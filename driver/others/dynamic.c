@@ -198,9 +198,9 @@ void gotoblas_dynamic_init(void) {
   gotoblas = get_coretype();
   
 #ifdef ARCH_X86
-  if (gotoblas == NULL) gotoblas = gotoblas_KATMAI;
+  if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
-  if (gotoblas == NULL) gotoblas = gotoblas_PRESCOTT;
+  if (gotoblas == NULL) gotoblas = &gotoblas_PRESCOTT;
 #endif
   
   if (gotoblas && gotoblas -> init) {
