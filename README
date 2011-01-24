@@ -10,8 +10,17 @@ Please read GotoBLAS_02QuickInstall.txt or type "make"
 3.Support CPU & OS
 Please read GotoBLAS_01Readme.txt
 
-4.Bugs
+4.Usages
+Link with libopenblas.a or -lopenblas for shared library.
 
+Set the number of threads. for example,
+export OPENBLAS_NUM_THREADS=4
+ or 
+export OMP_NUM_THREADS=4
+OPENBLAS_NUM_THREAD is prior to OMP_NUM_THREADS.
+
+4.Report Bugs
+Please add a issue in https://github.com/xianyi/OpenBLAS/issues
 
 5.To-Do List:
 Support ICT Loongson 3A CPU
