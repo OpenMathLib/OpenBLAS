@@ -260,6 +260,11 @@ endif
 BINARY_DEFINED = 1
 endif
 
+ifeq ($(CORE), LOONGSON3A)
+CCOMMON_OPT += -march=mips64
+FCOMMON_OPT += -march=mips64
+endif
+
 ifeq ($(OSNAME), AIX)
 BINARY_DEFINED = 1
 endif

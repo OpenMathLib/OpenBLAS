@@ -1,3 +1,35 @@
+/*****************************************************************************
+Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in
+      the documentation and/or other materials provided with the
+      distribution.
+   3. Neither the name of the ISCAS nor the names of its contributors may 
+      be used to endorse or promote products derived from this software 
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+**********************************************************************************/
+
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
@@ -84,6 +116,7 @@
 /* #define FORCE_PPC440FP2	*/
 /* #define FORCE_CELL		*/
 /* #define FORCE_SICORTEX	*/
+/* #define FORCE_LOONSON3A      */
 /* #define FORCE_ITANIUM2	*/
 /* #define FORCE_GENERIC	*/
 /* #define FORCE_SPARC		*/
@@ -500,6 +533,20 @@
 #define CORENAME  "sicortex"
 #endif
 
+
+#ifdef FORCE_LOONGSON3A
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "LOONGSON3A"
+#define SUBDIRNAME      "mips64"
+#define ARCHCONFIG   "-DLOONGSON3A " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
+       "-DDTB_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "loongson3a"
+#define CORENAME  "LOONGSON3A"
+#endif
+
 #ifdef FORCE_ITANIUM2
 #define FORCE
 #define ARCHITECTURE    "IA64"
@@ -631,7 +678,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else    
-#if defined(__i386__) || defined(__x86_64__) || defined(POWER)
+#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
