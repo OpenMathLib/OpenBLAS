@@ -36,22 +36,22 @@ ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
 all :: all1 all2 all3 
 
 all1: xscblat1 xdcblat1 xccblat1 xzcblat1
-	GOTO_NUM_THREADS=2 ./xscblat1
-	GOTO_NUM_THREADS=2 ./xdcblat1
-	GOTO_NUM_THREADS=2 ./xccblat1
-	GOTO_NUM_THREADS=2 ./xzcblat1
+	OPENBLAS_NUM_THREADS=2 ./xscblat1
+	OPENBLAS_NUM_THREADS=2 ./xdcblat1
+	OPENBLAS_NUM_THREADS=2 ./xccblat1
+	OPENBLAS_NUM_THREADS=2 ./xzcblat1
 
 all2: xscblat2 xdcblat2 xccblat2 xzcblat2
-	GOTO_NUM_THREADS=2 ./xscblat2 < sin2
-	GOTO_NUM_THREADS=2 ./xdcblat2 < din2
-	GOTO_NUM_THREADS=2 ./xccblat2 < cin2
-	GOTO_NUM_THREADS=2 ./xzcblat2 < zin2
+	OPENBLAS_NUM_THREADS=2 ./xscblat2 < sin2
+	OPENBLAS_NUM_THREADS=2 ./xdcblat2 < din2
+	OPENBLAS_NUM_THREADS=2 ./xccblat2 < cin2
+	OPENBLAS_NUM_THREADS=2 ./xzcblat2 < zin2
 
 all3: xscblat3 xdcblat3 xccblat3 xzcblat3
-	GOTO_NUM_THREADS=2 ./xscblat3 < sin3
-	GOTO_NUM_THREADS=2 ./xdcblat3 < din3
-	GOTO_NUM_THREADS=2 ./xccblat3 < cin3
-	GOTO_NUM_THREADS=2 ./xzcblat3 < zin3
+	OPENBLAS_NUM_THREADS=2 ./xscblat3 < sin3
+	OPENBLAS_NUM_THREADS=2 ./xdcblat3 < din3
+	OPENBLAS_NUM_THREADS=2 ./xccblat3 < cin3
+	OPENBLAS_NUM_THREADS=2 ./xzcblat3 < zin3
 
 clean ::
 	rm -f x* 
