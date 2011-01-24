@@ -47,27 +47,27 @@ endif
 shared :
 ifeq ($(OSNAME), Linux)
 	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) libgoto2.so
+	-ln -fs $(LIBSONAME) libopenblas.so
 endif
 ifeq ($(OSNAME), FreeBSD)
 	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) libgoto2.so
+	-ln -fs $(LIBSONAME) libopenblas.so
 endif
 ifeq ($(OSNAME), NetBSD)
 	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) libgoto2.so
+	-ln -fs $(LIBSONAME) libopenblas.so
 endif
 ifeq ($(OSNAME), Darwin)
 	$(MAKE) -C exports dyn
-	-ln -fs $(LIBDYNNAME) libgoto2.dylib
+	-ln -fs $(LIBDYNNAME) libopenblas.dylib
 endif
 ifeq ($(OSNAME), WINNT)
 	$(MAKE) -C exports dll
-#	-ln -fs $(LIBDLLNAME) libgoto2.dll
+#	-ln -fs $(LIBDLLNAME) libopenblas.dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) libgoto2.dll
+	-ln -fs $(LIBDLLNAME) libopenblas.dll
 endif
 
 tests :
@@ -86,7 +86,7 @@ endif
 endif
 
 libs :
-	-ln -fs $(LIBNAME) libgoto2.$(LIBSUFFIX)
+	-ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -102,7 +102,7 @@ endif
 prof : prof_blas prof_lapack
 
 prof_blas :
-	ln -fs $(LIBNAME_P) libgoto2_p.$(LIBSUFFIX)
+	ln -fs $(LIBNAME_P) libopenblas_p.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d prof || exit 1 ; \
@@ -113,7 +113,7 @@ ifdef DYNAMIC_ARCH
 endif
 
 blas :
-	ln -fs $(LIBNAME) libgoto2.$(LIBSUFFIX)
+	ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
 	for d in $(BLASDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d libs || exit 1 ; \
@@ -121,7 +121,7 @@ blas :
 	done
 
 hpl : 
-	ln -fs $(LIBNAME) libgoto2.$(LIBSUFFIX)
+	ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
 	for d in $(BLASDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -135,7 +135,7 @@ ifdef DYNAMIC_ARCH
 endif
 
 hpl_p :
-	ln -fs $(LIBNAME_P) libgoto2_p.$(LIBSUFFIX)
+	ln -fs $(LIBNAME_P) libopenblas_p.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -221,7 +221,7 @@ clean ::
 ifdef DYNAMIC_ARCH
 	@$(MAKE) -C kernel clean
 endif
-	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf libgoto2.$(LIBSUFFIX) libgoto2_p.$(LIBSUFFIX) *.lnk myconfig.h
+	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf libopenblas.$(LIBSUFFIX) libopenblas_p.$(LIBSUFFIX) *.lnk myconfig.h
 	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d lapack-3.1.1; then \
 	echo deleting lapack-3.1.1; \

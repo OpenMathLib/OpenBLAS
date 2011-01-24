@@ -1,3 +1,35 @@
+/*****************************************************************************
+Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in
+      the documentation and/or other materials provided with the
+      distribution.
+   3. Neither the name of the ISCAS nor the names of its contributors may 
+      be used to endorse or promote products derived from this software 
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+**********************************************************************************/
+
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
@@ -196,7 +228,7 @@ int blas_get_cpu_number(void){
 
   blas_goto_num = 0;
 #ifndef USE_OPENMP
-  p = getenv("GOTO_NUM_THREADS");
+  p = getenv("OPENBLAS_NUM_THREADS");
   if (p) blas_goto_num = atoi(p);
   if (blas_goto_num < 0) blas_goto_num = 0;
 #endif
@@ -246,7 +278,7 @@ static int hot_alloc = 0;
 static void alloc_mmap_free(struct release_t *release){
 
   if (munmap(release -> address, BUFFER_SIZE)) {
-    printf("GotoBLAS : munmap failed\n");
+    printf("OpenBLAS : munmap failed\n");
   }
 }
 
@@ -511,11 +543,11 @@ static void *alloc_windows(void *address){
 static void alloc_devicedirver_free(struct release_t *release){
 
   if (munmap(release -> address, BUFFER_SIZE)) {
-    printf("GotoBLAS : Bugphysarea unmap failed.\n");
+    printf("OpenBLAS : Bugphysarea unmap failed.\n");
   }
 
   if (close(release -> attr)) {
-    printf("GotoBLAS : Bugphysarea close failed.\n");
+    printf("OpenBLAS : Bugphysarea close failed.\n");
   }
 
 }
@@ -553,7 +585,7 @@ static void *alloc_devicedirver(void *address){
 static void alloc_shm_free(struct release_t *release){
 
   if (shmdt(release -> address)) {
-    printf("GotoBLAS : Shared memory unmap failed.\n");
+    printf("OpenBLAS : Shared memory unmap failed.\n");
     }
 }
 
@@ -590,7 +622,7 @@ static void alloc_hugetlb_free(struct release_t *release){
 
 #if defined(OS_LINUX) || defined(OS_AIX)
   if (shmdt(release -> address)) {
-    printf("GotoBLAS : Hugepage unmap failed.\n");
+    printf("OpenBLAS : Hugepage unmap failed.\n");
   }
 #endif
 
@@ -690,11 +722,11 @@ static int hugetlb_pid = 0;
 static void alloc_hugetlbfile_free(struct release_t *release){
 
   if (munmap(release -> address, BUFFER_SIZE)) {
-    printf("GotoBLAS : HugeTLBfs unmap failed.\n");
+    printf("OpenBLAS : HugeTLBfs unmap failed.\n");
   }
 
   if (close(release -> attr)) {
-    printf("GotoBLAS : HugeTLBfs close failed.\n");
+    printf("OpenBLAS : HugeTLBfs close failed.\n");
   }
 }
 
@@ -916,14 +948,14 @@ void *blas_memory_alloc(int procpos){
 
 #ifdef ALLOC_DEVICEDRIVER
 	if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
-	    fprintf(stderr, "GotoBLAS Warning ... Physically contigous allocation was failed.\n");
+	    fprintf(stderr, "OpenBLAS Warning ... Physically contigous allocation was failed.\n");
 	}
 #endif
 
 #ifdef ALLOC_HUGETLBFILE
 	if ((*func == alloc_hugetlbfile) && (map_address == (void *)-1)) {
 #ifndef OS_WINDOWS
-	    fprintf(stderr, "GotoBLAS Warning ... HugeTLB(File) allocation was failed.\n");
+	    fprintf(stderr, "OpenBLAS Warning ... HugeTLB(File) allocation was failed.\n");
 #endif
 	}
 #endif
