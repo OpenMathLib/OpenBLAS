@@ -19,11 +19,11 @@ export OPENBLAS_NUM_THREADS=4
 export OMP_NUM_THREADS=4
 OPENBLAS_NUM_THREAD is prior to OMP_NUM_THREADS.
 
-4.Report Bugs
+5.Report Bugs
 Please add a issue in https://github.com/xianyi/OpenBLAS/issues
 
-5.To-Do List:
+6.To-Do List:
 Support ICT Loongson 3A CPU
 
-6.Contact
+7.Contact
 OpenBLAS users mailing list: http://list.rdcps.ac.cn/mailman/listinfo/openblas
