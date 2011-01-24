@@ -1,0 +1,19 @@
+OpenBLAS Readme
+
+1.Introduction
+OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. OpenBLAS is an open source project supported by Lab of Parallel Software and Computational Science, ISCAS.(http://www.rdcps.ac.cn)
+
+2.Intallation
+check out codes from git://github.com/xianyi/OpenBLAS.git
+Please read GotoBLAS_02QuickInstall.txt or type "make"
+
+3.Support CPU & OS
+Please read GotoBLAS_01Readme.txt
+
+4.Bugs
+
+
+5.To-Do List:
+Support ICT Loongson 3A CPU
+
+6.Contact
