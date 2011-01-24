@@ -1,0 +1,684 @@
+diff -ruN lapack-3.1.1.old/INSTALL/Makefile lapack-3.1.1/INSTALL/Makefile
+--- lapack-3.1.1.old/INSTALL/Makefile	2007-02-23 14:07:35.000000000 -0600
++++ lapack-3.1.1/INSTALL/Makefile	2009-12-16 14:40:35.000000000 -0600
+@@ -27,7 +27,7 @@
+ 	    $(LOADER) $(LOADOPTS) -o testversion ilaver.o LAPACK_version.o
+ 
+ clean:
+-	rm -f *.o
++	rm -f *.o test*
+ 
+ slamch.o: slamch.f ; $(FORTRAN) $(NOOPT) -c $< -o $@
+ dlamch.o: dlamch.f ; $(FORTRAN) $(NOOPT) -c $< -o $@
+diff -ruN lapack-3.1.1.old/Makefile lapack-3.1.1/Makefile
+--- lapack-3.1.1.old/Makefile	2007-02-22 15:55:00.000000000 -0600
++++ lapack-3.1.1/Makefile	2009-12-16 14:40:35.000000000 -0600
+@@ -20,9 +20,12 @@
+ blaslib:
+ 	( cd BLAS/SRC; $(MAKE) )
+ 
+-lapacklib:	lapack_install
++lapacklib:
+ 	( cd SRC; $(MAKE) )
+ 
++lapack_prof:
++	( cd SRC; $(MAKE) lapack_prof)
++
+ tmglib:
+ 	( cd TESTING/MATGEN; $(MAKE) )
+ 
+diff -ruN lapack-3.1.1.old/SRC/Makefile lapack-3.1.1/SRC/Makefile
+--- lapack-3.1.1.old/SRC/Makefile	2007-02-23 15:33:05.000000000 -0600
++++ lapack-3.1.1/SRC/Makefile	2009-12-16 14:41:09.000000000 -0600
+@@ -38,265 +38,273 @@
+ #
+ #######################################################################
+  
+-ALLAUX = ilaenv.o ieeeck.o lsamen.o xerbla.o iparmq.o	\
+-    ../INSTALL/ilaver.o ../INSTALL/lsame.o
++ALLAUX = ilaenv.$(SUFFIX) ieeeck.$(SUFFIX) lsamen.$(SUFFIX) iparmq.$(SUFFIX)	\
++    ../INSTALL/ilaver.$(SUFFIX)
+ 
+ SCLAUX = \
+-   sbdsdc.o \
+-   sbdsqr.o sdisna.o slabad.o slacpy.o sladiv.o slae2.o  slaebz.o \
+-   slaed0.o slaed1.o slaed2.o slaed3.o slaed4.o slaed5.o slaed6.o \
+-   slaed7.o slaed8.o slaed9.o slaeda.o slaev2.o slagtf.o \
+-   slagts.o slamrg.o slanst.o \
+-   slapy2.o slapy3.o slarnv.o \
+-   slarra.o slarrb.o slarrc.o slarrd.o slarre.o slarrf.o slarrj.o \
+-   slarrk.o slarrr.o slaneg.o \
+-   slartg.o slaruv.o slas2.o  slascl.o \
+-   slasd0.o slasd1.o slasd2.o slasd3.o slasd4.o slasd5.o slasd6.o \
+-   slasd7.o slasd8.o slasda.o slasdq.o slasdt.o \
+-   slaset.o slasq1.o slasq2.o slasq3.o slazq3.o slasq4.o slazq4.o slasq5.o slasq6.o \
+-   slasr.o  slasrt.o slassq.o slasv2.o spttrf.o sstebz.o sstedc.o \
+-   ssteqr.o ssterf.o slaisnan.o sisnan.o \
+-   ../INSTALL/slamch.o ../INSTALL/second_$(TIMER).o
++   sbdsdc.$(SUFFIX) \
++   sbdsqr.$(SUFFIX) sdisna.$(SUFFIX) slabad.$(SUFFIX) slacpy.$(SUFFIX) sladiv.$(SUFFIX) slae2.$(SUFFIX)  slaebz.$(SUFFIX) \
++   slaed0.$(SUFFIX) slaed1.$(SUFFIX) slaed2.$(SUFFIX) slaed3.$(SUFFIX) slaed4.$(SUFFIX) slaed5.$(SUFFIX) slaed6.$(SUFFIX) \
++   slaed7.$(SUFFIX) slaed8.$(SUFFIX) slaed9.$(SUFFIX) slaeda.$(SUFFIX) slaev2.$(SUFFIX) slagtf.$(SUFFIX) \
++   slagts.$(SUFFIX) slamrg.$(SUFFIX) slanst.$(SUFFIX) \
++   slapy2.$(SUFFIX) slapy3.$(SUFFIX) slarnv.$(SUFFIX) \
++   slarra.$(SUFFIX) slarrb.$(SUFFIX) slarrc.$(SUFFIX) slarrd.$(SUFFIX) slarre.$(SUFFIX) slarrf.$(SUFFIX) slarrj.$(SUFFIX) \
++   slarrk.$(SUFFIX) slarrr.$(SUFFIX) slaneg.$(SUFFIX) \
++   slartg.$(SUFFIX) slaruv.$(SUFFIX) slas2.$(SUFFIX)  slascl.$(SUFFIX) \
++   slasd0.$(SUFFIX) slasd1.$(SUFFIX) slasd2.$(SUFFIX) slasd3.$(SUFFIX) slasd4.$(SUFFIX) slasd5.$(SUFFIX) slasd6.$(SUFFIX) \
++   slasd7.$(SUFFIX) slasd8.$(SUFFIX) slasda.$(SUFFIX) slasdq.$(SUFFIX) slasdt.$(SUFFIX) \
++   slaset.$(SUFFIX) slasq1.$(SUFFIX) slasq2.$(SUFFIX) slasq3.$(SUFFIX) slazq3.$(SUFFIX) slasq4.$(SUFFIX) slazq4.$(SUFFIX) slasq5.$(SUFFIX) slasq6.$(SUFFIX) \
++   slasr.$(SUFFIX)  slasrt.$(SUFFIX) slassq.$(SUFFIX) slasv2.$(SUFFIX) spttrf.$(SUFFIX) sstebz.$(SUFFIX) sstedc.$(SUFFIX) \
++   ssteqr.$(SUFFIX) ssterf.$(SUFFIX) slaisnan.$(SUFFIX) sisnan.$(SUFFIX) \
++   ../INSTALL/second_$(TIMER).$(SUFFIX)
+ 
+ DZLAUX = \
+-   dbdsdc.o \
+-   dbdsqr.o ddisna.o dlabad.o dlacpy.o dladiv.o dlae2.o  dlaebz.o \
+-   dlaed0.o dlaed1.o dlaed2.o dlaed3.o dlaed4.o dlaed5.o dlaed6.o \
+-   dlaed7.o dlaed8.o dlaed9.o dlaeda.o dlaev2.o dlagtf.o \
+-   dlagts.o dlamrg.o dlanst.o \
+-   dlapy2.o dlapy3.o dlarnv.o \
+-   dlarra.o dlarrb.o dlarrc.o dlarrd.o dlarre.o dlarrf.o dlarrj.o \
+-   dlarrk.o dlarrr.o dlaneg.o \
+-   dlartg.o dlaruv.o dlas2.o  dlascl.o \
+-   dlasd0.o dlasd1.o dlasd2.o dlasd3.o dlasd4.o dlasd5.o dlasd6.o \
+-   dlasd7.o dlasd8.o dlasda.o dlasdq.o dlasdt.o \
+-   dlaset.o dlasq1.o dlasq2.o dlasq3.o dlazq3.o dlasq4.o dlazq4.o dlasq5.o dlasq6.o \
+-   dlasr.o  dlasrt.o dlassq.o dlasv2.o dpttrf.o dstebz.o dstedc.o \
+-   dsteqr.o dsterf.o dlaisnan.o disnan.o \
+-   ../INSTALL/dlamch.o ../INSTALL/dsecnd_$(TIMER).o
++   dbdsdc.$(SUFFIX) \
++   dbdsqr.$(SUFFIX) ddisna.$(SUFFIX) dlabad.$(SUFFIX) dlacpy.$(SUFFIX) dladiv.$(SUFFIX) dlae2.$(SUFFIX)  dlaebz.$(SUFFIX) \
++   dlaed0.$(SUFFIX) dlaed1.$(SUFFIX) dlaed2.$(SUFFIX) dlaed3.$(SUFFIX) dlaed4.$(SUFFIX) dlaed5.$(SUFFIX) dlaed6.$(SUFFIX) \
++   dlaed7.$(SUFFIX) dlaed8.$(SUFFIX) dlaed9.$(SUFFIX) dlaeda.$(SUFFIX) dlaev2.$(SUFFIX) dlagtf.$(SUFFIX) \
++   dlagts.$(SUFFIX) dlamrg.$(SUFFIX) dlanst.$(SUFFIX) \
++   dlapy2.$(SUFFIX) dlapy3.$(SUFFIX) dlarnv.$(SUFFIX) \
++   dlarra.$(SUFFIX) dlarrb.$(SUFFIX) dlarrc.$(SUFFIX) dlarrd.$(SUFFIX) dlarre.$(SUFFIX) dlarrf.$(SUFFIX) dlarrj.$(SUFFIX) \
++   dlarrk.$(SUFFIX) dlarrr.$(SUFFIX) dlaneg.$(SUFFIX) \
++   dlartg.$(SUFFIX) dlaruv.$(SUFFIX) dlas2.$(SUFFIX)  dlascl.$(SUFFIX) \
++   dlasd0.$(SUFFIX) dlasd1.$(SUFFIX) dlasd2.$(SUFFIX) dlasd3.$(SUFFIX) dlasd4.$(SUFFIX) dlasd5.$(SUFFIX) dlasd6.$(SUFFIX) \
++   dlasd7.$(SUFFIX) dlasd8.$(SUFFIX) dlasda.$(SUFFIX) dlasdq.$(SUFFIX) dlasdt.$(SUFFIX) \
++   dlaset.$(SUFFIX) dlasq1.$(SUFFIX) dlasq2.$(SUFFIX) dlasq3.$(SUFFIX) dlazq3.$(SUFFIX) dlasq4.$(SUFFIX) dlazq4.$(SUFFIX) dlasq5.$(SUFFIX) dlasq6.$(SUFFIX) \
++   dlasr.$(SUFFIX)  dlasrt.$(SUFFIX) dlassq.$(SUFFIX) dlasv2.$(SUFFIX) dpttrf.$(SUFFIX) dstebz.$(SUFFIX) dstedc.$(SUFFIX) \
++   dsteqr.$(SUFFIX) dsterf.$(SUFFIX) dlaisnan.$(SUFFIX) disnan.$(SUFFIX) \
++   ../INSTALL/dsecnd_$(TIMER).$(SUFFIX)
+ 
+ SLASRC = \
+-   sgbbrd.o sgbcon.o sgbequ.o sgbrfs.o sgbsv.o  \
+-   sgbsvx.o sgbtf2.o sgbtrf.o sgbtrs.o sgebak.o sgebal.o sgebd2.o \
+-   sgebrd.o sgecon.o sgeequ.o sgees.o  sgeesx.o sgeev.o  sgeevx.o \
+-   sgegs.o  sgegv.o  sgehd2.o sgehrd.o sgelq2.o sgelqf.o \
+-   sgels.o  sgelsd.o sgelss.o sgelsx.o sgelsy.o sgeql2.o sgeqlf.o \
+-   sgeqp3.o sgeqpf.o sgeqr2.o sgeqrf.o sgerfs.o sgerq2.o sgerqf.o \
+-   sgesc2.o sgesdd.o sgesv.o  sgesvd.o sgesvx.o sgetc2.o sgetf2.o \
+-   sgetrf.o sgetri.o \
+-   sgetrs.o sggbak.o sggbal.o sgges.o  sggesx.o sggev.o  sggevx.o \
+-   sggglm.o sgghrd.o sgglse.o sggqrf.o \
+-   sggrqf.o sggsvd.o sggsvp.o sgtcon.o sgtrfs.o sgtsv.o  \
+-   sgtsvx.o sgttrf.o sgttrs.o sgtts2.o shgeqz.o \
+-   shsein.o shseqr.o slabrd.o slacon.o slacn2.o \
+-   slaein.o slaexc.o slag2.o  slags2.o slagtm.o slagv2.o slahqr.o \
+-   slahrd.o slahr2.o slaic1.o slaln2.o slals0.o slalsa.o slalsd.o \
+-   slangb.o slange.o slangt.o slanhs.o slansb.o slansp.o \
+-   slansy.o slantb.o slantp.o slantr.o slanv2.o \
+-   slapll.o slapmt.o \
+-   slaqgb.o slaqge.o slaqp2.o slaqps.o slaqsb.o slaqsp.o slaqsy.o \
+-   slaqr0.o slaqr1.o slaqr2.o slaqr3.o slaqr4.o slaqr5.o \
+-   slaqtr.o slar1v.o slar2v.o \
+-   slarf.o  slarfb.o slarfg.o slarft.o slarfx.o slargv.o \
+-   slarrv.o slartv.o \
+-   slarz.o  slarzb.o slarzt.o slaswp.o slasy2.o slasyf.o \
+-   slatbs.o slatdf.o slatps.o slatrd.o slatrs.o slatrz.o slatzm.o \
+-   slauu2.o slauum.o sopgtr.o sopmtr.o sorg2l.o sorg2r.o \
+-   sorgbr.o sorghr.o sorgl2.o sorglq.o sorgql.o sorgqr.o sorgr2.o \
+-   sorgrq.o sorgtr.o sorm2l.o sorm2r.o \
+-   sormbr.o sormhr.o sorml2.o sormlq.o sormql.o sormqr.o sormr2.o \
+-   sormr3.o sormrq.o sormrz.o sormtr.o spbcon.o spbequ.o spbrfs.o \
+-   spbstf.o spbsv.o  spbsvx.o \
+-   spbtf2.o spbtrf.o spbtrs.o spocon.o spoequ.o sporfs.o sposv.o  \
+-   sposvx.o spotf2.o spotrf.o spotri.o spotrs.o sppcon.o sppequ.o \
+-   spprfs.o sppsv.o  sppsvx.o spptrf.o spptri.o spptrs.o sptcon.o \
+-   spteqr.o sptrfs.o sptsv.o  sptsvx.o spttrs.o sptts2.o srscl.o  \
+-   ssbev.o  ssbevd.o ssbevx.o ssbgst.o ssbgv.o  ssbgvd.o ssbgvx.o \
+-   ssbtrd.o sspcon.o sspev.o  sspevd.o sspevx.o sspgst.o \
+-   sspgv.o  sspgvd.o sspgvx.o ssprfs.o sspsv.o  sspsvx.o ssptrd.o \
+-   ssptrf.o ssptri.o ssptrs.o sstegr.o sstein.o sstev.o  sstevd.o sstevr.o \
+-   sstevx.o ssycon.o ssyev.o  ssyevd.o ssyevr.o ssyevx.o ssygs2.o \
+-   ssygst.o ssygv.o  ssygvd.o ssygvx.o ssyrfs.o ssysv.o  ssysvx.o \
+-   ssytd2.o ssytf2.o ssytrd.o ssytrf.o ssytri.o ssytrs.o stbcon.o \
+-   stbrfs.o stbtrs.o stgevc.o stgex2.o stgexc.o stgsen.o \
+-   stgsja.o stgsna.o stgsy2.o stgsyl.o stpcon.o stprfs.o stptri.o \
+-   stptrs.o \
+-   strcon.o strevc.o strexc.o strrfs.o strsen.o strsna.o strsyl.o \
+-   strti2.o strtri.o strtrs.o stzrqf.o stzrzf.o sstemr.o
++   sgbbrd.$(SUFFIX) sgbcon.$(SUFFIX) sgbequ.$(SUFFIX) sgbrfs.$(SUFFIX) sgbsv.$(SUFFIX)  \
++   sgbsvx.$(SUFFIX) sgbtf2.$(SUFFIX) sgbtrf.$(SUFFIX) sgbtrs.$(SUFFIX) sgebak.$(SUFFIX) sgebal.$(SUFFIX) sgebd2.$(SUFFIX) \
++   sgebrd.$(SUFFIX) sgecon.$(SUFFIX) sgeequ.$(SUFFIX) sgees.$(SUFFIX)  sgeesx.$(SUFFIX) sgeev.$(SUFFIX)  sgeevx.$(SUFFIX) \
++   sgegs.$(SUFFIX)  sgegv.$(SUFFIX)  sgehd2.$(SUFFIX) sgehrd.$(SUFFIX) sgelq2.$(SUFFIX) sgelqf.$(SUFFIX) \
++   sgels.$(SUFFIX)  sgelsd.$(SUFFIX) sgelss.$(SUFFIX) sgelsx.$(SUFFIX) sgelsy.$(SUFFIX) sgeql2.$(SUFFIX) sgeqlf.$(SUFFIX) \
++   sgeqp3.$(SUFFIX) sgeqpf.$(SUFFIX) sgeqr2.$(SUFFIX) sgeqrf.$(SUFFIX) sgerfs.$(SUFFIX) sgerq2.$(SUFFIX) sgerqf.$(SUFFIX) \
++   sgesc2.$(SUFFIX) sgesdd.$(SUFFIX) sgesvd.$(SUFFIX) sgesvx.$(SUFFIX) sgetc2.$(SUFFIX) \
++   sgetri.$(SUFFIX) \
++   sggbak.$(SUFFIX) sggbal.$(SUFFIX) sgges.$(SUFFIX)  sggesx.$(SUFFIX) sggev.$(SUFFIX)  sggevx.$(SUFFIX) \
++   sggglm.$(SUFFIX) sgghrd.$(SUFFIX) sgglse.$(SUFFIX) sggqrf.$(SUFFIX) \
++   sggrqf.$(SUFFIX) sggsvd.$(SUFFIX) sggsvp.$(SUFFIX) sgtcon.$(SUFFIX) sgtrfs.$(SUFFIX) sgtsv.$(SUFFIX)  \
++   sgtsvx.$(SUFFIX) sgttrf.$(SUFFIX) sgttrs.$(SUFFIX) sgtts2.$(SUFFIX) shgeqz.$(SUFFIX) \
++   shsein.$(SUFFIX) shseqr.$(SUFFIX) slabrd.$(SUFFIX) slacon.$(SUFFIX) slacn2.$(SUFFIX) \
++   slaein.$(SUFFIX) slaexc.$(SUFFIX) slag2.$(SUFFIX)  slags2.$(SUFFIX) slagtm.$(SUFFIX) slagv2.$(SUFFIX) slahqr.$(SUFFIX) \
++   slahrd.$(SUFFIX) slahr2.$(SUFFIX) slaic1.$(SUFFIX) slaln2.$(SUFFIX) slals0.$(SUFFIX) slalsa.$(SUFFIX) slalsd.$(SUFFIX) \
++   slangb.$(SUFFIX) slange.$(SUFFIX) slangt.$(SUFFIX) slanhs.$(SUFFIX) slansb.$(SUFFIX) slansp.$(SUFFIX) \
++   slansy.$(SUFFIX) slantb.$(SUFFIX) slantp.$(SUFFIX) slantr.$(SUFFIX) slanv2.$(SUFFIX) \
++   slapll.$(SUFFIX) slapmt.$(SUFFIX) \
++   slaqgb.$(SUFFIX) slaqge.$(SUFFIX) slaqp2.$(SUFFIX) slaqps.$(SUFFIX) slaqsb.$(SUFFIX) slaqsp.$(SUFFIX) slaqsy.$(SUFFIX) \
++   slaqr0.$(SUFFIX) slaqr1.$(SUFFIX) slaqr2.$(SUFFIX) slaqr3.$(SUFFIX) slaqr4.$(SUFFIX) slaqr5.$(SUFFIX) \
++   slaqtr.$(SUFFIX) slar1v.$(SUFFIX) slar2v.$(SUFFIX) \
++   slarf.$(SUFFIX)  slarfb.$(SUFFIX) slarfg.$(SUFFIX) slarft.$(SUFFIX) slarfx.$(SUFFIX) slargv.$(SUFFIX) \
++   slarrv.$(SUFFIX) slartv.$(SUFFIX) \
++   slarz.$(SUFFIX)  slarzb.$(SUFFIX) slarzt.$(SUFFIX) slasy2.$(SUFFIX) slasyf.$(SUFFIX) \
++   slatbs.$(SUFFIX) slatdf.$(SUFFIX) slatps.$(SUFFIX) slatrd.$(SUFFIX) slatrs.$(SUFFIX) slatrz.$(SUFFIX) slatzm.$(SUFFIX) \
++   sopgtr.$(SUFFIX) sopmtr.$(SUFFIX) sorg2l.$(SUFFIX) sorg2r.$(SUFFIX) \
++   sorgbr.$(SUFFIX) sorghr.$(SUFFIX) sorgl2.$(SUFFIX) sorglq.$(SUFFIX) sorgql.$(SUFFIX) sorgqr.$(SUFFIX) sorgr2.$(SUFFIX) \
++   sorgrq.$(SUFFIX) sorgtr.$(SUFFIX) sorm2l.$(SUFFIX) sorm2r.$(SUFFIX) \
++   sormbr.$(SUFFIX) sormhr.$(SUFFIX) sorml2.$(SUFFIX) sormlq.$(SUFFIX) sormql.$(SUFFIX) sormqr.$(SUFFIX) sormr2.$(SUFFIX) \
++   sormr3.$(SUFFIX) sormrq.$(SUFFIX) sormrz.$(SUFFIX) sormtr.$(SUFFIX) spbcon.$(SUFFIX) spbequ.$(SUFFIX) spbrfs.$(SUFFIX) \
++   spbstf.$(SUFFIX) spbsv.$(SUFFIX)  spbsvx.$(SUFFIX) \
++   spbtf2.$(SUFFIX) spbtrf.$(SUFFIX) spbtrs.$(SUFFIX) spocon.$(SUFFIX) spoequ.$(SUFFIX) sporfs.$(SUFFIX) sposv.$(SUFFIX)  \
++   sposvx.$(SUFFIX) spotrs.$(SUFFIX) sppcon.$(SUFFIX) sppequ.$(SUFFIX) \
++   spprfs.$(SUFFIX) sppsv.$(SUFFIX)  sppsvx.$(SUFFIX) spptrf.$(SUFFIX) spptri.$(SUFFIX) spptrs.$(SUFFIX) sptcon.$(SUFFIX) \
++   spteqr.$(SUFFIX) sptrfs.$(SUFFIX) sptsv.$(SUFFIX)  sptsvx.$(SUFFIX) spttrs.$(SUFFIX) sptts2.$(SUFFIX) srscl.$(SUFFIX)  \
++   ssbev.$(SUFFIX)  ssbevd.$(SUFFIX) ssbevx.$(SUFFIX) ssbgst.$(SUFFIX) ssbgv.$(SUFFIX)  ssbgvd.$(SUFFIX) ssbgvx.$(SUFFIX) \
++   ssbtrd.$(SUFFIX) sspcon.$(SUFFIX) sspev.$(SUFFIX)  sspevd.$(SUFFIX) sspevx.$(SUFFIX) sspgst.$(SUFFIX) \
++   sspgv.$(SUFFIX)  sspgvd.$(SUFFIX) sspgvx.$(SUFFIX) ssprfs.$(SUFFIX) sspsv.$(SUFFIX)  sspsvx.$(SUFFIX) ssptrd.$(SUFFIX) \
++   ssptrf.$(SUFFIX) ssptri.$(SUFFIX) ssptrs.$(SUFFIX) sstegr.$(SUFFIX) sstein.$(SUFFIX) sstev.$(SUFFIX)  sstevd.$(SUFFIX) sstevr.$(SUFFIX) \
++   sstevx.$(SUFFIX) ssycon.$(SUFFIX) ssyev.$(SUFFIX)  ssyevd.$(SUFFIX) ssyevr.$(SUFFIX) ssyevx.$(SUFFIX) ssygs2.$(SUFFIX) \
++   ssygst.$(SUFFIX) ssygv.$(SUFFIX)  ssygvd.$(SUFFIX) ssygvx.$(SUFFIX) ssyrfs.$(SUFFIX) ssysv.$(SUFFIX)  ssysvx.$(SUFFIX) \
++   ssytd2.$(SUFFIX) ssytf2.$(SUFFIX) ssytrd.$(SUFFIX) ssytrf.$(SUFFIX) ssytri.$(SUFFIX) ssytrs.$(SUFFIX) stbcon.$(SUFFIX) \
++   stbrfs.$(SUFFIX) stbtrs.$(SUFFIX) stgevc.$(SUFFIX) stgex2.$(SUFFIX) stgexc.$(SUFFIX) stgsen.$(SUFFIX) \
++   stgsja.$(SUFFIX) stgsna.$(SUFFIX) stgsy2.$(SUFFIX) stgsyl.$(SUFFIX) stpcon.$(SUFFIX) stprfs.$(SUFFIX) stptri.$(SUFFIX) \
++   stptrs.$(SUFFIX) \
++   strcon.$(SUFFIX) strevc.$(SUFFIX) strexc.$(SUFFIX) strrfs.$(SUFFIX) strsen.$(SUFFIX) strsna.$(SUFFIX) strsyl.$(SUFFIX) \
++   strtrs.$(SUFFIX) stzrqf.$(SUFFIX) stzrzf.$(SUFFIX) sstemr.$(SUFFIX)
+ 
+ CLASRC = \
+-   cbdsqr.o cgbbrd.o cgbcon.o cgbequ.o cgbrfs.o cgbsv.o  cgbsvx.o \
+-   cgbtf2.o cgbtrf.o cgbtrs.o cgebak.o cgebal.o cgebd2.o cgebrd.o \
+-   cgecon.o cgeequ.o cgees.o  cgeesx.o cgeev.o  cgeevx.o \
+-   cgegs.o  cgegv.o  cgehd2.o cgehrd.o cgelq2.o cgelqf.o \
+-   cgels.o  cgelsd.o cgelss.o cgelsx.o cgelsy.o cgeql2.o cgeqlf.o cgeqp3.o \
+-   cgeqpf.o cgeqr2.o cgeqrf.o cgerfs.o cgerq2.o cgerqf.o \
+-   cgesc2.o cgesdd.o cgesv.o  cgesvd.o cgesvx.o cgetc2.o cgetf2.o cgetrf.o \
+-   cgetri.o cgetrs.o \
+-   cggbak.o cggbal.o cgges.o  cggesx.o cggev.o  cggevx.o cggglm.o \
+-   cgghrd.o cgglse.o cggqrf.o cggrqf.o \
+-   cggsvd.o cggsvp.o \
+-   cgtcon.o cgtrfs.o cgtsv.o  cgtsvx.o cgttrf.o cgttrs.o cgtts2.o chbev.o  \
+-   chbevd.o chbevx.o chbgst.o chbgv.o  chbgvd.o chbgvx.o chbtrd.o \
+-   checon.o cheev.o  cheevd.o cheevr.o cheevx.o chegs2.o chegst.o \
+-   chegv.o  chegvd.o chegvx.o cherfs.o chesv.o  chesvx.o chetd2.o \
+-   chetf2.o chetrd.o \
+-   chetrf.o chetri.o chetrs.o chgeqz.o chpcon.o chpev.o  chpevd.o \
+-   chpevx.o chpgst.o chpgv.o  chpgvd.o chpgvx.o chprfs.o chpsv.o  \
+-   chpsvx.o \
+-   chptrd.o chptrf.o chptri.o chptrs.o chsein.o chseqr.o clabrd.o \
+-   clacgv.o clacon.o clacn2.o clacp2.o clacpy.o clacrm.o clacrt.o cladiv.o \
+-   claed0.o claed7.o claed8.o \
+-   claein.o claesy.o claev2.o clags2.o clagtm.o \
+-   clahef.o clahqr.o \
+-   clahrd.o clahr2.o claic1.o clals0.o clalsa.o clalsd.o clangb.o clange.o clangt.o \
+-   clanhb.o clanhe.o \
+-   clanhp.o clanhs.o clanht.o clansb.o clansp.o clansy.o clantb.o \
+-   clantp.o clantr.o clapll.o clapmt.o clarcm.o claqgb.o claqge.o \
+-   claqhb.o claqhe.o claqhp.o claqp2.o claqps.o claqsb.o \
+-   claqr0.o claqr1.o claqr2.o claqr3.o claqr4.o claqr5.o \
+-   claqsp.o claqsy.o clar1v.o clar2v.o clarf.o  clarfb.o clarfg.o clarft.o \
+-   clarfx.o clargv.o clarnv.o clarrv.o clartg.o clartv.o \
+-   clarz.o  clarzb.o clarzt.o clascl.o claset.o clasr.o  classq.o \
+-   claswp.o clasyf.o clatbs.o clatdf.o clatps.o clatrd.o clatrs.o clatrz.o \
+-   clatzm.o clauu2.o clauum.o cpbcon.o cpbequ.o cpbrfs.o cpbstf.o cpbsv.o  \
+-   cpbsvx.o cpbtf2.o cpbtrf.o cpbtrs.o cpocon.o cpoequ.o cporfs.o \
+-   cposv.o  cposvx.o cpotf2.o cpotrf.o cpotri.o cpotrs.o cppcon.o \
+-   cppequ.o cpprfs.o cppsv.o  cppsvx.o cpptrf.o cpptri.o cpptrs.o \
+-   cptcon.o cpteqr.o cptrfs.o cptsv.o  cptsvx.o cpttrf.o cpttrs.o cptts2.o \
+-   crot.o   cspcon.o cspmv.o  cspr.o   csprfs.o cspsv.o  \
+-   cspsvx.o csptrf.o csptri.o csptrs.o csrscl.o cstedc.o \
+-   cstegr.o cstein.o csteqr.o csycon.o csymv.o  \
+-   csyr.o   csyrfs.o csysv.o  csysvx.o csytf2.o csytrf.o csytri.o \
+-   csytrs.o ctbcon.o ctbrfs.o ctbtrs.o ctgevc.o ctgex2.o \
+-   ctgexc.o ctgsen.o ctgsja.o ctgsna.o ctgsy2.o ctgsyl.o ctpcon.o \
+-   ctprfs.o ctptri.o \
+-   ctptrs.o ctrcon.o ctrevc.o ctrexc.o ctrrfs.o ctrsen.o ctrsna.o \
+-   ctrsyl.o ctrti2.o ctrtri.o ctrtrs.o ctzrqf.o ctzrzf.o cung2l.o cung2r.o \
+-   cungbr.o cunghr.o cungl2.o cunglq.o cungql.o cungqr.o cungr2.o \
+-   cungrq.o cungtr.o cunm2l.o cunm2r.o cunmbr.o cunmhr.o cunml2.o \
+-   cunmlq.o cunmql.o cunmqr.o cunmr2.o cunmr3.o cunmrq.o cunmrz.o \
+-   cunmtr.o cupgtr.o cupmtr.o icmax1.o scsum1.o cstemr.o
++   cbdsqr.$(SUFFIX) cgbbrd.$(SUFFIX) cgbcon.$(SUFFIX) cgbequ.$(SUFFIX) cgbrfs.$(SUFFIX) cgbsv.$(SUFFIX)  cgbsvx.$(SUFFIX) \
++   cgbtf2.$(SUFFIX) cgbtrf.$(SUFFIX) cgbtrs.$(SUFFIX) cgebak.$(SUFFIX) cgebal.$(SUFFIX) cgebd2.$(SUFFIX) cgebrd.$(SUFFIX) \
++   cgecon.$(SUFFIX) cgeequ.$(SUFFIX) cgees.$(SUFFIX)  cgeesx.$(SUFFIX) cgeev.$(SUFFIX)  cgeevx.$(SUFFIX) \
++   cgegs.$(SUFFIX)  cgegv.$(SUFFIX)  cgehd2.$(SUFFIX) cgehrd.$(SUFFIX) cgelq2.$(SUFFIX) cgelqf.$(SUFFIX) \
++   cgels.$(SUFFIX)  cgelsd.$(SUFFIX) cgelss.$(SUFFIX) cgelsx.$(SUFFIX) cgelsy.$(SUFFIX) cgeql2.$(SUFFIX) cgeqlf.$(SUFFIX) cgeqp3.$(SUFFIX) \
++   cgeqpf.$(SUFFIX) cgeqr2.$(SUFFIX) cgeqrf.$(SUFFIX) cgerfs.$(SUFFIX) cgerq2.$(SUFFIX) cgerqf.$(SUFFIX) \
++   cgesc2.$(SUFFIX) cgesdd.$(SUFFIX) cgesvd.$(SUFFIX) cgesvx.$(SUFFIX) cgetc2.$(SUFFIX) \
++   cgetri.$(SUFFIX) \
++   cggbak.$(SUFFIX) cggbal.$(SUFFIX) cgges.$(SUFFIX)  cggesx.$(SUFFIX) cggev.$(SUFFIX)  cggevx.$(SUFFIX) cggglm.$(SUFFIX) \
++   cgghrd.$(SUFFIX) cgglse.$(SUFFIX) cggqrf.$(SUFFIX) cggrqf.$(SUFFIX) \
++   cggsvd.$(SUFFIX) cggsvp.$(SUFFIX) \
++   cgtcon.$(SUFFIX) cgtrfs.$(SUFFIX) cgtsv.$(SUFFIX)  cgtsvx.$(SUFFIX) cgttrf.$(SUFFIX) cgttrs.$(SUFFIX) cgtts2.$(SUFFIX) chbev.$(SUFFIX)  \
++   chbevd.$(SUFFIX) chbevx.$(SUFFIX) chbgst.$(SUFFIX) chbgv.$(SUFFIX)  chbgvd.$(SUFFIX) chbgvx.$(SUFFIX) chbtrd.$(SUFFIX) \
++   checon.$(SUFFIX) cheev.$(SUFFIX)  cheevd.$(SUFFIX) cheevr.$(SUFFIX) cheevx.$(SUFFIX) chegs2.$(SUFFIX) chegst.$(SUFFIX) \
++   chegv.$(SUFFIX)  chegvd.$(SUFFIX) chegvx.$(SUFFIX) cherfs.$(SUFFIX) chesv.$(SUFFIX)  chesvx.$(SUFFIX) chetd2.$(SUFFIX) \
++   chetf2.$(SUFFIX) chetrd.$(SUFFIX) \
++   chetrf.$(SUFFIX) chetri.$(SUFFIX) chetrs.$(SUFFIX) chgeqz.$(SUFFIX) chpcon.$(SUFFIX) chpev.$(SUFFIX)  chpevd.$(SUFFIX) \
++   chpevx.$(SUFFIX) chpgst.$(SUFFIX) chpgv.$(SUFFIX)  chpgvd.$(SUFFIX) chpgvx.$(SUFFIX) chprfs.$(SUFFIX) chpsv.$(SUFFIX)  \
++   chpsvx.$(SUFFIX) \
++   chptrd.$(SUFFIX) chptrf.$(SUFFIX) chptri.$(SUFFIX) chptrs.$(SUFFIX) chsein.$(SUFFIX) chseqr.$(SUFFIX) clabrd.$(SUFFIX) \
++   clacgv.$(SUFFIX) clacon.$(SUFFIX) clacn2.$(SUFFIX) clacp2.$(SUFFIX) clacpy.$(SUFFIX) clacrm.$(SUFFIX) clacrt.$(SUFFIX) cladiv.$(SUFFIX) \
++   claed0.$(SUFFIX) claed7.$(SUFFIX) claed8.$(SUFFIX) \
++   claein.$(SUFFIX) claesy.$(SUFFIX) claev2.$(SUFFIX) clags2.$(SUFFIX) clagtm.$(SUFFIX) \
++   clahef.$(SUFFIX) clahqr.$(SUFFIX) \
++   clahrd.$(SUFFIX) clahr2.$(SUFFIX) claic1.$(SUFFIX) clals0.$(SUFFIX) clalsa.$(SUFFIX) clalsd.$(SUFFIX) clangb.$(SUFFIX) clange.$(SUFFIX) clangt.$(SUFFIX) \
++   clanhb.$(SUFFIX) clanhe.$(SUFFIX) \
++   clanhp.$(SUFFIX) clanhs.$(SUFFIX) clanht.$(SUFFIX) clansb.$(SUFFIX) clansp.$(SUFFIX) clansy.$(SUFFIX) clantb.$(SUFFIX) \
++   clantp.$(SUFFIX) clantr.$(SUFFIX) clapll.$(SUFFIX) clapmt.$(SUFFIX) clarcm.$(SUFFIX) claqgb.$(SUFFIX) claqge.$(SUFFIX) \
++   claqhb.$(SUFFIX) claqhe.$(SUFFIX) claqhp.$(SUFFIX) claqp2.$(SUFFIX) claqps.$(SUFFIX) claqsb.$(SUFFIX) \
++   claqr0.$(SUFFIX) claqr1.$(SUFFIX) claqr2.$(SUFFIX) claqr3.$(SUFFIX) claqr4.$(SUFFIX) claqr5.$(SUFFIX) \
++   claqsp.$(SUFFIX) claqsy.$(SUFFIX) clar1v.$(SUFFIX) clar2v.$(SUFFIX) clarf.$(SUFFIX)  clarfb.$(SUFFIX) clarfg.$(SUFFIX) clarft.$(SUFFIX) \
++   clarfx.$(SUFFIX) clargv.$(SUFFIX) clarnv.$(SUFFIX) clarrv.$(SUFFIX) clartg.$(SUFFIX) clartv.$(SUFFIX) \
++   clarz.$(SUFFIX)  clarzb.$(SUFFIX) clarzt.$(SUFFIX) clascl.$(SUFFIX) claset.$(SUFFIX) clasr.$(SUFFIX)  classq.$(SUFFIX) \
++   clasyf.$(SUFFIX) clatbs.$(SUFFIX) clatdf.$(SUFFIX) clatps.$(SUFFIX) clatrd.$(SUFFIX) clatrs.$(SUFFIX) clatrz.$(SUFFIX) \
++   clatzm.$(SUFFIX) cpbcon.$(SUFFIX) cpbequ.$(SUFFIX) cpbrfs.$(SUFFIX) cpbstf.$(SUFFIX) cpbsv.$(SUFFIX)  \
++   cpbsvx.$(SUFFIX) cpbtf2.$(SUFFIX) cpbtrf.$(SUFFIX) cpbtrs.$(SUFFIX) cpocon.$(SUFFIX) cpoequ.$(SUFFIX) cporfs.$(SUFFIX) \
++   cposv.$(SUFFIX)  cposvx.$(SUFFIX) cpotrs.$(SUFFIX) cppcon.$(SUFFIX) \
++   cppequ.$(SUFFIX) cpprfs.$(SUFFIX) cppsv.$(SUFFIX)  cppsvx.$(SUFFIX) cpptrf.$(SUFFIX) cpptri.$(SUFFIX) cpptrs.$(SUFFIX) \
++   cptcon.$(SUFFIX) cpteqr.$(SUFFIX) cptrfs.$(SUFFIX) cptsv.$(SUFFIX)  cptsvx.$(SUFFIX) cpttrf.$(SUFFIX) cpttrs.$(SUFFIX) cptts2.$(SUFFIX) \
++   crot.$(SUFFIX)   cspcon.$(SUFFIX) csprfs.$(SUFFIX) cspsv.$(SUFFIX)  \
++   cspsvx.$(SUFFIX) csptrf.$(SUFFIX) csptri.$(SUFFIX) csptrs.$(SUFFIX) csrscl.$(SUFFIX) cstedc.$(SUFFIX) \
++   cstegr.$(SUFFIX) cstein.$(SUFFIX) csteqr.$(SUFFIX) csycon.$(SUFFIX) \
++   csyrfs.$(SUFFIX) csysv.$(SUFFIX)  csysvx.$(SUFFIX) csytf2.$(SUFFIX) csytrf.$(SUFFIX) csytri.$(SUFFIX) \
++   csytrs.$(SUFFIX) ctbcon.$(SUFFIX) ctbrfs.$(SUFFIX) ctbtrs.$(SUFFIX) ctgevc.$(SUFFIX) ctgex2.$(SUFFIX) \
++   ctgexc.$(SUFFIX) ctgsen.$(SUFFIX) ctgsja.$(SUFFIX) ctgsna.$(SUFFIX) ctgsy2.$(SUFFIX) ctgsyl.$(SUFFIX) ctpcon.$(SUFFIX) \
++   ctprfs.$(SUFFIX) ctptri.$(SUFFIX) \
++   ctptrs.$(SUFFIX) ctrcon.$(SUFFIX) ctrevc.$(SUFFIX) ctrexc.$(SUFFIX) ctrrfs.$(SUFFIX) ctrsen.$(SUFFIX) ctrsna.$(SUFFIX) \
++   ctrsyl.$(SUFFIX) ctrtrs.$(SUFFIX) ctzrqf.$(SUFFIX) ctzrzf.$(SUFFIX) cung2l.$(SUFFIX) cung2r.$(SUFFIX) \
++   cungbr.$(SUFFIX) cunghr.$(SUFFIX) cungl2.$(SUFFIX) cunglq.$(SUFFIX) cungql.$(SUFFIX) cungqr.$(SUFFIX) cungr2.$(SUFFIX) \
++   cungrq.$(SUFFIX) cungtr.$(SUFFIX) cunm2l.$(SUFFIX) cunm2r.$(SUFFIX) cunmbr.$(SUFFIX) cunmhr.$(SUFFIX) cunml2.$(SUFFIX) \
++   cunmlq.$(SUFFIX) cunmql.$(SUFFIX) cunmqr.$(SUFFIX) cunmr2.$(SUFFIX) cunmr3.$(SUFFIX) cunmrq.$(SUFFIX) cunmrz.$(SUFFIX) \
++   cunmtr.$(SUFFIX) cupgtr.$(SUFFIX) cupmtr.$(SUFFIX) icmax1.$(SUFFIX) scsum1.$(SUFFIX) cstemr.$(SUFFIX)
+ 
+ DLASRC = \
+-   dgbbrd.o dgbcon.o dgbequ.o dgbrfs.o dgbsv.o  \
+-   dgbsvx.o dgbtf2.o dgbtrf.o dgbtrs.o dgebak.o dgebal.o dgebd2.o \
+-   dgebrd.o dgecon.o dgeequ.o dgees.o  dgeesx.o dgeev.o  dgeevx.o \
+-   dgegs.o  dgegv.o  dgehd2.o dgehrd.o dgelq2.o dgelqf.o \
+-   dgels.o  dgelsd.o dgelss.o dgelsx.o dgelsy.o dgeql2.o dgeqlf.o \
+-   dgeqp3.o dgeqpf.o dgeqr2.o dgeqrf.o dgerfs.o dgerq2.o dgerqf.o \
+-   dgesc2.o dgesdd.o dgesv.o  dgesvd.o dgesvx.o dgetc2.o dgetf2.o \
+-   dgetrf.o dgetri.o \
+-   dgetrs.o dggbak.o dggbal.o dgges.o  dggesx.o dggev.o  dggevx.o \
+-   dggglm.o dgghrd.o dgglse.o dggqrf.o \
+-   dggrqf.o dggsvd.o dggsvp.o dgtcon.o dgtrfs.o dgtsv.o  \
+-   dgtsvx.o dgttrf.o dgttrs.o dgtts2.o dhgeqz.o \
+-   dhsein.o dhseqr.o dlabrd.o dlacon.o dlacn2.o \
+-   dlaein.o dlaexc.o dlag2.o  dlags2.o dlagtm.o dlagv2.o dlahqr.o \
+-   dlahrd.o dlahr2.o dlaic1.o dlaln2.o dlals0.o dlalsa.o dlalsd.o \
+-   dlangb.o dlange.o dlangt.o dlanhs.o dlansb.o dlansp.o \
+-   dlansy.o dlantb.o dlantp.o dlantr.o dlanv2.o \
+-   dlapll.o dlapmt.o \
+-   dlaqgb.o dlaqge.o dlaqp2.o dlaqps.o dlaqsb.o dlaqsp.o dlaqsy.o \
+-   dlaqr0.o dlaqr1.o dlaqr2.o dlaqr3.o dlaqr4.o dlaqr5.o \
+-   dlaqtr.o dlar1v.o dlar2v.o \
+-   dlarf.o  dlarfb.o dlarfg.o dlarft.o dlarfx.o dlargv.o \
+-   dlarrv.o dlartv.o \
+-   dlarz.o  dlarzb.o dlarzt.o dlaswp.o dlasy2.o dlasyf.o \
+-   dlatbs.o dlatdf.o dlatps.o dlatrd.o dlatrs.o dlatrz.o dlatzm.o dlauu2.o \
+-   dlauum.o dopgtr.o dopmtr.o dorg2l.o dorg2r.o \
+-   dorgbr.o dorghr.o dorgl2.o dorglq.o dorgql.o dorgqr.o dorgr2.o \
+-   dorgrq.o dorgtr.o dorm2l.o dorm2r.o \
+-   dormbr.o dormhr.o dorml2.o dormlq.o dormql.o dormqr.o dormr2.o \
+-   dormr3.o dormrq.o dormrz.o dormtr.o dpbcon.o dpbequ.o dpbrfs.o \
+-   dpbstf.o dpbsv.o  dpbsvx.o \
+-   dpbtf2.o dpbtrf.o dpbtrs.o dpocon.o dpoequ.o dporfs.o dposv.o  \
+-   dposvx.o dpotf2.o dpotrf.o dpotri.o dpotrs.o dppcon.o dppequ.o \
+-   dpprfs.o dppsv.o  dppsvx.o dpptrf.o dpptri.o dpptrs.o dptcon.o \
+-   dpteqr.o dptrfs.o dptsv.o  dptsvx.o dpttrs.o dptts2.o drscl.o  \
+-   dsbev.o  dsbevd.o dsbevx.o dsbgst.o dsbgv.o  dsbgvd.o dsbgvx.o \
+-   dsbtrd.o  dspcon.o dspev.o  dspevd.o dspevx.o dspgst.o \
+-   dspgv.o  dspgvd.o dspgvx.o dsprfs.o dspsv.o  dspsvx.o dsptrd.o \
+-   dsptrf.o dsptri.o dsptrs.o dstegr.o dstein.o dstev.o  dstevd.o dstevr.o \
+-   dstevx.o dsycon.o dsyev.o  dsyevd.o dsyevr.o \
+-   dsyevx.o dsygs2.o dsygst.o dsygv.o  dsygvd.o dsygvx.o dsyrfs.o \
+-   dsysv.o  dsysvx.o \
+-   dsytd2.o dsytf2.o dsytrd.o dsytrf.o dsytri.o dsytrs.o dtbcon.o \
+-   dtbrfs.o dtbtrs.o dtgevc.o dtgex2.o dtgexc.o dtgsen.o \
+-   dtgsja.o dtgsna.o dtgsy2.o dtgsyl.o dtpcon.o dtprfs.o dtptri.o \
+-   dtptrs.o \
+-   dtrcon.o dtrevc.o dtrexc.o dtrrfs.o dtrsen.o dtrsna.o dtrsyl.o \
+-   dtrti2.o dtrtri.o dtrtrs.o dtzrqf.o dtzrzf.o dstemr.o \
+-   dsgesv.o dlag2s.o slag2d.o
++   dgbbrd.$(SUFFIX) dgbcon.$(SUFFIX) dgbequ.$(SUFFIX) dgbrfs.$(SUFFIX) dgbsv.$(SUFFIX)  \
++   dgbsvx.$(SUFFIX) dgbtf2.$(SUFFIX) dgbtrf.$(SUFFIX) dgbtrs.$(SUFFIX) dgebak.$(SUFFIX) dgebal.$(SUFFIX) dgebd2.$(SUFFIX) \
++   dgebrd.$(SUFFIX) dgecon.$(SUFFIX) dgeequ.$(SUFFIX) dgees.$(SUFFIX)  dgeesx.$(SUFFIX) dgeev.$(SUFFIX)  dgeevx.$(SUFFIX) \
++   dgegs.$(SUFFIX)  dgegv.$(SUFFIX)  dgehd2.$(SUFFIX) dgehrd.$(SUFFIX) dgelq2.$(SUFFIX) dgelqf.$(SUFFIX) \
++   dgels.$(SUFFIX)  dgelsd.$(SUFFIX) dgelss.$(SUFFIX) dgelsx.$(SUFFIX) dgelsy.$(SUFFIX) dgeql2.$(SUFFIX) dgeqlf.$(SUFFIX) \
++   dgeqp3.$(SUFFIX) dgeqpf.$(SUFFIX) dgeqr2.$(SUFFIX) dgeqrf.$(SUFFIX) dgerfs.$(SUFFIX) dgerq2.$(SUFFIX) dgerqf.$(SUFFIX) \
++   dgesc2.$(SUFFIX) dgesdd.$(SUFFIX) dgesvd.$(SUFFIX) dgesvx.$(SUFFIX) dgetc2.$(SUFFIX) \
++   dgetri.$(SUFFIX) \
++   dggbak.$(SUFFIX) dggbal.$(SUFFIX) dgges.$(SUFFIX)  dggesx.$(SUFFIX) dggev.$(SUFFIX)  dggevx.$(SUFFIX) \
++   dggglm.$(SUFFIX) dgghrd.$(SUFFIX) dgglse.$(SUFFIX) dggqrf.$(SUFFIX) \
++   dggrqf.$(SUFFIX) dggsvd.$(SUFFIX) dggsvp.$(SUFFIX) dgtcon.$(SUFFIX) dgtrfs.$(SUFFIX) dgtsv.$(SUFFIX)  \
++   dgtsvx.$(SUFFIX) dgttrf.$(SUFFIX) dgttrs.$(SUFFIX) dgtts2.$(SUFFIX) dhgeqz.$(SUFFIX) \
++   dhsein.$(SUFFIX) dhseqr.$(SUFFIX) dlabrd.$(SUFFIX) dlacon.$(SUFFIX) dlacn2.$(SUFFIX) \
++   dlaein.$(SUFFIX) dlaexc.$(SUFFIX) dlag2.$(SUFFIX)  dlags2.$(SUFFIX) dlagtm.$(SUFFIX) dlagv2.$(SUFFIX) dlahqr.$(SUFFIX) \
++   dlahrd.$(SUFFIX) dlahr2.$(SUFFIX) dlaic1.$(SUFFIX) dlaln2.$(SUFFIX) dlals0.$(SUFFIX) dlalsa.$(SUFFIX) dlalsd.$(SUFFIX) \
++   dlangb.$(SUFFIX) dlange.$(SUFFIX) dlangt.$(SUFFIX) dlanhs.$(SUFFIX) dlansb.$(SUFFIX) dlansp.$(SUFFIX) \
++   dlansy.$(SUFFIX) dlantb.$(SUFFIX) dlantp.$(SUFFIX) dlantr.$(SUFFIX) dlanv2.$(SUFFIX) \
++   dlapll.$(SUFFIX) dlapmt.$(SUFFIX) \
++   dlaqgb.$(SUFFIX) dlaqge.$(SUFFIX) dlaqp2.$(SUFFIX) dlaqps.$(SUFFIX) dlaqsb.$(SUFFIX) dlaqsp.$(SUFFIX) dlaqsy.$(SUFFIX) \
++   dlaqr0.$(SUFFIX) dlaqr1.$(SUFFIX) dlaqr2.$(SUFFIX) dlaqr3.$(SUFFIX) dlaqr4.$(SUFFIX) dlaqr5.$(SUFFIX) \
++   dlaqtr.$(SUFFIX) dlar1v.$(SUFFIX) dlar2v.$(SUFFIX) \
++   dlarf.$(SUFFIX)  dlarfb.$(SUFFIX) dlarfg.$(SUFFIX) dlarft.$(SUFFIX) dlarfx.$(SUFFIX) dlargv.$(SUFFIX) \
++   dlarrv.$(SUFFIX) dlartv.$(SUFFIX) \
++   dlarz.$(SUFFIX)  dlarzb.$(SUFFIX) dlarzt.$(SUFFIX) dlasy2.$(SUFFIX) dlasyf.$(SUFFIX) \
++   dlatbs.$(SUFFIX) dlatdf.$(SUFFIX) dlatps.$(SUFFIX) dlatrd.$(SUFFIX) dlatrs.$(SUFFIX) dlatrz.$(SUFFIX) dlatzm.$(SUFFIX) \
++   dopgtr.$(SUFFIX) dopmtr.$(SUFFIX) dorg2l.$(SUFFIX) dorg2r.$(SUFFIX) \
++   dorgbr.$(SUFFIX) dorghr.$(SUFFIX) dorgl2.$(SUFFIX) dorglq.$(SUFFIX) dorgql.$(SUFFIX) dorgqr.$(SUFFIX) dorgr2.$(SUFFIX) \
++   dorgrq.$(SUFFIX) dorgtr.$(SUFFIX) dorm2l.$(SUFFIX) dorm2r.$(SUFFIX) \
++   dormbr.$(SUFFIX) dormhr.$(SUFFIX) dorml2.$(SUFFIX) dormlq.$(SUFFIX) dormql.$(SUFFIX) dormqr.$(SUFFIX) dormr2.$(SUFFIX) \
++   dormr3.$(SUFFIX) dormrq.$(SUFFIX) dormrz.$(SUFFIX) dormtr.$(SUFFIX) dpbcon.$(SUFFIX) dpbequ.$(SUFFIX) dpbrfs.$(SUFFIX) \
++   dpbstf.$(SUFFIX) dpbsv.$(SUFFIX)  dpbsvx.$(SUFFIX) \
++   dpbtf2.$(SUFFIX) dpbtrf.$(SUFFIX) dpbtrs.$(SUFFIX) dpocon.$(SUFFIX) dpoequ.$(SUFFIX) dporfs.$(SUFFIX) dposv.$(SUFFIX)  \
++   dposvx.$(SUFFIX) dpotrs.$(SUFFIX) dppcon.$(SUFFIX) dppequ.$(SUFFIX) \
++   dpprfs.$(SUFFIX) dppsv.$(SUFFIX)  dppsvx.$(SUFFIX) dpptrf.$(SUFFIX) dpptri.$(SUFFIX) dpptrs.$(SUFFIX) dptcon.$(SUFFIX) \
++   dpteqr.$(SUFFIX) dptrfs.$(SUFFIX) dptsv.$(SUFFIX)  dptsvx.$(SUFFIX) dpttrs.$(SUFFIX) dptts2.$(SUFFIX) drscl.$(SUFFIX)  \
++   dsbev.$(SUFFIX)  dsbevd.$(SUFFIX) dsbevx.$(SUFFIX) dsbgst.$(SUFFIX) dsbgv.$(SUFFIX)  dsbgvd.$(SUFFIX) dsbgvx.$(SUFFIX) \
++   dsbtrd.$(SUFFIX)  dspcon.$(SUFFIX) dspev.$(SUFFIX)  dspevd.$(SUFFIX) dspevx.$(SUFFIX) dspgst.$(SUFFIX) \
++   dspgv.$(SUFFIX)  dspgvd.$(SUFFIX) dspgvx.$(SUFFIX) dsprfs.$(SUFFIX) dspsv.$(SUFFIX)  dspsvx.$(SUFFIX) dsptrd.$(SUFFIX) \
++   dsptrf.$(SUFFIX) dsptri.$(SUFFIX) dsptrs.$(SUFFIX) dstegr.$(SUFFIX) dstein.$(SUFFIX) dstev.$(SUFFIX)  dstevd.$(SUFFIX) dstevr.$(SUFFIX) \
++   dstevx.$(SUFFIX) dsycon.$(SUFFIX) dsyev.$(SUFFIX)  dsyevd.$(SUFFIX) dsyevr.$(SUFFIX) \
++   dsyevx.$(SUFFIX) dsygs2.$(SUFFIX) dsygst.$(SUFFIX) dsygv.$(SUFFIX)  dsygvd.$(SUFFIX) dsygvx.$(SUFFIX) dsyrfs.$(SUFFIX) \
++   dsysv.$(SUFFIX)  dsysvx.$(SUFFIX) \
++   dsytd2.$(SUFFIX) dsytf2.$(SUFFIX) dsytrd.$(SUFFIX) dsytrf.$(SUFFIX) dsytri.$(SUFFIX) dsytrs.$(SUFFIX) dtbcon.$(SUFFIX) \
++   dtbrfs.$(SUFFIX) dtbtrs.$(SUFFIX) dtgevc.$(SUFFIX) dtgex2.$(SUFFIX) dtgexc.$(SUFFIX) dtgsen.$(SUFFIX) \
++   dtgsja.$(SUFFIX) dtgsna.$(SUFFIX) dtgsy2.$(SUFFIX) dtgsyl.$(SUFFIX) dtpcon.$(SUFFIX) dtprfs.$(SUFFIX) dtptri.$(SUFFIX) \
++   dtptrs.$(SUFFIX) \
++   dtrcon.$(SUFFIX) dtrevc.$(SUFFIX) dtrexc.$(SUFFIX) dtrrfs.$(SUFFIX) dtrsen.$(SUFFIX) dtrsna.$(SUFFIX) dtrsyl.$(SUFFIX) \
++   dtrtrs.$(SUFFIX) dtzrqf.$(SUFFIX) dtzrzf.$(SUFFIX) dstemr.$(SUFFIX) \
++   dsgesv.$(SUFFIX) dlag2s.$(SUFFIX) slag2d.$(SUFFIX)
+ 
+ ZLASRC = \
+-   zbdsqr.o zgbbrd.o zgbcon.o zgbequ.o zgbrfs.o zgbsv.o  zgbsvx.o \
+-   zgbtf2.o zgbtrf.o zgbtrs.o zgebak.o zgebal.o zgebd2.o zgebrd.o \
+-   zgecon.o zgeequ.o zgees.o  zgeesx.o zgeev.o  zgeevx.o \
+-   zgegs.o  zgegv.o  zgehd2.o zgehrd.o zgelq2.o zgelqf.o \
+-   zgels.o  zgelsd.o zgelss.o zgelsx.o zgelsy.o zgeql2.o zgeqlf.o zgeqp3.o \
+-   zgeqpf.o zgeqr2.o zgeqrf.o zgerfs.o zgerq2.o zgerqf.o \
+-   zgesc2.o zgesdd.o zgesv.o  zgesvd.o zgesvx.o zgetc2.o zgetf2.o zgetrf.o \
+-   zgetri.o zgetrs.o \
+-   zggbak.o zggbal.o zgges.o  zggesx.o zggev.o  zggevx.o zggglm.o \
+-   zgghrd.o zgglse.o zggqrf.o zggrqf.o \
+-   zggsvd.o zggsvp.o \
+-   zgtcon.o zgtrfs.o zgtsv.o  zgtsvx.o zgttrf.o zgttrs.o zgtts2.o zhbev.o  \
+-   zhbevd.o zhbevx.o zhbgst.o zhbgv.o  zhbgvd.o zhbgvx.o zhbtrd.o \
+-   zhecon.o zheev.o  zheevd.o zheevr.o zheevx.o zhegs2.o zhegst.o \
+-   zhegv.o  zhegvd.o zhegvx.o zherfs.o zhesv.o  zhesvx.o zhetd2.o \
+-   zhetf2.o zhetrd.o \
+-   zhetrf.o zhetri.o zhetrs.o zhgeqz.o zhpcon.o zhpev.o  zhpevd.o \
+-   zhpevx.o zhpgst.o zhpgv.o  zhpgvd.o zhpgvx.o zhprfs.o zhpsv.o  \
+-   zhpsvx.o \
+-   zhptrd.o zhptrf.o zhptri.o zhptrs.o zhsein.o zhseqr.o zlabrd.o \
+-   zlacgv.o zlacon.o zlacn2.o zlacp2.o zlacpy.o zlacrm.o zlacrt.o zladiv.o \
+-   zlaed0.o zlaed7.o zlaed8.o \
+-   zlaein.o zlaesy.o zlaev2.o zlags2.o zlagtm.o \
+-   zlahef.o zlahqr.o \
+-   zlahrd.o zlahr2.o zlaic1.o zlals0.o zlalsa.o zlalsd.o zlangb.o zlange.o \
+-   zlangt.o zlanhb.o \
+-   zlanhe.o \
+-   zlanhp.o zlanhs.o zlanht.o zlansb.o zlansp.o zlansy.o zlantb.o \
+-   zlantp.o zlantr.o zlapll.o zlapmt.o zlaqgb.o zlaqge.o \
+-   zlaqhb.o zlaqhe.o zlaqhp.o zlaqp2.o zlaqps.o zlaqsb.o \
+-   zlaqr0.o zlaqr1.o zlaqr2.o zlaqr3.o zlaqr4.o zlaqr5.o \
+-   zlaqsp.o zlaqsy.o zlar1v.o zlar2v.o zlarcm.o zlarf.o  zlarfb.o \
+-   zlarfg.o zlarft.o \
+-   zlarfx.o zlargv.o zlarnv.o zlarrv.o zlartg.o zlartv.o \
+-   zlarz.o  zlarzb.o zlarzt.o zlascl.o zlaset.o zlasr.o  \
+-   zlassq.o zlaswp.o zlasyf.o \
+-   zlatbs.o zlatdf.o zlatps.o zlatrd.o zlatrs.o zlatrz.o zlatzm.o zlauu2.o \
+-   zlauum.o zpbcon.o zpbequ.o zpbrfs.o zpbstf.o zpbsv.o  \
+-   zpbsvx.o zpbtf2.o zpbtrf.o zpbtrs.o zpocon.o zpoequ.o zporfs.o \
+-   zposv.o  zposvx.o zpotf2.o zpotrf.o zpotri.o zpotrs.o zppcon.o \
+-   zppequ.o zpprfs.o zppsv.o  zppsvx.o zpptrf.o zpptri.o zpptrs.o \
+-   zptcon.o zpteqr.o zptrfs.o zptsv.o  zptsvx.o zpttrf.o zpttrs.o zptts2.o \
+-   zrot.o   zspcon.o zspmv.o  zspr.o   zsprfs.o zspsv.o  \
+-   zspsvx.o zsptrf.o zsptri.o zsptrs.o zdrscl.o zstedc.o \
+-   zstegr.o zstein.o zsteqr.o zsycon.o zsymv.o  \
+-   zsyr.o   zsyrfs.o zsysv.o  zsysvx.o zsytf2.o zsytrf.o zsytri.o \
+-   zsytrs.o ztbcon.o ztbrfs.o ztbtrs.o ztgevc.o ztgex2.o \
+-   ztgexc.o ztgsen.o ztgsja.o ztgsna.o ztgsy2.o ztgsyl.o ztpcon.o \
+-   ztprfs.o ztptri.o \
+-   ztptrs.o ztrcon.o ztrevc.o ztrexc.o ztrrfs.o ztrsen.o ztrsna.o \
+-   ztrsyl.o ztrti2.o ztrtri.o ztrtrs.o ztzrqf.o ztzrzf.o zung2l.o \
+-   zung2r.o zungbr.o zunghr.o zungl2.o zunglq.o zungql.o zungqr.o zungr2.o \
+-   zungrq.o zungtr.o zunm2l.o zunm2r.o zunmbr.o zunmhr.o zunml2.o \
+-   zunmlq.o zunmql.o zunmqr.o zunmr2.o zunmr3.o zunmrq.o zunmrz.o \
+-   zunmtr.o zupgtr.o \
+-   zupmtr.o izmax1.o dzsum1.o zstemr.o \
+-   zcgesv.o zlag2c.o clag2z.o
++   zbdsqr.$(SUFFIX) zgbbrd.$(SUFFIX) zgbcon.$(SUFFIX) zgbequ.$(SUFFIX) zgbrfs.$(SUFFIX) zgbsv.$(SUFFIX)  zgbsvx.$(SUFFIX) \
++   zgbtf2.$(SUFFIX) zgbtrf.$(SUFFIX) zgbtrs.$(SUFFIX) zgebak.$(SUFFIX) zgebal.$(SUFFIX) zgebd2.$(SUFFIX) zgebrd.$(SUFFIX) \
++   zgecon.$(SUFFIX) zgeequ.$(SUFFIX) zgees.$(SUFFIX)  zgeesx.$(SUFFIX) zgeev.$(SUFFIX)  zgeevx.$(SUFFIX) \
++   zgegs.$(SUFFIX)  zgegv.$(SUFFIX)  zgehd2.$(SUFFIX) zgehrd.$(SUFFIX) zgelq2.$(SUFFIX) zgelqf.$(SUFFIX) \
++   zgels.$(SUFFIX)  zgelsd.$(SUFFIX) zgelss.$(SUFFIX) zgelsx.$(SUFFIX) zgelsy.$(SUFFIX) zgeql2.$(SUFFIX) zgeqlf.$(SUFFIX) zgeqp3.$(SUFFIX) \
++   zgeqpf.$(SUFFIX) zgeqr2.$(SUFFIX) zgeqrf.$(SUFFIX) zgerfs.$(SUFFIX) zgerq2.$(SUFFIX) zgerqf.$(SUFFIX) \
++   zgesc2.$(SUFFIX) zgesdd.$(SUFFIX) zgesvd.$(SUFFIX) zgesvx.$(SUFFIX) zgetc2.$(SUFFIX) \
++   zgetri.$(SUFFIX) \
++   zggbak.$(SUFFIX) zggbal.$(SUFFIX) zgges.$(SUFFIX)  zggesx.$(SUFFIX) zggev.$(SUFFIX)  zggevx.$(SUFFIX) zggglm.$(SUFFIX) \
++   zgghrd.$(SUFFIX) zgglse.$(SUFFIX) zggqrf.$(SUFFIX) zggrqf.$(SUFFIX) \
++   zggsvd.$(SUFFIX) zggsvp.$(SUFFIX) \
++   zgtcon.$(SUFFIX) zgtrfs.$(SUFFIX) zgtsv.$(SUFFIX)  zgtsvx.$(SUFFIX) zgttrf.$(SUFFIX) zgttrs.$(SUFFIX) zgtts2.$(SUFFIX) zhbev.$(SUFFIX)  \
++   zhbevd.$(SUFFIX) zhbevx.$(SUFFIX) zhbgst.$(SUFFIX) zhbgv.$(SUFFIX)  zhbgvd.$(SUFFIX) zhbgvx.$(SUFFIX) zhbtrd.$(SUFFIX) \
++   zhecon.$(SUFFIX) zheev.$(SUFFIX)  zheevd.$(SUFFIX) zheevr.$(SUFFIX) zheevx.$(SUFFIX) zhegs2.$(SUFFIX) zhegst.$(SUFFIX) \
++   zhegv.$(SUFFIX)  zhegvd.$(SUFFIX) zhegvx.$(SUFFIX) zherfs.$(SUFFIX) zhesv.$(SUFFIX)  zhesvx.$(SUFFIX) zhetd2.$(SUFFIX) \
++   zhetf2.$(SUFFIX) zhetrd.$(SUFFIX) \
++   zhetrf.$(SUFFIX) zhetri.$(SUFFIX) zhetrs.$(SUFFIX) zhgeqz.$(SUFFIX) zhpcon.$(SUFFIX) zhpev.$(SUFFIX)  zhpevd.$(SUFFIX) \
++   zhpevx.$(SUFFIX) zhpgst.$(SUFFIX) zhpgv.$(SUFFIX)  zhpgvd.$(SUFFIX) zhpgvx.$(SUFFIX) zhprfs.$(SUFFIX) zhpsv.$(SUFFIX)  \
++   zhpsvx.$(SUFFIX) \
++   zhptrd.$(SUFFIX) zhptrf.$(SUFFIX) zhptri.$(SUFFIX) zhptrs.$(SUFFIX) zhsein.$(SUFFIX) zhseqr.$(SUFFIX) zlabrd.$(SUFFIX) \
++   zlacgv.$(SUFFIX) zlacon.$(SUFFIX) zlacn2.$(SUFFIX) zlacp2.$(SUFFIX) zlacpy.$(SUFFIX) zlacrm.$(SUFFIX) zlacrt.$(SUFFIX) zladiv.$(SUFFIX) \
++   zlaed0.$(SUFFIX) zlaed7.$(SUFFIX) zlaed8.$(SUFFIX) \
++   zlaein.$(SUFFIX) zlaesy.$(SUFFIX) zlaev2.$(SUFFIX) zlags2.$(SUFFIX) zlagtm.$(SUFFIX) \
++   zlahef.$(SUFFIX) zlahqr.$(SUFFIX) \
++   zlahrd.$(SUFFIX) zlahr2.$(SUFFIX) zlaic1.$(SUFFIX) zlals0.$(SUFFIX) zlalsa.$(SUFFIX) zlalsd.$(SUFFIX) zlangb.$(SUFFIX) zlange.$(SUFFIX) \
++   zlangt.$(SUFFIX) zlanhb.$(SUFFIX) \
++   zlanhe.$(SUFFIX) \
++   zlanhp.$(SUFFIX) zlanhs.$(SUFFIX) zlanht.$(SUFFIX) zlansb.$(SUFFIX) zlansp.$(SUFFIX) zlansy.$(SUFFIX) zlantb.$(SUFFIX) \
++   zlantp.$(SUFFIX) zlantr.$(SUFFIX) zlapll.$(SUFFIX) zlapmt.$(SUFFIX) zlaqgb.$(SUFFIX) zlaqge.$(SUFFIX) \
++   zlaqhb.$(SUFFIX) zlaqhe.$(SUFFIX) zlaqhp.$(SUFFIX) zlaqp2.$(SUFFIX) zlaqps.$(SUFFIX) zlaqsb.$(SUFFIX) \
++   zlaqr0.$(SUFFIX) zlaqr1.$(SUFFIX) zlaqr2.$(SUFFIX) zlaqr3.$(SUFFIX) zlaqr4.$(SUFFIX) zlaqr5.$(SUFFIX) \
++   zlaqsp.$(SUFFIX) zlaqsy.$(SUFFIX) zlar1v.$(SUFFIX) zlar2v.$(SUFFIX) zlarcm.$(SUFFIX) zlarf.$(SUFFIX)  zlarfb.$(SUFFIX) \
++   zlarfg.$(SUFFIX) zlarft.$(SUFFIX) \
++   zlarfx.$(SUFFIX) zlargv.$(SUFFIX) zlarnv.$(SUFFIX) zlarrv.$(SUFFIX) zlartg.$(SUFFIX) zlartv.$(SUFFIX) \
++   zlarz.$(SUFFIX)  zlarzb.$(SUFFIX) zlarzt.$(SUFFIX) zlascl.$(SUFFIX) zlaset.$(SUFFIX) zlasr.$(SUFFIX)  \
++   zlassq.$(SUFFIX) zlasyf.$(SUFFIX) \
++   zlatbs.$(SUFFIX) zlatdf.$(SUFFIX) zlatps.$(SUFFIX) zlatrd.$(SUFFIX) zlatrs.$(SUFFIX) zlatrz.$(SUFFIX) zlatzm.$(SUFFIX) \
++   zpbcon.$(SUFFIX) zpbequ.$(SUFFIX) zpbrfs.$(SUFFIX) zpbstf.$(SUFFIX) zpbsv.$(SUFFIX)  \
++   zpbsvx.$(SUFFIX) zpbtf2.$(SUFFIX) zpbtrf.$(SUFFIX) zpbtrs.$(SUFFIX) zpocon.$(SUFFIX) zpoequ.$(SUFFIX) zporfs.$(SUFFIX) \
++   zposv.$(SUFFIX)  zposvx.$(SUFFIX) zpotrs.$(SUFFIX) zppcon.$(SUFFIX) \
++   zppequ.$(SUFFIX) zpprfs.$(SUFFIX) zppsv.$(SUFFIX)  zppsvx.$(SUFFIX) zpptrf.$(SUFFIX) zpptri.$(SUFFIX) zpptrs.$(SUFFIX) \
++   zptcon.$(SUFFIX) zpteqr.$(SUFFIX) zptrfs.$(SUFFIX) zptsv.$(SUFFIX)  zptsvx.$(SUFFIX) zpttrf.$(SUFFIX) zpttrs.$(SUFFIX) zptts2.$(SUFFIX) \
++   zrot.$(SUFFIX)   zspcon.$(SUFFIX) zsprfs.$(SUFFIX) zspsv.$(SUFFIX)  \
++   zspsvx.$(SUFFIX) zsptrf.$(SUFFIX) zsptri.$(SUFFIX) zsptrs.$(SUFFIX) zdrscl.$(SUFFIX) zstedc.$(SUFFIX) \
++   zstegr.$(SUFFIX) zstein.$(SUFFIX) zsteqr.$(SUFFIX) zsycon.$(SUFFIX) \
++   zsyrfs.$(SUFFIX) zsysv.$(SUFFIX)  zsysvx.$(SUFFIX) zsytf2.$(SUFFIX) zsytrf.$(SUFFIX) zsytri.$(SUFFIX) \
++   zsytrs.$(SUFFIX) ztbcon.$(SUFFIX) ztbrfs.$(SUFFIX) ztbtrs.$(SUFFIX) ztgevc.$(SUFFIX) ztgex2.$(SUFFIX) \
++   ztgexc.$(SUFFIX) ztgsen.$(SUFFIX) ztgsja.$(SUFFIX) ztgsna.$(SUFFIX) ztgsy2.$(SUFFIX) ztgsyl.$(SUFFIX) ztpcon.$(SUFFIX) \
++   ztprfs.$(SUFFIX) ztptri.$(SUFFIX) \
++   ztptrs.$(SUFFIX) ztrcon.$(SUFFIX) ztrevc.$(SUFFIX) ztrexc.$(SUFFIX) ztrrfs.$(SUFFIX) ztrsen.$(SUFFIX) ztrsna.$(SUFFIX) \
++   ztrsyl.$(SUFFIX) ztrtrs.$(SUFFIX) ztzrqf.$(SUFFIX) ztzrzf.$(SUFFIX) zung2l.$(SUFFIX) \
++   zung2r.$(SUFFIX) zungbr.$(SUFFIX) zunghr.$(SUFFIX) zungl2.$(SUFFIX) zunglq.$(SUFFIX) zungql.$(SUFFIX) zungqr.$(SUFFIX) zungr2.$(SUFFIX) \
++   zungrq.$(SUFFIX) zungtr.$(SUFFIX) zunm2l.$(SUFFIX) zunm2r.$(SUFFIX) zunmbr.$(SUFFIX) zunmhr.$(SUFFIX) zunml2.$(SUFFIX) \
++   zunmlq.$(SUFFIX) zunmql.$(SUFFIX) zunmqr.$(SUFFIX) zunmr2.$(SUFFIX) zunmr3.$(SUFFIX) zunmrq.$(SUFFIX) zunmrz.$(SUFFIX) \
++   zunmtr.$(SUFFIX) zupgtr.$(SUFFIX) \
++   zupmtr.$(SUFFIX) izmax1.$(SUFFIX) dzsum1.$(SUFFIX) zstemr.$(SUFFIX) \
++   zcgesv.$(SUFFIX) zlag2c.$(SUFFIX) clag2z.$(SUFFIX)
+ 
+ all: ../$(LAPACKLIB)
+ 
++lapack_prof: ../$(LAPACKLIB_P)
++
+ ALLOBJ=$(SLASRC) $(DLASRC) $(CLASRC) $(ZLASRC) $(SCLAUX) $(DZLAUX)	\
+ 	$(ALLAUX)
+ 
++ALLOBJ_P = $(ALLOBJ:.$(SUFFIX)=.$(PSUFFIX))
++
+ ../$(LAPACKLIB): $(ALLOBJ)
+ 	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+ 	$(RANLIB) $@
+ 
++../$(LAPACKLIB_P): $(ALLOBJ_P)
++	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ_P)
++	$(RANLIB) $@
++
+ single: $(SLASRC) $(ALLAUX) $(SCLAUX) 
+ 	$(ARCH) $(ARCHFLAGS) ../$(LAPACKLIB) $(SLASRC) $(ALLAUX) \
+ 	$(SCLAUX)
+@@ -317,6 +325,7 @@
+ 	$(DZLAUX)
+ 	$(RANLIB) ../$(LAPACKLIB)
+ 
++
+ $(ALLAUX): $(FRC)
+ $(SCLAUX): $(FRC)
+ $(DZLAUX): $(FRC)
+@@ -329,11 +338,16 @@
+ 	@FRC=$(FRC)
+ 
+ clean:
+-	rm -f *.o
++	rm -f *.$(SUFFIX) *.$(PSUFFIX)
+ 
+-.f.o: 
++%.$(SUFFIX): %.f
+ 	$(FORTRAN) $(OPTS) -c $< -o $@
+ 
+-slaruv.o: slaruv.f ; $(FORTRAN) $(NOOPT) -c $< -o $@
+-dlaruv.o: dlaruv.f ; $(FORTRAN) $(NOOPT) -c $< -o $@
++%.$(PSUFFIX): %.f
++	$(FORTRAN) $(POPTS) -c $< -o $@
++
++slaruv.$(SUFFIX): slaruv.f ; $(FORTRAN) $(NOOPT) -O0 -c $< -o $@
++dlaruv.$(SUFFIX): dlaruv.f ; $(FORTRAN) $(NOOPT) -O0 -c $< -o $@
+ 
++slaruv.$(PSUFFIX): slaruv.f ; $(FORTRAN) $(PNOOPT) -O0 -c $< -o $@
++dlaruv.$(PSUFFIX): dlaruv.f ; $(FORTRAN) $(PNOOPT) -O0 -c $< -o $@
+diff -ruN lapack-3.1.1.old/TESTING/EIG/Makefile lapack-3.1.1/TESTING/EIG/Makefile
+--- lapack-3.1.1.old/TESTING/EIG/Makefile	2007-02-20 15:33:03.000000000 -0600
++++ lapack-3.1.1/TESTING/EIG/Makefile	2009-12-16 14:40:35.000000000 -0600
+@@ -78,7 +78,7 @@
+    cget35.o cget36.o cget37.o cget38.o cget51.o cget52.o \
+    cget54.o cglmts.o cgqrts.o cgrqts.o cgsvts.o \
+    chbt21.o chet21.o chet22.o chpt21.o chst01.o \
+-   clarfy.o clarhs.o clatm4.o clctes.o clctsx.o clsets.o csbmv.o \
++   clarfy.o clarhs.o clatm4.o clctes.o clctsx.o clsets.o \
+    csgt01.o cslect.o \
+    cstt21.o cstt22.o cunt01.o cunt03.o
+ 
+@@ -115,7 +115,7 @@
+    zget35.o zget36.o zget37.o zget38.o zget51.o zget52.o \
+    zget54.o zglmts.o zgqrts.o zgrqts.o zgsvts.o \
+    zhbt21.o zhet21.o zhet22.o zhpt21.o zhst01.o \
+-   zlarfy.o zlarhs.o zlatm4.o zlctes.o zlctsx.o zlsets.o zsbmv.o \
++   zlarfy.o zlarhs.o zlatm4.o zlctes.o zlctsx.o zlsets.o \
+    zsgt01.o zslect.o \
+    zstt21.o zstt22.o zunt01.o zunt03.o
+ 
+@@ -129,22 +129,22 @@
+ ../xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) ; \
+           $(LOADER) $(LOADOPTS) -o $@ \
+           $(SEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) \
+-	  ../../$(LAPACKLIB) $(BLASLIB)
++	  ../../$(LAPACKLIB) $(BLASLIB) $(CEXTRALIB)
+ 
+ ../xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) ; \
+           $(LOADER) $(LOADOPTS) -o $@ \
+           $(CEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) \
+-	  ../../$(LAPACKLIB) $(BLASLIB)
++	  ../../$(LAPACKLIB) $(BLASLIB) $(CEXTRALIB)
+ 
+ ../xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) ; \
+           $(LOADER) $(LOADOPTS) -o $@ \
+           $(DEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) \
+-	  ../../$(LAPACKLIB) $(BLASLIB)
++	  ../../$(LAPACKLIB) $(BLASLIB) $(CEXTRALIB)
+ 
+ ../xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) ; \
+           $(LOADER) $(LOADOPTS) -o $@ \
+           $(ZEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) \
+-	  ../../$(LAPACKLIB) $(BLASLIB)
++	  ../../$(LAPACKLIB) $(BLASLIB) $(CEXTRALIB)
+ 
+ $(AEIGTST): $(FRC)
+ $(SCIGTST): $(FRC)
+diff -ruN lapack-3.1.1.old/TESTING/LIN/Makefile lapack-3.1.1/TESTING/LIN/Makefile
+--- lapack-3.1.1.old/TESTING/LIN/Makefile	2007-02-20 15:33:03.000000000 -0600
++++ lapack-3.1.1/TESTING/LIN/Makefile	2009-12-16 14:40:35.000000000 -0600
+@@ -97,7 +97,7 @@
+    cqpt01.o cqrt01.o cqrt02.o cqrt03.o cqrt11.o \
+    cqrt12.o cqrt13.o cqrt14.o cqrt15.o cqrt16.o \
+    cqrt17.o crqt01.o crqt02.o crqt03.o crzt01.o crzt02.o \
+-   csbmv.o  cspt01.o \
++   cspt01.o \
+    cspt02.o cspt03.o csyt01.o csyt02.o csyt03.o \
+    ctbt02.o ctbt03.o ctbt05.o ctbt06.o ctpt01.o \
+    ctpt02.o ctpt03.o ctpt05.o ctpt06.o ctrt01.o \
+@@ -159,7 +159,7 @@
+    zqpt01.o zqrt01.o zqrt02.o zqrt03.o zqrt11.o \
+    zqrt12.o zqrt13.o zqrt14.o zqrt15.o zqrt16.o \
+    zqrt17.o zrqt01.o zrqt02.o zrqt03.o zrzt01.o zrzt02.o \
+-   zsbmv.o  zspt01.o \
++   zspt01.o \
+    zspt02.o zspt03.o zsyt01.o zsyt02.o zsyt03.o \
+    ztbt02.o ztbt03.o ztbt05.o ztbt06.o ztpt01.o \
+    ztpt02.o ztpt03.o ztpt05.o ztpt06.o ztrt01.o \
+@@ -176,7 +176,7 @@
+ 	zdrvab.o zerrab.o zget08.o          \
+ 	alaerh.o alahd.o  aladhd.o alareq.o \
+ 	chkxer.o zget02.o zlarhs.o zlatb4.o \
+-	zsbmv.o  xerbla.o
++	xerbla.o
+ 
+ all:  single double complex complex16 proto-double proto-complex16
+ 
+@@ -190,27 +190,27 @@
+ 
+ ../xlintsts : $(ALINTST) $(SLINTST) $(SCLNTST)
+ 	$(LOADER) $(LOADOPTS)  $(ALINTST) $(SCLNTST) $(SLINTST) \
+-        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
++        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@ $(CEXTRALIB)
+ 
+ ../xlintstc : $(ALINTST) $(CLINTST) $(SCLNTST)
+ 	$(LOADER) $(LOADOPTS)  $(ALINTST) $(SCLNTST) $(CLINTST) \
+-        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
++        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@ $(CEXTRALIB)
+  
+ ../xlintstd : $(ALINTST) $(DLINTST) $(DZLNTST)
+ 	$(LOADER) $(LOADOPTS)  $(ALINTST) $(DZLNTST) $(DLINTST) \
+-        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
++        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@ $(CEXTRALIB)
+  
+ ../xlintstz : $(ALINTST) $(ZLINTST) $(DZLNTST)
+ 	$(LOADER) $(LOADOPTS)  $(ALINTST) $(DZLNTST) $(ZLINTST) \
+-        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
++        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@ $(CEXTRALIB)
+  
+ ../xlintstds : $(DSLINTST)
+ 	$(LOADER) $(LOADOPTS)  $(DSLINTST) \
+-        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
++        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@ $(CEXTRALIB)
+  
+ ../xlintstzc : $(ZCLINTST)
+ 	$(LOADER) $(LOADOPTS)  $(ZCLINTST) \
+-        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@
++        ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)  -o $@ $(CEXTRALIB)
+  
+ $(ALINTST): $(FRC)
+ $(SCLNTST): $(FRC)

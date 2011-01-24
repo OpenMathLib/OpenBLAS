@@ -1,0 +1,3 @@
+#!/bin/bash
+
+make BINARY=32 CC=gcc FC=gfortran

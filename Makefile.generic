@@ -1,0 +1,6 @@
+COPT	= -Wall -O2 # -DGEMMTEST
+ifdef BINARY64
+else
+# LDFLAGS		 = -m elf32ppc
+LDFLAGS		 = -m elf_i386
+endif

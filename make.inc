@@ -1,0 +1,11 @@
+SHELL = /bin/sh
+PLAT = _LINUX
+DRVOPTS  = $(OPTS)
+LOADER   = $(FORTRAN)
+TIMER     = NONE
+ARCHFLAGS= -ru
+RANLIB   = ranlib
+BLASLIB      = 
+TMGLIB       = tmglib.a
+EIGSRCLIB    = eigsrc.a
+LINSRCLIB    = linsrc.a

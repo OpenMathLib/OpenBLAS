@@ -1,0 +1,93 @@
+#
+# The Makefile compiles c wrappers and testers for CBLAS.  
+#
+
+TOPDIR = ..
+include $(TOPDIR)/Makefile.system
+
+CFLAGS += -DADD$(BU) -DCBLAS
+
+LIB = $(TOPDIR)/$(LIBNAME)
+
+stestl1o = c_sblas1.o
+
+stestl2o = c_sblas2.o c_s2chke.o auxiliary.o c_xerbla.o constant.o
+
+stestl3o = c_sblas3.o c_s3chke.o auxiliary.o c_xerbla.o constant.o
+
+dtestl1o = c_dblas1.o
+
+dtestl2o = c_dblas2.o c_d2chke.o auxiliary.o c_xerbla.o constant.o
+
+dtestl3o = c_dblas3.o c_d3chke.o auxiliary.o c_xerbla.o constant.o
+
+ctestl1o = c_cblas1.o
+
+ctestl2o = c_cblas2.o c_c2chke.o auxiliary.o c_xerbla.o constant.o
+
+ctestl3o = c_cblas3.o c_c3chke.o auxiliary.o c_xerbla.o constant.o
+
+ztestl1o = c_zblas1.o 
+
+ztestl2o = c_zblas2.o c_z2chke.o auxiliary.o c_xerbla.o constant.o
+
+ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
+
+all :: all1 all2 all3 
+
+all1: xscblat1 xdcblat1 xccblat1 xzcblat1
+	GOTO_NUM_THREADS=2 ./xscblat1
+	GOTO_NUM_THREADS=2 ./xdcblat1
+	GOTO_NUM_THREADS=2 ./xccblat1
+	GOTO_NUM_THREADS=2 ./xzcblat1
+
+all2: xscblat2 xdcblat2 xccblat2 xzcblat2
+	GOTO_NUM_THREADS=2 ./xscblat2 < sin2
+	GOTO_NUM_THREADS=2 ./xdcblat2 < din2
+	GOTO_NUM_THREADS=2 ./xccblat2 < cin2
+	GOTO_NUM_THREADS=2 ./xzcblat2 < zin2
+
+all3: xscblat3 xdcblat3 xccblat3 xzcblat3
+	GOTO_NUM_THREADS=2 ./xscblat3 < sin3
+	GOTO_NUM_THREADS=2 ./xdcblat3 < din3
+	GOTO_NUM_THREADS=2 ./xccblat3 < cin3
+	GOTO_NUM_THREADS=2 ./xzcblat3 < zin3
+
+clean ::
+	rm -f x* 
+
+FLDFLAGS = $(FFLAGS:-fPIC=)
+CEXTRALIB = 
+
+# Single real
+xscblat1: $(stestl1o) c_sblat1.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xscblat1 c_sblat1.o $(stestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xscblat2: $(stestl2o) c_sblat2.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xscblat2 c_sblat2.o $(stestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xscblat3: $(stestl3o) c_sblat3.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xscblat3 c_sblat3.o $(stestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+# Double real
+xdcblat1: $(dtestl1o) c_dblat1.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xdcblat1 c_dblat1.o $(dtestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xdcblat2: $(dtestl2o) c_dblat2.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xdcblat2 c_dblat2.o $(dtestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xdcblat3: $(dtestl3o) c_dblat3.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xdcblat3 c_dblat3.o $(dtestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+ 
+# Single complex
+xccblat1: $(ctestl1o) c_cblat1.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xccblat1 c_cblat1.o $(ctestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xccblat2: $(ctestl2o) c_cblat2.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xccblat2 c_cblat2.o $(ctestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xccblat3: $(ctestl3o) c_cblat3.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xccblat3 c_cblat3.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+
+# Double complex 
+xzcblat1: $(ztestl1o) c_zblat1.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xzcblat1 c_zblat1.o $(ztestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xzcblat2: $(ztestl2o) c_zblat2.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xzcblat2 c_zblat2.o $(ztestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xzcblat3: $(ztestl3o) c_zblat3.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xzcblat3 c_zblat3.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+   
+include $(TOPDIR)/Makefile.tail

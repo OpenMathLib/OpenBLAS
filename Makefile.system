@@ -1,0 +1,753 @@
+#
+# Include user definition
+#
+
+# TO suppress recursive includes
+INCLUDED = 1
+
+ifndef TOPDIR
+TOPDIR = .
+endif
+
+# Default C compiler
+CC = gcc
+
+ifndef MAKEFILE_RULE
+include $(TOPDIR)/Makefile.rule
+else
+include $(TOPDIR)/$(MAKEFILE_RULE)
+endif
+
+#
+#  Beginning of system configuration 
+#
+
+ifndef HOSTCC
+HOSTCC	 = $(CC)
+endif
+
+ifdef TARGET
+GETARCH_FLAGS += -DFORCE_$(TARGET)
+endif
+
+# This operation is expensive, so execution should be once.
+ifndef GOTOBLAS_MAKEFILE
+export GOTOBLAS_MAKEFILE = 1
+
+# Generating Makefile.conf and config.h
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.getarch CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS=$(GETARCH_FLAGS) BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) all)
+
+ifndef TARGET_CORE
+include $(TOPDIR)/Makefile.conf
+else
+include $(TOPDIR)/Makefile_kernel.conf
+endif
+
+endif
+
+ifndef NUM_THREADS
+NUM_THREADS = $(NUM_CORES)
+endif
+
+ifeq ($(NUM_THREADS), 1)
+override USE_THREAD = 0
+endif
+
+ifdef USE_THREAD
+ifeq ($(USE_THREAD), 0)
+SMP =
+else
+SMP = 1
+endif
+else
+ifeq ($(NUM_THREAD), 1)
+SMP =
+else
+SMP = 1
+endif
+endif
+
+ifndef NEED_PIC
+NEED_PIC = 1
+endif
+
+ARFLAGS	=
+CPP	= $(COMPILER) -E
+AR	= $(CROSS_SUFFIX)ar
+AS	= $(CROSS_SUFFIX)as
+LD	= $(CROSS_SUFFIX)ld
+RANLIB	= $(CROSS_SUFFIX)ranlib
+NM	= $(CROSS_SUFFIX)nm
+DLLWRAP = $(CROSS_SUFFIX)dllwrap
+
+#
+#  OS dependent settings
+#
+
+ifeq ($(OSNAME), Darwin)
+EXTRALIB	+= -lSystemStubs
+export MACOSX_DEPLOYMENT_TARGET=10.2
+endif
+
+ifeq ($(OSNAME), Linux)
+EXTRALIB	+= -lm
+endif
+
+ifeq ($(OSNAME), AIX)
+EXTRALIB	+= -lm
+endif
+
+ifeq ($(OSNAME), WINNT)
+NEED_PIC = 0
+NO_EXPRECISION = 1
+
+EXTRALIB        += -defaultlib:advapi32
+
+SUFFIX  = obj
+PSUFFIX = pobj
+LIBSUFFIX = lib
+endif
+
+ifeq ($(OSNAME), Interix)
+NEED_PIC = 0
+NO_EXPRECISION = 1
+
+INTERIX_TOOL_DIR = /opt/gcc.3.3/i586-pc-interix3/bin
+endif
+
+ifeq ($(OSNAME), CYGWIN_NT)
+NEED_PIC = 0
+NO_EXPRECISION = 1
+endif
+
+ifneq ($(OSNAME), WINNT)
+ifneq ($(OSNAME), CYGWIN_NT)
+ifneq ($(OSNAME), Interix)
+ifdef SMP
+EXTRALIB   += -lpthread
+endif
+endif
+endif
+endif
+
+ifdef QUAD_PRECISION
+CCOMMON_OPT	+= -DQUAD_PRECISION
+NO_EXPRECISION = 1
+endif
+
+ifneq ($(ARCH), x86)
+ifneq ($(ARCH), x86_64)
+NO_EXPRECISION = 1
+endif
+endif
+
+ifdef SANITY_CHECK
+CCOMMON_OPT	+= -DSANITY_CHECK -DREFNAME=$(*F)f$(BU)
+endif
+
+#
+#  Architecture dependent settings
+#
+
+ifeq ($(ARCH), x86)
+ifndef BINARY
+NO_BINARY_MODE	= 1
+endif
+ifndef NO_EXPRECISION
+ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(C_COMPILER), GCC)
+EXPRECISION	= 1
+CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
+FCOMMON_OPT	+= -m128bit-long-double
+endif
+endif
+endif
+endif
+
+ifeq ($(ARCH), x86_64)
+ifndef NO_EXPRECISION
+ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(C_COMPILER), GCC)
+EXPRECISION	= 1
+CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
+FCOMMON_OPT	+= -m128bit-long-double
+endif
+endif
+endif
+endif
+
+ifeq ($(C_COMPILER), INTEL)
+CCOMMON_OPT    += -wd981
+endif
+
+ifdef USE_OPENMP
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT    += -fopenmp
+endif
+
+ifeq ($(C_COMPILER), INTEL)
+CCOMMON_OPT    += -openmp
+endif
+
+ifeq ($(C_COMPILER), PGI)
+CCOMMON_OPT    += -mp
+endif
+
+ifeq ($(C_COMPILER), OPEN64)
+CCOMMON_OPT    += -mp
+CEXTRALIB   += -lstdc++
+endif
+
+ifeq ($(C_COMPILER), PATHSCALE)
+CCOMMON_OPT    += -mp
+endif
+endif
+
+
+ifdef DYNAMIC_ARCH
+ifeq ($(ARCH), x86)
+DYNAMIC_CORE = KATMAI COPPERMINE NORTHWOOD PRESCOTT BANIAS \
+	       CORE2 PENRYN DUNNINGTON NEHALEM ATHLON OPTERON OPTERON_SSE3 BARCELONA ATOM NANO
+endif
+
+ifeq ($(ARCH), x86_64)
+DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA ATOM NANO
+endif
+
+ifndef DYNAMIC_CORE
+DYNAMIC_ARCH =
+endif
+endif
+
+ifeq ($(ARCH), ia64)
+NO_BINARY_MODE	= 1
+BINARY_DEFINED	= 1
+
+ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(C_COMPILER), GCC)
+# EXPRECISION	= 1
+# CCOMMON_OPT	+= -DEXPRECISION
+endif
+endif
+endif
+
+ifeq ($(ARCH), mips64)
+NO_BINARY_MODE	= 1
+endif
+
+ifeq ($(ARCH), alpha)
+NO_BINARY_MODE	= 1
+BINARY_DEFINED	= 1
+endif
+
+#
+#  C Compiler dependent settings
+#
+
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -Wall
+COMMON_PROF += -fno-inline
+NO_UNINITIALIZED_WARN =  -Wno-uninitialized
+
+ifdef NO_BINARY_MODE
+
+ifeq ($(ARCH), mips64)
+ifdef BINARY64
+CCOMMON_OPT += -mabi=64
+else
+CCOMMON_OPT += -mabi=n32
+endif
+BINARY_DEFINED = 1
+endif
+
+ifeq ($(OSNAME), AIX)
+BINARY_DEFINED = 1
+endif
+
+endif
+
+ifndef BINARY_DEFINED
+ifdef BINARY64
+CCOMMON_OPT += -m64
+else
+CCOMMON_OPT += -m32
+endif
+endif
+
+endif
+
+ifeq ($(C_COMPILER), PGI)
+ifdef BINARY64
+CCOMMON_OPT += -tp p7-64
+else
+CCOMMON_OPT += -tp p7
+endif
+endif
+
+ifeq ($(C_COMPILER), PATHSCALE)
+ifdef BINARY64
+CCOMMON_OPT += -m64
+else
+CCOMMON_OPT += -m32
+endif
+endif
+
+#
+#  Fortran Compiler dependent settings
+#
+
+ifeq ($(F_COMPILER), G77)
+CCOMMON_OPT += -DF_INTERFACE_G77
+FCOMMON_OPT += -Wall
+ifndef NO_BINARY_MODE
+ifdef BINARY64
+FCOMMON_OPT += -m64
+else
+FCOMMON_OPT += -m32
+endif
+endif
+endif
+
+ifeq ($(F_COMPILER), G95)
+CCOMMON_OPT += -DF_INTERFACE_G95
+FCOMMON_OPT += -Wall
+ifndef NO_BINARY_MODE
+ifdef BINARY64
+FCOMMON_OPT += -m64
+else
+FCOMMON_OPT += -m32
+endif
+endif
+endif
+
+ifeq ($(F_COMPILER), GFORTRAN)
+CCOMMON_OPT += -DF_INTERFACE_GFORT
+FCOMMON_OPT += -Wall 
+ifdef NO_BINARY_MODE
+ifeq ($(ARCH), mips64)
+ifdef BINARY64
+FCOMMON_OPT += -mabi=64
+else
+FCOMMON_OPT += -mabi=n32
+endif
+endif
+else
+ifdef BINARY64
+FCOMMON_OPT += -m64
+ifdef INTERFACE64
+FCOMMON_OPT +=  -fdefault-integer-8
+endif
+else
+FCOMMON_OPT += -m32
+endif
+endif
+ifdef USE_OPENMP
+FCOMMON_OPT += -fopenmp
+endif
+endif
+
+ifeq ($(F_COMPILER), INTEL)
+CCOMMON_OPT += -DF_INTERFACE_INTEL
+ifdef INTERFACE64
+FCOMMON_OPT += -i8
+endif
+ifdef USE_OPENMP
+FCOMMON_OPT += -openmp
+endif
+endif
+
+ifeq ($(F_COMPILER), FUJITSU)
+CCOMMON_OPT += -DF_INTERFACE_FUJITSU
+ifdef USE_OPENMP
+FCOMMON_OPT += -openmp
+endif
+endif
+
+ifeq ($(F_COMPILER), IBM)
+CCOMMON_OPT += -DF_INTERFACE_IBM
+# FCOMMON_OPT	+= -qarch=440
+ifdef BINARY64
+FCOMMON_OPT += -q64
+ifdef INTERFACE64
+FCOMMON_OPT += -qintsize=8
+endif
+else
+FCOMMON_OPT += -q32
+endif
+ifdef USE_OPENMP
+FCOMMON_OPT += -openmp
+endif
+endif
+
+ifeq ($(F_COMPILER), PGI)
+CCOMMON_OPT  += -DF_INTERFACE_PGI
+COMMON_PROF +=  -DPGICOMPILER
+ifdef BINARY64
+ifdef INTERFACE64
+FCOMMON_OPT += -i8
+endif
+FCOMMON_OPT += -tp p7-64
+else
+FCOMMON_OPT += -tp p7
+endif
+ifdef USE_OPENMP
+FCOMMON_OPT += -mp
+endif
+endif
+
+ifeq ($(F_COMPILER), PATHSCALE)
+CCOMMON_OPT  += -DF_INTERFACE_PATHSCALE
+ifdef BINARY64
+ifdef INTERFACE64
+FCOMMON_OPT += -i8
+endif
+endif
+
+ifneq ($(ARCH), mips64)
+ifndef BINARY64
+FCOMMON_OPT += -m32
+else
+FCOMMON_OPT += -m64
+endif
+else
+ifdef BINARY64
+FCOMMON_OPT += -mabi=64
+else
+FCOMMON_OPT += -mabi=n32
+endif
+endif
+
+ifdef USE_OPENMP
+FCOMMON_OPT += -mp
+endif
+endif
+
+ifeq ($(F_COMPILER), OPEN64)
+CCOMMON_OPT  += -DF_INTERFACE_OPEN64
+ifdef BINARY64
+ifdef INTERFACE64
+FCOMMON_OPT += -i8
+endif
+endif
+ifndef BINARY64
+FCOMMON_OPT += -m32
+else
+FCOMMON_OPT += -m64
+endif
+
+ifdef USE_OPENMP
+FEXTRALIB   += -lstdc++
+FCOMMON_OPT += -mp
+endif
+endif
+
+ifeq ($(C_COMPILER), OPEN64)
+ifndef BINARY64
+CCOMMON_OPT += -m32
+else
+CCOMMON_OPT += -m64
+endif
+endif
+
+ifeq ($(C_COMPILER), SUN)
+CCOMMON_OPT  += -w
+ifeq ($(ARCH), x86)
+CCOMMON_OPT  += -m32
+else
+FCOMMON_OPT  += -m64
+endif
+endif
+
+ifeq ($(F_COMPILER), SUN)
+CCOMMON_OPT  += -DF_INTERFACE_SUN
+ifeq ($(ARCH), x86)
+FCOMMON_OPT  += -m32
+else
+FCOMMON_OPT  += -m64
+endif
+ifdef USE_OPENMP
+FCOMMON_OPT += -xopenmp=parallel
+endif
+endif
+
+ifeq ($(F_COMPILER), COMPAQ)
+CCOMMON_OPT  += -DF_INTERFACE_COMPAQ
+ifdef USE_OPENMP
+FCOMMON_OPT += -openmp
+endif
+endif
+
+ifdef BINARY64
+ifdef INTERFACE64
+CCOMMON_OPT	+= -DUSE64BITINT
+endif
+endif
+
+ifeq ($(NEED_PIC), 1)
+ifeq ($(C_COMPILER), IBM)
+CCOMMON_OPT += -qpic=large 
+else
+CCOMMON_OPT += -fPIC 
+endif
+ifeq ($(F_COMPILER), SUN)
+FCOMMON_OPT  += -pic
+else
+FCOMMON_OPT += -fPIC 
+endif
+endif
+
+ifeq ($(DYNAMIC_ARCH), 1)
+CCOMMON_OPT	+= -DDYNAMIC_ARCH
+endif
+
+ifdef SMP
+CCOMMON_OPT	+= -DSMP_SERVER
+
+ifeq ($(ARCH), mips64)
+USE_SIMPLE_THREADED_LEVEL3 = 1
+endif
+
+ifeq ($(USE_OPENMP), 1)
+# USE_SIMPLE_THREADED_LEVEL3 = 1
+# NO_AFFINITY = 1
+CCOMMON_OPT	+= -DUSE_OPENMP
+endif
+
+endif
+
+ifeq ($(NO_WARMUP), 1)
+CCOMMON_OPT	+= -DNO_WARMUP
+endif
+
+ifeq ($(CONSISTENT_FPCSR), 1)
+CCOMMON_OPT	+= -DCONSISTENT_FPCSR
+endif
+
+# Only for development
+# CCOMMON_OPT	 += -DPARAMTEST
+# CCOMMON_OPT	 += -DPREFETCHTEST
+# CCOMMON_OPT	 += -DNO_SWITCHING
+# USE_PAPI = 1
+
+ifdef USE_PAPI
+CCOMMON_OPT	 += -DUSE_PAPI
+EXTRALIB	 += -lpapi -lperfctr
+endif
+
+ifdef DYNAMIC_THREADS
+CCOMMON_OPT	 += -DDYNAMIC_THREADS
+endif
+
+CCOMMON_OPT	+= -DMAX_CPU_NUMBER=$(NUM_THREADS)
+
+ifdef USE_SIMPLE_THREADED_LEVEL3
+CCOMMON_OPT	+= -DUSE_SIMPLE_THREADED_LEVEL3
+endif
+
+LIBPREFIX = libgoto2
+
+KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
+
+include $(TOPDIR)/Makefile.$(ARCH)
+
+CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
+
+ifeq ($(CORE), PPC440)
+CCOMMON_OPT	+= -DALLOC_QALLOC
+endif
+
+ifeq ($(CORE), PPC440FP2)
+STATIC_ALLOCATION = 1
+endif
+
+ifneq ($(OSNAME), Linux)
+NO_AFFINITY = 1
+endif
+
+ifneq ($(ARCH), x86_64)
+ifneq ($(ARCH), x86)
+NO_AFFINITY = 1
+endif
+endif
+
+ifdef NO_AFFINITY
+CCOMMON_OPT	+= -DNO_AFFINITY
+endif
+
+ifdef FUNCTION_PROFILE
+CCOMMON_OPT	+= -DFUNCTION_PROFILE
+endif
+
+ifdef HUGETLB_ALLOCATION
+CCOMMON_OPT	+= -DALLOC_HUGETLB
+endif
+
+ifdef HUGETLBFILE_ALLOCATION
+CCOMMON_OPT	+= -DALLOC_HUGETLBFILE -DHUGETLB_FILE_NAME=$(HUGETLBFILE_ALLOCATION)
+endif
+
+ifdef STATIC_ALLOCATION
+CCOMMON_OPT	+= -DALLOC_STATIC
+endif
+
+ifdef DEVICEDRIVER_ALLOCATION
+CCOMMON_OPT	+= -DALLOC_DEVICEDRIVER -DDEVICEDRIVER_NAME=\"/dev/mapper\"
+endif
+
+ifdef MIXED_MEMORY_ALLOCATION
+CCOMMON_OPT	+= -DMIXED_MEMORY_ALLOCATION
+endif
+
+ifeq ($(OSNAME), SunOS)
+TAR	= gtar
+PATCH	= gpatch
+GREP	= ggrep
+else
+TAR	= tar
+PATCH	= patch
+GREP	= grep
+endif
+
+MD5SUM	= md5sum
+AWK	= awk
+
+REVISION = -r$(VERSION)
+
+CFLAGS     = $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
+PFLAGS     = $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
+
+FFLAGS     = $(COMMON_OPT) $(FCOMMON_OPT)
+FPFLAGS    = $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
+
+ifndef SUFFIX
+SUFFIX  = o
+endif
+
+ifndef PSUFFIX
+PSUFFIX = po
+endif
+
+ifndef LIBSUFFIX
+LIBSUFFIX = a
+endif
+
+ifndef DYNAMIC_ARCH
+ifndef SMP
+LIBNAME		= $(LIBPREFIX)_$(LIBCORE)$(REVISION).$(LIBSUFFIX)
+LIBNAME_P	= $(LIBPREFIX)_$(LIBCORE)$(REVISION)_p.$(LIBSUFFIX)
+else
+LIBNAME		= $(LIBPREFIX)_$(LIBCORE)p$(REVISION).$(LIBSUFFIX)
+LIBNAME_P	= $(LIBPREFIX)_$(LIBCORE)p$(REVISION)_p.$(LIBSUFFIX)
+endif
+else
+ifndef SMP
+LIBNAME		= $(LIBPREFIX)$(REVISION).$(LIBSUFFIX)
+LIBNAME_P	= $(LIBPREFIX)$(REVISION)_p.$(LIBSUFFIX)
+else
+LIBNAME		= $(LIBPREFIX)p$(REVISION).$(LIBSUFFIX)
+LIBNAME_P	= $(LIBPREFIX)p$(REVISION)_p.$(LIBSUFFIX)
+endif
+endif
+
+
+LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so)
+LIBDLLNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dll)
+LIBDYNNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dylib)
+LIBDEFNAME   = $(LIBNAME:.$(LIBSUFFIX)=.def)
+LIBEXPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.exp)
+LIBZIPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.zip)
+
+LIBS		= $(TOPDIR)/$(LIBNAME)
+LIBS_P		= $(TOPDIR)/$(LIBNAME_P)
+
+export OSNAME
+export ARCH
+export CORE
+export LIBCORE
+export PGCPATH
+export CONFIG
+export CC
+export FC
+export BU
+export FU
+export USE_THREAD
+export NUM_THREADS
+export NUM_CORES
+export SMP
+export MAKEFILE_RULE
+export NEED_PIC
+export BINARY
+export BINARY32
+export BINARY64
+export F_COMPILER
+export C_COMPILER
+export USE_OPENMP
+export CROSS
+export CROSS_SUFFIX
+export NOFORTRAN
+export EXTRALIB
+export CEXTRALIB
+export FEXTRALIB
+export HAVE_SSE
+export HAVE_SSE2
+export HAVE_SSE3
+export HAVE_SSSE3
+export HAVE_SSE4_1
+export HAVE_SSE4_2
+export HAVE_SSE4A
+export HAVE_SSE5
+export KERNELDIR
+export FUNCTION_PROFILE
+export TARGET_CORE
+
+export SGEMM_UNROLL_M
+export SGEMM_UNROLL_N
+export DGEMM_UNROLL_M
+export DGEMM_UNROLL_N
+export QGEMM_UNROLL_M
+export QGEMM_UNROLL_N
+export CGEMM_UNROLL_M
+export CGEMM_UNROLL_N
+export ZGEMM_UNROLL_M
+export ZGEMM_UNROLL_N
+export XGEMM_UNROLL_M
+export XGEMM_UNROLL_N
+
+ifdef USE_CUDA
+export CUDADIR
+export CUCC
+export CUFLAGS
+export CULIB
+endif
+
+.SUFFIXES: .$(PSUFFIX) .$(SUFFIX) .f
+
+.f.$(SUFFIX):
+	$(FC) $(FFLAGS) -c $<  -o $(@F)
+
+.f.$(PSUFFIX):
+	$(FC) $(FPFLAGS) -pg -c $<  -o $(@F)
+
+
+ifdef BINARY64
+PATHSCALEPATH	= /opt/pathscale/lib/3.1
+PGIPATH		= /opt/pgi/linux86-64/7.1-5/lib
+else
+PATHSCALEPATH	= /opt/pathscale/lib/3.1/32
+PGIPATH		= /opt/pgi/linux86/7.1-5/lib
+endif
+
+ACMLPATH	= /opt/acml/4.3.0
+ifneq ($(OSNAME), Darwin)
+MKLPATH         = /opt/intel/mkl/10.2.2.025/lib
+else
+MKLPATH         = /Library/Frameworks/Intel_MKL.framework/Versions/10.0.1.014/lib
+endif
+ATLASPATH	= /opt/atlas/3.9.17/opteron
+FLAMEPATH	= $(HOME)/flame/lib
+ifneq ($(OSNAME), SunOS)
+SUNPATH		= /opt/sunstudio12.1
+else
+SUNPATH		= /opt/SUNWspro
+endif
+

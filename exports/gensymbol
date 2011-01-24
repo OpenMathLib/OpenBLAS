@@ -1,0 +1,462 @@
+#!/usr/bin/perl
+
+@blasobjs   = (
+	       caxpy,ccopy,cdotc,cdotu,cgbmv,cgemm,cgemv,cgerc,cgeru,
+	       chbmv,chemm,chemv,cher2,cher2k,cher,cherk,
+	       chpmv,chpr2,chpr,crotg,cscal,csrot,csscal,cswap,
+	       csymm,csyr2k,csyrk,ctbmv,ctbsv,ctpmv,ctpsv,ctrmm,ctrmv,ctrsm,
+	       ctrsv, csymv,
+	       damax,damin,dasum,daxpy,dcabs1,dcopy,ddot,dgbmv,dgemm,
+	       dgemv,dger,dmax,dmin,dnrm2,drot,drotg,drotm,drotmg,dsbmv,
+               dscal,dsdot,dspmv,dspr2,
+	       dspr,dswap,dsymm,dsymv,dsyr2,dsyr2k,dsyr,dsyrk,dtbmv,dtbsv,
+	       dtpmv,dtpsv,dtrmm,dtrmv,dtrsm,dtrsv,dzamax,dzamin,dzasum,dznrm2,
+	       icamax,icamin,idamax,idamin,idmax,idmin,isamax,isamin,ismax,ismin,
+	       izamax,izamin,lsame,samax,samin,sasum,saxpy,scabs1,scamax,
+	       scamin,scasum,scnrm2,scopy,sdot,sdsdot,sgbmv,sgemm,sgemv,sger,
+	       smax,smin,snrm2,
+	       srot,srotg,srotm,srotmg,ssbmv,sscal,sspmv,sspr2,sspr,sswap,
+	       ssymm,ssymv,ssyr2,ssyr2k,ssyr,ssyrk,stbmv,stbsv,stpmv,stpsv,
+	       strmm,strmv,strsm,strsv,zaxpy,zcopy,zdotc,zdotu,zdrot,
+	       zdscal,zgbmv,zgemm,zgemv,zgerc,zgeru,
+	       zhbmv,zhemm,zhemv,zher2,zher2k,zher,zherk,zhpmv,zhpr2,
+	       zhpr,zrotg,zscal,zswap,zsymm,zsyr2k,zsyrk,ztbmv,
+	       ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv, zsymv,
+	       xerbla);
+
+@cblasobjs  = (
+	       cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
+	       cblas_cgerc, cblas_cgeru, cblas_chbmv, cblas_chemm, cblas_chemv, cblas_cher2, cblas_cher2k,
+	       cblas_cher, cblas_cherk,  cblas_chpmv, cblas_chpr2, cblas_chpr, cblas_cscal,
+	       cblas_csscal, cblas_cswap, cblas_csymm, cblas_csyr2k, cblas_csyrk, cblas_ctbmv,
+	       cblas_ctbsv, cblas_ctpmv, cblas_ctpsv, cblas_ctrmm, cblas_ctrmv, cblas_ctrsm, cblas_ctrsv,
+	       cblas_dasum, cblas_daxpy, cblas_dcopy, cblas_ddot,
+	       cblas_dgbmv, cblas_dgemm, cblas_dgemv, cblas_dger, cblas_dnrm2,
+	       cblas_drot, cblas_drotg, cblas_drotm, cblas_drotmg, cblas_dsbmv, cblas_dscal, cblas_dsdot,
+	       cblas_dspmv, cblas_dspr2, cblas_dspr, cblas_dswap, cblas_dsymm, cblas_dsymv, cblas_dsyr2,
+	       cblas_dsyr2k, cblas_dsyr, cblas_dsyrk, cblas_dtbmv, cblas_dtbsv, cblas_dtpmv, cblas_dtpsv,
+	       cblas_dtrmm, cblas_dtrmv, cblas_dtrsm, cblas_dtrsv, cblas_dzasum,
+	       cblas_dznrm2, cblas_icamax, cblas_idamax,
+	       cblas_isamax, cblas_izamax,
+	       cblas_sasum, cblas_saxpy,
+	       cblas_scasum, cblas_scnrm2, cblas_scopy, cblas_sdot, cblas_sdsdot, cblas_sgbmv, cblas_sgemm,
+	       cblas_sgemv, cblas_sger, cblas_snrm2, cblas_srot, cblas_srotg,
+	       cblas_srotm, cblas_srotmg, cblas_ssbmv, cblas_sscal, cblas_sspmv, cblas_sspr2, cblas_sspr,
+	       cblas_sswap, cblas_ssymm, cblas_ssymv, cblas_ssyr2, cblas_ssyr2k, cblas_ssyr, cblas_ssyrk,
+	       cblas_stbmv, cblas_stbsv, cblas_stpmv, cblas_stpsv, cblas_strmm, cblas_strmv, cblas_strsm,
+	       cblas_strsv, cblas_zaxpy, cblas_zcopy, cblas_zdotc, cblas_zdotu, cblas_zdscal,
+	       cblas_zgbmv, cblas_zgemm, cblas_zgemv, cblas_zgerc, cblas_zgeru, cblas_zhbmv, cblas_zhemm,
+	       cblas_zhemv, cblas_zher2, cblas_zher2k, cblas_zher, cblas_zherk, cblas_zhpmv, cblas_zhpr2,
+	       cblas_zhpr, cblas_zscal, cblas_zswap, cblas_zsymm, cblas_zsyr2k, cblas_zsyrk,
+	       cblas_ztbmv, cblas_ztbsv, cblas_ztpmv, cblas_ztpsv, cblas_ztrmm, cblas_ztrmv, cblas_ztrsm,
+	       cblas_ztrsv);
+
+@exblasobjs = (
+	       qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,
+	       qgemv,qger,qmax,qmin,
+	       qnrm2,
+	       qsbmv,qscal,qspmv,qspr2,
+	       qspr,qswap,qsymm,qsymv,qsyr2,qsyr2k,qsyr,qsyrk,qtbmv,qtbsv,
+	       qtpmv,qtpsv,qtrmm,qtrmv,qtrsm,qtrsv,
+	       qxamax,qxamin,qxasum,qxnrm2,
+	       xaxpy,xcopy,xdotc,xdotu,
+	       xqscal,xgbmv,xgemm,xgemv,xgerc,xgeru,
+	       xhbmv,xhemm,xhemv,xher2,xher2k,xher,xherk,xhpmv,xhpr2,
+	       xhpr,xscal,xswap,xsymm,xsyr2k,xsyrk,xtbmv,
+	       xtbsv,xtpmv,xtpsv,xtrmm,xtrmv,xtrsm,xtrsv,
+#	       qrot,qrotg,qrotm,qrotmg,
+#	       xdrot,xrotg,
+	       );
+
+@gemm3mobjs = (
+	       zgemm3m, cgemm3m, zsymm3m, csymm3m, zhemm3m, chemm3m,
+	       );
+
+@lapackobjs = (
+	       sgesv,  dgesv,  cgesv,  zgesv, 
+	       sgetf2, dgetf2, cgetf2, zgetf2, 
+	       sgetrf, dgetrf, cgetrf, zgetrf, 
+	       slaswp, dlaswp, claswp, zlaswp, 
+	       sgetrs, dgetrs, cgetrs, zgetrs, 
+	       slauu2, dlauu2, clauu2, zlauu2, 
+	       slauum, dlauum, clauum, zlauum, 
+	       spotf2, dpotf2, cpotf2, zpotf2, 
+	       spotrf, dpotrf, cpotrf, zpotrf, 
+	       strti2, dtrti2, ctrti2, ztrti2, 
+	       strtri, dtrtri, ctrtri, ztrtri, 
+	       spotri, dpotri, cpotri, zpotri,
+	       );
+
+@lapackobjs2 = (
+		sgbbrd, sgbcon, sgbequ, sgbrfs, sgbsv, 
+		sgbsvx, sgbtf2, sgbtrf, sgbtrs, sgebak, sgebal, sgebd2,
+		sgebrd, sgecon, sgeequ, sgees,  sgeesx, sgeev,  sgeevx,
+		sgegs,  sgegv,  sgehd2, sgehrd, sgelq2, sgelqf,
+		sgels,  sgelsd, sgelss, sgelsx, sgelsy, sgeql2, sgeqlf,
+		sgeqp3, sgeqpf, sgeqr2, sgeqrf, sgerfs, sgerq2, sgerqf,
+		sgesc2, sgesdd, sgesvd, sgesvx, sgetc2,
+		sgetri,
+		sggbak, sggbal, sgges,  sggesx, sggev,  sggevx,
+		sggglm, sgghrd, sgglse, sggqrf,
+		sggrqf, sggsvd, sggsvp, sgtcon, sgtrfs, sgtsv, 
+		sgtsvx, sgttrf, sgttrs, sgtts2, shgeqz,
+		shsein, shseqr, slabrd, slacon, slacn2,
+		slaein, slaexc, slag2,  slags2, slagtm, slagv2, slahqr,
+		slahrd, slahr2, slaic1, slaln2, slals0, slalsa, slalsd,
+		slangb, slange, slangt, slanhs, slansb, slansp,
+		slansy, slantb, slantp, slantr, slanv2,
+		slapll, slapmt,
+		slaqgb, slaqge, slaqp2, slaqps, slaqsb, slaqsp, slaqsy,
+		slaqr0, slaqr1, slaqr2, slaqr3, slaqr4, slaqr5,
+		slaqtr, slar1v, slar2v,
+		slarf,  slarfb, slarfg, slarft, slarfx, slargv,
+		slarrv, slartv,
+		slarz,  slarzb, slarzt, slasy2, slasyf,
+		slatbs, slatdf, slatps, slatrd, slatrs, slatrz, slatzm,
+		sopgtr, sopmtr, sorg2l, sorg2r,
+		sorgbr, sorghr, sorgl2, sorglq, sorgql, sorgqr, sorgr2,
+		sorgrq, sorgtr, sorm2l, sorm2r,
+		sormbr, sormhr, sorml2, sormlq, sormql, sormqr, sormr2,
+		sormr3, sormrq, sormrz, sormtr, spbcon, spbequ, spbrfs,
+		spbstf, spbsv,  spbsvx,
+		spbtf2, spbtrf, spbtrs, spocon, spoequ, sporfs, sposv, 
+		sposvx, spotrs, sppcon, sppequ,
+		spprfs, sppsv,  sppsvx, spptrf, spptri, spptrs, sptcon,
+		spteqr, sptrfs, sptsv,  sptsvx, spttrs, sptts2, srscl, 
+		ssbev,  ssbevd, ssbevx, ssbgst, ssbgv,  ssbgvd, ssbgvx,
+		ssbtrd, sspcon, sspev,  sspevd, sspevx, sspgst,
+		sspgv,  sspgvd, sspgvx, ssprfs, sspsv,  sspsvx, ssptrd,
+		ssptrf, ssptri, ssptrs, sstegr, sstein, sstev,  sstevd, sstevr,
+		sstevx, ssycon, ssyev,  ssyevd, ssyevr, ssyevx, ssygs2,
+		ssygst, ssygv,  ssygvd, ssygvx, ssyrfs, ssysv,  ssysvx,
+		ssytd2, ssytf2, ssytrd, ssytrf, ssytri, ssytrs, stbcon,
+		stbrfs, stbtrs, stgevc, stgex2, stgexc, stgsen,
+		stgsja, stgsna, stgsy2, stgsyl, stpcon, stprfs, stptri,
+		stptrs,
+		strcon, strevc, strexc, strrfs, strsen, strsna, strsyl,
+		strtrs, stzrqf, stzrzf, sstemr,
+		
+		cbdsqr, cgbbrd, cgbcon, cgbequ, cgbrfs, cgbsv,  cgbsvx,
+		cgbtf2, cgbtrf, cgbtrs, cgebak, cgebal, cgebd2, cgebrd,
+		cgecon, cgeequ, cgees,  cgeesx, cgeev,  cgeevx,
+		cgegs,  cgegv,  cgehd2, cgehrd, cgelq2, cgelqf,
+		cgels,  cgelsd, cgelss, cgelsx, cgelsy, cgeql2, cgeqlf, cgeqp3,
+		cgeqpf, cgeqr2, cgeqrf, cgerfs, cgerq2, cgerqf,
+		cgesc2, cgesdd, cgesvd, cgesvx, cgetc2,
+		cgetri,
+		cggbak, cggbal, cgges,  cggesx, cggev,  cggevx, cggglm,
+		cgghrd, cgglse, cggqrf, cggrqf,
+		cggsvd, cggsvp,
+		cgtcon, cgtrfs, cgtsv,  cgtsvx, cgttrf, cgttrs, cgtts2, chbev, 
+		chbevd, chbevx, chbgst, chbgv,  chbgvd, chbgvx, chbtrd,
+		checon, cheev,  cheevd, cheevr, cheevx, chegs2, chegst,
+		chegv,  chegvd, chegvx, cherfs, chesv,  chesvx, chetd2,
+		chetf2, chetrd,
+		chetrf, chetri, chetrs, chgeqz, chpcon, chpev,  chpevd,
+		chpevx, chpgst, chpgv,  chpgvd, chpgvx, chprfs, chpsv, 
+		chpsvx,
+		chptrd, chptrf, chptri, chptrs, chsein, chseqr, clabrd,
+		clacgv, clacon, clacn2, clacp2, clacpy, clacrm, clacrt, cladiv,
+		claed0, claed7, claed8,
+		claein, claesy, claev2, clags2, clagtm,
+		clahef, clahqr,
+		clahrd, clahr2, claic1, clals0, clalsa, clalsd, clangb, clange, clangt,
+		clanhb, clanhe,
+		clanhp, clanhs, clanht, clansb, clansp, clansy, clantb,
+		clantp, clantr, clapll, clapmt, clarcm, claqgb, claqge,
+		claqhb, claqhe, claqhp, claqp2, claqps, claqsb,
+		claqr0, claqr1, claqr2, claqr3, claqr4, claqr5,
+		claqsp, claqsy, clar1v, clar2v, clarf,  clarfb, clarfg, clarft,
+		clarfx, clargv, clarnv, clarrv, clartg, clartv,
+		clarz,  clarzb, clarzt, clascl, claset, clasr,  classq,
+		clasyf, clatbs, clatdf, clatps, clatrd, clatrs, clatrz,
+		clatzm, cpbcon, cpbequ, cpbrfs, cpbstf, cpbsv, 
+		cpbsvx, cpbtf2, cpbtrf, cpbtrs, cpocon, cpoequ, cporfs,
+		cposv,  cposvx, cpotrs, cppcon,
+		cppequ, cpprfs, cppsv,  cppsvx, cpptrf, cpptri, cpptrs,
+		cptcon, cpteqr, cptrfs, cptsv,  cptsvx, cpttrf, cpttrs, cptts2,
+		crot,   cspcon, cspmv,  cspr,   csprfs, cspsv, 
+		cspsvx, csptrf, csptri, csptrs, csrscl, cstedc,
+		cstegr, cstein, csteqr, csycon, 
+		csyr,   csyrfs, csysv,  csysvx, csytf2, csytrf, csytri,
+		csytrs, ctbcon, ctbrfs, ctbtrs, ctgevc, ctgex2,
+		ctgexc, ctgsen, ctgsja, ctgsna, ctgsy2, ctgsyl, ctpcon,
+		ctprfs, ctptri,
+		ctptrs, ctrcon, ctrevc, ctrexc, ctrrfs, ctrsen, ctrsna,
+		ctrsyl, ctrtrs, ctzrqf, ctzrzf, cung2l, cung2r,
+		cungbr, cunghr, cungl2, cunglq, cungql, cungqr, cungr2,
+		cungrq, cungtr, cunm2l, cunm2r, cunmbr, cunmhr, cunml2,
+		cunmlq, cunmql, cunmqr, cunmr2, cunmr3, cunmrq, cunmrz,
+		cunmtr, cupgtr, cupmtr, icmax1, scsum1, cstemr,
+		
+		dgbbrd, dgbcon, dgbequ, dgbrfs, dgbsv, 
+		dgbsvx, dgbtf2, dgbtrf, dgbtrs, dgebak, dgebal, dgebd2,
+		dgebrd, dgecon, dgeequ, dgees,  dgeesx, dgeev,  dgeevx,
+		dgegs,  dgegv,  dgehd2, dgehrd, dgelq2, dgelqf,
+		dgels,  dgelsd, dgelss, dgelsx, dgelsy, dgeql2, dgeqlf,
+		dgeqp3, dgeqpf, dgeqr2, dgeqrf, dgerfs, dgerq2, dgerqf,
+		dgesc2, dgesdd, dgesvd, dgesvx, dgetc2,
+		dgetri,
+		dggbak, dggbal, dgges,  dggesx, dggev,  dggevx,
+		dggglm, dgghrd, dgglse, dggqrf,
+		dggrqf, dggsvd, dggsvp, dgtcon, dgtrfs, dgtsv, 
+		dgtsvx, dgttrf, dgttrs, dgtts2, dhgeqz,
+		dhsein, dhseqr, dlabrd, dlacon, dlacn2,
+		dlaein, dlaexc, dlag2,  dlags2, dlagtm, dlagv2, dlahqr,
+		dlahrd, dlahr2, dlaic1, dlaln2, dlals0, dlalsa, dlalsd,
+		dlangb, dlange, dlangt, dlanhs, dlansb, dlansp,
+		dlansy, dlantb, dlantp, dlantr, dlanv2,
+		dlapll, dlapmt,
+		dlaqgb, dlaqge, dlaqp2, dlaqps, dlaqsb, dlaqsp, dlaqsy,
+		dlaqr0, dlaqr1, dlaqr2, dlaqr3, dlaqr4, dlaqr5,
+		dlaqtr, dlar1v, dlar2v,
+		dlarf,  dlarfb, dlarfg, dlarft, dlarfx, dlargv,
+		dlarrv, dlartv,
+		dlarz,  dlarzb, dlarzt, dlasy2, dlasyf,
+		dlatbs, dlatdf, dlatps, dlatrd, dlatrs, dlatrz, dlatzm,
+		dopgtr, dopmtr, dorg2l, dorg2r,
+		dorgbr, dorghr, dorgl2, dorglq, dorgql, dorgqr, dorgr2,
+		dorgrq, dorgtr, dorm2l, dorm2r,
+		dormbr, dormhr, dorml2, dormlq, dormql, dormqr, dormr2,
+		dormr3, dormrq, dormrz, dormtr, dpbcon, dpbequ, dpbrfs,
+		dpbstf, dpbsv,  dpbsvx,
+		dpbtf2, dpbtrf, dpbtrs, dpocon, dpoequ, dporfs, dposv, 
+		dposvx, dpotrs, dppcon, dppequ,
+		dpprfs, dppsv,  dppsvx, dpptrf, dpptri, dpptrs, dptcon,
+		dpteqr, dptrfs, dptsv,  dptsvx, dpttrs, dptts2, drscl, 
+		dsbev,  dsbevd, dsbevx, dsbgst, dsbgv,  dsbgvd, dsbgvx,
+		dsbtrd,  dspcon, dspev,  dspevd, dspevx, dspgst,
+		dspgv,  dspgvd, dspgvx, dsprfs, dspsv,  dspsvx, dsptrd,
+		dsptrf, dsptri, dsptrs, dstegr, dstein, dstev,  dstevd, dstevr,
+		dstevx, dsycon, dsyev,  dsyevd, dsyevr,
+		dsyevx, dsygs2, dsygst, dsygv,  dsygvd, dsygvx, dsyrfs,
+		dsysv,  dsysvx,
+		dsytd2, dsytf2, dsytrd, dsytrf, dsytri, dsytrs, dtbcon,
+		dtbrfs, dtbtrs, dtgevc, dtgex2, dtgexc, dtgsen,
+		dtgsja, dtgsna, dtgsy2, dtgsyl, dtpcon, dtprfs, dtptri,
+		dtptrs,
+		dtrcon, dtrevc, dtrexc, dtrrfs, dtrsen, dtrsna, dtrsyl,
+		dtrtrs, dtzrqf, dtzrzf, dstemr,
+		dsgesv, dlag2s, slag2d,
+		
+		zbdsqr, zgbbrd, zgbcon, zgbequ, zgbrfs, zgbsv,  zgbsvx,
+		zgbtf2, zgbtrf, zgbtrs, zgebak, zgebal, zgebd2, zgebrd,
+		zgecon, zgeequ, zgees,  zgeesx, zgeev,  zgeevx,
+		zgegs,  zgegv,  zgehd2, zgehrd, zgelq2, zgelqf,
+		zgels,  zgelsd, zgelss, zgelsx, zgelsy, zgeql2, zgeqlf, zgeqp3,
+		zgeqpf, zgeqr2, zgeqrf, zgerfs, zgerq2, zgerqf,
+		zgesc2, zgesdd, zgesvd, zgesvx, zgetc2,
+		zgetri,
+		zggbak, zggbal, zgges,  zggesx, zggev,  zggevx, zggglm,
+		zgghrd, zgglse, zggqrf, zggrqf,
+		zggsvd, zggsvp,
+		zgtcon, zgtrfs, zgtsv,  zgtsvx, zgttrf, zgttrs, zgtts2, zhbev, 
+		zhbevd, zhbevx, zhbgst, zhbgv,  zhbgvd, zhbgvx, zhbtrd,
+		zhecon, zheev,  zheevd, zheevr, zheevx, zhegs2, zhegst,
+		zhegv,  zhegvd, zhegvx, zherfs, zhesv,  zhesvx, zhetd2,
+		zhetf2, zhetrd,
+		zhetrf, zhetri, zhetrs, zhgeqz, zhpcon, zhpev,  zhpevd,
+		zhpevx, zhpgst, zhpgv,  zhpgvd, zhpgvx, zhprfs, zhpsv, 
+		zhpsvx,
+		zhptrd, zhptrf, zhptri, zhptrs, zhsein, zhseqr, zlabrd,
+		zlacgv, zlacon, zlacn2, zlacp2, zlacpy, zlacrm, zlacrt, zladiv,
+		zlaed0, zlaed7, zlaed8,
+		zlaein, zlaesy, zlaev2, zlags2, zlagtm,
+		zlahef, zlahqr,
+		zlahrd, zlahr2, zlaic1, zlals0, zlalsa, zlalsd, zlangb, zlange,
+		zlangt, zlanhb,
+		zlanhe,
+		zlanhp, zlanhs, zlanht, zlansb, zlansp, zlansy, zlantb,
+		zlantp, zlantr, zlapll, zlapmt, zlaqgb, zlaqge,
+		zlaqhb, zlaqhe, zlaqhp, zlaqp2, zlaqps, zlaqsb,
+		zlaqr0, zlaqr1, zlaqr2, zlaqr3, zlaqr4, zlaqr5,
+		zlaqsp, zlaqsy, zlar1v, zlar2v, zlarcm, zlarf,  zlarfb,
+		zlarfg, zlarft,
+		zlarfx, zlargv, zlarnv, zlarrv, zlartg, zlartv,
+		zlarz,  zlarzb, zlarzt, zlascl, zlaset, zlasr, 
+		zlassq, zlasyf,
+		zlatbs, zlatdf, zlatps, zlatrd, zlatrs, zlatrz, zlatzm,
+		zpbcon, zpbequ, zpbrfs, zpbstf, zpbsv, 
+		zpbsvx, zpbtf2, zpbtrf, zpbtrs, zpocon, zpoequ, zporfs,
+		zposv,  zposvx, zpotrs, zppcon,
+		zppequ, zpprfs, zppsv,  zppsvx, zpptrf, zpptri, zpptrs,
+		zptcon, zpteqr, zptrfs, zptsv,  zptsvx, zpttrf, zpttrs, zptts2,
+		zrot,   zspcon, zspmv,  zspr,   zsprfs, zspsv, 
+		zspsvx, zsptrf, zsptri, zsptrs, zdrscl, zstedc,
+		zstegr, zstein, zsteqr, zsycon, 
+		zsyr,   zsyrfs, zsysv,  zsysvx, zsytf2, zsytrf, zsytri,
+		zsytrs, ztbcon, ztbrfs, ztbtrs, ztgevc, ztgex2,
+		ztgexc, ztgsen, ztgsja, ztgsna, ztgsy2, ztgsyl, ztpcon,
+		ztprfs, ztptri,
+		ztptrs, ztrcon, ztrevc, ztrexc, ztrrfs, ztrsen, ztrsna,
+		ztrsyl, ztrtrs, ztzrqf, ztzrzf, zung2l,
+		zung2r, zungbr, zunghr, zungl2, zunglq, zungql, zungqr, zungr2,
+		zungrq, zungtr, zunm2l, zunm2r, zunmbr, zunmhr, zunml2,
+		zunmlq, zunmql, zunmqr, zunmr2, zunmr3, zunmrq, zunmrz,
+		zunmtr, zupgtr,
+		zupmtr, izmax1, dzsum1, zstemr,
+		zcgesv, zlag2c, clag2z,
+		);
+
+if (-d "../lapack-3.1.1") {
+    @objs = (@blasobjs, @lapackobjs, @lapackobjs2);
+} else {
+    @objs = (@blasobjs, @lapackobjs);
+}
+
+if ($ARGV[3] == 1){ @objs = (@objs, @exblasobjs); };
+
+if ($ARGV[1] eq "X86_64"){ @objs = (@objs, @gemm3mobjs); };
+
+if ($ARGV[1] eq "x86"){ @objs = (@objs, @gemm3mobjs); };
+
+if ($ARGV[1] eq "ia64"){ @objs = (@objs, @gemm3mobjs); };
+
+if ($ARGV[1] eq "MIPS"){ @objs = (@objs, @gemm3mobjs); };
+
+@linuxobjs = ('__strtol_internal', 'exit', 'free', 'getenv', 'malloc',
+	      'mmap', 'printf', 'sqrt',
+	      'pthread_cond_broadcast', 'pthread_cond_destroy',
+	      'pthread_cond_init', 'pthread_cond_signal', 'pthread_cond_wait',
+	      'pthread_create', 'pthread_exit', 'pthread_join',
+	      'pthread_mutex_destroy', 'pthread_mutex_init',
+	      'pthread_mutex_lock', 'pthread_mutex_unlock');
+
+@hplobjs  = (daxpy, dcopy, dscal, idamax, dgemv, dtrsv, dger, dgemm, dtrsm);
+@hplobjs2 = (HPL_dlaswp00N, HPL_dlaswp01N, HPL_dlaswp01T); 
+
+$bu = $ARGV[2];
+
+$bu = "" if (($bu eq "0") || ($bu eq "1"));
+
+if ($ARGV[0] eq "linux"){
+    foreach $objs (@objs) {
+	print $objs, $bu, "\n";
+    }
+
+    if ($ARGV[4] == 0) {
+	foreach $objs (@cblasobjs) {
+	    print $objs, "\n";
+	}
+    }
+
+    foreach $objs (@linuxobjs) {
+	print $objs, "\n";
+    }
+    exit(0);
+} 
+
+if ($ARGV[0] eq "osx"){
+    foreach $objs (@objs) {
+	print "_", $objs, $bu, "\n";
+    }
+
+    if ($ARGV[4] == 0) {
+	foreach $objs (@cblasobjs) {
+	    print "_", $objs, "\n";
+	}
+    }
+    exit(0);
+} 
+
+if ($ARGV[0] eq "aix"){
+    foreach $objs (@objs) {
+	print $objs, $bu, "\n";
+    }
+
+    if ($ARGV[4] == 0) {
+	foreach $objs (@cblasobjs) {
+	    print $objs, "\n";
+	}
+    }
+    exit(0);
+} 
+
+if ($ARGV[0] eq "win2k"){
+    print "EXPORTS\n";
+    $count = 1;    
+    foreach $objs (@objs) {
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+   	print "\t$objs=$objs","_  \@", $count, "\n";
+	$count ++;
+   	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+	$count ++;
+	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	$count ++;
+    }
+
+    exit(0);
+}
+
+if ($ARGV[0] eq "win2khpl"){
+    print "EXPORTS\n";
+    $count = 1;    
+    foreach $objs (@hplobjs) {
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+   	print "\t$objs=$objs","_  \@", $count, "\n";
+	$count ++;
+   	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+	$count ++;
+	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	$count ++;
+    }
+
+#    foreach $objs (@hplobjs2) {
+#   	print "\t$objs=$objs","  \@", $count, "\n";
+#	$count ++;
+#    }
+
+    exit(0);
+}
+
+if ($ARGV[0] eq "microsoft"){
+    print "EXPORTS\n";
+    $count = 1;    
+    foreach $objs (@objs) {
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+   	print "\t$objs = $objs","_\n";
+	$count ++;
+   	print "\t$objs\_ = $objs","_\n";
+	$count ++;
+   	print "\t$uppercase = $objs","_\n";
+	$count ++;
+   	print "\t$uppercase\_ = $objs","_\n";
+	$count ++;
+    }
+    exit(0);
+}
+
+if ($ARGV[0] eq "win2kasm"){
+    print "\t.text\n";
+    foreach $objs (@objs) {
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+	print "\t.align 16\n";
+	print "\t.globl _", $uppercase, "_\n";
+	print "_", $uppercase, "_:\n";
+	print "\tjmp\t_", $objs, "_\n";
+    }
+    exit(0);
+}
+
+if ($ARGV[0] eq "linktest"){
+    print "int main(void){\n";
+    foreach $objs (@objs) {
+	print $objs, $bu, "();\n" if $objs ne "xerbla";
+    }
+    if ($ARGV[4] == 0) {
+	foreach $objs (@cblasobjs) {
+	print $objs, "();\n";
+	}
+    }
+
+
+
+
+    print "return 0;}\n";
+    exit(0);
+}
+

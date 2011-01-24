@@ -1,0 +1,3 @@
+#!/bin/bash
+
+make BINARY=64 CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran

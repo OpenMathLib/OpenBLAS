@@ -1,0 +1,39 @@
+export BINARY
+export USE_OPENMP
+
+ifdef TARGET_CORE
+TARGET_MAKE = Makefile_kernel.conf
+TARGET_CONF = config_kernel.h
+else
+TARGET_MAKE = Makefile.conf
+TARGET_CONF = config.h
+endif
+
+# CPUIDEMU = ../../cpuid/table.o
+
+ifdef CPUIDEMU
+EXFLAGS = -DCPUIDEMU -DVENDOR=99
+endif
+
+all: getarch_2nd
+	./getarch_2nd  0 >> $(TARGET_MAKE)
+	./getarch_2nd  1 >> $(TARGET_CONF)
+
+config.h : c_check f_check getarch
+	perl ./c_check $(TARGET_MAKE) $(TARGET_CONF) $(CC)
+	perl ./f_check $(TARGET_MAKE) $(TARGET_CONF) $(FC)
+	./getarch 0 >> $(TARGET_MAKE)
+	./getarch 1 >> $(TARGET_CONF)
+
+
+getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
+	$(HOSTCC) $(CFLAGS) $(EXFLAGS) -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
+
+getarch_2nd : getarch_2nd.c config.h dummy
+ifndef TARGET_CORE
+	$(HOSTCC) -I. $(CFLAGS) -o $(@F) getarch_2nd.c
+else
+	$(HOSTCC) -I. $(CFLAGS) -DBUILD_KERNEL -o $(@F) getarch_2nd.c
+endif
+
+dummy:
