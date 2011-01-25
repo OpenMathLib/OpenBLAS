@@ -5,7 +5,15 @@ OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. OpenB
 
 2.Intallation
 check out codes from git://github.com/xianyi/OpenBLAS.git
+1)Normal compile
 Please read GotoBLAS_02QuickInstall.txt or type "make"
+
+2)Cross compile
+Please set CC and FC with the cross toolchains. Then, set HOSTCC with your host C compiler. At last, set TARGET explicitly.
+
+examples:
+On X86 box, compile this library for loongson3a CPU.
+make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-gfortran HOSTCC=gcc TARGET=LOONGSON3A
 
 3.Support CPU & OS
 Please read GotoBLAS_01Readme.txt
