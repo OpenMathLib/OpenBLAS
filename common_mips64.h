@@ -230,4 +230,12 @@ REALNAME: ;\
 #ifndef MAP_ANONYMOUS
 #define MAP_ANONYMOUS MAP_ANON
 #endif
+
+#if defined(LOONGSON3A)
+#define PREFETCHD_(x) ld $0, x
+#define PREFETCHD(x)  PREFETCHD_(x)  
+#else
+#define PREFETCHD(x) 
+#endif
+
 #endif
