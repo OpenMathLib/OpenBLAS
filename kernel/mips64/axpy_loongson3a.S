@@ -135,22 +135,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	daddiu	I, I, -1
 
 	LD	a1,  0 * SIZE(X)
-	LD	b1,  0 * SIZE(Y)
 	LD	a2,  1 * SIZE(X)
-	LD	b2,  1 * SIZE(Y)
 	LD	a3,  2 * SIZE(X)
-	LD	b3,  2 * SIZE(Y)
 	LD	a4,  3 * SIZE(X)
-	LD	b4,  3 * SIZE(Y)
 	LD	a5,  4 * SIZE(X)
-	LD	b5,  4 * SIZE(Y)
 	LD	a6,  5 * SIZE(X)
-	LD	b6,  5 * SIZE(Y)
 	LD	a7,  6 * SIZE(X)
-	LD	b7,  6 * SIZE(Y)
 	LD	a8,  7 * SIZE(X)
-	LD	b8,  7 * SIZE(Y)
 
+		
+	LD	b1,  0 * SIZE(Y)
+	LD	b2,  1 * SIZE(Y)
+	LD	b3,  2 * SIZE(Y)
+	LD	b4,  3 * SIZE(Y)
+	LD	b5,  4 * SIZE(Y)
+	LD	b6,  5 * SIZE(Y)
+	LD	b7,  6 * SIZE(Y)
+	LD	b8,  7 * SIZE(Y)
+		
 	blez	I, .L13
 	NOP
 	.align 5
@@ -159,21 +161,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PREFETCHD(PREFETCH_DISTANCE*SIZE(X))
 	PREFETCHD(PREFETCH_DISTANCE*SIZE(Y))
 		
-	MADD	t1, b1, ALPHA, a1
-	LD	a1,  8 * SIZE(X)
-	LD	b1,  8 * SIZE(Y)
-
+	MADD	t1, b1, ALPHA, a1	
 	MADD	t2, b2, ALPHA, a2
-	LD	a2,  9 * SIZE(X)
+	LD	b1,  8 * SIZE(Y)
 	LD	b2,  9 * SIZE(Y)
-
+		
 	MADD	t3, b3, ALPHA, a3
-	LD	a3, 10 * SIZE(X)
-	LD	b3, 10 * SIZE(Y)
-
 	MADD	t4, b4, ALPHA, a4
-	LD	a4, 11 * SIZE(X)
+	LD	b3, 10 * SIZE(Y)
 	LD	b4, 11 * SIZE(Y)
+		
+	LD	a1,  8 * SIZE(X)
+	LD	a2,  9 * SIZE(X)
+	LD	a3, 10 * SIZE(X)
+	LD	a4, 11 * SIZE(X)
+
 
 	ST	t1,  0 * SIZE(Y)
 	ST	t2,  1 * SIZE(Y)
@@ -184,20 +186,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(Y))
 
 	MADD	t1, b5, ALPHA, a5
-	LD	a5, 12 * SIZE(X)
-	LD	b5, 12 * SIZE(Y)
-
 	MADD	t2, b6, ALPHA, a6
-	LD	a6, 13 * SIZE(X)
+	LD	b5, 12 * SIZE(Y)
 	LD	b6, 13 * SIZE(Y)
-
+		
 	MADD	t3, b7, ALPHA, a7
-	LD	a7, 14 * SIZE(X)
-	LD	b7, 14 * SIZE(Y)
-
 	MADD	t4, b8, ALPHA, a8
+	LD	b7, 14 * SIZE(Y)
+	LD	b8, 15 * SIZE(Y)		
+		
+	LD	a5, 12 * SIZE(X)
+	LD	a6, 13 * SIZE(X)
+	LD	a7, 14 * SIZE(X)
 	LD	a8, 15 * SIZE(X)
-	LD	b8, 15 * SIZE(Y)
+
 
 	ST	t1,  4 * SIZE(Y)
 	ST	t2,  5 * SIZE(Y)
