@@ -7,13 +7,17 @@ ifndef DYNAMIC_ARCH
 BLASDIRS += kernel 
 endif
 
+ifdef UTEST_CHECK
+SANITY_CHECK = 1
+endif
+
 ifdef SANITY_CHECK
 BLASDIRS += reference
 endif
 
 SUBDIRS	= $(BLASDIRS) lapack
 
-SUBDIRS_ALL = $(SUBDIRS) test ctest exports benchmark ../laswp ../bench
+SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
 .PHONY : all libs netlib test ctest shared
 .NOTPARALLEL : all libs prof lapack-test
@@ -77,6 +81,9 @@ ifndef CROSS
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
+ifdef UTEST_CHECK
+	$(MAKE) -C utest all
+endif
 endif
 ifndef NO_CBLAS
 	$(MAKE) -C ctest all
