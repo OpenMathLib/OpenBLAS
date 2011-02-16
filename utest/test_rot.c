@@ -29,18 +29,26 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
-#ifndef ASSEMBLER
 
-#define REF_BU f
-#define BLASFUNC_REF_2(x,y) BLASFUNC(x## y)
-#define BLASFUNC_REF_1(x,y) BLASFUNC_REF_2(x,y)
-#define BLASFUNC_REF(x) BLASFUNC_REF_1(x,REF_BU)
+#include "common_utest.h"
 
-void  BLASFUNC_REF(srot)  (blasint *, float  *, blasint *, float  *, blasint *, float  *, float  *);
-void  BLASFUNC_REF(drot)  (blasint *, double *, blasint *, double *, blasint *, double *, double *);
-void  BLASFUNC_REF(qrot)  (blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *);
-void  BLASFUNC_REF(csrot) (blasint *, float  *, blasint *, float  *, blasint *, float  *, float  *);
-void  BLASFUNC_REF(zdrot) (blasint *, double *, blasint *, double *, blasint *, double *, double *);
-void  BLASFUNC_REF(xqrot) (blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *);
+void test_drot_incx_0(void)
+{
+	int i;
+	int N=4,incX=0,incY=0;
+	double c=0.25,s=0.5;
+	double x1[]={1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0};
+	double x2[]={1.0,3.0,5.0,7.0};
+	double y2[]={2.0,4.0,6.0,8.0};
 
-#endif
+	//OpenBLAS
+	drot_(&N,x1,&incX,y1,&incY,&c,&s);
+	//reference
+	drotf_(&N,x2,&incX,y2,&incY,&c,&s);
+
+	for(i=0; i<N; i++){
+		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
+		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+	}
+}

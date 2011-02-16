@@ -29,18 +29,16 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
-#ifndef ASSEMBLER
 
-#define REF_BU f
-#define BLASFUNC_REF_2(x,y) BLASFUNC(x## y)
-#define BLASFUNC_REF_1(x,y) BLASFUNC_REF_2(x,y)
-#define BLASFUNC_REF(x) BLASFUNC_REF_1(x,REF_BU)
+#ifndef COMMON_UTEST_H_
+#define COMMON_UTEST_H_
+#include <CUnit/CUnit.h>
 
-void  BLASFUNC_REF(srot)  (blasint *, float  *, blasint *, float  *, blasint *, float  *, float  *);
-void  BLASFUNC_REF(drot)  (blasint *, double *, blasint *, double *, blasint *, double *, double *);
-void  BLASFUNC_REF(qrot)  (blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *);
-void  BLASFUNC_REF(csrot) (blasint *, float  *, blasint *, float  *, blasint *, float  *, float  *);
-void  BLASFUNC_REF(zdrot) (blasint *, double *, blasint *, double *, blasint *, double *, double *);
-void  BLASFUNC_REF(xqrot) (blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *);
+#include <common.h>
+
+#define CHECK_EPS 0.0002
+
+//Testcase list
+void test_drot_incx_0(void);
 
 #endif
