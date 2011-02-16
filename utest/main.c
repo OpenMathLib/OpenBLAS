@@ -29,18 +29,50 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
-#ifndef ASSEMBLER
 
-#define REF_BU f
-#define BLASFUNC_REF_2(x,y) BLASFUNC(x## y)
-#define BLASFUNC_REF_1(x,y) BLASFUNC_REF_2(x,y)
-#define BLASFUNC_REF(x) BLASFUNC_REF_1(x,REF_BU)
+#include <stdio.h>
+#include <string.h>
 
-void  BLASFUNC_REF(srot)  (blasint *, float  *, blasint *, float  *, blasint *, float  *, float  *);
-void  BLASFUNC_REF(drot)  (blasint *, double *, blasint *, double *, blasint *, double *, double *);
-void  BLASFUNC_REF(qrot)  (blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *);
-void  BLASFUNC_REF(csrot) (blasint *, float  *, blasint *, float  *, blasint *, float  *, float  *);
-void  BLASFUNC_REF(zdrot) (blasint *, double *, blasint *, double *, blasint *, double *, double *);
-void  BLASFUNC_REF(xqrot) (blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *);
 
-#endif
+#include "common_utest.h"
+#include <CUnit/Basic.h>
+
+CU_TestInfo test_level1[]={
+	{"Testing drot when incx & incy == 0",test_drot_incx_0},
+	CU_TEST_INFO_NULL,
+};
+
+CU_SuiteInfo suites[]={
+	{"Level1 Test Suite", NULL,NULL,test_level1},
+	CU_SUITE_INFO_NULL,
+};
+
+int main()
+{
+	CU_ErrorCode error;
+	if (CUE_SUCCESS != CU_initialize_registry())
+		return CU_get_error();
+	
+	error=CU_register_suites(suites);
+	
+	if (error != CUE_SUCCESS) {
+		perror(CU_get_error_msg());
+		CU_cleanup_registry();
+		return CU_get_error();
+		
+	}
+	
+
+	
+
+	/* Run all tests using the CUnit Basic interface */
+	CU_basic_set_mode(CU_BRM_VERBOSE);
+	
+	CU_basic_run_tests();
+	
+	CU_cleanup_registry();
+	
+	return CU_get_error();
+	
+}
+

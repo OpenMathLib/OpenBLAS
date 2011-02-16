@@ -84,6 +84,10 @@ VERSION = 0.1
 # slow (Not implemented yet).
 # SANITY_CHECK = 1
 
+# Run testcases in utest/ . When you enable UTEST_CHECK, it would enable
+# SANITY_CHECK to compare the result with reference BLAS.
+# UTEST_CHECK = 1
+
 # Common Optimization Flag; -O2 is enough.
 COMMON_OPT += -O2
 
