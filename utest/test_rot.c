@@ -43,9 +43,72 @@ void test_drot_incx_0(void)
 	double y2[]={2.0,4.0,6.0,8.0};
 
 	//OpenBLAS
-	drot_(&N,x1,&incX,y1,&incY,&c,&s);
+	BLASFUNC(drot)(&N,x1,&incX,y1,&incY,&c,&s);
 	//reference
-	drotf_(&N,x2,&incX,y2,&incY,&c,&s);
+	BLASFUNC_REF(drot)(&N,x2,&incX,y2,&incY,&c,&s);
+
+	for(i=0; i<N; i++){
+		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
+		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+	}
+}
+
+void test_zdrot_incx_0(void)
+{
+	int i;
+	int N=4,incX=0,incY=0;
+	double c=0.25,s=0.5;
+	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	double x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y2[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(zdrot)(&N,x1,&incX,y1,&incY,&c,&s);
+	//reference
+	BLASFUNC_REF(zdrot)(&N,x2,&incX,y2,&incY,&c,&s);
+
+	for(i=0; i<N; i++){
+		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
+		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+	}
+}
+
+void test_srot_incx_0(void)
+{
+	int i;
+	int N=4,incX=0,incY=0;
+	float c=0.25,s=0.5;
+	float x1[]={1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0};
+	float x2[]={1.0,3.0,5.0,7.0};
+	float y2[]={2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(srot)(&N,x1,&incX,y1,&incY,&c,&s);
+	//reference
+	BLASFUNC_REF(srot)(&N,x2,&incX,y2,&incY,&c,&s);
+
+	for(i=0; i<N; i++){
+		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
+		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+	}
+}
+
+void test_csrot_incx_0(void)
+{
+	int i;
+	int N=4,incX=0,incY=0;
+	float c=0.25,s=0.5;
+	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	float x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y2[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(csrot)(&N,x1,&incX,y1,&incY,&c,&s);
+	//reference
+	BLASFUNC_REF(csrot)(&N,x2,&incX,y2,&incY,&c,&s);
 
 	for(i=0; i<N; i++){
 		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);

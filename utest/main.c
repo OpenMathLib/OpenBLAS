@@ -38,7 +38,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <CUnit/Basic.h>
 
 CU_TestInfo test_level1[]={
+	{"Testing srot when incx & incy == 0",test_srot_incx_0},
 	{"Testing drot when incx & incy == 0",test_drot_incx_0},
+	{"Testing csrot when incx & incy == 0",test_csrot_incx_0},
+	{"Testing zdrot when incx & incy == 0",test_zdrot_incx_0},
 	CU_TEST_INFO_NULL,
 };
 
