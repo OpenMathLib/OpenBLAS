@@ -138,7 +138,8 @@ DBLASOBJS	+= \
 	dpotf2f.$(SUFFIX) dpotrff.$(SUFFIX) dtrti2f.$(SUFFIX) dtrtrif.$(SUFFIX) \
 	dlaswpf.$(SUFFIX) dgetrsf.$(SUFFIX) dgesvf.$(SUFFIX)  dpotrif.$(SUFFIX) \
 
-QBLASOBJS	+= \
+QBLASOBJS	+= 
+#	\
 	qgetf2f.$(SUFFIX) qgetrff.$(SUFFIX) qlauu2f.$(SUFFIX) qlauumf.$(SUFFIX) \
 	qpotf2f.$(SUFFIX) qpotrff.$(SUFFIX) qtrti2f.$(SUFFIX) qtrtrif.$(SUFFIX) \
 	qlaswpf.$(SUFFIX) qgetrsf.$(SUFFIX) qgesvf.$(SUFFIX)  qpotrif.$(SUFFIX) \
@@ -153,7 +154,8 @@ ZBLASOBJS	+= \
 	zpotf2f.$(SUFFIX) zpotrff.$(SUFFIX) ztrti2f.$(SUFFIX) ztrtrif.$(SUFFIX) \
 	zlaswpf.$(SUFFIX) zgetrsf.$(SUFFIX) zgesvf.$(SUFFIX)  zpotrif.$(SUFFIX) \
 
-XBLASOBJS	+= \
+XBLASOBJS	+= 
+#	\
 	xgetf2f.$(SUFFIX) xgetrff.$(SUFFIX) xlauu2f.$(SUFFIX) xlauumf.$(SUFFIX) \
 	xpotf2f.$(SUFFIX) xpotrff.$(SUFFIX) xtrti2f.$(SUFFIX) xtrtrif.$(SUFFIX) \
 	xlaswpf.$(SUFFIX) xgetrsf.$(SUFFIX) xgesvf.$(SUFFIX)  xpotrif.$(SUFFIX) \
