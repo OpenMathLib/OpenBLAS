@@ -859,6 +859,10 @@
 
 .L50:
 	movl	N,  I
+	cmpl	$0, INCX
+	je  .L56
+	cmpl	$0, INCY
+	je  .L56
 	sarl	$2, I
 	jle	.L55
 	ALIGN_3
