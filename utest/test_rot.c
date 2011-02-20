@@ -32,9 +32,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common_utest.h"
 
-void test_drot_incx_0(void)
+void test_drot_inc_0(void)
 {
-	int i;
+	int i=0;
 	int N=4,incX=0,incY=0;
 	double c=0.25,s=0.5;
 	double x1[]={1.0,3.0,5.0,7.0};
@@ -53,9 +53,9 @@ void test_drot_incx_0(void)
 	}
 }
 
-void test_zdrot_incx_0(void)
+void test_zdrot_inc_0(void)
 {
-	int i;
+	int i=0;
 	int N=4,incX=0,incY=0;
 	double c=0.25,s=0.5;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
@@ -68,15 +68,15 @@ void test_zdrot_incx_0(void)
 	//reference
 	BLASFUNC_REF(zdrot)(&N,x2,&incX,y2,&incY,&c,&s);
 
-	for(i=0; i<N; i++){
+	for(i=0; i<2*N; i++){
 		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
 		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
 	}
 }
 
-void test_srot_incx_0(void)
+void test_srot_inc_0(void)
 {
-	int i;
+	int i=0;
 	int N=4,incX=0,incY=0;
 	float c=0.25,s=0.5;
 	float x1[]={1.0,3.0,5.0,7.0};
@@ -95,9 +95,9 @@ void test_srot_incx_0(void)
 	}
 }
 
-void test_csrot_incx_0(void)
+void test_csrot_inc_0(void)
 {
-	int i;
+	int i=0;
 	int N=4,incX=0,incY=0;
 	float c=0.25,s=0.5;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
@@ -110,7 +110,7 @@ void test_csrot_incx_0(void)
 	//reference
 	BLASFUNC_REF(csrot)(&N,x2,&incX,y2,&incY,&c,&s);
 
-	for(i=0; i<N; i++){
+	for(i=0; i<2*N; i++){
 		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
 		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
 	}

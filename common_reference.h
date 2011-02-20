@@ -43,16 +43,16 @@ void  BLASFUNC_REF(csrot) (blasint *, float  *, blasint *, float  *, blasint *, 
 void  BLASFUNC_REF(zdrot) (blasint *, double *, blasint *, double *, blasint *, double *, double *);
 void  BLASFUNC_REF(xqrot) (blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *);
 
-void    BLASFUNC_REF(sswap) (blasint *, float  *, blasint *, float  *, blasint *);
-void    BLASFUNC_REF(dswap) (blasint *, double *, blasint *, double *, blasint *);
-void    BLASFUNC_REF(qswap) (blasint *, xdouble *, blasint *, xdouble *, blasint *);
-void    BLASFUNC_REF(cswap) (blasint *, float  *, blasint *, float  *, blasint *);
-void    BLASFUNC_REF(zswap) (blasint *, double *, blasint *, double *, blasint *);
-void    BLASFUNC_REF(xswap) (blasint *, xdouble *, blasint *, xdouble *, blasint *);
+void BLASFUNC_REF(sswap) (blasint *, float  *, blasint *, float  *, blasint *);
+void BLASFUNC_REF(dswap) (blasint *, double *, blasint *, double *, blasint *);
+void BLASFUNC_REF(qswap) (blasint *, xdouble *, blasint *, xdouble *, blasint *);
+void BLASFUNC_REF(cswap) (blasint *, float  *, blasint *, float  *, blasint *);
+void BLASFUNC_REF(zswap) (blasint *, double *, blasint *, double *, blasint *);
+void BLASFUNC_REF(xswap) (blasint *, xdouble *, blasint *, xdouble *, blasint *);
 
-void    BLASFUNC_REF(saxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
-void    BLASFUNC_REF(daxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
-void    BLASFUNC_REF(caxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
-void    BLASFUNC_REF(zaxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
+void BLASFUNC_REF(saxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void BLASFUNC_REF(daxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
+void BLASFUNC_REF(caxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void BLASFUNC_REF(zaxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
 
 #endif

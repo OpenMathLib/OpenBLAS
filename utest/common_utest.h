@@ -39,10 +39,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CHECK_EPS 0.00002
 
 //Testcase list
-void test_drot_incx_0(void);
-void test_srot_incx_0(void);
-void test_zdrot_incx_0(void);
-void test_csrot_incx_0(void);
+void test_drot_inc_0(void);
+void test_srot_inc_0(void);
+void test_zdrot_inc_0(void);
+void test_csrot_inc_0(void);
 
 void test_dswap_inc_0(void);
 void test_zswap_inc_0(void);
