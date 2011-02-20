@@ -44,4 +44,9 @@ void test_srot_incx_0(void);
 void test_zdrot_incx_0(void);
 void test_csrot_incx_0(void);
 
+void test_dswap_inc_0(void);
+void test_zswap_inc_0(void);
+void test_sswap_inc_0(void);
+void test_cswap_inc_0(void);
+
 #endif
