@@ -49,4 +49,9 @@ void test_zswap_inc_0(void);
 void test_sswap_inc_0(void);
 void test_cswap_inc_0(void);
 
+void test_daxpy_inc_0(void);
+void test_zaxpy_inc_0(void);
+void test_saxpy_inc_0(void);
+void test_caxpy_inc_0(void);
+
 #endif

@@ -50,4 +50,9 @@ void    BLASFUNC_REF(cswap) (blasint *, float  *, blasint *, float  *, blasint *
 void    BLASFUNC_REF(zswap) (blasint *, double *, blasint *, double *, blasint *);
 void    BLASFUNC_REF(xswap) (blasint *, xdouble *, blasint *, xdouble *, blasint *);
 
+void    BLASFUNC_REF(saxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void    BLASFUNC_REF(daxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
+void    BLASFUNC_REF(caxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void    BLASFUNC_REF(zaxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
+
 #endif

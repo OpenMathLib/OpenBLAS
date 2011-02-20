@@ -5,7 +5,7 @@ include $(TOPDIR)/Makefile.system
 TARGET=openblas_utest
 CUNIT_LIB=/usr/local/lib/libcunit.a
 
-OBJS=main.o test_rot.o test_swap.o
+OBJS=main.o test_rot.o test_swap.o test_axpy.o
 
 all : run_test
 

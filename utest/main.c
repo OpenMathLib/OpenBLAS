@@ -47,6 +47,11 @@ CU_TestInfo test_level1[]={
 	{"Testing cswap with incx & incy == 0",test_cswap_inc_0},
 	{"Testing zswap with incx & incy == 0",test_zswap_inc_0},
 
+	{"Testing saxpy with incx & incy == 0",test_saxpy_inc_0},
+	{"Testing daxpy with incx & incy == 0",test_daxpy_inc_0},
+	{"Testing caxpy with incx & incy == 0",test_caxpy_inc_0},
+	{"Testing zaxpy with incx & incy == 0",test_zaxpy_inc_0},
+
 	CU_TEST_INFO_NULL,
 };
 
