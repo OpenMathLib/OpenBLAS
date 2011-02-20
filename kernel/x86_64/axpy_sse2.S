@@ -805,6 +805,12 @@
 .L40:
 	movq	Y, YY
 	movq	M,  %rax
+//If incx==0 || incy==0, avoid unloop.
+	cmpq	$0, INCX
+	je  .L46
+	cmpq	$0, INCY
+	je  .L46
+		
 	sarq	$3, %rax
 	jle	.L45
 	ALIGN_3
