@@ -89,7 +89,13 @@ VERSION = 0.1
 # UTEST_CHECK = 1
 
 # Common Optimization Flag; -O2 is enough.
+# DEBUG = 1
+
+ifeq ($(DEBUG), 1)
+COMMON_OPT += -g
+else
 COMMON_OPT += -O2
+endif
 
 # Profiling flags
 COMMON_PROF = -pg
