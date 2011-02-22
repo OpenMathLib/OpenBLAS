@@ -55,4 +55,9 @@ void BLASFUNC_REF(daxpy) (blasint *, double *, double *, blasint *, double *, bl
 void BLASFUNC_REF(caxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
 void BLASFUNC_REF(zaxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
 
+float   _Complex BLASFUNC_REF(cdotu)  (blasint *, float  *, blasint *, float  *, blasint *);
+float   _Complex BLASFUNC_REF(cdotc)  (blasint *, float  *, blasint *, float  *, blasint *);
+double  _Complex BLASFUNC_REF(zdotu)  (blasint *, double  *, blasint *, double  *, blasint *);
+double  _Complex BLASFUNC_REF(zdotc)  (blasint *, double  *, blasint *, double  *, blasint *);
+
 #endif

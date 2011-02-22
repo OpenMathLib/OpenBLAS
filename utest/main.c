@@ -52,6 +52,7 @@ CU_TestInfo test_level1[]={
 	{"Testing caxpy with incx || incy == 0",test_caxpy_inc_0},
 	{"Testing zaxpy with incx || incy == 0",test_zaxpy_inc_0},
 
+	{"Testing zdotu with n == 1",test_zdotu_n_1},
 	CU_TEST_INFO_NULL,
 };
 
