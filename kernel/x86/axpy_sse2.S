@@ -698,6 +698,12 @@
 .L40:
 	movl	Y, YY
 	movl	M,  %eax
+//If incx==0 || incy==0, avoid unloop.
+	cmpl	$0, INCX
+	je  .L46
+	cmpl	$0, INCY
+	je  .L46
+
 	sarl	$3, %eax
 	jle	.L45
 	ALIGN_3
