@@ -1440,6 +1440,12 @@
 .L50:
 	movl	M, %eax
 	movl	Y, YY
+//If incx==0 || incy==0, avoid unloop.
+	cmpl	$0, INCX
+	je  .L56
+	cmpl	$0, INCY
+	je  .L56
+
 	sarl	$3,   %eax
 	jle	.L55
 	ALIGN_3
