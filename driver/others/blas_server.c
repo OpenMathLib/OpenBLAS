@@ -525,7 +525,16 @@ int blas_thread_init(void){
       if (thread_timeout <  4) thread_timeout =  4;
       if (thread_timeout > 30) thread_timeout = 30;
       thread_timeout = (1 << thread_timeout);
-    }
+    }else{
+		p = getenv("GOTO_THREAD_TIMEOUT");
+		if (p) {
+			thread_timeout = atoi(p);
+			if (thread_timeout <  4) thread_timeout =  4;
+			if (thread_timeout > 30) thread_timeout = 30;
+			thread_timeout = (1 << thread_timeout);
+		}
+	}
+	
 
     for(i = 0; i < blas_num_threads - 1; i++){
 
@@ -788,6 +797,11 @@ void goto_set_num_threads(int num_threads) {
 
   blas_cpu_number  = num_threads;
 
+}
+
+void openblas_set_num_threads(int num_threads) {
+	goto_set_num_threads(num_threads);
+	
 }
 
 /* Compatible function with pthread_create / join */

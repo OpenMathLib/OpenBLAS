@@ -70,7 +70,7 @@ VERSION = 0.1
 # time out to improve performance. This number should be from 4 to 30
 # which corresponds to (1 << n) cycles. For example, if you set to 26,
 # thread will be running for (1 << 26) cycles(about 25ms on 3.0GHz
-# system). Also you can control this mumber by GOTO_THREAD_TIMEOUT
+# system). Also you can control this mumber by THREAD_TIMEOUT
 # CCOMMON_OPT	+= -DTHREAD_TIMEOUT=26
 
 # Using special device driver for mapping physically contigous memory

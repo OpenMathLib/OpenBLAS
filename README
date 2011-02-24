@@ -32,11 +32,19 @@ MIPS64:
 4.Usages
 Link with libopenblas.a or -lopenblas for shared library.
 
-Set the number of threads. for example,
+4.1 Set the number of threads with environment variables. for example,
 export OPENBLAS_NUM_THREADS=4
+ or
+export GOTO_NUM_THREADS=4
  or 
 export OMP_NUM_THREADS=4
-OPENBLAS_NUM_THREAD is prior to OMP_NUM_THREADS.
+
+The priorities are OPENBLAS_NUM_THREAD > GOTO_NUM_THREADS > OMP_NUM_THREADS.
+
+4.2 Set the number of threads with calling functions. for example,
+void goto_set_num_threads(int num_threads);
+or
+void openblas_set_num_threads(int num_threads);
 
 5.Report Bugs
 Please add a issue in https://github.com/xianyi/OpenBLAS/issues

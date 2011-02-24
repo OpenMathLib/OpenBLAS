@@ -231,6 +231,13 @@ int blas_get_cpu_number(void){
   p = getenv("OPENBLAS_NUM_THREADS");
   if (p) blas_goto_num = atoi(p);
   if (blas_goto_num < 0) blas_goto_num = 0;
+
+  if (blas_goto_num == 0) {
+	    p = getenv("GOTO_NUM_THREADS");
+		if (p) blas_goto_num = atoi(p);
+		if (blas_goto_num < 0) blas_goto_num = 0;
+  }
+  
 #endif
 
   blas_omp_num = 0;
