@@ -68,9 +68,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#undef  DEBUG
+//#undef  DEBUG
 
 #include "common.h"
+#include <errno.h>
 
 #ifdef OS_WINDOWS
 #define ALLOC_WINDOWS
@@ -386,11 +387,23 @@ static void *alloc_mmap(void *address){
 			 MMAP_ACCESS, MMAP_POLICY, -1, 0);
       
       if (map_address != (void *)-1) {
-	
+		  
 #ifdef OS_LINUX
-	my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
+#ifdef DEBUG
+		  int ret;
+		  ret=my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
+		  if(ret==-1){
+			  int errsv=errno;
+			  perror("alloc_mmap:");
+			  printf("error code=%d,\tmap_address=%lx\n",errsv,map_address);
+		  }
+
+#else
+		  my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
+#endif
 #endif
 
+	
 	allocsize = DGEMM_P * DGEMM_Q * sizeof(double);
 	
 	start   = (BLASULONG)map_address;
@@ -986,7 +999,7 @@ void *blas_memory_alloc(int procpos){
     memory[position].addr = map_address; 
 
 #ifdef DEBUG
-    printf("  Mapping Succeeded. %p(%d)\n", (void *)alloc_area[position], position);
+    printf("  Mapping Succeeded. %p(%d)\n", (void *)memory[position].addr, position);
 #endif
   }
  
@@ -1017,7 +1030,7 @@ void *blas_memory_alloc(int procpos){
 
 #ifdef DEBUG
   printf("Mapped   : %p  %3d\n\n",
-	  (void *)alloc_area[position], position);
+	  (void *)memory[position].addr, position);
 #endif  
   
   return (void *)memory[position].addr;
@@ -1060,7 +1073,7 @@ void blas_memory_free(void *free_area){
 
 #ifdef DEBUG
   for (position = 0; position < NUM_BUFFERS; position++) 
-    printf("%4ld  %p : %d\n", position, alloc_area[position], alloc_used[position]);
+    printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
 #endif
 
   return;

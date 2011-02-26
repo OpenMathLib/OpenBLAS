@@ -92,7 +92,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SHARE_NAME	"/sys/devices/system/cpu/cpu%d/cache/index%d/shared_cpu_map"
 #define NODE_DIR	"/sys/devices/system/node"
 
-#undef DEBUG
+//#undef DEBUG
 
 /* Private variables */
 typedef struct {
