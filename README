@@ -54,3 +54,6 @@ Optimization on ICT Loongson 3A CPU
 
 7.Contact
 OpenBLAS users mailing list: http://list.rdcps.ac.cn/mailman/listinfo/openblas
+
+8.ChangeLog
+Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD version.

@@ -1,0 +1,25 @@
+OpenBLAS ChangeLog
+====================================================================
+Version 0.1 (in development)
+26-Feb-2011
+
+common:
+	* Added DEBUG=1 rule in Makefile.rule to build debug version.
+	* Disable compiling quad precision in reference BLAS library(netlib BLAS).
+	* Added unit testcases in utest/ subdir. Used  CUnit framework.
+	* Supported OPENBLAS_* & GOTO_* environment variables (Pleas see README)
+	* Imported GotoBLAS2 1.13 BSD version
+
+x86/x86 64:
+	* Modified ?axpy functions to return same netlib BLAS results 
+	  when incx==0 or incy==0 (Refs issue #7 on github)
+	* Modified ?swap functions to return same netlib BLAS results 
+	  when incx==0 or incy==0 (Refs issue #6 on github)
+	* Modified ?rot functions to return same netlib BLAS results 
+	  when incx==0 or incy==0 (Refs issue #4 on github)
+	* Detect Intel Westmere to use Nehalem codes.
+	* Fixed a typo bug about compiling dynamic ARCH library.
+MIPS64:
+	* Improve daxpy performance on ICT Loongson 3A.
+	* Supported ICT Loongson 3A CPU (Refs issue #1 on github)
+====================================================================
