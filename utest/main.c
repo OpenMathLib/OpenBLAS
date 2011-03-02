@@ -33,12 +33,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <string.h>
 
-
 #include "common_utest.h"
 #include <CUnit/Basic.h>
 
 CU_TestInfo test_level1[]={
-	{"Testing drot when incx & incy == 0",test_drot_incx_0},
+	{"Testing srot when incx || incy == 0",test_srot_inc_0},
+	{"Testing drot when incx || incy == 0",test_drot_inc_0},
+	{"Testing csrot when incx || incy == 0",test_csrot_inc_0},
+	{"Testing zdrot when incx || incy == 0",test_zdrot_inc_0},
+
+	{"Testing sswap with incx || incy == 0",test_sswap_inc_0},
+	{"Testing dswap with incx || incy == 0",test_dswap_inc_0},
+	{"Testing cswap with incx || incy == 0",test_cswap_inc_0},
+	{"Testing zswap with incx || incy == 0",test_zswap_inc_0},
+
+	{"Testing saxpy with incx || incy == 0",test_saxpy_inc_0},
+	{"Testing daxpy with incx || incy == 0",test_daxpy_inc_0},
+	{"Testing caxpy with incx || incy == 0",test_caxpy_inc_0},
+	{"Testing zaxpy with incx || incy == 0",test_zaxpy_inc_0},
+
+	{"Testing zdotu with n == 1",test_zdotu_n_1},
 	CU_TEST_INFO_NULL,
 };
 
@@ -64,7 +78,9 @@ int main()
 	
 
 	
-
+	printf("Seting OK\n");
+	fflush(stdout);
+	
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 	

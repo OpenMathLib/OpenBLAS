@@ -972,8 +972,15 @@ int get_cpuname(void){
 	  return CPUTYPE_ATOM;
 	case 13:
 	  return CPUTYPE_DUNNINGTON;
-	break;
 	}
+	break;
+	  case  2:
+		  switch (model) {
+		  case 12:
+			  //Xeon Processor 5600 (Westmere-EP)
+			  return CPUTYPE_NEHALEM;
+		  }
+		  break;
       }
       break;
     case 0x7:
@@ -1289,8 +1296,16 @@ int get_coretype(void){
 	  return CORE_ATOM;
 	case 13:
 	  return CORE_DUNNINGTON;
-	break;
 	}
+		break;
+	  case  2:
+		  switch (model) {
+		  case 12:
+			  //Xeon Processor 5600 (Westmere-EP)
+			  return CORE_NEHALEM;
+		  }
+		  break;
+
       }
       case 15:
       if (model <= 0x2) return CORE_NORTHWOOD;

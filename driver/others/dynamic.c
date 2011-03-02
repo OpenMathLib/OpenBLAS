@@ -121,6 +121,11 @@ static gotoblas_t *get_coretype(void){
 	if ((model == 10) || (model == 11) || (model == 14) || (model == 15)) return &gotoblas_NEHALEM;
 	if (model == 12) return &gotoblas_ATOM;
 	return NULL;
+
+	  case 2:
+		  //Intel Xeon Processor 5600 (Westmere-EP)
+		  if (model == 12) return &gotoblas_NEHALEM;
+		  return NULL;
       }
       case 0xf:
       if (model <= 0x2) return &gotoblas_NORTHWOOD;

@@ -297,7 +297,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   printf("GEMM: SA .. %p  SB .. %p\n", sa, sb);
 #endif
 
-#ifdef DEBUG
+#ifdef TIMING
   innercost = 0;
   outercost = 0;
   kernelcost = 0;

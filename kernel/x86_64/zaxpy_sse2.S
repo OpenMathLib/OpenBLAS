@@ -1416,6 +1416,12 @@
 
 	movq	Y, YY
 	movq	M,  %rax
+//If incx==0 || incy==0, avoid unloop and jump to end.
+	cmpq	$0, INCX
+	je  .L58
+	cmpq	$0, INCY
+	je	.L58
+		
 	sarq	$3, %rax
 	jle	.L55
 
@@ -1769,6 +1775,7 @@
 	andq	$1, %rax
 	jle	.L999
 
+.L58:	
 	MOVDDUP( 0 * SIZE, X, %xmm0)
 	MOVDDUP( 1 * SIZE, X, %xmm1)
 
@@ -1781,6 +1788,9 @@
 
 	movlpd	%xmm8,   0 * SIZE(YY)
 	movhpd	%xmm8,   1 * SIZE(YY)
+		
+	decq %rax
+	jg	.L58
 	ALIGN_3
 
 .L999:

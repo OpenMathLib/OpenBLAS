@@ -1463,6 +1463,12 @@
 .L50:
 	movq	M, %rax
 	movq	Y, YY
+//If incx==0 || incy==0, avoid unloop.
+	cmpq	$0, INCX
+	je  .L56
+	cmpq	$0, INCY
+	je  .L56
+
 	sarq	$3,   %rax
 	jle	.L55
 	ALIGN_3

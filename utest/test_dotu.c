@@ -30,30 +30,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#ifndef COMMON_UTEST_H_
-#define COMMON_UTEST_H_
-#include <CUnit/CUnit.h>
+#include "common_utest.h"
+#include <complex.h>
 
-#include <common.h>
+void test_zdotu_n_1(void)
+{
+	int N=1,incX=1,incY=1;
+	double x1[]={1.0,1.0};
+	double y1[]={1.0,2.0};
+	double x2[]={1.0,1.0};
+	double y2[]={1.0,2.0};
+	double _Complex result1=0.0;
+	double _Complex result2=0.0;
+	//OpenBLAS
+	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
+	//reference
+	result2=BLASFUNC_REF(zdotu)(&N,x2,&incX,y2,&incY);
 
-#define CHECK_EPS 0.00002
+	CU_ASSERT_DOUBLE_EQUAL(creal(result1), creal(result2), CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(cimag(result1), cimag(result2), CHECK_EPS);
+//	printf("\%lf,%lf\n",creal(result1),cimag(result1));
+	
+}
 
-//Testcase list
-void test_drot_inc_0(void);
-void test_srot_inc_0(void);
-void test_zdrot_inc_0(void);
-void test_csrot_inc_0(void);
 
-void test_dswap_inc_0(void);
-void test_zswap_inc_0(void);
-void test_sswap_inc_0(void);
-void test_cswap_inc_0(void);
-
-void test_daxpy_inc_0(void);
-void test_zaxpy_inc_0(void);
-void test_saxpy_inc_0(void);
-void test_caxpy_inc_0(void);
-
-void test_zdotu_n_1(void);
-
-#endif

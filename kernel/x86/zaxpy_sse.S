@@ -2857,6 +2857,11 @@
 	unpcklps ALPHA_I, ALPHA_R
 	unpcklps %xmm5, ALPHA_I
 #endif
+//If incx==0 || incy==0, avoid unloop and jump to end.
+	cmpl	$0, INCX
+	je  .L200
+	cmpl	$0, INCY
+	je	.L200
 
 	movl	Y, YY
 
@@ -3090,8 +3095,41 @@
 	addps	%xmm1, %xmm4
 
 	movsd	%xmm4,   (Y)
+	jmp	.L999
 	ALIGN_3
 
+.L200:
+	movl    M, %eax
+	cmpl	$0, %eax
+	jle .L999
+	ALIGN_3
+
+.L201:
+	movsd	 (X), %xmm0
+
+#ifdef HAVE_SSE3
+	movshdup  %xmm0, %xmm1
+	movsldup  %xmm0, %xmm0
+#else
+	movaps	  %xmm0, %xmm1
+	shufps	  $0xa0, %xmm0, %xmm0
+	shufps	  $0xf5, %xmm1, %xmm1
+#endif
+
+	mulps	ALPHA_R, %xmm0
+	mulps	ALPHA_I, %xmm1
+
+	movsd	 (Y), %xmm4
+
+	addps	%xmm0, %xmm4
+	addps	%xmm1, %xmm4
+
+	movsd	%xmm4,   (Y)
+	
+	decl    %eax
+	jg  .L201
+
+	ALIGN_3
 .L999:
 	popl	%ebp
 	popl	%ebx

@@ -278,7 +278,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	//  fprintf(stderr, "A = %p  B = %p  C = %p\n\tlda = %ld  ldb = %ld ldc = %ld\n", a, b, c, lda, ldb, ldc);
 #endif
 
-#ifdef DEBUG
+#ifdef TIMING
   innercost = 0;
   outercost = 0;
   kernelcost = 0;

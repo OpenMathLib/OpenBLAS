@@ -887,6 +887,10 @@
 
 .L50:
 	movq	N,  %rax
+	cmpq	$0, INCX
+	je  .L56
+	cmpq	$0, INCY
+	je  .L56
 	sarq	$2, %rax
 	jle	.L55
 	ALIGN_3
