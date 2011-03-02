@@ -68,8 +68,9 @@ extern long int syscall (long int __sysno, ...);
 static inline int my_mbind(void *addr, unsigned long len, int mode,
 			   unsigned long *nodemask, unsigned long maxnode,
 			   unsigned flags) {
-  
-  return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
+//Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34
+	unsigned long null_nodemask=0;
+	return syscall(SYS_mbind, addr, len, mode, &null_nodemask, maxnode, flags);
 }
 
 static inline int my_set_mempolicy(int mode, const unsigned long *addr, unsigned long flag) {
