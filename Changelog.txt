@@ -13,6 +13,9 @@ common:
 	* Imported GotoBLAS2 1.13 BSD version
 
 x86/x86 64:
+	* On x86 32bits, gcc 4.4.3 generated wrong codes (movsd) from movlps 
+	  in zdot_sse2.S line 191. This would casue zdotu & zdotc failures.
+	  Instead,Walk around it. (Refs issue #8 #9 on github)
 	* Modified ?axpy functions to return same netlib BLAS results 
 	  when incx==0 or incy==0 (Refs issue #7 on github)
 	* Modified ?swap functions to return same netlib BLAS results 

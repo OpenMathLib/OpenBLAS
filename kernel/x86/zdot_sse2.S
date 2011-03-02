@@ -1188,8 +1188,8 @@
 	testl	$1, N
 	jle	.L48
 
-	movlps	-16 * SIZE(X), %xmm4
-	movlps	-16 * SIZE(Y), %xmm6
+	movlpd	-16 * SIZE(X), %xmm4
+	movlpd	-16 * SIZE(Y), %xmm6
 
 	pshufd	$0x4e,  %xmm6, %xmm3 
 	mulpd	%xmm4,  %xmm6
