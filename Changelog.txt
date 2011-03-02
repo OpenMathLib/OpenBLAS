@@ -4,6 +4,8 @@ Version 0.1 (in development)
 26-Feb-2011
 
 common:
+	* Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34. 
+	  Thank Mr.Ei-ji Nakama providing this patch. (Refs issue #12 on github)
 	* Added DEBUG=1 rule in Makefile.rule to build debug version.
 	* Disable compiling quad precision in reference BLAS library(netlib BLAS).
 	* Added unit testcases in utest/ subdir. Used  CUnit framework.
