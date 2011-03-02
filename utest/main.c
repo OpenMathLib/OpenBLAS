@@ -53,6 +53,8 @@ CU_TestInfo test_level1[]={
 	{"Testing zaxpy with incx || incy == 0",test_zaxpy_inc_0},
 
 	{"Testing zdotu with n == 1",test_zdotu_n_1},
+	{"Testing zdotu with input x & y offset == 1",test_zdotu_offset_1},
+	
 	CU_TEST_INFO_NULL,
 };
 

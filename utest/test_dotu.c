@@ -53,4 +53,23 @@ void test_zdotu_n_1(void)
 	
 }
 
+void test_zdotu_offset_1(void)
+{
+	int N=1,incX=1,incY=1;
+	double x1[]={1.0,2.0,3.0,4.0};
+	double y1[]={5.0,6.0,7.0,8.0};
+	double x2[]={1.0,2.0,3.0,4.0};
+	double y2[]={5.0,6.0,7.0,8.0};
+	double _Complex result1=0.0;
+	double _Complex result2=0.0;
+	//OpenBLAS
+	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
+	//reference
+	result2=BLASFUNC_REF(zdotu)(&N,x2+1,&incX,y2+1,&incY);
+
+	CU_ASSERT_DOUBLE_EQUAL(creal(result1), creal(result2), CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(cimag(result1), cimag(result2), CHECK_EPS);
+//	printf("\%lf,%lf\n",creal(result1),cimag(result1));
+	
+}
 
