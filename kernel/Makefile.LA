@@ -1,3 +1,4 @@
+ifneq ($(NO_LAPACK), 1)
 SBLASOBJS	+= sneg_tcopy$(TSUFFIX).$(SUFFIX) slaswp_ncopy$(TSUFFIX).$(SUFFIX)
 
 DBLASOBJS	+= dneg_tcopy$(TSUFFIX).$(SUFFIX) dlaswp_ncopy$(TSUFFIX).$(SUFFIX)
@@ -9,6 +10,8 @@ CBLASOBJS	+= cneg_tcopy$(TSUFFIX).$(SUFFIX) claswp_ncopy$(TSUFFIX).$(SUFFIX)
 ZBLASOBJS	+= zneg_tcopy$(TSUFFIX).$(SUFFIX) zlaswp_ncopy$(TSUFFIX).$(SUFFIX)
 
 XBLASOBJS	+= xneg_tcopy$(TSUFFIX).$(SUFFIX) xlaswp_ncopy$(TSUFFIX).$(SUFFIX)
+
+endif
 
 $(KDIR)sneg_tcopy$(TSUFFIX).$(SUFFIX) $(KDIR)sneg_tcopy$(TSUFFIX).$(PSUFFIX) : generic/neg_tcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $< -o $@

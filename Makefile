@@ -15,7 +15,10 @@ ifdef SANITY_CHECK
 BLASDIRS += reference
 endif
 
-SUBDIRS	= $(BLASDIRS) lapack
+SUBDIRS	= $(BLASDIRS)
+ifneq ($(NO_LAPACK), 1)
+SUBDIRS	+= lapack
+endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
@@ -149,9 +152,14 @@ hpl_p :
 	fi; \
 	done
 
+ifeq ($(NO_LAPACK), 1)
+netlib : 
+
+else
 netlib : lapack-3.1.1 patch.for_lapack-3.1.1 lapack-3.1.1/make.inc
 ifndef NOFORTRAN
 	-@$(MAKE) -C lapack-3.1.1 lapacklib
+endif
 endif
 
 prof_lapack : lapack-3.1.1 lapack-3.1.1/make.inc

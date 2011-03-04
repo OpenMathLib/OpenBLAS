@@ -75,13 +75,13 @@ libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
 	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
 
 libgoto2.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) > $(@F)
+	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) > $(@F)
 
 libgoto2_shared.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) > $(@F)
+	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
 
 libgoto_hpl.def : gensymbol
-	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) > $(@F)
+	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
 
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 	$(PREFIX)gcc $(CFLAGS) -all_load -dynamiclib -o $(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
@@ -162,23 +162,23 @@ static : ../$(LIBNAME)
 	rm -f goto.$(SUFFIX)
 
 linux.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) > $(@F)
+	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > $(@F)
 
 osx.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) > $(@F)
+	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > $(@F)
 
 aix.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) > $(@F)
+	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > $(@F)
 
 symbol.S : gensymbol
-	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS) > symbol.S
+	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > symbol.S
 
 test : linktest.c
 	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
 	rm -f linktest
 
 linktest.c : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) > linktest.c
+	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) > linktest.c
 
 clean ::
 	@rm -f *.def *.dylib __.SYMDEF*
