@@ -342,36 +342,45 @@ CBLASOBJS    = $(CBLAS1OBJS) $(CBLAS2OBJS) $(CBLAS3OBJS)
 ZBLASOBJS    = $(ZBLAS1OBJS) $(ZBLAS2OBJS) $(ZBLAS3OBJS)
 XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
-SBLASOBJS	+= \
+SLAPACKOBJS	= \
 	sgetf2.$(SUFFIX) sgetrf.$(SUFFIX) slauu2.$(SUFFIX) slauum.$(SUFFIX) \
 	spotf2.$(SUFFIX) spotrf.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) \
 	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
 
-DBLASOBJS	+= \
+DLAPACKOBJS	= \
 	dgetf2.$(SUFFIX) dgetrf.$(SUFFIX) dlauu2.$(SUFFIX) dlauum.$(SUFFIX) \
 	dpotf2.$(SUFFIX) dpotrf.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) \
 	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
 
-QBLASOBJS	+= \
+QLAPACKOBJS	= \
 	qgetf2.$(SUFFIX) qgetrf.$(SUFFIX) qlauu2.$(SUFFIX) qlauum.$(SUFFIX) \
 	qpotf2.$(SUFFIX) qpotrf.$(SUFFIX) qtrti2.$(SUFFIX) qtrtri.$(SUFFIX) \
 	qlaswp.$(SUFFIX) qgetrs.$(SUFFIX) qgesv.$(SUFFIX)  qpotri.$(SUFFIX) \
 
-CBLASOBJS	+= \
+CLAPACKOBJS	= \
 	cgetf2.$(SUFFIX) cgetrf.$(SUFFIX) clauu2.$(SUFFIX) clauum.$(SUFFIX) \
 	cpotf2.$(SUFFIX) cpotrf.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) \
 	claswp.$(SUFFIX) cgetrs.$(SUFFIX) cgesv.$(SUFFIX)  cpotri.$(SUFFIX) \
 
-ZBLASOBJS	+= \
+ZLAPACKOBJS	= \
 	zgetf2.$(SUFFIX) zgetrf.$(SUFFIX) zlauu2.$(SUFFIX) zlauum.$(SUFFIX) \
 	zpotf2.$(SUFFIX) zpotrf.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) \
 	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
 
-XBLASOBJS	+= \
+XLAPACKOBJS	= \
 	xgetf2.$(SUFFIX) xgetrf.$(SUFFIX) xlauu2.$(SUFFIX) xlauum.$(SUFFIX) \
 	xpotf2.$(SUFFIX) xpotrf.$(SUFFIX) xtrti2.$(SUFFIX) xtrtri.$(SUFFIX) \
 	xlaswp.$(SUFFIX) xgetrs.$(SUFFIX) xgesv.$(SUFFIX)  xpotri.$(SUFFIX) \
 
+ifneq ($(NO_LAPACK), 1)
+SBLASOBJS += $(SLAPACKOBJS)
+DBLASOBJS += $(DLAPACKOBJS)
+QBLASOBJS += $(QLAPACKOBJS)
+CBLASOBJS += $(CLAPACKOBJS)
+ZBLASOBJS += $(ZLAPACKOBJS)
+XBLASOBJS += $(XLAPACKOBJS)
+
+endif
 
 FUNCOBJS    = $(SBLASOBJS) $(DBLASOBJS) $(CBLASOBJS) $(ZBLASOBJS)
 

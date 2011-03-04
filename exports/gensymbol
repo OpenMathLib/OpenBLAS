@@ -298,7 +298,10 @@
 		zcgesv, zlag2c, clag2z,
 		);
 
-if (-d "../lapack-3.1.1") {
+if ($ARGV[5] == 1) {
+	#NO_LAPACK=1
+	@objs = (@blasobjs);
+} elsif (-d "../lapack-3.1.1") {
     @objs = (@blasobjs, @lapackobjs, @lapackobjs2);
 } else {
     @objs = (@blasobjs, @lapackobjs);
