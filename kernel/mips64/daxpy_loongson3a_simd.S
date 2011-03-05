@@ -72,7 +72,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 		
-#define PREFETCH_DISTANCE 1864
+#define PREFETCH_DISTANCE 2016
 		
 #define N	$4
 
@@ -195,11 +195,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	dsll	INCY, INCY, BASE_SHIFT
 
 	bne	INCY, TEMP, .L20
+
+	//Dose  the address of Y algin 16 bytes?  
+	andi	TEMP,  Y, 8
+	beq	TEMP, $0, .L10  
+	//Y unalgin. Compute this unalgined element.
+	LD	a1,  0 * SIZE(X)
+	LD	b1,  0 * SIZE(Y)
+
+	daddiu	X, X, SIZE
+	daddiu	Y, Y, SIZE
+
+	MADD	t1, b1, ALPHA, a1
+	daddiu	N, N, -1
+	
+	ST	t1, -1 * SIZE(Y)
+	blez	N, .L999
+	.align 5
+	
+.L10:
+
 	dsra	I, N, 4
 
 	blez	I, .L15
 	daddiu	I, I, -1
+	
+	//Y algin. We need test X address
+	//Dose  the address of X algin 16 bytes?  
+	andi	TEMP,  X, 8
+	bne	TEMP, $0, .L30  ///
+	.align 5
 
+.L11:
+	//X & Y algin
 	gsLQC1(X_BASE,A2,A1,0*SIZE)
 	gsLQC1(X_BASE,A4,A3,2*SIZE)
 	gsLQC1(X_BASE,A6,A5,4*SIZE)
@@ -345,7 +373,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	blez	I, .L999
 	NOP
-	.align	3
+	.align	5
 
 .L16:
 	LD	a1,  0 * SIZE(X)
@@ -382,6 +410,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	NOP
 	.align 5
 
+.L30:
+	//Y align, X unalign, INCX==INCY==1
+	//unloop 16
+	
+	LD	a1,  0 * SIZE(X)
+	gsLQC1(X_BASE,A3,A2,1*SIZE)
+	gsLQC1(X_BASE,A5,A4,3*SIZE)
+	gsLQC1(X_BASE,A7,A6,5*SIZE)
+	gsLQC1(X_BASE,A9,A8,7*SIZE)
+
+	gsLQC1(X_BASE,A11,A10,8*SIZE)
+	gsLQC1(X_BASE,A13,A12,11*SIZE)
+	gsLQC1(X_BASE,A15,A14,13*SIZE)
+	LD	a16,  15 * SIZE(X)
+		
+	gsLQC1(Y_BASE,B2,B1,0*SIZE)
+	gsLQC1(Y_BASE,B4,B3,2*SIZE)
+	gsLQC1(Y_BASE,B6,B5,4*SIZE)
+	gsLQC1(Y_BASE,B8,B7,6*SIZE)
+		
+	blez	I, .L13
+	NOP
+	.align 5
+	
+.L31:
+	MADD	t1, b1, ALPHA, a1	
+	MADD	t2, b2, ALPHA, a2
+	gsSQC1(Y_BASE, T2, T1, 0*SIZE)		
+	gsLQC1(Y_BASE,B2,B1,8*SIZE)
+
+	MADD	t3, b3, ALPHA, a3
+	MADD	t4, b4, ALPHA, a4
+	gsSQC1(Y_BASE, T4, T3, 2*SIZE)
+	gsLQC1(Y_BASE,B4,B3,10*SIZE)
+
+	PREFETCHD(PREFETCH_DISTANCE*SIZE(Y))
+	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(Y))
+
+	MADD	t1, b5, ALPHA, a5
+	MADD	t2, b6, ALPHA, a6
+	gsSQC1(Y_BASE, T2, T1, 4*SIZE)		
+	gsLQC1(Y_BASE,B6,B5,12*SIZE)
+
+	MADD	t3, b7, ALPHA, a7
+	MADD	t4, b8, ALPHA, a8
+	gsSQC1(Y_BASE, T4, T3, 6*SIZE)
+	gsLQC1(Y_BASE,B8,B7,14*SIZE)
+
+	PREFETCHD((PREFETCH_DISTANCE+8)*SIZE(Y))
+	PREFETCHD((PREFETCH_DISTANCE+12)*SIZE(Y))
+
+	MADD	t1, b1, ALPHA, a9	
+	MADD	t2, b2, ALPHA, a10
+	gsSQC1(Y_BASE, T2, T1, 8*SIZE)		
+	gsLQC1(Y_BASE,B2,B1,16*SIZE)
+
+	MADD	t3, b3, ALPHA, a11
+	MADD	t4, b4, ALPHA, a12
+	gsSQC1(Y_BASE, T4, T3, 10*SIZE)
+	gsLQC1(Y_BASE,B4,B3,18*SIZE)
+
+	PREFETCHD(PREFETCH_DISTANCE*SIZE(X))
+	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(X))
+
+	MADD	t1, b5, ALPHA, a13	
+	MADD	t2, b6, ALPHA, a14
+	gsSQC1(Y_BASE, T2, T1, 12*SIZE)		
+	gsLQC1(Y_BASE,B6,B5,20*SIZE)
+
+	MADD	t3, b7, ALPHA, a15
+	MADD	t4, b8, ALPHA, a16
+	gsSQC1(Y_BASE, T4, T3, 14*SIZE)
+	gsLQC1(Y_BASE,B8,B7,22*SIZE)
+		
+	PREFETCHD((PREFETCH_DISTANCE+8)*SIZE(X))
+	PREFETCHD((PREFETCH_DISTANCE+12)*SIZE(X))
+
+	LD	a1,  16 * SIZE(X)
+	gsLQC1(X_BASE,A3,A2,17*SIZE)
+	gsLQC1(X_BASE,A5,A4,19*SIZE)
+	gsLQC1(X_BASE,A7,A6,21*SIZE)
+	gsLQC1(X_BASE,A9,A8,23*SIZE)
+
+	gsLQC1(X_BASE,A11,A10,25*SIZE)
+	gsLQC1(X_BASE,A13,A12,27*SIZE)
+	gsLQC1(X_BASE,A15,A14,29*SIZE)
+	LD	a16,  31 * SIZE(X)
+
+	daddiu	I, I, -1
+	daddiu	Y, Y, 16 * SIZE
+		
+	daddiu	X, X, 16 * SIZE
+	bgtz	I, .L31
+		
+	//jump back to the remain loop process.
+	b	.L13
+	.align 5
+	
+//INCX!=1 or INCY != 1	
 .L20:
 	dsra	I, N, 3
 	move	YY, Y
@@ -538,7 +665,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	blez	I, .L999
 	NOP
-	.align	3
+	.align	5
 
 .L26:
 	LD	a1,  0 * SIZE(X)
