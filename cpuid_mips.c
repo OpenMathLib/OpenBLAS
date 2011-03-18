@@ -99,9 +99,22 @@ int detect(void){
 
   fclose(infile);
 
-  if (strstr(p, "Loongson-3A")) return CPU_LOONGSON3A;
-  else return CPU_SICORTEX;
-
+  if (strstr(p, "Loongson-3A")){
+    return CPU_LOONGSON3A;
+  }else if (strstr(p, "Loongson-3")){
+    infile = fopen("/proc/cpuinfo", "r");
+    while (fgets(buffer, sizeof(buffer), infile)){
+      if (!strncmp("system type", buffer, 11)){
+	p = strchr(buffer, ':') + 2;
+	break;
+      }
+    }
+    fclose(infile);
+    if (strstr(p, "loongson3a"))
+      return CPU_LOONGSON3A;
+  }else{
+    return CPU_SICORTEX;
+  }
 #endif
     return CPU_UNKNOWN;
 }
