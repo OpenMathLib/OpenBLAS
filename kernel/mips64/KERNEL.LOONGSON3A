@@ -1,0 +1,2 @@
+SAXPYKERNEL=axpy_loongson3a.S
+DAXPYKERNEL=daxpy_loongson3a_simd.S
