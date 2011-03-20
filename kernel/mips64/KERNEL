@@ -30,6 +30,7 @@ ifndef LSAME_KERNEL
 LSAME_KERNEL	= ../generic/lsame.c
 endif
 
+ifndef SGEMMKERNEL
 SGEMMKERNEL    =  gemm_kernel.S
 SGEMMINCOPY    = ../generic/gemm_ncopy_2.c
 SGEMMITCOPY    = ../generic/gemm_tcopy_2.c
@@ -39,6 +40,9 @@ SGEMMINCOPYOBJ =  sgemm_incopy.o
 SGEMMITCOPYOBJ =  sgemm_itcopy.o
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
+endif
+
+ifndef DGEMMKERNEL
 DGEMMKERNEL    =  gemm_kernel.S
 DGEMMINCOPY    = ../generic/gemm_ncopy_2.c
 DGEMMITCOPY    = ../generic/gemm_tcopy_2.c
@@ -48,6 +52,9 @@ DGEMMINCOPYOBJ =  dgemm_incopy.o
 DGEMMITCOPYOBJ =  dgemm_itcopy.o
 DGEMMONCOPYOBJ =  dgemm_oncopy.o
 DGEMMOTCOPYOBJ =  dgemm_otcopy.o
+endif
+
+ifndef CGEMMKERNEL
 CGEMMKERNEL    =  zgemm_kernel.S
 CGEMMINCOPY    = ../generic/zgemm_ncopy_1.c
 CGEMMITCOPY    = ../generic/zgemm_tcopy_1.c
@@ -57,6 +64,9 @@ CGEMMINCOPYOBJ =  cgemm_incopy.o
 CGEMMITCOPYOBJ =  cgemm_itcopy.o
 CGEMMONCOPYOBJ =  cgemm_oncopy.o
 CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+endif
+
+ifndef ZGEMMKERNEL
 ZGEMMKERNEL    =  zgemm_kernel.S
 ZGEMMINCOPY    = ../generic/zgemm_ncopy_1.c
 ZGEMMITCOPY    = ../generic/zgemm_tcopy_1.c
@@ -66,11 +76,20 @@ ZGEMMINCOPYOBJ =  zgemm_incopy.o
 ZGEMMITCOPYOBJ =  zgemm_itcopy.o
 ZGEMMONCOPYOBJ =  zgemm_oncopy.o
 ZGEMMOTCOPYOBJ =  zgemm_otcopy.o
+endif
 
+ifndef SGEMM_BETA
 SGEMM_BETA = ../generic/gemm_beta.c
+endif
+ifndef DGEMM_BETA
 DGEMM_BETA = ../generic/gemm_beta.c
+endif
+ifndef CGEMM_BETA
 CGEMM_BETA = ../generic/zgemm_beta.c
+endif
+ifndef ZGEMM_BETA
 ZGEMM_BETA = ../generic/zgemm_beta.c
+endif
 
 STRSMKERNEL_LN	=  trsm_kernel_LN.S
 STRSMKERNEL_LT	=  trsm_kernel_LT.S

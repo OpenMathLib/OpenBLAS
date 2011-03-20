@@ -95,7 +95,8 @@ VERSION = 0.1
 # DEBUG = 1
 
 ifeq ($(DEBUG), 1)
-COMMON_OPT += -g -DDEBUG
+COMMON_OPT += -g
+# -DDEBUG
 else
 COMMON_OPT += -O2
 endif

@@ -72,7 +72,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 		
-#define PREFETCH_DISTANCE 48
+#define PREFETCH_DISTANCE 2016
 		
 #define N	$4
 
@@ -98,24 +98,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define a7	$f6
 #define a8	$f7
 
-#define b1	$f8
-#define b2	$f9
-#define b3	$f10
-#define b4	$f11
-#define b5	$f12
-#define b6	$f13
-#define b7	$f14
-#define b8	$f17
+#define a9	$f8
+#define a10	$f9
+#define a11	$f10
+#define a12	$f11
+#define a13	$f12
+#define a14	$f13
+#define a15	$f14
+#define a16	$f17
 
 #define t1	$f18
 #define t2	$f19
 #define t3	$f20
 #define t4	$f21
 
-#define t5	$f22
-#define t6	$f23
-#define t7	$f24
-#define t8	$f25
+#define b1	$f22
+#define b2	$f23
+#define b3	$f24
+#define b4	$f25
+
+#define b5	$f26
+#define b6	$f27
+#define b7	$f28
+#define b8	$f29
 
 
 #define A1	 0
@@ -127,24 +132,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define A7	 6
 #define A8	 7
 
-#define B1	 8
-#define B2	 9
-#define B3	 10
-#define B4	 11
-#define B5	 12
-#define B6	 13
-#define B7	 14
-#define B8	 17
+#define A9	 8
+#define A10	 9
+#define A11	 10
+#define A12	 11
+#define A13	 12
+#define A14	 13
+#define A15	 14
+#define A16	 17
 
 #define T1	 18
 #define T2	 19
 #define T3	 20
 #define T4	 21
 
-#define T5	 22
-#define T6	 23
-#define T7	 24
-#define T8	 25
+#define B1	 22
+#define B2	 23
+#define B3	 24
+#define B4	 25
+
+#define B5	 26
+#define B6	 27
+#define B7	 28
+#define B8	 29
 
 #define X_BASE 8
 #define Y_BASE 10
@@ -158,14 +168,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 	
 #ifndef __64BIT__
-	daddiu	$sp, $sp, -16
+	daddiu	$sp, $sp, -40
 	sdc1	$f20, 0($sp)
-	sdc1	$f21, 8($sp)
+	sdc1	$f22, 8($sp)
+	sdc1	$f24, 16($sp)
+	sdc1	$f26, 24($sp)
+	sdc1	$f28, 32($sp)
+#else
+	daddiu	$sp, $sp, -48
+	sdc1	$f24, 0($sp)
+	sdc1	$f25, 8($sp)
+	sdc1	$f26, 16($sp)
+	sdc1	$f27, 24($sp)
+	sdc1	$f28, 32($sp)
+	sdc1	$f29, 40($sp)
 #endif
 
-	daddiu	$sp, $sp, -16
-	sdc1	t7, 0($sp)
-	sdc1	t8, 8($sp)
 
 	
 	li	TEMP, SIZE
@@ -177,173 +195,185 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	dsll	INCY, INCY, BASE_SHIFT
 
 	bne	INCY, TEMP, .L20
-	dsra	I, N, 3
+
+	//Dose  the address of Y algin 16 bytes?  
+	andi	TEMP,  Y, 8
+	beq	TEMP, $0, .L10  
+	//Y unalgin. Compute this unalgined element.
+	LD	a1,  0 * SIZE(X)
+	LD	b1,  0 * SIZE(Y)
+
+	daddiu	X, X, SIZE
+	daddiu	Y, Y, SIZE
+
+	MADD	t1, b1, ALPHA, a1
+	daddiu	N, N, -1
+	
+	ST	t1, -1 * SIZE(Y)
+	blez	N, .L999
+	.align 5
+	
+.L10:
+
+	dsra	I, N, 4
 
 	blez	I, .L15
 	daddiu	I, I, -1
+	
+	//Y algin. We need test X address
+	//Dose  the address of X algin 16 bytes?  
+	andi	TEMP,  X, 8
+	bne	TEMP, $0, .L30  ///
+	.align 5
 
-	gsLQC1(X_BASE,A2,A1,0*SIZE)
-	gsLQC1(X_BASE,A4,A3,2*SIZE)
-	gsLQC1(X_BASE,A6,A5,4*SIZE)
-	gsLQC1(X_BASE,A8,A7,6*SIZE)
-/*	LD	a1,  0 * SIZE(X)
-	LD	a2,  1 * SIZE(X)
-	LD	a3,  2 * SIZE(X)
-	LD	a4,  3 * SIZE(X)
-	LD	a5,  4 * SIZE(X)
-	LD	a6,  5 * SIZE(X)
-	LD	a7,  6 * SIZE(X)
-	LD	a8,  7 * SIZE(X)
-*/
-	gsLQC1(Y_BASE,B2,B1,0*SIZE)
-	gsLQC1(Y_BASE,B4,B3,2*SIZE)
-	gsLQC1(Y_BASE,B6,B5,4*SIZE)
-	gsLQC1(Y_BASE,B8,B7,6*SIZE)
-/*		
-	LD	b1,  0 * SIZE(Y)
-	LD	b2,  1 * SIZE(Y)
-	LD	b3,  2 * SIZE(Y)
-	LD	b4,  3 * SIZE(Y)
-	LD	b5,  4 * SIZE(Y)
-	LD	b6,  5 * SIZE(Y)
-	LD	b7,  6 * SIZE(Y)
-	LD	b8,  7 * SIZE(Y)
-*/		
+.L11:
+	//X & Y algin
+	gsLQC1(X_BASE,A2,A1,0)
+	gsLQC1(X_BASE,A4,A3,1)
+	gsLQC1(X_BASE,A6,A5,2)
+	gsLQC1(X_BASE,A8,A7,3)
+
+	gsLQC1(X_BASE,A10,A9,4)
+	gsLQC1(X_BASE,A12,A11,5)
+	gsLQC1(X_BASE,A14,A13,6)
+	gsLQC1(X_BASE,A16,A15,7)
+
+	gsLQC1(Y_BASE,B2,B1,0)
+	gsLQC1(Y_BASE,B4,B3,1)
+	gsLQC1(Y_BASE,B6,B5,2)
+	gsLQC1(Y_BASE,B8,B7,3)
+		
 	blez	I, .L13
 	NOP
 	.align 5
 
 .L12:
-
-
 		
 	MADD	t1, b1, ALPHA, a1	
 	MADD	t2, b2, ALPHA, a2
-	PREFETCHD(PREFETCH_DISTANCE*SIZE(X))
-	gsLQC1(Y_BASE,B2,B1,8*SIZE)
+	gsSQC1(Y_BASE, T2, T1, 0)		
+	gsLQC1(Y_BASE,B2,B1,4)
 
 	MADD	t3, b3, ALPHA, a3
 	MADD	t4, b4, ALPHA, a4
-	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(X))
-	gsLQC1(Y_BASE,B4,B3,10*SIZE)
+	gsSQC1(Y_BASE, T4, T3, 1)
+	gsLQC1(Y_BASE,B4,B3,5)
 
-
-
-	MADD	t5, b5, ALPHA, a5
-	MADD	t6, b6, ALPHA, a6
 	PREFETCHD(PREFETCH_DISTANCE*SIZE(Y))
-	gsLQC1(Y_BASE,B6,B5,12*SIZE)
-	
-	MADD	t7, b7, ALPHA, a7
-	MADD	t8, b8, ALPHA, a8
 	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(Y))
-	gsLQC1(Y_BASE,B8,B7,14*SIZE)
 
+	MADD	t1, b5, ALPHA, a5
+	MADD	t2, b6, ALPHA, a6
+	gsSQC1(Y_BASE, T2, T1, 2)		
+	gsLQC1(Y_BASE,B6,B5,6)
 
-/*	LD	b1,  8 * SIZE(Y)
-	LD	b2,  9 * SIZE(Y)
-*/
+	MADD	t3, b7, ALPHA, a7
+	MADD	t4, b8, ALPHA, a8
+	gsSQC1(Y_BASE, T4, T3, 3)
+	gsLQC1(Y_BASE,B8,B7, 7)
 
-	
+	PREFETCHD((PREFETCH_DISTANCE+8)*SIZE(Y))
+	PREFETCHD((PREFETCH_DISTANCE+12)*SIZE(Y))
 
+	MADD	t1, b1, ALPHA, a9	
+	MADD	t2, b2, ALPHA, a10
+	gsSQC1(Y_BASE, T2, T1, 4)		
+	gsLQC1(Y_BASE,B2,B1,8)
+
+	MADD	t3, b3, ALPHA, a11
+	MADD	t4, b4, ALPHA, a12
+	gsSQC1(Y_BASE, T4, T3, 5)
+	gsLQC1(Y_BASE,B4,B3,9)
+
+	PREFETCHD(PREFETCH_DISTANCE*SIZE(X))
+	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(X))
+
+	MADD	t1, b5, ALPHA, a13	
+	MADD	t2, b6, ALPHA, a14
+	gsSQC1(Y_BASE, T2, T1, 6)		
+	gsLQC1(Y_BASE,B6,B5,10)
+
+	MADD	t3, b7, ALPHA, a15
+	MADD	t4, b8, ALPHA, a16
+	gsSQC1(Y_BASE, T4, T3, 7)
+	gsLQC1(Y_BASE,B8,B7,11)
 		
+	PREFETCHD((PREFETCH_DISTANCE+8)*SIZE(X))
+	PREFETCHD((PREFETCH_DISTANCE+12)*SIZE(X))
 
-	
-	
+	gsLQC1(X_BASE,A2,A1,8)
+	gsLQC1(X_BASE,A4,A3,9)
+	gsLQC1(X_BASE,A6,A5,10)
+	gsLQC1(X_BASE,A8,A7,11)
 
-
-/*
-	LD	b3, 10 * SIZE(Y)
-	LD	b4, 11 * SIZE(Y)
-*/
-	gsLQC1(X_BASE,A2,A1,8*SIZE)
-	gsLQC1(X_BASE,A4,A3,10*SIZE)
-	gsLQC1(X_BASE,A6,A5,12*SIZE)
-	gsLQC1(X_BASE,A8,A7,14*SIZE)
-
-/*
-	LD	a1,  8 * SIZE(X)
-	LD	a2,  9 * SIZE(X)
-	LD	a3, 10 * SIZE(X)
-	LD	a4, 11 * SIZE(X)
-*/
-
-/*		
-	ST	t1,  0 * SIZE(Y)
-	ST	t2,  1 * SIZE(Y)
-	ST	t3,  2 * SIZE(Y)
-	ST	t4,  3 * SIZE(Y)
-*/
+	gsLQC1(X_BASE,A10,A9,12)
+	gsLQC1(X_BASE,A12,A11,13)
+	gsLQC1(X_BASE,A14,A13,14)
+	gsLQC1(X_BASE,A16,A15,15)
 
 
-
-
-
-
-/*
-	LD	b5, 12 * SIZE(Y)
-	LD	b6, 13 * SIZE(Y)
-*/		
-
-	
-/*
-	LD	b7, 14 * SIZE(Y)
-	LD	b8, 15 * SIZE(Y)		
-*/
-		
-/*
-	LD	a5, 12 * SIZE(X)
-	LD	a6, 13 * SIZE(X)
-	LD	a7, 14 * SIZE(X)
-	LD	a8, 15 * SIZE(X)
-*/
-	gsSQC1(Y_BASE, T2, T1, 0*SIZE)
-	gsSQC1(Y_BASE, T4, T3, 2*SIZE)
-	gsSQC1(Y_BASE, T6, T5, 4*SIZE)
-	gsSQC1(Y_BASE, T8, T7, 6*SIZE)
-/*
-	ST	t1,  4 * SIZE(Y)
-	ST	t2,  5 * SIZE(Y)
-	ST	t3,  6 * SIZE(Y)
-	ST	t4,  7 * SIZE(Y)
-*/
 	daddiu	I, I, -1
-	daddiu	Y, Y, 8 * SIZE
-
+	daddiu	Y, Y, 16 * SIZE
+		
+	daddiu	X, X, 16 * SIZE
 	bgtz	I, .L12
-	daddiu	X, X, 8 * SIZE
+
 	.align 5
 
 .L13:
-	MADD	t1, b1, ALPHA, a1
+
+	MADD	t1, b1, ALPHA, a1	
 	MADD	t2, b2, ALPHA, a2
+	gsSQC1(Y_BASE, T2, T1, 0)
+	gsLQC1(Y_BASE,B2,B1,4)
+
 	MADD	t3, b3, ALPHA, a3
 	MADD	t4, b4, ALPHA, a4
+	gsSQC1(Y_BASE, T4, T3, 1)
+	gsLQC1(Y_BASE,B4,B3,5)
 
-	ST	t1,  0 * SIZE(Y)
+
 	MADD	t1, b5, ALPHA, a5
-	ST	t2,  1 * SIZE(Y)
 	MADD	t2, b6, ALPHA, a6
-	ST	t3,  2 * SIZE(Y)
+	gsSQC1(Y_BASE, T2, T1, 2)
+	gsLQC1(Y_BASE,B6,B5,6)
+
 	MADD	t3, b7, ALPHA, a7
-	ST	t4,  3 * SIZE(Y)
 	MADD	t4, b8, ALPHA, a8
+	gsSQC1(Y_BASE, T4, T3, 3)
+	gsLQC1(Y_BASE,B8,B7,7)
 
-	ST	t1,  4 * SIZE(Y)
-	ST	t2,  5 * SIZE(Y)
-	ST	t3,  6 * SIZE(Y)
-	ST	t4,  7 * SIZE(Y)
 
-	daddiu	X, X, 8 * SIZE
-	daddiu	Y, Y, 8 * SIZE
+	MADD	t1, b1, ALPHA, a9	
+	MADD	t2, b2, ALPHA, a10
+	gsSQC1(Y_BASE, T2, T1, 4)
+
+
+	MADD	t3, b3, ALPHA, a11
+	MADD	t4, b4, ALPHA, a12
+	gsSQC1(Y_BASE, T4, T3, 5)
+
+
+	MADD	t1, b5, ALPHA, a13	
+	MADD	t2, b6, ALPHA, a14
+	gsSQC1(Y_BASE, T2, T1, 6)
+
+
+	MADD	t3, b7, ALPHA, a15
+	MADD	t4, b8, ALPHA, a16
+	gsSQC1(Y_BASE, T4, T3, 7)
+
+
+	daddiu	X, X, 16 * SIZE
+	daddiu	Y, Y, 16 * SIZE
 	.align 5
 
 .L15:
-	andi	I,  N, 7
+	andi	I,  N, 15
 
 	blez	I, .L999
 	NOP
-	.align	3
+	.align	5
 
 .L16:
 	LD	a1,  0 * SIZE(X)
@@ -358,20 +388,178 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	bgtz	I, .L16
 	ST	t1, -1 * SIZE(Y)
 
-	ldc1	t7, 0($sp)
-	ldc1	t8, 8($sp)
-	daddiu	$sp, $sp, 16
 
 #ifndef __64BIT__
 	ldc1	$f20, 0($sp)
-	ldc1	$f21, 8($sp)
-	daddiu	$sp, $sp, 16
+	ldc1	$f22, 8($sp)
+	ldc1	$f24, 16($sp)
+	ldc1	$f26, 24($sp)
+	ldc1	$f28, 32($sp)
+	daddiu	$sp, $sp, 40
+#else
+	ldc1	$f24, 0($sp)
+	ldc1	$f25, 8($sp)
+	ldc1	$f26, 16($sp)
+	ldc1	$f27, 24($sp)
+	ldc1	$f28, 32($sp)
+	ldc1	$f29, 40($sp)
+	daddiu	$sp, $sp, 48
 #endif
 
 	j	$31
 	NOP
 	.align 5
 
+.L30:
+	//Y align, X unalign, INCX==INCY==1
+	//unloop 16
+	
+	LD	a1,  0 * SIZE(X)
+	daddiu	X, X, SIZE
+	gsLQC1(X_BASE,A3,A2,0)
+	gsLQC1(X_BASE,A5,A4,1)
+	gsLQC1(X_BASE,A7,A6,2)
+	gsLQC1(X_BASE,A9,A8,3)
+
+	gsLQC1(X_BASE,A11,A10,4)
+	gsLQC1(X_BASE,A13,A12,5)
+	gsLQC1(X_BASE,A15,A14,6)
+	LD	a16,  14 * SIZE(X)
+
+		
+	gsLQC1(Y_BASE,B2,B1,0)
+	gsLQC1(Y_BASE,B4,B3,1)
+	gsLQC1(Y_BASE,B6,B5,2)
+	gsLQC1(Y_BASE,B8,B7,3)
+		
+	blez	I, .L32
+	NOP
+	.align 5
+	
+.L31:
+	MADD	t1, b1, ALPHA, a1	
+	MADD	t2, b2, ALPHA, a2
+	gsSQC1(Y_BASE, T2, T1, 0)
+	gsLQC1(Y_BASE,B2,B1,4)
+
+	MADD	t3, b3, ALPHA, a3
+	MADD	t4, b4, ALPHA, a4
+	gsSQC1(Y_BASE, T4, T3, 1)
+	gsLQC1(Y_BASE,B4,B3,5)
+
+	PREFETCHD(PREFETCH_DISTANCE*SIZE(Y))
+	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(Y))
+
+	MADD	t1, b5, ALPHA, a5
+	MADD	t2, b6, ALPHA, a6
+	gsSQC1(Y_BASE, T2, T1, 2)
+	gsLQC1(Y_BASE,B6,B5,6)
+
+	MADD	t3, b7, ALPHA, a7
+	MADD	t4, b8, ALPHA, a8
+	gsSQC1(Y_BASE, T4, T3, 3)
+	gsLQC1(Y_BASE,B8,B7,7)
+
+	PREFETCHD((PREFETCH_DISTANCE+8)*SIZE(Y))
+	PREFETCHD((PREFETCH_DISTANCE+12)*SIZE(Y))
+
+	MADD	t1, b1, ALPHA, a9	
+	MADD	t2, b2, ALPHA, a10
+	gsSQC1(Y_BASE, T2, T1, 4)
+	gsLQC1(Y_BASE,B2,B1,8)
+
+	MADD	t3, b3, ALPHA, a11
+	MADD	t4, b4, ALPHA, a12
+	gsSQC1(Y_BASE, T4, T3, 5)
+	gsLQC1(Y_BASE,B4,B3,9)
+
+	PREFETCHD(PREFETCH_DISTANCE*SIZE(X))
+	PREFETCHD((PREFETCH_DISTANCE+4)*SIZE(X))
+
+	MADD	t1, b5, ALPHA, a13	
+	MADD	t2, b6, ALPHA, a14
+	gsSQC1(Y_BASE, T2, T1, 6)
+	gsLQC1(Y_BASE,B6,B5,10)
+
+	MADD	t3, b7, ALPHA, a15
+	MADD	t4, b8, ALPHA, a16
+	gsSQC1(Y_BASE, T4, T3, 7)
+	gsLQC1(Y_BASE,B8,B7,11)
+		
+	PREFETCHD((PREFETCH_DISTANCE+8)*SIZE(X))
+	PREFETCHD((PREFETCH_DISTANCE+12)*SIZE(X))
+
+	LD	a1,  15 * SIZE(X)
+	gsLQC1(X_BASE,A3,A2,8)
+	gsLQC1(X_BASE,A5,A4,9)
+	gsLQC1(X_BASE,A7,A6,10)
+	gsLQC1(X_BASE,A9,A8,11)
+
+	gsLQC1(X_BASE,A11,A10,12)
+	gsLQC1(X_BASE,A13,A12,13)
+	gsLQC1(X_BASE,A15,A14,14)
+	LD	a16,  30 * SIZE(X)
+
+	daddiu	I, I, -1
+	daddiu	Y, Y, 16 * SIZE
+		
+	daddiu	X, X, 16 * SIZE
+	bgtz	I, .L31
+	
+	.align 5
+//Loop end:
+.L32:
+	
+	MADD	t1, b1, ALPHA, a1	
+	MADD	t2, b2, ALPHA, a2
+	gsSQC1(Y_BASE, T2, T1, 0)
+	gsLQC1(Y_BASE,B2,B1,4)
+
+	MADD	t3, b3, ALPHA, a3
+	MADD	t4, b4, ALPHA, a4
+	gsSQC1(Y_BASE, T4, T3, 1)
+	gsLQC1(Y_BASE,B4,B3,5)
+
+
+	MADD	t1, b5, ALPHA, a5
+	MADD	t2, b6, ALPHA, a6
+	gsSQC1(Y_BASE, T2, T1, 2)
+	gsLQC1(Y_BASE,B6,B5,6)
+
+	MADD	t3, b7, ALPHA, a7
+	MADD	t4, b8, ALPHA, a8
+	gsSQC1(Y_BASE, T4, T3, 3)
+	gsLQC1(Y_BASE,B8,B7,7)
+
+
+	MADD	t1, b1, ALPHA, a9	
+	MADD	t2, b2, ALPHA, a10
+	gsSQC1(Y_BASE, T2, T1, 4)
+
+
+	MADD	t3, b3, ALPHA, a11
+	MADD	t4, b4, ALPHA, a12
+	gsSQC1(Y_BASE, T4, T3, 5)
+
+
+	MADD	t1, b5, ALPHA, a13	
+	MADD	t2, b6, ALPHA, a14
+	gsSQC1(Y_BASE, T2, T1, 6)
+
+
+	MADD	t3, b7, ALPHA, a15
+	MADD	t4, b8, ALPHA, a16
+	gsSQC1(Y_BASE, T4, T3, 7)
+
+
+	daddiu	X, X, 15 * SIZE
+	daddiu	Y, Y, 16 * SIZE
+
+	//jump back to the remain process.
+	b	.L15
+	.align 5
+	
+//INCX!=1 or INCY != 1	
 .L20:
 	dsra	I, N, 3
 	move	YY, Y
@@ -528,7 +716,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	blez	I, .L999
 	NOP
-	.align	3
+	.align	5
 
 .L26:
 	LD	a1,  0 * SIZE(X)
@@ -545,15 +733,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	.align 5
 
 .L999:
-	
-	ldc1	t7, 0($sp)
-	ldc1	t8, 8($sp)
-	daddiu	$sp, $sp, 16
 
 #ifndef __64BIT__
 	ldc1	$f20, 0($sp)
-	ldc1	$f21, 8($sp)
-	daddiu	$sp, $sp, 16
+	ldc1	$f22, 8($sp)
+	ldc1	$f24, 16($sp)
+	ldc1	$f26, 24($sp)
+	ldc1	$f28, 32($sp)
+	daddiu	$sp, $sp, 40
+#else
+	ldc1	$f24, 0($sp)
+	ldc1	$f25, 8($sp)
+	ldc1	$f26, 16($sp)
+	ldc1	$f27, 24($sp)
+	ldc1	$f28, 32($sp)
+	ldc1	$f29, 40($sp)
+	daddiu	$sp, $sp, 48
 #endif
 
 	j	$31
