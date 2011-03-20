@@ -1,6 +1,6 @@
 OpenBLAS ChangeLog
 ====================================================================
-Version 0.1 (in development)
+Version 0.1 alpha1
 20-Mar-2011
 
 common:
