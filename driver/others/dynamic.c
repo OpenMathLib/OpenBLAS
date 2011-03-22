@@ -123,6 +123,11 @@ static gotoblas_t *get_coretype(void){
 	return NULL;
 
 	  case 2:
+		  //Intel Core (Clarkdale) / Core (Arrandale)
+		  // Pentium (Clarkdale) / Pentium Mobile (Arrandale)
+		  // Xeon (Clarkdale), 32nm
+		  if (model ==  5) return &gotoblas_NEHALEM;
+		  
 		  //Intel Xeon Processor 5600 (Westmere-EP)
 		  if (model == 12) return &gotoblas_NEHALEM;
 		  return NULL;
