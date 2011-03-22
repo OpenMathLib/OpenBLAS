@@ -1305,6 +1305,11 @@ int get_coretype(void){
 		break;
 	  case  2:
 		  switch (model) {
+		  case 5:
+			  //Intel Core (Clarkdale) / Core (Arrandale) 
+			  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
+			  // Xeon (Clarkdale), 32nm
+			  return CORE_NEHALEM;
 		  case 12:
 			  //Xeon Processor 5600 (Westmere-EP)
 			  return CORE_NEHALEM;
