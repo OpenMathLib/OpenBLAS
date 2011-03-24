@@ -30,6 +30,10 @@ int main(int argc, char **argv) {
     printf("#define DLOCAL_BUFFER_SIZE\t%ld\n", (DGEMM_DEFAULT_Q * DGEMM_DEFAULT_UNROLL_N * 2 * 1 *  sizeof(double)));
     printf("#define CLOCAL_BUFFER_SIZE\t%ld\n", (CGEMM_DEFAULT_Q * CGEMM_DEFAULT_UNROLL_N * 4 * 2 *  sizeof(float)));
     printf("#define ZLOCAL_BUFFER_SIZE\t%ld\n", (ZGEMM_DEFAULT_Q * ZGEMM_DEFAULT_UNROLL_N * 2 * 2 *  sizeof(double)));
+
+#ifdef USE64BITINT
+	printf("#define USE64BITINT\n");
+#endif
   }
 
   return 0;

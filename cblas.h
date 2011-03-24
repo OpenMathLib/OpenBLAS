@@ -1,6 +1,9 @@
 #ifndef CBLAS_H
 #define CBLAS_H
 
+#include <stddef.h>
+#include "common.h"
+
 #define CBLAS_INDEX size_t
 
 enum CBLAS_ORDER     {CblasRowMajor=101, CblasColMajor=102};

@@ -3,7 +3,8 @@ OpenBLAS ChangeLog
 Version 0.1 alpha2(in development)
 
 common:
-	* 
+	* Fixed blasint undefined bug in <cblas.h> file. Other software 
+	  could include this header successfully(Refs issue #13 on github)
 x86/x86_64:
 	* 
 MIPS64:

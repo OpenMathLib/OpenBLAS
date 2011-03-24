@@ -30,6 +30,10 @@ ifdef TARGET
 GETARCH_FLAGS += -DFORCE_$(TARGET)
 endif
 
+ifdef INTERFACE64
+GETARCH_FLAGS	+= -DUSE64BITINT
+endif
+
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
@@ -489,7 +493,8 @@ endif
 
 ifdef BINARY64
 ifdef INTERFACE64
-CCOMMON_OPT	+= -DUSE64BITINT
+CCOMMON_OPT	+= 
+#-DUSE64BITINT
 endif
 endif
 
