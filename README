@@ -57,3 +57,7 @@ OpenBLAS users mailing list: http://list.rdcps.ac.cn/mailman/listinfo/openblas
 
 8.ChangeLog
 Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD version.
+
+9.Known Issues
+* The number of CPUs/Cores should less than or equal to 8*sizeof(unsigned long). On 64 bits, the limit 
+  is 64. On 32 bits, it is 32.
