@@ -39,12 +39,16 @@ export GOTO_NUM_THREADS=4
  or 
 export OMP_NUM_THREADS=4
 
-The priorities are OPENBLAS_NUM_THREAD > GOTO_NUM_THREADS > OMP_NUM_THREADS.
+The priorities are OPENBLAS_NUM_THREADS > GOTO_NUM_THREADS > OMP_NUM_THREADS.
+
+If you compile this lib with USE_OPENMP=1, you should only set OMP_NUM_THREADS environment variable.
 
 4.2 Set the number of threads with calling functions. for example,
 void goto_set_num_threads(int num_threads);
 or
 void openblas_set_num_threads(int num_threads);
+
+If you compile this lib with USE_OPENMP=1, you should use the above functions, too.
 
 5.Report Bugs
 Please add a issue in https://github.com/xianyi/OpenBLAS/issues
@@ -57,3 +61,7 @@ OpenBLAS users mailing list: http://list.rdcps.ac.cn/mailman/listinfo/openblas
 
 8.ChangeLog
 Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD version.
+
+9.Known Issues
+* The number of CPUs/Cores should less than or equal to 8*sizeof(unsigned long). On 64 bits, the limit 
+  is 64. On 32 bits, it is 32.

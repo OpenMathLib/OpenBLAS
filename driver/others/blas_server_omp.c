@@ -49,6 +49,26 @@
 
 int blas_server_avail = 0;
 
+void goto_set_num_threads(int num_threads) {
+
+  if (num_threads < 1) num_threads = blas_num_threads;
+
+  if (num_threads > MAX_CPU_NUMBER) num_threads = MAX_CPU_NUMBER;
+
+  if (num_threads > blas_num_threads) {
+    blas_num_threads = num_threads;
+  }
+
+  blas_cpu_number  = num_threads;
+
+  omp_set_num_threads(blas_cpu_number);
+  
+}
+void openblas_set_num_threads(int num_threads) {
+
+	goto_set_num_threads(num_threads);
+}
+
 int blas_thread_init(void){
 
   blas_get_cpu_number();
