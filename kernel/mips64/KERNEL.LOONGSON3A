@@ -1,2 +1,10 @@
 SAXPYKERNEL=axpy_loongson3a.S
 DAXPYKERNEL=daxpy_loongson3a_simd.S
+
+DGEMMKERNEL    =  gemm_kernel_loongson3a.S
+DGEMMONCOPY    = ../generic/gemm_ncopy_4.c
+DGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
+DGEMMONCOPYOBJ = dgemm_oncopy.o
+DGEMMOTCOPYOBJ = dgemm_otcopy.o
+
+
