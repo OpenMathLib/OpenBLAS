@@ -17,10 +17,6 @@
 #define AO	$12
 #define BO	$13
 
-#define I	$2
-#define J	$3
-#define L	$7
-
 #define CO1	$14
 #define CO2	$15
 #define CO3	$16
@@ -31,12 +27,17 @@
 #define NCO	$20
 
 #define SPANB	$21
-#define SPANC	$22
 #define PREB	$23
 #define PREA	$24
 #define SPANA	$25
 
 #define ALPHA	$f15
+
+#if defined(TRMMKERNEL)
+#define	OFFSET	$2
+#define	KK	$3
+#define	TEMP	$7
+#endif
 
 #define R8	8
 #define	R9	9
@@ -164,20 +165,26 @@
 	ST	ALPHA,152($sp)		#  Backup	ALPHA
 	move	MCO,M				#  Backup	M
 
+#if defined(TRMMKERNEL)
+	ld	OFFSET,160($sp)			#
+#endif
+
 	move	NCO,N				#  Backup	N
 	move	KCO,K				#  Backup	K
 
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	neg	KK,OFFSET
+#endif
+
 	move	AO,A				#  Backup	A_addr
-	move	BO,B				#  Backup	B_addr
+	dsra	N,NCO,2				#  N=NCO/2
 	
 	dsll	LDC,LDC,BASE_SHIFT			#  LDC*8Byte
 	dsll	SPANB,KCO,2+BASE_SHIFT			#  SPANB=KC*NR(4)*8Byte=KC*2^5
 	
-	dsll	SPANA,KCO,1+BASE_SHIFT			#  SPANA = KCO*4mr*8Byte
-	dsra	N,NCO,2				#  N=NCO/2
-
+	move	BO,B				#  Backup	B_addr
 	beq		N,$0,.L0_N2			#  N=0,NCO<4
-	dsll	SPANC,LDC,2			#  SPANC=LDC*4
+	dsll	SPANA,KCO,1+BASE_SHIFT			#  SPANA = KCO*4mr*8Byte
 
 .L0_N4_Lb:
 	move	CO1,C				#  Set C	
@@ -189,12 +196,70 @@
 	daddu	CO3,CO2,LDC
 	daddu	PREB,BO,SPANB		#  PreB point next panelB
 
+#if defined(TRMMKERNEL) && defined(LEFT)
+	move	KK,OFFSET
+#endif
+
 	daddu	CO4,CO3,LDC
-	beqz	M,.L14_M2
 	daddu	PREA,AO,SPANA
+	
+	beqz	M,.L14_M2
+	daddu	C,CO4,LDC
 
 .L10:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B,BO
+#else
+	dsll	K,KK,2 + BASE_SHIFT
+	dsll	TEMP,KK,2 + BASE_SHIFT
+
+	daddu	A,A,K
+	daddu	B,BO,TEMP
+#endif
 	MTC		$0,t11
+	MOV	t21,t11
+	gsLQC1(R8,F1,F0,0)			#a0,a1
+
+	MOV	t31,t11
+	MOV	t41,t11
+	gsLQC1(R9,F9,F8,0)			#b0,b1
+
+	MOV	t12,t11
+	MOV	t22,t11
+	gsLQC1(R8,F3,F2,1)			#a2,a3
+	
+	MOV	t32,t11
+	MOV	t42,t11
+	gsLQC1(R9,F11,F10,1)		#b2,b3
+
+	MOV	t13,t11
+	MOV	t23,t11
+	
+	MOV	t33,t11
+	MOV	t43,t11
+
+	MOV	t14,t11
+	MOV	t24,t11
+	
+	MOV	t34,t11
+	MOV	t44,t11
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP,KCO,KK			#  temp = kco - kk
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 4
+#else
+	daddiu	TEMP, KK, 4
+#endif
+
+	dsra	K,TEMP,2				#  K=KCO/2
+	beqz	K,.L15
+	nop
+
+#else							
+	MTC		$0,t11				#  gemm part
+	move	B,BO
 	MOV	t21,t11
 	gsLQC1(R8,F1,F0,0)			#a0,a1
 
@@ -225,7 +290,9 @@
 	MOV	t44,t11
 	beqz	K,.L15
 	nop
-
+#endif
+	
+	.align	5
 .L11:							#  N=M=K=4
 	gsLQC1(R8,F5,F4,2)			#  R8=A
 	MADD	t11,t11,a0,b0
@@ -357,7 +424,13 @@
 	MADD	t44,t44,a7,b7
 
 .L15:							#  N=4 M=4 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	andi	K,TEMP, 2
+#endif
+	nop
+	
 	beqz	K,.L18
 	nop
 
@@ -428,7 +501,13 @@
 	daddu	PREA,PREA,8*SIZE
 	
 .L18:							#  N=4, M=4, K=1
-	and		K,KCO,1
+#ifndef TRMMKERNEL
+	andi	K,KCO,1
+#else
+	andi	K,TEMP, 1
+#endif
+	NOP
+
 	beqz	K,.L19				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -463,7 +542,8 @@
 	MADD	t44,t44,a3,b3
 
 .L19:							#  Write Back
-	LD	c11,0(CO1)			#  Fetch 16 C
+#ifndef TRMMKERNEL				
+	LD	c11,0(CO1)				#  gemm write part Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 	LD	c31,2*SIZE(CO1)
 	LD	c41,3*SIZE(CO1)
@@ -532,10 +612,79 @@
 	ST	t34,2*SIZE(CO4)
 	daddu	CO3,CO3,4*SIZE
 	ST	t44,3*SIZE(CO4)
-	move	B,BO				#  Reset B
 	daddu	PREB,BO,SPANB
 	bnez	M,.L10				#  M!=0
 	daddu	CO4,CO4,4*SIZE
+
+#else							
+	MUL	t11, ALPHA, t11
+	MUL	t21, ALPHA, t21
+	MUL	t31, ALPHA, t31
+	MUL	t41, ALPHA, t41
+
+	ST	t11, 0 * SIZE(CO1)
+	ST	t21, 1 * SIZE(CO1)
+	ST	t31, 2 * SIZE(CO1)
+	ST	t41, 3 * SIZE(CO1)
+
+	MUL	t12, ALPHA, t12
+	MUL	t22, ALPHA, t22
+	MUL	t32, ALPHA, t32
+	MUL	t42, ALPHA, t42
+
+	ST	t12, 0 * SIZE(CO2)
+	ST	t22, 1 * SIZE(CO2)
+	ST	t32, 2 * SIZE(CO2)
+	ST	t42, 3 * SIZE(CO2)
+
+	MUL	t13, ALPHA, t13
+	MUL	t23, ALPHA, t23
+	MUL	t33, ALPHA, t33
+	MUL	t43, ALPHA, t43
+
+	ST	t13, 0 * SIZE(CO3)
+	ST	t23, 1 * SIZE(CO3)
+	ST	t33, 2 * SIZE(CO3)
+	ST	t43, 3 * SIZE(CO3)
+
+	MUL	t14, ALPHA, t14
+	MUL	t24, ALPHA, t24
+	MUL	t34, ALPHA, t34
+	MUL	t44, ALPHA, t44
+
+	ST	t14, 0 * SIZE(CO4)
+	ST	t24, 1 * SIZE(CO4)
+	ST	t34, 2 * SIZE(CO4)
+	ST	t44, 3 * SIZE(CO4)
+
+	daddiu	M,M,-1				#  M--
+
+	daddiu	CO4,CO4, 4 * SIZE	#  trmm part write back
+	daddiu	CO3,CO3, 4 * SIZE
+	daddiu	CO2,CO2, 4 * SIZE
+	daddiu	CO1,CO1, 4 * SIZE
+	
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP,KCO,KK
+#ifdef LEFT
+	daddiu	TEMP,TEMP, -4
+#else
+	daddiu	TEMP,TEMP, -4
+#endif
+
+	dsll	K,TEMP,2 + BASE_SHIFT
+	dsll	TEMP,TEMP,2 + BASE_SHIFT
+
+	daddu	A,A,K
+	daddu	B,B,TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK,4
+#endif
+	bnez	M,.L10				#  M!=0
+	nop
+#endif
 
 
 
@@ -545,6 +694,46 @@
 	nop
 
 .L20:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B,BO
+#else
+	dsll	K,KK,1 + BASE_SHIFT	#mr=2 so KK*2
+	dsll	TEMP,KK,2 + BASE_SHIFT
+
+	daddu	A,A,K
+	daddu	B,BO,TEMP
+#endif
+
+	MTC		$0,t11
+	MOV	t21,t11
+	gsLQC1(R8,F1,F0,0)			#a0,a1
+
+	MOV	t12,t11
+	MOV	t22,t11
+	gsLQC1(R9,F9,F8,0)			#b0,b1
+	
+	dsra	K,KCO,2				#  K=KCO/2
+	MOV	t13,t11
+	gsLQC1(R9,F11,F10,1)		#b2,b3
+	
+	MOV	t23,t11
+	MOV	t14,t11
+	MOV	t24,t11
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP,KCO,KK
+#elif defined(LEFT)
+	daddiu	TEMP,KK,2
+#else
+	daddiu	TEMP,KK,4			#  not sure
+#endif
+	dsra	K,TEMP,2
+	beqz	K,.L25
+	nop
+
+#else
+	move	B,BO				# gemm part 
 	MTC		$0,t11
 	MOV	t21,t11
 	gsLQC1(R8,F1,F0,0)			#a0,a1
@@ -563,6 +752,7 @@
 	MOV	t24,t11
 	beqz	K,.L25
 	nop
+#endif
 
 .L21:							#  N=4 m=2,=K=4
 	gsLQC1(R8,F5,F4,1)			#  R8=A
@@ -630,7 +820,11 @@
 	MADD	t24,t24,a7,b7
 
 .L25:							#  N=4 M=2 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	and		K,TEMP,2
+#endif
 	beqz	K,.L28
 	nop
 
@@ -669,7 +863,11 @@
 	MADD	t24,t24,a5,b7
 	
 .L28:							#  N=4, M=2, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	and		K,TEMP,1
+#endif
 	beqz	K,.L29				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -688,7 +886,8 @@
 	MADD	t24,t24,a1,b3
 
 .L29:							#  Write Back
-	LD	c11,0(CO1)			#  Fetch 16 C
+#ifndef TRMMKERNEL
+	LD	c11,0(CO1)			#  gemm write back part  Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 
 	LD	c12,0(CO2)
@@ -730,6 +929,56 @@
 	daddu	CO3,CO3,2*SIZE
 	daddu	CO4,CO4,2*SIZE
 
+#else
+	MUL	t11, ALPHA, t11
+	MUL	t21, ALPHA, t21
+	
+	ST	t11, 0 * SIZE(CO1)
+	ST	t21, 1 * SIZE(CO1)
+
+	MUL	t12, ALPHA, t12
+	MUL	t22, ALPHA, t22
+	
+	ST	t12, 0 * SIZE(CO2)
+	ST	t22, 1 * SIZE(CO2)
+
+	MUL	t13, ALPHA, t13
+	MUL	t23, ALPHA, t23
+	
+	ST	t13, 0 * SIZE(CO3)
+	ST	t23, 1 * SIZE(CO3)
+
+	MUL	t14, ALPHA, t14
+	MUL	t24, ALPHA, t24
+	
+	ST	t14, 0 * SIZE(CO4)
+	ST	t24, 1 * SIZE(CO4)
+
+	daddiu	CO1,CO1, 2 * SIZE
+	daddiu	CO2,CO2, 2 * SIZE
+	daddiu	CO3,CO3, 2 * SIZE
+	daddiu	CO4,CO4, 2 * SIZE
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP,KCO,KK
+#ifdef LEFT
+	daddiu	TEMP,TEMP,-2
+#else
+	daddiu	TEMP,TEMP,-4
+#endif
+
+	dsll	K,TEMP,1 + BASE_SHIFT
+	dsll	TEMP,TEMP,2 + BASE_SHIFT
+
+	daddu	A,A,K
+	daddu	B,B,TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 2
+#endif
+#endif
 
 
 .L14_M1:
@@ -848,7 +1097,6 @@
 .L0_N4_Loop:
 	daddu	BO,BO,SPANB			#  BO point to next panel B
 	daddiu	N,N,-1				#  N--
-	daddu	C,C,SPANC			#  C pointe to next panel C
 	bnez	N,.L0_N4_Lb			#  N!=0
 	move	B,BO				#  Set B
 
@@ -858,7 +1106,7 @@
 .L0_N2:
 	and		N,NCO,2				#  Remainder N = 2
 	beqz	N,.L0_N1			#  N=0,NCO<2
-	dsll	SPANC,LDC,1			#  SPANC=LDC*2
+	nop
 
 .L0_N2_Lb:
 	move	CO1,C				#  Set C	
@@ -868,8 +1116,9 @@
 	move	A,AO				#  Reset A
 
 	daddu	CO2,CO1,LDC
-	beqz	M,.L12_M2
 	daddu	PREA,AO,SPANA
+	beqz	M,.L12_M2
+	daddu	C,CO2,LDC
 
 .L40:						
 	MTC		$0,t11
@@ -1284,7 +1533,6 @@
 .L0_N2_Loop:
 	daddu	BO,BO,SPANB			#  BO+=KC*2N
 	move	B,BO				#  Set B
-	daddu	C,C,SPANC			#  C+=LDC*2
 
 
 
