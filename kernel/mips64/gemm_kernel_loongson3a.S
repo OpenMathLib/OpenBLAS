@@ -3,6 +3,7 @@
 #define FETCH   ld
 
 #define REALNAME ASMNAME
+
 #define ASSEMBLER
 #include "common.h"
 
@@ -713,7 +714,6 @@
 	MOV	t22,t11
 	gsLQC1(R9,F9,F8,0)			#b0,b1
 	
-	dsra	K,KCO,2				#  K=KCO/2
 	MOV	t13,t11
 	gsLQC1(R9,F11,F10,1)		#b2,b3
 	
@@ -987,6 +987,37 @@
 	nop
 
 .L30:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B,BO
+#else
+	dsll	K,KK, 0 + BASE_SHIFT
+	dsll	TEMP,KK,2 + BASE_SHIFT
+
+	daddu	A,A,K
+	daddu	B,BO,TEMP
+#endif
+
+	gsLQC1(R8,F1,F0,0)
+	gsLQC1(R9,F9,F8,0)			#b0,b1
+	MTC		$0,t11
+	gsLQC1(R9,F11,F10,1)		#b2,b3
+	MOV	t12,t11
+	MOV	t13,t11
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1
+#else
+	daddiu	TEMP, KK, 4
+#endif
+	dsra	K,TEMP, 2
+
+	beqz	K,.L35
+	MOV	t14,t11
+#else
+	move	B,BO
 	gsLQC1(R8,F1,F0,0)
 	dsra	K,KCO,2				#  K=KCO/2
 	gsLQC1(R9,F9,F8,0)			#b0,b1
@@ -994,8 +1025,10 @@
 	gsLQC1(R9,F11,F10,1)		#b2,b3
 	MOV	t12,t11
 	MOV	t13,t11
+	dsra	K,KCO,2
 	beqz	K,.L35
 	MOV	t14,t11
+#endif
 
 .L31:							#  N=4 m=1,=K=4
 	gsLQC1(R8,F3,F2,1)	
@@ -1037,7 +1070,11 @@
 	MADD	t14,t14,a3,b7
 
 .L35:							#  N=4 M=1 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	and		K,TEMP,2
+#endif
 	beqz	K,.L38
 	nop
 
@@ -1065,7 +1102,11 @@
 	MADD	t14,t14,a1,b7
 	
 .L38:							#  N=4, M=1, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	andi	K,TEMP,1
+#endif
 	beqz	K,.L39				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -1078,6 +1119,7 @@
 	MADD	t14,t14,a0,b3
 
 .L39:							#  Write Back
+#ifndef TRMMKERNEL
 	LD	c11,0(CO1)			#  Fetch 16 C
 	LD	c12,0(CO2)
 	LD	c13,0(CO3)
@@ -1092,13 +1134,46 @@
 	ST	t12,0(CO2)
 	ST	t13,0(CO3)
 	ST	t14,0(CO4)
+#else
+	MUL	t11, ALPHA, t11
+	MUL	t12, ALPHA, t12
+	MUL	t13, ALPHA, t13
+	MUL	t14, ALPHA, t14
+
+	ST	t11,  0 * SIZE(CO1)
+	ST	t12,  0 * SIZE(CO2)
+	ST	t13,  0 * SIZE(CO3)
+	ST	t14,  0 * SIZE(CO4)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -1
+#else
+	daddiu	TEMP, TEMP, -4
+#endif
+
+	dsll	K,TEMP, 0 + BASE_SHIFT
+	dsll	TEMP,TEMP, 2 + BASE_SHIFT
+
+	daddu	A,A,K
+	daddu	B,BO,TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 1
+#endif
+#endif
 
 
 .L0_N4_Loop:
-	daddu	BO,BO,SPANB			#  BO point to next panel B
 	daddiu	N,N,-1				#  N--
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	daddiu	KK, KK,4 
+#endif
 	bnez	N,.L0_N4_Lb			#  N!=0
-	move	B,BO				#  Set B
+	move	BO,B				#  Set B
 
 
 
@@ -1111,7 +1186,11 @@
 .L0_N2_Lb:
 	move	CO1,C				#  Set C	
 	dsra	M,MCO,2				#  M=MCO/2
-	
+
+#if defined(TRMMKERNEL) &&  defined(LEFT)
+	move	KK, OFFSET
+#endif
+
 	dsll	SPANB,KCO,1+BASE_SHIFT			#  SPANB=KC*NR(2)*8Byte=KC*16=KC*2^4
 	move	A,AO				#  Reset A
 
@@ -1121,7 +1200,44 @@
 	daddu	C,CO2,LDC
 
 .L40:						
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B,BO
+#else
+	dsll	K,KK, 2 + BASE_SHIFT	# mr=4
+	dsll	TEMP, KK,1 + BASE_SHIFT	# nr=2
+
+	daddu	A,A,K
+	daddu	B,BO,TEMP
+#endif
 	MTC		$0,t11
+	MOV	t21,t11
+	gsLQC1(R8,F1,F0,0)			#a0,a1
+
+	MOV	t31,t11
+	MOV	t41,t11
+	gsLQC1(R9,F9,F8,0)			#b0,b1
+
+	MOV	t12,t11
+	gsLQC1(R8,F3,F2,1)			#a2,a3
+	
+	MOV	t22,t11
+	MOV	t32,t11
+	
+	MOV	t42,t11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP,KCO,KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 4
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	K,TEMP,2				#  K=KCO/2
+	beqz	K,.L45
+	nop
+#else
+	move	B,BO
+	MTC		$0,t11				#  gemm part
 	MOV	t21,t11
 	gsLQC1(R8,F1,F0,0)			#a0,a1
 
@@ -1139,6 +1255,7 @@
 	MOV	t42,t11
 	beqz	K,.L45
 	nop
+#endif
 
 .L41:							#  N=2,M=K=4
 	gsLQC1(R8,F5,F4,2)			#  R8=A
@@ -1215,7 +1332,11 @@
 
 
 .L45:							#  N=2 M=4 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	andi	K,TEMP,2
+#endif
 	beqz	K,.L48
 	nop
 
@@ -1258,7 +1379,11 @@
 
 	
 .L48:							#  N=2, M=4, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	andi	K,TEMP,1
+#endif
 	beqz	K,.L49				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -1279,7 +1404,8 @@
 	MADD	t42,t42,a3,b1
 
 .L49:							#  Write Back
-	LD	c11,0(CO1)			#  Fetch 16 C
+#ifndef TRMMKERNEL
+	LD	c11,0(CO1)			#  gemm write back part Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 	LD	c31,2*SIZE(CO1)
 	LD	c41,3*SIZE(CO1)
@@ -1315,10 +1441,57 @@
 	FETCH	$0,8*SIZE(CO2)
 
 	daddu	CO1,CO1,4*SIZE			#  COx += 4*8Byte
-	daddu	CO2,CO2,4*SIZE
 	bnez	M,.L40				#  M!=0
-	move	B,BO				#  Reset B
+	daddu	CO2,CO2,4*SIZE
+#else
+	daddiu	M,M,-1
 
+	daddiu	CO1,CO1, 4*SIZE
+	daddiu	CO2,CO2, 4*SIZE
+
+	MUL	t11, ALPHA, t11
+	MUL	t21, ALPHA, t21
+	MUL	t31, ALPHA, t31
+	MUL	t41, ALPHA, t41
+	
+	MUL	t12, ALPHA, t12
+	MUL	t22, ALPHA, t22
+	MUL	t32, ALPHA, t32
+	MUL	t42, ALPHA, t42
+
+	ST	t11, -4 * SIZE(CO1)
+	ST	t21, -3 * SIZE(CO1)
+	ST	t31, -2 * SIZE(CO1)
+	ST	t41, -1 * SIZE(CO1)
+	
+	ST	t12, -4 * SIZE(CO2)
+	ST	t22, -3 * SIZE(CO2)
+	ST	t32, -2 * SIZE(CO2)
+	ST	t42, -1 * SIZE(CO2)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -4
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+
+	dsll	K,TEMP, 2 + BASE_SHIFT
+	dsll	TEMP, TEMP, 1 + BASE_SHIFT
+
+	daddu	A,A,K
+	daddu	B,B,TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 4
+#endif
+
+	bnez	M,.L40
+	nop
+#endif
 
 .L12_M2:
 	and		M,MCO,2				#  Remainder M = 2
@@ -1326,6 +1499,37 @@
 	nop
 
 .L50:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B,BO
+#else
+	dsll	K,    KK, 1 + BASE_SHIFT	#mr=2
+	dsll	TEMP, KK, 1 + BASE_SHIFT	#nr=2
+
+	daddu	A, A, K
+	daddu	B, BO,  TEMP
+#endif
+	MTC		$0,t11
+	gsLQC1(R8,F1,F0,0)			#a0,a1
+
+	MOV	t21,t11
+	MOV	t12,t11
+	gsLQC1(R9,F9,F8,0)			#b0,b1
+	
+	MOV	t22,t11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 2
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	K,TEMP,2				#  K=KCO/2
+	beqz	K,.L55
+	nop
+
+#else
+	move	B,BO
 	dsra	K,KCO,2				#  K=KCO/2
 	MTC		$0,t11
 	gsLQC1(R8,F1,F0,0)			#a0,a1
@@ -1337,6 +1541,7 @@
 	MOV	t22,t11
 	beqz	K,.L55
 	nop
+#endif
 
 .L51:							#  N=2 m=2,=K=4
 	gsLQC1(R8,F5,F4,1)			#  R8=A
@@ -1376,7 +1581,12 @@
 	MADD	t22,t22,a7,b7
 
 .L55:							#  N=2 M=2 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	andi	K,TEMP,2
+#endif
+	NOP
 	beqz	K,.L58
 	nop
 
@@ -1402,7 +1612,11 @@
 
 	
 .L58:							#  N=2, M=2, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	and		K,  TEMP, 1
+#endif
 	beqz	K,.L59				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -1416,7 +1630,8 @@
 
 
 .L59:							#  Write Back
-	LD	c11,0(CO1)			#  Fetch 16 C
+#ifndef TRMMKERNEL
+	LD	c11,0(CO1)			#  write gemm part back Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 	LD	c12,0(CO2)
 	LD	c22,1*SIZE(CO2)
@@ -1429,7 +1644,6 @@
 	ST	t11,0(CO1)
 	ST	t21,1*SIZE(CO1)
 	ST	t12,0(CO2)
-	move	B,BO				#  Reset B
 	ST	t22,1*SIZE(CO2)
 
 	daddu	CO1,CO1,2*SIZE			#  COx += 2*8Byte
@@ -1437,6 +1651,44 @@
 
 	FETCH	$0,0(CO1)
 	FETCH	$0,0(CO2)
+#else
+	daddiu	M, M, -1
+
+	daddiu	CO1,CO1, 2 * SIZE
+	daddiu	CO2,CO2, 2 * SIZE
+
+	MUL	t11, ALPHA, t11
+	MUL	t21, ALPHA, t21
+	MUL	t12, ALPHA, t12
+	MUL	t22, ALPHA, t22
+
+	ST	t11, -2 * SIZE(CO1)
+	ST	t21, -1 * SIZE(CO1)
+	ST	t12, -2 * SIZE(CO2)
+	ST	t22, -1 * SIZE(CO2)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -2
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+
+	dsll	K,    TEMP, 1 + BASE_SHIFT
+	dsll	TEMP, TEMP, 1 + BASE_SHIFT
+
+	daddu	A, A, K
+	daddu	B, B, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 2
+#endif
+	FETCH	$0,0(CO1)
+	FETCH	$0,0(CO2)
+
+#endif
 
 
 .L12_M1:
@@ -1445,8 +1697,39 @@
 	nop
 
 .L60:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B,BO
+#else
+	dsll	K,    KK, 0 + BASE_SHIFT
+	dsll	TEMP, KK, 1 + BASE_SHIFT
+
+	daddu	A, A, K
+	daddu	B, BO,  TEMP
+#endif
+	MTC		$0,t11
+	gsLQC1(R8,F4,F0,0)
+
+	MOV	t21,t11
+	MOV	t12,t11
+	gsLQC1(R9,F9,F8,0)			#b0,b1
+	
+	MOV	t22,t11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	K,TEMP,2				#  K=KCO/2
+	beqz	K,.L65
+	nop
+
+#else
 	dsra	K,KCO,2				#  K=KCO/2
 	MTC		$0,t11
+	move	B,BO				#  Reset B
 	gsLQC1(R8,F4,F0,0)
 
 	MOV	t21,t11
@@ -1456,6 +1739,7 @@
 	MOV	t22,t11
 	beqz	K,.L65
 	nop
+#endif
 
 .L61:							#  N=2 m=1,=K=4
 	gsLQC1(R9,F13,F12,1)		#  R9=B
@@ -1483,7 +1767,11 @@
 	MADD	t12,t12,a6,b7
 
 .L65:							#  N=2 M=1 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	and		K,TEMP,2
+#endif
 	beqz	K,.L68
 	nop
 
@@ -1502,7 +1790,11 @@
 
 	
 .L68:							#  N=2, M=1, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	and		K,TEMP,1
+#endif
 	beqz	K,.L69				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -1513,6 +1805,7 @@
 
 
 .L69:							#  Write Back
+#ifndef TRMMKERNEL
 	LD	c11,0(CO1)			#  Fetch 16 C
 	LD	c12,0(CO2)
 	
@@ -1521,19 +1814,47 @@
 
 	ST	t11,0(CO1)
 	ST	t12,0(CO2)
-	move	B,BO				#  Reset B
 
 	daddu	CO1,CO1,1*SIZE			#  COx += 2*8Byte
 	daddu	CO2,CO2,1*SIZE
 
 	FETCH	$0,0(CO1)
 	FETCH	$0,0(CO2)
+#else
+	MUL	t11, ALPHA, t11
+	MUL	t12, ALPHA, t12
 
+	ST	t11,  0 * SIZE(CO1)
+	ST	t12,  0 * SIZE(CO2)
+
+	daddu	CO1,CO1,1*SIZE			#  COx += 2*8Byte
+	daddu	CO2,CO2,1*SIZE
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -1
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+
+	dsll	K,    TEMP, 0 + BASE_SHIFT
+	dsll	TEMP, TEMP, 1 + BASE_SHIFT
+
+	daddu	A, A, K
+	daddu	B, B, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 1
+#endif
+#endif
 
 .L0_N2_Loop:
-	daddu	BO,BO,SPANB			#  BO+=KC*2N
-	move	B,BO				#  Set B
-
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	daddiu	KK, KK, 2
+#endif
+	move	BO, B
 
 
 	.align	5					
@@ -1544,13 +1865,45 @@
 
 	move	CO1,C				#  Set C	
 	dsra	M,MCO,2				#  M=MCO/2
-	
+
+#if defined(TRMMKERNEL) &&  defined(LEFT)
+	move	KK, OFFSET
+#endif
+
 	move	A,AO				#  Reset A
 	beqz	M,.L11_M2
 	daddu	PREA,AO,SPANA
 
 
 .L70:						
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B, BO
+#else
+	dsll	K,    KK, 2 + BASE_SHIFT
+	dsll	TEMP, KK, 0 + BASE_SHIFT
+
+	daddu	AO, AO, K
+	daddu	B, BO,  TEMP
+#endif
+	gsLQC1(R9,F12,F8,0)
+	MTC		$0,t11
+	gsLQC1(R8,F1,F0,0)			#a0,a1
+	MOV	t21,t11
+	gsLQC1(R8,F3,F2,1)			#a2,a3
+	MOV	t31,t11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 4
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	K,TEMP,2				#  K=KCO/2
+	beqz	K,.L75
+	MOV	t41,t11
+#else
+	move	B, BO
 	dsra	K,KCO,2				#  K=KCO/2
 	gsLQC1(R9,F12,F8,0)
 	MTC		$0,t11
@@ -1560,6 +1913,8 @@
 	MOV	t31,t11
 	beqz	K,.L75
 	MOV	t41,t11
+#endif
+
 
 .L71:							#  N=1,M=K=4
 	gsLQC1(R8,F5,F4,2)			#  R8=A
@@ -1610,7 +1965,11 @@
 
 
 .L75:							#  N=2 M=4 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	and		K,TEMP,2
+#endif
 	beqz	K,.L78
 	nop
 
@@ -1641,7 +2000,11 @@
 
 	
 .L78:							#  N=2, M=4, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	and		K,TEMP,1
+#endif
 	beqz	K,.L79				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -1657,6 +2020,7 @@
 
 
 .L79:							#  Write Back
+#ifndef TRMMKERNEL
 	LD	c11,0(CO1)			#  Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 	LD	c31,2*SIZE(CO1)
@@ -1677,7 +2041,42 @@
 
 	daddu	CO1,CO1,4*SIZE			#  COx += 4*8Byte
 	bnez	M,.L70				#  M!=0
-	move	B,BO				#  Reset B
+	nop
+#else
+	daddiu	M,M,-1				#  M--
+	MUL	t11, ALPHA, t11
+	MUL	t21, ALPHA, t21
+	MUL	t31, ALPHA, t31
+	MUL	t41, ALPHA, t41
+
+	ST	t11,0(CO1)
+	ST	t21,1*SIZE(CO1)
+	ST	t31,2*SIZE(CO1)
+	ST	t41,3*SIZE(CO1)
+
+	daddu	CO1,CO1,4*SIZE			#  COx += 4*8Byte
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -4
+#else
+	daddiu	TEMP, TEMP, -1
+#endif
+
+	dsll	K,    TEMP, 2 + BASE_SHIFT
+	dsll	TEMP, TEMP, 0 + BASE_SHIFT
+
+	daddu	A, A,K
+	daddu	B, B, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 4
+#endif
+	bnez	M,.L70				#  M!=0
+	nop
+#endif
 
 
 
@@ -1687,6 +2086,33 @@
 	nop
 
 .L80:						
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B, BO
+#else
+	dsll	K,    KK, 1 + BASE_SHIFT
+	dsll	TEMP, KK, 0 + BASE_SHIFT
+
+	daddu	A, A, K
+	daddu	B, BO,  TEMP
+#endif
+
+	gsLQC1(R9,F12,F8,0)
+	MTC		$0,t11
+	gsLQC1(R8,F1,F0,0)			#a0,a1
+	MOV		t21,t11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 2
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	K,TEMP,2				#  K=KCO/2
+	beqz	K,.L85
+	nop
+#else
+	move	B, BO
 	dsra	K,KCO,2				#  K=KCO/2
 	gsLQC1(R9,F12,F8,0)
 	MTC		$0,t11
@@ -1694,6 +2120,7 @@
 	MOV		t21,t11
 	beqz	K,.L85
 	nop
+#endif
 
 .L81:							#  N=1,M=2,K=4
 	gsLQC1(R8,F5,F4,1)			#  R8=A
@@ -1722,7 +2149,12 @@
 
 
 .L85:							#  N=2 M=4 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	andi	K,TEMP,2
+#endif
+
 	beqz	K,.L88
 	nop
 
@@ -1741,7 +2173,12 @@
 
 	
 .L88:							#  N=2, M=4, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	andi	K,TEMP,1
+#endif
+
 	beqz	K,.L89				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	
@@ -1752,6 +2189,7 @@
 
 
 .L89:							#  Write Back
+#ifndef TRMMKERNEL
 	LD	c11,0(CO1)			#  Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 
@@ -1764,7 +2202,34 @@
 	FETCH	$0,2*SIZE(CO1)
 	
 	daddu	CO1,CO1,2*SIZE			#  COx += 2*8Byte
-	move	B,BO				#  Reset B
+#else
+	daddu	CO1,CO1,2*SIZE			#  COx += 2*8Byte
+	MUL	t11, ALPHA, t11
+	MUL	t21, ALPHA, t21
+
+	ST	t11, -2 * SIZE(CO1)
+	ST	t21, -1 * SIZE(CO1)
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -2
+#else
+	daddiu	TEMP, TEMP, -1
+#endif
+
+	dsll	K,    TEMP, 1 + BASE_SHIFT
+	dsll	TEMP, TEMP, 0 + BASE_SHIFT
+
+	daddu	A, A, K
+	daddu	B, B, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 2
+#endif
+#endif
+
 
 
 .L11_M1:
@@ -1772,12 +2237,39 @@
 	beqz	M,.L999				#  M = 0, End
 	nop
 
-.L90:						
+.L90:			
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	B,  BO
+#else
+	dsll	K,    KK, 0 + BASE_SHIFT
+	dsll	TEMP, KK, 0 + BASE_SHIFT
+
+	daddu	A, A, K
+	daddu	B, BO,  TEMP
+#endif
+	gsLQC1(R8,F4,F0,0)
+	MTC		$0,t11
+	gsLQC1(R9,F12,F8,0)
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, KCO, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	K,  TEMP, 2
+	beqz	K,.L95
+	nop
+
+#else
+	move	B,  BO
 	dsra	K,KCO,2				#  K=KCO/2
 	gsLQC1(R8,F4,F0,0)
 	gsLQC1(R9,F12,F8,0)
 	beqz	K,.L95
 	MTC		$0,t11
+#endif
 
 .L91:							#  N=1,M=1,K=4
 	gsLQC1(R8,F6,F2,1)
@@ -1798,7 +2290,11 @@
 	nop
 
 .L95:							#  N=2 M=4 K=2
+#ifndef TRMMKERNEL
 	and		K,KCO,2				#  k = KCO&2
+#else
+	andi	K,TEMP,2
+#endif
 	beqz	K,.L98
 	nop
 
@@ -1813,18 +2309,26 @@
 
 	
 .L98:							#  N=2, M=4, K=1
+#ifndef TRMMKERNEL
 	and		K,KCO,1
+#else
+	andi	K,TEMP,1
+#endif
 	beqz	K,.L99				#  
 	LD	ALPHA,152($sp)		#  Get ALPHA
 	MADD	t11,t11,a0,b0
 
 
 .L99:							#  Write Back
+#ifndef TRMMKERNEL
 	LD	c11,0(CO1)			#  Fetch 16 C
 	MADD	t11,c11,t11,ALPHA
 	ST	t11,0(CO1)
+#else
+	MUL	t11, ALPHA, t11
 
-
+	ST	t11,  0 * SIZE(CO1)
+#endif
 
 
 .L999:							#  End
