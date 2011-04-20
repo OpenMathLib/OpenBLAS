@@ -10,6 +10,8 @@ common:
 	  on github)
 	* Support "void goto_set_num_threads(int num_threads)" and "void
 	  openblas_set_num_threads(int num_threads)" when USE_OPENMP=1
+	* Added extern "C" to support C++. Thank Tasio for the patch(Refs 
+	  issue #21 on github)
 
 x86/x86_64:
 	* 
