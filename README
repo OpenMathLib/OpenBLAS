@@ -8,7 +8,9 @@ Download from project homepage. http://xianyi.github.com/OpenBLAS/
 Or,
 check out codes from git://github.com/xianyi/OpenBLAS.git
 1)Normal compile
-Please read GotoBLAS_02QuickInstall.txt or type "make"
+  (a) type "make" to detect the CPU automatically.
+  or
+  (b) type "make TARGET=xxx" to set target CPU, e.g. "make TARGET=NEHALEM". The full target list is in file TargetList.txt.
 
 2)Cross compile
 Please set CC and FC with the cross toolchains. Then, set HOSTCC with your host C compiler. At last, set TARGET explicitly.
