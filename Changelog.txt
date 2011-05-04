@@ -14,6 +14,7 @@ common:
 	  issue #21 on github)
 	* Provided an error message when the arch is not supported.(Refs 
 	  issue #19 on github)
+	* Fixed issue #23. Fixed a bug of f_check script about generating link flags.
 
 x86/x86_64:
 	* 
