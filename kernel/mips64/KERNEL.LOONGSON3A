@@ -8,3 +8,7 @@ DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
 
+DTRSMKERNEL_LN	= trsm_kernel_LN_loongson3a.S 
+DTRSMKERNEL_LT	= trsm_kernel_LT_loongson3a.S
+DTRSMKERNEL_RN	= trsm_kernel_RN_loongson3a.S
+DTRSMKERNEL_RT	= trsm_kernel_RT_loongson3a.S
