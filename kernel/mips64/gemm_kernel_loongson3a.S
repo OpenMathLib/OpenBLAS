@@ -164,18 +164,11 @@
 	.align	5					#  BACKUP
 .L0_N4:							#  Loop N
 	ST	ALPHA,152($sp)		#  Backup	ALPHA
+	
 	move	MCO,M				#  Backup	M
-
-#if defined(TRMMKERNEL)
-	ld	OFFSET,160($sp)			#
-#endif
 
 	move	NCO,N				#  Backup	N
 	move	KCO,K				#  Backup	K
-
-#if defined(TRMMKERNEL) && !defined(LEFT)
-	neg	KK,OFFSET
-#endif
 
 	move	AO,A				#  Backup	A_addr
 	dsra	N,NCO,2				#  N=NCO/2
@@ -184,6 +177,15 @@
 	dsll	SPANB,KCO,2+BASE_SHIFT			#  SPANB=KC*NR(4)*8Byte=KC*2^5
 	
 	move	BO,B				#  Backup	B_addr
+
+#if defined(TRMMKERNEL)
+	LDARG	OFFSET,160($sp)			#
+#endif
+
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	neg	KK,OFFSET				#  right
+#endif
+	
 	beq		N,$0,.L0_N2			#  N=0,NCO<4
 	dsll	SPANA,KCO,1+BASE_SHIFT			#  SPANA = KCO*4mr*8Byte
 
@@ -197,13 +199,13 @@
 	daddu	CO3,CO2,LDC
 	daddu	PREB,BO,SPANB		#  PreB point next panelB
 
-#if defined(TRMMKERNEL) && defined(LEFT)
-	move	KK,OFFSET
-#endif
-
 	daddu	CO4,CO3,LDC
 	daddu	PREA,AO,SPANA
-	
+
+#if defined(TRMMKERNEL) && defined(LEFT)
+	move	KK,OFFSET			#	left
+#endif
+
 	beqz	M,.L14_M2
 	daddu	C,CO4,LDC
 
@@ -212,12 +214,13 @@
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	move	B,BO
 #else
-	dsll	K,KK,2 + BASE_SHIFT
+	dsll	K,KK,2 + BASE_SHIFT		#  KK no data part
 	dsll	TEMP,KK,2 + BASE_SHIFT
 
-	daddu	A,A,K
+	daddu	A,A,K					#  move A B to data part
 	daddu	B,BO,TEMP
 #endif
+
 	MTC		$0,t11
 	MOV	t21,t11
 	gsLQC1(R8,F1,F0,0)			#a0,a1
@@ -676,11 +679,11 @@
 	dsll	K,TEMP,2 + BASE_SHIFT
 	dsll	TEMP,TEMP,2 + BASE_SHIFT
 
-	daddu	A,A,K
-	daddu	B,B,TEMP
+	daddu	A,A,K				# mov A to the end of panel Ai
+	daddu	B,B,TEMP			# mov B to the end of panel Bj
 #endif
 
-#ifdef LEFT
+#ifdef LEFT						#	right control by N loop
 	daddiu	KK, KK,4
 #endif
 	bnez	M,.L10				#  M!=0
@@ -1158,7 +1161,7 @@
 	dsll	TEMP,TEMP, 2 + BASE_SHIFT
 
 	daddu	A,A,K
-	daddu	B,BO,TEMP
+	daddu	B,B,TEMP
 #endif
 
 #ifdef LEFT
@@ -1883,7 +1886,7 @@
 	dsll	K,    KK, 2 + BASE_SHIFT
 	dsll	TEMP, KK, 0 + BASE_SHIFT
 
-	daddu	AO, AO, K
+	daddu	A, A, K
 	daddu	B, BO,  TEMP
 #endif
 	gsLQC1(R9,F12,F8,0)
