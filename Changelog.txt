@@ -16,6 +16,7 @@ common:
 	  issue #19 on github)
 	* Fixed issue #23. Fixed a bug of f_check script about generating link flags.
 	* Added openblas_set_num_threads for Fortran.
+	* Fixed #25 a wrong result of rotmg.
 
 x86/x86_64:
 	* 
