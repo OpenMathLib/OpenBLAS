@@ -67,3 +67,11 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 9.Known Issues
 * The number of CPUs/Cores should less than or equal to 8*sizeof(unsigned long). On 64 bits, the limit 
   is 64. On 32 bits, it is 32.
+
+10. Specification of Git Branches
+We used the git branching model in this article (http://nvie.com/posts/a-successful-git-branching-model/). 
+Now, there are 4 branches in github.com.
+  * The master branch. This a main branch to reflect a production-ready state.
+  * The develop branch. This a main branch to reflect a state with the latest delivered development changes for the next release.
+  * The loongson3a branch. This is a feature branch. We develop Loongson3A codes on this branch. We will merge this feature to develop branch in future.
+  * The gh-pages branch. This is for web pages
