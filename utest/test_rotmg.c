@@ -30,68 +30,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include <stdio.h>
-#include <string.h>
-
 #include "common_utest.h"
-#include <CUnit/Basic.h>
 
-CU_TestInfo test_level1[]={
-	{"Testing srot when incx || incy == 0",test_srot_inc_0},
-	{"Testing drot when incx || incy == 0",test_drot_inc_0},
-	{"Testing csrot when incx || incy == 0",test_csrot_inc_0},
-	{"Testing zdrot when incx || incy == 0",test_zdrot_inc_0},
-
-	{"Testing sswap with incx || incy == 0",test_sswap_inc_0},
-	{"Testing dswap with incx || incy == 0",test_dswap_inc_0},
-	{"Testing cswap with incx || incy == 0",test_cswap_inc_0},
-	{"Testing zswap with incx || incy == 0",test_zswap_inc_0},
-
-	{"Testing saxpy with incx || incy == 0",test_saxpy_inc_0},
-	{"Testing daxpy with incx || incy == 0",test_daxpy_inc_0},
-	{"Testing caxpy with incx || incy == 0",test_caxpy_inc_0},
-	{"Testing zaxpy with incx || incy == 0",test_zaxpy_inc_0},
-
-	{"Testing zdotu with n == 1",test_zdotu_n_1},
-	{"Testing zdotu with input x & y offset == 1",test_zdotu_offset_1},
-
-	{"Testing drotmg",test_drotmg},
-	CU_TEST_INFO_NULL,
-};
-
-CU_SuiteInfo suites[]={
-	{"Level1 Test Suite", NULL,NULL,test_level1},
-	CU_SUITE_INFO_NULL,
-};
-
-int main()
+void test_drotmg()
 {
-	CU_ErrorCode error;
-	if (CUE_SUCCESS != CU_initialize_registry())
-		return CU_get_error();
+	double te_d1, tr_d1;
+	double te_d2, tr_d2;
+	double te_x1, tr_x1;
+	double te_y1, tr_y1;
+	double te_param[5],tr_param[5];
+	int i=0;
+	te_d1= tr_d1=0.21149573940783739;
+	te_d2= tr_d2=0.046892057172954082;
+	te_x1= tr_x1=-0.42272687517106533;
+	te_y1= tr_y1=0.42211309121921659;
+	//OpenBLAS
+	BLASFUNC(drotmg)(&te_d1, &te_d2, &te_x1, &te_y1, te_param);
+	//reference
+	BLASFUNC_REF(drotmg)(&tr_d1, &tr_d2, &tr_x1, &tr_y1, tr_param);
 	
-	error=CU_register_suites(suites);
-	
-	if (error != CUE_SUCCESS) {
-		perror(CU_get_error_msg());
-		CU_cleanup_registry();
-		return CU_get_error();
-		
+	CU_ASSERT_DOUBLE_EQUAL(te_d1, tr_d1, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_d2, tr_d2, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_x1, tr_x1, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_y1, tr_y1, CHECK_EPS);
+
+	for(i=0; i<5; i++){
+		CU_ASSERT_DOUBLE_EQUAL(te_param[i], tr_param[i], CHECK_EPS);
 	}
-	
-
-	
-	printf("Seting OK\n");
-	fflush(stdout);
-	
-	/* Run all tests using the CUnit Basic interface */
-	CU_basic_set_mode(CU_BRM_VERBOSE);
-	
-	CU_basic_run_tests();
-	
-	CU_cleanup_registry();
-	
-	return CU_get_error();
-	
 }
-

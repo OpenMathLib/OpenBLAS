@@ -57,4 +57,6 @@ void test_caxpy_inc_0(void);
 void test_zdotu_n_1(void);
 void test_zdotu_offset_1(void);
 
+void test_drotmg(void);
+
 #endif
