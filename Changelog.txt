@@ -19,7 +19,8 @@ common:
 	* Fixed #25 a wrong result of rotmg.
 
 x86/x86_64:
-	* 
+	* Fixed #28 a wrong result of dsdot on x86_64.
+
 MIPS64:
 	* 
 ====================================================================

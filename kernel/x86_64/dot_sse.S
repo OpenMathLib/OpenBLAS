@@ -1286,6 +1286,10 @@
 	haddps	%xmm0, %xmm0
 #endif
 
+#ifdef DSDOT
+	cvtss2sd %xmm0, %xmm0
+#endif
+
 	RESTOREREGISTERS
 
 	ret
