@@ -56,6 +56,8 @@ CU_TestInfo test_level1[]={
 	{"Testing zdotu with input x & y offset == 1",test_zdotu_offset_1},
 
 	{"Testing drotmg",test_drotmg},
+
+	{"Testing dsdot with n == 1",test_dsdot_n_1},
 	CU_TEST_INFO_NULL,
 };
 
