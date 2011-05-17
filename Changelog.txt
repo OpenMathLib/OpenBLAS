@@ -1,7 +1,7 @@
 OpenBLAS ChangeLog
 ====================================================================
 Version 0.1 alpha2(in development)
-
+0;136;0c
 common:
 	* Fixed blasint undefined bug in <cblas.h> file. Other software 
 	  could include this header successfully(Refs issue #13 on github)
@@ -22,7 +22,8 @@ x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.
 
 MIPS64:
-	* 
+	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64. 
+
 ====================================================================
 Version 0.1 alpha1
 20-Mar-2011
