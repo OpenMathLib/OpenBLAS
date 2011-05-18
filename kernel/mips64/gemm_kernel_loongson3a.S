@@ -1,13 +1,9 @@
-#define gsLQC1(base,fq,ft,offset) .word(0x32<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
-#define gsSQC1(base,fq,ft,offset) .word(0x3A<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
-#define FETCH   ld
-
 #define REALNAME ASMNAME
-
 #define ASSEMBLER
 #include "common.h"
-
-
+#define FETCH	ld
+#define gsLQC1(base,fq,ft,offset) .word(0x32<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
+#define gsSQC1(base,fq,ft,offset) .word(0x3A<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
 
 #define M	$4
 #define	N	$5
@@ -163,81 +159,78 @@
 	ST	$f23,144($sp)
 
 
-	.align	5					#  BACKUP
-.L0_N4:							#  Loop N
-	ST	ALPHA,152($sp)		#  Backup	ALPHA
-	
-	move	MCO,M				#  Backup	M
+	.align	5					
+.L0_N4:									#  Loop N
+	ST	ALPHA,152($sp)					#  Backup	ALPHA
+	move	MCO,M						#  Backup	M
 
-	move	NCO,N				#  Backup	N
-	move	KCO,K				#  Backup	K
+	move	NCO,N						#  Backup	N
+	move	KCO,K						#  Backup	K
 
-	move	AO,A				#  Backup	A_addr
-	dsra	N,NCO,2				#  N=NCO/2
+	move	AO,A						#  Backup	A_addr
+	dsra	N,NCO,2						#  N=NCO/2
 	
 	dsll	LDC,LDC,BASE_SHIFT			#  LDC*8Byte
-	dsll	SPANB,KCO,2+BASE_SHIFT			#  SPANB=KC*NR(4)*8Byte=KC*2^5
+	dsll	SPANB,KCO,2+BASE_SHIFT		#  SPANB=KC*4nr*8Byte=KC*2^5
 	
-	move	BO,B				#  Backup	B_addr
-
 #if defined(TRMMKERNEL)
-	LDARG	OFFSET,160($sp)			#
+	LDARG	OFFSET,160($sp)				#	OFFSET is relate to the data part		
 #endif
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
-	neg	KK,OFFSET				#  right
+	neg		KK,OFFSET				
 #endif
 	
-	beq		N,$0,.L0_N2			#  N=0,NCO<4
-	dsll	SPANA,KCO,1+BASE_SHIFT			#  SPANA = KCO*4mr*8Byte
+	move	BO,B						#  Backup	B_addr
+	beq		N,$0,.L0_N2					#  N=0,NCO<4
+	dsll	SPANA,KCO,1+BASE_SHIFT		#  SPANA = KCO*2mr*8Byte
 
-.L0_N4_Lb:
-	move	CO1,C				#  Set C	
-	dsra	M,MCO,2				#  M=MCO/2
+.L0_N4_Lb:								#	mr=4,nr=4
+	move	CO1,C							
+	dsra	M,MCO,2						#  M=MCO/2
 	
-	move	A,AO				#  Reset A
-	daddu	CO2,CO1,LDC
+	move	A,AO						#  Reset A
+	daddu	CO2,C,LDC
 
+	daddu	PREB,BO,SPANB				#  PreB point next panelB
 	daddu	CO3,CO2,LDC
-	daddu	PREB,BO,SPANB		#  PreB point next panelB
 
-	daddu	CO4,CO3,LDC
 	daddu	PREA,AO,SPANA
+	daddu	CO4,CO3,LDC
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-	move	KK,OFFSET			#	left
+	move	KK,OFFSET					
 #endif
-
 	beqz	M,.L14_M2
-	daddu	C,CO4,LDC
+	daddu	C,CO4,LDC					#	move C to next panel Cj
 
 .L10:
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-	move	B,BO
+	move	B,BO						#	(SIDE=L and UPLO=L) or (SIZE=R and UPLO=U)
 #else
-	dsll	K,KK,2 + BASE_SHIFT		#  KK no data part
+	dsll	K,KK,2 + BASE_SHIFT			#  KK is the length that needs to span to the data part
 	dsll	TEMP,KK,2 + BASE_SHIFT
 
-	daddu	A,A,K					#  move A B to data part
+	daddu	A,A,K						#  move A B to data part
 	daddu	B,BO,TEMP
 #endif
 
 	MTC		$0,t11
 	MOV	t21,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
+	gsLQC1(R8,F1,F0,0)					#	a0,a1
 
 	MOV	t31,t11
 	MOV	t41,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
+	gsLQC1(R9,F9,F8,0)					#	b0,b1
 
 	MOV	t12,t11
 	MOV	t22,t11
-	gsLQC1(R8,F3,F2,1)			#a2,a3
+	gsLQC1(R8,F3,F2,1)					#	a2,a3
 	
 	MOV	t32,t11
 	MOV	t42,t11
-	gsLQC1(R9,F11,F10,1)		#b2,b3
+	gsLQC1(R9,F11,F10,1)				#	b2,b3
 
 	MOV	t13,t11
 	MOV	t23,t11
@@ -248,63 +241,60 @@
 	MOV	t14,t11
 	MOV	t24,t11
 	
-	MOV	t34,t11
-	MOV	t44,t11
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
-	dsubu	TEMP,KCO,KK			#  temp = kco - kk
+	dsubu	TEMP,KCO,KK					#  temp is the length of the data part
 #elif defined(LEFT)
-	daddiu	TEMP, KK, 4
+	daddiu	TEMP, KK, 4					#	S=L,U=L	
 #else
-	daddiu	TEMP, KK, 4
+	daddiu	TEMP, KK, 4					#	S=R,U=U,for this two situation KK is the length of the data part
 #endif
-
-	dsra	K,TEMP,2				#  K=KCO/2
+	dsra	K,TEMP,2					#  K=KCO/2
+	MOV	t34,t11
 	beqz	K,.L15
-	nop
+	MOV	t44,t11
 
 #else							
-	MTC		$0,t11				#  gemm part
-	move	B,BO
+	move	B,BO						#	Reset B
+	MTC		$0,t11						# 	GEMM part	NR=4,MR=4
+	gsLQC1(R8,F1,F0,0)					#	a0,a1
+
 	MOV	t21,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
-
 	MOV	t31,t11
+	gsLQC1(R9,F9,F8,0)					#	b0,b1
+
 	MOV	t41,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
-
 	MOV	t12,t11
+	gsLQC1(R8,F3,F2,1)					#	a2,a3
+	
 	MOV	t22,t11
-	gsLQC1(R8,F3,F2,1)			#a2,a3
-	
 	MOV	t32,t11
+	gsLQC1(R9,F11,F10,1)				#	b2,b3
+
 	MOV	t42,t11
-	gsLQC1(R9,F11,F10,1)		#b2,b3
-
-	dsra	K,KCO,2				#  K=KCO/2
+	dsra	K,KCO,2						#  K=KCO/2
+	
 	MOV	t13,t11
-	
 	MOV	t23,t11
+	
 	MOV	t33,t11
-
 	MOV	t43,t11
+
 	MOV	t14,t11
-	
 	MOV	t24,t11
-	MOV	t34,t11
 	
-	MOV	t44,t11
+	MOV	t34,t11
 	beqz	K,.L15
-	nop
+	MOV	t44,t11							#	clear 16 results registers
 #endif
 	
 	.align	5
-.L11:							#  N=M=K=4
-	gsLQC1(R8,F5,F4,2)			#  R8=A
+.L11:									#  kr=4
+	gsLQC1(R8,F5,F4,2)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
-	gsLQC1(R9,F13,F12,2)		#  R9=B
+	gsLQC1(R9,F13,F12,2)		
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
 
@@ -329,7 +319,7 @@
 
 	MADD	t34,t34,a2,b3
 	MADD	t44,t44,a3,b3
-								#load2 comp1
+								
 .L12:
 	gsLQC1(R8,F1,F0,4)
 	MADD	t11,t11,a4,b4
@@ -377,12 +367,12 @@
 	gsLQC1(R9,F15,F14,7)
 	MADD	t32,t32,a2,b1
 	MADD	t42,t42,a3,b1
-	daddu	A,A,16*SIZE				#  A+=4(mr)*4(kr)*8Byte=16*SIZE
+	daddu	A,A,16*SIZE					#  4mr*4kr
 
 	FETCH		$0,8*SIZE(PREB)
 	MADD	t13,t13,a0,b2
 	MADD	t23,t23,a1,b2
-	daddu	B,B,16*SIZE
+	daddu	B,B,16*SIZE					#	4nr*4kr
 
 	MADD	t14,t14,a0,b3
 	MADD	t24,t24,a1,b3
@@ -395,7 +385,7 @@
 	MADD	t44,t44,a3,b3
 	
 .L14:
-	gsLQC1(R8,F1,F0,0)
+	gsLQC1(R8,F1,F0,0)						
 	MADD	t11,t11,a4,b4
 	MADD	t21,t21,a5,b4
 
@@ -416,36 +406,34 @@
 	MADD	t13,t13,a4,b6
 	MADD	t23,t23,a5,b6
 
+	FETCH		$0,12*SIZE(PREA)
 	MADD	t14,t14,a4,b7
 	MADD	t24,t24,a5,b7
 
-	FETCH		$0,12*SIZE(PREA)
 	MADD	t33,t33,a6,b6
 	MADD	t43,t43,a7,b6
 	daddu	PREB,PREB,16*SIZE
 	
 	MADD	t34,t34,a6,b7
-	daddu	PREA,PREA,16*SIZE
-	bnez 	K,.L11
 	MADD	t44,t44,a7,b7
+	bnez 	K,.L11
+	daddu	PREA,PREA,16*SIZE
 
-.L15:							#  N=4 M=4 K=2
+.L15:									#  kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2				
 #else
 	andi	K,TEMP, 2
 #endif
-	nop
-	
 	beqz	K,.L18
 	nop
 
 .L16:			
-	gsLQC1(R8,F5,F4,2)			#  R8=A
+	gsLQC1(R8,F5,F4,2)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
-	gsLQC1(R9,F13,F12,2)		#  R9=B
+	gsLQC1(R9,F13,F12,2)		
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
 
@@ -456,17 +444,17 @@
 	gsLQC1(R9,F15,F14,3)
 	MADD	t32,t32,a2,b1
 	MADD	t42,t42,a3,b1
-	daddu	A,A,8*SIZE				#  A+=4(mr)*2(kr)*8Byte=8*SIZE
+	daddu	A,A,8*SIZE					#	4mr*2kr
 
 	FETCH		$0,0(PREB)
 	MADD	t13,t13,a0,b2
 	MADD	t23,t23,a1,b2
-	daddu	B,B,8*SIZE
+	daddu	B,B,8*SIZE					#	4nr*2kr
 
+	FETCH		$0,0(PREA)
 	MADD	t14,t14,a0,b3
 	MADD	t24,t24,a1,b3
 
-	FETCH		$0,0(PREA)
 	MADD	t33,t33,a2,b2
 	MADD	t43,t43,a3,b2
 
@@ -494,37 +482,35 @@
 	MADD	t13,t13,a4,b6
 	MADD	t23,t23,a5,b6
 
+	FETCH		$0,4*SIZE(PREA)
 	MADD	t14,t14,a4,b7
 	MADD	t24,t24,a5,b7
+	daddu	PREB,PREB,8*SIZE
 
-	FETCH		$0,4*SIZE(PREA)
 	MADD	t33,t33,a6,b6
 	MADD	t43,t43,a7,b6
-	daddu	PREB,PREB,8*SIZE
+	daddu	PREA,PREA,8*SIZE
 	
 	MADD	t34,t34,a6,b7
 	MADD	t44,t44,a7,b7
-	daddu	PREA,PREA,8*SIZE
 	
-.L18:							#  N=4, M=4, K=1
+.L18:									#	kr=1
 #ifndef TRMMKERNEL
 	andi	K,KCO,1
 #else
-	andi	K,TEMP, 1
+	andi	K,TEMP,1
 #endif
-	NOP
-
-	beqz	K,.L19				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L19				  
+	LD	ALPHA,152($sp)					#  Get ALPHA
 	
 	FETCH		$0,0(PREB)
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
-	daddu	A,A,4*SIZE				#  A+=4(mr)*1(kr)*8Byte=32
+	daddu	A,A,4*SIZE					#  	4mr*kr
 
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
-	daddu	B,B,4*SIZE
+	daddu	B,B,4*SIZE					#	4nr*kr
 
 	FETCH		$0,0(PREA)
 	MADD	t31,t31,a2,b0
@@ -547,10 +533,10 @@
 	MADD	t34,t34,a2,b3
 	MADD	t44,t44,a3,b3
 
-.L19:							#  Write Back
+.L19:									#  Write Back to C
 #ifndef TRMMKERNEL				
-	LD	c11,0(CO1)				#  gemm write part Fetch 16 C
-	LD	c21,1*SIZE(CO1)			
+	LD	c11,0(CO1)						#  GEMM write part 
+	LD	c21,1*SIZE(CO1)					#  get 16 C
 	LD	c31,2*SIZE(CO1)
 	LD	c41,3*SIZE(CO1)
 
@@ -589,7 +575,7 @@
 	MADD	t34,c34,t34,ALPHA
 	ST	t41,3*SIZE(CO1)
 	MADD	t44,c44,t44,ALPHA
-	daddiu	M,M,-1				#  M--
+	daddiu	M,M,-1						#  M--
 
 	ST	t12,0(CO2)
 	ST	t22,1*SIZE(CO2)
@@ -612,159 +598,160 @@
 	FETCH	$0,8*SIZE(CO4)
 
 	ST	t14,0(CO4)
-	daddu	CO1,CO1,4*SIZE			#  COx += 4*8Byte
+	daddu	CO1,CO1,4*SIZE				#  COi += 4
 	ST	t24,1*SIZE(CO4)
 	daddu	CO2,CO2,4*SIZE
 	ST	t34,2*SIZE(CO4)
 	daddu	CO3,CO3,4*SIZE
 	ST	t44,3*SIZE(CO4)
 	daddu	PREB,BO,SPANB
-	bnez	M,.L10				#  M!=0
+	
+	bnez	M,.L10				
 	daddu	CO4,CO4,4*SIZE
 
 #else							
-	MUL	t11, ALPHA, t11
+	MUL	t11, ALPHA, t11					#	TRMM write back part
 	MUL	t21, ALPHA, t21
 	MUL	t31, ALPHA, t31
 	MUL	t41, ALPHA, t41
 
 	ST	t11, 0 * SIZE(CO1)
-	ST	t21, 1 * SIZE(CO1)
-	ST	t31, 2 * SIZE(CO1)
-	ST	t41, 3 * SIZE(CO1)
-
 	MUL	t12, ALPHA, t12
+	ST	t21, 1 * SIZE(CO1)
 	MUL	t22, ALPHA, t22
+	ST	t31, 2 * SIZE(CO1)
 	MUL	t32, ALPHA, t32
+	ST	t41, 3 * SIZE(CO1)
 	MUL	t42, ALPHA, t42
 
 	ST	t12, 0 * SIZE(CO2)
-	ST	t22, 1 * SIZE(CO2)
-	ST	t32, 2 * SIZE(CO2)
-	ST	t42, 3 * SIZE(CO2)
-
 	MUL	t13, ALPHA, t13
+	ST	t22, 1 * SIZE(CO2)
 	MUL	t23, ALPHA, t23
+	ST	t32, 2 * SIZE(CO2)
 	MUL	t33, ALPHA, t33
+	ST	t42, 3 * SIZE(CO2)
 	MUL	t43, ALPHA, t43
 
 	ST	t13, 0 * SIZE(CO3)
-	ST	t23, 1 * SIZE(CO3)
-	ST	t33, 2 * SIZE(CO3)
-	ST	t43, 3 * SIZE(CO3)
-
 	MUL	t14, ALPHA, t14
+	ST	t23, 1 * SIZE(CO3)
 	MUL	t24, ALPHA, t24
+	ST	t33, 2 * SIZE(CO3)
 	MUL	t34, ALPHA, t34
+	ST	t43, 3 * SIZE(CO3)
 	MUL	t44, ALPHA, t44
 
 	ST	t14, 0 * SIZE(CO4)
+	daddiu	M,M,-1						#  M--
 	ST	t24, 1 * SIZE(CO4)
 	ST	t34, 2 * SIZE(CO4)
 	ST	t44, 3 * SIZE(CO4)
-
-	daddiu	M,M,-1				#  M--
-
-	daddiu	CO4,CO4, 4 * SIZE	#  trmm part write back
-	daddiu	CO3,CO3, 4 * SIZE
-	daddiu	CO2,CO2, 4 * SIZE
 	daddiu	CO1,CO1, 4 * SIZE
-	
+	daddiu	CO2,CO2, 4 * SIZE
+	daddiu	CO3,CO3, 4 * SIZE
+	daddiu	CO4,CO4, 4 * SIZE	
+
+	FETCH	$0,4*SIZE(CO1)
+	FETCH	$0,4*SIZE(CO2)
+	FETCH	$0,4*SIZE(CO3)
+	FETCH	$0,4*SIZE(CO4)
+
+	FETCH	$0,0(CO1)
+	FETCH	$0,0(CO2)
+	FETCH	$0,0(CO3)
+	FETCH	$0,0(CO4)
+
 #if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-	dsubu	TEMP,KCO,KK
+	dsubu	TEMP,KCO,KK								
 #ifdef LEFT
 	daddiu	TEMP,TEMP, -4
 #else
 	daddiu	TEMP,TEMP, -4
 #endif
-
 	dsll	K,TEMP,2 + BASE_SHIFT
 	dsll	TEMP,TEMP,2 + BASE_SHIFT
-
-	daddu	A,A,K				# mov A to the end of panel Ai
-	daddu	B,B,TEMP			# mov B to the end of panel Bj
+	daddu	A,A,K						# 	mov A to the end of panel Ai
+	daddu	B,B,TEMP					# 	mov B to the end of panel Bj
 #endif
 
-#ifdef LEFT						#	right control by N loop
+#ifdef LEFT										
 	daddiu	KK, KK,4
 #endif
-	bnez	M,.L10				#  M!=0
+	bnez	M,.L10					
 	nop
 #endif
 
 
-
+	.align 3
 .L14_M2:
-	andi		M,MCO,2				#  Remainder M = 2
+	andi	M, MCO, 2					#	nr=4,mr=2
 	beqz	M,.L14_M1			
 	nop
 
 .L20:
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-	move	B,BO
+	move	B,BO						#	Reset B
 #else
-	dsll	K,KK,1 + BASE_SHIFT	#mr=2 so KK*2
-	dsll	TEMP,KK,2 + BASE_SHIFT
-
+	dsll	K,KK,1 + BASE_SHIFT			#	mr=2	
+	dsll	TEMP,KK,2 + BASE_SHIFT		#	nr=4
 	daddu	A,A,K
 	daddu	B,BO,TEMP
 #endif
 
 	MTC		$0,t11
 	MOV	t21,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
+	gsLQC1(R8,F1,F0,0)					#	a0,a1
 
 	MOV	t12,t11
 	MOV	t22,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
+	gsLQC1(R9,F9,F8,0)					#	b0,b1
 	
 	MOV	t13,t11
-	gsLQC1(R9,F11,F10,1)		#b2,b3
-	
 	MOV	t23,t11
-	MOV	t14,t11
-	MOV	t24,t11
+	gsLQC1(R9,F11,F10,1)				#	b2,b3
+	
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP,KCO,KK
 #elif defined(LEFT)
-	daddiu	TEMP,KK,2
+	daddiu	TEMP,KK,2					#	left part,controlled by mr, mr=2
 #else
-	daddiu	TEMP,KK,4			#  not sure
+	daddiu	TEMP,KK,4					#  	right part,controlled by nr,nr=4
 #endif
 	dsra	K,TEMP,2
+	MOV	t14,t11
 	beqz	K,.L25
-	nop
+	MOV	t24,t11							#	clear 2*4=8 results registers
 
 #else
-	move	B,BO				# gemm part 
+	move	B,BO						#	Reset B 
 	MTC		$0,t11
+	gsLQC1(R8,F1,F0,0)		
+	
 	MOV	t21,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
-
 	MOV	t12,t11
+	gsLQC1(R9,F9,F8,0)			
+
 	MOV	t22,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
+	dsra	K,KCO,2				
+	gsLQC1(R9,F11,F10,1)		
 	
-	dsra	K,KCO,2				#  K=KCO/2
 	MOV	t13,t11
-	gsLQC1(R9,F11,F10,1)		#b2,b3
-	
 	MOV	t23,t11
-	MOV	t14,t11
 	
-	MOV	t24,t11
+	MOV	t14,t11
 	beqz	K,.L25
-	nop
+	MOV	t24,t11
 #endif
 
-.L21:							#  N=4 m=2,=K=4
-	gsLQC1(R8,F5,F4,1)			#  R8=A
+.L21:									#  nr=4,mr=2,kr=4
+	gsLQC1(R8,F5,F4,1)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
-	gsLQC1(R9,F13,F12,2)		#  R9=B
+	gsLQC1(R9,F13,F12,2)		
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
 
@@ -772,51 +759,51 @@
 	MADD	t13,t13,a0,b2
 	MADD	t23,t23,a1,b2
 	
-	gsLQC1(R8,F3,F2,2)
 	MADD	t14,t14,a0,b3
 	MADD	t24,t24,a1,b3
 	
-	gsLQC1(R9,F9,F8,4)
+	gsLQC1(R8,F3,F2,2)
 	MADD	t11,t11,a4,b4
 	MADD	t21,t21,a5,b4
 
-	gsLQC1(R9,F11,F10,5)
+	gsLQC1(R9,F9,F8,4)
 	MADD	t12,t12,a4,b5
 	MADD	t22,t22,a5,b5
 
-	gsLQC1(R8,F7,F6,3)	
+	gsLQC1(R9,F11,F10,5)
 	MADD	t13,t13,a4,b6
 	MADD	t23,t23,a5,b6
 
 	MADD	t14,t14,a4,b7
 	MADD	t24,t24,a5,b7
-
-	gsLQC1(R9,F13,F12,6)
-	MADD	t11,t11,a2,b0
-	MADD	t21,t21,a3,b0
-	daddu	A,A,8*SIZE				#  A+=2(mr)*4(kr)*8Byte=8*SIZE
-
-	gsLQC1(R9,F15,F14,7)
-	MADD	t12,t12,a2,b1
-	MADD	t22,t22,a3,b1
 	daddiu	K,K,-1
 
-	gsLQC1(R8,F1,F0,0)
+	gsLQC1(R8,F7,F6,3)	
+	MADD	t11,t11,a2,b0
+	MADD	t21,t21,a3,b0
+
+	gsLQC1(R9,F13,F12,6)
+	MADD	t12,t12,a2,b1
+	MADD	t22,t22,a3,b1
+
+	gsLQC1(R9,F15,F14,7)
 	MADD	t13,t13,a2,b2
 	MADD	t23,t23,a3,b2
-	daddu	B,B,16*SIZE				#  B+=4(nr)*4(kr)*8Byte=16*SIZE
+	daddu	A,A,8*SIZE					#  2mr*4kr
 
 	MADD	t14,t14,a2,b3
 	MADD	t24,t24,a3,b3
+	daddu	B,B,16*SIZE					#	4nr*4kr
 
-	gsLQC1(R9,F9,F8,0)
+	gsLQC1(R8,F1,F0,0)
 	MADD	t11,t11,a6,b4
 	MADD	t21,t21,a7,b4
 
-	gsLQC1(R9,F11,F10,1)
+	gsLQC1(R9,F9,F8,0)
 	MADD	t12,t12,a6,b5
 	MADD	t22,t22,a7,b5
 
+	gsLQC1(R9,F11,F10,1)
 	MADD	t13,t13,a6,b6
 	MADD	t23,t23,a7,b6
 
@@ -824,32 +811,32 @@
 	bnez 	K,.L21
 	MADD	t24,t24,a7,b7
 
-.L25:							#  N=4 M=2 K=2
+.L25:										
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2						#	kr=2
 #else
-	andi		K,TEMP,2
+	andi	K,TEMP,2
 #endif
 	beqz	K,.L28
 	nop
 
 .L26:			
-	gsLQC1(R8,F5,F4,1)			#  R8=A
+	gsLQC1(R8,F5,F4,1)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
-	gsLQC1(R9,F13,F12,2)		#  R9=B
+	gsLQC1(R9,F13,F12,2)		
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
-	daddu	A,A,4*SIZE				#  A+=2(mr)*2(kr)*8Byte=32
 
 	gsLQC1(R9,F15,F14,3)
 	MADD	t13,t13,a0,b2
 	MADD	t23,t23,a1,b2
-	daddu	B,B,8*SIZE
+	daddu	A,A,4*SIZE					#  	2mr*2kr
 	
 	MADD	t14,t14,a0,b3
 	MADD	t24,t24,a1,b3
+	daddu	B,B,8*SIZE					#	4nr*2kr
 
 .L27:
 	gsLQC1(R8,F1,F0,0)
@@ -867,19 +854,19 @@
 	MADD	t14,t14,a4,b7
 	MADD	t24,t24,a5,b7
 	
-.L28:							#  N=4, M=2, K=1
+.L28:									#	kr=1	
 #ifndef TRMMKERNEL
-	andi		K,KCO,1
+	andi	K,KCO,1
 #else
-	andi		K,TEMP,1
+	andi	K,TEMP,1
 #endif
-	beqz	K,.L29				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L29				  
+	LD	ALPHA,152($sp)					#  Get ALPHA
 	
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
-	daddu	A,A,2*SIZE				#  A+=2(mr)*1(kr)*8Byte=16
-	daddu	B,B,4*SIZE
+	daddu	A,A,2*SIZE					#  2mr*kr
+	daddu	B,B,4*SIZE					#  4nr*kr
 
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
@@ -890,9 +877,9 @@
 	MADD	t14,t14,a0,b3
 	MADD	t24,t24,a1,b3
 
-.L29:							#  Write Back
+.L29:									#  Write Back to C
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  gemm write back part  Fetch 16 C
+	LD	c11,0(CO1)						#	GEMM write back part
 	LD	c21,1*SIZE(CO1)			
 
 	LD	c12,0(CO2)
@@ -919,64 +906,64 @@
 	MADD	t24,c24,t24,ALPHA
 
 	ST	t13,0(CO3)
+	daddu	CO1,CO1,2*SIZE				#  COi += 2
 	ST	t23,1*SIZE(CO3)
-	daddu	CO1,CO1,2*SIZE			#  COx += 2*8Byte
-
-	FETCH	$0,0(CO1)
-	FETCH	$0,2*SIZE(CO2)
-	FETCH	$0,2*SIZE(CO3)
-	FETCH	$0,2*SIZE(CO4)
+	daddu	CO2,CO2,2*SIZE
 
 	ST	t14,0(CO4)
-	daddu	CO2,CO2,2*SIZE
-	ST	t24,1*SIZE(CO4)
 	daddu	CO3,CO3,2*SIZE
+	ST	t24,1*SIZE(CO4)
 	daddu	CO4,CO4,2*SIZE
 
+	FETCH	$0,0(CO1)
+	FETCH	$0,0(CO2)
+	FETCH	$0,0(CO3)
+	FETCH	$0,0(CO4)
+
 #else
-	MUL	t11, ALPHA, t11
+	MUL	t11, ALPHA, t11					#	TRMM write back part
 	MUL	t21, ALPHA, t21
 	
 	ST	t11, 0 * SIZE(CO1)
-	ST	t21, 1 * SIZE(CO1)
-
 	MUL	t12, ALPHA, t12
+	ST	t21, 1 * SIZE(CO1)
 	MUL	t22, ALPHA, t22
 	
 	ST	t12, 0 * SIZE(CO2)
-	ST	t22, 1 * SIZE(CO2)
-
 	MUL	t13, ALPHA, t13
+	ST	t22, 1 * SIZE(CO2)
 	MUL	t23, ALPHA, t23
 	
 	ST	t13, 0 * SIZE(CO3)
-	ST	t23, 1 * SIZE(CO3)
-
 	MUL	t14, ALPHA, t14
+	ST	t23, 1 * SIZE(CO3)
 	MUL	t24, ALPHA, t24
 	
 	ST	t14, 0 * SIZE(CO4)
 	ST	t24, 1 * SIZE(CO4)
-
+	
 	daddiu	CO1,CO1, 2 * SIZE
 	daddiu	CO2,CO2, 2 * SIZE
 	daddiu	CO3,CO3, 2 * SIZE
 	daddiu	CO4,CO4, 2 * SIZE
 
-#if ( defined(LEFT) &&  defined(TRANSA)) || \
-    (!defined(LEFT) && !defined(TRANSA))
+	FETCH	$0,0(CO1)
+	FETCH	$0,0(CO2)
+	FETCH	$0,0(CO3)
+	FETCH	$0,0(CO4)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP,KCO,KK
 #ifdef LEFT
 	daddiu	TEMP,TEMP,-2
 #else
 	daddiu	TEMP,TEMP,-4
 #endif
-
 	dsll	K,TEMP,1 + BASE_SHIFT
 	dsll	TEMP,TEMP,2 + BASE_SHIFT
 
-	daddu	A,A,K
-	daddu	B,B,TEMP
+	daddu	A,A,K						#	move A to next panel Ai
+	daddu	B,B,TEMP					#	move B to next panel Bj
 #endif
 
 #ifdef LEFT
@@ -985,15 +972,16 @@
 #endif
 
 
+	.align 3
 .L14_M1:
-	andi		M,MCO,1				#  Remainder M = 1
-	beqz	M,.L0_N4_Loop		#  M = 0, finishing one panel B
+	andi	M,MCO,1						#	mr=1	
+	beqz	M,.L0_N4_Loop				#  	M = 0, finishing one panel Bj
 	nop
 
 .L30:
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-	move	B,BO
+	move	B,BO						#	Reset B
 #else
 	dsll	K,KK, 0 + BASE_SHIFT
 	dsll	TEMP,KK,2 + BASE_SHIFT
@@ -1001,14 +989,15 @@
 	daddu	A,A,K
 	daddu	B,BO,TEMP
 #endif
-
-	LD	a0,	0 * SIZE(A)
-#	gsLQC1(R8,F1,F0,0)
-	gsLQC1(R9,F9,F8,0)			#b0,b1
 	MTC		$0,t11
-	gsLQC1(R9,F11,F10,1)		#b2,b3
 	MOV	t12,t11
+	LD	a0,	0 * SIZE(A)					#	a0
+
 	MOV	t13,t11
+	gsLQC1(R9,F9,F8,0)					#	b0,b1
+
+	MOV	t14,t11							#	clear result registers
+	gsLQC1(R9,F11,F10,1)				#	b2,b3
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
@@ -1018,39 +1007,42 @@
 	daddiu	TEMP, KK, 4
 #endif
 	dsra	K,TEMP, 2
-
+	nop
 	beqz	K,.L35
-	MOV	t14,t11
+	nop
+								
 #else							
-								#	gemm 
-	move	B,BO
-	LD	a0, 0 * SIZE(A)
-#	gsLQC1(R8,F1,F0,0)
-	dsra	K,KCO,2				#  K=KCO/2
-	gsLQC1(R9,F9,F8,0)			#b0,b1
+	move	B,BO						#	Reset B, GEMM part
+	dsra	K,KCO,2						#  	K=KCO/2
+	LD	a0, 0 * SIZE(A)					#	a0
+
 	MTC		$0,t11
-	gsLQC1(R9,F11,F10,1)		#b2,b3
 	MOV	t12,t11
+	gsLQC1(R9,F9,F8,0)					#	b0,b1
+
 	MOV	t13,t11
-	dsra	K,KCO,2
-	beqz	K,.L35
 	MOV	t14,t11
+	gsLQC1(R9,F11,F10,1)				#	b2,b3
+	
+	beqz	K,.L35
+	nop
 #endif
 
-.L31:							#  N=4 m=1,=K=4
-#	gsLQC1(R8,F3,F2,1)	
-	LD	a1,	1*SIZE(A)
-	gsLQC1(R9,F13,F12,2)		#  R9=B
+.L31:									#	nr=4,mr=1,kr=4	
+	LD	a1,	1*SIZE(A)					#	load a1
 	MADD	t11,t11,a0,b0
+	
+	gsLQC1(R9,F13,F12,2)				#	b4,b5
 	MADD	t12,t12,a0,b1
 	
-	gsLQC1(R9,F15,F14,3)
+	gsLQC1(R9,F15,F14,3)				#	b6,b7
 	MADD	t13,t13,a0,b2
 	MADD	t14,t14,a0,b3
 
-	LD	a2,	2*SIZE(A)
-	gsLQC1(R9,F9,F8,4)
+	LD	a2,	2*SIZE(A)					#	a2
 	MADD	t11,t11,a1,b4
+	
+	gsLQC1(R9,F9,F8,4)
 	MADD	t12,t12,a1,b5
 	
 	gsLQC1(R9,F11,F10,5)
@@ -1058,22 +1050,22 @@
 	MADD	t14,t14,a1,b7
 	daddiu	K,K,-1
 
-	LD	a3,	3*SIZE(A)
-	gsLQC1(R9,F13,F12,6)
+	LD	a3,	3*SIZE(A)					#	a3
 	MADD	t11,t11,a2,b0
+	
+	gsLQC1(R9,F13,F12,6)
 	MADD	t12,t12,a2,b1
+	daddu	A,A,4*SIZE					#	1mr*4kr
 	
 	gsLQC1(R9,F15,F14,7)
 	MADD	t13,t13,a2,b2
 	MADD	t14,t14,a2,b3
-	
-	daddu	A,A,4*SIZE				#  A+=1(mr)*4(kr)*8Byte=8*SIZE
-	daddu	B,B,16*SIZE				#  B+=4(nr)*4(kr)*8Byte=16*SIZE
+	daddu	B,B,16*SIZE					#	4nr*4kr
 
-#	gsLQC1(R8,F1,F0,0)	
-	LD	a0,	0*SIZE(A)
-	gsLQC1(R9,F9,F8,0)
+	LD	a0,	0*SIZE(A)					#	a0
 	MADD	t11,t11,a3,b4
+	
+	gsLQC1(R9,F9,F8,0)
 	MADD	t12,t12,a3,b5
 	
 	gsLQC1(R9,F11,F10,1)
@@ -1081,58 +1073,60 @@
 	bnez 	K,.L31
 	MADD	t14,t14,a3,b7
 
-.L35:							#  N=4 M=1 K=2
+.L35:									#  kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2			
 #else
-	andi		K,TEMP,2
+	andi	K,TEMP,2
 #endif
 	beqz	K,.L38
 	nop
 
 .L36:			
-	LD	a1,1*SIZE(A)
-	gsLQC1(R9,F13,F12,2)		#  R9=B
+	LD	a1,1*SIZE(A)					#	load a1
 	MADD	t11,t11,a0,b0
+	
+	gsLQC1(R9,F13,F12,2)				
 	MADD	t12,t12,a0,b1
-	daddu	A,A,2*SIZE				#  A+=1(mr)*2(kr)*8Byte=32
+	daddu	A,A,2*SIZE					#  	mr*2kr
 	
 	gsLQC1(R9,F15,F14,3)
 	MADD	t13,t13,a0,b2
 	MADD	t14,t14,a0,b3
-	daddu	B,B,8*SIZE
+	daddu	B,B,8*SIZE					#	4nr*2kr
 
 
 .L37:
 	LD	a0,0(A)
-	gsLQC1(R9,F9,F8,0)
 	MADD	t11,t11,a1,b4
+	
+	gsLQC1(R9,F9,F8,0)
 	MADD	t12,t12,a1,b5
 	
 	gsLQC1(R9,F11,F10,1)
 	MADD	t13,t13,a1,b6
 	MADD	t14,t14,a1,b7
 	
-.L38:							#  N=4, M=1, K=1
+.L38:									#  	kr=1
 #ifndef TRMMKERNEL
-	andi		K,KCO,1
+	andi	K,KCO,1
 #else
 	andi	K,TEMP,1
 #endif
-	beqz	K,.L39				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L39				
+	LD	ALPHA,152($sp)					#  Get ALPHA
 	
 	MADD	t11,t11,a0,b0
 	MADD	t12,t12,a0,b1
-	daddu	A,A,1*SIZE				#  A+=1(mr)*1(kr)*8Byte=16
+	daddu	A,A,1*SIZE				
 	daddu	B,B,4*SIZE
 	
 	MADD	t13,t13,a0,b2
 	MADD	t14,t14,a0,b3
 
-.L39:							#  Write Back
+.L39:									#  Write Back
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  Fetch 16 C
+	LD	c11,0(CO1)			
 	LD	c12,0(CO2)
 	LD	c13,0(CO3)
 	LD	c14,0(CO4)
@@ -1157,8 +1151,7 @@
 	ST	t13,  0 * SIZE(CO3)
 	ST	t14,  0 * SIZE(CO4)
 
-#if ( defined(LEFT) &&  defined(TRANSA)) || \
-    (!defined(LEFT) && !defined(TRANSA))
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #ifdef LEFT
 	daddiu	TEMP, TEMP, -1
@@ -1179,64 +1172,60 @@
 #endif
 
 
-.L0_N4_Loop:
-	daddiu	N,N,-1				#  N--
+	.align	3
+.L0_N4_Loop:								#	mc finished
+	daddiu	N,N,-1							#  N--
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	daddiu	KK, KK,4 
 #endif
-	bnez	N,.L0_N4_Lb			#  N!=0
-	move	BO,B				#  Set B
-
-
+	bnez	N,.L0_N4_Lb			
+	move	BO,B							#  Set BO point to next panel Bj
 
 	.align	5					
 .L0_N2:
-	andi		N,NCO,2				#  Remainder N = 2
-	beqz	N,.L0_N1			#  N=0,NCO<2
+	andi	N,NCO,2							#  	nr = 2
+	beqz	N,.L0_N1		
 	nop
 
 .L0_N2_Lb:
-	move	CO1,C				#  Set C	
-	dsra	M,MCO,2				#  M=MCO/2
+	move	CO1,C					
+	daddu	CO2,C,LDC
+
+	dsra	M,MCO,2				
+	move	A,AO							#  Reset A
+
+	daddu	PREA,AO,SPANA
+	daddu	C,CO2,LDC
 
 #if defined(TRMMKERNEL) &&  defined(LEFT)
 	move	KK, OFFSET
 #endif
-
-	dsll	SPANB,KCO,1+BASE_SHIFT			#  SPANB=KC*NR(2)*8Byte=KC*16=KC*2^4
-	move	A,AO				#  Reset A
-
-	daddu	CO2,CO1,LDC
-	daddu	PREA,AO,SPANA
 	beqz	M,.L12_M2
-	daddu	C,CO2,LDC
+	nop
 
 .L40:						
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-	move	B,BO
+	move	B,BO							#	Reset B
 #else
-	dsll	K,KK, 2 + BASE_SHIFT	# mr=4
-	dsll	TEMP, KK,1 + BASE_SHIFT	# nr=2
+	dsll	K,KK, 2 + BASE_SHIFT
+	dsll	TEMP, KK,1 + BASE_SHIFT	
 
 	daddu	A,A,K
 	daddu	B,BO,TEMP
 #endif
 	MTC		$0,t11
 	MOV	t21,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
+	gsLQC1(R8,F1,F0,0)						#	a0,a1
 
 	MOV	t31,t11
 	MOV	t41,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
+	gsLQC1(R9,F9,F8,0)						#	b0,b1
 
 	MOV	t12,t11
-	gsLQC1(R8,F3,F2,1)			#a2,a3
-	
 	MOV	t22,t11
-	MOV	t32,t11
+	gsLQC1(R8,F3,F2,1)						#	a2,a3
 	
-	MOV	t42,t11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP,KCO,KK
 #elif defined(LEFT)
@@ -1244,37 +1233,38 @@
 #else
 	daddiu	TEMP, KK, 2
 #endif
-	dsra	K,TEMP,2				#  K=KCO/2
-	beqz	K,.L45
-	nop
-#else
-	move	B,BO
-	MTC		$0,t11				#  gemm part
-	MOV	t21,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
-
-	MOV	t31,t11
-	MOV	t41,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
-
-	dsra	K,KCO,2				#  K=KCO/2
-	MOV	t12,t11
-	gsLQC1(R8,F3,F2,1)			#a2,a3
-	
-	MOV	t22,t11
+	dsra	K,TEMP,2				
 	MOV	t32,t11
-	
-	MOV	t42,t11
 	beqz	K,.L45
-	nop
+	MOV	t42,t11
+
+#else
+	move	B,BO							#	Reset B
+	MTC		$0,t11							#  	gemm part
+	gsLQC1(R8,F1,F0,0)						#	a0,a1
+
+	MOV	t21,t11
+	MOV	t31,t11
+	gsLQC1(R9,F9,F8,0)						#	b0,b1
+
+	MOV	t41,t11
+	dsra	K,KCO,2							#	K=KCO/2
+	gsLQC1(R8,F3,F2,1)						#	a2,a3
+	
+	MOV	t12,t11
+	MOV	t22,t11
+	
+	MOV	t32,t11
+	beqz	K,.L45
+	MOV	t42,t11
 #endif
 
-.L41:							#  N=2,M=K=4
-	gsLQC1(R8,F5,F4,2)			#  R8=A
+.L41:										#  	nr=2,mr=kr=4
+	gsLQC1(R8,F5,F4,2)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
-	gsLQC1(R9,F13,F12,1)		#  R9=B
+	gsLQC1(R9,F13,F12,1)	
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
 
@@ -1315,12 +1305,12 @@
 	gsLQC1(R8,F7,F6,7)
 	MADD	t31,t31,a2,b2
 	MADD	t41,t41,a3,b2
-	daddu	B,B,8*SIZE				#  B+=2(nr)*4(kr)*8Byte=8*SIZE
+	daddu	B,B,8*SIZE						#	2nr*4kr	
 
 	FETCH		$0,8*SIZE(PREA)
 	MADD	t32,t32,a2,b3
 	MADD	t42,t42,a3,b3
-	daddu	A,A,16*SIZE				#  A+=4(mr)*4(kr)*8Byte=16*SIZE
+	daddu	A,A,16*SIZE						#	4mr*4kr
 
 .L44:
 	gsLQC1(R8,F1,F0,0)
@@ -1343,9 +1333,9 @@
 	MADD	t42,t42,a7,b7
 
 
-.L45:							#  N=2 M=4 K=2
+.L45:										#  	kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2				
 #else
 	andi	K,TEMP,2
 #endif
@@ -1353,23 +1343,23 @@
 	nop
 
 .L46:			
-	gsLQC1(R8,F5,F4,2)			#  R8=A
+	gsLQC1(R8,F5,F4,2)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
-	gsLQC1(R9,F13,F12,1)		#  R9=B
+	gsLQC1(R9,F13,F12,1)		
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
 
 	gsLQC1(R8,F7,F6,3)
 	MADD	t31,t31,a2,b0
 	MADD	t41,t41,a3,b0
-	daddu	B,B,4*SIZE				#  B+=2(nr)*2(kr)*8Byte=32
+	daddu	B,B,4*SIZE						#  B+=2(nr)*2(kr)*8Byte=32
 
 	FETCH		$0,0(PREA)
 	MADD	t32,t32,a2,b1
 	MADD	t42,t42,a3,b1
-	daddu	A,A,8*SIZE				#  A+=4(mr)*2(kr)*8Byte=8*SIZE
+	daddu	A,A,8*SIZE						#  A+=4(mr)*2(kr)*8Byte=8*SIZE
 
 .L47:
 	gsLQC1(R8,F1,F0,0)
@@ -1390,19 +1380,19 @@
 	daddu	PREA,PREA,8*SIZE
 
 	
-.L48:							#  N=2, M=4, K=1
+.L48:										#	 kr=1
 #ifndef TRMMKERNEL
-	andi		K,KCO,1
+	andi	K,KCO,1
 #else
 	andi	K,TEMP,1
 #endif
-	beqz	K,.L49				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L49				 
+	LD	ALPHA,152($sp)						#  Get ALPHA
 	
 	FETCH		$0,0(PREA)
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
-	daddu	A,A,4*SIZE				#  A+=4(mr)*1(kr)*8Byte=32
+	daddu	A,A,4*SIZE						#  A+=4(mr)*1(kr)*8Byte=32
 
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
@@ -1415,9 +1405,9 @@
 	MADD	t32,t32,a2,b1
 	MADD	t42,t42,a3,b1
 
-.L49:							#  Write Back
+.L49:										#  Write Back
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  gemm write back part Fetch 16 C
+	LD	c11,0(CO1)							#  gemm write back part Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 	LD	c31,2*SIZE(CO1)
 	LD	c41,3*SIZE(CO1)
@@ -1439,7 +1429,7 @@
 	MADD	t32,c32,t32,ALPHA
 	ST	t41,3*SIZE(CO1)
 	MADD	t42,c42,t42,ALPHA
-	daddiu	M,M,-1				#  M--
+	daddiu	M,M,-1				
 
 	ST	t12,0(CO2)
 	ST	t22,1*SIZE(CO2)
@@ -1448,48 +1438,49 @@
 
 	FETCH	$0,4*SIZE(CO1)
 	FETCH	$0,4*SIZE(CO2)
-
 	FETCH	$0,8*SIZE(CO1)
 	FETCH	$0,8*SIZE(CO2)
 
-	daddu	CO1,CO1,4*SIZE			#  COx += 4*8Byte
-	bnez	M,.L40				#  M!=0
+	daddu	CO1,CO1,4*SIZE			
+	bnez	M,.L40				
 	daddu	CO2,CO2,4*SIZE
+
 #else
-	daddiu	M,M,-1
-
-	daddiu	CO1,CO1, 4*SIZE
-	daddiu	CO2,CO2, 4*SIZE
-
 	MUL	t11, ALPHA, t11
 	MUL	t21, ALPHA, t21
 	MUL	t31, ALPHA, t31
 	MUL	t41, ALPHA, t41
 	
 	MUL	t12, ALPHA, t12
+	ST	t11, 0 * SIZE(CO1)
 	MUL	t22, ALPHA, t22
+	ST	t21, 1 * SIZE(CO1)
 	MUL	t32, ALPHA, t32
+	ST	t31, 2 * SIZE(CO1)
 	MUL	t42, ALPHA, t42
-
-	ST	t11, -4 * SIZE(CO1)
-	ST	t21, -3 * SIZE(CO1)
-	ST	t31, -2 * SIZE(CO1)
-	ST	t41, -1 * SIZE(CO1)
+	ST	t41, 3 * SIZE(CO1)
 	
-	ST	t12, -4 * SIZE(CO2)
-	ST	t22, -3 * SIZE(CO2)
-	ST	t32, -2 * SIZE(CO2)
-	ST	t42, -1 * SIZE(CO2)
+	ST	t12, 0 * SIZE(CO2)
+	daddiu	M,M,-1
+	ST	t22, 1 * SIZE(CO2)
+	ST	t32, 2 * SIZE(CO2)
+	ST	t42, 3 * SIZE(CO2)
+	
+	daddiu	CO1,CO1, 4*SIZE
+	daddiu	CO2,CO2, 4*SIZE
 
-#if ( defined(LEFT) &&  defined(TRANSA)) || \
-    (!defined(LEFT) && !defined(TRANSA))
+	FETCH	$0,0(CO1)
+	FETCH	$0,0(CO2)
+	FETCH	$0,4(CO1)
+	FETCH	$0,4(CO2)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) ||(!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #ifdef LEFT
 	daddiu	TEMP, TEMP, -4
 #else
 	daddiu	TEMP, TEMP, -2
 #endif
-
 	dsll	K,TEMP, 2 + BASE_SHIFT
 	dsll	TEMP, TEMP, 1 + BASE_SHIFT
 
@@ -1500,13 +1491,14 @@
 #ifdef LEFT
 	daddiu	KK, KK, 4
 #endif
-
 	bnez	M,.L40
 	nop
 #endif
 
+
+	.align 3
 .L12_M2:
-	andi		M,MCO,2				#  Remainder M = 2
+	andi	M,MCO,2						#  	mr = 2
 	beqz	M,.L12_M1			
 	nop
 
@@ -1522,13 +1514,10 @@
 	daddu	B, BO,  TEMP
 #endif
 	MTC		$0,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
+	gsLQC1(R8,F1,F0,0)					#a0,a1
 
 	MOV	t21,t11
-	MOV	t12,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
-	
-	MOV	t22,t11
+	gsLQC1(R9,F9,F8,0)					#b0,b1
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #elif defined(LEFT)
@@ -1536,31 +1525,31 @@
 #else
 	daddiu	TEMP, KK, 2
 #endif
-	dsra	K,TEMP,2				#  K=KCO/2
+	dsra	K,TEMP,2			
+	MOV	t12,t11
 	beqz	K,.L55
-	nop
+	MOV	t22,t11
 
 #else
 	move	B,BO
-	dsra	K,KCO,2				#  K=KCO/2
-	MTC		$0,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
+	dsra	K,KCO,2						#  K=KCO/2
+	gsLQC1(R8,F1,F0,0)					#a0,a1
 
+	MTC		$0,t11
 	MOV	t21,t11
-	MOV	t12,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
+	gsLQC1(R9,F9,F8,0)					#b0,b1
 	
-	MOV	t22,t11
+	MOV	t12,t11
 	beqz	K,.L55
-	nop
+	MOV	t22,t11
 #endif
 
-.L51:							#  N=2 m=2,=K=4
-	gsLQC1(R8,F5,F4,1)			#  R8=A
+.L51:									#  nr=2 mr=2,kr=4
+	gsLQC1(R8,F5,F4,1)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
-	gsLQC1(R9,F13,F12,1)		#  R9=B
+	gsLQC1(R9,F13,F12,1)	
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
 
@@ -1576,12 +1565,12 @@
 	gsLQC1(R8,F7,F6,3)	
 	MADD	t11,t11,a2,b2
 	MADD	t21,t21,a3,b2
-	daddu	A,A,8*SIZE				#  A+=2(mr)*4(kr)*8Byte=8*SIZE
+	daddu	A,A,8*SIZE					#  A+=2(mr)*4(kr)*8Byte=8*SIZE
 
 	gsLQC1(R9,F15,F14,3)
 	MADD	t12,t12,a2,b3
 	MADD	t22,t22,a3,b3
-	daddu	B,B,8*SIZE				#  B+=2(nr)*4(kr)*8Byte=16*SIZE
+	daddu	B,B,8*SIZE					#  B+=2(nr)*4(kr)*8Byte=16*SIZE
 
 	gsLQC1(R8,F1,F0,0)
 	MADD	t11,t11,a6,b6
@@ -1592,26 +1581,25 @@
 	bnez 	K,.L51
 	MADD	t22,t22,a7,b7
 
-.L55:							#  N=2 M=2 K=2
+.L55:									#  	kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2				
 #else
 	andi	K,TEMP,2
 #endif
-	NOP
 	beqz	K,.L58
 	nop
 
 .L56:			
-	gsLQC1(R8,F5,F4,1)			#  R8=A
+	gsLQC1(R8,F5,F4,1)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
-	daddu	A,A,4*SIZE				#  A+=2(mr)*2(kr)*8Byte=32
+	daddu	A,A,4*SIZE					#  A+=2(mr)*2(kr)*8Byte=32
 
-	gsLQC1(R9,F13,F12,1)		#  R9=B
+	gsLQC1(R9,F13,F12,1)		
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
-	daddu	B,B,4*SIZE
+	daddu	B,B,4*SIZE					#	2nr*2kr
 
 .L57:
 	gsLQC1(R8,F1,F0,0)
@@ -1623,27 +1611,27 @@
 	MADD	t22,t22,a5,b5
 
 	
-.L58:							#  N=2, M=2, K=1
+.L58:									#  kr=1
 #ifndef TRMMKERNEL
-	andi		K,KCO,1
+	andi	K,KCO,1
 #else
-	andi		K,  TEMP, 1
+	andi	K,TEMP, 1
 #endif
-	beqz	K,.L59				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L59				
+	LD	ALPHA,152($sp)					#  Get ALPHA
 	
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
-	daddu	A,A,2*SIZE				#  A+=2(mr)*1(kr)*8Byte=16
-	daddu	B,B,2*SIZE
+	daddu	A,A,2*SIZE					#  	A+=2(mr)*1(kr)*8Byte=16
+	daddu	B,B,2*SIZE					#	2nr*kr
 
 	MADD	t12,t12,a0,b1
 	MADD	t22,t22,a1,b1
 
 
-.L59:							#  Write Back
+.L59:									#  Write Back
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  write gemm part back Fetch 16 C
+	LD	c11,0(CO1)						#  write gemm part back Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 	LD	c12,0(CO2)
 	LD	c22,1*SIZE(CO2)
@@ -1658,17 +1646,15 @@
 	ST	t12,0(CO2)
 	ST	t22,1*SIZE(CO2)
 
-	daddu	CO1,CO1,2*SIZE			#  COx += 2*8Byte
+	daddu	CO1,CO1,2*SIZE			
 	daddu	CO2,CO2,2*SIZE
 
 	FETCH	$0,0(CO1)
 	FETCH	$0,0(CO2)
 #else
 	daddiu	M, M, -1
-
 	daddiu	CO1,CO1, 2 * SIZE
 	daddiu	CO2,CO2, 2 * SIZE
-
 	MUL	t11, ALPHA, t11
 	MUL	t21, ALPHA, t21
 	MUL	t12, ALPHA, t12
@@ -1678,6 +1664,9 @@
 	ST	t21, -1 * SIZE(CO1)
 	ST	t12, -2 * SIZE(CO2)
 	ST	t22, -1 * SIZE(CO2)
+
+	FETCH	$0,0(CO1)
+	FETCH	$0,0(CO2)
 
 #if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP, KCO, KK
@@ -1697,21 +1686,19 @@
 #ifdef LEFT
 	daddiu	KK, KK, 2
 #endif
-	FETCH	$0,0(CO1)
-	FETCH	$0,0(CO2)
-
 #endif
 
 
+	.align 3
 .L12_M1:
-	andi		M,MCO,1				#  Remainder M = 1
-	beqz	M,.L0_N2_Loop		#  M = 0, finishing one panel B
+	andi	M,MCO,1					#  	mr = 1
+	beqz	M,.L0_N2_Loop		
 	nop
 
 .L60:
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-	move	B,BO
+	move	B,BO					#	Reset B
 #else
 	dsll	K,    KK, 0 + BASE_SHIFT
 	dsll	TEMP, KK, 1 + BASE_SHIFT
@@ -1720,13 +1707,11 @@
 	daddu	B, BO,  TEMP
 #endif
 	MTC		$0,t11
-#gsLQC1(R8,F4,F0,0)
-	LD	a0, 0*SIZE(A)
-	MOV	t21,t11
-	MOV	t12,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
+	LD	a0, 0*SIZE(A)				#	a0
 	
-	MOV	t22,t11
+	MOV	t21,t11
+	gsLQC1(R9,F9,F8,0)				#	b0,b1
+	
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #elif defined(LEFT)
@@ -1734,87 +1719,88 @@
 #else
 	daddiu	TEMP, KK, 2
 #endif
-	dsra	K,TEMP,2				#  K=KCO/2
+	dsra	K,TEMP,2				
+	MOV	t12,t11
 	beqz	K,.L65
-	nop
+	MOV	t22,t11
 
 #else
-	dsra	K,KCO,2				#  K=KCO/2
-	MTC		$0,t11
-	move	B,BO				#  Reset B
-#	gsLQC1(R8,F4,F0,0)
+	dsra	K,KCO,2				
+	move	B,BO					#  Reset B
 	LD	a0,0*SIZE(A)
-	MOV	t21,t11
-	MOV	t12,t11
-	gsLQC1(R9,F9,F8,0)			#b0,b1
 	
-	MOV	t22,t11
+	MTC		$0,t11
+	MOV	t21,t11
+	gsLQC1(R9,F9,F8,0)		
+
+	MOV	t12,t11
 	beqz	K,.L65
-	nop
+	MOV	t22,t11
 #endif
 
-.L61:							#  N=2 m=1,=K=4
-	LD	a4,	1*SIZE(A)
-	gsLQC1(R9,F13,F12,1)		#  R9=B
+.L61:								#	nr=2,mr=1,kr=4	
+	LD	a4,	1*SIZE(A)				#	a2
 	MADD	t11,t11,a0,b0
+	
+	gsLQC1(R9,F13,F12,1)		
 	MADD	t12,t12,a0,b1
 
-	LD	a2,	2*SIZE(A)
-	gsLQC1(R9,F11,F10,2)
+	LD	a2,	2*SIZE(A)				#	a3
 	MADD	t11,t11,a4,b4
+	
+	gsLQC1(R9,F11,F10,2)
 	MADD	t12,t12,a4,b5
 
-#	gsLQC1(R8,F6,F2,1)
-	LD	a6,	3*SIZE(A)
+	LD	a6,	3*SIZE(A)				#	a4
 	MADD	t11,t11,a2,b2
-	MADD	t12,t12,a2,b3
 	daddiu	K,K,-1
 	
 	gsLQC1(R9,F15,F14,3)
+	MADD	t12,t12,a2,b3
 	daddu	A,A,4*SIZE				#  A+=1(mr)*4(kr)*8Byte=32
-#	gsLQC1(R8,F4,F0,0)
 
 	LD	a0,	0*SIZE(A)
+	MADD	t11,t11,a6,b6
 	daddu	B,B,8*SIZE				#  B+=2(nr)*4(kr)*8Byte=8*SIZE
 	
-	gsLQC1(R9,F9,F8,0)
-	MADD	t11,t11,a6,b6
+	gsLQC1(R9,F9,F8,0)				#	a0
 	bnez 	K,.L61
 	MADD	t12,t12,a6,b7
 
-.L65:							#  N=2 M=1 K=2
+.L65:								#  kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2				
 #else
-	andi		K,TEMP,2
+	andi	K,TEMP,2
 #endif
 	beqz	K,.L68
 	nop
 
 .L66:			
-	LD	a4,	1*SIZE(A)
+	LD	a4,	1*SIZE(A)				#	a1
 	MADD	t11,t11,a0,b0
-	
-	gsLQC1(R9,F13,F12,1)		#  R9=B
-	MADD	t12,t12,a0,b1
 	daddu	A,A,2*SIZE				#  A+=1(mr)*2(kr)*8Byte=16
+	
+	gsLQC1(R9,F13,F12,1)	
+	MADD	t12,t12,a0,b1
 	daddu	B,B,4*SIZE
 
 .L67:
-	LD	a0,0(A)
-	gsLQC1(R9,F9,F8,0)
+	LD	a0,0(A)						#	a0
 	MADD	t11,t11,a4,b4
+	
+	gsLQC1(R9,F9,F8,0)
 	MADD	t12,t12,a4,b5
 
 	
-.L68:							#  N=2, M=1, K=1
+.L68:								#   kr=1
 #ifndef TRMMKERNEL
-	andi		K,KCO,1
+	andi	K,KCO,1
 #else
-	andi		K,TEMP,1
+	andi	K,TEMP,1
 #endif
-	beqz	K,.L69				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L69				  
+	LD	ALPHA,152($sp)				#  Get ALPHA
 	
 	MADD	t11,t11,a0,b0
 	MADD	t12,t12,a0,b1
@@ -1822,9 +1808,9 @@
 	daddu	B,B,2*SIZE
 
 
-.L69:							#  Write Back
+.L69:								#  Write Back
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  Fetch 16 C
+	LD	c11,0(CO1)					#  Fetch 16 C
 	LD	c12,0(CO2)
 	
 	MADD	t11,c11,t11,ALPHA
@@ -1833,11 +1819,9 @@
 	ST	t11,0(CO1)
 	ST	t12,0(CO2)
 
-	daddu	CO1,CO1,1*SIZE			#  COx += 2*8Byte
+	daddu	CO1,CO1,1*SIZE		
 	daddu	CO2,CO2,1*SIZE
 
-	FETCH	$0,0(CO1)
-	FETCH	$0,0(CO2)
 #else
 	MUL	t11, ALPHA, t11
 	MUL	t12, ALPHA, t12
@@ -1845,7 +1829,7 @@
 	ST	t11,  0 * SIZE(CO1)
 	ST	t12,  0 * SIZE(CO2)
 
-	daddu	CO1,CO1,1*SIZE			#  COx += 2*8Byte
+	daddu	CO1,CO1,1*SIZE			
 	daddu	CO2,CO2,1*SIZE
 
 #if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1877,26 +1861,26 @@
 
 	.align	5					
 .L0_N1:
-	andi		N,NCO,1				#  Remainder N = 1
-	beqz	N,.L999				#  N=0,NCO<1
+	andi	N,NCO,1					#  nr = 1
+	beqz	N,.L999					
 	nop
 
-	move	CO1,C				#  Set C	
-	dsra	M,MCO,2				#  M=MCO/2
-
+	move	CO1,C				
+	dsra	M,MCO,2				
+	
+	move	A,AO					#  Reset A
+	daddu	PREA,AO,SPANA
 #if defined(TRMMKERNEL) &&  defined(LEFT)
 	move	KK, OFFSET
 #endif
 
-	move	A,AO				#  Reset A
 	beqz	M,.L11_M2
-	daddu	PREA,AO,SPANA
-
+	daddu	C,CO1,LDC
 
 .L70:						
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-	move	B, BO
+	move	B, BO					#	Reset B
 #else
 	dsll	K,    KK, 2 + BASE_SHIFT
 	dsll	TEMP, KK, 0 + BASE_SHIFT
@@ -1904,13 +1888,15 @@
 	daddu	A, A, K
 	daddu	B, BO,  TEMP
 #endif
-#	gsLQC1(R9,F12,F8,0)
-	LD	b0,	0*SIZE(B)
+
 	MTC		$0,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
+	LD	b0,	0*SIZE(B)
+	
 	MOV	t21,t11
-	gsLQC1(R8,F3,F2,1)			#a2,a3
+	gsLQC1(R8,F1,F0,0)				#a0,a1
+
 	MOV	t31,t11
+	gsLQC1(R8,F3,F2,1)				#a2,a3
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #elif defined(LEFT)
@@ -1918,122 +1904,125 @@
 #else
 	daddiu	TEMP, KK, 1
 #endif
-	dsra	K,TEMP,2				#  K=KCO/2
-	beqz	K,.L75
+	dsra	K,TEMP,2		
 	MOV	t41,t11
+	beqz	K,.L75
+	nop
 #else
-	move	B, BO
-	dsra	K,KCO,2				#  K=KCO/2
-#	gsLQC1(R9,F12,F8,0)
+	move	B, BO					#	Reset B
+	dsra	K,KCO,2			
 	LD	b0,	0*SIZE(B)
+	
 	MTC		$0,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
 	MOV	t21,t11
-	gsLQC1(R8,F3,F2,1)			#a2,a3
+	gsLQC1(R8,F1,F0,0)				#a0,a1
+	
 	MOV	t31,t11
-	beqz	K,.L75
 	MOV	t41,t11
+	gsLQC1(R8,F3,F2,1)				#a2,a3
+	
+	beqz	K,.L75
+	nop
 #endif
 
-
-.L71:							#  N=1,M=K=4
-	gsLQC1(R8,F5,F4,2)			#  R8=A
-	gsLQC1(R8,F7,F6,3)
+.L71:								#  nr=1,mr=kr=4
+	LD	b4,	1*SIZE(B)				#	b1
 	MADD	t11,t11,a0,b0
+	
+	gsLQC1(R8,F5,F4,2)			
 	MADD	t21,t21,a1,b0
 
-	LD	b4,	1*SIZE(B)
+	gsLQC1(R8,F7,F6,3)
 	FETCH		$0,(PREA)
 	MADD	t31,t31,a2,b0
 	MADD	t41,t41,a3,b0
 
 .L72:
-#	gsLQC1(R9,F14,F10,1)
-	gsLQC1(R8,F1,F0,4)
-	gsLQC1(R8,F3,F2,5)
+	LD	b2,	2*SIZE(B)				#	b2
 	MADD	t11,t11,a4,b4
+	gsLQC1(R8,F1,F0,4)
 	MADD	t21,t21,a5,b4
 
-	LD	b2,	2*SIZE(B)
+	gsLQC1(R8,F3,F2,5)
 	FETCH		$0,4*SIZE(PREA)
 	MADD	t31,t31,a6,b4
 	MADD	t41,t41,a7,b4
 
 .L73:
-	gsLQC1(R8,F5,F4,6)	
-	gsLQC1(R8,F7,F6,7)
-	MADD	t11,t11,a0,b2
-
 	LD	b6,	3*SIZE(B)
+	MADD	t11,t11,a0,b2
+	daddu	B,B,4*SIZE				#  B+=1(nr)*4(kr)*8Byte=32
+	
+	gsLQC1(R8,F5,F4,6)	
 	MADD	t21,t21,a1,b2
-	daddu	A,A,16*SIZE				#  A+=4(mr)*4(kr)*8Byte=16*SIZE
-
 	FETCH		$0,8*SIZE(PREA)
+
+	gsLQC1(R8,F7,F6,7)
 	MADD	t31,t31,a2,b2
 	MADD	t41,t41,a3,b2
-	daddu	B,B,4*SIZE				#  B+=1(nr)*4(kr)*8Byte=32
+	daddu	A,A,16*SIZE				#  A+=4(mr)*4(kr)*8Byte=16*SIZE
 
 .L74:
-#	gsLQC1(R9,F12,F8,0)
-	gsLQC1(R8,F1,F0,0)
-	daddu	PREA,PREA,16*SIZE
-	gsLQC1(R8,F3,F2,1)
-	MADD	t11,t11,a4,b6
-	MADD	t21,t21,a5,b6
-	
 	LD	b0,	0*SIZE(B)
+	MADD	t11,t11,a4,b6
+	daddu	PREA,PREA,16*SIZE
+	
+	gsLQC1(R8,F1,F0,0)
+	MADD	t21,t21,a5,b6
 	daddiu	K,K,-1
 	FETCH		$0,-32(PREA)
 
+	gsLQC1(R8,F3,F2,1)
 	MADD	t31,t31,a6,b6
 	bnez 	K,.L71
 	MADD	t41,t41,a7,b6
 
 
-.L75:							#  N=2 M=4 K=2
+.L75:								#  kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2				
 #else
-	andi		K,TEMP,2
+	andi	K,TEMP,2
 #endif
 	beqz	K,.L78
 	nop
 
 .L76:			
-	gsLQC1(R8,F5,F4,2)			#  R8=A
-	gsLQC1(R8,F7,F6,3)
-	MADD	t11,t11,a0,b0
-	MADD	t21,t21,a1,b0
-	daddu	A,A,8*SIZE				#  A+=4(mr)*2(kr)*8Byte=8*SIZE
-
 	LD	b4,	1*SIZE(B)
+	MADD	t11,t11,a0,b0
+	daddu	B,B,2*SIZE				#  B+=1(nr)*2(kr)*8Byte=32
+	
+	gsLQC1(R8,F5,F4,2)			
+	MADD	t21,t21,a1,b0
 	FETCH		$0,0(PREA)
+
+	gsLQC1(R8,F7,F6,3)
 	MADD	t31,t31,a2,b0
 	MADD	t41,t41,a3,b0
-	daddu	B,B,2*SIZE				#  B+=1(nr)*2(kr)*8Byte=32
+	daddu	A,A,8*SIZE				#  A+=4(mr)*2(kr)*8Byte=8*SIZE
 
 .L77:
-	gsLQC1(R8,F1,F0,0)
-	gsLQC1(R8,F3,F2,1)
-	MADD	t11,t11,a4,b4
-	MADD	t21,t21,a5,b4
-
 	LD	b0,0(B)
+	MADD	t11,t11,a4,b4
+	
+	gsLQC1(R8,F1,F0,0)
+	MADD	t21,t21,a5,b4
 	FETCH		$0,4*SIZE(PREA)
+
+	gsLQC1(R8,F3,F2,1)
 	MADD	t31,t31,a6,b4
 	MADD	t41,t41,a7,b4
 	daddu	PREA,PREA,8*SIZE
 
-
 	
-.L78:							#  N=2, M=4, K=1
+.L78:								#   kr=1
 #ifndef TRMMKERNEL
-	andi		K,KCO,1
+	andi	K,KCO,1
 #else
-	andi		K,TEMP,1
+	andi	K,TEMP,1
 #endif
-	beqz	K,.L79				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L79				 
+	LD	ALPHA,152($sp)				#  Get ALPHA
 	
 	FETCH		$0,0(PREA)
 	MADD	t11,t11,a0,b0
@@ -2046,9 +2035,9 @@
 	daddu	PREA,PREA,4*SIZE
 
 
-.L79:							#  Write Back
+.L79:								#  Write Back
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  Fetch 16 C
+	LD	c11,0(CO1)					#  Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 	LD	c31,2*SIZE(CO1)
 	LD	c41,3*SIZE(CO1)
@@ -2062,15 +2051,15 @@
 	ST	t21,1*SIZE(CO1)
 	ST	t31,2*SIZE(CO1)
 	ST	t41,3*SIZE(CO1)
-	daddiu	M,M,-1				#  M--
+	daddiu	M,M,-1					#  M--
 
 	FETCH	$0,4*SIZE(CO1)
+	FETCH	$0,8*SIZE(CO1)
 
+	bnez	M,.L70					#  M!=0
 	daddu	CO1,CO1,4*SIZE			#  COx += 4*8Byte
-	bnez	M,.L70				#  M!=0
-	nop
 #else
-	daddiu	M,M,-1				#  M--
+	daddiu	M,M,-1					#  M--
 	MUL	t11, ALPHA, t11
 	MUL	t21, ALPHA, t21
 	MUL	t31, ALPHA, t31
@@ -2081,9 +2070,11 @@
 	ST	t31,2*SIZE(CO1)
 	ST	t41,3*SIZE(CO1)
 
-	daddu	CO1,CO1,4*SIZE			#  COx += 4*8Byte
-#if ( defined(LEFT) &&  defined(TRANSA)) || \
-    (!defined(LEFT) && !defined(TRANSA))
+	FETCH	$0,4*SIZE(CO1)
+	FETCH	$0,8*SIZE(CO1)
+
+	daddu	CO1,CO1,4*SIZE			
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #ifdef LEFT
 	daddiu	TEMP, TEMP, -4
@@ -2101,14 +2092,14 @@
 #ifdef LEFT
 	daddiu	KK, KK, 4
 #endif
-	bnez	M,.L70				#  M!=0
+	bnez	M,.L70				
 	nop
 #endif
 
 
-
+	.align 3
 .L11_M2:
-	andi		M,MCO,2				#  Remainder M = 2
+	andi	M,MCO,2					#  mr = 2
 	beqz	M,.L11_M1			
 	nop
 
@@ -2124,10 +2115,10 @@
 	daddu	B, BO,  TEMP
 #endif
 
-#	gsLQC1(R9,F12,F8,0)
 	LD	b0,	0*SIZE(B)
 	MTC		$0,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
+	
+	gsLQC1(R8,F1,F0,0)				#a0,a1
 	MOV		t21,t11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
@@ -2141,19 +2132,20 @@
 	nop
 #else
 	move	B, BO
-	dsra	K,KCO,2				#  K=KCO/2
-#	gsLQC1(R9,F12,F8,0)
+	dsra	K,KCO,2				
 	LD	b0,	0*SIZE(B)
+
 	MTC		$0,t11
-	gsLQC1(R8,F1,F0,0)			#a0,a1
 	MOV		t21,t11
+	gsLQC1(R8,F1,F0,0)				#a0,a1
+	
 	beqz	K,.L85
 	nop
 #endif
 
-.L81:							#  N=1,M=2,K=4
+.L81:								#  nr=1,mr=2,kr=4
 	LD	b4,	1*SIZE(B)
-	gsLQC1(R8,F5,F4,1)			#  R8=A
+	gsLQC1(R8,F5,F4,1)			
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
 
@@ -2162,42 +2154,38 @@
 	MADD	t11,t11,a4,b4
 	MADD	t21,t21,a5,b4
 	
-#	gsLQC1(R9,F14,F10,1)
-
 	LD	b6,	3*SIZE(B)
 	gsLQC1(R8,F7,F6,3)
 	MADD	t11,t11,a2,b2
-
 	MADD	t21,t21,a3,b2
+
 	daddu	A,A,8*SIZE				#  A+=2(mr)*4(kr)*8Byte=8*SIZE
 	daddu	B,B,4*SIZE				#  B+=1(nr)*4(kr)*8Byte=32
 
-#	gsLQC1(R9,F12,F8,0)
-	gsLQC1(R8,F1,F0,0)
-	daddiu	K,K,-1
-	MADD	t11,t11,a6,b6
-	
 	LD	b0,	0*SIZE(B)
-	bnez 	K,.L81
+	gsLQC1(R8,F1,F0,0)
+	MADD	t11,t11,a6,b6
 	MADD	t21,t21,a7,b6
+	
+	daddiu	K,K,-1
+	bnez 	K,.L81
+	nop
 
-
-.L85:							#  N=2 M=4 K=2
+.L85:								#  kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2				
 #else
 	andi	K,TEMP,2
 #endif
-
 	beqz	K,.L88
 	nop
 
 .L86:			
-	gsLQC1(R8,F5,F4,1)			#  R8=A
+	gsLQC1(R8,F5,F4,1)		
 	LD	b4,	1*SIZE(B)
 	MADD	t11,t11,a0,b0
-	
 	MADD	t21,t21,a1,b0
+	
 	daddu	A,A,4*SIZE				#  A+=2(mr)*2(kr)*8Byte=32
 	daddu	B,B,2*SIZE				#  B+=1(nr)*2(kr)*8Byte=16
 	
@@ -2207,15 +2195,14 @@
 	MADD	t21,t21,a5,b4
 
 	
-.L88:							#  N=2, M=4, K=1
+.L88:								#  kr=1
 #ifndef TRMMKERNEL
-	andi		K,KCO,1
+	andi	K,KCO,1
 #else
 	andi	K,TEMP,1
 #endif
-
-	beqz	K,.L89				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L89				
+	LD	ALPHA,152($sp)				#  Get ALPHA
 	
 	MADD	t11,t11,a0,b0
 	MADD	t21,t21,a1,b0
@@ -2223,9 +2210,9 @@
 	daddu	B,B,1*SIZE
 
 
-.L89:							#  Write Back
+.L89:								#  Write Back
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  Fetch 16 C
+	LD	c11,0(CO1)					#  Fetch 16 C
 	LD	c21,1*SIZE(CO1)			
 
 	MADD	t11,c11,t11,ALPHA
@@ -2237,15 +2224,16 @@
 	FETCH	$0,2*SIZE(CO1)
 	
 	daddu	CO1,CO1,2*SIZE			#  COx += 2*8Byte
+
 #else
 	daddu	CO1,CO1,2*SIZE			#  COx += 2*8Byte
 	MUL	t11, ALPHA, t11
 	MUL	t21, ALPHA, t21
 
+	FETCH	$0,0(CO1)
 	ST	t11, -2 * SIZE(CO1)
 	ST	t21, -1 * SIZE(CO1)
-#if ( defined(LEFT) &&  defined(TRANSA)) || \
-    (!defined(LEFT) && !defined(TRANSA))
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #ifdef LEFT
 	daddiu	TEMP, TEMP, -2
@@ -2266,10 +2254,10 @@
 #endif
 
 
-
+	.align 3
 .L11_M1:
-	andi		M,MCO,1				#  Remainder M = 1
-	beqz	M,.L999				#  M = 0, End
+	andi		M,MCO,1				#   mr = 1
+	beqz	M,.L999			
 	nop
 
 .L90:			
@@ -2283,11 +2271,9 @@
 	daddu	A, A, K
 	daddu	B, BO,  TEMP
 #endif
-#	gsLQC1(R8,F4,F0,0)
-	MTC		$0,t11
-#	gsLQC1(R9,F12,F8,0)
 	LD	a0,	0*SIZE(A)
 	LD	b0,	0*SIZE(B)
+	MTC		$0,t11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #elif defined(LEFT)
@@ -2301,27 +2287,22 @@
 
 #else
 	move	B,  BO
-	dsra	K,KCO,2				#  K=KCO/2
-#	gsLQC1(R8,F4,F0,0)
-#	gsLQC1(R9,F12,F8,0)
 	LD	a0,	0*SIZE(A)
 	LD	b0,	0*SIZE(B)
+	dsra	K,KCO,2				
 	beqz	K,.L95
 	MTC		$0,t11
 #endif
 
-.L91:							#  N=1,M=1,K=4
-#	gsLQC1(R8,F6,F2,1)
+.L91:								#  nr=mr=1,kr=4
 	LD	a4,	1*SIZE(A)
 	LD	b4,	1*SIZE(B)
 	MADD	t11,t11,a0,b0
-#	gsLQC1(R9,F14,F10,1)
+	
 	LD	a2,	2*SIZE(A)
 	LD	b2,	2*SIZE(B)
 	MADD	t11,t11,a4,b4
 
-
-#	gsLQC1(R8,F4,F0,0)
 	LD	a6,	3*SIZE(A)
 	LD	b6,	3*SIZE(B)
 	MADD	t11,t11,a2,b2
@@ -2331,16 +2312,15 @@
 
 	LD	a0,	0*SIZE(A)
 	LD	b0,	0*SIZE(B)
-#	gsLQC1(R9,F12,F8,0)
 	MADD	t11,t11,a6,b6
 	
 	daddiu	K,K,-1
 	bnez 	K,.L91
 	nop
 
-.L95:							#  N=2 M=4 K=2
+.L95:								#  kr=2
 #ifndef TRMMKERNEL
-	andi		K,KCO,2				#  k = KCO&2
+	andi	K,KCO,2			
 #else
 	andi	K,TEMP,2
 #endif
@@ -2357,25 +2337,25 @@
 	LD	b0,0(B)
 	LD	a0,0(A)
 	MADD	t11,t11,a4,b4
-
-
 	
-.L98:							#  N=2, M=4, K=1
+.L98:								#  kr=1
 #ifndef TRMMKERNEL
 	andi		K,KCO,1
 #else
 	andi	K,TEMP,1
 #endif
-	beqz	K,.L99				#  
-	LD	ALPHA,152($sp)		#  Get ALPHA
+	beqz	K,.L99				
+	LD	ALPHA,152($sp)				#  Get ALPHA
+
 	MADD	t11,t11,a0,b0
 
 
-.L99:							#  Write Back
+.L99:								#  Write Back
 #ifndef TRMMKERNEL
-	LD	c11,0(CO1)			#  Fetch 16 C
+	LD	c11,0(CO1)					#  Fetch 16 C
 	MADD	t11,c11,t11,ALPHA
 	ST	t11,0(CO1)
+
 #else
 	MUL	t11, ALPHA, t11
 
