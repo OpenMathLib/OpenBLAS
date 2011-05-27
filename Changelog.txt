@@ -17,6 +17,7 @@ common:
 	* Fixed issue #23. Fixed a bug of f_check script about generating link flags.
 	* Added openblas_set_num_threads for Fortran.
 	* Fixed #25 a wrong result of rotmg.
+	* Fixed a bug about detecting underscore prefix in c_check.
 
 x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.
