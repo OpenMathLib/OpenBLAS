@@ -101,6 +101,7 @@ blas_server.$(SUFFIX) : $(BLAS_SERVER) ../../common.h ../../common_thread.h ../.
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 openblas_set_num_threads.$(SUFFIX) : openblas_set_num_threads.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 blasL1thread.$(SUFFIX) : blas_l1_thread.c ../../common.h ../../common_thread.h
 	$(CC) $(CFLAGS) -c $< -o $(@F)
