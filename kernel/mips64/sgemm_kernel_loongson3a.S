@@ -1,6 +1,7 @@
 #define REALNAME ASMNAME
 #define ASSEMBLER
 #include "common.h"
+
 #define FETCH	ld
 #define gsLQC1(base,fq,ft,offset) .word(0x32<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
 #define gsSQC1(base,fq,ft,offset) .word(0x3A<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
@@ -215,35 +216,36 @@
 	daddu	A,A,K						#  move A B to data part
 	daddu	B,BO,TEMP
 #endif
-	MTC		$0,t11
-	MOV	t21,t11
+
+	MTC		$0,t11						# 	GEMM part	NR=4,MR=4
 	LD	a0,0(A)
-	
+
+	MOV	t21,t11
 	MOV	t31,t11
-	MOV	t41,t11
 	LD	a1,1*SIZE(A)
 
+	MOV	t41,t11
 	MOV	t12,t11
-	MOV	t22,t11
 	LD	b0,0(B)
 	
+	MOV	t22,t11
 	MOV	t32,t11
-	MOV	t42,t11
 	LD	b1,1*SIZE(B)
 
+	MOV	t42,t11
+	LD	a2,2*SIZE(A)
+	
 	MOV	t13,t11
 	MOV	t23,t11
-	LD	a2,2*SIZE(A)
-
+	LD	b2,2*SIZE(B)
+	
 	MOV	t33,t11
 	MOV	t43,t11
-	LD	b2,2*SIZE(B)
+	LD	a3,3*SIZE(A)
 
 	MOV	t14,t11
 	MOV	t24,t11
-	LD	a3,3*SIZE(A)
-
-
+	LD	b3,3*SIZE(B)
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP,KCO,KK					#  temp is the length of the data part
@@ -733,21 +735,21 @@
 	daddu	B,BO,TEMP
 #endif
 
-	MTC		$0,t11
 	LD	a0,0*SIZE(A)
-	MOV	t21,t11
+	MTC		$0,t11
 	LD	a1,1*SIZE(A)
-
-	MOV	t12,t11
+	
+	MOV	t21,t11
 	LD	b0,0*SIZE(B)
-	MOV	t22,t11
+	MOV	t12,t11
 	LD	b1,1*SIZE(B)
 
-	MOV	t13,t11
+	MOV	t22,t11
 	LD	b2,2*SIZE(B)
+
+	MOV	t13,t11
 	MOV	t23,t11
 	LD	b3,3*SIZE(B)
-
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP,KCO,KK
@@ -1043,20 +1045,26 @@
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	move	B,BO						#	Reset B
 #else
-	dsll	K,KK, 0 + BASE_SHIFT
+	dsll	K,KK, BASE_SHIFT
 	dsll	TEMP,KK,2 + BASE_SHIFT
 
 	daddu	A,A,K
 	daddu	B,BO,TEMP
 #endif
+
+	LD	a0, 0 * SIZE(A)					#	a0
+
 	MTC		$0,t11
+	LD	b0,0*SIZE(B)
+	
 	MOV	t12,t11
-	LD	a0,	0 * SIZE(A)					#	a0
+	LD	b1,1*SIZE(B)
 
 	MOV	t13,t11
-	LD	b0,0*SIZE(B)
-	MOV	t14,t11							#	clear result registers
-	LD	b1,1*SIZE(B)
+	LD	b2,2*SIZE(B)
+	
+	MOV	t14,t11
+	LD	b3,3*SIZE(B)
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
@@ -1236,7 +1244,7 @@
 	daddiu	TEMP, TEMP, -4
 #endif
 
-	dsll	K,TEMP, 0 + BASE_SHIFT
+	dsll	K,TEMP, BASE_SHIFT
 	dsll	TEMP,TEMP, 2 + BASE_SHIFT
 
 	daddu	A,A,K
@@ -1291,21 +1299,21 @@
 	daddu	A,A,K
 	daddu	B,BO,TEMP
 #endif
-	MTC		$0,t11
 	LD	a0,0*SIZE(A)
-	MOV	t21,t11
+	MTC		$0,t11							#  	gemm part
 	LD	a1,1*SIZE(A)
 
-	MOV	t31,t11
+	MOV	t21,t11
 	LD	b0,0*SIZE(B)
-	MOV	t41,t11
+	MOV	t31,t11
 	LD	b1,1*SIZE(B)
 
-	MOV	t12,t11
+	MOV	t41,t11
 	LD	a2,2*SIZE(A)
-	MOV	t22,t11
 	LD	a3,3*SIZE(A)
-
+	
+	MOV	t12,t11
+	MOV	t22,t11
 	
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP,KCO,KK
@@ -1621,11 +1629,14 @@
 	daddu	A, A, K
 	daddu	B, BO,  TEMP
 #endif
-	MTC		$0,t11
 	LD	a0,0*SIZE(A)
-	MOV	t21,t11
 	LD	a1,1*SIZE(A)
 
+	MTC		$0,t11
+	LD	b0,0*SIZE(B)
+	MOV	t21,t11
+	LD	b1,1*SIZE(B)
+	
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #elif defined(LEFT)
@@ -1830,11 +1841,14 @@
 	daddu	A, A, K
 	daddu	B, BO,  TEMP
 #endif
-	MTC		$0,t11
-	LD	a0, 0*SIZE(A)				#	a0
+	LD	a0,0*SIZE(A)
 	
+	MTC		$0,t11
 	MOV	t21,t11
-	LD	b0,0*SIZE(B)		
+	LD	b0,0*SIZE(B)
+
+	MOV	t12,t11
+	LD	b1,1*SIZE(B)
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
@@ -1844,9 +1858,9 @@
 	daddiu	TEMP, KK, 2
 #endif
 	dsra	K,TEMP,2				
-	MOV	t12,t11
-	beqz	K,.L65
 	MOV	t22,t11
+	beqz	K,.L65
+	nop
 
 #else
 	dsra	K,KCO,2				
@@ -2023,13 +2037,18 @@
 	daddu	A, A, K
 	daddu	B, BO,  TEMP
 #endif
-	MTC		$0,t11
 	LD	b0,	0*SIZE(B)
 	
-	MOV	t21,t11
+	MTC		$0,t11
 	LD	a0,0*SIZE(A)
-	MOV	t31,t11
+	MOV	t21,t11
 	LD	a1,1*SIZE(A)
+	
+	MOV	t31,t11
+	LD	a2,2*SIZE(A)
+	MOV	t41,t11
+	LD	a3,3*SIZE(A)
+
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
@@ -2039,7 +2058,6 @@
 	daddiu	TEMP, KK, 1
 #endif
 	dsra	K,TEMP,2		
-	MOV	t41,t11
 	beqz	K,.L75
 	nop
 #else
@@ -2276,10 +2294,11 @@
 	daddu	B, BO,  TEMP
 #endif
 	LD	b0,	0*SIZE(B)
+
 	MTC		$0,t11
-	
-	LD	a0,0*SIZE(A)
 	MOV		t21,t11
+	LD	a0,0*SIZE(A)
+	LD	a1,1*SIZE(A)
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
@@ -2443,6 +2462,7 @@
 	LD	a0,	0*SIZE(A)
 	LD	b0,	0*SIZE(B)
 	MTC		$0,t11
+
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, KCO, KK
 #elif defined(LEFT)
