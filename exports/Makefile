@@ -84,7 +84,7 @@ libgoto_hpl.def : gensymbol
 	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
 
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
-	$(PREFIX)gcc $(CFLAGS) -all_load -dynamiclib -o $(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(PREFIX)gcc $(CFLAGS) -all_load -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 
 symbol.$(SUFFIX) : symbol.S
 	$(CC) $(CFLAGS) -c -o $(@F) $^
