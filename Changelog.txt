@@ -22,6 +22,7 @@ common:
 x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.
 	* Fixed #32 a SEGFAULT bug of zdotc with gcc-4.6.
+	* Fixed #33 ztrmm bug on Nehalem.
 
 MIPS64:
 	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64. 
