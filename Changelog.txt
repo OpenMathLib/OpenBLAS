@@ -19,6 +19,7 @@ common:
 	* Fixed #25 a wrong result of rotmg.
 	* Fixed a bug about detecting underscore prefix in c_check.
 	* Print the wall time (cycles) with enabling FUNCTION_PROFILE
+	* Fixed #35 a build bug with NO_LAPACK=1 & DYNAMIC_ARCH=1
 
 x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.

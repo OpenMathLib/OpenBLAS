@@ -101,7 +101,11 @@ gotoblas_t TABLE_NAME = {
 #endif
   ssymm_outcopyTS, ssymm_oltcopyTS,
 
+#ifndef NO_LAPACK
   sneg_tcopyTS, slaswp_ncopyTS,
+#else
+  NULL,NULL,
+#endif
 
   0, 0, 0,
   DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N, MAX(DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N),
@@ -147,7 +151,11 @@ gotoblas_t TABLE_NAME = {
 #endif
   dsymm_outcopyTS, dsymm_oltcopyTS,
 
+#ifndef NO_LAPACK
   dneg_tcopyTS, dlaswp_ncopyTS,
+#else
+  NULL, NULL,
+#endif
 
 #ifdef EXPRECISION
 
@@ -286,7 +294,11 @@ gotoblas_t TABLE_NAME = {
   chemm3m_oucopyrTS,  chemm3m_olcopyrTS,
   chemm3m_oucopyiTS,  chemm3m_olcopyiTS,
 
+#ifndef NO_LAPACK
   cneg_tcopyTS, claswp_ncopyTS,
+#else
+  NULL, NULL,
+#endif
 
   0, 0, 0,
   ZGEMM_DEFAULT_UNROLL_M, ZGEMM_DEFAULT_UNROLL_N, MAX(ZGEMM_DEFAULT_UNROLL_M, ZGEMM_DEFAULT_UNROLL_N),
@@ -375,7 +387,11 @@ gotoblas_t TABLE_NAME = {
   zhemm3m_oucopyrTS,  zhemm3m_olcopyrTS,
   zhemm3m_oucopyiTS,  zhemm3m_olcopyiTS,
 
+#ifndef NO_LAPACK
   zneg_tcopyTS, zlaswp_ncopyTS,
+#else
+  NULL, NULL,
+#endif
 
 #ifdef EXPRECISION
 

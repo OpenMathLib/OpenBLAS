@@ -515,6 +515,10 @@ ifeq ($(DYNAMIC_ARCH), 1)
 CCOMMON_OPT	+= -DDYNAMIC_ARCH
 endif
 
+ifeq ($(NO_LAPACK), 1)
+CCOMMON_OPT	+= -DNO_LAPACK
+endif
+
 ifdef SMP
 CCOMMON_OPT	+= -DSMP_SERVER
 
