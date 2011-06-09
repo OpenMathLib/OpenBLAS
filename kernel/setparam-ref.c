@@ -203,7 +203,11 @@ gotoblas_t TABLE_NAME = {
 #endif
   qsymm_outcopyTS, qsymm_oltcopyTS,
 
+#ifndef NO_LAPACK
   qneg_tcopyTS, qlaswp_ncopyTS,
+#else
+  NULL, NULL,
+#endif
 
 #endif
 
@@ -482,7 +486,11 @@ gotoblas_t TABLE_NAME = {
   xhemm3m_oucopyrTS,  xhemm3m_olcopyrTS,
   xhemm3m_oucopyiTS,  xhemm3m_olcopyiTS,
 
+#ifndef NO_LAPACK
   xneg_tcopyTS, xlaswp_ncopyTS,
+#else
+  NULL, NULL,
+#endif
 
 #endif
 
