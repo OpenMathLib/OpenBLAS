@@ -189,7 +189,7 @@ ifeq ($(C_COMPILER), INTEL)
 CCOMMON_OPT    += -wd981
 endif
 
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT    += -fopenmp
 endif
