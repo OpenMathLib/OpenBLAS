@@ -18,6 +18,7 @@ common:
 	* Added openblas_set_num_threads for Fortran.
 	* Fixed #25 a wrong result of rotmg.
 	* Fixed a bug about detecting underscore prefix in c_check.
+	* Added install target. You can use "make install". (Refs #20)
 
 x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.
