@@ -91,6 +91,9 @@ VERSION = 0.1alpha2
 # SANITY_CHECK to compare the result with reference BLAS.
 # UTEST_CHECK = 1
 
+# The installation directory.
+# PREFIX = /opt/OpenBLAS
+
 # Common Optimization Flag; -O2 is enough.
 # DEBUG = 1
 
