@@ -22,6 +22,11 @@ make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-g
 3)Debug version
 make DEBUG=1
 
+4)Intall to the directory (Optional)
+e.g.
+make install PREFIX=your_installation_directory
+The default directory is /opt/OpenBLAS
+
 3.Support CPU & OS
 Please read GotoBLAS_01Readme.txt
 

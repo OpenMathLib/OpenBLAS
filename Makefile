@@ -15,6 +15,10 @@ ifdef SANITY_CHECK
 BLASDIRS += reference
 endif
 
+ifndef PREFIX
+PREFIX = /opt/OpenBLAS
+endif
+
 SUBDIRS	= $(BLASDIRS)
 ifneq ($(NO_LAPACK), 1)
 SUBDIRS	+= lapack
@@ -111,6 +115,7 @@ ifdef DYNAMIC_ARCH
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
 endif
+	touch lib.grd
 
 prof : prof_blas prof_lapack
 
@@ -230,6 +235,63 @@ lapack-test :
 
 dummy :
 
+lib.grd :
+	$(error OpenBLAS: Please run "make" firstly)
+
+install : 	lib.grd
+	@-mkdir -p $(PREFIX)
+	@echo Generating openblas_config.h in $(PREFIX)
+#for inc 
+	@echo \#ifndef OPENBLAS_CONFIG_H > $(PREFIX)/openblas_config.h
+	@echo \#define OPENBLAS_CONFIG_H >> $(PREFIX)/openblas_config.h
+	@cat config.h >> $(PREFIX)/openblas_config.h
+	@echo \#define VERSION \" OpenBLAS $(VERSION) \" >> $(PREFIX)/openblas_config.h
+	@cat openblas_config_template.h >> $(PREFIX)/openblas_config.h
+	@echo \#endif >> $(PREFIX)/openblas_config.h
+
+	@echo Generating f77blas.h in $(PREFIX)
+	@echo \#ifndef OPENBLAS_F77BLAS_H > $(PREFIX)/f77blas.h
+	@echo \#define OPENBLAS_F77BLAS_H >> $(PREFIX)/f77blas.h
+	@echo \#include \"openblas_config.h\" >> $(PREFIX)/f77blas.h
+	@cat common_interface.h >> $(PREFIX)/f77blas.h
+	@echo \#endif >> $(PREFIX)/f77blas.h
+
+	@echo Generating cblas.h in $(PREFIX)
+	@sed 's/common/openblas_config/g' cblas.h > $(PREFIX)/cblas.h
+
+#for install static library 
+	@echo Copy the static library to $(PREFIX)
+	@cp $(LIBNAME) $(PREFIX)
+	@-ln -fs $(PREFIX)/$(LIBNAME) $(PREFIX)/libopenblas.$(LIBSUFFIX)
+#for install shared library 
+	@echo Copy the shared library to $(PREFIX)
+ifeq ($(OSNAME), Linux)
+	-cp $(LIBSONAME) $(PREFIX)
+	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
+endif
+ifeq ($(OSNAME), FreeBSD)
+	-cp $(LIBSONAME) $(PREFIX)
+	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
+endif
+ifeq ($(OSNAME), NetBSD)
+	-cp $(LIBSONAME) $(PREFIX)
+	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
+endif
+ifeq ($(OSNAME), Darwin)
+	-cp $(LIBDYNNAME) $(PREFIX)
+	-ln -fs $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/libopenblas.dylib
+endif
+ifeq ($(OSNAME), WINNT)
+	-cp $(LIBDLLNAME) $(PREFIX)
+	-ln -fs $(PREFIX)/$(LIBDLLNAME) $(PREFIX)/libopenblas.dll
+endif
+ifeq ($(OSNAME), CYGWIN_NT)
+	-cp $(LIBDLLNAME) $(PREFIX)
+	-ln -fs $(PREFIX)/$(LIBDLLNAME) $(PREFIX)/libopenblas.dll
+endif
+
+	@echo Install OK!
+
 clean ::
 	@for d in $(SUBDIRS_ALL) ; \
 	do if test -d $$d; then \
@@ -245,4 +307,5 @@ endif
 	echo deleting lapack-3.1.1; \
 	rm -rf lapack-3.1.1 ;\
 	fi
+	@rm -f *.grd
 	@echo Done.
