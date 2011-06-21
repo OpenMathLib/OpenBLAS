@@ -91,15 +91,37 @@ ifndef ZGEMM_BETA
 ZGEMM_BETA = ../generic/zgemm_beta.c
 endif
 
+ifndef	STRSMKERNEL_LN
 STRSMKERNEL_LN	=  trsm_kernel_LN.S
-STRSMKERNEL_LT	=  trsm_kernel_LT.S
-STRSMKERNEL_RN	=  trsm_kernel_LT.S
-STRSMKERNEL_RT	=  trsm_kernel_RT.S
+endif
 
+ifndef	STRSMKERNEL_LT
+STRSMKERNEL_LT	=  trsm_kernel_LT.S
+endif
+
+ifndef	STRSMKERNEL_RN
+STRSMKERNEL_RN	=  trsm_kernel_LT.S
+endif
+
+ifndef	STRSMKERNEL_RT
+STRSMKERNEL_RT	=  trsm_kernel_RT.S
+endif
+
+ifndef DTRSMKERNEL_LN
 DTRSMKERNEL_LN	=  trsm_kernel_LN.S
+endif
+
+ifndef DTRSMKERNEL_LT
 DTRSMKERNEL_LT	=  trsm_kernel_LT.S
+endif
+
+ifndef DTRSMKERNEL_RN
 DTRSMKERNEL_RN	=  trsm_kernel_LT.S
+endif
+
+ifndef DTRSMKERNEL_RT
 DTRSMKERNEL_RT	=  trsm_kernel_RT.S
+endif
 
 CTRSMKERNEL_LN	=  ztrsm_kernel_LT.S
 CTRSMKERNEL_LT	=  ztrsm_kernel_LT.S

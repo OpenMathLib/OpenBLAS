@@ -220,6 +220,11 @@ REALNAME: ;\
 
 #define BUFFER_SIZE     ( 8 << 20)
 
+#if defined(LOONGSON3A)
+#define PAGESIZE	(16UL << 10)
+#define FIXED_PAGESIZE	(16UL << 10)
+#endif
+
 #ifndef PAGESIZE
 #define PAGESIZE	(64UL << 10)
 #endif
