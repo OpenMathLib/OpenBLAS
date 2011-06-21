@@ -1,7 +1,7 @@
 OpenBLAS ChangeLog
 ====================================================================
-Version 0.1 alpha2(in development)
-0;136;0c
+Version 0.1 alpha2(Preparing to release)
+
 common:
 	* Fixed blasint undefined bug in <cblas.h> file. Other software 
 	  could include this header successfully(Refs issue #13 on github)
@@ -31,6 +31,8 @@ x86/x86_64:
 
 MIPS64:
 	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64. 
+	* Optimized single/double precision BLAS Level3 on Loongson3A/MIPS64. (Refs #2)
+	* Optimized single/double precision axpy function on Loongson3A/MIPS64. (Refs #3)
 
 ====================================================================
 Version 0.1 alpha1
