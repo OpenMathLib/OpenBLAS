@@ -118,10 +118,10 @@ lsame.$(PSUFFIX): $(KERNELDIR)/$(LSAME_KERNEL)
 cpuid.$(PSUFFIX): $(KERNELDIR)/cpuid.S
 	$(CC) -c $(PFLAGS) $< -o $(@F)
 
-ifdef DYNAMIC_ARCH
+#ifdef DYNAMIC_ARCH
 clean ::
 	@rm -f setparam_*.c kernel_*.h setparam.h kernel.h
 
-endif
+#endif
 
 include $(TOPDIR)/Makefile.tail
