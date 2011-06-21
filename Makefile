@@ -26,8 +26,8 @@ endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
-.PHONY : all libs netlib test ctest shared
-.NOTPARALLEL : all libs prof lapack-test
+.PHONY : all libs netlib test ctest shared install 
+.NOTPARALLEL : all libs prof lapack-test install
 
 all :: libs netlib tests shared
 	@echo
@@ -109,11 +109,15 @@ endif
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
+#Save the config files for installation
+	cp Makefile.conf Makefile.conf_last
+	cp config.h config_last.h
 ifdef DYNAMIC_ARCH
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
+	echo DYNAMIC_ARCH=1 >> Makefile.conf_last
 endif
 	touch lib.grd
 
@@ -235,62 +239,8 @@ lapack-test :
 
 dummy :
 
-lib.grd :
-	$(error OpenBLAS: Please run "make" firstly)
-
-install : 	lib.grd
-	@-mkdir -p $(PREFIX)
-	@echo Generating openblas_config.h in $(PREFIX)
-#for inc 
-	@echo \#ifndef OPENBLAS_CONFIG_H > $(PREFIX)/openblas_config.h
-	@echo \#define OPENBLAS_CONFIG_H >> $(PREFIX)/openblas_config.h
-	@cat config.h >> $(PREFIX)/openblas_config.h
-	@echo \#define VERSION \" OpenBLAS $(VERSION) \" >> $(PREFIX)/openblas_config.h
-	@cat openblas_config_template.h >> $(PREFIX)/openblas_config.h
-	@echo \#endif >> $(PREFIX)/openblas_config.h
-
-	@echo Generating f77blas.h in $(PREFIX)
-	@echo \#ifndef OPENBLAS_F77BLAS_H > $(PREFIX)/f77blas.h
-	@echo \#define OPENBLAS_F77BLAS_H >> $(PREFIX)/f77blas.h
-	@echo \#include \"openblas_config.h\" >> $(PREFIX)/f77blas.h
-	@cat common_interface.h >> $(PREFIX)/f77blas.h
-	@echo \#endif >> $(PREFIX)/f77blas.h
-
-	@echo Generating cblas.h in $(PREFIX)
-	@sed 's/common/openblas_config/g' cblas.h > $(PREFIX)/cblas.h
-
-#for install static library 
-	@echo Copy the static library to $(PREFIX)
-	@cp $(LIBNAME) $(PREFIX)
-	@-ln -fs $(PREFIX)/$(LIBNAME) $(PREFIX)/libopenblas.$(LIBSUFFIX)
-#for install shared library 
-	@echo Copy the shared library to $(PREFIX)
-ifeq ($(OSNAME), Linux)
-	-cp $(LIBSONAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
-endif
-ifeq ($(OSNAME), FreeBSD)
-	-cp $(LIBSONAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
-endif
-ifeq ($(OSNAME), NetBSD)
-	-cp $(LIBSONAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
-endif
-ifeq ($(OSNAME), Darwin)
-	-cp $(LIBDYNNAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/libopenblas.dylib
-endif
-ifeq ($(OSNAME), WINNT)
-	-cp $(LIBDLLNAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBDLLNAME) $(PREFIX)/libopenblas.dll
-endif
-ifeq ($(OSNAME), CYGWIN_NT)
-	-cp $(LIBDLLNAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBDLLNAME) $(PREFIX)/libopenblas.dll
-endif
-
-	@echo Install OK!
+install :
+	$(MAKE) -f Makefile.install install
 
 clean ::
 	@for d in $(SUBDIRS_ALL) ; \
@@ -298,14 +248,14 @@ clean ::
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
-ifdef DYNAMIC_ARCH
+#ifdef DYNAMIC_ARCH
 	@$(MAKE) -C kernel clean
-endif
+#endif
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf libopenblas.$(LIBSUFFIX) libopenblas_p.$(LIBSUFFIX) *.lnk myconfig.h
 	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d lapack-3.1.1; then \
 	echo deleting lapack-3.1.1; \
 	rm -rf lapack-3.1.1 ;\
 	fi
-	@rm -f *.grd
+	@rm -f *.grd Makefile.conf_last config_last.h
 	@echo Done.
