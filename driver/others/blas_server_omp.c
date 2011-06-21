@@ -38,7 +38,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/mman.h>
+//#include <sys/mman.h>
 #include "common.h"
 
 #ifndef USE_OPENMP
