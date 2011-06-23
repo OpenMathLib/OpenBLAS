@@ -72,6 +72,7 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 9.Known Issues
 * The number of CPUs/Cores should less than or equal to 8*sizeof(unsigned long). On 64 bits, the limit 
   is 64. On 32 bits, it is 32.
+* This library is not compatible with EKOPath Compiler Suite 4.0.10 (http://www.pathscale.com/ekopath-compiler-suite). However, Path64 (https://github.com/path64/compiler) could compile the codes successfully.
 
 10. Specification of Git Branches
 We used the git branching model in this article (http://nvie.com/posts/a-successful-git-branching-model/). 
