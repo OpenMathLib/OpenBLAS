@@ -60,4 +60,8 @@ float   _Complex BLASFUNC_REF(cdotc)  (blasint *, float  *, blasint *, float  *,
 double  _Complex BLASFUNC_REF(zdotu)  (blasint *, double  *, blasint *, double  *, blasint *);
 double  _Complex BLASFUNC_REF(zdotc)  (blasint *, double  *, blasint *, double  *, blasint *);
 
+void BLASFUNC_REF(drotmg)(double *, double *, double *, double *, double *);
+
+double BLASFUNC_REF(dsdot)(blasint *, float *, blasint *, float *, blasint*);
+												   
 #endif

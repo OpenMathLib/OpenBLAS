@@ -30,35 +30,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#ifndef COMMON_UTEST_H_
-#define COMMON_UTEST_H_
-#include <CUnit/CUnit.h>
+#include "common_utest.h"
 
-#include <common.h>
+void test_drotmg()
+{
+	double te_d1, tr_d1;
+	double te_d2, tr_d2;
+	double te_x1, tr_x1;
+	double te_y1, tr_y1;
+	double te_param[5],tr_param[5];
+	int i=0;
+	te_d1= tr_d1=0.21149573940783739;
+	te_d2= tr_d2=0.046892057172954082;
+	te_x1= tr_x1=-0.42272687517106533;
+	te_y1= tr_y1=0.42211309121921659;
+	//OpenBLAS
+	BLASFUNC(drotmg)(&te_d1, &te_d2, &te_x1, &te_y1, te_param);
+	//reference
+	BLASFUNC_REF(drotmg)(&tr_d1, &tr_d2, &tr_x1, &tr_y1, tr_param);
+	
+	CU_ASSERT_DOUBLE_EQUAL(te_d1, tr_d1, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_d2, tr_d2, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_x1, tr_x1, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_y1, tr_y1, CHECK_EPS);
 
-#define CHECK_EPS 0.00002
-
-//Testcase list
-void test_drot_inc_0(void);
-void test_srot_inc_0(void);
-void test_zdrot_inc_0(void);
-void test_csrot_inc_0(void);
-
-void test_dswap_inc_0(void);
-void test_zswap_inc_0(void);
-void test_sswap_inc_0(void);
-void test_cswap_inc_0(void);
-
-void test_daxpy_inc_0(void);
-void test_zaxpy_inc_0(void);
-void test_saxpy_inc_0(void);
-void test_caxpy_inc_0(void);
-
-void test_zdotu_n_1(void);
-void test_zdotu_offset_1(void);
-
-void test_drotmg(void);
-
-void test_dsdot_n_1(void);
-
-#endif
+	for(i=0; i<5; i++){
+		CU_ASSERT_DOUBLE_EQUAL(te_param[i], tr_param[i], CHECK_EPS);
+	}
+}

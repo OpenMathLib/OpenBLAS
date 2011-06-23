@@ -49,6 +49,7 @@ double NAME(blasint *N, float *x, blasint *INCX, float *y, blasint *INCY){
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   BLASLONG incy = *INCY;
+  double ret = 0.0;
 
   PRINT_DEBUG_NAME;
 
@@ -61,19 +62,21 @@ double NAME(blasint *N, float *x, blasint *INCX, float *y, blasint *INCY){
   if (incx < 0) x -= (n - 1) * incx;
   if (incy < 0) y -= (n - 1) * incy;
 
-  return DSDOT_K(n, x, incx, y, incy);
+  ret=DSDOT_K(n, x, incx, y, incy);
 
   FUNCTION_PROFILE_END(1, n, n);
 
   IDEBUG_END;
 
-  return 0;
+  return ret;
   
 }
 
 #else
 
 double CNAME(blasint n, float *x, blasint incx, float *y, blasint incy){
+
+  double ret = 0.0;
   
   PRINT_DEBUG_CNAME;
 
@@ -86,13 +89,13 @@ double CNAME(blasint n, float *x, blasint incx, float *y, blasint incy){
   if (incx < 0) x -= (n - 1) * incx;
   if (incy < 0) y -= (n - 1) * incy;
 
-  return DSDOT_K(n, x, incx, y, incy);
+  ret=DSDOT_K(n, x, incx, y, incy);
 
   FUNCTION_PROFILE_END(1, n, n);
 
   IDEBUG_END;
 
-  return 0;
+  return ret;
   
 }
 

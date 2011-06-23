@@ -1,6 +1,7 @@
 OpenBLAS ChangeLog
 ====================================================================
-Version 0.1 alpha2(in development)
+Version 0.1 alpha2
+23-Jun-2011
 
 common:
 	* Fixed blasint undefined bug in <cblas.h> file. Other software 
@@ -15,11 +16,25 @@ common:
 	* Provided an error message when the arch is not supported.(Refs 
 	  issue #19 on github)
 	* Fixed issue #23. Fixed a bug of f_check script about generating link flags.
+	* Added openblas_set_num_threads for Fortran.
+	* Fixed #25 a wrong result of rotmg.
+	* Fixed a bug about detecting underscore prefix in c_check.
+	* Print the wall time (cycles) with enabling FUNCTION_PROFILE
+	* Fixed #35 a build bug with NO_LAPACK=1 & DYNAMIC_ARCH=1
+	* Added install target. You can use "make install". (Refs #20)
+
 
 x86/x86_64:
-	* 
+	* Fixed #28 a wrong result of dsdot on x86_64.
+	* Fixed #32 a SEGFAULT bug of zdotc with gcc-4.6.
+	* Fixed #33 ztrmm bug on Nehalem.
+	* Walk round #27 the low performance axpy issue with small imput size & multithreads.
+
 MIPS64:
-	* 
+	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64. 
+	* Optimized single/double precision BLAS Level3 on Loongson3A/MIPS64. (Refs #2)
+	* Optimized single/double precision axpy function on Loongson3A/MIPS64. (Refs #3)
+
 ====================================================================
 Version 0.1 alpha1
 20-Mar-2011

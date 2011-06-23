@@ -300,7 +300,11 @@
 	.align 3
 
 .L999:
-	j	$31
 	ADD	s1, s1, s2
-
+#ifdef DSDOT
+	cvt.d.s s1, s1
+#endif
+	j	$31
+	NOP
+	
 	EPILOGUE

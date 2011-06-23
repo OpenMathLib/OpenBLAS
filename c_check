@@ -149,7 +149,7 @@ $binformat    = bin64  if ($data =~ /BINARY_64/);
 
 $data = `$compiler_name -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
-$data =~ /globl\ ([_\.]*)(.*)/;
+$data =~ /globl\s([_\.]*)(.*)/;
 
 $need_fu      = $1;
 
