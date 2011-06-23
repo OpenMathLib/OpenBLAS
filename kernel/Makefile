@@ -53,6 +53,11 @@ SBLASOBJS	+= setparam$(TSUFFIX).$(SUFFIX)
 CCOMMON_OPT	+= -DTS=$(TSUFFIX)
 endif
 
+KERNEL_INTERFACE = ../common_level1.h ../common_level2.h ../common_level3.h 
+ifneq ($(NO_LAPACK), 1)
+KERNEL_INTERFACE += ../common_lapack.h 
+endif
+
 ifeq ($(ARCH), x86)
 COMMONOBJS	+= cpuid.$(SUFFIX)
 endif
@@ -88,8 +93,9 @@ setparam$(TSUFFIX).$(SUFFIX): setparam$(TSUFFIX).c kernel$(TSUFFIX).h
 setparam$(TSUFFIX).c : setparam-ref.c
 	sed 's/TS/$(TSUFFIX)/g' $< > $(@F)
 
-kernel$(TSUFFIX).h : ../common_level1.h ../common_level2.h ../common_level3.h ../common_lapack.h 
+kernel$(TSUFFIX).h : $(KERNEL_INTERFACE) 
 	sed 's/\ *(/$(TSUFFIX)(/g' $^ > $(@F)
+
 
 cpuid.$(SUFFIX): $(KERNELDIR)/cpuid.S
 	$(CC) -c $(CFLAGS) $< -o $(@F)
@@ -112,10 +118,10 @@ lsame.$(PSUFFIX): $(KERNELDIR)/$(LSAME_KERNEL)
 cpuid.$(PSUFFIX): $(KERNELDIR)/cpuid.S
 	$(CC) -c $(PFLAGS) $< -o $(@F)
 
-ifdef DYNAMIC_ARCH
+#ifdef DYNAMIC_ARCH
 clean ::
 	@rm -f setparam_*.c kernel_*.h setparam.h kernel.h
 
-endif
+#endif
 
 include $(TOPDIR)/Makefile.tail

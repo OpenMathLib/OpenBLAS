@@ -7,6 +7,12 @@
 #define  GAMSQ   16777216.e0
 #define  RGAMSQ  5.9604645e-8
 
+#ifdef DOUBLE
+#define ABS(x) fabs(x)
+#else
+#define ABS(x) fabsf(x)
+#endif
+
 #ifndef CBLAS
 
 void NAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT *DY1, FLOAT *dparam){
@@ -47,7 +53,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
     dq2 =  dp2 * dy1;
     dq1 =  dp1 * *dx1;
 
-    if (! (abs(dq1) > abs(dq2))) goto L40;
+    if (! (ABS(dq1) > ABS(dq2))) goto L40;
 
     dh21 = -(dy1) / *dx1;
     dh12 = dp2 / dp1;
@@ -140,7 +146,7 @@ L150:
     goto L130;
 
 L160:
-    if (! (abs(*dd2) <= RGAMSQ)) {
+    if (! (ABS(*dd2) <= RGAMSQ)) {
 	goto L190;
     }
     if (*dd2 == ZERO) {
@@ -157,7 +163,7 @@ L180:
     goto L160;
 
 L190:
-    if (! (abs(*dd2) >= GAMSQ)) {
+    if (! (ABS(*dd2) >= GAMSQ)) {
 	goto L220;
     }
     igo = 3;

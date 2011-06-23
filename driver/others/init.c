@@ -172,13 +172,20 @@ static inline int rcount(unsigned long number) {
   return count;
 }
 
+/***
+  Known issue: The number of CPUs/cores should less 
+  than sizeof(unsigned long). On 64 bits, the limit 
+  is 64. On 32 bits, it is 32.
+***/
 static inline unsigned long get_cpumap(int node) {
 
   int infile;
   unsigned long affinity;
   char name[160];
+  char cpumap[160];
   char *p, *dummy;
-  
+  int i=0;
+
   sprintf(name, CPUMAP_NAME, node);
   
   infile = open(name, O_RDONLY);
@@ -187,13 +194,19 @@ static inline unsigned long get_cpumap(int node) {
     
   if (infile != -1) {
     
-    read(infile, name, sizeof(name));
-   
+    read(infile, cpumap, sizeof(cpumap));
+    p = cpumap;
+    while (*p != '\n' && i<160){
+      if(*p != ',') {
+	name[i++]=*p;
+      }
+      p++;
+    }
     p = name;
 
-    while ((*p == '0') || (*p == ',')) p++;
+    //    while ((*p == '0') || (*p == ',')) p++;
 
-    affinity = strtol(p, &dummy, 16);
+    affinity = strtoul(p, &dummy, 16);
    
     close(infile);
   }
@@ -347,7 +360,13 @@ static void disable_hyperthread(void) {
   unsigned long share;
   int cpu;
 
-  common -> avail = (1UL << common -> num_procs) - 1;
+  if(common->num_procs > 64){
+    fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->num_procs);
+    exit(1);
+  }else if(common->num_procs == 64){
+    common -> avail = 0xFFFFFFFFFFFFFFFFUL;
+  }else
+    common -> avail = (1UL << common -> num_procs) - 1;
 
 #ifdef DEBUG
   fprintf(stderr, "\nAvail CPUs    : %04lx.\n", common -> avail);
@@ -376,7 +395,13 @@ static void disable_affinity(void) {
     fprintf(stderr, "CPU mask                  : %04lx.\n\n", *(unsigned long *)&cpu_orig_mask[0]);
 #endif
 
-  lprocmask = (1UL << common -> final_num_procs) - 1;
+  if(common->final_num_procs > 64){
+    fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->final_num_procs);
+    exit(1);
+  }else if(common->final_num_procs == 64){
+    lprocmask = 0xFFFFFFFFFFFFFFFFUL;
+  }else
+    lprocmask = (1UL << common -> final_num_procs) - 1;
 
 #ifndef USE_OPENMP
   lprocmask &= *(unsigned long *)&cpu_orig_mask[0];

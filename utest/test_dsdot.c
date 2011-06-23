@@ -30,35 +30,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#ifndef COMMON_UTEST_H_
-#define COMMON_UTEST_H_
-#include <CUnit/CUnit.h>
+#include "common_utest.h"
 
-#include <common.h>
+void test_dsdot_n_1()
+{
+	float x= 0.172555164;
+	float y= -0.0138700781;
+	int incx=1;
+	int incy=1;
+	int n=1;
+	
+	double res1=0.0f, res2=0.0f;
 
-#define CHECK_EPS 0.00002
+	res1=BLASFUNC(dsdot)(&n, &x, &incx, &y, &incy);
+	res2=BLASFUNC_REF(dsdot)(&n, &x, &incx, &y, &incy);
 
-//Testcase list
-void test_drot_inc_0(void);
-void test_srot_inc_0(void);
-void test_zdrot_inc_0(void);
-void test_csrot_inc_0(void);
-
-void test_dswap_inc_0(void);
-void test_zswap_inc_0(void);
-void test_sswap_inc_0(void);
-void test_cswap_inc_0(void);
-
-void test_daxpy_inc_0(void);
-void test_zaxpy_inc_0(void);
-void test_saxpy_inc_0(void);
-void test_caxpy_inc_0(void);
-
-void test_zdotu_n_1(void);
-void test_zdotu_offset_1(void);
-
-void test_drotmg(void);
-
-void test_dsdot_n_1(void);
-
-#endif
+	CU_ASSERT_DOUBLE_EQUAL(res1, res2, CHECK_EPS);
+	
+}

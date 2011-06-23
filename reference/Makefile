@@ -128,6 +128,8 @@ CBLASOBJS    = $(CBLAS1OBJS) $(CBLAS2OBJS) $(CBLAS3OBJS)
 ZBLASOBJS    = $(ZBLAS1OBJS) $(ZBLAS2OBJS) $(ZBLAS3OBJS)
 XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
+ifneq ($(NO_LAPACK), 1)
+
 SBLASOBJS	+= \
 	sgetf2f.$(SUFFIX) sgetrff.$(SUFFIX) slauu2f.$(SUFFIX) slauumf.$(SUFFIX) \
 	spotf2f.$(SUFFIX) spotrff.$(SUFFIX) strti2f.$(SUFFIX) strtrif.$(SUFFIX) \
@@ -160,6 +162,7 @@ XBLASOBJS	+=
 	xpotf2f.$(SUFFIX) xpotrff.$(SUFFIX) xtrti2f.$(SUFFIX) xtrtrif.$(SUFFIX) \
 	xlaswpf.$(SUFFIX) xgetrsf.$(SUFFIX) xgesvf.$(SUFFIX)  xpotrif.$(SUFFIX) \
 
+endif
 
 include $(TOPDIR)/Makefile.tail
 

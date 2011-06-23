@@ -604,30 +604,41 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef POWER
 #define POWER
 #endif
+#define OPENBLAS_SUPPORTED
 #endif
 
 #if defined(__i386__) || (__x86_64__)
 #include "cpuid_x86.c"
+#define OPENBLAS_SUPPORTED
 #endif
 
 #ifdef __ia64__
 #include "cpuid_ia64.c"
+#define OPENBLAS_SUPPORTED
 #endif
 
 #ifdef __alpha
 #include "cpuid_alpha.c"
+#define OPENBLAS_SUPPORTED
 #endif
 
 #ifdef POWER
 #include "cpuid_power.c"
+#define OPENBLAS_SUPPORTED
 #endif
 
 #ifdef sparc
 #include "cpuid_sparc.c"
+#define OPENBLAS_SUPPORTED
 #endif
 
 #ifdef __mips__
 #include "cpuid_mips.c"
+#define OPENBLAS_SUPPORTED
+#endif
+
+#ifndef OPENBLAS_SUPPORTED
+#error "This arch/CPU is not supported by OpenBLAS."
 #endif
 
 #else
