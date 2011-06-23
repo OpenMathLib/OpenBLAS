@@ -28,3 +28,12 @@ DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
 DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+
+ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+
+
+
+

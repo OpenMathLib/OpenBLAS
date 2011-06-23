@@ -1,11 +1,9 @@
 #define ASSEMBLER
 #include "common.h"
 
-
 #define FETCH	ld
 #define gsLQC1(base,fq,ft,offset) .word(0x32<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
 #define gsSQC1(base,fq,ft,offset) .word(0x3A<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
-
 
 #define STACKSIZE	160
 #define M	$4
@@ -116,12 +114,12 @@
 ##	MADD3	a*d
 ##	MADD4	d*b
 ##################################
-####if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
+#if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 #define MADD1	  MADD
 #define MADD2	  MADD
 #define MADD3	  MADD
 #define MADD4	  NMSUB
-###endif
+#endif
 
 #if   defined(NR) || defined(NC) || defined(TR) || defined(TC)
 #define MADD1	  MADD
@@ -175,6 +173,9 @@
 
 	dsra	J,  N, 1							#	J=N/2
 	ST	ALPHA_R, 128($sp)						#	store alpha_r & alpha_i
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	neg	KK, OFFSET
+#endif
 
 	dsll	LDC, LDC, ZBASE_SHIFT				#	LDC*SIZE*COMPSIZE
 	blez	J, .L20
@@ -183,6 +184,10 @@
 
 	.align	5
 .L10:
+#if defined(TRMMKERNEL) &&  defined(LEFT)
+	move	KK, OFFSET
+#endif
+
 	daddiu	J, J, -1							
 	dsra	I,  M, 1							#	I=M/2
 
@@ -193,12 +198,66 @@
 	daddu	CO2, C,   LDC
 
 	move	AO, A								#	Reset AO
-	daddu	PREB, PREB, B						#	PREA=A+panel size
-
 	blez	I, .L30
 	daddu	PREA, PREA, A						#	PREA=A+panel size
 
 .L11:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO,  B
+#else
+	dsll	L,    KK, 1 + ZBASE_SHIFT			#	MR=NR=2
+	dsll	TEMP, KK, 1 + ZBASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B,  TEMP
+#endif
+	MTC	$0,  c11								#	Clear results regs
+	MOV	c12, c11
+	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+
+	MOV	c13, c11
+	MOV	c14, c11
+	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+
+	MOV	c21, c11
+	MOV	c22, c11
+	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	
+	MOV	c23, c11
+	MOV	c24, c11
+	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+
+	FETCH	$0, 0 * SIZE(CO2)
+	MOV	c31, c11
+	MOV	c32, c11
+
+	FETCH	$0, 0 * SIZE(CO1)
+	MOV	c33, c11
+	MOV	c34, c11
+	
+	FETCH	$0, 4 * SIZE(CO2)
+	MOV	c41, c11
+	MOV	c42, c11
+
+	FETCH	$0, 4 * SIZE(CO1)
+	MOV	c43, c11
+	MOV	c44, c11
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 2
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	L,  TEMP, 2
+	daddu	PREB, PREB, B						#	PREA=A+panel size
+	blez	L, .L15
+	NOP
+
+#else
+
 	dsra	L,  K, 2							#	Unroll K 4 times	
 	move	BO,  B
 
@@ -218,18 +277,25 @@
 	MOV	c24, c11
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
 
+	FETCH	$0, 0 * SIZE(CO2)
 	MOV	c31, c11
 	MOV	c32, c11
 
+	FETCH	$0, 0 * SIZE(CO1)
 	MOV	c33, c11
 	MOV	c34, c11
 	
+	FETCH	$0, 4 * SIZE(CO2)
 	MOV	c41, c11
 	MOV	c42, c11
 
+	FETCH	$0, 4 * SIZE(CO1)
 	MOV	c43, c11
+
+	daddu	PREB, PREB, B						#	PREA=A+panel size
 	blez	L, .L15
 	MOV	c44, c11
+#endif
 
 	.align	5
 
@@ -361,8 +427,13 @@
 	.align	5
 
 .L15:
+#ifndef	TRMMKERNEL
 	andi	L,  K, 3
 	LD	ALPHA_R, 128($sp)
+#else
+	andi	L,  TEMP, 3
+	LD	ALPHA_R, 128($sp)
+#endif
 	blez	L, .L18
 	LD	ALPHA_I, 136($sp)
 
@@ -408,7 +479,7 @@
 	NOP
 
 .L18:
-
+#ifndef TRMMKERNEL
  	ADD	c11, c14, c11
 	LD	a1,  0 * SIZE(CO1)
 	ADD	c12, c13, c12
@@ -458,20 +529,75 @@
 	ST	b3, 2 * SIZE(CO2)
 	ST	b4, 3 * SIZE(CO2)
 
-	FETCH	$0, 4 * SIZE(CO2)
-	FETCH	$0, 4 * SIZE(CO1)
-	FETCH	$0, 8 * SIZE(CO2)
-	FETCH	$0, 8 * SIZE(CO1)
-	FETCH	$0, 12 * SIZE(CO2)
-	FETCH	$0, 12 * SIZE(CO1)
-	FETCH	$0, 16 * SIZE(CO2)
-	FETCH	$0, 16 * SIZE(CO1)
+#else
+ 	ADD	c11, c14, c11
+	ADD	c12, c13, c12
+	ADD	c21, c24, c21
+	ADD	c22, c23, c22
 
+	ADD	c31, c34, c31
+	ADD	c32, c33, c32
+	ADD	c41, c44, c41
+	ADD	c42, c43, c42
+
+	daddiu	I, I, -1
+	MUL a1, ALPHA_R, c11
+	MUL a2, ALPHA_R, c12
+	MUL	b1, ALPHA_R, c21
+	MUL	b2, ALPHA_R, c22
+
+	NMSUB	a1, a1, ALPHA_I, c12
+	MADD	a2, a2, ALPHA_I, c11
+	NMSUB	b1, b1, ALPHA_I, c22
+	MADD	b2, b2, ALPHA_I, c21
+
+	MUL	a3, ALPHA_R, c31
+	MUL	a4, ALPHA_R, c32
+	MUL	b3, ALPHA_R, c41
+	MUL	b4, ALPHA_R, c42
+
+	NMSUB	a3, a3, ALPHA_I, c32
+	MADD	a4, a4, ALPHA_I, c31
+	NMSUB	b3, b3, ALPHA_I, c42
+	MADD	b4, b4, ALPHA_I, c41
+
+	ST	a1, 0 * SIZE(CO1)
+	ST	a2, 1 * SIZE(CO1)
+	ST	b1, 2 * SIZE(CO1)
+	ST	b2, 3 * SIZE(CO1)
+
+	ST	a3, 0 * SIZE(CO2)
+	ST	a4, 1 * SIZE(CO2)
+	ST	b3, 2 * SIZE(CO2)
+	ST	b4, 3 * SIZE(CO2)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -2
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+
+	dsll	L,    TEMP, 1 + ZBASE_SHIFT
+	dsll	TEMP, TEMP, 1 + ZBASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 2
+#endif
+#endif
+
+	dsll	PREB, K, 1 + ZBASE_SHIFT				#	PREA=K*2*2^4
 	daddiu	CO1,CO1, 4 * SIZE 
 	bgtz	I, .L11
 	daddiu	CO2,CO2, 4 * SIZE 
 
-
+	.align	5
 .L30:
 	andi	I, M, 1
 	daddu	C,   C, LDC						#	Change C to next panel
@@ -480,22 +606,69 @@
 	blez	I, .L19
 	daddu	C,   C, LDC						#	Change C to next panel
 
-	dsra	L,  K, 2							#	Unroll K 4 times	
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	move	BO,  B
+#else
+	dsll	L,    KK, ZBASE_SHIFT			#	MR=1
+	dsll	TEMP, KK, 1 + ZBASE_SHIFT		#	NR=2
+
+	daddu	AO, AO, L
+	daddu	BO, B,  TEMP
+#endif
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	move	BO,  B
+
+	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 	
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
 	MOV	c13, c11
 	MOV	c14, c11
 
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	FETCH	$0, 0 * SIZE(PREB)
 	MOV	c31, c11
 	MOV	c32, c11
 
+	FETCH	$0, 0 * SIZE(CO1)
+	FETCH	$0, 0 * SIZE(CO2)
+	FETCH	$0, 4 * SIZE(CO1)
+	FETCH	$0, 4 * SIZE(CO2)
+
+	MOV	c33, c11
+	MOV	c34, c11
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1							#	MR=1
+#else	
+	daddiu	TEMP, KK, 2							#	NR=2
+#endif
+	dsra	L,  TEMP, 2
+	blez	L, .L35
+	NOP
+
+#else
+
+	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	dsra	L,  K, 2							#	Unroll K 4 times	
+	move	BO,  B
+
+	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	MTC	$0,  c11								#	Clear results regs
+	MOV	c12, c11
+	
+	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	MOV	c13, c11
+	MOV	c14, c11
+
 	FETCH	$0, 0 * SIZE(PREB)
+	MOV	c31, c11
+	MOV	c32, c11
+
 	FETCH	$0, 0 * SIZE(CO1)
 	FETCH	$0, 0 * SIZE(CO2)
 	FETCH	$0, 4 * SIZE(CO1)
@@ -504,6 +677,7 @@
 	MOV	c33, c11
 	blez	L, .L35
 	MOV	c34, c11
+#endif
 
 	.align	5
 
@@ -582,15 +756,18 @@
 
 
 .L35:
+#ifndef TRMMKERNEL
 	andi	L,  K, 3
 	LD	ALPHA_R, 128($sp)
-	NOP
+#else
+	andi	L,  TEMP, 3
+	LD	ALPHA_R, 128($sp)
+#endif
 	blez	L, .L38
 	LD	ALPHA_I, 136($sp)
 	.align	5
 
 .L36:
-
 	daddiu	L, L, -1
 	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b2					#	axd
@@ -615,6 +792,7 @@
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
 
 .L38:
+#ifndef	TRMMKERNEL
  	ADD	c11, c14, c11
 	LD	a1,  0 * SIZE(CO1)
 	ADD	c12, c13, c12
@@ -645,10 +823,60 @@
 
 	daddiu	CO1,CO1, 2 * SIZE 
 	daddiu	CO2,CO2, 2 * SIZE 
+#else
+ 	ADD	c11, c14, c11
+	ADD	c12, c13, c12
+
+	ADD	c31, c34, c31
+	ADD	c32, c33, c32
+
+	MUL	a1, ALPHA_R, c11
+	MUL	a2, ALPHA_R, c12
+	MUL	a3, ALPHA_R, c31
+	MUL	a4, ALPHA_R, c32
+
+	NMSUB	a1, a1, ALPHA_I, c12
+	MADD	a2, a2, ALPHA_I, c11
+
+	NMSUB	a3, a3, ALPHA_I, c32
+	MADD	a4, a4, ALPHA_I, c31
+
+	ST	a1, 0 * SIZE(CO1)
+	ST	a2, 1 * SIZE(CO1)
+
+	ST	a3, 0 * SIZE(CO2)
+	ST	a4, 1 * SIZE(CO2)
+
+	daddiu	CO1,CO1, 2 * SIZE 
+	daddiu	CO2,CO2, 2 * SIZE 
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -1
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+	dsll	L,    TEMP, ZBASE_SHIFT
+	dsll	TEMP, TEMP, 1 + ZBASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 1
+#endif
+#endif
 
 	.align 5
 
 .L19:
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	daddiu	KK, KK, 2
+#endif
+
 	bgtz	J, .L10
 	move	B, BO
 
@@ -662,11 +890,56 @@
 	dsra	I,  M, 1							#	I=M/2
 	move	CO1, C
 
+#if defined(TRMMKERNEL) &&  defined(LEFT)
+	move	KK, OFFSET
+#endif
+
 	move	AO, A								#	Reset AO
 	blez	I, .L29
 	daddu	PREA, PREA, A
 
 .L21:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO,  B
+#else
+	dsll	L,    KK, 1 + ZBASE_SHIFT
+	dsll	TEMP, KK, ZBASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B,  TEMP
+#endif
+	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	MTC	$0,  c11								#	Clear results regs
+	MOV	c12, c11
+
+	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	MOV	c13, c11
+	MOV	c14, c11
+
+	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	MOV	c21, c11
+	MOV	c22, c11
+
+	FETCH	$0, 0 * SIZE(PREA)
+	MOV	c23, c11
+	MOV	c24, c11
+
+	FETCH	$0, 0 * SIZE(CO1)
+	FETCH	$0, 4 * SIZE(CO1)
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 2						#	define Mr=2
+#else
+	daddiu	TEMP, KK, 1						#	define	NR=1
+#endif
+	dsra	L,  TEMP, 2
+	blez	L, .L25
+	NOP
+
+#else
 	dsra	L,  K, 2							#	Unroll K 4 times	
 	move	BO,  B
 
@@ -691,8 +964,9 @@
 
 	blez	L, .L25
 	NOP
+#endif
 
-	.align	3
+	.align	5
 
 .L22:
 	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
@@ -766,15 +1040,18 @@
 
 
 .L25:
+#ifndef TRMMKERNEL
 	andi	L,  K, 3
 	LD	ALPHA_R, 128($sp)
-
+#else
+	andi	L, TEMP, 3
+	LD	ALPHA_R, 128($sp)
+#endif
 	blez	L, .L28
 	LD	ALPHA_I, 136($sp)
 	.align	3
 
 .L26:
-
 	daddiu	L, L, -1
 	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b2					#	axd
@@ -799,6 +1076,7 @@
 	FETCH	$0, 0 * SIZE(PREA)
 
 .L28:
+#ifndef	TRMMKERNEL
  	ADD	c11, c14, c11
 	LD	a1,  0 * SIZE(CO1)
 	ADD	c12, c13, c12
@@ -824,6 +1102,48 @@
 	ST	b1, 2 * SIZE(CO1)
 	ST	b2, 3 * SIZE(CO1)
 
+#else
+ 	ADD	c11, c14, c11
+	ADD	c12, c13, c12
+	ADD	c21, c24, c21
+	ADD	c22, c23, c22
+
+	daddiu	I, I, -1
+	MUL	a1, ALPHA_R, c11
+	MUL	a2, ALPHA_R, c12
+	MUL	b1, ALPHA_R, c21
+	MUL	b2, ALPHA_R, c22
+
+	NMSUB	a1, a1, ALPHA_I, c12
+	MADD	a2, a2, ALPHA_I, c11
+	NMSUB	b1, b1, ALPHA_I, c22
+	MADD	b2, b2, ALPHA_I, c21
+
+	ST	a1, 0 * SIZE(CO1)
+	ST	a2, 1 * SIZE(CO1)
+	ST	b1, 2 * SIZE(CO1)
+	ST	b2, 3 * SIZE(CO1)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -2
+#else
+	daddiu	TEMP, TEMP, -1
+#endif
+
+	dsll	L,    TEMP, 1 + ZBASE_SHIFT
+	dsll	TEMP, TEMP, ZBASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 2
+#endif
+#endif
 	daddiu	CO1,CO1, 4 * SIZE 
 	bgtz	I, .L21
 	NOP
@@ -833,6 +1153,39 @@
 	blez	I, .L999
 	NOP
 
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO,  B
+#else
+	dsll	TEMP, KK,  ZBASE_SHIFT
+
+	daddu	AO, AO, TEMP
+	daddu	BO, B,  TEMP
+#endif
+
+	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	MTC	$0,  c11								#	Clear results regs
+	MOV	c12, c11
+
+	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	MOV	c13, c11
+	MOV	c14, c11
+
+	FETCH	$0, 0 * SIZE(PREA)
+	FETCH	$0, 4 * SIZE(PREA)
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	L,  TEMP, 2
+	blez	L, .L45
+	NOP
+
+#else
 	dsra	L,  K, 2							#	Unroll K 4 times	
 	move	BO,  B
 
@@ -848,6 +1201,7 @@
 	FETCH	$0, 4 * SIZE(PREA)
 	blez	L, .L45
 	NOP
+#endif
 
 	.align	3
 
@@ -892,8 +1246,13 @@
 	.align 5
 
 .L45:
+#ifndef	TRMMKERNEL
 	andi	L,  K, 3
 	LD	ALPHA_R, 128($sp)
+#else
+	andi	L,  TEMP, 3
+	LD	ALPHA_R, 128($sp)
+#endif
 	blez	L, .L48
 	LD	ALPHA_I, 136($sp)
 
@@ -914,6 +1273,7 @@
 	NOP
 
 .L48:
+#ifndef	TRMMKERNEL
  	ADD	c11, c14, c11
 	ADD	c12, c13, c12
 
@@ -929,7 +1289,40 @@
 	ST	a1, 0 * SIZE(CO1)
 	ST	a2, 1 * SIZE(CO1)
 
+#else
+	ADD	c11, c14, c11
+	ADD	c12, c13, c12
+
+	MUL	a1, ALPHA_R, c11
+	MUL	a2, ALPHA_R, c12
+
+	NMSUB	a1, a1, ALPHA_I, c12
+	MADD	a2, a2, ALPHA_I, c11
+
+	ST	a1, 0 * SIZE(CO1)
+	ST	a2, 1 * SIZE(CO1)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -1
+#else
+	daddiu	TEMP, TEMP, -1
+#endif
+
+	dsll	TEMP, TEMP, ZBASE_SHIFT
+
+	daddu	AO, AO, TEMP
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 1
+#endif
+
 	daddiu	CO1,CO1, 2 * SIZE 
+#endif
 
 
 

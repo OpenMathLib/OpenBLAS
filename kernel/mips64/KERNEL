@@ -128,10 +128,21 @@ CTRSMKERNEL_LT	=  ztrsm_kernel_LT.S
 CTRSMKERNEL_RN	=  ztrsm_kernel_LT.S
 CTRSMKERNEL_RT	=  ztrsm_kernel_RT.S
 
+ifndef	ZTRSMKERNEL_LN
 ZTRSMKERNEL_LN	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	ZTRSMKERNEL_LT
 ZTRSMKERNEL_LT	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	ZTRSMKERNEL_RN
 ZTRSMKERNEL_RN	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	ZTRSMKERNEL_RT
 ZTRSMKERNEL_RT	=  ztrsm_kernel_RT.S
+endif
 
 CGEMM3MKERNEL    =  zgemm3m_kernel.S
 ZGEMM3MKERNEL    =  zgemm3m_kernel.S
