@@ -1,6 +1,7 @@
 OpenBLAS ChangeLog
 ====================================================================
-Version 0.1 alpha2(Preparing to release)
+Version 0.1 alpha2
+23-Jun-2011
 
 common:
 	* Fixed blasint undefined bug in <cblas.h> file. Other software 
