@@ -618,27 +618,25 @@
 #endif
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
-	move	BO,  B
-
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 	
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
 	MOV	c13, c11
 	MOV	c14, c11
 
-	FETCH	$0, 0 * SIZE(PREB)
+	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
 	MOV	c31, c11
 	MOV	c32, c11
+
+	FETCH	$0, 0 * SIZE(PREB)
+	MOV	c33, c11
+	MOV	c34, c11
 
 	FETCH	$0, 0 * SIZE(CO1)
 	FETCH	$0, 0 * SIZE(CO2)
 	FETCH	$0, 4 * SIZE(CO1)
 	FETCH	$0, 4 * SIZE(CO2)
-
-	MOV	c33, c11
-	MOV	c34, c11
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, K, KK
