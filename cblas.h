@@ -1,6 +1,14 @@
 #ifndef CBLAS_H
 #define CBLAS_H
 
+#ifdef __cplusplus
+extern "C" {
+	/* Assume C declarations for C++ */
+#endif  /* __cplusplus */
+
+#include <stddef.h>
+#include "common.h"
+
 #define CBLAS_INDEX size_t
 
 enum CBLAS_ORDER     {CblasRowMajor=101, CblasColMajor=102};
@@ -270,4 +278,10 @@ void cblas_zher2k(enum CBLAS_ORDER Order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANS
                   double *alpha, double *A, blasint lda, double *B, blasint ldb, double beta, double *C, blasint ldc);
 
 void cblas_xerbla(blasint p, char *rout, char *form, ...);
+
+#ifdef __cplusplus
+}
+     
+#endif  /* __cplusplus */
+
 #endif

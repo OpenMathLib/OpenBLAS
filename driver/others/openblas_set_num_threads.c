@@ -30,35 +30,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#ifndef COMMON_UTEST_H_
-#define COMMON_UTEST_H_
-#include <CUnit/CUnit.h>
+#include "common.h"
 
-#include <common.h>
+#ifdef SMP_SERVER
+#ifdef OS_LINUX
 
-#define CHECK_EPS 0.00002
+extern  void openblas_set_num_threads(int num_threads) ;
 
-//Testcase list
-void test_drot_inc_0(void);
-void test_srot_inc_0(void);
-void test_zdrot_inc_0(void);
-void test_csrot_inc_0(void);
+void NAME(int* num_threads){
+	openblas_set_num_threads(*num_threads);
+}
 
-void test_dswap_inc_0(void);
-void test_zswap_inc_0(void);
-void test_sswap_inc_0(void);
-void test_cswap_inc_0(void);
-
-void test_daxpy_inc_0(void);
-void test_zaxpy_inc_0(void);
-void test_saxpy_inc_0(void);
-void test_caxpy_inc_0(void);
-
-void test_zdotu_n_1(void);
-void test_zdotu_offset_1(void);
-
-void test_drotmg(void);
-
-void test_dsdot_n_1(void);
-
+#endif
 #endif

@@ -74,20 +74,21 @@ void gotoblas_profile_quit(void) {
   if (cycles > 0) {
 
     fprintf(stderr, "\n\t====== BLAS Profiling Result =======\n\n");
-    fprintf(stderr, "  Function      No. of Calls   Time Consumption   Efficiency  Bytes/cycle\n");
+    fprintf(stderr, "  Function      No. of Calls   Time Consumption   Efficiency  Bytes/cycle  Wall Time(Cycles)\n");
     
     for (i = 0; i < MAX_PROF_TABLE; i ++) {
       if (function_profile_table[i].calls) {
 #ifndef OS_WINDOWS
-	fprintf(stderr, "%-12s  : %10Ld        %8.2f%%      %10.3f%%  %8.2f\n", 
+	fprintf(stderr, "%-12s  : %10Ld        %8.2f%%      %10.3f%%  %8.2f   %Ld\n", 
 #else
-	fprintf(stderr, "%-12s  : %10lld        %8.2f%%      %10.3f%%  %8.2f\n", 
+	fprintf(stderr, "%-12s  : %10lld        %8.2f%%      %10.3f%%  %8.2f   %lld\n", 
 #endif
 		func_table[i],
 		function_profile_table[i].calls,
 		(double)function_profile_table[i].cycles  / (double)cycles * 100.,
 		(double)function_profile_table[i].fops    / (double)function_profile_table[i].tcycles * 100.,
-		(double)function_profile_table[i].area    / (double)function_profile_table[i].cycles
+			(double)function_profile_table[i].area    / (double)function_profile_table[i].cycles,
+			function_profile_table[i].cycles
 		);
       }
     }

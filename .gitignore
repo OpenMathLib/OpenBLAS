@@ -1,8 +1,13 @@
+*.obj
+*.lib
+*.dll
+*.def
 *.o
 lapack-3.1.1
 lapack-3.1.1.tgz
 *.so
 *.a
+.svn
 *~
 config.h
 Makefile.conf

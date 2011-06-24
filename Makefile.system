@@ -30,6 +30,10 @@ ifdef TARGET
 GETARCH_FLAGS += -DFORCE_$(TARGET)
 endif
 
+ifdef INTERFACE64
+GETARCH_FLAGS	+= -DUSE64BITINT
+endif
+
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
@@ -185,7 +189,7 @@ ifeq ($(C_COMPILER), INTEL)
 CCOMMON_OPT    += -wd981
 endif
 
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT    += -fopenmp
 endif
@@ -489,7 +493,8 @@ endif
 
 ifdef BINARY64
 ifdef INTERFACE64
-CCOMMON_OPT	+= -DUSE64BITINT
+CCOMMON_OPT	+= 
+#-DUSE64BITINT
 endif
 endif
 
@@ -508,6 +513,10 @@ endif
 
 ifeq ($(DYNAMIC_ARCH), 1)
 CCOMMON_OPT	+= -DDYNAMIC_ARCH
+endif
+
+ifeq ($(NO_LAPACK), 1)
+CCOMMON_OPT	+= -DNO_LAPACK
 endif
 
 ifdef SMP

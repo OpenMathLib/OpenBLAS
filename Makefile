@@ -15,6 +15,10 @@ ifdef SANITY_CHECK
 BLASDIRS += reference
 endif
 
+ifndef PREFIX
+PREFIX = /opt/OpenBLAS
+endif
+
 SUBDIRS	= $(BLASDIRS)
 ifneq ($(NO_LAPACK), 1)
 SUBDIRS	+= lapack
@@ -22,8 +26,8 @@ endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
-.PHONY : all libs netlib test ctest shared
-.NOTPARALLEL : all libs prof lapack-test
+.PHONY : all libs netlib test ctest shared install 
+.NOTPARALLEL : all libs prof lapack-test install
 
 all :: libs netlib tests shared
 	@echo
@@ -70,7 +74,7 @@ ifeq ($(OSNAME), Darwin)
 endif
 ifeq ($(OSNAME), WINNT)
 	$(MAKE) -C exports dll
-#	-ln -fs $(LIBDLLNAME) libopenblas.dll
+	-ln -fs $(LIBDLLNAME) libopenblas.dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
@@ -96,18 +100,26 @@ endif
 endif
 
 libs :
+ifeq ($(CORE), UNKOWN)
+	$(error OpenBLAS: Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for the detail.)
+endif
 	-ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
+#Save the config files for installation
+	cp Makefile.conf Makefile.conf_last
+	cp config.h config_last.h
 ifdef DYNAMIC_ARCH
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
+	echo DYNAMIC_ARCH=1 >> Makefile.conf_last
 endif
+	touch lib.grd
 
 prof : prof_blas prof_lapack
 
@@ -227,19 +239,23 @@ lapack-test :
 
 dummy :
 
+install :
+	$(MAKE) -f Makefile.install install
+
 clean ::
 	@for d in $(SUBDIRS_ALL) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
-ifdef DYNAMIC_ARCH
+#ifdef DYNAMIC_ARCH
 	@$(MAKE) -C kernel clean
-endif
+#endif
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf libopenblas.$(LIBSUFFIX) libopenblas_p.$(LIBSUFFIX) *.lnk myconfig.h
 	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d lapack-3.1.1; then \
 	echo deleting lapack-3.1.1; \
 	rm -rf lapack-3.1.1 ;\
 	fi
+	@rm -f *.grd Makefile.conf_last config_last.h
 	@echo Done.

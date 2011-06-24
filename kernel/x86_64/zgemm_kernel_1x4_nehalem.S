@@ -544,7 +544,7 @@
 	jg	.L11
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
-	addq	$1, KK
+	addq	$4, KK
 #endif
 
 	leaq	(C, LDC, 4), C
@@ -594,7 +594,7 @@
 	jg	.L11
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
-	addq	$1, KK
+	addq	$4, KK
 #endif
 
 	leaq	(C, LDC, 4), C

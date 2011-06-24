@@ -53,18 +53,19 @@ dyn : $(LIBDYNNAME)
 zip : dll
 	zip $(LIBZIPNAME) $(LIBDLLNAME) $(LIBNAME)
 
-dll  : libgoto2.dll
+dll  : ../$(LIBDLLNAME)
+#libgoto2.dll
 
 dll2 : libgoto2_shared.dll
 
-libgoto2.dll : ../$(LIBNAME) libgoto2.def dllinit.$(SUFFIX)
+../$(LIBDLLNAME) : ../$(LIBNAME) libgoto2.def dllinit.$(SUFFIX)
 	$(RANLIB) ../$(LIBNAME)
 ifeq ($(BINARY32), 1)
-	$(DLLWRAP) -o $(@F) --def libgoto2.def \
+	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libgoto2.def \
 	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
 	-lib /machine:i386 /def:libgoto2.def
 else
-	$(DLLWRAP) -o $(@F) --def libgoto2.def \
+	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libgoto2.def \
 	--entry _dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
 	-lib /machine:X64 /def:libgoto2.def 
 endif
@@ -84,7 +85,7 @@ libgoto_hpl.def : gensymbol
 	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
 
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
-	$(PREFIX)gcc $(CFLAGS) -all_load -dynamiclib -o $(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(PREFIX)gcc $(CFLAGS) -all_load -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 
 symbol.$(SUFFIX) : symbol.S
 	$(CC) $(CFLAGS) -c -o $(@F) $^

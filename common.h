@@ -39,6 +39,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#ifdef __cplusplus
+extern "C" {
+	/* Assume C declarations for C++ */
+#endif  /* __cplusplus */
+
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
@@ -606,5 +611,10 @@ extern int gotoblas_profile;
 #define PRINT_DEBUG_CNAME if (readenv("GOTO_DEBUG")) fprintf(stderr, "GotoBLAS : %s\n", CHAR_CNAME)
 #define PRINT_DEBUG_NAME  if (readenv("GOTO_DEBUG")) fprintf(stderr, "GotoBLAS : %s\n", CHAR_NAME)
 #endif
+
+#ifdef __cplusplus
+}
+     
+#endif  /* __cplusplus */
 
 #endif
