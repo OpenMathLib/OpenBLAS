@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.1alpha2.1
+VERSION = 0.1alpha2.2
 
 # You can specify the target architecture, otherwise it's
 # automatically detected.
