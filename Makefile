@@ -103,6 +103,9 @@ libs :
 ifeq ($(CORE), UNKOWN)
 	$(error OpenBLAS: Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for the detail.)
 endif
+ifeq ($(NOFORTRAN), 1)
+	$(error OpenBLAS: Detecting fortran compiler failed. Please install fortran compiler, e.g. gfortran, ifort, openf90.)
+endif
 	-ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \

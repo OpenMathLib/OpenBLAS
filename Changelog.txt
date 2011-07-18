@@ -1,5 +1,13 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.1 alpha2.1
+28-Jun-2011
+
+common:
+	* Stop the build and output the error message when detecting 
+	  fortran compiler failed. (Refs issue #42 on github)
+
+====================================================================
 Version 0.1 alpha2
 23-Jun-2011
 
