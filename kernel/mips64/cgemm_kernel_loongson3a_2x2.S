@@ -5,6 +5,7 @@
 #define gsLQC1(base,fq,ft,offset) .word(0x32<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
 #define gsSQC1(base,fq,ft,offset) .word(0x3A<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
 
+
 #define STACKSIZE	160
 #define M	$4
 #define	N	$5
@@ -173,6 +174,7 @@
 
 	dsra	J,  N, 1							#	J=N/2
 	ST	ALPHA_R, 128($sp)						#	store alpha_r & alpha_i
+
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	neg	KK, OFFSET
 #endif
@@ -206,27 +208,31 @@
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	move	BO,  B
 #else
-	dsll	L,    KK, 1 + ZBASE_SHIFT			#	MR=NR=2
 	dsll	TEMP, KK, 1 + ZBASE_SHIFT
 
-	daddu	AO, AO, L
+	daddu	AO, AO, TEMP
 	daddu	BO, B,  TEMP
 #endif
+
 	MTC	$0,  c11								#	Clear results regs
+	LD	a1,	0 * SIZE(AO)
 	MOV	c12, c11
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	LD	a2,	1 * SIZE(AO)
 
 	MOV	c13, c11
+	LD	b1, 0 * SIZE(BO)
 	MOV	c14, c11
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b2, 1 * SIZE(BO)
 
 	MOV	c21, c11
+	LD	a3,	2 * SIZE(AO)
 	MOV	c22, c11
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	LD	a4, 3 * SIZE(AO)
 	
 	MOV	c23, c11
+	LD	b3, 2 * SIZE(BO)
 	MOV	c24, c11
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	b4,	3 * SIZE(BO)
 
 	FETCH	$0, 0 * SIZE(CO2)
 	MOV	c31, c11
@@ -262,35 +268,40 @@
 	move	BO,  B
 
 	MTC	$0,  c11								#	Clear results regs
+	LD	a1,	0 * SIZE(AO)
 	MOV	c12, c11
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	LD	a2,	1 * SIZE(AO)
 
 	MOV	c13, c11
+	LD	b1,	0 * SIZE(BO)
 	MOV	c14, c11
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b2,	1 * SIZE(BO)
 
 	MOV	c21, c11
+	LD	a3,	2 * SIZE(AO)
 	MOV	c22, c11
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	LD	a4, 3 * SIZE(AO)
 	
 	MOV	c23, c11
+	LD	b3, 2 * SIZE(BO)
 	MOV	c24, c11
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	b4,	3 * SIZE(BO)
 
-	FETCH	$0, 0 * SIZE(CO2)
 	MOV	c31, c11
 	MOV	c32, c11
+	FETCH	$0, 0 * SIZE(CO2)
 
-	FETCH	$0, 0 * SIZE(CO1)
 	MOV	c33, c11
 	MOV	c34, c11
+	FETCH	$0, 0 * SIZE(CO1)
 	
-	FETCH	$0, 4 * SIZE(CO2)
 	MOV	c41, c11
 	MOV	c42, c11
+	FETCH	$0, 4 * SIZE(CO2)
 
-	FETCH	$0, 4 * SIZE(CO1)
 	MOV	c43, c11
+	NOP
+	FETCH	$0, 4 * SIZE(CO1)
 
 	daddu	PREB, PREB, B						#	PREA=A+panel size
 	blez	L, .L15
@@ -300,19 +311,23 @@
 	.align	5
 
 .L12:
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
-	gsLQC1(R13, F13, F12, 2)				
+	LD	a5,	4 * SIZE(AO)
+	LD	a6,	5 * SIZE(AO)
 	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R12, F11, F10, 3)					
-	gsLQC1(R13, F16, F15, 3)			
+	LD	b5,	4 * SIZE(BO)
+	LD	b6,	5 * SIZE(BO)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
+	LD	a7,	6 * SIZE(AO)
+	LD	a8,	7 * SIZE(AO)
 	MADD1	c21, c21, a3, b1 					#	A2xB1
 	MADD3	c23, c23, a3, b2
 
+	LD	b7,	6 * SIZE(BO)
+	LD	b8, 7 * SIZE(BO)
 	MADD2	c22, c22, a4, b1
 	MADD4	c24, c24, a4, b2
 
@@ -329,19 +344,23 @@
 	MADD2	c42, c42, a4, b3
 	MADD4	c44, c44, a4, b4
 
-	gsLQC1(R12, F1, F0, 4)						#	unroll	k=2	
-	gsLQC1(R13, F5, F4, 4)					
+	LD	a1,	8 * SIZE(AO)
+	LD	a2, 9 * SIZE(AO)
 	MADD1	c11, c11, a5, b5 					#	axc		A1xB1	
 	MADD3	c13, c13, a5, b6					#	axd
 
+	LD	b1,	8 * SIZE(BO)
+	LD	b2, 9 * SIZE(BO)
 	MADD2	c12, c12, a6, b5					#	bxc
 	MADD4	c14, c14, a6, b6					#	bxd
 
-	gsLQC1(R12, F3, F2, 5)						
-	gsLQC1(R13, F7, F6, 5)				
+	LD	a3,	10 * SIZE(AO)
+	LD	a4,	11 * SIZE(AO)	
 	MADD1	c21, c21, a7, b5 					#	A2xB1
 	MADD3	c23, c23, a7, b6
 
+	LD	b3,	10 * SIZE(BO)
+	LD	b4,	11 * SIZE(BO)
 	MADD2	c22, c22, a8, b5
 	MADD4	c24, c24, a8, b6
 
@@ -358,21 +377,23 @@
 	MADD2	c42, c42, a8, b7
 	MADD4	c44, c44, a8, b8
 
-	gsLQC1(R12, F9, F8, 6)						#	Unroll	K=3
-	gsLQC1(R13, F13, F12, 6)				
+	LD	a5,	12 * SIZE(AO)
+	LD	a6,	13 * SIZE(AO)
 	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R13, F16, F15, 7)			
-	gsLQC1(R12, F11, F10, 7)					
+	LD	b5,	12 * SIZE(BO)
+	LD	b6,	13 * SIZE(BO)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
+	LD	a7,	14 * SIZE(AO)
+	LD	a8,	15 * SIZE(AO)
 	MADD1	c21, c21, a3, b1 					#	A2xB1
 	MADD3	c23, c23, a3, b2
-	daddiu	AO, AO, 16 * SIZE 					#	2mr*4kr*cmpx
-	daddiu	BO, BO, 16 * SIZE  					#	2nr*4kr*cmpx
 
+	LD	b7, 14 * SIZE(BO)
+	LD	b8,	15 * SIZE(BO)
 	MADD2	c22, c22, a4, b1
 	MADD4	c24, c24, a4, b2
 
@@ -384,28 +405,34 @@
 	FETCH	$0, 12 * SIZE(PREB)
 	MADD2	c32, c32, a2, b3
 	MADD4	c34, c34, a2, b4
+	daddiu	AO, AO, 16 * SIZE
 
+	daddiu	BO, BO, 16 * SIZE  					#	2nr*4kr*cmpx
 	MADD1	c41, c41, a3, b3 					#	A2xB2
 	MADD3	c43, c43, a3, b4
 	daddu	PREA, PREA, 16 * SIZE
-	daddu	PREB, PREB, 16 * SIZE
 
 	MADD2	c42, c42, a4, b3
 	MADD4	c44, c44, a4, b4
+	daddu	PREB, PREB, 16 * SIZE
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	a1,	0 * SIZE(AO)
+	LD	a2,	1 * SIZE(AO)
 	MADD1	c11, c11, a5, b5 					#	axc		A1xB1	
 	MADD3	c13, c13, a5, b6					#	axd
 
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	b1, 0 * SIZE(BO)
+	LD	b2,	1 * SIZE(BO)
 	MADD2	c12, c12, a6, b5					#	bxc
 	MADD4	c14, c14, a6, b6					#	bxd
 
+	LD	a3,	2 * SIZE(AO)
+	LD	a4,	3 * SIZE(AO)
 	MADD1	c21, c21, a7, b5 					#	A2xB1
 	MADD3	c23, c23, a7, b6
 
+	LD	b3, 2 * SIZE(BO)
+	LD	b4,	3 * SIZE(BO)
 	MADD2	c22, c22, a8, b5
 	MADD4	c24, c24, a8, b6
 
@@ -471,10 +498,14 @@
 	MADD2	c42, c42, a4, b3
 	MADD4	c44, c44, a4, b4
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	a1,	0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
+	LD	a3, 2 * SIZE(AO)
+	LD	a4, 3 * SIZE(AO)
+	LD	b3, 2 * SIZE(BO)
+	LD	b4, 3 * SIZE(BO)
 	bgtz	L, .L16
 	NOP
 
@@ -541,8 +572,8 @@
 	ADD	c42, c43, c42
 
 	daddiu	I, I, -1
-	MUL a1, ALPHA_R, c11
-	MUL a2, ALPHA_R, c12
+	MUL	a1, ALPHA_R, c11
+	MUL	a2, ALPHA_R, c12
 	MUL	b1, ALPHA_R, c21
 	MUL	b2, ALPHA_R, c22
 
@@ -571,6 +602,7 @@
 	ST	b3, 2 * SIZE(CO2)
 	ST	b4, 3 * SIZE(CO2)
 
+
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP, K, KK
@@ -580,10 +612,9 @@
 	daddiu	TEMP, TEMP, -2
 #endif
 
-	dsll	L,    TEMP, 1 + ZBASE_SHIFT
 	dsll	TEMP, TEMP, 1 + ZBASE_SHIFT
 
-	daddu	AO, AO, L
+	daddu	AO, AO, TEMP
 	daddu	BO, BO, TEMP
 #endif
 
@@ -617,15 +648,18 @@
 	daddu	BO, B,  TEMP
 #endif
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2,	1 * SIZE(AO)
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 	
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	MOV	c13, c11
 	MOV	c14, c11
 
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	b3, 2 * SIZE(BO)
+	LD	b4, 3 * SIZE(BO)
 	MOV	c31, c11
 	MOV	c32, c11
 
@@ -651,15 +685,18 @@
 
 #else
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2,	1 * SIZE(AO)
 	dsra	L,  K, 2							#	Unroll K 4 times	
 	move	BO,  B
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 	
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	b3, 2 * SIZE(BO)
+	LD	b4, 3 * SIZE(BO)
 	MOV	c13, c11
 	MOV	c14, c11
 
@@ -680,16 +717,18 @@
 	.align	5
 
 .L32:
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	gsLQC1(R13, F13, F12, 2)				
+	LD	a3,	2 * SIZE(AO)
+	LD	a4, 3 * SIZE(AO)
 	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R13, F16, F15, 3)			
+	LD	b5, 4 * SIZE(BO)
+	LD	b6, 5 * SIZE(BO)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
-	NOP
-
+	
+	LD	b7, 6 * SIZE(BO)
+	LD	b8, 7 * SIZE(BO)
 	MADD1	c31, c31, a1, b3 					#	A1xB2
 	MADD3	c33, c33, a1, b4
 	
@@ -698,16 +737,18 @@
 	MADD4	c34, c34, a2, b4
 	NOP
 
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
-	gsLQC1(R13, F5, F4, 4)					
+	LD	a5,	4 * SIZE(AO)
+	LD	a6, 5 * SIZE(AO)
 	MADD1	c11, c11, a3, b5 					#	axc		A1xB1	
 	MADD3	c13, c13, a3, b6					#	axd
 
-	gsLQC1(R13, F7, F6, 5)				
+	LD	b1, 8 * SIZE(BO)
+	LD	b2, 9 * SIZE(BO)
 	MADD2	c12, c12, a4, b5					#	bxc
 	MADD4	c14, c14, a4, b6					#	bxd
-	NOP
-
+	
+	LD	b3, 10 * SIZE(BO)
+	LD	b4, 11 * SIZE(BO)
 	MADD1	c31, c31, a3, b7 					#	A1xB2
 	MADD3	c33, c33, a3, b8
 
@@ -716,36 +757,46 @@
 	MADD4	c34, c34, a4, b8
 	daddiu	L, L, -1
 
-	gsLQC1(R12, F11, F10, 3)					
-	gsLQC1(R13, F13, F12, 6)				
+	LD	a7, 6 * SIZE(AO)
+	LD	a8, 7 * SIZE(AO)
 	MADD1	c11, c11, a5, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a5, b2					#	axd
 
-	gsLQC1(R13, F16, F15, 7)			
+	LD	b5, 12 * SIZE(BO)
+	LD	b6, 13 * SIZE(BO)
 	MADD2	c12, c12, a6, b1					#	bxc
 	MADD4	c14, c14, a6, b2					#	bxd
-	daddiu	AO, AO, 8 * SIZE 					#	2mr*4kr*cmpx
 
+	LD	b7, 14 * SIZE(BO)
+	LD	b8, 15 * SIZE(BO)
 	MADD1	c31, c31, a5, b3 					#	A1xB2
 	MADD3	c33, c33, a5, b4
+
+	daddiu	AO, AO, 8 * SIZE 					#	2mr*4kr*cmpx
+	daddiu	BO, BO, 16 * SIZE  					#	2nr*4kr*cmpx
 
 	FETCH	$0, 12 * SIZE(PREB)
 	MADD2	c32, c32, a6, b3
 	MADD4	c34, c34, a6, b4
-	daddiu	BO, BO, 16 * SIZE  					#	2nr*4kr*cmpx
+	NOP
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
 	MADD1	c11, c11, a7, b5 					#	axc		A1xB1	
 	MADD3	c13, c13, a7, b6					#	axd
 
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	b1,	0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	MADD2	c12, c12, a8, b5					#	bxc
 	MADD4	c14, c14, a8, b6					#	bxd
-	daddiu	PREB, PREB, 16 * SIZE
 
+	LD	b3, 2 * SIZE(BO)
+	LD	b4, 3 * SIZE(BO)
 	MADD1	c31, c31, a7, b7 					#	A1xB2
+	NOP
+
 	MADD3	c33, c33, a7, b8
+	daddiu	PREB, PREB, 16 * SIZE
 
 	FETCH	$0, 0 * SIZE(PREB)
 	MADD2	c32, c32, a8, b7
@@ -781,13 +832,16 @@
 	daddiu	PREB, PREB, 4 * SIZE 
 	MADD2	c32, c32, a2, b3
 	MADD4	c34, c34, a2, b4
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
-	NOP
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
 
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
+	LD	b3, 2 * SIZE(BO)
+	LD	b4, 3 * SIZE(BO)
 	bgtz	L, .L36
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	NOP
 
 .L38:
 #ifndef	TRMMKERNEL
@@ -821,8 +875,9 @@
 
 	daddiu	CO1,CO1, 2 * SIZE 
 	daddiu	CO2,CO2, 2 * SIZE 
+
 #else
- 	ADD	c11, c14, c11
+	ADD	c11, c14, c11
 	ADD	c12, c13, c12
 
 	ADD	c31, c34, c31
@@ -830,6 +885,7 @@
 
 	MUL	a1, ALPHA_R, c11
 	MUL	a2, ALPHA_R, c12
+
 	MUL	a3, ALPHA_R, c31
 	MUL	a4, ALPHA_R, c32
 
@@ -907,15 +963,19 @@
 	daddu	AO, AO, L
 	daddu	BO, B,  TEMP
 #endif
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	MOV	c13, c11
 	MOV	c14, c11
 
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	LD	a3, 2 * SIZE(AO)
+	LD	a4, 3 * SIZE(AO)
 	MOV	c21, c11
 	MOV	c22, c11
 
@@ -941,15 +1001,18 @@
 	dsra	L,  K, 2							#	Unroll K 4 times	
 	move	BO,  B
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	MOV	c13, c11
 	MOV	c14, c11
 
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	LD	a3, 2 * SIZE(AO)
+	LD 	a4, 3 * SIZE(AO)
 	MOV	c21, c11
 	MOV	c22, c11
 
@@ -967,15 +1030,18 @@
 	.align	5
 
 .L22:
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
+	LD	 a5, 4 * SIZE(AO)
+	LD	 a6, 5 * SIZE(AO)
 	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	 b3, 2 * SIZE(BO)
+	LD	 b4, 3 * SIZE(BO)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
-	gsLQC1(R12, F11, F10, 3)					
+	LD 	 a7, 6 * SIZE(AO)
+	LD 	 a8, 7 * SIZE(AO)
 	MADD1	c21, c21, a3, b1 					#	A2xB1
 	MADD3	c23, c23, a3, b2
 	
@@ -983,15 +1049,18 @@
 	MADD2	c22, c22, a4, b1
 	MADD4	c24, c24, a4, b2
 
-	gsLQC1(R12, F1, F0, 4)						#	Unroll	K=2	
+	LD 	a1, 8 * SIZE(AO)
+	LD	a2, 9 * SIZE(AO)
 	MADD1	c11, c11, a5, b3 					#	axc		A1xB1	
 	MADD3	c13, c13, a5, b4					#	axd
 
-	gsLQC1(R13, F13, F12, 2)				
+	LD	b5, 4 * SIZE(BO)
+	LD	b6, 5 * SIZE(BO)
 	MADD2	c12, c12, a6, b3					#	bxc
 	MADD4	c14, c14, a6, b4					#	bxd
 
-	gsLQC1(R12, F3, F2, 5)						
+	LD	a3, 10 * SIZE(AO)
+	LD	a4, 11 * SIZE(AO)
 	MADD1	c21, c21, a7, b3 					#	A2xB1
 	MADD3	c23, c23, a7, b4
 
@@ -1000,34 +1069,41 @@
 	MADD4	c24, c24, a8, b4
 	daddiu	L, L, -1
 
-	gsLQC1(R12, F9, F8, 6)						#	Unroll	K=3
+	LD	a5, 12 * SIZE(AO)
+	LD	a6, 13 * SIZE(AO)
 	MADD1	c11, c11, a1, b5 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b6					#	axd
 
-	gsLQC1(R13, F16, F15, 3)			
+	LD	b7, 6 * SIZE(BO)
+	LD	b8, 7 * SIZE(BO)
 	MADD2	c12, c12, a2, b5					#	bxc
 	MADD4	c14, c14, a2, b6					#	bxd
 
-	gsLQC1(R12, F11, F10, 7)					
+	LD	a7, 14 * SIZE(AO)
+	LD	a8, 15 * SIZE(AO)
 	MADD1	c21, c21, a3, b5 					#	A2xB1
 	MADD3	c23, c23, a3, b6
+
 	daddiu	BO, BO,  8 * SIZE  					#	1nr*4kr*cmpx
+	daddiu	AO, AO, 16 * SIZE 					#	2mr*4kr*cmpx
 
 	FETCH	$0, 12 * SIZE(PREA)
 	MADD2	c22, c22, a4, b5
 	MADD4	c24, c24, a4, b6
-	daddiu	AO, AO, 16 * SIZE 					#	2mr*4kr*cmpx
-
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
-	MADD1	c11, c11, a5, b7 					#	axc		A1xB1	
-	MADD3	c13, c13, a5, b8					#	axd
 	daddiu	PREA, PREA, 16 * SIZE 		
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
+	MADD1	c11, c11, a5, b7 					#	axc		A1xB1	
+	MADD3	c13, c13, a5, b8					#	axd
+
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	MADD2	c12, c12, a6, b7					#	bxc
 	MADD4	c14, c14, a6, b8					#	bxd
 
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	LD	a3, 2 * SIZE(AO)
+	LD	a4, 3 * SIZE(AO)
 	MADD1	c21, c21, a7, b7 					#	A2xB1
 	MADD3	c23, c23, a7, b8
 
@@ -1065,10 +1141,16 @@
 	daddiu	PREA, PREA, 4 * SIZE 				#	2mr*1kr*cmpx
 	MADD2	c22, c22, a4, b1
 	MADD4	c24, c24, a4, b2
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
 
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+#	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
+#	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+#	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
+	LD	a3, 2 * SIZE(AO)
+	LD	a4, 3 * SIZE(AO)
 
 	bgtz	L, .L26
 	FETCH	$0, 0 * SIZE(PREA)
@@ -1161,11 +1243,15 @@
 	daddu	BO, B,  TEMP
 #endif
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+#	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+#	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b1, 0 * SIZE(BO)
+	LD 	b2, 1 * SIZE(BO)
 	MOV	c13, c11
 	MOV	c14, c11
 
@@ -1187,11 +1273,15 @@
 	dsra	L,  K, 2							#	Unroll K 4 times	
 	move	BO,  B
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+#	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+#	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b1, 0 * SIZE(BO)
+	LD 	b2, 1 * SIZE(BO)
 	MOV	c13, c11
 	MOV	c14, c11
 
@@ -1204,41 +1294,61 @@
 	.align	3
 
 .L42:
-	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+#	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
+	LD 	a3, 2 * SIZE(AO)
+	LD	a4, 3 * SIZE(AO)
 	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+#	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
+	LD	b3, 2 * SIZE(BO)
+	LD	b4, 3 * SIZE(BO)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
+#	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
+	LD	a5, 4 * SIZE(AO)
+	LD	a6, 5 * SIZE(AO)
 	MADD1	c11, c11, a3, b3 					#	axc		A1xB1	
 	MADD3	c13, c13, a3, b4					#	axd
 
-	gsLQC1(R13, F13, F12, 2)				
+#	gsLQC1(R13, F13, F12, 2)				
+	LD	b5, 4 * SIZE(BO)
+	LD 	b6, 5 * SIZE(BO)
 	MADD2	c12, c12, a4, b3					#	bxc
 	MADD4	c14, c14, a4, b4					#	bxd
-	daddiu	L, L, -1
 
-	gsLQC1(R12, F11, F10, 3)					
+#	gsLQC1(R12, F11, F10, 3)					
+	LD 	a7, 6 * SIZE(AO)
+	LD	a8, 7 * SIZE(AO)
 	MADD1	c11, c11, a5, b5 					#	axc		A1xB1	
 	MADD3	c13, c13, a5, b6					#	axd
-	daddiu	AO, AO, 8 * SIZE 					#	2mr*4kr*cmpx
 
-	gsLQC1(R13, F16, F15, 3)			
+	daddiu	L, L, -1
+
+#	gsLQC1(R13, F16, F15, 3)			
+	LD	b7, 6 * SIZE(BO)
+	LD	b8, 7 * SIZE(BO)
 	MADD2	c12, c12, a6, b5					#	bxc
 	MADD4	c14, c14, a6, b6					#	bxd
+
+	daddiu	AO, AO, 8 * SIZE 					#	2mr*4kr*cmpx
 	daddiu	BO, BO, 8 * SIZE  					#	2nr*4kr*cmpx
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
+#	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
 	MADD1	c11, c11, a7, b7 					#	axc		A1xB1	
 	MADD3	c13, c13, a7, b8					#	axd
 
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+#	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	MADD2	c12, c12, a8, b7					#	bxc
-	bgtz	L, .L42
 	MADD4	c14, c14, a8, b8					#	bxd
+
+	bgtz	L, .L42
+	NOP
 
 
 	.align 5
@@ -1264,9 +1374,12 @@
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
-	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
-	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
-
+#	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
+#	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
+	LD	a1, 0 * SIZE(AO)
+	LD	a2, 1 * SIZE(AO)
+	LD	b1, 0 * SIZE(BO)
+	LD	b2, 1 * SIZE(BO)
 	bgtz	L, .L46
 	NOP
 

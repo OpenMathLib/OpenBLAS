@@ -1,19 +1,25 @@
 SAXPYKERNEL=axpy_loongson3a.S
 DAXPYKERNEL=daxpy_loongson3a_simd.S
 
-SGEMMKERNEL    =  sgemm_kernel_loongson3a.S
+SGEMMKERNEL    =  sgemm_kernel_loongson3a_4x4.S
 SGEMMONCOPY    = ../generic/gemm_ncopy_4.c
 SGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
-DGEMMKERNEL    =  gemm_kernel_loongson3a.S
+DGEMMKERNEL    =  dgemm_kernel_loongson3a_4x4.S
 DGEMMONCOPY    = ../generic/gemm_ncopy_4.c
 DGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
-ZGEMMKERNEL    =  zgemm_kernel_loongson3a.S
+CGEMMKERNEL    =  cgemm_kernel_loongson3a_2x2.S
+CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+CGEMMONCOPYOBJ =  cgemm_oncopy.o
+CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+
+ZGEMMKERNEL    =  zgemm_kernel_loongson3a_2x2.S
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMONCOPYOBJ =  zgemm_oncopy.o
@@ -28,6 +34,11 @@ DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
 DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+
+CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+CTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 
 ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
