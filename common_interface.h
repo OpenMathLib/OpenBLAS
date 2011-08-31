@@ -38,6 +38,11 @@
 
 #ifndef ASSEMBLER
 
+#ifdef __cplusplus
+extern "C" {
+	/* Assume C declarations for C++ */
+#endif  /* __cplusplus */
+
 int    BLASFUNC(xerbla)(char *, blasint *info, blasint);
 
 FLOATRET  BLASFUNC(sdot)  (blasint *, float  *, blasint *, float  *, blasint *);
@@ -733,4 +738,10 @@ xdouble   BLASFUNC(qlamch)(char *);
 FLOATRET  BLASFUNC(slamc3)(float *, float *);
 double    BLASFUNC(dlamc3)(double *, double *);
 xdouble   BLASFUNC(qlamc3)(xdouble *, xdouble *);
+
+#ifdef __cplusplus
+}
+     
+#endif  /* __cplusplus */
+
 #endif
