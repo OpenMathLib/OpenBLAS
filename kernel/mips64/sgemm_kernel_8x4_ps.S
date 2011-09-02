@@ -6069,7 +6069,7 @@
 	move	BO, B
 #else
 	dsll	L, KK, 3 + BASE_SHIFT
-	dsll	TEMP, KK, 2 + BASE_SHIFT
+	dsll	TEMP, KK, 1 + BASE_SHIFT
 
 	daddu	AO, AO, L
 	daddu	BO, B, TEMP
