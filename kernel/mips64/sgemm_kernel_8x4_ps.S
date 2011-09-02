@@ -6985,9 +6985,9 @@
 #if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	dsubu	TEMP, K, KK
 #ifdef	LEFT
-	daddiu	TEMP, TEMP, 1
+	daddiu	TEMP, TEMP, -1
 #else
-	daddiu	TEMP, TEMP, 2
+	daddiu	TEMP, TEMP, -2
 #endif
 	dsll	L, TEMP, BASE_SHIFT
 	dsll	TEMP, TEMP, 1 + BASE_SHIFT
