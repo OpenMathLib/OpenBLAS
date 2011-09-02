@@ -5003,6 +5003,7 @@
 #endif
 
 	bgtz	I, .L481
+	NOP
 #endif
 
 	.align	4
