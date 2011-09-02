@@ -6465,7 +6465,6 @@
 	MOV		C34, C11
 	
 	MOV		C43, C11
-	blez	L, .L242
 	MOV		C44, C11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	dsubu	TEMP, K, KK
