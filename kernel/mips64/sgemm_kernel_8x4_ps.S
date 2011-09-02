@@ -3,7 +3,7 @@
 #include "common.h"
 
 #define FETCH	ld
-#define	STACKSIZE	192
+#define	STACKSIZE	160
 #define gsLQC1(base,fq,ft,offset) .word(0x32<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
 #define gsSQC1(base,fq,ft,offset) .word(0x3A<<26|base<<21|ft<<16|0x1<<15|offset<<6|0x1<<5|fq)
 
@@ -127,7 +127,7 @@
 #	.ent	gemm
 #	.type	gemm, @function
 #gemm:
-#	.frame	$fp,STACKSIZE,$31		# vars= 48, regs= 1/0, args= 0, gp= 0
+#	.frame	$sp,STACKSIZE,$31		# vars= 48, regs= 1/0, args= 0, gp= 0
 #	.mask	0x40000000,-8
 #	.fmask	0x00000000,0
 #	.set	noreorder
@@ -137,34 +137,34 @@
 	PROLOGUE
 
 	daddiu	$sp,$sp,-STACKSIZE
-	sd	$fp,184($sp)
-	move	$fp,$sp
 
-	sd	$16,   0($fp)
-	sd	$17,   8($fp)
-	sd	$18,  16($fp)
-	sd	$19,  24($fp)
-	sd	$20,  32($fp)
-	sd	$21,  40($fp)
-	sd	$22,  48($fp)
+	sd	$16,   0($sp)
+	sd	$17,   8($sp)
+	sd	$18,  16($sp)
+	sd	$19,  24($sp)
+	sd	$20,  32($sp)
+	sd	$21,  40($sp)
+	sd	$22,  48($sp)
 
-	ST	$f24, 56($fp)
-	ST	$f25, 64($fp)
-	ST	$f26, 72($fp)
-	ST	$f27, 80($fp)
-	ST	$f28, 88($fp)
+	ST	$f24, 56($sp)
+	ST	$f25, 64($sp)
+	ST	$f26, 72($sp)
+	ST	$f27, 80($sp)
+	ST	$f28, 88($sp)
 
 #if defined(TRMMKERNEL)
-	sd	$23,  96($fp)
-	sd	$24, 104($fp)
-	sd	$25, 112($fp)
+	sd	$23,  96($sp)
+	sd	$24, 104($sp)
+	sd	$25, 112($sp)
+
+	LDARG	OFFSET, 160($sp)
 #endif
 
 #ifndef __64BIT__
-	ST	$f20,120($fp)
-	ST	$f21,128($fp)
-	ST	$f22,136($fp)
-	ST	$f23,144($fp)
+	ST	$f20,120($sp)
+	ST	$f21,128($sp)
+	ST	$f22,136($sp)
+	ST	$f23,144($sp)
 #endif
 
 	.align	4
@@ -172,16 +172,12 @@
 	dsra	J, N, 2				#	NR=4
 	dsll	LDC, LDC, BASE_SHIFT#	LDC*SIZE
 
-#if defined(TRMMKERNEL)
-	LD		OFFSET, 192($fp)
-#endif
-
 #if	defined(TRMMKERNEL) && !defined(LEFT)
 	neg		KK, OFFSET
 #endif
 
 	blez	J, .L2
-	ST		ALPHA, 152($fp)
+	ST		ALPHA, 152($sp)
 
 .L48:
 	dsra	I, M, 3				#	MR=8
@@ -4670,7 +4666,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L480
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADPS	C11, C11, A1, B1
 	MADPS	C21, C21, A2, B1
@@ -5273,7 +5269,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L440
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADPS	C11, C11, A1, B1
 	MADPS	C21, C21, A2, B1
@@ -5653,7 +5649,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L420
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADPS	C11, C11, A1, B1
 	MADPS	C12, C12, A1, B2
@@ -5968,7 +5964,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L410
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C11, C11, A1, B1
 	MADD	C12, C12, A1, B2
@@ -6258,7 +6254,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L280
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C13, C13, A5, B1
 	MADD	C23, C23, A6, B1
@@ -6574,7 +6570,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L240
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C11, C11, A1, B1
 	MADD	C21, C21, A2, B1
@@ -6784,7 +6780,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L220
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C11, C11, A1, B1
 	MADD	C21, C21, A2, B1
@@ -6953,7 +6949,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L210
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C11, C11, A1, B1
 	MADD	C12, C12, A1, B2
@@ -7204,7 +7200,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L180
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C13, C13, A5, B1
 	MADD	C23, C23, A6, B1
@@ -7435,7 +7431,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L140
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C11, C11, A1, B1
 	MADD	C21, C21, A2, B1
@@ -7597,7 +7593,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L120
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C11, C11, A1, B1
 	MADD	C21, C21, A2, B1
@@ -7730,7 +7726,7 @@
 	andi	L, TEMP, 1
 #endif
 	blez	L, .L110
-	LD		ALPHA, 152($fp)
+	LD		ALPHA, 152($sp)
 
 	MADD	C11, C11, A1, B1
 	daddiu	AO, AO, 1 * SIZE
@@ -7762,35 +7758,33 @@
 	NOP
 
 .L999:
-	ld	$16,   0($fp)
-	ld	$17,   8($fp)
-	ld	$18,  16($fp)
-	ld	$19,  24($fp)
-	ld	$20,  32($fp)
-	ld	$21,  40($fp)
-	ld	$22,  48($fp)
+	ld	$16,   0($sp)
+	ld	$17,   8($sp)
+	ld	$18,  16($sp)
+	ld	$19,  24($sp)
+	ld	$20,  32($sp)
+	ld	$21,  40($sp)
+	ld	$22,  48($sp)
 
-	LD	$f24, 56($fp)
-	LD	$f25, 64($fp)
-	LD	$f26, 72($fp)
-	LD	$f27, 80($fp)
-	LD	$f28, 88($fp)
+	LD	$f24, 56($sp)
+	LD	$f25, 64($sp)
+	LD	$f26, 72($sp)
+	LD	$f27, 80($sp)
+	LD	$f28, 88($sp)
 
 #if defined(TRMMKERNEL)
-	ld	$23,  96($fp)
-	ld	$24, 104($fp)
-	ld	$25, 112($fp)
+	ld	$23,  96($sp)
+	ld	$24, 104($sp)
+	ld	$25, 112($sp)
 #endif
 
 #ifndef __64BIT__
-	LD	$f20,120($fp)
-	LD	$f21,128($fp)
-	LD	$f22,136($fp)
-	LD	$f23,144($fp)
+	LD	$f20,120($sp)
+	LD	$f21,128($sp)
+	LD	$f22,136($sp)
+	LD	$f23,144($sp)
 #endif
 
-	move	$sp,$fp
-	ld	$fp,184($sp)
 	daddiu	$sp,$sp,STACKSIZE
 	j	$31
 	nop
