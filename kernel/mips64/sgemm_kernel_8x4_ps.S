@@ -114,6 +114,12 @@
 #define	R16	16
 #define	R17	17
 
+#if defined(TRMMKERNEL)
+#define	OFFSET	$23
+#define	KK		$24
+#define TEMP	$25
+#endif
+
 #	.text
 #	.align	2
 ##	.globl	gemm
@@ -165,6 +171,15 @@
 .L4:
 	dsra	J, N, 2				#	NR=4
 	dsll	LDC, LDC, BASE_SHIFT#	LDC*SIZE
+
+#if defined(TRMMKERNEL)
+	LD		OFFSET, 192($fp)
+#endif
+
+#if	defined(TRMMKERNEL) && !defined(LEFT)
+	neg		KK, OFFSET
+#endif
+
 	blez	J, .L2
 	ST		ALPHA, 152($fp)
 
@@ -181,11 +196,81 @@
 	daddu	CO4, CO3, LDC
 	daddu	PREA, A, PREA
 
+#if defined(TRMMKERNEL) && defined(LEFT)
+	move	KK, OFFSET
+#endif
+
 	blez	I, .L44
 	daddu	C,   CO4, LDC
 
 	.align	4
 .L481:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) ||\
+	(!defined(LEFT) && !defined(TRANSA))
+	move	BO, B
+#else
+	dsll	L, KK, 3 + BASE_SHIFT	# kk*8mr*datasize
+	dsll	TEMP, KK, 2 + BASE_SHIFT
+
+	daddu	AO, AO, L			#	AO point to the data addr
+	daddu	BO, B,  TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+
+	dsll	PREB, K, BASE_SHIFT
+	MOV		C21, C11
+	MOV		C22, C11
+	
+	MOV		C31, C11
+	MOV		C32, C11
+	gsLQC1(R13, F9, F8, 0)		#	B1 B2
+
+	MOV		C41, C11
+	MOV		C42, C11
+	gsLQC1(R12, F1, F0, 0)		#	A1 A2
+
+	MOV		C13, C11
+	MOV		C14, C11
+	gsLQC1(R12, F3, F2, 1)		#	A3 A4
+
+	MOV		C23, C11
+	FETCH	$0, 0 * SIZE(CO1)
+	MOV		C24, C11
+	FETCH	$0, 4 * SIZE(CO1)
+	
+	MOV		C33, C11
+	FETCH	$0, 0 * SIZE(CO2)
+	MOV		C34, C11
+	FETCH	$0, 4 * SIZE(CO2)
+	
+	daddu	PREB, B, PREB 
+	MOV		C43, C11
+	FETCH	$0, 0 * SIZE(CO3)
+
+	MOV		C44, C11
+	FETCH	$0, 4 * SIZE(CO3)
+
+	PLU		B3,	B1, B1
+	FETCH	$0, 0 * SIZE(CO4)
+
+	PLU		B4, B2, B2
+	FETCH	$0, 4 * SIZE(CO4)
+
+#if (defined(LEFT) && !defined(TRANSA)) ||\
+		 (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK			#	TEMP is the length of the data part
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 8
+#else
+	daddiu	TEMP, KK, 4
+#endif
+	dsra	L, TEMP, 6
+	blez	L, .L482
+	NOP
+#else
+								#	GEMM PART
 	move	BO, B				#	Reset	B
 	dsra	L, K, 6				#	UnRoll	K=64
 
@@ -231,6 +316,7 @@
 	PLU		B4, B2, B2
 	blez	L, .L482
 	FETCH	$0, 4 * SIZE(CO4)
+#endif
 
 .L4810:
 	daddiu	L, L, -1
@@ -2413,7 +2499,11 @@
 
 	.align	4
 .L482:
+#ifndef TRMMKERNEL
 	andi	L, K, 32
+#else
+	andi	L, TEMP, 32
+#endif
 	blez	L, .L483
 	NOP
 
@@ -3508,7 +3598,11 @@
 
 	.align	4
 .L483:
+#ifndef TRMMKERNEL
 	andi	L, K, 16
+#else
+	andi	L, TEMP, 16
+#endif
 	blez	L, .L484
 	NOP
 
@@ -4059,7 +4153,11 @@
 
 	.align	4
 .L484:				
+#ifndef TRMMKERNEL
 	andi	L, K, 8
+#else
+	andi	L, TEMP, 8
+#endif
 	blez	L, .L485
 	NOP
 
@@ -4338,7 +4436,11 @@
 
 	.align	4
 .L485:
+#ifndef TRMMKERNEL
 	andi	L, K, 4
+#else
+	andi	L, TEMP, 4
+#endif
 	blez	L, .L486
 	NOP
 
@@ -4481,7 +4583,11 @@
 
 	.align	4
 .L486:
+#ifndef TRMMKERNEL
 	andi	L, K, 2
+#else
+	andi	L, TEMP, 2
+#endif
 	blez	L, .L487
 	NOP
 
@@ -4558,7 +4664,11 @@
 
 	.align	4
 .L487:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L480
 	LD		ALPHA, 152($fp)
 
@@ -4592,6 +4702,7 @@
 
 	.align	4
 .L480:							#	Write Back
+#ifndef TRMMKERNEL
 	daddiu	I, I, -1
 	CVTU	A1, C13				#	A1=C13.upper=c12
 	CVTU	A2, C11				#	A2=C11.upper=c22
@@ -4762,7 +4873,141 @@
 	daddiu	CO3, CO3, 8 * SIZE
 	bgtz	I, .L481
 	daddiu	CO4, CO4, 8 * SIZE
+#else
+	daddiu	I, I, -1
+	CVTU	A1, C13				#	A1=C13.upper=c12
+	CVTU	A2, C11				#	A2=C11.upper=c22
+	CVTU	A3, C23				#	A3=C23.upper=c14
+	CVTU	A4, C21				#	A4=C21.upper=c24
+	CVTU	A5, C33				#	A5=C33.upper=c16
+	CVTU	A6, C31				#	A6=C31.upper=c26
+	CVTU	A7, C43				#	A7=C43.upper=c18
+	CVTU	A8, C41				#	A8=C41.upper=c28
 
+	MUL		A1, A1, ALPHA 		#	c12		
+	MUL		A2, A2, ALPHA 		#	c22
+	MUL		A3, A3, ALPHA 		#	c14
+	MUL		A4, A4, ALPHA 		#	c24
+	MUL		A5, A5, ALPHA 		#	c16
+	MUL		A6, A6, ALPHA 		#	c26
+	MUL		A7, A7, ALPHA 		#	c18
+	MUL		A8, A8, ALPHA 		#	c28
+
+	MUL	C11, C11, ALPHA 		#	c12
+	ST	A1, 1 * SIZE(CO1)
+
+	MUL	C13, C13, ALPHA 		#	c22
+	ST	A2, 1 * SIZE(CO2)
+
+	MUL	C21, C21, ALPHA 		#	c14
+	ST	A3, 3 * SIZE(CO1)
+
+	MUL	C23, C23, ALPHA 		#	c24
+	ST	A4, 3 * SIZE(CO2)
+
+	MUL	C31, C31, ALPHA 		#	c16
+	ST	A5, 5 * SIZE(CO1)
+	
+	MUL	C33, C33, ALPHA 		#	c26
+	ST	A6, 5 * SIZE(CO2)
+
+	MUL	C41, C41, ALPHA 		#	c18
+	ST	A7, 7 * SIZE(CO1)
+
+	MUL	C43, C43, ALPHA 		#	c28
+	ST	A8, 7 * SIZE(CO2)
+
+	CVTU	A1, C14				#	B1=C12.upper=c42
+	ST		C11, 0 * SIZE(CO1)
+
+	CVTU	A2, C12				#	B2=C14.upper=c32
+	ST		C13, 0 * SIZE(CO2)
+
+	CVTU	A3, C24				#	B3=C22.upper=c44
+	ST		C21, 2 * SIZE(CO1)
+	
+	CVTU	A4, C22				#	B4=C24.upper=c34
+	ST		C23, 2 * SIZE(CO2)
+
+	CVTU	A5, C34				#	B5=C32.upper=c46
+	ST		C31, 4 * SIZE(CO1)
+
+	CVTU	A6, C32				#	B6=C24.upper=c36
+	ST		C33, 4 * SIZE(CO2)
+
+	CVTU	A7, C44				#	B7=C42.upper=c48
+	ST		C41, 6 * SIZE(CO1)
+
+	CVTU	A8, C42				#	A1=C44.upper=c38	
+	ST		C43, 6 * SIZE(CO2)
+
+	MUL		A1, A1, ALPHA 		#	c31
+	MUL		A2, A2, ALPHA 
+	MUL		A3, A3, ALPHA 
+	MUL		A4, A4, ALPHA 
+	MUL		A5, A5, ALPHA 
+	MUL		A6, A6, ALPHA 
+	MUL		A7, A7, ALPHA 
+	MUL		A8, A8, ALPHA 
+
+	MUL	C12, C12, ALPHA 
+	ST	A1, 1 * SIZE(CO3)
+
+	MUL	C14, C14, ALPHA 
+	ST	A2, 1 * SIZE(CO4)
+
+	MUL	C22, C22, ALPHA 
+	ST	A3, 3 * SIZE(CO3)
+
+	MUL	C24, C24, ALPHA 
+	ST	A4, 3 * SIZE(CO4)
+
+	MUL	C32, C32, ALPHA 
+	ST	A5, 5 * SIZE(CO3)
+
+	MUL	C34, C34, ALPHA 
+	ST	A6, 5 * SIZE(CO4)
+
+	MUL	C42, C42, ALPHA 
+	ST	A7, 7 * SIZE(CO3)
+
+	MUL	C44, C44, ALPHA 
+	ST	A8, 7 * SIZE(CO4)
+
+	ST		C12, 0 * SIZE(CO3)
+	ST		C14, 0 * SIZE(CO4)
+	ST		C22, 2 * SIZE(CO3)
+	ST		C24, 2 * SIZE(CO4)
+	ST		C32, 4 * SIZE(CO3)
+	ST		C34, 4 * SIZE(CO4)
+	ST		C42, 6 * SIZE(CO3)
+	ST		C44, 6 * SIZE(CO4)
+
+	daddiu	CO1, CO1, 8 * SIZE
+	daddiu	CO2, CO2, 8 * SIZE
+	daddiu	CO3, CO3, 8 * SIZE
+	daddiu	CO4, CO4, 8 * SIZE
+
+#if ( defined(LEFT) && defined(TRANSA)) ||\
+		(!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef	LEFT
+	daddiu	TEMP, TEMP, -8
+#else
+	daddiu	TEMP, TEMP, -4
+#endif
+	dsll	L, TEMP, 3 + BASE_SHIFT
+	dsll	TEMP, TEMP, 2 + BASE_SHIFT
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef	LEFT
+	daddiu	KK, KK, 8
+#endif
+
+	bgtz	I, .L481
+#endif
 
 	.align	4
 .L44:
@@ -4772,6 +5017,65 @@
 
 	.align	4
 .L441:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) ||\
+	(!defined(LEFT) && !defined(TRANSA))
+	move	BO, B				#	Reset B
+#else
+	dsll	L, KK, 2 + BASE_SHIFT
+	dsll	TEMP, KK, 2 + BASE_SHIFT
+	daddu	AO, AO, L
+	daddu	BO, B,  TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+
+	dsll	PREB, K, BASE_SHIFT
+	MOV		C21, C11
+	MOV		C22, C11
+	
+	MOV		C31, C11
+	MOV		C32, C11
+	gsLQC1(R13, F9, F8, 0)		#	B1 B2
+
+	MOV		C41, C11
+	MOV		C42, C11
+	gsLQC1(R12, F1, F0, 0)		#	A1 A2
+
+	MOV		C13, C11
+	MOV		C14, C11
+
+	MOV		C23, C11
+	FETCH	$0, 0 * SIZE(CO1)
+	MOV		C24, C11
+	
+	MOV		C33, C11
+	FETCH	$0, 0 * SIZE(CO2)
+	MOV		C34, C11
+	
+	daddu	PREB, B, PREB 
+	MOV		C43, C11
+	FETCH	$0, 0 * SIZE(CO3)
+
+	MOV		C44, C11
+	PLU		B3,	B1, B1
+
+	FETCH	$0, 0 * SIZE(CO4)
+	PLU		B4, B2, B2
+
+#if (defined(LEFT) && !defined(TRANSA)) ||\
+		(!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddu	TEMP, KK, 4
+#else
+	daddu	TEMP, KK, 4
+#endif
+	dsra	L, TEMP, 2
+	blez	L, .L442
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 2				#	UnRoll	K=4
 
@@ -4806,13 +5110,12 @@
 	FETCH	$0, 0 * SIZE(CO3)
 
 	MOV		C44, C11
-
 	PLU		B3,	B1, B1
-	FETCH	$0, 0 * SIZE(CO4)
 
-	PLU		B4, B2, B2
+	FETCH	$0, 0 * SIZE(CO4)
 	blez	L, .L442
-	NOP
+	PLU		B4, B2, B2
+#endif
 
 .L4410:							#	
 	daddiu	L, L, -1
@@ -4907,7 +5210,11 @@
 
 	.align	4
 .L442:
+#ifndef TRMMKERNEL
 	andi	L, K, 2
+#else
+	andi	L, TEMP, 2
+#endif
 	blez	L, .L443
 	NOP
 
@@ -4960,7 +5267,11 @@
 
 	.align	4
 .L443:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L440
 	LD		ALPHA, 152($fp)
 
@@ -4981,6 +5292,7 @@
 
 	.align	4
 .L440:
+#ifndef TRMMKERNEL
 	CVTU	A1, C13				#	A1=C13.upper=c12
 	LD		B1, 1 * SIZE(CO1)
 
@@ -5069,6 +5381,86 @@
 	daddiu	CO3, CO3, 4 * SIZE
 	daddiu	CO4, CO4, 4 * SIZE
 
+#else
+	CVTU	A1, C13				#	A1=C13.upper=c12
+	CVTU	A2, C11				#	A2=C11.upper=c22
+	CVTU	A3, C23				#	A3=C23.upper=c14
+	CVTU	A4, C21				#	A4=C21.upper=c24
+
+	MUL		A1, A1, ALPHA 		#	c12		
+	MUL		A2, A2, ALPHA 		#	c22
+	MUL		A3, A3, ALPHA 		#	c14
+	MUL		A4, A4, ALPHA 		#	c24
+	
+	MUL	C11, C11, ALPHA 		#	c12
+	ST	A1, 1 * SIZE(CO1)
+
+	MUL	C13, C13, ALPHA 		#	c22
+	ST	A2, 1 * SIZE(CO2)
+
+	MUL	C21, C21, ALPHA 		#	c14
+	ST	A3, 3 * SIZE(CO1)
+
+	MUL	C23, C23, ALPHA 		#	c24
+	ST	A4, 3 * SIZE(CO2)
+
+	CVTU	A5, C14				#	B1=C12.upper=c42
+	ST		C11, 0 * SIZE(CO1)
+
+	CVTU	A6, C12				#	B2=C14.upper=c32
+	ST		C13, 0 * SIZE(CO2)
+
+	CVTU	A7, C24				#	B3=C22.upper=c44
+	ST		C21, 2 * SIZE(CO1)
+	
+	CVTU	A8, C22				#	B4=C24.upper=c34
+	ST		C23, 2 * SIZE(CO2)
+
+	MUL		A5, A5, ALPHA 		#	c31
+	MUL		A6, A6, ALPHA 
+	MUL		A7, A7, ALPHA 
+	MUL		A8, A8, ALPHA 
+
+	MUL	C12, C12, ALPHA 
+	ST	A5, 1 * SIZE(CO3)
+
+	MUL	C14, C14, ALPHA 
+	ST	A6, 1 * SIZE(CO4)
+
+	MUL	C22, C22, ALPHA 
+	ST	A7, 3 * SIZE(CO3)
+	
+	MUL	C24, C24, ALPHA 
+	ST	A8, 3 * SIZE(CO4)
+
+	ST		C12, 0 * SIZE(CO3)
+	ST		C14, 0 * SIZE(CO4)
+	ST		C22, 2 * SIZE(CO3)
+	ST		C24, 2 * SIZE(CO4)
+
+	daddiu	CO1, CO1, 4 * SIZE
+	daddiu	CO2, CO2, 4 * SIZE
+	daddiu	CO3, CO3, 4 * SIZE
+	daddiu	CO4, CO4, 4 * SIZE
+
+#if ( defined(LEFT) && defined(TRANSA))||\
+		(!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -4
+#else
+	daddiu	TEMP, TEMP, -4
+#endif
+	dsll	L, TEMP, 2 + BASE_SHIFT
+	dsll	TEMP, TEMP, 2 + BASE_SHIFT
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 4
+#endif
+#endif
 
 	.align	4
 .L42:
@@ -5078,6 +5470,62 @@
 
 	.align	4
 .L421:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) ||\
+	(!defined(LEFT) && !defined(TRANSA))
+	move	BO, B
+#else
+	dsll	L, KK, 1 + BASE_SHIFT
+	dsll	TEMP, KK, 2 + BASE_SHIFT
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+
+	MOV		C21, C11
+	MOV		C22, C11
+	
+	MOV		C31, C11
+	MOV		C32, C11
+	gsLQC1(R13, F9, F8, 0)		#	B1 B2
+
+	MOV		C41, C11
+	MOV		C42, C11
+	gsLQC1(R12, F1, F0, 0)		#	A1 A2
+
+	MOV		C13, C11
+	MOV		C14, C11
+
+	MOV		C23, C11
+	FETCH	$0, 0 * SIZE(CO1)
+	MOV		C24, C11
+	
+	MOV		C33, C11
+	FETCH	$0, 0 * SIZE(CO2)
+	MOV		C34, C11
+	
+	MOV		C43, C11
+	FETCH	$0, 0 * SIZE(CO3)
+
+	MOV		C44, C11
+	PLU		B3,	B1, B1
+
+	FETCH	$0, 0 * SIZE(CO4)
+	PLU		B4, B2, B2
+#if (defined(LEFT) && !defined(TRANSA)) ||\
+		(!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 2
+#else
+	daddiu	TEMP, KK, 4
+#endif
+	dsra	L, TEMP, 2
+	blez	L, .L422
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 2				#	UnRoll	K=4
 
@@ -5110,13 +5558,12 @@
 	FETCH	$0, 0 * SIZE(CO3)
 
 	MOV		C44, C11
-
 	PLU		B3,	B1, B1
-	FETCH	$0, 0 * SIZE(CO4)
 
-	PLU		B4, B2, B2
+	FETCH	$0, 0 * SIZE(CO4)
 	blez	L, .L422
-	NOP
+	PLU		B4, B2, B2
+#endif
 
 .L4210:
 	daddiu	L, L, -1
@@ -5168,7 +5615,11 @@
 
 	.align	4
 .L422:
+#ifndef TRMMKERNEL
 	andi	L, K, 2
+#else
+	andi	L, TEMP, 2
+#endif
 	blez	L, .L423
 	NOP
 
@@ -5196,7 +5647,11 @@
 	PLU		B4, B2, B2
 
 .L423:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L420
 	LD		ALPHA, 152($fp)
 
@@ -5210,6 +5665,7 @@
 
 	.align	4
 .L420:
+#ifndef TRMMKERNEL
 	CVTU	A1, C13				#	A1=C13.upper=c12
 	LD		B1, 1 * SIZE(CO1)
 
@@ -5256,6 +5712,60 @@
 	daddiu	CO2, CO2, 2 * SIZE
 	daddiu	CO3, CO3, 2 * SIZE
 	daddiu	CO4, CO4, 2 * SIZE
+#else
+	CVTU	A1, C13				#	A1=C13.upper=c12
+	CVTU	A2, C11				#	A2=C11.upper=c22
+
+	MUL	A1, A1, ALPHA 		#	c12		
+	MUL	A2, A2, ALPHA 		#	c22
+
+	MUL	C11, C11, ALPHA 		#	c12
+	MUL	C13, C13, ALPHA 		#	c22
+
+	CVTU	A3, C14				#	B1=C12.upper=c42
+	CVTU	A4, C12				#	B2=C14.upper=c32
+
+	MUL	A3, A3, ALPHA 		#	c31
+	ST	A1, 1 * SIZE(CO1)
+
+	MUL	A4, A4, ALPHA 
+	ST	A2, 1 * SIZE(CO2)
+
+	MUL	C12, C12, ALPHA 
+	ST	C11, 0 * SIZE(CO1)
+	
+	MUL	C14, C14, ALPHA 
+	ST	C13, 0 * SIZE(CO2)
+
+	ST	A3, 1 * SIZE(CO3)
+	ST	A4, 1 * SIZE(CO4)
+
+	ST	C12, 0 * SIZE(CO3)
+	ST	C14, 0 * SIZE(CO4)
+
+	daddiu	CO1, CO1, 2 * SIZE
+	daddiu	CO2, CO2, 2 * SIZE
+	daddiu	CO3, CO3, 2 * SIZE
+	daddiu	CO4, CO4, 2 * SIZE
+#if ( defined(LEFT) &&  defined(TRANSA))||\
+		(!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -2
+#else
+	daddiu	TEMP, TEMP, -4
+#endif
+	dsll	L, TEMP, 1 + BASE_SHIFT
+	dsll	TEMP, TEMP, 2 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 2
+#endif
+#endif
 
 
 	.align	4
@@ -5266,6 +5776,56 @@
 
 	.align	4
 .L411:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) ||\
+	(!defined(LEFT) && !defined(TRANSA))
+	move	BO, B
+#else
+	dsll	L, KK, BASE_SHIFT
+	dsll	TEMP, KK, 2 + BASE_SHIFT
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C21, C11
+	MOV		C22, C11
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C31, C11
+	MOV		C32, C11
+	LD		B2, 1 * SIZE(BO)
+
+	MOV		C41, C11
+	MOV		C42, C11
+	LD		B3, 2 * SIZE(BO)
+
+	MOV		C13, C11
+	MOV		C14, C11
+	LD		B4, 3 * SIZE(BO)
+
+	MOV		C23, C11
+	MOV		C24, C11
+	
+	MOV		C33, C11
+	MOV		C34, C11
+	
+	MOV		C43, C11
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA))||\
+		(!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1
+#else
+	daddiu	TEMP, KK, 4
+#endif
+	dsra	L, TEMP, 2
+	blez	L, .L412
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 2				#	UnRoll	K=4
 
@@ -5298,6 +5858,7 @@
 	MOV		C43, C11
 	blez	L, .L412
 	MOV		C44, C11
+#endif
 
 .L4110:
 	daddiu	L, L, -1
@@ -5362,7 +5923,11 @@
 	LD		B4, 3 * SIZE(BO)
 
 .L412:
+#ifndef TRMMKERNEL
 	andi	L, K, 2
+#else
+	andi	L, TEMP, 2
+#endif
 	blez	L, .L413
 	NOP
 
@@ -5397,7 +5962,11 @@
 	LD		B4, 3 * SIZE(BO)
 
 .L413:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L410
 	LD		ALPHA, 152($fp)
 
@@ -5410,6 +5979,7 @@
 
 	.align	4
 .L410:
+#ifndef TRMMKERNEL
 	LD		A5, 0 * SIZE(CO1)
 	LD		A6, 0 * SIZE(CO2)
 	LD		A7, 0 * SIZE(CO3)
@@ -5429,9 +5999,47 @@
 	daddiu	CO2, CO2, 1 * SIZE
 	daddiu	CO3, CO3, 1 * SIZE
 	daddiu	CO4, CO4, 1 * SIZE
+#else
+	MUL		A5, C11, ALPHA
+	MUL		A6, C12, ALPHA
+	MUL		A7, C13, ALPHA
+	MUL		A8, C14, ALPHA
+
+	ST		A5, 0 * SIZE(CO1)
+	ST		A6, 0 * SIZE(CO2)
+	ST		A7, 0 * SIZE(CO3)
+	ST		A8, 0 * SIZE(CO4)
+
+	daddiu	CO1, CO1, 1 * SIZE
+	daddiu	CO2, CO2, 1 * SIZE
+	daddiu	CO3, CO3, 1 * SIZE
+	daddiu	CO4, CO4, 1 * SIZE
+
+#if ( defined(LEFT) &&  defined(TRANSA))||\
+		(!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef	LEFT
+	daddiu	TEMP, TEMP, -1
+#else
+	daddiu	TEMP, TEMP, -4
+#endif
+
+	dsll	L, TEMP, BASE_SHIFT
+	dsll	TEMP, TEMP, 2 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+#ifdef	LEFT
+	daddiu	KK, KK, 1
+#endif
+#endif
 
 	.align	4
 .L40:
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	daddiu	KK, KK, 4
+#endif
 	daddiu	J, J, -1
 	move	B, BO
 	bgtz	J, .L48
@@ -5451,13 +6059,75 @@
 	move	AO, A				#	Reset A
 	move	CO1, C
 
+#if defined(TRMMKERNEL) &&  defined(LEFT)
+	move	KK, OFFSET
+#endif
 	daddu	CO2, C,   LDC
 	blez	I, .L24
 	daddu	C,   CO2, LDC
 
-
 	.align	4
 .L281:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO, B
+#else
+	dsll	L, KK, 3 + BASE_SHIFT
+	dsll	TEMP, KK, 2 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C12, C11		
+	LD		A2, 1 * SIZE(AO)
+
+	MOV		C21, C11
+	LD		A3, 2 * SIZE(AO)
+
+	MOV		C22, C11
+	LD		A4, 3 * SIZE(AO)
+
+	MOV		C31, C11
+	LD		A5, 4 * SIZE(AO)
+
+	MOV		C32, C11
+	LD		A6, 5 * SIZE(AO)
+
+	MOV		C41, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C42, C11
+	LD		B2, 1 * SIZE(BO)
+
+	MOV		C13, C11
+	LD		A7, 6 * SIZE(AO)
+
+	MOV		C14, C11
+	LD		A8, 7 * SIZE(AO)
+
+	MOV		C23, C11
+	MOV		C24, C11
+	
+	MOV		C33, C11
+	MOV		C34, C11
+	
+	MOV		C43, C11
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 8
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L282
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -5500,7 +6170,7 @@
 	MOV		C43, C11
 	blez	L, .L282
 	MOV		C44, C11
-
+#endif
 
 	.align	4
 .L2810:
@@ -5582,7 +6252,11 @@
 
 	.align	4
 .L282:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L280
 	LD		ALPHA, 152($fp)
 
@@ -5609,6 +6283,7 @@
 
 	.align	4
 .L280:							#	Write Back
+#ifndef TRMMKERNEL
 	daddiu	I, I, -1
 
 	LD		A1, 0 * SIZE(CO1)
@@ -5680,6 +6355,72 @@
 	daddiu	CO1, CO1, 8 * SIZE
 	bgtz	I, .L281
 	daddiu	CO2, CO2, 8 * SIZE
+#else
+	daddiu	I, I, -1
+
+	MUL		A1, C11, ALPHA
+	MUL		A2, C21, ALPHA
+	MUL		A3, C31, ALPHA
+	MUL		A4, C41, ALPHA
+	MUL		A5, C13, ALPHA
+	MUL		A6, C23, ALPHA
+	MUL		A7, C33, ALPHA
+	MUL		A8, C43, ALPHA
+
+	MUL		B1, C12, ALPHA
+	ST		A1, 0 * SIZE(CO1)
+
+	MUL		B2, C22, ALPHA
+	ST		A2, 1 * SIZE(CO1)
+
+	MUL		B3, C32, ALPHA
+	ST		A3, 2 * SIZE(CO1)
+
+	MUL		B4, C42, ALPHA
+	ST		A4, 3 * SIZE(CO1)
+
+	MUL		B5, C14, ALPHA
+	ST		A5, 4 * SIZE(CO1)
+
+	MUL		B6, C24, ALPHA
+	ST		A6, 5 * SIZE(CO1)
+
+	MUL		B7, C34, ALPHA
+	ST		A7, 6 * SIZE(CO1)
+
+	MUL		C11, C44, ALPHA
+	ST		A8, 7 * SIZE(CO1)
+
+	ST		B1, 0 * SIZE(CO2)
+	ST		B2, 1 * SIZE(CO2)
+	ST		B3, 2 * SIZE(CO2)
+	ST		B4, 3 * SIZE(CO2)
+	ST		B5, 4 * SIZE(CO2)
+	ST		B6, 5 * SIZE(CO2)
+	ST		B7, 6 * SIZE(CO2)
+	ST		C11, 7 * SIZE(CO2)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) ||(!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -8
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+	dsll	L, TEMP, 3 + BASE_SHIFT
+	dsll	TEMP, TEMP, 1 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 8
+#endif
+	daddiu	CO1, CO1, 8 * SIZE
+	bgtz	I, .L281
+	daddiu	CO2, CO2, 8 * SIZE
+#endif
 
 
 	.align	4
@@ -5690,6 +6431,58 @@
 
 	.align	4
 .L241:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO, B
+#else
+	dsll	L, KK, 2 + BASE_SHIFT
+	dsll	TEMP, KK, 1 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C21, C11
+	MOV		C22, C11
+	LD		A2, 1 * SIZE(AO)
+
+	MOV		C31, C11
+	MOV		C32, C11
+	LD		A3, 2 * SIZE(AO)
+
+	MOV		C41, C11
+	MOV		C42, C11
+	LD		A4, 3 * SIZE(AO)
+
+	MOV		C13, C11
+	MOV		C14, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C23, C11
+	MOV		C24, C11
+	LD		B2, 1 * SIZE(BO)
+
+	MOV		C33, C11
+	MOV		C34, C11
+	
+	MOV		C43, C11
+	blez	L, .L242
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 4
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L242
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -5723,7 +6516,7 @@
 	MOV		C43, C11
 	blez	L, .L242
 	MOV		C44, C11
-
+#endif
 
 	.align	4
 .L2410:
@@ -5775,7 +6568,11 @@
 
 	.align	4
 .L242:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L240
 	LD		ALPHA, 152($fp)
 
@@ -5793,6 +6590,7 @@
 
 	.align	4
 .L240:							#	Write Back
+#ifndef TRMMKERNEL
 	LD		A1, 0 * SIZE(CO1)
 	LD		A2, 1 * SIZE(CO1)
 	LD		A3, 2 * SIZE(CO1)
@@ -5829,6 +6627,50 @@
 
 	daddiu	CO1, CO1, 4 * SIZE
 	daddiu	CO2, CO2, 4 * SIZE
+#else
+
+	MUL		A1, C11, ALPHA
+	MUL		A2, C21, ALPHA
+	MUL		A3, C31, ALPHA
+	MUL		A4, C41, ALPHA
+
+	MUL		B1, C12, ALPHA
+	ST		A1, 0 * SIZE(CO1)
+
+	MUL		B2, C22, ALPHA
+	ST		A2, 1 * SIZE(CO1)
+
+	MUL		B3, C32, ALPHA
+	ST		A3, 2 * SIZE(CO1)
+
+	MUL		B4, C42, ALPHA
+	ST		A4, 3 * SIZE(CO1)
+
+	ST		B1, 0 * SIZE(CO2)
+	ST		B2, 1 * SIZE(CO2)
+	ST		B3, 2 * SIZE(CO2)
+	ST		B4, 3 * SIZE(CO2)
+
+	daddiu	CO1, CO1, 4 * SIZE
+	daddiu	CO2, CO2, 4 * SIZE
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -4
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+	dsll	L, TEMP, 2 + BASE_SHIFT
+	dsll	TEMP, TEMP, 1 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 4
+#endif
+#endif
 
 	.align	4
 .L22:
@@ -5838,6 +6680,46 @@
 
 	.align	4
 .L221:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO, B
+#else
+	dsll	L, KK, 1 + BASE_SHIFT
+	dsll	TEMP, KK, 1 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C21, C11
+	MOV		C22, C11
+	LD		A2, 1 * SIZE(AO)
+
+	MOV		C31, C11
+	MOV		C32, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C41, C11
+	MOV		C42, C11
+	LD		B2, 1 * SIZE(BO)
+
+	MOV		C43, C11
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 2
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L222
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -5860,6 +6742,7 @@
 	MOV		C43, C11
 	blez	L, .L222
 	MOV		C44, C11
+#endif
 
 
 	.align	4
@@ -5895,7 +6778,11 @@
 
 	.align	4
 .L222:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L220
 	LD		ALPHA, 152($fp)
 
@@ -5909,6 +6796,7 @@
 
 	.align	4
 .L220:							#	Write Back
+#ifndef TRMMKERNEL
 	LD		A1, 0 * SIZE(CO1)
 	LD		A2, 1 * SIZE(CO1)
 
@@ -5929,7 +6817,39 @@
 
 	daddiu	CO1, CO1, 2 * SIZE
 	daddiu	CO2, CO2, 2 * SIZE
+#else
 
+	MUL		A1, C11, ALPHA
+	MUL		A2, C21, ALPHA
+	MUL		B1, C12, ALPHA
+	MUL		B2, C22, ALPHA
+
+	ST		A1, 0 * SIZE(CO1)
+	ST		A2, 1 * SIZE(CO1)
+	ST		B1, 0 * SIZE(CO2)
+	ST		B2, 1 * SIZE(CO2)
+
+	daddiu	CO1, CO1, 2 * SIZE
+	daddiu	CO2, CO2, 2 * SIZE
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu 	TEMP, TEMP, -2
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+	dsll	L, TEMP, 1 + BASE_SHIFT
+	dsll	TEMP, TEMP, 1 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef	LEFT
+	daddu	KK, KK, 2
+#endif
+#endif
 
 	.align	4
 .L21:
@@ -5939,6 +6859,46 @@
 
 	.align	4
 .L211:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO, B				#	Reset	B
+#else
+	dsll	L, KK, BASE_SHIFT
+	dsll	TEMP, KK, 1 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C21, C11
+	MOV		C22, C11
+
+	MOV		C31, C11
+	MOV		C32, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C41, C11
+	MOV		C42, C11
+	LD		B2, 1 * SIZE(BO)
+
+	MOV		C43, C11
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L212
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -5960,7 +6920,7 @@
 	MOV		C43, C11
 	blez	L, .L212
 	MOV		C44, C11
-
+#endif
 
 	.align	4
 .L2110:
@@ -5987,7 +6947,11 @@
 
 	.align	4
 .L212:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L210
 	LD		ALPHA, 152($fp)
 
@@ -5999,6 +6963,7 @@
 
 	.align	4
 .L210:							#	Write Back
+#ifndef TRMMKERNEL
 	LD		A1, 0 * SIZE(CO1)
 
 	MADD		A1, A1, C11, ALPHA
@@ -6011,12 +6976,42 @@
 
 	daddiu	CO1, CO1, 1 * SIZE
 	daddiu	CO2, CO2, 1 * SIZE
+#else
+
+	MUL		A1, C11, ALPHA
+	MUL		B1, C12, ALPHA
+
+	ST		A1, 0 * SIZE(CO1)
+	ST		B1, 0 * SIZE(CO2)
+
+	daddiu	CO1, CO1, 1 * SIZE
+	daddiu	CO2, CO2, 1 * SIZE
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef	LEFT
+	daddiu	TEMP, TEMP, 1
+#else
+	daddiu	TEMP, TEMP, 2
+#endif
+	dsll	L, TEMP, BASE_SHIFT
+	dsll	TEMP, TEMP, 1 + BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef	LEFT
+	daddiu	KK, KK, 1
+#endif
+#endif
 
 
 	.align	4
 .L20:
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	daddiu  KK, KK, 2
+#endif
 	move	B, BO
-	NOP
 
 
 
@@ -6029,12 +7024,76 @@
 .L18:
 	dsra	I, M, 3				#	MR=8
 	move	AO, A				#	Reset A
+
+#if defined(TRMMKERNEL) &&  defined(LEFT)
+	move	KK, OFFSET
+#endif
 	blez	I, .L14
 	NOP
 
 
 	.align	4
 .L181:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO, B				#	Reset	B
+#else
+	dsll	L, KK, 3 + BASE_SHIFT
+	dsll	TEMP, KK, BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C12, C11		
+	LD		A2, 1 * SIZE(AO)
+
+	MOV		C21, C11
+	LD		A3, 2 * SIZE(AO)
+
+	MOV		C22, C11
+	LD		A4, 3 * SIZE(AO)
+
+	MOV		C31, C11
+	LD		A5, 4 * SIZE(AO)
+
+	MOV		C32, C11
+	LD		A6, 5 * SIZE(AO)
+
+	MOV		C41, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C42, C11
+	LD		A7, 6 * SIZE(AO)
+
+	MOV		C13, C11
+	LD		A8, 7 * SIZE(AO)
+
+	MOV		C14, C11
+
+	MOV		C23, C11
+	MOV		C24, C11
+	
+	MOV		C33, C11
+	MOV		C34, C11
+	
+	MOV		C43, C11
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 8
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L182
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -6076,6 +7135,7 @@
 	MOV		C43, C11
 	blez	L, .L182
 	MOV		C44, C11
+#endif
 
 
 	.align	4
@@ -6138,7 +7198,11 @@
 
 	.align	4
 .L182:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L180
 	LD		ALPHA, 152($fp)
 
@@ -6157,6 +7221,7 @@
 
 	.align	4
 .L180:							#	Write Back
+#ifndef TRMMKERNEL
 	daddiu	I, I, -1
 
 	LD		A1, 0 * SIZE(C)
@@ -6189,7 +7254,51 @@
 	daddiu	C, C, 8 * SIZE
 	bgtz	I, .L181
 	NOP
+#else
+	daddiu	I, I, -1
 
+	MUL		A1, C11, ALPHA
+	MUL		A2, C21, ALPHA
+	MUL		A3, C31, ALPHA
+	MUL		A4, C41, ALPHA
+	MUL		A5, C13, ALPHA
+	MUL		A6, C23, ALPHA
+	MUL		A7, C33, ALPHA
+	MUL		A8, C43, ALPHA
+
+	ST		A1, 0 * SIZE(C)
+	ST		A2, 1 * SIZE(C)
+	ST		A3, 2 * SIZE(C)
+	ST		A4, 3 * SIZE(C)
+	ST		A5, 4 * SIZE(C)
+	ST		A6, 5 * SIZE(C)
+	ST		A7, 6 * SIZE(C)
+	ST		A8, 7 * SIZE(C)
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -8
+#else
+	daddiu	TEMP, TEMP, -1
+#endif
+
+	dsll	L, TEMP, 3 + BASE_SHIFT
+	dsll	TEMP, TEMP, BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 8
+#endif
+
+	daddiu	C, C, 8 * SIZE
+	bgtz	I, .L181
+	NOP
+#endif
 
 	.align	4
 .L14:
@@ -6199,6 +7308,56 @@
 
 	.align	4
 .L141:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move 	BO, B
+#else
+	dsll	L, KK, 2 + BASE_SHIFT
+	dsll	TEMP, KK, BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C21, C11
+	MOV		C22, C11
+	LD		A2, 1 * SIZE(AO)
+
+	MOV		C31, C11
+	MOV		C32, C11
+	LD		A3, 2 * SIZE(AO)
+
+	MOV		C41, C11
+	MOV		C42, C11
+	LD		A4, 3 * SIZE(AO)
+
+	MOV		C13, C11
+	MOV		C14, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C23, C11
+	MOV		C24, C11
+
+	MOV		C33, C11
+	MOV		C34, C11
+	
+	MOV		C43, C11
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif	defined(LEFT)
+	daddiu	TEMP, KK, 4
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L142
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -6231,7 +7390,7 @@
 	MOV		C43, C11
 	blez	L, .L142
 	MOV		C44, C11
-
+#endif
 
 	.align	4
 .L1410:
@@ -6270,7 +7429,11 @@
 
 	.align	4
 .L142:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L140
 	LD		ALPHA, 152($fp)
 
@@ -6284,6 +7447,7 @@
 
 	.align	4
 .L140:							#	Write Back
+#ifndef TRMMKERNEL
 	LD		A1, 0 * SIZE(C)
 	LD		A2, 1 * SIZE(C)
 	LD		A3, 2 * SIZE(C)
@@ -6299,6 +7463,36 @@
 	ST		A3, 2 * SIZE(C)
 	ST		A4, 3 * SIZE(C)
 	daddiu	C, C, 4 * SIZE
+#else
+	MUL		A1, C11, ALPHA
+	MUL		A2, C21, ALPHA
+	MUL		A3, C31, ALPHA
+	MUL		A4, C41, ALPHA
+
+	ST		A1, 0 * SIZE(C)
+	ST		A2, 1 * SIZE(C)
+	ST		A3, 2 * SIZE(C)
+	ST		A4, 3 * SIZE(C)
+	daddiu	C, C, 4 * SIZE
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef	LEFT
+	daddiu	TEMP, TEMP, -4
+#else
+	daddiu	TEMP, TEMP, -1
+#endif
+
+	dsll	L, TEMP, 2 + BASE_SHIFT
+	dsll	TEMP, TEMP, BASE_SHIFT
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef	LEFT
+	daddiu	KK, KK, 4
+#endif
+#endif
 
 	.align	4
 .L12:
@@ -6308,6 +7502,48 @@
 
 	.align	4
 .L121:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) ||\
+	(!defined(LEFT) && !defined(TRANSA))
+	move	BO, B				#	Reset	B
+#else
+	dsll	L, KK, 1 + BASE_SHIFT
+	dsll	TEMP, KK, BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, B, TEMP
+#endif
+
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C21, C11
+	MOV		C22, C11
+	LD		A2, 1 * SIZE(AO)
+
+	MOV		C31, C11
+	MOV		C32, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C41, C11
+	MOV		C42, C11
+
+	MOV		C43, C11
+	MOV		C44, C11
+#if (defined(LEFT) && !defined(TRANSA)) ||\
+		(!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 2
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L122
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -6329,7 +7565,7 @@
 	MOV		C43, C11
 	blez	L, .L122
 	MOV		C44, C11
-
+#endif
 
 	.align	4
 .L1210:
@@ -6355,7 +7591,11 @@
 
 	.align	4
 .L122:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L120
 	LD		ALPHA, 152($fp)
 
@@ -6367,6 +7607,7 @@
 
 	.align	4
 .L120:							#	Write Back
+#ifndef TRMMKERNEL
 	LD		A1, 0 * SIZE(C)
 	LD		A2, 1 * SIZE(C)
 
@@ -6377,7 +7618,33 @@
 	ST		A2, 1 * SIZE(C)
 
 	daddiu	C, C, 2 * SIZE
+#else
+	MUL		A1, C11, ALPHA
+	MUL		A2, C21, ALPHA
 
+	ST		A1, 0 * SIZE(C)
+	ST		A2, 1 * SIZE(C)
+
+	daddiu	C, C, 2 * SIZE
+#if ( defined(LEFT) &&  defined(TRANSA))||\
+		(!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -2
+#else
+	daddiu	TEMP, TEMP, -1
+#endif
+	dsll	L, TEMP, 1 + BASE_SHIFT
+	dsll	TEMP, TEMP, BASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef	LEFT
+	daddiu	KK, KK, 2
+#endif
+#endif
 
 	.align	4
 .L11:
@@ -6387,6 +7654,38 @@
 
 	.align	4
 .L111:
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA))||\
+	(!defined(LEFT) && !defined(TRANSA))
+	move	BO, B
+#else
+	dsll	L, KK, BASE_SHIFT
+	daddu	AO, AO, L
+	daddu	BO, B, L
+#endif
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+	LD		A1, 0 * SIZE(AO)
+
+	MOV		C21, C11
+	MOV		C22, C11
+	LD		B1, 0 * SIZE(BO)
+
+	MOV		C31, C11
+	MOV		C32, C11
+#if (defined(LEFT) && !defined(TRANSA))||\
+		(!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 1
+#else
+	daddiu	TEMP, KK, 1
+#endif
+	dsra	L, TEMP, 1
+	blez	L, .L112
+	NOP
+
+#else
 	move	BO, B				#	Reset	B
 	dsra	L, K, 1				#	UnRoll	K=4
 
@@ -6401,7 +7700,7 @@
 	MOV		C31, C11
 	blez	L, .L112
 	MOV		C32, C11
-
+#endif
 
 
 	.align	4
@@ -6425,7 +7724,11 @@
 
 	.align	4
 .L112:
+#ifndef TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L110
 	LD		ALPHA, 152($fp)
 
@@ -6436,6 +7739,7 @@
 
 	.align	4
 .L110:							#	Write Back
+#ifndef TRMMKERNEL
 	LD		A1, 0 * SIZE(C)
 
 	MADD		A1, A1, C11, ALPHA
@@ -6443,13 +7747,19 @@
 	ST		A1, 0 * SIZE(C)
 
 	daddiu	C, C, 1 * SIZE
+#else
+	MUL		A1, C11, ALPHA
+	
+	ST		A1, 0 * SIZE(C)
 
+	daddiu	C, C, 1 * SIZE
+
+#endif
 
 	.align	4
 .L10:
 	move	B, BO
 	NOP
-
 
 .L999:
 	ld	$16,   0($fp)
