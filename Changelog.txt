@@ -1,5 +1,13 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.1 alpha2.3
+5-Sep-2011
+
+x86/x86_64:
+	*  Added DTB_ENTRIES into dynamic arch setting parameters. Now, 
+	   it can read DTB_ENTRIES on runtime. (Refs issue #55 on github)
+
+====================================================================
 Version 0.1 alpha2.2
 14-Jul-2011
 
