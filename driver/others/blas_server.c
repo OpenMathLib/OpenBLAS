@@ -500,6 +500,7 @@ static int blas_monitor(void *arg){
 /* Initializing routine */
 int blas_thread_init(void){
   BLASLONG i;
+  int ret;
 #ifdef NEED_STACKATTR
   pthread_attr_t attr;
 #endif
@@ -545,12 +546,16 @@ int blas_thread_init(void){
       pthread_cond_init (&thread_status[i].wakeup, NULL);
       
 #ifdef NEED_STACKATTR
-      pthread_create(&blas_threads[i], &attr, 
+      ret=pthread_create(&blas_threads[i], &attr, 
 		     (void *)&blas_thread_server, (void *)i);
 #else
-      pthread_create(&blas_threads[i], NULL, 
+      ret=pthread_create(&blas_threads[i], NULL, 
 		     (void *)&blas_thread_server, (void *)i);
 #endif
+      if(ret!=0){
+	fprintf(STDERR,"OpenBLAS: pthread_creat error in blas_thread_init function. Error code:%d\n",ret);
+	exit(1);
+      }
     }
 
 #ifdef MONITOR
