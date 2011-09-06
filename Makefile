@@ -31,7 +31,7 @@ SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
 all :: libs netlib tests shared
 	@echo
-	@echo " GotoBLAS build complete."
+	@echo " OpenBLAS build complete."
 	@echo
 	@echo "  OS               ... $(OSNAME)             "
 	@echo "  Architecture     ... $(ARCH)               "
@@ -39,6 +39,9 @@ ifndef BINARY64
 	@echo "  BINARY           ... 32bit                 "
 else
 	@echo "  BINARY           ... 64bit                 "
+endif
+ifdef INTERFACE64
+	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
 	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
@@ -115,6 +118,13 @@ endif
 #Save the config files for installation
 	cp Makefile.conf Makefile.conf_last
 	cp config.h config_last.h
+ifdef QUAD_PRECISION
+	echo "#define QUAD_PRECISION">> config_last.h
+endif
+ifeq ($(EXPRECISION), 1)
+	echo "#define EXPRECISION">> config_last.h
+endif
+## 
 ifdef DYNAMIC_ARCH
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \

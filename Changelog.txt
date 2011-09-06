@@ -1,5 +1,13 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.1 alpha2.2
+14-Jul-2011
+
+common:
+	* Fixed a building bug when DYNAMIC_ARCH=1 & INTERFACE64=1. 
+	  (Refs issue #44 on github)
+
+====================================================================
 Version 0.1 alpha2.1
 28-Jun-2011
 
