@@ -50,7 +50,7 @@ void get_subdirname(void){
 
 void get_cpuconfig(void){
   printf("#define V9\n");
-  printf("#define DTB_ENTRIES 32\n");
+  printf("#define DTB_DEFAULT_ENTRIES 32\n");
 }
 
 void get_libname(void){

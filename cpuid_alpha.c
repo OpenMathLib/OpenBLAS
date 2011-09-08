@@ -72,7 +72,7 @@ void get_cpuconfig(void){
     printf("#define L1_DATA_LINESIZE 32\n");
     printf("#define L2_SIZE 2097152\n");
     printf("#define L2_LINESIZE 32\n");
-    printf("#define DTB_ENTRIES 32\n");
+    printf("#define DTB_DEFAULT_ENTRIES 32\n");
     printf("#define DTB_SIZE 8192\n");
     break;
 
@@ -81,7 +81,7 @@ void get_cpuconfig(void){
     printf("#define L1_DATA_LINESIZE 32\n");
     printf("#define L2_SIZE 2097152\n");
     printf("#define L2_LINESIZE 64\n");
-    printf("#define DTB_ENTRIES 64\n");
+    printf("#define DTB_DEFAULT_ENTRIES 64\n");
     printf("#define DTB_SIZE 8192\n");
     break;
 
@@ -90,7 +90,7 @@ void get_cpuconfig(void){
     printf("#define L1_DATA_LINESIZE 64\n");
     printf("#define L2_SIZE 4194304\n");
     printf("#define L2_LINESIZE 64\n");
-    printf("#define DTB_ENTRIES 64\n");
+    printf("#define DTB_DEFAULT_ENTRIES 64\n");
     printf("#define DTB_SIZE 8192\n");
     break;
   }

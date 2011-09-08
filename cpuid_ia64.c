@@ -133,6 +133,6 @@ void get_cpuconfig(void){
   printf("#define L2_SIZE 1572864\n");
   printf("#define L2_LINESIZE 128\n");
   printf("#define DTB_SIZE 16384\n");
-  printf("#define DTB_ENTRIES 128\n");
+  printf("#define DTB_DEFAULT_ENTRIES 128\n");
 }
 
