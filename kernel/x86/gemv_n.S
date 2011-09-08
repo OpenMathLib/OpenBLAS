@@ -48,7 +48,7 @@
 #endif
 
 #ifndef P
-#define P DTB_ENTRIES
+#define P DTB_DEFAULT_ENTRIES
 #endif
 
 #define STACK	16

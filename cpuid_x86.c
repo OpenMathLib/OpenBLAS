@@ -1393,7 +1393,7 @@ void get_cpuconfig(void){
     if (info.size > 0) {
       printf("#define DTB_SIZE %d\n", info.size * 1024);
       printf("#define DTB_ASSOCIATIVE %d\n", info.associative);
-      printf("#define DTB_ENTRIES %d\n", info.linesize);
+      printf("#define DTB_DEFAULT_ENTRIES %d\n", info.linesize);
     }
     
     features = get_cputype(GET_FEATURE);
@@ -1422,7 +1422,7 @@ void get_cpuconfig(void){
     features = get_coretype();
     if (features > 0) printf("#define CORE_%s\n", corename[features]);
   } else {
-    printf("#define DTB_ENTRIES 16\n");
+    printf("#define DTB_DEFAULT_ENTRIES 16\n");
     printf("#define L1_CODE_SIZE 8192\n");
     printf("#define L1_DATA_SIZE 8192\n");
     printf("#define L2_SIZE 0\n");
