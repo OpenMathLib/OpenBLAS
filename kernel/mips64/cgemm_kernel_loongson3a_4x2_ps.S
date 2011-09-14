@@ -12,10 +12,10 @@
 #define M	$4
 #define	N	$5
 #define	K	$6
-#define A	$8
-#define B	$9
-#define C	$10
-#define LDC	$11
+#define A	$9
+#define B	$10
+#define C	$11
+#define LDC	$8
 
 ####	Pointer A, B, C	####
 #define AO	$12
@@ -120,6 +120,7 @@
 
 	PROLOGUE
 
+	LDARG	LDC,   0($sp)
 	daddiu	$sp,$sp,-STACKSIZE
 
 	sd	$16,   0($sp)
@@ -141,7 +142,7 @@
 	sd	$24, 104($sp)
 	sd	$25, 112($sp)
 
-	LDARG	OFFSET, 160($sp)
+	LDARG	OFFSET, STACKSIZE($sp)
 #endif
 
 #ifndef __64BIT__
@@ -379,13 +380,12 @@
 	/*	(a + bi) * (c + di) */
 	SUB		C11, C11, A1		#	ac'+'bd
 	SUB		C21, C21, A2
-	LD		A1, 152($sp)		#	load alpha_r
 #	LD		A1, 0 * SIZE(A)		#	load alpha_r
 	SUB		C31, C31, A3
+	LD		A1, 152($sp)		#	load alpha_r
+	SUB		C41, C41, A4
 	LD		A2, 160($sp)		#	load alpha_i
 #	LD		A2, 0 * SIZE(A)		#	load alpha_i
-
-	SUB		C41, C41, A4
 	ADD		C13, A5, C13		#	ad'+'cb
 	ADD		C23, A6, C23
 	ADD		C33, A7, C33
@@ -488,78 +488,60 @@
 	ADD		C11, A1, C11		#	ac'+'bd
 	ADD		C21, A2, C21
 #	LD		A1, 0 * SIZE(A)		#	load alpha_r
-	LD		A1, 152($sp)		#	load alpha_r
-
 	ADD		C31, A3, C31
+	LD		A1, 152($sp)		#	load alpha_r
+	ADD		C41, A4, C41
 	LD		A2, 160($sp)		#	load alpha_i
 #	LD		A2, 0 * SIZE(A)		#	load alpha_r
-
-	ADD		C41, A4, C41
-	LD		B1, 0 * SIZE(CO1)
-
 	SUB		C13, A5, C13		#	ad'+'cb
-	LD		B3, 2 * SIZE(CO1)
-
 	SUB		C23, A6, C23
-	LD		B5, 4 * SIZE(CO1)
-
 	SUB		C33, A7, C33
-	LD		B7, 6 * SIZE(CO1)
-
 	SUB		C43, A8, C43
-	LD		B2, 1 * SIZE(CO1)
-
 	ADD		C12, B1, C12
-	LD		B4, 3 * SIZE(CO1)
-
 	ADD		C22, B2, C22
-	LD		B6, 5 * SIZE(CO1)
-
 	ADD		C32, B3, C32
+	ADD		C42, B4, C42
+	SUB		C14, B5, C14
+	SUB		C24, B6, C24
+	SUB		C34, B7, C34
+	SUB		C44, B8, C44
+
+	LD		B1, 0 * SIZE(CO1)
+	LD		B3, 2 * SIZE(CO1)
+	LD		B5, 4 * SIZE(CO1)
+	LD		B7, 6 * SIZE(CO1)
+	LD		B2, 1 * SIZE(CO1)
+	LD		B4, 3 * SIZE(CO1)
+	LD		B6, 5 * SIZE(CO1)
 	LD		B8, 7 * SIZE(CO1)
 
-	ADD		C42, B4, C42
 	MADD	B1, B1, C11, A1		#	A1 = alpha_r
-
-	SUB		C14, B5, C14
 	MADD	B3, B3, C21, A1
-
-	SUB		C24, B6, C24
 	MADD	B5, B5, C31, A1
-
-	SUB		C34, B7, C34
 	MADD	B7, B7, C41, A1
-
-	SUB		C44, B8, C44
 	MADD	B2, B2, C13, A1
-
 	MADD	B4, B4, C23, A1
 	MADD	B6, B6, C33, A1
-
 	MADD	B8, B8, C43, A1
 	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
-
 	NMSUB	B3, B3, C23, A2
 	NMSUB	B5, B5, C33, A2
-	LD		C13, 0 * SIZE(CO2)
-
 	NMSUB	B7, B7, C43, A2
 	MADD	B2, B2, C11, A2
-	LD		C23, 2 * SIZE(CO2)
-
 	MADD	B4, B4, C12, A2
 	MADD	B6, B6, C13, A2
-	LD		C33, 4 * SIZE(CO2)
-
 	MADD	B8, B8, C14, A2
-	LD		C43, 6 * SIZE(CO2)
 
+	LD		C13, 0 * SIZE(CO2)
+	LD		C23, 2 * SIZE(CO2)
+	LD		C33, 4 * SIZE(CO2)
+	LD		C43, 6 * SIZE(CO2)
 	LD		C11, 1 * SIZE(CO2)
 	LD		C21, 3 * SIZE(CO2)
 	LD		C31, 5 * SIZE(CO2)
-	MADD	C13, C13, C12, A1
-
 	LD		C41, 7 * SIZE(CO2)
+
+	MADD	C13, C13, C12, A1
 	MADD	C23, C23, C22, A1
 
 	MADD	C33, C33, C32, A1
@@ -611,78 +593,60 @@
 	ADD		C11, A1, C11		#	ac'+'bd
 	ADD		C21, A2, C21
 #	LD		A1, 0 * SIZE(A)		#	load alpha_r
-	LD		A1, 152($sp)		#	load alpha_r
-
 	ADD		C31, A3, C31
+	LD		A1, 152($sp)		#	load alpha_r
 #	LD		A2, 0 * SIZE(A)		#	load alpha_r
-	LD		A2, 160($sp)		#	load alpha_i
-
 	ADD		C41, A4, C41
-	LD		B1, 0 * SIZE(CO1)
-
+	LD		A2, 160($sp)		#	load alpha_i
 	SUB		C13, C13, A5		#	ad'+'cb
-	LD		B3, 2 * SIZE(CO1)
-
 	SUB		C23, C23, A6
-	LD		B5, 4 * SIZE(CO1)
-
 	SUB		C33, C33, A7
-	LD		B7, 6 * SIZE(CO1)
-
 	SUB		C43, C43, A8
-	LD		B2, 1 * SIZE(CO1)
-
 	ADD		C12, B1, C12
-	LD		B4, 3 * SIZE(CO1)
-
 	ADD		C22, B2, C22
-	LD		B6, 5 * SIZE(CO1)
-
 	ADD		C32, B3, C32
+	ADD		C42, B4, C42
+	SUB		C14, C14, B5
+	SUB		C24, C24, B6
+	SUB		C34, C34, B7
+	SUB		C44, C44, B8
+
+	LD		B1, 0 * SIZE(CO1)
+	LD		B3, 2 * SIZE(CO1)
+	LD		B5, 4 * SIZE(CO1)
+	LD		B7, 6 * SIZE(CO1)
+	LD		B2, 1 * SIZE(CO1)
+	LD		B4, 3 * SIZE(CO1)
+	LD		B6, 5 * SIZE(CO1)
 	LD		B8, 7 * SIZE(CO1)
 
-	ADD		C42, B4, C42
 	MADD	B1, B1, C11, A1		#	A1 = alpha_r
-
-	SUB		C14, C14, B5
 	MADD	B3, B3, C21, A1
-
-	SUB		C24, C24, B6
 	MADD	B5, B5, C31, A1
-
-	SUB		C34, C34, B7
 	MADD	B7, B7, C41, A1
-
-	SUB		C44, C44, B8
 	MADD	B2, B2, C13, A1
-
 	MADD	B4, B4, C23, A1
 	MADD	B6, B6, C33, A1
-
 	MADD	B8, B8, C43, A1
 	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
-
 	NMSUB	B3, B3, C23, A2
 	NMSUB	B5, B5, C33, A2
-	LD		C13, 0 * SIZE(CO2)
-
 	NMSUB	B7, B7, C43, A2
 	MADD	B2, B2, C11, A2
-	LD		C23, 2 * SIZE(CO2)
-
 	MADD	B4, B4, C12, A2
 	MADD	B6, B6, C13, A2
-	LD		C33, 4 * SIZE(CO2)
-
 	MADD	B8, B8, C14, A2
-	LD		C43, 6 * SIZE(CO2)
 
+	LD		C13, 0 * SIZE(CO2)
+	LD		C23, 2 * SIZE(CO2)
+	LD		C33, 4 * SIZE(CO2)
+	LD		C43, 6 * SIZE(CO2)
 	LD		C11, 1 * SIZE(CO2)
 	LD		C21, 3 * SIZE(CO2)
 	LD		C31, 5 * SIZE(CO2)
-	MADD	C13, C13, C12, A1
-
 	LD		C41, 7 * SIZE(CO2)
+
+	MADD	C13, C13, C12, A1
 	MADD	C23, C23, C22, A1
 
 	MADD	C33, C33, C32, A1
@@ -731,113 +695,94 @@
 
 #if   defined(RR) || defined(RC) || defined(CR) || defined(CC)
 	/*	(a - bi) * (c - di) */
-	SUB		C11, A1, C11		#	ac'+'bd
-	SUB		C21, A2, C21
+	SUB		C11, C11, A1		#	ac'+'bd
+	SUB		C21, C21, A2
+	SUB		C31, C31, A3
 	LD		A1, 152($sp)		#	load alpha_r
 #	LD		A1, 0 * SIZE(A)		#	load alpha_r
-
-	SUB		C31, A3, C31
-#	LD		A2, 0 * SIZE(A)		#	load alpha_i
+	SUB		C41, C41, A4
 	LD		A2, 160($sp)
-
-	SUB		C41, A4, C41
-	LD		B1, 0 * SIZE(CO1)
+#	LD		A2, 0 * SIZE(A)		#	load alpha_i
 
 	ADD		C13, A5, C13		#	ad'+'cb
-	LD		B3, 2 * SIZE(CO1)
-
 	ADD		C23, A6, C23
-	LD		B5, 4 * SIZE(CO1)
-
 	ADD		C33, A7, C33
-	LD		B7, 6 * SIZE(CO1)
-
 	ADD		C43, A8, C43
+	SUB		C12, C12, B1
+	SUB		C22, C22, B2
+	SUB		C32, C32, B3
+	SUB		C42, C42, B4
+	ADD		C14, B5, C14
+	ADD		C24, B6, C24
+	ADD		C34, B7, C34
+	ADD		C44, B8, C44
+
+	LD		B1, 0 * SIZE(CO1)
+	LD		B3, 2 * SIZE(CO1)
+	LD		B5, 4 * SIZE(CO1)
+	LD		B7, 6 * SIZE(CO1)
 	LD		B2, 1 * SIZE(CO1)
-
-	SUB		C12, B1, C12
 	LD		B4, 3 * SIZE(CO1)
-
-	SUB		C22, B2, C22
 	LD		B6, 5 * SIZE(CO1)
-
-	SUB		C32, B3, C32
 	LD		B8, 7 * SIZE(CO1)
 
-	SUB		C42, B4, C42
 	MADD	B1, B1, C11, A1		#	A1 = alpha_r
-
-	ADD		C14, B5, C14
 	MADD	B3, B3, C21, A1
-
-	ADD		C24, B6, C24
 	MADD	B5, B5, C31, A1
-
-	ADD		C34, B7, C34
 	MADD	B7, B7, C41, A1
-
-	ADD		C44, B8, C44
 	NMSUB	B2, B2, C13, A1
-
 	NMSUB	B4, B4, C23, A1
 	NMSUB	B6, B6, C33, A1
-
 	NMSUB	B8, B8, C43, A1
 	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
-
 	NMSUB	B3, B3, C23, A2
 	NMSUB	B5, B5, C33, A2
-	LD		C13, 0 * SIZE(CO2)
-
 	NMSUB	B7, B7, C43, A2
 	MADD	B2, B2, C11, A2
-	LD		C23, 2 * SIZE(CO2)
-
 	MADD	B4, B4, C12, A2
 	MADD	B6, B6, C13, A2
-	LD		C33, 4 * SIZE(CO2)
-
 	MADD	B8, B8, C14, A2
-	LD		C43, 6 * SIZE(CO2)
 
+	LD		C13, 0 * SIZE(CO2)
+	LD		C43, 6 * SIZE(CO2)
+	LD		C23, 2 * SIZE(CO2)
+	LD		C33, 4 * SIZE(CO2)
 	LD		C11, 1 * SIZE(CO2)
 	LD		C21, 3 * SIZE(CO2)
 	LD		C31, 5 * SIZE(CO2)
-	MADD	C13, C13, C12, A1
-
 	LD		C41, 7 * SIZE(CO2)
-	MADD	C23, C23, C22, A1
 
-	MADD	C33, C33, C32, A1
+	MADD	C13, C13, C12, A1
 	ST		B1, 0 * SIZE(CO1)
 
-	MADD	C43, C43, C42, A1
+	MADD	C23, C23, C22, A1
 	ST		B3, 2 * SIZE(CO1)
 
-	NMSUB	C11, C11, C14, A1
+	MADD	C33, C33, C32, A1
 	ST		B5, 4 * SIZE(CO1)
 
-	NMSUB	C21, C21, C24, A1
+	MADD	C43, C43, C42, A1
 	ST		B7, 6 * SIZE(CO1)
 
-	NMSUB	C31, C31, C34, A1
+	NMSUB	C11, C11, C14, A1
 	ST		B2, 1 * SIZE(CO1)
 
-	NMSUB	C41, C41, C44, A1
+	NMSUB	C21, C21, C24, A1
 	ST		B4, 3 * SIZE(CO1)
 
-	NMSUB	C13, C13, C14, A2
+	NMSUB	C31, C31, C34, A1
 	ST		B6, 5 * SIZE(CO1)
 
-	NMSUB	C23, C23, C24, A2
+	NMSUB	C41, C41, C44, A1
 	ST		B8, 7 * SIZE(CO1)
 
+	NMSUB	C13, C13, C14, A2
+	NMSUB	C23, C23, C24, A2
 	NMSUB	C33, C33, C34, A2
 	NMSUB	C43, C43, C44, A2
 
 	MADD	C11, C11, C12, A2
 	MADD	C21, C21, C22, A2
-	
 	MADD	C31, C31, C32, A2
 	MADD	C41, C41, C42, A2
 
