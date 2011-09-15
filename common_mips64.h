@@ -152,6 +152,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define CMPEQ	c.eq.d
 #define CMPLE	c.le.d
 #define CMPLT	c.lt.d
+#define	NEG	neg.d
 #else
 #define LD	lwc1
 #define ST	swc1
@@ -177,6 +178,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define MADPS   madd.ps   
 #define CVTU    cvt.s.pu    
 #define CVTL    cvt.s.pl 
+#define	NEG	neg.s
 #endif
 
 #if   defined(__64BIT__) &&  defined(USE64BITINT)
