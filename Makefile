@@ -125,6 +125,13 @@ endif
 #Save the config files for installation
 	cp Makefile.conf Makefile.conf_last
 	cp config.h config_last.h
+ifdef QUAD_PRECISION
+	echo "#define QUAD_PRECISION">> config_last.h
+endif
+ifeq ($(EXPRECISION), 1)
+	echo "#define EXPRECISION">> config_last.h
+endif
+## 
 ifdef DYNAMIC_ARCH
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \

@@ -1542,7 +1542,5 @@
 	popl	%esi
 	popl	%edi
 /*remove the hidden return value address from the stack.*/
-	popl	%ecx
-	xchgl	%ecx, 0(%esp)
-	ret
+	ret	$0x4
 	EPILOGUE

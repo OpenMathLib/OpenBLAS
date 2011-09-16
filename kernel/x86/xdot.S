@@ -307,7 +307,11 @@
 	popl	%ebx
 	popl	%esi
 	popl	%edi
+#if defined(F_INTERFACE) && defined(RETURN_BY_STACK)
+	ret	$0x4
+#else
 	ret
+#endif
 	ALIGN_3
 
 .L88:
@@ -326,6 +330,10 @@
 	popl	%ebx
 	popl	%esi
 	popl	%edi
-	ret
 
+#if defined(F_INTERFACE) && defined(RETURN_BY_STACK)
+	ret	$0x4
+#else
+	ret
+#endif
 	EPILOGUE

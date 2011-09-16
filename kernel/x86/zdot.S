@@ -283,7 +283,11 @@
 	popl	%ebx
 	popl	%esi
 	popl	%edi
+#if defined(DOUBLE) || defined(XDOUBLE)
+	ret	$0x4
+#else
 	ret
+#endif
 	ALIGN_3
 
 .L88:
@@ -305,6 +309,10 @@
 	popl	%ebx
 	popl	%esi
 	popl	%edi
-	ret
 
+#if defined(DOUBLE) || defined(XDOUBLE)
+	ret	$0x4
+#else
+	ret
+#endif
 	EPILOGUE
