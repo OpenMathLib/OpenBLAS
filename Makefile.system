@@ -27,7 +27,13 @@ HOSTCC	 = $(CC)
 endif
 
 ifdef TARGET
-GETARCH_FLAGS += -DFORCE_$(TARGET)
+GETARCH_FLAGS := -DFORCE_$(TARGET)
+endif
+
+#TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
+#
+ifdef TARGET_CORE
+GETARCH_FLAGS := -DFORCE_$(TARGET_CORE)
 endif
 
 ifdef INTERFACE64
