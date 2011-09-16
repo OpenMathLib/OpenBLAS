@@ -62,6 +62,8 @@ ifeq ($(OSNAME), Darwin)
 	@echo "Thus, you need run \"make PREFIX=/your_installation_path/ install\"."
 endif
 	@echo
+	@echo "To install the library, you can run \"make PREFIX=/path/to/your/installation install\"."
+	@echo
 
 shared :
 ifeq ($(OSNAME), Linux)
