@@ -142,7 +142,7 @@
 	sd	$24, 104($sp)
 	sd	$25, 112($sp)
 
-	LDARG	OFFSET, STACKSIZE($sp)
+	LDARG	OFFSET, STACKSIZE+8($sp)
 #endif
 
 #ifndef __64BIT__
@@ -157,59 +157,132 @@
 	dsra	J, N, 1				#	NR=2
 	ST		$f15, 152($sp)
 
+#if defined(TRMMKERNEL) && !defined(LEFT)
+	neg	KK, OFFSET
+#endif
+
 	dsll	LDC, LDC, ZBASE_SHIFT#	LDC*SIZE
 	blez	J, .L1
 	ST		$f16, 160($sp)
 
 .L24:
+#if defined(TRMMKERNEL) &&  defined(LEFT)
+	move	KK, OFFSET
+#endif
+
 	dsra	I, M, 2				#	MR=8
 	move	AO, A				#	Reset A
+
+	dsll	PREA, K, 1 + ZBASE_SHIFT
 	move	CO1, C
 
 	daddu	CO2, C,   LDC
+	daddu	PREA, AO, PREA
+
 	blez	I, .L22
 	daddu	C,   CO2, LDC
 
 	.align	4
 .L241:
-	move	BO, B				#	Reset	B
-	dsra	L, K, 2				#	UnRoll	K=64
+#if defined(TRMMKERNEL)
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	move	BO,  B
+#else
+	dsll	L, KK, 2 + ZBASE_SHIFT
+	dsll	TEMP, KK, 1 + ZBASE_SHIFT
 
+	daddu	AO, AO, L
+	daddu	BO, B,  TEMP
+#endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
 	MOV		C12, C11		
 
+	dsll	PREB, K, ZBASE_SHIFT
 	MOV		C21, C11
 	MOV		C22, C11
 	
+	gsLQC1(R13, F9, F8, 0)		#	B1 B2
 	MOV		C31, C11
 	MOV		C32, C11
-	gsLQC1(R13, F9, F8, 0)		#	B1 B2
 
 	gsLQC1(R12, F1, F0, 0)		#	A1 A2
 	MOV		C41, C11
 	MOV		C42, C11
 
+	gsLQC1(R12, F3, F2, 1)		#	A3 A4
 	MOV		C13, C11
 	MOV		C14, C11
-	gsLQC1(R12, F3, F2, 1)		#	A3 A4
 
 	MOV		C23, C11
-	FETCH	$0, 0 * SIZE(CO1)
-
-	FETCH	$0, 8 * SIZE(CO1)
 	MOV		C24, C11
-	
-	MOV		C33, C11
-	FETCH	$0, 0 * SIZE(CO2)
 
-	FETCH	$0, 8 * SIZE(CO2)
+	MOV		C33, C11
 	MOV		C34, C11
+	
 	MOV		C43, C11
+	MOV		C44, C11
 
 	PLU		B3,	B1, B1
 	PLU		B4, B2, B2
+	daddu	PREB, BO, PREB
+
+	FETCH	$0, 0 * SIZE(CO1)
+	FETCH	$0, 8 * SIZE(CO1)
+	FETCH	$0, 0 * SIZE(CO2)
+	FETCH	$0, 8 * SIZE(CO2)
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	dsubu	TEMP, K, KK
+#elif defined(LEFT)
+	daddiu	TEMP, KK, 4
+#else
+	daddiu	TEMP, KK, 2
+#endif
+	dsra	L,  TEMP, 2
 	blez	L, .L242
+	NOP
+
+#else
+
+	move	BO, B				#	Reset	B
+	dsra	L, K, 2				#	UnRoll	K=64
+	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
+	MOV		C12, C11		
+
+	dsll	PREB, K, ZBASE_SHIFT
+	MOV		C21, C11
+	MOV		C22, C11
+	
+	gsLQC1(R13, F9, F8, 0)		#	B1 B2
+	MOV		C31, C11
+	MOV		C32, C11
+
+	gsLQC1(R12, F1, F0, 0)		#	A1 A2
+	MOV		C41, C11
+	MOV		C42, C11
+
+	gsLQC1(R12, F3, F2, 1)		#	A3 A4
+	MOV		C13, C11
+	MOV		C14, C11
+
+	FETCH	$0, 0 * SIZE(CO1)
+	MOV		C23, C11
+	MOV		C24, C11
+
+	FETCH	$0, 0 * SIZE(CO2)
+	MOV		C33, C11
+	MOV		C34, C11
+
+	MOV		C43, C11
 	MOV		C44, C11
+	daddu	PREB, BO, PREB
+
+	PLU		B3,	B1, B1
+	PLU		B4, B2, B2
+	
+	FETCH	$0, 8 * SIZE(CO1)
+	blez	L, .L242
+	FETCH	$0, 8 * SIZE(CO2)
+#endif
 
 .L2410:
 	daddiu	L, L, -1
@@ -225,9 +298,11 @@
 	MADPS	C31, C31, A3, B1
 	MADPS	C41, C41, A4, B1
 
+	FETCH	$0, 0 * SIZE(PREB)
 	MADPS	C32, C32, A3, B2
 	MADPS	C42, C42, A4, B2
 
+	FETCH	$0, 0 * SIZE(PREA)
 	MADPS	C13, C13, A1, B3
 	MADPS	C23, C23, A2, B3
 
@@ -239,6 +314,7 @@
 
 	PLU		B7,	B5, B5
 	PLU		B8, B6, B6
+	daddu	PREB, PREB, 8 * SIZE
 
 	MADPS	C34, C34, A3, B4
 	MADPS	C44, C44, A4, B4
@@ -255,6 +331,7 @@
 	MADPS	C31, C31, A7, B5
 	MADPS	C41, C41, A8, B5
 
+	FETCH	$0, 8 * SIZE(PREA)
 	MADPS	C32, C32, A7, B6
 	MADPS	C42, C42, A8, B6
 
@@ -283,9 +360,10 @@
 
 	gsLQC1(R12, F7, F6, 7)		#	A7 A8
 	MADPS	C31, C31, A3, B1
-	daddiu	BO, BO, 4 * 4 * SIZE	#	4KR*4NR
 	MADPS	C41, C41, A4, B1
+	daddiu	BO, BO, 4 * 4 * SIZE	#	4KR*4NR
 
+	FETCH	$0, 16 * SIZE(PREA)
 	MADPS	C32, C32, A3, B2
 	MADPS	C42, C42, A4, B2
 	daddiu	AO, AO, 8 * 4 * SIZE 	#	4KR*8MR
@@ -317,11 +395,13 @@
 	MADPS	C31, C31, A7, B5
 	MADPS	C41, C41, A8, B5
 
+	FETCH	$0, 24 * SIZE(PREA)
 	MADPS	C32, C32, A7, B6
 	MADPS	C42, C42, A8, B6
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
+	daddu	PREA, PREA, 32 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -339,7 +419,11 @@
 
 	.align	4
 .L242:
+#ifndef	TRMMKERNEL
 	andi	L, K, 2
+#else
+	andi	L, TEMP, 2
+#endif
 	blez	L, .L247
 	NOP
 
@@ -407,7 +491,11 @@
 	
 	.align	4
 .L247:
+#ifndef	TRMMKERNEL
 	andi	L, K, 1
+#else
+	andi	L, TEMP, 1
+#endif
 	blez	L, .L240
 	NOP
 
@@ -440,6 +528,7 @@
 
 	.align	4
 .L240:							#	Write Back
+#ifndef TRMMKERNEL
 	daddiu	I, I, -1
 	CVTU	A1, C11
 	CVTU	A2, C21
@@ -891,6 +980,395 @@
 
 #endif
 
+#else
+	daddiu	I, I, -1
+	CVTU	A1, C11
+	CVTU	A2, C21
+
+	CVTU	A3, C31
+	CVTU	A4, C41
+
+	CVTU	A5, C13
+	CVTU	A6, C23
+
+	CVTU	A7, C33
+	CVTU	A8, C43
+
+	CVTU	B1, C12
+	CVTU	B2, C22
+
+	CVTU	B3, C32
+	CVTU	B4, C42
+
+	CVTU	B5, C14
+	CVTU	B6, C24
+
+	CVTU	B7, C34
+	CVTU	B8, C44
+
+#if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
+	/*	(a + bi) * (c + di) */
+	SUB		C11, C11, A1		#	ac'+'bd
+	SUB		C21, C21, A2
+	SUB		C31, C31, A3
+	LD		A1, 152($sp)		#	load alpha_r
+	SUB		C41, C41, A4
+#	LD		A1, 0 * SIZE(A)		#	load alpha_r
+	LD		A2, 160($sp)		#	load alpha_i
+	ADD		C13, A5, C13		#	ad'+'cb
+	ADD		C23, A6, C23
+#	LD		A2, 0 * SIZE(A)		#	load alpha_i
+	ADD		C33, A7, C33
+	ADD		C43, A8, C43
+	SUB		C12, C12, B1
+	SUB		C22, C22, B2
+	SUB		C32, C32, B3
+	SUB		C42, C42, B4
+	ADD		C14, B5, C14
+	ADD		C24, B6, C24
+	ADD		C34, B7, C34
+	ADD		C44, B8, C44
+
+	MUL		B1, C11, A1		#	A1 = alpha_r
+	MUL		B3, C21, A1
+	MUL		B5, C31, A1
+	MUL		B7, C41, A1
+	MUL		B2, C13, A1
+	MUL		B4, C23, A1
+	MUL		B6, C33, A1
+	MUL		B8, C43, A1
+	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
+	NMSUB	B3, B3, C23, A2
+	NMSUB	B5, B5, C33, A2
+	NMSUB	B7, B7, C43, A2
+	MADD	B2, B2, C11, A2
+	MADD	B4, B4, C21, A2
+	MADD	B6, B6, C31, A2
+	MADD	B8, B8, C41, A2
+	
+	ST		B1, 0 * SIZE(CO1)
+	MUL		C13, C12, A1
+	MUL		C23, C22, A1
+
+	ST		B3, 2 * SIZE(CO1)
+	MUL		C33, C32, A1
+	MUL		C43, C42, A1
+
+	ST		B5, 4 * SIZE(CO1)
+	MUL		C11, C14, A1
+	MUL		C21, C24, A1
+
+	ST		B7, 6 * SIZE(CO1)
+	MUL		C31, C34, A1
+	MUL		C41, C44, A1
+
+	ST		B2, 1 * SIZE(CO1)
+	NMSUB	C13, C13, C14, A2
+	NMSUB	C23, C23, C24, A2
+
+	ST		B4, 3 * SIZE(CO1)
+	NMSUB	C33, C33, C34, A2
+	NMSUB	C43, C43, C44, A2
+
+	ST		B6, 5 * SIZE(CO1)
+	MADD	C11, C11, C12, A2
+	MADD	C21, C21, C22, A2
+	
+	ST		B8, 7 * SIZE(CO1)
+	MADD	C31, C31, C32, A2
+	MADD	C41, C41, C42, A2
+
+	ST		C13, 0 * SIZE(CO2)
+	ST		C23, 2 * SIZE(CO2)
+	ST		C33, 4 * SIZE(CO2)
+	ST		C43, 6 * SIZE(CO2)
+	ST		C11, 1 * SIZE(CO2)
+	ST		C21, 3 * SIZE(CO2)
+	ST		C31, 5 * SIZE(CO2)
+	ST		C41, 7 * SIZE(CO2)
+#endif
+
+#if   defined(NR) || defined(NC) || defined(TR) || defined(TC)
+	/*	(a + bi) * (c - di) */
+	ADD		C11, A1, C11		#	ac'+'bd
+	ADD		C21, A2, C21
+#	LD		A1, 0 * SIZE(A)		#	load alpha_r
+	ADD		C31, A3, C31
+	LD		A1, 152($sp)		#	load alpha_r
+	ADD		C41, A4, C41
+	LD		A2, 160($sp)		#	load alpha_i
+#	LD		A2, 0 * SIZE(A)		#	load alpha_r
+	SUB		C13, A5, C13		#	ad'+'cb
+	SUB		C23, A6, C23
+	SUB		C33, A7, C33
+	SUB		C43, A8, C43
+	ADD		C12, B1, C12
+	ADD		C22, B2, C22
+	ADD		C32, B3, C32
+	ADD		C42, B4, C42
+	SUB		C14, B5, C14
+	SUB		C24, B6, C24
+	SUB		C34, B7, C34
+	SUB		C44, B8, C44
+
+	MUL		B1, C11, A1		#	A1 = alpha_r
+	MUL		B3, C21, A1
+	MUL		B5, C31, A1
+	MUL	 	B7, C41, A1
+	MUL		B2, C13, A1
+	MUL		B4, C23, A1
+	MUL		B6, C33, A1
+	MUL		B8, C43, A1
+	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
+	NMSUB	B3, B3, C23, A2
+	NMSUB	B5, B5, C33, A2
+	NMSUB	B7, B7, C43, A2
+	MADD	B2, B2, C11, A2
+	MADD	B4, B4, C21, A2
+	MADD	B6, B6, C31, A2
+	MADD	B8, B8, C41, A2
+
+	MUL		C13, C12, A1
+	MUL		C23, C22, A1
+
+	ST		B1, 0 * SIZE(CO1)
+	MUL		C33, C32, A1
+	MUL		C43, C42, A1
+
+	ST		B3, 2 * SIZE(CO1)
+	MUL		C11, C14, A1
+	MUL		C21, C24, A1
+
+	ST		B5, 4 * SIZE(CO1)
+	MUL 	C31, C34, A1
+	MUL 	C41, C44, A1
+
+	ST		B7, 6 * SIZE(CO1)
+	NMSUB	C13, C13, C14, A2
+	NMSUB	C23, C23, C24, A2
+
+	ST		B2, 1 * SIZE(CO1)
+	NMSUB	C33, C33, C34, A2
+	NMSUB	C43, C43, C44, A2
+
+	ST		B4, 3 * SIZE(CO1)
+	MADD	C11, C11, C12, A2
+	MADD	C21, C21, C22, A2
+
+	ST		B6, 5 * SIZE(CO1)
+	MADD	C31, C31, C32, A2
+	MADD	C41, C41, C42, A2
+
+	ST		B8, 7 * SIZE(CO1)
+	ST		C13, 0 * SIZE(CO2)
+	ST		C23, 2 * SIZE(CO2)
+	ST		C33, 4 * SIZE(CO2)
+	ST		C43, 6 * SIZE(CO2)
+	ST		C11, 1 * SIZE(CO2)
+	ST		C21, 3 * SIZE(CO2)
+	ST		C31, 5 * SIZE(CO2)
+	ST		C41, 7 * SIZE(CO2)
+
+#endif
+
+#if	  defined(RN) || defined(RT) || defined(CN) || defined(CT)
+	/*	(a - bi) * (c + di) */
+	ADD		C11, A1, C11		#	ac'+'bd
+	ADD		C21, A2, C21
+#	LD		A1, 0 * SIZE(A)		#	load alpha_r
+	ADD		C31, A3, C31
+	LD		A1, 152($sp)		#	load alpha_r
+#	LD		A2, 0 * SIZE(A)		#	load alpha_r
+	ADD		C41, A4, C41
+	LD		A2, 160($sp)		#	load alpha_i
+	SUB		C13, C13, A5		#	ad'+'cb
+	SUB		C23, C23, A6
+	SUB		C33, C33, A7
+	SUB		C43, C43, A8
+	ADD		C12, B1, C12
+	ADD		C22, B2, C22
+	ADD		C32, B3, C32
+	ADD		C42, B4, C42
+	SUB		C14, C14, B5
+	SUB		C24, C24, B6
+
+	SUB		C34, C34, B7
+	SUB		C44, C44, B8
+
+	MUL	B1, C11, A1		#	A1 = alpha_r
+	MUL	B3, C21, A1
+	MUL	B5, C31, A1
+	MUL	B7, C41, A1
+	MUL	B2, C13, A1
+	MUL	B4, C23, A1
+	MUL	B6, C33, A1
+	MUL	B8, C43, A1
+	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
+	NMSUB	B3, B3, C23, A2
+	NMSUB	B5, B5, C33, A2
+	NMSUB	B7, B7, C43, A2
+	MADD	B2, B2, C11, A2
+	MADD	B4, B4, C21, A2
+	MADD	B6, B6, C31, A2
+	MADD	B8, B8, C41, A2
+
+	MUL	C13, C12, A1
+	MUL	C23, C22, A1
+
+	ST		B1, 0 * SIZE(CO1)
+	MUL	C33, C32, A1
+	MUL	C43, C42, A1
+
+	ST		B3, 2 * SIZE(CO1)
+	MUL	C11, C14, A1
+	MUL	C21, C24, A1
+
+	ST		B5, 4 * SIZE(CO1)
+	MUL	C31, C34, A1
+	MUL	C41, C44, A1
+
+	ST		B7, 6 * SIZE(CO1)
+	NMSUB	C13, C13, C14, A2
+	NMSUB	C23, C23, C24, A2
+
+	ST		B2, 1 * SIZE(CO1)
+	NMSUB	C33, C33, C34, A2
+	NMSUB	C43, C43, C44, A2
+
+	ST		B4, 3 * SIZE(CO1)
+	MADD	C11, C11, C12, A2
+	MADD	C21, C21, C22, A2
+
+	ST		B6, 5 * SIZE(CO1)
+	MADD	C31, C31, C32, A2
+	MADD	C41, C41, C42, A2
+
+	ST		B8, 7 * SIZE(CO1)
+	ST		C13, 0 * SIZE(CO2)
+	ST		C23, 2 * SIZE(CO2)
+	ST		C33, 4 * SIZE(CO2)
+	ST		C43, 6 * SIZE(CO2)
+	ST		C11, 1 * SIZE(CO2)
+	ST		C21, 3 * SIZE(CO2)
+	ST		C31, 5 * SIZE(CO2)
+	ST		C41, 7 * SIZE(CO2)
+
+#endif
+
+#if   defined(RR) || defined(RC) || defined(CR) || defined(CC)
+	/*	(a - bi) * (c - di) */
+	SUB		C11, C11, A1		#	ac'+'bd
+	SUB		C21, C21, A2
+	SUB		C31, C31, A3
+	LD		A1, 152($sp)		#	load alpha_r
+#	LD		A1, 0 * SIZE(A)		#	load alpha_r
+	SUB		C41, C41, A4
+	LD		A2, 160($sp)
+#	LD		A2, 0 * SIZE(A)		#	load alpha_i
+
+	ADD		C13, A5, C13		#	ad'+'cb
+	ADD		C23, A6, C23
+	ADD		C33, A7, C33
+	ADD		C43, A8, C43
+	SUB		C12, C12, B1
+	SUB		C22, C22, B2
+	SUB		C32, C32, B3
+	SUB		C42, C42, B4
+	ADD		C14, B5, C14
+	ADD		C24, B6, C24
+	ADD		C34, B7, C34
+	ADD		C44, B8, C44
+
+	NEG		C13, C13
+	NEG		C23, C23
+	NEG		C33, C33
+	NEG		C43, C43
+	NEG		C14, C14
+	NEG		C24, C24
+	NEG		C34, C34
+	NEG		C44, C44
+
+	MUL		B1, C11, A1		#	A1 = alpha_r
+	MUL		B3, C21, A1
+	MUL		B5, C31, A1
+	MUL		B7, C41, A1
+	MUL		B2, C13, A1
+	MUL		B4, C23, A1
+	MUL		B6, C33, A1
+	MUL		B8, C43, A1
+	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
+	NMSUB	B3, B3, C23, A2
+	NMSUB	B5, B5, C33, A2
+	NMSUB	B7, B7, C43, A2
+	MADD	B2, B2, C11, A2
+	MADD	B4, B4, C21, A2
+	MADD	B6, B6, C31, A2
+	MADD	B8, B8, C41, A2
+
+	ST		B1, 0 * SIZE(CO1)
+	MUL		C13, C12, A1
+	MUL		C23, C22, A1
+
+	ST		B3, 2 * SIZE(CO1)
+	MUL		C33, C32, A1
+	MUL		C43, C42, A1
+
+	ST		B5, 4 * SIZE(CO1)
+	MUL		C11, C14, A1
+	MUL		C21, C24, A1
+
+	ST		B7, 6 * SIZE(CO1)
+	MUL		C31, C34, A1
+	MUL		C41, C44, A1
+
+	ST		B2, 1 * SIZE(CO1)
+	NMSUB	C13, C13, C14, A2
+	NMSUB	C23, C23, C24, A2
+
+	ST		B4, 3 * SIZE(CO1)
+	NMSUB	C33, C33, C34, A2
+	NMSUB	C43, C43, C44, A2
+
+	ST		B6, 5 * SIZE(CO1)
+	MADD	C11, C11, C12, A2
+	MADD	C21, C21, C22, A2
+
+	ST		B8, 7 * SIZE(CO1)
+	MADD	C31, C31, C32, A2
+	MADD	C41, C41, C42, A2
+
+	ST		C13, 0 * SIZE(CO2)
+	ST		C23, 2 * SIZE(CO2)
+	ST		C33, 4 * SIZE(CO2)
+	ST		C43, 6 * SIZE(CO2)
+	ST		C11, 1 * SIZE(CO2)
+	ST		C21, 3 * SIZE(CO2)
+	ST		C31, 5 * SIZE(CO2)
+	ST		C41, 7 * SIZE(CO2)
+#endif
+
+
+#if ( defined(LEFT) &&  defined(TRANSA)) || \
+    (!defined(LEFT) && !defined(TRANSA))
+	dsubu	TEMP, K, KK
+#ifdef LEFT
+	daddiu	TEMP, TEMP, -4
+#else
+	daddiu	TEMP, TEMP, -2
+#endif
+
+	dsll	L, TEMP, 2 + ZBASE_SHIFT
+	dsll	TEMP, TEMP, 1 + ZBASE_SHIFT
+
+	daddu	AO, AO, L
+	daddu	BO, BO, TEMP
+#endif
+
+#ifdef LEFT
+	daddiu	KK, KK, 4
+#endif
+
+#endif
 	daddiu	CO1, CO1, 8 * SIZE
 	bgtz	I, .L241
 	daddiu	CO2, CO2, 8 * SIZE
