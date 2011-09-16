@@ -56,6 +56,11 @@ ifndef SMP
 else
 	@echo " (Multi threaded; Max num-threads is $(NUM_THREADS))"
 endif
+
+ifeq ($(OSNAME), Darwin)
+	@echo "Because absolute path issue, $(LIBDYNNAME) may not work under this directory."
+	@echo "Thus, you need run \"make PREFIX=/your_installation_path/ install\"."
+endif
 	@echo
 
 shared :

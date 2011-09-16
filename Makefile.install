@@ -50,6 +50,7 @@ ifeq ($(OSNAME), NetBSD)
 endif
 ifeq ($(OSNAME), Darwin)
 	-cp $(LIBDYNNAME) $(PREFIX)
+	-install_name_tool -add_rpath $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/$(LIBDYNNAME)
 	-ln -fs $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/libopenblas.dylib
 endif
 ifeq ($(OSNAME), WINNT)
