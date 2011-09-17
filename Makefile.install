@@ -48,9 +48,9 @@ ifeq ($(OSNAME), NetBSD)
 	-cp $(LIBSONAME) $(PREFIX)
 	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
 endif
-ifeq ($(OSNAME), Darwin)
+ifeq ($(OSNAME), Darwin)     
 	-cp $(LIBDYNNAME) $(PREFIX)
-	-install_name_tool -add_rpath $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/$(LIBDYNNAME)
+	-install_name_tool -id $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/$(LIBDYNNAME)
 	-ln -fs $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/libopenblas.dylib
 endif
 ifeq ($(OSNAME), WINNT)

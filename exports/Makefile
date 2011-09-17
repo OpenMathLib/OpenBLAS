@@ -85,7 +85,7 @@ libgoto_hpl.def : gensymbol
 	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
 
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
-	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name `pwd`/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 
 symbol.$(SUFFIX) : symbol.S
 	$(CC) $(CFLAGS) -c -o $(@F) $^
