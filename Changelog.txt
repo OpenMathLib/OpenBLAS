@@ -1,5 +1,22 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.1 alpha2.4
+18-Sep-2011
+common:
+	* Fixed a bug about installation. The header file "fblas77.h" 
+	  works fine now.
+	* Fixed #61 a building bug about setting TARGET and DYNAMIC_ARCH.
+	* Try to handle absolute path of shared library in OSX. (#57)
+	  Thank Dr Kane O'Donnell.
+	* Changed the installation folder layout to $(PREFIX)/include and
+	  $(PREFIX)/lib
+
+x86/x86_64:
+	* Fixed #58 zdot/xdot SEGFAULT bug with GCC-4.6 on x86. According 
+	  to i386 calling convention, The callee should remove the first 
+	  hidden parameter.Thank Mr. John for this patch. 
+
+====================================================================
 Version 0.1 alpha2.3
 5-Sep-2011
 

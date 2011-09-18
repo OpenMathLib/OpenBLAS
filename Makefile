@@ -56,6 +56,20 @@ ifndef SMP
 else
 	@echo " (Multi threaded; Max num-threads is $(NUM_THREADS))"
 endif
+
+ifeq ($(OSNAME), Darwin)
+	@echo "WARNING: If you plan to use the dynamic library $(LIBDYNNAME), you must run:"
+	@echo
+	@echo "\"make PREFIX=/your_installation_path/ install\"."
+	@echo
+	@echo "(or set PREFIX in Makefile.rule and run make install."
+	@echo "If you want to move the .dylib to a new location later, make sure you change"
+	@echo "the internal name of the dylib with:"
+	@echo
+	@echo "install_name_tool -id /new/absolute/path/to/$(LIBDYNNAME) $(LIBDYNNAME)"
+endif
+	@echo
+	@echo "To install the library, you can run \"make PREFIX=/path/to/your/installation install\"."
 	@echo
 
 shared :
@@ -118,6 +132,13 @@ endif
 #Save the config files for installation
 	cp Makefile.conf Makefile.conf_last
 	cp config.h config_last.h
+ifdef QUAD_PRECISION
+	echo "#define QUAD_PRECISION">> config_last.h
+endif
+ifeq ($(EXPRECISION), 1)
+	echo "#define EXPRECISION">> config_last.h
+endif
+## 
 ifdef DYNAMIC_ARCH
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \
