@@ -3,6 +3,9 @@ export GOTOBLAS_MAKEFILE = 1
 -include $(TOPDIR)/Makefile.conf_last
 include ./Makefile.system
 
+OPENBLAS_INCLUDE_DIR:=$(PREFIX)/include
+OPENBLAS_LIBRARY_DIR:=$(PREFIX)/lib
+
 .PHONY : install
 .NOTPARALLEL : install
 
@@ -11,54 +14,57 @@ lib.grd :
 
 install : 	lib.grd
 	@-mkdir -p $(PREFIX)
-	@echo Generating openblas_config.h in $(PREFIX)
+	@-mkdir -p $(OPENBLAS_INCLUDE_DIR)
+	@-mkdir -p $(OPENBLAS_LIBRARY_DIR)
+	@echo Generating openblas_config.h in $(OPENBLAS_INCLUDE_DIR)
 #for inc 
-	@echo \#ifndef OPENBLAS_CONFIG_H > $(PREFIX)/openblas_config.h
-	@echo \#define OPENBLAS_CONFIG_H >> $(PREFIX)/openblas_config.h
-	@cat config_last.h >> $(PREFIX)/openblas_config.h
-	@echo \#define VERSION \" OpenBLAS $(VERSION) \" >> $(PREFIX)/openblas_config.h
-	@cat openblas_config_template.h >> $(PREFIX)/openblas_config.h
-	@echo \#endif >> $(PREFIX)/openblas_config.h
+	@echo \#ifndef OPENBLAS_CONFIG_H > $(OPENBLAS_INCLUDE_DIR)/openblas_config.h
+	@echo \#define OPENBLAS_CONFIG_H >> $(OPENBLAS_INCLUDE_DIR)/openblas_config.h
+	@cat config_last.h >> $(OPENBLAS_INCLUDE_DIR)/openblas_config.h
+	@echo \#define VERSION \" OpenBLAS $(VERSION) \" >> $(OPENBLAS_INCLUDE_DIR)/openblas_config.h
+	@cat openblas_config_template.h >> $(OPENBLAS_INCLUDE_DIR)/openblas_config.h
+	@echo \#endif >> $(OPENBLAS_INCLUDE_DIR)/openblas_config.h
 
-	@echo Generating f77blas.h in $(PREFIX)
-	@echo \#ifndef OPENBLAS_F77BLAS_H > $(PREFIX)/f77blas.h
-	@echo \#define OPENBLAS_F77BLAS_H >> $(PREFIX)/f77blas.h
-	@echo \#include \"openblas_config.h\" >> $(PREFIX)/f77blas.h
-	@cat common_interface.h >> $(PREFIX)/f77blas.h
-	@echo \#endif >> $(PREFIX)/f77blas.h
+	@echo Generating f77blas.h in $(OPENBLAS_INCLUDE_DIR)
+	@echo \#ifndef OPENBLAS_F77BLAS_H > $(OPENBLAS_INCLUDE_DIR)/f77blas.h
+	@echo \#define OPENBLAS_F77BLAS_H >> $(OPENBLAS_INCLUDE_DIR)/f77blas.h
+	@echo \#include \"openblas_config.h\" >> $(OPENBLAS_INCLUDE_DIR)/f77blas.h
+	@cat common_interface.h >> $(OPENBLAS_INCLUDE_DIR)/f77blas.h
+	@echo \#endif >> $(OPENBLAS_INCLUDE_DIR)/f77blas.h
 
-	@echo Generating cblas.h in $(PREFIX)
-	@sed 's/common/openblas_config/g' cblas.h > $(PREFIX)/cblas.h
+	@echo Generating cblas.h in $(OPENBLAS_INCLUDE_DIR)
+	@sed 's/common/openblas_config/g' cblas.h > $(OPENBLAS_INCLUDE_DIR)/cblas.h
 
 #for install static library 
-	@echo Copy the static library to $(PREFIX)
-	@cp $(LIBNAME) $(PREFIX)
-	@-ln -fs $(PREFIX)/$(LIBNAME) $(PREFIX)/libopenblas.$(LIBSUFFIX)
+	@echo Copy the static library to $(OPENBLAS_LIBRARY_DIR)
+	@cp $(LIBNAME) $(OPENBLAS_LIBRARY_DIR)
+	@-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBNAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.$(LIBSUFFIX)
 #for install shared library 
-	@echo Copy the shared library to $(PREFIX)
+	@echo Copy the shared library to $(OPENBLAS_LIBRARY_DIR)
 ifeq ($(OSNAME), Linux)
-	-cp $(LIBSONAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
+	-cp $(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)
+	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.so
 endif
 ifeq ($(OSNAME), FreeBSD)
-	-cp $(LIBSONAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
+	-cp $(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)
+	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.so
 endif
 ifeq ($(OSNAME), NetBSD)
-	-cp $(LIBSONAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBSONAME) $(PREFIX)/libopenblas.so
+	-cp $(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)
+	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.so
 endif
-ifeq ($(OSNAME), Darwin)
-	-cp $(LIBDYNNAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBDYNNAME) $(PREFIX)/libopenblas.dylib
+ifeq ($(OSNAME), Darwin)     
+	-cp $(LIBDYNNAME) $(OPENBLAS_LIBRARY_DIR)
+	-install_name_tool -id $(OPENBLAS_LIBRARY_DIR)/$(LIBDYNNAME) $(OPENBLAS_LIBRARY_DIR)/$(LIBDYNNAME)
+	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBDYNNAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.dylib
 endif
 ifeq ($(OSNAME), WINNT)
-	-cp $(LIBDLLNAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBDLLNAME) $(PREFIX)/libopenblas.dll
+	-cp $(LIBDLLNAME) $(OPENBLAS_LIBRARY_DIR)
+	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBDLLNAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
-	-cp $(LIBDLLNAME) $(PREFIX)
-	-ln -fs $(PREFIX)/$(LIBDLLNAME) $(PREFIX)/libopenblas.dll
+	-cp $(LIBDLLNAME) $(OPENBLAS_LIBRARY_DIR)
+	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBDLLNAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.dll
 endif
 
 	@echo Install OK!
