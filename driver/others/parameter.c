@@ -688,11 +688,11 @@ void blas_set_parameter(void){
   if(blas_num_threads == 1){
 #endif
     //single thread
-    dgemm_r = 1000;
+    dgemm_r = 1024;
 #ifdef SMP
   }else{
     //multi thread
-    dgemm_r = 300;
+    dgemm_r = 200;
   }
 #endif
 #endif

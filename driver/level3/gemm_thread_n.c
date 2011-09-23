@@ -71,15 +71,15 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
     queue[num_cpu].args    = arg;
     queue[num_cpu].range_m = range_m;
     queue[num_cpu].range_n = &range[num_cpu];
-    queue[num_cpu].sa      = NULL;
-    queue[num_cpu].sb      = NULL;
+    queue[num_cpu].sa      = sa	+ GEMM_OFFSET_A1 * num_cpu;	//NULL;
+    queue[num_cpu].sb      = queue[num_cpu].sa + GEMM_OFFSET_A1 * 5;//NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
     num_cpu ++;
   }
   
   if (num_cpu) {
     queue[0].sa = sa;
-    queue[0].sb = sb;
+    queue[0].sb = sa + GEMM_OFFSET_A1 * 5;
 
     queue[num_cpu - 1].next = NULL;
     
