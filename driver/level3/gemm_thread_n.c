@@ -71,16 +71,25 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
     queue[num_cpu].args    = arg;
     queue[num_cpu].range_m = range_m;
     queue[num_cpu].range_n = &range[num_cpu];
-    queue[num_cpu].sa      = sa	+ GEMM_OFFSET_A1 * num_cpu;	//NULL;
-    queue[num_cpu].sb      = queue[num_cpu].sa + GEMM_OFFSET_A1 * 5;//NULL;
+#if defined(LOONGSON3A)
+    queue[num_cpu].sa      = sa	+ GEMM_OFFSET_A1 * num_cpu;
+    queue[num_cpu].sb      = queue[num_cpu].sa + GEMM_OFFSET_A1 * 5;
+#else
+	queue[num_cpu].sa      = NULL;
+    queue[num_cpu].sb      = NULL;
+#endif
     queue[num_cpu].next    = &queue[num_cpu + 1];
     num_cpu ++;
   }
   
   if (num_cpu) {
+#if defined(LOONGSON3A)
     queue[0].sa = sa;
     queue[0].sb = sa + GEMM_OFFSET_A1 * 5;
-
+#else
+	queue[0].sa = sa;
+	queue[0].sb = sb;
+#endif
     queue[num_cpu - 1].next = NULL;
     
     exec_blas(num_cpu,
