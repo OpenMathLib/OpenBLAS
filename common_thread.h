@@ -39,6 +39,11 @@
 #ifndef COMMON_THREAD
 #define COMMON_THREAD
 
+#ifdef USE_OPENMP
+#include <omp.h>
+extern void goto_set_num_threads(int nthreads);
+#endif
+
 /* Basic Thread Debugging */
 #undef SMP_DEBUG
 
@@ -126,12 +131,23 @@ extern int blas_server_avail;
 
 static __inline int num_cpu_avail(int level) {
 
+#ifdef USE_OPENMP
+	int openmp_nthreads=0;
+#endif
+
   if ((blas_cpu_number == 1) 
 
 #ifdef USE_OPENMP
       || omp_in_parallel()
 #endif
       ) return 1;
+
+#ifdef USE_OPENMP
+  openmp_nthreads=omp_get_max_threads();
+  if (blas_cpu_number != openmp_nthreads) {
+	  goto_set_num_threads(openmp_nthreads);
+  }
+#endif
 
   return blas_cpu_number;
 
