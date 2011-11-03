@@ -1,6 +1,16 @@
 SAXPYKERNEL=axpy_loongson3a.S
 DAXPYKERNEL=daxpy_loongson3a_simd.S
 
+SGEMVNKERNEL = gemv_n_loongson3a.c
+SGEMVTKERNEL = gemv_t_loongson3a.c
+DGEMVNKERNEL = gemv_n_loongson3a.c
+DGEMVTKERNEL = gemv_t_loongson3a.c
+CGEMVNKERNEL = zgemv_n_loongson3a.c
+CGEMVTKERNEL = zgemv_t_loongson3a.c
+ZGEMVNKERNEL = zgemv_n_loongson3a.c
+ZGEMVTKERNEL = zgemv_t_loongson3a.c
+
+
 SGEMMKERNEL    =  sgemm_kernel_8x4_ps.S		
 SGEMMINCOPY    =  ../generic/gemm_ncopy_8.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_8.c
