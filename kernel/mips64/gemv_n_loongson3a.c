@@ -16,13 +16,16 @@
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT ALPHA, FLOAT *A, BLASLONG LDA, FLOAT *X, BLASLONG INCX, FLOAT *Y, BLASLONG INCY, FLOAT *BUFFER) 
 {
 
+	BLASLONG kx=0, ky=0;
 	if(!ALPHA)
 		return 0;
 
-	if(INCX < 0)
-		INCX = -INCX;
-	if(INCY < 0)
-		INCY = -INCY;
+	//if(INCX < 0)
+	//	kx = (1-N) * INCX;
+	//	INCX = -INCX;
+	//if(INCY < 0)
+	//	ky = (1-M) * INCY;
+	//	INCY = -INCY;
 
 	BLASLONG fahead = 30;
 	BLASLONG spec_unroll = 4;
@@ -31,7 +34,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT ALPHA, FLOAT *A, BLASLO
 
 	if(ALPHA == 1) {
 		if(INCY == 1) {
-			for(; likely(j < N); j++, k += INCX) {
+			for(k=kx; likely(j < N); j++, k += INCX) {
 				BLASLONG i = 0;
 				for(; likely(i < tMQ);) {
 					prefetch(A[LDA * j + i + fahead]);
@@ -46,8 +49,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT ALPHA, FLOAT *A, BLASLO
 				}
 			}
 		} else {
-			for(; likely(j < N); j++, k += INCX) {
-				BLASLONG i = 0, h = 0;
+			for(k=kx; likely(j < N); j++, k += INCX) {
+				BLASLONG i = 0, h = ky;
 				for(; likely(i < tMQ);) {
 					prefetch(A[LDA * j + i + fahead]);
 					prefetch(Y[h + fahead]);
@@ -63,7 +66,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT ALPHA, FLOAT *A, BLASLO
 		}
 	} else {
 		if(INCY == 1) {
-			for(; likely(j < N); j++, k += INCX) {
+			for(k=kx; likely(j < N); j++, k += INCX) {
 				BLASLONG i = 0;
 				for(; likely(i < tMQ);) {
 					prefetch(A[LDA * j + i + fahead]);
@@ -78,8 +81,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT ALPHA, FLOAT *A, BLASLO
 				}
 			}
 		} else {
-			for(; likely(j < N); j++, k += INCX) {
-				BLASLONG i = 0, h = 0;
+			for(k=kx; likely(j < N); j++, k += INCX) {
+				BLASLONG i = 0, h = ky;
 				for(; likely(i < tMQ);) {
 					prefetch(A[LDA * j + i + fahead]);
 					prefetch(Y[h + fahead]);

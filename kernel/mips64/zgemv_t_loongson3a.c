@@ -18,10 +18,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT rALPHA, FLOAT iALPHA, F
 	if(!rALPHA && iALPHA)
 		return 0;
 
-	if(INCX < 0)
-		INCX = -INCX;
-	if(INCY < 0)
-		INCY = -INCY;
+//	if(INCX < 0)
+//		INCX = -INCX;
+//	if(INCY < 0)
+//		INCY = -INCY;
 
 	BLASLONG fahead = 30;
 	BLASLONG spec_unroll = 2;
