@@ -39,14 +39,19 @@
 #define ASSEMBLER
 #include "common.h"
 
+#ifndef WINDOWS_ABI
 #define N	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
 #define Y	ARG4	/* rcx */
-#ifndef WINDOWS_ABI
 #define INCY	ARG5	/* r8  */
 #else
-#define INCY	%r10
+#define RESULT_ADDRESS	ARG1    /*rcx*/
+#define N	ARG2	/* rdx */
+#define X	ARG3	/* r8 */
+#define INCX	ARG4	/* r9*/
+#define Y	%r10	
+#define INCY	%r11
 #endif
 
 #include "l1param.h"
@@ -64,7 +69,8 @@
 	PROFCODE
 
 #ifdef WINDOWS_ABI
-	movq	40(%rsp), INCY
+	movq	40(%rsp), Y
+	movq	48(%rsp), INCY
 #endif
 
 	SAVEREGISTERS
@@ -1542,6 +1548,12 @@
 #else
 	addsd	 %xmm2, %xmm0
 	subsd	 %xmm3, %xmm1
+#endif
+
+#ifdef WINDOWS_ABI
+	movq	RESULT_ADDRESS,	%rax
+	movsd	%xmm0,	(%rax)
+	movsd	%xmm1,	8(%rax)
 #endif
 
 	RESTOREREGISTERS

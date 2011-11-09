@@ -49,6 +49,8 @@
 static void init_parameter(void);
 
 gotoblas_t TABLE_NAME = {
+  DTB_DEFAULT_ENTRIES ,
+
   GEMM_DEFAULT_OFFSET_A, GEMM_DEFAULT_OFFSET_B, GEMM_DEFAULT_ALIGN,
 
   0, 0, 0,

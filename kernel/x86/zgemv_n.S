@@ -44,11 +44,11 @@
 #endif
 
 #if defined(PENTIUM4) || defined(ATHLON)
-#define P ((DTB_ENTRIES) >> 1)
+#define P ((DTB_DEFAULT_ENTRIES) >> 1)
 #endif
 	
 #ifndef P
-#define P DTB_ENTRIES
+#define P DTB_DEFAULT_ENTRIES
 #endif
 
 #define STACK	16

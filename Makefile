@@ -56,6 +56,27 @@ ifndef SMP
 else
 	@echo " (Multi threaded; Max num-threads is $(NUM_THREADS))"
 endif
+
+ifeq ($(USE_OPENMP), 1)
+	@echo
+	@echo " Use OpenMP in the multithreading. Becasue of ignoring OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS flags, "
+	@echo " you should use OMP_NUM_THREADS environment variable to control the number of threads."
+	@echo
+endif
+
+ifeq ($(OSNAME), Darwin)
+	@echo "WARNING: If you plan to use the dynamic library $(LIBDYNNAME), you must run:"
+	@echo
+	@echo "\"make PREFIX=/your_installation_path/ install\"."
+	@echo
+	@echo "(or set PREFIX in Makefile.rule and run make install."
+	@echo "If you want to move the .dylib to a new location later, make sure you change"
+	@echo "the internal name of the dylib with:"
+	@echo
+	@echo "install_name_tool -id /new/absolute/path/to/$(LIBDYNNAME) $(LIBDYNNAME)"
+endif
+	@echo
+	@echo "To install the library, you can run \"make PREFIX=/path/to/your/installation install\"."
 	@echo
 
 shared :

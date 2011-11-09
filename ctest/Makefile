@@ -36,22 +36,43 @@ ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
 all :: all1 all2 all3 
 
 all1: xscblat1 xdcblat1 xccblat1 xzcblat1
+ifeq ($(USE_OPENMP), 1)
+	OMP_NUM_THREADS=2 ./xscblat1
+	OMP_NUM_THREADS=2 ./xdcblat1
+	OMP_NUM_THREADS=2 ./xccblat1
+	OMP_NUM_THREADS=2 ./xzcblat1
+else
 	OPENBLAS_NUM_THREADS=2 ./xscblat1
 	OPENBLAS_NUM_THREADS=2 ./xdcblat1
 	OPENBLAS_NUM_THREADS=2 ./xccblat1
 	OPENBLAS_NUM_THREADS=2 ./xzcblat1
+endif
 
 all2: xscblat2 xdcblat2 xccblat2 xzcblat2
+ifeq ($(USE_OPENMP), 1)
+	OMP_NUM_THREADS=2 ./xscblat2 < sin2
+	OMP_NUM_THREADS=2 ./xdcblat2 < din2
+	OMP_NUM_THREADS=2 ./xccblat2 < cin2
+	OMP_NUM_THREADS=2 ./xzcblat2 < zin2
+else
 	OPENBLAS_NUM_THREADS=2 ./xscblat2 < sin2
 	OPENBLAS_NUM_THREADS=2 ./xdcblat2 < din2
 	OPENBLAS_NUM_THREADS=2 ./xccblat2 < cin2
 	OPENBLAS_NUM_THREADS=2 ./xzcblat2 < zin2
+endif
 
 all3: xscblat3 xdcblat3 xccblat3 xzcblat3
+ifeq ($(USE_OPENMP), 1)
+	OMP_NUM_THREADS=2 ./xscblat3 < sin3
+	OMP_NUM_THREADS=2 ./xdcblat3 < din3
+	OMP_NUM_THREADS=2 ./xccblat3 < cin3
+	OMP_NUM_THREADS=2 ./xzcblat3 < zin3
+else
 	OPENBLAS_NUM_THREADS=2 ./xscblat3 < sin3
 	OPENBLAS_NUM_THREADS=2 ./xdcblat3 < din3
 	OPENBLAS_NUM_THREADS=2 ./xccblat3 < cin3
 	OPENBLAS_NUM_THREADS=2 ./xzcblat3 < zin3
+endif
 
 clean ::
 	rm -f x* 

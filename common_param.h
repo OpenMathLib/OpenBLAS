@@ -44,6 +44,7 @@
 #ifdef DYNAMIC_ARCH
 
 typedef struct {
+  int dtb_entries;
   int offsetA, offsetB, align;
 
   int sgemm_p, sgemm_q, sgemm_r;
@@ -813,6 +814,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
 
 extern gotoblas_t *gotoblas;
 
+#define DTB_ENTRIES  gotoblas -> dtb_entries
 #define GEMM_OFFSET_A	gotoblas -> offsetA
 #define GEMM_OFFSET_B	gotoblas -> offsetB
 #define GEMM_ALIGN	gotoblas -> align
@@ -862,6 +864,8 @@ extern gotoblas_t *gotoblas;
 #define XGEMM_UNROLL_MN	gotoblas -> xgemm_unroll_mn
 
 #else
+
+#define DTB_ENTRIES  DTB_DEFAULT_ENTRIES 
 
 #define GEMM_OFFSET_A	GEMM_DEFAULT_OFFSET_A
 #define GEMM_OFFSET_B	GEMM_DEFAULT_OFFSET_B
@@ -997,14 +1001,14 @@ extern gotoblas_t *gotoblas;
 #endif
 
 #ifdef XDOUBLE
-#define GEMM3M_UNROLL_M	QGEMM_DEFAULT_UNROLL_M
-#define GEMM3M_UNROLL_N	QGEMM_DEFAULT_UNROLL_N
+#define GEMM3M_UNROLL_M	QGEMM_UNROLL_M
+#define GEMM3M_UNROLL_N	QGEMM_UNROLL_N
 #elif defined(DOUBLE)
-#define GEMM3M_UNROLL_M	DGEMM_DEFAULT_UNROLL_M
-#define GEMM3M_UNROLL_N	DGEMM_DEFAULT_UNROLL_N
+#define GEMM3M_UNROLL_M	DGEMM_UNROLL_M
+#define GEMM3M_UNROLL_N	DGEMM_UNROLL_N
 #else
-#define GEMM3M_UNROLL_M	SGEMM_DEFAULT_UNROLL_M
-#define GEMM3M_UNROLL_N	SGEMM_DEFAULT_UNROLL_N
+#define GEMM3M_UNROLL_M	SGEMM_UNROLL_M
+#define GEMM3M_UNROLL_N	SGEMM_UNROLL_N
 #endif
 
 

@@ -66,7 +66,7 @@ ifeq ($(BINARY32), 1)
 	-lib /machine:i386 /def:libgoto2.def
 else
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libgoto2.def \
-	--entry _dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
 	-lib /machine:X64 /def:libgoto2.def 
 endif
 
@@ -85,7 +85,7 @@ libgoto_hpl.def : gensymbol
 	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
 
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
-	$(PREFIX)gcc $(CFLAGS) -all_load -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 
 symbol.$(SUFFIX) : symbol.S
 	$(CC) $(CFLAGS) -c -o $(@F) $^

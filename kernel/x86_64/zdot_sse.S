@@ -3483,6 +3483,10 @@
 	subss	 %xmm3, %xmm1
 #endif
 	unpcklps %xmm1, %xmm0
+	
+#ifdef WINDOWS_ABI
+	movq	%xmm0, %rax
+#endif
 
 	RESTOREREGISTERS
 

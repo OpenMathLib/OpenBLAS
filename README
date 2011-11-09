@@ -48,7 +48,7 @@ export OMP_NUM_THREADS=4
 
 The priorities are OPENBLAS_NUM_THREADS > GOTO_NUM_THREADS > OMP_NUM_THREADS.
 
-If you compile this lib with USE_OPENMP=1, you should only set OMP_NUM_THREADS environment variable.
+If you compile this lib with USE_OPENMP=1, you should set OMP_NUM_THREADS environment variable. OpenBLAS ignores OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS with USE_OPENMP=1.
 
 4.2 Set the number of threads with calling functions. for example,
 void goto_set_num_threads(int num_threads);
