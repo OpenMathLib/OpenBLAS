@@ -683,7 +683,7 @@ void blas_set_parameter(void){
 
 #if defined(ARCH_MIPS64) 
 void blas_set_parameter(void){
-#if defined(LOONGSON3A)
+#if defined(LOONGSON3A) || defined(LOONGSON3B) 
 #ifdef SMP
   if(blas_num_threads == 1){
 #endif

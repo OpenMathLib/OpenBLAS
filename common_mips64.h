@@ -101,10 +101,13 @@ static void INLINE blas_lock(volatile unsigned long *address){
 
 static inline unsigned int rpcc(void){
   unsigned long ret;
-#if defined(LOONGSON3A)
+#if defined(LOONGSON3A) 
   unsigned long long tmp;
   __asm__ __volatile__("dmfc0 %0, $25, 1": "=r"(tmp):: "memory");
   ret=tmp;
+#elif defined(LOONGSON3B)
+  //Temp Implementation.
+  return 1;
 #else
   __asm__ __volatile__(".set   push    \n"                                     
           ".set   mips32r2\n"                                                  
@@ -234,6 +237,11 @@ REALNAME: ;\
 #define FIXED_PAGESIZE	(16UL << 10)
 #endif
 
+#if defined(LOONGSON3B)
+#define PAGESIZE	(16UL << 10)
+#define FIXED_PAGESIZE	(16UL << 10)
+#endif
+
 #ifndef PAGESIZE
 #define PAGESIZE	(64UL << 10)
 #endif
@@ -245,7 +253,7 @@ REALNAME: ;\
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
-#if defined(LOONGSON3A)
+#if defined(LOONGSON3A) || defined(LOONGSON3B)
 #define PREFETCHD_(x) ld $0, x
 #define PREFETCHD(x)  PREFETCHD_(x)  
 #else
