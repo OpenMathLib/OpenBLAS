@@ -591,7 +591,9 @@ endif
 
 ifneq ($(ARCH), x86_64)
 ifneq ($(ARCH), x86)
+ifneq ($(CORE), LOONGSON3B)
 NO_AFFINITY = 1
+endif
 endif
 endif
 
