@@ -119,7 +119,8 @@ static inline unsigned int rpcc(void){
   return ret;
 }
 
-//#if defined(LOONGSON3A) || defined(LOONGSON3B)
+#if defined(LOONGSON3A) || defined(LOONGSON3B)
+#define WHEREAMI
 static inline int WhereAmI(void){
   int ret=0;
   __asm__ __volatile__(".set push \n"
@@ -129,7 +130,7 @@ static inline int WhereAmI(void){
   return ret;
 
 }
-//#endif
+#endif
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
@@ -252,8 +253,8 @@ REALNAME: ;\
 #endif
 
 #if defined(LOONGSON3B)
-#define PAGESIZE	(16UL << 10)
-#define FIXED_PAGESIZE	(16UL << 10)
+#define PAGESIZE	(32UL << 10)
+#define FIXED_PAGESIZE	(32UL << 10)
 #endif
 
 #ifndef PAGESIZE
