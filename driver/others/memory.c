@@ -389,12 +389,13 @@ static void *alloc_mmap(void *address){
       if (map_address != (void *)-1) {
 		  
 #ifdef OS_LINUX
-#ifdef DEBUG
-		  int ret;
+#if 1
+	//#ifdef DEBUG
+		  int ret=0;
 		  ret=my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
 		  if(ret==-1){
 			  int errsv=errno;
-			  perror("alloc_mmap:");
+			  perror("OpenBLAS alloc_mmap:");
 			  printf("error code=%d,\tmap_address=%lx\n",errsv,map_address);
 		  }
 
