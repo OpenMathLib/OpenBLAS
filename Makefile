@@ -1,4 +1,4 @@
-0;136;0cTOPDIR	= .
+TOPDIR	= .
 include ./Makefile.system
 
 BLASDIRS = interface driver/level2 driver/level3 driver/others
