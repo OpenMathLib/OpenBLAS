@@ -120,6 +120,7 @@ static inline unsigned int rpcc(void){
 }
 
 #if defined(LOONGSON3A) || defined(LOONGSON3B)
+#ifndef NO_AFFINITY
 #define WHEREAMI
 static inline int WhereAmI(void){
   int ret=0;
@@ -130,6 +131,7 @@ static inline int WhereAmI(void){
   return ret;
 
 }
+#endif
 #endif
 
 static inline int blas_quickdivide(blasint x, blasint y){
