@@ -95,7 +95,6 @@ DLLWRAP = $(CROSS_SUFFIX)dllwrap
 #
 
 ifeq ($(OSNAME), Darwin)
-EXTRALIB	+= -lSystemStubs
 export MACOSX_DEPLOYMENT_TARGET=10.2
 endif
 
