@@ -981,6 +981,9 @@ int get_cpuname(void){
 			  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
 			  // Xeon (Clarkdale), 32nm
 			  return CPUTYPE_NEHALEM;
+		  case 10:
+                          //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
+                          return CPUTYPE_NEHALEM;
 		  case 12:
 			  //Xeon Processor 5600 (Westmere-EP)
 			  return CPUTYPE_NEHALEM;
@@ -1310,6 +1313,9 @@ int get_coretype(void){
 	  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
 	  // Xeon (Clarkdale), 32nm
 	  return CORE_NEHALEM;
+	case 10:
+          //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
+          return CORE_NEHALEM;
 	case 12:
 	  //Xeon Processor 5600 (Westmere-EP)
 	  return CORE_NEHALEM;
