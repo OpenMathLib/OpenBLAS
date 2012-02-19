@@ -1,5 +1,18 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.1 alpha2.5
+19-Feb-2012
+common:
+	* Upgraded LAPACK to 3.4.0 version
+	* Fixed a bug on Mac OS X. Don't require SystemStubs on OS X.
+	  SystemStubs does not exist on Lion. Thank Stefan Karpinski.
+	* Improved README with using OpenMP. Check the internal threads
+	  count less than or equal to omp_get_max_threads()
+x86/x86_64:
+	* Auto-detect Intel Core i6/i7 (Sandy Bridge) CPU with Nehalem assembly kernels
+	* Fixed some bugs on MingW 64-bit including zgemv, cdot, zdot.
+
+====================================================================
 Version 0.1 alpha2.4
 18-Sep-2011
 common:
