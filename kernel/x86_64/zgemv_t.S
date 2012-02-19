@@ -131,8 +131,8 @@
 	movq	OLD_LDA,   LDA
 	movq	OLD_X,     X
 
-	movaps	%xmm3,       %xmm0
-	movss	OLD_ALPHA_I, %xmm1
+	movapd	%xmm3,       %xmm0
+	movsd	OLD_ALPHA_I, %xmm1
 #endif
 
 	movq	OLD_INCX,  INCX

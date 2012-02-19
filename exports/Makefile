@@ -66,7 +66,7 @@ ifeq ($(BINARY32), 1)
 	-lib /machine:i386 /def:libgoto2.def
 else
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libgoto2.def \
-	--entry _dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
 	-lib /machine:X64 /def:libgoto2.def 
 endif
 
