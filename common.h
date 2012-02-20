@@ -89,6 +89,10 @@ extern "C" {
 #include <sched.h>
 #endif
 
+#ifdef OS_DARWIN
+#include <sched.h>
+#endif
+
 #ifdef OS_WINDOWS
 #ifdef  ATOM
 #define GOTO_ATOM ATOM
