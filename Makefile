@@ -285,6 +285,7 @@ clean ::
 #ifdef DYNAMIC_ARCH
 	@$(MAKE) -C kernel clean
 #endif
+	@$(MAKE) -C reference clean
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf libopenblas.$(LIBSUFFIX) libopenblas_p.$(LIBSUFFIX) *.lnk myconfig.h
 	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d lapack-3.4.0; then \
