@@ -341,7 +341,8 @@ endif
 
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
-FCOMMON_OPT += -Wall 
+FCOMMON_OPT += -Wall
+EXTRALIB += -lgfortran 
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
 ifdef BINARY64
