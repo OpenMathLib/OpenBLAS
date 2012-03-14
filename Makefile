@@ -83,6 +83,7 @@ shared :
 ifeq ($(OSNAME), Linux)
 	$(MAKE) -C exports so
 	-ln -fs $(LIBSONAME) libopenblas.so
+	-ln -fs $(LIBSONAME) libopenblas.so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), FreeBSD)
 	$(MAKE) -C exports so

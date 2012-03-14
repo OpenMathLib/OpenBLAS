@@ -44,6 +44,7 @@ install : 	lib.grd
 ifeq ($(OSNAME), Linux)
 	-cp $(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)
 	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.so
+	-ln -fs $(OPENBLAS_LIBRARY_DIR)/$(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)/libopenblas.so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), FreeBSD)
 	-cp $(LIBSONAME) $(OPENBLAS_LIBRARY_DIR)
