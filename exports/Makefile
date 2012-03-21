@@ -100,7 +100,7 @@ so : ../$(LIBSONAME)
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
 	$(CC) $(CFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--retain-symbols-file=linux.def -Wl,-soname,libopenblas.so.$(MAJOR_VERSION) $(EXTRALIB)
+	-Wl,--retain-symbols-file=linux.def -Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
 	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 
