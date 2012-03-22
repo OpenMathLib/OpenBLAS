@@ -3,6 +3,8 @@ OpenBLAS ChangeLog
 Version 0.1 alpha2.5
 19-Feb-2012
 common:
+	* Fixed missing "#include <sched.h>" bug on Mac OS X.
+	  Thank Mike Nolta for the patch.
 	* Upgraded LAPACK to 3.4.0 version
 	* Fixed a bug on Mac OS X. Don't require SystemStubs on OS X.
 	  SystemStubs does not exist on Lion. Thank Stefan Karpinski.
