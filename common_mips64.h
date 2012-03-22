@@ -152,6 +152,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define CMPEQ	c.eq.d
 #define CMPLE	c.le.d
 #define CMPLT	c.lt.d
+#define	NEG	neg.d
 #else
 #define LD	lwc1
 #define ST	swc1
@@ -170,6 +171,14 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define CMPEQ	c.eq.s
 #define CMPLE	c.le.s
 #define CMPLT	c.lt.s
+#define PLU     plu.ps                                                    
+#define PLL     pll.ps   
+#define PUU     puu.ps    
+#define PUL     pul.ps   
+#define MADPS   madd.ps   
+#define CVTU    cvt.s.pu    
+#define CVTL    cvt.s.pl 
+#define	NEG	neg.s
 #endif
 
 #if   defined(__64BIT__) &&  defined(USE64BITINT)
@@ -218,7 +227,7 @@ REALNAME: ;\
 
 #define SEEK_ADDRESS
 
-#define BUFFER_SIZE     ( 8 << 20)
+#define BUFFER_SIZE     ( 32 << 20)
 
 #if defined(LOONGSON3A)
 #define PAGESIZE	(16UL << 10)

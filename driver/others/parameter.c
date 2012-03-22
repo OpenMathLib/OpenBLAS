@@ -45,8 +45,22 @@ int get_L2_size(void);
 #define DEFAULT_GEMM_P 128
 #define DEFAULT_GEMM_Q 128
 #define DEFAULT_GEMM_R 128
+#define DEFAULT_GEMM_OFFSET_A 0
+#define DEFAULT_GEMM_OFFSET_B 0
 
 /* Global Parameter */
+#if GEMM_OFFSET_A == gemm_offset_a
+BLASLONG gemm_offset_a = DEFAULT_GEMM_OFFSET_A;
+#else
+BLASLONG gemm_offset_a = GEMM_OFFSET_A;
+#endif
+
+#if GEMM_OFFSET_B == gemm_offset_b
+BLASLONG gemm_offset_b = DEFAULT_GEMM_OFFSET_B;
+#else
+BLASLONG gemm_offset_b = GEMM_OFFSET_B;
+#endif
+
 #if SGEMM_P == sgemm_p
 BLASLONG sgemm_p = DEFAULT_GEMM_P;
 #else
@@ -665,4 +679,22 @@ void blas_set_parameter(void){
 
 #endif
 
+#endif
+
+#if defined(ARCH_MIPS64) 
+void blas_set_parameter(void){
+#if defined(LOONGSON3A)
+#ifdef SMP
+  if(blas_num_threads == 1){
+#endif
+    //single thread
+    dgemm_r = 1024;
+#ifdef SMP
+  }else{
+    //multi thread
+    dgemm_r = 200;
+  }
+#endif
+#endif
+}
 #endif

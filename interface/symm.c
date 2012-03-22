@@ -136,6 +136,7 @@ void NAME(char *SIDE, char *UPLO,
   FLOAT *sa, *sb;
 
 #ifdef SMP
+#ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
 #elif defined(DOUBLE)
@@ -143,6 +144,15 @@ void NAME(char *SIDE, char *UPLO,
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
 #endif  
+#else
+#ifdef XDOUBLE
+  int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
+#elif defined(DOUBLE)
+  int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
+#else
+  int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
+#endif
+#endif
 #endif
 
 #if defined(SMP) && !defined(NO_AFFINITY)
@@ -237,6 +247,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   FLOAT *sa, *sb;
 
 #ifdef SMP
+#ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
 #elif defined(DOUBLE)
@@ -244,6 +255,15 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
 #endif  
+#else
+#ifdef XDOUBLE
+  int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
+#elif defined(DOUBLE)
+  int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
+#else
+  int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
+#endif  
+#endif
 #endif
 
 #if defined(SMP) && !defined(NO_AFFINITY)
