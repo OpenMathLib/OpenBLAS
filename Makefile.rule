@@ -88,6 +88,11 @@ VERSION = 0.1alpha2.5
 # If you need to synchronize FP CSR between threads (for x86/x86_64 only).
 # CONSISTENT_FPCSR = 1
 
+# If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute 
+# with single thread. You can use this flag to avoid the overhead of multi-threading 
+# in small matrix sizes. The default value is 4.
+# GEMM_MULTITHREAD_THRESHOLD = 4
+
 # If you need santy check by comparing reference BLAS. It'll be very
 # slow (Not implemented yet).
 # SANITY_CHECK = 1

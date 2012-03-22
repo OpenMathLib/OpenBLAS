@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
 #ifdef USE64BITINT
 	printf("#define USE64BITINT\n");
 #endif
+	printf("#define GEMM_MULTITHREAD_THRESHOLD\t%ld\n", GEMM_MULTITHREAD_THRESHOLD);
   }
 
   return 0;
