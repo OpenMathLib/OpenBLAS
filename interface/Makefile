@@ -770,20 +770,36 @@ xgeru.$(SUFFIX) xgeru.$(PSUFFIX) : zger.c
 xgerc.$(SUFFIX) xgerc.$(PSUFFIX) : zger.c
 	$(CC) -c $(CFLAGS) -DCONJ $< -o $(@F)
 
+ifndef USE_NETLIB_GEMV
 sgemv.$(SUFFIX) sgemv.$(PSUFFIX): gemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<
 
 dgemv.$(SUFFIX) dgemv.$(PSUFFIX): gemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<
+else
+sgemv.$(SUFFIX) sgemv.$(PSUFFIX): netlib/sgemv.f
+	$(FC) -c $(FFLAGS) -o $(@F) $<
+
+dgemv.$(SUFFIX) dgemv.$(PSUFFIX): netlib/dgemv.f
+	$(FC) -c $(FFLAGS) -o $(@F) $<
+endif
 
 qgemv.$(SUFFIX) qgemv.$(PSUFFIX): gemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<
-
+	
+ifndef USE_NETLIB_GEMV
 cgemv.$(SUFFIX) cgemv.$(PSUFFIX): zgemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<
 
 zgemv.$(SUFFIX) zgemv.$(PSUFFIX): zgemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<
+else
+cgemv.$(SUFFIX) cgemv.$(PSUFFIX): netlib/cgemv.f
+	$(FC) -c $(FFLAGS) -o $(@F) $<
+
+zgemv.$(SUFFIX) zgemv.$(PSUFFIX): netlib/zgemv.f
+	$(FC) -c $(FFLAGS) -o $(@F) $<
+endif
 
 xgemv.$(SUFFIX) xgemv.$(PSUFFIX): zgemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<

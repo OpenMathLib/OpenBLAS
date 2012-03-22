@@ -239,6 +239,22 @@ ifndef ZSWAPKERNEL
 ZSWAPKERNEL = zswap_sse2.S
 endif
 
+ifndef DGEMVNKERNEL
+DGEMVNKERNEL = gemv_n_sse2.S
+endif
+
+ifndef DGEMVTKERNEL
+DGEMVTKERNEL = gemv_t_sse2.S
+endif
+
+ifndef ZGEMVNKERNEL
+ZGEMVNKERNEL = zgemv_n_sse2.S
+endif
+
+ifndef ZGEMVTKERNEL
+ZGEMVTKERNEL = zgemv_t_sse2.S
+endif
+
 endif
 
 
