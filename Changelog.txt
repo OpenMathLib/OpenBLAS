@@ -1,5 +1,23 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.1.0
+23-Mar-2012
+common:
+	* Set soname of shared library on Linux.
+	* Added LIBNAMESUFFIX flag in Makefile.rule. The user can use 
+	  this flag to control the library name, e.g. libopenblas.a, 
+	  libopenblas_ifort.a or libopenblas_omp.a.
+	* Added GEMM_MULTITHREAD_THRESHOLD flag in Makefile.rule.
+	  The lib use single thread in GEMM function with small matrices.
+x86/x86_64:
+	* Used GEMV SSE/SSE2 kernels on x86 32-bit.
+	* Exported CBLAS functions in Windows DLL.
+MIPS64:
+	* Completed Level-3 BLAS optimization on Loongson 3A CPU.
+	* Improved GEMV performance on Loongson 3A CPU.
+	* Improved Level-3 BLAS performance on Loongson 3B CPU. (EXPERIMENT)
+
+====================================================================
 Version 0.1 alpha2.5
 19-Feb-2012
 common:
