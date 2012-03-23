@@ -55,8 +55,8 @@ int CNAME(int mode,
     range_M[0] = 0;
     i          = arg -> m;
   } else {
-    range_M[0] = range_M[0];
-    i          = range_M[1] - range_M[0];
+    range_M[0] = range_m[0];
+    i          = range_m[1] - range_m[0];
   }
 
   num_cpu_m  = 0;

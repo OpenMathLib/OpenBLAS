@@ -101,10 +101,15 @@ static void INLINE blas_lock(volatile unsigned long *address){
 
 static inline unsigned int rpcc(void){
   unsigned long ret;
-#if defined(LOONGSON3A)
-  unsigned long long tmp;
-  __asm__ __volatile__("dmfc0 %0, $25, 1": "=r"(tmp):: "memory");
-  ret=tmp;
+#if defined(LOONGSON3A) || defined(LOONGSON3B)
+  //  unsigned long long tmp;
+  //__asm__ __volatile__("dmfc0 %0, $25, 1": "=r"(tmp):: "memory");
+  //ret=tmp;
+  __asm__ __volatile__(".set push \n"
+                       ".set mips32r2\n"
+                       "rdhwr %0, $2\n"
+                       ".set pop": "=r"(ret):: "memory");
+
 #else
   __asm__ __volatile__(".set   push    \n"                                     
           ".set   mips32r2\n"                                                  
@@ -113,6 +118,21 @@ static inline unsigned int rpcc(void){
 #endif
   return ret;
 }
+
+#if defined(LOONGSON3A) || defined(LOONGSON3B)
+#ifndef NO_AFFINITY
+#define WHEREAMI
+static inline int WhereAmI(void){
+  int ret=0;
+  __asm__ __volatile__(".set push \n"
+                       ".set mips32r2\n"
+                       "rdhwr %0, $0\n"
+                       ".set pop": "=r"(ret):: "memory");
+  return ret;
+
+}
+#endif
+#endif
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
@@ -152,6 +172,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define CMPEQ	c.eq.d
 #define CMPLE	c.le.d
 #define CMPLT	c.lt.d
+#define	NEG	neg.d
 #else
 #define LD	lwc1
 #define ST	swc1
@@ -170,6 +191,14 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define CMPEQ	c.eq.s
 #define CMPLE	c.le.s
 #define CMPLT	c.lt.s
+#define PLU     plu.ps                                                    
+#define PLL     pll.ps   
+#define PUU     puu.ps    
+#define PUL     pul.ps   
+#define MADPS   madd.ps   
+#define CVTU    cvt.s.pu    
+#define CVTL    cvt.s.pl 
+#define	NEG	neg.s
 #endif
 
 #if   defined(__64BIT__) &&  defined(USE64BITINT)
@@ -218,11 +247,16 @@ REALNAME: ;\
 
 #define SEEK_ADDRESS
 
-#define BUFFER_SIZE     ( 8 << 20)
+#define BUFFER_SIZE     ( 32 << 20)
 
 #if defined(LOONGSON3A)
 #define PAGESIZE	(16UL << 10)
 #define FIXED_PAGESIZE	(16UL << 10)
+#endif
+
+#if defined(LOONGSON3B)
+#define PAGESIZE	(32UL << 10)
+#define FIXED_PAGESIZE	(32UL << 10)
 #endif
 
 #ifndef PAGESIZE
@@ -236,7 +270,7 @@ REALNAME: ;\
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
-#if defined(LOONGSON3A)
+#if defined(LOONGSON3A) || defined(LOONGSON3B)
 #define PREFETCHD_(x) ld $0, x
 #define PREFETCHD(x)  PREFETCHD_(x)  
 #else

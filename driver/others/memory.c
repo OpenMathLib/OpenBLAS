@@ -390,11 +390,11 @@ static void *alloc_mmap(void *address){
 		  
 #ifdef OS_LINUX
 #ifdef DEBUG
-		  int ret;
+		  int ret=0;
 		  ret=my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
 		  if(ret==-1){
 			  int errsv=errno;
-			  perror("alloc_mmap:");
+			  perror("OpenBLAS alloc_mmap:");
 			  printf("error code=%d,\tmap_address=%lx\n",errsv,map_address);
 		  }
 
@@ -884,7 +884,7 @@ void *blas_memory_alloc(int procpos){
       if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
       
-#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64)
 #ifndef DYNAMIC_ARCH
       blas_set_parameter();
 #endif

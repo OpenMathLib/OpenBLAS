@@ -72,6 +72,7 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 9.Known Issues
 * The number of CPUs/Cores should less than or equal to 8*sizeof(unsigned long). On 64 bits, the limit 
   is 64. On 32 bits, it is 32.
+* On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell. I don't think this is a bug in OpenBLAS. 
 
 10. Specification of Git Branches
 We used the git branching model in this article (http://nvie.com/posts/a-successful-git-branching-model/). 
