@@ -82,27 +82,28 @@ endif
 shared :
 ifeq ($(OSNAME), Linux)
 	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) libopenblas.so
+	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), FreeBSD)
 	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) libopenblas.so
+	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), NetBSD)
 	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) libopenblas.so
+	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), Darwin)
 	$(MAKE) -C exports dyn
-	-ln -fs $(LIBDYNNAME) libopenblas.dylib
+	-ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
 endif
 ifeq ($(OSNAME), WINNT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) libopenblas.dll
+	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) libopenblas.dll
+	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
 endif
 
 tests :
@@ -130,7 +131,7 @@ endif
 ifeq ($(NOFORTRAN), 1)
 	$(error OpenBLAS: Detecting fortran compiler failed. Please install fortran compiler, e.g. gfortran, ifort, openf90.)
 endif
-	-ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
+	-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -158,7 +159,7 @@ endif
 prof : prof_blas prof_lapack
 
 prof_blas :
-	ln -fs $(LIBNAME_P) libopenblas_p.$(LIBSUFFIX)
+	ln -fs $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d prof || exit 1 ; \
@@ -169,7 +170,7 @@ ifdef DYNAMIC_ARCH
 endif
 
 blas :
-	ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
+	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	for d in $(BLASDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d libs || exit 1 ; \
@@ -177,7 +178,7 @@ blas :
 	done
 
 hpl : 
-	ln -fs $(LIBNAME) libopenblas.$(LIBSUFFIX)
+	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	for d in $(BLASDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -191,7 +192,7 @@ ifdef DYNAMIC_ARCH
 endif
 
 hpl_p :
-	ln -fs $(LIBNAME_P) libopenblas_p.$(LIBSUFFIX)
+	ln -fs $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -285,7 +286,8 @@ clean ::
 #ifdef DYNAMIC_ARCH
 	@$(MAKE) -C kernel clean
 #endif
-	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf libopenblas.$(LIBSUFFIX) libopenblas_p.$(LIBSUFFIX) *.lnk myconfig.h
+	@$(MAKE) -C reference clean
+	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
 	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d lapack-3.4.0; then \
 	echo deleting lapack-3.4.0; \

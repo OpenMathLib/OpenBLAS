@@ -301,7 +301,7 @@
 if ($ARGV[5] == 1) {
 	#NO_LAPACK=1
 	@objs = (@blasobjs);
-} elsif (-d "../lapack-3.1.1") {
+} elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0") {
     @objs = (@blasobjs, @lapackobjs, @lapackobjs2);
 } else {
     @objs = (@blasobjs, @lapackobjs);
@@ -389,6 +389,13 @@ if ($ARGV[0] eq "win2k"){
 	$count ++;
     }
 
+	if ($ARGV[4] == 0) {
+		foreach $objs (@cblasobjs) {
+			print "\t",$objs,"=$objs","  \@", $count, "\n";
+			$count ++;
+		}
+    }
+	
     exit(0);
 }
 

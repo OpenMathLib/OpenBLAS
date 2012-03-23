@@ -3,7 +3,12 @@
 #
 
 # This library's version
-VERSION = 0.1alpha2.5
+VERSION = 0.1.0
+
+# If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
+# and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library 
+# is libopenblas_$(LIBNAMESUFFIX).so.0.
+# LIBNAMESUFFIX = omp
 
 # You can specify the target architecture, otherwise it's
 # automatically detected.
@@ -82,6 +87,11 @@ VERSION = 0.1alpha2.5
 
 # If you need to synchronize FP CSR between threads (for x86/x86_64 only).
 # CONSISTENT_FPCSR = 1
+
+# If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute 
+# with single thread. You can use this flag to avoid the overhead of multi-threading 
+# in small matrix sizes. The default value is 4.
+# GEMM_MULTITHREAD_THRESHOLD = 4
 
 # If you need santy check by comparing reference BLAS. It'll be very
 # slow (Not implemented yet).

@@ -58,16 +58,16 @@ dll  : ../$(LIBDLLNAME)
 
 dll2 : libgoto2_shared.dll
 
-../$(LIBDLLNAME) : ../$(LIBNAME) libgoto2.def dllinit.$(SUFFIX)
+../$(LIBDLLNAME) : ../$(LIBNAME) libopenblas.def dllinit.$(SUFFIX)
 	$(RANLIB) ../$(LIBNAME)
 ifeq ($(BINARY32), 1)
-	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libgoto2.def \
+	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
 	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
-	-lib /machine:i386 /def:libgoto2.def
+	-lib /machine:i386 /def:libopenblas.def
 else
-	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libgoto2.def \
+	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
 	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
-	-lib /machine:X64 /def:libgoto2.def 
+	-lib /machine:X64 /def:libopenblas.def 
 endif
 
 libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
@@ -75,7 +75,7 @@ libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
 
-libgoto2.def : gensymbol
+libopenblas.def : gensymbol
 	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) > $(@F)
 
 libgoto2_shared.def : gensymbol
@@ -100,7 +100,7 @@ so : ../$(LIBSONAME)
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
 	$(CC) $(CFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--retain-symbols-file=linux.def $(EXTRALIB)
+	-Wl,--retain-symbols-file=linux.def -Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
 	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 

@@ -284,6 +284,10 @@ if ($link ne "") {
 
 }
 
+if ($vendor eq "INTEL"){
+    $linker_a .= "-lgfortran"
+}
+
 open(MAKEFILE, ">> $makefile") || die "Can't append $makefile";
 open(CONFFILE, ">> $config"  ) || die "Can't append $config";
 

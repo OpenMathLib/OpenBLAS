@@ -397,8 +397,13 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   mode |= (transb << BLAS_TRANSB_SHIFT);
 
   args.common = NULL;
-  args.nthreads = num_cpu_avail(3);
 
+  if(args.m <= GEMM_MULTITHREAD_THRESHOLD || args.n <= GEMM_MULTITHREAD_THRESHOLD 
+     || args.k <=GEMM_MULTITHREAD_THRESHOLD){
+    args.nthreads = 1;
+  }else{
+    args.nthreads = num_cpu_avail(3);
+  }
  if (args.nthreads == 1) {
 #endif
     

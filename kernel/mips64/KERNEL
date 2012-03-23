@@ -123,15 +123,37 @@ ifndef DTRSMKERNEL_RT
 DTRSMKERNEL_RT	=  trsm_kernel_RT.S
 endif
 
+ifndef	CTRSMKERNEL_LN
 CTRSMKERNEL_LN	=  ztrsm_kernel_LT.S
-CTRSMKERNEL_LT	=  ztrsm_kernel_LT.S
-CTRSMKERNEL_RN	=  ztrsm_kernel_LT.S
-CTRSMKERNEL_RT	=  ztrsm_kernel_RT.S
+endif
 
+ifndef	CTRSMKERNEL_LT
+CTRSMKERNEL_LT	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	CTRSMKERNEL_RN
+CTRSMKERNEL_RN	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	CTRSMKERNEL_RT
+CTRSMKERNEL_RT	=  ztrsm_kernel_RT.S
+endif
+
+ifndef	ZTRSMKERNEL_LN
 ZTRSMKERNEL_LN	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	ZTRSMKERNEL_LT
 ZTRSMKERNEL_LT	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	ZTRSMKERNEL_RN
 ZTRSMKERNEL_RN	=  ztrsm_kernel_LT.S
+endif
+
+ifndef	ZTRSMKERNEL_RT
 ZTRSMKERNEL_RT	=  ztrsm_kernel_RT.S
+endif
 
 CGEMM3MKERNEL    =  zgemm3m_kernel.S
 ZGEMM3MKERNEL    =  zgemm3m_kernel.S
