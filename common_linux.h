@@ -76,8 +76,8 @@ static inline int my_mbind(void *addr, unsigned long len, int mode,
 #endif
 #else
 //Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34
-	unsigned long null_nodemask=0;
-	return syscall(SYS_mbind, addr, len, mode, &null_nodemask, maxnode, flags);
+//	unsigned long null_nodemask=0;
+	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
 #endif
 }
 
