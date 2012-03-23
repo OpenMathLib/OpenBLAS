@@ -389,8 +389,7 @@ static void *alloc_mmap(void *address){
       if (map_address != (void *)-1) {
 		  
 #ifdef OS_LINUX
-#if 1
-	//#ifdef DEBUG
+#ifdef DEBUG
 		  int ret=0;
 		  ret=my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
 		  if(ret==-1){
