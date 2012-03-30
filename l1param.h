@@ -9,6 +9,13 @@
 #define ALIGNED_ACCESS
 #endif
 
+#ifdef SANDYBRIDGE
+#define PREFETCH	prefetcht0
+#define PREFETCHW	prefetcht0
+#define PREFETCHSIZE (128 *  12)
+#define ALIGNED_ACCESS
+#endif
+
 #ifdef ATHLON
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw

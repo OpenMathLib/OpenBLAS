@@ -63,6 +63,17 @@
 #define PREFETCHSIZE	64 * 3
 #endif
 
+#ifdef SANDYBRIDGE
+#define MOVUPS_A	movups
+#define MOVUPS_XL	movups
+#define MOVUPS_XS	movups
+#define MOVUPS_YL	movups
+#define MOVUPS_YS	movups
+#define PREFETCH	prefetcht0
+#define PREFETCHW	prefetcht0
+#define PREFETCHSIZE	64 * 3
+#endif
+
 #ifdef OPTERON
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw

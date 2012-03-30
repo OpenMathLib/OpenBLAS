@@ -76,6 +76,12 @@
 #define PREFETCHB     prefetcht0
 #endif
 
+#ifdef SANDYBRIDGE
+#define PREFETCHSIZE  (8 * 1 - 4)
+#define PREFETCHW     prefetcht0
+#define PREFETCHB     prefetcht0
+#endif
+
 #ifndef PREFETCH
 #define PREFETCH      prefetcht0
 #endif

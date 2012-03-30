@@ -52,6 +52,13 @@
 #define MOVUPS_A	movups
 #endif
 
+#ifdef SANDYBRIDGE
+#define PREFETCHSIZE	12
+#define PREFETCH	prefetcht0
+#define PREFETCHW	prefetcht0
+#define MOVUPS_A	movups
+#endif
+
 #if defined(CORE2) || defined(PENRYN) || defined(DUNNINGTON)
 #define PREFETCHSIZE	16
 #define PREFETCH      prefetcht0

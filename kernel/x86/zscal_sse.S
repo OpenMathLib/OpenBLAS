@@ -55,7 +55,7 @@
 #define XX	%edi
 #define FLAG	%ebp
 
-#if defined(NEHALEM) || defined(PENRYN) || defined(DUNNINGTON)
+#if defined(NEHALEM) || defined(PENRYN) || defined(DUNNINGTON) || defined(SANDYBRIDGE)
 #define  USE_PSHUFD
 #else
 #define USE_PSHUFD_HALF
@@ -697,7 +697,7 @@
 	cmpl	$2 * SIZE, INCX
 	jne	.L120
 
-#if defined(ALIGNED_ACCESS) && !defined(NEHALEM)
+#if defined(ALIGNED_ACCESS) && !defined(NEHALEM) &&  !defined(SANDYBRIDGE)
 
 	PSHUFD2($0, %xmm0, %xmm6)
 	PSHUFD2($0, %xmm1, %xmm1)

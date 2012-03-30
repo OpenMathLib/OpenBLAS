@@ -55,7 +55,7 @@
 
 #include "l1param.h"
 
-#if defined(NEHALEM) || defined(PENRYN) || defined(DUNNINGTON) || defined(BARCELONA) || defined(NANO)
+#if defined(NEHALEM) || defined(PENRYN) || defined(DUNNINGTON) || defined(BARCELONA) || defined(NANO)  || defined(SANDYBRIDGE)
 #define  USE_PSHUFD
 #else
 #define  USE_PSHUFD_HALF
@@ -803,7 +803,7 @@
 	cmpq	$2 * SIZE, INCX
 	jne	.L220
 
-#if defined(ALIGNED_ACCESS) && !defined(NEHALEM)
+#if defined(ALIGNED_ACCESS) && !defined(NEHALEM) && !defined(SANDYBRIDGE)
 	
 	movddup	%xmm0,  %xmm14
 	pxor	%xmm15, %xmm15
