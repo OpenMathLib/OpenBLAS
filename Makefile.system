@@ -101,6 +101,7 @@ DLLWRAP = $(CROSS_SUFFIX)dllwrap
 
 ifeq ($(OSNAME), Darwin)
 export MACOSX_DEPLOYMENT_TARGET=10.2
+MD5SUM = md5 -r
 endif
 
 ifeq ($(OSNAME), Linux)
@@ -651,7 +652,10 @@ PATCH	= patch
 GREP	= grep
 endif
 
+ifndef MD5SUM
 MD5SUM	= md5sum
+endif
+
 AWK	= awk
 
 REVISION = -r$(VERSION)
