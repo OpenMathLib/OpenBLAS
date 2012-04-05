@@ -232,18 +232,27 @@ endif
 
 lapack-3.4.0 : lapack-3.4.0.tgz
 ifndef NOFORTRAN
+ifndef NO_LAPACK
 	@if test `$(MD5SUM) lapack-3.4.0.tgz | $(AWK) '{print $$1}'` = 02d5706ec03ba885fc246e5fa10d8c70; then \
 		echo $(TAR) zxf $< ;\
 		$(TAR) zxf $< && (cd lapack-3.4.0; $(PATCH) -p1 < ../patch.for_lapack-3.4.0) ;\
 	else \
-		echo "	lapack-3.4.0.tgz check sum is wrong (Please use orignal)." ;\
 		rm -rf lapack-3.4.0 ;\
+		echo "	Cannot download lapack-3.4.0.tgz or the MD5 check sum is wrong (Please use orignal)."; \
+		exit 1; \
 	fi
 endif
+endif
+
+LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.0.tgz
 
 lapack-3.4.0.tgz :
 ifndef NOFORTRAN
-	-wget http://www.netlib.org/lapack/lapack-3.4.0.tgz
+ifeq ($(OSNAME), Darwin)
+	curl -O $(LAPACK_URL)
+else
+	wget $(LAPACK_URL)
+endif
 endif
 
 large.tgz : 
