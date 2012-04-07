@@ -51,6 +51,9 @@ VERSION = 0.1.0
 # If you don't need LAPACK, please comment it in.
 # NO_LAPACK = 1
 
+# If you don't need LAPACKE (C Interface to LAPACK), please comment it in.
+# NO_LAPACKE = 1
+
 # If you want to use legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1
 

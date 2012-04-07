@@ -9,6 +9,10 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+ifndef NETLIB_LAPACK_DIR
+NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.0
+endif
+
 # Default C compiler
 CC = gcc
 
@@ -534,6 +538,10 @@ endif
 
 ifeq ($(NO_LAPACK), 1)
 CCOMMON_OPT	+= -DNO_LAPACK
+endif
+
+ifeq ($(NO_LAPACKE), 1)
+CCOMMON_OPT	+= -DNO_LAPACKE
 endif
 
 ifdef SMP
