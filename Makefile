@@ -240,12 +240,20 @@ ifndef NOFORTRAN
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 
+LAPACKE_CFLAGS = $(CFLAGS)
+LAPACKE_LDFLAGS = $(FFLAGS) $(EXTRALIB)
+ifeq ($(F_COMPILER), INTEL)
+LAPACKE_LDFLAGS += -nofor-main 
+endif
+ifdef INTERFACE64
+LAPACKE_CFLAGS += -DHAVE_LAPACK_CONFIG_H -DLAPACK_ILP64
+endif
 $(NETLIB_LAPACK_DIR)/lapacke/make.inc :
 ifndef NOFORTRAN
 	-@echo "CC        = $(CC)" > $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "CFLAGS    = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
+	-@echo "CFLAGS    = $(LAPACKE_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
 	-@echo "LINKER    = $(FC)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "LDFLAGS   = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
+	-@echo "LDFLAGS   = $(LAPACKE_LDFLAGS)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
 	-@echo "LAPACKE   = ../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
 	-@echo "LIBS      = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
 	-@echo "ARCH      = $(AR)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
@@ -259,6 +267,7 @@ ifndef NO_LAPACK
 	@if test `$(MD5SUM) lapack-3.4.0.tgz | $(AWK) '{print $$1}'` = 02d5706ec03ba885fc246e5fa10d8c70; then \
 		echo $(TAR) zxf $< ;\
 		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.0) ;\
+		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
 	else \
 		rm -rf $(NETLIB_LAPACK_DIR) ;\
 		echo "	Cannot download lapack-3.4.0.tgz or the MD5 check sum is wrong (Please use orignal)."; \

@@ -48,7 +48,8 @@ VERSION = 0.1.0
 # If you don't need CBLAS interface, please comment it in.
 # NO_CBLAS = 1
 
-# If you don't need LAPACK, please comment it in.
+# If you don't need LAPACK, please comment it in. 
+# If you set NO_LAPACK=1, the library automatically sets NO_LAPACKE=1.
 # NO_LAPACK = 1
 
 # If you don't need LAPACKE (C Interface to LAPACK), please comment it in.

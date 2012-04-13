@@ -10,6 +10,14 @@ ifndef NO_CBLAS
 NO_CBLAS	= 0
 endif
 
+ifndef NO_LAPACK
+NO_LAPACK	= 0
+endif
+
+ifndef NO_LAPACKE
+NO_LAPACKE	= 0
+endif
+
 ifeq ($(OSNAME), WINNT)
 ifeq ($(F_COMPILER), GFORTRAN)
 EXTRALIB += -lgfortran

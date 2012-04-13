@@ -332,7 +332,13 @@
 		zbbcsd, zlapmr, zunbdb, zuncsd,
 		zgeqrt, zgeqrt2, zgeqrt3, zgemqrt,
 		ztpqrt, ztpqrt2, ztpmqrt, ztprfb,
+
 		);
+
+@lapack_extendedprecision_objs = (
+                zposvxx, clagge, clatms, chesvxx, cposvxx, cgesvxx, ssyrfssx, csyrfsx,
+                dlagsy, dsysvxx, sporfsx, slatms, zlatms, zherfsx, csysvxx,
+                );
 
 @lapackeobjs = (
 		lapack_make_complex_double,
@@ -2459,7 +2465,7 @@ if ($ARGV[1] eq "ia64"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 if ($ARGV[1] eq "MIPS"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 
 if ($ARGV[6] == 1) {
-    #NO_LAPACK=1
+    #NO_LAPACKE=1
     @no_underscore_objs = (@cblasobjs);
 } else {
     @no_underscore_objs = (@cblasobjs, @lapackeobjs);

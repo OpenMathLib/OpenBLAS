@@ -538,6 +538,8 @@ endif
 
 ifeq ($(NO_LAPACK), 1)
 CCOMMON_OPT	+= -DNO_LAPACK
+#Disable LAPACK C interface
+NO_LAPACKE = 1
 endif
 
 ifeq ($(NO_LAPACKE), 1)
