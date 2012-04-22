@@ -22,15 +22,15 @@ double cblas_dsdot (blasint n, float *x, blasint incx, float *y, blasint incy);
 float  cblas_sdot(blasint n, float  *x, blasint incx, float  *y, blasint incy);
 double cblas_ddot(blasint n, double *x, blasint incx, double *y, blasint incy);
 
-float  _Complex cblas_cdotu(blasint n, float  *x, blasint incx, float  *y, blasint incy);
-float  _Complex cblas_cdotc(blasint n, float  *x, blasint incx, float  *y, blasint incy);
-double _Complex cblas_zdotu(blasint n, double *x, blasint incx, double *y, blasint incy);
-double _Complex cblas_zdotc(blasint n, double *x, blasint incx, double *y, blasint incy);
+openblas_complex_float  cblas_cdotu(blasint n, float  *x, blasint incx, float  *y, blasint incy);
+openblas_complex_float  cblas_cdotc(blasint n, float  *x, blasint incx, float  *y, blasint incy);
+openblas_complex_double cblas_zdotu(blasint n, double *x, blasint incx, double *y, blasint incy);
+openblas_complex_double cblas_zdotc(blasint n, double *x, blasint incx, double *y, blasint incy);
 
-void  cblas_cdotu_sub(blasint n, float  *x, blasint incx, float  *y, blasint incy, float  _Complex *ret);
-void  cblas_cdotc_sub(blasint n, float  *x, blasint incx, float  *y, blasint incy, float  _Complex *ret);
-void  cblas_zdotu_sub(blasint n, double *x, blasint incx, double *y, blasint incy, double _Complex *ret);
-void  cblas_zdotc_sub(blasint n, double *x, blasint incx, double *y, blasint incy, double _Complex *ret);
+void  cblas_cdotu_sub(blasint n, float  *x, blasint incx, float  *y, blasint incy, openblas_complex_float  *ret);
+void  cblas_cdotc_sub(blasint n, float  *x, blasint incx, float  *y, blasint incy, openblas_complex_float  *ret);
+void  cblas_zdotu_sub(blasint n, double *x, blasint incx, double *y, blasint incy, openblas_complex_double *ret);
+void  cblas_zdotc_sub(blasint n, double *x, blasint incx, double *y, blasint incy, openblas_complex_double *ret);
 
 float  cblas_sasum (blasint n, float  *x, blasint incx);
 double cblas_dasum (blasint n, double *x, blasint incx);
