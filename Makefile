@@ -26,10 +26,10 @@ endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
-.PHONY : all libs netlib lapacke test ctest shared install
+.PHONY : all libs netlib test ctest shared install
 .NOTPARALLEL : all libs prof lapack-test install
 
-all :: libs netlib lapacke tests shared
+all :: libs netlib tests shared
 	@echo
 	@echo " OpenBLAS build complete."
 	@echo
@@ -203,82 +203,58 @@ ifeq ($(NO_LAPACK), 1)
 netlib : 
 
 else
-netlib : lapack-3.4.0 patch.for_lapack-3.4.0 $(NETLIB_LAPACK_DIR)/make.inc
+netlib : lapack-3.4.1 patch.for_lapack-3.4.1 $(NETLIB_LAPACK_DIR)/make.inc
 ifndef NOFORTRAN
 	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 endif
-endif
-
-ifeq ($(NO_LAPACKE), 1)
-lapacke :
-
-else
-lapacke : lapack-3.4.0 $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-ifndef NOFORTRAN
-	-@$(MAKE) -C $(NETLIB_LAPACK_DIR)/lapacke
+ifndef NO_LAPACKE
+	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
 endif
 endif
 
-prof_lapack : lapack-3.4.0 $(NETLIB_LAPACK_DIR)/make.inc
+prof_lapack : lapack-3.4.1 $(NETLIB_LAPACK_DIR)/make.inc
 	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 $(NETLIB_LAPACK_DIR)/make.inc :
 ifndef NOFORTRAN
-	-@echo "FORTRAN   = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "OPTS      = $(FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "POPTS     = $(FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "NOOPT     = $(FFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "PNOOPT     = $(FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "LOADOPTS  = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "ARCH      = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "RANLIB    = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "LAPACKLIB = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "OPTS        = $(FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "POPTS       = $(FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "NOOPT       = $(FFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "PNOOPT      = $(FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LAPACKLIB   = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LAPACKELIB  = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB_P = ../$(LIBNAME_P)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "SUFFIX     = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "PSUFFIX    = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
-#	-@echo "CEXTRALIB  = $(CEXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
+#	-@echo "CEXTRALIB   = $(CEXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 
-LAPACKE_CFLAGS = $(CFLAGS)
-LAPACKE_LDFLAGS = $(FFLAGS) $(EXTRALIB)
-ifeq ($(F_COMPILER), INTEL)
-LAPACKE_LDFLAGS += -nofor-main 
-endif
-ifdef INTERFACE64
-LAPACKE_CFLAGS += -DHAVE_LAPACK_CONFIG_H -DLAPACK_ILP64
-endif
-$(NETLIB_LAPACK_DIR)/lapacke/make.inc :
-ifndef NOFORTRAN
-	-@echo "CC        = $(CC)" > $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "CFLAGS    = $(LAPACKE_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "LINKER    = $(FC)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "LDFLAGS   = $(LAPACKE_LDFLAGS)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "LAPACKE   = ../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "LIBS      = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "ARCH      = $(AR)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "ARCHFLAGS = -ru" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-	-@echo "RANLIB    = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/lapacke/make.inc
-endif
-
-lapack-3.4.0 : lapack-3.4.0.tgz
+lapack-3.4.1 : lapack-3.4.1.tgz
 ifndef NOFORTRAN
 ifndef NO_LAPACK
-	@if test `$(MD5SUM) lapack-3.4.0.tgz | $(AWK) '{print $$1}'` = 02d5706ec03ba885fc246e5fa10d8c70; then \
+	@if test `$(MD5SUM) lapack-3.4.1.tgz | $(AWK) '{print $$1}'` = d33ace3ac27dc6b4502833ee4dd820db; then \
 		echo $(TAR) zxf $< ;\
-		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.0) ;\
+		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.1) ;\
 		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
 	else \
 		rm -rf $(NETLIB_LAPACK_DIR) ;\
-		echo "	Cannot download lapack-3.4.0.tgz or the MD5 check sum is wrong (Please use orignal)."; \
+		echo "	Cannot download lapack-3.4.1.tgz or the MD5 check sum is wrong (Please use orignal)."; \
 		exit 1; \
 	fi
 endif
 endif
 
-LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.0.tgz
+LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.1.tgz
 
-lapack-3.4.0.tgz :
+lapack-3.4.1.tgz :
 ifndef NOFORTRAN
 ifeq ($(OSNAME), Darwin)
 	curl -O $(LAPACK_URL)
@@ -297,7 +273,7 @@ ifndef NOFORTRAN
 	-wget http://www.netlib.org/lapack/timing/timing.tgz
 endif
 
-lapack-timing : lapack-3.4.0 large.tgz timing.tgz
+lapack-timing : lapack-3.4.1 large.tgz timing.tgz
 ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )

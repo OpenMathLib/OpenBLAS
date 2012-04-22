@@ -737,6 +737,8 @@
 		LAPACKE_csyconv_work,
 		LAPACKE_csyequb,
 		LAPACKE_csyequb_work,
+		LAPACKE_csyr,
+		LAPACKE_csyr_work,
 		LAPACKE_csyrfs,
 		LAPACKE_csyrfs_work,
 		LAPACKE_csysv,
@@ -2307,6 +2309,8 @@
 		LAPACKE_zsyconv_work,
 		LAPACKE_zsyequb,
 		LAPACKE_zsyequb_work,
+		LAPACKE_zsyr,
+		LAPACKE_zsyr_work,
 		LAPACKE_zsyrfs,
 		LAPACKE_zsyrfs_work,
 		LAPACKE_zsysv,
@@ -2448,7 +2452,7 @@
 if ($ARGV[5] == 1) {
 	#NO_LAPACK=1
 	@underscore_objs = (@blasobjs);
-} elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0") {
+} elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1") {
     @underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2);
 } else {
     @underscore_objs = (@blasobjs, @lapackobjs);
