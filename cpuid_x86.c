@@ -987,6 +987,9 @@ int get_cpuname(void){
 		  case 12:
 			  //Xeon Processor 5600 (Westmere-EP)
 			  return CPUTYPE_NEHALEM;
+		  case 13:
+                          //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
+                          return CPUTYPE_NEHALEM;
 		  }
 		  break;
       }
@@ -1319,6 +1322,9 @@ int get_coretype(void){
 	case 12:
 	  //Xeon Processor 5600 (Westmere-EP)
 	  return CORE_NEHALEM;
+	case 13:
+          //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
+          return CORE_NEHALEM;
 	}
 	break;
       }
