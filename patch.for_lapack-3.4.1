@@ -926,7 +926,7 @@ diff -ruN lapack-3.4.1.old/lapacke/src/Makefile lapack-3.4.1/lapacke/src/Makefil
 -	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLOBJ) $(ALLXOBJ)
 +../../$(LAPACKELIB): $(OBJ_FILES)
 +# http://hackage.haskell.org/trac/gtk2hs/ticket/1146
-+	echo $(OBJ_FILES) | xargs --max-args=100 $(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB)
++	echo $(OBJ_FILES) | xargs -n 100 $(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB)
  	$(RANLIB) ../../$(LAPACKELIB)
  
  .c.o:
