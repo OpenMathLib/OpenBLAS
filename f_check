@@ -237,6 +237,8 @@ if ($link ne "") {
     $link =~ s/\-rpath\s+/\-rpath\@/g;
 
     @flags = split(/[\s\,\n]/, $link);
+    # remove leading and trailing quotes from each flag.
+    @flags = map {s/^['"]|['"]$//g; $_} @flags;
 
     foreach $flags (@flags) {
 	if (
