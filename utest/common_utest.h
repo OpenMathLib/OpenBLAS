@@ -61,4 +61,6 @@ void test_drotmg(void);
 
 void test_dsdot_n_1(void);
 
+void test_samax(void);
+
 #endif

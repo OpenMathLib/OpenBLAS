@@ -58,6 +58,8 @@ CU_TestInfo test_level1[]={
 	{"Testing drotmg",test_drotmg},
 
 	{"Testing dsdot with n == 1",test_dsdot_n_1},
+
+	{"Testing samax", test_samax},
 	CU_TEST_INFO_NULL,
 };
 
