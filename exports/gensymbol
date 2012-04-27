@@ -2468,11 +2468,17 @@ if ($ARGV[1] eq "ia64"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 
 if ($ARGV[1] eq "MIPS"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 
+if ($ARGV[4] == 0) {
+    @no_underscore_objs = (@cblasobjs);
+}else{
+    #NO_CBLAS=1
+    @no_underscore_objs = ();
+}
 if ($ARGV[6] == 1) {
     #NO_LAPACKE=1
-    @no_underscore_objs = (@cblasobjs);
+    @no_underscore_objs = (@no_underscore_objs);
 } else {
-    @no_underscore_objs = (@cblasobjs, @lapackeobjs);
+    @no_underscore_objs = (@no_underscore_objs, @lapackeobjs);
 }
 
 @linuxobjs = ('__strtol_internal', 'exit', 'free', 'getenv', 'malloc',
@@ -2495,11 +2501,11 @@ if ($ARGV[0] eq "linux"){
 	print $objs, $bu, "\n";
     }
 
-    if ($ARGV[4] == 0) {
+#    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
 	    print $objs, "\n";
 	}
-    }
+#    }
 
     foreach $objs (@linuxobjs) {
 	print $objs, "\n";
@@ -2512,11 +2518,11 @@ if ($ARGV[0] eq "osx"){
 	print "_", $objs, $bu, "\n";
     }
 
-    if ($ARGV[4] == 0) {
+#    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
 	    print "_", $objs, "\n";
 	}
-    }
+#    }
     exit(0);
 } 
 
@@ -2525,11 +2531,11 @@ if ($ARGV[0] eq "aix"){
 	print $objs, $bu, "\n";
     }
 
-    if ($ARGV[4] == 0) {
+#    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
 	    print $objs, "\n";
 	}
-    }
+#    }
     exit(0);
 } 
 
@@ -2547,12 +2553,12 @@ if ($ARGV[0] eq "win2k"){
 	$count ++;
     }
 
-	if ($ARGV[4] == 0) {
+#	if ($ARGV[4] == 0) {
 		foreach $objs (@no_underscore_objs) {
 			print "\t",$objs,"=$objs","  \@", $count, "\n";
 			$count ++;
 		}
-    }
+#    }
 	
     exit(0);
 }
@@ -2615,11 +2621,11 @@ if ($ARGV[0] eq "linktest"){
     foreach $objs (@underscore_objs) {
 	print $objs, $bu, "();\n" if $objs ne "xerbla";
     }
-    if ($ARGV[4] == 0) {
+#    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
 	print $objs, "();\n";
 	}
-    }
+#    }
 
 
 
