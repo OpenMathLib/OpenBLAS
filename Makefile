@@ -240,7 +240,7 @@ endif
 lapack-3.4.1 : lapack-3.4.1.tgz
 ifndef NOFORTRAN
 ifndef NO_LAPACK
-	@if test `$(MD5SUM) lapack-3.4.1.tgz | $(AWK) '{print $$1}'` = d33ace3ac27dc6b4502833ee4dd820db; then \
+	@if test `$(MD5SUM) lapack-3.4.1.tgz | $(AWK) '{print $$1}'` = 44c3869c38c8335c2b9c2a8bb276eb55; then \
 		echo $(TAR) zxf $< ;\
 		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.1) ;\
 		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
