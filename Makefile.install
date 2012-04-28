@@ -39,6 +39,7 @@ ifndef NO_LAPACKE
 	@echo Copying LAPACKE header files to $(OPENBLAS_LIBRARY_DIR)
 	@-cp $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke.h $(OPENBLAS_INCLUDE_DIR)/lapacke.h
 	@-cp $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_config.h $(OPENBLAS_INCLUDE_DIR)/lapacke_config.h
+	@-cp $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling_with_flags.h $(OPENBLAS_INCLUDE_DIR)/lapacke_mangling.h
 	@-cp $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_utils.h $(OPENBLAS_INCLUDE_DIR)/lapacke_utils.h
 endif
 
