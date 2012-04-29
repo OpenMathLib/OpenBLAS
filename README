@@ -2,6 +2,7 @@ OpenBLAS Readme
 
 1.Introduction
 OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. OpenBLAS is an open source project supported by Lab of Parallel Software and Computational Science, ISCAS.(http://www.rdcps.ac.cn)
+Please read the documents on OpenBLAS wiki pages(http://github.com/xianyi/OpenBLAS/wiki).
 
 2.Intallation
 Download from project homepage. http://xianyi.github.com/OpenBLAS/
@@ -34,7 +35,7 @@ Additional support CPU:
 x86_64:
 	Intel Xeon 56xx (Westmere) //Used GotoBLAS2 Nehalem codes.
 MIPS64:
-	ICT Loongson 3A //The initial version used GotoBLAS2 MIPS64 kernels. Thus, the performance is not good.
+	ICT Loongson 3A //Level 3 BLAS subroutines are optimized.
 
 4.Usages
 Link with libopenblas.a or -lopenblas for shared library.
