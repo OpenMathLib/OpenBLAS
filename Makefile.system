@@ -9,6 +9,10 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+ifndef NETLIB_LAPACK_DIR
+NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.1
+endif
+
 # Default C compiler
 CC = gcc
 
@@ -101,6 +105,7 @@ DLLWRAP = $(CROSS_SUFFIX)dllwrap
 
 ifeq ($(OSNAME), Darwin)
 export MACOSX_DEPLOYMENT_TARGET=10.2
+MD5SUM = md5 -r
 endif
 
 ifeq ($(OSNAME), Linux)
@@ -533,6 +538,12 @@ endif
 
 ifeq ($(NO_LAPACK), 1)
 CCOMMON_OPT	+= -DNO_LAPACK
+#Disable LAPACK C interface
+NO_LAPACKE = 1
+endif
+
+ifeq ($(NO_LAPACKE), 1)
+CCOMMON_OPT	+= -DNO_LAPACKE
 endif
 
 ifdef SMP
@@ -651,7 +662,10 @@ PATCH	= patch
 GREP	= grep
 endif
 
+ifndef MD5SUM
 MD5SUM	= md5sum
+endif
+
 AWK	= awk
 
 REVISION = -r$(VERSION)

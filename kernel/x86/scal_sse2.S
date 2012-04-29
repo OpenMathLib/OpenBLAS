@@ -76,7 +76,8 @@
 	xorps	%xmm1, %xmm1
 	comisd	%xmm0, %xmm1
 	jne	.L100		# Alpha != ZERO
-
+        jp      .L100           # For Alpha = NaN
+	
 /* Alpha == ZERO */
 	cmpl	$SIZE, INCX
 	jne	.L50

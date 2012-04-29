@@ -63,5 +63,7 @@ double  _Complex BLASFUNC_REF(zdotc)  (blasint *, double  *, blasint *, double  
 void BLASFUNC_REF(drotmg)(double *, double *, double *, double *, double *);
 
 double BLASFUNC_REF(dsdot)(blasint *, float *, blasint *, float *, blasint*);
+
+FLOATRET  BLASFUNC_REF(samax) (blasint *, float  *, blasint *);
 												   
 #endif

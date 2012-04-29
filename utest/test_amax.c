@@ -1,4 +1,5 @@
-Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
+/*****************************************************************************
+Copyright (c) 2011-2012, Lab of Parallel Software and Computational Science,ICSAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -26,3 +27,20 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+**********************************************************************************/
+
+#include "common_utest.h"
+
+void test_samax()
+{
+  int N=3, inc=1;
+  float te_max=0.0, tr_max=0.0;
+  float x[]={-1.1, 2.2, -3.3};
+
+  te_max=BLASFUNC(samax)(&N, x, &inc);
+
+  tr_max=BLASFUNC_REF(samax)(&N, x, &inc);
+  
+  CU_ASSERT_DOUBLE_EQUAL(te_max, tr_max, CHECK_EPS);
+}
