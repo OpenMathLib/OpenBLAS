@@ -97,7 +97,8 @@
 
      git am segfaults.patch
 
-     and see if the crashes persist.
+     and see if the crashes persist. Note that this patch will lead to many
+     compiler warnings.
 
 2. Architecture Specific issue or Implementation
 
