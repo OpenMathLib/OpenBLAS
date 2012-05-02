@@ -90,6 +90,14 @@
        number of threads will consume extra resource. I recommend you to
        specify minimum number of threads.
 
+1.9  Q I have segfaults when I compile with USE_OPENMP=1. What's wrong?
+
+     A This may be related to a bug in the Linux kernel 2.6.32. Try applying
+     the patch segaults.patch using
+
+     git am segfaults.patch
+
+     and see if the crashes persist.
 
 2. Architecture Specific issue or Implementation
 
