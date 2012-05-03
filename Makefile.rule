@@ -94,8 +94,8 @@ VERSION = 0.1.1
 
 # If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute 
 # with single thread. You can use this flag to avoid the overhead of multi-threading 
-# in small matrix sizes. The default value is 4.
-# GEMM_MULTITHREAD_THRESHOLD = 4
+# in small matrix sizes. The default value is 50.
+# GEMM_MULTITHREAD_THRESHOLD = 50
 
 # If you need santy check by comparing reference BLAS. It'll be very
 # slow (Not implemented yet).
