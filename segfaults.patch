@@ -11,14 +11,14 @@ diff --git a/common_linux.h b/common_linux.h
 index b0381d9..40a94cb 100644
 --- a/common_linux.h
 +++ b/common_linux.h
-@@ -76,8 +76,8 @@ static inline int my_mbind(void *addr, unsigned long len, int mode,
+@@ -76,9 +76,8 @@ static inline int my_mbind(void *addr, unsigned long len, int mode,
  #endif
  #else
  //Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34
 -//	unsigned long null_nodemask=0;
 -	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
 +	unsigned long null_nodemask=0;
-+	return syscall(SYS_mbind, addr, len, mode, &nodemask, maxnode, flags);
++	return 0;
  #endif
  }
  
