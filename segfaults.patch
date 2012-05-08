@@ -1,27 +1,12 @@
-From ac40907baa90a0acc78139762ffa3c6f09274236 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Alexander=20Ebersp=C3=A4cher?= <alex.eberspaecher@gmail.com>
-Date: Wed, 2 May 2012 11:22:52 +0200
-Subject: [PATCH] Fix segfaults with kernel 2.6.32. This comes at the price of many compiler warnings.
-
----
- common_linux.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/common_linux.h b/common_linux.h
-index b0381d9..40a94cb 100644
---- a/common_linux.h
-+++ b/common_linux.h
-@@ -76,9 +76,8 @@ static inline int my_mbind(void *addr, unsigned long len, int mode,
- #endif
+diff -ruN common_linux.h.orig common_linux.h
+--- common_linux.h.orig	2012-04-23 11:27:55.000000000 +0800
++++ common_linux.h	2012-05-08 23:43:00.000000000 +0800
+@@ -77,7 +77,7 @@
  #else
  //Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34
--//	unsigned long null_nodemask=0;
+ //	unsigned long null_nodemask=0;
 -	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
-+	unsigned long null_nodemask=0;
 +	return 0;
  #endif
  }
  
--- 
-1.7.1
-

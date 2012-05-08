@@ -95,7 +95,7 @@
      A This may be related to a bug in the Linux kernel 2.6.32. Try applying
      the patch segaults.patch using
 
-     git am segfaults.patch
+     patch < segfaults.patch
 
      and see if the crashes persist. Note that this patch will lead to many
      compiler warnings.
