@@ -108,6 +108,14 @@ export MACOSX_DEPLOYMENT_TARGET=10.2
 MD5SUM = md5 -r
 endif
 
+ifeq ($(OSNAME), FreeBSD)
+MD5SUM = md5 -r
+endif
+
+ifeq ($(OSNAME), NetBSD)
+MD5SUM = md5 -r
+endif
+
 ifeq ($(OSNAME), Linux)
 EXTRALIB	+= -lm
 endif
