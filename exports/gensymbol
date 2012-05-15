@@ -73,6 +73,7 @@
 	       );
 
 @lapackobjs = (
+	       # These routines are provided by OpenBLAS.
 	       sgesv,  dgesv,  cgesv,  zgesv, 
 	       sgetf2, dgetf2, cgetf2, zgetf2, 
 	       sgetrf, dgetrf, cgetrf, zgetrf, 
@@ -88,32 +89,85 @@
 	       );
 
 @lapackobjs2 = (
-		sgbbrd, sgbcon, sgbequ, sgbrfs, sgbsv, 
+		# These routines are provided by LAPACK (reference implementation).
+		#
+		# This list is prepared by copying all routines listed in
+		# `lapack-3.4.1/SRC/Makefile` and replacing the '.o' suffix with a comma.
+		# Thereafter the following routines should be removed:
+		# - those provided by OpenBLAS (see @lapackobjs)
+		# - extra precision routines (see @lapack_extendedprecision_objs)
+		# Each of these have been marked individually with "already provided" or "excluded".
+
+		# ALLAUX  -- Auxiliary routines called from all precisions
+		# already provided by @blasobjs: xerbla, lsame
+		ilaenv, ieeeck, lsamen, xerbla_array, iparmq,
+		ilaprec, ilatrans, ilauplo, iladiag, chla_transtype,
+		ilaver, slamch,
+
+		# SCLAUX  -- Auxiliary routines called from both REAL and COMPLEX.
+		# excluded: second_$(TIMER)
+		sbdsdc,
+		sbdsqr, sdisna, slabad, slacpy, sladiv, slae2,  slaebz,
+		slaed0, slaed1, slaed2, slaed3, slaed4, slaed5, slaed6,
+		slaed7, slaed8, slaed9, slaeda, slaev2, slagtf,
+		slagts, slamrg, slanst,
+		slapy2, slapy3, slarnv,
+		slarra, slarrb, slarrc, slarrd, slarre, slarrf, slarrj,
+		slarrk, slarrr, slaneg,
+		slartg, slaruv, slas2,  slascl,
+		slasd0, slasd1, slasd2, slasd3, slasd4, slasd5, slasd6,
+		slasd7, slasd8, slasda, slasdq, slasdt,
+		slaset, slasq1, slasq2, slasq3, slasq4, slasq5, slasq6,
+		slasr,  slasrt, slassq, slasv2, spttrf, sstebz, sstedc,
+		ssteqr, ssterf, slaisnan, sisnan,
+		slartgp, slartgs,
+
+		# DZLAUX  -- Auxiliary routines called from both DOUBLE and COMPLEX*16.
+		# excluded: dsecnd_$(TIMER)
+		dbdsdc,
+		dbdsqr, ddisna, dlabad, dlacpy, dladiv, dlae2,  dlaebz,
+		dlaed0, dlaed1, dlaed2, dlaed3, dlaed4, dlaed5, dlaed6,
+		dlaed7, dlaed8, dlaed9, dlaeda, dlaev2, dlagtf,
+		dlagts, dlamrg, dlanst,
+		dlapy2, dlapy3, dlarnv,
+		dlarra, dlarrb, dlarrc, dlarrd, dlarre, dlarrf, dlarrj,
+		dlarrk, dlarrr, dlaneg,
+		dlartg, dlaruv, dlas2,  dlascl,
+		dlasd0, dlasd1, dlasd2, dlasd3, dlasd4, dlasd5, dlasd6,
+		dlasd7, dlasd8, dlasda, dlasdq, dlasdt,
+		dlaset, dlasq1, dlasq2, dlasq3, dlasq4, dlasq5, dlasq6,
+		dlasr,  dlasrt, dlassq, dlasv2, dpttrf, dstebz, dstedc,
+		dsteqr, dsterf, dlaisnan, disnan,
+		dlartgp, dlartgs,
+		dlamch,
+
+		# SLASRC  -- Single precision real LAPACK routines
+		# already provided by @lapackobjs:
+		#     sgesv, sgetf2, slaswp, slauu2, slauum, spotf2, spotri, strti2, strtri
+		sgbbrd, sgbcon, sgbequ, sgbrfs, sgbsv,
 		sgbsvx, sgbtf2, sgbtrf, sgbtrs, sgebak, sgebal, sgebd2,
 		sgebrd, sgecon, sgeequ, sgees,  sgeesx, sgeev,  sgeevx,
 		sgegs,  sgegv,  sgehd2, sgehrd, sgelq2, sgelqf,
 		sgels,  sgelsd, sgelss, sgelsx, sgelsy, sgeql2, sgeqlf,
-		sgeqp3, sgeqpf, sgeqr2, sgeqr2p, sgeqrf, sgeqrfp, sgerfs, sgerq2, sgerqf,
-		sgesc2, sgesdd, sgesvd, sgesvx, sgetc2,
-		sgetri,
+		sgeqp3, sgeqpf, sgeqr2, sgeqr2p, sgeqrf, sgeqrfp, sgerfs,
+		sgerq2, sgerqf, sgesc2, sgesdd, sgesvd, sgesvx,
+		sgetc2, sgetri,
 		sggbak, sggbal, sgges,  sggesx, sggev,  sggevx,
 		sggglm, sgghrd, sgglse, sggqrf,
-		sggrqf, sggsvd, sggsvp, sgtcon, sgtrfs, sgtsv, 
+		sggrqf, sggsvd, sggsvp, sgtcon, sgtrfs, sgtsv,
 		sgtsvx, sgttrf, sgttrs, sgtts2, shgeqz,
-		shsein, shseqr, slabad, slabrd, slacon, slacn2, slacpy,
+		shsein, shseqr, slabrd, slacon, slacn2,
 		slaein, slaexc, slag2,  slags2, slagtm, slagv2, slahqr,
 		slahrd, slahr2, slaic1, slaln2, slals0, slalsa, slalsd,
-                slamch,    
 		slangb, slange, slangt, slanhs, slansb, slansp,
 		slansy, slantb, slantp, slantr, slanv2,
-		slapll, slapmt, slapy2, slapy3,
+		slapll, slapmt,
 		slaqgb, slaqge, slaqp2, slaqps, slaqsb, slaqsp, slaqsy,
 		slaqr0, slaqr1, slaqr2, slaqr3, slaqr4, slaqr5,
 		slaqtr, slar1v, slar2v, ilaslr, ilaslc,
 		slarf,  slarfb, slarfg, slarfgp, slarft, slarfx, slargv,
-		slarnv, slarrv, slartg, slartgp, slartgs, slartv,
-		slarz,  slarzb, slarzt, slascl, slasy2, slasyf,
-                slaset,
+		slarrv, slartv,
+		slarz,  slarzb, slarzt, slasy2, slasyf,
 		slatbs, slatdf, slatps, slatrd, slatrs, slatrz, slatzm,
 		sopgtr, sopmtr, sorg2l, sorg2r,
 		sorgbr, sorghr, sorgl2, sorglq, sorgql, sorgqr, sorgr2,
@@ -121,19 +175,21 @@
 		sormbr, sormhr, sorml2, sormlq, sormql, sormqr, sormr2,
 		sormr3, sormrq, sormrz, sormtr, spbcon, spbequ, spbrfs,
 		spbstf, spbsv,  spbsvx,
-		spbtf2, spbtrf, spbtrs, spocon, spoequ, sporfs, sposv, 
-		sposvx, spotrs, spstrf, spstf2,
+		spbtf2, spbtrf, spbtrs, spocon, spoequ, sporfs, sposv,
+		sposvx, spstrf, spstf2,
 		sppcon, sppequ,
 		spprfs, sppsv,  sppsvx, spptrf, spptri, spptrs, sptcon,
-		spteqr, sptrfs, sptsv,  sptsvx, spttrs, sptts2, srscl, 
+		spteqr, sptrfs, sptsv,  sptsvx, spttrs, sptts2, srscl,
 		ssbev,  ssbevd, ssbevx, ssbgst, ssbgv,  ssbgvd, ssbgvx,
 		ssbtrd, sspcon, sspev,  sspevd, sspevx, sspgst,
 		sspgv,  sspgvd, sspgvx, ssprfs, sspsv,  sspsvx, ssptrd,
 		ssptrf, ssptri, ssptrs, sstegr, sstein, sstev,  sstevd, sstevr,
-		sstevx, ssycon, ssyev,  ssyevd, ssyevr, ssyevx, ssygs2,
+		sstevx,
+		ssycon, ssyev,  ssyevd, ssyevr, ssyevx, ssygs2,
 		ssygst, ssygv,  ssygvd, ssygvx, ssyrfs, ssysv,  ssysvx,
 		ssytd2, ssytf2, ssytrd, ssytrf, ssytri, ssytri2, ssytri2x,
-		ssyswapr, ssytrs, ssytrs2, ssyconv, stbcon,
+		ssyswapr, ssytrs, ssytrs2, ssyconv,
+		stbcon,
 		stbrfs, stbtrs, stgevc, stgex2, stgexc, stgsen,
 		stgsja, stgsna, stgsy2, stgsyl, stpcon, stprfs, stptri,
 		stptrs,
@@ -146,26 +202,38 @@
 		sbbcsd, slapmr, sorbdb, sorcsd,
 		sgeqrt, sgeqrt2, sgeqrt3, sgemqrt,
 		stpqrt, stpqrt2, stpmqrt, stprfb,
-		
+
+		# DSLASRC -- Double-single mixed precision real routines called from
+		# single, single-extra and double precision real LAPACK
+		# routines (i.e. from SLASRC, SXLASRC, DLASRC).
+		#
+		# already provided by @lapackobjs:
+		#     sgetrs, spotrf, sgetrf
+		spotrs,
+
+		# CLASRC  -- Single precision complex LAPACK routines
+		# already provided by @blasobjs: csymv
+		# already provided by @lapackobjs:
+		#     cgesv, cgetf2, claswp, clauu2, clauum, cpotf2, cpotri, ctrti2, ctrtri
 		cbdsqr, cgbbrd, cgbcon, cgbequ, cgbrfs, cgbsv,  cgbsvx,
 		cgbtf2, cgbtrf, cgbtrs, cgebak, cgebal, cgebd2, cgebrd,
 		cgecon, cgeequ, cgees,  cgeesx, cgeev,  cgeevx,
 		cgegs,  cgegv,  cgehd2, cgehrd, cgelq2, cgelqf,
 		cgels,  cgelsd, cgelss, cgelsx, cgelsy, cgeql2, cgeqlf, cgeqp3,
-		cgeqpf, cgeqr2, cgeqr2p, cgeqrf, cgeqrfp, cgerfs, cgerq2, cgerqf,
-		cgesc2, cgesdd, cgesvd, cgesvx, cgetc2,
-		cgetri,
+		cgeqpf, cgeqr2, cgeqr2p, cgeqrf, cgeqrfp, cgerfs,
+		cgerq2, cgerqf, cgesc2, cgesdd, cgesvd,
+		cgesvx, cgetc2, cgetri,
 		cggbak, cggbal, cgges,  cggesx, cggev,  cggevx, cggglm,
 		cgghrd, cgglse, cggqrf, cggrqf,
 		cggsvd, cggsvp,
-		cgtcon, cgtrfs, cgtsv,  cgtsvx, cgttrf, cgttrs, cgtts2, chbev, 
+		cgtcon, cgtrfs, cgtsv,  cgtsvx, cgttrf, cgttrs, cgtts2, chbev,
 		chbevd, chbevx, chbgst, chbgv,  chbgvd, chbgvx, chbtrd,
 		checon, cheev,  cheevd, cheevr, cheevx, chegs2, chegst,
 		chegv,  chegvd, chegvx, cherfs, chesv,  chesvx, chetd2,
 		chetf2, chetrd,
-		chetrf, chetri, chetri2,  chetri2x, cheswapr,
+		chetrf, chetri, chetri2, chetri2x, cheswapr,
 		chetrs, chetrs2, chgeqz, chpcon, chpev,  chpevd,
-		chpevx, chpgst, chpgv,  chpgvd, chpgvx, chprfs, chpsv, 
+		chpevx, chpgst, chpgv,  chpgvd, chpgvx, chprfs, chpsv,
 		chpsvx,
 		chptrd, chptrf, chptri, chptrs, chsein, chseqr, clabrd,
 		clacgv, clacon, clacn2, clacp2, clacpy, clacrm, clacrt, cladiv,
@@ -179,21 +247,22 @@
 		claqhb, claqhe, claqhp, claqp2, claqps, claqsb,
 		claqr0, claqr1, claqr2, claqr3, claqr4, claqr5,
 		claqsp, claqsy, clar1v, clar2v, ilaclr, ilaclc,
-		clarf,  clarfb, clarfg, clarfgp, clarft,
+		clarf,  clarfb, clarfg, clarft, clarfgp,
 		clarfx, clargv, clarnv, clarrv, clartg, clartv,
 		clarz,  clarzb, clarzt, clascl, claset, clasr,  classq,
 		clasyf, clatbs, clatdf, clatps, clatrd, clatrs, clatrz,
-		clatzm, cpbcon, cpbequ, cpbrfs, cpbstf, cpbsv, 
+		clatzm, cpbcon, cpbequ, cpbrfs, cpbstf, cpbsv,
 		cpbsvx, cpbtf2, cpbtrf, cpbtrs, cpocon, cpoequ, cporfs,
-		cposv,  cposvx, cpotrs, cpstrf, cpstf2,
+		cposv,  cposvx, cpstrf, cpstf2,
 		cppcon, cppequ, cpprfs, cppsv,  cppsvx, cpptrf, cpptri, cpptrs,
 		cptcon, cpteqr, cptrfs, cptsv,  cptsvx, cpttrf, cpttrs, cptts2,
-		crot,   cspcon, cspmv,  cspr,   csprfs, cspsv, 
+		crot,   cspcon, cspmv,  cspr,   csprfs, cspsv,
 		cspsvx, csptrf, csptri, csptrs, csrscl, cstedc,
-		cstegr, cstein, csteqr, csycon,
-		csyr,   csyrfs, csysv,  csysvx, csytf2, csytrf, csytri,
-		csytri2, csytri2x, csyswapr,
-		csytrs, csytrs2, csyconv, ctbcon, ctbrfs, ctbtrs, ctgevc, ctgex2,
+		cstegr, cstein, csteqr,
+		csycon,
+		csyr, csyrfs, csysv,  csysvx, csytf2, csytrf, csytri, csytri2, csytri2x,
+		csyswapr, csytrs, csytrs2, csyconv,
+		ctbcon, ctbrfs, ctbtrs, ctgevc, ctgex2,
 		ctgexc, ctgsen, ctgsja, ctgsna, ctgsy2, ctgsyl, ctpcon,
 		ctprfs, ctptri,
 		ctptrs, ctrcon, ctrevc, ctrexc, ctrrfs, ctrsen, ctrsna,
@@ -209,32 +278,42 @@
 		cgeqrt, cgeqrt2, cgeqrt3, cgemqrt,
 		ctpqrt, ctpqrt2, ctpmqrt, ctprfb,
 
+		# ZCLASRC -- Double-single mixed precision complex routines called from
+		# single, single-extra and double precision complex LAPACK
+		# routines (i.e. from CLASRC, CXLASRC, ZLASRC).
+		#
+		# already provided by @lapackobjs:
+		#     cgetrs, cpotrf, cgetrf
+		cpotrs,
+
+		# DLASRC  -- Double precision real LAPACK routines
+		# already provided by @lapackobjs:
+		#     dgesv, dgetf2, dgetrs, dlaswp, dlauu2, dlauum, dpotf2, dpotrf, dpotri,
+		#     dtrti2, dtrtri
 		dgbbrd, dgbcon, dgbequ, dgbrfs, dgbsv,
 		dgbsvx, dgbtf2, dgbtrf, dgbtrs, dgebak, dgebal, dgebd2,
 		dgebrd, dgecon, dgeequ, dgees,  dgeesx, dgeev,  dgeevx,
 		dgegs,  dgegv,  dgehd2, dgehrd, dgelq2, dgelqf,
 		dgels,  dgelsd, dgelss, dgelsx, dgelsy, dgeql2, dgeqlf,
-		dgeqp3, dgeqpf, dgeqr2, dgeqr2p, dgeqrf, dgeqrfp, dgerfs, dgerq2, dgerqf,
-		dgesc2, dgesdd, dgesvd, dgesvx, dgetc2,
-		dgetri,
+		dgeqp3, dgeqpf, dgeqr2, dgeqr2p, dgeqrf, dgeqrfp, dgerfs,
+		dgerq2, dgerqf, dgesc2, dgesdd, dgesvd, dgesvx,
+		dgetc2, dgetri,
 		dggbak, dggbal, dgges,  dggesx, dggev,  dggevx,
 		dggglm, dgghrd, dgglse, dggqrf,
-		dggrqf, dggsvd, dggsvp, dgtcon, dgtrfs, dgtsv, 
+		dggrqf, dggsvd, dggsvp, dgtcon, dgtrfs, dgtsv,
 		dgtsvx, dgttrf, dgttrs, dgtts2, dhgeqz,
-		dhsein, dhseqr, dlabad, dlabrd, dlacon, dlacn2, dlacpy,
+		dhsein, dhseqr, dlabrd, dlacon, dlacn2,
 		dlaein, dlaexc, dlag2,  dlags2, dlagtm, dlagv2, dlahqr,
 		dlahrd, dlahr2, dlaic1, dlaln2, dlals0, dlalsa, dlalsd,
-                dlamch, 
 		dlangb, dlange, dlangt, dlanhs, dlansb, dlansp,
 		dlansy, dlantb, dlantp, dlantr, dlanv2,
-		dlapll, dlapmt, dlapy2, dlapy3,
+		dlapll, dlapmt,
 		dlaqgb, dlaqge, dlaqp2, dlaqps, dlaqsb, dlaqsp, dlaqsy,
 		dlaqr0, dlaqr1, dlaqr2, dlaqr3, dlaqr4, dlaqr5,
 		dlaqtr, dlar1v, dlar2v, iladlr, iladlc,
-		dlarf,  dlarfb, dlarfg, dlarfgp, dlarft, dlarfx, dlargv,
-		dlarnv, dlarrv, dlartg, dlartgp, dlartgs, dlartv,
-		dlarz,  dlarzb, dlarzt, dlascl, dlasy2, dlasyf,
-                dlaset,
+		dlarf,  dlarfb, dlarfg, dlarfgp, dlarft, dlarfx,
+		dlargv, dlarrv, dlartv,
+		dlarz,  dlarzb, dlarzt, dlasy2, dlasyf,
 		dlatbs, dlatdf, dlatps, dlatrd, dlatrs, dlatrz, dlatzm,
 		dopgtr, dopmtr, dorg2l, dorg2r,
 		dorgbr, dorghr, dorgl2, dorglq, dorgql, dorgqr, dorgr2,
@@ -242,21 +321,22 @@
 		dormbr, dormhr, dorml2, dormlq, dormql, dormqr, dormr2,
 		dormr3, dormrq, dormrz, dormtr, dpbcon, dpbequ, dpbrfs,
 		dpbstf, dpbsv,  dpbsvx,
-		dpbtf2, dpbtrf, dpbtrs, dpocon, dpoequ, dporfs, dposv, 
+		dpbtf2, dpbtrf, dpbtrs, dpocon, dpoequ, dporfs, dposv,
 		dposvx, dpotrs, dpstrf, dpstf2,
 		dppcon, dppequ,
 		dpprfs, dppsv,  dppsvx, dpptrf, dpptri, dpptrs, dptcon,
-		dpteqr, dptrfs, dptsv,  dptsvx, dpttrs, dptts2, drscl, 
+		dpteqr, dptrfs, dptsv,  dptsvx, dpttrs, dptts2, drscl,
 		dsbev,  dsbevd, dsbevx, dsbgst, dsbgv,  dsbgvd, dsbgvx,
 		dsbtrd,  dspcon, dspev,  dspevd, dspevx, dspgst,
 		dspgv,  dspgvd, dspgvx, dsprfs, dspsv,  dspsvx, dsptrd,
 		dsptrf, dsptri, dsptrs, dstegr, dstein, dstev,  dstevd, dstevr,
-		dstevx, dsycon, dsyev,  dsyevd, dsyevr,
+		dstevx,
+		dsycon, dsyev,  dsyevd, dsyevr,
 		dsyevx, dsygs2, dsygst, dsygv,  dsygvd, dsygvx, dsyrfs,
 		dsysv,  dsysvx,
-		dsytd2, dsytf2, dsytrd, dsytrf, dsytri, dsytrs, dsytrs2,
-		dsytri2, dsytri2x, dsyswapr, dsyconv, dtbcon,
-		dtbrfs, dtbtrs, dtgevc, dtgex2, dtgexc, dtgsen,
+		dsytd2, dsytf2, dsytrd, dsytrf, dsytri, dsytri2, dsytri2x,
+		dsyswapr, dsytrs, dsytrs2, dsyconv,
+		dtbcon, dtbrfs, dtbtrs, dtgevc, dtgex2, dtgexc, dtgsen,
 		dtgsja, dtgsna, dtgsy2, dtgsyl, dtpcon, dtprfs, dtptri,
 		dtptrs,
 		dtrcon, dtrevc, dtrexc, dtrrfs, dtrsen, dtrsna, dtrsyl,
@@ -270,6 +350,11 @@
 		dgeqrt, dgeqrt2, dgeqrt3, dgemqrt,
 		dtpqrt, dtpqrt2, dtpmqrt, dtprfb,
 
+		# ZLASRC  -- Double precision complex LAPACK routines
+		# already provided by @blasobjs: zsymv
+		# already provided by @lapackobjs:
+		#     zgesv, zgetrs, zgetf2, zlaswp, zlauu2, zlauum, zpotf2, zpotrf, zpotri,
+		#     ztrti2, ztrtri
 		zbdsqr, zgbbrd, zgbcon, zgbequ, zgbrfs, zgbsv,  zgbsvx,
 		zgbtf2, zgbtrf, zgbtrs, zgebak, zgebal, zgebd2, zgebrd,
 		zgecon, zgeequ, zgees,  zgeesx, zgeev,  zgeevx,
@@ -281,14 +366,14 @@
 		zggbak, zggbal, zgges,  zggesx, zggev,  zggevx, zggglm,
 		zgghrd, zgglse, zggqrf, zggrqf,
 		zggsvd, zggsvp,
-		zgtcon, zgtrfs, zgtsv,  zgtsvx, zgttrf, zgttrs, zgtts2, zhbev, 
+		zgtcon, zgtrfs, zgtsv,  zgtsvx, zgttrf, zgttrs, zgtts2, zhbev,
 		zhbevd, zhbevx, zhbgst, zhbgv,  zhbgvd, zhbgvx, zhbtrd,
 		zhecon, zheev,  zheevd, zheevr, zheevx, zhegs2, zhegst,
 		zhegv,  zhegvd, zhegvx, zherfs, zhesv,  zhesvx, zhetd2,
 		zhetf2, zhetrd,
 		zhetrf, zhetri, zhetri2, zhetri2x, zheswapr,
 		zhetrs, zhetrs2, zhgeqz, zhpcon, zhpev,  zhpevd,
-		zhpevx, zhpgst, zhpgv,  zhpgvd, zhpgvx, zhprfs, zhpsv, 
+		zhpevx, zhpgst, zhpgv,  zhpgvd, zhpgvx, zhprfs, zhpsv,
 		zhpsvx,
 		zhptrd, zhptrf, zhptri, zhptrs, zhsein, zhseqr, zlabrd,
 		zlacgv, zlacon, zlacn2, zlacp2, zlacpy, zlacrm, zlacrt, zladiv,
@@ -304,22 +389,23 @@
 		zlaqr0, zlaqr1, zlaqr2, zlaqr3, zlaqr4, zlaqr5,
 		zlaqsp, zlaqsy, zlar1v, zlar2v, ilazlr, ilazlc,
 		zlarcm, zlarf,  zlarfb,
-		zlarfg, zlarfgp, zlarft,
+		zlarfg, zlarft, zlarfgp,
 		zlarfx, zlargv, zlarnv, zlarrv, zlartg, zlartv,
-		zlarz,  zlarzb, zlarzt, zlascl, zlaset, zlasr, 
+		zlarz,  zlarzb, zlarzt, zlascl, zlaset, zlasr,
 		zlassq, zlasyf,
 		zlatbs, zlatdf, zlatps, zlatrd, zlatrs, zlatrz, zlatzm,
-		zpbcon, zpbequ, zpbrfs, zpbstf, zpbsv, 
+		zpbcon, zpbequ, zpbrfs, zpbstf, zpbsv,
 		zpbsvx, zpbtf2, zpbtrf, zpbtrs, zpocon, zpoequ, zporfs,
 		zposv,  zposvx, zpotrs, zpstrf, zpstf2,
 		zppcon, zppequ, zpprfs, zppsv,  zppsvx, zpptrf, zpptri, zpptrs,
 		zptcon, zpteqr, zptrfs, zptsv,  zptsvx, zpttrf, zpttrs, zptts2,
-		zrot,   zspcon, zspmv,  zspr,   zsprfs, zspsv, 
+		zrot,   zspcon, zspmv,  zspr,   zsprfs, zspsv,
 		zspsvx, zsptrf, zsptri, zsptrs, zdrscl, zstedc,
-		zstegr, zstein, zsteqr, zsycon,
-		zsyr,   zsyrfs, zsysv,  zsysvx, zsytf2, zsytrf, zsytri,
-		zsytri2, zsytri2x, zsyswapr,
-		zsytrs, zsytrs2, zsyconv, ztbcon, ztbrfs, ztbtrs, ztgevc, ztgex2,
+		zstegr, zstein, zsteqr,
+		zsycon,
+		zsyr, zsyrfs, zsysv,  zsysvx, zsytf2, zsytrf, zsytri, zsytri2, zsytri2x,
+		zsyswapr, zsytrs, zsytrs2, zsyconv,
+		ztbcon, ztbrfs, ztbtrs, ztgevc, ztgex2,
 		ztgexc, ztgsen, ztgsja, ztgsna, ztgsy2, ztgsyl, ztpcon,
 		ztprfs, ztptri,
 		ztptrs, ztrcon, ztrevc, ztrexc, ztrrfs, ztrsen, ztrsna,
@@ -336,7 +422,6 @@
 		zbbcsd, zlapmr, zunbdb, zuncsd,
 		zgeqrt, zgeqrt2, zgeqrt3, zgemqrt,
 		ztpqrt, ztpqrt2, ztpmqrt, ztprfb,
-
 		);
 
 @lapack_extendedprecision_objs = (
