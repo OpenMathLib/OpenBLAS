@@ -14,7 +14,15 @@ NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.1
 endif
 
 # Default C compiler
+# - Only set if not specified on the command line or inherited from the environment.
+# - CC is an implicit variable so neither '?=' or 'ifndef' can be used.
+#   http://stackoverflow.com/questions/4029274/mingw-and-make-variables
+# - Default value is 'cc' which is not always a valid command (e.g. MinGW).
+ifeq ($(origin CC),default)
 CC = gcc
+endif
+
+# Default Fortran compiler (FC) is selected by f_check.
 
 ifndef MAKEFILE_RULE
 include $(TOPDIR)/Makefile.rule
