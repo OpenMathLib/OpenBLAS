@@ -70,11 +70,11 @@ dll2 : libgoto2_shared.dll
 	$(RANLIB) ../$(LIBNAME)
 ifeq ($(BINARY32), 1)
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
 	-lib /machine:i386 /def:libopenblas.def
 else
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
 	-lib /machine:X64 /def:libopenblas.def 
 endif
 
