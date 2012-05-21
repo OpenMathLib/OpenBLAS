@@ -282,7 +282,7 @@ REALNAME:
 #define EPILOGUE .end	 REALNAME
 #endif
 
-#if defined(OS_LINUX) || defined(OS_FreeBSD) || defined(OS_NetBSD) || defined(__ELF__)
+#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NetBSD) || defined(__ELF__)
 #define PROLOGUE \
 	.text; \
 	.align 16; \
