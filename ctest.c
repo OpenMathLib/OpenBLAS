@@ -63,7 +63,7 @@ OS_WINNT
 #endif
 
 #if defined(__CYGWIN__)
-OS_CYGWIN
+OS_CYGWIN_NT
 #endif
 
 #if defined(__INTERIX)

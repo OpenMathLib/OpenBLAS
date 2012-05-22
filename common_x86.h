@@ -254,7 +254,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define PROFCODE
 #endif
 
-#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INERIX)
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
 #define SAVEREGISTERS \
 	subl	$32, %esp;\
 	movups	%xmm6,    0(%esp);\
@@ -269,7 +269,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define RESTOREREGISTERS
 #endif
 
-#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INERIX)
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
 #define PROLOGUE \
 	.text; \
 	.align 16; \
