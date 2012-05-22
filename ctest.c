@@ -35,19 +35,19 @@ OS_LINUX
 #endif
 
 #if defined(__FreeBSD__)
-OS_FreeBSD
+OS_FREEBSD
 #endif
 
 #if defined(__NetBSD__)
-OS_NetBSD
+OS_NETBSD
 #endif
 
 #if defined(__sun)
-OS_SunOS
+OS_SUNOS
 #endif
 
 #if defined(__APPLE__)
-OS_Darwin
+OS_DARWIN
 #endif
 
 #if defined(_AIX)
