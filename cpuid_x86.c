@@ -990,7 +990,7 @@ int get_cpuname(void){
 			  return CPUTYPE_NEHALEM;
 		  case 13:
                           //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
-                          return CPUTYPE_NEHALEM;
+                          return CPUTYPE_SANDYBRIDGE;
 		  case 15:
 			  //Xeon Processor E7 (Westmere-EX)
 			  return CPUTYPE_NEHALEM;
@@ -1332,7 +1332,7 @@ int get_coretype(void){
 	  return CORE_NEHALEM;
 	case 13:
           //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
-          return CORE_NEHALEM;
+          return CORE_SANDYBRIDGE;
 	case 15:
 	  //Xeon Processor E7 (Westmere-EX)
 	  return CORE_NEHALEM;
