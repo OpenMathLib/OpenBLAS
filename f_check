@@ -32,11 +32,12 @@ if ($compiler eq "") {
 	      "pgf95", "pgf90", "pgf77",
               "ifort");
     
+OUTER:
     foreach $lists (@lists) {
         foreach $path (@path) {
-            if (-f $path . "/" . $lists) {
+            if (-x $path . "/" . $lists) {
                 $compiler = $lists;
-                break;
+                last OUTER;
             }
         }
     }
@@ -237,6 +238,8 @@ if ($link ne "") {
     $link =~ s/\-rpath\s+/\-rpath\@/g;
 
     @flags = split(/[\s\,\n]/, $link);
+    # remove leading and trailing quotes from each flag.
+    @flags = map {s/^['"]|['"]$//g; $_} @flags;
 
     foreach $flags (@flags) {
 	if (

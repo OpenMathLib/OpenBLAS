@@ -1,5 +1,18 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.1.1
+29-Apr-2012
+common:
+	* Upgraded LAPACK to 3.4.1 version. (Thank Zaheer Chothia)
+	* Supported LAPACKE, a C interface to LAPACKE. (Thank Zaheer Chothia)
+	* Fixed the build bug (MD5 and download) on Mac OSX.
+	* Auto download CUnit 2.1.2-2 from SF.net with UTEST_CHECK=1.
+x86/x86_64:
+	* Auto-detect Intel Sandy Bridge Core i7-3xxx & Xeon E7 Westmere-EX.
+	* Test alpha=Nan in dscale.
+	* Fixed a SEGFAULT bug in samax on x86 windows.
+	
+====================================================================
 Version 0.1.0
 23-Mar-2012
 common:
