@@ -360,5 +360,7 @@ REALNAME:
 // ffreep %st(0). 
 // Because Clang didn't support ffreep, we directly use the opcode.
 // Please check out http://www.sandpile.org/x86/opc_fpu.htm 
+#ifndef ffreep
 #define ffreep .byte 0xdf, 0xc0 #
+#endif
 #endif
