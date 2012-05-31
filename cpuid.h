@@ -103,6 +103,7 @@
 #define CORE_NEHALEM	17
 #define CORE_ATOM	18
 #define CORE_NANO	19
+#define CORE_SANDYBRIDGE 20
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -122,6 +123,7 @@
 #define HAVE_MISALIGNSSE (1 << 15)
 #define HAVE_128BITFPU   (1 << 16)
 #define HAVE_FASTMOVU    (1 << 17)
+#define HAVE_AVX     (1 <<  18)
 
 #define CACHE_INFO_L1_I     1
 #define CACHE_INFO_L1_D     2
@@ -188,4 +190,5 @@ typedef struct {
 #define CPUTYPE_NSGEODE			41
 #define CPUTYPE_VIAC3			42
 #define CPUTYPE_NANO			43
+#define CPUTYPE_SANDYBRIDGE             44
 #endif

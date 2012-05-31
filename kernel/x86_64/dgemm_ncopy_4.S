@@ -45,7 +45,7 @@
 #define PREFETCHW     prefetcht0
 #endif
 
-#if defined(CORE2) || defined(PENRYN) || defined(DUNNINGTON) || defined(NEHALEM)
+#if defined(CORE2) || defined(PENRYN) || defined(DUNNINGTON) || defined(NEHALEM) || defined(SANDYBRIDGE)
 #define PREFETCHSIZE	16
 #define PREFETCH      prefetcht0
 #define PREFETCHW     prefetcht0

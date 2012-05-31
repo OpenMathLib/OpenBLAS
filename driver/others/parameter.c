@@ -165,7 +165,7 @@ int get_L2_size(void){
 
 #if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || \
     defined(CORE_PRESCOTT) || defined(CORE_CORE2) || defined(PENRYN) || defined(DUNNINGTON) || \
-    defined(CORE_NEHALEM) || defined(ATOM) || defined(GENERIC)
+  defined(CORE_NEHALEM) || defined(CORE_SANDYBRIDGE) || defined(ATOM) || defined(GENERIC)
 
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 
@@ -374,6 +374,17 @@ void blas_set_parameter(void){
 #endif
 
 #if defined(NEHALEM)
+  sgemm_p = 1024;
+  dgemm_p =  512;
+  cgemm_p =  512;
+  zgemm_p =  256;
+#ifdef EXPRECISION
+  qgemm_p =  256;
+  xgemm_p =  128;
+#endif
+#endif
+
+#if defined(SANDYBRIDGE)
   sgemm_p = 1024;
   dgemm_p =  512;
   cgemm_p =  512;

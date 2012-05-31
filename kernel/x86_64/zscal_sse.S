@@ -685,7 +685,7 @@
 	cmpq	$2 * SIZE, INCX
 	jne	.L120
 
-#if defined(ALIGNED_ACCESS) && !defined(NEHALEM)
+#if defined(ALIGNED_ACCESS) && !defined(NEHALEM) && !defined(SANDYBRIDGE)
 
 	pshufd	$0, %xmm0, %xmm14
 	pshufd	$0, %xmm1, %xmm1
