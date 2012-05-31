@@ -163,7 +163,7 @@ int get_L2_size(void){
 
   int eax, ebx, ecx, edx;
 
-#if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || \
+#if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || defined(BOBCATE) || \
     defined(CORE_PRESCOTT) || defined(CORE_CORE2) || defined(PENRYN) || defined(DUNNINGTON) || \
   defined(CORE_NEHALEM) || defined(CORE_SANDYBRIDGE) || defined(ATOM) || defined(GENERIC)
 
@@ -446,7 +446,7 @@ void blas_set_parameter(void){
 #endif
 #endif
 
-#if defined(CORE_BARCELONA)
+#if defined(CORE_BARCELONA) || defined(CORE_BOBCATE)
   size >>= 8;
 
   sgemm_p = 232 * size;
