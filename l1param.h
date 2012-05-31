@@ -67,7 +67,7 @@
 #define ALIGNED_ACCESS
 #endif
 
-#ifdef BOBCATE
+#ifdef BOBCAT
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE (128 *   5)

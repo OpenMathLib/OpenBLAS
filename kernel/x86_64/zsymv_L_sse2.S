@@ -76,7 +76,7 @@
 #define movsd		movlpd
 #endif
 
-#if defined(BARCELONA)  || defined(SHANGHAI) || defined(BOBCATE)
+#if defined(BARCELONA)  || defined(SHANGHAI) || defined(BOBCAT)
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE	(16 * 16)

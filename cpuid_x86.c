@@ -1029,7 +1029,7 @@ int get_cpuname(void){
       case 10:
 	return CPUTYPE_BARCELONA;
       case  5:
-	return CPUTYPE_BOBCATE;
+	return CPUTYPE_BOBCAT;
       }
       break;
     }
@@ -1150,7 +1150,7 @@ static char *cpuname[] = {
   "VIAC3",
   "NANO",
   "SANDYBRIDGE",
-  "BOBCATE",
+  "BOBCAT",
 };
 
 static char *lowercpuname[] = {
@@ -1198,7 +1198,7 @@ static char *lowercpuname[] = {
   "nsgeode",
   "nano",
   "sandybridge",
-  "bobcate",
+  "bobcat",
 };
 
 static char *corename[] = {
@@ -1223,7 +1223,7 @@ static char *corename[] = {
   "ATOM",
   "NANO",
   "SANDYBRIDGE",
-  "BOBCATE",
+  "BOBCAT",
 };
 
 static char *corename_lower[] = {
@@ -1248,7 +1248,7 @@ static char *corename_lower[] = {
   "atom",
   "nano",
   "sandybridge",
-  "bobcate",
+  "bobcat",
 };
 
 
@@ -1358,7 +1358,7 @@ int get_coretype(void){
     if (family <= 0xe) return CORE_ATHLON;
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON; 
-      else if (exfamily == 5) return CORE_BOBCATE; 
+      else if (exfamily == 5) return CORE_BOBCAT; 
       else return CORE_BARCELONA;
     }
   }

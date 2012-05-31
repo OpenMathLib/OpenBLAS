@@ -85,7 +85,7 @@
 #define movsd		movlps
 #endif
 
-#if defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCATE)
+#if defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCAT)
 #define ALIGNED_ACCESS
 #define MOVUPS_A	movaps
 #define MOVUPS_XL	movaps

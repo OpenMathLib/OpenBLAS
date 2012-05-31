@@ -222,7 +222,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(BOBCATE)
+#if defined(BOBCAT)
 
 #define SNUMOPT		8
 #define DNUMOPT		4

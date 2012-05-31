@@ -794,7 +794,7 @@ static void init_parameter(void) {
 #endif
 #endif
 
-#ifdef BOBCATE
+#ifdef BOBCAT
 
 #ifdef DEBUG
   fprintf(stderr, "Bobcate\n");
