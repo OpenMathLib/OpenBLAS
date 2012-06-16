@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -102,6 +102,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_BARCELONA	*/
 /* #define FORCE_SHANGHAI	*/
 /* #define FORCE_ISTANBUL	*/
+/* #define FORCE_BOBCAT	*/
 /* #define FORCE_SSE_GENERIC	*/
 /* #define FORCE_VIAC3		*/
 /* #define FORCE_NANO		*/
@@ -361,6 +362,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU"
 #define LIBNAME   "barcelona"
 #define CORENAME  "BARCELONA"
+#endif
+
+#if defined(FORCE_BOBCAT) 
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "BOBCAT"
+#define ARCHCONFIG   "-DBOBCAT " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=524288 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=40 -DDTB_SIZE=4096 " \
+		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 " \
+		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_CFLUSH -DHAVE_CMOV"
+#define LIBNAME   "bobcat"
+#define CORENAME  "BOBCAT"
 #endif
 
 #ifdef FORCE_SSE_GENERIC
