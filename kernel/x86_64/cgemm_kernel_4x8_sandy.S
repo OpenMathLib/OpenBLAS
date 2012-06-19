@@ -3578,7 +3578,7 @@ ADDQ	$8*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
 DECQ	k;
 JG	.L241_bodyB;
-.align
+ALIGN_5
 .L241_loopE:
 #ifndef	TRMMKERNEL
 TEST $2, bk;
