@@ -425,6 +425,7 @@ REALNAME:
 #define ALIGN_2 .align 2
 #define ALIGN_3 .align 3
 #define ALIGN_4 .align 4
+#define ALIGN_5 .align 5
 #define ffreep	fstp
 #endif
 
