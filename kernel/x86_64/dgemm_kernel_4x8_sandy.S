@@ -162,7 +162,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ST_SX	movaps
 #define ST_DX	movapd
 #define STL_DX	movlpd
+#define STL_DY	vmovlpd
 #define STH_DX	movhpd
+#define STH_DY	vmovhpd
 
 #define EDUP_SY	vmovsldup
 #define ODUP_SY	vmovshdup
@@ -242,6 +244,7 @@ movq    %r15, 40(%rsp);
 #ifdef TRMMKERNEL
 	movq	old_offset, %r11
 #endif
+	movaps	%xmm3, %xmm0
 #else
 
 movq	old_ldc, ldc
@@ -660,10 +663,10 @@ LDL_DY	2*SIZE(C1), xvec5, xvec5;
 LDH_DY	3*SIZE(C1), xvec5, xvec5;
 ADD_DY	xvec5, xvec7, xvec7;
 #endif
-STL_DX	xvec15, 0*SIZE(C0);
-STH_DX	xvec15, 1*SIZE(C0);
-STL_DX	xvec7, 2*SIZE(C1);
-STH_DX	xvec7, 3*SIZE(C1);
+STL_DY	xvec15, 0*SIZE(C0);
+STH_DY	xvec15, 1*SIZE(C0);
+STL_DY	xvec7, 2*SIZE(C1);
+STH_DY	xvec7, 3*SIZE(C1);
 
 EXTRA_DY $1, yvec14, xvec4;
 #ifndef	TRMMKERNEL
@@ -674,10 +677,10 @@ LDL_DY	6*SIZE(C1), xvec2, xvec2;
 LDH_DY	7*SIZE(C1), xvec2, xvec2;
 ADD_DY	xvec2, xvec4, xvec4;
 #endif
-STL_DX	xvec14, 4*SIZE(C0);
-STH_DX	xvec14, 5*SIZE(C0);
-STL_DX	xvec4, 6*SIZE(C1);
-STH_DX	xvec4, 7*SIZE(C1);
+STL_DY	xvec14, 4*SIZE(C0);
+STH_DY	xvec14, 5*SIZE(C0);
+STL_DY	xvec4, 6*SIZE(C1);
+STH_DY	xvec4, 7*SIZE(C1);
 
 EXTRA_DY $1, yvec13, xvec7;
 #ifndef	TRMMKERNEL
@@ -688,10 +691,10 @@ LDL_DY	2*SIZE(C1, ldc, 1), xvec5, xvec5;
 LDH_DY	3*SIZE(C1, ldc, 1), xvec5, xvec5;
 ADD_DY	xvec5, xvec7, xvec7;
 #endif
-STL_DX	xvec13, 0*SIZE(C0, ldc, 1);
-STH_DX	xvec13, 1*SIZE(C0, ldc, 1);
-STL_DX	xvec7, 2*SIZE(C1, ldc, 1);
-STH_DX	xvec7, 3*SIZE(C1, ldc, 1);
+STL_DY	xvec13, 0*SIZE(C0, ldc, 1);
+STH_DY	xvec13, 1*SIZE(C0, ldc, 1);
+STL_DY	xvec7, 2*SIZE(C1, ldc, 1);
+STH_DY	xvec7, 3*SIZE(C1, ldc, 1);
 
 EXTRA_DY $1, yvec12, xvec4;
 #ifndef	TRMMKERNEL
@@ -702,10 +705,10 @@ LDL_DY	6*SIZE(C1, ldc, 1), xvec2, xvec2;
 LDH_DY	7*SIZE(C1, ldc, 1), xvec2, xvec2;
 ADD_DY	xvec2, xvec4, xvec4;
 #endif
-STL_DX	xvec12, 4*SIZE(C0, ldc, 1);
-STH_DX	xvec12, 5*SIZE(C0, ldc ,1);
-STL_DX	xvec4, 6*SIZE(C1, ldc, 1);
-STH_DX	xvec4, 7*SIZE(C1, ldc, 1);
+STL_DY	xvec12, 4*SIZE(C0, ldc, 1);
+STH_DY	xvec12, 5*SIZE(C0, ldc ,1);
+STL_DY	xvec4, 6*SIZE(C1, ldc, 1);
+STH_DY	xvec4, 7*SIZE(C1, ldc, 1);
 
 EXTRA_DY $1, yvec11, xvec7;
 #ifndef	TRMMKERNEL
@@ -716,10 +719,10 @@ LDL_DY	2*SIZE(C0), xvec5, xvec5;
 LDH_DY	3*SIZE(C0), xvec5, xvec5;
 ADD_DY	xvec5, xvec7, xvec7;
 #endif
-STL_DX	xvec11, 0*SIZE(C1);
-STH_DX	xvec11, 1*SIZE(C1);
-STL_DX	xvec7, 2*SIZE(C0);
-STH_DX	xvec7, 3*SIZE(C0);
+STL_DY	xvec11, 0*SIZE(C1);
+STH_DY	xvec11, 1*SIZE(C1);
+STL_DY	xvec7, 2*SIZE(C0);
+STH_DY	xvec7, 3*SIZE(C0);
 
 EXTRA_DY $1, yvec10, xvec4;
 #ifndef	TRMMKERNEL
@@ -730,10 +733,10 @@ LDL_DY	6*SIZE(C0), xvec2, xvec2;
 LDH_DY	7*SIZE(C0), xvec2, xvec2;
 ADD_DY	xvec2, xvec4, xvec4;
 #endif
-STL_DX	xvec10, 4*SIZE(C1);
-STH_DX	xvec10, 5*SIZE(C1);
-STL_DX	xvec4, 6*SIZE(C0);
-STH_DX	xvec4, 7*SIZE(C0);
+STL_DY	xvec10, 4*SIZE(C1);
+STH_DY	xvec10, 5*SIZE(C1);
+STL_DY	xvec4, 6*SIZE(C0);
+STH_DY	xvec4, 7*SIZE(C0);
 
 EXTRA_DY $1, yvec9, xvec7;
 #ifndef	TRMMKERNEL
@@ -744,10 +747,10 @@ LDL_DY	2*SIZE(C0, ldc, 1), xvec5, xvec5;
 LDH_DY	3*SIZE(C0, ldc ,1), xvec5, xvec5;
 ADD_DY	xvec5, xvec7, xvec7;
 #endif
-STL_DX	xvec9, 0*SIZE(C1, ldc, 1);
-STH_DX	xvec9, 1*SIZE(C1, ldc, 1);
-STL_DX	xvec7, 2*SIZE(C0, ldc, 1);
-STH_DX	xvec7, 3*SIZE(C0, ldc, 1);
+STL_DY	xvec9, 0*SIZE(C1, ldc, 1);
+STH_DY	xvec9, 1*SIZE(C1, ldc, 1);
+STL_DY	xvec7, 2*SIZE(C0, ldc, 1);
+STH_DY	xvec7, 3*SIZE(C0, ldc, 1);
 
 EXTRA_DY $1, yvec8, xvec4;
 #ifndef	TRMMKERNEL
@@ -758,10 +761,10 @@ LDL_DY	6*SIZE(C0, ldc, 1), xvec2, xvec2;
 LDH_DY	7*SIZE(C0, ldc, 1), xvec2, xvec2;
 ADD_DY	xvec2, xvec4, xvec4;
 #endif
-STL_DX	xvec8, 4*SIZE(C1, ldc, 1);
-STH_DX	xvec8, 5*SIZE(C1, ldc, 1);
-STL_DX	xvec4, 6*SIZE(C0, ldc, 1);
-STH_DX	xvec4, 7*SIZE(C0, ldc, 1);
+STL_DY	xvec8, 4*SIZE(C1, ldc, 1);
+STH_DY	xvec8, 5*SIZE(C1, ldc, 1);
+STL_DY	xvec4, 6*SIZE(C0, ldc, 1);
+STH_DY	xvec4, 7*SIZE(C0, ldc, 1);
 #if (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) ||(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 MOVQ	bk, %rax;
 SUBQ	kkk, %rax;

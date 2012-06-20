@@ -251,6 +251,7 @@ movq    %r15, 40(%rsp);
 #ifdef TRMMKERNEL
 	movq	old_offset, %r11
 #endif
+	movaps	%xmm3, %xmm0
 #else
 
 movq	old_ldc, ldc
