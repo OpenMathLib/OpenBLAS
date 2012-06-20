@@ -257,10 +257,14 @@ LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.1.tgz
 lapack-3.4.1.tgz :
 ifndef NOFORTRAN
 #http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
-ifeq ($(OSNAME), $(filter $(OSNAME),Darwin FreeBSD NetBSD))
+ifeq ($(OSNAME), $(filter $(OSNAME),Darwin NetBSD))
 	curl -O $(LAPACK_URL)
 else
+ifeq ($(OSNAME), FreeBSD)
+	fetch $(LAPACK_URL)
+else
 	wget $(LAPACK_URL)
+endif
 endif
 endif
 
