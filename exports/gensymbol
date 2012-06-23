@@ -2759,6 +2759,10 @@ if ($ARGV[0] eq "aix"){
 if ($ARGV[0] eq "win2k"){
     print "EXPORTS\n";
     $count = 1;    
+    
+	#remove openblas_set_num_threads 
+	@underscore_objs = grep /[^openblas_set_num_threads]/,@underscore_objs;
+	
     foreach $objs (@underscore_objs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
@@ -2769,7 +2773,11 @@ if ($ARGV[0] eq "win2k"){
 	print "\t$uppercase=$objs", "_  \@", $count, "\n";
 	$count ++;
     }
-
+    
+	#for openblas_set_num_threads 
+    print "\topenblas_set_num_threads_=openblas_set_num_threads_  \@", $count, "\n";
+	$count ++;
+	
 #	if ($ARGV[4] == 0) {
 		foreach $objs (@no_underscore_objs) {
 			print "\t",$objs,"=$objs","  \@", $count, "\n";
