@@ -41,12 +41,19 @@ Please read GotoBLAS_01Readme.txt
 ### Additional support CPU:
 
 #### x86/x86-64:
-* Intel Xeon 56xx (Westmere). Used GotoBLAS2 Nehalem codes.
-* Intel Sandy Bridge. Optimized Level-3 BLAS with AVX on x86-64.
-* AMD Bobcat. Used GotoBLAS2 Barcelona codes.
+- **Intel Xeon 56xx (Westmere)**: Used GotoBLAS2 Nehalem codes.
+- **Intel Sandy Bridge**: Optimized Level-3 BLAS with AVX on x86-64.
+- **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
+
 #### MIPS64:
-* ICT Loongson 3A. Optimized Level-3 BLAS and the part of Level-1,2.
-* ICT Loongson 3B (Experimental)
+- **ICT Loongson 3A**: Optimized Level-3 BLAS and the part of Level-1,2.
+- **ICT Loongson 3B**: Experimental
+
+### Support OS:
+- **GNU/Linux**
+- **MingWin/Windows**: Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-in-Microsoft-Visual-Studio>.
+- **Darwin/Mac OS X**: Experimental. Although GotoBLAS2 supports Darwin, we are the beginner on Mac OS X.
+- **FreeBSD**: Supportted by community. We didn't test the library on this OS.
 
 ## Usages
 Link with libopenblas.a or -lopenblas for shared library.
