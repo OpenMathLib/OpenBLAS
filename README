@@ -34,8 +34,10 @@ Please read GotoBLAS_01Readme.txt
 Additional support CPU:
 x86_64:
 	Intel Xeon 56xx (Westmere) //Used GotoBLAS2 Nehalem codes.
+	Intel Sandy Bridge
 MIPS64:
-	ICT Loongson 3A //Level 3 BLAS subroutines are optimized.
+	ICT Loongson 3A 
+	ICT Loongson 3B (Experimental)
 
 4.Usages
 Link with libopenblas.a or -lopenblas for shared library.
@@ -70,10 +72,10 @@ OpenBLAS users mailing list: http://list.rdcps.ac.cn/mailman/listinfo/openblas
 8.ChangeLog
 Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD version.
 
-9.Known Issues
-* The number of CPUs/Cores should less than or equal to 8*sizeof(unsigned long). On 64 bits, the limit 
-  is 64. On 32 bits, it is 32.
-* On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell. I don't think this is a bug in OpenBLAS. 
+9.Troubleshooting
+* Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture. The Clang 3.0 will generate the wrong AVX binary code.
+* The number of CPUs/Cores should less than or equal to 256. 
+* On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell. 
 
 10. Specification of Git Branches
 We used the git branching model in this article (http://nvie.com/posts/a-successful-git-branching-model/). 
