@@ -3,12 +3,12 @@
 ## Introduction
 OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. OpenBLAS is an open source project supported by Lab of Parallel Software and Computational Science, ISCAS <http://www.rdcps.ac.cn>.
 
-Please read the documents on OpenBLAS wiki pages<http://github.com/xianyi/OpenBLAS/wiki>.
+Please read the documents on OpenBLAS wiki pages <http://github.com/xianyi/OpenBLAS/wiki>.
 
 ## Intallation
 Download from project homepage. http://xianyi.github.com/OpenBLAS/
-Or,
-check out codes from git://github.com/xianyi/OpenBLAS.git
+
+Or, check out codes from git://github.com/xianyi/OpenBLAS.git
 ### Normal compile
   * type "make" to detect the CPU automatically.
   or
@@ -38,13 +38,15 @@ The default directory is /opt/OpenBLAS
 ## Support CPU & OS
 Please read GotoBLAS_01Readme.txt
 
-Additional support CPU:
-x86_64:
-	Intel Xeon 56xx (Westmere) //Used GotoBLAS2 Nehalem codes.
-	Intel Sandy Bridge
-MIPS64:
-	ICT Loongson 3A 
-	ICT Loongson 3B (Experimental)
+### Additional support CPU:
+
+#### x86/x86-64:
+* Intel Xeon 56xx (Westmere). Used GotoBLAS2 Nehalem codes.
+* Intel Sandy Bridge. Optimized Level-3 BLAS with AVX on x86-64.
+* AMD Bobcat. Used GotoBLAS2 Barcelona codes.
+#### MIPS64:
+* ICT Loongson 3A. Optimized Level-3 BLAS and the part of Level-1,2.
+* ICT Loongson 3B (Experimental)
 
 ## Usages
 Link with libopenblas.a or -lopenblas for shared library.
@@ -52,6 +54,7 @@ Link with libopenblas.a or -lopenblas for shared library.
 ### Set the number of threads with environment variables. 
 
 Examples:
+
     export OPENBLAS_NUM_THREADS=4
 
  or
@@ -69,7 +72,9 @@ If you compile this lib with USE_OPENMP=1, you should set OMP_NUM_THREADS enviro
 ### Set the number of threads with calling functions. 
 
 Examples:
+
     void goto_set_num_threads(int num_threads);
+
     void openblas_set_num_threads(int num_threads);
 
 If you compile this lib with USE_OPENMP=1, you should use the above functions, too.
