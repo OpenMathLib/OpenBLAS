@@ -146,75 +146,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MOVQ	movq 
 
 #define XOR_SY	vxorps
-#define XOR_DY	vxorpd
-#define XOR_SX	xorps
-#define XOR_DX	xorpd
+#define XOR_SX	vxorps
 
 #define LD_SY	vmovaps
-#define LD_DY	vmovapd
-#define LD_SX	movaps
-#define LD_DX	movapd
-#define LDL_SX	movlps
+#define LD_SX	vmovaps
+#define LDL_SX	vmovlps
 #define LDL_SY	vmovlps
-#define LDH_SX	movhps
+#define LDH_SX	vmovhps
 #define LDH_SY	vmovhps
 
 #define ST_SY	vmovaps
-#define ST_DY	vmovapd
-#define ST_SX	movaps
-#define ST_DX	movapd
-#define STL_SX	movlps
+#define ST_SX	vmovaps
+#define STL_SX	vmovlps
 #define STL_SY	vmovlps
-#define STH_SX	movhps
+#define STH_SX	vmovhps
 #define STH_SY	vmovhps
 
 #define EDUP_SY	vmovsldup
 #define ODUP_SY	vmovshdup
-#define EDUP_SX	movsldup
-#define ODUP_SX	movshdup
-#define EDUP_DY	vmovddup
+#define EDUP_SX	vmovsldup
+#define ODUP_SX	vmovshdup
 
 #define ADD_SY	vaddps 
-#define ADD_DY	vaddpd
-#define ADD_SX	addps
-#define ADD_DX	addpd
+#define ADD_SX	vaddps
 
 #define ADD1_DY	vaddpd
-#define ADD2_DY	vaddpd
-#define ADDSUB_DY	vaddsubpd
 #define ADDSUB_SY	vaddsubps
 
 #define MUL_SY	vmulps
-#define MUL_DY	vmulpd
-#define MUL_SX	mulps
-#define MUL_DX	mulpd
+#define MUL_SX	vmulps
 
 #define SHUF_SY	vperm2f128
 #define SHUF_DY	vperm2f128
-#define SHUF_DX	pshufd
-#define SHUF_SX	pshufd
+#define SHUF_SX	vpshufd
 
 #define VPERMILP_SY	vpermilps
 #define VPERMILP_SX	vpermilps
-#define VPERMILP_DY	vpermilpd
 
 #define BROAD_SY vbroadcastss
-#define BROAD_DY vbroadcastsd
 #define BROAD_SX vbroadcastss  
-#define BROAD_DX movddup
 
 #define MOV_SY vmovaps
-#define MOV_DY vmovapd
-#define MOV_SX movaps
-#define MOV_DX movapd
+#define MOV_SX vmovaps
 
 #define REVS_SY	vshufps
-#define REVS_DY vshufpd
-#define REVS_SX shufps
-#define REVS_DX	movsd
+#define REVS_SX vshufps
 
 #define EXTRA_SY vextractf128
-#define EXTRA_DY vextractf128
 
 
 PROLOGUE
@@ -259,6 +237,8 @@ movq	old_ldc, ldc
 movq	old_offset, %r11
 #endif
 #endif
+
+vzeroupper
 
 vmovlps	ALPHA, MEMALPHA
 movq	old_bm,	bm
@@ -864,125 +844,125 @@ ALIGN_4
 
 #### Unroll time 1 ####
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	4*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
 ODUP_SX 4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	4*SIZE(ptrba), xvec1;
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec11;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec11, xvec11;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec10;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec10, xvec10;
 
 EDUP_SX	8*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec9;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec9, xvec9;
 ODUP_SX 8*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec8;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec8, xvec8;
 
 #### Unroll time 2 #### 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	12*SIZE(ptrbb), xvec2;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
 ODUP_SX	12*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	8*SIZE(ptrba), xvec0;
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec11;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec11, xvec11;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec10;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec10, xvec10;
 
 EDUP_SX	16*SIZE(ptrbb), xvec2;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec9;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec9, xvec9;
 ODUP_SX	16*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec8;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec8, xvec8;
 
 #### Unroll time 3 #### 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	20*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
 ODUP_SX	20*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	12*SIZE(ptrba), xvec1;
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec11;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec11, xvec11;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec10;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec10, xvec10;
 
 EDUP_SX	24*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec9;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec9, xvec9;
 ODUP_SX	24*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec8;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec8, xvec8;
 ADDQ	$16*SIZE, ptrba;
 
 #### Unroll time 4 #### 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	28*SIZE(ptrbb), xvec2;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
 ODUP_SX	28*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$32*SIZE, ptrbb;
 
 LD_SX	0*SIZE(ptrba), xvec0;
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec11;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec11, xvec11;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec10;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec10, xvec10;
 
 EDUP_SX	0*SIZE(ptrbb), xvec2;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec9;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec9, xvec9;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec8;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec8, xvec8;
 DECQ k;
 JG .L8_bodyB;
 ALIGN_4
@@ -997,65 +977,65 @@ ALIGN_4
 .L9_bodyB:
 #### Unroll time 1 ####
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	4*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
 ODUP_SX	4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	4*SIZE(ptrba), xvec1;
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec11;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec11, xvec11;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec10;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec10, xvec10;
 
 EDUP_SX	8*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec9;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec9, xvec9;
 ODUP_SX	8*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec8;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec8, xvec8;
 
 #### Unroll time 2 #### 
 ADDQ	$8*SIZE, ptrba;
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	12*SIZE(ptrbb), xvec2;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
 ODUP_SX	12*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$16*SIZE, ptrbb;
 
 LD_SX	0*SIZE(ptrba), xvec0;
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec11;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec11, xvec11;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec10;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec10, xvec10;
 
 EDUP_SX	0*SIZE(ptrbb), xvec2;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec9;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec9, xvec9;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec8;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec8, xvec8;
 
 .L9_loopE:
 #ifndef	TRMMKERNEL
@@ -1068,57 +1048,57 @@ ALIGN_4
 .L10_bodyB:
 #### Unroll time 1 ####
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 ADDQ	$4*SIZE, ptrba;
 
 EDUP_SX	4*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
 ODUP_SX 4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$8*SIZE, ptrbb;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec11;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec11, xvec11;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec10;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec10, xvec10;
 
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec9;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec8;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec9, xvec9;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec8, xvec8;
 
 .L10_loopE:
 #### Multiply Alpha ####
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
-MUL_SX	xvec7, xvec13;
-MUL_SX	xvec7, xvec12;
-MUL_SX	xvec7, xvec11;
-MUL_SX	xvec7, xvec10;
-MUL_SX	xvec7, xvec9;
-MUL_SX	xvec7, xvec8;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
+MUL_SX xvec7, xvec13, xvec13;
+MUL_SX xvec7, xvec12, xvec12;
+MUL_SX xvec7, xvec11, xvec11;
+MUL_SX xvec7, xvec10, xvec10;
+MUL_SX xvec7, xvec9, xvec9;
+MUL_SX xvec7, xvec8, xvec8;
 #### Reverse Result ####
 MOV_SX	xvec15, xvec7;
-REVS_SX	$0xe4, xvec13, xvec15;
-REVS_SX	$0xe4, xvec7, xvec13;
+REVS_SX	$0xe4, xvec13, xvec15, xvec15;
+REVS_SX	$0xe4, xvec7, xvec13, xvec13;
 MOV_SX	xvec14, xvec7;
-REVS_SX	$0xe4, xvec12, xvec14;
-REVS_SX	$0xe4, xvec7, xvec12;
+REVS_SX	$0xe4, xvec12, xvec14, xvec14;
+REVS_SX	$0xe4, xvec7, xvec12, xvec12;
 MOV_SX	xvec11, xvec7;
-REVS_SX	$0xe4, xvec9, xvec11;
-REVS_SX	$0xe4, xvec7, xvec9;
+REVS_SX	$0xe4, xvec9, xvec11, xvec11;
+REVS_SX	$0xe4, xvec7, xvec9, xvec9;
 MOV_SX	xvec10, xvec7;
-REVS_SX	$0xe4, xvec8, xvec10;
-REVS_SX	$0xe4, xvec7, xvec8;
+REVS_SX	$0xe4, xvec8, xvec10, xvec10;
+REVS_SX	$0xe4, xvec7, xvec8, xvec8;
 #### Testing Alignment #### 
 MOVQ	C0, %rax;
 OR		ldc, %rax;
@@ -1127,14 +1107,14 @@ JNE		.L10_loopEx;
 ALIGN_4
 LEAQ (ldc,ldc,2),%rax;
 #ifndef	TRMMKERNEL
-ADD_SX	0*SIZE(C0), xvec15;
-ADD_SX	0*SIZE(C0, ldc, 1), xvec14;
-ADD_SX	0*SIZE(C0, ldc, 2), xvec13;
-ADD_SX	0*SIZE(C0, %rax, 1), xvec12;
-ADD_SX	0*SIZE(C1), xvec11;
-ADD_SX	0*SIZE(C1, ldc, 1), xvec10;
-ADD_SX	0*SIZE(C1, ldc, 2), xvec9;
-ADD_SX	0*SIZE(C1, %rax, 1), xvec8;
+ADD_SX 0*SIZE(C0), xvec15, xvec15;
+ADD_SX 0*SIZE(C0, ldc,1), xvec14, xvec14;
+ADD_SX 0*SIZE(C0, ldc,2), xvec13, xvec13;
+ADD_SX 0*SIZE(C0, %rax,1), xvec12, xvec12;
+ADD_SX 0*SIZE(C1), xvec11, xvec11;
+ADD_SX 0*SIZE(C1, ldc,1), xvec10, xvec10;
+ADD_SX 0*SIZE(C1, ldc,2), xvec9, xvec9;
+ADD_SX 0*SIZE(C1, %rax,1), xvec8, xvec8;
 #endif
 ST_SX	xvec15, 0*SIZE(C0);
 ST_SX	xvec14, 0*SIZE(C0, ldc, 1);
@@ -1161,30 +1141,30 @@ ALIGN_4
 .L10_loopEx:
 LEAQ (ldc,ldc,2),%rax;
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec7;
-LDH_SX	2*SIZE(C0), xvec7;
-LDL_SX	0*SIZE(C0, ldc, 1), xvec6;
-LDH_SX	2*SIZE(C0, ldc, 1), xvec6;
-LDL_SX	0*SIZE(C0, ldc, 2), xvec5;
-LDH_SX	2*SIZE(C0, ldc, 2), xvec5;
-LDL_SX	0*SIZE(C0, %rax, 1), xvec4;
-LDH_SX	2*SIZE(C0, %rax, 1), xvec4;
-LDL_SX	0*SIZE(C1), xvec3;
-LDH_SX	2*SIZE(C1), xvec3;
-LDL_SX	0*SIZE(C1, ldc, 1), xvec2;
-LDH_SX	2*SIZE(C1, ldc, 1), xvec2;
-LDL_SX	0*SIZE(C1, ldc, 2), xvec1;
-LDH_SX	2*SIZE(C1, ldc, 2), xvec1;
-LDL_SX	0*SIZE(C1, %rax, 1), xvec0;
-LDH_SX	2*SIZE(C1, %rax, 1), xvec0;
-ADD_SX	xvec7, xvec15;
-ADD_SX	xvec6, xvec14;
-ADD_SX	xvec5, xvec13;
-ADD_SX	xvec4, xvec12;
-ADD_SX	xvec3, xvec11;
-ADD_SX	xvec2, xvec10;
-ADD_SX	xvec1, xvec9;
-ADD_SX	xvec0, xvec8;
+LDL_SX 0*SIZE(C0), xvec7, xvec7;
+LDH_SX 2*SIZE(C0), xvec7, xvec7;
+LDL_SX 0*SIZE(C0, ldc, 1), xvec6, xvec6;
+LDH_SX 2*SIZE(C0, ldc, 1), xvec6, xvec6;
+LDL_SX 0*SIZE(C0, ldc, 2), xvec5, xvec5;
+LDH_SX 2*SIZE(C0, ldc, 2), xvec5, xvec5;
+LDL_SX 0*SIZE(C0, %rax, 1), xvec4, xvec4;
+LDH_SX 2*SIZE(C0, %rax, 1), xvec4, xvec4;
+LDL_SX 0*SIZE(C1), xvec3, xvec3;
+LDH_SX 2*SIZE(C1), xvec3, xvec3;
+LDL_SX 0*SIZE(C1, ldc, 1), xvec2, xvec2;
+LDH_SX 2*SIZE(C1, ldc, 1), xvec2, xvec2;
+LDL_SX 0*SIZE(C1, ldc, 2), xvec1, xvec1;
+LDH_SX 2*SIZE(C1, ldc, 2), xvec1, xvec1;
+LDL_SX 0*SIZE(C1, %rax, 1), xvec0, xvec0;
+LDH_SX 2*SIZE(C1, %rax, 1), xvec0, xvec0;
+ADD_SX xvec7, xvec15, xvec15;
+ADD_SX xvec6, xvec14, xvec14;
+ADD_SX xvec5, xvec13, xvec13;
+ADD_SX xvec4, xvec12, xvec12;
+ADD_SX xvec3, xvec11, xvec11;
+ADD_SX xvec2, xvec10, xvec10;
+ADD_SX xvec1, xvec9, xvec9;
+ADD_SX xvec0, xvec8, xvec8;
 #endif
 STL_SX	xvec15, 0*SIZE(C0);
 STH_SX	xvec15, 2*SIZE(C0);
@@ -1258,63 +1238,63 @@ LD_SX	0*SIZE(ptrba), xvec0;	# a1, a2, a3, a4
 SHUF_SX	$0x44, xvec0, xvec1;	# a1, a2, a1, a2
 EDUP_SX	0*SIZE(ptrbb), xvec2;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	4*SIZE(ptrbb), xvec4;
 ODUP_SX	4*SIZE(ptrbb), xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 SHUF_SX	$0xee, xvec0, xvec6;
 EDUP_SX	8*SIZE(ptrbb), xvec2;
 ODUP_SX	8*SIZE(ptrbb), xvec3;
-MUL_SX	xvec6, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec6, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec6, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec6, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	12*SIZE(ptrbb), xvec4;
 ODUP_SX	12*SIZE(ptrbb), xvec5;
-MUL_SX	xvec6, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec6, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec6, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec6, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	4*SIZE(ptrba), xvec0;
 SHUF_SX	$0x44, xvec0, xvec1;
 EDUP_SX	16*SIZE(ptrbb), xvec2;
 ODUP_SX	16*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	20*SIZE(ptrbb), xvec4;
 ODUP_SX	20*SIZE(ptrbb), xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 SHUF_SX	$0xee, xvec0, xvec6;
 EDUP_SX	24*SIZE(ptrbb), xvec2;
 ODUP_SX	24*SIZE(ptrbb), xvec3;
-MUL_SX	xvec6, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec6, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec6, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec6, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	28*SIZE(ptrbb), xvec4;
 ODUP_SX	28*SIZE(ptrbb), xvec5;
-MUL_SX	xvec6, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec6, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec6, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec6, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$32*SIZE, ptrbb;
@@ -1334,32 +1314,32 @@ LD_SX	0*SIZE(ptrba), xvec0;	# a1, a2, a3, a4
 SHUF_SX	$0x44, xvec0, xvec1;	# a1, a2, a1, a2
 EDUP_SX	0*SIZE(ptrbb), xvec2;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	4*SIZE(ptrbb), xvec4;
 ODUP_SX	4*SIZE(ptrbb), xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 SHUF_SX	$0xee, xvec0, xvec6;
 EDUP_SX	8*SIZE(ptrbb), xvec2;
 ODUP_SX	8*SIZE(ptrbb), xvec3;
-MUL_SX	xvec6, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec6, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec6, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec6, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	12*SIZE(ptrbb), xvec4;
 ODUP_SX	12*SIZE(ptrbb), xvec5;
-MUL_SX	xvec6, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec6, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec6, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec6, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
 
@@ -1376,40 +1356,40 @@ LD_SX	0*SIZE(ptrba), xvec0;	# a1, a2, a3, a4
 SHUF_SX	$0x44, xvec0, xvec1;	# a1, a2, a1, a2
 EDUP_SX	0*SIZE(ptrbb), xvec2;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 EDUP_SX	4*SIZE(ptrbb), xvec4;
 ODUP_SX	4*SIZE(ptrbb), xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 .L13_loopE:
 LEAQ (ldc,ldc,2),%rax;
 #### Multiply Alpha ####
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
-MUL_SX	xvec7, xvec13;
-MUL_SX	xvec7, xvec12;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
+MUL_SX xvec7, xvec13, xvec13;
+MUL_SX xvec7, xvec12, xvec12;
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec11;
-LDH_SX	0*SIZE(C0, ldc, 2), xvec11;
-LDL_SX	0*SIZE(C0, ldc, 1), xvec10;
-LDH_SX	0*SIZE(C0, %rax, 1), xvec10;
-LDL_SX	0*SIZE(C1), xvec9;
-LDH_SX	0*SIZE(C1, ldc, 2), xvec9;
-LDL_SX	0*SIZE(C1, ldc, 1), xvec8;
-LDH_SX	0*SIZE(C1, %rax, 1), xvec8;
-ADD_SX	xvec11, xvec15;
-ADD_SX	xvec10, xvec14;
-ADD_SX	xvec9, xvec13;
-ADD_SX	xvec8, xvec12;
+LDL_SX 0*SIZE(C0), xvec11, xvec11;
+LDH_SX 0*SIZE(C0, ldc, 2), xvec11, xvec11;
+LDL_SX 0*SIZE(C0, ldc, 1), xvec10, xvec10;
+LDH_SX 0*SIZE(C0, %rax, 1), xvec10, xvec10;
+LDL_SX 0*SIZE(C1), xvec9, xvec9;
+LDH_SX 0*SIZE(C1, ldc, 2), xvec9, xvec9;
+LDL_SX 0*SIZE(C1, ldc, 1), xvec8, xvec8;
+LDH_SX 0*SIZE(C1, %rax,1), xvec8, xvec8;
+ADD_SX xvec11, xvec15, xvec15;
+ADD_SX xvec10, xvec14, xvec14;
+ADD_SX xvec9, xvec13, xvec13;
+ADD_SX xvec8, xvec12, xvec12;
 #endif
 STL_SX	xvec15, 0*SIZE(C0);
 STH_SX	xvec15, 0*SIZE(C0, ldc, 2);
@@ -1471,35 +1451,35 @@ ALIGN_4
 .L14_bodyB:
 BROAD_SX 0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 LD_SX	4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 BROAD_SX 1*SIZE(ptrba), xvec1;
 LD_SX	8*SIZE(ptrbb), xvec4;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec15;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec15, xvec15;
 LD_SX	12*SIZE(ptrbb), xvec5;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec14;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec14, xvec14;
 
 BROAD_SX 2*SIZE(ptrba), xvec0;
 LD_SX	16*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 LD_SX	20*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 BROAD_SX 3*SIZE(ptrba), xvec1;
 LD_SX	24*SIZE(ptrbb), xvec4;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec15;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec15, xvec15;
 LD_SX	28*SIZE(ptrbb), xvec5;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec14;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec14, xvec14;
 
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$32*SIZE, ptrbb;
@@ -1517,19 +1497,19 @@ ALIGN_4
 .L15_bodyB:
 BROAD_SX 0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 LD_SX	4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 BROAD_SX 1*SIZE(ptrba), xvec1;
 LD_SX	8*SIZE(ptrbb), xvec4;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec15;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec15, xvec15;
 LD_SX	12*SIZE(ptrbb), xvec5;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec14;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec14, xvec14;
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
 
@@ -1544,18 +1524,18 @@ ALIGN_4
 .L16_bodyB:
 BROAD_SX 0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec2;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 LD_SX	4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 ADDQ	$1, ptrba;
 ADDQ	$4, ptrbb;
 
 .L16_loopE:
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
 
 LEAQ (ldc,ldc,2),%rax;
 SHUF_SX	$0xff, xvec15, xvec13;
@@ -1676,96 +1656,96 @@ ALIGN_4
 ODUP_SX	0*SIZE(ptrbb), xvec3;
 SHUF_SX	$0x4e, xvec2, xvec4;
 MOV_SX	xvec2, xvec6;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 SHUF_SX	$0x4e, xvec3, xvec5;
 MOV_SX	xvec3, xvec7;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec13;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec12;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec13, xvec13;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec12, xvec12;
 
 EDUP_SX	4*SIZE(ptrbb), xvec2;
 MOV_SX	xvec4, xvec6;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec11;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec10;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec11, xvec11;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec10, xvec10;
 
 MOV_SX	xvec5, xvec7;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec9;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec9, xvec9;
 LD_SX	8*SIZE(ptrba), xvec0;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec8;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec8, xvec8;
 LD_SX	12*SIZE(ptrba), xvec1;
 
 #### Unroll time 2 ####
 ODUP_SX	4*SIZE(ptrbb), xvec3;
 SHUF_SX	$0x4e, xvec2, xvec4;
 MOV_SX	xvec2, xvec6;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 SHUF_SX	$0x4e, xvec3, xvec5;
 MOV_SX	xvec3, xvec7;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec13;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec12;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec13, xvec13;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec12, xvec12;
 
 EDUP_SX	8*SIZE(ptrbb), xvec2;
 MOV_SX	xvec4, xvec6;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec11;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec10;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec11, xvec11;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec10, xvec10;
 
 MOV_SX	xvec5, xvec7;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec9;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec9, xvec9;
 LD_SX	16*SIZE(ptrba), xvec0;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec8;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec8, xvec8;
 LD_SX	20*SIZE(ptrba), xvec1;
 
 #### Unroll time 3 ####
 ODUP_SX	8*SIZE(ptrbb), xvec3;
 SHUF_SX	$0x4e, xvec2, xvec4;
 MOV_SX	xvec2, xvec6;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 SHUF_SX	$0x4e, xvec3, xvec5;
 MOV_SX	xvec3, xvec7;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec13;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec12;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec13, xvec13;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec12, xvec12;
 
 EDUP_SX	12*SIZE(ptrbb), xvec2;
 MOV_SX	xvec4, xvec6;
 ADDQ	$16*SIZE, ptrbb;
 
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec11;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec10;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec11, xvec11;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec10, xvec10;
 
 MOV_SX	xvec5, xvec7;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec9;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec9, xvec9;
 LD_SX	24*SIZE(ptrba), xvec0;
 
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec8;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec8, xvec8;
 LD_SX	28*SIZE(ptrba), xvec1;
 ADDQ	$32*SIZE, ptrba;
 
@@ -1773,32 +1753,32 @@ ADDQ	$32*SIZE, ptrba;
 ODUP_SX	-4*SIZE(ptrbb), xvec3;
 SHUF_SX	$0x4e, xvec2, xvec4;
 MOV_SX	xvec2, xvec6;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 SHUF_SX	$0x4e, xvec3, xvec5;
 MOV_SX	xvec3, xvec7;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec13;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec12;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec13, xvec13;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec12, xvec12;
 
 EDUP_SX	0*SIZE(ptrbb), xvec2;
 MOV_SX	xvec4, xvec6;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec11;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec10;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec11, xvec11;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec10, xvec10;
 
 MOV_SX	xvec5, xvec7;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec9;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec9, xvec9;
 LD_SX	0*SIZE(ptrba), xvec0;
 
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec8;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec8, xvec8;
 LD_SX	4*SIZE(ptrba), xvec1;
 DECQ	k;
 JG	.L211_bodyB;
@@ -1816,33 +1796,33 @@ ALIGN_4
 ODUP_SX	0*SIZE(ptrbb), xvec3;
 SHUF_SX	$0x4e, xvec2, xvec4;
 MOV_SX	xvec2, xvec6;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 SHUF_SX	$0x4e, xvec3, xvec5;
 MOV_SX	xvec3, xvec7;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec13;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec12;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec13, xvec13;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec12, xvec12;
 
 EDUP_SX	4*SIZE(ptrbb), xvec2;
 MOV_SX	xvec4, xvec6;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec11;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec11, xvec11;
 ADDQ	$8*SIZE, ptrbb;
 
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec10;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec10, xvec10;
 MOV_SX	xvec5, xvec7;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec9;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec9, xvec9;
 LD_SX	8*SIZE(ptrba), xvec0;
 
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec8;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec8, xvec8;
 LD_SX	12*SIZE(ptrba), xvec1;
 ADDQ	$16*SIZE, ptrba;
 
@@ -1850,31 +1830,31 @@ ADDQ	$16*SIZE, ptrba;
 ODUP_SX	-4*SIZE(ptrbb), xvec3;
 SHUF_SX	$0x4e, xvec2, xvec4;
 MOV_SX	xvec2, xvec6;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 SHUF_SX	$0x4e, xvec3, xvec5;
 MOV_SX	xvec3, xvec7;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec13;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec12;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec13, xvec13;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec12, xvec12;
 
 EDUP_SX	0*SIZE(ptrbb), xvec2;
 MOV_SX	xvec4, xvec6;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec11;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec10;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec11, xvec11;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec10, xvec10;
 
 MOV_SX	xvec5, xvec7;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec9;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec9, xvec9;
 LD_SX	0*SIZE(ptrba), xvec0;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec8;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec8, xvec8;
 LD_SX	4*SIZE(ptrba), xvec1;
 
 .L212_loopE:
@@ -1889,70 +1869,70 @@ ALIGN_4
 ODUP_SX	0*SIZE(ptrbb), xvec3;
 SHUF_SX	$0x4e, xvec2, xvec4;
 MOV_SX	xvec2, xvec6;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 ADDQ	$4*SIZE, ptrbb;
 
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 MOV_SX	xvec3, xvec7;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec13;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec13, xvec13;
 
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec12;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec12, xvec12;
 MOV_SX	xvec4, xvec6;
 ADDQ	$8*SIZE, ptrba;
 
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec11;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec10;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec11, xvec11;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec10, xvec10;
 
 MOV_SX	xvec5, xvec7;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec9;
-MUL_SX	xvec1, xvec7;
-ADD_SX	xvec7, xvec8;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec9, xvec9;
+MUL_SX xvec1, xvec7, xvec7;
+ADD_SX xvec7, xvec8, xvec8;
 
 .L213_loopE:
 #### Multiply Alpha ####
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
-MUL_SX	xvec7, xvec13;
-MUL_SX	xvec7, xvec12;
-MUL_SX	xvec7, xvec11;
-MUL_SX	xvec7, xvec10;
-MUL_SX	xvec7, xvec9;
-MUL_SX	xvec7, xvec8;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
+MUL_SX xvec7, xvec13, xvec13;
+MUL_SX xvec7, xvec12, xvec12;
+MUL_SX xvec7, xvec11, xvec11;
+MUL_SX xvec7, xvec10, xvec10;
+MUL_SX xvec7, xvec9, xvec9;
+MUL_SX xvec7, xvec8, xvec8;
 #### Writing Back #### 
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec0;
-LDH_SX	2*SIZE(C1), xvec0;
-LDL_SX	4*SIZE(C0), xvec1;
-LDH_SX	6*SIZE(C1), xvec1;
-LDL_SX	0*SIZE(C0, ldc, 1), xvec2;
-LDH_SX	2*SIZE(C1, ldc, 1), xvec2;
-LDL_SX	4*SIZE(C0, ldc, 1), xvec3;
-LDH_SX	6*SIZE(C1, ldc, 1), xvec3;
-LDL_SX	0*SIZE(C1), xvec4;
-LDH_SX	2*SIZE(C0), xvec4;
-LDL_SX	4*SIZE(C1), xvec5;
-LDH_SX	6*SIZE(C0), xvec5;
-LDL_SX	0*SIZE(C1, ldc, 1), xvec6;
-LDH_SX	2*SIZE(C0, ldc, 1), xvec6;
-LDL_SX	4*SIZE(C1, ldc, 1), xvec7;
-LDH_SX	6*SIZE(C0, ldc, 1), xvec7;
-ADD_SX	xvec0, xvec15;
-ADD_SX	xvec1, xvec14;
-ADD_SX	xvec2, xvec13;
-ADD_SX	xvec3, xvec12;
-ADD_SX	xvec4, xvec11;
-ADD_SX	xvec5, xvec10;
-ADD_SX	xvec6, xvec9;
-ADD_SX	xvec7, xvec8;
+LDL_SX 0*SIZE(C0), xvec0, xvec0;
+LDH_SX 2*SIZE(C1), xvec0, xvec0;
+LDL_SX 4*SIZE(C0), xvec1, xvec1;
+LDH_SX 6*SIZE(C1), xvec1, xvec1;
+LDL_SX 0*SIZE(C0, ldc, 1), xvec2, xvec2;
+LDH_SX 2*SIZE(C1, ldc, 1), xvec2, xvec2;
+LDL_SX 4*SIZE(C0, ldc, 1), xvec3, xvec3;
+LDH_SX 6*SIZE(C1, ldc, 1), xvec3, xvec3;
+LDL_SX 0*SIZE(C1), xvec4, xvec4;
+LDH_SX 2*SIZE(C0), xvec4, xvec4;
+LDL_SX 4*SIZE(C1), xvec5, xvec5;
+LDH_SX 6*SIZE(C0), xvec5, xvec5;
+LDL_SX 0*SIZE(C1, ldc, 1), xvec6, xvec6;
+LDH_SX 2*SIZE(C0, ldc, 1), xvec6, xvec6;
+LDL_SX 4*SIZE(C1, ldc, 1), xvec7, xvec7;
+LDH_SX 6*SIZE(C0, ldc, 1), xvec7, xvec7;
+ADD_SX xvec0, xvec15, xvec15;
+ADD_SX xvec1, xvec14, xvec14;
+ADD_SX xvec2, xvec13, xvec13;
+ADD_SX xvec3, xvec12, xvec12;
+ADD_SX xvec4, xvec11, xvec11;
+ADD_SX xvec5, xvec10, xvec10;
+ADD_SX xvec6, xvec9, xvec9;
+ADD_SX xvec7, xvec8, xvec8;
 #endif
 STL_SX	xvec15, 0*SIZE(C0);
 STH_SX	xvec15, 2*SIZE(C1);
@@ -2028,64 +2008,64 @@ EDUP_SX	0*SIZE(ptrbb), xvec2;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	4*SIZE(ptrba), xvec1;
 EDUP_SX	4*SIZE(ptrbb), xvec2;
 ODUP_SX	4*SIZE(ptrbb), xvec3;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	8*SIZE(ptrba), xvec0;
 EDUP_SX	8*SIZE(ptrbb), xvec2;
 ODUP_SX	8*SIZE(ptrbb), xvec3;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	12*SIZE(ptrba), xvec1;
 EDUP_SX	12*SIZE(ptrbb), xvec2;
 ODUP_SX	12*SIZE(ptrbb), xvec3;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$16*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
 
@@ -2106,32 +2086,32 @@ EDUP_SX	0*SIZE(ptrbb), xvec2;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 
 LD_SX	4*SIZE(ptrba), xvec1;
 EDUP_SX	4*SIZE(ptrbb), xvec2;
 ODUP_SX	4*SIZE(ptrbb), xvec3;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec1, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec1, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec1, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec1, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec13
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 .L222_loopE:
@@ -2148,39 +2128,39 @@ EDUP_SX	0*SIZE(ptrbb), xvec2;
 ODUP_SX	0*SIZE(ptrbb), xvec3;
 
 SHUF_SX	$0x4e, xvec2, xvec4;
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec3, xvec5;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec13;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec12;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec13, xvec13;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec12, xvec12;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 .L223_loopE:
 #### Multiply Alpha ####
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
-MUL_SX	xvec7, xvec13;
-MUL_SX	xvec7, xvec12;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
+MUL_SX xvec7, xvec13, xvec13;
+MUL_SX xvec7, xvec12, xvec12;
 #### Writing back ####
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec0;
-LDH_SX	2*SIZE(C1), xvec0;
-LDL_SX	0*SIZE(C0, ldc, 1), xvec1;
-LDH_SX	2*SIZE(C1, ldc, 1), xvec1;
-LDL_SX	0*SIZE(C1), xvec2;
-LDH_SX	2*SIZE(C0), xvec2;
-LDL_SX	0*SIZE(C1, ldc, 1), xvec3;
-LDH_SX	2*SIZE(C0, ldc, 1), xvec3;
-ADD_SX	xvec0, xvec15;
-ADD_SX	xvec1, xvec14;
-ADD_SX	xvec2, xvec13;
-ADD_SX	xvec3, xvec12;
+LDL_SX 0*SIZE(C0), xvec0, xvec0;
+LDH_SX 2*SIZE(C1), xvec0, xvec0;
+LDL_SX 0*SIZE(C0, ldc, 1), xvec1, xvec1;
+LDH_SX 2*SIZE(C1, ldc, 1), xvec1, xvec1;
+LDL_SX 0*SIZE(C1), xvec2, xvec2;
+LDH_SX 2*SIZE(C0), xvec2, xvec2;
+LDL_SX 0*SIZE(C1, ldc, 1), xvec3, xvec3;
+LDH_SX 2*SIZE(C0, ldc, 1), xvec3, xvec3;
+ADD_SX xvec0, xvec15, xvec15;
+ADD_SX xvec1, xvec14, xvec14;
+ADD_SX xvec2, xvec13, xvec13;
+ADD_SX xvec3, xvec12, xvec12;
 #endif
 STL_SX	xvec15, 0*SIZE(C0);
 STH_SX	xvec15, 2*SIZE(C1);
@@ -2242,35 +2222,35 @@ LD_SX	0*SIZE(ptrba), xvec0;
 EDUP_SX	0*SIZE(ptrbb), xvec4;
 ODUP_SX	0*SIZE(ptrbb), xvec5;
 SHUF_SX	$0x44, xvec0, xvec1;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec15;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec15, xvec15;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec14, xvec14;
 
 SHUF_SX	$0xee, xvec0, xvec2;
 EDUP_SX	4*SIZE(ptrbb), xvec6;
 ODUP_SX	4*SIZE(ptrbb), xvec7;
-MUL_SX	xvec2, xvec6;
-ADD_SX	xvec6, xvec15;
-MUL_SX	xvec2, xvec7;
-ADD_SX	xvec7, xvec14;
+MUL_SX xvec2, xvec6, xvec6;
+ADD_SX xvec6, xvec15, xvec15;
+MUL_SX xvec2, xvec7, xvec7;
+ADD_SX xvec7, xvec14, xvec14;
 
 LD_SX	4*SIZE(ptrba), xvec0;
 EDUP_SX	8*SIZE(ptrbb), xvec4;
 ODUP_SX	8*SIZE(ptrbb), xvec5;
 SHUF_SX	$0x44, xvec0, xvec1;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec15;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec15, xvec15;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec14, xvec14;
 
 SHUF_SX	$0xee, xvec0, xvec2;
 EDUP_SX	12*SIZE(ptrbb), xvec6;
 ODUP_SX	12*SIZE(ptrbb), xvec7;
-MUL_SX	xvec2, xvec6;
-ADD_SX	xvec6, xvec15;
-MUL_SX	xvec2, xvec7;
-ADD_SX	xvec7, xvec14;
+MUL_SX xvec2, xvec6, xvec6;
+ADD_SX xvec6, xvec15, xvec15;
+MUL_SX xvec2, xvec7, xvec7;
+ADD_SX xvec7, xvec14, xvec14;
 
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
@@ -2290,18 +2270,18 @@ LD_SX	0*SIZE(ptrba), xvec0;
 EDUP_SX	0*SIZE(ptrbb), xvec4;
 ODUP_SX	0*SIZE(ptrbb), xvec5;
 SHUF_SX	$0x44, xvec0, xvec1;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec15;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec15, xvec15;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec14, xvec14;
 
 SHUF_SX	$0xee, xvec0, xvec2;
 EDUP_SX	4*SIZE(ptrbb), xvec6;
 ODUP_SX	4*SIZE(ptrbb), xvec7;
-MUL_SX	xvec2, xvec6;
-ADD_SX	xvec6, xvec15;
-MUL_SX	xvec2, xvec7;
-ADD_SX	xvec7, xvec14;
+MUL_SX xvec2, xvec6, xvec6;
+ADD_SX xvec6, xvec15, xvec15;
+MUL_SX xvec2, xvec7, xvec7;
+ADD_SX xvec7, xvec14, xvec14;
 
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
@@ -2318,10 +2298,10 @@ LD_SX	0*SIZE(ptrba), xvec0;
 EDUP_SX	0*SIZE(ptrbb), xvec4;
 ODUP_SX	0*SIZE(ptrbb), xvec5;
 SHUF_SX	$0x44, xvec0, xvec1;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec15;
-MUL_SX	xvec1, xvec5;
-ADD_SX	xvec5, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec15, xvec15;
+MUL_SX xvec1, xvec5, xvec5;
+ADD_SX xvec5, xvec14, xvec14;
 
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
@@ -2392,23 +2372,23 @@ ALIGN_4
 .L241_bodyB:
 BROAD_SX 0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 
 BROAD_SX 1*SIZE(ptrba), xvec2;
 LD_SX	4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec2, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec2, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 
 BROAD_SX 2*SIZE(ptrba), xvec4;
 LD_SX	8*SIZE(ptrbb), xvec5;
-MUL_SX	xvec4, xvec5;
-ADD_SX	xvec5, xvec15;
+MUL_SX xvec4, xvec5, xvec5;
+ADD_SX xvec5, xvec15, xvec15;
 
 BROAD_SX 3*SIZE(ptrba), xvec6;
 LD_SX	12*SIZE(ptrbb), xvec7;
-MUL_SX	xvec6, xvec7;
-ADD_SX	xvec7, xvec15;
+MUL_SX xvec6, xvec7, xvec7;
+ADD_SX xvec7, xvec15, xvec15;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
 DECQ	k;
@@ -2425,13 +2405,13 @@ ALIGN_4
 .L242_bodyB:
 BROAD_SX 0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 
 BROAD_SX 1*SIZE(ptrba), xvec2;
 LD_SX	4*SIZE(ptrbb), xvec3;
-MUL_SX	xvec2, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec2, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 
@@ -2446,14 +2426,14 @@ ALIGN_4;
 .L243_bodyB:
 BROAD_SX 0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 ADDQ	$1*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 .L243_loopE:
 #### Multiply Alpha ####
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
+MUL_SX xvec7, xvec15, xvec15;
 SHUF_SX $0xff, xvec15, xvec14;
 SHUF_SX $0xaa, xvec15, xvec13;
 SHUF_SX $0x55, xvec15, xvec12;
@@ -2546,34 +2526,34 @@ LD_SX	0*SIZE(ptrba), xvec0;
 LD_SX	4*SIZE(ptrba), xvec1;
 
 MOV_SX	xvec3, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 SHUF_SX $0x4e, xvec4, xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 MOV_SX	xvec5, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec13;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec13, xvec13;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec12, xvec12;
 
 SHUF_SX	$0xfa, xvec2, xvec3;
 LD_SX	8*SIZE(ptrba), xvec0;
 LD_SX	12*SIZE(ptrba), xvec1;
 
 MOV_SX	xvec3, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec4, xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 MOV_SX	xvec5, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec13;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec13, xvec13;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec12, xvec12;
 
 LD_SX	4*SIZE(ptrbb), xvec2;
 SHUF_SX	$0x50, xvec2, xvec3;
@@ -2581,34 +2561,34 @@ LD_SX	16*SIZE(ptrba), xvec0;
 LD_SX	20*SIZE(ptrba), xvec1;
 
 MOV_SX	xvec3, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec4, xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 MOV_SX	xvec5, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec13;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec13, xvec13;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec12, xvec12;
 
 SHUF_SX $0xfa, xvec2, xvec3;
 LD_SX	24*SIZE(ptrba), xvec0;
 LD_SX	28*SIZE(ptrba), xvec1;
 
 MOV_SX	xvec3, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec4, xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 MOV_SX	xvec5, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec13;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec13, xvec13;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec12, xvec12;
 
 ADDQ	$32*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
@@ -2630,34 +2610,34 @@ LD_SX	0*SIZE(ptrba), xvec0;
 LD_SX	4*SIZE(ptrba), xvec1;
 
 MOV_SX	xvec3, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 SHUF_SX $0x4e, xvec4, xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 MOV_SX	xvec5, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec13;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec13, xvec13;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec12, xvec12;
 
 SHUF_SX	$0xfa, xvec2, xvec3;
 LD_SX	8*SIZE(ptrba), xvec0;
 LD_SX	12*SIZE(ptrba), xvec1;
 
 MOV_SX	xvec3, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 SHUF_SX	$0x4e, xvec4, xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 MOV_SX	xvec5, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec13;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec13, xvec13;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec12, xvec12;
 ADDQ	$16*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 
@@ -2676,40 +2656,40 @@ LD_SX	0*SIZE(ptrba), xvec0;
 LD_SX	4*SIZE(ptrba), xvec1;
 
 MOV_SX	xvec3, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
 SHUF_SX $0x4e, xvec4, xvec5;
-MUL_SX	xvec1, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec1, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 MOV_SX	xvec5, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec13;
-MUL_SX	xvec1, xvec6;
-ADD_SX	xvec6, xvec12;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec13, xvec13;
+MUL_SX xvec1, xvec6, xvec6;
+ADD_SX xvec6, xvec12, xvec12;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$2*SIZE, ptrbb;
 
 .L313_loopE:
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
-MUL_SX	xvec7, xvec13;
-MUL_SX	xvec7, xvec12;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
+MUL_SX xvec7, xvec13, xvec13;
+MUL_SX xvec7, xvec12, xvec12;
 #### Writing Back ####
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec0;
-LDH_SX	2*SIZE(C1), xvec0;
-LDL_SX	4*SIZE(C0), xvec1;
-LDH_SX	6*SIZE(C1), xvec1;
-LDL_SX	0*SIZE(C1), xvec2;
-LDH_SX	2*SIZE(C0), xvec2;
-LDL_SX	4*SIZE(C1), xvec3;
-LDH_SX	6*SIZE(C0), xvec3;
-ADD_SX	xvec0, xvec15;
-ADD_SX	xvec1, xvec14;
-ADD_SX	xvec2, xvec13;
-ADD_SX	xvec3, xvec12;
+LDL_SX 0*SIZE(C0), xvec0, xvec0;
+LDH_SX 2*SIZE(C1), xvec0, xvec0;
+LDL_SX 4*SIZE(C0), xvec1, xvec1;
+LDH_SX 6*SIZE(C1), xvec1, xvec1;
+LDL_SX 0*SIZE(C1), xvec2, xvec2;
+LDH_SX 2*SIZE(C0), xvec2, xvec2;
+LDL_SX 4*SIZE(C1), xvec3, xvec3;
+LDH_SX 6*SIZE(C0), xvec3, xvec3;
+ADD_SX xvec0, xvec15, xvec15;
+ADD_SX xvec1, xvec14, xvec14;
+ADD_SX xvec2, xvec13, xvec13;
+ADD_SX xvec3, xvec12, xvec12;
 #endif
 STL_SX	xvec15, 0*SIZE(C0);
 STH_SX	xvec15, 2*SIZE(C1);
@@ -2774,35 +2754,35 @@ LD_SX	0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec2;
 SHUF_SX	$0x50, xvec2, xvec3;
 SHUF_SX $0x05, xvec2, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 LD_SX	4*SIZE(ptrba), xvec0;
 SHUF_SX	$0xfa, xvec2, xvec5;
 SHUF_SX	$0xaf, xvec2, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec15;
-MUL_SX	xvec0, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec15, xvec15;
+MUL_SX xvec0, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 LD_SX	8*SIZE(ptrba), xvec0;
 LD_SX	4*SIZE(ptrbb), xvec2;
 SHUF_SX	$0x50, xvec2, xvec3;
 SHUF_SX	$0x05, xvec2, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 LD_SX	12*SIZE(ptrba), xvec0;
 SHUF_SX	$0xfa, xvec2, xvec5;
 SHUF_SX	$0xaf, xvec2, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec15;
-MUL_SX	xvec0, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec15, xvec15;
+MUL_SX xvec0, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 
 ADDQ	$16*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
@@ -2822,18 +2802,18 @@ LD_SX	0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec2;
 SHUF_SX	$0x50, xvec2, xvec3;
 SHUF_SX $0x05, xvec2, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 
 LD_SX	4*SIZE(ptrba), xvec0;
 SHUF_SX	$0xfa, xvec2, xvec5;
 SHUF_SX	$0xaf, xvec2, xvec6;
-MUL_SX	xvec0, xvec5;
-ADD_SX	xvec5, xvec15;
-MUL_SX	xvec0, xvec6;
-ADD_SX	xvec6, xvec14;
+MUL_SX xvec0, xvec5, xvec5;
+ADD_SX xvec5, xvec15, xvec15;
+MUL_SX xvec0, xvec6, xvec6;
+ADD_SX xvec6, xvec14, xvec14;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 
@@ -2850,25 +2830,25 @@ LD_SX	0*SIZE(ptrba), xvec0;
 LD_SX	0*SIZE(ptrbb), xvec2;
 SHUF_SX	$0x50, xvec2, xvec3;
 SHUF_SX $0x05, xvec2, xvec4;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec15;
-MUL_SX	xvec0, xvec4;
-ADD_SX	xvec4, xvec14;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec15, xvec15;
+MUL_SX xvec0, xvec4, xvec4;
+ADD_SX xvec4, xvec14, xvec14;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$2*SIZE, ptrbb;
 
 .L323_loopE:
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
 #### Writing back ####
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec0;
-LDH_SX	2*SIZE(C1), xvec0;
-LDL_SX	0*SIZE(C1), xvec1;
-LDH_SX	2*SIZE(C0), xvec1;
-ADD_SX	xvec0, xvec15;
-ADD_SX	xvec1, xvec14;
+LDL_SX 0*SIZE(C0), xvec0, xvec0;
+LDH_SX 2*SIZE(C1), xvec0, xvec0;
+LDL_SX 0*SIZE(C1), xvec1, xvec1;
+LDH_SX 2*SIZE(C0), xvec1, xvec1;
+ADD_SX xvec0, xvec15, xvec15;
+ADD_SX xvec1, xvec14, xvec14;
 #endif
 STL_SX	xvec15, 0*SIZE(C0);
 STH_SX	xvec15, 2*SIZE(C1);
@@ -2928,19 +2908,19 @@ LD_SX	0*SIZE(ptrba), xvec0;		# a0, a1, a2, a3
 EDUP_SX	0*SIZE(ptrbb), xvec2;		# b0, b0, b2, b2
 ODUP_SX	0*SIZE(ptrbb), xvec3;		# b1, b1, b3, b3
 
-MUL_SX	xvec0, xvec2;				# c00, c10
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec0, xvec3;				# C01, c11
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 LD_SX	4*SIZE(ptrba), xvec0;
 EDUP_SX	4*SIZE(ptrbb), xvec2;
 ODUP_SX	4*SIZE(ptrbb), xvec3;
 
-MUL_SX	xvec0, xvec2;
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec0, xvec3;
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 DECQ	k;
@@ -2959,10 +2939,10 @@ LD_SX	0*SIZE(ptrba), xvec0;		# a0, a1, a2, a3
 EDUP_SX	0*SIZE(ptrbb), xvec2;		# b0, b0, b2, b2
 ODUP_SX	0*SIZE(ptrbb), xvec3;		# b1, b1, b3, b3
 
-MUL_SX	xvec0, xvec2;				# c00, c10
-ADD_SX	xvec2, xvec15;
-MUL_SX	xvec0, xvec3;				# C01, c11
-ADD_SX	xvec3, xvec14;
+MUL_SX xvec0, xvec2, xvec2;
+ADD_SX xvec2, xvec15, xvec15;
+MUL_SX xvec0, xvec3, xvec3;
+ADD_SX xvec3, xvec14, xvec14;
 
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
@@ -2985,7 +2965,7 @@ mulss	xvec0, xvec2;
 addss	xvec2, xvec15;
 mulss	xvec1, xvec3;
 SHUF_SX	$0xe1, xvec3, xvec4;
-ADD_SX	xvec4, xvec15;
+ADD_SX xvec4, xvec15, xvec15;
 
 movss	1*SIZE(ptrbb), xvec5;
 XOR_SY	yvec6, yvec6, yvec6;
@@ -2994,26 +2974,26 @@ mulss	xvec0, xvec5;
 addss	xvec5, xvec14;
 mulss	xvec1, xvec6;
 SHUF_SX	$0xe1, xvec6, xvec7;
-ADD_SX	xvec7, xvec14
+ADD_SX xvec7, xvec14, xvec14
 
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$2*SIZE, ptrbb;
 .L333_loopE:
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
-MUL_SX	xvec7, xvec14;
+MUL_SX xvec7, xvec15, xvec15;
+MUL_SX xvec7, xvec14, xvec14;
 SHUF_SX	$0xee, xvec15, xvec13;
 SHUF_SX	$0xee, xvec14, xvec12;
 SHUF_SX	$0x44, xvec15, xvec11;
 SHUF_SX	$0x44, xvec14, xvec10;
-ADD_SX	xvec13, xvec11;
-ADD_SX	xvec12, xvec10;
+ADD_SX xvec13, xvec11, xvec11;
+ADD_SX xvec12, xvec10, xvec10;
 
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec0;
-LDL_SX	0*SIZE(C1), xvec1;
-ADD_SX	xvec0, xvec11;
-ADD_SX	xvec1, xvec10;
+LDL_SX 0*SIZE(C0), xvec0, xvec0;
+LDL_SX 0*SIZE(C1), xvec1, xvec1;
+ADD_SX xvec0, xvec11, xvec11;
+ADD_SX xvec1, xvec10, xvec10;
 #endif
 STL_SX	xvec11, 0*SIZE(C0);
 STL_SX	xvec10, 0*SIZE(C1);
@@ -3305,14 +3285,14 @@ SHUF_SX	$0xee, xvec15, xvec12;
 SHUF_SX	$0x44, xvec14, xvec11;
 SHUF_SX	$0xee, xvec14, xvec10;
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec0;
-LDL_SX	2*SIZE(C0), xvec1;
-LDL_SX	4*SIZE(C0), xvec2;
-LDL_SX	6*SIZE(C0), xvec3;
-ADD_SX	xvec0, xvec13;
-ADD_SX	xvec1, xvec12;
-ADD_SX	xvec2, xvec11;
-ADD_SX	xvec3, xvec10;
+LDL_SX 0*SIZE(C0), xvec0, xvec0;
+LDL_SX 2*SIZE(C0), xvec1, xvec1;
+LDL_SX 4*SIZE(C0), xvec2, xvec2;
+LDL_SX 6*SIZE(C0), xvec3, xvec3;
+ADD_SX xvec0, xvec13, xvec13;
+ADD_SX xvec1, xvec12, xvec12;
+ADD_SX xvec2, xvec11, xvec11;
+ADD_SX xvec3, xvec10, xvec10;
 #endif
 STL_SX	xvec13, 0*SIZE(C0);
 STL_SX	xvec12, 2*SIZE(C0);
@@ -3368,23 +3348,23 @@ ALIGN_4
 .L421_bodyB:
 LD_SX	0*SIZE(ptrba), xvec0;
 BROAD_SX 0*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 
 LD_SX	4*SIZE(ptrba), xvec0;
 BROAD_SX 1*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 
 LD_SX	8*SIZE(ptrba), xvec0;
 BROAD_SX 2*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 
 LD_SX	12*SIZE(ptrba), xvec0;
 BROAD_SX 3*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 ADDQ	$16*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 DECQ 	k;
@@ -3401,13 +3381,13 @@ ALIGN_4
 .L422_bodyB:
 LD_SX	0*SIZE(ptrba), xvec0;
 BROAD_SX 0*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 
 LD_SX	4*SIZE(ptrba), xvec0;
 BROAD_SX 1*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$2*SIZE, ptrbb;
@@ -3422,19 +3402,19 @@ ALIGN_4
 .L423_bodyB:
 LD_SX	0*SIZE(ptrba), xvec0;
 BROAD_SX 0*SIZE(ptrbb), xvec1;
-MUL_SX	xvec0, xvec1;
-ADD_SX	xvec1, xvec15;
+MUL_SX xvec0, xvec1, xvec1;
+ADD_SX xvec1, xvec15, xvec15;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$1*SIZE, ptrbb;
 
 .L423_loopE:
 #### Writing back ####
 BROAD_SX MEMALPHA, xvec7;
-MUL_SX	xvec7, xvec15;
+MUL_SX xvec7, xvec15, xvec15;
 #ifndef	TRMMKERNEL
-LDL_SX	0*SIZE(C0), xvec0;
-LDH_SX	2*SIZE(C0), xvec0;
-ADD_SX	xvec0, xvec15;
+LDL_SX 0*SIZE(C0), xvec0, xvec0;
+LDH_SX 2*SIZE(C0), xvec0, xvec0;
+ADD_SX xvec0, xvec15, xvec15;
 #endif
 STL_SX	xvec15, 0*SIZE(C0);
 STH_SX	xvec15, 2*SIZE(C0);
@@ -3485,37 +3465,37 @@ SARQ $2, k;
 JLE .L431_loopE;
 ALIGN_4
 .L431_bodyB:
-movss	0*SIZE(ptrba), xvec0;
-movss	1*SIZE(ptrba), xvec1;
-movss	0*SIZE(ptrbb), xvec2;
-mulss	xvec2, xvec0;
-addss	xvec0, xvec15;
-mulss	xvec2, xvec1;
-addss	xvec1, xvec14;
+vmovss	0*SIZE(ptrba), xvec0;
+vmovss	1*SIZE(ptrba), xvec1;
+vmovss	0*SIZE(ptrbb), xvec2;
+vmulss	xvec2, xvec0, xvec0;
+vaddss	xvec0, xvec15, xvec15;
+vmulss	xvec2, xvec1, xvec1;
+vaddss	xvec1, xvec14, xvec14;
 
-movss	2*SIZE(ptrba), xvec3;
-movss	3*SIZE(ptrba), xvec4;
-movss	1*SIZE(ptrbb), xvec5;
-mulss	xvec5, xvec3;
-addss	xvec3, xvec15;
-mulss	xvec5, xvec4;
-addss	xvec4, xvec14;
+vmovss	2*SIZE(ptrba), xvec3;
+vmovss	3*SIZE(ptrba), xvec4;
+vmovss	1*SIZE(ptrbb), xvec5;
+vmulss	xvec5, xvec3, xvec3;
+vaddss	xvec3, xvec15, xvec15;
+vmulss	xvec5, xvec4, xvec4;
+vaddss	xvec4, xvec14, xvec14;
 
-movss	4*SIZE(ptrba), xvec0;
-movss	5*SIZE(ptrba), xvec1;
-movss	2*SIZE(ptrbb), xvec2;
-mulss	xvec2, xvec0;
-addss	xvec0, xvec15;
-mulss	xvec2, xvec1;
-addss	xvec1, xvec14;
+vmovss	4*SIZE(ptrba), xvec0;
+vmovss	5*SIZE(ptrba), xvec1;
+vmovss	2*SIZE(ptrbb), xvec2;
+vmulss	xvec2, xvec0, xvec0;
+vaddss	xvec0, xvec15, xvec15;
+vmulss	xvec2, xvec1, xvec1;
+vaddss	xvec1, xvec14, xvec14;
 
-movss	6*SIZE(ptrba), xvec3;
-movss	7*SIZE(ptrba), xvec4;
-movss	3*SIZE(ptrbb), xvec5;
-mulss	xvec5, xvec3;
-addss	xvec3, xvec15;
-mulss	xvec5, xvec4;
-addss	xvec4, xvec14;
+vmovss	6*SIZE(ptrba), xvec3;
+vmovss	7*SIZE(ptrba), xvec4;
+vmovss	3*SIZE(ptrbb), xvec5;
+vmulss	xvec5, xvec3, xvec3;
+vaddss	xvec3, xvec15, xvec15;
+vmulss	xvec5, xvec4, xvec4;
+vaddss	xvec4, xvec14, xvec14;
 addq	$8*SIZE, ptrba;
 addq	$4*SIZE, ptrbb;
 decq	k;
@@ -3530,21 +3510,21 @@ TEST $2, kkk;
 JLE .L432_loopE;
 ALIGN_4
 .L432_bodyB:
-movss	0*SIZE(ptrba), xvec0;
-movss	1*SIZE(ptrba), xvec1;
-movss	0*SIZE(ptrbb), xvec2;
-mulss	xvec2, xvec0;
-addss	xvec0, xvec15;
-mulss	xvec2, xvec1;
-addss	xvec1, xvec14;
+vmovss	0*SIZE(ptrba), xvec0;
+vmovss	1*SIZE(ptrba), xvec1;
+vmovss	0*SIZE(ptrbb), xvec2;
+vmulss	xvec2, xvec0, xvec0;
+vaddss	xvec0, xvec15, xvec15;
+vmulss	xvec2, xvec1, xvec1;
+vaddss	xvec1, xvec14, xvec14;
 
-movss	2*SIZE(ptrba), xvec3;
-movss	3*SIZE(ptrba), xvec4;
-movss	1*SIZE(ptrbb), xvec5;
-mulss	xvec5, xvec3;
-addss	xvec3, xvec15;
-mulss	xvec5, xvec4;
-addss	xvec4, xvec14;
+vmovss	2*SIZE(ptrba), xvec3;
+vmovss	3*SIZE(ptrba), xvec4;
+vmovss	1*SIZE(ptrbb), xvec5;
+vmulss	xvec5, xvec3, xvec3;
+vaddss	xvec3, xvec15, xvec15;
+vmulss	xvec5, xvec4, xvec4;
+vaddss	xvec4, xvec14, xvec14;
 addq	$4*SIZE, ptrba;
 addq	$2*SIZE, ptrbb;
 
@@ -3557,28 +3537,28 @@ TEST $1, kkk;
 JLE .L433_loopE;
 ALIGN_4
 .L433_bodyB:
-movss	0*SIZE(ptrba), xvec0;
-movss	1*SIZE(ptrba), xvec1;
-movss	0*SIZE(ptrbb), xvec2;
-mulss	xvec2, xvec0;
-addss	xvec0, xvec15;
-mulss	xvec2, xvec1;
-addss	xvec1, xvec14;
+vmovss	0*SIZE(ptrba), xvec0;
+vmovss	1*SIZE(ptrba), xvec1;
+vmovss	0*SIZE(ptrbb), xvec2;
+vmulss	xvec2, xvec0, xvec0;
+vaddss	xvec0, xvec15, xvec15;
+vmulss	xvec2, xvec1, xvec1;
+vaddss	xvec1, xvec14, xvec14;
 addq	$2*SIZE, ptrba;
 addq	$1*SIZE, ptrbb;
 
 .L433_loopE:
 #### Writing Back ####
-movss	MEMALPHA, xvec7;
-mulss	xvec7, xvec15;
-mulss	xvec7, xvec14;
+vmovss	MEMALPHA, xvec7;
+vmulss	xvec7, xvec15, xvec15;
+vmulss	xvec7, xvec14, xvec14;
 
 #ifndef	TRMMKERNEL
-addss	0*SIZE(C0), xvec15;
-addss	1*SIZE(C0), xvec14;
+vaddss	0*SIZE(C0), xvec15, xvec15;
+vaddss	1*SIZE(C0), xvec14, xvec14;
 #endif
-movss	xvec15, 0*SIZE(C0);
-movss	xvec14, 1*SIZE(C0);
+vmovss	xvec15, 0*SIZE(C0);
+vmovss	xvec14, 1*SIZE(C0);
 #if (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) ||(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 MOVQ bk, %rax;
 SUBQ kkk, %rax;
@@ -3625,25 +3605,25 @@ SARQ $2, k;
 JLE .L441_loopE;
 ALIGN_4
 .L441_bodyB:
-movss	0*SIZE(ptrba), xvec0;
-movss	0*SIZE(ptrbb), xvec1;
-mulss	xvec0, xvec1;
-addss	xvec1, xvec15;
+vmovss	0*SIZE(ptrba), xvec0;
+vmovss	0*SIZE(ptrbb), xvec1;
+vmulss	xvec0, xvec1, xvec1;
+vaddss	xvec1, xvec15, xvec15;
 
-movss	1*SIZE(ptrba), xvec0;
-movss	1*SIZE(ptrbb), xvec1;
-mulss	xvec0, xvec1;
-addss	xvec1, xvec15;
+vmovss	1*SIZE(ptrba), xvec0;
+vmovss	1*SIZE(ptrbb), xvec1;
+vmulss	xvec0, xvec1, xvec1;
+vaddss	xvec1, xvec15, xvec15;
 
-movss	2*SIZE(ptrba), xvec0;
-movss	2*SIZE(ptrbb), xvec1;
-mulss	xvec0, xvec1;
-addss	xvec1, xvec15;
+vmovss	2*SIZE(ptrba), xvec0;
+vmovss	2*SIZE(ptrbb), xvec1;
+vmulss	xvec0, xvec1, xvec1;
+vaddss	xvec1, xvec15, xvec15;
 
-movss	3*SIZE(ptrba), xvec0;
-movss	3*SIZE(ptrbb), xvec1;
-mulss	xvec0, xvec1;
-addss	xvec1, xvec15;
+vmovss	3*SIZE(ptrba), xvec0;
+vmovss	3*SIZE(ptrbb), xvec1;
+vmulss	xvec0, xvec1, xvec1;
+vaddss	xvec1, xvec15, xvec15;
 addq	$4*SIZE, ptrba;
 addq	$4*SIZE, ptrbb;
 decq	k;
@@ -3658,15 +3638,15 @@ TEST $2, kkk;
 JLE .L442_loopE;
 ALIGN_4
 .L442_bodyB:
-movss	0*SIZE(ptrba), xvec0;
-movss	0*SIZE(ptrbb), xvec1;
-mulss	xvec0, xvec1;
-addss	xvec1, xvec15;
+vmovss	0*SIZE(ptrba), xvec0;
+vmovss	0*SIZE(ptrbb), xvec1;
+vmulss	xvec0, xvec1, xvec1;
+vaddss	xvec1, xvec15, xvec15;
 
-movss	1*SIZE(ptrba), xvec0;
-movss	1*SIZE(ptrbb), xvec1;
-mulss	xvec0, xvec1;
-addss	xvec1, xvec15;
+vmovss	1*SIZE(ptrba), xvec0;
+vmovss	1*SIZE(ptrbb), xvec1;
+vmulss	xvec0, xvec1, xvec1;
+vaddss	xvec1, xvec15, xvec15;
 addq	$2*SIZE, ptrba;
 addq	$2*SIZE, ptrbb;
 
@@ -3679,21 +3659,21 @@ TEST $1, kkk;
 JLE .L443_loopE;
 ALIGN_4
 .L443_bodyB:
-movss	0*SIZE(ptrba), xvec0;
-movss	0*SIZE(ptrbb), xvec1;
-mulss	xvec0, xvec1;
-addss	xvec1, xvec15;
+vmovss	0*SIZE(ptrba), xvec0;
+vmovss	0*SIZE(ptrbb), xvec1;
+vmulss	xvec0, xvec1, xvec1;
+vaddss	xvec1, xvec15, xvec15;
 addq	$1*SIZE, ptrba;
 addq	$1*SIZE, ptrbb;
 
 .L443_loopE:
 #### Writing Back ####
-movss	MEMALPHA, xvec7;
-mulss	xvec7, xvec15;
+vmovss	MEMALPHA, xvec7;
+vmulss	xvec7, xvec15, xvec15;
 #ifndef	TRMMKERNEL
-addss	0*SIZE(C0), xvec15;
+vaddss	0*SIZE(C0), xvec15, xvec15;
 #endif
-movss	xvec15, 0*SIZE(C0);
+vmovss	xvec15, 0*SIZE(C0);
 #if (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) ||(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 MOVQ bk, %rax;
 SUBQ kkk, %rax;
@@ -3711,6 +3691,7 @@ MOV	bk, k;
 SALQ $2, k;
 ADDQ k, bb;
 ADDQ ldc, C;
+
 .L40_loopE:
 movq      0(%rsp), %rbx;
 movq      8(%rsp), %rbp;
@@ -3718,6 +3699,9 @@ movq     16(%rsp), %r12;
 movq     24(%rsp), %r13;
 movq     32(%rsp), %r14;
 movq     40(%rsp), %r15;
+
+vzeroupper
+
 #ifdef WINDOWS_ABI
 	movq	 48(%rsp), %rdi
 	movq	 56(%rsp), %rsi
@@ -3732,6 +3716,7 @@ movq     40(%rsp), %r15;
 	movups	192(%rsp), %xmm14
 	movups	208(%rsp), %xmm15
 #endif
+
 addq    $STACKSIZE, %rsp;
 ret
 
