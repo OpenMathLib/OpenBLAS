@@ -5,7 +5,7 @@ OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. OpenB
 
 Please read the documents on OpenBLAS wiki pages <http://github.com/xianyi/OpenBLAS/wiki>.
 
-## Intallation
+## Installation
 Download from project homepage. http://xianyi.github.com/OpenBLAS/
 
 Or, check out codes from git://github.com/xianyi/OpenBLAS.git
@@ -76,9 +76,9 @@ The priorities are OPENBLAS_NUM_THREADS > GOTO_NUM_THREADS > OMP_NUM_THREADS.
 
 If you compile this lib with USE_OPENMP=1, you should set OMP_NUM_THREADS environment variable. OpenBLAS ignores OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS with USE_OPENMP=1.
 
-### Set the number of threads with calling functions. 
+### Set the number of threads on runtime. 
 
-Examples:
+We provided the below functions to controll the number of threads on runtime. So far, we didn't support changing the number of threads on Windows. On Windows, these functions are dummy.
 
     void goto_set_num_threads(int num_threads);
 
