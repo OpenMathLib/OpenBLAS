@@ -64,7 +64,7 @@
 #define PREFETCHB     prefetcht0
 #endif
 
-#ifdef NEHALEM
+#if defined(NEHALEM) || defined(SANDYBRIDGE)
 #define PREFETCHSIZE  (16 * 1 + 8)
 #define PREFETCHW     prefetcht0
 #define PREFETCHB     prefetcht0

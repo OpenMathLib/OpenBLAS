@@ -57,7 +57,7 @@
 #define PREFETCHSIZE	(16 * 24)
 #endif
 
-#ifdef NEHALEM
+#if defined(NEHALEM) || defined(SANDYBRIDGE)
 #define PREFETCH	prefetcht0
 #define PREFETCHW	prefetcht0
 #define PREFETCHSIZE	(16 * 24)
@@ -76,7 +76,7 @@
 #define movsd		movlpd
 #endif
 
-#if defined(BARCELONA)  || defined(SHANGHAI)
+#if defined(BARCELONA)  || defined(SHANGHAI) || defined(BOBCAT)
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE	(16 * 16)

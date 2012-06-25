@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -85,6 +85,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MAX_NODES	16
 #define MAX_CPUS	256
+#define NCPUBITS        (8*sizeof(unsigned long))
+#define MAX_BITMASK_LEN (MAX_CPUS/NCPUBITS)
+#define CPUELT(cpu)	((cpu) / NCPUBITS)
+#define CPUMASK(cpu)	((unsigned long) 1UL << ((cpu) % NCPUBITS))
+
 
 #define SH_MAGIC	0x510510
 
@@ -103,10 +108,10 @@ typedef struct {
   int num_nodes;
   int num_procs;
   int final_num_procs;
-  unsigned long avail;
-  
+  unsigned long avail [MAX_BITMASK_LEN];
+  int avail_count;
   unsigned long cpu_info   [MAX_CPUS];
-  unsigned long node_info  [MAX_NODES];
+  unsigned long node_info  [MAX_NODES][MAX_BITMASK_LEN];
   int cpu_use[MAX_CPUS];
 
 } shm_t;
@@ -126,7 +131,8 @@ static shm_t *common = (void *)-1;
 static int shmid, pshmid;
 static void *paddr;
 
-static unsigned long lprocmask, lnodemask;
+static unsigned long lprocmask[MAX_BITMASK_LEN], lnodemask;
+static int lprocmask_count = 0;
 static int numprocs = 1;
 static int numnodes = 1;
 
@@ -177,70 +183,114 @@ static inline int rcount(unsigned long number) {
   than sizeof(unsigned long). On 64 bits, the limit 
   is 64. On 32 bits, it is 32.
 ***/
-static inline unsigned long get_cpumap(int node) {
+static inline void get_cpumap(int node, unsigned long * node_info) {
 
   int infile;
-  unsigned long affinity;
+  unsigned long affinity[32];
   char name[160];
   char cpumap[160];
-  char *p, *dummy;
+  char *dummy;
   int i=0;
+  int count=0;
+  int k=0;
 
   sprintf(name, CPUMAP_NAME, node);
   
   infile = open(name, O_RDONLY);
+  for(i=0; i<32; i++){
+    affinity[i] = 0;
+  }
 
-  affinity = 0;
-    
   if (infile != -1) {
     
     read(infile, cpumap, sizeof(cpumap));
-    p = cpumap;
-    while (*p != '\n' && i<160){
-      if(*p != ',') {
-	name[i++]=*p;
+
+    for(i=0; i<160; i++){
+      if(cpumap[i] == '\n')
+	break;
+      if(cpumap[i] != ','){
+	name[k++]=cpumap[i];
+	
+	//Enough data for Hex
+	if(k >= NCPUBITS/4){
+	  affinity[count++] = strtoul(name, &dummy, 16);
+	  k=0;
+	}
       }
-      p++;
+
     }
-    p = name;
-
-    //    while ((*p == '0') || (*p == ',')) p++;
-
-    affinity = strtoul(p, &dummy, 16);
-   
+    if(k!=0){
+      name[k]='\0';
+      affinity[count++] = strtoul(name, &dummy, 16);
+      k=0;
+    }
+    // 0-63bit -> node_info[0], 64-128bit -> node_info[1] ....
+    // revert the sequence
+    for(i=0; i<count && i<MAX_BITMASK_LEN; i++){
+      node_info[i]=affinity[count-i-1];
+    }
     close(infile);
   }
 
-  return affinity;
+  return ;
 }
 
-static inline unsigned long get_share(int cpu, int level) {
+static inline void get_share(int cpu, int level, unsigned long * share) {
 
   int infile;
-  unsigned long affinity;
+  unsigned long affinity[32];
+  char cpumap[160];
   char name[160];
-  char *p;
-  
+  char *dummy;
+  int count=0;
+  int i=0,k=0;
+  int bitmask_idx = 0;
+
   sprintf(name, SHARE_NAME, cpu, level);
   
   infile = open(name, O_RDONLY);
 
-  affinity = (1UL << cpu);
-    
+  //  Init share
+  for(i=0; i<MAX_BITMASK_LEN; i++){
+    share[i]=0;
+  }
+  bitmask_idx = CPUELT(cpu);
+  share[bitmask_idx] = CPUMASK(cpu);
+
   if (infile != -1) {
     
-    read(infile, name, sizeof(name));
+    read(infile, cpumap, sizeof(cpumap));
+
+    for(i=0; i<160; i++){
+      if(cpumap[i] == '\n')
+	break;
+      if(cpumap[i] != ','){
+	name[k++]=cpumap[i];
+	
+	//Enough data 
+	if(k >= NCPUBITS/4){
+	  affinity[count++] = strtoul(name, &dummy, 16);
+	  k=0;
+	}
+      }
+
+    }
+    if(k!=0){
+      name[k]='\0';
+      affinity[count++] = strtoul(name, &dummy, 16);
+      k=0;
+    }
+    // 0-63bit -> node_info[0], 64-128bit -> node_info[1] ....
+    // revert the sequence
+    for(i=0; i<count && i<MAX_BITMASK_LEN; i++){
+      share[i]=affinity[count-i-1];
+    }
    
-    p = name;
-
-    while ((*p == '0') || (*p == ',')) p++;
-
-    affinity = strtol(p, &p, 16);
    
     close(infile);
   }
 
-  return affinity;
+  return ;
 }
 
 static int numa_check(void) {
@@ -248,6 +298,7 @@ static int numa_check(void) {
   DIR *dp;
   struct dirent *dir;
   int node;
+  int j;
 
   common -> num_nodes = 0;
 
@@ -258,7 +309,9 @@ static int numa_check(void) {
     return 0;
   }
 
-  for (node = 0; node < MAX_NODES; node ++) common -> node_info[node] = 0;
+  for (node = 0; node < MAX_NODES; node ++) {
+    for (j = 0; j<MAX_BITMASK_LEN; j++) common -> node_info[node][j] = 0;
+  }
 
   while ((dir = readdir(dp)) != NULL) {
     if (*(unsigned int *) dir -> d_name == 0x065646f6eU) {
@@ -266,12 +319,12 @@ static int numa_check(void) {
       node = atoi(&dir -> d_name[4]);
 
       if (node > MAX_NODES) {
-	fprintf(stderr, "\nGotoBLAS Warining : MAX_NODES (NUMA) is too small. Terminated.\n");
+	fprintf(stderr, "\nOpenBLAS Warning : MAX_NODES (NUMA) is too small. Terminated.\n");
 	exit(1);
       }
 
       common -> num_nodes ++;
-      common -> node_info[node] = get_cpumap(node);
+      get_cpumap(node, common->node_info[node]);
 
     }
   }
@@ -284,7 +337,7 @@ static int numa_check(void) {
   fprintf(stderr, "Numa found : number of Nodes = %2d\n", common -> num_nodes);
 
   for (node = 0; node < common -> num_nodes; node ++)
-    fprintf(stderr, "MASK (%2d) : %08lx\n", node, common -> node_info[node]);
+    fprintf(stderr, "MASK (%2d) : %08lx\n", node, common -> node_info[node][0]);
 #endif
 
   return common -> num_nodes;
@@ -296,11 +349,13 @@ static void numa_mapping(void) {
   int i, j, h;
   unsigned long work, bit;
   int count = 0;
+  int bitmask_idx = 0;
 
   for (node = 0; node < common -> num_nodes; node ++) {
     core = 0;
     for (cpu = 0; cpu < common -> num_procs; cpu ++) {
-      if (common -> node_info[node] & common -> avail & (1UL << cpu)) {
+      bitmask_idx = CPUELT(cpu);
+      if (common -> node_info[node][bitmask_idx] & common -> avail[bitmask_idx] & CPUMASK(cpu)) {
 	common -> cpu_info[count] = WRITE_CORE(core) | WRITE_NODE(node) | WRITE_CPU(cpu);
 	count ++;
 	core ++;
@@ -357,58 +412,89 @@ static void numa_mapping(void) {
 
 static void disable_hyperthread(void) {
 
-  unsigned long share;
+  unsigned long share[MAX_BITMASK_LEN];
   int cpu;
+  int bitmask_idx = 0;
+  int i=0, count=0;
+  bitmask_idx = CPUELT(common -> num_procs);
 
-  if(common->num_procs > 64){
-    fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->num_procs);
-    exit(1);
-  }else if(common->num_procs == 64){
-    common -> avail = 0xFFFFFFFFFFFFFFFFUL;
-  }else
-    common -> avail = (1UL << common -> num_procs) - 1;
+  for(i=0; i< bitmask_idx; i++){
+    common -> avail[count++] = 0xFFFFFFFFFFFFFFFFUL;
+  }
+  if(CPUMASK(common -> num_procs) != 1){
+    common -> avail[count++] = CPUMASK(common -> num_procs) - 1;
+  }
+  common -> avail_count = count;
+
+  /* if(common->num_procs > 64){ */
+  /*   fprintf(stderr, "\nOpenBLAS Warning : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->num_procs); */
+  /*   exit(1); */
+  /* }else if(common->num_procs == 64){ */
+  /*   common -> avail = 0xFFFFFFFFFFFFFFFFUL; */
+  /* }else */
+  /*   common -> avail = (1UL << common -> num_procs) - 1; */
 
 #ifdef DEBUG
-  fprintf(stderr, "\nAvail CPUs    : %04lx.\n", common -> avail);
+  fprintf(stderr, "\nAvail CPUs    : ");
+  for(i=0; i<count; i++)
+    fprintf(stderr, "%04lx ", common -> avail[i]);
+  fprintf(stderr, ".\n");
 #endif
 
   for (cpu = 0; cpu < common -> num_procs; cpu ++) {
-    
-    share = (get_share(cpu, 1) & common -> avail);
-    
-    if (popcount(share) > 1) {
+
+    get_share(cpu, 1, share);
+
+    //When the shared cpu are in different element of share & avail array, this may be a bug.
+    for (i = 0; i < count ; i++){
+      if (popcount(share[i]) > 1) {
       
 #ifdef DEBUG
-      fprintf(stderr, "Detected Hyper Threading on CPU %4x; disabled CPU %04lx.\n",
-	      cpu, share & ~(1UL << cpu));
+	fprintf(stderr, "Detected Hyper Threading on CPU %4x; disabled CPU %04lx.\n",
+		cpu, share[i] & ~(CPUMASK(cpu)));
 #endif
       
-      common -> avail &= ~((share & ~(1UL << cpu)));
+	common -> avail[i] &= ~((share[i] & ~ CPUMASK(cpu)));
+      }
     }
   }
 }
 
 static void disable_affinity(void) {
-
+  int i=0;
+  int bitmask_idx=0;
+  int count=0;
 #ifdef DEBUG
-    fprintf(stderr, "Final all available CPUs  : %04lx.\n\n", common -> avail);
+    fprintf(stderr, "Final all available CPUs  : %04lx.\n\n", common -> avail[0]);
     fprintf(stderr, "CPU mask                  : %04lx.\n\n", *(unsigned long *)&cpu_orig_mask[0]);
 #endif
 
-  if(common->final_num_procs > 64){
-    fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->final_num_procs);
-    exit(1);
-  }else if(common->final_num_procs == 64){
-    lprocmask = 0xFFFFFFFFFFFFFFFFUL;
-  }else
-    lprocmask = (1UL << common -> final_num_procs) - 1;
+  /* if(common->final_num_procs > 64){ */
+  /*   fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->final_num_procs); */
+  /*   exit(1); */
+  /* }else if(common->final_num_procs == 64){ */
+  /*   lprocmask = 0xFFFFFFFFFFFFFFFFUL; */
+  /* }else */
+  /*   lprocmask = (1UL << common -> final_num_procs) - 1; */
+
+  bitmask_idx = CPUELT(common -> final_num_procs);
+
+  for(i=0; i< bitmask_idx; i++){
+    lprocmask[count++] = 0xFFFFFFFFFFFFFFFFUL;
+  }
+  if(CPUMASK(common -> final_num_procs) != 1){
+    lprocmask[count++] = CPUMASK(common -> final_num_procs) - 1;
+  }
+  lprocmask_count = count;
 
 #ifndef USE_OPENMP
-  lprocmask &= *(unsigned long *)&cpu_orig_mask[0];
+  for(i=0; i< count; i++){
+    lprocmask[i] &= ((unsigned long *)&cpu_orig_mask[0])[i];
+  }
 #endif
 
 #ifdef DEBUG
-    fprintf(stderr, "I choose these CPUs  : %04lx.\n\n", lprocmask);
+    fprintf(stderr, "I choose these CPUs  : %04lx.\n\n", lprocmask[0]);
 #endif
 
 }
@@ -498,7 +584,7 @@ static void create_pshmem(void) {
 static void local_cpu_map(void) {
 
   int cpu, id, mapping;
-
+  int bitmask_idx = 0;
   cpu = 0;
   mapping = 0;
 
@@ -508,8 +594,9 @@ static void local_cpu_map(void) {
     if (id > 0) {
       if (is_dead(id)) common -> cpu_use[cpu] = 0;
     }
-
-    if ((common -> cpu_use[cpu] == 0) && (lprocmask & (1UL << cpu))) {
+    
+    bitmask_idx = CPUELT(cpu);
+    if ((common -> cpu_use[cpu] == 0) && (lprocmask[bitmask_idx] & CPUMASK(cpu))) {
 
       common -> cpu_use[cpu] = pshmid;
       cpu_mapping[mapping] = READ_CPU(common -> cpu_info[cpu]);
@@ -595,6 +682,7 @@ void gotoblas_affinity_init(void) {
 #ifndef USE_OPENMP
   cpu_set_t cpu_mask;
 #endif
+  int i;
 
   if (initialized) return;
 
@@ -646,6 +734,11 @@ void gotoblas_affinity_init(void) {
 
     common -> num_procs = get_nprocs();
 
+    if(common -> num_procs > MAX_CPUS) {
+      fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(%d). Terminated.\n", common->num_procs, MAX_CPUS);
+      exit(1);
+    }
+
     for (cpu = 0; cpu < common -> num_procs; cpu++) common -> cpu_info[cpu] = cpu;
     
     numa_check();
@@ -654,7 +747,8 @@ void gotoblas_affinity_init(void) {
 
     if (common -> num_nodes > 1) numa_mapping();
 
-    common -> final_num_procs = popcount(common -> avail);
+    common -> final_num_procs = 0;
+    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += popcount(common -> avail[i]);
 
     for (cpu = 0; cpu < common -> final_num_procs; cpu ++) common -> cpu_use[cpu] =  0;
 
@@ -664,7 +758,8 @@ void gotoblas_affinity_init(void) {
 
   disable_affinity();
 
-  num_avail = popcount(lprocmask);
+  num_avail = 0;
+  for(i=0; i<lprocmask_count; i++) num_avail += popcount(lprocmask[i]);
 
   if ((numprocs <= 0) || (numprocs > num_avail)) numprocs = num_avail;
 

@@ -1,5 +1,18 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.0
+26-Jun-2012
+common:
+	* Removed the limitation (64) of numbers of CPU cores.
+	  Now, it supports 256 cores at max.
+	* Supported clang compiler.
+	* Fixed some build bugs on FreeBSD
+x86/x86-64:
+	* Optimized Level-3 BLAS on Intel Sandy Bridge x86-64 by AVX instructions.
+	  Please use gcc >= 4.6 or clang >=3.1.
+	* Support AMD Bobcat by using GotoBLAS2 AMD Barcelona codes.
+
+====================================================================
 Version 0.1.1
 29-Apr-2012
 common:
@@ -7,6 +20,8 @@ common:
 	* Supported LAPACKE, a C interface to LAPACKE. (Thank Zaheer Chothia)
 	* Fixed the build bug (MD5 and download) on Mac OSX.
 	* Auto download CUnit 2.1.2-2 from SF.net with UTEST_CHECK=1.
+	* Fxied the compatibility issue for compilers without C99 complex number
+	  (e.g. Visual Studio)
 x86/x86_64:
 	* Auto-detect Intel Sandy Bridge Core i7-3xxx & Xeon E7 Westmere-EX.
 	* Test alpha=Nan in dscale.

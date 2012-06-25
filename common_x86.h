@@ -254,7 +254,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define PROFCODE
 #endif
 
-#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INERIX)
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
 #define SAVEREGISTERS \
 	subl	$32, %esp;\
 	movups	%xmm6,    0(%esp);\
@@ -269,7 +269,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define RESTOREREGISTERS
 #endif
 
-#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INERIX)
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
 #define PROLOGUE \
 	.text; \
 	.align 16; \
@@ -282,7 +282,7 @@ REALNAME:
 #define EPILOGUE .end	 REALNAME
 #endif
 
-#if defined(OS_LINUX) || defined(OS_FreeBSD) || defined(OS_NetBSD) || defined(__ELF__)
+#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(__ELF__)
 #define PROLOGUE \
 	.text; \
 	.align 16; \
@@ -356,4 +356,11 @@ REALNAME:
 
 #ifndef ALIGN_6
 #define ALIGN_6 .align 64
+
+// ffreep %st(0). 
+// Because Clang didn't support ffreep, we directly use the opcode.
+// Please check out http://www.sandpile.org/x86/opc_fpu.htm 
+#ifndef ffreep
+#define ffreep .byte 0xdf, 0xc0 #
+#endif
 #endif

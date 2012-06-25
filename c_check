@@ -43,14 +43,14 @@ $compiler = DEC       if ($data =~ /COMPILER_DEC/);
 $compiler = GCC       if ($compiler eq "");
 
 $os = Linux           if ($data =~ /OS_LINUX/);
-$os = FreeBSD         if ($data =~ /OS_FreeBSD/);
-$os = NetBSD          if ($data =~ /OS_NetBSD/);
-$os = Darwin          if ($data =~ /OS_Darwin/);
-$os = SunOS           if ($data =~ /OS_SunOS/);
+$os = FreeBSD         if ($data =~ /OS_FREEBSD/);
+$os = NetBSD          if ($data =~ /OS_NETBSD/);
+$os = Darwin          if ($data =~ /OS_DARWIN/);
+$os = SunOS           if ($data =~ /OS_SUNOS/);
 $os = AIX             if ($data =~ /OS_AIX/);
 $os = osf             if ($data =~ /OS_OSF/);
 $os = WINNT           if ($data =~ /OS_WINNT/);
-$os = CYGWIN_NT       if ($data =~ /OS_CYGWIN/);
+$os = CYGWIN_NT       if ($data =~ /OS_CYGWIN_NT/);
 $os = Interix         if ($data =~ /OS_INTERIX/);
 
 $architecture = x86    if ($data =~ /ARCH_X86/);

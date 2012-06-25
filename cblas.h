@@ -9,6 +9,10 @@ extern "C" {
 #include <stddef.h>
 #include "common.h"
 
+/*Set the number of threads on runtime.*/
+void openblas_set_num_threads(int num_threads);
+void goto_set_num_threads(int num_threads);
+
 #define CBLAS_INDEX size_t
 
 enum CBLAS_ORDER     {CblasRowMajor=101, CblasColMajor=102};

@@ -69,6 +69,12 @@
 #define PREFETCHB     prefetcht0
 #endif
 
+#ifdef SANDYBRIDGE
+#define PREFETCHSIZE  (16 * 1 - 8)
+#define PREFETCHW     prefetcht0
+#define PREFETCHB     prefetcht0
+#endif
+
 #ifndef PREFETCH
 #define PREFETCH      prefetcht0
 #endif
@@ -262,7 +268,7 @@
 	movaps	-16 * SIZE(AA), %xmm0
 
 	addps	%xmm2, %xmm7
-#ifndef NEHALEM
+#if !(defined(NEHALEM) || defined(SANDYBRIDGE))
 	PREFETCH (PREFETCHSIZE + 16) * SIZE(AA)
 #endif
 	pshufd	$0x93, %xmm1, %xmm2

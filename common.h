@@ -68,7 +68,7 @@ extern "C" {
 #define SMP
 #endif
 
-#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_Interix)
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
 #define WINDOWS_ABI
 #define OS_WINDOWS
 
@@ -89,7 +89,7 @@ extern "C" {
 #include <sched.h>
 #endif
 
-#ifdef OS_DARWIN
+#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD)
 #include <sched.h>
 #endif
 

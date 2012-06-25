@@ -70,11 +70,11 @@ dll2 : libgoto2_shared.dll
 	$(RANLIB) ../$(LIBNAME)
 ifeq ($(BINARY32), 1)
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
 	-lib /machine:i386 /def:libopenblas.def
 else
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
 	-lib /machine:X64 /def:libopenblas.def 
 endif
 
@@ -121,7 +121,7 @@ so : ../$(LIBSONAME)
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
 	$(CC) $(CFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--retain-symbols-file=linux.def $(EXTRALIB)
+	-Wl,--retain-symbols-file=linux.def $(FEXTRALIB) $(EXTRALIB)
 	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 

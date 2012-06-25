@@ -57,7 +57,7 @@
 
 #include "l1param.h"
 
-#if defined(NEHALEM) || defined(PENRYN) || defined(DUNNINGTON)
+#if defined(NEHALEM) || defined(PENRYN) || defined(DUNNINGTON) || defined(SANDYBRIDGE)
 #define  USE_PSHUFD
 #else
 #define USE_PSHUFD_HALF
@@ -860,7 +860,7 @@
 	cmpl	$2 * SIZE, INCX
 	jne	.L220
 
-#if defined(ALIGNED_ACCESS) && !defined(NEHALEM)
+#if defined(ALIGNED_ACCESS) && !defined(NEHALEM) && !defined(SANDYBRIDGE)
 
 #ifdef HAVE_SSE3
 	movddup	%xmm0, %xmm6
