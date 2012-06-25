@@ -72,6 +72,14 @@
 	       zgemm3m, cgemm3m, zsymm3m, csymm3m, zhemm3m, chemm3m,
 	       );
 
+@misc_no_underscore_objs = (
+                            openblas_set_num_threads, goto_set_num_threads,
+                           );
+
+@misc_underscore_objs = (
+                            openblas_set_num_threads,
+                        );
+
 @lapackobjs = (
 	       # These routines are provided by OpenBLAS.
 	       sgesv,  dgesv,  cgesv,  zgesv, 
@@ -2660,11 +2668,11 @@
 
 if ($ARGV[5] == 1) {
 	#NO_LAPACK=1
-	@underscore_objs = (@blasobjs);
+	@underscore_objs = (@blasobjs, @misc_underscore_objs);
 } elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1") {
-    @underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2);
+    @underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2, @misc_underscore_objs);
 } else {
-    @underscore_objs = (@blasobjs, @lapackobjs);
+    @underscore_objs = (@blasobjs, @lapackobjs, @misc_underscore_objs);
 }
 
 if ($ARGV[3] == 1){ @underscore_objs = (@underscore_objs, @exblasobjs); };
@@ -2678,10 +2686,10 @@ if ($ARGV[1] eq "ia64"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 if ($ARGV[1] eq "MIPS"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 
 if ($ARGV[4] == 0) {
-    @no_underscore_objs = (@cblasobjs);
+    @no_underscore_objs = (@cblasobjs, @misc_no_underscore_objs);
 }else{
     #NO_CBLAS=1
-    @no_underscore_objs = ();
+    @no_underscore_objs = (@misc_no_underscore_objs);
 }
 if ($ARGV[6] == 1) {
     #NO_LAPACKE=1
@@ -2751,6 +2759,10 @@ if ($ARGV[0] eq "aix"){
 if ($ARGV[0] eq "win2k"){
     print "EXPORTS\n";
     $count = 1;    
+    
+	#remove openblas_set_num_threads 
+	@underscore_objs = grep /[^openblas_set_num_threads]/,@underscore_objs;
+	
     foreach $objs (@underscore_objs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
@@ -2761,7 +2773,11 @@ if ($ARGV[0] eq "win2k"){
 	print "\t$uppercase=$objs", "_  \@", $count, "\n";
 	$count ++;
     }
-
+    
+	#for openblas_set_num_threads 
+    print "\topenblas_set_num_threads_=openblas_set_num_threads_  \@", $count, "\n";
+	$count ++;
+	
 #	if ($ARGV[4] == 0) {
 		foreach $objs (@no_underscore_objs) {
 			print "\t",$objs,"=$objs","  \@", $count, "\n";

@@ -45,6 +45,8 @@ extern "C" {
 
 int    BLASFUNC(xerbla)(char *, blasint *info, blasint);
 
+void    BLASFUNC(openblas_set_num_threads)(int *);
+
 FLOATRET  BLASFUNC(sdot)  (blasint *, float  *, blasint *, float  *, blasint *);
 FLOATRET  BLASFUNC(sdsdot)(blasint *, float  *,        float  *, blasint *, float  *, blasint *);
 
