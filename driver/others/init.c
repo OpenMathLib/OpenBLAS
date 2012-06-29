@@ -447,6 +447,9 @@ static void disable_hyperthread(void) {
 
     //When the shared cpu are in different element of share & avail array, this may be a bug.
     for (i = 0; i < count ; i++){
+
+      share[i] &= common->avail[i];
+
       if (popcount(share[i]) > 1) {
       
 #ifdef DEBUG
