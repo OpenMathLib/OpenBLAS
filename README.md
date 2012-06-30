@@ -44,6 +44,7 @@ Please read GotoBLAS_01Readme.txt
 - **Intel Xeon 56xx (Westmere)**: Used GotoBLAS2 Nehalem codes.
 - **Intel Sandy Bridge**: Optimized Level-3 BLAS with AVX on x86-64.
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
+- **AMD Bulldozer**: Used GotoBLAS2 Barcelona codes.
 
 #### MIPS64:
 - **ICT Loongson 3A**: Optimized Level-3 BLAS and the part of Level-1,2.

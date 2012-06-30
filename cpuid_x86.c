@@ -1027,6 +1027,7 @@ int get_cpuname(void){
 	return CPUTYPE_OPTERON;
       case  1:
       case 10:
+      case  6:   //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
 	return CPUTYPE_BARCELONA;
       case  5:
 	return CPUTYPE_BOBCAT;
@@ -1151,6 +1152,7 @@ static char *cpuname[] = {
   "NANO",
   "SANDYBRIDGE",
   "BOBCAT",
+  "BULLDOZER",
 };
 
 static char *lowercpuname[] = {
@@ -1199,6 +1201,7 @@ static char *lowercpuname[] = {
   "nano",
   "sandybridge",
   "bobcat",
+  "bulldozer",
 };
 
 static char *corename[] = {
@@ -1224,6 +1227,7 @@ static char *corename[] = {
   "NANO",
   "SANDYBRIDGE",
   "BOBCAT",
+  "BULLDOZER",
 };
 
 static char *corename_lower[] = {
@@ -1249,6 +1253,7 @@ static char *corename_lower[] = {
   "nano",
   "sandybridge",
   "bobcat",
+  "bulldozer",
 };
 
 
@@ -1359,6 +1364,7 @@ int get_coretype(void){
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON; 
       else if (exfamily == 5) return CORE_BOBCAT; 
+      else if (exfamily == 6) return CORE_BARCELONA;  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
       else return CORE_BARCELONA;
     }
   }
