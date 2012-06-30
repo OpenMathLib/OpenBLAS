@@ -1,5 +1,13 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.1
+30-Jun-2012
+common:
+x86/x86-64:
+	* Fixed the SEGFAULT bug about hyper-theading
+	* Support AMD Bulldozer by using GotoBLAS2 AMD Barcelona codes
+
+====================================================================
 Version 0.2.0
 26-Jun-2012
 common:
