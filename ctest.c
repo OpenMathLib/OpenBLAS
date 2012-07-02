@@ -70,6 +70,11 @@ OS_CYGWIN_NT
 OS_INTERIX
 #endif
 
+#if defined(__gnu_hurd__)
+/* Hurd is very similar to GNU/Linux, it should work out of the box */
+OS_LINUX
+#endif
+
 #if defined(__i386) || defined(_X86)
 ARCH_X86
 #endif
