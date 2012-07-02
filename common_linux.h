@@ -86,7 +86,13 @@ static inline int my_set_mempolicy(int mode, const unsigned long *addr, unsigned
   return syscall(SYS_set_mempolicy, mode, addr, flag);
 }
 
-static inline int my_gettid(void) { return syscall(SYS_gettid); }
+static inline int my_gettid(void) { 
+#ifdef SYS_gettid
+return syscall(SYS_gettid); 
+#else
+return getpid();
+#endif
+}
 
 #endif
 #endif

@@ -1128,7 +1128,7 @@ static BLASULONG   init_lock = 0UL;
 static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, 
 			  void *sa, void *sb, BLASLONG pos) {
 
-#ifndef ARCH_POWER
+#if !defined(ARCH_POWER) && !defined(ARCH_SPARC)
 
   long size;
   BLASULONG buffer;
