@@ -975,27 +975,33 @@ int get_cpuname(void){
 	  return CPUTYPE_DUNNINGTON;
 	}
 	break;
-	  case  2:
-		  switch (model) {
-		  case 5:
-			  //Intel Core (Clarkdale) / Core (Arrandale) 
-			  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
-			  // Xeon (Clarkdale), 32nm
-			  return CPUTYPE_NEHALEM;
-		  case 10:
-                          //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
-                          return CPUTYPE_SANDYBRIDGE;
-		  case 12:
-			  //Xeon Processor 5600 (Westmere-EP)
-			  return CPUTYPE_NEHALEM;
-		  case 13:
-                          //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
-                          return CPUTYPE_SANDYBRIDGE;
-		  case 15:
-			  //Xeon Processor E7 (Westmere-EX)
-			  return CPUTYPE_NEHALEM;
-		  }
-		  break;
+      case  2:
+	switch (model) {
+	case 5:
+	  //Intel Core (Clarkdale) / Core (Arrandale) 
+	  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
+	  // Xeon (Clarkdale), 32nm
+	  return CPUTYPE_NEHALEM;
+	case 10:
+	  //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
+	  return CPUTYPE_SANDYBRIDGE;
+	case 12:
+	  //Xeon Processor 5600 (Westmere-EP)
+	  return CPUTYPE_NEHALEM;
+	case 13:
+	  //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
+	  return CPUTYPE_SANDYBRIDGE;
+	case 15:
+	  //Xeon Processor E7 (Westmere-EX)
+	  return CPUTYPE_NEHALEM;
+	}
+	break;
+      case 3:
+	switch (model) {
+	case 10:
+	  return CPUTYPE_SANDYBRIDGE;
+	}
+	break;
       }
       break;
     case 0x7:
@@ -1347,6 +1353,12 @@ int get_coretype(void){
 	case 15:
 	  //Xeon Processor E7 (Westmere-EX)
 	  return CORE_NEHALEM;
+	}
+	break;
+      case 3:
+	switch (model) {
+	case 10:
+	  return CORE_SANDYBRIDGE;
 	}
 	break;
       }
