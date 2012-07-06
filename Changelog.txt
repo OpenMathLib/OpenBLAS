@@ -1,5 +1,17 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.2
+6-July-2012
+common:
+	* Fixed exporting DLL functions bug on Windows/MingW
+	* Support GNU Hurd (Thank Sylvestre Ledru)
+	* Support kfreebsd kernel (Thank Sylvestre Ledru)
+x86/x86-64:
+	* Support Intel Sandy Bridge 22nm desktop/mobile CPU
+SPARC:
+	* Improve the detection of SPARC (Thank Sylvestre Ledru)
+
+====================================================================
 Version 0.2.1
 30-Jun-2012
 common:

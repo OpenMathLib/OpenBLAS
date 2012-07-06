@@ -2760,30 +2760,27 @@ if ($ARGV[0] eq "win2k"){
     print "EXPORTS\n";
     $count = 1;    
     
-	#remove openblas_set_num_threads 
-	@underscore_objs = grep /[^openblas_set_num_threads]/,@underscore_objs;
-	
     foreach $objs (@underscore_objs) {
-	$uppercase = $objs;
-	$uppercase =~ tr/[a-z]/[A-Z]/;
-   	print "\t$objs=$objs","_  \@", $count, "\n";
-	$count ++;
-   	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
-	$count ++;
-	print "\t$uppercase=$objs", "_  \@", $count, "\n";
-	$count ++;
+	unless ($objs =~ /openblas_set_num_threads/) { #remove openblas_set_num_threads
+	    $uppercase = $objs;
+	    $uppercase =~ tr/[a-z]/[A-Z]/;
+	    print "\t$objs=$objs","_  \@", $count, "\n";
+	    $count ++;
+	    print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+	    $count ++;
+	    print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	    $count ++;
+	}
     }
     
-	#for openblas_set_num_threads 
+    #for openblas_set_num_threads 
     print "\topenblas_set_num_threads_=openblas_set_num_threads_  \@", $count, "\n";
+    $count ++;
+    
+    foreach $objs (@no_underscore_objs) {
+	print "\t",$objs,"=$objs","  \@", $count, "\n";
 	$count ++;
-	
-#	if ($ARGV[4] == 0) {
-		foreach $objs (@no_underscore_objs) {
-			print "\t",$objs,"=$objs","  \@", $count, "\n";
-			$count ++;
-		}
-#    }
+    }
 	
     exit(0);
 }

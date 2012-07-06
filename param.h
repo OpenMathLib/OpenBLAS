@@ -1482,7 +1482,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_THREAD gemm_thread_mn
 #endif
 
-#if defined(SPARC) && defined(V9)
+#if (defined(SPARC) && defined(V9)) || defined(__sparc_v9__)
 
 #define SNUMOPT		2
 #define DNUMOPT		2
