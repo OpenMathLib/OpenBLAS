@@ -99,11 +99,9 @@ ifeq ($(OSNAME), Darwin)
 endif
 ifeq ($(OSNAME), WINNT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
 endif
 
 tests :
