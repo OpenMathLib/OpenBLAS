@@ -17,11 +17,11 @@ ZLASWP	= ../generic/zlaswp_k_1.c
 endif
 
 ifndef LASWP
-LASWP	= ../generic/laswp_k_1.c
+LASWP	= ../generic/laswp_k.c
 endif
 
 ifndef ZLASWP
-ZLASWP	= ../generic/zlaswp_k_1.c
+ZLASWP	= ../generic/zlaswp_k.c
 endif
 
 include ../generic/Makefile
