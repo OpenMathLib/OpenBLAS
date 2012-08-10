@@ -687,6 +687,15 @@ AWK	= awk
 REVISION = -r$(VERSION)
 MAJOR_VERSION = $(word 1,$(subst ., ,$(VERSION)))
 
+ifeq ($(DEBUG), 1)
+COMMON_OPT += -g
+endif
+
+ifndef COMMON_OPT
+COMMON_OPT = -O2
+endif
+
+
 CFLAGS     = $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 PFLAGS     = $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
 

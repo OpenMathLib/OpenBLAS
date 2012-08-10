@@ -108,18 +108,15 @@ VERSION = 0.2.2
 # The installation directory.
 # PREFIX = /opt/OpenBLAS
 
-# Common Optimization Flag; -O2 is enough.
-# DEBUG = 1
-
-ifeq ($(DEBUG), 1)
-COMMON_OPT += -g
-# -DDEBUG
-else
-COMMON_OPT += -O2
-endif
+# Common Optimization Flag; 
+# The default -O2 is enough.
+# COMMON_OPT = -O2
 
 # Profiling flags
 COMMON_PROF = -pg
+
+# Build Debug version
+# DEBUG = 1
 
 #
 #  End of user configuration 
