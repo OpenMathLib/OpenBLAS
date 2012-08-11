@@ -433,7 +433,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 /* Shutdown procedure, but user don't have to call this routine. The */
 /* kernel automatically kill threads.                                */
 
-int blas_thread_shutdown_(void){
+int BLASFUNC(blas_thread_shutdown)(void){
 
   int i;
 
