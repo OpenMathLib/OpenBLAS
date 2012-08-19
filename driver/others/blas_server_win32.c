@@ -466,7 +466,17 @@ void goto_set_num_threads(int num_threads)
 		LOCK_COMMAND(&server_lock);
 		
 		//increased_threads = 1;
+	    if (!blas_server_avail){
 
+			InitializeCriticalSection(&pool.lock);
+			pool.filled = CreateEvent(NULL, FALSE, FALSE, NULL);
+			pool.killed = CreateEvent(NULL, TRUE,  FALSE, NULL);
+
+			pool.shutdown = 0;
+			pool.queue    = NULL;
+			blas_server_avail = 1;
+		}
+		
 		for(i = blas_num_threads - 1; i < num_threads - 1; i++){	  
 		  
 			blas_threads[i] = CreateThread(NULL, 0, 
