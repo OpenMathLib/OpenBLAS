@@ -14,7 +14,7 @@ endif
 
 # COMMONOBJS	+=  info.$(SUFFIX)
 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 COMMONOBJS	+=  dynamic.$(SUFFIX)
 else
 COMMONOBJS	+=  parameter.$(SUFFIX)
@@ -70,7 +70,7 @@ ifndef BLAS_SERVER
 BLAS_SERVER = blas_server.c
 endif
 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
 else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) parameter.$(SUFFIX)

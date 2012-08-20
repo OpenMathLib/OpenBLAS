@@ -48,7 +48,7 @@ HPLOBJS = \
 
 COMMONOBJS	+= lsame.$(SUFFIX) scabs1.$(SUFFIX) dcabs1.$(SUFFIX)
 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 SBLASOBJS	+= setparam$(TSUFFIX).$(SUFFIX)
 CCOMMON_OPT	+= -DTS=$(TSUFFIX)
 endif

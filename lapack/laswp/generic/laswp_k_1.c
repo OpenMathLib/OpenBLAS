@@ -48,7 +48,7 @@
 int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG lda, 
 	 FLOAT *dummy2, BLASLONG dumy3, blasint *ipiv, BLASLONG incx){
 
-  BLASLONG i, j, ip1, ip2;
+  BLASLONG i, j, ip1, ip2, rows;
   blasint *piv;
   FLOAT *a1;
   FLOAT *b1, *b2;
@@ -58,13 +58,34 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
   k1 --;
 
 #ifndef MINUS
- ipiv += k1
-;
+ ipiv += k1;
 #else
   ipiv -= (k2 - 1) * incx;
 #endif
 
   if (n  <= 0) return 0;
+  
+  rows = k2-k1;
+  if (rows <=0) return 0;
+  if (rows == 1) {
+    //Only have 1 row
+    ip1 = *ipiv;
+    a1 = a + k1 + 1;
+    b1 = a + ip1;
+    
+    if(a1 == b1) return 0;
+
+    for(j=0; j<n; j++){
+	A1 = *a1;
+	B1 = *b1;
+	*a1 = B1;
+	*b1 = A1;
+
+	a1 += lda;
+	b1 += lda;
+    }
+    return 0;
+  }
 
   j = n;
   if (j > 0) {
@@ -85,10 +106,11 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
       b1 = a + ip1;
       b2 = a + ip2;
 	  
-      i = ((k2 - k1) >> 1);
-      
-      if (i > 0) {
-	do {
+      i = (rows >> 1);
+
+      i--;
+      //Main Loop
+      while (i > 0) {
 #ifdef OPTERON
 #ifndef MINUS
 	  asm volatile("prefetchw  2 * 128(%0)\n"  : : "r"(a1));
@@ -172,12 +194,69 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	  a1 -= 2;
 #endif
 	i --;
-	} while (i > 0);
       }
+
+      //Loop Ending
+      A1 = *a1;
+      A2 = *a2;
+      B1 = *b1;
+      B2 = *b2;
+      if (b1 == a1) {
+	if (b2 == a1) {
+	  *a1 = A2;
+	  *a2 = A1;
+	} else 
+	  if (b2 != a2) {
+	    *a2 = B2;
+	    *b2 = A2;
+	  }
+      } else 
+	if (b1 == a2) {
+	  if (b2 != a1) {
+	    if (b2 == a2) {
+	      *a1 = A2;
+	      *a2 = A1;
+	    } else {
+	      *a1 = A2;
+	      *a2 = B2;
+	      *b2 = A1;
+	    }
+	  }
+	} else {
+	  if (b2 == a1) {
+	    *a1 = A2;
+	    *a2 = B1;
+	    *b1 = A1;
+	  } else 
+	    if (b2 == a2) {
+	      *a1 = B1;
+	      *b1 = A1;
+	    } else 
+	      if (b2 == b1) {
+		*a1 = B1;
+		*a2 = A1;
+		*b1 = A2;
+	      } else {
+		*a1 = B1;
+		*a2 = B2;
+		*b1 = A1;
+		*b2 = A2;
+	      }
+	}
+
+#ifndef MINUS
+	  a1 += 2;
+#else
+	  a1 -= 2;
+#endif
       
-      i = ((k2 - k1) & 1);
+      //Remain
+      i = (rows & 1);
       
       if (i > 0) {
+	ip1 = *piv;
+	b1 = a + ip1;      
+
 	A1 = *a1;
 	B1 = *b1;
 	*a1 = B1;

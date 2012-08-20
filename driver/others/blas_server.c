@@ -435,7 +435,7 @@ static int blas_thread_server(void *arg){
 
   blas_memory_free(buffer);
 
-  pthread_exit(NULL);
+  //pthread_exit(NULL);
 
   return 0;
 }

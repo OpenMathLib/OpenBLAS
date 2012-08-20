@@ -66,6 +66,11 @@ dll  : ../$(LIBDLLNAME)
 
 dll2 : libgoto2_shared.dll
 
+# On Windows, we only generate a DLL without a version suffix.  This is because
+# applications which link against the dynamic library reference a fixed DLL name
+# in their import table.  By instead using a stable name it is possible to
+# upgrade between library versions, without needing to re-link an application.
+# For more details see: https://github.com/xianyi/OpenBLAS/issues/127.
 ../$(LIBDLLNAME) : ../$(LIBNAME) libopenblas.def dllinit.$(SUFFIX)
 	$(RANLIB) ../$(LIBNAME)
 ifeq ($(BINARY32), 1)

@@ -100,6 +100,7 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 * Please use gcc version 4.6 and above to compile Sandy Bridge AVX kernels on Linux/MingW/BSD.
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture. The Clang 3.0 will generate the wrong AVX binary code.
 * The number of CPUs/Cores should less than or equal to 256. 
+* On Linux, OpenBLAS sets the processor affinity by default. This may cause [the conflict with R parallel](https://stat.ethz.ch/pipermail/r-sig-hpc/2012-April/001348.html). You can build the library with NO_AFFINITY=1.
 * On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell. 
 
 ## Specification of Git Branches

@@ -1,5 +1,18 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.3
+20-Aug-2012
+common:
+	* Fixed LAPACK unstable bug about ?laswp. (#130)
+	* Fixed the shared library bug about unloading the library on 
+	  Linux (#132).
+	* Fixed the compilation failure on BlueGene/P (TARGET=PPC440FP2)
+	  Please use gcc and IBM xlf. (#134)
+x86/x86-64:
+	* Supported goto_set_num_threads and openblas_set_num_threads 
+	  APIs in Windows. They can set the number of threads on runtime.
+	  
+====================================================================
 Version 0.2.2
 6-July-2012
 common:

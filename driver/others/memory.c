@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -206,7 +206,15 @@ int get_num_procs(void) {
 
 #endif
 
+/*
+OpenBLAS uses the numbers of CPU cores in multithreading. 
+It can be set by openblas_set_num_threads(int num_threads);
+*/
 int blas_cpu_number  = 0;
+/*
+The numbers of threads in the thread pool. 
+This value is equal or large than blas_cpu_number. This means some threads are sleep.
+*/
 int blas_num_threads = 0;
 
 int  goto_get_num_procs  (void) {
@@ -1289,6 +1297,7 @@ void DESTRUCTOR gotoblas_quit(void) {
    moncontrol (1);
 #endif
 
+   blas_shutdown();
 }
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))

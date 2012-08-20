@@ -3,7 +3,7 @@ include ./Makefile.system
 
 BLASDIRS = interface driver/level2 driver/level3 driver/others
 
-ifndef DYNAMIC_ARCH
+ifneq ($(DYNAMIC_ARCH), 1)
 BLASDIRS += kernel 
 endif
 
@@ -99,11 +99,9 @@ ifeq ($(OSNAME), Darwin)
 endif
 ifeq ($(OSNAME), WINNT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
 endif
 
 tests :
@@ -147,7 +145,7 @@ ifeq ($(EXPRECISION), 1)
 	echo "#define EXPRECISION">> config_last.h
 endif
 ## 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
@@ -165,7 +163,7 @@ prof_blas :
 	  $(MAKE) -C $$d prof || exit 1 ; \
 	fi; \
 	done
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 	  $(MAKE) -C kernel commonprof || exit 1
 endif
 
@@ -184,7 +182,7 @@ hpl :
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
@@ -233,7 +231,7 @@ ifndef NOFORTRAN
 	-@echo "LAPACKLIB_P = ../$(LIBNAME_P)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
-#	-@echo "CEXTRALIB   = $(CEXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 

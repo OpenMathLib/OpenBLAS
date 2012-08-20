@@ -60,6 +60,8 @@ extern gotoblas_t  gotoblas_NEHALEM;
 extern gotoblas_t  gotoblas_OPTERON;
 extern gotoblas_t  gotoblas_OPTERON_SSE3;
 extern gotoblas_t  gotoblas_BARCELONA;
+extern gotoblas_t  gotoblas_SANDYBRIDGE;
+extern gotoblas_t  gotoblas_BOBCAT;
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -122,15 +124,24 @@ static gotoblas_t *get_coretype(void){
 	if (model == 12) return &gotoblas_ATOM;
 	return NULL;
 
-	  case 2:
-		  //Intel Core (Clarkdale) / Core (Arrandale)
-		  // Pentium (Clarkdale) / Pentium Mobile (Arrandale)
-		  // Xeon (Clarkdale), 32nm
-		  if (model ==  5) return &gotoblas_NEHALEM;
+      case 2:
+	//Intel Core (Clarkdale) / Core (Arrandale)
+	// Pentium (Clarkdale) / Pentium Mobile (Arrandale)
+	// Xeon (Clarkdale), 32nm
+	if (model ==  5) return &gotoblas_NEHALEM;
 		  
-		  //Intel Xeon Processor 5600 (Westmere-EP)
-		  if (model == 12) return &gotoblas_NEHALEM;
-		  return NULL;
+	//Intel Xeon Processor 5600 (Westmere-EP)
+	//Xeon Processor E7 (Westmere-EX)
+	if (model == 12 || model == 15) return &gotoblas_NEHALEM;
+
+	//Intel Core i5-2000 /i7-2000 (Sandy Bridge)
+	//Intel Core i7-3000 / Xeon E5
+	if (model == 10 || model == 13) return &gotoblas_SANDYBRIDGE;
+	return NULL;
+      case 3:
+	//Intel Sandy Bridge 22nm (Ivy Bridge?)
+	if (model == 10) return &gotoblas_SANDYBRIDGE;
+	return NULL;
       }
       case 0xf:
       if (model <= 0x2) return &gotoblas_NORTHWOOD;
@@ -144,7 +155,9 @@ static gotoblas_t *get_coretype(void){
       if ((exfamily == 0) || (exfamily == 2)) {
 	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3; 
 	else return &gotoblas_OPTERON;
-      }  else {
+      }  else if (exfamily == 5) {
+	return &gotoblas_BOBCAT;
+      } else {
 	return &gotoblas_BARCELONA;
       }
     }
@@ -178,6 +191,8 @@ static char *corename[] = {
     "Opteron(SSE3)",
     "Barcelona",
     "Nano",
+    "Sandybridge",
+    "Bobcat",
 };
 
 char *gotoblas_corename(void) {
@@ -197,7 +212,9 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_OPTERON)      return corename[13];
   if (gotoblas == &gotoblas_BARCELONA)    return corename[14];
   if (gotoblas == &gotoblas_NANO)         return corename[15];
-  
+  if (gotoblas == &gotoblas_SANDYBRIDGE)  return corename[16];
+  if (gotoblas == &gotoblas_BOBCAT)       return corename[17];
+
   return corename[0];
 }
 

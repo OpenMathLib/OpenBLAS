@@ -113,7 +113,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	    min_jj = js + jmin - jjs;
 	    if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 	    
-#if 0
+#if 1 
 	    LASWP_PLUS(min_jj, j + offset + 1, j + jb + offset, ZERO, 
 #ifdef COMPLEX
 		       ZERO,
