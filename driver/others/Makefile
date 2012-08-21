@@ -215,7 +215,7 @@ info.$(SUFFIX) : info.c info.h ../../common.h ../../param.h
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 
-hpl   : CFLAGS += -DHPL
-hpl_p : CFLAGS += -DHPL
+hpl   : override CFLAGS += -DHPL
+hpl_p : override CFLAGS += -DHPL
 
 include $(TOPDIR)/Makefile.tail
