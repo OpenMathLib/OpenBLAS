@@ -642,6 +642,8 @@ int BLASFUNC(zgemc)(char *, char *, blasint *, blasint *, blasint *, double *,
 int BLASFUNC(xgemc)(char *, char *, blasint *, blasint *, blasint *, xdouble *,
 	   xdouble *, blasint *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *, blasint *);
 
+/* Lapack routines */
+
 int BLASFUNC(sgetf2)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
 int BLASFUNC(dgetf2)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
 int BLASFUNC(qgetf2)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
@@ -677,6 +679,13 @@ int BLASFUNC(cgesv)(blasint *, blasint *, float  *, blasint *, blasint *, float 
 int BLASFUNC(zgesv)(blasint *, blasint *, double *, blasint *, blasint *, double*, blasint *, blasint *);
 int BLASFUNC(xgesv)(blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble*, blasint *, blasint *);
 
+int BLASFUNC(sgesvd)(char *, char *, blasint *, blasint *, float   *, blasint *, float   *, float   *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
+int BLASFUNC(dgesvd)(char *, char *, blasint *, blasint *, double  *, blasint *, double  *, double  *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
+int BLASFUNC(qgesvd)(char *, char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
+int BLASFUNC(cgesvd)(char *, char *, blasint *, blasint *, float   *, blasint *, float   *, float   *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
+int BLASFUNC(zgesvd)(char *, char *, blasint *, blasint *, double  *, blasint *, double  *, double  *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
+int BLASFUNC(xgesvd)(char *, char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, xdouble *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
+
 int BLASFUNC(spotf2)(char *, blasint *, float  *, blasint *, blasint *);
 int BLASFUNC(dpotf2)(char *, blasint *, double *, blasint *, blasint *);
 int BLASFUNC(qpotf2)(char *, blasint *, xdouble *, blasint *, blasint *);
@@ -690,6 +699,13 @@ int BLASFUNC(qpotrf)(char *, blasint *, xdouble *, blasint *, blasint *);
 int BLASFUNC(cpotrf)(char *, blasint *, float  *, blasint *, blasint *);
 int BLASFUNC(zpotrf)(char *, blasint *, double *, blasint *, blasint *);
 int BLASFUNC(xpotrf)(char *, blasint *, xdouble *, blasint *, blasint *);
+
+int BLASFUNC(spotrs)(char *, blasint *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
+int BLASFUNC(dpotrs)(char *, blasint *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
+int BLASFUNC(qpotrs)(char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
+int BLASFUNC(cpotrs)(char *, blasint *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
+int BLASFUNC(zpotrs)(char *, blasint *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
+int BLASFUNC(xpotrs)(char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
 
 int BLASFUNC(slauu2)(char *, blasint *, float  *, blasint *, blasint *);
 int BLASFUNC(dlauu2)(char *, blasint *, double *, blasint *, blasint *);
