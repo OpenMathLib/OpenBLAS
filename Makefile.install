@@ -32,8 +32,10 @@ install : 	lib.grd
 	@cat common_interface.h >> $(OPENBLAS_INCLUDE_DIR)/f77blas.h
 	@echo \#endif >> $(OPENBLAS_INCLUDE_DIR)/f77blas.h
 
+ifndef NO_CBLAS
 	@echo Generating cblas.h in $(OPENBLAS_INCLUDE_DIR)
 	@sed 's/common/openblas_config/g' cblas.h > $(OPENBLAS_INCLUDE_DIR)/cblas.h
+endif
 
 ifndef NO_LAPACKE
 	@echo Copying LAPACKE header files to $(OPENBLAS_LIBRARY_DIR)
