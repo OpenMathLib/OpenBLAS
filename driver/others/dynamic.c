@@ -60,8 +60,14 @@ extern gotoblas_t  gotoblas_NEHALEM;
 extern gotoblas_t  gotoblas_OPTERON;
 extern gotoblas_t  gotoblas_OPTERON_SSE3;
 extern gotoblas_t  gotoblas_BARCELONA;
-extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BOBCAT;
+#ifndef NO_AVX
+extern gotoblas_t  gotoblas_SANDYBRIDGE;
+#else
+//Use NEHALEM kernels for sandy bridge
+#define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
+#endif
+
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2

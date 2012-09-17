@@ -71,6 +71,10 @@ VERSION = 0.2.3
 # If you want to disable CPU/Memory affinity on Linux.
 # NO_AFFINITY = 1
 
+# Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers 
+# and OS. However, the performance is low.
+# NO_AVX = 1
+
 # If you would like to know minute performance report of GotoBLAS.
 # FUNCTION_PROFILE = 1
 

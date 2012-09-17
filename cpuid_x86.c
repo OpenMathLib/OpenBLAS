@@ -40,6 +40,11 @@
 #include <string.h>
 #include "cpuid.h"
 
+#ifdef NO_AVX
+#define CPUTYPE_SANDYBRIDGE CPUTYPE_NEHALEM
+#define CORE_SANDYBRIDGE CORE_NEHALEM
+#endif
+
 #ifndef CPUIDEMU
 
 #if defined(__APPLE__) && defined(__i386__)
@@ -189,7 +194,9 @@ int get_cputype(int gettype){
     if ((ecx & (1 <<  9)) != 0) feature |= HAVE_SSSE3;
     if ((ecx & (1 << 19)) != 0) feature |= HAVE_SSE4_1;
     if ((ecx & (1 << 20)) != 0) feature |= HAVE_SSE4_2;
+#ifndef NO_AVX
     if ((ecx & (1 << 28)) != 0) feature |= HAVE_AVX;
+#endif
 
     if (have_excpuid() >= 0x01) {
       cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
