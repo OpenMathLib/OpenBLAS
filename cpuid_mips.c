@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -101,12 +101,14 @@ int detect(void){
 
   fclose(infile);
 
+  if(p != NULL){
   if (strstr(p, "Loongson-3A")){
     return CPU_LOONGSON3A;
   }else if(strstr(p, "Loongson-3B")){
     return CPU_LOONGSON3B;
   }else if (strstr(p, "Loongson-3")){
     infile = fopen("/proc/cpuinfo", "r");
+    p = (char *)NULL;
     while (fgets(buffer, sizeof(buffer), infile)){
       if (!strncmp("system type", buffer, 11)){
 	p = strchr(buffer, ':') + 2;
@@ -118,6 +120,24 @@ int detect(void){
       return CPU_LOONGSON3A;
   }else{
     return CPU_SICORTEX;
+  }
+  }
+  //Check model name for Loongson3
+  infile = fopen("/proc/cpuinfo", "r");
+  p = (char *)NULL;
+  while (fgets(buffer, sizeof(buffer), infile)){
+    if (!strncmp("model name", buffer, 10)){
+      p = strchr(buffer, ':') + 2;
+      break;
+    }
+  }
+  fclose(infile);
+  if(p != NULL){
+  if (strstr(p, "Loongson-3A")){
+    return CPU_LOONGSON3A;
+  }else if(strstr(p, "Loongson-3B")){
+    return CPU_LOONGSON3B;
+  }
   }
 #endif
     return CPU_UNKNOWN;

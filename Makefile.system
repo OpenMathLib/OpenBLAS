@@ -61,6 +61,10 @@ ifeq ($(NO_AVX), 1)
 GETARCH_FLAGS	+= -DNO_AVX
 endif
 
+ifeq ($(DEBUG), 1)
+GETARCH_FLAGS	+= -g
+endif
+
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
