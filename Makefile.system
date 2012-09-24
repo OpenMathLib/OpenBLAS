@@ -149,6 +149,26 @@ EXTRALIB        += -defaultlib:advapi32
 SUFFIX  = obj
 PSUFFIX = pobj
 LIBSUFFIX = lib
+ifeq ($(C_COMPILER), GCC)
+#Test for supporting MS_ABI
+GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
+GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
+ifeq ($(GCCVERSIONGT4), 1)
+# GCC Majar version > 4
+# It is compatible with MSVC ABI. 
+CCOMMON_OPT	+= -DMS_ABI
+endif
+
+ifeq ($(GCCVERSIONGTEQ4), 1)
+ifeq ($(GCCMINORVERSIONGTEQ7), 1)
+# GCC Version >=4.7
+# It is compatible with MSVC ABI. 
+CCOMMON_OPT	+= -DMS_ABI
+endif
+endif
+
+endif
 endif
 
 ifeq ($(OSNAME), Interix)
