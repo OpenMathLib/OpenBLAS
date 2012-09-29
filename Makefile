@@ -201,7 +201,7 @@ ifeq ($(NO_LAPACK), 1)
 netlib : 
 
 else
-netlib : lapack-3.4.1 patch.for_lapack-3.4.1 $(NETLIB_LAPACK_DIR)/make.inc
+netlib : lapack-3.4.2 patch.for_lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
 ifndef NOFORTRAN
 	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 endif
@@ -210,7 +210,7 @@ ifndef NO_LAPACKE
 endif
 endif
 
-prof_lapack : lapack-3.4.1 $(NETLIB_LAPACK_DIR)/make.inc
+prof_lapack : lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
 	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 $(NETLIB_LAPACK_DIR)/make.inc :
@@ -235,24 +235,24 @@ ifndef NOFORTRAN
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 
-lapack-3.4.1 : lapack-3.4.1.tgz
+lapack-3.4.2 : lapack-3.4.2.tgz
 ifndef NOFORTRAN
 ifndef NO_LAPACK
-	@if test `$(MD5SUM) lapack-3.4.1.tgz | $(AWK) '{print $$1}'` = 44c3869c38c8335c2b9c2a8bb276eb55; then \
+	@if test `$(MD5SUM) lapack-3.4.2.tgz | $(AWK) '{print $$1}'` = 61bf1a8a4469d4bdb7604f5897179478; then \
 		echo $(TAR) zxf $< ;\
-		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.1) ;\
+		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.2) ;\
 		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
 	else \
 		rm -rf $(NETLIB_LAPACK_DIR) ;\
-		echo "	Cannot download lapack-3.4.1.tgz or the MD5 check sum is wrong (Please use orignal)."; \
+		echo "	Cannot download lapack-3.4.2.tgz or the MD5 check sum is wrong (Please use orignal)."; \
 		exit 1; \
 	fi
 endif
 endif
 
-LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.1.tgz
+LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.2.tgz
 
-lapack-3.4.1.tgz :
+lapack-3.4.2.tgz :
 ifndef NOFORTRAN
 #http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
 ifeq ($(OSNAME), $(filter $(OSNAME),Darwin NetBSD))
@@ -276,7 +276,7 @@ ifndef NOFORTRAN
 	-wget http://www.netlib.org/lapack/timing/timing.tgz
 endif
 
-lapack-timing : lapack-3.4.1 large.tgz timing.tgz
+lapack-timing : lapack-3.4.2 large.tgz timing.tgz
 ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )

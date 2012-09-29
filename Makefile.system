@@ -10,7 +10,7 @@ TOPDIR = .
 endif
 
 ifndef NETLIB_LAPACK_DIR
-NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.1
+NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.2
 endif
 
 # Default C compiler
