@@ -1,5 +1,21 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.4
+8-Oct-2012
+common:
+	* Upgraded LAPACK to 3.4.2 version. (#145)
+	* Provided support for passing CFLAGS, FFLAGS, PFLAGS, 
+	  FPFLAGS to make. (#137)
+	* f77blas.h:compatibility for compilers without C99 complex 
+	  number support. (#141)
+x86/x86-64:
+	* Added NO_AVX flag. Check OS supporting AVX on runtime. (#139)
+	* Fixed zdot incompatibility ABI issue with GCC 4.7 on 
+	  Windows 32-bit. (#140)
+MIPS64:
+	* Fixed the generation of shared library bug.
+	* Fixed the detection bug on the Loongson 3A server.
+====================================================================
 Version 0.2.3
 20-Aug-2012
 common:
