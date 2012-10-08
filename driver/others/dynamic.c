@@ -60,8 +60,14 @@ extern gotoblas_t  gotoblas_NEHALEM;
 extern gotoblas_t  gotoblas_OPTERON;
 extern gotoblas_t  gotoblas_OPTERON_SSE3;
 extern gotoblas_t  gotoblas_BARCELONA;
-extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BOBCAT;
+#ifndef NO_AVX
+extern gotoblas_t  gotoblas_SANDYBRIDGE;
+#else
+//Use NEHALEM kernels for sandy bridge
+#define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
+#endif
+
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -69,6 +75,25 @@ extern gotoblas_t  gotoblas_BOBCAT;
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
+
+static inline void xgetbv(int op, int * eax, int * edx){
+  __asm__ __volatile__
+    ("xgetbv": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+}
+
+int support_avx(){
+  int eax, ebx, ecx, edx;
+  int ret=0;
+  
+  cpuid(1, &eax, &ebx, &ecx, &edx);
+  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0){
+    xgetbv(0, &eax, &edx);
+    if((eax & 6) == 6){
+      ret=1;  //OS support AVX
+    }
+  }
+  return ret;
+}
 
 static int get_vendor(void){
   int eax, ebx, ecx, edx;
@@ -136,11 +161,25 @@ static gotoblas_t *get_coretype(void){
 
 	//Intel Core i5-2000 /i7-2000 (Sandy Bridge)
 	//Intel Core i7-3000 / Xeon E5
-	if (model == 10 || model == 13) return &gotoblas_SANDYBRIDGE;
+	if (model == 10 || model == 13) {
+	  if(support_avx())
+	    return &gotoblas_SANDYBRIDGE;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
 	return NULL;
       case 3:
 	//Intel Sandy Bridge 22nm (Ivy Bridge?)
-	if (model == 10) return &gotoblas_SANDYBRIDGE;
+	if (model == 10) {
+	  if(support_avx())
+	    return &gotoblas_SANDYBRIDGE;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
 	return NULL;
       }
       case 0xf:
@@ -233,7 +272,7 @@ void gotoblas_dynamic_init(void) {
   if (gotoblas && gotoblas -> init) {
     gotoblas -> init();
   } else {
-    fprintf(stderr, "GotoBLAS : Architecture Initialization failed. No initialization function found.\n");
+    fprintf(stderr, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
     exit(1);
   }
   

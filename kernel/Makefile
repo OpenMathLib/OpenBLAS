@@ -6,7 +6,7 @@ TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
 ifdef TARGET_CORE
-CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
 BUILD_KERNEL = 1
 KDIR =
 TSUFFIX = _$(TARGET_CORE)

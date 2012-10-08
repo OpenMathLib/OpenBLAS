@@ -5,7 +5,7 @@
 TOPDIR = ..
 include $(TOPDIR)/Makefile.system
 
-CFLAGS += -DADD$(BU) -DCBLAS
+override CFLAGS += -DADD$(BU) -DCBLAS
 
 LIB = $(TOPDIR)/$(LIBNAME)
 

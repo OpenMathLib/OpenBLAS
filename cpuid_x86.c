@@ -40,6 +40,11 @@
 #include <string.h>
 #include "cpuid.h"
 
+#ifdef NO_AVX
+#define CPUTYPE_SANDYBRIDGE CPUTYPE_NEHALEM
+#define CORE_SANDYBRIDGE CORE_NEHALEM
+#endif
+
 #ifndef CPUIDEMU
 
 #if defined(__APPLE__) && defined(__i386__)
@@ -107,6 +112,25 @@ static inline int have_excpuid(void){
 
   cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
   return eax & 0xffff;
+}
+
+static inline void xgetbv(int op, int * eax, int * edx){
+  __asm__ __volatile__
+    ("xgetbv": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+}
+
+int support_avx(){
+  int eax, ebx, ecx, edx;
+  int ret=0;
+  
+  cpuid(1, &eax, &ebx, &ecx, &edx);
+  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0){
+    xgetbv(0, &eax, &edx);
+    if((eax & 6) == 6){
+      ret=1;  //OS support AVX
+    }
+  }
+  return ret;
 }
 
 int get_vendor(void){
@@ -189,7 +213,9 @@ int get_cputype(int gettype){
     if ((ecx & (1 <<  9)) != 0) feature |= HAVE_SSSE3;
     if ((ecx & (1 << 19)) != 0) feature |= HAVE_SSE4_1;
     if ((ecx & (1 << 20)) != 0) feature |= HAVE_SSE4_2;
-    if ((ecx & (1 << 28)) != 0) feature |= HAVE_AVX;
+#ifndef NO_AVX
+    if (support_avx()) feature |= HAVE_AVX;
+#endif
 
     if (have_excpuid() >= 0x01) {
       cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
@@ -984,13 +1010,19 @@ int get_cpuname(void){
 	  return CPUTYPE_NEHALEM;
 	case 10:
 	  //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
-	  return CPUTYPE_SANDYBRIDGE;
+	  if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	    return CPUTYPE_NEHALEM; //OS doesn't support AVX
 	case 12:
 	  //Xeon Processor 5600 (Westmere-EP)
 	  return CPUTYPE_NEHALEM;
 	case 13:
 	  //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
-	  return CPUTYPE_SANDYBRIDGE;
+	  if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	    return CPUTYPE_NEHALEM;
 	case 15:
 	  //Xeon Processor E7 (Westmere-EX)
 	  return CPUTYPE_NEHALEM;
@@ -999,7 +1031,10 @@ int get_cpuname(void){
       case 3:
 	switch (model) {
 	case 10:
-	  return CPUTYPE_SANDYBRIDGE;
+	  if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	    return CPUTYPE_NEHALEM;
 	}
 	break;
       }
@@ -1343,13 +1378,19 @@ int get_coretype(void){
 	  return CORE_NEHALEM;
 	case 10:
           //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
-          return CORE_SANDYBRIDGE;
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	    return CORE_NEHALEM; //OS doesn't support AVX
 	case 12:
 	  //Xeon Processor 5600 (Westmere-EP)
 	  return CORE_NEHALEM;
 	case 13:
           //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
-          return CORE_SANDYBRIDGE;
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	    return CORE_NEHALEM; //OS doesn't support AVX
 	case 15:
 	  //Xeon Processor E7 (Westmere-EX)
 	  return CORE_NEHALEM;
@@ -1358,7 +1399,10 @@ int get_coretype(void){
       case 3:
 	switch (model) {
 	case 10:
-	  return CORE_SANDYBRIDGE;
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	    return CORE_NEHALEM; //OS doesn't support AVX
 	}
 	break;
       }

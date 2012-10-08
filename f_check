@@ -211,6 +211,10 @@ if (!$?) {
 	if ($?) {
 	    $link = `$compiler $openmp -q32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	}
+       #For gfortran MIPS
+	if ($?) {
+	    $link = `$compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
+	}
 	$binary = "" if ($?);
     }
     
@@ -218,6 +222,10 @@ if (!$?) {
 	$link = `$compiler $openmp -m64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	if ($?) {
 	    $link = `$compiler $openmp -q64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
+	}
+       #For gfortran MIPS
+	if ($?) {
+	    $link = `$compiler $openmp -mabi=64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	}
 	$binary = "" if ($?);
     }
