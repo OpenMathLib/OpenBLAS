@@ -76,19 +76,19 @@ myxcomplex_t    BLASFUNC(xdotu)  (blasint *, xdouble  *, blasint *, xdouble  *, 
 myxcomplex_t    BLASFUNC(xdotc)  (blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
 
 #elif defined RETURN_BY_STACK
-void  BLASFUNC(cdotu)  (float   _Complex *,  blasint *, float  * , blasint *, float  *,  blasint *);
-void  BLASFUNC(cdotc)  (float   _Complex *,  blasint *, float  *,  blasint *, float  *,  blasint *);
-void  BLASFUNC(zdotu)  (double  _Complex *, blasint *, double  *, blasint *, double  *, blasint *);
-void  BLASFUNC(zdotc)  (double  _Complex *, blasint *, double  *, blasint *, double  *, blasint *);
-void  BLASFUNC(xdotu)  (xdouble _Complex *, blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
-void  BLASFUNC(xdotc)  (xdouble _Complex *, blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
+void  BLASFUNC(cdotu)  (openblas_complex_float   *,  blasint *, float  * , blasint *, float  *,  blasint *);
+void  BLASFUNC(cdotc)  (openblas_complex_float   *,  blasint *, float  *,  blasint *, float  *,  blasint *);
+void  BLASFUNC(zdotu)  (openblas_complex_double  *, blasint *, double  *, blasint *, double  *, blasint *);
+void  BLASFUNC(zdotc)  (openblas_complex_double  *, blasint *, double  *, blasint *, double  *, blasint *);
+void  BLASFUNC(xdotu)  (openblas_complex_xdouble *, blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
+void  BLASFUNC(xdotc)  (openblas_complex_xdouble *, blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
 #else
-float   _Complex BLASFUNC(cdotu)  (blasint *, float  *, blasint *, float  *, blasint *);
-float   _Complex BLASFUNC(cdotc)  (blasint *, float  *, blasint *, float  *, blasint *);
-double  _Complex BLASFUNC(zdotu)  (blasint *, double  *, blasint *, double  *, blasint *);
-double  _Complex BLASFUNC(zdotc)  (blasint *, double  *, blasint *, double  *, blasint *);
-xdouble _Complex BLASFUNC(xdotu)  (blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
-xdouble _Complex BLASFUNC(xdotc)  (blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
+openblas_complex_float   BLASFUNC(cdotu)  (blasint *, float  *, blasint *, float  *, blasint *);
+openblas_complex_float   BLASFUNC(cdotc)  (blasint *, float  *, blasint *, float  *, blasint *);
+openblas_complex_double  BLASFUNC(zdotu)  (blasint *, double  *, blasint *, double  *, blasint *);
+openblas_complex_double  BLASFUNC(zdotc)  (blasint *, double  *, blasint *, double  *, blasint *);
+openblas_complex_xdouble BLASFUNC(xdotu)  (blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
+openblas_complex_xdouble BLASFUNC(xdotc)  (blasint *, xdouble  *, blasint *, xdouble  *, blasint *);
 #endif
 
 void    BLASFUNC(saxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);

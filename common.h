@@ -389,10 +389,12 @@ typedef int blasint;
   #define OPENBLAS_COMPLEX_C99
   typedef float _Complex openblas_complex_float;
   typedef double _Complex openblas_complex_double;
+  typedef xdouble _Complex openblas_complex_xdouble;
 #else
   #define OPENBLAS_COMPLEX_STRUCT
   typedef struct { float real, imag; } openblas_complex_float;
   typedef struct { double real, imag; } openblas_complex_double;
+  typedef struct { xdouble real, imag; } openblas_complex_xdouble;
 #endif
 #endif  // ASSEMBLER
 
