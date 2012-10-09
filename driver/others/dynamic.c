@@ -76,12 +76,15 @@ extern gotoblas_t  gotoblas_SANDYBRIDGE;
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
 
+#ifndef NO_AVX
 static inline void xgetbv(int op, int * eax, int * edx){
   __asm__ __volatile__
     ("xgetbv": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
 }
+#endif
 
 int support_avx(){
+#ifndef NO_AVX
   int eax, ebx, ecx, edx;
   int ret=0;
   
@@ -93,6 +96,9 @@ int support_avx(){
     }
   }
   return ret;
+#else
+  return 0;
+#endif
 }
 
 static int get_vendor(void){
