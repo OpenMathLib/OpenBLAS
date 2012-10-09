@@ -79,7 +79,7 @@ If you compile this lib with USE_OPENMP=1, you should set OMP_NUM_THREADS enviro
 
 ### Set the number of threads on runtime. 
 
-We provided the below functions to controll the number of threads on runtime. So far, we didn't support changing the number of threads on Windows. On Windows, these functions are dummy.
+We provided the below functions to controll the number of threads on runtime.
 
     void goto_set_num_threads(int num_threads);
 
@@ -97,6 +97,7 @@ OpenBLAS users mailing list: http://list.rdcps.ac.cn/mailman/listinfo/openblas
 Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD version.
 
 ## Troubleshooting
+* Please read [Faq](https://github.com/xianyi/OpenBLAS/wiki/Faq) at first.
 * Please use gcc version 4.6 and above to compile Sandy Bridge AVX kernels on Linux/MingW/BSD.
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture. The Clang 3.0 will generate the wrong AVX binary code.
 * The number of CPUs/Cores should less than or equal to 256. 
