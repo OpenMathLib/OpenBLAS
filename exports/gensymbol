@@ -2669,7 +2669,8 @@
 if ($ARGV[5] == 1) {
 	#NO_LAPACK=1
 	@underscore_objs = (@blasobjs, @misc_underscore_objs);
-} elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1") {
+} elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1" ||
+         -d "../lapack-3.4.2") {
     @underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2, @misc_underscore_objs);
 } else {
     @underscore_objs = (@blasobjs, @lapackobjs, @misc_underscore_objs);

@@ -8,6 +8,8 @@ lapack-3.1.1
 lapack-3.1.1.tgz
 lapack-3.4.1
 lapack-3.4.1.tgz
+lapack-3.4.2
+lapack-3.4.2.tgz
 *.so
 *.a
 .svn
