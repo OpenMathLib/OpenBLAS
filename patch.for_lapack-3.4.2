@@ -899,19 +899,64 @@ diff -ruN lapack-3.4.2.old/TESTING/LIN/Makefile lapack-3.4.2/TESTING/LIN/Makefil
  ../xlintsts: xlintsts
  	mv xlintsts $@
 diff -ruN lapack-3.4.2.old/lapacke/src/Makefile lapack-3.4.2/lapacke/src/Makefile
---- lapack-3.4.2.old/lapacke/src/Makefile	2012-04-02 22:16:32 +0200
-+++ lapack-3.4.2/lapacke/src/Makefile	2012-04-22 21:38:38 +0200
-@@ -2041,19 +2041,21 @@
+--- lapack-3.4.2.old/lapacke/src/Makefile	2012-09-21 04:21:29 +0200
++++ lapack-3.4.2/lapacke/src/Makefile	2012-10-15 22:04:56 +0200
+@@ -34,7 +34,7 @@
+ #
+ include ../../make.inc
+ 
+-SRC_OBJ = \
++CSRC_OBJ = \
+ lapacke_cbbcsd.o \
+ lapacke_cbbcsd_work.o \
+ lapacke_cbdsqr.o \
+@@ -526,7 +526,9 @@
+ lapacke_cupgtr.o \
+ lapacke_cupgtr_work.o \
+ lapacke_cupmtr.o \
+-lapacke_cupmtr_work.o \
++lapacke_cupmtr_work.o
++
++DSRC_OBJ = \
+ lapacke_dbbcsd.o \
+ lapacke_dbbcsd_work.o \
+ lapacke_dbdsdc.o \
+@@ -1012,7 +1014,9 @@
+ lapacke_dtrttp.o \
+ lapacke_dtrttp_work.o \
+ lapacke_dtzrzf.o \
+-lapacke_dtzrzf_work.o \
++lapacke_dtzrzf_work.o
++
++SSRC_OBJ = \
+ lapacke_sbbcsd.o \
+ lapacke_sbbcsd_work.o \
+ lapacke_sbdsdc.o \
+@@ -1492,7 +1496,9 @@
+ lapacke_strttp.o \
+ lapacke_strttp_work.o \
+ lapacke_stzrzf.o \
+-lapacke_stzrzf_work.o \
++lapacke_stzrzf_work.o
++
++ZSRC_OBJ = \
+ lapacke_zbbcsd.o \
+ lapacke_zbbcsd_work.o \
+ lapacke_zbdsqr.o \
+@@ -2041,19 +2047,29 @@
  lapacke_zlagsy.o \
  lapacke_zlagsy_work.o
  
 -ALLOBJ = $(SRC_OBJ) $(MATGEN_OBJ) 
-+OBJ_FILES := $(SRC_OBJ)
++COBJ_FILES := $(CSRC_OBJ)
++SOBJ_FILES := $(SSRC_OBJ)
++DOBJ_FILES := $(DSRC_OBJ)
++ZOBJ_FILES := $(ZSRC_OBJ)
  
 -ifdef USEXBLAS
 -ALLXOBJ = $(SXLASRC) $(DXLASRC) $(CXLASRC) $(ZXLASRC)
 +ifdef LAPACKE_EXTENDED
-+OBJ_FILES += $(SXLASRC) $(DXLASRC) $(CXLASRC) $(ZXLASRC)
++OBJ_FILES += $(SRCX_OBJ)
  endif
  
 -
@@ -924,9 +969,14 @@ diff -ruN lapack-3.4.2.old/lapacke/src/Makefile lapack-3.4.2/lapacke/src/Makefil
  
 -../../$(LAPACKELIB): $(ALLOBJ) $(ALLXOBJ)
 -	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLOBJ) $(ALLXOBJ)
-+../../$(LAPACKELIB): $(OBJ_FILES)
-+# http://hackage.haskell.org/trac/gtk2hs/ticket/1146
-+	echo $(OBJ_FILES) | xargs -n 100 $(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB)
++../../$(LAPACKELIB): $(COBJ_FILES) $(DOBJ_FILES) $(SOBJ_FILES) $(ZOBJ_FILES) $(OBJ_FILES)
++	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(COBJ_FILES)
++	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(DOBJ_FILES)
++	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(SOBJ_FILES)
++	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ZOBJ_FILES)
++ifneq ($(strip $(OBJ_FILES)),)
++	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(OBJ_FILES)
++endif
  	$(RANLIB) ../../$(LAPACKELIB)
  
  .c.o:
