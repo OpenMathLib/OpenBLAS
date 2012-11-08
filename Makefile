@@ -80,6 +80,7 @@ endif
 	@echo
 
 shared :
+ifndef NO_SHARED
 ifeq ($(OSNAME), Linux)
 	$(MAKE) -C exports so
 	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
@@ -102,6 +103,7 @@ ifeq ($(OSNAME), WINNT)
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
+endif
 endif
 
 tests :

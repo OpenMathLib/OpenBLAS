@@ -45,6 +45,9 @@ VERSION = 0.2.4
 # automatically detected by the the script.
 # NUM_THREADS = 24
 
+# if you don't need generate the shared library, please comment it in.
+# NO_SHARED = 1
+
 # If you don't need CBLAS interface, please comment it in.
 # NO_CBLAS = 1
 
