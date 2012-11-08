@@ -24,9 +24,12 @@ VERSION = 0.2.4
 # Fortran compiler. Default is g77.
 # FC = gfortran
 
-# Even you can specify cross compiler
+# Even you can specify cross compiler. Meanwhile, please set HOSTCC.
 # CC = x86_64-w64-mingw32-gcc
 # FC = x86_64-w64-mingw32-gfortran
+
+# If you use the cross compiler, please set this host compiler.
+# HOSTCC = gcc
 
 # If you need 32bit binary, define BINARY=32, otherwise define BINARY=64
 # BINARY=64
