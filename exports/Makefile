@@ -119,7 +119,8 @@ so : ../$(LIBSONAME)
 
 endif
 
-ifeq ($(OSNAME), FreeBSD)
+#http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
 
 so : ../$(LIBSONAME)
 
