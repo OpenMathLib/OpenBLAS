@@ -980,3 +980,21 @@ diff -ruN lapack-3.4.2.old/lapacke/src/Makefile lapack-3.4.2/lapacke/src/Makefil
  	$(RANLIB) ../../$(LAPACKELIB)
  
  .c.o:
+diff -ruN lapack-3.4.2.old/lapacke/example/Makefile lapack-3.4.2/lapacke/example/Makefile
+--- lapack-3.4.2.old/lapacke/example/Makefile	2012-03-23 06:55:22.000000000 +0800
++++ lapack-3.4.2/lapacke/example/Makefile	2012-11-13 00:32:24.125449952 +0800
+@@ -4,12 +4,12 @@
+ 
+ xexample_DGESV_rowmajor: example_DGESV_rowmajor.o ../../$(LAPACKLIB) ../../$(LAPACKELIB)
+ 	$(LOADER) $(LOADOPTS)  example_DGESV_rowmajor.o \
+-         ../../$(LAPACKELIB) ../../$(LAPACKLIB) $(BLASLIB) -o $@
++         ../../$(LAPACKELIB) $(CEXTRALIB) -o $@
+ 	./$@
+ 
+ xexample_ZGESV_rowmajor: example_ZGESV_rowmajor.o ../../$(LAPACKLIB) ../../$(LAPACKELIB)
+ 	$(LOADER) $(LOADOPTS)  example_ZGESV_rowmajor.o \
+-         ../../$(LAPACKELIB) ../../$(LAPACKLIB) $(BLASLIB) -o $@
++         ../../$(LAPACKELIB) $(CEXTRALIB) -o $@
+ 	./$@
+ 
+ .c.o:
