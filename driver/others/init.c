@@ -82,6 +82,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sched.h>
 #include <dirent.h>
 #include <dlfcn.h>
+                
+#ifdef __APPLE__
+#include <sys/sysctl.h>
+#endif
 
 #define MAX_NODES	16
 #define MAX_CPUS	256
@@ -844,7 +848,15 @@ void gotoblas_set_affinity2(int threads) {};
 
 void gotoblas_affinity_reschedule(void) {};
 
-int get_num_procs(void) { return get_nprocs(); }
+int get_num_procs(void) {
+#ifdef __APPLE__
+    int physicalCores;
+    sysctlbyname("hw.physicalcpu", &physicalCores, sizeof(physicalCores), NULL, 0);
+    return physicalCores;
+#else
+    return get_nprocs();
+#endif
+}
 
 int get_num_nodes(void) { return 1; }
 
