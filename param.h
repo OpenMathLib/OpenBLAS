@@ -1664,26 +1664,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XGEMM_DEFAULT_UNROLL_M 1
 #endif
 
-#define SGEMM_P sgemm_p
-#define DGEMM_P dgemm_p
-#define QGEMM_P qgemm_p
-#define CGEMM_P cgemm_p
-#define ZGEMM_P zgemm_p
-#define XGEMM_P xgemm_p
+#define SGEMM_DEFAULT_P sgemm_p
+#define DGEMM_DEFAULT_P dgemm_p
+#define QGEMM_DEFAULT_P qgemm_p
+#define CGEMM_DEFAULT_P cgemm_p
+#define ZGEMM_DEFAULT_P zgemm_p
+#define XGEMM_DEFAULT_P xgemm_p
 
-#define SGEMM_R sgemm_r
-#define DGEMM_R dgemm_r
-#define QGEMM_R qgemm_r
-#define CGEMM_R cgemm_r
-#define ZGEMM_R zgemm_r
-#define XGEMM_R xgemm_r
+#define SGEMM_DEFAULT_R sgemm_r
+#define DGEMM_DEFAULT_R dgemm_r
+#define QGEMM_DEFAULT_R qgemm_r
+#define CGEMM_DEFAULT_R cgemm_r
+#define ZGEMM_DEFAULT_R zgemm_r
+#define XGEMM_DEFAULT_R xgemm_r
 
-#define SGEMM_Q 128
-#define DGEMM_Q 128
-#define QGEMM_Q 128
-#define CGEMM_Q 128
-#define ZGEMM_Q 128
-#define XGEMM_Q 128
+#define SGEMM_DEFAULT_Q 128
+#define DGEMM_DEFAULT_Q 128
+#define QGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 128
+#define ZGEMM_DEFAULT_Q 128
+#define XGEMM_DEFAULT_Q 128
 
 #define SYMV_P	16
 
