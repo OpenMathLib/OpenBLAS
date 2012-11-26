@@ -74,6 +74,11 @@
 #define STACK_Y		 72 + STACKSIZE(%rsp)
 #define STACK_INCY	 80 + STACKSIZE(%rsp)
 #define STACK_BUFFER	 88 + STACKSIZE(%rsp)
+//Temp variables for M,N,A,LDA
+#define MMM	224(%rsp)
+#define NN	232(%rsp)
+#define AA	240(%rsp)
+#define LDAX	248(%rsp)
 
 #endif
 
@@ -134,6 +139,12 @@
 	movq	OLD_A,        A
 	movq	OLD_LDA,      LDA
 	movq	OLD_X,        X
+
+	movq	M,	      MMM
+	movq	N,            NN
+	movq	A,            AA
+	movq	LDA,	      LDAX
+
 #else
 	movq	OLD_M,	      MMM
 	movq	OLD_N,        NN
