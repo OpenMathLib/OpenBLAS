@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.4
+VERSION = 0.2.5
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library 
@@ -24,9 +24,12 @@ VERSION = 0.2.4
 # Fortran compiler. Default is g77.
 # FC = gfortran
 
-# Even you can specify cross compiler
+# Even you can specify cross compiler. Meanwhile, please set HOSTCC.
 # CC = x86_64-w64-mingw32-gcc
 # FC = x86_64-w64-mingw32-gfortran
+
+# If you use the cross compiler, please set this host compiler.
+# HOSTCC = gcc
 
 # If you need 32bit binary, define BINARY=32, otherwise define BINARY=64
 # BINARY=64
@@ -44,6 +47,9 @@ VERSION = 0.2.4
 # less than actual number of cores. If you don't specify one, it's
 # automatically detected by the the script.
 # NUM_THREADS = 24
+
+# if you don't need generate the shared library, please comment it in.
+# NO_SHARED = 1
 
 # If you don't need CBLAS interface, please comment it in.
 # NO_CBLAS = 1

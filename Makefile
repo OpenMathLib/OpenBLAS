@@ -80,6 +80,7 @@ endif
 	@echo
 
 shared :
+ifndef NO_SHARED
 ifeq ($(OSNAME), Linux)
 	$(MAKE) -C exports so
 	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
@@ -102,6 +103,7 @@ ifeq ($(OSNAME), WINNT)
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
+endif
 endif
 
 tests :
@@ -222,7 +224,11 @@ ifndef NOFORTRAN
 	-@echo "PNOOPT      = $(FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifdef INTERFACE64
+	-@echo "CFLAGS      = $(CFLAGS) -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
 	-@echo "CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc

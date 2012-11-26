@@ -351,7 +351,12 @@ typedef int blasint;
 #endif
 
 #define MMAP_ACCESS (PROT_READ | PROT_WRITE)
+
+#ifdef __NetBSD__
+#define MMAP_POLICY (MAP_PRIVATE | MAP_ANON)
+#else
 #define MMAP_POLICY (MAP_PRIVATE | MAP_ANONYMOUS)
+#endif
 
 #include "param.h"
 #include "common_param.h"

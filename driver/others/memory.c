@@ -185,7 +185,7 @@ int get_num_procs(void) {
 
 #endif
 
-#if defined(OS_FREEBSD) || defined(OS_DARWIN)
+#if defined(OS_FREEBSD) 
 
 int get_num_procs(void) {
   
@@ -204,6 +204,18 @@ int get_num_procs(void) {
   return nums;
 }
 
+#endif
+
+#if defined(OS_DARWIN)
+int get_num_procs(void) {
+  static int nums = 0;
+  size_t len;
+  if (nums == 0){
+    len = sizeof(int);
+    sysctlbyname("hw.physicalcpu", &nums, &len, NULL, 0);
+  }
+  return nums;
+}
 #endif
 
 /*

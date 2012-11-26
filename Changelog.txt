@@ -1,5 +1,21 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.5
+26-Nov-2012
+common:
+	* Added NO_SHARED flag to disable generating the shared library.
+	* Compile LAPACKE with ILP64 modle when INTERFACE64=1 (#158)
+	* Export LAPACK 3.4.2 symbols in shared library. (#147)
+	* Only detect the number of physical CPU cores on Mac OSX. (#157)
+	* Fixed NetBSD build. (#155)
+	* Fixed compilation with TARGET=GENERIC. (#160)
+x86/x86-64:
+	* Restore the original CPU affinity when calling 
+	  openblas_set_num_threads(1) (#153)
+	* Fixed a SEGFAULT bug in dgemv_t when m is very large.(#154)
+MIPS64:
+
+====================================================================
 Version 0.2.4
 8-Oct-2012
 common:

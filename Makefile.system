@@ -129,7 +129,7 @@ MD5SUM = md5 -r
 endif
 
 ifeq ($(OSNAME), NetBSD)
-MD5SUM = md5 -r
+MD5SUM = md5 -n
 endif
 
 ifeq ($(OSNAME), Linux)
