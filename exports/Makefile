@@ -22,6 +22,11 @@ ifeq ($(OSNAME), WINNT)
 ifeq ($(F_COMPILER), GFORTRAN)
 EXTRALIB += -lgfortran
 endif
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(C_COMPILER), GCC)
+EXTRALIB += -lgomp
+endif
+endif
 endif
 
 ifeq ($(OSNAME), CYGWIN_NT)
