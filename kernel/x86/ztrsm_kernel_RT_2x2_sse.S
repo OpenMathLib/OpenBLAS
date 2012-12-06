@@ -75,7 +75,7 @@
 #define STACK_ALIGN	4096
 #define STACK_OFFSET	1024
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 #define PREFETCHSIZE (16 * 10 + 8)
 #define WPREFETCHSIZE 112
 #define PREFETCH      prefetch
@@ -1820,7 +1820,7 @@
 	addps	%xmm0, %xmm7
 	movsd	16 * SIZE(AA), %xmm0
 	mulps	%xmm1, %xmm2
-#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht1     (PREFETCHSIZE + 16) * SIZE(AA)
 #endif
 	addps	%xmm2, %xmm4
