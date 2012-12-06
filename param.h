@@ -143,7 +143,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCAT)
+#if defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCAT) || defined(BULLDOZER)
 
 #define SNUMOPT		8
 #define DNUMOPT		4
