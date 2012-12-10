@@ -1494,6 +1494,9 @@ void get_cpuconfig(void){
       printf("#define DTB_SIZE %d\n", info.size * 1024);
       printf("#define DTB_ASSOCIATIVE %d\n", info.associative);
       printf("#define DTB_DEFAULT_ENTRIES %d\n", info.linesize);
+    } else {
+      //fall back for some virtual machines.
+      printf("#define DTB_DEFAULT_ENTRIES 32\n");
     }
     
     features = get_cputype(GET_FEATURE);
