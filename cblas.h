@@ -13,6 +13,9 @@ extern "C" {
 void openblas_set_num_threads(int num_threads);
 void goto_set_num_threads(int num_threads);
 
+/*Get the build configure on runtime.*/
+char* openblas_get_config(void);
+
 #define CBLAS_INDEX size_t
 
 enum CBLAS_ORDER     {CblasRowMajor=101, CblasColMajor=102};
