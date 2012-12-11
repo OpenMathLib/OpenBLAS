@@ -1525,6 +1525,7 @@ void get_cpuconfig(void){
     if (features & HAVE_AVX )    printf("#define HAVE_AVX\n");
     if (features & HAVE_3DNOWEX) printf("#define HAVE_3DNOWEX\n");
     if (features & HAVE_3DNOW)   printf("#define HAVE_3DNOW\n");
+    if (features & HAVE_FMA4 )    printf("#define HAVE_FMA4\n");
     if (features & HAVE_CFLUSH)  printf("#define HAVE_CFLUSH\n");
     if (features & HAVE_HIT)     printf("#define HAVE_HIT 1\n");
     if (features & HAVE_MISALIGNSSE) printf("#define HAVE_MISALIGNSSE\n");
@@ -1591,5 +1592,6 @@ void get_sse(void){
   if (features & HAVE_AVX )    printf("HAVE_AVX=1\n");
   if (features & HAVE_3DNOWEX) printf("HAVE_3DNOWEX=1\n");
   if (features & HAVE_3DNOW)   printf("HAVE_3DNOW=1\n");
+  if (features & HAVE_FMA4 )    printf("HAVE_FMA4=1\n");
 
 }
