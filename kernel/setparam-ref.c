@@ -634,10 +634,10 @@ static void init_parameter(void) {
   TABLE_NAME.xgemm_q = XGEMM_DEFAULT_Q;
 #endif
 
-#if defined(CORE_KATMAI)  || defined(CORE_COPPERMINE) || defined(CORE_BANIAS) || defined(CORE_YONAH)
+#if defined(CORE_KATMAI)  || defined(CORE_COPPERMINE) || defined(CORE_BANIAS) || defined(CORE_YONAH) || defined(CORE_ATHLON)
 
 #ifdef DEBUG
-  fprintf(stderr, "Katmai, Coppermine, Banias\n");
+  fprintf(stderr, "Katmai, Coppermine, Banias, Athlon\n");
 #endif
 
   TABLE_NAME.sgemm_p =  64 * (l2 >> 7);
