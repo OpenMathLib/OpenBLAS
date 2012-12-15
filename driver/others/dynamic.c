@@ -273,6 +273,15 @@ void gotoblas_dynamic_init(void) {
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
   if (gotoblas == NULL) gotoblas = &gotoblas_PRESCOTT;
+  /* sanity check, if 64bit pointer we can't have a 32 bit cpu */
+  if (sizeof(void*) == 8) {
+      if (gotoblas == &gotoblas_KATMAI ||
+          gotoblas == &gotoblas_COPPERMINE ||
+          gotoblas == &gotoblas_NORTHWOOD ||
+          gotoblas == &gotoblas_BANIAS ||
+          gotoblas == &gotoblas_ATHLON)
+          gotoblas = &gotoblas_PRESCOTT;
+  }
 #endif
   
   if (gotoblas && gotoblas -> init) {
