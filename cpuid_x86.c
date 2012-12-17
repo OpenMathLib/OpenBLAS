@@ -1030,6 +1030,8 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	    return CPUTYPE_NEHALEM;
+	case 14:
+	  // Xeon E7540
 	case 15:
 	  //Xeon Processor E7 (Westmere-EX)
 	  return CPUTYPE_NEHALEM;
