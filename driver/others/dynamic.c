@@ -163,7 +163,8 @@ static gotoblas_t *get_coretype(void){
 		  
 	//Intel Xeon Processor 5600 (Westmere-EP)
 	//Xeon Processor E7 (Westmere-EX)
-	if (model == 12 || model == 15) return &gotoblas_NEHALEM;
+	//Xeon E7540
+	if (model == 12 || model == 14 || model == 15) return &gotoblas_NEHALEM;
 
 	//Intel Core i5-2000 /i7-2000 (Sandy Bridge)
 	//Intel Core i7-3000 / Xeon E5
