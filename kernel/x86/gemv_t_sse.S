@@ -236,6 +236,20 @@
 	jg	.L06
 	ALIGN_4
 
+//Padding zero to prevent loading the dirty number from buffer.
+	movl	M,  I
+	movl	$8, J
+	andl	$7, I
+	xorps	%xmm0, %xmm0
+	subl	I, J
+	ALIGN_2
+.L07:
+	movss	%xmm0, 0 * SIZE(Y1)
+	addl	$SIZE, Y1
+	decl	J
+	jg	.L07
+	ALIGN_4
+
 .L10:
 	movl	Y, Y1
 
