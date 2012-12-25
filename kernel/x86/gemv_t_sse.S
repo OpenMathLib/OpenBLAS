@@ -89,7 +89,7 @@
 #endif
 
 #define STACKSIZE	16
-#define ARGS	16
+#define ARGS	20
 
 #define M		 4 + STACKSIZE+ARGS(%esp)
 #define N		 8 + STACKSIZE+ARGS(%esp)
@@ -106,6 +106,7 @@
 #define NN	4+STACKSIZE(%esp)
 #define AA	8+STACKSIZE(%esp)
 #define LDAX	12+STACKSIZE(%esp)
+#define XX	16+STACKSIZE(%esp)
 	
 #define I	%eax
 #define J	%ebx
@@ -130,6 +131,8 @@
 
 	movl	STACK_LDA,  LDA
 	movl	LDA,LDAX			# backup LDA
+	movl	STACK_X,    X
+	movl	X,XX
 	movl	N,J
 	movl	J,NN				# backup N
 	movl	A,J
@@ -139,7 +142,7 @@
 .L0t:
 	xorl	J,J
 	addl	$1,J
-	sall	$23,J				# J=2^22
+	sall	$21,J				# J=2^22
 	subl	J,MMM				# MMM=MMM-J
 	movl	J,M		
 	jge		.L00t
@@ -159,8 +162,8 @@
 
 
 	movl	LDAX,  LDA			# reset LDA
+	movl	XX,X
 
-	movl	STACK_X,    X
 	movl	STACK_INCX, INCX
 	movl	STACK_INCY, INCY
 
@@ -683,6 +686,9 @@
 	movl	M,J
 	leal	(,J,SIZE),%eax
 	addl	%eax,AA
+	movl	XX,J
+	addl	%eax,J
+	movl	J,XX
 	jmp		.L0t
 	ALIGN_4
 
