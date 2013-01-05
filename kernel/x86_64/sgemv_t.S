@@ -1,4 +1,5 @@
-/*********************************************************************/
+	;; 2c
+1
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -75,8 +76,8 @@
 #define STACK_Y		 72 + STACKSIZE(%rsp)
 #define STACK_INCY	 80 + STACKSIZE(%rsp)
 #define STACK_BUFFER	 88 + STACKSIZE(%rsp)
-#defien MMM	216(%rsp)
-#defien NN	224(%rsp)
+#define MMM	216(%rsp)
+#define NN	224(%rsp)
 #define AA	232(%rsp)
 #define LDAX 240(%rsp)
 
@@ -137,8 +138,10 @@
 
 	movq	OLD_M,	      MMM
 	movq	OLD_N,        NN
-	movq	OLD_A,        AA
-	movq	OLD_LDA,      LDAX
+	movq	OLD_A,        X
+	movq	X,	      AA
+	movq	OLD_LDA,      X
+	movq	X,	      LDAX
 	movq	OLD_X,        X
 #else
 	movq	OLD_M,	      MMM
