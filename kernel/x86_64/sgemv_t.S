@@ -1,5 +1,3 @@
-	;; 2c
-1
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
