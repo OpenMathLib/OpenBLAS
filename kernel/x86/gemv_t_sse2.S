@@ -128,7 +128,9 @@
 .L0t:
 	xorl	J,J
 	addl	$1,J
-	sall	$22,J				# J=2^22
+	sall    $21,J                           # J=2^21*sizeof(double)=buffer size(16MB)
+	subl    $4, J                           # Don't use last 4 double in the buffer.
+	                                        # Now, split M by block J
 	subl	J,MMM				# MMM=MMM-J
 	movl	J,M		
 	jge		.L00t
