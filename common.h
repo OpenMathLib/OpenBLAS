@@ -557,7 +557,8 @@ typedef struct {
 #include "common_level3.h"
 #include "common_lapack.h"
 #ifdef CBLAS
-#include "cblas.h"
+/* This header file is generated from "cblas.h" (see Makefile.prebuild). */
+#include "cblas_noconst.h"
 #endif
 
 #ifndef ASSEMBLER

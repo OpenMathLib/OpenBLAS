@@ -70,7 +70,7 @@ ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.getarch CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf

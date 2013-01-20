@@ -314,7 +314,7 @@ clean ::
 #endif
 	@$(MAKE) -C reference clean
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
-	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
+	@rm -f Makefile.conf config.h cblas_noconst.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d $(NETLIB_LAPACK_DIR); then \
 	echo deleting $(NETLIB_LAPACK_DIR); \
 	rm -rf $(NETLIB_LAPACK_DIR) ;\
