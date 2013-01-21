@@ -78,8 +78,9 @@ extern gotoblas_t  gotoblas_SANDYBRIDGE;
 
 #ifndef NO_AVX
 static inline void xgetbv(int op, int * eax, int * edx){
+  //Use binary code for xgetbv
   __asm__ __volatile__
-    ("xgetbv": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+    (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
 }
 #endif
 
