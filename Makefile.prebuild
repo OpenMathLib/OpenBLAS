@@ -39,6 +39,6 @@ else
 endif
 
 cblas_noconst.h : cblas.h
-	sed -e "s/\bconst\b\s*//g" cblas.h > cblas_noconst.h
+	perl -ane ' s/\bconst\b\s*//g; print; ' < cblas.h > cblas_noconst.h	
 
 dummy:
