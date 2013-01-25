@@ -699,7 +699,7 @@
 	movsd	-32 * SIZE(X), %xmm4
 
 	pshufd	$0xb1,  %xmm4, %xmm12 
-	shufps	$0x39,  %xmm8, %xmm8
+	shufps	$0x59,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
@@ -1336,7 +1336,7 @@
 
 	movss	%xmm9,  %xmm8
 	pshufd	$0xb1,  %xmm4, %xmm12 
-	shufps	$0x93,  %xmm8, %xmm8
+	shufps	$0x03,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
@@ -1697,7 +1697,7 @@
 	movsd	-32 * SIZE(Y), %xmm4
 
 	pshufd	$0xb1,  %xmm4, %xmm12 
-	shufps	$0x39,  %xmm8, %xmm8
+	shufps	$0xa9,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
@@ -2024,7 +2024,7 @@
 
 	movss	%xmm9,  %xmm8
 	pshufd	$0xb1,  %xmm4, %xmm12 
-	shufps	$0x93,  %xmm8, %xmm8
+	shufps	$0x03,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
