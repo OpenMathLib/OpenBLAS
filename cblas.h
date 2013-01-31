@@ -1,13 +1,13 @@
 #ifndef CBLAS_H
 #define CBLAS_H
 
+#include <stddef.h>
+#include "common.h"
+
 #ifdef __cplusplus
 extern "C" {
 	/* Assume C declarations for C++ */
 #endif  /* __cplusplus */
-
-#include <stddef.h>
-#include "common.h"
 
 /*Set the number of threads on runtime.*/
 void openblas_set_num_threads(int num_threads);
