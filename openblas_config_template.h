@@ -48,7 +48,8 @@ typedef int blasint;
 /* C99 supports complex floating numbers natively, which GCC also offers as an
    extension since version 3.0.  If neither are available, use a compatible
    structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
-#if defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || __GNUC__ >= 3
+#if (defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L ||
+     (__GNUC__ >= 3 && !defined(__cplusplus)))
   #define OPENBLAS_COMPLEX_C99
   #include <complex.h>
   typedef float _Complex openblas_complex_float;
