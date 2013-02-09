@@ -118,8 +118,9 @@ static inline int have_excpuid(void){
 
 #ifndef NO_AVX
 static inline void xgetbv(int op, int * eax, int * edx){
+  //Use binary code for xgetbv
   __asm__ __volatile__
-    ("xgetbv": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+    (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
 }
 #endif
 
@@ -1035,6 +1036,8 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	    return CPUTYPE_NEHALEM;
+	case 14:
+	  // Xeon E7540
 	case 15:
 	  //Xeon Processor E7 (Westmere-EX)
 	  return CPUTYPE_NEHALEM;
@@ -1407,6 +1410,8 @@ int get_coretype(void){
 	    return CORE_SANDYBRIDGE;
 	  else
 	    return CORE_NEHALEM; //OS doesn't support AVX
+	case 14:
+	  //Xeon E7540
 	case 15:
 	  //Xeon Processor E7 (Westmere-EX)
 	  return CORE_NEHALEM;
@@ -1508,6 +1513,9 @@ void get_cpuconfig(void){
       printf("#define DTB_SIZE %d\n", info.size * 1024);
       printf("#define DTB_ASSOCIATIVE %d\n", info.associative);
       printf("#define DTB_DEFAULT_ENTRIES %d\n", info.linesize);
+    } else {
+      //fall back for some virtual machines.
+      printf("#define DTB_DEFAULT_ENTRIES 32\n");
     }
     
     features = get_cputype(GET_FEATURE);

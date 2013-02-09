@@ -76,17 +76,22 @@
 #endif
 
 #define STACKSIZE	16
+#define ARGS	16
 
-#define M		 4 + STACKSIZE(%esp)
-#define N		 8 + STACKSIZE(%esp)
-#define ALPHA		16 + STACKSIZE(%esp)
-#define A		24 + STACKSIZE(%esp)
-#define STACK_LDA	28 + STACKSIZE(%esp)
-#define STACK_X		32 + STACKSIZE(%esp)
-#define STACK_INCX	36 + STACKSIZE(%esp)
-#define Y		40 + STACKSIZE(%esp)
-#define STACK_INCY	44 + STACKSIZE(%esp)
-#define BUFFER		48 + STACKSIZE(%esp)
+#define M		 4 + STACKSIZE+ARGS(%esp)
+#define N		 8 + STACKSIZE+ARGS(%esp)
+#define ALPHA		16 + STACKSIZE+ARGS(%esp)
+#define A		24 + STACKSIZE+ARGS(%esp)
+#define STACK_LDA	28 + STACKSIZE+ARGS(%esp)
+#define STACK_X		32 + STACKSIZE+ARGS(%esp)
+#define STACK_INCX	36 + STACKSIZE+ARGS(%esp)
+#define Y		40 + STACKSIZE+ARGS(%esp)
+#define STACK_INCY	44 + STACKSIZE+ARGS(%esp)
+#define BUFFER		48 + STACKSIZE+ARGS(%esp)
+
+#define MMM	0+ARGS(%esp)
+#define YY	4+ARGS(%esp)
+#define AA	8+ARGS(%esp)
 	
 #define I	%eax
 #define J	%ebx
@@ -101,12 +106,41 @@
 
 	PROLOGUE
 
+
+	subl	$ARGS,%esp
 	pushl	%ebp
 	pushl	%edi
 	pushl	%esi
 	pushl	%ebx
 
 	PROFCODE
+
+	movl	Y,J
+	movl	J,YY				# backup Y
+	movl	A,J
+	movl	J,AA				# backup A
+	movl	M,J
+	movl	J,MMM				# backup MM
+.L0t:
+	xorl	J,J
+	addl	$1,J
+	sall	$20,J
+	subl	J,MMM
+	movl	J,M
+	jge		.L00t
+	ALIGN_4
+
+	movl	MMM,%eax
+	addl	J,%eax
+	jle		.L999x
+	movl	%eax,M
+
+.L00t:
+	movl	AA,%eax
+	movl	%eax,A
+
+	movl	YY,J
+	movl	J,Y
 
 	movl	STACK_LDA,  LDA
 	movl	STACK_X,    X
@@ -677,10 +711,22 @@
 	ALIGN_3
 
 .L999:
+	movl	M,J
+	leal	(,J,SIZE),%eax
+	addl	%eax,AA
+	movl	YY,J
+	addl	%eax,J
+	movl	J,YY
+	jmp		.L0t
+	ALIGN_4
+
+.L999x:
+
 	popl	%ebx
 	popl	%esi
 	popl	%edi	
 	popl	%ebp
+	addl	$ARGS,%esp
 	ret
 
 	EPILOGUE

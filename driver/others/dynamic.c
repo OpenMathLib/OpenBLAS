@@ -80,8 +80,9 @@ extern gotoblas_t  gotoblas_BULLDOZER;
 
 #ifndef NO_AVX
 static inline void xgetbv(int op, int * eax, int * edx){
+  //Use binary code for xgetbv
   __asm__ __volatile__
-    ("xgetbv": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+    (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
 }
 #endif
 
@@ -165,7 +166,8 @@ static gotoblas_t *get_coretype(void){
 		  
 	//Intel Xeon Processor 5600 (Westmere-EP)
 	//Xeon Processor E7 (Westmere-EX)
-	if (model == 12 || model == 15) return &gotoblas_NEHALEM;
+	//Xeon E7540
+	if (model == 12 || model == 14 || model == 15) return &gotoblas_NEHALEM;
 
 	//Intel Core i5-2000 /i7-2000 (Sandy Bridge)
 	//Intel Core i7-3000 / Xeon E5
@@ -285,6 +287,15 @@ void gotoblas_dynamic_init(void) {
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
   if (gotoblas == NULL) gotoblas = &gotoblas_PRESCOTT;
+  /* sanity check, if 64bit pointer we can't have a 32 bit cpu */
+  if (sizeof(void*) == 8) {
+      if (gotoblas == &gotoblas_KATMAI ||
+          gotoblas == &gotoblas_COPPERMINE ||
+          gotoblas == &gotoblas_NORTHWOOD ||
+          gotoblas == &gotoblas_BANIAS ||
+          gotoblas == &gotoblas_ATHLON)
+          gotoblas = &gotoblas_PRESCOTT;
+  }
 #endif
   
   if (gotoblas && gotoblas -> init) {

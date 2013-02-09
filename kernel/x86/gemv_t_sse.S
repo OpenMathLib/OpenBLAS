@@ -89,17 +89,24 @@
 #endif
 
 #define STACKSIZE	16
+#define ARGS	20
 
-#define M		 4 + STACKSIZE(%esp)
-#define N		 8 + STACKSIZE(%esp)
-#define ALPHA		16 + STACKSIZE(%esp)
-#define A		20 + STACKSIZE(%esp)
-#define STACK_LDA	24 + STACKSIZE(%esp)
-#define STACK_X		28 + STACKSIZE(%esp)
-#define STACK_INCX	32 + STACKSIZE(%esp)
-#define Y		36 + STACKSIZE(%esp)
-#define STACK_INCY	40 + STACKSIZE(%esp)
-#define BUFFER		44 + STACKSIZE(%esp)
+#define M		 4 + STACKSIZE+ARGS(%esp)
+#define N		 8 + STACKSIZE+ARGS(%esp)
+#define ALPHA		16 + STACKSIZE+ARGS(%esp)
+#define A		20 + STACKSIZE+ARGS(%esp)
+#define STACK_LDA	24 + STACKSIZE+ARGS(%esp)
+#define STACK_X		28 + STACKSIZE+ARGS(%esp)
+#define STACK_INCX	32 + STACKSIZE+ARGS(%esp)
+#define Y		36 + STACKSIZE+ARGS(%esp)
+#define STACK_INCY	40 + STACKSIZE+ARGS(%esp)
+#define BUFFER		44 + STACKSIZE+ARGS(%esp)
+
+#define MMM	0+STACKSIZE(%esp)
+#define NN	4+STACKSIZE(%esp)
+#define AA	8+STACKSIZE(%esp)
+#define LDAX	12+STACKSIZE(%esp)
+#define XX	16+STACKSIZE(%esp)
 	
 #define I	%eax
 #define J	%ebx
@@ -114,6 +121,7 @@
 
 	PROLOGUE
 
+	subl	$ARGS,%esp
 	pushl	%ebp
 	pushl	%edi
 	pushl	%esi
@@ -122,7 +130,42 @@
 	PROFCODE
 
 	movl	STACK_LDA,  LDA
+	movl	LDA,LDAX			# backup LDA
 	movl	STACK_X,    X
+	movl	X,XX
+	movl	N,J
+	movl	J,NN				# backup N
+	movl	A,J
+	movl	J,AA				# backup A
+    movl	M,J
+	movl	J,MMM				# mov M to MMM
+.L0t:
+	xorl	J,J
+	addl	$1,J
+	sall    $22,J                           # J=2^24*sizeof(float)=buffer size(16MB)
+	subl    $8, J                           # Don't use last 8 float in the buffer.
+	                                        # Now, split M by block J
+	subl	J,MMM				# MMM=MMM-J
+	movl	J,M		
+	jge		.L00t
+	ALIGN_4
+	
+	movl	MMM,%eax
+	addl	J,%eax
+	jle		.L999x
+	movl	%eax,M
+
+.L00t:
+	movl	AA,%eax
+	movl	%eax,A			 	# mov AA to A
+
+	movl	NN,%eax
+	movl	%eax,N				# reset N
+
+
+	movl	LDAX,  LDA			# reset LDA
+	movl	XX,X
+
 	movl	STACK_INCX, INCX
 	movl	STACK_INCY, INCY
 
@@ -196,6 +239,20 @@
 	addl	$SIZE, Y1
 	decl	I
 	jg	.L06
+	ALIGN_4
+
+//Padding zero to prevent loading the dirty number from buffer.
+	movl	M,  I
+	movl	$8, J
+	andl	$7, I
+	xorps	%xmm0, %xmm0
+	subl	I, J
+	ALIGN_2
+.L07:
+	movss	%xmm0, 0 * SIZE(Y1)
+	addl	$SIZE, Y1
+	decl	J
+	jg	.L07
 	ALIGN_4
 
 .L10:
@@ -628,10 +685,22 @@
 	ALIGN_4
  	
 .L999:
+	movl	M,J
+	leal	(,J,SIZE),%eax
+	addl	%eax,AA
+	movl	XX,J
+	addl	%eax,J
+	movl	J,XX
+	jmp		.L0t
+	ALIGN_4
+
+.L999x:
 	popl	%ebx
 	popl	%esi
 	popl	%edi	
 	popl	%ebp
+
+	addl	$ARGS,%esp
 	ret
 
 	EPILOGUE

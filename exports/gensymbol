@@ -74,6 +74,7 @@
 
 @misc_no_underscore_objs = (
                             openblas_set_num_threads, goto_set_num_threads,
+                            openblas_get_config,
                            );
 
 @misc_underscore_objs = (

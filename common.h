@@ -390,7 +390,8 @@ typedef int blasint;
 /* C99 supports complex floating numbers natively, which GCC also offers as an
    extension since version 3.0.  If neither are available, use a compatible
    structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
-#if defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || __GNUC__ >= 3
+#if (defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
+     (__GNUC__ >= 3 && !defined(__cplusplus)))
   #define OPENBLAS_COMPLEX_C99
   typedef float _Complex openblas_complex_float;
   typedef double _Complex openblas_complex_double;
@@ -557,7 +558,8 @@ typedef struct {
 #include "common_level3.h"
 #include "common_lapack.h"
 #ifdef CBLAS
-#include "cblas.h"
+/* This header file is generated from "cblas.h" (see Makefile.prebuild). */
+#include "cblas_noconst.h"
 #endif
 
 #ifndef ASSEMBLER
