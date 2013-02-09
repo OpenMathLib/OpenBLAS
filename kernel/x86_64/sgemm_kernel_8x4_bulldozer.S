@@ -88,7 +88,7 @@
 #define KERNEL1(xx) \
 	vfmaddps  %xmm8,%xmm1,%xmm0,%xmm8 ;\
 	vmovaps	%xmm2, %xmm0 ;\
-	vmovups -28 * SIZE(AO, %rax, 4),%xmm2 ;\	
+	vmovups -28 * SIZE(AO, %rax, 4),%xmm2 ;\
 	vfmaddps %xmm12,%xmm2, %xmm1, %xmm12 ;\
 	vmovups	-24 * SIZE(BO, %rax, 8), %xmm1 ;\
 	vfmaddps %xmm9,%xmm3, %xmm0, %xmm9 ;\
@@ -107,7 +107,7 @@
 #define KERNEL2(xx) \
 	vfmaddps  %xmm8,%xmm1,%xmm0,%xmm8 ;\
 	vmovaps	%xmm2, %xmm0 ;\
-	vmovups -20 * SIZE(AO, %rax, 4),%xmm2 ;\	
+	vmovups -20 * SIZE(AO, %rax, 4),%xmm2 ;\
 	vfmaddps %xmm12,%xmm2, %xmm1, %xmm12 ;\
 	vmovups	-8 * SIZE(BO, %rax, 8), %xmm1 ;\
 	vfmaddps %xmm9,%xmm3, %xmm0, %xmm9 ;\
