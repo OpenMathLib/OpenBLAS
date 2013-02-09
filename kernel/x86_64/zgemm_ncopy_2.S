@@ -85,7 +85,7 @@
 #define movsd movlpd
 #endif
 
-#if defined(BARCELONA) || defined(SHANGHAI)
+#if defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 #define RPREFETCHSIZE 32
 #define WPREFETCHSIZE 48
 #endif

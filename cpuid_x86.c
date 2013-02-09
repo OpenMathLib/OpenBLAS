@@ -43,6 +43,8 @@
 #ifdef NO_AVX
 #define CPUTYPE_SANDYBRIDGE CPUTYPE_NEHALEM
 #define CORE_SANDYBRIDGE CORE_NEHALEM
+#define CPUTYPE_BULLDOZER CPUTYPE_BARCELONA
+#define CORE_BULLDOZER CORE_BARCELONA
 #endif
 
 #ifndef CPUIDEMU
@@ -229,6 +231,9 @@ int get_cputype(int gettype){
       cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
       if ((ecx & (1 <<  6)) != 0) feature |= HAVE_SSE4A;
       if ((ecx & (1 <<  7)) != 0) feature |= HAVE_MISALIGNSSE;
+#ifndef NO_AVX
+      if ((ecx & (1 <<  16)) != 0) feature |= HAVE_FMA4;
+#endif
       if ((edx & (1 << 30)) != 0) feature |= HAVE_3DNOWEX;
       if ((edx & (1 << 31)) != 0) feature |= HAVE_3DNOW;
     }
@@ -1078,8 +1083,12 @@ int get_cpuname(void){
 	return CPUTYPE_OPTERON;
       case  1:
       case 10:
-      case  6:   //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
 	return CPUTYPE_BARCELONA;
+      case  6:   //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	if(support_avx())
+	  return CPUTYPE_BULLDOZER;
+	else
+	  return CPUTYPE_BARCELONA; //OS don't support AVX.
       case  5:
 	return CPUTYPE_BOBCAT;
       }
@@ -1432,8 +1441,13 @@ int get_coretype(void){
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON; 
       else if (exfamily == 5) return CORE_BOBCAT; 
-      else if (exfamily == 6) return CORE_BARCELONA;  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
-      else return CORE_BARCELONA;
+      else if (exfamily == 6) {
+	//AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	if(support_avx())
+	  return CORE_BULLDOZER;
+	else
+	  return CORE_BARCELONA; //OS don't support AVX. Use old kernels.
+      }else return CORE_BARCELONA;
     }
   }
 
@@ -1519,6 +1533,7 @@ void get_cpuconfig(void){
     if (features & HAVE_AVX )    printf("#define HAVE_AVX\n");
     if (features & HAVE_3DNOWEX) printf("#define HAVE_3DNOWEX\n");
     if (features & HAVE_3DNOW)   printf("#define HAVE_3DNOW\n");
+    if (features & HAVE_FMA4 )    printf("#define HAVE_FMA4\n");
     if (features & HAVE_CFLUSH)  printf("#define HAVE_CFLUSH\n");
     if (features & HAVE_HIT)     printf("#define HAVE_HIT 1\n");
     if (features & HAVE_MISALIGNSSE) printf("#define HAVE_MISALIGNSSE\n");
@@ -1585,5 +1600,6 @@ void get_sse(void){
   if (features & HAVE_AVX )    printf("HAVE_AVX=1\n");
   if (features & HAVE_3DNOWEX) printf("HAVE_3DNOWEX=1\n");
   if (features & HAVE_3DNOW)   printf("HAVE_3DNOW=1\n");
+  if (features & HAVE_FMA4 )    printf("HAVE_FMA4=1\n");
 
 }

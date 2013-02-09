@@ -86,7 +86,7 @@
 #define PREFETCHW    prefetcht0
 #endif
 
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BULLDOZER)
 #define PREFETCH     prefetch
 #define PREFETCHW    prefetchw
 #define movsd movlps

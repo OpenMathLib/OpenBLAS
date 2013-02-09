@@ -251,7 +251,7 @@
 	sarq	$4, I
 	jle	.L113
 
-#if defined(BARCELONA) || defined(SHANGHAI)
+#if defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 
 	movaps  %xmm0, %xmm1
 	mulpd	-16 * SIZE(X), %xmm1

@@ -58,7 +58,7 @@
 #define movsd		movlps
 #endif
 
-#ifdef BARCELONA
+#if defined(BARCELONA) || defined(BULLDOZER)
 #define PREFETCH	prefetchnta
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE	(8 * 5)

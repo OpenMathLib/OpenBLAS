@@ -125,7 +125,8 @@
 #define HAVE_MISALIGNSSE (1 << 15)
 #define HAVE_128BITFPU   (1 << 16)
 #define HAVE_FASTMOVU    (1 << 17)
-#define HAVE_AVX     (1 <<  18)
+#define HAVE_AVX      (1 <<  18)
+#define HAVE_FMA4     (1 <<  19)
 
 #define CACHE_INFO_L1_I     1
 #define CACHE_INFO_L1_D     2
