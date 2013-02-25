@@ -224,6 +224,7 @@ static void exec_threads(blas_queue_t *queue){
 					    + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	  }
       }
+      queue->sb=sb;
     }
   }
 
