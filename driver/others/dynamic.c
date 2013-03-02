@@ -175,7 +175,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -186,7 +186,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -211,7 +211,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_BULLDOZER;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Barcelona kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }	
       } else {
