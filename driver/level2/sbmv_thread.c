@@ -65,7 +65,6 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 
   a = (FLOAT *)args -> a;
   x = (FLOAT *)args -> b;
-  y = (FLOAT *)args -> c;
 
   lda  = args -> lda;
   incx = args -> ldb;
@@ -76,6 +75,10 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
   n_from = 0;
   n_to   = n;
 
+  //Use y as each thread's n* COMPSIZE elements in sb buffer
+  y = buffer;   
+  buffer += ((COMPSIZE * n  + 1023) & ~1023);
+
   if (range_m) {
     n_from = *(range_m + 0);
     n_to   = *(range_m + 1);
@@ -83,7 +86,6 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
     a += n_from * lda  * COMPSIZE;
   }
 
-  if (range_n) y += *range_n * COMPSIZE;
 
   if (incx != 1) {
     COPY_K(n, x, incx, buffer, 1);
@@ -331,7 +333,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
 
   if (num_cpu) {
     queue[0].sa = NULL;
-    queue[0].sb = buffer + num_cpu * (((n + 255) & ~255) + 16) * COMPSIZE;
+    queue[0].sb = buffer;
     queue[num_cpu - 1].next = NULL;
   
     exec_blas(num_cpu, queue);
@@ -344,7 +346,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
 #else
 	    ONE, ZERO,
 #endif
-	    buffer + range_n[i] * COMPSIZE, 1, buffer, 1, NULL, 0);
+	    (FLOAT*)(queue[i].sb), 1, buffer, 1, NULL, 0);
   }
 
   AXPYU_K(n, 0, 0,

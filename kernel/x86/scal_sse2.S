@@ -253,7 +253,7 @@
 	sarl	$4, I
 	jle	.L113
 
-#if defined(BARCELONA)
+#if defined(BARCELONA) || defined(BULLDOZER)
 
 	movaps  %xmm0, %xmm1
 	mulpd	-16 * SIZE(X), %xmm1

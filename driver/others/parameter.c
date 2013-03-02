@@ -163,7 +163,7 @@ int get_L2_size(void){
 
   int eax, ebx, ecx, edx;
 
-#if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || \
+#if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER) || \
     defined(CORE_PRESCOTT) || defined(CORE_CORE2) || defined(PENRYN) || defined(DUNNINGTON) || \
   defined(CORE_NEHALEM) || defined(CORE_SANDYBRIDGE) || defined(ATOM) || defined(GENERIC)
 

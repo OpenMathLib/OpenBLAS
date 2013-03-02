@@ -469,7 +469,7 @@
 	ALIGN_4
 
 .L71:
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	prefetch	PREFETCHSIZE * SIZE(X)
 #endif
 

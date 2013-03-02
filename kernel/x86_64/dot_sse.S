@@ -530,7 +530,7 @@
 #endif
 	movsd	-32 * SIZE(Y), %xmm8
 
-	pshufd	$0x39, %xmm4,  %xmm5
+	pshufd	$0x29, %xmm4,  %xmm5
 
 	mulps	%xmm8,  %xmm5
 	addps	%xmm5,  %xmm3
@@ -750,7 +750,8 @@
 	xorps	%xmm5, %xmm5
 	movhlps	%xmm4, %xmm5
 
-	mulps	-32 * SIZE(Y), %xmm5
+	movlps  -32 * SIZE(Y), %xmm4
+	mulps	%xmm4, %xmm5
 	addps	%xmm5, %xmm0
 
 	addq	$2 * SIZE, X
@@ -992,7 +993,7 @@
 	movsd	-32 * SIZE(Y), %xmm8
 
 	movss	%xmm5, %xmm4
-	shufps	$0x93, %xmm5,  %xmm4
+	shufps	$0x93, %xmm4,  %xmm4
 
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm3

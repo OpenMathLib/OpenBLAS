@@ -63,9 +63,11 @@ extern gotoblas_t  gotoblas_BARCELONA;
 extern gotoblas_t  gotoblas_BOBCAT;
 #ifndef NO_AVX
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
+extern gotoblas_t  gotoblas_BULLDOZER;
 #else
 //Use NEHALEM kernels for sandy bridge
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
+#define gotoblas_BULLDOZER gotoblas_BARCELONA
 #endif
 
 
@@ -78,8 +80,9 @@ extern gotoblas_t  gotoblas_SANDYBRIDGE;
 
 #ifndef NO_AVX
 static inline void xgetbv(int op, int * eax, int * edx){
+  //Use binary code for xgetbv
   __asm__ __volatile__
-    ("xgetbv": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+    (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
 }
 #endif
 
@@ -163,7 +166,8 @@ static gotoblas_t *get_coretype(void){
 		  
 	//Intel Xeon Processor 5600 (Westmere-EP)
 	//Xeon Processor E7 (Westmere-EX)
-	if (model == 12 || model == 15) return &gotoblas_NEHALEM;
+	//Xeon E7540
+	if (model == 12 || model == 14 || model == 15) return &gotoblas_NEHALEM;
 
 	//Intel Core i5-2000 /i7-2000 (Sandy Bridge)
 	//Intel Core i7-3000 / Xeon E5
@@ -171,7 +175,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -182,7 +186,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -202,6 +206,14 @@ static gotoblas_t *get_coretype(void){
 	else return &gotoblas_OPTERON;
       }  else if (exfamily == 5) {
 	return &gotoblas_BOBCAT;
+      } else if (exfamily == 6) {
+	//AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	  if(support_avx())
+	    return &gotoblas_BULLDOZER;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	  }	
       } else {
 	return &gotoblas_BARCELONA;
       }
@@ -238,6 +250,7 @@ static char *corename[] = {
     "Nano",
     "Sandybridge",
     "Bobcat",
+    "Bulldozer",
 };
 
 char *gotoblas_corename(void) {
@@ -259,6 +272,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_NANO)         return corename[15];
   if (gotoblas == &gotoblas_SANDYBRIDGE)  return corename[16];
   if (gotoblas == &gotoblas_BOBCAT)       return corename[17];
+  if (gotoblas == &gotoblas_BULLDOZER)    return corename[18];
 
   return corename[0];
 }

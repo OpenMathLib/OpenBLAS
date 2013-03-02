@@ -74,6 +74,13 @@
 #define ALIGNED_ACCESS
 #endif
 
+#ifdef BULLDOZER
+#define PREFETCH	prefetch
+#define PREFETCHW	prefetchw
+#define PREFETCHSIZE (128 *   5)
+#define ALIGNED_ACCESS
+#endif
+
 #ifdef NANO
 #define PREFETCH        prefetcht0
 #define PREFETCHW       prefetcht0
