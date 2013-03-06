@@ -340,7 +340,7 @@
 
 	vmovsd	 %xmm0, ALPHA
 
-	salq	$BASE_SHIFT, LDC
+	salq	$BASE_SHIFT, LDC	# LDC << 3 # LDC * 8
 
 #ifdef TRMMKERNEL
 	vmovsd	%xmm12, OFFSET
@@ -350,7 +350,7 @@
 #endif	
 #endif
 	movq	N,  J
-	sarq	$2, J		# j = (n >> 2)
+	sarq	$2, J		# j = (n >> 2) # j = n / 4
 	jle	.L40
 	ALIGN_4
 
@@ -434,104 +434,6 @@
 #define PR2 24
 
 .L12:
-	prefetcht0 PR1*SIZE(AO,%rax,4)
-	prefetcht0 PR2*SIZE(AO,%rax,4)
-	prefetcht0 PR1*SIZE(BO,%rax,4)
-	prefetcht0 PR2*SIZE(BO,%rax,4)
-	KERNEL1(16 *  0)
-	KERNEL2(16 *  0)
-	KERNEL3(16 *  0)
-	KERNEL4(16 *  0)
-	KERNEL5(16 *  0)
-	KERNEL6(16 *  0)
-	KERNEL7(16 *  0)
-	KERNEL8(16 *  0)
-	NOBRANCH
-	je	.L15
-	prefetcht0 PR1*SIZE(AO,%rax,4)
-	prefetcht0 PR2*SIZE(AO,%rax,4)
-	prefetcht0 PR1*SIZE(BO,%rax,4)
-	prefetcht0 PR2*SIZE(BO,%rax,4)
-	KERNEL1(16 *  0)
-	KERNEL2(16 *  0)
-	KERNEL3(16 *  0)
-	KERNEL4(16 *  0)
-	KERNEL5(16 *  0)
-	KERNEL6(16 *  0)
-	KERNEL7(16 *  0)
-	KERNEL8(16 *  0)
-	NOBRANCH
-	je	.L15
-	prefetcht0 PR1*SIZE(AO,%rax,4)
-	prefetcht0 PR2*SIZE(AO,%rax,4)
-	prefetcht0 PR1*SIZE(BO,%rax,4)
-	prefetcht0 PR2*SIZE(BO,%rax,4)
-	KERNEL1(16 *  0)
-	KERNEL2(16 *  0)
-	KERNEL3(16 *  0)
-	KERNEL4(16 *  0)
-	KERNEL5(16 *  0)
-	KERNEL6(16 *  0)
-	KERNEL7(16 *  0)
-	KERNEL8(16 *  0)
-	NOBRANCH
-	je	.L15
-	prefetcht0 PR1*SIZE(AO,%rax,4)
-	prefetcht0 PR2*SIZE(AO,%rax,4)
-	prefetcht0 PR1*SIZE(BO,%rax,4)
-	prefetcht0 PR2*SIZE(BO,%rax,4)
-	KERNEL1(16 *  0)
-	KERNEL2(16 *  0)
-	KERNEL3(16 *  0)
-	KERNEL4(16 *  0)
-	KERNEL5(16 *  0)
-	KERNEL6(16 *  0)
-	KERNEL7(16 *  0)
-	KERNEL8(16 *  0)
-	NOBRANCH
-	je	.L15
-	prefetcht0 PR1*SIZE(AO,%rax,4)
-	prefetcht0 PR2*SIZE(AO,%rax,4)
-	prefetcht0 PR1*SIZE(BO,%rax,4)
-	prefetcht0 PR2*SIZE(BO,%rax,4)
-	KERNEL1(16 *  0)
-	KERNEL2(16 *  0)
-	KERNEL3(16 *  0)
-	KERNEL4(16 *  0)
-	KERNEL5(16 *  0)
-	KERNEL6(16 *  0)
-	KERNEL7(16 *  0)
-	KERNEL8(16 *  0)
-	NOBRANCH
-	je	.L15
-	prefetcht0 PR1*SIZE(AO,%rax,4)
-	prefetcht0 PR2*SIZE(AO,%rax,4)
-	prefetcht0 PR1*SIZE(BO,%rax,4)
-	prefetcht0 PR2*SIZE(BO,%rax,4)
-	KERNEL1(16 *  0)
-	KERNEL2(16 *  0)
-	KERNEL3(16 *  0)
-	KERNEL4(16 *  0)
-	KERNEL5(16 *  0)
-	KERNEL6(16 *  0)
-	KERNEL7(16 *  0)
-	KERNEL8(16 *  0)
-	NOBRANCH
-	je	.L15
-	prefetcht0 PR1*SIZE(AO,%rax,4)
-	prefetcht0 PR2*SIZE(AO,%rax,4)
-	prefetcht0 PR1*SIZE(BO,%rax,4)
-	prefetcht0 PR2*SIZE(BO,%rax,4)
-	KERNEL1(16 *  0)
-	KERNEL2(16 *  0)
-	KERNEL3(16 *  0)
-	KERNEL4(16 *  0)
-	KERNEL5(16 *  0)
-	KERNEL6(16 *  0)
-	KERNEL7(16 *  0)
-	KERNEL8(16 *  0)
-	NOBRANCH
-	je	.L15
 	prefetcht0 PR1*SIZE(AO,%rax,4)
 	prefetcht0 PR2*SIZE(AO,%rax,4)
 	prefetcht0 PR1*SIZE(BO,%rax,4)
@@ -986,15 +888,15 @@
 	jg	.L01
 	ALIGN_4
 
-.L40:
-	testq	$3, N
-	je	.L999
+.L40:   # N % 4
+	testq	$3, N 			# N % 4 == 3
+	je	.L999 			# Jump to end if N % 4 == 0
 
-	testq	$2, N
+	testq	$2, N			# N % 4 == 2
 	je	.L80
 	ALIGN_4
 
-.L41:
+.L41:					# N % 4 > 1
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
@@ -1002,14 +904,14 @@
 
 	movq	C, CO1			# coffset1 = c
 	leaq	(C, LDC, 1), CO2	# coffset2 = c + ldc
-	movq	A, AO		# aoffset = a
+	movq	A, AO			# aoffset = a
 
 	movq	K, %rax
-	salq	$BASE_SHIFT + 1, %rax
+	salq	$BASE_SHIFT + 1, %rax	# k << 4
 	leaq	(B, %rax), BB
 
 	movq	M,  I
-	sarq	$2, I	# i = (m >> 2)
+	sarq	$2, I			# i = (m >> 2)
 	jle	.L60
 	ALIGN_4
 
@@ -1063,12 +965,12 @@
 	je	.L56
 	ALIGN_4
 
-.L52:
+.L52:								# Loop for (N % 4) == 2
 	vfmaddpd %xmm8,%xmm1, %xmm0,%xmm8
 	vfmaddpd %xmm9,%xmm5, %xmm2,%xmm9
-	vmovups  -14 * SIZE(AO, %rax, 4),%xmm2
+	vmovups  	-14 * SIZE(AO, %rax, 4),%xmm2
 	vfmaddpd %xmm12,%xmm2, %xmm1,%xmm12
-	vmovups	-12 * SIZE(AO, %rax, 4), %xmm0
+	vmovups		-12 * SIZE(AO, %rax, 4), %xmm0
 	vmovddup	-14 * SIZE(BO, %rax, 2), %xmm1
 	vfmaddpd %xmm13,%xmm2, %xmm5,%xmm13
 	vmovddup	-13 * SIZE(BO, %rax, 2), %xmm5
@@ -1076,15 +978,15 @@
 	vfmaddpd %xmm8,%xmm1, %xmm0,%xmm8
 	vfmaddpd %xmm12,%xmm2, %xmm1,%xmm12
 	vfmaddpd %xmm9,%xmm5, %xmm0,%xmm9
-	vmovups	  (AO, %rax, 4), %xmm0
-	vmovddup	 -8 * SIZE(BO, %rax, 2), %xmm1
+	vmovups	 		 (AO, %rax, 4), %xmm0
+	vmovddup	 	-8 * SIZE(BO, %rax, 2), %xmm1
 	vfmaddpd %xmm13,%xmm2, %xmm5,%xmm13
 	vmovddup	-11 * SIZE(BO, %rax, 2), %xmm5
-	vmovups	-6 * SIZE(AO, %rax, 4), %xmm2
+	vmovups		-6 * SIZE(AO, %rax, 4), %xmm2
 	vfmaddpd %xmm8,%xmm3, %xmm4,%xmm8
 	vfmaddpd %xmm12,%xmm2, %xmm3,%xmm12
 	vfmaddpd %xmm9,%xmm5, %xmm4,%xmm9
-	vmovups	 -4 * SIZE(AO, %rax, 4), %xmm4
+	vmovups	 	-4 * SIZE(AO, %rax, 4), %xmm4
 	vmovddup	-10 * SIZE(BO, %rax, 2), %xmm3
 	vfmaddpd %xmm13,%xmm2, %xmm5,%xmm13
 	vmovddup	 -9 * SIZE(BO, %rax, 2), %xmm5
@@ -1093,7 +995,7 @@
 	vfmaddpd %xmm12,%xmm2, %xmm3,%xmm12
 	vfmaddpd %xmm9,%xmm5, %xmm4,%xmm9
 	vfmaddpd %xmm13,%xmm2, %xmm5,%xmm13
-	vmovups	  8 * SIZE(AO, %rax, 4), %xmm4
+	vmovups	  	  8 * SIZE(AO, %rax, 4), %xmm4
 	vmovddup	 -4 * SIZE(BO, %rax, 2), %xmm3
 	vmovddup	 -7 * SIZE(BO, %rax, 2), %xmm5
 	vmovaps	%xmm0, %xmm2
@@ -1455,8 +1357,8 @@
 	ALIGN_4
 
 .L80:
-	testq	$1, N
-	je	.L999
+	testq	$1, N			# N % 4 == 1
+	je	.L999 			# Jump to end if N % 4 == 0
 	ALIGN_4
 
 .L81:
