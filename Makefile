@@ -225,9 +225,9 @@ ifndef NOFORTRAN
 	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 ifdef INTERFACE64
-	-@echo "CFLAGS      = $(CFLAGS) -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override CFLAGS      = $(CFLAGS) -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64" >> $(NETLIB_LAPACK_DIR)/make.inc
 else
-	-@echo "CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
