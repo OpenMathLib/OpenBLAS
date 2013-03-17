@@ -27,7 +27,7 @@ On X86 box, compile this library for loongson3a CPU.
 
     make DEBUG=1
 
-### Intall to the directory (Optional)
+### Install to the directory (Optional)
 
 Example:
 
