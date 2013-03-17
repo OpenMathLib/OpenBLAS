@@ -104,8 +104,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_BARCELONA	*/
 /* #define FORCE_SHANGHAI	*/
 /* #define FORCE_ISTANBUL	*/
-/* #define FORCE_BULLDOZER	*/
 /* #define FORCE_BOBCAT		*/
+/* #define FORCE_BULLDOZER	*/
 /* #define FORCE_SSE_GENERIC	*/
 /* #define FORCE_VIAC3		*/
 /* #define FORCE_NANO		*/
