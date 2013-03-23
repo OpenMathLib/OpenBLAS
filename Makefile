@@ -267,7 +267,7 @@ else
 ifeq ($(OSNAME), FreeBSD)
 	fetch $(LAPACK_URL)
 else
-	wget $(LAPACK_URL)
+	wget -O $@ $(LAPACK_URL)
 endif
 endif
 endif
