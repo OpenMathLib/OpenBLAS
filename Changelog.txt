@@ -1,5 +1,23 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.6
+2-Mar-2013
+common:
+	* Improved OpenMP performance slightly. (d744c9)
+	* Improved cblas.h compatibility with Intel MKL.(#185)
+	* Fixed the overflowing bug in single thread cholesky factorization.
+	* Fixed the overflowing buffer bug of multithreading hbmv and sbmv.(#174)
+
+x86/x86-64:
+	* Added AMD Bulldozer x86-64 S/DGEMM AVX kernels. (Thank Werner Saar)
+	  We will tune the performance in future.
+	* Auto-detect Intel Xeon E7540.
+	* Fixed the overflowing buffer bug of gemv. (#173)
+	* Fixed the bug of s/cdot about invalid reading NAN on x86_64. (#189)
+
+MIPS64:
+
+====================================================================
 Version 0.2.5
 26-Nov-2012
 common:

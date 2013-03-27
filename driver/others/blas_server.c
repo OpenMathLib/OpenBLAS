@@ -385,6 +385,7 @@ static int blas_thread_server(void *arg){
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	  }
 	}
+	queue->sb=sb;
       }
 	
 #ifdef MONITOR

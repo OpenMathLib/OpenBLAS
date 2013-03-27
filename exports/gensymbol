@@ -74,6 +74,7 @@
 
 @misc_no_underscore_objs = (
                             openblas_set_num_threads, goto_set_num_threads,
+                            openblas_get_config,
                            );
 
 @misc_underscore_objs = (
@@ -110,7 +111,7 @@
 		# already provided by @blasobjs: xerbla, lsame
 		ilaenv, ieeeck, lsamen, xerbla_array, iparmq,
 		ilaprec, ilatrans, ilauplo, iladiag, chla_transtype,
-		ilaver, slamch,
+		ilaver, slamch, slamc3,
 
 		# SCLAUX  -- Auxiliary routines called from both REAL and COMPLEX.
 		# excluded: second_$(TIMER)
@@ -147,7 +148,7 @@
 		dlasr,  dlasrt, dlassq, dlasv2, dpttrf, dstebz, dstedc,
 		dsteqr, dsterf, dlaisnan, disnan,
 		dlartgp, dlartgs,
-		dlamch,
+		dlamch, dlamc3,
 
 		# SLASRC  -- Single precision real LAPACK routines
 		# already provided by @lapackobjs:

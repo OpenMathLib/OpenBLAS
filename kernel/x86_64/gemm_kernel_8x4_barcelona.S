@@ -930,7 +930,7 @@
 .L22:
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movaps	 4 * SIZE(BO), %xmm9
@@ -983,7 +983,7 @@
 	addps	%xmm8, %xmm3
 	movaps	 0 * SIZE(AO), %xmm8
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 16) * SIZE(AO)
 #endif
 	mulps	%xmm10, %xmm9
@@ -1178,7 +1178,7 @@
 .L32:
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movsd	 4 * SIZE(BO), %xmm9
@@ -1423,7 +1423,7 @@
 .L42:
 	mulss	%xmm8, %xmm9
 	addss	%xmm9, %xmm0
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movss	 4 * SIZE(BO), %xmm9
@@ -1765,7 +1765,7 @@
 
 .L62:
 	mulps	%xmm8, %xmm9
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	mulps	 4 * SIZE(BO), %xmm8
@@ -1793,7 +1793,7 @@
 	addps	%xmm8, %xmm5
 	movaps	32 * SIZE(AO), %xmm8
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 16) * SIZE(AO)
 #endif
 	mulps	%xmm10, %xmm11
@@ -1822,7 +1822,7 @@
 	addps	%xmm10, %xmm5
 	movaps	48 * SIZE(AO), %xmm10
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 32) * SIZE(AO)
 #endif
 	mulps	%xmm12, %xmm13
@@ -1851,7 +1851,7 @@
 	addps	%xmm12, %xmm5
 	movaps	64 * SIZE(AO), %xmm12
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 48) * SIZE(AO)
 #endif
 	mulps	%xmm14, %xmm15
@@ -2024,7 +2024,7 @@
 
 .L72:
 	mulps	%xmm8, %xmm9
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 
@@ -2208,7 +2208,7 @@
 .L82:
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movsd	 4 * SIZE(BO), %xmm9
@@ -2395,7 +2395,7 @@
 .L92:
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movss	 4 * SIZE(BO), %xmm9
@@ -2670,7 +2670,7 @@
 
 .L112:
 	mulps	%xmm9, %xmm8
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 
@@ -2687,7 +2687,7 @@
 	addps	%xmm9, %xmm4
 	movaps	 8 * SIZE(BO), %xmm9
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 16) * SIZE(AO)
 #endif
 	mulps	%xmm9, %xmm10
@@ -2704,7 +2704,7 @@
 	addps	%xmm9, %xmm4
 	movaps	32 * SIZE(BO), %xmm9
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 32) * SIZE(AO)
 #endif
 	mulps	%xmm11, %xmm12
@@ -2721,7 +2721,7 @@
 	addps	%xmm11, %xmm4
 	movaps	24 * SIZE(BO), %xmm11
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 48) * SIZE(AO)
 #endif
 	mulps	%xmm11, %xmm14
@@ -2857,7 +2857,7 @@
 
 .L122:
 	mulps	%xmm8, %xmm9
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movaps	-28 * SIZE(AO), %xmm8
@@ -2873,7 +2873,7 @@
 	addps	%xmm8, %xmm3
 	movaps	  0 * SIZE(AO), %xmm8
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE + 16) * SIZE(AO)
 #endif
 	mulps	%xmm10, %xmm11
@@ -3003,7 +3003,7 @@
 
 .L132:
 	mulps	%xmm8, %xmm9
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movsd	-30 * SIZE(AO), %xmm8
@@ -3150,7 +3150,7 @@
 
 .L142:
 	mulss	%xmm8, %xmm9
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 #endif
 	movss	-31 * SIZE(AO), %xmm8

@@ -66,7 +66,9 @@ static FLOAT dm1 = -1.;
 #endif
 
 #define GEMM_PQ  MAX(GEMM_P, GEMM_Q)
-#define REAL_GEMM_R (GEMM_R - GEMM_PQ)
+
+//leave some space for GEMM_ALIGN in sb2
+#define REAL_GEMM_R (GEMM_R - 2*GEMM_PQ)
 
 #if 0
 #define SHARED_ARRAY
@@ -220,7 +222,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 			sa,
 			sb2,
 			a + (is + js * lda) * COMPSIZE, lda,
-			- is + js);
+			is - js);
 #endif
 
 	}

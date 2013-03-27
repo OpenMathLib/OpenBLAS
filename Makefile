@@ -225,9 +225,9 @@ ifndef NOFORTRAN
 	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 ifdef INTERFACE64
-	-@echo "CFLAGS      = $(CFLAGS) -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override CFLAGS      = $(CFLAGS) -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64" >> $(NETLIB_LAPACK_DIR)/make.inc
 else
-	-@echo "CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -267,7 +267,7 @@ else
 ifeq ($(OSNAME), FreeBSD)
 	fetch $(LAPACK_URL)
 else
-	wget $(LAPACK_URL)
+	wget -O $@ $(LAPACK_URL)
 endif
 endif
 endif
@@ -314,7 +314,7 @@ clean ::
 #endif
 	@$(MAKE) -C reference clean
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
-	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
+	@rm -f Makefile.conf config.h cblas_noconst.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d $(NETLIB_LAPACK_DIR); then \
 	echo deleting $(NETLIB_LAPACK_DIR); \
 	rm -rf $(NETLIB_LAPACK_DIR) ;\

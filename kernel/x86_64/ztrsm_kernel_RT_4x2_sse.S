@@ -95,7 +95,7 @@
 #define PREFETCHSIZE (8 * 6 + 4)
 #endif
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCAT)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCAT) || defined(BULLDOZER)
 #define PREFETCH     prefetch
 #define PREFETCHW    prefetchw
 #define PREFETCHNTA  prefetchnta
