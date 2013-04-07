@@ -514,10 +514,27 @@ ifdef INTERFACE64
 FCOMMON_OPT += -i8
 endif
 endif
+
+ifeq ($(ARCH), mips64)
+ifndef BINARY64
+FCOMMON_OPT += -n32
+else
+FCOMMON_OPT += -n64
+endif
+ifeq ($(CORE), LOONGSON3A) 
+FCOMMON_OPT += -loongson3
+endif
+
+ifeq ($(CORE), LOONGSON3B) 
+FCOMMON_OPT += -loongson3
+endif
+
+else
 ifndef BINARY64
 FCOMMON_OPT += -m32
 else
 FCOMMON_OPT += -m64
+endif
 endif
 
 ifdef USE_OPENMP
@@ -527,10 +544,28 @@ endif
 endif
 
 ifeq ($(C_COMPILER), OPEN64)
+
+ifeq ($(ARCH), mips64)
+ifndef BINARY64
+CCOMMON_OPT += -n32
+else
+CCOMMON_OPT += -n64
+endif
+ifeq ($(CORE), LOONGSON3A) 
+CCOMMON_OPT += -loongson3
+endif
+
+ifeq ($(CORE), LOONGSON3B) 
+CCOMMON_OPT += -loongson3
+endif
+
+else
+
 ifndef BINARY64
 CCOMMON_OPT += -m32
 else
 CCOMMON_OPT += -m64
+endif
 endif
 endif
 

@@ -23,6 +23,10 @@ On X86 box, compile this library for loongson3a CPU.
 
     make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-gfortran HOSTCC=gcc TARGET=LOONGSON3A
 
+On X86 box, compile this library for loongson3a CPU with loongcc (based on Open64) compiler.
+
+    make CC=loongcc FC=loongf95 HOSTCC=gcc TARGET=LOONGSON3A CROSS=1 CROSS_SUFFIX=mips64el-st-linux-gnu-   NO_LAPACKE=1 NO_SHARED=1 BINARY=32
+
 ### Debug version
 
     make DEBUG=1
