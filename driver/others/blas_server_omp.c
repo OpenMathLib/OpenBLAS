@@ -49,7 +49,11 @@
 
 int blas_server_avail = 0;
 
+static void * blas_thread_buffer[MAX_CPU_NUMBER];
+
 void goto_set_num_threads(int num_threads) {
+
+  int i=0;
 
   if (num_threads < 1) num_threads = blas_num_threads;
 
@@ -62,7 +66,19 @@ void goto_set_num_threads(int num_threads) {
   blas_cpu_number  = num_threads;
 
   omp_set_num_threads(blas_cpu_number);
-  
+
+  //adjust buffer for each thread
+  for(i=0; i<blas_cpu_number; i++){
+    if(blas_thread_buffer[i]==NULL){
+      blas_thread_buffer[i]=blas_memory_alloc(2);
+    }
+  }
+  for(; i<MAX_CPU_NUMBER; i++){
+    if(blas_thread_buffer[i]!=NULL){
+      blas_memory_free(blas_thread_buffer[i]);
+      blas_thread_buffer[i]=NULL;
+    }
+  }
 #if defined(ARCH_MIPS64) 
   //set parameters for different number of threads.
   blas_set_parameter();
@@ -76,16 +92,32 @@ void openblas_set_num_threads(int num_threads) {
 
 int blas_thread_init(void){
 
+  int i=0;
+
   blas_get_cpu_number();
 
   blas_server_avail = 1;
+
+  for(i=0; i<blas_num_threads; i++){
+    blas_thread_buffer[i]=blas_memory_alloc(2);
+  }
+  for(; i<MAX_CPU_NUMBER; i++){
+      blas_thread_buffer[i]=NULL;
+  }
 
   return 0;
 }
 
 int BLASFUNC(blas_thread_shutdown)(void){
-
+  int i=0;
   blas_server_avail = 0;
+
+  for(i=0; i<MAX_CPU_NUMBER; i++){
+    if(blas_thread_buffer[i]!=NULL){
+      blas_memory_free(blas_thread_buffer[i]);
+      blas_thread_buffer[i]=NULL;
+    }
+  }
 
   return 0;
 }
@@ -177,7 +209,8 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 static void exec_threads(blas_queue_t *queue){
 
   void *buffer, *sa, *sb;
-
+  int pos=0, release_flag=0;
+  
   buffer = NULL;
   sa = queue -> sa;
   sb = queue -> sb;
@@ -189,7 +222,14 @@ static void exec_threads(blas_queue_t *queue){
 
   if ((sa == NULL) && (sb == NULL) && ((queue -> mode & BLAS_PTHREAD) == 0)) {
 
-    buffer = blas_memory_alloc(2);
+    pos = omp_get_thread_num();
+    buffer = blas_thread_buffer[pos];
+
+    //fallback
+    if(buffer==NULL) {
+      buffer = blas_memory_alloc(2);
+      release_flag=1;
+    }
 
     if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
     
@@ -224,6 +264,7 @@ static void exec_threads(blas_queue_t *queue){
 					    + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	  }
       }
+      queue->sb=sb;
     }
   }
 
@@ -241,7 +282,7 @@ static void exec_threads(blas_queue_t *queue){
 
     }
 
-  if (buffer != NULL) blas_memory_free(buffer);
+  if (release_flag) blas_memory_free(buffer);
 
 }
 

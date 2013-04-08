@@ -385,6 +385,7 @@ static int blas_thread_server(void *arg){
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	  }
 	}
+	queue->sb=sb;
       }
 	
 #ifdef MONITOR
@@ -435,7 +436,7 @@ static int blas_thread_server(void *arg){
 
   blas_memory_free(buffer);
 
-  pthread_exit(NULL);
+  //pthread_exit(NULL);
 
   return 0;
 }
@@ -770,6 +771,19 @@ void goto_set_num_threads(int num_threads) {
 
   if (num_threads < 1) num_threads = blas_num_threads;
 
+#ifndef NO_AFFINITY
+  if (num_threads == 1) {
+    if (blas_cpu_number == 1){
+      //OpenBLAS is already single thread.
+      return; 
+    }else{
+      //From multi-threads to single thread
+      //Restore the original affinity mask
+      gotoblas_set_affinity(-1);
+    }
+  }
+#endif
+
   if (num_threads > MAX_CPU_NUMBER) num_threads = MAX_CPU_NUMBER;
 
   if (num_threads > blas_num_threads) {
@@ -799,6 +813,13 @@ void goto_set_num_threads(int num_threads) {
 
     UNLOCK_COMMAND(&server_lock);
   }
+
+#ifndef NO_AFFINITY
+  if(blas_cpu_number == 1 && num_threads > 1){
+    //Restore the thread 0 affinity.
+    gotoblas_set_affinity(0);
+  }
+#endif
 
   blas_cpu_number  = num_threads;
 

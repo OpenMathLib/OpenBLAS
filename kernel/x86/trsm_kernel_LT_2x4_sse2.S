@@ -69,7 +69,7 @@
 #define STACK_ALIGN	4096
 #define STACK_OFFSET	1024
 
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 #define PREFETCH     prefetch
 #define PREFETCHSIZE (8 * 10 + 4)
 #endif
@@ -910,7 +910,7 @@
 .L22:
 	mulsd	%xmm0, %xmm2
 	addsd	%xmm2, %xmm4
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	PREFETCH (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	movlpd	 2 * SIZE(BB), %xmm2
@@ -959,7 +959,7 @@
 	movlpd	40 * SIZE(BB), %xmm3
 	addsd	%xmm0, %xmm7
 	movlpd	 8 * SIZE(AA), %xmm0
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	PREFETCH (PREFETCHSIZE  + 8) * SIZE(AA)
 #endif
 	mulsd	%xmm1, %xmm2
@@ -1439,7 +1439,7 @@
 
 .L42:
 	mulpd	%xmm0, %xmm2
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	mulpd	 2 * SIZE(BB), %xmm0
@@ -1469,7 +1469,7 @@
 	addpd	%xmm0, %xmm7
 	movapd	16 * SIZE(AA), %xmm0
 
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 8) * SIZE(AA)
 #endif
 	mulpd	%xmm1, %xmm2

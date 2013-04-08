@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -103,7 +103,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/syscall.h>
 #endif
 
-#if defined(OS_FreeBSD) || defined(OS_Darwin)
+#if defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include <sys/sysctl.h>
 #endif
 
@@ -185,7 +185,7 @@ int get_num_procs(void) {
 
 #endif
 
-#if defined(OS_FreeBSD) || defined(OS_Darwin)
+#if defined(OS_FREEBSD) 
 
 int get_num_procs(void) {
   
@@ -206,7 +206,27 @@ int get_num_procs(void) {
 
 #endif
 
+#if defined(OS_DARWIN)
+int get_num_procs(void) {
+  static int nums = 0;
+  size_t len;
+  if (nums == 0){
+    len = sizeof(int);
+    sysctlbyname("hw.physicalcpu", &nums, &len, NULL, 0);
+  }
+  return nums;
+}
+#endif
+
+/*
+OpenBLAS uses the numbers of CPU cores in multithreading. 
+It can be set by openblas_set_num_threads(int num_threads);
+*/
 int blas_cpu_number  = 0;
+/*
+The numbers of threads in the thread pool. 
+This value is equal or large than blas_cpu_number. This means some threads are sleep.
+*/
 int blas_num_threads = 0;
 
 int  goto_get_num_procs  (void) {
@@ -215,7 +235,7 @@ int  goto_get_num_procs  (void) {
 
 int blas_get_cpu_number(void){
   char *p;
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FreeBSD) || defined(OS_Darwin)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
   int max_num;
 #endif
   int blas_goto_num   = 0;
@@ -223,7 +243,7 @@ int blas_get_cpu_number(void){
 
   if (blas_num_threads) return blas_num_threads;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FreeBSD) || defined(OS_Darwin)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
   max_num = get_num_procs();
 #endif
 
@@ -250,7 +270,7 @@ int blas_get_cpu_number(void){
   else if (blas_omp_num > 0) blas_num_threads = blas_omp_num;
   else blas_num_threads = MAX_CPU_NUMBER;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FreeBSD) || defined(OS_Darwin)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
   if (blas_num_threads > max_num) blas_num_threads = max_num;
 #endif
 
@@ -1128,7 +1148,7 @@ static BLASULONG   init_lock = 0UL;
 static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, 
 			  void *sa, void *sb, BLASLONG pos) {
 
-#ifndef ARCH_POWER
+#if !defined(ARCH_POWER) && !defined(ARCH_SPARC)
 
   long size;
   BLASULONG buffer;
@@ -1289,6 +1309,7 @@ void DESTRUCTOR gotoblas_quit(void) {
    moncontrol (1);
 #endif
 
+   blas_shutdown();
 }
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))

@@ -63,6 +63,8 @@ static blas_pool_t   pool;
 static HANDLE	    blas_threads   [MAX_CPU_NUMBER];
 static DWORD	    blas_threads_id[MAX_CPU_NUMBER];
 
+
+
 static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 
       if (!(mode & BLAS_COMPLEX)){
@@ -179,7 +181,7 @@ static DWORD WINAPI blas_thread_server(void *arg){
     
     do {
       action = WaitForMultipleObjects(2, handles, FALSE, INFINITE);
-    } while ((action != WAIT_OBJECT_0) && (action == WAIT_OBJECT_0 + 1));
+    } while ((action != WAIT_OBJECT_0) && (action != WAIT_OBJECT_0 + 1));
     
     if (action == WAIT_OBJECT_0 + 1) break;
 
@@ -251,6 +253,7 @@ static DWORD WINAPI blas_thread_server(void *arg){
 					  + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	    }
 	}
+	queue->sb=sb;
       }
 	
 #ifdef MONITOR
@@ -263,7 +266,9 @@ static DWORD WINAPI blas_thread_server(void *arg){
       } else {
 	legacy_exec(routine, queue -> mode, queue -> args, sb);
       }
-    }
+    }else{
+		continue; //if queue == NULL
+	}
     
 #ifdef SMP_DEBUG
     fprintf(STDERR, "Server[%2ld] Finished!\n", cpu);
@@ -425,7 +430,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 /* Shutdown procedure, but user don't have to call this routine. The */
 /* kernel automatically kill threads.                                */
 
-int blas_thread_shutdown_(void){
+int BLASFUNC(blas_thread_shutdown)(void){
 
   int i;
 
@@ -437,7 +442,7 @@ int blas_thread_shutdown_(void){
 
     SetEvent(pool.killed);
     
-    for(i = 0; i < blas_cpu_number - 1; i++){
+    for(i = 0; i < blas_num_threads - 1; i++){
       WaitForSingleObject(blas_threads[i], INFINITE);
     }
     
@@ -447,4 +452,48 @@ int blas_thread_shutdown_(void){
   UNLOCK_COMMAND(&server_lock);
   
   return 0;
+}
+
+void goto_set_num_threads(int num_threads)
+{
+	 long i;
+
+	if (num_threads < 1) num_threads = blas_cpu_number;
+
+	if (num_threads > MAX_CPU_NUMBER) num_threads = MAX_CPU_NUMBER;
+
+	if (num_threads > blas_num_threads) {
+
+		LOCK_COMMAND(&server_lock);
+		
+		//increased_threads = 1;
+	    if (!blas_server_avail){
+
+			InitializeCriticalSection(&pool.lock);
+			pool.filled = CreateEvent(NULL, FALSE, FALSE, NULL);
+			pool.killed = CreateEvent(NULL, TRUE,  FALSE, NULL);
+
+			pool.shutdown = 0;
+			pool.queue    = NULL;
+			blas_server_avail = 1;
+		}
+		
+		for(i = blas_num_threads - 1; i < num_threads - 1; i++){	  
+		  
+			blas_threads[i] = CreateThread(NULL, 0, 
+				     blas_thread_server, (void *)i,
+				     0, &blas_threads_id[i]);
+		}
+	
+		blas_num_threads = num_threads;
+
+		UNLOCK_COMMAND(&server_lock);
+	}
+
+	blas_cpu_number  = num_threads;
+}
+
+void openblas_set_num_threads(int num)
+{
+	goto_set_num_threads(num);
 }

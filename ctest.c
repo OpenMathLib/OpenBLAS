@@ -34,20 +34,20 @@ COMPILER_GNU
 OS_LINUX
 #endif
 
-#if defined(__FreeBSD__)
-OS_FreeBSD
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+OS_FREEBSD
 #endif
 
 #if defined(__NetBSD__)
-OS_NetBSD
+OS_NETBSD
 #endif
 
 #if defined(__sun)
-OS_SunOS
+OS_SUNOS
 #endif
 
 #if defined(__APPLE__)
-OS_Darwin
+OS_DARWIN
 #endif
 
 #if defined(_AIX)
@@ -63,11 +63,16 @@ OS_WINNT
 #endif
 
 #if defined(__CYGWIN__)
-OS_CYGWIN
+OS_CYGWIN_NT
 #endif
 
 #if defined(__INTERIX)
 OS_INTERIX
+#endif
+
+#if defined(__gnu_hurd__)
+/* Hurd is very similar to GNU/Linux, it should work out of the box */
+OS_LINUX
 #endif
 
 #if defined(__i386) || defined(_X86)

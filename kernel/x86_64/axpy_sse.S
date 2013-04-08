@@ -69,7 +69,7 @@
 #endif
 	movaps	%xmm0,  ALPHA
 #else
-	movaps	%xmm3,  ALPHA
+	
 
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
@@ -79,6 +79,10 @@
 
 	SAVEREGISTERS
 
+#ifdef WINDOWS_ABI
+	movaps	%xmm3,  ALPHA
+#endif
+	
 	shufps	$0, ALPHA, ALPHA
 
 	leaq	(, INCX, SIZE), INCX

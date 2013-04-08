@@ -10,9 +10,22 @@ ifndef NO_CBLAS
 NO_CBLAS	= 0
 endif
 
+ifndef NO_LAPACK
+NO_LAPACK	= 0
+endif
+
+ifndef NO_LAPACKE
+NO_LAPACKE	= 0
+endif
+
 ifeq ($(OSNAME), WINNT)
 ifeq ($(F_COMPILER), GFORTRAN)
 EXTRALIB += -lgfortran
+endif
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(C_COMPILER), GCC)
+EXTRALIB += -lgomp
+endif
 endif
 endif
 
@@ -58,15 +71,20 @@ dll  : ../$(LIBDLLNAME)
 
 dll2 : libgoto2_shared.dll
 
+# On Windows, we only generate a DLL without a version suffix.  This is because
+# applications which link against the dynamic library reference a fixed DLL name
+# in their import table.  By instead using a stable name it is possible to
+# upgrade between library versions, without needing to re-link an application.
+# For more details see: https://github.com/xianyi/OpenBLAS/issues/127.
 ../$(LIBDLLNAME) : ../$(LIBNAME) libopenblas.def dllinit.$(SUFFIX)
 	$(RANLIB) ../$(LIBNAME)
 ifeq ($(BINARY32), 1)
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
 	-lib /machine:i386 /def:libopenblas.def
 else
 	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(FEXTRALIB)
+	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
 	-lib /machine:X64 /def:libopenblas.def 
 endif
 
@@ -76,13 +94,13 @@ libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
 	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
 
 libopenblas.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) > $(@F)
+	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) > $(@F)
 
 libgoto2_shared.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
+	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) > $(@F)
 
 libgoto_hpl.def : gensymbol
-	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK)  > $(@F)
+	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) > $(@F)
 
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
@@ -106,14 +124,15 @@ so : ../$(LIBSONAME)
 
 endif
 
-ifeq ($(OSNAME), FreeBSD)
+#http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
 
 so : ../$(LIBSONAME)
 
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
 	$(CC) $(CFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--retain-symbols-file=linux.def $(EXTRALIB)
+	-Wl,--retain-symbols-file=linux.def $(FEXTRALIB) $(EXTRALIB)
 	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 
@@ -163,23 +182,23 @@ static : ../$(LIBNAME)
 	rm -f goto.$(SUFFIX)
 
 linux.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > $(@F)
+	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) > $(@F)
 
 osx.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > $(@F)
+	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) > $(@F)
 
 aix.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > $(@F)
+	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) > $(@F)
 
 symbol.S : gensymbol
-	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) > symbol.S
+	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) > symbol.S
 
 test : linktest.c
 	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
 	rm -f linktest
 
 linktest.c : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) > linktest.c
+	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) > linktest.c
 
 clean ::
 	@rm -f *.def *.dylib __.SYMDEF*

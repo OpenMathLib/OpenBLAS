@@ -57,7 +57,7 @@
 #define PREFETCHSIZE	(16 * 24)
 #endif
 
-#ifdef NEHALEM
+#if defined(NEHALEM) || defined(SANDYBRIDGE)
 #define PREFETCH	prefetcht0
 #define PREFETCHW	prefetcht0
 #define PREFETCHSIZE	(16 * 24)
@@ -76,7 +76,7 @@
 #define movsd		movlpd
 #endif
 
-#if defined(BARCELONA)  || defined(SHANGHAI)
+#if defined(BARCELONA)  || defined(SHANGHAI) || defined(BOBCAT) || defined(BULLDOZER)
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE	(16 * 16)
@@ -167,7 +167,7 @@
 #define a3     %xmm14
 #define	xt1    %xmm15
 
-#if (defined(HAVE_SSE3) && !defined(CORE_OPTERON)) || defined(BARCELONA) || defined(SHANGHAI)
+#if (defined(HAVE_SSE3) && !defined(CORE_OPTERON)) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 #define MOVDDUP(a, b, c)	movddup	a(b), c
 #define MOVDDUP2(a, b, c)	movddup	a##b, c
 #else

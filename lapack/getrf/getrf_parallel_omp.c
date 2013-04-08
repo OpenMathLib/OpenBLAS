@@ -77,9 +77,20 @@ static void inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
       min_jj = js + min_j - jjs;
       if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
       
+#if 0
       LASWP_NCOPY(min_jj, off + 1, off + k, 
 		  c + (- off + jjs * lda) * COMPSIZE, lda,
 		  ipiv, sb + k * (jjs - js) * COMPSIZE);
+
+#else
+      LASWP_PLUS(min_jj, off + 1, off + k, ZERO, 
+#ifdef COMPLEX
+		 ZERO,
+#endif
+		 c + (- off + jjs * lda) * COMPSIZE, lda, NULL, 0, ipiv, 1);
+	
+      GEMM_ONCOPY (k, min_jj, c + jjs * lda * COMPSIZE, lda, sb + (jjs - js) * k * COMPSIZE);
+#endif
 
       for (is = 0; is < k; is += GEMM_P) {
 	min_i = k - is;

@@ -1541,6 +1541,16 @@
 	popl	%ebx
 	popl	%esi
 	popl	%edi
-/*remove the hidden return value address from the stack.*/
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
+#ifdef MS_ABI
+/* For MingW GCC >= 4.7. It is compatible with MSVC ABI. http://gcc.gnu.org/bugzilla/show_bug.cgi?id=36834 */
+	ret
+#else
+/* remove the hidden return value address from the stack. For MingW GCC < 4.7 */
 	ret	$0x4
+#endif
+#else
+/*remove the hidden return value address from the stack on Linux.*/
+	ret $0x4
+#endif
 	EPILOGUE

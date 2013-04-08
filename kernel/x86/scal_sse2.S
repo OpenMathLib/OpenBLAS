@@ -76,7 +76,8 @@
 	xorps	%xmm1, %xmm1
 	comisd	%xmm0, %xmm1
 	jne	.L100		# Alpha != ZERO
-
+        jp      .L100           # For Alpha = NaN
+	
 /* Alpha == ZERO */
 	cmpl	$SIZE, INCX
 	jne	.L50
@@ -252,7 +253,7 @@
 	sarl	$4, I
 	jle	.L113
 
-#if defined(BARCELONA)
+#if defined(BARCELONA) || defined(BULLDOZER)
 
 	movaps  %xmm0, %xmm1
 	mulpd	-16 * SIZE(X), %xmm1

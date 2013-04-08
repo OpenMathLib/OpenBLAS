@@ -45,6 +45,12 @@
 #define PREFETCHW	prefetcht0
 #endif
 
+#ifdef SANDYBRIDGE
+#define PREFETCHSIZE	16
+#define PREFETCH	prefetcht0
+#define PREFETCHW	prefetcht0
+#endif
+
 #ifndef MOVAPS
 #define MOVAPS	movaps
 #endif

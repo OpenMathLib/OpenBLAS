@@ -46,6 +46,13 @@
 #define PREFETCHW     prefetcht0
 #endif
 
+#if defined(SANDYBRIDGE)
+#define RPREFETCHSIZE	12
+#define WPREFETCHSIZE (RPREFETCHSIZE * 2)
+#define PREFETCH      prefetcht0
+#define PREFETCHW     prefetcht0
+#endif
+
 #ifndef WINDOWS_ABI
 
 #define M	ARG1	/* rdi */

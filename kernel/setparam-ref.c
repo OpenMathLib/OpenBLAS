@@ -634,10 +634,10 @@ static void init_parameter(void) {
   TABLE_NAME.xgemm_q = XGEMM_DEFAULT_Q;
 #endif
 
-#if defined(CORE_KATMAI)  || defined(CORE_COPPERMINE) || defined(CORE_BANIAS) || defined(CORE_YONAH)
+#if defined(CORE_KATMAI)  || defined(CORE_COPPERMINE) || defined(CORE_BANIAS) || defined(CORE_YONAH) || defined(CORE_ATHLON)
 
 #ifdef DEBUG
-  fprintf(stderr, "Katmai, Coppermine, Banias\n");
+  fprintf(stderr, "Katmai, Coppermine, Banias, Athlon\n");
 #endif
 
   TABLE_NAME.sgemm_p =  64 * (l2 >> 7);
@@ -746,6 +746,22 @@ static void init_parameter(void) {
 #endif
 #endif
 
+#ifdef SANDYBRIDGE
+
+#ifdef DEBUG
+  fprintf(stderr, "Sandybridge\n");
+#endif
+
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+#endif
+#endif
+
 #ifdef OPTERON
 
 #ifdef DEBUG
@@ -766,6 +782,38 @@ static void init_parameter(void) {
 
 #ifdef DEBUG
   fprintf(stderr, "Barcelona\n");
+#endif
+
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+#endif
+#endif
+
+#ifdef BOBCAT
+
+#ifdef DEBUG
+  fprintf(stderr, "Bobcate\n");
+#endif
+
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+#endif
+#endif
+
+#ifdef BULLDOZER
+
+#ifdef DEBUG
+  fprintf(stderr, "Bulldozer\n");
 #endif
 
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;

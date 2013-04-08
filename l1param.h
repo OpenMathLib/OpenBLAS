@@ -9,6 +9,13 @@
 #define ALIGNED_ACCESS
 #endif
 
+#ifdef SANDYBRIDGE
+#define PREFETCH	prefetcht0
+#define PREFETCHW	prefetcht0
+#define PREFETCHSIZE (128 *  12)
+#define ALIGNED_ACCESS
+#endif
+
 #ifdef ATHLON
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
@@ -54,6 +61,20 @@
 #endif
 
 #ifdef SHANGHAI
+#define PREFETCH	prefetch
+#define PREFETCHW	prefetchw
+#define PREFETCHSIZE (128 *   5)
+#define ALIGNED_ACCESS
+#endif
+
+#ifdef BOBCAT
+#define PREFETCH	prefetch
+#define PREFETCHW	prefetchw
+#define PREFETCHSIZE (128 *   5)
+#define ALIGNED_ACCESS
+#endif
+
+#ifdef BULLDOZER
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE (128 *   5)

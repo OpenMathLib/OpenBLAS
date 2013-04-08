@@ -64,7 +64,7 @@
 #define BORIG	60(%esp)
 #define BUFFER 128(%esp)
 
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 #define PREFETCH     prefetch
 #define PREFETCHW    prefetchw
 #define PREFETCHSIZE (16 * 10 + 8)
@@ -872,7 +872,7 @@
 .L22:
 	mulps	%xmm0, %xmm2
 	addps	%xmm2, %xmm4
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	movaps	 4 * SIZE(BB), %xmm2
@@ -1316,7 +1316,7 @@
 .L32:
 	mulss	%xmm0, %xmm2
 	addss	%xmm2, %xmm4
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	movss	 4 * SIZE(BB), %xmm2
@@ -1855,7 +1855,7 @@
 
 .L52:
 	mulps	%xmm0, %xmm2
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	mulps	 4 * SIZE(BB), %xmm0
@@ -1885,7 +1885,7 @@
 	addps	%xmm0, %xmm5
 	movaps	32 * SIZE(AA), %xmm0
 
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 16) * SIZE(AA)
 #endif
 	mulps	%xmm1, %xmm2
@@ -2249,7 +2249,7 @@
 	ALIGN_4
 
 .L62:
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 
@@ -2562,7 +2562,7 @@
 
 .L72:
 	mulss	%xmm0, %xmm2
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	mulss	 4 * SIZE(BB), %xmm0
@@ -2957,7 +2957,7 @@
 
 .L92:
 	mulps	%xmm0, %xmm2
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	movaps	 4 * SIZE(AA), %xmm0
@@ -2972,7 +2972,7 @@
 	mulps	12 * SIZE(BB), %xmm0
 	addps	%xmm0, %xmm7
 	movaps	32 * SIZE(AA), %xmm0
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 16) * SIZE(AA)
 #endif
 	mulps	%xmm1, %xmm3
@@ -3280,7 +3280,7 @@
 
 .L102:
 	mulps	%xmm0, %xmm2
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	movsd	 2 * SIZE(AA), %xmm0
@@ -3515,7 +3515,7 @@
 
 .L112:
 	mulss	%xmm0, %xmm2
-#if defined(OPTERON) || defined(BARCELONA)
+#if defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER)
 	prefetcht0 (PREFETCHSIZE  + 0) * SIZE(AA)
 #endif
 	movss	 1 * SIZE(AA), %xmm0

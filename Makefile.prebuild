@@ -1,3 +1,5 @@
+# This is triggered by Makefile.system and runs before any of the code is built.
+
 export BINARY
 export USE_OPENMP
 
@@ -15,7 +17,7 @@ ifdef CPUIDEMU
 EXFLAGS = -DCPUIDEMU -DVENDOR=99
 endif
 
-all: getarch_2nd
+all: getarch_2nd cblas_noconst.h
 	./getarch_2nd  0 >> $(TARGET_MAKE)
 	./getarch_2nd  1 >> $(TARGET_CONF)
 
@@ -35,5 +37,8 @@ ifndef TARGET_CORE
 else
 	$(HOSTCC) -I. $(CFLAGS) -DBUILD_KERNEL -o $(@F) getarch_2nd.c
 endif
+
+cblas_noconst.h : cblas.h
+	perl -ane ' s/\bconst\b\s*//g; print; ' < cblas.h > cblas_noconst.h	
 
 dummy:

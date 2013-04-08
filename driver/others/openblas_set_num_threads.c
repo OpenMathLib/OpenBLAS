@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #ifdef SMP_SERVER
-#ifdef OS_LINUX
 
 extern  void openblas_set_num_threads(int num_threads) ;
 
-void NAME(int* num_threads){
+void openblas_set_num_threads_(int* num_threads){
 	openblas_set_num_threads(*num_threads);
 }
 
-#endif
+#else
+//Single thread
+
+void openblas_set_num_threads(int num_threads) {
+}
+
+void openblas_set_num_threads_(int* num_threads){
+
+}
 #endif

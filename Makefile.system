@@ -9,8 +9,20 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+ifndef NETLIB_LAPACK_DIR
+NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.2
+endif
+
 # Default C compiler
+# - Only set if not specified on the command line or inherited from the environment.
+# - CC is an implicit variable so neither '?=' or 'ifndef' can be used.
+#   http://stackoverflow.com/questions/4029274/mingw-and-make-variables
+# - Default value is 'cc' which is not always a valid command (e.g. MinGW).
+ifeq ($(origin CC),default)
 CC = gcc
+endif
+
+# Default Fortran compiler (FC) is selected by f_check.
 
 ifndef MAKEFILE_RULE
 include $(TOPDIR)/Makefile.rule
@@ -41,16 +53,24 @@ GETARCH_FLAGS	+= -DUSE64BITINT
 endif
 
 ifndef GEMM_MULTITHREAD_THRESHOLD
-GEMM_MULTITHREAD_THRESHOLD=4
+GEMM_MULTITHREAD_THRESHOLD=50
 endif
 GETARCH_FLAGS	+= -DGEMM_MULTITHREAD_THRESHOLD=$(GEMM_MULTITHREAD_THRESHOLD) 
+
+ifeq ($(NO_AVX), 1)
+GETARCH_FLAGS	+= -DNO_AVX
+endif
+
+ifeq ($(DEBUG), 1)
+GETARCH_FLAGS	+= -g
+endif
 
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.getarch CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
@@ -101,6 +121,15 @@ DLLWRAP = $(CROSS_SUFFIX)dllwrap
 
 ifeq ($(OSNAME), Darwin)
 export MACOSX_DEPLOYMENT_TARGET=10.2
+MD5SUM = md5 -r
+endif
+
+ifeq ($(OSNAME), FreeBSD)
+MD5SUM = md5 -r
+endif
+
+ifeq ($(OSNAME), NetBSD)
+MD5SUM = md5 -n
 endif
 
 ifeq ($(OSNAME), Linux)
@@ -120,6 +149,26 @@ EXTRALIB        += -defaultlib:advapi32
 SUFFIX  = obj
 PSUFFIX = pobj
 LIBSUFFIX = lib
+ifeq ($(C_COMPILER), GCC)
+#Test for supporting MS_ABI
+GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
+GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
+ifeq ($(GCCVERSIONGT4), 1)
+# GCC Majar version > 4
+# It is compatible with MSVC ABI. 
+CCOMMON_OPT	+= -DMS_ABI
+endif
+
+ifeq ($(GCCVERSIONGTEQ4), 1)
+ifeq ($(GCCMINORVERSIONGTEQ7), 1)
+# GCC Version >=4.7
+# It is compatible with MSVC ABI. 
+CCOMMON_OPT	+= -DMS_ABI
+endif
+endif
+
+endif
 endif
 
 ifeq ($(OSNAME), Interix)
@@ -223,14 +272,20 @@ endif
 endif
 
 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 ifeq ($(ARCH), x86)
 DYNAMIC_CORE = KATMAI COPPERMINE NORTHWOOD PRESCOTT BANIAS \
-	       CORE2 PENRYN DUNNINGTON NEHALEM ATHLON OPTERON OPTERON_SSE3 BARCELONA ATOM NANO
+	       CORE2 PENRYN DUNNINGTON NEHALEM ATHLON OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
+ifneq ($(NO_AVX), 1)
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER
+endif
 endif
 
 ifeq ($(ARCH), x86_64)
-DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA ATOM NANO
+DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
+ifneq ($(NO_AVX), 1)
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER
+endif
 endif
 
 ifndef DYNAMIC_CORE
@@ -459,10 +514,27 @@ ifdef INTERFACE64
 FCOMMON_OPT += -i8
 endif
 endif
+
+ifeq ($(ARCH), mips64)
+ifndef BINARY64
+FCOMMON_OPT += -n32
+else
+FCOMMON_OPT += -n64
+endif
+ifeq ($(CORE), LOONGSON3A) 
+FCOMMON_OPT += -loongson3
+endif
+
+ifeq ($(CORE), LOONGSON3B) 
+FCOMMON_OPT += -loongson3
+endif
+
+else
 ifndef BINARY64
 FCOMMON_OPT += -m32
 else
 FCOMMON_OPT += -m64
+endif
 endif
 
 ifdef USE_OPENMP
@@ -472,10 +544,28 @@ endif
 endif
 
 ifeq ($(C_COMPILER), OPEN64)
+
+ifeq ($(ARCH), mips64)
+ifndef BINARY64
+CCOMMON_OPT += -n32
+else
+CCOMMON_OPT += -n64
+endif
+ifeq ($(CORE), LOONGSON3A) 
+CCOMMON_OPT += -loongson3
+endif
+
+ifeq ($(CORE), LOONGSON3B) 
+CCOMMON_OPT += -loongson3
+endif
+
+else
+
 ifndef BINARY64
 CCOMMON_OPT += -m32
 else
 CCOMMON_OPT += -m64
+endif
 endif
 endif
 
@@ -533,6 +623,16 @@ endif
 
 ifeq ($(NO_LAPACK), 1)
 CCOMMON_OPT	+= -DNO_LAPACK
+#Disable LAPACK C interface
+NO_LAPACKE = 1
+endif
+
+ifeq ($(NO_LAPACKE), 1)
+CCOMMON_OPT	+= -DNO_LAPACKE
+endif
+
+ifeq ($(NO_AVX), 1)
+CCOMMON_OPT	+= -DNO_AVX
 endif
 
 ifdef SMP
@@ -651,17 +751,30 @@ PATCH	= patch
 GREP	= grep
 endif
 
+ifndef MD5SUM
 MD5SUM	= md5sum
+endif
+
 AWK	= awk
 
 REVISION = -r$(VERSION)
 MAJOR_VERSION = $(word 1,$(subst ., ,$(VERSION)))
 
-CFLAGS     = $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
-PFLAGS     = $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
+ifeq ($(DEBUG), 1)
+COMMON_OPT += -g
+endif
 
-FFLAGS     = $(COMMON_OPT) $(FCOMMON_OPT)
-FPFLAGS    = $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
+ifndef COMMON_OPT
+COMMON_OPT = -O2
+endif
+
+
+override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
+override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
+
+override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
+override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
+#MAKEOVERRIDES =
 
 ifndef SUFFIX
 SUFFIX  = o
@@ -675,7 +788,7 @@ ifndef LIBSUFFIX
 LIBSUFFIX = a
 endif
 
-ifndef DYNAMIC_ARCH
+ifneq ($(DYNAMIC_ARCH), 1)
 ifndef SMP
 LIBNAME		= $(LIBPREFIX)_$(LIBCORE)$(REVISION).$(LIBSUFFIX)
 LIBNAME_P	= $(LIBPREFIX)_$(LIBCORE)$(REVISION)_p.$(LIBSUFFIX)
@@ -694,8 +807,8 @@ endif
 endif
 
 
+LIBDLLNAME   = $(LIBPREFIX).dll
 LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so)
-LIBDLLNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dll)
 LIBDYNNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dylib)
 LIBDEFNAME   = $(LIBNAME:.$(LIBSUFFIX)=.def)
 LIBEXPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.exp)
@@ -740,6 +853,7 @@ export HAVE_SSE4_1
 export HAVE_SSE4_2
 export HAVE_SSE4A
 export HAVE_SSE5
+export HAVE_AVX
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE

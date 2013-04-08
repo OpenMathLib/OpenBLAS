@@ -135,7 +135,7 @@ static __inline int num_cpu_avail(int level) {
 	int openmp_nthreads=0;
 #endif
 
-  if ((blas_cpu_number == 1) 
+  if (blas_cpu_number == 1
 
 #ifdef USE_OPENMP
       || omp_in_parallel()

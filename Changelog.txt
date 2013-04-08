@@ -1,5 +1,116 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.6
+2-Mar-2013
+common:
+	* Improved OpenMP performance slightly. (d744c9)
+	* Improved cblas.h compatibility with Intel MKL.(#185)
+	* Fixed the overflowing bug in single thread cholesky factorization.
+	* Fixed the overflowing buffer bug of multithreading hbmv and sbmv.(#174)
+
+x86/x86-64:
+	* Added AMD Bulldozer x86-64 S/DGEMM AVX kernels. (Thank Werner Saar)
+	  We will tune the performance in future.
+	* Auto-detect Intel Xeon E7540.
+	* Fixed the overflowing buffer bug of gemv. (#173)
+	* Fixed the bug of s/cdot about invalid reading NAN on x86_64. (#189)
+
+MIPS64:
+
+====================================================================
+Version 0.2.5
+26-Nov-2012
+common:
+	* Added NO_SHARED flag to disable generating the shared library.
+	* Compile LAPACKE with ILP64 modle when INTERFACE64=1 (#158)
+	* Export LAPACK 3.4.2 symbols in shared library. (#147)
+	* Only detect the number of physical CPU cores on Mac OSX. (#157)
+	* Fixed NetBSD build. (#155)
+	* Fixed compilation with TARGET=GENERIC. (#160)
+x86/x86-64:
+	* Restore the original CPU affinity when calling 
+	  openblas_set_num_threads(1) (#153)
+	* Fixed a SEGFAULT bug in dgemv_t when m is very large.(#154)
+MIPS64:
+
+====================================================================
+Version 0.2.4
+8-Oct-2012
+common:
+	* Upgraded LAPACK to 3.4.2 version. (#145)
+	* Provided support for passing CFLAGS, FFLAGS, PFLAGS, 
+	  FPFLAGS to make. (#137)
+	* f77blas.h:compatibility for compilers without C99 complex 
+	  number support. (#141)
+x86/x86-64:
+	* Added NO_AVX flag. Check OS supporting AVX on runtime. (#139)
+	* Fixed zdot incompatibility ABI issue with GCC 4.7 on 
+	  Windows 32-bit. (#140)
+MIPS64:
+	* Fixed the generation of shared library bug.
+	* Fixed the detection bug on the Loongson 3A server.
+====================================================================
+Version 0.2.3
+20-Aug-2012
+common:
+	* Fixed LAPACK unstable bug about ?laswp. (#130)
+	* Fixed the shared library bug about unloading the library on 
+	  Linux (#132).
+	* Fixed the compilation failure on BlueGene/P (TARGET=PPC440FP2)
+	  Please use gcc and IBM xlf. (#134)
+x86/x86-64:
+	* Supported goto_set_num_threads and openblas_set_num_threads 
+	  APIs in Windows. They can set the number of threads on runtime.
+	  
+====================================================================
+Version 0.2.2
+6-July-2012
+common:
+	* Fixed exporting DLL functions bug on Windows/MingW
+	* Support GNU Hurd (Thank Sylvestre Ledru)
+	* Support kfreebsd kernel (Thank Sylvestre Ledru)
+x86/x86-64:
+	* Support Intel Sandy Bridge 22nm desktop/mobile CPU
+SPARC:
+	* Improve the detection of SPARC (Thank Sylvestre Ledru)
+
+====================================================================
+Version 0.2.1
+30-Jun-2012
+common:
+x86/x86-64:
+	* Fixed the SEGFAULT bug about hyper-theading
+	* Support AMD Bulldozer by using GotoBLAS2 AMD Barcelona codes
+
+====================================================================
+Version 0.2.0
+26-Jun-2012
+common:
+	* Removed the limitation (64) of numbers of CPU cores.
+	  Now, it supports 256 cores at max.
+	* Supported clang compiler.
+	* Fixed some build bugs on FreeBSD
+x86/x86-64:
+	* Optimized Level-3 BLAS on Intel Sandy Bridge x86-64 by AVX instructions.
+	  Please use gcc >= 4.6 or clang >=3.1.
+	* Support AMD Bobcat by using GotoBLAS2 AMD Barcelona codes.
+
+====================================================================
+Version 0.1.1
+29-Apr-2012
+common:
+	* Upgraded LAPACK to 3.4.1 version. (Thank Zaheer Chothia)
+	* Supported LAPACKE, a C interface to LAPACKE. (Thank Zaheer Chothia)
+	* Fixed the build bug (MD5 and download) on Mac OSX.
+	* Auto download CUnit 2.1.2-2 from SF.net with UTEST_CHECK=1.
+	* Fxied the compatibility issue for compilers without C99 complex number
+	  (e.g. Visual Studio)
+x86/x86_64:
+	* Auto-detect Intel Sandy Bridge Core i7-3xxx & Xeon E7 Westmere-EX.
+	* Test alpha=Nan in dscale.
+	* Fixed a SEGFAULT bug in samax on x86 windows.
+	
+====================================================================
 Version 0.1.0
 23-Mar-2012
 common:

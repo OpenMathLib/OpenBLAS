@@ -86,7 +86,7 @@
 #define BORIG	 72(%rsp)
 #define BUFFER	128(%rsp)
 
-#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
+#if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCAT) || defined(BULLDOZER)
 #define PREFETCH     prefetch
 #define PREFETCHW    prefetchw
 #define PREFETCHNTA  prefetchnta

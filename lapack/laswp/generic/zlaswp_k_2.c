@@ -49,7 +49,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	  FLOAT *a, BLASLONG lda, 
 	  FLOAT *dummy2, BLASLONG dumy3, blasint *ipiv, BLASLONG incx){
 
-  BLASLONG i, j, ip1, ip2;
+  BLASLONG i, j, ip1, ip2, rows;
   blasint *piv;
   FLOAT *a1;
   FLOAT *b1, *b2;
@@ -68,6 +68,38 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 
   if (n  <= 0) return 0;
 
+  rows = k2-k1;
+  if (rows <=0) return 0;
+  if (rows == 1) {
+    //Only have 1 row
+    ip1 = *ipiv * 2;
+
+#ifndef MINUS
+    a1 = a + (k1 + 1) * 2;
+#else
+    a1 = a + k2 * 2;
+#endif
+
+    b1 = a + ip1;
+    
+    if(a1 == b1) return 0;
+
+    for(j=0; j<n; j++){
+      A1 = *(a1 + 0);
+      A2 = *(a1 + 1);
+      B1 = *(b1 + 0);
+      B2 = *(b1 + 1);
+
+      *(a1 + 0) = B1;
+      *(a1 + 1) = B2;
+      *(b1 + 0) = A1;
+      *(b1 + 1) = A2;
+	
+      a1 += lda;
+      b1 += lda;
+    }
+    return 0;
+  }
 
   j = (n >> 1);
   if (j > 0) {
@@ -88,10 +120,12 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
       b1 = a + ip1;
       b2 = a + ip2;
 	  
-      i = ((k2 - k1) >> 1);
-      
-      if (i > 0) {
-	do {
+      i = (rows >> 1);
+      i--;
+
+      //Loop pipeline
+      //Main Loop
+      while (i > 0) {
 #ifdef CORE2
 #ifndef MINUS
 	  asm volatile("prefetcht0  1 * 64(%0)\n"  : : "r"(b1));
@@ -246,12 +280,149 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	  a1 -= 4;
 #endif
 	i --;
-	} while (i > 0);
       }
-      
-      i = ((k2 - k1) & 1);
+      //Loop Ending
+      A1 = *(a1 + 0);
+      A2 = *(a1 + 1);
+      A3 = *(a2 + 0);
+      A4 = *(a2 + 1);
+
+      A5 = *(a1 + 0 + lda);
+      A6 = *(a1 + 1 + lda);
+      A7 = *(a2 + 0 + lda);
+      A8 = *(a2 + 1 + lda);
+
+      B1 = *(b1 + 0);
+      B2 = *(b1 + 1);
+      B3 = *(b2 + 0);
+      B4 = *(b2 + 1);
+	  
+      B5 = *(b1 + 0 + lda);
+      B6 = *(b1 + 1 + lda);
+      B7 = *(b2 + 0 + lda);
+      B8 = *(b2 + 1 + lda);
+
+      if (b1 == a1) {
+	if (b2 == a1) {
+	  *(a1 + 0) = A3;
+	  *(a1 + 1) = A4;
+	  *(a2 + 0) = A1;
+	  *(a2 + 1) = A2;
+	  *(a1 + 0 + lda) = A7;
+	  *(a1 + 1 + lda) = A8;
+	  *(a2 + 0 + lda) = A5;
+	  *(a2 + 1 + lda) = A6;
+	} else 
+	  if (b2 != a2) {
+	    *(a2 + 0) = B3;
+	    *(a2 + 1) = B4;
+	    *(b2 + 0) = A3;
+	    *(b2 + 1) = A4;
+	    *(a2 + 0 + lda) = B7;
+	    *(a2 + 1 + lda) = B8;
+	    *(b2 + 0 + lda) = A7;
+	    *(b2 + 1 + lda) = A8;
+	  }
+      } else 
+	if (b1 == a2) {
+	  if (b2 != a1) {
+	    if (b2 == a2) {
+	      *(a1 + 0) = A3;
+	      *(a1 + 1) = A4;
+	      *(a2 + 0) = A1;
+	      *(a2 + 1) = A2;
+	      *(a1 + 0 + lda) = A7;
+	      *(a1 + 1 + lda) = A8;
+	      *(a2 + 0 + lda) = A5;
+	      *(a2 + 1 + lda) = A6;
+	    } else {
+	      *(a1 + 0) = A3;
+	      *(a1 + 1) = A4;
+	      *(a2 + 0) = B3;
+	      *(a2 + 1) = B4;
+	      *(b2 + 0) = A1;
+	      *(b2 + 1) = A2;
+	      *(a1 + 0 + lda) = A7;
+	      *(a1 + 1 + lda) = A8;
+	      *(a2 + 0 + lda) = B7;
+	      *(a2 + 1 + lda) = B8;
+	      *(b2 + 0 + lda) = A5;
+	      *(b2 + 1 + lda) = A6;
+	    }
+	  }
+	} else {
+	  if (b2 == a1) {
+	    *(a1 + 0) = A3;
+	    *(a1 + 1) = A4;
+	    *(a2 + 0) = B1;
+	    *(a2 + 1) = B2;
+	    *(b1 + 0) = A1;
+	    *(b1 + 1) = A2;
+	    *(a1 + 0 + lda) = A7;
+	    *(a1 + 1 + lda) = A8;
+	    *(a2 + 0 + lda) = B5;
+	    *(a2 + 1 + lda) = B6;
+	    *(b1 + 0 + lda) = A5;
+	    *(b1 + 1 + lda) = A6;
+	  } else 
+	    if (b2 == a2) {
+	      *(a1 + 0) = B1;
+	      *(a1 + 1) = B2;
+	      *(b1 + 0) = A1;
+	      *(b1 + 1) = A2;
+	      *(a1 + 0 + lda) = B5;
+	      *(a1 + 1 + lda) = B6;
+	      *(b1 + 0 + lda) = A5;
+	      *(b1 + 1 + lda) = A6;
+	    } else 
+	      if (b2 == b1) {
+		*(a1 + 0) = B1;
+		*(a1 + 1) = B2;
+		*(a2 + 0) = A1;
+		*(a2 + 1) = A2;
+		*(b1 + 0) = A3;
+		*(b1 + 1) = A4;
+		*(a1 + 0 + lda) = B5;
+		*(a1 + 1 + lda) = B6;
+		*(a2 + 0 + lda) = A5;
+		*(a2 + 1 + lda) = A6;
+		*(b1 + 0 + lda) = A7;
+		*(b1 + 1 + lda) = A8;
+	      } else {
+		*(a1 + 0) = B1;
+		*(a1 + 1) = B2;
+		*(a2 + 0) = B3;
+		*(a2 + 1) = B4;
+		*(b1 + 0) = A1;
+		*(b1 + 1) = A2;
+		*(b2 + 0) = A3;
+		*(b2 + 1) = A4;
+		*(a1 + 0 + lda) = B5;
+		*(a1 + 1 + lda) = B6;
+		*(a2 + 0 + lda) = B7;
+		*(a2 + 1 + lda) = B8;
+		*(b1 + 0 + lda) = A5;
+		*(b1 + 1 + lda) = A6;
+		*(b2 + 0 + lda) = A7;
+		*(b2 + 1 + lda) = A8;
+	      }
+	}
+	  
+
+	  
+#ifndef MINUS
+      a1 += 4;
+#else
+      a1 -= 4;
+#endif
+
+      //Remain
+      i = (rows & 1);
       
       if (i > 0) {
+	ip1 = *piv * 2;
+	b1 = a + ip1;
+
 	A1 = *(a1 + 0);
 	A2 = *(a1 + 1);
 	A3 = *(a1 + 0 + lda);
@@ -293,10 +464,12 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
     b1 = a + ip1;
     b2 = a + ip2;
     
-    i = ((k2 - k1) >> 1);
-    
-    if (i > 0) {
-      do {
+    i = (rows >> 1);
+    i--;
+
+    //Loop pipeline
+    //Main Loop
+    while (i > 0) {
 	A1 = *(a1 + 0);
 	A2 = *(a1 + 1);
 	A3 = *(a2 + 0);
@@ -384,12 +557,94 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	a1 -= 4;
 #endif
 	i --;
-      } while (i > 0);
     }
+    //Loop Ending
+    A1 = *(a1 + 0);
+    A2 = *(a1 + 1);
+    A3 = *(a2 + 0);
+    A4 = *(a2 + 1);
+    B1 = *(b1 + 0);
+    B2 = *(b1 + 1);
+    B3 = *(b2 + 0);
+    B4 = *(b2 + 1);
+	
+    if (b1 == a1) {
+      if (b2 == a1) {
+	*(a1 + 0) = A3;
+	*(a1 + 1) = A4;
+	*(a2 + 0) = A1;
+	*(a2 + 1) = A2;
+      } else 
+	if (b2 != a2) {
+	  *(a2 + 0) = B3;
+	  *(a2 + 1) = B4;
+	  *(b2 + 0) = A3;
+	  *(b2 + 1) = A4;
+	}
+    } else 
+      if (b1 == a2) {
+	if (b2 != a1) {
+	  if (b2 == a2) {
+	    *(a1 + 0) = A3;
+	    *(a1 + 1) = A4;
+	    *(a2 + 0) = A1;
+	    *(a2 + 1) = A2;
+	  } else {
+	    *(a1 + 0) = A3;
+	    *(a1 + 1) = A4;
+	    *(a2 + 0) = B3;
+	    *(a2 + 1) = B4;
+	    *(b2 + 0) = A1;
+	    *(b2 + 1) = A2;
+	  }
+	}
+      } else {
+	if (b2 == a1) {
+	  *(a1 + 0) = A3;
+	  *(a1 + 1) = A4;
+	  *(a2 + 0) = B1;
+	  *(a2 + 1) = B2;
+	  *(b1 + 0) = A1;
+	  *(b1 + 1) = A2;
+	} else 
+	  if (b2 == a2) {
+	    *(a1 + 0) = B1;
+	    *(a1 + 1) = B2;
+	    *(b1 + 0) = A1;
+	    *(b1 + 1) = A2;
+	  } else 
+	    if (b2 == b1) {
+	      *(a1 + 0) = B1;
+	      *(a1 + 1) = B2;
+	      *(a2 + 0) = A1;
+	      *(a2 + 1) = A2;
+	      *(b1 + 0) = A3;
+	      *(b1 + 1) = A4;
+	    } else {
+	      *(a1 + 0) = B1;
+	      *(a1 + 1) = B2;
+	      *(a2 + 0) = B3;
+	      *(a2 + 1) = B4;
+	      *(b1 + 0) = A1;
+	      *(b1 + 1) = A2;
+	      *(b2 + 0) = A3;
+	      *(b2 + 1) = A4;
+	    }
+      }
+	
+#ifndef MINUS
+    a1 += 4;
+#else
+    a1 -= 4;
+#endif
     
-    i = ((k2 - k1) & 1);
+    //Remain
+    i = (rows & 1);
     
     if (i > 0) {
+      ip1 = *piv * 2;
+      b1 = a + ip1;
+
       A1 = *(a1 + 0);
       A2 = *(a1 + 1);
       B1 = *(b1 + 0);

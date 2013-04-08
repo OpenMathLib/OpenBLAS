@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -143,7 +143,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(BARCELONA) || defined(SHANGHAI)
+#if defined(BARCELONA) || defined(SHANGHAI) || defined(BOBCAT) || defined(BULLDOZER)
 
 #define SNUMOPT		8
 #define DNUMOPT		4
@@ -913,6 +913,84 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+#ifdef SANDYBRIDGE
+
+#define SNUMOPT		8
+#define DNUMOPT		4
+
+#define GEMM_DEFAULT_OFFSET_A	  0
+#define GEMM_DEFAULT_OFFSET_B     0
+#define GEMM_DEFAULT_ALIGN 0x03fffUL
+
+#define SYMV_P	8
+
+#define SWITCH_RATIO	4
+
+#ifdef ARCH_X86
+#define SGEMM_DEFAULT_UNROLL_M 4
+#define DGEMM_DEFAULT_UNROLL_M 2
+#define QGEMM_DEFAULT_UNROLL_M 2
+#define CGEMM_DEFAULT_UNROLL_M 2
+#define ZGEMM_DEFAULT_UNROLL_M 1
+#define XGEMM_DEFAULT_UNROLL_M 1
+
+#define SGEMM_DEFAULT_UNROLL_N 4
+#define DGEMM_DEFAULT_UNROLL_N 4
+#define QGEMM_DEFAULT_UNROLL_N 2
+#define CGEMM_DEFAULT_UNROLL_N 2
+#define ZGEMM_DEFAULT_UNROLL_N 2
+#define XGEMM_DEFAULT_UNROLL_N 1
+#else
+#define SGEMM_DEFAULT_UNROLL_M 8
+#define DGEMM_DEFAULT_UNROLL_M 8
+#define QGEMM_DEFAULT_UNROLL_M 2
+#define CGEMM_DEFAULT_UNROLL_M 8
+#define ZGEMM_DEFAULT_UNROLL_M 4
+#define XGEMM_DEFAULT_UNROLL_M 1
+
+#define SGEMM_DEFAULT_UNROLL_N 8
+#define DGEMM_DEFAULT_UNROLL_N 4
+#define QGEMM_DEFAULT_UNROLL_N 2
+#define CGEMM_DEFAULT_UNROLL_N 4
+#define ZGEMM_DEFAULT_UNROLL_N 4
+#define XGEMM_DEFAULT_UNROLL_N 1
+#endif
+
+#define SGEMM_DEFAULT_P 512
+#define SGEMM_DEFAULT_R sgemm_r
+//#define SGEMM_DEFAULT_R 1024
+
+#define DGEMM_DEFAULT_P 512
+#define DGEMM_DEFAULT_R dgemm_r
+//#define DGEMM_DEFAULT_R 1024
+
+#define QGEMM_DEFAULT_P 504
+#define QGEMM_DEFAULT_R qgemm_r
+
+#define CGEMM_DEFAULT_P 128
+//#define CGEMM_DEFAULT_R cgemm_r
+#define CGEMM_DEFAULT_R 1024
+
+#define ZGEMM_DEFAULT_P 512
+#define ZGEMM_DEFAULT_R zgemm_r
+//#define ZGEMM_DEFAULT_R 1024
+
+#define XGEMM_DEFAULT_P 252
+#define XGEMM_DEFAULT_R xgemm_r
+
+#define SGEMM_DEFAULT_Q 256
+#define DGEMM_DEFAULT_Q 256
+#define QGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 256 
+#define ZGEMM_DEFAULT_Q 192
+#define XGEMM_DEFAULT_Q 128
+
+#define GETRF_FACTOR 0.72
+
+#endif
+
+
+
 #ifdef ATOM
 
 #define SNUMOPT		2
@@ -1404,7 +1482,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_THREAD gemm_thread_mn
 #endif
 
-#if defined(SPARC) && defined(V9)
+#if (defined(SPARC) && defined(V9)) || defined(__sparc_v9__)
 
 #define SNUMOPT		2
 #define DNUMOPT		2
@@ -1586,26 +1664,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define XGEMM_DEFAULT_UNROLL_M 1
 #endif
 
-#define SGEMM_P sgemm_p
-#define DGEMM_P dgemm_p
-#define QGEMM_P qgemm_p
-#define CGEMM_P cgemm_p
-#define ZGEMM_P zgemm_p
-#define XGEMM_P xgemm_p
+#define SGEMM_DEFAULT_P sgemm_p
+#define DGEMM_DEFAULT_P dgemm_p
+#define QGEMM_DEFAULT_P qgemm_p
+#define CGEMM_DEFAULT_P cgemm_p
+#define ZGEMM_DEFAULT_P zgemm_p
+#define XGEMM_DEFAULT_P xgemm_p
 
-#define SGEMM_R sgemm_r
-#define DGEMM_R dgemm_r
-#define QGEMM_R qgemm_r
-#define CGEMM_R cgemm_r
-#define ZGEMM_R zgemm_r
-#define XGEMM_R xgemm_r
+#define SGEMM_DEFAULT_R sgemm_r
+#define DGEMM_DEFAULT_R dgemm_r
+#define QGEMM_DEFAULT_R qgemm_r
+#define CGEMM_DEFAULT_R cgemm_r
+#define ZGEMM_DEFAULT_R zgemm_r
+#define XGEMM_DEFAULT_R xgemm_r
 
-#define SGEMM_Q 128
-#define DGEMM_Q 128
-#define QGEMM_Q 128
-#define CGEMM_Q 128
-#define ZGEMM_Q 128
-#define XGEMM_Q 128
+#define SGEMM_DEFAULT_Q 128
+#define DGEMM_DEFAULT_Q 128
+#define QGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 128
+#define ZGEMM_DEFAULT_Q 128
+#define XGEMM_DEFAULT_Q 128
 
 #define SYMV_P	16
 

@@ -46,6 +46,13 @@
 #define MOVUPS_A	movups
 #endif
 
+#ifdef SANDYBRIDGE
+#define PREFETCHSIZE	16
+#define PREFETCH	prefetcht0
+#define PREFETCHW	prefetcht0
+#define MOVUPS_A	movups
+#endif
+
 #ifdef MOVUPS_A
 #define MOVUPS_A1(OFF, ADDR, REGS)		MOVUPS_A	OFF(ADDR), REGS
 #define MOVUPS_A2(OFF, ADDR, BASE, SCALE, REGS)	MOVUPS_A	OFF(ADDR, BASE, SCALE), REGS

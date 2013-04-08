@@ -495,7 +495,6 @@
 	ALIGN_4
 	
 .L999:
-	RESTOREREGISTERS
 
 	subl	$8, %esp
 	movss	%xmm0, (%esp)

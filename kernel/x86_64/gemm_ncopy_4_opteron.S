@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-#if defined(BARCELONA) || defined(SHANGHAI)
+#if defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 #define RPREFETCHSIZE (12 + 4)
 #define WPREFETCHSIZE (48 + 4)
 #define MOVNTQ	 MOVQ
@@ -79,7 +79,7 @@
 #define AO3	%r13
 #define AO4	%rax
 
-#if defined(BARCELONA) || defined(SHANGHAI)
+#if defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 #define RPREFETCH prefetch
 #else
 #define RPREFETCH prefetch

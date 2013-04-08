@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.1.0
+VERSION = 0.2.6
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library 
@@ -24,9 +24,12 @@ VERSION = 0.1.0
 # Fortran compiler. Default is g77.
 # FC = gfortran
 
-# Even you can specify cross compiler
+# Even you can specify cross compiler. Meanwhile, please set HOSTCC.
 # CC = x86_64-w64-mingw32-gcc
 # FC = x86_64-w64-mingw32-gfortran
+
+# If you use the cross compiler, please set this host compiler.
+# HOSTCC = gcc
 
 # If you need 32bit binary, define BINARY=32, otherwise define BINARY=64
 # BINARY=64
@@ -45,11 +48,18 @@ VERSION = 0.1.0
 # automatically detected by the the script.
 # NUM_THREADS = 24
 
+# if you don't need generate the shared library, please comment it in.
+# NO_SHARED = 1
+
 # If you don't need CBLAS interface, please comment it in.
 # NO_CBLAS = 1
 
-# If you don't need LAPACK, please comment it in.
+# If you don't need LAPACK, please comment it in. 
+# If you set NO_LAPACK=1, the library automatically sets NO_LAPACKE=1.
 # NO_LAPACK = 1
+
+# If you don't need LAPACKE (C Interface to LAPACK), please comment it in.
+# NO_LAPACKE = 1
 
 # If you want to use legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1
@@ -66,6 +76,10 @@ VERSION = 0.1.0
 
 # If you want to disable CPU/Memory affinity on Linux.
 # NO_AFFINITY = 1
+
+# Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers 
+# and OS. However, the performance is low.
+# NO_AVX = 1
 
 # If you would like to know minute performance report of GotoBLAS.
 # FUNCTION_PROFILE = 1
@@ -90,8 +104,8 @@ VERSION = 0.1.0
 
 # If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute 
 # with single thread. You can use this flag to avoid the overhead of multi-threading 
-# in small matrix sizes. The default value is 4.
-# GEMM_MULTITHREAD_THRESHOLD = 4
+# in small matrix sizes. The default value is 50.
+# GEMM_MULTITHREAD_THRESHOLD = 50
 
 # If you need santy check by comparing reference BLAS. It'll be very
 # slow (Not implemented yet).
@@ -104,18 +118,15 @@ VERSION = 0.1.0
 # The installation directory.
 # PREFIX = /opt/OpenBLAS
 
-# Common Optimization Flag; -O2 is enough.
-# DEBUG = 1
-
-ifeq ($(DEBUG), 1)
-COMMON_OPT += -g
-# -DDEBUG
-else
-COMMON_OPT += -O2
-endif
+# Common Optimization Flag; 
+# The default -O2 is enough.
+# COMMON_OPT = -O2
 
 # Profiling flags
 COMMON_PROF = -pg
+
+# Build Debug version
+# DEBUG = 1
 
 #
 #  End of user configuration 

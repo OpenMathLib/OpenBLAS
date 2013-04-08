@@ -58,7 +58,7 @@
 #define PREFETCHSIZE	(16 * 2)
 #endif
 
-#if defined(CORE2) || defined(PENRYN) || defined(DUNNINGTON) || defined(NEHALEM)
+#if defined(CORE2) || defined(PENRYN) || defined(DUNNINGTON) || defined(NEHALEM) || defined(SANDYBRIDGE)
 #define PREFETCH	prefetcht0
 #define PREFETCHW	prefetcht0
 #define PREFETCHSIZE	(16 * 7)
@@ -71,7 +71,7 @@
 #define movsd		movlps
 #endif
 
-#ifdef BARCELONA
+#if defined(BARCELONA) || defined(BULLDOZER)
 #define PREFETCH	prefetchnta
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE	(16 * 5)

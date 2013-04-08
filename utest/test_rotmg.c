@@ -38,12 +38,18 @@ void test_drotmg()
 	double te_d2, tr_d2;
 	double te_x1, tr_x1;
 	double te_y1, tr_y1;
-	double te_param[5],tr_param[5];
+	double te_param[5];
+	double tr_param[5];
 	int i=0;
 	te_d1= tr_d1=0.21149573940783739;
 	te_d2= tr_d2=0.046892057172954082;
 	te_x1= tr_x1=-0.42272687517106533;
 	te_y1= tr_y1=0.42211309121921659;
+
+	for(i=0; i<5; i++){
+	  te_param[i]=tr_param[i]=0.0;
+	}
+
 	//OpenBLAS
 	BLASFUNC(drotmg)(&te_d1, &te_d2, &te_x1, &te_y1, te_param);
 	//reference

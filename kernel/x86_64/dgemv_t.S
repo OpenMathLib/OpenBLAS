@@ -47,7 +47,7 @@
 
 #ifndef WINDOWS_ABI
 
-#define STACKSIZE	64
+#define STACKSIZE	128
 	
 #define OLD_M	  %rdi
 #define OLD_N	  %rsi
@@ -57,7 +57,10 @@
 #define STACK_Y		16 + STACKSIZE(%rsp)
 #define STACK_INCY	24 + STACKSIZE(%rsp)
 #define STACK_BUFFER	32 + STACKSIZE(%rsp)
-
+#define MMM	56(%rsp)
+#define NN	64(%rsp)
+#define AA	72(%rsp)
+#define LDAX	80(%rsp)
 #else
 
 #define STACKSIZE	256
@@ -71,6 +74,11 @@
 #define STACK_Y		 72 + STACKSIZE(%rsp)
 #define STACK_INCY	 80 + STACKSIZE(%rsp)
 #define STACK_BUFFER	 88 + STACKSIZE(%rsp)
+//Temp variables for M,N,A,LDA
+#define MMM	224(%rsp)
+#define NN	232(%rsp)
+#define AA	240(%rsp)
+#define LDAX	248(%rsp)
 
 #endif
 
@@ -131,28 +139,18 @@
 	movq	OLD_A,        A
 	movq	OLD_LDA,      LDA
 	movq	OLD_X,        X
+
+	movq	M,	      MMM
+	movq	N,            NN
+	movq	A,            AA
+	movq	LDA,	      LDAX
+
 #else
-	movq	OLD_M,	      M
-	movq	OLD_N,        N
-	movq	OLD_A,        A
-	movq	OLD_LDA,      LDA
+	movq	OLD_M,	      MMM
+	movq	OLD_N,        NN
+	movq	OLD_A,        AA
+	movq	OLD_LDA,      LDAX
 #endif
-
-	movq	STACK_INCX,   INCX
-	movq	STACK_Y,      Y
-	movq	STACK_INCY,   INCY
-	movq	STACK_BUFFER, BUFFER
-
-	leaq	-1(INCX), %rax
-
-	leaq	(,LDA,  SIZE), LDA
-	leaq	(,INCX, SIZE), INCX
-	leaq	(,INCY, SIZE), INCY
-
-	leaq	(LDA, LDA, 2), LDA3
-
-	subq	$-16 * SIZE, A
-
 #ifdef HAVE_SSE3
 #ifndef WINDOWS_ABI
 	movddup	%xmm0, ALPHA
@@ -167,6 +165,39 @@
 #endif
 	unpcklpd ALPHA, ALPHA
 #endif
+
+
+
+.L0x:
+	xorq	M,M
+	addq	$1,M
+	salq	$22,M
+	subq	M,MMM
+	jge .L00
+
+	movq	MMM,%rax
+	addq	M,%rax
+	jle	.L999x
+	movq	%rax,M
+
+.L00:	
+	movq	LDAX,LDA
+	movq	NN,N
+	movq	AA,A
+	movq	STACK_INCX,   INCX
+	movq	STACK_Y,      Y
+	movq	STACK_INCY,   INCY
+	movq	STACK_BUFFER, BUFFER
+
+	leaq	-1(INCX), %rax
+
+	leaq	(,LDA,  SIZE), LDA
+	leaq	(,INCX, SIZE), INCX
+	leaq	(,INCY, SIZE), INCY
+
+	leaq	(LDA, LDA, 2), LDA3
+
+	subq	$-16 * SIZE, A
 
 	testq	M, M
 	jle	.L999
@@ -854,7 +885,6 @@
 
 .L21:
 #endif
-
 	subq	$4, N
 
 	leaq	16 * SIZE(BUFFER), X1
@@ -2461,6 +2491,12 @@
 	ALIGN_4
 
 .L999:
+	leaq	(, M, SIZE), %rax
+	addq %rax,AA
+	jmp .L0x;
+	ALIGN_4
+
+.L999x:
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

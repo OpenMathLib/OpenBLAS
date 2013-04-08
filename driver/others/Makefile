@@ -1,12 +1,12 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
-COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX)
+COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) openblas_set_num_threads.$(SUFFIX) openblas_get_config.$(SUFFIX)
 
 COMMONOBJS	+= slamch.$(SUFFIX) slamc3.$(SUFFIX) dlamch.$(SUFFIX)  dlamc3.$(SUFFIX)
 
 ifdef SMP
-COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX) openblas_set_num_threads.$(SUFFIX)
+COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX) 
 ifndef NO_AFFINITY
 COMMONOBJS	+= init.$(SUFFIX) 
 endif
@@ -14,7 +14,7 @@ endif
 
 # COMMONOBJS	+=  info.$(SUFFIX)
 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 COMMONOBJS	+=  dynamic.$(SUFFIX)
 else
 COMMONOBJS	+=  parameter.$(SUFFIX)
@@ -70,7 +70,7 @@ ifndef BLAS_SERVER
 BLAS_SERVER = blas_server.c
 endif
 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
 else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) parameter.$(SUFFIX)
@@ -101,6 +101,9 @@ blas_server.$(SUFFIX) : $(BLAS_SERVER) ../../common.h ../../common_thread.h ../.
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 openblas_set_num_threads.$(SUFFIX) : openblas_set_num_threads.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+
+openblas_get_config.$(SUFFIX) : openblas_get_config.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 blasL1thread.$(SUFFIX) : blas_l1_thread.c ../../common.h ../../common_thread.h
@@ -215,7 +218,7 @@ info.$(SUFFIX) : info.c info.h ../../common.h ../../param.h
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 
-hpl   : CFLAGS += -DHPL
-hpl_p : CFLAGS += -DHPL
+hpl   : override CFLAGS += -DHPL
+hpl_p : override CFLAGS += -DHPL
 
 include $(TOPDIR)/Makefile.tail

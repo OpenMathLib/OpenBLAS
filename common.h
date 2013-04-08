@@ -68,7 +68,7 @@ extern "C" {
 #define SMP
 #endif
 
-#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_Interix)
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
 #define WINDOWS_ABI
 #define OS_WINDOWS
 
@@ -89,7 +89,7 @@ extern "C" {
 #include <sched.h>
 #endif
 
-#ifdef OS_DARWIN
+#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD)
 #include <sched.h>
 #endif
 
@@ -351,7 +351,12 @@ typedef int blasint;
 #endif
 
 #define MMAP_ACCESS (PROT_READ | PROT_WRITE)
+
+#ifdef __NetBSD__
+#define MMAP_POLICY (MAP_PRIVATE | MAP_ANON)
+#else
 #define MMAP_POLICY (MAP_PRIVATE | MAP_ANONYMOUS)
+#endif
 
 #include "param.h"
 #include "common_param.h"
@@ -373,6 +378,31 @@ typedef int blasint;
 #define FLOATRET	float
 #endif
 #endif
+
+#ifndef ASSEMBLER
+#ifndef NOINCLUDE
+/* Inclusion of a standard header file is needed for definition of __STDC_*
+   predefined macros with some compilers (e.g. GCC 4.7 on Linux).  This occurs
+   as a side effect of including either <features.h> or <stdc-predef.h>. */
+#include <stdio.h>
+#endif  // NOINCLUDE
+
+/* C99 supports complex floating numbers natively, which GCC also offers as an
+   extension since version 3.0.  If neither are available, use a compatible
+   structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
+#if (defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
+     (__GNUC__ >= 3 && !defined(__cplusplus)))
+  #define OPENBLAS_COMPLEX_C99
+  typedef float _Complex openblas_complex_float;
+  typedef double _Complex openblas_complex_double;
+  typedef xdouble _Complex openblas_complex_xdouble;
+#else
+  #define OPENBLAS_COMPLEX_STRUCT
+  typedef struct { float real, imag; } openblas_complex_float;
+  typedef struct { double real, imag; } openblas_complex_double;
+  typedef struct { xdouble real, imag; } openblas_complex_xdouble;
+#endif
+#endif  // ASSEMBLER
 
 #ifndef IFLUSH
 #define IFLUSH
@@ -528,7 +558,8 @@ typedef struct {
 #include "common_level3.h"
 #include "common_lapack.h"
 #ifdef CBLAS
-#include "cblas.h"
+/* This header file is generated from "cblas.h" (see Makefile.prebuild). */
+#include "cblas_noconst.h"
 #endif
 
 #ifndef ASSEMBLER

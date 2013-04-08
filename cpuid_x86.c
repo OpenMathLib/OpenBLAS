@@ -40,6 +40,13 @@
 #include <string.h>
 #include "cpuid.h"
 
+#ifdef NO_AVX
+#define CPUTYPE_SANDYBRIDGE CPUTYPE_NEHALEM
+#define CORE_SANDYBRIDGE CORE_NEHALEM
+#define CPUTYPE_BULLDOZER CPUTYPE_BARCELONA
+#define CORE_BULLDOZER CORE_BARCELONA
+#endif
+
 #ifndef CPUIDEMU
 
 #if defined(__APPLE__) && defined(__i386__)
@@ -108,6 +115,33 @@ static inline int have_excpuid(void){
   cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
   return eax & 0xffff;
 }
+
+#ifndef NO_AVX
+static inline void xgetbv(int op, int * eax, int * edx){
+  //Use binary code for xgetbv
+  __asm__ __volatile__
+    (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+}
+#endif
+
+int support_avx(){
+#ifndef NO_AVX
+  int eax, ebx, ecx, edx;
+  int ret=0;
+  
+  cpuid(1, &eax, &ebx, &ecx, &edx);
+  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0){
+    xgetbv(0, &eax, &edx);
+    if((eax & 6) == 6){
+      ret=1;  //OS support AVX
+    }
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
+
 
 int get_vendor(void){
   int eax, ebx, ecx, edx;
@@ -189,11 +223,17 @@ int get_cputype(int gettype){
     if ((ecx & (1 <<  9)) != 0) feature |= HAVE_SSSE3;
     if ((ecx & (1 << 19)) != 0) feature |= HAVE_SSE4_1;
     if ((ecx & (1 << 20)) != 0) feature |= HAVE_SSE4_2;
+#ifndef NO_AVX
+    if (support_avx()) feature |= HAVE_AVX;
+#endif
 
     if (have_excpuid() >= 0x01) {
       cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
       if ((ecx & (1 <<  6)) != 0) feature |= HAVE_SSE4A;
       if ((ecx & (1 <<  7)) != 0) feature |= HAVE_MISALIGNSSE;
+#ifndef NO_AVX
+      if ((ecx & (1 <<  16)) != 0) feature |= HAVE_FMA4;
+#endif
       if ((edx & (1 << 30)) != 0) feature |= HAVE_3DNOWEX;
       if ((edx & (1 << 31)) != 0) feature |= HAVE_3DNOW;
     }
@@ -974,21 +1014,44 @@ int get_cpuname(void){
 	  return CPUTYPE_DUNNINGTON;
 	}
 	break;
-	  case  2:
-		  switch (model) {
-		  case 5:
-			  //Intel Core (Clarkdale) / Core (Arrandale) 
-			  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
-			  // Xeon (Clarkdale), 32nm
-			  return CPUTYPE_NEHALEM;
-		  case 10:
-                          //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
-                          return CPUTYPE_NEHALEM;
-		  case 12:
-			  //Xeon Processor 5600 (Westmere-EP)
-			  return CPUTYPE_NEHALEM;
-		  }
-		  break;
+      case  2:
+	switch (model) {
+	case 5:
+	  //Intel Core (Clarkdale) / Core (Arrandale) 
+	  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
+	  // Xeon (Clarkdale), 32nm
+	  return CPUTYPE_NEHALEM;
+	case 10:
+	  //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
+	  if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	    return CPUTYPE_NEHALEM; //OS doesn't support AVX
+	case 12:
+	  //Xeon Processor 5600 (Westmere-EP)
+	  return CPUTYPE_NEHALEM;
+	case 13:
+	  //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
+	  if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	    return CPUTYPE_NEHALEM;
+	case 14:
+	  // Xeon E7540
+	case 15:
+	  //Xeon Processor E7 (Westmere-EX)
+	  return CPUTYPE_NEHALEM;
+	}
+	break;
+      case 3:
+	switch (model) {
+	case 10:
+	  if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	    return CPUTYPE_NEHALEM;
+	}
+	break;
       }
       break;
     case 0x7:
@@ -1021,6 +1084,13 @@ int get_cpuname(void){
       case  1:
       case 10:
 	return CPUTYPE_BARCELONA;
+      case  6:   //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	if(support_avx())
+	  return CPUTYPE_BULLDOZER;
+	else
+	  return CPUTYPE_BARCELONA; //OS don't support AVX.
+      case  5:
+	return CPUTYPE_BOBCAT;
       }
       break;
     }
@@ -1140,6 +1210,9 @@ static char *cpuname[] = {
   "NSGEODE",
   "VIAC3",
   "NANO",
+  "SANDYBRIDGE",
+  "BOBCAT",
+  "BULLDOZER",
 };
 
 static char *lowercpuname[] = {
@@ -1186,6 +1259,9 @@ static char *lowercpuname[] = {
   "tms3x00",
   "nsgeode",
   "nano",
+  "sandybridge",
+  "bobcat",
+  "bulldozer",
 };
 
 static char *corename[] = {
@@ -1209,6 +1285,9 @@ static char *corename[] = {
   "NEHALEM",
   "ATOM",
   "NANO",
+  "SANDYBRIDGE",
+  "BOBCAT",
+  "BULLDOZER",
 };
 
 static char *corename_lower[] = {
@@ -1232,6 +1311,9 @@ static char *corename_lower[] = {
   "nehalem",
   "atom",
   "nano",
+  "sandybridge",
+  "bobcat",
+  "bulldozer",
 };
 
 
@@ -1315,10 +1397,33 @@ int get_coretype(void){
 	  return CORE_NEHALEM;
 	case 10:
           //Intel Core i5-2000 /i7-2000 (Sandy Bridge)
-          return CORE_NEHALEM;
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	    return CORE_NEHALEM; //OS doesn't support AVX
 	case 12:
 	  //Xeon Processor 5600 (Westmere-EP)
 	  return CORE_NEHALEM;
+	case 13:
+          //Intel Core i7-3000 / Xeon E5 (Sandy Bridge)
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	    return CORE_NEHALEM; //OS doesn't support AVX
+	case 14:
+	  //Xeon E7540
+	case 15:
+	  //Xeon Processor E7 (Westmere-EX)
+	  return CORE_NEHALEM;
+	}
+	break;
+      case 3:
+	switch (model) {
+	case 10:
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	    return CORE_NEHALEM; //OS doesn't support AVX
 	}
 	break;
       }
@@ -1334,7 +1439,15 @@ int get_coretype(void){
     if (family <= 0x5) return CORE_80486;
     if (family <= 0xe) return CORE_ATHLON;
     if (family == 0xf){
-      if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON; else return CORE_BARCELONA;
+      if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON; 
+      else if (exfamily == 5) return CORE_BOBCAT; 
+      else if (exfamily == 6) {
+	//AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	if(support_avx())
+	  return CORE_BULLDOZER;
+	else
+	  return CORE_BARCELONA; //OS don't support AVX. Use old kernels.
+      }else return CORE_BARCELONA;
     }
   }
 
@@ -1400,6 +1513,9 @@ void get_cpuconfig(void){
       printf("#define DTB_SIZE %d\n", info.size * 1024);
       printf("#define DTB_ASSOCIATIVE %d\n", info.associative);
       printf("#define DTB_DEFAULT_ENTRIES %d\n", info.linesize);
+    } else {
+      //fall back for some virtual machines.
+      printf("#define DTB_DEFAULT_ENTRIES 32\n");
     }
     
     features = get_cputype(GET_FEATURE);
@@ -1414,8 +1530,10 @@ void get_cpuconfig(void){
     if (features & HAVE_SSE4_2)   printf("#define HAVE_SSE4_2\n");
     if (features & HAVE_SSE4A)   printf("#define HAVE_SSE4A\n");
     if (features & HAVE_SSE5 )   printf("#define HAVE_SSSE5\n");
+    if (features & HAVE_AVX )    printf("#define HAVE_AVX\n");
     if (features & HAVE_3DNOWEX) printf("#define HAVE_3DNOWEX\n");
     if (features & HAVE_3DNOW)   printf("#define HAVE_3DNOW\n");
+    if (features & HAVE_FMA4 )    printf("#define HAVE_FMA4\n");
     if (features & HAVE_CFLUSH)  printf("#define HAVE_CFLUSH\n");
     if (features & HAVE_HIT)     printf("#define HAVE_HIT 1\n");
     if (features & HAVE_MISALIGNSSE) printf("#define HAVE_MISALIGNSSE\n");
@@ -1479,7 +1597,9 @@ void get_sse(void){
   if (features & HAVE_SSE4_2)   printf("HAVE_SSE4_2=1\n");
   if (features & HAVE_SSE4A)   printf("HAVE_SSE4A=1\n");
   if (features & HAVE_SSE5 )   printf("HAVE_SSSE5=1\n");
+  if (features & HAVE_AVX )    printf("HAVE_AVX=1\n");
   if (features & HAVE_3DNOWEX) printf("HAVE_3DNOWEX=1\n");
   if (features & HAVE_3DNOW)   printf("HAVE_3DNOW=1\n");
+  if (features & HAVE_FMA4 )    printf("HAVE_FMA4=1\n");
 
 }

@@ -3,7 +3,7 @@ include ./Makefile.system
 
 BLASDIRS = interface driver/level2 driver/level3 driver/others
 
-ifndef DYNAMIC_ARCH
+ifneq ($(DYNAMIC_ARCH), 1)
 BLASDIRS += kernel 
 endif
 
@@ -26,7 +26,7 @@ endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
-.PHONY : all libs netlib test ctest shared install 
+.PHONY : all libs netlib test ctest shared install
 .NOTPARALLEL : all libs prof lapack-test install
 
 all :: libs netlib tests shared
@@ -80,6 +80,7 @@ endif
 	@echo
 
 shared :
+ifndef NO_SHARED
 ifeq ($(OSNAME), Linux)
 	$(MAKE) -C exports so
 	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
@@ -99,11 +100,10 @@ ifeq ($(OSNAME), Darwin)
 endif
 ifeq ($(OSNAME), WINNT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	$(MAKE) -C exports dll
-	-ln -fs $(LIBDLLNAME) $(LIBPREFIX).dll
+endif
 endif
 
 tests :
@@ -147,7 +147,7 @@ ifeq ($(EXPRECISION), 1)
 	echo "#define EXPRECISION">> config_last.h
 endif
 ## 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
@@ -165,7 +165,7 @@ prof_blas :
 	  $(MAKE) -C $$d prof || exit 1 ; \
 	fi; \
 	done
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 	  $(MAKE) -C kernel commonprof || exit 1
 endif
 
@@ -184,7 +184,7 @@ hpl :
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 	  $(MAKE) -C kernel commonlibs || exit 1
 	for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
@@ -203,47 +203,73 @@ ifeq ($(NO_LAPACK), 1)
 netlib : 
 
 else
-netlib : lapack-3.4.0 patch.for_lapack-3.4.0 lapack-3.4.0/make.inc
+netlib : lapack-3.4.2 patch.for_lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
 ifndef NOFORTRAN
-	-@$(MAKE) -C lapack-3.4.0 lapacklib
+	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
+endif
+ifndef NO_LAPACKE
+	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
 endif
 endif
 
-prof_lapack : lapack-3.4.0 lapack-3.4.0/make.inc
-	-@$(MAKE) -C lapack-3.4.0 lapack_prof
+prof_lapack : lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
+	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
-lapack-3.4.0/make.inc :
+$(NETLIB_LAPACK_DIR)/make.inc :
 ifndef NOFORTRAN
-	-@echo "FORTRAN   = $(FC)" > lapack-3.4.0/make.inc
-	-@echo "OPTS      = $(FFLAGS)" >> lapack-3.4.0/make.inc
-	-@echo "POPTS     = $(FPFLAGS)" >> lapack-3.4.0/make.inc
-	-@echo "NOOPT     = $(FFLAGS) -O0" >> lapack-3.4.0/make.inc
-	-@echo "PNOOPT     = $(FPFLAGS) -O0" >> lapack-3.4.0/make.inc
-	-@echo "LOADOPTS  = $(FFLAGS) $(EXTRALIB)" >> lapack-3.4.0/make.inc
-	-@echo "ARCH      = $(AR)" >> lapack-3.4.0/make.inc
-	-@echo "RANLIB    = $(RANLIB)" >> lapack-3.4.0/make.inc
-	-@echo "LAPACKLIB = ../$(LIBNAME)" >> lapack-3.4.0/make.inc
-	-@echo "LAPACKLIB_P = ../$(LIBNAME_P)" >> lapack-3.4.0/make.inc
-	-@echo "SUFFIX     = $(SUFFIX)" >> lapack-3.4.0/make.inc
-	-@echo "PSUFFIX    = $(PSUFFIX)" >> lapack-3.4.0/make.inc
-#	-@echo "CEXTRALIB  = $(CEXTRALIB)" >> lapack-3.4.0/make.inc
-	-@cat  make.inc >> lapack-3.4.0/make.inc
+	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "OPTS        = $(FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "POPTS       = $(FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "NOOPT       = $(FFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "PNOOPT      = $(FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifdef INTERFACE64
+	-@echo "override CFLAGS      = $(CFLAGS) -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
+	-@echo "override CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LAPACKLIB   = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LAPACKELIB  = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LAPACKLIB_P = ../$(LIBNAME_P)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 
-lapack-3.4.0 : lapack-3.4.0.tgz
+lapack-3.4.2 : lapack-3.4.2.tgz
 ifndef NOFORTRAN
-	@if test `$(MD5SUM) lapack-3.4.0.tgz | $(AWK) '{print $$1}'` = 02d5706ec03ba885fc246e5fa10d8c70; then \
+ifndef NO_LAPACK
+	@if test `$(MD5SUM) lapack-3.4.2.tgz | $(AWK) '{print $$1}'` = 61bf1a8a4469d4bdb7604f5897179478; then \
 		echo $(TAR) zxf $< ;\
-		$(TAR) zxf $< && (cd lapack-3.4.0; $(PATCH) -p1 < ../patch.for_lapack-3.4.0) ;\
+		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.2) ;\
+		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
 	else \
-		echo "	lapack-3.4.0.tgz check sum is wrong (Please use orignal)." ;\
-		rm -rf lapack-3.4.0 ;\
+		rm -rf $(NETLIB_LAPACK_DIR) ;\
+		echo "	Cannot download lapack-3.4.2.tgz or the MD5 check sum is wrong (Please use orignal)."; \
+		exit 1; \
 	fi
 endif
+endif
 
-lapack-3.4.0.tgz :
+LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.2.tgz
+
+lapack-3.4.2.tgz :
 ifndef NOFORTRAN
-	-wget http://www.netlib.org/lapack/lapack-3.4.0.tgz
+#http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
+ifeq ($(OSNAME), $(filter $(OSNAME),Darwin NetBSD))
+	curl -O $(LAPACK_URL)
+else
+ifeq ($(OSNAME), FreeBSD)
+	fetch $(LAPACK_URL)
+else
+	wget -O $@ $(LAPACK_URL)
+endif
+endif
 endif
 
 large.tgz : 
@@ -256,21 +282,21 @@ ifndef NOFORTRAN
 	-wget http://www.netlib.org/lapack/timing/timing.tgz
 endif
 
-lapack-timing : lapack-3.4.0 large.tgz timing.tgz
+lapack-timing : lapack-3.4.2 large.tgz timing.tgz
 ifndef NOFORTRAN
-	(cd lapack-3.4.0; $(TAR) zxf ../timing.tgz TIMING)
-	(cd lapack-3.4.0/TIMING; $(TAR) zxf ../../large.tgz )
-	make -C lapack-3.4.0 tmglib
-	make -C lapack-3.4.0/TIMING
+	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
+	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
+	make -C $(NETLIB_LAPACK_DIR) tmglib
+	make -C $(NETLIB_LAPACK_DIR)/TIMING
 endif
 
 
 lapack-test :
-	$(MAKE) -C lapack-3.4.0 tmglib
-	$(MAKE) -C lapack-3.4.0/TESTING xeigtstc xeigtstd xeigtsts xeigtstz xlintstc xlintstd xlintstds xlintsts xlintstz xlintstzc
-	@rm	-f lapack-3.4.0/TESTING/*.out
-	$(MAKE) -j 1 -C lapack-3.4.0/TESTING
-	$(GREP) failed lapack-3.4.0/TESTING/*.out
+	$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
+	$(MAKE) -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc xeigtstd xeigtsts xeigtstz xlintstc xlintstd xlintstds xlintsts xlintstz xlintstzc
+	@rm	-f $(NETLIB_LAPACK_DIR)/TESTING/*.out
+	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING
+	$(GREP) failed $(NETLIB_LAPACK_DIR)/TESTING/*.out
 
 dummy :
 
@@ -288,10 +314,10 @@ clean ::
 #endif
 	@$(MAKE) -C reference clean
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
-	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
-	@if test -d lapack-3.4.0; then \
-	echo deleting lapack-3.4.0; \
-	rm -rf lapack-3.4.0 ;\
+	@rm -f Makefile.conf config.h cblas_noconst.h Makefile_kernel.conf config_kernel.h st* *.dylib
+	@if test -d $(NETLIB_LAPACK_DIR); then \
+	echo deleting $(NETLIB_LAPACK_DIR); \
+	rm -rf $(NETLIB_LAPACK_DIR) ;\
 	fi
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@echo Done.

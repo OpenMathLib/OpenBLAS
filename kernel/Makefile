@@ -6,7 +6,7 @@ TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
 ifdef TARGET_CORE
-CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
 BUILD_KERNEL = 1
 KDIR =
 TSUFFIX = _$(TARGET_CORE)
@@ -48,7 +48,7 @@ HPLOBJS = \
 
 COMMONOBJS	+= lsame.$(SUFFIX) scabs1.$(SUFFIX) dcabs1.$(SUFFIX)
 
-ifdef DYNAMIC_ARCH
+ifeq ($(DYNAMIC_ARCH), 1)
 SBLASOBJS	+= setparam$(TSUFFIX).$(SUFFIX)
 CCOMMON_OPT	+= -DTS=$(TSUFFIX)
 endif

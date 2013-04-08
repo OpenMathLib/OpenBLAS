@@ -60,6 +60,16 @@ extern gotoblas_t  gotoblas_NEHALEM;
 extern gotoblas_t  gotoblas_OPTERON;
 extern gotoblas_t  gotoblas_OPTERON_SSE3;
 extern gotoblas_t  gotoblas_BARCELONA;
+extern gotoblas_t  gotoblas_BOBCAT;
+#ifndef NO_AVX
+extern gotoblas_t  gotoblas_SANDYBRIDGE;
+extern gotoblas_t  gotoblas_BULLDOZER;
+#else
+//Use NEHALEM kernels for sandy bridge
+#define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
+#define gotoblas_BULLDOZER gotoblas_BARCELONA
+#endif
+
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -67,6 +77,32 @@ extern gotoblas_t  gotoblas_BARCELONA;
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
+
+#ifndef NO_AVX
+static inline void xgetbv(int op, int * eax, int * edx){
+  //Use binary code for xgetbv
+  __asm__ __volatile__
+    (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+}
+#endif
+
+int support_avx(){
+#ifndef NO_AVX
+  int eax, ebx, ecx, edx;
+  int ret=0;
+  
+  cpuid(1, &eax, &ebx, &ecx, &edx);
+  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0){
+    xgetbv(0, &eax, &edx);
+    if((eax & 6) == 6){
+      ret=1;  //OS support AVX
+    }
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
 
 static int get_vendor(void){
   int eax, ebx, ecx, edx;
@@ -122,15 +158,39 @@ static gotoblas_t *get_coretype(void){
 	if (model == 12) return &gotoblas_ATOM;
 	return NULL;
 
-	  case 2:
-		  //Intel Core (Clarkdale) / Core (Arrandale)
-		  // Pentium (Clarkdale) / Pentium Mobile (Arrandale)
-		  // Xeon (Clarkdale), 32nm
-		  if (model ==  5) return &gotoblas_NEHALEM;
+      case 2:
+	//Intel Core (Clarkdale) / Core (Arrandale)
+	// Pentium (Clarkdale) / Pentium Mobile (Arrandale)
+	// Xeon (Clarkdale), 32nm
+	if (model ==  5) return &gotoblas_NEHALEM;
 		  
-		  //Intel Xeon Processor 5600 (Westmere-EP)
-		  if (model == 12) return &gotoblas_NEHALEM;
-		  return NULL;
+	//Intel Xeon Processor 5600 (Westmere-EP)
+	//Xeon Processor E7 (Westmere-EX)
+	//Xeon E7540
+	if (model == 12 || model == 14 || model == 15) return &gotoblas_NEHALEM;
+
+	//Intel Core i5-2000 /i7-2000 (Sandy Bridge)
+	//Intel Core i7-3000 / Xeon E5
+	if (model == 10 || model == 13) {
+	  if(support_avx())
+	    return &gotoblas_SANDYBRIDGE;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	return NULL;
+      case 3:
+	//Intel Sandy Bridge 22nm (Ivy Bridge?)
+	if (model == 10) {
+	  if(support_avx())
+	    return &gotoblas_SANDYBRIDGE;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	return NULL;
       }
       case 0xf:
       if (model <= 0x2) return &gotoblas_NORTHWOOD;
@@ -144,7 +204,17 @@ static gotoblas_t *get_coretype(void){
       if ((exfamily == 0) || (exfamily == 2)) {
 	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3; 
 	else return &gotoblas_OPTERON;
-      }  else {
+      }  else if (exfamily == 5) {
+	return &gotoblas_BOBCAT;
+      } else if (exfamily == 6) {
+	//AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	  if(support_avx())
+	    return &gotoblas_BULLDOZER;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	  }	
+      } else {
 	return &gotoblas_BARCELONA;
       }
     }
@@ -178,6 +248,9 @@ static char *corename[] = {
     "Opteron(SSE3)",
     "Barcelona",
     "Nano",
+    "Sandybridge",
+    "Bobcat",
+    "Bulldozer",
 };
 
 char *gotoblas_corename(void) {
@@ -197,7 +270,10 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_OPTERON)      return corename[13];
   if (gotoblas == &gotoblas_BARCELONA)    return corename[14];
   if (gotoblas == &gotoblas_NANO)         return corename[15];
-  
+  if (gotoblas == &gotoblas_SANDYBRIDGE)  return corename[16];
+  if (gotoblas == &gotoblas_BOBCAT)       return corename[17];
+  if (gotoblas == &gotoblas_BULLDOZER)    return corename[18];
+
   return corename[0];
 }
 
@@ -211,12 +287,21 @@ void gotoblas_dynamic_init(void) {
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
   if (gotoblas == NULL) gotoblas = &gotoblas_PRESCOTT;
+  /* sanity check, if 64bit pointer we can't have a 32 bit cpu */
+  if (sizeof(void*) == 8) {
+      if (gotoblas == &gotoblas_KATMAI ||
+          gotoblas == &gotoblas_COPPERMINE ||
+          gotoblas == &gotoblas_NORTHWOOD ||
+          gotoblas == &gotoblas_BANIAS ||
+          gotoblas == &gotoblas_ATHLON)
+          gotoblas = &gotoblas_PRESCOTT;
+  }
 #endif
   
   if (gotoblas && gotoblas -> init) {
     gotoblas -> init();
   } else {
-    fprintf(stderr, "GotoBLAS : Architecture Initialization failed. No initialization function found.\n");
+    fprintf(stderr, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
     exit(1);
   }
   
