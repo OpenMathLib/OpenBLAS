@@ -526,11 +526,11 @@ else
 FCOMMON_OPT += -n64
 endif
 ifeq ($(CORE), LOONGSON3A) 
-FCOMMON_OPT += -loongson3
+FCOMMON_OPT += -loongson3 -static
 endif
 
 ifeq ($(CORE), LOONGSON3B) 
-FCOMMON_OPT += -loongson3
+FCOMMON_OPT += -loongson3 -static
 endif
 
 else
@@ -556,11 +556,11 @@ else
 CCOMMON_OPT += -n64
 endif
 ifeq ($(CORE), LOONGSON3A) 
-CCOMMON_OPT += -loongson3
+CCOMMON_OPT += -loongson3 -static
 endif
 
 ifeq ($(CORE), LOONGSON3B) 
-CCOMMON_OPT += -loongson3
+CCOMMON_OPT += -loongson3 -static
 endif
 
 else
