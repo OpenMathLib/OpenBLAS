@@ -81,6 +81,9 @@ VERSION = 0.2.6
 # and OS. However, the performance is low.
 # NO_AVX = 1
 
+# Don't use parallel make.
+# NO_PARALLEL_MAKE = 1
+
 # If you would like to know minute performance report of GotoBLAS.
 # FUNCTION_PROFILE = 1
 

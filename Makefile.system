@@ -65,6 +65,10 @@ ifeq ($(DEBUG), 1)
 GETARCH_FLAGS	+= -g
 endif
 
+ifndef NO_PARALLEL_MAKE
+NO_PARALLEL_MAKE=0
+endif
+GETARCH_FLAGS	+= -DNO_PARALLEL_MAKE=$(NO_PARALLEL_MAKE)
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
