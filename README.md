@@ -91,8 +91,8 @@ If you compile this lib with USE_OPENMP=1, you should use the above functions, t
 Please add a issue in https://github.com/xianyi/OpenBLAS/issues
 
 ## Contact
-OpenBLAS users mailing list: https://groups.google.com/forum/#!forum/openblas-users
-OpenBLAS developers mailing list: https://groups.google.com/forum/#!forum/openblas-dev
+* OpenBLAS users mailing list: https://groups.google.com/forum/#!forum/openblas-users
+* OpenBLAS developers mailing list: https://groups.google.com/forum/#!forum/openblas-dev
 
 ## ChangeLog
 Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD version.
