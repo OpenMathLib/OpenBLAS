@@ -56,7 +56,7 @@
 *		53 GFLOPS with 4 threads on 2 modules
 *		46 GFLOPS with 2 threads on 2 modules
 *		28 GFLOPS with 2 threads on 1 module
-*	      23,6 GFLOPS with 1 thread  on 1 module
+*	      23,1 GFLOPS with 1 thread  on 1 module
 *********************************************************************/
 
 #define ASSEMBLER
@@ -114,132 +114,132 @@
 #define B_PR1 512
 
 #define KERNEL1(xx) \
-	vmovddup	-15 * SIZE(BO, %rax, 4), %xmm3 ;\
 	vmovups 	-14 * SIZE(AO, %rax, 4),%xmm2 ;\
-	vfmaddpd %xmm8,%xmm6,%xmm7,%xmm8 ;\
-	vfmaddpd %xmm12,%xmm2,%xmm7,%xmm12 ;\
+	vfmaddpd 		%xmm8,%xmm6,%xmm7,%xmm8 ;\
 	vmovddup	-14 * SIZE(BO, %rax, 4), %xmm5 ;\
+	vfmaddpd 		%xmm12,%xmm2,%xmm7,%xmm12 ;\
 	vmovddup	-13 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm9,%xmm6,%xmm3,%xmm9 ;\
-	vfmaddpd %xmm13,%xmm2,%xmm3,%xmm13 ;\
-	vmovddup	 -8 * SIZE(BO, %rax, 4), %xmm7 ;\
-	vfmaddpd %xmm10,%xmm6,%xmm5,%xmm10 ;\
-	vfmaddpd %xmm11,%xmm6,%xmm4,%xmm11 ;\
+	vfmaddpd 		%xmm9,%xmm6,%xmm3,%xmm9 ;\
 	vmovddup	-12 * SIZE(BO, %rax, 4), %xmm1 ;\
-	vfmaddpd %xmm15,%xmm2, %xmm4,%xmm15 ;\
-	vfmaddpd %xmm14,%xmm2, %xmm5,%xmm14 ;\
-	vmovups  	-8 * SIZE(AO, %rax, 4),%xmm6 ;\
+	vfmaddpd 		%xmm13,%xmm2,%xmm3,%xmm13 ;\
+	vmovddup	 -8 * SIZE(BO, %rax, 4), %xmm7 ;\
+	vfmaddpd 		%xmm10,%xmm6,%xmm5,%xmm10 ;\
+ 	vmovddup	-11 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm6,%xmm4,%xmm11 ;\
+	vmovups 	-12 * SIZE(AO, %rax, 4),%xmm0 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
+	vmovups  	 -8 * SIZE(AO, %rax, 4),%xmm6 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
 
 #define KERNEL2(xx) \
-	vmovups		-12 * SIZE(AO, %rax, 4), %xmm2 ;\
-	vmovups 	-10 * SIZE(AO, %rax, 4),%xmm0 ;\
- 	vmovddup	-11 * SIZE(BO, %rax, 4), %xmm3 ;\
-	vfmaddpd %xmm8, %xmm2, %xmm1,%xmm8 ;\
-	vfmaddpd %xmm12,%xmm0, %xmm1,%xmm12 ;\
+	vmovups		-10 * SIZE(AO, %rax, 4), %xmm2 ;\
+	vfmaddpd 		%xmm8, %xmm0, %xmm1,%xmm8 ;\
+	vfmaddpd 		%xmm12,%xmm2, %xmm1,%xmm12 ;\
 	vmovddup	-10 * SIZE(BO, %rax, 4), %xmm5 ;\
-	vfmaddpd %xmm9, %xmm2, %xmm3,%xmm9 ;\
-	vfmaddpd %xmm13,%xmm0, %xmm3,%xmm13 ;\
+	vfmaddpd 		%xmm9, %xmm0, %xmm3,%xmm9 ;\
+	vfmaddpd 		%xmm13,%xmm2, %xmm3,%xmm13 ;\
 	vmovddup	 -9 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm10,%xmm2, %xmm5,%xmm10 ;\
-	vfmaddpd %xmm14,%xmm0, %xmm5,%xmm14 ;\
-	vfmaddpd %xmm11,%xmm2, %xmm4,%xmm11 ;\
-	vfmaddpd %xmm15,%xmm0, %xmm4,%xmm15 ;\
+	vfmaddpd 		%xmm10,%xmm0, %xmm5,%xmm10 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
+ 	vmovddup	 -7 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm0, %xmm4,%xmm11 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
 
 #define KERNEL3(xx) \
-	vmovups 	-6 * SIZE(AO, %rax, 4),%xmm2 ;\
- 	vmovddup	 -7 * SIZE(BO, %rax, 4), %xmm3 ;\
-	vfmaddpd %xmm8, %xmm6, %xmm7, %xmm8 ;\
-	vfmaddpd %xmm12,%xmm2, %xmm7,%xmm12 ;\
+	vmovups 	 -6 * SIZE(AO, %rax, 4),%xmm2 ;\
+	vfmaddpd 		%xmm8, %xmm6, %xmm7, %xmm8 ;\
 	vmovddup	 -6 * SIZE(BO, %rax, 4), %xmm5 ;\
+	vfmaddpd 		%xmm12,%xmm2, %xmm7,%xmm12 ;\
 	vmovddup	 -5 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm9, %xmm6, %xmm3,%xmm9 ;\
-	vfmaddpd %xmm13,%xmm2, %xmm3,%xmm13 ;\
+	vfmaddpd 		%xmm9, %xmm6, %xmm3,%xmm9 ;\
 	vmovddup	          (BO, %rax, 4), %xmm7 ;\
-	vfmaddpd %xmm10,%xmm6, %xmm5,%xmm10 ;\
-	vfmaddpd %xmm14,%xmm2, %xmm5,%xmm14 ;\
+	vfmaddpd 		%xmm13,%xmm2, %xmm3,%xmm13 ;\
 	vmovddup	 -4 * SIZE(BO, %rax, 4), %xmm1 ;\
-	vfmaddpd %xmm11,%xmm6, %xmm4, %xmm11 ;\
-	vfmaddpd %xmm15,%xmm2, %xmm4,%xmm15 ;\
+	vfmaddpd 		%xmm10,%xmm6, %xmm5,%xmm10 ;\
+ 	vmovddup	 -3 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm6, %xmm4, %xmm11 ;\
+	vmovups 	 -4 * SIZE(AO, %rax, 4),%xmm0 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
 	vmovups	  	          (AO, %rax, 4), %xmm6 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
 
 #define KERNEL4(xx) \
-	vmovups	 	 -4 * SIZE(AO, %rax, 4), %xmm2 ;\
-	vmovups 	 -2 * SIZE(AO, %rax, 4),%xmm0 ;\
- 	vmovddup	 -3 * SIZE(BO, %rax, 4), %xmm3 ;\
-	vfmaddpd %xmm8,%xmm2, %xmm1,%xmm8 ;\
-	vfmaddpd %xmm12,%xmm0, %xmm1 ,%xmm12;\
+	vmovups	 	 -2 * SIZE(AO, %rax, 4), %xmm2 ;\
+	vfmaddpd 		%xmm8,%xmm0, %xmm1,%xmm8 ;\
+	vfmaddpd 		%xmm12,%xmm2, %xmm1 ,%xmm12;\
 	vmovddup	 -2 * SIZE(BO, %rax, 4), %xmm5 ;\
-	vfmaddpd %xmm9,%xmm2, %xmm3,%xmm9 ;\
-	vfmaddpd %xmm13,%xmm0, %xmm3,%xmm13 ;\
+	vfmaddpd 		%xmm9,%xmm0, %xmm3,%xmm9 ;\
+	vfmaddpd 		%xmm13,%xmm2, %xmm3,%xmm13 ;\
 	vmovddup	 -1 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm10,%xmm2, %xmm5,%xmm10 ;\
-	vfmaddpd %xmm14,%xmm0, %xmm5,%xmm14 ;\
-	vfmaddpd %xmm11,%xmm2, %xmm4,%xmm11 ;\
-	vfmaddpd %xmm15,%xmm0, %xmm4,%xmm15 ;\
+	vfmaddpd 		%xmm10,%xmm0, %xmm5,%xmm10 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
+ 	vmovddup	  1 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm0, %xmm4,%xmm11 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
 
 #define KERNEL5(xx) \
 	vmovups 	  2 * SIZE(AO, %rax, 4),%xmm2 ;\
- 	vmovddup	  1 * SIZE(BO, %rax, 4), %xmm3 ;\
-	vfmaddpd %xmm8,%xmm6, %xmm7,%xmm8 ;\
-	vfmaddpd %xmm12,%xmm2, %xmm7,%xmm12 ;\
+	vfmaddpd 		%xmm8,%xmm6, %xmm7,%xmm8 ;\
 	vmovddup	  2 * SIZE(BO, %rax, 4), %xmm5 ;\
+	vfmaddpd 		%xmm12,%xmm2, %xmm7,%xmm12 ;\
 	vmovddup	  3 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm9,%xmm6, %xmm3,%xmm9 ;\
-	vfmaddpd %xmm13,%xmm2, %xmm3,%xmm13 ;\
+	vfmaddpd 		%xmm9,%xmm6, %xmm3,%xmm9 ;\
 	vmovddup	  8 * SIZE(BO, %rax, 4), %xmm7 ;\
-	vfmaddpd %xmm10,%xmm6, %xmm5,%xmm10 ;\
-	vfmaddpd %xmm14,%xmm2, %xmm5,%xmm14 ;\
-	vmovddup	4 * SIZE(BO, %rax, 4), %xmm1 ;\
-	vfmaddpd %xmm11,%xmm6, %xmm4,%xmm11 ;\
-	vfmaddpd %xmm15,%xmm2, %xmm4,%xmm15 ;\
+	vfmaddpd 		%xmm13,%xmm2, %xmm3,%xmm13 ;\
+	vmovddup	  4 * SIZE(BO, %rax, 4), %xmm1 ;\
+	vfmaddpd 		%xmm10,%xmm6, %xmm5,%xmm10 ;\
+ 	vmovddup	  5 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm6, %xmm4,%xmm11 ;\
+	vmovups		  4 * SIZE(AO, %rax, 4),%xmm0 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
 	vmovups	  	  8 * SIZE(AO, %rax, 4), %xmm6 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
 
 #define KERNEL6(xx) \
-	vmovups	  	4 * SIZE(AO, %rax, 4), %xmm2 ;\
-	vmovups		6 * SIZE(AO, %rax, 4),%xmm0 ;\
- 	vmovddup	5 * SIZE(BO, %rax, 4), %xmm3 ;\
-	vfmaddpd %xmm8,%xmm2, %xmm1,%xmm8 ;\
-	vfmaddpd %xmm12,%xmm0, %xmm1,%xmm12 ;\
+	vmovups	  	  6 * SIZE(AO, %rax, 4), %xmm2 ;\
+	vfmaddpd 		%xmm8,%xmm0, %xmm1,%xmm8 ;\
+	vfmaddpd 		%xmm12,%xmm2, %xmm1,%xmm12 ;\
 	vmovddup	  6 * SIZE(BO, %rax, 4), %xmm5 ;\
-	vfmaddpd %xmm9,%xmm2, %xmm3,%xmm9 ;\
-	vfmaddpd %xmm13,%xmm0, %xmm3,%xmm13 ;\
+	vfmaddpd 		%xmm9,%xmm0, %xmm3,%xmm9 ;\
+	vfmaddpd 		%xmm13,%xmm2, %xmm3,%xmm13 ;\
 	vmovddup	  7 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm10,%xmm2, %xmm5,%xmm10 ;\
-	vfmaddpd %xmm14,%xmm0, %xmm5,%xmm14 ;\
-	vfmaddpd %xmm11,%xmm2, %xmm4,%xmm11 ;\
-	vfmaddpd %xmm15,%xmm0, %xmm4,%xmm15 ;\
+	vfmaddpd 		%xmm10,%xmm0, %xmm5,%xmm10 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
+ 	vmovddup	  9 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm0, %xmm4,%xmm11 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
 
 #define KERNEL7(xx) \
 	vmovups 	 10 * SIZE(AO, %rax, 4),%xmm2 ;\
- 	vmovddup	  9 * SIZE(BO, %rax, 4), %xmm3 ;\
-	vfmaddpd %xmm8,%xmm6, %xmm7,%xmm8 ;\
-	vfmaddpd %xmm12,%xmm2, %xmm7,%xmm12 ;\
+	vfmaddpd 		%xmm8,%xmm6, %xmm7,%xmm8 ;\
 	vmovddup	 10 * SIZE(BO, %rax, 4), %xmm5 ;\
+	vfmaddpd 		%xmm12,%xmm2, %xmm7,%xmm12 ;\
 	vmovddup	 11 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm9,%xmm6, %xmm3,%xmm9 ;\
-	vfmaddpd %xmm13,%xmm2, %xmm3,%xmm13 ;\
+	vfmaddpd 		%xmm9,%xmm6, %xmm3,%xmm9 ;\
 	vmovddup	 16 * SIZE(BO, %rax, 4), %xmm7 ;\
-	vfmaddpd %xmm10,%xmm6, %xmm5,%xmm10 ;\
-	vfmaddpd %xmm14,%xmm2, %xmm5,%xmm14 ;\
+	vfmaddpd 		%xmm13,%xmm2, %xmm3,%xmm13 ;\
 	vmovddup	 12 * SIZE(BO, %rax, 4), %xmm1 ;\
-	vfmaddpd %xmm11,%xmm6, %xmm4,%xmm11 ;\
-	vfmaddpd %xmm15,%xmm2, %xmm4,%xmm15 ;\
+	vfmaddpd 		%xmm10,%xmm6, %xmm5,%xmm10 ;\
+ 	vmovddup	 13 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm6, %xmm4,%xmm11 ;\
+	vmovups 	 12 * SIZE(AO, %rax, 4), %xmm0 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
 	vmovups 	 16 * SIZE(AO, %rax, 4),%xmm6 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
 
 #define KERNEL8(xx) \
-	vmovups	 	 12 * SIZE(AO, %rax, 4), %xmm2 ;\
-	vmovups 	 14 * SIZE(AO, %rax, 4), %xmm0 ;\
- 	vmovddup	 13 * SIZE(BO, %rax, 4), %xmm3 ;\
-	vfmaddpd %xmm8,%xmm2, %xmm1,%xmm8 ;\
-	vfmaddpd %xmm12,%xmm0, %xmm1,%xmm12 ;\
+	vmovups	 	 14 * SIZE(AO, %rax, 4), %xmm2 ;\
+	vfmaddpd 		%xmm8,%xmm0, %xmm1,%xmm8 ;\
+	vfmaddpd 		%xmm12,%xmm2, %xmm1,%xmm12 ;\
 	vmovddup	 14 * SIZE(BO, %rax, 4), %xmm5 ;\
-	vfmaddpd %xmm9,%xmm2, %xmm3,%xmm9 ;\
-	vfmaddpd %xmm13, %xmm0, %xmm3,%xmm13 ;\
+	vfmaddpd 		%xmm9,%xmm0, %xmm3,%xmm9 ;\
+	vfmaddpd 		%xmm13, %xmm2, %xmm3,%xmm13 ;\
 	vmovddup	 15 * SIZE(BO, %rax, 4), %xmm4 ;\
-	vfmaddpd %xmm10,%xmm2, %xmm5,%xmm10 ;\
-	vfmaddpd %xmm14,%xmm0, %xmm5,%xmm14 ;\
-	vfmaddpd %xmm11,%xmm2, %xmm4,%xmm11 ;\
-	vfmaddpd %xmm15,%xmm0, %xmm4,%xmm15 ;\
+	vfmaddpd 		%xmm10,%xmm0, %xmm5,%xmm10 ;\
+	vfmaddpd 		%xmm14,%xmm2, %xmm5,%xmm14 ;\
+ 	vmovddup	 17 * SIZE(BO, %rax, 4), %xmm3 ;\
+	vfmaddpd 		%xmm11,%xmm0, %xmm4,%xmm11 ;\
+	vfmaddpd 		%xmm15,%xmm2, %xmm4,%xmm15 ;\
 
 #define KERNEL_SUB1(xx) \
 	vmovups  	-16 * SIZE(AO),%xmm0 ;\
@@ -456,97 +456,13 @@
 
 	vmovups 	-16 * SIZE(AO, %rax, 4),%xmm6 
 	vmovddup	-16 * SIZE(BO, %rax, 4), %xmm7 
+	vmovddup	-15 * SIZE(BO, %rax, 4), %xmm3 
 
 	.align 16
 
 .L12:
 
-#ifndef SMP 
-
- 	prefetcht0 A_PR1(AO,%rax,4)
-        prefetcht0 B_PR1(BO,%rax,4)
-        KERNEL1(16 *  0)
-        KERNEL2(16 *  0)
-        prefetcht0 A_PR1+64(AO,%rax,4)
-        prefetcht0 B_PR1+64(BO,%rax,4)
-        KERNEL3(16 *  0)
-        KERNEL4(16 *  0)
-        prefetcht0 A_PR1+128(AO,%rax,4)
-        prefetcht0 B_PR1+128(BO,%rax,4)
-        KERNEL5(16 *  0)
-        KERNEL6(16 *  0)
-        prefetcht0 A_PR1+192(AO,%rax,4)
-        prefetcht0 B_PR1+192(BO,%rax,4)
-        KERNEL7(16 *  0)
-        KERNEL8(16 *  0)
-
-	addq	$8 * SIZE, %rax 
-	je	.L15
-
- 	prefetcht0 A_PR1(AO,%rax,4)
-        prefetcht0 B_PR1(BO,%rax,4)
-        KERNEL1(16 *  0)
-        KERNEL2(16 *  0)
-        prefetcht0 A_PR1+64(AO,%rax,4)
-        prefetcht0 B_PR1+64(BO,%rax,4)
-        KERNEL3(16 *  0)
-        KERNEL4(16 *  0)
-        prefetcht0 A_PR1+128(AO,%rax,4)
-        prefetcht0 B_PR1+128(BO,%rax,4)
-        KERNEL5(16 *  0)
-        KERNEL6(16 *  0)
-        prefetcht0 A_PR1+192(AO,%rax,4)
-        prefetcht0 B_PR1+192(BO,%rax,4)
-        KERNEL7(16 *  0)
-        KERNEL8(16 *  0)
-
-	addq	$8 * SIZE, %rax 
-	je	.L15
-
-
- 	prefetcht0 A_PR1(AO,%rax,4)
-        prefetcht0 B_PR1(BO,%rax,4)
-        KERNEL1(16 *  0)
-        KERNEL2(16 *  0)
-        prefetcht0 A_PR1+64(AO,%rax,4)
-        prefetcht0 B_PR1+64(BO,%rax,4)
-        KERNEL3(16 *  0)
-        KERNEL4(16 *  0)
-        prefetcht0 A_PR1+128(AO,%rax,4)
-        prefetcht0 B_PR1+128(BO,%rax,4)
-        KERNEL5(16 *  0)
-        KERNEL6(16 *  0)
-        prefetcht0 A_PR1+192(AO,%rax,4)
-        prefetcht0 B_PR1+192(BO,%rax,4)
-        KERNEL7(16 *  0)
-        KERNEL8(16 *  0)
-
-	addq	$8 * SIZE, %rax 
-	je	.L15
-
- 	prefetcht0 A_PR1(AO,%rax,4)
-        prefetcht0 B_PR1(BO,%rax,4)
-        KERNEL1(16 *  0)
-        KERNEL2(16 *  0)
-        prefetcht0 A_PR1+64(AO,%rax,4)
-        prefetcht0 B_PR1+64(BO,%rax,4)
-        KERNEL3(16 *  0)
-        KERNEL4(16 *  0)
-        prefetcht0 A_PR1+128(AO,%rax,4)
-        prefetcht0 B_PR1+128(BO,%rax,4)
-        KERNEL5(16 *  0)
-        KERNEL6(16 *  0)
-        prefetcht0 A_PR1+192(AO,%rax,4)
-        prefetcht0 B_PR1+192(BO,%rax,4)
-        KERNEL7(16 *  0)
-        KERNEL8(16 *  0)
-
-	addq	$8 * SIZE, %rax 
-	jnz	.L12
-
-	.align 16
-#else
-#ifdef OPTMODULE
+#if  defined(OPTBYMODULE) || !defined(SMP)
 
  	prefetcht0 A_PR1(AO,%rax,4)
         prefetcht0 B_PR1(BO,%rax,4)
@@ -585,7 +501,6 @@
 	jmp	.L12
 	.align 16
 
-#endif
 #endif
 
 
