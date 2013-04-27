@@ -44,8 +44,8 @@ STRSMKERNEL_RN	=  trsm_kernel_LT_8x4_sse.S
 STRSMKERNEL_RT	=  trsm_kernel_RT_8x4_sse.S
 
 DTRSMKERNEL_LN	=  trsm_kernel_LN_4x4_barcelona.S
-DTRSMKERNEL_LT	=  trsm_kernel_LT_4x4_barcelona.S
-DTRSMKERNEL_RN	=  trsm_kernel_LT_4x4_barcelona.S
+DTRSMKERNEL_LT	=  trsm_kernel_LT_4x4_bulldozer.S
+DTRSMKERNEL_RN	=  trsm_kernel_LT_4x4_bulldozer.S
 DTRSMKERNEL_RT	=  trsm_kernel_RT_4x4_barcelona.S
 
 CTRSMKERNEL_LN	=  ztrsm_kernel_LN_4x2_sse.S
