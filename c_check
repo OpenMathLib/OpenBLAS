@@ -241,13 +241,13 @@ print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
 
 if ($os eq "LINUX") {
     
-    @pthread = split(/\s+/, `nm /lib/libpthread.so* | grep _pthread_create`);
+#    @pthread = split(/\s+/, `nm /lib/libpthread.so* | grep _pthread_create`);
     
-    if ($pthread[2] ne "") {
-	print CONFFILE "#define PTHREAD_CREATE_FUNC	$pthread[2]\n";
-    } else {
+#    if ($pthread[2] ne "") {
+#	print CONFFILE "#define PTHREAD_CREATE_FUNC	$pthread[2]\n";
+#    } else {
 	print CONFFILE "#define PTHREAD_CREATE_FUNC	pthread_create\n";
-    }
+#    }
 } else {
     print CONFFILE "#define PTHREAD_CREATE_FUNC	pthread_create\n";
 }
