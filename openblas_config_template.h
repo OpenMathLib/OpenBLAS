@@ -51,7 +51,9 @@ typedef int blasint;
 #if (defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
      (__GNUC__ >= 3 && !defined(__cplusplus)))
   #define OPENBLAS_COMPLEX_C99
+#ifndef __cplusplus
   #include <complex.h>
+#endif
   typedef float _Complex openblas_complex_float;
   typedef double _Complex openblas_complex_double;
   typedef xdouble _Complex openblas_complex_xdouble;
