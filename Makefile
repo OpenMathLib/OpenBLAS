@@ -247,7 +247,7 @@ endif
 lapack-3.4.2 : lapack-3.4.2.tgz
 ifndef NOFORTRAN
 ifndef NO_LAPACK
-	@if test `$(MD5SUM) lapack-3.4.2.tgz | $(AWK) '{print $$1}'` = 61bf1a8a4469d4bdb7604f5897179478; then \
+	@if test `$(MD5SUM) $< | $(AWK) '{print $$1}'` = 61bf1a8a4469d4bdb7604f5897179478; then \
 		echo $(TAR) zxf $< ;\
 		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.2) ;\
 		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
@@ -263,26 +263,32 @@ LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.2.tgz
 
 lapack-3.4.2.tgz :
 ifndef NOFORTRAN
+	if [ ! -a $< ]; then
 #http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
 ifeq ($(OSNAME), $(filter $(OSNAME),Darwin NetBSD))
-	curl -O $(LAPACK_URL)
+	curl -O $(LAPACK_URL);
 else
 ifeq ($(OSNAME), FreeBSD)
-	fetch $(LAPACK_URL)
+	fetch $(LAPACK_URL);
 else
-	wget -O $@ $(LAPACK_URL)
+	wget -O $@ $(LAPACK_URL);
 endif
 endif
+	fi
 endif
 
 large.tgz : 
 ifndef NOFORTRAN
-	-wget http://www.netlib.org/lapack/timing/large.tgz
+	if [ ! -a $< ]; then
+	-wget http://www.netlib.org/lapack/timing/large.tgz;
+	fi
 endif
 
 timing.tgz :
 ifndef NOFORTRAN
-	-wget http://www.netlib.org/lapack/timing/timing.tgz
+	if [ ! -a $< ]; then
+	-wget http://www.netlib.org/lapack/timing/timing.tgz;
+	fi
 endif
 
 lapack-timing : lapack-3.4.2 large.tgz timing.tgz
