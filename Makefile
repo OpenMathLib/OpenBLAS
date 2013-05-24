@@ -263,7 +263,6 @@ LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.2.tgz
 
 lapack-3.4.2.tgz :
 ifndef NOFORTRAN
-	if [ ! -a $< ]; then
 #http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
 ifeq ($(OSNAME), $(filter $(OSNAME),Darwin NetBSD))
 	curl -O $(LAPACK_URL);
@@ -274,7 +273,6 @@ else
 	wget -O $@ $(LAPACK_URL);
 endif
 endif
-	fi
 endif
 
 large.tgz : 
