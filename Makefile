@@ -154,6 +154,9 @@ ifeq ($(DYNAMIC_ARCH), 1)
 	done
 	echo DYNAMIC_ARCH=1 >> Makefile.conf_last
 endif
+ifdef USE_THREAD
+	echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
+endif
 	touch lib.grd
 
 prof : prof_blas prof_lapack
