@@ -101,10 +101,10 @@
 #define Y		36 + STACKSIZE+ARGS(%esp)
 #define STACK_INCY	40 + STACKSIZE+ARGS(%esp)
 #define BUFFER		44 + STACKSIZE+ARGS(%esp)
+
 #define MMM	0+ARGS(%esp)
 #define YY	4+ARGS(%esp)
 #define AA	8+ARGS(%esp)
-#define LDAX	12+ARGS(%esp)
 	
 #define I	%eax
 #define J	%ebx
@@ -153,8 +153,8 @@
 
 	movl	YY,J
 	movl	J,Y
-	movl	STACK_LDA,  LDA
 
+	movl	STACK_LDA,  LDA
 	movl	STACK_X,    X
 	movl	STACK_INCX, INCX
 
@@ -688,9 +688,9 @@
 	movl	M,J
 	leal	(,J,SIZE),%eax
 	addl	%eax,AA
-	movl	YY,J
-	addl	%eax,J
-	movl	J,YY
+	movl	STACK_INCY,INCY
+	imull	INCY,%eax
+	addl	%eax,YY
 	jmp		.L0t
 	ALIGN_4
 
