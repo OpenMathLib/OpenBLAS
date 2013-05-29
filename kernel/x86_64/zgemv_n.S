@@ -42,7 +42,7 @@
 
 #ifndef WINDOWS_ABI
 
-#define STACKSIZE	64
+#define STACKSIZE	128
 	
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
@@ -50,7 +50,15 @@
 #define OLD_BUFFER	32 + STACKSIZE(%rsp)
 #define ALPHA_R		48	      (%rsp)
 #define ALPHA_I		56	      (%rsp)
-	
+
+#define MMM	64(%rsp)
+#define NN	72(%rsp)
+#define AA	80(%rsp)
+#define XX	88(%rsp)
+#define LDAX	96(%rsp)
+#define ALPHAR	104(%rsp)
+#define	ALPHAI	112(%rsp) 
+
 #define M	  %rdi
 #define N	  %rsi
 #define A	  %rcx
@@ -62,7 +70,7 @@
 
 #else
 
-#define STACKSIZE	256
+#define STACKSIZE	288
 	
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
@@ -74,6 +82,14 @@
 #define OLD_BUFFER	 96 + STACKSIZE(%rsp)
 #define ALPHA_R		224	       (%rsp)
 #define ALPHA_I		232	       (%rsp)
+
+#define MMM	232(%rsp)
+#define NN	240(%rsp)
+#define AA	248(%rsp)
+#define	XX	256(%rsp)
+#define LDAX	264(%rsp)
+#define ALPHAR	272(%rsp)
+#define ALPHAI	280(%rsp)
 
 #define M	  %rcx
 #define N	  %rdx
@@ -136,8 +152,37 @@
 	movsd	OLD_ALPHA_I, %xmm1
 #endif
 
-	movq	OLD_INCX,  INCX
+	movq	A, AA
+	movq	N, NN
+	movq	M, MMM
+	movq	LDA, LDAX
+	movq	X, XX
 	movq	OLD_Y,     Y
+	movsd	%xmm0,ALPHAR
+	movsd	%xmm1,ALPHAI
+
+.L0t:
+	xorq	I,I
+	addq	$1,I
+	salq	$18,I
+	subq	I,MMM
+	movq	I,M
+	movsd	ALPHAR,%xmm0
+	movsd	ALPHAI,%xmm1
+	jge	.L00t
+
+	movq	MMM,M
+	addq	I,M
+	jle	.L999x
+
+.L00t:
+	movq	AA, A
+	movq	NN, N
+	movq	LDAX, LDA
+	movq	XX, X
+
+	movq	OLD_INCX,  INCX
+#	movq	OLD_Y,     Y
 	movq	OLD_INCY,  INCY
 	movq	OLD_BUFFER, BUFFER
 
@@ -2673,6 +2718,12 @@
 	ALIGN_3
 
 .L999:
+	movq	M, I
+	salq	$ZBASE_SHIFT,I
+	addq	I,AA
+	jmp	.L0t
+.L999x:
+
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12
