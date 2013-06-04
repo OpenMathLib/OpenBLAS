@@ -83,7 +83,7 @@
 #define AA	248(%rsp)
 #define LDAX 256(%rsp)
 #define XX	264(%rsp)
-#define
+
 #endif
 
 #define LDA	%r8
