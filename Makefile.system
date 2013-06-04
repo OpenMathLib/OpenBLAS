@@ -152,7 +152,7 @@ EXTRALIB        += -defaultlib:advapi32
 
 SUFFIX  = obj
 PSUFFIX = pobj
-LIBSUFFIX = lib
+LIBSUFFIX = a
 ifeq ($(C_COMPILER), GCC)
 #Test for supporting MS_ABI
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
