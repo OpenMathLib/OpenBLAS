@@ -33,6 +33,7 @@ if ($ARGV[0] =~ /(.*)(-[.\d]+)/) {
 }
 
 $compiler = "";
+$compiler = CLANG     if ($data =~ /COMPILER_CLANG/);
 $compiler = PGI       if ($data =~ /COMPILER_PGI/);
 $compiler = PATHSCALE if ($data =~ /COMPILER_PATHSCALE/);
 $compiler = INTEL     if ($data =~ /COMPILER_INTEL/);
@@ -115,6 +116,10 @@ if ($compiler eq "PATHSCALE") {
 
 if ($compiler eq "OPEN64") {
     $openmp = "-mp";
+}
+
+if ($compiler eq "CLANG") {
+    $openmp = "-fopenmp";
 }
 
 if ($compiler eq "GCC") {

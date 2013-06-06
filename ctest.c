@@ -1,3 +1,7 @@
+#if defined(__clang__)
+COMPILER_CLANG
+#endif
+
 #if defined(__PGI) || defined(__PGIC__)
 COMPILER_PGI
 #endif

@@ -153,6 +153,11 @@ EXTRALIB        += -defaultlib:advapi32
 SUFFIX  = obj
 PSUFFIX = pobj
 LIBSUFFIX = a
+
+ifeq ($(C_COMPILER), CLANG)
+CCOMMON_OPT	+= -DMS_ABI
+endif
+
 ifeq ($(C_COMPILER), GCC)
 #Test for supporting MS_ABI
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
@@ -232,6 +237,11 @@ EXPRECISION	= 1
 CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
 FCOMMON_OPT	+= -m128bit-long-double
 endif
+ifeq ($(C_COMPILER), CLANG)
+EXPRECISION	= 1
+CCOMMON_OPT	+= -DEXPRECISION 
+FCOMMON_OPT	+= -m128bit-long-double
+endif
 endif
 endif
 endif
@@ -244,6 +254,11 @@ EXPRECISION	= 1
 CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
 FCOMMON_OPT	+= -m128bit-long-double
 endif
+ifeq ($(C_COMPILER), CLANG)
+EXPRECISION	= 1
+CCOMMON_OPT	+= -DEXPRECISION 
+FCOMMON_OPT	+= -m128bit-long-double
+endif
 endif
 endif
 endif
@@ -254,6 +269,11 @@ endif
 
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT    += -fopenmp
+endif
+
+ifeq ($(C_COMPILER), CLANG)
+$(error OpenBLAS: Clang didn't support OpenMP yet.)
 CCOMMON_OPT    += -fopenmp
 endif
 
@@ -322,7 +342,9 @@ endif
 #  C Compiler dependent settings
 #
 
-ifeq ($(C_COMPILER), GCC)
+# ifeq logical or. GCC or CLANG
+# http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC CLANG))
 CCOMMON_OPT += -Wall
 COMMON_PROF += -fno-inline
 NO_UNINITIALIZED_WARN =  -Wno-uninitialized
