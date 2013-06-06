@@ -130,7 +130,7 @@ int support_avx(){
   int ret=0;
   
   cpuid(1, &eax, &ebx, &ecx, &edx);
-  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0){
+  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0 && (ecx & (1 << 26)) != 0){
     xgetbv(0, &eax, &edx);
     if((eax & 6) == 6){
       ret=1;  //OS support AVX
