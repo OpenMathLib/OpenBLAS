@@ -360,8 +360,20 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
       for(jjs = xxx; jjs < MIN(n_to, xxx + div_n); jjs += min_jj){
 	min_jj = MIN(n_to, xxx + div_n) - jjs;
+
+#if defined(BULLDOZER) && defined(ARCH_X86_64) && defined(DOUBLE) && !defined(COMPLEX)
+	if (min_jj >= 12*GEMM_UNROLL_N) min_jj = 12*GEMM_UNROLL_N;
+	else
+		if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
+		else
+			if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
+			else
+				if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+#else
+
 	if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	
+#endif	
+
 	START_RPCC();
 	
 	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs, 
@@ -634,7 +646,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
       
       num_cpu_n ++;
     }
-    
+ 
     for (j = 0; j < num_cpu_m; j++) {
       for (i = 0; i < num_cpu_m; i++) {
 	for (k = 0; k < DIVIDE_RATE; k++) {
