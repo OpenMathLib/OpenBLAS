@@ -161,6 +161,32 @@
 #define BUFFER1	           128(%rsp)
 #define BUFFER2	LB2_OFFSET+128(%rsp)
 
+#if defined(OS_WINDOWS)
+#if   L_BUFFER_SIZE > 16384
+#define STACK_TOUCH \
+        movl    $0,  4096 * 4(%rsp);\
+        movl    $0,  4096 * 3(%rsp);\
+        movl    $0,  4096 * 2(%rsp);\
+        movl    $0,  4096 * 1(%rsp);
+#elif L_BUFFER_SIZE > 12288
+#define STACK_TOUCH \
+        movl    $0,  4096 * 3(%rsp);\
+        movl    $0,  4096 * 2(%rsp);\
+        movl    $0,  4096 * 1(%rsp);
+#elif L_BUFFER_SIZE > 8192
+#define STACK_TOUCH \
+        movl    $0,  4096 * 2(%rsp);\
+        movl    $0,  4096 * 1(%rsp);
+#elif L_BUFFER_SIZE > 4096
+#define STACK_TOUCH \
+        movl    $0,  4096 * 1(%rsp);
+#else
+#define STACK_TOUCH
+#endif
+#else
+#define STACK_TOUCH
+#endif
+
 
 
 #define	A_PR1	384
@@ -899,7 +925,7 @@
         subq    $128 + L_BUFFER_SIZE, %rsp
         andq    $-4096, %rsp    # align stack
 
-        STACK_TOUCHING
+        STACK_TOUCH
 
 	cmpq	$0, OLD_M
 	je	.L999
