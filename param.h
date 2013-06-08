@@ -234,7 +234,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P	16
 #define HAVE_EXCLUSIVE_CACHE
 
-#define GEMM_THREAD gemm_thread_m
+#define GEMM_THREAD gemm_thread_mn
 
 #endif
 
