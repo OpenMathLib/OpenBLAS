@@ -127,17 +127,18 @@
 *******************************************************************************************/
 
 #define KERNEL16x3_1(xx) \
-	prefetcht0	A_PR1(AO,%rax,SIZE)	;\
 	vbroadcastss	 -6 * SIZE(BO, BI, SIZE), %xmm1 ;\
 	vmovups 	-32 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm4,%xmm1,%xmm0,%xmm4 ;\
 	vbroadcastss	 -5 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	-28 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
 	vfmaddps  	%xmm8,%xmm2,%xmm0,%xmm8 ;\
+	prefetcht0	A_PR1(AO,%rax,SIZE)	;\
 	vfmaddps  	%xmm9,%xmm3,%xmm0,%xmm9 ;\
 	vmovups 	-24 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm10,%xmm1,%xmm0,%xmm10 ;\
@@ -146,20 +147,21 @@
 	vmovups 	-20 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm13,%xmm1,%xmm0,%xmm13 ;\
 	vfmaddps  	%xmm14,%xmm2,%xmm0,%xmm14 ;\
+	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %xmm1 ;\
+	vbroadcastss	 -2 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm15,%xmm3,%xmm0,%xmm15 ;\
 
 #define KERNEL16x3_2(xx) \
-	prefetcht0	A_PR1+64(AO,%rax,SIZE)	;\
-	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %xmm1 ;\
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm4,%xmm1,%xmm0,%xmm4 ;\
-	vbroadcastss	 -2 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	 -1 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	-12 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
 	vfmaddps  	%xmm8,%xmm2,%xmm0,%xmm8 ;\
+	prefetcht0	A_PR1+64(AO,%rax,SIZE)	;\
 	vfmaddps  	%xmm9,%xmm3,%xmm0,%xmm9 ;\
 	vmovups 	 -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm10,%xmm1,%xmm0,%xmm10 ;\
@@ -168,20 +170,21 @@
 	vmovups 	 -4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm13,%xmm1,%xmm0,%xmm13 ;\
 	vfmaddps  	%xmm14,%xmm2,%xmm0,%xmm14 ;\
+	vbroadcastss	  0 * SIZE(BO, BI, SIZE), %xmm1 ;\
+	vbroadcastss	  1 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm15,%xmm3,%xmm0,%xmm15 ;\
 
 #define KERNEL16x3_3(xx) \
-	prefetcht0	A_PR1+128(AO,%rax,SIZE)	;\
-	vbroadcastss	  0 * SIZE(BO, BI, SIZE), %xmm1 ;\
 	vmovups 	  0 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm4,%xmm1,%xmm0,%xmm4 ;\
-	vbroadcastss	  1 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	  2 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	  4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
 	vfmaddps  	%xmm8,%xmm2,%xmm0,%xmm8 ;\
+	prefetcht0	A_PR1+128(AO,%rax,SIZE)	;\
 	vfmaddps  	%xmm9,%xmm3,%xmm0,%xmm9 ;\
 	vmovups 	  8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm10,%xmm1,%xmm0,%xmm10 ;\
@@ -190,31 +193,32 @@
 	vmovups 	 12 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm13,%xmm1,%xmm0,%xmm13 ;\
 	vfmaddps  	%xmm14,%xmm2,%xmm0,%xmm14 ;\
+	vbroadcastss	  3 * SIZE(BO, BI, SIZE), %xmm1 ;\
+	vbroadcastss	  4 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm15,%xmm3,%xmm0,%xmm15 ;\
 
 #define KERNEL16x3_4(xx) \
-	prefetcht0	A_PR1+192(AO,%rax,SIZE)	;\
-	vbroadcastss	  3 * SIZE(BO, BI, SIZE), %xmm1 ;\
 	vmovups 	 16 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm4,%xmm1,%xmm0,%xmm4 ;\
-	vbroadcastss	  4 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	  5 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	 20 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
 	vfmaddps  	%xmm8,%xmm2,%xmm0,%xmm8 ;\
+	prefetcht0	A_PR1+192(AO,%rax,SIZE)	;\
 	vfmaddps  	%xmm9,%xmm3,%xmm0,%xmm9 ;\
 	vmovups 	 24 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm10,%xmm1,%xmm0,%xmm10 ;\
 	vfmaddps  	%xmm11,%xmm2,%xmm0,%xmm11 ;\
+	addq	$12, BI				  ;\
 	vfmaddps  	%xmm12,%xmm3,%xmm0,%xmm12 ;\
 	vmovups 	 28 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm13,%xmm1,%xmm0,%xmm13 ;\
 	vfmaddps  	%xmm14,%xmm2,%xmm0,%xmm14 ;\
-	vfmaddps  	%xmm15,%xmm3,%xmm0,%xmm15 ;\
-	addq	$12, BI				  ;\
 	addq	$64, %rax 			  ;\
+	vfmaddps  	%xmm15,%xmm3,%xmm0,%xmm15 ;\
 
 #define KERNEL16x3_SUB(xx) \
 	vbroadcastss	 -6 * SIZE(BO, BI, SIZE), %xmm1 ;\
@@ -223,6 +227,7 @@
 	vbroadcastss	 -5 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	-28 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
@@ -248,6 +253,7 @@
 	vbroadcastss	 -5 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	-28 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
@@ -261,6 +267,7 @@
 	vbroadcastss	 -2 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	 -1 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	-20 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
@@ -275,6 +282,7 @@
 	vbroadcastss	  1 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	  2 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	-12 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
@@ -288,6 +296,7 @@
 	vbroadcastss	  4 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	  5 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	 -4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
@@ -303,6 +312,7 @@
 	vbroadcastss	 -5 * SIZE(BO, BI, SIZE), %xmm2 ;\
 	vfmaddps  	%xmm5,%xmm2,%xmm0,%xmm5 ;\
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %xmm3 ;\
+	nop						;\
 	vfmaddps  	%xmm6,%xmm3,%xmm0,%xmm6 ;\
 	vmovups 	-28 * SIZE(AO, %rax, SIZE), %xmm0 ;\
 	vfmaddps  	%xmm7,%xmm1,%xmm0,%xmm7 ;\
@@ -1072,15 +1082,74 @@
         leaq    (B,%rax, SIZE), BO2     // next offset to BO2
         leaq    BUFFER1, BO             // first buffer to BO
         movq    K, %rax
+	sarq	$3 , %rax		// K / 8
+	jz	.L6_01a_2
         ALIGN_4
+
+.L6_01a_1:
+
+        prefetcht0 512(BO1)
+        prefetcht0 512(BO2)
+        prefetchw  512(BO)
+
+	vmovsd	0 * SIZE(BO1), %xmm0
+	vmovsd	2 * SIZE(BO1), %xmm2
+	vmovsd	4 * SIZE(BO1), %xmm4
+	vmovsd	6 * SIZE(BO1), %xmm6
+	vmovss  0 * SIZE(BO2), %xmm1
+	vmovss  2 * SIZE(BO2), %xmm3
+	vmovss  4 * SIZE(BO2), %xmm5
+	vmovss  6 * SIZE(BO2), %xmm7
+	vmovsd	%xmm0, 0*SIZE(BO)
+	vmovss	%xmm1, 2*SIZE(BO)
+	vmovsd	%xmm2, 3*SIZE(BO)
+	vmovss	%xmm3, 5*SIZE(BO)
+	vmovsd	%xmm4, 6*SIZE(BO)
+	vmovss	%xmm5, 8*SIZE(BO)
+	vmovsd	%xmm6, 9*SIZE(BO)
+	vmovss	%xmm7,11*SIZE(BO)
+	addq	$8*SIZE,BO1
+	addq	$8*SIZE,BO2
+	addq	$12*SIZE,BO
+
+	vmovsd	0 * SIZE(BO1), %xmm0
+	vmovsd	2 * SIZE(BO1), %xmm2
+	vmovsd	4 * SIZE(BO1), %xmm4
+	vmovsd	6 * SIZE(BO1), %xmm6
+	vmovss  0 * SIZE(BO2), %xmm1
+	vmovss  2 * SIZE(BO2), %xmm3
+	vmovss  4 * SIZE(BO2), %xmm5
+	vmovss  6 * SIZE(BO2), %xmm7
+	vmovsd	%xmm0, 0*SIZE(BO)
+	vmovss	%xmm1, 2*SIZE(BO)
+	vmovsd	%xmm2, 3*SIZE(BO)
+	vmovss	%xmm3, 5*SIZE(BO)
+	vmovsd	%xmm4, 6*SIZE(BO)
+	vmovss	%xmm5, 8*SIZE(BO)
+	vmovsd	%xmm6, 9*SIZE(BO)
+	vmovss	%xmm7,11*SIZE(BO)
+	addq	$8*SIZE,BO1
+	addq	$8*SIZE,BO2
+	addq	$12*SIZE,BO
+
+	decq	%rax
+	jnz	.L6_01a_1
+
+
+
+.L6_01a_2:
+
+	movq    K, %rax
+        andq    $7, %rax                // K % 8
+        jz      .L6_02c
+        ALIGN_4
+
 
 .L6_02b:
 
-	vmovss	0 * SIZE(BO1), %xmm0
-	vmovss	1 * SIZE(BO1), %xmm1
+	vmovsd	0 * SIZE(BO1), %xmm0
 	vmovss  0 * SIZE(BO2), %xmm2
-	vmovss	%xmm0, 0*SIZE(BO)
-	vmovss	%xmm1, 1*SIZE(BO)
+	vmovsd	%xmm0, 0*SIZE(BO)
 	vmovss	%xmm2, 2*SIZE(BO)
 	addq	$2*SIZE,BO1
 	addq	$2*SIZE,BO2
@@ -1096,17 +1165,73 @@
 	leaq	(BO1,%rax, SIZE), BO2	// next offset to BO2
 	leaq    BUFFER2, BO		// second buffer to BO
 	movq	K, %rax
+	sarq	$3 , %rax		// K / 8
+	jz	.L6_02c_2
 	ALIGN_4
 
+.L6_02c_1:
+
+	prefetcht0 512(BO2)
+        prefetchw  512(BO)
+
+	vmovsd	0 * SIZE(BO2), %xmm0
+	vmovsd	2 * SIZE(BO2), %xmm2
+	vmovsd	4 * SIZE(BO2), %xmm4
+	vmovsd	6 * SIZE(BO2), %xmm6
+	vmovss  1 * SIZE(BO1), %xmm1
+	vmovss  3 * SIZE(BO1), %xmm3
+	vmovss  5 * SIZE(BO1), %xmm5
+	vmovss  7 * SIZE(BO1), %xmm7
+	vmovss	%xmm1, 0*SIZE(BO)
+	vmovsd	%xmm0, 1*SIZE(BO)
+	vmovss	%xmm3, 3*SIZE(BO)
+	vmovsd	%xmm2, 4*SIZE(BO)
+	vmovss	%xmm5, 6*SIZE(BO)
+	vmovsd	%xmm4, 7*SIZE(BO)
+	vmovss	%xmm7, 9*SIZE(BO)
+	vmovsd	%xmm6,10*SIZE(BO)
+	addq	$8*SIZE,BO1
+	addq	$8*SIZE,BO2
+	addq	$12*SIZE,BO
+
+
+	vmovsd	0 * SIZE(BO2), %xmm0
+	vmovsd	2 * SIZE(BO2), %xmm2
+	vmovsd	4 * SIZE(BO2), %xmm4
+	vmovsd	6 * SIZE(BO2), %xmm6
+	vmovss  1 * SIZE(BO1), %xmm1
+	vmovss  3 * SIZE(BO1), %xmm3
+	vmovss  5 * SIZE(BO1), %xmm5
+	vmovss  7 * SIZE(BO1), %xmm7
+	vmovss	%xmm1, 0*SIZE(BO)
+	vmovsd	%xmm0, 1*SIZE(BO)
+	vmovss	%xmm3, 3*SIZE(BO)
+	vmovsd	%xmm2, 4*SIZE(BO)
+	vmovss	%xmm5, 6*SIZE(BO)
+	vmovsd	%xmm4, 7*SIZE(BO)
+	vmovss	%xmm7, 9*SIZE(BO)
+	vmovsd	%xmm6,10*SIZE(BO)
+	addq	$8*SIZE,BO1
+	addq	$8*SIZE,BO2
+	addq	$12*SIZE,BO
+
+	decq	%rax
+	jnz	.L6_02c_1
+
+
+.L6_02c_2:
+
+	movq    K, %rax
+        andq    $7, %rax                // K % 8
+        jz      .L6_03c
+        ALIGN_4
 
 .L6_03b:
 
 	vmovss	  1*SIZE(BO1), %xmm0
-	vmovss	  0*SIZE(BO2), %xmm1
-	vmovss	  1*SIZE(BO2), %xmm2
+	vmovsd	  0*SIZE(BO2), %xmm1
 	vmovss	%xmm0, 0*SIZE(BO)
-	vmovss	%xmm1, 1*SIZE(BO)
-	vmovss	%xmm2, 2*SIZE(BO)
+	vmovsd	%xmm1, 1*SIZE(BO)
 	addq	$2*SIZE,BO1
 	addq	$2*SIZE,BO2
 	addq	$3*SIZE,BO
