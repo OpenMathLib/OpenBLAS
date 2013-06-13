@@ -20,6 +20,12 @@ endif
 # - Default value is 'cc' which is not always a valid command (e.g. MinGW).
 ifeq ($(origin CC),default)
 CC = gcc
+# Change the default compile to clang on Mac OSX.
+# http://stackoverflow.com/questions/714100/os-detecting-makefile
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+     CC = clang
+endif
 endif
 
 # Default Fortran compiler (FC) is selected by f_check.
