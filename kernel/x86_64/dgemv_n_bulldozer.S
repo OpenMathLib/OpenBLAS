@@ -40,6 +40,8 @@
 #include "common.h"
 #include "l2param.h"
 
+#undef ALIGNED_ACCESS
+
 #define A_PRE 256
 
 #define VMOVUPS_A1(OFF, ADDR, REGS) vmovups	OFF(ADDR), REGS
@@ -304,11 +306,6 @@
 	sarq	$3,  I
 	jle	.L15
 
-	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
-	VMOVUPS_A1(-14 * SIZE, A1, %xmm5)
-	VMOVUPS_A1(-12 * SIZE, A1, %xmm6)
-	VMOVUPS_A1(-10 * SIZE, A1, %xmm7)
-
 	VMOVUPS_YL1(-16 * SIZE, Y1, %xmm0)
 	VMOVUPS_YL1(-14 * SIZE, Y1, %xmm1)
 	VMOVUPS_YL1(-12 * SIZE, Y1, %xmm2)
@@ -316,105 +313,60 @@
 
 	decq	 I
 	jle	 .L14
-	ALIGN_3
+	.align 32
 
 .L13:
 
 
-	vfmaddpd %xmm0 , %xmm8 , %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm8 , %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm8 , %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm8 , %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A1, LDA, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A1, LDA, 1, %xmm5)
-	prefetchnta	A_PRE(A1,LDA,1)
-	VMOVUPS_A2(-12 * SIZE, A1, LDA, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A1, LDA, 1, %xmm7)
-
-
-	vfmaddpd %xmm0 , %xmm9 , %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm9 , %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm9 , %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm9 , %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A1, LDA, 2, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A1, LDA, 2, %xmm5)
-	prefetchnta	A_PRE(A1,LDA,2)
-	VMOVUPS_A2(-12 * SIZE, A1, LDA, 2, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A1, LDA, 2, %xmm7)
-
-
-	vfmaddpd %xmm0 , %xmm10, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm10, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm10, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm10, %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A1, LDA3, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A1, LDA3, 1, %xmm5)
-	prefetchnta	A_PRE(A1,LDA3,1)
-	VMOVUPS_A2(-12 * SIZE, A1, LDA3, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A1, LDA3, 1, %xmm7)
-
-
-	vfmaddpd %xmm0 , %xmm11, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm11, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm11, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm11, %xmm7 , %xmm3
-
-	VMOVUPS_A1(-16 * SIZE, A2, %xmm4)
-	VMOVUPS_A1(-14 * SIZE, A2, %xmm5)
-	prefetchnta	A_PRE(A2)
-	VMOVUPS_A1(-12 * SIZE, A2, %xmm6)
-	VMOVUPS_A1(-10 * SIZE, A2, %xmm7)
-
-
-	vfmaddpd %xmm0 , %xmm12, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm12, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm12, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm12, %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A2, LDA, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A2, LDA, 1, %xmm5)
-	prefetchnta	A_PRE(A2,LDA,1)
-	VMOVUPS_A2(-12 * SIZE, A2, LDA, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A2, LDA, 1, %xmm7)
-
-
-	vfmaddpd %xmm0 , %xmm13, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm13, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm13, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm13, %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A2, LDA, 2, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A2, LDA, 2, %xmm5)
-	prefetchnta	A_PRE(A2,LDA,2)
-	VMOVUPS_A2(-12 * SIZE, A2, LDA, 2, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A2, LDA, 2, %xmm7)
-
-
-	vfmaddpd %xmm0 , %xmm14, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm14, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm14, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm14, %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A2, LDA3, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A2, LDA3, 1, %xmm5)
-	prefetchnta	A_PRE(A2,LDA3,1)
-	VMOVUPS_A2(-12 * SIZE, A2, LDA3, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A2, LDA3, 1, %xmm7)
-
-
-	vfmaddpd %xmm0 , %xmm15, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm15, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm15, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm15, %xmm7 , %xmm3
-
-	VMOVUPS_A1( -8 * SIZE, A1, %xmm4)
-	VMOVUPS_A1( -6 * SIZE, A1, %xmm5)
 	prefetchnta	A_PRE(A1)
-	VMOVUPS_A1( -4 * SIZE, A1, %xmm6)
-	VMOVUPS_A1( -2 * SIZE, A1, %xmm7)
+	vfmaddpd %xmm0 , -16 * SIZE(A1) , %xmm8, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1) , %xmm8, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1) , %xmm8, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1) , %xmm8, %xmm3
+	nop
+
+	prefetchnta	A_PRE(A1,LDA,1)
+	vfmaddpd %xmm0 , -16 * SIZE(A1, LDA, 1) , %xmm9 , %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1, LDA, 1) , %xmm9 , %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1, LDA, 1) , %xmm9 , %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1, LDA, 1) , %xmm9 , %xmm3
+
+	prefetchnta	A_PRE(A1,LDA,2)
+	vfmaddpd %xmm0 , -16 * SIZE(A1, LDA, 2) , %xmm10, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1, LDA, 2) , %xmm10, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1, LDA, 2) , %xmm10, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1, LDA, 2) , %xmm10, %xmm3
+
+	prefetchnta	A_PRE(A1,LDA3,1)
+	vfmaddpd %xmm0 , -16 * SIZE(A1, LDA3, 1) , %xmm11, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1, LDA3, 1) , %xmm11, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1, LDA3, 1) , %xmm11, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1, LDA3, 1) , %xmm11, %xmm3
+
+	prefetchnta	A_PRE(A2)
+	vfmaddpd %xmm0 , -16 * SIZE(A2) , %xmm12, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2) , %xmm12, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2) , %xmm12, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2) , %xmm12, %xmm3
+	nop
+
+	prefetchnta	A_PRE(A2,LDA,1)
+	vfmaddpd %xmm0 , -16 * SIZE(A2, LDA, 1) , %xmm13, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2, LDA, 1) , %xmm13, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2, LDA, 1) , %xmm13, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2, LDA, 1) , %xmm13, %xmm3
+
+	prefetchnta	A_PRE(A2,LDA,2)
+	vfmaddpd %xmm0 , -16 * SIZE(A2, LDA, 2) , %xmm14, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2, LDA, 2) , %xmm14, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2, LDA, 2) , %xmm14, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2, LDA, 2) , %xmm14, %xmm3
+
+	prefetchnta	A_PRE(A2,LDA3,1)
+	vfmaddpd %xmm0 , -16 * SIZE(A2, LDA3, 1) , %xmm15, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2, LDA3, 1) , %xmm15, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2, LDA3, 1) , %xmm15, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2, LDA3, 1) , %xmm15, %xmm3
 
 
 	VMOVUPS_YS1(-16 * SIZE, Y1, %xmm0)
@@ -439,80 +391,48 @@
 	ALIGN_3
 
 .L14:
-	vfmaddpd %xmm0 , %xmm8 , %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm8 , %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm8 , %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm8 , %xmm7 , %xmm3
 
-	VMOVUPS_A2(-16 * SIZE, A1, LDA, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A1, LDA, 1, %xmm5)
-	VMOVUPS_A2(-12 * SIZE, A1, LDA, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A1, LDA, 1, %xmm7)
+	vfmaddpd %xmm0 , -16 * SIZE(A1) , %xmm8, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1) , %xmm8, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1) , %xmm8, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1) , %xmm8, %xmm3
 
-	vfmaddpd %xmm0 , %xmm9 , %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm9 , %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm9 , %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm9 , %xmm7 , %xmm3
+	vfmaddpd %xmm0 , -16 * SIZE(A1, LDA, 1) , %xmm9 , %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1, LDA, 1) , %xmm9 , %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1, LDA, 1) , %xmm9 , %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1, LDA, 1) , %xmm9 , %xmm3
 
-	VMOVUPS_A2(-16 * SIZE, A1, LDA, 2, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A1, LDA, 2, %xmm5)
-	VMOVUPS_A2(-12 * SIZE, A1, LDA, 2, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A1, LDA, 2, %xmm7)
+	vfmaddpd %xmm0 , -16 * SIZE(A1, LDA, 2) , %xmm10, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1, LDA, 2) , %xmm10, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1, LDA, 2) , %xmm10, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1, LDA, 2) , %xmm10, %xmm3
 
-	vfmaddpd %xmm0 , %xmm10, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm10, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm10, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm10, %xmm7 , %xmm3
+	vfmaddpd %xmm0 , -16 * SIZE(A1, LDA3, 1) , %xmm11, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A1, LDA3, 1) , %xmm11, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A1, LDA3, 1) , %xmm11, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A1, LDA3, 1) , %xmm11, %xmm3
 
-	VMOVUPS_A2(-16 * SIZE, A1, LDA3, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A1, LDA3, 1, %xmm5)
-	VMOVUPS_A2(-12 * SIZE, A1, LDA3, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A1, LDA3, 1, %xmm7)
+	vfmaddpd %xmm0 , -16 * SIZE(A2) , %xmm12, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2) , %xmm12, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2) , %xmm12, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2) , %xmm12, %xmm3
 
-	vfmaddpd %xmm0 , %xmm11, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm11, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm11, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm11, %xmm7 , %xmm3
+	vfmaddpd %xmm0 , -16 * SIZE(A2, LDA, 1) , %xmm13, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2, LDA, 1) , %xmm13, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2, LDA, 1) , %xmm13, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2, LDA, 1) , %xmm13, %xmm3
 
-	VMOVUPS_A1(-16 * SIZE, A2, %xmm4)
-	VMOVUPS_A1(-14 * SIZE, A2, %xmm5)
-	VMOVUPS_A1(-12 * SIZE, A2, %xmm6)
-	VMOVUPS_A1(-10 * SIZE, A2, %xmm7)
+	vfmaddpd %xmm0 , -16 * SIZE(A2, LDA, 2) , %xmm14, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2, LDA, 2) , %xmm14, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2, LDA, 2) , %xmm14, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2, LDA, 2) , %xmm14, %xmm3
 
-	vfmaddpd %xmm0 , %xmm12, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm12, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm12, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm12, %xmm7 , %xmm3
+	vfmaddpd %xmm0 , -16 * SIZE(A2, LDA3, 1) , %xmm15, %xmm0
+	vfmaddpd %xmm1 , -14 * SIZE(A2, LDA3, 1) , %xmm15, %xmm1
+	vfmaddpd %xmm2 , -12 * SIZE(A2, LDA3, 1) , %xmm15, %xmm2
+	vfmaddpd %xmm3 , -10 * SIZE(A2, LDA3, 1) , %xmm15, %xmm3
 
-	VMOVUPS_A2(-16 * SIZE, A2, LDA, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A2, LDA, 1, %xmm5)
-	VMOVUPS_A2(-12 * SIZE, A2, LDA, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A2, LDA, 1, %xmm7)
 
-	vfmaddpd %xmm0 , %xmm13, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm13, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm13, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm13, %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A2, LDA, 2, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A2, LDA, 2, %xmm5)
-	VMOVUPS_A2(-12 * SIZE, A2, LDA, 2, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A2, LDA, 2, %xmm7)
-
-	vfmaddpd %xmm0 , %xmm14, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm14, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm14, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm14, %xmm7 , %xmm3
-
-	VMOVUPS_A2(-16 * SIZE, A2, LDA3, 1, %xmm4)
-	VMOVUPS_A2(-14 * SIZE, A2, LDA3, 1, %xmm5)
-	VMOVUPS_A2(-12 * SIZE, A2, LDA3, 1, %xmm6)
-	VMOVUPS_A2(-10 * SIZE, A2, LDA3, 1, %xmm7)
-
-	vfmaddpd %xmm0 , %xmm15, %xmm4 , %xmm0
-	vfmaddpd %xmm1 , %xmm15, %xmm5 , %xmm1
-	vfmaddpd %xmm2 , %xmm15, %xmm6 , %xmm2
-	vfmaddpd %xmm3 , %xmm15, %xmm7 , %xmm3
 
 	VMOVUPS_YS1(-16 * SIZE, Y1, %xmm0)
 	VMOVUPS_YS1(-14 * SIZE, Y1, %xmm1)
@@ -1364,8 +1284,8 @@
 	ALIGN_3
 
 .L5X:
-	movhpd	-16 * SIZE(A1, LDA), %xmm8
-	movhpd	-16 * SIZE(A2, LDA), %xmm9
+	vmovhpd	-16 * SIZE(A1, LDA), %xmm8, %xmm8
+	vmovhpd	-16 * SIZE(A2, LDA), %xmm9, %xmm9
 
 	movq	MM,  I
 	sarq	$3,  I
@@ -1400,18 +1320,18 @@
         VMOVUPS_A2(-11 * SIZE, A1, LDA, 1, %xmm6)
 
 
-        shufpd  $1, %xmm4, %xmm8
+        vshufpd  $0x01, %xmm4, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
         VMOVUPS_A2( -9 * SIZE, A1, LDA, 1, %xmm8)
-        shufpd  $1, %xmm5, %xmm4
+        vshufpd  $0x01, %xmm5, %xmm4, %xmm4
 	vfmaddpd %xmm1 , %xmm13 , %xmm4 , %xmm1
         VMOVUPS_A1(-16 * SIZE, A2, %xmm4)
 
 	prefetchnta	A_PRE(A2)
-        shufpd  $1, %xmm6, %xmm5
+        vshufpd  $0x01, %xmm6, %xmm5, %xmm5
 	vfmaddpd %xmm2 , %xmm13 , %xmm5 , %xmm2
         VMOVUPS_A1(-14 * SIZE, A2, %xmm5)
-        shufpd  $1, %xmm8, %xmm6
+        vshufpd  $0x01, %xmm8, %xmm6, %xmm6
 	vfmaddpd %xmm3 , %xmm13 , %xmm6 , %xmm3
         VMOVUPS_A1(-12 * SIZE, A2, %xmm6)
 
@@ -1428,18 +1348,18 @@
         VMOVUPS_A2(-11 * SIZE, A2, LDA, 1, %xmm6)
 
 
-        shufpd  $1, %xmm4, %xmm9
+        vshufpd  $0x01, %xmm4, %xmm9, %xmm9
 	vfmaddpd %xmm0 , %xmm15 , %xmm9 , %xmm0
         VMOVUPS_A2( -9 * SIZE, A2, LDA, 1, %xmm9)
-        shufpd  $1, %xmm5, %xmm4
+        vshufpd  $0x01, %xmm5, %xmm4, %xmm4
 	vfmaddpd %xmm1 , %xmm15 , %xmm4 , %xmm1
         VMOVUPS_A1( -8 * SIZE, A1, %xmm4)
 
 	prefetchnta	A_PRE(A1)
-        shufpd  $1, %xmm6, %xmm5
+        vshufpd  $0x01, %xmm6, %xmm5, %xmm5
 	vfmaddpd %xmm2 , %xmm15 , %xmm5 , %xmm2
         VMOVUPS_A1( -6 * SIZE, A1, %xmm5)
-        shufpd  $1, %xmm9, %xmm6
+        vshufpd  $0x01, %xmm9, %xmm6, %xmm6
 	vfmaddpd %xmm3 , %xmm15 , %xmm6 , %xmm3
         VMOVUPS_A1( -4 * SIZE, A1, %xmm6)
 
@@ -1477,17 +1397,17 @@
 	vfmaddpd %xmm3 , %xmm12 , %xmm7 , %xmm3
 	VMOVUPS_A2(-11 * SIZE, A1, LDA, 1, %xmm6)
 
-	shufpd	$1, %xmm4, %xmm8
+	vshufpd	$0x01, %xmm4, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
 	VMOVUPS_A2( -9 * SIZE, A1, LDA, 1, %xmm8)
-	shufpd	$1, %xmm5, %xmm4
+	vshufpd	$0x01, %xmm5, %xmm4, %xmm4
 	vfmaddpd %xmm1 , %xmm13 , %xmm4 , %xmm1
 	VMOVUPS_A1(-16 * SIZE, A2, %xmm4)
 
-	shufpd	$1, %xmm6, %xmm5
+	vshufpd	$0x01, %xmm6, %xmm5, %xmm5
 	vfmaddpd %xmm2 , %xmm13 , %xmm5 , %xmm2
 	VMOVUPS_A1(-14 * SIZE, A2, %xmm5)
-	shufpd	$1, %xmm8, %xmm6
+	vshufpd	$0x01, %xmm8, %xmm6, %xmm6
 	vfmaddpd %xmm3 , %xmm13 , %xmm6 , %xmm3
 	VMOVUPS_A1(-12 * SIZE, A2, %xmm6)
 
@@ -1501,15 +1421,15 @@
 	vfmaddpd %xmm3 , %xmm14 , %xmm7 , %xmm3
 	VMOVUPS_A2(-11 * SIZE, A2, LDA, 1, %xmm6)
 
-	shufpd	$1, %xmm4, %xmm9
+	vshufpd	$0x01, %xmm4, %xmm9, %xmm9
 	vfmaddpd %xmm0 , %xmm15 , %xmm9 , %xmm0
 	VMOVUPS_A2( -9 * SIZE, A2, LDA, 1, %xmm9)
 
-	shufpd	$1, %xmm5, %xmm4
+	vshufpd	$0x01, %xmm5, %xmm4, %xmm4
 	vfmaddpd %xmm1 , %xmm15 , %xmm4 , %xmm1
-	shufpd	$1, %xmm6, %xmm5
+	vshufpd	$0x01, %xmm6, %xmm5, %xmm5
 	vfmaddpd %xmm2 , %xmm15 , %xmm5 , %xmm2
-	shufpd	$1, %xmm9, %xmm6
+	vshufpd	$0x01, %xmm9, %xmm6, %xmm6
 	vfmaddpd %xmm3 , %xmm15 , %xmm6 , %xmm3
 
 	VMOVUPS_YS1(-16 * SIZE, Y1, %xmm0)
@@ -1538,10 +1458,10 @@
 	VMOVUPS_A2(-15 * SIZE, A1, LDA, 1, %xmm6)
 	VMOVUPS_A2(-13 * SIZE, A1, LDA, 1, %xmm7)
 
-	shufpd	$1, %xmm6, %xmm8
+	vshufpd	$0x01, %xmm6, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
 	movaps	 %xmm7,  %xmm8
-	shufpd	$1, %xmm7, %xmm6
+	vshufpd	$0x01, %xmm7, %xmm6, %xmm6
 	vfmaddpd %xmm1 , %xmm13 , %xmm6 , %xmm1
 
 	VMOVUPS_A1(-16 * SIZE, A2, %xmm4)
@@ -1553,10 +1473,10 @@
 	VMOVUPS_A2(-15 * SIZE, A2, LDA, 1, %xmm6)
 	VMOVUPS_A2(-13 * SIZE, A2, LDA, 1, %xmm7)
 
-	shufpd	$1, %xmm6, %xmm9
+	vshufpd	$0x01, %xmm6, %xmm9, %xmm9
 	vfmaddpd %xmm0 , %xmm15 , %xmm9 , %xmm0
 	movaps	 %xmm7,  %xmm9
-	shufpd	$1, %xmm7, %xmm6
+	vshufpd	$0x01, %xmm7, %xmm6, %xmm6
 	vfmaddpd %xmm1 , %xmm15 , %xmm6 , %xmm1
 
 	VMOVUPS_YS1(-16 * SIZE, Y1, %xmm0)
@@ -1579,11 +1499,11 @@
 	VMOVUPS_YL1(-16 * SIZE, Y1, %xmm0)
 
 	vfmaddpd %xmm0 , %xmm12 , %xmm4 , %xmm0
-	shufpd	$1, %xmm5, %xmm8
+	vshufpd	$0x01, %xmm5, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
 	movaps	 %xmm5,  %xmm8
 	vfmaddpd %xmm0 , %xmm14 , %xmm6 , %xmm0
-	shufpd	$1, %xmm7, %xmm9
+	vshufpd	$0x01, %xmm7, %xmm9, %xmm9
 	vfmaddpd %xmm0 , %xmm15 , %xmm9 , %xmm0
 	movaps	 %xmm7,  %xmm9
 
@@ -1601,9 +1521,9 @@
 	vmovsd	 -16 * SIZE(Y1), %xmm0
 
 	vmovsd	 -16 * SIZE(A1), %xmm4
-	shufpd	 $1, %xmm8, %xmm8
+	vshufpd	 $0x01, %xmm8, %xmm8, %xmm8
 	vmovsd	 -16 * SIZE(A2), %xmm6
-	shufpd	 $1, %xmm9, %xmm9
+	vshufpd	 $0x01, %xmm9, %xmm9, %xmm9
 
 	vfmaddsd %xmm0 , %xmm12 , %xmm4 , %xmm0
 	vfmaddsd %xmm0 , %xmm13 , %xmm8 , %xmm0
@@ -1668,7 +1588,7 @@
 	ALIGN_3
 
 .L6X:
-	movhpd	-16 * SIZE(A2), %xmm8
+	vmovhpd	-16 * SIZE(A2), %xmm8, %xmm8
 
 	movq	MM,  I
 	sarq	$3,  I
@@ -1701,18 +1621,18 @@
 	VMOVUPS_A1(-11 * SIZE, A2, %xmm6)
 
 
-	shufpd	$1, %xmm4, %xmm8
+	vshufpd	$0x01, %xmm4, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
 	VMOVUPS_A1( -9 * SIZE, A2, %xmm8)
-	shufpd	$1, %xmm5, %xmm4
+	vshufpd	$0x01, %xmm5, %xmm4, %xmm4
 	vfmaddpd %xmm1 , %xmm13 , %xmm4 , %xmm1
 	VMOVUPS_A1( -8 * SIZE, A1, %xmm4)
 
 	prefetchnta	A_PRE(A1)
-	shufpd	$1, %xmm6, %xmm5
+	vshufpd	$0x01, %xmm6, %xmm5, %xmm5
 	vfmaddpd %xmm2 , %xmm13 , %xmm5 , %xmm2
 	VMOVUPS_A1( -6 * SIZE, A1, %xmm5)
-	shufpd	$1, %xmm8, %xmm6
+	vshufpd	$0x01, %xmm8, %xmm6, %xmm6
 	vfmaddpd %xmm3 , %xmm13 , %xmm6 , %xmm3
 	VMOVUPS_A1( -4 * SIZE, A1, %xmm6)
 
@@ -1749,15 +1669,15 @@
 	vfmaddpd %xmm3 , %xmm12 , %xmm7 , %xmm3
 	VMOVUPS_A1(-11 * SIZE, A2, %xmm6)
 
-	shufpd	$0x01, %xmm4, %xmm8
+	vshufpd	$0x01, %xmm4, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
 	VMOVUPS_A1( -9 * SIZE, A2, %xmm8)
-	shufpd	$0x01, %xmm5, %xmm4
+	vshufpd	$0x01, %xmm5, %xmm4, %xmm4
 	vfmaddpd %xmm1 , %xmm13 , %xmm4 , %xmm1
 
-	shufpd	$0x01, %xmm6,  %xmm5
+	vshufpd	$0x01, %xmm6, %xmm5, %xmm5
 	vfmaddpd %xmm2 , %xmm13 , %xmm5 , %xmm2
-	shufpd	$0x01, %xmm8, %xmm6
+	vshufpd	$0x01, %xmm8, %xmm6, %xmm6
 	vfmaddpd %xmm3 , %xmm13 , %xmm6 , %xmm3
 
 	VMOVUPS_YS1(-16 * SIZE, Y1, %xmm0)
@@ -1787,10 +1707,10 @@
 	VMOVUPS_A1(-15 * SIZE, A2, %xmm6)
 	VMOVUPS_A1(-13 * SIZE, A2, %xmm7)
 
-	shufpd	$0x01, %xmm6, %xmm8
+	vshufpd	$0x01, %xmm6, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
 	movaps	 %xmm7,  %xmm8
-	shufpd	$0x01, %xmm7,  %xmm6
+	vshufpd	$0x01, %xmm7, %xmm6, %xmm6
 	vfmaddpd %xmm1 , %xmm13 , %xmm6 , %xmm1
 
 	VMOVUPS_YS1(-16 * SIZE, Y1, %xmm0)
@@ -1811,7 +1731,7 @@
 	VMOVUPS_YL1(-16 * SIZE, Y1, %xmm0)
 
 	vfmaddpd %xmm0 , %xmm12 , %xmm4 , %xmm0
-	shufpd	$0x01, %xmm5, %xmm8
+	vshufpd	$0x01, %xmm5, %xmm8, %xmm8
 	vfmaddpd %xmm0 , %xmm13 , %xmm8 , %xmm0
 	movaps	 %xmm5,  %xmm8
 
@@ -2009,7 +1929,7 @@
 	je	.L910
 
 	vmovsd	(Y), %xmm0
-	addsd	(BUFFER), %xmm0
+	vaddsd	(BUFFER), %xmm0, %xmm0
 	vmovsd	%xmm0, (Y)
 
 	addq	$SIZE, Y
@@ -2041,10 +1961,10 @@
 	vmovups	6 * SIZE(BUFFER), %xmm7
 
 
-	addpd	%xmm4, %xmm0
-	addpd	%xmm5, %xmm1
-	addpd	%xmm6, %xmm2
-	addpd	%xmm7, %xmm3
+	vaddpd	%xmm4, %xmm0, %xmm0
+	vaddpd	%xmm5, %xmm1, %xmm1
+	vaddpd	%xmm6, %xmm2, %xmm2
+	vaddpd	%xmm7, %xmm3, %xmm3
 
 	vmovups	%xmm0,  0 * SIZE(Y)
 	vmovups	%xmm1,  2 * SIZE(Y)
@@ -2071,8 +1991,8 @@
 	vmovups	0 * SIZE(BUFFER), %xmm4
 	vmovups	2 * SIZE(BUFFER), %xmm5
 
-	addpd	%xmm4, %xmm0
-	addpd	%xmm5, %xmm1
+	vaddpd	%xmm4, %xmm0, %xmm0
+	vaddpd	%xmm5, %xmm1, %xmm1
 
 	vmovups	%xmm0,  0 * SIZE(Y)
 	vmovups	%xmm1,  2 * SIZE(Y)
@@ -2089,7 +2009,7 @@
 
 	vmovups	(BUFFER), %xmm4
 
-	addpd	%xmm4, %xmm0
+	vaddpd	%xmm4, %xmm0, %xmm0
 
 	vmovups	%xmm0,  (Y)
 
@@ -2105,7 +2025,7 @@
 
 	vmovsd	0 * SIZE(BUFFER), %xmm4
 
-	addsd	%xmm4, %xmm0
+	vaddsd	%xmm4, %xmm0, %xmm0
 
 	vmovsd	%xmm0, (Y)
 	ALIGN_3
@@ -2133,16 +2053,16 @@
 	vmovups	5 * SIZE(BUFFER), %xmm7
 	vmovups	7 * SIZE(BUFFER), %xmm8
 
-	shufpd	 $0x01, %xmm5,  %xmm4
-	shufpd	 $0x01, %xmm6,  %xmm5
-	shufpd	 $0x01, %xmm7,  %xmm6
-	shufpd	 $0x01, %xmm8,  %xmm7
+	vshufpd	 $0x01, %xmm5, %xmm4, %xmm4
+	vshufpd	 $0x01, %xmm6, %xmm5, %xmm5
+	vshufpd	 $0x01, %xmm7, %xmm6, %xmm6
+	vshufpd	 $0x01, %xmm8, %xmm7, %xmm7
 
 
-	addpd	%xmm4, %xmm0
-	addpd	%xmm5, %xmm1
-	addpd	%xmm6, %xmm2
-	addpd	%xmm7, %xmm3
+	vaddpd	%xmm4, %xmm0, %xmm0
+	vaddpd	%xmm5, %xmm1, %xmm1
+	vaddpd	%xmm6, %xmm2, %xmm2
+	vaddpd	%xmm7, %xmm3, %xmm3
 
 	vmovups	%xmm0,  0 * SIZE(Y)
 	vmovups	%xmm1,  2 * SIZE(Y)
@@ -2171,11 +2091,11 @@
 	vmovups	1 * SIZE(BUFFER), %xmm5
 	vmovups	3 * SIZE(BUFFER), %xmm6
 
-	shufpd	 $0x01, %xmm5, %xmm4
-	shufpd	 $0x01, %xmm6, %xmm5
+	vshufpd	 $0x01, %xmm5, %xmm4, %xmm4
+	vshufpd	 $0x01, %xmm6, %xmm5, %xmm5
 
-	addpd	%xmm4, %xmm0
-	addpd	%xmm5, %xmm1
+	vaddpd	%xmm4, %xmm0, %xmm0
+	vaddpd	%xmm5, %xmm1, %xmm1
 
 	vmovups	%xmm0,  0 * SIZE(Y)
 	vmovups	%xmm1,  2 * SIZE(Y)
@@ -2194,9 +2114,9 @@
 
 	vmovups	 1 * SIZE(BUFFER), %xmm5
 
-	shufpd	 $0x01, %xmm5, %xmm4
+	vshufpd	 $0x01, %xmm5, %xmm4, %xmm4
 
-	addpd	%xmm4, %xmm0
+	vaddpd	%xmm4, %xmm0, %xmm0
 
 	vmovups	%xmm0,  (Y)
 
@@ -2214,7 +2134,7 @@
 
 	vshufpd	$0x01, %xmm4 ,%xmm4, %xmm4
 
-	addsd	%xmm4, %xmm0
+	vaddsd	%xmm4, %xmm0, %xmm0
 
 	vmovsd	%xmm0, (Y)
 	ALIGN_3
@@ -2227,7 +2147,7 @@
 	je	.L960
 
 	vmovsd	(Y), %xmm0
-	addsd	(BUFFER), %xmm0
+	vaddsd	(BUFFER), %xmm0, %xmm0
 	vmovsd	%xmm0, (Y)
 
 	addq	INCY, Y
@@ -2248,57 +2168,57 @@
 .L962:
 	vmovsd	(Y), %xmm0
 	addq	INCY, Y
-	movhpd	(Y), %xmm0
+	vmovhpd	(Y), %xmm0, %xmm0
 	addq	INCY, Y
 
 	vmovups	0 * SIZE(BUFFER), %xmm4
 
 	vmovsd	(Y), %xmm1
 	addq	INCY, Y
-	movhpd	(Y), %xmm1
+	vmovhpd	(Y), %xmm1, %xmm1
 	addq	INCY, Y
 
 	vmovups	2 * SIZE(BUFFER), %xmm5
 
 	vmovsd	(Y), %xmm2
 	addq	INCY, Y
-	movhpd	(Y), %xmm2
+	vmovhpd	(Y), %xmm2, %xmm2
 	addq	INCY, Y
 
 	vmovups	4 * SIZE(BUFFER), %xmm6
 
-	addpd	%xmm4, %xmm0
+	vaddpd	%xmm4, %xmm0, %xmm0
 
 	vmovsd	(Y), %xmm3
 	addq	INCY, Y
-	movhpd	(Y), %xmm3
+	vmovhpd	(Y), %xmm3, %xmm3
 	addq	INCY, Y
 
 	vmovups	6 * SIZE(BUFFER), %xmm7
 
-	addpd	%xmm5, %xmm1
+	vaddpd	%xmm5, %xmm1, %xmm1
 
 	vmovsd	%xmm0, (Y1)
 	addq	INCY, Y1
-	movhpd	%xmm0, (Y1)
+	vmovhpd	%xmm0, (Y1)
 	addq	INCY, Y1
 
-	addpd	%xmm6, %xmm2
+	vaddpd	%xmm6, %xmm2, %xmm2
 
 	vmovsd	%xmm1, (Y1)
 	addq	INCY, Y1
-	movhpd	%xmm1, (Y1)
+	vmovhpd	%xmm1, (Y1)
 	addq	INCY, Y1
 
-	addpd	%xmm7, %xmm3
+	vaddpd	%xmm7, %xmm3, %xmm3
 
 	vmovsd	%xmm2, (Y1)
 	addq	INCY, Y1
-	movhpd	%xmm2, (Y1)
+	vmovhpd	%xmm2, (Y1)
 	addq	INCY, Y1
 	vmovsd	%xmm3, (Y1)
 	addq	INCY, Y1
-	movhpd	%xmm3, (Y1)
+	vmovhpd	%xmm3, (Y1)
 	addq	INCY, Y1
 
 	addq	$8 * SIZE, BUFFER
@@ -2315,28 +2235,28 @@
 
 	vmovsd	(Y), %xmm0
 	addq	INCY, Y
-	movhpd	(Y), %xmm0
+	vmovhpd	(Y), %xmm0, %xmm0
 	addq	INCY, Y
 
 	vmovups	0 * SIZE(BUFFER), %xmm4
 
 	vmovsd	(Y), %xmm1
 	addq	INCY, Y
-	movhpd	(Y), %xmm1
+	vmovhpd	(Y), %xmm1, %xmm1
 	addq	INCY, Y
 
 	vmovups	2 * SIZE(BUFFER), %xmm5
 
-	addpd	%xmm4, %xmm0
-	addpd	%xmm5, %xmm1
+	vaddpd	%xmm4, %xmm0, %xmm0
+	vaddpd	%xmm5, %xmm1, %xmm1
 
 	vmovsd	%xmm0, (Y1)
 	addq	INCY, Y1
-	movhpd	%xmm0, (Y1)
+	vmovhpd	%xmm0, (Y1)
 	addq	INCY, Y1
 	vmovsd	%xmm1, (Y1)
 	addq	INCY, Y1
-	movhpd	%xmm1, (Y1)
+	vmovhpd	%xmm1, (Y1)
 	addq	INCY, Y1
 
 	addq	$4 * SIZE, BUFFER
@@ -2348,16 +2268,16 @@
 
 	vmovsd	(Y), %xmm0
 	addq	INCY, Y
-	movhpd	(Y), %xmm0
+	vmovhpd	(Y),%xmm0, %xmm0
 	addq	INCY, Y
 
 	vmovups	0 * SIZE(BUFFER), %xmm4
 
-	addpd	%xmm4, %xmm0
+	vaddpd	%xmm4, %xmm0, %xmm0
 
 	vmovsd	%xmm0, (Y1)
 	addq	INCY, Y1
-	movhpd	%xmm0, (Y1)
+	vmovhpd	%xmm0, (Y1)
 	addq	INCY, Y1
 
 	addq	$2 * SIZE, BUFFER
@@ -2371,7 +2291,7 @@
 
 	vmovsd	0 * SIZE(BUFFER), %xmm4
 
-	addsd	%xmm4, %xmm0
+	vaddsd	%xmm4, %xmm0, %xmm0
 
 	vmovsd	%xmm0, (Y1)
 	ALIGN_3
