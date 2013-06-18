@@ -647,7 +647,7 @@
 
 	vmovsd	0 * SIZE(AO1),      %xmm0
 
-	movlpd	%xmm0,  -16 * SIZE(B3)
+	vmovsd	%xmm0,  -16 * SIZE(B3)
 	jmp	.L999
 	ALIGN_4
 	
