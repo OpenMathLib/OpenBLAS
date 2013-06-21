@@ -128,20 +128,20 @@
 	testq	$SIZE, A
 	je	.L12
 
-	movsd	0 * SIZE(AO1),         %xmm0
-	movsd	0 * SIZE(AO1, LDA),    %xmm1
-	movsd	0 * SIZE(AO1, LDA, 2), %xmm2
-	movsd	0 * SIZE(AO1, LDA3),   %xmm3
+	vmovsd	0 * SIZE(AO1),         %xmm0
+	vmovsd	0 * SIZE(AO1, LDA),    %xmm1
+	vmovsd	0 * SIZE(AO1, LDA, 2), %xmm2
+	vmovsd	0 * SIZE(AO1, LDA3),   %xmm3
 
-	movsd	0 * SIZE(AO2),         %xmm4
-	movsd	0 * SIZE(AO2, LDA),    %xmm5
-	movsd	0 * SIZE(AO2, LDA, 2), %xmm6
-	movsd	0 * SIZE(AO2, LDA3),   %xmm7
+	vmovsd	0 * SIZE(AO2),         %xmm4
+	vmovsd	0 * SIZE(AO2, LDA),    %xmm5
+	vmovsd	0 * SIZE(AO2, LDA, 2), %xmm6
+	vmovsd	0 * SIZE(AO2, LDA3),   %xmm7
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
-	unpcklpd %xmm5, %xmm4
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
+	vunpcklpd %xmm5, %xmm4 , %xmm4
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -172,9 +172,9 @@
 	vmovups	0 * SIZE(AO1, LDA, 2), %xmm2
 	vmovups	 %xmm0, %xmm8
 	prefetchnta	A_PRE(AO1, LDA3)
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm9
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 
 	prefetchnta	A_PRE(AO2)
@@ -186,10 +186,10 @@
 
 	prefetchnta	A_PRE(AO2, LDA, 2)
 	vmovups	 %xmm4, %xmm10
-	unpcklpd %xmm5, %xmm4
+	vunpcklpd %xmm5, %xmm4 , %xmm4
 	prefetchnta	A_PRE(AO2, LDA3)
 	vmovups	 %xmm6, %xmm11
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	prefetchw	B_PRE(B)
 	vmovups	%xmm0,  -16 * SIZE(B)
@@ -197,10 +197,10 @@
 	vmovups	%xmm4,  -12 * SIZE(B)
 	vmovups	%xmm6,  -10 * SIZE(B)
 
-	unpckhpd %xmm1, %xmm8
-	unpckhpd %xmm3, %xmm9
-	unpckhpd %xmm5, %xmm10
-	unpckhpd %xmm7, %xmm11
+	vunpckhpd %xmm1, %xmm8 , %xmm8
+	vunpckhpd %xmm3, %xmm9 , %xmm9
+	vunpckhpd %xmm5, %xmm10, %xmm10
+	vunpckhpd %xmm7, %xmm11, %xmm11
 
 
 	prefetchw	B_PRE+64(B)
@@ -217,9 +217,9 @@
 	vmovups	2 * SIZE(AO1, LDA3),   %xmm3
 
 	vmovups	 %xmm0, %xmm8
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm9
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 
 	vmovups	2 * SIZE(AO2),         %xmm4
@@ -228,9 +228,9 @@
 	vmovups	2 * SIZE(AO2, LDA3),   %xmm7
 
 	vmovups	 %xmm4, %xmm10
-	unpcklpd %xmm5, %xmm4
+	vunpcklpd %xmm5, %xmm4 , %xmm4
 	vmovups	 %xmm6, %xmm11
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 
 	prefetchw	B_PRE+128(B)
@@ -239,10 +239,10 @@
 	vmovups	%xmm4,    4 * SIZE(B)
 	vmovups	%xmm6,    6 * SIZE(B)
 
-	unpckhpd %xmm1, %xmm8
-	unpckhpd %xmm3, %xmm9
-	unpckhpd %xmm5, %xmm10
-	unpckhpd %xmm7, %xmm11
+	vunpckhpd %xmm1, %xmm8 , %xmm8
+	vunpckhpd %xmm3, %xmm9 , %xmm9
+	vunpckhpd %xmm5, %xmm10, %xmm10
+	vunpckhpd %xmm7, %xmm11, %xmm11
 
 
 	prefetchw	B_PRE+192(B)
@@ -259,9 +259,9 @@
 	vmovups	4 * SIZE(AO1, LDA3),   %xmm3
 
 	vmovups	 %xmm0, %xmm8
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm9
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 
 	vmovups	4 * SIZE(AO2),         %xmm4
@@ -270,9 +270,9 @@
 	vmovups	4 * SIZE(AO2, LDA3),   %xmm7
 
 	vmovups	 %xmm4, %xmm10
-	unpcklpd %xmm5, %xmm4
+	vunpcklpd %xmm5, %xmm4 , %xmm4
 	vmovups	 %xmm6, %xmm11
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 
 	prefetchw	B_PRE+256(B)
@@ -281,11 +281,10 @@
 	vmovups	%xmm4,   20 * SIZE(B)
 	vmovups	%xmm6,   22 * SIZE(B)
 
-	unpckhpd %xmm1, %xmm8
-	unpckhpd %xmm3, %xmm9
-	unpckhpd %xmm5, %xmm10
-	unpckhpd %xmm7, %xmm11
-
+	vunpckhpd %xmm1, %xmm8 , %xmm8
+	vunpckhpd %xmm3, %xmm9 , %xmm9
+	vunpckhpd %xmm5, %xmm10, %xmm10
+	vunpckhpd %xmm7, %xmm11, %xmm11
 
 	prefetchw	B_PRE+320(B)
 	vmovups	%xmm8,   24 * SIZE(B)
@@ -301,9 +300,9 @@
 	vmovups	6 * SIZE(AO1, LDA3),   %xmm3
 
 	vmovups	 %xmm0, %xmm8
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm9
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 
 	vmovups	6 * SIZE(AO2),         %xmm4
@@ -312,9 +311,9 @@
 	vmovups	6 * SIZE(AO2, LDA3),   %xmm7
 
 	vmovups	 %xmm4, %xmm10
-	unpcklpd %xmm5, %xmm4
+	vunpcklpd %xmm5, %xmm4 , %xmm4
 	vmovups	 %xmm6, %xmm11
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 
 	prefetchw	B_PRE+384(B)
@@ -323,11 +322,10 @@
 	vmovups	%xmm4,   36 * SIZE(B)
 	vmovups	%xmm6,   38 * SIZE(B)
 
-	unpckhpd %xmm1, %xmm8
-	unpckhpd %xmm3, %xmm9
-	unpckhpd %xmm5, %xmm10
-	unpckhpd %xmm7, %xmm11
-
+	vunpckhpd %xmm1, %xmm8 , %xmm8
+	vunpckhpd %xmm3, %xmm9 , %xmm9
+	vunpckhpd %xmm5, %xmm10, %xmm10
+	vunpckhpd %xmm7, %xmm11, %xmm11
 
 	prefetchw	B_PRE+448(B)
 	vmovups	%xmm8,   40 * SIZE(B)
@@ -358,24 +356,24 @@
 	vmovups	0 * SIZE(AO2, LDA3),   %xmm7
 
 	vmovups	 %xmm0, %xmm8
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm9
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 	vmovups	 %xmm4, %xmm10
-	unpcklpd %xmm5, %xmm4
+	vunpcklpd %xmm5, %xmm4 , %xmm4
 	vmovups	 %xmm6, %xmm11
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
 	vmovups	%xmm4,  -12 * SIZE(B)
 	vmovups	%xmm6,  -10 * SIZE(B)
 
-	unpckhpd %xmm1, %xmm8
-	unpckhpd %xmm3, %xmm9
-	unpckhpd %xmm5, %xmm10
-	unpckhpd %xmm7, %xmm11
+	vunpckhpd %xmm1, %xmm8 , %xmm8
+	vunpckhpd %xmm3, %xmm9 , %xmm9
+	vunpckhpd %xmm5, %xmm10, %xmm10
+	vunpckhpd %xmm7, %xmm11, %xmm11
 
 	vmovups	%xmm8,   -8 * SIZE(B)
 	vmovups	%xmm9,   -6 * SIZE(B)
@@ -393,24 +391,24 @@
 	vmovups	2 * SIZE(AO2, LDA3),   %xmm7
 
 	vmovups	 %xmm0, %xmm8
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm9
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 	vmovups	 %xmm4, %xmm10
-	unpcklpd %xmm5, %xmm4
+	vunpcklpd %xmm5, %xmm4 , %xmm4
 	vmovups	 %xmm6, %xmm11
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,    0 * SIZE(B)
 	vmovups	%xmm2,    2 * SIZE(B)
 	vmovups	%xmm4,    4 * SIZE(B)
 	vmovups	%xmm6,    6 * SIZE(B)
 
-	unpckhpd %xmm1, %xmm8
-	unpckhpd %xmm3, %xmm9
-	unpckhpd %xmm5, %xmm10
-	unpckhpd %xmm7, %xmm11
+	vunpckhpd %xmm1, %xmm8 , %xmm8
+	vunpckhpd %xmm3, %xmm9 , %xmm9
+	vunpckhpd %xmm5, %xmm10, %xmm10
+	vunpckhpd %xmm7, %xmm11, %xmm11
 
 	vmovups	%xmm8,    8 * SIZE(B)
 	vmovups	%xmm9,   10 * SIZE(B)
@@ -437,24 +435,24 @@
 	vmovups	0 * SIZE(AO2, LDA3),   %xmm7
 
 	vmovups	 %xmm0, %xmm8
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm9
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 	vmovups	 %xmm4, %xmm10
-	unpcklpd %xmm5, %xmm4
+	vunpcklpd %xmm5, %xmm4 , %xmm4
 	vmovups	 %xmm6, %xmm11
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
 	vmovups	%xmm4,  -12 * SIZE(B)
 	vmovups	%xmm6,  -10 * SIZE(B)
 
-	unpckhpd %xmm1, %xmm8
-	unpckhpd %xmm3, %xmm9
-	unpckhpd %xmm5, %xmm10
-	unpckhpd %xmm7, %xmm11
+	vunpckhpd %xmm1, %xmm8 , %xmm8
+	vunpckhpd %xmm3, %xmm9 , %xmm9
+	vunpckhpd %xmm5, %xmm10, %xmm10
+	vunpckhpd %xmm7, %xmm11, %xmm11
 
 	vmovups	%xmm8,   -8 * SIZE(B)
 	vmovups	%xmm9,   -6 * SIZE(B)
@@ -470,20 +468,20 @@
 	testq	$1, MM
 	jle	.L19
 
-	movsd	0 * SIZE(AO1),         %xmm0
-	movsd	0 * SIZE(AO1, LDA),    %xmm1
-	movsd	0 * SIZE(AO1, LDA, 2), %xmm2
-	movsd	0 * SIZE(AO1, LDA3),   %xmm3
+	vmovsd	0 * SIZE(AO1),         %xmm0
+	vmovsd	0 * SIZE(AO1, LDA),    %xmm1
+	vmovsd	0 * SIZE(AO1, LDA, 2), %xmm2
+	vmovsd	0 * SIZE(AO1, LDA3),   %xmm3
 
-	movsd	0 * SIZE(AO2),         %xmm4
-	movsd	0 * SIZE(AO2, LDA),    %xmm5
-	movsd	0 * SIZE(AO2, LDA, 2), %xmm6
-	movsd	0 * SIZE(AO2, LDA3),   %xmm7
+	vmovsd	0 * SIZE(AO2),         %xmm4
+	vmovsd	0 * SIZE(AO2, LDA),    %xmm5
+	vmovsd	0 * SIZE(AO2, LDA, 2), %xmm6
+	vmovsd	0 * SIZE(AO2, LDA3),   %xmm7
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
-	unpcklpd %xmm5, %xmm4
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
+	vunpcklpd %xmm5, %xmm4 , %xmm4
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -509,13 +507,13 @@
 	testq	$SIZE, A
 	je	.L22
 
-	movsd	0 * SIZE(AO1),      %xmm0
-	movsd	0 * SIZE(AO1, LDA), %xmm1
-	movsd	0 * SIZE(AO2),      %xmm2
-	movsd	0 * SIZE(AO2, LDA), %xmm3
+	vmovsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO1, LDA), %xmm1
+	vmovsd	0 * SIZE(AO2),      %xmm2
+	vmovsd	0 * SIZE(AO2, LDA), %xmm3
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -539,12 +537,12 @@
 	vmovups	0 * SIZE(AO2, LDA), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,  -16 * SIZE(B)
@@ -559,12 +557,12 @@
 	vmovups	2 * SIZE(AO2, LDA), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,  -8 * SIZE(B)
@@ -579,12 +577,12 @@
 	vmovups	4 * SIZE(AO2, LDA), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,   0 * SIZE(B)
@@ -599,12 +597,12 @@
 	vmovups	6 * SIZE(AO2, LDA), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,   8 * SIZE(B)
@@ -630,12 +628,12 @@
 	vmovups	0 * SIZE(AO2, LDA), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -648,12 +646,12 @@
 	vmovups	2 * SIZE(AO2, LDA), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -8 * SIZE(B)
 	vmovups	%xmm2,  -6 * SIZE(B)
@@ -675,12 +673,12 @@
 	vmovups	0 * SIZE(AO2, LDA), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -696,13 +694,13 @@
 	testq	$1, MM
 	jle	.L30
 
-	movsd	0 * SIZE(AO1),      %xmm0
-	movsd	0 * SIZE(AO1, LDA), %xmm1
-	movsd	0 * SIZE(AO2),      %xmm2
-	movsd	0 * SIZE(AO2, LDA), %xmm3
+	vmovsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO1, LDA), %xmm1
+	vmovsd	0 * SIZE(AO2),      %xmm2
+	vmovsd	0 * SIZE(AO2, LDA), %xmm3
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -720,10 +718,10 @@
 	testq	$SIZE, A
 	je	.L32
 
-	movsd	0 * SIZE(AO1),      %xmm0
-	movsd	0 * SIZE(AO2),      %xmm1
+	vmovsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO2),      %xmm1
 
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 
@@ -746,12 +744,12 @@
 	vmovups	2 * SIZE(AO2),      %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,  -16 * SIZE(B)
@@ -766,12 +764,12 @@
 	vmovups	6 * SIZE(AO2), %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
-	unpckhpd %xmm1, %xmm4
-	unpckhpd %xmm3, %xmm6
+	vunpckhpd %xmm1, %xmm4 , %xmm4
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,  -8 * SIZE(B)
@@ -797,12 +795,12 @@
 	vmovups	2 * SIZE(AO2),      %xmm3
 
 	vmovups	 %xmm0, %xmm4
-	unpcklpd %xmm1, %xmm0
-	unpckhpd %xmm1, %xmm4
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpckhpd %xmm1, %xmm4 , %xmm4
 
 	vmovups	 %xmm2, %xmm6
-	unpcklpd %xmm3, %xmm2
-	unpckhpd %xmm3, %xmm6
+	vunpcklpd %xmm3, %xmm2 , %xmm2
+	vunpckhpd %xmm3, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm4,  -14 * SIZE(B)
@@ -822,8 +820,8 @@
 	vmovups	0 * SIZE(AO2),      %xmm1
 
 	vmovups	 %xmm0, %xmm2
-	unpcklpd %xmm1, %xmm0
-	unpckhpd %xmm1, %xmm2
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpckhpd %xmm1, %xmm2 , %xmm2
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -837,10 +835,10 @@
 	testq	$1, MM
 	jle	.L40
 
-	movsd	0 * SIZE(AO1),      %xmm0
-	movsd	0 * SIZE(AO2),      %xmm1
+	vmovsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO2),      %xmm1
 
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	subq	$-2 * SIZE, B
@@ -910,9 +908,9 @@
 	testq	$1, MM
 	jle	.L999
 
-	movsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO1),      %xmm0
 
-	movlpd	%xmm0,  -16 * SIZE(B)
+	vmovlpd	%xmm0,  -16 * SIZE(B)
 	jmp	.L999
 	ALIGN_4
 
@@ -931,10 +929,10 @@
 	vmovups	5 * SIZE(AO1),      %xmm3
 	vmovups	7 * SIZE(AO1),      %xmm4
 
-	shufpd	$1, %xmm1, %xmm0
-	shufpd	$1, %xmm2, %xmm1
-	shufpd	$1, %xmm3, %xmm2
-	shufpd	$1, %xmm4, %xmm3
+	vshufpd	$1, %xmm1, %xmm0 , %xmm0
+	vshufpd	$1, %xmm2, %xmm1 , %xmm1
+	vshufpd	$1, %xmm3, %xmm2 , %xmm2
+	vshufpd	$1, %xmm4, %xmm3 , %xmm3
 
 
 	vmovups	%xmm0,  -16 * SIZE(B)
@@ -958,8 +956,8 @@
 	vmovups	1 * SIZE(AO1),      %xmm1
 	vmovups	3 * SIZE(AO1),      %xmm2
 
-	shufpd	$1, %xmm1, %xmm0
-	shufpd	$1, %xmm2, %xmm1
+	vshufpd	$1, %xmm1, %xmm0 , %xmm0
+	vshufpd	$1, %xmm2, %xmm1 , %xmm1
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm1,  -14 * SIZE(B)
@@ -976,7 +974,7 @@
 
 	vmovups	1 * SIZE(AO1),      %xmm1
 
-	shufpd	$1, %xmm1, %xmm0
+	vshufpd	$1, %xmm1, %xmm0 , %xmm0
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 
@@ -990,9 +988,9 @@
 	testq	$1, M
 	jle	.L999
 
-	shufpd	$1, %xmm0, %xmm0
+	vshufpd	$1, %xmm0, %xmm0 , %xmm0
 
-	movlpd	%xmm0,  -16 * SIZE(B)
+	vmovlpd	%xmm0,  -16 * SIZE(B)
 	jmp	.L999
 	ALIGN_4
 
@@ -1010,19 +1008,19 @@
 	testq	$SIZE, A
 	je	.L52
 
-	movsd	0 * SIZE(AO1),         %xmm0
-	movsd	0 * SIZE(AO1, LDA),    %xmm1
-	movsd	0 * SIZE(AO1, LDA, 2), %xmm2
-	movsd	0 * SIZE(AO1, LDA3),   %xmm3
-	movsd	0 * SIZE(AO2),         %xmm4
-	movsd	0 * SIZE(AO2, LDA),    %xmm5
-	movsd	0 * SIZE(AO2, LDA, 2), %xmm6
-	movsd	0 * SIZE(AO2, LDA3),   %xmm7
+	vmovsd	0 * SIZE(AO1),         %xmm0
+	vmovsd	0 * SIZE(AO1, LDA),    %xmm1
+	vmovsd	0 * SIZE(AO1, LDA, 2), %xmm2
+	vmovsd	0 * SIZE(AO1, LDA3),   %xmm3
+	vmovsd	0 * SIZE(AO2),         %xmm4
+	vmovsd	0 * SIZE(AO2, LDA),    %xmm5
+	vmovsd	0 * SIZE(AO2, LDA, 2), %xmm6
+	vmovsd	0 * SIZE(AO2, LDA3),   %xmm7
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
-	unpcklpd %xmm5, %xmm4
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
+	vunpcklpd %xmm5, %xmm4 , %xmm4
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -1058,10 +1056,10 @@
 	vmovups	0 * SIZE(AO2, LDA, 2), %xmm6
 	vmovups	1 * SIZE(AO2, LDA3),   %xmm7
 
-	movsd	 %xmm0, %xmm9
-	movsd	 %xmm2, %xmm10
-	movsd	 %xmm4, %xmm11
-	movsd	 %xmm6, %xmm12
+	vmovsd %xmm0, %xmm9 , %xmm9
+	vmovsd %xmm2, %xmm10, %xmm10
+	vmovsd %xmm4, %xmm11, %xmm11
+	vmovsd %xmm6, %xmm12, %xmm12
 
 
 	vmovups	%xmm9,  -16 * SIZE(B)
@@ -1069,10 +1067,10 @@
 	vmovups	%xmm11, -12 * SIZE(B)
 	vmovups	%xmm12, -10 * SIZE(B)
 
-	shufpd	 $1, %xmm1, %xmm0
-	shufpd	 $1, %xmm3, %xmm2
-	shufpd	 $1, %xmm5, %xmm4
-	shufpd	 $1, %xmm7, %xmm6
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
+	vshufpd	 $1, %xmm5, %xmm4 , %xmm4
+	vshufpd	 $1, %xmm7, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,   -8 * SIZE(B)
@@ -1092,10 +1090,10 @@
 	vmovups	2 * SIZE(AO2, LDA, 2), %xmm6
 	vmovups	3 * SIZE(AO2, LDA3),   %xmm12
 
-	movsd	 %xmm0, %xmm1
-	movsd	 %xmm2, %xmm3
-	movsd	 %xmm4, %xmm5
-	movsd	 %xmm6, %xmm7
+	vmovsd	 %xmm0, %xmm1 , %xmm1
+	vmovsd	 %xmm2, %xmm3 , %xmm3
+	vmovsd	 %xmm4, %xmm5 , %xmm5
+	vmovsd	 %xmm6, %xmm7 , %xmm7
 
 
 	vmovups	%xmm1,    0 * SIZE(B)
@@ -1103,10 +1101,10 @@
 	vmovups	%xmm5,    4 * SIZE(B)
 	vmovups	%xmm7,    6 * SIZE(B)
 
-	shufpd	 $1, %xmm9,  %xmm0
-	shufpd	 $1, %xmm10, %xmm2
-	shufpd	 $1, %xmm11, %xmm4
-	shufpd	 $1, %xmm12, %xmm6
+	vshufpd	 $1, %xmm9,  %xmm0 , %xmm0
+	vshufpd	 $1, %xmm10, %xmm2 , %xmm2
+	vshufpd	 $1, %xmm11, %xmm4 , %xmm4
+	vshufpd	 $1, %xmm12, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,    8 * SIZE(B)
@@ -1126,10 +1124,10 @@
 	vmovups	4 * SIZE(AO2, LDA, 2), %xmm6
 	vmovups	5 * SIZE(AO2, LDA3),   %xmm7
 
-	movsd	 %xmm0, %xmm9
-	movsd	 %xmm2, %xmm10
-	movsd	 %xmm4, %xmm11
-	movsd	 %xmm6, %xmm12
+	vmovsd	 %xmm0, %xmm9 , %xmm9
+	vmovsd	 %xmm2, %xmm10, %xmm10
+	vmovsd	 %xmm4, %xmm11, %xmm11
+	vmovsd	 %xmm6, %xmm12, %xmm12
 
 
 	vmovups	%xmm9,   16 * SIZE(B)
@@ -1137,10 +1135,10 @@
 	vmovups	%xmm11,  20 * SIZE(B)
 	vmovups	%xmm12,  22 * SIZE(B)
 
-	shufpd	 $1, %xmm1, %xmm0
-	shufpd	 $1, %xmm3, %xmm2
-	shufpd	 $1, %xmm5, %xmm4
-	shufpd	 $1, %xmm7, %xmm6
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
+	vshufpd	 $1, %xmm5, %xmm4 , %xmm4
+	vshufpd	 $1, %xmm7, %xmm6 , %xmm6
 
 
 	vmovups	%xmm0,   24 * SIZE(B)
@@ -1160,10 +1158,10 @@
 	vmovups	6 * SIZE(AO2, LDA, 2), %xmm6
 	vmovups	7 * SIZE(AO2, LDA3),   %xmm12
 
-	movsd	 %xmm0, %xmm1
-	movsd	 %xmm2, %xmm3
-	movsd	 %xmm4, %xmm5
-	movsd	 %xmm6, %xmm7
+	vmovsd	 %xmm0, %xmm1 , %xmm1
+	vmovsd	 %xmm2, %xmm3 , %xmm3
+	vmovsd	 %xmm4, %xmm5 , %xmm5
+	vmovsd	 %xmm6, %xmm7 , %xmm7
 
 
 	vmovups	%xmm1,   32 * SIZE(B)
@@ -1171,10 +1169,10 @@
 	vmovups	%xmm5,   36 * SIZE(B)
 	vmovups	%xmm7,   38 * SIZE(B)
 
-	shufpd	 $1, %xmm9,  %xmm0
-	shufpd	 $1, %xmm10, %xmm2
-	shufpd	 $1, %xmm11, %xmm4
-	shufpd	 $1, %xmm12, %xmm6
+	vshufpd	 $1, %xmm9,  %xmm0 , %xmm0
+	vshufpd	 $1, %xmm10, %xmm2 , %xmm2
+	vshufpd	 $1, %xmm11, %xmm4 , %xmm4
+	vshufpd	 $1, %xmm12, %xmm6 , %xmm6
 
 	vmovups	%xmm0,   40 * SIZE(B)
 	vmovups	%xmm2,   42 * SIZE(B)
@@ -1202,20 +1200,20 @@
 	vmovups	0 * SIZE(AO2, LDA, 2), %xmm6
 	vmovups	1 * SIZE(AO2, LDA3),   %xmm7
 
-	movsd	 %xmm0, %xmm9
-	movsd	 %xmm2, %xmm10
-	movsd	 %xmm4, %xmm11
-	movsd	 %xmm6, %xmm12
+	vmovsd	 %xmm0, %xmm9 , %xmm9
+	vmovsd	 %xmm2, %xmm10, %xmm10
+	vmovsd	 %xmm4, %xmm11, %xmm11
+	vmovsd	 %xmm6, %xmm12, %xmm12
 
 	vmovups	%xmm9,  -16 * SIZE(B)
 	vmovups	%xmm10, -14 * SIZE(B)
 	vmovups	%xmm11, -12 * SIZE(B)
 	vmovups	%xmm12, -10 * SIZE(B)
 
-	shufpd	 $1, %xmm1, %xmm0
-	shufpd	 $1, %xmm3, %xmm2
-	shufpd	 $1, %xmm5, %xmm4
-	shufpd	 $1, %xmm7, %xmm6
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
+	vshufpd	 $1, %xmm5, %xmm4 , %xmm4
+	vshufpd	 $1, %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,   -8 * SIZE(B)
 	vmovups	%xmm2,   -6 * SIZE(B)
@@ -1231,20 +1229,20 @@
 	vmovups	2 * SIZE(AO2, LDA, 2), %xmm6
 	vmovups	3 * SIZE(AO2, LDA3),   %xmm12
 
-	movsd	 %xmm0, %xmm1
-	movsd	 %xmm2, %xmm3
-	movsd	 %xmm4, %xmm5
-	movsd	 %xmm6, %xmm7
+	vmovsd	 %xmm0, %xmm1 , %xmm1
+	vmovsd	 %xmm2, %xmm3 , %xmm3
+	vmovsd	 %xmm4, %xmm5 , %xmm5
+	vmovsd	 %xmm6, %xmm7 , %xmm7
 
 	vmovups	%xmm1,    0 * SIZE(B)
 	vmovups	%xmm3,    2 * SIZE(B)
 	vmovups	%xmm5,    4 * SIZE(B)
 	vmovups	%xmm7,    6 * SIZE(B)
 
-	shufpd	 $1, %xmm9,  %xmm0
-	shufpd	 $1, %xmm10, %xmm2
-	shufpd	 $1, %xmm11, %xmm4
-	shufpd	 $1, %xmm12, %xmm6
+	vshufpd	 $1, %xmm9,  %xmm0 , %xmm0
+	vshufpd	 $1, %xmm10, %xmm2 , %xmm2
+	vshufpd	 $1, %xmm11, %xmm4 , %xmm4
+	vshufpd	 $1, %xmm12, %xmm6 , %xmm6
 
 	vmovups	%xmm0,    8 * SIZE(B)
 	vmovups	%xmm2,   10 * SIZE(B)
@@ -1269,20 +1267,20 @@
 	vmovups	0 * SIZE(AO2, LDA, 2), %xmm6
 	vmovups	1 * SIZE(AO2, LDA3),   %xmm7
 
-	movsd	 %xmm0, %xmm9
-	movsd	 %xmm2, %xmm10
-	movsd	 %xmm4, %xmm11
-	movsd	 %xmm6, %xmm12
+	vmovsd	 %xmm0, %xmm9 , %xmm9
+	vmovsd	 %xmm2, %xmm10, %xmm10
+	vmovsd	 %xmm4, %xmm11, %xmm11
+	vmovsd	 %xmm6, %xmm12, %xmm12
 
 	vmovups	%xmm9,  -16 * SIZE(B)
 	vmovups	%xmm10, -14 * SIZE(B)
 	vmovups	%xmm11, -12 * SIZE(B)
 	vmovups	%xmm12, -10 * SIZE(B)
 
-	shufpd	 $1, %xmm1, %xmm0
-	shufpd	 $1, %xmm3, %xmm2
-	shufpd	 $1, %xmm5, %xmm4
-	shufpd	 $1, %xmm7, %xmm6
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
+	vshufpd	 $1, %xmm5, %xmm4 , %xmm4
+	vshufpd	 $1, %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,   -8 * SIZE(B)
 	vmovups	%xmm2,   -6 * SIZE(B)
@@ -1298,19 +1296,19 @@
 	testq	$1, MM
 	jle	.L59
 
-	movsd	0 * SIZE(AO1),         %xmm0
-	movsd	0 * SIZE(AO1, LDA),    %xmm1
-	movsd	0 * SIZE(AO1, LDA, 2), %xmm2
-	movsd	0 * SIZE(AO1, LDA3),   %xmm3
-	movsd	0 * SIZE(AO2),         %xmm4
-	movsd	0 * SIZE(AO2, LDA),    %xmm5
-	movsd	0 * SIZE(AO2, LDA, 2), %xmm6
-	movsd	0 * SIZE(AO2, LDA3),   %xmm7
+	vmovsd	0 * SIZE(AO1),         %xmm0
+	vmovsd	0 * SIZE(AO1, LDA),    %xmm1
+	vmovsd	0 * SIZE(AO1, LDA, 2), %xmm2
+	vmovsd	0 * SIZE(AO1, LDA3),   %xmm3
+	vmovsd	0 * SIZE(AO2),         %xmm4
+	vmovsd	0 * SIZE(AO2, LDA),    %xmm5
+	vmovsd	0 * SIZE(AO2, LDA, 2), %xmm6
+	vmovsd	0 * SIZE(AO2, LDA3),   %xmm7
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
-	unpcklpd %xmm5, %xmm4
-	unpcklpd %xmm7, %xmm6
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
+	vunpcklpd %xmm5, %xmm4 , %xmm4
+	vunpcklpd %xmm7, %xmm6 , %xmm6
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -1336,13 +1334,13 @@
 	testq	$SIZE, A
 	je	.L62
 
-	movsd	0 * SIZE(AO1),      %xmm0
-	movsd	0 * SIZE(AO1, LDA), %xmm1
-	movsd	0 * SIZE(AO2),      %xmm2
-	movsd	0 * SIZE(AO2, LDA), %xmm3
+	vmovsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO1, LDA), %xmm1
+	vmovsd	0 * SIZE(AO2),      %xmm2
+	vmovsd	0 * SIZE(AO2, LDA), %xmm3
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -1368,10 +1366,10 @@
 	vmovups	0 * SIZE(AO2),      %xmm2
 	vmovups	1 * SIZE(AO2, LDA), %xmm3
 
-	movsd	 %xmm0, %xmm5
-	movsd	 %xmm2, %xmm7
-	shufpd	 $1, %xmm1, %xmm0
-	shufpd	 $1, %xmm3, %xmm2
+	vmovsd	 %xmm0, %xmm5 , %xmm5
+	vmovsd	 %xmm2, %xmm7 , %xmm7
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
 
 
 	vmovups	%xmm5,  -16 * SIZE(B)
@@ -1385,10 +1383,10 @@
 	vmovups	2 * SIZE(AO2),      %xmm2
 	vmovups	3 * SIZE(AO2, LDA), %xmm7
 
-	movsd	 %xmm0, %xmm1
-	movsd	 %xmm2, %xmm3
-	shufpd	 $1, %xmm5, %xmm0
-	shufpd	 $1, %xmm7, %xmm2
+	vmovsd	 %xmm0, %xmm1 , %xmm1
+	vmovsd	 %xmm2, %xmm3 , %xmm3
+	vshufpd	 $1, %xmm5, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm7, %xmm2 , %xmm2
 
 
 	vmovups	%xmm1,  -8 * SIZE(B)
@@ -1402,10 +1400,10 @@
 	vmovups	4 * SIZE(AO2),      %xmm2
 	vmovups	5 * SIZE(AO2, LDA), %xmm3
 
-	movsd	 %xmm0, %xmm5
-	movsd	 %xmm2, %xmm7
-	shufpd	 $1, %xmm1, %xmm0
-	shufpd	 $1, %xmm3, %xmm2
+	vmovsd	 %xmm0, %xmm5 , %xmm5
+	vmovsd	 %xmm2, %xmm7 , %xmm7
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
 
 
 	vmovups	%xmm5,    0 * SIZE(B)
@@ -1419,10 +1417,10 @@
 	vmovups	6 * SIZE(AO2),      %xmm2
 	vmovups	7 * SIZE(AO2, LDA), %xmm7
 
-	movsd	 %xmm0, %xmm1
-	movsd	 %xmm2, %xmm3
-	shufpd	 $1, %xmm5, %xmm0
-	shufpd	 $1, %xmm7, %xmm2
+	vmovsd	 %xmm0, %xmm1 , %xmm1
+	vmovsd	 %xmm2, %xmm3 , %xmm3
+	vshufpd	 $1, %xmm5, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm7, %xmm2 , %xmm2
 
 
 	vmovups	%xmm1,   8 * SIZE(B)
@@ -1447,10 +1445,10 @@
 	vmovups	0 * SIZE(AO2),      %xmm2
 	vmovups	1 * SIZE(AO2, LDA), %xmm3
 
-	movsd	 %xmm0, %xmm5
-	shufpd	 $1, %xmm1, %xmm0
-	movsd	 %xmm2, %xmm7
-	shufpd	 $1, %xmm3, %xmm2
+	vmovsd	 %xmm0, %xmm5 , %xmm5
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vmovsd	 %xmm2, %xmm7 , %xmm7
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
 
 	vmovups	%xmm5,  -16 * SIZE(B)
 	vmovups	%xmm7,  -14 * SIZE(B)
@@ -1462,10 +1460,10 @@
 	vmovups	2 * SIZE(AO2),      %xmm2
 	vmovups	3 * SIZE(AO2, LDA), %xmm7
 
-	movsd	 %xmm0, %xmm1
-	shufpd	 $1, %xmm5, %xmm0
-	movsd	 %xmm2, %xmm3
-	shufpd	 $1, %xmm7, %xmm2
+	vmovsd	 %xmm0, %xmm1 , %xmm1
+	vshufpd	 $1, %xmm5, %xmm0 , %xmm0
+	vmovsd	 %xmm2, %xmm3 , %xmm3
+	vshufpd	 $1, %xmm7, %xmm2 , %xmm2
 
 	vmovups	%xmm1,  -8 * SIZE(B)
 	vmovups	%xmm3,  -6 * SIZE(B)
@@ -1486,10 +1484,10 @@
 	vmovups	0 * SIZE(AO2),      %xmm2
 	vmovups	1 * SIZE(AO2, LDA), %xmm3
 
-	movsd	 %xmm0, %xmm5
-	movsd	 %xmm2, %xmm7
-	shufpd	 $1, %xmm1, %xmm0
-	shufpd	 $1, %xmm3, %xmm2
+	vmovsd	 %xmm0, %xmm5 , %xmm5
+	vmovsd	 %xmm2, %xmm7 , %xmm7
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
 
 	vmovups	%xmm5,  -16 * SIZE(B)
 	vmovups	%xmm7,  -14 * SIZE(B)
@@ -1505,13 +1503,13 @@
 	testq	$1, MM
 	jle	.L70
 
-	movsd	0 * SIZE(AO1),      %xmm0
-	movsd	0 * SIZE(AO1, LDA), %xmm1
-	movsd	0 * SIZE(AO2),      %xmm2
-	movsd	0 * SIZE(AO2, LDA), %xmm3
+	vmovsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO1, LDA), %xmm1
+	vmovsd	0 * SIZE(AO2),      %xmm2
+	vmovsd	0 * SIZE(AO2, LDA), %xmm3
 
-	unpcklpd %xmm1, %xmm0
-	unpcklpd %xmm3, %xmm2
+	vunpcklpd %xmm1, %xmm0 , %xmm0
+	vunpcklpd %xmm3, %xmm2 , %xmm2
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm2,  -14 * SIZE(B)
@@ -1529,10 +1527,10 @@
 	testq	$SIZE, A
 	je	.L72
 
-	movsd	0 * SIZE(AO1), %xmm0
-	movsd	0 * SIZE(AO2), %xmm1
+	vmovsd	0 * SIZE(AO1), %xmm0
+	vmovsd	0 * SIZE(AO2), %xmm1
 
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 
@@ -1556,10 +1554,10 @@
 	vmovups	2 * SIZE(AO1), %xmm2
 	vmovups	3 * SIZE(AO2), %xmm3
 
-	movsd	 %xmm0, %xmm5
-	shufpd	 $1, %xmm1, %xmm0
-	movsd	 %xmm2, %xmm1
-	shufpd	 $1, %xmm3, %xmm2
+	vmovsd	 %xmm0, %xmm5 , %xmm5
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vmovsd	 %xmm2, %xmm1 , %xmm1
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
 
 
 	vmovups	%xmm5,  -16 * SIZE(B)
@@ -1573,10 +1571,10 @@
 	vmovups	6 * SIZE(AO1), %xmm2
 	vmovups	7 * SIZE(AO2), %xmm5
 
-	movsd	 %xmm0, %xmm3
-	shufpd	 $1, %xmm1, %xmm0
-	movsd	 %xmm2, %xmm1
-	shufpd	 $1, %xmm5, %xmm2
+	vmovsd	 %xmm0, %xmm3 , %xmm3
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vmovsd	 %xmm2, %xmm1 , %xmm1
+	vshufpd	 $1, %xmm5, %xmm2 , %xmm2
 
 
 	vmovups	%xmm3,   -8 * SIZE(B)
@@ -1601,10 +1599,10 @@
 	vmovups	2 * SIZE(AO1), %xmm2
 	vmovups	3 * SIZE(AO2), %xmm3
 
-	movsd	 %xmm0, %xmm5
-	shufpd	 $1, %xmm1, %xmm0
-	movsd	 %xmm2, %xmm1
-	shufpd	 $1, %xmm3, %xmm2
+	vmovsd	 %xmm0, %xmm5 , %xmm5
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
+	vmovsd	 %xmm2, %xmm1 , %xmm1
+	vshufpd	 $1, %xmm3, %xmm2 , %xmm2
 
 	vmovups	%xmm5,  -16 * SIZE(B)
 	vmovups	%xmm0,  -14 * SIZE(B)
@@ -1625,8 +1623,8 @@
 	vmovups	0 * SIZE(AO1), %xmm0
 	vmovups	1 * SIZE(AO2), %xmm1
 
-	movsd	 %xmm0, %xmm5
-	shufpd	 $1, %xmm1, %xmm0
+	vmovsd	 %xmm0, %xmm5 , %xmm5
+	vshufpd	 $1, %xmm1, %xmm0 , %xmm0
 
 	vmovups	%xmm5,  -16 * SIZE(B)
 	vmovups	%xmm0,  -14 * SIZE(B)
@@ -1640,10 +1638,10 @@
 	testq	$1, MM
 	jle	.L80
 
-	movsd	0 * SIZE(AO1),      %xmm0
-	movsd	0 * SIZE(AO2),      %xmm1
+	vmovsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO2),      %xmm1
 
-	unpcklpd %xmm1, %xmm0
+	vunpcklpd %xmm1, %xmm0 , %xmm0
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	subq	$-2 * SIZE, B
@@ -1713,9 +1711,9 @@
 	testq	$1, MM
 	jle	.L999
 
-	movsd	0 * SIZE(AO1),      %xmm0
+	vmovsd	0 * SIZE(AO1),      %xmm0
 
-	movlpd	%xmm0,  -16 * SIZE(B)
+	vmovlpd	%xmm0,  -16 * SIZE(B)
 	jmp	.L999
 	ALIGN_4
 
@@ -1734,10 +1732,10 @@
 	vmovups	5 * SIZE(AO1),      %xmm3
 	vmovups	7 * SIZE(AO1),      %xmm4
 
-	shufpd	$1, %xmm1, %xmm0
-	shufpd	$1, %xmm2, %xmm1
-	shufpd	$1, %xmm3, %xmm2
-	shufpd	$1, %xmm4, %xmm3
+	vshufpd	$1, %xmm1, %xmm0 , %xmm0
+	vshufpd	$1, %xmm2, %xmm1 , %xmm1
+	vshufpd	$1, %xmm3, %xmm2 , %xmm2
+	vshufpd	$1, %xmm4, %xmm3 , %xmm3
 
 
 	vmovups	%xmm0,  -16 * SIZE(B)
@@ -1761,8 +1759,8 @@
 	vmovups	1 * SIZE(AO1),      %xmm1
 	vmovups	3 * SIZE(AO1),      %xmm2
 
-	shufpd	$1, %xmm1, %xmm0
-	shufpd	$1, %xmm2, %xmm1
+	vshufpd	$1, %xmm1, %xmm0 , %xmm0
+	vshufpd	$1, %xmm2, %xmm1 , %xmm1
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 	vmovups	%xmm1,  -14 * SIZE(B)
@@ -1779,7 +1777,7 @@
 
 	vmovups	1 * SIZE(AO1),      %xmm1
 
-	shufpd	$1, %xmm1, %xmm0
+	vshufpd	$1, %xmm1, %xmm0 , %xmm0
 
 	vmovups	%xmm0,  -16 * SIZE(B)
 
@@ -1793,9 +1791,9 @@
 	testq	$1, M
 	jle	.L999
 
-	shufpd	$1, %xmm0, %xmm0
+	vshufpd	$1, %xmm0, %xmm0 , %xmm0
 
-	movlpd	%xmm0,  -16 * SIZE(B)
+	vmovlpd	%xmm0,  -16 * SIZE(B)
 	ALIGN_4
 
 .L999:
