@@ -74,11 +74,11 @@
 #else
 	movl	%eax, %ecx
 	subl	$32,  %ecx
-	cmovg	%ecx, %eax
+	cmovge	%ecx, %eax
 
 	movl	%edx, %ecx
 	subl	$32,  %ecx
-	cmovg	%ecx, %edx
+	cmovge	%ecx, %edx
 
 	subl	%eax, %edx
 	movl	$0,   %eax
