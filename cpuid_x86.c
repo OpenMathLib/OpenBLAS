@@ -41,6 +41,8 @@
 #include "cpuid.h"
 
 #ifdef NO_AVX
+#define CPUTYPE_HASWELL CPUTYPE_NEHALEM
+#define CORE_HASWELL CORE_NEHALEM
 #define CPUTYPE_SANDYBRIDGE CPUTYPE_NEHALEM
 #define CORE_SANDYBRIDGE CORE_NEHALEM
 #define CPUTYPE_BULLDOZER CPUTYPE_BARCELONA
@@ -1050,8 +1052,22 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	    return CPUTYPE_NEHALEM;
+        case 12:
+          if(support_avx())
+            return CPUTYPE_HASWELL;
+          else
+	    return CPUTYPE_NEHALEM;
 	}
 	break;
+      case 4:
+        switch (model) {
+        case 5:
+          if(support_avx())
+            return CPUTYPE_HASWELL;
+          else
+	    return CPUTYPE_NEHALEM;
+        }
+        break;      
       }
       break;
     case 0x7:
@@ -1424,8 +1440,22 @@ int get_coretype(void){
 	    return CORE_SANDYBRIDGE;
 	  else
 	    return CORE_NEHALEM; //OS doesn't support AVX
+        case 12:
+          if(support_avx())
+            return CORE_HASWELL;
+          else
+	    return CORE_NEHALEM;
 	}
 	break;
+      case 4:
+        switch (model) {
+        case 5:
+          if(support_avx())
+            return CORE_HASWELL;
+          else
+	    return CORE_NEHALEM;
+        }
+        break;      
       }
       break;
 

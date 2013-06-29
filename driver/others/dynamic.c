@@ -69,7 +69,8 @@ extern gotoblas_t  gotoblas_BULLDOZER;
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #endif
-
+//Use sandy bridge kernels for haswell.
+#define gotoblas_HASWELL gotoblas_SANDYBRIDGE
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -185,6 +186,26 @@ static gotoblas_t *get_coretype(void){
 	if (model == 10) {
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Haswell
+	if (model == 12) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	return NULL;
+      case 4:
+		//Intel Haswell
+	if (model == 5) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
 	  else{
 	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
