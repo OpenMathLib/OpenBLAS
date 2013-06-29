@@ -196,4 +196,7 @@ typedef struct {
 #define CPUTYPE_SANDYBRIDGE             44
 #define CPUTYPE_BOBCAT                  45
 #define CPUTYPE_BULLDOZER               46
+// this define is because BLAS doesn't have haswell specific optimizations yet
+#define CPUTYPE_HASWELL CPUTYPE_SANDYBRIDGE 
+
 #endif
