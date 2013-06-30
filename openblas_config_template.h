@@ -1,5 +1,15 @@
 /*This is only for "make install" target.*/
 
+#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
+#define WINDOWS_ABI
+#define OS_WINDOWS
+
+#ifdef DOUBLE
+#define DOUBLE_DEFINED DOUBLE
+#undef  DOUBLE
+#endif
+#endif
+
 #ifdef NEEDBUNDERSCORE
 #define BLASFUNC(FUNC) FUNC##_
 #else
