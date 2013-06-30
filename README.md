@@ -27,7 +27,7 @@ On X86 box, compile this library for loongson3a CPU.
 
     make DEBUG=1
 
-### Install to the directory (Optional)
+### Install to the directory (optional)
 
 Example:
 
@@ -55,7 +55,7 @@ Please read GotoBLAS_01Readme.txt
 - **GNU/Linux**
 - **MingWin/Windows**: Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-in-Microsoft-Visual-Studio>.
 - **Darwin/Mac OS X**: Experimental. Although GotoBLAS2 supports Darwin, we are the beginner on Mac OS X.
-- **FreeBSD**: Supportted by community. We didn't test the library on this OS.
+- **FreeBSD**: Supported by community. We didn't test the library on this OS.
 
 ## Usages
 Link with libopenblas.a or -lopenblas for shared library.
@@ -80,7 +80,7 @@ If you compile this lib with USE_OPENMP=1, you should set OMP_NUM_THREADS enviro
 
 ### Set the number of threads on runtime. 
 
-We provided the below functions to controll the number of threads on runtime.
+We provided the below functions to control the number of threads on runtime.
 
     void goto_set_num_threads(int num_threads);
 
