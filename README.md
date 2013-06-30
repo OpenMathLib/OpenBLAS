@@ -43,6 +43,7 @@ Please read GotoBLAS_01Readme.txt
 #### x86/x86-64:
 - **Intel Xeon 56xx (Westmere)**: Used GotoBLAS2 Nehalem codes.
 - **Intel Sandy Bridge**: Optimized Level-3 BLAS with AVX on x86-64.
+- **Intel Haswell**: Optimized Level-3 BLAS with AVX on x86-64 (identical to Sandy Bridge).
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
 - **AMD Bulldozer**: x86-64 S/DGEMM AVX kernels. (Thank Werner Saar)
 
