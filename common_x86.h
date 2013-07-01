@@ -335,6 +335,7 @@ REALNAME:
 #define ALIGN_2 .align 2
 #define ALIGN_3 .align 3
 #define ALIGN_4 .align 4
+#define ALIGN_5 .align 5
 #define ffreep	fstp
 #endif
 
@@ -356,11 +357,10 @@ REALNAME:
 
 #ifndef ALIGN_6
 #define ALIGN_6 .align 64
-
+#endif
 // ffreep %st(0). 
 // Because Clang didn't support ffreep, we directly use the opcode.
 // Please check out http://www.sandpile.org/x86/opc_fpu.htm 
 #ifndef ffreep
 #define ffreep .byte 0xdf, 0xc0 #
-#endif
 #endif

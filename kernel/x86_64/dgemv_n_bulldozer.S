@@ -313,7 +313,7 @@
 
 	decq	 I
 	jle	 .L14
-	.align 32
+	ALIGN_5
 
 .L13:
 
