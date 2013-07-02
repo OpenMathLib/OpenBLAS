@@ -105,6 +105,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include <sys/sysctl.h>
+#include <sys/resource.h>
 #endif
 
 #if defined(OS_WINDOWS) && (defined(__MINGW32__) || defined(__MINGW64__))
@@ -215,6 +216,24 @@ int get_num_procs(void) {
     sysctlbyname("hw.physicalcpu", &nums, &len, NULL, 0);
   }
   return nums;
+}
+
+void set_stack_limit(int limitMB){
+  int result=0;
+  struct rlimit rl;
+  rlim_t StackSize;
+
+  StackSize=limitMB*1024*1024;
+  result=getrlimit(RLIMIT_STACK, &rl);
+  if(result==0){
+    if(rl.rlim_cur < StackSize){
+      rl.rlim_cur=StackSize;
+      result=setrlimit(RLIMIT_STACK, &rl);
+      if(result !=0){
+        fprintf(stderr, "OpenBLAS: set stack limit error =%d\n", result);                                                   
+      }
+    }
+  }
 }
 #endif
 
@@ -1248,11 +1267,18 @@ void CONSTRUCTOR gotoblas_init(void) {
 
   if (gotoblas_initialized) return;
 
+
 #ifdef PROFILE
    moncontrol (0);
 #endif
 
 #ifdef DYNAMIC_ARCH
+#if defined(SMP) && defined(OS_DARWIN) && MAX_CPU_NUMBER > 128
+  //Set stack limit to 16MB on Mac OS X 
+  //when NUM_THREADS>128 and DYNAMIC_ARCH=1.
+  //Prevent the SEGFAULT bug.
+  set_stack_limit(16);
+#endif
    gotoblas_dynamic_init();
 #endif
 
