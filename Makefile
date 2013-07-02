@@ -321,6 +321,9 @@ clean ::
 #endif
 	@$(MAKE) -C reference clean
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
+ifeq ($(OSNAME), Darwin)
+	@rm -rf getarch.dSYM getarch_2nd.dSYM
+endif
 	@rm -f Makefile.conf config.h cblas_noconst.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@if test -d $(NETLIB_LAPACK_DIR); then \
 	echo deleting $(NETLIB_LAPACK_DIR); \
