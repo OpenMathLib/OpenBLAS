@@ -1,0 +1,10 @@
+language: c
+compiler:
+  - gcc
+script: make DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=16
+
+# whitelist
+branches:
+  only:
+    - master
+    - develop
