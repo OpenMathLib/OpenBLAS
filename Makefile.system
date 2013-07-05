@@ -71,6 +71,10 @@ ifeq ($(DEBUG), 1)
 GETARCH_FLAGS	+= -g
 endif
 
+ifeq ($(QUIET_MAKE), 1)
+MAKE += -s
+endif
+
 ifndef NO_PARALLEL_MAKE
 NO_PARALLEL_MAKE=0
 endif
@@ -354,6 +358,10 @@ ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC CLANG))
 CCOMMON_OPT += -Wall
 COMMON_PROF += -fno-inline
 NO_UNINITIALIZED_WARN =  -Wno-uninitialized
+
+ifeq ($(QUIET_MAKE), 1)
+CCOMMON_OPT += $(NO_UNINITIALIZED_WARN)
+endif
 
 ifdef NO_BINARY_MODE
 

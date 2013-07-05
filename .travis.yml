@@ -1,7 +1,7 @@
 language: c
 compiler:
   - gcc
-script: make DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=16
+script: make QUIET_MAKE=1 DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32
 
 before_install:
  - sudo apt-get install -qq gfortran
