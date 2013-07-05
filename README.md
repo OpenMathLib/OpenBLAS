@@ -1,5 +1,7 @@
 # OpenBLAS
 
+[![Build Status](https://travis-ci.org/xianyi/OpenBLAS.png?branch=develop)](https://travis-ci.org/xianyi/OpenBLAS)
+
 ## Introduction
 OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. OpenBLAS is an open source project supported by Lab of Parallel Software and Computational Science, ISCAS <http://www.rdcps.ac.cn>.
 
