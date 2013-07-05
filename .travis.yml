@@ -3,6 +3,9 @@ compiler:
   - gcc
 script: make DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=16
 
+before_install:
+ - sudo apt-get install -qq gfortran
+
 # whitelist
 branches:
   only:
