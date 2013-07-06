@@ -47,6 +47,8 @@
 #define CORE_SANDYBRIDGE CORE_NEHALEM
 #define CPUTYPE_BULLDOZER CPUTYPE_BARCELONA
 #define CORE_BULLDOZER CORE_BARCELONA
+#define CPUTYPE_PILEDRIVER CPUTYPE_BARCELONA
+#define CORE_PILEDRIVER CORE_BARCELONA
 #endif
 
 #ifndef CPUIDEMU
@@ -228,6 +230,7 @@ int get_cputype(int gettype){
 #ifndef NO_AVX
     if (support_avx()) feature |= HAVE_AVX;
 #endif
+    if ((ecx & (1 << 20)) != 0) feature |= HAVE_FMA3;
 
     if (have_excpuid() >= 0x01) {
       cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
@@ -1100,11 +1103,21 @@ int get_cpuname(void){
       case  1:
       case 10:
 	return CPUTYPE_BARCELONA;
-      case  6:   //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
-	if(support_avx())
-	  return CPUTYPE_BULLDOZER;
-	else
-	  return CPUTYPE_BARCELONA; //OS don't support AVX.
+      case  6:
+	switch (model) {
+	case 1:
+	  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	  if(support_avx())
+	    return CPUTYPE_BULLDOZER;
+	  else
+	    return CPUTYPE_BARCELONA; //OS don't support AVX.
+	case 2:
+	  if(support_avx())
+	    return CPUTYPE_PILEDRIVER;
+	  else
+	    return CPUTYPE_BARCELONA; //OS don't support AVX.	  
+	}
+	break;
       case  5:
 	return CPUTYPE_BOBCAT;
       }
@@ -1229,6 +1242,7 @@ static char *cpuname[] = {
   "SANDYBRIDGE",
   "BOBCAT",
   "BULLDOZER",
+  "PILEDRIVER",
 };
 
 static char *lowercpuname[] = {
@@ -1278,6 +1292,7 @@ static char *lowercpuname[] = {
   "sandybridge",
   "bobcat",
   "bulldozer",
+  "piledriver",
 };
 
 static char *corename[] = {
@@ -1304,6 +1319,7 @@ static char *corename[] = {
   "SANDYBRIDGE",
   "BOBCAT",
   "BULLDOZER",
+  "PILEDRIVER",
 };
 
 static char *corename_lower[] = {
@@ -1330,6 +1346,7 @@ static char *corename_lower[] = {
   "sandybridge",
   "bobcat",
   "bulldozer",
+  "piledriver",
 };
 
 
@@ -1472,11 +1489,19 @@ int get_coretype(void){
       if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON; 
       else if (exfamily == 5) return CORE_BOBCAT; 
       else if (exfamily == 6) {
-	//AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
-	if(support_avx())
-	  return CORE_BULLDOZER;
-	else
-	  return CORE_BARCELONA; //OS don't support AVX. Use old kernels.
+	switch (model) {
+	case 1:
+	  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	  if(support_avx())
+	    return CORE_BULLDOZER;
+	  else
+	    return CORE_BARCELONA; //OS don't support AVX.
+	case 2:
+	  if(support_avx())
+	    return CORE_PILEDRIVER;
+	  else
+	    return CORE_BARCELONA; //OS don't support AVX.	  
+	}
       }else return CORE_BARCELONA;
     }
   }
@@ -1564,6 +1589,7 @@ void get_cpuconfig(void){
     if (features & HAVE_3DNOWEX) printf("#define HAVE_3DNOWEX\n");
     if (features & HAVE_3DNOW)   printf("#define HAVE_3DNOW\n");
     if (features & HAVE_FMA4 )    printf("#define HAVE_FMA4\n");
+    if (features & HAVE_FMA3 )    printf("#define HAVE_FMA3\n");
     if (features & HAVE_CFLUSH)  printf("#define HAVE_CFLUSH\n");
     if (features & HAVE_HIT)     printf("#define HAVE_HIT 1\n");
     if (features & HAVE_MISALIGNSSE) printf("#define HAVE_MISALIGNSSE\n");
@@ -1631,5 +1657,6 @@ void get_sse(void){
   if (features & HAVE_3DNOWEX) printf("HAVE_3DNOWEX=1\n");
   if (features & HAVE_3DNOW)   printf("HAVE_3DNOW=1\n");
   if (features & HAVE_FMA4 )    printf("HAVE_FMA4=1\n");
+  if (features & HAVE_FMA3 )    printf("HAVE_FMA3=1\n");
 
 }
