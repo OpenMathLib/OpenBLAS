@@ -41,6 +41,13 @@
 
 #ifndef USE_SIMPLE_THREADED_LEVEL3
 
+//The array of job_t may overflow the stack.
+//Instead, use malloc to alloc job_t. 
+#if MAX_CPU_NUMBER > 210
+#define USE_ALLOC_HEAP
+#endif
+
+
 static FLOAT dm1 = -1.;
 
 #ifndef KERNEL_FUNC
@@ -342,7 +349,12 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
 
   blas_arg_t newarg;
 
+#ifndef USE_ALLOC_HEAP
   job_t          job[MAX_CPU_NUMBER];
+#else
+  job_t *        job = NULL;
+#endif
+
   blas_queue_t queue[MAX_CPU_NUMBER];
 
   BLASLONG range[MAX_CPU_NUMBER + 100];
@@ -387,6 +399,15 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
   newarg.c        = args -> c;
   newarg.lda      = args -> lda;
   newarg.alpha    = args -> alpha;
+
+#ifdef USE_ALLOC_HEAP
+  job = (job_t*)malloc(MAX_CPU_NUMBER * sizeof(job_t));
+  if(job==NULL){
+    fprintf(stderr, "OpenBLAS: malloc failed in %s\n", __func__);
+    exit(1);
+  }
+#endif
+
   newarg.common   = (void *)job;
    
   n_from = 0;
@@ -494,6 +515,10 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
     exec_blas(num_cpu, queue);
   }
  
+#ifdef USE_ALLOC_HEAP
+  free(job);
+#endif
+
   return 0;
 }
 

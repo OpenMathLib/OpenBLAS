@@ -217,7 +217,7 @@ int get_num_procs(void) {
   }
   return nums;
 }
-
+/*
 void set_stack_limit(int limitMB){
   int result=0;
   struct rlimit rl;
@@ -235,6 +235,7 @@ void set_stack_limit(int limitMB){
     }
   }
 }
+*/
 #endif
 
 /*
@@ -1273,12 +1274,6 @@ void CONSTRUCTOR gotoblas_init(void) {
 #endif
 
 #ifdef DYNAMIC_ARCH
-#if defined(SMP) && defined(OS_DARWIN) && MAX_CPU_NUMBER > 128
-  //Set stack limit to 16MB on Mac OS X 
-  //when NUM_THREADS>128 and DYNAMIC_ARCH=1.
-  //Prevent the SEGFAULT bug.
-  set_stack_limit(16);
-#endif
    gotoblas_dynamic_init();
 #endif
 

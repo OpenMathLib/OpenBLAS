@@ -48,6 +48,12 @@
 #define SWITCH_RATIO 2
 #endif
 
+//The array of job_t may overflow the stack.
+//Instead, use malloc to alloc job_t. 
+#if MAX_CPU_NUMBER > 210
+#define USE_ALLOC_HEAP
+#endif
+
 #ifndef GEMM_LOCAL
 #if   defined(NN)
 #define GEMM_LOCAL    GEMM_NN
@@ -531,7 +537,12 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 
   blas_arg_t newarg;
 
+#ifndef USE_ALLOC_HEAP
   job_t          job[MAX_CPU_NUMBER];
+#else
+  job_t *        job = NULL;
+#endif
+
   blas_queue_t queue[MAX_CPU_NUMBER];
 
   BLASLONG range_M[MAX_CPU_NUMBER + 1];
@@ -575,6 +586,15 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   newarg.alpha    = args -> alpha;
   newarg.beta     = args -> beta;
   newarg.nthreads = args -> nthreads;
+
+#ifdef USE_ALLOC_HEAP
+  job = (job_t*)malloc(MAX_CPU_NUMBER * sizeof(job_t));
+  if(job==NULL){
+    fprintf(stderr, "OpenBLAS: malloc failed in %s\n", __func__);
+    exit(1);
+  }
+#endif
+
   newarg.common   = (void *)job;
    
 #ifdef PARAMTEST
@@ -659,6 +679,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 
     exec_blas(num_cpu_m, queue);
   }
+
+#ifdef USE_ALLOC_HEAP
+  free(job);
+#endif
 
   return 0;
 }

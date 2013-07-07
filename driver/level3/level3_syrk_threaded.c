@@ -48,6 +48,12 @@
 #define SWITCH_RATIO 2
 #endif
 
+//The array of job_t may overflow the stack.
+//Instead, use malloc to alloc job_t. 
+#if MAX_CPU_NUMBER > 210
+#define USE_ALLOC_HEAP
+#endif
+
 #ifndef SYRK_LOCAL
 #if   !defined(LOWER) && !defined(TRANS)
 #define SYRK_LOCAL    SYRK_UN
@@ -502,7 +508,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
   blas_arg_t newarg;
 
+#ifndef USE_ALLOC_HEAP
   job_t          job[MAX_CPU_NUMBER];
+#else
+  job_t *        job = NULL;
+#endif
+
   blas_queue_t queue[MAX_CPU_NUMBER];
 
   BLASLONG range[MAX_CPU_NUMBER + 100];
@@ -556,6 +567,15 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   newarg.ldc      = args -> ldc;
   newarg.alpha    = args -> alpha;
   newarg.beta     = args -> beta;
+
+#ifdef USE_ALLOC_HEAP
+  job = (job_t*)malloc(MAX_CPU_NUMBER * sizeof(job_t));
+  if(job==NULL){
+    fprintf(stderr, "OpenBLAS: malloc failed in %s\n", __func__);
+    exit(1);
+  }
+#endif
+
   newarg.common   = (void *)job;
    
   if (!range_n) {
@@ -668,6 +688,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     exec_blas(num_cpu, queue);
   }
  
+#ifdef USE_ALLOC_HEAP
+  free(job);
+#endif
 
   return 0;
 }
