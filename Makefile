@@ -206,7 +206,7 @@ ifeq ($(NO_LAPACK), 1)
 netlib : 
 
 else
-netlib : lapack-3.4.2 patch.for_lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
+netlib : lapack_prebuild
 ifndef NOFORTRAN
 	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 endif
@@ -215,10 +215,10 @@ ifndef NO_LAPACKE
 endif
 endif
 
-prof_lapack : lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
+prof_lapack : lapack_prebuild
 	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
-$(NETLIB_LAPACK_DIR)/make.inc :
+lapack_prebuild :
 ifndef NOFORTRAN
 	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "OPTS        = $(FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -289,7 +289,7 @@ ifndef NOFORTRAN
 	fi
 endif
 
-lapack-timing : lapack-3.4.2 large.tgz timing.tgz
+lapack-timing : large.tgz timing.tgz
 ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
@@ -325,9 +325,8 @@ ifeq ($(OSNAME), Darwin)
 	@rm -rf getarch.dSYM getarch_2nd.dSYM
 endif
 	@rm -f Makefile.conf config.h cblas_noconst.h Makefile_kernel.conf config_kernel.h st* *.dylib
-	@if test -d $(NETLIB_LAPACK_DIR); then \
-	echo deleting $(NETLIB_LAPACK_DIR); \
-	rm -rf $(NETLIB_LAPACK_DIR) ;\
-	fi
+	@touch $(NETLIB_LAPACK_DIR)/make.inc
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
+	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@echo Done.

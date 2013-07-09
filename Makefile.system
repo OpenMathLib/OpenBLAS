@@ -9,9 +9,7 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
-ifndef NETLIB_LAPACK_DIR
-NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.2
-endif
+NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 
 # Default C compiler
 # - Only set if not specified on the command line or inherited from the environment.

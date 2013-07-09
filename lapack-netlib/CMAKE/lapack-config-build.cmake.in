@@ -1,0 +1,2 @@
+include("@LAPACK_BINARY_DIR@/lapack-targets.cmake")
+@LAPACK_GNUtoMS_BUILD@
