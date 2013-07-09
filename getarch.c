@@ -83,6 +83,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #ifdef linux
 #include <sys/sysinfo.h>
+#include <unistd.h>
 #endif
 
 /* #define FORCE_P2		*/
@@ -736,7 +737,8 @@ static int get_num_cores(void) {
 #endif
   
 #ifdef linux
-  return get_nprocs();
+  //returns the number of processors which are currently online
+  return sysconf(_SC_NPROCESSORS_ONLN);
   
 #elif defined(OS_WINDOWS)
 

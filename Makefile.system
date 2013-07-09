@@ -447,7 +447,9 @@ endif
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
+ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran 
+endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
 ifdef BINARY64
