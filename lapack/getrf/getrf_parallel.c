@@ -45,7 +45,7 @@ double sqrt(double);
 
 //In this case, the recursive getrf_parallel may overflow the stack.
 //Instead, use malloc to alloc job_t. 
-#if MAX_CPU_NUMBER > 90
+#if MAX_CPU_NUMBER > GETRF_MEM_ALLOC_THRESHOLD
 #define USE_ALLOC_HEAP
 #endif
 

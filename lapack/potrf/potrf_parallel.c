@@ -43,7 +43,7 @@
 
 //The array of job_t may overflow the stack.
 //Instead, use malloc to alloc job_t. 
-#if MAX_CPU_NUMBER > 210
+#if MAX_CPU_NUMBER > BLAS3_MEM_ALLOC_THRESHOLD
 #define USE_ALLOC_HEAP
 #endif
 
