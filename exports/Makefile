@@ -119,7 +119,12 @@ so : ../$(LIBSONAME)
 	$(CC) $(CFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--retain-symbols-file=linux.def -Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
+ifneq ($(C_COMPILER), LSB)
 	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+else
+#Use FC on LSB
+	$(FC) $(FFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+endif
 	rm -f linktest
 
 endif

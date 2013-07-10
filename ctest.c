@@ -1,3 +1,13 @@
+//LSB (Linux Standard Base) compiler
+//only support lsbc++
+#if defined (__LSB_VERSION__)
+#if !defined (__cplusplus)
+COMPILER_LSB
+#else
+#error "OpenBLAS only supports lsbcc."
+#endif
+#endif
+
 #if defined(__clang__)
 COMPILER_CLANG
 #endif

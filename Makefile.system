@@ -240,7 +240,8 @@ NO_BINARY_MODE	= 1
 endif
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
-ifeq ($(C_COMPILER), GCC)
+# ifeq logical or. GCC or LSB
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
 EXPRECISION	= 1
 CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
 FCOMMON_OPT	+= -m128bit-long-double
@@ -257,7 +258,8 @@ endif
 ifeq ($(ARCH), x86_64)
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
-ifeq ($(C_COMPILER), GCC)
+# ifeq logical or. GCC or LSB
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
 EXPRECISION	= 1
 CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
 FCOMMON_OPT	+= -m128bit-long-double
@@ -276,7 +278,8 @@ CCOMMON_OPT    += -wd981
 endif
 
 ifeq ($(USE_OPENMP), 1)
-ifeq ($(C_COMPILER), GCC)
+# ifeq logical or. GCC or LSB
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
 CCOMMON_OPT    += -fopenmp
 endif
 
@@ -350,9 +353,10 @@ endif
 #  C Compiler dependent settings
 #
 
-# ifeq logical or. GCC or CLANG
+
+# ifeq logical or. GCC or CLANG or LSB
 # http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
-ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC CLANG))
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC CLANG LSB))
 CCOMMON_OPT += -Wall
 COMMON_PROF += -fno-inline
 NO_UNINITIALIZED_WARN =  -Wno-uninitialized
@@ -445,8 +449,11 @@ endif
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
+#Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
+ifneq ($(C_COMPILER), LSB)
 EXTRALIB += -lgfortran 
+endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
@@ -780,6 +787,15 @@ override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMM
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
+
+LAPACK_CFLAGS = $(CFLAGS)
+LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H 
+ifdef INTERFACE64
+LAPACK_CFLAGS +=  -DLAPACK_ILP64
+endif
+ifeq ($(C_COMPILER), LSB)
+LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE
+endif
 
 ifndef SUFFIX
 SUFFIX  = o

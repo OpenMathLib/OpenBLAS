@@ -33,6 +33,7 @@ if ($ARGV[0] =~ /(.*)(-[.\d]+)/) {
 }
 
 $compiler = "";
+$compiler = LSB       if ($data =~ /COMPILER_LSB/);
 $compiler = CLANG     if ($data =~ /COMPILER_CLANG/);
 $compiler = PGI       if ($data =~ /COMPILER_PGI/);
 $compiler = PATHSCALE if ($data =~ /COMPILER_PATHSCALE/);
@@ -122,7 +123,7 @@ if ($compiler eq "CLANG") {
     $openmp = "-fopenmp";
 }
 
-if ($compiler eq "GCC") {
+if ($compiler eq "GCC" || $compiler eq "LSB") {
     $openmp = "-fopenmp";
 }
 
