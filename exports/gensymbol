@@ -72,13 +72,18 @@
 	       zgemm3m, cgemm3m, zsymm3m, csymm3m, zhemm3m, chemm3m,
 	       );
 
+
+#both underscore and no underscore
+@misc_common_objs = (
+                     openblas_set_num_threads, openblas_get_parallel,
+                    );
+
 @misc_no_underscore_objs = (
-                            openblas_set_num_threads, goto_set_num_threads,
-                            openblas_get_config, openblas_get_parallel
+                            goto_set_num_threads,
+                            openblas_get_config,
                            );
 
 @misc_underscore_objs = (
-                            openblas_set_num_threads,openblas_get_parallel 
                         );
 
 @lapackobjs = (
@@ -2716,6 +2721,10 @@ $bu = $ARGV[2];
 $bu = "" if (($bu eq "0") || ($bu eq "1"));
 
 if ($ARGV[0] eq "linux"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
+
     foreach $objs (@underscore_objs) {
 	print $objs, $bu, "\n";
     }
@@ -2733,6 +2742,10 @@ if ($ARGV[0] eq "linux"){
 } 
 
 if ($ARGV[0] eq "osx"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
+
     foreach $objs (@underscore_objs) {
 	print "_", $objs, $bu, "\n";
     }
@@ -2746,6 +2759,10 @@ if ($ARGV[0] eq "osx"){
 } 
 
 if ($ARGV[0] eq "aix"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
+
     foreach $objs (@underscore_objs) {
 	print $objs, $bu, "\n";
     }
@@ -2761,23 +2778,31 @@ if ($ARGV[0] eq "aix"){
 if ($ARGV[0] eq "win2k"){
     print "EXPORTS\n";
     $count = 1;    
-    
+
+    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
+
     foreach $objs (@underscore_objs) {
-	unless ($objs =~ /openblas_set_num_threads/) { #remove openblas_set_num_threads
-	    $uppercase = $objs;
-	    $uppercase =~ tr/[a-z]/[A-Z]/;
-	    print "\t$objs=$objs","_  \@", $count, "\n";
-	    $count ++;
-	    print "\t",$objs, "_=$objs","_  \@", $count, "\n";
-	    $count ++;
-	    print "\t$uppercase=$objs", "_  \@", $count, "\n";
-	    $count ++;
-	}
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+	print "\t$objs=$objs","_  \@", $count, "\n";
+	$count ++;
+	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+	$count ++;
+	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	$count ++;
     }
     
-    #for openblas_set_num_threads 
-    print "\topenblas_set_num_threads_=openblas_set_num_threads_  \@", $count, "\n";
-    $count ++;
+    #for misc_common_objs
+    foreach $objs (@misc_common_objs) {
+
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+	$count ++;
+	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	$count ++;
+    }
+    
     
     foreach $objs (@no_underscore_objs) {
 	print "\t",$objs,"=$objs","  \@", $count, "\n";
@@ -2810,6 +2835,9 @@ if ($ARGV[0] eq "win2khpl"){
 }
 
 if ($ARGV[0] eq "microsoft"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+
     print "EXPORTS\n";
     $count = 1;    
     foreach $objs (@underscore_objs) {
@@ -2828,6 +2856,9 @@ if ($ARGV[0] eq "microsoft"){
 }
 
 if ($ARGV[0] eq "win2kasm"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+
     print "\t.text\n";
     foreach $objs (@underscore_objs) {
 	$uppercase = $objs;
@@ -2841,6 +2872,10 @@ if ($ARGV[0] eq "win2kasm"){
 }
 
 if ($ARGV[0] eq "linktest"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
+
     print "int main(void){\n";
     foreach $objs (@underscore_objs) {
 	print $objs, $bu, "();\n" if $objs ne "xerbla";
