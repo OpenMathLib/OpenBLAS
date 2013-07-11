@@ -16,6 +16,16 @@ void goto_set_num_threads(int num_threads);
 /*Get the build configure on runtime.*/
 char* openblas_get_config(void);
 
+/* Get the parallelization type which is used by OpenBLAS */
+int openblas_get_parallel(void); 
+/* OpenBLAS is compiled for sequential use  */
+#define OPENBLAS_SEQUENTIAL  0
+/* OpenBLAS is compiled using normal threading model */
+#define OPENBLAS_THREAD  1 
+/* OpenBLAS is compiled using OpenMP threading model */
+#define OPENBLAS_OPENMP 2 
+
+
 #define CBLAS_INDEX size_t
 
 typedef enum CBLAS_ORDER     {CblasRowMajor=101, CblasColMajor=102} CBLAS_ORDER;
