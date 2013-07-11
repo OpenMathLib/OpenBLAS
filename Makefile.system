@@ -362,7 +362,7 @@ COMMON_PROF += -fno-inline
 NO_UNINITIALIZED_WARN =  -Wno-uninitialized
 
 ifeq ($(QUIET_MAKE), 1)
-CCOMMON_OPT += $(NO_UNINITIALIZED_WARN)
+CCOMMON_OPT += $(NO_UNINITIALIZED_WARN) -Wno-unused
 endif
 
 ifdef NO_BINARY_MODE
