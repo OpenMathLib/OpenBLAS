@@ -208,15 +208,15 @@ netlib :
 else
 netlib : lapack_prebuild
 ifndef NOFORTRAN
-	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 endif
 ifndef NO_LAPACKE
-	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
 endif
 endif
 
 prof_lapack : lapack_prebuild
-	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 lapack_prebuild :
 ifndef NOFORTRAN

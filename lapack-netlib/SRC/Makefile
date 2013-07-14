@@ -407,13 +407,13 @@ ifdef USEXBLAS
 ALLXOBJ = $(SXLASRC) $(DXLASRC) $(CXLASRC) $(ZXLASRC)
 endif
 
-all: ../$(LAPACKLIB)
+all: lapacklib
 
 lapack_prof: ../$(LAPACKLIB_P)
 
-../$(LAPACKLIB): $(ALLOBJ) $(ALLXOBJ)
-	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ) $(ALLXOBJ)
-	$(RANLIB) $@
+lapacklib: $(ALLOBJ) $(ALLXOBJ)
+	$(ARCH) $(ARCHFLAGS) ../$(LAPACKLIB) $(ALLOBJ) $(ALLXOBJ)
+	$(RANLIB) ../$(LAPACKLIB)
 
 ../$(LAPACKLIB_P): $(ALLOBJ_P)
 	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ_P)
