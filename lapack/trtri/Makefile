@@ -13,6 +13,8 @@ ZBLASOBJS = ztrtri_UU_single.$(SUFFIX) ztrtri_UN_single.$(SUFFIX) ztrtri_LU_sing
 
 XBLASOBJS = xtrtri_UU_single.$(SUFFIX) xtrtri_UN_single.$(SUFFIX) xtrtri_LU_single.$(SUFFIX) xtrtri_LN_single.$(SUFFIX)
 
+DBLASOBJS += dtrtri_lapack.$(SUFFIX)
+
 ifdef SMP
 SBLASOBJS += strtri_UU_parallel.$(SUFFIX) strtri_UN_parallel.$(SUFFIX) strtri_LU_parallel.$(SUFFIX) strtri_LN_parallel.$(SUFFIX)
 DBLASOBJS += dtrtri_UU_parallel.$(SUFFIX) dtrtri_UN_parallel.$(SUFFIX) dtrtri_LU_parallel.$(SUFFIX) dtrtri_LN_parallel.$(SUFFIX)
@@ -51,6 +53,9 @@ dtrtri_UU_single.$(SUFFIX) : trtri_U_single.c
 
 dtrtri_UN_single.$(SUFFIX) : trtri_U_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -UUNIT $< -o $(@F)
+
+dtrtri_lapack.$(SUFFIX) : dtrtri_lapack.f
+	$(FC) -c $(FFLAGS) -UCOMPLEX -DDOUBLE -DUNIT $< -o $(@F)
 
 dtrtri_LU_single.$(SUFFIX) : trtri_L_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUNIT $< -o $(@F)
