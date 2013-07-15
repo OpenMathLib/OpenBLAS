@@ -231,7 +231,10 @@ static void exec_threads(blas_queue_t *queue){
       release_flag=1;
     }
 
-    if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
+    if (sa == NULL) {
+      sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
+      queue->sa=sa;
+    }
     
     if (sb == NULL) {
       if (!(queue -> mode & BLAS_COMPLEX)){
