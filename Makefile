@@ -82,27 +82,27 @@ endif
 shared :
 ifndef NO_SHARED
 ifeq ($(OSNAME), Linux)
-	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
+	@$(MAKE) -C exports so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), FreeBSD)
-	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@$(MAKE) -C exports so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), NetBSD)
-	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@$(MAKE) -C exports so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), Darwin)
-	$(MAKE) -C exports dyn
-	-ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
+	@$(MAKE) -C exports dyn
+	@-ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
 endif
 ifeq ($(OSNAME), WINNT)
-	$(MAKE) -C exports dll
+	@$(MAKE) -C exports dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
-	$(MAKE) -C exports dll
+	@$(MAKE) -C exports dll
 endif
 endif
 
@@ -131,33 +131,33 @@ endif
 ifeq ($(NOFORTRAN), 1)
 	$(error OpenBLAS: Detecting fortran compiler failed. Please install fortran compiler, e.g. gfortran, ifort, openf90.)
 endif
-	-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
-	for d in $(SUBDIRS) ; \
+	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+	@for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
 #Save the config files for installation
-	cp Makefile.conf Makefile.conf_last
-	cp config.h config_last.h
+	@cp Makefile.conf Makefile.conf_last
+	@cp config.h config_last.h
 ifdef QUAD_PRECISION
-	echo "#define QUAD_PRECISION">> config_last.h
+	@echo "#define QUAD_PRECISION">> config_last.h
 endif
 ifeq ($(EXPRECISION), 1)
-	echo "#define EXPRECISION">> config_last.h
+	@echo "#define EXPRECISION">> config_last.h
 endif
 ## 
 ifeq ($(DYNAMIC_ARCH), 1)
-	  $(MAKE) -C kernel commonlibs || exit 1
-	for d in $(DYNAMIC_CORE) ; \
+	@$(MAKE) -C kernel commonlibs || exit 1
+	@for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
-	echo DYNAMIC_ARCH=1 >> Makefile.conf_last
+	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
 endif
 ifdef USE_THREAD
-	echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
+	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
 endif
-	touch lib.grd
+	@touch lib.grd
 
 prof : prof_blas prof_lapack
 
