@@ -2684,7 +2684,7 @@ if ($ARGV[5] == 1) {
 
 if ($ARGV[3] == 1){ @underscore_objs = (@underscore_objs, @exblasobjs); };
 
-if ($ARGV[1] eq "X86_64"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
+if ($ARGV[1] eq "x86_64"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 
 if ($ARGV[1] eq "x86"){ @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 
