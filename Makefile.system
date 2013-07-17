@@ -184,8 +184,15 @@ ifeq ($(GCCMINORVERSIONGTEQ7), 1)
 CCOMMON_OPT	+= -DMS_ABI
 endif
 endif
-
 endif
+
+# Ensure the correct stack alignment on Win32
+# http://permalink.gmane.org/gmane.comp.lib.openblas.general/97
+ifeq ($(ARCH), x86)
+CCOMMON_OPT += -mincoming-stack-boundary=2
+FCOMMON_OPT += -mincoming-stack-boundary=2
+endif
+
 endif
 
 ifeq ($(OSNAME), Interix)
