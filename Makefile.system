@@ -9,9 +9,7 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
-ifndef NETLIB_LAPACK_DIR
-NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-3.4.2
-endif
+NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 
 # Default C compiler
 # - Only set if not specified on the command line or inherited from the environment.
@@ -20,6 +18,12 @@ endif
 # - Default value is 'cc' which is not always a valid command (e.g. MinGW).
 ifeq ($(origin CC),default)
 CC = gcc
+# Change the default compile to clang on Mac OSX.
+# http://stackoverflow.com/questions/714100/os-detecting-makefile
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+     CC = clang
+endif
 endif
 
 # Default Fortran compiler (FC) is selected by f_check.
@@ -53,7 +57,7 @@ GETARCH_FLAGS	+= -DUSE64BITINT
 endif
 
 ifndef GEMM_MULTITHREAD_THRESHOLD
-GEMM_MULTITHREAD_THRESHOLD=50
+GEMM_MULTITHREAD_THRESHOLD=4
 endif
 GETARCH_FLAGS	+= -DGEMM_MULTITHREAD_THRESHOLD=$(GEMM_MULTITHREAD_THRESHOLD) 
 
@@ -63,6 +67,19 @@ endif
 
 ifeq ($(DEBUG), 1)
 GETARCH_FLAGS	+= -g
+endif
+
+ifeq ($(QUIET_MAKE), 1)
+MAKE += -s
+endif
+
+ifndef NO_PARALLEL_MAKE
+NO_PARALLEL_MAKE=0
+endif
+GETARCH_FLAGS	+= -DNO_PARALLEL_MAKE=$(NO_PARALLEL_MAKE)
+
+ifeq ($(HOSTCC), loongcc)
+GETARCH_FLAGS  += -static
 endif
 
 # This operation is expensive, so execution should be once.
@@ -148,7 +165,12 @@ EXTRALIB        += -defaultlib:advapi32
 
 SUFFIX  = obj
 PSUFFIX = pobj
-LIBSUFFIX = lib
+LIBSUFFIX = a
+
+ifeq ($(C_COMPILER), CLANG)
+CCOMMON_OPT	+= -DMS_ABI
+endif
+
 ifeq ($(C_COMPILER), GCC)
 #Test for supporting MS_ABI
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
@@ -167,8 +189,15 @@ ifeq ($(GCCMINORVERSIONGTEQ7), 1)
 CCOMMON_OPT	+= -DMS_ABI
 endif
 endif
-
 endif
+
+# Ensure the correct stack alignment on Win32
+# http://permalink.gmane.org/gmane.comp.lib.openblas.general/97
+ifeq ($(ARCH), x86)
+CCOMMON_OPT += -mincoming-stack-boundary=2
+FCOMMON_OPT += -mincoming-stack-boundary=2
+endif
+
 endif
 
 ifeq ($(OSNAME), Interix)
@@ -223,9 +252,15 @@ NO_BINARY_MODE	= 1
 endif
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
-ifeq ($(C_COMPILER), GCC)
+# ifeq logical or. GCC or LSB
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
 EXPRECISION	= 1
 CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
+FCOMMON_OPT	+= -m128bit-long-double
+endif
+ifeq ($(C_COMPILER), CLANG)
+EXPRECISION	= 1
+CCOMMON_OPT	+= -DEXPRECISION 
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -235,9 +270,15 @@ endif
 ifeq ($(ARCH), x86_64)
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
-ifeq ($(C_COMPILER), GCC)
+# ifeq logical or. GCC or LSB
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
 EXPRECISION	= 1
 CCOMMON_OPT	+= -DEXPRECISION -m128bit-long-double
+FCOMMON_OPT	+= -m128bit-long-double
+endif
+ifeq ($(C_COMPILER), CLANG)
+EXPRECISION	= 1
+CCOMMON_OPT	+= -DEXPRECISION 
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -249,7 +290,13 @@ CCOMMON_OPT    += -wd981
 endif
 
 ifeq ($(USE_OPENMP), 1)
-ifeq ($(C_COMPILER), GCC)
+# ifeq logical or. GCC or LSB
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
+CCOMMON_OPT    += -fopenmp
+endif
+
+ifeq ($(C_COMPILER), CLANG)
+$(error OpenBLAS: Clang didn't support OpenMP yet.)
 CCOMMON_OPT    += -fopenmp
 endif
 
@@ -277,14 +324,14 @@ ifeq ($(ARCH), x86)
 DYNAMIC_CORE = KATMAI COPPERMINE NORTHWOOD PRESCOTT BANIAS \
 	       CORE2 PENRYN DUNNINGTON NEHALEM ATHLON OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
 ifneq ($(NO_AVX), 1)
-DYNAMIC_CORE += SANDYBRIDGE BULLDOZER
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER
 endif
 endif
 
 ifeq ($(ARCH), x86_64)
 DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
 ifneq ($(NO_AVX), 1)
-DYNAMIC_CORE += SANDYBRIDGE BULLDOZER
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER
 endif
 endif
 
@@ -318,10 +365,17 @@ endif
 #  C Compiler dependent settings
 #
 
-ifeq ($(C_COMPILER), GCC)
+
+# ifeq logical or. GCC or CLANG or LSB
+# http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC CLANG LSB))
 CCOMMON_OPT += -Wall
 COMMON_PROF += -fno-inline
 NO_UNINITIALIZED_WARN =  -Wno-uninitialized
+
+ifeq ($(QUIET_MAKE), 1)
+CCOMMON_OPT += $(NO_UNINITIALIZED_WARN) -Wno-unused
+endif
 
 ifdef NO_BINARY_MODE
 
@@ -407,7 +461,12 @@ endif
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
+#Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
+ifneq ($(NO_LAPACK), 1)
+ifneq ($(C_COMPILER), LSB)
 EXTRALIB += -lgfortran 
+endif
+endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
 ifdef BINARY64
@@ -514,10 +573,27 @@ ifdef INTERFACE64
 FCOMMON_OPT += -i8
 endif
 endif
+
+ifeq ($(ARCH), mips64)
+ifndef BINARY64
+FCOMMON_OPT += -n32
+else
+FCOMMON_OPT += -n64
+endif
+ifeq ($(CORE), LOONGSON3A) 
+FCOMMON_OPT += -loongson3 -static
+endif
+
+ifeq ($(CORE), LOONGSON3B) 
+FCOMMON_OPT += -loongson3 -static
+endif
+
+else
 ifndef BINARY64
 FCOMMON_OPT += -m32
 else
 FCOMMON_OPT += -m64
+endif
 endif
 
 ifdef USE_OPENMP
@@ -527,10 +603,28 @@ endif
 endif
 
 ifeq ($(C_COMPILER), OPEN64)
+
+ifeq ($(ARCH), mips64)
+ifndef BINARY64
+CCOMMON_OPT += -n32
+else
+CCOMMON_OPT += -n64
+endif
+ifeq ($(CORE), LOONGSON3A) 
+CCOMMON_OPT += -loongson3 -static
+endif
+
+ifeq ($(CORE), LOONGSON3B) 
+CCOMMON_OPT += -loongson3 -static
+endif
+
+else
+
 ifndef BINARY64
 CCOMMON_OPT += -m32
 else
 CCOMMON_OPT += -m64
+endif
 endif
 endif
 
@@ -741,6 +835,15 @@ override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
+LAPACK_CFLAGS = $(CFLAGS)
+LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H 
+ifdef INTERFACE64
+LAPACK_CFLAGS +=  -DLAPACK_ILP64
+endif
+ifeq ($(C_COMPILER), LSB)
+LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE
+endif
+
 ifndef SUFFIX
 SUFFIX  = o
 endif
@@ -835,6 +938,13 @@ export ZGEMM_UNROLL_M
 export ZGEMM_UNROLL_N
 export XGEMM_UNROLL_M
 export XGEMM_UNROLL_N
+export CGEMM3M_UNROLL_M
+export CGEMM3M_UNROLL_N
+export ZGEMM3M_UNROLL_M
+export ZGEMM3M_UNROLL_N
+export XGEMM3M_UNROLL_M
+export XGEMM3M_UNROLL_N
+
 
 ifdef USE_CUDA
 export CUDADIR

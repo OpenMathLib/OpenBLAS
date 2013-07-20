@@ -63,7 +63,7 @@
 
 #else
 
-#define STACKSIZE	256
+#define STACKSIZE	288
 	
 #define OLD_M	  %rcx
 #define OLD_N	  %rdx
@@ -74,10 +74,10 @@
 #define STACK_Y		 72 + STACKSIZE(%rsp)
 #define STACK_INCY	 80 + STACKSIZE(%rsp)
 #define STACK_BUFFER	 88 + STACKSIZE(%rsp)
-#define MMM	216(%rsp)
-#define NN	224(%rsp)
-#define AA	232(%rsp)
-#define LDAX 240(%rsp)
+#define MMM	232(%rsp)
+#define NN	240(%rsp)
+#define AA	248(%rsp)
+#define LDAX 256(%rsp)
 
 #endif
 

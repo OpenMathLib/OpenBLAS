@@ -114,6 +114,7 @@ int detect(void){
   if (!strncasecmp(p, "PPC970", 6)) return CPUTYPE_PPC970;
   if (!strncasecmp(p, "POWER5", 6)) return CPUTYPE_POWER5;
   if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
+  if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
   if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
 

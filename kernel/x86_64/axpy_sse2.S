@@ -69,7 +69,6 @@
 #endif
 	movaps	%xmm0,  ALPHA
 #else
-	movaps	%xmm3,  ALPHA
 
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
@@ -78,6 +77,10 @@
 #endif
 
 	SAVEREGISTERS
+
+#ifdef WINDOWS_ABI
+	movaps	%xmm3,  ALPHA
+#endif
 
 	unpcklpd ALPHA, ALPHA
 

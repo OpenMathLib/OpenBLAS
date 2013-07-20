@@ -83,6 +83,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #ifdef linux
 #include <sys/sysinfo.h>
+#include <unistd.h>
 #endif
 
 /* #define FORCE_P2		*/
@@ -96,14 +97,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_PENRYN		*/
 /* #define FORCE_DUNNINGTON	*/
 /* #define FORCE_NEHALEM	*/
+/* #define FORCE_SANDYBRIDGE	*/
+/* #define FORCE_ATOM		*/
 /* #define FORCE_ATHLON		*/
 /* #define FORCE_OPTERON	*/
 /* #define FORCE_OPTERON_SSE3	*/
 /* #define FORCE_BARCELONA	*/
 /* #define FORCE_SHANGHAI	*/
 /* #define FORCE_ISTANBUL	*/
+/* #define FORCE_BOBCAT		*/
 /* #define FORCE_BULLDOZER	*/
-/* #define FORCE_BOBCAT	*/
+/* #define FORCE_PILEDRIVER     */
 /* #define FORCE_SSE_GENERIC	*/
 /* #define FORCE_VIAC3		*/
 /* #define FORCE_NANO		*/
@@ -118,12 +122,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_PPC440FP2	*/
 /* #define FORCE_CELL		*/
 /* #define FORCE_SICORTEX	*/
-/* #define FORCE_LOONGSON3A      */
-/* #define FORCE_LOONGSON3B      */
+/* #define FORCE_LOONGSON3A	*/
+/* #define FORCE_LOONGSON3B	*/
 /* #define FORCE_ITANIUM2	*/
-/* #define FORCE_GENERIC	*/
 /* #define FORCE_SPARC		*/
 /* #define FORCE_SPARCV7	*/
+/* #define FORCE_GENERIC	*/
 
 #ifdef FORCE_P2
 #define FORCE
@@ -139,20 +143,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "P5"
 #endif
 
-#ifdef FORCE_COPPERMINE
-#define FORCE
-#define FORCE_INTEL
-#define ARCHITECTURE    "X86"
-#define SUBARCHITECTURE "PENTIUM3"
-#define ARCHCONFIG   "-DPENTIUM3 " \
-		     "-DL1_DATA_SIZE=16384 -DL1_DATA_LINESIZE=32 " \
-		     "-DL2_SIZE=262144 -DL2_LINESIZE=32 " \
-		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
-		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE "
-#define LIBNAME   "coppermine"
-#define CORENAME  "COPPERMINE"
-#endif
-
 #ifdef FORCE_KATMAI
 #define FORCE
 #define FORCE_INTEL
@@ -165,6 +155,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE "
 #define LIBNAME   "katmai"
 #define CORENAME  "KATMAI"
+#endif
+
+#ifdef FORCE_COPPERMINE
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "PENTIUM3"
+#define ARCHCONFIG   "-DPENTIUM3 " \
+		     "-DL1_DATA_SIZE=16384 -DL1_DATA_LINESIZE=32 " \
+		     "-DL2_SIZE=262144 -DL2_LINESIZE=32 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE "
+#define LIBNAME   "coppermine"
+#define CORENAME  "COPPERMINE"
 #endif
 
 #ifdef FORCE_NORTHWOOD
@@ -394,6 +398,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                      "-DHAVE_AVX -DHAVE_FMA4"
 #define LIBNAME   "bulldozer"
 #define CORENAME  "BULLDOZER"
+#endif
+
+#if defined (FORCE_PILEDRIVER)
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "PILEDRIVER"
+#define ARCHCONFIG   "-DPILEDRIVER " \
+		     "-DL1_DATA_SIZE=16384 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=2097152 -DL2_LINESIZE=64  -DL3_SIZE=12582912 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
+		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
+                     "-DHAVE_AVX -DHAVE_FMA4 -DHAVE_FMA3"
+#define LIBNAME   "piledriver"
+#define CORENAME  "PILEDRIVER"
 #endif
 
 #ifdef FORCE_SSE_GENERIC
@@ -717,7 +737,8 @@ static int get_num_cores(void) {
 #endif
   
 #ifdef linux
-  return get_nprocs();
+  //returns the number of processors which are currently online
+  return sysconf(_SC_NPROCESSORS_ONLN);
   
 #elif defined(OS_WINDOWS)
 
@@ -802,8 +823,12 @@ int main(int argc, char *argv[]){
 #endif
 #endif
 
+#if NO_PARALLEL_MAKE==1
+    printf("MAKE += -j 1\n");
+#else
 #ifndef OS_WINDOWS
     printf("MAKE += -j %d\n", get_num_cores());
+#endif
 #endif
 
     break;

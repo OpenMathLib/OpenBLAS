@@ -102,11 +102,9 @@
 #define STACK_INCY	40 + STACKSIZE+ARGS(%esp)
 #define BUFFER		44 + STACKSIZE+ARGS(%esp)
 
-#define MMM	0+STACKSIZE(%esp)
-#define NN	4+STACKSIZE(%esp)
-#define AA	8+STACKSIZE(%esp)
-#define LDAX	12+STACKSIZE(%esp)
-#define XX	16+STACKSIZE(%esp)
+#define MMM	0+ARGS(%esp)
+#define AA	4+ARGS(%esp)
+#define XX	8+ARGS(%esp)
 	
 #define I	%eax
 #define J	%ebx
@@ -129,12 +127,8 @@
 
 	PROFCODE
 
-	movl	STACK_LDA,  LDA
-	movl	LDA,LDAX			# backup LDA
 	movl	STACK_X,    X
 	movl	X,XX
-	movl	N,J
-	movl	J,NN				# backup N
 	movl	A,J
 	movl	J,AA				# backup A
     movl	M,J
@@ -144,7 +138,6 @@
 	addl	$1,J
 	sall    $22,J                           # J=2^24*sizeof(float)=buffer size(16MB)
 	subl    $8, J                           # Don't use last 8 float in the buffer.
-	                                        # Now, split M by block J
 	subl	J,MMM				# MMM=MMM-J
 	movl	J,M		
 	jge		.L00t
@@ -159,13 +152,10 @@
 	movl	AA,%eax
 	movl	%eax,A			 	# mov AA to A
 
-	movl	NN,%eax
-	movl	%eax,N				# reset N
+	movl	XX,%eax
+	movl	%eax,X
 
-
-	movl	LDAX,  LDA			# reset LDA
-	movl	XX,X
-
+	movl	STACK_LDA, LDA
 	movl	STACK_INCX, INCX
 	movl	STACK_INCY, INCY
 
@@ -688,9 +678,9 @@
 	movl	M,J
 	leal	(,J,SIZE),%eax
 	addl	%eax,AA
-	movl	XX,J
-	addl	%eax,J
-	movl	J,XX
+	movl	STACK_INCX,INCX
+	imull	INCX,%eax
+	addl	%eax,XX
 	jmp		.L0t
 	ALIGN_4
 

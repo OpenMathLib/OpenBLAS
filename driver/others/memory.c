@@ -105,6 +105,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include <sys/sysctl.h>
+#include <sys/resource.h>
 #endif
 
 #if defined(OS_WINDOWS) && (defined(__MINGW32__) || defined(__MINGW64__))
@@ -125,7 +126,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NO_WARMUP
 #endif
 
-#ifdef ALLOC_HUGETLB
+#ifndef SHM_HUGETLB
 #define SHM_HUGETLB 04000
 #endif
 
@@ -216,6 +217,25 @@ int get_num_procs(void) {
   }
   return nums;
 }
+/*
+void set_stack_limit(int limitMB){
+  int result=0;
+  struct rlimit rl;
+  rlim_t StackSize;
+
+  StackSize=limitMB*1024*1024;
+  result=getrlimit(RLIMIT_STACK, &rl);
+  if(result==0){
+    if(rl.rlim_cur < StackSize){
+      rl.rlim_cur=StackSize;
+      result=setrlimit(RLIMIT_STACK, &rl);
+      if(result !=0){
+        fprintf(stderr, "OpenBLAS: set stack limit error =%d\n", result);                                                   
+      }
+    }
+  }
+}
+*/
 #endif
 
 /*
@@ -1247,6 +1267,7 @@ static int gotoblas_initialized = 0;
 void CONSTRUCTOR gotoblas_init(void) {
 
   if (gotoblas_initialized) return;
+
 
 #ifdef PROFILE
    moncontrol (0);

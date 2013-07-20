@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.6
+VERSION = 0.2.7
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library 
@@ -81,6 +81,9 @@ VERSION = 0.2.6
 # and OS. However, the performance is low.
 # NO_AVX = 1
 
+# Don't use parallel make.
+# NO_PARALLEL_MAKE = 1
+
 # If you would like to know minute performance report of GotoBLAS.
 # FUNCTION_PROFILE = 1
 
@@ -104,8 +107,8 @@ VERSION = 0.2.6
 
 # If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute 
 # with single thread. You can use this flag to avoid the overhead of multi-threading 
-# in small matrix sizes. The default value is 50.
-# GEMM_MULTITHREAD_THRESHOLD = 50
+# in small matrix sizes. The default value is 4.
+# GEMM_MULTITHREAD_THRESHOLD = 4
 
 # If you need santy check by comparing reference BLAS. It'll be very
 # slow (Not implemented yet).

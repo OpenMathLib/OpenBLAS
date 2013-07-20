@@ -65,9 +65,16 @@ extern long int syscall (long int __sysno, ...);
 #endif
 #endif
 
+
+
 static inline int my_mbind(void *addr, unsigned long len, int mode,
 			   unsigned long *nodemask, unsigned long maxnode,
 			   unsigned flags) {
+#if defined (__LSB_VERSION__)
+// So far,  LSB (Linux Standard Base) don't support syscall().
+// https://lsbbugs.linuxfoundation.org/show_bug.cgi?id=3482
+        return 0;
+#else
 #if defined (LOONGSON3B) 
 #if defined (__64BIT__)
 	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
@@ -79,11 +86,17 @@ static inline int my_mbind(void *addr, unsigned long len, int mode,
 //	unsigned long null_nodemask=0;
 	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
 #endif
+#endif
 }
 
 static inline int my_set_mempolicy(int mode, const unsigned long *addr, unsigned long flag) {
-
+#if defined (__LSB_VERSION__)
+// So far,  LSB (Linux Standard Base) don't support syscall().
+// https://lsbbugs.linuxfoundation.org/show_bug.cgi?id=3482
+  return 0;
+#else
   return syscall(SYS_set_mempolicy, mode, addr, flag);
+#endif
 }
 
 static inline int my_gettid(void) { 

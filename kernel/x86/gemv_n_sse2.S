@@ -714,9 +714,9 @@
 	movl	M,J
 	leal	(,J,SIZE),%eax
 	addl	%eax,AA
-	movl	YY,J
-	addl	%eax,J
-	movl	J,YY
+	movl	STACK_INCY,INCY
+	imull	INCY,%eax
+	addl	%eax,YY
 	jmp		.L0t
 	ALIGN_4
 

@@ -76,7 +76,7 @@
 #define movsd		movlpd
 #endif
 
-#if defined(BARCELONA)  || defined(SHANGHAI) || defined(BOBCAT) || defined(BULLDOZER)
+#if defined(BARCELONA)  || defined(SHANGHAI) || defined(BOBCAT) || defined(BARCELONA_OPTIMIZATION)
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
 #define PREFETCHSIZE	(16 * 16)
@@ -167,7 +167,7 @@
 #define a3     %xmm14
 #define	xt1    %xmm15
 
-#if (defined(HAVE_SSE3) && !defined(CORE_OPTERON)) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
+#if (defined(HAVE_SSE3) && !defined(CORE_OPTERON)) || defined(BARCELONA) || defined(SHANGHAI) || defined(BARCELONA_OPTIMIZATION)
 #define MOVDDUP(a, b, c)	movddup	a(b), c
 #define MOVDDUP2(a, b, c)	movddup	a##b, c
 #else

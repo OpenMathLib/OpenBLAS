@@ -1,5 +1,37 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.7
+20-Jul-2013
+common:
+	* Support LSB (Linux Standard Base) 4.1.
+          e.g. make CC=lsbcc
+	* Include LAPACK 3.4.2 source codes to the repo. 
+          Avoid downloading at compile time.
+	* Add NO_PARALLEL_MAKE flag to disable parallel make.
+        * Create openblas_get_parallel to retrieve information which 
+          parallelization model is used by OpenBLAS. (Thank grisuthedragon)
+	* Detect LLVM/Clang compiler. The default compiler is Clang on Mac OS X.
+        * Change LIBSUFFIX from .lib to .a on windows.
+	* A walk round for dtrti_U single thread bug. Replace it with LAPACK codes. (#191)
+
+x86/x86-64:
+	* Optimize c/zgemm, trsm, dgemv_n, ddot, daxpy, dcopy on 
+          AMD Bulldozer. (Thank Werner Saar)
+        * Add Intel Haswell support (using Sandybridge optimizations).
+          (Thank Dan Luu)
+	* Add AMD Piledriver support (using Bulldozer optimizations).
+        * Fix the computational error in zgemm avx kernel on 
+          Sandybridge. (#237)
+        * Fix the overflow bug in gemv.
+	* Fix the overflow bug in multi-threaded BLAS3, getrf when NUM_THREADS 
+          is very large.(#214, #221, #246).
+MIPS64:
+        * Support loongcc (Open64 based) compiler for ICT Loongson 3A/B.
+
+Power:
+        * Support Power7 by old Power6 kernels. (#220)
+
+====================================================================
 Version 0.2.6
 2-Mar-2013
 common:

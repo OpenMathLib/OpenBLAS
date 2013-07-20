@@ -255,8 +255,8 @@ REALNAME: ;\
 #endif
 
 #if defined(LOONGSON3B)
-#define PAGESIZE	(32UL << 10)
-#define FIXED_PAGESIZE	(32UL << 10)
+#define PAGESIZE	(16UL << 10)
+#define FIXED_PAGESIZE	(16UL << 10)
 #endif
 
 #ifndef PAGESIZE

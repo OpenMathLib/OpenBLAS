@@ -82,27 +82,27 @@ endif
 shared :
 ifndef NO_SHARED
 ifeq ($(OSNAME), Linux)
-	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
+	@$(MAKE) -C exports so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), FreeBSD)
-	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@$(MAKE) -C exports so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), NetBSD)
-	$(MAKE) -C exports so
-	-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@$(MAKE) -C exports so
+	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), Darwin)
-	$(MAKE) -C exports dyn
-	-ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
+	@$(MAKE) -C exports dyn
+	@-ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
 endif
 ifeq ($(OSNAME), WINNT)
-	$(MAKE) -C exports dll
+	@$(MAKE) -C exports dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
-	$(MAKE) -C exports dll
+	@$(MAKE) -C exports dll
 endif
 endif
 
@@ -131,30 +131,33 @@ endif
 ifeq ($(NOFORTRAN), 1)
 	$(error OpenBLAS: Detecting fortran compiler failed. Please install fortran compiler, e.g. gfortran, ifort, openf90.)
 endif
-	-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
-	for d in $(SUBDIRS) ; \
+	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+	@for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
 	fi; \
 	done
 #Save the config files for installation
-	cp Makefile.conf Makefile.conf_last
-	cp config.h config_last.h
+	@cp Makefile.conf Makefile.conf_last
+	@cp config.h config_last.h
 ifdef QUAD_PRECISION
-	echo "#define QUAD_PRECISION">> config_last.h
+	@echo "#define QUAD_PRECISION">> config_last.h
 endif
 ifeq ($(EXPRECISION), 1)
-	echo "#define EXPRECISION">> config_last.h
+	@echo "#define EXPRECISION">> config_last.h
 endif
 ## 
 ifeq ($(DYNAMIC_ARCH), 1)
-	  $(MAKE) -C kernel commonlibs || exit 1
-	for d in $(DYNAMIC_CORE) ; \
+	@$(MAKE) -C kernel commonlibs || exit 1
+	@for d in $(DYNAMIC_CORE) ; \
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
-	echo DYNAMIC_ARCH=1 >> Makefile.conf_last
+	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
 endif
-	touch lib.grd
+ifdef USE_THREAD
+	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
+endif
+	@touch lib.grd
 
 prof : prof_blas prof_lapack
 
@@ -203,19 +206,19 @@ ifeq ($(NO_LAPACK), 1)
 netlib : 
 
 else
-netlib : lapack-3.4.2 patch.for_lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
+netlib : lapack_prebuild
 ifndef NOFORTRAN
-	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 endif
 ifndef NO_LAPACKE
-	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
 endif
 endif
 
-prof_lapack : lapack-3.4.2 $(NETLIB_LAPACK_DIR)/make.inc
-	-@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
+prof_lapack : lapack_prebuild
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
-$(NETLIB_LAPACK_DIR)/make.inc :
+lapack_prebuild :
 ifndef NOFORTRAN
 	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "OPTS        = $(FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -224,11 +227,7 @@ ifndef NOFORTRAN
 	-@echo "PNOOPT      = $(FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
-ifdef INTERFACE64
-	-@echo "CFLAGS      = $(CFLAGS) -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64" >> $(NETLIB_LAPACK_DIR)/make.inc
-else
-	-@echo "CFLAGS      = $(CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-endif
+	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -244,7 +243,7 @@ endif
 lapack-3.4.2 : lapack-3.4.2.tgz
 ifndef NOFORTRAN
 ifndef NO_LAPACK
-	@if test `$(MD5SUM) lapack-3.4.2.tgz | $(AWK) '{print $$1}'` = 61bf1a8a4469d4bdb7604f5897179478; then \
+	@if test `$(MD5SUM) $< | $(AWK) '{print $$1}'` = 61bf1a8a4469d4bdb7604f5897179478; then \
 		echo $(TAR) zxf $< ;\
 		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.2) ;\
 		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
@@ -262,27 +261,31 @@ lapack-3.4.2.tgz :
 ifndef NOFORTRAN
 #http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
 ifeq ($(OSNAME), $(filter $(OSNAME),Darwin NetBSD))
-	curl -O $(LAPACK_URL)
+	curl -O $(LAPACK_URL);
 else
 ifeq ($(OSNAME), FreeBSD)
-	fetch $(LAPACK_URL)
+	fetch $(LAPACK_URL);
 else
-	wget $(LAPACK_URL)
+	wget -O $@ $(LAPACK_URL);
 endif
 endif
 endif
 
 large.tgz : 
 ifndef NOFORTRAN
-	-wget http://www.netlib.org/lapack/timing/large.tgz
+	if [ ! -a $< ]; then
+	-wget http://www.netlib.org/lapack/timing/large.tgz;
+	fi
 endif
 
 timing.tgz :
 ifndef NOFORTRAN
-	-wget http://www.netlib.org/lapack/timing/timing.tgz
+	if [ ! -a $< ]; then
+	-wget http://www.netlib.org/lapack/timing/timing.tgz;
+	fi
 endif
 
-lapack-timing : lapack-3.4.2 large.tgz timing.tgz
+lapack-timing : large.tgz timing.tgz
 ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
@@ -314,10 +317,12 @@ clean ::
 #endif
 	@$(MAKE) -C reference clean
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
+ifeq ($(OSNAME), Darwin)
+	@rm -rf getarch.dSYM getarch_2nd.dSYM
+endif
 	@rm -f Makefile.conf config.h cblas_noconst.h Makefile_kernel.conf config_kernel.h st* *.dylib
-	@if test -d $(NETLIB_LAPACK_DIR); then \
-	echo deleting $(NETLIB_LAPACK_DIR); \
-	rm -rf $(NETLIB_LAPACK_DIR) ;\
-	fi
+	@touch $(NETLIB_LAPACK_DIR)/make.inc
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
+	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@echo Done.
