@@ -3,11 +3,18 @@
 [![Build Status](https://travis-ci.org/xianyi/OpenBLAS.png?branch=develop)](https://travis-ci.org/xianyi/OpenBLAS)
 
 ## Introduction
-OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. OpenBLAS is an open source project supported by Lab of Parallel Software and Computational Science, ISCAS <http://www.rdcps.ac.cn>.
+OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. 
 
 Please read the documents on OpenBLAS wiki pages <http://github.com/xianyi/OpenBLAS/wiki>.
 
-## Installation
+## Binary Packages
+We provide binary packages for the following platform.
+
+  * Windows x86/x86_64
+
+You can download them from [file hosting on sourceforge.net](https://sourceforge.net/projects/openblas/files/).
+
+## Installation from Source
 Download from project homepage. http://xianyi.github.com/OpenBLAS/
 
 Or, check out codes from git://github.com/xianyi/OpenBLAS.git
@@ -109,10 +116,9 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 * On Linux, OpenBLAS sets the processor affinity by default. This may cause [the conflict with R parallel](https://stat.ethz.ch/pipermail/r-sig-hpc/2012-April/001348.html). You can build the library with NO_AFFINITY=1.
 * On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell. 
 
-## Specification of Git Branches
-We used the git branching model in this article (http://nvie.com/posts/a-successful-git-branching-model/). 
-Now, there are 4 branches in github.com.
-  * The master branch. This a main branch to reflect a production-ready state.
-  * The develop branch. This a main branch to reflect a state with the latest delivered development changes for the next release.
-  * The loongson3a branch. This is a feature branch. We develop Loongson3A codes on this branch. We will merge this feature to develop branch in future.
-  * The gh-pages branch. This is for web pages
+## Contributing
+1. [Check for open issues](https://github.com/xianyi/OpenBLAS/issues) or open a fresh issue to start a discussion around a feature idea or a bug. 
+1. Fork the [OpenBLAS](https://github.com/xianyi/OpenBLAS) repository to start making your changes.
+1. Write a test which shows that the bug was fixed or that the feature works as expected.
+1. Send a pull request. Make sure to add yourself to `CONTRIBUTORS.md`.
+

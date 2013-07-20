@@ -7,41 +7,69 @@
 ## Active Developers
 
 * Wang Qian <traz0824@gmail.com>
+  * Optimize BLAS3 on ICT Loongson 3A.
+  * Optimize BLAS3 on Intel Sandy Bridge.
+
 * Zaheer Chothia <zaheer.chothia@gmail.com>
+  * Improve the compatibility about complex number
+  * Build LAPACKE: C interface to LAPACK
+  * Improve the windows build.
 
 ## Contributors
 
 In chronological order:
 
 * pipping <http://page.mi.fu-berlin.de/pipping>
-  * Make USE_OPENMP=0 disable openmp
+  * [2011-06-11] Make USE_OPENMP=0 disable openmp.
 
 * Stefan Karpinski <stefan@karpinski.org>
-  * Fix a bug about SystemStubs on Mac OS X.
+  * [2011-12-28] Fix a bug about SystemStubs on Mac OS X.
+
+* Alexander Eberspächer <https://github.com/aeberspaecher>
+  * [2012-05-02] Add note on patch for segfaults on Linux kernel 2.6.32.
 
 * Mike Nolta <mike@nolta.net>
-  * Fix building bug on FreeBSD and NetBSD
+  * [2012-05-19] Fix building bug on FreeBSD and NetBSD.
+
+* Sylvestre Ledru <https://github.com/sylvestre>
+  * [2012-07-01] Improve the detection of sparc. Fix building bug under 
+    Hurd and kfreebsd.
 
 * Jameson Nash <https://github.com/vtjnash>
-  * provide support for passing CFLAGS, FFLAGS, PFLAGS, FPFLAGS to make on the command line
+  * [2012-08-20] Provide support for passing CFLAGS, FFLAGS, PFLAGS, FPFLAGS to 
+    make on the command line.
 
 * Alexander Nasonov <alnsn@yandex.ru>
-  * Fix NetBSD build
+  * [2012-11-10] Fix NetBSD build.
 
 * Sébastien Villemot <sebastien@debian.org>
-  * Fix compilation with TARGET=GENERIC. Patch applied to Debian package
-
-* Kenneth Hoste <kenneth.hoste@gmail.com>
-  * adjusted Makefile about downloading LAPACK source files
+  * [2012-11-14] Fix compilation with TARGET=GENERIC. Patch applied to Debian package.
 
 * Werner Saar <wernsaar@googlemail.com>
-  * Optimize AVX and FMA4 kernels on AMD Bulldozer
+  * [2013-03-04] Optimize AVX and FMA4 DGEMM on AMD Bulldozer
+  * [2013-04-27] Optimize AVX and FMA4 TRSM on AMD Bulldozer
+  * [2013-06-09] Optimize AVX and FMA4 SGEMM on AMD Bulldozer
+  * [2013-06-11] Optimize AVX and FMA4 ZGEMM on AMD Bulldozer
+  * [2013-06-12] Optimize AVX and FMA4 CGEMM on AMD Bulldozer
+  * [2013-06-16] Optimize dgemv_n kernel on AMD Bulldozer
+  * [2013-06-20] Optimize ddot, daxpy kernel on AMD Bulldozer
+  * [2013-06-21] Optimize dcopy kernel on AMD Bulldozer
+
+* Kang-Che Sung <Explorer09@gmail.com>
+  * [2013-05-17] Fix typo in the document. Re-order the architecture list in getarch.c.
+
+* Kenneth Hoste <kenneth.hoste@gmail.com>
+  * [2013-05-22] Adjust Makefile about downloading LAPACK source files.
 
 * Lei WANG <https://github.com/wlbksy>
-  * Fix a bug about wget
+  * [2013-05-22] Fix a bug about wget.
+
+* Dan Luu <http://www.linkedin.com/in/danluu>
+  * [2013-06-30] Add Intel Haswell support (using sandybridge optimizations).
 
 * grisuthedragon <https://github.com/grisuthedragon>
-  * create openblas_get_parallel to retrieve information which parallelization model is used by OpenBLAS.
+  * [2013-07-11] create openblas_get_parallel to retrieve information which parallelization 
+    model is used by OpenBLAS.
 
 * [Your name or handle] <[email or website]>
-  * [Brief summary of your changes]
+  * [Date] [Brief summary of your changes]
