@@ -15,6 +15,14 @@
   * Build LAPACKE: C interface to LAPACK
   * Improve the windows build.
 
+## Previous Developers
+
+* Chen Shaohu <huhumartinwar@gmail.com>
+  * Optimize GEMV on the Loongson 3A processor. 
+
+* Luo Wen
+  * Intern. Test Level-2 BLAS.
+
 ## Contributors
 
 In chronological order:
