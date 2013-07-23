@@ -138,7 +138,7 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
     // call dtrtri from lapack for a walk around.
     if(uplo==0){
       dtrtri_lapack_(UPLO, DIAG, N, a, ldA, Info);
-      return;
+      return 0;
     }
 #endif
 
