@@ -315,7 +315,7 @@ static int numa_check(void) {
   }
 
   while ((dir = readdir(dp)) != NULL) {
-    if (*(unsigned int *) dir -> d_name == 0x065646f6eU) {
+    if (*(char *) dir -> d_name == 0x065646f6eU) {
 
       node = atoi(&dir -> d_name[4]);
 
