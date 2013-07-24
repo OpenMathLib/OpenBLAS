@@ -89,7 +89,7 @@ else
 endif
 
 libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
-	$(CC) $(CFLAGS) libgoto2_shared.def -shared -o $(@F) \
+	$(CC) $(LDFLAGS) libgoto2_shared.def -shared -o $(@F) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
 
@@ -116,14 +116,14 @@ ifeq ($(OSNAME), Linux)
 so : ../$(LIBSONAME)
 
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
-	$(CC) $(CFLAGS) -shared -o ../$(LIBSONAME) \
+	$(CC) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--retain-symbols-file=linux.def -Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
 ifneq ($(C_COMPILER), LSB)
-	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 else
 #Use FC on LSB
-	$(FC) $(FFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+	$(FC) $(FFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 endif
 	rm -f linktest
 
@@ -135,10 +135,10 @@ ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
 so : ../$(LIBSONAME)
 
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
-	$(CC) $(CFLAGS)  -shared -o ../$(LIBSONAME) \
+	$(CC) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--retain-symbols-file=linux.def $(FEXTRALIB) $(EXTRALIB)
-	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 
 endif
@@ -148,15 +148,15 @@ ifeq ($(OSNAME), OSF1)
 so : ../$(LIBSONAME)
 
 ../$(LIBSONAME) :
-	$(CC) -shared -o ../$(LIBSONAME) ../$(LIBNAME)
+	$(CC) $(LDFLAGS) -shared -o ../$(LIBSONAME) ../$(LIBNAME)
 endif
 
 ifeq ($(OSNAME), SunOS)
 
 so : ../$(LIBSONAME)
-	$(CC) $(CFLAGS)  -shared -o ../$(LIBSONAME) \
+	$(CC) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive $(EXTRALIB)
-	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+	$(CC) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 
 endif
@@ -199,7 +199,7 @@ symbol.S : gensymbol
 	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) > symbol.S
 
 test : linktest.c
-	$(CC) $(CFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
+	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
 	rm -f linktest
 
 linktest.c : gensymbol ../Makefile.system ../getarch.c
