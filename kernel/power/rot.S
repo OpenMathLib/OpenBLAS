@@ -569,3 +569,7 @@ LL(999):
 
 	EPILOGUE
 #endif
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

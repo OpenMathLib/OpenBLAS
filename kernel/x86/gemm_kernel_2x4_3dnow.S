@@ -1915,3 +1915,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	ret
 
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

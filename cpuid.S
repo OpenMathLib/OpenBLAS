@@ -65,3 +65,7 @@ _cpuid:
 	.subsections_via_symbols
 
 #endif
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

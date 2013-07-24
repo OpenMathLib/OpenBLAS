@@ -335,3 +335,7 @@
 	cvt.s.d	s1, s1
 	
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

@@ -451,3 +451,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	NOP
 
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

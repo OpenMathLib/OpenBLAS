@@ -253,3 +253,7 @@ $L17:
 $L999:
 	ret
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

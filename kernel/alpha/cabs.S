@@ -69,3 +69,7 @@ NAME:
 	ret
 	.end NAME
 	.ident	VERSION
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

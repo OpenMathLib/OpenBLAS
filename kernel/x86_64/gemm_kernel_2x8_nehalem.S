@@ -1847,3 +1847,7 @@
 	ret
 
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

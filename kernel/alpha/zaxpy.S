@@ -609,3 +609,7 @@ $SubEnd:
 	lda	$sp,  64($sp)
 	ret
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

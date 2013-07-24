@@ -7795,3 +7795,7 @@
 #	.end	gemm
 #	.size	gemm, .-gemm
 #	.ident	"GCC: (Debian 4.4.6-6) 4.4.6"
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

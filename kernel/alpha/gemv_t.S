@@ -1059,3 +1059,7 @@ $L999:
 	lda	$sp,  STACKSIZE($sp)
 	ret
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

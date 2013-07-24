@@ -2235,3 +2235,7 @@ $L999:
 	ret
 	.ident	VERSION
 	.end	CNAME
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

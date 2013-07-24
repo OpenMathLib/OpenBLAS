@@ -64,3 +64,7 @@ LL(1):
 
 LL(2):
 	b	LL(0)
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif
