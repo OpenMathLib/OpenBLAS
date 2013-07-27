@@ -89,7 +89,7 @@ else
 endif
 
 libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
-	$(CC) $(LDFLAGS) libgoto2_shared.def -shared -o $(@F) \
+	$(CC) $(CFLAGS) $(LDFLAGS) libgoto2_shared.def -shared -o $(@F) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
 
@@ -116,7 +116,7 @@ ifeq ($(OSNAME), Linux)
 so : ../$(LIBSONAME)
 
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
-	$(CC) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
+	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--retain-symbols-file=linux.def -Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
 ifneq ($(C_COMPILER), LSB)
@@ -135,7 +135,7 @@ ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
 so : ../$(LIBSONAME)
 
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
-	$(CC) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
+	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	-Wl,--retain-symbols-file=linux.def $(FEXTRALIB) $(EXTRALIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
@@ -148,15 +148,15 @@ ifeq ($(OSNAME), OSF1)
 so : ../$(LIBSONAME)
 
 ../$(LIBSONAME) :
-	$(CC) $(LDFLAGS) -shared -o ../$(LIBSONAME) ../$(LIBNAME)
+	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) ../$(LIBNAME)
 endif
 
 ifeq ($(OSNAME), SunOS)
 
 so : ../$(LIBSONAME)
-	$(CC) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
+	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive $(EXTRALIB)
-	$(CC) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 
 endif
