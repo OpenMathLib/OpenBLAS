@@ -1,8 +1,5 @@
 # COMPILER_PREFIX = mingw32-
 
-ifeq ($(OSNAME), Linux)
-LDFLAGS     = -melf_i386
-endif
 
 ifeq ($(OSNAME), Interix)
 ARFLAGS		= -m x86

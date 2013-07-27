@@ -10,7 +10,6 @@ endif
 ifeq ($(COMPILER_F77), f90)
 FCOMMON_OPT += -xarch=v9
 endif
-LDFLAGS	= -64
 else
 
 CCOMMON_OPT += -mcpu=v9
