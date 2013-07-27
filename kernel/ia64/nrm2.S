@@ -308,3 +308,7 @@
 	.section .data
 	.type	sqrt, @function
 	.global	sqrt
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

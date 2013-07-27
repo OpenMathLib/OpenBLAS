@@ -383,3 +383,7 @@ LL(A1IN_RemainKernel):
 	blr
 
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

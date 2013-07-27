@@ -237,3 +237,7 @@ LL(A1I1_RemainKernel):
 	.align 4
 
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

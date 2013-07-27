@@ -896,3 +896,7 @@
 	mov	 ar.lc = ARLC
 	br.ret.sptk.many b0
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

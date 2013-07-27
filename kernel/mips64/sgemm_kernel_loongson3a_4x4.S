@@ -2577,3 +2577,7 @@
 	daddiu	$sp, $sp, 160
 
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

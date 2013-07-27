@@ -330,3 +330,7 @@
 	ADD	s1, s1, s2
 
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

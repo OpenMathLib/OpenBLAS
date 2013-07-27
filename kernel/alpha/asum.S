@@ -204,3 +204,7 @@ $L999:
 	ADD	s0, t0, s0
 	ret
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

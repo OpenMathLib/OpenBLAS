@@ -1064,3 +1064,7 @@ LL(999):
 	addi	SP, SP,  16
 	blr
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

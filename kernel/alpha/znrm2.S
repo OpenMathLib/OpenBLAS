@@ -424,3 +424,7 @@ $L999:
 #endif
 	ret
 	EPILOGUE
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif

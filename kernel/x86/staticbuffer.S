@@ -47,3 +47,7 @@
 	.comm	alloc_area, (NUM_BUFFERS * BUFFER_SIZE), 4096
 #endif
 #endif
+
+#if defined(__ELF__)
+        .section .note.GNU-stack,"",%progbits
+#endif
