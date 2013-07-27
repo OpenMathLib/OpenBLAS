@@ -150,9 +150,17 @@ REALNAME:
 #define PROFCODE .prologue 0
 #endif
 
+#if defined(__linux__) && defined(__ELF__)
+#define GNUSTACK .section .note.GNU-stack,"",%progbits
+#else
+#define GNUSTACK
+#endif
+
 #define EPILOGUE \
 	.end REALNAME; \
-	.ident VERSION
+	.ident VERSION; \
+	GNUSTACK
+
 #endif
 
 #ifdef DOUBLE
