@@ -77,7 +77,7 @@ endif
 clean ::
 	rm -f x* 
 
-FLDFLAGS = $(FFLAGS:-fPIC=)
+FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
 CEXTRALIB = 
 
 # Single real

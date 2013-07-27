@@ -17,13 +17,7 @@ endif
 endif
 
 ifdef BINARY64
-ifeq ($(OSNAME), Linux)
-LDFLAGS		= -m elf64ppc
-endif
 
-ifeq ($(OSNAME), Darwin)
-LDFLAGS		= -arch ppc64
-endif
 
 ifeq ($(OSNAME), AIX)
 CCOMMON_OPT	+= -mpowerpc64 -maix64
@@ -34,17 +28,12 @@ ifeq ($(COMPILER_F77), xlf)
 FCOMMON_OPT	+= -q64
 endif
 ARFLAGS		= -X 64
-LDFLAGS		= -b64
 ASFLAGS		= -a64
 endif
 else
-ifeq ($(OSNAME), Linux)
-LDFLAGS		 = -m elf32ppc
-endif
 ifeq ($(OSNAME), AIX)
 CCOMMON_OPT	+= -Wa,-a32
 ARFLAGS		= -X 32
-LDFLAGS		= -b32
 ASFLAGS		= -a32
 endif
 endif
