@@ -229,8 +229,8 @@ int get_cputype(int gettype){
     if ((ecx & (1 << 20)) != 0) feature |= HAVE_SSE4_2;
 #ifndef NO_AVX
     if (support_avx()) feature |= HAVE_AVX;
+    if ((ecx & (1 << 12)) != 0) feature |= HAVE_FMA3;
 #endif
-    if ((ecx & (1 << 20)) != 0) feature |= HAVE_FMA3;
 
     if (have_excpuid() >= 0x01) {
       cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
