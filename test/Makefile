@@ -88,7 +88,7 @@ else
 endif
 endif
 
-FLDFLAGS = $(FFLAGS:-fPIC=)
+FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
 CEXTRALIB = 
 
 
