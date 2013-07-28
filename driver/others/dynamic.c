@@ -64,12 +64,15 @@ extern gotoblas_t  gotoblas_BOBCAT;
 #ifndef NO_AVX
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BULLDOZER;
+extern gotoblas_t  gotoblas_PILEDRIVER;
 #else
 //Use NEHALEM kernels for sandy bridge
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
+#define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #endif
-
+//Use sandy bridge kernels for haswell.
+#define gotoblas_HASWELL gotoblas_SANDYBRIDGE
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -92,7 +95,7 @@ int support_avx(){
   int ret=0;
   
   cpuid(1, &eax, &ebx, &ecx, &edx);
-  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0){
+  if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0 && (ecx & (1 << 26)) != 0){
     xgetbv(0, &eax, &edx);
     if((eax & 6) == 6){
       ret=1;  //OS support AVX
@@ -175,7 +178,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -186,7 +189,27 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Nehalem kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Haswell
+	if (model == 12) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	return NULL;
+      case 4:
+		//Intel Haswell
+	if (model == 5) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -207,13 +230,23 @@ static gotoblas_t *get_coretype(void){
       }  else if (exfamily == 5) {
 	return &gotoblas_BOBCAT;
       } else if (exfamily == 6) {
-	//AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+	if(model == 1){
+	  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
 	  if(support_avx())
 	    return &gotoblas_BULLDOZER;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS doesn't support AVX. Use Barcelona kernels.\n");
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-	  }	
+	  }
+	}else if(model == 2){
+	  //AMD Bulldozer Opteron 6300 / Opteron 4300 / Opteron 3300
+	  if(support_avx())
+	    return &gotoblas_PILEDRIVER;
+	  else{
+	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
       } else {
 	return &gotoblas_BARCELONA;
       }
@@ -251,6 +284,7 @@ static char *corename[] = {
     "Sandybridge",
     "Bobcat",
     "Bulldozer",
+    "Piledriver",
 };
 
 char *gotoblas_corename(void) {
@@ -273,6 +307,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_SANDYBRIDGE)  return corename[16];
   if (gotoblas == &gotoblas_BOBCAT)       return corename[17];
   if (gotoblas == &gotoblas_BULLDOZER)    return corename[18];
+  if (gotoblas == &gotoblas_PILEDRIVER)    return corename[19];
 
   return corename[0];
 }

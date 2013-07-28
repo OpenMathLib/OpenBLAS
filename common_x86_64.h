@@ -218,6 +218,11 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 
 #ifdef ASSEMBLER
 
+#if defined(PILEDRIVER) || defined(BULLDOZER)
+//Enable some optimazation for barcelona.
+#define BARCELONA_OPTIMIZATION
+#endif
+
 #if defined(HAVE_3DNOW)
 #define EMMS	femms
 #elif defined(HAVE_MMX)
@@ -367,7 +372,10 @@ REALNAME:
 #define PROFCODE
 #endif
 
-#define EPILOGUE .size	 REALNAME, .-REALNAME
+#define EPILOGUE \
+        .size	 REALNAME, .-REALNAME; \
+        .section .note.GNU-stack,"",%progbits
+
 
 #endif
 

@@ -33,6 +33,8 @@ if ($ARGV[0] =~ /(.*)(-[.\d]+)/) {
 }
 
 $compiler = "";
+$compiler = LSB       if ($data =~ /COMPILER_LSB/);
+$compiler = CLANG     if ($data =~ /COMPILER_CLANG/);
 $compiler = PGI       if ($data =~ /COMPILER_PGI/);
 $compiler = PATHSCALE if ($data =~ /COMPILER_PATHSCALE/);
 $compiler = INTEL     if ($data =~ /COMPILER_INTEL/);
@@ -117,7 +119,11 @@ if ($compiler eq "OPEN64") {
     $openmp = "-mp";
 }
 
-if ($compiler eq "GCC") {
+if ($compiler eq "CLANG") {
+    $openmp = "-fopenmp";
+}
+
+if ($compiler eq "GCC" || $compiler eq "LSB") {
     $openmp = "-fopenmp";
 }
 
@@ -241,13 +247,13 @@ print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
 
 if ($os eq "LINUX") {
     
-    @pthread = split(/\s+/, `nm /lib/libpthread.so* | grep _pthread_create`);
+#    @pthread = split(/\s+/, `nm /lib/libpthread.so* | grep _pthread_create`);
     
-    if ($pthread[2] ne "") {
-	print CONFFILE "#define PTHREAD_CREATE_FUNC	$pthread[2]\n";
-    } else {
+#    if ($pthread[2] ne "") {
+#	print CONFFILE "#define PTHREAD_CREATE_FUNC	$pthread[2]\n";
+#    } else {
 	print CONFFILE "#define PTHREAD_CREATE_FUNC	pthread_create\n";
-    }
+#    }
 } else {
     print CONFFILE "#define PTHREAD_CREATE_FUNC	pthread_create\n";
 }

@@ -60,6 +60,8 @@ static blasint (*trtri_parallel[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *
 };
 #endif
 
+extern void dtrtri_lapack_(char *UPLO, char *DIAG, int *N, double *a, int *ldA, int *Info);
+
 int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
   blas_arg_t args;
@@ -83,12 +85,14 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
   TOUPPER(uplo_arg);
   TOUPPER(diag_arg);
 
+
   uplo = -1;
   if (uplo_arg == 'U') uplo = 0;
   if (uplo_arg == 'L') uplo = 1;
   diag = -1;
   if (diag_arg == 'U') diag = 0;
   if (diag_arg == 'N') diag = 1;
+
 
   info  = 0;
   if (args.lda  < MAX(1,args.n)) info = 5;
@@ -127,6 +131,15 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
   args.nthreads = num_cpu_avail(4);
 
   if (args.nthreads == 1) {
+#endif
+
+#if DOUBLE
+    // double trtri_U single thread error
+    // call dtrtri from lapack for a walk around.
+    if(uplo==0){
+      dtrtri_lapack_(UPLO, DIAG, N, a, ldA, Info);
+      return 0;
+    }
 #endif
 
     *Info = (trtri_single[(uplo << 1) | diag])(&args, NULL, NULL, sa, sb, 0);

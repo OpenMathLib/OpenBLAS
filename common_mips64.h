@@ -235,10 +235,17 @@ REALNAME: ;\
 	.set	noreorder ;\
 	.set	nomacro
 
+#if defined(__linux__) && defined(__ELF__)
+#define GNUSTACK .section .note.GNU-stack,"",%progbits
+#else
+#define GNUSTACK
+#endif
+
 #define EPILOGUE \
 	.set	macro ;\
 	.set	reorder ;\
-	.end	REALNAME
+	.end	REALNAME ;\
+	GNUSTACK
 
 #define PROFCODE
 #endif
@@ -255,8 +262,8 @@ REALNAME: ;\
 #endif
 
 #if defined(LOONGSON3B)
-#define PAGESIZE	(32UL << 10)
-#define FIXED_PAGESIZE	(32UL << 10)
+#define PAGESIZE	(16UL << 10)
+#define FIXED_PAGESIZE	(16UL << 10)
 #endif
 
 #ifndef PAGESIZE

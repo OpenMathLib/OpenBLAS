@@ -43,6 +43,12 @@ static FLOAT dm1 = -1.;
 
 double sqrt(double);
 
+//In this case, the recursive getrf_parallel may overflow the stack.
+//Instead, use malloc to alloc job_t. 
+#if MAX_CPU_NUMBER > GETRF_MEM_ALLOC_THRESHOLD
+#define USE_ALLOC_HEAP
+#endif
+
 #ifndef CACHE_LINE_SIZE
 #define CACHE_LINE_SIZE 8
 #endif
@@ -356,7 +362,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   BLASLONG range_M[MAX_CPU_NUMBER + 1];
   BLASLONG range_N[MAX_CPU_NUMBER + 1];
 
+#ifndef USE_ALLOC_HEAP
   job_t        job[MAX_CPU_NUMBER];
+#else
+  job_t *      job=NULL;
+#endif
 
   BLASLONG width, nn, mm;
   BLASLONG i, j, k, is, bk;
@@ -401,7 +411,6 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   
   newarg.c   = ipiv;
   newarg.lda = lda;
-  newarg.common   = (void *)job;
 
   info = 0;
 
@@ -427,6 +436,16 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   
   if (iinfo && !info) info = iinfo;
   
+#ifdef USE_ALLOC_HEAP
+  job = (job_t*)malloc(MAX_CPU_NUMBER * sizeof(job_t));
+  if(job==NULL){
+    fprintf(stderr, "OpenBLAS: malloc failed in %s\n", __func__);
+    exit(1);
+  }
+#endif
+
+  newarg.common   = (void *)job;
+
   TRSM_ILTCOPY(bk, bk, a, lda, 0, sb);
 
   sbb = (FLOAT *)((((long)(sb + bk * bk * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
@@ -586,6 +605,10 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     is += bk;
   }
   
+#ifdef USE_ALLOC_HEAP
+  free(job);
+#endif
+
   return info;
 }
 

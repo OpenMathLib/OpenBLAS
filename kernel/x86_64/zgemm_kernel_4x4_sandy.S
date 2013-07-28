@@ -1385,7 +1385,7 @@ ALIGN_5
 EXTRA_DY $1, yvec15, xvec7;
 EXTRA_DY $1, yvec14, xvec6;
 EXTRA_DY $1, yvec13, xvec5;
-EXTRA_DY $2, yvec12, xvec4;
+EXTRA_DY $1, yvec12, xvec4;
 #ifndef	TRMMKERNEL
 LDL_DX 0*SIZE(C0), xvec0, xvec0;
 LDH_DX 1*SIZE(C0), xvec0, xvec0;
@@ -1406,8 +1406,8 @@ STL_DX	xvec7, 2*SIZE(C0, ldc, 1);
 STH_DX	xvec7, 3*SIZE(C0, ldc, 1);
 STL_DX	xvec13, 0*SIZE(C0, ldc, 1);
 STH_DX	xvec13, 1*SIZE(C0, ldc, 1);
-STL_DX	xvec6, 2*SIZE(C0);
-STH_DX	xvec6, 3*SIZE(C0);
+STL_DX	xvec5, 2*SIZE(C0);
+STH_DX	xvec5, 3*SIZE(C0);
 #ifndef	TRMMKERNEL
 LDL_DX 0*SIZE(C1), xvec0, xvec0;
 LDH_DX 1*SIZE(C1), xvec0, xvec0;

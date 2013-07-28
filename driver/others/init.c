@@ -82,6 +82,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sched.h>
 #include <dirent.h>
 #include <dlfcn.h>
+#include <unistd.h>
+#include <string.h>
 
 #define MAX_NODES	16
 #define MAX_CPUS	256
@@ -314,7 +316,7 @@ static int numa_check(void) {
   }
 
   while ((dir = readdir(dp)) != NULL) {
-    if (*(unsigned int *) dir -> d_name == 0x065646f6eU) {
+    if (strncmp(dir->d_name, "node", 4)==0) {
 
       node = atoi(&dir -> d_name[4]);
 
@@ -735,7 +737,8 @@ void gotoblas_affinity_init(void) {
     fprintf(stderr, "Shared Memory Initialization.\n");
 #endif
 
-    common -> num_procs = get_nprocs();
+    //returns the number of processors which are currently online
+    common -> num_procs = sysconf(_SC_NPROCESSORS_ONLN);;
 
     if(common -> num_procs > MAX_CPUS) {
       fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(%d). Terminated.\n", common->num_procs, MAX_CPUS);

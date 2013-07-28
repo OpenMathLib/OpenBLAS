@@ -106,6 +106,8 @@
 #define CORE_SANDYBRIDGE 20
 #define CORE_BOBCAT     21
 #define CORE_BULLDOZER  22
+#define CORE_PILEDRIVER  23
+#define CORE_HASWELL CORE_SANDYBRIDGE
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -127,6 +129,7 @@
 #define HAVE_FASTMOVU    (1 << 17)
 #define HAVE_AVX      (1 <<  18)
 #define HAVE_FMA4     (1 <<  19)
+#define HAVE_FMA3     (1 <<  20)
 
 #define CACHE_INFO_L1_I     1
 #define CACHE_INFO_L1_D     2
@@ -196,4 +199,8 @@ typedef struct {
 #define CPUTYPE_SANDYBRIDGE             44
 #define CPUTYPE_BOBCAT                  45
 #define CPUTYPE_BULLDOZER               46
+#define CPUTYPE_PILEDRIVER              47
+// this define is because BLAS doesn't have haswell specific optimizations yet
+#define CPUTYPE_HASWELL CPUTYPE_SANDYBRIDGE 
+
 #endif
