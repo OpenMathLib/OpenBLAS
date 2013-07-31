@@ -60,7 +60,7 @@ static blasint (*trtri_parallel[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *
 };
 #endif
 
-extern void dtrtri_lapack_(char *UPLO, char *DIAG, int *N, double *a, int *ldA, int *Info);
+extern void BLASFUNC(dtrtrilapack)(char *UPLO, char *DIAG, int *N, double *a, int *ldA, int *Info);
 
 int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
@@ -137,7 +137,7 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
     // double trtri_U single thread error
     // call dtrtri from lapack for a walk around.
     if(uplo==0){
-      dtrtri_lapack_(UPLO, DIAG, N, a, ldA, Info);
+      BLASFUNC(dtrtrilapack)(UPLO, DIAG, N, a, ldA, Info);
 #ifndef PPC440
       blas_memory_free(buffer);
 #endif

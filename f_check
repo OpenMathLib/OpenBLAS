@@ -114,6 +114,12 @@ if ($compiler eq "") {
 	    $vendor = IBM;
 	    $openmp = "-openmp";
 	}
+
+	# for embeded underscore name, e.g. zho_ge, it may append 2 underscores.
+	$data = `$compiler -O2 -S ftest3.f > /dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s`;
+	if ($data =~ /zho_ge__/) {
+	    $need2bu       = 1;
+	}
     }
 
     if ($vendor eq "") {
@@ -245,6 +251,8 @@ if ($link ne "") {
 
     $link =~ s/\-rpath\s+/\-rpath\@/g;
 
+    $link =~ s/\-rpath-link\s+/\-rpath-link\@/g;
+
     @flags = split(/[\s\,\n]/, $link);
     # remove leading and trailing quotes from each flag.
     @flags = map {s/^['"]|['"]$//g; $_} @flags;
@@ -265,7 +273,15 @@ if ($link ne "") {
 	    $linker_L .= "-Wl,". $flags . " ";
 	    }
 	
-	if ($flags =~ /^\-rpath/) {
+	if ($flags =~ /^\-rpath\@/) {
+	    $flags =~ s/\@/\,/g;
+	    if ($vendor eq "PGI") {
+		$flags =~ s/lib$/libso/;
+	    }
+	    $linker_L .= "-Wl,". $flags . " " ;
+	}
+
+	if ($flags =~ /^\-rpath-link\@/) {
 	    $flags =~ s/\@/\,/g;
 	    if ($vendor eq "PGI") {
 		$flags =~ s/lib$/libso/;
@@ -309,6 +325,9 @@ print MAKEFILE "NOFORTRAN=1\n" if $nofortran == 1;
 
 print CONFFILE "#define BUNDERSCORE\t$bu\n" if $bu ne "";
 print CONFFILE "#define NEEDBUNDERSCORE\t1\n" if $bu ne "";
+print CONFFILE "#define NEED2UNDERSCORES\t1\n" if $need2bu ne "";
+
+print MAKEFILE "NEED2UNDERSCORES=1\n" if $need2bu ne "";
 
 if (($linker_l ne "") || ($linker_a ne "")) {
     print MAKEFILE "FEXTRALIB=$linker_L $linker_l $linker_a\n";

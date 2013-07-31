@@ -897,6 +897,7 @@ export CC
 export FC
 export BU
 export FU
+export NEED2UNDERSCORES
 export USE_THREAD
 export NUM_THREADS
 export NUM_CORES
