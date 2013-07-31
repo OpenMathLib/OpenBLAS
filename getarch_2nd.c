@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv) {
 
-  if ( (argc <= 1) || (argc >= 2) && (*argv[1] == '0')) {
+  if ( (argc <= 1) || ((argc >= 2) && (*argv[1] == '0'))) {
     printf("SGEMM_UNROLL_M=%d\n", SGEMM_DEFAULT_UNROLL_M);
     printf("SGEMM_UNROLL_N=%d\n", SGEMM_DEFAULT_UNROLL_N);
     printf("DGEMM_UNROLL_M=%d\n", DGEMM_DEFAULT_UNROLL_M);
