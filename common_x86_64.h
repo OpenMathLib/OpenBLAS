@@ -372,7 +372,10 @@ REALNAME:
 #define PROFCODE
 #endif
 
-#define EPILOGUE .size	 REALNAME, .-REALNAME
+#define EPILOGUE \
+        .size	 REALNAME, .-REALNAME; \
+        .section .note.GNU-stack,"",%progbits
+
 
 #endif
 

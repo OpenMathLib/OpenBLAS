@@ -379,8 +379,15 @@ REALNAME:
 #define PROFCODE
 #endif
 
+#if defined(__linux__) && defined(__ELF__)
+#define GNUSTACK .section .note.GNU-stack,"",%progbits
+#else
+#define GNUSTACK
+#endif
+
 #define EPILOGUE \
-	.endp REALNAME
+        .endp REALNAME ; \
+        GNUSTACK
 
 #define START_ADDRESS 0x20000fc800000000UL
 

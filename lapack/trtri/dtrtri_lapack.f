@@ -107,7 +107,7 @@
 *> \ingroup doubleOTHERcomputational
 *
 *  =====================================================================
-      SUBROUTINE DTRTRI_LAPACK( UPLO, DIAG, N, A, LDA, INFO )
+      SUBROUTINE DTRTRILAPACK( UPLO, DIAG, N, A, LDA, INFO )
 *
 *  -- LAPACK computational routine (version 3.4.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --

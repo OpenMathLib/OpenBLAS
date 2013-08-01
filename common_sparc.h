@@ -199,8 +199,17 @@ static __inline int blas_quickdivide(blasint x, blasint y){
 	.type	REALNAME, #function; \
 	.proc	07; \
 REALNAME:;
+
+#if defined(__linux__) && defined(__ELF__)
+#define GNUSTACK .section .note.GNU-stack,"",%progbits
+#else
+#define GNUSTACK
+#endif
+
 #define EPILOGUE \
-	.size	 REALNAME, .-REALNAME
+        .size	 REALNAME, .-REALNAME; \
+        GNUSTACK
+
 #endif
 
 #endif

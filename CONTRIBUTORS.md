@@ -79,5 +79,9 @@ In chronological order:
   * [2013-07-11] create openblas_get_parallel to retrieve information which parallelization 
     model is used by OpenBLAS.
 
+* Sébastien Fabbro <bicatali@gentoo.org>
+  * [2013-07-24] Modify makefile to respect user's LDFLAGS
+  * [2013-07-24] Add stack markings for GNU as arch-independent for assembler files
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]

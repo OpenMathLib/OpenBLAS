@@ -2,23 +2,10 @@
 
 ifeq ($(OSNAME), SunOS)
 ifdef BINARY64
-LDFLAGS = -64
 ifeq ($(F_COMPILER), SUN)
 FCOMMON_OPT += -m64
 endif
 endif
-endif
-
-ifeq ($(OSNAME), FreeBSD)
-LDFLAGS		 = -m elf_x86_64_fbsd
-endif
-
-ifeq ($(OSNAME), Linux)
-LDFLAGS		 = -m elf_x86_64
-endif
-
-ifeq ($(OSNAME), Darwin)
-LDFLAGS		 = 
 endif
 
 ifeq ($(OSNAME), Interix)
