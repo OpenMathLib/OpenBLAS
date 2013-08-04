@@ -310,7 +310,6 @@
 	vmovddup         -1 * SIZE(AO), %xmm8
 	vmulpd                  %xmm3 , %xmm8 , %xmm3
 
-
 	vmovsd	%xmm0 ,  0 * SIZE(CO1)
 	vmovsd	%xmm1 ,  1 * SIZE(CO1)
 	vmovsd	%xmm2 ,  2 * SIZE(CO1)
@@ -358,7 +357,6 @@
 
 	vmovddup        -13 * SIZE(AO), %xmm8
 	vmulpd                  %xmm1 , %xmm8 , %xmm1
-
 
 	vmovsd	%xmm0 ,  0 * SIZE(CO1)
 	vmovsd	%xmm1 ,  1 * SIZE(CO1)
@@ -480,7 +478,6 @@
 	vfnmaddsd %xmm7 , 39 * SIZE(AO), %xmm6 , %xmm7
 
 	vmulsd		  47 * SIZE(AO), %xmm7 , %xmm7
-
 
 	vmovsd	%xmm0 ,  0 * SIZE(CO1)
 	vmovsd	%xmm1 ,  1 * SIZE(CO1)
@@ -706,7 +703,7 @@
 	leaq	(AO, %rax, 8), AO
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L56
 	ALIGN_4
 
@@ -765,10 +762,10 @@
 
 	movq	B, BO
 
-	pxor	%xmm8, %xmm8
-	pxor	%xmm9, %xmm9
-	pxor	%xmm10, %xmm10
-	pxor	%xmm11, %xmm11
+	vxorpd	%xmm8 , %xmm8 , %xmm8
+	vxorpd	%xmm9 , %xmm9 , %xmm9
+	vxorpd	%xmm10, %xmm10, %xmm10
+	vxorpd	%xmm11, %xmm11, %xmm11
 
 	movq	KK, %rax
 	andq	$-4, %rax
@@ -776,7 +773,7 @@
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L56_A
 	ALIGN_4
 
@@ -835,8 +832,8 @@
 .L61:
 	movq	B, BO
 
-	pxor	%xmm8, %xmm8
-	pxor	%xmm9, %xmm9
+	vxorpd	%xmm8, %xmm8 , %xmm8
+	vxorpd	%xmm9, %xmm9 , %xmm9
 
 	movq	KK, %rax
 	andq	$-4, %rax
@@ -844,7 +841,7 @@
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L66
 	ALIGN_4
 
@@ -901,7 +898,7 @@
 .L71:
 	movq	B, BO
 
-	pxor	%xmm8, %xmm8
+	vxorpd	%xmm8, %xmm8 , %xmm8
 
 	movq	KK, %rax
 	andq	$-4, %rax
@@ -909,7 +906,7 @@
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L76
 	ALIGN_4
 
@@ -985,10 +982,10 @@
 
 	movq	B, BO
 
-	pxor	%xmm8, %xmm8
-	pxor	%xmm9, %xmm9
-	pxor	%xmm10, %xmm10
-	pxor	%xmm11, %xmm11
+	vxorpd	%xmm8, %xmm8  , %xmm8
+	vxorpd	%xmm9, %xmm9  , %xmm9
+	vxorpd	%xmm10, %xmm10, %xmm10
+	vxorpd	%xmm11, %xmm11, %xmm11
 
 
 	movq	KK, %rax
@@ -997,7 +994,7 @@
 	leaq	(AO, %rax, 8), AO
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L96
 	ALIGN_4
 
@@ -1053,8 +1050,8 @@
 .L91_A:
 	movq	B, BO
 
-	pxor	%xmm8, %xmm8
-	pxor	%xmm9, %xmm9
+	vxorpd	%xmm8, %xmm8 , %xmm8
+	vxorpd	%xmm9, %xmm9 , %xmm9
 
 	movq	KK, %rax
 	andq	$-4, %rax
@@ -1062,7 +1059,7 @@
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L96_A
 	ALIGN_4
 
@@ -1119,7 +1116,7 @@
 
 	movq	B, BO
 
-	pxor	%xmm8, %xmm8
+	vxorpd	%xmm8, %xmm8 , %xmm8
 
 	movq	KK, %rax
 	andq	$-4, %rax
@@ -1127,7 +1124,7 @@
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L106
 	ALIGN_4
 
@@ -1183,7 +1180,7 @@
 .L111:
 	movq	B, BO
 
-	pxor	%xmm8, %xmm8
+	vxorpd	%xmm8, %xmm8 , %xmm8
 
 	movq	KK, %rax
 	andq	$-4, %rax
@@ -1191,7 +1188,7 @@
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
-	NOBRANCH
+
 	je	.L116
 	ALIGN_4
 
