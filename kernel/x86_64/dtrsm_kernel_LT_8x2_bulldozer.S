@@ -84,12 +84,6 @@
 
 #endif
 
-#define PREFETCH     prefetch
-#define PREFETCHSIZE  (8 *  7 + 0)
-
-#define movlpd	vmovsd
-#define movapd	vmovups
-#define movupd	vmovups
 
 .macro KERNEL8x2_SUB
 	vmovddup	-16*SIZE(BO,%rax,2), %xmm1
@@ -97,15 +91,15 @@
 	vmovups		-16*SIZE(AO,%rax,8), %xmm0
 	vfmaddpd	%xmm8 , %xmm0 , %xmm1 , %xmm8
 	vfmaddpd	%xmm9 , %xmm0 , %xmm2 , %xmm9
-	vmovups		-14*SIZE(AO,%rax,8), %xmm0
-	vfmaddpd	%xmm10, %xmm0 , %xmm1 , %xmm10
-	vfmaddpd	%xmm11, %xmm0 , %xmm2 , %xmm11
-	vmovups		-12*SIZE(AO,%rax,8), %xmm0
-	vfmaddpd	%xmm12, %xmm0 , %xmm1 , %xmm12
-	vfmaddpd	%xmm13, %xmm0 , %xmm2 , %xmm13
-	vmovups		-10*SIZE(AO,%rax,8), %xmm0
-	vfmaddpd	%xmm14, %xmm0 , %xmm1 , %xmm14
-	vfmaddpd	%xmm15, %xmm0 , %xmm2 , %xmm15
+	vmovups		-14*SIZE(AO,%rax,8), %xmm4
+	vfmaddpd	%xmm10, %xmm4 , %xmm1 , %xmm10
+	vfmaddpd	%xmm11, %xmm4 , %xmm2 , %xmm11
+	vmovups		-12*SIZE(AO,%rax,8), %xmm5
+	vfmaddpd	%xmm12, %xmm5 , %xmm1 , %xmm12
+	vfmaddpd	%xmm13, %xmm5 , %xmm2 , %xmm13
+	vmovups		-10*SIZE(AO,%rax,8), %xmm6
+	vfmaddpd	%xmm14, %xmm6 , %xmm1 , %xmm14
+	vfmaddpd	%xmm15, %xmm6 , %xmm2 , %xmm15
 	addq    $SIZE, %rax
 .endm
 
