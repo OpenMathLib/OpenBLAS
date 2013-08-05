@@ -84,6 +84,9 @@
 
 #endif
 
+#define A_PR1   384
+#define B_PR1   192
+
 
 .macro KERNEL8x2_SUB
 	vmovddup	-16*SIZE(BO,%rax,2), %xmm1
@@ -708,9 +711,14 @@
 	ALIGN_4
 
 .L52:
+	prefetcht0      A_PR1(AO,%rax,8)
+	prefetcht0      B_PR1(BO,%rax,2)
 	KERNEL8x2_SUB
+	prefetcht0      A_PR1(AO,%rax,8)
 	KERNEL8x2_SUB
+	prefetcht0      A_PR1(AO,%rax,8)
 	KERNEL8x2_SUB
+	prefetcht0      A_PR1(AO,%rax,8)
 	KERNEL8x2_SUB
 
 	jl	.L52
