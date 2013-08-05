@@ -63,16 +63,14 @@ extern gotoblas_t  gotoblas_BARCELONA;
 extern gotoblas_t  gotoblas_BOBCAT;
 #ifndef NO_AVX
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
-//extern gotoblas_t  gotoblas_BULLDOZER;
-//extern gotoblas_t  gotoblas_PILEDRIVER;
+extern gotoblas_t  gotoblas_BULLDOZER;
+extern gotoblas_t  gotoblas_PILEDRIVER;
 #else
 //Use NEHALEM kernels for sandy bridge
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
-#endif
-
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
-
+#endif
 //Use sandy bridge kernels for haswell.
 #define gotoblas_HASWELL gotoblas_SANDYBRIDGE
 
