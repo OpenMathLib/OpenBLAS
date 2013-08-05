@@ -1,5 +1,17 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.8
+01-Aug-2013
+common:
+	* Support Open64 5.0. (#266)
+	* Add executable stack markings. (#262, Thank Sébastien Fabbro)
+	* Respect user's LDFLAGS (Thank Sébastien Fabbro)
+
+x86/x86-64:
+	* Rollback bulldozer and piledriver kernels to barcelona kernels (#263)
+	  We will fix the compuational error bug in bulldozer and piledriver kernels.
+
+====================================================================
 Version 0.2.7
 20-Jul-2013
 common:

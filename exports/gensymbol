@@ -114,8 +114,8 @@
 
 		# ALLAUX  -- Auxiliary routines called from all precisions
 		# already provided by @blasobjs: xerbla, lsame
-		ilaenv, ieeeck, lsamen, xerbla_array, iparmq,
-		ilaprec, ilatrans, ilauplo, iladiag, chla_transtype,
+		ilaenv, ieeeck, lsamen,  iparmq,
+		ilaprec, ilatrans, ilauplo, iladiag, 
 		ilaver, slamch, slamc3,
 
 		# SCLAUX  -- Auxiliary routines called from both REAL and COMPLEX.
@@ -2672,12 +2672,25 @@
 		#LAPACKE_zlagsy_work,
 		);
 
+#These function may need 2 underscores.
+@lapack_embeded_underscore_objs=(xerbla_array, chla_transtype,);
+
 if ($ARGV[5] == 1) {
 	#NO_LAPACK=1
 	@underscore_objs = (@blasobjs, @misc_underscore_objs);
 } elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1" ||
          -d "../lapack-3.4.2" || -d "../lapack-netlib") {
-    @underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2, @misc_underscore_objs);
+
+    if ($ARGV[7] == 0){
+	# NEED2UNDERSCORES=0
+	# Don't need 2 underscores
+	@underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2, @misc_underscore_objs, @lapack_embeded_underscore_objs);
+    }else{
+	# Need 2 underscores
+	@underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2, @misc_underscore_objs);
+	@need_2underscore_objs = (@lapack_embeded_underscore_objs);
+    };
+
 } else {
     @underscore_objs = (@blasobjs, @lapackobjs, @misc_underscore_objs);
 }
@@ -2729,6 +2742,10 @@ if ($ARGV[0] eq "linux"){
 	print $objs, $bu, "\n";
     }
 
+    foreach $objs (@need_2underscore_objs) {
+	print $objs, $bu, $bu, "\n";
+    }
+
 #    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
 	    print $objs, "\n";
@@ -2750,6 +2767,10 @@ if ($ARGV[0] eq "osx"){
 	print "_", $objs, $bu, "\n";
     }
 
+    foreach $objs (@need_2underscore_objs) {
+	print "_", $objs, $bu, $bu, "\n";
+    }
+
 #    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
 	    print "_", $objs, "\n";
@@ -2765,6 +2786,10 @@ if ($ARGV[0] eq "aix"){
 
     foreach $objs (@underscore_objs) {
 	print $objs, $bu, "\n";
+    }
+
+    foreach $objs (@need_2underscore_objs) {
+	print $objs, $bu, $bu, "\n";
     }
 
 #    if ($ARGV[4] == 0) {
@@ -2789,6 +2814,17 @@ if ($ARGV[0] eq "win2k"){
 	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
 	$count ++;
 	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	$count ++;
+    }
+
+    foreach $objs (@need_2underscore_objs) {
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+	print "\t$objs=$objs","__  \@", $count, "\n";
+	$count ++;
+	print "\t",$objs, "__=$objs","__  \@", $count, "\n";
+	$count ++;
+	print "\t$uppercase=$objs", "__  \@", $count, "\n";
 	$count ++;
     }
     
@@ -2852,6 +2888,18 @@ if ($ARGV[0] eq "microsoft"){
    	print "\t$uppercase\_ = $objs","_\n";
 	$count ++;
     }
+
+    foreach $objs (@need_2underscore_objs) {
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+	print "\t$objs=$objs","__  \@", $count, "\n";
+	$count ++;
+	print "\t",$objs, "__=$objs","__  \@", $count, "\n";
+	$count ++;
+	print "\t$uppercase=$objs", "__  \@", $count, "\n";
+	$count ++;
+    }
+
     exit(0);
 }
 
@@ -2868,6 +2916,16 @@ if ($ARGV[0] eq "win2kasm"){
 	print "_", $uppercase, "_:\n";
 	print "\tjmp\t_", $objs, "_\n";
     }
+
+    foreach $objs (@need_2underscore_objs) {
+	$uppercase = $objs;
+	$uppercase =~ tr/[a-z]/[A-Z]/;
+	print "\t.align 16\n";
+	print "\t.globl _", $uppercase, "__\n";
+	print "_", $uppercase, "__:\n";
+	print "\tjmp\t_", $objs, "__\n";
+    }
+
     exit(0);
 }
 
@@ -2880,6 +2938,11 @@ if ($ARGV[0] eq "linktest"){
     foreach $objs (@underscore_objs) {
 	print $objs, $bu, "();\n" if $objs ne "xerbla";
     }
+
+    foreach $objs (@need_2underscore_objs) {
+	print $objs, $bu, $bu, "();\n";
+    }
+
 #    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
 	print $objs, "();\n";
