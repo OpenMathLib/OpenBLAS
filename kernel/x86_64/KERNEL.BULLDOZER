@@ -53,8 +53,8 @@ STRSMKERNEL_RN  =  ../generic/trsm_kernel_RN.c
 STRSMKERNEL_RT  =  ../generic/trsm_kernel_RT.c
 
 DTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
-DTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
+DTRSMKERNEL_LT  = dtrsm_kernel_LT_8x2_bulldozer.S
+DTRSMKERNEL_RN  = dtrsm_kernel_RN_8x2_bulldozer.S
 DTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
 
 CTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
