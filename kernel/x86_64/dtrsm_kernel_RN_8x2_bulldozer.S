@@ -108,149 +108,61 @@
 
 .macro SOLVE_8x2
 
-        vmovups   %xmm8 , %xmm1
-        vunpcklpd %xmm9 , %xmm8 , %xmm8
-        vunpckhpd %xmm9 , %xmm1 , %xmm1
+	vmovups		-16 * SIZE(AO), %xmm0
+	vmovups		-14 * SIZE(AO), %xmm1
+	vmovups		-12 * SIZE(AO), %xmm2
+	vmovups		-10 * SIZE(AO), %xmm3
+	vmovups		 -8 * SIZE(AO), %xmm4
+	vmovups		 -6 * SIZE(AO), %xmm5
+	vmovups		 -4 * SIZE(AO), %xmm6
+	vmovups		 -2 * SIZE(AO), %xmm7
 
-	vmovups		-16 * SIZE(BO), %xmm0
         vsubpd  	%xmm8 , %xmm0 , %xmm0
-	vmovups		-14 * SIZE(BO), %xmm8
-        vsubpd  	%xmm1 , %xmm8 , %xmm1
+        vsubpd  	%xmm10, %xmm1 , %xmm1
+        vsubpd  	%xmm12, %xmm2 , %xmm2
+        vsubpd  	%xmm14, %xmm3 , %xmm3
+        vsubpd  	%xmm9 , %xmm4 , %xmm4
+        vsubpd  	%xmm11, %xmm5 , %xmm5
+        vsubpd  	%xmm13, %xmm6 , %xmm6
+        vsubpd  	%xmm15, %xmm7 , %xmm7
 
-        vmovups   %xmm10, %xmm3
-        vunpcklpd %xmm11, %xmm10 , %xmm10
-        vunpckhpd %xmm11, %xmm3  , %xmm3
-
-	vmovups		-12 * SIZE(BO), %xmm8
-	vmovups		-10 * SIZE(BO), %xmm9
-        vsubpd  	%xmm10, %xmm8 , %xmm2
-        vsubpd  	%xmm3 , %xmm9 , %xmm3
-
-        vmovups   %xmm12, %xmm5
-        vunpcklpd %xmm13, %xmm12 , %xmm12
-        vunpckhpd %xmm13, %xmm5  , %xmm5
-
-	vmovups		 -8 * SIZE(BO), %xmm8
-	vmovups		 -6 * SIZE(BO), %xmm9
-        vsubpd  	%xmm12, %xmm8 , %xmm4
-        vsubpd  	%xmm5 , %xmm9 , %xmm5
-
-        vmovups  %xmm14, %xmm7
-        vunpcklpd %xmm15, %xmm14 , %xmm14
-        vunpckhpd %xmm15, %xmm7  , %xmm7
-
-	vmovups		 -4 * SIZE(BO), %xmm8
-	vmovups		 -2 * SIZE(BO), %xmm9
-        vsubpd  	%xmm14, %xmm8 , %xmm6
-        vsubpd  	%xmm7 , %xmm9 , %xmm7
-
-	vmovddup        -16 * SIZE(AO), %xmm8
+	vmovddup        -16 * SIZE(BO), %xmm8
         vmulpd                  %xmm0 , %xmm8 , %xmm0
-        vmovddup        -15 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1 
-        vmovddup        -14 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm0 , %xmm10, %xmm2 
-        vmovddup        -13 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm0 , %xmm11, %xmm3 
-	vmovddup        -12 * SIZE(AO), %xmm8
-        vfnmaddpd       %xmm4 , %xmm0 , %xmm8 , %xmm4 
-        vmovddup        -11 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm0 , %xmm9 , %xmm5 
-        vmovddup        -10 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm0 , %xmm10, %xmm6 
-        vmovddup         -9 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm0 , %xmm11, %xmm7 
+        vmulpd                  %xmm1 , %xmm8 , %xmm1
+        vmulpd                  %xmm2 , %xmm8 , %xmm2
+        vmulpd                  %xmm3 , %xmm8 , %xmm3
 
-	vmovddup         -7 * SIZE(AO), %xmm8
-	vmulpd                  %xmm1 , %xmm8 , %xmm1
-        vmovddup         -6 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm1 , %xmm10, %xmm2 
-        vmovddup         -5 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm1 , %xmm11, %xmm3 
-	vmovddup         -4 * SIZE(AO), %xmm8
-        vfnmaddpd       %xmm4 , %xmm1 , %xmm8 , %xmm4 
-        vmovddup         -3 * SIZE(AO), %xmm9
+        vmovddup        -15 * SIZE(BO), %xmm9
+        vfnmaddpd       %xmm4 , %xmm0 , %xmm9 , %xmm4 
         vfnmaddpd       %xmm5 , %xmm1 , %xmm9 , %xmm5 
-        vmovddup         -2 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm1 , %xmm10, %xmm6 
-        vmovddup         -1 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm1 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm6 , %xmm2 , %xmm9 , %xmm6 
+        vfnmaddpd       %xmm7 , %xmm3 , %xmm9 , %xmm7 
 
-	vmovddup          2 * SIZE(AO), %xmm8
-	vmulpd                  %xmm2 , %xmm8 , %xmm2
-        vmovddup          3 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm2 , %xmm11, %xmm3 
-	vmovddup          4 * SIZE(AO), %xmm8
-        vfnmaddpd       %xmm4 , %xmm2 , %xmm8 , %xmm4 
-        vmovddup          5 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm2 , %xmm9 , %xmm5 
-        vmovddup          6 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm2 , %xmm10, %xmm6 
-        vmovddup          7 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm2 , %xmm11, %xmm7 
+        vmovddup        -13 * SIZE(BO), %xmm10
+        vmulpd                  %xmm4 , %xmm10, %xmm4
+        vmulpd                  %xmm5 , %xmm10, %xmm5
+        vmulpd                  %xmm6 , %xmm10, %xmm6
+        vmulpd                  %xmm7 , %xmm10, %xmm7
 
-	vmovddup         11 * SIZE(AO), %xmm8
-	vmulpd                  %xmm3 , %xmm8 , %xmm3
-        vmovddup         12 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm4 , %xmm3 , %xmm11, %xmm4 
-        vmovddup         13 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm3 , %xmm9 , %xmm5 
-        vmovddup         14 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm3 , %xmm10, %xmm6 
-        vmovddup         15 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm3 , %xmm11, %xmm7 
+	vmovups %xmm0 ,  0 * SIZE(CO1)
+	vmovups %xmm1 ,  2 * SIZE(CO1)
+	vmovups %xmm2 ,  4 * SIZE(CO1)
+	vmovups %xmm3 ,  6 * SIZE(CO1)
 
-	vmovddup         20 * SIZE(AO), %xmm8
-	vmulpd                  %xmm4 , %xmm8 , %xmm4
-        vmovddup         21 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm4 , %xmm9 , %xmm5 
-        vmovddup         22 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm4 , %xmm10, %xmm6 
-        vmovddup         23 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm4 , %xmm11, %xmm7 
+	vmovups	%xmm4 ,  0 * SIZE(CO2)
+	vmovups	%xmm5 ,  2 * SIZE(CO2)
+	vmovups	%xmm6 ,  4 * SIZE(CO2)
+	vmovups	%xmm7 ,  6 * SIZE(CO2)
 
-	vmovddup         29 * SIZE(AO), %xmm8
-	vmulpd                  %xmm5 , %xmm8 , %xmm5
-        vmovddup         30 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm5 , %xmm10, %xmm6 
-        vmovddup         31 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm5 , %xmm11, %xmm7 
+	vmovups	%xmm0 , -16 * SIZE(AO)
+	vmovups	%xmm1 , -14 * SIZE(AO)
+	vmovups	%xmm2 , -12 * SIZE(AO)
+	vmovups	%xmm3 , -10 * SIZE(AO)
+	vmovups	%xmm4 ,  -8 * SIZE(AO)
+	vmovups	%xmm5 ,  -6 * SIZE(AO)
+	vmovups	%xmm6 ,  -4 * SIZE(AO)
+	vmovups	%xmm7 ,  -2 * SIZE(AO)
 
-	vmovddup         38 * SIZE(AO), %xmm8
-	vmulpd                  %xmm6 , %xmm8 , %xmm6
-        vmovddup         39 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm6 , %xmm11, %xmm7 
-
-	vmovddup         47 * SIZE(AO), %xmm8
-	vmulpd                  %xmm7 , %xmm8 , %xmm7
-
-
-	vmovsd	%xmm0 ,  0 * SIZE(CO1)
-	vmovsd	%xmm1 ,  1 * SIZE(CO1)
-	vmovsd	%xmm2 ,  2 * SIZE(CO1)
-	vmovsd	%xmm3 ,  3 * SIZE(CO1)
-	vmovsd	%xmm4 ,  4 * SIZE(CO1)
-	vmovsd	%xmm5 ,  5 * SIZE(CO1)
-	vmovsd	%xmm6 ,  6 * SIZE(CO1)
-	vmovsd	%xmm7 ,  7 * SIZE(CO1)
-
-	vmovhpd	%xmm0 ,  0 * SIZE(CO2)
-	vmovhpd	%xmm1 ,  1 * SIZE(CO2)
-	vmovhpd	%xmm2 ,  2 * SIZE(CO2)
-	vmovhpd	%xmm3 ,  3 * SIZE(CO2)
-	vmovhpd	%xmm4 ,  4 * SIZE(CO2)
-	vmovhpd	%xmm5 ,  5 * SIZE(CO2)
-	vmovhpd	%xmm6 ,  6 * SIZE(CO2)
-	vmovhpd	%xmm7 ,  7 * SIZE(CO2)
-
-	vmovups	%xmm0 , -16 * SIZE(BO)
-	vmovups	%xmm1 , -14 * SIZE(BO)
-	vmovups	%xmm2 , -12 * SIZE(BO)
-	vmovups	%xmm3 , -10 * SIZE(BO)
-	vmovups	%xmm4 ,  -8 * SIZE(BO)
-	vmovups	%xmm5 ,  -6 * SIZE(BO)
-	vmovups	%xmm6 ,  -4 * SIZE(BO)
-	vmovups	%xmm7 ,  -2 * SIZE(BO)
 
 .endm
 
@@ -271,62 +183,38 @@
 
 .macro SOLVE_4x2
 
-        vmovups   %xmm8 , %xmm1
-        vunpcklpd %xmm9 , %xmm8  , %xmm8
-        vunpckhpd %xmm9 , %xmm1  , %xmm1
+	vmovups		-16 * SIZE(AO), %xmm0
+	vmovups		-14 * SIZE(AO), %xmm1
+	vmovups		-12 * SIZE(AO), %xmm2
+	vmovups		-10 * SIZE(AO), %xmm3
 
-	vmovups		-16 * SIZE(BO), %xmm0
         vsubpd  	%xmm8 , %xmm0 , %xmm0
-	vmovups		-14 * SIZE(BO), %xmm8
-        vsubpd  	%xmm1 , %xmm8 , %xmm1
+        vsubpd  	%xmm10, %xmm1 , %xmm1
+        vsubpd  	%xmm9 , %xmm2 , %xmm2
+        vsubpd  	%xmm11, %xmm3 , %xmm3
 
-        vmovups  %xmm10, %xmm3
-        vunpcklpd %xmm11, %xmm10 , %xmm10
-        vunpckhpd %xmm11, %xmm3  , %xmm3
-
-	vmovups		-12 * SIZE(BO), %xmm8
-	vmovups		-10 * SIZE(BO), %xmm9
-        vsubpd  	%xmm10, %xmm8 , %xmm2
-        vsubpd  	%xmm3 , %xmm9 , %xmm3
-
-	vmovddup        -16 * SIZE(AO), %xmm8
+	vmovddup        -16 * SIZE(BO), %xmm8
         vmulpd                  %xmm0 , %xmm8 , %xmm0
-        vmovddup        -15 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1 
-        vmovddup        -14 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm0 , %xmm10, %xmm2 
-        vmovddup        -13 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm0 , %xmm11, %xmm3 
+        vmulpd                  %xmm1 , %xmm8 , %xmm1
 
-	vmovddup        -11 * SIZE(AO), %xmm8
-	vmulpd                  %xmm1 , %xmm8 , %xmm1
-        vmovddup        -10 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm1 , %xmm10, %xmm2 
-        vmovddup         -9 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm1 , %xmm11, %xmm3 
+        vmovddup        -15 * SIZE(BO), %xmm9
+        vfnmaddpd       %xmm2 , %xmm0 , %xmm9 , %xmm2 
+        vfnmaddpd       %xmm3 , %xmm1 , %xmm9 , %xmm3 
 
-	vmovddup         -6 * SIZE(AO), %xmm8
-	vmulpd                  %xmm2 , %xmm8 , %xmm2
-        vmovddup         -5 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm2 , %xmm11, %xmm3 
+        vmovddup        -13 * SIZE(BO), %xmm10
+        vmulpd                  %xmm2 , %xmm10, %xmm2
+        vmulpd                  %xmm3 , %xmm10, %xmm3
 
-	vmovddup         -1 * SIZE(AO), %xmm8
-	vmulpd                  %xmm3 , %xmm8 , %xmm3
+	vmovups %xmm0 ,  0 * SIZE(CO1)
+	vmovups %xmm1 ,  2 * SIZE(CO1)
 
-	vmovsd	%xmm0 ,  0 * SIZE(CO1)
-	vmovsd	%xmm1 ,  1 * SIZE(CO1)
-	vmovsd	%xmm2 ,  2 * SIZE(CO1)
-	vmovsd	%xmm3 ,  3 * SIZE(CO1)
+	vmovups	%xmm2 ,  0 * SIZE(CO2)
+	vmovups	%xmm3 ,  2 * SIZE(CO2)
 
-	vmovhpd	%xmm0 ,  0 * SIZE(CO2)
-	vmovhpd	%xmm1 ,  1 * SIZE(CO2)
-	vmovhpd	%xmm2 ,  2 * SIZE(CO2)
-	vmovhpd	%xmm3 ,  3 * SIZE(CO2)
-
-	vmovups	%xmm0 , -16 * SIZE(BO)
-	vmovups	%xmm1 , -14 * SIZE(BO)
-	vmovups	%xmm2 , -12 * SIZE(BO)
-	vmovups	%xmm3 , -10 * SIZE(BO)
+	vmovups	%xmm0 , -16 * SIZE(AO)
+	vmovups	%xmm1 , -14 * SIZE(AO)
+	vmovups	%xmm2 , -12 * SIZE(AO)
+	vmovups	%xmm3 , -10 * SIZE(AO)
 
 .endm
 
@@ -344,32 +232,28 @@
 
 .macro SOLVE_2x2
 
-        vmovups   %xmm8 , %xmm1
-        vunpcklpd %xmm9 , %xmm8 , %xmm8
-        vunpckhpd %xmm9 , %xmm1 , %xmm1
+	vmovups		-16 * SIZE(AO), %xmm0
+	vmovups		-14 * SIZE(AO), %xmm2
 
-	vmovups		-16 * SIZE(BO), %xmm0
         vsubpd  	%xmm8 , %xmm0 , %xmm0
-	vmovups		-14 * SIZE(BO), %xmm8
-        vsubpd  	%xmm1 , %xmm8 , %xmm1
+        vsubpd  	%xmm9 , %xmm2 , %xmm2
 
-	vmovddup        -16 * SIZE(AO), %xmm8
+	vmovddup        -16 * SIZE(BO), %xmm8
         vmulpd                  %xmm0 , %xmm8 , %xmm0
-        vmovddup        -15 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1 
 
-	vmovddup        -13 * SIZE(AO), %xmm8
-	vmulpd                  %xmm1 , %xmm8 , %xmm1
+        vmovddup        -15 * SIZE(BO), %xmm9
+        vfnmaddpd       %xmm2 , %xmm0 , %xmm9 , %xmm2 
 
-	vmovsd	%xmm0 ,  0 * SIZE(CO1)
-	vmovsd	%xmm1 ,  1 * SIZE(CO1)
+        vmovddup        -13 * SIZE(BO), %xmm10
+        vmulpd                  %xmm2 , %xmm10, %xmm2
 
-	vmovhpd	%xmm0 ,  0 * SIZE(CO2)
-	vmovhpd	%xmm1 ,  1 * SIZE(CO2)
+	vmovups %xmm0 ,  0 * SIZE(CO1)
 
-	vmovups	%xmm0 , -16 * SIZE(BO)
-	vmovups	%xmm1 , -14 * SIZE(BO)
+	vmovups	%xmm2 ,  0 * SIZE(CO2)
 
+	vmovups	%xmm0 , -16 * SIZE(AO)
+	vmovups	%xmm2 , -14 * SIZE(AO)
+        
 .endm
 
 
@@ -383,17 +267,28 @@
 
 .macro SOLVE_1x2
 
-	vmovups		-16 * SIZE(BO), %xmm0
-        vsubpd  	%xmm8 , %xmm0 , %xmm0
+	vmovups		-16 * SIZE(AO), %xmm2
 
-	vmovddup        -16 * SIZE(AO), %xmm8
-	vmulpd                  %xmm0 , %xmm8 , %xmm0
+        vsubpd  	%xmm8 , %xmm2 , %xmm2
 
-	vmovsd	%xmm0 ,  0 * SIZE(CO1)
+	vmovups		%xmm2 , %xmm0
+	vunpckhpd	%xmm0 , %xmm0 , %xmm0
 
-	vmovhpd	%xmm0 ,  0 * SIZE(CO2)
+	vmovsd          -16 * SIZE(BO), %xmm8
+        vmulsd                  %xmm2 , %xmm8 , %xmm2
 
-	vmovups	%xmm0 , -16 * SIZE(BO)
+        vmovsd          -15 * SIZE(BO), %xmm9
+        vfnmaddsd       %xmm0 , %xmm2 , %xmm9 , %xmm0 
+
+        vmovsd          -13 * SIZE(BO), %xmm10
+        vmulsd                  %xmm0 , %xmm10, %xmm0
+
+	vmovsd  %xmm2 ,  0 * SIZE(CO1)
+
+	vmovsd 	%xmm0 ,  0 * SIZE(CO2)
+
+	vmovsd 	%xmm2 , -16 * SIZE(AO)
+	vmovsd 	%xmm0 , -15 * SIZE(AO)
 
 .endm
 
@@ -416,90 +311,32 @@
 
 .macro SOLVE_8x1
 
-	vmovups	-16 * SIZE(BO), %xmm1
-	vmovups	-14 * SIZE(BO), %xmm3
-	vmovups	-12 * SIZE(BO), %xmm5
-	vmovups	-10 * SIZE(BO), %xmm7
+	vmovups		 -16 * SIZE(AO), %xmm0
+	vmovups		 -14 * SIZE(AO), %xmm1
+	vmovups		 -12 * SIZE(AO), %xmm2
+	vmovups		 -10 * SIZE(AO), %xmm3
 
-	vsubpd	%xmm8 ,  %xmm1 , %xmm1
-	vsubpd	%xmm9 ,  %xmm3 , %xmm3
-	vsubpd	%xmm10,  %xmm5 , %xmm5
-	vsubpd	%xmm11,  %xmm7 , %xmm7
+	vsubpd		 %xmm8 , %xmm0 , %xmm0
+	vsubpd		 %xmm9 , %xmm1 , %xmm1
+	vsubpd		 %xmm10, %xmm2 , %xmm2
+	vsubpd		 %xmm11, %xmm3 , %xmm3
 
-	vmovups	  %xmm1 , %xmm0
-        vunpckhpd %xmm1 , %xmm1 , %xmm1
+	vmovddup	 -16 * SIZE(BO), %xmm8
+	vmulpd		 %xmm0 , %xmm8 , %xmm0
+	vmulpd		 %xmm1 , %xmm8 , %xmm1
+	vmulpd		 %xmm2 , %xmm8 , %xmm2
+	vmulpd		 %xmm3 , %xmm8 , %xmm3
 
-	vmovups	  %xmm3 , %xmm2
-        vunpckhpd %xmm3 , %xmm3 , %xmm3
+	vmovups	%xmm0 ,  0 * SIZE(CO1)
+	vmovups	%xmm1 ,  2 * SIZE(CO1)
+	vmovups	%xmm2 ,  4 * SIZE(CO1)
+	vmovups	%xmm3 ,  6 * SIZE(CO1)
 
-	vmovups	  %xmm5 , %xmm4
-        vunpckhpd %xmm5 , %xmm5 , %xmm5
-
-	vmovups	  %xmm7 , %xmm6
-        vunpckhpd %xmm7 , %xmm7 , %xmm7
-
-	vmulsd		 -16 * SIZE(AO), %xmm0 , %xmm0
-	vfnmaddsd %xmm1 ,-15 * SIZE(AO), %xmm0 , %xmm1
-	vfnmaddsd %xmm2 ,-14 * SIZE(AO), %xmm0 , %xmm2
-	vfnmaddsd %xmm3 ,-13 * SIZE(AO), %xmm0 , %xmm3
-	vfnmaddsd %xmm4 ,-12 * SIZE(AO), %xmm0 , %xmm4
-	vfnmaddsd %xmm5 ,-11 * SIZE(AO), %xmm0 , %xmm5
-	vfnmaddsd %xmm6 ,-10 * SIZE(AO), %xmm0 , %xmm6
-	vfnmaddsd %xmm7 , -9 * SIZE(AO), %xmm0 , %xmm7
-
-	vmulsd		  -7 * SIZE(AO), %xmm1 , %xmm1
-	vfnmaddsd %xmm2 , -6 * SIZE(AO), %xmm1 , %xmm2
-	vfnmaddsd %xmm3 , -5 * SIZE(AO), %xmm1 , %xmm3
-	vfnmaddsd %xmm4 , -4 * SIZE(AO), %xmm1 , %xmm4
-	vfnmaddsd %xmm5 , -3 * SIZE(AO), %xmm1 , %xmm5
-	vfnmaddsd %xmm6 , -2 * SIZE(AO), %xmm1 , %xmm6
-	vfnmaddsd %xmm7 , -1 * SIZE(AO), %xmm1 , %xmm7
-
-	vmulsd		   2 * SIZE(AO), %xmm2 , %xmm2
-	vfnmaddsd %xmm3 ,  3 * SIZE(AO), %xmm2 , %xmm3
-	vfnmaddsd %xmm4 ,  4 * SIZE(AO), %xmm2 , %xmm4
-	vfnmaddsd %xmm5 ,  5 * SIZE(AO), %xmm2 , %xmm5
-	vfnmaddsd %xmm6 ,  6 * SIZE(AO), %xmm2 , %xmm6
-	vfnmaddsd %xmm7 ,  7 * SIZE(AO), %xmm2 , %xmm7
-
-	vmulsd		  11 * SIZE(AO), %xmm3 , %xmm3
-	vfnmaddsd %xmm4 , 12 * SIZE(AO), %xmm3 , %xmm4
-	vfnmaddsd %xmm5 , 13 * SIZE(AO), %xmm3 , %xmm5
-	vfnmaddsd %xmm6 , 14 * SIZE(AO), %xmm3 , %xmm6
-	vfnmaddsd %xmm7 , 15 * SIZE(AO), %xmm3 , %xmm7
-
-	vmulsd		  20 * SIZE(AO), %xmm4 , %xmm4
-	vfnmaddsd %xmm5 , 21 * SIZE(AO), %xmm4 , %xmm5
-	vfnmaddsd %xmm6 , 22 * SIZE(AO), %xmm4 , %xmm6
-	vfnmaddsd %xmm7 , 23 * SIZE(AO), %xmm4 , %xmm7
-
-	vmulsd		  29 * SIZE(AO), %xmm5 , %xmm5
-	vfnmaddsd %xmm6 , 30 * SIZE(AO), %xmm5 , %xmm6
-	vfnmaddsd %xmm7 , 31 * SIZE(AO), %xmm5 , %xmm7
-
-	vmulsd		  38 * SIZE(AO), %xmm6 , %xmm6
-	vfnmaddsd %xmm7 , 39 * SIZE(AO), %xmm6 , %xmm7
-
-	vmulsd		  47 * SIZE(AO), %xmm7 , %xmm7
-
-	vmovsd	%xmm0 ,  0 * SIZE(CO1)
-	vmovsd	%xmm1 ,  1 * SIZE(CO1)
-	vmovsd	%xmm2 ,  2 * SIZE(CO1)
-	vmovsd	%xmm3 ,  3 * SIZE(CO1)
-	vmovsd	%xmm4 ,  4 * SIZE(CO1)
-	vmovsd	%xmm5 ,  5 * SIZE(CO1)
-	vmovsd	%xmm6 ,  6 * SIZE(CO1)
-	vmovsd	%xmm7 ,  7 * SIZE(CO1)
-
-	vmovsd	%xmm0 , -16 * SIZE(BO)
-	vmovsd	%xmm1 , -15 * SIZE(BO)
-	vmovsd	%xmm2 , -14 * SIZE(BO)
-	vmovsd	%xmm3 , -13 * SIZE(BO)
-	vmovsd	%xmm4 , -12 * SIZE(BO)
-	vmovsd	%xmm5 , -11 * SIZE(BO)
-	vmovsd	%xmm6 , -10 * SIZE(BO)
-	vmovsd	%xmm7 ,  -9 * SIZE(BO)
-
+	vmovups	%xmm0 , -16 * SIZE(AO)
+	vmovups	%xmm1 , -14 * SIZE(AO)
+	vmovups	%xmm2 , -12 * SIZE(AO)
+	vmovups	%xmm3 , -10 * SIZE(AO)
+	
 .endm
 
 
@@ -516,41 +353,21 @@
 
 .macro SOLVE_4x1
 
-	vmovups	-16 * SIZE(BO), %xmm1
-	vmovups	-14 * SIZE(BO), %xmm3
+	vmovups		 -16 * SIZE(AO), %xmm0
+	vmovups		 -14 * SIZE(AO), %xmm1
 
-	vsubpd	%xmm8 ,  %xmm1 , %xmm1
-	vsubpd	%xmm9 ,  %xmm3 , %xmm3
+	vsubpd		 %xmm8 , %xmm0 , %xmm0
+	vsubpd		 %xmm9 , %xmm1 , %xmm1
 
-	vmovups	  %xmm1 , %xmm0
-        vunpckhpd %xmm1 , %xmm1 , %xmm1
+	vmovddup	 -16 * SIZE(BO), %xmm8
+	vmulpd		 %xmm0 , %xmm8 , %xmm0
+	vmulpd		 %xmm1 , %xmm8 , %xmm1
 
-	vmovups	  %xmm3 , %xmm2
-        vunpckhpd %xmm3 , %xmm3 , %xmm3
+	vmovups	%xmm0 ,  0 * SIZE(CO1)
+	vmovups	%xmm1 ,  2 * SIZE(CO1)
 
-	vmulsd		 -16 * SIZE(AO), %xmm0 , %xmm0
-	vfnmaddsd %xmm1 ,-15 * SIZE(AO), %xmm0 , %xmm1
-	vfnmaddsd %xmm2 ,-14 * SIZE(AO), %xmm0 , %xmm2
-	vfnmaddsd %xmm3 ,-13 * SIZE(AO), %xmm0 , %xmm3
-
-	vmulsd		 -11 * SIZE(AO), %xmm1 , %xmm1
-	vfnmaddsd %xmm2 ,-10 * SIZE(AO), %xmm1 , %xmm2
-	vfnmaddsd %xmm3 , -9 * SIZE(AO), %xmm1 , %xmm3
-
-	vmulsd		  -6 * SIZE(AO), %xmm2 , %xmm2
-	vfnmaddsd %xmm3 , -5 * SIZE(AO), %xmm2 , %xmm3
-
-	vmulsd		  -1 * SIZE(AO), %xmm3 , %xmm3
-
-	vmovsd	%xmm0 ,  0 * SIZE(CO1)
-	vmovsd	%xmm1 ,  1 * SIZE(CO1)
-	vmovsd	%xmm2 ,  2 * SIZE(CO1)
-	vmovsd	%xmm3 ,  3 * SIZE(CO1)
-
-	vmovsd	%xmm0 , -16 * SIZE(BO)
-	vmovsd	%xmm1 , -15 * SIZE(BO)
-	vmovsd	%xmm2 , -14 * SIZE(BO)
-	vmovsd	%xmm3 , -13 * SIZE(BO)
+	vmovups	%xmm0 , -16 * SIZE(AO)
+	vmovups	%xmm1 , -14 * SIZE(AO)
 
 .endm
 
@@ -566,23 +383,16 @@
 
 .macro SOLVE_2x1
 
-	vmovups	-16 * SIZE(BO), %xmm1
+	vmovups		 -16 * SIZE(AO), %xmm1
 
-	vsubpd	%xmm8 ,  %xmm1 , %xmm1
+	vsubpd		 %xmm8 , %xmm1 , %xmm1
 
-	vmovups	  %xmm1 , %xmm0
-        vunpckhpd %xmm1 , %xmm1 , %xmm1
+	vmovddup	 -16 * SIZE(BO), %xmm8
+	vmulpd		 %xmm1 , %xmm8 , %xmm1
 
-	vmulsd		 -16 * SIZE(AO), %xmm0 , %xmm0
-	vfnmaddsd %xmm1 ,-15 * SIZE(AO), %xmm0 , %xmm1
+	vmovups	%xmm1 ,  0 * SIZE(CO1)
 
-	vmulsd		 -13 * SIZE(AO), %xmm1 , %xmm1
-
-	vmovsd	%xmm0 ,  0 * SIZE(CO1)
-	vmovsd	%xmm1 ,  1 * SIZE(CO1)
-
-	vmovsd	%xmm0 , -16 * SIZE(BO)
-	vmovsd	%xmm1 , -15 * SIZE(BO)
+	vmovups	%xmm1 , -16 * SIZE(AO)
 
 .endm
 
@@ -597,15 +407,16 @@
 
 .macro SOLVE_1x1
 
-	vmovsd	-16 * SIZE(BO), %xmm1
+	vmovsd		 -16 * SIZE(AO), %xmm1
 
-	vsubsd	%xmm8 ,  %xmm1 , %xmm1
+	vsubsd		 %xmm8 , %xmm1 , %xmm1
 
-	vmulsd		 -16 * SIZE(AO), %xmm1 , %xmm1
+	vmulsd		 -16 * SIZE(BO), %xmm1 , %xmm1
 
 	vmovsd	%xmm1 ,  0 * SIZE(CO1)
 
-	vmovsd	%xmm1 , -16 * SIZE(BO)
+	vmovsd	%xmm1 , -16 * SIZE(AO)
+
 .endm
 
 
@@ -662,6 +473,8 @@
 	movsd	%xmm12, OFFSET
 	movsd	%xmm12, KK
 
+        negq    KK			// for RN Kernel
+
 	leaq	(, LDC, SIZE), LDC
 
 
@@ -677,9 +490,6 @@
 	movq	C, CO1			# coffset1 = c
 	leaq	(C, LDC, 1), CO2	# coffset2 = c + ldc
 	leaq    (C, LDC, 2), C
-
-	movq	OFFSET, %rax
-	movq	%rax, KK
 
 	movq	M,  I
 	sarq	$3, I	# i = (m >> 3)
@@ -754,8 +564,6 @@
 	leaq	(AO, %rax, 8), AO
 	leaq	(BO, %rax, 2), BO
 
-	addq	$8, KK
-
 	decq	I			# i --
 	jg	.L51
 	ALIGN_4	
@@ -826,8 +634,6 @@
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 2), BO
 
-	addq	$4, KK
-
 	ALIGN_4	
 
 /*********************************************************************************/
@@ -894,8 +700,6 @@
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 2), BO
 
-	addq	$2, KK
-
 	ALIGN_4	
 /********************************************************************************/
 .L70:
@@ -959,11 +763,11 @@
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 2), BO
 
-	addq	$1, KK
-
 	ALIGN_4	
 	
 .L79:
+
+        addq    $2, KK			// number of values in B # only for RN Kernel
 
 	movq	BO, B
 
@@ -977,9 +781,6 @@
 
 	movq	A, AO
 	movq	C, CO1			# coffset1 = c
-
-	movq	OFFSET, %rax
-	movq	%rax, KK
 
 	movq	M,  I
 	sarq	$3, I	# i = (m >> 3)
@@ -1042,8 +843,6 @@
 	leaq	(,%rax, SIZE), %rax
 	leaq	(AO, %rax, 8), AO
 	addq	%rax, BO
-
-	addq	$8, KK
 
 
 	decq	I			# i --
@@ -1110,9 +909,6 @@
 	leaq	(AO, %rax, 4), AO
 	addq	%rax, BO
 
-	addq	$4, KK
-
-
 	ALIGN_4	
 
 /*************************************************************************************/
@@ -1176,8 +972,6 @@
 	leaq	(AO, %rax, 2), AO
 	addq	%rax, BO
 
-	addq	$2, KK
-
 	ALIGN_4	
 
 .L110:
@@ -1240,11 +1034,11 @@
 	addq	%rax, AO
 	addq	%rax, BO
 
-	addq	$1, KK
-
 	ALIGN_4	
 
 .L119:
+
+        addq    $1 , KK			// number of values in B # only for RN Kernel
 
 	movq	BO, B
 
