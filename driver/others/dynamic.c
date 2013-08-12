@@ -65,14 +65,15 @@ extern gotoblas_t  gotoblas_BOBCAT;
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BULLDOZER;
 extern gotoblas_t  gotoblas_PILEDRIVER;
+extern gotoblas_t  gotoblas_HASWELL;
 #else
 //Use NEHALEM kernels for sandy bridge
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
+#define gotoblas_HASWELL gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #endif
-//Use sandy bridge kernels for haswell.
-#define gotoblas_HASWELL gotoblas_SANDYBRIDGE
+
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -285,6 +286,7 @@ static char *corename[] = {
     "Bobcat",
     "Bulldozer",
     "Piledriver",
+    "Haswell",
 };
 
 char *gotoblas_corename(void) {
@@ -307,7 +309,8 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_SANDYBRIDGE)  return corename[16];
   if (gotoblas == &gotoblas_BOBCAT)       return corename[17];
   if (gotoblas == &gotoblas_BULLDOZER)    return corename[18];
-  if (gotoblas == &gotoblas_PILEDRIVER)    return corename[19];
+  if (gotoblas == &gotoblas_PILEDRIVER)   return corename[19];
+  if (gotoblas == &gotoblas_HASWELL)      return corename[20];
 
   return corename[0];
 }
