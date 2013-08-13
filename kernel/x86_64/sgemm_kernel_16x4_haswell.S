@@ -131,11 +131,11 @@
 #else
 
 .macro VFMADD231PS_ y0,y1,y2
-	vfmadd231pd \y0,\y1,\y2
+	vfmadd231ps \y0,\y1,\y2
 .endm
 
 .macro VFMADD231SS_ x0,x1,x2
-	vfmadd231sd \x0,\x1,\x2
+	vfmadd231ss \x0,\x1,\x2
 .endm
 
 #endif
@@ -859,6 +859,7 @@
 	jz	.L4_01b
 	ALIGN_4
 
+
 .L4_01a:
         prefetcht0 512(BO1)
         prefetchw  512(BO)
@@ -957,7 +958,7 @@
 	andq	$-8, %rax			//  K = K - ( K % 8 )
 	je	.L4_16
 	movq    %rax, BI                        //  Index for BO
-        salq    $4, BI                   	//  BI = BI * 4 ; number of values
+        leaq    (,BI,4) , BI                   	//  BI = BI * 4 ; number of values
 
 	salq	$4, %rax			// rax = rax * 16 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1026,7 +1027,7 @@
 	je .L4_19
 
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	salq	$4, %rax			// rax = rax * 16 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1124,7 +1125,7 @@
 	andq	$-8, %rax
 	je	.L4_20_6
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	salq	$3, %rax			// rax = rax * 8 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1173,7 +1174,7 @@
 	je .L4_20_9
 
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI    	                //  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	salq	$3, %rax			// rax = rax * 8 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1264,7 +1265,7 @@
 	andq	$-8, %rax
 	je	.L4_26
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	salq	$2, %rax			// rax = rax * 4 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1313,7 +1314,7 @@
 	je .L4_29
 
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI     	                //  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	salq	$2, %rax			// rax = rax * 4 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1401,7 +1402,7 @@
 	andq	$-8, %rax
 	je	.L4_36
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                          //  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	salq	$1, %rax			// rax = rax *2 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1535,7 +1536,7 @@
 	andq	$-8, %rax
 	je	.L4_46
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                          //  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
@@ -1583,7 +1584,7 @@
 	je .L4_49
 
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                          //  BI = BI * 4 ; number of values
+        leaq    (,BI,4), BI                   	//  BI = BI * 4 ; number of values
 
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
