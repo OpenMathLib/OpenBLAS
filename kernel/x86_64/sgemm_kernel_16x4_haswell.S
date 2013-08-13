@@ -930,7 +930,7 @@
         leaq    BUFFER1, BO             	// first buffer to BO
         addq    $4 * SIZE, BO
         movq    %rax, BI                        //  Index for BO
-	salq	$2 ,BI				// BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
         salq    $4, %rax                        // rax = rax * 16 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1053,7 +1053,7 @@
         movq    K, %rax
         subq    KKK, %rax
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
         salq    $4, %rax                        // rax = rax * 16 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1096,7 +1096,7 @@
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $4 * SIZE, BO
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
         salq    $3, %rax                        // rax = rax * 8 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1200,7 +1200,7 @@
         movq    K, %rax 
         subq    KKK, %rax
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO         
         salq    $3, %rax                        // rax = rax * 8 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1236,7 +1236,7 @@
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $4 * SIZE, BO
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
         salq    $2, %rax                        // rax = rax * 4 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1340,7 +1340,7 @@
         movq    K, %rax 
         subq    KKK, %rax
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO         
         salq    $2, %rax                        // rax = rax * 4 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1373,7 +1373,7 @@
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $4 * SIZE, BO
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                   	//  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
         salq    $1, %rax                        // rax = rax * 2 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1451,7 +1451,7 @@
 	je .L4_39
 
 	movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                          //  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
 	
 	salq	$1, %rax			// rax = rax *2 ; number of values
 	leaq	(AO, %rax, SIZE), AO
@@ -1477,7 +1477,7 @@
         movq    K, %rax 
         subq    KKK, %rax
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                          //  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO         
         salq    $1, %rax                        // rax = rax * 2 ; number of values
         leaq    (AO, %rax, SIZE), AO
@@ -1509,7 +1509,7 @@
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $4 * SIZE, BO
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                          //  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
         leaq    (AO, %rax, SIZE), AO
 #endif
@@ -1609,7 +1609,7 @@
         movq    K, %rax 
         subq    KKK, %rax
         movq    %rax, BI                        //  Index for BO
-        salq    $2, BI                          //  BI = BI * 4 ; number of values
+	leaq	(,BI, 4), BI			// BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO         
         leaq    (AO, %rax, SIZE), AO
 #endif  
