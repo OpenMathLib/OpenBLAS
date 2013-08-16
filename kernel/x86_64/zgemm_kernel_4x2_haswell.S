@@ -36,6 +36,24 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+/*********************************************************************
+* 2013/08/16 Saar
+* Parameter:
+*       ZGEMM_DEFAULT_UNROLL_N  2
+*       ZGEMM_DEFAULT_UNROLL_M  4 
+*       ZGEMM_DEFAULT_P         112
+*       ZGEMM_DEFAULT_Q         224
+*
+* BLASTEST: OK
+*
+* Performance:
+*       1 thread:       1.80 times faster than sandybridge
+*       4 threads:      1.74 times faster than sandybridge
+*
+* Compile for FMA3: OK
+*
+*********************************************************************/
+
 
 #define ASSEMBLER
 #include "common.h"
@@ -119,29 +137,8 @@
 #define STACK_TOUCH
 #endif
 
-#if defined(BULLDOZER)
 
-.macro VFMADD231PD_ y0,y1,y2
-        vfmaddpd \y0,\y1,\y2,\y0
-.endm
-
-.macro VFMADD231SD_ x0,x1,x2
-        vfmaddsd \x0,\x1,\x2,\x0
-.endm
-
-#else
-
-.macro VFMADD231PD_ y0,y1,y2
-        vfmadd231pd \y0,\y1,\y2
-.endm
-
-.macro VFMADD231SD_ x0,x1,x2
-        vfmadd231sd \x0,\x1,\x2
-.endm
-
-#endif
-
-#if defined(BULLDOZER)
+#if defined(BULLDOZER) || defined(PILEDRIVER)
 
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
@@ -153,9 +150,6 @@
         vfmaddpd \y0,\y1,\y2,\y0
 .endm
 
-#define VFMADD_R    vfmaddpd
-#define VFMADD_I    vfmaddpd
-
 #elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
 
 .macro	VFMADDPD_R y0,y1,y2
@@ -165,9 +159,6 @@
 .macro	VFMADDPD_I y0,y1,y2
         vfmaddpd \y0,\y1,\y2,\y0
 .endm
-
-#define VFMADD_R    vfnmaddpd
-#define VFMADD_I    vfmaddpd
 
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
@@ -179,9 +170,6 @@
         vfnmaddpd \y0,\y1,\y2,\y0
 .endm
 
-#define VFMADD_R    vfmaddpd
-#define VFMADD_I    vfnmaddpd
-
 #else
 
 .macro	VFMADDPD_R y0,y1,y2
@@ -191,9 +179,6 @@
 .macro	VFMADDPD_I y0,y1,y2
         vfnmaddpd \y0,\y1,\y2,\y0
 .endm
-
-#define VFMADD_R    vfnmaddpd
-#define VFMADD_I    vfnmaddpd
 
 #endif
 
@@ -209,9 +194,6 @@
         vfmadd231pd \y0,\y1,\y2
 .endm
 
-#define VFMADD_R    vfmadd231pd
-#define VFMADD_I    vfmadd231pd
-
 #elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
 
 .macro	VFMADDPD_R y0,y1,y2
@@ -221,9 +203,6 @@
 .macro	VFMADDPD_I y0,y1,y2
         vfmadd231pd \y0,\y1,\y2
 .endm
-
-#define VFMADD_R    vfnmadd231pd
-#define VFMADD_I    vfmadd231pd
 
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
@@ -235,9 +214,6 @@
         vfnmadd231pd \y0,\y1,\y2
 .endm
 
-#define VFMADD_R    vfmadd231pd
-#define VFMADD_I    vfnmadd231pd
-
 #else
 
 .macro	VFMADDPD_R y0,y1,y2
@@ -247,9 +223,6 @@
 .macro	VFMADDPD_I y0,y1,y2
         vfnmadd231pd \y0,\y1,\y2
 .endm
-
-#define VFMADD_R    vfnmadd231pd
-#define VFMADD_I    vfnmadd231pd
 
 #endif
 
@@ -363,158 +336,179 @@
 .endm
 
 /***************************************************************************************************/
-#define KERNEL2x2_1(xx) \
-        prefetcht0      A_PR1(AO,%rax,SIZE)        ;\
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
-        vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        VFMADD_R        %xmm14,%xmm6,%xmm1,%xmm14 ;\
-        vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
-        VFMADD_I        %xmm15,%xmm7,%xmm1,%xmm15 ;\
 
-#define KERNEL2x2_2(xx) \
-        vmovups          -4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups          -2 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
-        vmovddup         -2 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        VFMADD_R        %xmm14,%xmm6,%xmm1,%xmm14 ;\
-        vmovddup         -1 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
-        VFMADD_I        %xmm15,%xmm7,%xmm1,%xmm15 ;\
+.macro KERNEL2x2_SUB
+        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
+        vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4
+        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1
+        VFMADDPD_R        %xmm8,%xmm4,%xmm0
+        VFMADDPD_R        %xmm12,%xmm4,%xmm1
+        vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5
+        VFMADDPD_I        %xmm9,%xmm5,%xmm0
+        VFMADDPD_I        %xmm13,%xmm5,%xmm1
+        vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6
+        VFMADDPD_R        %xmm10,%xmm6,%xmm0
+        VFMADDPD_R        %xmm14,%xmm6,%xmm1
+        vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7
+        VFMADDPD_I        %xmm11,%xmm7,%xmm0
+        VFMADDPD_I        %xmm15,%xmm7,%xmm1
+        addq    $4, BI                           
+        addq    $4, %rax                         
+.endm
 
-#define KERNEL2x2_3(xx) \
-	prefetcht0      A_PR1+64(AO,%rax,SIZE)     ;\
-        vmovups           0 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          0 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups           2 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup          1 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
-        vmovddup          2 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        VFMADD_R        %xmm14,%xmm6,%xmm1,%xmm14 ;\
-        vmovddup          3 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
-        VFMADD_I        %xmm15,%xmm7,%xmm1,%xmm15 ;\
+.macro SAVE2x2
 
-#define KERNEL2x2_4(xx) \
-        vmovups           4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups           6 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup          5 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
-        vmovddup          6 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        VFMADD_R        %xmm14,%xmm6,%xmm1,%xmm14 ;\
-        vmovddup          7 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
-        VFMADD_I        %xmm15,%xmm7,%xmm1,%xmm15 ;\
-        addq    $16, BI                            ;\
-        addq    $16, %rax                          ;\
+	vmovddup	ALPHA_R, %xmm0
+	vmovddup	ALPHA_I, %xmm1
+
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
+        vshufpd $0x01, %xmm11, %xmm11, %xmm11
+        vshufpd $0x01, %xmm13, %xmm13, %xmm13
+        vshufpd $0x01, %xmm15, %xmm15, %xmm15
+
+#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
+    defined(NR) || defined(NC) || defined(TR) || defined(TC)
+
+        vaddsubpd %xmm9, %xmm8 , %xmm8
+        vaddsubpd %xmm11,%xmm10, %xmm10
+        vaddsubpd %xmm13,%xmm12, %xmm12
+        vaddsubpd %xmm15,%xmm14, %xmm14
+
+        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
+        vshufpd $0x01, %xmm10, %xmm10, %xmm11
+        vshufpd $0x01, %xmm12, %xmm12, %xmm13
+        vshufpd $0x01, %xmm14, %xmm14, %xmm15
+
+#else
+        vaddsubpd %xmm8,  %xmm9 ,%xmm9
+        vaddsubpd %xmm10, %xmm11,%xmm11
+        vaddsubpd %xmm12, %xmm13,%xmm13
+        vaddsubpd %xmm14, %xmm15,%xmm15
+
+        vmovapd   %xmm9,  %xmm8
+        vmovapd   %xmm11, %xmm10
+        vmovapd   %xmm13, %xmm12
+        vmovapd   %xmm15, %xmm14
+
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
+        vshufpd $0x01, %xmm11, %xmm11, %xmm11
+        vshufpd $0x01, %xmm13, %xmm13, %xmm13
+        vshufpd $0x01, %xmm15, %xmm15, %xmm15
+
+#endif
+
+	// multiply with ALPHA_R
+        vmulpd  %xmm8 , %xmm0, %xmm8
+        vmulpd  %xmm10, %xmm0, %xmm10
+        vmulpd  %xmm12, %xmm0, %xmm12
+        vmulpd  %xmm14, %xmm0, %xmm14
+
+	// multiply with ALPHA_I
+        vmulpd  %xmm9 , %xmm1, %xmm9
+        vmulpd  %xmm11, %xmm1, %xmm11
+        vmulpd  %xmm13, %xmm1, %xmm13
+        vmulpd  %xmm15, %xmm1, %xmm15
+
+	vaddsubpd %xmm9, %xmm8 , %xmm8
+        vaddsubpd %xmm11,%xmm10, %xmm10
+        vaddsubpd %xmm13,%xmm12, %xmm12
+        vaddsubpd %xmm15,%xmm14, %xmm14
 
 
-#define KERNEL2x2_SUB(xx) \
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
-        vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        VFMADD_R        %xmm14,%xmm6,%xmm1,%xmm14 ;\
-        vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
-        VFMADD_I        %xmm15,%xmm7,%xmm1,%xmm15 ;\
-        addq    $4, BI                            ;\
-        addq    $4, %rax                          ;\
+
+#ifndef TRMMKERNEL
+
+	vaddpd 	 	(CO1), %xmm8 , %xmm8
+	vaddpd  2 * SIZE(CO1), %xmm12, %xmm12
+
+	vaddpd 	 	(CO1, LDC), %xmm10, %xmm10
+	vaddpd  2 * SIZE(CO1, LDC), %xmm14, %xmm14
+
+#endif
+
+	vmovups	%xmm8 ,  	(CO1)
+	vmovups	%xmm12 , 2 * SIZE(CO1)
+
+	vmovups	%xmm10 ,  	(CO1, LDC)
+	vmovups	%xmm14 , 2 * SIZE(CO1, LDC)
+
+.endm
 
 /************************************************************************************************/
 
 /************************************************************************************************/
 
-#define KERNEL1x2_1(xx) \
-        prefetcht0      A_PR1(AO,%rax,SIZE)        ;\
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
 
-#define KERNEL1x2_2(xx) \
-        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        vmovddup         -2 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        vmovddup         -1 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
+.macro KERNEL1x2_SUB
+        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
+        vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4
+        vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5
+        VFMADDPD_R        %xmm8,%xmm4,%xmm0
+        VFMADDPD_I        %xmm9,%xmm5,%xmm0
+        vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6
+        vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7
+        VFMADDPD_R        %xmm10,%xmm6,%xmm0
+        VFMADDPD_I        %xmm11,%xmm7,%xmm0
+        addq    $4, BI                           
+        addq    $2, %rax                         
+.endm
 
-#define KERNEL1x2_3(xx) \
-        vmovups          -4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          0 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup          1 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        vmovddup          2 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        vmovddup          3 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
+.macro SAVE1x2
 
-#define KERNEL1x2_4(xx) \
-        vmovups          -2 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup          5 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        vmovddup          6 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        vmovddup          7 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
-        addq    $16, BI                            ;\
-        addq    $8 , %rax                          ;\
+	vmovddup	ALPHA_R, %xmm0
+	vmovddup	ALPHA_I, %xmm1
 
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
+        vshufpd $0x01, %xmm11, %xmm11, %xmm11
 
-#define KERNEL1x2_SUB(xx) \
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6 ;\
-        VFMADD_R        %xmm10,%xmm6,%xmm0,%xmm10 ;\
-        vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7 ;\
-        VFMADD_I        %xmm11,%xmm7,%xmm0,%xmm11 ;\
-        addq    $4, BI                            ;\
-        addq    $2, %rax                          ;\
+#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
+    defined(NR) || defined(NC) || defined(TR) || defined(TC)
+
+        vaddsubpd %xmm9, %xmm8 , %xmm8
+        vaddsubpd %xmm11,%xmm10, %xmm10
+
+        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
+        vshufpd $0x01, %xmm10, %xmm10, %xmm11
+
+#else
+        vaddsubpd %xmm8, %xmm9, %xmm9
+        vaddsubpd %xmm10,%xmm11, %xmm11
+
+        vmovapd   %xmm9,  %xmm8
+        vmovapd   %xmm11, %xmm10
+
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
+        vshufpd $0x01, %xmm11, %xmm11, %xmm11
+
+#endif
+
+	// multiply with ALPHA_R
+        vmulpd  %xmm8 , %xmm0, %xmm8
+        vmulpd  %xmm10, %xmm0, %xmm10
+
+	// multiply with ALPHA_I
+        vmulpd  %xmm9 , %xmm1, %xmm9
+        vmulpd  %xmm11, %xmm1, %xmm11
+
+	vaddsubpd %xmm9, %xmm8 , %xmm8
+        vaddsubpd %xmm11,%xmm10, %xmm10
+
+#ifndef TRMMKERNEL
+
+	vaddpd 	 	(CO1), %xmm8 , %xmm8
+	vaddpd 	 	(CO1, LDC), %xmm10, %xmm10
+
+#endif
+
+	vmovups	%xmm8 ,  	(CO1)
+	vmovups	%xmm10 ,  	(CO1, LDC)
+
+.endm
+
 
 /************************************************************************************************/
 
@@ -592,106 +586,128 @@
 
 /************************************************************************************************/
 
-#define KERNEL2x1_1(xx) \
-        prefetcht0      A_PR1(AO,%rax,SIZE)        ;\
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
+.macro KERNEL2x1_SUB
+        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
+        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4
+        VFMADDPD_R        %xmm8,%xmm4,%xmm0
+        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1
+        VFMADDPD_R        %xmm12,%xmm4,%xmm1
+        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5
+        VFMADDPD_I        %xmm9,%xmm5,%xmm0
+        VFMADDPD_I        %xmm13,%xmm5,%xmm1
+        addq    $2, BI                           
+        addq    $4, %rax                         
+.endm
 
-#define KERNEL2x1_2(xx) \
-        vmovups          -4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -2 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups          -2 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup         -1 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
+.macro SAVE2x1
 
-#define KERNEL2x1_3(xx) \
-	prefetcht0      A_PR1+64(AO,%rax,SIZE)     ;\
-        vmovups           0 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          0 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups           2 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup          1 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
+	vmovddup	ALPHA_R, %xmm0
+	vmovddup	ALPHA_I, %xmm1
 
-#define KERNEL2x1_4(xx) \
-        vmovups           4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          2 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups           6 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup          3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
-        addq    $8, BI                            ;\
-        addq    $16, %rax                          ;\
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
+        vshufpd $0x01, %xmm13, %xmm13, %xmm13
 
+#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
+    defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
-#define KERNEL2x1_SUB(xx) \
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1 ;\
-        VFMADD_R        %xmm12,%xmm4,%xmm1,%xmm12 ;\
-        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        VFMADD_I        %xmm13,%xmm5,%xmm1,%xmm13 ;\
-        addq    $2, BI                            ;\
-        addq    $4, %rax                          ;\
+        vaddsubpd %xmm9, %xmm8  , %xmm8
+        vaddsubpd %xmm13,%xmm12 , %xmm12
+
+        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
+        vshufpd $0x01, %xmm12, %xmm12, %xmm13
+
+#else
+        vaddsubpd %xmm8, %xmm9 , %xmm9
+        vaddsubpd %xmm12,%xmm13, %xmm13
+
+        vmovapd   %xmm9,  %xmm8
+        vmovapd   %xmm13, %xmm12
+
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
+        vshufpd $0x01, %xmm13, %xmm13, %xmm13
+
+#endif
+
+	// multiply with ALPHA_R
+        vmulpd  %xmm8 , %xmm0, %xmm8
+        vmulpd  %xmm12, %xmm0, %xmm12
+
+	// multiply with ALPHA_I
+        vmulpd  %xmm9 , %xmm1, %xmm9
+        vmulpd  %xmm13, %xmm1, %xmm13
+
+	vaddsubpd %xmm9,  %xmm8 , %xmm8
+        vaddsubpd %xmm13, %xmm12, %xmm12
+
+#ifndef TRMMKERNEL
+
+	vaddpd 	 	(CO1), %xmm8 , %xmm8
+	vaddpd  2 * SIZE(CO1), %xmm12, %xmm12
+
+#endif
+
+	vmovups	%xmm8 ,  	(CO1)
+	vmovups	%xmm12 , 2 * SIZE(CO1)
+
+.endm
 
 
 /************************************************************************************************/
 
-#define KERNEL1x1_1(xx) \
-        prefetcht0      A_PR1(AO,%rax,SIZE)        ;\
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
+.macro KERNEL1x1_SUB
+        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
+        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4
+        VFMADDPD_R        %xmm8,%xmm4,%xmm0
+        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5
+        VFMADDPD_I        %xmm9,%xmm5,%xmm0
+        addq    $2, BI                           
+        addq    $2, %rax                         
+.endm
 
-#define KERNEL1x1_2(xx) \
-        vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -2 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup         -1 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
+.macro SAVE1x1
 
-#define KERNEL1x1_3(xx) \
-        vmovups          -4 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          0 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup          1 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
+	vmovddup	ALPHA_R, %xmm0
+	vmovddup	ALPHA_I, %xmm1
 
-#define KERNEL1x1_4(xx) \
-        vmovups          -2 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup          2 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup          3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        addq    $8, BI                            ;\
-        addq    $8, %rax                          ;\
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
 
+#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
+    defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
-#define KERNEL1x1_SUB(xx) \
-        vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0 ;\
-        vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4 ;\
-        VFMADD_R        %xmm8,%xmm4,%xmm0,%xmm8 ;\
-        vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5 ;\
-        VFMADD_I        %xmm9,%xmm5,%xmm0,%xmm9 ;\
-        addq    $2, BI                            ;\
-        addq    $2, %rax                          ;\
+        vaddsubpd %xmm9, %xmm8,  %xmm8
+
+        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
+
+#else
+        vaddsubpd %xmm8, %xmm9,  %xmm9
+
+        vmovapd   %xmm9,  %xmm8
+
+	// swap high and low 64 bytes
+        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
+
+#endif
+
+	// multiply with ALPHA_R
+        vmulpd  %xmm8 , %xmm0, %xmm8
+
+	// multiply with ALPHA_I
+        vmulpd  %xmm9 , %xmm1, %xmm9
+
+	vaddsubpd %xmm9 ,%xmm8,  %xmm8
+
+#ifndef TRMMKERNEL
+
+	vaddpd 	 	(CO1), %xmm8 , %xmm8
+
+#endif
+
+	vmovups	%xmm8 ,  	(CO1)
+
+.endm
 
 
 /************************************************************************************************/
@@ -1056,35 +1072,43 @@
 
 .L2_2_12:
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x2_1(xxx)
-	KERNEL2x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL2x2_3(xxx)
-	KERNEL2x2_4(xxx)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x2_1(xxx)
-	KERNEL2x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL2x2_3(xxx)
-	KERNEL2x2_4(xxx)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
 
 	je	.L2_2_16
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x2_1(xxx)
-	KERNEL2x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL2x2_3(xxx)
-	KERNEL2x2_4(xxx)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x2_1(xxx)
-	KERNEL2x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL2x2_3(xxx)
-	KERNEL2x2_4(xxx)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL2x2_SUB
+	KERNEL2x2_SUB
 
 	je	.L2_2_16
 
@@ -1113,88 +1137,15 @@
 
 .L2_2_17:
 
-	KERNEL2x2_SUB(xxx)
+	KERNEL2x2_SUB
+
 	jl	.L2_2_17
 	ALIGN_4
 
 
 .L2_2_19:
 
-	vmovddup	ALPHA_R, %xmm0
-	vmovddup	ALPHA_I, %xmm1
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-        vshufpd $0x01, %xmm11, %xmm11, %xmm11
-        vshufpd $0x01, %xmm13, %xmm13, %xmm13
-        vshufpd $0x01, %xmm15, %xmm15, %xmm15
-
-#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
-    defined(NR) || defined(NC) || defined(TR) || defined(TC)
-
-        vaddsubpd %xmm9, %xmm8 , %xmm8
-        vaddsubpd %xmm11,%xmm10, %xmm10
-        vaddsubpd %xmm13,%xmm12, %xmm12
-        vaddsubpd %xmm15,%xmm14, %xmm14
-
-        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
-        vshufpd $0x01, %xmm10, %xmm10, %xmm11
-        vshufpd $0x01, %xmm12, %xmm12, %xmm13
-        vshufpd $0x01, %xmm14, %xmm14, %xmm15
-
-#else
-        vaddsubpd %xmm8,  %xmm9 ,%xmm9
-        vaddsubpd %xmm10, %xmm11,%xmm11
-        vaddsubpd %xmm12, %xmm13,%xmm13
-        vaddsubpd %xmm14, %xmm15,%xmm15
-
-        vmovapd   %xmm9,  %xmm8
-        vmovapd   %xmm11, %xmm10
-        vmovapd   %xmm13, %xmm12
-        vmovapd   %xmm15, %xmm14
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-        vshufpd $0x01, %xmm11, %xmm11, %xmm11
-        vshufpd $0x01, %xmm13, %xmm13, %xmm13
-        vshufpd $0x01, %xmm15, %xmm15, %xmm15
-
-#endif
-
-	// multiply with ALPHA_R
-        vmulpd  %xmm8 , %xmm0, %xmm8
-        vmulpd  %xmm10, %xmm0, %xmm10
-        vmulpd  %xmm12, %xmm0, %xmm12
-        vmulpd  %xmm14, %xmm0, %xmm14
-
-	// multiply with ALPHA_I
-        vmulpd  %xmm9 , %xmm1, %xmm9
-        vmulpd  %xmm11, %xmm1, %xmm11
-        vmulpd  %xmm13, %xmm1, %xmm13
-        vmulpd  %xmm15, %xmm1, %xmm15
-
-	vaddsubpd %xmm9, %xmm8 , %xmm8
-        vaddsubpd %xmm11,%xmm10, %xmm10
-        vaddsubpd %xmm13,%xmm12, %xmm12
-        vaddsubpd %xmm15,%xmm14, %xmm14
-
-
-
-#ifndef TRMMKERNEL
-
-	vaddpd 	 	(CO1), %xmm8 , %xmm8
-	vaddpd  2 * SIZE(CO1), %xmm12, %xmm12
-
-	vaddpd 	 	(CO1, LDC), %xmm10, %xmm10
-	vaddpd  2 * SIZE(CO1, LDC), %xmm14, %xmm14
-
-#endif
-
-	vmovups	%xmm8 ,  	(CO1)
-	vmovups	%xmm12 , 2 * SIZE(CO1)
-
-	vmovups	%xmm10 ,  	(CO1, LDC)
-	vmovups	%xmm14 , 2 * SIZE(CO1, LDC)
+	SAVE2x2
 
 #if (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
     (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -1276,35 +1227,39 @@
 
 .L2_2_42:
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x2_1(xxx)
-	KERNEL1x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL1x2_3(xxx)
-	KERNEL1x2_4(xxx)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x2_1(xxx)
-	KERNEL1x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL1x2_3(xxx)
-	KERNEL1x2_4(xxx)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
 
 	je	.L2_2_46
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x2_1(xxx)
-	KERNEL1x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL1x2_3(xxx)
-	KERNEL1x2_4(xxx)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x2_1(xxx)
-	KERNEL1x2_2(xxx)
-	prefetcht0	B_PR1+64(BO,BI,SIZE)
-	KERNEL1x2_3(xxx)
-	KERNEL1x2_4(xxx)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
+	prefetcht0	B_PR1(BO,BI,SIZE)
+	KERNEL1x2_SUB
+	KERNEL1x2_SUB
 
 	je	.L2_2_46
 
@@ -1333,64 +1288,15 @@
 
 .L2_2_47:
 
-	KERNEL1x2_SUB(xxx)
+	KERNEL1x2_SUB
+
 	jl	.L2_2_47
 	ALIGN_4
 
 
 .L2_2_49:
 
-	vmovddup	ALPHA_R, %xmm0
-	vmovddup	ALPHA_I, %xmm1
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-        vshufpd $0x01, %xmm11, %xmm11, %xmm11
-
-#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
-    defined(NR) || defined(NC) || defined(TR) || defined(TC)
-
-        vaddsubpd %xmm9, %xmm8 , %xmm8
-        vaddsubpd %xmm11,%xmm10, %xmm10
-
-        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
-        vshufpd $0x01, %xmm10, %xmm10, %xmm11
-
-#else
-        vaddsubpd %xmm8, %xmm9, %xmm9
-        vaddsubpd %xmm10,%xmm11, %xmm11
-
-        vmovapd   %xmm9,  %xmm8
-        vmovapd   %xmm11, %xmm10
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-        vshufpd $0x01, %xmm11, %xmm11, %xmm11
-
-#endif
-
-	// multiply with ALPHA_R
-        vmulpd  %xmm8 , %xmm0, %xmm8
-        vmulpd  %xmm10, %xmm0, %xmm10
-
-	// multiply with ALPHA_I
-        vmulpd  %xmm9 , %xmm1, %xmm9
-        vmulpd  %xmm11, %xmm1, %xmm11
-
-	vaddsubpd %xmm9, %xmm8 , %xmm8
-        vaddsubpd %xmm11,%xmm10, %xmm10
-
-
-
-#ifndef TRMMKERNEL
-
-	vaddpd 	 	(CO1), %xmm8 , %xmm8
-	vaddpd 	 	(CO1, LDC), %xmm10, %xmm10
-
-#endif
-
-	vmovups	%xmm8 ,  	(CO1)
-	vmovups	%xmm10 ,  	(CO1, LDC)
+	SAVE1x2
 
 #if (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
     (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -1670,31 +1576,36 @@
 
 .L1_2_12:
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x1_1(xxx)
-	KERNEL2x1_2(xxx)
-	KERNEL2x1_3(xxx)
-	KERNEL2x1_4(xxx)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
 
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x1_1(xxx)
-	KERNEL2x1_2(xxx)
-	KERNEL2x1_3(xxx)
-	KERNEL2x1_4(xxx)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
 
 	je	.L1_2_16
 
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x1_1(xxx)
-	KERNEL2x1_2(xxx)
-	KERNEL2x1_3(xxx)
-	KERNEL2x1_4(xxx)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
 
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL2x1_1(xxx)
-	KERNEL2x1_2(xxx)
-	KERNEL2x1_3(xxx)
-	KERNEL2x1_4(xxx)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
+	prefetcht0	A_PR1(AO,%rax,SIZE)
+	KERNEL2x1_SUB
+	KERNEL2x1_SUB
 
 	je	.L1_2_16
 
@@ -1723,65 +1634,15 @@
 
 .L1_2_17:
 
-	KERNEL2x1_SUB(xxx)
+	KERNEL2x1_SUB
+
 	jl	.L1_2_17
 	ALIGN_4
 
 
 .L1_2_19:
 
-	vmovddup	ALPHA_R, %xmm0
-	vmovddup	ALPHA_I, %xmm1
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-        vshufpd $0x01, %xmm13, %xmm13, %xmm13
-
-#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
-    defined(NR) || defined(NC) || defined(TR) || defined(TC)
-
-        vaddsubpd %xmm9, %xmm8  , %xmm8
-        vaddsubpd %xmm13,%xmm12 , %xmm12
-
-        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
-        vshufpd $0x01, %xmm12, %xmm12, %xmm13
-
-#else
-        vaddsubpd %xmm8, %xmm9 , %xmm9
-        vaddsubpd %xmm12,%xmm13, %xmm13
-
-        vmovapd   %xmm9,  %xmm8
-        vmovapd   %xmm13, %xmm12
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-        vshufpd $0x01, %xmm13, %xmm13, %xmm13
-
-#endif
-
-	// multiply with ALPHA_R
-        vmulpd  %xmm8 , %xmm0, %xmm8
-        vmulpd  %xmm12, %xmm0, %xmm12
-
-	// multiply with ALPHA_I
-        vmulpd  %xmm9 , %xmm1, %xmm9
-        vmulpd  %xmm13, %xmm1, %xmm13
-
-	vaddsubpd %xmm9,  %xmm8 , %xmm8
-        vaddsubpd %xmm13, %xmm12, %xmm12
-
-
-
-#ifndef TRMMKERNEL
-
-	vaddpd 	 	(CO1), %xmm8 , %xmm8
-	vaddpd  2 * SIZE(CO1), %xmm12, %xmm12
-
-#endif
-
-	vmovups	%xmm8 ,  	(CO1)
-	vmovups	%xmm12 , 2 * SIZE(CO1)
-
+	SAVE2x1
 
 #if (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
     (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -1864,31 +1725,35 @@
 
 .L1_2_42:
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x1_1(xxx)
-	KERNEL1x1_2(xxx)
-	KERNEL1x1_3(xxx)
-	KERNEL1x1_4(xxx)
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x1_1(xxx)
-	KERNEL1x1_2(xxx)
-	KERNEL1x1_3(xxx)
-	KERNEL1x1_4(xxx)
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
 
 	je	.L1_2_46
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x1_1(xxx)
-	KERNEL1x1_2(xxx)
-	KERNEL1x1_3(xxx)
-	KERNEL1x1_4(xxx)
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
 
+	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL1x1_1(xxx)
-	KERNEL1x1_2(xxx)
-	KERNEL1x1_3(xxx)
-	KERNEL1x1_4(xxx)
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
+	KERNEL1x1_SUB
 
 	je	.L1_2_46
 
@@ -1917,53 +1782,15 @@
 
 .L1_2_47:
 
-	KERNEL1x1_SUB(xxx)
+	KERNEL1x1_SUB
+
 	jl	.L1_2_47
 	ALIGN_4
 
 
 .L1_2_49:
 
-	vmovddup	ALPHA_R, %xmm0
-	vmovddup	ALPHA_I, %xmm1
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-
-#if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
-    defined(NR) || defined(NC) || defined(TR) || defined(TC)
-
-        vaddsubpd %xmm9, %xmm8,  %xmm8
-
-        vshufpd $0x01, %xmm8 , %xmm8, %xmm9
-
-#else
-        vaddsubpd %xmm8, %xmm9,  %xmm9
-
-        vmovapd   %xmm9,  %xmm8
-
-	// swap high and low 64 bytes
-        vshufpd $0x01, %xmm9 , %xmm9, %xmm9
-
-#endif
-
-	// multiply with ALPHA_R
-        vmulpd  %xmm8 , %xmm0, %xmm8
-
-	// multiply with ALPHA_I
-        vmulpd  %xmm9 , %xmm1, %xmm9
-
-	vaddsubpd %xmm9 ,%xmm8,  %xmm8
-
-
-
-#ifndef TRMMKERNEL
-
-	vaddpd 	 	(CO1), %xmm8 , %xmm8
-
-#endif
-
-	vmovups	%xmm8 ,  	(CO1)
+	SAVE1x1
 
 #if (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
     (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
