@@ -941,8 +941,6 @@
 #endif
 
 	addq	$2 * SIZE, CO1		# coffset += 2
-	decq	I			# i --
-	jg	.L2_41
 	ALIGN_4	
 
 
@@ -1371,12 +1369,7 @@
 #endif
 
 	addq	$2 * SIZE, CO1		# coffset += 2
-	decq	I			# i --
-	jg	.L1_41
 	ALIGN_4	
-
-
-
 
 
 
