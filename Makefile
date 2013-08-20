@@ -31,7 +31,7 @@ SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
 all :: libs netlib tests shared
 	@echo
-	@echo " OpenBLAS build complete."
+	@echo " OpenBLAS build complete. ($(LIB_COMPONENTS))"
 	@echo
 	@echo "  OS               ... $(OSNAME)             "
 	@echo "  Architecture     ... $(ARCH)               "
@@ -44,7 +44,9 @@ ifdef INTERFACE64
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
+ifndef NOFORTRAN
 	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
+endif
 ifneq ($(OSNAME), AIX)
 	@echo -n "  Library Name     ... $(LIBNAME)"
 else

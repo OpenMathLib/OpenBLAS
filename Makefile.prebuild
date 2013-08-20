@@ -23,7 +23,17 @@ all: getarch_2nd cblas_noconst.h
 
 config.h : c_check f_check getarch
 	perl ./c_check $(TARGET_MAKE) $(TARGET_CONF) $(CC)
+ifneq ($(ONLY_CBLAS), 1)
 	perl ./f_check $(TARGET_MAKE) $(TARGET_CONF) $(FC)
+else
+#When we only build CBLAS, we set NOFORTRAN=2
+	echo "NOFORTRAN=2" >> $(TARGET_MAKE)
+	echo "NO_FBLAS=1" >> $(TARGET_MAKE)
+	echo "F_COMPILER=GFORTRAN"  >> $(TARGET_MAKE)
+	echo "BU=_"  >> $(TARGET_MAKE)
+	echo "#define BUNDERSCORE _" >> $(TARGET_CONF)
+	echo "#define NEEDBUNDERSCORE 1" >> $(TARGET_CONF)
+endif
 	./getarch 0 >> $(TARGET_MAKE)
 	./getarch 1 >> $(TARGET_CONF)
 

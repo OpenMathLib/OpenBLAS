@@ -2675,7 +2675,10 @@
 #These function may need 2 underscores.
 @lapack_embeded_underscore_objs=(xerbla_array, chla_transtype,);
 
-if ($ARGV[5] == 1) {
+if ($ARGV[8] == 1) {
+    #ONLY_CBLAS=1
+    @underscore_objs = (@misc_underscore_objs);
+} elsif ($ARGV[5] == 1) {
 	#NO_LAPACK=1
 	@underscore_objs = (@blasobjs, @misc_underscore_objs);
 } elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1" ||
@@ -2693,6 +2696,12 @@ if ($ARGV[5] == 1) {
 
 } else {
     @underscore_objs = (@blasobjs, @lapackobjs, @misc_underscore_objs);
+}
+
+if ($ARGV[8] == 1) {
+    #ONLY_CBLAS=1
+    @gemm3mobjs=();
+    @exblasobjs=();
 }
 
 if ($ARGV[3] == 1){ @underscore_objs = (@underscore_objs, @exblasobjs); };
