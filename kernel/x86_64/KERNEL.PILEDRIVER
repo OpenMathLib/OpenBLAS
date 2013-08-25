@@ -16,15 +16,17 @@ SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX) 
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
-DGEMMKERNEL    =  dgemm_kernel_8x2_bulldozer.S
-DGEMMINCOPY    =  dgemm_ncopy_8_bulldozer.S
-DGEMMITCOPY    =  dgemm_tcopy_8_bulldozer.S
-DGEMMONCOPY    =  gemm_ncopy_2_bulldozer.S
-DGEMMOTCOPY    =  gemm_tcopy_2_bulldozer.S
+
+DGEMMKERNEL    =  dgemm_kernel_6x4_piledriver.S
+DGEMMINCOPY    = ../generic/gemm_ncopy_6.c
+DGEMMITCOPY    = ../generic/gemm_tcopy_6.c
+DGEMMONCOPY    = ../generic/gemm_ncopy_4.c
+DGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
 DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 CGEMMKERNEL    =  cgemm_kernel_4x2_bulldozer.S
 CGEMMINCOPY    =  ../generic/zgemm_ncopy_4.c
 CGEMMITCOPY    =  ../generic/zgemm_tcopy_4.c
