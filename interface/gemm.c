@@ -71,6 +71,10 @@
 #endif
 #endif
 
+#ifndef GEMM_MULTITHREAD_THRESHOLD
+# define GEMM_MULTITHREAD_THRESHOLD 4
+#endif
+
 static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef GEMM3M
   GEMM_NN, GEMM_TN, GEMM_RN, GEMM_CN,
