@@ -15,10 +15,6 @@ ifdef SANITY_CHECK
 BLASDIRS += reference
 endif
 
-ifndef PREFIX
-PREFIX = /opt/OpenBLAS
-endif
-
 SUBDIRS	= $(BLASDIRS)
 ifneq ($(NO_LAPACK), 1)
 SUBDIRS	+= lapack

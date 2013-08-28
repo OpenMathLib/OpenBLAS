@@ -3,6 +3,8 @@ export GOTOBLAS_MAKEFILE = 1
 -include $(TOPDIR)/Makefile.conf_last
 include ./Makefile.system
 
+PREFIX?=/opt/OpenBLAS
+
 OPENBLAS_INCLUDE_DIR:=$(PREFIX)/include
 OPENBLAS_LIBRARY_DIR:=$(PREFIX)/lib
 OPENBLAS_BUILD_DIR:=$(CURDIR)
