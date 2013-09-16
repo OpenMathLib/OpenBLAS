@@ -679,6 +679,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "generic"
 #endif
 
+#ifdef FORCE_ARMV7
+#define FORCE
+#define ARCHITECTURE    "ARM"
+#define SUBARCHITECTURE "ARMV7"
+#define SUBDIRNAME      "arm"
+#define ARCHCONFIG   "-DARMV7 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "armv7"
+#define CORENAME  "ARMV7"
+#else
+#endif
+
+
 #ifndef FORCE
 
 #if defined(__powerpc__) || defined(__powerpc) || defined(powerpc) || \

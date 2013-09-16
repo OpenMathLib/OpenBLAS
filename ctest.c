@@ -1,3 +1,13 @@
+//LSB (Linux Standard Base) compiler
+//only support lsbc++
+#if defined (__LSB_VERSION__)
+#if !defined (__cplusplus)
+COMPILER_LSB
+#else
+#error "OpenBLAS only supports lsbcc."
+#endif
+#endif
+
 #if defined(__clang__)
 COMPILER_CLANG
 #endif
@@ -114,3 +124,9 @@ ARCH_IA64
 #if defined(__LP64) || defined(__LP64__) || defined(__ptr64) || defined(__x86_64__) || defined(__amd64__) || defined(__64BIT__)
 BINARY_64
 #endif
+
+#if defined(__ARM_ARCH) || defined(__ARM_ARCH_7A__)
+ARCH_ARM
+#endif
+
+

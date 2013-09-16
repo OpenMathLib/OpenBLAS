@@ -314,6 +314,23 @@ typedef int blasint;
 #define YIELDING	sched_yield()
 #endif
 
+/***
+To alloc job_t on heap or statck.
+please https://github.com/xianyi/OpenBLAS/issues/246
+***/
+#if defined(OS_WINDOWS)
+#define GETRF_MEM_ALLOC_THRESHOLD 32
+#define BLAS3_MEM_ALLOC_THRESHOLD 32
+#endif
+
+#ifndef GETRF_MEM_ALLOC_THRESHOLD
+#define GETRF_MEM_ALLOC_THRESHOLD 80
+#endif
+
+#ifndef BLAS3_MEM_ALLOC_THRESHOLD
+#define BLAS3_MEM_ALLOC_THRESHOLD 160
+#endif
+
 #ifdef QUAD_PRECISION
 #include "common_quad.h"
 #endif
@@ -344,6 +361,10 @@ typedef int blasint;
 
 #ifdef ARCH_MIPS64
 #include "common_mips64.h"
+#endif
+
+#ifdef ARCH_ARM
+#include "common_arm.h"
 #endif
 
 #ifdef OS_LINUX
