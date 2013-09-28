@@ -363,6 +363,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_mips64.h"
 #endif
 
+#ifdef ARCH_ARM
+#include "common_arm.h"
+#endif
+
 #ifdef OS_LINUX
 #include "common_linux.h"
 #endif
@@ -574,10 +578,9 @@ typedef struct {
 #include "common_level2.h"
 #include "common_level3.h"
 #include "common_lapack.h"
-
 #ifdef CBLAS
-# define OPENBLAS_CONST     /* see comment in cblas.h */
-# include "cblas.h"
+/* This header file is generated from "cblas.h" (see Makefile.prebuild). */
+#include "cblas_noconst.h"
 #endif
 
 #ifndef ASSEMBLER
