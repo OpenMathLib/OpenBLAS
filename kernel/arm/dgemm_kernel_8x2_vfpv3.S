@@ -26,43 +26,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/09/28 Saar
+* 2013/09/29 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
 *
-* 2013/09/22 Saar
-*	UNROLL_N		2
-*	UNROLL_M		8
-*	DGEMM_P			64
-*	DGEMM_Q			64
-*	DGEMM_R			512
-*	A_PRE			128
-*	B_PRE			128
 *
-* 	Performance on Odroid U2:
-*
-*		1 Core:		0.92 GFLOPS	ATLAS: 0.81	GFLOPS
-*		2 Cores:	1.83 GFLOPS	ATLAS: 1.51	GFLOPS
-*		3 Cores:	2.67 GFLOPS	ATLAS: 1.51	GFLOPS
-*		4 Cores:	3.52 GFLOPS	ATLAS: 1.51	GFLOPS
-*
-* 2013/09/28 Saar
+* 2013/09/29 Saar
 *	UNROLL_N		2
 *	UNROLL_M		8
 *	DGEMM_P			128
 *	DGEMM_Q			128
 *	DGEMM_R			2048
-*	A_PRE			128
-*	B_PRE			128
-*	C_PRE			32
+*	A_PRE			192
+*	B_PRE			32
+*	C_PRE			64
 *
 * 	Performance on Odroid U2:
 *
-*		1 Core:		0.99 GFLOPS	ATLAS: 0.82	GFLOPS
-*		2 Cores:	1.97 GFLOPS	ATLAS: 1.59	GFLOPS
-*		3 Cores:	2.86 GFLOPS	ATLAS: 1.59	GFLOPS
-*		4 Cores:	3.79 GFLOPS	ATLAS: 1.59	GFLOPS
+*		1 Core:		1.48 GFLOPS	ATLAS: 1.52	GFLOPS
+*		2 Cores:	2.92 GFLOPS	ATLAS: -	GFLOPS
+*		3 Cores:	4.08 GFLOPS	ATLAS: -	GFLOPS
+*		4 Cores:	4.80 GFLOPS	ATLAS: 3.80	GFLOPS
 **************************************************************************************/
 
 #define ASSEMBLER
@@ -108,10 +93,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define K1	r7
 #define BC	r12
 
-#define A_PRE	128
-#define A_PRE1	160
-#define B_PRE	128
-#define C_PRE	32
+#define A_PRE	192
+#define A_PRE1	224
+#define B_PRE	32
+#define C_PRE	64
 
 /**************************************************************************************
 * Macro definitions
@@ -138,256 +123,121 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .endm
 
-.macro KERNEL8x2_START
-
-	vldm		BO!, { d24 , d25}
-	vldm		AO!, { d0, d1 , d2, d3, d4 , d5 , d6 , d7 }
-
-	vmul.f64	d26 , d0 , d24
-	vmul.f64	d29 , d0 , d25
-	vmul.f64	d27 , d1 , d24
-	vmul.f64	d30 , d1 , d25
-	vmul.f64	d28 , d2 , d24
-	vmul.f64	d31 , d2 , d25
-
-        pld     [AO , #A_PRE]
-
-	vadd.f64	d8  , d8 , d26
-	vadd.f64	d16 , d16, d29
-	vadd.f64	d9  , d9 , d27
-	vadd.f64	d17 , d17, d30
-	vadd.f64	d10 , d10, d28
-	vadd.f64	d18 , d18, d31
-
-	vmul.f64	d26 , d3 , d24
-	vmul.f64	d27 , d4 , d24
-	vmul.f64	d28 , d5 , d24
-	vmul.f64	d29 , d3 , d25
-	vmul.f64	d30 , d4 , d25
-	vmul.f64	d31 , d5 , d25
-
-        pld     [AO , #A_PRE1]
-
-	vadd.f64	d11 , d11, d26
-	vadd.f64	d12 , d12, d27
-	vadd.f64	d13 , d13, d28
-	vadd.f64	d19 , d19, d29
-	vadd.f64	d20 , d20, d30
-	vadd.f64	d21 , d21, d31
-
-	vmul.f64	d26 , d6 , d24
-	vmul.f64	d27 , d7 , d24
-	vmul.f64	d29 , d6 , d25
-	vmul.f64	d30 , d7 , d25
-
-	vldm		BO!, { d24 , d25}
-	vldm		AO!, { d0, d1 , d2, d3, d4 , d5 , d6 , d7 }
-
-	vadd.f64	d14 , d14, d26
-	vadd.f64	d15 , d15, d27
-	vadd.f64	d22 , d22, d29
-	vadd.f64	d23 , d23, d30
-
-.endm
-
-
-.macro KERNEL8x2_M
-
-	vmul.f64	d26 , d0 , d24
-	vmul.f64	d29 , d0 , d25
-	vmul.f64	d27 , d1 , d24
-	vmul.f64	d30 , d1 , d25
-	vmul.f64	d28 , d2 , d24
-	vmul.f64	d31 , d2 , d25
-
-        pld     [AO , #A_PRE]
-
-	vadd.f64	d8  , d8 , d26
-	vadd.f64	d16 , d16, d29
-	vadd.f64	d9  , d9 , d27
-	vadd.f64	d17 , d17, d30
-	vadd.f64	d10 , d10, d28
-	vadd.f64	d18 , d18, d31
-
-	vmul.f64	d26 , d3 , d24
-	vmul.f64	d27 , d4 , d24
-	vmul.f64	d28 , d5 , d24
-	vmul.f64	d29 , d3 , d25
-	vmul.f64	d30 , d4 , d25
-	vmul.f64	d31 , d5 , d25
-
-        pld     [AO , #A_PRE1]
-
-	vadd.f64	d11 , d11, d26
-	vadd.f64	d12 , d12, d27
-	vadd.f64	d13 , d13, d28
-	vadd.f64	d19 , d19, d29
-	vadd.f64	d20 , d20, d30
-	vadd.f64	d21 , d21, d31
-
-	vmul.f64	d26 , d6 , d24
-	vmul.f64	d27 , d7 , d24
-	vmul.f64	d29 , d6 , d25
-	vmul.f64	d30 , d7 , d25
-
-	vldm		BO!, { d24 , d25}
-	vldm		AO!, { d0, d1 , d2, d3, d4 , d5 , d6 , d7 }
-
-	vadd.f64	d14 , d14, d26
-	vadd.f64	d15 , d15, d27
-	vadd.f64	d22 , d22, d29
-	vadd.f64	d23 , d23, d30
-
-.endm
-
-
-.macro KERNEL8x2_END
-
-	vmul.f64	d26 , d0 , d24
-	vmul.f64	d29 , d0 , d25
-	vmul.f64	d27 , d1 , d24
-	vmul.f64	d30 , d1 , d25
-	vmul.f64	d28 , d2 , d24
-	vmul.f64	d31 , d2 , d25
-
-        pld     [AO , #A_PRE]
-
-	vadd.f64	d8  , d8 , d26
-	vadd.f64	d16 , d16, d29
-	vadd.f64	d9  , d9 , d27
-	vadd.f64	d17 , d17, d30
-	vadd.f64	d10 , d10, d28
-	vadd.f64	d18 , d18, d31
-
-	vmul.f64	d26 , d3 , d24
-	vmul.f64	d27 , d4 , d24
-	vmul.f64	d28 , d5 , d24
-	vmul.f64	d29 , d3 , d25
-	vmul.f64	d30 , d4 , d25
-	vmul.f64	d31 , d5 , d25
-
-        pld     [AO , #A_PRE1]
-
-	vadd.f64	d11 , d11, d26
-	vadd.f64	d12 , d12, d27
-	vadd.f64	d13 , d13, d28
-	vadd.f64	d19 , d19, d29
-	vadd.f64	d20 , d20, d30
-	vadd.f64	d21 , d21, d31
-
-	vmul.f64	d26 , d6 , d24
-	vmul.f64	d27 , d7 , d24
-	vmul.f64	d29 , d6 , d25
-	vmul.f64	d30 , d7 , d25
-
-	vadd.f64	d14 , d14, d26
-	vadd.f64	d15 , d15, d27
-	vadd.f64	d22 , d22, d29
-	vadd.f64	d23 , d23, d30
-
-.endm
-
-
 
 
 .macro KERNEL8x2
 
-	vldm		BO!, { d24 , d25}
-	vldm		AO!, { d0, d1 , d2, d3, d4 , d5 , d6 , d7 }
-
-	vmul.f64	d26 , d0 , d24
-	vmul.f64	d29 , d0 , d25
-	vmul.f64	d27 , d1 , d24
-	vmul.f64	d30 , d1 , d25
-	vmul.f64	d28 , d2 , d24
-	vmul.f64	d31 , d2 , d25
-
+	fldmiad	BO!, { d24 , d25}
         pld     [AO , #A_PRE]
+	fldmiad	AO!, { d0, d1 }
 
-	vadd.f64	d8  , d8 , d26
-	vadd.f64	d16 , d16, d29
-	vadd.f64	d9  , d9 , d27
-	vadd.f64	d17 , d17, d30
-	vadd.f64	d10 , d10, d28
-	vadd.f64	d18 , d18, d31
+	fmacd	d8  , d0,  d24
+	fldmiad	AO!, { d2, d3 }
+	fmacd	d9  , d1,  d24
+	fldmiad	AO!, { d4, d5 }
+	fmacd	d16 , d0,  d25
+	fldmiad	AO!, { d6, d7 }
+	fmacd	d17 , d1,  d25
 
-	vmul.f64	d26 , d3 , d24
-	vmul.f64	d27 , d4 , d24
-	vmul.f64	d28 , d5 , d24
-	vmul.f64	d29 , d3 , d25
-	vmul.f64	d30 , d4 , d25
-	vmul.f64	d31 , d5 , d25
+	fmacd	d10 , d2,  d24
+	fmacd	d11 , d3,  d24
+	fmacd	d18 , d2,  d25
+	fmacd	d19 , d3,  d25
 
-        pld     [AO , #A_PRE1]
+        pld     [AO , #A_PRE-32]
 
-	vadd.f64	d11 , d11, d26
-	vadd.f64	d12 , d12, d27
-	vadd.f64	d13 , d13, d28
-	vadd.f64	d19 , d19, d29
-	vadd.f64	d20 , d20, d30
-	vadd.f64	d21 , d21, d31
+	fmacd	d12 , d4,  d24
+	fmacd	d13 , d5,  d24
+	fmacd	d20 , d4,  d25
+	fmacd	d21 , d5,  d25
 
-	vmul.f64	d26 , d6 , d24
-	vmul.f64	d27 , d7 , d24
-	vmul.f64	d29 , d6 , d25
-	vmul.f64	d30 , d7 , d25
-
-	vadd.f64	d14 , d14, d26
-	vadd.f64	d15 , d15, d27
-	vadd.f64	d22 , d22, d29
-	vadd.f64	d23 , d23, d30
+	fmacd	d14 , d6,  d24
+	fmacd	d15 , d7,  d24
+	fmacd	d22 , d6,  d25
+	fmacd	d23 , d7,  d25
 
 .endm
 
 .macro SAVE8x2
 
 	vldr		d0, ALPHA
-	vldm		CO2, { d24, d25, d26 , d27 , d28 , d29 , d30 , d31 }
+	vldm		CO1, { d24, d25, d26 , d27 , d28 , d29 , d30 , d31 }
 
-	vmul.f64	d8 , d0 , d8
-	vmul.f64	d9 , d0 , d9
-	vmul.f64	d10, d0 , d10
-	vmul.f64	d11, d0 , d11
-	vmul.f64	d12, d0 , d12
-	vmul.f64	d13, d0 , d13
-	vmul.f64	d14, d0 , d14
-	vmul.f64	d15, d0 , d15
+	vmla.f64	d24, d0 , d8
+	vmla.f64	d25, d0 , d9
+	vmla.f64	d26, d0 , d10
+	vmla.f64	d27, d0 , d11
+	vmla.f64	d28, d0 , d12
+	vmla.f64	d29, d0 , d13
+	vmla.f64	d30, d0 , d14
+	vmla.f64	d31, d0 , d15
+
+	vstm		CO1!, { d24, d25, d26 , d27 , d28 , d29 , d30 , d31 }
+	vldm		CO2,  { d8 , d9 , d10 , d11 , d12, d13  , d14 , d15 }
 	
-	vmul.f64	d16, d0 , d16
-	vmul.f64	d17, d0 , d17
-	vmul.f64	d18, d0 , d18
-	vmul.f64	d19, d0 , d19
-	vmul.f64	d20, d0 , d20
-	vmul.f64	d21, d0 , d21
-	vmul.f64	d22, d0 , d22
-	vmul.f64	d23, d0 , d23
+	vmla.f64	d8 , d0 , d16
+	vmla.f64	d9 , d0 , d17
+	vmla.f64	d10, d0 , d18
+	vmla.f64	d11, d0 , d19
+	vmla.f64	d12, d0 , d20
+	vmla.f64	d13, d0 , d21
+	vmla.f64	d14, d0 , d22
+	vmla.f64	d15, d0 , d23
 
-	vldm		CO1, { d0 , d1 , d2  , d3  , d4  , d5  , d6  , d7 }
-
-	vadd.f64	d16, d16, d24
-	vadd.f64	d17, d17, d25
-	vadd.f64	d18, d18, d26
-	vadd.f64	d19, d19, d27
-
-	vadd.f64	d20, d20, d28
-	vadd.f64	d21, d21, d29
-	vadd.f64	d22, d22, d30
-	vadd.f64	d23, d23, d31
-
-	vadd.f64	d8 , d8 , d0
-	vadd.f64	d9 , d9 , d1
-	vadd.f64	d10, d10, d2
-	vadd.f64	d11, d11, d3
-
-	vadd.f64	d12, d12, d4
-	vadd.f64	d13, d13, d5
-	vadd.f64	d14, d14, d6
-	vadd.f64	d15, d15, d7
-
-	vstm		CO2!, { d16, d17, d18 , d19 , d20 , d21 , d22 , d23 }
-	vstm		CO1!, { d8 , d9 , d10 , d11 , d12, d13  , d14 , d15 }
+	vstm		CO2!,  { d8 , d9 , d10 , d11 , d12, d13  , d14 , d15 }
 
 .endm
+
+.macro SAVE8x2_BAD
+
+        vldr            d0, ALPHA
+        vldm            CO2, { d24, d25, d26 , d27 , d28 , d29 , d30 , d31 }
+
+        vmul.f64        d8 , d0 , d8
+        vmul.f64        d9 , d0 , d9
+        vmul.f64        d10, d0 , d10
+        vmul.f64        d11, d0 , d11
+        vmul.f64        d12, d0 , d12
+        vmul.f64        d13, d0 , d13
+        vmul.f64        d14, d0 , d14
+        vmul.f64        d15, d0 , d15
+
+        vmul.f64        d16, d0 , d16
+        vmul.f64        d17, d0 , d17
+        vmul.f64        d18, d0 , d18
+        vmul.f64        d19, d0 , d19
+        vmul.f64        d20, d0 , d20
+        vmul.f64        d21, d0 , d21
+        vmul.f64        d22, d0 , d22
+        vmul.f64        d23, d0 , d23
+
+        vldm            CO1, { d0 , d1 , d2  , d3  , d4  , d5  , d6  , d7 }
+
+        vadd.f64        d16, d16, d24
+        vadd.f64        d17, d17, d25
+        vadd.f64        d18, d18, d26
+        vadd.f64        d19, d19, d27
+
+        vadd.f64        d20, d20, d28
+        vadd.f64        d21, d21, d29
+        vadd.f64        d22, d22, d30
+        vadd.f64        d23, d23, d31
+
+        vadd.f64        d8 , d8 , d0
+        vadd.f64        d9 , d9 , d1
+        vadd.f64        d10, d10, d2
+        vadd.f64        d11, d11, d3
+
+        vadd.f64        d12, d12, d4
+        vadd.f64        d13, d13, d5
+        vadd.f64        d14, d14, d6
+        vadd.f64        d15, d15, d7
+
+        vstm            CO2!, { d16, d17, d18 , d19 , d20 , d21 , d22 , d23 }
+        vstm            CO1!, { d8 , d9 , d10 , d11 , d12, d13  , d14 , d15 }
+
+.endm
+
 
 
 /*************************************************************************************/
@@ -814,18 +664,18 @@ _L2_M8_20:
 _L2_M8_22:
 
         pld     [BO , #B_PRE]
-	KERNEL8x2_START
-	KERNEL8x2_M
+	KERNEL8x2
+	KERNEL8x2
         pld     [BO , #B_PRE]
-	KERNEL8x2_M
-	KERNEL8x2_M
+	KERNEL8x2
+	KERNEL8x2
 
         pld     [BO , #B_PRE]
-	KERNEL8x2_M
-	KERNEL8x2_M
+	KERNEL8x2
+	KERNEL8x2
         pld     [BO , #B_PRE]
-	KERNEL8x2_M
-	KERNEL8x2_END
+	KERNEL8x2
+	KERNEL8x2
 
 	subs	L, L, #1
 	bgt	_L2_M8_22
