@@ -26,28 +26,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/09/29 Saar
+* 2013/09/30 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
 *
 *
-* 2013/09/29 Saar
+* 2013/09/30 Saar
 *	UNROLL_N		2
 *	UNROLL_M		8
-*	DGEMM_P			128
-*	DGEMM_Q			128
-*	DGEMM_R			2048
+*	DGEMM_P			64
+*	DGEMM_Q			64
+*	DGEMM_R			512
 *	A_PRE			192
 *	B_PRE			32
 *	C_PRE			64
 *
 * 	Performance on Odroid U2:
 *
-*		1 Core:		1.48 GFLOPS	ATLAS: 1.52	GFLOPS
-*		2 Cores:	2.92 GFLOPS	ATLAS: -	GFLOPS
-*		3 Cores:	4.08 GFLOPS	ATLAS: -	GFLOPS
-*		4 Cores:	4.80 GFLOPS	ATLAS: 3.80	GFLOPS
+*		1 Core:		1.42 GFLOPS	ATLAS: 1.58	GFLOPS
+*		2 Cores:	2.81 GFLOPS	ATLAS: -	GFLOPS
+*		3 Cores:	4.05 GFLOPS	ATLAS: -	GFLOPS
+*		4 Cores:	5.40 GFLOPS	ATLAS: 3.88	GFLOPS
 **************************************************************************************/
 
 #define ASSEMBLER
@@ -128,32 +128,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL8x2
 
 	fldmiad	BO!, { d24 , d25}
-        pld     [AO , #A_PRE]
-	fldmiad	AO!, { d0, d1 }
-
+	fldd	d0, [ AO ]
 	fmacd	d8  , d0,  d24
-	fldmiad	AO!, { d2, d3 }
-	fmacd	d9  , d1,  d24
-	fldmiad	AO!, { d4, d5 }
+	fldd	d1, [ AO , #8  ]
 	fmacd	d16 , d0,  d25
-	fldmiad	AO!, { d6, d7 }
+	fldd	d2, [ AO , #16  ]
+	fmacd	d9  , d1,  d24
 	fmacd	d17 , d1,  d25
-
+	fldd	d3, [ AO , #24  ]
 	fmacd	d10 , d2,  d24
-	fmacd	d11 , d3,  d24
 	fmacd	d18 , d2,  d25
+	fldd	d4, [ AO , #32  ]
+	fmacd	d11 , d3,  d24
+        pld     [AO , #A_PRE]
 	fmacd	d19 , d3,  d25
-
-        pld     [AO , #A_PRE-32]
+	fldd	d5, [ AO , #40 ]
 
 	fmacd	d12 , d4,  d24
-	fmacd	d13 , d5,  d24
 	fmacd	d20 , d4,  d25
+	fldd	d6, [ AO , #48 ]
+	fmacd	d13 , d5,  d24
 	fmacd	d21 , d5,  d25
 
+	fldd	d7, [ AO , #56  ]
 	fmacd	d14 , d6,  d24
-	fmacd	d15 , d7,  d24
 	fmacd	d22 , d6,  d25
+        pld     [AO , #A_PRE+32]
+	fmacd	d15 , d7,  d24
+	add	AO, AO, #64
 	fmacd	d23 , d7,  d25
 
 .endm
@@ -161,30 +163,62 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE8x2
 
 	vldr		d0, ALPHA
-	vldm		CO1, { d24, d25, d26 , d27 , d28 , d29 , d30 , d31 }
 
-	vmla.f64	d24, d0 , d8
-	vmla.f64	d25, d0 , d9
-	vmla.f64	d26, d0 , d10
-	vmla.f64	d27, d0 , d11
-	vmla.f64	d28, d0 , d12
-	vmla.f64	d29, d0 , d13
-	vmla.f64	d30, d0 , d14
-	vmla.f64	d31, d0 , d15
+	fldd	d24, [CO1]
+	fldd	d25, [CO1, #8 ]
+		
+	fmacd	d24, d0 , d8
+	fldd	d8  , [CO2]	
+	fldd	d26, [CO1, #16]
+	fmacd	d25, d0 , d9
+	fldd	d9  , [CO2, #8 ]	
+	fldd	d27, [CO1, #24]
+	fmacd	d26, d0 , d10
+	fldd	d10 , [CO2, #16 ]	
+	fldd	d28, [CO1, #32]
+	fmacd	d27, d0 , d11
+	fldd	d11 , [CO2, #24 ]	
+	fldd	d29, [CO1, #40]
+	fmacd	d28, d0 , d12
+	fldd	d12 , [CO2, #32 ]	
+	fldd	d30, [CO1, #48]
+	fmacd	d29, d0 , d13
+	fldd	d13 , [CO2, #40 ]	
+	fldd	d31, [CO1, #56]
+	fmacd	d30, d0 , d14
+	fldd	d14 , [CO2, #48 ]	
+	fmacd	d31, d0 , d15
+	fldd	d15 , [CO2, #56 ]	
 
-	vstm		CO1!, { d24, d25, d26 , d27 , d28 , d29 , d30 , d31 }
-	vldm		CO2,  { d8 , d9 , d10 , d11 , d12, d13  , d14 , d15 }
 	
-	vmla.f64	d8 , d0 , d16
-	vmla.f64	d9 , d0 , d17
-	vmla.f64	d10, d0 , d18
-	vmla.f64	d11, d0 , d19
-	vmla.f64	d12, d0 , d20
-	vmla.f64	d13, d0 , d21
-	vmla.f64	d14, d0 , d22
-	vmla.f64	d15, d0 , d23
+	fmacd	d8 , d0 , d16
+	fstd	d24, [CO1]
+	fmacd	d9 , d0 , d17
+	fstd	d25, [CO1, #8 ]
+	fstd	d8 , [CO2]
+	fmacd	d10, d0 , d18
+	fstd	d26, [CO1, #16 ]
+	fstd	d9 , [CO2, #8  ]
+	fmacd	d11, d0 , d19
+	fstd	d27, [CO1, #24 ]
+	fstd	d10, [CO2, #16 ]
+	fmacd	d12, d0 , d20
+	fstd	d28, [CO1, #32 ]
+	fstd	d11, [CO2, #24 ]
+	fmacd	d13, d0 , d21
+	fstd	d29, [CO1, #40 ]
+	fstd	d12, [CO2, #32 ]
+	fmacd	d14, d0 , d22
+	fstd	d30, [CO1, #48 ]
+	fstd	d13, [CO2, #40 ]
+	fmacd	d15, d0 , d23
+	fstd	d31, [CO1, #56 ]
+	fstd	d14, [CO2, #48 ]
 
-	vstm		CO2!,  { d8 , d9 , d10 , d11 , d12, d13  , d14 , d15 }
+	add	CO1, CO1, #64
+	fstd	d15, [CO2, #56 ]
+	add	CO2, CO2, #64
+
 
 .endm
 
@@ -643,6 +677,9 @@ _L2_BEGIN:
 	str	r3 , C						// store C
 
 	ldr	AO, A						// AO = A
+        pld     [AO , #A_PRE-96]
+        pld     [AO , #A_PRE-64]
+        pld     [AO , #A_PRE-32]
 
 _L2_M8_BEGIN:
 
@@ -653,7 +690,9 @@ _L2_M8_BEGIN:
 _L2_M8_20:
 
 	pld	[CO1, #C_PRE]
+	pld	[CO1, #C_PRE+32]
 	pld	[CO2, #C_PRE]
+	pld	[CO2, #C_PRE+32]
 	INIT8x2
 
 	mov	BO, BC
