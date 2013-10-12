@@ -26,34 +26,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/10/05 Saar
+* 2013/10/11 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
 *
 *
-* 2013/10/03 Saar
+* 2013/10/11 Saar
 *	UNROLL_N		4
 *	UNROLL_M		4
 *	DGEMM_P			128
 *	DGEMM_Q			96
 *	DGEMM_R			512
-*	A_PRE			64
-*	B_PRE			64
+*	A_PRE			96
+*	B_PRE			96
 *	C_PRE			64
 *
 * 	Performance on Odroid U2:
 *
-*		1 Core:		1.55 GFLOPS	ATLAS: 1.59	GFLOPS
-*		2 Cores:	3.10 GFLOPS	ATLAS: -	GFLOPS
-*		3 Cores:	4.54 GFLOPS	ATLAS: -	GFLOPS
-*		4 Cores:	5.67 GFLOPS	ATLAS: 3.88	GFLOPS
+*		1 Core:		1.57 GFLOPS	ATLAS: 1.59	GFLOPS
+*		2 Cores:	3.14 GFLOPS	ATLAS: 3.16	GFLOPS
+*		3 Cores:	4.56 GFLOPS	ATLAS: 4.60	GFLOPS
+*		4 Cores:	5.82 GFLOPS	ATLAS: 5.41	GFLOPS
 **************************************************************************************/
 
 #define ASSEMBLER
 #include "common.h"
 
-#define STACKSIZE 252
+#define STACKSIZE 256
 
 #define	OLD_M	r0
 #define	OLD_N	r1
@@ -67,17 +67,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * registers
 *******************************************************/
 
-#define C	[fp, #-248 ]
 #define LDC	[fp, #-252 ]
 #define M	[fp, #-256 ]
 #define N	[fp, #-260 ]
 #define K	[fp, #-264 ]
 #define A	[fp, #-268 ]
 
-#define ALPHA	[fp, #-276 ]
+#define ALPHA	[fp, #-280]
 
 #define B	[fp, #4 ]
-#define OLD_C	[fp, #8 ]
+#define C	[fp, #8 ]
 #define OLD_LDC	[fp, #12 ]
 
 #define I	r0
@@ -93,8 +92,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define K1	r7
 #define BC	r12
 
-#define A_PRE	64
-#define B_PRE	64
+#define A_PRE	96
+#define B_PRE	96
 #define C_PRE	64
 
 /**************************************************************************************
@@ -124,34 +123,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x4_I
 	pld	[ BO , #B_PRE ]
-
 	fldd	d8 , [ BO ]
-
+	fldd	d0 , [ AO ]
 	pld	[ AO , #A_PRE ]
-	fldmiad AO!, { d0 - d1}
 
+	fldd	d1 , [ AO, #8 ]
 	fmuld	d16  , d0,  d8
-	fldmiad AO!, { d2 - d3}
+	fldd	d2 , [ AO, #16 ]
 	fmuld	d17  , d1,  d8
-	fldd	d9 , [ BO, #8 ]
+	fldd	d3 , [ AO, #24 ]
 	fmuld	d18  , d2,  d8
-	fldd	d10, [ BO, #16 ]
+	fldd	d9 , [ BO, #8 ]
 	fmuld	d19  , d3,  d8
 
-	fldd	d11, [ BO, #24 ]
+	fldd	d10, [ BO, #16 ]
 	fmuld	d20  , d0,  d9
+	fldd	d11, [ BO, #24 ]
 	fmuld	d21  , d1,  d9
 	add	BO , BO, #32
+	add	AO , AO, #32
 	fmuld	d22  , d2,  d9
 
+	pld	[ BO , #B_PRE ]
 	fldd	d12, [ BO ]
 	fmuld	d23  , d3,  d9
 
+	pld	[ AO , #A_PRE ]
+	fldd	d4 , [ AO, #0 ]
 	fmuld	d24  , d0,  d10
-	fldmiad AO!, { d4 - d5 }
+	fldd	d5 , [ AO, #8 ]
 	fmuld	d25  , d1,  d10
+	fldd	d6 , [ AO, #16 ]
 	fmuld	d26  , d2,  d10
-	fldmiad AO!, { d6 - d7 }
+	fldd	d7 , [ AO, #24 ]
 	fmuld	d27  , d3,  d10
 
 	fldd	d13, [ BO, #8 ]
@@ -161,132 +165,91 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd	d15, [ BO, #24 ]
 	fmuld	d30  , d2,  d11
 	fmuld	d31  , d3,  d11
-	add	BO , BO, #32
 
 .endm
 
 
 
-.macro KERNEL4x4_S
-	pld	[ BO , #B_PRE ]
-
-	fldd	d8 , [ BO ]
-
-	pld	[ AO , #A_PRE ]
-	fldmiad AO!, { d0 - d1}
-
-	fmacd	d16  , d0,  d8
-	fldmiad AO!, { d2 - d3}
-	fmacd	d17  , d1,  d8
-	fldd	d9 , [ BO, #8 ]
-	fmacd	d18  , d2,  d8
-	fldd	d10, [ BO, #16 ]
-	fmacd	d19  , d3,  d8
-
-	fldd	d11, [ BO, #24 ]
-	fmacd	d20  , d0,  d9
-	fmacd	d21  , d1,  d9
-	add	BO , BO, #32
-	fmacd	d22  , d2,  d9
-
-	fldd	d12, [ BO ]
-	fmacd	d23  , d3,  d9
-
-	fmacd	d24  , d0,  d10
-	fldmiad AO!, { d4 - d5 }
-	fmacd	d25  , d1,  d10
-	fmacd	d26  , d2,  d10
-	fldmiad AO!, { d6 - d7 }
-	fmacd	d27  , d3,  d10
-
-	fldd	d13, [ BO, #8 ]
-	fmacd	d28  , d0,  d11
-	fldd	d14, [ BO, #16 ]
-	fmacd	d29  , d1,  d11
-	fldd	d15, [ BO, #24 ]
-	fmacd	d30  , d2,  d11
-	fmacd	d31  , d3,  d11
-	add	BO , BO, #32
-
-.endm
-
-
-
-.macro KERNEL4x4_M1
+.macro KERNEL4x4_M2
 
 	fmacd	d16  , d4,  d12
-	pld	[ AO , #A_PRE ]
+	pld	[ AO , #A_PRE+32 ]
 	fmacd	d17  , d5,  d12
+	fldd	d0 , [ AO , #32 ]
 	fmacd	d18  , d6,  d12
-	pld	[ BO , #B_PRE ]
+	pld	[ BO , #B_PRE+32 ]
 	fmacd	d19  , d7,  d12
 
+	fldd	d8 , [ BO , #32 ]
 	fmacd	d20  , d4,  d13
-	fldd	d8 , [ BO ]
+	fldd	d1 , [ AO, #40 ]
 	fmacd	d21  , d5,  d13
+	fldd	d2 , [ AO, #48 ]
 	fmacd	d22  , d6,  d13
-	fldmiad AO!, { d0 - d1 }
+	fldd	d3 , [ AO, #56 ]
 	fmacd	d23  , d7,  d13
 
 	fmacd	d24  , d4,  d14
-	fldmiad AO!, { d2 - d3 }
 	fmacd	d25  , d5,  d14
-	fldd	d9 , [ BO, #8 ]
+	fldd	d9 , [ BO, #40 ]
 	fmacd	d26  , d6,  d14
-	fldd	d10, [ BO, #16 ]
+	fldd	d10, [ BO, #48 ]
 	fmacd	d27  , d7,  d14
 
-	fldd	d11, [ BO, #24 ]
+	fldd	d11, [ BO, #56 ]
 	fmacd	d28  , d4,  d15
 	fmacd	d29  , d5,  d15
+	add	AO , AO, #64
 	fmacd	d30  , d6,  d15
-	add	BO , BO, #32
+	add	BO , BO, #64
 	fmacd	d31  , d7,  d15
 
 .endm
 
-.macro KERNEL4x4_M2
 
+.macro KERNEL4x4_M1
 
 	fmacd	d16  , d0,  d8
 	pld	[ AO , #A_PRE ]
 	fmacd	d17  , d1,  d8
-	pld	[ BO , #B_PRE ]
+	fldd	d4 , [ AO ]
 	fmacd	d18  , d2,  d8
-	fldd	d12, [ BO ]
+	pld	[ BO , #B_PRE ]
 	fmacd	d19  , d3,  d8
 
+	fldd	d12, [ BO ]
 	fmacd	d20  , d0,  d9
-	fldmiad AO!, { d4 - d5 }
+	fldd	d5 , [ AO, #8 ]
 	fmacd	d21  , d1,  d9
+	fldd	d6 , [ AO, #16 ]
 	fmacd	d22  , d2,  d9
-	fldmiad AO!, { d6 - d7 }
+	fldd	d7 , [ AO, #24 ]
 	fmacd	d23  , d3,  d9
 
 	fmacd	d24  , d0,  d10
 	fmacd	d25  , d1,  d10
+	fldd	d13, [ BO, #8 ]
 	fmacd	d26  , d2,  d10
+	fldd	d14, [ BO, #16 ]
 	fmacd	d27  , d3,  d10
 
-	fldd	d13, [ BO, #8 ]
-	fmacd	d28  , d0,  d11
-	fldd	d14, [ BO, #16 ]
-	fmacd	d29  , d1,  d11
 	fldd	d15, [ BO, #24 ]
+	fmacd	d28  , d0,  d11
+	fmacd	d29  , d1,  d11
 	fmacd	d30  , d2,  d11
 	fmacd	d31  , d3,  d11
-	add	BO , BO, #32
 
 .endm
+
 
 
 .macro KERNEL4x4_E
 
 	fmacd	d16  , d4,  d12
-	pld	[ AO , #A_PRE ]
 	fmacd	d17  , d5,  d12
+	add	BO , BO, #32
+	add	AO , AO, #32
 	fmacd	d18  , d6,  d12
-	pld	[ BO , #B_PRE ]
 	fmacd	d19  , d7,  d12
 
 	fmacd	d20  , d4,  d13
@@ -310,25 +273,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro KERNEL4x4_SUB
-	pld	[ BO , #B_PRE ]
-	pld	[ AO , #A_PRE ]
 
 	fldd	d8 , [ BO ]
+	pld	[ BO , #B_PRE ]
 
 	fldd	d0 , [ AO ]
+	pld	[ AO , #A_PRE ]
 	fldd	d1 , [ AO, #8 ]
-	fldd	d2 , [ AO, #16 ]
-	fldd	d3 , [ AO, #24 ]
 
 	fmacd	d16  , d0,  d8
-	fldd	d9 , [ BO, #8 ]
+	fldd	d2 , [ AO, #16 ]
 	fmacd	d17  , d1,  d8
-	fldd	d10, [ BO, #16 ]
+	fldd	d3 , [ AO, #24 ]
 	fmacd	d18  , d2,  d8
-	fldd	d11, [ BO, #24 ]
+	fldd	d9 , [ BO, #8 ]
 	fmacd	d19  , d3,  d8
 
+	fldd	d10, [ BO, #16 ]
 	fmacd	d20  , d0,  d9
+	fldd	d11, [ BO, #24 ]
 	fmacd	d21  , d1,  d9
 	fmacd	d22  , d2,  d9
 	fmacd	d23  , d3,  d9
@@ -924,9 +887,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lsl	r3, r3, #3					// ldc = ldc * 8
 	str	r3, LDC
 
-	ldr	r3, OLD_C
-	str	r3, C
-
 	ldr	K1, K
 	ldr	BC, B
 
@@ -958,140 +918,109 @@ _L4_M4_20:
 
 
 	mov	BO, BC
-	asrs	L , K1, #5					// L = L / 32
-	ble	_L4_M4_40
+	asrs	L , K1, #3					// L = L / 8
+	cmp	L , #3
+	blt	_L4_M4_30
 	.align 5
 
 
 
 	KERNEL4x4_I
-	KERNEL4x4_M1
 	KERNEL4x4_M2
 	KERNEL4x4_M1
+	KERNEL4x4_M2
 
-	KERNEL4x4_M2
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 	KERNEL4x4_M1
+	KERNEL4x4_M2
 
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_E
-
-	subs	L, L, #1
-	ble	_L4_M4_41
+	sub	L, L, #2
 
 _L4_M4_22:
 
-	KERNEL4x4_S
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 	KERNEL4x4_M1
+	KERNEL4x4_M2
 
-	KERNEL4x4_M2
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 	KERNEL4x4_M1
-
 	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_E
 
 	subs	L, L, #1
-	ble	_L4_M4_41
+	bgt	_L4_M4_22
 
-	b	_L4_M4_22
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_E
+
+	b	 _L4_M4_44
+
 	
+_L4_M4_30:
+	tst	L, #3
+	ble	_L4_M4_40
+
+	tst	L, #2
+	ble	_L4_M4_32
+
+	KERNEL4x4_I
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+
+
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_E
+
+	b	 _L4_M4_44
+
+_L4_M4_32:
+
+	tst	L, #1
+	ble	_L4_M4_40
+
+	KERNEL4x4_I
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_E
+
+	b	 _L4_M4_44
+
 
 _L4_M4_40:
 
 	INIT4x4
 
-_L4_M4_41:
-
-	tst	K1, #31
-	ble	_L4_M4_100
-
-	tst	K1, #16
-	ble	_L4_M4_44
-
-	KERNEL4x4_S
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_E
 
 _L4_M4_44:
 
-	ands	L , K1, #15					// L = L % 16
+	ands	L , K1, #7					// L = L % 8
 	ble	_L4_M4_100
 
 _L4_M4_46:
@@ -1099,7 +1028,7 @@ _L4_M4_46:
 	KERNEL4x4_SUB
 
 	subs	L, L, #1
-	bgt	_L4_M4_46
+	bne	_L4_M4_46
 	
 _L4_M4_100:
 
@@ -1108,7 +1037,7 @@ _L4_M4_100:
 _L4_M4_END:
 
 	subs	I, I, #1
-	bgt	_L4_M4_20
+	bne	_L4_M4_20
 
 
 _L4_M2_BEGIN:
