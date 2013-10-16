@@ -1,3 +1,7 @@
-ifdef BINARY64
-else
+
+ifeq ($(CORE), ARMV7)
+CCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard
+FCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard
 endif
+
+
