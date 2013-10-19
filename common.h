@@ -310,6 +310,13 @@ typedef int blasint;
 #define YIELDING	SwitchToThread()
 #endif
 
+/***************************************************
+Some no-oprations are enough
+***************************************************/
+#ifdef PILEDRIVER
+#define YIELDING	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
+
 #ifndef YIELDING
 #define YIELDING	sched_yield()
 #endif
