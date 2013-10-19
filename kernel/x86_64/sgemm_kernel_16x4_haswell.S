@@ -36,6 +36,28 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+/*********************************************************************
+* 2013/10/19 Saar
+*        BLASTEST               : 
+*        CTEST                  : OK
+*        TEST                   : OK
+*
+* 2013/08/15 Saar
+* Parameter:
+*	SGEMM_DEFAULT_UNROLL_N	4
+*	SGEMM_DEFAULT_UNROLL_M	16
+*	SGEMM_DEFAULT_P		768
+*	SGEMM_DEFAULT_Q		168
+*	
+* BLASTEST: OK
+*	
+* Performance:
+*	1 thread:	2.22 times faster than sandybridge
+*	4 threads:	2.26 times faster than sandybridge
+*
+* Compile for FMA3: OK
+*
+*********************************************************************/
 
 #define ASSEMBLER
 #include "common.h"
@@ -60,7 +82,6 @@
 #define	SP	%rbx
 
 #define BO1	%rdi
-#define BO2	%r15
 #define	CO2	%rdx
 
 #ifndef WINDOWS_ABI
@@ -131,11 +152,11 @@
 #else
 
 .macro VFMADD231PS_ y0,y1,y2
-	vfmadd231ps \y0,\y1,\y2
+	vfmadd231ps \y1,\y2,\y0
 .endm
 
 .macro VFMADD231SS_ x0,x1,x2
-	vfmadd231ss \x0,\x1,\x2
+	vfmadd231ss \x1,\x2,\x0
 .endm
 
 #endif
@@ -791,7 +812,7 @@
 	movq	OLD_C,     C
 	movq	OLD_LDC,   LDC
 #ifdef TRMMKERNEL
-	movsd	OLD_OFFSET, %xmm12
+	vmovsd	OLD_OFFSET, %xmm12
 #endif
 	vmovaps	%xmm3, %xmm0
 
@@ -836,8 +857,8 @@
 	
 
 #ifdef TRMMKERNEL
-	vmovss	%xmm12, OFFSET
-	vmovss	%xmm12, KK
+	vmovsd	%xmm12, OFFSET
+	vmovsd	%xmm12, KK
 #ifndef LEFT
 	negq	KK
 #endif	
@@ -1629,7 +1650,7 @@
 	
 .L4_60:
 #if defined(TRMMKERNEL) && !defined(LEFT)
-        addq    $2, KK
+        addq    $4, KK
 #endif
 
 	decq	J			// j --

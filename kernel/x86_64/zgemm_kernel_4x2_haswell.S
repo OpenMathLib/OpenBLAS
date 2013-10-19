@@ -37,6 +37,11 @@
 /*********************************************************************/
 
 /*********************************************************************
+* 2013/10/19 Saar
+*        BLASTEST               : 
+*        CTEST                  : OK
+*        TEST                   : OK
+*
 * 2013/08/16 Saar
 * Parameter:
 *       ZGEMM_DEFAULT_UNROLL_N  2
@@ -44,7 +49,6 @@
 *       ZGEMM_DEFAULT_P         112
 *       ZGEMM_DEFAULT_Q         224
 *
-* BLASTEST: OK
 *
 * Performance:
 *       1 thread:       1.80 times faster than sandybridge
@@ -138,7 +142,7 @@
 #endif
 
 
-#if defined(BULLDOZER) || defined(PILEDRIVER)
+#if defined(BULLDOZER) 
 
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
@@ -187,41 +191,41 @@
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
 .macro	VFMADDPD_R y0,y1,y2
-        vfmadd231pd \y0,\y1,\y2
+        vfmadd231pd \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPD_I y0,y1,y2
-        vfmadd231pd \y0,\y1,\y2
+        vfmadd231pd \y1,\y2,\y0
 .endm
 
 #elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
 
 .macro	VFMADDPD_R y0,y1,y2
-        vfnmadd231pd \y0,\y1,\y2
+        vfnmadd231pd \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPD_I y0,y1,y2
-        vfmadd231pd \y0,\y1,\y2
+        vfmadd231pd \y1,\y2,\y0
 .endm
 
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
 .macro	VFMADDPD_R y0,y1,y2
-        vfmadd231pd \y0,\y1,\y2
+        vfmadd231pd \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPD_I y0,y1,y2
-        vfnmadd231pd \y0,\y1,\y2
+        vfnmadd231pd \y1,\y2,\y0
 .endm
 
 #else
 
 .macro	VFMADDPD_R y0,y1,y2
-        vfnmadd231pd \y0,\y1,\y2
+        vfnmadd231pd \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPD_I y0,y1,y2
-        vfnmadd231pd \y0,\y1,\y2
+        vfnmadd231pd \y1,\y2,\y0
 .endm
 
 #endif

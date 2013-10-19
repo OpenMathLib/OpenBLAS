@@ -36,6 +36,31 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+/*********************************************************************
+* 2013/10/19 Saar
+*        BLASTEST               : 
+*        CTEST                  : OK
+*        TEST                   : OK
+
+*
+*
+* 2013/08/15 Saar
+* Parameter:
+*       SGEMM_DEFAULT_UNROLL_N  2
+*       SGEMM_DEFAULT_UNROLL_M  16
+*       SGEMM_DEFAULT_P         384
+*       SGEMM_DEFAULT_Q         168
+*
+* BLASTEST: OK
+*
+* Performance:
+*       1 thread:       2.31 times faster than sandybridge
+*       4 threads:      2.26 times faster than sandybridge
+*
+* Compile for FMA3: OK
+*
+*********************************************************************/
+
 
 #define ASSEMBLER
 #include "common.h"
@@ -130,11 +155,11 @@
 #else
 
 .macro VFMADD231PD_ y0,y1,y2
-	vfmadd231pd \y0,\y1,\y2
+	vfmadd231pd \y2,\y1,\y0
 .endm
 
 .macro VFMADD231SD_ x0,x1,x2
-	vfmadd231sd \x0,\x1,\x2
+	vfmadd231sd \x2,\x1,\x0
 .endm
 
 #endif

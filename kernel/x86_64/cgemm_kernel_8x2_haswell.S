@@ -37,6 +37,11 @@
 /*********************************************************************/
 
 /*********************************************************************
+* 2013/10/19 Saar
+*        BLASTEST               : 
+*        CTEST                  : OK
+*        TEST                   : OK
+*
 * 2013/08/16 Saar
 * Parameter:
 *       CGEMM_DEFAULT_UNROLL_N  2
@@ -139,7 +144,7 @@
 #endif
 
 
-#if defined(BULLDOZER) || defined(PILEDRIVER)
+#if defined(BULLDOZER)
 
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
@@ -188,41 +193,41 @@
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
 .macro	VFMADDPS_R y0,y1,y2
-        vfmadd231ps \y0,\y1,\y2
+        vfmadd231ps \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPS_I y0,y1,y2
-        vfmadd231ps \y0,\y1,\y2
+        vfmadd231ps \y1,\y2,\y0
 .endm
 
 #elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
 
 .macro	VFMADDPS_R y0,y1,y2
-        vfnmadd231ps \y0,\y1,\y2
+        vfnmadd231ps \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPS_I y0,y1,y2
-        vfmadd231ps \y0,\y1,\y2
+        vfmadd231ps \y1,\y2,\y0
 .endm
 
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
 .macro	VFMADDPS_R y0,y1,y2
-        vfmadd231ps \y0,\y1,\y2
+        vfmadd231ps \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPS_I y0,y1,y2
-        vfnmadd231ps \y0,\y1,\y2
+        vfnmadd231ps \y1,\y2,\y0
 .endm
 
 #else
 
 .macro	VFMADDPS_R y0,y1,y2
-        vfnmadd231ps \y0,\y1,\y2
+        vfnmadd231ps \y1,\y2,\y0
 .endm
 
 .macro	VFMADDPS_I y0,y1,y2
-        vfnmadd231ps \y0,\y1,\y2
+        vfnmadd231ps \y1,\y2,\y0
 .endm
 
 #endif
