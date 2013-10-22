@@ -470,9 +470,7 @@ CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
-ifneq ($(C_COMPILER), LSB)
 EXTRALIB += -lgfortran 
-endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
