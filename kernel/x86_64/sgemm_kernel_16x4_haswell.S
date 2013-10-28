@@ -1,61 +1,51 @@
-/*********************************************************************/
-/* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* All rights reserved.                                              */
-/*                                                                   */
-/* Redistribution and use in source and binary forms, with or        */
-/* without modification, are permitted provided that the following   */
-/* conditions are met:                                               */
-/*                                                                   */
-/*   1. Redistributions of source code must retain the above         */
-/*      copyright notice, this list of conditions and the following  */
-/*      disclaimer.                                                  */
-/*                                                                   */
-/*   2. Redistributions in binary form must reproduce the above      */
-/*      copyright notice, this list of conditions and the following  */
-/*      disclaimer in the documentation and/or other materials       */
-/*      provided with the distribution.                              */
-/*                                                                   */
-/*    THIS  SOFTWARE IS PROVIDED  BY THE  UNIVERSITY OF  TEXAS AT    */
-/*    AUSTIN  ``AS IS''  AND ANY  EXPRESS OR  IMPLIED WARRANTIES,    */
-/*    INCLUDING, BUT  NOT LIMITED  TO, THE IMPLIED  WARRANTIES OF    */
-/*    MERCHANTABILITY  AND FITNESS FOR  A PARTICULAR  PURPOSE ARE    */
-/*    DISCLAIMED.  IN  NO EVENT SHALL THE UNIVERSITY  OF TEXAS AT    */
-/*    AUSTIN OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,    */
-/*    INCIDENTAL,  SPECIAL, EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES    */
-/*    (INCLUDING, BUT  NOT LIMITED TO,  PROCUREMENT OF SUBSTITUTE    */
-/*    GOODS  OR  SERVICES; LOSS  OF  USE,  DATA,  OR PROFITS;  OR    */
-/*    BUSINESS INTERRUPTION) HOWEVER CAUSED  AND ON ANY THEORY OF    */
-/*    LIABILITY, WHETHER  IN CONTRACT, STRICT  LIABILITY, OR TORT    */
-/*    (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING IN ANY WAY OUT    */
-/*    OF  THE  USE OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE    */
-/*    POSSIBILITY OF SUCH DAMAGE.                                    */
-/*                                                                   */
-/* The views and conclusions contained in the software and           */
-/* documentation are those of the authors and should not be          */
-/* interpreted as representing official policies, either expressed   */
-/* or implied, of The University of Texas at Austin.                 */
-/*********************************************************************/
+/*********************************************************************************
+Copyright (c) 2013, The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**********************************************************************************/
 
 /*********************************************************************
-* 2013/10/19 Saar
-*        BLASTEST               : 
+* 2013/10/28 Saar
+*        BLASTEST               : OK
 *        CTEST                  : OK
 *        TEST                   : OK
 *
-* 2013/08/15 Saar
+* 2013/10/28 Saar
 * Parameter:
 *	SGEMM_DEFAULT_UNROLL_N	4
 *	SGEMM_DEFAULT_UNROLL_M	16
 *	SGEMM_DEFAULT_P		768
-*	SGEMM_DEFAULT_Q		168
+*	SGEMM_DEFAULT_Q		384
+*	A_PR1			512
+*	B_PR1			512
 *	
-* BLASTEST: OK
-*	
-* Performance:
-*	1 thread:	2.22 times faster than sandybridge
-*	4 threads:	2.26 times faster than sandybridge
 *
-* Compile for FMA3: OK
+* Performance at 9216x9216x9216:
+*       1 thread:       86 GFLOPS       (SANDYBRIDGE:  59)      (MKL:   83)
+*       2 threads:     157 GFLOPS       (SANDYBRIDGE: 116)      (MKL:  155)
+*       3 threads:     235 GFLOPS       (SANDYBRIDGE: 165)      (MKL:  230)
+*       4 threads:     288 GFLOPS       (SANDYBRIDGE: 223)      (MKL:  267)
 *
 *********************************************************************/
 
@@ -162,8 +152,8 @@
 #endif
 
 
-#define	A_PR1	384
-#define	B_PR1	192
+#define	A_PR1	512
+#define	B_PR1	512
 
 /*******************************************************************************************
 * 4 lines of N
@@ -229,6 +219,11 @@
 
 	vmovups	%ymm10,  	(CO2, LDC)
 	vmovups	%ymm11, 8 * SIZE(CO2, LDC)
+
+	prefetcht0	64(CO1)
+	prefetcht0	64(CO1, LDC)
+	prefetcht0	64(CO2)
+	prefetcht0	64(CO2, LDC)
 
 .endm
 
