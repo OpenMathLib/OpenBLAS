@@ -28,37 +28,38 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*********************************************************************
 *
-* 2013/10/18 Saar
+* 2013/10/31 Saar
 *        BLASTEST               : OK
 *        CTEST                  : OK
 *        TEST                   : OK
 *
 *
-* 2013/10/18 Saar
+* 2013/10/31 Saar
 *
 * Parameter:
 * 	UNROLL_M	8
 *	UNROLL_N	2
-*	DGEMM_P		384
+*	DGEMM_P		768
 *	DGEMM_Q		168
 *	DGEMM_R		12288
-*	A_PR1		256
+*	A_PR1		512
+*	B_PR1		256
 *
 * Performance at m x n on AMD 8320 (ACML-Version: 5.3.1):
 * 
-* 6144x6912	84.1	GFLOPS with 8 threads on 4 modules (ACML: 81.4 GFLOPS)
-* 6144x6912	81.2	GFLOPS with 4 threads on 4 modules (ACML: 81.3 GFLOPS)
-* 6144x6912	40.9	GFLOPS with 2 threads on 2 modules (ACML: 41.8 GFLOPS)
-* 6144x6912	20.5	GFLOPS with 1 threads on 1 modules (ACML: 21.0 GFLOPS)
+* 4608x4608	83.9	GFLOPS with 8 threads on 4 modules (ACML: 78.4 GFLOPS)
+* 4608x4608	80.9	GFLOPS with 4 threads on 4 modules (ACML: 78.4 GFLOPS)
+* 4608x4608	41.3    GFLOPS with 2 threads on 2 modules (ACML: 40.9 GFLOPS)
+* 4608x4608	20.7	GFLOPS with 1 threads on 1 modules (ACML: 20.8 GFLOPS)
 *
 * Performance at m x n on AMD 6380  (ACML-Version: 5.3.1):
 * 
-* 12288x13824  244.5	GFLOPS with 32 threads on 16 modules (ACML: 120.3 GFLOPS) !strange thermal behavior
-* 12288x13824  233.9	GFLOPS with 16 threads on 16 modules (ACML: 129.5 GFLOPS) !strange thermal behavior
-* 12288x13824  138.1	GFLOPS with  8 threads on  8 modules (ACML: 106.5 GFLOPS)
-* 6144x6912	73.6	GFLOPS with  4 threads on  4 modules (ACML:  59.4 GFLOPS)
-* 6144x6912	36.8	GFLOPS with  2 threads on  2 modules (ACML:  34.9 GFLOPS)
-* 6144x6912	18.7	GFLOPS with  1 threads on  1 modules (ACML:  18.7 GFLOPS)
+* 13824x13824  234.5	GFLOPS with 32 threads on 16 modules (ACML:  88.5 GFLOPS) !strange thermal behavior
+* 13824x13824  241.9	GFLOPS with 16 threads on 16 modules (ACML: 191.5 GFLOPS) !strange thermal behavior
+* 9216x9216    137.6	GFLOPS with  8 threads on  8 modules (ACML: 106.5 GFLOPS)
+* 4608x4608	75.7	GFLOPS with  4 threads on  4 modules (ACML:  56.3 GFLOPS)
+* 4608x4608	38.6	GFLOPS with  2 threads on  2 modules (ACML:  34.1 GFLOPS)
+* 4608x4608	19.6	GFLOPS with  1 threads on  1 modules (ACML:  18.3 GFLOPS)
 *
 *********************************************************************/
 
@@ -168,9 +169,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-#define	A_PR1	256
+#define	A_PR1	512
 #define	B_PR1	256
-#define	C_PR1	256
+#define	C_PR1	64
 
 .macro INIT8x3
 	vxorpd	%xmm4 , %xmm4 , %xmm4
@@ -454,9 +455,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro	SAVE8x3
 	vmovddup	ALPHA, %xmm0
 
-	prefetcht0	 C_PR1(CO1)
-	prefetcht0	 C_PR1(CO1,LDC)
-	prefetcht0	 C_PR1(CO1,LDC,2)
 
 	vfmaddpd 	 (CO1),%xmm0, %xmm4,%xmm4
 	vfmaddpd 	 (CO1, LDC),%xmm0, %xmm5,%xmm5
@@ -488,6 +486,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%xmm9 , 2 * SIZE(CO1, LDC, 2)
 	vmovups	%xmm12, 4 * SIZE(CO1, LDC, 2)
 	vmovups	%xmm15, 6 * SIZE(CO1, LDC, 2)
+
+	prefetcht0	 C_PR1(CO1)
+	prefetcht0	 C_PR1(CO1,LDC)
+	prefetcht0	 C_PR1(CO1,LDC,2)
 
 	addq	$8 * SIZE, CO1		# coffset += 8
 .endm
@@ -1284,6 +1286,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cmpq	$3, %rax
 	jl	.L6_13
 
+	prefetcht0 B_PR1(BO)
+	prefetcht0 B_PR1+64(BO)
+	prefetcht0 B_PR1+128(BO)
 	KERNEL8x3_INIT
 	KERNEL8x3_M2
 	KERNEL8x3_M3
@@ -1299,22 +1304,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L6_12:
 
+	prefetcht0 B_PR1-24(BO)
+	prefetcht0 B_PR1+40(BO)
 	KERNEL8x3_M1
 	KERNEL8x3_M2
 	KERNEL8x3_M3
 	KERNEL8x3_M4
 	KERNEL8x3_M5
+	prefetcht0 B_PR1+104(BO)
 	KERNEL8x3_M6
 	KERNEL8x3_M7
 	KERNEL8x3_M8
 
 	dec	%rax
-	//je	.L6_12_E
-
 	jne	.L6_12
 
 .L6_12_E:
 
+	prefetcht0 B_PR1(BO)
+	prefetcht0 B_PR1+64(BO)
 	KERNEL8x3_M1
 	KERNEL8x3_M2
 	KERNEL8x3_M3
@@ -1432,31 +1440,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L6_22:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
 	KERNEL4x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL4x3_4(xxx)
 
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
 	je	.L6_26
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
 	KERNEL4x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL4x3_4(xxx)
 
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
@@ -1548,31 +1550,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L6_32:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
 	KERNEL2x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL2x3_4(xxx)
 
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
 	je	.L6_36
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
 	KERNEL2x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL2x3_4(xxx)
 
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
@@ -1651,31 +1647,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L6_42:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
 	KERNEL1x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL1x3_4(xxx)
 
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
 	je	.L6_46
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
 	KERNEL1x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL1x3_4(xxx)
 
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
@@ -1753,6 +1743,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cmpq	$3, %rax
 	jl	.L7_13
 
+	prefetcht0 B_PR1(BO)
+	prefetcht0 B_PR1+64(BO)
+	prefetcht0 B_PR1+128(BO)
 	KERNEL8x3_INIT
 	KERNEL8x3_M2
 	KERNEL8x3_M3
@@ -1768,22 +1761,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L7_12:
 
+	prefetcht0 B_PR1-24(BO)
+	prefetcht0 B_PR1+40(BO)
 	KERNEL8x3_M1
 	KERNEL8x3_M2
 	KERNEL8x3_M3
 	KERNEL8x3_M4
+	prefetcht0 B_PR1+104(BO)
 	KERNEL8x3_M5
 	KERNEL8x3_M6
 	KERNEL8x3_M7
 	KERNEL8x3_M8
 
 	dec	%rax
-	//je	.L7_12_E
-
 	jne	.L7_12
 
 .L7_12_E:
 
+	prefetcht0 B_PR1(BO)
+	prefetcht0 B_PR1+64(BO)
 	KERNEL8x3_M1
 	KERNEL8x3_M2
 	KERNEL8x3_M3
@@ -1904,31 +1900,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L7_22:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
 	KERNEL4x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL4x3_4(xxx)
 
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
 	je	.L7_26
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
 	KERNEL4x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL4x3_4(xxx)
 
 	KERNEL4x3_1(xxx)
 	KERNEL4x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
@@ -2019,31 +2009,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L7_32:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
 	KERNEL2x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL2x3_4(xxx)
 
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
 	je	.L7_36
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
 	KERNEL2x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL2x3_4(xxx)
 
 	KERNEL2x3_1(xxx)
 	KERNEL2x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
@@ -2127,31 +2111,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L7_42:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
 	KERNEL1x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL1x3_4(xxx)
 
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
 	je	.L7_46
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
 	KERNEL1x3_3(xxx)
-	//prefetcht0	B_PR1+64(BO,BI,8)
 	KERNEL1x3_4(xxx)
 
 	KERNEL1x3_1(xxx)
 	KERNEL1x3_2(xxx)
-	//prefetcht0	B_PR1+32(BO,BI,8)
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
@@ -2277,13 +2255,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_12:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
@@ -2291,13 +2267,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_16
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
@@ -2399,13 +2373,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_22:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
@@ -2413,13 +2385,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_26
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
@@ -2503,13 +2473,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_32:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
@@ -2517,13 +2485,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_36
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
@@ -2600,13 +2566,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_42:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
@@ -2614,13 +2578,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_46
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
@@ -2743,7 +2705,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_12:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
 	KERNEL8x1_2(xxx)
 	KERNEL8x1_3(xxx)
@@ -2756,7 +2717,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L1_16
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
 	KERNEL8x1_2(xxx)
 	KERNEL8x1_3(xxx)
@@ -2851,7 +2811,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_22:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
 	KERNEL4x1_2(xxx)
 	KERNEL4x1_3(xxx)
@@ -2864,7 +2823,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L1_26
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
 	KERNEL4x1_2(xxx)
 	KERNEL4x1_3(xxx)
@@ -2946,7 +2904,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_32:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x1_1(xxx)
 	KERNEL2x1_2(xxx)
 	KERNEL2x1_3(xxx)
@@ -3036,7 +2993,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_42:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
 	KERNEL1x1_2(xxx)
 	KERNEL1x1_3(xxx)
@@ -3049,7 +3005,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L1_46
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
 	KERNEL1x1_2(xxx)
 	KERNEL1x1_3(xxx)
@@ -3317,13 +3272,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_12:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
@@ -3331,13 +3284,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_16
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
 	KERNEL8x2_2(xxx)
 	KERNEL8x2_3(xxx)
@@ -3502,13 +3453,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_22:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
@@ -3516,13 +3465,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_26
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
 	KERNEL4x2_2(xxx)
 	KERNEL4x2_3(xxx)
@@ -3667,13 +3614,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_32:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
@@ -3681,13 +3626,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_36
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
 	KERNEL2x2_2(xxx)
 	KERNEL2x2_3(xxx)
@@ -3818,13 +3761,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_42:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
@@ -3832,13 +3773,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_46
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
 	KERNEL1x2_2(xxx)
 	KERNEL1x2_3(xxx)
@@ -4023,7 +3962,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_12:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
 	KERNEL8x1_2(xxx)
 	KERNEL8x1_3(xxx)
@@ -4036,7 +3974,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L1_16
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
 	KERNEL8x1_2(xxx)
 	KERNEL8x1_3(xxx)
@@ -4186,7 +4123,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_22:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
 	KERNEL4x1_2(xxx)
 	KERNEL4x1_3(xxx)
@@ -4199,7 +4135,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L1_26
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
 	KERNEL4x1_2(xxx)
 	KERNEL4x1_3(xxx)
@@ -4335,7 +4270,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_32:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x1_1(xxx)
 	KERNEL2x1_2(xxx)
 	KERNEL2x1_3(xxx)
@@ -4476,7 +4410,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_42:
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
 	KERNEL1x1_2(xxx)
 	KERNEL1x1_3(xxx)
@@ -4489,7 +4422,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L1_46
 
-	//prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
 	KERNEL1x1_2(xxx)
 	KERNEL1x1_3(xxx)
