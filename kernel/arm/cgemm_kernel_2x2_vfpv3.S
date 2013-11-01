@@ -26,11 +26,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/10/16 Saar
+* 2013/11/01 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
 *
+* 2013/11/01 Saar
+*       UNROLL_N                2
+*       UNROLL_M                2
+*       CGEMM_P                 96
+*       CGEMM_Q                 120
+*       CGEMM_R                 4096
+*       A_PRE                   96
+*       B_PRE                   96
+*       C_PRE                   64
+*
+*       Performance on Odroid U2:
+*
+*               1 Core:         2.59 GFLOPS     ATLAS: 2.37     GFLOPS
+*               2 Cores:        5.17 GFLOPS     ATLAS: 4.46     GFLOPS
+*               3 Cores:        7.69 GFLOPS     ATLAS: 6.50     GFLOPS
+*               4 Cores:       10.22 GFLOPS     ATLAS: 8.18     GFLOPS
 **************************************************************************************/
 
 #define ASSEMBLER

@@ -80,31 +80,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSEMBLER
 
-static void INLINE blas_lock(volatile unsigned long *address){
+static void __inline blas_lock(volatile BLASULONG *address){
 
-//  long int ret, val = 1;
-/*
+  int register ret;
+
   do {
     while (*address) {YIELDING;};
 
     __asm__ __volatile__(
-			 "1:	ll	%0, %3\n"
-			 "	ori	%2, %0, 1\n"
-			 "	sc	%2, %1\n"
-			 "	beqz	%2, 1b\n"
-			 "	 andi	%2, %0, 1\n"
-			 "	sync\n"
-			 : "=&r" (val), "=m" (address), "=&r" (ret)
-			 : "m" (address)
-			 : "memory");
+                         "ldrex r2, [%1]                                                \n\t"
+                         "mov   r2, #0                                                  \n\t"
+                         "strex r3, r2, [%1]                                            \n\t"
+			 "mov	%0 , r3							\n\t"
+                         : "=r"(ret), "=r"(address)
+                         : "1"(address)
+                         : "memory", "r2" , "r3" 
+
+
+    );
 
   } while (ret);
-*/
+
 }
 
-static inline unsigned int rpcc(void){
-  unsigned long ret=0;
 
+static inline BLASULONG rpcc(void){
+  BLASULONG ret=0;
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  ret=1000000* tv.tv_sec + tv.tv_usec;
   return ret;
 }
 
