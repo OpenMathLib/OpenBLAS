@@ -840,6 +840,10 @@ override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
+#For LAPACK Fortran codes.
+LAPACK_FFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FFLAGS))
+LAPACK_FPFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FPFLAGS))
+
 LAPACK_CFLAGS = $(CFLAGS)
 LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H 
 ifdef INTERFACE64
