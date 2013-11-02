@@ -26,28 +26,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/10/13 Saar
+* 2013/11/02 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
 *
 *
-* 2013/10/13 Saar
+* 2013/11/02 Saar
 *	UNROLL_N		4
 *	UNROLL_M		4
 *	DGEMM_P			128
 *	DGEMM_Q			240
-*	DGEMM_R			4096
-*	A_PRE			96
-*	B_PRE			96
-*	C_PRE			64
+*	DGEMM_R			12288
+*	A_PRE			128
+*	B_PRE			128
+*	C_PRE			32
 *
-* 	Performance on Odroid U2:
+* Performance on Odroid U2:
 *
-*		1 Core:		2.60 GFLOPS	ATLAS: 2.67	GFLOPS
-*		2 Cores:	5.17 GFLOPS	ATLAS: 5.25	GFLOPS
-*		3 Cores:	7.60 GFLOPS	ATLAS: 7.82	GFLOPS
-*		4 Cores:	9.98 GFLOPS	ATLAS: 9.95	GFLOPS
+* 3072x3072		1 Core:		2.62 GFLOPS	ATLAS: 2.69	GFLOPS
+* 3072x3072		2 Cores:	5.23 GFLOPS	ATLAS: 5.27	GFLOPS
+* 3072x3072		3 Cores:	7.78 GFLOPS	ATLAS: 7.87	GFLOPS
+* 3072x3072		4 Cores:       10.10 GFLOPS	ATLAS: 9.98	GFLOPS
 **************************************************************************************/
 
 #define ASSEMBLER
@@ -92,9 +92,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define K1	r7
 #define BC	r12
 
-#define A_PRE	96
-#define B_PRE	96
-#define C_PRE	64
+#define A_PRE	128
+#define B_PRE	128
+#define C_PRE	32
 
 /**************************************************************************************
 * Macro definitions
@@ -123,10 +123,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x4_I
 
+	pld	[ AO , #A_PRE ]
 	fldmias AO!, { s0 - s1 }
-	pld	[ AO , #A_PRE-8 ]
+	pld	[ BO , #B_PRE ]
 	fldmias BO!, { s8 - s9 }
-	pld	[ BO , #B_PRE-8 ]
 
 	fmuls	s16  , s0,  s8
 	fldmias AO!, { s2 - s3 }
@@ -162,20 +162,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	pld	[ AO , #A_PRE ]
 	fmacs	s16  , s4,  s12
 	fmacs	s17  , s5,  s12
-	fldmias AO!, { s0 - s1 }
+	fldmias AO!, { s0 - s3 }
 	fmacs	s18  , s6,  s12
 	pld	[ BO , #B_PRE ]
 	fmacs	s19  , s7,  s12
 
 	fmacs	s20  , s4,  s13
-	fldmias AO!, { s2 - s3 }
+	fldmias BO!, { s8 - s11 }
 	fmacs	s21  , s5,  s13
 	fmacs	s22  , s6,  s13
-	fldmias BO!, { s8 - s9 }
+	//fldmias AO!, { s2 - s3 }
 	fmacs	s23  , s7,  s13
 
 	fmacs	s24  , s4,  s14
-	fldmias BO!, { s10 - s11 }
+	//fldmias BO!, { s10 - s11 }
 	fmacs	s25  , s5,  s14
 	fmacs	s26  , s6,  s14
 	fmacs	s27  , s7,  s14
@@ -191,17 +191,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL4x4_M1
 
 	fmacs	s16  , s0,  s8
-	fldmias AO!, { s4 - s5 }
+	fldmias AO!, { s4 - s7 }
 	fmacs	s17  , s1,  s8
 	fmacs	s18  , s2,  s8
-	fldmias AO!, { s6 - s7 }
+	fldmias BO!, { s12 - s15 }
+	//fldmias AO!, { s6 - s7 }
 	fmacs	s19  , s3,  s8
 
 	fmacs	s20  , s0,  s9
-	fldmias BO!, { s12 - s13 }
 	fmacs	s21  , s1,  s9
 	fmacs	s22  , s2,  s9
-	fldmias BO!, { s14 - s15 }
+	//fldmias BO!, { s14 - s15 }
 	fmacs	s23  , s3,  s9
 
 	fmacs	s24  , s0,  s10
@@ -248,10 +248,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL4x4_SUB
 
 	flds	s8 , [ BO ]
-	pld	[ BO , #B_PRE ]
 
 	flds	s0 , [ AO ]
-	pld	[ AO , #A_PRE ]
 	flds	s1 , [ AO, #4 ]
 
 	fmacs	s16  , s0,  s8
@@ -284,16 +282,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE4x4
-	pld	[ CO1 , #C_PRE ]
 
 	ldr	r3  , LDC
 	add	CO2 , CO1, r3
 	flds		s0, ALPHA
 	add	r4  , CO2, r3
-	pld	[ CO2 , #C_PRE ]
 
 	fldmias CO1, { s8 - s11 }
-	pld	[ r4 , #C_PRE ]
 		
 	fmacs	s8 , s0 , s16
 	flds	s12, [CO2]
@@ -313,6 +308,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmacs	s15, s0 , s23
 	fsts	s11, [CO1, #12 ]
 
+	pld	[ CO1 , #C_PRE ]
+
 	fldmias r4, { s8 - s11 }
 		
 	fmacs	s8 , s0 , s24
@@ -324,9 +321,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmacs	s11, s0 , s27
 	fsts	s15, [CO2, #12 ]
 
+	pld	[ CO2 , #C_PRE ]
+
 	add	CO2, r4 , r3
 
-	pld	[ CO2 , #C_PRE ]
 
 	fldmias CO2, { s12 - s15 }
 
@@ -339,7 +337,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fsts	s11, [r4 , #12 ]
 	fmacs	s15, s0 , s31
 
+	pld	[ r4 , #C_PRE ]
 	fstmias CO2, { s12 - s15 }
+	pld	[ CO2 , #C_PRE ]
 
 	add	CO1, CO1, #16
 
@@ -891,78 +891,29 @@ _L4_M4_20:
 
 
 	mov	BO, BC
-	asrs	L , K1, #3					// L = L / 8
-	cmp	L , #3
-	blt	_L4_M4_30
-	.align 5
+	asrs	L , K1, #1					// L = L / 8
+	cmp	L , #2
+	blt	_L4_M4_32
 
 
 
 	KERNEL4x4_I
 	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
 
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-	sub	L, L, #2
+	subs	L, L, #2
+	ble	_L4_M4_22a
+	.align 5
 
 _L4_M4_22:
 
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-	KERNEL4x4_M1
-	KERNEL4x4_M2
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 
 	subs	L, L, #1
 	bgt	_L4_M4_22
 
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
+_L4_M4_22a:
 
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_E
-
-	b	 _L4_M4_44
-
-	
-_L4_M4_30:
-	tst	L, #3
-	ble	_L4_M4_40
-
-	tst	L, #2
-	ble	_L4_M4_32
-
-	KERNEL4x4_I
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-
-	KERNEL4x4_M1
-	KERNEL4x4_M2
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
@@ -974,13 +925,7 @@ _L4_M4_32:
 	ble	_L4_M4_40
 
 	KERNEL4x4_I
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
 
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
 	KERNEL4x4_E
 
 	b	 _L4_M4_44
@@ -993,7 +938,7 @@ _L4_M4_40:
 
 _L4_M4_44:
 
-	ands	L , K1, #7					// L = L % 8
+	ands	L , K1, #1					// L = L % 8
 	ble	_L4_M4_100
 
 _L4_M4_46:

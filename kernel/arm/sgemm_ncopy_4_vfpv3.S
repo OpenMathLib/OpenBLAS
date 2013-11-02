@@ -26,10 +26,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/10/11 Saar
-* 	 BLASTEST 		: xOK
-* 	 CTEST			: xOK
-* 	 TEST			: xOK
+* 2013/11/02 Saar
+* 	 BLASTEST 		: OK
+* 	 CTEST			: OK
+* 	 TEST			: OK
 *
 **************************************************************************************/
 
@@ -217,6 +217,15 @@ _L4_M4_BEGIN:
 	ble	_L4_M4_40
 
 _L4_M4_20:
+
+	pld	[ AO1, #A_PRE ]
+	pld	[ AO2, #A_PRE ]
+	pld	[ AO3, #A_PRE ]
+	pld	[ AO4, #A_PRE ]
+	COPY4x4
+
+	subs	I , I , #1
+	ble	_L4_M4_40
 
 	COPY4x4
 
