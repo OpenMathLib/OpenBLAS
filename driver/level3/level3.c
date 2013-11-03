@@ -36,6 +36,8 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+// #define TIMING 1
+
 /* This file is a template for level 3 operation */
 
 #ifndef BETA_OPERATION
@@ -341,8 +343,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
                         if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
                         else
                                 if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-#else
+#elif defined(ARMV7)
+        if (min_jj >= 32) min_jj = 32;
+        else
+        if (min_jj >= 16) min_jj = 16;
+        else
+        if (min_jj >= 8) min_jj = 8;
+        else
+           if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
+#else
         if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
 
@@ -402,12 +412,22 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 #ifdef TIMING
   total = (double)outercost + (double)innercost + (double)kernelcost;
 
+#ifdef ARMV7
+
+  printf( "Copy A : %5.2f Copy  B: %5.2f  Kernel : %5.2f\n",
+	   innercost / total * 100., outercost / total * 100.,
+	  kernelcost / total * 100.);
+
+
+#else
+
   printf( "Copy A : %5.2f Copy  B: %5.2f  Kernel : %5.2f  kernel Effi. : %5.2f Total Effi. : %5.2f\n",
 	   innercost / total * 100., outercost / total * 100.,
 	  kernelcost / total * 100.,
 	  (double)(m_to - m_from) * (double)(n_to - n_from) * (double)k / (double)kernelcost * 100. * (double)COMPSIZE / 2.,
 	  (double)(m_to - m_from) * (double)(n_to - n_from) * (double)k / total * 100. * (double)COMPSIZE / 2.);
 
+#endif
 #endif
 
   return 0;

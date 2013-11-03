@@ -36,6 +36,8 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+// #define TIMING 1
+
 #ifndef CACHE_LINE_SIZE
 #define CACHE_LINE_SIZE 8
 #endif
@@ -233,6 +235,21 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   BLASLONG l1stride, l2size;
 
 #ifdef TIMING
+
+#ifdef ARMV7
+
+  unsigned long long rpcc_counter;
+  unsigned long long copy_A = 0;
+  unsigned long long copy_B = 0;
+  unsigned long long kernel = 0;
+  unsigned long long waiting1 = 0;
+  unsigned long long waiting2 = 0;
+  unsigned long long waiting3 = 0;
+  unsigned long long waiting6[MAX_CPU_NUMBER];
+  unsigned long long ops    = 0;
+
+#else
+
   BLASULONG rpcc_counter;
   BLASULONG copy_A = 0;
   BLASULONG copy_B = 0;
@@ -242,6 +259,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   BLASULONG waiting3 = 0;
   BLASULONG waiting6[MAX_CPU_NUMBER];
   BLASULONG ops    = 0;
+
+#endif
 
   for (i = 0; i < args -> nthreads; i++) waiting6[i] = 0;
 #endif
@@ -320,15 +339,35 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
     min_l = k - ls;
 
+#ifdef	ARMV7_1
+    if (min_l >= GEMM_Q / 4 * 2) {
+      min_l  = GEMM_Q / 4;
+    } else {
+      if (min_l > GEMM_Q / 4) min_l = (min_l + 1) / 2;
+    }
+
+#else
     if (min_l >= GEMM_Q * 2) {
       min_l  = GEMM_Q;
     } else {
       if (min_l > GEMM_Q) min_l = (min_l + 1) / 2;
     }
+#endif
 
     l1stride = 1;
     min_i = m_to - m_from;
     
+#ifdef	ARMV7_1
+    if (min_i >= GEMM_P / 4 * 2) {
+      min_i = GEMM_P / 4;
+    } else {
+      if (min_i > GEMM_P / 4) {
+	min_i = (min_i / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
+      } else {
+	if (args -> nthreads == 1) l1stride = 0;
+      }
+    }
+#else
     if (min_i >= GEMM_P * 2) {
       min_i = GEMM_P;
     } else {
@@ -338,6 +377,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	if (args -> nthreads == 1) l1stride = 0;
       }
     }
+
+#endif
 
     START_RPCC();
     
@@ -375,6 +416,14 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 			if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
 			else
 				if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+#elif defined(ARMV7)
+        if (min_jj >= 16) min_jj = 16;
+        else
+        if (min_jj >= 8) min_jj = 8;
+        else
+           if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+
+
 #else
 
 	if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
@@ -506,6 +555,21 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   STOP_RPCC(waiting3);
 
 #ifdef TIMING
+
+#ifdef ARMV7
+
+  unsigned long long waiting = waiting1 + waiting2 + waiting3;
+  unsigned long long total = copy_A + copy_B + kernel + waiting;
+
+  fprintf(stderr, "GEMM   [%2ld] Copy_A : %6.2f  Copy_B : %6.2f  Wait1 : %6.2f Wait2 : %6.2f Wait3 : %6.2f Kernel : %6.2f",
+	  mypos, (double)copy_A /(double)total * 100., (double)copy_B /(double)total * 100.,
+	  (double)waiting1 /(double)total * 100.,
+	  (double)waiting2 /(double)total * 100.,
+	  (double)waiting3 /(double)total * 100.,
+	  (double)kernel /(double)total  * 100.);
+
+#else
+
   BLASLONG waiting = waiting1 + waiting2 + waiting3;
   BLASLONG total = copy_A + copy_B + kernel + waiting;
 
@@ -515,6 +579,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	  (double)waiting2 /(double)total * 100.,
 	  (double)waiting3 /(double)total * 100.,
 	  (double)ops/(double)kernel / 4. * 100.);
+
+#endif
 
 #if 0
   fprintf(stderr, "GEMM   [%2ld] Copy_A : %6.2ld  Copy_B : %6.2ld  Wait : %6.2ld\n",

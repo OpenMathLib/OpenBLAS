@@ -104,11 +104,13 @@ static void __inline blas_lock(volatile BLASULONG *address){
 }
 
 
-static inline BLASULONG rpcc(void){
-  BLASULONG ret=0;
+static inline unsigned long long rpcc(void){
+  unsigned long long ret=0;
+  double v;
   struct timeval tv;
   gettimeofday(&tv,NULL);
-  ret=1000000* tv.tv_sec + tv.tv_usec;
+  v=(double) tv.tv_sec + (double) tv.tv_usec * 1e-6;
+  ret = (unsigned long long) ( v * 1000.0d );
   return ret;
 }
 

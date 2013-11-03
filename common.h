@@ -310,9 +310,17 @@ typedef int blasint;
 #define YIELDING	SwitchToThread()
 #endif
 
+
+#ifdef ARMV7
+#define YIELDING	asm volatile ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
+#endif
+
+
 #ifndef YIELDING
 #define YIELDING	sched_yield()
 #endif
+
+
 
 /***
 To alloc job_t on heap or statck.
