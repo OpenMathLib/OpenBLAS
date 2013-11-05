@@ -62,78 +62,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define	AO1	r6
 #define	AO2	r7
-#define	AO3	r8
-#define	AO4	r9
 
 #define I	r3
 #define	J	r12
 
-#define A_PRE	192
+#define A_PRE	256
 
 /**************************************************************************************
 * Macro definitions
 **************************************************************************************/
 
-.macro COPY4x4
+.macro COPY2x2
 
-	flds s0 , [ AO1, #0  ]
-	flds s1 , [ AO2, #0  ]
-	flds s2 , [ AO3, #0  ]
-	flds s3 , [ AO4, #0  ]
+	flds	s0 , [ AO1, #0  ]
+	flds	s1 , [ AO1, #4  ]
+	flds	s4 , [ AO1, #8 ]
+	flds	s5 , [ AO1, #12 ]
 
-	flds s4 , [ AO1, #4  ]
-	flds s8 , [ AO1, #8 ]
-	flds s12, [ AO1, #12 ]
-
-	flds s5 , [ AO2, #4  ]
+	flds	s2 , [ AO2, #0  ]
+	flds	s3 , [ AO2, #4  ]
 	add	AO1, AO1, #16
-	flds s9 , [ AO2, #8 ]
-	flds s13, [ AO2, #12 ]
-
-	flds s6 , [ AO3, #4  ]
-	add	AO2, AO2, #16
-	flds s10, [ AO3, #8 ]
-	flds s14, [ AO3, #12 ]
-
-	flds s7 , [ AO4, #4  ]
-	add	AO3, AO3, #16
-	flds s11, [ AO4, #8 ]
-	flds s15, [ AO4, #12 ]
-
-	fstmias	BO!, { s0 - s3 }
-	add	AO4, AO4, #16
-	fstmias	BO!, { s4 - s7 }
-	fstmias	BO!, { s8 - s15 }
-
-.endm
-
-.macro COPY1x4
-
-	flds s0 , [ AO1, #0  ]
-	flds s1 , [ AO2, #0  ]
-	add	AO1, AO1, #4
-	flds s2 , [ AO3, #0  ]
-	add	AO2, AO2, #4
-	flds s3 , [ AO4, #0  ]
-
-	add	AO3, AO3, #4
-	fstmias	BO!, { s0 - s3 }
-	add	AO4, AO4, #4
-
-.endm
-
-.macro COPY4x2
-
-	flds s0 , [ AO1, #0  ]
-	flds s2 , [ AO1, #4  ]
-	flds s4 , [ AO1, #8 ]
-	flds s6 , [ AO1, #12 ]
-
-	flds s1 , [ AO2, #0  ]
-	flds s3 , [ AO2, #4  ]
-	add	AO1, AO1, #16
-	flds s5 , [ AO2, #8 ]
-	flds s7 , [ AO2, #12 ]
+	flds	s6 , [ AO2, #8 ]
+	flds	s7 , [ AO2, #12 ]
 
 	fstmias	BO!, { s0 - s7 }
 	add	AO2, AO2, #16
@@ -143,21 +93,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY1x2
 
-	flds s0 , [ AO1, #0  ]
-	flds s1 , [ AO2, #0  ]
-	add	AO1, AO1, #4
+	flds	s0 , [ AO1, #0  ]
+	flds	s1 , [ AO1, #4  ]
+	flds	s2 , [ AO2, #0  ]
+	flds	s3 , [ AO2, #4  ]
 
-	fstmias	BO!, { s0 - s1 }
-	add	AO2, AO2, #4
+	add	AO1, AO1, #8
+	fstmias	BO!, { s0 - s3 }
+	add	AO2, AO2, #8
 
 .endm
 
-.macro COPY4x1
+.macro COPY2x1
 
-	flds s0 , [ AO1, #0  ]
-	flds s1 , [ AO1, #4  ]
-	flds s2 , [ AO1, #8 ]
-	flds s3 , [ AO1, #12 ]
+	flds	s0 , [ AO1, #0  ]
+	flds	s1 , [ AO1, #4  ]
+	flds	s2 , [ AO1, #8 ]
+	flds	s3 , [ AO1, #12 ]
 
 	fstmias	BO!, { s0 - s3 }
 	add	AO1, AO1, #16
@@ -167,10 +119,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY1x1
 
-	flds s0 , [ AO1, #0  ]
+	flds	s0 , [ AO1, #0  ]
+	flds	s1 , [ AO1, #4  ]
 
-	fstmias	BO!, { s0 }
-	add	AO1, AO1, #4
+	fstmias	BO!, { s0 - s1 }
+	add	AO1, AO1, #8
 
 .endm
 
@@ -191,7 +144,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sub	sp, sp, #STACKSIZE				// reserve stack
 
 
-	lsl	r3, r3, #2					// lda = lda * 4
+	lsl	r3, r3, #3					// lda = lda * 4 * 2
 	str	r3, LDA
 
 	sub	r4, fp, #128
@@ -199,147 +152,99 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ldr	BO, B	
 
-sgemm_ncopy_L4_BEGIN:
-
-	asrs	J, N, #2					// J = N / 4
-	ble	sgemm_ncopy_L2_BEGIN
-
-sgemm_ncopy_L4_M4_BEGIN:
-
-	mov	AO1, A						// AO1 = A
-	ldr	r4 , LDA
-	add	AO2, AO1, r4
-	add	AO3, AO2, r4
-	add	AO4, AO3, r4
-	add	A  , AO4, r4					// A = A + 4 * LDA
-
-	asrs	I, M, #2					// I = M / 4
-	ble	sgemm_ncopy_L4_M4_40
-
-sgemm_ncopy_L4_M4_20:
-
-	pld	[ AO1, #A_PRE ]
-	pld	[ AO2, #A_PRE ]
-	pld	[ AO3, #A_PRE ]
-	pld	[ AO4, #A_PRE ]
-	COPY4x4
-
-	subs	I , I , #1
-	ble	sgemm_ncopy_L4_M4_40
-
-	COPY4x4
-
-	subs	I , I , #1
-	bne	sgemm_ncopy_L4_M4_20
-	
-	
-sgemm_ncopy_L4_M4_40:
-
-	ands	I, M , #3
-	ble	sgemm_ncopy_L4_M4_END
-
-sgemm_ncopy_L4_M4_60:
-
-	COPY1x4
-
-	subs	I , I , #1
-	bne	sgemm_ncopy_L4_M4_60
-	
-
-sgemm_ncopy_L4_M4_END:
-
-	subs	J , J, #1						// j--
-	bne	sgemm_ncopy_L4_M4_BEGIN
-
-
-
 /*********************************************************************************************/
 
-sgemm_ncopy_L2_BEGIN:
+cgemm_ncopy_L2_BEGIN:
 
-	tst	N, #3
-	ble	sgemm_ncopy_L999
+	asrs	J, N, #1					// J = N / 2
+	ble	cgemm_ncopy_L1_BEGIN
 
-	tst	N, #2
-	ble	sgemm_ncopy_L1_BEGIN
-
-sgemm_ncopy_L2_M4_BEGIN:
+cgemm_ncopy_L2_M2_BEGIN:
 
 	mov	AO1, A						// AO1 = A
 	ldr	r4 , LDA
 	add	AO2, AO1, r4
 	add	A  , AO2, r4 					// A = A + 2 * LDA
 
-	asrs	I, M, #2					// I = M / 4
-	ble	sgemm_ncopy_L2_M4_40
+	asrs	I, M, #1					// I = M / 2
+	ble	cgemm_ncopy_L2_M2_40
 
-sgemm_ncopy_L2_M4_20:
+cgemm_ncopy_L2_M2_20:
 
-	COPY4x2
+	pld	[ AO1, #A_PRE ]
+	pld	[ AO2, #A_PRE ]
 
+	COPY2x2
 	subs	I , I , #1
-	bne	sgemm_ncopy_L2_M4_20
+	ble	cgemm_ncopy_L2_M2_40
+
+	COPY2x2
+	subs	I , I , #1
+	bne	cgemm_ncopy_L2_M2_20
 	
 	
-sgemm_ncopy_L2_M4_40:
+cgemm_ncopy_L2_M2_40:
 
-	ands	I, M , #3
-	ble	sgemm_ncopy_L2_M4_END
+	ands	I, M , #1
+	ble	cgemm_ncopy_L2_M2_END
 
-sgemm_ncopy_L2_M4_60:
+cgemm_ncopy_L2_M2_60:
 
 	COPY1x2
 
 	subs	I , I , #1
-	bne	sgemm_ncopy_L2_M4_60
+	bne	cgemm_ncopy_L2_M2_60
 	
 
-sgemm_ncopy_L2_M4_END:
+cgemm_ncopy_L2_M2_END:
+
+	subs    J , J, #1                                               // j--
+        bne     cgemm_ncopy_L2_M2_BEGIN
 
 
 /*********************************************************************************************/
 
-sgemm_ncopy_L1_BEGIN:
+cgemm_ncopy_L1_BEGIN:
 
 	tst	N, #1
-	ble	sgemm_ncopy_L999
+	ble	cgemm_ncopy_L999
 
 
-sgemm_ncopy_L1_M4_BEGIN:
+cgemm_ncopy_L1_M2_BEGIN:
 
 	mov	AO1, A						// AO1 = A
 	ldr	r4 , LDA
 	add	A  , AO1, r4 					// A = A + 1 * LDA
 
-	asrs	I, M, #2					// I = M / 4
-	ble	sgemm_ncopy_L1_M4_40
+	asrs	I, M, #1					// I = M / 2
+	ble	cgemm_ncopy_L1_M2_40
 
-sgemm_ncopy_L1_M4_20:
+cgemm_ncopy_L1_M2_20:
 
-	COPY4x1
+	COPY2x1
 
 	subs	I , I , #1
-	bne	sgemm_ncopy_L1_M4_20
+	bne	cgemm_ncopy_L1_M2_20
 	
 	
-sgemm_ncopy_L1_M4_40:
+cgemm_ncopy_L1_M2_40:
 
-	ands	I, M , #3
-	ble	sgemm_ncopy_L1_M4_END
+	ands	I, M , #1
+	ble	cgemm_ncopy_L1_M2_END
 
-sgemm_ncopy_L1_M4_60:
+cgemm_ncopy_L1_M2_60:
 
 	COPY1x1
 
 	subs	I , I , #1
-	bne	sgemm_ncopy_L1_M4_60
+	bne	cgemm_ncopy_L1_M2_60
 	
 
-sgemm_ncopy_L1_M4_END:
+cgemm_ncopy_L1_M2_END:
 
 
 
-sgemm_ncopy_L999:
+cgemm_ncopy_L999:
 
 	sub	r3, fp, #128
 	vldm	r3, { s8 - s15}					// restore floating point registers
