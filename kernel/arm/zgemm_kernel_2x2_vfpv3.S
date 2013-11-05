@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/11/02 Saar
+* 2013/11/05 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -924,9 +924,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ldr	J, N
 	asrs	J, J, #1					// J = J / 2
-	ble	_L1_BEGIN
+	ble	zgemm_kernel_L1_BEGIN
 
-_L2_BEGIN:
+zgemm_kernel_L2_BEGIN:
 	
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
@@ -940,19 +940,19 @@ _L2_BEGIN:
 
 
 
-_L2_M2_BEGIN:
+zgemm_kernel_L2_M2_BEGIN:
 
 	ldr	I, M
 	asrs	I, I, #1					// I = I / 2
-	ble	_L2_M1_BEGIN
+	ble	zgemm_kernel_L2_M1_BEGIN
 
-_L2_M2_20:
+zgemm_kernel_L2_M2_20:
 
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
 	cmp	L , #3
-	blt	_L2_M2_30
+	blt	zgemm_kernel_L2_M2_30
 	.align 5
 
 
@@ -969,7 +969,7 @@ _L2_M2_20:
 
 	sub	L, L, #2
 
-_L2_M2_22:
+zgemm_kernel_L2_M2_22:
 
 	KERNEL2x2_M1
 	KERNEL2x2_M2
@@ -982,7 +982,7 @@ _L2_M2_22:
 	KERNEL2x2_M2
 
 	subs	L, L, #1
-	bgt	_L2_M2_22
+	bgt	zgemm_kernel_L2_M2_22
 
 	KERNEL2x2_M1
 	KERNEL2x2_M2
@@ -994,15 +994,15 @@ _L2_M2_22:
 	KERNEL2x2_M1
 	KERNEL2x2_E
 
-	b	 _L2_M2_44
+	b	 zgemm_kernel_L2_M2_44
 
 	
-_L2_M2_30:
+zgemm_kernel_L2_M2_30:
 	tst	L, #3
-	ble	_L2_M2_40
+	ble	zgemm_kernel_L2_M2_40
 
 	tst	L, #2
-	ble	_L2_M2_32
+	ble	zgemm_kernel_L2_M2_32
 
 	KERNEL2x2_I
 	KERNEL2x2_M2
@@ -1025,12 +1025,12 @@ _L2_M2_30:
 	KERNEL2x2_M1
 	KERNEL2x2_E
 
-	b	 _L2_M2_44
+	b	 zgemm_kernel_L2_M2_44
 
-_L2_M2_32:
+zgemm_kernel_L2_M2_32:
 
 	tst	L, #1
-	ble	_L2_M2_40
+	ble	zgemm_kernel_L2_M2_40
 
 	KERNEL2x2_I
 	KERNEL2x2_M2
@@ -1042,51 +1042,51 @@ _L2_M2_32:
 	KERNEL2x2_M1
 	KERNEL2x2_E
 
-	b	 _L2_M2_44
+	b	 zgemm_kernel_L2_M2_44
 
 
-_L2_M2_40:
+zgemm_kernel_L2_M2_40:
 
 	INIT2x2
 
 
-_L2_M2_44:
+zgemm_kernel_L2_M2_44:
 
 	ands	L , K1, #7					// L = L % 8
-	ble	_L2_M2_100
+	ble	zgemm_kernel_L2_M2_100
 
-_L2_M2_46:
+zgemm_kernel_L2_M2_46:
 
 	KERNEL2x2_SUB
 
 	subs	L, L, #1
-	bne	_L2_M2_46
+	bne	zgemm_kernel_L2_M2_46
 	
-_L2_M2_100:
+zgemm_kernel_L2_M2_100:
 
 	SAVE2x2
 
-_L2_M2_END:
+zgemm_kernel_L2_M2_END:
 
 	subs	I, I, #1
-	bne	_L2_M2_20
+	bne	zgemm_kernel_L2_M2_20
 
 
-_L2_M1_BEGIN:
+zgemm_kernel_L2_M1_BEGIN:
 
 	ldr	I, M
 	tst	I, #1					// I = I % 2
-	ble	_L2_END
+	ble	zgemm_kernel_L2_END
 
-_L2_M1_20:
+zgemm_kernel_L2_M1_20:
 
 	INIT1x2
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L2_M1_40
+	ble	zgemm_kernel_L2_M1_40
 
-_L2_M1_22:
+zgemm_kernel_L2_M1_22:
 
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
@@ -1099,27 +1099,27 @@ _L2_M1_22:
 	KERNEL1x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M1_22
+	bgt	zgemm_kernel_L2_M1_22
 	
 
-_L2_M1_40:
+zgemm_kernel_L2_M1_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L2_M1_100
+	ble	zgemm_kernel_L2_M1_100
 
-_L2_M1_42:
+zgemm_kernel_L2_M1_42:
 
 	KERNEL1x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M1_42
+	bgt	zgemm_kernel_L2_M1_42
 	
-_L2_M1_100:
+zgemm_kernel_L2_M1_100:
 
 	SAVE1x2
 
 
-_L2_END:
+zgemm_kernel_L2_END:
 
 	mov	r3, BC
 	mov	r4, K1
@@ -1128,17 +1128,17 @@ _L2_END:
 	mov	BC, r3
 	
 	subs	J , #1						// j--
-	bgt	_L2_BEGIN
+	bgt	zgemm_kernel_L2_BEGIN
 
 
 
 /*********************************************************************************************/
 
-_L1_BEGIN:
+zgemm_kernel_L1_BEGIN:
 
 	ldr	J , N
 	tst	J , #1
-	ble	_L999
+	ble	zgemm_kernel_L999
 
 	
 	ldr	CO1, C						// CO1 = C
@@ -1148,19 +1148,19 @@ _L1_BEGIN:
 
 	ldr	AO, A						// AO = A
 
-_L1_M2_BEGIN:
+zgemm_kernel_L1_M2_BEGIN:
 
 	ldr	I, M
 	asrs	I, I, #1					// I = I / 2
-	ble	_L1_M1_BEGIN
+	ble	zgemm_kernel_L1_M1_BEGIN
 
-_L1_M2_20:
+zgemm_kernel_L1_M2_20:
 
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
 	cmp	L , #3
-	blt	_L1_M2_30
+	blt	zgemm_kernel_L1_M2_30
 	.align 5
 
 
@@ -1177,7 +1177,7 @@ _L1_M2_20:
 
 	sub	L, L, #2
 
-_L1_M2_22:
+zgemm_kernel_L1_M2_22:
 
 	KERNEL2x1_M1
 	KERNEL2x1_M2
@@ -1190,7 +1190,7 @@ _L1_M2_22:
 	KERNEL2x1_M2
 
 	subs	L, L, #1
-	bgt	_L1_M2_22
+	bgt	zgemm_kernel_L1_M2_22
 
 	KERNEL2x1_M1
 	KERNEL2x1_M2
@@ -1202,15 +1202,15 @@ _L1_M2_22:
 	KERNEL2x1_M1
 	KERNEL2x1_E
 
-	b	 _L1_M2_44
+	b	 zgemm_kernel_L1_M2_44
 
 	
-_L1_M2_30:
+zgemm_kernel_L1_M2_30:
 	tst	L, #3
-	ble	_L1_M2_40
+	ble	zgemm_kernel_L1_M2_40
 
 	tst	L, #2
-	ble	_L1_M2_32
+	ble	zgemm_kernel_L1_M2_32
 
 	KERNEL2x1_I
 	KERNEL2x1_M2
@@ -1233,12 +1233,12 @@ _L1_M2_30:
 	KERNEL2x1_M1
 	KERNEL2x1_E
 
-	b	 _L1_M2_44
+	b	 zgemm_kernel_L1_M2_44
 
-_L1_M2_32:
+zgemm_kernel_L1_M2_32:
 
 	tst	L, #1
-	ble	_L1_M2_40
+	ble	zgemm_kernel_L1_M2_40
 
 	KERNEL2x1_I
 	KERNEL2x1_M2
@@ -1250,51 +1250,51 @@ _L1_M2_32:
 	KERNEL2x1_M1
 	KERNEL2x1_E
 
-	b	 _L1_M2_44
+	b	 zgemm_kernel_L1_M2_44
 
 
-_L1_M2_40:
+zgemm_kernel_L1_M2_40:
 
 	INIT2x1
 
 
-_L1_M2_44:
+zgemm_kernel_L1_M2_44:
 
 	ands	L , K1, #7					// L = L % 8
-	ble	_L1_M2_100
+	ble	zgemm_kernel_L1_M2_100
 
-_L1_M2_46:
+zgemm_kernel_L1_M2_46:
 
 	KERNEL2x1_SUB
 
 	subs	L, L, #1
-	bne	_L1_M2_46
+	bne	zgemm_kernel_L1_M2_46
 	
-_L1_M2_100:
+zgemm_kernel_L1_M2_100:
 
 	SAVE2x1
 
-_L1_M2_END:
+zgemm_kernel_L1_M2_END:
 
 	subs	I, I, #1
-	bne	_L1_M2_20
+	bne	zgemm_kernel_L1_M2_20
 
 
-_L1_M1_BEGIN:
+zgemm_kernel_L1_M1_BEGIN:
 
 	ldr	I, M
 	tst	I, #1					// I = I % 2
-	ble	_L1_END
+	ble	zgemm_kernel_L1_END
 
-_L1_M1_20:
+zgemm_kernel_L1_M1_20:
 
 	INIT1x1
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L1_M1_40
+	ble	zgemm_kernel_L1_M1_40
 
-_L1_M1_22:
+zgemm_kernel_L1_M1_22:
 
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
@@ -1307,31 +1307,31 @@ _L1_M1_22:
 	KERNEL1x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M1_22
+	bgt	zgemm_kernel_L1_M1_22
 	
 
-_L1_M1_40:
+zgemm_kernel_L1_M1_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L1_M1_100
+	ble	zgemm_kernel_L1_M1_100
 
-_L1_M1_42:
+zgemm_kernel_L1_M1_42:
 
 	KERNEL1x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M1_42
+	bgt	zgemm_kernel_L1_M1_42
 	
-_L1_M1_100:
+zgemm_kernel_L1_M1_100:
 
 	SAVE1x1
 
 
-_L1_END:
+zgemm_kernel_L1_END:
 
 
 
-_L999:
+zgemm_kernel_L999:
 
 	sub	r3, fp, #128
 	vldm	r3, { d8 - d15}					// restore floating point registers

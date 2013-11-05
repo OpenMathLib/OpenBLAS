@@ -115,7 +115,7 @@ CGEMMONCOPYOBJ =  cgemm_oncopy.o
 CGEMMOTCOPYOBJ =  cgemm_otcopy.o
 
 ZGEMMKERNEL    = zgemm_kernel_2x2_vfpv3.S
-ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+ZGEMMONCOPY    = zgemm_ncopy_2_vfpv3.S
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMONCOPYOBJ =  zgemm_oncopy.o
 ZGEMMOTCOPYOBJ =  zgemm_otcopy.o

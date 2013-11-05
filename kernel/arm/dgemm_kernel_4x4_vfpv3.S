@@ -77,7 +77,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define B	[fp, #4 ]
 #define C	[fp, #8 ]
-#define OLD_LDC	[fp, #12 ]
+#define OLDdgemm_kernel_LDC	[fp, #12 ]
 
 #define I	r0
 #define J	r1
@@ -883,7 +883,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sub	r3, fp, #128
 	vstm	r3, { d8 - d15} 				// store floating point registers
 
-	ldr	r3, OLD_LDC
+	ldr	r3, OLDdgemm_kernel_LDC
 	lsl	r3, r3, #3					// ldc = ldc * 8
 	str	r3, LDC
 
@@ -892,9 +892,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ldr	J, N
 	asrs	J, J, #2					// J = J / 4
-	ble	_L2_BEGIN
+	ble	dgemm_kernel_L2_BEGIN
 
-_L4_BEGIN:
+dgemm_kernel_L4_BEGIN:
 	
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
@@ -908,21 +908,19 @@ _L4_BEGIN:
 
 
 
-_L4_M4_BEGIN:
+dgemm_kernel_L4_M4_BEGIN:
 
 	ldr	I, M
 	asrs	I, I, #2					// I = I / 4
-	ble	_L4_M2_BEGIN
+	ble	dgemm_kernel_L4_M2_BEGIN
 
-_L4_M4_20:
+dgemm_kernel_L4_M4_20:
 
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	cmp	L , #3
-	blt	_L4_M4_30
-	.align 5
-
+	cmp	L , #2
+	blt	dgemm_kernel_L4_M4_32
 
 
 	KERNEL4x4_I
@@ -935,9 +933,11 @@ _L4_M4_20:
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 
-	sub	L, L, #2
+	subs	L, L, #2
+	ble	dgemm_kernel_L4_M4_22a
+	.align 5
 
-_L4_M4_22:
+dgemm_kernel_L4_M4_22:
 
 	KERNEL4x4_M1
 	KERNEL4x4_M2
@@ -950,7 +950,9 @@ _L4_M4_22:
 	KERNEL4x4_M2
 
 	subs	L, L, #1
-	bgt	_L4_M4_22
+	bgt	dgemm_kernel_L4_M4_22
+
+dgemm_kernel_L4_M4_22a:
 
 	KERNEL4x4_M1
 	KERNEL4x4_M2
@@ -962,43 +964,12 @@ _L4_M4_22:
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
-	b	 _L4_M4_44
+	b	 dgemm_kernel_L4_M4_44
 
-	
-_L4_M4_30:
-	tst	L, #3
-	ble	_L4_M4_40
-
-	tst	L, #2
-	ble	_L4_M4_32
-
-	KERNEL4x4_I
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-
-
-	KERNEL4x4_M1
-	KERNEL4x4_M2
-	KERNEL4x4_M1
-	KERNEL4x4_E
-
-	b	 _L4_M4_44
-
-_L4_M4_32:
+dgemm_kernel_L4_M4_32:
 
 	tst	L, #1
-	ble	_L4_M4_40
+	ble	dgemm_kernel_L4_M4_40
 
 	KERNEL4x4_I
 	KERNEL4x4_M2
@@ -1010,54 +981,54 @@ _L4_M4_32:
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
-	b	 _L4_M4_44
+	b	 dgemm_kernel_L4_M4_44
 
 
-_L4_M4_40:
+dgemm_kernel_L4_M4_40:
 
 	INIT4x4
 
 
-_L4_M4_44:
+dgemm_kernel_L4_M4_44:
 
 	ands	L , K1, #7					// L = L % 8
-	ble	_L4_M4_100
+	ble	dgemm_kernel_L4_M4_100
 
-_L4_M4_46:
+dgemm_kernel_L4_M4_46:
 
 	KERNEL4x4_SUB
 
 	subs	L, L, #1
-	bne	_L4_M4_46
+	bne	dgemm_kernel_L4_M4_46
 	
-_L4_M4_100:
+dgemm_kernel_L4_M4_100:
 
 	SAVE4x4
 
-_L4_M4_END:
+dgemm_kernel_L4_M4_END:
 
 	subs	I, I, #1
-	bne	_L4_M4_20
+	bne	dgemm_kernel_L4_M4_20
 
 
-_L4_M2_BEGIN:
+dgemm_kernel_L4_M2_BEGIN:
 
 	ldr	I, M
 	tst	I , #3
-	ble	_L4_END
+	ble	dgemm_kernel_L4_END
 
 	tst	I, #2					// I = I / 2
-	ble	_L4_M1_BEGIN
+	ble	dgemm_kernel_L4_M1_BEGIN
 
-_L4_M2_20:
+dgemm_kernel_L4_M2_20:
 
 	INIT2x4
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L4_M2_40
+	ble	dgemm_kernel_L4_M2_40
 
-_L4_M2_22:
+dgemm_kernel_L4_M2_22:
 
 	KERNEL2x4_SUB
 	KERNEL2x4_SUB
@@ -1070,42 +1041,42 @@ _L4_M2_22:
 	KERNEL2x4_SUB
 
 	subs	L, L, #1
-	bgt	_L4_M2_22
+	bgt	dgemm_kernel_L4_M2_22
 	
 
-_L4_M2_40:
+dgemm_kernel_L4_M2_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L4_M2_100
+	ble	dgemm_kernel_L4_M2_100
 
-_L4_M2_42:
+dgemm_kernel_L4_M2_42:
 
 	KERNEL2x4_SUB
 
 	subs	L, L, #1
-	bgt	_L4_M2_42
+	bgt	dgemm_kernel_L4_M2_42
 	
-_L4_M2_100:
+dgemm_kernel_L4_M2_100:
 
 	SAVE2x4
 
-_L4_M2_END:
+dgemm_kernel_L4_M2_END:
 
 
-_L4_M1_BEGIN:
+dgemm_kernel_L4_M1_BEGIN:
 
 	tst	I, #1					// I = I % 2
-	ble	_L4_END
+	ble	dgemm_kernel_L4_END
 
-_L4_M1_20:
+dgemm_kernel_L4_M1_20:
 
 	INIT1x4
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L4_M1_40
+	ble	dgemm_kernel_L4_M1_40
 
-_L4_M1_22:
+dgemm_kernel_L4_M1_22:
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
@@ -1117,27 +1088,27 @@ _L4_M1_22:
 	KERNEL1x4_SUB
 
 	subs	L, L, #1
-	bgt	_L4_M1_22
+	bgt	dgemm_kernel_L4_M1_22
 	
 
-_L4_M1_40:
+dgemm_kernel_L4_M1_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L4_M1_100
+	ble	dgemm_kernel_L4_M1_100
 
-_L4_M1_42:
+dgemm_kernel_L4_M1_42:
 
 	KERNEL1x4_SUB
 
 	subs	L, L, #1
-	bgt	_L4_M1_42
+	bgt	dgemm_kernel_L4_M1_42
 	
-_L4_M1_100:
+dgemm_kernel_L4_M1_100:
 
 	SAVE1x4
 
 
-_L4_END:
+dgemm_kernel_L4_END:
 
 	mov	r3, BC
 	mov	r4, K1
@@ -1146,20 +1117,20 @@ _L4_END:
 	mov	BC, r3
 	
 	subs	J , #1						// j--
-	bgt	_L4_BEGIN
+	bgt	dgemm_kernel_L4_BEGIN
 
 
 
 /*********************************************************************************************/
 
-_L2_BEGIN:
+dgemm_kernel_L2_BEGIN:
 
 	ldr	J , N
 	tst	J , #3
-	ble	_L999
+	ble	dgemm_kernel_L999
 
 	tst	J , #2
-	ble	_L1_BEGIN
+	ble	dgemm_kernel_L1_BEGIN
 	
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
@@ -1168,28 +1139,25 @@ _L2_BEGIN:
 	str	r3 , C						// store C
 
 	ldr	AO, A						// AO = A
-        //pld     [AO , #A_PRE-96]
-        //pld     [AO , #A_PRE-64]
-        //pld     [AO , #A_PRE-32]
 
 
 
-_L2_M4_BEGIN:
+dgemm_kernel_L2_M4_BEGIN:
 
 	ldr	I, M
 	asrs	I, I, #2					// I = I / 4
-	ble	_L2_M2_BEGIN
+	ble	dgemm_kernel_L2_M2_BEGIN
 
-_L2_M4_20:
+dgemm_kernel_L2_M4_20:
 
 	INIT4x2
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L2_M4_40
+	ble	dgemm_kernel_L2_M4_40
 	.align 5
 
-_L2_M4_22:
+dgemm_kernel_L2_M4_22:
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
@@ -1201,49 +1169,49 @@ _L2_M4_22:
 	KERNEL4x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M4_22
+	bgt	dgemm_kernel_L2_M4_22
 	
 
-_L2_M4_40:
+dgemm_kernel_L2_M4_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L2_M4_100
+	ble	dgemm_kernel_L2_M4_100
 
-_L2_M4_42:
+dgemm_kernel_L2_M4_42:
 
 	KERNEL4x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M4_42
+	bgt	dgemm_kernel_L2_M4_42
 	
-_L2_M4_100:
+dgemm_kernel_L2_M4_100:
 
 	SAVE4x2
 
-_L2_M4_END:
+dgemm_kernel_L2_M4_END:
 
 	subs	I, I, #1
-	bgt	_L2_M4_20
+	bgt	dgemm_kernel_L2_M4_20
 
 
-_L2_M2_BEGIN:
+dgemm_kernel_L2_M2_BEGIN:
 
 	ldr	I, M
 	tst	I , #3
-	ble	_L2_END
+	ble	dgemm_kernel_L2_END
 
 	tst	I, #2					// I = I / 2
-	ble	_L2_M1_BEGIN
+	ble	dgemm_kernel_L2_M1_BEGIN
 
-_L2_M2_20:
+dgemm_kernel_L2_M2_20:
 
 	INIT2x2
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L2_M2_40
+	ble	dgemm_kernel_L2_M2_40
 
-_L2_M2_22:
+dgemm_kernel_L2_M2_22:
 
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
@@ -1256,42 +1224,42 @@ _L2_M2_22:
 	KERNEL2x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M2_22
+	bgt	dgemm_kernel_L2_M2_22
 	
 
-_L2_M2_40:
+dgemm_kernel_L2_M2_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L2_M2_100
+	ble	dgemm_kernel_L2_M2_100
 
-_L2_M2_42:
+dgemm_kernel_L2_M2_42:
 
 	KERNEL2x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M2_42
+	bgt	dgemm_kernel_L2_M2_42
 	
-_L2_M2_100:
+dgemm_kernel_L2_M2_100:
 
 	SAVE2x2
 
-_L2_M2_END:
+dgemm_kernel_L2_M2_END:
 
 
-_L2_M1_BEGIN:
+dgemm_kernel_L2_M1_BEGIN:
 
 	tst	I, #1					// I = I % 2
-	ble	_L2_END
+	ble	dgemm_kernel_L2_END
 
-_L2_M1_20:
+dgemm_kernel_L2_M1_20:
 
 	INIT1x2
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L2_M1_40
+	ble	dgemm_kernel_L2_M1_40
 
-_L2_M1_22:
+dgemm_kernel_L2_M1_22:
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
@@ -1303,27 +1271,27 @@ _L2_M1_22:
 	KERNEL1x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M1_22
+	bgt	dgemm_kernel_L2_M1_22
 	
 
-_L2_M1_40:
+dgemm_kernel_L2_M1_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L2_M1_100
+	ble	dgemm_kernel_L2_M1_100
 
-_L2_M1_42:
+dgemm_kernel_L2_M1_42:
 
 	KERNEL1x2_SUB
 
 	subs	L, L, #1
-	bgt	_L2_M1_42
+	bgt	dgemm_kernel_L2_M1_42
 	
-_L2_M1_100:
+dgemm_kernel_L2_M1_100:
 
 	SAVE1x2
 
 
-_L2_END:
+dgemm_kernel_L2_END:
 
 	mov	r3, BC
 	mov	r4, K1
@@ -1333,11 +1301,11 @@ _L2_END:
 
 /*********************************************************************************************/
 
-_L1_BEGIN:
+dgemm_kernel_L1_BEGIN:
 
 	ldr	J , N
 	tst	J , #1
-	ble	_L999
+	ble	dgemm_kernel_L999
 
 	
 	ldr	CO1, C						// CO1 = C
@@ -1346,28 +1314,25 @@ _L1_BEGIN:
 	str	r3 , C						// store C
 
 	ldr	AO, A						// AO = A
-        //pld     [AO , #A_PRE-96]
-        //pld     [AO , #A_PRE-64]
-        //pld     [AO , #A_PRE-32]
 
 
 
-_L1_M4_BEGIN:
+dgemm_kernel_L1_M4_BEGIN:
 
 	ldr	I, M
 	asrs	I, I, #2					// I = I / 4
-	ble	_L1_M2_BEGIN
+	ble	dgemm_kernel_L1_M2_BEGIN
 
-_L1_M4_20:
+dgemm_kernel_L1_M4_20:
 
 	INIT4x1
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L1_M4_40
+	ble	dgemm_kernel_L1_M4_40
 	.align 5
 
-_L1_M4_22:
+dgemm_kernel_L1_M4_22:
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -1379,49 +1344,49 @@ _L1_M4_22:
 	KERNEL4x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M4_22
+	bgt	dgemm_kernel_L1_M4_22
 	
 
-_L1_M4_40:
+dgemm_kernel_L1_M4_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L1_M4_100
+	ble	dgemm_kernel_L1_M4_100
 
-_L1_M4_42:
+dgemm_kernel_L1_M4_42:
 
 	KERNEL4x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M4_42
+	bgt	dgemm_kernel_L1_M4_42
 	
-_L1_M4_100:
+dgemm_kernel_L1_M4_100:
 
 	SAVE4x1
 
-_L1_M4_END:
+dgemm_kernel_L1_M4_END:
 
 	subs	I, I, #1
-	bgt	_L1_M4_20
+	bgt	dgemm_kernel_L1_M4_20
 
 
-_L1_M2_BEGIN:
+dgemm_kernel_L1_M2_BEGIN:
 
 	ldr	I, M
 	tst	I , #3
-	ble	_L1_END
+	ble	dgemm_kernel_L1_END
 
 	tst	I, #2					// I = I / 2
-	ble	_L1_M1_BEGIN
+	ble	dgemm_kernel_L1_M1_BEGIN
 
-_L1_M2_20:
+dgemm_kernel_L1_M2_20:
 
 	INIT2x1
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L1_M2_40
+	ble	dgemm_kernel_L1_M2_40
 
-_L1_M2_22:
+dgemm_kernel_L1_M2_22:
 
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
@@ -1434,42 +1399,42 @@ _L1_M2_22:
 	KERNEL2x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M2_22
+	bgt	dgemm_kernel_L1_M2_22
 	
 
-_L1_M2_40:
+dgemm_kernel_L1_M2_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L1_M2_100
+	ble	dgemm_kernel_L1_M2_100
 
-_L1_M2_42:
+dgemm_kernel_L1_M2_42:
 
 	KERNEL2x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M2_42
+	bgt	dgemm_kernel_L1_M2_42
 	
-_L1_M2_100:
+dgemm_kernel_L1_M2_100:
 
 	SAVE2x1
 
-_L1_M2_END:
+dgemm_kernel_L1_M2_END:
 
 
-_L1_M1_BEGIN:
+dgemm_kernel_L1_M1_BEGIN:
 
 	tst	I, #1					// I = I % 2
-	ble	_L1_END
+	ble	dgemm_kernel_L1_END
 
-_L1_M1_20:
+dgemm_kernel_L1_M1_20:
 
 	INIT1x1
 
 	mov	BO, BC
 	asrs	L , K1, #3					// L = L / 8
-	ble	_L1_M1_40
+	ble	dgemm_kernel_L1_M1_40
 
-_L1_M1_22:
+dgemm_kernel_L1_M1_22:
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
@@ -1481,30 +1446,30 @@ _L1_M1_22:
 	KERNEL1x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M1_22
+	bgt	dgemm_kernel_L1_M1_22
 	
 
-_L1_M1_40:
+dgemm_kernel_L1_M1_40:
 	
 	ands	L , K1, #7					// L = L % 8
-	ble	_L1_M1_100
+	ble	dgemm_kernel_L1_M1_100
 
-_L1_M1_42:
+dgemm_kernel_L1_M1_42:
 
 	KERNEL1x1_SUB
 
 	subs	L, L, #1
-	bgt	_L1_M1_42
+	bgt	dgemm_kernel_L1_M1_42
 	
-_L1_M1_100:
+dgemm_kernel_L1_M1_100:
 
 	SAVE1x1
 
 
-_L1_END:
+dgemm_kernel_L1_END:
 
 
-_L999:
+dgemm_kernel_L999:
 
 	sub	r3, fp, #128
 	vldm	r3, { d8 - d15}					// restore floating point registers

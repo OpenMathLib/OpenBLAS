@@ -62,8 +62,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define	AO1	r6
 #define	AO2	r7
-#define	AO3	r8
-#define	AO4	r9
 
 #define I	r3
 #define	J	r12
@@ -74,70 +72,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * Macro definitions
 **************************************************************************************/
 
-.macro COPY4x4
+.macro COPY2x2
 
 	pld	[ AO1, #A_PRE  ]
 	pld	[ AO2, #A_PRE  ]
-	pld	[ AO3, #A_PRE  ]
-	pld	[ AO4, #A_PRE  ]
-
 	fldd	d0 , [ AO1, #0  ]
-	fldd	d1 , [ AO2, #0  ]
-	fldd	d2 , [ AO3, #0  ]
-	fldd	d3 , [ AO4, #0  ]
-
-	fldd	d4 , [ AO1, #8  ]
-	fldd	d8 , [ AO1, #16 ]
-	fldd	d12, [ AO1, #24 ]
-
-	fldd	d5 , [ AO2, #8  ]
-	add	AO1, AO1, #32
-	fldd	d9 , [ AO2, #16 ]
-	fldd	d13, [ AO2, #24 ]
-
-	fldd	d6 , [ AO3, #8  ]
-	add	AO2, AO2, #32
-	fldd	d10, [ AO3, #16 ]
-	fldd	d14, [ AO3, #24 ]
-
-	fldd	d7 , [ AO4, #8  ]
-	add	AO3, AO3, #32
-	fldd	d11, [ AO4, #16 ]
-	fldd	d15, [ AO4, #24 ]
-
-	fstmiad	BO!, { d0 - d3 }
-	add	AO4, AO4, #32
-	fstmiad	BO!, { d4 - d7 }
-	fstmiad	BO!, { d8 - d15 }
-
-.endm
-
-.macro COPY1x4
-
-	fldd	d0 , [ AO1, #0  ]
-	fldd	d1 , [ AO2, #0  ]
-	add	AO1, AO1, #8
-	fldd	d2 , [ AO3, #0  ]
-	add	AO2, AO2, #8
-	fldd	d3 , [ AO4, #0  ]
-
-	add	AO3, AO3, #8
-	fstmiad	BO!, { d0 - d3 }
-	add	AO4, AO4, #8
-
-.endm
-
-.macro COPY4x2
-
-	fldd	d0 , [ AO1, #0  ]
-	fldd	d2 , [ AO1, #8  ]
+	fldd	d1 , [ AO1, #8  ]
 	fldd	d4 , [ AO1, #16 ]
-	fldd	d6 , [ AO1, #24 ]
+	fldd	d5 , [ AO1, #24 ]
 
-	fldd	d1 , [ AO2, #0  ]
+	fldd	d2 , [ AO2, #0  ]
 	fldd	d3 , [ AO2, #8  ]
 	add	AO1, AO1, #32
-	fldd	d5 , [ AO2, #16 ]
+	fldd	d6 , [ AO2, #16 ]
 	fldd	d7 , [ AO2, #24 ]
 
 	fstmiad	BO!, { d0 - d7 }
@@ -149,15 +96,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro COPY1x2
 
 	fldd	d0 , [ AO1, #0  ]
-	fldd	d1 , [ AO2, #0  ]
-	add	AO1, AO1, #8
+	fldd	d1 , [ AO1, #8  ]
+	fldd	d2 , [ AO2, #0  ]
+	fldd	d3 , [ AO2, #8  ]
 
-	fstmiad	BO!, { d0 - d1 }
-	add	AO2, AO2, #8
+	add	AO1, AO1, #16
+	fstmiad	BO!, { d0 - d3 }
+	add	AO2, AO2, #16
 
 .endm
 
-.macro COPY4x1
+.macro COPY2x1
 
 	fldd	d0 , [ AO1, #0  ]
 	fldd	d1 , [ AO1, #8  ]
@@ -173,9 +122,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro COPY1x1
 
 	fldd	d0 , [ AO1, #0  ]
+	fldd	d1 , [ AO1, #8  ]
 
-	fstmiad	BO!, { d0 }
-	add	AO1, AO1, #8
+	fstmiad	BO!, { d0 - d1 }
+	add	AO1, AO1, #16
 
 .endm
 
@@ -196,7 +146,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sub	sp, sp, #STACKSIZE				// reserve stack
 
 
-	lsl	r3, r3, #3					// lda = lda * 8
+	lsl	r3, r3, #4					// lda = lda * 8 * 2
 	str	r3, LDA
 
 	sub	r4, fp, #128
@@ -204,138 +154,93 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ldr	BO, B	
 
-dgemm_ncopy_L4_BEGIN:
-
-	asrs	J, N, #2					// J = N / 4
-	ble	dgemm_ncopy_L2_BEGIN
-
-dgemm_ncopy_L4_M4_BEGIN:
-
-	mov	AO1, A						// AO1 = A
-	ldr	r4 , LDA
-	add	AO2, AO1, r4
-	add	AO3, AO2, r4
-	add	AO4, AO3, r4
-	add	A  , AO4, r4					// A = A + 4 * LDA
-
-	asrs	I, M, #2					// I = M / 4
-	ble	dgemm_ncopy_L4_M4_40
-
-dgemm_ncopy_L4_M4_20:
-
-	COPY4x4
-
-	subs	I , I , #1
-	bne	dgemm_ncopy_L4_M4_20
-	
-	
-dgemm_ncopy_L4_M4_40:
-
-	ands	I, M , #3
-	ble	dgemm_ncopy_L4_M4_END
-
-dgemm_ncopy_L4_M4_60:
-
-	COPY1x4
-
-	subs	I , I , #1
-	bne	dgemm_ncopy_L4_M4_60
-	
-
-dgemm_ncopy_L4_M4_END:
-
-	subs	J , J, #1						// j--
-	bne	dgemm_ncopy_L4_M4_BEGIN
-
-
-
 /*********************************************************************************************/
 
-dgemm_ncopy_L2_BEGIN:
+zgemm_ncopy_L2_BEGIN:
 
-	tst	N, #3
-	ble	dgemm_ncopy_L999
+	asrs	J, N, #1					// J = N / 2
+	ble	zgemm_ncopy_L1_BEGIN
 
-	tst	N, #2
-	ble	dgemm_ncopy_L1_BEGIN
-
-dgemm_ncopy_L2_M4_BEGIN:
+zgemm_ncopy_L2_M2_BEGIN:
 
 	mov	AO1, A						// AO1 = A
 	ldr	r4 , LDA
 	add	AO2, AO1, r4
 	add	A  , AO2, r4 					// A = A + 2 * LDA
 
-	asrs	I, M, #2					// I = M / 4
-	ble	dgemm_ncopy_L2_M4_40
+	asrs	I, M, #1					// I = M / 2
+	ble	zgemm_ncopy_L2_M2_40
 
-dgemm_ncopy_L2_M4_20:
+zgemm_ncopy_L2_M2_20:
 
-	COPY4x2
+	COPY2x2
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L2_M4_20
+	bne	zgemm_ncopy_L2_M2_20
 	
 	
-dgemm_ncopy_L2_M4_40:
+zgemm_ncopy_L2_M2_40:
 
-	ands	I, M , #3
-	ble	dgemm_ncopy_L2_M4_END
+	ands	I, M , #1
+	ble	zgemm_ncopy_L2_M2_END
 
-dgemm_ncopy_L2_M4_60:
+zgemm_ncopy_L2_M2_60:
 
 	COPY1x2
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L2_M4_60
+	bne	zgemm_ncopy_L2_M2_60
 	
 
-dgemm_ncopy_L2_M4_END:
+zgemm_ncopy_L2_M2_END:
+
+	subs    J , J, #1                                               // j--
+        bne     zgemm_ncopy_L2_M2_BEGIN
 
 
 /*********************************************************************************************/
 
-dgemm_ncopy_L1_BEGIN:
+zgemm_ncopy_L1_BEGIN:
 
 	tst	N, #1
-	ble	dgemm_ncopy_L999
+	ble	zgemm_ncopy_L999
 
 
-dgemm_ncopy_L1_M4_BEGIN:
+zgemm_ncopy_L1_M2_BEGIN:
 
 	mov	AO1, A						// AO1 = A
 	ldr	r4 , LDA
 	add	A  , AO1, r4 					// A = A + 1 * LDA
 
-	asrs	I, M, #2					// I = M / 4
-	ble	dgemm_ncopy_L1_M4_40
+	asrs	I, M, #1					// I = M / 2
+	ble	zgemm_ncopy_L1_M2_40
 
-dgemm_ncopy_L1_M4_20:
+zgemm_ncopy_L1_M2_20:
 
-	COPY4x1
+	COPY2x1
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L1_M4_20
+	bne	zgemm_ncopy_L1_M2_20
 	
 	
-dgemm_ncopy_L1_M4_40:
+zgemm_ncopy_L1_M2_40:
 
-	ands	I, M , #3
-	ble	dgemm_ncopy_L1_M4_END
+	ands	I, M , #1
+	ble	zgemm_ncopy_L1_M2_END
 
-dgemm_ncopy_L1_M4_60:
+zgemm_ncopy_L1_M2_60:
 
 	COPY1x1
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L1_M4_60
+	bne	zgemm_ncopy_L1_M2_60
 	
 
-dgemm_ncopy_L1_M4_END:
+zgemm_ncopy_L1_M2_END:
 
 
 
-dgemm_ncopy_L999:
+zgemm_ncopy_L999:
 
 	sub	r3, fp, #128
 	vldm	r3, { d8 - d15}					// restore floating point registers
