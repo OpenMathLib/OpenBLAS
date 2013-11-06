@@ -77,7 +77,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define B	[fp, #4 ]
 #define C	[fp, #8 ]
-#define OLDdgemm_kernel_LDC	[fp, #12 ]
+#define OLD_LDC	[fp, #12 ]
 
 #define I	r0
 #define J	r1
@@ -883,7 +883,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sub	r3, fp, #128
 	vstm	r3, { d8 - d15} 				// store floating point registers
 
-	ldr	r3, OLDdgemm_kernel_LDC
+	ldr	r3, OLD_LDC
 	lsl	r3, r3, #3					// ldc = ldc * 8
 	str	r3, LDC
 
