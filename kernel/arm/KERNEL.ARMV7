@@ -45,13 +45,13 @@ DAXPYKERNEL  = ../arm/axpy.c
 CAXPYKERNEL  = ../arm/zaxpy.c
 ZAXPYKERNEL  = ../arm/zaxpy.c
 
-SCOPYKERNEL  = ../arm/copy.c
-DCOPYKERNEL  = ../arm/copy.c
-CCOPYKERNEL  = ../arm/zcopy.c
-ZCOPYKERNEL  = ../arm/zcopy.c
+SCOPYKERNEL  = scopy_vfpv3.S
+DCOPYKERNEL  = dcopy_vfpv3.S
+CCOPYKERNEL  = ccopy_vfpv3.S
+ZCOPYKERNEL  = zcopy_vfpv3.S
 
-SDOTKERNEL   = ../arm/dot.c
-DDOTKERNEL   = ../arm/dot.c
+SDOTKERNEL   = sdot_vfpv3.S
+DDOTKERNEL   = ddot_vfpv3.S
 CDOTKERNEL   = ../arm/zdot.c
 ZDOTKERNEL   = ../arm/zdot.c
 
@@ -108,15 +108,15 @@ DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
 CGEMMKERNEL    = cgemm_kernel_2x2_vfpv3.S
 CGEMMONCOPY    = cgemm_ncopy_2_vfpv3.S
-CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
-CGEMMONCOPYOBJ =  cgemm_oncopy.o
-CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+CGEMMOTCOPY    = cgemm_tcopy_2_vfpv3.S
+CGEMMONCOPYOBJ = cgemm_oncopy.o
+CGEMMOTCOPYOBJ = cgemm_otcopy.o
 
 ZGEMMKERNEL    = zgemm_kernel_2x2_vfpv3.S
 ZGEMMONCOPY    = zgemm_ncopy_2_vfpv3.S
-ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
-ZGEMMONCOPYOBJ =  zgemm_oncopy.o
-ZGEMMOTCOPYOBJ =  zgemm_otcopy.o
+ZGEMMOTCOPY    = zgemm_tcopy_2_vfpv3.S
+ZGEMMONCOPYOBJ = zgemm_oncopy.o
+ZGEMMOTCOPYOBJ = zgemm_otcopy.o
 
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
@@ -137,10 +137,5 @@ ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
 ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
-
-CGEMM3MKERNEL    =  zgemm3m_kernel_8x4_core2.S
-ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_core2.S
-
-
 
 
