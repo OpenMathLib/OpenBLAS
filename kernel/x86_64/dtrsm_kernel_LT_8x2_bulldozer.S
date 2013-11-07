@@ -103,7 +103,7 @@
 	vmovups		-10*SIZE(AO,%rax,8), %xmm6
 	vfmaddpd	%xmm14, %xmm6 , %xmm1 , %xmm14
 	vfmaddpd	%xmm15, %xmm6 , %xmm2 , %xmm15
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 .macro SOLVE_8x2
@@ -265,7 +265,7 @@
 	vmovups		-14*SIZE(AO,%rax,4), %xmm0
 	vfmaddpd	%xmm10, %xmm0 , %xmm1 , %xmm10
 	vfmaddpd	%xmm11, %xmm0 , %xmm2 , %xmm11
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 
@@ -338,7 +338,7 @@
 	vmovups		-16*SIZE(AO,%rax,2), %xmm0
 	vfmaddpd	%xmm8 , %xmm0 , %xmm1 , %xmm8
 	vfmaddpd	%xmm9 , %xmm0 , %xmm2 , %xmm9
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 
@@ -378,7 +378,7 @@
 	vmovups 	-16*SIZE(BO,%rax,2), %xmm1
 	vmovddup	-16*SIZE(AO,%rax,1), %xmm0
 	vfmaddpd	%xmm8 , %xmm0 , %xmm1 , %xmm8
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 .macro SOLVE_1x2
@@ -411,7 +411,7 @@
 	vfmaddpd	%xmm10, %xmm0 , %xmm1 , %xmm10
 	vmovups		-10*SIZE(AO,%rax,8), %xmm0
 	vfmaddpd	%xmm11, %xmm0 , %xmm1 , %xmm11
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 .macro SOLVE_8x1
@@ -510,7 +510,7 @@
 	vfmaddpd	%xmm8 , %xmm0 , %xmm1 , %xmm8
 	vmovups		-14*SIZE(AO,%rax,4), %xmm0
 	vfmaddpd	%xmm9 , %xmm0 , %xmm1 , %xmm9
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 
@@ -560,7 +560,7 @@
 	vmovddup	-16*SIZE(BO,%rax,1), %xmm1
 	vmovups		-16*SIZE(AO,%rax,2), %xmm0
 	vfmaddpd	%xmm8 , %xmm0 , %xmm1 , %xmm8
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 
@@ -592,7 +592,7 @@
 	vmovsd  	-16*SIZE(BO,%rax,1), %xmm1
 	vmovsd 		-16*SIZE(AO,%rax,1), %xmm0
 	vfmaddsd	%xmm8 , %xmm0 , %xmm1 , %xmm8
-	addq    $SIZE, %rax
+	addq    $ SIZE, %rax
 .endm
 
 .macro SOLVE_1x1
