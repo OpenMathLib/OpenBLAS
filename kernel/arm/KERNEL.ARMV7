@@ -52,8 +52,8 @@ ZCOPYKERNEL  = zcopy_vfpv3.S
 
 SDOTKERNEL   = sdot_vfpv3.S
 DDOTKERNEL   = ddot_vfpv3.S
-CDOTKERNEL   = ../arm/zdot.c
-ZDOTKERNEL   = ../arm/zdot.c
+CDOTKERNEL   = cdot_vfpv3.S
+ZDOTKERNEL   = zdot_vfpv3.S
 
 SNRM2KERNEL  = ../arm/nrm2.c
 DNRM2KERNEL  = ../arm/nrm2.c
