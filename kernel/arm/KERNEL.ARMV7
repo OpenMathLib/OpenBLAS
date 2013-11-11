@@ -35,10 +35,10 @@ DSWAPKERNEL  = ../arm/swap.c
 CSWAPKERNEL  = ../arm/zswap.c
 ZSWAPKERNEL  = ../arm/zswap.c
 
-SASUMKERNEL  = ../arm/asum.c
-DASUMKERNEL  = ../arm/asum.c
-CASUMKERNEL  = ../arm/zasum.c
-ZASUMKERNEL  = ../arm/zasum.c
+SASUMKERNEL  = asum_vfpv3.S
+DASUMKERNEL  = asum_vfpv3.S
+CASUMKERNEL  = asum_vfpv3.S
+ZASUMKERNEL  = asum_vfpv3.S
 
 SAXPYKERNEL  = ../arm/axpy.c
 DAXPYKERNEL  = ../arm/axpy.c
