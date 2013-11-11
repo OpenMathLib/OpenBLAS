@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/11/07 Saar
+* 2013/11/11 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -56,7 +56,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define Y	r6
 #define INC_Y	r7
 
-#define X_PRE	256
+#define X_PRE	512
 
 /**************************************************************************************
 * Macro definitions
@@ -65,14 +65,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F4
 
 	pld	[ X, #X_PRE  ]
+	fldmiad	X!, { d8 }
 	pld	[ Y, #X_PRE  ]
-	fldmiad	X!, { d8 - d9 }
-	fldmiad	Y!, { d4 - d5}
+	fldmiad	Y!, { d4 }
+	fldmiad	Y!, { d5 }
 	fmacd   d0  , d4,  d8
-	fldmiad	X!, { d10 - d11 }
+	fldmiad	X!, { d9 }
+	fldmiad	Y!, { d6 }
 	fmacd   d1  , d5,  d9
-	fldmiad	Y!, { d6 - d7 }
+	fldmiad	X!, { d10 }
+	fldmiad	X!, { d11 }
 	fmacd   d0  , d6,  d10
+	fldmiad	Y!, { d7 }
 	fmacd   d1  , d7,  d11
 
 .endm
@@ -172,6 +176,12 @@ ddot_kernel_F_BEGIN:
 	ble	ddot_kernel_F1
 
 ddot_kernel_F4:
+
+	KERNEL_F4
+
+	subs	I, I, #1
+	ble	ddot_kernel_F1
+
 
 	KERNEL_F4
 

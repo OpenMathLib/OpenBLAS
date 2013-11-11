@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/11/07 Saar
+* 2013/11/11 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK (no test for dsdot)
 * 	 TEST			: OK (no test for dsdot)
@@ -56,7 +56,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define Y	r6
 #define INC_Y	r7
 
-#define X_PRE	256
+#define X_PRE	512
 
 /**************************************************************************************
 * Macro definitions
