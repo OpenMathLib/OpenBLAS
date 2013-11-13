@@ -218,12 +218,6 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 
 #ifdef ASSEMBLER
 
-#if defined(SANDYBRIDGE) || defined(HASWELL)
-//Enable some optimazation for nehalem.
-#define NEHALEM_OPTIMIZATION
-#endif
-
-
 #if defined(PILEDRIVER) || defined(BULLDOZER)
 //Enable some optimazation for barcelona.
 #define BARCELONA_OPTIMIZATION
@@ -378,9 +372,19 @@ REALNAME:
 #define PROFCODE
 #endif
 
+#if defined(C_PATHSCALE) || defined(OS_DARWIN)
+
+#define EPILOGUE \
+        .size	 REALNAME, .-REALNAME; \
+        .section .note.GNU-stack,"",@progbits
+
+#else
+
 #define EPILOGUE \
         .size	 REALNAME, .-REALNAME; \
         .section .note.GNU-stack,"",%progbits
+
+#endif
 
 
 #endif

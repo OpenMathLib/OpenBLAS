@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 /********************************************************************************
-* 2013/10/28 Saar
+* 2013/11/13 Saar
 *        BLASTEST               : OK
 *        CTEST                  : OK
 *        TEST                   : OK
@@ -137,43 +137,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfmaddpd y0,y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfmaddpd y0,y1,y2,y0
 
 #elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfnmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfnmaddpd y0,y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfmaddpd y0,y1,y2,y0
 
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfmaddpd y0,y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfnmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfnmaddpd y0,y1,y2,y0
 
 #else
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfnmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfnmaddpd y0,y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfnmaddpd \y0,\y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfnmaddpd y0,y1,y2,y0
 
 #endif
 
@@ -181,43 +165,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfmadd231pd y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfmadd231pd y1,y2,y0
 
 #elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfnmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfnmadd231pd y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfmadd231pd y1,y2,y0
 
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfmadd231pd y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfnmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfnmadd231pd y1,y2,y0
 
 #else
 
-.macro	VFMADDPD_R y0,y1,y2
-        vfnmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_R( y0,y1,y2 ) vfnmadd231pd y1,y2,y0
 
-.macro	VFMADDPD_I y0,y1,y2
-        vfnmadd231pd \y1,\y2,\y0
-.endm
+#define	VFMADDPD_I( y0,y1,y2 ) vfnmadd231pd y1,y2,y0
 
 #endif
 
@@ -233,16 +201,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         vbroadcastsd      -8 * SIZE(BO, BI, SIZE),   %ymm4
         vbroadcastsd      -7 * SIZE(BO, BI, SIZE),   %ymm5
-        VFMADDPD_R        %ymm8 ,%ymm4,%ymm0
-        VFMADDPD_R        %ymm12,%ymm4,%ymm1
+        VFMADDPD_R(        %ymm8 ,%ymm4,%ymm0 )
+        VFMADDPD_R(        %ymm12,%ymm4,%ymm1 )
         vbroadcastsd      -6 * SIZE(BO, BI, SIZE),   %ymm6
-        VFMADDPD_I        %ymm9 ,%ymm5,%ymm0
-        VFMADDPD_I        %ymm13,%ymm5,%ymm1
+        VFMADDPD_I(        %ymm9 ,%ymm5,%ymm0 )
+        VFMADDPD_I(        %ymm13,%ymm5,%ymm1 )
         vbroadcastsd      -5 * SIZE(BO, BI, SIZE),   %ymm7
-        VFMADDPD_R        %ymm10,%ymm6,%ymm0
-        VFMADDPD_R        %ymm14,%ymm6,%ymm1
-        VFMADDPD_I        %ymm11,%ymm7,%ymm0
-        VFMADDPD_I        %ymm15,%ymm7,%ymm1
+        VFMADDPD_R(        %ymm10,%ymm6,%ymm0 )
+        VFMADDPD_R(        %ymm14,%ymm6,%ymm1 )
+        VFMADDPD_I(        %ymm11,%ymm7,%ymm0 )
+        VFMADDPD_I(        %ymm15,%ymm7,%ymm1 )
 
         addq    $4, BI                           
         addq    $8, %rax                         
@@ -337,17 +305,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
         vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4
         vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1
-        VFMADDPD_R        %xmm8,%xmm4,%xmm0
-        VFMADDPD_R        %xmm12,%xmm4,%xmm1
+        VFMADDPD_R(        %xmm8,%xmm4,%xmm0  )
+        VFMADDPD_R(        %xmm12,%xmm4,%xmm1 )
         vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5
-        VFMADDPD_I        %xmm9,%xmm5,%xmm0
-        VFMADDPD_I        %xmm13,%xmm5,%xmm1
+        VFMADDPD_I(        %xmm9,%xmm5,%xmm0  )
+        VFMADDPD_I(        %xmm13,%xmm5,%xmm1 )
         vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6
-        VFMADDPD_R        %xmm10,%xmm6,%xmm0
-        VFMADDPD_R        %xmm14,%xmm6,%xmm1
+        VFMADDPD_R(        %xmm10,%xmm6,%xmm0 )
+        VFMADDPD_R(        %xmm14,%xmm6,%xmm1 )
         vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7
-        VFMADDPD_I        %xmm11,%xmm7,%xmm0
-        VFMADDPD_I        %xmm15,%xmm7,%xmm1
+        VFMADDPD_I(        %xmm11,%xmm7,%xmm0 )
+        VFMADDPD_I(        %xmm15,%xmm7,%xmm1 )
         addq    $4, BI                           
         addq    $4, %rax                         
 .endm
@@ -441,12 +409,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
         vmovddup         -8 * SIZE(BO, BI, SIZE), %xmm4
         vmovddup         -7 * SIZE(BO, BI, SIZE), %xmm5
-        VFMADDPD_R        %xmm8,%xmm4,%xmm0
-        VFMADDPD_I        %xmm9,%xmm5,%xmm0
+        VFMADDPD_R(        %xmm8,%xmm4,%xmm0 )
+        VFMADDPD_I(        %xmm9,%xmm5,%xmm0 )
         vmovddup         -6 * SIZE(BO, BI, SIZE), %xmm6
         vmovddup         -5 * SIZE(BO, BI, SIZE), %xmm7
-        VFMADDPD_R        %xmm10,%xmm6,%xmm0
-        VFMADDPD_I        %xmm11,%xmm7,%xmm0
+        VFMADDPD_R(        %xmm10,%xmm6,%xmm0 )
+        VFMADDPD_I(        %xmm11,%xmm7,%xmm0 )
         addq    $4, BI                           
         addq    $2, %rax                         
 .endm
@@ -513,10 +481,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovups          -4 * SIZE(AO, %rax, SIZE), %ymm1
         vbroadcastsd     -4 * SIZE(BO, BI, SIZE)  , %ymm4
         vbroadcastsd     -3 * SIZE(BO, BI, SIZE)  , %ymm5
-        VFMADDPD_R        %ymm8 ,%ymm4,%ymm0
-        VFMADDPD_R        %ymm12,%ymm4,%ymm1
-        VFMADDPD_I        %ymm9 ,%ymm5,%ymm0
-        VFMADDPD_I        %ymm13,%ymm5,%ymm1
+        VFMADDPD_R(        %ymm8 ,%ymm4,%ymm0 )
+        VFMADDPD_R(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPD_I(        %ymm9 ,%ymm5,%ymm0 )
+        VFMADDPD_I(        %ymm13,%ymm5,%ymm1 )
 
         addq    $2, BI                           
         addq    $8, %rax                         
@@ -585,12 +553,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL2x1_SUB
         vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
         vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4
-        VFMADDPD_R        %xmm8,%xmm4,%xmm0
+        VFMADDPD_R(        %xmm8,%xmm4,%xmm0  )
         vmovups          -6 * SIZE(AO, %rax, SIZE), %xmm1
-        VFMADDPD_R        %xmm12,%xmm4,%xmm1
+        VFMADDPD_R(        %xmm12,%xmm4,%xmm1 )
         vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5
-        VFMADDPD_I        %xmm9,%xmm5,%xmm0
-        VFMADDPD_I        %xmm13,%xmm5,%xmm1
+        VFMADDPD_I(        %xmm9,%xmm5,%xmm0  )
+        VFMADDPD_I(        %xmm13,%xmm5,%xmm1 )
         addq    $2, BI                           
         addq    $4, %rax                         
 .endm
@@ -655,9 +623,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL1x1_SUB
         vmovups          -8 * SIZE(AO, %rax, SIZE), %xmm0
         vmovddup         -4 * SIZE(BO, BI, SIZE), %xmm4
-        VFMADDPD_R        %xmm8,%xmm4,%xmm0
+        VFMADDPD_R(        %xmm8,%xmm4,%xmm0 )
         vmovddup         -3 * SIZE(BO, BI, SIZE), %xmm5
-        VFMADDPD_I        %xmm9,%xmm5,%xmm0
+        VFMADDPD_I(        %xmm9,%xmm5,%xmm0 )
         addq    $2, BI                           
         addq    $2, %rax                         
 .endm
