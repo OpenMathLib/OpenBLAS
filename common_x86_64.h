@@ -372,9 +372,19 @@ REALNAME:
 #define PROFCODE
 #endif
 
+#if defined(C_PATHSCALE) || defined(OS_DARWIN)
+
+#define EPILOGUE \
+        .size	 REALNAME, .-REALNAME; \
+        .section .note.GNU-stack,"",@progbits
+
+#else
+
 #define EPILOGUE \
         .size	 REALNAME, .-REALNAME; \
         .section .note.GNU-stack,"",%progbits
+
+#endif
 
 
 #endif

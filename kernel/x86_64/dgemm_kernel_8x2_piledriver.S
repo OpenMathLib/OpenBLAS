@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*********************************************************************
 *
-* 2013/10/31 Saar
+* 2013/11/13 Saar
 *        BLASTEST               : OK
 *        CTEST                  : OK
 *        TEST                   : OK
@@ -144,25 +144,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define STACK_TOUCH
 #endif
 
-#if defined(BULLDOZER1)
+#if defined(BULLDOZER)
 
-.macro VFMADD231PD_ y1,y2,y0
-        vfmaddpd \y0,\y1,\y2,\y0
-.endm
+#define VFMADD231PD_( y1,y2,y0 ) vfmaddpd y0,y1,y2,y0
 
-.macro VFMADD231SD_ x1,x2,x0
-        vfmaddsd \x0,\x1,\x2,\x0
-.endm
+#define VFMADD231SD_( x1,x2,x0 ) vfmaddsd x0,x1,x2,x0
 
 #else
 
-.macro VFMADD231PD_ y1,y2,y0
-        vfmadd231pd \y2,\y1,\y0
-.endm
+#define VFMADD231PD_( y1,y2,y0 ) vfmadd231pd y2,y1,y0
 
-.macro VFMADD231SD_ x1,x2,x0
-        vfmadd231sd \x2,\x1,\x0
-.endm
+#define VFMADD231SD_( x1,x2,x0 ) vfmadd231sd x2,x1,x0
 
 #endif
 
@@ -218,46 +210,46 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL8x3_M1 
 	vmovups 	-16 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1(AO)
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	-14 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	-12 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	-10 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	-12 * SIZE(BO), %xmm1
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	-11 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 .macro KERNEL8x3_M2 
 	vmovups 	 -8 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1+64(AO)
 	vmovddup	-10 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	 -6 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	 -4 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	 -2 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	 -9 * SIZE(BO), %xmm1
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	 -8 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 
@@ -265,93 +257,93 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	  0 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1+128(AO)
 	vmovddup	 -7 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	  2 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	  4 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	  6 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	 -6 * SIZE(BO), %xmm1
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	 -5 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 .macro KERNEL8x3_M4 
 	vmovups 	  8 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1+192(AO)
 	vmovddup	 -4 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	 10 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	 12 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	 14 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	 -3 * SIZE(BO), %xmm1
 	addq		$32 * SIZE, AO
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	 -2 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 .macro KERNEL8x3_M5 
 	vmovups 	-16 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1(AO)
 	vmovddup	 -1 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	-14 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	-12 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	-10 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	  0 * SIZE(BO), %xmm1
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	  1 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 .macro KERNEL8x3_M6 
 	vmovups 	 -8 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1+64(AO)
 	vmovddup	  2 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	 -6 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	 -4 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	 -2 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	  3 * SIZE(BO), %xmm1
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	  4 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 
@@ -359,46 +351,46 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	  0 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1+128(AO)
 	vmovddup	  5 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	  2 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	  4 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	  6 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	  6 * SIZE(BO), %xmm1
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	  7 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 .macro KERNEL8x3_M8 
 	vmovups 	  8 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1+192(AO)
 	vmovddup	  8 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	 10 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	 12 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	 14 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	vmovddup	  9 * SIZE(BO), %xmm1
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	vmovddup	 10 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 	vmovddup	 11 * SIZE(BO), %xmm3
 	addq		$32 * SIZE, AO
 	addq		$24 * SIZE, BO
@@ -409,47 +401,47 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	  8 * SIZE(AO), %xmm0
 	prefetcht0	A_PR1+192(AO)
 	vmovddup	  8 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	 10 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	 12 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	 14 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	addq		$32*SIZE, AO
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	addq		$21*SIZE, BO
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 .macro KERNEL8x3_SUBN 
 	vmovddup	-12 * SIZE(BO), %xmm1
 	vmovups 	-16 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm4
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm4 )
 	vmovddup	-11 * SIZE(BO), %xmm2
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm5
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm5 )
 	vmovddup	-10 * SIZE(BO), %xmm3
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm6
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm6 )
 	vmovups 	-14 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm7
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm8
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm9
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm7 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm8 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm9 )
 	vmovups 	-12 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm10
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm11
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm12
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm10 )
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm11 )
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm12 )
 	vmovups 	-10 * SIZE(AO), %xmm0
-	VFMADD231PD_  	%xmm1,%xmm0,%xmm13
+	VFMADD231PD_(  	%xmm1,%xmm0,%xmm13 )
 	addq		$3*SIZE, BO
-	VFMADD231PD_  	%xmm2,%xmm0,%xmm14
+	VFMADD231PD_(  	%xmm2,%xmm0,%xmm14 )
 	addq		$8*SIZE, AO
-	VFMADD231PD_  	%xmm3,%xmm0,%xmm15
+	VFMADD231PD_(  	%xmm3,%xmm0,%xmm15 )
 .endm
 
 .macro	SAVE8x3
