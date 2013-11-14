@@ -67,14 +67,14 @@ double sqrt(double);
 #undef  GETRF_FACTOR
 #define GETRF_FACTOR 1.00
 
-static inline long FORMULA1(long M, long N, long IS, long BK, long T) {
+static inline BLASLONG FORMULA1(BLASLONG M, BLASLONG N, BLASLONG IS, BLASLONG BK, BLASLONG T) {
 
   double m = (double)(M - IS - BK);
   double n = (double)(N - IS - BK);
   double b = (double)BK;
   double a = (double)T;
 
-  return (long)((n + GETRF_FACTOR * m * b * (1. - a) / (b + m)) / a);
+  return (BLASLONG)((n + GETRF_FACTOR * m * b * (1. - a) / (b + m)) / a);
 
 }
 
@@ -111,7 +111,7 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
 
   if (args -> a == NULL) {
     TRSM_ILTCOPY(k, k, (FLOAT *)args -> b, lda, 0, sb);
-    sbb = (FLOAT *)((((long)(sb + k * k * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
+    sbb = (FLOAT *)((((BLASULONG)(sb + k * k * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
   } else {
     sb  = (FLOAT *)args -> a;
   }
@@ -221,7 +221,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
   if (args -> a == NULL) {
     TRSM_ILTCOPY(k, k, (FLOAT *)args -> b, lda, 0, sb);
-    sbb = (FLOAT *)((((long)(sb + k * k * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
+    sbb = (FLOAT *)((((BLASULONG)(sb + k * k * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
   } else {
     sb  = (FLOAT *)args -> a;
   }
@@ -448,7 +448,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   TRSM_ILTCOPY(bk, bk, a, lda, 0, sb);
 
-  sbb = (FLOAT *)((((long)(sb + bk * bk * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
+  sbb = (FLOAT *)((((BLASULONG)(sb + bk * bk * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
   
   is = 0;
   num_cpu = 0;
@@ -685,7 +685,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   if (width > n - init_bk) width = n - init_bk;
 
   if (width < init_bk) {
-    long temp;
+    BLASLONG temp;
 
     temp = FORMULA2(m, n, 0, init_bk, args -> nthreads);
     temp = (temp + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
@@ -708,7 +708,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   is = 0;
   num_cpu = 0;
 
-  sbb = (FLOAT *)((((long)(sb + GEMM_PQ * GEMM_PQ * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
+  sbb = (FLOAT *)((((BLASULONG)(sb + GEMM_PQ * GEMM_PQ * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
 
   while (is < mn) {
 
