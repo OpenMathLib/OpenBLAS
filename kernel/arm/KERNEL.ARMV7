@@ -30,10 +30,10 @@ IDMAXKERNEL  = iamax_vfpv3.S
 ISMINKERNEL  = iamax_vfpv3.S
 IDMINKERNEL  = iamax_vfpv3.S
 
-SSWAPKERNEL  = ../arm/swap.c
-DSWAPKERNEL  = ../arm/swap.c
-CSWAPKERNEL  = ../arm/zswap.c
-ZSWAPKERNEL  = ../arm/zswap.c
+SSWAPKERNEL  = swap_vfpv3.S
+DSWAPKERNEL  = swap_vfpv3.S
+CSWAPKERNEL  = swap_vfpv3.S
+ZSWAPKERNEL  = swap_vfpv3.S
 
 SASUMKERNEL  = asum_vfpv3.S
 DASUMKERNEL  = asum_vfpv3.S
