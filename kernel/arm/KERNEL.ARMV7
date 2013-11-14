@@ -1,34 +1,34 @@
-SAMAXKERNEL  = ../arm/amax.c
-DAMAXKERNEL  = ../arm/amax.c
-CAMAXKERNEL  = ../arm/zamax.c
-ZAMAXKERNEL  = ../arm/zamax.c
+SAMAXKERNEL  = iamax_vfpv3.S
+DAMAXKERNEL  = iamax_vfpv3.S
+CAMAXKERNEL  = iamax_vfpv3.S
+ZAMAXKERNEL  = iamax_vfpv3.S
 
-SAMINKERNEL  = ../arm/amin.c
-DAMINKERNEL  = ../arm/amin.c
-CAMINKERNEL  = ../arm/zamin.c
-ZAMINKERNEL  = ../arm/zamin.c
+SAMINKERNEL  = iamax_vfpv3.S
+DAMINKERNEL  = iamax_vfpv3.S
+CAMINKERNEL  = iamax_vfpv3.S
+ZAMINKERNEL  = iamax_vfpv3.S
 
-SMAXKERNEL   = ../arm/max.c
-DMAXKERNEL   = ../arm/max.c
+SMAXKERNEL   = iamax_vfpv3.S
+DMAXKERNEL   = iamax_vfpv3.S
 
-SMINKERNEL   = ../arm/min.c
-DMINKERNEL   = ../arm/min.c
+SMINKERNEL   = iamax_vfpv3.S
+DMINKERNEL   = iamax_vfpv3.S
 
-ISAMAXKERNEL = ../arm/iamax.c
-IDAMAXKERNEL = ../arm/iamax.c
-ICAMAXKERNEL = ../arm/izamax.c
-IZAMAXKERNEL = ../arm/izamax.c
+ISAMAXKERNEL = iamax_vfpv3.S
+IDAMAXKERNEL = iamax_vfpv3.S
+ICAMAXKERNEL = iamax_vfpv3.S
+IZAMAXKERNEL = iamax_vfpv3.S
 
-ISAMINKERNEL = ../arm/iamin.c
-IDAMINKERNEL = ../arm/iamin.c
-ICAMINKERNEL = ../arm/izamin.c
-IZAMINKERNEL = ../arm/izamin.c
+ISAMINKERNEL = iamax_vfpv3.S
+IDAMINKERNEL = iamax_vfpv3.S
+ICAMINKERNEL = iamax_vfpv3.S
+IZAMINKERNEL = iamax_vfpv3.S
 
-ISMAXKERNEL  = ../arm/imax.c
-IDMAXKERNEL  = ../arm/imax.c
+ISMAXKERNEL  = iamax_vfpv3.S
+IDMAXKERNEL  = iamax_vfpv3.S
 
-ISMINKERNEL  = ../arm/imin.c
-IDMINKERNEL  = ../arm/imin.c
+ISMINKERNEL  = iamax_vfpv3.S
+IDMINKERNEL  = iamax_vfpv3.S
 
 SSWAPKERNEL  = ../arm/swap.c
 DSWAPKERNEL  = ../arm/swap.c
