@@ -60,10 +60,10 @@ DNRM2KERNEL  = ../arm/nrm2.c
 CNRM2KERNEL  = ../arm/znrm2.c
 ZNRM2KERNEL  = ../arm/znrm2.c
 
-SROTKERNEL   = ../arm/rot.c
-DROTKERNEL   = ../arm/rot.c
-CROTKERNEL   = ../arm/zrot.c
-ZROTKERNEL   = ../arm/zrot.c
+SROTKERNEL   = rot_vfpv3.S
+DROTKERNEL   = rot_vfpv3.S
+CROTKERNEL   = rot_vfpv3.S
+ZROTKERNEL   = rot_vfpv3.S
 
 SSCALKERNEL  = scal_vfpv3.S
 DSCALKERNEL  = scal_vfpv3.S
