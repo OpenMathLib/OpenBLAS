@@ -65,10 +65,10 @@ DROTKERNEL   = ../arm/rot.c
 CROTKERNEL   = ../arm/zrot.c
 ZROTKERNEL   = ../arm/zrot.c
 
-SSCALKERNEL  = ../arm/scal.c
-DSCALKERNEL  = ../arm/scal.c
-CSCALKERNEL  = ../arm/zscal.c
-ZSCALKERNEL  = ../arm/zscal.c
+SSCALKERNEL  = scal_vfpv3.S
+DSCALKERNEL  = scal_vfpv3.S
+CSCALKERNEL  = scal_vfpv3.S
+ZSCALKERNEL  = scal_vfpv3.S
 
 SGEMVNKERNEL = gemv_n.c
 DGEMVNKERNEL = gemv_n.c
