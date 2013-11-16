@@ -55,10 +55,10 @@ DDOTKERNEL   = ddot_vfpv3.S
 CDOTKERNEL   = cdot_vfpv3.S
 ZDOTKERNEL   = zdot_vfpv3.S
 
-SNRM2KERNEL  = ../arm/nrm2.c
-DNRM2KERNEL  = ../arm/nrm2.c
-CNRM2KERNEL  = ../arm/znrm2.c
-ZNRM2KERNEL  = ../arm/znrm2.c
+SNRM2KERNEL  = nrm2_vfpv3.S
+DNRM2KERNEL  = nrm2_vfpv3.S
+CNRM2KERNEL  = nrm2_vfpv3.S
+ZNRM2KERNEL  = nrm2_vfpv3.S
 
 SROTKERNEL   = rot_vfpv3.S
 DROTKERNEL   = rot_vfpv3.S
