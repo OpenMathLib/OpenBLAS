@@ -70,8 +70,8 @@ DSCALKERNEL  = scal_vfpv3.S
 CSCALKERNEL  = scal_vfpv3.S
 ZSCALKERNEL  = scal_vfpv3.S
 
-SGEMVNKERNEL = gemv_n.c
-DGEMVNKERNEL = gemv_n.c
+SGEMVNKERNEL = gemv_n_vfpv3.S
+DGEMVNKERNEL = gemv_n_vfpv3.S
 CGEMVNKERNEL = zgemv_n.c
 ZGEMVNKERNEL = zgemv_n.c
 
