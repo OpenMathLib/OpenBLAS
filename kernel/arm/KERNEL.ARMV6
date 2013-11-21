@@ -66,10 +66,10 @@ DSCALKERNEL  =  scal_vfp.S
 CSCALKERNEL  =  scal_vfp.S
 ZSCALKERNEL  =  scal_vfp.S
 
-SSWAPKERNEL  =  swap.c
-DSWAPKERNEL  =  swap.c
-CSWAPKERNEL  =  zswap.c
-ZSWAPKERNEL  =  zswap.c
+SSWAPKERNEL  = swap_vfp.S
+DSWAPKERNEL  = swap_vfp.S
+CSWAPKERNEL  = swap_vfp.S
+ZSWAPKERNEL  = swap_vfp.S
 
 SGEMVNKERNEL = gemv_n.c
 DGEMVNKERNEL = gemv_n.c
