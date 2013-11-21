@@ -1,7 +1,12 @@
 
 ifeq ($(CORE), ARMV7)
-CCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard
-FCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard
+CCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
+FCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
+endif
+
+ifeq ($(CORE), ARMV6)
+CCOMMON_OPT += -marm -mfpu=vfp -mfloat-abi=hard  -march=armv6
+FCOMMON_OPT += -marm -mfpu=vfp -mfloat-abi=hard  -march=armv6
 endif
 
 
