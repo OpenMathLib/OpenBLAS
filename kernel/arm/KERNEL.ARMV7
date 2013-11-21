@@ -65,10 +65,10 @@ DROTKERNEL   = rot_vfpv3.S
 CROTKERNEL   = rot_vfpv3.S
 ZROTKERNEL   = rot_vfpv3.S
 
-SSCALKERNEL  = scal_vfpv3.S
-DSCALKERNEL  = scal_vfpv3.S
-CSCALKERNEL  = scal_vfpv3.S
-ZSCALKERNEL  = scal_vfpv3.S
+SSCALKERNEL  = scal_vfp.S
+DSCALKERNEL  = scal_vfp.S
+CSCALKERNEL  = scal_vfp.S
+ZSCALKERNEL  = scal_vfp.S
 
 SGEMVNKERNEL = gemv_n_vfpv3.S
 DGEMVNKERNEL = gemv_n_vfpv3.S

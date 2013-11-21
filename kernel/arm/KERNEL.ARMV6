@@ -60,10 +60,10 @@ DROTKERNEL   = rot.c
 CROTKERNEL   = zrot.c
 ZROTKERNEL   = zrot.c
 
-SSCALKERNEL  =  scal.c
-DSCALKERNEL  =  scal.c
-CSCALKERNEL  =  zscal.c
-ZSCALKERNEL  =  zscal.c
+SSCALKERNEL  =  scal_vfp.S
+DSCALKERNEL  =  scal_vfp.S
+CSCALKERNEL  =  scal_vfp.S
+ZSCALKERNEL  =  scal_vfp.S
 
 SSWAPKERNEL  =  swap.c
 DSWAPKERNEL  =  swap.c
