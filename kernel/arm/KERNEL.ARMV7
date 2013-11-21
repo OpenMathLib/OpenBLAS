@@ -1,34 +1,34 @@
-SAMAXKERNEL  = iamax_vfpv3.S
-DAMAXKERNEL  = iamax_vfpv3.S
-CAMAXKERNEL  = iamax_vfpv3.S
-ZAMAXKERNEL  = iamax_vfpv3.S
+SAMAXKERNEL  = iamax_vfp.S
+DAMAXKERNEL  = iamax_vfp.S
+CAMAXKERNEL  = iamax_vfp.S
+ZAMAXKERNEL  = iamax_vfp.S
 
-SAMINKERNEL  = iamax_vfpv3.S
-DAMINKERNEL  = iamax_vfpv3.S
-CAMINKERNEL  = iamax_vfpv3.S
-ZAMINKERNEL  = iamax_vfpv3.S
+SAMINKERNEL  = iamax_vfp.S
+DAMINKERNEL  = iamax_vfp.S
+CAMINKERNEL  = iamax_vfp.S
+ZAMINKERNEL  = iamax_vfp.S
 
-SMAXKERNEL   = iamax_vfpv3.S
-DMAXKERNEL   = iamax_vfpv3.S
+SMAXKERNEL   = iamax_vfp.S
+DMAXKERNEL   = iamax_vfp.S
 
-SMINKERNEL   = iamax_vfpv3.S
-DMINKERNEL   = iamax_vfpv3.S
+SMINKERNEL   = iamax_vfp.S
+DMINKERNEL   = iamax_vfp.S
 
-ISAMAXKERNEL = iamax_vfpv3.S
-IDAMAXKERNEL = iamax_vfpv3.S
-ICAMAXKERNEL = iamax_vfpv3.S
-IZAMAXKERNEL = iamax_vfpv3.S
+ISAMAXKERNEL = iamax_vfp.S
+IDAMAXKERNEL = iamax_vfp.S
+ICAMAXKERNEL = iamax_vfp.S
+IZAMAXKERNEL = iamax_vfp.S
 
-ISAMINKERNEL = iamax_vfpv3.S
-IDAMINKERNEL = iamax_vfpv3.S
-ICAMINKERNEL = iamax_vfpv3.S
-IZAMINKERNEL = iamax_vfpv3.S
+ISAMINKERNEL = iamax_vfp.S
+IDAMINKERNEL = iamax_vfp.S
+ICAMINKERNEL = iamax_vfp.S
+IZAMINKERNEL = iamax_vfp.S
 
-ISMAXKERNEL  = iamax_vfpv3.S
-IDMAXKERNEL  = iamax_vfpv3.S
+ISMAXKERNEL  = iamax_vfp.S
+IDMAXKERNEL  = iamax_vfp.S
 
-ISMINKERNEL  = iamax_vfpv3.S
-IDMINKERNEL  = iamax_vfpv3.S
+ISMINKERNEL  = iamax_vfp.S
+IDMINKERNEL  = iamax_vfp.S
 
 SSWAPKERNEL  = swap_vfpv3.S
 DSWAPKERNEL  = swap_vfpv3.S

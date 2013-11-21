@@ -1,34 +1,34 @@
-SAMAXKERNEL  = amax.c
-DAMAXKERNEL  = amax.c
-CAMAXKERNEL  = zamax.c
-ZAMAXKERNEL  = zamax.c
+SAMAXKERNEL  = iamax_vfp.S
+DAMAXKERNEL  = iamax_vfp.S
+CAMAXKERNEL  = iamax_vfp.S
+ZAMAXKERNEL  = iamax_vfp.S
 
-SAMINKERNEL  = amin.c
-DAMINKERNEL  = amin.c
-CAMINKERNEL  = zamin.c
-ZAMINKERNEL  = zamin.c
+SAMINKERNEL  = iamax_vfp.S
+DAMINKERNEL  = iamax_vfp.S
+CAMINKERNEL  = iamax_vfp.S
+ZAMINKERNEL  = iamax_vfp.S
 
-SMAXKERNEL   = max.c
-DMAXKERNEL   = max.c
+SMAXKERNEL   = iamax_vfp.S
+DMAXKERNEL   = iamax_vfp.S
 
-SMINKERNEL   = min.c
-DMINKERNEL   = min.c
+SMINKERNEL   = iamax_vfp.S
+DMINKERNEL   = iamax_vfp.S
 
-ISAMAXKERNEL = iamax.c
-IDAMAXKERNEL = iamax.c
-ICAMAXKERNEL = izamax.c
-IZAMAXKERNEL = izamax.c
+ISAMAXKERNEL = iamax_vfp.S
+IDAMAXKERNEL = iamax_vfp.S
+ICAMAXKERNEL = iamax_vfp.S
+IZAMAXKERNEL = iamax_vfp.S
 
-ISAMINKERNEL = iamin.c
-IDAMINKERNEL = iamin.c
-ICAMINKERNEL = izamin.c
-IZAMINKERNEL = izamin.c
+ISAMINKERNEL = iamax_vfp.S
+IDAMINKERNEL = iamax_vfp.S
+ICAMINKERNEL = iamax_vfp.S
+IZAMINKERNEL = iamax_vfp.S
 
-ISMAXKERNEL  = imax.c
-IDMAXKERNEL  = imax.c
+ISMAXKERNEL  = iamax_vfp.S
+IDMAXKERNEL  = iamax_vfp.S
 
-ISMINKERNEL  = imin.c
-IDMINKERNEL  = imin.c
+ISMINKERNEL  = iamax_vfp.S
+IDMINKERNEL  = iamax_vfp.S
 
 SASUMKERNEL  = asum.c
 DASUMKERNEL  = asum.c
