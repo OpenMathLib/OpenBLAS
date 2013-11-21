@@ -51,9 +51,9 @@ CCOPYKERNEL  = ccopy_vfp.S
 ZCOPYKERNEL  = zcopy_vfp.S
 
 SDOTKERNEL   = sdot_vfpv3.S
-DDOTKERNEL   = ddot_vfpv3.S
-CDOTKERNEL   = cdot_vfpv3.S
-ZDOTKERNEL   = zdot_vfpv3.S
+DDOTKERNEL   = ddot_vfp.S
+CDOTKERNEL   = cdot_vfp.S
+ZDOTKERNEL   = zdot_vfp.S
 
 SNRM2KERNEL  = nrm2_vfpv3.S
 DNRM2KERNEL  = nrm2_vfpv3.S
