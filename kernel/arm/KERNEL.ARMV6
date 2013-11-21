@@ -45,7 +45,7 @@ DCOPYKERNEL  = dcopy_vfp.S
 CCOPYKERNEL  = ccopy_vfp.S
 ZCOPYKERNEL  = zcopy_vfp.S
 
-SDOTKERNEL   = dot.c
+SDOTKERNEL   = sdot_vfp.S
 DDOTKERNEL   = ddot_vfp.S
 CDOTKERNEL   = cdot_vfp.S
 ZDOTKERNEL   = zdot_vfp.S
