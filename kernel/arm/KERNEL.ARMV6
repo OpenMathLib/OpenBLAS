@@ -92,23 +92,23 @@ SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
-DGEMMKERNEL    =  ../generic/gemmkernel_2x2.c		
+DGEMMKERNEL    = ../generic/gemmkernel_2x2.c		
 DGEMMONCOPY    = ../generic/gemm_ncopy_2.c
 DGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
 CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
-CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
-CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
-CGEMMONCOPYOBJ =  cgemm_oncopy.o
-CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+CGEMMONCOPY    = cgemm_ncopy_2_vfp.S
+CGEMMOTCOPY    = cgemm_tcopy_2_vfp.S
+CGEMMONCOPYOBJ = cgemm_oncopy.o
+CGEMMOTCOPYOBJ = cgemm_otcopy.o
 
 ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
-ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
-ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
-ZGEMMONCOPYOBJ =  zgemm_oncopy.o
-ZGEMMOTCOPYOBJ =  zgemm_otcopy.o
+ZGEMMONCOPY    = zgemm_ncopy_2_vfp.S
+ZGEMMOTCOPY    = zgemm_tcopy_2_vfp.S
+ZGEMMONCOPYOBJ = zgemm_oncopy.o
+ZGEMMOTCOPYOBJ = zgemm_otcopy.o
 
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
