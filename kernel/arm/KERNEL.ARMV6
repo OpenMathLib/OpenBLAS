@@ -55,10 +55,10 @@ DNRM2KERNEL  = nrm2.c
 CNRM2KERNEL  = znrm2.c
 ZNRM2KERNEL  = znrm2.c
 
-SROTKERNEL   = rot.c
-DROTKERNEL   = rot.c
-CROTKERNEL   = zrot.c
-ZROTKERNEL   = zrot.c
+SROTKERNEL   = rot_vfp.S
+DROTKERNEL   = rot_vfp.S
+CROTKERNEL   = rot_vfp.S
+ZROTKERNEL   = rot_vfp.S
 
 SSCALKERNEL  =  scal_vfp.S
 DSCALKERNEL  =  scal_vfp.S
