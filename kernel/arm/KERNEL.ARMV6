@@ -50,11 +50,10 @@ DDOTKERNEL   = ddot_vfp.S
 CDOTKERNEL   = cdot_vfp.S
 ZDOTKERNEL   = zdot_vfp.S
 
-
-SNRM2KERNEL  = nrm2.c
-DNRM2KERNEL  = nrm2.c
-CNRM2KERNEL  = znrm2.c
-ZNRM2KERNEL  = znrm2.c
+SNRM2KERNEL  = nrm2_vfp.S
+DNRM2KERNEL  = nrm2_vfp.S
+CNRM2KERNEL  = nrm2_vfp.S
+ZNRM2KERNEL  = nrm2_vfp.S
 
 SROTKERNEL   = rot_vfp.S
 DROTKERNEL   = rot_vfp.S
