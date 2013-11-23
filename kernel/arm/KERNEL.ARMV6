@@ -80,12 +80,16 @@ DGEMVTKERNEL = gemv_t.c
 CGEMVTKERNEL = zgemv_t.c
 ZGEMVTKERNEL = zgemv_t.c
 
-STRMMKERNEL	= ../generic/trmmkernel_2x2.c
+STRMMKERNEL	= strmm_kernel_4x2_vfp.S
 DTRMMKERNEL	= dtrmm_kernel_4x2_vfp.S
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 
-SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c		
+SGEMMKERNEL    =  sgemm_kernel_4x2_vfp.S		
+SGEMMINCOPY    = ../generic/gemm_ncopy_4.c
+SGEMMITCOPY    = ../generic/gemm_tcopy_4.c
+SGEMMINCOPYOBJ = sgemm_incopy.o
+SGEMMITCOPYOBJ = sgemm_itcopy.o
 SGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
