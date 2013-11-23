@@ -12,7 +12,7 @@ VERSION = 0.2.8
 
 # You can specify the target architecture, otherwise it's
 # automatically detected.
-TARGET = ARMV7
+TARGET = ARMV6
 
 # If you want to support multiple architecture in one binary
 # DYNAMIC_ARCH = 1
