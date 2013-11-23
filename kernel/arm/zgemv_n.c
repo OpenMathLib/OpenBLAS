@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
- * * 2013/09/15 Saar
+ * * 2013/11/23 Saar
  * *	 BLASTEST float		: OK
  * * 	 BLASTEST double	: OK
  * 	 CTEST			: OK
@@ -48,19 +48,16 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 	BLASLONG lda2;
 	BLASLONG i2;
 
-	if( alpha_r == 0.0 && alpha_i == 0.0 ) return(0);
-
 	lda2 = 2*lda;
-
-	inc_x2 = 2 * inc_x;
-	inc_y2 = 2 * inc_y;
 
 	ix = 0;
 	a_ptr = a;
 
-#if !defined(CONJ)
-	for (j=0; j<n; j++)
+	if ( inc_x == 1 && inc_y == 1 )
 	{
+
+	   for (j=0; j<n; j++)
+	   {
 
 #if !defined(XCONJ)
 		temp_r = alpha_r * x[ix]   - alpha_i * x[ix+1];
@@ -70,9 +67,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 		temp_i = alpha_r * x[ix+1] - alpha_i * x[ix];
 #endif
 		iy = 0;
+		i2=0;
+
 		for (i=0; i<m; i++)
 		{
-			i2 = 2*i;
+#if !defined(CONJ)
+
 #if !defined(XCONJ)
 			y[iy]   += temp_r * a_ptr[i2]   - temp_i * a_ptr[i2+1];
 			y[iy+1] += temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
@@ -81,13 +81,32 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			y[iy+1] += temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
 #endif
 
-			iy += inc_y2;
+#else
+
+#if !defined(XCONJ)
+			y[iy]   += temp_r * a_ptr[i2]   + temp_i * a_ptr[i2+1];
+			y[iy+1] -= temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
+#else
+			y[iy]   += temp_r * a_ptr[i2]   - temp_i * a_ptr[i2+1];
+			y[iy+1] -= temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
+#endif
+
+#endif
+			i2 += 2;
+			iy += 2;
 		}
 		a_ptr += lda2;
-		ix    += inc_x2;
-	}
+		ix    += 2;
+	   }
 
-#else
+	   return(0);
+
+	}
+	
+
+	inc_x2 = 2 * inc_x;
+	inc_y2 = 2 * inc_y;
+
 	for (j=0; j<n; j++)
 	{
 
@@ -99,9 +118,22 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 		temp_i = alpha_r * x[ix+1] - alpha_i * x[ix];
 #endif
 		iy = 0;
+		i2=0;
+
 		for (i=0; i<m; i++)
 		{
-			i2 = 2*i;
+#if !defined(CONJ)
+
+#if !defined(XCONJ)
+			y[iy]   += temp_r * a_ptr[i2]   - temp_i * a_ptr[i2+1];
+			y[iy+1] += temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
+#else
+			y[iy]   += temp_r * a_ptr[i2]   + temp_i * a_ptr[i2+1];
+			y[iy+1] += temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
+#endif
+
+#else
+
 #if !defined(XCONJ)
 			y[iy]   += temp_r * a_ptr[i2]   + temp_i * a_ptr[i2+1];
 			y[iy+1] -= temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
@@ -110,14 +142,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			y[iy+1] -= temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
 #endif
 
+#endif
+			i2 += 2;
 			iy += inc_y2;
 		}
 		a_ptr += lda2;
 		ix    += inc_x2;
 	}
 
-
-#endif
 
 	return(0);
 }
