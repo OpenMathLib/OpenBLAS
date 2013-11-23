@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/10/05 Saar
+* 2013/11/23 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -690,7 +690,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmuld	d12, d0 , d20
 	fstd	d12, [CO2]
 
-	add	CO1, CO1, #16
+	add	CO1, CO1, #8
 
 .endm
 
