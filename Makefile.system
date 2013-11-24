@@ -830,7 +830,11 @@ COMMON_OPT += -g
 endif
 
 ifndef COMMON_OPT
+ifeq ($(ARCH), arm)
+COMMON_OPT = -O3
+else
 COMMON_OPT = -O2
+endif
 endif
 
 
@@ -929,6 +933,10 @@ export HAVE_SSE4_2
 export HAVE_SSE4A
 export HAVE_SSE5
 export HAVE_AVX
+export HAVE_VFP
+export HAVE_VFPV3
+export HAVE_VFPV4
+export HAVE_NEON
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
