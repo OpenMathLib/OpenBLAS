@@ -129,4 +129,7 @@ BINARY_64
 ARCH_ARM
 #endif
 
+#if defined(__aarch64__)
+ARCH_ARM64
+#endif
 

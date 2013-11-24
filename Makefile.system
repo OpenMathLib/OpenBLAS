@@ -367,6 +367,14 @@ ifeq ($(ARCH), arm)
 NO_BINARY_MODE	= 1
 BINARY_DEFINED	= 1
 endif
+
+ifeq ($(ARCH), arm64)
+NO_BINARY_MODE	= 1
+BINARY_DEFINED	= 1
+endif
+
+
+
 #
 #  C Compiler dependent settings
 #

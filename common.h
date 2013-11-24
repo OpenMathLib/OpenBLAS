@@ -311,7 +311,7 @@ typedef int blasint;
 #endif
 
 
-#ifdef ARMV7
+#if defined(ARMV7) || defined(ARMV6) || defined(ARMV8)
 #define YIELDING	asm volatile ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
 #endif
 
@@ -373,6 +373,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 
 #ifdef ARCH_ARM
 #include "common_arm.h"
+#endif
+
+#ifdef ARCH_ARM64
+#include "common_arm64.h"
 #endif
 
 #ifdef OS_LINUX

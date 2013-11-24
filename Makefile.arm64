@@ -1,0 +1,7 @@
+
+ifeq ($(CORE), ARMV8)
+CCOMMON_OPT += -march=armv8-a
+FCOMMON_OPT += -march=armv8-a
+endif
+
+
