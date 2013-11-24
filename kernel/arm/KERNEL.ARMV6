@@ -70,8 +70,8 @@ DSWAPKERNEL  = swap_vfp.S
 CSWAPKERNEL  = swap_vfp.S
 ZSWAPKERNEL  = swap_vfp.S
 
-SGEMVNKERNEL = gemv_n.c
-DGEMVNKERNEL = gemv_n.c
+SGEMVNKERNEL = gemv_n_vfp.S
+DGEMVNKERNEL = gemv_n_vfp.S
 CGEMVNKERNEL = zgemv_n.c
 ZGEMVNKERNEL = zgemv_n.c
 
