@@ -840,9 +840,17 @@ endif
 ifndef COMMON_OPT
 ifeq ($(ARCH), arm)
 COMMON_OPT = -O3
-else
-COMMON_OPT = -O2
 endif
+endif
+
+ifndef COMMON_OPT
+ifeq ($(ARCH), arm64)
+COMMON_OPT = -O3
+endif
+endif
+
+ifndef COMMON_OPT
+COMMON_OPT = -O2
 endif
 
 
