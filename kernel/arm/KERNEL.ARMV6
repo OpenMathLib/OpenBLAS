@@ -75,8 +75,8 @@ DGEMVNKERNEL = gemv_n_vfp.S
 CGEMVNKERNEL = zgemv_n.c
 ZGEMVNKERNEL = zgemv_n.c
 
-SGEMVTKERNEL = gemv_t.c
-DGEMVTKERNEL = gemv_t.c
+SGEMVTKERNEL = gemv_t_vfp.S
+DGEMVTKERNEL = gemv_t_vfp.S
 CGEMVTKERNEL = zgemv_t.c
 ZGEMVTKERNEL = zgemv_t.c
 
