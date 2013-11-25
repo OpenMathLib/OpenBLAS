@@ -35,10 +35,10 @@ DASUMKERNEL  = asum_vfp.S
 CASUMKERNEL  = asum_vfp.S
 ZASUMKERNEL  = asum_vfp.S
 
-SAXPYKERNEL  = axpy.c
-DAXPYKERNEL  = axpy.c
-CAXPYKERNEL  = zaxpy.c
-ZAXPYKERNEL  = zaxpy.c
+SAXPYKERNEL  = axpy_vfp.S
+DAXPYKERNEL  = axpy_vfp.S
+CAXPYKERNEL  = axpy_vfp.S
+ZAXPYKERNEL  = axpy_vfp.S
 
 SCOPYKERNEL  = scopy_vfp.S
 DCOPYKERNEL  = dcopy_vfp.S
