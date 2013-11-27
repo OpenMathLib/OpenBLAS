@@ -26,10 +26,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/11/23 Saar
-* 	 BLASTEST 		: xOK
-* 	 CTEST			: xOK
-* 	 TEST			: xOK
+* 2013/11/27 Saar
+* 	 BLASTEST 		: OK
+* 	 CTEST			: OK
+* 	 TEST			: OK
 *
 **************************************************************************************/
 
@@ -77,7 +77,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define A_PRE	96
 #define B_PRE	96
-#define C_PRE	64
+#define C_PRE	32
 
 /**************************************************************************************
 * Macro definitions
@@ -100,26 +100,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x2_SUB
 
+	pld	[ AO, #A_PRE ]
 	fldd	d4 , [ BO ]
-	fldd	d5 , [ BO, #8 ]
 
 	fldd	d0 , [ AO ]
 	fldd	d1 , [ AO, #8 ]
-	fldd	d2 , [ AO, #16 ]
-	fldd	d3 , [ AO, #24 ]
 
 	fmacd	d8  , d0,  d4
+	fldd	d2 , [ AO, #16 ]
 	fmacd	d9  , d1,  d4
+	fldd	d3 , [ AO, #24 ]
 	fmacd	d10  , d2,  d4
+	fldd	d5 , [ BO, #8 ]
 	fmacd	d11  , d3,  d4
 
 	fmacd	d12  , d0,  d5
 	fmacd	d13  , d1,  d5
+	add	AO , AO, #32
 	fmacd	d14  , d2,  d5
+	add	BO , BO, #16
 	fmacd	d15  , d3,  d5
 
-	add	AO , AO, #32
-	add	BO , BO, #16
 
 .endm
 
@@ -130,37 +131,40 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fldd		d0, ALPHA
 
+
 	fldd	d4 , [CO1]
 	fldd	d5 , [CO1, #8 ]
-	fldd	d6 , [CO1, #16 ]
-	fldd	d7 , [CO1, #24 ]
 		
+	pld	[ CO1, #C_PRE ]
 	fmacd	d4 , d0 , d8
+	fldd	d6 , [CO1, #16 ]
 	fmacd	d5 , d0 , d9
+	fldd	d7 , [CO1, #24 ]
 	fmacd	d6 , d0 , d10
+	fstd	d4 , [CO1]
 	fmacd	d7 , d0 , d11
 
-	fstd	d4 , [CO1]
 	fstd	d5 , [CO1, #8 ]
 	fstd	d6 , [CO1, #16 ]
 	fstd	d7 , [CO1, #24 ]
 
 	fldd	d4 , [CO2]
 	fldd	d5 , [CO2, #8 ]
-	fldd	d6 , [CO2, #16 ]
-	fldd	d7 , [CO2, #24 ]
 
+	pld	[ CO2, #C_PRE ]
 	fmacd	d4 , d0 , d12
+	fldd	d6 , [CO2, #16 ]
 	fmacd	d5 , d0 , d13
+	fldd	d7 , [CO2, #24 ]
 	fmacd	d6 , d0 , d14
-	fmacd	d7 , d0 , d15
-
 	fstd	d4 , [CO2]
+	fmacd	d7 , d0 , d15
+	add	CO1, CO1, #32
+
 	fstd	d5 , [CO2, #8 ]
 	fstd	d6 , [CO2, #16 ]
 	fstd	d7 , [CO2, #24 ]
 
-	add	CO1, CO1, #32
 
 .endm
 
@@ -469,13 +473,18 @@ dgemm_kernel_L2_M4_20:
 	.align 5
 
 dgemm_kernel_L2_M4_22:
+
+	pld	[ BO, #B_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
+	pld	[ BO, #B_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 
+	pld	[ BO, #B_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
+	pld	[ BO, #B_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 
