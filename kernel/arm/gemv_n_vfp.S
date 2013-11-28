@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/11/24 Saar
+* 2013/11/28 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -74,44 +74,75 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if	defined(DOUBLE)
 
-.macro INIT_F4
+.macro INIT_F8
 
 	pld     [ YO , #Y_PRE ]
+	pld     [ YO , #Y_PRE+32 ]
 
-	vsub.f64	d12 , d12 , d12
-	vmov.f64	d13 , d12
-	vmov.f64	d14 , d12
-	vmov.f64	d15 , d12
+	vsub.f64	d8 , d8 , d8
+	vmov.f64	d9  , d8
+	vmov.f64	d10 , d8
+	vmov.f64	d11 , d8
+	vmov.f64	d12 , d8
+	vmov.f64	d13 , d8
+	vmov.f64	d14 , d8
+	vmov.f64	d15 , d8
 
 .endm
 
-.macro KERNEL_F4X4
+.macro KERNEL_F8X8
 
 	pld     [ XO , #X_PRE ]
-	KERNEL_F4X1
-	KERNEL_F4X1
-	KERNEL_F4X1
-	KERNEL_F4X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+
+	pld     [ XO , #X_PRE ]
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
 
 .endm
 
 
-.macro KERNEL_F4X1
+.macro KERNEL_F8X1
 
-	fldmiad	XO! ,  { d2 }
-	fldmiad	AO1 ,  { d8 - d11 }
-
-	vmla.f64	d12 , d2 , d8
 	pld	[ AO2 , #A_PRE ]
-	vmla.f64	d13 , d2 , d9
+	fldmiad	XO! ,  { d2 }
+	fldmiad	AO1 ,  { d4 - d7 }
+
+	vmla.f64	d8  , d2 , d4
+	pld	[ AO2 , #4*SIZE ]
+	vmla.f64	d9  , d2 , d5
+	add	r3, AO1, #4*SIZE
+	vmla.f64	d10 , d2 , d6
+	vmla.f64	d11 , d2 , d7
+
+
+	fldmiad	r3 ,  { d4 - d7 }
+
+	vmla.f64	d12 , d2 , d4
+	vmla.f64	d13 , d2 , d5
 	add		AO1, AO1, LDA
-	vmla.f64	d14 , d2 , d10
-	vmla.f64	d15 , d2 , d11
+	vmla.f64	d14 , d2 , d6
 	add		AO2, AO2, LDA
+	vmla.f64	d15 , d2 , d7
+
 
 .endm
 
-.macro	SAVE_F4
+.macro	SAVE_F8
+
+	fldmiad	YO,  { d4 - d7 }
+
+	vmla.f64	d4 , d0, d8
+	vmla.f64	d5 , d0, d9
+	vmla.f64	d6 , d0, d10
+	vmla.f64	d7 , d0, d11
+
+	fstmiad	YO!, { d4 - d7 }
 
 	fldmiad	YO,  { d4 - d7 }
 
@@ -244,43 +275,73 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else	/************************* SINGLE PRECISION *****************************************/
 
-.macro INIT_F4
+.macro INIT_F8
 
 	pld     [ YO , #Y_PRE ]
 
-	vsub.f32	s12 , s12 , s12
-	vmov.f32	s13 , s12
-	vmov.f32	s14 , s12
-	vmov.f32	s15 , s12
+	vsub.f32	s8 , s8 , s8
+	vmov.f32	s9  , s8
+	vmov.f32	s10 , s8
+	vmov.f32	s11 , s8
+	vmov.f32	s12 , s8
+	vmov.f32	s13 , s8
+	vmov.f32	s14 , s8
+	vmov.f32	s15 , s8
 
 .endm
 
-.macro KERNEL_F4X4
+.macro KERNEL_F8X8
 
 	pld     [ XO , #X_PRE ]
-	KERNEL_F4X1
-	KERNEL_F4X1
-	KERNEL_F4X1
-	KERNEL_F4X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
+	KERNEL_F8X1
 
 .endm
 
 
-.macro KERNEL_F4X1
+.macro KERNEL_F8X1
 
+	pld	[ AO2, #A_PRE ]
 	fldmias	XO! ,  { s2 }
-	fldmias	AO1 ,  { s8 - s11 }
+	fldmias	AO1 ,  { s4 - s7 }
 
-	vmla.f32	s12 , s2 , s8
-	vmla.f32	s13 , s2 , s9
-	vmla.f32	s14 , s2 , s10
-	vmla.f32	s15 , s2 , s11
+	vmla.f32	s8  , s2 , s4
+	vmla.f32	s9  , s2 , s5
+	vmla.f32	s10 , s2 , s6
+	vmla.f32	s11 , s2 , s7
+
+	add	r3, AO1, #4*SIZE
+
+	fldmias	r3 ,  { s4 - s7 }
+
+	vmla.f32	s12 , s2 , s4
+	vmla.f32	s13 , s2 , s5
+	vmla.f32	s14 , s2 , s6
+	vmla.f32	s15 , s2 , s7
+
 	add		AO1, AO1, LDA
 	add		AO2, AO2, LDA
 
 .endm
 
-.macro	SAVE_F4
+.macro	SAVE_F8
+
+	fldmias	YO,  { s4 - s7 }
+
+	vmla.f32	s4 , s0, s8
+	vmla.f32	s5 , s0, s9
+	vmla.f32	s6 , s0, s10
+	vmla.f32	s7 , s0, s11
+
+	fstmias	YO!, { s4 - s7 }
+
 
 	fldmias	YO,  { s4 - s7 }
 
@@ -332,8 +393,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S4X4
 
+	pld	[ AO2 , #A_PRE ]
 	KERNEL_S4X1
 	KERNEL_S4X1
+	pld	[ AO2 , #A_PRE ]
 	KERNEL_S4X1
 	KERNEL_S4X1
 
@@ -342,7 +405,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S4X1
 
-	pld	[ AO2 , #A_PRE ]
 	fldmias	XO  ,  { s2 }
 	fldmias	AO1 ,  { s8 - s11 }
 
@@ -471,27 +533,30 @@ gemvn_kernel_F4_BEGIN:
 	ldr	YO , Y
 
 	ldr	I, M
-	asrs	I, I, #2					// I = M / 4
+	asrs	I, I, #3					// I = M / 8
 	ble	gemvn_kernel_F1_BEGIN
 
 gemvn_kernel_F4X4:
 
 	ldr	AO1, A
 	add	AO2, AO1, LDA
-	add	r3 , AO1, #4*SIZE
+	add	r3 , AO1, #8*SIZE
 	str	r3 , A
+
+	add	AO2, AO2, LDA
+	add	AO2, AO2, LDA
 
 	ldr	XO , X
 
-	INIT_F4
+	INIT_F8
 
-	asrs	J, N, #2					// J = N / 4
+	asrs	J, N, #3					// J = N / 8
 	ble	gemvn_kernel_F4X1
 
 
 gemvn_kernel_F4X4_10:
 
-	KERNEL_F4X4
+	KERNEL_F8X8
 
 	subs	J, J, #1
 	bne	gemvn_kernel_F4X4_10
@@ -499,12 +564,12 @@ gemvn_kernel_F4X4_10:
 
 gemvn_kernel_F4X1:
 
-	ands	J, N , #3
+	ands	J, N , #7
 	ble	gemvn_kernel_F4_END
 
 gemvn_kernel_F4X1_10:
 
-	KERNEL_F4X1
+	KERNEL_F8X1
 
 	subs	J, J, #1
 	bne	gemvn_kernel_F4X1_10
@@ -512,7 +577,7 @@ gemvn_kernel_F4X1_10:
 
 gemvn_kernel_F4_END:
 
-	SAVE_F4
+	SAVE_F8
 
 	subs	I , I , #1
 	bne	gemvn_kernel_F4X4
@@ -521,7 +586,7 @@ gemvn_kernel_F4_END:
 gemvn_kernel_F1_BEGIN:
 
 	ldr	I, M
-	ands	I,  I , #3
+	ands	I,  I , #7
 	ble	gemvn_kernel_L999
 
 gemvn_kernel_F1X1:
