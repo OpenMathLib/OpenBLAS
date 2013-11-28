@@ -82,7 +82,7 @@ ZGEMVTKERNEL = zgemv_t.c
 
 STRMMKERNEL	= strmm_kernel_4x2_vfp.S
 DTRMMKERNEL	= dtrmm_kernel_4x2_vfp.S
-CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+CTRMMKERNEL	= ctrmm_kernel_2x2_vfp.S
 ZTRMMKERNEL	= ztrmm_kernel_2x2_vfp.S
 
 SGEMMKERNEL    = sgemm_kernel_4x2_vfp.S		
