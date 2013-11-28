@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/11/23 Saar
+* 2013/11/28 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -105,13 +105,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x2_SUB
 
-	flds	s4 , [ BO ]
-	flds	s5 , [ BO, #4 ]
-
-	flds	s0 , [ AO ]
-	flds	s1 , [ AO, #4 ]
-	flds	s2 , [ AO, #8 ]
-	flds	s3 , [ AO, #12 ]
+	fldmias	AO!, { s0 - s3 }
+	fldmias	BO!, { s4 - s5 }
 
 	fmacs	s8  , s0,  s4
 	fmacs	s9  , s1,  s4
@@ -122,9 +117,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmacs	s13  , s1,  s5
 	fmacs	s14  , s2,  s5
 	fmacs	s15  , s3,  s5
-
-	add	AO , AO, #16
-	add	BO , BO, #8
 
 .endm
 
@@ -490,13 +482,19 @@ _L2_M4_20:
 	.align 5
 
 _L2_M4_22:
+	pld	[ AO , #A_PRE ]
+	pld	[ BO , #B_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
+	pld	[ AO , #A_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 
+	pld	[ AO , #A_PRE ]
+	pld	[ BO , #B_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
+	pld	[ AO , #A_PRE ]
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 
