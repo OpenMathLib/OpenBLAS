@@ -187,38 +187,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL2x2_M1
 
-	pld	[ AO, #A_PRE ]
-	pld	[ BO, #B_PRE ]
 
 	fldd	d0 , [ AO ]
-	fldd	d1 , [ AO, #8 ]
-
 	fldd	d4 , [ BO ]
 	fldd	d5 , [ BO, #8 ]
 
 	fmacd	d8  , d0,  d4
-	KMAC_R	d8  , d1,  d5
-	fldd	d2 , [ AO, #16 ]
+	fldd	d1 , [ AO, #8 ]
 	fmacd	d9  , d0,  d5
+	fldd	d2 , [ AO, #16 ]
+	KMAC_R	d8  , d1,  d5
 	fldd	d3 , [ AO, #24 ]
 	KMAC_I	d9  , d1,  d4
 
 	fldd	d6 , [ BO, #16 ]
 	fmacd	d10 , d2,  d4
 	fldd	d7 , [ BO, #24 ]
-	KMAC_R	d10 , d3,  d5
 	fmacd	d11 , d2,  d5
+	KMAC_R	d10 , d3,  d5
+	pld	[ AO, #A_PRE ]
 	KMAC_I	d11 , d3,  d4
 
+	pld	[ BO, #B_PRE ]
 	fmacd	d12 , d0,  d6
-	KMAC_R	d12 , d1,  d7
 	fmacd	d13 , d0,  d7
+	KMAC_R	d12 , d1,  d7
 	KMAC_I	d13 , d1,  d6
 
 	fmacd	d14 , d2,  d6
-	KMAC_R	d14 , d3,  d7
-	add	BO , BO, #32
 	fmacd	d15 , d2,  d7
+	add	BO , BO, #32
+	KMAC_R	d14 , d3,  d7
 	add	AO , AO, #32
 	KMAC_I	d15 , d3,  d6
 
@@ -227,40 +226,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL2x2_M2
 
-	pld	[ AO, #A_PRE ]
-	pld	[ BO, #B_PRE ]
-
 	fldd	d0 , [ AO ]
-	fldd	d1 , [ AO, #8 ]
-
 	fldd	d4 , [ BO ]
 	fldd	d5 , [ BO, #8 ]
 
 	fmacd	d8  , d0,  d4
-	KMAC_R	d8  , d1,  d5
-	fldd	d2 , [ AO, #16 ]
+	fldd	d1 , [ AO, #8 ]
 	fmacd	d9  , d0,  d5
+	fldd	d2 , [ AO, #16 ]
+	KMAC_R	d8  , d1,  d5
 	fldd	d3 , [ AO, #24 ]
 	KMAC_I	d9  , d1,  d4
 
 	fldd	d6 , [ BO, #16 ]
 	fmacd	d10 , d2,  d4
 	fldd	d7 , [ BO, #24 ]
-	KMAC_R	d10 , d3,  d5
 	fmacd	d11 , d2,  d5
+	KMAC_R	d10 , d3,  d5
+	pld	[ AO, #A_PRE ]
 	KMAC_I	d11 , d3,  d4
 
+	pld	[ BO, #B_PRE ]
 	fmacd	d12 , d0,  d6
-	KMAC_R	d12 , d1,  d7
 	fmacd	d13 , d0,  d7
+	KMAC_R	d12 , d1,  d7
 	KMAC_I	d13 , d1,  d6
 
 	fmacd	d14 , d2,  d6
-	KMAC_R	d14 , d3,  d7
-	add	BO , BO, #32
 	fmacd	d15 , d2,  d7
+	add	BO , BO, #32
+	KMAC_R	d14 , d3,  d7
 	add	AO , AO, #32
 	KMAC_I	d15 , d3,  d6
+
 
 .endm
 
@@ -305,37 +303,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL2x2_SUB
 
 	fldd	d0 , [ AO ]
-	fldd	d1 , [ AO, #8 ]
-	fldd	d2 , [ AO, #16 ]
-	fldd	d3 , [ AO, #24 ]
-
 	fldd	d4 , [ BO ]
 	fldd	d5 , [ BO, #8 ]
-	fldd	d6 , [ BO, #16 ]
-	fldd	d7 , [ BO, #24 ]
 
 	fmacd	d8  , d0,  d4
-	KMAC_R	d8  , d1,  d5
+	fldd	d1 , [ AO, #8 ]
 	fmacd	d9  , d0,  d5
+	fldd	d2 , [ AO, #16 ]
+	KMAC_R	d8  , d1,  d5
+	fldd	d3 , [ AO, #24 ]
 	KMAC_I	d9  , d1,  d4
 
+	fldd	d6 , [ BO, #16 ]
 	fmacd	d10 , d2,  d4
-	KMAC_R	d10 , d3,  d5
+	fldd	d7 , [ BO, #24 ]
 	fmacd	d11 , d2,  d5
+	KMAC_R	d10 , d3,  d5
+	pld	[ AO, #A_PRE ]
 	KMAC_I	d11 , d3,  d4
 
+	pld	[ BO, #B_PRE ]
 	fmacd	d12 , d0,  d6
-	KMAC_R	d12 , d1,  d7
 	fmacd	d13 , d0,  d7
+	KMAC_R	d12 , d1,  d7
 	KMAC_I	d13 , d1,  d6
 
 	fmacd	d14 , d2,  d6
-	KMAC_R	d14 , d3,  d7
 	fmacd	d15 , d2,  d7
-	KMAC_I	d15 , d3,  d6
-
 	add	BO , BO, #32
+	KMAC_R	d14 , d3,  d7
 	add	AO , AO, #32
+	KMAC_I	d15 , d3,  d6
 
 
 .endm
