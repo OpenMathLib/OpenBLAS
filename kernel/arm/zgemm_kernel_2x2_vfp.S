@@ -26,28 +26,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2013/11/05 Saar
+* 2013/11/28 Saar
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
 *
-* 2013/11/02 Saar
-*       UNROLL_N                2
-*       UNROLL_M                2
-*       ZGEMM_P                 64
-*       ZGEMM_Q                 120
-*       ZGEMM_R                 4096
-*       A_PRE                   96
-*       B_PRE                   96
-*       C_PRE                   64
-*
-*       Performance on Odroid U2:
-*
-*               1 Core:         1.62 GFLOPS     ATLAS: 1.39     GFLOPS
-*               2 Cores:        3.20 GFLOPS     ATLAS: 2.54     GFLOPS
-*               3 Cores:        4.72 GFLOPS     ATLAS: 3.76     GFLOPS
-*               4 Cores:        5.93 GFLOPS     ATLAS: 4.88     GFLOPS
-**************************************************************************************/
+***************************************************************************************/
 
 #define ASSEMBLER
 #include "common.h"
@@ -159,6 +143,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL2x2_I
+	pld	[ AO, #A_PRE ]
+	pld	[ BO, #B_PRE ]
 
 	fldd	d0 , [ AO ]
 	fldd	d1 , [ AO, #8 ]
@@ -201,22 +187,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL2x2_M1
 
+	pld	[ AO, #A_PRE ]
+	pld	[ BO, #B_PRE ]
+
 	fldd	d0 , [ AO ]
 	fldd	d1 , [ AO, #8 ]
-	fldd	d2 , [ AO, #16 ]
-	fldd	d3 , [ AO, #24 ]
 
 	fldd	d4 , [ BO ]
 	fldd	d5 , [ BO, #8 ]
-	fldd	d6 , [ BO, #16 ]
-	fldd	d7 , [ BO, #24 ]
 
 	fmacd	d8  , d0,  d4
 	KMAC_R	d8  , d1,  d5
+	fldd	d2 , [ AO, #16 ]
 	fmacd	d9  , d0,  d5
+	fldd	d3 , [ AO, #24 ]
 	KMAC_I	d9  , d1,  d4
 
+	fldd	d6 , [ BO, #16 ]
 	fmacd	d10 , d2,  d4
+	fldd	d7 , [ BO, #24 ]
 	KMAC_R	d10 , d3,  d5
 	fmacd	d11 , d2,  d5
 	KMAC_I	d11 , d3,  d4
@@ -228,32 +217,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fmacd	d14 , d2,  d6
 	KMAC_R	d14 , d3,  d7
+	add	BO , BO, #32
 	fmacd	d15 , d2,  d7
+	add	AO , AO, #32
 	KMAC_I	d15 , d3,  d6
 
-	add	BO , BO, #32
-	add	AO , AO, #32
 
 .endm
 
 .macro KERNEL2x2_M2
 
+	pld	[ AO, #A_PRE ]
+	pld	[ BO, #B_PRE ]
+
 	fldd	d0 , [ AO ]
 	fldd	d1 , [ AO, #8 ]
-	fldd	d2 , [ AO, #16 ]
-	fldd	d3 , [ AO, #24 ]
 
 	fldd	d4 , [ BO ]
 	fldd	d5 , [ BO, #8 ]
-	fldd	d6 , [ BO, #16 ]
-	fldd	d7 , [ BO, #24 ]
 
 	fmacd	d8  , d0,  d4
 	KMAC_R	d8  , d1,  d5
+	fldd	d2 , [ AO, #16 ]
 	fmacd	d9  , d0,  d5
+	fldd	d3 , [ AO, #24 ]
 	KMAC_I	d9  , d1,  d4
 
+	fldd	d6 , [ BO, #16 ]
 	fmacd	d10 , d2,  d4
+	fldd	d7 , [ BO, #24 ]
 	KMAC_R	d10 , d3,  d5
 	fmacd	d11 , d2,  d5
 	KMAC_I	d11 , d3,  d4
@@ -265,12 +257,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fmacd	d14 , d2,  d6
 	KMAC_R	d14 , d3,  d7
-	fmacd	d15 , d2,  d7
-	KMAC_I	d15 , d3,  d6
-
 	add	BO , BO, #32
+	fmacd	d15 , d2,  d7
 	add	AO , AO, #32
-
+	KMAC_I	d15 , d3,  d6
 
 .endm
 
