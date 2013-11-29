@@ -70,15 +70,15 @@ DSCALKERNEL  = scal_vfp.S
 CSCALKERNEL  = scal_vfp.S
 ZSCALKERNEL  = scal_vfp.S
 
-SGEMVNKERNEL = gemv_n_vfpv3.S
-DGEMVNKERNEL = gemv_n_vfpv3.S
-CGEMVNKERNEL = zgemv_n.c
-ZGEMVNKERNEL = zgemv_n.c
+SGEMVNKERNEL = gemv_n_vfp.S
+DGEMVNKERNEL = gemv_n_vfp.S
+CGEMVNKERNEL = cgemv_n_vfp.S
+ZGEMVNKERNEL = zgemv_n_vfp.S
 
-SGEMVTKERNEL = gemv_t_vfpv3.S
-DGEMVTKERNEL = gemv_t_vfpv3.S
-CGEMVTKERNEL = zgemv_t.c
-ZGEMVTKERNEL = zgemv_t.c
+SGEMVTKERNEL = gemv_t_vfp.S
+DGEMVTKERNEL = gemv_t_vfp.S
+CGEMVTKERNEL = cgemv_t_vfp.S
+ZGEMVTKERNEL = zgemv_t_vfp.S
 
 STRMMKERNEL  =  strmm_kernel_4x4_vfpv3.S
 DTRMMKERNEL  =  dtrmm_kernel_4x4_vfpv3.S		
