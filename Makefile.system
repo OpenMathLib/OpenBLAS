@@ -222,6 +222,11 @@ endif
 endif
 endif
 
+# ifeq logical or
+ifeq ($(OSNAME), $(filter $(OSNAME),WINNT CYGWIN_NT Interix))
+OS_WINDOWS=1
+endif
+
 ifdef QUAD_PRECISION
 CCOMMON_OPT	+= -DQUAD_PRECISION
 NO_EXPRECISION = 1
@@ -477,9 +482,7 @@ CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
-ifneq ($(C_COMPILER), LSB)
 EXTRALIB += -lgfortran 
-endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
@@ -861,10 +864,17 @@ override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
+#For LAPACK Fortran codes.
+LAPACK_FFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FFLAGS))
+LAPACK_FPFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FPFLAGS))
+
 LAPACK_CFLAGS = $(CFLAGS)
 LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H 
 ifdef INTERFACE64
 LAPACK_CFLAGS +=  -DLAPACK_ILP64
+endif
+ifdef OS_WINDOWS
+LAPACK_CFLAGS +=  -DOPENBLAS_OS_WINDOWS
 endif
 ifeq ($(C_COMPILER), LSB)
 LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE
