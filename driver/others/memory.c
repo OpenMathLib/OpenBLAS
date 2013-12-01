@@ -363,7 +363,7 @@ static void *alloc_mmap(void *address){
 #define BENCH_ITERATION 4
 #define SCALING		2
 
-static inline BLASULONG run_bench(BLASULONG address, long size) {
+static inline BLASULONG run_bench(BLASULONG address, BLASULONG size) {
 
   BLASULONG original, *p;
   BLASULONG start, stop, min;
@@ -450,12 +450,12 @@ static void *alloc_mmap(void *address){
 	current = (SCALING - 1) * BUFFER_SIZE;
 	
 	while(current > 0) {
-	  *(long *)start = (long)start + PAGESIZE;
+	  *(BLASLONG *)start = (BLASLONG)start + PAGESIZE;
 	  start += PAGESIZE;
 	  current -= PAGESIZE;
 	}
 	
-	*(long *)(start - PAGESIZE) = (BLASULONG)map_address;
+	*(BLASLONG *)(start - PAGESIZE) = (BLASULONG)map_address;
 	
 	start = (BLASULONG)map_address;
 	
@@ -1170,7 +1170,7 @@ static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
 
 #if !defined(ARCH_POWER) && !defined(ARCH_SPARC)
 
-  long size;
+  size_t size;
   BLASULONG buffer;
 
   size   = BUFFER_SIZE - PAGESIZE;
