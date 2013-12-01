@@ -62,7 +62,7 @@
 #define PREFETCHSIZE  (8 * 21 + 4)
 #endif
 
-#if defined(NEHALEM) || defined(NEHALEM_OPTIMIZATION)
+#if defined(NEHALEM) || defined(SANDYBRIDGE)
 #define PREFETCH     prefetcht0
 #define PREFETCHSIZE  (8 * 21 + 4)
 #endif
