@@ -298,6 +298,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "SANDYBRIDGE"
 #endif
 
+#ifdef FORCE_HASWELL
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "HASWELL"
+#define ARCHCONFIG   "-DHASWELL " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3"
+#define LIBNAME   "haswell"
+#define CORENAME  "HASWELL"
+#endif
+
 #ifdef FORCE_ATOM
 #define FORCE
 #define FORCE_INTEL
@@ -725,19 +740,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-
-
 #ifndef FORCE
 
 #if defined(__powerpc__) || defined(__powerpc) || defined(powerpc) || \
-    defined(__PPC__) || defined(PPC) || defined(_POWER) || defined(__POWERPC__) 
-
+    defined(__PPC__) || defined(PPC) || defined(_POWER) || defined(__POWERPC__)
 #ifndef POWER
 #define POWER
 #endif
 #define OPENBLAS_SUPPORTED
 #endif
-
 
 #if defined(__i386__) || (__x86_64__)
 #include "cpuid_x86.c"
@@ -778,6 +789,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef OPENBLAS_SUPPORTED
 #error "This arch/CPU is not supported by OpenBLAS."
 #endif
+
+#else
 
 #endif
 
@@ -843,9 +856,8 @@ int main(int argc, char *argv[]){
     printf("NUM_CORES=%d\n", get_num_cores());
 
 #if defined(__arm__) && !defined(FORCE)
-	get_features();
+        get_features();
 #endif
-
 
 
 #if defined(__i386__) || defined(__x86_64__)
