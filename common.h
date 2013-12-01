@@ -581,9 +581,10 @@ typedef struct {
 #include "common_level2.h"
 #include "common_level3.h"
 #include "common_lapack.h"
+
 #ifdef CBLAS
-/* This header file is generated from "cblas.h" (see Makefile.prebuild). */
-#include "cblas_noconst.h"
+# define OPENBLAS_CONST     /* see comment in cblas.h */
+# include "cblas.h"
 #endif
 
 #ifndef ASSEMBLER
