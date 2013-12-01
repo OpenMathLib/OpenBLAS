@@ -1243,6 +1243,7 @@ static char *cpuname[] = {
   "BOBCAT",
   "BULLDOZER",
   "PILEDRIVER",
+  "HASWELL",
 };
 
 static char *lowercpuname[] = {
@@ -1293,6 +1294,7 @@ static char *lowercpuname[] = {
   "bobcat",
   "bulldozer",
   "piledriver",
+  "haswell",
 };
 
 static char *corename[] = {
@@ -1320,6 +1322,7 @@ static char *corename[] = {
   "BOBCAT",
   "BULLDOZER",
   "PILEDRIVER",
+  "HASWELL",
 };
 
 static char *corename_lower[] = {
@@ -1347,6 +1350,7 @@ static char *corename_lower[] = {
   "bobcat",
   "bulldozer",
   "piledriver",
+  "haswell",
 };
 
 

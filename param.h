@@ -1154,6 +1154,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef HASWELL
 
+<<<<<<< HEAD
 #define SNUMOPT         8
 #define DNUMOPT         4
 
@@ -1164,6 +1165,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P  8
 
 #define SWITCH_RATIO    4
+=======
+#define SNUMOPT		8
+#define DNUMOPT		4
+
+#define GEMM_DEFAULT_OFFSET_A	  0
+#define GEMM_DEFAULT_OFFSET_B     0
+#define GEMM_DEFAULT_ALIGN 0x03fffUL
+
+#define SYMV_P	8
+
+#define SWITCH_RATIO	4
+>>>>>>> origin/haswell
 
 #ifdef ARCH_X86
 
@@ -1233,6 +1246,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ZGEMM_DEFAULT_Q 128
 
 #define SGEMM_DEFAULT_R sgemm_r
+<<<<<<< HEAD
+=======
+//#define DGEMM_DEFAULT_R dgemm_r
+>>>>>>> origin/haswell
 #define DGEMM_DEFAULT_R 13824
 #define CGEMM_DEFAULT_R cgemm_r
 #define ZGEMM_DEFAULT_R zgemm_r

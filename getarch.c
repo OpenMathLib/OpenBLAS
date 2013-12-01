@@ -298,6 +298,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "SANDYBRIDGE"
 #endif
 
+#ifdef FORCE_HASWELL
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "HASWELL"
+#define ARCHCONFIG   "-DHASWELL " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3"
+#define LIBNAME   "haswell"
+#define CORENAME  "HASWELL"
+#endif
+
 #ifdef FORCE_ATOM
 #define FORCE
 #define FORCE_INTEL
@@ -679,6 +694,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "generic"
 #endif
 
+#ifdef FORCE_ARMV7
+#define FORCE
+#define ARCHITECTURE    "ARM"
+#define SUBARCHITECTURE "ARMV7"
+#define SUBDIRNAME      "arm"
+#define ARCHCONFIG   "-DARMV7 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 " \
+       "-DHAVE_VFPV3 -DHAVE_VFP"
+#define LIBNAME   "armv7"
+#define CORENAME  "ARMV7"
+#else
+#endif
+
+#ifdef FORCE_ARMV6
+#define FORCE
+#define ARCHITECTURE    "ARM"
+#define SUBARCHITECTURE "ARMV6"
+#define SUBDIRNAME      "arm"
+#define ARCHCONFIG   "-DARMV6 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 " \
+       "-DHAVE_VFP"
+#define LIBNAME   "armv6"
+#define CORENAME  "ARMV6"
+#else
+#endif
+
+#ifdef FORCE_ARMV8
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "ARMV8"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DARMV8 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 " \
+       "-DHAVE_VFP -DHAVE_VFPV3 -DHAVE_VFPV4"
+#define LIBNAME   "armv8"
+#define CORENAME  "ARMV8"
+#else
+#endif
+
+
 #ifndef FORCE
 
 #if defined(__powerpc__) || defined(__powerpc) || defined(powerpc) || \
@@ -718,6 +779,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cpuid_mips.c"
 #define OPENBLAS_SUPPORTED
 #endif
+
+#ifdef __arm__
+#include "cpuid_arm.c"
+#define OPENBLAS_SUPPORTED
+#endif
+
 
 #ifndef OPENBLAS_SUPPORTED
 #error "This arch/CPU is not supported by OpenBLAS."
@@ -773,7 +840,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else    
-#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__)
+#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -787,6 +854,11 @@ int main(int argc, char *argv[]){
 #endif
 
     printf("NUM_CORES=%d\n", get_num_cores());
+
+#if defined(__arm__) && !defined(FORCE)
+        get_features();
+#endif
+
 
 #if defined(__i386__) || defined(__x86_64__)
 #ifndef FORCE

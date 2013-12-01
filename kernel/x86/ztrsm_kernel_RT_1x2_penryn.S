@@ -63,7 +63,7 @@
 #define PREFETCHSIZE 84
 #endif
 
-#if defined(NEHALEM) || defined(SANDYBRIDGE)
+#if defined(NEHALEM) || defined(NEHALEM_OPTIMIZATION)
 #define PREFETCH	prefetcht1
 #define PREFETCHSIZE 84
 #endif
