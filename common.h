@@ -310,12 +310,14 @@ typedef int blasint;
 #define YIELDING	SwitchToThread()
 #endif
 
-/***************************************************
-Some no-oprations are enough
-***************************************************/
-#ifdef PILEDRIVER
-#define YIELDING	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#if defined(ARMV7) || defined(ARMV6) || defined(ARMV8)
+#define YIELDING        asm volatile ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
 #endif
+
+#ifdef PILEDRIVER
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
+
 
 #ifndef YIELDING
 #define YIELDING	sched_yield()
@@ -369,6 +371,15 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #ifdef ARCH_MIPS64
 #include "common_mips64.h"
 #endif
+
+#ifdef ARCH_ARM
+#include "common_arm.h"
+#endif
+
+#ifdef ARCH_ARM64
+#include "common_arm64.h"
+#endif
+
 
 #ifdef OS_LINUX
 #include "common_linux.h"
