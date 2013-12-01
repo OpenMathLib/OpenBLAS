@@ -126,7 +126,7 @@ so : ../$(LIBSONAME)
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--retain-symbols-file=linux.def -Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
+	-Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
 ifneq ($(C_COMPILER), LSB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 else
@@ -145,7 +145,7 @@ so : ../$(LIBSONAME)
 ../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--retain-symbols-file=linux.def $(FEXTRALIB) $(EXTRALIB)
+	$(FEXTRALIB) $(EXTRALIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
 
