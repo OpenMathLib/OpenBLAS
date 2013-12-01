@@ -382,7 +382,7 @@ REALNAME:
 
 #define EPILOGUE \
         .size	 REALNAME, .-REALNAME; \
-        .section .note.GNU-stack,"",%progbits
+        .section .note.GNU-stack,"",@progbits
 
 #endif
 
