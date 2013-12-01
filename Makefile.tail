@@ -606,7 +606,8 @@ clean ::
 	@if test -d $(ARCH); then \
 	(cd $(ARCH) && $(MAKE) clean) \
 	fi
-	@rm -rf *.a *.s *.o *.po *.obj *.i *.so core core.* gmon.out *.cso \
+	@find . -name '*.o' | xargs rm -rf
+	@rm -rf *.a *.s *.po *.obj *.i *.so core core.* gmon.out *.cso \
 	*.csx *.is *~ *.exe *.flame *.pdb *.dwf \
 	gen_insn_flash.c gen_insn_flash *.stackdump *.dll *.exp *.lib \
 	*.pc *.pcl *.def *.i *.prof linktest.c \

@@ -185,7 +185,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
   div_n = ((m_to - m_from + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 
-  buffer[0] = (FLOAT *)((((long)(sb + k * k * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
+  buffer[0] = (FLOAT *)((((BLASULONG)(sb + k * k * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
   for (i = 1; i < DIVIDE_RATE; i++) {
     buffer[i] = buffer[i - 1] + GEMM_Q * div_n * COMPSIZE;
   }
