@@ -171,7 +171,7 @@
 .L0x:
 	xorq	M,M
 	addq	$1,M
-	salq	$22,M
+	salq	$21,M
 	subq	M,MMM
 	jge .L00
 

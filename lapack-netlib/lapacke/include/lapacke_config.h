@@ -45,7 +45,11 @@ extern "C" {
 
 #ifndef lapack_int
 #if defined(LAPACK_ILP64)
+#if defined(OPENBLAS_OS_WINDOWS)
+#define lapack_int              long long
+#else
 #define lapack_int              long
+#endif
 #else
 #define lapack_int              int
 #endif
