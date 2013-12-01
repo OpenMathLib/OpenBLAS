@@ -373,6 +373,19 @@ NO_BINARY_MODE	= 1
 BINARY_DEFINED	= 1
 endif
 
+ifeq ($(ARCH), arm)
+NO_BINARY_MODE  = 1
+BINARY_DEFINED  = 1
+endif
+
+ifeq ($(ARCH), arm64)
+NO_BINARY_MODE  = 1
+BINARY_DEFINED  = 1
+endif
+
+
+
+
 #
 #  C Compiler dependent settings
 #
@@ -834,6 +847,19 @@ COMMON_OPT += -g
 endif
 
 ifndef COMMON_OPT
+ifeq ($(ARCH), arm)
+COMMON_OPT = -O3
+endif
+endif
+
+ifndef COMMON_OPT
+ifeq ($(ARCH), arm64)
+COMMON_OPT = -O3
+endif
+endif
+
+
+ifndef COMMON_OPT
 COMMON_OPT = -O2
 endif
 
@@ -958,6 +984,10 @@ export HAVE_SSE4_2
 export HAVE_SSE4A
 export HAVE_SSE5
 export HAVE_AVX
+export HAVE_VFP
+export HAVE_VFPV3
+export HAVE_VFPV4
+export HAVE_NEON
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
