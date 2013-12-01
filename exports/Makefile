@@ -22,6 +22,10 @@ ifndef NEED2UNDERSCORES
 NEED2UNDERSCORES=0
 endif
 
+ifndef ONLY_CBLAS
+ONLY_CBLAS	= 0
+endif
+
 ifeq ($(OSNAME), WINNT)
 ifeq ($(F_COMPILER), GFORTRAN)
 EXTRALIB += -lgfortran
@@ -98,13 +102,13 @@ libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
 	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
 
 libopenblas.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > $(@F)
+	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 libgoto2_shared.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > $(@F)
+	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 libgoto_hpl.def : gensymbol
-	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > $(@F)
+	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
@@ -191,23 +195,23 @@ static : ../$(LIBNAME)
 	rm -f goto.$(SUFFIX)
 
 linux.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > $(@F)
+	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 osx.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > $(@F)
+	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 aix.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > $(@F)
+	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 symbol.S : gensymbol
-	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > symbol.S
+	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > symbol.S
 
 test : linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
 	rm -f linktest
 
 linktest.c : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) > linktest.c
+	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > linktest.c
 
 clean ::
 	@rm -f *.def *.dylib __.SYMDEF*

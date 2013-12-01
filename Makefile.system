@@ -82,12 +82,19 @@ ifeq ($(HOSTCC), loongcc)
 GETARCH_FLAGS  += -static
 endif
 
+#if don't use Fortran, it will only compile CBLAS.
+ifeq ($(ONLY_CBLAS), 1)
+NO_LAPACK = 1
+else
+ONLY_CBLAS = 0
+endif
+
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
@@ -885,6 +892,23 @@ LIBZIPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.zip)
 LIBS		= $(TOPDIR)/$(LIBNAME)
 LIBS_P		= $(TOPDIR)/$(LIBNAME_P)
 
+
+LIB_COMPONENTS = BLAS
+ifneq ($(NO_CBLAS), 1)
+LIB_COMPONENTS += CBLAS
+endif
+
+ifneq ($(NO_LAPACK), 1)
+LIB_COMPONENTS += LAPACK
+ifneq ($(NO_LAPACKE), 1)
+LIB_COMPONENTS += LAPACKE
+endif
+endif
+
+ifeq ($(ONLY_CBLAS), 1)
+LIB_COMPONENTS = CBLAS
+endif
+
 export OSNAME
 export ARCH
 export CORE
@@ -911,6 +935,7 @@ export USE_OPENMP
 export CROSS
 export CROSS_SUFFIX
 export NOFORTRAN
+export NO_FBLAS
 export EXTRALIB
 export CEXTRALIB
 export FEXTRALIB

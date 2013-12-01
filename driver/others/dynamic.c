@@ -223,7 +223,19 @@ static gotoblas_t *get_coretype(void){
   }
 
   if (vendor == VENDOR_AMD){
-    if (family <= 0xe) return &gotoblas_ATHLON;
+    if (family <= 0xe) {
+        // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
+        cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
+        if (eax & 0xffff >= 0x01) {
+            cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
+            if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
+              return NULL;
+          }
+        else
+          return NULL;
+
+        return &gotoblas_ATHLON;
+      }
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) {
 	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3; 

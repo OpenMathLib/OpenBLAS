@@ -126,3 +126,5 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 1. Write a test which shows that the bug was fixed or that the feature works as expected.
 1. Send a pull request. Make sure to add yourself to `CONTRIBUTORS.md`.
 
+## Donation
+Please read [this wiki page](https://github.com/xianyi/OpenBLAS/wiki/Donation).

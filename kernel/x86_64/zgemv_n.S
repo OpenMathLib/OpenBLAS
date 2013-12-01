@@ -70,7 +70,7 @@
 
 #else
 
-#define STACKSIZE	288
+#define STACKSIZE	304
 	
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
@@ -83,13 +83,13 @@
 #define ALPHA_R		224	       (%rsp)
 #define ALPHA_I		232	       (%rsp)
 
-#define MMM	232(%rsp)
-#define NN	240(%rsp)
-#define AA	248(%rsp)
-#define	XX	256(%rsp)
-#define LDAX	264(%rsp)
-#define ALPHAR	272(%rsp)
-#define ALPHAI	280(%rsp)
+#define MMM	240(%rsp)
+#define NN	248(%rsp)
+#define AA	256(%rsp)
+#define	XX	264(%rsp)
+#define LDAX	272(%rsp)
+#define ALPHAR	280(%rsp)
+#define ALPHAI	288(%rsp)
 
 #define M	  %rcx
 #define N	  %rdx

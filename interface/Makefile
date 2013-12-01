@@ -786,7 +786,7 @@ endif
 
 qgemv.$(SUFFIX) qgemv.$(PSUFFIX): gemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<
-	
+
 ifndef USE_NETLIB_GEMV
 cgemv.$(SUFFIX) cgemv.$(PSUFFIX): zgemv.c
 	$(CC) -c $(CFLAGS) -o $(@F) $<
