@@ -367,9 +367,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       for(jjs = xxx; jjs < MIN(n_to, xxx + div_n); jjs += min_jj){
 	min_jj = MIN(n_to, xxx + div_n) - jjs;
 
-#if ( defined(BULLDOZER) || defined(PILEDRIVER) ) && defined(ARCH_X86_64) && !defined(XDOUBLE) && !defined(COMPLEX)
-	if (min_jj >= 12*GEMM_UNROLL_N) min_jj = 12*GEMM_UNROLL_N;
-	else
+#if ( defined(BULLDOZER) || defined(PILEDRIVER) || defined(HASWELL) ) && defined(ARCH_X86_64) && !defined(XDOUBLE) && !defined(COMPLEX)
 		if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 		else
 			if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
