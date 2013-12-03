@@ -63,6 +63,8 @@ $architecture = mips64 if ($data =~ /ARCH_MIPS64/);
 $architecture = alpha  if ($data =~ /ARCH_ALPHA/);
 $architecture = sparc  if ($data =~ /ARCH_SPARC/);
 $architecture = ia64   if ($data =~ /ARCH_IA64/);
+$architecture = arm    if ($data =~ /ARCH_ARM/);
+$architecture = arm64  if ($data =~ /ARCH_ARM64/);
 
 $defined = 0;
 
@@ -149,6 +151,8 @@ $architecture = mips64 if ($data =~ /ARCH_MIPS64/);
 $architecture = alpha  if ($data =~ /ARCH_ALPHA/);
 $architecture = sparc  if ($data =~ /ARCH_SPARC/);
 $architecture = ia64   if ($data =~ /ARCH_IA64/);
+$architecture = arm    if ($data =~ /ARCH_ARM/);
+$architecture = arm64  if ($data =~ /ARCH_ARM64/);
 
 $binformat    = bin32;
 $binformat    = bin64  if ($data =~ /BINARY_64/);
