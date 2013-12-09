@@ -231,7 +231,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup single_lin
 *
@@ -243,10 +243,10 @@
      +              S_TEMP_SPOT03, S_WORK_SLANSY,
      +              S_WORK_SPOT02, S_WORK_SPOT03 )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       INTEGER            NN, NNS, NNT, NOUT
@@ -342,7 +342,7 @@
 *
 *              If N.EQ.0, only consider the first type
 *
-               IF( N.EQ.0 .AND. IIT.GT.1 ) GO TO 120
+               IF( N.EQ.0 .AND. IIT.GE.1 ) GO TO 120
 *
 *              Skip types 3, 4, or 5 if the matrix size is too small.
 *
@@ -442,16 +442,19 @@
 *                       Form the inverse of A.
 *
                         CALL SPOTRI( UPLO, N, A, LDA, INFO )
+
+      					IF ( N .NE. 0 ) THEN
 *
-*                       Compute the 1-norm condition number of A.
+*                          Compute the 1-norm condition number of A.
 *
-                        AINVNM = SLANSY( '1', UPLO, N, A, LDA,
+                           AINVNM = SLANSY( '1', UPLO, N, A, LDA,
      +                           S_WORK_SLANSY )
-                        RCONDC = ( ONE / ANORM ) / AINVNM
+                           RCONDC = ( ONE / ANORM ) / AINVNM
 *
-*                       Restore the matrix A.
+*                          Restore the matrix A.
 *
-                        CALL SLACPY( UPLO, N, N, ASAV, LDA, A, LDA )
+                           CALL SLACPY( UPLO, N, N, ASAV, LDA, A, LDA )
+                        END IF
 *
                      END IF
 *

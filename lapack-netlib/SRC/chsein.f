@@ -104,6 +104,7 @@
 *> \verbatim
 *>          H is COMPLEX array, dimension (LDH,N)
 *>          The upper Hessenberg matrix H.
+*>          If a NaN is detected in H, the routine will return with INFO=-6.
 *> \endverbatim
 *>
 *> \param[in] LDH
@@ -225,7 +226,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -244,10 +245,10 @@
      $                   LDVL, VR, LDVR, MM, M, WORK, RWORK, IFAILL,
      $                   IFAILR, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          EIGSRC, INITV, SIDE
@@ -276,9 +277,9 @@
       COMPLEX            CDUM, WK
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            LSAME, SISNAN
       REAL               CLANHS, SLAMCH
-      EXTERNAL           LSAME, CLANHS, SLAMCH
+      EXTERNAL           LSAME, CLANHS, SLAMCH, SISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLAEIN, XERBLA
@@ -399,7 +400,10 @@
 *              has not ben computed before.
 *
                HNORM = CLANHS( 'I', KR-KL+1, H( KL, KL ), LDH, RWORK )
-               IF( HNORM.GT.RZERO ) THEN
+               IF( SISNAN( HNORM ) ) THEN
+                  INFO = -6
+                  RETURN
+               ELSE IF( (HNORM.GT.RZERO) ) THEN
                   EPS3 = HNORM*ULP
                ELSE
                   EPS3 = SMLNUM

@@ -139,7 +139,7 @@ def run_summary_test( f, cmdline, short_summary):
         	   if (short_summary==0): print line,
         	   whereisout= words_in_line.index("out")
         	   nb_test_fail+=int(words_in_line[whereisout-1])
-        	if (line.find("illegal")!=-1):
+        	if ((line.find("illegal")!=-1) or (line.find("Illegal")!=-1)):
         	   if (short_summary==0):print line,
         	   nb_test_illegal+=1
         	if (line.find(" INFO")!=-1):

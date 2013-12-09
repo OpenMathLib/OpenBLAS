@@ -36,8 +36,9 @@
 *>            p + i*q = ---------
 *>                       c + i*d
 *>
-*> The algorithm is due to Robert L. Smith and can be found
-*> in D. Knuth, The art of Computer Programming, Vol.2, p.195
+*> The algorithm is due to Michael Baudin and Robert L. Smith
+*> and can be found in the paper
+*> "A Robust Complex Division in Scilab"
 *> \endverbatim
 *
 *  Arguments:
@@ -83,17 +84,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date January 2013
 *
 *> \ingroup auxOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE DLADIV( A, B, C, D, P, Q )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     January 2013
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   A, B, C, D, P, Q
@@ -101,28 +102,152 @@
 *
 *  =====================================================================
 *
+*     .. Parameters ..
+      DOUBLE PRECISION   BS
+      PARAMETER          ( BS = 2.0D0 )
+      DOUBLE PRECISION   HALF
+      PARAMETER          ( HALF = 0.5D0 )
+      DOUBLE PRECISION   TWO
+      PARAMETER          ( TWO = 2.0D0 )
+*
 *     .. Local Scalars ..
-      DOUBLE PRECISION   E, F
+      DOUBLE PRECISION   AA, BB, CC, DD, AB, CD, S, OV, UN, BE, EPS
+*     ..
+*     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH
+      EXTERNAL           DLAMCH
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           DLADIV1
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS
+      INTRINSIC          ABS, MAX
 *     ..
 *     .. Executable Statements ..
 *
-      IF( ABS( D ).LT.ABS( C ) ) THEN
-         E = D / C
-         F = C + D*E
-         P = ( A+B*E ) / F
-         Q = ( B-A*E ) / F
-      ELSE
-         E = C / D
-         F = D + C*E
-         P = ( B+A*E ) / F
-         Q = ( -A+B*E ) / F
+      AA = A
+      BB = B
+      CC = C
+      DD = D
+      AB = MAX( ABS(A), ABS(B) )
+      CD = MAX( ABS(C), ABS(D) )
+      S = 1.0D0
+      
+      OV = DLAMCH( 'Overflow threshold' )
+      UN = DLAMCH( 'Safe minimum' )
+      EPS = DLAMCH( 'Epsilon' )
+      BE = BS / (EPS*EPS)
+      
+      IF( AB >= HALF*OV ) THEN
+         AA = HALF * AA
+         BB = HALF * BB
+         S  = TWO * S
       END IF
+      IF( CD >= HALF*OV ) THEN
+         CC = HALF * CC
+         DD = HALF * DD
+         S  = HALF * S
+      END IF
+      IF( AB <= UN*BS/EPS ) THEN
+         AA = AA * BE
+         BB = BB * BE
+         S  = S / BE
+      END IF
+      IF( CD <= UN*BS/EPS ) THEN
+         CC = CC * BE
+         DD = DD * BE
+         S  = S * BE
+      END IF
+      IF( ABS( D ).LE.ABS( C ) ) THEN
+         CALL DLADIV1(AA, BB, CC, DD, P, Q)
+      ELSE
+         CALL DLADIV1(BB, AA, DD, CC, P, Q)
+         Q = -Q
+      END IF
+      P = P * S
+      Q = Q * S
 *
       RETURN
 *
 *     End of DLADIV
+*
+      END
+
+      
+
+      SUBROUTINE DLADIV1( A, B, C, D, P, Q )
+*
+*  -- LAPACK auxiliary routine (version 3.5.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     January 2013
+*
+*     .. Scalar Arguments ..
+      DOUBLE PRECISION   A, B, C, D, P, Q
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      DOUBLE PRECISION   ONE
+      PARAMETER          ( ONE = 1.0D0 )
+*
+*     .. Local Scalars ..
+      DOUBLE PRECISION   R, T
+*     ..
+*     .. External Functions ..
+      DOUBLE PRECISION   DLADIV2
+      EXTERNAL           DLADIV2
+*     ..
+*     .. Executable Statements ..
+*
+      R = D / C
+      T = ONE / (C + D * R)
+      P = DLADIV2(A, B, C, D, R, T)
+      A = -A
+      Q = DLADIV2(B, A, C, D, R, T)
+*
+      RETURN
+*
+*     End of DLADIV1
+*
+      END
+
+      DOUBLE PRECISION FUNCTION DLADIV2( A, B, C, D, R, T )
+*
+*  -- LAPACK auxiliary routine (version 3.5.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     January 2013
+*
+*     .. Scalar Arguments ..
+      DOUBLE PRECISION   A, B, C, D, R, T
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      DOUBLE PRECISION   ZERO
+      PARAMETER          ( ZERO = 0.0D0 )
+*
+*     .. Local Scalars ..
+      DOUBLE PRECISION   BR
+*     ..
+*     .. Executable Statements ..
+*
+      IF( R.NE.ZERO ) THEN
+         BR = B * R
+         if( BR.NE.ZERO ) THEN
+            DLADIV2 = (A + BR) * T
+         ELSE
+            DLADIV2 = A * T + (B * T) * R
+         END IF
+      ELSE
+         DLADIV2 = (A + D * (B / C)) * T
+      END IF
+*
+      RETURN
+*
+*     End of DLADIV12
 *
       END

@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -90,10 +90,10 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHKXER, ZGBSV, ZGBSVX, ZGESV, ZGESVX, ZGTSV,
-     $                   ZGTSVX, ZHESV, ZHESVX, ZHPSV, ZHPSVX, ZPBSV,
-     $                   ZPBSVX, ZPOSV, ZPOSVX, ZPPSV, ZPPSVX, ZPTSV,
-     $                   ZPTSVX, ZSPSV, ZSPSVX, ZSYSV, 
-     $                   ZSYSVX
+     $                   ZGTSVX, ZHESV, ZHESV_ROOK, ZHESVX, ZHPSV,
+     $                   ZHPSVX, ZPBSV, ZPBSVX, ZPOSV, ZPOSVX, ZPPSV,
+     $                   ZPPSVX, ZPTSV, ZPTSVX, ZSPSV, ZSPSVX, ZSYSV,
+     $                   ZSYSV_ROOK, ZSYSVX
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -634,6 +634,24 @@
      $                RCOND, R1, R2, W, 3, RW, INFO )
          CALL CHKXER( 'ZHESVX', INFOT, NOUT, LERR, OK )
 *
+      ELSE IF( LSAMEN( 2, C2, 'HR' ) ) THEN
+*
+*        ZHESV_ROOK
+*
+         SRNAMT = 'ZHESV_ROOK'
+         INFOT = 1
+         CALL ZHESV_ROOK( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHESV_ROOK( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHESV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHESV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_ROOK', INFOT, NOUT, LERR, OK )
+*
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *
 *        ZHPSV
@@ -737,6 +755,24 @@
          CALL ZSYSVX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, B, 2, X, 2,
      $                RCOND, R1, R2, W, 3, RW, INFO )
          CALL CHKXER( 'ZSYSVX', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
+*
+*        ZSYSV_ROOK
+*
+         SRNAMT = 'ZSYSV_ROOK'
+         INFOT = 1
+         CALL ZSYSV_ROOK( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZSYSV_ROOK( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZSYSV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_ROOK', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *

@@ -322,7 +322,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup realOTHERcomputational
 *
@@ -332,10 +332,10 @@
      $                   V2T, LDV2T, B11D, B11E, B12D, B12E, B21D, B21E,
      $                   B22D, B22E, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS
@@ -358,8 +358,8 @@
       PARAMETER          ( HUNDRED = 100.0E0, MEIGHTH = -0.125E0,
      $                     ONE = 1.0E0, PIOVER2 = 1.57079632679489662E0,
      $                     TEN = 10.0E0, ZERO = 0.0E0 )
-      REAL               NEGONECOMPLEX
-      PARAMETER          ( NEGONECOMPLEX = -1.0E0 )
+      REAL               NEGONE
+      PARAMETER          ( NEGONE = -1.0E0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            COLMAJOR, LQUERY, RESTART11, RESTART12,
@@ -477,7 +477,10 @@
 *     Initial deflation
 *
       IMAX = Q
-      DO WHILE( ( IMAX .GT. 1 ) .AND. ( PHI(IMAX-1) .EQ. ZERO ) )
+      DO WHILE( IMAX .GT. 1 )
+         IF( PHI(IMAX-1) .NE. ZERO ) THEN
+            EXIT
+         END IF
          IMAX = IMAX - 1
       END DO
       IMIN = IMAX - 1
@@ -939,9 +942,9 @@
             B21D(IMAX) = -B21D(IMAX)
             IF( WANTV1T ) THEN
                IF( COLMAJOR ) THEN
-                  CALL SSCAL( Q, NEGONECOMPLEX, V1T(IMAX,1), LDV1T )
+                  CALL SSCAL( Q, NEGONE, V1T(IMAX,1), LDV1T )
                ELSE
-                  CALL SSCAL( Q, NEGONECOMPLEX, V1T(1,IMAX), 1 )
+                  CALL SSCAL( Q, NEGONE, V1T(1,IMAX), 1 )
                END IF
             END IF
          END IF
@@ -962,9 +965,9 @@
             B12D(IMAX) = -B12D(IMAX)
             IF( WANTU1 ) THEN
                IF( COLMAJOR ) THEN
-                  CALL SSCAL( P, NEGONECOMPLEX, U1(1,IMAX), 1 )
+                  CALL SSCAL( P, NEGONE, U1(1,IMAX), 1 )
                ELSE
-                  CALL SSCAL( P, NEGONECOMPLEX, U1(IMAX,1), LDU1 )
+                  CALL SSCAL( P, NEGONE, U1(IMAX,1), LDU1 )
                END IF
             END IF
          END IF
@@ -972,9 +975,9 @@
             B22D(IMAX) = -B22D(IMAX)
             IF( WANTU2 ) THEN
                IF( COLMAJOR ) THEN
-                  CALL SSCAL( M-P, NEGONECOMPLEX, U2(1,IMAX), 1 )
+                  CALL SSCAL( M-P, NEGONE, U2(1,IMAX), 1 )
                ELSE
-                  CALL SSCAL( M-P, NEGONECOMPLEX, U2(IMAX,1), LDU2 )
+                  CALL SSCAL( M-P, NEGONE, U2(IMAX,1), LDU2 )
                END IF
             END IF
          END IF
@@ -984,9 +987,9 @@
          IF( B12D(IMAX)+B22D(IMAX) .LT. 0 ) THEN
             IF( WANTV2T ) THEN
                IF( COLMAJOR ) THEN
-                  CALL SSCAL( M-Q, NEGONECOMPLEX, V2T(IMAX,1), LDV2T )
+                  CALL SSCAL( M-Q, NEGONE, V2T(IMAX,1), LDV2T )
                ELSE
-                  CALL SSCAL( M-Q, NEGONECOMPLEX, V2T(1,IMAX), 1 )
+                  CALL SSCAL( M-Q, NEGONE, V2T(1,IMAX), 1 )
                END IF
             END IF
          END IF

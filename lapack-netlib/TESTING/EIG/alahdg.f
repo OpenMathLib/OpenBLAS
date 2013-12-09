@@ -209,14 +209,23 @@
 *
 *        CSD
 *
-         WRITE( IOUNIT, FMT = 9920 )1
-         WRITE( IOUNIT, FMT = 9921 )2
-         WRITE( IOUNIT, FMT = 9922 )3
-         WRITE( IOUNIT, FMT = 9923 )4
-         WRITE( IOUNIT, FMT = 9924 )5
-         WRITE( IOUNIT, FMT = 9925 )6
-         WRITE( IOUNIT, FMT = 9926 )7
-         WRITE( IOUNIT, FMT = 9927 )8
+         WRITE( IOUNIT, FMT = 9910 )
+         WRITE( IOUNIT, FMT = 9911 )1
+         WRITE( IOUNIT, FMT = 9912 )2
+         WRITE( IOUNIT, FMT = 9913 )3
+         WRITE( IOUNIT, FMT = 9914 )4
+         WRITE( IOUNIT, FMT = 9915 )5
+         WRITE( IOUNIT, FMT = 9916 )6
+         WRITE( IOUNIT, FMT = 9917 )7
+         WRITE( IOUNIT, FMT = 9918 )8
+         WRITE( IOUNIT, FMT = 9919 )9
+         WRITE( IOUNIT, FMT = 9920 )
+         WRITE( IOUNIT, FMT = 9921 )10
+         WRITE( IOUNIT, FMT = 9922 )11
+         WRITE( IOUNIT, FMT = 9923 )12
+         WRITE( IOUNIT, FMT = 9924 )13
+         WRITE( IOUNIT, FMT = 9925 )14
+         WRITE( IOUNIT, FMT = 9926 )15
       END IF
 *
  9999 FORMAT( 1X, A )
@@ -291,18 +300,29 @@
 *
 *     CSD test ratio
 *
- 9920 FORMAT( 3X, I2, ': norm( U1'' * X11 * V1 - C ) / ( max(  P,  Q)',
+ 9910 FORMAT( 3X, '2-by-2 CSD' )
+ 9911 FORMAT( 3X, I2, ': norm( U1'' * X11 * V1 - C ) / ( max(  P,  Q)',
      $       ' * max(norm(I-X''*X),EPS) )' )
- 9921 FORMAT( 3X, I2, ': norm( U1'' * X12 * V2-(-S)) / ( max(  P,',
+ 9912 FORMAT( 3X, I2, ': norm( U1'' * X12 * V2-(-S)) / ( max(  P,',
      $       'M-Q) * max(norm(I-X''*X),EPS) )' )
- 9922 FORMAT( 3X, I2, ': norm( U2'' * X21 * V1 - S ) / ( max(M-P,',
+ 9913 FORMAT( 3X, I2, ': norm( U2'' * X21 * V1 - S ) / ( max(M-P,',
      $       '  Q) * max(norm(I-X''*X),EPS) )' )
- 9923 FORMAT( 3X, I2, ': norm( U2'' * X22 * V2 - C ) / ( max(M-P,',
+ 9914 FORMAT( 3X, I2, ': norm( U2'' * X22 * V2 - C ) / ( max(M-P,',
      $       'M-Q) * max(norm(I-X''*X),EPS) )' )
- 9924 FORMAT( 3X, I2, ': norm( I - U1''*U1 ) / (   P   * EPS )' )
- 9925 FORMAT( 3X, I2, ': norm( I - U2''*U2 ) / ( (M-P) * EPS )' )
- 9926 FORMAT( 3X, I2, ': norm( I - V1''*V1 ) / (   Q   * EPS )' )
- 9927 FORMAT( 3X, I2, ': norm( I - V2''*V2 ) / ( (M-Q) * EPS )' )
+ 9915 FORMAT( 3X, I2, ': norm( I - U1''*U1 ) / (   P   * EPS )' )
+ 9916 FORMAT( 3X, I2, ': norm( I - U2''*U2 ) / ( (M-P) * EPS )' )
+ 9917 FORMAT( 3X, I2, ': norm( I - V1''*V1 ) / (   Q   * EPS )' )
+ 9918 FORMAT( 3X, I2, ': norm( I - V2''*V2 ) / ( (M-Q) * EPS )' )
+ 9919 FORMAT( 3X, I2, ': principal angle ordering ( 0 or ULP )' )
+ 9920 FORMAT( 3X, '2-by-1 CSD' )
+ 9921 FORMAT( 3X, I2, ': norm( U1'' * X11 * V1 - C ) / ( max(  P,  Q)',
+     $       ' * max(norm(I-X''*X),EPS) )' )
+ 9922 FORMAT( 3X, I2, ': norm( U2'' * X21 * V1 - S ) / ( max(  M-P,',
+     $       'Q) * max(norm(I-X''*X),EPS) )' )
+ 9923 FORMAT( 3X, I2, ': norm( I - U1''*U1 ) / (   P   * EPS )' )
+ 9924 FORMAT( 3X, I2, ': norm( I - U2''*U2 ) / ( (M-P) * EPS )' )
+ 9925 FORMAT( 3X, I2, ': norm( I - V1''*V1 ) / (   Q   * EPS )' )
+ 9926 FORMAT( 3X, I2, ': principal angle ordering ( 0 or ULP )' )
       RETURN
 *
 *     End of ALAHDG

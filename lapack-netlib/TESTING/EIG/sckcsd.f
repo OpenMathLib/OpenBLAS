@@ -205,13 +205,14 @@
 *
 *     .. Parameters ..
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 9 )
+      PARAMETER          ( NTESTS = 15 )
       INTEGER            NTYPES
-      PARAMETER          ( NTYPES = 3 )
-      REAL               GAPDIGIT, ORTH, PIOVER2, TEN
-      PARAMETER          ( GAPDIGIT = 10.0E0, ORTH = 1.0E-4,
+      PARAMETER          ( NTYPES = 4 )
+      REAL               GAPDIGIT, ONE, ORTH, PIOVER2, TEN, ZERO
+      PARAMETER          ( GAPDIGIT = 10.0E0, ONE = 1.0E0,
+     $                     ORTH = 1.0E-4,
      $                     PIOVER2 = 1.57079632679489662E0,
-     $                     TEN = 10.0D0 )
+     $                     TEN = 10.0E0, ZERO = 0.0E0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            FIRSTT
@@ -231,8 +232,8 @@
       INTRINSIC          ABS, MIN
 *     ..
 *     .. External Functions ..
-      REAL               SLARND
-      EXTERNAL           SLARND
+      REAL               SLARAN, SLARND
+      EXTERNAL           SLARAN, SLARND
 *     ..
 *     .. Executable Statements ..
 *
@@ -286,7 +287,7 @@
      $                                ORTH*SLARND(2,ISEED)
                   END DO
                END DO
-            ELSE
+            ELSE IF( IMAT.EQ.3 ) THEN
                R = MIN( P, M-P, Q, M-Q )
                DO I = 1, R+1
                   THETA(I) = TEN**(-SLARND(1,ISEED)*GAPDIGIT)
@@ -298,9 +299,18 @@
                   THETA(I) = PIOVER2 * THETA(I) / THETA(R+1)
                END DO
                CALL SLACSG( M, P, Q, THETA, ISEED, X, LDX, WORK )
+            ELSE
+               CALL SLASET( 'F', M, M, ZERO, ONE, X, LDX )
+               DO I = 1, M
+                  J = INT( SLARAN( ISEED ) * M ) + 1
+                  IF( J .NE. I ) THEN
+                     CALL SROT( M, X(1+(I-1)*LDX), 1, X(1+(J-1)*LDX), 1,
+     $                 ZERO, ONE )
+                  END IF
+               END DO
             END IF
 *
-            NT = 9
+            NT = 15
 *
             CALL SCSDTS( M, P, Q, X, XF, LDX, U1, LDU1, U2, LDU2, V1T,
      $                   LDV1T, V2T, LDV2T, THETA, IWORK, WORK, LWORK,

@@ -72,6 +72,10 @@
       CHARACTER          CMACH
 *     ..
 *
+*     .. Scalar Arguments ..
+      DOUBLE PRECISION   A, B
+*     ..
+*
 * =====================================================================
 *
 *     .. Parameters ..

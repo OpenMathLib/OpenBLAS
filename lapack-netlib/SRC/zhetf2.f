@@ -1,25 +1,25 @@
-*> \brief \b ZHETF2 computes the factorization of a complex Hermitian matrix, using the diagonal pivoting method (unblocked algorithm).
+*> \brief \b ZHETF2 computes the factorization of a complex Hermitian matrix, using the diagonal pivoting method (unblocked algorithm, calling Level 2 BLAS).
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZHETF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhetf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetf2.f"> 
+*> Download ZHETF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhetf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZHETF2( UPLO, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -28,7 +28,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -90,13 +90,22 @@
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
 *>          Details of the interchanges and the block structure of D.
-*>          If IPIV(k) > 0, then rows and columns k and IPIV(k) were
-*>          interchanged and D(k,k) is a 1-by-1 diagonal block.
-*>          If UPLO = 'U' and IPIV(k) = IPIV(k-1) < 0, then rows and
-*>          columns k-1 and -IPIV(k) were interchanged and D(k-1:k,k-1:k)
-*>          is a 2-by-2 diagonal block.  If UPLO = 'L' and IPIV(k) =
-*>          IPIV(k+1) < 0, then rows and columns k+1 and -IPIV(k) were
-*>          interchanged and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
+*>
+*>          If UPLO = 'U':
+*>             If IPIV(k) > 0, then rows and columns k and IPIV(k) were
+*>             interchanged and D(k,k) is a 1-by-1 diagonal block.
+*>
+*>             If IPIV(k) = IPIV(k-1) < 0, then rows and columns
+*>             k-1 and -IPIV(k) were interchanged and D(k-1:k,k-1:k)
+*>             is a 2-by-2 diagonal block.
+*>
+*>          If UPLO = 'L':
+*>             If IPIV(k) > 0, then rows and columns k and IPIV(k) were
+*>             interchanged and D(k,k) is a 1-by-1 diagonal block.
+*>
+*>             If IPIV(k) = IPIV(k+1) < 0, then rows and columns
+*>             k+1 and -IPIV(k) were interchanged and D(k:k+1,k:k+1)
+*>             is a 2-by-2 diagonal block.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -113,12 +122,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date November 2013
 *
 *> \ingroup complex16HEcomputational
 *
@@ -182,10 +191,10 @@
 *  =====================================================================
       SUBROUTINE ZHETF2( UPLO, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -273,7 +282,8 @@
          ABSAKK = ABS( DBLE( A( K, K ) ) )
 *
 *        IMAX is the row-index of the largest off-diagonal element in
-*        column K, and COLMAX is its absolute value
+*        column K, and COLMAX is its absolute value.
+*        Determine both COLMAX and IMAX.
 *
          IF( K.GT.1 ) THEN
             IMAX = IZAMAX( K-1, A( 1, K ), 1 )
@@ -284,13 +294,19 @@
 *
          IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero or contains a NaN: set INFO and continue
+*           Column K is zero or underflow, or contains a NaN:
+*           set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
             KP = K
             A( K, K ) = DBLE( A( K, K ) )
          ELSE
+*
+*           ============================================================
+*
+*           Test for interchange
+*
             IF( ABSAKK.GE.ALPHA*COLMAX ) THEN
 *
 *              no interchange, use 1-by-1 pivot block
@@ -299,7 +315,8 @@
             ELSE
 *
 *              JMAX is the column-index of the largest off-diagonal
-*              element in row IMAX, and ROWMAX is its absolute value
+*              element in row IMAX, and ROWMAX is its absolute value.
+*              Determine only ROWMAX.
 *
                JMAX = IMAX + IZAMAX( K-IMAX, A( IMAX, IMAX+1 ), LDA )
                ROWMAX = CABS1( A( IMAX, JMAX ) )
@@ -313,6 +330,7 @@
 *                 no interchange, use 1-by-1 pivot block
 *
                   KP = K
+*
                ELSE IF( ABS( DBLE( A( IMAX, IMAX ) ) ).GE.ALPHA*ROWMAX )
      $                   THEN
 *
@@ -328,7 +346,10 @@
                   KP = IMAX
                   KSTEP = 2
                END IF
+*
             END IF
+*
+*           ============================================================
 *
             KK = K - KSTEP + 1
             IF( KP.NE.KK ) THEN
@@ -456,7 +477,8 @@
          ABSAKK = ABS( DBLE( A( K, K ) ) )
 *
 *        IMAX is the row-index of the largest off-diagonal element in
-*        column K, and COLMAX is its absolute value
+*        column K, and COLMAX is its absolute value.
+*        Determine both COLMAX and IMAX.
 *
          IF( K.LT.N ) THEN
             IMAX = K + IZAMAX( N-K, A( K+1, K ), 1 )
@@ -467,13 +489,19 @@
 *
          IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero or contains a NaN: set INFO and continue
+*           Column K is zero or underflow, or contains a NaN:
+*           set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
             KP = K
             A( K, K ) = DBLE( A( K, K ) )
          ELSE
+*
+*           ============================================================
+*
+*           Test for interchange
+*
             IF( ABSAKK.GE.ALPHA*COLMAX ) THEN
 *
 *              no interchange, use 1-by-1 pivot block
@@ -482,7 +510,8 @@
             ELSE
 *
 *              JMAX is the column-index of the largest off-diagonal
-*              element in row IMAX, and ROWMAX is its absolute value
+*              element in row IMAX, and ROWMAX is its absolute value.
+*              Determine only ROWMAX.
 *
                JMAX = K - 1 + IZAMAX( IMAX-K, A( IMAX, K ), LDA )
                ROWMAX = CABS1( A( IMAX, JMAX ) )
@@ -496,6 +525,7 @@
 *                 no interchange, use 1-by-1 pivot block
 *
                   KP = K
+*
                ELSE IF( ABS( DBLE( A( IMAX, IMAX ) ) ).GE.ALPHA*ROWMAX )
      $                   THEN
 *
@@ -511,7 +541,10 @@
                   KP = IMAX
                   KSTEP = 2
                END IF
+*
             END IF
+*
+*           ============================================================
 *
             KK = K + KSTEP - 1
             IF( KP.NE.KK ) THEN

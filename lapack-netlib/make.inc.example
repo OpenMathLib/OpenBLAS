@@ -1,7 +1,7 @@
 ####################################################################
 #  LAPACK make include file.                                       #
-#  LAPACK, Version 3.4.0                                           #
-#  April 2012                                                   #
+#  LAPACK, Version 3.5.0                                           #
+#  November 2013                                                   #
 ####################################################################
 #
 SHELL = /bin/sh
@@ -13,9 +13,9 @@ SHELL = /bin/sh
 #  desired load options for your machine.
 #
 FORTRAN  = gfortran 
-OPTS     = -O2
+OPTS     = -O2 -frecursive
 DRVOPTS  = $(OPTS)
-NOOPT    = -O0
+NOOPT    = -O0 -frecursive
 LOADER   = gfortran
 LOADOPTS =
 #

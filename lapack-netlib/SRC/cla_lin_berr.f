@@ -67,14 +67,14 @@
 *>
 *> \param[in] RES
 *> \verbatim
-*>          RES is DOUBLE PRECISION array, dimension (N,NRHS)
+*>          RES is REAL array, dimension (N,NRHS)
 *>     The residual matrix, i.e., the matrix R in the relative backward
 *>     error formula above.
 *> \endverbatim
 *>
 *> \param[in] AYB
 *> \verbatim
-*>          AYB is DOUBLE PRECISION array, dimension (N, NRHS)
+*>          AYB is REAL array, dimension (N, NRHS)
 *>     The denominator in the relative backward error formula above, i.e.,
 *>     the matrix abs(op(A_s))*abs(Y) + abs(B_s). The matrices A, Y, and B
 *>     are from iterative refinement (see cla_gerfsx_extended.f).
@@ -94,17 +94,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2013
 *
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE CLA_LIN_BERR ( N, NZ, NRHS, RES, AYB, BERR )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       INTEGER            N, NZ, NRHS

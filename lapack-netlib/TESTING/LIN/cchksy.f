@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE CCHKSY( DOTYPE, NN, NVAL, NNB, NBVAL, NNS, NSVAL,
 *                          THRESH, TSTERR, NMAX, A, AFAC, AINV, B, X,
 *                          XACT, WORK, RWORK, IWORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NMAX, NN, NNB, NNS, NOUT
@@ -24,7 +24,7 @@
 *       COMPLEX            A( * ), AFAC( * ), AINV( * ), B( * ),
 *      $                   WORK( * ), X( * ), XACT( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -135,14 +135,12 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX array, dimension
-*>                      (NMAX*max(2,NSMAX))
+*>          WORK is COMPLEX array, dimension (NMAX*max(2,NSMAX))
 *> \endverbatim
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is REAL array,
-*>                                 dimension (NMAX+2*NSMAX)
+*>          RWORK is REAL array, dimension (NMAX+2*NSMAX)
 *> \endverbatim
 *>
 *> \param[out] IWORK
@@ -159,12 +157,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup complex_lin
 *
@@ -173,10 +171,10 @@
      $                   THRESH, TSTERR, NMAX, A, AFAC, AINV, B, X,
      $                   XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -197,7 +195,7 @@
       REAL               ZERO
       PARAMETER          ( ZERO = 0.0E+0 )
       COMPLEX            CZERO
-      PARAMETER          ( CZERO = ( 0.0E+0, 0.0E+0 )  )
+      PARAMETER          ( CZERO = ( 0.0E+0, 0.0E+0 ) )
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 11 )
       INTEGER            NTESTS
@@ -299,9 +297,9 @@
             DO 160 IUPLO = 1, 2
                UPLO = UPLOS( IUPLO )
 *
-               IF( IMAT.NE.NTYPES ) THEN
+*              Begin generate test matrix A.
 *
-*                 Begin generate the test matrix A.
+               IF( IMAT.NE.NTYPES ) THEN
 *
 *                 Set up parameters with CLATB4 for the matrix generator
 *                 based on the type of matrix to be generated.
@@ -321,6 +319,9 @@
                   IF( INFO.NE.0 ) THEN
                      CALL ALAERH( PATH, 'CLATMS', INFO, 0, UPLO, N, N,
      $                            -1, -1, -1, IMAT, NFAIL, NERRS, NOUT )
+*
+*                    Skip all tests for this generated matrix
+*
                      GO TO 160
                   END IF
 *
@@ -393,16 +394,18 @@
                      IZERO = 0
                   END IF
 *
-*                 End generate the test matrix A.
-*
                ELSE
 *
-*                 Use a special block diagonal matrix to test alternate
-*                 code for the 2 x 2 blocks.
+*                 For matrix kind IMAT = 11, generate special block
+*                 diagonal matrix to test alternate code
+*                 for the 2 x 2 blocks.
 *
                   CALL CLATSY( UPLO, N, A, LDA, ISEED )
 *
                END IF
+*
+*              End generate test matrix A.
+*
 *
 *              Do for each value of NB in NBVAL
 *
@@ -523,6 +526,8 @@
                      GO TO 140
                   END IF
 *
+*                 Do for each value of NRHS in NSVAL.
+*
                   DO 130 IRHS = 1, NNS
                      NRHS = NSVAL( IRHS )
 *
@@ -601,7 +606,7 @@
      $                            RWORK( NRHS+1 ), WORK,
      $                            RWORK( 2*NRHS+1 ), INFO )
 *
-*                 Check error code from CSYRFS.
+*                    Check error code from CSYRFS and handle error.
 *
                      IF( INFO.NE.0 )
      $                  CALL ALAERH( PATH, 'CSYRFS', INFO, 0, UPLO, N,
@@ -627,6 +632,9 @@
                         END IF
   120                CONTINUE
                      NRUN = NRUN + 6
+*
+*                 End do for each value of NRHS in NSVAL.
+*
   130             CONTINUE
 *
 *+    TEST 9
@@ -644,7 +652,7 @@
      $               CALL ALAERH( PATH, 'CSYCON', INFO, 0, UPLO, N, N,
      $                            -1, -1, -1, IMAT, NFAIL, NERRS, NOUT )
 *
-*                 Compute the test ratio to compare to values of RCOND
+*                 Compute the test ratio to compare values of RCOND
 *
                   RESULT( 9 ) = SGET06( RCOND, RCONDC )
 *

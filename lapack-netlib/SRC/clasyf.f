@@ -1,25 +1,25 @@
-*> \brief \b CLASYF computes a partial factorization of a complex symmetric matrix, using the diagonal pivoting method.
+*> \brief \b CLASYF computes a partial factorization of a complex symmetric matrix using the Bunch-Kaufman diagonal pivoting method.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLASYF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clasyf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clasyf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clasyf.f"> 
+*> Download CLASYF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clasyf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clasyf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clasyf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CLASYF( UPLO, N, NB, KB, A, LDA, IPIV, W, LDW, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, KB, LDA, LDW, N, NB
@@ -28,7 +28,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * ), W( LDW, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -110,16 +110,26 @@
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
 *>          Details of the interchanges and the block structure of D.
-*>          If UPLO = 'U', only the last KB elements of IPIV are set;
-*>          if UPLO = 'L', only the first KB elements are set.
 *>
-*>          If IPIV(k) > 0, then rows and columns k and IPIV(k) were
-*>          interchanged and D(k,k) is a 1-by-1 diagonal block.
-*>          If UPLO = 'U' and IPIV(k) = IPIV(k-1) < 0, then rows and
-*>          columns k-1 and -IPIV(k) were interchanged and D(k-1:k,k-1:k)
-*>          is a 2-by-2 diagonal block.  If UPLO = 'L' and IPIV(k) =
-*>          IPIV(k+1) < 0, then rows and columns k+1 and -IPIV(k) were
-*>          interchanged and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
+*>          If UPLO = 'U':
+*>             Only the last KB elements of IPIV are set.
+*>
+*>             If IPIV(k) > 0, then rows and columns k and IPIV(k) were
+*>             interchanged and D(k,k) is a 1-by-1 diagonal block.
+*>
+*>             If IPIV(k) = IPIV(k-1) < 0, then rows and columns
+*>             k-1 and -IPIV(k) were interchanged and D(k-1:k,k-1:k)
+*>             is a 2-by-2 diagonal block.
+*>
+*>          If UPLO = 'L':
+*>             Only the first KB elements of IPIV are set.
+*>
+*>             If IPIV(k) > 0, then rows and columns k and IPIV(k) were
+*>             interchanged and D(k,k) is a 1-by-1 diagonal block.
+*>
+*>             If IPIV(k) = IPIV(k+1) < 0, then rows and columns
+*>             k+1 and -IPIV(k) were interchanged and D(k:k+1,k:k+1)
+*>             is a 2-by-2 diagonal block.
 *> \endverbatim
 *>
 *> \param[out] W
@@ -145,22 +155,32 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date November 2013
 *
 *> \ingroup complexSYcomputational
+*
+*> \par Contributors:
+*  ==================
+*>
+*> \verbatim
+*>
+*>  November 2013,  Igor Kozachenko,
+*>                  Computer Science Division,
+*>                  University of California, Berkeley
+*> \endverbatim
 *
 *  =====================================================================
       SUBROUTINE CLASYF( UPLO, N, NB, KB, A, LDA, IPIV, W, LDW, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -246,7 +266,8 @@
          ABSAKK = CABS1( W( K, KW ) )
 *
 *        IMAX is the row-index of the largest off-diagonal element in
-*        column K, and COLMAX is its absolute value
+*        column K, and COLMAX is its absolute value.
+*        Determine both COLMAX and IMAX.
 *
          IF( K.GT.1 ) THEN
             IMAX = ICAMAX( K-1, W( 1, KW ), 1 )
@@ -257,7 +278,7 @@
 *
          IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or underflow: set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
@@ -302,7 +323,7 @@
 *
                   KP = IMAX
 *
-*                 copy column KW-1 of W to column KW
+*                 copy column KW-1 of W to column KW of W
 *
                   CALL CCOPY( K, W( 1, KW-1 ), 1, W( 1, KW ), 1 )
                ELSE
@@ -315,58 +336,116 @@
                END IF
             END IF
 *
+*           ============================================================
+*
+*           KK is the column of A where pivoting step stopped
+*
             KK = K - KSTEP + 1
+*
+*           KKW is the column of W which corresponds to column KK of A
+*
             KKW = NB + KK - N
 *
-*           Updated column KP is already stored in column KKW of W
+*           Interchange rows and columns KP and KK.
+*           Updated column KP is already stored in column KKW of W.
 *
             IF( KP.NE.KK ) THEN
 *
-*              Copy non-updated column KK to column KP
+*              Copy non-updated column KK to column KP of submatrix A
+*              at step K. No need to copy element into column K
+*              (or K and K-1 for 2-by-2 pivot) of A, since these columns
+*              will be later overwritten.
 *
-               A( KP, K ) = A( KK, K )
-               CALL CCOPY( K-1-KP, A( KP+1, KK ), 1, A( KP, KP+1 ),
+               A( KP, KP ) = A( KK, KK )
+               CALL CCOPY( KK-1-KP, A( KP+1, KK ), 1, A( KP, KP+1 ),
      $                     LDA )
-               CALL CCOPY( KP, A( 1, KK ), 1, A( 1, KP ), 1 )
+               IF( KP.GT.1 )
+     $            CALL CCOPY( KP-1, A( 1, KK ), 1, A( 1, KP ), 1 )
 *
-*              Interchange rows KK and KP in last KK columns of A and W
+*              Interchange rows KK and KP in last K+1 to N columns of A
+*              (columns K (or K and K-1 for 2-by-2 pivot) of A will be
+*              later overwritten). Interchange rows KK and KP
+*              in last KKW to NB columns of W.
 *
-               CALL CSWAP( N-KK+1, A( KK, KK ), LDA, A( KP, KK ), LDA )
+               IF( K.LT.N )
+     $            CALL CSWAP( N-K, A( KK, K+1 ), LDA, A( KP, K+1 ),
+     $                        LDA )
                CALL CSWAP( N-KK+1, W( KK, KKW ), LDW, W( KP, KKW ),
      $                     LDW )
             END IF
 *
             IF( KSTEP.EQ.1 ) THEN
 *
-*              1-by-1 pivot block D(k): column KW of W now holds
+*              1-by-1 pivot block D(k): column kw of W now holds
 *
-*              W(k) = U(k)*D(k)
+*              W(kw) = U(k)*D(k),
 *
 *              where U(k) is the k-th column of U
 *
-*              Store U(k) in column k of A
+*              Store subdiag. elements of column U(k)
+*              and 1-by-1 block D(k) in column k of A.
+*              NOTE: Diagonal element U(k,k) is a UNIT element
+*              and not stored.
+*                 A(k,k) := D(k,k) = W(k,kw)
+*                 A(1:k-1,k) := U(1:k-1,k) = W(1:k-1,kw)/D(k,k)
 *
                CALL CCOPY( K, W( 1, KW ), 1, A( 1, K ), 1 )
                R1 = CONE / A( K, K )
                CALL CSCAL( K-1, R1, A( 1, K ), 1 )
+*
             ELSE
 *
-*              2-by-2 pivot block D(k): columns KW and KW-1 of W now
-*              hold
+*              2-by-2 pivot block D(k): columns kw and kw-1 of W now hold
 *
-*              ( W(k-1) W(k) ) = ( U(k-1) U(k) )*D(k)
+*              ( W(kw-1) W(kw) ) = ( U(k-1) U(k) )*D(k)
 *
 *              where U(k) and U(k-1) are the k-th and (k-1)-th columns
 *              of U
 *
+*              Store U(1:k-2,k-1) and U(1:k-2,k) and 2-by-2
+*              block D(k-1:k,k-1:k) in columns k-1 and k of A.
+*              NOTE: 2-by-2 diagonal block U(k-1:k,k-1:k) is a UNIT
+*              block and not stored.
+*                 A(k-1:k,k-1:k) := D(k-1:k,k-1:k) = W(k-1:k,kw-1:kw)
+*                 A(1:k-2,k-1:k) := U(1:k-2,k:k-1:k) =
+*                 = W(1:k-2,kw-1:kw) * ( D(k-1:k,k-1:k)**(-1) )
+*
                IF( K.GT.2 ) THEN
 *
-*                 Store U(k) and U(k-1) in columns k and k-1 of A
+*                 Compose the columns of the inverse of 2-by-2 pivot
+*                 block D in the following way to reduce the number
+*                 of FLOPS when we myltiply panel ( W(kw-1) W(kw) ) by
+*                 this inverse
+*
+*                 D**(-1) = ( d11 d21 )**(-1) =
+*                           ( d21 d22 )
+*
+*                 = 1/(d11*d22-d21**2) * ( ( d22 ) (-d21 ) ) =
+*                                        ( (-d21 ) ( d11 ) )
+*
+*                 = 1/d21 * 1/((d11/d21)*(d22/d21)-1) *
+*
+*                   * ( ( d22/d21 ) (      -1 ) ) =
+*                     ( (      -1 ) ( d11/d21 ) )
+*
+*                 = 1/d21 * 1/(D22*D11-1) * ( ( D11 ) (  -1 ) ) =
+*                                           ( ( -1  ) ( D22 ) )
+*
+*                 = 1/d21 * T * ( ( D11 ) (  -1 ) )
+*                               ( (  -1 ) ( D22 ) )
+*
+*                 = D21 * ( ( D11 ) (  -1 ) )
+*                         ( (  -1 ) ( D22 ) )
 *
                   D21 = W( K-1, KW )
                   D11 = W( K, KW ) / D21
                   D22 = W( K-1, KW-1 ) / D21
                   T = CONE / ( D11*D22-CONE )
+*
+*                 Update elements in columns A(k-1) and A(k) as
+*                 dot products of rows of ( W(kw-1) W(kw) ) and columns
+*                 of D**(-1)
+*
                   D21 = T / D21
                   DO 20 J = 1, K - 2
                      A( J, K-1 ) = D21*( D11*W( J, KW-1 )-W( J, KW ) )
@@ -379,7 +458,9 @@
                A( K-1, K-1 ) = W( K-1, KW-1 )
                A( K-1, K ) = W( K-1, KW )
                A( K, K ) = W( K, KW )
+*
             END IF
+*
          END IF
 *
 *        Store details of the interchanges in IPIV
@@ -423,20 +504,28 @@
    50    CONTINUE
 *
 *        Put U12 in standard form by partially undoing the interchanges
-*        in columns k+1:n
+*        in columns k+1:n looping backwards from k+1 to n
 *
          J = K + 1
    60    CONTINUE
-         JJ = J
-         JP = IPIV( J )
-         IF( JP.LT.0 ) THEN
-            JP = -JP
+*
+*           Undo the interchanges (if any) of rows JJ and JP at each
+*           step J
+*
+*           (Here, J is a diagonal index)
+            JJ = J
+            JP = IPIV( J )
+            IF( JP.LT.0 ) THEN
+               JP = -JP
+*              (Here, J is a diagonal index)
+               J = J + 1
+            END IF
+*           (NOTE: Here, J is used to determine row length. Length N-J+1
+*           of the rows to swap back doesn't include diagonal element)
             J = J + 1
-         END IF
-         J = J + 1
-         IF( JP.NE.JJ .AND. J.LE.N )
-     $      CALL CSWAP( N-J+1, A( JP, J ), LDA, A( JJ, J ), LDA )
-         IF( J.LE.N )
+            IF( JP.NE.JJ .AND. J.LE.N )
+     $         CALL CSWAP( N-J+1, A( JP, J ), LDA, A( JJ, J ), LDA )
+         IF( J.LT.N )
      $      GO TO 60
 *
 *        Set KB to the number of columns factorized
@@ -473,7 +562,8 @@
          ABSAKK = CABS1( W( K, K ) )
 *
 *        IMAX is the row-index of the largest off-diagonal element in
-*        column K, and COLMAX is its absolute value
+*        column K, and COLMAX is its absolute value.
+*        Determine both COLMAX and IMAX.
 *
          IF( K.LT.N ) THEN
             IMAX = K + ICAMAX( N-K, W( K+1, K ), 1 )
@@ -484,7 +574,7 @@
 *
          IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or underflow: set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
@@ -528,7 +618,7 @@
 *
                   KP = IMAX
 *
-*                 copy column K+1 of W to column K
+*                 copy column K+1 of W to column K of W
 *
                   CALL CCOPY( N-K+1, W( K, K+1 ), 1, W( K, K ), 1 )
                ELSE
@@ -541,21 +631,35 @@
                END IF
             END IF
 *
+*           ============================================================
+*
+*           KK is the column of A where pivoting step stopped
+*
             KK = K + KSTEP - 1
 *
-*           Updated column KP is already stored in column KK of W
+*           Interchange rows and columns KP and KK.
+*           Updated column KP is already stored in column KK of W.
 *
             IF( KP.NE.KK ) THEN
 *
-*              Copy non-updated column KK to column KP
+*              Copy non-updated column KK to column KP of submatrix A
+*              at step K. No need to copy element into column K
+*              (or K and K+1 for 2-by-2 pivot) of A, since these columns
+*              will be later overwritten.
 *
-               A( KP, K ) = A( KK, K )
-               CALL CCOPY( KP-K-1, A( K+1, KK ), 1, A( KP, K+1 ), LDA )
-               CALL CCOPY( N-KP+1, A( KP, KK ), 1, A( KP, KP ), 1 )
+               A( KP, KP ) = A( KK, KK )
+               CALL CCOPY( KP-KK-1, A( KK+1, KK ), 1, A( KP, KK+1 ),
+     $                     LDA )
+               IF( KP.LT.N )
+     $            CALL CCOPY( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ), 1 )
 *
-*              Interchange rows KK and KP in first KK columns of A and W
+*              Interchange rows KK and KP in first K-1 columns of A
+*              (columns K (or K and K+1 for 2-by-2 pivot) of A will be
+*              later overwritten). Interchange rows KK and KP
+*              in first KK columns of W.
 *
-               CALL CSWAP( KK, A( KK, 1 ), LDA, A( KP, 1 ), LDA )
+               IF( K.GT.1 )
+     $            CALL CSWAP( K-1, A( KK, 1 ), LDA, A( KP, 1 ), LDA )
                CALL CSWAP( KK, W( KK, 1 ), LDW, W( KP, 1 ), LDW )
             END IF
 *
@@ -563,17 +667,23 @@
 *
 *              1-by-1 pivot block D(k): column k of W now holds
 *
-*              W(k) = L(k)*D(k)
+*              W(k) = L(k)*D(k),
 *
 *              where L(k) is the k-th column of L
 *
-*              Store L(k) in column k of A
+*              Store subdiag. elements of column L(k)
+*              and 1-by-1 block D(k) in column k of A.
+*              (NOTE: Diagonal element L(k,k) is a UNIT element
+*              and not stored)
+*                 A(k,k) := D(k,k) = W(k,k)
+*                 A(k+1:N,k) := L(k+1:N,k) = W(k+1:N,k)/D(k,k)
 *
                CALL CCOPY( N-K+1, W( K, K ), 1, A( K, K ), 1 )
                IF( K.LT.N ) THEN
                   R1 = CONE / A( K, K )
                   CALL CSCAL( N-K, R1, A( K+1, K ), 1 )
                END IF
+*
             ELSE
 *
 *              2-by-2 pivot block D(k): columns k and k+1 of W now hold
@@ -583,15 +693,51 @@
 *              where L(k) and L(k+1) are the k-th and (k+1)-th columns
 *              of L
 *
+*              Store L(k+2:N,k) and L(k+2:N,k+1) and 2-by-2
+*              block D(k:k+1,k:k+1) in columns k and k+1 of A.
+*              (NOTE: 2-by-2 diagonal block L(k:k+1,k:k+1) is a UNIT
+*              block and not stored)
+*                 A(k:k+1,k:k+1) := D(k:k+1,k:k+1) = W(k:k+1,k:k+1)
+*                 A(k+2:N,k:k+1) := L(k+2:N,k:k+1) =
+*                 = W(k+2:N,k:k+1) * ( D(k:k+1,k:k+1)**(-1) )
+*
                IF( K.LT.N-1 ) THEN
 *
-*                 Store L(k) and L(k+1) in columns k and k+1 of A
+*                 Compose the columns of the inverse of 2-by-2 pivot
+*                 block D in the following way to reduce the number
+*                 of FLOPS when we myltiply panel ( W(k) W(k+1) ) by
+*                 this inverse
+*
+*                 D**(-1) = ( d11 d21 )**(-1) =
+*                           ( d21 d22 )
+*
+*                 = 1/(d11*d22-d21**2) * ( ( d22 ) (-d21 ) ) =
+*                                        ( (-d21 ) ( d11 ) )
+*
+*                 = 1/d21 * 1/((d11/d21)*(d22/d21)-1) *
+*
+*                   * ( ( d22/d21 ) (      -1 ) ) =
+*                     ( (      -1 ) ( d11/d21 ) )
+*
+*                 = 1/d21 * 1/(D22*D11-1) * ( ( D11 ) (  -1 ) ) =
+*                                           ( ( -1  ) ( D22 ) )
+*
+*                 = 1/d21 * T * ( ( D11 ) (  -1 ) )
+*                               ( (  -1 ) ( D22 ) )
+*
+*                 = D21 * ( ( D11 ) (  -1 ) )
+*                         ( (  -1 ) ( D22 ) )
 *
                   D21 = W( K+1, K )
                   D11 = W( K+1, K+1 ) / D21
                   D22 = W( K, K ) / D21
                   T = CONE / ( D11*D22-CONE )
                   D21 = T / D21
+*
+*                 Update elements in columns A(k) and A(k+1) as
+*                 dot products of rows of ( W(k) W(k+1) ) and columns
+*                 of D**(-1)
+*
                   DO 80 J = K + 2, N
                      A( J, K ) = D21*( D11*W( J, K )-W( J, K+1 ) )
                      A( J, K+1 ) = D21*( D22*W( J, K+1 )-W( J, K ) )
@@ -603,7 +749,9 @@
                A( K, K ) = W( K, K )
                A( K+1, K ) = W( K+1, K )
                A( K+1, K+1 ) = W( K+1, K+1 )
+*
             END IF
+*
          END IF
 *
 *        Store details of the interchanges in IPIV
@@ -648,20 +796,28 @@
   110    CONTINUE
 *
 *        Put L21 in standard form by partially undoing the interchanges
-*        in columns 1:k-1
+*        of rows in columns 1:k-1 looping backwards from k-1 to 1
 *
          J = K - 1
   120    CONTINUE
-         JJ = J
-         JP = IPIV( J )
-         IF( JP.LT.0 ) THEN
-            JP = -JP
+*
+*           Undo the interchanges (if any) of rows JJ and JP at each
+*           step J
+*
+*           (Here, J is a diagonal index)
+            JJ = J
+            JP = IPIV( J )
+            IF( JP.LT.0 ) THEN
+               JP = -JP
+*              (Here, J is a diagonal index)
+               J = J - 1
+            END IF
+*           (NOTE: Here, J is used to determine row length. Length J
+*           of the rows to swap back doesn't include diagonal element)
             J = J - 1
-         END IF
-         J = J - 1
-         IF( JP.NE.JJ .AND. J.GE.1 )
-     $      CALL CSWAP( J, A( JP, 1 ), LDA, A( JJ, 1 ), LDA )
-         IF( J.GE.1 )
+            IF( JP.NE.JJ .AND. J.GE.1 )
+     $         CALL CSWAP( J, A( JP, 1 ), LDA, A( JJ, 1 ), LDA )
+         IF( J.GT.1 )
      $      GO TO 120
 *
 *        Set KB to the number of columns factorized

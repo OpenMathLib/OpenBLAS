@@ -23,8 +23,10 @@ CPP    9               List types on next line if 0 < NTYPES <  9
 CPB    8               List types on next line if 0 < NTYPES <  8
 CPT   12               List types on next line if 0 < NTYPES < 12
 CHE   10               List types on next line if 0 < NTYPES < 10
+CHR   10               List types on next line if 0 < NTYPES < 10
 CHP   10               List types on next line if 0 < NTYPES < 10
 CSY   11               List types on next line if 0 < NTYPES < 11
+CSR   11               List types on next line if 0 < NTYPES < 11
 CSP   11               List types on next line if 0 < NTYPES < 11
 CTR   18               List types on next line if 0 < NTYPES < 18
 CTP   18               List types on next line if 0 < NTYPES < 18

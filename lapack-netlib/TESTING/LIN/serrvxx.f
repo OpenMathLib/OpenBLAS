@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -92,7 +92,8 @@
       EXTERNAL           CHKXER, SGBSV, SGBSVX, SGESV, SGESVX, SGTSV,
      $                   SGTSVX, SPBSV, SPBSVX, SPOSV, SPOSVX, SPPSV,
      $                   SPPSVX, SPTSV, SPTSVX, SSPSV, SSPSVX, SSYSV,
-     $                   SSYSVX, SGESVXX, SSYSVXX, SPOSVXX, SGBSVXX
+     $                   SSYSV_ROOK, SSYSVX, SGESVXX, SSYSVXX, SPOSVXX,
+     $                   SGBSVXX
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -886,6 +887,22 @@
      $        1, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, IW, INFO )
          CALL CHKXER( 'SSYSVXX', INFOT, NOUT, LERR, OK )
+*
+*        SSYSV_ROOK
+*
+         SRNAMT = 'SSYSV_ROOK'
+         INFOT = 1
+         CALL SSYSV_ROOK( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SSYSV_ROOK( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SSYSV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *

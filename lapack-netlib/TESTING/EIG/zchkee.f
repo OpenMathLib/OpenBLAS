@@ -1026,17 +1026,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup complex16_eig
 *
 *  =====================================================================
       PROGRAM ZCHKEE
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *  =====================================================================
 *
@@ -1129,6 +1129,10 @@
 *     ..
 *     .. Executable Statements ..
 *
+      A = 0.0
+      B = 0.0
+      C = 0.0
+      DC = 0.0
       S1 = DSECND( )
       FATAL = .FALSE.
       NUNIT = NOUT

@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ALADHD( IOUNIT, PATH )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            IOUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -47,10 +47,18 @@
 *>             _PP:  Symmetric or Hermitian positive definite packed
 *>             _PB:  Symmetric or Hermitian positive definite band
 *>             _PT:  Symmetric or Hermitian positive definite tridiagonal
-*>             _SY:  Symmetric indefinite
-*>             _SP:  Symmetric indefinite packed
-*>             _HE:  (complex) Hermitian indefinite
-*>             _HP:  (complex) Hermitian indefinite packed
+*>             _SY:  Symmetric indefinite,
+*>                     with partial (Bunch-Kaufman) pivoting
+*>             _SR:  Symmetric indefinite,
+*>                     with "rook" (bounded Bunch-Kaufman) pivoting
+*>             _SP:  Symmetric indefinite packed,
+*>                     with partial (Bunch-Kaufman) pivoting
+*>             _HE:  (complex) Hermitian indefinite,
+*>                     with partial (Bunch-Kaufman) pivoting
+*>             _HR:  (complex) Hermitian indefinite,
+*>                     with "rook" (bounded Bunch-Kaufman) pivoting
+*>             _HP:  (complex) Hermitian indefinite packed,
+*>                     with partial (Bunch-Kaufman) pivoting
 *>          The first character must be one of S, D, C, or Z (C or Z only
 *>          if complex).
 *> \endverbatim
@@ -58,22 +66,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup aux_lin
 *
 *  =====================================================================
       SUBROUTINE ALADHD( IOUNIT, PATH )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -223,7 +231,9 @@
       ELSE IF( LSAMEN( 2, P2, 'SY' ) .OR. LSAMEN( 2, P2, 'SP' ) ) THEN
 *
 *        SY: Symmetric indefinite full
+*            with partial (Bunch-Kaufman) pivoting algorithm
 *        SP: Symmetric indefinite packed
+*            with partial (Bunch-Kaufman) pivoting algorithm
 *
          IF( LSAME( C3, 'Y' ) ) THEN
             WRITE( IOUNIT, FMT = 9992 )PATH, 'Symmetric'
@@ -245,18 +255,42 @@
          WRITE( IOUNIT, FMT = 9976 )6
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
+      ELSE IF( LSAMEN( 2, P2, 'SR' )  ) THEN
+*
+*        SR: Symmetric indefinite full,
+*            with "rook" (bounded Bunch-Kaufman) pivoting algorithm
+*
+         WRITE( IOUNIT, FMT = 9992 )PATH, 'Symmetric'
+*
+         WRITE( IOUNIT, FMT = '( '' Matrix types:'' )' )
+         IF( SORD ) THEN
+            WRITE( IOUNIT, FMT = 9983 )
+         ELSE
+            WRITE( IOUNIT, FMT = 9982 )
+         END IF
+*
+         WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
+         WRITE( IOUNIT, FMT = 9974 )1
+         WRITE( IOUNIT, FMT = 9980 )2
+         WRITE( IOUNIT, FMT = 9979 )3
+         WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
+*
       ELSE IF( LSAMEN( 2, P2, 'HE' ) .OR. LSAMEN( 2, P2, 'HP' ) ) THEN
 *
 *        HE: Hermitian indefinite full
+*            with partial (Bunch-Kaufman) pivoting algorithm
 *        HP: Hermitian indefinite packed
+*            with partial (Bunch-Kaufman) pivoting algorithm
 *
          IF( LSAME( C3, 'E' ) ) THEN
             WRITE( IOUNIT, FMT = 9992 )PATH, 'Hermitian'
          ELSE
             WRITE( IOUNIT, FMT = 9991 )PATH, 'Hermitian'
          END IF
+*
          WRITE( IOUNIT, FMT = '( '' Matrix types:'' )' )
          WRITE( IOUNIT, FMT = 9983 )
+*
          WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
          WRITE( IOUNIT, FMT = 9974 )1
          WRITE( IOUNIT, FMT = 9980 )2
@@ -264,6 +298,22 @@
          WRITE( IOUNIT, FMT = 9977 )4
          WRITE( IOUNIT, FMT = 9978 )5
          WRITE( IOUNIT, FMT = 9976 )6
+         WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
+*
+      ELSE IF( LSAMEN( 2, P2, 'HR' )  ) THEN
+*
+*        HR: Hermitian indefinite full,
+*            with "rook" (bounded Bunch-Kaufman) pivoting algorithm
+*
+         WRITE( IOUNIT, FMT = 9992 )PATH, 'Hermitian'
+*
+         WRITE( IOUNIT, FMT = '( '' Matrix types:'' )' )
+         WRITE( IOUNIT, FMT = 9983 )
+*
+         WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
+         WRITE( IOUNIT, FMT = 9974 )1
+         WRITE( IOUNIT, FMT = 9980 )2
+         WRITE( IOUNIT, FMT = 9979 )3
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
       ELSE
@@ -286,10 +336,14 @@
      $      ' positive definite band matrices' )
  9993 FORMAT( / 1X, A3, ' drivers:  ', A9,
      $      ' positive definite tridiagonal' )
- 9992 FORMAT( / 1X, A3, ' drivers:  ', A9, ' indefinite matrices' )
+ 9992 FORMAT( / 1X, A3, ' drivers:  ', A9, ' indefinite matrices',
+     $     ', "rook" (bounded Bunch-Kaufman) pivoting' )
  9991 FORMAT( / 1X, A3, ' drivers:  ', A9,
      $      ' indefinite packed matrices',
      $      ', partial (Bunch-Kaufman) pivoting' )
+ 9891 FORMAT( / 1X, A3, ' drivers:  ', A9,
+     $      ' indefinite packed matrices',
+     $      ', "rook" (bounded Bunch-Kaufman) pivoting' )
  9990 FORMAT( / 1X, A3, ':  No header available' )
 *
 *     GE matrix types

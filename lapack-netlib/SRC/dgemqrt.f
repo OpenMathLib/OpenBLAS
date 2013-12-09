@@ -160,7 +160,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup doubleGEcomputational
 *
@@ -168,10 +168,10 @@
       SUBROUTINE DGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT, 
      $                   C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS
@@ -225,7 +225,7 @@
          INFO = -4
       ELSE IF( K.LT.0 .OR. K.GT.Q ) THEN
          INFO = -5
-      ELSE IF( NB.LT.1 .OR. NB.GT.K ) THEN
+      ELSE IF( NB.LT.1 .OR. (NB.GT.K .AND. K.GT.0)) THEN
          INFO = -6
       ELSE IF( LDV.LT.MAX( 1, Q ) ) THEN
          INFO = -8

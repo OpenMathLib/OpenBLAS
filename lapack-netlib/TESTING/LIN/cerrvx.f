@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CERRVX( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -43,22 +43,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -90,10 +90,10 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGBSV, CGBSVX, CGESV, CGESVX, CGTSV, CGTSVX,
-     $                   CHESV, CHESVX, CHKXER, CHPSV, CHPSVX, CPBSV,
-     $                   CPBSVX, CPOSV, CPOSVX, CPPSV, CPPSVX, CPTSV,
-     $                   CPTSVX, CSPSV, CSPSVX, CSYSV, 
-     $                   CSYSVX
+     $                   CHESV, CHESV_ROOK, CHESVX, CHKXER, CHPSV,
+     $                   CHPSVX, CPBSV, CPBSVX, CPOSV, CPOSVX, CPPSV,
+     $                   CPPSVX, CPTSV, CPTSVX, CSPSV, CSPSVX, CSYSV,
+     $                   CSYSV_ROOK, CSYSVX
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -632,6 +632,24 @@
      $                RCOND, R1, R2, W, 3, RW, INFO )
          CALL CHKXER( 'CHESVX', INFOT, NOUT, LERR, OK )
 *
+      ELSE IF( LSAMEN( 2, C2, 'HR' ) ) THEN
+*
+*        CHESV_ROOK
+*
+        SRNAMT = 'CHESV_ROOK'
+        INFOT = 1
+        CALL CHESV_ROOK( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+        CALL CHKXER( 'CHESV_ROOK', INFOT, NOUT, LERR, OK )
+        INFOT = 2
+        CALL CHESV_ROOK( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+        CALL CHKXER( 'CHESV_ROOK', INFOT, NOUT, LERR, OK )
+        INFOT = 3
+        CALL CHESV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+        CALL CHKXER( 'CHESV_ROOK', INFOT, NOUT, LERR, OK )
+        INFOT = 8
+        CALL CHESV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+        CALL CHKXER( 'CHESV_ROOK', INFOT, NOUT, LERR, OK )
+*
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *
 *        CHPSV
@@ -735,6 +753,24 @@
          CALL CSYSVX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, B, 2, X, 2,
      $                RCOND, R1, R2, W, 3, RW, INFO )
          CALL CHKXER( 'CSYSVX', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
+*
+*        CSYSV_ROOK
+*
+         SRNAMT = 'CSYSV_ROOK'
+         INFOT = 1
+         CALL CSYSV_ROOK( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYSV_ROOK( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CSYSV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_ROOK', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *

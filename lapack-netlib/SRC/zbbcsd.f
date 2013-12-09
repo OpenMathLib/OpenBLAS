@@ -322,7 +322,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -332,10 +332,10 @@
      $                   V2T, LDV2T, B11D, B11E, B12D, B12E, B21D, B21E,
      $                   B22D, B22E, RWORK, LRWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS
@@ -476,7 +476,10 @@
 *     Initial deflation
 *
       IMAX = Q
-      DO WHILE( ( IMAX .GT. 1 ) .AND. ( PHI(IMAX-1) .EQ. ZERO ) )
+      DO WHILE( IMAX .GT. 1 )
+         IF( PHI(IMAX-1) .NE. ZERO ) THEN
+            EXIT
+         END IF
          IMAX = IMAX - 1
       END DO
       IMIN = IMAX - 1

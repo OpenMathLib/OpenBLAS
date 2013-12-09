@@ -282,7 +282,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup realGEcomputational
 *
@@ -304,10 +304,10 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, WORK,
      $                   LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.1) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ, JOB
@@ -739,9 +739,9 @@
 *           Exceptional shift.  Chosen for no particularly good reason.
 *           (Single shift only.)
 *
-            IF( ( REAL( MAXIT )*SAFMIN )*ABS( H( ILAST-1, ILAST ) ).LT.
+            IF( ( REAL( MAXIT )*SAFMIN )*ABS( H( ILAST, ILAST-1 ) ).LT.
      $          ABS( T( ILAST-1, ILAST-1 ) ) ) THEN
-               ESHIFT = ESHIFT + H( ILAST, ILAST-1 ) /
+               ESHIFT = H( ILAST, ILAST-1 ) /
      $                  T( ILAST-1, ILAST-1 )
             ELSE
                ESHIFT = ESHIFT + ONE / ( SAFMIN*REAL( MAXIT ) )
@@ -759,6 +759,16 @@
      $                  T( ILAST-1, ILAST-1 ), LDT, SAFMIN*SAFETY, S1,
      $                  S2, WR, WR2, WI )
 *
+            IF ( ABS( (WR/S1)*T( ILAST, ILAST ) - H( ILAST, ILAST ) )
+     $         .GT. ABS( (WR2/S2)*T( ILAST, ILAST ) 
+     $         - H( ILAST, ILAST ) ) ) THEN
+               TEMP = WR
+               WR = WR2
+               WR2 = TEMP
+               TEMP = S1
+               S1 = S2
+               S2 = TEMP
+            END IF
             TEMP = MAX( S1, SAFMIN*MAX( ONE, ABS( WR ), ABS( WI ) ) )
             IF( WI.NE.ZERO )
      $         GO TO 200
