@@ -83,5 +83,8 @@ In chronological order:
   * [2013-07-24] Modify makefile to respect user's LDFLAGS
   * [2013-07-24] Add stack markings for GNU as arch-independent for assembler files
 
+* carlkl <https://github.com/carlkl>
+  * [2013-12-13] Fixed LAPACKE building bug on Windows
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]

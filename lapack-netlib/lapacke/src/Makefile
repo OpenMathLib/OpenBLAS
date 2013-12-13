@@ -34,7 +34,7 @@
 #
 include ../../make.inc
 
-SRC_OBJ = \
+CSRC_OBJ = \
 lapacke_cbbcsd.o \
 lapacke_cbbcsd_work.o \
 lapacke_cbdsqr.o \
@@ -532,7 +532,9 @@ lapacke_cunmtr_work.o \
 lapacke_cupgtr.o \
 lapacke_cupgtr_work.o \
 lapacke_cupmtr.o \
-lapacke_cupmtr_work.o \
+lapacke_cupmtr_work.o
+
+DSRC_OBJ = \
 lapacke_dbbcsd.o \
 lapacke_dbbcsd_work.o \
 lapacke_dbdsdc.o \
@@ -1022,7 +1024,9 @@ lapacke_dtrttf_work.o \
 lapacke_dtrttp.o \
 lapacke_dtrttp_work.o \
 lapacke_dtzrzf.o \
-lapacke_dtzrzf_work.o \
+lapacke_dtzrzf_work.o
+
+SSRC_OBJ = \
 lapacke_sbbcsd.o \
 lapacke_sbbcsd_work.o \
 lapacke_sbdsdc.o \
@@ -1506,7 +1510,9 @@ lapacke_strttf_work.o \
 lapacke_strttp.o \
 lapacke_strttp_work.o \
 lapacke_stzrzf.o \
-lapacke_stzrzf_work.o \
+lapacke_stzrzf_work.o
+
+ZSRC_OBJ = \
 lapacke_zbbcsd.o \
 lapacke_zbbcsd_work.o \
 lapacke_zbdsqr.o \
@@ -2061,12 +2067,17 @@ lapacke_slagsy_work.o \
 lapacke_zlagsy.o \
 lapacke_zlagsy_work.o
 
-
-ALLOBJ = $(SRC_OBJ) 
+COBJ_FILES := $(CSRC_OBJ)
+SOBJ_FILES := $(SSRC_OBJ)
+DOBJ_FILES := $(DSRC_OBJ)
+ZOBJ_FILES := $(ZSRC_OBJ)
 
 ifdef LAPACKE_TESTING
-ALLOBJ += $(MATGEN_OBJ) 
+ZOBJ_FILES += $(MATGEN_OBJ) 
 endif
+
+ALLOBJ = $(COBJ_FILES) $(DOBJ_FILES) $(SOBJ_FILES) $(ZOBJ_FILES) $(OBJ_FILES) 
+
 
 ifdef USEXBLAS
 ALLXOBJ = $(SXLASRC) $(DXLASRC) $(CXLASRC) $(ZXLASRC)
@@ -2078,7 +2089,11 @@ OBJ_FILES := $(C_FILES:.o=.o)
 all: ../../$(LAPACKELIB)
 
 ../../$(LAPACKELIB): $(ALLOBJ) $(ALLXOBJ)
-	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLOBJ) $(ALLXOBJ)
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(COBJ_FILES)
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(DOBJ_FILES)
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(SOBJ_FILES)
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ZOBJ_FILES)
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLXOBJ)
 	$(RANLIB) ../../$(LAPACKELIB)
 
 .c.o:
