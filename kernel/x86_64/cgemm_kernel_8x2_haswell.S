@@ -110,22 +110,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(OS_WINDOWS)
 #if   L_BUFFER_SIZE > 16384
 #define STACK_TOUCH \
-        movl    $0,  4096 * 4(%rsp);\
-        movl    $0,  4096 * 3(%rsp);\
-        movl    $0,  4096 * 2(%rsp);\
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 4(%rsp);\
+        movl    $ 0,  4096 * 3(%rsp);\
+        movl    $ 0,  4096 * 2(%rsp);\
+        movl    $ 0,  4096 * 1(%rsp);
 #elif L_BUFFER_SIZE > 12288
 #define STACK_TOUCH \
-        movl    $0,  4096 * 3(%rsp);\
-        movl    $0,  4096 * 2(%rsp);\
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 3(%rsp);\
+        movl    $ 0,  4096 * 2(%rsp);\
+        movl    $ 0,  4096 * 1(%rsp);
 #elif L_BUFFER_SIZE > 8192
 #define STACK_TOUCH \
-        movl    $0,  4096 * 2(%rsp);\
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 2(%rsp);\
+        movl    $ 0,  4096 * 1(%rsp);
 #elif L_BUFFER_SIZE > 4096
 #define STACK_TOUCH \
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 1(%rsp);
 #else
 #define STACK_TOUCH
 #endif
@@ -214,8 +214,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vbroadcastss         -5 * SIZE(BO, BI, SIZE), %ymm7
         VFMADDPS_I(        %ymm11,%ymm7,%ymm0 )
         VFMADDPS_I(        %ymm15,%ymm7,%ymm1 )
-        addq    $4 , BI                           
-        addq    $16, %rax                         
+        addq    $ 4 , BI                           
+        addq    $ 16, %rax                         
 .endm
 
 .macro SAVE8x2
@@ -224,10 +224,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %ymm1
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %ymm9 , %ymm9, %ymm9
-        vshufps $0xb1, %ymm11, %ymm11, %ymm11
-        vshufps $0xb1, %ymm13, %ymm13, %ymm13
-        vshufps $0xb1, %ymm15, %ymm15, %ymm15
+        vshufps $ 0xb1, %ymm9 , %ymm9, %ymm9
+        vshufps $ 0xb1, %ymm11, %ymm11, %ymm11
+        vshufps $ 0xb1, %ymm13, %ymm13, %ymm13
+        vshufps $ 0xb1, %ymm15, %ymm15, %ymm15
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
@@ -237,10 +237,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vaddsubps %ymm13,%ymm12, %ymm12
         vaddsubps %ymm15,%ymm14, %ymm14
 
-        vshufps $0xb1, %ymm8 , %ymm8, %ymm9
-        vshufps $0xb1, %ymm10, %ymm10, %ymm11
-        vshufps $0xb1, %ymm12, %ymm12, %ymm13
-        vshufps $0xb1, %ymm14, %ymm14, %ymm15
+        vshufps $ 0xb1, %ymm8 , %ymm8, %ymm9
+        vshufps $ 0xb1, %ymm10, %ymm10, %ymm11
+        vshufps $ 0xb1, %ymm12, %ymm12, %ymm13
+        vshufps $ 0xb1, %ymm14, %ymm14, %ymm15
 
 #else
         vaddsubps %ymm8,  %ymm9 ,%ymm9
@@ -254,10 +254,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %ymm15, %ymm14
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %ymm9 , %ymm9, %ymm9
-        vshufps $0xb1, %ymm11, %ymm11, %ymm11
-        vshufps $0xb1, %ymm13, %ymm13, %ymm13
-        vshufps $0xb1, %ymm15, %ymm15, %ymm15
+        vshufps $ 0xb1, %ymm9 , %ymm9, %ymm9
+        vshufps $ 0xb1, %ymm11, %ymm11, %ymm11
+        vshufps $ 0xb1, %ymm13, %ymm13, %ymm13
+        vshufps $ 0xb1, %ymm15, %ymm15, %ymm15
 
 #endif
 
@@ -318,8 +318,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vbroadcastss         -5 * SIZE(BO, BI, SIZE), %xmm7
         VFMADDPS_I(        %xmm11,%xmm7,%xmm0 )
         VFMADDPS_I(        %xmm15,%xmm7,%xmm1 )
-        addq    $4, BI                           
-        addq    $8, %rax                         
+        addq    $ 4, BI                           
+        addq    $ 8, %rax                         
 .endm
 
 .macro SAVE4x2
@@ -328,10 +328,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %xmm1
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
-        vshufps $0xb1, %xmm13, %xmm13, %xmm13
-        vshufps $0xb1, %xmm15, %xmm15, %xmm15
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm13, %xmm13, %xmm13
+        vshufps $ 0xb1, %xmm15, %xmm15, %xmm15
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
@@ -341,10 +341,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vaddsubps %xmm13,%xmm12, %xmm12
         vaddsubps %xmm15,%xmm14, %xmm14
 
-        vshufps $0xb1, %xmm8 , %xmm8, %xmm9
-        vshufps $0xb1, %xmm10, %xmm10, %xmm11
-        vshufps $0xb1, %xmm12, %xmm12, %xmm13
-        vshufps $0xb1, %xmm14, %xmm14, %xmm15
+        vshufps $ 0xb1, %xmm8 , %xmm8, %xmm9
+        vshufps $ 0xb1, %xmm10, %xmm10, %xmm11
+        vshufps $ 0xb1, %xmm12, %xmm12, %xmm13
+        vshufps $ 0xb1, %xmm14, %xmm14, %xmm15
 
 #else
         vaddsubps %xmm8,  %xmm9 ,%xmm9
@@ -358,10 +358,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %xmm15, %xmm14
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
-        vshufps $0xb1, %xmm13, %xmm13, %xmm13
-        vshufps $0xb1, %xmm15, %xmm15, %xmm15
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm13, %xmm13, %xmm13
+        vshufps $ 0xb1, %xmm15, %xmm15, %xmm15
 
 #endif
 
@@ -412,8 +412,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         VFMADDPS_R(        %xmm10,%xmm6,%xmm0 )
         vbroadcastss         -5 * SIZE(BO, BI, SIZE), %xmm7
         VFMADDPS_I(        %xmm11,%xmm7,%xmm0 )
-        addq    $4, BI                           
-        addq    $4, %rax                         
+        addq    $ 4, BI                           
+        addq    $ 4, %rax                         
 .endm
 
 .macro SAVE2x2
@@ -422,8 +422,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %xmm1
 
 	// swap high and low 4 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
@@ -431,8 +431,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vaddsubps %xmm9, %xmm8 , %xmm8
         vaddsubps %xmm11,%xmm10, %xmm10
 
-        vshufps $0xb1, %xmm8 , %xmm8, %xmm9
-        vshufps $0xb1, %xmm10, %xmm10, %xmm11
+        vshufps $ 0xb1, %xmm8 , %xmm8, %xmm9
+        vshufps $ 0xb1, %xmm10, %xmm10, %xmm11
 
 #else
         vaddsubps %xmm8,  %xmm9 ,%xmm9
@@ -442,8 +442,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %xmm11, %xmm10
 
 	// swap high and low 4 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
 
 #endif
 
@@ -484,8 +484,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         VFMADDPS_R(        %xmm10,%xmm6,%xmm0 )
         vbroadcastss         -5 * SIZE(BO, BI, SIZE), %xmm7
         VFMADDPS_I(        %xmm11,%xmm7,%xmm0 )
-        addq    $4, BI                           
-        addq    $2, %rax                         
+        addq    $ 4, BI                           
+        addq    $ 2, %rax                         
 .endm
 
 .macro SAVE1x2
@@ -494,8 +494,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %xmm1
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
@@ -503,8 +503,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vaddsubps %xmm9, %xmm8 , %xmm8
         vaddsubps %xmm11,%xmm10, %xmm10
 
-        vshufps $0xb1, %xmm8 , %xmm8, %xmm9
-        vshufps $0xb1, %xmm10, %xmm10, %xmm11
+        vshufps $ 0xb1, %xmm8 , %xmm8, %xmm9
+        vshufps $ 0xb1, %xmm10, %xmm10, %xmm11
 
 #else
         vaddsubps %xmm8,  %xmm9 ,%xmm9
@@ -514,8 +514,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %xmm11, %xmm10
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
 
 #endif
 
@@ -556,8 +556,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vbroadcastss         -3 * SIZE(BO, BI, SIZE), %ymm5
         VFMADDPS_I(        %ymm9,%ymm5,%ymm0  )
         VFMADDPS_I(        %ymm13,%ymm5,%ymm1 )
-        addq    $2 , BI                           
-        addq    $16, %rax                         
+        addq    $ 2 , BI                           
+        addq    $ 16, %rax                         
 .endm
 
 .macro SAVE8x1
@@ -566,8 +566,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %ymm1
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %ymm9 , %ymm9, %ymm9
-        vshufps $0xb1, %ymm13, %ymm13, %ymm13
+        vshufps $ 0xb1, %ymm9 , %ymm9, %ymm9
+        vshufps $ 0xb1, %ymm13, %ymm13, %ymm13
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
@@ -575,8 +575,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vaddsubps %ymm9, %ymm8 , %ymm8
         vaddsubps %ymm13,%ymm12, %ymm12
 
-        vshufps $0xb1, %ymm8 , %ymm8, %ymm9
-        vshufps $0xb1, %ymm12, %ymm12, %ymm13
+        vshufps $ 0xb1, %ymm8 , %ymm8, %ymm9
+        vshufps $ 0xb1, %ymm12, %ymm12, %ymm13
 
 #else
         vaddsubps %ymm8,  %ymm9 ,%ymm9
@@ -586,8 +586,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %ymm13, %ymm12
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %ymm9 , %ymm9, %ymm9
-        vshufps $0xb1, %ymm13, %ymm13, %ymm13
+        vshufps $ 0xb1, %ymm9 , %ymm9, %ymm9
+        vshufps $ 0xb1, %ymm13, %ymm13, %ymm13
 
 #endif
 
@@ -628,8 +628,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vbroadcastss         -3 * SIZE(BO, BI, SIZE), %xmm5
         VFMADDPS_I(        %xmm9,%xmm5,%xmm0  )
         VFMADDPS_I(        %xmm13,%xmm5,%xmm1 )
-        addq    $2, BI                           
-        addq    $8, %rax                         
+        addq    $ 2, BI                           
+        addq    $ 8, %rax                         
 .endm
 
 .macro SAVE4x1
@@ -638,8 +638,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %xmm1
 
 	// swap high and low 4 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm13, %xmm13, %xmm13
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm13, %xmm13, %xmm13
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
@@ -647,8 +647,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vaddsubps %xmm9, %xmm8 , %xmm8
         vaddsubps %xmm13,%xmm12, %xmm12
 
-        vshufps $0xb1, %xmm8 , %xmm8, %xmm9
-        vshufps $0xb1, %xmm12, %xmm12, %xmm13
+        vshufps $ 0xb1, %xmm8 , %xmm8, %xmm9
+        vshufps $ 0xb1, %xmm12, %xmm12, %xmm13
 
 #else
         vaddsubps %xmm8,  %xmm9 ,%xmm9
@@ -658,8 +658,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %xmm13, %xmm12
 
 	// swap high and low 4 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm13, %xmm13, %xmm13
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm13, %xmm13, %xmm13
 
 #endif
 
@@ -694,8 +694,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         VFMADDPS_R(        %xmm8,%xmm4,%xmm0  )
         vbroadcastss         -3 * SIZE(BO, BI, SIZE), %xmm5
         VFMADDPS_I(        %xmm9,%xmm5,%xmm0  )
-        addq    $2, BI                           
-        addq    $4, %rax                         
+        addq    $ 2, BI                           
+        addq    $ 4, %rax                         
 .endm
 
 .macro SAVE2x1
@@ -704,14 +704,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %xmm1
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
         vaddsubps %xmm9, %xmm8 , %xmm8
 
-        vshufps $0xb1, %xmm8 , %xmm8, %xmm9
+        vshufps $ 0xb1, %xmm8 , %xmm8, %xmm9
 
 #else
         vaddsubps %xmm8,  %xmm9 ,%xmm9
@@ -719,7 +719,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %xmm9,  %xmm8
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
 
 #endif
 
@@ -749,8 +749,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         VFMADDPS_R(        %xmm8,%xmm4,%xmm0 )
         vbroadcastss         -3 * SIZE(BO, BI, SIZE), %xmm5
         VFMADDPS_I(        %xmm9,%xmm5,%xmm0 )
-        addq    $2, BI                           
-        addq    $2, %rax                         
+        addq    $ 2, BI                           
+        addq    $ 2, %rax                         
 .endm
 
 .macro SAVE1x1
@@ -759,14 +759,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %xmm1
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
         vaddsubps %xmm9, %xmm8 , %xmm8
 
-        vshufps $0xb1, %xmm8 , %xmm8, %xmm9
+        vshufps $ 0xb1, %xmm8 , %xmm8, %xmm9
 
 #else
         vaddsubps %xmm8,  %xmm9 ,%xmm9
@@ -774,7 +774,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %xmm9,  %xmm8
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
 
 #endif
 
@@ -805,7 +805,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 	PROFCODE
 	
-	subq	$STACKSIZE, %rsp
+	subq	$ STACKSIZE, %rsp
 	movq	%rbx,   (%rsp)
 	movq	%rbp,  8(%rsp)
 	movq	%r12, 16(%rsp)
@@ -850,18 +850,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	movq    %rsp, SP      # save old stack
-        subq    $128 + L_BUFFER_SIZE, %rsp
-        andq    $-4096, %rsp    # align stack
+        subq    $ 128 + L_BUFFER_SIZE, %rsp
+        andq    $ -4096, %rsp    # align stack
 
         STACK_TOUCH
 
-	cmpq	$0, OLD_M
+	cmpq	$ 0, OLD_M
 	je	.L999
 
-	cmpq	$0, OLD_N
+	cmpq	$ 0, OLD_N
 	je	.L999
 
-	cmpq	$0, OLD_K
+	cmpq	$ 0, OLD_K
 	je	.L999
 
 	movq	OLD_M, M
@@ -871,11 +871,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovss	 %xmm0, ALPHA_R
 	vmovss	 %xmm1, ALPHA_I
 
-	salq	$ZBASE_SHIFT, LDC
+	salq	$ ZBASE_SHIFT, LDC
 
 	movq    N, %rax
         xorq    %rdx, %rdx
-        movq    $2,  %rdi
+        movq    $ 2,  %rdi
         divq    %rdi                    //    N / 2
         movq    %rax, Ndiv6             //    N / 2
         movq    %rdx, Nmod6             //    N % 2
@@ -893,7 +893,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L2_0:
 
 	movq	Ndiv6,  J
-	cmpq	$0, J
+	cmpq	$ 0, J
 	je	.L1_0
 	ALIGN_4
 
@@ -910,8 +910,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	vmovups	(BO1), %xmm0
 	vmovups	%xmm0,       (BO)
-	addq	$4*SIZE,BO1
-	addq	$4*SIZE,BO
+	addq	$ 4*SIZE,BO1
+	addq	$ 4*SIZE,BO
 	decq	%rax
 	jnz	.L2_02b
 
@@ -929,10 +929,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	
 	movq	A, AO		 	// aoffset = a
-	addq	$16 * SIZE, AO
+	addq	$ 16 * SIZE, AO
 
 	movq	M,  I
-	sarq	$3, I			// i = (m >> 3)
+	sarq	$ 3, I			// i = (m >> 3)
 	je	.L2_4_10
 
 	ALIGN_4
@@ -944,15 +944,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,4), BI                     //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -967,20 +967,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $8, %rax        // number of values in AO
+        addq    $ 8, %rax        // number of values in AO
 #else
-        addq    $2, %rax        // number of values in BO
+        addq    $ 2, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L2_8_16
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1043,13 +1043,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L2_8_19
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1076,16 +1076,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $8, KK
+        addq    $ 8, KK
 #endif
 
-	addq	$16 * SIZE, CO1		# coffset += 16
+	addq	$ 16 * SIZE, CO1		# coffset += 16
 	decq	I			# i --
 	jg	.L2_8_11
 	ALIGN_4	
@@ -1097,10 +1097,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .L2_4_10:
-	testq	$7, M		
+	testq	$ 7, M		
 	jz	.L2_4_60		// to next 2 lines of N
 
-	testq	$4, M		
+	testq	$ 4, M		
 	jz	.L2_4_20
 	ALIGN_4
 
@@ -1111,15 +1111,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,4), BI                     //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -1134,20 +1134,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $4, %rax        // number of values in AO
+        addq    $ 4, %rax        // number of values in AO
 #else
-        addq    $2, %rax        // number of values in BO
+        addq    $ 2, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L2_4_16
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1202,13 +1202,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L2_4_19
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1234,16 +1234,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $4, KK
+        addq    $ 4, KK
 #endif
 
-	addq	$8 * SIZE, CO1		# coffset += 8
+	addq	$ 8 * SIZE, CO1		# coffset += 8
 	ALIGN_4	
 
 
@@ -1254,7 +1254,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_4_20:
 
-	testq	$2, M		
+	testq	$ 2, M		
 	jz	.L2_4_40
 	ALIGN_4
 
@@ -1264,15 +1264,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,4), BI                     //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -1287,20 +1287,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $2, %rax        // number of values in AO
+        addq    $ 2, %rax        // number of values in AO
 #else
-        addq    $2, %rax        // number of values in BO
+        addq    $ 2, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L2_4_26
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1351,13 +1351,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L2_4_29
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1378,8 +1378,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vbroadcastss	ALPHA_I, %xmm1
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
@@ -1387,8 +1387,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vaddsubps %xmm9, %xmm8 , %xmm8
         vaddsubps %xmm11,%xmm10, %xmm10
 
-        vshufps $0xb1, %xmm8 , %xmm8, %xmm9
-        vshufps $0xb1, %xmm10, %xmm10, %xmm11
+        vshufps $ 0xb1, %xmm8 , %xmm8, %xmm9
+        vshufps $ 0xb1, %xmm10, %xmm10, %xmm11
 
 #else
         vaddsubps %xmm8,  %xmm9 ,%xmm9
@@ -1398,8 +1398,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovaps   %xmm11, %xmm10
 
 	// swap high and low 64 bytes
-        vshufps $0xb1, %xmm9 , %xmm9, %xmm9
-        vshufps $0xb1, %xmm11, %xmm11, %xmm11
+        vshufps $ 0xb1, %xmm9 , %xmm9, %xmm9
+        vshufps $ 0xb1, %xmm11, %xmm11, %xmm11
 
 #endif
 
@@ -1437,16 +1437,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $2, KK
+        addq    $ 2, KK
 #endif
 
-	addq	$4 * SIZE, CO1		# coffset += 4
+	addq	$ 4 * SIZE, CO1		# coffset += 4
 	decq	I			# i --
 	jg	.L2_4_21
 	ALIGN_4	
@@ -1455,7 +1455,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**************************************************************************/
 .L2_4_40:
-	testq	$1, M		
+	testq	$ 1, M		
 	jz	.L2_4_60		// to next 2 lines of N
 
 	ALIGN_4
@@ -1466,15 +1466,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$8 * SIZE, BO
+	addq	$ 8 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,4), BI                     //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -1489,20 +1489,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $1, %rax        // number of values in AO
+        addq    $ 1, %rax        // number of values in AO
 #else
-        addq    $2, %rax        // number of values in BO
+        addq    $ 2, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L2_4_46
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1551,13 +1551,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L2_4_49
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1583,16 +1583,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $1, KK
+        addq    $ 1, KK
 #endif
 
-	addq	$2 * SIZE, CO1		# coffset += 2
+	addq	$ 2 * SIZE, CO1		# coffset += 2
 	decq	I			# i --
 	jg	.L2_4_41
 	ALIGN_4	
@@ -1602,7 +1602,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	
 .L2_4_60:
 #if defined(TRMMKERNEL) && !defined(LEFT)
-        addq    $2, KK
+        addq    $ 2, KK
 #endif
 
 	decq	J			// j --
@@ -1617,7 +1617,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *************************************************************************************************/
 
 	movq	Nmod6, J		
-	andq	$1, J			// j % 2
+	andq	$ 1, J			// j % 2
 	je	.L999
 	ALIGN_4
 
@@ -1632,8 +1632,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	vmovsd		(BO1), %xmm0
 	vmovsd	%xmm0,       (BO)
-	addq	$2*SIZE,BO1
-	addq	$2*SIZE,BO
+	addq	$ 2*SIZE,BO1
+	addq	$ 2*SIZE,BO
 	decq	%rax
 	jnz	.L1_02b
 
@@ -1651,10 +1651,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	
 	movq	A, AO		 	// aoffset = a
-	addq	$16 * SIZE, AO
+	addq	$ 16 * SIZE, AO
 
 	movq	M,  I
-	sarq	$3, I			// i = (m >> 3)
+	sarq	$ 3, I			// i = (m >> 3)
 	je	.L1_4_10
 
 	ALIGN_4
@@ -1667,15 +1667,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,2), BI                     //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -1690,20 +1690,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $8, %rax        // number of values in AO
+        addq    $ 8, %rax        // number of values in AO
 #else
-        addq    $1, %rax        // number of values in BO
+        addq    $ 1, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L1_8_16
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1764,13 +1764,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L1_8_19
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1797,16 +1797,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$4, %rax			// rax = rax *16 ; number of values
+	salq	$ 4, %rax			// rax = rax *16 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $8, KK
+        addq    $ 8, KK
 #endif
 
-	addq	$16 * SIZE, CO1		# coffset += 16
+	addq	$ 16 * SIZE, CO1		# coffset += 16
 	decq	I			# i --
 	jg	.L1_8_11
 	ALIGN_4	
@@ -1816,10 +1816,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************************************/
 .L1_4_10:
 
-	testq	$7, M		
+	testq	$ 7, M		
 	jz	.L999
 
-	testq	$4, M		
+	testq	$ 4, M		
 	jz	.L1_4_20
 
 
@@ -1829,15 +1829,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,2), BI                     //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -1852,20 +1852,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $4, %rax        // number of values in AO
+        addq    $ 4, %rax        // number of values in AO
 #else
-        addq    $1, %rax        // number of values in BO
+        addq    $ 1, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L1_4_16
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1918,13 +1918,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L1_4_19
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 4 ; number of values
 
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -1950,16 +1950,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$3, %rax			// rax = rax * 8 ; number of values
+	salq	$ 3, %rax			// rax = rax * 8 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $4, KK
+        addq    $ 4, KK
 #endif
 
-	addq	$8 * SIZE, CO1		# coffset += 8
+	addq	$ 8 * SIZE, CO1		# coffset += 8
 	ALIGN_4	
 
 
@@ -1970,7 +1970,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_4_20:
 
-	testq	$2, M		
+	testq	$ 2, M		
 	jz	.L1_4_40
 	ALIGN_4
 
@@ -1980,15 +1980,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,2), BI                     //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -2003,20 +2003,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $2, %rax        // number of values in AO
+        addq    $ 2, %rax        // number of values in AO
 #else
-        addq    $1, %rax        // number of values in BO
+        addq    $ 1, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L1_4_26
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -2065,13 +2065,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L1_4_29
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2; number of values
 
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -2097,23 +2097,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$2, %rax			// rax = rax * 4 ; number of values
+	salq	$ 2, %rax			// rax = rax * 4 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $2, KK
+        addq    $ 2, KK
 #endif
 
-	addq	$4 * SIZE, CO1		# coffset += 4
+	addq	$ 4 * SIZE, CO1		# coffset += 4
 	ALIGN_4	
 
 
 
 /**************************************************************************/
 .L1_4_40:
-	testq	$1, M		
+	testq	$ 1, M		
 	jz	.L999		// to next 2 lines of N
 
 	ALIGN_4
@@ -2124,15 +2124,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
 	leaq	BUFFER1, BO		// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 #else
         movq    KK, %rax
 	leaq	BUFFER1, BO			// first buffer to BO
-	addq	$4 * SIZE, BO
+	addq	$ 4 * SIZE, BO
 	movq    %rax, BI                        //  Index for BO
         leaq    (,BI,2), BI                     //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
@@ -2147,20 +2147,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         movq    KK, %rax
 #ifdef LEFT
-        addq    $1, %rax        // number of values in AO
+        addq    $ 1, %rax        // number of values in AO
 #else
-        addq    $1, %rax        // number of values in BO
+        addq    $ 1, %rax        // number of values in BO
 #endif
         movq    %rax, KKK
 #endif
 
 
-	andq	$-8, %rax			//  K = K - ( K % 8 )
+	andq	$ -8, %rax			//  K = K - ( K % 8 )
 	je	.L1_4_46
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -2207,13 +2207,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    KKK, %rax
 #endif
 
-	andq	$7, %rax		# if (k & 1)
+	andq	$ 7, %rax		# if (k & 1)
 	je .L1_4_49
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
 	leaq	(AO, %rax, SIZE), AO
 	leaq	(BO, BI, SIZE), BO
 	negq	BI
@@ -2241,16 +2241,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
         leaq    (BO, BI, SIZE), BO
-	salq	$1, %rax			// rax = rax * 2 ; number of values
+	salq	$ 1, %rax			// rax = rax * 2 ; number of values
         leaq    (AO, %rax, SIZE), AO
 #endif
 
 
 #if defined(TRMMKERNEL) && defined(LEFT)
-        addq    $1, KK
+        addq    $ 1, KK
 #endif
 
-	addq	$2 * SIZE, CO1		# coffset += 2
+	addq	$ 2 * SIZE, CO1		# coffset += 2
 	ALIGN_4	
 
 
@@ -2278,7 +2278,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movups	208(%rsp), %xmm15
 #endif
 
-	addq	$STACKSIZE, %rsp
+	addq	$ STACKSIZE, %rsp
 	ret
 
 	EPILOGUE

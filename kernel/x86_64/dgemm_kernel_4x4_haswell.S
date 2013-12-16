@@ -107,22 +107,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(OS_WINDOWS)
 #if   L_BUFFER_SIZE > 16384
 #define STACK_TOUCH \
-        movl    $0,  4096 * 4(%rsp);\
-        movl    $0,  4096 * 3(%rsp);\
-        movl    $0,  4096 * 2(%rsp);\
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 4(%rsp);\
+        movl    $ 0,  4096 * 3(%rsp);\
+        movl    $ 0,  4096 * 2(%rsp);\
+        movl    $ 0,  4096 * 1(%rsp);
 #elif L_BUFFER_SIZE > 12288
 #define STACK_TOUCH \
-        movl    $0,  4096 * 3(%rsp);\
-        movl    $0,  4096 * 2(%rsp);\
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 3(%rsp);\
+        movl    $ 0,  4096 * 2(%rsp);\
+        movl    $ 0,  4096 * 1(%rsp);
 #elif L_BUFFER_SIZE > 8192
 #define STACK_TOUCH \
-        movl    $0,  4096 * 2(%rsp);\
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 2(%rsp);\
+        movl    $ 0,  4096 * 1(%rsp);
 #elif L_BUFFER_SIZE > 4096
 #define STACK_TOUCH \
-        movl    $0,  4096 * 1(%rsp);
+        movl    $ 0,  4096 * 1(%rsp);
 #else
 #define STACK_TOUCH
 #endif
@@ -168,17 +168,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd  	%ymm0 ,%ymm2  , %ymm8
 	vmulpd  	%ymm0 ,%ymm3  , %ymm12
 	prefetcht0	B_PR1+256(BO)
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vmulpd  	%ymm0 ,%ymm1  , %ymm5
 	vmulpd  	%ymm0 ,%ymm2  , %ymm9
 	vmulpd  	%ymm0 ,%ymm3  , %ymm13
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vmulpd  	%ymm0 ,%ymm1  , %ymm6
 	vmulpd  	%ymm0 ,%ymm2  , %ymm10
 
-	addq		$12*SIZE, BO
+	addq		$ 12*SIZE, BO
 	vmulpd  	%ymm0 ,%ymm3  , %ymm14
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vmulpd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 	vmulpd  	%ymm0 ,%ymm2  , %ymm11
@@ -197,16 +197,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	prefetcht0	B_PR1+128(BO)
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
@@ -221,24 +221,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 
-	addq		$8*SIZE, AO
+	addq		$ 8*SIZE, AO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		  0 * SIZE(BO), %ymm1
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
 	vmovups		  4 * SIZE(BO), %ymm2
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm15
 	vmovups		  8 * SIZE(BO), %ymm3
-	addq		$24*SIZE, BO
+	addq		$ 24*SIZE, BO
 .endm
 
 
@@ -247,21 +247,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 
-	addq		$8*SIZE, AO
+	addq		$ 8*SIZE, AO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm15
-	addq		$12*SIZE, BO
+	addq		$ 12*SIZE, BO
 .endm
 
 .macro KERNEL4x12_SUB
@@ -272,17 +272,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	vmovups		 -4 * SIZE(BO), %ymm3
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
-	addq		$12*SIZE, BO
+	addq		$ 12*SIZE, BO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
-	addq		$4*SIZE, AO
+	addq		$ 4*SIZE, AO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm15
@@ -309,23 +309,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd	%ymm0 , %ymm14, %ymm14
 	vmulpd	%ymm0 , %ymm15, %ymm15
 
-	vpermpd $0xb1 , %ymm5, %ymm5
-	vpermpd $0xb1 , %ymm7, %ymm7
+	vpermpd $ 0xb1 , %ymm5, %ymm5
+	vpermpd $ 0xb1 , %ymm7, %ymm7
 
-	vblendpd $0x0a, %ymm5, %ymm4, %ymm0
-	vblendpd $0x05, %ymm5, %ymm4, %ymm1
-	vblendpd $0x0a, %ymm7, %ymm6, %ymm2
-	vblendpd $0x05, %ymm7, %ymm6, %ymm3
+	vblendpd $ 0x0a, %ymm5, %ymm4, %ymm0
+	vblendpd $ 0x05, %ymm5, %ymm4, %ymm1
+	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
+	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
 
-	vpermpd $0x1b , %ymm2, %ymm2
-	vpermpd $0x1b , %ymm3, %ymm3
-	vpermpd $0xb1 , %ymm2, %ymm2
-	vpermpd $0xb1 , %ymm3, %ymm3
+	vpermpd $ 0x1b , %ymm2, %ymm2
+	vpermpd $ 0x1b , %ymm3, %ymm3
+	vpermpd $ 0xb1 , %ymm2, %ymm2
+	vpermpd $ 0xb1 , %ymm3, %ymm3
 
-	vblendpd $0x03, %ymm0, %ymm2 , %ymm4
-	vblendpd $0x03, %ymm1, %ymm3 , %ymm5
-	vblendpd $0x03, %ymm2, %ymm0 , %ymm6
-	vblendpd $0x03, %ymm3, %ymm1 , %ymm7
+	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
+	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
+	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
+	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
 
         leaq    (CO1, LDC, 2), %rax     
 	
@@ -349,23 +349,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht0	32(%rax)
 	prefetcht0	32(%rax,LDC)
 
-	vpermpd $0xb1 , %ymm9 , %ymm9
-	vpermpd $0xb1 , %ymm11, %ymm11
+	vpermpd $ 0xb1 , %ymm9 , %ymm9
+	vpermpd $ 0xb1 , %ymm11, %ymm11
 
-	vblendpd $0x0a, %ymm9 , %ymm8 , %ymm0
-	vblendpd $0x05, %ymm9 , %ymm8 , %ymm1
-	vblendpd $0x0a, %ymm11, %ymm10, %ymm2
-	vblendpd $0x05, %ymm11, %ymm10, %ymm3
+	vblendpd $ 0x0a, %ymm9 , %ymm8 , %ymm0
+	vblendpd $ 0x05, %ymm9 , %ymm8 , %ymm1
+	vblendpd $ 0x0a, %ymm11, %ymm10, %ymm2
+	vblendpd $ 0x05, %ymm11, %ymm10, %ymm3
 
-	vpermpd $0x1b , %ymm2, %ymm2
-	vpermpd $0x1b , %ymm3, %ymm3
-	vpermpd $0xb1 , %ymm2, %ymm2
-	vpermpd $0xb1 , %ymm3, %ymm3
+	vpermpd $ 0x1b , %ymm2, %ymm2
+	vpermpd $ 0x1b , %ymm3, %ymm3
+	vpermpd $ 0xb1 , %ymm2, %ymm2
+	vpermpd $ 0xb1 , %ymm3, %ymm3
 
-	vblendpd $0x03, %ymm0, %ymm2 , %ymm4
-	vblendpd $0x03, %ymm1, %ymm3 , %ymm5
-	vblendpd $0x03, %ymm2, %ymm0 , %ymm6
-	vblendpd $0x03, %ymm3, %ymm1 , %ymm7
+	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
+	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
+	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
+	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
 
 
 	leaq	(%rax, LDC, 2), %rax
@@ -390,23 +390,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht0	32(%rbp)
 	prefetcht0	32(%rbp,LDC)
 
-	vpermpd $0xb1 , %ymm13, %ymm13
-	vpermpd $0xb1 , %ymm15, %ymm15
+	vpermpd $ 0xb1 , %ymm13, %ymm13
+	vpermpd $ 0xb1 , %ymm15, %ymm15
 
-	vblendpd $0x0a, %ymm13, %ymm12, %ymm0
-	vblendpd $0x05, %ymm13, %ymm12, %ymm1
-	vblendpd $0x0a, %ymm15, %ymm14, %ymm2
-	vblendpd $0x05, %ymm15, %ymm14, %ymm3
+	vblendpd $ 0x0a, %ymm13, %ymm12, %ymm0
+	vblendpd $ 0x05, %ymm13, %ymm12, %ymm1
+	vblendpd $ 0x0a, %ymm15, %ymm14, %ymm2
+	vblendpd $ 0x05, %ymm15, %ymm14, %ymm3
 
-	vpermpd $0x1b , %ymm2, %ymm2
-	vpermpd $0x1b , %ymm3, %ymm3
-	vpermpd $0xb1 , %ymm2, %ymm2
-	vpermpd $0xb1 , %ymm3, %ymm3
+	vpermpd $ 0x1b , %ymm2, %ymm2
+	vpermpd $ 0x1b , %ymm3, %ymm3
+	vpermpd $ 0xb1 , %ymm2, %ymm2
+	vpermpd $ 0xb1 , %ymm3, %ymm3
 
-	vblendpd $0x03, %ymm0, %ymm2 , %ymm4
-	vblendpd $0x03, %ymm1, %ymm3 , %ymm5
-	vblendpd $0x03, %ymm2, %ymm0 , %ymm6
-	vblendpd $0x03, %ymm3, %ymm1 , %ymm7
+	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
+	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
+	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
+	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
 
 
 	leaq	(%rax, LDC, 4), %rax
@@ -431,7 +431,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht0	32(%rbp)
 	prefetcht0	32(%rbp,LDC)
 
-	addq	$4*SIZE, CO1
+	addq	$ 4*SIZE, CO1
 .endm
 
 /******************************************************************************************/
@@ -477,9 +477,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231pd  	%xmm0 ,%xmm3  , %xmm12
 	vmovddup	 -1 * SIZE(BO), %xmm3
 	vfmadd231pd  	%xmm0 ,%xmm1  , %xmm13
-	addq		$12*SIZE, BO
+	addq		$ 12*SIZE, BO
 	vfmadd231pd  	%xmm0 ,%xmm2  , %xmm14
-	addq		$2*SIZE, AO
+	addq		$ 2*SIZE, AO
 	vfmadd231pd  	%xmm0 ,%xmm3  , %xmm15
 
 .endm
@@ -557,7 +557,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%xmm6 ,  	(%rbp)
 	vmovups	%xmm7 ,  	(%rbp, LDC)
 
-	addq	$2*SIZE, CO1
+	addq	$ 2*SIZE, CO1
 .endm
 
 
@@ -604,9 +604,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231sd  	%xmm0 ,%xmm3  , %xmm12
 	vmovsd	 -1 * SIZE(BO), %xmm3
 	vfmadd231sd  	%xmm0 ,%xmm1  , %xmm13
-	addq		$12*SIZE, BO
+	addq		$ 12*SIZE, BO
 	vfmadd231sd  	%xmm0 ,%xmm2  , %xmm14
-	addq		$1*SIZE, AO
+	addq		$ 1*SIZE, AO
 	vfmadd231sd  	%xmm0 ,%xmm3  , %xmm15
 
 .endm
@@ -684,7 +684,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovsd	%xmm6 ,  	(%rbp)
 	vmovsd	%xmm7 ,  	(%rbp, LDC)
 
-	addq	$1*SIZE, CO1
+	addq	$ 1*SIZE, CO1
 .endm
 
 
@@ -707,13 +707,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups		-12 * SIZE(BO), %ymm1
 	vmovups 	-16 * SIZE(AO), %ymm0
 	vmulpd  	%ymm0 ,%ymm1  , %ymm4
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vmulpd  	%ymm0 ,%ymm1  , %ymm5
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vmulpd  	%ymm0 ,%ymm1  , %ymm6
 
-	addq		$4*SIZE, BO
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	addq		$ 4*SIZE, BO
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vmulpd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 
@@ -723,12 +723,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht0	A_PR1(AO)
 	vmovups 	-16 * SIZE(AO), %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 
@@ -737,44 +737,44 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL4x4_M2
 	vmovups 	-12 * SIZE(AO), %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 
-	addq		$8*SIZE, AO
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	addq		$ 8*SIZE, AO
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		 -8 * SIZE(BO), %ymm1
-	addq		$8*SIZE, BO
+	addq		$ 8*SIZE, BO
 .endm
 
 
 .macro KERNEL4x4_E
 	vmovups 	-12 * SIZE(AO), %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 
-	addq		$8*SIZE, AO
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	addq		$ 8*SIZE, AO
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
-	addq		$4*SIZE, BO
+	addq		$ 4*SIZE, BO
 .endm
 
 .macro KERNEL4x4_SUB
 	vmovups		-12 * SIZE(BO), %ymm1
 	vmovups 	-16 * SIZE(AO), %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
-	addq		$4*SIZE, BO
-	vpermpd		$0x1b, %ymm0  , %ymm0
+	addq		$ 4*SIZE, BO
+	vpermpd		$ 0x1b, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
-	addq		$4*SIZE, AO
-	vpermpd		$0xb1, %ymm0  , %ymm0
+	addq		$ 4*SIZE, AO
+	vpermpd		$ 0xb1, %ymm0  , %ymm0
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 
 .endm
@@ -788,23 +788,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd	%ymm0 , %ymm5 , %ymm5
 	vmulpd	%ymm0 , %ymm6 , %ymm6
 
-	vpermpd $0xb1 , %ymm5, %ymm5
-	vpermpd $0xb1 , %ymm7, %ymm7
+	vpermpd $ 0xb1 , %ymm5, %ymm5
+	vpermpd $ 0xb1 , %ymm7, %ymm7
 
-	vblendpd $0x0a, %ymm5, %ymm4, %ymm0
-	vblendpd $0x05, %ymm5, %ymm4, %ymm1
-	vblendpd $0x0a, %ymm7, %ymm6, %ymm2
-	vblendpd $0x05, %ymm7, %ymm6, %ymm3
+	vblendpd $ 0x0a, %ymm5, %ymm4, %ymm0
+	vblendpd $ 0x05, %ymm5, %ymm4, %ymm1
+	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
+	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
 
-	vpermpd $0x1b , %ymm2, %ymm2
-	vpermpd $0x1b , %ymm3, %ymm3
-	vpermpd $0xb1 , %ymm2, %ymm2
-	vpermpd $0xb1 , %ymm3, %ymm3
+	vpermpd $ 0x1b , %ymm2, %ymm2
+	vpermpd $ 0x1b , %ymm3, %ymm3
+	vpermpd $ 0xb1 , %ymm2, %ymm2
+	vpermpd $ 0xb1 , %ymm3, %ymm3
 
-	vblendpd $0x03, %ymm0, %ymm2 , %ymm4
-	vblendpd $0x03, %ymm1, %ymm3 , %ymm5
-	vblendpd $0x03, %ymm2, %ymm0 , %ymm6
-	vblendpd $0x03, %ymm3, %ymm1 , %ymm7
+	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
+	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
+	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
+	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
 
         leaq    (CO1, LDC, 2), %rax     
 	
@@ -823,7 +823,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm6 ,  	(%rax)
 	vmovups	%ymm7 ,  	(%rax, LDC)
 
-	addq	$4*SIZE, CO1
+	addq	$ 4*SIZE, CO1
 .endm
 
 /******************************************************************************************/
@@ -848,9 +848,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231pd  	%xmm0 ,%xmm2  , %xmm5
 	vmovddup	 -9 * SIZE(BO), %xmm8
 	vfmadd231pd  	%xmm0 ,%xmm3  , %xmm6
-	addq		$4*SIZE, BO
+	addq		$ 4*SIZE, BO
 	vfmadd231pd  	%xmm0 ,%xmm8  , %xmm7
-	addq		$2*SIZE, AO
+	addq		$ 2*SIZE, AO
 
 .endm
 
@@ -880,7 +880,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%xmm6 ,  	(%rax)
 	vmovups	%xmm7 ,  	(%rax, LDC)
 
-	addq	$2*SIZE, CO1
+	addq	$ 2*SIZE, CO1
 .endm
 
 /******************************************************************************************/
@@ -905,9 +905,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231sd  	%xmm0 ,%xmm2  , %xmm5
 	vmovsd	 -9 * SIZE(BO), %xmm8
 	vfmadd231sd  	%xmm0 ,%xmm3  , %xmm6
-	addq		$4*SIZE, BO
+	addq		$ 4*SIZE, BO
 	vfmadd231sd  	%xmm0 ,%xmm8  , %xmm7
-	addq		$1*SIZE, AO
+	addq		$ 1*SIZE, AO
 
 .endm
 
@@ -937,7 +937,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovsd	%xmm6 ,  	(%rax)
 	vmovsd	%xmm7 ,  	(%rax, LDC)
 
-	addq	$1*SIZE, CO1
+	addq	$ 1*SIZE, CO1
 .endm
 
 
@@ -963,8 +963,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vfmadd231pd  	%xmm1 ,%xmm2  , %xmm5
 	vfmadd231pd  	%xmm0 ,%xmm3  , %xmm6
 	vfmadd231pd  	%xmm1 ,%xmm3  , %xmm7
-	addq		$2*SIZE, BO
-	addq		$4*SIZE, AO
+	addq		$ 2*SIZE, BO
+	addq		$ 4*SIZE, AO
 
 .endm
 
@@ -993,7 +993,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%xmm6 ,  	(CO1, LDC)
 	vmovups	%xmm7 , 2 * SIZE(CO1, LDC)
 
-	addq	$4*SIZE, CO1
+	addq	$ 4*SIZE, CO1
 .endm
 
 
@@ -1014,8 +1014,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovddup	-11 * SIZE(BO), %xmm3
 	vfmadd231pd  	%xmm0 ,%xmm2  , %xmm4
 	vfmadd231pd  	%xmm0 ,%xmm3  , %xmm6
-	addq		$2*SIZE, BO
-	addq		$2*SIZE, AO
+	addq		$ 2*SIZE, BO
+	addq		$ 2*SIZE, AO
 
 .endm
 
@@ -1038,7 +1038,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%xmm4 ,  	(CO1)
 	vmovups	%xmm6 ,  	(CO1, LDC)
 
-	addq	$2*SIZE, CO1
+	addq	$ 2*SIZE, CO1
 .endm
 
 /******************************************************************************************/
@@ -1058,8 +1058,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovsd	-11 * SIZE(BO), %xmm2
 	vfmadd231sd  	%xmm0 ,%xmm1  , %xmm4
 	vfmadd231sd  	%xmm0 ,%xmm2  , %xmm5
-	addq		$2*SIZE, BO
-	addq		$1*SIZE, AO
+	addq		$ 2*SIZE, BO
+	addq		$ 1*SIZE, AO
 
 .endm
 
@@ -1082,7 +1082,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovsd	%xmm4 ,  	(CO1)
 	vmovsd	%xmm5 ,  	(CO1, LDC)
 
-	addq	$1*SIZE, CO1
+	addq	$ 1*SIZE, CO1
 .endm
 
 
@@ -1103,8 +1103,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-14 * SIZE(AO), %xmm1
 	vfmadd231pd  	%xmm0 ,%xmm2  , %xmm4
 	vfmadd231pd  	%xmm1 ,%xmm2  , %xmm5
-	addq		$1*SIZE, BO
-	addq		$4*SIZE, AO
+	addq		$ 1*SIZE, BO
+	addq		$ 4*SIZE, AO
 
 .endm
 
@@ -1127,7 +1127,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%xmm4 ,  	(CO1)
 	vmovups	%xmm5 , 2 * SIZE(CO1)
 
-	addq	$4*SIZE, CO1
+	addq	$ 4*SIZE, CO1
 .endm
 
 
@@ -1145,8 +1145,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovddup	-12 * SIZE(BO), %xmm2
 	vmovups 	-16 * SIZE(AO), %xmm0
 	vfmadd231pd  	%xmm0 ,%xmm2  , %xmm4
-	addq		$1*SIZE, BO
-	addq		$2*SIZE, AO
+	addq		$ 1*SIZE, BO
+	addq		$ 2*SIZE, AO
 
 .endm
 
@@ -1166,7 +1166,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	vmovups	%xmm4 ,  	(CO1)
 
-	addq	$2*SIZE, CO1
+	addq	$ 2*SIZE, CO1
 .endm
 
 
@@ -1184,8 +1184,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovsd	-12 * SIZE(BO), %xmm1
 	vmovsd 	-16 * SIZE(AO), %xmm0
 	vfmadd231sd  	%xmm0 ,%xmm1  , %xmm4
-	addq		$1*SIZE, BO
-	addq		$1*SIZE, AO
+	addq		$ 1*SIZE, BO
+	addq		$ 1*SIZE, AO
 
 .endm
 
@@ -1205,7 +1205,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	vmovsd	%xmm4 ,  	(CO1)
 
-	addq	$1*SIZE, CO1
+	addq	$ 1*SIZE, CO1
 .endm
 
 
@@ -1262,13 +1262,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         STACK_TOUCH
 
-	cmpq	$0, OLD_M
+	cmpq	$ 0, OLD_M
 	je	.L999
 
-	cmpq	$0, OLD_N
+	cmpq	$ 0, OLD_N
 	je	.L999
 
-	cmpq	$0, OLD_K
+	cmpq	$ 0, OLD_K
 	je	.L999
 
 	movq	OLD_M, M
@@ -1288,7 +1288,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	movq	Ndiv12,  J
-	cmpq	$0, J
+	cmpq	$ 0, J
 	je	.L4_0
 	ALIGN_4
 
@@ -1330,10 +1330,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm6, 16 * SIZE(BO)
 	vmovups	%ymm7, 20 * SIZE(BO)
 
-	addq	$8 * SIZE ,BO1
-	addq	$8 * SIZE ,BO2
-	addq	$8 * SIZE ,BO3
-	addq    $24 *SIZE ,BO
+	addq	$ 8 * SIZE ,BO1
+	addq	$ 8 * SIZE ,BO2
+	addq	$ 8 * SIZE ,BO3
+	addq    $ 24 *SIZE ,BO
 
 	decq	%rax
 	jnz	.L12_01a_1
@@ -1356,10 +1356,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm1, 0 * SIZE(BO)
 	vmovups	%ymm2, 4 * SIZE(BO)
 	vmovups	%ymm3, 8 * SIZE(BO)
-	addq	$4*SIZE,BO1
-	addq	$4*SIZE,BO2
-	addq	$4*SIZE,BO3
-	addq	$12*SIZE,BO
+	addq	$ 4*SIZE,BO1
+	addq	$ 4*SIZE,BO2
+	addq	$ 4*SIZE,BO3
+	addq	$ 12*SIZE,BO
 	decq	%rax
 	jnz	.L12_02b
 
@@ -1407,8 +1407,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	subq $2, %rax
 	je	.L12_12a
 
-	.align 32
-
+	ALIGN_5
 .L12_12:
 
 	KERNEL4x12_M1
@@ -1621,7 +1620,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L4_0:
 
-	cmpq	$0, Nmod12		// N % 12 == 0
+	cmpq	$ 0, Nmod12		// N % 12 == 0
 	je	.L999
 
 	movq	Nmod12, J		
@@ -1666,7 +1665,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	subq $2, %rax
 	je	.L4_12a
 
-	.align 32
+	ALIGN_5
 
 .L4_12:
 
@@ -1912,7 +1911,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_16
 
-	.align 32
+	ALIGN_5
 
 .L2_12:
 
@@ -2108,7 +2107,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sarq	$3, %rax			//  K / 8
 	je	.L1_16
 
-	.align 32
+	ALIGN_5
 
 .L1_12:
 
@@ -2362,13 +2361,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         STACK_TOUCH
 
-	cmpq	$0, OLD_M
+	cmpq	$ 0, OLD_M
 	je	.L999
 
-	cmpq	$0, OLD_N
+	cmpq	$ 0, OLD_N
 	je	.L999
 
-	cmpq	$0, OLD_K
+	cmpq	$ 0, OLD_K
 	je	.L999
 
 	movq	OLD_M, M
@@ -2397,7 +2396,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	movq	Ndiv12,  J
-	cmpq	$0, J
+	cmpq	$ 0, J
 	je	.L2_0
 	ALIGN_4
 
@@ -2471,7 +2470,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	subq $2, %rax
 	je	.L4_12a
 
-	.align 32
+	ALIGN_5
 
 .L4_12:
 
@@ -2848,7 +2847,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	je	.L2_16
 
-	.align 32
+	ALIGN_5
 
 .L2_12:
 
@@ -3176,7 +3175,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sarq	$3, %rax			//  K / 8
 	je	.L1_16
 
-	.align 32
+	ALIGN_5
 
 .L1_12:
 

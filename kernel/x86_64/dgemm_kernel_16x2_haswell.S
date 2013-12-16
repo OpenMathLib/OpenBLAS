@@ -192,8 +192,8 @@
 	VFMADD231PD_  	%ymm13,%ymm1,%ymm0
 	VFMADD231PD_  	%ymm14,%ymm2,%ymm0
 	VFMADD231PD_  	%ymm15,%ymm3,%ymm0
-	addq	$3*SIZE , BO	
-	addq	$16*SIZE, AO
+	addq	$ 3*SIZE , BO	
+	addq	$ 16*SIZE, AO
 .endm
 
 
@@ -212,8 +212,8 @@
 	VFMADD231PD_  	%ymm8,%ymm2,%ymm0
 	VFMADD231PD_  	%ymm9,%ymm3,%ymm0
 	prefetcht0	B_PR1(BO)
-	addq	$3*SIZE , BO	
-	addq	$8*SIZE, AO
+	addq	$ 3*SIZE , BO	
+	addq	$ 8*SIZE, AO
 .endm
 
 .macro KERNEL4x3_SUBN
@@ -224,8 +224,8 @@
 	VFMADD231PD_  	%ymm5,%ymm2,%ymm0
 	vbroadcastsd	-10 * SIZE(BO), %ymm3
 	VFMADD231PD_  	%ymm6,%ymm3,%ymm0
-	addq	$3*SIZE , BO	
-	addq	$4*SIZE, AO
+	addq	$ 3*SIZE , BO	
+	addq	$ 4*SIZE, AO
 .endm
 
 .macro KERNEL2x3_SUBN
@@ -240,8 +240,8 @@
 	VFMADD231SD_  	%xmm8,%xmm1,%xmm0
 	VFMADD231SD_  	%xmm10,%xmm2,%xmm0
 	VFMADD231SD_  	%xmm12,%xmm3,%xmm0
-	addq	$3*SIZE , BO	
-	addq	$2*SIZE, AO
+	addq	$ 3*SIZE , BO	
+	addq	$ 2*SIZE, AO
 .endm
 
 .macro KERNEL1x3_SUBN
@@ -252,8 +252,8 @@
 	VFMADD231SD_  	%xmm5,%xmm2,%xmm0
 	vmovsd	-10 * SIZE(BO), %xmm3
 	VFMADD231SD_  	%xmm6,%xmm3,%xmm0
-	addq	$3*SIZE , BO	
-	addq	$1*SIZE, AO
+	addq	$ 3*SIZE , BO	
+	addq	$ 1*SIZE, AO
 .endm
 
 
@@ -1602,16 +1602,16 @@
 	vmovsd	  1 * SIZE(BO, BI, SIZE), %xmm1
 	vmovsd 	-29 * SIZE(AO, %rax, SIZE), %xmm0
 	VFMADD231SD_  	%xmm4,%xmm1,%xmm0
-	addq	$4, BI				 
-	addq	$4, %rax 			 
+	addq	$ 4, BI				 
+	addq	$ 4, %rax 			 
 .endm
 
 .macro KERNEL1x1_SUB
 	vmovsd	 -2 * SIZE(BO, BI, SIZE), %xmm1
 	vmovsd 	-32 * SIZE(AO, %rax, SIZE), %xmm0
 	VFMADD231SD_  	%xmm4,%xmm1,%xmm0
-	addq	$1, BI				 
-	addq	$1 , %rax 			 
+	addq	$ 1, BI				 
+	addq	$ 1 , %rax 			 
 .endm
 
 .macro SAVE1x1
@@ -1749,9 +1749,9 @@
 	vmovsd	%xmm5, 8*SIZE(BO)
 	vmovups	%xmm6, 9*SIZE(BO)
 	vmovsd	%xmm7,11*SIZE(BO)
-	addq	$8*SIZE,BO1
-	addq	$8*SIZE,BO2
-	addq	$12*SIZE,BO
+	addq	$ 8*SIZE,BO1
+	addq	$ 8*SIZE,BO2
+	addq	$ 12*SIZE,BO
 
 	vmovups	0 * SIZE(BO1), %xmm0
 	vmovups	2 * SIZE(BO1), %xmm2
@@ -1769,9 +1769,9 @@
 	vmovsd	%xmm5, 8*SIZE(BO)
 	vmovups	%xmm6, 9*SIZE(BO)
 	vmovsd	%xmm7,11*SIZE(BO)
-	addq	$8*SIZE,BO1
-	addq	$8*SIZE,BO2
-	addq	$12*SIZE,BO
+	addq	$ 8*SIZE,BO1
+	addq	$ 8*SIZE,BO2
+	addq	$ 12*SIZE,BO
 
 	decq	%rax
 	jnz	.L6_01a_1
@@ -1792,9 +1792,9 @@
 	vmovsd  0 * SIZE(BO2), %xmm2
 	vmovups	%xmm0, 0*SIZE(BO)
 	vmovsd	%xmm2, 2*SIZE(BO)
-	addq	$2*SIZE,BO1
-	addq	$2*SIZE,BO2
-	addq	$3*SIZE,BO
+	addq	$ 2*SIZE,BO1
+	addq	$ 2*SIZE,BO2
+	addq	$ 3*SIZE,BO
 	decq	%rax
 	jnz	.L6_02b
 
