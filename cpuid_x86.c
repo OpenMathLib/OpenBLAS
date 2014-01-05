@@ -1051,11 +1051,14 @@ int get_cpuname(void){
       case 3:
 	switch (model) {
 	case 10:
+        case 14:
+	  // Ivy Bridge
 	  if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	    return CPUTYPE_NEHALEM;
         case 12:
+	case 15:
           if(support_avx())
             return CPUTYPE_HASWELL;
           else
@@ -1065,6 +1068,7 @@ int get_cpuname(void){
       case 4:
         switch (model) {
         case 5:
+	case 6:
           if(support_avx())
             return CPUTYPE_HASWELL;
           else
@@ -1457,11 +1461,13 @@ int get_coretype(void){
       case 3:
 	switch (model) {
 	case 10:
+	case 14:
 	  if(support_avx())
 	    return CORE_SANDYBRIDGE;
 	  else
 	    return CORE_NEHALEM; //OS doesn't support AVX
         case 12:
+	case 15:
           if(support_avx())
             return CORE_HASWELL;
           else
@@ -1471,6 +1477,7 @@ int get_coretype(void){
       case 4:
         switch (model) {
         case 5:
+	case 6:
           if(support_avx())
             return CORE_HASWELL;
           else

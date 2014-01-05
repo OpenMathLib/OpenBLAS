@@ -186,7 +186,7 @@ static gotoblas_t *get_coretype(void){
 	return NULL;
       case 3:
 	//Intel Sandy Bridge 22nm (Ivy Bridge?)
-	if (model == 10) {
+	if (model == 10 || model == 14) {
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
@@ -195,7 +195,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
 	//Intel Haswell
-	if (model == 12) {
+	if (model == 12 || model == 15) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
@@ -206,7 +206,7 @@ static gotoblas_t *get_coretype(void){
 	return NULL;
       case 4:
 		//Intel Haswell
-	if (model == 5) {
+	if (model == 5 || model == 6) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
