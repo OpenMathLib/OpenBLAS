@@ -1558,7 +1558,13 @@ void get_cpuconfig(void){
       printf("#define L2_SIZE %d\n", info.size * 1024);
       printf("#define L2_ASSOCIATIVE %d\n", info.associative);
       printf("#define L2_LINESIZE %d\n", info.linesize);
+    } else {
+      //fall back for some virtual machines.
+      printf("#define L2_SIZE 1048576\n");
+      printf("#define L2_ASSOCIATIVE 6\n");
+      printf("#define L2_LINESIZE 64\n");
     }
+
     
     get_cacheinfo(CACHE_INFO_L3, &info);
     if (info.size > 0) {
