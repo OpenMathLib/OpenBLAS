@@ -146,8 +146,10 @@ void NAME(char *UPLO, char *TRANS,
   if (uplo_arg  == 'L') uplo  = 1;
 
   if (trans_arg == 'N') trans = 0;
+#ifndef HEMM
   if (trans_arg == 'T') trans = 1;
   if (trans_arg == 'R') trans = 0;
+#endif
   if (trans_arg == 'C') trans = 1;
   
   nrowa = args.n;
