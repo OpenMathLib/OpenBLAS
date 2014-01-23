@@ -38,6 +38,7 @@
 
 #include "common.h"
 
+
 #ifdef ARCH_X86
 #define EXTERN extern
 #else
@@ -107,6 +108,11 @@ int support_avx(){
   return 0;
 #endif
 }
+
+extern void openblas_warning(int verbose, const char * msg);
+#define FALLBACK_VERBOSE 1
+#define NEHALEM_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n"
+#define BARCELONA_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n"
 
 static int get_vendor(void){
   int eax, ebx, ecx, edx;
@@ -179,7 +185,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -190,7 +196,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -199,7 +205,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -210,7 +216,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -248,7 +254,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_BULLDOZER;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}else if(model == 2){
@@ -256,7 +262,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_PILEDRIVER;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -351,7 +357,7 @@ void gotoblas_dynamic_init(void) {
   if (gotoblas && gotoblas -> init) {
     gotoblas -> init();
   } else {
-    fprintf(stderr, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
+    openblas_warning(0, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
     exit(1);
   }
   
