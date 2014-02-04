@@ -170,8 +170,9 @@
 	jge	.L00t
 
 	movq	MMM,M
-	addq	I,M
+	addq	M, I
 	jle	.L999x
+	movq	I, M
 	
 .L00t:
 	movq	XX,X
@@ -2853,6 +2854,9 @@
 .L999:
 	leaq	(, M, SIZE), %rax
 	addq %rax,AA
+	movq	STACK_INCY, INCY
+	imulq	INCY, %rax
+	addq %rax, Y
 	jmp .L0t
 	ALIGN_4
 
