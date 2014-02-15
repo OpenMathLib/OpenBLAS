@@ -111,6 +111,9 @@
 #define MM	M
 #endif
 
+#define TMP_M   %r15
+#define Y2      %rbx
+	
 	PROLOGUE
 	PROFCODE
 
@@ -2464,21 +2467,23 @@
 	cmpq	Y, BUFFER
 	je	.L999
 #endif
-
+	movq	M,   TMP_M
+	movq    Y,    Y1
+	
 	cmpq	$SIZE, INCY
 	jne	.L950
 
-	testq	$SIZE, Y
+	testq	$SIZE, Y1
 	je	.L910
 
-	movsd	(Y), %xmm0
+	movsd	(Y1), %xmm0
 	addsd	(BUFFER), %xmm0
-	movsd	%xmm0, (Y)
+	movsd	%xmm0, (Y1)
 
-	addq	$SIZE, Y
+	addq	$SIZE, Y1
 	addq	$SIZE, BUFFER
 
-	decq	M
+	decq	TMP_M
 	jle	.L999
 	ALIGN_4
 
@@ -2486,20 +2491,20 @@
 	testq	$SIZE, BUFFER
 	jne	.L920
 
-	movq	M,   %rax
+	movq	TMP_M,   %rax
 	sarq	$3,  %rax
 	jle	.L914
 	ALIGN_3
 
 .L912:
 #ifdef PREFETCHW
-	PREFETCHW	(PREFETCHSIZE) * 4 + PREOFFSET(Y)
+	PREFETCHW	(PREFETCHSIZE) * 4 + PREOFFSET(Y1)
 #endif
 
-	movapd	0 * SIZE(Y), %xmm0
-	movapd	2 * SIZE(Y), %xmm1
-	movapd	4 * SIZE(Y), %xmm2
-	movapd	6 * SIZE(Y), %xmm3
+	movapd	0 * SIZE(Y1), %xmm0
+	movapd	2 * SIZE(Y1), %xmm1
+	movapd	4 * SIZE(Y1), %xmm2
+	movapd	6 * SIZE(Y1), %xmm3
 
 	movapd	0 * SIZE(BUFFER), %xmm4
 	movapd	2 * SIZE(BUFFER), %xmm5
@@ -2515,12 +2520,12 @@
 	addpd	%xmm6, %xmm2
 	addpd	%xmm7, %xmm3
 
-	movapd	%xmm0,  0 * SIZE(Y)
-	movapd	%xmm1,  2 * SIZE(Y)
-	movapd	%xmm2,  4 * SIZE(Y)
-	movapd	%xmm3,  6 * SIZE(Y)
+	movapd	%xmm0,  0 * SIZE(Y1)
+	movapd	%xmm1,  2 * SIZE(Y1)
+	movapd	%xmm2,  4 * SIZE(Y1)
+	movapd	%xmm3,  6 * SIZE(Y1)
 
-	addq	$8 * SIZE, Y
+	addq	$8 * SIZE, Y1
 	addq	$8 * SIZE, BUFFER
 
 	decq	%rax
@@ -2528,14 +2533,14 @@
 	ALIGN_3
 
 .L914:
-	testq	$7, M
+	testq	$7, TMP_M
 	jle	.L999
 
-	testq	$4, M
+	testq	$4, TMP_M
 	jle	.L915
 
-	movapd	0 * SIZE(Y), %xmm0
-	movapd	2 * SIZE(Y), %xmm1
+	movapd	0 * SIZE(Y1), %xmm0
+	movapd	2 * SIZE(Y1), %xmm1
 
 	movapd	0 * SIZE(BUFFER), %xmm4
 	movapd	2 * SIZE(BUFFER), %xmm5
@@ -2543,40 +2548,40 @@
 	addpd	%xmm4, %xmm0
 	addpd	%xmm5, %xmm1
 
-	movapd	%xmm0,  0 * SIZE(Y)
-	movapd	%xmm1,  2 * SIZE(Y)
+	movapd	%xmm0,  0 * SIZE(Y1)
+	movapd	%xmm1,  2 * SIZE(Y1)
 
-	addq	$4 * SIZE, Y
+	addq	$4 * SIZE, Y1
 	addq	$4 * SIZE, BUFFER
 	ALIGN_3
 
 .L915:
-	testq	$2, M
+	testq	$2, TMP_M
 	jle	.L916
 
-	movapd	(Y), %xmm0
+	movapd	(Y1), %xmm0
 
 	movapd	(BUFFER), %xmm4
 
 	addpd	%xmm4, %xmm0
 
-	movapd	%xmm0,  (Y)
+	movapd	%xmm0,  (Y1)
 
-	addq	$2 * SIZE, Y
+	addq	$2 * SIZE, Y1
 	addq	$2 * SIZE, BUFFER
 	ALIGN_3
 
 .L916:
-	testq	$1, M
+	testq	$1, TMP_M
 	jle	.L999
 
-	movsd	(Y), %xmm0
+	movsd	(Y1), %xmm0
 
 	movsd	0 * SIZE(BUFFER), %xmm4
 
 	addsd	%xmm4, %xmm0
 
-	movlpd	%xmm0, (Y)
+	movlpd	%xmm0, (Y1)
 	ALIGN_3
 
 	jmp	.L999
@@ -2585,20 +2590,20 @@
 .L920:
 	movapd	-1 * SIZE(BUFFER), %xmm4
 
-	movq	M,   %rax
+	movq	TMP_M,   %rax
 	sarq	$3,  %rax
 	jle	.L924
 	ALIGN_3
 
 .L922:
 #ifdef PREFETCHW
-	PREFETCHW	(PREFETCHSIZE) * 4 + PREOFFSET(Y)
+	PREFETCHW	(PREFETCHSIZE) * 4 + PREOFFSET(Y1)
 #endif
 
-	movapd	 0 * SIZE(Y), %xmm0
-	movapd	 2 * SIZE(Y), %xmm1
-	movapd	 4 * SIZE(Y), %xmm2
-	movapd	 6 * SIZE(Y), %xmm3
+	movapd	 0 * SIZE(Y1), %xmm0
+	movapd	 2 * SIZE(Y1), %xmm1
+	movapd	 4 * SIZE(Y1), %xmm2
+	movapd	 6 * SIZE(Y1), %xmm3
 
 	movapd	1 * SIZE(BUFFER), %xmm5
 	movapd	3 * SIZE(BUFFER), %xmm6
@@ -2619,14 +2624,14 @@
 	addpd	%xmm6, %xmm2
 	addpd	%xmm7, %xmm3
 
-	movapd	%xmm0,  0 * SIZE(Y)
-	movapd	%xmm1,  2 * SIZE(Y)
-	movapd	%xmm2,  4 * SIZE(Y)
-	movapd	%xmm3,  6 * SIZE(Y)
+	movapd	%xmm0,  0 * SIZE(Y1)
+	movapd	%xmm1,  2 * SIZE(Y1)
+	movapd	%xmm2,  4 * SIZE(Y1)
+	movapd	%xmm3,  6 * SIZE(Y1)
 
 	movapd	%xmm8, %xmm4
 
-	addq	$8 * SIZE, Y
+	addq	$8 * SIZE, Y1
 	addq	$8 * SIZE, BUFFER
 
 	decq	%rax
@@ -2634,14 +2639,14 @@
 	ALIGN_3
 
 .L924:
-	testq	$7, M
+	testq	$7, TMP_M
 	jle	.L999
 
-	testq	$4, M
+	testq	$4, TMP_M
 	jle	.L925
 
-	movapd	 0 * SIZE(Y), %xmm0
-	movapd	 2 * SIZE(Y), %xmm1
+	movapd	 0 * SIZE(Y1), %xmm0
+	movapd	 2 * SIZE(Y1), %xmm1
 
 	movapd	1 * SIZE(BUFFER), %xmm5
 	movapd	3 * SIZE(BUFFER), %xmm6
@@ -2652,20 +2657,20 @@
 	addpd	%xmm4, %xmm0
 	addpd	%xmm5, %xmm1
 
-	movapd	%xmm0,  0 * SIZE(Y)
-	movapd	%xmm1,  2 * SIZE(Y)
+	movapd	%xmm0,  0 * SIZE(Y1)
+	movapd	%xmm1,  2 * SIZE(Y1)
 
 	movapd	%xmm6, %xmm4
 
-	addq	$4 * SIZE, Y
+	addq	$4 * SIZE, Y1
 	addq	$4 * SIZE, BUFFER
 	ALIGN_3
 
 .L925:
-	testq	$2, M
+	testq	$2, TMP_M
 	jle	.L926
 
-	movapd	 (Y), %xmm0
+	movapd	 (Y1), %xmm0
 
 	movapd	 1 * SIZE(BUFFER), %xmm5
 
@@ -2673,25 +2678,25 @@
 
 	addpd	%xmm4, %xmm0
 
-	movapd	%xmm0,  (Y)
+	movapd	%xmm0,  (Y1)
 
 	movaps	%xmm5, %xmm4
 
-	addq	$2 * SIZE, Y
+	addq	$2 * SIZE, Y1
 	addq	$2 * SIZE, BUFFER
 	ALIGN_3
 
 .L926:
-	testq	$1, M
+	testq	$1, TMP_M
 	jle	.L999
 
-	movsd	(Y), %xmm0
+	movsd	(Y1), %xmm0
 
 	shufpd	$1, %xmm4, %xmm4
 
 	addsd	%xmm4, %xmm0
 
-	movlpd	%xmm0, (Y)
+	movlpd	%xmm0, (Y1)
 	ALIGN_3
 
 	jmp	.L999
@@ -2701,53 +2706,53 @@
 	testq	$SIZE, BUFFER
 	je	.L960
 
-	movsd	(Y), %xmm0
+	movsd	(Y1), %xmm0
 	addsd	(BUFFER), %xmm0
-	movsd	%xmm0, (Y)
+	movsd	%xmm0, (Y1)
 
-	addq	INCY, Y
+	addq	INCY, Y1
 	addq	$SIZE, BUFFER
 
-	decq	M
+	decq	TMP_M
 	jle	.L999
 	ALIGN_4
 
 .L960:
-	movq	Y,  Y1
+	movq	Y1,  Y2
 
-	movq	M,   %rax
+	movq	TMP_M,   %rax
 	sarq	$3,  %rax
 	jle	.L964
 	ALIGN_3
 
 .L962:
-	movsd	(Y), %xmm0
-	addq	INCY, Y
-	movhpd	(Y), %xmm0
-	addq	INCY, Y
+	movsd	(Y2), %xmm0
+	addq	INCY, Y2
+	movhpd	(Y2), %xmm0
+	addq	INCY, Y2
 
 	movapd	0 * SIZE(BUFFER), %xmm4
 
-	movsd	(Y), %xmm1
-	addq	INCY, Y
-	movhpd	(Y), %xmm1
-	addq	INCY, Y
+	movsd	(Y2), %xmm1
+	addq	INCY, Y2
+	movhpd	(Y2), %xmm1
+	addq	INCY, Y2
 
 	movapd	2 * SIZE(BUFFER), %xmm5
 
-	movsd	(Y), %xmm2
-	addq	INCY, Y
-	movhpd	(Y), %xmm2
-	addq	INCY, Y
+	movsd	(Y2), %xmm2
+	addq	INCY, Y2
+	movhpd	(Y2), %xmm2
+	addq	INCY, Y2
 
 	movapd	4 * SIZE(BUFFER), %xmm6
 
 	addpd	%xmm4, %xmm0
 
-	movsd	(Y), %xmm3
-	addq	INCY, Y
-	movhpd	(Y), %xmm3
-	addq	INCY, Y
+	movsd	(Y2), %xmm3
+	addq	INCY, Y2
+	movhpd	(Y2), %xmm3
+	addq	INCY, Y2
 
 	movapd	6 * SIZE(BUFFER), %xmm7
 
@@ -2782,23 +2787,23 @@
 	ALIGN_3
 
 .L964:
-	testq	$7, M
+	testq	$7, TMP_M
 	jle	.L999
 
-	testq	$4, M
+	testq	$4, TMP_M
 	jle	.L965
 
-	movsd	(Y), %xmm0
-	addq	INCY, Y
-	movhpd	(Y), %xmm0
-	addq	INCY, Y
+	movsd	(Y2), %xmm0
+	addq	INCY, Y2
+	movhpd	(Y2), %xmm0
+	addq	INCY, Y2
 
 	movapd	0 * SIZE(BUFFER), %xmm4
 
-	movsd	(Y), %xmm1
-	addq	INCY, Y
-	movhpd	(Y), %xmm1
-	addq	INCY, Y
+	movsd	(Y2), %xmm1
+	addq	INCY, Y2
+	movhpd	(Y2), %xmm1
+	addq	INCY, Y2
 
 	movapd	2 * SIZE(BUFFER), %xmm5
 
@@ -2818,13 +2823,13 @@
 	ALIGN_3
 
 .L965:
-	testq	$2, M
+	testq	$2, TMP_M
 	jle	.L966
 
-	movsd	(Y), %xmm0
-	addq	INCY, Y
-	movhpd	(Y), %xmm0
-	addq	INCY, Y
+	movsd	(Y2), %xmm0
+	addq	INCY, Y2
+	movhpd	(Y2), %xmm0
+	addq	INCY, Y2
 
 	movapd	0 * SIZE(BUFFER), %xmm4
 
@@ -2839,10 +2844,10 @@
 	ALIGN_3
 
 .L966:
-	testq	$1, M
+	testq	$1, TMP_M
 	jle	.L999
 
-	movsd	(Y), %xmm0
+	movsd	(Y2), %xmm0
 
 	movsd	0 * SIZE(BUFFER), %xmm4
 
