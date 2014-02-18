@@ -60,6 +60,14 @@ CU_TestInfo test_level1[]={
 	{"Testing dsdot with n == 1",test_dsdot_n_1},
 
 	{"Testing samax", test_samax},
+
+#if !defined(USE_OPENMP) && !defined(OS_WINDOWS)
+	// The GNU OpenMP implementation libgomp is not fork-safe (as of 4.8.2):
+	// http://gcc.gnu.org/bugzilla/show_bug.cgi?id=60035
+	// Hence skip this test when OpenBLAS is built with OpenMP.
+	{"Testing fork safety", test_fork_safety},
+#endif
+
 	CU_TEST_INFO_NULL,
 };
 
