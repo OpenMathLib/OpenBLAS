@@ -498,3 +498,8 @@ void openblas_set_num_threads(int num)
 {
 	goto_set_num_threads(num);
 }
+
+void openblas_fork_handler()
+{
+
+}

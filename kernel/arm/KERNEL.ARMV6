@@ -40,10 +40,10 @@ DAXPYKERNEL  = axpy_vfp.S
 CAXPYKERNEL  = axpy_vfp.S
 ZAXPYKERNEL  = axpy_vfp.S
 
-SCOPYKERNEL  = scopy_vfp.S
-DCOPYKERNEL  = dcopy_vfp.S
-CCOPYKERNEL  = ccopy_vfp.S
-ZCOPYKERNEL  = zcopy_vfp.S
+SCOPYKERNEL  = copy.c
+DCOPYKERNEL  = copy.c
+CCOPYKERNEL  = zcopy.c
+ZCOPYKERNEL  = zcopy.c
 
 SDOTKERNEL   = sdot_vfp.S
 DDOTKERNEL   = ddot_vfp.S
