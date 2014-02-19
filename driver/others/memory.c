@@ -1288,11 +1288,7 @@ void CONSTRUCTOR gotoblas_init(void) {
 #ifdef SMP
   if (blas_cpu_number == 0) blas_get_cpu_number();
 #ifdef SMP_SERVER
-  if (blas_server_avail == 0) {
-    blas_thread_init();
-    //deal with pthread and fork.
-    openblas_fork_handler();
-  }
+  if (blas_server_avail == 0) blas_thread_init();
 #endif
 #endif
 

@@ -83,8 +83,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define ATTRIBUTE_SIZE 128
 
-extern void openblas_warning(int verbose, const char * msg);
-
 /* This is a thread server model implementation.  The threads are   */
 /* spawned at first access to blas library, and still remains until */
 /* destruction routine is called.  The number of threads are        */
@@ -923,17 +921,5 @@ int BLASFUNC(blas_thread_shutdown)(void){
   return 0;
 }
 
-/*
-https://github.com/xianyi/OpenBLAS/issues/294
-Use pthread_atfork to close blas_thread_server before fork.
-Then, re-init blas_thread_server after fork at child and parent.
-*/
-void openblas_fork_handler()
-{
-  int err;
-  err = pthread_atfork (BLASFUNC(blas_thread_shutdown), blas_thread_init, blas_thread_init);
-  if(err != 0)
-    openblas_warning(0, "OpenBLAS cannot install fork handler. You may meet hang after fork.\n");
-}
 #endif
 
