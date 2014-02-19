@@ -30,6 +30,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
+#ifndef OS_WINDOWS
 #include "common_utest.h"
 #include <sys/wait.h>
 #include <cblas.h>
@@ -55,7 +56,6 @@ void check_dgemm(double *a, double *b, double *result, double *expected, int n)
         CU_ASSERT_DOUBLE_EQUAL(expected[i], result[i], CHECK_EPS);
     }
 }
-
 
 void test_fork_safety(void)
 {
@@ -120,3 +120,4 @@ void test_fork_safety(void)
         CU_ASSERT(WEXITSTATUS (child_status) == 0);
     }
 }
+#endif
