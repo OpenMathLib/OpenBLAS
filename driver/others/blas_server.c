@@ -74,6 +74,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/resource.h>
 #endif
 
+#ifndef likely
+#ifdef __GNUC__
+#define likely(x) __builtin_expect(!!(x), 1)
+#else
+#define likely(x) (x)
+#endif
+#endif
+#ifndef unlikely
+#ifdef __GNUC__
+#define unlikely(x) __builtin_expect(!!(x), 0)
+#else
+#define unlikely(x) (x)
+#endif
+#endif
+
 #ifdef SMP_SERVER
 
 #undef MONITOR
@@ -82,8 +97,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef NEED_STACKATTR
 
 #define ATTRIBUTE_SIZE 128
-
-extern void openblas_warning(int verbose, const char * msg);
 
 /* This is a thread server model implementation.  The threads are   */
 /* spawned at first access to blas library, and still remains until */
@@ -586,6 +599,10 @@ static BLASULONG exec_queue_lock = 0;
 
 int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 
+#ifdef SMP_SERVER
+  // Handle lazy re-init of the thread-pool after a POSIX fork
+  if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
   BLASLONG i = 0;
   blas_queue_t *current = queue;
 #if defined(OS_LINUX) && !defined(NO_AFFINITY) && !defined(PARAMTEST)
@@ -710,7 +727,11 @@ int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
 /* Execute Threads */
 int exec_blas(BLASLONG num, blas_queue_t *queue){
 
-   int (*routine)(blas_arg_t *, void *, void *, double *, double *, BLASLONG);
+#ifdef SMP_SERVER
+  // Handle lazy re-init of the thread-pool after a POSIX fork
+  if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
+  int (*routine)(blas_arg_t *, void *, void *, double *, double *, BLASLONG);
 
 #ifdef TIMING_DEBUG
   BLASULONG start, stop;
@@ -923,17 +944,5 @@ int BLASFUNC(blas_thread_shutdown)(void){
   return 0;
 }
 
-/*
-https://github.com/xianyi/OpenBLAS/issues/294
-Use pthread_atfork to close blas_thread_server before fork.
-Then, re-init blas_thread_server after fork at child and parent.
-*/
-void openblas_fork_handler()
-{
-  int err;
-  err = pthread_atfork (BLASFUNC(blas_thread_shutdown), blas_thread_init, blas_thread_init);
-  if(err != 0)
-    openblas_warning(0, "OpenBLAS cannot install fork handler. You may meet hang after fork.\n");
-}
 #endif
 

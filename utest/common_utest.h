@@ -63,4 +63,6 @@ void test_dsdot_n_1(void);
 
 void test_samax(void);
 
+void test_fork_safety(void);
+
 #endif

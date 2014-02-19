@@ -315,9 +315,4 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   return 0;
 }
 
-void openblas_fork_handler()
-{
-
-}
-
 #endif
