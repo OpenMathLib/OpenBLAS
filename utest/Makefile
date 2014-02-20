@@ -11,7 +11,7 @@ CUNIT_LIB=$(CUNIT_DIR)/lib/libcunit.a
 
 CFLAGS+=-I$(CUNIT_DIR)/include
 
-OBJS=main.o test_rot.o test_swap.o test_axpy.o test_dotu.o test_rotmg.o test_dsdot.o test_amax.o
+OBJS=main.o test_rot.o test_swap.o test_axpy.o test_dotu.o test_rotmg.o test_dsdot.o test_amax.o test_fork.o
 
 all : run_test
 
