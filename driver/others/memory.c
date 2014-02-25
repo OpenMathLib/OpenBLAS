@@ -266,7 +266,7 @@ void openblas_fork_handler()
   // implementation of OpenMP.
 #if !defined(OS_WINDOWS) && defined(SMP_SERVER)
   int err;
-  err = pthread_atfork (BLASFUNC(blas_thread_shutdown), NULL, NULL);
+  err = pthread_atfork ((void (*)(void)) BLASFUNC(blas_thread_shutdown), NULL, NULL);
   if(err != 0)
     openblas_warning(0, "OpenBLAS Warning ... cannot install fork handler. You may meet hang after fork.\n");
 #endif
