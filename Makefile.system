@@ -82,12 +82,19 @@ ifeq ($(HOSTCC), loongcc)
 GETARCH_FLAGS  += -static
 endif
 
+#if don't use Fortran, it will only compile CBLAS.
+ifeq ($(ONLY_CBLAS), 1)
+NO_LAPACK = 1
+else
+ONLY_CBLAS = 0
+endif
+
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
@@ -222,6 +229,11 @@ endif
 endif
 endif
 
+# ifeq logical or
+ifeq ($(OSNAME), $(filter $(OSNAME),WINNT CYGWIN_NT Interix))
+OS_WINDOWS=1
+endif
+
 ifdef QUAD_PRECISION
 CCOMMON_OPT	+= -DQUAD_PRECISION
 NO_EXPRECISION = 1
@@ -324,16 +336,14 @@ ifeq ($(ARCH), x86)
 DYNAMIC_CORE = KATMAI COPPERMINE NORTHWOOD PRESCOTT BANIAS \
 	       CORE2 PENRYN DUNNINGTON NEHALEM ATHLON OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
 ifneq ($(NO_AVX), 1)
-DYNAMIC_CORE += SANDYBRIDGE 
-#BULLDOZER PILEDRIVER
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER HASWELL
 endif
 endif
 
 ifeq ($(ARCH), x86_64)
 DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
 ifneq ($(NO_AVX), 1)
-DYNAMIC_CORE += SANDYBRIDGE 
-#BULLDOZER PILEDRIVER
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER HASWELL
 endif
 endif
 
@@ -362,6 +372,19 @@ ifeq ($(ARCH), alpha)
 NO_BINARY_MODE	= 1
 BINARY_DEFINED	= 1
 endif
+
+ifeq ($(ARCH), arm)
+NO_BINARY_MODE  = 1
+BINARY_DEFINED  = 1
+endif
+
+ifeq ($(ARCH), arm64)
+NO_BINARY_MODE  = 1
+BINARY_DEFINED  = 1
+endif
+
+
+
 
 #
 #  C Compiler dependent settings
@@ -465,9 +488,7 @@ CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
-ifneq ($(C_COMPILER), LSB)
 EXTRALIB += -lgfortran 
-endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
@@ -826,6 +847,19 @@ COMMON_OPT += -g
 endif
 
 ifndef COMMON_OPT
+ifeq ($(ARCH), arm)
+COMMON_OPT = -O3
+endif
+endif
+
+ifndef COMMON_OPT
+ifeq ($(ARCH), arm64)
+COMMON_OPT = -O3
+endif
+endif
+
+
+ifndef COMMON_OPT
 COMMON_OPT = -O2
 endif
 
@@ -837,10 +871,23 @@ override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
+#For LAPACK Fortran codes.
+#Disable -fopenmp for LAPACK Fortran codes on Windows.
+ifdef OS_WINDOWS
+LAPACK_FFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FFLAGS))
+LAPACK_FPFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FPFLAGS))
+else
+LAPACK_FFLAGS := $(FFLAGS)
+LAPACK_FPFLAGS := $(FPFLAGS)
+endif
+
 LAPACK_CFLAGS = $(CFLAGS)
 LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H 
 ifdef INTERFACE64
 LAPACK_CFLAGS +=  -DLAPACK_ILP64
+endif
+ifdef OS_WINDOWS
+LAPACK_CFLAGS +=  -DOPENBLAS_OS_WINDOWS
 endif
 ifeq ($(C_COMPILER), LSB)
 LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE
@@ -887,6 +934,23 @@ LIBZIPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.zip)
 LIBS		= $(TOPDIR)/$(LIBNAME)
 LIBS_P		= $(TOPDIR)/$(LIBNAME_P)
 
+
+LIB_COMPONENTS = BLAS
+ifneq ($(NO_CBLAS), 1)
+LIB_COMPONENTS += CBLAS
+endif
+
+ifneq ($(NO_LAPACK), 1)
+LIB_COMPONENTS += LAPACK
+ifneq ($(NO_LAPACKE), 1)
+LIB_COMPONENTS += LAPACKE
+endif
+endif
+
+ifeq ($(ONLY_CBLAS), 1)
+LIB_COMPONENTS = CBLAS
+endif
+
 export OSNAME
 export ARCH
 export CORE
@@ -913,6 +977,7 @@ export USE_OPENMP
 export CROSS
 export CROSS_SUFFIX
 export NOFORTRAN
+export NO_FBLAS
 export EXTRALIB
 export CEXTRALIB
 export FEXTRALIB
@@ -925,6 +990,10 @@ export HAVE_SSE4_2
 export HAVE_SSE4A
 export HAVE_SSE5
 export HAVE_AVX
+export HAVE_VFP
+export HAVE_VFPV3
+export HAVE_VFPV4
+export HAVE_NEON
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE

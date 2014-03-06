@@ -267,6 +267,10 @@ lapacke_chseqr.o \
 lapacke_chseqr_work.o \
 lapacke_clacgv.o \
 lapacke_clacgv_work.o \
+lapacke_clacn2.o \
+lapacke_clacn2_work.o \
+lapacke_clacp2.o \
+lapacke_clacp2_work.o \
 lapacke_clacpy.o \
 lapacke_clacpy_work.o \
 lapacke_clag2z.o \
@@ -402,6 +406,8 @@ lapacke_csyequb_work.o \
 lapacke_csyrfs.o \
 lapacke_csyrfs_work.o \
 lapacke_csysv.o \
+lapacke_csysv_rook.o \
+lapacke_csysv_rook_work.o \
 lapacke_csysv_work.o \
 lapacke_csysvx.o \
 lapacke_csysvx_work.o \
@@ -677,6 +683,8 @@ lapacke_dhsein.o \
 lapacke_dhsein_work.o \
 lapacke_dhseqr.o \
 lapacke_dhseqr_work.o \
+lapacke_dlacn2.o \
+lapacke_dlacn2_work.o \
 lapacke_dlacpy.o \
 lapacke_dlacpy_work.o \
 lapacke_dlag2s.o \
@@ -926,6 +934,8 @@ lapacke_dsygvx_work.o \
 lapacke_dsyrfs.o \
 lapacke_dsyrfs_work.o \
 lapacke_dsysv.o \
+lapacke_dsysv_rook.o \
+lapacke_dsysv_rook_work.o \
 lapacke_dsysv_work.o \
 lapacke_dsysvx.o \
 lapacke_dsysvx_work.o \
@@ -1165,6 +1175,8 @@ lapacke_shsein.o \
 lapacke_shsein_work.o \
 lapacke_shseqr.o \
 lapacke_shseqr_work.o \
+lapacke_slacn2.o \
+lapacke_slacn2_work.o \
 lapacke_slacpy.o \
 lapacke_slacpy_work.o \
 lapacke_slag2d.o \
@@ -1410,6 +1422,8 @@ lapacke_ssygvx_work.o \
 lapacke_ssyrfs.o \
 lapacke_ssyrfs_work.o \
 lapacke_ssysv.o \
+lapacke_ssysv_rook.o \
+lapacke_ssysv_rook_work.o \
 lapacke_ssysv_work.o \
 lapacke_ssysvx.o \
 lapacke_ssysvx_work.o \
@@ -1735,6 +1749,10 @@ lapacke_zhseqr.o \
 lapacke_zhseqr_work.o \
 lapacke_zlacgv.o \
 lapacke_zlacgv_work.o \
+lapacke_zlacn2.o \
+lapacke_zlacn2_work.o \
+lapacke_zlacp2.o \
+lapacke_zlacp2_work.o \
 lapacke_zlacpy.o \
 lapacke_zlacpy_work.o \
 lapacke_zlag2c.o \
@@ -1870,6 +1888,8 @@ lapacke_zsyequb_work.o \
 lapacke_zsyrfs.o \
 lapacke_zsyrfs_work.o \
 lapacke_zsysv.o \
+lapacke_zsysv_rook.o \
+lapacke_zsysv_rook_work.o \
 lapacke_zsysv_work.o \
 lapacke_zsysvx.o \
 lapacke_zsysvx_work.o \
@@ -2052,23 +2072,29 @@ SOBJ_FILES := $(SSRC_OBJ)
 DOBJ_FILES := $(DSRC_OBJ)
 ZOBJ_FILES := $(ZSRC_OBJ)
 
-ifdef LAPACKE_EXTENDED
-OBJ_FILES += $(SRCX_OBJ)
+ifdef LAPACKE_TESTING
+ZOBJ_FILES += $(MATGEN_OBJ) 
 endif
 
-ifdef LAPACKE_TESTING
-OBJ_FILES += $(MATGEN_OBJ)
+ALLOBJ = $(COBJ_FILES) $(DOBJ_FILES) $(SOBJ_FILES) $(ZOBJ_FILES) $(OBJ_FILES) 
+
+
+ifdef USEXBLAS
+ALLXOBJ = $(SXLASRC) $(DXLASRC) $(CXLASRC) $(ZXLASRC)
 endif
+
+
+OBJ_FILES := $(C_FILES:.o=.o)
 
 all: ../../$(LAPACKELIB)
 
-../../$(LAPACKELIB): $(COBJ_FILES) $(DOBJ_FILES) $(SOBJ_FILES) $(ZOBJ_FILES) $(OBJ_FILES)
+../../$(LAPACKELIB): $(ALLOBJ) $(ALLXOBJ)
 	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(COBJ_FILES)
 	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(DOBJ_FILES)
 	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(SOBJ_FILES)
 	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ZOBJ_FILES)
-ifneq ($(strip $(OBJ_FILES)),)
-	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(OBJ_FILES)
+ifdef USEXBLAS
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLXOBJ)
 endif
 	$(RANLIB) ../../$(LAPACKELIB)
 

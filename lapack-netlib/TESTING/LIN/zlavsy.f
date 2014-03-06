@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLAVSY( UPLO, TRANS, DIAG, N, NRHS, A, LDA, IPIV, B,
 *                          LDB, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, TRANS, UPLO
 *       INTEGER            INFO, LDA, LDB, N, NRHS
@@ -19,14 +19,14 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX*16         A( LDA, * ), B( LDB, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> ZLAVSY  performs one of the matrix-vector operations
+*> ZLAVSY performs one of the matrix-vector operations
 *>    x := A*x  or  x := A'*x,
 *> where x is an N element vector and  A is one of the factors
 *> from the block U*D*U' or L*D*L' factorization computed by ZSYTRF.
@@ -83,6 +83,7 @@
 *>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          The block diagonal matrix D and the multipliers used to
 *>          obtain the factor U or L as computed by ZSYTRF.
+*>          Stored as a 2-D triangular matrix.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -95,7 +96,7 @@
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
 *>          Details of the interchanges and the block structure of D,
-*>          as determined by ZSYTRF or ZHETRF.
+*>          as determined by ZSYTRF.
 *>
 *>          If UPLO = 'U':
 *>               If IPIV(k) > 0, then rows and columns k and IPIV(k)
@@ -139,12 +140,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup complex16_lin
 *
@@ -152,10 +153,10 @@
       SUBROUTINE ZLAVSY( UPLO, TRANS, DIAG, N, NRHS, A, LDA, IPIV, B,
      $                   LDB, INFO )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, TRANS, UPLO

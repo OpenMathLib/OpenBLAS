@@ -308,7 +308,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -320,10 +320,10 @@
      $                             LDV2T, WORK, LWORK, RWORK, LRWORK,
      $                             IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS
@@ -356,7 +356,7 @@
      $                   LBBCSDWORKOPT, LORBDBWORK, LORBDBWORKMIN,
      $                   LORBDBWORKOPT, LORGLQWORK, LORGLQWORKMIN,
      $                   LORGLQWORKOPT, LORGQRWORK, LORGQRWORKMIN,
-     $                   LORGQRWORKOPT, LWORKMIN, LWORKOPT
+     $                   LORGQRWORKOPT, LWORKMIN, LWORKOPT, P1, Q1
       LOGICAL            COLMAJOR, DEFAULTSIGNS, LQUERY, WANTU1, WANTU2,
      $                   WANTV1T, WANTV2T
       INTEGER            LRWORKMIN, LRWORKOPT
@@ -392,9 +392,22 @@
          INFO = -8
       ELSE IF( Q .LT. 0 .OR. Q .GT. M ) THEN
          INFO = -9
-      ELSE IF( ( COLMAJOR .AND. LDX11 .LT. MAX(1,P) ) .OR.
-     $         ( .NOT.COLMAJOR .AND. LDX11 .LT. MAX(1,Q) ) ) THEN
-         INFO = -11
+      ELSE IF ( COLMAJOR .AND.  LDX11 .LT. MAX( 1, P ) ) THEN
+        INFO = -11
+      ELSE IF (.NOT. COLMAJOR .AND. LDX11 .LT. MAX( 1, Q ) ) THEN
+        INFO = -11
+      ELSE IF (COLMAJOR .AND. LDX12 .LT. MAX( 1, P ) ) THEN
+        INFO = -13
+      ELSE IF (.NOT. COLMAJOR .AND. LDX12 .LT. MAX( 1, M-Q ) ) THEN
+        INFO = -13
+      ELSE IF (COLMAJOR .AND. LDX21 .LT. MAX( 1, M-P ) ) THEN
+        INFO = -15
+      ELSE IF (.NOT. COLMAJOR .AND. LDX21 .LT. MAX( 1, Q ) ) THEN
+        INFO = -15
+      ELSE IF (COLMAJOR .AND. LDX22 .LT. MAX( 1, M-P ) ) THEN
+        INFO = -17
+      ELSE IF (.NOT. COLMAJOR .AND. LDX22 .LT. MAX( 1, M-Q ) ) THEN
+        INFO = -17
       ELSE IF( WANTU1 .AND. LDU1 .LT. P ) THEN
          INFO = -20
       ELSE IF( WANTU2 .AND. LDU2 .LT. M-P ) THEN
@@ -458,9 +471,10 @@
          IB22D = IB21E + MAX( 1, Q - 1 )
          IB22E = IB22D + MAX( 1, Q )
          IBBCSD = IB22E + MAX( 1, Q - 1 )
-         CALL CBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q, 0,
-     $                0, U1, LDU1, U2, LDU2, V1T, LDV1T, V2T, LDV2T, 0,
-     $                0, 0, 0, 0, 0, 0, 0, RWORK, -1, CHILDINFO )
+         CALL CBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q, 
+     $                THETA, THETA, U1, LDU1, U2, LDU2, V1T, LDV1T,
+     $                V2T, LDV2T, THETA, THETA, THETA, THETA, THETA,
+     $                THETA, THETA, THETA, RWORK, -1, CHILDINFO )
          LBBCSDWORKOPT = INT( RWORK(1) )
          LBBCSDWORKMIN = LBBCSDWORKOPT
          LRWORKOPT = IBBCSD + LBBCSDWORKOPT - 1
@@ -474,19 +488,19 @@
          ITAUQ1 = ITAUP2 + MAX( 1, M - P )
          ITAUQ2 = ITAUQ1 + MAX( 1, Q )
          IORGQR = ITAUQ2 + MAX( 1, M - Q )
-         CALL CUNGQR( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), 0, WORK, -1,
+         CALL CUNGQR( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGQRWORKOPT = INT( WORK(1) )
          LORGQRWORKMIN = MAX( 1, M - Q )
          IORGLQ = ITAUQ2 + MAX( 1, M - Q )
-         CALL CUNGLQ( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), 0, WORK, -1,
+         CALL CUNGLQ( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGLQWORKOPT = INT( WORK(1) )
          LORGLQWORKMIN = MAX( 1, M - Q )
          IORBDB = ITAUQ2 + MAX( 1, M - Q )
          CALL CUNBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
-     $                X21, LDX21, X22, LDX22, 0, 0, 0, 0, 0, 0, WORK,
-     $                -1, CHILDINFO )
+     $                X21, LDX21, X22, LDX22, THETA, THETA, U1, U2,
+     $                V1T, V2T, WORK, -1, CHILDINFO )
          LORBDBWORKOPT = INT( WORK(1) )
          LORBDBWORKMIN = LORBDBWORKOPT
          LWORKOPT = MAX( IORGQR + LORGQRWORKOPT, IORGLQ + LORGLQWORKOPT,
@@ -551,10 +565,14 @@
          END IF
          IF( WANTV2T .AND. M-Q .GT. 0 ) THEN
             CALL CLACPY( 'U', P, M-Q, X12, LDX12, V2T, LDV2T )
-            CALL CLACPY( 'U', M-P-Q, M-P-Q, X22(Q+1,P+1), LDX22,
-     $                   V2T(P+1,P+1), LDV2T )
-            CALL CUNGLQ( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
-     $                   WORK(IORGLQ), LORGLQWORK, INFO )
+            IF( M-P .GT. Q ) THEN
+               CALL CLACPY( 'U', M-P-Q, M-P-Q, X22(Q+1,P+1), LDX22,
+     $                      V2T(P+1,P+1), LDV2T )
+            END IF
+            IF( M .GT. Q ) THEN
+               CALL CUNGLQ( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
+     $                      WORK(IORGLQ), LORGLQWORK, INFO )
+            END IF
          END IF
       ELSE
          IF( WANTU1 .AND. P .GT. 0 ) THEN
@@ -579,9 +597,13 @@
      $                   WORK(IORGQR), LORGQRWORK, INFO )
          END IF
          IF( WANTV2T .AND. M-Q .GT. 0 ) THEN
+            P1 = MIN( P+1, M )
+            Q1 = MIN( Q+1, M )
             CALL CLACPY( 'L', M-Q, P, X12, LDX12, V2T, LDV2T )
-            CALL CLACPY( 'L', M-P-Q, M-P-Q, X22(P+1,Q+1), LDX22,
-     $                   V2T(P+1,P+1), LDV2T )
+            IF ( M .GT. P+Q ) THEN
+               CALL CLACPY( 'L', M-P-Q, M-P-Q, X22(P1,Q1), LDX22,
+     $                      V2T(P+1,P+1), LDV2T )
+            END IF
             CALL CUNGQR( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
      $                   WORK(IORGQR), LORGQRWORK, INFO )
          END IF

@@ -153,7 +153,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complex_lin
 *
@@ -162,10 +162,10 @@
      $                   A, AFAC, ASAV, B, BSAV, X, XACT, S, WORK,
      $                   RWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -530,11 +530,12 @@
 *
 *                    Check the error code from CPOSVX.
 *
-                     IF( INFO.NE.IZERO )
-     $                  CALL ALAERH( PATH, 'CPOSVX', INFO, IZERO,
+                     IF( INFO.NE.IZERO ) THEN
+                        CALL ALAERH( PATH, 'CPOSVX', INFO, IZERO,
      $                               FACT // UPLO, N, N, -1, -1, NRHS,
      $                               IMAT, NFAIL, NERRS, NOUT )
                         GO TO 90
+                     END IF
 *
                      IF( INFO.EQ.0 ) THEN
                         IF( .NOT.PREFAC ) THEN

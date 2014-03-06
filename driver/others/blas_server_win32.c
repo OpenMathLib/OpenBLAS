@@ -441,9 +441,10 @@ int BLASFUNC(blas_thread_shutdown)(void){
   if (blas_server_avail){
 
     SetEvent(pool.killed);
-    
+
     for(i = 0; i < blas_num_threads - 1; i++){
-      WaitForSingleObject(blas_threads[i], INFINITE);
+     WaitForSingleObject(blas_threads[i], 5);  //INFINITE);
+	 TerminateThread(blas_threads[i],0);
     }
     
     blas_server_avail = 0;

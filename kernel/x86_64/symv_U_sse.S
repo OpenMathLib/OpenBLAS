@@ -57,7 +57,7 @@
 #define PREFETCHSIZE	(16 * 12)
 #endif
 
-#if defined(NEHALEM) || defined(SANDYBRIDGE)
+#if defined(NEHALEM) || defined(SANDYBRIDGE)  || defined(HASWELL)
 #define PREFETCH	prefetcht0
 #define PREFETCHW	prefetcht0
 #define PREFETCHSIZE	(16 * 12)

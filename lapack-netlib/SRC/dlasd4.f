@@ -140,7 +140,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date November 2013
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -153,10 +153,10 @@
 *  =====================================================================
       SUBROUTINE DLASD4( N, I, D, Z, DELTA, RHO, SIGMA, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       INTEGER            I, INFO, N
@@ -223,6 +223,7 @@
 *
       EPS = DLAMCH( 'Epsilon' )
       RHOINV = ONE / RHO
+      TAU2= ZERO
 *
 *     The case I = N
 *
@@ -275,6 +276,7 @@
                ELSE
                   TAU2 = ( A+SQRT( A*A+FOUR*B*C ) ) / ( TWO*C )
                END IF
+               TAU = TAU2 / ( D( N )+SQRT( D( N )*D( N )+TAU2 ) )
             END IF
 *
 *           It can be proved that
@@ -293,6 +295,8 @@
             ELSE
                TAU2 = ( A+SQRT( A*A+FOUR*B*C ) ) / ( TWO*C )
             END IF
+            TAU = TAU2 / ( D( N )+SQRT( D( N )*D( N )+TAU2 ) )
+
 *
 *           It can be proved that
 *           D(N)^2 < D(N)^2+TAU2 < SIGMA(N)^2 < D(N)^2+RHO/2
@@ -301,7 +305,7 @@
 *
 *        The following TAU is to approximate SIGMA_n - D( N )
 *
-         TAU = TAU2 / ( D( N )+SQRT( D( N )*D( N )+TAU2 ) )
+*         TAU = TAU2 / ( D( N )+SQRT( D( N )*D( N )+TAU2 ) )
 *
          SIGMA = D( N ) + TAU
          DO 30 J = 1, N

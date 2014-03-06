@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRSY( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -88,8 +88,9 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAESM, CHKXER, CSPCON, CSPRFS, CSPTRF, CSPTRI,
-     $                   CSPTRS, CSYCON, CSYRFS, CSYTF2, CSYTRF, CSYTRI,
-     $                   CSYTRI2, CSYTRS
+     $                   CSPTRS, CSYCON, CSYCON_ROOK, CSYRFS, CSYTF2,
+     $                   CSYTF2_ROOK, CSYTRF, CSYTRF_ROOK, CSYTRI,
+     $                   CSYTRI_ROOK, CSYTRI2, CSYTRS, CSYTRS_ROOK
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -126,11 +127,11 @@
       ANRM = 1.0
       OK = .TRUE.
 *
-      IF( LSAMEN( 2, C2, 'SY' ) ) THEN
+*     Test error exits of the routines that use factorization
+*     of a symmetric indefinite matrix with patrial
+*     (Bunch-Kaufman) diagonal pivoting method.
 *
-*        Test error exits of the routines that use factorization
-*        of a symmetric indefinite matrix with patrial
-*        (Bunch-Kaufman) pivoting.
+      IF( LSAMEN( 2, C2, 'SY' ) ) THEN
 *
 *        CSYTRF
 *
@@ -251,11 +252,91 @@
          CALL CSYCON( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'CSYCON', INFOT, NOUT, LERR, OK )
 *
-      ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
+*     Test error exits of the routines that use factorization
+*     of a symmetric indefinite matrix with "rook"
+*     (bounded Bunch-Kaufman) diagonal pivoting method.
 *
-*        Test error exits of the routines that use factorization
-*        of a symmetric indefinite packed matrix with patrial
-*        (Bunch-Kaufman) pivoting.
+      ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
+*
+*        CSYTRF_ROOK
+*
+         SRNAMT = 'CSYTRF_ROOK'
+         INFOT = 1
+         CALL CSYTRF_ROOK( '/', 0, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRF_ROOK( 'U', -1, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTRF_ROOK( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'CSYTRF_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CSYTF2_ROOK
+*
+         SRNAMT = 'CSYTF2_ROOK'
+         INFOT = 1
+         CALL CSYTF2_ROOK( '/', 0, A, 1, IP, INFO )
+         CALL CHKXER( 'CSYTF2_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTF2_ROOK( 'U', -1, A, 1, IP, INFO )
+         CALL CHKXER( 'CSYTF2_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTF2_ROOK( 'U', 2, A, 1, IP, INFO )
+         CALL CHKXER( 'CSYTF2_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CSYTRI_ROOK
+*
+         SRNAMT = 'CSYTRI_ROOK'
+         INFOT = 1
+         CALL CSYTRI_ROOK( '/', 0, A, 1, IP, W, INFO )
+         CALL CHKXER( 'CSYTRI_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRI_ROOK( 'U', -1, A, 1, IP, W, INFO )
+         CALL CHKXER( 'CSYTRI_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTRI_ROOK( 'U', 2, A, 1, IP, W, INFO )
+         CALL CHKXER( 'CSYTRI_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CSYTRS_ROOK
+*
+         SRNAMT = 'CSYTRS_ROOK'
+         INFOT = 1
+         CALL CSYTRS_ROOK( '/', 0, 0, A, 1, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRS_ROOK( 'U', -1, 0, A, 1, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CSYTRS_ROOK( 'U', 0, -1, A, 1, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CSYTRS_ROOK( 'U', 2, 1, A, 1, IP, B, 2, INFO )
+         CALL CHKXER( 'CSYTRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CSYTRS_ROOK( 'U', 2, 1, A, 2, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CSYCON_ROOK
+*
+         SRNAMT = 'CSYCON_ROOK'
+         INFOT = 1
+         CALL CSYCON_ROOK( '/', 0, A, 1, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CSYCON_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYCON_ROOK( 'U', -1, A, 1, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CSYCON_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYCON_ROOK( 'U', 2, A, 1, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CSYCON_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL CSYCON_ROOK( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CSYCON_ROOK', INFOT, NOUT, LERR, OK )
+*
+*     Test error exits of the routines that use factorization
+*     of a symmetric indefinite packed matrix with patrial
+*     (Bunch-Kaufman) diagonal pivoting method.
+*
+      ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *
 *        CSPTRF
 *

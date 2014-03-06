@@ -118,7 +118,7 @@ SLASRC = \
    slaqtr.o slar1v.o slar2v.o ilaslr.o ilaslc.o \
    slarf.o  slarfb.o slarfg.o slarfgp.o slarft.o slarfx.o slargv.o \
    slarrv.o slartv.o  \
-   slarz.o  slarzb.o slarzt.o slasy2.o slasyf.o \
+   slarz.o  slarzb.o slarzt.o slasy2.o slasyf.o slasyf_rook.o \
    slatbs.o slatdf.o slatps.o slatrd.o slatrs.o slatrz.o slatzm.o \
    sopgtr.o sopmtr.o sorg2l.o sorg2r.o \
    sorgbr.o sorghr.o sorgl2.o sorglq.o sorgql.o sorgqr.o sorgr2.o \
@@ -140,6 +140,8 @@ SLASRC = \
    ssygst.o ssygv.o  ssygvd.o ssygvx.o ssyrfs.o ssysv.o  ssysvx.o \
    ssytd2.o ssytf2.o ssytrd.o ssytrf.o ssytri.o ssytri2.o ssytri2x.o \
    ssyswapr.o ssytrs.o ssytrs2.o ssyconv.o \
+   ssytf2_rook.o ssytrf_rook.o ssytrs_rook.o \
+   ssytri_rook.o ssycon_rook.o ssysv_rook.o \
    stbcon.o \
    stbrfs.o stbtrs.o stgevc.o stgex2.o stgexc.o stgsen.o \
    stgsja.o stgsna.o stgsy2.o stgsyl.o stpcon.o stprfs.o stptri.o \
@@ -150,7 +152,8 @@ SLASRC = \
    stfttr.o stpttf.o stpttr.o strttf.o strttp.o \
    sgejsv.o  sgesvj.o  sgsvj0.o  sgsvj1.o \
    sgeequb.o ssyequb.o spoequb.o sgbequb.o \
-   sbbcsd.o slapmr.o sorbdb.o sorcsd.o \
+   sbbcsd.o slapmr.o sorbdb.o sorbdb1.o sorbdb2.o sorbdb3.o sorbdb4.o \
+   sorbdb5.o sorbdb6.o sorcsd.o sorcsd2by1.o \
    sgeqrt.o sgeqrt2.o sgeqrt3.o sgemqrt.o \
    stpqrt.o stpqrt2.o stpmqrt.o stprfb.o
 
@@ -184,14 +187,16 @@ CLASRC = \
    chegv.o  chegvd.o chegvx.o cherfs.o chesv.o  chesvx.o chetd2.o \
    chetf2.o chetrd.o \
    chetrf.o chetri.o chetri2.o chetri2x.o cheswapr.o \
-   chetrs.o chetrs2.o chgeqz.o chpcon.o chpev.o  chpevd.o \
+   chetrs.o chetrs2.o \
+   chetf2_rook.o chetrf_rook.o chetri_rook.o chetrs_rook.o checon_rook.o chesv_rook.o \
+   chgeqz.o chpcon.o chpev.o  chpevd.o \
    chpevx.o chpgst.o chpgv.o  chpgvd.o chpgvx.o chprfs.o chpsv.o  \
    chpsvx.o \
    chptrd.o chptrf.o chptri.o chptrs.o chsein.o chseqr.o clabrd.o \
    clacgv.o clacon.o clacn2.o clacp2.o clacpy.o clacrm.o clacrt.o cladiv.o \
    claed0.o claed7.o claed8.o \
    claein.o claesy.o claev2.o clags2.o clagtm.o \
-   clahef.o clahqr.o \
+   clahef.o clahef_rook.o clahqr.o \
    clahrd.o clahr2.o claic1.o clals0.o clalsa.o clalsd.o clangb.o clange.o clangt.o \
    clanhb.o clanhe.o \
    clanhp.o clanhs.o clanht.o clansb.o clansp.o clansy.o clantb.o \
@@ -202,7 +207,7 @@ CLASRC = \
    clarf.o  clarfb.o clarfg.o clarft.o clarfgp.o \
    clarfx.o clargv.o clarnv.o clarrv.o clartg.o clartv.o \
    clarz.o  clarzb.o clarzt.o clascl.o claset.o clasr.o  classq.o \
-   clasyf.o clatbs.o clatdf.o clatps.o clatrd.o clatrs.o clatrz.o \
+   clasyf.o clasyf_rook.o clatbs.o clatdf.o clatps.o clatrd.o clatrs.o clatrz.o \
    clatzm.o cpbcon.o cpbequ.o cpbrfs.o cpbstf.o cpbsv.o  \
    cpbsvx.o cpbtf2.o cpbtrf.o cpbtrs.o cpocon.o cpoequ.o cporfs.o \
    cposv.o  cposvx.o cpotri.o cpstrf.o cpstf2.o \
@@ -214,6 +219,8 @@ CLASRC = \
    csycon.o csymv.o \
    csyr.o csyrfs.o csysv.o  csysvx.o csytf2.o csytrf.o csytri.o csytri2.o csytri2x.o \
    csyswapr.o csytrs.o csytrs2.o csyconv.o \
+   csytf2_rook.o csytrf_rook.o csytrs_rook.o \
+   csytri_rook.o csycon_rook.o csysv_rook.o \
    ctbcon.o ctbrfs.o ctbtrs.o ctgevc.o ctgex2.o \
    ctgexc.o ctgsen.o ctgsja.o ctgsna.o ctgsy2.o ctgsyl.o ctpcon.o \
    ctprfs.o ctptri.o \
@@ -226,7 +233,8 @@ CLASRC = \
    chfrk.o ctfttp.o clanhf.o cpftrf.o cpftri.o cpftrs.o ctfsm.o ctftri.o \
    ctfttr.o ctpttf.o ctpttr.o ctrttf.o ctrttp.o \
    cgeequb.o cgbequb.o csyequb.o cpoequb.o cheequb.o \
-   cbbcsd.o clapmr.o cunbdb.o cuncsd.o \
+   cbbcsd.o clapmr.o cunbdb.o cunbdb1.o cunbdb2.o cunbdb3.o cunbdb4.o \
+   cunbdb5.o cunbdb6.o cuncsd.o cuncsd2by1.o \
    cgeqrt.o cgeqrt2.o cgeqrt3.o cgemqrt.o \
    ctpqrt.o ctpqrt2.o ctpmqrt.o ctprfb.o
 
@@ -270,7 +278,7 @@ DLASRC = \
    dlaqtr.o dlar1v.o dlar2v.o iladlr.o iladlc.o \
    dlarf.o  dlarfb.o dlarfg.o dlarfgp.o dlarft.o dlarfx.o \
    dlargv.o dlarrv.o dlartv.o  \
-   dlarz.o  dlarzb.o dlarzt.o dlasy2.o dlasyf.o \
+   dlarz.o  dlarzb.o dlarzt.o dlasy2.o dlasyf.o dlasyf_rook.o \
    dlatbs.o dlatdf.o dlatps.o dlatrd.o dlatrs.o dlatrz.o dlatzm.o \
    dopgtr.o dopmtr.o dorg2l.o dorg2r.o \
    dorgbr.o dorghr.o dorgl2.o dorglq.o dorgql.o dorgqr.o dorgr2.o \
@@ -293,6 +301,8 @@ DLASRC = \
    dsysv.o  dsysvx.o \
    dsytd2.o dsytf2.o dsytrd.o dsytrf.o dsytri.o dsytri2.o dsytri2x.o \
    dsyswapr.o dsytrs.o dsytrs2.o dsyconv.o \
+   dsytf2_rook.o dsytrf_rook.o dsytrs_rook.o \
+   dsytri_rook.o dsycon_rook.o dsysv_rook.o \
    dtbcon.o dtbrfs.o dtbtrs.o dtgevc.o dtgex2.o dtgexc.o dtgsen.o \
    dtgsja.o dtgsna.o dtgsy2.o dtgsyl.o dtpcon.o dtprfs.o dtptri.o \
    dtptrs.o \
@@ -303,7 +313,8 @@ DLASRC = \
    dtfttr.o dtpttf.o dtpttr.o dtrttf.o dtrttp.o \
    dgejsv.o  dgesvj.o  dgsvj0.o  dgsvj1.o \
    dgeequb.o dsyequb.o dpoequb.o dgbequb.o \
-   dbbcsd.o dlapmr.o dorbdb.o dorcsd.o \
+   dbbcsd.o dlapmr.o dorbdb.o dorbdb1.o dorbdb2.o dorbdb3.o dorbdb4.o \
+   dorbdb5.o dorbdb6.o dorcsd.o dorcsd2by1.o \
    dgeqrt.o dgeqrt2.o dgeqrt3.o dgemqrt.o \
    dtpqrt.o dtpqrt2.o dtpmqrt.o dtprfb.o
 
@@ -335,14 +346,16 @@ ZLASRC = \
    zhegv.o  zhegvd.o zhegvx.o zherfs.o zhesv.o  zhesvx.o zhetd2.o \
    zhetf2.o zhetrd.o \
    zhetrf.o zhetri.o zhetri2.o zhetri2x.o zheswapr.o \
-   zhetrs.o zhetrs2.o zhgeqz.o zhpcon.o zhpev.o  zhpevd.o \
+   zhetrs.o zhetrs2.o \
+   zhetf2_rook.o zhetrf_rook.o zhetri_rook.o zhetrs_rook.o zhecon_rook.o zhesv_rook.o \
+   zhgeqz.o zhpcon.o zhpev.o  zhpevd.o \
    zhpevx.o zhpgst.o zhpgv.o  zhpgvd.o zhpgvx.o zhprfs.o zhpsv.o  \
    zhpsvx.o \
    zhptrd.o zhptrf.o zhptri.o zhptrs.o zhsein.o zhseqr.o zlabrd.o \
    zlacgv.o zlacon.o zlacn2.o zlacp2.o zlacpy.o zlacrm.o zlacrt.o zladiv.o \
    zlaed0.o zlaed7.o zlaed8.o \
    zlaein.o zlaesy.o zlaev2.o zlags2.o zlagtm.o \
-   zlahef.o zlahqr.o \
+   zlahef.o zlahef_rook.o zlahqr.o \
    zlahrd.o zlahr2.o zlaic1.o zlals0.o zlalsa.o zlalsd.o zlangb.o zlange.o \
    zlangt.o zlanhb.o \
    zlanhe.o \
@@ -355,7 +368,7 @@ ZLASRC = \
    zlarfg.o zlarft.o zlarfgp.o \
    zlarfx.o zlargv.o zlarnv.o zlarrv.o zlartg.o zlartv.o \
    zlarz.o  zlarzb.o zlarzt.o zlascl.o zlaset.o zlasr.o  \
-   zlassq.o zlasyf.o \
+   zlassq.o zlasyf.o zlasyf_rook.o \
    zlatbs.o zlatdf.o zlatps.o zlatrd.o zlatrs.o zlatrz.o zlatzm.o zlauu2.o \
    zpbcon.o zpbequ.o zpbrfs.o zpbstf.o zpbsv.o  \
    zpbsvx.o zpbtf2.o zpbtrf.o zpbtrs.o zpocon.o zpoequ.o zporfs.o \
@@ -368,6 +381,8 @@ ZLASRC = \
    zsycon.o zsymv.o \
    zsyr.o zsyrfs.o zsysv.o  zsysvx.o zsytf2.o zsytrf.o zsytri.o zsytri2.o zsytri2x.o \
    zsyswapr.o zsytrs.o zsytrs2.o zsyconv.o \
+   zsytf2_rook.o zsytrf_rook.o zsytrs_rook.o \
+   zsytri_rook.o zsycon_rook.o zsysv_rook.o \
    ztbcon.o ztbrfs.o ztbtrs.o ztgevc.o ztgex2.o \
    ztgexc.o ztgsen.o ztgsja.o ztgsna.o ztgsy2.o ztgsyl.o ztpcon.o \
    ztprfs.o ztptri.o \
@@ -382,7 +397,8 @@ ZLASRC = \
    zhfrk.o ztfttp.o zlanhf.o zpftrf.o zpftri.o zpftrs.o ztfsm.o ztftri.o \
    ztfttr.o ztpttf.o ztpttr.o ztrttf.o ztrttp.o \
    zgeequb.o zgbequb.o zsyequb.o zpoequb.o zheequb.o \
-   zbbcsd.o zlapmr.o zunbdb.o zuncsd.o \
+   zbbcsd.o zlapmr.o zunbdb.o zunbdb1.o zunbdb2.o zunbdb3.o zunbdb4.o \
+   zunbdb5.o zunbdb6.o zuncsd.o zuncsd2by1.o \
    zgeqrt.o zgeqrt2.o zgeqrt3.o zgemqrt.o \
    ztpqrt.o ztpqrt2.o ztpmqrt.o ztprfb.o
 

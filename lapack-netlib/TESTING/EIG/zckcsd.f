@@ -205,13 +205,16 @@
 *
 *     .. Parameters ..
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 9 )
+      PARAMETER          ( NTESTS = 15 )
       INTEGER            NTYPES
-      PARAMETER          ( NTYPES = 3 )
-      DOUBLE PRECISION   GAPDIGIT, ORTH, PIOVER2, TEN
+      PARAMETER          ( NTYPES = 4 )
+      DOUBLE PRECISION   GAPDIGIT, ORTH, PIOVER2, REALONE, REALZERO, TEN
       PARAMETER          ( GAPDIGIT = 18.0D0, ORTH = 1.0D-12,
      $                     PIOVER2 = 1.57079632679489662D0,
+     $                     REALONE = 1.0D0, REALZERO = 0.0D0,
      $                     TEN = 10.0D0 )
+      COMPLEX*16         ONE, ZERO
+      PARAMETER          ( ONE = (1.0D0,0.0D0), ZERO = (0.0D0,0.0D0) )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            FIRSTT
@@ -231,8 +234,8 @@
       INTRINSIC          ABS, MIN
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLARND
-      EXTERNAL           DLARND
+      DOUBLE PRECISION   DLARAN, DLARND
+      EXTERNAL           DLARAN, DLARND
 *     ..
 *     .. Executable Statements ..
 *
@@ -286,7 +289,7 @@
      $                                ORTH*DLARND(2,ISEED)
                   END DO
                END DO
-            ELSE
+            ELSE IF( IMAT.EQ.3 ) THEN
                R = MIN( P, M-P, Q, M-Q )
                DO I = 1, R+1
                   THETA(I) = TEN**(-DLARND(1,ISEED)*GAPDIGIT)
@@ -298,9 +301,18 @@
                   THETA(I) = PIOVER2 * THETA(I) / THETA(R+1)
                END DO
                CALL ZLACSG( M, P, Q, THETA, ISEED, X, LDX, WORK )
+            ELSE
+               CALL ZLASET( 'F', M, M, ZERO, ONE, X, LDX )
+               DO I = 1, M
+                  J = INT( DLARAN( ISEED ) * M ) + 1
+                  IF( J .NE. I ) THEN
+                     CALL ZDROT( M, X(1+(I-1)*LDX), 1, X(1+(J-1)*LDX),
+     $                 1, REALZERO, REALONE )
+                  END IF
+               END DO
             END IF
 *
-            NT = 9
+            NT = 15
 *
             CALL ZCSDTS( M, P, Q, X, XF, LDX, U1, LDU1, U2, LDU2, V1T,
      $                   LDV1T, V2T, LDV2T, THETA, IWORK, WORK, LWORK,

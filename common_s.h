@@ -17,7 +17,7 @@
 #define	SCOPY_K			scopy_k
 #define	SDOTU_K			sdot_k
 #define	SDOTC_K			sdot_k
-#define	SDSDOT_K		sdot_k
+#define	SDSDOT_K		dsdot_k
 #define	DSDOT_K			dsdot_k
 #define	SNRM2_K			snrm2_k
 #define	SSCAL_K			sscal_k
@@ -162,7 +162,7 @@
 #define	SCOPY_K			gotoblas -> scopy_k
 #define	SDOTU_K			gotoblas -> sdot_k
 #define	SDOTC_K			gotoblas -> sdot_k
-#define	SDSDOT_K		gotoblas -> sdot_k
+#define	SDSDOT_K		gotoblas -> dsdot_k
 #define	DSDOT_K			gotoblas -> dsdot_k
 #define	SNRM2_K			gotoblas -> snrm2_k
 #define	SSCAL_K			gotoblas -> sscal_k

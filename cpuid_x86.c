@@ -1051,11 +1051,14 @@ int get_cpuname(void){
       case 3:
 	switch (model) {
 	case 10:
+        case 14:
+	  // Ivy Bridge
 	  if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	    return CPUTYPE_NEHALEM;
         case 12:
+	case 15:
           if(support_avx())
             return CPUTYPE_HASWELL;
           else
@@ -1065,6 +1068,7 @@ int get_cpuname(void){
       case 4:
         switch (model) {
         case 5:
+	case 6:
           if(support_avx())
             return CPUTYPE_HASWELL;
           else
@@ -1243,6 +1247,7 @@ static char *cpuname[] = {
   "BOBCAT",
   "BULLDOZER",
   "PILEDRIVER",
+  "HASWELL",
 };
 
 static char *lowercpuname[] = {
@@ -1293,6 +1298,7 @@ static char *lowercpuname[] = {
   "bobcat",
   "bulldozer",
   "piledriver",
+  "haswell",
 };
 
 static char *corename[] = {
@@ -1320,6 +1326,7 @@ static char *corename[] = {
   "BOBCAT",
   "BULLDOZER",
   "PILEDRIVER",
+  "HASWELL",
 };
 
 static char *corename_lower[] = {
@@ -1347,6 +1354,7 @@ static char *corename_lower[] = {
   "bobcat",
   "bulldozer",
   "piledriver",
+  "haswell",
 };
 
 
@@ -1453,11 +1461,13 @@ int get_coretype(void){
       case 3:
 	switch (model) {
 	case 10:
+	case 14:
 	  if(support_avx())
 	    return CORE_SANDYBRIDGE;
 	  else
 	    return CORE_NEHALEM; //OS doesn't support AVX
         case 12:
+	case 15:
           if(support_avx())
             return CORE_HASWELL;
           else
@@ -1467,6 +1477,7 @@ int get_coretype(void){
       case 4:
         switch (model) {
         case 5:
+	case 6:
           if(support_avx())
             return CORE_HASWELL;
           else
@@ -1547,7 +1558,13 @@ void get_cpuconfig(void){
       printf("#define L2_SIZE %d\n", info.size * 1024);
       printf("#define L2_ASSOCIATIVE %d\n", info.associative);
       printf("#define L2_LINESIZE %d\n", info.linesize);
+    } else {
+      //fall back for some virtual machines.
+      printf("#define L2_SIZE 1048576\n");
+      printf("#define L2_ASSOCIATIVE 6\n");
+      printf("#define L2_LINESIZE 64\n");
     }
+
     
     get_cacheinfo(CACHE_INFO_L3, &info);
     if (info.size > 0) {

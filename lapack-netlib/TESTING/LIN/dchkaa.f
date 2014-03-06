@@ -158,9 +158,9 @@
       EXTERNAL           ALAREQ, DCHKEQ, DCHKGB, DCHKGE, DCHKGT, DCHKLQ,
      $                   DCHKPB, DCHKPO, DCHKPS, DCHKPP, DCHKPT, DCHKQ3,
      $                   DCHKQL, DCHKQP, DCHKQR, DCHKRQ, DCHKSP, DCHKSY,
-     $                   DCHKTB, DCHKTP, DCHKTR, DCHKTZ,
+     $                   DCHKSY_ROOK, DCHKTB, DCHKTP, DCHKTR, DCHKTZ,
      $                   DDRVGB, DDRVGE, DDRVGT, DDRVLS, DDRVPB, DDRVPO,
-     $                   DDRVPP, DDRVPT, DDRVSP, DDRVSY,
+     $                   DDRVPP, DDRVPT, DDRVSP, DDRVSY, DDRVSY_ROOK,
      $                   ILAVER, DCHKQRT, DCHKQRTP
 *     ..
 *     .. Scalars in Common ..
@@ -634,6 +634,32 @@
      $                   A( 1, 1 ), A( 1, 2 ), A( 1, 3 ), B( 1, 1 ),
      $                   B( 1, 2 ), B( 1, 3 ), WORK, RWORK, IWORK,
      $                   NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9988 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
+*
+*        SR:  symmetric indefinite matrices with Rook pivoting,
+*             with rook (bounded Bunch-Kaufman) pivoting algorithm
+*
+         NTYPES = 10
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKSY_ROOK(DOTYPE, NN, NVAL, NNB2, NBVAL2, NNS, NSVAL,
+     $                       THRESH, TSTERR, LDA, A( 1, 1 ), A( 1, 2 ),
+     $                       A( 1, 3 ), B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                       WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+         IF( TSTDRV ) THEN
+            CALL DDRVSY_ROOK( DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
+     $                        LDA, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                        B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                        WORK, RWORK, IWORK, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9988 )PATH
          END IF

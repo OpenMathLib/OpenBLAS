@@ -121,7 +121,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complex16GEcomputational
 *
@@ -160,10 +160,10 @@
 *  =====================================================================
       SUBROUTINE ZGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -194,8 +194,8 @@
 *     .. External Functions ..
       LOGICAL            DISNAN, LSAME
       INTEGER            IZAMAX
-      DOUBLE PRECISION   DLAMCH
-      EXTERNAL           DISNAN, LSAME, IZAMAX, DLAMCH
+      DOUBLE PRECISION   DLAMCH, DZNRM2
+      EXTERNAL           DISNAN, LSAME, IZAMAX, DLAMCH, DZNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZDSCAL, ZSWAP
@@ -324,15 +324,9 @@
       NOCONV = .FALSE.
 *
       DO 200 I = K, L
-         C = ZERO
-         R = ZERO
 *
-         DO 150 J = K, L
-            IF( J.EQ.I )
-     $         GO TO 150
-            C = C + CABS1( A( J, I ) )
-            R = R + CABS1( A( I, J ) )
-  150    CONTINUE
+         C = DZNRM2( L-K+1, A( K, I ), 1 )
+         R = DZNRM2( L-K+1, A( I, K ), LDA )
          ICA = IZAMAX( L, A( 1, I ), 1 )
          CA = ABS( A( ICA, I ) )
          IRA = IZAMAX( N-K+1, A( I, K ), LDA )

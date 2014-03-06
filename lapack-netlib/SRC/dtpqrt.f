@@ -132,7 +132,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -189,10 +189,10 @@
       SUBROUTINE DTPQRT( M, N, L, NB, A, LDA, B, LDB, T, LDT, WORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.4.1) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       INTEGER INFO, LDA, LDB, LDT, N, M, L, NB
@@ -219,9 +219,9 @@
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
-      ELSE IF( L.LT.0 .OR. L.GT.MIN(M,N) ) THEN
+      ELSE IF( L.LT.0 .OR. (L.GT.MIN(M,N) .AND. MIN(M,N).GE.0)) THEN
          INFO = -3
-      ELSE IF( NB.LT.1 .OR. NB.GT.N ) THEN
+      ELSE IF( NB.LT.1 .OR. (NB.GT.N .AND. N.GT.0)) THEN
          INFO = -4
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -6

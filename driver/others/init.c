@@ -494,7 +494,7 @@ static void disable_affinity(void) {
 
 #ifndef USE_OPENMP
   for(i=0; i< count; i++){
-    lprocmask[i] &= ((unsigned long *)&cpu_orig_mask[0])[i];
+    lprocmask[i] &= common->avail[i];
   }
 #endif
 
@@ -754,7 +754,7 @@ void gotoblas_affinity_init(void) {
     if (common -> num_nodes > 1) numa_mapping();
 
     common -> final_num_procs = 0;
-    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += popcount(common -> avail[i]);
+    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number.
 
     for (cpu = 0; cpu < common -> final_num_procs; cpu ++) common -> cpu_use[cpu] =  0;
 

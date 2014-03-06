@@ -55,7 +55,7 @@ lapack_int LAPACKE_zstegr_work( int matrix_order, char jobz, char range,
         lapack_int ldz_t = MAX(1,n);
         lapack_complex_double* z_t = NULL;
         /* Check leading dimension(s) */
-        if( ldz < *m ) {
+        if( ( LAPACKE_lsame( jobz, 'v' ) && ( ldz < ldz_t )  ) || ( ldz < 1 ) ) {
             info = -15;
             LAPACKE_xerbla( "LAPACKE_zstegr_work", info );
             return info;

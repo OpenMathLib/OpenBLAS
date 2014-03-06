@@ -52,8 +52,8 @@ FLOATRET NAME(blasint *N, FLOAT *a, FLOAT *x, blasint *INCX, FLOAT *y, blasint *
   FLOATRET ret;
 
   PRINT_DEBUG_NAME;
-
-  if (n <= 0) return 0.;
+  
+  if (n <= 0) return(*a) ;
 
   IDEBUG_START;
 
@@ -80,7 +80,7 @@ FLOAT CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint in
 
   PRINT_DEBUG_CNAME;
 
-  if (n <= 0) return 0.;
+  if (n <= 0) return (alpha);
 
   IDEBUG_START;
 

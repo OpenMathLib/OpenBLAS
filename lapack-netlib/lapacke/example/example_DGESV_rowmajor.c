@@ -1,44 +1,14 @@
-/*******************************************************************************
-*  Copyright (C) 2009-2011 Intel Corporation. All Rights Reserved.
-*  The information and material ("Material") provided below is owned by Intel
-*  Corporation or its suppliers or licensors, and title to such Material remains
-*  with Intel Corporation or its suppliers or licensors. The Material contains
-*  proprietary information of Intel or its suppliers and licensors. The Material
-*  is protected by worldwide copyright laws and treaty provisions. No part of
-*  the Material may be copied, reproduced, published, uploaded, posted,
-*  transmitted, or distributed in any way without Intel's prior express written
-*  permission. No license under any patent, copyright or other intellectual
-*  property rights in the Material is granted to or conferred upon you, either
-*  expressly, by implication, inducement, estoppel or otherwise. Any license
-*  under such intellectual property rights must be express and approved by Intel
-*  in writing.
-*
-********************************************************************************
-*/
 /*
-   LAPACKE_dgesv Example.
-   ======================
+   LAPACKE_dgesv Example
+   =====================
  
    The program computes the solution to the system of linear
    equations with a square matrix A and multiple
-   right-hand sides B, where A is the coefficient matrix:
- 
-     6.80  -6.05  -0.45   8.32  -9.67 
-    -2.11  -3.30   2.58   2.71  -5.14 
-     5.66   5.36  -2.70   4.35  -7.26 
-     5.97  -4.44   0.27  -7.17   6.08 
-     8.23   1.08   9.04   2.14  -6.87 
-
-   and B is the right-hand side matrix:
- 
-     4.02  -1.56   9.81 
-     6.19   4.00  -4.09 
-    -8.22  -8.67  -4.57 
-    -7.57   1.75  -8.61 
-    -3.03   2.86   8.99 
- 
-   Description.
-   ============
+   right-hand sides B, where A is the coefficient matrix
+   and b is the right-hand side matrix:
+  
+   Description
+   ===========
  
    The routine solves for X the system of linear equations A*X = B, 
    where A is an n-by-n matrix, the columns of matrix B are individual 
@@ -50,71 +20,74 @@
    is unit lower triangular, and U is upper triangular. The factored 
    form of A is then used to solve the system of equations A*X = B.
 
-   Example Program Results.
-   ========================
- 
- LAPACKE_dgesv (row-major, high-level) Example Program Results
+   LAPACKE Interface
+   =================
 
- Solution
-  -0.80  -0.39   0.96
-  -0.70  -0.55   0.22
-   0.59   0.84   1.90
-   1.32  -0.10   5.36
-   0.57   0.11   4.04
+   LAPACKE_dgesv (row-major, high-level) Example Program Results
 
- Details of LU factorization
-   8.23   1.08   9.04   2.14  -6.87
-   0.83  -6.94  -7.92   6.55  -3.99
-   0.69  -0.67 -14.18   7.24  -5.19
-   0.73   0.75   0.02 -13.82  14.19
-  -0.26   0.44  -0.59  -0.34  -3.43
+  -- LAPACKE Example routine (version 3.5.0) --
+  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+     February 2012
 
- Pivot indices
-      5      5      3      4      5
 */
 #include <stdlib.h>
 #include <stdio.h>
-#include "lapacke.h"
-
-/* Auxiliary routines prototypes */
-extern void print_matrix( char* desc, lapack_int m, lapack_int n, double* a, lapack_int lda );
-extern void print_int_vector( char* desc, lapack_int n, lapack_int* a );
-
-/* Parameters */
-#define N 5
-#define NRHS 3
-#define LDA N
-#define LDB NRHS
+#include <string.h>
+#include <lapacke.h>
+#include "lapacke_example_aux.h"
 
 /* Main program */
-int main() {
+int main(int argc, char **argv) {
+
         /* Locals */
-        lapack_int n = N, nrhs = NRHS, lda = LDA, ldb = LDB, info;
+        lapack_int n, nrhs, lda, ldb, info;
+		int i, j;
+		double normr, normb;
         /* Local arrays */
-        lapack_int ipiv[N];
-        double a[LDA*N] = {
-            6.80, -6.05, -0.45,  8.32, -9.67,
-           -2.11, -3.30,  2.58,  2.71, -5.14,
-            5.66, 5.36, -2.70,  4.35, -7.26,
-            5.97, -4.44,  0.27, -7.17, 6.08,
-            8.23, 1.08,  9.04,  2.14, -6.87
-        };
-        double b[LDB*N] = {
-            4.02, -1.56, 9.81,
-            6.19,  4.00, -4.09,
-           -8.22, -8.67, -4.57,
-           -7.57,  1.75, -8.61,
-           -3.03,  2.86, 8.99
-        };
+		double *A, *b, *Acopy, *bcopy;
+		lapack_int *ipiv;
+		
+        /* Default Value */
+	    n = 5; nrhs = 1;
+
+        /* Arguments */
+	    for( i = 1; i < argc; i++ ) {
+	    	if( strcmp( argv[i], "-n" ) == 0 ) { 
+		    	n  = atoi(argv[i+1]);
+			    i++;
+		    }
+			if( strcmp( argv[i], "-nrhs" ) == 0 ) { 
+				nrhs  = atoi(argv[i+1]);
+				i++;
+			} 
+		}
+		
+        /* Initialization */
+        lda=n, ldb=nrhs;
+		A = (double *)malloc(n*n*sizeof(double)) ;
+		if (A==NULL){ printf("error of memory allocation\n"); exit(0); }
+		b = (double *)malloc(n*nrhs*sizeof(double)) ;
+		if (b==NULL){ printf("error of memory allocation\n"); exit(0); }
+		ipiv = (lapack_int *)malloc(n*sizeof(lapack_int)) ;
+		if (ipiv==NULL){ printf("error of memory allocation\n"); exit(0); }
+
+        for( i = 0; i < n; i++ ) {
+                for( j = 0; j < n; j++ ) A[i*lda+j] = ((double) rand()) / ((double) RAND_MAX) - 0.5;
+		}
+
+		for(i=0;i<n*nrhs;i++)
+			b[i] = ((double) rand()) / ((double) RAND_MAX) - 0.5;
+
         /* Print Entry Matrix */
-        print_matrix( "Entry Matrix A", n, n, a, lda );
+        print_matrix_rowmajor( "Entry Matrix A", n, n, A, lda );
         /* Print Right Rand Side */
-        print_matrix( "Right Rand Side", n, nrhs, b, ldb );
+        print_matrix_rowmajor( "Right Rand Side b", n, nrhs, b, ldb );
         printf( "\n" );
         /* Executable statements */
         printf( "LAPACKE_dgesv (row-major, high-level) Example Program Results\n" );
         /* Solve the equations A*X = B */
-        info = LAPACKE_dgesv( LAPACK_ROW_MAJOR, n, nrhs, a, lda, ipiv,
+        info = LAPACKE_dgesv( LAPACK_ROW_MAJOR, n, nrhs, A, lda, ipiv,
                         b, ldb );
         /* Check for the exact singularity */
         if( info > 0 ) {
@@ -123,29 +96,13 @@ int main() {
                 printf( "the solution could not be computed.\n" );
                 exit( 1 );
         }
+        if (info <0) exit( 1 );
         /* Print solution */
-        print_matrix( "Solution", n, nrhs, b, ldb );
+        print_matrix_rowmajor( "Solution", n, nrhs, b, ldb );
         /* Print details of LU factorization */
-        print_matrix( "Details of LU factorization", n, n, a, lda );
+        print_matrix_rowmajor( "Details of LU factorization", n, n, A, lda );
         /* Print pivot indices */
-        print_int_vector( "Pivot indices", n, ipiv );
+        print_vector( "Pivot indices", n, ipiv );
         exit( 0 );
 } /* End of LAPACKE_dgesv Example */
 
-/* Auxiliary routine: printing a matrix */
-void print_matrix( char* desc, lapack_int m, lapack_int n, double* a, lapack_int lda ) {
-        lapack_int i, j;
-        printf( "\n %s\n", desc );
-        for( i = 0; i < m; i++ ) {
-                for( j = 0; j < n; j++ ) printf( " %6.2f", a[i*lda+j] );
-                printf( "\n" );
-        }
-}
-
-/* Auxiliary routine: printing a vector of integers */
-void print_int_vector( char* desc, lapack_int n, lapack_int* a ) {
-        lapack_int j;
-        printf( "\n %s\n", desc );
-        for( j = 0; j < n; j++ ) printf( " %6i", a[j] );
-        printf( "\n" );
-}

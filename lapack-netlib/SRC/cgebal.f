@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complexGEcomputational
 *
@@ -161,10 +161,10 @@
 *  =====================================================================
       SUBROUTINE CGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -195,8 +195,8 @@
 *     .. External Functions ..
       LOGICAL            SISNAN, LSAME
       INTEGER            ICAMAX
-      REAL               SLAMCH
-      EXTERNAL           SISNAN, LSAME, ICAMAX, SLAMCH
+      REAL               SLAMCH, SCNRM2
+      EXTERNAL           SISNAN, LSAME, ICAMAX, SLAMCH, SCNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CSSCAL, CSWAP, XERBLA
@@ -325,15 +325,9 @@
       NOCONV = .FALSE.
 *
       DO 200 I = K, L
-         C = ZERO
-         R = ZERO
 *
-         DO 150 J = K, L
-            IF( J.EQ.I )
-     $         GO TO 150
-            C = C + CABS1( A( J, I ) )
-            R = R + CABS1( A( I, J ) )
-  150    CONTINUE
+         C = SCNRM2( L-K+1, A( K, I ), 1 )
+         R = SCNRM2( L-K+1, A( I , K ), LDA )
          ICA = ICAMAX( L, A( 1, I ), 1 )
          CA = ABS( A( ICA, I ) )
          IRA = ICAMAX( N-K+1, A( I, K ), LDA )

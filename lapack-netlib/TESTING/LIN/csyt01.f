@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CSYT01( UPLO, N, A, LDA, AFAC, LDAFAC, IPIV, C, LDC,
 *                          RWORK, RESID )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            LDA, LDAFAC, LDC, N
@@ -21,7 +21,7 @@
 *       REAL               RWORK( * )
 *       COMPLEX            A( LDA, * ), AFAC( LDAFAC, * ), C( LDC, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -112,12 +112,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup complex_lin
 *
@@ -125,10 +125,10 @@
       SUBROUTINE CSYT01( UPLO, N, A, LDA, AFAC, LDAFAC, IPIV, C, LDC,
      $                   RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

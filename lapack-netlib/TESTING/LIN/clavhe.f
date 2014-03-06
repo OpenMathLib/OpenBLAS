@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CLAVHE( UPLO, TRANS, DIAG, N, NRHS, A, LDA, IPIV, B,
 *                          LDB, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, TRANS, UPLO
 *       INTEGER            INFO, LDA, LDB, N, NRHS
@@ -19,118 +19,133 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * ), B( LDB, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*>    CLAVHE  performs one of the matrix-vector operations
-*>       x := A*x  or  x := A^H*x,
-*>    where x is an N element vector and  A is one of the factors
-*>    from the symmetric factorization computed by CHETRF.
-*>    CHETRF produces a factorization of the form
-*>         U * D * U^H     or     L * D * L^H,
-*>    where U (or L) is a product of permutation and unit upper (lower)
-*>    triangular matrices, U^H (or L^H) is the conjugate transpose of
-*>    U (or L), and D is Hermitian and block diagonal with 1 x 1 and
-*>    2 x 2 diagonal blocks.  The multipliers for the transformations
-*>    and the upper or lower triangular parts of the diagonal blocks
-*>    are stored in the leading upper or lower triangle of the 2-D
-*>    array A.
+*> CLAVHE performs one of the matrix-vector operations
+*>    x := A*x  or  x := A^H*x,
+*> where x is an N element vector and  A is one of the factors
+*> from the block U*D*U' or L*D*L' factorization computed by CHETRF.
 *>
-*>    If TRANS = 'N' or 'n', CLAVHE multiplies either by U or U * D
-*>    (or L or L * D).
-*>    If TRANS = 'C' or 'c', CLAVHE multiplies either by U^H or D * U^H
-*>    (or L^H or D * L^H ).
+*> If TRANS = 'N', multiplies by U  or U * D  (or L  or L * D)
+*> If TRANS = 'C', multiplies by U' or D * U' (or L' or D * L')
 *> \endverbatim
 *
 *  Arguments:
 *  ==========
 *
+*> \param[in] UPLO
 *> \verbatim
-*>  UPLO   - CHARACTER*1
-*>           On entry, UPLO specifies whether the triangular matrix
-*>           stored in A is upper or lower triangular.
-*>              UPLO = 'U' or 'u'   The matrix is upper triangular.
-*>              UPLO = 'L' or 'l'   The matrix is lower triangular.
-*>           Unchanged on exit.
+*>          UPLO is CHARACTER*1
+*>          Specifies whether the factor stored in A is upper or lower
+*>          triangular.
+*>          = 'U':  Upper triangular
+*>          = 'L':  Lower triangular
+*> \endverbatim
 *>
-*>  TRANS  - CHARACTER*1
-*>           On entry, TRANS specifies the operation to be performed as
-*>           follows:
-*>              TRANS = 'N' or 'n'   x := A*x.
-*>              TRANS = 'C' or 'c'   x := A^H*x.
-*>           Unchanged on exit.
+*> \param[in] TRANS
+*> \verbatim
+*>          TRANS is CHARACTER*1
+*>          Specifies the operation to be performed:
+*>          = 'N':  x := A*x
+*>          = 'C':   x := A^H*x
+*> \endverbatim
 *>
-*>  DIAG   - CHARACTER*1
-*>           On entry, DIAG specifies whether the diagonal blocks are
-*>           assumed to be unit matrices:
-*>              DIAG = 'U' or 'u'   Diagonal blocks are unit matrices.
-*>              DIAG = 'N' or 'n'   Diagonal blocks are non-unit.
-*>           Unchanged on exit.
+*> \param[in] DIAG
+*> \verbatim
+*>          DIAG is CHARACTER*1
+*>          Specifies whether or not the diagonal blocks are unit
+*>          matrices.  If the diagonal blocks are assumed to be unit,
+*>          then A = U or A = L, otherwise A = U*D or A = L*D.
+*>          = 'U':  Diagonal blocks are assumed to be unit matrices.
+*>          = 'N':  Diagonal blocks are assumed to be non-unit matrices.
+*> \endverbatim
 *>
-*>  N      - INTEGER
-*>           On entry, N specifies the order of the matrix A.
-*>           N must be at least zero.
-*>           Unchanged on exit.
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The number of rows and columns of the matrix A.  N >= 0.
+*> \endverbatim
 *>
-*>  NRHS   - INTEGER
-*>           On entry, NRHS specifies the number of right hand sides,
-*>           i.e., the number of vectors x to be multiplied by A.
-*>           NRHS must be at least zero.
-*>           Unchanged on exit.
+*> \param[in] NRHS
+*> \verbatim
+*>          NRHS is INTEGER
+*>          The number of right hand sides, i.e., the number of vectors
+*>          x to be multiplied by A.  NRHS >= 0.
+*> \endverbatim
 *>
-*>  A      - COMPLEX array, dimension( LDA, N )
-*>           On entry, A contains a block diagonal matrix and the
-*>           multipliers of the transformations used to obtain it,
-*>           stored as a 2-D triangular matrix.
-*>           Unchanged on exit.
+*> \param[in] A
+*> \verbatim
+*>          A is COMPLEX array, dimension (LDA,N)
+*>          The block diagonal matrix D and the multipliers used to
+*>          obtain the factor U or L as computed by CHETRF_ROOK.
+*>          Stored as a 2-D triangular matrix.
+*> \endverbatim
 *>
-*>  LDA    - INTEGER
-*>           On entry, LDA specifies the first dimension of A as declared
-*>           in the calling ( sub ) program. LDA must be at least
-*>           max( 1, N ).
-*>           Unchanged on exit.
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.  LDA >= max(1,N).
+*> \endverbatim
 *>
-*>  IPIV   - INTEGER array, dimension( N )
-*>           On entry, IPIV contains the vector of pivot indices as
-*>           determined by CSYTRF or CHETRF.
-*>           If IPIV( K ) = K, no interchange was done.
-*>           If IPIV( K ) <> K but IPIV( K ) > 0, then row K was inter-
-*>           changed with row IPIV( K ) and a 1 x 1 pivot block was used.
-*>           If IPIV( K ) < 0 and UPLO = 'U', then row K-1 was exchanged
-*>           with row | IPIV( K ) | and a 2 x 2 pivot block was used.
-*>           If IPIV( K ) < 0 and UPLO = 'L', then row K+1 was exchanged
-*>           with row | IPIV( K ) | and a 2 x 2 pivot block was used.
+*> \param[in] IPIV
+*> \verbatim
+*>          IPIV is INTEGER array, dimension (N)
+*>          Details of the interchanges and the block structure of D,
+*>          as determined by CHETRF.
 *>
-*>  B      - COMPLEX array, dimension( LDB, NRHS )
-*>           On entry, B contains NRHS vectors of length N.
-*>           On exit, B is overwritten with the product A * B.
+*>          If UPLO = 'U':
+*>               If IPIV(k) > 0, then rows and columns k and IPIV(k)
+*>               were interchanged and D(k,k) is a 1-by-1 diagonal block.
+*>               (If IPIV( k ) = k, no interchange was done).
 *>
-*>  LDB    - INTEGER
-*>           On entry, LDB contains the leading dimension of B as
-*>           declared in the calling program.  LDB must be at least
-*>           max( 1, N ).
-*>           Unchanged on exit.
+*>               If IPIV(k) = IPIV(k-1) < 0, then rows and
+*>               columns k-1 and -IPIV(k) were interchanged,
+*>               D(k-1:k,k-1:k) is a 2-by-2 diagonal block.
 *>
-*>  INFO   - INTEGER
-*>           INFO is the error flag.
-*>           On exit, a value of 0 indicates a successful exit.
-*>           A negative value, say -K, indicates that the K-th argument
-*>           has an illegal value.
+*>          If UPLO = 'L':
+*>               If IPIV(k) > 0, then rows and columns k and IPIV(k)
+*>               were interchanged and D(k,k) is a 1-by-1 diagonal block.
+*>               (If IPIV( k ) = k, no interchange was done).
+*>
+*>               If IPIV(k) = IPIV(k+1) < 0, then rows and
+*>               columns k+1 and -IPIV(k) were interchanged,
+*>               D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
+*> \endverbatim
+*>
+*> \param[in,out] B
+*> \verbatim
+*>          B is COMPLEX array, dimension (LDB,NRHS)
+*>          On entry, B contains NRHS vectors of length N.
+*>          On exit, B is overwritten with the product A * B.
+*> \endverbatim
+*>
+*> \param[in] LDB
+*> \verbatim
+*>          LDB is INTEGER
+*>          The leading dimension of the array B.  LDB >= max(1,N).
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0: successful exit
+*>          < 0: if INFO = -k, the k-th argument had an illegal value
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complex_lin
 *
@@ -138,10 +153,10 @@
       SUBROUTINE CLAVHE( UPLO, TRANS, DIAG, N, NRHS, A, LDA, IPIV, B,
      $                   LDB, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, TRANS, UPLO

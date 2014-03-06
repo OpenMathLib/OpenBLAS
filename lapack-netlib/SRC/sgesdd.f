@@ -175,8 +175,7 @@
 *>            LWORK >= 3*min(M,N) + 
 *>                     max(max(M,N),5*min(M,N)*min(M,N)+4*min(M,N)).
 *>          If JOBZ = 'S' or 'A'
-*>            LWORK >= 3*min(M,N) +
-*>                     max(max(M,N),4*min(M,N)*min(M,N)+3*min(M,N)+max(M,N)).
+*>            LWORK >= min(M,N)*(6+4*min(M,N))+max(M,N)
 *>          For good performance, LWORK should generally be larger.
 *>          If LWORK = -1 but other input arguments are legal, WORK(1)
 *>          returns the optimal LWORK.
@@ -203,7 +202,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2013
 *
 *> \ingroup realGEsing
 *
@@ -217,10 +216,10 @@
       SUBROUTINE SGESDD( JOBZ, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK,
      $                   LWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.2) --
+*  -- LAPACK driver routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ

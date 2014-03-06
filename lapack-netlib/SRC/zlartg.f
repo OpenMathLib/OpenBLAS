@@ -85,7 +85,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2013
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -103,10 +103,10 @@
 *  =====================================================================
       SUBROUTINE ZLARTG( F, G, CS, SN, R )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   CS
@@ -130,7 +130,8 @@
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH, DLAPY2
-      EXTERNAL           DLAMCH, DLAPY2
+      LOGICAL            DISNAN
+      EXTERNAL           DLAMCH, DLAPY2, DISNAN
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, INT, LOG,
@@ -139,26 +140,17 @@
 *     .. Statement Functions ..
       DOUBLE PRECISION   ABS1, ABSSQ
 *     ..
-*     .. Save statement ..
-*     SAVE               FIRST, SAFMX2, SAFMIN, SAFMN2
-*     ..
-*     .. Data statements ..
-*     DATA               FIRST / .TRUE. /
-*     ..
 *     .. Statement Function definitions ..
       ABS1( FF ) = MAX( ABS( DBLE( FF ) ), ABS( DIMAG( FF ) ) )
       ABSSQ( FF ) = DBLE( FF )**2 + DIMAG( FF )**2
 *     ..
 *     .. Executable Statements ..
 *
-*     IF( FIRST ) THEN
-         SAFMIN = DLAMCH( 'S' )
-         EPS = DLAMCH( 'E' )
-         SAFMN2 = DLAMCH( 'B' )**INT( LOG( SAFMIN / EPS ) /
-     $            LOG( DLAMCH( 'B' ) ) / TWO )
-         SAFMX2 = ONE / SAFMN2
-*        FIRST = .FALSE.
-*     END IF
+      SAFMIN = DLAMCH( 'S' )
+      EPS = DLAMCH( 'E' )
+      SAFMN2 = DLAMCH( 'B' )**INT( LOG( SAFMIN / EPS ) /
+     $         LOG( DLAMCH( 'B' ) ) / TWO )
+      SAFMX2 = ONE / SAFMN2
       SCALE = MAX( ABS1( F ), ABS1( G ) )
       FS = F
       GS = G
@@ -172,7 +164,7 @@
          IF( SCALE.GE.SAFMX2 )
      $      GO TO 10
       ELSE IF( SCALE.LE.SAFMN2 ) THEN
-         IF( G.EQ.CZERO ) THEN
+         IF( G.EQ.CZERO.OR.DISNAN( ABS( G ) ) ) THEN
             CS = ONE
             SN = CZERO
             R = F

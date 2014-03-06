@@ -310,6 +310,16 @@ typedef int blasint;
 #define YIELDING	SwitchToThread()
 #endif
 
+#if defined(ARMV7) || defined(ARMV6) || defined(ARMV8)
+#define YIELDING        asm volatile ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
+#endif
+
+#ifdef PILEDRIVER
+#ifndef YIELDING
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
+#endif
+
 #ifndef YIELDING
 #define YIELDING	sched_yield()
 #endif
@@ -362,6 +372,15 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #ifdef ARCH_MIPS64
 #include "common_mips64.h"
 #endif
+
+#ifdef ARCH_ARM
+#include "common_arm.h"
+#endif
+
+#ifdef ARCH_ARM64
+#include "common_arm64.h"
+#endif
+
 
 #ifdef OS_LINUX
 #include "common_linux.h"
@@ -574,9 +593,10 @@ typedef struct {
 #include "common_level2.h"
 #include "common_level3.h"
 #include "common_lapack.h"
+
 #ifdef CBLAS
-/* This header file is generated from "cblas.h" (see Makefile.prebuild). */
-#include "cblas_noconst.h"
+# define OPENBLAS_CONST     /* see comment in cblas.h */
+# include "cblas.h"
 #endif
 
 #ifndef ASSEMBLER

@@ -941,14 +941,15 @@
 #endif
 
 	addq	$2 * SIZE, CO1		# coffset += 2
-	decq	I			# i --
-	jg	.L2_41
 	ALIGN_4	
 
 
 
 	
 .L2_60:
+#if defined(TRMMKERNEL) && !defined(LEFT)
+        addq    $2, KK
+#endif
 
 	decq	J			// j --
 	jg	.L2_01			// next 2 lines of N
@@ -1368,12 +1369,7 @@
 #endif
 
 	addq	$2 * SIZE, CO1		# coffset += 2
-	decq	I			# i --
-	jg	.L1_41
 	ALIGN_4	
-
-
-
 
 
 

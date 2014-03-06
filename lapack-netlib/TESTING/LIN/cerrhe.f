@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CERRHE( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -43,22 +43,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRHE( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -88,9 +88,10 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHECON, CHERFS, CHETF2, CHETRF, CHETRI,
-     $                   CHETRI2, CHETRS, CHKXER, CHPCON, CHPRFS,
-     $                   CHPTRF, CHPTRI, CHPTRS
+      EXTERNAL           ALAESM, CHECON, CHECON_ROOK, CHERFS, CHETF2,
+     $                   CHETF2_ROOK, CHETRF, CHETRF_ROOK, CHETRI,
+     $                   CHETRI_ROOK, CHETRI2, CHETRS, CHETRS_ROOK,
+     $                   CHKXER, CHPCON, CHPRFS, CHPTRF, CHPTRI, CHPTRS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -127,8 +128,9 @@
       ANRM = 1.0
       OK = .TRUE.
 *
-*     Test error exits of the routines that use the diagonal pivoting
-*     factorization of a Hermitian indefinite matrix.
+*     Test error exits of the routines that use factorization
+*     of a Hermitian indefinite matrix with patrial
+*     (Bunch-Kaufman) diagonal pivoting method.
 *
       IF( LSAMEN( 2, C2, 'HE' ) ) THEN
 *
@@ -251,8 +253,89 @@
          CALL CHECON( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'CHECON', INFOT, NOUT, LERR, OK )
 *
-*     Test error exits of the routines that use the diagonal pivoting
-*     factorization of a Hermitian indefinite packed matrix.
+*        Test error exits of the routines that use factorization
+*        of a Hermitian indefinite matrix with "rook"
+*        (bounded Bunch-Kaufman) diagonal pivoting method.
+*
+      ELSE IF( LSAMEN( 2, C2, 'HR' ) ) THEN
+*
+*        CHETRF_ROOK
+*
+         SRNAMT = 'CHETRF_ROOK'
+         INFOT = 1
+         CALL CHETRF_ROOK( '/', 0, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRF_ROOK( 'U', -1, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRF_ROOK( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'CHETRF_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CHETF2_ROOK
+*
+         SRNAMT = 'CHETF2_ROOK'
+         INFOT = 1
+         CALL CHETF2_ROOK( '/', 0, A, 1, IP, INFO )
+         CALL CHKXER( 'CHETF2_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETF2_ROOK( 'U', -1, A, 1, IP, INFO )
+         CALL CHKXER( 'CHETF2_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETF2_ROOK( 'U', 2, A, 1, IP, INFO )
+         CALL CHKXER( 'CHETF2_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CHETRI_ROOK
+*
+         SRNAMT = 'CHETRI_ROOK'
+         INFOT = 1
+         CALL CHETRI_ROOK( '/', 0, A, 1, IP, W, INFO )
+         CALL CHKXER( 'CHETRI_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRI_ROOK( 'U', -1, A, 1, IP, W, INFO )
+         CALL CHKXER( 'CHETRI_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRI_ROOK( 'U', 2, A, 1, IP, W, INFO )
+         CALL CHKXER( 'CHETRI_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CHETRS_ROOK
+*
+         SRNAMT = 'CHETRS_ROOK'
+         INFOT = 1
+         CALL CHETRS_ROOK( '/', 0, 0, A, 1, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRS_ROOK( 'U', -1, 0, A, 1, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CHETRS_ROOK( 'U', 0, -1, A, 1, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CHETRS_ROOK( 'U', 2, 1, A, 1, IP, B, 2, INFO )
+         CALL CHKXER( 'CHETRS_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CHETRS_ROOK( 'U', 2, 1, A, 2, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        CHECON_ROOK
+*
+         SRNAMT = 'CHECON_ROOK'
+         INFOT = 1
+         CALL CHECON_ROOK( '/', 0, A, 1, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CHECON_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHECON_ROOK( 'U', -1, A, 1, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CHECON_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHECON_ROOK( 'U', 2, A, 1, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CHECON_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL CHECON_ROOK( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CHECON_ROOK', INFOT, NOUT, LERR, OK )
+*
+*        Test error exits of the routines that use factorization
+*        of a Hermitian indefinite packed matrix with patrial
+*        (Bunch-Kaufman) diagonal pivoting method.
 *
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *

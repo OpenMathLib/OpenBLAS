@@ -289,7 +289,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -300,10 +300,10 @@
      $                             U1, LDU1, U2, LDU2, V1T, LDV1T, V2T,
      $                             LDV2T, WORK, LWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS
@@ -368,9 +368,22 @@
          INFO = -8
       ELSE IF( Q .LT. 0 .OR. Q .GT. M ) THEN
          INFO = -9
-      ELSE IF( ( COLMAJOR .AND. LDX11 .LT. MAX(1,P) ) .OR.
-     $         ( .NOT.COLMAJOR .AND. LDX11 .LT. MAX(1,Q) ) ) THEN
-         INFO = -11
+      ELSE IF ( COLMAJOR .AND.  LDX11 .LT. MAX( 1, P ) ) THEN
+        INFO = -11
+      ELSE IF (.NOT. COLMAJOR .AND. LDX11 .LT. MAX( 1, Q ) ) THEN
+        INFO = -11
+      ELSE IF (COLMAJOR .AND. LDX12 .LT. MAX( 1, P ) ) THEN
+        INFO = -13
+      ELSE IF (.NOT. COLMAJOR .AND. LDX12 .LT. MAX( 1, M-Q ) ) THEN
+        INFO = -13
+      ELSE IF (COLMAJOR .AND. LDX21 .LT. MAX( 1, M-P ) ) THEN
+        INFO = -15
+      ELSE IF (.NOT. COLMAJOR .AND. LDX21 .LT. MAX( 1, Q ) ) THEN
+        INFO = -15
+      ELSE IF (COLMAJOR .AND. LDX22 .LT. MAX( 1, M-P ) ) THEN
+        INFO = -17
+      ELSE IF (.NOT. COLMAJOR .AND. LDX22 .LT. MAX( 1, M-Q ) ) THEN
+        INFO = -17
       ELSE IF( WANTU1 .AND. LDU1 .LT. P ) THEN
          INFO = -20
       ELSE IF( WANTU2 .AND. LDU2 .LT. M-P ) THEN
@@ -427,19 +440,19 @@
          ITAUQ1 = ITAUP2 + MAX( 1, M - P )
          ITAUQ2 = ITAUQ1 + MAX( 1, Q )
          IORGQR = ITAUQ2 + MAX( 1, M - Q )
-         CALL DORGQR( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), 0, WORK, -1,
+         CALL DORGQR( M-Q, M-Q, M-Q, U1, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGQRWORKOPT = INT( WORK(1) )
          LORGQRWORKMIN = MAX( 1, M - Q )
          IORGLQ = ITAUQ2 + MAX( 1, M - Q )
-         CALL DORGLQ( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), 0, WORK, -1,
+         CALL DORGLQ( M-Q, M-Q, M-Q, U1, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGLQWORKOPT = INT( WORK(1) )
          LORGLQWORKMIN = MAX( 1, M - Q )
          IORBDB = ITAUQ2 + MAX( 1, M - Q )
          CALL DORBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
-     $                X21, LDX21, X22, LDX22, 0, 0, 0, 0, 0, 0, WORK,
-     $                -1, CHILDINFO )
+     $                X21, LDX21, X22, LDX22, THETA, V1T, U1, U2, V1T,
+     $                V2T, WORK, -1, CHILDINFO )
          LORBDBWORKOPT = INT( WORK(1) )
          LORBDBWORKMIN = LORBDBWORKOPT
          IB11D = ITAUQ2 + MAX( 1, M - Q )
@@ -451,9 +464,10 @@
          IB22D = IB21E + MAX( 1, Q - 1 )
          IB22E = IB22D + MAX( 1, Q )
          IBBCSD = IB22E + MAX( 1, Q - 1 )
-         CALL DBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q, 0,
-     $                0, U1, LDU1, U2, LDU2, V1T, LDV1T, V2T, LDV2T, 0,
-     $                0, 0, 0, 0, 0, 0, 0, WORK, -1, CHILDINFO )
+         CALL DBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q, 
+     $                THETA, THETA, U1, LDU1, U2, LDU2, V1T, LDV1T, V2T,
+     $                LDV2T, U1, U1, U1, U1, U1, U1, U1, U1, WORK, -1,
+     $                CHILDINFO )
          LBBCSDWORKOPT = INT( WORK(1) )
          LBBCSDWORKMIN = LBBCSDWORKOPT
          LWORKOPT = MAX( IORGQR + LORGQRWORKOPT, IORGLQ + LORGLQWORKOPT,
@@ -514,10 +528,14 @@
          END IF
          IF( WANTV2T .AND. M-Q .GT. 0 ) THEN
             CALL DLACPY( 'U', P, M-Q, X12, LDX12, V2T, LDV2T )
-            CALL DLACPY( 'U', M-P-Q, M-P-Q, X22(Q+1,P+1), LDX22,
-     $                   V2T(P+1,P+1), LDV2T )
-            CALL DORGLQ( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
-     $                   WORK(IORGLQ), LORGLQWORK, INFO )
+            IF (M-P .GT. Q) Then
+               CALL DLACPY( 'U', M-P-Q, M-P-Q, X22(Q+1,P+1), LDX22,
+     $                      V2T(P+1,P+1), LDV2T )
+            END IF
+            IF (M .GT. Q) THEN
+               CALL DORGLQ( M-Q, M-Q, M-Q, V2T, LDV2T, WORK(ITAUQ2),
+     $                      WORK(IORGLQ), LORGLQWORK, INFO )
+            END IF
          END IF
       ELSE
          IF( WANTU1 .AND. P .GT. 0 ) THEN

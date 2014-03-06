@@ -61,7 +61,8 @@
 *>          TYPE is CHARACTER*1
 *>          The type of the matrix to be generated:
 *>          = 'S':  symmetric matrix
-*>          = 'P':  symmetric positive (semi)definite matrix
+*>          = 'H':  Hermitian matrix
+*>          = 'P':  Hermitian positive (semi)definite matrix
 *>          = 'N':  nonsymmetric matrix
 *> \endverbatim
 *>
@@ -112,7 +113,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complex16_lin
 *
@@ -120,10 +121,10 @@
       SUBROUTINE ZLATB4( PATH, IMAT, M, N, TYPE, KL, KU, ANORM, MODE,
      $                   CNDNUM, DIST )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIST, TYPE

@@ -91,7 +91,7 @@
       EXTERNAL           CHKXER, DGBSV, DGBSVX, DGESV, DGESVX, DGTSV,
      $                   DGTSVX, DPBSV, DPBSVX, DPOSV, DPOSVX, DPPSV,
      $                   DPPSVX, DPTSV, DPTSVX, DSPSV, DSPSVX, DSYSV,
-     $                   DSYSVX
+     $                   DSYSV_ROOK, DSYSVX
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -626,6 +626,24 @@
          CALL DSYSVX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, B, 2, X, 2,
      $                RCOND, R1, R2, W, 3, IW, INFO )
          CALL CHKXER( 'DSYSVX', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
+*
+*        DSYSV_ROOK
+*
+         SRNAMT = 'DSYSV_ROOK'
+         INFOT = 1
+         CALL DSYSV_ROOK( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYSV_ROOK( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYSV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_ROOK', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *

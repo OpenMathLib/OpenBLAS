@@ -38,6 +38,7 @@
 
 #include "common.h"
 
+
 #ifdef ARCH_X86
 #define EXTERN extern
 #else
@@ -63,18 +64,17 @@ extern gotoblas_t  gotoblas_BARCELONA;
 extern gotoblas_t  gotoblas_BOBCAT;
 #ifndef NO_AVX
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
-//extern gotoblas_t  gotoblas_BULLDOZER;
-//extern gotoblas_t  gotoblas_PILEDRIVER;
+extern gotoblas_t  gotoblas_BULLDOZER;
+extern gotoblas_t  gotoblas_PILEDRIVER;
+extern gotoblas_t  gotoblas_HASWELL;
 #else
 //Use NEHALEM kernels for sandy bridge
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
-#endif
-
+#define gotoblas_HASWELL gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
+#endif
 
-//Use sandy bridge kernels for haswell.
-#define gotoblas_HASWELL gotoblas_SANDYBRIDGE
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -108,6 +108,11 @@ int support_avx(){
   return 0;
 #endif
 }
+
+extern void openblas_warning(int verbose, const char * msg);
+#define FALLBACK_VERBOSE 1
+#define NEHALEM_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n"
+#define BARCELONA_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n"
 
 static int get_vendor(void){
   int eax, ebx, ecx, edx;
@@ -180,38 +185,38 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	return NULL;
       case 3:
 	//Intel Sandy Bridge 22nm (Ivy Bridge?)
-	if (model == 10) {
+	if (model == 10 || model == 14) {
 	  if(support_avx())
 	    return &gotoblas_SANDYBRIDGE;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	//Intel Haswell
-	if (model == 12) {
+	if (model == 12 || model == 15) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	return NULL;
       case 4:
 		//Intel Haswell
-	if (model == 5) {
+	if (model == 5 || model == 6) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -224,7 +229,19 @@ static gotoblas_t *get_coretype(void){
   }
 
   if (vendor == VENDOR_AMD){
-    if (family <= 0xe) return &gotoblas_ATHLON;
+    if (family <= 0xe) {
+        // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
+        cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
+        if (eax & 0xffff >= 0x01) {
+            cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
+            if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
+              return NULL;
+          }
+        else
+          return NULL;
+
+        return &gotoblas_ATHLON;
+      }
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) {
 	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3; 
@@ -237,7 +254,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_BULLDOZER;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}else if(model == 2){
@@ -245,7 +262,7 @@ static gotoblas_t *get_coretype(void){
 	  if(support_avx())
 	    return &gotoblas_PILEDRIVER;
 	  else{
-	    fprintf(stderr, "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n");
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
@@ -287,6 +304,7 @@ static char *corename[] = {
     "Bobcat",
     "Bulldozer",
     "Piledriver",
+    "Haswell",
 };
 
 char *gotoblas_corename(void) {
@@ -309,7 +327,8 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_SANDYBRIDGE)  return corename[16];
   if (gotoblas == &gotoblas_BOBCAT)       return corename[17];
   if (gotoblas == &gotoblas_BULLDOZER)    return corename[18];
-  if (gotoblas == &gotoblas_PILEDRIVER)    return corename[19];
+  if (gotoblas == &gotoblas_PILEDRIVER)   return corename[19];
+  if (gotoblas == &gotoblas_HASWELL)      return corename[20];
 
   return corename[0];
 }
@@ -338,7 +357,7 @@ void gotoblas_dynamic_init(void) {
   if (gotoblas && gotoblas -> init) {
     gotoblas -> init();
   } else {
-    fprintf(stderr, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
+    openblas_warning(0, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
     exit(1);
   }
   

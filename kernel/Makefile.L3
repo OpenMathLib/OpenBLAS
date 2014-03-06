@@ -14,6 +14,20 @@ ifeq ($(ARCH), MIPS)
 USE_GEMM3M = 1
 endif
 
+ifeq ($(ARCH), arm)
+USE_TRMM = 1
+endif
+
+ifeq ($(ARCH), arm64)
+USE_TRMM = 1
+endif
+
+ifeq ($(TARGET), LOONGSON3B)												 
+USE_TRMM = 1
+endif
+
+
+
 SKERNELOBJS	+= \
 	sgemm_kernel$(TSUFFIX).$(SUFFIX) \
 	$(SGEMMINCOPYOBJ) $(SGEMMITCOPYOBJ) \
@@ -498,7 +512,8 @@ $(KDIR)xgemm_kernel_r$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL) $(XGEMMD
 $(KDIR)xgemm_kernel_b$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL) $(XGEMMDEPEND)
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX -DCC $< -o $@
 
-ifeq ($(TARGET), LOONGSON3B)												 
+
+ifdef USE_TRMM											 
 $(KDIR)strmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -UTRANSA $< -o $@
 
@@ -667,6 +682,9 @@ $(KDIR)ztrmm_kernel_RR$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
 $(KDIR)ztrmm_kernel_RC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o $@
 endif
+
+
+
 
 $(KDIR)xtrmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL)
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DXDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN $< -o $@

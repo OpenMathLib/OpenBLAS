@@ -1,8 +1,8 @@
 /*This is only for "make install" target.*/
 
-#if defined(OS_WINNT) || defined(OS_CYGWIN_NT) || defined(OS_INTERIX)
-#define WINDOWS_ABI
-#define OS_WINDOWS
+#if defined(OPENBLAS_OS_WINNT) || defined(OPENBLAS_OS_CYGWIN_NT) || defined(OPENBLAS_OS_INTERIX)
+#define OPENBLAS_WINDOWS_ABI
+#define OPENBLAS_OS_WINDOWS
 
 #ifdef DOUBLE
 #define DOUBLE_DEFINED DOUBLE
@@ -10,23 +10,23 @@
 #endif
 #endif
 
-#ifdef NEEDBUNDERSCORE
+#ifdef OPENBLAS_NEEDBUNDERSCORE
 #define BLASFUNC(FUNC) FUNC##_
 #else
 #define BLASFUNC(FUNC) FUNC
 #endif
 
-#ifdef QUAD_PRECISION
+#ifdef OPENBLAS_QUAD_PRECISION
 typedef struct {
   unsigned long x[2];
 }  xdouble;
-#elif defined EXPRECISION
+#elif defined OPENBLAS_EXPRECISION
 #define xdouble long double
 #else
 #define xdouble double
 #endif
 
-#if defined(OS_WINDOWS) && defined(__64BIT__)
+#if defined(OPENBLAS_OS_WINDOWS) && defined(OPENBLAS___64BIT__)
 typedef long long BLASLONG;
 typedef unsigned long long BLASULONG;
 #else
@@ -34,7 +34,7 @@ typedef long BLASLONG;
 typedef unsigned long BLASULONG;
 #endif
 
-#ifdef USE64BITINT
+#ifdef OPENBLAS_USE64BITINT
 typedef BLASLONG blasint;
 #else
 typedef int blasint;

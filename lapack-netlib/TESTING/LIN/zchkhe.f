@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE ZCHKHE( DOTYPE, NN, NVAL, NNB, NBVAL, NNS, NSVAL,
 *                          THRESH, TSTERR, NMAX, A, AFAC, AINV, B, X,
 *                          XACT, WORK, RWORK, IWORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NMAX, NN, NNB, NNS, NOUT
@@ -24,7 +24,7 @@
 *       COMPLEX*16         A( * ), AFAC( * ), AINV( * ), B( * ),
 *      $                   WORK( * ), X( * ), XACT( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -135,14 +135,12 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension
-*>                      (NMAX*max(3,NSMAX))
+*>          WORK is COMPLEX*16 array, dimension (NMAX*max(3,NSMAX))
 *> \endverbatim
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is DOUBLE PRECISION array, dimension
-*>                      (max(NMAX,2*NSMAX))
+*>          RWORK is DOUBLE PRECISION array, dimension (max(NMAX,2*NSMAX))
 *> \endverbatim
 *>
 *> \param[out] IWORK
@@ -159,12 +157,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date November 2013
 *
 *> \ingroup complex16_lin
 *
@@ -173,10 +171,10 @@
      $                   THRESH, TSTERR, NMAX, A, AFAC, AINV, B, X,
      $                   XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2013
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -196,6 +194,8 @@
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO
       PARAMETER          ( ZERO = 0.0D+0 )
+      COMPLEX*16         CZERO
+      PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ) )
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 10 )
       INTEGER            NTESTS
@@ -260,6 +260,11 @@
      $   CALL ZERRHE( PATH, NOUT )
       INFOT = 0
 *
+*     Set the minimum block size for which the block routine should
+*     be used, which will be later returned by ILAENV
+*
+      CALL XLAENV( 2, 2 )
+*
 *     Do for each value of N in NVAL
 *
       DO 180 IN = 1, NN
@@ -289,22 +294,27 @@
             DO 160 IUPLO = 1, 2
                UPLO = UPLOS( IUPLO )
 *
-*              Set up parameters with ZLATB4 and generate a test matrix
-*              with ZLATMS.
+*              Set up parameters with ZLATB4 for the matrix generator
+*              based on the type of matrix to be generated.
 *
                CALL ZLATB4( PATH, IMAT, N, N, TYPE, KL, KU, ANORM, MODE,
      $                      CNDNUM, DIST )
+*
+*              Generate a matrix with ZLATMS.
 *
                SRNAMT = 'ZLATMS'
                CALL ZLATMS( N, N, DIST, ISEED, TYPE, RWORK, MODE,
      $                      CNDNUM, ANORM, KL, KU, UPLO, A, LDA, WORK,
      $                      INFO )
 *
-*              Check error code from ZLATMS.
+*              Check error code from ZLATMS and handle error.
 *
                IF( INFO.NE.0 ) THEN
                   CALL ALAERH( PATH, 'ZLATMS', INFO, 0, UPLO, N, N, -1,
      $                         -1, -1, IMAT, NFAIL, NERRS, NOUT )
+*
+*                 Skip all tests for this generated matrix
+*
                   GO TO 160
                END IF
 *
@@ -327,34 +337,34 @@
                      IF( IUPLO.EQ.1 ) THEN
                         IOFF = ( IZERO-1 )*LDA
                         DO 20 I = 1, IZERO - 1
-                           A( IOFF+I ) = ZERO
+                           A( IOFF+I ) = CZERO
    20                   CONTINUE
                         IOFF = IOFF + IZERO
                         DO 30 I = IZERO, N
-                           A( IOFF ) = ZERO
+                           A( IOFF ) = CZERO
                            IOFF = IOFF + LDA
    30                   CONTINUE
                      ELSE
                         IOFF = IZERO
                         DO 40 I = 1, IZERO - 1
-                           A( IOFF ) = ZERO
+                           A( IOFF ) = CZERO
                            IOFF = IOFF + LDA
    40                   CONTINUE
                         IOFF = IOFF - IZERO
                         DO 50 I = IZERO, N
-                           A( IOFF+I ) = ZERO
+                           A( IOFF+I ) = CZERO
    50                   CONTINUE
                      END IF
                   ELSE
-                     IOFF = 0
                      IF( IUPLO.EQ.1 ) THEN
 *
 *                       Set the first IZERO rows and columns to zero.
 *
+                        IOFF = 0
                         DO 70 J = 1, N
                            I2 = MIN( J, IZERO )
                            DO 60 I = 1, I2
-                              A( IOFF+I ) = ZERO
+                              A( IOFF+I ) = CZERO
    60                      CONTINUE
                            IOFF = IOFF + LDA
    70                   CONTINUE
@@ -362,10 +372,11 @@
 *
 *                       Set the last IZERO rows and columns to zero.
 *
+                        IOFF = 0
                         DO 90 J = 1, N
                            I1 = MAX( J, IZERO )
                            DO 80 I = I1, N
-                              A( IOFF+I ) = ZERO
+                              A( IOFF+I ) = CZERO
    80                      CONTINUE
                            IOFF = IOFF + LDA
    90                   CONTINUE
@@ -375,6 +386,9 @@
                   IZERO = 0
                END IF
 *
+*              End generate test matrix A.
+*
+*
 *              Set the imaginary part of the diagonals.
 *
                CALL ZLAIPD( N, A, LDA+1, 0 )
@@ -382,13 +396,24 @@
 *              Do for each value of NB in NBVAL
 *
                DO 150 INB = 1, NNB
+*
+*                 Set the optimal blocksize, which will be later
+*                 returned by ILAENV.
+*
                   NB = NBVAL( INB )
                   CALL XLAENV( 1, NB )
 *
-*                 Compute the L*D*L' or U*D*U' factorization of the
-*                 matrix.
+*                 Copy the test matrix A into matrix AFAC which
+*                 will be factorized in place. This is needed to
+*                 preserve the test matrix A for subsequent tests.
 *
                   CALL ZLACPY( UPLO, N, N, A, LDA, AFAC, LDA )
+*
+*                 Compute the L*D*L**T or U*D*U**T factorization of the
+*                 matrix. IWORK stores details of the interchanges and
+*                 the block structure of D. AINV is a work array for
+*                 block factorization, LWORK is the length of AINV.
+*
                   LWORK = MAX( 2, NB )*LDA
                   SRNAMT = 'ZHETRF'
                   CALL ZHETRF( UPLO, N, AFAC, LDA, IWORK, AINV, LWORK,
@@ -411,11 +436,14 @@
                      END IF
                   END IF
 *
-*                 Check error code from ZHETRF.
+*                 Check error code from ZHETRF and handle error.
 *
                   IF( INFO.NE.K )
      $               CALL ALAERH( PATH, 'ZHETRF', INFO, K, UPLO, N, N,
      $                            -1, -1, NB, IMAT, NFAIL, NERRS, NOUT )
+*
+*                 Set the condition estimate flag if the INFO is not 0.
+*
                   IF( INFO.NE.0 ) THEN
                      TRFCON = .TRUE.
                   ELSE
@@ -439,12 +467,15 @@
                      CALL ZHETRI2( UPLO, N, AINV, LDA, IWORK, WORK,
      $                            LWORK, INFO )
 *
-*                 Check error code from ZHETRI.
+*                    Check error code from ZHETRI and handle error.
 *
                      IF( INFO.NE.0 )
      $                  CALL ALAERH( PATH, 'ZHETRI', INFO, -1, UPLO, N,
      $                               N, -1, -1, -1, IMAT, NFAIL, NERRS,
      $                               NOUT )
+*
+*                    Compute the residual for a symmetric matrix times
+*                    its inverse.
 *
                      CALL ZPOT03( UPLO, N, A, LDA, AINV, LDA, WORK, LDA,
      $                            RWORK, RCONDC, RESULT( 2 ) )
@@ -478,11 +509,16 @@
                      GO TO 140
                   END IF
 *
+*                 Do for each value of NRHS in NSVAL.
+*
                   DO 130 IRHS = 1, NNS
                      NRHS = NSVAL( IRHS )
 *
-*+    TEST 3
+*+    TEST 3 (Using TRS)
 *                 Solve and compute residual for  A * X = B.
+*
+*                    Choose a set of NRHS random solution vectors
+*                    stored in XACT and set up the right hand side B
 *
                      SRNAMT = 'ZLARHS'
                      CALL ZLARHS( PATH, XTYPE, UPLO, ' ', N, N, KL, KU,
@@ -494,7 +530,7 @@
                      CALL ZHETRS( UPLO, N, NRHS, AFAC, LDA, IWORK, X,
      $                            LDA, INFO )
 *
-*                 Check error code from ZHETRS.
+*                    Check error code from ZHETRS and handle error.
 *
                      IF( INFO.NE.0 )
      $                  CALL ALAERH( PATH, 'ZHETRS', INFO, 0, UPLO, N,
@@ -502,11 +538,17 @@
      $                               NERRS, NOUT )
 *
                      CALL ZLACPY( 'Full', N, NRHS, B, LDA, WORK, LDA )
+*
+*                    Compute the residual for the solution
+*
                      CALL ZPOT02( UPLO, N, NRHS, A, LDA, X, LDA, WORK,
      $                            LDA, RWORK, RESULT( 3 ) )
 *
-*+    TEST 4
+*+    TEST 4 (Using TRS2)
 *                 Solve and compute residual for  A * X = B.
+*
+*                    Choose a set of NRHS random solution vectors
+*                    stored in XACT and set up the right hand side B
 *
                      SRNAMT = 'ZLARHS'
                      CALL ZLARHS( PATH, XTYPE, UPLO, ' ', N, N, KL, KU,
@@ -518,7 +560,7 @@
                      CALL ZHETRS2( UPLO, N, NRHS, AFAC, LDA, IWORK, X,
      $                            LDA, WORK, INFO )
 *
-*                 Check error code from ZSYTRS2.
+*                    Check error code from ZHETRS2 and handle error.
 *
                      IF( INFO.NE.0 )
      $                  CALL ALAERH( PATH, 'ZHETRS2', INFO, 0, UPLO, N,
@@ -526,6 +568,9 @@
      $                               NERRS, NOUT )
 *
                      CALL ZLACPY( 'Full', N, NRHS, B, LDA, WORK, LDA )
+*
+*                    Compute the residual for the solution
+*
                      CALL ZPOT02( UPLO, N, NRHS, A, LDA, X, LDA, WORK,
      $                            LDA, RWORK, RESULT( 4 ) )
 *
@@ -544,7 +589,7 @@
      $                            RWORK( NRHS+1 ), WORK,
      $                            RWORK( 2*NRHS+1 ), INFO )
 *
-*                 Check error code from ZHERFS.
+*                    Check error code from ZHERFS.
 *
                      IF( INFO.NE.0 )
      $                  CALL ALAERH( PATH, 'ZHERFS', INFO, 0, UPLO, N,
@@ -569,7 +614,10 @@
                            NFAIL = NFAIL + 1
                         END IF
   120                CONTINUE
-                     NRUN = NRUN + 5
+                     NRUN = NRUN + 6
+*
+*                 End do for each value of NRHS in NSVAL.
+*
   130             CONTINUE
 *
 *+    TEST 9
@@ -581,7 +629,7 @@
                   CALL ZHECON( UPLO, N, AFAC, LDA, IWORK, ANORM, RCOND,
      $                         WORK, INFO )
 *
-*                 Check error code from ZHECON.
+*                 Check error code from ZHECON and handle error.
 *
                   IF( INFO.NE.0 )
      $               CALL ALAERH( PATH, 'ZHECON', INFO, 0, UPLO, N, N,

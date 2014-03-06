@@ -139,7 +139,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date April 2012
+*> \date November 2013
 *
 *> \ingroup aux_lin
 *
@@ -147,10 +147,10 @@
       SUBROUTINE ALAERH( PATH, SUBNAM, INFO, INFOE, OPTS, M, N, KL, KU,
      $                   N5, IMAT, NFAIL, NERRS, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.5.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -487,9 +487,19 @@
             WRITE( NOUT, FMT = 9955 )SUBNAM, INFO, UPLO, M, N5, IMAT
          END IF
 *
-      ELSE IF( LSAMEN( 2, P2, 'SY' ) .OR. LSAMEN( 2, P2, 'HE' ) ) THEN
+      ELSE IF( LSAMEN( 2, P2, 'SY' )
+     $         .OR. LSAMEN( 2, P2, 'SR' )
+     $         .OR. LSAMEN( 2, P2, 'HE' )
+     $         .OR. LSAMEN( 2, P2, 'HR' ) ) THEN
 *
-*        xHE, or xSY:  Symmetric or Hermitian indefinite matrices
+*        xSY: symmetric indefinite matrices
+*             with partial (Bunch-Kaufman) pivoting;
+*        xSR: symmetric indefinite matrices
+*             with rook (bounded Bunch-Kaufman) pivoting;
+*        xHE: Hermitian indefinite matrices
+*             with partial (Bunch-Kaufman) pivoting.
+*        xHR: Hermitian indefinite matrices
+*             with rook (bounded Bunch-Kaufman) pivoting;
 *
          UPLO = OPTS( 1: 1 )
          IF( LSAMEN( 3, C3, 'TRF' ) ) THEN

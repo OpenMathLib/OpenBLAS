@@ -15,10 +15,6 @@ ifdef SANITY_CHECK
 BLASDIRS += reference
 endif
 
-ifndef PREFIX
-PREFIX = /opt/OpenBLAS
-endif
-
 SUBDIRS	= $(BLASDIRS)
 ifneq ($(NO_LAPACK), 1)
 SUBDIRS	+= lapack
@@ -31,7 +27,7 @@ SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
 all :: libs netlib tests shared
 	@echo
-	@echo " OpenBLAS build complete."
+	@echo " OpenBLAS build complete. ($(LIB_COMPONENTS))"
 	@echo
 	@echo "  OS               ... $(OSNAME)             "
 	@echo "  Architecture     ... $(ARCH)               "
@@ -44,7 +40,9 @@ ifdef INTERFACE64
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
+ifndef NOFORTRAN
 	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
+endif
 ifneq ($(OSNAME), AIX)
 	@echo -n "  Library Name     ... $(LIBNAME)"
 else
@@ -221,10 +219,10 @@ prof_lapack : lapack_prebuild
 lapack_prebuild :
 ifndef NOFORTRAN
 	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "OPTS        = $(FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "POPTS       = $(FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "NOOPT       = $(FFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "PNOOPT      = $(FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "OPTS        = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "NOOPT       = $(LAPACK_FFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "PNOOPT      = $(LAPACK_FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -320,7 +318,7 @@ clean ::
 ifeq ($(OSNAME), Darwin)
 	@rm -rf getarch.dSYM getarch_2nd.dSYM
 endif
-	@rm -f Makefile.conf config.h cblas_noconst.h Makefile_kernel.conf config_kernel.h st* *.dylib
+	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
 	@touch $(NETLIB_LAPACK_DIR)/make.inc
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
 	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
