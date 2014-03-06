@@ -1,5 +1,32 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.9.rc2
+06-Mar-2014
+common:
+	* Added OPENBLAS_VERBOSE environment variable.(#338)
+	* Make OpenBLAS thread-pool resilient to fork via pthread_atfork.
+	  (#294, Thank Olivier Grisel)
+	* Rewrote rotmg
+	* Fixed sdsdot bug.
+x86/x86-64:
+	* Detect Intel Haswell for new Macbook.
+
+====================================================================
+Version 0.2.9.rc1
+13-Jan-2013
+common:
+	* Update LAPACK to 3.5.0 version
+	* Fixed compatiable issues with Clang and Pathscale compilers.
+
+x86/x86-64:
+	* Optimization on Intel Haswell.
+	* Enable optimization kernels on AMD Bulldozer and Piledriver.
+
+ARM:
+	* Support ARMv6 and ARMv7 ISA.
+	* Optimization on ARM Cortex-A9.
+
+====================================================================
 Version 0.2.8
 01-Aug-2013
 common:
