@@ -1,3 +1,37 @@
+/***************************************************************************
+Copyright (c) 2013, The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+
+/**************************************************************************************
+* 2014/02/28 Saar
+*	Test with lapack-3.5.0	: OK 
+*
+**************************************************************************************/
+
+
 #include "common.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
@@ -6,6 +40,8 @@
 #define  GAM     4096.e0
 #define  GAMSQ   16777216.e0
 #define  RGAMSQ  5.9604645e-8
+
+#define  TWO 2.e0
 
 #ifdef DOUBLE
 #define ABS(x) fabs(x)
@@ -25,181 +61,168 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 
 #endif
 
-    FLOAT du, dp1, dp2, dq2, dq1, dh11, dh21, dh12, dh22;
-    int igo, flag;
-    FLOAT dtemp;
+	FLOAT du, dp1, dp2, dq2, dq1, dh11, dh21, dh12, dh22, dflag, dtemp;
 
-#ifndef CBLAS
-  PRINT_DEBUG_NAME;
-#else
-  PRINT_DEBUG_CNAME;
-#endif
+	if(*dd1 < ZERO)
+	{
+		dflag = -ONE;
+		dh11  = ZERO;
+		dh12  = ZERO;
+		dh21  = ZERO;
+		dh22  = ZERO;
 
-    dh11 = ZERO;
-    dh12 = ZERO;
-    dh21 = ZERO;
-    dh22 = ZERO;
+		*dd1  = ZERO;
+		*dd2  = ZERO;
+		*dx1  = ZERO;
+	}
+	else
+	{
+		dp2 = *dd2 * dy1;
+		if(dp2 == ZERO)
+		{
+			dflag = -TWO;
+			dparam[0] = dflag;
+			return;
+		}
+		dp1 = *dd1 * *dx1;
+		dq2 =  dp2 * dy1;
+		dq1 =  dp1 * *dx1;
+		if(ABS(dq1) > ABS(dq2))
+		{
+			dh21 = -  dy1 / *dx1;
+			dh12 =    dp2 /  dp1;
 
-    if (*dd1 < ZERO) goto L60;
+			du   = ONE - dh12 * dh21;
+			if(du > ZERO)
+			{
+				dflag = ZERO;
+				*dd1  = *dd1 / du;
+				*dd2  = *dd2 / du;
+				*dx1  = *dx1 * du;
 
-    dp2 = *dd2 * dy1;
+			}
+		}
+		else
+		{
+			if(dq2 < ZERO)
+			{
+				dflag = -ONE;
+				
+				dh11  = ZERO;
+				dh12  = ZERO;
+				dh21  = ZERO;
+				dh22  = ZERO;
 
-    if (dp2 == ZERO) {
-      flag = -2;
-      goto L260;
-    }
+				*dd1  = ZERO;
+				*dd2  = ZERO;
+				*dx1  = ZERO;
+			}
+			else
+			{
+				dflag = ONE;
 
-    dp1 = *dd1 * *dx1;
-    dq2 =  dp2 * dy1;
-    dq1 =  dp1 * *dx1;
+				dh11  =  dp1 /  dp2;
+				dh22  = *dx1 /  dy1;
+				du    =  ONE + dh11 * dh22;
+				dtemp = *dd2 / du;
 
-    if (! (ABS(dq1) > ABS(dq2))) goto L40;
-
-    dh21 = -(dy1) / *dx1;
-    dh12 = dp2 / dp1;
-
-    du = ONE - dh12 * dh21;
-
-    if (du <= ZERO) goto L60;
-
-    flag = 0;
-    *dd1 /= du;
-    *dd2 /= du;
-    *dx1 *= du;
-
-    goto L100;
-
-L40:
-    if (dq2 < ZERO) goto L60;
-
-    flag = 1;
-    dh11  = dp1 / dp2;
-    dh22  = *dx1 / dy1;
-    du    = ONE + dh11 * dh22;
-    dtemp = *dd2 / du;
-    *dd2  = *dd1 / du;
-    *dd1  = dtemp;
-    *dx1  = dy1 * du;
-    goto L100;
-
-L60:
-    flag = -1;
-    dh11 = ZERO;
-    dh12 = ZERO;
-    dh21 = ZERO;
-    dh22 = ZERO;
-
-    *dd1 = ZERO;
-    *dd2 = ZERO;
-    *dx1 = ZERO;
-    goto L220;
+				*dd2  = *dd1 / du;
+				*dd1  = dtemp;
+				*dx1  = dy1 * du;
+			}			
+		}
 
 
-L70:
-    if (flag < 0) goto L90;
- 
-    if (flag > 0) goto L80;
- 
-    dh11 = ONE;
-    dh22 = ONE;
-    flag = -1;
-    goto L90;
+		if(*dd1 != ZERO)
+		{
+			while( (*dd1 <= RGAMSQ) || (*dd1 >= GAMSQ) )
+			{
+				if(dflag == ZERO)
+				{
+					dh11  =  ONE;
+					dh22  =  ONE;
+					dflag = -ONE;
+				}
+				else
+				{
+					dh21  = -ONE;
+					dh12  =  ONE;
+					dflag = -ONE;
+				}
+				if( *dd1 <= RGAMSQ )
+				{
+					*dd1  = *dd1 * (GAM * GAM);
+					*dx1  = *dx1 / GAM;
+					dh11  = dh11 / GAM;
+					dh12  = dh12 / GAM;
+				}
+				else
+				{
+					*dd1  = *dd1 / (GAM * GAM);
+					*dx1  = *dx1 * GAM;
+					dh11  = dh11 * GAM;
+					dh12  = dh12 * GAM;
+				}
+			}
+		}
+			
+		if(*dd2 != ZERO)
+		{
+			while( (ABS(*dd2) <= RGAMSQ) || (ABS(*dd2) >= GAMSQ) )
+			{
+				if(dflag == ZERO)
+				{
+					dh11  =  ONE;
+					dh22  =  ONE;
+					dflag = -ONE;
+				}
+				else
+				{
+					dh21  = -ONE;
+					dh12  =  ONE;
+					dflag = -ONE;
+				}
+				if( ABS(*dd2) <= RGAMSQ )
+				{
+					*dd2  = *dd2 * (GAM * GAM);
+					dh21  = dh21 / GAM;
+					dh22  = dh22 / GAM;
+				}
+				else
+				{
+					*dd2  = *dd2 / (GAM * GAM);
+					dh21  = dh21 * GAM;
+					dh22  = dh22 * GAM;
+				}
+			}
+		}
+					
+	}
 
-L80:
-    dh21 = -ONE;
-    dh12 = ONE;
-    flag = -1;
+	if(dflag < ZERO)
+	{
+		dparam[1] = dh11;
+		dparam[2] = dh21;
+		dparam[3] = dh12;
+		dparam[4] = dh22;
+	}
+	else
+	{
+		if(dflag == ZERO)
+		{
+			dparam[2] = dh21;
+			dparam[3] = dh12;
+		}
+		else
+		{
+			dparam[1] = dh11;
+			dparam[4] = dh22;
+		}
+	}
 
-L90:
-    switch (igo) {
-	case 0: goto L120;
-	case 1: goto L150;
-	case 2: goto L180;
-	case 3: goto L210;
-    }
 
-L100:
-    if (!(*dd1 <= RGAMSQ)) goto L130;
-    if (*dd1 == ZERO) goto L160;
-    igo = 0;
-    goto L70;
-
-L120:
-    *dd1 *= GAM * GAM;
-    *dx1 /= GAM;
-    dh11 /= GAM;
-    dh12 /= GAM;
-    goto L100;
-
-L130:
-    if (! (*dd1 >= GAMSQ)) {
-	goto L160;
-    }
-    igo = 1;
-    goto L70;
-
-L150:
-    *dd1 /= GAM * GAM;
-    *dx1 *= GAM;
-    dh11 *= GAM;
-    dh12 *= GAM;
-    goto L130;
-
-L160:
-    if (! (ABS(*dd2) <= RGAMSQ)) {
-	goto L190;
-    }
-    if (*dd2 == ZERO) {
-	goto L220;
-    }
-    igo = 2;
-    goto L70;
-
-L180:
-/* Computing 2nd power */
-    *dd2 *= GAM * GAM;
-    dh21 /= GAM;
-    dh22 /= GAM;
-    goto L160;
-
-L190:
-    if (! (ABS(*dd2) >= GAMSQ)) {
-	goto L220;
-    }
-    igo = 3;
-    goto L70;
-
-L210:
-/* Computing 2nd power */
-    *dd2 /= GAM * GAM;
-    dh21 *= GAM;
-    dh22 *= GAM;
-    goto L190;
-
-L220:
-    if (flag < 0) {
-	goto L250;
-    } else if (flag == 0) {
-	goto L230;
-    } else {
-	goto L240;
-    }
-L230:
-    dparam[2] = dh21;
-    dparam[3] = dh12;
-    goto L260;
-L240:
-    dparam[2] = dh11;
-    dparam[4] = dh22;
-    goto L260;
-L250:
-    dparam[1] = dh11;
-    dparam[2] = dh21;
-    dparam[3] = dh12;
-    dparam[4] = dh22;
-L260:
-    dparam[0] = (FLOAT) flag;
-    return;
+	dparam[0] = dflag;
+	return;
 }
 
 
