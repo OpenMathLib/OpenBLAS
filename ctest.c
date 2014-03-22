@@ -125,7 +125,7 @@ ARCH_IA64
 BINARY_64
 #endif
 
-#if defined(__ARM_ARCH) || defined(__ARM_ARCH_7A__)
+#if defined(__ARM_ARCH) || defined(__ARM_ARCH_7A__) || defined(__arm__)
 ARCH_ARM
 #endif
 
