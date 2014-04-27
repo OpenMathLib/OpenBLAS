@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo " Please read https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-in-Microsoft-Visual-Studio "
-make BINARY=64 CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran
+make BINARY=64 CC=gcc FC=gfortran
