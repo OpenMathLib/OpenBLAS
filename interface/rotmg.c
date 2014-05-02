@@ -26,7 +26,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2014/02/28 Saar
+* 2014/05/02 Saar
+* 	fixed two bugs as reported by Brendan Tracey 
 *	Test with lapack-3.5.0	: OK 
 *
 **************************************************************************************/
@@ -145,9 +146,12 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 				else
 				{
-					dh21  = -ONE;
-					dh12  =  ONE;
-					dflag = -ONE;
+					if(dflag == ONE)
+					{
+						dh21  = -ONE;
+						dh12  =  ONE;
+						dflag = -ONE;
+					}
 				}
 				if( *dd1 <= RGAMSQ )
 				{
@@ -178,9 +182,12 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 				else
 				{
-					dh21  = -ONE;
-					dh12  =  ONE;
-					dflag = -ONE;
+					if(dflag == ONE)
+					{
+						dh21  = -ONE;
+						dh12  =  ONE;
+						dflag = -ONE;
+					}
 				}
 				if( ABS(*dd2) <= RGAMSQ )
 				{
