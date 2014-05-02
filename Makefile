@@ -57,7 +57,7 @@ endif
 
 ifeq ($(USE_OPENMP), 1)
 	@echo
-	@echo " Use OpenMP in the multithreading. Becasue of ignoring OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS flags, "
+	@echo " Use OpenMP in the multithreading. Because of ignoring OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS flags, "
 	@echo " you should use OMP_NUM_THREADS environment variable to control the number of threads."
 	@echo
 endif
