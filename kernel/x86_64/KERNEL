@@ -119,7 +119,7 @@ XCOPYKERNEL = zcopy.S
 endif
 
 ifndef SDOTKERNEL
-SDOTKERNEL =  dot_sse.S
+SDOTKERNEL = ../arm/dot.c 
 endif
 
 ifndef DDOTKERNEL
@@ -369,11 +369,11 @@ endif
 GEMVDEP = ../l2param.h
 
 ifndef SGEMVNKERNEL
-SGEMVNKERNEL = sgemv_n.S
+SGEMVNKERNEL = ../arm/gemv_n.c
 endif
 
 ifndef SGEMVTKERNEL
-SGEMVTKERNEL = sgemv_t.S
+SGEMVTKERNEL = ../arm/gemv_t.c
 endif
 
 ifndef DGEMVNKERNEL
