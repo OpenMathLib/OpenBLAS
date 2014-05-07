@@ -1,7 +1,8 @@
 TOPDIR	= ..
 include ../Makefile.system
 
-SUBDIRS	= laswp getf2 getrf potf2 potrf lauu2 lauum trti2 trtri getrs
+#SUBDIRS	= laswp getf2 getrf potf2 potrf lauu2 lauum trti2 trtri getrs
+SUBDIRS	= 
 
 FLAMEDIRS = laswp getf2 potf2 lauu2 trti2
 
