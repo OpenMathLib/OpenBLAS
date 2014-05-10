@@ -68,7 +68,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
     SYMV_U, SYMV_L,
   };
 
-#ifdef SMPTEST
+#ifdef SMP
   int (*symv_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
     SYMV_THREAD_U, SYMV_THREAD_L,
   };
@@ -77,7 +77,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
   blasint info;
   int uplo;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -117,7 +117,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -125,7 +125,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
 
   (symv[uplo])(n, n, alpha_r, alpha_i, a, lda, b, incx, c, incy, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
     
     (symv_thread[uplo])(n, ALPHA, a, lda, b, incx, c, incy, buffer, nthreads);
