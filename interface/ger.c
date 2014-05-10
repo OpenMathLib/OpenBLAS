@@ -75,7 +75,7 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
   blasint    incy  = *INCY;
   blasint    lda   = *LDA;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -107,7 +107,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint info, t;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -167,7 +167,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -175,7 +175,7 @@ void CNAME(enum CBLAS_ORDER order,
 
     GER(m, n, 0, alpha, x, incx, y, incy, a, lda, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
     
     GER_THREAD(m, n, alpha, x, incx, y, incy, a, lda, buffer, nthreads);
