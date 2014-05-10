@@ -50,7 +50,7 @@
 #define ERROR_NAME "CGEMV "
 #endif
 
-#ifdef SMPTEST
+#ifdef SMP
 static int (*gemv_thread[])(BLASLONG, BLASLONG, FLOAT *, FLOAT *, BLASLONG,  FLOAT * , BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
   xgemv_thread_n, xgemv_thread_t, xgemv_thread_r, xgemv_thread_c, xgemv_thread_o, xgemv_thread_u, xgemv_thread_s, xgemv_thread_d, 
@@ -77,7 +77,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   blasint incy = *INCY;
 
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -143,7 +143,7 @@ void CNAME(enum CBLAS_ORDER order,
   blasint    lenx, leny;
   int trans;
   blasint info, t;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -232,7 +232,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -240,7 +240,7 @@ void CNAME(enum CBLAS_ORDER order,
     
     (gemv[(int)trans])(m, n, 0, alpha_r, alpha_i, a, lda, x, incx, y, incy, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
     
   } else {
     
