@@ -95,7 +95,7 @@ void NAME(char *UPLO, char *TRANS,
   FLOAT *buffer;
   FLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -208,7 +208,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   FLOAT CAlpha[2];
 #endif
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -341,7 +341,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   sa = (FLOAT *)((BLASLONG)buffer + GEMM_OFFSET_A);
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
   
-#ifdef SMPTEST
+#ifdef SMP
   if (!trans){
     mode |= (BLAS_TRANSA_N | BLAS_TRANSB_T);
   } else {
@@ -358,7 +358,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 
     (syr2k[(uplo << 1) | trans ])(&args, NULL, NULL, sa, sb, 0);
     
-#ifdef SMPTEST
+#ifdef SMP
 
   } else {
 
