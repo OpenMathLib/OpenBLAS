@@ -57,7 +57,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
 
 #endif
 
-#ifdef SMPTEST
+#ifdef SMP
   int mode, nthreads;
 #endif
 
@@ -78,7 +78,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
   if (incx < 0) x -= (n - 1) * incx;
   if (incy < 0) y -= (n - 1) * incy;
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(1);
 
   //disable multi-thread when incx==0 or incy==0
@@ -95,7 +95,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
 
   AXPYU_K(n, 0, 0, alpha, x, incx, y, incy, NULL, 0);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
 
 #ifdef XDOUBLE
