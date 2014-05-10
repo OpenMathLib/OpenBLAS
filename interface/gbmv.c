@@ -61,7 +61,7 @@ static void (*gbmv[])(BLASLONG, BLASLONG, BLASLONG, BLASLONG, FLOAT,
 #endif
 };
 
-#ifdef SMPTEST
+#ifdef SMP
 static int (*gbmv_thread[])(BLASLONG, BLASLONG, BLASLONG, BLASLONG, FLOAT,
 		      FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
@@ -91,7 +91,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   blasint incx = *INCX;
   blasint incy = *INCY;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -146,7 +146,7 @@ void CNAME(enum CBLAS_ORDER order,
   FLOAT *buffer;
   blasint lenx, leny, info, t;
   int trans;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -226,7 +226,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
   
   if (nthreads == 1) {
@@ -234,7 +234,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   (gbmv[(int)trans])(m, n, kl, ku, alpha, a, lda, x, incx, y, incy, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
 
     (gbmv_thread[(int)trans])(m, n, kl, ku, alpha, a, lda, x, incx, y, incy, buffer, nthreads);
