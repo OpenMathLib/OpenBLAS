@@ -61,7 +61,7 @@ static  int (*sbmv[])(BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLA
 #endif
 };
 
-#ifdef SMPTEST
+#ifdef SMPBUG
 static  int (*sbmv_thread[])(BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
   qsbmv_thread_U, qsbmv_thread_L,
@@ -90,7 +90,7 @@ void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *
   blasint info;
   int uplo;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMPBUG
   int nthreads;
 #endif
 
@@ -130,7 +130,7 @@ void CNAME(enum CBLAS_ORDER order,
   FLOAT *buffer;
   int uplo;
   blasint info;
-#ifdef SMPTEST
+#ifdef SMPBUG
   int nthreads;
 #endif
 
@@ -189,7 +189,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMPBUG
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -197,7 +197,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   (sbmv[uplo])(n, k, alpha, a, lda, x, incx, y, incy, buffer);
 
-#ifdef SMPTEST
+#ifdef SMPBUG
   } else {
 
     (sbmv_thread[uplo])(n, k, alpha, a, lda, x, incx, y, incy, buffer, nthreads);
