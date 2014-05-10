@@ -61,7 +61,7 @@ static int (*syr2[])(BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOA
 #endif
 };
 
-#ifdef SMPTEST
+#ifdef SMP
 static int (*syr2_thread[])(BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
   qsyr2_thread_U, qsyr2_thread_L,
@@ -88,7 +88,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
   blasint info;
   int uplo;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -120,7 +120,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
   FLOAT *buffer;
   int trans, uplo;
   blasint info;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -178,7 +178,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -186,7 +186,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
 
     (syr2[uplo])(n, alpha, x, incx, y, incy, a, lda, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
     
     (syr2_thread[uplo])(n, alpha, x, incx, y, incy, a, lda, buffer, nthreads);
