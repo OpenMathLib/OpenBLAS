@@ -61,7 +61,7 @@ static int (*spr[])(BLASLONG, FLOAT, FLOAT, FLOAT *, BLASLONG, FLOAT *, FLOAT *)
 #endif
 };
 
-#ifdef SMPTEST
+#ifdef SMP
 static int (*spr_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, FLOAT *, int) = {
 #ifdef XDOUBLE
   xspr_thread_U, xspr_thread_L,
@@ -85,7 +85,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
   blasint info;
   int uplo;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -120,7 +120,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -128,7 +128,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
     
     (spr[uplo])(n, alpha_r, alpha_i, x, incx, a, buffer);
     
-#ifdef SMPTEST
+#ifdef SMP
   } else {
 
     (spr_thread[uplo])(n, ALPHA, x, incx, a, buffer, nthreads);
