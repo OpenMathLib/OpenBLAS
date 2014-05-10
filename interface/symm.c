@@ -95,24 +95,24 @@ static int (*symm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
 #ifndef GEMM3M
 #ifndef HEMM
   SYMM_LU, SYMM_LL, SYMM_RU, SYMM_RL,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   SYMM_THREAD_LU, SYMM_THREAD_LL, SYMM_THREAD_RU, SYMM_THREAD_RL,
 #endif
 #else
   HEMM_LU, HEMM_LL, HEMM_RU, HEMM_RL,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   HEMM_THREAD_LU, HEMM_THREAD_LL, HEMM_THREAD_RU, HEMM_THREAD_RL,
 #endif
 #endif
 #else
 #ifndef HEMM
   SYMM3M_LU, SYMM3M_LL, SYMM3M_RU, SYMM3M_RL,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   SYMM3M_THREAD_LU, SYMM3M_THREAD_LL, SYMM3M_THREAD_RU, SYMM3M_THREAD_RL,
 #endif
 #else
   HEMM3M_LU, HEMM3M_LL, HEMM3M_RU, HEMM3M_RL,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   HEMM3M_THREAD_LU, HEMM3M_THREAD_LL, HEMM3M_THREAD_RU, HEMM3M_THREAD_RL,
 #endif
 #endif
@@ -135,7 +135,7 @@ void NAME(char *SIDE, char *UPLO,
   FLOAT *buffer;
   FLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -155,7 +155,7 @@ void NAME(char *SIDE, char *UPLO,
 #endif
 #endif
 
-#if defined(SMPTEST) && !defined(NO_AFFINITY)
+#if defined(SMP) && !defined(NO_AFFINITY)
   int nodes;
 #endif
 
@@ -246,7 +246,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   FLOAT *buffer;
   FLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -266,7 +266,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 #endif
 #endif
 
-#if defined(SMPTEST) && !defined(NO_AFFINITY)
+#if defined(SMP) && !defined(NO_AFFINITY)
   int nodes;
 #endif
 
@@ -387,7 +387,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   sa = (FLOAT *)((BLASLONG)buffer + GEMM_OFFSET_A);
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
   
-#ifdef SMPTEST
+#ifdef SMP
   args.common = NULL;
   args.nthreads = num_cpu_avail(3);
 
@@ -396,7 +396,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 
     (symm[(side << 1) | uplo ])(&args, NULL, NULL, sa, sb, 0);
 
-#ifdef SMPTEST
+#ifdef SMP
 
   } else {
 
