@@ -81,7 +81,7 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
   GEMM_NT, GEMM_TT, GEMM_RT, GEMM_CT,
   GEMM_NR, GEMM_TR, GEMM_RR, GEMM_CR,
   GEMM_NC, GEMM_TC, GEMM_RC, GEMM_CC,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   GEMM_THREAD_NN, GEMM_THREAD_TN, GEMM_THREAD_RN, GEMM_THREAD_CN,
   GEMM_THREAD_NT, GEMM_THREAD_TT, GEMM_THREAD_RT, GEMM_THREAD_CT,
   GEMM_THREAD_NR, GEMM_THREAD_TR, GEMM_THREAD_RR, GEMM_THREAD_CR,
@@ -92,7 +92,7 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
   GEMM3M_NT, GEMM3M_TT, GEMM3M_RT, GEMM3M_CT,
   GEMM3M_NR, GEMM3M_TR, GEMM3M_RR, GEMM3M_CR,
   GEMM3M_NC, GEMM3M_TC, GEMM3M_RC, GEMM3M_CC,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   GEMM3M_THREAD_NN, GEMM3M_THREAD_TN, GEMM3M_THREAD_RN, GEMM3M_THREAD_CN,
   GEMM3M_THREAD_NT, GEMM3M_THREAD_TT, GEMM3M_THREAD_RT, GEMM3M_THREAD_CT,
   GEMM3M_THREAD_NR, GEMM3M_THREAD_TR, GEMM3M_THREAD_RR, GEMM3M_THREAD_CR,
@@ -120,7 +120,7 @@ void NAME(char *TRANSA, char *TRANSB,
   FLOAT *buffer;
   FLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -140,7 +140,7 @@ void NAME(char *TRANSA, char *TRANSB,
 #endif
 #endif
 
-#if defined(SMPTEST) && !defined(NO_AFFINITY) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(NO_AFFINITY) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   int nodes;
 #endif
 
@@ -236,7 +236,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   XFLOAT *buffer;
   XFLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -256,7 +256,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #endif
 #endif
 
-#if defined(SMPTEST) && !defined(NO_AFFINITY) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(NO_AFFINITY) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   int nodes;
 #endif
 
@@ -396,7 +396,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   sa = (XFLOAT *)((BLASLONG)buffer +GEMM_OFFSET_A);
   sb = (XFLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
   
-#ifdef SMPTEST
+#ifdef SMP
   mode |= (transa << BLAS_TRANSA_SHIFT);
   mode |= (transb << BLAS_TRANSB_SHIFT);
 
@@ -413,7 +413,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
     
     (gemm[(transb << 2) | transa])(&args, NULL, NULL, sa, sb, 0);
     
-#ifdef SMPTEST
+#ifdef SMP
     
   } else {
     
@@ -447,7 +447,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
     
 #endif
     
-#ifdef SMPTEST
+#ifdef SMP
   }
 #endif
   
