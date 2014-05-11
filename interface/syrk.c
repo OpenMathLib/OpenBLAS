@@ -74,12 +74,12 @@
 static int (*syrk[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef HEMM
   SYRK_UN, SYRK_UC, SYRK_LN, SYRK_LC,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   SYRK_THREAD_UN, SYRK_THREAD_UC, SYRK_THREAD_LN, SYRK_THREAD_LC,
 #endif
 #else
   HERK_UN, HERK_UC, HERK_LN, HERK_LC,
-#if defined(SMPTEST) && !defined(USE_SIMPLE_THREADED_LEVEL3)
+#if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   HERK_THREAD_UN, HERK_THREAD_UC, HERK_THREAD_LN, HERK_THREAD_LC,
 #endif
 #endif
@@ -100,7 +100,7 @@ void NAME(char *UPLO, char *TRANS,
   FLOAT *buffer;
   FLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -205,7 +205,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   FLOAT *buffer;
   FLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -322,7 +322,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   sa = (FLOAT *)((BLASLONG)buffer + GEMM_OFFSET_A);
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
   
-#ifdef SMPTEST
+#ifdef SMP
   if (!trans){
     mode |= (BLAS_TRANSA_N | BLAS_TRANSB_T);
   } else {
@@ -339,7 +339,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 
     (syrk[(uplo << 1) | trans ])(&args, NULL, NULL, sa, sb, 0);
 
-#ifdef SMPTEST
+#ifdef SMP
 
   } else {
 
