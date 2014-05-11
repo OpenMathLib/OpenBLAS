@@ -70,7 +70,7 @@ static int (*tpmv[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, void *) = {
 #endif
 };
 
-#ifdef SMPTEST
+#ifdef SMP
 static int (*tpmv_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
   xtpmv_thread_NUU, xtpmv_thread_NUN, xtpmv_thread_NLU, xtpmv_thread_NLN,
@@ -108,7 +108,7 @@ void NAME(char *UPLO, char *TRANS, char *DIAG,
   int unit;
   int trans;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -162,7 +162,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
   uplo  = -1;
   trans = -1;
   info  =  0;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -225,7 +225,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -233,7 +233,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
   (tpmv[(trans<<2) | (uplo<<1) | unit])(n, a, x, incx, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
 
   } else {
 
