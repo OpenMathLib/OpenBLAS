@@ -119,7 +119,7 @@ void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
   FLOAT *buffer;
   FLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -223,7 +223,7 @@ void CNAME(enum CBLAS_ORDER order,
   XFLOAT *buffer;
   XFLOAT *sa, *sb;
 
-#ifdef SMPTEST
+#ifdef SMP
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -357,7 +357,7 @@ void CNAME(enum CBLAS_ORDER order,
   sa = (FLOAT *)((BLASLONG)buffer + GEMM_OFFSET_A);
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
   
-#ifdef SMPTEST
+#ifdef SMP
   mode |= (trans << BLAS_TRANSA_SHIFT);
   mode |= (side  << BLAS_RSIDE_SHIFT);
 
@@ -368,7 +368,7 @@ void CNAME(enum CBLAS_ORDER order,
 
     (trsm[(side<<4) | (trans<<2) | (uplo<<1) | unit])(&args, NULL, NULL, sa, sb, 0);
     
-#ifdef SMPTEST
+#ifdef SMP
   } else {
     if (!side) {
       gemm_thread_n(mode, &args, NULL, NULL, trsm[(side<<4) | (trans<<2) | (uplo<<1) | unit], sa, sb, args.nthreads);
