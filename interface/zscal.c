@@ -68,7 +68,7 @@ void CNAME(blasint n, FLOAT alpha_r, FLOAT *x, blasint incx){
 #endif
 #endif
 
-#ifdef SMPTEST
+#ifdef SMP
   int mode;
   int nthreads;
 #endif
@@ -87,7 +87,7 @@ void CNAME(blasint n, FLOAT alpha_r, FLOAT *x, blasint incx){
 
   FUNCTION_PROFILE_START();
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(1);
 
   if (nthreads == 1) {
@@ -95,7 +95,7 @@ void CNAME(blasint n, FLOAT alpha_r, FLOAT *x, blasint incx){
 
   SCAL_K(n, 0, 0, alpha[0], alpha[1], x, incx, NULL, 0, NULL, 0);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
 #ifdef DOUBLE
     mode  =  BLAS_DOUBLE | BLAS_COMPLEX;
