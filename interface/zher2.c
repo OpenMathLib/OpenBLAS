@@ -61,7 +61,7 @@ static int (*her2[])(BLASLONG, FLOAT, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLON
 #endif
 };
 
-#ifdef SMPTEST
+#ifdef SMP
 static int (*her2_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
   xher2_thread_U, xher2_thread_L, xher2_thread_V, xher2_thread_M,
@@ -89,7 +89,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
   blasint info;
   int  uplo;
   FLOAT *buffer;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -123,7 +123,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
   FLOAT *buffer;
   int trans, uplo;
   blasint info;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -181,7 +181,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -189,7 +189,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
 
     (her2[uplo])(n, alpha_r, alpha_i, x, incx, y, incy, a, lda, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
 
     (her2_thread[uplo])(n, ALPHA, x, incx, y, incy, a, lda, buffer, nthreads);
