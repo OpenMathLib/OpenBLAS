@@ -65,7 +65,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
   FLOAT beta_r	= BETA[0];
   FLOAT beta_i	= BETA[1];
   blasint incy	= *INCY;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -73,7 +73,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
     HEMV_U, HEMV_L, HEMV_V, HEMV_M,
   };
 
-#ifdef SMPTEST
+#ifdef SMP
   int (*hemv_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
     HEMV_THREAD_U, HEMV_THREAD_L, HEMV_THREAD_V, HEMV_THREAD_M,
   };
@@ -119,7 +119,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
   FLOAT *buffer;
   int trans, uplo;
   blasint info;
-#ifdef SMPTEST
+#ifdef SMP
   int nthreads;
 #endif
 
@@ -127,7 +127,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
     HEMV_U, HEMV_L, HEMV_V, HEMV_M,
   };
 
-#ifdef SMPTEST
+#ifdef SMP
   int (*hemv_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
     HEMV_THREAD_U, HEMV_THREAD_L, HEMV_THREAD_V, HEMV_THREAD_M,
   };
@@ -189,7 +189,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPTEST
+#ifdef SMP
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -197,7 +197,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
 
   (hemv[uplo])(n, n, alpha_r, alpha_i, a, lda, x, incx, y, incy, buffer);
 
-#ifdef SMPTEST
+#ifdef SMP
   } else {
 
     (hemv_thread[uplo])(n, ALPHA, a, lda, x, incx, y, incy, buffer, nthreads);
