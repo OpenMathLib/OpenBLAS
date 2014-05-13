@@ -310,7 +310,7 @@ typedef int blasint;
 #define YIELDING	SwitchToThread()
 #endif
 
-#if defined(ARMV7) || defined(ARMV6) || defined(ARMV8)
+#if defined(ARMV7) || defined(ARMV6) || defined(ARMV8) || defined(ARMV5)
 #define YIELDING        asm volatile ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
 #endif
 

@@ -10,3 +10,9 @@ FCOMMON_OPT += -marm -mfpu=vfp -mfloat-abi=hard  -march=armv6
 endif
 
 
+ifeq ($(CORE), ARMV5)
+CCOMMON_OPT += -marm -mfpu=vfp -mfloat-abi=hard  -march=armv6
+FCOMMON_OPT += -marm -mfpu=vfp -mfloat-abi=hard  -march=armv6
+endif
+
+
