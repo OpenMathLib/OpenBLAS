@@ -295,6 +295,8 @@ endif
 lapack-test :
 	make -j 1 -C $(NETLIB_LAPACK_DIR) tmglib
 	make -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+
 
 dummy :
 
