@@ -129,6 +129,9 @@ VERSION = 0.2.9.rc2
 # The default -O2 is enough.
 # COMMON_OPT = -O2
 
+# gfortran option for LAPACK
+FCOMMON_OPT=-frecursive
+
 # Profiling flags
 COMMON_PROF = -pg
 
