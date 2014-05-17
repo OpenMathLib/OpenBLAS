@@ -2923,32 +2923,6 @@ if ($ARGV[0] eq "microsoft"){
     exit(0);
 }
 
-if ($ARGV[0] eq "win2kasm"){
-
-    @underscore_objs = (@underscore_objs, @misc_common_objs);
-
-    print "\t.text\n";
-    foreach $objs (@underscore_objs) {
-	$uppercase = $objs;
-	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t.align 16\n";
-	print "\t.globl _", $uppercase, "_\n";
-	print "_", $uppercase, "_:\n";
-	print "\tjmp\t_", $objs, "_\n";
-    }
-
-    foreach $objs (@need_2underscore_objs) {
-	$uppercase = $objs;
-	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t.align 16\n";
-	print "\t.globl _", $uppercase, "__\n";
-	print "_", $uppercase, "__:\n";
-	print "\tjmp\t_", $objs, "__\n";
-    }
-
-    exit(0);
-}
-
 if ($ARGV[0] eq "linktest"){
 
     @underscore_objs = (@underscore_objs, @misc_common_objs);

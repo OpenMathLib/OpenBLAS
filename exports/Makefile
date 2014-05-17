@@ -113,9 +113,6 @@ libgoto_hpl.def : gensymbol
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 	$(FC) $(FFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 
-symbol.$(SUFFIX) : symbol.S
-	$(CC) $(CFLAGS) -c -o $(@F) $^
-
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<
 
@@ -202,9 +199,6 @@ osx.def : gensymbol ../Makefile.system ../getarch.c
 
 aix.def : gensymbol ../Makefile.system ../getarch.c
 	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
-
-symbol.S : gensymbol
-	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > symbol.S
 
 test : linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
