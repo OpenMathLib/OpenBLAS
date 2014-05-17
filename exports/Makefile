@@ -123,7 +123,7 @@ ifeq ($(OSNAME), Linux)
 
 so : ../$(LIBSONAME)
 
-../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
+../$(LIBSONAME) : ../$(LIBNAME) linktest.c
 ifneq ($(C_COMPILER), LSB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
@@ -145,7 +145,7 @@ ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
 
 so : ../$(LIBSONAME)
 
-../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
+../$(LIBSONAME) : ../$(LIBNAME) linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	$(FEXTRALIB) $(EXTRALIB)
@@ -196,9 +196,6 @@ static : ../$(LIBNAME)
 	rm -f ../$(LIBNAME)
 	$(AR) -cq ../$(LIBNAME) goto.$(SUFFIX)
 	rm -f goto.$(SUFFIX)
-
-linux.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 osx.def : gensymbol ../Makefile.system ../getarch.c
 	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
