@@ -9,16 +9,17 @@ CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
 CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 
-ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
-ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
-ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
-ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+#ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+#ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+#ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+#ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 
 
 #STRMMKERNEL	= ../generic/trmmkernel_2x2.c
 #SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c		
 #SGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
 #SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
+
 
 
 ###############################################################################
@@ -106,8 +107,8 @@ ZGEMVTKERNEL = zgemv_t_vfp.S
 
 STRMMKERNEL	= strmm_kernel_4x2_vfp.S
 DTRMMKERNEL	= dtrmm_kernel_4x2_vfp.S
-# CTRMMKERNEL	= ctrmm_kernel_2x2_vfp.S
-# ZTRMMKERNEL	= ztrmm_kernel_2x2_vfp.S
+#CTRMMKERNEL	= ctrmm_kernel_2x2_vfp.S
+ZTRMMKERNEL	= ztrmm_kernel_2x2_vfp.S
 
 SGEMMKERNEL    = sgemm_kernel_4x2_vfp.S		
 SGEMMINCOPY    = sgemm_ncopy_4_vfp.S
@@ -135,9 +136,9 @@ DGEMMOTCOPYOBJ = dgemm_otcopy.o
 CGEMMONCOPYOBJ = cgemm_oncopy.o
 CGEMMOTCOPYOBJ = cgemm_otcopy.o
 
-#ZGEMMKERNEL    = zgemm_kernel_2x2_vfp.S
-#ZGEMMONCOPY    = zgemm_ncopy_2_vfp.S
-#ZGEMMOTCOPY    = zgemm_tcopy_2_vfp.S
+ZGEMMKERNEL    = zgemm_kernel_2x2_vfp.S
+ZGEMMONCOPY    = zgemm_ncopy_2_vfp.S
+ZGEMMOTCOPY    = zgemm_tcopy_2_vfp.S
 ZGEMMONCOPYOBJ = zgemm_oncopy.o
 ZGEMMOTCOPYOBJ = zgemm_otcopy.o
 
