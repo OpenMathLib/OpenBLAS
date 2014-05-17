@@ -76,10 +76,10 @@ VERSION = 0.2.9.rc2
 # Unfortunately most of kernel won't give us high quality buffer.
 # BLAS tries to find the best region before entering main function,
 # but it will consume time. If you don't like it, you can disable one.
-# NO_WARMUP = 1
+NO_WARMUP = 1
 
 # If you want to disable CPU/Memory affinity on Linux.
-# NO_AFFINITY = 1
+NO_AFFINITY = 1
 
 # Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers 
 # and OS. However, the performance is low.
@@ -127,16 +127,16 @@ VERSION = 0.2.9.rc2
 
 # Common Optimization Flag; 
 # The default -O2 is enough.
-# COMMON_OPT = -O2
+COMMON_OPT = -O0
 
 # gfortran option for LAPACK
-FCOMMON_OPT=-frecursive
+FCOMMON_OPT = -frecursive
 
 # Profiling flags
 COMMON_PROF = -pg
 
 # Build Debug version
-# DEBUG = 1
+DEBUG = 1
 
 #
 #  End of user configuration 
