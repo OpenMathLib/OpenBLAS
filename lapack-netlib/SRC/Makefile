@@ -157,7 +157,7 @@ SLASRC = \
    sgeqrt.o sgeqrt2.o sgeqrt3.o sgemqrt.o \
    stpqrt.o stpqrt2.o stpmqrt.o stprfb.o
 
-DSLASRC = spotrs.o sgetrs.o spotrf.o 
+DSLASRC = spotrs.o spotrf.o 
 
 ifdef USEXBLAS
 SXLASRC = sgesvxx.o sgerfsx.o sla_gerfsx_extended.o sla_geamv.o		\
@@ -252,7 +252,7 @@ CXLASRC = cgesvxx.o cgerfsx.o cla_gerfsx_extended.o cla_geamv.o \
    cla_lin_berr.o clarscl2.o clascl2.o cla_wwaddw.o
 endif
 
-ZCLASRC = cpotrs.o cgetrs.o cpotrf.o 
+ZCLASRC = cpotrs.o cpotrf.o 
 
 DLASRC = \
    dgbbrd.o dgbcon.o dgbequ.o dgbrfs.o dgbsv.o  \
@@ -263,7 +263,7 @@ DLASRC = \
    dgeqp3.o dgeqpf.o dgeqr2.o dgeqr2p.o dgeqrf.o dgeqrfp.o dgerfs.o \
    dgerq2.o dgerqf.o dgesc2.o dgesdd.o dgesv.o  dgesvd.o dgesvx.o  \
    dgetc2.o dgetf2.o dgetri.o \
-   dgetrs.o dggbak.o dggbal.o dgges.o  dggesx.o dggev.o  dggevx.o \
+   dggbak.o dggbal.o dgges.o  dggesx.o dggev.o  dggevx.o \
    dggglm.o dgghrd.o dgglse.o dggqrf.o \
    dggrqf.o dggsvd.o dggsvp.o dgtcon.o dgtrfs.o dgtsv.o  \
    dgtsvx.o dgttrf.o dgttrs.o dgtts2.o dhgeqz.o \
@@ -336,7 +336,7 @@ ZLASRC = \
    zgels.o  zgelsd.o zgelss.o zgelsx.o zgelsy.o zgeql2.o zgeqlf.o zgeqp3.o \
    zgeqpf.o zgeqr2.o zgeqr2p.o zgeqrf.o zgeqrfp.o zgerfs.o zgerq2.o zgerqf.o \
    zgesc2.o zgesdd.o zgesv.o  zgesvd.o zgesvx.o zgetc2.o zgetf2.o  \
-   zgetri.o zgetrs.o \
+   zgetri.o  \
    zggbak.o zggbal.o zgges.o  zggesx.o zggev.o  zggevx.o zggglm.o \
    zgghrd.o zgglse.o zggqrf.o zggrqf.o \
    zggsvd.o zggsvp.o \
