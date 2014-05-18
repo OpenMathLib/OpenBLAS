@@ -365,10 +365,13 @@ CLAPACKOBJS	= \
 	cpotf2.$(SUFFIX) cpotrf.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) \
 	claswp.$(SUFFIX) cgetrs.$(SUFFIX) cgesv.$(SUFFIX)  cpotri.$(SUFFIX) \
 
+#ZLAPACKOBJS	= \
+#	zgetf2.$(SUFFIX) zgetrf.$(SUFFIX) zlauu2.$(SUFFIX) zlauum.$(SUFFIX) \
+#	zpotf2.$(SUFFIX) zpotrf.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) \
+#	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
+
 ZLAPACKOBJS	= \
-	zgetf2.$(SUFFIX) zgetrf.$(SUFFIX) zlauu2.$(SUFFIX) zlauum.$(SUFFIX) \
-	zpotf2.$(SUFFIX) zpotrf.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) \
-	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
+	zgetrf.$(SUFFIX)
 
 XLAPACKOBJS	= \
 	xgetf2.$(SUFFIX) xgetrf.$(SUFFIX) xlauu2.$(SUFFIX) xlauum.$(SUFFIX) \
@@ -380,7 +383,7 @@ ifneq ($(NO_LAPACK), 1)
 DBLASOBJS += $(DLAPACKOBJS)
 #QBLASOBJS += $(QLAPACKOBJS)
 #CBLASOBJS += $(CLAPACKOBJS)
-#ZBLASOBJS += $(ZLAPACKOBJS)
+ZBLASOBJS += $(ZLAPACKOBJS)
 #XBLASOBJS += $(XLAPACKOBJS)
 
 endif
@@ -1764,7 +1767,7 @@ qgetrf.$(SUFFIX) qgetrf.$(PSUFFIX) : getrf.c
 cgetrf.$(SUFFIX) cgetrf.$(PSUFFIX) : zgetrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zgetrf.$(SUFFIX) zgetrf.$(PSUFFIX) : zgetrf.c
+zgetrf.$(SUFFIX) zgetrf.$(PSUFFIX) : lapack/zgetrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xgetrf.$(SUFFIX) xgetrf.$(PSUFFIX) : zgetrf.c

@@ -335,7 +335,7 @@ ZLASRC = \
    zgegs.o  zgegv.o  zgehd2.o zgehrd.o zgelq2.o zgelqf.o \
    zgels.o  zgelsd.o zgelss.o zgelsx.o zgelsy.o zgeql2.o zgeqlf.o zgeqp3.o \
    zgeqpf.o zgeqr2.o zgeqr2p.o zgeqrf.o zgeqrfp.o zgerfs.o zgerq2.o zgerqf.o \
-   zgesc2.o zgesdd.o zgesv.o  zgesvd.o zgesvx.o zgetc2.o zgetf2.o zgetrf.o \
+   zgesc2.o zgesdd.o zgesv.o  zgesvd.o zgesvx.o zgetc2.o zgetf2.o  \
    zgetri.o zgetrs.o \
    zggbak.o zggbal.o zgges.o  zggesx.o zggev.o  zggevx.o zggglm.o \
    zgghrd.o zgglse.o zggqrf.o zggrqf.o \
