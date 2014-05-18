@@ -342,10 +342,14 @@ CBLASOBJS    = $(CBLAS1OBJS) $(CBLAS2OBJS) $(CBLAS3OBJS)
 ZBLASOBJS    = $(ZBLAS1OBJS) $(ZBLAS2OBJS) $(ZBLAS3OBJS)
 XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
+#SLAPACKOBJS	= \
+#	sgetf2.$(SUFFIX) sgetrf.$(SUFFIX) slauu2.$(SUFFIX) slauum.$(SUFFIX) \
+#	spotf2.$(SUFFIX) spotrf.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) \
+#	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
+
 SLAPACKOBJS	= \
-	sgetf2.$(SUFFIX) sgetrf.$(SUFFIX) slauu2.$(SUFFIX) slauum.$(SUFFIX) \
-	spotf2.$(SUFFIX) spotrf.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) \
-	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
+	sgetrf.$(SUFFIX)
+
 
 #DLAPACKOBJS	= \
 #	dgetf2.$(SUFFIX) dgetrf.$(SUFFIX) dlauu2.$(SUFFIX) dlauum.$(SUFFIX) \
@@ -379,7 +383,7 @@ XLAPACKOBJS	= \
 	xlaswp.$(SUFFIX) xgetrs.$(SUFFIX) xgesv.$(SUFFIX)  xpotri.$(SUFFIX) \
 
 ifneq ($(NO_LAPACK), 1)
-#SBLASOBJS += $(SLAPACKOBJS)
+SBLASOBJS += $(SLAPACKOBJS)
 DBLASOBJS += $(DLAPACKOBJS)
 #QBLASOBJS += $(QLAPACKOBJS)
 #CBLASOBJS += $(CLAPACKOBJS)
@@ -1755,7 +1759,7 @@ zgetf2.$(SUFFIX) zgetf2.$(PSUFFIX) : zgetf2.c
 xgetf2.$(SUFFIX) xgetf2.$(PSUFFIX) : zgetf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-sgetrf.$(SUFFIX) sgetrf.$(PSUFFIX) : getrf.c
+sgetrf.$(SUFFIX) sgetrf.$(PSUFFIX) : lapack/getrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 dgetrf.$(SUFFIX) dgetrf.$(PSUFFIX) : lapack/getrf.c

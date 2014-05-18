@@ -157,7 +157,7 @@ SLASRC = \
    sgeqrt.o sgeqrt2.o sgeqrt3.o sgemqrt.o \
    stpqrt.o stpqrt2.o stpmqrt.o stprfb.o
 
-DSLASRC = spotrs.o sgetrs.o spotrf.o sgetrf.o 
+DSLASRC = spotrs.o sgetrs.o spotrf.o 
 
 ifdef USEXBLAS
 SXLASRC = sgesvxx.o sgerfsx.o sla_gerfsx_extended.o sla_geamv.o		\
