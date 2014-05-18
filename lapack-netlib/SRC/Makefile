@@ -157,7 +157,7 @@ SLASRC = \
    sgeqrt.o sgeqrt2.o sgeqrt3.o sgemqrt.o \
    stpqrt.o stpqrt2.o stpmqrt.o stprfb.o
 
-DSLASRC = spotrs.o spotrf.o 
+DSLASRC = spotrs.o 
 
 ifdef USEXBLAS
 SXLASRC = sgesvxx.o sgerfsx.o sla_gerfsx_extended.o sla_geamv.o		\
@@ -252,7 +252,7 @@ CXLASRC = cgesvxx.o cgerfsx.o cla_gerfsx_extended.o cla_geamv.o \
    cla_lin_berr.o clarscl2.o clascl2.o cla_wwaddw.o
 endif
 
-ZCLASRC = cpotrs.o cpotrf.o 
+ZCLASRC = cpotrs.o 
 
 DLASRC = \
    dgbbrd.o dgbcon.o dgbequ.o dgbrfs.o dgbsv.o  \
@@ -287,7 +287,7 @@ DLASRC = \
    dormr3.o dormrq.o dormrz.o dormtr.o dpbcon.o dpbequ.o dpbrfs.o \
    dpbstf.o dpbsv.o  dpbsvx.o \
    dpbtf2.o dpbtrf.o dpbtrs.o dpocon.o dpoequ.o dporfs.o dposv.o  \
-   dposvx.o dpotf2.o dpotrf.o dpotri.o dpotrs.o dpstrf.o dpstf2.o \
+   dposvx.o dpotf2.o dpotri.o dpotrs.o dpstrf.o dpstf2.o \
    dppcon.o dppequ.o \
    dpprfs.o dppsv.o  dppsvx.o dpptrf.o dpptri.o dpptrs.o dptcon.o \
    dpteqr.o dptrfs.o dptsv.o  dptsvx.o dpttrs.o dptts2.o drscl.o  \
@@ -372,7 +372,7 @@ ZLASRC = \
    zlatbs.o zlatdf.o zlatps.o zlatrd.o zlatrs.o zlatrz.o zlatzm.o zlauu2.o \
    zlauum.o zpbcon.o zpbequ.o zpbrfs.o zpbstf.o zpbsv.o  \
    zpbsvx.o zpbtf2.o zpbtrf.o zpbtrs.o zpocon.o zpoequ.o zporfs.o \
-   zposv.o  zposvx.o zpotf2.o zpotrf.o zpotri.o zpotrs.o zpstrf.o zpstf2.o \
+   zposv.o  zposvx.o zpotf2.o zpotri.o zpotrs.o zpstrf.o zpstf2.o \
    zppcon.o zppequ.o zpprfs.o zppsv.o  zppsvx.o zpptrf.o zpptri.o zpptrs.o \
    zptcon.o zpteqr.o zptrfs.o zptsv.o  zptsvx.o zpttrf.o zpttrs.o zptts2.o \
    zrot.o   zspcon.o zspmv.o  zspr.o   zsprfs.o zspsv.o  \
