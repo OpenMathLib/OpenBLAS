@@ -262,7 +262,7 @@ DLASRC = \
    dgels.o  dgelsd.o dgelss.o dgelsx.o dgelsy.o dgeql2.o dgeqlf.o \
    dgeqp3.o dgeqpf.o dgeqr2.o dgeqr2p.o dgeqrf.o dgeqrfp.o dgerfs.o \
    dgerq2.o dgerqf.o dgesc2.o dgesdd.o dgesv.o  dgesvd.o dgesvx.o  \
-   dgetc2.o dgetf2.o dgetrf.o dgetri.o \
+   dgetc2.o dgetf2.o dgetri.o \
    dgetrs.o dggbak.o dggbal.o dgges.o  dggesx.o dggev.o  dggevx.o \
    dggglm.o dgghrd.o dgglse.o dggqrf.o \
    dggrqf.o dggsvd.o dggsvp.o dgtcon.o dgtrfs.o dgtsv.o  \

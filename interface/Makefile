@@ -347,10 +347,13 @@ SLAPACKOBJS	= \
 	spotf2.$(SUFFIX) spotrf.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) \
 	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
 
+#DLAPACKOBJS	= \
+#	dgetf2.$(SUFFIX) dgetrf.$(SUFFIX) dlauu2.$(SUFFIX) dlauum.$(SUFFIX) \
+#	dpotf2.$(SUFFIX) dpotrf.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) \
+#	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
+
 DLAPACKOBJS	= \
-	dgetf2.$(SUFFIX) dgetrf.$(SUFFIX) dlauu2.$(SUFFIX) dlauum.$(SUFFIX) \
-	dpotf2.$(SUFFIX) dpotrf.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) \
-	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
+	dgetrf.$(SUFFIX) 
 
 QLAPACKOBJS	= \
 	qgetf2.$(SUFFIX) qgetrf.$(SUFFIX) qlauu2.$(SUFFIX) qlauum.$(SUFFIX) \
@@ -372,15 +375,15 @@ XLAPACKOBJS	= \
 	xpotf2.$(SUFFIX) xpotrf.$(SUFFIX) xtrti2.$(SUFFIX) xtrtri.$(SUFFIX) \
 	xlaswp.$(SUFFIX) xgetrs.$(SUFFIX) xgesv.$(SUFFIX)  xpotri.$(SUFFIX) \
 
-#ifneq ($(NO_LAPACK), 1)
+ifneq ($(NO_LAPACK), 1)
 #SBLASOBJS += $(SLAPACKOBJS)
-#DBLASOBJS += $(DLAPACKOBJS)
+DBLASOBJS += $(DLAPACKOBJS)
 #QBLASOBJS += $(QLAPACKOBJS)
 #CBLASOBJS += $(CLAPACKOBJS)
 #ZBLASOBJS += $(ZLAPACKOBJS)
 #XBLASOBJS += $(XLAPACKOBJS)
 
-#endif
+endif
 
 FUNCOBJS    = $(SBLASOBJS) $(DBLASOBJS) $(CBLASOBJS) $(ZBLASOBJS)
 
@@ -1752,7 +1755,7 @@ xgetf2.$(SUFFIX) xgetf2.$(PSUFFIX) : zgetf2.c
 sgetrf.$(SUFFIX) sgetrf.$(PSUFFIX) : getrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dgetrf.$(SUFFIX) dgetrf.$(PSUFFIX) : getrf.c
+dgetrf.$(SUFFIX) dgetrf.$(PSUFFIX) : lapack/getrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qgetrf.$(SUFFIX) qgetrf.$(PSUFFIX) : getrf.c
