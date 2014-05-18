@@ -102,7 +102,7 @@ SLASRC = \
    sgels.o  sgelsd.o sgelss.o sgelsx.o sgelsy.o sgeql2.o sgeqlf.o \
    sgeqp3.o sgeqpf.o sgeqr2.o sgeqr2p.o sgeqrf.o sgeqrfp.o sgerfs.o \
    sgerq2.o sgerqf.o sgesc2.o sgesdd.o sgesv.o  sgesvd.o sgesvx.o \
-   sgetc2.o sgetf2.o sgetri.o \
+   sgetc2.o sgetri.o \
    sggbak.o sggbal.o sgges.o  sggesx.o sggev.o  sggevx.o \
    sggglm.o sgghrd.o sgglse.o sggqrf.o \
    sggrqf.o sggsvd.o sggsvp.o sgtcon.o sgtrfs.o sgtsv.o  \
@@ -177,7 +177,7 @@ CLASRC = \
    cgels.o  cgelsd.o cgelss.o cgelsx.o cgelsy.o cgeql2.o cgeqlf.o cgeqp3.o \
    cgeqpf.o cgeqr2.o cgeqr2p.o cgeqrf.o cgeqrfp.o cgerfs.o \
    cgerq2.o cgerqf.o cgesc2.o cgesdd.o cgesv.o  cgesvd.o  \
-   cgesvx.o cgetc2.o cgetf2.o cgetri.o \
+   cgesvx.o cgetc2.o cgetri.o \
    cggbak.o cggbal.o cgges.o  cggesx.o cggev.o  cggevx.o cggglm.o \
    cgghrd.o cgglse.o cggqrf.o cggrqf.o \
    cggsvd.o cggsvp.o \
@@ -262,7 +262,7 @@ DLASRC = \
    dgels.o  dgelsd.o dgelss.o dgelsx.o dgelsy.o dgeql2.o dgeqlf.o \
    dgeqp3.o dgeqpf.o dgeqr2.o dgeqr2p.o dgeqrf.o dgeqrfp.o dgerfs.o \
    dgerq2.o dgerqf.o dgesc2.o dgesdd.o dgesv.o  dgesvd.o dgesvx.o  \
-   dgetc2.o dgetf2.o dgetri.o \
+   dgetc2.o dgetri.o \
    dggbak.o dggbal.o dgges.o  dggesx.o dggev.o  dggevx.o \
    dggglm.o dgghrd.o dgglse.o dggqrf.o \
    dggrqf.o dggsvd.o dggsvp.o dgtcon.o dgtrfs.o dgtsv.o  \
@@ -335,7 +335,7 @@ ZLASRC = \
    zgegs.o  zgegv.o  zgehd2.o zgehrd.o zgelq2.o zgelqf.o \
    zgels.o  zgelsd.o zgelss.o zgelsx.o zgelsy.o zgeql2.o zgeqlf.o zgeqp3.o \
    zgeqpf.o zgeqr2.o zgeqr2p.o zgeqrf.o zgeqrfp.o zgerfs.o zgerq2.o zgerqf.o \
-   zgesc2.o zgesdd.o zgesv.o  zgesvd.o zgesvx.o zgetc2.o zgetf2.o  \
+   zgesc2.o zgesdd.o zgesv.o  zgesvd.o zgesvx.o zgetc2.o   \
    zgetri.o  \
    zggbak.o zggbal.o zgges.o  zggesx.o zggev.o  zggevx.o zggglm.o \
    zgghrd.o zgglse.o zggqrf.o zggrqf.o \

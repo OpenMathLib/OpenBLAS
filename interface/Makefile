@@ -348,7 +348,7 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 #	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
 
 SLAPACKOBJS	= \
-	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX)
+	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -357,7 +357,7 @@ SLAPACKOBJS	= \
 #	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
 
 DLAPACKOBJS	= \
-	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX)
+	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX)
 
 QLAPACKOBJS	= \
 	qgetf2.$(SUFFIX) qgetrf.$(SUFFIX) qlauu2.$(SUFFIX) qlauum.$(SUFFIX) \
@@ -370,7 +370,7 @@ QLAPACKOBJS	= \
 #	claswp.$(SUFFIX) cgetrs.$(SUFFIX) cgesv.$(SUFFIX)  cpotri.$(SUFFIX) \
 
 CLAPACKOBJS	= \
-	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX)
+	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -379,7 +379,7 @@ CLAPACKOBJS	= \
 #	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
 
 ZLAPACKOBJS	= \
-	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX)
+	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX)
 
 XLAPACKOBJS	= \
 	xgetf2.$(SUFFIX) xgetrf.$(SUFFIX) xlauu2.$(SUFFIX) xlauum.$(SUFFIX) \
@@ -1745,19 +1745,19 @@ cblas_cher2k.$(SUFFIX) cblas_cher2k.$(PSUFFIX) : syr2k.c
 cblas_zher2k.$(SUFFIX) cblas_zher2k.$(PSUFFIX) : syr2k.c
 	$(CC) -DCBLAS -c $(CFLAGS) -DHEMM $< -o $(@F)
 
-sgetf2.$(SUFFIX) sgetf2.$(PSUFFIX) : getf2.c
+sgetf2.$(SUFFIX) sgetf2.$(PSUFFIX) : lapack/getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dgetf2.$(SUFFIX) dgetf2.$(PSUFFIX) : getf2.c
+dgetf2.$(SUFFIX) dgetf2.$(PSUFFIX) : lapack/getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qgetf2.$(SUFFIX) qgetf2.$(PSUFFIX) : getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cgetf2.$(SUFFIX) cgetf2.$(PSUFFIX) : zgetf2.c
+cgetf2.$(SUFFIX) cgetf2.$(PSUFFIX) : lapack/zgetf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zgetf2.$(SUFFIX) zgetf2.$(PSUFFIX) : zgetf2.c
+zgetf2.$(SUFFIX) zgetf2.$(PSUFFIX) : lapack/zgetf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xgetf2.$(SUFFIX) xgetf2.$(PSUFFIX) : zgetf2.c
