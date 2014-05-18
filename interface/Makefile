@@ -348,7 +348,8 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 #	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
 
 SLAPACKOBJS	= \
-	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX)
+	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
+	spotf2.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -357,7 +358,9 @@ SLAPACKOBJS	= \
 #	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
 
 DLAPACKOBJS	= \
-	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX)
+	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
+	dpotf2.$(SUFFIX)
+
 
 QLAPACKOBJS	= \
 	qgetf2.$(SUFFIX) qgetrf.$(SUFFIX) qlauu2.$(SUFFIX) qlauum.$(SUFFIX) \
@@ -370,7 +373,8 @@ QLAPACKOBJS	= \
 #	claswp.$(SUFFIX) cgetrs.$(SUFFIX) cgesv.$(SUFFIX)  cpotri.$(SUFFIX) \
 
 CLAPACKOBJS	= \
-	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX)
+	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
+	cpotf2.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -379,7 +383,10 @@ CLAPACKOBJS	= \
 #	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
 
 ZLAPACKOBJS	= \
-	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX)
+	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
+	zpotf2.$(SUFFIX)
+
+
 
 XLAPACKOBJS	= \
 	xgetf2.$(SUFFIX) xgetrf.$(SUFFIX) xlauu2.$(SUFFIX) xlauum.$(SUFFIX) \
@@ -1817,19 +1824,19 @@ zlauum.$(SUFFIX) zlauum.$(PSUFFIX) : zlauum.c
 xlauum.$(SUFFIX) xlauum.$(PSUFFIX) : zlauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-spotf2.$(SUFFIX) spotf2.$(PSUFFIX) : potf2.c
+spotf2.$(SUFFIX) spotf2.$(PSUFFIX) : lapack/potf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dpotf2.$(SUFFIX) dpotf2.$(PSUFFIX) : potf2.c
+dpotf2.$(SUFFIX) dpotf2.$(PSUFFIX) : lapack/potf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qpotf2.$(SUFFIX) qpotf2.$(PSUFFIX) : potf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cpotf2.$(SUFFIX) cpotf2.$(PSUFFIX) : zpotf2.c
+cpotf2.$(SUFFIX) cpotf2.$(PSUFFIX) : lapack/zpotf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zpotf2.$(SUFFIX) zpotf2.$(PSUFFIX) : zpotf2.c
+zpotf2.$(SUFFIX) zpotf2.$(PSUFFIX) : lapack/zpotf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xpotf2.$(SUFFIX) xpotf2.$(PSUFFIX) : zpotf2.c
