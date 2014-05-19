@@ -75,9 +75,6 @@ zip : dll
 	zip $(LIBZIPNAME) $(LIBDLLNAME) $(LIBNAME)
 
 dll  : ../$(LIBDLLNAME)
-#libgoto2.dll
-
-dll2 : libgoto2_shared.dll
 
 # On Windows, we only generate a DLL without a version suffix.  This is because
 # applications which link against the dynamic library reference a fixed DLL name
@@ -96,15 +93,7 @@ else
 	-lib /machine:X64 /def:libopenblas.def 
 endif
 
-libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
-	$(CC) $(CFLAGS) $(LDFLAGS) libgoto2_shared.def -shared -o $(@F) \
-	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
-
 libopenblas.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
-
-libgoto2_shared.def : gensymbol
 	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 libgoto_hpl.def : gensymbol
@@ -113,9 +102,6 @@ libgoto_hpl.def : gensymbol
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 	$(FC) $(FFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 
-symbol.$(SUFFIX) : symbol.S
-	$(CC) $(CFLAGS) -c -o $(@F) $^
-
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<
 
@@ -123,7 +109,7 @@ ifeq ($(OSNAME), Linux)
 
 so : ../$(LIBSONAME)
 
-../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
+../$(LIBSONAME) : ../$(LIBNAME) linktest.c
 ifneq ($(C_COMPILER), LSB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
@@ -145,7 +131,7 @@ ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
 
 so : ../$(LIBSONAME)
 
-../$(LIBSONAME) : ../$(LIBNAME) linux.def linktest.c
+../$(LIBSONAME) : ../$(LIBNAME) linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
 	$(FEXTRALIB) $(EXTRALIB)
@@ -197,17 +183,11 @@ static : ../$(LIBNAME)
 	$(AR) -cq ../$(LIBNAME) goto.$(SUFFIX)
 	rm -f goto.$(SUFFIX)
 
-linux.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linux $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
-
 osx.def : gensymbol ../Makefile.system ../getarch.c
 	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 aix.def : gensymbol ../Makefile.system ../getarch.c
 	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
-
-symbol.S : gensymbol
-	perl ./gensymbol win2kasm noarch dummy $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > symbol.S
 
 test : linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
