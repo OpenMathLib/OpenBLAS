@@ -2725,8 +2725,7 @@ if ($ARGV[8] == 1) {
 } elsif ($ARGV[5] == 1) {
 	#NO_LAPACK=1
 	@underscore_objs = (@blasobjs, @misc_underscore_objs);
-} elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1" ||
-         -d "../lapack-3.4.2" || -d "../lapack-netlib") {
+} elsif (-d "../lapack-netlib") {
 
     if ($ARGV[7] == 0){
 	# NEED2UNDERSCORES=0
@@ -2771,45 +2770,12 @@ if ($ARGV[6] == 1) {
     @no_underscore_objs = (@no_underscore_objs, @lapackeobjs);
 }
 
-@linuxobjs = ('__strtol_internal', 'exit', 'free', 'getenv', 'malloc',
-	      'mmap', 'printf', 'sqrt',
-	      'pthread_cond_broadcast', 'pthread_cond_destroy',
-	      'pthread_cond_init', 'pthread_cond_signal', 'pthread_cond_wait',
-	      'pthread_create', 'pthread_exit', 'pthread_join',
-	      'pthread_mutex_destroy', 'pthread_mutex_init',
-	      'pthread_mutex_lock', 'pthread_mutex_unlock');
-
 @hplobjs  = (daxpy, dcopy, dscal, idamax, dgemv, dtrsv, dger, dgemm, dtrsm);
 @hplobjs2 = (HPL_dlaswp00N, HPL_dlaswp01N, HPL_dlaswp01T); 
 
 $bu = $ARGV[2];
 
 $bu = "" if (($bu eq "0") || ($bu eq "1"));
-
-if ($ARGV[0] eq "linux"){
-
-    @underscore_objs = (@underscore_objs, @misc_common_objs);
-    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
-
-    foreach $objs (@underscore_objs) {
-	print $objs, $bu, "\n";
-    }
-
-    foreach $objs (@need_2underscore_objs) {
-	print $objs, $bu, $bu, "\n";
-    }
-
-#    if ($ARGV[4] == 0) {
-	foreach $objs (@no_underscore_objs) {
-	    print $objs, "\n";
-	}
-#    }
-
-    foreach $objs (@linuxobjs) {
-	print $objs, "\n";
-    }
-    exit(0);
-} 
 
 if ($ARGV[0] eq "osx"){
 
@@ -2951,32 +2917,6 @@ if ($ARGV[0] eq "microsoft"){
 	$count ++;
 	print "\t$uppercase=$objs", "__  \@", $count, "\n";
 	$count ++;
-    }
-
-    exit(0);
-}
-
-if ($ARGV[0] eq "win2kasm"){
-
-    @underscore_objs = (@underscore_objs, @misc_common_objs);
-
-    print "\t.text\n";
-    foreach $objs (@underscore_objs) {
-	$uppercase = $objs;
-	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t.align 16\n";
-	print "\t.globl _", $uppercase, "_\n";
-	print "_", $uppercase, "_:\n";
-	print "\tjmp\t_", $objs, "_\n";
-    }
-
-    foreach $objs (@need_2underscore_objs) {
-	$uppercase = $objs;
-	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t.align 16\n";
-	print "\t.globl _", $uppercase, "__\n";
-	print "_", $uppercase, "__:\n";
-	print "\tjmp\t_", $objs, "__\n";
     }
 
     exit(0);
