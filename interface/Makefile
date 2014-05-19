@@ -349,7 +349,7 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
-	spotf2.$(SUFFIX)
+	spotf2.$(SUFFIX) slaswp.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -359,7 +359,7 @@ SLAPACKOBJS	= \
 
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
-	dpotf2.$(SUFFIX)
+	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX)
 
 
 QLAPACKOBJS	= \
@@ -374,7 +374,7 @@ QLAPACKOBJS	= \
 
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
-	cpotf2.$(SUFFIX)
+	cpotf2.$(SUFFIX) claswp.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -384,7 +384,7 @@ CLAPACKOBJS	= \
 
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
-	zpotf2.$(SUFFIX)
+	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX)
 
 
 
@@ -1896,19 +1896,19 @@ ztrtri.$(SUFFIX) ztrtri.$(PSUFFIX) : ztrtri.c
 xtrtri.$(SUFFIX) xtrtri.$(PSUFFIX) : ztrtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-slaswp.$(SUFFIX) slaswp.$(PSUFFIX) : laswp.c
+slaswp.$(SUFFIX) slaswp.$(PSUFFIX) : lapack/laswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dlaswp.$(SUFFIX) dlaswp.$(PSUFFIX) : laswp.c
+dlaswp.$(SUFFIX) dlaswp.$(PSUFFIX) : lapack/laswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qlaswp.$(SUFFIX) qlaswp.$(PSUFFIX) : laswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-claswp.$(SUFFIX) claswp.$(PSUFFIX) : zlaswp.c
+claswp.$(SUFFIX) claswp.$(PSUFFIX) : lapack/zlaswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zlaswp.$(SUFFIX) zlaswp.$(PSUFFIX) : zlaswp.c
+zlaswp.$(SUFFIX) zlaswp.$(PSUFFIX) : lapack/zlaswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xlaswp.$(SUFFIX) xlaswp.$(PSUFFIX) : zlaswp.c
