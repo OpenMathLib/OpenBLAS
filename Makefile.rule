@@ -127,7 +127,7 @@ NO_AFFINITY = 1
 
 # Common Optimization Flag; 
 # The default -O2 is enough.
-COMMON_OPT = -O0
+# COMMON_OPT = -O2
 
 # gfortran option for LAPACK
 FCOMMON_OPT = -frecursive
@@ -136,7 +136,7 @@ FCOMMON_OPT = -frecursive
 COMMON_PROF = -pg
 
 # Build Debug version
-DEBUG = 1
+# DEBUG = 1
 
 #
 #  End of user configuration 
