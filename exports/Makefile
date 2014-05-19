@@ -75,9 +75,6 @@ zip : dll
 	zip $(LIBZIPNAME) $(LIBDLLNAME) $(LIBNAME)
 
 dll  : ../$(LIBDLLNAME)
-#libgoto2.dll
-
-dll2 : libgoto2_shared.dll
 
 # On Windows, we only generate a DLL without a version suffix.  This is because
 # applications which link against the dynamic library reference a fixed DLL name
@@ -96,15 +93,7 @@ else
 	-lib /machine:X64 /def:libopenblas.def 
 endif
 
-libgoto2_shared.dll : ../$(LIBNAME) libgoto2_shared.def
-	$(CC) $(CFLAGS) $(LDFLAGS) libgoto2_shared.def -shared -o $(@F) \
-	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
-	-Wl,--out-implib,libgoto2_shared.lib $(FEXTRALIB)
-
 libopenblas.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
-
-libgoto2_shared.def : gensymbol
 	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
 
 libgoto_hpl.def : gensymbol
