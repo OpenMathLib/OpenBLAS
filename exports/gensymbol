@@ -2725,8 +2725,7 @@ if ($ARGV[8] == 1) {
 } elsif ($ARGV[5] == 1) {
 	#NO_LAPACK=1
 	@underscore_objs = (@blasobjs, @misc_underscore_objs);
-} elsif (-d "../lapack-3.1.1" || -d "../lapack-3.4.0" || -d "../lapack-3.4.1" ||
-         -d "../lapack-3.4.2" || -d "../lapack-netlib") {
+} elsif (-d "../lapack-netlib") {
 
     if ($ARGV[7] == 0){
 	# NEED2UNDERSCORES=0
