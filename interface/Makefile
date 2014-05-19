@@ -349,7 +349,7 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
-	spotf2.$(SUFFIX) slaswp.$(SUFFIX)
+	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -359,7 +359,7 @@ SLAPACKOBJS	= \
 
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
-	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX)
+	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX)
 
 
 QLAPACKOBJS	= \
@@ -374,7 +374,7 @@ QLAPACKOBJS	= \
 
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
-	cpotf2.$(SUFFIX) claswp.$(SUFFIX)
+	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -384,7 +384,7 @@ CLAPACKOBJS	= \
 
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
-	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX)
+	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)
 
 
 
@@ -1932,19 +1932,19 @@ zgetrs.$(SUFFIX) zgetrs.$(PSUFFIX) : lapack/zgetrs.c
 xgetrs.$(SUFFIX) xgetrs.$(PSUFFIX) : zgetrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-sgesv.$(SUFFIX) sgesv.$(PSUFFIX) : gesv.c
+sgesv.$(SUFFIX) sgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dgesv.$(SUFFIX) dgesv.$(PSUFFIX) : gesv.c
+dgesv.$(SUFFIX) dgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qgesv.$(SUFFIX) qgesv.$(PSUFFIX) : gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cgesv.$(SUFFIX) cgesv.$(PSUFFIX) : gesv.c
+cgesv.$(SUFFIX) cgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zgesv.$(SUFFIX) zgesv.$(PSUFFIX) : gesv.c
+zgesv.$(SUFFIX) zgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xgesv.$(SUFFIX) xgesv.$(PSUFFIX) : gesv.c
