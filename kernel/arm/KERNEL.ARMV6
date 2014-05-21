@@ -1,10 +1,19 @@
 SGEMVNKERNEL = ../arm/gemv_n.c
 SGEMVTKERNEL = ../arm/gemv_t.c
 
+DGEMVNKERNEL = ../arm/gemv_n.c
+DGEMVTKERNEL = ../arm/gemv_t.c
+
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
 CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+
+#ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+#ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+#ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+#ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+
 
 #STRMMKERNEL	= ../generic/trmmkernel_2x2.c
 #SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c		
@@ -86,18 +95,18 @@ CSWAPKERNEL  = swap_vfp.S
 ZSWAPKERNEL  = swap_vfp.S
 
 # BAD SGEMVNKERNEL = gemv_n_vfp.S
-DGEMVNKERNEL = gemv_n_vfp.S
+# BAD DGEMVNKERNEL = gemv_n_vfp.S
 CGEMVNKERNEL = cgemv_n_vfp.S
 ZGEMVNKERNEL = zgemv_n_vfp.S
 
 # BAD SGEMVTKERNEL = gemv_t_vfp.S
-DGEMVTKERNEL = gemv_t_vfp.S
+# BAD DGEMVTKERNEL = gemv_t_vfp.S
 CGEMVTKERNEL = cgemv_t_vfp.S
 ZGEMVTKERNEL = zgemv_t_vfp.S
 
 STRMMKERNEL	= strmm_kernel_4x2_vfp.S
 DTRMMKERNEL	= dtrmm_kernel_4x2_vfp.S
-# CTRMMKERNEL	= ctrmm_kernel_2x2_vfp.S
+#CTRMMKERNEL	= ctrmm_kernel_2x2_vfp.S
 ZTRMMKERNEL	= ztrmm_kernel_2x2_vfp.S
 
 SGEMMKERNEL    = sgemm_kernel_4x2_vfp.S		

@@ -61,7 +61,7 @@ static  int (*spmv[])(BLASLONG, FLOAT, FLOAT, FLOAT *, FLOAT *, BLASLONG, FLOAT 
 #endif
 };
 
-#ifdef SMP
+#ifdef SMPTEST
 static  int (*spmv_thread[])(BLASLONG, FLOAT *, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
   xspmv_thread_U, xspmv_thread_L,
@@ -88,7 +88,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a,
   blasint info;
   int uplo;
   FLOAT *buffer;
-#ifdef SMP
+#ifdef SMPTEST
   int nthreads;
 #endif
 
@@ -127,7 +127,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMP
+#ifdef SMPTEST
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -135,7 +135,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a,
 
   (spmv[uplo])(n, alpha_r, alpha_i, a, b, incx, c, incy, buffer);
 
-#ifdef SMP
+#ifdef SMPTEST
 
   } else {
 
