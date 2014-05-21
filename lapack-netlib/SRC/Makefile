@@ -120,7 +120,7 @@ SLASRC = \
    slarrv.o slartv.o  \
    slarz.o  slarzb.o slarzt.o slasy2.o slasyf.o slasyf_rook.o \
    slatbs.o slatdf.o slatps.o slatrd.o slatrs.o slatrz.o slatzm.o \
-   slauu2.o slauum.o sopgtr.o sopmtr.o sorg2l.o sorg2r.o \
+   sopgtr.o sopmtr.o sorg2l.o sorg2r.o \
    sorgbr.o sorghr.o sorgl2.o sorglq.o sorgql.o sorgqr.o sorgr2.o \
    sorgrq.o sorgtr.o sorm2l.o sorm2r.o \
    sormbr.o sormhr.o sorml2.o sormlq.o sormql.o sormqr.o sormr2.o \
@@ -208,7 +208,7 @@ CLASRC = \
    clarfx.o clargv.o clarnv.o clarrv.o clartg.o clartv.o \
    clarz.o  clarzb.o clarzt.o clascl.o claset.o clasr.o  classq.o \
    clasyf.o clasyf_rook.o clatbs.o clatdf.o clatps.o clatrd.o clatrs.o clatrz.o \
-   clatzm.o clauu2.o clauum.o cpbcon.o cpbequ.o cpbrfs.o cpbstf.o cpbsv.o  \
+   clatzm.o clauum.o cpbcon.o cpbequ.o cpbrfs.o cpbstf.o cpbsv.o  \
    cpbsvx.o cpbtf2.o cpbtrf.o cpbtrs.o cpocon.o cpoequ.o cporfs.o \
    cposv.o  cposvx.o cpotri.o cpstrf.o cpstf2.o \
    cppcon.o cppequ.o cpprfs.o cppsv.o  cppsvx.o cpptrf.o cpptri.o cpptrs.o \
@@ -279,8 +279,8 @@ DLASRC = \
    dlarf.o  dlarfb.o dlarfg.o dlarfgp.o dlarft.o dlarfx.o \
    dlargv.o dlarrv.o dlartv.o  \
    dlarz.o  dlarzb.o dlarzt.o dlasy2.o dlasyf.o dlasyf_rook.o \
-   dlatbs.o dlatdf.o dlatps.o dlatrd.o dlatrs.o dlatrz.o dlatzm.o dlauu2.o \
-   dlauum.o dopgtr.o dopmtr.o dorg2l.o dorg2r.o \
+   dlatbs.o dlatdf.o dlatps.o dlatrd.o dlatrs.o dlatrz.o dlatzm.o \
+   dopgtr.o dopmtr.o dorg2l.o dorg2r.o \
    dorgbr.o dorghr.o dorgl2.o dorglq.o dorgql.o dorgqr.o dorgr2.o \
    dorgrq.o dorgtr.o dorm2l.o dorm2r.o \
    dormbr.o dormhr.o dorml2.o dormlq.o dormql.o dormqr.o dormr2.o \
@@ -369,7 +369,7 @@ ZLASRC = \
    zlarfx.o zlargv.o zlarnv.o zlarrv.o zlartg.o zlartv.o \
    zlarz.o  zlarzb.o zlarzt.o zlascl.o zlaset.o zlasr.o  \
    zlassq.o zlasyf.o zlasyf_rook.o \
-   zlatbs.o zlatdf.o zlatps.o zlatrd.o zlatrs.o zlatrz.o zlatzm.o zlauu2.o \
+   zlatbs.o zlatdf.o zlatps.o zlatrd.o zlatrs.o zlatrz.o zlatzm.o \
    zlauum.o zpbcon.o zpbequ.o zpbrfs.o zpbstf.o zpbsv.o  \
    zpbsvx.o zpbtf2.o zpbtrf.o zpbtrs.o zpocon.o zpoequ.o zporfs.o \
    zposv.o  zposvx.o zpotri.o zpotrs.o zpstrf.o zpstf2.o \
