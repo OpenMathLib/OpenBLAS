@@ -7,15 +7,19 @@ SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX) 
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
-DGEMMKERNEL    =  gemm_kernel_2x8_nehalem.S
-DGEMMINCOPY    =  dgemm_ncopy_2.S
-DGEMMITCOPY    =  dgemm_tcopy_2.S
-DGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
-DGEMMOTCOPY    =  dgemm_tcopy_8.S
-DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
-DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+
+
+DGEMMKERNEL    =  gemm_kernel_4x4_core2.S
+DGEMMINCOPY    =
+DGEMMITCOPY    =
+DGEMMONCOPY    =  gemm_ncopy_4.S
+DGEMMOTCOPY    =  gemm_tcopy_4.S
+DGEMMINCOPYOBJ =
+DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+
 CGEMMKERNEL    =  zgemm_kernel_2x4_nehalem.S
 CGEMMINCOPY    =  zgemm_ncopy_2.S
 CGEMMITCOPY    =  zgemm_tcopy_2.S
@@ -40,10 +44,11 @@ STRSMKERNEL_LT	=  trsm_kernel_LT_4x8_nehalem.S
 STRSMKERNEL_RN	=  trsm_kernel_LT_4x8_nehalem.S
 STRSMKERNEL_RT	=  trsm_kernel_RT_4x8_nehalem.S
 
-DTRSMKERNEL_LN	=  trsm_kernel_LN_2x8_nehalem.S
-DTRSMKERNEL_LT	=  trsm_kernel_LT_2x8_nehalem.S
-DTRSMKERNEL_RN	=  trsm_kernel_LT_2x8_nehalem.S
-DTRSMKERNEL_RT	=  trsm_kernel_RT_2x8_nehalem.S
+DTRSMKERNEL_LN  =  trsm_kernel_LN_4x4_core2.S
+DTRSMKERNEL_LT  =  trsm_kernel_LT_4x4_core2.S
+DTRSMKERNEL_RN  =  trsm_kernel_LT_4x4_core2.S
+DTRSMKERNEL_RT  =  trsm_kernel_RT_4x4_core2.S
+
 
 CTRSMKERNEL_LN	=  ztrsm_kernel_LN_2x4_nehalem.S
 CTRSMKERNEL_LT	=  ztrsm_kernel_LT_2x4_nehalem.S

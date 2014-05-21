@@ -2,11 +2,11 @@ TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
 ifeq ($(ARCH), x86)
-SUPPORT_GEMM3M = 1
+SUPPORT_GEMM3M = 0
 endif
 
 ifeq ($(ARCH), x86_64)
-SUPPORT_GEMM3M = 1
+SUPPORT_GEMM3M = 0
 endif
 
 ifeq ($(ARCH), ia64)
@@ -342,30 +342,51 @@ CBLASOBJS    = $(CBLAS1OBJS) $(CBLAS2OBJS) $(CBLAS3OBJS)
 ZBLASOBJS    = $(ZBLAS1OBJS) $(ZBLAS2OBJS) $(ZBLAS3OBJS)
 XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
+#SLAPACKOBJS	= \
+#	sgetf2.$(SUFFIX) sgetrf.$(SUFFIX) slauu2.$(SUFFIX) slauum.$(SUFFIX) \
+#	spotf2.$(SUFFIX) spotrf.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) \
+#	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
+
 SLAPACKOBJS	= \
-	sgetf2.$(SUFFIX) sgetrf.$(SUFFIX) slauu2.$(SUFFIX) slauum.$(SUFFIX) \
-	spotf2.$(SUFFIX) spotrf.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) \
-	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
+	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
+	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX)
+
+
+#DLAPACKOBJS	= \
+#	dgetf2.$(SUFFIX) dgetrf.$(SUFFIX) dlauu2.$(SUFFIX) dlauum.$(SUFFIX) \
+#	dpotf2.$(SUFFIX) dpotrf.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) \
+#	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
 
 DLAPACKOBJS	= \
-	dgetf2.$(SUFFIX) dgetrf.$(SUFFIX) dlauu2.$(SUFFIX) dlauum.$(SUFFIX) \
-	dpotf2.$(SUFFIX) dpotrf.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) \
-	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
+	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
+	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX)
+
 
 QLAPACKOBJS	= \
 	qgetf2.$(SUFFIX) qgetrf.$(SUFFIX) qlauu2.$(SUFFIX) qlauum.$(SUFFIX) \
 	qpotf2.$(SUFFIX) qpotrf.$(SUFFIX) qtrti2.$(SUFFIX) qtrtri.$(SUFFIX) \
 	qlaswp.$(SUFFIX) qgetrs.$(SUFFIX) qgesv.$(SUFFIX)  qpotri.$(SUFFIX) \
 
+#CLAPACKOBJS	= \
+#	cgetf2.$(SUFFIX) cgetrf.$(SUFFIX) clauu2.$(SUFFIX) clauum.$(SUFFIX) \
+#	cpotf2.$(SUFFIX) cpotrf.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) \
+#	claswp.$(SUFFIX) cgetrs.$(SUFFIX) cgesv.$(SUFFIX)  cpotri.$(SUFFIX) \
+
 CLAPACKOBJS	= \
-	cgetf2.$(SUFFIX) cgetrf.$(SUFFIX) clauu2.$(SUFFIX) clauum.$(SUFFIX) \
-	cpotf2.$(SUFFIX) cpotrf.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) \
-	claswp.$(SUFFIX) cgetrs.$(SUFFIX) cgesv.$(SUFFIX)  cpotri.$(SUFFIX) \
+	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
+	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX)
+
+
+#ZLAPACKOBJS	= \
+#	zgetf2.$(SUFFIX) zgetrf.$(SUFFIX) zlauu2.$(SUFFIX) zlauum.$(SUFFIX) \
+#	zpotf2.$(SUFFIX) zpotrf.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) \
+#	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
 
 ZLAPACKOBJS	= \
-	zgetf2.$(SUFFIX) zgetrf.$(SUFFIX) zlauu2.$(SUFFIX) zlauum.$(SUFFIX) \
-	zpotf2.$(SUFFIX) zpotrf.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) \
-	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
+	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
+	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)
+
+
 
 XLAPACKOBJS	= \
 	xgetf2.$(SUFFIX) xgetrf.$(SUFFIX) xlauu2.$(SUFFIX) xlauum.$(SUFFIX) \
@@ -375,10 +396,10 @@ XLAPACKOBJS	= \
 ifneq ($(NO_LAPACK), 1)
 SBLASOBJS += $(SLAPACKOBJS)
 DBLASOBJS += $(DLAPACKOBJS)
-QBLASOBJS += $(QLAPACKOBJS)
+#QBLASOBJS += $(QLAPACKOBJS)
 CBLASOBJS += $(CLAPACKOBJS)
 ZBLASOBJS += $(ZLAPACKOBJS)
-XBLASOBJS += $(XLAPACKOBJS)
+#XBLASOBJS += $(XLAPACKOBJS)
 
 endif
 
@@ -1731,37 +1752,37 @@ cblas_cher2k.$(SUFFIX) cblas_cher2k.$(PSUFFIX) : syr2k.c
 cblas_zher2k.$(SUFFIX) cblas_zher2k.$(PSUFFIX) : syr2k.c
 	$(CC) -DCBLAS -c $(CFLAGS) -DHEMM $< -o $(@F)
 
-sgetf2.$(SUFFIX) sgetf2.$(PSUFFIX) : getf2.c
+sgetf2.$(SUFFIX) sgetf2.$(PSUFFIX) : lapack/getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dgetf2.$(SUFFIX) dgetf2.$(PSUFFIX) : getf2.c
+dgetf2.$(SUFFIX) dgetf2.$(PSUFFIX) : lapack/getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qgetf2.$(SUFFIX) qgetf2.$(PSUFFIX) : getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cgetf2.$(SUFFIX) cgetf2.$(PSUFFIX) : zgetf2.c
+cgetf2.$(SUFFIX) cgetf2.$(PSUFFIX) : lapack/zgetf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zgetf2.$(SUFFIX) zgetf2.$(PSUFFIX) : zgetf2.c
+zgetf2.$(SUFFIX) zgetf2.$(PSUFFIX) : lapack/zgetf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xgetf2.$(SUFFIX) xgetf2.$(PSUFFIX) : zgetf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-sgetrf.$(SUFFIX) sgetrf.$(PSUFFIX) : getrf.c
+sgetrf.$(SUFFIX) sgetrf.$(PSUFFIX) : lapack/getrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dgetrf.$(SUFFIX) dgetrf.$(PSUFFIX) : getrf.c
+dgetrf.$(SUFFIX) dgetrf.$(PSUFFIX) : lapack/getrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qgetrf.$(SUFFIX) qgetrf.$(PSUFFIX) : getrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cgetrf.$(SUFFIX) cgetrf.$(PSUFFIX) : zgetrf.c
+cgetrf.$(SUFFIX) cgetrf.$(PSUFFIX) : lapack/zgetrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zgetrf.$(SUFFIX) zgetrf.$(PSUFFIX) : zgetrf.c
+zgetrf.$(SUFFIX) zgetrf.$(PSUFFIX) : lapack/zgetrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xgetrf.$(SUFFIX) xgetrf.$(PSUFFIX) : zgetrf.c
@@ -1803,37 +1824,37 @@ zlauum.$(SUFFIX) zlauum.$(PSUFFIX) : zlauum.c
 xlauum.$(SUFFIX) xlauum.$(PSUFFIX) : zlauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-spotf2.$(SUFFIX) spotf2.$(PSUFFIX) : potf2.c
+spotf2.$(SUFFIX) spotf2.$(PSUFFIX) : lapack/potf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dpotf2.$(SUFFIX) dpotf2.$(PSUFFIX) : potf2.c
+dpotf2.$(SUFFIX) dpotf2.$(PSUFFIX) : lapack/potf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qpotf2.$(SUFFIX) qpotf2.$(PSUFFIX) : potf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cpotf2.$(SUFFIX) cpotf2.$(PSUFFIX) : zpotf2.c
+cpotf2.$(SUFFIX) cpotf2.$(PSUFFIX) : lapack/zpotf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zpotf2.$(SUFFIX) zpotf2.$(PSUFFIX) : zpotf2.c
+zpotf2.$(SUFFIX) zpotf2.$(PSUFFIX) : lapack/zpotf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xpotf2.$(SUFFIX) xpotf2.$(PSUFFIX) : zpotf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-spotrf.$(SUFFIX) spotrf.$(PSUFFIX) : potrf.c
+spotrf.$(SUFFIX) spotrf.$(PSUFFIX) : lapack/potrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dpotrf.$(SUFFIX) dpotrf.$(PSUFFIX) : potrf.c
+dpotrf.$(SUFFIX) dpotrf.$(PSUFFIX) : lapack/potrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qpotrf.$(SUFFIX) qpotrf.$(PSUFFIX) : potrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cpotrf.$(SUFFIX) cpotrf.$(PSUFFIX) : zpotrf.c
+cpotrf.$(SUFFIX) cpotrf.$(PSUFFIX) : lapack/zpotrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zpotrf.$(SUFFIX) zpotrf.$(PSUFFIX) : zpotrf.c
+zpotrf.$(SUFFIX) zpotrf.$(PSUFFIX) : lapack/zpotrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xpotrf.$(SUFFIX) xpotrf.$(PSUFFIX) : zpotrf.c
@@ -1875,55 +1896,55 @@ ztrtri.$(SUFFIX) ztrtri.$(PSUFFIX) : ztrtri.c
 xtrtri.$(SUFFIX) xtrtri.$(PSUFFIX) : ztrtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-slaswp.$(SUFFIX) slaswp.$(PSUFFIX) : laswp.c
+slaswp.$(SUFFIX) slaswp.$(PSUFFIX) : lapack/laswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dlaswp.$(SUFFIX) dlaswp.$(PSUFFIX) : laswp.c
+dlaswp.$(SUFFIX) dlaswp.$(PSUFFIX) : lapack/laswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qlaswp.$(SUFFIX) qlaswp.$(PSUFFIX) : laswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-claswp.$(SUFFIX) claswp.$(PSUFFIX) : zlaswp.c
+claswp.$(SUFFIX) claswp.$(PSUFFIX) : lapack/zlaswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zlaswp.$(SUFFIX) zlaswp.$(PSUFFIX) : zlaswp.c
+zlaswp.$(SUFFIX) zlaswp.$(PSUFFIX) : lapack/zlaswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xlaswp.$(SUFFIX) xlaswp.$(PSUFFIX) : zlaswp.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-sgetrs.$(SUFFIX) sgetrs.$(PSUFFIX) : getrs.c
+sgetrs.$(SUFFIX) sgetrs.$(PSUFFIX) : lapack/getrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dgetrs.$(SUFFIX) dgetrs.$(PSUFFIX) : getrs.c
+dgetrs.$(SUFFIX) dgetrs.$(PSUFFIX) : lapack/getrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qgetrs.$(SUFFIX) qgetrs.$(PSUFFIX) : getrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cgetrs.$(SUFFIX) cgetrs.$(PSUFFIX) : zgetrs.c
+cgetrs.$(SUFFIX) cgetrs.$(PSUFFIX) : lapack/zgetrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zgetrs.$(SUFFIX) zgetrs.$(PSUFFIX) : zgetrs.c
+zgetrs.$(SUFFIX) zgetrs.$(PSUFFIX) : lapack/zgetrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xgetrs.$(SUFFIX) xgetrs.$(PSUFFIX) : zgetrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-sgesv.$(SUFFIX) sgesv.$(PSUFFIX) : gesv.c
+sgesv.$(SUFFIX) sgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dgesv.$(SUFFIX) dgesv.$(PSUFFIX) : gesv.c
+dgesv.$(SUFFIX) dgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qgesv.$(SUFFIX) qgesv.$(PSUFFIX) : gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cgesv.$(SUFFIX) cgesv.$(PSUFFIX) : gesv.c
+cgesv.$(SUFFIX) cgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zgesv.$(SUFFIX) zgesv.$(PSUFFIX) : gesv.c
+zgesv.$(SUFFIX) zgesv.$(PSUFFIX) : lapack/gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xgesv.$(SUFFIX) xgesv.$(PSUFFIX) : gesv.c

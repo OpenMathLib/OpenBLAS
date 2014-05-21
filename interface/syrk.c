@@ -148,12 +148,21 @@ void NAME(char *UPLO, char *TRANS,
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
 
+
+#ifndef COMPLEX
   if (trans_arg == 'N') trans = 0;
-#ifndef HEMM
   if (trans_arg == 'T') trans = 1;
-  if (trans_arg == 'R') trans = 0;
-#endif
   if (trans_arg == 'C') trans = 1;
+#else
+#ifdef HEMM 
+  if (trans_arg == 'N') trans = 0;
+  if (trans_arg == 'C') trans = 1;
+#else
+  if (trans_arg == 'N') trans = 0;
+  if (trans_arg == 'T') trans = 1;
+#endif
+
+#endif
   
   nrowa = args.n;
   if (trans & 1) nrowa = args.k;
