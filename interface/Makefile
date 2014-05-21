@@ -376,7 +376,8 @@ QLAPACKOBJS	= \
 
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
-	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX)
+	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
+	clauum.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -386,7 +387,8 @@ CLAPACKOBJS	= \
 
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
-	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX)
+	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
+	zlauum.$(SUFFIX)
 
 
 
@@ -1817,10 +1819,10 @@ dlauum.$(SUFFIX) dlauum.$(PSUFFIX) : lapack/lauum.c
 qlauum.$(SUFFIX) qlauum.$(PSUFFIX) : lauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-clauum.$(SUFFIX) clauum.$(PSUFFIX) : zlauum.c
+clauum.$(SUFFIX) clauum.$(PSUFFIX) : lapack/zlauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zlauum.$(SUFFIX) zlauum.$(PSUFFIX) : zlauum.c
+zlauum.$(SUFFIX) zlauum.$(PSUFFIX) : lapack/zlauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xlauum.$(SUFFIX) xlauum.$(PSUFFIX) : zlauum.c
