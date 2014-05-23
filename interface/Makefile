@@ -350,7 +350,7 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
 	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX) slauu2.$(SUFFIX)  \
-	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX)
+	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) spotri.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -361,7 +361,7 @@ SLAPACKOBJS	= \
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
 	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX) dlauu2.$(SUFFIX)  \
-	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX)
+	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) dpotri.$(SUFFIX)
 
 
 QLAPACKOBJS	= \
@@ -377,7 +377,7 @@ QLAPACKOBJS	= \
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
 	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
-	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX)
+	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) cpotri.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -388,7 +388,7 @@ CLAPACKOBJS	= \
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
 	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
-	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX)
+	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) zpotri.$(SUFFIX)
 
 
 
@@ -1955,19 +1955,19 @@ zgesv.$(SUFFIX) zgesv.$(PSUFFIX) : lapack/gesv.c
 xgesv.$(SUFFIX) xgesv.$(PSUFFIX) : gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-spotri.$(SUFFIX) spotri.$(PSUFFIX) : potri.c
+spotri.$(SUFFIX) spotri.$(PSUFFIX) : lapack/potri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dpotri.$(SUFFIX) dpotri.$(PSUFFIX) : potri.c
+dpotri.$(SUFFIX) dpotri.$(PSUFFIX) : lapack/potri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qpotri.$(SUFFIX) qpotri.$(PSUFFIX) : potri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cpotri.$(SUFFIX) cpotri.$(PSUFFIX) : zpotri.c
+cpotri.$(SUFFIX) cpotri.$(PSUFFIX) : lapack/zpotri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zpotri.$(SUFFIX) zpotri.$(PSUFFIX) : zpotri.c
+zpotri.$(SUFFIX) zpotri.$(PSUFFIX) : lapack/zpotri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xpotri.$(SUFFIX) xpotri.$(PSUFFIX) : zpotri.c
