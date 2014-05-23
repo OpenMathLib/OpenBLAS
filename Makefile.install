@@ -50,10 +50,12 @@ ifndef NO_LAPACKE
 endif
 
 #for install static library 
+ifndef NO_STATIC
 	@echo Copying the static library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@install -pm644 $(LIBNAME) $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@cd $(DESTDIR)$(OPENBLAS_LIBRARY_DIR) ; \
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+endif
 #for install shared library 
 ifndef NO_SHARED
 	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
