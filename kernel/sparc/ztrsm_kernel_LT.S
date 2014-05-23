@@ -172,7 +172,7 @@
 
 	PROLOGUE
 	SAVESP
-	
+
 #ifndef __64BIT__
 #ifdef DOUBLE
 	ld	[%sp + STACK_START + 32], A
@@ -668,7 +668,7 @@
 	cmp	L,  0
 	ble,pn %icc, .LL29
 	nop
-	
+
 .LL26:
 	FADD2	c04, t1, c04
 	LDF	[AO +  3 * SIZE], a4
@@ -1130,7 +1130,7 @@
 	FMOV	FZERO, t1
 	ble,pn	%icc, .LL99
 	FMOV	FZERO, c04
-	
+
 #if defined(LT) || defined(RN)
 	sra	KK, 2, L
 

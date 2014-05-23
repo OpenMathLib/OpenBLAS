@@ -134,7 +134,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fldd	d4 , [CO1]
 	fldd	d5 , [CO1, #8 ]
-		
+
 	pld	[ CO1, #C_PRE ]
 	fmacd	d4 , d0 , d8
 	fldd	d6 , [CO1, #16 ]
@@ -208,7 +208,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fldd	d4 , [CO1]
 	fldd	d5 , [CO1, #8 ]
-		
+
 	fmacd	d4 , d0 , d8
 	fmacd	d5 , d0 , d9
 
@@ -262,7 +262,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA
 
 	fldd	d4 , [CO1]
-		
+
 	fmacd	d4 , d0 , d8
 
 	fstd	d4 , [CO1]
@@ -319,7 +319,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd	d5 , [CO1, #8 ]
 	fldd	d6 , [CO1, #16 ]
 	fldd	d7 , [CO1, #24 ]
-		
+
 	fmacd	d4 , d0 , d8
 	fmacd	d5 , d0 , d9
 	fmacd	d6 , d0 , d10
@@ -364,7 +364,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fldd	d4 , [CO1]
 	fldd	d5 , [CO1, #8 ]
-		
+
 	fmacd	d4 , d0 , d8
 	fmacd	d5 , d0 , d9
 
@@ -402,7 +402,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA
 
 	fldd	d4 , [CO1]
-		
+
 	fmacd	d4 , d0 , d8
 
 	fstd	d4 , [CO1]
@@ -490,10 +490,10 @@ dgemm_kernel_L2_M4_22:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L2_M4_22
-	
+
 
 dgemm_kernel_L2_M4_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	dgemm_kernel_L2_M4_100
 
@@ -503,7 +503,7 @@ dgemm_kernel_L2_M4_42:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L2_M4_42
-	
+
 dgemm_kernel_L2_M4_100:
 
 	SAVE4x2
@@ -545,10 +545,10 @@ dgemm_kernel_L2_M2_22:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L2_M2_22
-	
+
 
 dgemm_kernel_L2_M2_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	dgemm_kernel_L2_M2_100
 
@@ -558,7 +558,7 @@ dgemm_kernel_L2_M2_42:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L2_M2_42
-	
+
 dgemm_kernel_L2_M2_100:
 
 	SAVE2x2
@@ -592,10 +592,10 @@ dgemm_kernel_L2_M1_22:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L2_M1_22
-	
+
 
 dgemm_kernel_L2_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	dgemm_kernel_L2_M1_100
 
@@ -605,7 +605,7 @@ dgemm_kernel_L2_M1_42:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L2_M1_42
-	
+
 dgemm_kernel_L2_M1_100:
 
 	SAVE1x2
@@ -630,7 +630,7 @@ dgemm_kernel_L1_BEGIN:
 	tst	J , #1
 	ble	dgemm_kernel_L999
 
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	add	r3 , r4, CO1
@@ -668,10 +668,10 @@ dgemm_kernel_L1_M4_22:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L1_M4_22
-	
+
 
 dgemm_kernel_L1_M4_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	dgemm_kernel_L1_M4_100
 
@@ -681,7 +681,7 @@ dgemm_kernel_L1_M4_42:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L1_M4_42
-	
+
 dgemm_kernel_L1_M4_100:
 
 	SAVE4x1
@@ -723,10 +723,10 @@ dgemm_kernel_L1_M2_22:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L1_M2_22
-	
+
 
 dgemm_kernel_L1_M2_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	dgemm_kernel_L1_M2_100
 
@@ -736,7 +736,7 @@ dgemm_kernel_L1_M2_42:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L1_M2_42
-	
+
 dgemm_kernel_L1_M2_100:
 
 	SAVE2x1
@@ -770,10 +770,10 @@ dgemm_kernel_L1_M1_22:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L1_M1_22
-	
+
 
 dgemm_kernel_L1_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	dgemm_kernel_L1_M1_100
 
@@ -783,7 +783,7 @@ dgemm_kernel_L1_M1_42:
 
 	subs	L, L, #1
 	bgt	dgemm_kernel_L1_M1_42
-	
+
 dgemm_kernel_L1_M1_100:
 
 	SAVE1x1

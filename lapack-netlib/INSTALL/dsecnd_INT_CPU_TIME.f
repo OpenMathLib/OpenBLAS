@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *      DOUBLE PRECISION FUNCTION DSECND( )
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -23,10 +23,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -43,15 +43,15 @@
 * =====================================================================
 *
 *     .. Local Scalars ..
-* 
+*
       REAL T
-* 
+*
 * .. Intrinsic Functions ..
-* 
+*
       INTRINSIC CPU_TIME
-* 
+*
 * .. Executable Statements .. *
-* 
+*
       CALL CPU_TIME( T )
       DSECND = T
       RETURN

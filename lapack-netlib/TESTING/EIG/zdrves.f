@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE ZDRVES( NSIZES, NN, NTYPES, DOTYPE, ISEED, THRESH,
 *                          NOUNIT, A, LDA, H, HT, W, WT, VS, LDVS, RESULT,
 *                          WORK, NWORK, RWORK, IWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDVS, NOUNIT, NSIZES, NTYPES, NWORK
 *       DOUBLE PRECISION   THRESH
@@ -23,7 +23,7 @@
 *       COMPLEX*16         A( LDA, * ), H( LDA, * ), HT( LDA, * ),
 *      $                   VS( LDVS, * ), W( * ), WORK( * ), WT( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -364,10 +364,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

@@ -4,7 +4,7 @@ include ./Makefile.system
 BLASDIRS = interface driver/level2 driver/level3 driver/others
 
 ifneq ($(DYNAMIC_ARCH), 1)
-BLASDIRS += kernel 
+BLASDIRS += kernel
 endif
 
 ifdef UTEST_CHECK
@@ -149,7 +149,7 @@ endif
 ifeq ($(EXPRECISION), 1)
 	@echo "#define EXPRECISION">> config_last.h
 endif
-## 
+##
 ifeq ($(DYNAMIC_ARCH), 1)
 	@$(MAKE) -C kernel commonlibs || exit 1
 	@for d in $(DYNAMIC_CORE) ; \
@@ -183,7 +183,7 @@ blas :
 	fi; \
 	done
 
-hpl : 
+hpl :
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	for d in $(BLASDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
@@ -206,7 +206,7 @@ hpl_p :
 	done
 
 ifeq ($(NO_LAPACK), 1)
-netlib : 
+netlib :
 
 else
 netlib : lapack_prebuild
@@ -243,7 +243,7 @@ ifndef NOFORTRAN
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 
-large.tgz : 
+large.tgz :
 ifndef NOFORTRAN
 	if [ ! -a $< ]; then
 	-wget http://www.netlib.org/lapack/timing/large.tgz;

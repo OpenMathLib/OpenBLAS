@@ -3,24 +3,24 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 #ifdef TRMMKERNEL
 		,BLASLONG offset
 #endif
-		) 
+		)
 {
    BLASLONG i,j,k;
    FLOAT *C0,*C1,*ptrba,*ptrbb;
    FLOAT res0,res1,res2,res3,load0,load1,load2,load3,load4,load5,load6,load7;
-   for (j=0; j<bn/2; j+=1) 
+   for (j=0; j<bn/2; j+=1)
      {
         C0 = C;
         C1 = C0+ldc;
         ptrba = ba;
-        for (i=0; i<bm/2; i+=1) 
+        for (i=0; i<bm/2; i+=1)
           {
              ptrbb = bb;
              res0 = 0;
              res1 = 0;
              res2 = 0;
              res3 = 0;
-             for (k=0; k<bk/4; k+=1) 
+             for (k=0; k<bk/4; k+=1)
                {
                   load0 = ptrba[2*0+0];
                   load1 = ptrbb[2*0+0];
@@ -57,7 +57,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                   ptrba = ptrba+8;
                   ptrbb = ptrbb+8;
                }
-             for (k=0; k<(bk&3); k+=1) 
+             for (k=0; k<(bk&3); k+=1)
                {
                   load0 = ptrba[2*0+0];
                   load1 = ptrbb[2*0+0];
@@ -81,12 +81,12 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
              C0 = C0+2;
              C1 = C1+2;
           }
-        for (i=0; i<(bm&1); i+=1) 
+        for (i=0; i<(bm&1); i+=1)
           {
              ptrbb = bb;
              res0 = 0;
              res1 = 0;
-             for (k=0; k<bk; k+=1) 
+             for (k=0; k<bk; k+=1)
                {
                   load0 = ptrba[0+0];
                   load1 = ptrbb[2*0+0];
@@ -108,16 +108,16 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
         i = (ldc<<1);
         C = C+i;
      }
-   for (j=0; j<(bn&1); j+=1) 
+   for (j=0; j<(bn&1); j+=1)
      {
         C0 = C;
         ptrba = ba;
-        for (i=0; i<bm/2; i+=1) 
+        for (i=0; i<bm/2; i+=1)
           {
              ptrbb = bb;
              res0 = 0;
              res1 = 0;
-             for (k=0; k<bk; k+=1) 
+             for (k=0; k<bk; k+=1)
                {
                   load0 = ptrba[2*0+0];
                   load1 = ptrbb[0+0];
@@ -133,11 +133,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
              C0[1] = C0[1]+res1;
              C0 = C0+2;
           }
-        for (i=0; i<(bm&1); i+=1) 
+        for (i=0; i<(bm&1); i+=1)
           {
              ptrbb = bb;
              res0 = 0;
-             for (k=0; k<bk; k+=1) 
+             for (k=0; k<bk; k+=1)
                {
                   load0 = ptrba[0+0];
                   load1 = ptrbb[0+0];

@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAED6 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed6.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed6.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed6.f"> 
+*> Download SLAED6 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaed6.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaed6.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaed6.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAED6( KNITER, ORGATI, RHO, D, Z, FINIT, TAU, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            ORGATI
 *       INTEGER            INFO, KNITER
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       REAL               D( 3 ), Z( 3 )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -110,10 +110,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -175,7 +175,7 @@
       INTEGER            I, ITER, NITER
       REAL               A, B, BASE, C, DDF, DF, EPS, ERRETM, ETA, F,
      $                   FC, SCLFAC, SCLINV, SMALL1, SMALL2, SMINV1,
-     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4, 
+     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4,
      $                   LBD, UBD
 *     ..
 *     .. Intrinsic Functions ..
@@ -195,7 +195,7 @@
       IF( FINIT .LT. ZERO )THEN
          LBD = ZERO
       ELSE
-         UBD = ZERO 
+         UBD = ZERO
       END IF
 *
       NITER = 1
@@ -363,7 +363,7 @@
 *
          TAU = TAU + ETA
          IF( TAU .LT. LBD .OR. TAU .GT. UBD )
-     $      TAU = ( LBD + UBD )/TWO 
+     $      TAU = ( LBD + UBD )/TWO
 *
          FC = ZERO
          ERRETM = ZERO

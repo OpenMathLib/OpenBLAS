@@ -25,7 +25,7 @@ if(EXISTS "/proc/cpuinfo")
 endif()
 
 if(WIN32)
-  set(VSLOCATIONS 
+  set(VSLOCATIONS
     "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\6.0\\Setup;VsCommonDir]/MSDev98/Bin"
     "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\7.0\\Setup\\VS;EnvironmentDirectory]"
     "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\7.1\\Setup\\VS;EnvironmentDirectory]"
@@ -104,7 +104,7 @@ if(NOT compiler)
   message(FATAL_ERROR "compiler must be set")
 endif(NOT compiler)
 
-  
+
 set(BUILDNAME "${osname}${osver}${osrel}${cpu}-${compiler}")
 message("BUILDNAME: ${BUILDNAME}")
 
@@ -125,7 +125,7 @@ set(CTEST_TEST_TIMEOUT           "36000")
 
 # CVS command and the checkout command
 if(NOT EXISTS "${CTEST_DASHBOARD_ROOT}/${CTEST_DIR_NAME}")
-  set(CTEST_CHECKOUT_COMMAND     
+  set(CTEST_CHECKOUT_COMMAND
     "\"${CTEST_UPDATE_COMMAND}\" co https://icl.cs.utk.edu/svn/lapack-dev/lapack/trunk ${CTEST_DIR_NAME}")
 endif(NOT EXISTS "${CTEST_DASHBOARD_ROOT}/${CTEST_DIR_NAME}")
 
@@ -148,11 +148,11 @@ endif(CTEST_CMAKE_GENERATOR MATCHES Makefiles)
 # Should not need to edit under this line
 #----------------------------------------------------------------------------------
 
-# if you do not want to use the default location for a 
+# if you do not want to use the default location for a
 # dashboard then set this variable to the directory
 # the dashboard should be in
 make_directory("${CTEST_DASHBOARD_ROOT}")
-# these are the the name of the source and binary directory on disk. 
+# these are the the name of the source and binary directory on disk.
 # They will be appended to DASHBOARD_ROOT
 set(CTEST_SOURCE_DIRECTORY  "${CTEST_DASHBOARD_ROOT}/${CTEST_DIR_NAME}")
 set(CTEST_BINARY_DIRECTORY  "${CTEST_SOURCE_DIRECTORY}-${CTEST_BUILD_NAME}")

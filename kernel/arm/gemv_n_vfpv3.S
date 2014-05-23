@@ -635,7 +635,7 @@ gemvn_kernel_F1X1:
 	ldr	AO1, A
 	add	r3, AO1, #SIZE
 	str	r3, A
-	
+
 	ldr	XO , X
 
 	INIT_F1
@@ -735,7 +735,7 @@ gemvn_kernel_S1X1:
 	ldr	AO1, A
 	add	r3, AO1, #SIZE
 	str	r3, A
-	
+
 	ldr	XO , X
 
 	INIT_S1

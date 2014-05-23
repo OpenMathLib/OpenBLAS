@@ -134,7 +134,7 @@ int detect(void){
 
   if (hostInfo.cpu_subtype == CPU_SUBTYPE_POWERPC_7450) return CPUTYPE_PPCG4;
   if (hostInfo.cpu_subtype == CPU_SUBTYPE_POWERPC_970)  return CPUTYPE_PPC970;
- 
+
   return  CPUTYPE_PPC970;
 #endif
 }

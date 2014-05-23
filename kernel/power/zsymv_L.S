@@ -100,7 +100,7 @@
 #define TEMP	r22
 #define	PREA	r24
 #define IS	r25
-	
+
 #define y01 f0
 #define y02 f1
 #define y03 f2
@@ -1455,7 +1455,7 @@ LL(18):
 	STFD	y04,  3 * SIZE(YY)
 	ble	LL(11)
 	.align 4
-	
+
 LL(20):
 	andi.	TEMP, N, 1
 	ble	LL(990)
@@ -1505,7 +1505,7 @@ LL(20):
 	STFD	y01,  0 * SIZE(YY)
 	STFD	y02,  1 * SIZE(YY)
 	.align 4
-	
+
 LL(990):
 	cmpwi	cr0, INCY, 2 * SIZE
 	beq	LL(999)

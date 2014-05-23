@@ -572,7 +572,7 @@
                      CTRANS = '  CblasNoTrans'
                   ELSE IF (TRANS.EQ.'T')THEN
                      CTRANS = '    CblasTrans'
-                  ELSE 
+                  ELSE
                      CTRANS = 'CblasConjTrans'
                   END IF
                   TRAN = TRANS.EQ.'T'.OR.TRANS.EQ.'C'
@@ -921,7 +921,7 @@
                UPLO = ICH( IC: IC )
                IF (UPLO.EQ.'U')THEN
                   CUPLO = '    CblasUpper'
-               ELSE 
+               ELSE
                   CUPLO = '    CblasLower'
                END IF
 *
@@ -1215,7 +1215,7 @@
       LOGICAL            LSE, LSERES
       EXTERNAL           LSE, LSERES
 *     .. External Subroutines ..
-      EXTERNAL           SMAKE, SMVCH, CSTBMV, CSTBSV, CSTPMV, 
+      EXTERNAL           SMAKE, SMVCH, CSTBMV, CSTBSV, CSTPMV,
      $			 CSTPSV, CSTRMV,  CSTRSV
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX
@@ -1283,7 +1283,7 @@
                UPLO = ICHU( ICU: ICU )
                IF (UPLO.EQ.'U')THEN
                   CUPLO = '    CblasUpper'
-               ELSE 
+               ELSE
                   CUPLO = '    CblasLower'
                END IF
 *
@@ -1293,7 +1293,7 @@
                      CTRANS = '  CblasNoTrans'
                   ELSE IF (TRANS.EQ.'T')THEN
                      CTRANS = '    CblasTrans'
-                  ELSE 
+                  ELSE
                      CTRANS = 'CblasConjTrans'
                   END IF
 *
@@ -1972,7 +1972,7 @@
      $                  ALPHA, INCX, LDA
                      IF( REWI )
      $                  REWIND NTRA
-                     CALL CSSYR( IORDER, UPLO, N, ALPHA, XX, INCX, 
+                     CALL CSSYR( IORDER, UPLO, N, ALPHA, XX, INCX,
      $				  AA, LDA )
                   ELSE IF( PACKED )THEN
                      IF( TRACE )
@@ -2737,7 +2737,7 @@
             WRITE( NOUT, FMT = 9998 )I, YT( I ),
      $         YY( 1 + ( I - 1 )*ABS( INCY ) )
          ELSE
-            WRITE( NOUT, FMT = 9998 )I, 
+            WRITE( NOUT, FMT = 9998 )I,
      $         YY( 1 + ( I - 1 )*ABS( INCY ) ), YT(I)
          END IF
    60 CONTINUE

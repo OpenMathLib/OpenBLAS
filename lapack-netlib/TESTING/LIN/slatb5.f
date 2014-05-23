@@ -2,22 +2,22 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLATB5( PATH, IMAT, N, TYPE, KL, KU, ANORM, MODE,
 *                          CNDNUM, DIST )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               ANORM, CNDNUM
 *       INTEGER            IMAT, KL, KU, MODE, N
 *       CHARACTER          DIST, TYPE
 *       CHARACTER*3        PATH
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -101,10 +101,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

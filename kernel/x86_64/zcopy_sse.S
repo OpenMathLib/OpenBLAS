@@ -65,7 +65,7 @@
 #endif
 
 	SAVEREGISTERS
-	
+
 	salq	$ZBASE_SHIFT, INCX
 	salq	$ZBASE_SHIFT, INCY
 
@@ -80,7 +80,7 @@
 	subq	$-32 * SIZE, X
 	subq	$-32 * SIZE, Y
 	addq	M, M
-	
+
 	testq	$SIZE, Y
 	je	.L05
 

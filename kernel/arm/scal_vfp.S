@@ -65,11 +65,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	pld	[ X, #X_PRE ]
 	fldmiad	X,  { d4 - d7 }
-	vmul.f64    d4, d4, d0	
-	vmul.f64    d5, d5, d0	
-	vmul.f64    d6, d6, d0	
+	vmul.f64    d4, d4, d0
+	vmul.f64    d5, d5, d0
+	vmul.f64    d6, d6, d0
 	fstmiad	X!, { d4 - d5 }
-	vmul.f64    d7, d7, d0	
+	vmul.f64    d7, d7, d0
 	fstmiad	X!, { d6 - d7 }
 
 .endm
@@ -78,7 +78,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F1
 
 	fldmiad	X,  { d4 }
-	vmul.f64    d4, d4, d0	
+	vmul.f64    d4, d4, d0
 	fstmiad	X!, { d4 }
 
 .endm
@@ -86,7 +86,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_S1
 
 	fldmiad	X,  { d4 }
-	vmul.f64    d4, d4, d0	
+	vmul.f64    d4, d4, d0
 	fstmiad	X,  { d4 }
 	add	X, X, INC_X
 
@@ -97,11 +97,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F4
 
 	fldmias	X,  { s4 - s7 }
-	vmul.f32    s4, s4, s0	
-	vmul.f32    s5, s5, s0	
-	vmul.f32    s6, s6, s0	
+	vmul.f32    s4, s4, s0
+	vmul.f32    s5, s5, s0
+	vmul.f32    s6, s6, s0
 	fstmias	X!, { s4 - s5 }
-	vmul.f32    s7, s7, s0	
+	vmul.f32    s7, s7, s0
 	fstmias	X!, { s6 - s7 }
 
 .endm
@@ -110,7 +110,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F1
 
 	fldmias	X,  { s4 }
-	vmul.f32    s4, s4, s0	
+	vmul.f32    s4, s4, s0
 	fstmias	X!, { s4 }
 
 .endm
@@ -118,7 +118,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_S1
 
 	fldmias	X,  { s4 }
-	vmul.f32    s4, s4, s0	
+	vmul.f32    s4, s4, s0
 	fstmias	X,  { s4 }
 	add	X, X, INC_X
 
@@ -137,14 +137,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	pld	[ X, #X_PRE ]
 
 	fldmiad	X,  { d4 - d5 }
-	vmul.f64    d2, d0, d4	
+	vmul.f64    d2, d0, d4
 	fnmacd     d2, d1, d5
 	vmul.f64    d3, d0, d5
 	fmacd      d3, d1, d4
 	fstmiad	X!, { d2 - d3 }
 
 	fldmiad	X,  { d4 - d5 }
-	vmul.f64    d2, d0, d4	
+	vmul.f64    d2, d0, d4
 	fnmacd     d2, d1, d5
 	vmul.f64    d3, d0, d5
 	fmacd      d3, d1, d4
@@ -153,14 +153,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	pld	[ X, #X_PRE ]
 
 	fldmiad	X,  { d4 - d5 }
-	vmul.f64    d2, d0, d4	
+	vmul.f64    d2, d0, d4
 	fnmacd     d2, d1, d5
 	vmul.f64    d3, d0, d5
 	fmacd      d3, d1, d4
 	fstmiad	X!, { d2 - d3 }
 
 	fldmiad	X,  { d4 - d5 }
-	vmul.f64    d2, d0, d4	
+	vmul.f64    d2, d0, d4
 	fnmacd     d2, d1, d5
 	vmul.f64    d3, d0, d5
 	fmacd      d3, d1, d4
@@ -172,7 +172,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F1
 
 	fldmiad	X,  { d4 - d5 }
-	vmul.f64    d2, d0, d4	
+	vmul.f64    d2, d0, d4
 	fnmacd     d2, d1, d5
 	vmul.f64    d3, d0, d5
 	fmacd      d3, d1, d4
@@ -183,7 +183,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_S1
 
 	fldmiad	X,  { d4 - d5 }
-	vmul.f64    d2, d0, d4	
+	vmul.f64    d2, d0, d4
 	fnmacd     d2, d1, d5
 	vmul.f64    d3, d0, d5
 	fmacd      d3, d1, d4
@@ -200,28 +200,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	pld	[ X, #X_PRE ]
 
 	fldmias	X,  { s4 - s5 }
-	vmul.f32    s2, s0, s4	
+	vmul.f32    s2, s0, s4
 	fnmacs     s2, s1, s5
 	vmul.f32    s3, s0, s5
 	fmacs      s3, s1, s4
 	fstmias	X!, { s2 - s3 }
 
 	fldmias	X,  { s4 - s5 }
-	vmul.f32    s2, s0, s4	
+	vmul.f32    s2, s0, s4
 	fnmacs     s2, s1, s5
 	vmul.f32    s3, s0, s5
 	fmacs      s3, s1, s4
 	fstmias	X!, { s2 - s3 }
 
 	fldmias	X,  { s4 - s5 }
-	vmul.f32    s2, s0, s4	
+	vmul.f32    s2, s0, s4
 	fnmacs     s2, s1, s5
 	vmul.f32    s3, s0, s5
 	fmacs      s3, s1, s4
 	fstmias	X!, { s2 - s3 }
 
 	fldmias	X,  { s4 - s5 }
-	vmul.f32    s2, s0, s4	
+	vmul.f32    s2, s0, s4
 	fnmacs     s2, s1, s5
 	vmul.f32    s3, s0, s5
 	fmacs      s3, s1, s4
@@ -233,7 +233,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F1
 
 	fldmias	X,  { s4 - s5 }
-	vmul.f32    s2, s0, s4	
+	vmul.f32    s2, s0, s4
 	fnmacs     s2, s1, s5
 	vmul.f32    s3, s0, s5
 	fmacs      s3, s1, s4
@@ -244,7 +244,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_S1
 
 	fldmias	X,  { s4 - s5 }
-	vmul.f32    s2, s0, s4	
+	vmul.f32    s2, s0, s4
 	fnmacs     s2, s1, s5
 	vmul.f32    s3, s0, s5
 	fmacs      s3, s1, s4

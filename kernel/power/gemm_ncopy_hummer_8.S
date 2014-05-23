@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define	M	r3
 #define	N	r4
 #define	A	r5
@@ -120,7 +120,7 @@
 	stfpdux	f29, SP, r0
 	stfpdux	f30, SP, r0
 	stfpdux	f31, SP, r0
-	
+
 	stwu	r31,  -4(SP)
 	stwu	r30,  -4(SP)
 	stwu	r29,  -4(SP)
@@ -237,7 +237,7 @@
 	STFXDUX	c08,   B, INC2
 	bdnz	.L12
 	.align 4
-	
+
 .L15:
 	andi.	r0,  M,  3
 	ble	.L19
@@ -373,7 +373,7 @@
 	STFXDUX	c08,   B, INC2
 	bdnz	.L22
 	.align 4
-	
+
 .L25:
 	andi.	r0,  M,  7
 	ble	.L30
@@ -441,12 +441,12 @@
 
 	fsmfp	c01, c02
 	fsmfp	c03, c04
-	
+
 	STFPDUX	c01,   B, INC2
 	STFPDUX	c03,   B, INC2
 	.align 4
 
-	
+
 .L30:
 	andi.	J,  N,  2
 	ble	.L40
@@ -490,7 +490,7 @@
 	STFXDUX	c16,   B, INC2
 	bdnz	.L32
 	.align 4
-	
+
 .L35:
 	andi.	r0,  M,  7
 	ble	.L40
@@ -562,7 +562,7 @@
 	STFPDUX	c04,   B, INC2
 	bdnz	.L42
 	.align 4
-	
+
 .L45:
 	andi.	r0,  M,  7
 	ble	.L999
@@ -734,7 +734,7 @@
 	STFPDUX	c32,   B, INC2
 	bdnz	.L112
 	.align 4
-	
+
 .L115:
 	andi.	r0,  M,  7
 	ble	.L119
@@ -936,7 +936,7 @@
 	STFPDUX	c16,   B, INC2
 	bdnz	.L122
 	.align 4
-	
+
 .L125:
 	andi.	r0,  M,  7
 	ble	.L130
@@ -1013,7 +1013,7 @@
 	STFPDUX	c05,   B, INC2
 	.align 4
 
-	
+
 .L130:
 	andi.	J,  N,  2
 	ble	.L140
@@ -1059,7 +1059,7 @@
 	STFPDUX	c12,   B, INC2
 	bdnz	.L132
 	.align 4
-	
+
 .L135:
 	andi.	r0,  M,  7
 	ble	.L140
@@ -1141,7 +1141,7 @@
 	STFPDUX	c07,   B, INC2
 	bdnz	.L142
 	.align 4
-	
+
 .L145:
 	andi.	r0,  M,  7
 	ble	.L999

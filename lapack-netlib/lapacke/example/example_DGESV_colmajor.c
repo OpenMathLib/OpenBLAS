@@ -1,23 +1,23 @@
 /*
    LAPACKE_dgesv Example
    =====================
- 
+
    The program computes the solution to the system of linear
    equations with a square matrix A and multiple
    right-hand sides B, where A is the coefficient matrix
    and b is the right-hand side matrix:
-  
+
    Description
    ===========
- 
-   The routine solves for X the system of linear equations A*X = B, 
-   where A is an n-by-n matrix, the columns of matrix B are individual 
-   right-hand sides, and the columns of X are the corresponding 
+
+   The routine solves for X the system of linear equations A*X = B,
+   where A is an n-by-n matrix, the columns of matrix B are individual
+   right-hand sides, and the columns of X are the corresponding
    solutions.
 
-   The LU decomposition with partial pivoting and row interchanges is 
-   used to factor A as A = P*L*U, where P is a permutation matrix, L 
-   is unit lower triangular, and U is upper triangular. The factored 
+   The LU decomposition with partial pivoting and row interchanges is
+   used to factor A as A = P*L*U, where P is a permutation matrix, L
+   is unit lower triangular, and U is upper triangular. The factored
    form of A is then used to solve the system of equations A*X = B.
 
    LAPACKE Interface
@@ -48,22 +48,22 @@ int main(int argc, char **argv) {
         /* Local arrays */
 		double *A, *b, *Acopy, *bcopy;
 		lapack_int *ipiv;
-		
+
         /* Default Value */
 	    n = 5; nrhs = 1;
 
         /* Arguments */
 	    for( i = 1; i < argc; i++ ) {
-	    	if( strcmp( argv[i], "-n" ) == 0 ) { 
+	    	if( strcmp( argv[i], "-n" ) == 0 ) {
 		    	n  = atoi(argv[i+1]);
 			    i++;
 		    }
-			if( strcmp( argv[i], "-nrhs" ) == 0 ) { 
+			if( strcmp( argv[i], "-nrhs" ) == 0 ) {
 				nrhs  = atoi(argv[i+1]);
 				i++;
-			} 
+			}
 		}
-		
+
         /* Initialization */
         lda=n, ldb=n;
 		A = (double *)malloc(n*n*sizeof(double)) ;
@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
         for( i = 0; i < n; i++ ) {
                 for( j = 0; j < n; j++ ) A[i+j*lda] = ((double) rand()) / ((double) RAND_MAX) - 0.5;
 		}
-		
+
 		for(i=0;i<n*nrhs;i++)
 			b[i] = ((double) rand()) / ((double) RAND_MAX) - 0.5;
 
@@ -85,13 +85,13 @@ int main(int argc, char **argv) {
         /* Print Right Rand Side */
         print_matrix_colmajor( "Right Rand Side b", n, nrhs, b, ldb );
         printf( "\n" );
-        
+
         /* Executable statements */
         printf( "LAPACKE_dgesv (row-major, high-level) Example Program Results\n" );
         /* Solve the equations A*X = B */
         info = LAPACKE_dgesv( LAPACK_COL_MAJOR, n, nrhs, A, lda, ipiv,
                         b, ldb );
-                        
+
         /* Check for the exact singularity */
         if( info > 0 ) {
                 printf( "The diagonal element of the triangular factor of A,\n" );

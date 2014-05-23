@@ -50,7 +50,7 @@
 #define PREFETCHSIZE (5 + 4 * 10)
 #define STACK	16
 #define ARGS	16
-	
+
 #define J	 0 + STACK(%esp)
 #define KK	 4 + STACK(%esp)
 #define KKK	 8 + STACK(%esp)
@@ -111,7 +111,7 @@
 
 	addl	$8 * SIZE, A
 	addl	$8 * SIZE, B
-	
+
 #ifdef LN
        movl	M, %eax
        sall	$ZBASE_SHIFT, %eax
@@ -135,7 +135,7 @@
        movl	OFFSET, %eax
        negl	%eax
        movl	%eax, KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -145,7 +145,7 @@
 
 	cmpl	$0, M
 	jle	.L999
-	
+
 	movl	N,   %eax
 	movl	%eax, J
 	testl	%eax, %eax
@@ -178,7 +178,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -203,7 +203,7 @@
 	leal	(B,  %eax, 1), BO
 #else
 	movl	B, BO
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -238,7 +238,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -256,7 +256,7 @@
 
 	FLD	 -5 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -5 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -276,7 +276,7 @@
 
 	FLD	 -3 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -3 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -294,7 +294,7 @@
 
 	FLD	 -1 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -1 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -331,7 +331,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -350,7 +350,7 @@
 .L18:
 	faddp	%st, %st(3)
 	faddp	%st, %st(1)
-	
+
 	fxch	%st(1)
 
 #if defined(LN) || defined(RT)
@@ -430,7 +430,7 @@
 
 	FST	0 * SIZE(CO)
 	FST	1 * SIZE(CO)
-	
+
 #ifndef LN
 	addl	$2 * SIZE, CO
 #endif

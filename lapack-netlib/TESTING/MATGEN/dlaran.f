@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION DLARAN( ISEED )
-* 
+*
 *       .. Array Arguments ..
 *       INTEGER            ISEED( 4 )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -39,10 +39,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -128,7 +128,7 @@
 *        If a real number has n bits of precision, and the first
 *        n bits of the 48-bit integer above happen to be all 1 (which
 *        will occur about once every 2**n calls), then DLARAN will
-*        be rounded to exactly 1.0. 
+*        be rounded to exactly 1.0.
 *        Since DLARAN is not supposed to return exactly 0.0 or 1.0
 *        (and some callers of DLARAN, such as CLARND, depend on that),
 *        the statistically correct thing to do in this situation is

@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM DCHKEE
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -1027,10 +1027,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
@@ -1076,7 +1076,7 @@
       CHARACTER*80       LINE
       INTEGER            I, I1, IC, INFO, ITMP, K, LENP, MAXTYP, NEWSD,
      $                   NK, NN, NPARMS, NRHS, NTYPES,
-     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH 
+     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
       DOUBLE PRECISION   EPS, S1, S2, THRESH, THRSHN
 *     ..
 *     .. Local Arrays ..
@@ -2450,7 +2450,7 @@
  9962 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
      $      'Problem Expert Driver DGGEVX' )
  9961 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4,
-     $      ', INMIN=', I4, 
+     $      ', INMIN=', I4,
      $      ', INWIN =', I4, ', INIBL =', I4, ', ISHFTS =', I4,
      $      ', IACC22 =', I4)
  9960 FORMAT( / ' Tests of the CS Decomposition routines' )

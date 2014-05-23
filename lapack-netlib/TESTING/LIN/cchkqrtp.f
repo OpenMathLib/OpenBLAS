@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+*       SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
 *                            NBVAL, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NNB, NOUT
@@ -89,17 +89,17 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
-      SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+      SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                     NBVAL, NOUT )
       IMPLICIT NONE
 *
@@ -172,7 +172,7 @@
 *
             MINMN = MIN( M, N )
             DO L = 0, MINMN, MAX( MINMN, 1 )
-*     
+*
 *              Do for each possible value of NB
 *
 
@@ -180,7 +180,7 @@
                   NB = NBVAL( K )
 *
 *                 Test CTPQRT and CTPMQRT
-*     
+*
                   IF( (NB.LE.N).AND.(NB.GT.0) ) THEN
                      CALL CQRT05( M, N, L, NB, RESULT )
 *

@@ -53,11 +53,11 @@
 #ifdef SMP
 static int (*gemv_thread[])(BLASLONG, BLASLONG, FLOAT *, FLOAT *, BLASLONG,  FLOAT * , BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
 #ifdef XDOUBLE
-  xgemv_thread_n, xgemv_thread_t, xgemv_thread_r, xgemv_thread_c, xgemv_thread_o, xgemv_thread_u, xgemv_thread_s, xgemv_thread_d, 
+  xgemv_thread_n, xgemv_thread_t, xgemv_thread_r, xgemv_thread_c, xgemv_thread_o, xgemv_thread_u, xgemv_thread_s, xgemv_thread_d,
 #elif defined DOUBLE
-  zgemv_thread_n, zgemv_thread_t, zgemv_thread_r, zgemv_thread_c, zgemv_thread_o, zgemv_thread_u, zgemv_thread_s, zgemv_thread_d, 
+  zgemv_thread_n, zgemv_thread_t, zgemv_thread_r, zgemv_thread_c, zgemv_thread_o, zgemv_thread_u, zgemv_thread_s, zgemv_thread_d,
 #else
-  cgemv_thread_n, cgemv_thread_t, cgemv_thread_r, cgemv_thread_c, cgemv_thread_o, cgemv_thread_u, cgemv_thread_s, cgemv_thread_d, 
+  cgemv_thread_n, cgemv_thread_t, cgemv_thread_r, cgemv_thread_c, cgemv_thread_o, cgemv_thread_u, cgemv_thread_s, cgemv_thread_d,
 #endif
 };
 #endif
@@ -68,7 +68,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
 	 FLOAT *ALPHA, FLOAT *a, blasint *LDA,
 	 FLOAT *x, blasint *INCX,
 	 FLOAT *BETA,  FLOAT *y, blasint *INCY){
-  
+
   char trans = *TRANS;
   blasint m = *M;
   blasint n = *N;
@@ -86,7 +86,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
 		  GEMV_N, GEMV_T, GEMV_R, GEMV_C,
 		  GEMV_O, GEMV_U, GEMV_S, GEMV_D,
 		};
-  
+
   blasint    info;
   blasint    lenx, leny;
   blasint    i;
@@ -169,7 +169,7 @@ void CNAME(enum CBLAS_ORDER order,
     if (TransA == CblasTrans)       trans = 1;
     if (TransA == CblasConjNoTrans) trans = 2;
     if (TransA == CblasConjTrans)   trans = 3;
-    
+
     info = -1;
 
     if (incy == 0)	  info = 11;
@@ -178,7 +178,7 @@ void CNAME(enum CBLAS_ORDER order,
     if (n < 0)		  info = 3;
     if (m < 0)		  info = 2;
     if (trans < 0)        info = 1;
-    
+
   }
 
   if (order == CblasRowMajor) {
@@ -208,7 +208,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 
 #endif
-  
+
   /*  Quick return if possible. */
 
   if (m == 0 || n == 0) return;
@@ -237,13 +237,13 @@ void CNAME(enum CBLAS_ORDER order,
 
   if (nthreads == 1) {
 #endif
-    
+
     (gemv[(int)trans])(m, n, 0, alpha_r, alpha_i, a, lda, x, incx, y, incy, buffer);
 
 #ifdef SMP
-    
+
   } else {
-    
+
     (gemv_thread[(int)trans])(m, n, ALPHA, a, lda, x, incx, y, incy, buffer, nthreads);
 
   }

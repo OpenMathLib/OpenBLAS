@@ -4,7 +4,7 @@
    probably you created too many threads or process. Basically GotoBLAS
    assumes that available cores that you specify are exclusively for
    BLAS computation. Even one small thread/process conflicts with BLAS
-   threads, performance will become worse. 
+   threads, performance will become worse.
 
    The best solution is to reduce your number of threads or insert
    some synchronization mechanism and suspend your threads until BLAS
@@ -19,4 +19,4 @@
 
 
 Anyway, if you see any weird performance loss, it means your code or
-algorithm is not optimal. 
+algorithm is not optimal.

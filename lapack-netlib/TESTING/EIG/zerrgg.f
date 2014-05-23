@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZERRGG( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -44,10 +44,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -520,56 +520,56 @@
      $                 -1, 0, 0, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, RW, LW, IW, INFO )      
+     $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL ZUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, -1, 0, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, RW, LW, IW, INFO )      
+     $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 9
          CALL ZUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, -1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, RW, LW, IW, INFO )      
+     $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 11
          CALL ZUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, -1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, RW, LW, IW, INFO )      
+     $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL ZUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, -1, A, 1, A, 1, A,
-     $                 1, W, LW, RW, LW, IW, INFO )      
+     $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL ZUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, -1, A, 1, A,
-     $                 1, W, LW, RW, LW, IW, INFO )      
+     $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 24
          CALL ZUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, -1, A,
-     $                 1, W, LW, RW, LW, IW, INFO )      
+     $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 26
          CALL ZUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 -1, W, LW, RW, LW, IW, INFO )      
+     $                 -1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          NT = NT + 8
 *

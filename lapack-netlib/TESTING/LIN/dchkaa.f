@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM DCHKAA
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -94,10 +94,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -865,13 +865,13 @@
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF
-*         
+*
       ELSE IF( LSAMEN( 2, C2, 'QT' ) ) THEN
 *
 *        QT:  QRT routines for general matrices
 *
          IF( TSTCHK ) THEN
-            CALL DCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+            CALL DCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                    NBVAL, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
@@ -882,7 +882,7 @@
 *        QX:  QRT routines for triangular-pentagonal matrices
 *
          IF( TSTCHK ) THEN
-            CALL DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+            CALL DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                     NBVAL, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH

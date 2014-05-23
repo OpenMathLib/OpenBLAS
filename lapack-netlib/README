@@ -48,36 +48,36 @@ LAPACK INSTALLATION:
  - LAPACK includes also the CMAKE build. You will need to have CMAKE installed
  on your machine (CMAKE is available at http://www.cmake.org/). CMAKE will allow
  an easy installation on a Windows Machine
- - Specific information to run LAPACK under Windows are available at 
+ - Specific information to run LAPACK under Windows are available at
  http://icl.cs.utk.edu/lapack-for-windows/lapack/
- 
+
  For further information on LAPACK please read our FAQ at
  http://www.netlib.org/lapack/#_faq
  A User forum is also available to help you with the LAPACK library at
  http://icl.cs.utk.edu/lapack-forum/
 ================
- 
- 
+
+
 ================
 LAPACK User Support
- 
+
 LAPACK has been thoroughly tested, on many different
 types of computers.  The LAPACK project supports the package in the
 sense that reports of errors or poor performance will gain immediate
-attention from the developers. Such reports, descriptions 
+attention from the developers. Such reports, descriptions
 of interesting applications, and other comments should be sent by
 electronic mail to lapack@cs.utk.edu.
 
 A list of known problems, bugs, and compiler errors for LAPACK is
 maintained on netlib.
   http://www.netlib.org/lapack/release_notes.html
-  
+
 A User forum is also available to help you with the LAPACK library at
  http://icl.cs.utk.edu/lapack-forum/
-You can also contact directly the LAPACK team at lapack@cs.utk.edu  
+You can also contact directly the LAPACK team at lapack@cs.utk.edu
 ================
-  
-  
+
+
 ================
 LAPACK TESTING
 The complete package, including test code in four
@@ -152,7 +152,7 @@ LAPACK WORKING NOTES
 
 A number of technical reports were written during the development of
 LAPACK and published as LAPACK Working Notes, initially by Argonne
-National Laboratory and later by the University of Tennessee.  Many of 
+National Laboratory and later by the University of Tennessee.  Many of
 these reports later appeared as journal articles.  Most of these working
 notes are available in pdf and postscript form from netlib.
   http://www.netlib.org/lapack/lawns/

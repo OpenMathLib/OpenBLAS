@@ -105,13 +105,13 @@ static int gbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 	 args -> m,
 #else
 	 args -> n,
-#endif	 
-	 0, 0, ZERO, 
+#endif
+	 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y, 1, NULL, 0, NULL, 0);  
-  
+	 y, 1, NULL, 0, NULL, 0);
+
   offset_u = ku - n_from;
   offset_l = ku - n_from + args -> m;
 
@@ -157,7 +157,7 @@ static int gbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 
     x += COMPSIZE;
 #endif
-    
+
     y += COMPSIZE;
 
     offset_u --;
@@ -190,7 +190,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT *alpha, FLOAT 
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -198,27 +198,27 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT *alpha, FLOAT 
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.m = m;
   args.n = n;
-  
+
   args.a = (void *)a;
   args.b = (void *)x;
   args.c = (void *)buffer;
-    
+
   args.lda = lda;
   args.ldb = incx;
   args.ldc = ku;
   args.ldd = kl;
 
   num_cpu  = 0;
-  
+
   range_n[0] = 0;
   i          = n;
-    
+
   while (i > 0){
 
     width  = blas_quickdivide(i + nthreads - num_cpu - 1, nthreads - num_cpu);
@@ -227,7 +227,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT *alpha, FLOAT 
     if (i < width) width = i;
 
     range_n[num_cpu + 1] = range_n[num_cpu] + width;
-      
+
 #ifndef TRANSA
     range_m[num_cpu] = num_cpu * ((m + 15) & ~15);
 #else
@@ -242,7 +242,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT *alpha, FLOAT 
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i -= width;
   }
@@ -254,12 +254,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT *alpha, FLOAT 
 #else
     queue[0].sb = buffer + num_cpu * (((n + 255) & ~255) + 16) * COMPSIZE;
 #endif
-    
+
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-  
+
   for (i = 1; i < num_cpu; i ++) {
     AXPYU_K(
 #ifndef TRANSA

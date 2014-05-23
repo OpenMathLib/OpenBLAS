@@ -57,7 +57,7 @@
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 #ifdef USE_ALPHA
-	   FLOAT alpha_r, FLOAT alpha_i, 
+	   FLOAT alpha_r, FLOAT alpha_i,
 #endif
 	   FLOAT *b){
 
@@ -83,7 +83,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
       a_offset3  = a_offset2 + lda;
       a_offset4  = a_offset3 + lda;
       a_offset  += 4 * lda;
-      
+
       b_offset1  = b_offset;
       b_offset  += 16;
 
@@ -151,7 +151,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	  a_offset2 += 8;
 	  a_offset3 += 8;
 	  a_offset4 += 8;
-	  
+
 	  b_offset1 += m * 4;
 	  i --;
 	}while(i > 0);
@@ -167,12 +167,12 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	a6 = *(a_offset2 + 1);
 	a7 = *(a_offset2 + 2);
 	a8 = *(a_offset2 + 3);
-	
+
 	*(b_offset2 +  0) = CMULT(a1, a2);
 	*(b_offset2 +  1) = CMULT(a3, a4);
 	*(b_offset2 +  2) = CMULT(a5, a6);
 	*(b_offset2 +  3) = CMULT(a7, a8);
-	
+
 	a1 = *(a_offset3 + 0);
 	a2 = *(a_offset3 + 1);
 	a3 = *(a_offset3 + 2);
@@ -181,17 +181,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	a6 = *(a_offset4 + 1);
 	a7 = *(a_offset4 + 2);
 	a8 = *(a_offset4 + 3);
-	
+
 	*(b_offset2 +  4) = CMULT(a1, a2);
 	*(b_offset2 +  5) = CMULT(a3, a4);
 	*(b_offset2 +  6) = CMULT(a5, a6);
 	*(b_offset2 +  7) = CMULT(a7, a8);
-	
+
 	a_offset1 += 4;
 	a_offset2 += 4;
 	a_offset3 += 4;
 	a_offset4 += 4;
-	
+
 	b_offset2 += 8;
       }
 
@@ -210,7 +210,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	*(b_offset3 +  1) = CMULT(a3, a4);
 	*(b_offset3 +  2) = CMULT(a5, a6);
 	*(b_offset3 +  3) = CMULT(a7, a8);
-	
+
 	b_offset3 += 4;
       }
 
@@ -222,10 +222,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
     a_offset1  = a_offset;
     a_offset2  = a_offset1 + lda;
     a_offset  += 2 * lda;
-    
+
     b_offset1  = b_offset;
     b_offset  += 8;
-    
+
     i = (n >> 2);
     if (i > 0){
       do{
@@ -238,12 +238,12 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	a6 = *(a_offset1 + 5);
 	a7 = *(a_offset1 + 6);
 	a8 = *(a_offset1 + 7);
-	
+
 	*(b_offset1 +  0) = CMULT(a1, a2);
 	*(b_offset1 +  1) = CMULT(a3, a4);
 	*(b_offset1 +  2) = CMULT(a5, a6);
 	*(b_offset1 +  3) = CMULT(a7, a8);
-	
+
 	a1 = *(a_offset2 + 0);
 	a2 = *(a_offset2 + 1);
 	a3 = *(a_offset2 + 2);
@@ -252,15 +252,15 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	a6 = *(a_offset2 + 5);
 	a7 = *(a_offset2 + 6);
 	a8 = *(a_offset2 + 7);
-	
+
 	*(b_offset1 +  4) = CMULT(a1, a2);
 	*(b_offset1 +  5) = CMULT(a3, a4);
 	*(b_offset1 +  6) = CMULT(a5, a6);
 	*(b_offset1 +  7) = CMULT(a7, a8);
-	
+
 	a_offset1 += 8;
 	a_offset2 += 8;
-	
+
 	b_offset1 += m * 4;
 	i --;
       }while(i > 0);
@@ -275,23 +275,23 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
       a6 = *(a_offset2 + 1);
       a7 = *(a_offset2 + 2);
       a8 = *(a_offset2 + 3);
-      
+
       *(b_offset2 +  0) = CMULT(a1, a2);
       *(b_offset2 +  1) = CMULT(a3, a4);
       *(b_offset2 +  2) = CMULT(a5, a6);
       *(b_offset2 +  3) = CMULT(a7, a8);
-      
+
       a_offset1 += 4;
       a_offset2 += 4;
       b_offset2 += 4;
     }
-    
+
     if (n & 1) {
       a1 = *(a_offset1 + 0);
       a2 = *(a_offset1 + 1);
       a3 = *(a_offset2 + 0);
       a4 = *(a_offset2 + 1);
-      
+
       *(b_offset3 +  0) = CMULT(a1, a2);
       *(b_offset3 +  1) = CMULT(a3, a4);
 
@@ -302,7 +302,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
   if (m & 1){
     a_offset1  = a_offset;
     b_offset1  = b_offset;
-    
+
     i = (n >> 2);
     if (i > 0){
       do{
@@ -314,12 +314,12 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	a6 = *(a_offset1 + 5);
 	a7 = *(a_offset1 + 6);
 	a8 = *(a_offset1 + 7);
-	
+
 	*(b_offset1 +  0) = CMULT(a1, a2);
 	*(b_offset1 +  1) = CMULT(a3, a4);
 	*(b_offset1 +  2) = CMULT(a5, a6);
 	*(b_offset1 +  3) = CMULT(a7, a8);
-	
+
 	a_offset1 += 8;
 
 	b_offset1 += 4 * m;
@@ -333,17 +333,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
       a2 = *(a_offset1 + 1);
       a3 = *(a_offset1 + 2);
       a4 = *(a_offset1 + 3);
-      
+
       *(b_offset2 +  0) = CMULT(a1, a2);
       *(b_offset2 +  1) = CMULT(a3, a4);
-      
+
       a_offset1 += 4;
     }
-    
+
     if (n & 1) {
       a1 = *(a_offset1 + 0);
       a2 = *(a_offset1 + 1);
-      
+
       *(b_offset3 +  0) = CMULT(a1, a2);
     }
   }

@@ -87,7 +87,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	pushq	%r15
 	pushq	%r14
@@ -361,7 +361,7 @@
 
 .L999:
 	EMMS
-	
+
 #ifdef WINDOWS_ABI
 	movups	  0(%rsp), %xmm6
 	movups	 16(%rsp), %xmm7

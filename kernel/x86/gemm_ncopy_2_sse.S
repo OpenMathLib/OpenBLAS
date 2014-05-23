@@ -46,7 +46,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define ARG_A	12 + STACK + ARGS(%esp)
@@ -60,7 +60,7 @@
 #define A2	%edx
 #define I	%esi
 #define J	%edi
-	
+
 	PROLOGUE
 
 	pushl	%ebp

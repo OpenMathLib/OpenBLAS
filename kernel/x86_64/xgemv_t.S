@@ -42,7 +42,7 @@
 
 #define STACKSIZE	80
 #define P		4096
-	
+
 #define ALPHA_R		 8 + STACKSIZE(%rsp)
 #define ALPHA_I		24 + STACKSIZE(%rsp)
 #define OLD_INCX	40 + STACKSIZE(%rsp)
@@ -70,7 +70,7 @@
 #define X1	%r13
 #define Y1	%r14
 #define MIN_M	%rbx
-	
+
 
 	PROLOGUE
 	PROFCODE

@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE DCSDTS( M, P, Q, X, XF, LDX, U1, LDU1, U2, LDU2, V1T,
 *                          LDV1T, V2T, LDV2T, THETA, IWORK, WORK, LWORK,
 *                          RWORK, RESULT )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDX, LDU1, LDU2, LDV1T, LDV2T, LWORK, M, P, Q
 *       ..
@@ -22,7 +22,7 @@
 *      $                   V2T( LDV2T, * ), WORK( LWORK ), X( LDX, * ),
 *      $                   XF( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -215,10 +215,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -280,7 +280,7 @@
       CALL DSYRK( 'Upper', 'Conjugate transpose', M, M, -ONE, X, LDX,
      $            ONE, WORK, LDX )
       IF (M.GT.0) THEN
-         EPS2 = MAX( ULP, 
+         EPS2 = MAX( ULP,
      $               DLANGE( '1', M, M, WORK, LDX, RWORK ) / DBLE( M ) )
       ELSE
          EPS2 = ULP
@@ -445,7 +445,7 @@
       CALL DSYRK( 'Upper', 'Conjugate transpose', Q, M, -ONE, X, LDX,
      $            ONE, WORK, LDX )
       IF( M.GT.0 ) THEN
-         EPS2 = MAX( ULP, 
+         EPS2 = MAX( ULP,
      $               DLANGE( '1', Q, Q, WORK, LDX, RWORK ) / DBLE( M ) )
       ELSE
          EPS2 = ULP
@@ -551,7 +551,7 @@
       END DO
 *
       RETURN
-*      
+*
 *     End of DCSDTS
 *
       END

@@ -2,14 +2,14 @@ C> \brief \b ZPOTRF VARIANT: top-looking block version of the algorithm, calling
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZPOTRF ( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -17,7 +17,7 @@ C> \brief \b ZPOTRF VARIANT: top-looking block version of the algorithm, calling
 *       .. Array Arguments ..
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -88,10 +88,10 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
 C> \date November 2011
 *
@@ -180,11 +180,11 @@ C> \ingroup variantsPOcomputational
 *
 *              Compute the current block.
 *
-               CALL ZTRSM( 'Left', 'Upper', 'Conjugate Transpose', 
+               CALL ZTRSM( 'Left', 'Upper', 'Conjugate Transpose',
      $                      'Non-unit', J-1, JB, CONE, A( 1, 1 ), LDA,
      $                      A( 1, J ), LDA )
 
-               CALL ZHERK( 'Upper', 'Conjugate Transpose', JB, J-1, 
+               CALL ZHERK( 'Upper', 'Conjugate Transpose', JB, J-1,
      $                      -ONE, A( 1, J ), LDA, ONE, A( J, J ), LDA )
 *
 *              Update and factorize the current diagonal block and test
@@ -206,12 +206,12 @@ C> \ingroup variantsPOcomputational
 *
 *              Compute the current block.
 *
-               CALL ZTRSM( 'Right', 'Lower', 'Conjugate Transpose', 
+               CALL ZTRSM( 'Right', 'Lower', 'Conjugate Transpose',
      $                     'Non-unit', JB, J-1, CONE, A( 1, 1 ), LDA,
      $                     A( J, 1 ), LDA )
 
-               CALL ZHERK( 'Lower', 'No Transpose', JB, J-1, 
-     $                     -ONE, A( J, 1 ), LDA, 
+               CALL ZHERK( 'Lower', 'No Transpose', JB, J-1,
+     $                     -ONE, A( J, 1 ), LDA,
      $                     ONE, A( J, J ), LDA )
 *
 *              Update and factorize the current diagonal block and test

@@ -38,7 +38,7 @@
 
 #include "common.h"
 
-int CNAME(BLASLONG m, FLOAT alpha_r, 
+int CNAME(BLASLONG m, FLOAT alpha_r,
 	  FLOAT *x, BLASLONG incx, FLOAT *a, BLASLONG lda, FLOAT *buffer){
 
   BLASLONG i;

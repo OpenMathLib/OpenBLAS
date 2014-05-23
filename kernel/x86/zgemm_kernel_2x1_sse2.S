@@ -47,7 +47,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -239,7 +239,7 @@
 
 	movsd	 %xmm0, 0 + ALPHA_R
 	movsd	 %xmm0, 8 + ALPHA_R
-	
+
 	movsd	 %xmm1, 8 + ALPHA_I
 	xorpd	 %xmm7, %xmm1
 	movsd	 %xmm1, 0 + ALPHA_I
@@ -264,7 +264,7 @@
 	movd	%mm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	sall	$ZBASE_SHIFT, LDC
@@ -277,7 +277,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, BB
 	movapd	POSINV, %xmm7
@@ -299,7 +299,7 @@
 	unpcklpd %xmm3, %xmm3
 
 #if defined(NN) || defined(NT) || defined(NR) || defined(NC)  || \
-    defined(TN) || defined(TT) || defined(TR) || defined(TC) 
+    defined(TN) || defined(TT) || defined(TR) || defined(TC)
 	xorpd	 %xmm7, %xmm1
 	xorpd	 %xmm7, %xmm3
 #else
@@ -323,7 +323,7 @@
 	unpcklpd %xmm3, %xmm3
 
 #if defined(NN) || defined(NT) || defined(NR) || defined(NC)  || \
-    defined(TN) || defined(TT) || defined(TR) || defined(TC) 
+    defined(TN) || defined(TT) || defined(TR) || defined(TC)
 	xorpd	 %xmm7, %xmm1
 	xorpd	 %xmm7, %xmm3
 #else
@@ -337,7 +337,7 @@
 	movapd	%xmm3, 14 * SIZE(BB)
 
 	prefetcht0	104 * SIZE(B)
-	
+
 	addl	$ 8 * SIZE, B
 	addl	$16 * SIZE, BB
 	decl	%eax
@@ -359,7 +359,7 @@
 	unpcklpd %xmm1, %xmm1
 
 #if defined(NN) || defined(NT) || defined(NR) || defined(NC)  || \
-    defined(TN) || defined(TT) || defined(TR) || defined(TC) 
+    defined(TN) || defined(TT) || defined(TR) || defined(TC)
 	xorpd	 %xmm7, %xmm1
 #else
 	xorpd	 %xmm7, %xmm0
@@ -422,7 +422,7 @@
 	movapd	 8 * SIZE(AA), %xmm1
 	pxor	%xmm7, %xmm7
 
-#endif	
+#endif
 
 	prefetchnta	 3 * SIZE(%esi)
 
@@ -431,7 +431,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -445,7 +445,7 @@
 	NOBRANCH
 	je	.L12
 	sall	$3, %eax
-	
+
 .L1X:
 	KERNEL1(32  *  0)
 	KERNEL2(32  *  0)
@@ -542,7 +542,7 @@
 .L11:
 	leal	(BB, %eax, 4), BB
 	leal	(AA, %eax, 4), AA
-	
+
 .L12:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -670,7 +670,7 @@
 	movapd	 8 * SIZE(BB), %xmm2
 	pxor	%xmm6, %xmm6
 	pxor	%xmm7, %xmm7
-#endif	
+#endif
 
 
 #ifndef TRMMKERNEL
@@ -678,7 +678,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 	addl	$1, %eax

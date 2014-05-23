@@ -48,12 +48,12 @@
 #define A	%i5
 #define LDA	%i2
 #define X	%i3
-#define INCX	%i4	
+#define INCX	%i4
 #else
 #define A	%i4
 #define LDA	%i5
 #define X	%i2
-#define INCX	%i3	
+#define INCX	%i3
 #endif
 
 #define Y	%l0
@@ -218,7 +218,7 @@
 #else
 	FCLR(30)
 #endif
-	
+
 	clr	IS
 	mov	P, I
 	sll	LDA, BASE_SHIFT, LDA
@@ -697,7 +697,7 @@
 	cmp	IS, M
 	bl	%icc, .LL10
 	add	A, PNLDA, A
-		
+
 .LL999:
 	return	%i7 + 8
 	clr	%o0

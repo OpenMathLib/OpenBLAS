@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
 *> Download ZUNBDB1 + dependencies
@@ -20,7 +20,7 @@
 *
 *       SUBROUTINE ZUNBDB1( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
 *                           TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LWORK, M, P, Q, LDX11, LDX21
 *       ..
@@ -29,8 +29,8 @@
 *       COMPLEX*16         TAUP1(*), TAUP2(*), TAUQ1(*), WORK(*),
 *      $                   X11(LDX11,*), X21(LDX21,*)
 *       ..
-*  
-* 
+*
+*
 *> \par Purpose:
 *> =============
 *>
@@ -151,7 +151,7 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>           The dimension of the array WORK. LWORK >= M-Q.
-*> 
+*>
 *>           If LWORK = -1, then a workspace query is assumed; the routine
 *>           only calculates the optimal size of the WORK array, returns
 *>           this value as the first entry of the WORK array, and no error
@@ -169,10 +169,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date July 2012
 *

@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE CLATM5( PRTYPE, M, N, A, LDA, B, LDB, C, LDC, D, LDD,
 *                          E, LDE, F, LDF, R, LDR, L, LDL, ALPHA, QBLCKA,
 *                          QBLCKB )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDB, LDC, LDD, LDE, LDF, LDL, LDR, M, N,
 *      $                   PRTYPE, QBLCKA, QBLCKB
@@ -22,7 +22,7 @@
 *      $                   D( LDD, * ), E( LDE, * ), F( LDF, * ),
 *      $                   L( LDL, * ), R( LDR, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -187,10 +187,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

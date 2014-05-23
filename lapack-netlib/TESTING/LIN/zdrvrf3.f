@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
 *      +                    D_WORK_ZLANGE, Z_WORK_ZGEQRF, TAU )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, NN, NOUT
 *       DOUBLE PRECISION   THRESH
@@ -22,7 +22,7 @@
 *      +                   B2( LDA, * )
 *       COMPLEX*16         Z_WORK_ZGEQRF( * ), TAU( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -106,10 +106,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -257,12 +257,12 @@
                               END IF
 *
 *                             Generate A our NA--by--NA triangular
-*                             matrix. 
+*                             matrix.
 *                             Our test is based on forward error so we
 *                             do want A to be well conditionned! To get
 *                             a well-conditionned triangular matrix, we
 *                             take the R factor of the QR/LQ factorization
-*                             of a random matrix. 
+*                             of a random matrix.
 *
                               DO J = 1, NA
                                  DO I = 1, NA
@@ -292,7 +292,7 @@
 *
 *                             After the QR factorization, the diagonal
 *                             of A is made of real numbers, we multiply
-*                             by a random complex number of absolute 
+*                             by a random complex number of absolute
 *                             value 1.0E+00.
 *
                               DO J = 1, NA
@@ -349,7 +349,7 @@
                                     WRITE( NOUT, * )
                                     WRITE( NOUT, FMT = 9999 )
                                  END IF
-                                 WRITE( NOUT, FMT = 9997 ) 'ZTFSM', 
+                                 WRITE( NOUT, FMT = 9997 ) 'ZTFSM',
      +                              CFORM, SIDE, UPLO, TRANS, DIAG, M,
      +                              N, RESULT(1)
                                  NFAIL = NFAIL + 1
@@ -372,7 +372,7 @@
          WRITE( NOUT, FMT = 9995 ) 'ZTFSM', NFAIL, NRUN
       END IF
 *
- 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing ZTFSM 
+ 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing ZTFSM
      +         ***')
  9997 FORMAT( 1X, '     Failure in ',A5,', CFORM=''',A1,''',',
      + ' SIDE=''',A1,''',',' UPLO=''',A1,''',',' TRANS=''',A1,''',',

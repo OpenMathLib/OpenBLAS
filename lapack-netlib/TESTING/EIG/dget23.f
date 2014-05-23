@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -13,7 +13,7 @@
 *                          LDVR, LRE, LDLRE, RCONDV, RCNDV1, RCDVIN,
 *                          RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1, RESULT,
 *                          WORK, LWORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            COMP
 *       CHARACTER          BALANC
@@ -30,7 +30,7 @@
 *      $                   VL( LDVL, * ), VR( LDVR, * ), WI( * ),
 *      $                   WI1( * ), WORK( * ), WR( * ), WR1( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -362,10 +362,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

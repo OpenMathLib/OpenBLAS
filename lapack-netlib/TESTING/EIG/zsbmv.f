@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZSBMV( UPLO, N, K, ALPHA, A, LDA, X, INCX, BETA, Y,
 *                         INCY )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INCX, INCY, K, LDA, N
@@ -19,7 +19,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16         A( LDA, * ), X( * ), Y( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -139,10 +139,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

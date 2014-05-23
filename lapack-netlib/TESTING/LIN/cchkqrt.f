@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE CCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+*       SUBROUTINE CCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
 *                           NBVAL, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NNB, NOUT
@@ -89,17 +89,17 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
-      SUBROUTINE CCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+      SUBROUTINE CCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                    NBVAL, NOUT )
       IMPLICIT NONE
 *
@@ -175,7 +175,7 @@
                NB = NBVAL( K )
 *
 *              Test CGEQRT and CGEMQRT
-*     
+*
                IF( (NB.LE.MINMN).AND.(NB.GT.0) ) THEN
                   CALL CQRT04( M, N, NB, RESULT )
 *

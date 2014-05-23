@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	r3
 #define XX	r4
 #define PREA	r5
@@ -65,7 +65,7 @@
 
 #define FZERO	f0
 #define ALPHA	f1
-	
+
 	PROLOGUE
 	PROFCODE
 

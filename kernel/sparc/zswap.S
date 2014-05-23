@@ -119,7 +119,7 @@
 	ldx	[%sp +  STACK_START + 64], Y
 	ldx	[%sp +  STACK_START + 72], INCY
 #endif
-	
+
 	sll	INCX, ZBASE_SHIFT, INCX
 	sll	INCY, ZBASE_SHIFT, INCY
 

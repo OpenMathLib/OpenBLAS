@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CSROT( N, CX, INCX, CY, INCY, C, S )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER           INCX, INCY, N
 *       REAL              C, S
@@ -17,7 +17,7 @@
 *       .. Array Arguments ..
 *       COMPLEX           CX( * ), CY( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -86,10 +86,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

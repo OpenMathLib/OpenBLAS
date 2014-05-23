@@ -45,7 +45,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -153,7 +153,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -173,13 +173,13 @@
 	movl	%eax, J
 	jle	.L100
 	ALIGN_2
-	
+
 .L01:
 #ifdef LN
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, BB
 
@@ -195,7 +195,7 @@
         sall	$1 + BASE_SHIFT, %eax
 	leal	(B,  %eax, 1), B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -211,7 +211,7 @@
 	sarl	$2, %eax
 	jle	.L03
 	ALIGN_4
-	
+
 .L02:
 	movsd	 0 * SIZE(B), %xmm3
 	movhps	 2 * SIZE(B), %xmm3
@@ -337,7 +337,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movss	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -576,7 +576,7 @@
 	sall	$BASE_SHIFT, %eax
 	addl	%eax, AORIG
 #endif
-	ALIGN_2	
+	ALIGN_2
 
 .L30:
 	testl	$2, M
@@ -601,7 +601,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -801,7 +801,7 @@
 #ifdef RN
 	movss	 0 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm0
 
 	movss	 1 * SIZE(B), %xmm6
@@ -813,14 +813,14 @@
 
 	movss	 3 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm2
 #endif
 
 #ifdef RT
 	movss	 3 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm2
 
 	movss	 2 * SIZE(B), %xmm6
@@ -833,7 +833,7 @@
 
 	movss	 0 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm0
 #endif
 
@@ -911,7 +911,7 @@
 	sall	$1 + BASE_SHIFT, %eax
 	addl	%eax, AORIG
 #endif
-	ALIGN_2	
+	ALIGN_2
 
 .L50:
 	testl	$4, M
@@ -936,7 +936,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -1186,7 +1186,7 @@
 #ifdef RN
 	movss	 0 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm0
 
 	movss	 1 * SIZE(B), %xmm6
@@ -1198,14 +1198,14 @@
 
 	movss	 3 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm2
 #endif
 
 #ifdef RT
 	movss	 3 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm2
 
 	movss	 2 * SIZE(B), %xmm6
@@ -1218,7 +1218,7 @@
 
 	movss	 0 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm0
 #endif
 
@@ -1323,7 +1323,7 @@
 	sall	$2 + BASE_SHIFT, %eax
 	addl	%eax, AORIG
 #endif
-	ALIGN_2	
+	ALIGN_2
 
 .L70:
 	movl	M,  %ebx
@@ -1351,7 +1351,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -1874,7 +1874,7 @@
 #ifdef RN
 	movss	 0 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm0
 	mulps	%xmm6, %xmm1
 
@@ -1890,7 +1890,7 @@
 
 	movss	 3 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm2
 	mulps	%xmm6, %xmm3
 #endif
@@ -1898,7 +1898,7 @@
 #ifdef RT
 	movss	 3 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm2
 	mulps	%xmm6, %xmm3
 
@@ -1914,7 +1914,7 @@
 
 	movss	 0 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm0
 	mulps	%xmm6, %xmm1
 #endif
@@ -2079,7 +2079,7 @@
 
 	decl	%ebx			# i --
 	jg	.L10
-	ALIGN_2	
+	ALIGN_2
 
 .L99:
 #ifdef LN
@@ -2110,12 +2110,12 @@
 .L100:
 	testl	$1, N
 	jle	.L999
-	
+
 #ifdef LN
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, BB
 
@@ -2131,7 +2131,7 @@
         sall	$BASE_SHIFT, %eax
 	leal	(B,  %eax, 1), B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -2147,7 +2147,7 @@
 	sarl	$3, %eax
 	jle	.L103
 	ALIGN_4
-	
+
 .L102:
 	movsd	 0 * SIZE(B), %xmm3
 	movhps	 2 * SIZE(B), %xmm3
@@ -2262,7 +2262,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movss	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -2447,7 +2447,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -2667,7 +2667,7 @@
 	sall	$1 + BASE_SHIFT, %eax
 	addl	%eax, AORIG
 #endif
-	ALIGN_2	
+	ALIGN_2
 
 .L150:
 	testl	$4, M
@@ -2692,7 +2692,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -2996,7 +2996,7 @@
 	sall	$2 + BASE_SHIFT, %eax
 	addl	%eax, AORIG
 #endif
-	ALIGN_2	
+	ALIGN_2
 
 .L170:
 	movl	M,  %ebx
@@ -3024,7 +3024,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(BB), %xmm2
 	xorps	%xmm4, %xmm4
@@ -3462,7 +3462,7 @@
 #if defined(RN) || defined(RT)
 	movss	 0 * SIZE(B), %xmm6
 	shufps	$0x00, %xmm6, %xmm6
-	
+
 	mulps	%xmm6, %xmm0
 	mulps	%xmm6, %xmm1
 #endif
@@ -3470,7 +3470,7 @@
 #if defined(LN) || defined(LT)
 	shufps	$0x88, %xmm3, %xmm2
 	shufps	$0x88, %xmm7, %xmm5
-	
+
 	movlps	%xmm2,   0 * SIZE(B)
 	movhps	%xmm2,   2 * SIZE(B)
 	movlps	%xmm5,   4 * SIZE(B)
@@ -3570,7 +3570,7 @@
 
 	decl	%ebx			# i --
 	jg	.L110
-	ALIGN_2	
+	ALIGN_2
 
 .L179:
 #ifdef LN

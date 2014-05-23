@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM ZBLAT3
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -47,7 +47,7 @@
 *> ZHER2K T PUT F FOR NO TEST. SAME COLUMNS.
 *> ZSYR2K T PUT F FOR NO TEST. SAME COLUMNS.
 *>
-*> 
+*>
 *> Further Details
 *> ===============
 *>
@@ -74,10 +74,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *

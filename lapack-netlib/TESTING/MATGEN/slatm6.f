@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLATM6( TYPE, N, A, LDA, B, X, LDX, Y, LDY, ALPHA,
 *                          BETA, WX, WY, S, DIF )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDX, LDY, N, TYPE
 *       REAL               ALPHA, BETA, WX, WY
@@ -19,7 +19,7 @@
 *       REAL               A( LDA, * ), B( LDA, * ), DIF( * ), S( * ),
 *      $                   X( LDX, * ), Y( LDY, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -163,10 +163,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

@@ -93,11 +93,11 @@
 #define PREFETCHW	prefetcht0
 #define PREFETCHSIZE	(16 * 14)
 #endif
-	
+
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	80
-	
+
 #define OLD_Y		 8 + STACKSIZE(%rsp)
 #define OLD_INCY	16 + STACKSIZE(%rsp)
 #define OLD_BUFFER	24 + STACKSIZE(%rsp)
@@ -105,14 +105,14 @@
 #define M	  ARG1
 #define	N	  ARG2
 #define	A	  ARG3
-#define LDA	  ARG4	
+#define LDA	  ARG4
 #define	X	  ARG5
-#define INCX	  ARG6	
+#define INCX	  ARG6
 
 #else
 
 #define STACKSIZE	256
-	
+
 #define OLD_A		 40 + STACKSIZE(%rsp)
 #define OLD_LDA		 48 + STACKSIZE(%rsp)
 #define OLD_X		 56 + STACKSIZE(%rsp)

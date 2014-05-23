@@ -60,7 +60,7 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
   extern
 #endif
   FLOAT *sa, *sb;
-  
+
   PRINT_DEBUG_NAME;
 
   args.m    = *M;
@@ -81,7 +81,7 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
 
   *Info = 0;
   if (args.m == 0 || args.n == 0) return 0;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();

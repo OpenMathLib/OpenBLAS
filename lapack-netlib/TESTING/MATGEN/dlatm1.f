@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLATM1( MODE, COND, IRSIGN, IDIST, ISEED, D, N, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IDIST, INFO, IRSIGN, MODE, N
 *       DOUBLE PRECISION   COND
@@ -18,7 +18,7 @@
 *       INTEGER            ISEED( 4 )
 *       DOUBLE PRECISION   D( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -123,10 +123,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

@@ -1,4 +1,4 @@
-#include "common.h" 
+#include "common.h"
 
 //typedef int BLASLONG;
 //typedef double FLOAT;

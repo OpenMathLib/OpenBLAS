@@ -26,7 +26,7 @@ include ../make.inc
 #                  precision.
 #       ZLASRC  -- Double precision complex LAPACK routines
 #       ZXLASRC -- Double precision complex LAPACK routines using extra
-#                  precision.   
+#                  precision.
 #
 #  The library can be set up to include routines for any combination
 #  of the four precisions.  To create or add to the library, enter make
@@ -157,7 +157,7 @@ SLASRC = \
    sgeqrt.o sgeqrt2.o sgeqrt3.o sgemqrt.o \
    stpqrt.o stpqrt2.o stpmqrt.o stprfb.o
 
-DSLASRC = spotrs.o 
+DSLASRC = spotrs.o
 
 ifdef USEXBLAS
 SXLASRC = sgesvxx.o sgerfsx.o sla_gerfsx_extended.o sla_geamv.o		\
@@ -252,7 +252,7 @@ CXLASRC = cgesvxx.o cgerfsx.o cla_gerfsx_extended.o cla_geamv.o \
    cla_lin_berr.o clarscl2.o clascl2.o cla_wwaddw.o
 endif
 
-ZCLASRC = cpotrs.o 
+ZCLASRC = cpotrs.o
 
 DLASRC = \
    dgbbrd.o dgbcon.o dgbequ.o dgbrfs.o dgbsv.o  \

@@ -41,7 +41,7 @@
 #include "common.h"
 
 int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
-  
+
   BLASLONG i;
 #if (TRANSA == 2) || (TRANSA == 4)
   FLOAT _Complex temp;
@@ -114,7 +114,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
     a += (m - i) * 2;
 #endif
     }
-    
+
   if (incb != 1) {
     COPY_K(m, buffer, 1, b, incb);
   }

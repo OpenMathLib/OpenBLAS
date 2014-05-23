@@ -95,7 +95,7 @@ int support_avx(){
 #ifndef NO_AVX
   int eax, ebx, ecx, edx;
   int ret=0;
-  
+
   cpuid(1, &eax, &ebx, &ecx, &edx);
   if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0 && (ecx & (1 << 26)) != 0){
     xgetbv(0, &eax, &edx);
@@ -119,7 +119,7 @@ static int get_vendor(void){
   char vendor[13];
 
   cpuid(0, &eax, &ebx, &ecx, &edx);
-  
+
   *(int *)(&vendor[0]) = ebx;
   *(int *)(&vendor[4]) = edx;
   *(int *)(&vendor[8]) = ecx;
@@ -173,7 +173,7 @@ static gotoblas_t *get_coretype(void){
 	// Pentium (Clarkdale) / Pentium Mobile (Arrandale)
 	// Xeon (Clarkdale), 32nm
 	if (model ==  5) return &gotoblas_NEHALEM;
-		  
+
 	//Intel Xeon Processor 5600 (Westmere-EP)
 	//Xeon Processor E7 (Westmere-EX)
 	//Xeon E7540
@@ -244,7 +244,7 @@ static gotoblas_t *get_coretype(void){
       }
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) {
-	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3; 
+	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3;
 	else return &gotoblas_OPTERON;
       }  else if (exfamily == 5) {
 	return &gotoblas_BOBCAT;
@@ -279,7 +279,7 @@ static gotoblas_t *get_coretype(void){
       break;
     }
   }
-  
+
   return NULL;
 }
 
@@ -320,7 +320,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_DUNNINGTON)   return corename[ 9];
   if (gotoblas == &gotoblas_NEHALEM)      return corename[10];
   if (gotoblas == &gotoblas_ATHLON)       return corename[11];
-  if (gotoblas == &gotoblas_OPTERON_SSE3) return corename[12]; 
+  if (gotoblas == &gotoblas_OPTERON_SSE3) return corename[12];
   if (gotoblas == &gotoblas_OPTERON)      return corename[13];
   if (gotoblas == &gotoblas_BARCELONA)    return corename[14];
   if (gotoblas == &gotoblas_NANO)         return corename[15];
@@ -334,11 +334,11 @@ char *gotoblas_corename(void) {
 }
 
 void gotoblas_dynamic_init(void) {
-  
+
   if (gotoblas) return;
 
   gotoblas = get_coretype();
-  
+
 #ifdef ARCH_X86
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
@@ -353,18 +353,18 @@ void gotoblas_dynamic_init(void) {
           gotoblas = &gotoblas_PRESCOTT;
   }
 #endif
-  
+
   if (gotoblas && gotoblas -> init) {
     gotoblas -> init();
   } else {
     openblas_warning(0, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
     exit(1);
   }
-  
+
 }
 
 void gotoblas_dynamic_quit(void) {
-  
+
   gotoblas = NULL;
 
 }

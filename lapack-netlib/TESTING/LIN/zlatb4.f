@@ -2,22 +2,22 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLATB4( PATH, IMAT, M, N, TYPE, KL, KU, ANORM, MODE,
 *                          CNDNUM, DIST )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIST, TYPE
 *       CHARACTER*3        PATH
 *       INTEGER            IMAT, KL, KU, M, MODE, N
 *       DOUBLE PRECISION   ANORM, CNDNUM
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -108,10 +108,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *

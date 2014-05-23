@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE SDRVLS( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL, NNB,
 *                          NBVAL, NXVAL, THRESH, TSTERR, A, COPYA, B,
 *                          COPYB, C, S, COPYS, WORK, IWORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NNB, NNS, NOUT
@@ -24,7 +24,7 @@
 *       REAL               A( * ), B( * ), C( * ), COPYA( * ), COPYB( * ),
 *      $                   COPYS( * ), S( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -46,14 +46,14 @@
 *>          .TRUE.; if DOTYPE(j) = .FALSE., then type j is not used.
 *>          The matrix of type j is generated as follows:
 *>          j=1: A = U*D*V where U and V are random orthogonal matrices
-*>               and D has random entries (> 0.1) taken from a uniform 
+*>               and D has random entries (> 0.1) taken from a uniform
 *>               distribution (0,1). A is full rank.
 *>          j=2: The same of 1, but A is scaled up.
 *>          j=3: The same of 1, but A is scaled down.
 *>          j=4: A = U*D*V where U and V are random orthogonal matrices
 *>               and D has 3*min(M,N)/4 random entries (> 0.1) taken
 *>               from a uniform distribution (0,1) and the remaining
-*>               entries set to 0. A is rank-deficient. 
+*>               entries set to 0. A is rank-deficient.
 *>          j=5: The same of 4, but A is scaled up.
 *>          j=6: The same of 5, but A is scaled down.
 *> \endverbatim
@@ -189,10 +189,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -234,9 +234,9 @@
 *     .. Local Scalars ..
       CHARACTER          TRANS
       CHARACTER*3        PATH
-      INTEGER            CRANK, I, IM, IN, INB, INFO, INS, IRANK, 
-     $                   ISCALE, ITRAN, ITYPE, J, K, LDA, LDB, LDWORK, 
-     $                   LWLSY, LWORK, M, MNMIN, N, NB, NCOLS, NERRS, 
+      INTEGER            CRANK, I, IM, IN, INB, INFO, INS, IRANK,
+     $                   ISCALE, ITRAN, ITYPE, J, K, LDA, LDB, LDWORK,
+     $                   LWLSY, LWORK, M, MNMIN, N, NB, NCOLS, NERRS,
      $                   NFAIL, NLVL, NRHS, NROWS, NRUN, RANK
       REAL               EPS, NORMA, NORMB, RCOND
 *     ..
@@ -707,7 +707,7 @@
                               NFAIL = NFAIL + 1
                            END IF
    90                   CONTINUE
-                        NRUN = NRUN + 12 
+                        NRUN = NRUN + 12
 *
   100                CONTINUE
   110             CONTINUE

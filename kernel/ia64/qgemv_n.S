@@ -80,7 +80,7 @@
 
 #define ARLC	r30
 #define PR	r31
-	
+
 #define LDA7M8	r8
 #define PREA	r9
 #define PREB	r10
@@ -114,7 +114,7 @@
 	adds	r15 = 24, SP
 	adds	r16 = 32, SP
 	.body
-	;;	
+	;;
 
 #ifdef XDOUBLE
 	ld8	X      = [r14], 16
@@ -179,10 +179,10 @@
 .L11:
 	shladd	LDA7M8 = LDA, 3, r0
 	;;
-	sub	LDA7M8 = LDA, LDA7M8	
+	sub	LDA7M8 = LDA, LDA7M8
 	;;
 	adds	LDA7M8 = 8 * SIZE, LDA7M8
-	;;	
+	;;
 	mov	YLD1 = YY
 	mov	YST1 = YY
 	adds	YLD2 = 1 * SIZE, YY
@@ -558,7 +558,7 @@
 	nop   __LINE__
 	(p17) FMA	f122 = ALPHA7,  f88, f122
 	}
-	;; 
+	;;
 	{ .mmf
 	(p16) LDFD	f84  = [AO5], LDA
 	(p16) LDFD	f85  = [AO6], LDA
@@ -788,7 +788,7 @@
 	(p14) FMA	f100 = ALPHA7,  f84, f100
 	(p14) FMA	f101 = ALPHA7,  f85, f101
 	(p15) FMA	f102 = ALPHA7,  f86, f102
-	;; 
+	;;
 	(p13) FMA	f16  = ALPHA8,  f88, f96
 	(p13) FMA	f17  = ALPHA8,  f89, f97
 	(p13) FMA	f18  = ALPHA8,  f90, f98
@@ -832,10 +832,10 @@
 
 	shladd	LDA7M8 = LDA, 2, r0
 	;;
-	sub	LDA7M8 = LDA, LDA7M8	
+	sub	LDA7M8 = LDA, LDA7M8
 	;;
 	adds	LDA7M8 = 8 * SIZE, LDA7M8
-	;;	
+	;;
 	mov	YLD1 = YY
 	mov	YST1 = YY
 	adds	YLD2 = 2 * SIZE, YY
@@ -1123,10 +1123,10 @@
 
 	shladd	LDA7M8 = LDA, 1, r0
 	;;
-	sub	LDA7M8 = LDA, LDA7M8	
+	sub	LDA7M8 = LDA, LDA7M8
 	;;
 	adds	LDA7M8 = 8 * SIZE, LDA7M8
-	;;	
+	;;
 	mov	YLD1 = YY
 	mov	YST1 = YY
 	adds	YLD2 = 2 * SIZE, YY
@@ -1334,7 +1334,7 @@
 	(p6) br.cond.dpnt .L990
 	;;
 	mov	LDA7M8 = 8 * SIZE
-	;;	
+	;;
 	mov	YLD1 = YY
 	mov	YST1 = YY
 	adds	YLD2 = 2 * SIZE, YY

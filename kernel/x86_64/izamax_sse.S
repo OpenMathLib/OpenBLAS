@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
@@ -47,12 +47,12 @@
 #define I	ARG4
 #define XX	%r10
 #define	MM	%r11
-	
+
 #ifdef USE_MIN
 #define maxps	minps
 #define maxss	minss
 #endif
-	
+
 #include "l1param.h"
 
 	PROLOGUE
@@ -91,7 +91,7 @@
 	sarq	$3, I
 	jle	.L35
 	ALIGN_4
-	
+
 .L31:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -172,7 +172,7 @@
 	maxss	%xmm4,  %xmm0
 	maxss	%xmm6,  %xmm1
 	addq	$4 * SIZE, X
-	ALIGN_3	
+	ALIGN_3
 
 .L37:
 	testq	$1, M
@@ -203,7 +203,7 @@
 	sarq	$2, I
 	jle	.L45
 	ALIGN_4
-	
+
 .L41:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -301,7 +301,7 @@
 	incq	RET
 	comiss	%xmm0, %xmm3
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L47:
 	incq	RET
@@ -313,7 +313,7 @@
 	sarq	$3, I
 	jle	.L75
 	ALIGN_4
-	
+
 .L71:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -384,7 +384,7 @@
 	andps	%xmm15, %xmm6
 	addps	%xmm6,  %xmm4
 	maxps	%xmm4,  %xmm0
-	ALIGN_3	
+	ALIGN_3
 
 .L76:
 	testq	$2, M
@@ -405,7 +405,7 @@
 	maxss	%xmm4,  %xmm0
 	maxss	%xmm6,  %xmm1
 	ALIGN_3
-	
+
 .L77:
 	testq	$1, M
 	je	.L80
@@ -435,7 +435,7 @@
 	sarq	$2, I
 	jle	.L85
 	ALIGN_4
-	
+
 .L81:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -540,7 +540,7 @@
 	incq	RET
 	comiss	%xmm0, %xmm3
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L87:
 	incq	RET

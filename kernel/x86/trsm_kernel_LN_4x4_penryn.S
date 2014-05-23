@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -100,7 +100,7 @@
 	movl	OFFSET, %eax
 #ifdef RN
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 
 	leal	(, LDC, SIZE), LDC
@@ -165,7 +165,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -193,7 +193,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	movsd	-32 * SIZE(AA), %xmm0
@@ -499,7 +499,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	movaps	-32 * SIZE(AA), %xmm0
@@ -880,7 +880,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	leal		(CO1, LDC, 2), %eax
 
@@ -1451,7 +1451,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -1479,7 +1479,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	movsd	-32 * SIZE(AA), %xmm0
@@ -1711,7 +1711,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	-32 * SIZE(AA), %xmm0
 	pxor	%xmm3, %xmm3
@@ -1978,7 +1978,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	-32 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -2382,7 +2382,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -2410,7 +2410,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	movsd	-32 * SIZE(AA), %xmm0
@@ -2575,7 +2575,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movsd	-32 * SIZE(AA), %xmm0
 	pxor	%xmm3, %xmm3
@@ -2806,7 +2806,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	-32 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2

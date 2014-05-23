@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLA_SYRFSX_EXTENDED + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrfsx_extended.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrfsx_extended.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrfsx_extended.f"> 
+*> Download SLA_SYRFSX_EXTENDED + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sla_syrfsx_extended.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sla_syrfsx_extended.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sla_syrfsx_extended.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -25,7 +25,7 @@
 *                                       AYB, DY, Y_TAIL, RCOND, ITHRESH,
 *                                       RTHRESH, DZ_UB, IGNORE_CWISE,
 *                                       INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDAF, LDB, LDY, N, NRHS, PREC_TYPE,
 *      $                   N_NORMS, ITHRESH
@@ -41,14 +41,14 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> 
+*>
 *> SLA_SYRFSX_EXTENDED improves the computed solution to a system of
 *> linear equations by performing extra-precise iterative refinement
 *> and provides error bounds and backward error estimates for the solution.
@@ -378,10 +378,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -542,7 +542,7 @@
                CALL BLAS_SSYMV2_X(UPLO2, N, -1.0, A, LDA,
      $              Y(1, J), Y_TAIL, 1, 1.0, RES, 1, PREC_TYPE)
             END IF
-            
+
 !         XXX: RES is no longer needed.
             CALL SCOPY( N, RES, 1, DY, 1 )
             CALL SSYTRS( UPLO, N, 1, AF, LDAF, IPIV, DY, N, INFO )
@@ -554,11 +554,11 @@
             NORMDX = 0.0
             DZ_Z = 0.0
             YMIN = HUGEVAL
-            
+
             DO I = 1, N
                YK = ABS( Y( I, J ) )
                DYK = ABS( DY( I ) )
-               
+
                IF ( YK .NE. 0.0 ) THEN
                   DZ_Z = MAX( DZ_Z, DYK / YK )
                ELSE IF ( DYK .NE. 0.0 ) THEN
@@ -657,7 +657,7 @@
             ELSE
                CALL SLA_WWADDW( N, Y(1,J), Y_TAIL, DY )
             END IF
-            
+
          END DO
 *        Target of "IF (Z_STOP .AND. X_STOP)".  Sun's f77 won't EXIT.
  666     CONTINUE
@@ -687,7 +687,7 @@
 *            op(A) = A, A**T, or A**H depending on TRANS (and type).
          CALL SCOPY( N, B( 1, J ), 1, RES, 1 )
          CALL SSYMV( UPLO, N, -1.0, A, LDA, Y(1,J), 1, 1.0, RES, 1 )
-         
+
          DO I = 1, N
             AYB( I ) = ABS( B( I, J ) )
          END DO
@@ -696,7 +696,7 @@
 *
          CALL SLA_SYAMV( UPLO2, N, 1.0,
      $        A, LDA, Y(1, J), 1, 1.0, AYB, 1 )
-         
+
          CALL SLA_LIN_BERR( N, N, 1, RES, AYB, BERR_OUT( J ) )
 *
 *     End of loop for each RHS.

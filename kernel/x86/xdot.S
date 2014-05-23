@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS     0
-	
+
 #if defined(F_INTERFACE) && defined(RETURN_BY_STACK)
 #define RESULT		 4 + STACK + ARGS(%esp)
 #define STACK_N		 8 + STACK + ARGS(%esp)

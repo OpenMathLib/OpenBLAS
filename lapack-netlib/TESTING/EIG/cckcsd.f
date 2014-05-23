@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE CCKCSD( NM, MVAL, PVAL, QVAL, NMATS, ISEED, THRESH,
 *                          MMAX, X, XF, U1, U2, V1T, V2T, THETA, IWORK,
 *                          WORK, RWORK, NIN, NOUT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, NIN, NM, NMATS, MMAX, NOUT
 *       REAL               THRESH
@@ -23,7 +23,7 @@
 *       COMPLEX            U1( * ), U2( * ), V1T( * ), V2T( * ),
 *      $                   WORK( * ), X( * ), XF( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -170,10 +170,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

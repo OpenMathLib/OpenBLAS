@@ -2,20 +2,20 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ALAESM( PATH, OK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            OK
 *       CHARACTER*3        PATH
 *       INTEGER            NOUT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -51,10 +51,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

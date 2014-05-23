@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGESVJ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvj.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvj.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvj.f"> 
+*> Download SGESVJ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvj.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvj.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvj.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
 *                          LDV, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N
 *       CHARACTER*1        JOBA, JOBU, JOBV
@@ -29,7 +29,7 @@
 *       REAL               A( LDA, * ), SVA( N ), V( LDV, * ),
 *      $                   WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -253,10 +253,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -923,7 +923,7 @@
      $                                              FASTR )
                                     SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO, 
+                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
      $                                         ONE-T*AQOAP*AAPQ ) )
                                     MXSINJ = AMAX1( MXSINJ, ABS( T ) )
 *
@@ -1245,7 +1245,7 @@
                                     MXSINJ = AMAX1( MXSINJ, ABS( SN ) )
                                     SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,  
+                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
      $                                         ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = WORK( p ) / WORK( q )
@@ -1559,7 +1559,7 @@
       END IF
 *
 *     Undo scaling, if necessary (and possible).
-      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) ) 
+      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) )
      $    .OR. ( ( SKL.LT.ONE ) .AND. ( SVA( MAX( N2, 1 ) ) .GT.
      $    ( SFMIN / SKL ) ) ) ) THEN
          DO 2400 p = 1, N

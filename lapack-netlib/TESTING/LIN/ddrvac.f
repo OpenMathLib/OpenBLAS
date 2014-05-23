@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE DDRVAC( DOTYPE, NM, MVAL, NNS, NSVAL, THRESH, NMAX,
 *                          A, AFAC, B, X, WORK,
 *                          RWORK, SWORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            NMAX, NM, NNS, NOUT
 *       DOUBLE PRECISION   THRESH
@@ -23,7 +23,7 @@
 *       DOUBLE PRECISION   A( * ), AFAC( * ), B( * ),
 *      $                   RWORK( * ), WORK( * ), X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -130,10 +130,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -176,7 +176,7 @@
       CHARACTER          DIST, TYPE, UPLO, XTYPE
       CHARACTER*3        PATH
       INTEGER            I, IM, IMAT, INFO, IOFF, IRHS, IUPLO,
-     $                   IZERO, KL, KU, LDA, MODE, N, 
+     $                   IZERO, KL, KU, LDA, MODE, N,
      $                   NERRS, NFAIL, NIMAT, NRHS, NRUN
       DOUBLE PRECISION   ANORM, CNDNUM
 *     ..
@@ -194,7 +194,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, DLACPY,
-     $                   DLARHS, DLASET, DLATB4, DLATMS, 
+     $                   DLARHS, DLASET, DLATB4, DLATMS,
      $                   DPOT06, DSPOSV
 *     ..
 *     .. Intrinsic Functions ..
@@ -331,7 +331,7 @@
                   SRNAMT = 'DSPOSV '
                   KASE = KASE + 1
 *
-                  CALL DLACPY( 'All', N, N, A, LDA, AFAC, LDA) 
+                  CALL DLACPY( 'All', N, N, A, LDA, AFAC, LDA)
 *
                   CALL DSPOSV( UPLO, N, NRHS, AFAC, LDA, B, LDA, X, LDA,
      $                         WORK, SWORK, ITER, INFO )
@@ -372,7 +372,7 @@
 *                 Print information about the tests that did not
 *                 pass the testing.
 *
-*                 If iterative refinement has been used and claimed to 
+*                 If iterative refinement has been used and claimed to
 *                 be successful (ITER>0), we want
 *                 NORM1(B - A*X)/(NORM1(A)*NORM1(X)*EPS*SRQT(N)) < 1
 *
@@ -450,7 +450,7 @@
      $      '( norm_1(A) * norm_1(X) * EPS * SQRT(N) ) > 1 if ITERREF',
      $      / 4x, 'or norm_1( B - A * X )  / ',
      $      '( norm_1(A) * norm_1(X) * EPS ) > THRES if DPOTRF' )
-      
+
       RETURN
 *
 *     End of DDRVAC

@@ -52,7 +52,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   n      = args -> n;
   a      = (FLOAT *)args -> a;
   lda    = args -> lda;
-  
+
   if (range_n) {
     n      = range_n[1] - range_n[0];
     a     += range_n[0] * (lda + 1) * COMPSIZE;
@@ -61,13 +61,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   for (i = 0; i < n; i++) {
 
     SCAL_K(i + 1, 0, 0, *(a + i + i * lda), a + i, lda, NULL, 0, NULL, 0);
-    
+
     if (i < n - 1) {
       aii = DOTU_K(n - i - 1, a + i + 1 + i * lda, 1, a + i + 1 + i * lda, 1);
-      
+
       *(a + i + i * lda) += aii;
-      
-      GEMV_T(n - i - 1, i, 0, dp1, 
+
+      GEMV_T(n - i - 1, i, 0, dp1,
 	     a + (i + 1)          , lda,
 	     a + (i + 1) + i * lda, 1,
 	     a + i                , lda, sb);

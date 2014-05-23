@@ -8,9 +8,9 @@
 #include "common.h"
 #include "cblas_test.h"
 
-void F77_zgemv(int *order, char *transp, int *m, int *n, 
+void F77_zgemv(int *order, char *transp, int *m, int *n,
           const void *alpha,
-          CBLAS_TEST_ZOMPLEX *a, int *lda, const void *x, int *incx, 
+          CBLAS_TEST_ZOMPLEX *a, int *lda, const void *x, int *incx,
           const void *beta, void *y, int *incy) {
 
   CBLAS_TEST_ZOMPLEX *A;
@@ -38,9 +38,9 @@ void F77_zgemv(int *order, char *transp, int *m, int *n,
                   *m, *n, alpha, a, *lda, x, *incx, beta, y, *incy );
 }
 
-void F77_zgbmv(int *order, char *transp, int *m, int *n, int *kl, int *ku, 
-	      CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda, 
-	      CBLAS_TEST_ZOMPLEX *x, int *incx, 
+void F77_zgbmv(int *order, char *transp, int *m, int *n, int *kl, int *ku,
+	      CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda,
+	      CBLAS_TEST_ZOMPLEX *x, int *incx,
 	      CBLAS_TEST_ZOMPLEX *beta, CBLAS_TEST_ZOMPLEX *y, int *incy) {
 
   CBLAS_TEST_ZOMPLEX *A;
@@ -85,8 +85,8 @@ void F77_zgbmv(int *order, char *transp, int *m, int *n, int *kl, int *ku,
 		  *incx, beta, y, *incy );
 }
 
-void F77_zgeru(int *order, int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha, 
-	 CBLAS_TEST_ZOMPLEX *x, int *incx, CBLAS_TEST_ZOMPLEX *y, int *incy, 
+void F77_zgeru(int *order, int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha,
+	 CBLAS_TEST_ZOMPLEX *x, int *incx, CBLAS_TEST_ZOMPLEX *y, int *incy,
          CBLAS_TEST_ZOMPLEX *a, int *lda){
 
   CBLAS_TEST_ZOMPLEX *A;
@@ -114,8 +114,8 @@ void F77_zgeru(int *order, int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha,
      cblas_zgeru( UNDEFINED, *m, *n, alpha, x, *incx, y, *incy, a, *lda );
 }
 
-void F77_zgerc(int *order, int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha, 
-	 CBLAS_TEST_ZOMPLEX *x, int *incx, CBLAS_TEST_ZOMPLEX *y, int *incy, 
+void F77_zgerc(int *order, int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha,
+	 CBLAS_TEST_ZOMPLEX *x, int *incx, CBLAS_TEST_ZOMPLEX *y, int *incy,
          CBLAS_TEST_ZOMPLEX *a, int *lda) {
   CBLAS_TEST_ZOMPLEX *A;
   int i,j,LDA;
@@ -165,7 +165,7 @@ void F77_zhemv(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
      free(A);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_zhemv( CblasColMajor, uplo, *n, alpha, a, *lda, x, *incx, 
+     cblas_zhemv( CblasColMajor, uplo, *n, alpha, a, *lda, x, *incx,
 	   beta, y, *incy );
   else
      cblas_zhemv( UNDEFINED, uplo, *n, alpha, a, *lda, x, *incx,
@@ -173,7 +173,7 @@ void F77_zhemv(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 }
 
 void F77_zhbmv(int *order, char *uplow, int *n, int *k,
-     CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda, 
+     CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda,
      CBLAS_TEST_ZOMPLEX *x, int *incx, CBLAS_TEST_ZOMPLEX *beta,
      CBLAS_TEST_ZOMPLEX *y, int *incy){
 
@@ -186,7 +186,7 @@ int i,irow,j,jcol,LDA;
 
   if (*order == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_zhbmv(CblasRowMajor, UNDEFINED, *n, *k, alpha, a, *lda, x, 
+        cblas_zhbmv(CblasRowMajor, UNDEFINED, *n, *k, alpha, a, *lda, x,
 		 *incx, beta, y, *incy );
      else {
         LDA = *k+2;
@@ -237,7 +237,7 @@ int i,irow,j,jcol,LDA;
 }
 
 void F77_zhpmv(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
-     CBLAS_TEST_ZOMPLEX *ap, CBLAS_TEST_ZOMPLEX *x, int *incx, 
+     CBLAS_TEST_ZOMPLEX *ap, CBLAS_TEST_ZOMPLEX *x, int *incx,
      CBLAS_TEST_ZOMPLEX *beta, CBLAS_TEST_ZOMPLEX *y, int *incy){
 
   CBLAS_TEST_ZOMPLEX *A, *AP;
@@ -247,7 +247,7 @@ void F77_zhpmv(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
   get_uplo_type(uplow,&uplo);
   if (*order == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_zhpmv(CblasRowMajor, UNDEFINED, *n, alpha, ap, x, *incx, 
+        cblas_zhpmv(CblasRowMajor, UNDEFINED, *n, alpha, ap, x, *incx,
 	         beta, y, *incy);
      else {
         LDA = *n;
@@ -344,7 +344,7 @@ void F77_ztbmv(int *order, char *uplow, char *transp, char *diagn,
              }
           }
         }
-        cblas_ztbmv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA, x, 
+        cblas_ztbmv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA, x,
 		    *incx);
         free(A);
      }
@@ -371,7 +371,7 @@ void F77_ztbsv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_ztbsv(CblasRowMajor, UNDEFINED, trans, diag, *n, *k, a, *lda, x, 
+        cblas_ztbsv(CblasRowMajor, UNDEFINED, trans, diag, *n, *k, a, *lda, x,
 	         *incx);
      else {
         LDA = *k+2;
@@ -408,7 +408,7 @@ void F77_ztbsv(int *order, char *uplow, char *transp, char *diagn,
               }
            }
         }
-        cblas_ztbsv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA, 
+        cblas_ztbsv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA,
 		    x, *incx);
         free(A);
      }
@@ -674,7 +674,7 @@ void F77_zhpr2(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_zhpr2( CblasRowMajor, UNDEFINED, *n, alpha, x, *incx, y, 
+        cblas_zhpr2( CblasRowMajor, UNDEFINED, *n, alpha, x, *incx, y,
 		     *incy, ap );
      else {
         LDA = *n;
@@ -752,7 +752,7 @@ void F77_zher(int *order, char *uplow, int *n, double *alpha,
      LDA = *n+1;
      A=(CBLAS_TEST_ZOMPLEX*)malloc((*n)*LDA*sizeof( CBLAS_TEST_ZOMPLEX ));
 
-     for( i=0; i<*n; i++ ) 
+     for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
 	  A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
           A[ LDA*i+j ].imag=a[ (*lda)*j+i ].imag;
@@ -786,7 +786,7 @@ void F77_zher2(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
      LDA = *n+1;
      A= ( CBLAS_TEST_ZOMPLEX* )malloc((*n)*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
 
-     for( i=0; i<*n; i++ ) 
+     for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
 	  A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
           A[ LDA*i+j ].imag=a[ (*lda)*j+i ].imag;

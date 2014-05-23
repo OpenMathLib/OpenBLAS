@@ -61,11 +61,11 @@
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
 
-	movaps	%xmm3, %xmm0	
+	movaps	%xmm3, %xmm0
 #endif
 
 	SAVEREGISTERS
-	
+
 	testq	M, M
 	jle	.L999
 
@@ -75,7 +75,7 @@
 	comisd	%xmm0, %xmm1
 	jne	.L100		# Alpha != ZERO
 	jp	.L100		# For Alpha = NaN
-	
+
 /* Alpha == ZERO */
 	cmpq	$SIZE, INCX
 	jne	.L50
@@ -270,7 +270,7 @@
 	movaps  %xmm0, %xmm8
 	mulpd	 -2 * SIZE(X), %xmm8
 
-	decq	I 
+	decq	I
 	jle	.L112
 	ALIGN_4
 
@@ -336,7 +336,7 @@
 	movaps	 -4 * SIZE(X), %xmm7
 	movaps	 -2 * SIZE(X), %xmm8
 
-	decq	I 
+	decq	I
 	jle	.L112
 	ALIGN_4
 

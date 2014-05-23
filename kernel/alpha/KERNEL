@@ -74,8 +74,8 @@ SGEMMKERNEL    = gemm_kernel_4x4.S
 SGEMM_BETA     = gemm_beta.S
 SGEMMONCOPY    = ../generic/gemm_ncopy_4.c
 SGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
-SGEMMONCOPYOBJ = sgemm_oncopy.$(SUFFIX) 
-SGEMMOTCOPYOBJ = sgemm_otcopy.$(SUFFIX) 
+SGEMMONCOPYOBJ = sgemm_oncopy.$(SUFFIX)
+SGEMMOTCOPYOBJ = sgemm_otcopy.$(SUFFIX)
 
 DGEMMKERNEL    = gemm_kernel_4x4.S
 DGEMM_BETA     = gemm_beta.S

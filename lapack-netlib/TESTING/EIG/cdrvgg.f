@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,13 +12,13 @@
 *                          THRSHN, NOUNIT, A, LDA, B, S, T, S2, T2, Q,
 *                          LDQ, Z, ALPHA1, BETA1, ALPHA2, BETA2, VL, VR,
 *                          WORK, LWORK, RWORK, RESULT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDQ, LWORK, NOUNIT, NSIZES, NTYPES
 *       REAL               THRESH, THRSHN
 *       ..
 *       .. Array Arguments ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -407,10 +407,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

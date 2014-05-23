@@ -21,7 +21,7 @@ install : 	lib.grd
 	@-mkdir -p $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@-mkdir -p $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@echo Generating openblas_config.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
-#for inc 
+#for inc
 	@echo \#ifndef OPENBLAS_CONFIG_H > $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/openblas_config.h
 	@echo \#define OPENBLAS_CONFIG_H >> $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/openblas_config.h
 	@awk 'NF {print $$1, "OPENBLAS_"$$2, $$3}' config_last.h >> $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/openblas_config.h
@@ -49,14 +49,14 @@ ifndef NO_LAPACKE
 	@-install -pDm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_utils.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_utils.h
 endif
 
-#for install static library 
+#for install static library
 ifndef NO_STATIC
 	@echo Copying the static library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@install -pm644 $(LIBNAME) $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@cd $(DESTDIR)$(OPENBLAS_LIBRARY_DIR) ; \
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 endif
-#for install shared library 
+#for install shared library
 ifndef NO_SHARED
 	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 ifeq ($(OSNAME), Linux)
@@ -75,7 +75,7 @@ ifeq ($(OSNAME), NetBSD)
 	@cd $(DESTDIR)$(OPENBLAS_LIBRARY_DIR) ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
-ifeq ($(OSNAME), Darwin)     
+ifeq ($(OSNAME), Darwin)
 	@-cp $(LIBDYNNAME) $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@-install_name_tool -id $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)/$(LIBDYNNAME) $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)/$(LIBDYNNAME)
 	@-ln -fs $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)/$(LIBDYNNAME) $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)/$(LIBPREFIX).dylib

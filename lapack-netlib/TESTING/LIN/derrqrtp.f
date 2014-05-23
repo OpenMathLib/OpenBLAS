@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DERRQRTP( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -43,10 +43,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -81,7 +81,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAESM, CHKXER, DTPQRT2, DTPQRT,
-     $                   DTPMQRT 
+     $                   DTPMQRT
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -171,50 +171,50 @@
 *
       SRNAMT = 'DTPMQRT'
       INFOT = 1
-      CALL DTPMQRT( '/', 'N', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( '/', 'N', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 2
-      CALL DTPMQRT( 'L', '/', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'L', '/', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL DTPMQRT( 'L', 'N', -1, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'L', 'N', -1, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL DTPMQRT( 'L', 'N', 0, -1, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'L', 'N', 0, -1, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 5
-      CALL DTPMQRT( 'L', 'N', 0, 0, -1, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'L', 'N', 0, 0, -1, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       INFOT = 6
-      CALL DTPMQRT( 'L', 'N', 0, 0, 0, -1, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'L', 'N', 0, 0, 0, -1, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL DTPMQRT( 'L', 'N', 0, 0, 0, 0, 0, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'L', 'N', 0, 0, 0, 0, 0, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL DTPMQRT( 'R', 'N', 1, 2, 1, 1, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'R', 'N', 1, 2, 1, 1, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL DTPMQRT( 'L', 'N', 2, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL DTPMQRT( 'L', 'N', 2, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 11
-      CALL DTPMQRT( 'R', 'N', 1, 1, 1, 1, 1, A, 1, T, 0, B, 1, C, 1, 
+      CALL DTPMQRT( 'R', 'N', 1, 1, 1, 1, 1, A, 1, T, 0, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 13
-      CALL DTPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 0, C, 1, 
+      CALL DTPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 0, C, 1,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 15
-      CALL DTPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 0, 
+      CALL DTPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 0,
      $              W, INFO )
       CALL CHKXER( 'DTPMQRT', INFOT, NOUT, LERR, OK )
 *

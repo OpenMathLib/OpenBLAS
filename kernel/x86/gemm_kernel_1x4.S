@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define J	 0 + STACK(%esp)
 #define I	 4 + STACK(%esp)
 #define KK	 8 + STACK(%esp)
@@ -70,7 +70,7 @@
 #define BB	%ebx
 #define LDC	%ebp
 #define BX	%esi
-	
+
 #define PREFETCHSIZE (8 * 5 + 4)
 
 #define AOFFSET   1
@@ -334,7 +334,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	STACK_B, B
@@ -393,7 +393,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -529,7 +529,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	STACK_B, B
@@ -568,7 +568,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -733,7 +733,7 @@
 #endif
 
 	leal	(, LDC, 2), %eax
-	addl	%eax, C	
+	addl	%eax, C
 	movl	B, STACK_B
 	ALIGN_4
 
@@ -747,7 +747,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	STACK_B, B
@@ -782,7 +782,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -892,7 +892,7 @@
 	addl	$1, KK
 #endif
 
-	addl	LDC, C	
+	addl	LDC, C
 	movl	B, STACK_B
 	ALIGN_4
 

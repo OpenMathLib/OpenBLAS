@@ -34,8 +34,8 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_ctpqrt( int matrix_order, lapack_int m, lapack_int n,
-                           lapack_int l, lapack_int nb, 
-                           lapack_complex_float* a, lapack_int lda, 
+                           lapack_int l, lapack_int nb,
+                           lapack_complex_float* a, lapack_int lda,
                            lapack_complex_float* b, lapack_int ldb,
                            lapack_complex_float* t, lapack_int ldt )
 {

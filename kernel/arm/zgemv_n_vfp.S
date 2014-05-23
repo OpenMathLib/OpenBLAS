@@ -553,7 +553,7 @@ zgemvn_kernel_F1X1:
 	ldr	AO1, A
 	add	r3, AO1, #16
 	str	r3, A
-	
+
 	ldr	XO , X
 
 	INIT_F1
@@ -653,7 +653,7 @@ zgemvn_kernel_S1X1:
 	ldr	AO1, A
 	add	r3, AO1, #16
 	str	r3, A
-	
+
 	ldr	XO , X
 
 	INIT_S1

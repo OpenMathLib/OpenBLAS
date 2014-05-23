@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download STREVC + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/strevc.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/strevc.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/strevc.f"> 
+*> Download STREVC + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/strevc.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/strevc.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/strevc.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE STREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
 *                          LDVR, MM, M, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          HOWMNY, SIDE
 *       INTEGER            INFO, LDT, LDVL, LDVR, M, MM, N
@@ -30,7 +30,7 @@
 *       REAL               T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -41,16 +41,16 @@
 *> a real upper quasi-triangular matrix T.
 *> Matrices of this type are produced by the Schur factorization of
 *> a real general matrix:  A = Q*T*Q**T, as computed by SHSEQR.
-*> 
+*>
 *> The right eigenvector x and the left eigenvector y of T corresponding
 *> to an eigenvalue w are defined by:
-*> 
+*>
 *>    T*x = w*x,     (y**T)*T = w*(y**T)
-*> 
+*>
 *> where y**T denotes the transpose of y.
 *> The eigenvalues are not input to this routine, but are read directly
 *> from the diagonal blocks of T.
-*> 
+*>
 *> This routine returns the matrices X and/or Y of right and left
 *> eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
 *> input matrix.  If Q is the orthogonal factor that reduces a matrix
@@ -195,10 +195,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

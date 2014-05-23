@@ -45,7 +45,7 @@
 #include <ia64intrin.h>
 #endif
 
-static inline unsigned long cpuid(unsigned long regnum){ 
+static inline unsigned long cpuid(unsigned long regnum){
   unsigned long value;
 
 #ifdef __ECC
@@ -65,7 +65,7 @@ int get_vendor(void){
 
   cpuid0 = cpuid(0);
   cpuid1 = cpuid(1);
-  
+
   *(unsigned long *)(&vendor[0]) = cpuid0;
   *(unsigned long *)(&vendor[8]) = cpuid1;
   vendor[17] = (char)0;
@@ -79,7 +79,7 @@ int get_cputype(int gettype){
   unsigned long cpuid3;
 
   cpuid3 = cpuid(3);
-  
+
   switch (gettype) {
   case GET_ARCHREV :
     return BITMASK(cpuid3, 32, 0xff);

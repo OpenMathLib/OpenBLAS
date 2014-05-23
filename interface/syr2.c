@@ -75,7 +75,7 @@ static int (*syr2_thread[])(BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLON
 
 #ifndef CBLAS
 
-void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, 
+void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 	 FLOAT  *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *a, blasint *LDA){
 
   char uplo_arg = *UPLO;
@@ -99,7 +99,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (lda  < MAX(1, n))   info =  9;
@@ -164,7 +164,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
   }
 
 #endif
-  
+
   if (n == 0) return;
 
   if (alpha == ZERO) return;
@@ -188,7 +188,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
 
 #ifdef SMP
   } else {
-    
+
     (syr2_thread[uplo])(n, alpha, x, incx, y, incy, a, lda, buffer, nthreads);
 
   }

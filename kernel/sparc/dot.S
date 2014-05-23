@@ -108,11 +108,11 @@
 	FCLR(4)
 	FCLR(5)
 #endif
-	
+
 	cmp	N, 0
 	ble	.LL19
 	nop
-	
+
 	sll	INCX, BASE_SHIFT, INCX
 	sll	INCY, BASE_SHIFT, INCY
 
@@ -257,7 +257,7 @@
 
 	return	%i7 + 8
 	nop
-	
+
 .LL50:
 	sra	N, 3, I
 	cmp	I, 0

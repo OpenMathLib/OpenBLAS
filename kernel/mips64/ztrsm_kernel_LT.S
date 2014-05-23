@@ -125,7 +125,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -128
 
 	SDARG	$16,   0($sp)
@@ -988,7 +988,7 @@
 	bgtz	J, .L10
 	NOP
 	.align 3
-	
+
 .L20:
 	andi	J,  N, 2
 	blez	J, .L30

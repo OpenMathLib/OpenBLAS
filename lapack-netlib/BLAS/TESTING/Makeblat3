@@ -1,5 +1,5 @@
 include ../../make.inc
- 
+
 #######################################################################
 #  This makefile creates the test programs for the BLAS 3 routines.
 #  The test files are grouped as follows:
@@ -30,9 +30,9 @@ include ../../make.inc
 
 SBLAT3 = sblat3.o
 
-CBLAT3 = cblat3.o 
+CBLAT3 = cblat3.o
 
-DBLAT3 = dblat3.o 
+DBLAT3 = dblat3.o
 
 ZBLAT3 = zblat3.o
 
@@ -47,28 +47,28 @@ complex16: ../xblat3z
 	$(LOADER) $(LOADOPTS) $(SBLAT3) \
         $(BLASLIB) -o ../xblat3s
 
-../xblat3c: $(CBLAT3) 
+../xblat3c: $(CBLAT3)
 	$(LOADER) $(LOADOPTS) $(CBLAT3) \
         $(BLASLIB) -o ../xblat3c
- 
-../xblat3d: $(DBLAT3) 
+
+../xblat3d: $(DBLAT3)
 	$(LOADER) $(LOADOPTS) $(DBLAT3) \
         $(BLASLIB) -o ../xblat3d
- 
-../xblat3z: $(ZBLAT3) 
+
+../xblat3z: $(ZBLAT3)
 	$(LOADER) $(LOADOPTS) $(ZBLAT3) \
         $(BLASLIB) -o ../xblat3z
- 
+
 $(SBLAT3): $(FRC)
 $(CBLAT3): $(FRC)
 $(DBLAT3): $(FRC)
 $(ZBLAT3): $(FRC)
- 
+
 FRC:
 	@FRC=$(FRC)
- 
+
 clean:
 	rm -f *.o
- 
-.f.o: 
+
+.f.o:
 	$(FORTRAN) $(OPTS) -c $< -o $@

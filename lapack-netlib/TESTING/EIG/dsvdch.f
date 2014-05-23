@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DSVDCH( N, S, E, SVD, TOL, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, N
 *       DOUBLE PRECISION   TOL
@@ -17,7 +17,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   E( * ), S( * ), SVD( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -85,10 +85,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

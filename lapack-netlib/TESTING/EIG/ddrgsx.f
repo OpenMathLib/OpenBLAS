@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE DDRGSX( NSIZE, NCMAX, THRESH, NIN, NOUT, A, LDA, B, AI,
 *                          BI, Z, Q, ALPHAR, ALPHAI, BETA, C, LDC, S,
 *                          WORK, LWORK, IWORK, LIWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDC, LIWORK, LWORK, NCMAX, NIN,
 *      $                   NOUT, NSIZE
@@ -25,7 +25,7 @@
 *      $                   BI( LDA, * ), C( LDC, * ), Q( LDA, * ), S( * ),
 *      $                   WORK( * ), Z( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -345,10 +345,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

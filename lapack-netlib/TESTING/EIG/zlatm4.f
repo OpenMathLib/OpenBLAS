@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLATM4( ITYPE, N, NZ1, NZ2, RSIGN, AMAGN, RCOND,
 *                          TRIANG, IDIST, ISEED, A, LDA )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            RSIGN
 *       INTEGER            IDIST, ITYPE, LDA, N, NZ1, NZ2
@@ -20,7 +20,7 @@
 *       INTEGER            ISEED( 4 )
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -158,10 +158,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

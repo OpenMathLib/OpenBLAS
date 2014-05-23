@@ -97,7 +97,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define B_PRE	96
 #define C_PRE	64
 
-#if defined(NN) || defined(NT) || defined(TN) || defined(TT) 
+#if defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
 	#define	FADD_R	fsubs
 	#define	FADD_I	fadds
@@ -891,7 +891,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ble	cgemm_kernel_L1_BEGIN
 
 cgemm_kernel_L2_BEGIN:
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	lsl	r4 , r4 , #1					// LDC * 2
@@ -960,7 +960,7 @@ cgemm_kernel_L2_M2_22:
 
 	b	 cgemm_kernel_L2_M2_44
 
-	
+
 cgemm_kernel_L2_M2_30:
 	tst	L, #3
 	ble	cgemm_kernel_L2_M2_40
@@ -1025,7 +1025,7 @@ cgemm_kernel_L2_M2_46:
 
 	subs	L, L, #1
 	bne	cgemm_kernel_L2_M2_46
-	
+
 cgemm_kernel_L2_M2_100:
 
 	SAVE2x2
@@ -1064,10 +1064,10 @@ cgemm_kernel_L2_M1_22:
 
 	subs	L, L, #1
 	bgt	cgemm_kernel_L2_M1_22
-	
+
 
 cgemm_kernel_L2_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	cgemm_kernel_L2_M1_100
 
@@ -1077,7 +1077,7 @@ cgemm_kernel_L2_M1_42:
 
 	subs	L, L, #1
 	bgt	cgemm_kernel_L2_M1_42
-	
+
 cgemm_kernel_L2_M1_100:
 
 	SAVE1x2
@@ -1090,7 +1090,7 @@ cgemm_kernel_L2_END:
 	lsl	r4, r4, #4					// k * 2 * 4 * 2
 	add	r3, r3, r4					// B = B + K * 2 * 8
 	mov	BC, r3
-	
+
 	subs	J , #1						// j--
 	bgt	cgemm_kernel_L2_BEGIN
 
@@ -1104,7 +1104,7 @@ cgemm_kernel_L1_BEGIN:
 	tst	J , #1
 	ble	cgemm_kernel_L999
 
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	add	r3 , r4, CO1
@@ -1168,7 +1168,7 @@ cgemm_kernel_L1_M2_22:
 
 	b	 cgemm_kernel_L1_M2_44
 
-	
+
 cgemm_kernel_L1_M2_30:
 	tst	L, #3
 	ble	cgemm_kernel_L1_M2_40
@@ -1233,7 +1233,7 @@ cgemm_kernel_L1_M2_46:
 
 	subs	L, L, #1
 	bne	cgemm_kernel_L1_M2_46
-	
+
 cgemm_kernel_L1_M2_100:
 
 	SAVE2x1
@@ -1272,10 +1272,10 @@ cgemm_kernel_L1_M1_22:
 
 	subs	L, L, #1
 	bgt	cgemm_kernel_L1_M1_22
-	
+
 
 cgemm_kernel_L1_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	cgemm_kernel_L1_M1_100
 
@@ -1285,7 +1285,7 @@ cgemm_kernel_L1_M1_42:
 
 	subs	L, L, #1
 	bgt	cgemm_kernel_L1_M1_42
-	
+
 cgemm_kernel_L1_M1_100:
 
 	SAVE1x1

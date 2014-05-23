@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLAED8 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/claed8.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/claed8.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/claed8.f"> 
+*> Download CLAED8 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/claed8.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/claed8.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/claed8.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CLAED8( K, N, QSIZ, Q, LDQ, D, RHO, CUTPNT, Z, DLAMDA,
 *                          Q2, LDQ2, W, INDXP, INDX, INDXQ, PERM, GIVPTR,
 *                          GIVCOL, GIVNUM, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            CUTPNT, GIVPTR, INFO, K, LDQ, LDQ2, N, QSIZ
 *       REAL               RHO
@@ -33,7 +33,7 @@
 *      $                   Z( * )
 *       COMPLEX            Q( LDQ, * ), Q2( LDQ2, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -214,10 +214,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -291,8 +291,8 @@
       END IF
 *
 *     Need to initialize GIVPTR to O here in case of quick exit
-*     to prevent an unspecified code behavior (usually sigfault) 
-*     when IWORK array on entry to *stedc is not zeroed 
+*     to prevent an unspecified code behavior (usually sigfault)
+*     when IWORK array on entry to *stedc is not zeroed
 *     (or at least some IWORK entries which used in *laed7 for GIVPTR).
 *
       GIVPTR = 0

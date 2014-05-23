@@ -48,7 +48,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_M	  %rdi
 #define OLD_N	  %rsi
 #define OLD_A	  %rcx
@@ -64,7 +64,7 @@
 #else
 
 #define STACKSIZE	256
-	
+
 #define OLD_M	  %rcx
 #define OLD_N	  %rdx
 #define OLD_A		 40 + STACKSIZE(%rsp)
@@ -180,7 +180,7 @@
 	jle	.L999x
 	movq	%rax,M
 
-.L00:	
+.L00:
 	movq	LDAX,LDA
 	movq	NN,N
 	movq	AA,A
@@ -205,7 +205,7 @@
 	jle	.L999
 
 	movq	BUFFER, X1
-	
+
 #ifdef ALIGNED_ACCESS
 	testq	$SIZE, A
 	je	.L01

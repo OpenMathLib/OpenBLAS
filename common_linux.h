@@ -75,7 +75,7 @@ static inline int my_mbind(void *addr, unsigned long len, int mode,
 // https://lsbbugs.linuxfoundation.org/show_bug.cgi?id=3482
         return 0;
 #else
-#if defined (LOONGSON3B) 
+#if defined (LOONGSON3B)
 #if defined (__64BIT__)
 	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
 #else
@@ -99,9 +99,9 @@ static inline int my_set_mempolicy(int mode, const unsigned long *addr, unsigned
 #endif
 }
 
-static inline int my_gettid(void) { 
+static inline int my_gettid(void) {
 #ifdef SYS_gettid
-return syscall(SYS_gettid); 
+return syscall(SYS_gettid);
 #else
 return getpid();
 #endif

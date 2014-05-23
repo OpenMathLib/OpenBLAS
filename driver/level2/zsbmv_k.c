@@ -78,8 +78,8 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
     length  = k - offset;
 
     AXPYU_K(length + 1, 0, 0,
-	    alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1], 
-	    alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0], 
+	    alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
+	    alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0],
 	    a + offset * COMPSIZE, 1, Y + (i - length) * COMPSIZE, 1, NULL, 0);
 
     if (length > 0) {
@@ -95,18 +95,18 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
     if (n - i - 1 < k) length = n - i - 1;
 
     AXPYU_K(length + 1, 0, 0,
-	    alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1], 
-	    alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0], 
+	    alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
+	    alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0],
 	    a, 1, Y + i * COMPSIZE, 1, NULL, 0);
 
     if (length > 0) {
       FLOAT _Complex result = DOTU_K(length, a + COMPSIZE, 1, X + (i + 1) * COMPSIZE, 1);
-      
+
       Y[i * 2 + 0] += alpha_r * CREAL(result) - alpha_i * CIMAG(result);
       Y[i * 2 + 1] += alpha_r * CIMAG(result) + alpha_i * CREAL(result);
       }
 #endif
-    
+
     a += lda * 2;
   }
 

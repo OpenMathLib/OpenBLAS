@@ -41,7 +41,7 @@
 
 	.machine "any"
 
-	.globl	.rpcc                   
+	.globl	.rpcc
 .rpcc:
 	mftb	r3
 	rlinm	r3, r3, 3, 0, 31	# ldc(scaling)

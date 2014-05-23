@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE SDRVES( NSIZES, NN, NTYPES, DOTYPE, ISEED, THRESH,
 *                          NOUNIT, A, LDA, H, HT, WR, WI, WRT, WIT, VS,
 *                          LDVS, RESULT, WORK, NWORK, IWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDVS, NOUNIT, NSIZES, NTYPES, NWORK
 *       REAL               THRESH
@@ -23,7 +23,7 @@
 *      $                   RESULT( 13 ), VS( LDVS, * ), WI( * ), WIT( * ),
 *      $                   WORK( * ), WR( * ), WRT( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -374,10 +374,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

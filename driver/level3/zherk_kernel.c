@@ -59,7 +59,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifndef LOWER
     GEMM_KERNEL(m, n, k,
 		alpha_r, ZERO,
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     return 0;
   }
@@ -68,7 +68,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef LOWER
     GEMM_KERNEL(m, n, k,
 		alpha_r, ZERO,
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     return 0;
   }
@@ -78,7 +78,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef LOWER
     GEMM_KERNEL(m, offset, k,
 		alpha_r, ZERO,
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     b += offset * k   * COMPSIZE;
     c += offset * ldc * COMPSIZE;
@@ -94,7 +94,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 		  alpha_r, ZERO,
 		  a,
 		  b + (m + offset) * k   * COMPSIZE,
-		  c + (m + offset) * ldc * COMPSIZE, ldc); 
+		  c + (m + offset) * ldc * COMPSIZE, ldc);
 #endif
 
     n = m + offset;
@@ -106,7 +106,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifndef LOWER
     GEMM_KERNEL(-offset, n, k,
 		alpha_r, ZERO,
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     a -= offset * k   * COMPSIZE;
     c -= offset       * COMPSIZE;
@@ -122,7 +122,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 		alpha_r, ZERO,
 		a + (n - offset) * k * COMPSIZE,
 		b,
-		c + (n - offset)     * COMPSIZE, ldc); 
+		c + (n - offset)     * COMPSIZE, ldc);
 #endif
     m = n + offset;
   if (m <= 0) return 0;
@@ -138,7 +138,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifndef LOWER
     GEMM_KERNEL(mm, nn, k,
 		alpha_r, ZERO,
-		a, b + loop * k * COMPSIZE, c + loop * ldc * COMPSIZE, ldc); 
+		a, b + loop * k * COMPSIZE, c + loop * ldc * COMPSIZE, ldc);
 #endif
 
     GEMM_BETA(nn, nn, 0, ZERO,  ZERO,
@@ -146,8 +146,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 
     GEMM_KERNEL(nn, nn, k,
 		alpha_r, ZERO,
-		a + loop * k * COMPSIZE, b + loop * k * COMPSIZE, subbuffer, nn); 
-    
+		a + loop * k * COMPSIZE, b + loop * k * COMPSIZE, subbuffer, nn);
+
     cc = c + (loop + loop * ldc) * COMPSIZE;
     ss = subbuffer;
 
@@ -158,7 +158,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
       cc[i * 2 + 0] += ss[i * 2 + 0];
       cc[i * 2 + 1] += ss[i * 2 + 1];
     }
-    
+
     cc[j * 2 + 0] += ss[i * 2 + 0];
     cc[j * 2 + 1]  = ZERO;
 
@@ -184,8 +184,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef LOWER
     GEMM_KERNEL(m - mm - nn, nn, k,
 		alpha_r, ZERO,
-		a + (mm + nn) * k * COMPSIZE, b + loop * k * COMPSIZE, 
-		c + (mm + nn + loop * ldc) * COMPSIZE, ldc); 
+		a + (mm + nn) * k * COMPSIZE, b + loop * k * COMPSIZE,
+		c + (mm + nn + loop * ldc) * COMPSIZE, ldc);
 #endif
 
   }

@@ -46,7 +46,7 @@
 
 #define STACK	16
 #define ARGS	 8
-	
+
 #define J	 0 + STACK(%esp)
 #define BOFFSET2 4 + STACK(%esp)
 
@@ -65,7 +65,7 @@
 	pushl	%ebx
 
 	PROFCODE
-	
+
 	movl	A, %ebp
 	movl	B, %edi
 

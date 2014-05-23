@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, 
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
 	  FLOAT beta_r, FLOAT beta_i,
 	  FLOAT *dummy2, BLASLONG dummy3,
 	  FLOAT *dummy4, BLASLONG dummy5,
@@ -97,7 +97,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
     do {
       c_offset1 = c_offset;
       c_offset += ldc;
-      
+
       i = (m >> 1);
       if (i > 0){
 	do {
@@ -105,12 +105,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
 	  atemp2 = *(c_offset1 + 1);
 	  atemp3 = *(c_offset1 + 2);
 	  atemp4 = *(c_offset1 + 3);
-	  
+
 	  btemp1 = beta_r * atemp1;
 	  btemp2 = beta_i * atemp2;
 	  btemp3 = beta_r * atemp2;
 	  btemp4 = beta_i * atemp1;
-	  
+
 	  ctemp1 = btemp1 - btemp2;
 	  ctemp2 = btemp3 + btemp4;
 
@@ -118,7 +118,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
 	  btemp2 = beta_i * atemp4;
 	  btemp3 = beta_r * atemp4;
 	  btemp4 = beta_i * atemp3;
-	  
+
 	  ctemp3 = btemp1 - btemp2;
 	  ctemp4 = btemp3 + btemp4;
 
@@ -136,15 +136,15 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
 	do {
 	  atemp1 = *(c_offset1 + 0);
 	  atemp2 = *(c_offset1 + 1);
-	  
+
 	  btemp1 = beta_r * atemp1;
 	  btemp2 = beta_i * atemp2;
 	  btemp3 = beta_r * atemp2;
 	  btemp4 = beta_i * atemp1;
-	  
+
 	  ctemp1 = btemp1 - btemp2;
 	  ctemp2 = btemp3 + btemp4;
-	  
+
 	  *(c_offset1 + 0) = ctemp1;
 	  *(c_offset1 + 1) = ctemp2;
 	  c_offset1 += 2;

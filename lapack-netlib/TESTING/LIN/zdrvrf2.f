@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZDRVRF2( NOUT, NN, NVAL, A, LDA, ARF, AP, ASAV  )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, NN, NOUT
 *       ..
@@ -17,7 +17,7 @@
 *       INTEGER            NVAL( NN )
 *       COMPLEX*16         A( LDA, * ), ARF( * ), AP(*), ASAV( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -77,10 +77,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -252,10 +252,10 @@
      +         ' routines ***')
  9998 FORMAT( 1X, '     Error in RFP,convertion routines N=',I5,
      +        ' UPLO=''', A1, ''', FORM =''',A1,'''')
- 9997 FORMAT( 1X, 'All tests for the RFP convertion routines passed (', 
+ 9997 FORMAT( 1X, 'All tests for the RFP convertion routines passed (',
      +        I5,' tests run)')
  9996 FORMAT( 1X, 'RFP convertion routines:',I5,' out of ',I5,
-     +        ' error message recorded') 
+     +        ' error message recorded')
 *
       RETURN
 *

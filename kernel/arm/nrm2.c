@@ -63,7 +63,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	n *= inc_x;
 	while(i < n)
 	{
-		
+
 		if ( x[i] != 0.0 )
 		{
 			absxi = ABS( x[i] );
@@ -75,7 +75,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 			else
 			{
 				ssq += ( absxi/scale ) * ( absxi/scale );
-			}		
+			}
 
 		}
 		i += inc_x;
@@ -84,5 +84,5 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	return(scale);
 
 }
-	
+
 

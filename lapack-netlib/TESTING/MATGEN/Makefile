@@ -32,7 +32,7 @@ include ../../make.inc
 #       make single FRC=FRC
 #
 #######################################################################
- 
+
 SCATGEN = slatm1.o slaran.o slarnd.o
 
 SMATGEN = slatms.o slatme.o slatmr.o slatmt.o \
@@ -84,7 +84,7 @@ $(CMATGEN): $(FRC)
 $(DZATGEN): $(FRC)
 $(DMATGEN): $(FRC)
 $(ZMATGEN): $(FRC)
- 
+
 FRC:
 	@FRC=$(FRC)
 

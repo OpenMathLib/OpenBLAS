@@ -110,7 +110,7 @@ void NAME(char *TRANSA, char *TRANSB,
 	  FLOAT *b, blasint *ldB,
 	  FLOAT *beta,
 	  FLOAT *c, blasint *ldC){
-  
+
   blas_arg_t args;
 
   int transa, transb, nrowa, nrowb;
@@ -128,7 +128,7 @@ void NAME(char *TRANSA, char *TRANSB,
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -136,7 +136,7 @@ void NAME(char *TRANSA, char *TRANSB,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
@@ -199,7 +199,7 @@ void NAME(char *TRANSA, char *TRANSB,
 
   if (args.ldc < args.m) info = 13;
   if (args.ldb < nrowb)  info = 10;
-  if (args.lda < nrowa)  info =  8; 
+  if (args.lda < nrowa)  info =  8;
   if (args.k < 0)        info =  5;
   if (args.n < 0)        info =  4;
   if (args.m < 0)        info =  3;
@@ -221,7 +221,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 	   FLOAT *alpha,
 #endif
 	   FLOAT *a, blasint lda,
-	   FLOAT *b, blasint ldb, 
+	   FLOAT *b, blasint ldb,
 #ifndef COMPLEX
 	   FLOAT beta,
 #else
@@ -244,7 +244,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -252,7 +252,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
@@ -278,15 +278,15 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
     args.m = m;
     args.n = n;
     args.k = k;
-    
+
     args.a = (void *)a;
     args.b = (void *)b;
     args.c = (void *)c;
-    
+
     args.lda = lda;
     args.ldb = ldb;
     args.ldc = ldc;
-    
+
     if (TransA == CblasNoTrans)     transa = 0;
     if (TransA == CblasTrans)       transa = 1;
 #ifndef COMPLEX
@@ -305,7 +305,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
     if (TransB == CblasConjNoTrans) transb = 2;
     if (TransB == CblasConjTrans)   transb = 3;
 #endif
-    
+
     nrowa = args.m;
     if (transa & 1) nrowa = args.k;
     nrowb = args.k;
@@ -315,7 +315,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
     if (args.ldc < args.m) info = 13;
     if (args.ldb < nrowb)  info = 10;
-    if (args.lda < nrowa)  info =  8; 
+    if (args.lda < nrowa)  info =  8;
     if (args.k < 0)        info =  5;
     if (args.n < 0)        info =  4;
     if (args.m < 0)        info =  3;
@@ -327,11 +327,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
     args.m = n;
     args.n = m;
     args.k = k;
-    
+
     args.a = (void *)b;
     args.b = (void *)a;
     args.c = (void *)c;
-    
+
     args.lda = ldb;
     args.ldb = lda;
     args.ldc = ldc;
@@ -354,7 +354,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
     if (TransA == CblasConjNoTrans) transb = 2;
     if (TransA == CblasConjTrans)   transb = 3;
 #endif
-    
+
     nrowa = args.m;
     if (transa & 1) nrowa = args.k;
     nrowb = args.k;
@@ -364,7 +364,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
     if (args.ldc < args.m) info = 13;
     if (args.ldb < nrowb)  info = 10;
-    if (args.lda < nrowa)  info =  8; 
+    if (args.lda < nrowa)  info =  8;
     if (args.k < 0)        info =  5;
     if (args.n < 0)        info =  4;
     if (args.m < 0)        info =  3;
@@ -392,17 +392,17 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   FUNCTION_PROFILE_START();
 
   buffer = (XFLOAT *)blas_memory_alloc(0);
-  
+
   sa = (XFLOAT *)((BLASLONG)buffer +GEMM_OFFSET_A);
   sb = (XFLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-  
+
 #ifdef SMP
   mode |= (transa << BLAS_TRANSA_SHIFT);
   mode |= (transb << BLAS_TRANSB_SHIFT);
 
   args.common = NULL;
 
-  if(args.m <= GEMM_MULTITHREAD_THRESHOLD || args.n <= GEMM_MULTITHREAD_THRESHOLD 
+  if(args.m <= GEMM_MULTITHREAD_THRESHOLD || args.n <= GEMM_MULTITHREAD_THRESHOLD
      || args.k <=GEMM_MULTITHREAD_THRESHOLD){
     args.nthreads = 1;
   }else{
@@ -410,24 +410,24 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   }
  if (args.nthreads == 1) {
 #endif
-    
+
     (gemm[(transb << 2) | transa])(&args, NULL, NULL, sa, sb, 0);
-    
+
 #ifdef SMP
-    
+
   } else {
-    
+
 #ifndef USE_SIMPLE_THREADED_LEVEL3
 
 #ifndef NO_AFFINITY
       nodes = get_num_nodes();
-      
+
       if ((nodes > 1) && get_node_equal()) {
-	
+
 	args.nthreads /= nodes;
-	
+
 	gemm_thread_mn(mode, &args, NULL, NULL, gemm[16 | (transb << 2) | transa], sa, sb, nodes);
-	
+
       } else {
 #endif
 
@@ -436,21 +436,21 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #else
 
 	GEMM_THREAD(mode, &args, NULL, NULL, gemm[(transb << 2) | transa], sa, sb, args.nthreads);
-	
+
 #endif
-	
+
 #ifndef USE_SIMPLE_THREADED_LEVEL3
 #ifndef NO_AFFINITY
       }
 #endif
 #endif
-    
+
 #endif
-    
+
 #ifdef SMP
   }
 #endif
-  
+
  blas_memory_free(buffer);
 
   FUNCTION_PROFILE_END(COMPSIZE * COMPSIZE, args.m * args.k + args.k * args.n + args.m * args.n, 2 * args.m * args.n * args.k);

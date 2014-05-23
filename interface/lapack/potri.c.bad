@@ -80,7 +80,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   extern
 #endif
   FLOAT *sa, *sb;
-  
+
   PRINT_DEBUG_NAME;
 
   args.n    = *N;
@@ -107,7 +107,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   *Info = 0;
 
   if (args.n == 0) return 0;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -137,11 +137,11 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 #ifdef SMP
   } else {
     info = (trtri_parallel[uplo])(&args, NULL, NULL, sa, sb, 0);
-    
+
     if (!info) {
       info = (lauum_parallel[uplo])(&args, NULL, NULL, sa, sb, 0);
     }
-    
+
     *Info = info;
   }
 #endif

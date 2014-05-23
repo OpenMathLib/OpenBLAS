@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -14,7 +14,7 @@
 *      +              C_WORK_CLATMS, C_WORK_CPOT02,
 *      +              C_WORK_CPOT03, S_WORK_CLATMS, S_WORK_CLANHE,
 *      +              S_WORK_CPOT01, S_WORK_CPOT02, S_WORK_CPOT03 )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            NN, NNS, NNT, NOUT
 *       REAL               THRESH
@@ -40,7 +40,7 @@
 *       REAL               S_WORK_CPOT02( * )
 *       REAL               S_WORK_CPOT03( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -57,7 +57,7 @@
 *> full format to RFP format are performed using the routines CTRTTF and
 *> CTFTTR.
 *>
-*> First, a specific matrix A of size N is created. There is nine types of 
+*> First, a specific matrix A of size N is created. There is nine types of
 *> different matrixes possible.
 *>  1. Diagonal                        6. Random, CNDNUM = sqrt(0.1/EPS)
 *>  2. Random, CNDNUM = 2              7. Random, CNDNUM = 0.1/EPS
@@ -227,10 +227,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
@@ -521,7 +521,7 @@
 *
 *                    Form the inverse and compute the residual.
 *
-                    IF(MOD(N,2).EQ.0)THEN 
+                    IF(MOD(N,2).EQ.0)THEN
                        CALL CLACPY( 'A', N+1, N/2, ARF, N+1, ARFINV,
      +                               N+1 )
                     ELSE

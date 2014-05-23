@@ -45,11 +45,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     LASWP_PLUS (args -> n, 1, args -> m, ZERO, ZERO, args -> b, args -> ldb, NULL, 0, args -> c, 1);
 
     TRSM_LNLU(args, range_m, range_n, sa, sb, 0);
-    TRSM_LNUN(args, range_m, range_n, sa, sb, 0); 
+    TRSM_LNUN(args, range_m, range_n, sa, sb, 0);
 #elif TRANS == 2
     TRSM_LTUN(args, range_m, range_n, sa, sb, 0);
     TRSM_LTLU(args, range_m, range_n, sa, sb, 0);
-    
+
     LASWP_MINUS(args -> n, 1, args -> m, ZERO, ZERO, args -> b, args -> ldb, NULL, 0, args -> c, -1);
 #elif TRANS == 3
     LASWP_PLUS (args -> n, 1, args -> m, ZERO, ZERO, args -> b, args -> ldb, NULL, 0, args -> c, 1);

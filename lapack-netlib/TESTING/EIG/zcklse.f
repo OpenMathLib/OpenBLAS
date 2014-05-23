@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE ZCKLSE( NN, MVAL, PVAL, NVAL, NMATS, ISEED, THRESH,
 *                          NMAX, A, AF, B, BF, X, WORK, RWORK, NIN, NOUT,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, NIN, NMATS, NMAX, NN, NOUT
 *       DOUBLE PRECISION   THRESH
@@ -22,7 +22,7 @@
 *       COMPLEX*16         A( * ), AF( * ), B( * ), BF( * ), WORK( * ),
 *      $                   X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -154,10 +154,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

@@ -241,7 +241,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	) {
 #if defined(XDOUBLE) && defined(QUAD_PRECISION)
 	  xidouble xbeta;
-	  
+
 	  qtox(&xbeta, beta);
 #endif
 	  BETA_OPERATION(m_from, m_to, n_from, n_to, beta, c, ldc);
@@ -287,7 +287,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   for(js = n_from; js < n_to; js += GEMM_R){
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
-    
+
     for(ls = 0; ls < k; ls += min_l){
 
       min_l = k - ls;
@@ -302,11 +302,11 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	gemm_p = ((l2size / min_l + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1));
 	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M;
       }
-      
+
       /* First, we have to move data A to L2 cache */
       min_i = m_to - m_from;
       l1stride = 1;
-      
+
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
       } else {
@@ -316,13 +316,13 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  l1stride = 0;
 	}
       }
-      
+
       START_RPCC();
-      
+
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
-      
+
       STOP_RPCC(innercost);
-      
+
 #if defined(FUSED_GEMM) && !defined(TIMING)
 
       FUSED_KERNEL_OPERATION(min_i, min_j, min_l, alpha,
@@ -344,16 +344,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
         if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
 
-	
+
 	START_RPCC();
-	
-	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs, 
+
+	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
 			sb + min_l * (jjs - js) * COMPSIZE * l1stride);
-	
+
 	STOP_RPCC(outercost);
-	
+
 	START_RPCC();
-	
+
 #if !defined(XDOUBLE)  || !defined(QUAD_PRECISION)
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
 			 sa, sb + min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
@@ -363,39 +363,39 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 #endif
 
 	STOP_RPCC(kernelcost);
-      }      
+      }
 #endif
-      
+
       for(is = m_from + min_i; is < m_to; is += min_i){
 	min_i = m_to - is;
 
 	if (min_i >= GEMM_P * 2) {
 	  min_i = GEMM_P;
-	} else 
+	} else
 	  if (min_i > GEMM_P) {
 	    min_i = (min_i / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
 	  }
-	
+
 	START_RPCC();
-	
+
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	
+
 	STOP_RPCC(innercost);
-	
+
 	START_RPCC();
-	
+
 #if !defined(XDOUBLE)  || !defined(QUAD_PRECISION)
 	KERNEL_OPERATION(min_i, min_j, min_l, alpha, sa, sb, c, ldc, is, js);
 #else
 	KERNEL_OPERATION(min_i, min_j, min_l, (void *)&xalpha, sa, sb, c, ldc, is, js);
 #endif
-	
+
 	STOP_RPCC(kernelcost);
 
       } /* end of is */
     } /* end of js */
   } /* end of ls */
-  
+
 
 #ifdef TIMING
   total = (double)outercost + (double)innercost + (double)kernelcost;

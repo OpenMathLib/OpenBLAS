@@ -68,7 +68,7 @@ int CNAME(BLASLONG m, FLOAT alpha, FLOAT *a,
     if (i > 0) Y[i] += alpha * DOTU_K(i, a, 1, X, 1);
     AXPYU_K(i + 1, 0, 0, alpha * X[i], a, 1, Y, 1, NULL, 0);
     a += i + 1;
-    
+
 #else
     Y[i] += alpha * DOTU_K(m - i, a + i, 1, X + i, 1);
     if (m - i > 1) AXPYU_K(m - i - 1, 0, 0, alpha * X[i],

@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define OLD_M	 4 + STACK + ARGS(%esi)
 #define OLD_N	 8 + STACK + ARGS(%esi)
 #define OLD_K	12 + STACK + ARGS(%esi)
@@ -114,7 +114,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	movl	OLD_B, %edi
 	movl	OLD_C, %ebx
 	punpckldq %mm3, %mm3
-	
+
 	movq	 %mm3, ALPHA
 
 	movl	%ebx, C
@@ -143,13 +143,13 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$2, %eax
 	jle	.L03
 	ALIGN_3
-	
+
 .L02:
 	movd	 0 * SIZE(%edi), %mm0
 	movd	 1 * SIZE(%edi), %mm1
@@ -239,7 +239,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	decl	%eax
 	jne	.L04
 	ALIGN_4
-	
+
 .L10:
 	movl	C, %esi		# coffset = c
 	movl	A, %edx		# aoffset = a
@@ -282,7 +282,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -621,7 +621,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -948,13 +948,13 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$2, %eax
 	jle	.L33
 	ALIGN_3
-	
+
 .L32:
 	movd	 0 * SIZE(%edi), %mm0
 	movd	 1 * SIZE(%edi), %mm1
@@ -1012,7 +1012,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	decl	%eax
 	jne	.L34
 	ALIGN_4
-	
+
 .L40:
 	movl	C, %esi		# coffset = c
 	movl	A, %edx		# aoffset = a
@@ -1051,7 +1051,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1279,7 +1279,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1495,13 +1495,13 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$3, %eax
 	jle	.L63
 	ALIGN_3
-	
+
 .L62:
 	movd	 0 * SIZE(%edi), %mm0
 	movd	 1 * SIZE(%edi), %mm1
@@ -1554,7 +1554,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	decl	%eax
 	jne	.L64
 	ALIGN_4
-	
+
 .L70:
 	movl	C, %esi		# coffset = c
 	movl	A, %edx		# aoffset = a
@@ -1592,7 +1592,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1763,7 +1763,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT

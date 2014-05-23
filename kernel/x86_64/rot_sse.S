@@ -65,8 +65,8 @@
 
 	SAVEREGISTERS
 
-	leaq	(, INCX, SIZE), INCX	
-	leaq	(, INCY, SIZE), INCY	
+	leaq	(, INCX, SIZE), INCX
+	leaq	(, INCY, SIZE), INCY
 
 	pshufd	$0x0, %xmm0, C
 	pshufd	$0x0, %xmm1, S
@@ -153,7 +153,7 @@
 	movaps	 4 * SIZE(X), %xmm2
 	movaps	 8 * SIZE(X), %xmm8
 	movaps	12 * SIZE(X), %xmm10
-	
+
 	decq	%rax
 	jle	.L12
 	ALIGN_3

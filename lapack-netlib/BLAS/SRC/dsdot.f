@@ -2,26 +2,26 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION DSDOT(N,SX,INCX,SY,INCY)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER INCX,INCY,N
 *       ..
 *       .. Array Arguments ..
 *       REAL SX(*),SY(*)
 *       ..
-*  
+*
 *    AUTHORS
 *    =======
-*    Lawson, C. L., (JPL), Hanson, R. J., (SNLA), 
+*    Lawson, C. L., (JPL), Hanson, R. J., (SNLA),
 *    Kincaid, D. R., (U. of Texas), Krogh, F. T., (JPL)
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -79,10 +79,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -99,7 +99,7 @@
 *>
 *> \verbatim
 *>
-*>      
+*>
 *>  C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T.
 *>  Krogh, Basic linear algebra subprograms for Fortran
 *>  usage, Algorithm No. 539, Transactions on Mathematical
@@ -133,7 +133,7 @@
 *
 *  Authors:
 *  ========
-*  Lawson, C. L., (JPL), Hanson, R. J., (SNLA), 
+*  Lawson, C. L., (JPL), Hanson, R. J., (SNLA),
 *  Kincaid, D. R., (U. of Texas), Krogh, F. T., (JPL)
 *
 *  =====================================================================

@@ -46,14 +46,14 @@
 #if defined(PENTIUM4) || defined(ATHLON)
 #define P ((DTB_DEFAULT_ENTRIES) >> 1)
 #endif
-	
+
 #ifndef P
 #define P DTB_DEFAULT_ENTRIES
 #endif
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define PLDA_M	  0 + STACK(%esp)
 #define XP	  4 + STACK(%esp)
 #define MIN_N	  8 + STACK(%esp)

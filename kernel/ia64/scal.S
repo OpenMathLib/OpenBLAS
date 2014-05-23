@@ -81,7 +81,7 @@
 	.body
 	;;
 	{ .mmi
-	mov	XX = X1   
+	mov	XX = X1
 	(p10) LDFD f32 = [X1], INCX
 	mov	PR = pr
 	}

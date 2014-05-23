@@ -42,7 +42,7 @@
 
 int CNAME(BLASLONG dummy1, BLASLONG n,  BLASLONG dummy2, FLOAT alpha_r, FLOAT alpha_i,
 	  FLOAT *dummy3, BLASLONG dummy4, FLOAT *dummy5, BLASLONG dummy6,
-	  FLOAT *c, BLASLONG ldc, 
+	  FLOAT *c, BLASLONG ldc,
 	  FLOAT *dummy7, FLOAT *dummy8, BLASLONG from, BLASLONG to){
 
   BLASLONG i;

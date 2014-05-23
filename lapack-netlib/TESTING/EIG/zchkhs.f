@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -13,7 +13,7 @@
 *                          W3, EVECTL, EVECTR, EVECTY, EVECTX, UU, TAU,
 *                          WORK, NWORK, RWORK, IWORK, SELECT, RESULT,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDU, NOUNIT, NSIZES, NTYPES, NWORK
 *       DOUBLE PRECISION   THRESH
@@ -29,7 +29,7 @@
 *      $                   UU( LDU, * ), UZ( LDU, * ), W1( * ), W3( * ),
 *      $                   WORK( * ), Z( LDU, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -396,10 +396,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

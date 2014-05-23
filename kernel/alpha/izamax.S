@@ -235,7 +235,7 @@ $L13:
 	fcmovne	$f6, $f18, $f2
 	fcmovne	$f7, $f19, $f3
 	.align 4
-	
+
 $L14:
 	addt	$f8,  $f9,  $f16
 	addt	$f10, $f11, $f17

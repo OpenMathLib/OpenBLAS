@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	 8
 #define ARGS     0
 
@@ -111,7 +111,7 @@
 	decl	I
 	jle	.L11
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -224,7 +224,7 @@
 	addpd	%xmm5, %xmm1
 
 	addl	$4 * SIZE, X
-	ALIGN_3	
+	ALIGN_3
 
 .L22:
 	testl	$2, M
@@ -234,7 +234,7 @@
 	andps	%xmm3, %xmm4
 	addpd	%xmm4, %xmm0
 	addl	$2 * SIZE, X
-	
+
 .L23:
 	testl	$1, M
 	je	.L999
@@ -253,7 +253,7 @@
 	sarl	$2, I
 	jle	.L60
 	ALIGN_4
-	
+
 .L50:
 	movsd	0 * SIZE(X), %xmm4
 	movhps	1 * SIZE(X), %xmm4

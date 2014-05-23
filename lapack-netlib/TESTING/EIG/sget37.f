@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGET37( RMAX, LMAX, NINFO, KNT, NIN )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KNT, NIN
 *       ..
@@ -17,7 +17,7 @@
 *       INTEGER            LMAX( 3 ), NINFO( 3 )
 *       REAL               RMAX( 3 )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -78,10 +78,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

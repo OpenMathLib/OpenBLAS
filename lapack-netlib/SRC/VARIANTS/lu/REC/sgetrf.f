@@ -2,14 +2,14 @@ C> \brief \b SGETRF VARIANT: iterative version of Sivan Toledo's recursive LU al
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGETRF( M, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -17,7 +17,7 @@ C> \brief \b SGETRF VARIANT: iterative version of Sivan Toledo's recursive LU al
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -122,10 +122,10 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
 C> \date November 2011
 *

@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DSPMV(UPLO,N,ALPHA,AP,X,INCX,BETA,Y,INCY)
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION ALPHA,BETA
 *       INTEGER INCX,INCY,N
@@ -18,7 +18,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION AP(*),X(*),Y(*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -120,10 +120,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

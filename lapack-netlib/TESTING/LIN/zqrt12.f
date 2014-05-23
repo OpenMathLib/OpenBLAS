@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZQRT12( M, N, A, LDA, S, WORK, LWORK,
 *                        RWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LWORK, M, N
 *       ..
@@ -18,7 +18,7 @@
 *       DOUBLE PRECISION   RWORK( * ), S( * )
 *       COMPLEX*16         A( LDA, * ), WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -84,10 +84,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -195,7 +195,7 @@
      $                WORK( M*N+1 ), WORK( M*N+MN+1 ),
      $                WORK( M*N+2*MN+1 ), INFO )
          CALL DBDSQR( 'Upper', MN, 0, 0, 0, RWORK( 1 ), RWORK( MN+1 ),
-     $                DUMMY, MN, DUMMY, 1, DUMMY, MN, RWORK( 2*MN+1 ), 
+     $                DUMMY, MN, DUMMY, 1, DUMMY, MN, RWORK( 2*MN+1 ),
      $                INFO )
 *
          IF( ISCL.EQ.1 ) THEN

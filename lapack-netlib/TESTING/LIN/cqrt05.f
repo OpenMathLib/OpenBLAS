@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CQRT05(M,N,L,NB,RESULT)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER LWORK, M, N, L, NB, LDT
 *       .. Return values ..
 *       REAL RESULT(6)
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -45,7 +45,7 @@
 *>          The number of rows of the upper trapezoidal part the
 *>          lower test matrix.  0 <= L <= M.
 *> \endverbatim
-*>          
+*>
 *> \param[in] NB
 *> \verbatim
 *>          NB is INTEGER
@@ -61,17 +61,17 @@
 *>          RESULT(2) = | I - Q^H Q |
 *>          RESULT(3) = | Q C - Q C |
 *>          RESULT(4) = | Q^H C - Q^H C |
-*>          RESULT(5) = | C Q - C Q | 
+*>          RESULT(5) = | C Q - C Q |
 *>          RESULT(6) = | C Q^H - C Q^H |
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -92,11 +92,11 @@
       REAL RESULT(6)
 *
 *  =====================================================================
-*      
+*
 *     ..
-*     .. Local allocatable arrays 
+*     .. Local allocatable arrays
       COMPLEX, ALLOCATABLE :: AF(:,:), Q(:,:),
-     $  R(:,:), RWORK(:), WORK( : ), T(:,:), 
+     $  R(:,:), RWORK(:), WORK( : ), T(:,:),
      $  CF(:,:), DF(:,:), A(:,:), C(:,:), D(:,:)
 *
 *     .. Parameters ..
@@ -112,14 +112,14 @@
       INTEGER            ISEED( 4 )
 *     ..
 *     .. External Functions ..
-      REAL SLAMCH 
+      REAL SLAMCH
       REAL CLANGE, CLANSY
       LOGICAL  LSAME
       EXTERNAL SLAMCH, CLANGE, CLANSY, LSAME
 *     ..
 *     .. Data statements ..
       DATA ISEED / 1988, 1989, 1990, 1991 /
-*      
+*
       EPS = SLAMCH( 'Epsilon' )
       K = N
       M2 = M+N
@@ -133,7 +133,7 @@
 *     Dynamically allocate all arrays
 *
       ALLOCATE(A(M2,N),AF(M2,N),Q(M2,M2),R(M2,M2),RWORK(M2),
-     $           WORK(LWORK),T(NB,N),C(M2,N),CF(M2,N), 
+     $           WORK(LWORK),T(NB,N),C(M2,N),CF(M2,N),
      $           D(N,M2),DF(N,M2) )
 *
 *     Put random stuff into A
@@ -188,7 +188,7 @@
 *     Compute |I - Q'*Q| and store in RESULT(2)
 *
       CALL CLASET( 'Full', M2, M2, CZERO, ONE, R, M2 )
-      CALL CHERK( 'U', 'C', M2, M2, REAL(-ONE), Q, M2, REAL(ONE), 
+      CALL CHERK( 'U', 'C', M2, M2, REAL(-ONE), Q, M2, REAL(ONE),
      $            R, M2 )
       RESID = CLANSY( '1', 'Upper', M2, R, M2, RWORK )
       RESULT( 2 ) = RESID / (EPS*MAX(1,M2))
@@ -223,7 +223,7 @@
 *     Apply Q to C as QT*C
 *
       CALL CTPMQRT( 'L','C',M,N,K,L,NB,AF(NP1,1),M2,T,LDT,CF,M2,
-     $              CF(NP1,1),M2,WORK,INFO) 
+     $              CF(NP1,1),M2,WORK,INFO)
 *
 *     Compute |QT*C - QT*C| / |C|
 *
@@ -233,7 +233,7 @@
          RESULT( 4 ) = RESID / (EPS*MAX(1,M2)*CNORM)
       ELSE
          RESULT( 4 ) = ZERO
-      END IF     
+      END IF
 *
 *     Generate random n-by-m matrix D and a copy DF
 *
@@ -265,8 +265,8 @@
 *     Apply Q to D as D*QT
 *
       CALL CTPMQRT('R','C',N,M,N,L,NB,AF(NP1,1),M2,T,LDT,DF,N,
-     $             DF(1,NP1),N,WORK,INFO)     
-       
+     $             DF(1,NP1),N,WORK,INFO)
+
 *
 *     Compute |D*QT - D*QT| / |D|
 *

@@ -41,7 +41,7 @@
 #include "common.h"
 
 int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
-  
+
   BLASLONG i;
   FLOAT *gemvbuffer = (FLOAT *)buffer;
   FLOAT *B = b;
@@ -56,7 +56,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 #ifdef TRANSA
     if (i > 0) B[i] -= DOTU_K(i, a, 1, B, 1);
 #endif
-    
+
 #ifndef UNIT
 #ifndef TRANSA
     B[i] /= a[0];
@@ -64,7 +64,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
     B[i] /= a[i];
 #endif
 #endif
-    
+
 #ifndef TRANSA
     if (i < m - 1) {
       AXPYU_K(m - i  - 1 , 0, 0, - B[i],
@@ -78,7 +78,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
     a += (i + 1);
 #endif
   }
-  
+
   if (incb != 1) {
     COPY_K(m, buffer, 1, b, incb);
   }

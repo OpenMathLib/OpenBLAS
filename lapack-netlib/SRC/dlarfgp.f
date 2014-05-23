@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLARFGP + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarfgp.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarfgp.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarfgp.f"> 
+*> Download DLARFGP + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarfgp.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarfgp.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarfgp.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLARFGP( N, ALPHA, X, INCX, TAU )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INCX, N
 *       DOUBLE PRECISION   ALPHA, TAU
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -92,10 +92,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -203,7 +203,7 @@
          IF ( ABS(TAU).LE.SMLNUM ) THEN
 *
 *           In the case where the computed TAU ends up being a denormalized number,
-*           it loses relative accuracy. This is a BIG problem. Solution: flush TAU 
+*           it loses relative accuracy. This is a BIG problem. Solution: flush TAU
 *           to ZERO. This explains the next IF statement.
 *
 *           (Bug report provided by Pat Quillen from MathWorks on Jul 29, 2009.)
@@ -219,7 +219,7 @@
                BETA = -SAVEALPHA
             END IF
 *
-         ELSE 
+         ELSE
 *
 *           This is the general case.
 *

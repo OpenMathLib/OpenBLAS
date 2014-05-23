@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGET01( M, N, A, LDA, AFAC, LDAFAC, IPIV, RWORK,
 *                          RESID )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDAFAC, M, N
 *       REAL               RESID
@@ -19,7 +19,7 @@
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), AFAC( LDAFAC, * ), RWORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -94,10 +94,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

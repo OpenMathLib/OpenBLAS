@@ -73,7 +73,7 @@ static int (*spr_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, FLOAT 
 };
 #endif
 
-void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, 
+void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 	 FLOAT  *x, blasint *INCX, FLOAT *a){
 
   char uplo_arg = *UPLO;
@@ -96,7 +96,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (incx == 0)          info =  5;
@@ -107,7 +107,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
   if (n == 0) return;
 
   if ((alpha_r == ZERO) && (alpha_i == ZERO)) return;
@@ -125,9 +125,9 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   if (nthreads == 1) {
 #endif
-    
+
     (spr[uplo])(n, alpha_r, alpha_i, x, incx, a, buffer);
-    
+
 #ifdef SMP
   } else {
 

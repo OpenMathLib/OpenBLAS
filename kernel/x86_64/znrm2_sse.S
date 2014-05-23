@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
@@ -50,7 +50,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	SAVEREGISTERS
 
 	pxor	%xmm0, %xmm0
@@ -70,7 +70,7 @@
 
 	testq	$SIZE, X
 	je	.L05
-	
+
 	movss	(X), %xmm4
 	cvtss2sd %xmm4, %xmm6
 	mulsd	 %xmm6, %xmm6
@@ -85,7 +85,7 @@
 	movq	M,  I
 	sarq	$3, I
 	jle	.L14
-	
+
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 2 * SIZE(X), %xmm5
 	movsd	 4 * SIZE(X), %xmm6
@@ -252,7 +252,7 @@
 	sarq	$3, I
 	jle	.L44
 	ALIGN_4
-	
+
 .L41:
 	movsd	(X), %xmm4
 	addq	INCX, X

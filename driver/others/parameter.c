@@ -177,26 +177,26 @@ int get_L2_size(void){
   int i;
 
   cpuid(2, &eax, &ebx, &ecx, &edx);
-  
+
   info[ 0] = BITMASK(eax,  8, 0xff);
   info[ 1] = BITMASK(eax, 16, 0xff);
   info[ 2] = BITMASK(eax, 24, 0xff);
-  
+
   info[ 3] = BITMASK(ebx,  0, 0xff);
   info[ 4] = BITMASK(ebx,  8, 0xff);
   info[ 5] = BITMASK(ebx, 16, 0xff);
   info[ 6] = BITMASK(ebx, 24, 0xff);
-  
+
   info[ 7] = BITMASK(ecx,  0, 0xff);
   info[ 8] = BITMASK(ecx,  8, 0xff);
   info[ 9] = BITMASK(ecx, 16, 0xff);
   info[10] = BITMASK(ecx, 24, 0xff);
-  
+
   info[11] = BITMASK(edx,  0, 0xff);
   info[12] = BITMASK(edx,  8, 0xff);
   info[13] = BITMASK(edx, 16, 0xff);
   info[14] = BITMASK(edx, 24, 0xff);
-  
+
   for (i = 0; i < 15; i++){
 
     switch (info[i]){
@@ -284,7 +284,7 @@ void blas_set_parameter(void){
 #endif
 #endif
 
-#if defined(CORE_NORTHWOOD) 
+#if defined(CORE_NORTHWOOD)
   size >>= 7;
 
 #ifdef ALLOC_HUGETLB
@@ -414,7 +414,7 @@ void blas_set_parameter(void){
 #endif
 #endif
 
-#if defined(CORE_OPTERON) 
+#if defined(CORE_OPTERON)
   sgemm_p =  224 + 14 * (size >> 5);
   dgemm_p =  112 + 14 * (size >> 6);
   cgemm_p =  116 + 14 * (size >> 6);
@@ -469,7 +469,7 @@ void blas_set_parameter(void){
     factor = atoi(p);
     if (factor <  10) factor =  10;
     if (factor > 200) factor = 200;
-    
+
     sgemm_p = ((long)((double)sgemm_p * (double)factor * 1.e-2)) & ~7L;
     dgemm_p = ((long)((double)dgemm_p * (double)factor * 1.e-2)) & ~7L;
     cgemm_p = ((long)((double)cgemm_p * (double)factor * 1.e-2)) & ~7L;
@@ -479,7 +479,7 @@ void blas_set_parameter(void){
     xgemm_p = ((long)((double)xgemm_p * (double)factor * 1.e-2)) & ~7L;
 #endif
   }
-  
+
   if (sgemm_p == 0) sgemm_p = 64;
   if (dgemm_p == 0) dgemm_p = 64;
   if (cgemm_p == 0) cgemm_p = 64;
@@ -572,7 +572,7 @@ int get_current_cpu_info(void){
 
 #if defined(ARCH_IA64)
 
-static inline BLASULONG cpuid(BLASULONG regnum){ 
+static inline BLASULONG cpuid(BLASULONG regnum){
   BLASULONG value;
 
 #ifndef __ECC
@@ -587,11 +587,11 @@ static inline BLASULONG cpuid(BLASULONG regnum){
 #if 1
 
 void blas_set_parameter(void){
-  
+
   BLASULONG cpuid3, size;
 
   cpuid3 = cpuid(3);
-  
+
   size = BITMASK(cpuid3, 16, 0xff);
 
   sgemm_p = 192 * (size + 1);
@@ -625,7 +625,7 @@ void blas_set_parameter(void){
 #define IA64_PROC_NAME "/proc/pal/cpu0/cache_info"
 
 void blas_set_parameter(void){
-  
+
   BLASULONG cpuid3;
   int size = 0;
 
@@ -643,17 +643,17 @@ void blas_set_parameter(void){
 
   if (size <= 0) {
     if ((infile = fopen(IA64_PROC_NAME, "r")) != NULL) {
-      
+
       while(fgets(buffer, sizeof(buffer), infile) != NULL) {
 	if ((!strncmp("Data/Instruction Cache level 3", buffer, 30))) break;
       }
-      
+
       fgets(buffer, sizeof(buffer), infile);
-      
+
       fclose(infile);
-      
+
       *strstr(buffer, "bytes") = (char)NULL;
-      
+
       size = atoi(strchr(buffer, ':') + 1) / 1572864;
     }
   }
@@ -663,7 +663,7 @@ void blas_set_parameter(void){
 
   if (size <= 0) {
     cpuid3 = cpuid(3);
- 
+
     size = BITMASK(cpuid3, 16, 0xff) + 1;
   }
 
@@ -692,7 +692,7 @@ void blas_set_parameter(void){
 
 #endif
 
-#if defined(ARCH_MIPS64) 
+#if defined(ARCH_MIPS64)
 void blas_set_parameter(void){
 #if defined(LOONGSON3A)
 #ifdef SMP
@@ -720,7 +720,7 @@ void blas_set_parameter(void){
     dgemm_r = 160;
   }
 #endif
-#endif 
+#endif
 
 }
 #endif

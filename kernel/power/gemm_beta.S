@@ -90,7 +90,7 @@
 
 	fmr	ALPHA, f1
 	lfs	f0,    24(SP)
-	
+
 	cmpwi	cr0, M, 0
 	ble-	LL(999)
 	cmpwi	cr0, N, 0
@@ -133,7 +133,7 @@ LL(12):
 	addi	CO1, CO1,  16 * SIZE
 	bdnz	LL(12)
 	.align 4
-	
+
 LL(15):
 	andi.	r0,  M,  15
 	mtspr	CTR, r0
@@ -221,7 +221,7 @@ LL(22):
 	dcbtst	PRE, CO1
 	bdnz	LL(22)
 	.align 4
-	
+
 LL(25):
 	andi.	r0,  M,  15
 	mtspr	CTR, r0

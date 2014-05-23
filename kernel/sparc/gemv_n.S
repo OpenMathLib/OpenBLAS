@@ -46,12 +46,12 @@
 #define A	%i5
 #define LDA	%i2
 #define X	%i3
-#define INCX	%i4	
+#define INCX	%i4
 #else
 #define A	%i4
 #define LDA	%i5
 #define X	%i2
-#define INCX	%i3	
+#define INCX	%i3
 #endif
 
 #define Y	%l0
@@ -234,7 +234,7 @@
 	STF	FZERO, [Y1 +  7 * SIZE]
 	bg,pn	%icc, .LL01
 	add	Y1, 8 * SIZE, Y1
-	
+
 .LL10:
 	sra	N, 2, J
 	cmp	J, 0
@@ -1314,7 +1314,7 @@
 	add	Y1, INCY, Y1
 	STF	y8, [Y1]
 	add	Y1, INCY, Y1
-	
+
 	deccc	I
 	bg,pn	%icc, .LL991
 	add	BUFFER, 8 * SIZE, BUFFER
@@ -1356,7 +1356,7 @@
 	add	Y1, INCY, Y1
 	STF	y4, [Y1]
 	add	Y1, INCY, Y1
-	
+
 .LL996:
 	andcc	M, 2, I
 	ble,pn	%icc, .LL997
@@ -1378,7 +1378,7 @@
 	add	Y1, INCY, Y1
 	STF	y2, [Y1]
 	add	Y1, INCY, Y1
-	
+
 .LL997:
 	andcc	M, 1, I
 	ble,pn	%icc, .LL999

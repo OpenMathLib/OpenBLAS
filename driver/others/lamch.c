@@ -152,7 +152,7 @@ double
 FLOAT
 #endif
 NAME(char *P){
-  
+
   char p = *P;
   int pos;
   FLOAT *hdata = (FLOAT *)idata;

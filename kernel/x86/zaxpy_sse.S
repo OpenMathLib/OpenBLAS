@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_ALPHA_R	16 + STACK + ARGS(%esp)
 #define STACK_ALPHA_I	20 + STACK + ARGS(%esp)
@@ -97,7 +97,7 @@
 	movss	STACK_M, %xmm5
 	shufps	$0x11, %xmm5, %xmm5
 #endif
-	
+
 	shufps	$0, ALPHA_R, ALPHA_R
 	shufps	$0, ALPHA_I, ALPHA_I
 
@@ -3125,7 +3125,7 @@
 	addps	%xmm1, %xmm4
 
 	movsd	%xmm4,   (Y)
-	
+
 	decl    %eax
 	jg  .L201
 

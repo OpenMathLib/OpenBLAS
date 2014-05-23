@@ -31,7 +31,7 @@
   * Improve the windows build.
 
 * Chen Shaohu <huhumartinwar@gmail.com>
-  * Optimize GEMV on the Loongson 3A processor. 
+  * Optimize GEMV on the Loongson 3A processor.
 
 * Luo Wen
   * Intern. Test Level-2 BLAS.
@@ -53,11 +53,11 @@ In chronological order:
   * [2012-05-19] Fix building bug on FreeBSD and NetBSD.
 
 * Sylvestre Ledru <https://github.com/sylvestre>
-  * [2012-07-01] Improve the detection of sparc. Fix building bug under 
+  * [2012-07-01] Improve the detection of sparc. Fix building bug under
     Hurd and kfreebsd.
 
 * Jameson Nash <https://github.com/vtjnash>
-  * [2012-08-20] Provide support for passing CFLAGS, FFLAGS, PFLAGS, FPFLAGS to 
+  * [2012-08-20] Provide support for passing CFLAGS, FFLAGS, PFLAGS, FPFLAGS to
     make on the command line.
 
 * Alexander Nasonov <alnsn@yandex.ru>
@@ -80,7 +80,7 @@ In chronological order:
   * [2013-06-30] Add Intel Haswell support (using sandybridge optimizations).
 
 * grisuthedragon <https://github.com/grisuthedragon>
-  * [2013-07-11] create openblas_get_parallel to retrieve information which parallelization 
+  * [2013-07-11] create openblas_get_parallel to retrieve information which parallelization
     model is used by OpenBLAS.
 
 * Elliot Saba <staticfloat@gmail.com>

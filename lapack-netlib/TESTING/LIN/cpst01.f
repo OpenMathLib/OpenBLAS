@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CPST01( UPLO, N, A, LDA, AFAC, LDAFAC, PERM, LDPERM,
 *                          PIV, RWORK, RESID, RANK )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               RESID
 *       INTEGER            LDA, LDAFAC, LDPERM, N, RANK
@@ -22,7 +22,7 @@
 *       REAL               RWORK( * )
 *       INTEGER            PIV( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -123,10 +123,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

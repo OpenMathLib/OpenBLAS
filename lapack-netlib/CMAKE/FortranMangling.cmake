@@ -8,7 +8,7 @@
 #    NoChange
 #    f77IsF2C
 #    UpCase
-#    
+#
 macro(FORTRAN_MANGLING CDEFS)
 MESSAGE(STATUS "=========")
   GET_FILENAME_COMPONENT(F77_NAME ${CMAKE_Fortran_COMPILER} NAME)
@@ -39,7 +39,7 @@ MESSAGE(STATUS "=========")
 
 
 MESSAGE(STATUS "Testing FORTRAN_MANGLING")
-       
+
 MESSAGE(STATUS "Compiling Finface.f...")
 
     execute_process ( COMMAND  ${CMAKE_Fortran_COMPILER} ${F77_OPTION_COMPILE} ${PROJECT_SOURCE_DIR}/lapacke/mangling/Fintface.f
@@ -92,7 +92,7 @@ MESSAGE(STATUS "Running ./xintface...")
       RESULT_VARIABLE xintface_RES
       OUTPUT_VARIABLE xintface_OUT
       ERROR_VARIABLE xintface_ERR)
-                         
+
 
        if (xintface_RES EQUAL 0)
           STRING(REPLACE "\n" "" xintface_OUT "${xintface_OUT}")
@@ -100,6 +100,6 @@ MESSAGE(STATUS "Running ./xintface...")
           SET(CDEFS ${xintface_OUT})
       else()
           MESSAGE(FATAL_ERROR "FORTRAN_MANGLING:ERROR ${xintface_ERR}")
-      endif() 
-      
+      endif()
+
 endmacro(FORTRAN_MANGLING)

@@ -288,20 +288,20 @@ sgemm_tcopy_L4_M4_20:
 
 	subs	I , I , #1
 	ble	sgemm_tcopy_L4_M4_40
-	
+
 	COPY4x4_2
 
 	subs	I , I , #1
 	bne	sgemm_tcopy_L4_M4_20
-	
-	
+
+
 sgemm_tcopy_L4_M4_40:
 
 	tst	N , #2
 	ble	sgemm_tcopy_L4_M4_60
 
 	COPY2x4
-	
+
 
 sgemm_tcopy_L4_M4_60:
 
@@ -309,7 +309,7 @@ sgemm_tcopy_L4_M4_60:
 	ble	sgemm_tcopy_L4_M4_END
 
 	COPY1x4
-	
+
 
 sgemm_tcopy_L4_M4_END:
 
@@ -348,8 +348,8 @@ sgemm_tcopy_L2_M4_20:
 
 	subs	I , I , #1
 	bne	sgemm_tcopy_L2_M4_20
-	
-	
+
+
 sgemm_tcopy_L2_M4_40:
 
 	tst	N , #2
@@ -395,8 +395,8 @@ sgemm_tcopy_L1_M4_20:
 
 	subs	I , I , #1
 	bne	sgemm_tcopy_L1_M4_20
-	
-	
+
+
 sgemm_tcopy_L1_M4_40:
 
 	tst	N , #2

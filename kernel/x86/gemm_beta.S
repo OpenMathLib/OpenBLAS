@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #ifdef DOUBLE
@@ -169,7 +169,7 @@
 	FLD	4 * SIZE(%eax)
 	fmul	%st(1),%st
 	FST	4 * SIZE(%eax)
-	
+
 	FLD	5 * SIZE(%eax)
 	fmul	%st(1),%st
 	FST	5 * SIZE(%eax)

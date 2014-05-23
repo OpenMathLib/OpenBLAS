@@ -130,7 +130,7 @@ static inline int syrk_beta(BLASLONG m_from, BLASLONG m_to, BLASLONG n_from, BLA
 
     SCAL_K(MIN(i + n_from - m_from + 1, m_to) * COMPSIZE, 0, 0, alpha[0], c, 1, NULL, 0, NULL, 0);
 
-    if (i + n_from - m_from + 1 <= m_to) 
+    if (i + n_from - m_from + 1 <= m_to)
       *(c + (i + n_from - m_from) * COMPSIZE + 1)  = ZERO;
 
     c += ldc * COMPSIZE;

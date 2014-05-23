@@ -1,23 +1,23 @@
 /*
    LAPACKE_dgesv Example
    =====================
- 
+
    The program computes the solution to the system of linear
    equations with a square matrix A and multiple
    right-hand sides B, where A is the coefficient matrix
    and b is the right-hand side matrix:
-  
+
    Description
    ===========
- 
-   The routine solves for X the system of linear equations A*X = B, 
-   where A is an n-by-n matrix, the columns of matrix B are individual 
-   right-hand sides, and the columns of X are the corresponding 
+
+   The routine solves for X the system of linear equations A*X = B,
+   where A is an n-by-n matrix, the columns of matrix B are individual
+   right-hand sides, and the columns of X are the corresponding
    solutions.
 
-   The LU decomposition with partial pivoting and row interchanges is 
-   used to factor A as A = P*L*U, where P is a permutation matrix, L 
-   is unit lower triangular, and U is upper triangular. The factored 
+   The LU decomposition with partial pivoting and row interchanges is
+   used to factor A as A = P*L*U, where P is a permutation matrix, L
+   is unit lower triangular, and U is upper triangular. The factored
    form of A is then used to solve the system of equations A*X = B.
 
    LAPACKE Interface
@@ -47,22 +47,22 @@ int main(int argc, char **argv) {
         /* Local arrays */
 		double *A, *b, *Acopy, *bcopy;
 		lapack_int *ipiv;
-		
+
         /* Default Value */
 	    n = 5; nrhs = 1;
 
         /* Arguments */
 	    for( i = 1; i < argc; i++ ) {
-	    	if( strcmp( argv[i], "-n" ) == 0 ) { 
+	    	if( strcmp( argv[i], "-n" ) == 0 ) {
 		    	n  = atoi(argv[i+1]);
 			    i++;
 		    }
-			if( strcmp( argv[i], "-nrhs" ) == 0 ) { 
+			if( strcmp( argv[i], "-nrhs" ) == 0 ) {
 				nrhs  = atoi(argv[i+1]);
 				i++;
-			} 
+			}
 		}
-		
+
         /* Initialization */
         lda=n, ldb=nrhs;
 		A = (double *)malloc(n*n*sizeof(double)) ;

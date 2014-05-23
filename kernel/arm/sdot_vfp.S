@@ -239,7 +239,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
-	
+
 #if	defined(DSDOT)
 
 	vsub.f64                d0 , d0 , d0

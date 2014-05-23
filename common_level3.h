@@ -47,9 +47,9 @@ __global__ void cuda_dgemm_kernel(int, int, int, double *, double *, double *);
 extern "C" {
 #endif
 
-int sgemm_beta(BLASLONG, BLASLONG, BLASLONG, float, 
+int sgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,
 	       float  *, BLASLONG, float   *, BLASLONG, float  *, BLASLONG);
-int dgemm_beta(BLASLONG, BLASLONG, BLASLONG, double, 
+int dgemm_beta(BLASLONG, BLASLONG, BLASLONG, double,
 	       double *, BLASLONG, double  *, BLASLONG, double *, BLASLONG);
 int cgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,  float,
 	       float  *, BLASLONG, float   *, BLASLONG, float  *, BLASLONG);
@@ -57,12 +57,12 @@ int zgemm_beta(BLASLONG, BLASLONG, BLASLONG, double, double,
 	       double *, BLASLONG, double  *, BLASLONG, double *, BLASLONG);
 
 #ifdef EXPRECISION
-int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble, 
+int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);
 int xgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);
 #else
-int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble *, 
+int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble *,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);
 int xgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble *,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);

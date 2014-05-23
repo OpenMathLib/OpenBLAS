@@ -89,7 +89,7 @@ endif
 endif
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
-CEXTRALIB = 
+CEXTRALIB =
 
 
 sblat1 : sblat1.$(SUFFIX) ../$(LIBNAME)

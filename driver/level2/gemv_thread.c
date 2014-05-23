@@ -110,7 +110,7 @@ static int gemv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
        *((FLOAT *)args -> alpha + 1),
 #endif
        a, lda, x, incx, y, incy, buffer);
-  
+
   return 0;
 }
 
@@ -134,7 +134,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -142,17 +142,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.m = m;
   args.n = n;
-  
+
   args.a = (void *)a;
   args.b = (void *)x;
   args.c = (void *)y;
-    
+
   args.lda = lda;
   args.ldb = incx;
   args.ldc = incy;
@@ -164,14 +164,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
 #endif
 
   num_cpu  = 0;
-  
+
   range[0] = 0;
 #ifndef TRANSA
   i        = m;
 #else
   i        = n;
 #endif
-    
+
   while (i > 0){
 
     width  = blas_quickdivide(i + nthreads - num_cpu - 1, nthreads - num_cpu);
@@ -179,7 +179,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
     if (i < width) width = i;
 
     range[num_cpu + 1] = range[num_cpu] + width;
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = gemv_kernel;
     queue[num_cpu].args    = &args;
@@ -193,7 +193,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i -= width;
   }
@@ -202,9 +202,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
     queue[0].sa = NULL;
     queue[0].sb = buffer;
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-  
+
   return 0;
 }

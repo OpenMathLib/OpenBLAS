@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGET35( RMAX, LMAX, NINFO, KNT, NIN )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KNT, LMAX, NIN, NINFO
 *       DOUBLE PRECISION   RMAX
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -72,10 +72,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

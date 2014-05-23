@@ -163,10 +163,10 @@ goto64.$(SUFFIX) : ../$(LIBNAME) aix.def
 	ld -b64 -o $(@F) ../$(LIBNAME) -bE:aix.def -bM:SRE -bnoexpall -bnoentry -L$(HOME)/misc/lib/ppc64 -lxlf90 -lc -lm -lpthread
 else
 goto32.$(SUFFIX) : ../$(LIBNAME) aix.def
-	ld -o $(@F) ../$(LIBNAME) -bE:aix.def -bM:SRE -bnoexpall -bnoentry -L$(HOME)/misc/lib -lg2c -lc -lm 
+	ld -o $(@F) ../$(LIBNAME) -bE:aix.def -bM:SRE -bnoexpall -bnoentry -L$(HOME)/misc/lib -lg2c -lc -lm
 
 goto64.$(SUFFIX) : ../$(LIBNAME) aix.def
-	ld -b64 -o $(@F) ../$(LIBNAME) -bE:aix.def -bM:SRE -bnoexpall -bnoentry -L$(HOME)/misc/lib/ppc64 -lg2c -lc -lm 
+	ld -b64 -o $(@F) ../$(LIBNAME) -bE:aix.def -bM:SRE -bnoexpall -bnoentry -L$(HOME)/misc/lib/ppc64 -lg2c -lc -lm
 endif
 endif
 

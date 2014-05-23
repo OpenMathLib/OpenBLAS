@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS     0
-	
+
 #if !defined(DOUBLE) && !defined(XDOUBLE)
 #define RESULT		 4 + STACK + ARGS(%esp)
 #define STACK_N		 8 + STACK + ARGS(%esp)
@@ -98,8 +98,8 @@
 	addl	INCX, INCX
 	addl	INCY, INCY
 
-	leal	(, INCX, SIZE), INCX	
-	leal	(, INCY, SIZE), INCY	
+	leal	(, INCX, SIZE), INCX
+	leal	(, INCY, SIZE), INCY
 
 	cmpl	$2 * SIZE, INCX
 	jne	.L14

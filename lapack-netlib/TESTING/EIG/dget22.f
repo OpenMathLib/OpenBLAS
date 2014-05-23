@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGET22( TRANSA, TRANSE, TRANSW, N, A, LDA, E, LDE, WR,
 *                          WI, WORK, RESULT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANSA, TRANSE, TRANSW
 *       INTEGER            LDA, LDE, N
@@ -19,7 +19,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), E( LDE, * ), RESULT( 2 ), WI( * ),
 *      $                   WORK( * ), WR( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -154,10 +154,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

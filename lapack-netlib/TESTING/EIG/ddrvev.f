@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          NOUNIT, A, LDA, H, WR, WI, WR1, WI1, VL, LDVL,
 *                          VR, LDVR, LRE, LDLRE, RESULT, WORK, NWORK,
 *                          IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDLRE, LDVL, LDVR, NOUNIT, NSIZES,
 *      $                   NTYPES, NWORK
@@ -25,7 +25,7 @@
 *      $                   RESULT( 7 ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WI( * ), WI1( * ), WORK( * ), WR( * ), WR1( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -391,10 +391,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

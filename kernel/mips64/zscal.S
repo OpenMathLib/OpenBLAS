@@ -67,7 +67,7 @@
 #define t4	$f11
 
 	PROLOGUE
-	
+
 	li	TEMP, 2 * SIZE
 	MTC	$0,  a1
 
@@ -168,7 +168,7 @@
 	NOP
 	.align 3
 
-.L50:	
+.L50:
 	bne	INCX, TEMP, .L60
 	dsra	I, N, 2
 

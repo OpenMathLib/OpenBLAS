@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 	PROLOGUE
 	PROFCODE
 

@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLARFT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slarft.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slarft.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slarft.f"> 
+*> Download SLARFT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slarft.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slarft.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slarft.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLARFT( DIRECT, STOREV, N, K, V, LDV, TAU, T, LDT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIRECT, STOREV
 *       INTEGER            K, LDT, LDV, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       REAL               T( LDT, * ), TAU( * ), V( LDV, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -125,10 +125,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -221,7 +221,7 @@
                   END DO
                   DO J = 1, I-1
                      T( J, I ) = -TAU( I ) * V( I , J )
-                  END DO   
+                  END DO
                   J = MIN( LASTV, PREVLASTV )
 *
 *                 T(1:i-1,i) := - tau(i) * V(i:j,1:i-1)**T * V(i:j,i)
@@ -236,13 +236,13 @@
                   END DO
                   DO J = 1, I-1
                      T( J, I ) = -TAU( I ) * V( J , I )
-                  END DO   
+                  END DO
                   J = MIN( LASTV, PREVLASTV )
 *
 *                 T(1:i-1,i) := - tau(i) * V(1:i-1,i:j) * V(i,i:j)**T
 *
                   CALL SGEMV( 'No transpose', I-1, J-I, -TAU( I ),
-     $                        V( 1, I+1 ), LDV, V( I, I+1 ), LDV, 
+     $                        V( 1, I+1 ), LDV, V( I, I+1 ), LDV,
      $                        ONE, T( 1, I ), 1 )
                END IF
 *
@@ -280,7 +280,7 @@
                      END DO
                      DO J = I+1, K
                         T( J, I ) = -TAU( I ) * V( N-K+I , J )
-                     END DO   
+                     END DO
                      J = MAX( LASTV, PREVLASTV )
 *
 *                    T(i+1:k,i) = -tau(i) * V(j:n-k+i,i+1:k)**T * V(j:n-k+i,i)
@@ -295,7 +295,7 @@
                      END DO
                      DO J = I+1, K
                         T( J, I ) = -TAU( I ) * V( J, N-K+I )
-                     END DO   
+                     END DO
                      J = MAX( LASTV, PREVLASTV )
 *
 *                    T(i+1:k,i) = -tau(i) * V(i+1:k,j:n-k+i) * V(i,j:n-k+i)**T

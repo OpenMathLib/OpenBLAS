@@ -99,7 +99,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   for (i = 0; i < n; i += blocking) {
     bk = MIN(blocking, n - i);
-    
+
     if (i  > 0) TRSM_OUNCOPY(bk, bk, a + (i + i * lda) * COMPSIZE, lda, 0, sa_trsm);
 
     if (!range_n) {
@@ -118,24 +118,24 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       for (ls = i + bk; ls < n; ls += REAL_GEMM_R) {
 	min_l = n - ls;
 	if (min_l > REAL_GEMM_R) min_l = REAL_GEMM_R;
-	
+
 	GEMM_ONCOPY (bk, min_l, a + (i + ls * lda) * COMPSIZE, lda, sb_gemm);
-	
+
 	if (i > 0) {
 	  for (is = 0; is < i; is += GEMM_P) {
 	    min_i = i - is;
 	    if (min_i > GEMM_P) min_i = GEMM_P;
-	    
+
 	  if (ls == i + bk) {
 	    //NEG_TCOPY (bk, min_i, a + (is + i * lda) * COMPSIZE, lda, sa);
 
-	    GEMM_BETA(min_i, bk, 0, dm1, 
+	    GEMM_BETA(min_i, bk, 0, dm1,
 #ifdef COMPLEX
-		      ZERO, 
+		      ZERO,
 #endif
 		      NULL, 0, NULL, 0, a + (is + i * lda) * COMPSIZE, lda);
 
-	    TRSM_KERNEL_RN(min_i, bk, bk, dm1, 
+	    TRSM_KERNEL_RN(min_i, bk, bk, dm1,
 #ifdef COMPLEX
 			   ZERO,
 #endif
@@ -144,8 +144,8 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	  } else {
 	    GEMM_ITCOPY (bk, min_i, a + (is + i * lda) * COMPSIZE, lda, sa);
 	  }
-	    
-	  GEMM_KERNEL_N(min_i, min_l, bk, dp1, 
+
+	  GEMM_KERNEL_N(min_i, min_l, bk, dp1,
 #ifdef COMPLEX
 			ZERO,
 #endif
@@ -153,7 +153,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 			a + (is + ls * lda) * COMPSIZE, lda);
 	  }
 	}
-	
+
 	start_is = 0;
 	while (start_is < bk) start_is += GEMM_P;
 	start_is -= GEMM_P;
@@ -161,8 +161,8 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	for (is = 0; is < bk; is += GEMM_P) {
 	  min_i = bk - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
-	  TRMM_KERNEL_LN(min_i, min_l, bk, dp1, 
+
+	  TRMM_KERNEL_LN(min_i, min_l, bk, dp1,
 #ifdef COMPLEX
 			 ZERO,
 #endif
@@ -176,15 +176,15 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	for (is = 0; is < i; is += GEMM_P) {
 	  min_i = i - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
+
 	  //NEG_TCOPY (bk, min_i, a + (is + i * lda) * COMPSIZE, lda, sa);
-	  GEMM_BETA(min_i, bk, 0, dm1, 
+	  GEMM_BETA(min_i, bk, 0, dm1,
 #ifdef COMPLEX
-		    ZERO, 
+		    ZERO,
 #endif
 		    NULL, 0, NULL, 0, a + (is + i * lda) * COMPSIZE, lda);
 
-	  TRSM_KERNEL_RN(min_i, bk, bk, dm1, 
+	  TRSM_KERNEL_RN(min_i, bk, bk, dm1,
 #ifdef COMPLEX
 			 ZERO,
 #endif

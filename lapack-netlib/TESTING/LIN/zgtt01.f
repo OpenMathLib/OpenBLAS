@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGTT01( N, DL, D, DU, DLF, DF, DUF, DU2, IPIV, WORK,
 *                          LDWORK, RWORK, RESID )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDWORK, N
 *       DOUBLE PRECISION   RESID
@@ -21,7 +21,7 @@
 *       COMPLEX*16         D( * ), DF( * ), DL( * ), DLF( * ), DU( * ),
 *      $                   DU2( * ), DUF( * ), WORK( LDWORK, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -121,10 +121,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

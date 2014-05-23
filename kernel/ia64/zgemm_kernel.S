@@ -462,7 +462,7 @@
 	FMA_B	f99  = f34, f53, f99	// A3 * B6
 	nop	__LINE__
 	}
-	;; 
+	;;
 /* 12 */
 	{ .mfb
 	FMA	f114  = f34, f54, f114	// A3 * B7
@@ -2112,7 +2112,7 @@
 	mov	f82 = f0
 	tbit.z	p12, p0 = L, 0
 	}
-	{ .mfi	
+	{ .mfi
 	LDFPD	f50, f51 = [BOFFSET], 2 * SIZE
 	mov	f83 = f0
 	shr	L = L, 1
@@ -2134,7 +2134,7 @@
 	mov	f114 = f0
 	mov	ar.lc = L
 	}
-	{ .mfi	
+	{ .mfi
 	adds	PREA = (PREFETCHSIZE + 0) * SIZE, AOFFSET
 	mov	f115 = f0
 	nop	__LINE__
@@ -2650,7 +2650,7 @@
 	FMA	f120 = ALPHA_R, f112, f120
 	nop	__LINE__
 	}
-	;;	
+	;;
 	{ .mfb
 	STFD	[C1] = f73, SIZE
 	FCALC_C	f105 = ALPHA_R, f97,  f105
@@ -2661,7 +2661,7 @@
 	FCALC_C	f121 = ALPHA_R, f113, f121
 	nop	__LINE__
 	}
-	;;	
+	;;
 	{ .mfb
 	STFD	[C1] = f74, SIZE
 	FMA	f106 = ALPHA_R, f98,  f106
@@ -2672,7 +2672,7 @@
 	FMA	f122 = ALPHA_R, f114, f122
 	nop	__LINE__
 	}
-	;;	
+	;;
 	{ .mfb
 	STFD	[C1] = f75, SIZE
 	FCALC_C	f107 = ALPHA_R, f99,  f107
@@ -3108,7 +3108,7 @@
 	}
 	;;
 	{ .mfi
-	LDFPD	f54, f55 = [BOFFSET], 2 * SIZE	
+	LDFPD	f54, f55 = [BOFFSET], 2 * SIZE
 	mov	f120 = f0
 	mov	ar.lc = L
 	}
@@ -5490,7 +5490,7 @@
 	STFD	[C2] = f88, SIZE
 	mov	f80 = f0
 	}
-	;;	
+	;;
 	{ .mmi
 	STFD	[C1] = f73,  SIZE
 	STFD	[C2] = f89, SIZE
@@ -5585,7 +5585,7 @@
 	nop	__LINE__
 #endif
 	}
-	;;	
+	;;
 	{ .mmi
 	STFD	[C1] = f73, SIZE
 	STFD	[C2] = f89, SIZE
@@ -6772,7 +6772,7 @@
 	setf.d	f64 = r0
 	mov	f80 = f0
 	}
-	;;	
+	;;
 	{ .mmf
 	STFD	[C1] = f73,  SIZE
 	setf.d	f65 = r0
@@ -6807,7 +6807,7 @@
 	setf.d	f64 = r0
 	mov	f80 = f0
 	}
-	;;	
+	;;
 	{ .mmf
 	STFD	[C1] = f73,  SIZE
 	setf.d	f65 = r0

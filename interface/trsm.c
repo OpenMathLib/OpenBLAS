@@ -87,18 +87,18 @@ static int (*trsm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
   TRSM_LTUU, TRSM_LTUN, TRSM_LTLU, TRSM_LTLN,
   TRSM_LRUU, TRSM_LRUN, TRSM_LRLU, TRSM_LRLN,
   TRSM_LCUU, TRSM_LCUN, TRSM_LCLU, TRSM_LCLN,
-  TRSM_RNUU, TRSM_RNUN, TRSM_RNLU, TRSM_RNLN, 
+  TRSM_RNUU, TRSM_RNUN, TRSM_RNLU, TRSM_RNLN,
   TRSM_RTUU, TRSM_RTUN, TRSM_RTLU, TRSM_RTLN,
-  TRSM_RRUU, TRSM_RRUN, TRSM_RRLU, TRSM_RRLN, 
+  TRSM_RRUU, TRSM_RRUN, TRSM_RRLU, TRSM_RRLN,
   TRSM_RCUU, TRSM_RCUN, TRSM_RCLU, TRSM_RCLN,
 #else
   TRMM_LNUU, TRMM_LNUN, TRMM_LNLU, TRMM_LNLN,
   TRMM_LTUU, TRMM_LTUN, TRMM_LTLU, TRMM_LTLN,
   TRMM_LRUU, TRMM_LRUN, TRMM_LRLU, TRMM_LRLN,
   TRMM_LCUU, TRMM_LCUN, TRMM_LCLU, TRMM_LCLN,
-  TRMM_RNUU, TRMM_RNUN, TRMM_RNLU, TRMM_RNLN, 
+  TRMM_RNUU, TRMM_RNUN, TRMM_RNLU, TRMM_RNLN,
   TRMM_RTUU, TRMM_RTUN, TRMM_RTLU, TRMM_RTLN,
-  TRMM_RRUU, TRMM_RRUN, TRMM_RRLU, TRMM_RRLN, 
+  TRMM_RRUU, TRMM_RRUN, TRMM_RRLU, TRMM_RRLN,
   TRMM_RCUU, TRMM_RCUN, TRMM_RCLU, TRMM_RCLN,
 #endif
 };
@@ -108,7 +108,7 @@ static int (*trsm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
 void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
 	   blasint *M, blasint *N, FLOAT *alpha,
 	   FLOAT *a, blasint *ldA, FLOAT *b, blasint *ldB){
-  
+
   char side_arg  = *SIDE;
   char uplo_arg  = *UPLO;
   char trans_arg = *TRANS;
@@ -127,7 +127,7 @@ void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -135,7 +135,7 @@ void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
@@ -182,7 +182,7 @@ void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
-  
+
   nrowa = args.m;
   if (side & 1) nrowa = args.n;
 
@@ -201,10 +201,10 @@ void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
 #else
 
-void CNAME(enum CBLAS_ORDER order, 
+void CNAME(enum CBLAS_ORDER order,
 	   enum CBLAS_SIDE Side,  enum CBLAS_UPLO Uplo,
 	   enum CBLAS_TRANSPOSE Trans, enum CBLAS_DIAG Diag,
 	   blasint m, blasint n,
@@ -231,7 +231,7 @@ void CNAME(enum CBLAS_ORDER order,
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -239,7 +239,7 @@ void CNAME(enum CBLAS_ORDER order,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
@@ -269,7 +269,7 @@ void CNAME(enum CBLAS_ORDER order,
 
     if (Side == CblasLeft)         side  = 0;
     if (Side == CblasRight)        side  = 1;
-    
+
     if (Uplo == CblasUpper)        uplo  = 0;
     if (Uplo == CblasLower)        uplo  = 1;
 
@@ -282,15 +282,15 @@ void CNAME(enum CBLAS_ORDER order,
     if (Trans == CblasConjNoTrans) trans = 2;
     if (Trans == CblasConjTrans)   trans = 3;
 #endif
-    
+
     if (Diag == CblasUnit)          unit  = 0;
     if (Diag == CblasNonUnit)       unit  = 1;
 
     info = -1;
-    
+
     nrowa = args.m;
     if (side & 1) nrowa = args.n;
-    
+
     if (args.ldb < MAX(1,args.m)) info = 11;
     if (args.lda < MAX(1,nrowa))  info =  9;
     if (args.n < 0)               info =  6;
@@ -307,7 +307,7 @@ void CNAME(enum CBLAS_ORDER order,
 
     if (Side == CblasLeft)         side  = 1;
     if (Side == CblasRight)        side  = 0;
-    
+
     if (Uplo == CblasUpper)        uplo  = 1;
     if (Uplo == CblasLower)        uplo  = 0;
 
@@ -320,15 +320,15 @@ void CNAME(enum CBLAS_ORDER order,
     if (Trans == CblasConjNoTrans) trans = 2;
     if (Trans == CblasConjTrans)   trans = 3;
 #endif
-    
+
     if (Diag == CblasUnit)         unit  = 0;
     if (Diag == CblasNonUnit)      unit  = 1;
 
     info = -1;
-    
+
     nrowa = args.m;
     if (side & 1) nrowa = args.n;
-    
+
     if (args.ldb < MAX(1,args.m)) info = 11;
     if (args.lda < MAX(1,nrowa))  info =  9;
     if (args.n < 0)               info =  6;
@@ -353,10 +353,10 @@ void CNAME(enum CBLAS_ORDER order,
   FUNCTION_PROFILE_START();
 
   buffer = (FLOAT *)blas_memory_alloc(0);
-  
+
   sa = (FLOAT *)((BLASLONG)buffer + GEMM_OFFSET_A);
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-  
+
 #ifdef SMP
   mode |= (trans << BLAS_TRANSA_SHIFT);
   mode |= (side  << BLAS_RSIDE_SHIFT);
@@ -367,7 +367,7 @@ void CNAME(enum CBLAS_ORDER order,
 #endif
 
     (trsm[(side<<4) | (trans<<2) | (uplo<<1) | unit])(&args, NULL, NULL, sa, sb, 0);
-    
+
 #ifdef SMP
   } else {
     if (!side) {
@@ -377,10 +377,10 @@ void CNAME(enum CBLAS_ORDER order,
     }
   }
 #endif
-  
+
   blas_memory_free(buffer);
 
-  FUNCTION_PROFILE_END(COMPSIZE * COMPSIZE, 
+  FUNCTION_PROFILE_END(COMPSIZE * COMPSIZE,
 		       (!side) ? args.m * (args.m + args.n) : args.n * (args.m + args.n),
 		       (!side) ? args.m * args.m * args.n : args.m * args.n * args.n);
 

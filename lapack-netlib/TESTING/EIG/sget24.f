@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          H, HT, WR, WI, WRT, WIT, WRTMP, WITMP, VS,
 *                          LDVS, VS1, RCDEIN, RCDVIN, NSLCT, ISLCT,
 *                          RESULT, WORK, LWORK, IWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            COMP
 *       INTEGER            INFO, JTYPE, LDA, LDVS, LWORK, N, NOUNIT, NSLCT
@@ -26,7 +26,7 @@
 *      $                   WI( * ), WIT( * ), WITMP( * ), WORK( * ),
 *      $                   WR( * ), WRT( * ), WRTMP( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -328,10 +328,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

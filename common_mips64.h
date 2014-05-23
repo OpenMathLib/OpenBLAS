@@ -13,19 +13,19 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the ISCAS nor the names of its contributors may 
-      be used to endorse or promote products derived from this software 
+   3. Neither the name of the ISCAS nor the names of its contributors may
+      be used to endorse or promote products derived from this software
       without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
@@ -111,9 +111,9 @@ static inline unsigned int rpcc(void){
                        ".set pop": "=r"(ret):: "memory");
 
 #else
-  __asm__ __volatile__(".set   push    \n"                                     
-          ".set   mips32r2\n"                                                  
-          "rdhwr %0, $30  \n"                                                  
+  __asm__ __volatile__(".set   push    \n"
+          ".set   mips32r2\n"
+          "rdhwr %0, $30  \n"
           ".set pop" : "=r"(ret) : : "memory");
 #endif
   return ret;
@@ -191,13 +191,13 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define CMPEQ	c.eq.s
 #define CMPLE	c.le.s
 #define CMPLT	c.lt.s
-#define PLU     plu.ps                                                    
-#define PLL     pll.ps   
-#define PUU     puu.ps    
-#define PUL     pul.ps   
-#define MADPS   madd.ps   
-#define CVTU    cvt.s.pu    
-#define CVTL    cvt.s.pl 
+#define PLU     plu.ps
+#define PLL     pll.ps
+#define PUU     puu.ps
+#define PUL     pul.ps
+#define MADPS   madd.ps
+#define CVTU    cvt.s.pu
+#define CVTL    cvt.s.pl
 #define	NEG	neg.s
 #endif
 
@@ -279,9 +279,9 @@ REALNAME: ;\
 
 #if defined(LOONGSON3A) || defined(LOONGSON3B)
 #define PREFETCHD_(x) ld $0, x
-#define PREFETCHD(x)  PREFETCHD_(x)  
+#define PREFETCHD(x)  PREFETCHD_(x)
 #else
-#define PREFETCHD(x) 
+#define PREFETCHD(x)
 #endif
 
 #endif

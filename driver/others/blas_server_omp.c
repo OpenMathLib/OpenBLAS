@@ -79,7 +79,7 @@ void goto_set_num_threads(int num_threads) {
       blas_thread_buffer[i]=NULL;
     }
   }
-#if defined(ARCH_MIPS64) 
+#if defined(ARCH_MIPS64)
   //set parameters for different number of threads.
   blas_set_parameter();
 #endif
@@ -128,8 +128,8 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 #ifdef EXPRECISION
 	if (mode & BLAS_XDOUBLE){
 	  /* REAL / Extended Double */
-	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble, 
-			xdouble *, BLASLONG, xdouble *, BLASLONG, 
+	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble,
+			xdouble *, BLASLONG, xdouble *, BLASLONG,
 			xdouble *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -137,14 +137,14 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> a, args -> lda,
 		args -> b, args -> ldb,
 		args -> c, args -> ldc, sb);
-	} else 
+	} else
 #endif
 	  if (mode & BLAS_DOUBLE){
 	    /* REAL / Double */
-	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double, 
-			  double *, BLASLONG, double *, BLASLONG, 
+	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
+			  double *, BLASLONG, double *, BLASLONG,
 			  double *, BLASLONG, void *) = func;
-	    
+
 	    afunc(args -> m, args -> n, args -> k,
 		  ((double *)args -> alpha)[0],
 		  args -> a, args -> lda,
@@ -152,10 +152,10 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		  args -> c, args -> ldc, sb);
 	  } else {
 	    /* REAL / Single */
-	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float, 
-			  float *, BLASLONG, float *, BLASLONG, 
+	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
+			  float *, BLASLONG, float *, BLASLONG,
 			  float *, BLASLONG, void *) = func;
-	    
+
 	    afunc(args -> m, args -> n, args -> k,
 		  ((float *)args -> alpha)[0],
 		  args -> a, args -> lda,
@@ -167,7 +167,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	if (mode & BLAS_XDOUBLE){
 	  /* COMPLEX / Extended Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
-			xdouble *, BLASLONG, xdouble *, BLASLONG, 
+			xdouble *, BLASLONG, xdouble *, BLASLONG,
 			xdouble *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -181,7 +181,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	  if (mode & BLAS_DOUBLE){
 	    /* COMPLEX / Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double, double,
-			double *, BLASLONG, double *, BLASLONG, 
+			double *, BLASLONG, double *, BLASLONG,
 			double *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -193,7 +193,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	  } else {
 	    /* COMPLEX / Single */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float, float,
-			float *, BLASLONG, float *, BLASLONG, 
+			float *, BLASLONG, float *, BLASLONG,
 			float *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -210,7 +210,7 @@ static void exec_threads(blas_queue_t *queue){
 
   void *buffer, *sa, *sb;
   int pos=0, release_flag=0;
-  
+
   buffer = NULL;
   sa = queue -> sa;
   sb = queue -> sb;
@@ -235,19 +235,19 @@ static void exec_threads(blas_queue_t *queue){
       sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
       queue->sa=sa;
     }
-    
+
     if (sb == NULL) {
       if (!(queue -> mode & BLAS_COMPLEX)){
 #ifdef EXPRECISION
 	if (queue -> mode & BLAS_XDOUBLE){
-	  sb = (void *)(((BLASLONG)sa + ((QGEMM_P * QGEMM_Q * sizeof(xdouble) 
+	  sb = (void *)(((BLASLONG)sa + ((QGEMM_P * QGEMM_Q * sizeof(xdouble)
 					  + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-	} else 
+	} else
 #endif
 	  if (queue -> mode & BLAS_DOUBLE){
 	    sb = (void *)(((BLASLONG)sa + ((DGEMM_P * DGEMM_Q * sizeof(double)
 					    + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-	    
+
 	  } else {
 	    sb = (void *)(((BLASLONG)sa + ((SGEMM_P * SGEMM_Q * sizeof(float)
 					    + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);

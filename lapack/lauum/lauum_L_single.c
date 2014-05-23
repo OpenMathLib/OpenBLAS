@@ -91,7 +91,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   n      = args -> n;
   a      = (FLOAT *)args -> a;
   lda    = args -> lda;
-  
+
   if (range_n) {
     n      = range_n[1] - range_n[0];
     a     += range_n[0] * (lda + 1) * COMPSIZE;
@@ -107,11 +107,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   for (j = 0; j < n; j += blocking) {
     bk = MIN(blocking, n - j);
-    
+
     if (j > 0 ){
 
       TRMM_ILNCOPY(bk, bk, a + (j + j * lda) * COMPSIZE, lda, 0, 0, sb);
-      
+
       for (ls = 0; ls < j; ls += REAL_GEMM_R) {
 	min_l = j - ls;
 	if (min_l > REAL_GEMM_R) min_l = REAL_GEMM_R;
@@ -127,97 +127,97 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	} else {
 	  aa = sb2;
 	}
-	
+
 	for (jjs = ls; jjs < ls + min_l; jjs += GEMM_P){
 	  min_jj = ls + min_l - jjs;
 	  if (min_jj > GEMM_P) min_jj = GEMM_P;
-	  
+
 	  GEMM_ONCOPY(bk, min_jj, a + (j + jjs * lda) * COMPSIZE, lda, sb2 + (jjs - ls) * bk * COMPSIZE);
-	  
-	  SYRK_KERNEL(min_i, min_jj, bk, dp1, 
-		      aa, 
-		      sb2 + (jjs - ls) * bk * COMPSIZE, 
-		      a + (ls + jjs * lda) * COMPSIZE, lda, 
+
+	  SYRK_KERNEL(min_i, min_jj, bk, dp1,
+		      aa,
+		      sb2 + (jjs - ls) * bk * COMPSIZE,
+		      a + (ls + jjs * lda) * COMPSIZE, lda,
 		      ls - jjs);
 	}
 
-	
+
 	for(is = ls + min_i; is < j ; is += GEMM_P){
 	  min_i = j - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
+
 	  GEMM_INCOPY(bk, min_i, a + (j + is * lda)* COMPSIZE, lda, sa);
-	  
-	  SYRK_KERNEL(min_i, min_l, bk, dp1, 
-		      sa, 
-		      sb2, 
-		      a + (is + ls * lda) * COMPSIZE, lda, 
+
+	  SYRK_KERNEL(min_i, min_l, bk, dp1,
+		      sa,
+		      sb2,
+		      a + (is + ls * lda) * COMPSIZE, lda,
 		      is - ls);
 	}
-	
+
 	for (ks = 0; ks < bk; ks += GEMM_P) {
 	  min_k = bk - ks;
 	  if (min_k > GEMM_P) min_k = GEMM_P;
-	  
+
 	  TRMM_KERNEL(min_k, min_l, bk, dp1,
 #ifdef COMPLEX
 		      ZERO,
 #endif
 		      sb + ks * bk * COMPSIZE,
 		      sb2,
-		      a + (ks + j + ls * lda) * COMPSIZE, lda, ks); 
+		      a + (ks + j + ls * lda) * COMPSIZE, lda, ks);
 	}
 #else
 
 	min_i = j - ls;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	GEMM_INCOPY(bk, min_i, a + (j + ls * lda)* COMPSIZE, lda, sa);
-	
+
 	for (jjs = ls; jjs < ls + min_l; jjs += GEMM_P){
 	  min_jj = ls + min_l - jjs;
 	  if (min_jj > GEMM_P) min_jj = GEMM_P;
-	  
+
 	  GEMM_ONCOPY(bk, min_jj, a + (j + jjs * lda) * COMPSIZE, lda, sb2 + (jjs - ls) * bk * COMPSIZE);
-	  
-	  SYRK_KERNEL(min_i, min_jj, bk, dp1, 
-		      sa, 
-		      sb2 + (jjs - ls) * bk * COMPSIZE, 
-		      a + (ls + jjs * lda) * COMPSIZE, lda, 
+
+	  SYRK_KERNEL(min_i, min_jj, bk, dp1,
+		      sa,
+		      sb2 + (jjs - ls) * bk * COMPSIZE,
+		      a + (ls + jjs * lda) * COMPSIZE, lda,
 		      ls - jjs);
 	}
-	
+
 	for(is = ls + min_i; is < j ; is += GEMM_P){
 	  min_i = j - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
+
 	  GEMM_INCOPY(bk, min_i, a + (j + is * lda)* COMPSIZE, lda, sa);
-	  
-	  SYRK_KERNEL(min_i, min_l, bk, dp1, 
-		      sa, 
-		      sb2, 
-		      a + (is + ls * lda) * COMPSIZE, lda, 
+
+	  SYRK_KERNEL(min_i, min_l, bk, dp1,
+		      sa,
+		      sb2,
+		      a + (is + ls * lda) * COMPSIZE, lda,
 		      is - ls);
 	}
 
 	for (ks = 0; ks < bk; ks += GEMM_P) {
 	  min_k = bk - ks;
 	  if (min_k > GEMM_P) min_k = GEMM_P;
-	  
+
 	  TRMM_KERNEL(min_k, min_l, bk, dp1,
 #ifdef COMPLEX
 		      ZERO,
 #endif
 		      sb + ks * bk * COMPSIZE,
 		      sb2,
-		      a + (ks + j + ls * lda) * COMPSIZE, lda, ks); 
+		      a + (ks + j + ls * lda) * COMPSIZE, lda, ks);
 	}
 
 #endif
 
       }
     }
-    
+
     if (!range_n) {
       range_N[0] = j;
       range_N[1] = j + bk;
@@ -225,9 +225,9 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       range_N[0] = range_n[0] + j;
       range_N[1] = range_n[0] + j + bk;
     }
-    
+
     CNAME(args, NULL, range_N, sa, sb, 0);
-   
+
   }
 
   return 0;
