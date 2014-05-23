@@ -262,6 +262,7 @@ endif
 
 
 lapack-test :
+	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
 	make -j 1 -C $(NETLIB_LAPACK_DIR) tmglib
 	make -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
@@ -291,4 +292,6 @@ endif
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
 	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
 	@rm -f *.grd Makefile.conf_last config_last.h
+	@(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out testing_results.txt)
+	@rm -f $(NETLIB_LAPACK_DIR)/tmglib.a
 	@echo Done.

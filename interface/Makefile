@@ -350,7 +350,7 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
 	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX) slauu2.$(SUFFIX)  \
-	slauum.$(SUFFIX) strti2.$(SUFFIX)
+	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -361,7 +361,7 @@ SLAPACKOBJS	= \
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
 	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX) dlauu2.$(SUFFIX)  \
-	dlauum.$(SUFFIX) dtrti2.$(SUFFIX)
+	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX)
 
 
 QLAPACKOBJS	= \
@@ -377,7 +377,7 @@ QLAPACKOBJS	= \
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
 	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
-	clauum.$(SUFFIX) ctrti2.$(SUFFIX)
+	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -388,7 +388,7 @@ CLAPACKOBJS	= \
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
 	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
-	zlauum.$(SUFFIX) ztrti2.$(SUFFIX)
+	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX)
 
 
 
@@ -1883,19 +1883,19 @@ ztrti2.$(SUFFIX) ztrti2.$(PSUFFIX) : lapack/ztrti2.c
 xtrti2.$(SUFFIX) xtrti2.$(PSUFFIX) : ztrti2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-strtri.$(SUFFIX) strtri.$(PSUFFIX) : trtri.c
+strtri.$(SUFFIX) strtri.$(PSUFFIX) : lapack/trtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dtrtri.$(SUFFIX) dtrtri.$(PSUFFIX) : trtri.c
+dtrtri.$(SUFFIX) dtrtri.$(PSUFFIX) : lapack/trtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qtrtri.$(SUFFIX) qtrtri.$(PSUFFIX) : trtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-ctrtri.$(SUFFIX) ctrtri.$(PSUFFIX) : ztrtri.c
+ctrtri.$(SUFFIX) ctrtri.$(PSUFFIX) : lapack/ztrtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-ztrtri.$(SUFFIX) ztrtri.$(PSUFFIX) : ztrtri.c
+ztrtri.$(SUFFIX) ztrtri.$(PSUFFIX) : lapack/ztrtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xtrtri.$(SUFFIX) xtrtri.$(PSUFFIX) : ztrtri.c
