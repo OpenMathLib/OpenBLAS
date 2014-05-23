@@ -48,7 +48,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_M	  %rdi
 #define OLD_N	  %rsi
 #define OLD_A	  %rcx
@@ -67,7 +67,7 @@
 #else
 
 #define STACKSIZE	288
-	
+
 #define OLD_M	  %rcx
 #define OLD_N	  %rdx
 #define OLD_A		 40 + STACKSIZE(%rsp)
@@ -113,7 +113,7 @@
 
 #define TMP_M   %r15
 #define Y2      %rbx
-	
+
 	PROLOGUE
 	PROFCODE
 
@@ -176,7 +176,7 @@
 	addq	M, I
 	jle	.L999x
 	movq	I, M
-	
+
 .L00t:
 	movq	XX,X
 	movq	AA,A
@@ -203,7 +203,7 @@
 	testq	$SIZE, A
 	cmoveq	M, MM
 #endif
-	
+
 	testq	N, N		# if n <= 0 goto END
 	jle	.L999
 	testq	M, M		# if n <= 0 goto END
@@ -221,7 +221,7 @@
 #endif
 
 	movq	BUFFER, Y1
-	
+
 	pxor	%xmm4, %xmm4
 
 	movq	M,   %rax
@@ -316,7 +316,7 @@
 	movsd	ALPHA, %xmm0
 	unpcklpd %xmm0, %xmm0
 #endif
-	
+
 	mulpd	%xmm0, %xmm8
 	mulpd	%xmm0, %xmm9
 	mulpd	%xmm0, %xmm10
@@ -875,7 +875,7 @@
 	movsd	ALPHA, %xmm0
 	unpcklpd %xmm0, %xmm0
 #endif
-	
+
 	mulpd	%xmm0, %xmm12
 	mulpd	%xmm0, %xmm13
 	mulpd	%xmm0, %xmm14
@@ -1409,7 +1409,7 @@
 .L36:
 	testq	$2, MM
 	je	.L37
-	
+
 	MOVUPS_A1(-16 * SIZE, A1, %xmm8)
 	MOVUPS_A1(-16 * SIZE, A2, %xmm9)
 
@@ -1675,7 +1675,7 @@
 	movsd	ALPHA, %xmm0
 	unpcklpd %xmm0, %xmm0
 #endif
-	
+
 	mulpd	%xmm0, %xmm12
 	mulpd	%xmm0, %xmm13
 	mulpd	%xmm0, %xmm14
@@ -2241,7 +2241,7 @@
 .L66:
 	testq	$2, MM
 	je	.L67
-	
+
 	MOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	MOVUPS_A1(-15 * SIZE, A2, %xmm5)
 
@@ -2469,7 +2469,7 @@
 #endif
 	movq	M,   TMP_M
 	movq    Y,    Y1
-	
+
 	cmpq	$SIZE, INCY
 	jne	.L950
 
@@ -2702,7 +2702,7 @@
 	jmp	.L999
 	ALIGN_4
 
-.L950:	
+.L950:
 	testq	$SIZE, BUFFER
 	je	.L960
 

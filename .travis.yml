@@ -11,7 +11,7 @@ env:
 
 before_install:
  - sudo apt-get update -qq
- - sudo apt-get install -qq gfortran 
+ - sudo apt-get install -qq gfortran
  - if [[ "$TARGET_BOX" == "WIN64" ]]; then sudo apt-get install -qq binutils-mingw-w64-x86-64 gcc-mingw-w64-x86-64 gfortran-mingw-w64-x86-64; fi
  - if [[ "$TARGET_BOX" == "LINUX32" ]]; then sudo apt-get install -qq  gcc-multilib gfortran-multilib; fi
 

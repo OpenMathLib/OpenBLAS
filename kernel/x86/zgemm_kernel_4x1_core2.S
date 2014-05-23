@@ -45,7 +45,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -111,7 +111,7 @@
 	addl	$STACK_OFFSET, %esp
 
 	STACK_TOUCHING
-	
+
 	movd	STACK_M, %mm0
 	movl	STACK_N, %eax
 	movd	STACK_K, %mm1
@@ -134,7 +134,7 @@
 	movd	%mm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	subl	$-32 * SIZE, A
@@ -166,7 +166,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$2, %eax
@@ -250,7 +250,7 @@
 	leal	(, %eax,   8), %eax
 	leal	(AA, %eax, 4), AA
 	leal	(BB, %eax, 4), BB /* because it's doubled */
-#endif	
+#endif
 
 	movaps	-32 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -266,7 +266,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -395,11 +395,11 @@
 	ADDSUB	%xmm1,  %xmm7
 	movaps	-32 * SIZE(BB), %xmm1
 
-	
+
 	decl   %eax
 	jne    .L12
 	ALIGN_4
-	
+
 .L15:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -502,7 +502,7 @@
 	decl	%ebx
 	jg	.L10
 	ALIGN_2
-	
+
 .L20:
 	movl	M,  %ebx
 	testl	$2, %ebx
@@ -520,7 +520,7 @@
 	leal	(, %eax,   8), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 4), BB /* because it's doubled */
-#endif	
+#endif
 
 	movaps	-32 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -536,7 +536,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -695,7 +695,7 @@
 	leal	(, %eax,   8), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(BB, %eax, 4), BB /* because it's doubled */
-#endif	
+#endif
 
 	movsd	-32 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -712,7 +712,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 	addl	$1, %eax
@@ -860,7 +860,7 @@
 
 .L999:
 	movl	OLD_STACK, %esp
-	
+
 	EMMS
 
 	popl	%ebx

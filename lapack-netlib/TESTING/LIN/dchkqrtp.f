@@ -2,13 +2,13 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+*       SUBROUTINE DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
 *                           NBVAL, NOUT )
 *
 *       .. Scalar Arguments ..
@@ -89,17 +89,17 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
 *> \ingroup double_lin
 *
 *  =====================================================================
-      SUBROUTINE DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+      SUBROUTINE DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                     NBVAL, NOUT )
       IMPLICIT NONE
 *
@@ -172,14 +172,14 @@
 *
             MINMN = MIN( M, N )
             DO L = 0, MINMN, MAX( MINMN, 1 )
-*     
+*
 *              Do for each possible value of NB
 *
                DO K = 1, NNB
                   NB = NBVAL( K )
 *
 *                 Test DTPQRT and DTPMQRT
-*     
+*
                   IF( (NB.LE.N).AND.(NB.GT.0) ) THEN
                      CALL DQRT05( M, N, L, NB, RESULT )
 *

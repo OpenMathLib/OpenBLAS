@@ -551,7 +551,7 @@ cgemvn_kernel_F1X1:
 	ldr	AO1, A
 	add	r3, AO1, #8
 	str	r3, A
-	
+
 	ldr	XO , X
 
 	INIT_F1
@@ -651,7 +651,7 @@ cgemvn_kernel_S1X1:
 	ldr	AO1, A
 	add	r3, AO1, #8
 	str	r3, A
-	
+
 	ldr	XO , X
 
 	INIT_S1

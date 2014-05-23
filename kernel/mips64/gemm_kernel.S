@@ -55,7 +55,7 @@
 #define L	$7
 
 #define PREFETCHSIZE (4 * 10)
-	
+
 #define CO1	$14
 #define CO2	$15
 #define CO3	$16
@@ -109,7 +109,7 @@
 #define ALPHA	$f15
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -160
 
 	SDARG	$16,   0($sp)
@@ -1028,7 +1028,7 @@
 	bgtz	J, .L10
 	move	B, BO
 	.align 3
-	
+
 .L30:
 	andi	J,  N, 4
 	blez	J, .L50

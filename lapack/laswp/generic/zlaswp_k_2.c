@@ -45,8 +45,8 @@
 #define a2	(a1 - 2)
 #endif
 
-int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4, 
-	  FLOAT *a, BLASLONG lda, 
+int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
+	  FLOAT *a, BLASLONG lda,
 	  FLOAT *dummy2, BLASLONG dumy3, blasint *ipiv, BLASLONG incx){
 
   BLASLONG i, j, ip1, ip2, rows;
@@ -81,7 +81,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 #endif
 
     b1 = a + ip1;
-    
+
     if(a1 == b1) return 0;
 
     for(j=0; j<n; j++){
@@ -94,7 +94,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
       *(a1 + 1) = B2;
       *(b1 + 0) = A1;
       *(b1 + 1) = A2;
-	
+
       a1 += lda;
       b1 += lda;
     }
@@ -116,10 +116,10 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
       piv += incx;
       ip2 = *piv * 2;
       piv += incx;
-      
+
       b1 = a + ip1;
       b2 = a + ip2;
-	  
+
       i = (rows >> 1);
       i--;
 
@@ -154,7 +154,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	  B2 = *(b1 + 1);
 	  B3 = *(b2 + 0);
 	  B4 = *(b2 + 1);
-	  
+
 	  B5 = *(b1 + 0 + lda);
 	  B6 = *(b1 + 1 + lda);
 	  B7 = *(b2 + 0 + lda);
@@ -164,7 +164,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	  piv += incx;
 	  ip2 = *piv * 2;
 	  piv += incx;
-	  
+
 	  if (b1 == a1) {
 	    if (b2 == a1) {
 	      *(a1 + 0) = A3;
@@ -175,7 +175,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	      *(a1 + 1 + lda) = A8;
 	      *(a2 + 0 + lda) = A5;
 	      *(a2 + 1 + lda) = A6;
-	    } else 
+	    } else
 	      if (b2 != a2) {
 		*(a2 + 0) = B3;
 		*(a2 + 1) = B4;
@@ -186,7 +186,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 		*(b2 + 0 + lda) = A7;
 		*(b2 + 1 + lda) = A8;
 	      }
-	  } else 
+	  } else
 	    if (b1 == a2) {
 	      if (b2 != a1) {
 		if (b2 == a2) {
@@ -227,7 +227,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 		*(a2 + 1 + lda) = B6;
 		*(b1 + 0 + lda) = A5;
 		*(b1 + 1 + lda) = A6;
-	      } else 
+	      } else
 		if (b2 == a2) {
 		  *(a1 + 0) = B1;
 		  *(a1 + 1) = B2;
@@ -237,7 +237,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 		  *(a1 + 1 + lda) = B6;
 		  *(b1 + 0 + lda) = A5;
 		  *(b1 + 1 + lda) = A6;
-		} else 
+		} else
 		  if (b2 == b1) {
 		    *(a1 + 0) = B1;
 		    *(a1 + 1) = B2;
@@ -270,10 +270,10 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 		    *(b2 + 1 + lda) = A8;
 		  }
 	    }
-	  
+
 	  b1 = a + ip1;
 	  b2 = a + ip2;
-	  
+
 #ifndef MINUS
 	  a1 += 4;
 #else
@@ -296,7 +296,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
       B2 = *(b1 + 1);
       B3 = *(b2 + 0);
       B4 = *(b2 + 1);
-	  
+
       B5 = *(b1 + 0 + lda);
       B6 = *(b1 + 1 + lda);
       B7 = *(b2 + 0 + lda);
@@ -312,7 +312,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	  *(a1 + 1 + lda) = A8;
 	  *(a2 + 0 + lda) = A5;
 	  *(a2 + 1 + lda) = A6;
-	} else 
+	} else
 	  if (b2 != a2) {
 	    *(a2 + 0) = B3;
 	    *(a2 + 1) = B4;
@@ -323,7 +323,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	    *(b2 + 0 + lda) = A7;
 	    *(b2 + 1 + lda) = A8;
 	  }
-      } else 
+      } else
 	if (b1 == a2) {
 	  if (b2 != a1) {
 	    if (b2 == a2) {
@@ -364,7 +364,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	    *(a2 + 1 + lda) = B6;
 	    *(b1 + 0 + lda) = A5;
 	    *(b1 + 1 + lda) = A6;
-	  } else 
+	  } else
 	    if (b2 == a2) {
 	      *(a1 + 0) = B1;
 	      *(a1 + 1) = B2;
@@ -374,7 +374,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	      *(a1 + 1 + lda) = B6;
 	      *(b1 + 0 + lda) = A5;
 	      *(b1 + 1 + lda) = A6;
-	    } else 
+	    } else
 	      if (b2 == b1) {
 		*(a1 + 0) = B1;
 		*(a1 + 1) = B2;
@@ -407,9 +407,9 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 		*(b2 + 1 + lda) = A8;
 	      }
 	}
-	  
 
-	  
+
+
 #ifndef MINUS
       a1 += 4;
 #else
@@ -418,7 +418,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 
       //Remain
       i = (rows & 1);
-      
+
       if (i > 0) {
 	ip1 = *piv * 2;
 	b1 = a + ip1;
@@ -440,30 +440,30 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	*(b1 + 0 + lda) = A3;
 	*(b1 + 1 + lda) = A4;
       }
-      
+
       a += 2 * lda;
-      
+
       j --;
     } while (j > 0);
   }
 
   if (n & 1) {
     piv = ipiv;
-    
+
 #ifndef MINUS
     a1 = a + (k1 + 1) * 2;
 #else
     a1 = a + k2 * 2;
 #endif
-    
+
     ip1 = *piv * 2;
     piv += incx;
     ip2 = *piv * 2;
     piv += incx;
-    
+
     b1 = a + ip1;
     b2 = a + ip2;
-    
+
     i = (rows >> 1);
     i--;
 
@@ -478,26 +478,26 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	B2 = *(b1 + 1);
 	B3 = *(b2 + 0);
 	B4 = *(b2 + 1);
-	
+
 	ip1 = *piv * 2;
 	piv += incx;
 	ip2 = *piv * 2;
 	piv += incx;
-	
+
 	if (b1 == a1) {
 	  if (b2 == a1) {
 	    *(a1 + 0) = A3;
 	    *(a1 + 1) = A4;
 	    *(a2 + 0) = A1;
 	    *(a2 + 1) = A2;
-	  } else 
+	  } else
 	    if (b2 != a2) {
 	      *(a2 + 0) = B3;
 	      *(a2 + 1) = B4;
 	      *(b2 + 0) = A3;
 	      *(b2 + 1) = A4;
 	    }
-	} else 
+	} else
 	  if (b1 == a2) {
 	    if (b2 != a1) {
 	      if (b2 == a2) {
@@ -522,13 +522,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	      *(a2 + 1) = B2;
 	      *(b1 + 0) = A1;
 	      *(b1 + 1) = A2;
-	    } else 
+	    } else
 	      if (b2 == a2) {
 		*(a1 + 0) = B1;
 		*(a1 + 1) = B2;
 		*(b1 + 0) = A1;
 		*(b1 + 1) = A2;
-	      } else 
+	      } else
 		if (b2 == b1) {
 		  *(a1 + 0) = B1;
 		  *(a1 + 1) = B2;
@@ -547,10 +547,10 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 		  *(b2 + 1) = A4;
 		}
 	  }
-	
+
 	b1 = a + ip1;
 	b2 = a + ip2;
-	
+
 #ifndef MINUS
 	a1 += 4;
 #else
@@ -567,21 +567,21 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
     B2 = *(b1 + 1);
     B3 = *(b2 + 0);
     B4 = *(b2 + 1);
-	
+
     if (b1 == a1) {
       if (b2 == a1) {
 	*(a1 + 0) = A3;
 	*(a1 + 1) = A4;
 	*(a2 + 0) = A1;
 	*(a2 + 1) = A2;
-      } else 
+      } else
 	if (b2 != a2) {
 	  *(a2 + 0) = B3;
 	  *(a2 + 1) = B4;
 	  *(b2 + 0) = A3;
 	  *(b2 + 1) = A4;
 	}
-    } else 
+    } else
       if (b1 == a2) {
 	if (b2 != a1) {
 	  if (b2 == a2) {
@@ -606,13 +606,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	  *(a2 + 1) = B2;
 	  *(b1 + 0) = A1;
 	  *(b1 + 1) = A2;
-	} else 
+	} else
 	  if (b2 == a2) {
 	    *(a1 + 0) = B1;
 	    *(a1 + 1) = B2;
 	    *(b1 + 0) = A1;
 	    *(b1 + 1) = A2;
-	  } else 
+	  } else
 	    if (b2 == b1) {
 	      *(a1 + 0) = B1;
 	      *(a1 + 1) = B2;
@@ -631,16 +631,16 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
 	      *(b2 + 1) = A4;
 	    }
       }
-	
+
 #ifndef MINUS
     a1 += 4;
 #else
     a1 -= 4;
 #endif
-    
+
     //Remain
     i = (rows & 1);
-    
+
     if (i > 0) {
       ip1 = *piv * 2;
       b1 = a + ip1;
@@ -657,5 +657,5 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
   }
 
   return 0;
-} 
+}
 

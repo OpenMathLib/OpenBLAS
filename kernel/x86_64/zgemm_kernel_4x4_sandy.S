@@ -13,19 +13,19 @@ notice, this list of conditions and the following disclaimer.
 notice, this list of conditions and the following disclaimer in
 the documentation and/or other materials provided with the
 distribution.
-3. Neither the name of the ISCAS nor the names of its contributors may 
-be used to endorse or promote products derived from this software 
+3. Neither the name of the ISCAS nor the names of its contributors may
+be used to endorse or promote products derived from this software
 without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  **********************************************************************************/
@@ -59,7 +59,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef WINDOWS_ABI
 
-#define STACKSIZE 128 
+#define STACKSIZE 128
 
 #define old_ldc	8+STACKSIZE(%rsp)
 #define old_offset 16+STACKSIZE(%rsp)
@@ -143,7 +143,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OR		orq
 #define JNE		jne
 #define JMP		jmp
-#define NOP		
+#define NOP
 #define XOR		xorpd
 #undef	MOVQ
 #define MOVQ	movq
@@ -207,7 +207,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ADD1_DX	SUB_DX
 #define ADD1_DY SUB_DY
 #define ADD2_DY ADDSUB_DY
-#else 
+#else
 #define ADD1_DX	ADD_DX
 #define ADD1_DY ADD_DY
 #define ADD2_DY ADDSUB_DY
@@ -289,7 +289,7 @@ SALQ $6, k;
 LEAQ (bb, k, 1), prebb;			# Rn=4 SIZE=8 COMPLEX=2
 MOVQ ba,ptrba;
 MOVQ bm,i;
-SARQ $2,i;						# Rm = 4 
+SARQ $2,i;						# Rm = 4
 JLE .L1_loopE;
 ALIGN_5;
 .L1_bodyB:;
@@ -333,7 +333,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $4, %rax;
-#else 
+#else
 ADDQ $4, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -764,7 +764,7 @@ SUB_DY	yvec11, yvec7, yvec11;
 SUB_DY	yvec10, yvec7, yvec10;
 SUB_DY	yvec9, yvec7, yvec9;
 SUB_DY	yvec8, yvec7, yvec8;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 VPERMILP_DY $0x05, yvec14, yvec14;
 VPERMILP_DY $0x05, yvec13, yvec13;
@@ -882,7 +882,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 4), ptrba;
 LEAQ (ptrbb, %rax, 4), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$4, kk;
 #endif
 ADDQ $8*SIZE,C0;
@@ -996,7 +996,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 4), ptrba;
 LEAQ (ptrbb, %rax, 4), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$4, kk;
 #endif
 ADDQ	$8*SIZE, C0;
@@ -1032,7 +1032,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $2, %rax;
-#else 
+#else
 ADDQ $4, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -1304,7 +1304,7 @@ SUB_DY	yvec15, yvec7, yvec15;
 SUB_DY	yvec14, yvec7, yvec14;
 SUB_DY	yvec13, yvec7, yvec13;
 SUB_DY	yvec12, yvec7, yvec12;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 VPERMILP_DY $0x05, yvec14, yvec14;
 VPERMILP_DY $0x05, yvec13, yvec13;
@@ -1374,7 +1374,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 2), ptrba;
 LEAQ (ptrbb, %rax, 4), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$2, kk;
 #endif
 ADDQ	$4*SIZE, C0;
@@ -1437,7 +1437,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 2), ptrba;
 LEAQ (ptrbb, %rax, 4), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$2, kk;
 #endif
 ADDQ	$4*SIZE, C0;
@@ -1468,7 +1468,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $1, %rax;
-#else 
+#else
 ADDQ $4, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -1634,7 +1634,7 @@ ADDSUB_DY	yvec14, yvec7, yvec14;
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 SUB_DY	yvec15, yvec7, yvec15;
 SUB_DY	yvec14, yvec7, yvec14;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 VPERMILP_DY $0x05, yvec14, yvec14;
 ADDSUB_DY	yvec15, yvec7, yvec15;
@@ -1669,7 +1669,7 @@ ADD_DX xvec0, xvec15, xvec15;
 ADD_DX xvec1, xvec7, xvec7;
 ADD_DX xvec2, xvec14, xvec14;
 ADD_DX xvec3, xvec6, xvec6;
-#endif 
+#endif
 STL_DX	xvec15, 0*SIZE(C0);
 STH_DX	xvec15, 1*SIZE(C0);
 STL_DX	xvec7, 0*SIZE(C0, ldc, 1);
@@ -1685,7 +1685,7 @@ SALQ $ZBASE_SHIFT, %rax;
 ADDQ %rax, ptrba;
 LEAQ (ptrbb, %rax, 4), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$1, kk;
 #endif
 ADDQ	$2*SIZE, C0;
@@ -1742,7 +1742,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $4, %rax;
-#else 
+#else
 ADDQ $2, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -1994,7 +1994,7 @@ SUB_DY	yvec15, yvec7, yvec15;
 SUB_DY	yvec14, yvec7, yvec14;
 SUB_DY	yvec13, yvec7, yvec13;
 SUB_DY	yvec12, yvec7, yvec12;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 VPERMILP_DY $0x05, yvec14, yvec14;
 VPERMILP_DY $0x05, yvec13, yvec13;
@@ -2032,7 +2032,7 @@ EXTRA_DY $1, yvec15, xvec7;
 EXTRA_DY $1, yvec14, xvec6;
 EXTRA_DY $1, yvec13, xvec5;
 EXTRA_DY $1, yvec12, xvec4;
-#### Testing Alignment #### 
+#### Testing Alignment ####
 MOVQ	C0, %rax;
 OR		ldc, %rax;
 TEST 	$15, %rax;
@@ -2064,7 +2064,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 4), ptrba;
 LEAQ (ptrbb, %rax, 2), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$4, kk;
 #endif
 ADDQ $8*SIZE, C0;
@@ -2125,7 +2125,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 4), ptrba;
 LEAQ (ptrbb, %rax, 2), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$4, kk;
 #endif
 ADDQ	$8*SIZE, C0;
@@ -2159,7 +2159,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $2, %rax;
-#else 
+#else
 ADDQ $2, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -2336,7 +2336,7 @@ ADDSUB_DY	yvec13, yvec7, yvec13;
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 SUB_DY	yvec15, yvec7, yvec15;
 SUB_DY	yvec13, yvec7, yvec13;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 VPERMILP_DY $0x05, yvec13, yvec13;
 ADDSUB_DY	yvec15, yvec7, yvec15;
@@ -2389,7 +2389,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 2), ptrba;
 LEAQ (ptrbb, %rax, 2), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$2, kk;
 #endif
 ADDQ	$4*SIZE, C0;
@@ -2420,7 +2420,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $1, %rax;
-#else 
+#else
 ADDQ $2, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -2542,7 +2542,7 @@ XOR_DY	yvec7, yvec7, yvec7;
 ADDSUB_DY	yvec15, yvec7, yvec15;
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 SUB_DY	yvec15, yvec7, yvec15;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 ADDSUB_DY	yvec15, yvec7, yvec15;
 VPERMILP_DY $0x05, yvec15, yvec15;
@@ -2577,7 +2577,7 @@ SALQ $ZBASE_SHIFT, %rax;
 ADDQ %rax, ptrba;
 LEAQ (ptrbb, %rax, 2), ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$1, kk;
 #endif
 ADDQ	$2*SIZE, C0;
@@ -2627,7 +2627,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $4, %rax;
-#else 
+#else
 ADDQ $1, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -2797,7 +2797,7 @@ ADDSUB_DY	yvec14, yvec7, yvec14;
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 SUB_DY	yvec15, yvec7, yvec15;
 SUB_DY	yvec14, yvec7, yvec14;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 VPERMILP_DY $0x05, yvec14, yvec14;
 ADDSUB_DY	yvec15, yvec7, yvec15;
@@ -2850,7 +2850,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 4), ptrba;
 ADDQ %rax, ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$4, kk;
 #endif
 ADDQ	$8*SIZE, C0;
@@ -2882,7 +2882,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $2, %rax;
-#else 
+#else
 ADDQ $1, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -2986,7 +2986,7 @@ XOR_DY	yvec7, yvec7, yvec7;
 ADDSUB_DY	yvec15, yvec7, yvec15;
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 SUB_DY	yvec15, yvec7, yvec15;
-#elif defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+#elif defined(RR) || defined(RC) || defined(CR) || defined(CC)
 VPERMILP_DY $0x05, yvec15, yvec15;
 ADDSUB_DY	yvec15, yvec7, yvec15;
 VPERMILP_DY $0x05, yvec15, yvec15;
@@ -3021,7 +3021,7 @@ SALQ $ZBASE_SHIFT, %rax;
 LEAQ (ptrba, %rax, 2), ptrba;
 ADDQ %rax, ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$2, kk;
 #endif
 ADDQ	$4*SIZE, C0;
@@ -3050,7 +3050,7 @@ MOVQ %rax, kkk;
 MOVQ kk, %rax;
 #ifdef	LEFT
 ADDQ $1, %rax;
-#else 
+#else
 ADDQ $1, %rax;
 #endif
 MOVQ %rax, kkk;
@@ -3194,7 +3194,7 @@ SALQ $ZBASE_SHIFT, %rax;
 ADDQ %rax, ptrba;
 ADDQ %rax, ptrbb;
 #endif
-#if defined(TRMMKERNEL) && defined(LEFT) 
+#if defined(TRMMKERNEL) && defined(LEFT)
 ADDQ	$1, kk;
 #endif
 ADDQ	$2*SIZE, C0;

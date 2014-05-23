@@ -171,7 +171,7 @@
 	cmp.eq	p6, p7 = 0, I
 	mov	AOFFSET = A
 	mov	f80  = f0
-	} 
+	}
 	{ .mmf
 	add	C2 = LDC, C		// coffset2 = c + 1 * ldc
 	shladd	C3 = LDC, 1, C		// coffset3 = c + 2 * ldc
@@ -496,7 +496,7 @@
 	FMA	f106  = f34, f53, f106	// A3 * B6
 	nop	__LINE__
 	}
-	;; 
+	;;
 /* 12 */
 	{ .mfb
 	FMA	f114  = f34, f54, f114	// A3 * B7
@@ -4472,7 +4472,7 @@
 	LDFD	f21 = [BOFFSET]
 	adds	BOFFSET = -63 * SIZE, BOFFSET
 	;;
-	
+
 
 	FMPY	f64  = f64,  f32
 	FMPY	f65  = f65,  f32
@@ -5497,7 +5497,7 @@
 	;;
 	FNMA	f112 = f104, f17, f112
 	FNMA	f113 = f105, f17, f113
-	;; 
+	;;
 	{ .mfi
 	STFD	[AOFFSET]  = f64, SIZE
 	FNMA	f120 = f104, f18, f120
@@ -6029,7 +6029,7 @@
 	FNMA	f112 = f104, f17, f112
 	;;
 	FNMA	f120 = f104, f18, f120
-	;; 
+	;;
 	FMPY	f112 = f112, f19
 	;;
 	FNMA	f120 = f112, f20, f120
@@ -6118,7 +6118,7 @@
 	setf.d	f72  = r0
 	mov	f80  = f0
 	shr	I  = M, 3
-	} 
+	}
 	{ .mfi
 	mov	C1 = C			// coffset1 = c + 0 * ldc
 	mov	f88  = f0
@@ -7059,7 +7059,7 @@
 	;;
 	LDFPD	f37, f38 = [BOFFSET]
 	adds	BOFFSET = 4 * SIZE, BOFFSET
-	;;	
+	;;
 	LDFPD	f39, f40 = [BOFFSET]
 	adds	BOFFSET = 5 * SIZE, BOFFSET
 	;;
@@ -8548,7 +8548,7 @@
 	;;
 	{ .mfi
 	shr	I  = M, 3
-	} 
+	}
 	{ .mfi
 	mov	C1 = C			// coffset1 = c + 0 * ldc
 #ifdef LT
@@ -9987,7 +9987,7 @@
 
 	{ .mfi
 	shr	I  = M, 3
-	} 
+	}
 	{ .mfi
 	mov	C1 = C			// coffset1 = c + 0 * ldc
 #ifdef LT
@@ -11010,13 +11010,13 @@
 	;;
 	ldf.fill  f16 = [SP], 32
 	ldf.fill  f17 = [r9], 32
-	;;	
+	;;
 	ldf.fill  f18 = [SP], 32
 	ldf.fill  f19 = [r9], 32
-	;;	
+	;;
 	ldf.fill  f20 = [SP], 32
 	ldf.fill  f21 = [r9], 32
-	;;	
+	;;
 	mov	 ar.lc = ARLC
 	;;
 	mov pr    = PR, -1

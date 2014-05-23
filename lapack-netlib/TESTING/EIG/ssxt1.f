@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       REAL             FUNCTION SSXT1( IJOB, D1, N1, D2, N2, ABSTOL,
 *                        ULP, UNFL )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IJOB, N1, N2
 *       REAL               ABSTOL, ULP, UNFL
@@ -18,7 +18,7 @@
 *       .. Array Arguments ..
 *       REAL               D1( * ), D2( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -93,10 +93,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

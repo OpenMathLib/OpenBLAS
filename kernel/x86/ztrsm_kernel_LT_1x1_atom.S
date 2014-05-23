@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -57,7 +57,7 @@
 #define KK	 4 + STACK(%esp)
 #define KKK	 8 + STACK(%esp)
 #define AORIG	12 + STACK(%esp)
-	
+
 #define PREFETCH     prefetcht0
 #define PREFETCHSIZE (8 * 8 + 3)
 
@@ -101,7 +101,7 @@
 	movl	OFFSET, %eax
 #ifdef RN
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 
 	sall	$ZBASE_SHIFT, LDC
@@ -163,7 +163,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -195,7 +195,7 @@
 	movl	KK, %eax
 	sall	$ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movsd	 0 * SIZE(AA), %xmm0
 	xorps	%xmm2, %xmm2
@@ -416,7 +416,7 @@
 
 	decl	%ebx			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L99:
 #ifdef LN

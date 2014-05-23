@@ -50,7 +50,7 @@ int implver(void){
 #endif
   return arch;
 }
-  
+
 void get_architecture(void){
   printf("ALPHA");
 }
@@ -67,7 +67,7 @@ void get_cpuconfig(void){
   printf("#define EV%d\n", implver() + 4);
 
   switch (implver()){
-  case 0: 
+  case 0:
     printf("#define L1_DATA_SIZE 16384\n");
     printf("#define L1_DATA_LINESIZE 32\n");
     printf("#define L2_SIZE 2097152\n");
@@ -76,7 +76,7 @@ void get_cpuconfig(void){
     printf("#define DTB_SIZE 8192\n");
     break;
 
-  case 1: 
+  case 1:
     printf("#define L1_DATA_SIZE 16384\n");
     printf("#define L1_DATA_LINESIZE 32\n");
     printf("#define L2_SIZE 2097152\n");
@@ -85,7 +85,7 @@ void get_cpuconfig(void){
     printf("#define DTB_SIZE 8192\n");
     break;
 
-  case 2: 
+  case 2:
     printf("#define L1_DATA_SIZE 32768\n");
     printf("#define L1_DATA_LINESIZE 64\n");
     printf("#define L2_SIZE 4194304\n");

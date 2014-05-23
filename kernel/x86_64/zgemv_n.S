@@ -43,7 +43,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
 #define OLD_INCY	24 + STACKSIZE(%rsp)
@@ -57,7 +57,7 @@
 #define XX	88(%rsp)
 #define LDAX	96(%rsp)
 #define ALPHAR	104(%rsp)
-#define	ALPHAI	112(%rsp) 
+#define	ALPHAI	112(%rsp)
 
 #define M	  %rdi
 #define N	  %rsi
@@ -71,7 +71,7 @@
 #else
 
 #define STACKSIZE	304
-	
+
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
 #define OLD_LDA		 56 + STACKSIZE(%rsp)
@@ -194,7 +194,7 @@
 	movlpd	%xmm1, ALPHA_I
 
 	subq	$-16 * SIZE, A
-	
+
 	testq	M, M
 	jle	.L999
 	testq	N, N
@@ -230,7 +230,7 @@
 	testq	$SIZE, A
 	jne	.L100
 #endif
-	
+
 #if GEMV_UNROLL >= 4
 
 	cmpq	$4, N
@@ -260,7 +260,7 @@
 
 	pcmpeqb	%xmm5, %xmm5
 	psllq	$63,   %xmm5
-	shufps	$0xc0, %xmm5, %xmm5	
+	shufps	$0xc0, %xmm5, %xmm5
 
 	pshufd	$0x4e, %xmm8,  %xmm9
 	pshufd	$0x4e, %xmm10, %xmm11
@@ -764,7 +764,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	shufps	$0xc0, %xmm11, %xmm11	
+	shufps	$0xc0, %xmm11, %xmm11
 
 	pshufd	$0x4e, %xmm12, %xmm13
 	pshufd	$0x4e, %xmm14, %xmm15
@@ -1083,7 +1083,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	shufps	$0xc0, %xmm11, %xmm11	
+	shufps	$0xc0, %xmm11, %xmm11
 
 	pshufd	$0x4e, %xmm12, %xmm13
 
@@ -1316,7 +1316,7 @@
 
 	pcmpeqb	%xmm5, %xmm5
 	psllq	$63,   %xmm5
-	shufps	$0xc0, %xmm5, %xmm5	
+	shufps	$0xc0, %xmm5, %xmm5
 
 	pshufd	$0x4e, %xmm8,  %xmm9
 	pshufd	$0x4e, %xmm10, %xmm11
@@ -1864,7 +1864,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	shufps	$0xc0, %xmm11, %xmm11	
+	shufps	$0xc0, %xmm11, %xmm11
 
 	pshufd	$0x4e, %xmm12, %xmm13
 	pshufd	$0x4e, %xmm14, %xmm15
@@ -2206,7 +2206,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	shufps	$0xc0, %xmm11, %xmm11	
+	shufps	$0xc0, %xmm11, %xmm11
 
 	pshufd	$0x4e, %xmm12, %xmm13
 

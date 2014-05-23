@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
 *            INFO, PATH)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER N, NRHS, LDA, LDX, LDB, INFO
 *       .. Array Arguments ..
@@ -18,7 +18,7 @@
 *       COMPLEX*16 A(LDA,N), X(LDX, NRHS), B(LDB, NRHS)
 *       CHARACTER*3 PATH
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -121,10 +121,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -168,7 +168,7 @@
       COMPLEX*16 d1(8), d2(8), invd1(8), invd2(8)
       DATA D1 /(-1,0),(0,1),(-1,-1),(0,-1),(1,0),(-1,1),(1,1),(1,-1)/
       DATA D2 /(-1,0),(0,-1),(-1,1),(0,1),(1,0),(-1,-1),(1,-1),(1,1)/
-      
+
       DATA INVD1 /(-1,0),(0,-1),(-.5,.5),(0,1),(1,0),
      $     (-.5,-.5),(.5,-.5),(.5,.5)/
       DATA INVD2 /(-1,0),(0,1),(-.5,-.5),(0,-1),(1,0),
@@ -237,7 +237,7 @@
             END DO
          END DO
       END IF
-      
+
 *     Generate matrix B as simply the first NRHS columns of M * the
 *     identity.
       TMP = DBLE(M)
@@ -252,7 +252,7 @@
      $        * (N +J -1)
       END DO
 
-*     If we are testing SY routines, 
+*     If we are testing SY routines,
 *           take D1_i = D2_i, else, D1_i = D2_i*
       IF ( LSAMEN( 2, C2, 'SY' ) ) THEN
          DO J = 1, NRHS

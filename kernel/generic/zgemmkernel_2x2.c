@@ -14,12 +14,12 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
    BLASLONG i,j,k;
    FLOAT *C0,*C1,*ptrba,*ptrbb;
    FLOAT res0,res1,res2,res3,res4,res5,res6,res7,load0,load1,load2,load3,load4,load5,load6,load7,load8,load9,load10,load11,load12,load13,load14,load15;
-   for (j=0; j<bn/2; j+=1) 
+   for (j=0; j<bn/2; j+=1)
      {
         C0 = C;
         C1 = C0+2*ldc;
         ptrba = ba;
-        for (i=0; i<bm/2; i+=1) 
+        for (i=0; i<bm/2; i+=1)
           {
              ptrbb = bb;
              res0 = 0;
@@ -30,7 +30,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
              res5 = 0;
              res6 = 0;
              res7 = 0;
-             for (k=0; k<bk/4; k+=1) 
+             for (k=0; k<bk/4; k+=1)
                {
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
                   load0 = ptrba[4*0+0];
@@ -427,7 +427,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
                   ptrba = ptrba+16;
                   ptrbb = ptrbb+16;
                }
-             for (k=0; k<(bk&3); k+=1) 
+             for (k=0; k<(bk&3); k+=1)
                {
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
                   load0 = ptrba[4*0+0];
@@ -571,14 +571,14 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
              C0 = C0+4;
              C1 = C1+4;
           }
-        for (i=0; i<(bm&1); i+=1) 
+        for (i=0; i<(bm&1); i+=1)
           {
              ptrbb = bb;
              res0 = 0;
              res1 = 0;
              res2 = 0;
              res3 = 0;
-             for (k=0; k<bk; k+=1) 
+             for (k=0; k<bk; k+=1)
                {
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
                   load0 = ptrba[2*0+0];
@@ -671,18 +671,18 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
         i = (ldc<<2);
         C = C+i;
      }
-   for (j=0; j<(bn&1); j+=1) 
+   for (j=0; j<(bn&1); j+=1)
      {
         C0 = C;
         ptrba = ba;
-        for (i=0; i<bm/2; i+=1) 
+        for (i=0; i<bm/2; i+=1)
           {
              ptrbb = bb;
              res0 = 0;
              res1 = 0;
              res2 = 0;
              res3 = 0;
-             for (k=0; k<bk; k+=1) 
+             for (k=0; k<bk; k+=1)
                {
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
                   load0 = ptrba[4*0+0];
@@ -769,12 +769,12 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
              C0[3] = C0[3]+load3;
              C0 = C0+4;
           }
-        for (i=0; i<(bm&1); i+=1) 
+        for (i=0; i<(bm&1); i+=1)
           {
              ptrbb = bb;
              res0 = 0;
              res1 = 0;
-             for (k=0; k<bk; k+=1) 
+             for (k=0; k<bk; k+=1)
                {
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
                   load0 = ptrba[2*0+0];

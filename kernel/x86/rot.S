@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	12
 #define ARGS     0
-	
+
 #define STACK_N		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -110,7 +110,7 @@
 	sarl	$2, I
 	jle	.L15
 	ALIGN_4
-	
+
 .L10:
 #ifdef PENTIUM4
 	PREFETCH	(PREFETCH_SIZE + 0) * SIZE(X)
@@ -248,7 +248,7 @@
 	sarl	$2, I
 	jle	.L55
 	ALIGN_4
-	
+
 .L51:
 	FLD	0 * SIZE(X)
 	FLD	0 * SIZE(Y)

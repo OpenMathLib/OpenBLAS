@@ -217,7 +217,7 @@
 
         .register %g2, #scratch
         .register %g3, #scratch
-	
+
 	PROLOGUE
 	SAVESP
 	nop

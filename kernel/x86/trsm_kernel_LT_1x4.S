@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	32
-	
+
 #define J	 0 + STACK(%esp)
 #define I	 4 + STACK(%esp)
 #define KK	 8 + STACK(%esp)
@@ -111,7 +111,7 @@
        movl	OFFSET, %eax
        negl	%eax
        movl	%eax, KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -167,7 +167,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -186,7 +186,7 @@
 	jle	.L13
 	ALIGN_4
 
-.L12:	
+.L12:
 	movl	 -16 * SIZE(B), %esi
 	movl	  -8 * SIZE(B), %esi
 	movl	   0 * SIZE(B), %esi
@@ -220,7 +220,7 @@
 	leal	(B_ORIG, %eax, 4), B
 #else
 	movl	B_ORIG, B
-#endif	
+#endif
 
 	leal	(%edi, LDC, 2), %eax
 
@@ -679,7 +679,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -698,7 +698,7 @@
 	jle	.L23
 	ALIGN_4
 
-.L22:	
+.L22:
 	movl	 -16 * SIZE(B), %esi
 	movl	  -8 * SIZE(B), %esi
 	movl	   0 * SIZE(B), %esi
@@ -728,7 +728,7 @@
 	leal	(B_ORIG, %eax, 2), B
 #else
 	movl	B_ORIG, B
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -1022,7 +1022,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -1041,7 +1041,7 @@
 	jle	.L33
 	ALIGN_4
 
-.L32:	
+.L32:
 	movl	 -16 * SIZE(B), %esi
 	movl	  -8 * SIZE(B), %esi
 	movl	   0 * SIZE(B), %esi
@@ -1071,7 +1071,7 @@
 	leal	(B_ORIG, %eax, 1), B
 #else
 	movl	B_ORIG, B
-#endif	
+#endif
 
 	fldz
 	fldz

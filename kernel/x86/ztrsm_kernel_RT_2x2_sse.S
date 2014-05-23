@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -295,7 +295,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -313,7 +313,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, %ecx
 
@@ -329,7 +329,7 @@
 	sall	$ZBASE_SHIFT, %eax
 	addl	%eax, B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #if defined(LT)
 	movl	OFFSET, %eax
@@ -452,7 +452,7 @@
 	movl	KK, %eax
 	sall	$2 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -539,7 +539,7 @@
 	decl	%eax
 	jne	.L111
 	ALIGN_4
-	
+
 .L112:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -846,7 +846,7 @@
 	movl	KK, %eax
 	sall	$2 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 #ifdef	movsd
 	xorps	%xmm0, %xmm0
@@ -936,7 +936,7 @@
 	decl	%eax
 	jne	.L141
 	ALIGN_4
-	
+
 .L142:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -1140,7 +1140,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, %ecx
 
@@ -1156,7 +1156,7 @@
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #if defined(LT)
 	movl	OFFSET, %eax
@@ -1280,7 +1280,7 @@
 	movl	KK, %eax
 	sall	$3 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(AA), %xmm0
 	xorps	%xmm4, %xmm4
@@ -1319,7 +1319,7 @@
 	decl   %eax
 	jne    .L11
 	ALIGN_4
-	
+
 .L15:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -1741,7 +1741,7 @@
 	movl	KK, %eax
 	sall	$3 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -1875,7 +1875,7 @@
 	decl	%eax
 	jne	.L41
 	ALIGN_4
-	
+
 .L42:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax

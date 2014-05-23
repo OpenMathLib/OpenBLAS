@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #undef ZERO
 
 #define ALPHA    0
@@ -73,7 +73,7 @@
 #define BO	r25
 #define AO2	r26
 #define	BO2	r27
-	
+
 #define	CO1	r28
 #define CO2	r29
 #define	ZERO	r31
@@ -145,7 +145,7 @@
 	stfpdux	f29, SP, r0
 	stfpdux	f30, SP, r0
 	stfpdux	f31, SP, r0
-	
+
 	stwu	r31,  -4(SP)
 	stwu	r30,  -4(SP)
 	stwu	r29,  -4(SP)
@@ -194,7 +194,7 @@
 	li	INCM7, -7 * SIZE
 
 	addi	C, C, - 1 * SIZE
-	
+
 #ifdef LN
 	mullw	r0, M, K
 	slwi	r0, r0, ZBASE_SHIFT
@@ -1266,7 +1266,7 @@
 #endif
 	.align 4
 
-.L50:	
+.L50:
 	srawi.	J, N,  1
 	ble	.L999
 	.align 4

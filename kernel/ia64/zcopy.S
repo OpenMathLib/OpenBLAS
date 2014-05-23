@@ -75,7 +75,7 @@
 	PROLOGUE
 	.prologue
 	PROFCODE
-	
+
 	{ .mmi
 	shladd	INCX = INCX, ZBASE_SHIFT, r0
 	shladd	INCY = INCY, ZBASE_SHIFT, r0

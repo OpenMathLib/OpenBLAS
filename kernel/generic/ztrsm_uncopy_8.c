@@ -45,7 +45,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
   FLOAT *a1, *a2,  *a3,  *a4,  *a5,  *a6,  *a7,  *a8;
   FLOAT data1, data2;
-  
+
   lda *= 2;
   jj = offset;
 
@@ -65,7 +65,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 8)) {
 
 	data1 = *(a1 + (ii - jj) * lda + 0);
@@ -78,7 +78,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	  *(b +  k * 2 + 1) = *(a1 +  k * lda + 1);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a1  +  1);
@@ -124,7 +124,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 4)) {
 	data1 = *(a1 + (ii - jj) * lda + 0);
 	data2 = *(a1 + (ii - jj) * lda + 1);
@@ -136,7 +136,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	  *(b +  k * 2 + 1) = *(a1 +  k * lda + 1);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a1  +  1);
@@ -167,7 +167,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 2)) {
 	data1 = *(a1 + (ii - jj) * lda + 0);
 	data2 = *(a1 + (ii - jj) * lda + 1);
@@ -178,7 +178,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	  *(b +  k * 2 + 1) = *(a1 +  k * lda + 1);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a1  +  1);
@@ -201,7 +201,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 1)) {
 	data1 = *(a1 + (ii - jj) * lda + 0);
 	data2 = *(a1 + (ii - jj) * lda + 1);
@@ -212,7 +212,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	  *(b +  k * 2 + 1) = *(a1 +  k * lda + 1);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a1  +  1);

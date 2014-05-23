@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
 *> Download DORCSD2BY1 + dependencies
@@ -21,7 +21,7 @@
 *       SUBROUTINE DORCSD2BY1( JOBU1, JOBU2, JOBV1T, M, P, Q, X11, LDX11,
 *                              X21, LDX21, THETA, U1, LDU1, U2, LDU2, V1T,
 *                              LDV1T, WORK, LWORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU1, JOBU2, JOBV1T
 *       INTEGER            INFO, LDU1, LDU2, LDV1T, LWORK, LDX11, LDX21,
@@ -33,8 +33,8 @@
 *      $                   X11(LDX11,*), X21(LDX21,*)
 *       INTEGER            IWORK(*)
 *       ..
-*    
-* 
+*
+*
 *> \par Purpose:
 *> =============
 *>
@@ -53,7 +53,7 @@
 *>          [ X21 ]   [    | U2 ] [  0  0  0 ]
 *>                                [  0  S  0 ]
 *>                                [  0  0  I ]
-*> 
+*>
 *> X11 is P-by-Q. The orthogonal matrices U1, U2, V1, and V2 are P-by-P,
 *> (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
 *> R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
@@ -216,10 +216,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date July 2012
 *
@@ -253,7 +253,7 @@
      $                   X11(LDX11,*), X21(LDX21,*)
       INTEGER            IWORK(*)
 *     ..
-*  
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -500,16 +500,16 @@
             CALL DORGLQ( Q-1, Q-1, Q-1, V1T(2,2), LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL DBBCSD( JOBU1, JOBU2, JOBV1T, 'N', 'N', M, P, Q, THETA,
      $                WORK(IPHI), U1, LDU1, U2, LDU2, V1T, LDV1T, 0, 1,
      $                WORK(IB11D), WORK(IB11E), WORK(IB12D),
      $                WORK(IB12E), WORK(IB21D), WORK(IB21E),
      $                WORK(IB22D), WORK(IB22E), WORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place zero submatrices in
 *        preferred positions
 *
@@ -554,16 +554,16 @@
             CALL DORGLQ( Q, Q, R, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL DBBCSD( JOBV1T, 'N', JOBU1, JOBU2, 'T', M, Q, P, THETA,
      $                WORK(IPHI), V1T, LDV1T, 0, 1, U1, LDU1, U2, LDU2,
      $                WORK(IB11D), WORK(IB11E), WORK(IB12D),
      $                WORK(IB12E), WORK(IB21D), WORK(IB21E),
      $                WORK(IB22D), WORK(IB22E), WORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *
@@ -609,16 +609,16 @@
             CALL DORGLQ( Q, Q, R, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL DBBCSD( 'N', JOBV1T, JOBU2, JOBU1, 'T', M, M-Q, M-P,
      $                THETA, WORK(IPHI), 0, 1, V1T, LDV1T, U2, LDU2, U1,
      $                LDU1, WORK(IB11D), WORK(IB11E), WORK(IB12D),
      $                WORK(IB12E), WORK(IB21D), WORK(IB21E),
      $                WORK(IB22D), WORK(IB22E), WORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *
@@ -678,16 +678,16 @@
             CALL DORGLQ( Q, Q, Q, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL DBBCSD( JOBU2, JOBU1, 'N', JOBV1T, 'N', M, M-P, M-Q,
      $                THETA, WORK(IPHI), U2, LDU2, U1, LDU1, 0, 1, V1T,
      $                LDV1T, WORK(IB11D), WORK(IB11E), WORK(IB12D),
      $                WORK(IB12E), WORK(IB21D), WORK(IB21E),
      $                WORK(IB22D), WORK(IB22E), WORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *

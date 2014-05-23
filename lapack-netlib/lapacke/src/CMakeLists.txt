@@ -1,6 +1,6 @@
-#AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR} SRC_OBJ) 
+#AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR} SRC_OBJ)
 
-SET (SRC_OBJ 
+SET (SRC_OBJ
 lapacke_cbbcsd.c
 lapacke_cbbcsd_work.c
 lapacke_cbdsqr.c
@@ -1982,7 +1982,7 @@ lapacke_csyr_work.c
 lapacke_ilaver.c
 )
 
-SET(SRCX_OBJ 
+SET(SRCX_OBJ
 lapacke_cgbrfsx.c       lapacke_cporfsx.c       lapacke_dgerfsx.c       lapacke_sgbrfsx.c       lapacke_ssyrfsx.c       lapacke_zherfsx.c
 lapacke_cgbrfsx_work.c  lapacke_cporfsx_work.c  lapacke_dgerfsx_work.c  lapacke_sgbrfsx_work.c  lapacke_ssyrfsx_work.c  lapacke_zherfsx_work.c
 lapacke_cgerfsx.c       lapacke_csyrfsx.c       lapacke_dporfsx.c       lapacke_sgerfsx.c       lapacke_zgbrfsx.c       lapacke_zporfsx.c
@@ -1997,8 +1997,8 @@ lapacke_chesvxx.c       lapacke_dgbsvxx.c       lapacke_dsysvxx.c       lapacke_
 lapacke_chesvxx_work.c  lapacke_dgbsvxx_work.c  lapacke_dsysvxx_work.c  lapacke_sposvxx_work.c  lapacke_zgesvxx_work.c  lapacke_zsysvxx_work.c
 )
 
-# FILE PARTS OF TMGLIB 
-SET (MATGEN_OBJ 
+# FILE PARTS OF TMGLIB
+SET (MATGEN_OBJ
 lapacke_clatms.c
 lapacke_clatms_work.c
 lapacke_dlatms.c

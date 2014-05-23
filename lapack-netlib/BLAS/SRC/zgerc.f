@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGERC(M,N,ALPHA,X,INCX,Y,INCY,A,LDA)
-* 
+*
 *       .. Scalar Arguments ..
 *       COMPLEX*16 ALPHA
 *       INTEGER INCX,INCY,LDA,M,N
@@ -17,7 +17,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16 A(LDA,*),X(*),Y(*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -104,10 +104,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

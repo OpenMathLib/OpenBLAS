@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLSETS( M, P, N, A, AF, LDA, B, BF, LDB, C, CF,
 *                          D, DF, X, WORK, LWORK, RWORK, RESULT )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDB, LWORK, M, P, N
 *       ..
@@ -19,7 +19,7 @@
 *      $                   BF( LDB, * ), RESULT( 2 ), RWORK( * ),
 *      $                   C( * ), D( * ), CF( * ), DF( * ),
 *      $                   WORK( LWORK ), X( * )
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -142,10 +142,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

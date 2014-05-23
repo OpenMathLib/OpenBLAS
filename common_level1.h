@@ -54,11 +54,11 @@ double  _Complex zdotu_k (BLASLONG, double *, BLASLONG, double *, BLASLONG);
 xdouble _Complex xdotc_k (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
 xdouble _Complex xdotu_k (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
 
-int    saxpy_k (BLASLONG, BLASLONG, BLASLONG, float, 
+int    saxpy_k (BLASLONG, BLASLONG, BLASLONG, float,
 	       float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
-int    daxpy_k (BLASLONG, BLASLONG, BLASLONG, double, 
+int    daxpy_k (BLASLONG, BLASLONG, BLASLONG, double,
 	       double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
-int    qaxpy_k (BLASLONG, BLASLONG, BLASLONG, xdouble, 
+int    qaxpy_k (BLASLONG, BLASLONG, BLASLONG, xdouble,
 	       xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
 int    caxpy_k (BLASLONG, BLASLONG, BLASLONG, float,  float,
 	       float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
@@ -80,11 +80,11 @@ int    ccopy_k(BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
 int    zcopy_k(BLASLONG, double *, BLASLONG, double *, BLASLONG);
 int    xcopy_k(BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
 
-int    sswap_k (BLASLONG, BLASLONG, BLASLONG, float, 
+int    sswap_k (BLASLONG, BLASLONG, BLASLONG, float,
 	       float  *, BLASLONG, float  *, BLASLONG, float *, BLASLONG);
-int    dswap_k (BLASLONG, BLASLONG, BLASLONG, double, 
+int    dswap_k (BLASLONG, BLASLONG, BLASLONG, double,
 	       double *, BLASLONG, double *, BLASLONG, double*, BLASLONG);
-int    qswap_k (BLASLONG, BLASLONG, BLASLONG, xdouble, 
+int    qswap_k (BLASLONG, BLASLONG, BLASLONG, xdouble,
 	       xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble*, BLASLONG);
 int    cswap_k (BLASLONG, BLASLONG, BLASLONG, float,  float,
 	       float  *, BLASLONG, float  *, BLASLONG, float *, BLASLONG);
@@ -156,11 +156,11 @@ BLASLONG   icmin_k(BLASLONG, float  *, BLASLONG);
 BLASLONG   izmin_k(BLASLONG, double *, BLASLONG);
 BLASLONG   ixmin_k(BLASLONG, xdouble *, BLASLONG);
 
-int    sscal_k(BLASLONG, BLASLONG, BLASLONG, float, 
+int    sscal_k(BLASLONG, BLASLONG, BLASLONG, float,
 	      float *, BLASLONG, float *, BLASLONG,  float  *, BLASLONG);
-int    dscal_k(BLASLONG, BLASLONG, BLASLONG, double, 
+int    dscal_k(BLASLONG, BLASLONG, BLASLONG, double,
 	      double *, BLASLONG, double *, BLASLONG,  double  *, BLASLONG);
-int    qscal_k(BLASLONG, BLASLONG, BLASLONG, xdouble, 
+int    qscal_k(BLASLONG, BLASLONG, BLASLONG, xdouble,
 	      xdouble *, BLASLONG, xdouble *, BLASLONG,  xdouble  *, BLASLONG);
 int    cscal_k(BLASLONG, BLASLONG, BLASLONG, float, float,
 	      float *, BLASLONG, float *, BLASLONG,  float  *, BLASLONG);

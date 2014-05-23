@@ -2,14 +2,14 @@ C> \brief \b CPOTRF VARIANT: right looking block version of the algorithm, calli
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CPOTRF ( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -17,7 +17,7 @@ C> \brief \b CPOTRF VARIANT: right looking block version of the algorithm, calli
 *       .. Array Arguments ..
 *       COMPLEX            A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -88,10 +88,10 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
 C> \date November 2011
 *
@@ -190,11 +190,11 @@ C> \ingroup variantsPOcomputational
 *
 *                 Updating the trailing submatrix.
 *
-                  CALL CTRSM( 'Left', 'Upper', 'Conjugate Transpose', 
+                  CALL CTRSM( 'Left', 'Upper', 'Conjugate Transpose',
      $                        'Non-unit', JB, N-J-JB+1, CONE, A( J, J ),
      $                        LDA, A( J, J+JB ), LDA )
-                  CALL CHERK( 'Upper', 'Conjugate transpose', N-J-JB+1, 
-     $                        JB, -ONE, A( J, J+JB ), LDA, 
+                  CALL CHERK( 'Upper', 'Conjugate transpose', N-J-JB+1,
+     $                        JB, -ONE, A( J, J+JB ), LDA,
      $                        ONE, A( J+JB, J+JB ), LDA )
                END IF
    10       CONTINUE
@@ -219,12 +219,12 @@ C> \ingroup variantsPOcomputational
 *
 *                Updating the trailing submatrix.
 *
-                 CALL CTRSM( 'Right', 'Lower', 'Conjugate Transpose', 
+                 CALL CTRSM( 'Right', 'Lower', 'Conjugate Transpose',
      $                       'Non-unit', N-J-JB+1, JB, CONE, A( J, J ),
      $                       LDA, A( J+JB, J ), LDA )
 
-                 CALL CHERK( 'Lower', 'No Transpose', N-J-JB+1, JB, 
-     $                       -ONE, A( J+JB, J ), LDA, 
+                 CALL CHERK( 'Lower', 'No Transpose', N-J-JB+1, JB,
+     $                       -ONE, A( J+JB, J ), LDA,
      $                       ONE, A( J+JB, J+JB ), LDA )
                END IF
    20       CONTINUE

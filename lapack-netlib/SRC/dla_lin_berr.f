@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLA_LIN_BERR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dla_lin_berr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dla_lin_berr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dla_lin_berr.f"> 
+*> Download DLA_LIN_BERR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dla_lin_berr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dla_lin_berr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dla_lin_berr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLA_LIN_BERR ( N, NZ, NRHS, RES, AYB, BERR )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            N, NZ, NRHS
 *       ..
@@ -27,7 +27,7 @@
 *       DOUBLE PRECISION   AYB( N, NRHS ), BERR( NRHS )
 *       DOUBLE PRECISION   RES( N, NRHS )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -79,7 +79,7 @@
 *>     the matrix abs(op(A_s))*abs(Y) + abs(B_s). The matrices A, Y, and B
 *>     are from iterative refinement (see dla_gerfsx_extended.f).
 *> \endverbatim
-*>     
+*>
 *> \param[out] BERR
 *> \verbatim
 *>          BERR is DOUBLE PRECISION array, dimension (NRHS)
@@ -89,10 +89,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *

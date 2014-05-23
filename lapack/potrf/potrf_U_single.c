@@ -91,7 +91,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #ifdef SHARED_ARRAY
   FLOAT *aa;
 #endif
-  
+
   FLOAT *sb2 = (FLOAT *)((((BLASLONG)sb
 		    + GEMM_PQ  * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)
 		  + GEMM_OFFSET_B);
@@ -109,14 +109,14 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     info = POTF2_U(args, NULL, range_n, sa, sb, 0);
     return info;
   }
-  
+
   blocking = GEMM_Q;
   if (n <= 4 * GEMM_Q) blocking = (n + 3) / 4;
-  
+
   for (j = 0; j < n; j += blocking) {
     bk = n - j;
     if (bk > blocking) bk = blocking;
-    
+
     if (!range_n) {
       range_N[0] = j;
       range_N[1] = j + bk;
@@ -124,29 +124,29 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       range_N[0] = range_n[0] + j;
       range_N[1] = range_n[0] + j + bk;
     }
-    
+
     info = CNAME(args, NULL, range_N, sa, sb, 0);
     if (info) return info + j;
-    
+
     if (n - j - bk > 0) {
-      
+
       TRSM_IUNCOPY(bk, bk, a + (j + j * lda) * COMPSIZE, lda, 0, sb);
-      
+
       for(js = j + bk; js < n; js += REAL_GEMM_R) {
 	min_j = n - js;
 	if (min_j > REAL_GEMM_R) min_j = REAL_GEMM_R;
-	
+
 	for(jjs = js; jjs < js + min_j; jjs += GEMM_UNROLL_N){
 	  min_jj = min_j + js - jjs;
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	  
+
 	  GEMM_ONCOPY(bk, min_jj, a + (j + jjs * lda) * COMPSIZE, lda, sb2 + bk * (jjs - js) * COMPSIZE);
-	  
+
 	  for (is = 0; is < bk; is += GEMM_P) {
 	    min_i = bk - is;
 	    if (min_i > GEMM_P) min_i = GEMM_P;
-	    
-	    TRSM_KERNEL (min_i, min_jj, bk, dm1, 
+
+	    TRSM_KERNEL (min_i, min_jj, bk, dm1,
 #ifdef COMPLEX
 			 ZERO,
 #endif
@@ -158,14 +158,14 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
 	for (is = j + bk; is < js + min_j; is += min_i) {
 	  min_i = js + min_j - is;
-      
+
 	  if (min_i >= GEMM_P * 2) {
 	    min_i = GEMM_P;
-	  } else 
+	  } else
 	    if (min_i > GEMM_P) {
 	      min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	    }
-      
+
 #ifdef SHARED_ARRAY
 	  if ((is >= js) && (is + min_i <= js + min_j)) {
 	    aa = sb2 + bk * (is - js) * COMPSIZE;
@@ -176,18 +176,18 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #else
 	  GEMM_INCOPY(bk, min_i, a + (j + is * lda) * COMPSIZE, lda, sa);
 #endif
-	  
+
 	  SYRK_KERNEL_U(min_i, min_j, bk,
-			dm1, 
+			dm1,
 			SA, sb2,
 			a + (is + js * lda) * COMPSIZE, lda,
 			is - js);
-	  
+
 	}
       }
     }
-   
+
   }
-  
+
   return 0;
 }

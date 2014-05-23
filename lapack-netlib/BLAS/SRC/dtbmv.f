@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DTBMV(UPLO,TRANS,DIAG,N,K,A,LDA,X,INCX)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER INCX,K,LDA,N
 *       CHARACTER DIAG,TRANS,UPLO
@@ -17,7 +17,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION A(LDA,*),X(*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -159,10 +159,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

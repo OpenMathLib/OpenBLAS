@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #define ALPHA    0
 #define FZERO	 8
 
@@ -70,7 +70,7 @@
 #define BO	r25
 #define AO2	r26
 #define	BO2	r27
-	
+
 #define	CO1	r28
 #define CO2	r29
 #define	CO3	r30
@@ -122,7 +122,7 @@
 	stfpdux	f29, SP, r0
 	stfpdux	f30, SP, r0
 	stfpdux	f31, SP, r0
-	
+
 	stwu	r31,  -4(SP)
 	stwu	r30,  -4(SP)
 	stwu	r29,  -4(SP)
@@ -197,7 +197,7 @@
 #endif
 
 	addi	AO, A, -4 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -431,7 +431,7 @@
 	fxcsmadd	f7,  B6, A4, f7
 	LFPDUX	A9,  AO, INC4
 	fxcpmadd	f11, B4, A4, f11
-	nop	
+	nop
 	fxcsmadd	f15, B4, A4, f15
 	bdnz+	.L12
 	.align 4
@@ -1626,7 +1626,7 @@
 
 	fsmfp	A1, A2
 	fsmfp	A3, A4
-	
+
 	fxcpmadd	f0,  AP, f0,  A1
 	fxcpmadd	f1,  AP, f1,  A3
 #else
@@ -1687,7 +1687,7 @@
 #endif
 
 	addi	AO, A, -2 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -2649,7 +2649,7 @@
 
 	mr	CO1, C
 	addi	AO, A, -2 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -3507,7 +3507,7 @@
 #endif
 
 	addi	AO, A, -4 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -3741,7 +3741,7 @@
 	fxcsmadd	f7,  B6, A4, f7
 	LFPDUX	A9,  AO, INC4
 	fxcpmadd	f11, B4, A4, f11
-	nop	
+	nop
 	fxcsmadd	f15, B4, A4, f15
 	bdnz+	.L1012
 	.align 4
@@ -5120,7 +5120,7 @@
 #endif
 
 	addi	AO, A, -2 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -6147,7 +6147,7 @@
 
 	mr	CO1, C
 	addi	AO, A, -2 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 

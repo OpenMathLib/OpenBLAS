@@ -51,7 +51,7 @@
 #define a8	(a7 - 1)
 #endif
 
-int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG lda, 
+int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG lda,
 	 FLOAT *dummy2, BLASLONG dumy3, blasint *ipiv, BLASLONG incx){
 
   BLASLONG i, j, ip1, ip2, rows;
@@ -61,7 +61,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
   FLOAT *b5, *b6, *b7, *b8;
   FLOAT A1, A2, B1, B2, A3, A4, B3, B4;
   FLOAT A5, A6, B5, B6, A7, A8, B7, B8;
-  
+
   a--;
   k1 --;
 
@@ -80,7 +80,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
     ip1 = *ipiv;
     a1 = a + k1 + 1;
     b1 = a + ip1;
-    
+
     if(a1 == b1) return 0;
 
     for(j=0; j<n; j++){
@@ -105,7 +105,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 #else
       a1 = a + k2;
 #endif
-      
+
       a3 = a1 + 1 * lda;
       a5 = a1 + 2 * lda;
       a7 = a1 + 3 * lda;
@@ -114,10 +114,10 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
       piv += incx;
       ip2 = *piv;
       piv += incx;
-      
+
       b1 = a + ip1;
       b2 = a + ip2;
-	  
+
       b3 = b1 + 1 * lda;
       b4 = b2 + 1 * lda;
       b5 = b1 + 2 * lda;
@@ -126,7 +126,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
       b8 = b2 + 3 * lda;
 
       i = ((k2 - k1) >> 1);
-      
+
       i--; //Loop pipeline
       //Main Loop
       while (i > 0) {
@@ -147,12 +147,12 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	  B6 = *b6;
 	  B7 = *b7;
 	  B8 = *b8;
-	  
+
 	  ip1 = *piv;
 	  piv += incx;
 	  ip2 = *piv;
 	  piv += incx;
-	  
+
 	if (b1 == a1) {
 	  if (b2 == a1) {
 	    *a1 = A2;
@@ -163,7 +163,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	    *a6 = A5;
 	    *a7 = A8;
 	    *a8 = A7;
-	  } else 
+	  } else
 	    if (b2 != a2) {
 	      *a2 = B2;
 	      *b2 = A2;
@@ -174,7 +174,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	      *a8 = B8;
 	      *b8 = A8;
 	    }
-	} else 
+	} else
 	  if (b1 == a2) {
 	    if (b2 != a1) {
 	      if (b2 == a2) {
@@ -215,7 +215,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	      *a7 = A8;
 	      *a8 = B7;
 	      *b7 = A7;
-	    } else 
+	    } else
 	      if (b2 == a2) {
 		*a1 = B1;
 		*b1 = A1;
@@ -225,7 +225,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 		*b5 = A5;
 		*a7 = B7;
 		*b7 = A7;
-	      } else 
+	      } else
 		if (b2 == b1) {
 		  *a1 = B1;
 		  *a2 = A1;
@@ -258,17 +258,17 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 		  *b8 = A8;
 		}
 	  }
-	
+
 	  b1 = a + ip1;
 	  b2 = a + ip2;
-	  
+
 	  b3 = b1 + 1 * lda;
 	  b4 = b2 + 1 * lda;
 	  b5 = b1 + 2 * lda;
 	  b6 = b2 + 2 * lda;
 	  b7 = b1 + 3 * lda;
 	  b8 = b2 + 3 * lda;
-	  
+
 #ifndef MINUS
 	  a1 += 2;
 	  a3 += 2;
@@ -312,7 +312,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	  *a6 = A5;
 	  *a7 = A8;
 	  *a8 = A7;
-	} else 
+	} else
 	  if (b2 != a2) {
 	    *a2 = B2;
 	    *b2 = A2;
@@ -323,7 +323,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	    *a8 = B8;
 	    *b8 = A8;
 	  }
-      } else 
+      } else
 	if (b1 == a2) {
 	  if (b2 != a1) {
 	    if (b2 == a2) {
@@ -364,7 +364,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	    *a7 = A8;
 	    *a8 = B7;
 	    *b7 = A7;
-	  } else 
+	  } else
 	    if (b2 == a2) {
 	      *a1 = B1;
 	      *b1 = A1;
@@ -374,7 +374,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	      *b5 = A5;
 	      *a7 = B7;
 	      *b7 = A7;
-	    } else 
+	    } else
 	      if (b2 == b1) {
 		*a1 = B1;
 		*a2 = A1;
@@ -420,9 +420,9 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
       a7 -= 2;
 #endif
 
-      //Remain      
+      //Remain
       i = ((rows) & 1);
-      
+
       if (i > 0) {
 	ip1 = *piv;
 	b1 = a + ip1;
@@ -449,9 +449,9 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	*a7 = B7;
 	*b7 = A7;
       }
-      
+
       a += 4 * lda;
-      
+
       j --;
     } while (j > 0);
   }
@@ -464,20 +464,20 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 #else
     a1 = a + k2;
 #endif
-      
+
     a3 = a1 + 1 * lda;
 
     ip1 = *piv;
     piv += incx;
     ip2 = *piv;
     piv += incx;
-    
+
     b1 = a + ip1;
     b2 = a + ip2;
-    
+
     b3 = b1 + 1 * lda;
     b4 = b2 + 1 * lda;
-    
+
     i = ((rows) >> 1);
     i--;
 
@@ -486,31 +486,31 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	A2 = *a2;
 	A3 = *a3;
 	A4 = *a4;
-	
+
 	B1 = *b1;
 	B2 = *b2;
 	B3 = *b3;
 	B4 = *b4;
-	
+
 	ip1 = *piv;
 	piv += incx;
 	ip2 = *piv;
 	piv += incx;
-	
+
 	if (b1 == a1) {
 	  if (b2 == a1) {
 	    *a1 = A2;
 	    *a2 = A1;
 	    *a3 = A4;
 	    *a4 = A3;
-	  } else 
+	  } else
 	    if (b2 != a2) {
 	      *a2 = B2;
 	      *b2 = A2;
 	      *a4 = B4;
 	      *b4 = A4;
 	    }
-	} else 
+	} else
 	  if (b1 == a2) {
 	    if (b2 != a1) {
 	      if (b2 == a2) {
@@ -535,13 +535,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	      *a3 = A4;
 	      *a4 = B3;
 	      *b3 = A3;
-	    } else 
+	    } else
 	      if (b2 == a2) {
 		*a1 = B1;
 		*b1 = A1;
 		*a3 = B3;
 		*b3 = A3;
-	      } else 
+	      } else
 		if (b2 == b1) {
 		  *a1 = B1;
 		  *a2 = A1;
@@ -560,13 +560,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 		  *b4 = A4;
 		}
 	  }
-	
+
 	b1 = a + ip1;
 	b2 = a + ip2;
-	
+
 	b3 = b1 + 1 * lda;
 	b4 = b2 + 1 * lda;
-	
+
 #ifndef MINUS
 	a1 += 2;
 	a3 += 2;
@@ -576,13 +576,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 #endif
 	i --;
     }
-    
+
     //Loop Ending
     B1 = *b1;
     B2 = *b2;
     B3 = *b3;
     B4 = *b4;
-	  
+
     A1 = *a1;
     A2 = *a2;
     A3 = *a3;
@@ -594,14 +594,14 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	*a2 = A1;
 	*a3 = A4;
 	*a4 = A3;
-      } else 
+      } else
 	if (b2 != a2) {
 	  *a2 = B2;
 	  *b2 = A2;
 	  *a4 = B4;
 	  *b4 = A4;
 	}
-    } else 
+    } else
       if (b1 == a2) {
 	if (b2 != a1) {
 	  if (b2 == a2) {
@@ -626,13 +626,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	  *a3 = A4;
 	  *a4 = B3;
 	  *b3 = A3;
-	} else 
+	} else
 	  if (b2 == a2) {
 	    *a1 = B1;
 	    *b1 = A1;
 	    *a3 = B3;
 	    *b3 = A3;
-	  } else 
+	  } else
 	    if (b2 == b1) {
 	      *a1 = B1;
 	      *a2 = A1;
@@ -660,7 +660,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 #endif
 
     i = ((rows) & 1);
-    
+
     if (i > 0) {
       ip1 = *piv;
       b1 = a + ip1;
@@ -675,7 +675,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
       *a3 = B3;
       *b3 = A3;
     }
-    
+
     a += 2 * lda;
   }
 
@@ -687,15 +687,15 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 #else
     a1 = a + k2;
 #endif
-    
+
     ip1 = *piv;
     piv += incx;
     ip2 = *piv;
     piv += incx;
-    
+
     b1 = a + ip1;
     b2 = a + ip2;
-    
+
     i = ((rows) >> 1);
     i --;
 
@@ -704,22 +704,22 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
       A2 = *a2;
       B1 = *b1;
       B2 = *b2;
-	
+
       ip1 = *piv;
       piv += incx;
       ip2 = *piv;
       piv += incx;
-	
+
       if (b1 == a1) {
 	if (b2 == a1) {
 	  *a1 = A2;
 	  *a2 = A1;
-	} else 
+	} else
 	  if (b2 != a2) {
 	    *a2 = B2;
 	    *b2 = A2;
 	  }
-      } else 
+      } else
 	if (b1 == a2) {
 	  if (b2 != a1) {
 	    if (b2 == a2) {
@@ -736,11 +736,11 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	    *a1 = A2;
 	    *a2 = B1;
 	    *b1 = A1;
-	  } else 
+	  } else
 	    if (b2 == a2) {
 	      *a1 = B1;
 	      *b1 = A1;
-	    } else 
+	    } else
 	      if (b2 == b1) {
 		*a1 = B1;
 		*a2 = A1;
@@ -752,10 +752,10 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 		*b2 = A2;
 	      }
 	}
-	
+
       b1 = a + ip1;
       b2 = a + ip2;
-	
+
 #ifndef MINUS
       a1 += 2;
 #else
@@ -763,7 +763,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 #endif
       i --;
     }
-    
+
     //Loop Ending (n=1)
     A1 = *a1;
     A2 = *a2;
@@ -773,12 +773,12 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
       if (b2 == a1) {
 	*a1 = A2;
 	*a2 = A1;
-      } else 
+      } else
 	if (b2 != a2) {
 	  *a2 = B2;
 	  *b2 = A2;
 	}
-    } else 
+    } else
       if (b1 == a2) {
 	if (b2 != a1) {
 	  if (b2 == a2) {
@@ -795,11 +795,11 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 	  *a1 = A2;
 	  *a2 = B1;
 	  *b1 = A1;
-	} else 
+	} else
 	  if (b2 == a2) {
 	    *a1 = B1;
 	    *b1 = A1;
-	  } else 
+	  } else
 	    if (b2 == b1) {
 	      *a1 = B1;
 	      *a2 = A1;
@@ -817,13 +817,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
 #else
     a1 -= 2;
 #endif
-      
+
     //Remain
     i = (rows & 1);
-      
+
     if (i > 0) {
       ip1 = *piv;
-      b1 = a + ip1;      
+      b1 = a + ip1;
 
       A1 = *a1;
       B1 = *b1;
@@ -833,5 +833,5 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT *a, BLASLONG
   }
 
   return 0;
-} 
+}
 

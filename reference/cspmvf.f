@@ -78,7 +78,7 @@
 *           supplied as zero then Y need not be set on input.
 *           Unchanged on exit.
 *
-*  Y        (input/output) COMPLEX array, dimension at least 
+*  Y        (input/output) COMPLEX array, dimension at least
 *           ( 1 + ( N - 1 )*abs( INCY ) ).
 *           Before entry, the incremented array Y must contain the n
 *           element vector y. On exit, Y is overwritten by the updated

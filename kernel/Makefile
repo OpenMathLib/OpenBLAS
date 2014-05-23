@@ -53,9 +53,9 @@ SBLASOBJS	+= setparam$(TSUFFIX).$(SUFFIX)
 CCOMMON_OPT	+= -DTS=$(TSUFFIX)
 endif
 
-KERNEL_INTERFACE = ../common_level1.h ../common_level2.h ../common_level3.h 
+KERNEL_INTERFACE = ../common_level1.h ../common_level2.h ../common_level3.h
 ifneq ($(NO_LAPACK), 1)
-KERNEL_INTERFACE += ../common_lapack.h 
+KERNEL_INTERFACE += ../common_lapack.h
 endif
 
 ifeq ($(ARCH), x86)
@@ -93,7 +93,7 @@ setparam$(TSUFFIX).$(SUFFIX): setparam$(TSUFFIX).c kernel$(TSUFFIX).h
 setparam$(TSUFFIX).c : setparam-ref.c
 	sed 's/TS/$(TSUFFIX)/g' $< > $(@F)
 
-kernel$(TSUFFIX).h : $(KERNEL_INTERFACE) 
+kernel$(TSUFFIX).h : $(KERNEL_INTERFACE)
 	sed 's/\ *(/$(TSUFFIX)(/g' $^ > $(@F)
 
 

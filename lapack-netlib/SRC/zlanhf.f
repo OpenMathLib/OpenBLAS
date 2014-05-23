@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLANHF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlanhf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlanhf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlanhf.f"> 
+*> Download ZLANHF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlanhf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlanhf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlanhf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZLANHF( NORM, TRANSR, UPLO, N, A, WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          NORM, TRANSR, UPLO
 *       INTEGER            N
@@ -28,7 +28,7 @@
 *       DOUBLE PRECISION   WORK( 0: * )
 *       COMPLEX*16         A( 0: * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -126,10 +126,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -339,11 +339,11 @@
                   J = 0
 *                 -> L(0,0)
                   TEMP = ABS( DBLE( A( J+J*LDA ) ) )
-                  IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) ) 
+                  IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
      $                 VALUE = TEMP
                   DO I = 1, N - 1
                      TEMP = ABS( A( I+J*LDA ) )
-                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) ) 
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
      $                    VALUE = TEMP
                   END DO
                   DO J = 1, K - 1
@@ -726,7 +726,7 @@
                   VALUE = WORK( 0 )
                   DO I = 1, N-1
                      TEMP = WORK( I )
-                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) ) 
+                     IF( VALUE .LT. TEMP .OR. DISNAN( TEMP ) )
      $                    VALUE = TEMP
                   END DO
                ELSE

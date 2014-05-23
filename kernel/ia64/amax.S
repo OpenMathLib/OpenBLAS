@@ -314,18 +314,18 @@
 	;;
 	{ .mmf
 	(p13) LDFD	f42 = [DX], INCX
-	nop.m 0 
+	nop.m 0
 	(p12) FMAX DMAX1 = f32, DMAX1
 	}
 	{ .mmf
 	(p15) LDFD	f46 = [X3], INCX
-	nop.m 0 
+	nop.m 0
 	(p12) FMAX DMAX5 = f36, DMAX5
 	}
 	;;
 	{ .mmf
 	(p13) LDFD	f43 = [DX], INCX
-	nop.m 0 
+	nop.m 0
 	(p12) FMAX DMAX2 = f33, DMAX2
 	}
 	(p12) FMAX DMAX6 = f37, DMAX6
@@ -343,7 +343,7 @@
 	(p13) FMAX DMAX4 = f43, DMAX4
 	;;
 	.align 32
-	
+
 .L99:
 	{ .mfi
 	nop.m 0

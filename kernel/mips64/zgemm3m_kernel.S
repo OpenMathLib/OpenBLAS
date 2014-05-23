@@ -106,7 +106,7 @@
 #define ALPHA_I	$f16
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -128
 
 	SDARG	$16,   0($sp)
@@ -859,7 +859,7 @@
 	bgtz	J, .L10
 	move	B, BO
 	.align 3
-	
+
 .L30:
 	andi	J,  N, 4
 	blez	J, .L50
@@ -1540,7 +1540,7 @@
 	LD	$f1, 1 * SIZE(CO1)
 	LD	$f2, 2 * SIZE(CO1)
 	LD	$f3, 3 * SIZE(CO1)
-	
+
 	ADD	c11, c11, c21
 	daddiu	I, I, -1
 	ADD	c12, c12, c22

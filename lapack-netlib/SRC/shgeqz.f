@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SHGEQZ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/shgeqz.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/shgeqz.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/shgeqz.f"> 
+*> Download SHGEQZ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/shgeqz.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/shgeqz.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/shgeqz.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SHGEQZ( JOB, COMPQ, COMPZ, N, ILO, IHI, H, LDH, T, LDT,
 *                          ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, WORK,
 *                          LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          COMPQ, COMPZ, JOB
 *       INTEGER            IHI, ILO, INFO, LDH, LDQ, LDT, LDZ, LWORK, N
@@ -31,7 +31,7 @@
 *      $                   H( LDH, * ), Q( LDQ, * ), T( LDT, * ),
 *      $                   WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -50,9 +50,9 @@
 *>
 *> If JOB='S', then the Hessenberg-triangular pair (H,T) is
 *> also reduced to generalized Schur form,
-*> 
+*>
 *>    H = Q*S*Z**T,  T = Q*P*Z**T,
-*> 
+*>
 *> where Q and Z are orthogonal matrices, P is an upper triangular
 *> matrix, and S is a quasi-triangular matrix with 1-by-1 and 2-by-2
 *> diagonal blocks.
@@ -75,7 +75,7 @@
 *> generalized Schur factorization of (A,B):
 *>
 *>    A = (Q1*Q)*S*(Z1*Z)**T,  B = (Q1*Q)*P*(Z1*Z)**T.
-*> 
+*>
 *> To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
 *> of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
 *> complex and beta real.
@@ -86,7 +86,7 @@
 *> alternate form of the GNEP
 *>    mu*A*y = B*y.
 *> Real eigenvalues can be read directly from the generalized Schur
-*> form: 
+*> form:
 *>   alpha = S(i,i), beta = P(i,i).
 *>
 *> Ref: C.B. Moler & G.W. Stewart, "An Algorithm for Generalized Matrix
@@ -101,7 +101,7 @@
 *> \verbatim
 *>          JOB is CHARACTER*1
 *>          = 'E': Compute eigenvalues only;
-*>          = 'S': Compute eigenvalues and the Schur form. 
+*>          = 'S': Compute eigenvalues and the Schur form.
 *> \endverbatim
 *>
 *> \param[in] COMPQ
@@ -277,10 +277,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
@@ -760,7 +760,7 @@
      $                  S2, WR, WR2, WI )
 *
             IF ( ABS( (WR/S1)*T( ILAST, ILAST ) - H( ILAST, ILAST ) )
-     $         .GT. ABS( (WR2/S2)*T( ILAST, ILAST ) 
+     $         .GT. ABS( (WR2/S2)*T( ILAST, ILAST )
      $         - H( ILAST, ILAST ) ) ) THEN
                TEMP = WR
                WR = WR2

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE SLATME( N, DIST, ISEED, D, MODE, COND, DMAX, EI, 
-*         RSIGN, 
-*                          UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM, 
-*         A, 
+*       SUBROUTINE SLATME( N, DIST, ISEED, D, MODE, COND, DMAX, EI,
+*         RSIGN,
+*                          UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM,
+*         A,
 *                          LDA, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIST, RSIGN, SIM, UPPER
 *       INTEGER            INFO, KL, KU, LDA, MODE, MODES, N
@@ -24,7 +24,7 @@
 *       INTEGER            ISEED( 4 )
 *       REAL               A( LDA, * ), D( * ), DS( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -316,20 +316,20 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
 *> \ingroup real_matgen
 *
 *  =====================================================================
-      SUBROUTINE SLATME( N, DIST, ISEED, D, MODE, COND, DMAX, EI, 
-     $  RSIGN, 
-     $                   UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM, 
-     $  A, 
+      SUBROUTINE SLATME( N, DIST, ISEED, D, MODE, COND, DMAX, EI,
+     $  RSIGN,
+     $                   UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM,
+     $  A,
      $                   LDA, WORK, INFO )
 *
 *  -- LAPACK computational routine (version 3.4.0) --

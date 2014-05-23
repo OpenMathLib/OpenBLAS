@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -595,7 +595,7 @@
 	LFD	f17,  1 * SIZE(BO)
 	LFD	f18,  2 * SIZE(BO)
 	LFD	f19,  3 * SIZE(BO)
- 
+
 	LFD	f20,  4 * SIZE(BO)
  	LFD	f21,  5 * SIZE(BO)
 	LFD	f22,  6 * SIZE(BO)
@@ -615,7 +615,7 @@
 	LFD	f17,  1 * SIZE(AO)
 	LFD	f18,  2 * SIZE(AO)
 	LFD	f19,  3 * SIZE(AO)
- 
+
 	LFD	f20,  4 * SIZE(AO)
  	LFD	f21,  5 * SIZE(AO)
 	LFD	f22,  6 * SIZE(AO)
@@ -952,7 +952,7 @@
 	addi	CO1, CO1, 4 * SIZE
 	addi	CO2, CO2, 4 * SIZE
 #endif
-	
+
 #ifdef RT
 	slwi	r0, K, 1 + ZBASE_SHIFT
 	add	AORIG, AORIG, r0

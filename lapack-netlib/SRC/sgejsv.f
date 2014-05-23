@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGEJSV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgejsv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgejsv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgejsv.f"> 
+*> Download SGEJSV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgejsv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgejsv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgejsv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SGEJSV( JOBA, JOBU, JOBV, JOBR, JOBT, JOBP,
 *                          M, N, A, LDA, SVA, U, LDU, V, LDV,
 *                          WORK, LWORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       IMPLICIT    NONE
 *       INTEGER     INFO, LDA, LDU, LDV, LWORK, M, N
@@ -32,7 +32,7 @@
 *       INTEGER     IWORK( * )
 *       CHARACTER*1 JOBA, JOBP, JOBR, JOBT, JOBU, JOBV
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -97,7 +97,7 @@
 *>              numerical RANK is declared to be r. The SVD is computed with
 *>              absolute error bounds, but more accurately than with 'A'.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBU
 *> \verbatim
 *>          JOBU is CHARACTER*1
@@ -108,7 +108,7 @@
 *>              of U.
 *>       = 'N': U is not computed.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBV
 *> \verbatim
 *>          JOBV is CHARACTER*1
@@ -122,7 +122,7 @@
 *>              of V.
 *>       = 'N': V is not computed.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBR
 *> \verbatim
 *>          JOBR is CHARACTER*1
@@ -143,7 +143,7 @@
 *>         For computing the singular values in the FULL range [SFMIN,BIG]
 *>         use SGESVJ.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBT
 *> \verbatim
 *>          JOBT is CHARACTER*1
@@ -164,7 +164,7 @@
 *>         The implementer can easily remove this constraint and make the
 *>         code more complicated. See the descriptions of U and V.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBP
 *> \verbatim
 *>          JOBP is CHARACTER*1
@@ -317,15 +317,15 @@
 *>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB,7). Here NB is the optimal
 *>               block size for DGEQP3 and DGEQRF.
-*>               In general, optimal LWORK is computed as 
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 7).        
+*>               In general, optimal LWORK is computed as
+*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 7).
 *>            -> .. an estimate of the scaled condition number of A is
 *>               required (JOBA='E', 'G'). In this case, LWORK is the maximum
 *>               of the above and N*N+4*N, i.e. LWORK >= max(2*M+N,N*N+4*N,7).
-*>               ->> For optimal performance (blocked code) the optimal value 
+*>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB, N*N+4*N, 7).
 *>               In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 
+*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF),
 *>                                                     N+N*N+LWORK(DPOCON),7).
 *>
 *>          If SIGMA and the right singular vectors are needed (JOBV.EQ.'V'),
@@ -333,7 +333,7 @@
 *>            -> For optimal performance, LWORK >= max(2*M+N,3*N+(N+1)*NB,7),
 *>               where NB is the optimal block size for DGEQP3, DGEQRF, DGELQ,
 *>               DORMLQ. In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3), N+LWORK(DPOCON), 
+*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3), N+LWORK(DPOCON),
 *>                       N+LWORK(DGELQ), 2*N+LWORK(DGEQRF), N+LWORK(DORMLQ)).
 *>
 *>          If SIGMA and the left singular vectors are needed
@@ -344,14 +344,14 @@
 *>               where NB is the optimal block size for DGEQP3, DGEQRF, DORMQR.
 *>               In general, the optimal length LWORK is computed as
 *>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DPOCON),
-*>                        2*N+LWORK(DGEQRF), N+LWORK(DORMQR)). 
-*>               Here LWORK(DORMQR) equals N*NB (for JOBU.EQ.'U') or 
+*>                        2*N+LWORK(DGEQRF), N+LWORK(DORMQR)).
+*>               Here LWORK(DORMQR) equals N*NB (for JOBU.EQ.'U') or
 *>               M*NB (for JOBU.EQ.'F').
-*>               
-*>          If the full SVD is needed: (JOBU.EQ.'U' or JOBU.EQ.'F') and 
-*>            -> if JOBV.EQ.'V'  
-*>               the minimal requirement is LWORK >= max(2*M+N,6*N+2*N*N). 
-*>            -> if JOBV.EQ.'J' the minimal requirement is 
+*>
+*>          If the full SVD is needed: (JOBU.EQ.'U' or JOBU.EQ.'F') and
+*>            -> if JOBV.EQ.'V'
+*>               the minimal requirement is LWORK >= max(2*M+N,6*N+2*N*N).
+*>            -> if JOBV.EQ.'J' the minimal requirement is
 *>               LWORK >= max(2*M+N, 4*N+N*N,2*N+N*N+6).
 *>            -> For optimal performance, LWORK should be additionally
 *>               larger than N+M*NB, where NB is the optimal block size
@@ -384,10 +384,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -570,7 +570,7 @@
      $ .OR.
      $ (RSVEC .AND. (.NOT.LSVEC) .AND. (LWORK .LT. MAX0(7,2*M+N,4*N+1)))
      $ .OR.
-     $ (LSVEC .AND. RSVEC .AND. (.NOT.JRACC) .AND. 
+     $ (LSVEC .AND. RSVEC .AND. (.NOT.JRACC) .AND.
      $                          (LWORK.LT.MAX0(2*M+N,6*N+2*N*N)))
      $ .OR. (LSVEC .AND. RSVEC .AND. JRACC .AND.
      $                          LWORK.LT.MAX0(2*M+N,4*N+N*N,2*N+N*N+6)))
@@ -828,7 +828,7 @@
             KILL   = LSVEC
             LSVEC  = RSVEC
             RSVEC  = KILL
-            IF ( LSVEC ) N1 = N 
+            IF ( LSVEC ) N1 = N
 *
             ROWPIV = .TRUE.
          END IF

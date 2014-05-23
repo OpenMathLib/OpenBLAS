@@ -67,7 +67,7 @@
 	movq	 8(%rsp), INCY
 #else
 	movaps	%xmm3, %xmm0
-	movss	40(%rsp), %xmm1	
+	movss	40(%rsp), %xmm1
 
 	movq	48(%rsp), X
 	movq	56(%rsp), INCX
@@ -76,13 +76,13 @@
 #endif
 
 	SAVEREGISTERS
-	
+
 	salq	$ZBASE_SHIFT, INCX
 	salq	$ZBASE_SHIFT, INCY
 
 	testq	M, M
 	jle	.L999
-	
+
 	cmpq	$2 * SIZE, INCX
 	jne	.L100
 	cmpq	$2 * SIZE, INCY
@@ -3113,7 +3113,7 @@
 	movsd	%xmm8,   (Y)
 	jmp	.L999
 	ALIGN_3
-		
+
 .L200:
     movq    M, %rax
 	cmpq	$0, %rax
@@ -3142,11 +3142,11 @@
 
 	movsd   %xmm8,   (Y)
     addq    INCY, Y
-		
+
 	decq    %rax
     jg  .L201
     ALIGN_3
-		
+
 .L999:
 	xorq	%rax, %rax
 

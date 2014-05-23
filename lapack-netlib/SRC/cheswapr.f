@@ -2,31 +2,31 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHESWAPR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cheswapr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cheswapr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cheswapr.f"> 
+*> Download CHESWAPR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cheswapr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cheswapr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cheswapr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CHESWAPR( UPLO, N, A, LDA, I1, I2)
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER        UPLO
 *       INTEGER          I1, I2, LDA, N
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX          A( LDA, N )
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -90,10 +90,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -136,14 +136,14 @@
 *
 *         UPPER
 *         first swap
-*          - swap column I1 and I2 from I1 to I1-1 
+*          - swap column I1 and I2 from I1 to I1-1
          CALL CSWAP( I1-1, A(1,I1), 1, A(1,I2), 1 )
 *
 *          second swap :
 *          - swap A(I1,I1) and A(I2,I2)
 *          - swap row I1 from I1+1 to I2-1 with col I2 from I1+1 to I2-1
 *          - swap A(I2,I1) and A(I1,I2)
-     
+
          TMP=A(I1,I1)
          A(I1,I1)=A(I2,I2)
          A(I2,I2)=TMP
@@ -169,12 +169,12 @@
 *
 *         LOWER
 *         first swap
-*          - swap row I1 and I2 from 1 to I1-1 
+*          - swap row I1 and I2 from 1 to I1-1
          CALL CSWAP ( I1-1, A(I1,1), LDA, A(I2,1), LDA )
 *
 *         second swap :
 *          - swap A(I1,I1) and A(I2,I2)
-*          - swap col I1 from I1+1 to I2-1 with row I2 from I1+1 to I2-1     
+*          - swap col I1 from I1+1 to I2-1 with row I2 from I1+1 to I2-1
 *          - swap A(I2,I1) and A(I1,I2)
 
           TMP=A(I1,I1)
@@ -198,6 +198,6 @@
           END DO
 *
       ENDIF
-      
+
       END SUBROUTINE CHESWAPR
 

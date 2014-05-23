@@ -43,12 +43,12 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	64
-	
+
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
 #define OLD_INCY	24 + STACKSIZE(%rsp)
 #define OLD_BUFFER	32 + STACKSIZE(%rsp)
-	
+
 #define M	  %rdi
 #define N	  %rsi
 #define A	  %rcx
@@ -61,7 +61,7 @@
 #else
 
 #define STACKSIZE	256
-	
+
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
 #define OLD_LDA		 56 + STACKSIZE(%rsp)
@@ -156,7 +156,7 @@
 	xorps	 %xmm5, ALPHA_I
 
 	subq	$-16 * SIZE, A
-	
+
 	testq	M, M
 	jle	.L999
 	testq	N, N
@@ -164,7 +164,7 @@
 	ALIGN_3
 
 	movq	BUFFER, X1
-	
+
 	movq	Y, Y1
 
 	movq	M,  I
@@ -606,7 +606,7 @@
 	pcmpeqb	%xmm13, %xmm13
 	psllq	$63,    %xmm13
 	shufps	$0x40, %xmm13, %xmm13
-	
+
 #ifndef XCONJ
 	xorps	%xmm13, %xmm1
 	xorps	%xmm13, %xmm3
@@ -935,7 +935,7 @@
 	pcmpeqb	%xmm13, %xmm13
 	psllq	$63,    %xmm13
 	shufps	$0x40, %xmm13, %xmm13
-	
+
 #ifndef XCONJ
 	xorps	%xmm13, %xmm1
 	xorps	%xmm13, %xmm3
@@ -1154,7 +1154,7 @@
 	pcmpeqb	%xmm13, %xmm13
 	psllq	$63,    %xmm13
 	shufps	$0x40, %xmm13, %xmm13
-	
+
 #ifndef XCONJ
 	xorps	%xmm13, %xmm1
 #else

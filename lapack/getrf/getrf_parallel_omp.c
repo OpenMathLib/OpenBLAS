@@ -68,7 +68,7 @@ static void inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
     c     += range_n[0] * lda * COMPSIZE;
     d     += range_n[0] * lda * COMPSIZE;
   }
-  
+
   for (js = 0; js < n; js += REAL_GEMM_R) {
     min_j = n - js;
     if (min_j > REAL_GEMM_R) min_j = REAL_GEMM_R;
@@ -76,32 +76,32 @@ static void inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
     for (jjs = js; jjs < js + min_j; jjs += GEMM_UNROLL_N){
       min_jj = js + min_j - jjs;
       if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-      
+
 #if 0
-      LASWP_NCOPY(min_jj, off + 1, off + k, 
+      LASWP_NCOPY(min_jj, off + 1, off + k,
 		  c + (- off + jjs * lda) * COMPSIZE, lda,
 		  ipiv, sb + k * (jjs - js) * COMPSIZE);
 
 #else
-      LASWP_PLUS(min_jj, off + 1, off + k, ZERO, 
+      LASWP_PLUS(min_jj, off + 1, off + k, ZERO,
 #ifdef COMPLEX
 		 ZERO,
 #endif
 		 c + (- off + jjs * lda) * COMPSIZE, lda, NULL, 0, ipiv, 1);
-	
+
       GEMM_ONCOPY (k, min_jj, c + jjs * lda * COMPSIZE, lda, sb + (jjs - js) * k * COMPSIZE);
 #endif
 
       for (is = 0; is < k; is += GEMM_P) {
 	min_i = k - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	TRSM_KERNEL_LT(min_i, min_jj, k, dm1,
 #ifdef COMPLEX
 		       ZERO,
 #endif
 		       (FLOAT *)args -> a  + k * is * COMPSIZE,
-		       sb + (jjs - js) * k * COMPSIZE, 
+		       sb + (jjs - js) * k * COMPSIZE,
 		       c   + (is + jjs * lda) * COMPSIZE, lda, is);
       }
     }
@@ -109,9 +109,9 @@ static void inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
     for (is = 0; is < m; is += GEMM_P){
       min_i = m - is;
       if (min_i > GEMM_P) min_i = GEMM_P;
-      
+
       GEMM_ITCOPY (k, min_i, b + is * COMPSIZE, lda, sa);
-      
+
       GEMM_KERNEL_N(min_i, min_j, k, dm1,
 #ifdef COMPLEX
 		    ZERO,
@@ -141,7 +141,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -149,7 +149,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 
   m    = args -> m;
@@ -167,7 +167,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   }
 
   if (m <= 0 || n <= 0) return 0;
-  
+
   mn = MIN(m, n);
 
   blocking = (mn / 2 + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
@@ -177,13 +177,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     info = GETF2(args, NULL, range_n, sa, sb, 0);
     return info;
   }
-  
+
   sbb = (FLOAT *)((((BLASULONG)(sb + blocking * blocking * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
 
   info = 0;
 
   for (j = 0; j < mn; j += blocking) {
-    
+
     jb = mn - j;
     if (jb > blocking) jb = blocking;
 
@@ -198,9 +198,9 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     if (iinfo && !info) info = iinfo + j;
 
     if (j + jb < n) {
-      
+
       TRSM_ILTCOPY(jb, jb, offsetA + j * COMPSIZE, lda, 0, sb);
-      
+
       newarg.m   = m - jb - j;
       newarg.n   = n - jb - j;
       newarg.k   = jb;
@@ -215,7 +215,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       newarg.nthreads = args -> nthreads;
 
       gemm_thread_n(mode, &newarg, NULL, NULL,  (void *)inner_thread, sa, sbb, args -> nthreads);
-      
+
     }
   }
 
@@ -226,7 +226,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	       ZERO,
 #endif
 	       a - (offset - j * lda) * COMPSIZE, lda, NULL, 0 , ipiv, 1);
-    
+
   }
 
   return info;

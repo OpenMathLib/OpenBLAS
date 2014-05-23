@@ -22,7 +22,7 @@ ifeq ($(ARCH), arm64)
 USE_TRMM = 1
 endif
 
-ifeq ($(TARGET), LOONGSON3B)												 
+ifeq ($(TARGET), LOONGSON3B)
 USE_TRMM = 1
 endif
 
@@ -513,7 +513,7 @@ $(KDIR)xgemm_kernel_b$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL) $(XGEMMD
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX -DCC $< -o $@
 
 
-ifdef USE_TRMM											 
+ifdef USE_TRMM
 $(KDIR)strmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -UTRANSA $< -o $@
 

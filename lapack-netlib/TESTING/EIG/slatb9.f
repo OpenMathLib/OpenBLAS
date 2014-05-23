@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,14 +11,14 @@
 *       SUBROUTINE SLATB9( PATH, IMAT, M, P, N, TYPE, KLA, KUA,
 *                          KLB, KUB, ANORM, BNORM, MODEA, MODEB,
 *                          CNDNMA, CNDNMB, DISTA, DISTB )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DISTA, DISTB, TYPE
 *       CHARACTER*3        PATH
 *       INTEGER            IMAT, KLA, KUA, KLB, KUB, M, P, MODEA, MODEB, N
 *       REAL               ANORM, BNORM, CNDNMA, CNDNMB
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -156,10 +156,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -276,7 +276,7 @@
          ELSE
 *
 *           A: general dense, B: general dense
-*       
+*
             KLA = MAX( M-1, 0 )
             KUA = MAX( N-1, 0 )
             KLB = MAX( P-1, 0 )

@@ -75,7 +75,7 @@
 	}
 	;;
 	{ .mmi
-	mov	XX = X1   
+	mov	XX = X1
 	mov	PR = pr
 	}
 	{ .mmi

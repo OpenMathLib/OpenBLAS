@@ -41,13 +41,13 @@
 
 #define STACK	12
 #define ARGS	 0
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define X	 8 + STACK + ARGS(%esp)
 #define INCX	12 + STACK + ARGS(%esp)
 #define Y	16 + STACK + ARGS(%esp)
 #define INCY	20 + STACK + ARGS(%esp)
-	
+
 	PROLOGUE
 
 	pushl	%edi
@@ -71,7 +71,7 @@
 
 	sall	$ZBASE_SHIFT, %esi
 	sall	$ZBASE_SHIFT, %edi
-	
+
 	cmpl	$2 * SIZE, %esi	# if incx != 1
 	jne	.L100
 	cmpl	$2 * SIZE, %edi	# if incy != 1
@@ -84,14 +84,14 @@
 
 .L11:
 #if defined(DOUBLE) || defined(XDOUBLE)
-	FLD	7 * SIZE(%ecx)	
-	FLD	6 * SIZE(%ecx)	
-	FLD	5 * SIZE(%ecx)	
-	FLD	4 * SIZE(%ecx)	
-	FLD	3 * SIZE(%ecx)	
-	FLD	2 * SIZE(%ecx)	
-	FLD	1 * SIZE(%ecx)	
-	FLD	0 * SIZE(%ecx)	
+	FLD	7 * SIZE(%ecx)
+	FLD	6 * SIZE(%ecx)
+	FLD	5 * SIZE(%ecx)
+	FLD	4 * SIZE(%ecx)
+	FLD	3 * SIZE(%ecx)
+	FLD	2 * SIZE(%ecx)
+	FLD	1 * SIZE(%ecx)
+	FLD	0 * SIZE(%ecx)
 
 	FST	0 * SIZE(%edx)
 	FST	1 * SIZE(%edx)
@@ -102,10 +102,10 @@
 	FST	6 * SIZE(%edx)
 	FST	7 * SIZE(%edx)
 #else
-	fldl	6 * SIZE(%ecx)	
-	fldl	4 * SIZE(%ecx)	
-	fldl	2 * SIZE(%ecx)	
-	fldl	0 * SIZE(%ecx)	
+	fldl	6 * SIZE(%ecx)
+	fldl	4 * SIZE(%ecx)
+	fldl	2 * SIZE(%ecx)
+	fldl	0 * SIZE(%ecx)
 
 	fstpl	0 * SIZE(%edx)
 	fstpl	2 * SIZE(%edx)

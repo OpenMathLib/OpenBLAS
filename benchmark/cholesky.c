@@ -78,29 +78,29 @@ int gettimeofday(struct timeval *tv, void *tz){
   FILETIME ft;
   unsigned __int64 tmpres = 0;
   static int tzflag;
- 
+
   if (NULL != tv)
     {
       GetSystemTimeAsFileTime(&ft);
- 
+
       tmpres |= ft.dwHighDateTime;
       tmpres <<= 32;
       tmpres |= ft.dwLowDateTime;
- 
+
       /*converting file time to unix epoch*/
       tmpres /= 10;  /*convert into microseconds*/
-      tmpres -= DELTA_EPOCH_IN_MICROSECS; 
+      tmpres -= DELTA_EPOCH_IN_MICROSECS;
       tv->tv_sec = (long)(tmpres / 1000000UL);
       tv->tv_usec = (long)(tmpres % 1000000UL);
     }
- 
+
   return 0;
 }
 
 #endif
 
 static __inline double getmflops(int ratio, int m, double secs){
-  
+
   double mm = (double)m;
   double mulflops, addflops;
 
@@ -137,7 +137,7 @@ int MAIN__(int argc, char *argv[]){
   struct timeval start, stop;
   double time1;
 
-  argc--;argv++; 
+  argc--;argv++;
 
   if (argc > 0) { from     = atol(*argv);		argc--; argv++;}
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
@@ -148,17 +148,17 @@ int MAIN__(int argc, char *argv[]){
   if (( a    = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-    
+
   if (( b    = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-  
+
   for(m = from; m <= to; m += step){
-    
+
     fprintf(stderr, "M = %6d : ", (int)m);
-    
+
     for (uplos = 0; uplos < 2; uplos ++) {
-      
+
 #ifndef COMPLEX
       if (uplos & 1) {
 	for (j = 0; j < m; j++) {
@@ -219,11 +219,11 @@ int MAIN__(int argc, char *argv[]){
 	fprintf(stderr, "Info = %d\n", info);
 	exit(1);
       }
- 
+
      time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
 
       maxerr = 0.;
-      
+
       if (!(uplos & 1)) {
 	for (j = 0; j < m; j++) {
 	  for(i = 0; i <= j; i++) {
@@ -247,8 +247,8 @@ int MAIN__(int argc, char *argv[]){
 	  }
 	}
       }
-     
-      fprintf(stderr, 
+
+      fprintf(stderr,
 #ifdef XDOUBLE
 	      "  %Le  %10.3f MFlops", maxerr,
 #else

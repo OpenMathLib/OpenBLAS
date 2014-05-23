@@ -40,7 +40,7 @@
 #include <ctype.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG incx, 
+int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG incx,
 		       FLOAT *y, BLASLONG incy, FLOAT *a, FLOAT *buffer){
 
   BLASLONG i;
@@ -61,7 +61,7 @@ int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG incx,
 
   for (i = 0; i < m; i++){
 #ifndef LOWER
-    AXPYU_K(i + 1, 0, 0, 
+    AXPYU_K(i + 1, 0, 0,
 	   alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
 	   alpha_i * X[i * 2 + 0] + alpha_r * X[i * 2 + 1],
 	   Y,     1, a, 1, NULL, 0);

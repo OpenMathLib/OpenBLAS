@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CTRSM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
-* 
+*
 *       .. Scalar Arguments ..
 *       COMPLEX ALPHA
 *       INTEGER LDA,LDB,M,N
@@ -18,7 +18,7 @@
 *       .. Array Arguments ..
 *       COMPLEX A(LDA,*),B(LDB,*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -112,7 +112,7 @@
 *> \param[in] A
 *> \verbatim
 *>          A is COMPLEX array of DIMENSION ( LDA, k ),
-*>           where k is m when SIDE = 'L' or 'l'  
+*>           where k is m when SIDE = 'L' or 'l'
 *>             and k is n when SIDE = 'R' or 'r'.
 *>           Before entry  with  UPLO = 'U' or 'u',  the  leading  k by k
 *>           upper triangular part of the array  A must contain the upper
@@ -154,10 +154,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

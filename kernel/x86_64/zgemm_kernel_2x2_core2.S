@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define M	%r13
@@ -49,7 +49,7 @@
 #define B	%r8
 #define C	%r9
 #define LDC	%r10
-	
+
 #define I	%r11
 #define AO	%rdi
 #define BO	%rsi
@@ -109,7 +109,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
@@ -175,7 +175,7 @@
 	movsd	%xmm12, KK
 #ifndef LEFT
 	negq	KK
-#endif	
+#endif
 #endif
 
 	salq	$ZBASE_SHIFT, LDC
@@ -190,11 +190,11 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 /* Copying to Sub Buffer */
 	leaq	16 * SIZE +  BUFFER, BO
-	
+
 	movapd	 -16 * SIZE(B), %xmm0
 	movapd	  -8 * SIZE(B), %xmm4
 
@@ -202,7 +202,7 @@
 	sarq	$2, %rax
 	jle	.L03
 	ALIGN_3
-	
+
 .L02:
 	prefetcht0	(PREFETCH_R + 0) * SIZE(B)
 	prefetcht0	(PREFETCH_R + 8) * SIZE(B)
@@ -292,7 +292,7 @@
 	decq	%rax
 	jne	.L04
 	ALIGN_3
-	
+
 .L05:
 	leaq	(PREFETCH_R +  0) * SIZE(B), BB
 
@@ -317,7 +317,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 8), BO
-#endif	
+#endif
 
 	movaps	-16 * SIZE(AO), %xmm0
 	movaps	-14 * SIZE(AO), %xmm1
@@ -351,7 +351,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -366,7 +366,7 @@
 	jle	.L15
 	ALIGN_4
 
-.L12:	
+.L12:
 	PADDING;
 	ADD1	%xmm2, %xmm10
 	movaps	-15 * SIZE(BO), %xmm2
@@ -619,7 +619,7 @@
 	addsubpd	%xmm11, %xmm10
 	addsubpd	%xmm13, %xmm12
 	addsubpd	%xmm15, %xmm14
-	
+
 #if! defined(TRMMKERNEL) && !defined(BETAZERO)
 	addpd	%xmm0,  %xmm8
 	addpd	%xmm1,  %xmm10
@@ -654,7 +654,7 @@
 	addq	$4 * SIZE, CO2		# coffset += 4
 	decq	I			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L30:
 	testq	$1, M
@@ -672,7 +672,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 8), BO
-#endif	
+#endif
 
 	pxor	%xmm8, %xmm8
 	pxor	%xmm9, %xmm9
@@ -684,7 +684,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -844,7 +844,7 @@
 
 	addsubpd	%xmm9, %xmm8
 	addsubpd	%xmm11, %xmm10
-	
+
 #if! defined(TRMMKERNEL) && !defined(BETAZERO)
 	addpd	%xmm0,  %xmm8
 	addpd	%xmm1,  %xmm10
@@ -868,7 +868,7 @@
 	addq	$1, KK
 #endif
 	ALIGN_4
-	
+
 .L99:
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addl	$2, KK
@@ -886,7 +886,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 /* Copying to Sub Buffer */
 	leaq	BUFFER, BO
@@ -895,7 +895,7 @@
 	sarq	$2, %rax
 	jle	.L103
 	ALIGN_4
-	
+
 .L102:
 	movddup	 -16 * SIZE(B), %xmm8
 	movddup	 -15 * SIZE(B), %xmm9
@@ -940,7 +940,7 @@
 	decq	%rax
 	jne	.L104
 	ALIGN_4
-	
+
 .L105:
 	movq	C, CO1		# coffset1 = c
 	movq	A, AO		# aoffset = a
@@ -962,7 +962,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 4), BO
-#endif	
+#endif
 
 	pxor	%xmm8, %xmm8
 	pxor	%xmm9, %xmm9
@@ -975,7 +975,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1145,7 +1145,7 @@
 
 	addsubpd	%xmm9, %xmm8
 	addsubpd	%xmm13, %xmm12
-	
+
 #if! defined(TRMMKERNEL) && !defined(BETAZERO)
 	addpd	%xmm0,  %xmm8
 	addpd	%xmm2, %xmm12
@@ -1172,7 +1172,7 @@
 	addq	$4 * SIZE, CO1		# coffset += 4
 	decq	I			# i --
 	jg	.L110
-	ALIGN_4	
+	ALIGN_4
 
 .L130:
 	testq	$1, M
@@ -1191,7 +1191,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 4), BO
-#endif	
+#endif
 
 	pxor	%xmm8, %xmm8
 	pxor	%xmm9, %xmm9
@@ -1203,7 +1203,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1321,10 +1321,10 @@
 	movsd	%xmm8, 0 * SIZE(CO1)
 	movhpd	%xmm8, 1 * SIZE(CO1)
 	ALIGN_4
-	
+
 .L999:
 	movq	%r15, %rsp
-	
+
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

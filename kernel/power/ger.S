@@ -326,7 +326,7 @@ LL(06):
 	addi	X1, X1, SIZE
 	bdnz+	LL(06)
 	.align 4
-	
+
 LL(10):
 	srawi.	J, N, 1
 	ble	LL(20)
@@ -834,7 +834,7 @@ LL(19):
 	cmpi	cr0, 0, J, 0
 	bgt	LL(11)
 	.align 4
-	
+
 LL(20):
 	andi.	J, N, 1
 	ble	LL(999)

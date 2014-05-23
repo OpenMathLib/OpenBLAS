@@ -2,41 +2,41 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CTPQRT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctpqrt.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctpqrt.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctpqrt.f"> 
+*> Download CTPQRT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctpqrt.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctpqrt.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctpqrt.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CTPQRT( M, N, L, NB, A, LDA, B, LDB, T, LDT, WORK,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER INFO, LDA, LDB, LDT, N, M, L, NB
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX A( LDA, * ), B( LDB, * ), T( LDT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> CTPQRT computes a blocked QR factorization of a complex 
-*> "triangular-pentagonal" matrix C, which is composed of a 
-*> triangular block A and pentagonal block B, using the compact 
+*> CTPQRT computes a blocked QR factorization of a complex
+*> "triangular-pentagonal" matrix C, which is composed of a
+*> triangular block A and pentagonal block B, using the compact
 *> WY representation for Q.
 *> \endverbatim
 *
@@ -46,7 +46,7 @@
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>          The number of rows of the matrix B.  
+*>          The number of rows of the matrix B.
 *>          M >= 0.
 *> \endverbatim
 *>
@@ -88,7 +88,7 @@
 *> \param[in,out] B
 *> \verbatim
 *>          B is COMPLEX array, dimension (LDB,N)
-*>          On entry, the pentagonal M-by-N matrix B.  The first M-L rows 
+*>          On entry, the pentagonal M-by-N matrix B.  The first M-L rows
 *>          are rectangular, and the last L rows are upper trapezoidal.
 *>          On exit, B contains the pentagonal matrix V.  See Further Details.
 *> \endverbatim
@@ -105,7 +105,7 @@
 *>          The upper triangular block reflectors stored in compact form
 *>          as a sequence of upper triangular blocks.  See Further Details.
 *> \endverbatim
-*>          
+*>
 *> \param[in] LDT
 *> \verbatim
 *>          LDT is INTEGER
@@ -127,10 +127,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
@@ -141,10 +141,10 @@
 *>
 *> \verbatim
 *>
-*>  The input matrix C is a (N+M)-by-N matrix  
+*>  The input matrix C is a (N+M)-by-N matrix
 *>
 *>               C = [ A ]
-*>                   [ B ]        
+*>                   [ B ]
 *>
 *>  where A is an upper triangular N-by-N matrix, and B is M-by-N pentagonal
 *>  matrix consisting of a (M-L)-by-N rectangular matrix B1 on top of a L-by-N
@@ -154,8 +154,8 @@
 *>                   [ B2 ]  <-     L-by-N upper trapezoidal.
 *>
 *>  The upper trapezoidal matrix B2 consists of the first L rows of a
-*>  N-by-N upper triangular matrix, where 0 <= L <= MIN(M,N).  If L=0, 
-*>  B is rectangular M-by-N; if M=L=N, B is upper triangular.  
+*>  N-by-N upper triangular matrix, where 0 <= L <= MIN(M,N).  If L=0,
+*>  B is rectangular M-by-N; if M=L=N, B is upper triangular.
 *>
 *>  The matrix W stores the elementary reflectors H(i) in the i-th column
 *>  below the diagonal (of A) in the (N+M)-by-N input matrix C
@@ -169,17 +169,17 @@
 *>                   [ V ]  <- M-by-N, same form as B.
 *>
 *>  Thus, all of information needed for W is contained on exit in B, which
-*>  we call V above.  Note that V has the same form as B; that is, 
+*>  we call V above.  Note that V has the same form as B; that is,
 *>
 *>               V = [ V1 ] <- (M-L)-by-N rectangular
 *>                   [ V2 ] <-     L-by-N upper trapezoidal.
 *>
-*>  The columns of V represent the vectors which define the H(i)'s.  
+*>  The columns of V represent the vectors which define the H(i)'s.
 *>
 *>  The number of blocks is B = ceiling(N/NB), where each
-*>  block is of order NB except for the last block, which is of order 
+*>  block is of order NB except for the last block, which is of order
 *>  IB = N - (B-1)*NB.  For each of the B blocks, a upper triangular block
-*>  reflector factor is computed: T1, T2, ..., TB.  The NB-by-NB (and IB-by-IB 
+*>  reflector factor is computed: T1, T2, ..., TB.  The NB-by-NB (and IB-by-IB
 *>  for the last block) T's are stored in the NB-by-N matrix T as
 *>
 *>               T = [T1 T2 ... TB].
@@ -240,7 +240,7 @@
       IF( M.EQ.0 .OR. N.EQ.0 ) RETURN
 *
       DO I = 1, N, NB
-*     
+*
 *     Compute the QR factorization of the current block
 *
          IB = MIN( N-I+1, NB )
@@ -251,20 +251,20 @@
             LB = MB-M+L-I+1
          END IF
 *
-         CALL CTPQRT2( MB, IB, LB, A(I,I), LDA, B( 1, I ), LDB, 
+         CALL CTPQRT2( MB, IB, LB, A(I,I), LDA, B( 1, I ), LDB,
      $                 T(1, I ), LDT, IINFO )
 *
 *     Update by applying H**H to B(:,I+IB:N) from the left
 *
          IF( I+IB.LE.N ) THEN
             CALL CTPRFB( 'L', 'C', 'F', 'C', MB, N-I-IB+1, IB, LB,
-     $                    B( 1, I ), LDB, T( 1, I ), LDT, 
-     $                    A( I, I+IB ), LDA, B( 1, I+IB ), LDB, 
+     $                    B( 1, I ), LDB, T( 1, I ), LDT,
+     $                    A( I, I+IB ), LDA, B( 1, I+IB ), LDB,
      $                    WORK, IB )
          END IF
       END DO
       RETURN
-*     
+*
 *     End of CTPQRT
 *
       END

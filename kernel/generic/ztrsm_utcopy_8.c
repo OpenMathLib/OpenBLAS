@@ -57,7 +57,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 8)) {
 	for (k = 0; k < ii - jj; k ++) {
 	  *(b +  k * 2 + 0) = *(a1 +  k * 2 + 0);
@@ -69,7 +69,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
 	compinv(b +  (ii - jj) * 2, data1, data2);
       }
-      
+
       if (ii - jj >= 8) {
 	*(b +  0) = *(a1 +  0);
 	*(b +  1) = *(a1 +  1);
@@ -106,7 +106,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 4)) {
 	for (k = 0; k < ii - jj; k ++) {
 	  *(b +  k * 2 + 0) = *(a1 +  k * 2 + 0);
@@ -118,7 +118,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
 	compinv(b +  (ii - jj) * 2, data1, data2);
       }
-      
+
       if (ii - jj >= 4) {
 	*(b +  0) = *(a1 +  0);
 	*(b +  1) = *(a1 +  1);
@@ -146,7 +146,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 2)) {
 	for (k = 0; k < ii - jj; k ++) {
 	  *(b +  k * 2 + 0) = *(a1 +  k * 2 + 0);
@@ -158,7 +158,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
 	compinv(b +  (ii - jj) * 2, data1, data2);
       }
-      
+
       if (ii - jj >= 2) {
 	*(b +  0) = *(a1 +  0);
 	*(b +  1) = *(a1 +  1);
@@ -181,7 +181,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 1)) {
 	for (k = 0; k < ii - jj; k ++) {
 	  *(b +  k * 2 + 0) = *(a1 +  k * 2 + 0);
@@ -193,7 +193,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
 	compinv(b +  (ii - jj) * 2, data1, data2);
       }
-      
+
       if (ii - jj >= 1) {
 	*(b +  0) = *(a1 +  0);
 	*(b +  1) = *(a1 +  1);

@@ -56,7 +56,7 @@
 
 1.6  Q I use OpenMP compiler. How can I use GotoBLAS2 with it?
 
-     A Please understand that OpenMP is a compromised method to use 
+     A Please understand that OpenMP is a compromised method to use
        thread. If you want to use OpenMP based code with GotoBLAS2, you
        should enable "USE_OPENMP=1" in Makefile.rule.
 

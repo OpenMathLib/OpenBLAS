@@ -39,10 +39,10 @@
 #if defined(__APPLE__) && defined(__i386__)
 
 /* Quick hack for Darwin/x86 */
-	
+
 	.text
 	.globl _cpuid
-_cpuid:	
+_cpuid:
 	pushl	%esi
 	pushl	%ebx
 

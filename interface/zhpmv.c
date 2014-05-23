@@ -101,7 +101,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (incy == 0)          info =  9;
@@ -144,7 +144,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (order == CblasColMajor) {
     if (Uplo == CblasUpper)         uplo  = 0;
     if (Uplo == CblasLower)         uplo  = 1;
-    
+
     info = -1;
 
     if (incy == 0)          info =  9;

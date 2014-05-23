@@ -3,7 +3,7 @@ enable_language(C)
 
 # Create a header file netlib.h for the routines called in my C programs
 include(FortranCInterface)
-FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/lapacke_mangling.h 
+FortranCInterface_HEADER( ${CMAKE_CURRENT_SOURCE_DIR}/include/lapacke_mangling.h
                           MACRO_NAMESPACE "LAPACK_"
                           SYMBOL_NAMESPACE "LAPACK_" )
 

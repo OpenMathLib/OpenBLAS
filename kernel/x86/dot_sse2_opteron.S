@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS     0
-	
+
 #define STACK_N		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -76,8 +76,8 @@
 	movl	(INCY),INCY		# INCY
 #endif
 
-	leal	(, INCX, SIZE), INCX	
-	leal	(, INCY, SIZE), INCY	
+	leal	(, INCX, SIZE), INCX
+	leal	(, INCY, SIZE), INCY
 
 	pxor	%xmm0, %xmm0
 	pxor	%xmm1, %xmm1

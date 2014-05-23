@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CQRT15( SCALE, RKSEL, M, N, NRHS, A, LDA, B, LDB, S,
 *                          RANK, NORMA, NORMB, ISEED, WORK, LWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDB, LWORK, M, N, NRHS, RANK, RKSEL, SCALE
 *       REAL               NORMA, NORMB
@@ -20,7 +20,7 @@
 *       REAL               S( * )
 *       COMPLEX            A( LDA, * ), B( LDB, * ), WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -136,10 +136,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

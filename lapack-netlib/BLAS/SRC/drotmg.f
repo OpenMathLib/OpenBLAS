@@ -2,21 +2,21 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DROTMG(DD1,DD2,DX1,DY1,DPARAM)
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION DD1,DD2,DX1,DY1
 *       ..
 *       .. Array Arguments ..
 *       DOUBLE PRECISION DPARAM(5)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -78,10 +78,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -135,7 +135,7 @@
             DFLAG = -TWO
             DPARAM(1) = DFLAG
             RETURN
-         END IF 
+         END IF
 *        REGULAR-CASE..
          DP1 = DD1*DX1
          DQ2 = DP2*DY1
@@ -203,7 +203,7 @@
                END IF
             ENDDO
          END IF
-  
+
          IF (DD2.NE.ZERO) THEN
             DO WHILE ( (DABS(DD2).LE.RGAMSQ) .OR. (DABS(DD2).GE.GAMSQ) )
                IF (DFLAG.EQ.ZERO) THEN
@@ -223,10 +223,10 @@
                   DD2 = DD2/GAM**2
                   DH21 = DH21*GAM
                   DH22 = DH22*GAM
-               END IF      
+               END IF
             END DO
          END IF
-     
+
       END IF
 
       IF (DFLAG.LT.ZERO) THEN
@@ -236,7 +236,7 @@
          DPARAM(5) = DH22
       ELSE IF (DFLAG.EQ.ZERO) THEN
          DPARAM(3) = DH21
-         DPARAM(4) = DH12 
+         DPARAM(4) = DH12
       ELSE
          DPARAM(2) = DH11
          DPARAM(5) = DH22
@@ -245,7 +245,7 @@
       DPARAM(1) = DFLAG
       RETURN
       END
-      
-     
-     
-     
+
+
+
+

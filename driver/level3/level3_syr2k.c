@@ -178,16 +178,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       min_l = k - ls;
       if (min_l >= GEMM_Q * 2) {
 	min_l = GEMM_Q;
-      } else 
+      } else
 	if (min_l > GEMM_Q) {
 	  min_l = (min_l + 1) / 2;
 	}
 
       min_i = m_end - m_start;
-      
+
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
-      } else 
+      } else
 	if (min_i > GEMM_P) {
 	  min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	}
@@ -195,44 +195,44 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 #ifndef LOWER
 
       if (m_start >= js) {
-	
+
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, sa);
 
 	aa = sb + min_l * (m_start - js)  * COMPSIZE;
-	
+
 	OCOPY_OPERATION(min_l, min_i, b, ldb, ls, m_start, aa);
-	
+
 	KERNEL_OPERATION(min_i, min_i, min_l, alpha, sa, aa, c, ldc, m_start, m_start, 1);
-	
+
 	jjs = m_start + min_i;
 
       } else {
-	
+
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, sa);
 
 	jjs = js;
       }
-      
+
       for(; jjs < js + min_j; jjs += GEMM_UNROLL_MN){
 	min_jj = min_j + js - jjs;
 	if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
-	
+
 	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	
+
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
 			 sa, sb + min_l * (jjs - js)  * COMPSIZE,
 			 c, ldc, m_start, jjs, 1);
       }
-      
+
       for(is = m_start + min_i; is < m_end; is += min_i){
 	min_i = m_end - is;
 	if (min_i >= GEMM_P * 2) {
 	  min_i = GEMM_P;
-	} else 
+	} else
 	  if (min_i > GEMM_P) {
 	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	  }
-	
+
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
 
 	KERNEL_OPERATION(min_i, min_j, min_l, alpha, sa, sb, c, ldc, is, js, 1);
@@ -243,50 +243,50 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
-      } else 
+      } else
 	if (min_i > GEMM_P) {
 	  min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	}
 
       if (m_start >= js) {
-	
+
 	ICOPY_OPERATION(min_l, min_i, b, ldb, ls, m_start, sa);
 
 	aa = sb + min_l * (m_start - js)  * COMPSIZE;
-	
+
 	OCOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, aa);
-	
+
 	KERNEL_OPERATION_C(min_i, min_i, min_l, alpha, sa, aa, c, ldc, m_start, m_start, 0);
-	
+
 	jjs = m_start + min_i;
 
       } else {
-	
+
 	ICOPY_OPERATION(min_l, min_i, b, ldb, ls, m_start, sa);
 
 	jjs = js;
       }
-      
+
       for(; jjs < js + min_j; jjs += GEMM_UNROLL_MN){
 	min_jj = min_j + js - jjs;
 	if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
-	
+
 	OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	
+
 	KERNEL_OPERATION_C(min_i, min_jj, min_l, alpha,
 			 sa, sb + min_l * (jjs - js)  * COMPSIZE,
 			 c, ldc, m_start, jjs, 0);
       }
-      
+
       for(is = m_start + min_i; is < m_end; is += min_i){
 	min_i = m_end - is;
 	if (min_i >= GEMM_P * 2) {
 	  min_i = GEMM_P;
-	} else 
+	} else
 	  if (min_i > GEMM_P) {
 	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	  }
-	
+
 	ICOPY_OPERATION(min_l, min_i, b, ldb, ls, is, sa);
 
 	KERNEL_OPERATION_C(min_i, min_j, min_l, alpha, sa, sb, c, ldc, is, js, 0);
@@ -300,49 +300,49 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, sa);
 
       OCOPY_OPERATION(min_l, min_i, b, ldb, ls, m_start, aa);
-      
+
       KERNEL_OPERATION(min_i, MIN(min_i, min_j + js - m_start), min_l, alpha,
 		       sa, aa, c, ldc, m_start, m_start, 1);
 
       for(jjs = js; jjs < m_start; jjs += GEMM_UNROLL_MN){
 	min_jj = m_start - jjs;
 	if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
-	
+
 	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	
+
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
 			 sa, sb + min_l * (jjs - js)  * COMPSIZE, c, ldc, m_start, jjs, 1);
       }
 
       for(is = m_start + min_i; is < m_end; is += min_i){
-	
+
 	min_i = m_end - is;
-	
+
 	if (min_i >= GEMM_P * 2) {
 	  min_i = GEMM_P;
-	} else 
+	} else
 	  if (min_i > GEMM_P) {
 	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	  }
-	
+
 	aa = sb + min_l * (is - js) * COMPSIZE;
 
 	if (is  < js + min_j) {
-	  
+
 	  ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	  
+
 	  OCOPY_OPERATION(min_l, min_i, b, ldb, ls, is, aa);
-	  
+
 	  KERNEL_OPERATION(min_i, MIN(min_i, min_j - is + js), min_l, alpha,  sa, aa,  c, ldc, is, is, 1);
-	  
+
 	  KERNEL_OPERATION(min_i, is - js, min_l, alpha, sa, sb,  c, ldc, is, js, 1);
-	  
+
 	  } else {
-	    
+
 	    ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	    
+
 	    KERNEL_OPERATION(min_i, min_j, min_l, alpha, sa, sb,  c, ldc, is, js, 1);
-	    
+
 	  }
 
       }
@@ -351,7 +351,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
-      } else 
+      } else
 	if (min_i > GEMM_P) {
 	  min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	}
@@ -361,49 +361,49 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       ICOPY_OPERATION(min_l, min_i, b, ldb, ls, m_start, sa);
 
       OCOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, aa);
-      
+
       KERNEL_OPERATION_C(min_i, MIN(min_i, min_j + js - m_start), min_l, alpha,
 		       sa, aa, c, ldc, m_start, m_start, 0);
 
       for(jjs = js; jjs < m_start; jjs += GEMM_UNROLL_MN){
 	min_jj = m_start - jjs;
 	if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
-	
+
 	OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	
+
 	KERNEL_OPERATION_C(min_i, min_jj, min_l, alpha,
 			 sa, sb + min_l * (jjs - js)  * COMPSIZE, c, ldc, m_start, jjs, 0);
       }
 
       for(is = m_start + min_i; is < m_end; is += min_i){
-	
+
 	min_i = m_end - is;
-	
+
 	if (min_i >= GEMM_P * 2) {
 	  min_i = GEMM_P;
-	} else 
+	} else
 	  if (min_i > GEMM_P) {
 	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	  }
-	
+
 	aa = sb + min_l * (is - js) * COMPSIZE;
 
 	if (is  < js + min_j) {
-	  
+
 	  ICOPY_OPERATION(min_l, min_i, b, ldb, ls, is, sa);
-	  
+
 	  OCOPY_OPERATION(min_l, min_i, a, lda, ls, is, aa);
-	  
+
 	  KERNEL_OPERATION_C(min_i, MIN(min_i, min_j - is + js), min_l, alpha,  sa, aa,  c, ldc, is, is, 0);
-	  
+
 	  KERNEL_OPERATION_C(min_i, is - js, min_l, alpha, sa, sb,  c, ldc, is, js, 0);
-	  
+
 	  } else {
-	    
+
 	    ICOPY_OPERATION(min_l, min_i, b, ldb, ls, is, sa);
-	    
+
 	    KERNEL_OPERATION_C(min_i, min_j, min_l, alpha, sa, sb,  c, ldc, is, js, 0);
-	    
+
 	  }
 
       }

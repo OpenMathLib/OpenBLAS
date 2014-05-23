@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define OLD_K	%rdx
@@ -51,7 +51,7 @@
 #define B	%r8
 #define C	%r9
 #define LDC	%r10
-	
+
 #define I	%r11
 #define AO	%rdi
 #define BO	%rsi
@@ -98,7 +98,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 
 	movq	%rbx,  0(%rsp)
@@ -185,7 +185,7 @@
        movq	K, %rax
        salq	$1 + ZBASE_SHIFT, %rax
        subq	%rax, B
-       
+
        leaq	(, LDC, 2), %rax
        subq	%rax, C
 #endif
@@ -199,7 +199,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 
 	movq	K, %rax
 	salq	$ZBASE_SHIFT + 1, %rax
@@ -230,7 +230,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	prefetcht2	 -16 * SIZE(BB)
 	subq		 $-8 * SIZE, BB
@@ -274,7 +274,7 @@
 	jle	.L15
 	ALIGN_3
 
-.L12:	
+.L12:
 	ADD1	%xmm3, %xmm12
 	movaps	-14 * SIZE(BO), %xmm3
 	ADD1	%xmm4, %xmm14
@@ -919,7 +919,7 @@
 	decq	I			# i --
 	BRANCH
 	jg	.L11
-	ALIGN_4	
+	ALIGN_4
 
 .L20:
 	testq	$1, M
@@ -941,7 +941,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	movaps	-16 * SIZE(AO), %xmm0
 	movaps	-16 * SIZE(BO), %xmm2
@@ -966,7 +966,7 @@
 	jle	.L25
 	ALIGN_4
 
-.L22:	
+.L22:
 	ADD1	%xmm3, %xmm12
 	movaps	-14 * SIZE(BO), %xmm3
 	pshufd	$0x4e, %xmm2, %xmm7
@@ -1267,7 +1267,7 @@
        salq	$ZBASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
+	ALIGN_4
 
 .L39:
 #ifdef LN
@@ -1307,7 +1307,7 @@
 	movq	K, %rax
 	salq	$ZBASE_SHIFT, %rax
 	subq	%rax, B
-       
+
 	subq	LDC, C
 #endif
 
@@ -1320,7 +1320,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 
 	movq	K, %rax
 	salq	$ZBASE_SHIFT + 1, %rax
@@ -1329,7 +1329,7 @@
 #ifdef LT
 	movq	OFFSET, KK
 #endif
-	
+
 	movq	M,  I
 	sarq	$1, I	# i = (m >> 2)
 	NOBRANCH
@@ -1351,7 +1351,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	prefetcht2	 -16 * SIZE(BB)
 	subq		 $-4 * SIZE, BB
@@ -1377,7 +1377,7 @@
 	jle	.L55
 	ALIGN_4
 
-.L52:	
+.L52:
 	movaps	%xmm2, %xmm4
 	pshufd	$0x4e, %xmm2, %xmm7
 	mulpd	%xmm0, %xmm2
@@ -1707,7 +1707,7 @@
 	decq	I
 	BRANCH
 	jg	.L51
-	ALIGN_4	
+	ALIGN_4
 
 .L60:
 	testq	$1, M
@@ -1729,7 +1729,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	movaps	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8,  %xmm8
@@ -1749,7 +1749,7 @@
 	jle	.L65
 	ALIGN_4
 
-.L62:	
+.L62:
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	pshufd	$0x4e, %xmm2, %xmm7
@@ -1966,7 +1966,7 @@
        salq	$ZBASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
+	ALIGN_4
 
 .L79:
 #ifdef LN

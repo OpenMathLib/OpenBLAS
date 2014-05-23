@@ -2886,7 +2886,7 @@
             WRITE( NOUT, FMT = 9998 )I, YT( I ),
      $         YY( 1 + ( I - 1 )*ABS( INCY ) )
          ELSE
-            WRITE( NOUT, FMT = 9998 )I, 
+            WRITE( NOUT, FMT = 9998 )I,
      $         YY( 1 + ( I - 1 )*ABS( INCY ) ), YT(I)
          END IF
    60 CONTINUE

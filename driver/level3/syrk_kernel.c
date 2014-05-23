@@ -71,7 +71,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     return 0;
   }
@@ -83,7 +83,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     return 0;
   }
@@ -95,7 +95,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     b += offset * k   * COMPSIZE;
     c += offset * ldc * COMPSIZE;
@@ -114,7 +114,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #endif
 		  a,
 		  b + (m + offset) * k   * COMPSIZE,
-		  c + (m + offset) * ldc * COMPSIZE, ldc); 
+		  c + (m + offset) * ldc * COMPSIZE, ldc);
 #endif
 
     n = m + offset;
@@ -128,7 +128,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     a -= offset * k   * COMPSIZE;
     c -= offset       * COMPSIZE;
@@ -147,7 +147,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #endif
 		a + (n - offset) * k * COMPSIZE,
 		b,
-		c + (n - offset)     * COMPSIZE, ldc); 
+		c + (n - offset)     * COMPSIZE, ldc);
 #endif
     m = n + offset;
 
@@ -167,21 +167,21 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef COMPLEX
 		  alpha_i,
 #endif
-		  a, b + loop * k * COMPSIZE, c + loop * ldc * COMPSIZE, ldc); 
+		  a, b + loop * k * COMPSIZE, c + loop * ldc * COMPSIZE, ldc);
 #endif
 
-    GEMM_BETA(nn, nn, 0, ZERO, 
+    GEMM_BETA(nn, nn, 0, ZERO,
 #ifdef COMPLEX
 	      ZERO,
 #endif
 	      NULL, 0, NULL, 0, subbuffer, nn);
-    
+
     GEMM_KERNEL(nn, nn, k,
 		alpha_r,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a + loop * k * COMPSIZE, b + loop * k * COMPSIZE, subbuffer, nn); 
+		a + loop * k * COMPSIZE, b + loop * k * COMPSIZE, subbuffer, nn);
 
     cc = c + (loop + loop * ldc) * COMPSIZE;
     ss = subbuffer;
@@ -220,8 +220,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef COMPLEX
 		  alpha_i,
 #endif
-		  a + (mm + nn) * k * COMPSIZE, b + loop * k * COMPSIZE, 
-		  c + (mm + nn + loop * ldc) * COMPSIZE, ldc); 
+		  a + (mm + nn) * k * COMPSIZE, b + loop * k * COMPSIZE,
+		  c + (mm + nn + loop * ldc) * COMPSIZE, ldc);
 #endif
 
   }

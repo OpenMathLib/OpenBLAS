@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGET07( TRANS, N, NRHS, A, LDA, B, LDB, X, LDX, XACT,
 *                          LDXACT, FERR, CHKFERR, BERR, RESLTS )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       LOGICAL            CHKFERR
@@ -21,7 +21,7 @@
 *       COMPLEX            A( LDA, * ), B( LDB, * ), X( LDX, * ),
 *      $                   XACT( LDXACT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -153,10 +153,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

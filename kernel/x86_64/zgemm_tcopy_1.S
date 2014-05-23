@@ -74,7 +74,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	pushq	%r14
 	pushq	%r13
@@ -118,7 +118,7 @@
 #ifndef DOUBLE
 	movsd	0 * SIZE(AO1), %xmm0
 	movhps	0 * SIZE(AO1, LDA, 1), %xmm0
-	
+
 	movaps	%xmm0,   0 * SIZE(B)
 #else
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)

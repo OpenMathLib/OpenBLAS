@@ -50,7 +50,7 @@
 #define A	%i5
 #define LDA	%i2
 #define X	%i3
-#define INCX	%i4	
+#define INCX	%i4
 
 #define Y	%l0
 #define INCY	%l1
@@ -255,7 +255,7 @@
 	STF	FZERO, [Y1 +  7 * SIZE]
 	bg,pn	%icc, .LL01
 	add	Y1, 8 * SIZE, Y1
-	
+
 .LL20:
 	sra	N, 1, J
 	cmp	J, 0
@@ -1152,7 +1152,7 @@
 	add	Y1, INCY, Y1
 
 	add	BUFFER, 4 * SIZE, BUFFER
-	
+
 .LL996:
 	andcc	M, 1, I
 	ble,pn	%icc, .LL999

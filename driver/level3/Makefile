@@ -1094,7 +1094,7 @@ ssymm_LU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 
 ssymm_LL.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 ssymm_RU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1106,7 +1106,7 @@ dsymm_LU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 
 dsymm_LL.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 dsymm_RU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1118,7 +1118,7 @@ qsymm_LU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 
 qsymm_LL.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 qsymm_RU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1130,7 +1130,7 @@ csymm_LU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 
 csymm_LL.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm_RU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1142,7 +1142,7 @@ zsymm_LU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 
 zsymm_LL.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm_RU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1154,7 +1154,7 @@ xsymm_LU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 
 xsymm_LL.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm_RU.$(SUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1166,7 +1166,7 @@ ssymm_thread_LU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 ssymm_thread_LL.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 ssymm_thread_RU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1178,7 +1178,7 @@ dsymm_thread_LU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 dsymm_thread_LL.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 dsymm_thread_RU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1190,7 +1190,7 @@ qsymm_thread_LU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 qsymm_thread_LL.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 qsymm_thread_RU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1202,7 +1202,7 @@ csymm_thread_LU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 csymm_thread_LL.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm_thread_RU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1214,7 +1214,7 @@ zsymm_thread_LU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 zsymm_thread_LL.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm_thread_RU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1226,7 +1226,7 @@ xsymm_thread_LU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 xsymm_thread_LL.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm_thread_RU.$(SUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -1529,7 +1529,7 @@ chemm_LU.$(SUFFIX) : zhemm_k.c ../../param.h
 
 chemm_LL.$(SUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm_RU.$(SUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -1541,7 +1541,7 @@ zhemm_LU.$(SUFFIX) : zhemm_k.c ../../param.h
 
 zhemm_LL.$(SUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm_RU.$(SUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -1553,7 +1553,7 @@ xhemm_LU.$(SUFFIX) : zhemm_k.c ../../param.h
 
 xhemm_LL.$(SUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm_RU.$(SUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -1565,7 +1565,7 @@ chemm_thread_LU.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 
 chemm_thread_LL.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm_thread_RU.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -1577,7 +1577,7 @@ zhemm_thread_LU.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 
 zhemm_thread_LL.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm_thread_RU.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -1589,7 +1589,7 @@ xhemm_thread_LU.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 
 xhemm_thread_LL.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm_thread_RU.$(SUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -1776,76 +1776,76 @@ xher2k_kernel_LN.$(SUFFIX) : zher2k_kernel.c
 xher2k_kernel_LC.$(SUFFIX) : zher2k_kernel.c
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -DCONJ $< -o $(@F)
 
-cgemm3m_nn.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nn.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNN $< -o $(@F)
 
-cgemm3m_nt.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nt.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNT $< -o $(@F)
 
-cgemm3m_nr.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nr.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNR $< -o $(@F)
 
-cgemm3m_nc.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nc.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNC $< -o $(@F)
 
-cgemm3m_tn.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tn.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTN $< -o $(@F)
 
-cgemm3m_tt.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tt.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTT $< -o $(@F)
 
-cgemm3m_tr.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tr.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTR $< -o $(@F)
 
-cgemm3m_tc.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tc.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTC $< -o $(@F)
 
-cgemm3m_rn.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rn.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRN $< -o $(@F)
 
-cgemm3m_rt.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rt.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRT $< -o $(@F)
 
-cgemm3m_rr.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rr.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRR $< -o $(@F)
 
-cgemm3m_rc.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rc.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRC $< -o $(@F)
 
-cgemm3m_cn.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_cn.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCN $< -o $(@F)
 
-cgemm3m_ct.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_ct.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCT $< -o $(@F)
 
-cgemm3m_cr.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_cr.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCR $< -o $(@F)
 
-cgemm3m_cc.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_cc.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCC $< -o $(@F)
 
-zgemm3m_nn.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nn.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNN $< -o $(@F)
 
-zgemm3m_nt.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nt.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNT $< -o $(@F)
 
-zgemm3m_nr.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nr.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNR $< -o $(@F)
 
-zgemm3m_nc.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nc.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNC $< -o $(@F)
 
-zgemm3m_tn.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tn.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTN $< -o $(@F)
 
-zgemm3m_tt.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tt.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTT $< -o $(@F)
 
-zgemm3m_tr.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tr.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTR $< -o $(@F)
 
-zgemm3m_tc.$(SUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tc.$(SUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTC $< -o $(@F)
 
 zgemm3m_rn.$(SUFFIX) : gemm3m.c gemm3m_level3.c
@@ -2078,7 +2078,7 @@ csymm3m_LU.$(SUFFIX) : symm3m_k.c ../../param.h
 
 csymm3m_LL.$(SUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm3m_RU.$(SUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2090,7 +2090,7 @@ zsymm3m_LU.$(SUFFIX) : symm3m_k.c ../../param.h
 
 zsymm3m_LL.$(SUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm3m_RU.$(SUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2102,7 +2102,7 @@ xsymm3m_LU.$(SUFFIX) : symm3m_k.c ../../param.h
 
 xsymm3m_LL.$(SUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm3m_RU.$(SUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2114,7 +2114,7 @@ csymm3m_thread_LU.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 csymm3m_thread_LL.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm3m_thread_RU.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2126,7 +2126,7 @@ zsymm3m_thread_LU.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 zsymm3m_thread_LL.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm3m_thread_RU.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2138,7 +2138,7 @@ xsymm3m_thread_LU.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 xsymm3m_thread_LL.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm3m_thread_RU.$(SUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2150,7 +2150,7 @@ chemm3m_LU.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 
 chemm3m_LL.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm3m_RU.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2162,7 +2162,7 @@ zhemm3m_LU.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 
 zhemm3m_LL.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm3m_RU.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2174,7 +2174,7 @@ xhemm3m_LU.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 
 xhemm3m_LL.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm3m_RU.$(SUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2186,7 +2186,7 @@ chemm3m_thread_LU.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 chemm3m_thread_LL.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm3m_thread_RU.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2198,7 +2198,7 @@ zhemm3m_thread_LU.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 zhemm3m_thread_LL.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm3m_thread_RU.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -2210,7 +2210,7 @@ xhemm3m_thread_LU.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 xhemm3m_thread_LL.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm3m_thread_RU.$(SUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(CFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3463,7 +3463,7 @@ ssymm_LU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 
 ssymm_LL.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 ssymm_RU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3475,7 +3475,7 @@ dsymm_LU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 
 dsymm_LL.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 dsymm_RU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3487,7 +3487,7 @@ qsymm_LU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 
 qsymm_LL.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 qsymm_RU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3499,7 +3499,7 @@ csymm_LU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 
 csymm_LL.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm_RU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3511,7 +3511,7 @@ zsymm_LU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 
 zsymm_LL.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm_RU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3523,7 +3523,7 @@ xsymm_LU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 
 xsymm_LL.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm_RU.$(PSUFFIX) : symm_k.c level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3535,7 +3535,7 @@ ssymm_thread_LU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 ssymm_thread_LL.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 ssymm_thread_RU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3547,7 +3547,7 @@ dsymm_thread_LU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 dsymm_thread_LL.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 dsymm_thread_RU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3559,7 +3559,7 @@ qsymm_thread_LU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 qsymm_thread_LL.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -UCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 qsymm_thread_RU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -UCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3571,7 +3571,7 @@ csymm_thread_LU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 csymm_thread_LL.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm_thread_RU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3583,7 +3583,7 @@ zsymm_thread_LU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 zsymm_thread_LL.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm_thread_RU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3595,7 +3595,7 @@ xsymm_thread_LU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 
 xsymm_thread_LL.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm_thread_RU.$(PSUFFIX) : symm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -3898,7 +3898,7 @@ chemm_LU.$(PSUFFIX) : zhemm_k.c ../../param.h
 
 chemm_LL.$(PSUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm_RU.$(PSUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -3910,7 +3910,7 @@ zhemm_LU.$(PSUFFIX) : zhemm_k.c ../../param.h
 
 zhemm_LL.$(PSUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm_RU.$(PSUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -3922,7 +3922,7 @@ xhemm_LU.$(PSUFFIX) : zhemm_k.c ../../param.h
 
 xhemm_LL.$(PSUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm_RU.$(PSUFFIX) : zhemm_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -3934,7 +3934,7 @@ chemm_thread_LU.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 
 chemm_thread_LL.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm_thread_RU.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -3946,7 +3946,7 @@ zhemm_thread_LU.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 
 zhemm_thread_LL.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm_thread_RU.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -3958,7 +3958,7 @@ xhemm_thread_LU.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 
 xhemm_thread_LL.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm_thread_RU.$(PSUFFIX) : zhemm_k.c level3_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNC $< -o $(@F)
 
@@ -4145,76 +4145,76 @@ xher2k_kernel_LN.$(PSUFFIX) : zher2k_kernel.c
 xher2k_kernel_LC.$(PSUFFIX) : zher2k_kernel.c
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -DCONJ $< -o $(@F)
 
-cgemm3m_nn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNN $< -o $(@F)
 
-cgemm3m_nt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNT $< -o $(@F)
 
-cgemm3m_nr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNR $< -o $(@F)
 
-cgemm3m_nc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_nc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNC $< -o $(@F)
 
-cgemm3m_tn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTN $< -o $(@F)
 
-cgemm3m_tt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTT $< -o $(@F)
 
-cgemm3m_tr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTR $< -o $(@F)
 
-cgemm3m_tc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_tc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DTC $< -o $(@F)
 
-cgemm3m_rn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRN $< -o $(@F)
 
-cgemm3m_rt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRT $< -o $(@F)
 
-cgemm3m_rr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRR $< -o $(@F)
 
-cgemm3m_rc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_rc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DRC $< -o $(@F)
 
-cgemm3m_cn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_cn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCN $< -o $(@F)
 
-cgemm3m_ct.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_ct.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCT $< -o $(@F)
 
-cgemm3m_cr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_cr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCR $< -o $(@F)
 
-cgemm3m_cc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+cgemm3m_cc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DCC $< -o $(@F)
 
-zgemm3m_nn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNN $< -o $(@F)
 
-zgemm3m_nt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNT $< -o $(@F)
 
-zgemm3m_nr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNR $< -o $(@F)
 
-zgemm3m_nc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_nc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DNC $< -o $(@F)
 
-zgemm3m_tn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTN $< -o $(@F)
 
-zgemm3m_tt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tt.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTT $< -o $(@F)
 
-zgemm3m_tr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tr.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTR $< -o $(@F)
 
-zgemm3m_tc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c 
+zgemm3m_tc.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DDOUBLE -DCOMPLEX -DTC $< -o $(@F)
 
 zgemm3m_rn.$(PSUFFIX) : gemm3m.c gemm3m_level3.c
@@ -4447,7 +4447,7 @@ csymm3m_LU.$(PSUFFIX) : symm3m_k.c ../../param.h
 
 csymm3m_LL.$(PSUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm3m_RU.$(PSUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4459,7 +4459,7 @@ zsymm3m_LU.$(PSUFFIX) : symm3m_k.c ../../param.h
 
 zsymm3m_LL.$(PSUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm3m_RU.$(PSUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4471,7 +4471,7 @@ xsymm3m_LU.$(PSUFFIX) : symm3m_k.c ../../param.h
 
 xsymm3m_LL.$(PSUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm3m_RU.$(PSUFFIX) : symm3m_k.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4483,7 +4483,7 @@ csymm3m_thread_LU.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 csymm3m_thread_LL.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 csymm3m_thread_RU.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4495,7 +4495,7 @@ zsymm3m_thread_LU.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 zsymm3m_thread_LL.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zsymm3m_thread_RU.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4507,7 +4507,7 @@ xsymm3m_thread_LU.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 xsymm3m_thread_LL.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xsymm3m_thread_RU.$(PSUFFIX) : symm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4519,7 +4519,7 @@ chemm3m_LU.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 
 chemm3m_LL.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm3m_RU.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4531,7 +4531,7 @@ zhemm3m_LU.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 
 zhemm3m_LL.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm3m_RU.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4543,7 +4543,7 @@ xhemm3m_LU.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 
 xhemm3m_LL.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm3m_RU.$(PSUFFIX) : hemm3m_k.c gemm3m_level3.c ../../param.h
 	$(CC) -c $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4555,7 +4555,7 @@ chemm3m_thread_LU.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 chemm3m_thread_LL.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 chemm3m_thread_RU.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -UDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4567,7 +4567,7 @@ zhemm3m_thread_LU.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 zhemm3m_thread_LL.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 zhemm3m_thread_RU.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 
@@ -4579,7 +4579,7 @@ xhemm3m_thread_LU.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 
 xhemm3m_thread_LL.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -DLOWER -URSIDE -DNN $< -o $(@F)
-				   
+
 xhemm3m_thread_RU.$(PSUFFIX) : hemm3m_k.c level3_gemm3m_thread.c ../../param.h
 	$(CC) -c -DTHREADED_LEVEL3 $(PFLAGS) -DXDOUBLE -DCOMPLEX -ULOWER -DRSIDE -DNN $< -o $(@F)
 

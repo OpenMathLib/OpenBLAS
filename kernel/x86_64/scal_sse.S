@@ -61,11 +61,11 @@
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
 
-	movaps	%xmm3, %xmm0	
+	movaps	%xmm3, %xmm0
 #endif
 
 	SAVEREGISTERS
-	
+
 	testq	M, M
 	jle	.L999
 
@@ -285,7 +285,7 @@
 	movaps	%xmm0, %xmm8
 	mulps	 -4 * SIZE(X), %xmm8
 
-	decq	I 
+	decq	I
 	jle	.L112
 	ALIGN_4
 
@@ -341,9 +341,9 @@
 	movaps	%xmm6, -12 * SIZE(X)
 	movaps	%xmm7,  -8 * SIZE(X)
 	movaps	%xmm8,  -4 * SIZE(X)
-	
+
 #else
-	
+
 	movaps	-32 * SIZE(X), %xmm1
 	movaps	-28 * SIZE(X), %xmm2
 	movaps	-24 * SIZE(X), %xmm3
@@ -352,7 +352,7 @@
 	movaps	-12 * SIZE(X), %xmm6
 	movaps	 -8 * SIZE(X), %xmm7
 	movaps	 -4 * SIZE(X), %xmm8
-	decq	I 
+	decq	I
 	jle	.L112
 	ALIGN_4
 

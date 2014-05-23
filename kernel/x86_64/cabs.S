@@ -46,7 +46,7 @@
 	movsd	0 * SIZE(ARG1), %xmm0
 	movsd	1 * SIZE(ARG1), %xmm1
 	pcmpeqb	%xmm4, %xmm4
-		
+
 	psrlq	$1, %xmm4
 	andpd	%xmm4, %xmm0
 	andpd	%xmm4, %xmm1
@@ -55,13 +55,13 @@
 	movss	0 * SIZE(ARG1), %xmm0
 	movss	1 * SIZE(ARG1), %xmm1
 	pcmpeqb	%xmm4, %xmm4
-		
+
 	psrld	$1, %xmm4
 	andps	%xmm4, %xmm0
 	andps	%xmm4, %xmm1
 	addps	%xmm1, %xmm0
 #endif
-	
+
 #if !defined(DOUBLE) && defined(NEED_F2CCONV)
 	cvtss2sd	%xmm0, %xmm0
 #endif

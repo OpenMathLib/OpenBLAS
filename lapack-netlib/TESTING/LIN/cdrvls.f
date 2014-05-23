@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          NBVAL, NXVAL, THRESH, TSTERR, A, COPYA, B,
 *                          COPYB, C, S, COPYS, WORK, RWORK, IWORK,
 *                          NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NNB, NNS, NOUT
@@ -26,7 +26,7 @@
 *       COMPLEX            A( * ), B( * ), C( * ), COPYA( * ), COPYB( * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -196,10 +196,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -263,7 +263,7 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASVM, CERRLS, CGELS, CGELSD,
      $                   CGELSS, CGELSX, CGELSY, CGEMM, CLACPY, CLARNV,
-     $                   CQRT13, CQRT15, CQRT16, CSSCAL, SAXPY, 
+     $                   CQRT13, CQRT15, CQRT16, CSSCAL, SAXPY,
      $                   XLAENV
 *     ..
 *     .. Intrinsic Functions ..

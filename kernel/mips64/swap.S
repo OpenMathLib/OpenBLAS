@@ -70,7 +70,7 @@
 #define b8	$f15
 
 	PROLOGUE
-	
+
 	li	TEMP, SIZE
 	NOP
 

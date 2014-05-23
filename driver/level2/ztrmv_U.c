@@ -43,7 +43,7 @@
 static FLOAT dp1 = 1.;
 
 int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *buffer){
-  
+
   BLASLONG i, is, min_i;
 #if (TRANSA == 2) || (TRANSA == 4)
   FLOAT _Complex temp;
@@ -61,7 +61,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
   }
 
   for (is =0; is < m; is += DTB_ENTRIES){
-    
+
     min_i = MIN(m - is, DTB_ENTRIES);
 
 #if (TRANSA) == 1 || (TRANSA == 3)
@@ -128,7 +128,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
 #endif
 
     }
-    
+
 #if (TRANSA) == 2 || (TRANSA == 4)
     if (m - is > min_i){
 #if TRANSA == 2

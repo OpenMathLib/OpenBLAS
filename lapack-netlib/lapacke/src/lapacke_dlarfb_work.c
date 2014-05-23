@@ -43,7 +43,7 @@ lapack_int LAPACKE_dlarfb_work( int matrix_order, char side, char trans,
     lapack_int info = 0;
     lapack_int nrows_v, ncols_v;
     lapack_int ldc_t, ldt_t, ldv_t;
-    double *v_t = NULL, *t_t = NULL, *c_t = NULL; 
+    double *v_t = NULL, *t_t = NULL, *c_t = NULL;
     if( matrix_order == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_dlarfb( &side, &trans, &direct, &storev, &m, &n, &k, v, &ldv, t,

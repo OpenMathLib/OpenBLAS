@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define OLD_M	 4 + STACK + ARGS(%esi)
 #define OLD_N	 8 + STACK + ARGS(%esi)
 #define OLD_K	12 + STACK + ARGS(%esi)
@@ -237,7 +237,7 @@
 	movss	%xmm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	sall	$ZBASE_SHIFT, LDC
@@ -251,7 +251,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 /* Copying to Sub Buffer */
 	movl	K, %eax
@@ -259,7 +259,7 @@
 	sarl	$1, %eax
 	jle	.L05
 	ALIGN_4
-	
+
 .L02:
 #define COPYPREFETCH 40
 
@@ -320,7 +320,7 @@
 
 	addl	$4 * SIZE, %edi
 	ALIGN_4
-	
+
 .L10:
 	movl	%edi, BX
 
@@ -343,7 +343,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 8), BB
-#endif	
+#endif
 
 	movl	BX, %eax
 
@@ -374,7 +374,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -389,7 +389,7 @@
 	andl	$-8, %eax
 	sall	$4, %eax
 	je	.L15
-.L1X:	
+.L1X:
 	KERNEL1(16  *  0)
 	KERNEL2(16  *  0)
 	KERNEL3(16  *  0)
@@ -630,7 +630,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(BB, %eax, 8), BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -648,7 +648,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -862,7 +862,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 /* Copying to Sub Buffer */
 	movl	K, %eax
@@ -870,7 +870,7 @@
 	sarl	$2, %eax
 	jle	.L35
 	ALIGN_4
-	
+
 .L32:
 #ifdef PENTIUM4
 #ifdef HAVE_SSE3
@@ -1002,7 +1002,7 @@
 	decl	%eax
 	jne	.L36
 	ALIGN_4
-	
+
 .L40:
 	movl	C, %esi		# coffset = c
 	movl	A, AA		# aoffset = a
@@ -1023,7 +1023,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -1050,7 +1050,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1220,7 +1220,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -1239,7 +1239,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1384,14 +1384,14 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	leal	BUFFER, %ecx
 	sarl	$3, %eax
 	jle	.L65
 	ALIGN_4
-	
+
 .L62:
 #ifdef PENTIUM4
 #ifdef HAVE_SSE3
@@ -1512,7 +1512,7 @@
 	decl	%eax
 	jne	.L66
 	ALIGN_4
-	
+
 .L70:
 	movl	C, %esi		# coffset = c
 	movl	A, AA		# aoffset = a
@@ -1533,7 +1533,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -1558,7 +1558,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1679,7 +1679,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -1698,7 +1698,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1793,7 +1793,7 @@
 .L999:
 	movl	OLD_STACK, %esp
 	EMMS
-	
+
 	popl	%ebx
 	popl	%esi
 	popl	%edi

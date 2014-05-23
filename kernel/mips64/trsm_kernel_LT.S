@@ -104,7 +104,7 @@
 #define ALPHA	$f15
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -144
 
 	SDARG	$16,   0($sp)
@@ -1686,7 +1686,7 @@
 	bgtz	J, .L10
 	NOP
 	.align 3
-	
+
 .L30:
 	andi	J,  N, 4
 	blez	J, .L50

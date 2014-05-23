@@ -59,7 +59,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   n      = args -> n;
   a      = (FLOAT *)args -> a;
   lda    = args -> lda;
-  
+
   if (range_n) {
     n      = range_n[1] - range_n[0];
     a     += range_n[0] * (lda + 1) * COMPSIZE;
@@ -92,9 +92,9 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   ZTRMV (n - j - 1,
 	 a + ((j + 1) + (j + 1) * lda) * COMPSIZE, lda,
-	 a + ((j + 1) + j * lda) * COMPSIZE, 1, 
+	 a + ((j + 1) + j * lda) * COMPSIZE, 1,
 	 sb);
-  
+
   SCAL_K(n - j - 1, 0, 0,
 	  -ajj_r, -ajj_i,
 	  a + ((j + 1)  + j * lda) * COMPSIZE, 1,

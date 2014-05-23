@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 #define Y	r6
 #define INCY	r7
 #define PREA	r8
@@ -63,7 +63,7 @@
 #ifdef L1_DUALFETCH
 	li	PREA, (L1_PREFETCHSIZE) / 2
 #else
-	li	PREA, (L1_PREFETCHSIZE) 
+	li	PREA, (L1_PREFETCHSIZE)
 #endif
 
 	cmpwi	cr0, N, 0

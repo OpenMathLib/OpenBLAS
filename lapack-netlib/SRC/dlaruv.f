@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLARUV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaruv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaruv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaruv.f"> 
+*> Download DLARUV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaruv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaruv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaruv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLARUV( ISEED, N, X )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            N
 *       ..
@@ -27,7 +27,7 @@
 *       INTEGER            ISEED( 4 )
 *       DOUBLE PRECISION   X( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -67,10 +67,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -392,7 +392,7 @@
       I4 = ISEED( 4 )
 *
       DO 10 I = 1, MIN( N, LV )
-*	  
+*
   20     CONTINUE
 *
 *        Multiply the seed by i-th power of the multiplier modulo 2**48
@@ -419,11 +419,11 @@
 *           If a real number has n bits of precision, and the first
 *           n bits of the 48-bit integer above happen to be all 1 (which
 *           will occur about once every 2**n calls), then X( I ) will
-*           be rounded to exactly 1.0. 
+*           be rounded to exactly 1.0.
 *           Since X( I ) is not supposed to return exactly 0.0 or 1.0,
 *           the statistically correct thing to do in this situation is
 *           simply to iterate again.
-*           N.B. the case X( I ) = 0.0 should not be possible.	
+*           N.B. the case X( I ) = 0.0 should not be possible.
             I1 = I1 + 2
             I2 = I2 + 2
             I3 = I3 + 2

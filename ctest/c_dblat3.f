@@ -675,7 +675,7 @@
 *
   120 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
-      CALL DPRCN1(NOUT, NC, SNAME, IORDER, TRANSA, TRANSB, 
+      CALL DPRCN1(NOUT, NC, SNAME, IORDER, TRANSA, TRANSB,
      $           M, N, K, ALPHA, LDA, LDB, BETA, LDC)
 *
   130 CONTINUE
@@ -710,24 +710,24 @@
       CHARACTER*1      TRANSA, TRANSB
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CTA,CTB
-      
+
       IF (TRANSA.EQ.'N')THEN
          CTA = '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CTA = '    CblasTrans'
-      ELSE 
+      ELSE
          CTA = 'CblasConjTrans'
       END IF
       IF (TRANSB.EQ.'N')THEN
          CTB = '  CblasNoTrans'
       ELSE IF (TRANSB.EQ.'T')THEN
          CTB = '    CblasTrans'
-      ELSE 
+      ELSE
          CTB = 'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CTA,CTB
@@ -891,9 +891,9 @@
 *                       Call the subroutine.
 *
                         IF( TRACE )
-     $                      CALL DPRCN2(NTRA, NC, SNAME, IORDER, 
-     $                      SIDE, UPLO, M, N, ALPHA, LDA, LDB, 
-     $                      BETA, LDC) 
+     $                      CALL DPRCN2(NTRA, NC, SNAME, IORDER,
+     $                      SIDE, UPLO, M, N, ALPHA, LDA, LDB,
+     $                      BETA, LDC)
                         IF( REWI )
      $                     REWIND NTRA
                         CALL CDSYMM( IORDER, SIDE, UPLO, M, N, ALPHA,
@@ -989,7 +989,7 @@
   110 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
       CALL DPRCN2(NOUT, NC, SNAME, IORDER, SIDE, UPLO, M, N, ALPHA, LDA,
-     $           LDB, BETA, LDC) 
+     $           LDB, BETA, LDC)
 *
   120 CONTINUE
       RETURN
@@ -1024,20 +1024,20 @@
       CHARACTER*1      SIDE, UPLO
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CS,CU
-      
+
       IF (SIDE.EQ.'L')THEN
          CS = '     CblasLeft'
-      ELSE 
+      ELSE
          CS = '    CblasRight'
       END IF
       IF (UPLO.EQ.'U')THEN
          CU = '    CblasUpper'
-      ELSE 
+      ELSE
          CU = '    CblasLower'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CS,CU
@@ -1210,7 +1210,7 @@
                               IF( REWI )
      $                           REWIND NTRA
                               CALL CDTRSM( IORDER, SIDE, UPLO, TRANSA,
-     $                                    DIAG, M, N, ALPHA, AA, LDA, 
+     $                                    DIAG, M, N, ALPHA, AA, LDA,
      $					  BB, LDB )
                            END IF
 *
@@ -1370,22 +1370,22 @@
       CHARACTER*1      SIDE, UPLO, TRANSA, DIAG
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CS, CU, CA, CD
-      
+
       IF (SIDE.EQ.'L')THEN
          CS = '     CblasLeft'
-      ELSE 
+      ELSE
          CS = '    CblasRight'
       END IF
       IF (UPLO.EQ.'U')THEN
          CU = '    CblasUpper'
-      ELSE 
+      ELSE
          CU = '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA = '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA = '    CblasTrans'
-      ELSE 
+      ELSE
          CA = 'CblasConjTrans'
       END IF
       IF (DIAG.EQ.'N')THEN
@@ -1395,14 +1395,14 @@
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CS,CU
       WRITE(NOUT, FMT = 9994)CA, CD, M, N, ALPHA, LDA, LDB
 
  9995 FORMAT( 1X, I6, ': ', A12,'(', A14, ',', A14, ',', A14, ',')
- 9994 FORMAT( 22X, 2( A14, ',') , 2( I3, ',' ), 
+ 9994 FORMAT( 22X, 2( A14, ',') , 2( I3, ',' ),
      $      F4.1, ', A,', I3, ', B,', I3, ').' )
       END
 *
@@ -1696,36 +1696,36 @@
       CHARACTER*1      UPLO, TRANSA
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CU, CA
-      
+
       IF (UPLO.EQ.'U')THEN
          CU = '    CblasUpper'
-      ELSE 
+      ELSE
          CU = '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA = '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA = '    CblasTrans'
-      ELSE 
+      ELSE
          CA = 'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
       WRITE(NOUT, FMT = 9994)N, K, ALPHA, LDA, BETA, LDC
 
  9995 FORMAT( 1X, I6, ': ', A12,'(', 3( A14, ',') )
- 9994 FORMAT( 20X, 2( I3, ',' ), 
+ 9994 FORMAT( 20X, 2( I3, ',' ),
      $      F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ').' )
       END
 *
       SUBROUTINE DCHK5( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
-     $                  AB, AA, AS, BB, BS, C, CC, CS, CT, G, W, 
-     $			IORDER )     
+     $                  AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
+     $			IORDER )
 *
 *  Tests DSYR2K.
 *
@@ -2053,29 +2053,29 @@
       CHARACTER*1      UPLO, TRANSA
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CU, CA
-      
+
       IF (UPLO.EQ.'U')THEN
          CU = '    CblasUpper'
-      ELSE 
+      ELSE
          CU = '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA = '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA = '    CblasTrans'
-      ELSE 
+      ELSE
          CA = 'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
       WRITE(NOUT, FMT = 9994)N, K, ALPHA, LDA, LDB, BETA, LDC
 
  9995 FORMAT( 1X, I6, ': ', A12,'(', 3( A14, ',') )
- 9994 FORMAT( 20X, 2( I3, ',' ), 
+ 9994 FORMAT( 20X, 2( I3, ',' ),
      $      F4.1, ', A,', I3, ', B', I3, ',', F4.1, ', C,', I3, ').' )
       END
 *

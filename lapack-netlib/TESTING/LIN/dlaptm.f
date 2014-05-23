@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAPTM( N, NRHS, ALPHA, D, E, X, LDX, BETA, B, LDB )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDB, LDX, N, NRHS
 *       DOUBLE PRECISION   ALPHA, BETA
@@ -17,7 +17,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   B( LDB, * ), D( * ), E( * ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -104,10 +104,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

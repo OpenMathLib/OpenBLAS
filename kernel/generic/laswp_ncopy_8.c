@@ -77,7 +77,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
     do {
       ip = *piv;
       piv ++;
-      
+
       dx1 = a + i;
       dy1 = a + ip;
       dx2 = a + i  + lda * 1;
@@ -123,7 +123,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
       btemp7 = *dy7;
       atemp8 = *dx8;
       btemp8 = *dy8;
-      
+
       if (ip != i) {
 	*dy1 = atemp1;
 	*dy2 = atemp2;
@@ -151,12 +151,12 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	*(buffer + 6) = atemp7;
 	*(buffer + 7) = atemp8;
       }
-      
+
       buffer += 8;
 
       i++;
     } while (i <= k2);
-	
+
       a += 8 * lda;
       j --;
     } while (j > 0);
@@ -164,10 +164,10 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 
   if (n & 4) {
     piv = ipiv;
-    
+
       ip = *piv;
       piv ++;
-      
+
       dx1 = a + k1;
       dy1 = a + ip;
       dx2 = a + k1 + lda * 1;
@@ -178,7 +178,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
       dy4 = a + ip + lda * 3;
 
     i = k1;
-    
+
     do {
       atemp1 = *dx1;
       atemp2 = *dx2;
@@ -189,7 +189,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
       btemp2 = *dy2;
       btemp3 = *dy3;
       btemp4 = *dy4;
-      
+
       if (ip != i) {
 	*dy1 = atemp1;
 	*dy2 = atemp2;
@@ -205,10 +205,10 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	*(buffer + 2) = atemp3;
 	*(buffer + 3) = atemp4;
       }
-      
+
       ip = *piv;
       piv ++;
-      
+
       i++;
       dx1 = a + i;
       dy1 = a + ip;
@@ -222,18 +222,18 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
       buffer += 4;
 
     } while (i <= k2);
-	
+
       a += 4 * lda;
   }
 
   if (n & 2) {
     piv = ipiv;
-    
+
     i = k1;
     do {
       ip = *piv;
       piv ++;
-      
+
       dx1 = a + i;
       dy1 = a + ip;
       dx2 = a + i  + lda;
@@ -243,7 +243,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
       btemp1 = *dy1;
       atemp2 = *dx2;
       btemp2 = *dy2;
-      
+
       if (ip != i) {
 	*dy1 = atemp1;
 	*dy2 = atemp2;
@@ -253,44 +253,44 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	*(buffer + 0) = atemp1;
 	*(buffer + 1) = atemp2;
       }
-      
+
       buffer += 2;
 
       i++;
     } while (i <= k2);
-    
+
     a += 2 * lda;
   }
 
 
   if (n & 1) {
     piv = ipiv;
-    
+
     i = k1;
     do {
       ip = *piv;
       piv ++;
-      
+
       dx1 = a + i;
       dy1 = a + ip;
       atemp1 = *dx1;
       btemp1 = *dy1;
-      
+
       if (ip != i) {
 	*dy1 = atemp1;
 	*buffer = btemp1;
       } else {
 	*buffer = atemp1;
       }
-      
+
       buffer ++;
 
       i++;
     } while (i <= k2);
-    
+
     a += lda;
   }
 
   return 0;
-} 
+}
 

@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM ZCHKRFP
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -47,10 +47,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -264,7 +264,7 @@
       CALL ZDRVRF3( NOUT, NN, NVAL, THRESH, WORKA, NMAX, WORKARF,
      +              WORKAINV, WORKAFAC, D_WORK_ZLANHE,
      +              Z_WORK_ZPOT03, Z_WORK_ZPOT02 )
- 
+
 *
 *    Test the routine: zhfrk
 *

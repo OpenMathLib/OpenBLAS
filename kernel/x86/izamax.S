@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X	 	 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -99,9 +99,9 @@
 	movl	$1, RET
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	addl	INCX, X
 	decl	M
@@ -114,16 +114,16 @@
 	sarl	$2, I
 	jle	.L20
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
 	FMOV	%st(1), %st(0)
@@ -132,9 +132,9 @@
 	incl	NUM
 
 	FLD	2 * SIZE(X)
-	fabs	
+	fabs
 	FLD	3 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
 	FMOV	%st(1), %st(0)
@@ -143,9 +143,9 @@
 	incl	NUM
 
 	FLD	4 * SIZE(X)
-	fabs	
+	fabs
 	FLD	5 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
 	FMOV	%st(1), %st(0)
@@ -154,9 +154,9 @@
 	incl	NUM
 
 	FLD	6 * SIZE(X)
-	fabs	
+	fabs
 	FLD	7 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
 	FMOV	%st(1), %st(0)
@@ -178,9 +178,9 @@
 
 .L21:
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
 	FMOV	%st(1), %st(0)
@@ -199,12 +199,12 @@
 	sarl	$2, I
 	jle	.L60
 	ALIGN_4
-	
+
 .L50:
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addl	INCX, X
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
@@ -214,9 +214,9 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addl	INCX, X
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
@@ -226,9 +226,9 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addl	INCX, X
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
@@ -238,9 +238,9 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addl	INCX, X
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
@@ -262,9 +262,9 @@
 
 .L61:
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi	%st(1), %st
 	FMOV	%st(1), %st(0)

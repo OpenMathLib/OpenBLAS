@@ -80,7 +80,7 @@
 #define AO41	loc9
 #define AO61	loc10
 #define AO81	loc11
-	
+
 #define PREB	r8
 #define WPRE	r9
 #define OFFSET	PREB
@@ -89,7 +89,7 @@
 #define ARLC	r29
 #define PR	r30
 #define ARPFS	r31
-	
+
 #ifdef DOUBLE
 #define RPREFETCH	(16 * 3 +  8)
 #else
@@ -149,7 +149,7 @@
 	xmpy.l f10 = f10, f11
 	}
 	.body
-	;;	
+	;;
 	;;
 	{ .mmi
 	ld8	BUFFER = [r16]
@@ -3541,15 +3541,15 @@
 	ldf.fill  f16 = [SP], 32
 	ldf.fill  f17 = [r9], 32
 	mov	 ar.lc = ARLC
-	;;	
+	;;
 	ldf.fill  f18 = [SP], 32
 	ldf.fill  f19 = [r9], 32
 	mov pr    = PR, -1
-	;;	
+	;;
 	ldf.fill  f20 = [SP], 32
 	ldf.fill  f21 = [r9], 32
 	mov	ar.pfs = ARPFS
-	;;	
+	;;
 	ldf.fill  f22 = [SP], 32
 	ldf.fill  f23 = [r9]
 	br.ret.sptk.many b0

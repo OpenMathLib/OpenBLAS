@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define M	%rdi
 #define N	%rsi
 #define K	%rdx
@@ -55,7 +55,7 @@
 #define	CO1	%r15
 #define BB	%rbx
 #define KK	%rbp
-	
+
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE 128
@@ -107,9 +107,9 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
-	
+
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
 	movq	%r12, 16(%rsp)
@@ -144,7 +144,7 @@
 	movq	OLD_OFFSET, KK
 
 	movq	KK, OFFSET
-	
+
 	salq	$ZBASE_SHIFT, LDC
 
 #ifdef LN
@@ -168,7 +168,7 @@
 
 #ifdef RN
 	negq	KK
-#endif	
+#endif
 
 #ifdef RT
        movq	N, KK
@@ -203,7 +203,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 #ifdef LT
 	movq	OFFSET, KK
 #endif
@@ -229,7 +229,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	movsd	 0 * SIZE(AO), %xmm0
 	xorps	%xmm2,  %xmm2
@@ -502,7 +502,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	prefetcht0	 0 * SIZE(BB)
 	subq	   $-8 * SIZE, BB
@@ -547,7 +547,7 @@
 	ADDSD3	 %xmm7, %xmm14
 	movsd	 3 * SIZE(AO), %xmm7
 	mulsd	 %xmm3, %xmm2
- 
+
 	ADDSD4	 %xmm6, %xmm15
 	PREFETCH ((PREFETCHSIZE) >> 1 + 0) * SIZE(BO)
 	movaps	 %xmm4, %xmm6
@@ -943,7 +943,7 @@
 #endif
 	decq	I			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L99:
 #ifdef LN
@@ -965,7 +965,7 @@
 	decq	J			# j --
 	jg	.L01
 	ALIGN_4
-	
+
 .L999:
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp

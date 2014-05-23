@@ -66,7 +66,7 @@
 #define TEMP1	%l6
 #define TEMP2	%l7
 #define AORIG	%o7
-	
+
 #ifdef DOUBLE
 #define c01	%f0
 #define c02	%f2
@@ -223,10 +223,10 @@
 
         .register %g2, #scratch
         .register %g3, #scratch
-	
+
 	PROLOGUE
 	SAVESP
-	
+
 #ifndef __64BIT__
 #ifdef DOUBLE
 	ld	[%sp + STACK_START + 32], A
@@ -1429,7 +1429,7 @@
 	nop
 	.align 4
 
-.LL20: 
+.LL20:
 	and	N, 2, J
 	cmp	J, 0
 	ble,pn	%icc, .LL30

@@ -44,7 +44,7 @@
 #define INCX	$6
 #define Y	$7
 #define INCY	$8
-	
+
 #define XX	$9
 #define YY	$10
 
@@ -70,7 +70,7 @@
 #define t4	$f3
 
 	PROLOGUE
-	
+
 	dsll	INCX, INCX, BASE_SHIFT
 	li	TEMP, SIZE
 

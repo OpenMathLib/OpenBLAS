@@ -105,7 +105,7 @@
 #define MMM	0+ARGS(%esp)
 #define YY	4+ARGS(%esp)
 #define AA	8+ARGS(%esp)
-	
+
 #define I	%eax
 #define J	%ebx
 
@@ -169,7 +169,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	xorps	%xmm7, %xmm7
 
 	movl	M,   %eax
@@ -697,7 +697,7 @@
 .L999x:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 	addl	$ARGS,%esp
 	ret

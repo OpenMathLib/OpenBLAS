@@ -103,9 +103,9 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   for (i = start_i; i >= 0; i -= blocking) {
     bk = MIN(blocking, n - i);
-    
+
     if (n - bk - i > 0) TRSM_OLNCOPY(bk, bk, a + (i + i * lda) * COMPSIZE, lda, 0, sa_trsm);
-	
+
     if (!range_n) {
       range_N[0] = i;
       range_N[1] = i + bk;
@@ -122,18 +122,18 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       for (ls = 0; ls < i; ls += REAL_GEMM_R) {
 	min_l = i - ls;
 	if (min_l > REAL_GEMM_R) min_l = REAL_GEMM_R;
-	
+
 	GEMM_ONCOPY (bk, min_l, a + (i + ls * lda) * COMPSIZE, lda, sb_gemm);
-	
+
 	if (n - bk - i > 0) {
 	  for (is = i + bk; is < n; is += GEMM_P) {
 	    min_i = n - is;
 	    if (min_i > GEMM_P) min_i = GEMM_P;
-	    
+
 	    if (ls == 0) {
 	      NEG_TCOPY (bk, min_i, a + (is + i * lda) * COMPSIZE, lda, sa);
 
-	      TRSM_KERNEL_RT(min_i, bk, bk, dm1, 
+	      TRSM_KERNEL_RT(min_i, bk, bk, dm1,
 #ifdef COMPLEX
 			     ZERO,
 #endif
@@ -143,7 +143,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	      GEMM_ITCOPY (bk, min_i, a + (is + i * lda) * COMPSIZE, lda, sa);
 	    }
 
-	    GEMM_KERNEL_N(min_i, min_l, bk, dp1, 
+	    GEMM_KERNEL_N(min_i, min_l, bk, dp1,
 #ifdef COMPLEX
 			  ZERO,
 #endif
@@ -151,12 +151,12 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 			  a + (is + ls * lda) * COMPSIZE, lda);
 	  }
 	}
-	
+
 	for (is = 0; is < bk; is += GEMM_P) {
 	  min_i = bk - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
-	  TRMM_KERNEL_LT(min_i, min_l, bk, dp1, 
+
+	  TRMM_KERNEL_LT(min_i, min_l, bk, dp1,
 #ifdef COMPLEX
 			 ZERO,
 #endif
@@ -171,10 +171,10 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	for (is = 0; is < n - bk - i; is += GEMM_P) {
 	  min_i = n - bk - i - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
+
 	  NEG_TCOPY (bk, min_i, a + (i + bk + is + i * lda) * COMPSIZE, lda, sa);
-	  
-	  TRSM_KERNEL_RT(min_i, bk, bk, dm1, 
+
+	  TRSM_KERNEL_RT(min_i, bk, bk, dm1,
 #ifdef COMPLEX
 			 ZERO,
 #endif
@@ -182,7 +182,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 			 a + (i + bk + is + i * lda) * COMPSIZE, lda, 0);
 	}
       }
-      
+
     }
   }
 

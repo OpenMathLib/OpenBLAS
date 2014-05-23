@@ -35,7 +35,7 @@ include $(TOPDIR)/$(MAKEFILE_RULE)
 endif
 
 #
-#  Beginning of system configuration 
+#  Beginning of system configuration
 #
 
 ifndef HOSTCC
@@ -59,7 +59,7 @@ endif
 ifndef GEMM_MULTITHREAD_THRESHOLD
 GEMM_MULTITHREAD_THRESHOLD=4
 endif
-GETARCH_FLAGS	+= -DGEMM_MULTITHREAD_THRESHOLD=$(GEMM_MULTITHREAD_THRESHOLD) 
+GETARCH_FLAGS	+= -DGEMM_MULTITHREAD_THRESHOLD=$(GEMM_MULTITHREAD_THRESHOLD)
 
 ifeq ($(NO_AVX), 1)
 GETARCH_FLAGS	+= -DNO_AVX
@@ -186,14 +186,14 @@ GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 ifeq ($(GCCVERSIONGT4), 1)
 # GCC Majar version > 4
-# It is compatible with MSVC ABI. 
+# It is compatible with MSVC ABI.
 CCOMMON_OPT	+= -DMS_ABI
 endif
 
 ifeq ($(GCCVERSIONGTEQ4), 1)
 ifeq ($(GCCMINORVERSIONGTEQ7), 1)
 # GCC Version >=4.7
-# It is compatible with MSVC ABI. 
+# It is compatible with MSVC ABI.
 CCOMMON_OPT	+= -DMS_ABI
 endif
 endif
@@ -273,7 +273,7 @@ FCOMMON_OPT	+= -m128bit-long-double
 endif
 ifeq ($(C_COMPILER), CLANG)
 EXPRECISION	= 1
-CCOMMON_OPT	+= -DEXPRECISION 
+CCOMMON_OPT	+= -DEXPRECISION
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -291,7 +291,7 @@ FCOMMON_OPT	+= -m128bit-long-double
 endif
 ifeq ($(C_COMPILER), CLANG)
 EXPRECISION	= 1
-CCOMMON_OPT	+= -DEXPRECISION 
+CCOMMON_OPT	+= -DEXPRECISION
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -414,12 +414,12 @@ endif
 BINARY_DEFINED = 1
 endif
 
-ifeq ($(CORE), LOONGSON3A) 
+ifeq ($(CORE), LOONGSON3A)
 CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
 endif
 
-ifeq ($(CORE), LOONGSON3B) 
+ifeq ($(CORE), LOONGSON3B)
 CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
 endif
@@ -489,7 +489,7 @@ CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
-EXTRALIB += -lgfortran 
+EXTRALIB += -lgfortran
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
@@ -604,11 +604,11 @@ FCOMMON_OPT += -n32
 else
 FCOMMON_OPT += -n64
 endif
-ifeq ($(CORE), LOONGSON3A) 
+ifeq ($(CORE), LOONGSON3A)
 FCOMMON_OPT += -loongson3 -static
 endif
 
-ifeq ($(CORE), LOONGSON3B) 
+ifeq ($(CORE), LOONGSON3B)
 FCOMMON_OPT += -loongson3 -static
 endif
 
@@ -634,11 +634,11 @@ CCOMMON_OPT += -n32
 else
 CCOMMON_OPT += -n64
 endif
-ifeq ($(CORE), LOONGSON3A) 
+ifeq ($(CORE), LOONGSON3A)
 CCOMMON_OPT += -loongson3 -static
 endif
 
-ifeq ($(CORE), LOONGSON3B) 
+ifeq ($(CORE), LOONGSON3B)
 CCOMMON_OPT += -loongson3 -static
 endif
 
@@ -682,21 +682,21 @@ endif
 
 ifdef BINARY64
 ifdef INTERFACE64
-CCOMMON_OPT	+= 
+CCOMMON_OPT	+=
 #-DUSE64BITINT
 endif
 endif
 
 ifeq ($(NEED_PIC), 1)
 ifeq ($(C_COMPILER), IBM)
-CCOMMON_OPT += -qpic=large 
+CCOMMON_OPT += -qpic=large
 else
-CCOMMON_OPT += -fPIC 
+CCOMMON_OPT += -fPIC
 endif
 ifeq ($(F_COMPILER), SUN)
 FCOMMON_OPT  += -pic
 else
-FCOMMON_OPT += -fPIC 
+FCOMMON_OPT += -fPIC
 endif
 endif
 
@@ -870,7 +870,7 @@ LAPACK_FPFLAGS := $(FPFLAGS)
 endif
 
 LAPACK_CFLAGS = $(CFLAGS)
-LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H 
+LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H
 ifdef INTERFACE64
 LAPACK_CFLAGS +=  -DLAPACK_ILP64
 endif

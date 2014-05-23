@@ -21,7 +21,7 @@ if(DEFINED INPUT)
 endif()
 message("Running: ${TEST}")
 message("ARGS= ${ARGS}")
-execute_process(COMMAND "${TEST}" 
+execute_process(COMMAND "${TEST}"
   ${ARGS}
   RESULT_VARIABLE RET)
 if(DEFINED OUTPUT)

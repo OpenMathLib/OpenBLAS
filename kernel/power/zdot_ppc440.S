@@ -38,19 +38,19 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #if defined(F_INTERFACE) && defined(F_INTERFACE_F2C)
 #define RESULT	r3
 #define N	r4
 #define X	r5
-#define INCX	r6	
+#define INCX	r6
 #define Y	r7
 #define INCY	r8
 #define PRE	r9
 #else
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 #define Y	r6
 #define INCY	r7
 #define PRE	r8

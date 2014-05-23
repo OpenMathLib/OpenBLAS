@@ -348,13 +348,13 @@
   160      IF (CORDER) THEN
            CALL CCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
-     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z, 
+     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
      $			0 )
            END IF
            IF (RORDER) THEN
            CALL CCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
-     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z, 
+     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
      $			1 )
            END IF
             GO TO 200
@@ -581,7 +581,7 @@
                      CTRANS = '  CblasNoTrans'
                   ELSE IF (TRANS.EQ.'T')THEN
                      CTRANS = '    CblasTrans'
-                  ELSE 
+                  ELSE
                      CTRANS = 'CblasConjTrans'
                   END IF
                   TRAN = TRANS.EQ.'T'.OR.TRANS.EQ.'C'
@@ -684,7 +684,7 @@
 *
 *                             See what data changed inside subroutines.
 *
-*        IF(TRANS .NE. 'C' .OR. (INCX .GT. 0 .AND. INCY .GT. 0)) THEN 
+*        IF(TRANS .NE. 'C' .OR. (INCX .GT. 0 .AND. INCY .GT. 0)) THEN
                               ISAME( 1 ) = TRANS.EQ.TRANSS
                               ISAME( 2 ) = MS.EQ.M
                               ISAME( 3 ) = NS.EQ.N
@@ -925,7 +925,7 @@
                UPLO = ICH( IC: IC )
                IF (UPLO.EQ.'U')THEN
                   CUPLO = '    CblasUpper'
-               ELSE 
+               ELSE
                   CUPLO = '    CblasLower'
                END IF
 *
@@ -1284,7 +1284,7 @@
                UPLO = ICHU( ICU: ICU )
                IF (UPLO.EQ.'U')THEN
                   CUPLO = '    CblasUpper'
-               ELSE 
+               ELSE
                   CUPLO = '    CblasLower'
                END IF
 *
@@ -1294,7 +1294,7 @@
                      CTRANS = '  CblasNoTrans'
                   ELSE IF (TRANS.EQ.'T')THEN
                      CTRANS = '    CblasTrans'
-                  ELSE 
+                  ELSE
                      CTRANS = 'CblasConjTrans'
                   END IF
 *

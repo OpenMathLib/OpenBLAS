@@ -67,5 +67,5 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	}
 	return(sumf);
 }
-	
+
 

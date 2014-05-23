@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -1678,7 +1678,7 @@ LL(98):
 	STFD	f8,  0 * SIZE(CO1)
 	STFD	f9,  1 * SIZE(CO1)
 	.align 4
-	
+
 LL(999):
 	mr	SP, STACK
 

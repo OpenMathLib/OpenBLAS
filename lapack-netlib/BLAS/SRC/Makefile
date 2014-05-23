@@ -56,7 +56,7 @@ include ../../make.inc
 #######################################################################
 
 all: $(BLASLIB)
- 
+
 #---------------------------------------------------------
 #  Comment out the next 6 definitions if you already have
 #  the Level 1 BLAS.
@@ -119,7 +119,7 @@ $(ZBLAS2): $(FRC)
 #  Comment out the next 4 definitions if you already have
 #  the Level 3 BLAS.
 #---------------------------------------------------------
-SBLAS3 = sgemm.o ssymm.o ssyrk.o ssyr2k.o strmm.o strsm.o 
+SBLAS3 = sgemm.o ssymm.o ssyrk.o ssyr2k.o strmm.o strsm.o
 $(SBLAS3): $(FRC)
 
 CBLAS3 = cgemm.o csymm.o csyrk.o csyr2k.o ctrmm.o ctrsm.o \
@@ -167,5 +167,5 @@ FRC:
 clean:
 	rm -f *.o
 
-.f.o: 
+.f.o:
 	$(FORTRAN) $(OPTS) -c $< -o $@

@@ -8,7 +8,7 @@ include ../../make.inc
 #       LUCR -- Crout Level 3 BLAS version of LU factorization
 #       LULL -- left-looking Level 3 BLAS version of LU factorization
 #       QRLL -- left-looking Level 3 BLAS version of QR factorization
-#       LUREC -- an iterative version of Sivan Toledo's recursive LU algorithm[1].  
+#       LUREC -- an iterative version of Sivan Toledo's recursive LU algorithm[1].
 #       For square matrices, this iterative versions should
 #       be within a factor of two of the optimum number of memory transfers.
 #
@@ -53,15 +53,15 @@ lull: $(LULL)
 lurec: $(LUREC)
 	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/lurec.a $(LUREC)
 	$(RANLIB) $(VARIANTSDIR)/lurec.a
-	
+
 qrll: $(QRLL)
 	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/qrll.a  $(QRLL)
 	$(RANLIB) $(VARIANTSDIR)/qrll.a
 
 
-.f.o: 
+.f.o:
 	$(FORTRAN) $(OPTS) -c $< -o $@
-	
+
 clean:
 	rm -f $(CHOLRL) $(CHOLTOP) $(LUCR) $(LULL) $(LUREC) $(QRLL) \
 	      $(VARIANTSDIR)/*.a

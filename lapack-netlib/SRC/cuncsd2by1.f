@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
 *> Download CUNCSD2BY1 + dependencies
@@ -22,7 +22,7 @@
 *                              X21, LDX21, THETA, U1, LDU1, U2, LDU2, V1T,
 *                              LDV1T, WORK, LWORK, RWORK, LRWORK, IWORK,
 *                              INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU1, JOBU2, JOBV1T
 *       INTEGER            INFO, LDU1, LDU2, LDV1T, LWORK, LDX11, LDX21,
@@ -36,8 +36,8 @@
 *      $                   X11(LDX11,*), X21(LDX21,*)
 *       INTEGER            IWORK(*)
 *       ..
-*    
-* 
+*
+*
 *> \par Purpose:
 *> =============
 *>
@@ -54,7 +54,7 @@
 *>          [ X21 ]   [    | U2 ] [  0  0  0 ]
 *>                                [  0  S  0 ]
 *>                                [  0  0  I ]
-*> 
+*>
 *> X11 is P-by-Q. The unitary matrices U1, U2, V1, and V2 are P-by-P,
 *> (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
 *> R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
@@ -217,7 +217,7 @@
 *> \verbatim
 *>          LRWORK is INTEGER
 *>           The dimension of the array RWORK.
-*> 
+*>
 *>           If LRWORK = -1, then a workspace query is assumed; the routine
 *>           only calculates the optimal size of the RWORK array, returns
 *>           this value as the first entry of the work array, and no error
@@ -247,10 +247,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date July 2012
 *
@@ -280,7 +280,7 @@
      $                   X11(LDX11,*), X21(LDX21,*)
       INTEGER            IWORK(*)
 *     ..
-*  
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -542,16 +542,16 @@
             CALL CUNGLQ( Q-1, Q-1, Q-1, V1T(2,2), LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL CBBCSD( JOBU1, JOBU2, JOBV1T, 'N', 'N', M, P, Q, THETA,
      $                RWORK(IPHI), U1, LDU1, U2, LDU2, V1T, LDV1T, 0, 1,
      $                RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
      $                RWORK(IB12E), RWORK(IB21D), RWORK(IB21E),
      $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place zero submatrices in
 *        preferred positions
 *
@@ -596,16 +596,16 @@
             CALL CUNGLQ( Q, Q, R, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL CBBCSD( JOBV1T, 'N', JOBU1, JOBU2, 'T', M, Q, P, THETA,
      $                RWORK(IPHI), V1T, LDV1T, 0, 1, U1, LDU1, U2, LDU2,
      $                RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
      $                RWORK(IB12E), RWORK(IB21D), RWORK(IB21E),
      $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *
@@ -651,16 +651,16 @@
             CALL CUNGLQ( Q, Q, R, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL CBBCSD( 'N', JOBV1T, JOBU2, JOBU1, 'T', M, M-Q, M-P,
      $                THETA, RWORK(IPHI), 0, 1, V1T, LDV1T, U2, LDU2,
      $                U1, LDU1, RWORK(IB11D), RWORK(IB11E),
      $                RWORK(IB12D), RWORK(IB12E), RWORK(IB21D),
      $                RWORK(IB21E), RWORK(IB22D), RWORK(IB22E),
      $                RWORK(IBBCSD), LBBCSD, CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *
@@ -720,16 +720,16 @@
             CALL CUNGLQ( Q, Q, Q, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL CBBCSD( JOBU2, JOBU1, 'N', JOBV1T, 'N', M, M-P, M-Q,
      $                THETA, RWORK(IPHI), U2, LDU2, U1, LDU1, 0, 1, V1T,
      $                LDV1T, RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
      $                RWORK(IB12E), RWORK(IB21D), RWORK(IB21E),
      $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *

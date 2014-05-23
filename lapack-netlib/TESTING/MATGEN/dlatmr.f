@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          RSIGN, GRADE, DL, MODEL, CONDL, DR, MODER,
 *                          CONDR, PIVTNG, IPIVOT, KL, KU, SPARSE, ANORM,
 *                          PACK, A, LDA, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIST, GRADE, PACK, PIVTNG, RSIGN, SYM
 *       INTEGER            INFO, KL, KU, LDA, M, MODE, MODEL, MODER, N
@@ -22,7 +22,7 @@
 *       INTEGER            IPIVOT( * ), ISEED( 4 ), IWORK( * )
 *       DOUBLE PRECISION   A( LDA, * ), D( * ), DL( * ), DR( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -456,10 +456,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

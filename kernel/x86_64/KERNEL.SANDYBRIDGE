@@ -31,12 +31,12 @@ CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 
 ZGEMMKERNEL    =  zgemm_kernel_4x4_sandy.S
-ZGEMMINCOPY    =  
-ZGEMMITCOPY    = 
+ZGEMMINCOPY    =
+ZGEMMITCOPY    =
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_4.c
 ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_4.c
-ZGEMMINCOPYOBJ =  
-ZGEMMITCOPYOBJ =  
+ZGEMMINCOPYOBJ =
+ZGEMMITCOPYOBJ =
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 

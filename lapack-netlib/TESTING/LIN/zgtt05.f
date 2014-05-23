@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGTT05( TRANS, N, NRHS, DL, D, DU, B, LDB, X, LDX,
 *                          XACT, LDXACT, FERR, BERR, RESLTS )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            LDB, LDX, LDXACT, N, NRHS
@@ -20,7 +20,7 @@
 *       COMPLEX*16         B( LDB, * ), D( * ), DL( * ), DU( * ),
 *      $                   X( LDX, * ), XACT( LDXACT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -152,10 +152,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

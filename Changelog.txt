@@ -44,25 +44,25 @@ Version 0.2.7
 common:
 	* Support LSB (Linux Standard Base) 4.1.
           e.g. make CC=lsbcc
-	* Include LAPACK 3.4.2 source codes to the repo. 
+	* Include LAPACK 3.4.2 source codes to the repo.
           Avoid downloading at compile time.
 	* Add NO_PARALLEL_MAKE flag to disable parallel make.
-        * Create openblas_get_parallel to retrieve information which 
+        * Create openblas_get_parallel to retrieve information which
           parallelization model is used by OpenBLAS. (Thank grisuthedragon)
 	* Detect LLVM/Clang compiler. The default compiler is Clang on Mac OS X.
         * Change LIBSUFFIX from .lib to .a on windows.
-	* A walk round for dtrti_U single thread bug. Replace it with LAPACK codes. (#191)
+	* A work-around for dtrti_U single thread bug. Replace it with LAPACK codes. (#191)
 
 x86/x86-64:
-	* Optimize c/zgemm, trsm, dgemv_n, ddot, daxpy, dcopy on 
+	* Optimize c/zgemm, trsm, dgemv_n, ddot, daxpy, dcopy on
           AMD Bulldozer. (Thank Werner Saar)
         * Add Intel Haswell support (using Sandybridge optimizations).
           (Thank Dan Luu)
 	* Add AMD Piledriver support (using Bulldozer optimizations).
-        * Fix the computational error in zgemm avx kernel on 
+        * Fix the computational error in zgemm avx kernel on
           Sandybridge. (#237)
         * Fix the overflow bug in gemv.
-	* Fix the overflow bug in multi-threaded BLAS3, getrf when NUM_THREADS 
+	* Fix the overflow bug in multi-threaded BLAS3, getrf when NUM_THREADS
           is very large.(#214, #221, #246).
 MIPS64:
         * Support loongcc (Open64 based) compiler for ICT Loongson 3A/B.
@@ -99,7 +99,7 @@ common:
 	* Fixed NetBSD build. (#155)
 	* Fixed compilation with TARGET=GENERIC. (#160)
 x86/x86-64:
-	* Restore the original CPU affinity when calling 
+	* Restore the original CPU affinity when calling
 	  openblas_set_num_threads(1) (#153)
 	* Fixed a SEGFAULT bug in dgemv_t when m is very large.(#154)
 MIPS64:
@@ -109,13 +109,13 @@ Version 0.2.4
 8-Oct-2012
 common:
 	* Upgraded LAPACK to 3.4.2 version. (#145)
-	* Provided support for passing CFLAGS, FFLAGS, PFLAGS, 
+	* Provided support for passing CFLAGS, FFLAGS, PFLAGS,
 	  FPFLAGS to make. (#137)
-	* f77blas.h:compatibility for compilers without C99 complex 
+	* f77blas.h:compatibility for compilers without C99 complex
 	  number support. (#141)
 x86/x86-64:
 	* Added NO_AVX flag. Check OS supporting AVX on runtime. (#139)
-	* Fixed zdot incompatibility ABI issue with GCC 4.7 on 
+	* Fixed zdot incompatibility ABI issue with GCC 4.7 on
 	  Windows 32-bit. (#140)
 MIPS64:
 	* Fixed the generation of shared library bug.
@@ -125,14 +125,14 @@ Version 0.2.3
 20-Aug-2012
 common:
 	* Fixed LAPACK unstable bug about ?laswp. (#130)
-	* Fixed the shared library bug about unloading the library on 
+	* Fixed the shared library bug about unloading the library on
 	  Linux (#132).
 	* Fixed the compilation failure on BlueGene/P (TARGET=PPC440FP2)
 	  Please use gcc and IBM xlf. (#134)
 x86/x86-64:
-	* Supported goto_set_num_threads and openblas_set_num_threads 
+	* Supported goto_set_num_threads and openblas_set_num_threads
 	  APIs in Windows. They can set the number of threads on runtime.
-	  
+
 ====================================================================
 Version 0.2.2
 6-July-2012
@@ -180,14 +180,14 @@ x86/x86_64:
 	* Auto-detect Intel Sandy Bridge Core i7-3xxx & Xeon E7 Westmere-EX.
 	* Test alpha=Nan in dscale.
 	* Fixed a SEGFAULT bug in samax on x86 windows.
-	
+
 ====================================================================
 Version 0.1.0
 23-Mar-2012
 common:
 	* Set soname of shared library on Linux.
-	* Added LIBNAMESUFFIX flag in Makefile.rule. The user can use 
-	  this flag to control the library name, e.g. libopenblas.a, 
+	* Added LIBNAMESUFFIX flag in Makefile.rule. The user can use
+	  this flag to control the library name, e.g. libopenblas.a,
 	  libopenblas_ifort.a or libopenblas_omp.a.
 	* Added GEMM_MULTITHREAD_THRESHOLD flag in Makefile.rule.
 	  The lib use single thread in GEMM function with small matrices.
@@ -218,7 +218,7 @@ x86/x86_64:
 Version 0.1 alpha2.4
 18-Sep-2011
 common:
-	* Fixed a bug about installation. The header file "fblas77.h" 
+	* Fixed a bug about installation. The header file "fblas77.h"
 	  works fine now.
 	* Fixed #61 a building bug about setting TARGET and DYNAMIC_ARCH.
 	* Try to handle absolute path of shared library in OSX. (#57)
@@ -227,16 +227,16 @@ common:
 	  $(PREFIX)/lib
 
 x86/x86_64:
-	* Fixed #58 zdot/xdot SEGFAULT bug with GCC-4.6 on x86. According 
-	  to i386 calling convention, The callee should remove the first 
-	  hidden parameter.Thank Mr. John for this patch. 
+	* Fixed #58 zdot/xdot SEGFAULT bug with GCC-4.6 on x86. According
+	  to i386 calling convention, The callee should remove the first
+	  hidden parameter.Thank Mr. John for this patch.
 
 ====================================================================
 Version 0.1 alpha2.3
 5-Sep-2011
 
 x86/x86_64:
-	*  Added DTB_ENTRIES into dynamic arch setting parameters. Now, 
+	*  Added DTB_ENTRIES into dynamic arch setting parameters. Now,
 	   it can read DTB_ENTRIES on runtime. (Refs issue #55 on github)
 
 ====================================================================
@@ -244,7 +244,7 @@ Version 0.1 alpha2.2
 14-Jul-2011
 
 common:
-	* Fixed a building bug when DYNAMIC_ARCH=1 & INTERFACE64=1. 
+	* Fixed a building bug when DYNAMIC_ARCH=1 & INTERFACE64=1.
 	  (Refs issue #44 on github)
 
 ====================================================================
@@ -252,7 +252,7 @@ Version 0.1 alpha2.1
 28-Jun-2011
 
 common:
-	* Stop the build and output the error message when detecting 
+	* Stop the build and output the error message when detecting
 	  fortran compiler failed. (Refs issue #42 on github)
 
 ====================================================================
@@ -260,16 +260,16 @@ Version 0.1 alpha2
 23-Jun-2011
 
 common:
-	* Fixed blasint undefined bug in <cblas.h> file. Other software 
+	* Fixed blasint undefined bug in <cblas.h> file. Other software
 	  could include this header successfully(Refs issue #13 on github)
-	* Fixed the SEGFAULT bug on 64 cores. On SMP server, the number 
-	  of CPUs or cores should be less than or equal to 64.(Refs issue #14 
+	* Fixed the SEGFAULT bug on 64 cores. On SMP server, the number
+	  of CPUs or cores should be less than or equal to 64.(Refs issue #14
 	  on github)
 	* Support "void goto_set_num_threads(int num_threads)" and "void
 	  openblas_set_num_threads(int num_threads)" when USE_OPENMP=1
-	* Added extern "C" to support C++. Thank Tasio for the patch(Refs 
+	* Added extern "C" to support C++. Thank Tasio for the patch(Refs
 	  issue #21 on github)
-	* Provided an error message when the arch is not supported.(Refs 
+	* Provided an error message when the arch is not supported.(Refs
 	  issue #19 on github)
 	* Fixed issue #23. Fixed a bug of f_check script about generating link flags.
 	* Added openblas_set_num_threads for Fortran.
@@ -284,10 +284,10 @@ x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.
 	* Fixed #32 a SEGFAULT bug of zdotc with gcc-4.6.
 	* Fixed #33 ztrmm bug on Nehalem.
-	* Walk round #27 the low performance axpy issue with small imput size & multithreads.
+	* Work-around #27 the low performance axpy issue with small imput size & multithreads.
 
 MIPS64:
-	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64. 
+	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64.
 	* Optimized single/double precision BLAS Level3 on Loongson3A/MIPS64. (Refs #2)
 	* Optimized single/double precision axpy function on Loongson3A/MIPS64. (Refs #3)
 
@@ -296,9 +296,9 @@ Version 0.1 alpha1
 20-Mar-2011
 
 common:
-	* Support "make  NO_LAPACK=1" to build the library without 
+	* Support "make  NO_LAPACK=1" to build the library without
 	  LAPACK functions.
-	* Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34. 
+	* Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34.
 	  Thank Mr.Ei-ji Nakama providing this patch. (Refs issue #12 on github)
 	* Added DEBUG=1 rule in Makefile.rule to build debug version.
 	* Disable compiling quad precision in reference BLAS library(netlib BLAS).
@@ -307,15 +307,15 @@ common:
 	* Imported GotoBLAS2 1.13 BSD version
 
 x86/x86_64:
-	* On x86 32bits, fixed a bug in zdot_sse2.S line 191. This would casue 
-	  zdotu & zdotc failures.Instead,Walk around it. (Refs issue #8 #9 on github)
-	* Modified ?axpy functions to return same netlib BLAS results 
+	* On x86 32bits, fixed a bug in zdot_sse2.S line 191. This would casue
+	  zdotu & zdotc failures. Instead, work-around it. (Refs issue #8 #9 on github)
+	* Modified ?axpy functions to return same netlib BLAS results
 	  when incx==0 or incy==0 (Refs issue #7 on github)
-	* Modified ?swap functions to return same netlib BLAS results 
+	* Modified ?swap functions to return same netlib BLAS results
 	  when incx==0 or incy==0 (Refs issue #6 on github)
-	* Modified ?rot functions to return same netlib BLAS results 
+	* Modified ?rot functions to return same netlib BLAS results
 	  when incx==0 or incy==0 (Refs issue #4 on github)
-	* Detect Intel Westmere,Intel Clarkdale and Intel Arrandale 
+	* Detect Intel Westmere,Intel Clarkdale and Intel Arrandale
 	  to use Nehalem codes.
 	* Fixed a typo bug about compiling dynamic ARCH library.
 MIPS64:

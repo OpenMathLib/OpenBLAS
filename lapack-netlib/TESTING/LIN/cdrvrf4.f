@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CDRVRF4( NOUT, NN, NVAL, THRESH, C1, C2, LDC, CRF, A,
 *      +                    LDA, S_WORK_CLANGE )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDC, NN, NOUT
 *       REAL               THRESH
@@ -21,7 +21,7 @@
 *       COMPLEX            A( LDA, * ), C1( LDC, * ), C2( LDC, *),
 *      +                   CRF( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -101,10 +101,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -244,7 +244,7 @@
 *
 *                          In this case we are TRANS, so A is K-by-N
 *
-                           DO J = 1,N 
+                           DO J = 1,N
                               DO I = 1, K
                                  A( I, J) = CLARND( 4, ISEED )
                               END DO
@@ -256,7 +256,7 @@
                         END IF
 *
 *
-*                       Generate C1 our N--by--N Hermitian matrix. 
+*                       Generate C1 our N--by--N Hermitian matrix.
 *                       Make sure C2 has the same upper/lower part,
 *                       (the one that we do not touch), so
 *                       copy the initial C1 in C2 in it.
@@ -311,7 +311,7 @@
 *
                         RESULT(1) = CLANGE( 'I', N, N, C1, LDC,
      +                                      S_WORK_CLANGE )
-                        RESULT(1) = RESULT(1) 
+                        RESULT(1) = RESULT(1)
      +                              / MAX( ABS( ALPHA ) * NORMA * NORMA
      +                                   + ABS( BETA ) * NORMC, ONE )
      +                              / MAX( N , 1 ) / EPS
@@ -321,7 +321,7 @@
                               WRITE( NOUT, * )
                               WRITE( NOUT, FMT = 9999 )
                            END IF
-                           WRITE( NOUT, FMT = 9997 ) 'CHFRK', 
+                           WRITE( NOUT, FMT = 9997 ) 'CHFRK',
      +                        CFORM, UPLO, TRANS, N, K, RESULT(1)
                            NFAIL = NFAIL + 1
                         END IF
@@ -341,7 +341,7 @@
          WRITE( NOUT, FMT = 9995 ) 'CHFRK', NFAIL, NRUN
       END IF
 *
- 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing CHFRK 
+ 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing CHFRK
      +         ***')
  9997 FORMAT( 1X, '     Failure in ',A5,', CFORM=''',A1,''',',
      + ' UPLO=''',A1,''',',' TRANS=''',A1,''',', ' N=',I3,', K =', I3,

@@ -1,14 +1,14 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
-COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) openblas_set_num_threads.$(SUFFIX) openblas_get_config.$(SUFFIX) openblas_get_parallel.$(SUFFIX) openblas_error_handle.$(SUFFIX) 
+COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) openblas_set_num_threads.$(SUFFIX) openblas_get_config.$(SUFFIX) openblas_get_parallel.$(SUFFIX) openblas_error_handle.$(SUFFIX)
 
 #COMMONOBJS	+= slamch.$(SUFFIX) slamc3.$(SUFFIX) dlamch.$(SUFFIX)  dlamc3.$(SUFFIX)
 
 ifdef SMP
-COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX) 
+COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX)
 ifndef NO_AFFINITY
-COMMONOBJS	+= init.$(SUFFIX) 
+COMMONOBJS	+= init.$(SUFFIX)
 endif
 endif
 
@@ -56,13 +56,13 @@ ifeq ($(USE_OPENMP), 1)
 BLAS_SERVER = blas_server_omp.c
 else
 ifeq ($(OSNAME), WINNT)
-BLAS_SERVER = blas_server_win32.c 
+BLAS_SERVER = blas_server_win32.c
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
-BLAS_SERVER = blas_server_win32.c 
+BLAS_SERVER = blas_server_win32.c
 endif
 ifeq ($(OSNAME), Interix)
-BLAS_SERVER = blas_server_win32.c 
+BLAS_SERVER = blas_server_win32.c
 endif
 endif
 

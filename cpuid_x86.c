@@ -91,7 +91,7 @@ void cpuid(unsigned int op, unsigned int *eax, unsigned int *ebx, unsigned int *
   if ((current < start) || (current > stop)) current = start;
 
   while ((count > 0) && (idlist[current].id != op)) {
-    
+
     current ++;
     if (current > stop) current = start;
     count --;
@@ -132,7 +132,7 @@ int support_avx(){
 #ifndef NO_AVX
   int eax, ebx, ecx, edx;
   int ret=0;
-  
+
   cpuid(1, &eax, &ebx, &ecx, &edx);
   if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0 && (ecx & (1 << 26)) != 0){
     xgetbv(0, &eax, &edx);
@@ -152,7 +152,7 @@ int get_vendor(void){
   char vendor[13];
 
   cpuid(0, &eax, &ebx, &ecx, &edx);
-  
+
   *(int *)(&vendor[0]) = ebx;
   *(int *)(&vendor[4]) = edx;
   *(int *)(&vendor[8]) = ecx;
@@ -173,7 +173,7 @@ int get_vendor(void){
 
   return VENDOR_UNKNOWN;
 }
-  
+
 int get_cputype(int gettype){
   int eax, ebx, ecx, edx;
   int extend_family, family;
@@ -182,7 +182,7 @@ int get_cputype(int gettype){
   int feature = 0;
 
   cpuid(1, &eax, &ebx, &ecx, &edx);
-  
+
   switch (gettype) {
   case GET_EXFAMILY :
     return BITMASK(eax, 20, 0xff);
@@ -252,12 +252,12 @@ int get_cputype(int gettype){
   }
   return feature;
 }
-  
+
 int get_cacheinfo(int type, cache_info_t *cacheinfo){
   int eax, ebx, ecx, edx, cpuid_level;
   int info[15];
   int i;
-  cache_info_t LC1, LD1, L2, L3, 
+  cache_info_t LC1, LD1, L2, L3,
     ITB, DTB, LITB, LDTB,
     L2ITB, L2DTB, L2LITB, L2LDTB;
 
@@ -283,22 +283,22 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
     info[ 0] = BITMASK(eax,  8, 0xff);
     info[ 1] = BITMASK(eax, 16, 0xff);
     info[ 2] = BITMASK(eax, 24, 0xff);
-    
+
     info[ 3] = BITMASK(ebx,  0, 0xff);
     info[ 4] = BITMASK(ebx,  8, 0xff);
     info[ 5] = BITMASK(ebx, 16, 0xff);
     info[ 6] = BITMASK(ebx, 24, 0xff);
-    
+
     info[ 7] = BITMASK(ecx,  0, 0xff);
     info[ 8] = BITMASK(ecx,  8, 0xff);
     info[ 9] = BITMASK(ecx, 16, 0xff);
     info[10] = BITMASK(ecx, 24, 0xff);
-    
+
     info[11] = BITMASK(edx,  0, 0xff);
     info[12] = BITMASK(edx,  8, 0xff);
     info[13] = BITMASK(edx, 16, 0xff);
     info[14] = BITMASK(edx, 24, 0xff);
-    
+
     for (i = 0; i < 15; i++){
 
       switch (info[i]){
@@ -864,7 +864,7 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
     LITB.associative = BITMASK(eax,  8, 0xff);
     if (LITB.associative == 0xff) LITB.associative = 0;
     LITB.linesize    = BITMASK(eax,  0, 0xff);
-    
+
     DTB.size        = 4;
     DTB.associative = BITMASK(ebx, 24, 0xff);
     if (DTB.associative == 0xff) DTB.associative = 0;
@@ -896,7 +896,7 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
     L2LITB.associative = BITMASK(eax,  8, 0xff);
     if (L2LITB.associative == 0xff) L2LITB.associative = 0;
     L2LITB.linesize    = BITMASK(eax,  0, 0xff);
-    
+
     L2DTB.size        = 4;
     L2DTB.associative = BITMASK(ebx, 24, 0xff);
     if (L2DTB.associative == 0xff) L2DTB.associative = 0;
@@ -920,7 +920,7 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
   }
 
     switch (type) {
-      
+
     case CACHE_INFO_L1_I :
       *cacheinfo = LC1;
       break;
@@ -982,7 +982,7 @@ int get_cpuname(void){
       return CPUTYPE_PENTIUM;
     case 0x6:
       switch (exmodel) {
-      case 0: 
+      case 0:
 	switch (model) {
 	case  1:
 	case  3:
@@ -1022,8 +1022,8 @@ int get_cpuname(void){
       case  2:
 	switch (model) {
 	case 5:
-	  //Intel Core (Clarkdale) / Core (Arrandale) 
-	  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
+	  //Intel Core (Clarkdale) / Core (Arrandale)
+	  // Pentium (Clarkdale) / Pentium Mobile (Arrandale)
 	  // Xeon (Clarkdale), 32nm
 	  return CPUTYPE_NEHALEM;
 	case 10:
@@ -1074,7 +1074,7 @@ int get_cpuname(void){
           else
 	    return CPUTYPE_NEHALEM;
         }
-        break;      
+        break;
       }
       break;
     case 0x7:
@@ -1119,7 +1119,7 @@ int get_cpuname(void){
 	  if(support_avx())
 	    return CPUTYPE_PILEDRIVER;
 	  else
-	    return CPUTYPE_BARCELONA; //OS don't support AVX.	  
+	    return CPUTYPE_BARCELONA; //OS don't support AVX.
 	}
 	break;
       case  5:
@@ -1303,7 +1303,7 @@ static char *lowercpuname[] = {
 
 static char *corename[] = {
   "UNKOWN",
-  "80486", 
+  "80486",
   "P5",
   "P6",
   "KATMAI",
@@ -1331,7 +1331,7 @@ static char *corename[] = {
 
 static char *corename_lower[] = {
   "unknown",
-  "80486", 
+  "80486",
   "p5",
   "p6",
   "katmai",
@@ -1432,8 +1432,8 @@ int get_coretype(void){
       case  2:
 	switch (model) {
 	case 5:
-	  //Intel Core (Clarkdale) / Core (Arrandale) 
-	  // Pentium (Clarkdale) / Pentium Mobile (Arrandale) 
+	  //Intel Core (Clarkdale) / Core (Arrandale)
+	  // Pentium (Clarkdale) / Pentium Mobile (Arrandale)
 	  // Xeon (Clarkdale), 32nm
 	  return CORE_NEHALEM;
 	case 10:
@@ -1483,7 +1483,7 @@ int get_coretype(void){
           else
 	    return CORE_NEHALEM;
         }
-        break;      
+        break;
       }
       break;
 
@@ -1497,8 +1497,8 @@ int get_coretype(void){
     if (family <= 0x5) return CORE_80486;
     if (family <= 0xe) return CORE_ATHLON;
     if (family == 0xf){
-      if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON; 
-      else if (exfamily == 5) return CORE_BOBCAT; 
+      if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON;
+      else if (exfamily == 5) return CORE_BOBCAT;
       else if (exfamily == 6) {
 	switch (model) {
 	case 1:
@@ -1511,7 +1511,7 @@ int get_coretype(void){
 	  if(support_avx())
 	    return CORE_PILEDRIVER;
 	  else
-	    return CORE_BARCELONA; //OS don't support AVX.	  
+	    return CORE_BARCELONA; //OS don't support AVX.
 	}
       }else return CORE_BARCELONA;
     }
@@ -1545,14 +1545,14 @@ void get_cpuconfig(void){
       printf("#define L1_CODE_ASSOCIATIVE %d\n", info.associative);
       printf("#define L1_CODE_LINESIZE %d\n", info.linesize);
     }
-    
+
     get_cacheinfo(CACHE_INFO_L1_D, &info);
     if (info.size > 0) {
       printf("#define L1_DATA_SIZE %d\n", info.size * 1024);
       printf("#define L1_DATA_ASSOCIATIVE %d\n", info.associative);
       printf("#define L1_DATA_LINESIZE %d\n", info.linesize);
     }
-    
+
     get_cacheinfo(CACHE_INFO_L2, &info);
     if (info.size > 0) {
       printf("#define L2_SIZE %d\n", info.size * 1024);
@@ -1565,21 +1565,21 @@ void get_cpuconfig(void){
       printf("#define L2_LINESIZE 64\n");
     }
 
-    
+
     get_cacheinfo(CACHE_INFO_L3, &info);
     if (info.size > 0) {
       printf("#define L3_SIZE %d\n", info.size * 1024);
       printf("#define L3_ASSOCIATIVE %d\n", info.associative);
       printf("#define L3_LINESIZE %d\n", info.linesize);
     }
-    
+
     get_cacheinfo(CACHE_INFO_L1_ITB, &info);
     if (info.size > 0) {
       printf("#define ITB_SIZE %d\n", info.size * 1024);
       printf("#define ITB_ASSOCIATIVE %d\n", info.associative);
       printf("#define ITB_ENTRIES %d\n", info.linesize);
     }
-    
+
     get_cacheinfo(CACHE_INFO_L1_DTB, &info);
     if (info.size > 0) {
       printf("#define DTB_SIZE %d\n", info.size * 1024);
@@ -1589,7 +1589,7 @@ void get_cpuconfig(void){
       //fall back for some virtual machines.
       printf("#define DTB_DEFAULT_ENTRIES 32\n");
     }
-    
+
     features = get_cputype(GET_FEATURE);
 
     if (features & HAVE_CMOV )   printf("#define HAVE_CMOV\n");
@@ -1612,7 +1612,7 @@ void get_cpuconfig(void){
     if (features & HAVE_MISALIGNSSE) printf("#define HAVE_MISALIGNSSE\n");
     if (features & HAVE_128BITFPU)   printf("#define HAVE_128BITFPU\n");
     if (features & HAVE_FASTMOVU)    printf("#define HAVE_FASTMOVU\n");
-    
+
     printf("#define NUM_SHAREDCACHE %d\n", get_cputype(GET_NUMSHARE) + 1);
     printf("#define NUM_CORES %d\n", get_cputype(GET_NUMCORES) + 1);
 

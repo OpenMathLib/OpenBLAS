@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGEMQRT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgemqrt.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgemqrt.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgemqrt.f"> 
+*> Download SGEMQRT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgemqrt.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgemqrt.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgemqrt.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE SGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT, 
+*       SUBROUTINE SGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT,
 *                          C, LDC, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER SIDE, TRANS
 *       INTEGER   INFO, K, LDV, LDC, M, N, NB, LDT
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       REAL   V( LDV, * ), C( LDC, * ), T( LDT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -46,7 +46,7 @@
 *>
 *>       Q = H(1) H(2) . . . H(K) = I - V T V**T
 *>
-*> generated using the compact WY representation as returned by SGEQRT. 
+*> generated using the compact WY representation as returned by SGEQRT.
 *>
 *> Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
 *> \endverbatim
@@ -155,17 +155,17 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
 *> \ingroup realGEcomputational
 *
 *  =====================================================================
-      SUBROUTINE SGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT, 
+      SUBROUTINE SGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT,
      $                   C, LDC, WORK, INFO )
 *
 *  -- LAPACK computational routine (version 3.5.0) --
@@ -207,7 +207,7 @@
       RIGHT  = LSAME( SIDE,  'R' )
       TRAN   = LSAME( TRANS, 'T' )
       NOTRAN = LSAME( TRANS, 'N' )
-*      
+*
       IF( LEFT ) THEN
          LDWORK = MAX( 1, N )
          Q = M
@@ -248,17 +248,17 @@
 *
          DO I = 1, K, NB
             IB = MIN( NB, K-I+1 )
-            CALL SLARFB( 'L', 'T', 'F', 'C', M-I+1, N, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            CALL SLARFB( 'L', 'T', 'F', 'C', M-I+1, N, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( I, 1 ), LDC, WORK, LDWORK )
          END DO
-*         
+*
       ELSE IF( RIGHT .AND. NOTRAN ) THEN
 *
          DO I = 1, K, NB
             IB = MIN( NB, K-I+1 )
-            CALL SLARFB( 'R', 'N', 'F', 'C', M, N-I+1, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            CALL SLARFB( 'R', 'N', 'F', 'C', M, N-I+1, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( 1, I ), LDC, WORK, LDWORK )
          END DO
 *
@@ -266,9 +266,9 @@
 *
          KF = ((K-1)/NB)*NB+1
          DO I = KF, 1, -NB
-            IB = MIN( NB, K-I+1 )         
-            CALL SLARFB( 'L', 'N', 'F', 'C', M-I+1, N, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            IB = MIN( NB, K-I+1 )
+            CALL SLARFB( 'L', 'N', 'F', 'C', M-I+1, N, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( I, 1 ), LDC, WORK, LDWORK )
          END DO
 *
@@ -276,9 +276,9 @@
 *
          KF = ((K-1)/NB)*NB+1
          DO I = KF, 1, -NB
-            IB = MIN( NB, K-I+1 )         
-            CALL SLARFB( 'R', 'T', 'F', 'C', M, N-I+1, IB, 
-     $                   V( I, I ), LDV, T( 1, I ), LDT, 
+            IB = MIN( NB, K-I+1 )
+            CALL SLARFB( 'R', 'T', 'F', 'C', M, N-I+1, IB,
+     $                   V( I, I ), LDV, T( 1, I ), LDT,
      $                   C( 1, I ), LDC, WORK, LDWORK )
          END DO
 *

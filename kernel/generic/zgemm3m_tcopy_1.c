@@ -57,7 +57,7 @@
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 #ifdef USE_ALPHA
-	   FLOAT alpha_r, FLOAT alpha_i, 
+	   FLOAT alpha_r, FLOAT alpha_i,
 #endif
 	   FLOAT *b){
 
@@ -70,20 +70,20 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
   while (n > 0) {
     a_offset = a;
     a += 2;
-    
+
     for (i = 0; i < m; i ++) {
-      
+
       a1 = *(a_offset + 0);
       a2 = *(a_offset + 1);
-      
+
       *(b +  0) = CMULT(a1, a2);
-      
+
       a_offset += lda;
-      
+
       b ++;
     }
     n --;
   }
-  
+
   return 0;
 }

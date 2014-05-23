@@ -3,18 +3,18 @@
 
 
 ###############################################################################
-# lapack_testing.py  
+# lapack_testing.py
 ###############################################################################
 
 
-from subprocess import Popen, STDOUT, PIPE 
+from subprocess import Popen, STDOUT, PIPE
 import os, sys, math
 import getopt
 # Arguments
 try:
-   opts, args = getopt.getopt(sys.argv[1:], "hd:srep:t:n", 
+   opts, args = getopt.getopt(sys.argv[1:], "hd:srep:t:n",
                               ["help", "dir", "short", "run", "error","prec=","test=","number"])
-   
+
 except getopt.error, msg:
    print msg
    print "for help use --help"
@@ -147,7 +147,7 @@ def run_summary_test( f, cmdline, short_summary):
         	   nb_test_info+=1
         	if (with_file==1):
         	   pipe.close()
-           
+
    f.flush();
 
    return [nb_test_run,nb_test_fail,nb_test_illegal,nb_test_info]
@@ -183,7 +183,7 @@ elif prec=='z':
    range_prec=[3]
 elif prec=='cz':
    range_prec=[2,3]
-else: 
+else:
    prec='x';
    range_prec=range(4)
 
@@ -196,7 +196,7 @@ elif test=='rfp':
    range_test=[17]
 elif test=='eig':
    range_test=range(15)
-else:  
+else:
    range_test=range(18)
 
 list_results = [
@@ -261,14 +261,14 @@ for dtype in range_prec:
            cmdbase="xeigtst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
      if (not just_errors and not short_summary):
         print "-->  Testing "+name+" "+dtests[1][dtest]+" [ "+cmdbase+" ]"
-     # Run the process: either to read the file or run the LAPACK testing   
+     # Run the process: either to read the file or run the LAPACK testing
      nb_test = run_summary_test(f, cmdbase, short_summary)
      list_results[0][dtype]+=nb_test[0]
      list_results[1][dtype]+=nb_test[1]
      list_results[2][dtype]+=nb_test[2]
      list_results[3][dtype]+=nb_test[3]
      got_error=nb_test[1]+nb_test[2]+nb_test[3]
-     
+
      if (not short_summary):
         if (nb_test[0]>0 and just_errors==0):
            print "-->  Tests passed: "+str(nb_test[0])
@@ -285,7 +285,7 @@ for dtype in range_prec:
            print ""
 #     elif (got_error>0):
 #        print dtests[2][dtest]+".out \t"+str(nb_test[1])+"\t"+str(nb_test[2])+"\t"+str(nb_test[3])
-        
+
      sys.stdout.flush()
   if (list_results[0][dtype] > 0 ):
      percent_num_error=float(list_results[1][dtype])/float(list_results[0][dtype])*100
@@ -298,7 +298,7 @@ for dtype in range_prec:
   list_results[1][4]+=list_results[1][dtype]
   list_results[2][4]+=list_results[2][dtype]
   list_results[3][4]+=list_results[3][dtype]
-  
+
 if only_numbers==1:
    print str(list_results[1][4])+"\n"+str(list_results[2][4]+list_results[3][4])
 else:

@@ -45,7 +45,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -216,7 +216,7 @@
 	movl	%eax, J
 	jle	.L999
 	ALIGN_2
-	
+
 .L01:
 /* Copying to Sub Buffer */
 	movl	K, %eax
@@ -224,7 +224,7 @@
 	sarl	$3, %eax
 	jle	.L03
 	ALIGN_4
-	
+
 .L02:
 	prefetchnta	 96 * SIZE(B)
 
@@ -279,7 +279,7 @@
 	decl	%eax
 	jne	.L04
 	ALIGN_4
-	
+
 .L05:
 	movl	C, %esi		# coffset = c
 	movl	A, %edx		# aoffset = a
@@ -306,7 +306,7 @@
 	andl	$-8, %eax
 	leal	(, %eax, 8), %eax
 	je	.L12
-	
+
 	KERNELMACRO(32 *  0)		# 0
 	cmpl	$64 *  1, %eax
 	jle	.L11
@@ -372,7 +372,7 @@
 
 #define PRE 40
 
-.L11:	
+.L11:
 	mulpd	%xmm0, %xmm1
 	movd	(PRE + 0) * SIZE(AA), %mm0
 	addpd	%xmm1, %xmm4
@@ -544,7 +544,7 @@
 	BRANCH
 	decl	%ebx			# i --
 	jg	.L10
-	ALIGN_2	
+	ALIGN_2
 
 .L20:
 	movl	M,  %ebx
@@ -567,7 +567,7 @@
 	sarl	$3, %eax
 	je	.L22
 
-.L21:	
+.L21:
 	movapd	 0 * SIZE(BB), %xmm0
 	movapd	 0 * SIZE(AA), %xmm1
 	mulpd	%xmm0, %xmm1
@@ -690,7 +690,7 @@
 	sarl	$3, %eax
 	je	.L32
 
-.L31:	
+.L31:
 	movapd	 0 * SIZE(BB), %xmm0
 	movapd	 0 * SIZE(AA), %xmm1
 	mulpd	%xmm0, %xmm1
@@ -791,7 +791,7 @@
 	sarl	$3, %eax
 	je	.L52
 
-.L51:	
+.L51:
 	movsd	 0 * SIZE(AA), %xmm0
 	mulsd	 0 * SIZE(BB), %xmm0
 	addsd	%xmm0, %xmm4

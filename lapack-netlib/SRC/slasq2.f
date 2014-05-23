@@ -2,38 +2,38 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASQ2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasq2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasq2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasq2.f"> 
+*> Download SLASQ2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasq2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasq2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasq2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLASQ2( N, Z, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, N
 *       ..
 *       .. Array Arguments ..
 *       REAL               Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> SLASQ2 computes all the eigenvalues of the symmetric positive 
+*> SLASQ2 computes all the eigenvalues of the symmetric positive
 *> definite tridiagonal matrix associated with the qd array Z to high
 *> relative accuracy are computed to high relative accuracy, in the
 *> absence of denormalization, underflow and overflow.
@@ -83,17 +83,17 @@
 *>              = 2, current block of Z not diagonalized after 100*N
 *>                   iterations (in inner while loop).  On exit Z holds
 *>                   a qd array with the same eigenvalues as the given Z.
-*>              = 3, termination criterion of outer while loop not met 
+*>              = 3, termination criterion of outer while loop not met
 *>                   (program created more than N unreduced blocks)
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -155,7 +155,7 @@
       INTRINSIC          ABS, MAX, MIN, REAL, SQRT
 *     ..
 *     .. Executable Statements ..
-*      
+*
 *     Test the input arguments.
 *     (in case SLASQ2 is not called by SLASQ1)
 *
@@ -195,7 +195,7 @@
          END IF
          Z( 5 ) = Z( 1 ) + Z( 2 ) + Z( 3 )
          IF( Z( 2 ).GT.Z( 3 )*TOL2 ) THEN
-            T = HALF*( ( Z( 1 )-Z( 3 ) )+Z( 2 ) ) 
+            T = HALF*( ( Z( 1 )-Z( 3 ) )+Z( 2 ) )
             S = Z( 3 )*( Z( 2 ) / T )
             IF( S.LE.T ) THEN
                S = Z( 3 )*( Z( 2 ) / ( T*( ONE+SQRT( ONE+S / T ) ) ) )
@@ -264,24 +264,24 @@
          Z( 2*N-1 ) = ZERO
          RETURN
       END IF
-*         
+*
 *     Check whether the machine is IEEE conformable.
-*         
+*
 *     IEEE = ILAENV( 10, 'SLASQ2', 'N', 1, 2, 3, 4 ).EQ.1 .AND.
-*    $       ILAENV( 11, 'SLASQ2', 'N', 1, 2, 3, 4 ).EQ.1      
+*    $       ILAENV( 11, 'SLASQ2', 'N', 1, 2, 3, 4 ).EQ.1
 *
 *     [11/15/2008] The case IEEE=.TRUE. has a problem in single precision with
 *     some the test matrices of type 16. The double precision code is fine.
 *
       IEEE = .FALSE.
-*         
+*
 *     Rearrange data for locality: Z=(q1,qq1,e1,ee1,q2,qq2,e2,ee2,...).
 *
       DO 30 K = 2*N, 2, -2
-         Z( 2*K ) = ZERO 
-         Z( 2*K-1 ) = Z( K ) 
-         Z( 2*K-2 ) = ZERO 
-         Z( 2*K-3 ) = Z( K-1 ) 
+         Z( 2*K ) = ZERO
+         Z( 2*K-1 ) = Z( K )
+         Z( 2*K-2 ) = ZERO
+         Z( 2*K-3 ) = Z( K-1 )
    30 CONTINUE
 *
       I0 = 1
@@ -338,7 +338,7 @@
                D = Z( I4+1 )*( D / Z( I4-2*PP-2 ) )
             END IF
             EMIN = MIN( EMIN, Z( I4-2*PP ) )
-   60    CONTINUE 
+   60    CONTINUE
          Z( 4*N0-PP-2 ) = D
 *
 *        Now find qmax.
@@ -369,14 +369,14 @@
       NDIV = 2*( N0-I0 )
 *
       DO 160 IWHILA = 1, N + 1
-         IF( N0.LT.1 ) 
+         IF( N0.LT.1 )
      $      GO TO 170
 *
-*        While array unfinished do 
+*        While array unfinished do
 *
 *        E(N0) holds the value of SIGMA when submatrix in I0:N0
 *        splits from the rest of the array, but is negated.
-*      
+*
          DESIG = ZERO
          IF( N0.EQ.N ) THEN
             SIGMA = ZERO
@@ -391,7 +391,7 @@
 *        Find last unreduced submatrix's top index I0, find QMAX and
 *        EMIN. Find Gershgorin-type bound if Q's much greater than E's.
 *
-         EMAX = ZERO 
+         EMAX = ZERO
          IF( N0.GT.I0 ) THEN
             EMIN = ABS( Z( 4*N0-5 ) )
          ELSE
@@ -409,7 +409,7 @@
             QMAX = MAX( QMAX, Z( I4-7 )+Z( I4-5 ) )
             EMIN = MIN( EMIN, Z( I4-5 ) )
    90    CONTINUE
-         I4 = 4 
+         I4 = 4
 *
   100    CONTINUE
          I0 = I4 / 4
@@ -426,7 +426,7 @@
                   KMIN = ( I4+3 )/4
                END IF
   110       CONTINUE
-            IF( (KMIN-I0)*2.LT.N0-KMIN .AND. 
+            IF( (KMIN-I0)*2.LT.N0-KMIN .AND.
      $         DEEMIN.LE.HALF*Z(4*N0-3) ) THEN
                IPN4 = 4*( I0+N0 )
                PP = 2
@@ -451,15 +451,15 @@
 *
          DMIN = -MAX( ZERO, QMIN-TWO*SQRT( QMIN )*SQRT( EMAX ) )
 *
-*        Now I0:N0 is unreduced. 
+*        Now I0:N0 is unreduced.
 *        PP = 0 for ping, PP = 1 for pong.
 *        PP = 2 indicates that flipping was applied to the Z array and
-*               and that the tests for deflation upon entry in SLASQ3 
+*               and that the tests for deflation upon entry in SLASQ3
 *               should not be performed.
 *
          NBIG = 100*( N0-I0+1 )
          DO 140 IWHILB = 1, NBIG
-            IF( I0.GT.N0 ) 
+            IF( I0.GT.N0 )
      $         GO TO 150
 *
 *           While submatrix unfinished take a good dqds step.
@@ -502,8 +502,8 @@
   140    CONTINUE
 *
          INFO = 2
-*       
-*        Maximum number of iterations exceeded, restore the shift 
+*
+*        Maximum number of iterations exceeded, restore the shift
 *        SIGMA and place the new d's and e's in a qd array.
 *        This might need to be done for several blocks
 *
@@ -556,16 +556,16 @@
       INFO = 3
       RETURN
 *
-*     end IWHILA   
+*     end IWHILA
 *
   170 CONTINUE
-*      
+*
 *     Move q's to the front.
-*      
+*
       DO 180 K = 2, N
          Z( K ) = Z( 4*K-3 )
   180 CONTINUE
-*      
+*
 *     Sort and compute sum of eigenvalues.
 *
       CALL SLASRT( 'D', N, Z, IINFO )
@@ -577,7 +577,7 @@
 *
 *     Store trace, sum(eigenvalues) and information on performance.
 *
-      Z( 2*N+1 ) = TRACE 
+      Z( 2*N+1 ) = TRACE
       Z( 2*N+2 ) = E
       Z( 2*N+3 ) = REAL( ITER )
       Z( 2*N+4 ) = REAL( NDIV ) / REAL( N**2 )

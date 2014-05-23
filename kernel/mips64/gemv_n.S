@@ -89,7 +89,7 @@
 
 
 	PROLOGUE
-	
+
 	LDARG	Y,       0($sp)
 	LDARG	INCY,    8($sp)
 	LDARG	BUFFER, 16($sp)
@@ -109,7 +109,7 @@
 	sdc1	$f21, 24($sp)
 	sdc1	$f22, 32($sp)
 #endif
-	
+
 	blez	M, .L999
 	dsll	INCX, INCX, BASE_SHIFT
 

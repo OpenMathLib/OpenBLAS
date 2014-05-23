@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLATME( N, DIST, ISEED, D, MODE, COND, DMAX,
-*         RSIGN, 
-*                          UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM, 
-*         A, 
+*         RSIGN,
+*                          UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM,
+*         A,
 *                          LDA, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIST, RSIGN, SIM, UPPER
 *       INTEGER            INFO, KL, KU, LDA, MODE, MODES, N
@@ -25,7 +25,7 @@
 *       DOUBLE PRECISION   DS( * )
 *       COMPLEX*16         A( LDA, * ), D( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -285,10 +285,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -296,9 +296,9 @@
 *
 *  =====================================================================
       SUBROUTINE ZLATME( N, DIST, ISEED, D, MODE, COND, DMAX,
-     $  RSIGN, 
-     $                   UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM, 
-     $  A, 
+     $  RSIGN,
+     $                   UPPER, SIM, DS, MODES, CONDS, KL, KU, ANORM,
+     $  A,
      $                   LDA, WORK, INFO )
 *
 *  -- LAPACK computational routine (version 3.4.0) --

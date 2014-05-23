@@ -45,7 +45,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -243,7 +243,7 @@
 	movd	%mm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	leal	(, LDC, SIZE * 2), LDC
@@ -292,7 +292,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
  	leal	BUFFER, BB
 	movaps	POSINV, %xmm7
@@ -313,7 +313,7 @@
 	shufps	$0, %xmm3, %xmm3
 
 #if defined(NN) || defined(NT) || defined(NR) || defined(NC)  || \
-    defined(TN) || defined(TT) || defined(TR) || defined(TC) 
+    defined(TN) || defined(TT) || defined(TR) || defined(TC)
 	xorps	 %xmm7, %xmm1
 	xorps	 %xmm7, %xmm3
 #else
@@ -337,7 +337,7 @@
 	shufps	$0, %xmm3, %xmm3
 
 #if defined(NN) || defined(NT) || defined(NR) || defined(NC)  || \
-    defined(TN) || defined(TT) || defined(TR) || defined(TC) 
+    defined(TN) || defined(TT) || defined(TR) || defined(TC)
 	xorps	 %xmm7, %xmm1
 	xorps	 %xmm7, %xmm3
 #else
@@ -371,7 +371,7 @@
 	shufps	$0, %xmm1, %xmm1
 
 #if defined(NN) || defined(NT) || defined(NR) || defined(NC)  || \
-    defined(TN) || defined(TT) || defined(TR) || defined(TC) 
+    defined(TN) || defined(TT) || defined(TR) || defined(TC)
 	xorps	 %xmm7, %xmm1
 #else
 	xorps	 %xmm7, %xmm0
@@ -429,7 +429,7 @@
 	movaps	 16 * SIZE(AA), %xmm1
 	xorps	%xmm7, %xmm7
 
-#endif	
+#endif
 
 	prefetchnta    8 * SIZE(%esi)
 
@@ -438,7 +438,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -451,7 +451,7 @@
 	andl	$-8, %eax
 	je	.L12
 	sall	$3, %eax
-	
+
 .L1X:
 	KERNEL1(32  *  0)
 	KERNEL2(32  *  0)
@@ -582,14 +582,14 @@
 	movaps	 8 * SIZE(AA), %xmm1
 	xorps	%xmm7, %xmm7
 
-#endif	
+#endif
 
 #ifndef TRMMKERNEL
 	movl	K, %eax
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -764,7 +764,7 @@
 	decl	%eax
 	jne	.L11
 #endif
-	
+
 .L12:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -859,7 +859,7 @@
 	decl	%ebx			# i --
 	jg	.L10
 	ALIGN_2
-	
+
 .L50:
 	movl	M,  %ebx
 	testl	$2, %ebx
@@ -899,14 +899,14 @@
 	movaps	 16 * SIZE(AA), %xmm1
 	xorps	%xmm7, %xmm7
 
-#endif	
+#endif
 
 #ifndef TRMMKERNEL
 	movl	K, %eax
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1009,14 +1009,14 @@
 	movaps	 8 * SIZE(AA), %xmm1
 	xorps	%xmm7, %xmm7
 
-#endif	
+#endif
 
 #ifndef TRMMKERNEL
 	movl	K, %eax
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1085,7 +1085,7 @@
 	decl	%eax
 	jne	.L51
 #endif
-	
+
 .L52:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -1208,14 +1208,14 @@
 	movsd	 8 * SIZE(AA), %xmm1
 	xorps	%xmm7, %xmm7
 
-#endif	
+#endif
 
 #ifndef TRMMKERNEL
 	movl	K, %eax
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 	addl	$1, %eax
@@ -1327,7 +1327,7 @@
 	movsd	 8 * SIZE(AA), %xmm1
 	xorps	%xmm7, %xmm7
 
-#endif	
+#endif
 
 
 #ifndef TRMMKERNEL
@@ -1335,7 +1335,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 	addl	$1, %eax
@@ -1409,7 +1409,7 @@
 	jne	.L71
 	ALIGN_2
 #endif
-	
+
 .L72:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -1496,7 +1496,7 @@
 
 .L999:
 	movl	OLD_STACK, %esp
-	
+
 	EMMS
 
 	popl	%ebx

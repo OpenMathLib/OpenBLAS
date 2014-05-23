@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(LAPACK Fortran)
 
 # Configure the warning and code coverage suppression file
-configure_file( 
+configure_file(
   "${LAPACK_SOURCE_DIR}/CTestCustom.cmake.in"
   "${LAPACK_BINARY_DIR}/CTestCustom.cmake"
   COPYONLY
@@ -127,14 +127,14 @@ if(NOT BLAS_FOUND)
   add_subdirectory(BLAS)
   set( BLAS_LIBRARIES blas )
 else()
-  set( CMAKE_EXE_LINKER_FLAGS 
-    "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
+  set( CMAKE_EXE_LINKER_FLAGS
+    "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}"
     CACHE STRING "Linker flags for executables" FORCE)
-  set( CMAKE_MODULE_LINKER_FLAGS 
-    "${CMAKE_MODULE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
+  set( CMAKE_MODULE_LINKER_FLAGS
+    "${CMAKE_MODULE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}"
     CACHE STRING "Linker flags for modules" FORCE)
-  set( CMAKE_SHARED_LINKER_FLAGS 
-    "${CMAKE_SHARED_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}" 
+  set( CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}"
     CACHE STRING "Linker flags for shared libs" FORCE)
 endif( NOT BLAS_FOUND )
 
@@ -142,7 +142,7 @@ option(USE_XBLAS "Build extended precision (needs XBLAS)" OFF)
 if (USE_XBLAS)
   find_library(XBLAS_LIBRARY NAMES xblas)
 endif(USE_XBLAS)
-   
+
 option(USE_OPTIMIZED_LAPACK "Whether or not to use an optimized LAPACK library instead of included netlib LAPACK" OFF)
 
 # User did not provide a LAPACK Library but specified to search for one
@@ -177,14 +177,14 @@ if(NOT LATESTLAPACK_FOUND)
   option(BUILD_COMPLEX16 "Build LAPACK Double Complex Precision" ON)
   add_subdirectory(SRC)
 else()
-  set( CMAKE_EXE_LINKER_FLAGS 
-    "${CMAKE_EXE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
+  set( CMAKE_EXE_LINKER_FLAGS
+    "${CMAKE_EXE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}"
     CACHE STRING "Linker flags for executables" FORCE)
-  set( CMAKE_MODULE_LINKER_FLAGS 
-    "${CMAKE_MODULE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
+  set( CMAKE_MODULE_LINKER_FLAGS
+    "${CMAKE_MODULE_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}"
     CACHE STRING "Linker flags for modules" FORCE)
-  set( CMAKE_SHARED_LINKER_FLAGS 
-    "${CMAKE_SHARED_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}" 
+  set( CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} ${LAPACK_LINKER_FLAGS}"
     CACHE STRING "Linker flags for shared libs" FORCE)
 endif( NOT LATESTLAPACK_FOUND )
 
@@ -212,7 +212,7 @@ if(LAPACKE)
 endif(LAPACKE)
 
 # --------------------------------------------------
-# CPACK Packaging 
+# CPACK Packaging
 
 SET(CPACK_PACKAGE_NAME "LAPACK")
 SET(CPACK_PACKAGE_VENDOR "University of Tennessee, Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd")

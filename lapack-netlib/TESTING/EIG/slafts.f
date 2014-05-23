@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAFTS( TYPE, M, N, IMAT, NTESTS, RESULT, ISEED,
 *                          THRESH, IOUNIT, IE )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        TYPE
 *       INTEGER            IE, IMAT, IOUNIT, M, N, NTESTS
@@ -20,7 +20,7 @@
 *       INTEGER            ISEED( 4 )
 *       REAL               RESULT( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -86,10 +86,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

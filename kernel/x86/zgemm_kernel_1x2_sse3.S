@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -57,7 +57,7 @@
 #define BX	 4 + STACK(%esp)
 #define KK	 8 + STACK(%esp)
 #define KKK	12 + STACK(%esp)
-	
+
 #ifdef PENTIUM4
 #define PREFETCH_R   (8 * 4)
 #define PREFETCH	prefetcht1
@@ -222,7 +222,7 @@
 	movl	OFFSET, %eax
 #ifndef LEFT
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 #endif
 
@@ -238,7 +238,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	B, BX
 
@@ -261,7 +261,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 4), BB
-#endif	
+#endif
 
 	movl	BX, %eax
 
@@ -289,7 +289,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -304,7 +304,7 @@
 	andl	$-8, %eax
 	sall	$4, %eax
 	je	.L12
-	
+
 .L1X:
 	KERNEL1(16  *  0)
 	KERNEL2(16  *  0)
@@ -578,7 +578,7 @@
 
 	addsubpd	%xmm5, %xmm4
 	addsubpd	%xmm7, %xmm6
-	
+
 #ifndef TRMMKERNEL
 	movsd	0 * SIZE(%esi), %xmm0
 	movhpd	1 * SIZE(%esi), %xmm0
@@ -610,7 +610,7 @@
 	addl	$2 * SIZE, %esi		# coffset += 4
 	decl	%ebx			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L99:
 #if defined(TRMMKERNEL) && !defined(LEFT)
@@ -635,10 +635,10 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	M,  %ebx
-	testl	%ebx, %ebx	
+	testl	%ebx, %ebx
 	jle	.L500
 	ALIGN_4
 
@@ -653,7 +653,7 @@ L110:
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 2), BB
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -673,7 +673,7 @@ L110:
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -843,7 +843,7 @@ L114:
 	addl	$2 * SIZE, %esi		# coffset += 4
 	decl	%ebx			# i --
 	jg	L110
-	ALIGN_4	
+	ALIGN_4
 
 .L500:
 	popl	%ebx

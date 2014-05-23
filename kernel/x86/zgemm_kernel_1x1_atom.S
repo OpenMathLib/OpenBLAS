@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -57,7 +57,7 @@
 #define BX	 4 + STACK(%esp)
 #define KK	 8 + STACK(%esp)
 #define KKK	12 + STACK(%esp)
-	
+
 #define PREFETCH	prefetcht0
 #define PREFETCHSIZE 84
 
@@ -107,7 +107,7 @@
 	movl	OFFSET, %eax
 #ifndef LEFT
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 #endif
 
@@ -127,7 +127,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	B, BX
 
@@ -150,7 +150,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 2), BB
-#endif	
+#endif
 
 	movl	BX, %eax
 	prefetcht0  0 * SIZE(%eax)
@@ -171,7 +171,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -327,7 +327,7 @@
 	addl	$2 * SIZE, CO1
 	decl	%ebx
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L99:
 #if defined(TRMMKERNEL) && !defined(LEFT)

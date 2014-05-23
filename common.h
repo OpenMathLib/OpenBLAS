@@ -531,7 +531,7 @@ static __inline void compinv(FLOAT *b, FLOAT ar, FLOAT ai){
 
 #ifndef UNIT
   FLOAT ratio, den;
-      
+
   if (
 #ifdef XDOUBLE
       (fabsl(ar)) >= (fabsl(ai))
@@ -557,7 +557,7 @@ static __inline void compinv(FLOAT *b, FLOAT ar, FLOAT ai){
   b[0] = ONE;
   b[1] = ZERO;
 #endif
-  
+
 }
 #endif
 
@@ -693,7 +693,7 @@ extern int gotoblas_profile;
 
 #ifdef __cplusplus
 }
-     
+
 #endif  /* __cplusplus */
 
 #endif

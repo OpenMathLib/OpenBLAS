@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_ALPHA	16 + STACK + ARGS(%esp)
 #define STACK_X		32 + STACK + ARGS(%esp)
@@ -154,7 +154,7 @@
 #ifdef HAVE_3DNOW
 	prefetchw	24 * SIZE(Y)
 #endif
-	
+
 	addl	$8 * SIZE, X
 	addl	$8 * SIZE, Y
 	decl	%eax

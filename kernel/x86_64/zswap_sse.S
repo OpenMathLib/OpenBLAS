@@ -86,7 +86,7 @@
 
 	subq	$-32 * SIZE, X
 	subq	$-32 * SIZE, Y
-	
+
 	cmpq	$3, M
 	jle	.L16
 
@@ -312,7 +312,7 @@
 .L20:
 	movaps	 -33 * SIZE(X), %xmm0
 	movaps	 -32 * SIZE(Y), %xmm1
-	
+
 	movss	%xmm1, -32 * SIZE(X)
 	pshufd	$0x39, %xmm1, %xmm3
 	movlps	%xmm3, -31 * SIZE(X)
@@ -796,7 +796,7 @@
 .L40:
 	movaps	 -35 * SIZE(X), %xmm0
 	movaps	 -32 * SIZE(Y), %xmm1
-	
+
 	movss	%xmm1, -32 * SIZE(X)
 
 	subq	$3, M

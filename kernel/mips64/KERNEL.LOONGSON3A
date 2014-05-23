@@ -11,7 +11,7 @@ ZGEMVNKERNEL = zgemv_n_loongson3a.c
 ZGEMVTKERNEL = zgemv_t_loongson3a.c
 
 
-SGEMMKERNEL    =  sgemm_kernel_8x4_ps.S		
+SGEMMKERNEL    =  sgemm_kernel_8x4_ps.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_8.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_8.c
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c

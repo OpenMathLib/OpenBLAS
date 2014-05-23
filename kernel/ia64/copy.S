@@ -94,7 +94,7 @@
 	mov	PR = pr
 	}
 	{ .mmi
-	mov	YY = Y1   
+	mov	YY = Y1
 	(p7) adds N = -1, N
 	(p7) add Y1 = Y1, INCY
 	}
@@ -600,7 +600,7 @@
 	;;
 
  /* INCX != 1 */
-.L100: 
+.L100:
 	{ .mmi
 	shladd	INCX16 = INCX, 4, r0
 	shladd	INCY16 = INCY, 4, r0

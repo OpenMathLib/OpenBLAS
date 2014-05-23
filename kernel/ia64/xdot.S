@@ -112,7 +112,7 @@
 	;;
 	shl	r26 = r26, ZBASE_SHIFT
 	shl	r27 = r27, ZBASE_SHIFT
-	;;	
+	;;
 	(p6) add X1 = r26, X1
 	(p7) add Y1 = r27, Y1
 	;;
@@ -481,12 +481,12 @@
 	(p13) FMA	f13 = f43, f58, f13
 	(p13) FMA	f14 = f42, f59, f14
 	(p13) FMA	f15 = f43, f59, f15
-	;;		      
+	;;
 	(p14) FMA	f8  = f44, f60, f8
 	(p14) FMA	f9  = f45, f60, f9
 	(p14) FMA	f10 = f44, f61, f10
 	(p14) FMA	f11 = f45, f61, f11
-	;; 
+	;;
 	.align 32
 
 .L999:
@@ -505,7 +505,7 @@
 #endif
 	;;
 	.align 32
-	
+
 .L1000:
 #ifdef F_INTERFACE
 	STFD	[r32] = f8, SIZE

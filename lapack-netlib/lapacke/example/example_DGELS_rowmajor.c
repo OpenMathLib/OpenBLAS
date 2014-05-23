@@ -1,16 +1,16 @@
 /*
    LAPACKE Example : Calling DGELS using row-major order
    =====================================================
- 
+
    The program computes the solution to the system of linear
    equations with a square matrix A and multiple
    right-hand sides B, where A is the coefficient matrix
    and b is the right-hand side matrix:
-  
+
    Description
    ===========
- 
-   In this example, we wish solve the least squares problem min_x || B - Ax || 
+
+   In this example, we wish solve the least squares problem min_x || B - Ax ||
    for two right-hand sides using the LAPACK routine DGELS. For input we will
    use the 5-by-3 matrix
 
@@ -28,11 +28,11 @@
          (  18 16 )
     We will first store the input matrix as a static C two-dimensional array,
     which is stored in row-major order, and let LAPACKE handle the work space
-    array allocation. The LAPACK base name for this function is gels, and we 
+    array allocation. The LAPACK base name for this function is gels, and we
     will use double precision (d), so the LAPACKE function name is LAPACKE_dgels.
 
     thus lda=3 and ldb=2. The output for each right hand side is stored in b as
-    consecutive vectors of length 3. The correct answer for this problem is 
+    consecutive vectors of length 3. The correct answer for this problem is
     the 3-by-2 matrix
 
          ( 2 1 )
@@ -83,7 +83,7 @@ int main (int argc, const char * argv[])
    /* Print Right Rand Side */
    print_matrix_rowmajor( "Right Hand Side b", n, nrhs, *b, ldb );
    printf( "\n" );
-   
+
    /* Executable statements */
    printf( "LAPACKE_dgels (row-major, high-level) Example Program Results\n" );
    /* Solve least squares problem*/

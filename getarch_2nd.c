@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     printf("DGEMM_UNROLL_N=%d\n", DGEMM_DEFAULT_UNROLL_N);
     printf("QGEMM_UNROLL_M=%d\n", QGEMM_DEFAULT_UNROLL_M);
     printf("QGEMM_UNROLL_N=%d\n", QGEMM_DEFAULT_UNROLL_N);
-    
+
     printf("CGEMM_UNROLL_M=%d\n", CGEMM_DEFAULT_UNROLL_M);
     printf("CGEMM_UNROLL_N=%d\n", CGEMM_DEFAULT_UNROLL_N);
     printf("ZGEMM_UNROLL_M=%d\n", ZGEMM_DEFAULT_UNROLL_M);
@@ -60,8 +60,8 @@ int main(int argc, char **argv) {
 #endif
 
 
-  } 
-  
+  }
+
 
   if ((argc >= 2) && (*argv[1] == '1')) {
     printf("#define SLOCAL_BUFFER_SIZE\t%ld\n", (SGEMM_DEFAULT_Q * SGEMM_DEFAULT_UNROLL_N * 4 * 1 *  sizeof(float)));

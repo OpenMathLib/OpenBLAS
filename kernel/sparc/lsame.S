@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define A	%o0
 #define B	%o1
 #define AA	%o4

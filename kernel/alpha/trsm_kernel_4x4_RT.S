@@ -410,7 +410,7 @@ $L98:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 	SUB	a3, c03, c03
@@ -420,7 +420,7 @@ $L98:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 	SUB	a3, c03, c03
@@ -432,7 +432,7 @@ $L98:
 	LD	a2, 14 * SIZE(AO)
 	LD	a3, 13 * SIZE(AO)
 	LD	a4, 12 * SIZE(AO)
- 
+
 	MUL	a1, c04, c04
 	MUL	a2, c04, t1
 	SUB	c03, t1, c03
@@ -444,7 +444,7 @@ $L98:
 	LD	b1, 10 * SIZE(AO)
 	LD	b2,  9 * SIZE(AO)
 	LD	b3,  8 * SIZE(AO)
- 
+
 	MUL	b1, c03, c03
 	MUL	b2, c03, t1
 	SUB	c02, t1, c02
@@ -466,7 +466,7 @@ $L98:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a2, c01, t1
 	SUB	c02, t1, c02
@@ -478,7 +478,7 @@ $L98:
 	LD	b1,  5 * SIZE(AO)
 	LD	b2,  6 * SIZE(AO)
 	LD	b3,  7 * SIZE(AO)
- 
+
 	MUL	b1, c02, c02
 	MUL	b2, c02, t1
 	SUB	c03, t1, c03
@@ -488,7 +488,7 @@ $L98:
 	LD	a1, 10 * SIZE(AO)
 	LD	a2, 11 * SIZE(AO)
 	LD	a3, 15 * SIZE(AO)
- 
+
 	MUL	a1, c03, c03
 	MUL	a2, c03, t1
 	SUB	c04, t1, c04
@@ -497,7 +497,7 @@ $L98:
 
 #if defined(RN) || defined(RT)
 	LD	a1,  0 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c02, c02
 	MUL	a1, c03, c03
@@ -714,13 +714,13 @@ $L108:
 #if defined(LN) || defined(LT)
 	LD	a1,  0 * SIZE(BO)
 	LD	a2,  1 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 #else
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 #endif
@@ -740,7 +740,7 @@ $L108:
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  3 * SIZE(AO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a2, c01, t1
 	SUB	c02, t1, c02
@@ -749,7 +749,7 @@ $L108:
 
 #if defined(RN) || defined(RT)
 	LD	a1,  0 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c02, c02
 #endif
@@ -932,11 +932,11 @@ $L118:
 
 #if defined(LN) || defined(LT)
 	LD	a1,  0 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 #else
 	LD	a1,  0 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 #endif
 
@@ -948,7 +948,7 @@ $L118:
 
 #if defined(RN) || defined(RT)
 	LD	a1,  0 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 #endif
 
@@ -1025,7 +1025,7 @@ $L40:
 	addq	C2, LDC, C
 #endif
 	fclr	t2
-	
+
 #ifdef LN
 	addq	M, OFFSET, KK
 #endif
@@ -1292,7 +1292,7 @@ $L58:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	LD	b1,  4 * SIZE(BO)
  	LD	b2,  5 * SIZE(BO)
 	LD	b3,  6 * SIZE(BO)
@@ -1312,7 +1312,7 @@ $L58:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	LD	b1,  4 * SIZE(AO)
  	LD	b2,  5 * SIZE(AO)
 	LD	b3,  6 * SIZE(AO)
@@ -1334,7 +1334,7 @@ $L58:
 	LD	a2, 14 * SIZE(AO)
 	LD	a3, 13 * SIZE(AO)
 	LD	a4, 12 * SIZE(AO)
- 
+
 	MUL	a1, c04, c04
 	MUL	a1, c08, c08
 
@@ -1359,7 +1359,7 @@ $L58:
 	LD	b1, 10 * SIZE(AO)
 	LD	b2,  9 * SIZE(AO)
 	LD	b3,  8 * SIZE(AO)
- 
+
 	MUL	b1, c03, c03
 	MUL	b1, c07, c07
 
@@ -1397,7 +1397,7 @@ $L58:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c05, c05
 
@@ -1422,7 +1422,7 @@ $L58:
 	LD	b1,  5 * SIZE(AO)
 	LD	b2,  6 * SIZE(AO)
 	LD	b3,  7 * SIZE(AO)
- 
+
 	MUL	b1, c02, c02
 	MUL	b1, c06, c06
 
@@ -1441,7 +1441,7 @@ $L58:
 	LD	a1, 10 * SIZE(AO)
 	LD	a2, 11 * SIZE(AO)
 	LD	a3, 15 * SIZE(AO)
- 
+
 	MUL	a1, c03, c03
 	MUL	a1, c07, c07
 
@@ -1459,7 +1459,7 @@ $L58:
 	LD	a1,  0 * SIZE(BO)
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  3 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c02, c02
 	MUL	a1, c03, c03
@@ -1760,7 +1760,7 @@ $L68:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c05, c05
 	SUB	a3, c02, c02
@@ -1770,7 +1770,7 @@ $L68:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 	SUB	a3, c05, c05
@@ -1799,7 +1799,7 @@ $L68:
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  3 * SIZE(AO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c05, c05
 
@@ -1817,7 +1817,7 @@ $L68:
 	LD	a1,  0 * SIZE(BO)
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  3 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c02, c02
 
@@ -2050,13 +2050,13 @@ $L78:
 #if defined(LN) || defined(LT)
 	LD	a1,  0 * SIZE(BO)
 	LD	a2,  1 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c05, c05
 #else
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c05, c05
 #endif
@@ -2072,7 +2072,7 @@ $L78:
 	LD	a1,  0 * SIZE(BO)
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  3 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a2, c01, t1
 	SUB	c05, t1, c05
@@ -2156,7 +2156,7 @@ $L80:
 	sra	N, 2, J
 	ble	J, $L999
 	.align 4
-	
+
 $L01:
 #ifdef RT
 	sll	K, 2 + BASE_SHIFT, TMP1
@@ -2291,7 +2291,7 @@ $L11:
 	fclr	c14
 	fclr	c07
 	ble	TMP1, $L18
-#endif	
+#endif
 
 	ble	L, $L15
 	.align	5
@@ -2618,7 +2618,7 @@ $L18:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	LD	b1,  4 * SIZE(BO)
  	LD	b2,  5 * SIZE(BO)
 	LD	b3,  6 * SIZE(BO)
@@ -2658,7 +2658,7 @@ $L18:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	LD	b1,  4 * SIZE(AO)
  	LD	b2,  5 * SIZE(AO)
 	LD	b3,  6 * SIZE(AO)
@@ -2700,7 +2700,7 @@ $L18:
 	LD	a2, 14 * SIZE(AO)
 	LD	a3, 13 * SIZE(AO)
 	LD	a4, 12 * SIZE(AO)
- 
+
 	MUL	a1, c04, c04
 	MUL	a1, c08, c08
 	MUL	a1, c12, c12
@@ -2739,7 +2739,7 @@ $L18:
 	LD	b1, 10 * SIZE(AO)
 	LD	b2,  9 * SIZE(AO)
 	LD	b3,  8 * SIZE(AO)
- 
+
 	MUL	b1, c03, c03
 	MUL	b1, c07, c07
 	MUL	b1, c11, c11
@@ -2795,7 +2795,7 @@ $L18:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c05, c05
 	MUL	a1, c09, c09
@@ -2834,7 +2834,7 @@ $L18:
 	LD	b1,  5 * SIZE(AO)
 	LD	b2,  6 * SIZE(AO)
 	LD	b3,  7 * SIZE(AO)
- 
+
 	MUL	b1, c02, c02
 	MUL	b1, c06, c06
 	MUL	b1, c10, c10
@@ -2863,7 +2863,7 @@ $L18:
 	LD	a1, 10 * SIZE(AO)
 	LD	a2, 11 * SIZE(AO)
 	LD	a3, 15 * SIZE(AO)
- 
+
 	MUL	a1, c03, c03
 	MUL	a1, c07, c07
 	MUL	a1, c11, c11
@@ -2890,7 +2890,7 @@ $L18:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c02, c02
 	MUL	a1, c03, c03
@@ -2929,7 +2929,7 @@ $L18:
 	LD	b1,  5 * SIZE(BO)
 	LD	b2,  6 * SIZE(BO)
 	LD	b3,  7 * SIZE(BO)
- 
+
 	MUL	b1, c05, c05
 	MUL	b1, c06, c06
 	MUL	b1, c07, c07
@@ -2958,7 +2958,7 @@ $L18:
 	LD	a1, 10 * SIZE(BO)
 	LD	a2, 11 * SIZE(BO)
 	LD	a3, 15 * SIZE(BO)
- 
+
 	MUL	a1, c09, c09
 	MUL	a1, c10, c10
 	MUL	a1, c11, c11
@@ -2985,7 +2985,7 @@ $L18:
 	LD	a2, 14 * SIZE(BO)
 	LD	a3, 13 * SIZE(BO)
 	LD	a4, 12 * SIZE(BO)
- 
+
 	MUL	a1, c13, c13
 	MUL	a1, c14, c14
 	MUL	a1, c15, c15
@@ -3024,7 +3024,7 @@ $L18:
 	LD	b1, 10 * SIZE(BO)
 	LD	b2,  9 * SIZE(BO)
 	LD	b3,  8 * SIZE(BO)
- 
+
 	MUL	b1, c09, c09
 	MUL	b1, c10, c10
 	MUL	b1, c11, c11
@@ -3434,7 +3434,7 @@ $L28:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	LD	b1,  4 * SIZE(BO)
  	LD	b2,  5 * SIZE(BO)
 	LD	b3,  6 * SIZE(BO)
@@ -3455,7 +3455,7 @@ $L28:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	LD	b1,  4 * SIZE(AO)
  	LD	b2,  5 * SIZE(AO)
 	LD	b3,  6 * SIZE(AO)
@@ -3502,7 +3502,7 @@ $L28:
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  3 * SIZE(AO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c05, c05
 	MUL	a1, c09, c09
@@ -3529,7 +3529,7 @@ $L28:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a1, c02, c02
 
@@ -3554,7 +3554,7 @@ $L28:
 	LD	b1,  5 * SIZE(BO)
 	LD	b2,  6 * SIZE(BO)
 	LD	b3,  7 * SIZE(BO)
- 
+
 	MUL	b1, c05, c05
 	MUL	b1, c06, c06
 
@@ -3573,7 +3573,7 @@ $L28:
 	LD	a1, 10 * SIZE(BO)
 	LD	a2, 11 * SIZE(BO)
 	LD	a3, 15 * SIZE(BO)
- 
+
 	MUL	a1, c09, c09
 	MUL	a1, c10, c10
 
@@ -3592,7 +3592,7 @@ $L28:
 	LD	a2, 14 * SIZE(BO)
 	LD	a3, 13 * SIZE(BO)
 	LD	a4, 12 * SIZE(BO)
- 
+
 	MUL	a1, c13, c13
 	MUL	a1, c14, c14
 
@@ -3617,7 +3617,7 @@ $L28:
 	LD	b1, 10 * SIZE(BO)
 	LD	b2,  9 * SIZE(BO)
 	LD	b3,  8 * SIZE(BO)
- 
+
 	MUL	b1, c09, c09
 	MUL	b1, c10, c10
 
@@ -3890,7 +3890,7 @@ $L38:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c05, c05
 	SUB	a3, c09, c09
@@ -3900,7 +3900,7 @@ $L38:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c05, c05
 	SUB	a3, c09, c09
@@ -3921,7 +3921,7 @@ $L38:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	MUL	a1, c01, c01
 	MUL	a2, c01, t1
 	SUB	c05, t1, c05
@@ -3933,7 +3933,7 @@ $L38:
 	LD	b1,  5 * SIZE(BO)
 	LD	b2,  6 * SIZE(BO)
 	LD	b3,  7 * SIZE(BO)
- 
+
 	MUL	b1, c05, c05
 	MUL	b2, c05, t1
 	SUB	c09, t1, c09
@@ -3943,7 +3943,7 @@ $L38:
 	LD	a1, 10 * SIZE(BO)
 	LD	a2, 11 * SIZE(BO)
 	LD	a3, 15 * SIZE(BO)
- 
+
 	MUL	a1, c09, c09
 	MUL	a2, c09, t1
 	SUB	c13, t1, c13
@@ -3955,7 +3955,7 @@ $L38:
 	LD	a2, 14 * SIZE(BO)
 	LD	a3, 13 * SIZE(BO)
 	LD	a4, 12 * SIZE(BO)
- 
+
 	MUL	a1, c13, c13
 	MUL	a2, c13, t1
 	SUB	c09, t1, c09
@@ -3967,7 +3967,7 @@ $L38:
 	LD	b1, 10 * SIZE(BO)
 	LD	b2,  9 * SIZE(BO)
 	LD	b3,  8 * SIZE(BO)
- 
+
 	MUL	b1, c09, c09
 	MUL	b2, c09, t1
 	SUB	c05, t1, c05

@@ -124,7 +124,7 @@
 	movaps	 4 * SIZE(X), %xmm2
 	movaps	 8 * SIZE(X), %xmm8
 	movaps	12 * SIZE(X), %xmm10
-	
+
 	decq	%rax
 	jle	.L12
 	ALIGN_3
@@ -552,7 +552,7 @@
 	movaps	 4 * SIZE(X), %xmm2
 	movaps	 8 * SIZE(X), %xmm8
 	movaps	12 * SIZE(X), %xmm10
-	
+
 	decq	%rax
 	jle	.L22
 	ALIGN_3
@@ -1026,7 +1026,7 @@
 	movhps	10 * SIZE(X), %xmm8
 	movsd	12 * SIZE(X), %xmm10
 	movhps	14 * SIZE(X), %xmm10
-	
+
 	decq	%rax
 	jle	.L32
 	ALIGN_3

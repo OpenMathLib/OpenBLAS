@@ -41,7 +41,7 @@
 #include "common.h"
 #include "symcopy.h"
 
-int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, 
+int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
 	 FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *buffer){
 
   BLASLONG is, min_i;
@@ -76,7 +76,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
 #ifndef LOWER
     if (is > 0){
 #ifndef HEMVREV
-      GEMV_C(is, min_i, 0, alpha_r, alpha_i, 
+      GEMV_C(is, min_i, 0, alpha_r, alpha_i,
 	      a + is * lda * 2,  lda,
 	      X,          1,
 	      Y + is * 2, 1, gemvbuffer);
@@ -86,7 +86,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
 	      X + is * 2, 1,
 	      Y,          1, gemvbuffer);
 #else
-      GEMV_T(is, min_i, 0, alpha_r, alpha_i, 
+      GEMV_T(is, min_i, 0, alpha_r, alpha_i,
 	      a + is * lda * 2,  lda,
 	      X,          1,
 	      Y + is * 2, 1, gemvbuffer);
@@ -113,11 +113,11 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
 #endif
 #endif
 
-    GEMV_N(min_i, min_i, 0, alpha_r, alpha_i, 
+    GEMV_N(min_i, min_i, 0, alpha_r, alpha_i,
 	    symbuffer, min_i,
-	    X + is * 2, 1, 
+	    X + is * 2, 1,
 	    Y + is * 2, 1, gemvbuffer);
-    
+
 #ifdef LOWER
     if (m - is - min_i > 0){
 

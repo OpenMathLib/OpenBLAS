@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 #define Y	r6
 #define INCY	r7
 #define PREA	r8
@@ -88,7 +88,7 @@
 	srawi.	r0, N, 3
 	mtspr	CTR, r0
 	beq-	cr0, LL(50)
-	
+
 	LFD	f0,   0 * SIZE(X)
 	LFD	f4,   1 * SIZE(X)
 	LFD	f6,   2 * SIZE(X)

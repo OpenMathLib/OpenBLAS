@@ -44,7 +44,7 @@ double
 FLOAT
 #endif
 NAME(FLOAT *a, FLOAT *b){
-  
+
  return *a + *b;
 
 }

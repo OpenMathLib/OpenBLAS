@@ -76,7 +76,7 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
   n_to   = n;
 
   //Use y as each thread's n* COMPSIZE elements in sb buffer
-  y = buffer;   
+  y = buffer;
   buffer += ((COMPSIZE * n  + 1023) & ~1023);
 
   if (range_m) {
@@ -94,12 +94,12 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
     buffer += ((COMPSIZE * n  + 1023) & ~1023);
   }
 
-  SCAL_K(n, 0, 0, ZERO, 
+  SCAL_K(n, 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y, 1, NULL, 0, NULL, 0);  
-  
+	 y, 1, NULL, 0, NULL, 0);
+
   for (i = n_from; i < n_to; i++) {
 
 #ifndef LOWER
@@ -193,7 +193,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -201,52 +201,52 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.n = n;
   args.k = k;
-  
+
   args.a = (void *)a;
   args.b = (void *)x;
   args.c = (void *)buffer;
-    
+
   args.lda = lda;
   args.ldb = incx;
   args.ldc = incy;
 
   dnum = (double)n * (double)n / (double)nthreads;
   num_cpu  = 0;
-  
+
   if (n < 2 * k) {
 
 #ifndef LOWER
 
     range_m[MAX_CPU_NUMBER] = n;
     i          = 0;
-    
+
     while (i < n){
-      
+
       if (nthreads - num_cpu > 1) {
-	
+
 	double di = (double)(n - i);
 	if (di * di - dnum > 0) {
 	  width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
 	} else {
 	  width = n - i;
 	}
-	
+
 	if (width < 16) width = 16;
 	if (width > n - i) width = n - i;
-	
+
       } else {
 	width = n - i;
       }
-      
+
       range_m[MAX_CPU_NUMBER - num_cpu - 1] = range_m[MAX_CPU_NUMBER - num_cpu] - width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = sbmv_kernel;
       queue[num_cpu].args    = &args;
@@ -255,37 +255,37 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-      
+
       num_cpu ++;
       i += width;
     }
-    
+
 #else
-    
+
     range_m[0] = 0;
     i          = 0;
-    
+
     while (i < n){
-      
+
       if (nthreads - num_cpu > 1) {
-	
+
 	double di = (double)(n - i);
 	if (di * di - dnum > 0) {
 	  width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
 	} else {
 	  width = n - i;
 	}
-	
+
 	if (width < 16) width = 16;
 	if (width > n - i) width = n - i;
-	
+
       } else {
 	width = n - i;
       }
-      
+
       range_m[num_cpu + 1] = range_m[num_cpu] + width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = sbmv_kernel;
       queue[num_cpu].args    = &args;
@@ -294,29 +294,29 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-      
+
       num_cpu ++;
       i += width;
     }
-    
+
 #endif
-    
+
   } else {
-    
+
     range_m[0] = 0;
     i          = n;
-    
+
     while (i > 0){
-      
+
       width  = blas_quickdivide(i + nthreads - num_cpu - 1, nthreads - num_cpu);
-      
+
       if (width < 4) width = 4;
       if (i < width) width = i;
-      
+
       range_m[num_cpu + 1] = range_m[num_cpu] + width;
-      
+
       range_n[num_cpu] = num_cpu * ((n + 15) & ~15);
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = sbmv_kernel;
       queue[num_cpu].args    = &args;
@@ -325,7 +325,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-      
+
       num_cpu ++;
       i -= width;
     }
@@ -335,10 +335,10 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
     queue[0].sa = NULL;
     queue[0].sb = buffer;
     queue[num_cpu - 1].next = NULL;
-  
+
     exec_blas(num_cpu, queue);
   }
-  
+
   for (i = 1; i < num_cpu; i ++) {
     AXPYU_K(n, 0, 0,
 #ifndef COMPLEX
@@ -356,6 +356,6 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
 	  alpha[0], alpha[1],
 #endif
 	  buffer, 1, y, incy, NULL, 0);
-  
+
   return 0;
 }

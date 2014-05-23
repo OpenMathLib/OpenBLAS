@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SORCSD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorcsd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorcsd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorcsd.f"> 
+*> Download SORCSD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorcsd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorcsd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorcsd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -23,7 +23,7 @@
 *                                    LDX12, X21, LDX21, X22, LDX22, THETA,
 *                                    U1, LDU1, U2, LDU2, V1T, LDV1T, V2T,
 *                                    LDV2T, WORK, LWORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS
 *       INTEGER            INFO, LDU1, LDU2, LDV1T, LDV2T, LDX11, LDX12,
@@ -37,7 +37,7 @@
 *      $                   X12( LDX12, * ), X21( LDX21, * ), X22( LDX22,
 *      $                   * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -284,10 +284,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
@@ -578,7 +578,7 @@
 *     Permute rows and columns to place identity submatrices in top-
 *     left corner of (1,1)-block and/or bottom-right corner of (1,2)-
 *     block and/or bottom-right corner of (2,1)-block and/or top-left
-*     corner of (2,2)-block 
+*     corner of (2,2)-block
 *
       IF( Q .GT. 0 .AND. WANTU2 ) THEN
          DO I = 1, Q

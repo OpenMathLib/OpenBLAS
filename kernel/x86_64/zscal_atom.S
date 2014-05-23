@@ -65,12 +65,12 @@
 #endif
 
 	SAVEREGISTERS
-	
+
 	salq	$ZBASE_SHIFT, INCX
 
 	testq	M, M
 	jle	.L999
-	
+
 	pxor	%xmm15, %xmm15
 	comisd	%xmm0, %xmm15
 	jne	.L30		# Alpha_r != ZERO
@@ -387,7 +387,7 @@
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS
-	
+
 	ret
 
 	EPILOGUE

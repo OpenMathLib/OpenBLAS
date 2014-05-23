@@ -234,7 +234,7 @@
 
 	{ .mfi
 	shr	I  = M, 3
-	} 
+	}
 	{ .mfi
 	mov	C1 = C			// coffset1 = c + 0 * ldc
 #ifdef LN
@@ -467,7 +467,7 @@
 	;;
 	shladd	AOFFSET = r2, 3, AORIG
 	add	BOFFSET = r2, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -1103,7 +1103,7 @@
 	;;
 	shladd	AOFFSET = r2, 2, AORIG
 	add	BOFFSET = r2, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -1463,7 +1463,7 @@
 	;;
 	shladd	AOFFSET = r2, 1, AORIG
 	add	BOFFSET = r2, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -1711,7 +1711,7 @@
 	;;
 	add	AOFFSET = r2, AORIG
 	add	BOFFSET = r2, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -1846,7 +1846,7 @@
 	;;
 	{ .mfi
 	shr	I  = M, 3
-	} 
+	}
 	{ .mfi
 	mov	C1 = C			// coffset1 = c + 0 * ldc
 #ifdef LN
@@ -2184,7 +2184,7 @@
 	;;
 	shladd	AOFFSET = r2, 3, AORIG
 	shladd	BOFFSET = r2, 1, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -3097,7 +3097,7 @@
 	;;
 	shladd	AOFFSET = r2, 2, AORIG
 	shladd	BOFFSET = r2, 1, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -3585,7 +3585,7 @@
 	;;
 	shladd	AOFFSET = r2, 1, AORIG
 	shladd	BOFFSET = r2, 1, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -3914,7 +3914,7 @@
 	;;
 	add	AOFFSET = r2, AORIG
 	shladd	BOFFSET = r2, 1, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -4109,7 +4109,7 @@
 	setf.d	f72  = r0
 	mov	f80  = f0
 	shr	I  = M, 3
-	} 
+	}
 	{ .mfi
 	mov	C1 = C			// coffset1 = c + 0 * ldc
 	mov	f88  = f0
@@ -4656,7 +4656,7 @@
 	;;
 	shladd	AOFFSET = r2, 3, AORIG
 	shladd	BOFFSET = r2, 2, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -5047,7 +5047,7 @@
 	FMPY	f80  = f80,  f21
 	FMPY	f88  = f88,  f21
 	;;
-	
+
 	adds	BOFFSET  = 24 * SIZE, BOFFSET
 	adds	BOFFSET2 = 24 * SIZE, BOFFSET2
 	;;
@@ -5398,7 +5398,7 @@
 	;;
 	LDFPD	f37, f38 = [BOFFSET]
 	adds	BOFFSET = 4 * SIZE, BOFFSET
-	;;	
+	;;
 	LDFPD	f39, f40 = [BOFFSET]
 	adds	BOFFSET = 5 * SIZE, BOFFSET
 	;;
@@ -6175,7 +6175,7 @@
 	;;
 	shladd	AOFFSET = r2, 2, AORIG
 	shladd	BOFFSET = r2, 2, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -6981,7 +6981,7 @@
 	;;
 	shladd	AOFFSET = r2, 1, AORIG
 	shladd	BOFFSET = r2, 2, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -7469,7 +7469,7 @@
 	;;
 	add	AOFFSET = r2, AORIG
 	shladd	BOFFSET = r2, 2, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -7786,7 +7786,7 @@
 	mov	AOFFSET = A
 #endif
 	mov	f80  = f0
-	} 
+	}
 	{ .mmf
 	add	C2 = LDC, C		// coffset2 = c + 1 * ldc
 	shladd	C3 = LDC, 1, C		// coffset3 = c + 2 * ldc
@@ -8153,7 +8153,7 @@
 	FMA	f106  = f34, f53, f106	// A3 * B6
 	nop	__LINE__
 	}
-	;; 
+	;;
 /* 12 */
 	{ .mfb
 	FMA	f114  = f34, f54, f114	// A3 * B7
@@ -8798,7 +8798,7 @@
 	;;
 	shladd	AOFFSET = r2, 3, AORIG
 	shladd	BOFFSET = r2, 3, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -13126,7 +13126,7 @@
 	;;
 	shladd	AOFFSET = r2, 2, AORIG
 	shladd	BOFFSET = r2, 3, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -13937,7 +13937,7 @@
 	LDFD	f21 = [BOFFSET]
 	adds	BOFFSET = -63 * SIZE, BOFFSET
 	;;
-	
+
 
 	FMPY	f64  = f64,  f32
 	FMPY	f65  = f65,  f32
@@ -14103,7 +14103,7 @@
 	FNMA	f121 = f105, f18, f121
 	FNMA	f122 = f106, f18, f122
 	FNMA	f123 = f107, f18, f123
-	;; 
+	;;
 	FMPY	f112 = f112, f19
 	FMPY	f113 = f113, f19
 	FMPY	f114 = f114, f19
@@ -14972,7 +14972,7 @@
 	;;
 	shladd	AOFFSET = r2, 1, AORIG
 	shladd	BOFFSET = r2, 3, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -15515,7 +15515,7 @@
 	;;
 	FNMA	f120 = f104, f18, f120
 	FNMA	f121 = f105, f18, f121
-	;; 
+	;;
 	FMPY	f112 = f112, f19
 	FMPY	f113 = f113, f19
 	;;
@@ -16061,7 +16061,7 @@
 	;;
 	add	AOFFSET = r2, AORIG
 	shladd	BOFFSET = r2, 3, B
-	;;	
+	;;
 #endif
  	adds	AOFFSET2 = 4 * SIZE, AOFFSET
  	adds	BOFFSET2 = 4 * SIZE, BOFFSET
@@ -16369,7 +16369,7 @@
 	FNMA	f112 = f104, f17, f112
 	;;
 	FNMA	f120 = f104, f18, f120
-	;; 
+	;;
 	FMPY	f112 = f112, f19
 	;;
 	FNMA	f120 = f112, f20, f120
@@ -16671,13 +16671,13 @@
 	;;
 	ldf.fill  f16 = [SP], 32
 	ldf.fill  f17 = [r9], 32
-	;;	
+	;;
 	ldf.fill  f18 = [SP], 32
 	ldf.fill  f19 = [r9], 32
-	;;	
+	;;
 	ldf.fill  f20 = [SP], 32
 	ldf.fill  f21 = [r9], 32
-	;;	
+	;;
 	mov	 ar.lc = ARLC
 	;;
 	mov pr    = PR, -1

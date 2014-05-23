@@ -60,7 +60,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 	while(i < n)
 	{
-		if( ABS(x[ix]) < ABS(minf) ) 
+		if( ABS(x[ix]) < ABS(minf) )
 		{
 			minf = ABS(x[ix]);
 		}
@@ -69,5 +69,5 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	}
 	return(minf);
 }
-	
+
 

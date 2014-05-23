@@ -80,7 +80,7 @@
 #define F27 27
 #define F26 26
 #define F25 25
-#define F24 24 
+#define F24 24
 #define F23 23
 #define F22 22
 #define F21 21
@@ -88,7 +88,7 @@
 #define F19 19
 #define F18 18
 #define F17 17
-#define F16 16 
+#define F16 16
 #define F15 15
 #define F14 14
 #define F13 13
@@ -100,10 +100,10 @@
 #define F7 7
 #define F6 6
 #define F5 5
-#define F4 4 
-#define F3 3 
-#define F2 2 
-#define F1 1 
+#define F4 4
+#define F3 3
+#define F2 2
+#define F1 1
 #define F0 0
 
 #define	R12	12
@@ -132,7 +132,7 @@
 #	.fmask	0x00000000,0
 #	.set	noreorder
 #	.set	nomacro
-	
+
 
 	PROLOGUE
 
@@ -213,12 +213,12 @@
 	daddu	BO, B,  TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	dsll	PREB, K, BASE_SHIFT
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	MOV		C31, C11
 	MOV		C32, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
@@ -235,13 +235,13 @@
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV		C24, C11
 	FETCH	$0, 4 * SIZE(CO1)
-	
+
 	MOV		C33, C11
 	FETCH	$0, 0 * SIZE(CO2)
 	MOV		C34, C11
 	FETCH	$0, 4 * SIZE(CO2)
-	
-	daddu	PREB, B, PREB 
+
+	daddu	PREB, B, PREB
 	MOV		C43, C11
 	FETCH	$0, 0 * SIZE(CO3)
 
@@ -271,12 +271,12 @@
 	dsra	L, K, 6				#	UnRoll	K=64
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	dsll	PREB, K, BASE_SHIFT
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	MOV		C31, C11
 	MOV		C32, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
@@ -293,13 +293,13 @@
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV		C24, C11
 	FETCH	$0, 4 * SIZE(CO1)
-	
+
 	MOV		C33, C11
 	FETCH	$0, 0 * SIZE(CO2)
 	MOV		C34, C11
 	FETCH	$0, 4 * SIZE(CO2)
-	
-	daddu	PREB, B, PREB 
+
+	daddu	PREB, B, PREB
 	MOV		C43, C11
 	FETCH	$0, 0 * SIZE(CO3)
 
@@ -435,7 +435,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -571,7 +571,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -707,7 +707,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -843,7 +843,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -979,7 +979,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -1115,7 +1115,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -1251,7 +1251,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -1387,7 +1387,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -1523,7 +1523,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -1659,7 +1659,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -1795,7 +1795,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -1931,7 +1931,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -2067,7 +2067,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -2203,7 +2203,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -2339,7 +2339,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -2475,7 +2475,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -2622,7 +2622,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -2758,7 +2758,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -2894,7 +2894,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3030,7 +3030,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3166,7 +3166,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3302,7 +3302,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3438,7 +3438,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3574,7 +3574,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3721,7 +3721,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3857,7 +3857,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -3993,7 +3993,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -4129,7 +4129,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -4148,7 +4148,7 @@
 
 
 	.align	4
-.L484:				
+.L484:
 #ifndef TRMMKERNEL
 	andi	L, K, 8
 #else
@@ -4276,7 +4276,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -4412,7 +4412,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -4559,7 +4559,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -4640,7 +4640,7 @@
 
 	MADPS	C13, C13, A5, B7
 	MADPS	C23, C23, A6, B7
-	daddiu	PREB, PREB, 8 * SIZE	
+	daddiu	PREB, PREB, 8 * SIZE
 
 	MADPS	C33, C33, A7, B7
 	MADPS	C43, C43, A8, B7
@@ -4721,7 +4721,7 @@
 	CVTU	A8, C41				#	A8=C41.upper=c28
 	LD		B6, 5 * SIZE(CO2)
 
-	MADD	A1, B1, A1, ALPHA 		#	c12		
+	MADD	A1, B1, A1, ALPHA 		#	c12
 	LD		B7, 7 * SIZE(CO1)
 
 	MADD	A2, B2, A2, ALPHA 		#	c22
@@ -4732,7 +4732,7 @@
 
 	MADD	A4, B4, A4, ALPHA 		#	c24
 	LD		B3, 0 * SIZE(CO2)
-	
+
 	MADD	A5, B5, A5, ALPHA 		#	c16
 	LD		B4, 2 * SIZE(CO1)
 
@@ -4759,7 +4759,7 @@
 
 	MADD	C31, B6, C31, ALPHA 		#	c16
 	LD		A2, 6 * SIZE(CO2)
-	
+
 	MADD	C33, B7, C33, ALPHA 		#	c26
 	ST		A4, 3 * SIZE(CO2)
 
@@ -4773,7 +4773,7 @@
 
 	MADD	C43, A2, C43, ALPHA 		#	c28
 	ST		C13, 0 * SIZE(CO2)
-	
+
 	ST		C21, 2 * SIZE(CO1)
 	ST		C23, 2 * SIZE(CO2)
 	ST		C31, 4 * SIZE(CO1)
@@ -4801,58 +4801,58 @@
 	CVTU	A7, C44				#	B7=C42.upper=c48
 	LD		B6, 5 * SIZE(CO4)
 
-	CVTU	A8, C42				#	A1=C44.upper=c38	
+	CVTU	A8, C42				#	A1=C44.upper=c38
 	LD		B7, 7 * SIZE(CO3)
 
 	MADD	A1, B1, A1, ALPHA 		#	c31
 	LD		C11, 7 * SIZE(CO4)
 
-	MADD	A2, B2, A2, ALPHA 
+	MADD	A2, B2, A2, ALPHA
 	LD		C13, 0 * SIZE(CO3)
-	
-	MADD	A3, B3, A3, ALPHA 
+
+	MADD	A3, B3, A3, ALPHA
 	LD		C21, 0 * SIZE(CO4)
-	
-	MADD	A4, B4, A4, ALPHA 
+
+	MADD	A4, B4, A4, ALPHA
 	LD		C23, 2 * SIZE(CO3)
 
-	MADD	A5, B5, A5, ALPHA 
+	MADD	A5, B5, A5, ALPHA
 	LD		C31, 2 * SIZE(CO4)
-	
-	MADD	A6, B6, A6, ALPHA 
+
+	MADD	A6, B6, A6, ALPHA
 	LD		C33, 4 * SIZE(CO3)
-	
-	MADD	A7, B7, A7, ALPHA 
+
+	MADD	A7, B7, A7, ALPHA
 	LD		C41, 4 * SIZE(CO4)
-	
-	MADD	A8, C11, A8, ALPHA 
+
+	MADD	A8, C11, A8, ALPHA
 	ST		A1, 1 * SIZE(CO3)
 
-	MADD	C12, C13, C12, ALPHA 
+	MADD	C12, C13, C12, ALPHA
 	LD		C43, 6 * SIZE(CO3)
-	
-	MADD	C14, C21, C14, ALPHA 
+
+	MADD	C14, C21, C14, ALPHA
 	ST		A2, 1 * SIZE(CO4)
 
-	MADD	C22, C23, C22, ALPHA 
+	MADD	C22, C23, C22, ALPHA
 	LD		B1, 6 * SIZE(CO4)
-	
-	MADD	C24, C31, C24, ALPHA 
+
+	MADD	C24, C31, C24, ALPHA
 	ST		A3, 3 * SIZE(CO3)
 
-	MADD	C32, C33, C32, ALPHA 
+	MADD	C32, C33, C32, ALPHA
 	ST		A4, 3 * SIZE(CO4)
 
-	MADD	C34, C41, C34, ALPHA 
+	MADD	C34, C41, C34, ALPHA
 	ST		A5, 5 * SIZE(CO3)
 
-	MADD	C42, C43, C42, ALPHA 
+	MADD	C42, C43, C42, ALPHA
 	ST		A6, 5 * SIZE(CO4)
 
 	ST		A7, 7 * SIZE(CO3)
 	NOP
 
-	MADD	C44, B1, C44, ALPHA 
+	MADD	C44, B1, C44, ALPHA
 	ST		A8, 7 * SIZE(CO4)
 
 	ST		C12, 0 * SIZE(CO3)
@@ -4880,7 +4880,7 @@
 	CVTU	A7, C43				#	A7=C43.upper=c18
 	CVTU	A8, C41				#	A8=C41.upper=c28
 
-	MUL		A1, A1, ALPHA 		#	c12		
+	MUL		A1, A1, ALPHA 		#	c12
 	MUL		A2, A2, ALPHA 		#	c22
 	MUL		A3, A3, ALPHA 		#	c14
 	MUL		A4, A4, ALPHA 		#	c24
@@ -4903,7 +4903,7 @@
 
 	MUL	C31, C31, ALPHA 		#	c16
 	ST	A5, 5 * SIZE(CO1)
-	
+
 	MUL	C33, C33, ALPHA 		#	c26
 	ST	A6, 5 * SIZE(CO2)
 
@@ -4921,7 +4921,7 @@
 
 	CVTU	A3, C24				#	B3=C22.upper=c44
 	ST		C21, 2 * SIZE(CO1)
-	
+
 	CVTU	A4, C22				#	B4=C24.upper=c34
 	ST		C23, 2 * SIZE(CO2)
 
@@ -4934,40 +4934,40 @@
 	CVTU	A7, C44				#	B7=C42.upper=c48
 	ST		C41, 6 * SIZE(CO1)
 
-	CVTU	A8, C42				#	A1=C44.upper=c38	
+	CVTU	A8, C42				#	A1=C44.upper=c38
 	ST		C43, 6 * SIZE(CO2)
 
 	MUL		A1, A1, ALPHA 		#	c31
-	MUL		A2, A2, ALPHA 
-	MUL		A3, A3, ALPHA 
-	MUL		A4, A4, ALPHA 
-	MUL		A5, A5, ALPHA 
-	MUL		A6, A6, ALPHA 
-	MUL		A7, A7, ALPHA 
-	MUL		A8, A8, ALPHA 
+	MUL		A2, A2, ALPHA
+	MUL		A3, A3, ALPHA
+	MUL		A4, A4, ALPHA
+	MUL		A5, A5, ALPHA
+	MUL		A6, A6, ALPHA
+	MUL		A7, A7, ALPHA
+	MUL		A8, A8, ALPHA
 
-	MUL	C12, C12, ALPHA 
+	MUL	C12, C12, ALPHA
 	ST	A1, 1 * SIZE(CO3)
 
-	MUL	C14, C14, ALPHA 
+	MUL	C14, C14, ALPHA
 	ST	A2, 1 * SIZE(CO4)
 
-	MUL	C22, C22, ALPHA 
+	MUL	C22, C22, ALPHA
 	ST	A3, 3 * SIZE(CO3)
 
-	MUL	C24, C24, ALPHA 
+	MUL	C24, C24, ALPHA
 	ST	A4, 3 * SIZE(CO4)
 
-	MUL	C32, C32, ALPHA 
+	MUL	C32, C32, ALPHA
 	ST	A5, 5 * SIZE(CO3)
 
-	MUL	C34, C34, ALPHA 
+	MUL	C34, C34, ALPHA
 	ST	A6, 5 * SIZE(CO4)
 
-	MUL	C42, C42, ALPHA 
+	MUL	C42, C42, ALPHA
 	ST	A7, 7 * SIZE(CO3)
 
-	MUL	C44, C44, ALPHA 
+	MUL	C44, C44, ALPHA
 	ST	A8, 7 * SIZE(CO4)
 
 	ST		C12, 0 * SIZE(CO3)
@@ -5025,12 +5025,12 @@
 	daddu	BO, B,  TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	dsll	PREB, K, BASE_SHIFT
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	MOV		C31, C11
 	MOV		C32, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
@@ -5045,12 +5045,12 @@
 	MOV		C23, C11
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	FETCH	$0, 0 * SIZE(CO2)
 	MOV		C34, C11
-	
-	daddu	PREB, B, PREB 
+
+	daddu	PREB, B, PREB
 	MOV		C43, C11
 	FETCH	$0, 0 * SIZE(CO3)
 
@@ -5077,12 +5077,12 @@
 	dsra	L, K, 2				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	dsll	PREB, K, BASE_SHIFT
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	MOV		C31, C11
 	MOV		C32, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
@@ -5097,12 +5097,12 @@
 	MOV		C23, C11
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	FETCH	$0, 0 * SIZE(CO2)
 	MOV		C34, C11
-	
-	daddu	PREB, B, PREB 
+
+	daddu	PREB, B, PREB
 	MOV		C43, C11
 	FETCH	$0, 0 * SIZE(CO3)
 
@@ -5114,7 +5114,7 @@
 	PLU		B4, B2, B2
 #endif
 
-.L4410:							#	
+.L4410:							#
 	daddiu	L, L, -1
 	MADPS	C11, C11, A1, B1
 	gsLQC1(R13, F13, F12, 1)	#	B3 B4
@@ -5196,7 +5196,7 @@
 	MADPS	C13, C13, A7, B7
 	daddiu	PREA, PREA, 16 * SIZE
 	MADPS	C23, C23, A8, B7
-	daddiu	PREB, PREB, 16 * SIZE	
+	daddiu	PREB, PREB, 16 * SIZE
 
 	MADPS	C14, C14, A7, B8
 	MADPS	C24, C24, A8, B8
@@ -5303,7 +5303,7 @@
 	LD		B4, 3 * SIZE(CO2)
 
 
-	MADD	A1, B1, A1, ALPHA 		#	c12		
+	MADD	A1, B1, A1, ALPHA 		#	c12
 	LD		B5, 0 * SIZE(CO1)
 
 	MADD	A2, B2, A2, ALPHA 		#	c22
@@ -5314,7 +5314,7 @@
 
 	MADD	A4, B4, A4, ALPHA 		#	c24
 	LD		B1, 2 * SIZE(CO2)
-	
+
 	MADD	C11, B5, C11, ALPHA 		#	c12
 	ST		A1, 1 * SIZE(CO1)
 
@@ -5347,25 +5347,25 @@
 	MADD	A1, B1, A1, ALPHA 		#	c31
 	LD		A5, 0 * SIZE(CO3)
 
-	MADD	A2, B2, A2, ALPHA 
+	MADD	A2, B2, A2, ALPHA
 	LD		A6, 0 * SIZE(CO4)
-	
-	MADD	A3, B3, A3, ALPHA 
+
+	MADD	A3, B3, A3, ALPHA
 	LD		A7, 2 * SIZE(CO3)
-	
-	MADD	A4, B4, A4, ALPHA 
+
+	MADD	A4, B4, A4, ALPHA
 	LD		A8, 2 * SIZE(CO4)
 
-	MADD	C12, A5, C12, ALPHA 
+	MADD	C12, A5, C12, ALPHA
 	ST		A1, 1 * SIZE(CO3)
 
-	MADD	C14, A6, C14, ALPHA 
+	MADD	C14, A6, C14, ALPHA
 	ST		A2, 1 * SIZE(CO4)
 
-	MADD	C22, A7, C22, ALPHA 
+	MADD	C22, A7, C22, ALPHA
 	ST		A3, 3 * SIZE(CO3)
-	
-	MADD	C24, A8, C24, ALPHA 
+
+	MADD	C24, A8, C24, ALPHA
 	ST		A4, 3 * SIZE(CO4)
 
 	ST		C12, 0 * SIZE(CO3)
@@ -5384,11 +5384,11 @@
 	CVTU	A3, C23				#	A3=C23.upper=c14
 	CVTU	A4, C21				#	A4=C21.upper=c24
 
-	MUL		A1, A1, ALPHA 		#	c12		
+	MUL		A1, A1, ALPHA 		#	c12
 	MUL		A2, A2, ALPHA 		#	c22
 	MUL		A3, A3, ALPHA 		#	c14
 	MUL		A4, A4, ALPHA 		#	c24
-	
+
 	MUL	C11, C11, ALPHA 		#	c12
 	ST	A1, 1 * SIZE(CO1)
 
@@ -5409,25 +5409,25 @@
 
 	CVTU	A7, C24				#	B3=C22.upper=c44
 	ST		C21, 2 * SIZE(CO1)
-	
+
 	CVTU	A8, C22				#	B4=C24.upper=c34
 	ST		C23, 2 * SIZE(CO2)
 
 	MUL		A5, A5, ALPHA 		#	c31
-	MUL		A6, A6, ALPHA 
-	MUL		A7, A7, ALPHA 
-	MUL		A8, A8, ALPHA 
+	MUL		A6, A6, ALPHA
+	MUL		A7, A7, ALPHA
+	MUL		A8, A8, ALPHA
 
-	MUL	C12, C12, ALPHA 
+	MUL	C12, C12, ALPHA
 	ST	A5, 1 * SIZE(CO3)
 
-	MUL	C14, C14, ALPHA 
+	MUL	C14, C14, ALPHA
 	ST	A6, 1 * SIZE(CO4)
 
-	MUL	C22, C22, ALPHA 
+	MUL	C22, C22, ALPHA
 	ST	A7, 3 * SIZE(CO3)
-	
-	MUL	C24, C24, ALPHA 
+
+	MUL	C24, C24, ALPHA
 	ST	A8, 3 * SIZE(CO4)
 
 	ST		C12, 0 * SIZE(CO3)
@@ -5478,11 +5478,11 @@
 	daddu	BO, B, TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	MOV		C31, C11
 	MOV		C32, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
@@ -5497,11 +5497,11 @@
 	MOV		C23, C11
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	FETCH	$0, 0 * SIZE(CO2)
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	FETCH	$0, 0 * SIZE(CO3)
 
@@ -5527,11 +5527,11 @@
 	dsra	L, K, 2				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	MOV		C31, C11
 	MOV		C32, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
@@ -5546,11 +5546,11 @@
 	MOV		C23, C11
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	FETCH	$0, 0 * SIZE(CO2)
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	FETCH	$0, 0 * SIZE(CO3)
 
@@ -5669,7 +5669,7 @@
 	CVTU	A2, C11				#	A2=C11.upper=c22
 	LD		B2, 1 * SIZE(CO2)
 
-	MADD	A1, B1, A1, ALPHA 		#	c12		
+	MADD	A1, B1, A1, ALPHA 		#	c12
 	LD		B5, 0 * SIZE(CO1)
 
 	MADD	A2, B2, A2, ALPHA 		#	c22
@@ -5693,13 +5693,13 @@
 	MADD	A1, B1, A1, ALPHA 		#	c31
 	LD		A5, 0 * SIZE(CO3)
 
-	MADD	A2, B2, A2, ALPHA 
+	MADD	A2, B2, A2, ALPHA
 	LD		A6, 0 * SIZE(CO4)
-	
-	MADD	C12, A5, C12, ALPHA 
+
+	MADD	C12, A5, C12, ALPHA
 	ST		A1, 1 * SIZE(CO3)
 
-	MADD	C14, A6, C14, ALPHA 
+	MADD	C14, A6, C14, ALPHA
 	ST		A2, 1 * SIZE(CO4)
 
 	ST		C12, 0 * SIZE(CO3)
@@ -5713,7 +5713,7 @@
 	CVTU	A1, C13				#	A1=C13.upper=c12
 	CVTU	A2, C11				#	A2=C11.upper=c22
 
-	MUL	A1, A1, ALPHA 		#	c12		
+	MUL	A1, A1, ALPHA 		#	c12
 	MUL	A2, A2, ALPHA 		#	c22
 
 	MUL	C11, C11, ALPHA 		#	c12
@@ -5725,13 +5725,13 @@
 	MUL	A3, A3, ALPHA 		#	c31
 	ST	A1, 1 * SIZE(CO1)
 
-	MUL	A4, A4, ALPHA 
+	MUL	A4, A4, ALPHA
 	ST	A2, 1 * SIZE(CO2)
 
-	MUL	C12, C12, ALPHA 
+	MUL	C12, C12, ALPHA
 	ST	C11, 0 * SIZE(CO1)
-	
-	MUL	C14, C14, ALPHA 
+
+	MUL	C14, C14, ALPHA
 	ST	C13, 0 * SIZE(CO2)
 
 	ST	A3, 1 * SIZE(CO3)
@@ -5784,7 +5784,7 @@
 	daddu	BO, B, TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		B1, 0 * SIZE(BO)
 
 	MOV		C21, C11
@@ -5805,10 +5805,10 @@
 
 	MOV		C23, C11
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	MOV		C44, C11
 #if (defined(LEFT) && !defined(TRANSA))||\
@@ -5827,7 +5827,7 @@
 	dsra	L, K, 2				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		B1, 0 * SIZE(BO)
 
 	MOV		C21, C11
@@ -5848,10 +5848,10 @@
 
 	MOV		C23, C11
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	blez	L, .L412
 	MOV		C44, C11
@@ -5860,7 +5860,7 @@
 .L4110:
 	daddiu	L, L, -1
 	LD		A2, 1 * SIZE(AO)
-	
+
 	MADD	C11, C11, A1, B1
 	LD		B5,	4 * SIZE(BO)
 
@@ -5875,7 +5875,7 @@
 
 	LD		A3, 2 * SIZE(AO)
 	NOP
-	
+
 	MADD	C11, C11, A2, B5
 	LD		B1,	 8 * SIZE(BO)
 
@@ -5890,7 +5890,7 @@
 
 	LD		A4, 3 * SIZE(AO)
 	daddiu	AO, AO, 4 * SIZE
-	
+
 	MADD	C11, C11, A3, B1
 	LD		B5,	12 * SIZE(BO)
 
@@ -5930,7 +5930,7 @@
 
 	LD		A2, 1 * SIZE(AO)
 	daddiu	AO, AO, 2 * SIZE
-	
+
 	MADD	C11, C11, A1, B1
 	LD		B5,	4 * SIZE(BO)
 
@@ -5945,7 +5945,7 @@
 
 	LD		A1, 0 * SIZE(AO)
 	daddiu	BO, BO, 8 * SIZE
-	
+
 	MADD	C11, C11, A2, B5
 	LD		B1,	0 * SIZE(BO)
 
@@ -6046,7 +6046,7 @@
 
 	.align	4
 .L2:							#	Nr=2
-	andi	J, N, 2			
+	andi	J, N, 2
 	blez	J, .L1
 	NOP
 
@@ -6078,7 +6078,7 @@
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
 	LD		A1, 0 * SIZE(AO)
 
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A2, 1 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6107,10 +6107,10 @@
 
 	MOV		C23, C11
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	MOV		C44, C11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
@@ -6131,7 +6131,7 @@
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
 	LD		A1, 0 * SIZE(AO)
 
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A2, 1 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6160,10 +6160,10 @@
 
 	MOV		C23, C11
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	blez	L, .L282
 	MOV		C44, C11
@@ -6293,8 +6293,8 @@
 	LD		A8, 7 * SIZE(CO1)
 
 	MADD		A1, A1, C11, ALPHA
-	LD		B1, 0 * SIZE(CO2) 
-	
+	LD		B1, 0 * SIZE(CO2)
+
 	MADD		A2, A2, C21, ALPHA
 	LD		B2, 1 * SIZE(CO2)
 
@@ -6439,7 +6439,7 @@
 	daddu	BO, B, TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6464,7 +6464,7 @@
 
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	MOV		C44, C11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
@@ -6483,7 +6483,7 @@
 	dsra	L, K, 1				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6508,7 +6508,7 @@
 
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	blez	L, .L242
 	MOV		C44, C11
@@ -6593,8 +6593,8 @@
 	LD		A4, 3 * SIZE(CO1)
 
 	MADD		A1, A1, C11, ALPHA
-	LD		B1, 0 * SIZE(CO2) 
-	
+	LD		B1, 0 * SIZE(CO2)
+
 	MADD		A2, A2, C21, ALPHA
 	LD		B2, 1 * SIZE(CO2)
 
@@ -6687,7 +6687,7 @@
 	daddu	BO, B, TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6720,7 +6720,7 @@
 	dsra	L, K, 1				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6797,8 +6797,8 @@
 	LD		A2, 1 * SIZE(CO1)
 
 	MADD		A1, A1, C11, ALPHA
-	LD		B1, 0 * SIZE(CO2) 
-	
+	LD		B1, 0 * SIZE(CO2)
+
 	MADD		A2, A2, C21, ALPHA
 	LD		B2, 1 * SIZE(CO2)
 
@@ -6867,7 +6867,7 @@
 #endif
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6899,7 +6899,7 @@
 	dsra	L, K, 1				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -6963,8 +6963,8 @@
 	LD		A1, 0 * SIZE(CO1)
 
 	MADD		A1, A1, C11, ALPHA
-	LD		B1, 0 * SIZE(CO2) 
-	
+	LD		B1, 0 * SIZE(CO2)
+
 	MADD		B1, B1, C12, ALPHA
 	ST		A1, 0 * SIZE(CO1)
 
@@ -7044,7 +7044,7 @@
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
 	LD		A1, 0 * SIZE(AO)
 
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A2, 1 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7072,10 +7072,10 @@
 
 	MOV		C23, C11
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	MOV		C44, C11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
@@ -7096,7 +7096,7 @@
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
 	LD		A1, 0 * SIZE(AO)
 
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A2, 1 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7124,10 +7124,10 @@
 
 	MOV		C23, C11
 	MOV		C24, C11
-	
+
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	blez	L, .L182
 	MOV		C44, C11
@@ -7315,7 +7315,7 @@
 	daddu	BO, B, TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7339,7 +7339,7 @@
 
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	MOV		C44, C11
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
@@ -7358,7 +7358,7 @@
 	dsra	L, K, 1				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7382,7 +7382,7 @@
 
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	blez	L, .L142
 	MOV		C44, C11
@@ -7511,7 +7511,7 @@
 #endif
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7544,7 +7544,7 @@
 	dsra	L, K, 1				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7660,7 +7660,7 @@
 	daddu	BO, B, L
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7686,7 +7686,7 @@
 	dsra	L, K, 1				#	UnRoll	K=4
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	LD		A1, 0 * SIZE(AO)
 
 	MOV		C21, C11
@@ -7739,13 +7739,13 @@
 	LD		A1, 0 * SIZE(C)
 
 	MADD		A1, A1, C11, ALPHA
-	
+
 	ST		A1, 0 * SIZE(C)
 
 	daddiu	C, C, 1 * SIZE
 #else
 	MUL		A1, C11, ALPHA
-	
+
 	ST		A1, 0 * SIZE(C)
 
 	daddiu	C, C, 1 * SIZE

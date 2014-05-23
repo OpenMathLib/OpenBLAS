@@ -257,7 +257,7 @@
 
 	stfd	f1, ALPHA_R
 	stfd	f2, ALPHA_I
-	
+
 	mullw	PLDA_M, LDA, N
 	li	XP,  P
 	subf	PLDA_M, XP, PLDA_M
@@ -669,7 +669,7 @@ LL(MainKernel):
 
 	addi	BO, BO, 16 * SIZE
  	bdnz	LL(MainKernel)
-	.align 4	
+	.align 4
 
 LL(MainKernelSkip):
 	FMADD	f0,  f16,  f24, f0
@@ -984,7 +984,7 @@ LL(MainN3Kernel):
 	addi	AO4, AO4, 2 * SIZE
 
 	bdnz	LL(MainN3Kernel)
-	.align 4	
+	.align 4
 
 LL(MainN3KernelSkip):
 	FMADD	f0,  f16,  f24, f0
@@ -1159,7 +1159,7 @@ LL(FinishN1):
 	cmpwi	cr0, J, 0
 	bgt	LL(MainHead)
 	.align 4
-	
+
 LL(Remain):
 	andi.	J, N, 3
 	ble	LL(ISEnd)
@@ -1301,7 +1301,7 @@ LL(RemainKernel):
 	DCBT(AO1, PREA)
 
 	bdnz	LL(RemainKernel)
-	.align 4	
+	.align 4
 
 LL(RemainKernelSkip):
 	FMADD	f0,  f16,  f24, f0
@@ -1393,7 +1393,7 @@ LL(RemainN3Kernel):
 	LFDU	f25, 2 * SIZE(BO)
 	addi	AO1, AO1, 2 * SIZE
 	bdnz	LL(RemainN3Kernel)
-	.align 4	
+	.align 4
 
 LL(RemainN3KernelSkip):
 	FMADD	f0,  f16,  f24, f0

@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLATMT( M, N, DIST, ISEED, SYM, D, MODE, COND, DMAX,
 *                          RANK, KL, KU, PACK, A, LDA, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   COND, DMAX
 *       INTEGER            INFO, KL, KU, LDA, M, MODE, N, RANK
@@ -20,7 +20,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), D( * ), WORK( * )
 *       INTEGER            ISEED( 4 )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -318,10 +318,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

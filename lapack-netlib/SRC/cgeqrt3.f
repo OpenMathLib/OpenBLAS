@@ -2,41 +2,41 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGEQRT3 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgeqrt3.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgeqrt3.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgeqrt3.f"> 
+*> Download CGEQRT3 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgeqrt3.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgeqrt3.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgeqrt3.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       RECURSIVE SUBROUTINE CGEQRT3( M, N, A, LDA, T, LDT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER   INFO, LDA, M, N, LDT
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX   A( LDA, * ), T( LDT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> CGEQRT3 recursively computes a QR factorization of a complex M-by-N matrix A, 
-*> using the compact WY representation of Q. 
+*> CGEQRT3 recursively computes a QR factorization of a complex M-by-N matrix A,
+*> using the compact WY representation of Q.
 *>
-*> Based on the algorithm of Elmroth and Gustavson, 
+*> Based on the algorithm of Elmroth and Gustavson,
 *> IBM J. Res. Develop. Vol 44 No. 4 July 2000.
 *> \endverbatim
 *
@@ -95,10 +95,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -178,7 +178,7 @@
 *        Compute Householder transform when N=1
 *
          CALL CLARFG( M, A, A( MIN( 2, M ), 1 ), 1, T )
-*         
+*
       ELSE
 *
 *        Otherwise, split A into blocks...
@@ -199,7 +199,7 @@
                T( I, J+N1 ) = A( I, J+N1 )
             END DO
          END DO
-         CALL CTRMM( 'L', 'L', 'C', 'U', N1, N2, ONE, 
+         CALL CTRMM( 'L', 'L', 'C', 'U', N1, N2, ONE,
      &               A, LDA, T( 1, J1 ), LDT )
 *
          CALL CGEMM( 'C', 'N', N1, N2, M-N1, ONE, A( J1, 1 ), LDA,
@@ -208,7 +208,7 @@
          CALL CTRMM( 'L', 'U', 'C', 'N', N1, N2, ONE,
      &               T, LDT, T( 1, J1 ), LDT )
 *
-         CALL CGEMM( 'N', 'N', M-N1, N2, N1, -ONE, A( J1, 1 ), LDA, 
+         CALL CGEMM( 'N', 'N', M-N1, N2, N1, -ONE, A( J1, 1 ), LDA,
      &               T( 1, J1 ), LDT, ONE, A( J1, J1 ), LDA )
 *
          CALL CTRMM( 'L', 'L', 'N', 'U', N1, N2, ONE,
@@ -222,7 +222,7 @@
 *
 *        Compute A(J1:M,J1:N) <- (Y2,R2,T2) where Q2 = I - Y2 T2 Y2**H
 *
-         CALL CGEQRT3( M-N1, N2, A( J1, J1 ), LDA, 
+         CALL CGEQRT3( M-N1, N2, A( J1, J1 ), LDA,
      &                T( J1, J1 ), LDT, IINFO )
 *
 *        Compute T3 = T(1:N1,J1:N) = -T1 Y1**H Y2 T2
@@ -236,13 +236,13 @@
          CALL CTRMM( 'R', 'L', 'N', 'U', N1, N2, ONE,
      &               A( J1, J1 ), LDA, T( 1, J1 ), LDT )
 *
-         CALL CGEMM( 'C', 'N', N1, N2, M-N, ONE, A( I1, 1 ), LDA, 
+         CALL CGEMM( 'C', 'N', N1, N2, M-N, ONE, A( I1, 1 ), LDA,
      &               A( I1, J1 ), LDA, ONE, T( 1, J1 ), LDT )
 *
-         CALL CTRMM( 'L', 'U', 'N', 'N', N1, N2, -ONE, T, LDT, 
+         CALL CTRMM( 'L', 'U', 'N', 'N', N1, N2, -ONE, T, LDT,
      &               T( 1, J1 ), LDT )
 *
-         CALL CTRMM( 'R', 'U', 'N', 'N', N1, N2, ONE, 
+         CALL CTRMM( 'R', 'U', 'N', 'N', N1, N2, ONE,
      &               T( J1, J1 ), LDT, T( 1, J1 ), LDT )
 *
 *        Y = (Y1,Y2); R = [ R1  A(1:N1,J1:N) ];  T = [T1 T3]

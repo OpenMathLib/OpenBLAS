@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE CLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK, 
+*       SUBROUTINE CLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
 *            INFO, PATH)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER T, N, NRHS, LDA, LDX, LDB, INFO
 *       .. Array Arguments ..
@@ -18,7 +18,7 @@
 *       COMPLEX A(LDA,N), X(LDX, NRHS), B(LDB, NRHS)
 *       CHARACTER*3        PATH
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -121,17 +121,17 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
-      SUBROUTINE CLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK, 
+      SUBROUTINE CLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
      $     INFO, PATH)
 *
 *  -- LAPACK test routine (version 3.4.0) --
@@ -165,10 +165,10 @@
       PARAMETER (NMAX_EXACT = 6, NMAX_APPROX = 11, SIZE_D = 8)
 *
 *     d's are generated from random permuation of those eight elements.
-      COMPLEX D1(8), D2(8), INVD1(8), INVD2(8) 
+      COMPLEX D1(8), D2(8), INVD1(8), INVD2(8)
       DATA D1 /(-1,0),(0,1),(-1,-1),(0,-1),(1,0),(-1,1),(1,1),(1,-1)/
       DATA D2 /(-1,0),(0,-1),(-1,1),(0,1),(1,0),(-1,-1),(1,-1),(1,1)/
-      
+
       DATA INVD1 /(-1,0),(0,-1),(-.5,.5),(0,1),(1,0),
      $     (-.5,-.5),(.5,-.5),(.5,.5)/
       DATA INVD2 /(-1,0),(0,1),(-.5,-.5),(0,-1),(1,0),
@@ -250,14 +250,14 @@
          WORK(J) = (  ( (WORK(J-1)/(J-1)) * (J-1 - N) ) /(J-1)  )
      $        * (N +J -1)
       END DO
-*      
+*
 *     If we are testing SY routines, take D1_i = D2_i, else, D1_i = D2_i*
       IF ( LSAMEN( 2, C2, 'SY' ) ) THEN
          DO J = 1, NRHS
             DO I = 1, N
-               X(I, J) = 
+               X(I, J) =
      $              INVD1(MOD(J,SIZE_D)+1) *
-     $              ((WORK(I)*WORK(J)) / (I + J - 1)) 
+     $              ((WORK(I)*WORK(J)) / (I + J - 1))
      $              * INVD1(MOD(I,SIZE_D)+1)
             END DO
          END DO
@@ -272,4 +272,4 @@
          END DO
       END IF
       END
-      
+

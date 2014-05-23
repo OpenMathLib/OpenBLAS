@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_GBAMV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gbamv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gbamv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gbamv.f"> 
+*> Download ZLA_GBAMV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_gbamv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_gbamv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_gbamv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLA_GBAMV( TRANS, M, N, KL, KU, ALPHA, AB, LDAB, X,
 *                             INCX, BETA, Y, INCY )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   ALPHA, BETA
 *       INTEGER            INCX, INCY, LDAB, M, N, KL, KU, TRANS
@@ -29,7 +29,7 @@
 *       COMPLEX*16         AB( LDAB, * ), X( * )
 *       DOUBLE PRECISION   Y( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -173,10 +173,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -400,7 +400,7 @@
                      TEMP = CABS1( AB( KE-I+J, I ) )
                      SYMB_ZERO = SYMB_ZERO .AND.
      $                    ( X( JX ) .EQ. ZERO .OR. TEMP .EQ. ZERO )
-                     
+
                      Y( IY ) = Y( IY ) + ALPHA*CABS1( X( JX ) )*TEMP
                      JX = JX + INCX
                   END DO
@@ -412,9 +412,9 @@
                IY = IY + INCY
             END DO
          END IF
-         
+
       END IF
-*     
+*
       RETURN
 *
 *     End of ZLA_GBAMV

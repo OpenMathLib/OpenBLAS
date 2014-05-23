@@ -60,7 +60,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
     gemvbuffer = (FLOAT *)(((BLASLONG)buffer + n * sizeof(FLOAT) * COMPSIZE+ 4095) & ~4095);
     COPY_K(n, b, incb, buffer, 1);
   }
-  
+
   a += (n - 1) * lda * COMPSIZE;
 
   for (i = n - 1; i >= 0; i--) {
@@ -89,11 +89,11 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
     ar = a[0];
     ai = a[1];
 #endif
-    
+
     if (fabs(ar) >= fabs(ai)){
       ratio = ai / ar;
       den = 1./(ar * ( 1 + ratio * ratio));
-      
+
       ar =  den;
 #if TRANSA < 3
       ai = -ratio * den;
@@ -110,10 +110,10 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
       ai =  den;
 #endif
     }
-    
+
     br = B[i * 2 + 0];
     bi = B[i * 2 + 1];
-    
+
     B[i * 2 + 0] = ar*br - ai*bi;
     B[i * 2 + 1] = ar*bi + ai*br;
 #endif
@@ -138,7 +138,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
 
     a -= lda * COMPSIZE;
   }
-    
+
   if (incb != 1) {
     COPY_K(n, buffer, 1, b, incb);
   }

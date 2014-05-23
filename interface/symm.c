@@ -121,12 +121,12 @@ static int (*symm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
 
 #ifndef CBLAS
 
-void NAME(char *SIDE, char *UPLO, 
-         blasint *M, blasint *N, 
-         FLOAT *alpha, FLOAT *a, blasint *ldA, 
-         FLOAT *b, blasint *ldB, 
+void NAME(char *SIDE, char *UPLO,
+         blasint *M, blasint *N,
+         FLOAT *alpha, FLOAT *a, blasint *ldA,
+         FLOAT *b, blasint *ldB,
          FLOAT *beta,  FLOAT *c, blasint *ldC){
-  
+
   char side_arg  = *SIDE;
   char uplo_arg  = *UPLO;
 
@@ -143,7 +143,7 @@ void NAME(char *SIDE, char *UPLO,
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -179,13 +179,13 @@ void NAME(char *SIDE, char *UPLO,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
-  
+
   args.m = *M;
   args.n = *N;
 
   args.c = (void *)c;
   args.ldc = *ldC;
-    
+
   info = 0;
 
   if (args.ldc < MAX(1, args.m)) info = 12;
@@ -193,17 +193,17 @@ void NAME(char *SIDE, char *UPLO,
   if (!side) {
     args.a = (void *)a;
     args.b = (void *)b;
-    
+
     args.lda = *ldA;
     args.ldb = *ldB;
-    
+
     if (args.ldb < MAX(1, args.m)) info =  9;
     if (args.lda < MAX(1, args.m)) info =  7;
 
   } else {
     args.a = (void *)b;
     args.b = (void *)a;
-    
+
     args.lda = *ldB;
     args.ldb = *ldA;
 
@@ -220,7 +220,7 @@ void NAME(char *SIDE, char *UPLO,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
 #else
 
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
@@ -254,7 +254,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -262,7 +262,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
@@ -304,24 +304,24 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
     if (!side) {
       args.a = (void *)a;
       args.b = (void *)b;
-      
+
       args.lda = lda;
       args.ldb = ldb;
-      
+
       if (args.ldb < MAX(1, args.m)) info =  9;
       if (args.lda < MAX(1, args.m)) info =  7;
-      
+
     } else {
       args.a = (void *)b;
       args.b = (void *)a;
-      
+
       args.lda = ldb;
       args.ldb = lda;
-      
+
       if (args.lda < MAX(1, args.m)) info =  9;
       if (args.ldb < MAX(1, args.n)) info =  7;
     }
-    
+
     if (args.n   < 0)              info =  4;
     if (args.m   < 0)              info =  3;
     if (uplo     < 0)              info =  2;
@@ -345,24 +345,24 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
     if (!side) {
       args.a = (void *)a;
       args.b = (void *)b;
-      
+
       args.lda = lda;
       args.ldb = ldb;
-      
+
       if (args.ldb < MAX(1, args.m)) info =  9;
       if (args.lda < MAX(1, args.m)) info =  7;
-      
+
     } else {
       args.a = (void *)b;
       args.b = (void *)a;
-      
+
       args.lda = ldb;
       args.ldb = lda;
-      
+
       if (args.lda < MAX(1, args.m)) info =  9;
       if (args.ldb < MAX(1, args.n)) info =  7;
     }
-    
+
     if (args.n   < 0)              info =  4;
     if (args.m   < 0)              info =  3;
     if (uplo     < 0)              info =  2;
@@ -383,10 +383,10 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   FUNCTION_PROFILE_START();
 
   buffer = (FLOAT *)blas_memory_alloc(0);
-    
+
   sa = (FLOAT *)((BLASLONG)buffer + GEMM_OFFSET_A);
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-  
+
 #ifdef SMP
   args.common = NULL;
   args.nthreads = num_cpu_avail(3);
@@ -402,25 +402,25 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 
 #ifndef NO_AFFINITY
     nodes = get_num_nodes();
-    
+
     if (nodes > 1) {
-      
+
       args.nthreads /= nodes;
-      
-      gemm_thread_mn(mode, &args, NULL, NULL, 
+
+      gemm_thread_mn(mode, &args, NULL, NULL,
 		     symm[4 | (side << 1) | uplo ], sa, sb, nodes);
-      
+
     } else {
 #endif
 
 #ifndef USE_SIMPLE_THREADED_LEVEL3
-      
+
       (symm[4 | (side << 1) | uplo ])(&args, NULL, NULL, sa, sb, 0);
-      
+
 #else
-      
+
       GEMM_THREAD(mode, &args, NULL, NULL, symm[(side << 1) | uplo ], sa, sb, args.nthreads);
-      
+
 #endif
 
 #ifndef NO_AFFINITY

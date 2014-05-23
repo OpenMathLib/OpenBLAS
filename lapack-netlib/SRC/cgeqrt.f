@@ -2,31 +2,31 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGEQRT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgeqrt.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgeqrt.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgeqrt.f"> 
+*> Download CGEQRT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgeqrt.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgeqrt.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgeqrt.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGEQRT( M, N, NB, A, LDA, T, LDT, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER INFO, LDA, LDT, M, N, NB
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX A( LDA, * ), T( LDT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -34,7 +34,7 @@
 *> \verbatim
 *>
 *> CGEQRT computes a blocked QR factorization of a complex M-by-N matrix A
-*> using the compact WY representation of Q.  
+*> using the compact WY representation of Q.
 *> \endverbatim
 *
 *  Arguments:
@@ -81,7 +81,7 @@
 *>          as a sequence of upper triangular blocks.  See below
 *>          for further details.
 *> \endverbatim
-*>          
+*>
 *> \param[in] LDT
 *> \verbatim
 *>          LDT is INTEGER
@@ -103,10 +103,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
@@ -130,9 +130,9 @@
 *>  in the matrix A.  The 1's along the diagonal of V are not stored in A.
 *>
 *>  Let K=MIN(M,N).  The number of blocks is B = ceiling(K/NB), where each
-*>  block is of order NB except for the last block, which is of order 
+*>  block is of order NB except for the last block, which is of order
 *>  IB = K - (B-1)*NB.  For each of the B blocks, a upper triangular block
-*>  reflector factor is computed: T1, T2, ..., TB.  The NB-by-NB (and IB-by-IB 
+*>  reflector factor is computed: T1, T2, ..., TB.  The NB-by-NB (and IB-by-IB
 *>  for the last block) T's are stored in the NB-by-N matrix T as
 *>
 *>               T = (T1 T2 ... TB).
@@ -194,7 +194,7 @@
 *
       DO I = 1, K,  NB
          IB = MIN( K-I+1, NB )
-*     
+*
 *     Compute the QR factorization of the current block A(I:M,I:I+IB-1)
 *
          IF( USE_RECURSIVE_QR ) THEN
@@ -207,12 +207,12 @@
 *     Update by applying H**H to A(I:M,I+IB:N) from the left
 *
             CALL CLARFB( 'L', 'C', 'F', 'C', M-I+1, N-I-IB+1, IB,
-     $                   A( I, I ), LDA, T( 1, I ), LDT, 
+     $                   A( I, I ), LDA, T( 1, I ), LDT,
      $                   A( I, I+IB ), LDA, WORK , N-I-IB+1 )
          END IF
       END DO
       RETURN
-*     
+*
 *     End of CGEQRT
 *
       END

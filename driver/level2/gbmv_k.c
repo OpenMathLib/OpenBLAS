@@ -84,12 +84,12 @@ void CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT alpha,
 
 #ifndef TRANS
     AXPYU_K(length, 0, 0,
-	   alpha * X[i], 
+	   alpha * X[i],
 	   a + start, 1, Y + start - offset_u, 1, NULL, 0);
 #else
     Y[i] += alpha * DOTU_K(length, a + start, 1, X + start - offset_u, 1);
 #endif
-   
+
     offset_u --;
     offset_l --;
 

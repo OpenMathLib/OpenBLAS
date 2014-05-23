@@ -1559,7 +1559,7 @@ LL(19):
 	cmpi	cr0, 0, J, 0
 	bgt	LL(11)
 	.align 4
-	
+
 LL(20):
 	andi.	J, N, 4
 	mr	AO1, A

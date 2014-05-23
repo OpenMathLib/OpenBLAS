@@ -3,9 +3,9 @@ include ../../make.inc
 all: xexample_DGESV_rowmajor \
      xexample_DGESV_colmajor \
      xexample_DGELS_rowmajor \
-     xexample_DGELS_colmajor 
+     xexample_DGELS_colmajor
 
-LIBRAIRIES= ../../$(LAPACKELIB) ../../$(LAPACKLIB) $(BLASLIB) 
+LIBRAIRIES= ../../$(LAPACKELIB) ../../$(LAPACKLIB) $(BLASLIB)
 
 # Double Precision Examples
 xexample_DGESV_rowmajor: example_DGESV_rowmajor.o lapacke_example_aux.o $(LIBRAIRIES)

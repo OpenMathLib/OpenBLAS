@@ -187,16 +187,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       min_l = k - ls;
       if (min_l >= GEMM_Q * 2) {
 	min_l = GEMM_Q;
-      } else 
+      } else
 	if (min_l > GEMM_Q) {
 	  min_l = (min_l + 1) / 2;
 	}
 
       min_i = m_end - m_start;
-      
+
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
-      } else 
+      } else
 	if (min_i > GEMM_P) {
 	  min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	}
@@ -207,29 +207,29 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
 	aa = sb + min_l * MAX(m_start - js, 0) * COMPSIZE;
 	if (!shared) aa = sa;
-	
+
 	for(jjs = MAX(m_start, js); jjs < js + min_j; jjs += min_jj){
 	  min_jj = js + min_j - jjs;
 	  if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
-	  
+
 	  if (!shared && (jjs - MAX(m_start, js) < min_i)) {
 	    START_RPCC();
-	    
+
 	    ICOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, sa + min_l * (jjs - js) * COMPSIZE);
-	    
+
 	    STOP_RPCC(innercost);
 	  }
-	  
+
 	  START_RPCC();
-	  
+
 	  OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	  
+
 	  STOP_RPCC(outercost);
-	  
+
 	  START_RPCC();
-	  
+
 	  KERNEL_OPERATION(min_i, min_jj, min_l, alpha, aa, sb + min_l * (jjs - js)  * COMPSIZE, c, ldc, MAX(m_start, js), jjs);
-	  
+
 	  STOP_RPCC(kernelcost);
 	}
 
@@ -237,30 +237,30 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	  min_i = m_end - is;
 	  if (min_i >= GEMM_P * 2) {
 	    min_i = GEMM_P;
-	  } else 
+	  } else
 	    if (min_i > GEMM_P) {
 	      min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	    }
-	  
+
 	  aa = sb + min_l * (is - js)  * COMPSIZE;
-	
+
 	  if (!shared) {
-	  
+
 	    START_RPCC();
-	    
+
 	    ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	    
+
 	    STOP_RPCC(innercost);
 
 	    aa = sa;
 	  }
 
 	  START_RPCC();
-	  
+
 	  KERNEL_OPERATION(min_i, min_j, min_l, alpha, aa, sb, c, ldc, is, js);
-	  
+
 	  STOP_RPCC(kernelcost);
-	  
+
 	}
 
       }
@@ -268,27 +268,27 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       if (m_start < js) {
 
 	if (m_end < js) {
-	  
+
 	  START_RPCC();
-	
+
 	  ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, sa);
-	  
+
 	  STOP_RPCC(innercost);
-	  
+
 	  for(jjs = js; jjs < js + min_j; jjs += GEMM_UNROLL_MN){
 	    min_jj = min_j + js - jjs;
 	    if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
-	    
+
 	    START_RPCC();
-	    
+
 	    OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	    
+
 	    STOP_RPCC(outercost);
-	    
+
 	  START_RPCC();
-	  
+
 	  KERNEL_OPERATION(min_i, min_jj, min_l, alpha, sa, sb + min_l * (jjs - js)  * COMPSIZE, c, ldc, m_start, jjs);
-	  
+
 	  STOP_RPCC(kernelcost);
 
 	  }
@@ -301,180 +301,180 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	  min_i = MIN(m_end, js)- is;
 	  if (min_i >= GEMM_P * 2) {
 	    min_i = GEMM_P;
-	  } else 
+	  } else
 	    if (min_i > GEMM_P) {
 	      min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	    }
-	  
+
 	  START_RPCC();
-	  
+
 	  ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	  
+
 	  STOP_RPCC(innercost);
-	  
+
 	  START_RPCC();
-	  
+
 	  KERNEL_OPERATION(min_i, min_j, min_l, alpha, sa, sb, c, ldc, is, js);
-	  
+
 	  STOP_RPCC(kernelcost);
-	  
+
 	}
       }
 
 #else
 
       if (m_start < js + min_j) {
-	
+
 	aa = sb + min_l * (m_start - js) * COMPSIZE;
-	
+
 	if (!shared) {
 
 	  START_RPCC();
-	  
+
 	  ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, sa);
-	  
+
 	  STOP_RPCC(innercost);
-	  
+
 	}
 
 	START_RPCC();
-	
+
 	OCOPY_OPERATION(min_l, (shared? (min_i) : MIN(min_i, min_j + js - m_start)), a, lda, ls, m_start, aa);
-	
+
 	STOP_RPCC(outercost);
 
 	START_RPCC();
-	
+
 	KERNEL_OPERATION(min_i, MIN(min_i, min_j + js - m_start), min_l, alpha, (shared? (aa) : (sa)), aa, c, ldc, m_start, m_start);
-	
+
 	STOP_RPCC(kernelcost);
 
 	for(jjs = js; jjs < m_start; jjs += GEMM_UNROLL_N){
 	  min_jj = m_start - jjs;
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	  
+
 	  START_RPCC();
-	  
+
 	  OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	
+
 	  STOP_RPCC(outercost);
-	  
+
 	  START_RPCC();
 
 	  KERNEL_OPERATION(min_i, min_jj, min_l, alpha, (shared? (aa) : (sa)), sb + min_l * (jjs - js)  * COMPSIZE, c, ldc, m_start, jjs);
-	  
+
 	  STOP_RPCC(kernelcost);
-	  
+
 	}
 
 	for(is = m_start + min_i; is < m_end; is += min_i){
-	  
+
 	  min_i = m_end - is;
-	  
+
 	  if (min_i >= GEMM_P * 2) {
 	    min_i = GEMM_P;
-	  } else 
+	  } else
 	    if (min_i > GEMM_P) {
 	      min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	    }
-	  
+
 	  if (is  < js + min_j) {
-	    
+
 	    if (!shared) {
 	      START_RPCC();
-	      
+
 	      ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	      
+
 	      STOP_RPCC(innercost);
 	    }
 
 	    aa = sb + min_l * (is - js) * COMPSIZE;
-	  
+
 	    START_RPCC();
-	    
+
 	    OCOPY_OPERATION(min_l, (shared? (min_i) : MIN(min_i, min_j - is + js)), a, lda, ls, is, aa);
-	    
+
 	    STOP_RPCC(outercost);
-	    
+
 	    START_RPCC();
-	    
+
 	    KERNEL_OPERATION(min_i, MIN(min_i, min_j - is + js), min_l, alpha,  (shared? (aa) : (sa)), aa,  c, ldc, is, is);
-	    
+
 	    STOP_RPCC(kernelcost);
-	    
+
 	    START_RPCC();
-	    
+
 	    KERNEL_OPERATION(min_i, is - js, min_l, alpha, (shared? (aa) : (sa)), sb,  c, ldc, is, js);
-	    
+
 	    STOP_RPCC(kernelcost);
-	    
+
 	  } else {
-	    
+
 	    START_RPCC();
-	    
+
 	    ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	    
+
 	    STOP_RPCC(innercost);
-	    
+
 	    START_RPCC();
-	    
+
 	    KERNEL_OPERATION(min_i, min_j, min_l, alpha, sa, sb,  c, ldc, is, js);
-	    
+
 	    STOP_RPCC(kernelcost);
-	    
+
 	  }
-	  
+
 	}
 
       } else {
 
 	START_RPCC();
-	
+
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_start, sa);
-	
+
 	STOP_RPCC(innercost);
-	
+
 	for(jjs = js; jjs < min_j; jjs += GEMM_UNROLL_N){
 	  min_jj = min_j - jjs;
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	  
+
 	  START_RPCC();
-	  
+
 	  OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, sb + min_l * (jjs - js) * COMPSIZE);
-	  
+
 	  STOP_RPCC(outercost);
-	  
+
 	  START_RPCC();
-	  
+
 	  KERNEL_OPERATION(min_i, min_jj, min_l, alpha, sa, sb + min_l * (jjs - js)  * COMPSIZE, c, ldc, m_start, jjs);
-	  
+
 	  STOP_RPCC(kernelcost);
-	  
+
 	}
-	
+
 	for(is = m_start + min_i; is < m_end; is += min_i){
-	  
+
 	  min_i = m_end - is;
-	  
+
 	  if (min_i >= GEMM_P * 2) {
 	    min_i = GEMM_P;
-	  } else 
+	  } else
 	    if (min_i > GEMM_P) {
 	      min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	    }
-	  
+
 	  START_RPCC();
-	  
+
 	  ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-	  
+
 	  STOP_RPCC(innercost);
-	  
+
 	  START_RPCC();
-	  
+
 	  KERNEL_OPERATION(min_i, min_j, min_l, alpha, sa, sb,  c, ldc, is, js);
-	  
+
 	  STOP_RPCC(kernelcost);
-	  
+
 	}
       }
 #endif

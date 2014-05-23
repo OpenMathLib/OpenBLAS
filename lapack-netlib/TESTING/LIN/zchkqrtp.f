@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE ZCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+*       SUBROUTINE ZCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
 *                            NBVAL, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NNB, NOUT
@@ -89,17 +89,17 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
-      SUBROUTINE ZCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+      SUBROUTINE ZCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                     NBVAL, NOUT )
       IMPLICIT NONE
 *
@@ -126,7 +126,7 @@
 *     .. Local Scalars ..
       CHARACTER*3        PATH
       INTEGER            I, J, K, T, L, M, N, NB, NFAIL, NERRS, NRUN,
-     $                   MINMN      
+     $                   MINMN
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   RESULT( NTESTS )
@@ -172,14 +172,14 @@
 *
             MINMN = MIN( M, N )
             DO L = 0, MINMN, MAX( MINMN, 1 )
-*     
+*
 *              Do for each possible value of NB
 *
                DO K = 1, NNB
                   NB = NBVAL( K )
 *
 *                 Test ZTPQRT and ZTPMQRT
-*     
+*
                   IF( (NB.LE.N).AND.(NB.GT.0) ) THEN
                      CALL ZQRT05( M, N, L, NB, RESULT )
 *

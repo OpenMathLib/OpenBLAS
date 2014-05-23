@@ -49,7 +49,7 @@
 #define LD	LDFD
 #define ST	STFD_NTA
 #endif
-	
+
 #define J	r15
 #define PREB	r17
 #define PREA	r18
@@ -82,7 +82,7 @@
 	.prologue
 	PROFCODE
 
-	.body	
+	.body
 	{ .mii
 	shladd	LDA = LDA, BASE_SHIFT, r0
 	mov	PR = pr

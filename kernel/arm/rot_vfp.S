@@ -235,7 +235,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacd      d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
-	
+
 	fldmiad	X,  { d4 - d5 }
 	fldmiad	Y,  { d6 - d7 }
 	vmul.f64    d2 , d0, d4
@@ -250,7 +250,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacd      d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
-	
+
 	pld	[ X, #X_PRE ]
 	pld	[ Y, #X_PRE ]
 
@@ -268,7 +268,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacd      d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
-	
+
 	fldmiad	X,  { d4 - d5 }
 	fldmiad	Y,  { d6 - d7 }
 	vmul.f64    d2 , d0, d4
@@ -283,7 +283,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacd      d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
-	
+
 .endm
 
 
@@ -303,7 +303,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacd      d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
-	
+
 
 .endm
 
@@ -352,7 +352,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacs      s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
-	
+
 	fldmias	X,  { s4 - s5 }
 	fldmias	Y,  { s6 - s7 }
 	vmul.f32    s2 , s0, s4
@@ -367,7 +367,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacs      s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
-	
+
 	pld	[ X, #X_PRE ]
 	pld	[ Y, #X_PRE ]
 
@@ -385,7 +385,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacs      s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
-	
+
 	fldmias	X,  { s4 - s5 }
 	fldmias	Y,  { s6 - s7 }
 	vmul.f32    s2 , s0, s4
@@ -400,7 +400,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacs      s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
-	
+
 .endm
 
 
@@ -420,7 +420,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fnmacs      s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
-	
+
 
 .endm
 

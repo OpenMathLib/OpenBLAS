@@ -504,10 +504,10 @@
 	}
 	;;
 	(p14) STFD	[YY1] = f90,   1 * SIZE
-	;;	
+	;;
 	(p14) STFD	[YY1] = f91
 	(p14) add	YY1 = YY1, INCYM1
-	;;	
+	;;
 	(p15) STFD	[YY1] = f92,   1 * SIZE
 	;;
 	{ .mmb

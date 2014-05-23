@@ -93,7 +93,7 @@
 #define YY	4 + ARGS(%esp)
 #define AA	8 + ARGS(%esp)
 
-	
+
 #define I	%eax
 #define J	%ebx
 
@@ -165,7 +165,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	movl	N,  J
 
 	pxor	%xmm7, %xmm7
@@ -202,7 +202,7 @@
 
 	pcmpeqb	%xmm5, %xmm5
 	psllq	$63,    %xmm5
-	shufps	$0xc0, %xmm5, %xmm5	
+	shufps	$0xc0, %xmm5, %xmm5
 
 	pshufd	$0x4e, %xmm6, %xmm7
 
@@ -503,7 +503,7 @@
 .L999x:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 	addl	$ARGS,%esp
 	ret

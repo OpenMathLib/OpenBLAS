@@ -276,7 +276,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA
 	add	r4  , CO2, r3
 
-		
+
 	fmuls	s8 , s0 , s16
 	fmuls	s9 , s0 , s17
 	fmuls	s10, s0 , s18
@@ -291,7 +291,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmuls	s15, s0 , s23
 	fsts	s11, [CO1, #12 ]
 
-		
+
 	fmuls	s8 , s0 , s24
 	fsts	s12, [CO2]
 	fmuls	s9 , s0 , s25
@@ -368,7 +368,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	r4  , CO2, r3
 
 	flds		s0, ALPHA
-		
+
 	fmuls	s8 , s0 , s16
 	fmuls	s9 , s0 , s17
 
@@ -381,7 +381,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fsts	s12, [CO2]
 	fsts	s13, [CO2, #4 ]
 
-		
+
 	fmuls	s8 , s0 , s24
 	fmuls	s9 , s0 , s25
 
@@ -804,7 +804,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ble	_L2_BEGIN
 
 _L4_BEGIN:
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	lsl	r4 , r4 , #2					// LDC * 4
@@ -907,7 +907,7 @@ _L4_M4_22:
 
 	b	 _L4_M4_44
 
-	
+
 _L4_M4_30:
 	tst	L, #3
 	ble	_L4_M4_40
@@ -972,7 +972,7 @@ _L4_M4_46:
 
 	subs	L, L, #1
 	bne	_L4_M4_46
-	
+
 _L4_M4_100:
 
 	SAVE4x4
@@ -1065,10 +1065,10 @@ _L4_M2_22:
 
 	subs	L, L, #1
 	bgt	_L4_M2_22
-	
+
 
 _L4_M2_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L4_M2_100
 
@@ -1078,7 +1078,7 @@ _L4_M2_42:
 
 	subs	L, L, #1
 	bgt	_L4_M2_42
-	
+
 _L4_M2_100:
 
 	SAVE2x4
@@ -1162,10 +1162,10 @@ _L4_M1_22:
 
 	subs	L, L, #1
 	bgt	_L4_M1_22
-	
+
 
 _L4_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L4_M1_100
 
@@ -1175,7 +1175,7 @@ _L4_M1_42:
 
 	subs	L, L, #1
 	bgt	_L4_M1_42
-	
+
 _L4_M1_100:
 
 	SAVE1x4
@@ -1206,7 +1206,7 @@ _L4_END:
 	lsl	r4, r4, #4					// k * 4 * 4
 	add	r3, r3, r4					// B = B + K * 4 * 4
 	mov	BC, r3
-	
+
 #if !defined(LEFT)
         ldr     r3 , KK
         add     r3 , r3 , #4                                    // number of values in BO
@@ -1228,7 +1228,7 @@ _L2_BEGIN:
 
 	tst	J , #2
 	ble	_L1_BEGIN
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	lsl	r4 , r4 , #1					// LDC * 2
@@ -1306,10 +1306,10 @@ _L2_M4_22:
 
 	subs	L, L, #1
 	bgt	_L2_M4_22
-	
+
 
 _L2_M4_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L2_M4_100
 
@@ -1319,7 +1319,7 @@ _L2_M4_42:
 
 	subs	L, L, #1
 	bgt	_L2_M4_42
-	
+
 _L2_M4_100:
 
 	SAVE4x2
@@ -1411,10 +1411,10 @@ _L2_M2_22:
 
 	subs	L, L, #1
 	bgt	_L2_M2_22
-	
+
 
 _L2_M2_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L2_M2_100
 
@@ -1424,7 +1424,7 @@ _L2_M2_42:
 
 	subs	L, L, #1
 	bgt	_L2_M2_42
-	
+
 _L2_M2_100:
 
 	SAVE2x2
@@ -1508,10 +1508,10 @@ _L2_M1_22:
 
 	subs	L, L, #1
 	bgt	_L2_M1_22
-	
+
 
 _L2_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L2_M1_100
 
@@ -1521,7 +1521,7 @@ _L2_M1_42:
 
 	subs	L, L, #1
 	bgt	_L2_M1_42
-	
+
 _L2_M1_100:
 
 	SAVE1x2
@@ -1568,7 +1568,7 @@ _L1_BEGIN:
 	tst	J , #1
 	ble	_L999
 
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	add	r3 , r4, CO1
@@ -1645,10 +1645,10 @@ _L1_M4_22:
 
 	subs	L, L, #1
 	bgt	_L1_M4_22
-	
+
 
 _L1_M4_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L1_M4_100
 
@@ -1658,7 +1658,7 @@ _L1_M4_42:
 
 	subs	L, L, #1
 	bgt	_L1_M4_42
-	
+
 _L1_M4_100:
 
 	SAVE4x1
@@ -1751,10 +1751,10 @@ _L1_M2_22:
 
 	subs	L, L, #1
 	bgt	_L1_M2_22
-	
+
 
 _L1_M2_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L1_M2_100
 
@@ -1764,7 +1764,7 @@ _L1_M2_42:
 
 	subs	L, L, #1
 	bgt	_L1_M2_42
-	
+
 _L1_M2_100:
 
 	SAVE2x1
@@ -1848,10 +1848,10 @@ _L1_M1_22:
 
 	subs	L, L, #1
 	bgt	_L1_M1_22
-	
+
 
 _L1_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L1_M1_100
 
@@ -1861,7 +1861,7 @@ _L1_M1_42:
 
 	subs	L, L, #1
 	bgt	_L1_M1_42
-	
+
 _L1_M1_100:
 
 	SAVE1x1

@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGBT01( M, N, KL, KU, A, LDA, AFAC, LDAFAC, IPIV, WORK,
 *                          RESID )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KL, KU, LDA, LDAFAC, M, N
 *       REAL               RESID
@@ -19,7 +19,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * ), AFAC( LDAFAC, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -113,10 +113,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

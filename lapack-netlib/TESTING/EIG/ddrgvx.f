@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          ALPHAR, ALPHAI, BETA, VL, VR, ILO, IHI, LSCALE,
 *                          RSCALE, S, DTRU, DIF, DIFTRU, WORK, LWORK,
 *                          IWORK, LIWORK, RESULT, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IHI, ILO, INFO, LDA, LIWORK, LWORK, NIN, NOUT,
 *      $                   NSIZE
@@ -27,7 +27,7 @@
 *      $                   LSCALE( * ), RESULT( 4 ), RSCALE( * ), S( * ),
 *      $                   VL( LDA, * ), VR( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -212,32 +212,32 @@
 *>  		IHI is INTEGER
 *> \endverbatim
 *>
-*> \param[out] LSCALE	
+*> \param[out] LSCALE
 *> \verbatim
 *>  		LSCALE is DOUBLE PRECISION array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] RSCALE	
+*> \param[out] RSCALE
 *> \verbatim
 *>  		RSCALE is DOUBLE PRECISION array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] S	
+*> \param[out] S
 *> \verbatim
 *>  		S is DOUBLE PRECISION array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] DTRU	
+*> \param[out] DTRU
 *> \verbatim
 *>  		DTRU is DOUBLE PRECISION array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] DIF		
+*> \param[out] DIF
 *> \verbatim
 *>  		DIF is DOUBLE PRECISION array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] DIFTRU		
+*> \param[out] DIFTRU
 *> \verbatim
 *>  		DIFTRU is DOUBLE PRECISION array, dimension (N)
 *> \endverbatim
@@ -285,10 +285,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *

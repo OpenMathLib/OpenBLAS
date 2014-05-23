@@ -100,11 +100,11 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buf
 #ifndef UNIT
       ar = AA[0];
       ai = AA[1];
-      
+
       if (fabs(ar) >= fabs(ai)){
 	ratio = ai / ar;
 	den = 1./(ar * ( 1 + ratio * ratio));
-	
+
 	ar =  den;
 #if TRANSA < 3
 	ai = -ratio * den;
@@ -124,7 +124,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buf
 
       br = BB[0];
       bi = BB[1];
-      
+
       BB[0] = ar*br - ai*bi;
       BB[1] = ar*bi + ai*br;
 #endif

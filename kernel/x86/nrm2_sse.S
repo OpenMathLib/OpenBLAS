@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	 8
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -49,7 +49,7 @@
 #define M	%edx
 #define X	%ecx
 #define INCX	%esi
-	
+
 #define I	%eax
 
 #include "l1param.h"
@@ -79,7 +79,7 @@
 
 	testl	$SIZE, X
 	je	.L05
-	
+
 	movss	-32 * SIZE(X), %xmm0
 	cvtss2sd %xmm0, %xmm0
 	mulsd	 %xmm0, %xmm0
@@ -93,7 +93,7 @@
 	movl	M,  I
 	sarl	$4, I
 	jle	.L13
-	
+
 	movsd	-32 * SIZE(X), %xmm4
 	movsd	-30 * SIZE(X), %xmm5
 	movsd	-28 * SIZE(X), %xmm6
@@ -267,7 +267,7 @@
 	sarl	$3, I
 	jle	.L44
 	ALIGN_4
-	
+
 .L41:
 	movss	(X), %xmm4
 	addl	INCX, X

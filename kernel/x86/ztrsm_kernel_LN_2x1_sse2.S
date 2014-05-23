@@ -47,7 +47,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -276,7 +276,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -295,7 +295,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, BB
 
@@ -311,7 +311,7 @@
 	sall	$ZBASE_SHIFT, %eax
 	addl	%eax, B
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 #if defined(LT)
 	movl	OFFSET, %eax
@@ -357,7 +357,7 @@
 	movapd	%xmm7, 14 * SIZE(BB)
 
 	prefetcht0	104 * SIZE(B)
-	
+
 	addl	$ 8 * SIZE, B
 	addl	$16 * SIZE, BB
 	decl	%eax
@@ -436,7 +436,7 @@
 	movl	KK, %eax
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movapd	 0 * SIZE(BB), %xmm1
 	pxor	%xmm4, %xmm4
@@ -713,7 +713,7 @@
 	movl	KK, %eax
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movapd	 0 * SIZE(BB), %xmm2
 	pxor	%xmm4, %xmm4
@@ -740,7 +740,7 @@
 	NOBRANCH
 	je	.L12
 	sall	$3, %eax
-	
+
 .L1X:
 	KERNEL1(32  *  0)
 	KERNEL2(32  *  0)
@@ -837,7 +837,7 @@
 .L11:
 	leal	(BB, %eax, 4), BB
 	leal	(AA, %eax, 4), AA
-	
+
 .L12:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax

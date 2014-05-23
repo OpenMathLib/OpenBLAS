@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGET52( LEFT, N, A, LDA, B, LDB, E, LDE, ALPHAR,
 *                          ALPHAI, BETA, WORK, RESULT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            LEFT
 *       INTEGER            LDA, LDB, LDE, N
@@ -20,7 +20,7 @@
 *      $                   B( LDB, * ), BETA( * ), E( LDE, * ),
 *      $                   RESULT( 2 ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -62,7 +62,7 @@
 *> supposed to be normalized so that the maximum "absolute value"
 *> of its elements is 1, where in this case, "absolute value"
 *> of a complex value x is  |Re(x)| + |Im(x)| ; let us call this
-*> maximum "absolute value" norm of a vector v  M(v). 
+*> maximum "absolute value" norm of a vector v  M(v).
 *> if a(j)=b(j)=0, then the eigenvector is set to be the jth coordinate
 *> vector.  The normalization test is:
 *>
@@ -186,10 +186,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

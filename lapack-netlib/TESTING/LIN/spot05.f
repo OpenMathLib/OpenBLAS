@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOT05( UPLO, N, NRHS, A, LDA, B, LDB, X, LDX, XACT,
 *                          LDXACT, FERR, BERR, RESLTS )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            LDA, LDB, LDX, LDXACT, N, NRHS
@@ -19,7 +19,7 @@
 *       REAL               A( LDA, * ), B( LDB, * ), BERR( * ), FERR( * ),
 *      $                   RESLTS( * ), X( LDX, * ), XACT( LDXACT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -151,10 +151,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *

@@ -1,6 +1,6 @@
 #include "common.h"
 
-int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FLOAT* C,BLASLONG ldc ,BLASLONG offset) 
+int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FLOAT* C,BLASLONG ldc ,BLASLONG offset)
 {
 
    BLASLONG i,j,k;
@@ -51,12 +51,12 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
    BLASLONG off, temp;
 
 #if !defined(LEFT)
-   off = -offset; 
+   off = -offset;
 #endif
 
 
 
-   for (j=0; j<bn/2; j+=1) 
+   for (j=0; j<bn/2; j+=1)
    {
         C0 = C;
         C1 = C0+ldc;
@@ -69,7 +69,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
         ptrba = ba;
 
 
-        for (i=0; i<bm/16; i+=1) 
+        for (i=0; i<bm/16; i+=1)
         {
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -120,13 +120,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+16;	// number of values in A
 #else
 		temp = off+2;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 			b1 = ptrbb[1];
@@ -274,11 +274,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 16; // number of values in A
-#else 
+#else
 		temp -= 2; // number of values in B
 #endif
 		ptrba += temp*16;
@@ -296,7 +296,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 
 
-        if ( bm & 8) 
+        if ( bm & 8)
         {
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -328,13 +328,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+8;	// number of values in A
 #else
 		temp = off+2;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 			b1 = ptrbb[1];
@@ -412,11 +412,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C1[7] = res1_7;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 8; // number of values in A
-#else 
+#else
 		temp -= 2; // number of values in B
 #endif
 		ptrba += temp*8;
@@ -454,13 +454,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+4;	// number of values in A
 #else
 		temp = off+2;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 			b1 = ptrbb[1];
@@ -506,11 +506,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C1[3] = res1_3;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 4; // number of values in A
-#else 
+#else
 		temp -= 2; // number of values in B
 #endif
 		ptrba += temp*4;
@@ -545,13 +545,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+2;	// number of values in A
 #else
 		temp = off+2;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 			b1 = ptrbb[1];
@@ -581,11 +581,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C1[1] = res1_1;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 2; // number of values in A
-#else 
+#else
 		temp -= 2; // number of values in B
 #endif
 		ptrba += temp*2;
@@ -618,13 +618,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+1;	// number of values in A
 #else
 		temp = off+2;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 			b1 = ptrbb[1];
@@ -646,11 +646,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C1[0] = res1_0;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 1; // number of values in A
-#else 
+#else
 		temp -= 2; // number of values in B
 #endif
 		ptrba += temp*1;
@@ -683,7 +683,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 
 
-   for (j=0; j<(bn&1); j+=1) 
+   for (j=0; j<(bn&1); j+=1)
    {
         C0 = C;
 
@@ -694,7 +694,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
         ptrba = ba;
 
 
-        for (i=0; i<bm/16; i+=1) 
+        for (i=0; i<bm/16; i+=1)
         {
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -727,13 +727,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+16;	// number of values in A
 #else
 		temp = off+1;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 
@@ -827,11 +827,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C0[15] = res0_15;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 16; // number of values in A
-#else 
+#else
 		temp -= 1; // number of values in B
 #endif
 		ptrba += temp*16;
@@ -870,13 +870,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+8;	// number of values in A
 #else
 		temp = off+1;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 
@@ -926,11 +926,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C0[6] = res0_6;
 		C0[7] = res0_7;
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 8; // number of values in A
-#else 
+#else
 		temp -= 1; // number of values in B
 #endif
 		ptrba += temp*8;
@@ -962,13 +962,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+4;	// number of values in A
 #else
 		temp = off+1;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 
@@ -999,11 +999,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C0[3] = res0_3;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 4; // number of values in A
-#else 
+#else
 		temp -= 1; // number of values in B
 #endif
 		ptrba += temp*4;
@@ -1035,13 +1035,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+2;	// number of values in A
 #else
 		temp = off+1;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 
@@ -1062,11 +1062,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C0[1] = res0_1;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 2; // number of values in A
-#else 
+#else
 		temp -= 1; // number of values in B
 #endif
 		ptrba += temp*2;
@@ -1096,13 +1096,13 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 		temp = bk-off;
-#elif defined(LEFT) 
+#elif defined(LEFT)
 		temp = off+1;	// number of values in A
 #else
 		temp = off+1;	// number of values in B
 #endif
 
-		for (k=0; k<temp; k++) 
+		for (k=0; k<temp; k++)
                 {
 			b0 = ptrbb[0];
 
@@ -1118,11 +1118,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C0[0] = res0_0;
 
 
-#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA)) 
+#if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 		temp = bk - off;
 #ifdef LEFT
 		temp -= 1; // number of values in A
-#else 
+#else
 		temp -= 1; // number of values in B
 #endif
 		ptrba += temp*1;

@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DORBDB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dorbdb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dorbdb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dorbdb.f"> 
+*> Download DORBDB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dorbdb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dorbdb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dorbdb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DORBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
 *                          X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
 *                          TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIGNS, TRANS
 *       INTEGER            INFO, LDX11, LDX12, LDX21, LDX22, LWORK, M, P,
@@ -33,7 +33,7 @@
 *      $                   WORK( * ), X11( LDX11, * ), X12( LDX12, * ),
 *      $                   X21( LDX21, * ), X22( LDX22, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -250,10 +250,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2013
 *
@@ -393,7 +393,7 @@
 *
       IF( COLMAJOR ) THEN
 *
-*        Reduce columns 1, ..., Q of X11, X12, X21, and X22 
+*        Reduce columns 1, ..., Q of X11, X12, X21, and X22
 *
          DO I = 1, Q
 *
@@ -618,12 +618,12 @@
                X11(I+1,I) = ONE
             END IF
             IF ( M-Q .GT. I ) THEN
-               CALL DLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1, 
+               CALL DLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1,
      $                       TAUQ2(I) )
             ELSE
-               CALL DLARFGP( M-Q-I+1, X12(I,I), X12(I,I), 1, 
+               CALL DLARFGP( M-Q-I+1, X12(I,I), X12(I,I), 1,
      $                       TAUQ2(I) )
-            END IF               
+            END IF
             X12(I,I) = ONE
 *
             IF( I .LT. Q ) THEN
@@ -649,7 +649,7 @@
             CALL DLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1, TAUQ2(I) )
             X12(I,I) = ONE
 *
-            IF ( P .GT. I ) THEN 
+            IF ( P .GT. I ) THEN
                CALL DLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1, TAUQ2(I),
      $                  X12(I,I+1), LDX12, WORK )
             END IF

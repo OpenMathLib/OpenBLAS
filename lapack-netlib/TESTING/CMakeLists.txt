@@ -16,8 +16,8 @@ macro(add_lapack_test output input target)
   if(EXISTS "${TEST_INPUT}")
     add_test(LAPACK-${testName} "${CMAKE_COMMAND}"
       -DTEST=${TEST_LOC}
-      -DINPUT=${TEST_INPUT} 
-      -DOUTPUT=${TEST_OUTPUT} 
+      -DINPUT=${TEST_INPUT}
+      -DOUTPUT=${TEST_OUTPUT}
       -DINTDIR=${CMAKE_CFG_INTDIR}
       -P "${LAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
   endif()

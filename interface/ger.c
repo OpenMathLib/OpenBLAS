@@ -157,7 +157,7 @@ void CNAME(enum CBLAS_ORDER order,
   /*     Quick return if possible. */
   if (m == 0 || n == 0) return;
   if (alpha == 0.) return;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -177,9 +177,9 @@ void CNAME(enum CBLAS_ORDER order,
 
 #ifdef SMP
   } else {
-    
+
     GER_THREAD(m, n, alpha, x, incx, y, incy, a, lda, buffer, nthreads);
-    
+
   }
 #endif
 

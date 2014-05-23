@@ -84,7 +84,7 @@
 	FCLR(0)
 
 	sll	INCX, ZBASE_SHIFT, INCX
-	
+
 	FMOV	c1, c2
 	FMOV	c1, t1
 	FMOV	c1, t2

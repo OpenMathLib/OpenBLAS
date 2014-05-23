@@ -43,7 +43,7 @@
 const static FLOAT dm1 = -1.;
 
 int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
-  
+
   BLASLONG i;
 #if (TRANSA == 2) || (TRANSA == 4)
   FLOAT _Complex result;
@@ -61,7 +61,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
   }
 
   for (i = 0; i < m; i++) {
-    
+
 #if (TRANSA == 2) || (TRANSA == 4)
     if (i > 0) {
 #if TRANSA == 2
@@ -69,7 +69,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 #else
       result = DOTC_K(i, a, 1, B, 1);
 #endif
-      
+
       B[i * COMPSIZE + 0] -= CREAL(result);
       B[i * COMPSIZE + 1] -= CIMAG(result);
     }
@@ -83,11 +83,11 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
       ar = a[i * COMPSIZE + 0];
       ai = a[i * COMPSIZE + 1];
 #endif
-      
+
       if (fabs(ar) >= fabs(ai)){
 	ratio = ai / ar;
 	den = 1./(ar * ( 1 + ratio * ratio));
-	
+
 	ar =  den;
 #if TRANSA < 3
 	ai = -ratio * den;
@@ -107,7 +107,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 
       br = B[i * COMPSIZE + 0];
       bi = B[i * COMPSIZE + 1];
-      
+
       B[i * COMPSIZE + 0] = ar*br - ai*bi;
       B[i * COMPSIZE + 1] = ar*bi + ai*br;
 #endif
