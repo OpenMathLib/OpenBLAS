@@ -207,6 +207,7 @@ else
 netlib : lapack_prebuild
 ifndef NOFORTRAN
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
 ifndef NO_LAPACKE
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
@@ -230,11 +231,18 @@ ifndef NOFORTRAN
 	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB   = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "TMGLIB      = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "BLASLIB     = ../../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKELIB  = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB_P = ../$(LIBNAME_P)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifeq ($(F_COMPILER), GFORTRAN)
+	-@echo "TIMER       = INT_ETIME" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
+	-@echo "TIMER       = NONE" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 
@@ -256,14 +264,12 @@ lapack-timing : large.tgz timing.tgz
 ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
-	make -C $(NETLIB_LAPACK_DIR) tmglib
 	make -C $(NETLIB_LAPACK_DIR)/TIMING
 endif
 
 
 lapack-test :
 	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
-	make -j 1 -C $(NETLIB_LAPACK_DIR) tmglib
 	make -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
 
@@ -293,5 +299,4 @@ endif
 	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out testing_results.txt)
-	@rm -f $(NETLIB_LAPACK_DIR)/tmglib.a
 	@echo Done.
