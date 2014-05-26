@@ -349,7 +349,8 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
-	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX)
+	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX) slauu2.$(SUFFIX)  \
+	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) spotri.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -359,7 +360,8 @@ SLAPACKOBJS	= \
 
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
-	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX)
+	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX) dlauu2.$(SUFFIX)  \
+	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) dpotri.$(SUFFIX)
 
 
 QLAPACKOBJS	= \
@@ -374,7 +376,8 @@ QLAPACKOBJS	= \
 
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
-	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX)
+	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
+	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) cpotri.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -384,7 +387,9 @@ CLAPACKOBJS	= \
 
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
-	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)
+	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
+	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) zpotri.$(SUFFIX)
+
 
 
 
@@ -1788,37 +1793,37 @@ zgetrf.$(SUFFIX) zgetrf.$(PSUFFIX) : lapack/zgetrf.c
 xgetrf.$(SUFFIX) xgetrf.$(PSUFFIX) : zgetrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-slauu2.$(SUFFIX) slauu2.$(PSUFFIX) : lauu2.c
+slauu2.$(SUFFIX) slauu2.$(PSUFFIX) : lapack/lauu2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dlauu2.$(SUFFIX) dlauu2.$(PSUFFIX) : lauu2.c
+dlauu2.$(SUFFIX) dlauu2.$(PSUFFIX) : lapack/lauu2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qlauu2.$(SUFFIX) qlauu2.$(PSUFFIX) : lauu2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-clauu2.$(SUFFIX) clauu2.$(PSUFFIX) : zlauu2.c
+clauu2.$(SUFFIX) clauu2.$(PSUFFIX) : lapack/zlauu2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zlauu2.$(SUFFIX) zlauu2.$(PSUFFIX) : zlauu2.c
+zlauu2.$(SUFFIX) zlauu2.$(PSUFFIX) : lapack/zlauu2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xlauu2.$(SUFFIX) xlauu2.$(PSUFFIX) : zlauu2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-slauum.$(SUFFIX) slauum.$(PSUFFIX) : lauum.c
+slauum.$(SUFFIX) slauum.$(PSUFFIX) : lapack/lauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dlauum.$(SUFFIX) dlauum.$(PSUFFIX) : lauum.c
+dlauum.$(SUFFIX) dlauum.$(PSUFFIX) : lapack/lauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qlauum.$(SUFFIX) qlauum.$(PSUFFIX) : lauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-clauum.$(SUFFIX) clauum.$(PSUFFIX) : zlauum.c
+clauum.$(SUFFIX) clauum.$(PSUFFIX) : lapack/zlauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zlauum.$(SUFFIX) zlauum.$(PSUFFIX) : zlauum.c
+zlauum.$(SUFFIX) zlauum.$(PSUFFIX) : lapack/zlauum.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xlauum.$(SUFFIX) xlauum.$(PSUFFIX) : zlauum.c
@@ -1860,37 +1865,37 @@ zpotrf.$(SUFFIX) zpotrf.$(PSUFFIX) : lapack/zpotrf.c
 xpotrf.$(SUFFIX) xpotrf.$(PSUFFIX) : zpotrf.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-strti2.$(SUFFIX) strti2.$(PSUFFIX) : trti2.c
+strti2.$(SUFFIX) strti2.$(PSUFFIX) : lapack/trti2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dtrti2.$(SUFFIX) dtrti2.$(PSUFFIX) : trti2.c
+dtrti2.$(SUFFIX) dtrti2.$(PSUFFIX) : lapack/trti2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qtrti2.$(SUFFIX) qtrti2.$(PSUFFIX) : trti2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-ctrti2.$(SUFFIX) ctrti2.$(PSUFFIX) : ztrti2.c
+ctrti2.$(SUFFIX) ctrti2.$(PSUFFIX) : lapack/ztrti2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-ztrti2.$(SUFFIX) ztrti2.$(PSUFFIX) : ztrti2.c
+ztrti2.$(SUFFIX) ztrti2.$(PSUFFIX) : lapack/ztrti2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xtrti2.$(SUFFIX) xtrti2.$(PSUFFIX) : ztrti2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-strtri.$(SUFFIX) strtri.$(PSUFFIX) : trtri.c
+strtri.$(SUFFIX) strtri.$(PSUFFIX) : lapack/trtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dtrtri.$(SUFFIX) dtrtri.$(PSUFFIX) : trtri.c
+dtrtri.$(SUFFIX) dtrtri.$(PSUFFIX) : lapack/trtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qtrtri.$(SUFFIX) qtrtri.$(PSUFFIX) : trtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-ctrtri.$(SUFFIX) ctrtri.$(PSUFFIX) : ztrtri.c
+ctrtri.$(SUFFIX) ctrtri.$(PSUFFIX) : lapack/ztrtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-ztrtri.$(SUFFIX) ztrtri.$(PSUFFIX) : ztrtri.c
+ztrtri.$(SUFFIX) ztrtri.$(PSUFFIX) : lapack/ztrtri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xtrtri.$(SUFFIX) xtrtri.$(PSUFFIX) : ztrtri.c
@@ -1950,19 +1955,19 @@ zgesv.$(SUFFIX) zgesv.$(PSUFFIX) : lapack/gesv.c
 xgesv.$(SUFFIX) xgesv.$(PSUFFIX) : gesv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-spotri.$(SUFFIX) spotri.$(PSUFFIX) : potri.c
+spotri.$(SUFFIX) spotri.$(PSUFFIX) : lapack/potri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-dpotri.$(SUFFIX) dpotri.$(PSUFFIX) : potri.c
+dpotri.$(SUFFIX) dpotri.$(PSUFFIX) : lapack/potri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 qpotri.$(SUFFIX) qpotri.$(PSUFFIX) : potri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-cpotri.$(SUFFIX) cpotri.$(PSUFFIX) : zpotri.c
+cpotri.$(SUFFIX) cpotri.$(PSUFFIX) : lapack/zpotri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zpotri.$(SUFFIX) zpotri.$(PSUFFIX) : zpotri.c
+zpotri.$(SUFFIX) zpotri.$(PSUFFIX) : lapack/zpotri.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 xpotri.$(SUFFIX) xpotri.$(PSUFFIX) : zpotri.c

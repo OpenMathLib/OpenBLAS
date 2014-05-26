@@ -149,7 +149,10 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   blas_memory_free(buffer);
 #endif
 
-  FUNCTION_PROFILE_END(COMPSIZE * COMPSIZE, args.m * args.n,  2. / 3. * args.m * args.n * args.n);
+  FUNCTION_PROFILE_END(COMPSIZE * COMPSIZE, .5 * args.n * args.n,
+                          args.n * (1./3. + args.n * ( 1./2. + args.n * 1./6.))
+                       +  args.n * (1./3. + args.n * (-1./2. + args.n * 1./6.)));
+
 
   IDEBUG_END;
 
