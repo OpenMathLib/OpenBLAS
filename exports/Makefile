@@ -83,15 +83,9 @@ dll  : ../$(LIBDLLNAME)
 # For more details see: https://github.com/xianyi/OpenBLAS/issues/127.
 ../$(LIBDLLNAME) : ../$(LIBNAME) libopenblas.def dllinit.$(SUFFIX)
 	$(RANLIB) ../$(LIBNAME)
-ifeq ($(BINARY32), 1)
-	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry _dllinit@12 -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
-	-lib /machine:i386 /def:libopenblas.def
-else
-	$(DLLWRAP) -o ../$(LIBDLLNAME) --def libopenblas.def \
-	--entry $(FU)dllinit    -s dllinit.$(SUFFIX) --dllname $(@F) ../$(LIBNAME) $(EXTRALIB)
-	-lib /machine:X64 /def:libopenblas.def 
-endif
+	$(CC) $(CFLAGS) $(LDFLAGS) libopenblas.def dllinit.$(SUFFIX) \
+	-shared -o ../$(LIBDLLNAME) -Wl,--out-implib,../$(LIBDLLNAME).a \
+	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive $(FEXTRALIB)
 
 libopenblas.def : gensymbol
 	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)

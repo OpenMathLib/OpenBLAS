@@ -50,10 +50,12 @@ ifndef NO_LAPACKE
 endif
 
 #for install static library 
+ifndef NO_STATIC
 	@echo Copying the static library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@install -pm644 $(LIBNAME) $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@cd $(DESTDIR)$(OPENBLAS_LIBRARY_DIR) ; \
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+endif
 #for install shared library 
 ifndef NO_SHARED
 	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
@@ -80,6 +82,7 @@ ifeq ($(OSNAME), Darwin)
 endif
 ifeq ($(OSNAME), WINNT)
 	@-cp $(LIBDLLNAME) $(OPENBLAS_BINARY_DIR)
+	@-cp $(LIBDLLNAME).a $(OPENBLAS_LIBRARY_DIR)
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	@-cp $(LIBDLLNAME) $(OPENBLAS_BINARY_DIR)

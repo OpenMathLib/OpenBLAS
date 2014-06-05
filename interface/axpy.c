@@ -86,7 +86,8 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
   if (incx == 0 || incy == 0)
 	  nthreads = 1;
  
-  //Temporarily walk around the low performance issue with small imput size & multithreads.
+  //Temporarily work-around the low performance issue with small imput size &
+  //multithreads.
   if (n <= 10000)
 	  nthreads = 1;
   

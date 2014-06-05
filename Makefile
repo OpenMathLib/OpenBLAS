@@ -129,6 +129,11 @@ endif
 ifeq ($(NOFORTRAN), 1)
 	$(error OpenBLAS: Detecting fortran compiler failed. Please install fortran compiler, e.g. gfortran, ifort, openf90.)
 endif
+ifeq ($(NO_STATIC), 1)
+ifeq ($(NO_SHARED), 1)
+	$(error OpenBLAS: neither static nor shared are enabled.)
+endif
+endif
 	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \

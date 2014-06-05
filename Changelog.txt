@@ -51,7 +51,7 @@ common:
           parallelization model is used by OpenBLAS. (Thank grisuthedragon)
 	* Detect LLVM/Clang compiler. The default compiler is Clang on Mac OS X.
         * Change LIBSUFFIX from .lib to .a on windows.
-	* A walk round for dtrti_U single thread bug. Replace it with LAPACK codes. (#191)
+	* A work-around for dtrti_U single thread bug. Replace it with LAPACK codes. (#191)
 
 x86/x86-64:
 	* Optimize c/zgemm, trsm, dgemv_n, ddot, daxpy, dcopy on 
@@ -284,7 +284,7 @@ x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.
 	* Fixed #32 a SEGFAULT bug of zdotc with gcc-4.6.
 	* Fixed #33 ztrmm bug on Nehalem.
-	* Walk round #27 the low performance axpy issue with small imput size & multithreads.
+	* Work-around #27 the low performance axpy issue with small imput size & multithreads.
 
 MIPS64:
 	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64. 
@@ -308,7 +308,7 @@ common:
 
 x86/x86_64:
 	* On x86 32bits, fixed a bug in zdot_sse2.S line 191. This would casue 
-	  zdotu & zdotc failures.Instead,Walk around it. (Refs issue #8 #9 on github)
+	  zdotu & zdotc failures. Instead, work-around it. (Refs issue #8 #9 on github)
 	* Modified ?axpy functions to return same netlib BLAS results 
 	  when incx==0 or incy==0 (Refs issue #7 on github)
 	* Modified ?swap functions to return same netlib BLAS results 

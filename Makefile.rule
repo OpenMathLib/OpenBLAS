@@ -48,6 +48,9 @@ VERSION = 0.2.9.rc2
 # automatically detected by the the script.
 # NUM_THREADS = 24
 
+# if you don't need to install the static library, please comment it in.
+# NO_STATIC = 1
+
 # if you don't need generate the shared library, please comment it in.
 # NO_SHARED = 1
 

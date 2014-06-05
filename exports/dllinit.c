@@ -41,7 +41,7 @@
 void gotoblas_init(void);
 void gotoblas_quit(void);
 
-BOOL APIENTRY dllinit(HINSTANCE hInst, DWORD reason, LPVOID reserved) {
+BOOL APIENTRY DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved) {
 
   if (reason == DLL_PROCESS_ATTACH) {
     gotoblas_init();
