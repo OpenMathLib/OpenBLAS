@@ -84,7 +84,7 @@ dll  : ../$(LIBDLLNAME)
 ../$(LIBDLLNAME) : ../$(LIBNAME) libopenblas.def dllinit.$(SUFFIX)
 	$(RANLIB) ../$(LIBNAME)
 	$(CC) $(CFLAGS) $(LDFLAGS) libopenblas.def dllinit.$(SUFFIX) \
-	-shared -o ../$(LIBDLLNAME) -Wl,--out-implib,../$(LIBDLLNAME).a \
+	-shared -o ../$(LIBDLLNAME) -Wl,--out-implib,../$(LIBPREFIX).lib \
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive $(FEXTRALIB)
 
 libopenblas.def : gensymbol

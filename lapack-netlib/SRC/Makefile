@@ -54,9 +54,9 @@ include ../make.inc
 #
 #######################################################################
 
-ALLAUX = ilaenv.o ieeeck.o lsamen.o xerbla.o xerbla_array.o iparmq.o	\
+ALLAUX = ilaenv.o ieeeck.o lsamen.o xerbla_array.o iparmq.o	\
     ilaprec.o ilatrans.o ilauplo.o iladiag.o chla_transtype.o \
-    ../INSTALL/ilaver.o ../INSTALL/lsame.o ../INSTALL/slamch.o
+    ../INSTALL/ilaver.o ../INSTALL/slamch.o
 
 SCLAUX = \
    sbdsdc.o \
@@ -213,11 +213,11 @@ CLASRC = \
    cposv.o  cposvx.o cpstrf.o cpstf2.o \
    cppcon.o cppequ.o cpprfs.o cppsv.o  cppsvx.o cpptrf.o cpptri.o cpptrs.o \
    cptcon.o cpteqr.o cptrfs.o cptsv.o  cptsvx.o cpttrf.o cpttrs.o cptts2.o \
-   crot.o   cspcon.o cspmv.o  cspr.o   csprfs.o cspsv.o  \
+   crot.o   cspcon.o csprfs.o cspsv.o  \
    cspsvx.o csptrf.o csptri.o csptrs.o csrscl.o cstedc.o \
    cstegr.o cstein.o csteqr.o \
-   csycon.o csymv.o \
-   csyr.o csyrfs.o csysv.o  csysvx.o csytf2.o csytrf.o csytri.o csytri2.o csytri2x.o \
+   csycon.o \
+   csyrfs.o csysv.o  csysvx.o csytf2.o csytrf.o csytri.o csytri2.o csytri2x.o \
    csyswapr.o csytrs.o csytrs2.o csyconv.o \
    csytf2_rook.o csytrf_rook.o csytrs_rook.o \
    csytri_rook.o csycon_rook.o csysv_rook.o \
@@ -375,11 +375,11 @@ ZLASRC = \
    zposv.o  zposvx.o zpotrs.o zpstrf.o zpstf2.o \
    zppcon.o zppequ.o zpprfs.o zppsv.o  zppsvx.o zpptrf.o zpptri.o zpptrs.o \
    zptcon.o zpteqr.o zptrfs.o zptsv.o  zptsvx.o zpttrf.o zpttrs.o zptts2.o \
-   zrot.o   zspcon.o zspmv.o  zspr.o   zsprfs.o zspsv.o  \
+   zrot.o   zspcon.o zsprfs.o zspsv.o  \
    zspsvx.o zsptrf.o zsptri.o zsptrs.o zdrscl.o zstedc.o \
    zstegr.o zstein.o zsteqr.o \
-   zsycon.o zsymv.o \
-   zsyr.o zsyrfs.o zsysv.o  zsysvx.o zsytf2.o zsytrf.o zsytri.o zsytri2.o zsytri2x.o \
+   zsycon.o \
+   zsyrfs.o zsysv.o  zsysvx.o zsytf2.o zsytrf.o zsytri.o zsytri2.o zsytri2x.o \
    zsyswapr.o zsytrs.o zsytrs2.o zsyconv.o \
    zsytf2_rook.o zsytrf_rook.o zsytrs_rook.o \
    zsytri_rook.o zsycon_rook.o zsysv_rook.o \

@@ -20,6 +20,7 @@ install : 	lib.grd
 	@-mkdir -p $(DESTDIR)$(PREFIX)
 	@-mkdir -p $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@-mkdir -p $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
+	@-mkdir -p $(DESTDIR)$(OPENBLAS_BINARY_DIR)
 	@echo Generating openblas_config.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 #for inc 
 	@echo \#ifndef OPENBLAS_CONFIG_H > $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/openblas_config.h
@@ -82,7 +83,7 @@ ifeq ($(OSNAME), Darwin)
 endif
 ifeq ($(OSNAME), WINNT)
 	@-cp $(LIBDLLNAME) $(OPENBLAS_BINARY_DIR)
-	@-cp $(LIBDLLNAME).a $(OPENBLAS_LIBRARY_DIR)
+	@-cp $(LIBPREFIX).lib $(OPENBLAS_LIBRARY_DIR)
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	@-cp $(LIBDLLNAME) $(OPENBLAS_BINARY_DIR)
