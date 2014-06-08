@@ -209,6 +209,8 @@
 #define CNEG_TCOPY		cneg_tcopy
 #define CLASWP_NCOPY		claswp_ncopy
 
+#define CAXPBY_K                caxpby_k
+
 #else
 
 #define	CAMAX_K			gotoblas -> camax_k
@@ -380,6 +382,7 @@
 #define CNEG_TCOPY		gotoblas -> cneg_tcopy
 #define CLASWP_NCOPY		gotoblas -> claswp_ncopy
 
+#define CAXPBY_K                gotoblas -> caxpby_k
 #endif
 
 #define	CGEMM_NN		cgemm_nn

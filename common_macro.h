@@ -628,6 +628,8 @@
 #define	HERK_THREAD_LR		DSYRK_THREAD_LN
 #define	HERK_THREAD_LC		DSYRK_THREAD_LT
 
+#define	AXPBY_K			DAXPBY_K
+
 #else
 
 #define	AMAX_K			SAMAX_K
@@ -917,6 +919,8 @@
 #define	HERK_THREAD_UC		SSYRK_THREAD_UC
 #define	HERK_THREAD_LR		SSYRK_THREAD_LN
 #define	HERK_THREAD_LC		SSYRK_THREAD_LT
+
+#define	AXPBY_K			SAXPBY_K
 
 #endif
 #else
@@ -1722,6 +1726,8 @@
 #define SYMM_OUTCOPY		ZSYMM_OUTCOPY
 #define SYMM_OLTCOPY		ZSYMM_OLTCOPY
 
+#define AXPBY_K                 ZAXPBY_K
+
 #else
 
 #define	AMAX_K			CAMAX_K
@@ -2122,6 +2128,8 @@
 #define SYMM_ILTCOPY		CSYMM_ILTCOPY
 #define SYMM_OUTCOPY		CSYMM_OUTCOPY
 #define SYMM_OLTCOPY		CSYMM_OLTCOPY
+
+#define AXPBY_K                 CAXPBY_K
 
 #endif
 #endif

@@ -146,6 +146,8 @@
 #define SNEG_TCOPY		sneg_tcopy
 #define SLASWP_NCOPY		slaswp_ncopy
 
+#define SAXPBY_K                saxpby_k
+
 #else
 
 #define	SAMAX_K			gotoblas -> samax_k
@@ -258,6 +260,8 @@
 
 #define SNEG_TCOPY		gotoblas -> sneg_tcopy
 #define SLASWP_NCOPY		gotoblas -> slaswp_ncopy
+
+#define SAXPBY_K                gotoblas -> saxpby_k
 
 #endif
 

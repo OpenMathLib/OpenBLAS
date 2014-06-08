@@ -209,6 +209,8 @@
 #define ZNEG_TCOPY		zneg_tcopy
 #define ZLASWP_NCOPY		zlaswp_ncopy
 
+#define ZAXPBY_K                zaxpby_k
+
 #else
 
 #define	ZAMAX_K			gotoblas -> zamax_k
@@ -380,6 +382,7 @@
 #define ZNEG_TCOPY		gotoblas -> zneg_tcopy
 #define ZLASWP_NCOPY		gotoblas -> zlaswp_ncopy
 
+#define ZAXPBY_K                gotoblas -> zaxpby_k
 #endif
 
 #define	ZGEMM_NN		zgemm_nn

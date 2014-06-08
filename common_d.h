@@ -144,6 +144,8 @@
 #define DNEG_TCOPY		dneg_tcopy
 #define DLASWP_NCOPY		dlaswp_ncopy
 
+#define	DAXPBY_K		daxpby_k
+
 #else
 
 #define	DAMAX_K			gotoblas -> damax_k
@@ -255,6 +257,7 @@
 #define DNEG_TCOPY		gotoblas -> dneg_tcopy
 #define DLASWP_NCOPY		gotoblas -> dlaswp_ncopy
 
+#define	DAXPBY_K		gotoblas -> daxpby_k
 #endif
 
 #define	DGEMM_NN		dgemm_nn

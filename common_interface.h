@@ -757,6 +757,14 @@ FLOATRET  BLASFUNC(slamc3)(float *, float *);
 double    BLASFUNC(dlamc3)(double *, double *);
 xdouble   BLASFUNC(qlamc3)(xdouble *, xdouble *);
 
+/* BLAS extensions */
+
+void    BLASFUNC(saxpby) (blasint *, float  *, float  *, blasint *, float *, float  *, blasint *);
+void    BLASFUNC(daxpby) (blasint *, double  *, double  *, blasint *, double *, double  *, blasint *);
+void    BLASFUNC(caxpby) (blasint *, float  *, float  *, blasint *, float *, float  *, blasint *);
+void    BLASFUNC(zaxpby) (blasint *, double  *, double  *, blasint *, double *, double  *, blasint *);
+
+
 #ifdef __cplusplus
 }
      

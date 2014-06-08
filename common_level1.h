@@ -204,6 +204,13 @@ int    srotm_k (BLASLONG, float,  BLASLONG, float,  BLASLONG, float);
 int    drotm_k (BLASLONG, double, BLASLONG, double, BLASLONG, double);
 int    qrotm_k (BLASLONG, xdouble, BLASLONG, xdouble, BLASLONG, xdouble);
 
+
+int    saxpby_k (BLASLONG, float,  float  *, BLASLONG, float,  float  *, BLASLONG);
+int    daxpby_k (BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG);
+int    caxpby_k (BLASLONG, float,  float,  float  *, BLASLONG, float,  float,  float  *, BLASLONG);
+int    zaxpby_k (BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG);
+
+
 #ifdef __CUDACC__
 }
 #endif

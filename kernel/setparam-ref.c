@@ -500,6 +500,12 @@ gotoblas_t TABLE_NAME = {
 
   SNUMOPT, DNUMOPT, QNUMOPT,
 
+  saxpby_kTS,
+  daxpby_kTS,
+  caxpby_kTS,
+  zaxpby_kTS
+
+
 };
 
 #ifdef ARCH_X86

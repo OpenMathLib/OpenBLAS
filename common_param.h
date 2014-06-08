@@ -806,9 +806,15 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
 
 #endif
 
+
   void (*init)(void);
 
   int snum_opt, dnum_opt, qnum_opt;
+
+  int    (*saxpby_k)     (BLASLONG, float, float*, BLASLONG,float, float*, BLASLONG);
+  int    (*daxpby_k)     (BLASLONG, double, double*, BLASLONG,double, double*, BLASLONG);
+  int    (*caxpby_k)     (BLASLONG, float, float,  float*, BLASLONG,float,float, float*, BLASLONG);
+  int    (*zaxpby_k)     (BLASLONG, double, double,  double*, BLASLONG,double,double, double*, BLASLONG);
 
 } gotoblas_t;
 

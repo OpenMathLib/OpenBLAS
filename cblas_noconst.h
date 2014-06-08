@@ -296,6 +296,17 @@ void cblas_zher2k(enum CBLAS_ORDER Order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANS
 
 void cblas_xerbla(blasint p, char *rout, char *form, ...);
 
+/*** BLAS extensions ***/
+
+void cblas_saxpby(blasint n, float alpha, float *x, blasint incx,float beta, float *y, blasint incy);
+
+void cblas_daxpby(blasint n, double alpha, double *x, blasint incx,double beta, double *y, blasint incy);
+
+void cblas_caxpby(blasint n, float *alpha, float *x, blasint incx,float *beta, float *y, blasint incy);
+
+void cblas_zaxpby(blasint n, double *alpha, double *x, blasint incx,double *beta, double *y, blasint incy);
+
+
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */
