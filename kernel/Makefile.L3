@@ -320,6 +320,13 @@ XBLASOBJS += \
 
 endif
 
+######  BLAS extensions #####
+
+DBLASOBJS += \
+	domatcopy_k_cn$(TSUFFIX).$(SUFFIX) domatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	domatcopy_k_ct$(TSUFFIX).$(SUFFIX) domatcopy_k_rt$(TSUFFIX).$(SUFFIX)
+
+
 SGEMMINCOPYOBJ_P = $(SGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SGEMMITCOPYOBJ_P = $(SGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SGEMMONCOPYOBJ_P = $(SGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
@@ -3237,3 +3244,40 @@ $(KDIR)xtrsm_oltucopy$(TSUFFIX).$(PSUFFIX) : generic/ztrsm_ltcopy_$(XGEMM_UNROLL
 
 $(KDIR)xtrsm_oltncopy$(TSUFFIX).$(PSUFFIX) : generic/ztrsm_ltcopy_$(XGEMM_UNROLL_N).c
 	$(CC) -c $(PFLAGS) $(NO_UNINITIALIZED_WARN) -DXDOUBLE -DCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
+
+
+#####  BLAS extensions ######
+
+ifndef DOMATCOPY_CN
+DOMATCOPY_CN = ../arm/omatcopy_cn.c
+endif
+
+$(KDIR)domatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+ifndef DOMATCOPY_RN
+DOMATCOPY_RN = ../arm/omatcopy_rn.c
+endif
+
+$(KDIR)domatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+ifndef DOMATCOPY_CT
+DOMATCOPY_CT = ../arm/omatcopy_ct.c
+endif
+
+$(KDIR)domatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+ifndef DOMATCOPY_RT
+DOMATCOPY_RT = ../arm/omatcopy_rt.c
+endif
+
+$(KDIR)domatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+
+
+
+
+

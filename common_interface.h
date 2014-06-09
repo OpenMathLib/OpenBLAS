@@ -764,6 +764,10 @@ void    BLASFUNC(daxpby) (blasint *, double  *, double  *, blasint *, double *, 
 void    BLASFUNC(caxpby) (blasint *, float  *, float  *, blasint *, float *, float  *, blasint *);
 void    BLASFUNC(zaxpby) (blasint *, double  *, double  *, blasint *, double *, double  *, blasint *);
 
+void    BLASFUNC(somatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void    BLASFUNC(domatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, double  *, blasint *);
+void    BLASFUNC(comatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void    BLASFUNC(zomatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, double  *, blasint *);
 
 #ifdef __cplusplus
 }

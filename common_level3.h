@@ -1732,6 +1732,11 @@ int zgemc_otcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, BLA
 int xgemc_oncopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xdouble *b, BLASLONG ldb, xdouble *c);
 int xgemc_otcopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xdouble *b, BLASLONG ldb, xdouble *c);
 
+int domatcopy_k_cn(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+int domatcopy_k_rn(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+int domatcopy_k_ct(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+int domatcopy_k_rt(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+
 #ifdef __CUDACC__
 }
 #endif

@@ -63,7 +63,8 @@ DBLAS2OBJS    = \
 
 DBLAS3OBJS    = \
 		dgemm.$(SUFFIX) dsymm.$(SUFFIX) dtrmm.$(SUFFIX) \
-		dtrsm.$(SUFFIX) dsyrk.$(SUFFIX) dsyr2k.$(SUFFIX) 
+		dtrsm.$(SUFFIX) dsyrk.$(SUFFIX) dsyr2k.$(SUFFIX) \
+		domatcopy.$(SUFFIX)
 
 CBLAS1OBJS    = \
 		caxpy.$(SUFFIX) caxpyc.$(SUFFIX) cswap.$(SUFFIX) \
@@ -2024,5 +2025,6 @@ caxpby.$(SUFFIX) caxpby.$(PSUFFIX) : zaxpby.c
 cblas_caxpby.$(SUFFIX) cblas_caxpby.$(PSUFFIX) : zaxpby.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
-
+domatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : omatcopy.c ../param.h
+	$(CC) -c $(CFLAGS) $< -o $(@F)
 
