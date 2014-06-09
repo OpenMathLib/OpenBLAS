@@ -148,6 +148,12 @@
 
 #define SAXPBY_K                saxpby_k
 
+#define SOMATCOPY_K_CN          somatcopy_k_cn
+#define SOMATCOPY_K_RN          somatcopy_k_rn
+#define SOMATCOPY_K_CT          somatcopy_k_ct
+#define SOMATCOPY_K_RT          somatcopy_k_rt
+
+
 #else
 
 #define	SAMAX_K			gotoblas -> samax_k
@@ -262,6 +268,12 @@
 #define SLASWP_NCOPY		gotoblas -> slaswp_ncopy
 
 #define SAXPBY_K                gotoblas -> saxpby_k
+
+#define SOMATCOPY_K_CN          gotoblas -> somatcopy_k_cn
+#define SOMATCOPY_K_RN          gotoblas -> somatcopy_k_rn
+#define SOMATCOPY_K_CT          gotoblas -> somatcopy_k_ct
+#define SOMATCOPY_K_RT          gotoblas -> somatcopy_k_rt
+
 
 #endif
 

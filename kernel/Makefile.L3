@@ -321,6 +321,9 @@ XBLASOBJS += \
 endif
 
 ######  BLAS extensions #####
+SBLASOBJS += \
+	somatcopy_k_cn$(TSUFFIX).$(SUFFIX) somatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	somatcopy_k_ct$(TSUFFIX).$(SUFFIX) somatcopy_k_rt$(TSUFFIX).$(SUFFIX)
 
 DBLASOBJS += \
 	domatcopy_k_cn$(TSUFFIX).$(SUFFIX) domatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
@@ -3275,6 +3278,36 @@ endif
 
 $(KDIR)domatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_RT)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+ifndef SOMATCOPY_CN
+SOMATCOPY_CN = ../arm/omatcopy_cn.c
+endif
+
+$(KDIR)somatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+ifndef SOMATCOPY_RN
+SOMATCOPY_RN = ../arm/omatcopy_rn.c
+endif
+
+$(KDIR)somatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+ifndef SOMATCOPY_CT
+SOMATCOPY_CT = ../arm/omatcopy_ct.c
+endif
+
+$(KDIR)somatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+ifndef SOMATCOPY_RT
+SOMATCOPY_RT = ../arm/omatcopy_rt.c
+endif
+
+$(KDIR)somatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+
 
 
 

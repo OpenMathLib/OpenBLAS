@@ -501,6 +501,8 @@ gotoblas_t TABLE_NAME = {
   SNUMOPT, DNUMOPT, QNUMOPT,
 
   saxpby_kTS, daxpby_kTS, caxpby_kTS, zaxpby_kTS,
+
+  somatcopy_k_cnTS, somatcopy_k_ctTS, somatcopy_k_rnTS, somatcopy_k_rtTS,
   domatcopy_k_cnTS, domatcopy_k_ctTS, domatcopy_k_rnTS, domatcopy_k_rtTS
 
 
