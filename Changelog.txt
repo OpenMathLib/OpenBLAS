@@ -1,5 +1,16 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.9
+10-Jun-2014
+common:
+	* Improved the result for LAPACK testing. (#372)
+	* Installed DLL to prefix/bin instead of prefix/lib. (#366)
+	* Build import library on Windows.(#374)
+x86/x86-64:
+	* To improve LAPACK testing, we fallback some kernels. (#372)
+	https://github.com/xianyi/OpenBLAS/wiki/Fixed-optimized-kernels-To-do-List
+
+====================================================================
 Version 0.2.9.rc2
 06-Mar-2014
 common:
