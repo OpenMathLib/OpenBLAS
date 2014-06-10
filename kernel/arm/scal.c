@@ -38,20 +38,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
-	BLASLONG i=0;
+	BLASLONG i=0,j=0;
 
-	if ( n < 0 || inc_x < 1     )  return(0);
-	if ( da == 1.0 ) return(0);
-
-	n *= inc_x;
-	while(i < n)
+	while(j < n)
 	{
 
-		x[i] = da * x[i] ;
+		if ( da == 0.0 )
+			x[i]=0.0;
+		else
+			x[i] = da * x[i] ;
+
 		i += inc_x ;
+		j++;
 
 	}
-	return(0);
+	return;
 
 }
 	

@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.9.rc2
+VERSION = 0.2.9
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library 
@@ -48,6 +48,9 @@ VERSION = 0.2.9.rc2
 # automatically detected by the the script.
 # NUM_THREADS = 24
 
+# if you don't need to install the static library, please comment it in.
+# NO_STATIC = 1
+
 # if you don't need generate the shared library, please comment it in.
 # NO_SHARED = 1
 
@@ -76,10 +79,10 @@ VERSION = 0.2.9.rc2
 # Unfortunately most of kernel won't give us high quality buffer.
 # BLAS tries to find the best region before entering main function,
 # but it will consume time. If you don't like it, you can disable one.
-# NO_WARMUP = 1
+NO_WARMUP = 1
 
 # If you want to disable CPU/Memory affinity on Linux.
-# NO_AFFINITY = 1
+NO_AFFINITY = 1
 
 # Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers 
 # and OS. However, the performance is low.
@@ -128,6 +131,9 @@ VERSION = 0.2.9.rc2
 # Common Optimization Flag; 
 # The default -O2 is enough.
 # COMMON_OPT = -O2
+
+# gfortran option for LAPACK
+FCOMMON_OPT = -frecursive
 
 # Profiling flags
 COMMON_PROF = -pg

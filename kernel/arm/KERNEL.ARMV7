@@ -1,3 +1,8 @@
+SGEMVNKERNEL = ../arm/gemv_n.c
+SGEMVTKERNEL = ../arm/gemv_t.c
+
+
+#################################################################################
 SAMAXKERNEL  = iamax_vfp.S
 DAMAXKERNEL  = iamax_vfp.S
 CAMAXKERNEL  = iamax_vfp.S
@@ -65,17 +70,17 @@ DROTKERNEL   = rot_vfp.S
 CROTKERNEL   = rot_vfp.S
 ZROTKERNEL   = rot_vfp.S
 
-SSCALKERNEL  = scal_vfp.S
+SSCALKERNEL  = scal.c
 DSCALKERNEL  = scal.c
-CSCALKERNEL  = scal_vfp.S
-ZSCALKERNEL  = scal_vfp.S
+CSCALKERNEL  = zscal.c
+ZSCALKERNEL  = zscal.c
 
-SGEMVNKERNEL = gemv_n_vfp.S
-DGEMVNKERNEL = gemv_n.c
+# BAD SGEMVNKERNEL = gemv_n_vfp.S
+DGEMVNKERNEL = gemv_n_vfp.S
 CGEMVNKERNEL = cgemv_n_vfp.S
 ZGEMVNKERNEL = zgemv_n_vfp.S
 
-SGEMVTKERNEL = gemv_t_vfp.S
+# BAD SGEMVTKERNEL = gemv_t_vfp.S
 DGEMVTKERNEL = gemv_t_vfp.S
 CGEMVTKERNEL = cgemv_t_vfp.S
 ZGEMVTKERNEL = zgemv_t_vfp.S

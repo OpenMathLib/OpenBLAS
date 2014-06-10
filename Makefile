@@ -57,7 +57,7 @@ endif
 
 ifeq ($(USE_OPENMP), 1)
 	@echo
-	@echo " Use OpenMP in the multithreading. Becasue of ignoring OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS flags, "
+	@echo " Use OpenMP in the multithreading. Because of ignoring OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS flags, "
 	@echo " you should use OMP_NUM_THREADS environment variable to control the number of threads."
 	@echo
 endif
@@ -128,6 +128,11 @@ ifeq ($(CORE), UNKOWN)
 endif
 ifeq ($(NOFORTRAN), 1)
 	$(error OpenBLAS: Detecting fortran compiler failed. Please install fortran compiler, e.g. gfortran, ifort, openf90.)
+endif
+ifeq ($(NO_STATIC), 1)
+ifeq ($(NO_SHARED), 1)
+	$(error OpenBLAS: neither static nor shared are enabled.)
+endif
 endif
 	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@for d in $(SUBDIRS) ; \
@@ -207,6 +212,7 @@ else
 netlib : lapack_prebuild
 ifndef NOFORTRAN
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
+	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
 ifndef NO_LAPACKE
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
@@ -230,43 +236,19 @@ ifndef NOFORTRAN
 	-@echo "ARCHFLAGS   = -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB   = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "TMGLIB      = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "BLASLIB     = ../../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKELIB  = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB_P = ../$(LIBNAME_P)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifeq ($(F_COMPILER), GFORTRAN)
+	-@echo "TIMER       = INT_ETIME" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
+	-@echo "TIMER       = NONE" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
-endif
-
-lapack-3.4.2 : lapack-3.4.2.tgz
-ifndef NOFORTRAN
-ifndef NO_LAPACK
-	@if test `$(MD5SUM) $< | $(AWK) '{print $$1}'` = 61bf1a8a4469d4bdb7604f5897179478; then \
-		echo $(TAR) zxf $< ;\
-		$(TAR) zxf $< && (cd $(NETLIB_LAPACK_DIR); $(PATCH) -p1 < ../patch.for_lapack-3.4.2) ;\
-		rm -f $(NETLIB_LAPACK_DIR)/lapacke/make.inc ;\
-	else \
-		rm -rf $(NETLIB_LAPACK_DIR) ;\
-		echo "	Cannot download lapack-3.4.2.tgz or the MD5 check sum is wrong (Please use orignal)."; \
-		exit 1; \
-	fi
-endif
-endif
-
-LAPACK_URL=http://www.netlib.org/lapack/lapack-3.4.2.tgz
-
-lapack-3.4.2.tgz :
-ifndef NOFORTRAN
-#http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
-ifeq ($(OSNAME), $(filter $(OSNAME),Darwin NetBSD))
-	curl -O $(LAPACK_URL);
-else
-ifeq ($(OSNAME), FreeBSD)
-	fetch $(LAPACK_URL);
-else
-	wget -O $@ $(LAPACK_URL);
-endif
-endif
 endif
 
 large.tgz : 
@@ -287,17 +269,15 @@ lapack-timing : large.tgz timing.tgz
 ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
-	make -C $(NETLIB_LAPACK_DIR) tmglib
 	make -C $(NETLIB_LAPACK_DIR)/TIMING
 endif
 
 
 lapack-test :
-	$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
-	$(MAKE) -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc xeigtstd xeigtsts xeigtstz xlintstc xlintstd xlintstds xlintsts xlintstz xlintstzc
-	@rm	-f $(NETLIB_LAPACK_DIR)/TESTING/*.out
-	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING
-	$(GREP) failed $(NETLIB_LAPACK_DIR)/TESTING/*.out
+	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
+	make -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+
 
 dummy :
 
@@ -323,4 +303,5 @@ endif
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
 	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
 	@rm -f *.grd Makefile.conf_last config_last.h
+	@(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out testing_results.txt)
 	@echo Done.

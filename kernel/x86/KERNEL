@@ -59,7 +59,7 @@ CASUMKERNEL = zasum_sse.S
 endif
 
 ifndef SDOTKERNEL
-SDOTKERNEL = dot_sse.S
+SDOTKERNEL = ../arm/dot.c
 endif
 
 ifndef CDOTKERNEL
@@ -107,11 +107,11 @@ CSWAPKERNEL = zswap_sse.S
 endif
 
 ifndef SGEMVNKERNEL
-SGEMVNKERNEL = gemv_n_sse.S
+SGEMVNKERNEL = ../arm/gemv_n.c
 endif
 
 ifndef SGEMVTKERNEL
-SGEMVTKERNEL = gemv_t_sse.S
+SGEMVTKERNEL = ../arm/gemv_t.c
 endif
 
 ifndef CGEMVNKERNEL

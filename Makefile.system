@@ -158,6 +158,7 @@ endif
 
 ifeq ($(OSNAME), Linux)
 EXTRALIB	+= -lm
+NO_EXPRECISION = 1
 endif
 
 ifeq ($(OSNAME), AIX)
@@ -845,19 +846,6 @@ MAJOR_VERSION = $(word 1,$(subst ., ,$(VERSION)))
 ifeq ($(DEBUG), 1)
 COMMON_OPT += -g
 endif
-
-ifndef COMMON_OPT
-ifeq ($(ARCH), arm)
-COMMON_OPT = -O3
-endif
-endif
-
-ifndef COMMON_OPT
-ifeq ($(ARCH), arm64)
-COMMON_OPT = -O3
-endif
-endif
-
 
 ifndef COMMON_OPT
 COMMON_OPT = -O2
