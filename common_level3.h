@@ -1742,6 +1742,27 @@ int domatcopy_k_rn(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, B
 int domatcopy_k_ct(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
 int domatcopy_k_rt(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
 
+int comatcopy_k_cn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_ct(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rt(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+
+int comatcopy_k_cnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_ctc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rtc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+
+int zomatcopy_k_cn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_ct(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rt(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+
+int zomatcopy_k_cnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_ctc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rtc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+
+
 #ifdef __CUDACC__
 }
 #endif

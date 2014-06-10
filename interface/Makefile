@@ -93,7 +93,8 @@ CBLAS2OBJS    = \
 CBLAS3OBJS    = \
 		cgemm.$(SUFFIX) csymm.$(SUFFIX) ctrmm.$(SUFFIX) \
 		ctrsm.$(SUFFIX) csyrk.$(SUFFIX) csyr2k.$(SUFFIX) \
-	       	chemm.$(SUFFIX) cherk.$(SUFFIX) cher2k.$(SUFFIX)
+	       	chemm.$(SUFFIX) cherk.$(SUFFIX) cher2k.$(SUFFIX) \
+		comatcopy.$(SUFFIX)
 
 ZBLAS1OBJS    = \
 		zaxpy.$(SUFFIX) zaxpyc.$(SUFFIX) zswap.$(SUFFIX) \
@@ -120,7 +121,8 @@ ZBLAS2OBJS    = \
 ZBLAS3OBJS    = \
 		zgemm.$(SUFFIX) zsymm.$(SUFFIX) ztrmm.$(SUFFIX) \
 		ztrsm.$(SUFFIX) zsyrk.$(SUFFIX) zsyr2k.$(SUFFIX) \
-	       	zhemm.$(SUFFIX) zherk.$(SUFFIX) zher2k.$(SUFFIX)
+	       	zhemm.$(SUFFIX) zherk.$(SUFFIX) zher2k.$(SUFFIX) \
+		zomatcopy.$(SUFFIX)
 
 ifdef SUPPORT_GEMM3M
 
@@ -2032,4 +2034,11 @@ domatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : omatcopy.c
 
 somatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : omatcopy.c 
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+comatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : zomatcopy.c 
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+zomatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : zomatcopy.c 
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
 

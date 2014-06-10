@@ -211,6 +211,16 @@
 
 #define ZAXPBY_K                zaxpby_k
 
+#define ZOMATCOPY_K_CN          zomatcopy_k_cn
+#define ZOMATCOPY_K_RN          zomatcopy_k_rn
+#define ZOMATCOPY_K_CT          zomatcopy_k_ct
+#define ZOMATCOPY_K_RT          zomatcopy_k_rt
+#define ZOMATCOPY_K_CNC         zomatcopy_k_cnc
+#define ZOMATCOPY_K_RNC         zomatcopy_k_rnc
+#define ZOMATCOPY_K_CTC         zomatcopy_k_ctc
+#define ZOMATCOPY_K_RTC         zomatcopy_k_rtc
+
+
 #else
 
 #define	ZAMAX_K			gotoblas -> zamax_k
@@ -383,6 +393,16 @@
 #define ZLASWP_NCOPY		gotoblas -> zlaswp_ncopy
 
 #define ZAXPBY_K                gotoblas -> zaxpby_k
+
+#define ZOMATCOPY_K_CN          gotoblas -> zomatcopy_k_cn
+#define ZOMATCOPY_K_RN          gotoblas -> zomatcopy_k_rn
+#define ZOMATCOPY_K_CT          gotoblas -> zomatcopy_k_ct
+#define ZOMATCOPY_K_RT          gotoblas -> zomatcopy_k_rt
+#define ZOMATCOPY_K_CNC         gotoblas -> zomatcopy_k_cnc
+#define ZOMATCOPY_K_RNC         gotoblas -> zomatcopy_k_rnc
+#define ZOMATCOPY_K_CTC         gotoblas -> zomatcopy_k_ctc
+#define ZOMATCOPY_K_RTC         gotoblas -> zomatcopy_k_rtc
+
 #endif
 
 #define	ZGEMM_NN		zgemm_nn

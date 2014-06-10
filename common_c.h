@@ -211,6 +211,16 @@
 
 #define CAXPBY_K                caxpby_k
 
+#define COMATCOPY_K_CN          comatcopy_k_cn
+#define COMATCOPY_K_RN          comatcopy_k_rn
+#define COMATCOPY_K_CT          comatcopy_k_ct
+#define COMATCOPY_K_RT          comatcopy_k_rt
+#define COMATCOPY_K_CNC         comatcopy_k_cnc
+#define COMATCOPY_K_RNC         comatcopy_k_rnc
+#define COMATCOPY_K_CTC         comatcopy_k_ctc
+#define COMATCOPY_K_RTC         comatcopy_k_rtc
+
+
 #else
 
 #define	CAMAX_K			gotoblas -> camax_k
@@ -383,6 +393,16 @@
 #define CLASWP_NCOPY		gotoblas -> claswp_ncopy
 
 #define CAXPBY_K                gotoblas -> caxpby_k
+
+#define COMATCOPY_K_CN          gotoblas -> comatcopy_k_cn
+#define COMATCOPY_K_RN          gotoblas -> comatcopy_k_rn
+#define COMATCOPY_K_CT          gotoblas -> comatcopy_k_ct
+#define COMATCOPY_K_RT          gotoblas -> comatcopy_k_rt
+#define COMATCOPY_K_CNC         gotoblas -> comatcopy_k_cnc
+#define COMATCOPY_K_RNC         gotoblas -> comatcopy_k_rnc
+#define COMATCOPY_K_CTC         gotoblas -> comatcopy_k_ctc
+#define COMATCOPY_K_RTC         gotoblas -> comatcopy_k_rtc
+
 #endif
 
 #define	CGEMM_NN		cgemm_nn

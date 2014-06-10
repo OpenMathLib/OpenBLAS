@@ -503,7 +503,11 @@ gotoblas_t TABLE_NAME = {
   saxpby_kTS, daxpby_kTS, caxpby_kTS, zaxpby_kTS,
 
   somatcopy_k_cnTS, somatcopy_k_ctTS, somatcopy_k_rnTS, somatcopy_k_rtTS,
-  domatcopy_k_cnTS, domatcopy_k_ctTS, domatcopy_k_rnTS, domatcopy_k_rtTS
+  domatcopy_k_cnTS, domatcopy_k_ctTS, domatcopy_k_rnTS, domatcopy_k_rtTS,
+  comatcopy_k_cnTS, comatcopy_k_ctTS, comatcopy_k_rnTS, comatcopy_k_rtTS,
+  comatcopy_k_cncTS, comatcopy_k_ctcTS, comatcopy_k_rncTS, comatcopy_k_rtcTS,
+  zomatcopy_k_cnTS, zomatcopy_k_ctTS, zomatcopy_k_rnTS, zomatcopy_k_rtTS,
+  zomatcopy_k_cncTS, zomatcopy_k_ctcTS, zomatcopy_k_rncTS, zomatcopy_k_rtcTS
 
 
 };
