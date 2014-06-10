@@ -41,7 +41,7 @@ SBLAS2OBJS    = \
 SBLAS3OBJS    = \
 		sgemm.$(SUFFIX) ssymm.$(SUFFIX) strmm.$(SUFFIX) \
 		strsm.$(SUFFIX) ssyrk.$(SUFFIX) ssyr2k.$(SUFFIX) \
-		somatcopy.$(SUFFIX)
+		somatcopy.$(SUFFIX) simatcopy.$(SUFFIX)
 
 
 DBLAS1OBJS    = \
@@ -66,7 +66,7 @@ DBLAS2OBJS    = \
 DBLAS3OBJS    = \
 		dgemm.$(SUFFIX) dsymm.$(SUFFIX) dtrmm.$(SUFFIX) \
 		dtrsm.$(SUFFIX) dsyrk.$(SUFFIX) dsyr2k.$(SUFFIX) \
-		domatcopy.$(SUFFIX)
+		domatcopy.$(SUFFIX) dimatcopy.$(SUFFIX)
 
 CBLAS1OBJS    = \
 		caxpy.$(SUFFIX) caxpyc.$(SUFFIX) cswap.$(SUFFIX) \
@@ -94,7 +94,7 @@ CBLAS3OBJS    = \
 		cgemm.$(SUFFIX) csymm.$(SUFFIX) ctrmm.$(SUFFIX) \
 		ctrsm.$(SUFFIX) csyrk.$(SUFFIX) csyr2k.$(SUFFIX) \
 	       	chemm.$(SUFFIX) cherk.$(SUFFIX) cher2k.$(SUFFIX) \
-		comatcopy.$(SUFFIX)
+		comatcopy.$(SUFFIX) cimatcopy.$(SUFFIX)
 
 ZBLAS1OBJS    = \
 		zaxpy.$(SUFFIX) zaxpyc.$(SUFFIX) zswap.$(SUFFIX) \
@@ -122,7 +122,7 @@ ZBLAS3OBJS    = \
 		zgemm.$(SUFFIX) zsymm.$(SUFFIX) ztrmm.$(SUFFIX) \
 		ztrsm.$(SUFFIX) zsyrk.$(SUFFIX) zsyr2k.$(SUFFIX) \
 	       	zhemm.$(SUFFIX) zherk.$(SUFFIX) zher2k.$(SUFFIX) \
-		zomatcopy.$(SUFFIX)
+		zomatcopy.$(SUFFIX) zimatcopy.$(SUFFIX)
 
 ifdef SUPPORT_GEMM3M
 
@@ -2032,13 +2032,25 @@ cblas_caxpby.$(SUFFIX) cblas_caxpby.$(PSUFFIX) : zaxpby.c
 domatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : omatcopy.c 
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-somatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : omatcopy.c 
+somatcopy.$(SUFFIX) somatcopy.$(PSUFFIX) : omatcopy.c 
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-comatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : zomatcopy.c 
+comatcopy.$(SUFFIX) comatcopy.$(PSUFFIX) : zomatcopy.c 
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-zomatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : zomatcopy.c 
+zomatcopy.$(SUFFIX) zomatcopy.$(PSUFFIX) : zomatcopy.c 
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+dimatcopy.$(SUFFIX) dimatcopy.$(PSUFFIX) : imatcopy.c 
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+simatcopy.$(SUFFIX) simatcopy.$(PSUFFIX) : imatcopy.c 
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+cimatcopy.$(SUFFIX) cimatcopy.$(PSUFFIX) : zimatcopy.c 
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+zimatcopy.$(SUFFIX) zimatcopy.$(PSUFFIX) : zimatcopy.c 
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 
