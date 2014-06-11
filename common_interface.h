@@ -757,6 +757,23 @@ FLOATRET  BLASFUNC(slamc3)(float *, float *);
 double    BLASFUNC(dlamc3)(double *, double *);
 xdouble   BLASFUNC(qlamc3)(xdouble *, xdouble *);
 
+/* BLAS extensions */
+
+void    BLASFUNC(saxpby) (blasint *, float  *, float  *, blasint *, float *, float  *, blasint *);
+void    BLASFUNC(daxpby) (blasint *, double  *, double  *, blasint *, double *, double  *, blasint *);
+void    BLASFUNC(caxpby) (blasint *, float  *, float  *, blasint *, float *, float  *, blasint *);
+void    BLASFUNC(zaxpby) (blasint *, double  *, double  *, blasint *, double *, double  *, blasint *);
+
+void    BLASFUNC(somatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void    BLASFUNC(domatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, double  *, blasint *);
+void    BLASFUNC(comatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, float  *, blasint *);
+void    BLASFUNC(zomatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, double  *, blasint *);
+
+void    BLASFUNC(simatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, blasint *);
+void    BLASFUNC(dimatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, blasint *);
+void    BLASFUNC(cimatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, blasint *);
+void    BLASFUNC(zimatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, blasint *);
+
 #ifdef __cplusplus
 }
      

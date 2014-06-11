@@ -305,6 +305,16 @@ void cblas_zher2k(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBL
 
 void cblas_xerbla(blasint p, char *rout, char *form, ...);
 
+/*** BLAS extensions ***/
+
+void cblas_saxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST float alpha, OPENBLAS_CONST float *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST float beta, float *y, OPENBLAS_CONST blasint incy);
+
+void cblas_daxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST double alpha, OPENBLAS_CONST double *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST double beta, double *y, OPENBLAS_CONST blasint incy);
+
+void cblas_caxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST float *alpha, OPENBLAS_CONST float *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST float *beta, float *y, OPENBLAS_CONST blasint incy);
+
+void cblas_zaxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST double *alpha, OPENBLAS_CONST double *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST double *beta, double *y, OPENBLAS_CONST blasint incy);
+
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */
