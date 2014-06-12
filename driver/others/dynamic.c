@@ -116,18 +116,24 @@ extern void openblas_warning(int verbose, const char * msg);
 
 static int get_vendor(void){
   int eax, ebx, ecx, edx;
-  char vendor[13];
+
+  union
+  {
+        char vchar[16];
+        int  vint[4];
+  } vendor;
 
   cpuid(0, &eax, &ebx, &ecx, &edx);
-  
-  *(int *)(&vendor[0]) = ebx;
-  *(int *)(&vendor[4]) = edx;
-  *(int *)(&vendor[8]) = ecx;
-  vendor[12] = (char)0;
 
-  if (!strcmp(vendor, "GenuineIntel")) return VENDOR_INTEL;
-  if (!strcmp(vendor, "AuthenticAMD")) return VENDOR_AMD;
-  if (!strcmp(vendor, "CentaurHauls")) return VENDOR_CENTAUR;
+  *(&vendor.vint[0]) = ebx;
+  *(&vendor.vint[1]) = edx;
+  *(&vendor.vint[2]) = ecx;
+
+  vendor.vchar[12] = '\0';
+
+  if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
+  if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
+  if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
 
@@ -232,7 +238,7 @@ static gotoblas_t *get_coretype(void){
     if (family <= 0xe) {
         // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
         cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
-        if (eax & 0xffff >= 0x01) {
+        if ( (eax & 0xffff)  >= 0x01) {
             cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
             if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
               return NULL;
