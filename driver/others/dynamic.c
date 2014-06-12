@@ -333,11 +333,79 @@ char *gotoblas_corename(void) {
   return corename[0];
 }
 
+
+static gotoblas_t *force_coretype(char *coretype){
+
+	int i ;
+	int found = -1;
+	char message[128];
+	char mname[20];
+
+	for ( i=1 ; i <= 20; i++)
+	{
+		if (!strncasecmp(coretype,corename[i],20))
+		{
+			found = i;
+			break;
+		}
+	}
+	if (found < 0)
+	{
+		strncpy(mname,coretype,20);
+    		sprintf(message, "Core not found: %s\n",mname);
+    		openblas_warning(1, message); 
+		return(NULL);
+	}
+
+	switch (found)
+	{
+
+		case 20: return (&gotoblas_HASWELL);
+		case 19: return (&gotoblas_PILEDRIVER);
+		case 18: return (&gotoblas_BULLDOZER);
+		case 17: return (&gotoblas_BOBCAT);
+		case 16: return (&gotoblas_SANDYBRIDGE);
+		case 15: return (&gotoblas_NANO);
+		case 14: return (&gotoblas_BARCELONA);
+		case 13: return (&gotoblas_OPTERON);
+		case 12: return (&gotoblas_OPTERON_SSE3);
+		case 11: return (&gotoblas_ATHLON);
+		case 10: return (&gotoblas_NEHALEM);
+		case  9: return (&gotoblas_DUNNINGTON);
+		case  8: return (&gotoblas_PENRYN);
+		case  7: return (&gotoblas_CORE2);
+		case  6: return (&gotoblas_ATOM);
+		case  5: return (&gotoblas_BANIAS);
+		case  4: return (&gotoblas_PRESCOTT);
+		case  3: return (&gotoblas_NORTHWOOD);
+		case  2: return (&gotoblas_COPPERMINE);
+		case  1: return (&gotoblas_KATMAI);
+	}
+	return(NULL);
+
+}
+			
+	
+		
+
 void gotoblas_dynamic_init(void) {
   
+  char coremsg[128];
+  char coren[22];
+  char *p;
+ 
+
   if (gotoblas) return;
 
-  gotoblas = get_coretype();
+  p = getenv("OPENBLAS_CORETYPE");
+  if ( p )
+  {
+	gotoblas = force_coretype(p);
+  }
+  else
+  {
+  	gotoblas = get_coretype();
+  }
   
 #ifdef ARCH_X86
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
@@ -355,6 +423,9 @@ void gotoblas_dynamic_init(void) {
 #endif
   
   if (gotoblas && gotoblas -> init) {
+    strncpy(coren,gotoblas_corename(),20);
+    sprintf(coremsg, "Core: %s\n",coren);
+    openblas_warning(2, coremsg); 
     gotoblas -> init();
   } else {
     openblas_warning(0, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
