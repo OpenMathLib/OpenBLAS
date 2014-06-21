@@ -52,7 +52,7 @@ ifdef TARGET_CORE
 GETARCH_FLAGS := -DFORCE_$(TARGET_CORE)
 endif
 
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 GETARCH_FLAGS	+= -DUSE64BITINT
 endif
 
@@ -502,7 +502,7 @@ endif
 else
 ifdef BINARY64
 FCOMMON_OPT += -m64
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT +=  -fdefault-integer-8
 endif
 else
@@ -516,7 +516,7 @@ endif
 
 ifeq ($(F_COMPILER), INTEL)
 CCOMMON_OPT += -DF_INTERFACE_INTEL
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 ifdef USE_OPENMP
@@ -536,7 +536,7 @@ CCOMMON_OPT += -DF_INTERFACE_IBM
 # FCOMMON_OPT	+= -qarch=440
 ifdef BINARY64
 FCOMMON_OPT += -q64
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -qintsize=8
 endif
 else
@@ -551,7 +551,7 @@ ifeq ($(F_COMPILER), PGI)
 CCOMMON_OPT  += -DF_INTERFACE_PGI
 COMMON_PROF +=  -DPGICOMPILER
 ifdef BINARY64
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 FCOMMON_OPT += -tp p7-64
@@ -566,7 +566,7 @@ endif
 ifeq ($(F_COMPILER), PATHSCALE)
 CCOMMON_OPT  += -DF_INTERFACE_PATHSCALE
 ifdef BINARY64
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
@@ -593,7 +593,7 @@ endif
 ifeq ($(F_COMPILER), OPEN64)
 CCOMMON_OPT  += -DF_INTERFACE_OPEN64
 ifdef BINARY64
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
@@ -681,7 +681,7 @@ endif
 endif
 
 ifdef BINARY64
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 CCOMMON_OPT	+= 
 #-DUSE64BITINT
 endif
@@ -871,7 +871,7 @@ endif
 
 LAPACK_CFLAGS = $(CFLAGS)
 LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H 
-ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
 LAPACK_CFLAGS +=  -DLAPACK_ILP64
 endif
 ifdef OS_WINDOWS

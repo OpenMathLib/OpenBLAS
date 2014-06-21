@@ -39,7 +39,7 @@
 #include "common.h"
 
 #ifdef SMP
-#ifndef USE64BITINT
+#if !defined(USE64BITINT) || defined(ARCH_X86)
 unsigned int blas_quick_divide_table[] = {
   0x00000000, 0x00000001, 0x80000001, 0x55555556, 
   0x40000001, 0x33333334, 0x2aaaaaab, 0x24924925, 
