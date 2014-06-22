@@ -36,9 +36,13 @@ ifndef BINARY64
 else
 	@echo "  BINARY           ... 64bit                 "
 endif
+
+ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
+endif
+
 	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
 ifndef NOFORTRAN
 	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
