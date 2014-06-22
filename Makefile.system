@@ -103,9 +103,10 @@ GETARCH_FLAGS	+= -DGEMM_MULTITHREAD_THRESHOLD=$(GEMM_MULTITHREAD_THRESHOLD)
 
 ifeq ($(NO_AVX), 1)
 GETARCH_FLAGS	+= -DNO_AVX
+endif
+
 ifeq ($(BINARY), 32)
 GETARCH_FLAGS	+= -DNO_AVX
-endif
 endif
 
 ifeq ($(DEBUG), 1)
@@ -770,12 +771,11 @@ endif
 
 ifeq ($(NO_AVX), 1)
 CCOMMON_OPT	+= -DNO_AVX
-else
+endif
+
 ifeq ($(BINARY), 32)
 CCOMMON_OPT	+= -DNO_AVX
 endif
-endif
-
 
 ifdef SMP
 CCOMMON_OPT	+= -DSMP_SERVER

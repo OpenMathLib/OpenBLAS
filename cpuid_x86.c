@@ -40,6 +40,7 @@
 #include <string.h>
 #include "cpuid.h"
 
+/*
 #ifdef NO_AVX
 #define CPUTYPE_HASWELL CPUTYPE_NEHALEM
 #define CORE_HASWELL CORE_NEHALEM
@@ -50,6 +51,7 @@
 #define CPUTYPE_PILEDRIVER CPUTYPE_BARCELONA
 #define CORE_PILEDRIVER CORE_BARCELONA
 #endif
+*/
 
 #ifndef CPUIDEMU
 
