@@ -75,7 +75,7 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
   blasint    incy  = *INCY;
   blasint    lda   = *LDA;
   FLOAT *buffer;
-#ifdef SMP
+#ifdef SMPBUG
   int nthreads;
 #endif
 
@@ -107,7 +107,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint info, t;
-#ifdef SMP
+#ifdef SMPBUG
   int nthreads;
 #endif
 
