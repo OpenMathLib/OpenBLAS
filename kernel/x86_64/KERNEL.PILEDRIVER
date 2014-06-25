@@ -1,3 +1,6 @@
+SGEMVNKERNEL = sgemv_n.S
+SGEMVTKERNEL = sgemv_t.S
+
 ZGEMVNKERNEL = zgemv_n_dup.S
 ZGEMVTKERNEL = zgemv_t_dup.S
 
