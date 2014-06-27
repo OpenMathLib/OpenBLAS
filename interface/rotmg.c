@@ -62,7 +62,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 
 #endif
 
-	FLOAT du, dp1, dp2, dq2, dq1, dh11, dh21, dh12, dh22, dflag, dtemp;
+	FLOAT du, dp1, dp2, dq2, dq1, dh11=ZERO, dh21=ZERO, dh12=ZERO, dh22=ZERO, dflag=-ONE, dtemp;
 
 	if(*dd1 < ZERO)
 	{

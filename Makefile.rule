@@ -133,7 +133,8 @@ NO_AFFINITY = 1
 # COMMON_OPT = -O2
 
 # gfortran option for LAPACK
-FCOMMON_OPT = -frecursive
+# enable this flag only on 64bit Linux and if you need a thread safe lapack library
+# FCOMMON_OPT = -frecursive
 
 # Profiling flags
 COMMON_PROF = -pg

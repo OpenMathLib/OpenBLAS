@@ -109,7 +109,7 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
   blasint    incy  = *INCY;
   blasint    lda   = *LDA;
   FLOAT *buffer;
-#ifdef SMP
+#ifdef SMPBUG
   int nthreads;
 #endif
 
@@ -144,7 +144,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint info, t;
-#ifdef SMP
+#ifdef SMPBUG
   int nthreads;
 #endif
 
@@ -205,7 +205,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMP
+#ifdef SMPBUG
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -221,7 +221,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 #endif
 
-#ifdef SMP
+#ifdef SMPBUG
 
   } else {
 

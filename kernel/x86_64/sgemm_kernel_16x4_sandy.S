@@ -25,30 +25,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
-/*********************************************************************
-* 2013/11/13 Saar
-*        BLASTEST               : OK
-*        CTEST                  : OK
-*        TEST                   : OK
-*
-* 2013/10/28 Saar
-* Parameter:
-*	SGEMM_DEFAULT_UNROLL_N	4
-*	SGEMM_DEFAULT_UNROLL_M	16
-*	SGEMM_DEFAULT_P		768
-*	SGEMM_DEFAULT_Q		384
-*	A_PR1			512
-*	B_PR1			512
-*	
-*
-* Performance at 9216x9216x9216:
-*       1 thread:       86 GFLOPS       (SANDYBRIDGE:  59)      (MKL:   83)
-*       2 threads:     157 GFLOPS       (SANDYBRIDGE: 116)      (MKL:  155)
-*       3 threads:     235 GFLOPS       (SANDYBRIDGE: 165)      (MKL:  230)
-*       4 threads:     288 GFLOPS       (SANDYBRIDGE: 223)      (MKL:  267)
-*
-*********************************************************************/
-
 #define ASSEMBLER
 #include "common.h"
  
@@ -127,21 +103,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define STACK_TOUCH
 #endif
 
-#if defined(BULLDOZER)
-
-#define VFMADD231PS_( y0,y1,y2 ) vfmaddps y0,y1,y2,y0
-
-#define VFMADD231SS_( x0,x1,x2 ) vfmaddss x0,x1,x2,x0
-
-#else
-
-#define VFMADD231PS_( y0,y1,y2 ) vfmadd231ps y1,y2,y0
-
-#define VFMADD231SS_( x0,x1,x2 ) vfmadd231ss x1,x2,x0
-
-#endif
-
-
 #define	A_PR1	512
 #define	B_PR1	512
 
@@ -154,16 +115,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	 -8 * SIZE(AO, %rax, SIZE), %ymm1
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %ymm2
 	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %ymm3
-	VFMADD231PS_(  	%ymm4,%ymm2,%ymm0 )
-	VFMADD231PS_(  	%ymm5,%ymm2,%ymm1 )
-	VFMADD231PS_(  	%ymm6,%ymm3,%ymm0 )
-	VFMADD231PS_(  	%ymm7,%ymm3,%ymm1 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vmulps		%ymm2 , %ymm1 , %ymm13
+	vmulps		%ymm3 , %ymm0 , %ymm14
+	vmulps		%ymm3 , %ymm1 , %ymm15
+	vaddps 	        %ymm12, %ymm4 , %ymm4
+	vaddps 	        %ymm13, %ymm5 , %ymm5
+	vaddps 	        %ymm14, %ymm6 , %ymm6
+	vaddps 	        %ymm15, %ymm7 , %ymm7
 	vbroadcastss	 -2 * SIZE(BO, BI, SIZE), %ymm2
 	vbroadcastss	 -1 * SIZE(BO, BI, SIZE), %ymm3
-	VFMADD231PS_(  	%ymm8,%ymm2,%ymm0  )
-	VFMADD231PS_(  	%ymm9,%ymm2,%ymm1  )
-	VFMADD231PS_(  	%ymm10,%ymm3,%ymm0 )
-	VFMADD231PS_(  	%ymm11,%ymm3,%ymm1 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vmulps		%ymm2 , %ymm1 , %ymm13
+	vmulps		%ymm3 , %ymm0 , %ymm14
+	vmulps		%ymm3 , %ymm1 , %ymm15
+	vaddps 	        %ymm12, %ymm8 , %ymm8
+	vaddps 	        %ymm13, %ymm9 , %ymm9
+	vaddps 	        %ymm14, %ymm10, %ymm10
+	vaddps 	        %ymm15, %ymm11, %ymm11
 	addq	$ 4 , BI	
 	addq	$ 16, %rax 
 .endm
@@ -225,12 +194,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %ymm0
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %ymm2
 	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %ymm3
-	VFMADD231PS_(  	%ymm4,%ymm2,%ymm0 )
-	VFMADD231PS_(  	%ymm6,%ymm3,%ymm0 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vmulps		%ymm3 , %ymm0 , %ymm14
+	vaddps 	        %ymm12, %ymm4 , %ymm4
+	vaddps 	        %ymm14, %ymm6 , %ymm6
 	vbroadcastss	 -2 * SIZE(BO, BI, SIZE), %ymm2
 	vbroadcastss	 -1 * SIZE(BO, BI, SIZE), %ymm3
-	VFMADD231PS_(  	%ymm8,%ymm2,%ymm0  )
-	VFMADD231PS_(  	%ymm10,%ymm3,%ymm0 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vmulps		%ymm3 , %ymm0 , %ymm14
+	vaddps 	        %ymm12, %ymm8 , %ymm8
+	vaddps 	        %ymm14, %ymm10, %ymm10
 	addq	$ 4 , BI	
 	addq	$ 8 , %rax 
 .endm
@@ -269,12 +242,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %xmm0
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %xmm2
 	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231PS_(  	%xmm4,%xmm2,%xmm0 )
-	VFMADD231PS_(  	%xmm6,%xmm3,%xmm0 )
+	vmulps		%xmm2 , %xmm0 , %xmm12
+	vmulps		%xmm3 , %xmm0 , %xmm14
+	vaddps 	        %xmm12, %xmm4 , %xmm4
+	vaddps 	        %xmm14, %xmm6 , %xmm6
 	vbroadcastss	 -2 * SIZE(BO, BI, SIZE), %xmm2
 	vbroadcastss	 -1 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231PS_(  	%xmm8,%xmm2,%xmm0  )
-	VFMADD231PS_(  	%xmm10,%xmm3,%xmm0 )
+	vmulps		%xmm2 , %xmm0 , %xmm12
+	vmulps		%xmm3 , %xmm0 , %xmm14
+	vaddps 	        %xmm12, %xmm8 , %xmm8
+	vaddps 	        %xmm14, %xmm10, %xmm10
 	addq	$ 4 , BI	
 	addq	$ 4 , %rax 
 .endm
@@ -313,16 +290,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovss 	-15 * SIZE(AO, %rax, SIZE), %xmm1
 	vmovss	 -4 * SIZE(BO, BI, SIZE), %xmm2
 	vmovss	 -3 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231SS_(  	%xmm4,%xmm2,%xmm0 )
-	VFMADD231SS_(  	%xmm5,%xmm2,%xmm1 )
-	VFMADD231SS_(  	%xmm6,%xmm3,%xmm0 )
-	VFMADD231SS_(  	%xmm7,%xmm3,%xmm1 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vmulss		%xmm2 , %xmm1 , %xmm13
+	vmulss		%xmm3 , %xmm0 , %xmm14
+	vmulss		%xmm3 , %xmm1 , %xmm15
+	vaddss 	        %xmm12, %xmm4 , %xmm4
+	vaddss 	        %xmm13, %xmm5 , %xmm5
+	vaddss 	        %xmm14, %xmm6 , %xmm6
+	vaddss 	        %xmm15, %xmm7 , %xmm7
 	vmovss	 -2 * SIZE(BO, BI, SIZE), %xmm2
 	vmovss	 -1 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231SS_(  	%xmm8,%xmm2,%xmm0  )
-	VFMADD231SS_(  	%xmm9,%xmm2,%xmm1  )
-	VFMADD231SS_(  	%xmm10,%xmm3,%xmm0 )
-	VFMADD231SS_(  	%xmm11,%xmm3,%xmm1 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vmulss		%xmm2 , %xmm1 , %xmm13
+	vmulss		%xmm3 , %xmm0 , %xmm14
+	vmulss		%xmm3 , %xmm1 , %xmm15
+	vaddss 	        %xmm12, %xmm8 , %xmm8
+	vaddss 	        %xmm13, %xmm9 , %xmm9
+	vaddss 	        %xmm14, %xmm10, %xmm10
+	vaddss 	        %xmm15, %xmm11, %xmm11
 	addq	$ 4 , BI	
 	addq	$ 2, %rax 
 .endm
@@ -378,12 +363,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovss 	-16 * SIZE(AO, %rax, SIZE), %xmm0
 	vmovss	 -4 * SIZE(BO, BI, SIZE), %xmm2
 	vmovss	 -3 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231SS_(  	%xmm4,%xmm2,%xmm0 )
-	VFMADD231SS_(  	%xmm6,%xmm3,%xmm0 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vmulss		%xmm3 , %xmm0 , %xmm14
+	vaddss 	        %xmm12, %xmm4 , %xmm4
+	vaddss 	        %xmm14, %xmm6 , %xmm6
 	vmovss	 -2 * SIZE(BO, BI, SIZE), %xmm2
 	vmovss	 -1 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231SS_(  	%xmm8,%xmm2,%xmm0  )
-	VFMADD231SS_(  	%xmm10,%xmm3,%xmm0 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vmulss		%xmm3 , %xmm0 , %xmm14
+	vaddss 	        %xmm12, %xmm8 , %xmm8
+	vaddss 	        %xmm14, %xmm10, %xmm10
 	addq	$ 4 , BI	
 	addq	$ 1, %rax 
 .endm
@@ -426,10 +415,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	 -8 * SIZE(AO, %rax, SIZE), %ymm1
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %ymm2
 	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %ymm3
-	VFMADD231PS_(  	%ymm4,%ymm2,%ymm0 )
-	VFMADD231PS_(  	%ymm5,%ymm2,%ymm1 )
-	VFMADD231PS_(  	%ymm6,%ymm3,%ymm0 )
-	VFMADD231PS_(  	%ymm7,%ymm3,%ymm1 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vmulps		%ymm2 , %ymm1 , %ymm13
+	vmulps		%ymm3 , %ymm0 , %ymm14
+	vmulps		%ymm3 , %ymm1 , %ymm15
+	vaddps 	        %ymm12, %ymm4 , %ymm4
+	vaddps 	        %ymm13, %ymm5 , %ymm5
+	vaddps 	        %ymm14, %ymm6 , %ymm6
+	vaddps 	        %ymm15, %ymm7 , %ymm7
 	addq	$ 2 , BI	
 	addq	$ 16, %rax 
 .endm
@@ -470,8 +463,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %ymm0
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %ymm2
 	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %ymm3
-	VFMADD231PS_(  	%ymm4,%ymm2,%ymm0 )
-	VFMADD231PS_(  	%ymm6,%ymm3,%ymm0 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vmulps		%ymm3 , %ymm0 , %ymm14
+	vaddps 	        %ymm12, %ymm4 , %ymm4
+	vaddps 	        %ymm14, %ymm6 , %ymm6
 	addq	$ 2 , BI	
 	addq	$ 8 , %rax 
 .endm
@@ -503,8 +498,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %xmm0
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %xmm2
 	vbroadcastss	 -3 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231PS_(  	%xmm4,%xmm2,%xmm0 )
-	VFMADD231PS_(  	%xmm6,%xmm3,%xmm0 )
+	vmulps		%xmm2 , %xmm0 , %xmm12
+	vmulps		%xmm3 , %xmm0 , %xmm14
+	vaddps 	        %xmm12, %xmm4 , %xmm4
+	vaddps 	        %xmm14, %xmm6 , %xmm6
 	addq	$ 2 , BI	
 	addq	$ 4 , %rax 
 .endm
@@ -536,10 +533,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovss 	-15 * SIZE(AO, %rax, SIZE), %xmm1
 	vmovss	 -4 * SIZE(BO, BI, SIZE), %xmm2
 	vmovss	 -3 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231SS_(  	%xmm4,%xmm2,%xmm0 )
-	VFMADD231SS_(  	%xmm5,%xmm2,%xmm1 )
-	VFMADD231SS_(  	%xmm6,%xmm3,%xmm0 )
-	VFMADD231SS_(  	%xmm7,%xmm3,%xmm1 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vmulss		%xmm2 , %xmm1 , %xmm13
+	vmulss		%xmm3 , %xmm0 , %xmm14
+	vmulss		%xmm3 , %xmm1 , %xmm15
+	vaddss 	        %xmm12, %xmm4 , %xmm4
+	vaddss 	        %xmm13, %xmm5 , %xmm5
+	vaddss 	        %xmm14, %xmm6 , %xmm6
+	vaddss 	        %xmm15, %xmm7 , %xmm7
 	addq	$ 2 , BI	
 	addq	$ 2, %rax 
 .endm
@@ -579,8 +580,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovss 	-16 * SIZE(AO, %rax, SIZE), %xmm0
 	vmovss	 -4 * SIZE(BO, BI, SIZE), %xmm2
 	vmovss	 -3 * SIZE(BO, BI, SIZE), %xmm3
-	VFMADD231SS_(  	%xmm4,%xmm2,%xmm0 )
-	VFMADD231SS_(  	%xmm6,%xmm3,%xmm0 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vmulss		%xmm3 , %xmm0 , %xmm14
+	vaddss 	        %xmm12, %xmm4 , %xmm4
+	vaddss 	        %xmm14, %xmm6 , %xmm6
 	addq	$ 2 , BI	
 	addq	$ 1, %rax 
 .endm
@@ -615,8 +618,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %ymm0
 	vmovups 	 -8 * SIZE(AO, %rax, SIZE), %ymm1
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %ymm2
-	VFMADD231PS_(  	%ymm4,%ymm2,%ymm0 )
-	VFMADD231PS_(  	%ymm5,%ymm2,%ymm1 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vmulps		%ymm2 , %ymm1 , %ymm13
+	vaddps 	        %ymm12, %ymm4 , %ymm4
+	vaddps 	        %ymm13, %ymm5 , %ymm5
 	addq	$ 1 , BI	
 	addq	$ 16, %rax 
 .endm
@@ -646,7 +651,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL8x1_SUB
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %ymm0
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %ymm2
-	VFMADD231PS_(  	%ymm4,%ymm2,%ymm0 )
+	vmulps		%ymm2 , %ymm0 , %ymm12
+	vaddps 	        %ymm12, %ymm4 , %ymm4
 	addq	$ 1 , BI	
 	addq	$ 8 , %rax 
 .endm
@@ -674,7 +680,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL4x1_SUB
 	vmovups 	-16 * SIZE(AO, %rax, SIZE), %xmm0
 	vbroadcastss	 -4 * SIZE(BO, BI, SIZE), %xmm2
-	VFMADD231PS_(  	%xmm4,%xmm2,%xmm0 )
+	vmulps		%xmm2 , %xmm0 , %xmm12
+	vaddps 	        %xmm12, %xmm4 , %xmm4
 	addq	$ 1 , BI	
 	addq	$ 4 , %rax 
 .endm
@@ -702,8 +709,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovss 	-16 * SIZE(AO, %rax, SIZE), %xmm0
 	vmovss 	-15 * SIZE(AO, %rax, SIZE), %xmm1
 	vmovss	 -4 * SIZE(BO, BI, SIZE), %xmm2
-	VFMADD231SS_(  	%xmm4,%xmm2,%xmm0 )
-	VFMADD231SS_(  	%xmm5,%xmm2,%xmm1 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vmulss		%xmm2 , %xmm1 , %xmm13
+	vaddss 	        %xmm12, %xmm4 , %xmm4
+	vaddss 	        %xmm13, %xmm5 , %xmm5
 	addq	$ 1 , BI	
 	addq	$ 2 , %rax 
 .endm
@@ -733,7 +742,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL1x1_SUB
 	vmovss 	-16 * SIZE(AO, %rax, SIZE), %xmm0
 	vmovss	 -4 * SIZE(BO, BI, SIZE), %xmm2
-	VFMADD231SS_(  	%xmm4,%xmm2,%xmm0 )
+	vmulss		%xmm2 , %xmm0 , %xmm12
+	vaddss 	        %xmm12, %xmm4 , %xmm4
 	addq	$ 1 , BI	
 	addq	$ 1 , %rax 
 .endm

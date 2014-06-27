@@ -1,3 +1,7 @@
+SGEMVNKERNEL = sgemv_n.S
+SGEMVTKERNEL = sgemv_t.S
+
+
 SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
