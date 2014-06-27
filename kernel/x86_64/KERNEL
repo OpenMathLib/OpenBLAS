@@ -119,8 +119,14 @@ XCOPYKERNEL = zcopy.S
 endif
 
 ifndef SDOTKERNEL
-SDOTKERNEL = ../arm/dot.c 
+SDOTKERNEL = dot_sse.S 
 endif
+
+
+ifndef DSDOTKERNEL
+DSDOTKERNEL = ../arm/dot.c 
+endif
+
 
 ifndef DDOTKERNEL
 DDOTKERNEL =  dot_sse2.S
