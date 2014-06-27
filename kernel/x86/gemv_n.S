@@ -53,7 +53,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define PLDA_M	  0 + STACK(%esp)
 #define XP	  4 + STACK(%esp)
 #define MIN_N	  8 + STACK(%esp)
@@ -190,7 +190,7 @@
 	ALIGN_2
 
 .L48:
-	movl	A, %edx			# a_offset = a	
+	movl	A, %edx			# a_offset = a
 	fldz
 	addl	$4 * SIZE, A		# a += 4
 	fldz
@@ -261,7 +261,7 @@
 	FLD	0 * SIZE(%edx)		# at1  = *(a_offset + 0)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(2)		# ct1 += at1
- 
+
 	FLD	1 * SIZE(%edx)		# at1  = *(a_offset + 1)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(3)		# ct2 += at1
@@ -279,7 +279,7 @@
 	FLD	0 * SIZE(%edx)		# at1  = *(a_offset + 0)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(2)		# ct1 += at1
- 
+
 	FLD	1 * SIZE(%edx)		# at1  = *(a_offset + 1)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(3)		# ct2 += at1
@@ -306,7 +306,7 @@
 	FLD	0 * SIZE(%edx)		# at1  = *(a_offset + 0)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(2)		# ct1 += at1
- 
+
 	FLD	1 * SIZE(%edx)		# at1  = *(a_offset + 1)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(3)		# ct2 += at1

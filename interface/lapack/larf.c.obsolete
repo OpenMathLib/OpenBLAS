@@ -58,7 +58,7 @@ int NAME(char *SIDE, blasint *M, blasint *N, FLOAT *v, blasint *incV, FLOAT *tau
 
   char side_arg  = *SIDE;
   int side;
-  
+
   PRINT_DEBUG_NAME;
 
   TOUPPER(side_arg);
@@ -77,7 +77,7 @@ int NAME(char *SIDE, blasint *M, blasint *N, FLOAT *v, blasint *incV, FLOAT *tau
   if (side_arg  == 'R') side  = 1;
 
   if (args.m == 0 || args.n == 0) return 0;
-  
+
 #ifndef COMPLEX
   if (*tau == ZERO) return 0;
 #else

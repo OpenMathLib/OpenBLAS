@@ -16,8 +16,8 @@ SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
 SGEMMONCOPY    =  gemm_ncopy_2_bulldozer.S
 SGEMMOTCOPY    =  gemm_tcopy_2_bulldozer.S
 
-SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX) 
-SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX) 
+SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 DGEMMKERNEL    =  dgemm_kernel_8x2_bulldozer.S

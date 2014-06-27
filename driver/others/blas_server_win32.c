@@ -71,8 +71,8 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 #ifdef EXPRECISION
 	if (mode & BLAS_XDOUBLE){
 	  /* REAL / Extended Double */
-	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble, 
-			xdouble *, BLASLONG, xdouble *, BLASLONG, 
+	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble,
+			xdouble *, BLASLONG, xdouble *, BLASLONG,
 			xdouble *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -80,14 +80,14 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> a, args -> lda,
 		args -> b, args -> ldb,
 		args -> c, args -> ldc, sb);
-	} else 
+	} else
 #endif
 	  if (mode & BLAS_DOUBLE){
 	    /* REAL / Double */
-	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double, 
-			  double *, BLASLONG, double *, BLASLONG, 
+	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
+			  double *, BLASLONG, double *, BLASLONG,
 			  double *, BLASLONG, void *) = func;
-	    
+
 	    afunc(args -> m, args -> n, args -> k,
 		  ((double *)args -> alpha)[0],
 		  args -> a, args -> lda,
@@ -95,10 +95,10 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		  args -> c, args -> ldc, sb);
 	  } else {
 	    /* REAL / Single */
-	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float, 
-			  float *, BLASLONG, float *, BLASLONG, 
+	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
+			  float *, BLASLONG, float *, BLASLONG,
 			  float *, BLASLONG, void *) = func;
-	    
+
 	    afunc(args -> m, args -> n, args -> k,
 		  ((float *)args -> alpha)[0],
 		  args -> a, args -> lda,
@@ -110,7 +110,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	if (mode & BLAS_XDOUBLE){
 	  /* COMPLEX / Extended Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
-			xdouble *, BLASLONG, xdouble *, BLASLONG, 
+			xdouble *, BLASLONG, xdouble *, BLASLONG,
 			xdouble *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -124,7 +124,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	  if (mode & BLAS_DOUBLE){
 	    /* COMPLEX / Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double, double,
-			double *, BLASLONG, double *, BLASLONG, 
+			double *, BLASLONG, double *, BLASLONG,
 			double *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -136,7 +136,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	  } else {
 	    /* COMPLEX / Single */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float, float,
-			float *, BLASLONG, float *, BLASLONG, 
+			float *, BLASLONG, float *, BLASLONG,
 			float *, BLASLONG, void *) = func;
 
 	  afunc(args -> m, args -> n, args -> k,
@@ -163,47 +163,47 @@ static DWORD WINAPI blas_thread_server(void *arg){
   blas_queue_t	*queue;
   DWORD action;
   HANDLE handles[] = {pool.filled, pool.killed};
-  
+
   /* Each server needs each buffer */
   buffer   = blas_memory_alloc(2);
-  
+
 #ifdef SMP_DEBUG
   fprintf(STDERR, "Server[%2ld] Thread is started!\n", cpu);
 #endif
-  
+
   while (1){
-    
+
     /* Waiting for Queue */
-    
+
 #ifdef SMP_DEBUG
     fprintf(STDERR, "Server[%2ld] Waiting for Queue.\n", cpu);
 #endif
-    
+
     do {
       action = WaitForMultipleObjects(2, handles, FALSE, INFINITE);
     } while ((action != WAIT_OBJECT_0) && (action != WAIT_OBJECT_0 + 1));
-    
+
     if (action == WAIT_OBJECT_0 + 1) break;
 
 #ifdef SMP_DEBUG
     fprintf(STDERR, "Server[%2ld] Got it.\n", cpu);
 #endif
-    
+
     EnterCriticalSection(&pool.lock);
-    
+
     queue = pool.queue;
     if (queue) pool.queue = queue->next;
-    
+
     LeaveCriticalSection(&pool.lock);
-    
+
     if (queue)  {
       int (*routine)(blas_arg_t *, void *, void *, void *, void *, BLASLONG) = queue -> routine;
-      
+
       if (pool.queue) SetEvent(pool.filled);
-      
+
       sa = queue -> sa;
       sb = queue -> sb;
-      
+
 #ifdef CONSISTENT_FPCSR
       __asm__ __volatile__ ("ldmxcsr %0" : : "m" (queue -> sse_mode));
       __asm__ __volatile__ ("fldcw %0"   : : "m" (queue -> x87_mode));
@@ -213,27 +213,27 @@ static DWORD WINAPI blas_thread_server(void *arg){
       fprintf(STDERR, "Server[%2ld] Started.  Mode = 0x%03x M = %3ld N=%3ld K=%3ld\n",
 	      cpu, queue->mode, queue-> args ->m, queue->args->n, queue->args->k);
 #endif
-      
+
       // fprintf(stderr, "queue start[%ld]!!!\n", cpu);
-      
+
 #ifdef MONITOR
       main_status[cpu] = MAIN_RUNNING1;
 #endif
-      
+
       if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
-      
+
       if (sb == NULL) {
 	if (!(queue -> mode & BLAS_COMPLEX)){
 #ifdef EXPRECISION
 	  if (queue -> mode & BLAS_XDOUBLE){
-	    sb = (void *)(((BLASLONG)sa + ((XGEMM_P * XGEMM_Q * sizeof(xdouble) 
+	    sb = (void *)(((BLASLONG)sa + ((XGEMM_P * XGEMM_Q * sizeof(xdouble)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-	  } else 
+	  } else
 #endif
 	    if (queue -> mode & BLAS_DOUBLE){
 	      sb = (void *)(((BLASLONG)sa + ((DGEMM_P * DGEMM_Q * sizeof(double)
 					  + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-	      
+
 	    } else {
 	      sb = (void *)(((BLASLONG)sa + ((SGEMM_P * SGEMM_Q * sizeof(float)
 					  + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
@@ -255,11 +255,11 @@ static DWORD WINAPI blas_thread_server(void *arg){
 	}
 	queue->sb=sb;
       }
-	
+
 #ifdef MONITOR
       main_status[cpu] = MAIN_RUNNING2;
 #endif
-      
+
       if (!(queue -> mode & BLAS_LEGACY)) {
 
 	(routine)(queue -> args, queue -> range_m, queue -> range_n, sa, sb, queue -> position);
@@ -269,28 +269,28 @@ static DWORD WINAPI blas_thread_server(void *arg){
     }else{
 		continue; //if queue == NULL
 	}
-    
+
 #ifdef SMP_DEBUG
     fprintf(STDERR, "Server[%2ld] Finished!\n", cpu);
 #endif
-    
+
     EnterCriticalSection(&queue->lock);
-    
+
     queue -> status = BLAS_STATUS_FINISHED;
-    
+
     LeaveCriticalSection(&queue->lock);
-    
+
     SetEvent(queue->finish);
   }
-  
+
   /* Shutdown procedure */
-  
+
 #ifdef SMP_DEBUG
   fprintf(STDERR, "Server[%2ld] Shutdown!\n",  cpu);
 #endif
-  
+
   blas_memory_free(buffer);
-  
+
   return 0;
   }
 
@@ -299,11 +299,11 @@ int blas_thread_init(void){
   BLASLONG i;
 
   if (blas_server_avail || (blas_cpu_number <= 1)) return 0;
-  
+
   LOCK_COMMAND(&server_lock);
 
 #ifdef SMP_DEBUG
-  fprintf(STDERR, "Initializing Thread(Num. threads = %d)\n", 
+  fprintf(STDERR, "Initializing Thread(Num. threads = %d)\n",
 	  blas_cpu_number);
 #endif
 
@@ -317,11 +317,11 @@ int blas_thread_init(void){
     pool.queue    = NULL;
 
     for(i = 0; i < blas_cpu_number - 1; i++){
-      blas_threads[i] = CreateThread(NULL, 0, 
+      blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
 				     0, &blas_threads_id[i]);
     }
-    
+
     blas_server_avail = 1;
   }
 
@@ -330,7 +330,7 @@ int blas_thread_init(void){
   return 0;
 }
 
-/* 
+/*
    User can call one of two routines.
 
      exec_blas_async ... immediately returns after jobs are queued.
@@ -387,7 +387,7 @@ int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
 #endif
 
       WaitForSingleObject(queue->finish, INFINITE);
-      
+
       CloseHandle(queue->finish);
       DeleteCriticalSection(&queue -> lock);
 
@@ -414,7 +414,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   if ((num > 1) && queue -> next) exec_blas_async(1, queue -> next);
 
   routine = queue -> routine;
-  
+
     if (!(queue -> mode & BLAS_LEGACY)) {
       (routine)(queue -> args, queue -> range_m, queue -> range_n,
 		queue -> sa, queue -> sb, 0);
@@ -435,7 +435,7 @@ int BLASFUNC(blas_thread_shutdown)(void){
   int i;
 
   if (!blas_server_avail) return 0;
-  
+
   LOCK_COMMAND(&server_lock);
 
   if (blas_server_avail){
@@ -446,12 +446,12 @@ int BLASFUNC(blas_thread_shutdown)(void){
      WaitForSingleObject(blas_threads[i], 5);  //INFINITE);
 	 TerminateThread(blas_threads[i],0);
     }
-    
+
     blas_server_avail = 0;
   }
-  
+
   UNLOCK_COMMAND(&server_lock);
-  
+
   return 0;
 }
 
@@ -466,7 +466,7 @@ void goto_set_num_threads(int num_threads)
 	if (num_threads > blas_num_threads) {
 
 		LOCK_COMMAND(&server_lock);
-		
+
 		//increased_threads = 1;
 	    if (!blas_server_avail){
 
@@ -478,14 +478,14 @@ void goto_set_num_threads(int num_threads)
 			pool.queue    = NULL;
 			blas_server_avail = 1;
 		}
-		
-		for(i = blas_num_threads - 1; i < num_threads - 1; i++){	  
-		  
-			blas_threads[i] = CreateThread(NULL, 0, 
+
+		for(i = blas_num_threads - 1; i < num_threads - 1; i++){
+
+			blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
 				     0, &blas_threads_id[i]);
 		}
-	
+
 		blas_num_threads = num_threads;
 
 		UNLOCK_COMMAND(&server_lock);

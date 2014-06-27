@@ -362,7 +362,7 @@
 	}
 	;;
 	{ .mfi
-	(p7) LDFPD	f54, f55 = [BOFFSET], 2 * SIZE	
+	(p7) LDFPD	f54, f55 = [BOFFSET], 2 * SIZE
 	mov	f120 = f0
 	mov	ar.lc = L
 	}
@@ -566,7 +566,7 @@
 	;;
 	add	AOFFSET = r2, AORIG
 	shladd	BOFFSET = r2, 2, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -1009,7 +1009,7 @@
 	mov	f82 = f0
 	tbit.z	p12, p0 = L, 0
 	}
-	{ .mfi	
+	{ .mfi
 	(p7) LDFPD	f50, f51 = [BOFFSET], 2 * SIZE
 	mov	f83 = f0
 	shr	L = L, 1
@@ -1031,7 +1031,7 @@
 	mov	f114 = f0
 	mov	ar.lc = L
 	}
-	{ .mfi	
+	{ .mfi
 	adds	PREA = (PREFETCHSIZE + 0) * SIZE, AOFFSET
 	mov	f115 = f0
 	nop	__LINE__
@@ -1404,7 +1404,7 @@
 	;;
 	shladd	AOFFSET = r2, 1, AORIG
 	shladd	BOFFSET = r2, 2, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -2427,7 +2427,7 @@
 	FMA_B	f99  = f34, f53, f99	// A3 * B6
 	nop	__LINE__
 	}
-	;; 
+	;;
 /* 12 */
 	{ .mfb
 	FMA	f114  = f34, f54, f114	// A3 * B7
@@ -3072,7 +3072,7 @@
 	;;
 	shladd	AOFFSET = r2, 2, AORIG
 	shladd	BOFFSET = r2, 2, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -5364,7 +5364,7 @@
 	nop	__LINE__
 	}
 	;;
-	{ .mfi	
+	{ .mfi
 	STFD	[C2 ] = f87, SIZE
 	mov	f112 = f0
 	adds	I = -1, I
@@ -7542,7 +7542,7 @@
 	;;
 	add	AOFFSET = r2, AORIG
 	shladd	BOFFSET = r2, 1, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -8003,7 +8003,7 @@
 	;;
 	shladd	AOFFSET = r2, 1, AORIG
 	shladd	BOFFSET = r2, 1, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -8787,7 +8787,7 @@
 	;;
 	shladd	AOFFSET = r2, 2, AORIG
 	shladd	BOFFSET = r2, 1, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -9622,7 +9622,7 @@
 	;;
 	add	AOFFSET = r2, AORIG
 	add	BOFFSET = r2, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -9951,7 +9951,7 @@
 	;;
 	shladd	AOFFSET = r2, 1, AORIG
 	add	BOFFSET = r2, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)
@@ -10432,7 +10432,7 @@
 	;;
 	shladd	AOFFSET = r2, 2, AORIG
 	add	BOFFSET = r2, B
-	;;	
+	;;
 #endif
 
 #if defined(LN) || defined(LT)

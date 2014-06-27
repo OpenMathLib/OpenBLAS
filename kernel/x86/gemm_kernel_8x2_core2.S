@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -114,7 +114,7 @@
 	movd	%mm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	shufps	$0, %xmm3, %xmm3
@@ -142,13 +142,13 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$2, %eax
 	jle	.L05
 	ALIGN_4
-	
+
 .L02:
 	prefetcht0	(PREFETCH_R + 0) * SIZE(B)
 	movss	-32 * SIZE(B), %xmm0
@@ -207,7 +207,7 @@
 	decl	%eax
 	jne	.L06
 	ALIGN_4
-	
+
 .L10:
 	movl	C, C1
 	movl	A, AA
@@ -244,7 +244,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -494,7 +494,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -662,7 +662,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -825,7 +825,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -977,13 +977,13 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$3, %eax
 	jle	.L55
 	ALIGN_4
-	
+
 .L52:
 	movss	-32 * SIZE(B), %xmm0
 	movss	-31 * SIZE(B), %xmm1
@@ -1035,7 +1035,7 @@
 	decl	%eax
 	jne	.L56
 	ALIGN_4
-	
+
 .L60:
 	movl	C, C1
 	movl	A, AA
@@ -1073,7 +1073,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1240,7 +1240,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1379,7 +1379,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1513,7 +1513,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1610,7 +1610,7 @@
 
 .L999:
 	movl	OLD_STACK, %esp
-	
+
 	EMMS
 
 	popl	%ebx

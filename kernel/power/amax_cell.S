@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 
 #define PREA	r8
 
@@ -640,7 +640,7 @@ LL(28):
 	fsub	f16, f0,  f8
 	fsel	f0,  f16, f0,  f8
 	.align 4
-	
+
 LL(999):
 	fsub	f8,  f0,  f1
 	fsub	f9,  f2,  f3

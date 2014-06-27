@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #ifdef DOUBLE
 #define STACK_ALPHA_R	16 + STACK + ARGS(%esp)

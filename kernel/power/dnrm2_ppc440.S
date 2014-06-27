@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 
 #define NN	r6
 #define XX	r7
@@ -106,7 +106,7 @@
 	slwi	INCX, INCX, BASE_SHIFT
 	sub	X, X, INCX
 
-	li	PRE, 3 * 16 * SIZE 
+	li	PRE, 3 * 16 * SIZE
 
 	cmpwi	cr0, N, 0
 	ble-	LL(999)

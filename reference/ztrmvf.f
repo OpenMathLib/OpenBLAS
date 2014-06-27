@@ -174,7 +174,7 @@
                            X( I ) = X( I ) + TEMP*A( I, J )
                         ELSE
                            X( I ) = X( I ) + TEMP*DCONJG(A( I, J ))
-                        ENDIF   
+                        ENDIF
    10                CONTINUE
                      IF (NOCONJ) THEN
                      IF( NOUNIT )

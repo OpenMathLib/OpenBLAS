@@ -72,7 +72,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
   while (js > 0){
 
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
     if (offset > -1) ao2 = a + posY * 2 + (posX + 1) * lda; else ao2 = a + (posX + 1) * 2 + posY * lda;
     if (offset > -2) ao3 = a + posY * 2 + (posX + 2) * lda; else ao3 = a + (posX + 2) * 2 + posY * lda;
@@ -93,7 +93,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
       data06 = CMULT(*(ao6 + 0), *(ao6 + 1));
       data07 = CMULT(*(ao7 + 0), *(ao7 + 1));
       data08 = CMULT(*(ao8 + 0), *(ao8 + 1));
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
       if (offset >  -1) ao2 += 2; else ao2 += lda;
       if (offset >  -2) ao3 += 2; else ao3 += lda;
@@ -125,7 +125,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
   if (n & 4) {
 
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
     if (offset > -1) ao2 = a + posY * 2 + (posX + 1) * lda; else ao2 = a + (posX + 1) * 2 + posY * lda;
     if (offset > -2) ao3 = a + posY * 2 + (posX + 2) * lda; else ao3 = a + (posX + 2) * 2 + posY * lda;
@@ -138,7 +138,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
       data02 = CMULT(*(ao2 + 0), *(ao2 + 1));
       data03 = CMULT(*(ao3 + 0), *(ao3 + 1));
       data04 = CMULT(*(ao4 + 0), *(ao4 + 1));
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
       if (offset >  -1) ao2 += 2; else ao2 += lda;
       if (offset >  -2) ao3 += 2; else ao3 += lda;
@@ -160,7 +160,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
   if (n & 2) {
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
     if (offset > -1) ao2 = a + posY * 2 + (posX + 1) * lda; else ao2 = a + (posX + 1) * 2 + posY * lda;
 
@@ -169,7 +169,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     while (i > 0) {
       data01 = CMULT(*(ao1 + 0), *(ao1 + 1));
       data02 = CMULT(*(ao2 + 0), *(ao2 + 1));
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
       if (offset >  -1) ao2 += 2; else ao2 += lda;
 
@@ -181,20 +181,20 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
       offset --;
       i --;
     }
-    
+
     posX += 2;
   }
 
   if (n & 1) {
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
 
     i     = m;
 
     while (i > 0) {
       data01 = CMULT(*(ao1 + 0), *(ao1 + 1));
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
 
       b[ 0] = data01;

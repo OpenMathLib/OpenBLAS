@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_ALPHA_R	16 + STACK + ARGS(%esp)
 #define STACK_ALPHA_I	32 + STACK + ARGS(%esp)
@@ -87,7 +87,7 @@
 
 	sall	$ZBASE_SHIFT, INCX
 	sall	$ZBASE_SHIFT, INCY
-	
+
 	testl	M, M
 	jle	.L40
 

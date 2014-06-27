@@ -84,13 +84,13 @@
 #define AO61	loc13
 #define AO71	loc14
 #define AO81	loc15
-	
+
 #define PREB	r8
 
 #define ARLC	r29
 #define PR	r30
 #define ARPFS	r31
-	
+
 #ifdef DOUBLE
 #define RPREFETCH	(16 * 3 +  8)
 #else
@@ -120,17 +120,17 @@
 	;;
 	stf.spill  [r8] = f16, 32
 	stf.spill  [r9] = f17, 32
-	;;	
+	;;
 	stf.spill  [r8] = f18, 32
 	stf.spill  [r9] = f19, 32
-	;;	
+	;;
 	stf.spill  [r8] = f20, 32
 	stf.spill  [r9] = f21, 32
 	;;
 	stf.spill  [r8] = f22
 	stf.spill  [r9] = f23
 	.body
-	;;	
+	;;
 
 	ld8	Y      = [r14]
 	ld8	INCY   = [r15]
@@ -3301,15 +3301,15 @@
 	ldf.fill  f16 = [SP], 32
 	ldf.fill  f17 = [r9], 32
 	mov	 ar.lc = ARLC
-	;;	
+	;;
 	ldf.fill  f18 = [SP], 32
 	ldf.fill  f19 = [r9], 32
 	mov pr    = PR, -1
-	;;	
+	;;
 	ldf.fill  f20 = [SP], 32
 	ldf.fill  f21 = [r9], 32
 	mov	ar.pfs = ARPFS
-	;;	
+	;;
 	ldf.fill  f22 = [SP], 32
 	ldf.fill  f23 = [r9]
 	br.ret.sptk.many b0

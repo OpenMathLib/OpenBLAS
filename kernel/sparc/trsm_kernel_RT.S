@@ -2211,7 +2211,7 @@
 	sub	KK, 2, KK
 #endif
 
-.LL200:	
+.LL200:
 	sra	N, 2, J
 	cmp	J, 0
 	ble,pn	%icc, .LL999

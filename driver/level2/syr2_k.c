@@ -40,7 +40,7 @@
 #include <ctype.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT *x, BLASLONG incx, 
+int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT *x, BLASLONG incx,
 		       FLOAT *y, BLASLONG incy, FLOAT *a, BLASLONG lda, FLOAT *buffer){
 
   BLASLONG i;

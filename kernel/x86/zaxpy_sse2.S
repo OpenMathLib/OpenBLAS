@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_ALPHA_R	16 + STACK + ARGS(%esp)
 #define STACK_ALPHA_I	24 + STACK + ARGS(%esp)
@@ -113,10 +113,10 @@
 #endif
 
 #ifndef CONJ
-	shufps	$0x0c, %xmm5, %xmm5	
+	shufps	$0x0c, %xmm5, %xmm5
 	xorpd	%xmm5, ALPHA_I
 #else
-	shufps	$0xc0, %xmm5, %xmm5	
+	shufps	$0xc0, %xmm5, %xmm5
 	xorpd	%xmm5, ALPHA_R
 #endif
 
@@ -1518,7 +1518,7 @@
 	movlpd	%xmm4,   0 * SIZE(YY)
 	movhpd	%xmm4,   1 * SIZE(YY)
 
-			
+
 	decl %eax
 	jg	.L58
 	ALIGN_3

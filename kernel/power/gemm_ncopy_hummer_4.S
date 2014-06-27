@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define	M	r3
 #define	N	r4
 #define	A	r5
@@ -91,7 +91,7 @@
 	stfpdux	f17, SP, r0
 	stfpdux	f18, SP, r0
 	stfpdux	f19, SP, r0
-	
+
 	stwu	r31,  -4(SP)
 	stwu	r30,  -4(SP)
 
@@ -201,7 +201,7 @@
 	STFXDUX	c08,   B, INC2
 	bdnz	.L12
 	.align 4
-	
+
 .L15:
 	andi.	r0,  M,  7
 	ble	.L19
@@ -323,7 +323,7 @@
 	STFXDUX	c04,   B, INC2
 	bdnz	.L22
 	.align 4
-	
+
 .L25:
 	andi.	r0,  M,  7
 	ble	.L30
@@ -395,7 +395,7 @@
 	STFPDUX	c04,   B, INC2
 	bdnz	.L32
 	.align 4
-	
+
 .L35:
 	andi.	r0,  M,  7
 	ble	.L99
@@ -529,7 +529,7 @@
 	STFPDUX	c16,   B, INC2
 	bdnz	.L112
 	.align 4
-	
+
 .L115:
 	andi.	r0,  M,  7
 	ble	.L119
@@ -656,7 +656,7 @@
 	STFPDUX	c12,   B, INC2
 	bdnz	.L122
 	.align 4
-	
+
 .L125:
 	andi.	r0,  M,  7
 	ble	.L130
@@ -738,7 +738,7 @@
 	STFPDUX	c07,   B, INC2
 	bdnz	.L132
 	.align 4
-	
+
 .L135:
 	andi.	r0,  M,  7
 	ble	.L999

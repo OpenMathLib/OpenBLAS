@@ -49,12 +49,12 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	64
-	
+
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
 #define OLD_INCY	24 + STACKSIZE(%rsp)
 #define OLD_BUFFER	32 + STACKSIZE(%rsp)
-	
+
 #define M	  %rdi
 #define N	  %rsi
 #define A	  %rcx
@@ -67,7 +67,7 @@
 #else
 
 #define STACKSIZE	256
-	
+
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
 #define OLD_LDA		 56 + STACKSIZE(%rsp)
@@ -173,7 +173,7 @@
 	movaps	%xmm1, ALPHA_I
 
 	subq	$-16 * SIZE, A
-	
+
 	testq	M, M
 	jle	.L999
 	testq	N, N

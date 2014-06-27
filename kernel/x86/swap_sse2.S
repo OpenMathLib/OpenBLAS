@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS     0
-	
+
 #define STACK_M	 	 4 + STACK + ARGS(%esp)
 #define STACK_X		24 + STACK + ARGS(%esp)
 #define STACK_INCX	28 + STACK + ARGS(%esp)
@@ -96,7 +96,7 @@
 .L10:
 	subl	$-16 * SIZE, X
 	subl	$-16 * SIZE, Y
-	
+
 	testl	$SIZE, X
 	jne	.L20
 

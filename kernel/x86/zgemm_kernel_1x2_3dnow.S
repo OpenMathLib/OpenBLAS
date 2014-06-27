@@ -99,7 +99,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	andl	$-1024, %esp	# align stack
 
 	STACK_TOUCHING
-	
+
 	movl	OLD_N, %eax
 	movl	OLD_K, %ecx
 	movl	OLD_A, %edx
@@ -172,7 +172,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K,  %eax
 	sarl	$2, %eax
@@ -307,7 +307,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -619,7 +619,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	addl	$2 * SIZE, %esi
 	decl	%ebx
 	jg	.L11
-	ALIGN_4	
+	ALIGN_4
 
 .L19:
 #if defined(TRMMKERNEL) && !defined(LEFT)
@@ -708,7 +708,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	C, %esi		# coffset = c
 	movl	A, AA		# aoffset = a
@@ -744,7 +744,7 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -943,11 +943,11 @@ https://sourceforge.net/mailarchive/forum.php?forum_id=426&max_rows=25&style=fla
 	addl	$2 * SIZE, %esi		# coffset += 4
 	decl	%ebx			# i --
 	jg	.L31
-	ALIGN_4	
+	ALIGN_4
 
 .L999:
 	EMMS
-	
+
 	movl	OLD_STACK, %esp
 	popl	%ebx
 	popl	%esi

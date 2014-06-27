@@ -117,11 +117,11 @@
 	nop	__LINE__
 	nop	__LINE__
 	}
-	;;	
+	;;
 	stf.spill  [r8] = f18, 32
 	stf.spill  [r9] = f19, 32
 	shr	J = N, 3
-	;;	
+	;;
 	stf.spill  [r8] = f20, 32
 	stf.spill  [r9] = f21, 32
 	shladd	LDC = LDC, ZBASE_SHIFT, r0
@@ -129,17 +129,17 @@
 	stf.spill  [r8] = f22, 32
 	stf.spill  [r9] = f23, 32
 	mov	AOFFSET = A
-	;;	
+	;;
 	stf.spill  [r8] = f24, 32
 	stf.spill  [r9] = f25, 32
 	cmp.ge	p6, p0  = 0, J
-	;;	
+	;;
 	stf.spill  [r8] = f26, 32
 	stf.spill  [r9] = f27, 32
-	;;	
+	;;
 	stf.spill  [r8] = f28, 32
 	stf.spill  [r9] = f29, 32
-       ;;	
+       ;;
 	stf.spill  [r8] = f30
 	stf.spill  [r9] = f31
 	(p6)	br.cond.dpnt .L050
@@ -162,7 +162,7 @@
 	cmp.eq	p6, p7 = 0, I
 	nop	__LINE__
 	mov	f80  = f0
-	} 
+	}
 	{ .mmf
 	add	C2 = LDC, C		// coffset2 = c + 1 * ldc
 	shladd	C3 = LDC, 1, C		// coffset3 = c + 2 * ldc
@@ -492,7 +492,7 @@
 	FMA	f106  = f34, f53, f106	// A3 * B6
 	nop	__LINE__
 	}
-	;; 
+	;;
 /* 12 */
 	{ .mfi
 	FMA	f114  = f34, f54, f114	// A3 * B7
@@ -3450,7 +3450,7 @@
 	cmp.eq	p6, p7 = 0, I
 	mov	f65  = f0
 	nop	__LINE__
-	} 
+	}
 	{ .mfi
 	shladd	C4 = LDC, 1, C2
 	mov	f73  = f0
@@ -6705,7 +6705,7 @@
 	adds	L =  1, K
 	}
 	;;
-	{ .mii	
+	{ .mii
 	LDFD f32 = [AOFFSET], 1 * SIZE
 	tbit.z	p12, p0 = L, 0
 	shr	L = L, 1
@@ -6774,13 +6774,13 @@
 	;;
 	ldf.fill  f16 = [SP], 32
 	ldf.fill  f17 = [r9], 32
-	;;	
+	;;
 	ldf.fill  f18 = [SP], 32
 	ldf.fill  f19 = [r9], 32
-	;;	
+	;;
 	ldf.fill  f20 = [SP], 32
 	ldf.fill  f21 = [r9], 32
-	;;	
+	;;
 	ldf.fill  f22 = [SP], 32
 	ldf.fill  f23 = [r9], 32
 	mov	 ar.lc = ARLC

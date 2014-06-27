@@ -73,7 +73,7 @@ static  int (*sbmv_thread[])(BLASLONG, BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLO
 };
 #endif
 
-void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *LDA, 
+void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
             FLOAT  *b, blasint *INCX, FLOAT *BETA, FLOAT *c, blasint *INCY){
 
   char uplo_arg = *UPLO;
@@ -101,7 +101,7 @@ void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (incy == 0)          info = 11;
@@ -115,7 +115,7 @@ void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
   if (n == 0) return;
 
   if ((beta_r != ONE) || (beta_i != ZERO)) SCAL_K(n, 0, 0, beta_r, beta_i, c, abs(incy), NULL, 0, NULL, 0);
@@ -123,7 +123,7 @@ void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *
   if ((alpha_r == ZERO) && (alpha_i == ZERO)) return;
 
   IDEBUG_START;
-  
+
   FUNCTION_PROFILE_START();
 
   if (incx < 0 ) b -= (n - 1) * incx * COMPSIZE;

@@ -58,12 +58,12 @@ void *sb = NULL;
 static double static_buffer[BUFFER_SIZE/sizeof(double)];
 
 void *blas_memory_alloc(int numproc){
-  
+
   if (sa == NULL){
 #if 1
-    sa = (void *)qalloc(QFAST, BUFFER_SIZE); 
+    sa = (void *)qalloc(QFAST, BUFFER_SIZE);
 #else
-    sa = (void *)malloc(BUFFER_SIZE); 
+    sa = (void *)malloc(BUFFER_SIZE);
 #endif
     sb = (void *)&static_buffer[0];
   }

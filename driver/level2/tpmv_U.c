@@ -53,11 +53,11 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
   }
 
   for (i = 0; i < m; i++) {
-    
+
 #ifndef TRANSA
     if (i > 0) AXPYU_K(i, 0, 0, B[i], a, 1, B, 1, NULL, 0);
 #endif
-    
+
 #ifndef UNIT
 #ifndef TRANSA
     B[i] *= a[i];
@@ -65,7 +65,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
     B[i] *= a[0];
 #endif
 #endif
-    
+
 #ifdef TRANSA
     if (i < m - 1) B[i] += DOTU_K(m - i - 1, a + 1, 1, B + i + 1, 1);
 #endif

@@ -97,7 +97,7 @@
 .L10:
 	subq	$-16 * SIZE, X
 	subq	$-16 * SIZE, Y
-	
+
 	testq	$SIZE, X
 	jne	.L20
 

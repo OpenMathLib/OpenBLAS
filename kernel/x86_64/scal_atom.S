@@ -61,11 +61,11 @@
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
 
-	movaps	%xmm3, %xmm0	
+	movaps	%xmm3, %xmm0
 #endif
 
 	SAVEREGISTERS
-	
+
 	testq	M, M
 	jle	.L999
 
@@ -218,7 +218,7 @@
 	mulsd	%xmm0, %xmm3
 	mulsd	%xmm0, %xmm4
 
-	decq	I 
+	decq	I
 	jle	.L112
 	ALIGN_4
 

@@ -56,7 +56,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   n      = args -> n;
   a      = (FLOAT *)args -> a;
   lda    = args -> lda;
-  
+
   if (range_n) {
     n      = range_n[1] - range_n[0];
     a     += range_n[0] * (lda + 1) * COMPSIZE;
@@ -72,12 +72,12 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #endif
 
     TRMV  (j,
-	   a          , lda, 
+	   a          , lda,
 	   a + j * lda, 1,
 	   sb);
 
-    SCAL_K(j, 0, 0, 
-	   -ajj, 
+    SCAL_K(j, 0, 0,
+	   -ajj,
 	   a + j * lda, 1,
 	   NULL, 0, NULL, 0);
 

@@ -1,4 +1,4 @@
-#include "common.h" 
+#include "common.h"
 
 #define prefetch(x) __asm__ __volatile__("ld $0, %0"::"m"(x))
 #define likely(x) __builtin_expect(!!(x), 1)

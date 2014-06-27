@@ -116,7 +116,7 @@
 	ldx	[%sp+  STACK_START + 56], Y
 	ldx	[%sp+  STACK_START + 64], INCY
 #endif
-	
+
 	sll	INCX, BASE_SHIFT, INCX
 	sll	INCY, BASE_SHIFT, INCY
 

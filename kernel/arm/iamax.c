@@ -61,7 +61,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 	while(i < n)
 	{
-		if( ABS(x[ix]) > ABS(maxf) ) 
+		if( ABS(x[ix]) > ABS(maxf) )
 		{
 			max = i;
 			maxf = ABS(x[ix]);
@@ -71,5 +71,5 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	}
 	return(max+1);
 }
-	
+
 

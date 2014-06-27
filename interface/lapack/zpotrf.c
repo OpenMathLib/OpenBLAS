@@ -78,7 +78,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   args.n    = *N;
   args.a    = (void *)a;
   args.lda  = *ldA;
-  
+
   TOUPPER(uplo_arg);
 
   uplo = -1;
@@ -98,7 +98,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   *Info = 0;
 
   if (args.n == 0) return 0;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -115,7 +115,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   args.nthreads = num_cpu_avail(4);
 
   if (args.nthreads == 1) {
-#endif    
+#endif
 
     *Info = (potrf_single[uplo])(&args, NULL, NULL, sa, sb, 0);
 

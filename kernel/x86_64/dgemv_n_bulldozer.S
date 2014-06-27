@@ -57,7 +57,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	64
-	
+
 #define OLD_M	  %rdi
 #define OLD_N	  %rsi
 #define OLD_A	  %rcx
@@ -71,7 +71,7 @@
 #else
 
 #define STACKSIZE	256
-	
+
 #define OLD_M	  %rcx
 #define OLD_N	  %rdx
 #define OLD_A		 40 + STACKSIZE(%rsp)
@@ -172,7 +172,7 @@
 	testq	$SIZE, A
 	cmoveq	M, MM
 #endif
-	
+
 	testq	N, N		# if n <= 0 goto END
 	jle	.L999
 	testq	M, M		# if n <= 0 goto END
@@ -190,7 +190,7 @@
 #endif
 
 	movq	BUFFER, Y1
-	
+
 	vxorpd	%xmm4, %xmm4, %xmm4
 
 	movq	M,   %rax
@@ -255,7 +255,7 @@
 	addq	INCX, X
 
 	vmovddup	ALPHA, %xmm0
-	
+
 	vmulpd	%xmm0, %xmm8  , %xmm8
 	vmulpd	%xmm0, %xmm9  , %xmm9
 	vmulpd	%xmm0, %xmm10 , %xmm10
@@ -561,7 +561,7 @@
 	vfmaddsd %xmm0 , %xmm14, %xmm6 , %xmm0
 	vfmaddsd %xmm0 , %xmm15, %xmm7 , %xmm0
 
-	
+
 	vmovsd	 %xmm0, -16 * SIZE(Y1)
 	ALIGN_3
 
@@ -1035,7 +1035,7 @@
 .L36:
 	testq	$2, MM
 	je	.L37
-	
+
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm8)
 	VMOVUPS_A1(-16 * SIZE, A2, %xmm9)
 
@@ -1255,7 +1255,7 @@
 	addq	INCX, X
 
 	vmovddup	ALPHA, %xmm0
-	
+
 	vmulpd	%xmm0, %xmm12 , %xmm12
 	vmulpd	%xmm0, %xmm13 , %xmm13
 	vmulpd	%xmm0, %xmm14 , %xmm14
@@ -1306,7 +1306,7 @@
 
 .L53:
 
-	
+
 
 	vfmaddpd %xmm0 , %xmm12 , %xmm4 , %xmm0
         VMOVUPS_A1(-10 * SIZE, A1, %xmm7)
@@ -1724,7 +1724,7 @@
 .L66:
 	testq	$2, MM
 	je	.L67
-	
+
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A1(-15 * SIZE, A2, %xmm5)
 
@@ -2142,7 +2142,7 @@
 	jmp	.L999
 	ALIGN_4
 
-.L950:	
+.L950:
 	testq	$SIZE, BUFFER
 	je	.L960
 

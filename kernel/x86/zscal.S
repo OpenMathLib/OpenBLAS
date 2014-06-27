@@ -40,7 +40,7 @@
 #include "common.h"
 
 #define STACK	 8
-	
+
 #define STACK_N		 4 + STACK(%esp)
 #ifdef XDOUBLE
 #define ALPHA_R		16 + STACK(%esp)

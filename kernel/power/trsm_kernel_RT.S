@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -256,7 +256,7 @@
 
 #ifdef linux
 #ifndef __64BIT__
-	mr	PREA,  r10	
+	mr	PREA,  r10
 	lwz	PREB,   8 + STACKSIZE(SP)
 	lwz	PREC,  12 + STACKSIZE(SP)
 #else
@@ -511,7 +511,7 @@ LL(78):
 	LFD	f17,  1 * SIZE(AO)
 	LFD	f18,  2 * SIZE(AO)
 	LFD	f19,  3 * SIZE(AO)
- 
+
 	FSUB	f0,  f16, f0
 	FSUB	f1,  f17, f1
 	FSUB	f2,  f18, f2
@@ -1100,7 +1100,7 @@ LL(40):
 	fmr	f5,  f0
 	fmr	f6,  f0
 	fmr	f7,  f0
-	
+
 	srawi.	I, M,  2
 #if defined(LN) || defined(RT)
 	mr	AORIG, A
@@ -1313,7 +1313,7 @@ LL(48):
 	LFD	f17,  1 * SIZE(AO)
 	LFD	f18,  2 * SIZE(AO)
 	LFD	f19,  3 * SIZE(AO)
- 
+
 	LFD	f20,  4 * SIZE(AO)
  	LFD	f21,  5 * SIZE(AO)
 	LFD	f22,  6 * SIZE(AO)
@@ -2106,7 +2106,7 @@ LL(10):
 	fmr	f13, f0
 	fmr	f14, f0
 	fmr	f15, f0
-	
+
 	srawi.	I, M,  2
 
 #if defined(LN) || defined(RT)
@@ -2378,7 +2378,7 @@ LL(18):
 	LFD	f17,  1 * SIZE(BO)
 	LFD	f18,  2 * SIZE(BO)
 	LFD	f19,  3 * SIZE(BO)
- 
+
 	LFD	f20,  4 * SIZE(BO)
  	LFD	f21,  5 * SIZE(BO)
 	LFD	f22,  6 * SIZE(BO)
@@ -2418,7 +2418,7 @@ LL(18):
 	LFD	f17,  1 * SIZE(AO)
 	LFD	f18,  2 * SIZE(AO)
 	LFD	f19,  3 * SIZE(AO)
- 
+
 	LFD	f20,  4 * SIZE(AO)
  	LFD	f21,  5 * SIZE(AO)
 	LFD	f22,  6 * SIZE(AO)
@@ -2810,7 +2810,7 @@ LL(18):
 	addi	CO3, CO3, 4 * SIZE
 	addi	CO4, CO4, 4 * SIZE
 #endif
-	
+
 #ifdef RT
 	slwi	r0, K, 2 + BASE_SHIFT
 	add	AORIG, AORIG, r0
@@ -3031,7 +3031,7 @@ LL(28):
 	LFD	f17,  1 * SIZE(BO)
 	LFD	f18,  2 * SIZE(BO)
 	LFD	f19,  3 * SIZE(BO)
- 
+
 	LFD	f20,  4 * SIZE(BO)
  	LFD	f21,  5 * SIZE(BO)
 	LFD	f22,  6 * SIZE(BO)

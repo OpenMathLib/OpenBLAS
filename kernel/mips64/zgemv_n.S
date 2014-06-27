@@ -119,7 +119,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	LDARG	INCX,    0($sp)
 	LDARG	Y,       8($sp)
 	LDARG	INCY,   16($sp)

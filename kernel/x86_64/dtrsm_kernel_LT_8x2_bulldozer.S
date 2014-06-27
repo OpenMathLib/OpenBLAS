@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define M	%r13
@@ -49,7 +49,7 @@
 #define B	%r8
 #define C	%r9
 #define LDC	%r10
-	
+
 #define I	%r11
 #define AO	%rdi
 #define BO	%rsi
@@ -147,79 +147,79 @@
 	vmovddup        -16 * SIZE(AO), %xmm8
         vmulpd                  %xmm0 , %xmm8 , %xmm0
         vmovddup        -15 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1 
+        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1
         vmovddup        -14 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm0 , %xmm10, %xmm2 
+        vfnmaddpd       %xmm2 , %xmm0 , %xmm10, %xmm2
         vmovddup        -13 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm0 , %xmm11, %xmm3 
+        vfnmaddpd       %xmm3 , %xmm0 , %xmm11, %xmm3
 	vmovddup        -12 * SIZE(AO), %xmm8
-        vfnmaddpd       %xmm4 , %xmm0 , %xmm8 , %xmm4 
+        vfnmaddpd       %xmm4 , %xmm0 , %xmm8 , %xmm4
         vmovddup        -11 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm0 , %xmm9 , %xmm5 
+        vfnmaddpd       %xmm5 , %xmm0 , %xmm9 , %xmm5
         vmovddup        -10 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm0 , %xmm10, %xmm6 
+        vfnmaddpd       %xmm6 , %xmm0 , %xmm10, %xmm6
         vmovddup         -9 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm0 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm7 , %xmm0 , %xmm11, %xmm7
 
 	vmovddup         -7 * SIZE(AO), %xmm8
 	vmulpd                  %xmm1 , %xmm8 , %xmm1
         vmovddup         -6 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm1 , %xmm10, %xmm2 
+        vfnmaddpd       %xmm2 , %xmm1 , %xmm10, %xmm2
         vmovddup         -5 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm1 , %xmm11, %xmm3 
+        vfnmaddpd       %xmm3 , %xmm1 , %xmm11, %xmm3
 	vmovddup         -4 * SIZE(AO), %xmm8
-        vfnmaddpd       %xmm4 , %xmm1 , %xmm8 , %xmm4 
+        vfnmaddpd       %xmm4 , %xmm1 , %xmm8 , %xmm4
         vmovddup         -3 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm1 , %xmm9 , %xmm5 
+        vfnmaddpd       %xmm5 , %xmm1 , %xmm9 , %xmm5
         vmovddup         -2 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm1 , %xmm10, %xmm6 
+        vfnmaddpd       %xmm6 , %xmm1 , %xmm10, %xmm6
         vmovddup         -1 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm1 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm7 , %xmm1 , %xmm11, %xmm7
 
 	vmovddup          2 * SIZE(AO), %xmm8
 	vmulpd                  %xmm2 , %xmm8 , %xmm2
         vmovddup          3 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm2 , %xmm11, %xmm3 
+        vfnmaddpd       %xmm3 , %xmm2 , %xmm11, %xmm3
 	vmovddup          4 * SIZE(AO), %xmm8
-        vfnmaddpd       %xmm4 , %xmm2 , %xmm8 , %xmm4 
+        vfnmaddpd       %xmm4 , %xmm2 , %xmm8 , %xmm4
         vmovddup          5 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm2 , %xmm9 , %xmm5 
+        vfnmaddpd       %xmm5 , %xmm2 , %xmm9 , %xmm5
         vmovddup          6 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm2 , %xmm10, %xmm6 
+        vfnmaddpd       %xmm6 , %xmm2 , %xmm10, %xmm6
         vmovddup          7 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm2 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm7 , %xmm2 , %xmm11, %xmm7
 
 	vmovddup         11 * SIZE(AO), %xmm8
 	vmulpd                  %xmm3 , %xmm8 , %xmm3
         vmovddup         12 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm4 , %xmm3 , %xmm11, %xmm4 
+        vfnmaddpd       %xmm4 , %xmm3 , %xmm11, %xmm4
         vmovddup         13 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm3 , %xmm9 , %xmm5 
+        vfnmaddpd       %xmm5 , %xmm3 , %xmm9 , %xmm5
         vmovddup         14 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm3 , %xmm10, %xmm6 
+        vfnmaddpd       %xmm6 , %xmm3 , %xmm10, %xmm6
         vmovddup         15 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm3 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm7 , %xmm3 , %xmm11, %xmm7
 
 	vmovddup         20 * SIZE(AO), %xmm8
 	vmulpd                  %xmm4 , %xmm8 , %xmm4
         vmovddup         21 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm5 , %xmm4 , %xmm9 , %xmm5 
+        vfnmaddpd       %xmm5 , %xmm4 , %xmm9 , %xmm5
         vmovddup         22 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm4 , %xmm10, %xmm6 
+        vfnmaddpd       %xmm6 , %xmm4 , %xmm10, %xmm6
         vmovddup         23 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm4 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm7 , %xmm4 , %xmm11, %xmm7
 
 	vmovddup         29 * SIZE(AO), %xmm8
 	vmulpd                  %xmm5 , %xmm8 , %xmm5
         vmovddup         30 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm6 , %xmm5 , %xmm10, %xmm6 
+        vfnmaddpd       %xmm6 , %xmm5 , %xmm10, %xmm6
         vmovddup         31 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm5 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm7 , %xmm5 , %xmm11, %xmm7
 
 	vmovddup         38 * SIZE(AO), %xmm8
 	vmulpd                  %xmm6 , %xmm8 , %xmm6
         vmovddup         39 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm7 , %xmm6 , %xmm11, %xmm7 
+        vfnmaddpd       %xmm7 , %xmm6 , %xmm11, %xmm7
 
 	vmovddup         47 * SIZE(AO), %xmm8
 	vmulpd                  %xmm7 , %xmm8 , %xmm7
@@ -292,23 +292,23 @@
 	vmovddup        -16 * SIZE(AO), %xmm8
         vmulpd                  %xmm0 , %xmm8 , %xmm0
         vmovddup        -15 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1 
+        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1
         vmovddup        -14 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm0 , %xmm10, %xmm2 
+        vfnmaddpd       %xmm2 , %xmm0 , %xmm10, %xmm2
         vmovddup        -13 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm0 , %xmm11, %xmm3 
+        vfnmaddpd       %xmm3 , %xmm0 , %xmm11, %xmm3
 
 	vmovddup        -11 * SIZE(AO), %xmm8
 	vmulpd                  %xmm1 , %xmm8 , %xmm1
         vmovddup        -10 * SIZE(AO), %xmm10
-        vfnmaddpd       %xmm2 , %xmm1 , %xmm10, %xmm2 
+        vfnmaddpd       %xmm2 , %xmm1 , %xmm10, %xmm2
         vmovddup         -9 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm1 , %xmm11, %xmm3 
+        vfnmaddpd       %xmm3 , %xmm1 , %xmm11, %xmm3
 
 	vmovddup         -6 * SIZE(AO), %xmm8
 	vmulpd                  %xmm2 , %xmm8 , %xmm2
         vmovddup         -5 * SIZE(AO), %xmm11
-        vfnmaddpd       %xmm3 , %xmm2 , %xmm11, %xmm3 
+        vfnmaddpd       %xmm3 , %xmm2 , %xmm11, %xmm3
 
 	vmovddup         -1 * SIZE(AO), %xmm8
 	vmulpd                  %xmm3 , %xmm8 , %xmm3
@@ -356,7 +356,7 @@
 	vmovddup        -16 * SIZE(AO), %xmm8
         vmulpd                  %xmm0 , %xmm8 , %xmm0
         vmovddup        -15 * SIZE(AO), %xmm9
-        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1 
+        vfnmaddpd       %xmm1 , %xmm0 , %xmm9 , %xmm1
 
 	vmovddup        -13 * SIZE(AO), %xmm8
 	vmulpd                  %xmm1 , %xmm8 , %xmm1
@@ -617,7 +617,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,   (%rsp)
 	movq	%rbp,  8(%rsp)
@@ -758,7 +758,7 @@
 
 	decq	I			# i --
 	jg	.L51
-	ALIGN_4	
+	ALIGN_4
 
 /*********************************************************************************/
 
@@ -828,7 +828,7 @@
 
 	addq	$4, KK
 
-	ALIGN_4	
+	ALIGN_4
 
 /*********************************************************************************/
 
@@ -896,7 +896,7 @@
 
 	addq	$2, KK
 
-	ALIGN_4	
+	ALIGN_4
 /********************************************************************************/
 .L70:
 	testq	$1, M
@@ -961,8 +961,8 @@
 
 	addq	$1, KK
 
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L79:
 
 	movq	BO, B
@@ -1048,7 +1048,7 @@
 
 	decq	I			# i --
 	jg	.L91
-	ALIGN_4	
+	ALIGN_4
 
 /*****************************************************************************/
 .L90_A:
@@ -1113,7 +1113,7 @@
 	addq	$4, KK
 
 
-	ALIGN_4	
+	ALIGN_4
 
 /*************************************************************************************/
 .L100:
@@ -1178,7 +1178,7 @@
 
 	addq	$2, KK
 
-	ALIGN_4	
+	ALIGN_4
 
 .L110:
 	testq	$1, M
@@ -1242,7 +1242,7 @@
 
 	addq	$1, KK
 
-	ALIGN_4	
+	ALIGN_4
 
 .L119:
 
@@ -1251,7 +1251,7 @@
 
 	ALIGN_4
 
-	
+
 .L999:
 	movq	   (%rsp), %rbx
 	movq	  8(%rsp), %rbp

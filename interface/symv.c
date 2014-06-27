@@ -53,7 +53,7 @@
 
 #ifndef CBLAS
 
-void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA, 
+void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
             FLOAT  *x, blasint *INCX, FLOAT *BETA, FLOAT *y, blasint *INCY){
 
   char uplo_arg = *UPLO;
@@ -67,7 +67,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
   int (*symv[])(BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *) = {
     SYMV_U, SYMV_L,
   };
-  
+
 #ifdef SMP
   int (*symv_thread[])(BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, int) = {
     SYMV_THREAD_U, SYMV_THREAD_L,
@@ -88,7 +88,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (incy == 0)          info = 10;
@@ -101,10 +101,10 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
 #else
 
-void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha, 
+void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
 	   FLOAT *a, blasint lda, FLOAT *x, blasint incx, FLOAT beta, FLOAT *y, blasint incy) {
 
   FLOAT *buffer;

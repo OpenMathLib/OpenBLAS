@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -259,7 +259,7 @@
 	fmr	f13, f0
 	fmr	f14, f0
 	fmr	f15, f0
-	
+
 	srawi.	I, M,  2
 	mr	AO, A
 	add	C,  CO4, LDC
@@ -640,7 +640,7 @@
 	addi	CO2, CO2, 4 * SIZE
 	addi	CO3, CO3, 4 * SIZE
 	addi	CO4, CO4, 4 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -1207,7 +1207,7 @@
 	fmr	f5,  f0
 	fmr	f6,  f0
 	fmr	f7,  f0
-	
+
 	srawi.	I, M,  2
 	add	C,  CO2, LDC
 	mr	AO, A
@@ -2059,7 +2059,7 @@
  	fmr	f1,  f0
 	fmr	f2,  f0
 	fmr	f3,  f0
- 
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))

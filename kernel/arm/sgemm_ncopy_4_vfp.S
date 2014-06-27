@@ -197,7 +197,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sub	r4, fp, #128
 	vstm	r4, { s8 - s15} 				// store floating point registers
 
-	ldr	BO, B	
+	ldr	BO, B
 
 sgemm_ncopy_L4_BEGIN:
 
@@ -231,8 +231,8 @@ sgemm_ncopy_L4_M4_20:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L4_M4_20
-	
-	
+
+
 sgemm_ncopy_L4_M4_40:
 
 	ands	I, M , #3
@@ -244,7 +244,7 @@ sgemm_ncopy_L4_M4_60:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L4_M4_60
-	
+
 
 sgemm_ncopy_L4_M4_END:
 
@@ -279,8 +279,8 @@ sgemm_ncopy_L2_M4_20:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L2_M4_20
-	
-	
+
+
 sgemm_ncopy_L2_M4_40:
 
 	ands	I, M , #3
@@ -292,7 +292,7 @@ sgemm_ncopy_L2_M4_60:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L2_M4_60
-	
+
 
 sgemm_ncopy_L2_M4_END:
 
@@ -320,8 +320,8 @@ sgemm_ncopy_L1_M4_20:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L1_M4_20
-	
-	
+
+
 sgemm_ncopy_L1_M4_40:
 
 	ands	I, M , #3
@@ -333,7 +333,7 @@ sgemm_ncopy_L1_M4_60:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L1_M4_60
-	
+
 
 sgemm_ncopy_L1_M4_END:
 

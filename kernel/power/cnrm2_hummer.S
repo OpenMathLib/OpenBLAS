@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 
 #define INCX2	r6
 #define X2	r7
@@ -336,7 +336,7 @@ LL(98):
 	lfpdux	f14, SP, r10
 	addi	SP, SP,  16
 	blr
-#endif	
+#endif
 	.align 4
 
 LL(99):
@@ -517,7 +517,7 @@ LL(118):
 LL(198):
 	LFDX	A1,    X, INCX2
 	fmadd	C4, A1, A1, C4
-	
+
 	fpadd	C1,  C1,  C5
 	lis	r3, 0x3f00
 	fpadd	C2,  C2,  C6

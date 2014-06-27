@@ -112,15 +112,15 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   for(js = 0; js < n; js += GEMM_R){
     min_j = n - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
-    
+
     for(ls = 0; ls < js; ls += GEMM_Q){
       min_l = js - ls;
       if (min_l > GEMM_Q) min_l = GEMM_Q;
       min_i = m;
       if (min_i > GEMM_P) min_i = GEMM_P;
-     
+
       GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
-      
+
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
 	if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
@@ -131,25 +131,25 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	GEMM_OTCOPY(min_l, min_jj, a + (jjs + ls * lda) * COMPSIZE, lda, sb + min_l * (jjs - js) * COMPSIZE);
 #endif
 
-	GEMM_KERNEL(min_i, min_jj, min_l, dm1, 
+	GEMM_KERNEL(min_i, min_jj, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
 		    sa, sb + min_l * (jjs - js) * COMPSIZE,
-		    b + (jjs * ldb) * COMPSIZE, ldb); 
+		    b + (jjs * ldb) * COMPSIZE, ldb);
       }
 
       for(is = min_i; is < m; is += GEMM_P){
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
-	
-	GEMM_KERNEL(min_i, min_j, min_l, dm1, 
+
+	GEMM_KERNEL(min_i, min_j, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
-		    sa, sb, b + (is + js * ldb) * COMPSIZE, ldb); 
+		    sa, sb, b + (is + js * ldb) * COMPSIZE, ldb);
       }
     }
 
@@ -160,25 +160,25 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       if (min_i > GEMM_P) min_i = GEMM_P;
 
       GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
-      
+
 #ifndef TRANSA
       TRSM_OUNCOPY(min_l, min_l, a + (ls + ls * lda) * COMPSIZE, lda, 0, sb);
 #else
       TRSM_OLTCOPY(min_l, min_l, a + (ls + ls * lda) * COMPSIZE, lda, 0, sb);
 #endif
-      
+
       TRSM_KERNEL(min_i, min_l, min_l, dm1,
 #ifdef COMPLEX
 		  ZERO,
 #endif
 		  sa,
-		  sb, 
+		  sb,
 		  b + (ls * ldb) * COMPSIZE, ldb, 0);
-      
+
       for(jjs = 0; jjs < min_j - min_l - ls + js; jjs += min_jj){
 	min_jj = min_j - min_l - ls + js - jjs;
 	if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	
+
 #ifndef TRANSA
       GEMM_ONCOPY (min_l, min_jj, a + (ls + (ls + min_l + jjs) * lda) * COMPSIZE, lda,
 		   sb + min_l * (min_l + jjs) * COMPSIZE);
@@ -187,36 +187,36 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 		   sb + min_l * (min_l + jjs) * COMPSIZE);
 #endif
 
-      GEMM_KERNEL(min_i, min_jj, min_l, dm1, 
+      GEMM_KERNEL(min_i, min_jj, min_l, dm1,
 #ifdef COMPLEX
 		  ZERO,
 #endif
-		  sa, 
+		  sa,
 		  sb + min_l * (min_l + jjs) * COMPSIZE,
-		  b + (min_l + ls + jjs) * ldb * COMPSIZE, ldb); 
+		  b + (min_l + ls + jjs) * ldb * COMPSIZE, ldb);
       }
 
       for(is = min_i; is < m; is += GEMM_P){
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
-	
+
 	TRSM_KERNEL(min_i, min_l, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
 		    sa,
-		    sb, 
+		    sb,
 		    b + (is + ls * ldb) * COMPSIZE, ldb, 0);
-	
-	GEMM_KERNEL(min_i, min_j - min_l + js - ls, min_l, dm1, 
+
+	GEMM_KERNEL(min_i, min_j - min_l + js - ls, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
-		    sa, 
+		    sa,
 		    sb + min_l * min_l * COMPSIZE,
-		    b + (is + ( min_l + ls) * ldb) * COMPSIZE, ldb); 
+		    b + (is + ( min_l + ls) * ldb) * COMPSIZE, ldb);
       }
     }
   }
@@ -235,48 +235,48 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       if (min_i > GEMM_P) min_i = GEMM_P;
 
       GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
-      
+
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
 	if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	
+
 #ifndef TRANSA
 	GEMM_ONCOPY(min_l, min_jj, a + (ls + (jjs - min_j) * lda) * COMPSIZE, lda, sb + min_l * (jjs - js) * COMPSIZE);
 #else
 	GEMM_OTCOPY(min_l, min_jj, a + ((jjs - min_j) + ls * lda) * COMPSIZE, lda, sb + min_l * (jjs - js) * COMPSIZE);
 #endif
 
-	GEMM_KERNEL(min_i, min_jj, min_l, dm1, 
+	GEMM_KERNEL(min_i, min_jj, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
 		    sa, sb + min_l * (jjs - js) * COMPSIZE,
-		    b + (jjs - min_j) * ldb * COMPSIZE, ldb); 
+		    b + (jjs - min_j) * ldb * COMPSIZE, ldb);
       }
 
       for(is = min_i; is < m; is += GEMM_P){
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
-	
-	GEMM_KERNEL(min_i, min_j, min_l, dm1, 
+
+	GEMM_KERNEL(min_i, min_j, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
-		    sa, sb, b + (is + (js - min_j) * ldb) * COMPSIZE, ldb); 
+		    sa, sb, b + (is + (js - min_j) * ldb) * COMPSIZE, ldb);
       }
     }
 
     start_ls = js - min_j;
     while (start_ls + GEMM_Q < js) start_ls += GEMM_Q;
-    
+
     for(ls = start_ls; ls >= js - min_j; ls -= GEMM_Q){
       min_l = js - ls;
       if (min_l > GEMM_Q) min_l = GEMM_Q;
       min_i = m;
       if (min_i > GEMM_P) min_i = GEMM_P;
-      
+
       GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
 
 #ifndef TRANSA
@@ -286,63 +286,63 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       TRSM_OUTCOPY(min_l, min_l,           a + (ls + ls * lda) * COMPSIZE, lda,
 		   0, sb + min_l * (min_j - js + ls) * COMPSIZE);
 #endif
-      
+
       TRSM_KERNEL(min_i, min_l, min_l, dm1,
 #ifdef COMPLEX
 		  ZERO,
 #endif
 		  sa,
-		  sb + min_l * (min_j - js + ls) * COMPSIZE, 
+		  sb + min_l * (min_j - js + ls) * COMPSIZE,
 		  b + (ls * ldb) * COMPSIZE, ldb, 0);
-      
+
       for(jjs = 0; jjs < min_j - js + ls; jjs += min_jj){
 	min_jj = min_j - js + ls - jjs;
 	if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	
+
 #ifndef TRANSA
 	GEMM_ONCOPY (min_l, min_jj, a + (ls + (js - min_j + jjs) * lda) * COMPSIZE, lda,
 		     sb + min_l * jjs * COMPSIZE);
 #else
-	GEMM_OTCOPY (min_l, min_jj, a + ((js - min_j + jjs) + ls * lda) * COMPSIZE, lda, 
+	GEMM_OTCOPY (min_l, min_jj, a + ((js - min_j + jjs) + ls * lda) * COMPSIZE, lda,
 		     sb + min_l * jjs * COMPSIZE);
 #endif
-	
-	GEMM_KERNEL(min_i, min_jj, min_l, dm1, 
+
+	GEMM_KERNEL(min_i, min_jj, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
-		    sa, 
+		    sa,
 		    sb + min_l * jjs * COMPSIZE,
-		    b + (js - min_j + jjs) * ldb * COMPSIZE, ldb); 
+		    b + (js - min_j + jjs) * ldb * COMPSIZE, ldb);
       }
 
       for(is = min_i; is < m; is += GEMM_P){
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
-	
+
 	TRSM_KERNEL(min_i, min_l, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
 		    sa,
-		    sb + min_l * (min_j - js + ls) * COMPSIZE, 
+		    sb + min_l * (min_j - js + ls) * COMPSIZE,
 		    b + (is + ls * ldb) * COMPSIZE, ldb, 0);
-	
-	GEMM_KERNEL(min_i, min_j - js + ls, min_l, dm1, 
+
+	GEMM_KERNEL(min_i, min_j - js + ls, min_l, dm1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
-		    sa, 
+		    sa,
 		    sb,
-		    b + (is + (js - min_j) * ldb) * COMPSIZE, ldb); 
+		    b + (is + (js - min_j) * ldb) * COMPSIZE, ldb);
       }
 
     }
   }
-  
+
 #endif
-     
+
   return 0;
 }

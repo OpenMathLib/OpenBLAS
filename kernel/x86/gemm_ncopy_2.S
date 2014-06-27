@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 8
-	
+
 #define J	 0 + STACK(%esp)
 
 #define M	 4 + STACK + ARGS(%esp)

@@ -71,7 +71,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   }
 
   if (m <= 0 || n <= 0) return 0;
-  
+
   mn = MIN(m, n);
 
   blocking = (mn / 2 + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
@@ -81,13 +81,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     info = GETF2(args, NULL, range_n, sa, sb, 0);
     return info;
   }
-  
+
   sbb = (FLOAT *)((((BLASULONG)(sb + blocking * blocking * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
 
   info = 0;
 
   for (j = 0; j < mn; j += blocking) {
-    
+
     jb = mn - j;
     if (jb > blocking) jb = blocking;
 
@@ -102,53 +102,53 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     if (iinfo && !info) info = iinfo + j;
 
     if (j + jb < n) {
-      
+
       TRSM_ILTCOPY(jb, jb, offsetA + j * COMPSIZE, lda, 0, sb);
-      
+
       for (js = j + jb; js < n; js += REAL_GEMM_R){
 	jmin = n - js;
 	if (jmin > REAL_GEMM_R) jmin = REAL_GEMM_R;
-	
+
 	  for (jjs = js; jjs < js + jmin; jjs += GEMM_UNROLL_N){
 	    min_jj = js + jmin - jjs;
 	    if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-	    
-#if 1 
-	    LASWP_PLUS(min_jj, j + offset + 1, j + jb + offset, ZERO, 
+
+#if 1
+	    LASWP_PLUS(min_jj, j + offset + 1, j + jb + offset, ZERO,
 #ifdef COMPLEX
 		       ZERO,
 #endif
 		       a + (- offset + jjs * lda) * COMPSIZE, lda, NULL, 0 , ipiv, 1);
-	    
+
 	    GEMM_ONCOPY (jb, min_jj, a + (j + jjs * lda) * COMPSIZE, lda, sbb + jb * (jjs - js) * COMPSIZE);
 #else
-	    LASWP_NCOPY(min_jj, j + offset + 1, j + jb + offset, 
+	    LASWP_NCOPY(min_jj, j + offset + 1, j + jb + offset,
 			a + (- offset + jjs * lda) * COMPSIZE, lda, ipiv, sbb + jb * (jjs - js) * COMPSIZE);
 #endif
-	    
-	    
+
+
 	    for (jc = 0; jc < jb; jc += GEMM_P) {
 	      jcmin = jb - jc;
 	      if (jcmin > GEMM_P) jcmin = GEMM_P;
-	      
+
 	      TRSM_KERNEL_LT(jcmin, min_jj, jb, dm1,
 #ifdef COMPLEX
 			     ZERO,
 #endif
 			     sb  + jb * jc * COMPSIZE,
-			     sbb + jb * (jjs - js) * COMPSIZE, 
+			     sbb + jb * (jjs - js) * COMPSIZE,
 			     a + (j + jc + jjs * lda) * COMPSIZE, lda, jc);
 	    }
 	  }
 
 
 	for (is = j + jb; is < m; is += GEMM_P){
-	  
+
 	  imin = m - is;
 	  if (imin > GEMM_P) imin = GEMM_P;
 
 	  GEMM_ITCOPY (jb, imin, offsetA + is * COMPSIZE, lda, sa);
-	  
+
 	  GEMM_KERNEL_N(imin, jmin, jb, dm1,
 #ifdef COMPLEX
 			ZERO,
@@ -158,7 +158,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       }
     }
   }
-  
+
   for (j = 0; j < mn; j += jb) {
     jb = MIN(mn - j, blocking);
     LASWP_PLUS(jb, j + jb + offset + 1, mn + offset, ZERO,
@@ -166,7 +166,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	       ZERO,
 #endif
 	       a - (offset - j * lda) * COMPSIZE, lda, NULL, 0 , ipiv, 1);
-    
+
   }
 
   return info;

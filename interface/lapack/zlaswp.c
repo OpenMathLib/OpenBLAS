@@ -53,7 +53,7 @@ static int (*laswp[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASL
 };
 
 int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *ipiv, blasint *INCX){
-  
+
   blasint n    = *N;
   blasint lda  = *LDA;
   blasint k1   = *K1;
@@ -94,7 +94,7 @@ int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 
   blas_level1_thread(mode, n, k1, k2, dummyalpha, a, lda, NULL, 0, ipiv, incx, laswp[flag], nthreads);
   }

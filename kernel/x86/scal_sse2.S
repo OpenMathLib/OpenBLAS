@@ -77,7 +77,7 @@
 	comisd	%xmm0, %xmm1
 	jne	.L100		# Alpha != ZERO
         jp      .L100           # For Alpha = NaN
-	
+
 /* Alpha == ZERO */
 	cmpl	$SIZE, INCX
 	jne	.L50
@@ -264,7 +264,7 @@
 	movaps  %xmm0, %xmm4
 	mulpd	-10 * SIZE(X), %xmm4
 
-	decl	I 
+	decl	I
 	jle	.L112
 	ALIGN_4
 
@@ -342,7 +342,7 @@
 	movaps	-12 * SIZE(X), %xmm3
 	movaps	-10 * SIZE(X), %xmm4
 
-	decl	I 
+	decl	I
 	jle	.L112
 	ALIGN_4
 

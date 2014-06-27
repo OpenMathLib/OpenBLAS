@@ -66,11 +66,11 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  if (X > posY) {
 	    ao1 += 2;
 	    b += 2;
-	  } else 
+	  } else
 	    if (X < posY) {
 	      data01 = *(ao1 + 0);
 	      data02 = *(ao1 + 1);
-	  
+
 	      b[ 0] = data01;
 	      b[ 1] = data02;
 	      ao1 += lda;
@@ -82,7 +82,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 #else
 	      data01 = *(ao1 + 0);
 	      data02 = *(ao1 + 1);
-	  
+
 	      b[ 0] = data01;
 	      b[ 1] = data02;
 #endif

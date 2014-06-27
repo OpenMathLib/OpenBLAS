@@ -354,7 +354,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cmp	INC_X, #0
 	beq	iamax_kernel_L999
 
-	
+
 	cmp	INC_X, #1
 	bne	iamax_kernel_S_BEGIN
 

@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define RET	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 
 #define N	r6
 #define NN	r7
@@ -96,7 +96,7 @@
 
 	slwi	INCX, INCX, ZBASE_SHIFT
 	sub	X, X, INCX
-	li	INC1, SIZE	
+	li	INC1, SIZE
 	li	PRE, 3 * 16 * SIZE
 
 	mr	NN, N

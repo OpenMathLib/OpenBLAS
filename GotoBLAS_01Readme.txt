@@ -83,7 +83,7 @@
 4. Suported precision
 
  Now x86/x86_64 version support 80bit FP precision in addition to
-normal double presicion and single precision. Currently only 
+normal double presicion and single precision. Currently only
 gfortran supports 80bit FP with "REAL*10".
 
 

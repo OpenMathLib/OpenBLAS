@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -145,7 +145,7 @@
 	movd	%mm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	subl	$-16 * SIZE, A
@@ -163,7 +163,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$2, %eax
@@ -191,7 +191,7 @@
 	movapd	%xmm5,   -6 * SIZE(BB)
 	movapd	%xmm6,   -4 * SIZE(BB)
 	movapd	%xmm7,   -2 * SIZE(BB)
-	
+
 	addl	$  8 * SIZE, B
 	subl	$-16 * SIZE, BB
 	decl	%eax
@@ -242,7 +242,7 @@
 	leal	(AA, %eax, 4), AA
 	leal	(BB, %eax, 4), BB /* because it's doubled */
 
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -264,7 +264,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -481,7 +481,7 @@
 
 	addsubpd	%xmm5, %xmm4
 	addsubpd	%xmm7, %xmm6
-	
+
 #if! defined(TRMMKERNEL) && !defined(BETAZERO)
 	addpd	%xmm0, %xmm4
 	addpd	%xmm1, %xmm6
@@ -527,7 +527,7 @@
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 4), BB /* because it's doubled */
 
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -543,7 +543,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 	addl	$1, %eax
@@ -662,7 +662,7 @@
 	mulpd	%xmm3, %xmm5
 
 	addsubpd	%xmm5, %xmm4
-	
+
 #if! defined(TRMMKERNEL) && !defined(BETAZERO)
 	addpd	%xmm0,  %xmm4
 #endif

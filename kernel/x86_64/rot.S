@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	ARG1
 #define X	ARG2
 #define INCX	ARG3
@@ -80,7 +80,7 @@
 	sarq	$2, I
 	jle	.L15
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -212,7 +212,7 @@
 	sarq	$2, I
 	jle	.L55
 	ALIGN_4
-	
+
 .L51:
 	FLD	0 * SIZE(X)
 	FLD	0 * SIZE(Y)

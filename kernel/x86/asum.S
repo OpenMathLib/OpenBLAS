@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	 8
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -49,7 +49,7 @@
 #define M	%edx
 #define X	%ecx
 #define INCX	%esi
-	
+
 #define I	%eax
 
 #include "l1param.h"
@@ -91,7 +91,7 @@
 	sarl	$3, I
 	jle	.L20
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -153,7 +153,7 @@
 	sarl	$3, I
 	jle	.L60
 	ALIGN_4
-	
+
 .L50:
 	FLD	(X)
 	addl	INCX, X

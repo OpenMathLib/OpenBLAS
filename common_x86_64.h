@@ -60,7 +60,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
   do {
     while (*address) {YIELDING;};
-    
+
     __asm__ __volatile__(
 			 "xchgl %0, %1\n"
 			 : "=r"(ret), "=m"(*address)
@@ -74,8 +74,8 @@ static __inline BLASULONG rpcc(void){
   BLASULONG a, d;
 
   __asm__ __volatile__ ("rdtsc" : "=a" (a), "=d" (d));
-  
-  return ((BLASULONG)a + ((BLASULONG)d << 32));  
+
+  return ((BLASULONG)a + ((BLASULONG)d << 32));
 }
 
 #define RPCC64BIT
@@ -86,7 +86,7 @@ static __inline BLASULONG getstackaddr(void){
   __asm__ __volatile__ ("movq %%rsp, %0"
 			 : "=r"(addr) : : "memory");
 
-  return addr;  
+  return addr;
 }
 
 static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
@@ -457,9 +457,9 @@ REALNAME:
 #define ALIGN_6 .align 64
 #endif
 
-// ffreep %st(0). 
+// ffreep %st(0).
 // Because Clang didn't support ffreep, we directly use the opcode.
-// Please check out http://www.sandpile.org/x86/opc_fpu.htm 
+// Please check out http://www.sandpile.org/x86/opc_fpu.htm
 #ifndef ffreep
 #define ffreep .byte 0xdf, 0xc0 #
 #endif

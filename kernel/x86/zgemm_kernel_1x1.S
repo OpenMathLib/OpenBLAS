@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define BX	 0 + STACK(%esp)
 #define KK	 4 + STACK(%esp)
 #define KKK	 8 + STACK(%esp)
@@ -105,7 +105,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	%ebx, BX
 
@@ -125,7 +125,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(A, %eax, 2), A
 	leal	(B, %eax, 2), B
-#endif	
+#endif
 
 #ifdef HAVE_SSE
 	movl	BX, %eax
@@ -169,7 +169,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT

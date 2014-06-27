@@ -11,10 +11,10 @@ void cblas_xerbla(blasint info, char *rout, char *form, ...)
    extern int link_xerbla;
    extern int RowMajorStrg;
    extern char *cblas_rout;
-   
-   /* Initially, c__3chke will call this routine with 
-    * global variable link_xerbla=1, and F77_xerbla will set link_xerbla=0. 
-    * This is done to fool the linker into loading these subroutines first 
+
+   /* Initially, c__3chke will call this routine with
+    * global variable link_xerbla=1, and F77_xerbla will set link_xerbla=0.
+    * This is done to fool the linker into loading these subroutines first
     * instead of ones in the CBLAS or the legacy BLAS library.
     */
    if (link_xerbla) return;
@@ -26,11 +26,11 @@ void cblas_xerbla(blasint info, char *rout, char *form, ...)
 
    if (RowMajorStrg)
    {
-      /* To properly check leading dimension problems in cblas__gemm, we 
-       * need to do the following trick. When cblas__gemm is called with 
-       * CblasRowMajor, the arguments A and B switch places in the call to 
-       * f77__gemm. Thus when we test for bad leading dimension problems 
-       * for A and B, lda is in position 11 instead of 9, and ldb is in 
+      /* To properly check leading dimension problems in cblas__gemm, we
+       * need to do the following trick. When cblas__gemm is called with
+       * CblasRowMajor, the arguments A and B switch places in the call to
+       * f77__gemm. Thus when we test for bad leading dimension problems
+       * for A and B, lda is in position 11 instead of 9, and ldb is in
        * position 9 instead of 11.
        */
       if (strstr(rout,"gemm") != 0)
@@ -117,7 +117,7 @@ void F77_xerbla(char *srname, void *vinfo)
    }
    for(i=0;  i  < 6; i++) rout[i+6] = tolower(srname[i]);
    for(i=11; i >= 9; i--) if (rout[i] == ' ') rout[i] = '\0';
-   
+
    /* We increment *info by 1 since the CBLAS interface adds one more
     * argument to all level 2 and 3 routines.
     */

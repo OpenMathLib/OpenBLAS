@@ -187,7 +187,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
-	
+
 	vsub.f32                s0 , s0 , s0
 	vsub.f32                s1 , s1 , s1
 	vsub.f32                s2 , s2 , s2
@@ -269,11 +269,11 @@ cdot_kernel_L999:
 	vldm	r3, { s8 - s15}					// restore floating point registers
 
 #if !defined(CONJ)
-	vsub.f32	s0 , s0, s2				
-	vadd.f32	s1 , s1, s3				
+	vsub.f32	s0 , s0, s2
+	vadd.f32	s1 , s1, s3
 #else
-	vadd.f32	s0 , s0, s2				
-	vsub.f32	s1 , s1, s3				
+	vadd.f32	s0 , s0, s2
+	vsub.f32	s1 , s1, s3
 #endif
 
 	sub	sp, fp, #24

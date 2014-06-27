@@ -18,13 +18,13 @@ void CNAME(blasint n, FLOAT *dx, blasint incx, FLOAT *dy, blasint incy, FLOAT *d
 #endif
 
   blasint i__1, i__2;
-  
+
   blasint i__;
   FLOAT w, z__;
   blasint kx, ky;
   FLOAT dh11, dh12, dh22, dh21, dflag;
   blasint nsteps;
-  
+
 #ifndef CBLAS
   PRINT_DEBUG_CNAME;
 #else
@@ -34,7 +34,7 @@ void CNAME(blasint n, FLOAT *dx, blasint incx, FLOAT *dy, blasint incy, FLOAT *d
   --dparam;
   --dy;
   --dx;
-  
+
   dflag = dparam[1];
     if (n <= 0 || dflag == - 2.0) goto L140;
 

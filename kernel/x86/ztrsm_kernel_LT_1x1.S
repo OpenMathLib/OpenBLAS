@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define KK	 0 + STACK(%esp)
 #define KKK	 4 + STACK(%esp)
 #define AORIG	 8 + STACK(%esp)
@@ -112,7 +112,7 @@
        movl	OFFSET, %eax
        negl	%eax
        movl	%eax, KK
-#endif	
+#endif
 
 #ifdef RT
        movl	STACK_N, %eax
@@ -154,7 +154,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -178,7 +178,7 @@
 	addl	%eax,  B
 #else
 	movl	STACK_B, B
-#endif	
+#endif
 
 	fldz
 	fldz

@@ -1,10 +1,10 @@
 SGEMMKERNEL    =  gemm_kernel_4x4_penryn.S
-SGEMMINCOPY    =  
-SGEMMITCOPY    =  
+SGEMMINCOPY    =
+SGEMMITCOPY    =
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
-SGEMMINCOPYOBJ =  
-SGEMMITCOPYOBJ =  
+SGEMMINCOPYOBJ =
+SGEMMITCOPYOBJ =
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 DGEMMKERNEL    =  gemm_kernel_2x2_atom.S

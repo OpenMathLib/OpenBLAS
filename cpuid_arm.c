@@ -67,7 +67,7 @@ int get_feature(char *search)
 
 	t = strtok(p," ");
 	while( t = strtok(NULL," "))
-	{	
+	{
 		if (!strcmp(t, search))   { return(1); }
 	}
 
@@ -102,7 +102,7 @@ int detect(void)
   	if(p != NULL)
 	{
 
-		if (strstr(p, "ARMv7")) 
+		if (strstr(p, "ARMv7"))
 		{
 			 if ( get_feature("vfpv4"))
 			 	return CPU_ARMV7;
@@ -116,7 +116,7 @@ int detect(void)
 
 		}
 
-		if (strstr(p, "ARMv6")) 
+		if (strstr(p, "ARMv6"))
 		{
 			 if ( get_feature("vfp"))
 			 	return CPU_ARMV6;
@@ -248,7 +248,7 @@ void get_features(void)
 
 	t = strtok(p," ");
 	while( t = strtok(NULL," "))
-	{	
+	{
 		if (!strcmp(t, "vfp"))   { printf("HAVE_VFP=1\n"); continue; }
 		if (!strcmp(t, "vfpv3")) { printf("HAVE_VFPV3=1\n"); continue; }
 		if (!strcmp(t, "vfpv4")) { printf("HAVE_VFPV4=1\n"); continue; }

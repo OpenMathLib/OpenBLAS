@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define OLD_M	 4 + STACK + ARGS(%esi)
 #define OLD_N	 8 + STACK + ARGS(%esi)
 #define OLD_K	12 + STACK + ARGS(%esi)
@@ -130,13 +130,13 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$2, %eax
 	jle	.L05
 	ALIGN_4
-	
+
 .L02:
 	movddup	 -16 * SIZE(B), %xmm0
 	movddup	 -15 * SIZE(B), %xmm1
@@ -183,7 +183,7 @@
 	decl	%eax
 	jne	.L06
 	ALIGN_4
-	
+
 .L10:
 	movl	B, BX
 
@@ -229,7 +229,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -517,7 +517,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 	addl	$2, %eax
@@ -685,7 +685,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -828,13 +828,13 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sarl	$3, %eax
 	jle	.L45
 	ALIGN_4
-	
+
 .L42:
 	movddup	 -16 * SIZE(B), %xmm0
 	movddup	 -15 * SIZE(B), %xmm1
@@ -876,7 +876,7 @@
 	decl	%eax
 	jne	.L46
 	ALIGN_4
-	
+
 .L50:
 	movl	C, C1
 	movl	A, AA
@@ -914,7 +914,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1086,7 +1086,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1219,7 +1219,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 	addl	$1, %eax
@@ -1316,7 +1316,7 @@
 
 .L999:
 	movl	OLD_STACK, %esp
-	
+
 	EMMS
 
 	popl	%ebx

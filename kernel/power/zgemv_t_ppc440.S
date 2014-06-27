@@ -542,7 +542,7 @@ LL(12):
 	LFDU	a7, 1 * SIZE(AO4)
 	FMADD4	y8,  a8,  b3, y8
  	bdnz	LL(12)
-	.align 4	
+	.align 4
 
 LL(13):
 	FMADD1	y1,  a1,  b1, y1
@@ -804,7 +804,7 @@ LL(19):
 	cmpwi	cr0, J, 0
 	bgt	LL(11)
 	.align 4
-	
+
 LL(20):
 	andi.	J, N, 2
 	ble	LL(30)
@@ -920,7 +920,7 @@ LL(22):
 	FMADD4	y4,  a4,  b3, y4
 
  	bdnz	LL(22)
-	.align 4	
+	.align 4
 
 LL(23):
 	FMADD1	y1,  a1,  b1, y1
@@ -1147,7 +1147,7 @@ LL(32):
 	LFDU	a2, 1 * SIZE(AO1)
 
  	bdnz	LL(32)
-	.align 4	
+	.align 4
 
 LL(33):
 	FMADD1	y1,  a1,  b1, y1

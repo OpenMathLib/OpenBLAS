@@ -1,6 +1,6 @@
 SGEMMKERNEL    =  gemm_kernel_power6.S
-SGEMMINCOPY    =  
-SGEMMITCOPY    =  
+SGEMMINCOPY    =
+SGEMMITCOPY    =
 SGEMMONCOPY    =  gemm_ncopy_4.S
 SGEMMOTCOPY    =  gemm_tcopy_4.S
 SGEMMINCOPYOBJ =

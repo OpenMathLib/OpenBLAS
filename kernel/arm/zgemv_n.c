@@ -102,7 +102,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 	   return(0);
 
 	}
-	
+
 
 	inc_x2 = 2 * inc_x;
 	inc_y2 = 2 * inc_y;
@@ -153,5 +153,5 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 	return(0);
 }
-	
+
 

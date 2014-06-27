@@ -53,7 +53,7 @@ void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha,
 {
 
 	char Order, Trans;
-	int order=-1,trans=-1;	
+	int order=-1,trans=-1;
 	blasint info = -1;
 	FLOAT *b;
 	size_t msize;

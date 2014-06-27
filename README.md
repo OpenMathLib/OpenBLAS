@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/xianyi/OpenBLAS.png?branch=develop)](https://travis-ci.org/xianyi/OpenBLAS)
 
 ## Introduction
-OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version. 
+OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version.
 
 Please read the documents on OpenBLAS wiki pages <http://github.com/xianyi/OpenBLAS/wiki>.
 
@@ -74,7 +74,7 @@ Please read GotoBLAS_01Readme.txt
 ## Usages
 Link with libopenblas.a or -lopenblas for shared library.
 
-### Set the number of threads with environment variables. 
+### Set the number of threads with environment variables.
 
 Examples:
 
@@ -84,7 +84,7 @@ Examples:
 
     export GOTO_NUM_THREADS=4
 
- or 
+ or
 
     export OMP_NUM_THREADS=4
 
@@ -92,7 +92,7 @@ The priorities are OPENBLAS_NUM_THREADS > GOTO_NUM_THREADS > OMP_NUM_THREADS.
 
 If you compile this lib with USE_OPENMP=1, you should set OMP_NUM_THREADS environment variable. OpenBLAS ignores OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS with USE_OPENMP=1.
 
-### Set the number of threads on runtime. 
+### Set the number of threads on runtime.
 
 We provided the below functions to control the number of threads on runtime.
 
@@ -116,12 +116,12 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 * Please read [Faq](https://github.com/xianyi/OpenBLAS/wiki/Faq) at first.
 * Please use gcc version 4.6 and above to compile Sandy Bridge AVX kernels on Linux/MingW/BSD.
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture. The Clang 3.0 will generate the wrong AVX binary code.
-* The number of CPUs/Cores should less than or equal to 256. 
+* The number of CPUs/Cores should less than or equal to 256.
 * On Linux, OpenBLAS sets the processor affinity by default. This may cause [the conflict with R parallel](https://stat.ethz.ch/pipermail/r-sig-hpc/2012-April/001348.html). You can build the library with NO_AFFINITY=1.
-* On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell. 
+* On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell.
 
 ## Contributing
-1. [Check for open issues](https://github.com/xianyi/OpenBLAS/issues) or open a fresh issue to start a discussion around a feature idea or a bug. 
+1. [Check for open issues](https://github.com/xianyi/OpenBLAS/issues) or open a fresh issue to start a discussion around a feature idea or a bug.
 1. Fork the [OpenBLAS](https://github.com/xianyi/OpenBLAS) repository to start making your changes.
 1. Write a test which shows that the bug was fixed or that the feature works as expected.
 1. Send a pull request. Make sure to add yourself to `CONTRIBUTORS.md`.

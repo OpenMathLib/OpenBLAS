@@ -60,27 +60,27 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
  ipiv += k1;
 
   if (n  <= 0) return 0;
-      
+
   j = (n >> 1);
   if (j > 0) {
     do {
       piv = ipiv;
-      
+
       a1 = a + (k1 + 1) * 2;
       a3 = a1 + lda;
-      
+
       ip1 = *(piv + 0) * 2;
       ip2 = *(piv + 1) * 2;
       piv += 2;
-      
+
       b1 = a + ip1;
       b2 = a + ip2;
-      
+
       b3 = b1 + lda;
       b4 = b2 + lda;
-      
+
       i = ((k2 - k1) >> 1);
-      
+
       if (i > 0) {
 	do {
 	  A1 = *(a1 + 0);
@@ -104,7 +104,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	  ip1 = *(piv + 0) * 2;
 	  ip2 = *(piv + 1) * 2;
 	  piv += 2;
-	  
+
 	  if (b1 == a1) {
 	    if (b2 == a2) {
 	      *(buffer + 0) = A1;
@@ -124,13 +124,13 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	      *(buffer + 5) = B4;
 	      *(buffer + 6) = B7;
 	      *(buffer + 7) = B8;
-	      
+
 	      *(b2 + 0) = A3;
 	      *(b2 + 1) = A4;
 	      *(b4 + 0) = A7;
 	      *(b4 + 1) = A8;
 	    }
-	} else 
+	} else
 	  if (b1 == a2) {
 	    if (b2 == a2) {
 	      *(buffer + 0) = A3;
@@ -171,7 +171,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	      *(b1 + 1) = A2;
 	      *(b3 + 0) = A5;
 	      *(b3 + 1) = A6;
-	    } else 
+	    } else
 	      if (b2 == b1) {
 		*(buffer + 0) = B1;
 		*(buffer + 1) = B2;
@@ -205,24 +205,24 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 		*(b4 + 1) = A8;
 	      }
 	  }
-	  
+
 	  buffer += 8;
-	  
+
 	  b1 = a + ip1;
 	  b2 = a + ip2;
-	  
+
 	  b3 = b1 + lda;
 	  b4 = b2 + lda;
-	  
+
 	  a1 += 4;
 	  a3 += 4;
-	  
+
 	  i --;
 	} while (i > 0);
       }
-      
+
       i = ((k2 - k1) & 1);
-      
+
       if (i > 0) {
 	A1 = *(a1 + 0);
 	A2 = *(a1 + 1);
@@ -232,7 +232,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	A4 = *(a3 + 1);
 	B3 = *(b3 + 0);
 	B4 = *(b3 + 1);
-	
+
 	if (a1 == b1) {
 	  *(buffer + 0) = A1;
 	  *(buffer + 1) = A2;
@@ -251,26 +251,26 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	}
 	buffer += 4;
       }
-      
+
       a += 2 * lda;
       j --;
     } while (j > 0);
   }
-  
+
   if (n & 1) {
     piv = ipiv;
-    
+
     a1 = a + (k1 + 1) * 2;
-    
+
     ip1 = *(piv + 0) * 2;
     ip2 = *(piv + 1) * 2;
     piv += 2;
-    
+
     b1 = a + ip1;
     b2 = a + ip2;
-    
+
     i = ((k2 - k1) >> 1);
-    
+
     if (i > 0) {
       do {
 	A1 = *(a1 + 0);
@@ -281,11 +281,11 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	B2 = *(b1 + 1);
 	B3 = *(b2 + 0);
 	B4 = *(b2 + 1);
-	
+
 	ip1 = *(piv + 0) * 2;
 	ip2 = *(piv + 1) * 2;
 	piv += 2;
-	
+
 	if (b1 == a1) {
 	  if (b2 == a2) {
 	    *(buffer + 0) = A1;
@@ -297,11 +297,11 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	    *(buffer + 1) = A2;
 	    *(buffer + 2) = B3;
 	    *(buffer + 3) = B4;
-	    
+
 	    *(b2 + 0) = A3;
 	    *(b2 + 1) = A4;
 	  }
-	} else 
+	} else
 	  if (b1 == a2) {
 	    if (b2 == a2) {
 	      *(buffer + 0) = A3;
@@ -324,7 +324,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	      *(buffer + 3) = A4;
 	      *(b1 + 0) = A1;
 	      *(b1 + 1) = A2;
-	    } else 
+	    } else
 	      if (b2 == b1) {
 		*(buffer + 0) = B1;
 		*(buffer + 1) = B2;
@@ -345,24 +345,24 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	  }
 
 	buffer += 4;
-	
+
 	b1 = a + ip1;
 	b2 = a + ip2;
 
 	a1 += 4;
-	
+
 	i --;
       } while (i > 0);
     }
-    
+
     i = ((k2 - k1) & 1);
-    
+
     if (i > 0) {
       A1 = *(a1 + 0);
       A2 = *(a1 + 1);
-      B1 = *(b1 + 0); 
+      B1 = *(b1 + 0);
       B2 = *(b1 + 1);
-     
+
       if (a1 == b1) {
 	*(buffer + 0) = A1;
 	*(buffer + 1) = A2;
@@ -377,5 +377,5 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
   }
 
   return 0;
-} 
+}
 

@@ -146,7 +146,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	*(b + 14) = data12;
 	*(b + 15) = data16;
       }
-      
+
       a1 += 4;
       a2 += 4;
       a3 += 4;
@@ -160,7 +160,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     if ((m & 2) != 0) {
 
       if (ii== jj) {
-	
+
 #ifndef UNIT
 	data01 = *(a1 + 0);
 #endif
@@ -205,7 +205,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	*(b +  6) = data07;
 	*(b +  7) = data08;
       }
-      
+
       a1 += 2;
       a2 += 2;
       b += 8;
@@ -284,7 +284,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	*(b +  2) = data02;
 	*(b +  3) = data04;
       }
-      
+
       a1 += 2;
       a2 += 2;
       b += 4;
@@ -338,7 +338,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	data01 = *(a1 + 0);
 	*(b +  0) = data01;
       }
-      
+
       a1+= 1;
       b += 1;
       i  --;

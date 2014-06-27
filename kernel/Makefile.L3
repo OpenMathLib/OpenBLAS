@@ -22,7 +22,7 @@ ifeq ($(ARCH), arm64)
 USE_TRMM = 1
 endif
 
-ifeq ($(TARGET), LOONGSON3B)												 
+ifeq ($(TARGET), LOONGSON3B)
 USE_TRMM = 1
 endif
 
@@ -333,13 +333,13 @@ CBLASOBJS += \
 	comatcopy_k_cn$(TSUFFIX).$(SUFFIX) comatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	comatcopy_k_ct$(TSUFFIX).$(SUFFIX) comatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	comatcopy_k_cnc$(TSUFFIX).$(SUFFIX) comatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
-	comatcopy_k_ctc$(TSUFFIX).$(SUFFIX) comatcopy_k_rtc$(TSUFFIX).$(SUFFIX) 
+	comatcopy_k_ctc$(TSUFFIX).$(SUFFIX) comatcopy_k_rtc$(TSUFFIX).$(SUFFIX)
 
 ZBLASOBJS += \
 	zomatcopy_k_cn$(TSUFFIX).$(SUFFIX) zomatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	zomatcopy_k_ct$(TSUFFIX).$(SUFFIX) zomatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	zomatcopy_k_cnc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
-	zomatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX) 
+	zomatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX)
 
 
 SGEMMINCOPYOBJ_P = $(SGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
@@ -535,7 +535,7 @@ $(KDIR)xgemm_kernel_b$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL) $(XGEMMD
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX -DCC $< -o $@
 
 
-ifdef USE_TRMM											 
+ifdef USE_TRMM
 $(KDIR)strmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -UTRANSA $< -o $@
 

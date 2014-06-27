@@ -46,7 +46,7 @@
 #define B	ARG5
 #define C	ARG6
 #define LDC	%r10
-	
+
 #define I	%r12
 #define J	%r13
 #define AO	%r14
@@ -73,7 +73,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
@@ -89,10 +89,10 @@
 	negq	%rax
 	movq	%rax, KK
 #endif
-	
+
 	addq	$8 * SIZE, A
 	addq	$8 * SIZE, B
-	
+
 	salq	$BASE_SHIFT, LDC
 
 #ifdef LN
@@ -118,7 +118,7 @@
        movq	OFFSET, %rax
        negq	%rax
        movq	%rax, KK
-#endif	
+#endif
 
 #ifdef RT
        movq	N, %rax
@@ -127,7 +127,7 @@
 #endif
 
 	movq	N,  %rax
-	testq	$1, %rax	
+	testq	$1, %rax
 	je	.L30
 
 #if defined(LT) || defined(RN)
@@ -155,7 +155,7 @@
 	movq	OFFSET, %rax
 	addq	M, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, %rax
@@ -182,7 +182,7 @@
 	leaq	(B,  %rax, 1), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -415,7 +415,7 @@
 	leaq	(B,  %rax, 1), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	fldz
 
@@ -624,7 +624,7 @@
 	movq	OFFSET, %rax
 	addq	M, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, %rax
@@ -651,7 +651,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -688,7 +688,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -706,7 +706,7 @@
 
 	FLD	 -5 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -5 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -726,7 +726,7 @@
 
 	FLD	 -3 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -3 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -744,7 +744,7 @@
 
 	FLD	 -1 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -1 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -781,7 +781,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -996,7 +996,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	fldz
 	fldz

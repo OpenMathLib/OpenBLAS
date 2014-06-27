@@ -48,7 +48,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
 #define OLD_INCY	24 + STACKSIZE(%rsp)
@@ -75,7 +75,7 @@
 #else
 
 #define STACKSIZE	288
-	
+
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
 #define OLD_LDA		 56 + STACKSIZE(%rsp)
@@ -207,7 +207,7 @@
 	ALIGN_3
 
 	subq	$-32 * SIZE, A
-	
+
 	movq	BUFFER, Y1
 
 	pxor	%xmm4, %xmm4
@@ -281,7 +281,7 @@
 
 	pcmpeqb	%xmm7, %xmm7
 	psllq	$63,   %xmm7
-	
+
 	pshufd	$0x00, %xmm9,  %xmm8
 	pshufd	$0x55, %xmm9,  %xmm9
 	pshufd	$0x00, %xmm11, %xmm10
@@ -875,7 +875,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 	pshufd	$0x00, %xmm15, %xmm14
@@ -926,7 +926,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -1134,7 +1134,7 @@
 	pshufd	 $0xb1, %xmm6,  %xmm7
 	pshufd	 $0xb1, %xmm8,  %xmm9
 	pshufd	 $0xb1, %xmm10, %xmm11
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm12, %xmm6
@@ -1206,7 +1206,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -1244,12 +1244,12 @@
 	movsd	ALPHA, %xmm8
 	unpcklpd %xmm8, %xmm8
 #endif
-	
+
 	pshufd	$0xb1, %xmm8, %xmm9
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 
@@ -1285,7 +1285,7 @@
 	movsd	 -32 * SIZE(Y1), %xmm0
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -1449,7 +1449,7 @@
 	MOVUPS_A1(-32 * SIZE, A1, %xmm4)
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -1469,7 +1469,7 @@
 	movsd	 -32 * SIZE(A1), %xmm4
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -1515,7 +1515,7 @@
 
 	pcmpeqb	%xmm7, %xmm7
 	psllq	$63,   %xmm7
-	
+
 	pshufd	$0x00, %xmm9,  %xmm8
 	pshufd	$0x55, %xmm9,  %xmm9
 	pshufd	$0x00, %xmm11, %xmm10
@@ -2130,7 +2130,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 	pshufd	$0x00, %xmm15, %xmm14
@@ -2181,7 +2181,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -2399,7 +2399,7 @@
 	pshufd	 $0xb1, %xmm6,  %xmm7
 	pshufd	 $0xb1, %xmm8,  %xmm9
 	pshufd	 $0xb1, %xmm10, %xmm11
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm12, %xmm6
@@ -2472,7 +2472,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -2512,12 +2512,12 @@
 	movsd	ALPHA, %xmm8
 	unpcklpd %xmm8, %xmm8
 #endif
-	
+
 	pshufd	$0xb1, %xmm8, %xmm9
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 
@@ -2553,7 +2553,7 @@
 	movsd	 -32 * SIZE(Y1), %xmm0
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -2717,7 +2717,7 @@
 	MOVUPS_A1(-32 * SIZE, A1, %xmm4)
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -2737,7 +2737,7 @@
 	movsd	 -32 * SIZE(A1), %xmm4
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -2780,7 +2780,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 	pshufd	$0x00, %xmm15, %xmm14
@@ -2831,7 +2831,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -3165,7 +3165,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -3200,12 +3200,12 @@
 	movsd	ALPHA, %xmm8
 	unpcklpd %xmm8, %xmm8
 #endif
-	
+
 	pshufd	$0xb1, %xmm8, %xmm9
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 
@@ -3241,7 +3241,7 @@
 	movsd	 -32 * SIZE(Y1), %xmm0
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -3454,7 +3454,7 @@
 	movsd	 -32 * SIZE(A1), %xmm4
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -3493,7 +3493,7 @@
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 	pshufd	$0x00, %xmm15, %xmm14
@@ -3544,7 +3544,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -3878,7 +3878,7 @@
 
 	pshufd	 $0xb1, %xmm4, %xmm5
 	pshufd	 $0xb1, %xmm6, %xmm7
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -3913,12 +3913,12 @@
 	movsd	ALPHA, %xmm8
 	unpcklpd %xmm8, %xmm8
 #endif
-	
+
 	pshufd	$0xb1, %xmm8, %xmm9
 
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
-	
+
 	pshufd	$0x00, %xmm13, %xmm12
 	pshufd	$0x55, %xmm13, %xmm13
 
@@ -3954,7 +3954,7 @@
 	movsd	 -32 * SIZE(Y1), %xmm0
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5
@@ -4167,7 +4167,7 @@
 	movsd	 -32 * SIZE(A1), %xmm4
 
 	pshufd	 $0xb1, %xmm4, %xmm5
-	
+
 	mulps	 %xmm12, %xmm4
 	addps	 %xmm4,  %xmm0
 	mulps	 %xmm13, %xmm5

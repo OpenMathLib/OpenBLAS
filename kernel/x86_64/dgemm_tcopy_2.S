@@ -114,7 +114,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	pushq	%rdi
 	pushq	%rsi
@@ -326,7 +326,7 @@
 
 	movlpd	%xmm0,  -16 * SIZE(B3)
 	ALIGN_4
-	
+
 .L999:
 	popq	%rbp
 	popq	%r13

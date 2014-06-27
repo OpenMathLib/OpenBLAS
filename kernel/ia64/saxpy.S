@@ -64,7 +64,7 @@
 #define XB	r29
 #define PR	r30
 #define ARLC	r31
-	
+
 #define ALPHA	f8
 #define ALPHA_P	f9
 
@@ -92,7 +92,7 @@
 	}
 	{ .mib
 	(p10) adds N = -1, N
-	mov  YYY = Y 
+	mov  YYY = Y
 	(p7) br.ret.sptk.many b0
 	}
 	;;
@@ -548,7 +548,7 @@
 	(p18) fpma	f14  = ALPHA_P, f52, f100
 	}
 	{ .mmi
-	(p17) ldf8	f66  = [X], 2 * SIZE	
+	(p17) ldf8	f66  = [X], 2 * SIZE
 	(p16) ldf8	f86  = [Y], 2 * SIZE
 	}
 	;;
@@ -1485,7 +1485,7 @@
 	(p16) LDFD	f71  = [X], INCX
 	(p16) LDFD	f119 = [Y], INCY
 	(p17) FMA	f13 = ALPHA, f48, f96
-	}	
+	}
 	;;
 	{ .mmi
 	(p18) STFD	[Y1] = f14

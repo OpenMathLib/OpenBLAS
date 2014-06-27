@@ -43,7 +43,7 @@
 const static FLOAT dm1 = -1.;
 
 int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buffer){
-  
+
   BLASLONG i, is, min_i;
 #if (TRANSA == 2) || (TRANSA == 4)
   FLOAT _Complex result;
@@ -100,11 +100,11 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buf
 #ifndef UNIT
       ar = AA[i * COMPSIZE + 0];
       ai = AA[i * COMPSIZE + 1];
-      
+
       if (fabs(ar) >= fabs(ai)){
 	ratio = ai / ar;
 	den = 1./(ar * ( 1 + ratio * ratio));
-	
+
 	ar =  den;
 #if TRANSA < 3
 	ai = -ratio * den;
@@ -124,7 +124,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buf
 
       br = BB[i * COMPSIZE + 0];
       bi = BB[i * COMPSIZE + 1];
-      
+
       BB[i * COMPSIZE + 0] = ar*br - ai*bi;
       BB[i * COMPSIZE + 1] = ar*bi + ai*br;
 #endif

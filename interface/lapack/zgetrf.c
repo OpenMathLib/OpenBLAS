@@ -60,7 +60,7 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
   extern
 #endif
   FLOAT *sa, *sb;
-  
+
   PRINT_DEBUG_NAME;
 
   args.m    = *M;

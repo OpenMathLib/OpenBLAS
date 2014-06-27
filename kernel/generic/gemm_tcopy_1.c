@@ -57,7 +57,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
 
       b_offset1 = b_offset;
       b_offset ++;
-      
+
       j = n;
       if (j > 0) {
 	do {

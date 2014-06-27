@@ -313,7 +313,7 @@ $L22:
 	LD	$f10,  0 * SIZE(XX)
 	fabs	$f14, $f22
 	addq	XX, INCX, XX
-	cmpteq	$f0, $f18, $f2	
+	cmpteq	$f0, $f18, $f2
 
 	LD	$f11,  0 * SIZE(XX)
 	fabs	$f15, $f23
@@ -376,7 +376,7 @@ $L22:
 
 $L23:
 	fabs	$f14, $f22
-	cmpteq	$f0, $f18, $f2	
+	cmpteq	$f0, $f18, $f2
 	fabs	$f15, $f23
 	cmpteq	$f0, $f19, $f3
 

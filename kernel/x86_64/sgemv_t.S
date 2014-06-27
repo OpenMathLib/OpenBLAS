@@ -43,11 +43,11 @@
 #undef  GEMV_UNROLL
 #define GEMV_UNROLL 4
 #endif
-	
+
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_M	  %rdi
 #define OLD_N	  %rsi
 #define OLD_A	  %rcx
@@ -64,7 +64,7 @@
 #else
 
 #define STACKSIZE	288
-	
+
 #define OLD_M	  %rcx
 #define OLD_N	  %rdx
 #define OLD_A		 40 + STACKSIZE(%rsp)
@@ -161,7 +161,7 @@
 	subq	M,MMM
 	jge		.L00t
 	ALIGN_4
-	
+
 	movq	MMM,%rax
 	addq	M,%rax
 	jle		.L999x
@@ -213,7 +213,7 @@
 #endif
 
 	movq	BUFFER, X1
-	
+
 	movq	M,  I
 	sarq	$3, I
 	jle	.L05
@@ -307,7 +307,7 @@
 
 	testq	$SIZE, A1
 	je	.L1X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -991,7 +991,7 @@
 
 	testq	$SIZE, A1
 	je	.L2X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -1018,26 +1018,26 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -1279,29 +1279,29 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -1415,7 +1415,7 @@
 
 	testq	$SIZE, A1
 	je	.L3X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -1442,26 +1442,26 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -1665,29 +1665,29 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 
 	addq	$2 * SIZE, A1
 	addq	$2 * SIZE, A2
@@ -1782,7 +1782,7 @@
 
 	testq	$SIZE, A1
 	je	.L4X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -1803,14 +1803,14 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -1972,17 +1972,17 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -2054,7 +2054,7 @@
 
 	testq	$SIZE, A1
 	je	.L5X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -2072,7 +2072,7 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
@@ -2194,11 +2194,11 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
@@ -2270,7 +2270,7 @@
 
 	testq	$SIZE, A1
 	je	.L10X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -2297,26 +2297,26 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -2582,29 +2582,29 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -2715,7 +2715,7 @@
 
 	testq	$SIZE, A1
 	je	.L11X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -2739,20 +2739,20 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
@@ -2964,23 +2964,23 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
@@ -3075,7 +3075,7 @@
 
 	testq	$SIZE, A1
 	je	.L12X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -3096,14 +3096,14 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -3277,17 +3277,17 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -3358,7 +3358,7 @@
 
 	testq	$SIZE, A1
 	je	.L13X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -3376,7 +3376,7 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
@@ -3497,11 +3497,11 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
@@ -3571,7 +3571,7 @@
 
 	testq	$SIZE, A1
 	je	.L20X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -3598,26 +3598,26 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -3927,29 +3927,29 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -4060,7 +4060,7 @@
 
 	testq	$SIZE, A1
 	je	.L21X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -4084,20 +4084,20 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
@@ -4364,23 +4364,23 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
@@ -4478,7 +4478,7 @@
 
 	testq	$SIZE, A1
 	je	.L22X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -4499,14 +4499,14 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -4693,17 +4693,17 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -4791,7 +4791,7 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
@@ -4912,11 +4912,11 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
@@ -4983,7 +4983,7 @@
 
 	testq	$SIZE, A1
 	je	.L30X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -5010,26 +5010,26 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -5339,29 +5339,29 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
 #ifdef movsd
 	xorps	%xmm3, %xmm3
-#endif	
+#endif
 	movsd	-32 * SIZE(A2, LDA), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm11
@@ -5475,7 +5475,7 @@
 
 	testq	$SIZE, A1
 	je	.L31X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -5499,20 +5499,20 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
@@ -5774,23 +5774,23 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A1, LDA), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
 #ifdef movsd
 	xorps	%xmm2, %xmm2
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm10
@@ -5884,7 +5884,7 @@
 
 	testq	$SIZE, A1
 	je	.L32X
-	
+
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
 	mulss	%xmm4, %xmm0
@@ -5905,14 +5905,14 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -6098,17 +6098,17 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 #ifdef movsd
 	xorps	%xmm1, %xmm1
-#endif	
+#endif
 	movsd	-32 * SIZE(A2), %xmm1
 	mulps	%xmm4, %xmm1
 	addps	%xmm1, %xmm9
@@ -6196,7 +6196,7 @@
 #ifdef movsd
 	xorps	%xmm0, %xmm0
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
@@ -6317,11 +6317,11 @@
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
-#endif	
+#endif
 	movsd	-32 * SIZE(A1), %xmm0
 #ifdef movsd
 	xorps	%xmm4, %xmm4
-#endif	
+#endif
 	movsd	-32 * SIZE(X1), %xmm4
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8

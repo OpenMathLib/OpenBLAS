@@ -28,7 +28,7 @@ endif
 
 
 ifndef SMP
-LIBATLAS	= -L$(ATLASPATH)64 -llapack -lcblas -lf77blas -latlas -lm 
+LIBATLAS	= -L$(ATLASPATH)64 -llapack -lcblas -lf77blas -latlas -lm
 else
 LIBATLAS	= -L$(ATLASPATH)64 -llapack -lptcblas -lptf77blas -latlas -lpthread -lm
 endif

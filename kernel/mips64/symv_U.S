@@ -89,7 +89,7 @@
 
 
 	PROLOGUE
-	
+
 	LDARG	BUFFER,  0($sp)
 	daddiu	$sp, $sp, -32
 

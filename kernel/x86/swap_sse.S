@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS     0
-	
+
 #define STACK_M	 	 4 + STACK + ARGS(%esp)
 #define STACK_X		20 + STACK + ARGS(%esp)
 #define STACK_INCX	24 + STACK + ARGS(%esp)
@@ -53,7 +53,7 @@
 #define Y	%edi
 #define INCX	%ebx
 #define INCY	%ecx
-	
+
 #include "l1param.h"
 
 	PROLOGUE
@@ -80,7 +80,7 @@
 
 	subl	$-32 * SIZE, X
 	subl	$-32 * SIZE, Y
-	
+
 	cmpl	$3, M
 	jle	.L16
 
@@ -302,7 +302,7 @@
 .L20:
 	movaps	 -33 * SIZE(X), %xmm0
 	movaps	 -32 * SIZE(Y), %xmm1
-	
+
 	movss	%xmm1, -32 * SIZE(X)
 	PSHUFD2($0x39, %xmm1, %xmm3)
 	movlps	%xmm3, -31 * SIZE(X)
@@ -778,7 +778,7 @@
 .L40:
 	movaps	 -35 * SIZE(X), %xmm0
 	movaps	 -32 * SIZE(Y), %xmm1
-	
+
 	movss	%xmm1, -32 * SIZE(X)
 
 	subl	$3, M

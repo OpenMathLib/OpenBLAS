@@ -70,7 +70,7 @@
 #endif
 #else
 	movaps	%xmm3, %xmm0
-	movsd	40(%rsp), %xmm1	
+	movsd	40(%rsp), %xmm1
 
 	movq	48(%rsp), X
 	movq	56(%rsp), INCX
@@ -79,7 +79,7 @@
 #endif
 
 	SAVEREGISTERS
-	
+
 #ifndef CONJ
 #define ADD1	subsd
 #define ADD2	addsd
@@ -95,7 +95,7 @@
 
 	testq	M, M
 	jle	.L999
-	
+
 	cmpq	$2 * SIZE, INCX
 	jne	.L20
 	cmpq	$2 * SIZE, INCY

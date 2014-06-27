@@ -55,12 +55,12 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
   }
 
   for (is = 0; is < m; is += DTB_ENTRIES){
-    
+
     min_i = MIN(m - is, DTB_ENTRIES);
 
 #ifndef TRANSA
     if (is > 0){
-      GEMV_N(is, min_i, 0, dp1, 
+      GEMV_N(is, min_i, 0, dp1,
 	     a + is * lda,  lda,
 	     B + is, 1,
 	     B,      1, gemvbuffer);
@@ -70,7 +70,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
     for (i = 0; i < min_i; i++) {
       FLOAT *AA = a + is + (i + is) * lda;
       FLOAT *BB = B + is;
-      
+
 #ifndef TRANSA
       if (i > 0) AXPYU_K(i, 0, 0, BB[i], AA, 1, BB, 1, NULL, 0);
 #endif
@@ -86,7 +86,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
 
 #ifdef TRANSA
     if (m - is > min_i){
-      GEMV_T(m - is - min_i, min_i, 0, dp1, 
+      GEMV_T(m - is - min_i, min_i, 0, dp1,
 	     a + is + min_i + is * lda,  lda,
 	     B + is + min_i, 1,
 	     B + is,         1, gemvbuffer);

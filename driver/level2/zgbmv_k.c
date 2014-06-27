@@ -129,7 +129,7 @@ void CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT alpha_r, FLOA
     Y[i * 2 + 1] += alpha_i * CREAL(temp) - alpha_r * CIMAG(temp);
 #endif
 #endif
-   
+
     offset_u --;
     offset_l --;
 

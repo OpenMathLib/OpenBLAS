@@ -26,12 +26,12 @@ if ($compiler eq "") {
 
     @lists = ("g77", "g95", "gfortran", "frt", "fort", "openf90", "openf95",
 	      "sunf77", "sunf90", "sunf95",
-              "xlf95", "xlf90", "xlf", 
-              "ppuf77", "ppuf95", "ppuf90", "ppuxlf", 
-	      "pathf90", "pathf95", 
+              "xlf95", "xlf90", "xlf",
+              "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
+	      "pathf90", "pathf95",
 	      "pgf95", "pgf90", "pgf77",
               "ifort");
-    
+
 OUTER:
     foreach $lists (@lists) {
         foreach $path (@path) {
@@ -129,43 +129,43 @@ if ($compiler eq "") {
 	    $bu       = "_";
 	    $openmp = "";
 	}
-	
+
 	if ($compiler =~ /g95/) {
 	    $vendor = G95;
 	    $bu       = "_";
 	    $openmp = "";
 	}
-	
+
 	if ($compiler =~ /gfortran/) {
 	    $vendor = GFORTRAN;
 	    $bu       = "_";
 	    $openmp = "-fopenmp";
 	}
-	
+
 	if ($compiler =~ /ifort/) {
 	    $vendor = INTEL;
 	    $bu       = "_";
 	    $openmp = "-openmp";
 	}
-	
+
 	if ($compiler =~ /pathf/) {
 	    $vendor = PATHSCALE;
 	    $bu       = "_";
 	    $openmp = "-mp";
 	}
-	
+
 	if ($compiler =~ /pgf/) {
 	    $vendor = PGI;
 	    $bu       = "_";
 	    $openmp = "-mp";
 	}
-	
+
 	if ($compiler =~ /ftn/) {
 	    $vendor = PGI;
 	    $bu       = "_";
 	    $openmp = "-openmp";
 	}
-	
+
 	if ($compiler =~ /frt/) {
 	    $vendor = FUJITSU;
 	    $bu       = "_";
@@ -177,12 +177,12 @@ if ($compiler eq "") {
 	    $bu       = "_";
 	    $openmp = "-xopenmp=parallel";
 	}
-	
+
 	if ($compiler =~ /ppuf/) {
 	    $vendor = IBM;
 	    $openmp = "-openmp";
 	}
-	
+
 	if ($compiler =~ /xlf/) {
 	    $vendor = IBM;
 	    $openmp = "-openmp";
@@ -209,9 +209,9 @@ $data = `which $compiler > /dev/null 2> /dev/null`;
 if (!$?) {
 
     $binary = $ENV{"BINARY"};
-    
+
     $openmp = "" if $ENV{USE_OPENMP} != 1;
-    
+
     if ($binary == 32) {
 	$link = `$compiler $openmp -m32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	if ($?) {
@@ -223,7 +223,7 @@ if (!$?) {
 	}
 	$binary = "" if ($?);
     }
-    
+
     if ($binary == 64) {
 	$link = `$compiler $openmp -m64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	if ($?) {
@@ -235,12 +235,12 @@ if (!$?) {
 	}
 	$binary = "" if ($?);
     }
-    
+
     if ($binary eq "") {
 	$link = `$compiler $openmp -v ftest2.f 2>&1 && rm -f a.out a.exe`;
     }
 }
-    
+
 $linker_L = "";
 $linker_l = "";
 $linker_a = "";
@@ -268,11 +268,11 @@ if ($link ne "") {
 	    }
 	    $linker_L .= $flags . " ";
 	}
-    
+
 	if ($flags =~ /^\-Y/) {
 	    $linker_L .= "-Wl,". $flags . " ";
 	    }
-	
+
 	if ($flags =~ /^\-rpath\@/) {
 	    $flags =~ s/\@/\,/g;
 	    if ($vendor eq "PGI") {
@@ -288,9 +288,9 @@ if ($link ne "") {
 	    }
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
-	
+
 	if (
-	    ($flags =~ /^\-l/) 
+	    ($flags =~ /^\-l/)
 	    && ($flags !~ /gfortranbegin/)
 	    && ($flags !~ /frtbegin/)
 	    && ($flags !~ /pathfstart/)

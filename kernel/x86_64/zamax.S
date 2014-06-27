@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1
 #define X	ARG2
 #define INCX	ARG3
@@ -67,9 +67,9 @@
 	ffreep	%st
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	addq	INCX, X
 	decq	M
@@ -82,16 +82,16 @@
 	sarq	$2, I
 	jle	.L20
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi
 	FMOV	%st(1), %st(0)
@@ -99,9 +99,9 @@
 	ffreep	%st
 
 	FLD	2 * SIZE(X)
-	fabs	
+	fabs
 	FLD	3 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi
 	FMOV	%st(1), %st(0)
@@ -109,9 +109,9 @@
 	ffreep	%st
 
 	FLD	4 * SIZE(X)
-	fabs	
+	fabs
 	FLD	5 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi
 	FMOV	%st(1), %st(0)
@@ -119,9 +119,9 @@
 	ffreep	%st
 
 	FLD	6 * SIZE(X)
-	fabs	
+	fabs
 	FLD	7 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi
 	FMOV	%st(1), %st(0)
@@ -143,9 +143,9 @@
 
 .L21:
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi
 	FMOV	%st(1), %st(0)
@@ -163,12 +163,12 @@
 	sarq	$2, I
 	jle	.L60
 	ALIGN_4
-	
+
 .L50:
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addq	INCX, X
 	faddp	%st, %st(1)
 	fcomi
@@ -177,9 +177,9 @@
 	ffreep	%st
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addq	INCX, X
 	faddp	%st, %st(1)
 	fcomi
@@ -188,9 +188,9 @@
 	ffreep	%st
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addq	INCX, X
 	faddp	%st, %st(1)
 	fcomi
@@ -199,9 +199,9 @@
 	ffreep	%st
 
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	addq	INCX, X
 	faddp	%st, %st(1)
 	fcomi
@@ -221,9 +221,9 @@
 
 .L61:
 	FLD	0 * SIZE(X)
-	fabs	
+	fabs
 	FLD	1 * SIZE(X)
-	fabs	
+	fabs
 	faddp	%st, %st(1)
 	fcomi
 	FMOV	%st(1), %st(0)

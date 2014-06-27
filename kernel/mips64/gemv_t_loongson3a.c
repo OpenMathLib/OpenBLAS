@@ -1,6 +1,6 @@
 #include "common.h"
 
-//These are auto-tuning codes on Loongson-3A platform. 
+//These are auto-tuning codes on Loongson-3A platform.
 
 //#define prefetch(x) __builtin_prefetch(x)
 //#define prefetch(x) do {_mm_prefetch((char *)(x), _MM_HINT_T0);} while(0)

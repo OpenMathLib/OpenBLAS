@@ -54,7 +54,7 @@
 #define COMPADD	1
 #define STRIDE SIZE
 #endif
-	
+
 #define PRE1	r2
 
 #define I	r17
@@ -128,7 +128,7 @@
 	mov	f11 = f0
 	shl	INCX = INCX, BASE_SHIFT + COMPADD
 	}
-	;;	
+	;;
 	{ .mmi
 #ifdef XDOUBLE
 	shladd	INCX16  = INCX, (3 - COMPADD), r0
@@ -260,7 +260,7 @@
 	}
 	;;
 	{ .mmf
-	(p16) LDFD	f71  = [X], INCX	
+	(p16) LDFD	f71  = [X], INCX
 	(p18) fabs	f73  = f73
 	}
 	{ .mfb
@@ -365,7 +365,7 @@
 #ifndef COMPLEX
 	(p15) FADD	f10 = f10, f46
 #endif
-	;;		      
+	;;
 	.align 32
 
 .L998:

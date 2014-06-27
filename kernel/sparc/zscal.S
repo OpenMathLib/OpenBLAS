@@ -170,7 +170,7 @@
 #else
 	FCLR(24)
 #endif
-	
+
 	FCMP	ALPHA_R, FZERO
 	fbne	.LL100
 	sll	INCX, ZBASE_SHIFT, INCX

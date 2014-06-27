@@ -69,7 +69,7 @@
 #endif
 	movaps	%xmm0,  ALPHA
 #else
-	
+
 
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
@@ -82,7 +82,7 @@
 #ifdef WINDOWS_ABI
 	movaps	%xmm3,  ALPHA
 #endif
-	
+
 	shufps	$0, ALPHA, ALPHA
 
 	leaq	(, INCX, SIZE), INCX
@@ -90,7 +90,7 @@
 
 	testq	M, M
 	jle	.L19
-	
+
 	cmpq	$SIZE, INCX
 	jne	.L50
 	cmpq	$SIZE, INCY
@@ -368,7 +368,7 @@
 .L20:
 
 #ifdef ALIGNED_ACCESS
-	
+
 	testq	$SIZE, X
 	jne	.L30
 
