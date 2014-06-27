@@ -21,11 +21,11 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-CGEMMKERNEL    =  zgemm_kernel_2x4_nehalem.S
-CGEMMINCOPY    =  zgemm_ncopy_2.S
-CGEMMITCOPY    =  zgemm_tcopy_2.S
-CGEMMONCOPY    =  ../generic/zgemm_ncopy_4.c
-CGEMMOTCOPY    =  ../generic/zgemm_tcopy_4.c
+CGEMMKERNEL    =  cgemm_kernel_8x2_sandy.S
+CGEMMINCOPY    =  ../generic/zgemm_ncopy_8.c
+CGEMMITCOPY    =  ../generic/zgemm_tcopy_8.c
+CGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
+CGEMMOTCOPY    =  ../generic/zgemm_tcopy_2.c
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
