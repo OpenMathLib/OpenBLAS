@@ -23,7 +23,7 @@ endif
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
 .PHONY : all libs netlib test ctest shared install
-.NOTPARALLEL : all libs prof lapack-test install
+.NOTPARALLEL : all libs prof lapack-test install blas-test
 
 all :: libs netlib tests shared
 	@echo
@@ -281,6 +281,11 @@ lapack-test :
 	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
 	make -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+
+blas-test:
+	(cd $(NETLIB_LAPACK_DIR)/BLAS && rm -f x* *.out)
+	make -j 1 -C $(NETLIB_LAPACK_DIR) blas_testing
+	(cd $(NETLIB_LAPACK_DIR)/BLAS && cat *.out)
 
 
 dummy :
