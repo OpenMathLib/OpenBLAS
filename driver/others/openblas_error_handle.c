@@ -35,9 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int openblas_verbose() {
   int ret=0;
-  char *p;
-  p = getenv("OPENBLAS_VERBOSE");
-  if (p) ret = atoi(p);
+  env_var_t p;
+  if (readenv(p,"OPENBLAS_VERBOSE")) ret = atoi(p);
   if(ret<0) ret=0;
   return ret;
 }

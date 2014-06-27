@@ -273,7 +273,7 @@ void openblas_fork_handler()
 }
 
 int blas_get_cpu_number(void){
-  char *p;
+  env_var_t p;
 #if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
   int max_num;
 #endif
@@ -288,21 +288,18 @@ int blas_get_cpu_number(void){
 
   blas_goto_num = 0;
 #ifndef USE_OPENMP
-  p = getenv("OPENBLAS_NUM_THREADS");
-  if (p) blas_goto_num = atoi(p);
+  if (readenv(p,"OPENBLAS_NUM_THREADS")) blas_goto_num = atoi(p);
   if (blas_goto_num < 0) blas_goto_num = 0;
 
   if (blas_goto_num == 0) {
-	    p = getenv("GOTO_NUM_THREADS");
-		if (p) blas_goto_num = atoi(p);
+		if (readenv(p,"GOTO_NUM_THREADS")) blas_goto_num = atoi(p);
 		if (blas_goto_num < 0) blas_goto_num = 0;
   }
   
 #endif
 
   blas_omp_num = 0;
-  p = getenv("OMP_NUM_THREADS");
-  if (p) blas_omp_num = atoi(p);
+  if (readenv(p,"OMP_NUM_THREADS")) blas_omp_num = atoi(p);
   if (blas_omp_num < 0) blas_omp_num = 0;
 
   if (blas_goto_num > 0) blas_num_threads = blas_goto_num;
@@ -769,16 +766,23 @@ static void *alloc_hugetlb(void *address){
   tp.PrivilegeCount = 1;
   tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
   
-  if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) return (void *) -1;
+  if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) {
+      CloseHandle(hToken);
+      return -1;
+  }
 
-  if (AdjustTokenPrivileges(hToken, FALSE, (PTOKEN_PRIVILEGES)&tp, 0, NULL, NULL) != TRUE) return (void *) -1;
+  if (AdjustTokenPrivileges(hToken, FALSE, &tp, 0, NULL, NULL) != TRUE) {
+      CloseHandle(hToken);
+      return -1;
+  }
 
   map_address  = (void *)VirtualAlloc(address,
 				      BUFFER_SIZE,
 				      MEM_LARGE_PAGES | MEM_RESERVE | MEM_COMMIT,
 				      PAGE_READWRITE);
 
-  AdjustTokenPrivileges(hToken, TRUE, &tp, 0, (PTOKEN_PRIVILEGES)NULL, NULL);
+  tp.Privileges[0].Attributes = 0;
+  AdjustTokenPrivileges(hToken, FALSE, &tp, 0, NULL, NULL);
 
   if (map_address == (void *)NULL) map_address = (void *)-1;
   

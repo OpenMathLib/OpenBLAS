@@ -533,18 +533,15 @@ int blas_thread_init(void){
 
   if (!blas_server_avail){
 
-    char *p;
+    env_var_t p;
 
-    p = getenv("THREAD_TIMEOUT");
-
-    if (p) {
+    if (readenv(p,"THREAD_TIMEOUT")) {
       thread_timeout = atoi(p);
       if (thread_timeout <  4) thread_timeout =  4;
       if (thread_timeout > 30) thread_timeout = 30;
       thread_timeout = (1 << thread_timeout);
     }else{
-		p = getenv("GOTO_THREAD_TIMEOUT");
-		if (p) {
+		if (readenv(p,"GOTO_THREAD_TIMEOUT")) {
 			thread_timeout = atoi(p);
 			if (thread_timeout <  4) thread_timeout =  4;
 			if (thread_timeout > 30) thread_timeout = 30;

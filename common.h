@@ -388,6 +388,15 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_arm64.h"
 #endif
 
+#ifndef ASSEMBLER
+#ifdef OS_WINDOWS
+typedef char env_var_t[MAX_PATH];
+#define readenv(p, n) GetEnvironmentVariable((n), (p), sizeof(p))
+#else
+typedef char* env_var_t;
+#define readenv(p, n) ((p)=getenv(n))
+#endif
+#endif
 
 #ifdef OS_LINUX
 #include "common_linux.h"
@@ -515,13 +524,9 @@ static __inline void blas_unlock(volatile BLASULONG *address){
   *address = 0;
 }
 
-static __inline int readenv(char *env) {
-
-  char *p;
-
-  p = getenv(env);
-
-  if (p == NULL) return 0; else return atoi(p);
+static __inline int readenv_atoi(char *env) {
+  env_var_t p;
+  return readenv(p,env) ? 0 : atoi(p);
 }
 
 
@@ -687,8 +692,8 @@ extern int gotoblas_profile;
 #define PRINT_DEBUG_CNAME
 #define PRINT_DEBUG_NAME
 #else
-#define PRINT_DEBUG_CNAME if (readenv("GOTO_DEBUG")) fprintf(stderr, "GotoBLAS : %s\n", CHAR_CNAME)
-#define PRINT_DEBUG_NAME  if (readenv("GOTO_DEBUG")) fprintf(stderr, "GotoBLAS : %s\n", CHAR_NAME)
+#define PRINT_DEBUG_CNAME if (readenv_atoi("GOTO_DEBUG")) fprintf(stderr, "GotoBLAS : %s\n", CHAR_CNAME)
+#define PRINT_DEBUG_NAME  if (readenv_atoi("GOTO_DEBUG")) fprintf(stderr, "GotoBLAS : %s\n", CHAR_NAME)
 #endif
 
 #ifdef __cplusplus
