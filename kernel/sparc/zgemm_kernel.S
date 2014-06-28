@@ -171,7 +171,7 @@
 
 	PROLOGUE
 	SAVESP
-	
+
 #ifndef __64BIT__
 #ifdef DOUBLE
 #define STACK_ALPHA	[%sp + STACK_START + 24]
@@ -239,7 +239,7 @@
 #else
 	FCLR(29)
 #endif
-	
+
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	neg	OFFSET, KK
 #endif

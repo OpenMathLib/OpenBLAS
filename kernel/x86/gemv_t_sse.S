@@ -105,7 +105,7 @@
 #define MMM	0+ARGS(%esp)
 #define AA	4+ARGS(%esp)
 #define XX	8+ARGS(%esp)
-	
+
 #define I	%eax
 #define J	%ebx
 
@@ -139,10 +139,10 @@
 	sall    $22,J                           # J=2^24*sizeof(float)=buffer size(16MB)
 	subl    $8, J                           # Don't use last 8 float in the buffer.
 	subl	J,MMM				# MMM=MMM-J
-	movl	J,M		
+	movl	J,M
 	jge		.L00t
 	ALIGN_4
-	
+
 	movl	MMM,%eax
 	addl	J,%eax
 	jle		.L999x
@@ -171,7 +171,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	movl	M,  I
 	sarl	$3, I
 	jle	.L05
@@ -423,7 +423,7 @@
 	mulps	%xmm2, %xmm5
 	addps	%xmm5, %xmm1
 	movaps	%xmm3, %xmm2
-	
+
 	addl	$4 * SIZE, A1
 	ALIGN_4
 
@@ -446,7 +446,7 @@
 	mulps	%xmm2, %xmm5
 	addps	%xmm5, %xmm1
 	movhlps	%xmm2, %xmm2
-	
+
 	addl	$2 * SIZE, A1
 	ALIGN_4
 
@@ -621,7 +621,7 @@
 	mulps	%xmm2, %xmm4
 	addps	%xmm4, %xmm0
 	movaps	%xmm3, %xmm2
-	
+
 	addl	$4 * SIZE, A1
 	ALIGN_4
 
@@ -637,7 +637,7 @@
 	mulps	%xmm2, %xmm4
 	addps	%xmm4, %xmm0
 	movhlps	%xmm2, %xmm2
-	
+
 	addl	$2 * SIZE, A1
 	ALIGN_4
 
@@ -673,7 +673,7 @@
 
 	movss	%xmm0, (Y1)
 	ALIGN_4
- 	
+
 .L999:
 	movl	M,J
 	leal	(,J,SIZE),%eax
@@ -687,7 +687,7 @@
 .L999x:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 
 	addl	$ARGS,%esp

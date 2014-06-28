@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define M	%r13
@@ -328,11 +328,11 @@
 	movapd	20 * SIZE + 2 * (xx) * SIZE(BO), %xmm5 ;\
 	addpd	%xmm6, %xmm15 ;\
 	movapd	 6 * SIZE + 1 * (xx) * SIZE(AO), %xmm6
-#endif	
+#endif
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
@@ -398,7 +398,7 @@
 	movsd	%xmm12, KK
 #ifndef LEFT
 	negq	KK
-#endif	
+#endif
 #endif
 	movq	N,  J
 	sarq	$2, J		# j = (n >> 2)
@@ -410,17 +410,17 @@
 	leaq	16 * SIZE + BUFFER, BO
 	movq	C, CO1			# coffset1 = c
 	leaq	(C, LDC, 1), CO2	# coffset2 = c + ldc
-	
+
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 	movq	K, %rax
 	sarq	$2, %rax
 	jle	.L03
 	ALIGN_3
-	
+
 
 #define RPREFETCHSIZE (8 *  7 + 4)
 #define WPREFETCHSIZE (8 *  8 + 4)
@@ -528,7 +528,7 @@
 	subq	$1, %rax
 	jne	.L04
 	ALIGN_3
-	
+
 .L10:
 	movq	A, AO		# aoffset = a
 
@@ -551,7 +551,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 8), BO
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AO), %xmm0
 	movapd	-16 * SIZE(BO), %xmm1
@@ -582,7 +582,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -964,7 +964,7 @@
 	decq	I			# i --
 	BRANCH
 	jg	.L11
-	ALIGN_3	
+	ALIGN_3
 
 .L20:
 	testq	$3, M
@@ -986,7 +986,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 8), BO
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -1005,7 +1005,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1212,7 +1212,7 @@
 
 	addq	$2 * SIZE, CO1		# coffset += 4
 	addq	$2 * SIZE, CO2		# coffset += 4
-	ALIGN_3	
+	ALIGN_3
 
 .L30:
 	testq	$1, M
@@ -1231,7 +1231,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 8), BO
-#endif	
+#endif
 
 	movsd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -1250,7 +1250,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1445,8 +1445,8 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	addq	$1, KK
 #endif
-	ALIGN_3	
-	
+	ALIGN_3
+
 .L39:
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addl	$4, KK
@@ -1468,17 +1468,17 @@
 .L41:
 /* Copying to Sub Buffer */
 	leaq	BUFFER, BO
-	
+
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 	movq	K, %rax
 	sarq	$2, %rax
 	jle	.L43
 	ALIGN_3
-	
+
 .L42:
 	PREFETCH	 56 * SIZE(B)
 
@@ -1536,7 +1536,7 @@
 	decq	%rax
 	jne	.L44
 	ALIGN_3
-	
+
 .L50:
 	movq	C, CO1			# coffset1 = c
 	leaq	(C, LDC, 1), CO2	# coffset2 = c + ldc
@@ -1559,7 +1559,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 4), BO
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -1583,7 +1583,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1794,7 +1794,7 @@
 	addq	$4 * SIZE, CO2		# coffset += 4
 	decq	I			# i --
 	jg	.L51
-	ALIGN_3	
+	ALIGN_3
 
 .L60:
 	testq	$2, M
@@ -1813,7 +1813,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 4), BO
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -1832,7 +1832,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1976,7 +1976,7 @@
 
 	addq	$2 * SIZE, CO1		# coffset += 4
 	addq	$2 * SIZE, CO2		# coffset += 4
-	ALIGN_3	
+	ALIGN_3
 
 .L70:
 	testq	$1, M
@@ -1995,7 +1995,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 4), BO
-#endif	
+#endif
 
 	movsd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -2014,7 +2014,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -2150,8 +2150,8 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	addq	$1, KK
 #endif
-	ALIGN_3	
-	
+	ALIGN_3
+
 .L79:
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addl	$2, KK
@@ -2167,17 +2167,17 @@
 .L81:
 /* Copying to Sub Buffer */
 	leaq	BUFFER, BO
-	
+
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 	movq	K, %rax
 	sarq	$3, %rax
 	jle	.L83
 	ALIGN_3
-	
+
 .L82:
 	PREFETCH	 56 * SIZE(B)
 
@@ -2232,7 +2232,7 @@
 	decq	%rax
 	jne	.L84
 	ALIGN_3
-	
+
 .L90:
 	movq	C, CO1			# coffset1 = c
 	movq	A, AO		# aoffset = a
@@ -2254,7 +2254,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 2), BO
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -2275,7 +2275,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -2415,7 +2415,7 @@
 	addq	$4 * SIZE, CO1		# coffset += 4
 	decq	I			# i --
 	jg	.L91
-	ALIGN_3	
+	ALIGN_3
 
 .L100:
 	testq	$2, M
@@ -2434,7 +2434,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 2), BO
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -2450,7 +2450,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -2554,7 +2554,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	addq	$2, KK
 #endif
-	ALIGN_3	
+	ALIGN_3
 
 .L110:
 	testq	$1, M
@@ -2573,7 +2573,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 2), BO
-#endif	
+#endif
 
 	movsd	-16 * SIZE(AO), %xmm0
 	pxor	%xmm8, %xmm8
@@ -2589,7 +2589,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -2673,7 +2673,7 @@
 #endif
 	movsd	%xmm8, 0 * SIZE(CO1)
 	ALIGN_3
-	
+
 .L999:
 	movq	%rbx, %rsp
 

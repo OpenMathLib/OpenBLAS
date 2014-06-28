@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -99,7 +99,7 @@
 #define PREA	r30
 #define PREC	r31
 #define PREB	PREA
-	
+
 #ifndef NEEDPARAM
 
 #ifndef DOUBLE
@@ -291,7 +291,7 @@ LL(KERNEL_MainSubHead):
 	LFD	f21,  1 * SIZE(B)
 	LFD	f22,  2 * SIZE(B)
 	LFD	f23,  3 * SIZE(B)
- 
+
 	LFD	f24,  4 * SIZE(AO)
 	LFD	f25,  5 * SIZE(AO)
 	LFD	f26,  6 * SIZE(AO)
@@ -601,7 +601,7 @@ LL(KERNEL_MainFinish):
 
 	addi	CO1, CO1, 4 * SIZE
 	addi	CO2, CO2, 4 * SIZE
-	
+
 	addic.	I, I, -1
 	bgt	LL(KERNEL_MainSubHead)
 	.align 4

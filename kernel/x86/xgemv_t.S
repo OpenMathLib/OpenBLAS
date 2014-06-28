@@ -49,7 +49,7 @@
 
 #define STACK	16
 #define ARGS	24
-	
+
 #define NLDA	  0 + STACK(%esp)
 #define XP	  4 + STACK(%esp)
 #define MIN_M	  8 + STACK(%esp)

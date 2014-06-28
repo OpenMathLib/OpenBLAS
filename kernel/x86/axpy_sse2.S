@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_ALPHA	16 + STACK + ARGS(%esp)
 #define STACK_X		24 + STACK + ARGS(%esp)
@@ -55,7 +55,7 @@
 #define INCX	 %ecx
 #define INCY	 %edx
 #define YY	 %ebp
-	
+
 #define ALPHA	%xmm7
 
 #include "l1param.h"
@@ -605,7 +605,7 @@
 
 	movsd	 -2 * SIZE(X), %xmm3
 	movhps	 -1 * SIZE(X), %xmm3
-	
+
 	subl	$-8 * SIZE, Y
 	subl	$-8 * SIZE, X
 	decl	%eax

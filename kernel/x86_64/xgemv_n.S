@@ -41,9 +41,9 @@
 #include "l2param.h"
 
 #define P		32
-	
+
 #define STACKSIZE	80
-	
+
 #define ALPHA_R		 8 + STACKSIZE(%rsp)
 #define ALPHA_I		24 + STACKSIZE(%rsp)
 #define OLD_INCX	40 + STACKSIZE(%rsp)
@@ -71,7 +71,7 @@
 #define Y1	%r14
 #define XP	%r15
 #define MIN_N	%rbx
-	
+
 
 	PROLOGUE
 	PROFCODE

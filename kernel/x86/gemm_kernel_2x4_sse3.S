@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -213,7 +213,7 @@
 	movl	OFFSET, %eax
 #ifndef LEFT
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 #endif
 
@@ -229,7 +229,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sall	$BASE_SHIFT + 2, %eax
@@ -255,7 +255,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 4), BB
-#endif	
+#endif
 
 	movl	BX, %eax
 	prefetcht2  0 * SIZE(%eax)
@@ -284,7 +284,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -299,7 +299,7 @@
 	andl	$-8, %eax
 	sall	$4, %eax
 	je	.L15
-	
+
 .L1X:
 	KERNEL1(16  *  0)
 	KERNEL2(16  *  0)
@@ -741,7 +741,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(B,  %eax, 4), BB
-#endif	
+#endif
 
 	movddup	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -757,7 +757,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -968,7 +968,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	M,  %ebx
 	sarl	$1, %ebx	# i = (m >> 2)
@@ -986,7 +986,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 2), BB
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1012,7 +1012,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1179,7 +1179,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(B,  %eax, 2), BB
-#endif	
+#endif
 
 	movddup	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1195,7 +1195,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1348,7 +1348,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	M,  %ebx
 	sarl	$1, %ebx	# i = (m >> 2)
@@ -1366,7 +1366,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 1), BB
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1386,7 +1386,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1513,7 +1513,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(B,  %eax, 1), BB
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1529,7 +1529,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT

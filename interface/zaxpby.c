@@ -41,7 +41,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *BETA, FLOAT *y, blasint *INCY)
 {
-  
+
   blasint n    = *N;
   blasint incx = *INCX;
   blasint incy = *INCY;
@@ -66,9 +66,9 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *BETA, FLOAT *
   if (incy < 0) y -= (n - 1) * incy * 2;
 
   AXPBY_K (n, alpha_r, alpha_i, x, incx, beta_r, beta_i, y, incy);
-    
+
   FUNCTION_PROFILE_END(4, 2 * n, 2 * n);
 
   return;
-  
+
 }

@@ -105,7 +105,7 @@ int NAME(char *TRANS, blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return 0;
   }
-  
+
   args.alpha = NULL;
   args.beta  = NULL;
 
@@ -139,7 +139,7 @@ int NAME(char *TRANS, blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA,
 
   }
 #endif
-  
+
 #ifndef PPC440
   blas_memory_free(buffer);
 #endif
@@ -149,5 +149,5 @@ int NAME(char *TRANS, blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA,
   IDEBUG_END;
 
   return 0;
-  
+
 }

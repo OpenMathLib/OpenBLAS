@@ -42,7 +42,7 @@
 #ifndef USE_SIMPLE_THREADED_LEVEL3
 
 //The array of job_t may overflow the stack.
-//Instead, use malloc to alloc job_t. 
+//Instead, use malloc to alloc job_t.
 #if MAX_CPU_NUMBER > BLAS3_MEM_ALLOC_THRESHOLD
 #define USE_ALLOC_HEAP
 #endif
@@ -189,19 +189,19 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   for (i = 1; i < DIVIDE_RATE; i++) {
     buffer[i] = buffer[i - 1] + GEMM_Q * div_n * COMPSIZE;
   }
-  
+
 #ifndef LOWER
   TRSM_IUNCOPY(k, k, (FLOAT *)S, lda, 0, sb);
 #else
   TRSM_OLTCOPY(k, k, (FLOAT *)S, lda, 0, sb);
 #endif
-  
+
   for (xxx = m_from, bufferside = 0; xxx < m_to; xxx += div_n, bufferside ++) {
-    
+
     for(jjs = xxx; jjs < MIN(m_to, xxx + div_n); jjs += min_jj){
-      
+
       min_jj = MIN(m_to, xxx + div_n) - jjs;
-      
+
 #ifndef LOWER
       if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
 #else
@@ -211,7 +211,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #ifndef LOWER
       OCOPY_OPERATION (k, min_jj, a, lda, 0, jjs, buffer[bufferside] + k * (jjs - xxx) * COMPSIZE);
 
-      TRSM_KERNEL     (k, min_jj, k, dm1, 
+      TRSM_KERNEL     (k, min_jj, k, dm1,
 #ifdef COMPLEX
 		       ZERO,
 #endif
@@ -230,7 +230,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 		       a + jjs       * COMPSIZE, lda, 0);
 #endif
     }
-    
+
 #ifndef LOWER
     for (i = 0; i <= mypos; i++)
       job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
@@ -238,25 +238,25 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     for (i = mypos; i < args -> nthreads; i++)
       job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
 #endif
-    
+
     WMB;
   }
-  
+
   min_i = m_to - m_from;
-  
+
   if (min_i >= GEMM_P * 2) {
     min_i = GEMM_P;
-  } else 
+  } else
     if (min_i > GEMM_P) {
       min_i = ((min_i + 1) / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
     }
-  
+
 #ifndef LOWER
   ICOPY_OPERATION(k, min_i, a, lda, 0, m_from, sa);
 #else
   OCOPY_OPERATION(k, min_i, a, lda, 0, m_from, sa);
 #endif
-  
+
   current = mypos;
 
 #ifndef LOWER
@@ -266,47 +266,47 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #endif
     {
       div_n = ((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
-      
+
       for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-	
+
 	/* thread has to wait */
 	if (current != mypos) while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
-	
+
 	KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), k, alpha,
 			 sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			 c, lda, m_from, xxx);
-	
+
 	if (m_from + min_i >= m_to) {
 	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	  WMB;
 	}
       }
-      
+
 #ifndef LOWER
       current ++;
 #else
       current --;
 #endif
     }
-  
+
   for(is = m_from + min_i; is < m_to; is += min_i){
     min_i = m_to - is;
-    
+
     if (min_i >= GEMM_P * 2) {
       min_i = GEMM_P;
-    } else 
+    } else
       if (min_i > GEMM_P) {
 	min_i = ((min_i + 1) / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
       }
-    
+
 #ifndef LOWER
     ICOPY_OPERATION(k, min_i, a, lda, 0, is, sa);
 #else
     OCOPY_OPERATION(k, min_i, a, lda, 0, is, sa);
 #endif
-    
+
     current = mypos;
-    
+
 #ifndef LOWER
     while (current < args -> nthreads)
 #else
@@ -314,18 +314,18 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #endif
 	{
 	  div_n = ((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
-	  
+
 	  for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-	    
+
 	    KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), k, alpha,
 			     sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			     c, lda, is, xxx);
-	    
+
 	    if (is + min_i >= m_to) {
 	      job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	      WMB;
 	    }
-	  }	
+	  }
 #ifndef LOWER
 	  current ++;
 #else
@@ -333,7 +333,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #endif
 	}
   }
-  
+
   for (i = 0; i < args -> nthreads; i++) {
     if (i != mypos) {
       for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
@@ -341,7 +341,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       }
     }
   }
-  
+
   return 0;
   }
 
@@ -378,7 +378,7 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
   mask  = MAX(SGEMM_UNROLL_M, SGEMM_UNROLL_N) - 1;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -389,7 +389,7 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
   mask  = MAX(CGEMM_UNROLL_M, CGEMM_UNROLL_N) - 1;
-#endif  
+#endif
 #endif
 
   newarg.m        = args -> m;
@@ -409,7 +409,7 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
 #endif
 
   newarg.common   = (void *)job;
-   
+
   n_from = 0;
   n_to   = args -> m;
 
@@ -424,17 +424,17 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
   dnum = (double)n * (double)n /(double)nthreads;
 
   while (i < n){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di   = (double)i;
-      
+
       width = (((BLASLONG)(sqrt(di * di + dnum) - di) + mask) & ~mask);
-      
+
       if (num_cpu == 0) width = n - ((n - width) & ~mask);
-      
+
       if ((width > n - i) || (width < mask)) width = n - i;
-      
+
     } else {
       width = n - i;
     }
@@ -449,7 +449,7 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
@@ -466,21 +466,21 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
   dnum = (double)n * (double)n /(double)nthreads;
 
   while (i < n){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
 	double di   = (double)i;
-	
+
 	width = (((BLASLONG)(sqrt(di * di + dnum) - di) + mask) & ~mask);
-	
+
       if ((width > n - i) || (width < mask)) width = n - i;
-	
+
     } else {
       width = n - i;
     }
 
     range[num_cpu + 1] = range[num_cpu] + width;
-    
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = inner_thread;
     queue[num_cpu].args    = &newarg;
@@ -489,7 +489,7 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
@@ -507,14 +507,14 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
 	}
       }
     }
-    
+
     queue[0].sa = sa;
     queue[0].sb = sb;
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
- 
+
 #ifdef USE_ALLOC_HEAP
   free(job);
 #endif
@@ -540,7 +540,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -548,14 +548,14 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 
   if (args -> nthreads  == 1) {
 #ifndef LOWER
-    info = POTRF_U_SINGLE(args, NULL, NULL, sa, sb, 0); 
+    info = POTRF_U_SINGLE(args, NULL, NULL, sa, sb, 0);
 #else
-    info = POTRF_L_SINGLE(args, NULL, NULL, sa, sb, 0); 
+    info = POTRF_L_SINGLE(args, NULL, NULL, sa, sb, 0);
 #endif
     return info;
   }
@@ -584,7 +584,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   blocking = (n / 2 + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
   if (blocking > GEMM_Q) blocking = GEMM_Q;
-    
+
   for (i = 0; i < n; i += blocking) {
     bk = n - i;
     if (bk > blocking) bk = blocking;
@@ -643,7 +643,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     newarg.k = bk;
     newarg.a = a + (i + bk +  i       * lda) * COMPSIZE;
     newarg.c = a + (i + bk + (i + bk) * lda) * COMPSIZE;
-    
+
 #if 0
     HERK_THREAD_LN(&newarg, NULL, NULL, sa, sb, 0);
 #else

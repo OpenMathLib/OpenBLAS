@@ -62,8 +62,8 @@
 
 	SAVEREGISTERS
 
-	leaq	(, INCX, SIZE), INCX	
-	leaq	(, INCY, SIZE), INCY	
+	leaq	(, INCX, SIZE), INCX
+	leaq	(, INCY, SIZE), INCY
 
 	vxorps	%xmm0, %xmm0 , %xmm0
 	vxorps	%xmm1, %xmm1 , %xmm1

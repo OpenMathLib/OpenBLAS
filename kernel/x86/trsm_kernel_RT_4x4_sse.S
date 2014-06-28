@@ -40,7 +40,7 @@
 #include "common.h"
 
 #define STACK	16
-	
+
 #define OLD_M	 4 + STACK(%esi)
 #define OLD_N	 8 + STACK(%esi)
 #define OLD_K	12 + STACK(%esi)
@@ -268,7 +268,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -283,7 +283,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, %ecx
 
@@ -299,7 +299,7 @@
         sall	$BASE_SHIFT, %eax
 	leal	(B,  %eax, 1), B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -315,7 +315,7 @@
 	sarl	$3, %eax
 	jle	.L85
 	ALIGN_4
-	
+
 .L82:
 	movsd	 0 * SIZE(B), %xmm3
 	movhps	 2 * SIZE(B), %xmm3
@@ -371,7 +371,7 @@
 	decl	%eax
 	jne	.L86
 	ALIGN_4
-	
+
 .L90:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -413,7 +413,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -728,7 +728,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -969,7 +969,7 @@
 	movl	KK, %eax
 	sall	$BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -1165,7 +1165,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, %ecx
 
@@ -1181,7 +1181,7 @@
         sall	$1 + BASE_SHIFT, %eax
 	leal	(B,  %eax, 1), B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -1197,7 +1197,7 @@
 	sarl	$2, %eax
 	jle	.L45
 	ALIGN_4
-	
+
 .L42:
 	movaps	 0 * SIZE(B), %xmm3
 	movaps	 4 * SIZE(B), %xmm7
@@ -1253,7 +1253,7 @@
 	decl	%eax
 	jne	.L46
 	ALIGN_4
-	
+
 .L50:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -1297,7 +1297,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -1689,7 +1689,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -2007,7 +2007,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	xorps	%xmm4, %xmm4
 	xorps	%xmm5, %xmm5
@@ -2273,7 +2273,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, %ecx
 
@@ -2289,7 +2289,7 @@
         sall	$2 + BASE_SHIFT, %eax
 	leal	(B,  %eax, 1), B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -2305,7 +2305,7 @@
 	sarl	$1, %eax
 	jle	.L05
 	ALIGN_4
-	
+
 .L02:
 	movaps	 0 * SIZE(B), %xmm3
 	movaps	 4 * SIZE(B), %xmm7
@@ -2360,7 +2360,7 @@
 
 	addl	$4 * SIZE, B
 	ALIGN_4
-	
+
 .L10:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -2404,7 +2404,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(AA), %xmm0
 	xorps	%xmm4, %xmm4
@@ -2829,7 +2829,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef	movsd
 	xorps	%xmm0, %xmm0
@@ -3279,7 +3279,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movss	 0 * SIZE(AA), %xmm0
 	xorps	%xmm4, %xmm4

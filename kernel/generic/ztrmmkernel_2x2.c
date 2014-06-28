@@ -16,7 +16,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	off = -offset;
 #endif
-	for (j=0; j<bn/2; j+=1) 
+	for (j=0; j<bn/2; j+=1)
 	{
 #if defined(TRMMKERNEL) &&  defined(LEFT)
 		off = offset;
@@ -24,7 +24,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 		C0 = C;
 		C1 = C0+2*ldc;
 		ptrba = ba;
-		for (i=0; i<bm/2; i+=1) 
+		for (i=0; i<bm/2; i+=1)
 		{
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 			ptrbb = bb;
@@ -44,10 +44,10 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 			temp = bk - off;
 #elif defined(LEFT)
 			temp = off + 2;
-#else 
+#else
 			temp = off + 2;
 #endif
-			for (k=0; k<temp/4; k+=1) 
+			for (k=0; k<temp/4; k+=1)
 			{
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 				load0 = ptrba[4*0+0];
@@ -444,7 +444,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 				ptrba = ptrba+16;
 				ptrbb = ptrbb+16;
 			}
-			for (k=0; k<(temp&3); k+=1) 
+			for (k=0; k<(temp&3); k+=1)
 			{
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 				load0 = ptrba[4*0+0];
@@ -590,11 +590,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 			C0 = C0+4;
 			C1 = C1+4;
 		}
-		for (i=0; i<(bm&1); i+=1) 
+		for (i=0; i<(bm&1); i+=1)
 		{
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 			ptrbb = bb;
-#else 
+#else
 			ptrba += off*2;
 			ptrbb = bb + off*2*2;
 #endif
@@ -609,7 +609,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 #else
 			temp = off+2;
 #endif
-			for (k=0; k<temp; k+=1) 
+			for (k=0; k<temp; k+=1)
 			{
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 				load0 = ptrba[2*0+0];
@@ -692,7 +692,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 			temp = bk - off;
 #ifdef LEFT
 			temp -= 1;
-#else 
+#else
 			temp -= 2;
 #endif
 			ptrba += temp*2;
@@ -712,18 +712,18 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 		i = (ldc<<2);
 		C = C+i;
 	}
-	for (j=0; j<(bn&1); j+=1) 
+	for (j=0; j<(bn&1); j+=1)
 	{
 		C0 = C;
 #if defined(TRMMKERNEL) &&  defined(LEFT)
 		off = offset;
 #endif
 		ptrba = ba;
-		for (i=0; i<bm/2; i+=1) 
+		for (i=0; i<bm/2; i+=1)
 		{
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 			ptrbb = bb;
-#else 
+#else
 			ptrba += off*2*2;
 			ptrbb = bb+off*2;
 #endif
@@ -738,7 +738,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 #else
 			temp = off + 1;
 #endif
-			for (k=0; k<temp; k+=1) 
+			for (k=0; k<temp; k+=1)
 			{
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 				load0 = ptrba[4*0+0];
@@ -832,11 +832,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 #endif
 			C0 = C0+4;
 		}
-		for (i=0; i<(bm&1); i+=1) 
+		for (i=0; i<(bm&1); i+=1)
 		{
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 			ptrbb = bb;
-#else 
+#else
 			ptrba += off*2;
 			ptrbb = bb + off*2;
 #endif
@@ -846,10 +846,10 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 			temp = bk-off;
 #elif defined(LEFT)
 			temp = off + 1;
-#else 
+#else
 			temp = off + 1;
 #endif
-			for (k=0; k<temp; k+=1) 
+			for (k=0; k<temp; k+=1)
 			{
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 				load0 = ptrba[2*0+0];
@@ -903,7 +903,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 			temp = bk - off;
 #ifdef LEFT
 			temp -= 1;
-#else 
+#else
 			temp -= 1;
 #endif
 			ptrba += temp*2;

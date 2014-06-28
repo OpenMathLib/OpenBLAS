@@ -21,7 +21,7 @@ void F77_daxpy(const int *N, const double *alpha, const double *X,
    return;
 }
 
-void F77_dcopy(const int *N, double *X, const int *incX, 
+void F77_dcopy(const int *N, double *X, const int *incX,
                     double *Y, const int *incY)
 {
    cblas_dcopy(*N, X, *incX, Y, *incY);

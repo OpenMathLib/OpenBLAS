@@ -61,7 +61,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
   a += (m + 1) * m - 2;
 
   for (i = 0; i < m; i++) {
-    
+
 #if (TRANSA == 2) || (TRANSA == 4)
     if (i > 0) {
 #if TRANSA == 2
@@ -69,20 +69,20 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 #else
       result = DOTC_K(i, a + 2, 1, B + (m - i) * 2, 1);
 #endif
-      
+
       B[(m - i - 1) * 2 + 0] -= CREAL(result);
       B[(m - i - 1) * 2 + 1] -= CIMAG(result);
     }
 #endif
-    
+
 #ifndef UNIT
     ar = a[0];
     ai = a[1];
-    
+
     if (fabs(ar) >= fabs(ai)){
       ratio = ai / ar;
       den = 1./(ar * ( 1 + ratio * ratio));
-      
+
       ar =  den;
 #if (TRANSA == 1) || (TRANSA == 2)
       ai = -ratio * den;
@@ -99,10 +99,10 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
       ai =  den;
 #endif
     }
-    
+
     br = B[(m - i - 1) * 2 + 0];
     bi = B[(m - i - 1) * 2 + 1];
-    
+
     B[(m - i - 1) * 2 + 0] = ar*br - ai*bi;
     B[(m - i - 1) * 2 + 1] = ar*bi + ai*br;
 #endif

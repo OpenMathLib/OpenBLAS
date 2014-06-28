@@ -1,5 +1,5 @@
 #
-# The Makefile compiles c wrappers and testers for CBLAS.  
+# The Makefile compiles c wrappers and testers for CBLAS.
 #
 
 TOPDIR = ..
@@ -27,13 +27,13 @@ ctestl2o = c_cblas2.o c_c2chke.o auxiliary.o c_xerbla.o constant.o
 
 ctestl3o = c_cblas3.o c_c3chke.o auxiliary.o c_xerbla.o constant.o
 
-ztestl1o = c_zblas1.o 
+ztestl1o = c_zblas1.o
 
 ztestl2o = c_zblas2.o c_z2chke.o auxiliary.o c_xerbla.o constant.o
 
 ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
 
-all :: all1 all2 all3 
+all :: all1 all2 all3
 
 all1: xscblat1 xdcblat1 xccblat1 xzcblat1
 ifeq ($(USE_OPENMP), 1)
@@ -75,10 +75,10 @@ else
 endif
 
 clean ::
-	rm -f x* 
+	rm -f x*
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
-CEXTRALIB = 
+CEXTRALIB =
 
 # Single real
 xscblat1: $(stestl1o) c_sblat1.o $(TOPDIR)/$(LIBNAME)
@@ -94,7 +94,7 @@ xdcblat2: $(dtestl2o) c_dblat2.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xdcblat2 c_dblat2.o $(dtestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xdcblat3: $(dtestl3o) c_dblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xdcblat3 c_dblat3.o $(dtestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
- 
+
 # Single complex
 xccblat1: $(ctestl1o) c_cblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat1 c_cblat1.o $(ctestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
@@ -103,12 +103,12 @@ xccblat2: $(ctestl2o) c_cblat2.o $(TOPDIR)/$(LIBNAME)
 xccblat3: $(ctestl3o) c_cblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat3 c_cblat3.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 
-# Double complex 
+# Double complex
 xzcblat1: $(ztestl1o) c_zblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat1 c_zblat1.o $(ztestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xzcblat2: $(ztestl2o) c_zblat2.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat2 c_zblat2.o $(ztestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xzcblat3: $(ztestl3o) c_zblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat3 c_zblat3.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
-   
+
 include $(TOPDIR)/Makefile.tail

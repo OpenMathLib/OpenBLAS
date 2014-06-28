@@ -452,7 +452,7 @@ LL(22):
 #endif
 
  	bdnz	LL(22)
-	.align 4	
+	.align 4
 
 LL(23):
 	FMADD	y01, a1, b1, y01
@@ -756,7 +756,7 @@ LL(32):
 
 	LFDU	b4,  1 * SIZE(X1)
  	bdnz	LL(32)
-	.align 4	
+	.align 4
 
 LL(33):
 	FMADD	y01, a1, b1, y01
@@ -960,7 +960,7 @@ LL(42):
 	LFDU	b4,  1 * SIZE(X1)
 
  	bdnz	LL(42)
-	.align 4	
+	.align 4
 
 LL(43):
 	FMADD	y01, a1, b1, y01

@@ -86,11 +86,11 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    a07 += 16;
 	    a08 += 16;
 	    b += 128;
-	  } else 
+	  } else
 	    if (X < posY) {
 
 	      for (ii = 0; ii < 8; ii++){
-		
+
 		b[  0] = *(a01 +  0);
 		b[  1] = *(a01 +  1);
 		b[  2] = *(a01 +  2);
@@ -99,7 +99,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 		b[  5] = *(a01 +  5);
 		b[  6] = *(a01 +  6);
 		b[  7] = *(a01 +  7);
-		
+
 		b[  8] = *(a01 +  8);
 		b[  9] = *(a01 +  9);
 		b[ 10] = *(a01 + 10);
@@ -108,7 +108,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 		b[ 13] = *(a01 + 13);
 		b[ 14] = *(a01 + 14);
 		b[ 15] = *(a01 + 15);
-		
+
 		a01 += lda;
 		b += 16;
 	      }
@@ -120,7 +120,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      a06 += 8 * lda;
 	      a07 += 8 * lda;
 	      a08 += 8 * lda;
-		
+
 	    } else {
 #ifdef UNIT
 	      b[  0] = ONE;
@@ -143,7 +143,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 13] = *(a01 + 13);
 	      b[ 14] = *(a01 + 14);
 	      b[ 15] = *(a01 + 15);
-      
+
 	      b[ 16] = ZERO;
 	      b[ 17] = ZERO;
 #ifdef UNIT
@@ -313,7 +313,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  i --;
 	} while (i > 0);
       }
-      
+
       i = (m & 7);
       if (i > 0) {
 	if (X > posY) {
@@ -326,7 +326,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  a07 += 2 * i;
 	  a08 += 2 * i;
 	  b += 16 * i;
-	} else 
+	} else
 	  if (X < posY) {
 	    for (ii = 0; ii < i; ii++){
 	      b[  0] = *(a01 +  0);
@@ -337,7 +337,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[  5] = *(a01 +  5);
 	      b[  6] = *(a01 +  6);
 	      b[  7] = *(a01 +  7);
-	      
+
 	      b[  8] = *(a01 +  8);
 	      b[  9] = *(a01 +  9);
 	      b[ 10] = *(a01 + 10);
@@ -346,7 +346,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 13] = *(a01 + 13);
 	      b[ 14] = *(a01 + 14);
 	      b[ 15] = *(a01 + 15);
-	      
+
 	      a01 += lda;
 	      a02 += lda;
 	      a03 += lda;
@@ -371,7 +371,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    b[  5] = *(a01 +  5);
 	    b[  6] = *(a01 +  6);
 	    b[  7] = *(a01 +  7);
-	    
+
 	    b[  8] = *(a01 +  8);
 	    b[  9] = *(a01 +  9);
 	    b[ 10] = *(a01 + 10);
@@ -396,7 +396,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 5] = *(a02 +  5);
 	      b[ 6] = *(a02 +  6);
 	      b[ 7] = *(a02 +  7);
-	      
+
 	      b[ 8] = *(a02 +  8);
 	      b[ 9] = *(a02 +  9);
 	      b[10] = *(a02 + 10);
@@ -422,7 +422,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 #endif
 	      b[ 6] = *(a03 +  6);
 	      b[ 7] = *(a03 +  7);
-	      
+
 	      b[ 8] = *(a03 +  8);
 	      b[ 9] = *(a03 +  9);
 	      b[10] = *(a03 + 10);
@@ -448,7 +448,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 6] = *(a04 +  6);
 	      b[ 7] = *(a04 +  7);
 #endif
-	      
+
 	      b[ 8] = *(a04 +  8);
 	      b[ 9] = *(a04 +  9);
 	      b[10] = *(a04 + 10);
@@ -469,7 +469,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 5] = ZERO;
 	      b[ 6] = ZERO;
 	      b[ 7] = ZERO;
-	      
+
 #ifdef UNIT
 	      b[ 8] = ONE;
 	      b[ 9] = ZERO;
@@ -495,7 +495,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 5] = ZERO;
 	      b[ 6] = ZERO;
 	      b[ 7] = ZERO;
-	      
+
 	      b[ 8] = ZERO;
 	      b[ 9] = ZERO;
 #ifdef UNIT
@@ -521,7 +521,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 5] = ZERO;
 	      b[ 6] = ZERO;
 	      b[ 7] = ZERO;
-	      
+
 	      b[ 8] = ZERO;
 	      b[ 9] = ZERO;
 	      b[10] = ZERO;
@@ -537,7 +537,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[15] = *(a07 + 15);
 	      b += 16;
 	    }
-	  }    
+	  }
       }
 
       posY += 8;
@@ -548,7 +548,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
   if (n & 4){
     X = posX;
-    
+
     if (posX <= posY) {
       a01 = a + posY * 2 + (posX +  0) * lda;
       a02 = a + posY * 2 + (posX +  1) * lda;
@@ -560,7 +560,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
       a03 = a + posX * 2 + (posY +  2) * lda;
       a04 = a + posX * 2 + (posY +  3) * lda;
     }
-    
+
     i = (m >> 2);
     if (i > 0) {
       do {
@@ -570,7 +570,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  a03 += 8;
 	  a04 += 8;
 	  b += 32;
-	} else 
+	} else
 	  if (X < posY) {
 	    for (ii = 0; ii < 4; ii++){
 	      b[  0] = *(a01 +  0);
@@ -581,7 +581,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[  5] = *(a01 +  5);
 	      b[  6] = *(a01 +  6);
 	      b[  7] = *(a01 +  7);
-	      
+
 	      a01 += lda;
 	      b += 8;
 	      }
@@ -603,7 +603,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[  5] = *(a01 +  5);
 	      b[  6] = *(a01 +  6);
 	      b[  7] = *(a01 +  7);
-	      
+
 	      b[  8] = ZERO;
 	      b[  9] = ZERO;
 #ifdef UNIT
@@ -631,7 +631,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 #endif
 	      b[ 22] = *(a03 +  6);
 	      b[ 23] = *(a03 +  7);
-	      
+
 	      b[ 24] = ZERO;
 	      b[ 25] = ZERO;
 	      b[ 26] = ZERO;
@@ -645,19 +645,19 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[ 30] = *(a04 +  6);
 	      b[ 31] = *(a04 +  7);
 #endif
-	      
+
 	      a01 += 8;
 	      a02 += 8;
 	      a03 += 8;
 	      a04 += 8;
 	      b += 32;
 	    }
-	
+
 	X += 4;
 	i --;
       } while (i > 0);
     }
-    
+
     i = (m & 3);
     if (i > 0) {
       if (X > posY) {
@@ -666,7 +666,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	a03 += 2 * i;
 	a04 += 2 * i;
 	b += 8 * i;
-      } else 
+      } else
 	if (X < posY) {
 	  for (ii = 0; ii < i; ii++){
 	    b[  0] = *(a01 +  0);
@@ -677,7 +677,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    b[  5] = *(a01 +  5);
 	    b[  6] = *(a01 +  6);
 	    b[  7] = *(a01 +  7);
-	    
+
 	    a01 += lda;
 	    a02 += lda;
 	    a03 += lda;
@@ -740,7 +740,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
   if (n & 2){
     X = posX;
-    
+
     if (posX <= posY) {
       a01 = a + posY * 2 + (posX +  0) * lda;
       a02 = a + posY * 2 + (posX +  1) * lda;
@@ -748,7 +748,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
       a01 = a + posX * 2 + (posY +  0) * lda;
       a02 = a + posX * 2 + (posY +  1) * lda;
     }
-    
+
     i = (m >> 1);
     if (i > 0) {
       do {
@@ -756,7 +756,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  a01 += 4;
 	  a02 += 4;
 	  b += 8;
-	} else 
+	} else
 	  if (X < posY) {
 	    b[0] = *(a01 +  0);
 	    b[1] = *(a01 +  1);
@@ -779,7 +779,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 #endif
 	    b[2] = *(a01 +  2);
 	    b[3] = *(a01 +  3);
-	    
+
 	    b[4] = ZERO;
 	    b[5] = ZERO;
 #ifdef UNIT
@@ -788,30 +788,30 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 #else
 	    b[6] = *(a02 +  2);
 	    b[7] = *(a02 +  3);
-#endif	    
+#endif
 	    a01 += 4;
 	    a02 += 4;
 	    b += 8;
 	  }
-	
+
 	X += 2;
 	i --;
       } while (i > 0);
     }
-    
+
     i = (m & 1);
     if (i > 0) {
       if (X > posY) {
 	a01 += 2;
 	a02 += 2;
 	b += 4;
-      } else 
+      } else
 	if (X < posY) {
 	  b[  0] = *(a01 +  0);
 	  b[  1] = *(a01 +  1);
 	  b[  2] = *(a01 +  2);
 	  b[  3] = *(a01 +  3);
-	  
+
 	  a01 += lda;
 	  a02 += lda;
 	  b += 4;
@@ -833,17 +833,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
   if (n & 1){
     X = posX;
-    
+
     if (posX <= posY) {
       a01 = a + posY * 2 + (posX +  0) * lda;
     } else {
       a01 = a + posX * 2 + (posY +  0) * lda;
     }
-    
+
     i = m;
     if (i > 0) {
       do {
-	
+
 	if (X > posY) {
 	  a01 += 2;
 	  b += 2;
@@ -864,7 +864,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    a01 += 2;
 	    b += 2;
 	  }
-	
+
 	X += 1;
 	i --;
       } while (i > 0);

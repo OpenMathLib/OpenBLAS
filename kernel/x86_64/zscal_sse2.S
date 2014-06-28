@@ -72,13 +72,13 @@
 #endif
 
 	SAVEREGISTERS
-	
+
 	salq	$ZBASE_SHIFT, INCX
 	xor	FLAG, FLAG
 
 	testq	M, M
 	jle	.L999
-	
+
 	pxor	%xmm15, %xmm15
 	comisd	%xmm0, %xmm15
 	jne	.L100
@@ -177,7 +177,7 @@
 	jle	.L22
 	ALIGN_4
 
-.L21:	
+.L21:
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -280,7 +280,7 @@
 #endif
 	pxor	%xmm15, %xmm15
 	subsd	%xmm1,  %xmm15
-	movlhps	%xmm1,  %xmm15	
+	movlhps	%xmm1,  %xmm15
 
 	cmpq	$2 * SIZE, INCX
 	jne	.L120
@@ -804,11 +804,11 @@
 	jne	.L220
 
 #if defined(ALIGNED_ACCESS) && !defined(NEHALEM) && !defined(SANDYBRIDGE)
-	
+
 	movddup	%xmm0,  %xmm14
 	pxor	%xmm15, %xmm15
 	subsd	%xmm1,  %xmm15
-	movlhps	%xmm1,  %xmm15	
+	movlhps	%xmm1,  %xmm15
 	shufpd	$1, %xmm15, %xmm15
 
 	movhps	0 * SIZE(X), %xmm0
@@ -1085,7 +1085,7 @@
 	movddup	%xmm0,  %xmm14
 	pxor	%xmm15, %xmm15
 	subsd	%xmm1,  %xmm15
-	movlhps	%xmm1,  %xmm15	
+	movlhps	%xmm1,  %xmm15
 
 	subq	$-16 * SIZE, X
 
@@ -1399,7 +1399,7 @@
 	movddup	%xmm0,  %xmm14
 	pxor	%xmm15, %xmm15
 	subsd	%xmm1,  %xmm15
-	movlhps	%xmm1,  %xmm15	
+	movlhps	%xmm1,  %xmm15
 
 	movq	X, XX
 
@@ -1717,7 +1717,7 @@
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS
-	
+
 	ret
 
 	EPILOGUE

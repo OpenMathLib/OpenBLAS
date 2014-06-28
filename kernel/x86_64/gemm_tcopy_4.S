@@ -130,7 +130,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	pushq	%rdi
 	pushq	%rsi

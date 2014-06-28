@@ -70,7 +70,7 @@
 #define t44	$f25
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -144
 
 	SDARG	$16,   0($sp)
@@ -104,19 +104,19 @@
 
 	neg	KK, OFFSET							#	for RN OFFSET always 0
 
-	dsra	J,  N, 2						#	J = NC/4 
+	dsra	J,  N, 2						#	J = NC/4
 	blez	J, .L30
 	NOP
 
 .L10:
 	daddiu	J, J, -1
-	
+
 	move	CO1, C
 	daddu	CO2, C,   LDC
 	daddu	CO3, CO2, LDC
 	daddu	CO4, CO3, LDC
-	
-	move	AO, A							#	A is the retangular matrix and B is the trigular matrix	
+
+	move	AO, A							#	A is the retangular matrix and B is the trigular matrix
 	daddu	C,  CO4, LDC					#	Fixed pointer C
 
 	dsra	I,  M, 2						#	I=MC/4
@@ -139,14 +139,14 @@
 	MOV	t23, t11
 	MOV	t33, t11
 	MOV	t43, t11
-	
+
 	MOV	t14, t11
 	MOV	t24, t11
 	MOV	t34, t11
 	MOV	t44, t11
-	
+
 	LD	a1,  0 * SIZE(AO)					#	AO point to the beginning address of sa
-	LD	a2,  1 * SIZE(AO)					#	get 4 a	
+	LD	a2,  1 * SIZE(AO)					#	get 4 a
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
 
@@ -188,7 +188,7 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 	MADD	t34, t34, a3, b4
-	MADD	t44, t44, a4, b4			#	fisrt 	
+	MADD	t44, t44, a4, b4			#	fisrt
 
 	LD	a1,  8 * SIZE(AO)
 	LD	a2,  9 * SIZE(AO)
@@ -250,9 +250,9 @@
 	MADD	t34, t34, a3, b4
 	MADD	t44, t44, a4, b4			#	third
 
-	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr
 	daddiu	BO, BO, 16 * SIZE			#	BP += 4nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -313,11 +313,11 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 	MADD	t34, t34, a3, b4
-	MADD	t44, t44, a4, b4		
+	MADD	t44, t44, a4, b4
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr
 	daddiu	BO, BO, 4 * SIZE			#	BP += 4nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -337,7 +337,7 @@
 .L18:									#	.L18 always deal with the trigular data part
  	LD	b1,  0 * SIZE(AO)				#	for RN & RT A is the result matrix
 	LD	b2,  1 * SIZE(AO)				#	Fixed results
-	LD	b3,  2 * SIZE(AO)				
+	LD	b3,  2 * SIZE(AO)
 	LD	b4,  3 * SIZE(AO)				#	sa stored as col major
 
 	SUB	t11, b1, t11
@@ -398,7 +398,7 @@
 	NMSUB	t34, t34, b4, t31
 	NMSUB	t44, t44, b4, t41
 
-	
+
 	LD	b5,  5 * SIZE(BO)
 	LD	b6,  6 * SIZE(BO)
 	LD	b7,  7 * SIZE(BO)
@@ -463,17 +463,17 @@
 	ST	t21,  1 * SIZE(CO1)
 	ST	t31,  2 * SIZE(CO1)
 	ST	t41,  3 * SIZE(CO1)
-	
+
 	ST	t12,  0 * SIZE(CO2)
 	ST	t22,  1 * SIZE(CO2)
 	ST	t32,  2 * SIZE(CO2)
 	ST	t42,  3 * SIZE(CO2)
-	
+
 	ST	t13,  0 * SIZE(CO3)
 	ST	t23,  1 * SIZE(CO3)
 	ST	t33,  2 * SIZE(CO3)
 	ST	t43,  3 * SIZE(CO3)
-	
+
 	ST	t14,  0 * SIZE(CO4)
 	ST	t24,  1 * SIZE(CO4)
 	ST	t34,  2 * SIZE(CO4)
@@ -496,7 +496,7 @@
 	NOP
 
 	.align 3
-.L20:									
+.L20:
 	andi	I,  M, 2					#	mr=2
 	blez	I, .L50
 	nop
@@ -515,14 +515,14 @@
 	MOV	t23, t11
 	MOV	t33, t11
 	MOV	t43, t11
-	
+
 	MOV	t14, t11
 	MOV	t24, t11
 	MOV	t34, t11
 	MOV	t44, t11
-	
+
 	LD	a1,  0 * SIZE(AO)					#	AO point to the beginning address of sa
-	LD	a2,  1 * SIZE(AO)					#	get 4 a	
+	LD	a2,  1 * SIZE(AO)					#	get 4 a
 
 	LD	b1,  0 * SIZE(B)					#	B point to the beginning address of every panel Bj
 	LD	b2,  1 * SIZE(B)					#	get 4 b
@@ -594,9 +594,9 @@
 	MADD	t14, t14, a3, b4
 	MADD	t24, t24, a4, b4
 
-	daddiu	AO, AO, 8 * SIZE			#	AO += 2mr*4kr	
+	daddiu	AO, AO, 8 * SIZE			#	AO += 2mr*4kr
 	daddiu	BO, BO, 16 * SIZE			#	BP += 4nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -641,9 +641,9 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 
-	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 4 * SIZE			#	BP += 4nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -698,7 +698,7 @@
 	NMSUB	t14, t14, b4, t11
 	NMSUB	t24, t24, b4, t21
 
-	
+
 	LD	b5,  5 * SIZE(BO)
 	LD	b6,  6 * SIZE(BO)
 	LD	b7,  7 * SIZE(BO)
@@ -741,13 +741,13 @@
 
 	ST	t11,  0 * SIZE(CO1)				#	write back results
 	ST	t21,  1 * SIZE(CO1)
-	
+
 	ST	t12,  0 * SIZE(CO2)
 	ST	t22,  1 * SIZE(CO2)
-	
+
 	ST	t13,  0 * SIZE(CO3)
 	ST	t23,  1 * SIZE(CO3)
-	
+
 	ST	t14,  0 * SIZE(CO4)
 	ST	t24,  1 * SIZE(CO4)
 
@@ -764,7 +764,7 @@
 	daddu	BO, BO, TEMP				#	move BO to the end of this panel
 
 	.align 3
-.L50:									
+.L50:
 	andi	I,  M, 1					#	mr=1
 	blez	I, .L29
 	nop
@@ -783,12 +783,12 @@
 	MOV	t23, t11
 	MOV	t33, t11
 	MOV	t43, t11
-	
+
 	MOV	t14, t11
 	MOV	t24, t11
 	MOV	t34, t11
 	MOV	t44, t11
-	
+
 	LD	a1,  0 * SIZE(AO)					#	AO point to the beginning address of sa
 
 	LD	b1,  0 * SIZE(B)					#	B point to the beginning address of every panel Bj
@@ -837,9 +837,9 @@
 	MADD	t13, t13, a3, b3
 	MADD	t14, t14, a3, b4
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 1mr*4kr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 1mr*4kr
 	daddiu	BO, BO, 16 * SIZE			#	BP += 4nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -869,9 +869,9 @@
 	MADD	t13, t13, a1, b3
 	MADD	t14, t14, a1, b4
 
-	daddiu	AO, AO, 1 * SIZE			#	AO += 1mr	
+	daddiu	AO, AO, 1 * SIZE			#	AO += 1mr
 	daddiu	BO, BO, 4 * SIZE			#	BP += 4nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -907,7 +907,7 @@
 	NMSUB	t13, t13, b3, t11
 	NMSUB	t14, t14, b4, t11
 
-	
+
 	LD	b5,  5 * SIZE(BO)
 	LD	b6,  6 * SIZE(BO)
 	LD	b7,  7 * SIZE(BO)
@@ -954,13 +954,13 @@
 	.align 3
 .L29:
 	move	B,  BO						#	change to next panel of Bj
-	daddiu	KK, KK,  4					#	rectangular data length increase by 4	
+	daddiu	KK, KK,  4					#	rectangular data length increase by 4
 	bgtz	J, .L10
 	NOP
 
 
 	.align 3
-	
+
 .L30:
 	andi	J,  N, 2
 	blez	J, .L70
@@ -968,8 +968,8 @@
 
 	move	CO1, C
 	daddu	CO2, C,   LDC
-	
-	move	AO, A							#	A is the retangular matrix and B is the trigular matrix	
+
+	move	AO, A							#	A is the retangular matrix and B is the trigular matrix
 	daddu	C,  CO2, LDC					#	Fixed pointer C
 
 	dsra	I,  M, 2						#	I=MC/4
@@ -989,7 +989,7 @@
 	MOV	t42, t11
 
 	LD	a1,  0 * SIZE(AO)					#	AO point to the beginning address of sa
-	LD	a2,  1 * SIZE(AO)					#	get 4 a	
+	LD	a2,  1 * SIZE(AO)					#	get 4 a
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
 
@@ -1055,9 +1055,9 @@
 	MADD	t32, t32, a3, b4
 	MADD	t42, t42, a4, b4
 
-	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr
 	daddiu	BO, BO,  8 * SIZE			#	BP += 2nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -1098,9 +1098,9 @@
 	MADD	t32, t32, a3, b2
 	MADD	t42, t42, a4, b2
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr
 	daddiu	BO, BO, 2 * SIZE			#	BP += 2nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -1118,7 +1118,7 @@
 .L38:									#	.L38 always deal with the trigular data part
  	LD	b1,  0 * SIZE(AO)				#	for RN & RT A is the result matrix
 	LD	b2,  1 * SIZE(AO)				#	Fixed results
-	LD	b3,  2 * SIZE(AO)				
+	LD	b3,  2 * SIZE(AO)
 	LD	b4,  3 * SIZE(AO)				#	sa stored as col major
 
 	SUB	t11, b1, t11
@@ -1147,7 +1147,7 @@
 	NMSUB	t22, t22, b2, t21
 	NMSUB	t32, t32, b2, t31
 	NMSUB	t42, t42, b2, t41
-	
+
 	LD	b5,  3 * SIZE(BO)
 	MUL	t12, b5, t12
 	MUL	t22, b5, t22
@@ -1169,7 +1169,7 @@
 	ST	t21,  1 * SIZE(CO1)
 	ST	t31,  2 * SIZE(CO1)
 	ST	t41,  3 * SIZE(CO1)
-	
+
 	ST	t12,  0 * SIZE(CO2)
 	ST	t22,  1 * SIZE(CO2)
 	ST	t32,  2 * SIZE(CO2)
@@ -1201,7 +1201,7 @@
 	MOV	t22, t11
 
 	LD	a1,  0 * SIZE(AO)					#	AO point to the beginning address of sa
-	LD	a2,  1 * SIZE(AO)					#	get 4 a	
+	LD	a2,  1 * SIZE(AO)					#	get 4 a
 
 	LD	b1,  0 * SIZE(B)					#	B point to the beginning address of every panel Bj
 	LD	b2,  1 * SIZE(B)					#	get 4 b
@@ -1241,9 +1241,9 @@
 	MADD	t12, t12, a3, b4
 	MADD	t22, t22, a4, b4
 
-	daddiu	AO, AO,  8 * SIZE			#	AO += 2mr*4kr	
+	daddiu	AO, AO,  8 * SIZE			#	AO += 2mr*4kr
 	daddiu	BO, BO,  8 * SIZE			#	BP += 2nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
@@ -1271,9 +1271,9 @@
 	MADD	t12, t12, a1, b2
 	MADD	t22, t22, a2, b2
 
-	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 2 * SIZE			#	BP += 2nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
@@ -1305,7 +1305,7 @@
 	MUL	t21, b1, t21
 	NMSUB	t12, t12, b2, t11
 	NMSUB	t22, t22, b2, t21
-	
+
 	LD	b5,  3 * SIZE(BO)
 	MUL	t12, b5, t12
 	MUL	t22, b5, t22
@@ -1371,9 +1371,9 @@
 	MADD	t11, t11, a3, b3
 	MADD	t12, t12, a3, b4
 
-	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr	
+	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr
 	daddiu	BO, BO,  8 * SIZE			#	BP += 2nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
@@ -1396,9 +1396,9 @@
 	MADD	t11, t11, a1, b1
 	MADD	t12, t12, a1, b2
 
-	daddiu	AO, AO, 1 * SIZE			#	AO += mr	
+	daddiu	AO, AO, 1 * SIZE			#	AO += mr
 	daddiu	BO, BO, 2 * SIZE			#	BP += 2nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
@@ -1421,7 +1421,7 @@
 	LD	b2,  1 * SIZE(BO)
 	MUL	t11, b1, t11
 	NMSUB	t12, t12, b2, t11
-	
+
 	LD	b5,  3 * SIZE(BO)
 	MUL	t12, b5, t12
 
@@ -1445,7 +1445,7 @@
 	.align 3
 .L39:
 	move	B,  BO						#	change to next panel of Bj
-	daddiu	KK, KK,  2					#	rectangular data length increase by 4	
+	daddiu	KK, KK,  2					#	rectangular data length increase by 4
 
 
 
@@ -1473,7 +1473,7 @@
 	MOV	t41, t11
 
 	LD	a1,  0 * SIZE(AO)					#	AO point to the beginning address of sa
-	LD	a2,  1 * SIZE(AO)					#	get 4 a	
+	LD	a2,  1 * SIZE(AO)					#	get 4 a
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
 
@@ -1520,9 +1520,9 @@
 	MADD	t31, t31, a3, b3
 	MADD	t41, t41, a4, b3
 
-	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr
 	daddiu	BO, BO,  4 * SIZE			#	BP += 1nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -1552,9 +1552,9 @@
 	MADD	t31, t31, a3, b1
 	MADD	t41, t41, a4, b1
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr
 	daddiu	BO, BO, 1 * SIZE			#	BP += 1nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -1571,7 +1571,7 @@
 .L78:									#	.L78 always deal with the trigular data part
  	LD	b1,  0 * SIZE(AO)				#	for RN & RT A is the result matrix
 	LD	b2,  1 * SIZE(AO)				#	Fixed results
-	LD	b3,  2 * SIZE(AO)				
+	LD	b3,  2 * SIZE(AO)
 	LD	b4,  3 * SIZE(AO)				#	sa stored as col major
 
 	SUB	t11, b1, t11
@@ -1596,7 +1596,7 @@
 	ST	t21,  1 * SIZE(CO1)
 	ST	t31,  2 * SIZE(CO1)
 	ST	t41,  3 * SIZE(CO1)
-	
+
 
 	daddiu	CO1, CO1, 4 * SIZE			#	fixed address
 
@@ -1621,7 +1621,7 @@
 	MOV	t21, t11
 
 	LD	a1,  0 * SIZE(AO)					#	AO point to the beginning address of sa
-	LD	a2,  1 * SIZE(AO)					#	get 4 a	
+	LD	a2,  1 * SIZE(AO)					#	get 4 a
 
 	LD	b1,  0 * SIZE(B)					#	B point to the beginning address of every panel Bj
 
@@ -1654,9 +1654,9 @@
 	MADD	t11, t11, a3, b3
 	MADD	t21, t21, a4, b3
 
-	daddiu	AO, AO,  8 * SIZE			#	AO += 2mr*4kr	
+	daddiu	AO, AO,  8 * SIZE			#	AO += 2mr*4kr
 	daddiu	BO, BO,  4 * SIZE			#	BP += 1nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -1680,9 +1680,9 @@
 	MADD	t11, t11, a1, b1
 	MADD	t21, t21, a2, b1
 
-	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 1 * SIZE			#	BP += 1nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -1712,7 +1712,7 @@
 
 	ST	t11,  0 * SIZE(CO1)				#	write back results
 	ST	t21,  1 * SIZE(CO1)
-	
+
 
 	daddiu	CO1, CO1, 2 * SIZE			#	fixed address
 
@@ -1754,9 +1754,9 @@
 
 	MADD	t11, t11, a3, b3
 
-	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr	
+	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr
 	daddiu	BO, BO,  4 * SIZE			#	BP += 1nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 
@@ -1776,9 +1776,9 @@
 .L96:
 	MADD	t11, t11, a1, b1
 
-	daddiu	AO, AO, 1 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 1 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 1 * SIZE			#	BP += 1nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 
@@ -1801,7 +1801,7 @@
 	ST	t11,  0 * SIZE(AO)				#	update packed blockA for follow-up compute
 
 	ST	t11,  0 * SIZE(CO1)				#	write back results
-	
+
 
 	daddiu	CO1, CO1, 1 * SIZE			#	fixed address
 

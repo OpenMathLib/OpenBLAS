@@ -143,7 +143,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	LDARG	LDC,   0($sp)
 	daddiu	$sp, $sp, -STACKSIZE
 
@@ -188,7 +188,7 @@
 	move	KK, OFFSET
 #endif
 
-	daddiu	J, J, -1							
+	daddiu	J, J, -1
 	dsra	I,  M, 1							#	I=M/2
 
 	dsll	PREB, K, 1 + ZBASE_SHIFT				#	PREA=K*2*2^4
@@ -223,7 +223,7 @@
 	MOV	c21, c11
 	MOV	c22, c11
 	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	
+
 	MOV	c23, c11
 	MOV	c24, c11
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
@@ -235,7 +235,7 @@
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV	c33, c11
 	MOV	c34, c11
-	
+
 	FETCH	$0, 4 * SIZE(CO2)
 	MOV	c41, c11
 	MOV	c42, c11
@@ -258,7 +258,7 @@
 
 #else
 
-	dsra	L,  K, 2							#	Unroll K 4 times	
+	dsra	L,  K, 2							#	Unroll K 4 times
 	move	BO,  B
 
 	MTC	$0,  c11								#	Clear results regs
@@ -272,7 +272,7 @@
 	MOV	c21, c11
 	MOV	c22, c11
 	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	
+
 	MOV	c23, c11
 	MOV	c24, c11
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
@@ -284,7 +284,7 @@
 	FETCH	$0, 0 * SIZE(CO1)
 	MOV	c33, c11
 	MOV	c34, c11
-	
+
 	FETCH	$0, 4 * SIZE(CO2)
 	MOV	c41, c11
 	MOV	c42, c11
@@ -300,13 +300,13 @@
 	.align	5
 
 .L12:
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
-	gsLQC1(R13, F13, F12, 2)				
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1
+	gsLQC1(R13, F13, F12, 2)
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R12, F11, F10, 3)					
-	gsLQC1(R13, F16, F15, 3)			
+	gsLQC1(R12, F11, F10, 3)
+	gsLQC1(R13, F16, F15, 3)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
@@ -329,16 +329,16 @@
 	MADD2	c42, c42, a4, b3
 	MADD4	c44, c44, a4, b4
 
-	gsLQC1(R12, F1, F0, 4)						#	unroll	k=2	
-	gsLQC1(R13, F5, F4, 4)					
-	MADD1	c11, c11, a5, b5 					#	axc		A1xB1	
+	gsLQC1(R12, F1, F0, 4)						#	unroll	k=2
+	gsLQC1(R13, F5, F4, 4)
+	MADD1	c11, c11, a5, b5 					#	axc		A1xB1
 	MADD3	c13, c13, a5, b6					#	axd
 
 	MADD2	c12, c12, a6, b5					#	bxc
 	MADD4	c14, c14, a6, b6					#	bxd
 
-	gsLQC1(R12, F3, F2, 5)						
-	gsLQC1(R13, F7, F6, 5)				
+	gsLQC1(R12, F3, F2, 5)
+	gsLQC1(R13, F7, F6, 5)
 	MADD1	c21, c21, a7, b5 					#	A2xB1
 	MADD3	c23, c23, a7, b6
 
@@ -359,12 +359,12 @@
 	MADD4	c44, c44, a8, b8
 
 	gsLQC1(R12, F9, F8, 6)						#	Unroll	K=3
-	gsLQC1(R13, F13, F12, 6)				
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	gsLQC1(R13, F13, F12, 6)
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R13, F16, F15, 7)			
-	gsLQC1(R12, F11, F10, 7)					
+	gsLQC1(R13, F16, F15, 7)
+	gsLQC1(R12, F11, F10, 7)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
@@ -395,7 +395,7 @@
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
 	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
-	MADD1	c11, c11, a5, b5 					#	axc		A1xB1	
+	MADD1	c11, c11, a5, b5 					#	axc		A1xB1
 	MADD3	c13, c13, a5, b6					#	axd
 
 	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
@@ -442,17 +442,17 @@
 .L16:
 	daddiu	BO, BO, 4 * SIZE					#	2nr*1kr*cmpx
 	daddiu	AO, AO, 4 * SIZE					#	2mr*1kr*cmpx
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
-	daddiu	PREA, PREA, 4 * SIZE			
-	daddiu	PREB, PREB, 4 * SIZE			
+	daddiu	PREA, PREA, 4 * SIZE
+	daddiu	PREB, PREB, 4 * SIZE
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
 	MADD1	c21, c21, a3, b1 					#	A2xB1
 	MADD3	c23, c23, a3, b2
-	
+
 	MADD2	c22, c22, a4, b1
 	MADD4	c24, c24, a4, b2
 
@@ -593,9 +593,9 @@
 #endif
 
 	dsll	PREB, K, 1 + ZBASE_SHIFT				#	PREA=K*2*2^4
-	daddiu	CO1,CO1, 4 * SIZE 
+	daddiu	CO1,CO1, 4 * SIZE
 	bgtz	I, .L11
-	daddiu	CO2,CO2, 4 * SIZE 
+	daddiu	CO2,CO2, 4 * SIZE
 
 	.align	5
 .L30:
@@ -620,7 +620,7 @@
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
-	
+
 	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
 	MOV	c13, c11
 	MOV	c14, c11
@@ -642,7 +642,7 @@
 	dsubu	TEMP, K, KK
 #elif defined(LEFT)
 	daddiu	TEMP, KK, 1							#	MR=1
-#else	
+#else
 	daddiu	TEMP, KK, 2							#	NR=2
 #endif
 	dsra	L,  TEMP, 2
@@ -652,13 +652,13 @@
 #else
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
-	dsra	L,  K, 2							#	Unroll K 4 times	
+	dsra	L,  K, 2							#	Unroll K 4 times
 	move	BO,  B
 
 	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
 	MTC	$0,  c11								#	Clear results regs
 	MOV	c12, c11
-	
+
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
 	MOV	c13, c11
 	MOV	c14, c11
@@ -681,29 +681,29 @@
 
 .L32:
 	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	gsLQC1(R13, F13, F12, 2)				
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	gsLQC1(R13, F13, F12, 2)
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
-	gsLQC1(R13, F16, F15, 3)			
+	gsLQC1(R13, F16, F15, 3)
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 	NOP
 
 	MADD1	c31, c31, a1, b3 					#	A1xB2
 	MADD3	c33, c33, a1, b4
-	
+
 	FETCH	$0, 4 * SIZE(PREB)
 	MADD2	c32, c32, a2, b3
 	MADD4	c34, c34, a2, b4
 	NOP
 
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
-	gsLQC1(R13, F5, F4, 4)					
-	MADD1	c11, c11, a3, b5 					#	axc		A1xB1	
+	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1
+	gsLQC1(R13, F5, F4, 4)
+	MADD1	c11, c11, a3, b5 					#	axc		A1xB1
 	MADD3	c13, c13, a3, b6					#	axd
 
-	gsLQC1(R13, F7, F6, 5)				
+	gsLQC1(R13, F7, F6, 5)
 	MADD2	c12, c12, a4, b5					#	bxc
 	MADD4	c14, c14, a4, b6					#	bxd
 	NOP
@@ -716,12 +716,12 @@
 	MADD4	c34, c34, a4, b8
 	daddiu	L, L, -1
 
-	gsLQC1(R12, F11, F10, 3)					
-	gsLQC1(R13, F13, F12, 6)				
-	MADD1	c11, c11, a5, b1 					#	axc		A1xB1	
+	gsLQC1(R12, F11, F10, 3)
+	gsLQC1(R13, F13, F12, 6)
+	MADD1	c11, c11, a5, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a5, b2					#	axd
 
-	gsLQC1(R13, F16, F15, 7)			
+	gsLQC1(R13, F16, F15, 7)
 	MADD2	c12, c12, a6, b1					#	bxc
 	MADD4	c14, c14, a6, b2					#	bxd
 	daddiu	AO, AO, 8 * SIZE 					#	2mr*4kr*cmpx
@@ -736,7 +736,7 @@
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
 	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
-	MADD1	c11, c11, a7, b5 					#	axc		A1xB1	
+	MADD1	c11, c11, a7, b5 					#	axc		A1xB1
 	MADD3	c13, c13, a7, b6					#	axd
 
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
@@ -767,7 +767,7 @@
 
 .L36:
 	daddiu	L, L, -1
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
 	daddiu	BO, BO, 4 * SIZE 					#	2nr*1kr*cmpx
@@ -777,8 +777,8 @@
 	daddiu	AO, AO, 2 * SIZE					#	2mr*1kr*cmpx
 	MADD1	c31, c31, a1, b3 					#	A1xB2
 	MADD3	c33, c33, a1, b4
-	
-	daddiu	PREB, PREB, 4 * SIZE 
+
+	daddiu	PREB, PREB, 4 * SIZE
 	MADD2	c32, c32, a2, b3
 	MADD4	c34, c34, a2, b4
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
@@ -819,8 +819,8 @@
 	ST	a3, 0 * SIZE(CO2)
 	ST	a4, 1 * SIZE(CO2)
 
-	daddiu	CO1,CO1, 2 * SIZE 
-	daddiu	CO2,CO2, 2 * SIZE 
+	daddiu	CO1,CO1, 2 * SIZE
+	daddiu	CO2,CO2, 2 * SIZE
 #else
  	ADD	c11, c14, c11
 	ADD	c12, c13, c12
@@ -845,8 +845,8 @@
 	ST	a3, 0 * SIZE(CO2)
 	ST	a4, 1 * SIZE(CO2)
 
-	daddiu	CO1,CO1, 2 * SIZE 
-	daddiu	CO2,CO2, 2 * SIZE 
+	daddiu	CO1,CO1, 2 * SIZE
+	daddiu	CO2,CO2, 2 * SIZE
 
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -879,7 +879,7 @@
 	move	B, BO
 
 	.align 5
-	
+
 .L20:
 	andi	J,  N, 1
 	blez	J, .L999
@@ -938,7 +938,7 @@
 	NOP
 
 #else
-	dsra	L,  K, 2							#	Unroll K 4 times	
+	dsra	L,  K, 2							#	Unroll K 4 times
 	move	BO,  B
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
@@ -967,31 +967,31 @@
 	.align	5
 
 .L22:
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
-	gsLQC1(R12, F11, F10, 3)					
+	gsLQC1(R12, F11, F10, 3)
 	MADD1	c21, c21, a3, b1 					#	A2xB1
 	MADD3	c23, c23, a3, b2
-	
+
 	FETCH	$0, 4 * SIZE(PREA)
 	MADD2	c22, c22, a4, b1
 	MADD4	c24, c24, a4, b2
 
-	gsLQC1(R12, F1, F0, 4)						#	Unroll	K=2	
-	MADD1	c11, c11, a5, b3 					#	axc		A1xB1	
+	gsLQC1(R12, F1, F0, 4)						#	Unroll	K=2
+	MADD1	c11, c11, a5, b3 					#	axc		A1xB1
 	MADD3	c13, c13, a5, b4					#	axd
 
-	gsLQC1(R13, F13, F12, 2)				
+	gsLQC1(R13, F13, F12, 2)
 	MADD2	c12, c12, a6, b3					#	bxc
 	MADD4	c14, c14, a6, b4					#	bxd
 
-	gsLQC1(R12, F3, F2, 5)						
+	gsLQC1(R12, F3, F2, 5)
 	MADD1	c21, c21, a7, b3 					#	A2xB1
 	MADD3	c23, c23, a7, b4
 
@@ -1001,14 +1001,14 @@
 	daddiu	L, L, -1
 
 	gsLQC1(R12, F9, F8, 6)						#	Unroll	K=3
-	MADD1	c11, c11, a1, b5 					#	axc		A1xB1	
+	MADD1	c11, c11, a1, b5 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b6					#	axd
 
-	gsLQC1(R13, F16, F15, 3)			
+	gsLQC1(R13, F16, F15, 3)
 	MADD2	c12, c12, a2, b5					#	bxc
 	MADD4	c14, c14, a2, b6					#	bxd
 
-	gsLQC1(R12, F11, F10, 7)					
+	gsLQC1(R12, F11, F10, 7)
 	MADD1	c21, c21, a3, b5 					#	A2xB1
 	MADD3	c23, c23, a3, b6
 	daddiu	BO, BO,  8 * SIZE  					#	1nr*4kr*cmpx
@@ -1019,9 +1019,9 @@
 	daddiu	AO, AO, 16 * SIZE 					#	2mr*4kr*cmpx
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
-	MADD1	c11, c11, a5, b7 					#	axc		A1xB1	
+	MADD1	c11, c11, a5, b7 					#	axc		A1xB1
 	MADD3	c13, c13, a5, b8					#	axd
-	daddiu	PREA, PREA, 16 * SIZE 		
+	daddiu	PREA, PREA, 16 * SIZE
 
 	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
 	MADD2	c12, c12, a6, b7					#	bxc
@@ -1051,7 +1051,7 @@
 
 .L26:
 	daddiu	L, L, -1
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
 	daddiu	BO, BO, 2 * SIZE 					#	2nr*1kr*cmpx
@@ -1142,7 +1142,7 @@
 	daddiu	KK, KK, 2
 #endif
 #endif
-	daddiu	CO1,CO1, 4 * SIZE 
+	daddiu	CO1,CO1, 4 * SIZE
 	bgtz	I, .L21
 	NOP
 
@@ -1184,7 +1184,7 @@
 	NOP
 
 #else
-	dsra	L,  K, 2							#	Unroll K 4 times	
+	dsra	L,  K, 2							#	Unroll K 4 times
 	move	BO,  B
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2
@@ -1205,34 +1205,34 @@
 
 .L42:
 	gsLQC1(R12, F3, F2, 1)						#	R:a3	I:a4
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 
 	gsLQC1(R13, F7, F6, 1)						#	R:b2	I:b3
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
 
-	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1	
-	MADD1	c11, c11, a3, b3 					#	axc		A1xB1	
+	gsLQC1(R12, F9, F8, 2)						#	Unroll K=1
+	MADD1	c11, c11, a3, b3 					#	axc		A1xB1
 	MADD3	c13, c13, a3, b4					#	axd
 
-	gsLQC1(R13, F13, F12, 2)				
+	gsLQC1(R13, F13, F12, 2)
 	MADD2	c12, c12, a4, b3					#	bxc
 	MADD4	c14, c14, a4, b4					#	bxd
 	daddiu	L, L, -1
 
-	gsLQC1(R12, F11, F10, 3)					
-	MADD1	c11, c11, a5, b5 					#	axc		A1xB1	
+	gsLQC1(R12, F11, F10, 3)
+	MADD1	c11, c11, a5, b5 					#	axc		A1xB1
 	MADD3	c13, c13, a5, b6					#	axd
 	daddiu	AO, AO, 8 * SIZE 					#	2mr*4kr*cmpx
 
-	gsLQC1(R13, F16, F15, 3)			
+	gsLQC1(R13, F16, F15, 3)
 	MADD2	c12, c12, a6, b5					#	bxc
 	MADD4	c14, c14, a6, b6					#	bxd
 	daddiu	BO, BO, 8 * SIZE  					#	2nr*4kr*cmpx
 
 	gsLQC1(R12, F1, F0, 0)						#	R:a1	I:a2	Unroll K=4
-	MADD1	c11, c11, a7, b7 					#	axc		A1xB1	
+	MADD1	c11, c11, a7, b7 					#	axc		A1xB1
 	MADD3	c13, c13, a7, b8					#	axd
 
 	gsLQC1(R13, F5, F4, 0)						#	R:b1	I:b2
@@ -1259,7 +1259,7 @@
 	daddiu	BO, BO, 1 * SIZE * COMPSIZE			#	2nr*1kr*cmpx
 	daddiu	AO, AO, 1 * SIZE * COMPSIZE			#	2mr*1kr*cmpx
 
-	MADD1	c11, c11, a1, b1 					#	axc		A1xB1	
+	MADD1	c11, c11, a1, b1 					#	axc		A1xB1
 	MADD3	c13, c13, a1, b2					#	axd
 	MADD2	c12, c12, a2, b1					#	bxc
 	MADD4	c14, c14, a2, b2					#	bxd
@@ -1319,7 +1319,7 @@
 	daddiu	KK, KK, 1
 #endif
 
-	daddiu	CO1,CO1, 2 * SIZE 
+	daddiu	CO1,CO1, 2 * SIZE
 #endif
 
 

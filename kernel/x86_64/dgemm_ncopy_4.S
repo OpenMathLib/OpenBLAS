@@ -107,7 +107,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	pushq	%r15
 	pushq	%r14

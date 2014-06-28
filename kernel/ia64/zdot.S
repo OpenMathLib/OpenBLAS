@@ -98,7 +98,7 @@
 	LDINT	N    = [N]
 	LDINT	INCX = [INCX]
 	LDINT	INCY = [INCY]
-	;; 
+	;;
 #ifndef USE64BITINT
 	sxt4	N = N
 	sxt4	INCX = INCX
@@ -442,7 +442,7 @@
 	(p12) FMA	f13 = f44, f47, f13
 	(p12) FMA	f14 = f45, f46, f14
 	(p12) FMA	f15 = f45, f47, f15
-	;;		      
+	;;
 	(p13) FMA	f8  = f48, f50, f8
 	(p13) FMA	f9  = f48, f51, f9
 	(p13) FMA	f10 = f49, f50, f10
@@ -451,7 +451,7 @@
 	(p13) FMA	f13 = f52, f55, f13
 	(p13) FMA	f14 = f53, f54, f14
 	(p13) FMA	f15 = f53, f55, f15
-	;;		      
+	;;
 	(p14) FMA	f8  = f56, f58, f8
 	(p14) FMA	f9  = f56, f59, f9
 	(p14) FMA	f10 = f57, f58, f10
@@ -474,7 +474,7 @@
 #endif
 	;;
 	.align 32
-	
+
 .L1000:
 #if defined(F_INTERFACE) && defined(RETURN_BY_STACK)
 	STFD	[r32] = f8, SIZE

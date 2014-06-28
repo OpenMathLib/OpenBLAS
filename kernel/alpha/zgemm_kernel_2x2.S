@@ -211,7 +211,7 @@ CNAME:
 	sra	N, 1, J
 	ble	J, $L30
 	.align 4
-	
+
 $L01:
 	mov	C,  C1
 	addq	C,  LDC, C2

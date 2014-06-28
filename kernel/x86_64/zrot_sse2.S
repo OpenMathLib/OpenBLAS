@@ -99,7 +99,7 @@
 	movapd	2 * SIZE(X), %xmm2
 	movapd	4 * SIZE(X), %xmm8
 	movapd	6 * SIZE(X), %xmm10
-	
+
 	decq	%rax
 	jle	.L12
 	ALIGN_3
@@ -1169,7 +1169,7 @@
 	movapd	2 * SIZE(X), %xmm2
 	movapd	4 * SIZE(X), %xmm8
 	movapd	6 * SIZE(X), %xmm10
-	
+
 	decq	%rax
 	jle	.L42
 	ALIGN_3

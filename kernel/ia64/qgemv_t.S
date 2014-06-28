@@ -82,7 +82,7 @@
 
 #define ARLC	r30
 #define PR	r31
-	
+
 #ifdef DOUBLE
 #define RPREFETCH	(16 * 3 +  8)
 #else
@@ -150,7 +150,7 @@
 	adds	YY2 = 4 * SIZE, BUFFER
 	;;
 	shr	I = M, 3
-	;;	
+	;;
 	{ .mmi
 	adds I = -1, I
 	cmp.eq	p16, p0 = r0, r0
@@ -254,10 +254,10 @@
 	;;
 	shladd	LDA7M8 = LDA, 3, r0
 	;;
-	sub	LDA7M8 = LDA, LDA7M8	
+	sub	LDA7M8 = LDA, LDA7M8
 	;;
 	adds	LDA7M8 = 8 * SIZE, LDA7M8
-	;;	
+	;;
 	mov	f8  = f0
 	mov	f9  = f0
 	mov	f10 = f0
@@ -386,8 +386,8 @@
 	(p16) FMA	f14 = f96,  f80, f14
 	(p16) FMA	f15 = f96,  f88, f15
 	;;
-	(p16) FMA	f8  = f97,  f33, f8 
-	(p16) FMA	f9  = f97,  f41, f9 
+	(p16) FMA	f8  = f97,  f33, f8
+	(p16) FMA	f9  = f97,  f41, f9
 	(p16) FMA	f10 = f97,  f49, f10
 	(p16) FMA	f11 = f97,  f57, f11
 	(p16) FMA	f12 = f97,  f65, f12
@@ -404,8 +404,8 @@
 	(p16) FMA	f14 = f98,  f82, f14
 	(p16) FMA	f15 = f98,  f90, f15
 	;;
-	(p16) FMA	f8  = f99,  f35, f8 
-	(p16) FMA	f9  = f99,  f43, f9 
+	(p16) FMA	f8  = f99,  f35, f8
+	(p16) FMA	f9  = f99,  f43, f9
 	(p16) FMA	f10 = f99,  f51, f10
 	(p16) FMA	f11 = f99,  f59, f11
 	(p16) FMA	f12 = f99,  f67, f12
@@ -422,8 +422,8 @@
 	(p16) FMA	f14 = f100, f84, f14
 	(p16) FMA	f15 = f100, f92, f15
 	;;
-	(p16) FMA	f8  = f101, f37, f8 
-	(p16) FMA	f9  = f101, f45, f9 
+	(p16) FMA	f8  = f101, f37, f8
+	(p16) FMA	f9  = f101, f45, f9
 	(p16) FMA	f10 = f101, f53, f10
 	(p16) FMA	f11 = f101, f61, f11
 	(p16) FMA	f12 = f101, f69, f12
@@ -440,8 +440,8 @@
 	(p16) FMA	f14 = f102, f86, f14
 	(p16) FMA	f15 = f102, f94, f15
 	;;
-	(p16) FMA	f8  = f103, f39, f8 
-	(p16) FMA	f9  = f103, f47, f9 
+	(p16) FMA	f8  = f103, f39, f8
+	(p16) FMA	f9  = f103, f47, f9
 	(p16) FMA	f10 = f103, f55, f10
 	(p16) FMA	f11 = f103, f63, f11
 	(p16) FMA	f12 = f103, f71, f12
@@ -563,8 +563,8 @@
 	(p13) FMA	f14 = f96,  f80, f14
 	(p13) FMA	f15 = f96,  f88, f15
 	;;
-	(p13) FMA	f8  = f97,  f33, f8 
-	(p13) FMA	f9  = f97,  f41, f9 
+	(p13) FMA	f8  = f97,  f33, f8
+	(p13) FMA	f9  = f97,  f41, f9
 	(p13) FMA	f10 = f97,  f49, f10
 	(p13) FMA	f11 = f97,  f57, f11
 	(p13) FMA	f12 = f97,  f65, f12
@@ -581,8 +581,8 @@
 	(p13) FMA	f14 = f98,  f82, f14
 	(p13) FMA	f15 = f98,  f90, f15
 	;;
-	(p13) FMA	f8  = f99,  f35, f8 
-	(p13) FMA	f9  = f99,  f43, f9 
+	(p13) FMA	f8  = f99,  f35, f8
+	(p13) FMA	f9  = f99,  f43, f9
 	(p13) FMA	f10 = f99,  f51, f10
 	(p13) FMA	f11 = f99,  f59, f11
 	(p13) FMA	f12 = f99,  f67, f12
@@ -599,8 +599,8 @@
 	(p14) FMA	f14 = f100, f84, f14
 	(p14) FMA	f15 = f100, f92, f15
 	;;
-	(p14) FMA	f8  = f101, f37, f8 
-	(p14) FMA	f9  = f101, f45, f9 
+	(p14) FMA	f8  = f101, f37, f8
+	(p14) FMA	f9  = f101, f45, f9
 	(p14) FMA	f10 = f101, f53, f10
 	(p14) FMA	f11 = f101, f61, f11
 	(p14) FMA	f12 = f101, f69, f12
@@ -690,10 +690,10 @@
 	;;
 	shladd	LDA7M8 = LDA, 2, r0
 	;;
-	sub	LDA7M8 = LDA, LDA7M8	
+	sub	LDA7M8 = LDA, LDA7M8
 	;;
 	adds	LDA7M8 = 8 * SIZE, LDA7M8
-	;;	
+	;;
 	mov	f8  = f0
 	mov	f9  = f0
 	mov	f10 = f0
@@ -778,8 +778,8 @@
 	(p16) FMA	f10 = f96,  f48, f10
 	(p16) FMA	f11 = f96,  f56, f11
 	;;
-	(p16) FMA	f8  = f97,  f33, f8 
-	(p16) FMA	f9  = f97,  f41, f9 
+	(p16) FMA	f8  = f97,  f33, f8
+	(p16) FMA	f9  = f97,  f41, f9
 	(p16) FMA	f10 = f97,  f49, f10
 	(p16) FMA	f11 = f97,  f57, f11
 	;;
@@ -788,8 +788,8 @@
 	(p16) FMA	f10 = f98,  f50, f10
 	(p16) FMA	f11 = f98,  f58, f11
 	;;
-	(p16) FMA	f8  = f99,  f35, f8 
-	(p16) FMA	f9  = f99,  f43, f9 
+	(p16) FMA	f8  = f99,  f35, f8
+	(p16) FMA	f9  = f99,  f43, f9
 	(p16) FMA	f10 = f99,  f51, f10
 	(p16) FMA	f11 = f99,  f59, f11
 	;;
@@ -799,8 +799,8 @@
 	(p16) FMA	f11 = f100, f60, f11
 
 	;;
-	(p16) FMA	f8  = f101, f37, f8 
-	(p16) FMA	f9  = f101, f45, f9 
+	(p16) FMA	f8  = f101, f37, f8
+	(p16) FMA	f9  = f101, f45, f9
 	(p16) FMA	f10 = f101, f53, f10
 	(p16) FMA	f11 = f101, f61, f11
 	;;
@@ -809,8 +809,8 @@
 	(p16) FMA	f10 = f102, f54, f10
 	(p16) FMA	f11 = f102, f62, f11
 	;;
-	(p16) FMA	f8  = f103, f39, f8 
-	(p16) FMA	f9  = f103, f47, f9 
+	(p16) FMA	f8  = f103, f39, f8
+	(p16) FMA	f9  = f103, f47, f9
 	(p16) FMA	f10 = f103, f55, f10
 	(p16) FMA	f11 = f103, f63, f11
 	br.ctop.sptk.few .L22
@@ -888,8 +888,8 @@
 	(p13) FMA	f10 = f96,  f48, f10
 	(p13) FMA	f11 = f96,  f56, f11
 	;;
-	(p13) FMA	f8  = f97,  f33, f8 
-	(p13) FMA	f9  = f97,  f41, f9 
+	(p13) FMA	f8  = f97,  f33, f8
+	(p13) FMA	f9  = f97,  f41, f9
 	(p13) FMA	f10 = f97,  f49, f10
 	(p13) FMA	f11 = f97,  f57, f11
 	;;
@@ -898,8 +898,8 @@
 	(p13) FMA	f10 = f98,  f50, f10
 	(p13) FMA	f11 = f98,  f58, f11
 	;;
-	(p13) FMA	f8  = f99,  f35, f8 
-	(p13) FMA	f9  = f99,  f43, f9 
+	(p13) FMA	f8  = f99,  f35, f8
+	(p13) FMA	f9  = f99,  f43, f9
 	(p13) FMA	f10 = f99,  f51, f10
 	(p13) FMA	f11 = f99,  f59, f11
 	;;
@@ -908,8 +908,8 @@
 	(p14) FMA	f10 = f100, f52, f10
 	(p14) FMA	f11 = f100, f60, f11
 	;;
-	(p14) FMA	f8  = f101, f37, f8 
-	(p14) FMA	f9  = f101, f45, f9 
+	(p14) FMA	f8  = f101, f37, f8
+	(p14) FMA	f9  = f101, f45, f9
 	(p14) FMA	f10 = f101, f53, f10
 	(p14) FMA	f11 = f101, f61, f11
 	;;
@@ -962,10 +962,10 @@
 	;;
 	shladd	LDA7M8 = LDA, 1, r0
 	;;
-	sub	LDA7M8 = LDA, LDA7M8	
+	sub	LDA7M8 = LDA, LDA7M8
 	;;
 	adds	LDA7M8 = 8 * SIZE, LDA7M8
-	;;	
+	;;
 	mov	f8  = f0
 	mov	f9  = f0
 	mov	f10 = f0
@@ -1028,26 +1028,26 @@
 	(p16) FMA	f8  = f96,  f32, f8
 	(p16) FMA	f9  = f96,  f40, f9
 	;;
-	(p16) FMA	f8  = f97,  f33, f8 
-	(p16) FMA	f9  = f97,  f41, f9 
+	(p16) FMA	f8  = f97,  f33, f8
+	(p16) FMA	f9  = f97,  f41, f9
 	;;
 	(p16) FMA	f8  = f98,  f34, f8
 	(p16) FMA	f9  = f98,  f42, f9
 	;;
-	(p16) FMA	f8  = f99,  f35, f8 
-	(p16) FMA	f9  = f99,  f43, f9 
+	(p16) FMA	f8  = f99,  f35, f8
+	(p16) FMA	f9  = f99,  f43, f9
 	;;
 	(p16) FMA	f8  = f100, f36, f8
 	(p16) FMA	f9  = f100, f44, f9
 	;;
-	(p16) FMA	f8  = f101, f37, f8 
-	(p16) FMA	f9  = f101, f45, f9 
+	(p16) FMA	f8  = f101, f37, f8
+	(p16) FMA	f9  = f101, f45, f9
 	;;
 	(p16) FMA	f8  = f102, f38, f8
 	(p16) FMA	f9  = f102, f46, f9
 	;;
-	(p16) FMA	f8  = f103, f39, f8 
-	(p16) FMA	f9  = f103, f47, f9 
+	(p16) FMA	f8  = f103, f39, f8
+	(p16) FMA	f9  = f103, f47, f9
 	br.ctop.sptk.few .L32
 	;;
 	.align 16
@@ -1103,20 +1103,20 @@
 	(p13) FMA	f8  = f96,  f32, f8
 	(p13) FMA	f9  = f96,  f40, f9
 	;;
-	(p13) FMA	f8  = f97,  f33, f8 
-	(p13) FMA	f9  = f97,  f41, f9 
+	(p13) FMA	f8  = f97,  f33, f8
+	(p13) FMA	f9  = f97,  f41, f9
 	;;
 	(p13) FMA	f8  = f98,  f34, f8
 	(p13) FMA	f9  = f98,  f42, f9
 	;;
-	(p13) FMA	f8  = f99,  f35, f8 
-	(p13) FMA	f9  = f99,  f43, f9 
+	(p13) FMA	f8  = f99,  f35, f8
+	(p13) FMA	f9  = f99,  f43, f9
 	;;
 	(p14) FMA	f8  = f100, f36, f8
 	(p14) FMA	f9  = f100, f44, f9
 	;;
-	(p14) FMA	f8  = f101, f37, f8 
-	(p14) FMA	f9  = f101, f45, f9 
+	(p14) FMA	f8  = f101, f37, f8
+	(p14) FMA	f9  = f101, f45, f9
 	;;
 	(p15) FMA	f8  = f102, f38, f8
 	(p15) FMA	f9  = f102, f46, f9
@@ -1202,19 +1202,19 @@
 	;;
 	(p16) FMA	f8  = f96,  f32, f8
 	;;
-	(p16) FMA	f8  = f97,  f33, f8 
+	(p16) FMA	f8  = f97,  f33, f8
 	;;
 	(p16) FMA	f8  = f98,  f34, f8
 	;;
-	(p16) FMA	f8  = f99,  f35, f8 
+	(p16) FMA	f8  = f99,  f35, f8
 	;;
 	(p16) FMA	f8  = f100, f36, f8
 	;;
-	(p16) FMA	f8  = f101, f37, f8 
+	(p16) FMA	f8  = f101, f37, f8
 	;;
 	(p16) FMA	f8  = f102, f38, f8
 	;;
-	(p16) FMA	f8  = f103, f39, f8 
+	(p16) FMA	f8  = f103, f39, f8
 	br.ctop.sptk.few .L42
 	;;
 	.align 16
@@ -1260,15 +1260,15 @@
 	;;
 	(p13) FMA	f8  = f96,  f32, f8
 	;;
-	(p13) FMA	f8  = f97,  f33, f8 
+	(p13) FMA	f8  = f97,  f33, f8
 	;;
 	(p13) FMA	f8  = f98,  f34, f8
 	;;
-	(p13) FMA	f8  = f99,  f35, f8 
+	(p13) FMA	f8  = f99,  f35, f8
 	;;
 	(p14) FMA	f8  = f100, f36, f8
 	;;
-	(p14) FMA	f8  = f101, f37, f8 
+	(p14) FMA	f8  = f101, f37, f8
 	;;
 	(p15) FMA	f8  = f102, f38, f8
 	;;

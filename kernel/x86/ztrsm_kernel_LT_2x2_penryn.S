@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -55,7 +55,7 @@
 #define KK	 4 + STACK(%esp)
 #define KKK	 8 + STACK(%esp)
 #define AORIG	12 + STACK(%esp)
-	
+
 #if defined(PENRYN) || defined(DUNNINGTON)
 #define PREFETCH	prefetcht1
 #define PREFETCHSIZE 84
@@ -101,12 +101,12 @@
 	movl	OFFSET, %eax
 #ifdef RN
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 
 	movl	M,    %ebx
 	testl	%ebx, %ebx
-	jle	.L999	
+	jle	.L999
 
 	subl	$-32 * SIZE, A
 	subl	$-32 * SIZE, B
@@ -134,7 +134,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -177,7 +177,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -209,7 +209,7 @@
 	movl	KK, %eax
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	-32 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -368,11 +368,11 @@
 	movaps	-32 * SIZE(BB), %xmm1
 	mulps	%xmm0, %xmm2
 	movaps	-32 * SIZE(AA), %xmm0
-	
+
 	decl   %eax
 	jne    .L11
 	ALIGN_4
-	
+
 .L15:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -775,7 +775,7 @@
 	movl	KK, %eax
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movsd	-32 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -933,7 +933,7 @@
 	decl	%eax
 	jne	.L41
 	ALIGN_4
-	
+
 .L42:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -1006,7 +1006,7 @@
 	pxor	%xmm0, %xmm7
 #endif
 #endif
-	
+
 	addps	%xmm5, %xmm4
 	addps	%xmm7, %xmm6
 
@@ -1258,7 +1258,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -1290,7 +1290,7 @@
 	movl	KK, %eax
 	sall	$ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	-32 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -1391,11 +1391,11 @@
 
 	subl   $-32 * SIZE, AA
 	subl   $-16 * SIZE, BB
-	
+
 	decl   %eax
 	jne	.L111
 	ALIGN_4
-	
+
 .L112:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -1457,7 +1457,7 @@
 	pxor	%xmm0, %xmm5
 #endif
 #endif
-	
+
 	addps	%xmm5, %xmm4
 
 #if defined(LN) || defined(LT)
@@ -1678,7 +1678,7 @@
 	movl	KK, %eax
 	sall	$ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movsd	-32 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -1777,11 +1777,11 @@
 
 	subl   $-16 * SIZE, AA
 	subl   $-16 * SIZE, BB
-	
+
 	decl	%eax
 	jne	.L141
 	ALIGN_4
-	
+
 .L142:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -1839,7 +1839,7 @@
 	pxor	%xmm0, %xmm5
 #endif
 #endif
-	
+
 	addps	%xmm5, %xmm4
 
 #if defined(LN) || defined(LT)

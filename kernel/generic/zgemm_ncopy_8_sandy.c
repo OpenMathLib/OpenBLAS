@@ -13,19 +13,19 @@ notice, this list of conditions and the following disclaimer.
 notice, this list of conditions and the following disclaimer in
 the documentation and/or other materials provided with the
 distribution.
-3. Neither the name of the ISCAS nor the names of its contributors may 
-be used to endorse or promote products derived from this software 
+3. Neither the name of the ISCAS nor the names of its contributors may
+be used to endorse or promote products derived from this software
 without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  **********************************************************************************/
@@ -33,13 +33,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "common.h"
 
-int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest) 
+int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
 {
    BLASLONG i,j;
    BLASLONG idx=0;
    BLASLONG ii;
    FLOAT *src0,*src1,*src2,*src3,*src4,*src5,*src6,*src7,*dest0;
-   for (j=0; j<col/8; j+=1) 
+   for (j=0; j<col/8; j+=1)
      {
         src0 = src;
         src1 = src0+2*srcdim;
@@ -53,7 +53,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
         dest0 = dest;
         ii = (row<<4);
         dest = dest+ii;
-        for (i=0; i<row/4; i+=1) 
+        for (i=0; i<row/4; i+=1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -130,7 +130,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (4<<4);
              dest0 = dest0+ii;
           }
-        if (row&2)  
+        if (row&2)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -175,7 +175,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (2<<4);
              dest0 = dest0+ii;
           }
-        if (row&1)  
+        if (row&1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -205,7 +205,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              dest0 = dest0+ii;
           }
      }
-   if (col&4)  
+   if (col&4)
      {
         src0 = src;
         src1 = src0+2*srcdim;
@@ -215,7 +215,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
         dest0 = dest;
         ii = (row<<3);
         dest = dest+ii;
-        for (i=0; i<row/4; i+=1) 
+        for (i=0; i<row/4; i+=1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -256,7 +256,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (4<<3);
              dest0 = dest0+ii;
           }
-        if (row&2)  
+        if (row&2)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -281,7 +281,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (2<<3);
              dest0 = dest0+ii;
           }
-        if (row&1)  
+        if (row&1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -299,7 +299,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              dest0 = dest0+ii;
           }
      }
-   if (col&2)  
+   if (col&2)
      {
         src0 = src;
         src1 = src0+2*srcdim;
@@ -307,7 +307,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
         dest0 = dest;
         ii = (row<<2);
         dest = dest+ii;
-        for (i=0; i<row/4; i+=1) 
+        for (i=0; i<row/4; i+=1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -330,7 +330,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (4<<2);
              dest0 = dest0+ii;
           }
-        if (row&2)  
+        if (row&2)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -345,7 +345,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (2<<2);
              dest0 = dest0+ii;
           }
-        if (row&1)  
+        if (row&1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -357,14 +357,14 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              dest0 = dest0+ii;
           }
      }
-   if (col&1)  
+   if (col&1)
      {
         src0 = src;
         src = src0+2*srcdim;
         dest0 = dest;
         ii = (row<<1);
         dest = dest+ii;
-        for (i=0; i<row/4; i+=1) 
+        for (i=0; i<row/4; i+=1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -378,7 +378,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (4<<1);
              dest0 = dest0+ii;
           }
-        if (row&2)  
+        if (row&2)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];
@@ -388,7 +388,7 @@ int CNAME(BLASLONG row,BLASLONG col,FLOAT* src,BLASLONG srcdim,FLOAT* dest)
              ii = (2<<1);
              dest0 = dest0+ii;
           }
-        if (row&1)  
+        if (row&1)
           {
              dest0[0] = src0[0];
              dest0[1] = src0[1];

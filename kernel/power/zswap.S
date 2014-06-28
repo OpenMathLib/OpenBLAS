@@ -38,12 +38,12 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #ifdef linux
 #ifndef __64BIT__
 #define N	r3
 #define X	r6
-#define INCX	r7	
+#define INCX	r7
 #define Y	r8
 #define INCY	r9
 #define PREA	r4
@@ -52,7 +52,7 @@
 #else
 #define N	r3
 #define X	r8
-#define INCX	r9	
+#define INCX	r9
 #define Y	r10
 #define INCY	r4
 #define PREA	r5
@@ -65,7 +65,7 @@
 #if !defined(__64BIT__) && defined(DOUBLE)
 #define N	r3
 #define X	r10
-#define INCX	r4	
+#define INCX	r4
 #define Y	r5
 #define INCY	r6
 #define PREA	r7
@@ -74,7 +74,7 @@
 #else
 #define N	r3
 #define X	r8
-#define INCX	r9	
+#define INCX	r9
 #define Y	r10
 #define INCY	r4
 #define PREA	r5
@@ -120,7 +120,7 @@
 #if defined(linux) && defined(__64BIT__)
 	ld	INCY, 112 + STACKSIZE(SP)
 #endif
-	
+
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
 	ld	INCY,   112 + STACKSIZE(SP)
@@ -143,7 +143,7 @@
 #ifdef L1_DUALFETCH
 	li	PREA, (L1_PREFETCHSIZE) / 2
 #else
-	li	PREA, (L1_PREFETCHSIZE) 
+	li	PREA, (L1_PREFETCHSIZE)
 #endif
 
 	cmpwi	cr0, N, 0

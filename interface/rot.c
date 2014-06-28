@@ -45,7 +45,7 @@
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *C, FLOAT *S){
-  
+
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   BLASLONG incy = *INCY;
@@ -78,5 +78,5 @@ void CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy, FLOAT c, F
   IDEBUG_END;
 
   return;
-  
+
 }

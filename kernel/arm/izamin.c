@@ -66,7 +66,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 	while(i < n)
 	{
-		if( CABS1(x,ix) < CABS1(minf,0) ) 
+		if( CABS1(x,ix) < CABS1(minf,0) )
 		{
 			min = i;
 			minf[0] = ABS(x[ix]);
@@ -77,5 +77,5 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	}
 	return(min+1);
 }
-	
+
 

@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define	M	r3
 #define	N	r4
 #define	A	r5
@@ -57,7 +57,7 @@
 #define M4	r29
 #define INC	r30
 #define INC2	r31
-	
+
 #define c01	f0
 #define c02	f1
 #define c03	f2
@@ -184,7 +184,7 @@ LL(12):
 	STFPDUX	c16,   B1, INC2
 	bdnz	LL(12)
 	.align 4
-	
+
 LL(15):
 	andi.	r0,  N,  3
 	ble	LL(19)
@@ -271,7 +271,7 @@ LL(22):
 	STFPDUX	c08,   B1, INC2
 	bdnz	LL(22)
 	.align 4
-	
+
 LL(23):
 	andi.	r0,  N,  2
 	ble	LL(24)
@@ -323,7 +323,7 @@ LL(32):
 	STFPDUX	c04,   B1, INC2
 	bdnz	LL(32)
 	.align 4
-	
+
 LL(33):
 	andi.	r0,  N,  2
 	ble	LL(34)
@@ -447,7 +447,7 @@ LL(112):
 	STFPDUX	c16,   B1, INC2
 	bdnz	LL(112)
 	.align 4
-	
+
 LL(115):
 	andi.	r0,  N,  3
 	ble	LL(119)
@@ -576,7 +576,7 @@ LL(122):
 	STFPDUX	c15,   B1, INC2
 	bdnz	LL(122)
 	.align 4
-	
+
 LL(123):
 	andi.	r0,  N,  2
 	ble	LL(124)
@@ -651,7 +651,7 @@ LL(132):
 	STFPDUX	c07,   B1, INC2
 	bdnz	LL(132)
 	.align 4
-	
+
 LL(133):
 	andi.	r0,  N,  2
 	ble	LL(134)

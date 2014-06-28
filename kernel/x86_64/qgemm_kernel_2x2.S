@@ -46,7 +46,7 @@
 #define B	ARG5
 #define C	ARG6
 #define LDC	%r10
-	
+
 #define I	%r12
 #define J	%r13
 #define AO	%r14
@@ -73,7 +73,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
@@ -89,10 +89,10 @@
 	negq	%rax
 	movq	%rax, KK
 #endif
-	
+
 	addq	$8 * SIZE, A
 	addq	$8 * SIZE, B
-	
+
 	salq	$BASE_SHIFT, LDC
 
 	movq	N,   %rax
@@ -105,7 +105,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 	movq	A, AO
 
@@ -128,7 +128,7 @@
 	salq	$BASE_SHIFT, %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(B,  %rax, 2), BO
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -148,7 +148,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -174,7 +174,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -192,7 +192,7 @@
 
 	FLD	 -5 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -5 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -212,7 +212,7 @@
 
 	FLD	 -3 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -3 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -230,7 +230,7 @@
 
 	FLD	 -1 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -1 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -266,7 +266,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -347,7 +347,7 @@
 	salq	$BASE_SHIFT, %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	( B, %rax, 2), BO
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -357,7 +357,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -496,13 +496,13 @@
 
 .L30:
 	movq	N,  %rax
-	testq	$1, %rax	
+	testq	$1, %rax
 	je	.L999
 
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 	movq	A, AO
 
@@ -524,7 +524,7 @@
 	salq	$BASE_SHIFT, %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	( B, %rax, 1), BO
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -540,7 +540,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -681,7 +681,7 @@
 	salq	$BASE_SHIFT, %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	( B, %rax, 1), BO
-#endif	
+#endif
 
 	fldz
 
@@ -690,7 +690,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT

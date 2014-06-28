@@ -48,7 +48,7 @@
 
 #ifdef __ELF__
 int __xerbla(char *message, blasint *info, blasint length){
- 
+
   printf(" ** On entry to %6s parameter number %2d had an illegal value\n",
 	  message, *info);
 
@@ -60,7 +60,7 @@ int BLASFUNC(xerbla)(char *, blasint *, blasint) __attribute__ ((weak, alias ("_
 #else
 
 int BLASFUNC(xerbla)(char *message, blasint *info, blasint length){
- 
+
   printf(" ** On entry to %6s parameter number %2d had an illegal value\n",
 	  message, *info);
 

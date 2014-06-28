@@ -78,7 +78,7 @@
 #define t4	$f21
 
 	PROLOGUE
-	
+
 #ifndef __64BIT__
 	daddiu	$sp, $sp, -16
 	sdc1	$f20, 0($sp)

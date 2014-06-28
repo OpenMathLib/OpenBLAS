@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #ifdef linux
 #ifndef __64BIT__
 #define N	r3
@@ -51,7 +51,7 @@
 #else
 #define N	r3
 #define X	r8
-#define INCX	r9	
+#define INCX	r9
 #define Y	r5
 #define INCY	r4
 #define	YY	r6
@@ -96,7 +96,7 @@
 	PROFCODE
 
 	subi	SP, SP, STACKSIZE
-	
+
 	stfd	f14,    0(SP)
 	stfd	f15,    8(SP)
 	stfd	f16,   16(SP)

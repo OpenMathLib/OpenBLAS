@@ -121,7 +121,7 @@
 #ifndef CBLAS
 
 blasint NAME(blasint *N, FLOAT *x, blasint *INCX){
-  
+
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   blasint ret;
@@ -146,7 +146,7 @@ blasint NAME(blasint *N, FLOAT *x, blasint *INCX){
 #else
 
 CBLAS_INDEX CNAME(blasint n, FLOAT *x, blasint incx){
-  
+
   CBLAS_INDEX ret;
 
   PRINT_DEBUG_CNAME;

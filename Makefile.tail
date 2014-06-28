@@ -57,7 +57,7 @@ commonlibs :: $(COMMONOBJS)
 commonprof :: $(COMMONOBJS_P)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME_P) $^
 
-quick : 
+quick :
 	  $(MAKE) -C $(TOPDIR) libs
 
 bms.$(SUFFIX):bm.c $(TOPDIR)/../bench/bmcommon.h
@@ -386,7 +386,7 @@ kbench_rank_k: kbench_rank_k.$(SUFFIX) $(DBLASOBJS) $(COMMONOBJS) $(OBJS) $(LIBS
 smallbench: smallbench.$(SUFFIX)  $(BLASOBJS) $(COMMONOBJS) $(OBJS) $(LIBS)
 	$(CC) -o $(@F) $(CFLAGS) $^  $(EXTRALIB) $(CEXTRALIB)
 
-smallbench.mkl: smallbench.$(SUFFIX) 
+smallbench.mkl: smallbench.$(SUFFIX)
 	$(CC) -o $(@F) $(CFLAGS) $^  $(LIBMKL) $(EXTRALIB) $(CEXTRALIB)
 
 bench.sun: bench.$(SUFFIX) $(OBJS)
@@ -410,7 +410,7 @@ bench.acml: bench.$(SUFFIX) $(OBJS)
 bench.flame: bench.$(SUFFIX) $(OBJS)
 	$(CC) -o $(@F) $(CFLAGS) $^  $(LIBFLAME)  $(EXTRALIB) $(CEXTRALIB)
 
-kbench.mkl: kbench.$(SUFFIX) $(OBJS) 
+kbench.mkl: kbench.$(SUFFIX) $(OBJS)
 	$(CC) -static -o $(@F) $(CFLAGS) $^  $(LIBMKL) $(EXTRALIB) $(CEXTRALIB)
 
 bench.mkl: bench.$(SUFFIX) $(OBJS)
@@ -537,10 +537,10 @@ params.$(SUFFIX):param.c $(TOPDIR)/../bench/bmcommon.h
 	$(CC) $(CFLAGS) -UDOUBLE -UCOMPLEX -c $< -o $(@F)
 
 paramd.$(SUFFIX):param.c $(TOPDIR)/../bench/bmcommon.h
-	$(CC) $(CFLAGS) -DDOUBLE -UCOMPLEX -c $< -o $(@F) 
+	$(CC) $(CFLAGS) -DDOUBLE -UCOMPLEX -c $< -o $(@F)
 
 paramq.$(SUFFIX):param.c $(TOPDIR)/../bench/bmcommon.h
-	$(CC) $(CFLAGS) -DXDOUBLE -UCOMPLEX -c $< -o $(@F) 
+	$(CC) $(CFLAGS) -DXDOUBLE -UCOMPLEX -c $< -o $(@F)
 
 paramc.$(SUFFIX):paramz.c $(TOPDIR)/../bench/bmcommon.h
 	$(CC) $(CFLAGS) -UDOUBLE -DCOMPLEX -c $< -o $(@F)
@@ -555,10 +555,10 @@ params-ex.$(SUFFIX):param-ex.c $(TOPDIR)/../bench/bmcommon.h
 	$(CC) $(CFLAGS) -UDOUBLE -UCOMPLEX -c $< -o $(@F)
 
 paramd-ex.$(SUFFIX):param-ex.c $(TOPDIR)/../bench/bmcommon.h
-	$(CC) $(CFLAGS) -DDOUBLE -UCOMPLEX -c $< -o $(@F) 
+	$(CC) $(CFLAGS) -DDOUBLE -UCOMPLEX -c $< -o $(@F)
 
 paramq-ex.$(SUFFIX):param-ex.c $(TOPDIR)/../bench/bmcommon.h
-	$(CC) $(CFLAGS) -DXDOUBLE -UCOMPLEX -c $< -o $(@F) 
+	$(CC) $(CFLAGS) -DXDOUBLE -UCOMPLEX -c $< -o $(@F)
 
 paramc-ex.$(SUFFIX):paramz-ex.c $(TOPDIR)/../bench/bmcommon.h
 	$(CC) $(CFLAGS) -UDOUBLE -DCOMPLEX -c $< -o $(@F)

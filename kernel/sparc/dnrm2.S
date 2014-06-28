@@ -258,7 +258,7 @@
 	FCMP	c1, fzero
 	fbe	.LL99
 	nop
-	
+
 	FMOV	c1, fmax
 	add	N, 1, N
 	FDIV	fone, c1, fone

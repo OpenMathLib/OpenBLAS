@@ -81,8 +81,8 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 
     if (length > 0) {
       AXPYU_K(length, 0, 0,
-	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1], 
-	      alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0], 
+	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
+	      alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0],
 	      a + offset * COMPSIZE, 1, Y + (i - length) * COMPSIZE, 1, NULL, 0);
     }
 
@@ -106,8 +106,8 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 
     if (length > 0) {
       AXPYU_K(length, 0, 0,
-	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1], 
-	      alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0], 
+	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
+	      alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0],
 	      a + COMPSIZE, 1, Y + (i + 1) * COMPSIZE, 1, NULL, 0);
     }
 
@@ -131,8 +131,8 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 
     if (length > 0) {
       AXPYC_K(length, 0, 0,
-	       alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1], 
-	       alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0], 
+	       alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
+	       alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0],
 	      a + offset * COMPSIZE, 1, Y + (i - length) * COMPSIZE, 1, NULL, 0);
     }
 
@@ -156,8 +156,8 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 
     if (length > 0) {
       AXPYC_K(length, 0, 0,
-	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1], 
-	      alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0], 
+	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
+	      alpha_r * X[i * 2 + 1] + alpha_i * X[i * 2 + 0],
 	      a + COMPSIZE, 1, Y + (i + 1) * COMPSIZE, 1, NULL, 0);
     }
 
@@ -176,7 +176,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #endif
 #endif
 
-    
+
     a += lda * 2;
   }
 

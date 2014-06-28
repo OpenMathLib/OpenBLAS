@@ -58,10 +58,10 @@
 static __inline void blas_lock(volatile unsigned long *address){
 
   unsigned long ret;
-  
+
   do {
     while (*address) {YIELDING;};
-    
+
     __asm__ __volatile__ ("mov ar.ccv=r0\n;;\n"
 			  "cmpxchg4.acq %0=[%2],%1,ar.ccv\n"
 			  : "=r"(ret) : "r"(1), "r"(address)

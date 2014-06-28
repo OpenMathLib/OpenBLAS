@@ -72,14 +72,14 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
   for(is = 0; is < offset; is += SYMV_P){
     min_i = MIN(offset - is, SYMV_P);
 #endif
-      
+
 #ifndef LOWER
     if (is >0){
       GEMV_T(is, min_i, 0, alpha_r, alpha_i,
 	      a + is * lda * COMPSIZE, lda,
 	      X,                       1,
 	      Y + is * COMPSIZE,       1, gemvbuffer);
-      
+
       GEMV_N(is, min_i, 0, alpha_r, alpha_i,
 	      a + is * lda  * COMPSIZE,  lda,
 	      X + is * COMPSIZE, 1,
@@ -92,12 +92,12 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
 #else
     ZSYMCOPY_U(min_i, a + (is + is * lda) * COMPSIZE, lda, symbuffer);
 #endif
-    
+
     GEMV_N(min_i, min_i, 0, alpha_r, alpha_i,
 	    symbuffer, min_i,
 	    X + is * COMPSIZE, 1,
 	    Y + is * COMPSIZE, 1, gemvbuffer);
-    
+
 
 #ifdef LOWER
     if (m - is >  min_i){
@@ -105,7 +105,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
 	      a + ((is + min_i) + is * lda) * COMPSIZE, lda,
 	      X + (is + min_i) * COMPSIZE, 1,
 	      Y +  is           * COMPSIZE, 1, gemvbuffer);
-      
+
       GEMV_N(m - is - min_i, min_i, 0, alpha_r, alpha_i,
 	      a + ((is + min_i) + is * lda) * COMPSIZE, lda,
 	      X +  is           * COMPSIZE, 1,

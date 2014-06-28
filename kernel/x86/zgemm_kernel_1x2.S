@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define J	 0 + STACK(%esp)
 #define I	 4 + STACK(%esp)
 #define KK	 8 + STACK(%esp)
@@ -331,7 +331,7 @@
 
 	movl	STACK_LDC, LDC
 	sall	$ZBASE_SHIFT, LDC
-	
+
 	subl	$(AOFFSET - 16 * SIZE), STACK_A
 	subl	$(BOFFSET - 16 * SIZE), STACK_B
 
@@ -346,7 +346,7 @@
 	movl	K, %eax
 	testl	%eax, %eax
 	jle	.L999
-	
+
 	movl	N,   %eax
 	sarl	$1,  %eax
 	movl	%eax, J
@@ -357,7 +357,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	STACK_B, B
@@ -411,7 +411,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -510,7 +510,7 @@
 	FMUL	ALPHA_R
 	fxch	%st(1)
 	FMUL	ALPHA_I
-	faddp	%st, %st(1)	
+	faddp	%st, %st(1)
 
 #ifndef TRMMKERNEL
 	FADD	1 * SIZE(%edi)
@@ -531,7 +531,7 @@
 	FMUL	ALPHA_R
 	fxch	%st(1)
 	FMUL	ALPHA_I
-	faddp	%st, %st(1)	
+	faddp	%st, %st(1)
 
 #ifndef TRMMKERNEL
 	FADD	1 * SIZE(%edi,LDC)
@@ -580,7 +580,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	STACK_B, B
@@ -617,7 +617,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -765,7 +765,7 @@
 	FMUL	ALPHA_R
 	fxch	%st(1)
 	FMUL	ALPHA_I
-	faddp	%st, %st(1)	
+	faddp	%st, %st(1)
 
 #ifndef TRMMKERNEL
 	FADD	1 * SIZE(%edi)

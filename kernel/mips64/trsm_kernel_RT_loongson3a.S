@@ -70,7 +70,7 @@
 #define t44	$f25
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -144
 
 	SDARG	$16,   0($sp)
@@ -110,7 +110,7 @@
 											#	Be carefull B has no effeck of mc!!
 	mult	N, LDC
 	mflo	TEMP
-	daddu	C, C, TEMP						#	C point to the last colum of blockB 
+	daddu	C, C, TEMP						#	C point to the last colum of blockB
 
 	dsubu	KK, K, OFFSET					#	KC-KK is the length of rectangular data part of Bj
 
@@ -126,17 +126,17 @@
 	move	CO1, C
 
 	move	AORIG, A
-	
+
 	dsra	I,  M, 2
 	blez	I, .L80
 	NOP
 
 .L31:										#	mr=4,nr=1
-	dsll	L,    KK, 2 + BASE_SHIFT		#	mr=4	
+	dsll	L,    KK, 2 + BASE_SHIFT		#	mr=4
 	dsll	TEMP, KK, BASE_SHIFT			#	nr=1
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 4 results registers
 	MOV	t21, t11
@@ -153,7 +153,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L35
 	NOP
-	
+
 	.align	3
 
 .L32:
@@ -193,9 +193,9 @@
 	MADD	t31, t31, a3, b3
 	MADD	t41, t41, a4, b3
 
-	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr
 	daddiu	BO, BO,  4 * SIZE			#	BO += 1nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -227,9 +227,9 @@
 	MADD	t31, t31, a3, b1
 	MADD	t41, t41, a4, b1
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr
 	daddiu	BO, BO, 1 * SIZE			#	BO += 2nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -277,11 +277,11 @@
 	ST	t21,  1 * SIZE(CO1)
 	ST	t31,  2 * SIZE(CO1)
 	ST	t41,  3 * SIZE(CO1)
-	
+
 
 	daddiu	CO1, CO1, 4 * SIZE			#	fixed pointer
 
-	dsll	TEMP, K, 2 + BASE_SHIFT		
+	dsll	TEMP, K, 2 + BASE_SHIFT
 	daddu	AORIG, AORIG, TEMP			# move to next panel Ai
 
 	daddiu	I, I, -1
@@ -295,11 +295,11 @@
 	blez	I, .L90
 	nop
 
-	dsll	L,    KK, 1 + BASE_SHIFT		#	mr=2	
+	dsll	L,    KK, 1 + BASE_SHIFT		#	mr=2
 	dsll	TEMP, KK, BASE_SHIFT			#	nr=1
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 4 results registers
 	MOV	t21, t11
@@ -312,7 +312,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L85
 	NOP
-	
+
 	.align	3
 
 .L82:
@@ -340,9 +340,9 @@
 	MADD	t11, t11, a3, b3
 	MADD	t21, t21, a4, b3
 
-	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr
 	daddiu	BO, BO,  4 * SIZE			#	BO += 1nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -368,9 +368,9 @@
 	MADD	t11, t11, a1, b1
 	MADD	t21, t21, a2, b1
 
-	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 1 * SIZE			#	BO += 1nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -406,11 +406,11 @@
 
 	ST	t11,  0 * SIZE(CO1)				#	write back
 	ST	t21,  1 * SIZE(CO1)
-	
+
 
 	daddiu	CO1, CO1, 2 * SIZE			#	fixed pointer
 
-	dsll	TEMP, K, 1 + BASE_SHIFT		
+	dsll	TEMP, K, 1 + BASE_SHIFT
 	daddu	AORIG, AORIG, TEMP			# move to next panel Ai
 
 
@@ -420,11 +420,11 @@
 	blez	I, .L39
 	nop
 
-	dsll	L,    KK, BASE_SHIFT			#	mr=1	
+	dsll	L,    KK, BASE_SHIFT			#	mr=1
 	dsll	TEMP, KK, BASE_SHIFT			#	nr=1
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 4 results registers
 
@@ -434,7 +434,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L95
 	NOP
-	
+
 	.align	3
 
 .L92:
@@ -453,9 +453,9 @@
 
 	MADD	t11, t11, a3, b3
 
-	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr	
+	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr
 	daddiu	BO, BO,  4 * SIZE			#	BO += 1nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 
@@ -477,9 +477,9 @@
 .L96:
 	MADD	t11, t11, a1, b1
 
-	daddiu	AO, AO, 1 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 1 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 1 * SIZE			#	BO += 1nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 
@@ -508,11 +508,11 @@
 	ST	t11,  0 * SIZE(AO)				# updata packed A
 
 	ST	t11,  0 * SIZE(CO1)				#	write back
-	
+
 
 	daddiu	CO1, CO1, 1 * SIZE			#	fixed pointer
 
-	dsll	TEMP, K, BASE_SHIFT		
+	dsll	TEMP, K, BASE_SHIFT
 	daddu	AORIG, AORIG, TEMP			# move to next panel Ai
 
 
@@ -529,7 +529,7 @@
 	dsll	TEMP, K, 1 + BASE_SHIFT			#	Kc*2nr	move B to the beginning address of Bj
 	dsubu	B, B, TEMP
 
-	dsll	TEMP, LDC, 1					#	C 
+	dsll	TEMP, LDC, 1					#	C
 	dsubu	C, C, TEMP
 
 	move	CO1, C
@@ -542,11 +542,11 @@
 	NOP
 
 .L51:										#	mr=4,nr=2
-	dsll	L,    KK, 2 + BASE_SHIFT		#	mr=4	
+	dsll	L,    KK, 2 + BASE_SHIFT		#	mr=4
 	dsll	TEMP, KK, 1 + BASE_SHIFT		#	nr=2
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 8 results registers
 	MOV	t21, t11
@@ -568,7 +568,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L55
 	NOP
-	
+
 	.align	3
 
 .L52:
@@ -626,9 +626,9 @@
 	MADD	t32, t32, a3, b4
 	MADD	t42, t42, a4, b4
 
-	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr
 	daddiu	BO, BO,  8 * SIZE			#	BO += 2nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -671,9 +671,9 @@
 	MADD	t32, t32, a3, b2
 	MADD	t42, t42, a4, b2
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr
 	daddiu	BO, BO, 2 * SIZE			#	BO += 2nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -749,16 +749,16 @@
 	ST	t21,  1 * SIZE(CO1)
 	ST	t31,  2 * SIZE(CO1)
 	ST	t41,  3 * SIZE(CO1)
-	
+
 	ST	t12,  0 * SIZE(CO2)
 	ST	t22,  1 * SIZE(CO2)
 	ST	t32,  2 * SIZE(CO2)
 	ST	t42,  3 * SIZE(CO2)
-	
+
 	daddiu	CO1, CO1, 4 * SIZE			#	fixed pointer
 	daddiu	CO2, CO2, 4 * SIZE
 
-	dsll	TEMP, K, 2 + BASE_SHIFT		
+	dsll	TEMP, K, 2 + BASE_SHIFT
 	daddu	AORIG, AORIG, TEMP			# move to next panel Ai
 
 	daddiu	I, I, -1
@@ -773,11 +773,11 @@
 	blez	I, .L70
 	nop
 
-	dsll	L,    KK, 1 + BASE_SHIFT		#	mr=2	
+	dsll	L,    KK, 1 + BASE_SHIFT		#	mr=2
 	dsll	TEMP, KK, 1 + BASE_SHIFT		#	nr=2
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 8 results registers
 	MOV	t21, t11
@@ -793,7 +793,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L65
 	NOP
-	
+
 	.align	3
 
 .L62:
@@ -833,9 +833,9 @@
 	MADD	t12, t12, a3, b4
 	MADD	t22, t22, a4, b4
 
-	daddiu	AO, AO,  8 * SIZE			#	AO += 2mr*4kr	
+	daddiu	AO, AO,  8 * SIZE			#	AO += 2mr*4kr
 	daddiu	BO, BO,  8 * SIZE			#	BO += 2nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -868,9 +868,9 @@
 	MADD	t12, t12, a1, b2
 	MADD	t22, t22, a2, b2
 
-	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 2 * SIZE			#	BO += 2nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -921,10 +921,10 @@
 
 	ST	t11,  0 * SIZE(CO1)				#	write back
 	ST	t21,  1 * SIZE(CO1)
-	
+
 	ST	t12,  0 * SIZE(CO2)
 	ST	t22,  1 * SIZE(CO2)
-	
+
 	daddiu	CO1, CO1, 2 * SIZE			#	fixed pointer
 	daddiu	CO2, CO2, 2 * SIZE
 
@@ -939,11 +939,11 @@
 	blez	I, .L59
 	nop
 
-	dsll	L,    KK, BASE_SHIFT			#	mr=1	
+	dsll	L,    KK, BASE_SHIFT			#	mr=1
 	dsll	TEMP, KK, 1 + BASE_SHIFT		#	nr=2
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 8 results registers
 	MOV	t12, t11
@@ -956,7 +956,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L75
 	NOP
-	
+
 	.align	3
 
 .L72:
@@ -984,9 +984,9 @@
 	MADD	t11, t11, a3, b3
 	MADD	t12, t12, a3, b4
 
-	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr	
+	daddiu	AO, AO,  4 * SIZE			#	AO += 1mr*4kr
 	daddiu	BO, BO,  8 * SIZE			#	BO += 2nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -1012,9 +1012,9 @@
 	MADD	t11, t11, a1, b1
 	MADD	t12, t12, a1, b2
 
-	daddiu	AO, AO, 1 * SIZE			#	AO += 1mr	
+	daddiu	AO, AO, 1 * SIZE			#	AO += 1mr
 	daddiu	BO, BO, 2 * SIZE			#	BO += 2nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -1055,7 +1055,7 @@
 
 	ST	t11,  0 * SIZE(CO1)				#	write back
 	ST	t12,  0 * SIZE(CO2)
-	
+
 	daddiu	CO1, CO1, 1 * SIZE			#	fixed pointer
 	daddiu	CO2, CO2, 1 * SIZE
 
@@ -1070,13 +1070,13 @@
 
 	.align 3
 .L50:
-	dsra	J,  N, 2						#	J = NC/4 
+	dsra	J,  N, 2						#	J = NC/4
 	blez	J, .L999
 	NOP
 
 .L10:
 	dsll	TEMP, K, 2 + BASE_SHIFT
-	dsubu	B, B, TEMP						#	move B to the beginning address of Bj	
+	dsubu	B, B, TEMP						#	move B to the beginning address of Bj
 
 	dsll	TEMP, LDC, 2
 	dsubu	C, C, TEMP						#	move C to the beginning address of Cj
@@ -1087,7 +1087,7 @@
 	daddu	CO2, C,   LDC
 	daddu	CO3, CO2, LDC
 	daddu	CO4, CO3, LDC
-	
+
 	move	AORIG, A						#	reset A
 
 	dsra	I,  M, 2						#	I=MC/4
@@ -1096,11 +1096,11 @@
 
 	.align 3
 .L11:
-	dsll	L,    KK, 2 + BASE_SHIFT		#	mr=4	
+	dsll	L,    KK, 2 + BASE_SHIFT		#	mr=4
 	dsll	TEMP, KK, 2 + BASE_SHIFT		#	nr=4
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 16 results registers
 	MOV	t21, t11
@@ -1132,7 +1132,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L15
 	NOP
-	
+
 	.align	3
 
 .L12:
@@ -1164,7 +1164,7 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 	MADD	t34, t34, a3, b4
-	MADD	t44, t44, a4, b4			#	fisrt 	
+	MADD	t44, t44, a4, b4			#	fisrt
 
 	LD	a1,  8 * SIZE(AO)
 	LD	a2,  9 * SIZE(AO)
@@ -1226,9 +1226,9 @@
 	MADD	t34, t34, a3, b4
 	MADD	t44, t44, a4, b4			#	third
 
-	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE			#	AO += 4mr*4kr
 	daddiu	BO, BO, 16 * SIZE			#	BO += 4nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -1293,9 +1293,9 @@
 	MADD	t34, t34, a3, b4
 	MADD	t44, t44, a4, b4			#	third
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 4mr
 	daddiu	BO, BO, 4 * SIZE			#	BO += 4nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
@@ -1381,7 +1381,7 @@
 	NMSUB	t31, t31, b4, t34
 	NMSUB	t41, t41, b4, t44
 
-	
+
 	LD	b5,  10 * SIZE(BO)
 	LD	b6,   9 * SIZE(BO)
 	LD	b7,   8 * SIZE(BO)
@@ -1442,17 +1442,17 @@
 	ST	t21,  1 * SIZE(CO1)
 	ST	t31,  2 * SIZE(CO1)
 	ST	t41,  3 * SIZE(CO1)
-	
+
 	ST	t12,  0 * SIZE(CO2)
 	ST	t22,  1 * SIZE(CO2)
 	ST	t32,  2 * SIZE(CO2)
 	ST	t42,  3 * SIZE(CO2)
-	
+
 	ST	t13,  0 * SIZE(CO3)
 	ST	t23,  1 * SIZE(CO3)
 	ST	t33,  2 * SIZE(CO3)
 	ST	t43,  3 * SIZE(CO3)
-	
+
 	ST	t14,  0 * SIZE(CO4)
 	ST	t24,  1 * SIZE(CO4)
 	ST	t34,  2 * SIZE(CO4)
@@ -1463,7 +1463,7 @@
 	daddiu	CO3, CO3, 4 * SIZE
 	daddiu	CO4, CO4, 4 * SIZE
 
-	dsll	TEMP, K, 2 + BASE_SHIFT		
+	dsll	TEMP, K, 2 + BASE_SHIFT
 	daddu	AORIG, AORIG, TEMP			# move to next panel Ai
 
 	daddiu	I, I, -1
@@ -1476,11 +1476,11 @@
 	blez	I, .L40
 	NOP
 
-	dsll	L,    KK, 1 + BASE_SHIFT		#	mr=2	
+	dsll	L,    KK, 1 + BASE_SHIFT		#	mr=2
 	dsll	TEMP, KK, 2 + BASE_SHIFT		#	nr=4
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 8 results registers
 	MOV	t21, t11
@@ -1502,7 +1502,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L25
 	NOP
-	
+
 	.align	3
 
 .L22:
@@ -1566,9 +1566,9 @@
 	MADD	t14, t14, a3, b4
 	MADD	t24, t24, a4, b4
 
-	daddiu	AO, AO, 8 * SIZE			#	AO += 2mr*4kr	
+	daddiu	AO, AO, 8 * SIZE			#	AO += 2mr*4kr
 	daddiu	BO, BO, 16 * SIZE			#	BO += 4nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -1615,9 +1615,9 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 
-	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 2 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 4 * SIZE			#	BO += 4nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -1677,7 +1677,7 @@
 	NMSUB	t11, t11, b4, t14
 	NMSUB	t21, t21, b4, t24
 
-	
+
 	LD	b5,  10 * SIZE(BO)
 	LD	b6,   9 * SIZE(BO)
 	LD	b7,   8 * SIZE(BO)
@@ -1716,13 +1716,13 @@
 
 	ST	t11,  0 * SIZE(CO1)				#	write back
 	ST	t21,  1 * SIZE(CO1)
-	
+
 	ST	t12,  0 * SIZE(CO2)
 	ST	t22,  1 * SIZE(CO2)
-	
+
 	ST	t13,  0 * SIZE(CO3)
 	ST	t23,  1 * SIZE(CO3)
-	
+
 	ST	t14,  0 * SIZE(CO4)
 	ST	t24,  1 * SIZE(CO4)
 
@@ -1741,11 +1741,11 @@
 	blez	I, .L29
 	NOP
 
-	dsll	L,    KK, BASE_SHIFT			#	mr=1	
+	dsll	L,    KK, BASE_SHIFT			#	mr=1
 	dsll	TEMP, KK, 2 + BASE_SHIFT		#	nr=4
-	daddu	AO, AORIG, L					
+	daddu	AO, AORIG, L
 	daddu	BO, B, TEMP						#	BO point to the retangular data part,also reset BO
-	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part 
+	dsubu	TEMP, K, KK						#	temp = the length of rectangular data part
 
 	MTC	$0,  t11							#	clear 4 results registers
 	MOV	t12, t11
@@ -1762,7 +1762,7 @@
 	dsra	L,  TEMP, 2						#	L=(KC-offset)/4
 	blez	L, .L45
 	NOP
-	
+
 	.align	3
 
 .L42:
@@ -1802,9 +1802,9 @@
 	MADD	t13, t13, a3, b3
 	MADD	t14, t14, a3, b4
 
-	daddiu	AO, AO, 4 * SIZE			#	AO += 1mr*4kr	
+	daddiu	AO, AO, 4 * SIZE			#	AO += 1mr*4kr
 	daddiu	BO, BO, 16 * SIZE			#	BO += 4nr*4kr
-	
+
 	LD	a1,  0 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -1836,9 +1836,9 @@
 	MADD	t13, t13, a1, b3
 	MADD	t14, t14, a1, b4
 
-	daddiu	AO, AO, 1 * SIZE			#	AO += 2mr	
+	daddiu	AO, AO, 1 * SIZE			#	AO += 2mr
 	daddiu	BO, BO, 4 * SIZE			#	BO += 4nr
-	
+
 	LD	a1,  0 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -1879,7 +1879,7 @@
 	NMSUB	t12, t12, b3, t14
 	NMSUB	t11, t11, b4, t14
 
-	
+
 	LD	b5,  10 * SIZE(BO)
 	LD	b6,   9 * SIZE(BO)
 	LD	b7,   8 * SIZE(BO)

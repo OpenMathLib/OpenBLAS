@@ -153,7 +153,7 @@
 	.align 32
 
 .L51:
-	(p16) LDFD	f32  = [X],  STRIDE	
+	(p16) LDFD	f32  = [X],  STRIDE
 	(p16) lfetch.nt1 [PRE1], INCX16
 	(p18) fma.d.s1	f8  = f34, f34, f8
 
@@ -199,7 +199,7 @@
 	(p16) LDFD	f68  = [X],  STRIDE
 	(p18) fma.d.s1	f12 = f70, f70, f12
 	nop.b 0
-	(p16) LDFD	f71  = [X2], STRIDE	
+	(p16) LDFD	f71  = [X2], STRIDE
 	(p18) fma.d.s1	f13 = f73, f73, f13
 	nop.b 0
 	;;
@@ -271,7 +271,7 @@
 	;;
 #ifndef COMPLEX
 	(p15) fma.d.s1	f14 = f46, f46, f14
-	;;		      
+	;;
 #endif
 	.align 32
 

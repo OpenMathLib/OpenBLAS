@@ -100,7 +100,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	pushq	%rdi
 	pushq	%rsi
@@ -174,7 +174,7 @@
 	movapd	%xmm0,    0 * SIZE(BO)
 	movapd	%xmm1,    2 * SIZE(BO)
 #endif
-	
+
 	leaq	(BO, M8, 2), BO
 	addq	$2 * SIZE, AO1
 	addq	$2 * SIZE, AO2

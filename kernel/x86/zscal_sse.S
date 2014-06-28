@@ -1073,7 +1073,7 @@
 
 
 #else
-	
+
 	PSHUFD2($0, %xmm0, %xmm6)
 	PSHUFD2($0, %xmm1, %xmm1)
 	subps	  %xmm1,   %xmm7

@@ -119,7 +119,7 @@
 #endif
 
 	FCLR(29)
-		
+
 	FCMP	ALPHA, FZERO
 	fbne	.LL100
 	sll	INCX, BASE_SHIFT, INCX

@@ -68,10 +68,10 @@
 
 	salq	$ZBASE_SHIFT, INCX
 	salq	$ZBASE_SHIFT, INCY
-	
+
 	testq	M, M
 	jle	.L40
-	
+
 	cmpq	$2 * SIZE, INCX
 	jne	.L14
 	cmpq	$2 * SIZE, INCY
@@ -332,5 +332,5 @@
 	ffreep	%st(0)
 	ffreep	%st(0)
 	ret
-	
+
 	EPILOGUE

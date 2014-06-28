@@ -62,7 +62,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
   }
 
   for (i = 0; i < n; i++) {
-    
+
 #if (TRANSA == 2) || (TRANSA == 4)
     length  = i;
     if (length > k) length = k;
@@ -87,11 +87,11 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
     ar = a[k * 2 + 0];
     ai = a[k * 2 + 1];
 #endif
-    
+
     if (fabs(ar) >= fabs(ai)){
       ratio = ai / ar;
       den = 1./(ar * ( 1 + ratio * ratio));
-      
+
       ar =  den;
 #if TRANSA < 3
       ai = -ratio * den;
@@ -108,10 +108,10 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
       ai =  den;
 #endif
     }
-    
+
     br = B[i * 2 + 0];
     bi = B[i * 2 + 1];
-    
+
     B[i * 2 + 0] = ar*br - ai*bi;
     B[i * 2 + 1] = ar*bi + ai*br;
 #endif

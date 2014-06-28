@@ -46,7 +46,7 @@ const static FLOAT dm1 = -1.;
 #define GEMV_UNROLL DTB_ENTRIES
 
 int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buffer){
-  
+
   BLASLONG i, is, min_i;
   FLOAT *gemvbuffer = (FLOAT *)buffer;
   FLOAT *B = b;
@@ -58,14 +58,14 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buf
   }
 
   for (is = 0; is < m; is += GEMV_UNROLL){
-    
+
     min_i = MIN(m - is, GEMV_UNROLL);
 
 #ifdef TRANSA
     if (is > 0){
-      GEMV_T(is, min_i, 0, dm1, 
+      GEMV_T(is, min_i, 0, dm1,
 	     a + is * lda ,  lda,
-	     B,       1, 
+	     B,       1,
 	     B +  is, 1, gemvbuffer);
     }
 #endif
@@ -89,12 +89,12 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buf
       }
 #endif
     }
-      
+
 #ifndef TRANSA
     if (m - is > min_i){
-      GEMV_N(m - is - min_i, min_i, 0, dm1, 
+      GEMV_N(m - is - min_i, min_i, 0, dm1,
 	     a + is + min_i + is * lda,  lda,
-	     B + is,            1, 
+	     B + is,            1,
 	     B + (is + min_i),  1, gemvbuffer);
     }
 #endif

@@ -57,7 +57,7 @@
 #define ALPHA	%xmm15
 
 #include "l1param.h"
-	
+
 	PROLOGUE
 	PROFCODE
 
@@ -89,7 +89,7 @@
 
 	testq	M, M
 	jle	.L47
-	
+
 	cmpq	$SIZE, INCX
 	jne	.L40
 	cmpq	$SIZE, INCY
@@ -813,7 +813,7 @@
 	je  .L46
 	cmpq	$0, INCY
 	je  .L46
-		
+
 	sarq	$3, %rax
 	jle	.L45
 	ALIGN_3

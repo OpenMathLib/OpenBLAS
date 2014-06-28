@@ -61,8 +61,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldmiad	X!, 	{ d4 }
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_F1_NEXT_\@	
-	vabs.f64   	d4,  d4 
+	beq		KERNEL_F1_NEXT_\@
+	vabs.f64   	d4,  d4
 	vcmpe.f64  	d0,  d4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f64	d2 , d4, d0			// scale >= x ?	x / scale
@@ -98,8 +98,8 @@ KERNEL_F1_NEXT_\@:
 	fldmiad	X, 	{ d4 }
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_S1_NEXT	
-	vabs.f64   	d4,  d4 
+	beq		KERNEL_S1_NEXT
+	vabs.f64   	d4,  d4
 	vcmpe.f64  	d0,  d4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f64	d2 , d4, d0			// scale >= x ?	x / scale
@@ -124,8 +124,8 @@ KERNEL_S1_NEXT:
 	fldmias	X!, 	{ s4 }
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_F1_NEXT_\@	
-	vabs.f32   	s4,  s4 
+	beq		KERNEL_F1_NEXT_\@
+	vabs.f32   	s4,  s4
 	vcmpe.f32  	s0,  s4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f32	s2 , s4, s0			// scale >= x ?	x / scale
@@ -161,8 +161,8 @@ KERNEL_F1_NEXT_\@:
 	fldmias	X, 	{ s4 }
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_S1_NEXT	
-	vabs.f32   	s4,  s4 
+	beq		KERNEL_S1_NEXT
+	vabs.f32   	s4,  s4
 	vcmpe.f32  	s0,  s4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f32	s2 , s4, s0			// scale >= x ?	x / scale
@@ -195,8 +195,8 @@ KERNEL_S1_NEXT:
 
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_F1_NEXT_\@	
-	vabs.f64   	d4,  d4 
+	beq		KERNEL_F1_NEXT_\@
+	vabs.f64   	d4,  d4
 	vcmpe.f64  	d0,  d4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f64	d2 , d4, d0			// scale >= x ?	x / scale
@@ -212,8 +212,8 @@ KERNEL_F1_NEXT_\@:
 
 	vcmpe.f64	d5, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_F1_END_\@	
-	vabs.f64   	d5,  d5 
+	beq		KERNEL_F1_END_\@
+	vabs.f64   	d5,  d5
 	vcmpe.f64  	d0,  d5				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f64	d2 , d5, d0			// scale >= x ?	x / scale
@@ -253,8 +253,8 @@ KERNEL_F1_END_\@:
 
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_S1_NEXT_\@	
-	vabs.f64   	d4,  d4 
+	beq		KERNEL_S1_NEXT_\@
+	vabs.f64   	d4,  d4
 	vcmpe.f64  	d0,  d4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f64	d2 , d4, d0			// scale >= x ?	x / scale
@@ -270,8 +270,8 @@ KERNEL_S1_NEXT_\@:
 
 	vcmpe.f64	d5, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_S1_END_\@	
-	vabs.f64   	d5,  d5 
+	beq		KERNEL_S1_END_\@
+	vabs.f64   	d5,  d5
 	vcmpe.f64  	d0,  d5				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f64	d2 , d5, d0			// scale >= x ?	x / scale
@@ -298,8 +298,8 @@ KERNEL_S1_END_\@:
 
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_F1_NEXT_\@	
-	vabs.f32   	s4,  s4 
+	beq		KERNEL_F1_NEXT_\@
+	vabs.f32   	s4,  s4
 	vcmpe.f32  	s0,  s4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f32	s2 , s4, s0			// scale >= x ?	x / scale
@@ -315,8 +315,8 @@ KERNEL_F1_NEXT_\@:
 
 	vcmpe.f32	s5, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_F1_END_\@	
-	vabs.f32   	s5,  s5 
+	beq		KERNEL_F1_END_\@
+	vabs.f32   	s5,  s5
 	vcmpe.f32  	s0,  s5				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f32	s2 , s5, s0			// scale >= x ?	x / scale
@@ -354,8 +354,8 @@ KERNEL_F1_END_\@:
 
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_S1_NEXT_\@	
-	vabs.f32   	s4,  s4 
+	beq		KERNEL_S1_NEXT_\@
+	vabs.f32   	s4,  s4
 	vcmpe.f32  	s0,  s4				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f32	s2 , s4, s0			// scale >= x ?	x / scale
@@ -371,8 +371,8 @@ KERNEL_S1_NEXT_\@:
 
 	vcmpe.f32	s5, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
-	beq		KERNEL_S1_END_\@	
-	vabs.f32   	s5,  s5 
+	beq		KERNEL_S1_END_\@
+	vabs.f32   	s5,  s5
 	vcmpe.f32  	s0,  s5				// compare with scale
 	vmrs		APSR_nzcv, fpscr
 	vdivge.f32	s2 , s5, s0			// scale >= x ?	x / scale
@@ -407,13 +407,13 @@ KERNEL_S1_END_\@:
 #if defined(DOUBLE)
 	vsub.f64                d0 , d0 , d0		// scale=0.0
 	vmov.f64		d1 , #1.0		// ssq=1.0
-	vmov.f64		d7 , d1			// value 1.0 
-	vmov.f64		d6 , d0			// value 0.0 
+	vmov.f64		d7 , d1			// value 1.0
+	vmov.f64		d6 , d0			// value 0.0
 #else
 	vsub.f32                s0 , s0 , s0		// scale=0.0
 	vmov.f32		s1 , #1.0		// ssq=1.0
 	vmov.f32		s7 , s1			// value 1.0
-	vmov.f32		s6 , s0			// value 0.0 
+	vmov.f32		s6 , s0			// value 0.0
 #endif
 
 
@@ -424,7 +424,7 @@ KERNEL_S1_END_\@:
 	cmp	INC_X, #0
 	beq	nrm2_kernel_L999
 
-	
+
 	cmp	INC_X, #1
 	bne	nrm2_kernel_S_BEGIN
 

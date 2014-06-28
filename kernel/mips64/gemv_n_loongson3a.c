@@ -1,6 +1,6 @@
 #include "common.h"
 
-//These are auto-tuning codes on Loongson-3A platform. 
+//These are auto-tuning codes on Loongson-3A platform.
 
 //#define prefetch(x) __builtin_prefetch(x)
 //#define prefetch(x) do {_mm_prefetch((char *)(x), _MM_HINT_T0);} while(0)
@@ -13,7 +13,7 @@
 #define norm_loop_alpha1 do {Y[h] += A[LDA * j + i] * X[k]; i++; h += INCY;} while(0)
 #define norm_loop do {Y[h] += ALPHA * A[LDA * j + i] * X[k]; i++; h += INCY;} while(0)
 
-int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT ALPHA, FLOAT *A, BLASLONG LDA, FLOAT *X, BLASLONG INCX, FLOAT *Y, BLASLONG INCY, FLOAT *BUFFER) 
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG UNUSED, FLOAT ALPHA, FLOAT *A, BLASLONG LDA, FLOAT *X, BLASLONG INCX, FLOAT *Y, BLASLONG INCY, FLOAT *BUFFER)
 {
 
 	BLASLONG kx=0, ky=0;

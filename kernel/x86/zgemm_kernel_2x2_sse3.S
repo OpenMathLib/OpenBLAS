@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -268,7 +268,7 @@
 	movss	%xmm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	sall	$ZBASE_SHIFT, LDC
@@ -281,7 +281,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 /* Copying to Sub Buffer */
 	leal	BUFFER, %ecx
@@ -360,7 +360,7 @@
 	leal	(, %eax,   8), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movaps	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -379,7 +379,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -395,7 +395,7 @@
 	andl	$-8, %eax
 	sall	$4, %eax
 	je	.L15
-.L1X:	
+.L1X:
 	KERNEL1(32 *  0)
 	KERNEL2(32 *  0)
 	KERNEL3(32 *  0)
@@ -588,7 +588,7 @@
 	jne    .L11
 	ALIGN_4
 #endif
-	
+
 .L15:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -714,7 +714,7 @@
 	leal	(, %eax,    8), %eax
 	leal	(AA, %eax,  1), AA
 	leal	(BB,  %eax, 4), BB
-#endif	
+#endif
 
 	movddup	  0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -728,7 +728,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -822,7 +822,7 @@
 	decl	%eax
 	jne	.L41
 	ALIGN_4
-	
+
 .L42:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -859,12 +859,12 @@
 	movhlps %xmm6, %xmm5
 
 #if  defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-     defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+     defined(RR) || defined(RC) || defined(CR) || defined(CC)
 	cmpeqps	%xmm7, %xmm7
 	pslld	$31,   %xmm7
 	xorps	%xmm7, %xmm5
-#endif     
-     
+#endif
+
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
 	shufps	$0xb1, %xmm5, %xmm5
@@ -934,7 +934,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 /* Copying to Sub Buffer */
 	leal	BUFFER, %ecx
@@ -1009,7 +1009,7 @@
 	leal	(, %eax,    8), %eax
 	leal	(AA, %eax,  2), AA
 	leal	(BB,  %eax, 2), BB
-#endif	
+#endif
 
 	movaps	  0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1029,7 +1029,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1107,7 +1107,7 @@
 	decl	%eax
 	jne	.L111
 	ALIGN_4
-	
+
 .L112:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -1208,7 +1208,7 @@
 	leal	(, %eax,    8), %eax
 	leal	(AA, %eax,  1), AA
 	leal	(BB,  %eax, 2), BB
-#endif	
+#endif
 
 	movddup	  0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1222,7 +1222,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -1284,7 +1284,7 @@
 	decl	%eax
 	jne	.L141
 	ALIGN_4
-	
+
 .L142:
 #ifndef TRMMKERNEL
 	movl	K, %eax
@@ -1317,12 +1317,12 @@
 	movhlps %xmm4, %xmm5
 
 #if  defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-     defined(RR) || defined(RC) || defined(CR) || defined(CC) 
+     defined(RR) || defined(RC) || defined(CR) || defined(CC)
 	cmpeqps	%xmm7, %xmm7
 	pslld	$31,   %xmm7
 	xorps	%xmm7, %xmm5
-#endif     
-     
+#endif
+
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT) || \
     defined(NR) || defined(NC) || defined(TR) || defined(TC)
 	shufps	$0xb1, %xmm5, %xmm5

@@ -70,7 +70,7 @@
 #define b8	$f15
 
 	PROLOGUE
-	
+
 	LDARG	INCY, 0($sp)
 	li	TEMP, 2 * SIZE
 

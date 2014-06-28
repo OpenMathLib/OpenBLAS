@@ -69,9 +69,9 @@ gotoblas_t TABLE_NAME = {
   sgemv_nTS,  sgemv_tTS, sger_kTS,
   ssymv_LTS, ssymv_UTS,
 
-  sgemm_kernelTS, sgemm_betaTS, 
+  sgemm_kernelTS, sgemm_betaTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
-  sgemm_incopyTS, sgemm_itcopyTS, 
+  sgemm_incopyTS, sgemm_itcopyTS,
 #else
   sgemm_oncopyTS, sgemm_otcopyTS,
 #endif
@@ -97,7 +97,7 @@ gotoblas_t TABLE_NAME = {
   strmm_ounucopyTS, strmm_ounncopyTS, strmm_outucopyTS, strmm_outncopyTS,
   strmm_olnucopyTS, strmm_olnncopyTS, strmm_oltucopyTS, strmm_oltncopyTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
-  ssymm_iutcopyTS, ssymm_iltcopyTS, 
+  ssymm_iutcopyTS, ssymm_iltcopyTS,
 #else
   ssymm_outcopyTS, ssymm_oltcopyTS,
 #endif
@@ -119,9 +119,9 @@ gotoblas_t TABLE_NAME = {
   dgemv_nTS,  dgemv_tTS,  dger_kTS,
   dsymv_LTS,  dsymv_UTS,
 
-  dgemm_kernelTS, dgemm_betaTS, 
+  dgemm_kernelTS, dgemm_betaTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
-  dgemm_incopyTS, dgemm_itcopyTS, 
+  dgemm_incopyTS, dgemm_itcopyTS,
 #else
   dgemm_oncopyTS, dgemm_otcopyTS,
 #endif
@@ -147,7 +147,7 @@ gotoblas_t TABLE_NAME = {
   dtrmm_ounucopyTS, dtrmm_ounncopyTS, dtrmm_outucopyTS, dtrmm_outncopyTS,
   dtrmm_olnucopyTS, dtrmm_olnncopyTS, dtrmm_oltucopyTS, dtrmm_oltncopyTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
-  dsymm_iutcopyTS, dsymm_iltcopyTS, 
+  dsymm_iutcopyTS, dsymm_iltcopyTS,
 #else
   dsymm_outcopyTS, dsymm_oltcopyTS,
 #endif
@@ -171,9 +171,9 @@ gotoblas_t TABLE_NAME = {
   qgemv_nTS,  qgemv_tTS,  qger_kTS,
   qsymv_LTS,  qsymv_UTS,
 
-  qgemm_kernelTS, qgemm_betaTS, 
+  qgemm_kernelTS, qgemm_betaTS,
 #if QGEMM_DEFAULT_UNROLL_M != QGEMM_DEFAULT_UNROLL_N
-  qgemm_incopyTS, qgemm_itcopyTS, 
+  qgemm_incopyTS, qgemm_itcopyTS,
 #else
   qgemm_oncopyTS, qgemm_otcopyTS,
 #endif
@@ -199,7 +199,7 @@ gotoblas_t TABLE_NAME = {
   qtrmm_ounucopyTS, qtrmm_ounncopyTS, qtrmm_outucopyTS, qtrmm_outncopyTS,
   qtrmm_olnucopyTS, qtrmm_olnncopyTS, qtrmm_oltucopyTS, qtrmm_oltncopyTS,
 #if QGEMM_DEFAULT_UNROLL_M != QGEMM_DEFAULT_UNROLL_N
-  qsymm_iutcopyTS, qsymm_iltcopyTS, 
+  qsymm_iutcopyTS, qsymm_iltcopyTS,
 #else
   qsymm_outcopyTS, qsymm_oltcopyTS,
 #endif
@@ -219,14 +219,14 @@ gotoblas_t TABLE_NAME = {
   camax_kTS, camin_kTS, icamax_kTS, icamin_kTS,
   cnrm2_kTS, casum_kTS, ccopy_kTS,
   cdotu_kTS, cdotc_kTS, csrot_kTS,
-  caxpy_kTS, caxpyc_kTS, cscal_kTS, cswap_kTS, 
+  caxpy_kTS, caxpyc_kTS, cscal_kTS, cswap_kTS,
 
-  cgemv_nTS, cgemv_tTS, cgemv_rTS, cgemv_cTS, 
-  cgemv_oTS, cgemv_uTS, cgemv_sTS, cgemv_dTS, 
-  cgeru_kTS, cgerc_kTS, cgerv_kTS, cgerd_kTS, 
+  cgemv_nTS, cgemv_tTS, cgemv_rTS, cgemv_cTS,
+  cgemv_oTS, cgemv_uTS, cgemv_sTS, cgemv_dTS,
+  cgeru_kTS, cgerc_kTS, cgerv_kTS, cgerd_kTS,
   csymv_LTS, csymv_UTS,
   chemv_LTS, chemv_UTS, chemv_MTS, chemv_VTS,
-  
+
   cgemm_kernel_nTS, cgemm_kernel_lTS, cgemm_kernel_rTS, cgemm_kernel_bTS,
   cgemm_betaTS,
 
@@ -236,10 +236,10 @@ gotoblas_t TABLE_NAME = {
   cgemm_oncopyTS, cgemm_otcopyTS,
 #endif
   cgemm_oncopyTS, cgemm_otcopyTS,
-  
+
   ctrsm_kernel_LNTS, ctrsm_kernel_LTTS, ctrsm_kernel_LRTS, ctrsm_kernel_LCTS,
   ctrsm_kernel_RNTS, ctrsm_kernel_RTTS, ctrsm_kernel_RRTS, ctrsm_kernel_RCTS,
-  
+
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   ctrsm_iunucopyTS,  ctrsm_iunncopyTS,  ctrsm_iutucopyTS,  ctrsm_iutncopyTS,
   ctrsm_ilnucopyTS,  ctrsm_ilnncopyTS,  ctrsm_iltucopyTS,  ctrsm_iltncopyTS,
@@ -249,10 +249,10 @@ gotoblas_t TABLE_NAME = {
 #endif
   ctrsm_ounucopyTS,  ctrsm_ounncopyTS,  ctrsm_outucopyTS,  ctrsm_outncopyTS,
   ctrsm_olnucopyTS,  ctrsm_olnncopyTS,  ctrsm_oltucopyTS,  ctrsm_oltncopyTS,
-  
+
   ctrmm_kernel_RNTS,  ctrmm_kernel_RTTS,  ctrmm_kernel_RRTS,  ctrmm_kernel_RCTS,
   ctrmm_kernel_LNTS,  ctrmm_kernel_LTTS,  ctrmm_kernel_LRTS,  ctrmm_kernel_LCTS,
-  
+
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   ctrmm_iunucopyTS,  ctrmm_iunncopyTS,  ctrmm_iutucopyTS,  ctrmm_iutncopyTS,
   ctrmm_ilnucopyTS,  ctrmm_ilnncopyTS,  ctrmm_iltucopyTS,  ctrmm_iltncopyTS,
@@ -262,7 +262,7 @@ gotoblas_t TABLE_NAME = {
 #endif
   ctrmm_ounucopyTS,  ctrmm_ounncopyTS,  ctrmm_outucopyTS,  ctrmm_outncopyTS,
   ctrmm_olnucopyTS,  ctrmm_olnncopyTS,  ctrmm_oltucopyTS,  ctrmm_oltncopyTS,
-  
+
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   csymm_iutcopyTS,  csymm_iltcopyTS,
 #else
@@ -275,16 +275,16 @@ gotoblas_t TABLE_NAME = {
   chemm_outcopyTS,  chemm_oltcopyTS,
 #endif
   chemm_outcopyTS,  chemm_oltcopyTS,
-  
+
   cgemm3m_kernelTS,
-  
+
   cgemm3m_incopybTS,  cgemm3m_incopyrTS,
   cgemm3m_incopyiTS,  cgemm3m_itcopybTS,
   cgemm3m_itcopyrTS,  cgemm3m_itcopyiTS,
   cgemm3m_oncopybTS,  cgemm3m_oncopyrTS,
   cgemm3m_oncopyiTS,  cgemm3m_otcopybTS,
   cgemm3m_otcopyrTS,  cgemm3m_otcopyiTS,
-  
+
   csymm3m_iucopybTS,  csymm3m_ilcopybTS,
   csymm3m_iucopyrTS,  csymm3m_ilcopyrTS,
   csymm3m_iucopyiTS,  csymm3m_ilcopyiTS,
@@ -294,7 +294,7 @@ gotoblas_t TABLE_NAME = {
 
   chemm3m_iucopybTS,  chemm3m_ilcopybTS,
   chemm3m_iucopyrTS,  chemm3m_ilcopyrTS,
-  chemm3m_iucopyiTS,  chemm3m_ilcopyiTS, 
+  chemm3m_iucopyiTS,  chemm3m_ilcopyiTS,
 
   chemm3m_oucopybTS,  chemm3m_olcopybTS,
   chemm3m_oucopyrTS,  chemm3m_olcopyrTS,
@@ -312,11 +312,11 @@ gotoblas_t TABLE_NAME = {
   zamax_kTS, zamin_kTS, izamax_kTS, izamin_kTS,
   znrm2_kTS, zasum_kTS, zcopy_kTS,
   zdotu_kTS, zdotc_kTS, zdrot_kTS,
-  zaxpy_kTS, zaxpyc_kTS, zscal_kTS, zswap_kTS, 
+  zaxpy_kTS, zaxpyc_kTS, zscal_kTS, zswap_kTS,
 
-  zgemv_nTS, zgemv_tTS, zgemv_rTS, zgemv_cTS, 
-  zgemv_oTS, zgemv_uTS, zgemv_sTS, zgemv_dTS, 
-  zgeru_kTS, zgerc_kTS, zgerv_kTS, zgerd_kTS, 
+  zgemv_nTS, zgemv_tTS, zgemv_rTS, zgemv_cTS,
+  zgemv_oTS, zgemv_uTS, zgemv_sTS, zgemv_dTS,
+  zgeru_kTS, zgerc_kTS, zgerv_kTS, zgerd_kTS,
   zsymv_LTS, zsymv_UTS,
   zhemv_LTS, zhemv_UTS, zhemv_MTS, zhemv_VTS,
 
@@ -329,10 +329,10 @@ gotoblas_t TABLE_NAME = {
   zgemm_oncopyTS, zgemm_otcopyTS,
 #endif
   zgemm_oncopyTS, zgemm_otcopyTS,
-  
+
   ztrsm_kernel_LNTS, ztrsm_kernel_LTTS, ztrsm_kernel_LRTS, ztrsm_kernel_LCTS,
   ztrsm_kernel_RNTS, ztrsm_kernel_RTTS, ztrsm_kernel_RRTS, ztrsm_kernel_RCTS,
-  
+
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   ztrsm_iunucopyTS,  ztrsm_iunncopyTS,  ztrsm_iutucopyTS,  ztrsm_iutncopyTS,
   ztrsm_ilnucopyTS,  ztrsm_ilnncopyTS,  ztrsm_iltucopyTS,  ztrsm_iltncopyTS,
@@ -342,10 +342,10 @@ gotoblas_t TABLE_NAME = {
 #endif
   ztrsm_ounucopyTS,  ztrsm_ounncopyTS,  ztrsm_outucopyTS,  ztrsm_outncopyTS,
   ztrsm_olnucopyTS,  ztrsm_olnncopyTS,  ztrsm_oltucopyTS,  ztrsm_oltncopyTS,
-  
+
   ztrmm_kernel_RNTS,  ztrmm_kernel_RTTS,  ztrmm_kernel_RRTS,  ztrmm_kernel_RCTS,
   ztrmm_kernel_LNTS,  ztrmm_kernel_LTTS,  ztrmm_kernel_LRTS,  ztrmm_kernel_LCTS,
-  
+
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   ztrmm_iunucopyTS,  ztrmm_iunncopyTS,  ztrmm_iutucopyTS,  ztrmm_iutncopyTS,
   ztrmm_ilnucopyTS,  ztrmm_ilnncopyTS,  ztrmm_iltucopyTS,  ztrmm_iltncopyTS,
@@ -355,7 +355,7 @@ gotoblas_t TABLE_NAME = {
 #endif
   ztrmm_ounucopyTS,  ztrmm_ounncopyTS,  ztrmm_outucopyTS,  ztrmm_outncopyTS,
   ztrmm_olnucopyTS,  ztrmm_olnncopyTS,  ztrmm_oltucopyTS,  ztrmm_oltncopyTS,
-  
+
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   zsymm_iutcopyTS,  zsymm_iltcopyTS,
 #else
@@ -368,16 +368,16 @@ gotoblas_t TABLE_NAME = {
   zhemm_outcopyTS,  zhemm_oltcopyTS,
 #endif
   zhemm_outcopyTS,  zhemm_oltcopyTS,
-  
+
   zgemm3m_kernelTS,
-  
+
   zgemm3m_incopybTS,  zgemm3m_incopyrTS,
   zgemm3m_incopyiTS,  zgemm3m_itcopybTS,
   zgemm3m_itcopyrTS,  zgemm3m_itcopyiTS,
   zgemm3m_oncopybTS,  zgemm3m_oncopyrTS,
   zgemm3m_oncopyiTS,  zgemm3m_otcopybTS,
   zgemm3m_otcopyrTS,  zgemm3m_otcopyiTS,
-  
+
   zsymm3m_iucopybTS,  zsymm3m_ilcopybTS,
   zsymm3m_iucopyrTS,  zsymm3m_ilcopyrTS,
   zsymm3m_iucopyiTS,  zsymm3m_ilcopyiTS,
@@ -387,7 +387,7 @@ gotoblas_t TABLE_NAME = {
 
   zhemm3m_iucopybTS,  zhemm3m_ilcopybTS,
   zhemm3m_iucopyrTS,  zhemm3m_ilcopyrTS,
-  zhemm3m_iucopyiTS,  zhemm3m_ilcopyiTS, 
+  zhemm3m_iucopyiTS,  zhemm3m_ilcopyiTS,
 
   zhemm3m_oucopybTS,  zhemm3m_olcopybTS,
   zhemm3m_oucopyrTS,  zhemm3m_olcopyrTS,
@@ -407,11 +407,11 @@ gotoblas_t TABLE_NAME = {
   xamax_kTS, xamin_kTS, ixamax_kTS, ixamin_kTS,
   xnrm2_kTS, xasum_kTS, xcopy_kTS,
   xdotu_kTS, xdotc_kTS, xqrot_kTS,
-  xaxpy_kTS, xaxpyc_kTS, xscal_kTS, xswap_kTS, 
+  xaxpy_kTS, xaxpyc_kTS, xscal_kTS, xswap_kTS,
 
-  xgemv_nTS, xgemv_tTS, xgemv_rTS, xgemv_cTS, 
-  xgemv_oTS, xgemv_uTS, xgemv_sTS, xgemv_dTS, 
-  xgeru_kTS, xgerc_kTS, xgerv_kTS, xgerd_kTS, 
+  xgemv_nTS, xgemv_tTS, xgemv_rTS, xgemv_cTS,
+  xgemv_oTS, xgemv_uTS, xgemv_sTS, xgemv_dTS,
+  xgeru_kTS, xgerc_kTS, xgerv_kTS, xgerd_kTS,
   xsymv_LTS, xsymv_UTS,
   xhemv_LTS, xhemv_UTS, xhemv_MTS, xhemv_VTS,
 
@@ -424,10 +424,10 @@ gotoblas_t TABLE_NAME = {
   xgemm_oncopyTS, xgemm_otcopyTS,
 #endif
   xgemm_oncopyTS, xgemm_otcopyTS,
-  
+
   xtrsm_kernel_LNTS, xtrsm_kernel_LTTS, xtrsm_kernel_LRTS, xtrsm_kernel_LCTS,
   xtrsm_kernel_RNTS, xtrsm_kernel_RTTS, xtrsm_kernel_RRTS, xtrsm_kernel_RCTS,
-  
+
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   xtrsm_iunucopyTS,  xtrsm_iunncopyTS,  xtrsm_iutucopyTS,  xtrsm_iutncopyTS,
   xtrsm_ilnucopyTS,  xtrsm_ilnncopyTS,  xtrsm_iltucopyTS,  xtrsm_iltncopyTS,
@@ -437,10 +437,10 @@ gotoblas_t TABLE_NAME = {
 #endif
   xtrsm_ounucopyTS,  xtrsm_ounncopyTS,  xtrsm_outucopyTS,  xtrsm_outncopyTS,
   xtrsm_olnucopyTS,  xtrsm_olnncopyTS,  xtrsm_oltucopyTS,  xtrsm_oltncopyTS,
-  
+
   xtrmm_kernel_RNTS,  xtrmm_kernel_RTTS,  xtrmm_kernel_RRTS,  xtrmm_kernel_RCTS,
   xtrmm_kernel_LNTS,  xtrmm_kernel_LTTS,  xtrmm_kernel_LRTS,  xtrmm_kernel_LCTS,
-  
+
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   xtrmm_iunucopyTS,  xtrmm_iunncopyTS,  xtrmm_iutucopyTS,  xtrmm_iutncopyTS,
   xtrmm_ilnucopyTS,  xtrmm_ilnncopyTS,  xtrmm_iltucopyTS,  xtrmm_iltncopyTS,
@@ -450,7 +450,7 @@ gotoblas_t TABLE_NAME = {
 #endif
   xtrmm_ounucopyTS,  xtrmm_ounncopyTS,  xtrmm_outucopyTS,  xtrmm_outncopyTS,
   xtrmm_olnucopyTS,  xtrmm_olnncopyTS,  xtrmm_oltucopyTS,  xtrmm_oltncopyTS,
-  
+
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   xsymm_iutcopyTS,  xsymm_iltcopyTS,
 #else
@@ -463,16 +463,16 @@ gotoblas_t TABLE_NAME = {
   xhemm_outcopyTS,  xhemm_oltcopyTS,
 #endif
   xhemm_outcopyTS,  xhemm_oltcopyTS,
-  
+
   xgemm3m_kernelTS,
-  
+
   xgemm3m_incopybTS,  xgemm3m_incopyrTS,
   xgemm3m_incopyiTS,  xgemm3m_itcopybTS,
   xgemm3m_itcopyrTS,  xgemm3m_itcopyiTS,
   xgemm3m_oncopybTS,  xgemm3m_oncopyrTS,
   xgemm3m_oncopyiTS,  xgemm3m_otcopybTS,
   xgemm3m_otcopyrTS,  xgemm3m_otcopyiTS,
-  
+
   xsymm3m_iucopybTS,  xsymm3m_ilcopybTS,
   xsymm3m_iucopyrTS,  xsymm3m_ilcopyrTS,
   xsymm3m_iucopyiTS,  xsymm3m_ilcopyiTS,
@@ -482,7 +482,7 @@ gotoblas_t TABLE_NAME = {
 
   xhemm3m_iucopybTS,  xhemm3m_ilcopybTS,
   xhemm3m_iucopyrTS,  xhemm3m_ilcopyrTS,
-  xhemm3m_iucopyiTS,  xhemm3m_ilcopyiTS, 
+  xhemm3m_iucopyiTS,  xhemm3m_ilcopyiTS,
 
   xhemm3m_oucopybTS,  xhemm3m_olcopybTS,
   xhemm3m_oucopyrTS,  xhemm3m_olcopyrTS,
@@ -518,45 +518,45 @@ static int get_l2_size_old(void){
   int info[15];
 
   cpuid(2, &eax, &ebx, &ecx, &edx);
-  
+
   info[ 0] = BITMASK(eax,  8, 0xff);
   info[ 1] = BITMASK(eax, 16, 0xff);
   info[ 2] = BITMASK(eax, 24, 0xff);
-  
+
   info[ 3] = BITMASK(ebx,  0, 0xff);
   info[ 4] = BITMASK(ebx,  8, 0xff);
   info[ 5] = BITMASK(ebx, 16, 0xff);
   info[ 6] = BITMASK(ebx, 24, 0xff);
-  
+
   info[ 7] = BITMASK(ecx,  0, 0xff);
   info[ 8] = BITMASK(ecx,  8, 0xff);
   info[ 9] = BITMASK(ecx, 16, 0xff);
   info[10] = BITMASK(ecx, 24, 0xff);
-  
+
   info[11] = BITMASK(edx,  0, 0xff);
   info[12] = BITMASK(edx,  8, 0xff);
   info[13] = BITMASK(edx, 16, 0xff);
   info[14] = BITMASK(edx, 24, 0xff);
-  
+
   for (i = 0; i < 15; i++){
-    
+
     switch (info[i]){
-      
+
       /* This table is from http://www.sandpile.org/ia32/cpuid.htm */
-      
+
     case 0x1a :
       return 96;
-      
+
     case 0x39 :
     case 0x3b :
     case 0x41 :
     case 0x79 :
     case 0x81 :
       return 128;
-      
+
     case 0x3a :
       return 192;
-      
+
     case 0x21 :
     case 0x3c :
     case 0x42 :
@@ -564,10 +564,10 @@ static int get_l2_size_old(void){
     case 0x7e :
     case 0x82 :
       return 256;
-      
+
     case 0x3d :
       return 384;
-      
+
     case 0x3e :
     case 0x43 :
     case 0x7b :
@@ -575,14 +575,14 @@ static int get_l2_size_old(void){
     case 0x83 :
     case 0x86 :
       return 512;
-      
+
     case 0x44 :
     case 0x78 :
     case 0x7c :
     case 0x84 :
     case 0x87 :
       return 1024;
-      
+
     case 0x45 :
     case 0x7d :
     case 0x85 :
@@ -590,10 +590,10 @@ static int get_l2_size_old(void){
 
     case 0x48 :
       return 3184;
-      
+
     case 0x49 :
       return 4096;
-      
+
     case 0x4e :
       return 6144;
     }
@@ -899,37 +899,37 @@ static void init_parameter(void) {
   fprintf(stderr, "L2 = %8d DGEMM_P  .. %d\n", l2, TABLE_NAME.dgemm_p);
 #endif
 
-  TABLE_NAME.sgemm_r = (((BUFFER_SIZE - 
-			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA 
+  TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.sgemm_q *  4) - 15) & ~15);
 
-  TABLE_NAME.dgemm_r = (((BUFFER_SIZE - 
-			       ((TABLE_NAME.dgemm_p * TABLE_NAME.dgemm_q *  8 + TABLE_NAME.offsetA 
+  TABLE_NAME.dgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.dgemm_p * TABLE_NAME.dgemm_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.dgemm_q *  8) - 15) & ~15);
 
 #ifdef EXPRECISION
-  TABLE_NAME.qgemm_r = (((BUFFER_SIZE - 
-			       ((TABLE_NAME.qgemm_p * TABLE_NAME.qgemm_q * 16 + TABLE_NAME.offsetA 
+  TABLE_NAME.qgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.qgemm_p * TABLE_NAME.qgemm_q * 16 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.qgemm_q * 16) - 15) & ~15);
 #endif
 
-  TABLE_NAME.cgemm_r = (((BUFFER_SIZE - 
-			       ((TABLE_NAME.cgemm_p * TABLE_NAME.cgemm_q *  8 + TABLE_NAME.offsetA 
+  TABLE_NAME.cgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.cgemm_p * TABLE_NAME.cgemm_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.cgemm_q *  8) - 15) & ~15);
 
-  TABLE_NAME.zgemm_r = (((BUFFER_SIZE - 
-			       ((TABLE_NAME.zgemm_p * TABLE_NAME.zgemm_q * 16 + TABLE_NAME.offsetA 
+  TABLE_NAME.zgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.zgemm_p * TABLE_NAME.zgemm_q * 16 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.zgemm_q * 16) - 15) & ~15);
 
 #ifdef EXPRECISION
-  TABLE_NAME.xgemm_r = (((BUFFER_SIZE - 
-			       ((TABLE_NAME.xgemm_p * TABLE_NAME.xgemm_q * 32 + TABLE_NAME.offsetA 
-				 + TABLE_NAME.align) & ~TABLE_NAME.align)	
+  TABLE_NAME.xgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.xgemm_p * TABLE_NAME.xgemm_q * 32 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 		       ) / (TABLE_NAME.xgemm_q * 32) - 15) & ~15);
 #endif
 

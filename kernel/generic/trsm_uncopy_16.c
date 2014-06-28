@@ -51,7 +51,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
   FLOAT *a1, *a2,  *a3,  *a4,  *a5,  *a6,  *a7,  *a8;
   FLOAT *a9, *a10, *a11, *a12, *a13, *a14, *a15, *a16;
 
-  
+
   jj = offset;
 
   j = (n >> 4);
@@ -78,14 +78,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 16)) {
 	*(b +  ii - jj) = INV(*(a1 + (ii - jj) * lda));
 	for (k = ii - jj + 1; k < 16; k ++) {
 	  *(b +  k) = *(a1 +  k * lda);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a2  +  0);
@@ -143,14 +143,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 8)) {
 	*(b +  ii - jj) = INV(*(a1 + (ii - jj) * lda));
 	for (k = ii - jj + 1; k < 8; k ++) {
 	  *(b +  k) = *(a1 +  k * lda);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a2  +  0);
@@ -187,14 +187,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 4)) {
 	*(b +  ii - jj) = INV(*(a1 + (ii - jj) * lda));
 	for (k = ii - jj + 1; k < 4; k ++) {
 	  *(b +  k) = *(a1 +  k * lda);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a2  +  0);
@@ -221,14 +221,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 2)) {
 	*(b +  ii - jj) = INV(*(a1 + (ii - jj) * lda));
 	for (k = ii - jj + 1; k < 2; k ++) {
 	  *(b +  k) = *(a1 +  k * lda);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
 	*(b +  1) = *(a2  +  0);
@@ -249,14 +249,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
     ii = 0;
 
     for (i = 0; i < m; i++) {
-      
+
       if ((ii >= jj ) && (ii - jj < 1)) {
 	*(b +  ii - jj) = INV(*(a1 + (ii - jj) * lda));
 	for (k = ii - jj + 1; k < 1; k ++) {
 	  *(b +  k) = *(a1 +  k * lda);
 	}
       }
-      
+
       if (ii - jj < 0) {
 	*(b +  0) = *(a1  +  0);
       }

@@ -96,7 +96,7 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
 #else
     if ((x[i * COMPSIZE + 0] != ZERO) || (x[i * COMPSIZE + 1] != ZERO)) {
 #ifndef LOWER
-      AXPYU_K(i + 1, 0, 0, 
+      AXPYU_K(i + 1, 0, 0,
 	      alpha_r * x[i * COMPSIZE + 0] - alpha_i * x[i * COMPSIZE + 1],
 	      alpha_i * x[i * COMPSIZE + 0] + alpha_r * x[i * COMPSIZE + 1],
 	      x,                1, a, 1, NULL, 0);
@@ -112,7 +112,7 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
     if ((x[i * COMPSIZE + 0] != ZERO) || (x[i * COMPSIZE + 1] != ZERO)) {
 #ifndef HEMVREV
 #ifndef LOWER
-      AXPYU_K(i + 1, 0, 0, 
+      AXPYU_K(i + 1, 0, 0,
 	      alpha_r * x[i * COMPSIZE + 0], - alpha_r * x[i * COMPSIZE + 1],
 	      x,                1, a, 1, NULL, 0);
 #else
@@ -122,7 +122,7 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
 #endif
 #else
 #ifndef LOWER
-      AXPYC_K(i + 1, 0, 0, 
+      AXPYC_K(i + 1, 0, 0,
 	      alpha_r * x[i * COMPSIZE + 0],   alpha_r * x[i * COMPSIZE + 1],
 	      x,                1, a, 1, NULL, 0);
 #else
@@ -145,7 +145,7 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
     a += (args -> m - i) * COMPSIZE;
 #endif
   }
-  
+
   return 0;
 }
 
@@ -172,7 +172,7 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *bu
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -180,15 +180,15 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *bu
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.m = m;
-  
+
   args.a = (void *)x;
   args.b = (void *)a;
-    
+
   args.lda = incx;
 
 #if !defined(COMPLEX) || defined(HEMV) || defined(HEMVREV)
@@ -199,16 +199,16 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *bu
 
   dnum = (double)m * (double)m / (double)nthreads;
   num_cpu  = 0;
-  
+
 #ifndef LOWER
 
   range_m[MAX_CPU_NUMBER] = m;
   i          = 0;
-    
+
   while (i < m){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di = (double)(m - i);
       if (di * di - dnum > 0) {
 	width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
@@ -218,13 +218,13 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *bu
 
       if (width < 16) width = 16;
       if (width > m - i) width = m - i;
-	
+
     } else {
       width = m - i;
     }
-    
+
     range_m[MAX_CPU_NUMBER - num_cpu - 1] = range_m[MAX_CPU_NUMBER - num_cpu] - width;
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = syr_kernel;
     queue[num_cpu].args    = &args;
@@ -233,20 +233,20 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *bu
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
-  
+
 #else
 
   range_m[0] = 0;
   i          = 0;
-    
+
   while (i < m){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di = (double)(m - i);
       if (di * di - dnum > 0) {
 	width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
@@ -256,13 +256,13 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *bu
 
       if (width < 16) width = 16;
       if (width > m - i) width = m - i;
-	
+
     } else {
       width = m - i;
     }
-    
+
     range_m[num_cpu + 1] = range_m[num_cpu] + width;
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = syr_kernel;
     queue[num_cpu].args    = &args;
@@ -271,21 +271,21 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *bu
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
-  
+
 #endif
 
   if (num_cpu) {
     queue[0].sa = NULL;
     queue[0].sb = buffer;
-    
+
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-   
+
   return 0;
 }

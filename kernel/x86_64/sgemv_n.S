@@ -48,7 +48,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_M	  %rdi
 #define OLD_N	  %rsi
 #define OLD_A	  %rcx
@@ -66,7 +66,7 @@
 #else
 
 #define STACKSIZE	288
-	
+
 #define OLD_M	  %rcx
 #define OLD_N	  %rdx
 #define OLD_A		 40 + STACKSIZE(%rsp)
@@ -210,9 +210,9 @@
 	jle	.L999
 
 	subq	$-32 * SIZE, A
-	
+
 	movq	BUFFER, Y1
-	
+
 	pxor	%xmm0, %xmm0
 
 	movq	M,   %rax
@@ -301,7 +301,7 @@
 
 	testq	$SIZE, A1
 	je	.L1X
-	
+
 	movss	 -32 * SIZE(A1), %xmm4
 	movss	 -32 * SIZE(A1, LDA,  1), %xmm5
 	movss	 -32 * SIZE(A1, LDA,  2), %xmm6
@@ -907,7 +907,7 @@
 
 	testq	$SIZE, A1
 	je	.L2X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -1301,7 +1301,7 @@
 
 	testq	$SIZE, A1
 	je	.L3X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -1628,7 +1628,7 @@
 
 	testq	$SIZE, A1
 	je	.L4X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm8
 
 	movss	 -32 * SIZE(A1), %xmm0
@@ -1885,7 +1885,7 @@
 
 	testq	$SIZE, A1
 	je	.L5X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm8
 	movss	 -32 * SIZE(A1), %xmm0
 
@@ -2066,7 +2066,7 @@
 .L100:
 	testq	$2 * SIZE - 1, LDA
 	jne	.L200
-	
+
 	cmpq	$4, N
 	jl	.L110
 	ALIGN_3
@@ -2105,7 +2105,7 @@
 
 	testq	$SIZE, A1
 	je	.L10X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -2513,7 +2513,7 @@
 
 	testq	$SIZE, A1
 	je	.L11X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -2846,7 +2846,7 @@
 
 	testq	$SIZE, A1
 	je	.L12X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm8
 
 	movss	 -32 * SIZE(A1), %xmm0
@@ -3116,7 +3116,7 @@
 
 	testq	$SIZE, A1
 	je	.L13X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm8
 	movss	 -32 * SIZE(A1), %xmm0
 
@@ -3332,7 +3332,7 @@
 
 	testq	$SIZE, A1
 	je	.L20X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -3776,7 +3776,7 @@
 
 	testq	$SIZE, A1
 	je	.L21X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -4139,7 +4139,7 @@
 
 	testq	$SIZE, A1
 	je	.L22X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm9
 
 	movss	 -32 * SIZE(A1), %xmm0
@@ -4423,7 +4423,7 @@
 
 	testq	$SIZE, A1
 	je	.L23X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm8
 	movss	 -32 * SIZE(A1), %xmm0
 
@@ -4637,7 +4637,7 @@
 
 	testq	$SIZE, A1
 	je	.L30X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -5080,7 +5080,7 @@
 
 	testq	$SIZE, A1
 	je	.L31X
-	
+
 	movss	 -32 * SIZE(A1), %xmm0
 	movss	 -32 * SIZE(A1, LDA), %xmm1
 	movss	 -32 * SIZE(A2), %xmm2
@@ -5439,7 +5439,7 @@
 
 	testq	$SIZE, A1
 	je	.L32X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm9
 
 	movss	 -32 * SIZE(A1), %xmm0
@@ -5722,7 +5722,7 @@
 
 	testq	$SIZE, A1
 	je	.L33X
-	
+
 	movss	 -32 * SIZE(Y1), %xmm8
 	movss	 -32 * SIZE(A1), %xmm0
 

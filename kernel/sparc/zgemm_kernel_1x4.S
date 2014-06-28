@@ -239,10 +239,10 @@
 
         .register %g2, #scratch
         .register %g3, #scratch
-	
+
 	PROLOGUE
 	SAVESP
-	
+
 #ifndef __64BIT__
 #ifdef DOUBLE
 	st	%i3, [%sp + STACK_START + 16]
@@ -1123,7 +1123,7 @@
 	mov	BO, B
 	.align 4
 
-.LL20: 
+.LL20:
 	and	N, 2, J
 	cmp	J, 0
 	ble,pn	%icc, .LL30

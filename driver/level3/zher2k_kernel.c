@@ -61,7 +61,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     return 0;
   }
@@ -73,7 +73,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     return 0;
   }
@@ -86,7 +86,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     b += offset * k   * COMPSIZE;
     c += offset * ldc * COMPSIZE;
@@ -105,7 +105,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #endif
 		  a,
 		  b + (m + offset) * k   * COMPSIZE,
-		  c + (m + offset) * ldc * COMPSIZE, ldc); 
+		  c + (m + offset) * ldc * COMPSIZE, ldc);
 #endif
 
     n = m + offset;
@@ -120,7 +120,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #ifdef COMPLEX
 		alpha_i,
 #endif
-		a, b, c, ldc); 
+		a, b, c, ldc);
 #endif
     a -= offset * k   * COMPSIZE;
     c -= offset       * COMPSIZE;
@@ -139,30 +139,30 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #endif
 		a + (n - offset) * k * COMPSIZE,
 		b,
-		c + (n - offset)     * COMPSIZE, ldc); 
+		c + (n - offset)     * COMPSIZE, ldc);
 #endif
     m = n + offset;
   if (m <= 0) return 0;
   }
 
   for (loop = 0; loop < n; loop += GEMM_UNROLL_MN) {
-      
+
     int mm, nn;
-    
+
     mm = (loop & ~(GEMM_UNROLL_MN - 1));
     nn = MIN(GEMM_UNROLL_MN, n - loop);
-    
+
 #ifndef LOWER
     GEMM_KERNEL(mm, nn, k,
 		  alpha_r,
 #ifdef COMPLEX
 		  alpha_i,
 #endif
-		  a, b + loop * k * COMPSIZE, c + loop * ldc * COMPSIZE, ldc); 
+		  a, b + loop * k * COMPSIZE, c + loop * ldc * COMPSIZE, ldc);
 #endif
-    
+
     if (flag) {
-      GEMM_BETA(nn, nn, 0, ZERO, 
+      GEMM_BETA(nn, nn, 0, ZERO,
 #ifdef COMPLEX
 		ZERO,
 #endif
@@ -173,17 +173,17 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 #ifdef COMPLEX
 		    alpha_i,
 #endif
-		    a + loop * k * COMPSIZE, b + loop * k * COMPSIZE, subbuffer, nn); 
+		    a + loop * k * COMPSIZE, b + loop * k * COMPSIZE, subbuffer, nn);
 
 
 #ifndef LOWER
-      
+
       for (j = 0; j < nn; j ++) {
 	for (i = 0; i <= j; i ++) {
-	  c[(i + loop + (j + loop) * ldc) * 2 + 0] += 
+	  c[(i + loop + (j + loop) * ldc) * 2 + 0] +=
 	    subbuffer[(i + j * nn) * 2 + 0] + subbuffer[(j + i * nn) * 2 + 0];
 	  if (i != j) {
-	    c[(i + loop + (j + loop) * ldc) * 2 + 1] += 
+	    c[(i + loop + (j + loop) * ldc) * 2 + 1] +=
 	      subbuffer[(i + j * nn) * 2 + 1] - subbuffer[(j + i * nn) * 2 + 1];
 	  } else {
 	    c[(i + loop + (j + loop) * ldc) * 2 + 1] = ZERO;
@@ -205,15 +205,15 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
       }
 #endif
     }
-    
+
 #ifdef LOWER
     GEMM_KERNEL(m - mm - nn, nn, k,
 		  alpha_r,
 #ifdef COMPLEX
 		  alpha_i,
 #endif
-		  a + (mm + nn) * k * COMPSIZE, b + loop * k * COMPSIZE, 
-		  c + (mm + nn + loop * ldc) * COMPSIZE, ldc); 
+		  a + (mm + nn) * k * COMPSIZE, b + loop * k * COMPSIZE,
+		  c + (mm + nn + loop * ldc) * COMPSIZE, ldc);
 #endif
   }
 

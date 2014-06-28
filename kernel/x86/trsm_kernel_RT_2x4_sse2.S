@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define OLD_M	 4 + STACK + ARGS(%esi)
 #define OLD_N	 8 + STACK + ARGS(%esi)
 #define OLD_K	12 + STACK + ARGS(%esi)
@@ -256,7 +256,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -271,7 +271,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, BB
 
@@ -287,7 +287,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(B,  %eax, 1), B
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -303,7 +303,7 @@
 	sarl	$3, %eax
 	jle	.L65
 	ALIGN_4
-	
+
 .L62:
 #define COPYPREFETCH 40
 
@@ -365,7 +365,7 @@
 	decl	%eax
 	jne	.L66
 	ALIGN_4
-	
+
 .L70:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -407,7 +407,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -653,7 +653,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -863,7 +863,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, BB
 
@@ -879,7 +879,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(B,  %eax, 2), B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -895,7 +895,7 @@
 	sarl	$2, %eax
 	jle	.L35
 	ALIGN_4
-	
+
 .L32:
 #define COPYPREFETCH 40
 
@@ -960,7 +960,7 @@
 	decl	%eax
 	jne	.L36
 	ALIGN_4
-	
+
 .L40:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -1004,7 +1004,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -1318,7 +1318,7 @@
 	movl	KK, %eax
 	sall	$2 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -1588,7 +1588,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, BB
 
@@ -1604,7 +1604,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(B,  %eax, 4), B
 	leal	(BB, %eax, 8), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -1620,7 +1620,7 @@
 	sarl	$1, %eax
 	jle	.L05
 	ALIGN_4
-	
+
 .L02:
 #define COPYPREFETCH 40
 
@@ -1686,7 +1686,7 @@
 
 	addl	$4 * SIZE, B
 	ALIGN_4
-	
+
 .L10:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -1730,7 +1730,7 @@
 	movl	KK, %eax
 	sall	$3 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -1767,7 +1767,7 @@
 	andl	$-8, %eax
 	sall	$4, %eax
 	je	.L15
-.L1X:	
+.L1X:
 	KERNEL1(16  *  0)
 	KERNEL2(16  *  0)
 	KERNEL3(16  *  0)
@@ -2199,7 +2199,7 @@
 	movl	KK, %eax
 	sall	$3 + BASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -2576,7 +2576,7 @@
 .L999:
 	movl	OLD_STACK, %esp
 	EMMS
-	
+
 	popl	%ebx
 	popl	%esi
 	popl	%edi

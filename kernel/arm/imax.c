@@ -53,7 +53,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 	while(i < n)
 	{
-		if( x[ix] > maxf ) 
+		if( x[ix] > maxf )
 		{
 			max = i;
 			maxf = x[ix];
@@ -63,5 +63,5 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	}
 	return(max+1);
 }
-	
+
 

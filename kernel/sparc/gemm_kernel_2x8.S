@@ -1140,7 +1140,7 @@
 	cmp	I, 0
 	ble,pn	%icc, .LL29
 	nop
-	
+
 #if !defined(TRMMKERNEL) || (defined(TRMMKERNEL) && ((defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))))
 	mov	B, BO
 #else
@@ -1414,7 +1414,7 @@
 	mov	BO, B
 	.align 4
 
-.LL30: 
+.LL30:
 	and	N, 4, J
 	cmp	J, 0
 	ble,pn	%icc, .LL50

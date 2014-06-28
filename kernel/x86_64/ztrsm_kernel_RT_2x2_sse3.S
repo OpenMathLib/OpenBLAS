@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define M	%rdi
 #define N	%rsi
 #define K	%rdx
@@ -55,7 +55,7 @@
 #define	CO1	%r15
 #define CO2	%rbx
 #define KK	%rbp
-	
+
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE 128
@@ -338,9 +338,9 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
-	
+
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
 	movq	%r12, 16(%rsp)
@@ -375,7 +375,7 @@
 	movq	OLD_OFFSET, KK
 
 	movq	KK, OFFSET
-	
+
 	salq	$ZBASE_SHIFT, LDC
 
 #ifdef LN
@@ -399,7 +399,7 @@
 
 #ifdef RN
 	negq	KK
-#endif	
+#endif
 
 #ifdef RT
        movq	N, KK
@@ -420,7 +420,7 @@
        movq	K, %rax
        salq	$0 + ZBASE_SHIFT, %rax
        subq	%rax, B
-       
+
        subq	LDC, C
 #endif
 	movq	C, CO1		# coffset1 = c
@@ -431,7 +431,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 #ifdef LT
 	movq	OFFSET, KK
 #endif
@@ -456,7 +456,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AO), %xmm8
 	pxor	%xmm0, %xmm0
@@ -849,7 +849,7 @@
 
 	decq	I			# i --
 	jg	.L110
-	ALIGN_4	
+	ALIGN_4
 
 .L130:
 	testq	$1, M
@@ -870,7 +870,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AO), %xmm8
 	pxor	%xmm0, %xmm0
@@ -1168,7 +1168,7 @@
        movq	K, %rax
        salq	$1 + ZBASE_SHIFT, %rax
        subq	%rax, B
-       
+
        leaq	(, LDC, 2), %rax
        subq	%rax, C
 #endif
@@ -1183,7 +1183,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 #ifdef LT
 	movq	OFFSET, KK
 #endif
@@ -1208,7 +1208,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AO), %xmm8
 	pxor	%xmm0, %xmm0
@@ -1240,8 +1240,8 @@
 	andq	$-8, %rax
 	salq	$4, %rax
 	je	.L12
-	
-.L1X:	
+
+.L1X:
 	KERNEL1 (16  *  0)
 	KERNEL2 (16  *  0)
 	KERNEL3 (16  *  0)
@@ -1722,7 +1722,7 @@
 #endif
 	decq	I			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L30:
 	testq	$1, M
@@ -1742,7 +1742,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AO), %xmm8
 	pxor	%xmm0, %xmm0
@@ -2145,7 +2145,7 @@
        addq	%rax, AORIG
 #endif
 	ALIGN_4
-	
+
 .L99:
 #ifdef LN
        leaq	(, K, SIZE), %rax
@@ -2166,7 +2166,7 @@
 	decq	J			# j --
 	jg	.L01
 
-	
+
 .L999:
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp

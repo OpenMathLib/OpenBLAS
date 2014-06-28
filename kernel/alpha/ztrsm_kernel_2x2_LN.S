@@ -235,7 +235,7 @@ CNAME:
 	sra	N, 1, J
 	ble	J, $L30
 	.align 4
-	
+
 $L01:
 #ifdef RT
 	sll	K, ZBASE_SHIFT + 1, TMP1
@@ -524,7 +524,7 @@ $L28:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 	SUB	a3, c09, c09
@@ -534,7 +534,7 @@ $L28:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 	SUB	a3, c09, c09
@@ -620,7 +620,7 @@ $L28:
 	MUL	a4, c09, t2
 	ADD6	c01, t1, c01
 	ADD5	c02, t2, c02
-	
+
 	LD	a1,  0 * SIZE(BO)
 	LD	a2,  1 * SIZE(BO)
 
@@ -1116,7 +1116,7 @@ $L18:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	LD	b1,  4 * SIZE(BO)
  	LD	b2,  5 * SIZE(BO)
 	LD	b3,  6 * SIZE(BO)
@@ -1136,7 +1136,7 @@ $L18:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	LD	b1,  4 * SIZE(AO)
  	LD	b2,  5 * SIZE(AO)
 	LD	b3,  6 * SIZE(AO)
@@ -1193,7 +1193,7 @@ $L18:
 	ADD5	c02, t2, c02
 	ADD6	c09, t3, c09
 	ADD5	c10, t4, c10
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 
@@ -1373,7 +1373,7 @@ $L18:
 	ADD5	c02, t2, c02
 	ADD6	c03, t3, c03
 	ADD5	c04, t4, c04
-	
+
 	LD	a1,  0 * SIZE(BO)
 	LD	a2,  1 * SIZE(BO)
 
@@ -1709,7 +1709,7 @@ $L58:
 #else
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 #endif
@@ -2043,7 +2043,7 @@ $L48:
 	LD	a2,  1 * SIZE(BO)
 	LD	a3,  2 * SIZE(BO)
 	LD	a4,  3 * SIZE(BO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 	SUB	a3, c03, c03
@@ -2053,7 +2053,7 @@ $L48:
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
- 
+
 	SUB	a1, c01, c01
 	SUB	a2, c02, c02
 	SUB	a3, c03, c03
@@ -2083,7 +2083,7 @@ $L48:
 
 	ADD6	c01, t1, c01
 	ADD5	c02, t2, c02
-	
+
 	LD	a1,  0 * SIZE(AO)
 	LD	a2,  1 * SIZE(AO)
 

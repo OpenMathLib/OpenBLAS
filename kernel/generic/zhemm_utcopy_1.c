@@ -51,7 +51,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
   js = n;
   while (js > 0){
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
 
     i     = m;
@@ -59,7 +59,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     while (i > 0) {
       data01 = *(ao1 + 0);
       data02 = *(ao1 + 1);
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
 
       if (offset > 0) {

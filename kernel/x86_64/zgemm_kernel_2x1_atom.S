@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define M	%rdi
 #define N	%rsi
 #define K	%rdx
@@ -54,7 +54,7 @@
 #define BO	%r14
 #define	CO1	%r15
 #define BB	%rbp
-	
+
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE 128
@@ -113,9 +113,9 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
-	
+
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
 	movq	%r12, 16(%rsp)
@@ -165,7 +165,7 @@
 	movsd	%xmm4, KK
 #ifndef LEFT
 	negq	KK
-#endif	
+#endif
 #endif
 
 	salq	$ZBASE_SHIFT, LDC
@@ -179,7 +179,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 	movq	C, CO1
 	addq	LDC, C
@@ -206,7 +206,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
 	leaq	(B,  %rax, 2), BO
-#endif	
+#endif
 
 	prefetcht0	 0 * SIZE(BB)
 	subq	   $-8 * SIZE, BB
@@ -237,7 +237,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -261,7 +261,7 @@
 	ADDSD3	 %xmm7, %xmm14
 	movsd	 3 * SIZE(AO), %xmm7
 	mulsd	 %xmm3, %xmm2
- 
+
 	ADDSD4	 %xmm6, %xmm15
 	PREFETCH ((PREFETCHSIZE) >> 1 + 0) * SIZE(BO)
 	movaps	 %xmm4, %xmm6
@@ -514,7 +514,7 @@
 	addq	$4 * SIZE, CO1
 	decq	I
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L20:
 	testq	$1, M
@@ -530,7 +530,7 @@
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(B,  %rax, 2), BO
-#endif	
+#endif
 
 
 	movsd	 0 * SIZE(AO), %xmm0
@@ -553,7 +553,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -729,7 +729,7 @@
 	addq	$1, KK
 #endif
 	ALIGN_4
-	
+
 .L99:
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addq	$1, KK
@@ -739,7 +739,7 @@
 	decq	J			# j --
 	jg	.L01
 	ALIGN_4
-	
+
 .L999:
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp

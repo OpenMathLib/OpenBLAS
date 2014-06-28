@@ -62,7 +62,7 @@
 #define YY	r27
 #define PR	r30
 #define ARLC	r31
-	
+
 #define ALPHA	f8
 
 	PROLOGUE

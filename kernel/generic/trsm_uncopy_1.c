@@ -74,7 +74,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
       }
 
       if (ii < jj) *(b +  0) = *(a1 + 0);
-      
+
       a1 ++;
       b ++;
       i  --;

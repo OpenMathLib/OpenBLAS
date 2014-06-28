@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -707,7 +707,7 @@ LL(18):
 	addi	CO2, CO2, 16 * SIZE
 	addi	CO3, CO3, 16 * SIZE
 	addi	CO4, CO4, 16 * SIZE
-	
+
 	addic.	I, I, -1
 	bgt+	LL(11)
 	b	LL(20)
@@ -809,7 +809,7 @@ LL(19):
 	addi	CO2, CO2, 16 * SIZE
 	addi	CO3, CO3, 16 * SIZE
 	addi	CO4, CO4, 16 * SIZE
-	
+
 	addic.	I, I, -1
 	bgt+	LL(11)
 	.align 4
@@ -1917,7 +1917,7 @@ LL(118):
 
 	FADD	f0, f0, f2
 	FADD	f1, f1, f3
-	
+
 	FMADD	f0,  f0, f13, f8
 	FMADD	f1,  f1, f13, f9
 
@@ -2629,7 +2629,7 @@ LL(178):
 
 	STFD	f0,  0 * SIZE(CO1)
 	.align 4
-	
+
 LL(999):
 	mr	SP, STACK
 

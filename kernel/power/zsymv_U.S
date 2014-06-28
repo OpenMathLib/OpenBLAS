@@ -295,7 +295,7 @@
 
 	li	PREA, PREFETCHSIZE_A * SIZE
 	sub	IS, M, IS
-	
+
 	cmpwi	cr0, M, 0
 	ble-	LL(999)
 
@@ -1393,7 +1393,7 @@ LL(18):
 	STFD	y04,  3 * SIZE(YY)
 	ble	LL(11)
 	.align 4
-	
+
 LL(20):
 	andi.	TEMP, M, 1
 	ble	LL(990)
@@ -1485,7 +1485,7 @@ LL(28):
 	STFD	y01,  0 * SIZE(YY)
 	STFD	y02,  1 * SIZE(YY)
 	.align 4
-	
+
 LL(990):
 	cmpwi	cr0, INCY, 2 * SIZE
 	beq	LL(999)

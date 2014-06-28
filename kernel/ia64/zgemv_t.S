@@ -81,7 +81,7 @@
 #define CLD2	loc13
 #define CST1	loc14
 #define CST2	loc15
-	
+
 #define PREB	r8
 #define WPRE	r9
 #define OFFSET	PREB
@@ -91,7 +91,7 @@
 #define ARLC	r29
 #define PR	r30
 #define ARPFS	r31
-	
+
 #ifdef DOUBLE
 #define RPREFETCH	(16 * 2 +  8)
 #else
@@ -145,7 +145,7 @@
 	stf.spill  [r9] = f17, 32
 	mov	PR = pr
 	}
-	;;	
+	;;
 	{ .mmi
 	stf.spill  [r8] = f18, 32
 	stf.spill  [r9] = f19, 32
@@ -164,7 +164,7 @@
 	adds	r17 = 168, SP
 	}
 	.body
-	;;	
+	;;
 	{ .mmf
 	ld8	INCX   = [r14]
 	ld8	Y      = [r15]
@@ -2001,15 +2001,15 @@
 	ldf.fill  f16 = [SP], 32
 	ldf.fill  f17 = [r9], 32
 	mov	 ar.lc = ARLC
-	;;	
+	;;
 	ldf.fill  f18 = [SP], 32
 	ldf.fill  f19 = [r9], 32
 	mov pr    = PR, -1
-	;;	
+	;;
 	ldf.fill  f20 = [SP], 32
 	ldf.fill  f21 = [r9], 32
 	mov	ar.pfs = ARPFS
-	;;	
+	;;
 	ldf.fill  f22 = [SP], 32
 	ldf.fill  f23 = [r9]
 	br.ret.sptk.many b0

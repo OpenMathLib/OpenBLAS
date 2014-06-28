@@ -28,8 +28,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**************************************************************************************
 * 2013/08/19 Saar
-*	 BLASTEST float		
-* 	 BLASTEST double	
+*	 BLASTEST float
+* 	 BLASTEST double
 *
 **************************************************************************************/
 
@@ -51,7 +51,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 	while(i < n)
 	{
-		if( x[ix] > minf ) 
+		if( x[ix] > minf )
 		{
 			min = i;
 			minf = x[ix];
@@ -61,5 +61,5 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	}
 	return(min+1);
 }
-	
+
 

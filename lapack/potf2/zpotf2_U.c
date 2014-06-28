@@ -57,7 +57,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   n      = args -> n;
   a      = (FLOAT *)args -> a;
   lda    = args -> lda;
-  
+
   if (range_n) {
     n      = range_n[1] - range_n[0];
     a     += range_n[0] * (lda + 1) * COMPSIZE;
@@ -68,7 +68,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     ajj[0] = DOTC_K(j, a, 1, a, 1);
     GET_IMAGE(ajj[1]);
 
-    ajj[0] = *(a + j * 2) - ajj[0]; 
+    ajj[0] = *(a + j * 2) - ajj[0];
 
     if (ajj[0] <= 0){
       *(a + j * 2 + 0) = ajj[0];
@@ -87,7 +87,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	      a + lda * 2, lda,
 	      a, 1,
 	      a + (j + lda) * 2, lda, sb);
-      
+
       SCAL_K(i, 0, 0, ONE / ajj[0], ZERO,
 	      a + (j + lda) * 2, lda, NULL, 0, NULL, 0);
     }

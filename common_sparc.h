@@ -130,7 +130,7 @@ static __inline int blas_quickdivide(blasint x, blasint y){
 #define FSQRT	fsqrts
 #define FDIV	fdivs
 #endif
-	
+
 #define HALT prefetch [%g0], 5
 
 #define FMADDS(rs1, rs2, rs3, rd) \
@@ -170,19 +170,19 @@ static __inline int blas_quickdivide(blasint x, blasint y){
         .word	((2 << 30) | ((rd) << 25) | ( 0x36 << 19) | ( 0x7e << 5))
 
 #ifndef DOUBLE
-#define	FCLR(a)			FCLRS(a) 
-#define	FONE(a)			FONES(a) 
-#define	FMADD(a, b, c, d)	FMADDS(a, b, c, d) 
-#define	FMSUB(a, b, c, d)	FMSUBS(a, b, c, d) 
-#define	FNMADD(a, b, c, d)	FNMADDS(a, b, c, d) 
-#define	FNMSUB(a, b, c, d)	FNMSUBS(a, b, c, d) 
+#define	FCLR(a)			FCLRS(a)
+#define	FONE(a)			FONES(a)
+#define	FMADD(a, b, c, d)	FMADDS(a, b, c, d)
+#define	FMSUB(a, b, c, d)	FMSUBS(a, b, c, d)
+#define	FNMADD(a, b, c, d)	FNMADDS(a, b, c, d)
+#define	FNMSUB(a, b, c, d)	FNMSUBS(a, b, c, d)
 #else
-#define	FCLR(a)			FCLRD(a) 
-#define	FONE(a)			FONED(a) 
-#define	FMADD(a, b, c, d)	FMADDD(a, b, c, d) 
-#define	FMSUB(a, b, c, d)	FMSUBD(a, b, c, d) 
-#define	FNMADD(a, b, c, d)	FNMADDD(a, b, c, d) 
-#define	FNMSUB(a, b, c, d)	FNMSUBD(a, b, c, d) 
+#define	FCLR(a)			FCLRD(a)
+#define	FONE(a)			FONED(a)
+#define	FMADD(a, b, c, d)	FMADDD(a, b, c, d)
+#define	FMSUB(a, b, c, d)	FMSUBD(a, b, c, d)
+#define	FNMADD(a, b, c, d)	FNMADDD(a, b, c, d)
+#define	FNMSUB(a, b, c, d)	FNMSUBD(a, b, c, d)
 #endif
 
 #ifndef F_INTERFACE

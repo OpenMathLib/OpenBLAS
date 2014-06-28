@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #define N	r3
 #define X	r6
-#define INCX	r7	
+#define INCX	r7
 
 #define INCX2	r4
 #define X2	r5
@@ -74,7 +74,7 @@
 	stfpdux	f14, SP, r10
 	stfpdux	f15, SP, r10
 	stfpdux	f16, SP, r10
-	
+
 	li	r10,   0
 	stwu	r10,   -4(SP)
 	stwu	r10,   -4(SP)

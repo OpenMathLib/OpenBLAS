@@ -86,7 +86,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	LDARG	INCY, 0($sp)
 	li	TEMP, 2 * SIZE
 
@@ -95,7 +95,7 @@
 	sdc1	$f20, 0($sp)
 	sdc1	$f21, 8($sp)
 #endif
-	
+
 	blez	N, .L999
 	dsll	INCX, INCX, ZBASE_SHIFT
 

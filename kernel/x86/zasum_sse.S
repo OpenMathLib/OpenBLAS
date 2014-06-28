@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	 8
 #define ARGS     0
 
@@ -52,7 +52,7 @@
 #define INCX	%ebx
 
 #include "l1param.h"
-	
+
 	PROLOGUE
 	PROFCODE
 
@@ -79,7 +79,7 @@
 	movss	STACK_M, %xmm3
 	shufps	$0, %xmm3, %xmm3
 #endif
-	
+
 	sall	$ZBASE_SHIFT, INCX
 
 	cmpl	$2 * SIZE, INCX
@@ -124,7 +124,7 @@
 	decl	I
 	jle	.L12
 	ALIGN_3
-	
+
 .L11:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -277,7 +277,7 @@
 	sarl	$2, I
 	jle	.L105
 	ALIGN_4
-	
+
 .L101:
 	movsd	(X), %xmm4
 	addl	INCX, X
@@ -322,18 +322,18 @@
 #ifndef HAVE_SSE3
 	movhlps	%xmm0, %xmm1
 	addps	%xmm1, %xmm0
-	
+
 	movaps	%xmm0, %xmm1
 	shufps  $1, %xmm0, %xmm0
 	addss	 %xmm1, %xmm0
 #else
 	haddps	%xmm0, %xmm0
 	haddps	%xmm0, %xmm0
-#endif	
+#endif
 
 	movss	%xmm0, STACK_M
 	flds	STACK_M
-	
+
 	popl	%ebx
 	popl	%esi
 	ret

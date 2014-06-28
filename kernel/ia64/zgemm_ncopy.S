@@ -44,7 +44,7 @@
 
 #define LD	LDF8
 #define ST	STF8_NTA
-	
+
 #define TEMP	r2
 
 #define I	r14
@@ -77,7 +77,7 @@
 	.prologue
 	PROFCODE
 
-	.body	
+	.body
 	{ .mii
 	shladd	LDA= LDA, ZBASE_SHIFT, r0
 	mov	PR = pr

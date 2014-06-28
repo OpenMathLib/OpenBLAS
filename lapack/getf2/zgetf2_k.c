@@ -63,7 +63,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   lda  = args -> lda;
   ipiv = (blasint *)args -> c;
   offset = 0;
-  
+
   if (range_n) {
     m     -= range_n[0];
     n      = range_n[1] - range_n[0];
@@ -73,13 +73,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   info = 0;
   b = a;
-  
+
   for (j = 0; j < n; j++) {
 
     len = MIN(j, m);
 
     for (i = 0; i < len; i++) {
-      ip = ipiv[i + offset] - 1 - offset; 
+      ip = ipiv[i + offset] - 1 - offset;
       if (ip != i) {
 	temp1 = *(b + i  * 2 + 0);
 	temp2 = *(b + i  * 2 + 1);
@@ -91,7 +91,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	*(b + ip * 2 + 1) = temp2;
       }
     }
-    
+
     ZTRSV_NLU(len, a, lda, b, 1, sb);
 
     if (j < m) {
@@ -124,7 +124,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	}
 
 	if (j + 1 < m) {
-	  SCAL_K(m - j - 1, 0, 0, temp3, temp4, 
+	  SCAL_K(m - j - 1, 0, 0, temp3, temp4,
 		 b + (j + 1) * 2, 1, NULL, 0, NULL, 0);
 	}
       } else {

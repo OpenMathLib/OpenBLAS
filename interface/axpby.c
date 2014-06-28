@@ -40,7 +40,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *BETA, FLOAT *y, blasint *INCY)
 {
-  
+
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   BLASLONG incy = *INCY;
@@ -66,7 +66,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT beta, FLOAT *y,
   FUNCTION_PROFILE_END(1, 2 * n, 2 * n);
 
   return;
-  
+
 }
 
 

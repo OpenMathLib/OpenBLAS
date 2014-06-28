@@ -75,7 +75,7 @@ static  int (*hbmv_thread[])(BLASLONG, BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLO
 
 #ifndef CBLAS
 
-void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *LDA, 
+void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *LDA,
             FLOAT  *x, blasint *INCX, FLOAT *BETA, FLOAT *y, blasint *INCY){
 
   char uplo_arg = *UPLO;
@@ -105,7 +105,7 @@ void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *
   if (uplo_arg  == 'L') uplo  = 1;
   if (uplo_arg  == 'V') uplo  = 2;
   if (uplo_arg  == 'M') uplo  = 3;
- 
+
   info = 0;
 
   if (incy == 0)          info = 11;
@@ -119,7 +119,7 @@ void NAME(char *UPLO, blasint *N, blasint *K, FLOAT  *ALPHA, FLOAT *a, blasint *
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
 #else
 
 void CNAME(enum CBLAS_ORDER order,
@@ -150,7 +150,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (order == CblasColMajor) {
     if (Uplo == CblasUpper)         uplo  = 0;
     if (Uplo == CblasLower)         uplo  = 1;
-    
+
     info = -1;
 
     if (incy == 0)          info = 11;

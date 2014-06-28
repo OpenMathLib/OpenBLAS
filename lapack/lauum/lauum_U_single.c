@@ -91,7 +91,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   n      = args -> n;
   a      = (FLOAT *)args -> a;
   lda    = args -> lda;
-  
+
   if (range_n) {
     n      = range_n[1] - range_n[0];
     a     += range_n[0] * (lda + 1) * COMPSIZE;
@@ -117,74 +117,74 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	min_l = j - ls;
 
 #if 0
-	
-      
+
+
 	if (min_l > REAL_GEMM_R) min_l = REAL_GEMM_R;
 	min_i = ls + min_l;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	if (ls > 0) {
 	  GEMM_ITCOPY(bk, min_i, a + (j * lda) * COMPSIZE, lda, sa);
 	  aa = sa;
 	} else {
 	  aa = sb2;
 	}
-	
+
 	for (jjs = ls; jjs < ls + min_l; jjs += GEMM_P){
 	  min_jj = ls + min_l - jjs;
 	  if (min_jj > GEMM_P) min_jj = GEMM_P;
-	  
+
 	  GEMM_OTCOPY(bk,  min_jj,  a + (jjs  + j * lda) * COMPSIZE, lda, sb2 + (jjs - ls) * bk * COMPSIZE);
-	  
-	  SYRK_KERNEL(min_i, min_jj, bk, dp1, 
-		      aa, 
-		      sb2 + (jjs - ls) * bk * COMPSIZE, 
+
+	  SYRK_KERNEL(min_i, min_jj, bk, dp1,
+		      aa,
+		      sb2 + (jjs - ls) * bk * COMPSIZE,
 		      a + (jjs * lda) * COMPSIZE, lda, - jjs);
 	}
-	
+
 	if (ls + REAL_GEMM_R >= j ) {
 	  for (ks = 0; ks < bk; ks += GEMM_P) {
 	    min_k = bk - ks;
 	    if (min_k > GEMM_P) min_k = GEMM_P;
-	    
+
 	    TRMM_KERNEL(min_i, min_k, bk, dp1,
 #ifdef COMPLEX
 			ZERO,
 #endif
 			aa,
 			sb + ks * bk * COMPSIZE,
-			a + ((ks + j) * lda) * COMPSIZE, lda, -ks); 
+			a + ((ks + j) * lda) * COMPSIZE, lda, -ks);
 	  }
 	}
-	
+
 	for(is = min_i; is < ls + min_l ; is += GEMM_P){
 	  min_i = ls + min_l - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
+
 	  if (is < ls) {
 	    GEMM_ITCOPY(bk, min_i, a + (is + j * lda) * COMPSIZE, lda, sa);
 	    aa = sa;
 	  } else {
 	    aa = sb2 + (is - ls) * bk * COMPSIZE;
 	  }
-	  
-	  SYRK_KERNEL(min_i, min_l, bk, dp1, 
-		      aa, 
-		      sb2, 
+
+	  SYRK_KERNEL(min_i, min_l, bk, dp1,
+		      aa,
+		      sb2,
 		      a + (is + ls * lda) * COMPSIZE, lda, is - ls);
-	  
+
 	  if (ls + REAL_GEMM_R >= j ) {
 	    for (ks = 0; ks < bk; ks += GEMM_P) {
 	      min_k = bk - ks;
 	      if (min_k > GEMM_P) min_k = GEMM_P;
-	      
+
 	      TRMM_KERNEL(min_i, min_k, bk, dp1,
 #ifdef COMPLEX
 			  ZERO,
 #endif
 			  aa,
 			  sb + ks * bk * COMPSIZE,
-			  a + (is + (ks + j) * lda) * COMPSIZE, lda, -ks); 
+			  a + (is + (ks + j) * lda) * COMPSIZE, lda, -ks);
 	    }
 	  }
 	}
@@ -198,12 +198,12 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	for (jjs = ls; jjs < ls + min_l; jjs += GEMM_P){
 	  min_jj = ls + min_l - jjs;
 	  if (min_jj > GEMM_P) min_jj = GEMM_P;
-	  
+
 	  GEMM_OTCOPY(bk,  min_jj,  a + (jjs  + j * lda) * COMPSIZE, lda, sb2 + (jjs - ls) * bk * COMPSIZE);
-	  
-	  SYRK_KERNEL(min_i, min_jj, bk, dp1, 
-		      sa, 
-		      sb2 + (jjs - ls) * bk * COMPSIZE, 
+
+	  SYRK_KERNEL(min_i, min_jj, bk, dp1,
+		      sa,
+		      sb2 + (jjs - ls) * bk * COMPSIZE,
 		      a + (jjs * lda) * COMPSIZE, lda, - jjs);
 	}
 
@@ -211,40 +211,40 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	  for (ks = 0; ks < bk; ks += GEMM_P) {
 	    min_k = bk - ks;
 	    if (min_k > GEMM_P) min_k = GEMM_P;
-	    
+
 	    TRMM_KERNEL(min_i, min_k, bk, dp1,
 #ifdef COMPLEX
 			ZERO,
 #endif
 			sa,
 			sb + ks * bk * COMPSIZE,
-			a + ((ks + j) * lda) * COMPSIZE, lda, -ks); 
+			a + ((ks + j) * lda) * COMPSIZE, lda, -ks);
 	  }
 	}
 
 	for(is = min_i; is < ls + min_l ; is += GEMM_P){
 	  min_i = ls + min_l - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
+
 	  GEMM_ITCOPY(bk, min_i, a + (is + j * lda) * COMPSIZE, lda, sa);
-	  
-	  SYRK_KERNEL(min_i, min_l, bk, dp1, 
-		      sa, 
-		      sb2, 
+
+	  SYRK_KERNEL(min_i, min_l, bk, dp1,
+		      sa,
+		      sb2,
 		      a + (is + ls * lda) * COMPSIZE, lda, is - ls);
-	  
+
 	  if (ls + REAL_GEMM_R >= j ) {
 	    for (ks = 0; ks < bk; ks += GEMM_P) {
 	      min_k = bk - ks;
 	      if (min_k > GEMM_P) min_k = GEMM_P;
-	      
+
 	      TRMM_KERNEL(min_i, min_k, bk, dp1,
 #ifdef COMPLEX
 			  ZERO,
 #endif
 			  sa,
 			  sb + ks * bk * COMPSIZE,
-			  a + (is + (ks + j) * lda) * COMPSIZE, lda, -ks); 
+			  a + (is + (ks + j) * lda) * COMPSIZE, lda, -ks);
 	    }
 	  }
 	}
@@ -259,7 +259,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       range_N[0] = range_n[0] + j;
       range_N[1] = range_n[0] + j + bk;
     }
-    
+
     CNAME(args, NULL, range_N, sa, sb, 0);
 
   }

@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #define ALPHA    0
 #define FZERO	 8
 
@@ -70,7 +70,7 @@
 #define BO	r25
 #define AO2	r26
 #define	BO2	r27
-	
+
 #define	CO1	r28
 #define CO2	r29
 #define	CO3	r30
@@ -122,7 +122,7 @@
 	stfpdux	f29, SP, r0
 	stfpdux	f30, SP, r0
 	stfpdux	f31, SP, r0
-	
+
 	stwu	r31,  -4(SP)
 	stwu	r30,  -4(SP)
 	stwu	r29,  -4(SP)
@@ -272,7 +272,7 @@
 	mtspr	CTR, r0
 	ble	.L44
 #endif
-	
+
 	LFPDUX	A1,  AO,  INC4
 	LFPDUX	B1,  BO,  INC4
 	LFPDUX	B2,  BO2, INC4
@@ -1774,7 +1774,7 @@
 	fxcsmadd	f7,  B6, A4, f7
 	LFPDUX	A9,  AO, INC4
 	fxcpmadd	f11, B4, A4, f11
-	nop	
+	nop
 	fxcsmadd	f15, B4, A4, f15
 	bdnz+	.L12
 	.align 4
@@ -4597,7 +4597,7 @@
 	mtspr	CTR, r0
 	ble	.L114
 #endif
-	
+
 	LFPDUX	A1,  AO,  INC2
 	LFPDUX	A2,  AO,  INC2
 	LFPDUX	B1,  BO,  INC2
@@ -5428,7 +5428,7 @@
 	fsmfp	f0, f4
 	fsmfp	f1, f5
 	fsmfp	f2, f6
-	fsmfp	f3, f7	
+	fsmfp	f3, f7
 #endif
 
 #ifdef LT
@@ -5528,7 +5528,7 @@
 	fsmfp	f0, f4
 	fsmfp	f1, f5
 	fsmfp	f2, f6
-	fsmfp	f3, f7	
+	fsmfp	f3, f7
 #endif
 
 #ifdef RN

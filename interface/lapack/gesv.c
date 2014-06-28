@@ -71,7 +71,7 @@ int NAME(blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA, blasint *ipiv,
   extern
 #endif
   FLOAT *sa, *sb;
-  
+
   PRINT_DEBUG_NAME;
 
   args.m    = *N;
@@ -121,18 +121,18 @@ int NAME(blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA, blasint *ipiv,
 
     args.n    = *N;
     info = GETRF_SINGLE(&args, NULL, NULL, sa, sb, 0);
-    
+
     if (info == 0){
       args.n    = *NRHS;
       GETRS_N_SINGLE(&args, NULL, NULL, sa, sb, 0);
     }
-    
+
 #ifdef SMP
   } else {
 
     args.n    = *N;
     info = GETRF_PARALLEL(&args, NULL, NULL, sa, sb, 0);
-    
+
     if (info == 0){
       args.n    = *NRHS;
       GETRS_N_PARALLEL(&args, NULL, NULL, sa, sb, 0);

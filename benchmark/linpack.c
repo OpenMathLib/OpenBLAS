@@ -83,22 +83,22 @@ int gettimeofday(struct timeval *tv, void *tz){
   FILETIME ft;
   unsigned __int64 tmpres = 0;
   static int tzflag;
- 
+
   if (NULL != tv)
     {
       GetSystemTimeAsFileTime(&ft);
- 
+
       tmpres |= ft.dwHighDateTime;
       tmpres <<= 32;
       tmpres |= ft.dwLowDateTime;
- 
+
       /*converting file time to unix epoch*/
       tmpres /= 10;  /*convert into microseconds*/
-      tmpres -= DELTA_EPOCH_IN_MICROSECS; 
+      tmpres -= DELTA_EPOCH_IN_MICROSECS;
       tv->tv_sec = (long)(tmpres / 1000000UL);
       tv->tv_usec = (long)(tmpres % 1000000UL);
     }
- 
+
   return 0;
 }
 
@@ -154,7 +154,7 @@ int MAIN__(int argc, char *argv[]){
   struct timeval start, stop;
   double time1, time2;
 
-  argc--;argv++; 
+  argc--;argv++;
 
   if (argc > 0) { from     = atol(*argv);		argc--; argv++;}
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
@@ -165,15 +165,15 @@ int MAIN__(int argc, char *argv[]){
   if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-    
+
   if (( b = (FLOAT *)malloc(sizeof(FLOAT) * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-  
+
   if (( ipiv = (blasint *)malloc(sizeof(blasint) * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-  
+
 #ifdef linux
   srandom(getpid());
 #endif
@@ -181,7 +181,7 @@ int MAIN__(int argc, char *argv[]){
   fprintf(stderr, "   SIZE       Residual     Decompose            Solve           Total\n");
 
   for(m = from; m <= to; m += step){
-    
+
     fprintf(stderr, " %6d : ", (int)m);
 
     for(j = 0; j < m; j++){
@@ -189,9 +189,9 @@ int MAIN__(int argc, char *argv[]){
 	a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       }
     }
-    
+
     for (i = 0; i < m * COMPSIZE; ++i) b[i] = 0.;
-    
+
     for (j = 0; j < m; ++j) {
       for (i = 0; i < m * COMPSIZE; ++i) {
 	b[i] += a[i + j * m * COMPSIZE];
@@ -208,7 +208,7 @@ int MAIN__(int argc, char *argv[]){
       fprintf(stderr, "Matrix is not singular .. %d\n", info);
       exit(1);
     }
-    
+
     time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
 
     gettimeofday( &start, (struct timezone *)0);
@@ -221,7 +221,7 @@ int MAIN__(int argc, char *argv[]){
       fprintf(stderr, "Matrix is not singular .. %d\n", info);
       exit(1);
     }
-    
+
     time2 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
 
     maxerr = 0.;
@@ -239,7 +239,7 @@ int MAIN__(int argc, char *argv[]){
 #endif
 #endif
     }
-    
+
 #ifdef XDOUBLE
     fprintf(stderr,"  %Le ", maxerr);
 #else
@@ -247,7 +247,7 @@ int MAIN__(int argc, char *argv[]){
 #endif
 
     fprintf(stderr,
-	    " %10.2f MFlops %10.2f MFlops %10.2f MFlops\n", 
+	    " %10.2f MFlops %10.2f MFlops %10.2f MFlops\n",
 	    COMPSIZE * COMPSIZE * 2. / 3. * (double)m * (double)m * (double)m / time1 * 1.e-6,
 	    COMPSIZE * COMPSIZE * 2.      * (double)m * (double)m             / time2 * 1.e-6,
 	    COMPSIZE * COMPSIZE * (2. / 3. * (double)m * (double)m * (double)m + 2. * (double)m * (double)m) / (time1 + time2) * 1.e-6);

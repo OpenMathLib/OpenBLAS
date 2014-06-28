@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS     0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		32 + STACK + ARGS(%esp)
 #define STACK_INCX	36 + STACK + ARGS(%esp)

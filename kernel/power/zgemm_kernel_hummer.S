@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #undef ZERO
 
 #define ALPHA    0
@@ -72,7 +72,7 @@
 #define BO	r25
 #define AO2	r26
 #define	BO2	r27
-	
+
 #define	CO1	r28
 #define CO2	r29
 #define	ZERO	r31
@@ -131,7 +131,7 @@
 	stfpdux	f29, SP, r0
 	stfpdux	f30, SP, r0
 	stfpdux	f31, SP, r0
-	
+
 	stwu	r31,  -4(SP)
 	stwu	r30,  -4(SP)
 	stwu	r29,  -4(SP)
@@ -201,7 +201,7 @@
 #endif
 
 	addi	AO, A, -4 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -1435,7 +1435,7 @@
 #endif
 
 	addi	AO, A, -2 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -2273,7 +2273,7 @@
 #endif
 
 	addi	AO, A, -4 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 
@@ -2629,7 +2629,7 @@
 #endif
 	FXCSMADD	f13, B2, A2, f13
 	nop
-	
+
 	FXCPMADD	f2,  B5, A8, f2
 	nop
 	FXCSMADD	f6,  B5, A8, f6
@@ -3576,7 +3576,7 @@
 #endif
 
 	addi	AO, A, -2 * SIZE
-	
+
 	li	r0, FZERO
 	lfpsx	f0, SP, r0
 

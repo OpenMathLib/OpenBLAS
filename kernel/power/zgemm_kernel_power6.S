@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -107,7 +107,7 @@
 
 #define PREA	r30
 #define PREC	r31
-	
+
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 #define FMA1	FMADD
 #define FMA2	FMADD
@@ -1056,7 +1056,7 @@ LL(18):
 	addi	CO2, CO2, 4 * SIZE
 	addi	CO3, CO3, 4 * SIZE
 	addi	CO4, CO4, 4 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -1445,7 +1445,7 @@ LL(28):
 	addi	CO2, CO2, 2 * SIZE
 	addi	CO3, CO3, 2 * SIZE
 	addi	CO4, CO4, 2 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -2016,7 +2016,7 @@ LL(38):
 
 	addi	CO1, CO1, 4 * SIZE
 	addi	CO2, CO2, 4 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -2271,7 +2271,7 @@ LL(48):
 
 	addi	CO1, CO1, 2 * SIZE
 	addi	CO2, CO2, 2 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -2644,7 +2644,7 @@ LL(58):
 	fmr	f11, f0
 
 	addi	CO1, CO1, 4 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -2847,7 +2847,7 @@ LL(68):
 	STFD	f1,  1 * SIZE(CO1)
 
 	addi	CO1, CO1, 2 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))

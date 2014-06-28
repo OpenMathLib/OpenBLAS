@@ -46,7 +46,7 @@
 #define B	ARG5
 #define C	ARG6
 #define LDC	%r10
-	
+
 #define I	%r12
 #define J	%r13
 #define AO	%r14
@@ -59,7 +59,7 @@
 
 #define KK	%r11
 #define AORIG	 48(%rsp)
-	
+
 #ifdef OPTERON
 #define PREFETCH	prefetch
 #define PREFETCHW	prefetchw
@@ -89,7 +89,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
@@ -104,7 +104,7 @@
 
 	addq	$8 * SIZE, A
 	addq	$8 * SIZE, B
-	
+
 #ifdef LN
        movq	M, %rax
        salq	$ZBASE_SHIFT, %rax
@@ -128,7 +128,7 @@
        movq	OFFSET, %rax
        negq	%rax
        movq	%rax, KK
-#endif	
+#endif
 
 #ifdef RT
        movq	N, %rax
@@ -138,7 +138,7 @@
 
 	cmpq	$0, M
 	jle	.L999
-	
+
 	movq	N,   %rax
 	movq	%rax, J
 	testq	%rax, %rax
@@ -170,7 +170,7 @@
 	movq	OFFSET, %rax
 	addq	M, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, %rax
@@ -194,7 +194,7 @@
 	leaq	(B,  %rax, 1), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -229,7 +229,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -247,7 +247,7 @@
 
 	FLD	 -5 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -5 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -267,7 +267,7 @@
 
 	FLD	 -3 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -3 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -285,7 +285,7 @@
 
 	FLD	 -1 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -1 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -322,7 +322,7 @@
 
 	FLD	 -7 * SIZE(BO)
 	fmul	 %st, %st(2)
-	 
+
 	FLD	 -7 * SIZE(AO)
 	fmul	 %st, %st(2)
 	fmulp	 %st, %st(1)
@@ -341,7 +341,7 @@
 .L18:
 	faddp	%st, %st(3)
 	faddp	%st, %st(1)
-	
+
 	fxch	%st(1)
 
 #if defined(LN) || defined(RT)
@@ -421,7 +421,7 @@
 
 	FST	0 * SIZE(CO)
 	FST	1 * SIZE(CO)
-	
+
 #ifndef LN
 	addq	$2 * SIZE, CO
 #endif

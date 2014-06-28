@@ -71,7 +71,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	subq	$STACKSIZE, %rsp
 

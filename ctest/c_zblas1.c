@@ -16,21 +16,21 @@ void F77_zaxpy(const int *N, const void *alpha, void *X,
    return;
 }
 
-void F77_zcopy(const int *N, void *X, const int *incX, 
+void F77_zcopy(const int *N, void *X, const int *incX,
                     void *Y, const int *incY)
 {
    cblas_zcopy(*N, X, *incX, Y, *incY);
    return;
 }
 
-void F77_zdotc(const int *N, const void *X, const int *incX, 
+void F77_zdotc(const int *N, const void *X, const int *incX,
                      const void *Y, const int *incY,void *dotc)
 {
    cblas_zdotc_sub(*N, X, *incX, Y, *incY, dotc);
    return;
 }
 
-void F77_zdotu(const int *N, void *X, const int *incX, 
+void F77_zdotu(const int *N, void *X, const int *incX,
                         void *Y, const int *incY,void *dotu)
 {
    cblas_zdotu_sub(*N, X, *incX, Y, *incY, dotu);

@@ -68,11 +68,11 @@ static int (*tpsv[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, void *) = {
 
 void NAME(char *UPLO, char *TRANS, char *DIAG,
 	   blasint *N, FLOAT *a, FLOAT *x, blasint *INCX){
-  
+
   char uplo_arg  = *UPLO;
   char trans_arg = *TRANS;
   char diag_arg  = *DIAG;
-  
+
   blasint n    = *N;
   blasint incx = *INCX;
 
@@ -115,7 +115,7 @@ void NAME(char *UPLO, char *TRANS, char *DIAG,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
 #else
 
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
@@ -141,7 +141,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
     if (TransA == CblasTrans)       trans = 1;
     if (TransA == CblasConjNoTrans) trans = 0;
     if (TransA == CblasConjTrans)   trans = 1;
-    
+
     if (Diag == CblasUnit)          unit  = 0;
     if (Diag == CblasNonUnit)       unit  = 1;
 
@@ -183,7 +183,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 #endif
 
   if (n == 0) return;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
