@@ -698,11 +698,11 @@ void gotoblas_affinity_init(void) {
 #ifdef USE_OPENMP
   numprocs = 0;
 #else
-  numprocs = readenv("OPENBLAS_NUM_THREADS");
-  if (numprocs == 0) numprocs = readenv("GOTO_NUM_THREADS");
+  numprocs = readenv_atoi("OPENBLAS_NUM_THREADS");
+  if (numprocs == 0) numprocs = readenv_atoi("GOTO_NUM_THREADS");
 #endif
 
-  if (numprocs == 0) numprocs = readenv("OMP_NUM_THREADS");
+  if (numprocs == 0) numprocs = readenv_atoi("OMP_NUM_THREADS");
 
   numnodes = 1;
 
@@ -793,7 +793,7 @@ void gotoblas_affinity_init(void) {
 
     setup_mempolicy();
 
-    if (readenv("OPENBLAS_MAIN_FREE") || readenv("GOTOBLAS_MAIN_FREE")) {
+    if (readenv_atoi("OPENBLAS_MAIN_FREE") || readenv_atoi("GOTOBLAS_MAIN_FREE")) {
       sched_setaffinity(0, sizeof(cpu_orig_mask), &cpu_orig_mask[0]);
     }
 

@@ -248,7 +248,7 @@ int get_L2_size(void){
 
 void blas_set_parameter(void){
 
-  char *p;
+  env_var_t p;
   int factor;
   int size = get_L2_size();
 
@@ -463,9 +463,8 @@ void blas_set_parameter(void){
 #endif
 #endif
 
-  p = getenv("GOTO_BLOCK_FACTOR");
 
-  if (p) {
+  if (readenv(p,"GOTO_BLOCK_FACTOR")) {
     factor = atoi(p);
     if (factor <  10) factor =  10;
     if (factor > 200) factor = 200;
