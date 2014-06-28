@@ -1,4 +1,4 @@
-##define REALNAME gemm 
+##define REALNAME gemm
 #define ASSEMBLER
 #include "common.h"
 
@@ -77,7 +77,7 @@
 #define F27 27
 #define F26 26
 #define F25 25
-#define F24 24 
+#define F24 24
 #define F23 23
 #define F22 22
 #define F21 21
@@ -85,7 +85,7 @@
 #define F19 19
 #define F18 18
 #define F17 17
-#define F16 16 
+#define F16 16
 #define F15 15
 #define F14 14
 #define F13 13
@@ -97,10 +97,10 @@
 #define F7 7
 #define F6 6
 #define F5 5
-#define F4 4 
-#define F3 3 
-#define F2 2 
-#define F1 1 
+#define F4 4
+#define F3 3
+#define F2 2
+#define F1 1
 #define F0 0
 
 #define	R12	12
@@ -195,12 +195,12 @@
 	daddu	BO, B,  TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	dsll	PREB, K, ZBASE_SHIFT
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
 	MOV		C31, C11
 	MOV		C32, C11
@@ -218,7 +218,7 @@
 
 	MOV		C33, C11
 	MOV		C34, C11
-	
+
 	MOV		C43, C11
 	MOV		C44, C11
 
@@ -246,12 +246,12 @@
 	move	BO, B				#	Reset	B
 	dsra	L, K, 2				#	UnRoll	K=64
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	dsll	PREB, K, ZBASE_SHIFT
 	MOV		C21, C11
 	MOV		C22, C11
-	
+
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
 	MOV		C31, C11
 	MOV		C32, C11
@@ -278,7 +278,7 @@
 
 	PLU		B3,	B1, B1
 	PLU		B4, B2, B2
-	
+
 	FETCH	$0, 8 * SIZE(CO1)
 	blez	L, .L242
 	FETCH	$0, 8 * SIZE(CO2)
@@ -349,7 +349,7 @@
 
 	MADPS	C34, C34, A7, B8
 	MADPS	C44, C44, A8, B8
-	
+
 	gsLQC1(R13, F13, F12, 3)	#	B3 B4
 	MADPS	C11, C11, A1, B1
 	MADPS	C21, C21, A2, B1
@@ -488,7 +488,7 @@
 
 	MADPS	C34, C34, A7, B8
 	MADPS	C44, C44, A8, B8
-	
+
 	.align	4
 .L247:
 #ifndef	TRMMKERNEL
@@ -644,7 +644,7 @@
 
 	MADD	C11, C11, C12, A2
 	MADD	C21, C21, C22, A2
-	
+
 	MADD	C31, C31, C32, A2
 	MADD	C41, C41, C42, A2
 
@@ -748,7 +748,7 @@
 
 	MADD	C11, C11, C12, A2
 	MADD	C21, C21, C22, A2
-	
+
 	MADD	C31, C31, C32, A2
 	MADD	C41, C41, C42, A2
 
@@ -853,7 +853,7 @@
 
 	MADD	C11, C11, C12, A2
 	MADD	C21, C21, C22, A2
-	
+
 	MADD	C31, C31, C32, A2
 	MADD	C41, C41, C42, A2
 
@@ -1045,7 +1045,7 @@
 	MADD	B4, B4, C21, A2
 	MADD	B6, B6, C31, A2
 	MADD	B8, B8, C41, A2
-	
+
 	ST		B1, 0 * SIZE(CO1)
 	MUL		C13, C12, A1
 	MUL		C23, C22, A1
@@ -1073,7 +1073,7 @@
 	ST		B6, 5 * SIZE(CO1)
 	MADD	C11, C11, C12, A2
 	MADD	C21, C21, C22, A2
-	
+
 	ST		B8, 7 * SIZE(CO1)
 	MADD	C31, C31, C32, A2
 	MADD	C41, C41, C42, A2
@@ -1391,7 +1391,7 @@
 	daddu	BO, B,  TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	MOV		C21, C11
 	MOV		C22, C11
@@ -1406,7 +1406,7 @@
 
 	FETCH	$0, 8 * SIZE(CO1)
 	MOV		C24, C11
-	
+
 	FETCH	$0, 0 * SIZE(CO2)
 	FETCH	$0, 8 * SIZE(CO2)
 
@@ -1416,7 +1416,7 @@
 	dsubu	TEMP, K, KK
 #elif defined(LEFT)
 	daddiu	TEMP, KK, 2							#	MR=2
-#else	
+#else
 	daddiu	TEMP, KK, 2							#	NR=2
 #endif
 	dsra	L,  TEMP, 2
@@ -1428,7 +1428,7 @@
 	dsra	L, K, 2				#	UnRoll	K=64
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 
 	MOV		C21, C11
 	MOV		C22, C11
@@ -1443,7 +1443,7 @@
 
 	FETCH	$0, 8 * SIZE(CO1)
 	MOV		C24, C11
-	
+
 	FETCH	$0, 0 * SIZE(CO2)
 	FETCH	$0, 8 * SIZE(CO2)
 
@@ -1665,7 +1665,7 @@
 
 	MADD	B6, B6, C12, A2
 	MADD	B8, B8, C22, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B7, 2 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
@@ -1723,7 +1723,7 @@
 
 	MADD	B6, B6, C12, A2
 	MADD	B8, B8, C22, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B7, 2 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
@@ -1745,7 +1745,7 @@
 	ADD		C22, A6, C22
 	SUB		C14, C14, A7
 	SUB		C24, C24, A8
-	
+
 	LD		B1, 0 * SIZE(CO1)
 	LD		B3, 2 * SIZE(CO1)
 	LD		B2, 1 * SIZE(CO1)
@@ -1782,7 +1782,7 @@
 
 	MADD	B6, B6, C12, A2
 	MADD	B8, B8, C22, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B7, 2 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
@@ -1910,7 +1910,7 @@
 
 	MADD	B6, B6, C12, A2
 	MADD	B8, B8, C22, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B7, 2 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
@@ -1958,7 +1958,7 @@
 
 	MADD	B6, B6, C12, A2
 	MADD	B8, B8, C22, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B7, 2 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
@@ -1980,7 +1980,7 @@
 	ADD		C22, A6, C22
 	SUB		C14, C14, A7
 	SUB		C24, C24, A8
-	
+
 	MUL	B1, C11, A1		#	A1 = alpha_r
 	MUL	B3, C21, A1
 	MUL	B2, C13, A1
@@ -2007,7 +2007,7 @@
 
 	MADD	B6, B6, C12, A2
 	MADD	B8, B8, C22, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B7, 2 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
@@ -2109,7 +2109,7 @@
 	daddu	BO, B,  TEMP
 #endif
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
 
 	gsLQC1(R12, F1, F0, 0)		#	A1 A2
@@ -2125,7 +2125,7 @@
 	dsubu	TEMP, K, KK
 #elif defined(LEFT)
 	daddiu	TEMP, KK, 1							#	MR=1
-#else	
+#else
 	daddiu	TEMP, KK, 2							#	NR=2
 #endif
 	dsra	L,  TEMP, 2
@@ -2137,7 +2137,7 @@
 	dsra	L, K, 2				#	UnRoll	K=64
 
 	MTC		$0, C11				#	CLEAR REAULTS REGISTERS
-	MOV		C12, C11		
+	MOV		C12, C11
 	gsLQC1(R13, F9, F8, 0)		#	B1 B2
 
 	gsLQC1(R12, F1, F0, 0)		#	A1 A2
@@ -2290,7 +2290,7 @@
 
 	NMSUB	B5, B5, C14, A2
 	MADD	B6, B6, C12, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
 #endif
@@ -2324,7 +2324,7 @@
 
 	NMSUB	B5, B5, C14, A2
 	MADD	B6, B6, C12, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
 
@@ -2340,7 +2340,7 @@
 	LD		A2, 160($sp)		#	load alpha_i
 	ADD		C12, A5, C12
 	SUB		C14, C14, A7
-	
+
 	LD		B1, 0 * SIZE(CO1)
 	LD		B2, 1 * SIZE(CO1)
 
@@ -2359,7 +2359,7 @@
 
 	NMSUB	B5, B5, C14, A2
 	MADD	B6, B6, C12, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
 #endif
@@ -2429,7 +2429,7 @@
 
 	NMSUB	B5, B5, C14, A2
 	MADD	B6, B6, C12, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
 #endif
@@ -2457,7 +2457,7 @@
 
 	NMSUB	B5, B5, C14, A2
 	MADD	B6, B6, C12, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
 
@@ -2473,7 +2473,7 @@
 	LD		A2, 160($sp)		#	load alpha_i
 	ADD		C12, A5, C12
 	SUB		C14, C14, A7
-	
+
 	MUL B1, C11, A4		#	A1 = alpha_r
 	MUL B2, C13, A4
 	NMSUB	B1, B1, C13, A2		#	A2 = alpha_i
@@ -2486,7 +2486,7 @@
 
 	NMSUB	B5, B5, C14, A2
 	MADD	B6, B6, C12, A2
-	
+
 	ST		B5, 0 * SIZE(CO2)
 	ST		B6, 1 * SIZE(CO2)
 #endif
@@ -2679,7 +2679,7 @@
 
 	PLU		B7,	B5, B5
 	PLU		B8, B6, B6
-	
+
 	MADPS	C11, C11, A1, B5
 	MADPS	C21, C21, A2, B5
 	gsLQC1(R12, F5, F4, 6)		#	A5 A6
@@ -2757,7 +2757,7 @@
 	MADPS	C43, C43, A8, B4
 	PLU		B3,	B1, B1
 
-	
+
 	.align	4
 .L147:
 #ifndef TRMMKERNEL
@@ -3274,7 +3274,7 @@
 
 	FETCH	$0, 0 * SIZE(CO1)
 	FETCH	$0, 8 * SIZE(CO1)
-	
+
 	PLU		B3,	B1, B1
 	PLU		B4, B2, B2
 #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
@@ -3302,7 +3302,7 @@
 
 	FETCH	$0, 0 * SIZE(CO1)
 	FETCH	$0, 8 * SIZE(CO1)
-	
+
 	PLU		B3,	B1, B1
 	blez	L, .L122
 	PLU		B4, B2, B2
@@ -3483,7 +3483,7 @@
 	LD		A1, 152($sp)		#	load alpha_r
 #	LD		A2, 0 * SIZE(A)		#	load alpha_r
 	LD		A2, 160($sp)		#	load alpha_i
-	
+
 	LD		B1, 0 * SIZE(CO1)
 	LD		B3, 2 * SIZE(CO1)
 	LD		B2, 1 * SIZE(CO1)
@@ -3609,7 +3609,7 @@
 	LD		A1, 152($sp)		#	load alpha_r
 #	LD		A2, 0 * SIZE(A)		#	load alpha_r
 	LD		A2, 160($sp)		#	load alpha_i
-	
+
 	MUL B1, C11, A1		#	A1 = alpha_r
 	MUL B3, C21, A1
 	MUL B2, C13, A1
@@ -3854,7 +3854,7 @@
 	SUB		C13, C13, A3		#	ad'+'cb
 	LD		A4, 152($sp)		#	load alpha_r
 	LD		A2, 160($sp)		#	load alpha_i
-	
+
 	LD		B1, 0 * SIZE(CO1)
 	LD		B2, 1 * SIZE(CO1)
 

@@ -60,7 +60,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
     gemvbuffer = (FLOAT *)(((BLASLONG)buffer + n * sizeof(FLOAT) * COMPSIZE+ 4095) & ~4095);
     COPY_K(n, b, incb, buffer, 1);
   }
-  
+
   a += (n - 1) * lda * COMPSIZE;
 
   for (i = n - 1; i >= 0; i--) {
@@ -102,7 +102,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
       B[i * 2 + 1] = atemp1 * btemp2 - atemp2 * btemp1;
 #endif
 #endif
-    
+
 #if (TRANSA == 2) || (TRANSA == 4)
     length  = i;
     if (length > k) length = k;
@@ -121,7 +121,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
 
     a -= lda * COMPSIZE;
   }
-    
+
   if (incb != 1) {
     COPY_K(n, buffer, 1, b, incb);
   }

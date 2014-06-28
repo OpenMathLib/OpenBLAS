@@ -76,8 +76,8 @@
 	movl	STACK_Y,     Y
 	movl	STACK_INCY,  INCY
 
-	leal	(, INCX, SIZE), INCX	
-	leal	(, INCY, SIZE), INCY	
+	leal	(, INCX, SIZE), INCX
+	leal	(, INCY, SIZE), INCY
 
 	movsd	STACK_C, C
 	movsd	STACK_S, S

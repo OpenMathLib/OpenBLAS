@@ -62,7 +62,7 @@
 #define ALPHA	$f15
 
 	PROLOGUE
-	
+
 	LDARG	C,     0($sp)
 	MTC	$0,  FZERO
 	LDARG	LDC,   8($sp)

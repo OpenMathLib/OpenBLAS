@@ -100,7 +100,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   n      = args -> n;
   a      = (FLOAT *)args -> a;
   lda    = args -> lda;
-  
+
   if (range_n) {
     n      = range_n[1] - range_n[0];
     a     += range_n[0] * (lda + 1) * COMPSIZE;
@@ -129,7 +129,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     if (info) return info + j;
 
     if (n - j - bk > 0) {
-     
+
       TRSM_OLTCOPY(bk, bk, a + (j + j * lda) * COMPSIZE, lda, 0, sb);
 
       /* First tile */
@@ -147,9 +147,9 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	} else {
 	  aa = sa;
 	}
-	
+
 	GEMM_ITCOPY(bk, min_i, a + (is + j * lda) * COMPSIZE, lda, aa);
-	
+
 	TRSM_KERNEL(min_i, bk, bk, dm1,
 #ifdef COMPLEX
 		    ZERO,
@@ -157,7 +157,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 		    aa,
 		    sb,
 		    a + (is + j * lda) * COMPSIZE, lda, 0);
-	
+
 	SYRK_KERNEL_L(min_i, min_j, bk, dm1,
 		      aa,
 		      sb2,
@@ -172,7 +172,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #ifdef COMPLEX
 		    ZERO,
 #endif
-		    
+
 		    sa,
 		    sb,
 		    a + (is + j * lda) * COMPSIZE, lda, 0);
@@ -188,17 +188,17 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 		      is - j - bk);
 #endif
       }
-      
+
       for(js = j + bk + min_j; js < n; js += REAL_GEMM_R){
 	min_j = n - js;
 	if (min_j > REAL_GEMM_R) min_j = REAL_GEMM_R;
 
 	GEMM_OTCOPY(bk, min_j, a + (js + j * lda) * COMPSIZE, lda, sb2);
-	
+
 	for (is = js; is < n; is += GEMM_P) {
 	  min_i = n - is;
 	  if (min_i > GEMM_P) min_i = GEMM_P;
-	  
+
 #ifdef SHARED_ARRAY
 
 	  if (is + min_i < js + min_j) {
@@ -207,7 +207,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	    GEMM_ITCOPY(bk, min_i, a + (is + j * lda) * COMPSIZE, lda, sa);
 	    aa = sa;
 	  }
-	  
+
 	  SYRK_KERNEL_L(min_i, min_j, bk, dm1,
 			aa,
 			sb2,
@@ -217,7 +217,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #else
 
 	  GEMM_ITCOPY(bk, min_i, a + (is + j * lda) * COMPSIZE, lda, sa);
-	  
+
 	  SYRK_KERNEL_L(min_i, min_j, bk, dm1,
 			sa,
 			sb2,
@@ -229,7 +229,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       }
 
     }
-    
+
   }
 
   return 0;

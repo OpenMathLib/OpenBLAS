@@ -72,7 +72,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
 	    ao1 += 2;
 	    b += 2;
-	  } else 
+	  } else
 	    if (X < posY) {
 	      ao1 += lda;
 	      b += 2;

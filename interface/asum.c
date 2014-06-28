@@ -45,7 +45,7 @@
 #ifndef CBLAS
 
 FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
-  
+
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   FLOATRET ret;
@@ -70,7 +70,7 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
 #else
 
 FLOAT CNAME(blasint n, FLOAT *x, blasint incx){
-  
+
   FLOAT ret;
 
   PRINT_DEBUG_CNAME;

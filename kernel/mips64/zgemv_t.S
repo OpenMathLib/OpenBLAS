@@ -114,7 +114,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	LDARG	INCX,    0($sp)
 	LDARG	Y,       8($sp)
 	LDARG	INCY,   16($sp)
@@ -143,7 +143,7 @@
 	dsll	INCY, INCY, ZBASE_SHIFT
 
 	li	XORIG, 2 * SIZE
-	
+
 	beq	INCX, XORIG, .L10
 	move	XORIG, X
 
@@ -449,10 +449,10 @@
 .L19:
 	LD	a1, 0 * SIZE(Y)
 	LD	a2, 1 * SIZE(Y)
-	daddu	Y, Y, INCY	
+	daddu	Y, Y, INCY
 	LD	a3, 0 * SIZE(Y)
 	LD	a4, 1 * SIZE(Y)
-	daddu	Y, Y, INCY	
+	daddu	Y, Y, INCY
 
 	MADD	a1, a1, ALPHA_R, y1
 	MADD	a2, a2, ALPHA_I, y1
@@ -468,12 +468,12 @@
 
 	ST	a1,  0 * SIZE(YY)
 	ST	a2,  1 * SIZE(YY)
-	daddu	YY, YY, INCY	
+	daddu	YY, YY, INCY
 	ST	a3,  0 * SIZE(YY)
 	ST	a4,  1 * SIZE(YY)
 
 	bgtz	J, .L11
-	daddu	YY, YY, INCY	
+	daddu	YY, YY, INCY
 	.align 3
 
 .L20:

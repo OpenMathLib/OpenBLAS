@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -106,7 +106,7 @@
 #define PREA	r30
 #define PREC	r31
 #define PREB	PREA
-	
+
 #ifndef NEEDPARAM
 
 #ifndef DOUBLE
@@ -993,7 +993,7 @@ LL(49):
 	.align 4
 
 
-LL(30):	
+LL(30):
 	srawi.	J, N,  1
 	ble	LL(999)
 	.align 4
@@ -1362,7 +1362,7 @@ LL(KERNEL_MainFinish):
 	LFD	f17,  1 * SIZE(BO)
 	LFD	f18,  2 * SIZE(BO)
 	LFD	f19,  3 * SIZE(BO)
- 
+
 	LFD	f20,  4 * SIZE(BO)
  	LFD	f21,  5 * SIZE(BO)
 	LFD	f22,  6 * SIZE(BO)
@@ -1382,7 +1382,7 @@ LL(KERNEL_MainFinish):
 	LFD	f17,  1 * SIZE(AO)
 	LFD	f18,  2 * SIZE(AO)
 	LFD	f19,  3 * SIZE(AO)
- 
+
 	LFD	f20,  4 * SIZE(AO)
  	LFD	f21,  5 * SIZE(AO)
 	LFD	f22,  6 * SIZE(AO)
@@ -1719,7 +1719,7 @@ LL(KERNEL_MainFinish):
 	addi	CO1, CO1, 4 * SIZE
 	addi	CO2, CO2, 4 * SIZE
 #endif
-	
+
 #ifdef RT
 	slwi	r0, K, 1 + ZBASE_SHIFT
 	add	AORIG, AORIG, r0

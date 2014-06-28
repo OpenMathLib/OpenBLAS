@@ -58,7 +58,7 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
   num_cpu  = 0;
 
   while (i > 0){
-    
+
     width  = blas_quickdivide(i + nthreads - num_cpu - 1, nthreads - num_cpu);
 
     i -= width;
@@ -76,15 +76,15 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
     queue[num_cpu].next    = &queue[num_cpu + 1];
     num_cpu ++;
   }
-  
+
   if (num_cpu) {
     queue[0].sa = sa;
     queue[0].sb = sb;
 
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-   
+
   return 0;
 }

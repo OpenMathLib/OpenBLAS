@@ -76,7 +76,7 @@
 	movq	 8(%rsp), INCY
 #else
 	movaps	%xmm3, %xmm0
-	movsd	40(%rsp), %xmm1	
+	movsd	40(%rsp), %xmm1
 
 	movq	48(%rsp), X
 	movq	56(%rsp), INCX
@@ -85,18 +85,18 @@
 #endif
 
 	SAVEREGISTERS
-	
+
 	salq	$ZBASE_SHIFT, INCX
 	salq	$ZBASE_SHIFT, INCY
 
 	testq	M, M
 	jle	.L999
-	
+
 	cmpq	$2 * SIZE, INCX
 	jne	.L50
 	cmpq	$2 * SIZE, INCY
 	jne	.L50
-	
+
 	subq	$-16 * SIZE, X
 	subq	$-16 * SIZE, Y
 
@@ -112,10 +112,10 @@
 #endif
 
 #ifndef CONJ
-	shufps	$0x0c, %xmm7, %xmm7	
+	shufps	$0x0c, %xmm7, %xmm7
 	xorpd	%xmm7, ALPHA_I
 #else
-	shufps	$0xc0, %xmm7, %xmm7	
+	shufps	$0xc0, %xmm7, %xmm7
 	xorpd	%xmm7, ALPHA_R
 #endif
 
@@ -1421,7 +1421,7 @@
 	je  .L58
 	cmpq	$0, INCY
 	je	.L58
-		
+
 	sarq	$3, %rax
 	jle	.L55
 
@@ -1775,7 +1775,7 @@
 	andq	$1, %rax
 	jle	.L999
 
-.L58:	
+.L58:
 	MOVDDUP( 0 * SIZE, X, %xmm0)
 	MOVDDUP( 1 * SIZE, X, %xmm1)
 
@@ -1788,7 +1788,7 @@
 
 	movlpd	%xmm8,   0 * SIZE(YY)
 	movhpd	%xmm8,   1 * SIZE(YY)
-		
+
 	decq %rax
 	jg	.L58
 	ALIGN_3

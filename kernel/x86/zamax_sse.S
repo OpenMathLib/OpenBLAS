@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -54,12 +54,12 @@
 #define MM	%ebp
 #define XX	%edi
 #define TEMP	%ebx
-	
+
 #ifdef USE_MIN
 #define maxps	minps
 #define maxss	minss
 #endif
-	
+
 #ifndef HAVE_SSE2
 #define pxor	xorps
 #define movsd	movlps
@@ -124,7 +124,7 @@
 	sarl	$3, I
 	jle	.L35
 	ALIGN_4
-	
+
 .L31:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(XX)
@@ -216,7 +216,7 @@
 	maxss	%xmm1,  %xmm0
 	maxss	%xmm3,  %xmm0
 	addl	$4 * SIZE, XX
-	ALIGN_3	
+	ALIGN_3
 
 .L37:
 	testl	$1, MM
@@ -247,7 +247,7 @@
 	sarl	$3, I
 	jle	.L75
 	ALIGN_4
-	
+
 .L71:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(XX)
@@ -325,7 +325,7 @@
 #endif
 	addps	%xmm3,  %xmm1
 	maxps	%xmm1,  %xmm0
-	ALIGN_3	
+	ALIGN_3
 
 .L76:
 	testl	$2, MM
@@ -349,7 +349,7 @@
 	maxss	%xmm1,  %xmm0
 	maxss	%xmm3,  %xmm0
 	ALIGN_3
-	
+
 .L77:
 	testl	$1, MM
 	je	.L80

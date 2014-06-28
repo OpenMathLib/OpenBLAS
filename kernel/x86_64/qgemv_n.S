@@ -41,9 +41,9 @@
 #include "l2param.h"
 
 #define P		32
-	
+
 #define STACKSIZE	80
-	
+
 #define ALPHA		 8 + STACKSIZE(%rsp)
 #define OLD_INCX	24 + STACKSIZE(%rsp)
 #define OLD_Y		32 + STACKSIZE(%rsp)
@@ -71,7 +71,7 @@
 #define XP	%r15
 /* #define BUFFER	%r15 */
 #define MIN_N	%rbx
-	
+
 
 	PROLOGUE
 	PROFCODE
@@ -175,7 +175,7 @@
 	ALIGN_2
 
 .L48:
-	movq	A, A1			# a_offset = a	
+	movq	A, A1			# a_offset = a
 	fldz
 	addq	$4 * SIZE, A		# a += 4
 	fldz
@@ -239,7 +239,7 @@
 	FLD	0 * SIZE(A1)		# at1  = *(a_offset + 0)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(2)		# ct1 += at1
- 
+
 	FLD	1 * SIZE(A1)		# at1  = *(a_offset + 1)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(3)		# ct2 += at1

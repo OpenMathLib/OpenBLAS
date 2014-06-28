@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 
 #define PREX	r8
 #define	INC1	r9
@@ -86,7 +86,7 @@
 
 	sub	X, X, INCX
 	li	INC1, SIZE
-	
+
 	cmpwi	cr0, N, 0
 	ble-	LL(9999)
 	cmpwi	cr0, INCX, 0

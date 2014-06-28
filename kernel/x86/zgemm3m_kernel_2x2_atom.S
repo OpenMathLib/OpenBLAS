@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -84,7 +84,7 @@
 	movl	OFFSET, %eax
 #ifndef LEFT
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 #endif
 
@@ -100,7 +100,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	K, %eax
 	sall	$BASE_SHIFT + 1, %eax
@@ -129,7 +129,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 2), BB
-#endif	
+#endif
 
 	movl	BX, %eax
 	prefetcht0  0 * SIZE(%eax)
@@ -151,7 +151,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -325,7 +325,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(B,  %eax, 2), BB
-#endif	
+#endif
 
 	movsd	 0 * SIZE(AA), %xmm0
 	xorps	%xmm2, %xmm2
@@ -338,7 +338,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -466,7 +466,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	C, CO1
 	addl	LDC, C
@@ -489,7 +489,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(B,  %eax, 1), BB
-#endif	
+#endif
 
 	movsd	 0 * SIZE(BB), %xmm1
 	xorps	%xmm0, %xmm0
@@ -503,7 +503,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -629,7 +629,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 1), AA
 	leal	(B,  %eax, 1), BB
-#endif	
+#endif
 
 	movsd	 0 * SIZE(AA), %xmm0
 	xorps	%xmm4, %xmm4
@@ -641,7 +641,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT

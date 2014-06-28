@@ -42,7 +42,7 @@
 #define N	$4
 #define	X	$5
 #define INCX	$6
-	
+
 #define I	$2
 #define TEMP	$3
 
@@ -65,7 +65,7 @@
 
 
 	PROLOGUE
-	
+
 #ifdef F_INTERFACE
 	LDINT	N,     0(N)
 	LDINT	INCX,  0(INCX)
@@ -118,7 +118,7 @@
 
 	cvt.d.s	t1, a5
 	NOP
-	
+
 	madd.d	s2, s2, t2, t2
 	LD	a2,  1 * SIZE(X)
 
@@ -195,7 +195,7 @@
 
 	cvt.d.s	t1, a1
 	cvt.d.s	t2, a2
-	
+
 	madd.d	s1, s1, t1, t1
 	daddu	X, X, INCX
 
@@ -210,5 +210,5 @@
 
 	j	$31
 	cvt.s.d	s1, s1
-	
+
 	EPILOGUE

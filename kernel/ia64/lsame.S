@@ -58,7 +58,7 @@
 	;;
 	cmp4.eq p6, p7 = r15, r14
 	mov r8 = 1
-	;; 
+	;;
 	(p7) mov r8 = 0
 	br.ret.sptk.many b0
 

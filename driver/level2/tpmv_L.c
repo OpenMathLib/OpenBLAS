@@ -51,14 +51,14 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
     B = buffer;
     COPY_K(m, b, incb, buffer, 1);
   }
-  
+
   a += (m + 1) * m / 2 - 1;
 
   for (i = 0; i < m; i++) {
 #ifndef TRANSA
     if (i > 0) AXPYU_K(i, 0, 0, B[m - i - 1], a + 1, 1, B + m - i, 1, NULL, 0);
 #endif
-    
+
 #ifndef UNIT
     B[m - i - 1] *= a[0];
 #endif
@@ -73,7 +73,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
     a -= (m - i);
 #endif
   }
-    
+
   if (incb != 1) {
     COPY_K(m, buffer, 1, b, incb);
   }

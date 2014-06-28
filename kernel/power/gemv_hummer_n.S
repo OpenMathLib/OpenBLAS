@@ -375,7 +375,7 @@
 	cmpi	cr0, 0, J, 0
 	bgt	.L11
 	.align 4
-	
+
 .L20:
 	andi.	J, N, 2
 	ble	.L30
@@ -870,7 +870,7 @@
 	cmpi	cr0, 0, J, 0
 	bgt	.L41
 	.align 4
-	
+
 .L50:
 	andi.	J, N, 2
 	ble	.L60
@@ -1419,7 +1419,7 @@
 	cmpi	cr0, 0, J, 0
 	bgt	.L71
 	.align 4
-	
+
 .L80:
 	andi.	J, N, 2
 	ble	.L90

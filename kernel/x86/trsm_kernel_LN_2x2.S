@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define J	 0 + STACK(%esp)
 #define KK	 4 + STACK(%esp)
 #define KKK	 8 + STACK(%esp)
@@ -72,7 +72,7 @@
 #else
 #define REP rep
 #endif
-	
+
 #define AA	%edx
 #define BB	%ecx
 
@@ -112,7 +112,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -121,7 +121,7 @@
 #endif
 
 	movl	N,   %eax		# j = (n >> 1)		# MEMORY
-	sarl	$1,  %eax		 
+	sarl	$1,  %eax
 	movl	%eax, J			# j = (n >> 1)		# MEMORY
 	je	.L8
 	ALIGN_4
@@ -153,7 +153,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -178,7 +178,7 @@
 	leal	(%ebx, %eax, 2), BB
 #else
 	movl	%ebx, BB
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -371,7 +371,7 @@
 	leal	(%ebx, %eax, 2), BB
 #else
 	movl	%ebx, BB
-#endif	
+#endif
 
 	fldz
 	fldz
@@ -741,7 +741,7 @@
 	movl	N,  %eax		# n			# MEMORY
 	andl	$1, %eax
 	je	.End
-	
+
 #if defined(LT) || defined(RN)
 	movl	A, AA
 #else
@@ -767,7 +767,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -792,7 +792,7 @@
 	leal	(%ebx, %eax, 1), BB
 #else
 	movl	%ebx, BB
-#endif	
+#endif
 
 	fldz
 
@@ -905,7 +905,7 @@
 	sarl	$1, %esi		# m >> 1
 	je	.L99
 	ALIGN_4
-	
+
 .L46:
 #ifdef LN
        movl	K, %eax
@@ -921,7 +921,7 @@
 	leal	(%ebx, %eax, 1), BB
 #else
 	movl	%ebx, BB
-#endif	
+#endif
 
 	fldz
 	fldz

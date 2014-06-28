@@ -50,7 +50,7 @@ endif
 
 ifndef SMP
 LIBCXML		= -lcxml  -lots -lm
-LIBATLAS	= -L/usr/lib/atlas3.7.8 -lf77blas -latlas -lm 
+LIBATLAS	= -L/usr/lib/atlas3.7.8 -lf77blas -latlas -lm
 else
 LIBCXML		= -lcxmlp -lots -lm
 LIBATLAS	= -L/usr/lib/atlas3.7.8p -llapack -lptcblas -lptf77blas -latlas -lpthread -lm

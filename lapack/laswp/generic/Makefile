@@ -12,7 +12,7 @@ ZLASWP	= ../generic/zlaswp_k.c
 endif
 
 LASWP_DEPS  = ../generic/laswp_k_1.c ../generic/laswp_k_2.c \
-	      ../generic/laswp_k_4.c ../generic/laswp_k_8.c 
+	      ../generic/laswp_k_4.c ../generic/laswp_k_8.c
 
 ZLASWP_DEPS = ../generic/zlaswp_k_1.c ../generic/zlaswp_k_2.c \
 	      ../generic/zlaswp_k_4.c

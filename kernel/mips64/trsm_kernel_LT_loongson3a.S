@@ -70,7 +70,7 @@
 #define ALPHA	$f15
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -144
 
 	SDARG	$16,   0($sp)
@@ -97,7 +97,7 @@
 	sdc1	$f23,136($sp)
 #endif
 											#	LT compute from left to right, top to bottom
-	LDARG	OFFSET, 144($sp)					
+	LDARG	OFFSET, 144($sp)
 	dsll	LDC, LDC, BASE_SHIFT			#	ldc
 
 	dsra	J,  N, 2						#	j = nc/4
@@ -122,7 +122,7 @@
 
 	dsra	I,  M, 2						#	i = mc/4
 	move	KK, OFFSET						#	kk is the length of the rectangular data part of panel Ai
-	move	AO, A							#	reset A	
+	move	AO, A							#	reset A
 	daddu	C,  CO4, LDC					#	fixed pointer C, the write back address
 	blez	I, .L20
 	nop
@@ -137,7 +137,7 @@
 	LD	b1,  0 * SIZE(B)					#	get 4b
 	LD	b2,  1 * SIZE(B)
 	LD	b3,  2 * SIZE(B)
-	LD	b4,  3 * SIZE(B)				
+	LD	b4,  3 * SIZE(B)
 
 	MOV	t13, t11							#	clear result registers
 	MOV	t23, t11
@@ -155,7 +155,7 @@
 
 	.align	3
 .L12:
-	LD	a5,  4 * SIZE(AO)					
+	LD	a5,  4 * SIZE(AO)
 	LD	a6,  5 * SIZE(AO)
 	LD	a7,  6 * SIZE(AO)
 	LD	a8,  7 * SIZE(AO)
@@ -183,7 +183,7 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 	MADD	t34, t34, a3, b4
-	MADD	t44, t44, a4, b4		
+	MADD	t44, t44, a4, b4
 
 	LD	a1,   8 * SIZE(AO)
 	LD	a2,   9 * SIZE(AO)
@@ -213,7 +213,7 @@
 	MADD	t14, t14, a5, b8
 	MADD	t24, t24, a6, b8
 	MADD	t34, t34, a7, b8
-	MADD	t44, t44, a8, b8			
+	MADD	t44, t44, a8, b8
 
 	LD	a5,  12 * SIZE(AO)
 	LD	a6,  13 * SIZE(AO)
@@ -243,12 +243,12 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 	MADD	t34, t34, a3, b4
-	MADD	t44, t44, a4, b4		
+	MADD	t44, t44, a4, b4
 
-	daddiu	AO, AO, 16 * SIZE				#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE				#	AO += 4mr*4kr
 	daddiu	BO, BO, 16 * SIZE				#	BO += 4nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -276,12 +276,12 @@
 	MADD	t14, t14, a5, b8
 	MADD	t24, t24, a6, b8
 	MADD	t34, t34, a7, b8
-	MADD	t44, t44, a8, b8			
+	MADD	t44, t44, a8, b8
 
 	daddiu	L, L, -1
 	bgtz	L, .L12
 	nop
-	
+
 
 	.align 3
 .L15:
@@ -291,7 +291,7 @@
 
 	.align	3
 .L16:
-	MADD	t11, t11, a1, b1				
+	MADD	t11, t11, a1, b1
 	MADD	t21, t21, a2, b1
 	MADD	t31, t31, a3, b1
 	MADD	t41, t41, a4, b1
@@ -309,12 +309,12 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 	MADD	t34, t34, a3, b4
-	MADD	t44, t44, a4, b4		
+	MADD	t44, t44, a4, b4
 
-	daddiu	AO, AO,  4 * SIZE				#	AO += 4mr	
+	daddiu	AO, AO,  4 * SIZE				#	AO += 4mr
 	daddiu	BO, BO,  4 * SIZE				#	BO += 4nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -344,7 +344,7 @@
 	LD	b6,  5 * SIZE(BO)
 	LD	b7,  6 * SIZE(BO)
 	LD	b8,  7 * SIZE(BO)
-	
+
 	SUB	t21, b5, t21
 	SUB	t22, b6, t22
 	SUB	t23, b7, t23
@@ -354,12 +354,12 @@
 	LD	b2,  9 * SIZE(BO)
 	LD	b3, 10 * SIZE(BO)
 	LD	b4, 11 * SIZE(BO)
-	
+
 	SUB	t31, b1, t31
 	SUB	t32, b2, t32
 	SUB	t33, b3, t33
 	SUB	t34, b4, t34
-	
+
 	LD	b5, 12 * SIZE(BO)
 	LD	b6, 13 * SIZE(BO)
 	LD	b7, 14 * SIZE(BO)
@@ -371,7 +371,7 @@
 	SUB	t44, b8, t44
 
 
-	LD	a1,  0 * SIZE(AO)					#	sa stores in col major		
+	LD	a1,  0 * SIZE(AO)					#	sa stores in col major
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -392,7 +392,7 @@
 	NMSUB	t43, t43, a4, t13
 	NMSUB	t44, t44, a4, t14
 
-	
+
 	LD	a5,  5 * SIZE(AO)
 	LD	a6,  6 * SIZE(AO)
 	LD	a7,  7 * SIZE(AO)
@@ -445,7 +445,7 @@
 	ST	t43, 14 * SIZE(BO)
 	ST	t44, 15 * SIZE(BO)
 
-	ST	t11,  0 * SIZE(CO1)					#	write back 
+	ST	t11,  0 * SIZE(CO1)					#	write back
 	ST	t21,  1 * SIZE(CO1)
 	ST	t31,  2 * SIZE(CO1)
 	ST	t41,  3 * SIZE(CO1)
@@ -491,7 +491,7 @@
 
 	.align 3
 .L20:
-	andi	I,  M, 2						#	mr=2,nr=4	
+	andi	I,  M, 2						#	mr=2,nr=4
 	blez	I, .L50
 	nop
 
@@ -510,7 +510,7 @@
 	LD	b1,  0 * SIZE(B)					#	get 4b
 	LD	b2,  1 * SIZE(B)
 	LD	b3,  2 * SIZE(B)
-	LD	b4,  3 * SIZE(B)				
+	LD	b4,  3 * SIZE(B)
 
 	dsra	L,  KK, 2
 	blez	L, .L25
@@ -519,7 +519,7 @@
 
 	.align	3
 .L22:
-	LD	a5,  2 * SIZE(AO)					
+	LD	a5,  2 * SIZE(AO)
 	LD	a6,  3 * SIZE(AO)
 	LD	b5,  4 * SIZE(BO)
 	LD	b6,  5 * SIZE(BO)
@@ -567,10 +567,10 @@
 	MADD	t14, t14, a3, b4
 	MADD	t24, t24, a4, b4
 
-	daddiu	AO, AO,  8 * SIZE				#	AO += 2mr*4kr	
+	daddiu	AO, AO,  8 * SIZE				#	AO += 2mr*4kr
 	daddiu	BO, BO, 16 * SIZE				#	BO += 4nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
@@ -596,7 +596,7 @@
 	andi	L, KK,  3
 	blez	L, .L28
 	nop
-	
+
 	.align	3
 .L26:
 	MADD	t11, t11, a1, b1				#	3rd compute
@@ -608,10 +608,10 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 
-	daddiu	AO, AO,  2 * SIZE				#	AO += 2mr	
+	daddiu	AO, AO,  2 * SIZE				#	AO += 2mr
 	daddiu	BO, BO,  4 * SIZE				#	BO += 4nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
@@ -643,7 +643,7 @@
 	SUB	t24, b8, t24
 
 
-	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part		
+	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part
 	LD	b2,  1 * SIZE(AO)
 	MUL	t11, b1, t11
 	MUL	t12, b1, t12
@@ -653,7 +653,7 @@
 	NMSUB	t22, t22, b2, t12
 	NMSUB	t23, t23, b2, t13
 	NMSUB	t24, t24, b2, t14
-	
+
 	LD	b3,  3 * SIZE(AO)
 	MUL	t21, b3, t21
 	MUL	t22, b3, t22
@@ -705,7 +705,7 @@
 
 	.align 3
 .L50:
-	andi	I,  M, 1						#	mr=1,nr=4	
+	andi	I,  M, 1						#	mr=1,nr=4
 	blez	I, .L29
 	nop
 
@@ -723,7 +723,7 @@
 	LD	b1,  0 * SIZE(B)					#	get 4b
 	LD	b2,  1 * SIZE(B)
 	LD	b3,  2 * SIZE(B)
-	LD	b4,  3 * SIZE(B)				
+	LD	b4,  3 * SIZE(B)
 
 	dsra	L,  KK, 2
 	blez	L, .L55
@@ -732,7 +732,7 @@
 
 	.align	3
 .L52:
-	LD	a5,  1 * SIZE(AO)					
+	LD	a5,  1 * SIZE(AO)
 	LD	b5,  4 * SIZE(BO)
 	LD	b6,  5 * SIZE(BO)
 	LD	b7,  6 * SIZE(BO)
@@ -765,10 +765,10 @@
 	MADD	t13, t13, a3, b3
 	MADD	t14, t14, a3, b4
 
-	daddiu	AO, AO,  4 * SIZE				#	AO += mr*4kr	
+	daddiu	AO, AO,  4 * SIZE				#	AO += mr*4kr
 	daddiu	BO, BO, 16 * SIZE				#	BO += 4nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
 	LD	b3,  2 * SIZE(BO)
@@ -789,7 +789,7 @@
 	andi	L, KK,  3
 	blez	L, .L58
 	nop
-	
+
 	.align	3
 .L56:
 	MADD	t11, t11, a1, b1				#	3rd compute
@@ -797,10 +797,10 @@
 	MADD	t13, t13, a1, b3
 	MADD	t14, t14, a1, b4
 
-	daddiu	AO, AO,  1 * SIZE				#	AO += 2mr	
+	daddiu	AO, AO,  1 * SIZE				#	AO += 2mr
 	daddiu	BO, BO,  4 * SIZE				#	BO += 4nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
 	LD	b3,  2 * SIZE(BO)
@@ -823,7 +823,7 @@
 	SUB	t14, b4, t14
 
 
-	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part		
+	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part
 	MUL	t11, b1, t11
 	MUL	t12, b1, t12
 	MUL	t13, b1, t13
@@ -858,8 +858,8 @@
 	move	B,  BO								#	fixed panel Bj
 	bgtz	J, .L10
 	nop
-	
-	
+
+
 	.align 3
 .L30:
 	andi	J,  N, 2							#	nr=2
@@ -874,9 +874,9 @@
 	MOV	t31, t11
 	MOV	t41, t11
 
-	move	KK, OFFSET							
+	move	KK, OFFSET
 	move	AO, A								#	reset A
-	daddu	C,  CO2, LDC						#	fixed 
+	daddu	C,  CO2, LDC						#	fixed
 
 	dsra	I,  M, 2							#	I = mc/4
 	blez	I, .L40
@@ -902,7 +902,7 @@
 
 	.align	3
 .L32:
-	LD	a5,  4 * SIZE(AO)					
+	LD	a5,  4 * SIZE(AO)
 	LD	a6,  5 * SIZE(AO)
 	LD	a7,  6 * SIZE(AO)
 	LD	a8,  7 * SIZE(AO)
@@ -950,10 +950,10 @@
 	MADD	t32, t32, a3, b4
 	MADD	t42, t42, a4, b4
 
-	daddiu	AO, AO, 16 * SIZE				#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE				#	AO += 4mr*4kr
 	daddiu	BO, BO,  8 * SIZE				#	BO += 2nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -973,30 +973,30 @@
 	bgtz	L, .L32
 	nop
 
-	
+
 	.align 3
 
 .L35:
 	andi	L, KK,  3
 	blez	L, .L38
 	nop
-	
+
 	.align	3
 .L36:
 	MADD	t11, t11, a1, b1				#	3rd compute
 	MADD	t21, t21, a2, b1
 	MADD	t31, t31, a3, b1
 	MADD	t41, t41, a4, b1
-	
+
 	MADD	t12, t12, a1, b2
 	MADD	t22, t22, a2, b2
 	MADD	t32, t32, a3, b2
 	MADD	t42, t42, a4, b2
 
-	daddiu	AO, AO,  4 * SIZE				#	AO += 4mr	
+	daddiu	AO, AO,  4 * SIZE				#	AO += 4mr
 	daddiu	BO, BO,  2 * SIZE				#	BO += 2nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -1027,7 +1027,7 @@
 	SUB	t41, b7, t41
 	SUB	t42, b8, t42
 
-	LD	a1,  0 * SIZE(AO)					#	sa stores in col major		
+	LD	a1,  0 * SIZE(AO)					#	sa stores in col major
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -1040,7 +1040,7 @@
 	NMSUB	t41, t41, a4, t11
 	NMSUB	t42, t42, a4, t12
 
-	
+
 	LD	a5,  5 * SIZE(AO)
 	LD	a6,  6 * SIZE(AO)
 	LD	a7,  7 * SIZE(AO)
@@ -1091,7 +1091,7 @@
 	daddu	AO, AO, L						#	move AO to the end of Ai
 	daddu	BO, BO, TEMP
 
-	daddiu	KK, KK, 4						#	
+	daddiu	KK, KK, 4						#
 
 	MTC	$0,  a1
 	MOV	t11, a1
@@ -1122,12 +1122,12 @@
 
 	dsra	L,  KK, 2
 	blez	L, .L45
-	move	BO,  B							#	reset B	
+	move	BO,  B							#	reset B
 
 
 	.align	3
 .L42:
-	LD	a5,  2 * SIZE(AO)					
+	LD	a5,  2 * SIZE(AO)
 	LD	a6,  3 * SIZE(AO)
 	LD	b5,  2 * SIZE(BO)
 	LD	b6,  3 * SIZE(BO)
@@ -1157,10 +1157,10 @@
 	MADD	t12, t12, a3, b4
 	MADD	t22, t22, a4, b4
 
-	daddiu	AO, AO,  8 * SIZE				#	AO += 2mr*4kr	
+	daddiu	AO, AO,  8 * SIZE				#	AO += 2mr*4kr
 	daddiu	BO, BO,  8 * SIZE				#	BO += 2nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
@@ -1173,14 +1173,14 @@
 	daddiu	L, L, -1
 	bgtz	L, .L42
 	nop
-	
+
 	.align 3
 
 .L45:
 	andi	L, KK,  3
 	blez	L, .L48
 	nop
-	
+
 	.align	3
 .L46:
 	MADD	t11, t11, a1, b1				#	3rd compute
@@ -1188,10 +1188,10 @@
 	MADD	t12, t12, a1, b2
 	MADD	t22, t22, a2, b2
 
-	daddiu	AO, AO,  2 * SIZE				#	AO += 2mr	
+	daddiu	AO, AO,  2 * SIZE				#	AO += 2mr
 	daddiu	BO, BO,  2 * SIZE				#	BO += 2nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
@@ -1211,13 +1211,13 @@
 	SUB	t21, b3, t21
 	SUB	t22, b4, t22
 
-	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part		
+	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part
 	LD	b2,  1 * SIZE(AO)
 	MUL	t11, b1, t11
 	MUL	t12, b1, t12
 	NMSUB	t21, t21, b2, t11
 	NMSUB	t22, t22, b2, t12
-	
+
 	LD	b3,  3 * SIZE(AO)
 	MUL	t21, b3, t21
 	MUL	t22, b3, t22
@@ -1266,12 +1266,12 @@
 
 	dsra	L,  KK, 2
 	blez	L, .L65
-	move	BO,  B							#	reset B	
+	move	BO,  B							#	reset B
 
 
 	.align	3
 .L62:
-	LD	a5,  1 * SIZE(AO)					
+	LD	a5,  1 * SIZE(AO)
 	LD	b5,  2 * SIZE(BO)
 	LD	b6,  3 * SIZE(BO)
 
@@ -1292,10 +1292,10 @@
 	MADD	t11, t11, a3, b3				#	3rd compute
 	MADD	t12, t12, a3, b4
 
-	daddiu	AO, AO,  4 * SIZE				#	AO += mr*4kr	
+	daddiu	AO, AO,  4 * SIZE				#	AO += mr*4kr
 	daddiu	BO, BO,  8 * SIZE				#	BO += 2nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
 
@@ -1305,23 +1305,23 @@
 	daddiu	L, L, -1
 	bgtz	L, .L62
 	nop
-	
+
 	.align 3
 
 .L65:
 	andi	L, KK,  3
 	blez	L, .L68
 	nop
-	
+
 	.align	3
 .L66:
 	MADD	t11, t11, a1, b1				#	3rd compute
 	MADD	t12, t12, a1, b2
 
-	daddiu	AO, AO,  1 * SIZE				#	AO += 1mr	
+	daddiu	AO, AO,  1 * SIZE				#	AO += 1mr
 	daddiu	BO, BO,  2 * SIZE				#	BO += 2nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	b1,  0 * SIZE(BO)
 	LD	b2,  1 * SIZE(BO)
 
@@ -1336,7 +1336,7 @@
 	SUB	t11, b1, t11
 	SUB	t12, b2, t12
 
-	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part		
+	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part
 	MUL	t11, b1, t11
 	MUL	t12, b1, t12
 
@@ -1360,7 +1360,7 @@
 	.align 3
 .L49:
 	move	B,  BO
-	
+
 	.align 3
 
 .L70:
@@ -1396,7 +1396,7 @@
 
 	.align	3
 .L72:
-	LD	a5,  4 * SIZE(AO)					
+	LD	a5,  4 * SIZE(AO)
 	LD	a6,  5 * SIZE(AO)
 	LD	a7,  6 * SIZE(AO)
 	LD	a8,  7 * SIZE(AO)
@@ -1432,10 +1432,10 @@
 	MADD	t31, t31, a3, b3
 	MADD	t41, t41, a4, b3
 
-	daddiu	AO, AO, 16 * SIZE				#	AO += 4mr*4kr	
+	daddiu	AO, AO, 16 * SIZE				#	AO += 4mr*4kr
 	daddiu	BO, BO,  4 * SIZE				#	BO += 1nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -1450,7 +1450,7 @@
 	daddiu	L, L, -1
 	bgtz	L, .L72
 	nop
-	
+
 	.align 3
 
 .L75:
@@ -1465,10 +1465,10 @@
 	MADD	t31, t31, a3, b1
 	MADD	t41, t41, a4, b1
 
-	daddiu	AO, AO,  4 * SIZE				#	AO += 4mr	
+	daddiu	AO, AO,  4 * SIZE				#	AO += 4mr
 	daddiu	BO, BO,  1 * SIZE				#	BO += 1nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -1490,7 +1490,7 @@
 	SUB	t31, b3, t31
 	SUB	t41, b4, t41
 
-	LD	a1,  0 * SIZE(AO)					#	sa stores in col major		
+	LD	a1,  0 * SIZE(AO)					#	sa stores in col major
 	LD	a2,  1 * SIZE(AO)
 	LD	a3,  2 * SIZE(AO)
 	LD	a4,  3 * SIZE(AO)
@@ -1556,10 +1556,10 @@
 	dsra	L,  KK, 2
 	blez	L, .L85
 	move	BO,  B
-	
+
 	.align	3
 .L82:
-	LD	a5,  2 * SIZE(AO)					
+	LD	a5,  2 * SIZE(AO)
 	LD	a6,  3 * SIZE(AO)
 
 	LD	b5,  1 * SIZE(BO)
@@ -1583,10 +1583,10 @@
 	MADD	t11, t11, a3, b3				#	3rd compute
 	MADD	t21, t21, a4, b3
 
-	daddiu	AO, AO,  8 * SIZE				#	AO += 2mr*4kr	
+	daddiu	AO, AO,  8 * SIZE				#	AO += 2mr*4kr
 	daddiu	BO, BO,  4 * SIZE				#	BO += 1nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -1597,7 +1597,7 @@
 	daddiu	L, L, -1
 	bgtz	L, .L82
 	nop
-	
+
 	.align 3
 
 .L85:
@@ -1610,10 +1610,10 @@
 	MADD	t11, t11, a1, b1				#	3rd compute
 	MADD	t21, t21, a2, b1
 
-	daddiu	AO, AO,  2 * SIZE				#	AO += 2mr	
+	daddiu	AO, AO,  2 * SIZE				#	AO += 2mr
 	daddiu	BO, BO,  1 * SIZE				#	BO += 1nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	a2,  1 * SIZE(AO)
 
 	LD	b1,  0 * SIZE(BO)
@@ -1630,11 +1630,11 @@
 	SUB	t11, b1, t11
 	SUB	t21, b2, t21
 
-	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part		
+	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part
 	LD	b2,  1 * SIZE(AO)
 	MUL	t11, b1, t11
 	NMSUB	t21, t21, b2, t11
-	
+
 	LD	b3,  3 * SIZE(AO)
 	MUL	t21, b3, t21
 
@@ -1646,7 +1646,7 @@
 
 
 	daddiu	CO1, CO1, 2 * SIZE
-	
+
 	dsubu	TEMP, K, KK
 	dsll	L,    TEMP, 1 + BASE_SHIFT
 	dsll	TEMP, TEMP, 0 + BASE_SHIFT
@@ -1655,7 +1655,7 @@
 
 	daddiu	KK, KK, 2
 
-	
+
 	.align 3
 .L90:
 	andi	I,  M, 1					#	mr=1
@@ -1670,10 +1670,10 @@
 	dsra	L,  KK, 2
 	blez	L, .L95
 	move	BO,  B
-	
+
 	.align	3
 .L92:
-	LD	a5,  1 * SIZE(AO)					
+	LD	a5,  1 * SIZE(AO)
 	LD	b5,  1 * SIZE(BO)
 
 	MADD	t11, t11, a1, b1				#	1st compute
@@ -1688,10 +1688,10 @@
 
 	MADD	t11, t11, a3, b3				#	3rd compute
 
-	daddiu	AO, AO,  4 * SIZE				#	AO += 2mr*4kr	
+	daddiu	AO, AO,  4 * SIZE				#	AO += 2mr*4kr
 	daddiu	BO, BO,  4 * SIZE				#	BO += 1nr*4kr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	b1,  0 * SIZE(BO)
 
 	MADD	t11, t11, a7, b7				#	4th compute
@@ -1699,7 +1699,7 @@
 	daddiu	L, L, -1
 	bgtz	L, .L92
 	nop
-	
+
 	.align 3
 .L95:
 	andi	L, KK,  3
@@ -1710,10 +1710,10 @@
 .L96:
 	MADD	t11, t11, a1, b1				#	3rd compute
 
-	daddiu	AO, AO,  1 * SIZE				#	AO += 2mr	
+	daddiu	AO, AO,  1 * SIZE				#	AO += 2mr
 	daddiu	BO, BO,  1 * SIZE				#	BO += 1nr
-	
-	LD	a1,  0 * SIZE(AO)					#	next 
+
+	LD	a1,  0 * SIZE(AO)					#	next
 	LD	b1,  0 * SIZE(BO)
 
 	daddiu	L, L, -1
@@ -1726,16 +1726,16 @@
 
 	SUB	t11, b1, t11
 
-	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part		
+	LD	b1,  0 * SIZE(AO)				#	computes the triangular_part
 	MUL	t11, b1, t11
-	
+
 	ST	t11,  0 * SIZE(BO)
 
 	ST	t11,  0 * SIZE(CO1)
 
 
 	daddiu	CO1, CO1, 1 * SIZE
-	
+
 	dsubu	TEMP, K, KK
 	dsll	L,    TEMP,  BASE_SHIFT
 	dsll	TEMP, TEMP,  BASE_SHIFT

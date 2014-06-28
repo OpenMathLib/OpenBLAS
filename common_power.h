@@ -114,7 +114,7 @@ static inline unsigned long getstackaddr(void){
   __asm__ __volatile__ ("mr %0, 1"
 			 : "=r"(addr) : : "memory");
 
-  return addr;  
+  return addr;
 };
 
 #if defined(OS_LINUX) || defined(OS_AIX)

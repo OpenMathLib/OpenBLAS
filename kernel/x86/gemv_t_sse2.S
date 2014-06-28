@@ -128,10 +128,10 @@
 	sall    $21,J                           # J=2^21*sizeof(double)=buffer size(16MB)
 	subl    $4, J                           # Don't use last 4 double in the buffer.
 	subl	J,MMM				# MMM=MMM-J
-	movl	J,M		
+	movl	J,M
 	jge		.L00t
 	ALIGN_4
-	
+
 	movl	MMM,%eax
 	addl	J,%eax
 	jle		.L999x
@@ -161,7 +161,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	movl	M,  I
 	sarl	$3, I
 	jle	.L05
@@ -391,7 +391,7 @@
 	mulpd	%xmm2, %xmm5
 	addpd	%xmm5, %xmm1
 	movapd	%xmm3, %xmm2
-	
+
 	addl	$2 * SIZE, A1
 	ALIGN_4
 
@@ -562,7 +562,7 @@
 	mulpd	%xmm2, %xmm4
 	addpd	%xmm4, %xmm0
 	movapd	%xmm3, %xmm2
-	
+
 	addl	$2 * SIZE, A1
 	ALIGN_4
 
@@ -594,7 +594,7 @@
 
 	movlpd	%xmm0, (Y1)
 	ALIGN_4
-	
+
 .L999:
 	movl 	M,J
 	leal 	(,J,SIZE),%eax
@@ -608,7 +608,7 @@
 .L999x:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 
 	addl	$ARGS,%esp

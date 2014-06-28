@@ -46,7 +46,7 @@
 #define A	%i5
 #define LDA	%i2
 #define X	%i3
-#define INCX	%i4	
+#define INCX	%i4
 
 #define Y	%l0
 #define INCY	%l1
@@ -1500,7 +1500,7 @@
 	add	Y2, INCY, Y2
 	STF	a3, [Y2 + 0 * SIZE]
 	STF	a4, [Y2 + 1 * SIZE]
-	
+
 .LL300:
 	andcc	N, 1, J
 	FCLR(0)
@@ -1729,7 +1729,7 @@
 	cmp	IS, M
 	bl	%icc, .LL10
 	add	A, PNLDA, A
-		
+
 .LL999:
 	return	%i7 + 8
 	clr	%o0

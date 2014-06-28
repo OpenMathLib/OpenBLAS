@@ -85,7 +85,7 @@
 #define x8	$f20
 
 	PROLOGUE
-	
+
 	LDARG	Y,       0($sp)
 	LDARG	INCY,    8($sp)
 	LDARG	BUFFER, 16($sp)
@@ -104,7 +104,7 @@
 #ifndef __64BIT__
 	sdc1	$f20, 16($sp)
 #endif
-	
+
 	blez	M, .L999
 	dsll	INCX, INCX, BASE_SHIFT
 
@@ -353,9 +353,9 @@
 
 .L19:
 	LD	a1, 0 * SIZE(Y)
-	daddu	Y, Y, INCY	
+	daddu	Y, Y, INCY
 	LD	a2, 0 * SIZE(Y)
-	daddu	Y, Y, INCY	
+	daddu	Y, Y, INCY
 
 	MADD	a1, a1, ALPHA, y1
 	daddiu	J, J, -1
@@ -363,11 +363,11 @@
 	MTC	$0, y1
 
 	ST	a1,  0 * SIZE(YY)
-	daddu	YY, YY, INCY	
+	daddu	YY, YY, INCY
 	ST	a2,  0 * SIZE(YY)
 
 	bgtz	J, .L11
-	daddu	YY, YY, INCY	
+	daddu	YY, YY, INCY
 	.align 3
 
 .L20:
@@ -504,13 +504,13 @@
 
 .L29:
 	LD	a1, 0 * SIZE(Y)
-	daddu	Y, Y, INCY	
+	daddu	Y, Y, INCY
 
 	MADD	a1, a1, ALPHA, y1
 	NOP
 
 	ST	a1,  0 * SIZE(YY)
-	daddu	YY, YY, INCY	
+	daddu	YY, YY, INCY
 	.align 3
 
 .L999:

@@ -58,7 +58,7 @@
 #define Y		48 + STACKSIZE(%esp)
 #define STACK_INCY	52 + STACKSIZE(%esp)
 #define BUFFER		56 + STACKSIZE(%esp)
-	
+
 #define I	%eax
 #define J	%ebx
 
@@ -122,7 +122,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	movl	N,  J
 
 	pxor	%xmm7, %xmm7
@@ -538,7 +538,7 @@
 .L999:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 	ret
 

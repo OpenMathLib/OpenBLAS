@@ -176,7 +176,7 @@ int exec_blas(BLASLONG num_cpu, blas_param_t *param, void *buffer);
 
 int blas_level1_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k, void *alpha,
 		       void *a, BLASLONG lda,
-		       void *b, BLASLONG ldb, 
+		       void *b, BLASLONG ldb,
 		       void *c, BLASLONG ldc, int (*function)(), int threads);
 
 int gemm_thread_m (int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG);
@@ -187,14 +187,14 @@ int gemm_thread_mn(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*functio
 
 int gemm_thread_variable(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG, BLASLONG);
 
-int trsm_thread(int mode, BLASLONG m, BLASLONG n, 
+int trsm_thread(int mode, BLASLONG m, BLASLONG n,
 		double alpha_r, double alpha_i,
 		void *a, BLASLONG lda,
 		void *c, BLASLONG ldc, int (*function)(), void *buffer);
 
 int syrk_thread(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG);
 
-int beta_thread(int mode, BLASLONG m, BLASLONG n, 
+int beta_thread(int mode, BLASLONG m, BLASLONG n,
 		double alpha_r, double alpha_i,
 		void *c, BLASLONG ldc, int (*fuction)());
 

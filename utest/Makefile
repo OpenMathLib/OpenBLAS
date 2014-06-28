@@ -45,7 +45,7 @@ run_test: $(TARGET)
 	./$(TARGET)
 
 clean:
-	-rm -f *.o $(TARGET) 
+	-rm -f *.o $(TARGET)
 	-rm -rf $(CUNIT_DIR)
 
 libs:

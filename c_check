@@ -180,9 +180,9 @@ $linker_a = "";
 
 {
     $link = `$compiler_name -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $openmp -v ctest2.o -o ctest2 2>&1 && rm -f ctest2.o ctest2 ctest2.exe`;
-    
+
     $link =~ s/\-Y\sP\,/\-Y/g;
-    
+
     @flags = split(/[\s\,\n]/, $link);
     # remove leading and trailing quotes from each flag.
     @flags = map {s/^['"]|['"]$//g; $_} @flags;
@@ -193,15 +193,15 @@ $linker_a = "";
 	    && ($flags !~ /^-LIST:/)
 	    && ($flags !~ /^-LANG:/)
 	    ) {
-	    $linker_L .= $flags . " " 
+	    $linker_L .= $flags . " "
 	    }
 
 	if ($flags =~ /^\-Y/) {
-	    $linker_L .= "-Wl,". $flags . " " 
+	    $linker_L .= "-Wl,". $flags . " "
 	    }
-	
+
 	if (
-	    ($flags =~ /^\-l/) 
+	    ($flags =~ /^\-l/)
 	    && ($flags !~ /gfortranbegin/)
 	    && ($flags !~ /frtbegin/)
 	    && ($flags !~ /pathfstart/)
@@ -213,7 +213,7 @@ $linker_a = "";
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
 	    ) {
-	    $linker_l .= $flags . " " 
+	    $linker_l .= $flags . " "
 	}
 
 	$linker_a .= $flags . " " if $flags =~ /\.a$/;
@@ -250,9 +250,9 @@ print CONFFILE "#define __64BIT__\t1\n"  if $binformat eq bin64;
 print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
 
 if ($os eq "LINUX") {
-    
+
 #    @pthread = split(/\s+/, `nm /lib/libpthread.so* | grep _pthread_create`);
-    
+
 #    if ($pthread[2] ne "") {
 #	print CONFFILE "#define PTHREAD_CREATE_FUNC	$pthread[2]\n";
 #    } else {

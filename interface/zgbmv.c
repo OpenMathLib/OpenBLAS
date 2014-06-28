@@ -135,7 +135,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   if (n < 0)		 info = 3;
   if (m < 0)		 info = 2;
   if (i < 0)		 info = 1;
-  
+
   trans = i;
 
   if (info != 0){
@@ -178,7 +178,7 @@ void CNAME(enum CBLAS_ORDER order,
     if (TransA == CblasTrans)       trans = 1;
     if (TransA == CblasConjNoTrans) trans = 2;
     if (TransA == CblasConjTrans)   trans = 3;
-    
+
     info = -1;
 
     if (incy == 0)	 info = 13;
@@ -234,7 +234,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (beta_r != ONE || beta_i != ZERO) SCAL_K(leny, 0, 0, beta_r, beta_i, y, abs(incy), NULL, 0, NULL, 0);
 
   if (alpha_r == ZERO && alpha_i == ZERO) return;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();

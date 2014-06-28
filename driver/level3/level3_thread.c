@@ -49,7 +49,7 @@
 #endif
 
 //The array of job_t may overflow the stack.
-//Instead, use malloc to alloc job_t. 
+//Instead, use malloc to alloc job_t.
 #if MAX_CPU_NUMBER > BLAS3_MEM_ALLOC_THRESHOLD
 #define USE_ALLOC_HEAP
 #endif
@@ -309,12 +309,12 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #endif
 
   div_n = (n_to - n_from + DIVIDE_RATE - 1) / DIVIDE_RATE;
-  
+
   buffer[0] = sb;
   for (i = 1; i < DIVIDE_RATE; i++) {
     buffer[i] = buffer[i - 1] + GEMM_Q * ((div_n + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1)) * COMPSIZE;
   }
-  
+
 
   for(ls = 0; ls < k; ls += min_l){
 
@@ -328,7 +328,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
     l1stride = 1;
     min_i = m_to - m_from;
-    
+
     if (min_i >= GEMM_P * 2) {
       min_i = GEMM_P;
     } else {
@@ -340,23 +340,23 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     }
 
     START_RPCC();
-    
+
     ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
-    
+
     STOP_RPCC(copy_A);
-    
+
     div_n = (n_to - n_from + DIVIDE_RATE - 1) / DIVIDE_RATE;
-    
+
     for (xxx = n_from, bufferside = 0; xxx < n_to; xxx += div_n, bufferside ++) {
-      
+
       START_RPCC();
-      
+
       /* Make sure if no one is using buffer */
       for (i = 0; i < args -> nthreads; i++)
 	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;};
-      
+
       STOP_RPCC(waiting1);
-      
+
 #if defined(FUSED_GEMM) && !defined(TIMING)
 
       FUSED_KERNEL_OPERATION(min_i, MIN(n_to, xxx + div_n) - xxx, min_l, alpha,
@@ -376,21 +376,21 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #else
 
 	if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-#endif	
+#endif
 
 	START_RPCC();
-	
-	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs, 
+
+	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
 			buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE * l1stride);
-	
+
 	STOP_RPCC(copy_B);
-	
+
 	START_RPCC();
-	
+
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
 			 sa, buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE * l1stride,
 			 c, ldc, m_from, jjs);
-	  
+
 	STOP_RPCC(kernel);
 
 #ifdef TIMING
@@ -399,30 +399,30 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
       }
 #endif
-	
+
       for (i = 0; i < args -> nthreads; i++) job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
       WMB;
     }
 
     current = mypos;
-    
+
     do {
       current ++;
       if (current >= args -> nthreads) current = 0;
-      
+
       div_n = (range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE;
-      
+
       for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-	
+
 	if (current != mypos) {
-	  
+
 	  START_RPCC();
-	  
+
 	  /* thread has to wait */
 	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
-	  
+
 	  STOP_RPCC(waiting2);
-	    
+
 	  START_RPCC();
 
 	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1]  - xxx,  div_n), min_l, alpha,
@@ -434,43 +434,43 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	  ops += 2 * min_i * MIN(range_n[current + 1]  - xxx,  div_n) * min_l;
 #endif
 	}
-	
+
 	if (m_to - m_from == min_i) {
 	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	}
       }
     } while (current != mypos);
-    
+
 
     for(is = m_from + min_i; is < m_to; is += min_i){
       min_i = m_to - is;
 
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
-      } else 
+      } else
 	if (min_i > GEMM_P) {
 	  min_i = ((min_i + 1) / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
 	}
-      
+
       START_RPCC();
-      
+
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-      
+
       STOP_RPCC(copy_A);
-      
+
       current = mypos;
       do {
-	
+
 	div_n = (range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE;
-	
+
 	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-	  
+
 	  START_RPCC();
-	  
+
 	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), min_l, alpha,
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			   c, ldc, is, xxx);
-	  
+
 	STOP_RPCC(kernel);
 
 #ifdef TIMING
@@ -483,16 +483,16 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	  WMB;
 	}
 	}
-	
+
 	current ++;
 	if (current >= args -> nthreads) current = 0;
-	
+
       } while (current != mypos);
-      
+
     }
-    
+
   }
-  
+
   START_RPCC();
 
   for (i = 0; i < args -> nthreads; i++) {
@@ -561,7 +561,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   mode  =  BLAS_DOUBLE  | BLAS_REAL | BLAS_NODE;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL | BLAS_NODE;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX | BLAS_NODE;
@@ -569,7 +569,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX | BLAS_NODE;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX | BLAS_NODE;
-#endif  
+#endif
 #endif
 
   newarg.m        = args -> m;
@@ -594,7 +594,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 #endif
 
   newarg.common   = (void *)job;
-   
+
 #ifdef PARAMTEST
   newarg.gemm_p  = args -> gemm_p;
   newarg.gemm_q  = args -> gemm_q;
@@ -612,7 +612,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   num_cpu_m  = 0;
 
   while (m > 0){
-    
+
     width  = blas_quickdivide(m + nthreads - num_cpu_m - 1, nthreads - num_cpu_m);
 
     m -= width;
@@ -633,10 +633,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     queue[i].sb      = NULL;
     queue[i].next    = &queue[i + 1];
   }
-  
+
   queue[0].sa = sa;
   queue[0].sb = sb;
-  
+
   if (!range_n) {
     n_from = 0;
     n_to   = args -> n;
@@ -648,23 +648,23 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   for(js = n_from; js < n_to; js += GEMM_R * nthreads){
     n = n_to - js;
     if (n > GEMM_R * nthreads) n = GEMM_R * nthreads;
-    
+
     range_N[0] = js;
 
     num_cpu_n  = 0;
 
     while (n > 0){
-      
+
       width  = blas_quickdivide(n + nthreads - num_cpu_n - 1, nthreads - num_cpu_n);
-      
+
       n -= width;
       if (n < 0) width = width + n;
-      
+
       range_N[num_cpu_n + 1] = range_N[num_cpu_n] + width;
-      
+
       num_cpu_n ++;
     }
- 
+
     for (j = 0; j < num_cpu_m; j++) {
       for (i = 0; i < num_cpu_m; i++) {
 	for (k = 0; k < DIVIDE_RATE; k++) {
@@ -672,7 +672,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 	}
       }
     }
-    
+
     queue[num_cpu_m - 1].next = NULL;
 
     exec_blas(num_cpu_m, queue);
@@ -692,9 +692,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   BLASLONG nthreads = args -> nthreads;
   BLASLONG divN, divT;
   int mode;
-  
+
   if (nthreads  == 1) {
-    GEMM_LOCAL(args, range_m, range_n, sa, sb, 0); 
+    GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
     return 0;
   }
 
@@ -745,7 +745,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
     mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
     mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -753,9 +753,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
     mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
 #endif
-    
+#endif
+
 #if defined(TN) || defined(TT) || defined(TR) || defined(TC) || \
     defined(CN) || defined(CT) || defined(CR) || defined(CC)
     mode |= (BLAS_TRANSA_T);
@@ -764,11 +764,11 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     defined(NC) || defined(TC) || defined(RC) || defined(CC)
     mode |= (BLAS_TRANSB_T);
 #endif
-    
+
 #ifdef OS_WINDOWS
-    gemm_thread_n(mode, args, range_m, range_n, GEMM_LOCAL,  sa, sb, divN); 
+    gemm_thread_n(mode, args, range_m, range_n, GEMM_LOCAL,  sa, sb, divN);
 #else
-    gemm_thread_n(mode, args, range_m, range_n, gemm_driver, sa, sb, divN); 
+    gemm_thread_n(mode, args, range_m, range_n, gemm_driver, sa, sb, divN);
 #endif
 
   }

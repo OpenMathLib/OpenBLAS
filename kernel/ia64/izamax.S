@@ -60,7 +60,7 @@
 #define N	r32
 #define DX	r33
 #define INCX	r34
-		
+
 #define PRE1	r2
 
 #define I	r14
@@ -107,7 +107,7 @@
 	sxt4	N = N
 	sxt4	INCX = INCX
 	}
-	;; 
+	;;
 #endif
 #endif
 
@@ -288,7 +288,7 @@
 	(p16) LDFD	f82 = [DX], SIZE
 	(p8 ) mov  DMAX1 = DATA6
 	(p19) fabs	f85  = f85
-	}    
+	}
 	{ .mmf
 	nop.m 0
 	nop.m 0
@@ -563,7 +563,7 @@
 	}
 	;;
 	.align 32
-	
+
 .L999:
 	{ .mmi
 	setf.d	f8 = DMAX1

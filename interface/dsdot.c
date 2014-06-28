@@ -45,7 +45,7 @@
 #ifndef CBLAS
 
 double NAME(blasint *N, float *x, blasint *INCX, float *y, blasint *INCY){
-  
+
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   BLASLONG incy = *INCY;
@@ -69,7 +69,7 @@ double NAME(blasint *N, float *x, blasint *INCX, float *y, blasint *INCY){
   IDEBUG_END;
 
   return ret;
-  
+
 }
 
 #else
@@ -77,7 +77,7 @@ double NAME(blasint *N, float *x, blasint *INCX, float *y, blasint *INCY){
 double CNAME(blasint n, float *x, blasint incx, float *y, blasint incy){
 
   double ret = 0.0;
-  
+
   PRINT_DEBUG_CNAME;
 
   if (n <= 0) return 0;
@@ -96,7 +96,7 @@ double CNAME(blasint n, float *x, blasint incx, float *y, blasint incy){
   IDEBUG_END;
 
   return ret;
-  
+
 }
 
 #endif

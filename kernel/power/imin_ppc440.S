@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define RET	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 
 #define N	r6
 #define NN	r7
@@ -380,7 +380,7 @@ LL(1160):
 	LFDUX	f8,    XX, INCX
 	addi	RET, RET, 1
 	fcmpu	cr0, f1, f8
-	beq	cr0, LL(9999)	
+	beq	cr0, LL(9999)
 	bdnz	LL(1160)
 	.align 4
 

@@ -76,8 +76,8 @@
 	movl	STACK_Y,     Y
 	movl	STACK_INCY,  INCY
 
-	leal	(, INCX, SIZE), INCX	
-	leal	(, INCY, SIZE), INCY	
+	leal	(, INCX, SIZE), INCX
+	leal	(, INCY, SIZE), INCY
 
 	movss	STACK_C, C
 	movss	STACK_S, S
@@ -434,7 +434,7 @@
 	movaps	%xmm0, 12 * SIZE(X)
 	movlps	%xmm2, 12 * SIZE(Y)
 	movhps	%xmm2, 14 * SIZE(Y)
-	
+
 	addl	$16 * SIZE, X
 	addl	$16 * SIZE, Y
 	ALIGN_3

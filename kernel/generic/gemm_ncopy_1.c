@@ -55,7 +55,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
       a_offset += lda;
 
       i = (m >> 3);
-      
+
       if (i > 0){
 	do {
 	  *(b_offset + 0) = *(a_offset1 + 0);
@@ -73,7 +73,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
       }
 
       i = (m & 7);
-      
+
       if (i > 0){
 	do {
 	  *(b_offset + 0) = *(a_offset1 + 0);

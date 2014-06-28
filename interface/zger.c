@@ -129,7 +129,7 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
 #else
 
 void CNAME(enum CBLAS_ORDER order,
@@ -195,7 +195,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (m == 0 || n == 0) return;
 
   if ((alpha_r == 0.) && (alpha_i == 0.)) return;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -245,5 +245,5 @@ void CNAME(enum CBLAS_ORDER order,
   IDEBUG_END;
 
   return;
- 
+
 }

@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define	M	r3
 #define	N	r4
 #define	A	r5
@@ -204,7 +204,7 @@ LL(12):
 	dcbt	PREA, AO3
 	dcbt	PREA, AO4
 #endif
-	
+
 	dcbtst	PREB1, B
 
 	addi	AO1, AO1,  4 * SIZE
@@ -214,7 +214,7 @@ LL(12):
 	addi	B,   B,   16 * SIZE
 	bdnz	LL(12)
 	.align 4
-	
+
 LL(15):
 	andi.	r0,  M,  3
 	mtspr	CTR, r0
@@ -284,7 +284,7 @@ LL(22):
 	addi	B,   B,    8 * SIZE
 	bdnz	LL(22)
 	.align 4
-	
+
 LL(25):
 	andi.	r0,  M,  3
 	mtspr	CTR, r0
@@ -330,7 +330,7 @@ LL(32):
 	addi	B,   B,    4 * SIZE
 	bdnz	LL(32)
 	.align 4
-	
+
 LL(35):
 	andi.	r0,  M,  3
 	mtspr	CTR, r0

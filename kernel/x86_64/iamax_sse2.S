@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
@@ -47,14 +47,14 @@
 #define I	ARG4
 #define XX	%r10
 #define	MM	%r11
-	
+
 #ifdef USE_MIN
 #define maxpd	minpd
 #define maxsd	minsd
 #endif
 
 #include "l1param.h"
-	
+
 	PROLOGUE
 	PROFCODE
 
@@ -114,7 +114,7 @@
 	sarq	$4, I
 	jle	.L15
 	ALIGN_4
-	
+
 .L11:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -226,7 +226,7 @@
 #endif
 	maxpd	%xmm5, %xmm1
 	addq	$4 * SIZE, X
-	ALIGN_3	
+	ALIGN_3
 
 .L17:
 	testq	$2, M
@@ -238,7 +238,7 @@
 #endif
 	maxpd	%xmm6, %xmm2
 	addq	$2 * SIZE, X
-	
+
 .L18:
 	testq	$1, M
 	je	.L20
@@ -284,7 +284,7 @@
 	sarq	$3, I
 	jle	.L25
 	ALIGN_4
-	
+
 .L22:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -407,7 +407,7 @@
 	incq	RET
 	comisd	%xmm0, %xmm4
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L27:
 	testq	$2, M
@@ -427,7 +427,7 @@
 	comisd	%xmm0, %xmm2
 	je	.L999
 	ALIGN_3
-	
+
 .L28:
 	incq	RET
 	jmp	.L999
@@ -566,7 +566,7 @@
 #endif
 	maxpd	%xmm5, %xmm1
 	addq	$4 * SIZE, X
-	ALIGN_3	
+	ALIGN_3
 
 .L57:
 	testq	$2, M
@@ -579,7 +579,7 @@
 #endif
 	maxpd	%xmm6, %xmm2
 	addq	$2 * SIZE, X
-	
+
 .L58:
 	testq	$1, M
 	je	.L60
@@ -608,7 +608,7 @@
 	sarq	$3, I
 	jle	.L65
 	ALIGN_4
-	
+
 .L62:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -735,7 +735,7 @@
 	incq	RET
 	comisd	%xmm0, %xmm4
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L67:
 	testq	$2, M
@@ -755,7 +755,7 @@
 	comisd	%xmm0, %xmm2
 	je	.L999
 	ALIGN_3
-	
+
 .L68:
 	incq	RET
 	jmp	.L999
@@ -766,7 +766,7 @@
 	sarq	$4, I
 	jle	.L85
 	ALIGN_4
-	
+
 .L81:
 	movsd	0 * SIZE(X), %xmm4
 	addq	INCX, X
@@ -909,7 +909,7 @@
 	andpd	 %xmm15, %xmm5
 #endif
 	maxpd	%xmm5, %xmm1
-	ALIGN_3	
+	ALIGN_3
 
 .L87:
 	testq	$2, M
@@ -924,7 +924,7 @@
 #endif
 	maxpd	%xmm6, %xmm2
 	ALIGN_3
-	
+
 .L88:
 	testq	$1, M
 	je	.L90
@@ -960,7 +960,7 @@
 	sarq	$3, I
 	jle	.L95
 	ALIGN_4
-	
+
 .L92:
 	movsd	0 * SIZE(X), %xmm1
 	addq	INCX, X
@@ -1101,7 +1101,7 @@
 	incq	RET
 	comisd	%xmm0, %xmm4
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L97:
 	testq	$2, M
@@ -1122,7 +1122,7 @@
 	comisd	%xmm0, %xmm2
 	je	.L999
 	ALIGN_3
-	
+
 .L98:
 	incq	RET
 	ALIGN_3

@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define RET	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 
 #define N	r6
 #define NN	r7

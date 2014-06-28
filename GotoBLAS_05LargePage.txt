@@ -43,7 +43,7 @@
   F) Other aarchitecture which doesn't have Large TLB enhancement
 
    If you have root permission, please install device driver which
-   located in drivers/mapper. 
+   located in drivers/mapper.
 
    $shell> cd drivers/mapper
    $shell> make

@@ -123,7 +123,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   if (n < 0)		 info = 3;
   if (m < 0)		 info = 2;
   if (i < 0)		 info = 1;
-  
+
   trans = i;
 
   if (info != 0){
@@ -160,7 +160,7 @@ void CNAME(enum CBLAS_ORDER order,
     if (TransA == CblasTrans)       trans = 1;
     if (TransA == CblasConjNoTrans) trans = 0;
     if (TransA == CblasConjTrans)   trans = 1;
-    
+
     info = -1;
 
     if (incy == 0)	 info = 13;
@@ -214,9 +214,9 @@ void CNAME(enum CBLAS_ORDER order,
   if (trans) leny = n;
 
   if (beta != ONE) SCAL_K(leny, 0, 0, beta, y, abs(incy), NULL, 0, NULL, 0);
-  
+
   if (alpha == ZERO) return;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -228,7 +228,7 @@ void CNAME(enum CBLAS_ORDER order,
 
 #ifdef SMP
   nthreads = num_cpu_avail(2);
-  
+
   if (nthreads == 1) {
 #endif
 

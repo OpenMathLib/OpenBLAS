@@ -42,7 +42,7 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, 
 
 	if ( rows <= 0     )  return(0);
 	if ( cols <= 0     )  return(0);
-	
+
 	aptr = a;
 	bptr = b;
 
@@ -55,16 +55,16 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, 
 
 		for(j=0; j<cols; j++)
 		{
-			bptr[ia]   = alpha_r * aptr[ia]    - alpha_i * aptr[ia+1]; 
-			bptr[ia+1] = alpha_r * aptr[ia+1]  + alpha_i * aptr[ia]; 
+			bptr[ia]   = alpha_r * aptr[ia]    - alpha_i * aptr[ia+1];
+			bptr[ia+1] = alpha_r * aptr[ia+1]  + alpha_i * aptr[ia];
 			ia += 2;
 		}
 		aptr += lda;
 		bptr += ldb;
-	}	
+	}
 
 	return(0);
 
 }
-	
+
 

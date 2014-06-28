@@ -91,17 +91,17 @@ static int spmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
   }
 
 #ifndef LOWER
-  SCAL_K(m_to, 0, 0, ZERO, 
+  SCAL_K(m_to, 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y, 1, NULL, 0, NULL, 0);  
+	 y, 1, NULL, 0, NULL, 0);
 #else
-  SCAL_K(args -> m - m_from, 0, 0, ZERO, 
+  SCAL_K(args -> m - m_from, 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y + m_from * COMPSIZE, 1, NULL, 0, NULL, 0);  
+	 y + m_from * COMPSIZE, 1, NULL, 0, NULL, 0);
 #endif
 
 #ifndef LOWER
@@ -139,7 +139,7 @@ static int spmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 	    a, 1, y, 1, NULL, 0);
 
     a += (i + 1) * COMPSIZE;
-    
+
 #else
 #if !defined(HEMV) && !defined(HEMVREV)
     result = MYDOT(args -> m - i    , a + i * COMPSIZE, 1, x + i * COMPSIZE, 1);
@@ -198,7 +198,7 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -206,31 +206,31 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.m = m;
-  
+
   args.a = (void *)a;
   args.b = (void *)x;
   args.c = (void *)buffer;
-    
+
   args.ldb = incx;
   args.ldc = incy;
 
   dnum = (double)m * (double)m / (double)nthreads;
   num_cpu  = 0;
-  
+
 #ifndef LOWER
 
   range_m[MAX_CPU_NUMBER] = m;
   i          = 0;
-    
+
   while (i < m){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di = (double)(m - i);
       if (di * di - dnum > 0) {
 	width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
@@ -240,14 +240,14 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
 
       if (width < 16) width = 16;
       if (width > m - i) width = m - i;
-	
+
     } else {
       width = m - i;
     }
-    
+
     range_m[MAX_CPU_NUMBER - num_cpu - 1] = range_m[MAX_CPU_NUMBER - num_cpu] - width;
     range_n[num_cpu] = num_cpu * (((m + 15) & ~15) + 16);
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = spmv_kernel;
     queue[num_cpu].args    = &args;
@@ -256,20 +256,20 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
-  
+
 #else
 
   range_m[0] = 0;
   i          = 0;
-    
+
   while (i < m){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di = (double)(m - i);
       if (di * di - dnum > 0) {
 	width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
@@ -279,14 +279,14 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
 
       if (width < 16) width = 16;
       if (width > m - i) width = m - i;
-	
+
     } else {
       width = m - i;
     }
-    
+
     range_m[num_cpu + 1] = range_m[num_cpu] + width;
     range_n[num_cpu] = num_cpu * (((m + 15) & ~15) + 16);
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = spmv_kernel;
     queue[num_cpu].args    = &args;
@@ -295,44 +295,44 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
-  
+
 #endif
 
   if (num_cpu) {
     queue[0].sa = NULL;
     queue[0].sb = buffer + num_cpu * (((m + 255) & ~255) + 16) * COMPSIZE;
-    
+
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-   
+
   for (i = 1; i < num_cpu; i ++) {
-    
+
 #ifndef LOWER
-    
+
     AXPYU_K(range_m[MAX_CPU_NUMBER - i], 0, 0, ONE,
 #ifdef COMPLEX
-	    ZERO, 
+	    ZERO,
 #endif
 	    buffer + range_n[i] * COMPSIZE, 1, buffer, 1, NULL, 0);
-    
+
 #else
-    
+
     AXPYU_K(m - range_m[i], 0, 0, ONE,
 #ifdef COMPLEX
-	    ZERO, 
+	    ZERO,
 #endif
 	    buffer + (range_n[i] + range_m[i]) * COMPSIZE, 1, buffer + range_m[i] * COMPSIZE, 1, NULL, 0);
-    
+
 #endif
-    
+
   }
-  
+
    AXPYU_K(m, 0, 0,
 #ifndef COMPLEX
 	  alpha,
@@ -340,6 +340,6 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
 	  alpha[0], alpha[1],
 #endif
 	  buffer, 1, y, incy, NULL, 0);
-  
+
   return 0;
 }

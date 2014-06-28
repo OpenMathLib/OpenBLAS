@@ -43,12 +43,12 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
 #define OLD_INCY	24 + STACKSIZE(%rsp)
 #define OLD_BUFFER	32 + STACKSIZE(%rsp)
-	
+
 #define MMM	64(%rsp)
 #define NN	72(%rsp)
 #define AA	80(%rsp)
@@ -68,7 +68,7 @@
 #else
 
 #define STACKSIZE	288
-	
+
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
 #define OLD_LDA		 56 + STACKSIZE(%rsp)
@@ -193,7 +193,7 @@
 #endif
 
 	subq	$-16 * SIZE, A
-	
+
 	testq	M, M
 	jle	.L999
 	testq	N, N
@@ -201,7 +201,7 @@
 	ALIGN_3
 
 	movq	BUFFER, X1
-	
+
 	movq	Y, Y1
 
 	movq	M,  I
@@ -669,7 +669,7 @@
 	pcmpeqb	%xmm13, %xmm13
 	psllq	$63,    %xmm13
 	shufps	$0xc0, %xmm13, %xmm13
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorpd	%xmm13, %xmm0
 	xorpd	%xmm13, %xmm2
@@ -1034,7 +1034,7 @@
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
 	shufps	$0xc0, %xmm11, %xmm11
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorpd	%xmm11, %xmm0
 	xorpd	%xmm11, %xmm2
@@ -1264,7 +1264,7 @@
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
 	shufps	$0xc0, %xmm11, %xmm11
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorpd	%xmm11, %xmm0
 #else
@@ -1769,7 +1769,7 @@
 	pcmpeqb	%xmm13, %xmm13
 	psllq	$63,    %xmm13
 	shufps	$0xc0, %xmm13, %xmm13
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorpd	%xmm13, %xmm0
 	xorpd	%xmm13, %xmm2
@@ -2157,7 +2157,7 @@
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
 	shufps	$0xc0, %xmm11, %xmm11
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorpd	%xmm11, %xmm0
 	xorpd	%xmm11, %xmm2
@@ -2398,7 +2398,7 @@
 	pcmpeqb	%xmm11, %xmm11
 	psllq	$63,    %xmm11
 	shufps	$0xc0, %xmm11, %xmm11
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorpd	%xmm11, %xmm0
 #else

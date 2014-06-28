@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define ALPHA		16 + STACK + ARGS(%esp)
 #define STACK_X		24 + STACK + ARGS(%esp)
@@ -54,7 +54,7 @@
 #define Y	 %edi
 #define INCX	 %ecx
 #define INCY	 %edx
-	
+
 #define PREFETCHSIZE	 64
 
 	PROLOGUE

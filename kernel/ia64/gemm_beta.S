@@ -81,7 +81,7 @@
 	{ .mfb
 	cmp.ge	p6, p0 = 0, N
 	fcmp.eq	p0, p15 = BETA, f0
-	(p6) br.ret.sptk.many b0	
+	(p6) br.ret.sptk.many b0
 	}
 	;;
 	.body
@@ -197,7 +197,7 @@
 	{ .mmi
 	(p12) STFD [CO1] = f0, 1 * SIZE
 	(p12) STFD [CO2] = f0, 1 * SIZE
-	(p12) adds CO3 = 8 * SIZE, CO3	
+	(p12) adds CO3 = 8 * SIZE, CO3
 	}
 	;;
 	{ .mmi
@@ -397,7 +397,7 @@
 	{ .mmi
 	(p12) LDFD f34 = [CO1], 1 * SIZE
 	(p12) LDFD f38 = [CO2], 1 * SIZE
-	(p12) adds CO3 = 8 * SIZE, CO3	
+	(p12) adds CO3 = 8 * SIZE, CO3
 	}
 	;;
 	{ .mmi
@@ -446,7 +446,7 @@
 	(p13) FMPY f40 = BETA, f40
 	}
 	{ .mmf
-	(p12) adds DO3 = 8 * SIZE, DO3	
+	(p12) adds DO3 = 8 * SIZE, DO3
 	(p14) FMPY f44 = BETA, f44
 	}
 	;;
@@ -456,7 +456,7 @@
 	(p13) FMPY f41 = BETA, f41
 	}
 	{ .mmf
-	(p13) adds DO3 = 4 * SIZE, DO3	
+	(p13) adds DO3 = 4 * SIZE, DO3
 	(p14) FMPY f45 = BETA, f45
 	}
 	;;

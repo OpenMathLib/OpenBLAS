@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -189,7 +189,7 @@
 
 #ifdef linux
 #ifndef __64BIT__
-	mr	PREA,  r10	
+	mr	PREA,  r10
 	lwz	PREB,   8 + STACKSIZE(SP)
 	lwz	PREC,  12 + STACKSIZE(SP)
 #else
@@ -246,7 +246,7 @@ LL(10):
 	fmr	f13, f0
 	fmr	f14, f0
 	fmr	f15, f0
-	
+
 	srawi.	I, M,  2
 	mr	AO, A
 	add	C,  CO4, LDC
@@ -522,7 +522,7 @@ LL(18):
 	addi	CO4, CO4, 4 * SIZE
 	fmr	f14, f31
 	fmr	f15, f31
-	
+
 	addic.	I, I, -1
 	bgt+	LL(11)
 	.align 4
@@ -880,7 +880,7 @@ LL(40):
 	fmr	f5,  f0
 	fmr	f6,  f0
 	fmr	f7,  f0
-	
+
 	srawi.	I, M,  2
 	add	C,  CO2, LDC
 	mr	AO, A

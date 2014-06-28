@@ -73,7 +73,7 @@ static int (*syr2_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASL
 };
 #endif
 
-void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, 
+void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 	 FLOAT  *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *a, blasint *LDA){
 
   char uplo_arg = *UPLO;
@@ -98,7 +98,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (lda  < MAX(1, n))   info =  9;
@@ -111,7 +111,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
   if (n == 0) return;
 
   if ((alpha_r == ZERO) && (alpha_i == ZERO)) return;

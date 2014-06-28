@@ -280,7 +280,7 @@
 
 	li	PREA, PREFETCHSIZE_A * SIZE
 	sub	IS, M, IS
-	
+
 	cmpwi	cr0, M, 0
 	ble-	LL(999)
 
@@ -390,7 +390,7 @@ LL(11):
 	slwi	TEMP,  IS,  BASE_SHIFT
 	add	TEMP, X, TEMP
 
-	LFD	a16, ALPHA 
+	LFD	a16, ALPHA
 	lfd	xsum1, FZERO
 
 	LFD	atemp1, 0 * SIZE(TEMP)
@@ -484,7 +484,7 @@ LL(12):
 	FMADD	y04, atemp2, a8,  y04
 #	DCBT(X, PREX)
 	NOP2
-	
+
 	FMADD	xsum1, xtemp3, a3,  xsum1
 	LFD	a3,  6 * SIZE(AO1)
 	FMADD	y01, atemp3, a9,  y01
@@ -1106,7 +1106,7 @@ LL(15):
 	.align 4
 
 LL(18):
-	LFD	xtemp1, ALPHA 
+	LFD	xtemp1, ALPHA
 
 	FMUL	xsum1, xtemp1, xsum1
 	FMUL	xsum2, xtemp1, xsum2
@@ -1163,7 +1163,7 @@ LL(20):
 	LFD	atemp1, 0 * SIZE(TEMP)
 	LFD	atemp2, 1 * SIZE(TEMP)
 
-	LFD	a1, ALPHA 
+	LFD	a1, ALPHA
 
 	FMUL	atemp1, a1, atemp1
 	FMUL	atemp2, a1, atemp2
@@ -1228,7 +1228,7 @@ LL(22):
 	.align 4
 
 LL(28):
-	LFD	xtemp1, ALPHA 
+	LFD	xtemp1, ALPHA
 
 	FMUL	xsum1, xtemp1, xsum1
 	FMUL	xsum2, xtemp1, xsum2
@@ -1246,7 +1246,7 @@ LL(28):
 
 	addi	IS, IS, 2
 	.align 4
-	
+
 LL(30):
 	andi.	TEMP, M, 1
 	ble	LL(990)
@@ -1258,7 +1258,7 @@ LL(30):
 
 	LFD	atemp1, 0 * SIZE(TEMP)
 
-	LFD	a1, ALPHA 
+	LFD	a1, ALPHA
 
 	FMUL	atemp1, a1, atemp1
 
@@ -1299,7 +1299,7 @@ LL(32):
 	.align 4
 
 LL(38):
-	LFD	xtemp1, ALPHA 
+	LFD	xtemp1, ALPHA
 
 	FMUL	xsum1, xtemp1, xsum1
 

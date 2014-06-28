@@ -106,7 +106,7 @@
 #define MMM	0+ARGS(%esp)
 #define XX	4+ARGS(%esp)
 #define AA	8+ARGS(%esp)
-	
+
 #define I	%eax
 #define J	%ebx
 
@@ -180,7 +180,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	movl	M,  I
 	sarl	$2, I
 	jle	.L05
@@ -239,7 +239,7 @@
 	movl	N,  J
 	ALIGN_3
 
-.L11:	
+.L11:
 	movl	BUFFER, X
 	addl	$32 * SIZE, X
 
@@ -473,7 +473,7 @@
 	mulps	%xmm2,  %xmm5
 	SUBPS	%xmm5,  %xmm1
 	ALIGN_4
-	
+
 .L19:
 #ifdef HAVE_SSE2
 	pcmpeqb	%xmm5, %xmm5
@@ -486,7 +486,7 @@
 	addl	$8, %esp
 	movlhps	%xmm5, %xmm5
 #endif
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorps	%xmm5, %xmm0
 #else
@@ -529,7 +529,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -544,7 +544,7 @@
 	decl	J
 	jg	.L11
 	ALIGN_4
-	
+
 .L999:
 	movl	M,%eax
 	sall	$ZBASE_SHIFT, %eax
@@ -558,7 +558,7 @@
 .L999x:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 
 	addl	$ARGS,%esp

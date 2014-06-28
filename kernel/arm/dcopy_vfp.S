@@ -134,7 +134,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
-	
+
 	cmp	N, #0
 	ble	dcopy_kernel_L999
 

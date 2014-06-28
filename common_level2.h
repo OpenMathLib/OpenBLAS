@@ -986,24 +986,24 @@ int cnorm_t(BLASLONG, BLASLONG, float *a, BLASLONG);
 int znorm_n(BLASLONG, BLASLONG, double *a, BLASLONG);
 int znorm_t(BLASLONG, BLASLONG, double *a, BLASLONG);
 
-void sgbmv_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float, 
+void sgbmv_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, void *buffer);
 void sgbmv_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, void *buffer);
 
 void dgbmv_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, double,
 		 double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, void *buffer);
-void dgbmv_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, double, 
+void dgbmv_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, double,
 		 double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, void *buffer);
 
 void qgbmv_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble,
 		 xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, void *buffer);
-void qgbmv_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble, 
+void qgbmv_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble,
 		 xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, void *buffer);
 
 void cgbmv_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float, float,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, void *buffer);
-void cgbmv_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float, float, 
+void cgbmv_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float, float,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, void *buffer);
 void cgbmv_r(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float, float,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, void *buffer);
@@ -1052,24 +1052,24 @@ void xgbmv_s(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
 void xgbmv_d(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
 		 xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, void *buffer);
 
-int sgbmv_thread_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float, 
+int sgbmv_thread_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *buffer, int);
 int sgbmv_thread_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *buffer, int);
 
 int dgbmv_thread_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, double,
 		 double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *buffer, int);
-int dgbmv_thread_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, double, 
+int dgbmv_thread_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, double,
 		 double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *buffer, int);
 
 int qgbmv_thread_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble,
 		 xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *buffer, int);
-int qgbmv_thread_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble, 
+int qgbmv_thread_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, xdouble,
 		 xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *buffer, int);
 
 int cgbmv_thread_n(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float *,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *buffer, int);
-int cgbmv_thread_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float *, 
+int cgbmv_thread_t(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float *,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *buffer, int);
 int cgbmv_thread_r(BLASLONG, BLASLONG, BLASLONG, BLASLONG, float *,
 		 float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *buffer, int);

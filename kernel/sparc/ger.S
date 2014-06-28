@@ -46,12 +46,12 @@
 #define X	%i5
 #define INCX	%i2
 #define Y	%i3
-#define INCY	%i4	
+#define INCY	%i4
 #else
 #define X	%i4
 #define INCX	%i5
 #define Y	%i2
-#define INCY	%i3	
+#define INCY	%i3
 #endif
 
 #define A	%l0
@@ -251,7 +251,7 @@
 	deccc	J
 	bg,pn	%icc, .LL06
 	nop
-	
+
 .LL10:
 	mov	N, J
 	cmp	N, 0

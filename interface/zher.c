@@ -75,7 +75,7 @@ static int (*her_thread[])(BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG
 
 #ifndef CBLAS
 
-void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, 
+void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 	  FLOAT  *x, blasint *INCX, FLOAT *a, blasint *LDA){
 
   char uplo_arg = *UPLO;
@@ -98,7 +98,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (lda  < MAX(1, n))   info =  7;
@@ -139,7 +139,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
     if (incx == 0)          info =  5;
     if (n < 0)              info =  2;
     if (uplo  < 0)          info =  1;
-    
+
   }
 
   if (order == CblasRowMajor) {
@@ -161,7 +161,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
   }
 
 #endif
-  
+
   if (n == 0) return;
 
   if (alpha == ZERO) return;
@@ -173,7 +173,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
   if (incx < 0 ) x -= (n - 1) * incx * 2;
 
   buffer = (FLOAT *)blas_memory_alloc(1);
-  
+
 #ifdef SMP
   nthreads = num_cpu_avail(2);
 

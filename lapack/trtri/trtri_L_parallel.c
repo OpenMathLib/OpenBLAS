@@ -67,7 +67,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -75,7 +75,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 
   n = args -> n;
@@ -99,7 +99,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   for (i = start_i; i >= 0; i -= blocking) {
     bk = n - i;
     if (bk > blocking) bk = blocking;
-    
+
     range_N[0] = i;
     range_N[1] = i + bk;
 
@@ -124,7 +124,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     newarg.a = a + (i + i * lda) * COMPSIZE;
 
     CNAME  (&newarg, NULL, NULL, sa, sb, 0);
-    
+
     newarg.m = n - bk - i;
     newarg.n = i;
     newarg.k = bk;

@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -105,7 +105,7 @@
 #define PREA	r30
 #define PREC	r31
 #define PREB	PREA
-	
+
 #ifndef NEEDPARAM
 
 	PROLOGUE
@@ -335,7 +335,7 @@ LL(11):
 	LFD	f21,  1 * SIZE(B)
 	LFD	f22,  2 * SIZE(B)
 	LFD	f23,  3 * SIZE(B)
- 
+
 #ifdef POWER5
 	LFD	f28,  4 * SIZE(B)
 	LFD	f29,  5 * SIZE(B)
@@ -564,7 +564,7 @@ LL(12):
 	LFD	f30, 22 * SIZE(BO)
 	LFD	f31, 23 * SIZE(BO)
 #endif
-	
+
 	addi	AO, AO, 16 * SIZE
 	addi	BO, BO, 16 * SIZE
 
@@ -831,7 +831,7 @@ LL(KERNEL_MainFinish):
 
 	addi	CO1, CO1, 4 * SIZE
 	addi	CO2, CO2, 4 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))

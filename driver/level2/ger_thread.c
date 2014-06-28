@@ -102,7 +102,7 @@ static int ger_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
 #endif
 #endif
 	 x, 1, a, 1, NULL, 0);
-    
+
     y += incy * COMPSIZE;
     a += lda  * COMPSIZE;
   }
@@ -130,7 +130,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -138,17 +138,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.m = m;
   args.n = n;
-  
+
   args.a = (void *)x;
   args.b = (void *)y;
   args.c = (void *)a;
-    
+
   args.lda = incx;
   args.ldb = incy;
   args.ldc = lda;
@@ -160,18 +160,18 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *
 #endif
 
   num_cpu  = 0;
-  
+
   range_n[0] = 0;
   i          = n;
-    
+
   while (i > 0){
-    
+
     width  = blas_quickdivide(i + nthreads - num_cpu - 1, nthreads - num_cpu);
     if (width < 4) width = 4;
     if (i < width) width = i;
 
     range_n[num_cpu + 1] = range_n[num_cpu] + width;
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = ger_kernel;
     queue[num_cpu].args    = &args;
@@ -179,19 +179,19 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i -= width;
   }
-  
+
   if (num_cpu) {
     queue[0].sa = NULL;
     queue[0].sb = buffer;
-    
+
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-   
+
   return 0;
 }

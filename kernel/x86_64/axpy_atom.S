@@ -84,7 +84,7 @@
 
 	testq	M, M
 	jle	.L29
-	
+
 	cmpq	$SIZE, INCX
 	jne	.L20
 	cmpq	$SIZE, INCY

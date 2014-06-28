@@ -140,7 +140,7 @@
       IF( N.EQ.0 )
      $   RETURN
 *
-      NOCONJ = LSAME( TRANS, 'N' ) .OR. LSAME( TRANS, 'T' ) 
+      NOCONJ = LSAME( TRANS, 'N' ) .OR. LSAME( TRANS, 'T' )
       NOUNIT = LSAME( DIAG , 'N' )
 *
 *     Set up the start point in X if the increment is not unity. This

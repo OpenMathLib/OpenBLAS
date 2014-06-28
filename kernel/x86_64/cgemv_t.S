@@ -48,7 +48,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	128
-	
+
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
 #define OLD_INCY	24 + STACKSIZE(%rsp)
@@ -60,7 +60,7 @@
 #define LDAX	88(%rsp)
 #define ALPHAR	96(%rsp)
 #define ALPHAI	104(%rsp)
-	
+
 #define M	  %rdi
 #define N	  %rsi
 #define A	  %rcx
@@ -73,7 +73,7 @@
 #else
 
 #define STACKSIZE	288
-	
+
 #define OLD_ALPHA_I	 40 + STACKSIZE(%rsp)
 #define OLD_A		 48 + STACKSIZE(%rsp)
 #define OLD_LDA		 56 + STACKSIZE(%rsp)
@@ -202,7 +202,7 @@
 	jle	.L999
 
 	subq	$-32 * SIZE, A
-	
+
 	movq	BUFFER, X1
 
 #ifdef ALIGNED_ACCESS
@@ -893,7 +893,7 @@
 	movaps	%xmm4, %xmm6
 	shufps	$0x88, %xmm5, %xmm4
 	shufps	$0xdd, %xmm5, %xmm6
-	
+
 	addps	%xmm2, %xmm0
 	addps	%xmm6, %xmm4
 #endif
@@ -1306,7 +1306,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -1576,7 +1576,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -2227,7 +2227,7 @@
 	movaps	%xmm4, %xmm6
 	shufps	$0x88, %xmm5, %xmm4
 	shufps	$0xdd, %xmm5, %xmm6
-	
+
 	addps	%xmm2, %xmm0
 	addps	%xmm6, %xmm4
 #endif
@@ -2653,7 +2653,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -2923,7 +2923,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -3365,7 +3365,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -3650,7 +3650,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -4087,7 +4087,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 
@@ -4372,7 +4372,7 @@
 	movaps	%xmm0, %xmm2
 	shufps	$0x88, %xmm1, %xmm0
 	shufps	$0xdd, %xmm1, %xmm2
-	
+
 	addps	%xmm2, %xmm0
 #endif
 

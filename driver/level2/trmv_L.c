@@ -53,14 +53,14 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
     gemvbuffer = (FLOAT *)(((BLASLONG)buffer + m * sizeof(FLOAT) + 4095) & ~4095);
     COPY_K(m, b, incb, buffer, 1);
   }
-  
+
   for (is = m; is > 0; is -= DTB_ENTRIES){
 
     min_i = MIN(is, DTB_ENTRIES);
-    
+
 #ifndef TRANSA
     if (m - is > 0){
-      GEMV_N(m - is, min_i, 0, dp1, 
+      GEMV_N(m - is, min_i, 0, dp1,
 	     a + is + (is - min_i) * lda, lda,
 	     B + is - min_i, 1,
 	     B + is, 1, gemvbuffer);
@@ -83,10 +83,10 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
       if (i < min_i - 1) BB[0] += DOTU_K(min_i - i - 1, AA - (min_i - i - 1), 1, BB - (min_i - i - 1), 1);
 #endif
     }
-    
+
 #ifdef TRANSA
     if (is - min_i > 0){
-      GEMV_T(is - min_i, min_i, 0, dp1, 
+      GEMV_T(is - min_i, min_i, 0, dp1,
 	     a +  (is - min_i) * lda, lda,
 	     B,              1,
 	     B + is - min_i, 1, gemvbuffer);

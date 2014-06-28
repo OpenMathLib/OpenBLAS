@@ -45,7 +45,7 @@
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
-  
+
   blasint n    = *N;
   blasint incx = *INCX;
   blasint incy = *INCY;
@@ -96,18 +96,18 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
 #else
     AXPYC_K(n, 0, 0, alpha_r, alpha_i, x, incx, y, incy, NULL, 0);
 #endif
-    
+
 #ifdef SMP
   } else {
-    
+
 #ifdef XDOUBLE
     mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
 #elif defined(DOUBLE)
     mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
     mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
-    
+#endif
+
     blas_level1_thread(mode, n, 0, 0, ALPHA, x, incx, y, incy, NULL, 0,
 #ifndef CONJ
 		       (void *)AXPYU_K,
@@ -117,11 +117,11 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
 		       nthreads);
   }
 #endif
-  
+
   FUNCTION_PROFILE_END(4, 2 * n, 2 * n);
 
   IDEBUG_END;
 
   return;
-  
+
 }

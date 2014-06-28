@@ -47,7 +47,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -114,7 +114,7 @@
 	addl	$STACK_OFFSET, %esp
 
 	STACK_TOUCHING
-	
+
 	movd	STACK_M, %mm0
 	movl	STACK_N, %eax
 	movd	STACK_K, %mm1
@@ -166,7 +166,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -185,7 +185,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	16 * SIZE + BUFFER, BB
 
@@ -201,7 +201,7 @@
 	sall	$ZBASE_SHIFT, %eax
 	addl	%eax, B
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 #if defined(LT)
 	movl	OFFSET, %eax
@@ -314,7 +314,7 @@
 	movl	KK, %eax
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -458,7 +458,7 @@
 	decl   %eax
 	jne    .L12
 	ALIGN_4
-	
+
 .L15:
 #if defined(LT) || defined(RN)
 	movl	KK, %eax
@@ -757,7 +757,7 @@
 	movl	KK, %eax
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4

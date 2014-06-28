@@ -62,7 +62,7 @@ int CNAME(int mode,
   num_cpu_m  = 0;
 
   while (i > 0){
-    
+
     width  = blas_quickdivide(i + divM - num_cpu_m - 1, divM - num_cpu_m);
 
     i -= width;
@@ -84,7 +84,7 @@ int CNAME(int mode,
   num_cpu_n  = 0;
 
   while (i > 0){
-    
+
     width  = blas_quickdivide(i + divN - num_cpu_n - 1, divN - num_cpu_n);
 
     i -= width;
@@ -112,7 +112,7 @@ int CNAME(int mode,
     procs ++;
     }
   }
-  
+
   if (procs) {
     queue[0].sa = sa;
     queue[0].sb = sb;
@@ -121,7 +121,7 @@ int CNAME(int mode,
 
     exec_blas(procs, queue);
   }
-  
+
   return 0;
 }
 

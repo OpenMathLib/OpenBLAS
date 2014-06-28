@@ -45,7 +45,7 @@
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX){
-  
+
   blasint n    = *N;
   blasint incx = *INCX;
 
@@ -104,8 +104,8 @@ void CNAME(blasint n, FLOAT alpha_r, FLOAT *x, blasint incx){
     mode  =  BLAS_DOUBLE | BLAS_COMPLEX;
 #else
     mode  =  BLAS_SINGLE | BLAS_COMPLEX;
-#endif  
-    
+#endif
+
     blas_level1_thread(mode, n, 0, 0,  alpha, x, incx, NULL, 0, NULL, 0, (void *)SCAL_K, nthreads);
 
   }
@@ -116,5 +116,5 @@ void CNAME(blasint n, FLOAT alpha_r, FLOAT *x, blasint incx){
   IDEBUG_END;
 
   return;
-  
+
 }

@@ -41,13 +41,13 @@
 
 #define STACK	12
 #define ARGS	 0
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define X	 8 + STACK + ARGS(%esp)
 #define INCX	12 + STACK + ARGS(%esp)
 #define Y	16 + STACK + ARGS(%esp)
 #define INCY	20 + STACK + ARGS(%esp)
-	
+
 	PROLOGUE
 
 	pushl	%edi
@@ -88,14 +88,14 @@
 	ALIGN_2
 
 .L11:
-	FLD	7 * SIZE(%ecx)	
-	FLD	6 * SIZE(%ecx)	
-	FLD	5 * SIZE(%ecx)	
-	FLD	4 * SIZE(%ecx)	
-	FLD	3 * SIZE(%ecx)	
-	FLD	2 * SIZE(%ecx)	
-	FLD	1 * SIZE(%ecx)	
-	FLD	0 * SIZE(%ecx)	
+	FLD	7 * SIZE(%ecx)
+	FLD	6 * SIZE(%ecx)
+	FLD	5 * SIZE(%ecx)
+	FLD	4 * SIZE(%ecx)
+	FLD	3 * SIZE(%ecx)
+	FLD	2 * SIZE(%ecx)
+	FLD	1 * SIZE(%ecx)
+	FLD	0 * SIZE(%ecx)
 
 	FST	0 * SIZE(%edx)
 	FST	1 * SIZE(%edx)

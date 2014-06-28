@@ -99,9 +99,9 @@
 #define ADD1	MADD
 #define ADD2	NMSUB
 #endif
-	
+
 	PROLOGUE
-	
+
 	LDARG	INCY,    0($sp)
 	LDARG	BUFFER,  8($sp)
 #ifdef __64BIT__

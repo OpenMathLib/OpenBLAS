@@ -103,7 +103,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	LDARG	INCY,    0($sp)
 	LDARG	BUFFER,  8($sp)
 #ifdef __64BIT__

@@ -104,7 +104,7 @@
 	cmp	N, 0
 	ble	.LL20
 	nop
-		
+
 	cmp	INCX, 0
 	ble	.LL20
 	sll	INCX, ZBASE_SHIFT, INCX

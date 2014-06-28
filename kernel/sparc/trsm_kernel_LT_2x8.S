@@ -2105,7 +2105,7 @@
 	nop
 	.align 4
 
-.LL30: 
+.LL30:
 	and	N, 4, J
 	cmp	J, 0
 	ble,pn	%icc, .LL50

@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS     0
-	
+
 #define RESULT		 4 + STACK + ARGS(%esp)
 #define STACK_N		 8 + STACK + ARGS(%esp)
 #define STACK_X		12 + STACK + ARGS(%esp)
@@ -119,7 +119,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(Y), %xmm6
@@ -127,7 +127,7 @@
 	movaps	-12 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(Y), %xmm7
@@ -139,7 +139,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -8 * SIZE(Y), %xmm6
@@ -147,7 +147,7 @@
 	movaps	 -8 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -6 * SIZE(Y), %xmm7
@@ -159,7 +159,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(X)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -4 * SIZE(Y), %xmm6
@@ -167,7 +167,7 @@
 	movaps	 -4 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -2 * SIZE(Y), %xmm7
@@ -179,7 +179,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	  0 * SIZE(Y), %xmm6
@@ -187,7 +187,7 @@
 	movaps	  0 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	  2 * SIZE(Y), %xmm7
@@ -203,7 +203,7 @@
 	ALIGN_3
 
 .L12:
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(Y), %xmm6
@@ -211,7 +211,7 @@
 	movaps	-12 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(Y), %xmm7
@@ -219,7 +219,7 @@
 	movaps	-10 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -8 * SIZE(Y), %xmm6
@@ -227,7 +227,7 @@
 	movaps	 -8 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -6 * SIZE(Y), %xmm7
@@ -235,7 +235,7 @@
 	movaps	 -6 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -4 * SIZE(Y), %xmm6
@@ -243,7 +243,7 @@
 	movaps	 -4 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -2 * SIZE(Y), %xmm7
@@ -251,13 +251,13 @@
 	movaps	 -2 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -276,7 +276,7 @@
 	movaps	-14 * SIZE(X), %xmm5
 	movaps	-14 * SIZE(Y), %xmm7
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(Y), %xmm6
@@ -284,7 +284,7 @@
 	movaps	-12 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(Y), %xmm7
@@ -292,13 +292,13 @@
 	movaps	-10 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -317,13 +317,13 @@
 	movaps	-14 * SIZE(X), %xmm5
 	movaps	-14 * SIZE(Y), %xmm7
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -340,7 +340,7 @@
 	movaps	-16 * SIZE(X), %xmm4
 	movaps	-16 * SIZE(Y), %xmm6
 
-	pshufd	$0x4e,  %xmm6, %xmm3 
+	pshufd	$0x4e,  %xmm6, %xmm3
 	mulpd	%xmm4,  %xmm6
 	addpd	%xmm6,  %xmm0
 	mulpd	%xmm4,  %xmm3
@@ -370,7 +370,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(Y), %xmm6
@@ -379,7 +379,7 @@
 	movhps	-11 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(Y), %xmm7
@@ -392,7 +392,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -8 * SIZE(Y), %xmm6
@@ -401,7 +401,7 @@
 	movhps	 -7 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -6 * SIZE(Y), %xmm7
@@ -414,7 +414,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(X)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -4 * SIZE(Y), %xmm6
@@ -423,7 +423,7 @@
 	movhps	 -3 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -2 * SIZE(Y), %xmm7
@@ -436,7 +436,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	  0 * SIZE(Y), %xmm6
@@ -445,7 +445,7 @@
 	movhps	  1 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	  2 * SIZE(Y), %xmm7
@@ -462,7 +462,7 @@
 	ALIGN_3
 
 .L22:
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(Y), %xmm6
@@ -471,7 +471,7 @@
 	movhps	-11 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(Y), %xmm7
@@ -480,7 +480,7 @@
 	movhps	 -9 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -8 * SIZE(Y), %xmm6
@@ -489,7 +489,7 @@
 	movhps	 -7 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -6 * SIZE(Y), %xmm7
@@ -498,7 +498,7 @@
 	movhps	 -5 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -4 * SIZE(Y), %xmm6
@@ -507,7 +507,7 @@
 	movhps	 -3 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -2 * SIZE(Y), %xmm7
@@ -516,13 +516,13 @@
 	movhps	 -1 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -544,7 +544,7 @@
 	movhps	-13 * SIZE(X), %xmm5
 	movaps	-14 * SIZE(Y), %xmm7
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(Y), %xmm6
@@ -553,7 +553,7 @@
 	movhps	-11 * SIZE(X), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(Y), %xmm7
@@ -562,13 +562,13 @@
 	movhps	 -9 * SIZE(X), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -586,7 +586,7 @@
 	movhps	-15 * SIZE(X), %xmm4
 	movaps	-16 * SIZE(Y), %xmm6
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
@@ -596,7 +596,7 @@
 	movhps	-13 * SIZE(X), %xmm5
 	movaps	-14 * SIZE(Y), %xmm7
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -614,7 +614,7 @@
 	movhps	-15 * SIZE(X), %xmm4
 	movaps	-16 * SIZE(Y), %xmm6
 
-	pshufd	$0x4e,  %xmm6, %xmm3 
+	pshufd	$0x4e,  %xmm6, %xmm3
 	mulpd	%xmm4,  %xmm6
 	addpd	%xmm6,  %xmm0
 	mulpd	%xmm4,  %xmm3
@@ -647,7 +647,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(X), %xmm6
@@ -656,7 +656,7 @@
 	movhps	-11 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(X), %xmm7
@@ -668,7 +668,7 @@
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -8 * SIZE(X), %xmm6
@@ -677,7 +677,7 @@
 	movhps	 -7 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -6 * SIZE(X), %xmm7
@@ -690,7 +690,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -4 * SIZE(X), %xmm6
@@ -699,7 +699,7 @@
 	movhps	 -3 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -2 * SIZE(X), %xmm7
@@ -712,7 +712,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(X)
 #endif
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	  0 * SIZE(X), %xmm6
@@ -721,7 +721,7 @@
 	movhps	  1 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	  2 * SIZE(X), %xmm7
@@ -738,7 +738,7 @@
 	ALIGN_3
 
 .L32:
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(X), %xmm6
@@ -747,7 +747,7 @@
 	movhps	-11 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(X), %xmm7
@@ -756,7 +756,7 @@
 	movhps	 -9 * SIZE(Y), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -8 * SIZE(X), %xmm6
@@ -765,7 +765,7 @@
 	movhps	 -7 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -6 * SIZE(X), %xmm7
@@ -774,7 +774,7 @@
 	movhps	 -5 * SIZE(Y), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	 -4 * SIZE(X), %xmm6
@@ -783,7 +783,7 @@
 	movhps	 -3 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	 -2 * SIZE(X), %xmm7
@@ -792,13 +792,13 @@
 	movhps	 -1 * SIZE(Y), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -820,7 +820,7 @@
 	movhps	-13 * SIZE(Y), %xmm5
 	movaps	-14 * SIZE(X), %xmm7
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	movaps	-12 * SIZE(X), %xmm6
@@ -829,7 +829,7 @@
 	movhps	-11 * SIZE(Y), %xmm4
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	movaps	-10 * SIZE(X), %xmm7
@@ -838,13 +838,13 @@
 	movhps	 -9 * SIZE(Y), %xmm5
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -862,7 +862,7 @@
 	movhps	-15 * SIZE(Y), %xmm4
 	movaps	-16 * SIZE(X), %xmm6
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
@@ -872,7 +872,7 @@
 	movhps	-13 * SIZE(Y), %xmm5
 	movaps	-14 * SIZE(X), %xmm7
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -893,7 +893,7 @@
 	movhps	-15 * SIZE(Y), %xmm4
 	movaps	-16 * SIZE(X), %xmm6
 
-	pshufd	$0x4e,  %xmm6, %xmm3 
+	pshufd	$0x4e,  %xmm6, %xmm3
 	mulpd	%xmm4,  %xmm6
 	addpd	%xmm6,  %xmm0
 	mulpd	%xmm4,  %xmm3
@@ -939,7 +939,7 @@
 #endif
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -949,7 +949,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -959,7 +959,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -969,7 +969,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -979,7 +979,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -989,7 +989,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -999,7 +999,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1009,7 +1009,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1027,7 +1027,7 @@
 
 .L42:
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1037,7 +1037,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1047,7 +1047,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1057,7 +1057,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1067,7 +1067,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1077,7 +1077,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1087,7 +1087,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1097,7 +1097,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1116,7 +1116,7 @@
 	movaps	-16 * SIZE(Y), %xmm7
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1126,7 +1126,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1136,7 +1136,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1146,7 +1146,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1165,7 +1165,7 @@
 	movaps	-16 * SIZE(Y), %xmm7
 
 	movsd	%xmm7, %xmm6
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	movsd	%xmm5, %xmm4
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
@@ -1175,7 +1175,7 @@
 	addpd	%xmm3, %xmm1
 
 	movsd	%xmm6, %xmm7
-	pshufd	$0x4e,  %xmm7, %xmm3 
+	pshufd	$0x4e,  %xmm7, %xmm3
 	movsd	%xmm4,  %xmm5
 	mulpd	%xmm5,  %xmm7
 	addpd	%xmm7,  %xmm0
@@ -1193,7 +1193,7 @@
 	movlpd	-16 * SIZE(X), %xmm4
 	movlpd	-16 * SIZE(Y), %xmm6
 
-	pshufd	$0x4e,  %xmm6, %xmm3 
+	pshufd	$0x4e,  %xmm6, %xmm3
 	mulpd	%xmm4,  %xmm6
 	addpd	%xmm6,  %xmm0
 	mulpd	%xmm4,  %xmm3
@@ -1205,7 +1205,7 @@
 	SHUFPD_1 %xmm1, %xmm1
 	SHUFPD_1 %xmm2, %xmm2
 	SHUFPD_1 %xmm3, %xmm3
-	jmp	.L98	
+	jmp	.L98
 	ALIGN_3
 
 .L50:
@@ -1232,7 +1232,7 @@
 	ALIGN_3
 
 .L53:
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1244,7 +1244,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1256,7 +1256,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1268,7 +1268,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1280,7 +1280,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1292,7 +1292,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1304,7 +1304,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1316,7 +1316,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1333,7 +1333,7 @@
 	ALIGN_3
 
 .L54:
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1345,7 +1345,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1357,7 +1357,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1369,7 +1369,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1381,7 +1381,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1393,7 +1393,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1405,13 +1405,13 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -1436,7 +1436,7 @@
 	movhps	1 * SIZE(Y), %xmm7
 	addl	INCY, Y
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm6
@@ -1448,7 +1448,7 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	MOVLPS	0 * SIZE(Y), %xmm7
@@ -1460,13 +1460,13 @@
 	addl	INCX, X
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
 	addpd	%xmm3, %xmm1
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -1484,7 +1484,7 @@
 	movhps	1 * SIZE(Y), %xmm6
 	addl	INCY, Y
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3
@@ -1497,7 +1497,7 @@
 	movhps	1 * SIZE(Y), %xmm7
 	addl	INCY, Y
 
-	pshufd	$0x4e, %xmm7, %xmm3 
+	pshufd	$0x4e, %xmm7, %xmm3
 	mulpd	%xmm5, %xmm7
 	addpd	%xmm7, %xmm0
 	mulpd	%xmm5, %xmm3
@@ -1513,7 +1513,7 @@
 	MOVLPS	0 * SIZE(Y), %xmm6
 	movhps	1 * SIZE(Y), %xmm6
 
-	pshufd	$0x4e, %xmm6, %xmm3 
+	pshufd	$0x4e, %xmm6, %xmm3
 	mulpd	%xmm4, %xmm6
 	addpd	%xmm6, %xmm0
 	mulpd	%xmm4, %xmm3

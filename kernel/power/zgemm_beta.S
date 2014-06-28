@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define	M	r3
 #define	N	r4
 #define	C	r10
@@ -86,11 +86,11 @@
 #endif
 #endif
 
-	
+
 	slwi	LDC, LDC, ZBASE_SHIFT
 
 	lfs	f0,    16(SP)
-	
+
 	fmr	ALPHA_R, f1
 	fmr	ALPHA_I, f2
 
@@ -138,7 +138,7 @@ LL(12):
 	addi	CO1, CO1,  16 * SIZE
 	bdnz	LL(12)
 	.align 4
-	
+
 LL(15):
 	andi.	r0,  M,  7
 	mtspr	CTR, r0
@@ -211,7 +211,7 @@ LL(22):
 	dcbtst	PRE, CO1
 	bdnz	LL(22)
 	.align 4
-	
+
 LL(25):
 	andi.	r0,  M,  3
 	mtspr	CTR, r0

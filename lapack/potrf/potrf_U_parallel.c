@@ -55,7 +55,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -63,11 +63,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 
   if (args -> nthreads  == 1) {
-    info = POTRF_U_SINGLE(args, NULL, NULL, sa, sb, 0); 
+    info = POTRF_U_SINGLE(args, NULL, NULL, sa, sb, 0);
     return info;
   }
 
@@ -91,7 +91,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   blocking = (n / 2 + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
   if (blocking > GEMM_Q) blocking = GEMM_Q;
-    
+
   for (i = 0; i < n; i += blocking) {
     bk = n - i;
     if (bk > blocking) bk = blocking;
@@ -108,15 +108,15 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       newarg.n = n - i - bk;
       newarg.a = a + (i +  i       * lda) * COMPSIZE;
       newarg.b = a + (i + (i + bk) * lda) * COMPSIZE;
-      
+
       gemm_thread_n(mode | BLAS_TRANSA_T,
 		    &newarg, NULL, NULL, (void *)TRSM_LCUN, sa, sb, args -> nthreads);
-      
+
       newarg.n = n - i - bk;
       newarg.k = bk;
       newarg.a = a + ( i       + (i + bk) * lda) * COMPSIZE;
       newarg.c = a + ((i + bk) + (i + bk) * lda) * COMPSIZE;
-      
+
 #ifndef USE_SIMPLE_THREADED_LEVEL3
       HERK_THREAD_UC(&newarg, NULL, NULL, sa, sb, 0);
 #else

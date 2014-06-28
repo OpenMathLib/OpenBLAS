@@ -409,7 +409,7 @@ LL(11):
 
 	LFD	a16, 3 * SIZE(AO4)
 
-	LFD	a5, ALPHA 
+	LFD	a5, ALPHA
 
 	FMUL	xsum1, atemp1, a1
 	FMUL	xsum2, atemp1, a2
@@ -522,7 +522,7 @@ LL(12):
 	FMADD	y04, atemp2, a8,  y04
 #	DCBT(X, PREX)
 	NOP2
-	
+
 	FMADD	xsum1, xtemp3, a3,  xsum1
 	LFD	a3,  6 * SIZE(AO1)
 	FMADD	y01, atemp3, a9,  y01
@@ -1211,7 +1211,7 @@ LL(18):
 	LFD	y03,  2 * SIZE(YY)
 	LFD	y04,  3 * SIZE(YY)
 
-	LFD	xtemp1, ALPHA 
+	LFD	xtemp1, ALPHA
 
 	FMUL	xsum1, xtemp1, xsum1
 	FMUL	xsum2, xtemp1, xsum2
@@ -1254,7 +1254,7 @@ LL(20):
 	LFD	a2,  1 * SIZE(AO1)
 	LFD	a6,  1 * SIZE(AO2)
 
-	LFD	a5, ALPHA 
+	LFD	a5, ALPHA
 
 	FMUL	xsum1, atemp1, a1
 	FMUL	xsum2, atemp1, a2
@@ -1288,7 +1288,7 @@ LL(28):
 	LFD	y01,  0 * SIZE(YY)
 	LFD	y02,  1 * SIZE(YY)
 
-	LFD	xtemp1, ALPHA 
+	LFD	xtemp1, ALPHA
 
 	FMUL	xsum1, xtemp1, xsum1
 	FMUL	xsum2, xtemp1, xsum2
@@ -1314,7 +1314,7 @@ LL(30):
 
 	LFD	atemp1, 0 * SIZE(XX)
 	LFD	a1,     0 * SIZE(AO1)
-	LFD	xtemp1, ALPHA 
+	LFD	xtemp1, ALPHA
 	LFD	y01,    0 * SIZE(YY)
 
 	FMUL	xsum1, atemp1, a1

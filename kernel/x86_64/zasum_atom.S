@@ -38,20 +38,20 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
 
 #define I	%rax
-	
+
 #include "l1param.h"
 
 	PROLOGUE
 	PROFCODE
 
 	SAVEREGISTERS
-	
+
 	xorps	%xmm0, %xmm0
 
 	testq	M, M
@@ -102,7 +102,7 @@
 	decq	I
 	jle	.L11
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -257,7 +257,7 @@
 	pshufd	$0x4e, %xmm5, %xmm13
 	addsd	%xmm5, %xmm2
 	addsd	%xmm13, %xmm3
-	ALIGN_3	
+	ALIGN_3
 
 .L14:
 	testq	$2, M
@@ -270,8 +270,8 @@
 	pshufd	$0x4e, %xmm4, %xmm5
 	addsd	%xmm4, %xmm2
 	addsd	%xmm5, %xmm3
-	ALIGN_3	
-	
+	ALIGN_3
+
 .L15:
 	testq	$1, M
 	je	.L998
@@ -303,7 +303,7 @@
 	decq	I
 	jle	.L23
 	ALIGN_4
-	
+
 .L22:
 	andps	%xmm15, %xmm4
 	addq	INCX, X
@@ -379,7 +379,7 @@
 	addsd	%xmm6,  %xmm2
 	andps	%xmm15, %xmm7
 	addsd	%xmm7,  %xmm3
-	ALIGN_3	
+	ALIGN_3
 
 .L26:
 	testq	$1, M
@@ -404,7 +404,7 @@
 
 .L999:
 	RESTOREREGISTERS
-	
+
 	ret
 
 	EPILOGUE

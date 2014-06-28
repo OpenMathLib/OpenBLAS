@@ -113,5 +113,5 @@ int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FL
 	return(0);
 
 }
-	
+
 

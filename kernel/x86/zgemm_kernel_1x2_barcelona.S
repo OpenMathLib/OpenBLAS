@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -219,7 +219,7 @@
 
 #ifndef LEFT
 	negl	%eax
-#endif	
+#endif
 
 	movl	%eax, KK
 #endif
@@ -239,7 +239,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	GEMM_DEFAULT_Q * GEMM_DEFAULT_UNROLL_N * SIZE(B), %eax
 	movl	%eax, BX
@@ -262,7 +262,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AO, %eax, 2), AO
 	leal	(B,  %eax, 4), BO
-#endif	
+#endif
 
 	movl	BX, %eax
 
@@ -287,7 +287,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -496,7 +496,7 @@
 	addl	$2 * SIZE, CO		# coffset += 4
 	decl	I			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L99:
 #if defined(TRMMKERNEL) && !defined(LEFT)
@@ -521,7 +521,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	C, CO
 	movl	A, AO
@@ -542,7 +542,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AO, %eax, 2), AO
 	leal	(B,  %eax, 2), BO
-#endif	
+#endif
 
 	movddup	-16 * SIZE(AO), %xmm0
 	pxor	%xmm4, %xmm4
@@ -558,7 +558,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -713,7 +713,7 @@
 	addl	$2 * SIZE, CO		# coffset += 4
 	decl	I			# i --
 	jg	.L110
-	ALIGN_4	
+	ALIGN_4
 
 .L500:
 	popl	%ebx

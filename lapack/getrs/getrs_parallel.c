@@ -51,14 +51,14 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   }
 
 #ifndef TRANS
-  LASWP_PLUS(n, 1, args -> m, ZERO, 
+  LASWP_PLUS(n, 1, args -> m, ZERO,
 	     (FLOAT *)args -> b + off * args -> ldb * COMPSIZE, args -> ldb, NULL, 0, args -> c, 1);
   TRSM_LNLU (args, range_m, range_n, sa, sb, 0);
   TRSM_LNUN (args, range_m, range_n, sa, sb, 0);
 #else
   TRSM_LTUN  (args, range_m, range_n, sa, sb, 0);
   TRSM_LTLU  (args, range_m, range_n, sa, sb, 0);
-  LASWP_MINUS(n, 1, args -> m, ZERO, 
+  LASWP_MINUS(n, 1, args -> m, ZERO,
 	      (FLOAT *)args -> b + off * args -> ldb * COMPSIZE, args -> ldb, NULL, 0, args -> c, -1);
 #endif
 
@@ -81,7 +81,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
       mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 
       gemm_thread_n(mode, args, NULL, NULL, inner_thread, sa, sb,  args -> nthreads);
     }
@@ -97,7 +97,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       mode  =  BLAS_DOUBLE  | BLAS_REAL | (1 << BLAS_TRANSA_SHIFT);
 #else
       mode  =  BLAS_SINGLE  | BLAS_REAL | (1 << BLAS_TRANSA_SHIFT);
-#endif  
+#endif
 
       gemm_thread_n(mode, args, NULL, NULL, inner_thread, sa, sb,  args -> nthreads);
     }

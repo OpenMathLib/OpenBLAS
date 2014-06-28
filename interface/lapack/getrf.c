@@ -53,14 +53,14 @@
 int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint *Info){
 
   blas_arg_t args;
-   
+
   blasint info;
   FLOAT *buffer;
 #ifdef PPC440
   extern
 #endif
   FLOAT *sa, *sb;
-  
+
   PRINT_DEBUG_NAME;
 
   args.m    = *M;

@@ -42,7 +42,7 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha, FLOAT *a, BLASLONG lda, FLO
 
 	if ( rows <= 0     )  return(0);
 	if ( cols <= 0     )  return(0);
-	
+
 	aptr = a;
 	bptr = b;
 
@@ -52,10 +52,10 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha, FLOAT *a, BLASLONG lda, FLO
 		{
 			for(j=0; j<cols; j++)
 			{
-				bptr[j] = 0.0; 
+				bptr[j] = 0.0;
 			}
 			bptr += ldb;
-		}	
+		}
 		return(0);
 	}
 
@@ -65,11 +65,11 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha, FLOAT *a, BLASLONG lda, FLO
 		{
 			for(j=0; j<cols; j++)
 			{
-				bptr[j] = aptr[j]; 
+				bptr[j] = aptr[j];
 			}
 			aptr += lda;
 			bptr += ldb;
-		}	
+		}
 		return(0);
 	}
 
@@ -77,14 +77,14 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha, FLOAT *a, BLASLONG lda, FLO
 	{
 		for(j=0; j<cols; j++)
 		{
-			bptr[j] = alpha * aptr[j]; 
+			bptr[j] = alpha * aptr[j];
 		}
 		aptr += lda;
 		bptr += ldb;
-	}	
+	}
 
 	return(0);
 
 }
-	
+
 

@@ -75,7 +75,7 @@ static int (*hpr2_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASL
 
 #ifndef CBLAS
 
-void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, 
+void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 	 FLOAT  *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *a){
 
   char uplo_arg = *UPLO;
@@ -99,7 +99,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   if (uplo_arg  == 'U') uplo  = 0;
   if (uplo_arg  == 'L') uplo  = 1;
- 
+
   info = 0;
 
   if (incy == 0)          info =  7;
@@ -111,7 +111,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
-  
+
 #else
 
 void CNAME(enum CBLAS_ORDER order,
@@ -139,7 +139,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (order == CblasColMajor) {
     if (Uplo == CblasUpper)         uplo  = 0;
     if (Uplo == CblasLower)         uplo  = 1;
-    
+
     info = -1;
 
     if (incy == 0)          info =  7;
@@ -188,7 +188,7 @@ void CNAME(enum CBLAS_ORDER order,
 #endif
 
     (hpr2[uplo])(n, alpha_r, alpha_i, x, incx, y, incy, a, buffer);
-  
+
 #ifdef SMP
   } else {
 

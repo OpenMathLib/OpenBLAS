@@ -43,7 +43,7 @@
 #endif
 
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *C, FLOAT *S){
-  
+
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   BLASLONG incy = *INCY;
@@ -68,5 +68,5 @@ void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *C
   IDEBUG_END;
 
   return;
-  
+
 }

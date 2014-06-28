@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -57,7 +57,7 @@
 #define KK	 4 + STACK(%esp)
 #define KKK	 8 + STACK(%esp)
 #define AORIG	12 + STACK(%esp)
-	
+
 #if defined(PENRYN) || defined(DUNNINGTON)
 #define PREFETCH	prefetcht1
 #define PREFETCHSIZE 84
@@ -98,12 +98,12 @@
 	movl	OFFSET, %eax
 #ifdef RN
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 
 	movl	M,  %ebx
 	testl	%ebx, %ebx
-	jle	.L999	
+	jle	.L999
 
 	subl	$-16 * SIZE, A
 	subl	$-16 * SIZE, B
@@ -164,7 +164,7 @@
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -194,7 +194,7 @@ L110:
 	movl	KK, %eax
 	sall	$ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	-16 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -466,7 +466,7 @@ L118:
 #ifdef RT
 	subl	$1, KK
 #endif
-	ALIGN_4	
+	ALIGN_4
 
 .L100:
 	movl	N, %eax
@@ -503,7 +503,7 @@ L118:
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -533,7 +533,7 @@ L118:
 	movl	KK, %eax
 	sall	$1 + ZBASE_SHIFT, %eax
 	addl	%eax, BB
-#endif	
+#endif
 
 	movaps	-16 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -932,7 +932,7 @@ L118:
 
 	decl	%ebx			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L99:
 #ifdef LN

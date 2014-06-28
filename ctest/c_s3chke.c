@@ -26,9 +26,9 @@ void chkxer(void) {
 
 void F77_s3chke(char *rout) {
    char *sf = ( rout ) ;
-   float  A[2] = {0.0,0.0}, 
-          B[2] = {0.0,0.0}, 
-          C[2] = {0.0,0.0}, 
+   float  A[2] = {0.0,0.0},
+          B[2] = {0.0,0.0},
+          C[2] = {0.0,0.0},
           ALPHA=0.0, BETA=0.0;
    extern int cblas_info, cblas_lerr, cblas_ok;
    extern int RowMajorStrg;
@@ -39,22 +39,22 @@ void F77_s3chke(char *rout) {
       cblas_xerbla(cblas_info,cblas_rout,"");
       F77_xerbla(cblas_rout,&cblas_info);
    }
- 
+
    cblas_ok = TRUE ;
    cblas_lerr = PASSED ;
 
    if (strncmp( sf,"cblas_sgemm"   ,11)==0) {
       cblas_rout = "cblas_sgemm"   ;
       cblas_info = 1;
-      cblas_sgemm( INVALID,  CblasNoTrans, CblasNoTrans, 0, 0, 0, 
+      cblas_sgemm( INVALID,  CblasNoTrans, CblasNoTrans, 0, 0, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
       cblas_info = 1;
-      cblas_sgemm( INVALID,  CblasNoTrans, CblasTrans, 0, 0, 0, 
+      cblas_sgemm( INVALID,  CblasNoTrans, CblasTrans, 0, 0, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
       cblas_info = 1;
-      cblas_sgemm( INVALID,  CblasTrans, CblasNoTrans, 0, 0, 0, 
+      cblas_sgemm( INVALID,  CblasTrans, CblasNoTrans, 0, 0, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
       cblas_info = 1;

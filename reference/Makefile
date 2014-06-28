@@ -37,7 +37,7 @@ SBLAS2OBJS    = \
 
 SBLAS3OBJS    = \
 		sgemmf.$(SUFFIX) ssymmf.$(SUFFIX) strmmf.$(SUFFIX) \
-		strsmf.$(SUFFIX) ssyrkf.$(SUFFIX) ssyr2kf.$(SUFFIX) 
+		strsmf.$(SUFFIX) ssyrkf.$(SUFFIX) ssyr2kf.$(SUFFIX)
 
 DBLAS1OBJS    = \
 		daxpyf.$(SUFFIX) dswapf.$(SUFFIX) \
@@ -59,7 +59,7 @@ DBLAS2OBJS    = \
 
 DBLAS3OBJS    = \
 		dgemmf.$(SUFFIX) dsymmf.$(SUFFIX) dtrmmf.$(SUFFIX) \
-		dtrsmf.$(SUFFIX) dsyrkf.$(SUFFIX) dsyr2kf.$(SUFFIX) 
+		dtrsmf.$(SUFFIX) dsyrkf.$(SUFFIX) dsyr2kf.$(SUFFIX)
 
 CBLAS1OBJS    = \
 		caxpyf.$(SUFFIX) caxpycf.$(SUFFIX) cswapf.$(SUFFIX) \
@@ -140,7 +140,7 @@ DBLASOBJS	+= \
 	dpotf2f.$(SUFFIX) dpotrff.$(SUFFIX) dtrti2f.$(SUFFIX) dtrtrif.$(SUFFIX) \
 	dlaswpf.$(SUFFIX) dgetrsf.$(SUFFIX) dgesvf.$(SUFFIX)  dpotrif.$(SUFFIX) \
 
-QBLASOBJS	+= 
+QBLASOBJS	+=
 #	\
 	qgetf2f.$(SUFFIX) qgetrff.$(SUFFIX) qlauu2f.$(SUFFIX) qlauumf.$(SUFFIX) \
 	qpotf2f.$(SUFFIX) qpotrff.$(SUFFIX) qtrti2f.$(SUFFIX) qtrtrif.$(SUFFIX) \
@@ -156,7 +156,7 @@ ZBLASOBJS	+= \
 	zpotf2f.$(SUFFIX) zpotrff.$(SUFFIX) ztrti2f.$(SUFFIX) ztrtrif.$(SUFFIX) \
 	zlaswpf.$(SUFFIX) zgetrsf.$(SUFFIX) zgesvf.$(SUFFIX)  zpotrif.$(SUFFIX) \
 
-XBLASOBJS	+= 
+XBLASOBJS	+=
 #	\
 	xgetf2f.$(SUFFIX) xgetrff.$(SUFFIX) xlauu2f.$(SUFFIX) xlauumf.$(SUFFIX) \
 	xpotf2f.$(SUFFIX) xpotrff.$(SUFFIX) xtrti2f.$(SUFFIX) xtrtrif.$(SUFFIX) \

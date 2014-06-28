@@ -75,7 +75,7 @@
         .mask 0x4000000,-16
         ldah	$29,    0($27)		!gpdisp!1
         lda	$29,    0($29)		!gpdisp!1
- 
+
 	lda	$sp,  -16($sp)
 	ldq	$27, sqrt($29)		!literal!2
 	stq	$26,    0($sp)
@@ -85,7 +85,7 @@
 #else
 	PROFCODE
 #endif
-	
+
 	fclr	a0
 	sll	INCX, ZBASE_SHIFT, INCX
 	fclr	a1

@@ -32,9 +32,9 @@
 
  GotoBLAS2 build complete.
 
-  OS               ... Linux             
-  Architecture     ... x86_64               
-  BINARY           ... 64bit                 
+  OS               ... Linux
+  Architecture     ... x86_64
+  BINARY           ... 64bit
   C compiler       ... GCC  (command line : gcc)
   Fortran compiler ... PATHSCALE  (command line : pathf90)
   Library Name     ... libgoto_barcelonap-r1.27.a (Multi threaded; Max

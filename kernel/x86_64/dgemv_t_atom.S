@@ -47,12 +47,12 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	 64
-	
+
 #define OLD_INCX	  8 + STACKSIZE(%rsp)
 #define OLD_Y		 16 + STACKSIZE(%rsp)
 #define OLD_INCY	 24 + STACKSIZE(%rsp)
 #define OLD_BUFFER	 32 + STACKSIZE(%rsp)
-	
+
 #define M	  %rdi
 #define N	  %rsi
 #define A	  %rcx
@@ -66,7 +66,7 @@
 #else
 
 #define STACKSIZE	256
-	
+
 #define OLD_A		 40 + STACKSIZE(%rsp)
 #define OLD_LDA		 48 + STACKSIZE(%rsp)
 #define OLD_X		 56 + STACKSIZE(%rsp)
@@ -95,7 +95,7 @@
 #define Y1    %r15
 
 #define ALPHA %xmm3
-	
+
 	PROLOGUE
 	PROFCODE
 
@@ -130,7 +130,7 @@
 	movq	OLD_Y,      Y
 	movq	OLD_INCY,   INCY
 	movq	OLD_BUFFER, BUFFER
-	
+
 	leaq	(,INCX, SIZE), INCX
 	leaq	(,INCY, SIZE), INCY
 	leaq	(, LDA, SIZE), LDA

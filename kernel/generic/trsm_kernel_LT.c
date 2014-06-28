@@ -101,7 +101,7 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
   for (i = 0; i < m; i++) {
 
     aa = *(a + i);
-    
+
     for (j = 0; j < n; j ++) {
       bb = *(c + i + j * ldc);
       bb *= aa;
@@ -134,7 +134,7 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
 
     aa1 = *(a + i * 2 + 0);
     aa2 = *(a + i * 2 + 1);
-    
+
     for (j = 0; j < n; j ++) {
       bb1 = *(c + i * 2 + 0 + j * ldc);
       bb2 = *(c + i * 2 + 1 + j * ldc);
@@ -191,24 +191,24 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
   j = (n >> GEMM_UNROLL_N_SHIFT);
 
   while (j > 0) {
-    
+
     kk = offset;
     aa = a;
     cc = c;
-    
+
     i = (m >> GEMM_UNROLL_M_SHIFT);
-    
+
     while (i > 0) {
 
 	if (kk > 0) {
-	  GEMM_KERNEL(GEMM_UNROLL_M, GEMM_UNROLL_N, kk, dm1, 
+	  GEMM_KERNEL(GEMM_UNROLL_M, GEMM_UNROLL_N, kk, dm1,
 #ifdef COMPLEX
 		      ZERO,
 #endif
-		      aa, b, cc, ldc); 
+		      aa, b, cc, ldc);
 	}
 
-	solve(GEMM_UNROLL_M, GEMM_UNROLL_N, 
+	solve(GEMM_UNROLL_M, GEMM_UNROLL_N,
 	      aa + kk * GEMM_UNROLL_M * COMPSIZE,
 	      b  + kk * GEMM_UNROLL_N * COMPSIZE,
 	      cc, ldc);
@@ -218,19 +218,19 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
       kk += GEMM_UNROLL_M;
       i --;
     }
-    
+
     if (m & (GEMM_UNROLL_M - 1)) {
       i = (GEMM_UNROLL_M >> 1);
       while (i > 0) {
 	if (m & i) {
 	    if (kk > 0) {
-	      GEMM_KERNEL(i, GEMM_UNROLL_N, kk, dm1, 
+	      GEMM_KERNEL(i, GEMM_UNROLL_N, kk, dm1,
 #ifdef COMPLEX
 			  ZERO,
 #endif
-			  aa, b, cc, ldc); 
+			  aa, b, cc, ldc);
 	    }
-	  solve(i, GEMM_UNROLL_N, 
+	  solve(i, GEMM_UNROLL_N,
 		aa + kk * i             * COMPSIZE,
 		b  + kk * GEMM_UNROLL_N * COMPSIZE,
 		cc, ldc);
@@ -242,39 +242,39 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
 	i >>= 1;
       }
     }
-    
+
     b += GEMM_UNROLL_N * k   * COMPSIZE;
     c += GEMM_UNROLL_N * ldc * COMPSIZE;
     j --;
     jj += GEMM_UNROLL_M;
   }
-  
+
   if (n & (GEMM_UNROLL_N - 1)) {
 
     j = (GEMM_UNROLL_N >> 1);
     while (j > 0) {
       if (n & j) {
-	
+
 	kk = offset;
 	aa = a;
 	cc = c;
-	
+
 	i = (m >> GEMM_UNROLL_M_SHIFT);
-	
+
 	while (i > 0) {
 	  if (kk > 0) {
-	    GEMM_KERNEL(GEMM_UNROLL_M, j, kk, dm1, 
+	    GEMM_KERNEL(GEMM_UNROLL_M, j, kk, dm1,
 #ifdef COMPLEX
 			ZERO,
 #endif
 			aa,
-			b, 
+			b,
 			cc,
-			ldc); 
+			ldc);
 	  }
 
-	  solve(GEMM_UNROLL_M, j, 
-		aa + kk * GEMM_UNROLL_M * COMPSIZE, 
+	  solve(GEMM_UNROLL_M, j,
+		aa + kk * GEMM_UNROLL_M * COMPSIZE,
 		b  + kk * j             * COMPSIZE, cc, ldc);
 
 	  aa += GEMM_UNROLL_M * k * COMPSIZE;
@@ -282,24 +282,24 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
 	  kk += GEMM_UNROLL_M;
 	  i --;
 	}
-	
+
 	if (m & (GEMM_UNROLL_M - 1)) {
 	  i = (GEMM_UNROLL_M >> 1);
 	  while (i > 0) {
 	    if (m & i) {
 	      if (kk > 0) {
-		GEMM_KERNEL(i, j, kk, dm1, 
+		GEMM_KERNEL(i, j, kk, dm1,
 #ifdef COMPLEX
 			    ZERO,
 #endif
 			    aa,
-			    b, 
+			    b,
 			    cc,
-			    ldc); 
+			    ldc);
 	      }
 
-	      solve(i, j, 
-		    aa + kk * i * COMPSIZE, 
+	      solve(i, j,
+		    aa + kk * i * COMPSIZE,
 		    b  + kk * j * COMPSIZE, cc, ldc);
 
 	      aa += i * k * COMPSIZE;
@@ -309,7 +309,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
 	    i >>= 1;
 	  }
 	}
-	
+
 	b += j * k   * COMPSIZE;
 	c += j * ldc * COMPSIZE;
       }

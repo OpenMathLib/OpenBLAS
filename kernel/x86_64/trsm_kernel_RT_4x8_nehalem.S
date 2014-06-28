@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define OLD_K	%rdx
@@ -51,7 +51,7 @@
 #define B	%r8
 #define C	%r9
 #define LDC	%r10
-	
+
 #define I	%r11
 #define AO	%rdi
 #define BO	%rsi
@@ -94,7 +94,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 
 	movq	%rbx,  0(%rsp)
@@ -176,7 +176,7 @@
 	movq	K, %rax
 	salq	$BASE_SHIFT, %rax
 	subq	%rax, B
-       
+
 	subq	LDC, C
 #endif
 
@@ -189,7 +189,7 @@
 	movq	OFFSET, %rax
 	addq	M, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, %rax
@@ -217,7 +217,7 @@
 	leaq	(B,  %rax, 1), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movaps	-32 * SIZE(AO), %xmm0
@@ -236,7 +236,7 @@
 	jle	.L105
 	ALIGN_3
 
-.L102:	
+.L102:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	addps	%xmm1, %xmm8
@@ -466,7 +466,7 @@
 	decq	I
 	BRANCH
 	jg	.L101
-	ALIGN_4	
+	ALIGN_4
 
 .L110:
 	testq	$2, M
@@ -487,7 +487,7 @@
 	leaq	(B,  %rax, 1), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movddup	-32 * SIZE(AO), %xmm0
@@ -504,7 +504,7 @@
 	jle	.L115
 	ALIGN_3
 
-.L112:	
+.L112:
 	addps	%xmm1, %xmm8
 	movss	-32 * SIZE(BO), %xmm1
 	unpcklps %xmm1, %xmm1
@@ -687,7 +687,7 @@
 	leaq	(B,  %rax, 1), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm2, %xmm2
 	movss	-32 * SIZE(AO), %xmm0
@@ -704,7 +704,7 @@
 	jle	.L125
 	ALIGN_3
 
-.L122:	
+.L122:
 	addss	%xmm2, %xmm8
 	movss	-32 * SIZE(BO), %xmm2
 	mulss	%xmm0, %xmm2
@@ -830,8 +830,8 @@
        salq	$BASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L129:
 #ifdef LN
        leaq	(, K, SIZE), %rax
@@ -864,7 +864,7 @@
        movq	K, %rax
        salq	$1 + BASE_SHIFT, %rax
        subq	%rax, B
-       
+
        leaq	(, LDC, 2), %rax
        subq	%rax, C
 #endif
@@ -879,7 +879,7 @@
 	movq	OFFSET, %rax
 	addq	M, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, %rax
@@ -907,7 +907,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movaps	-32 * SIZE(AO), %xmm0
@@ -930,7 +930,7 @@
 	jle	.L75
 	ALIGN_3
 
-.L72:	
+.L72:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	addps	%xmm1, %xmm8
@@ -1211,7 +1211,7 @@
 	decq	I
 	BRANCH
 	jg	.L71
-	ALIGN_4	
+	ALIGN_4
 
 .L80:
 	testq	$2, M
@@ -1232,7 +1232,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movddup	-32 * SIZE(AO), %xmm0
@@ -1252,7 +1252,7 @@
 	jle	.L85
 	ALIGN_3
 
-.L82:	
+.L82:
 	addps	%xmm1, %xmm8
 	movsd	-32 * SIZE(BO), %xmm1
 	unpcklps    %xmm1, %xmm1
@@ -1332,7 +1332,7 @@
 
 #if defined(LN) || defined(LT)
 	pshufd	$0xd8, %xmm8, %xmm8
-	
+
 	movaps	-32 * SIZE(BO), %xmm0
 #else
 	movaps	-32 * SIZE(AO), %xmm0
@@ -1437,7 +1437,7 @@
        salq	$1 + BASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
+	ALIGN_4
 
 .L90:
 	testq	$1, M
@@ -1458,7 +1458,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm2, %xmm2
 	movsd	-32 * SIZE(AO), %xmm0
@@ -1476,7 +1476,7 @@
 	jle	.L95
 	ALIGN_3
 
-.L92:	
+.L92:
 	pshufd	$0x00, %xmm0, %xmm1
 	addps	%xmm2, %xmm8
 	movsd	-32 * SIZE(BO), %xmm2
@@ -1639,8 +1639,8 @@
        salq	$BASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L99:
 #ifdef LN
        leaq	(, K, SIZE), %rax
@@ -1673,7 +1673,7 @@
        movq	K, %rax
        salq	$2 + BASE_SHIFT, %rax
        subq	%rax, B
-       
+
        leaq	(, LDC, 4), %rax
        subq	%rax, C
 #endif
@@ -1688,7 +1688,7 @@
 	movq	OFFSET, %rax
 	addq	M, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, %rax
@@ -1716,7 +1716,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movaps	-32 * SIZE(AO), %xmm0
@@ -1744,7 +1744,7 @@
 	jle	.L45
 	ALIGN_3
 
-.L42:	
+.L42:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	addps	%xmm1, %xmm8
@@ -2153,7 +2153,7 @@
 	decq	I
 	BRANCH
 	jg	.L41
-	ALIGN_4	
+	ALIGN_4
 
 .L50:
 	testq	$2, M
@@ -2174,7 +2174,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movddup	-32 * SIZE(AO), %xmm0
@@ -2194,7 +2194,7 @@
 	jle	.L55
 	ALIGN_3
 
-.L52:	
+.L52:
 	addps	%xmm1, %xmm8
 	pshufd	$0x50, %xmm5, %xmm1
 	mulps	%xmm0, %xmm1
@@ -2292,7 +2292,7 @@
 	movaps	%xmm8, %xmm4
 	shufps	$0x88, %xmm9, %xmm8
 	shufps	$0xdd, %xmm9, %xmm4
-	
+
 	movaps	-32 * SIZE(BO), %xmm0
 	movaps	-28 * SIZE(BO), %xmm1
 
@@ -2471,7 +2471,7 @@
        salq	$1 + BASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
+	ALIGN_4
 
 .L60:
 	testq	$1, M
@@ -2492,7 +2492,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm2, %xmm2
 	movsd	-32 * SIZE(AO), %xmm0
@@ -2510,7 +2510,7 @@
 	jle	.L65
 	ALIGN_3
 
-.L62:	
+.L62:
 	pshufd	$0x00, %xmm0, %xmm1
 	addps	%xmm2, %xmm8
 	movaps	-32 * SIZE(BO), %xmm2
@@ -2741,8 +2741,8 @@
        salq	$BASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L69:
 #ifdef LN
        leaq	(, K, SIZE), %rax
@@ -2779,7 +2779,7 @@
        movq	K, %rax
        salq	$3 + BASE_SHIFT, %rax
        subq	%rax, B
-       
+
        leaq	(, LDC, 8), %rax
        subq	%rax, C
 #endif
@@ -2794,7 +2794,7 @@
 	movq	OFFSET, %rax
 	addq	M, %rax
 	movq	%rax, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, %rax
@@ -2826,7 +2826,7 @@
 	leaq	(B,  %rax, 8), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	prefetchnta	 -32 * SIZE(BB)
 	subq		 $-16 * SIZE, BB
@@ -2868,7 +2868,7 @@
 	jle	.L15
 	ALIGN_3
 
-.L12:	
+.L12:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	addps	%xmm1, %xmm12
@@ -3670,7 +3670,7 @@
 	decq	I
 	BRANCH
 	jg	.L11
-	ALIGN_4	
+	ALIGN_4
 
 .L20:
 	testq	$2, M
@@ -3691,7 +3691,7 @@
 	leaq	(B,  %rax, 8), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movddup	-32 * SIZE(AO), %xmm0
@@ -3716,7 +3716,7 @@
 	jle	.L25
 	ALIGN_3
 
-.L22:	
+.L22:
 	addps	%xmm1, %xmm8
 	pshufd	$0x50, %xmm5, %xmm1
 	mulps	%xmm0, %xmm1
@@ -3861,7 +3861,7 @@
 	movaps	%xmm8, %xmm4
 	shufps	$0x88, %xmm9, %xmm8
 	shufps	$0xdd, %xmm9, %xmm4
-	
+
 	movaps	%xmm10, %xmm5
 	shufps	$0x88, %xmm11, %xmm10
 	shufps	$0xdd, %xmm11, %xmm5
@@ -4284,7 +4284,7 @@
        salq	$1 + BASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
+	ALIGN_4
 
 .L30:
 	testq	$1, M
@@ -4305,7 +4305,7 @@
 	leaq	(B,  %rax, 8), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm2, %xmm2
 	movsd	-32 * SIZE(AO), %xmm0
@@ -4324,7 +4324,7 @@
 	jle	.L35
 	ALIGN_3
 
-.L32:	
+.L32:
 	pshufd	$0x00, %xmm0, %xmm1
 	addps	%xmm2, %xmm8
 	movaps	-32 * SIZE(BO), %xmm2
@@ -4794,8 +4794,8 @@
        salq	$BASE_SHIFT, %rax
        addq	%rax, AORIG
 #endif
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L39:
 #ifdef LN
        leaq	(, K, SIZE), %rax

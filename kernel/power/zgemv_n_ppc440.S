@@ -82,7 +82,7 @@
 #define	INCY	r7
 #endif
 #endif
-	
+
 #define I	r11
 #define	J	r12
 
@@ -1241,7 +1241,7 @@ LL(37):
 	STFDU	y01, 1 * SIZE(Y2)
 	STFDU	y02, 1 * SIZE(Y2)
 	.align 4
-	
+
 LL(990):
 	cmpi	cr0, 0, INCY, SIZE
 	beq	LL(999)

@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS     0
-	
+
 #define STACK_N		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -75,8 +75,8 @@
 	movl	(INCY),INCY		# INCY
 #endif
 
-	leal	(, INCX, SIZE), INCX	
-	leal	(, INCY, SIZE), INCY	
+	leal	(, INCX, SIZE), INCX
+	leal	(, INCY, SIZE), INCY
 
 	xorps	%xmm0, %xmm0
 	xorps	%xmm1, %xmm1
@@ -1297,13 +1297,13 @@
 #elif defined(HAVE_SSE2)
 	movhlps	%xmm0, %xmm1
 	addps	%xmm1, %xmm0
-	
+
 	PSHUFD2($1, %xmm0, %xmm1)
 	addss	 %xmm1, %xmm0
 #else
 	movhlps	%xmm0, %xmm1
 	addps	%xmm1, %xmm0
-	
+
 	movaps	%xmm0, %xmm1
 	shufps	$1, %xmm0, %xmm0
 	addss	 %xmm1, %xmm0
