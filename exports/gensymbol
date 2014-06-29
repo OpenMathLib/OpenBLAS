@@ -22,7 +22,9 @@
 	       zhbmv,zhemm,zhemv,zher2,zher2k,zher,zherk,zhpmv,zhpr2,
 	       zhpr,zrotg,zscal,zswap,zsymm,zsyr2k,zsyrk,ztbmv,
 	       ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv, zsymv,
-	       xerbla);
+	       xerbla,
+	       saxpby,daxpby,caxpby,zaxpby
+	       );
 
 @cblasobjs  = (
 	       cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
@@ -49,7 +51,9 @@
 	       cblas_zhemv, cblas_zher2, cblas_zher2k, cblas_zher, cblas_zherk, cblas_zhpmv, cblas_zhpr2,
 	       cblas_zhpr, cblas_zscal, cblas_zswap, cblas_zsymm, cblas_zsyr2k, cblas_zsyrk,
 	       cblas_ztbmv, cblas_ztbsv, cblas_ztpmv, cblas_ztpsv, cblas_ztrmm, cblas_ztrmv, cblas_ztrsm,
-	       cblas_ztrsv, cblas_cdotc_sub, cblas_cdotu_sub, cblas_zdotc_sub, cblas_zdotu_sub );
+	       cblas_ztrsv, cblas_cdotc_sub, cblas_cdotu_sub, cblas_zdotc_sub, cblas_zdotu_sub,
+               cblas_saxpby,cblas_daxpby,cblas_caxpby,cblas_zaxpby
+               );
 
 @exblasobjs = (
 	       qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,
@@ -88,17 +92,17 @@
 
 @lapackobjs = (
 	       # These routines are provided by OpenBLAS.
-	       sgesv,  dgesv,  cgesv,  zgesv, 
-	       sgetf2, dgetf2, cgetf2, zgetf2, 
-	       sgetrf, dgetrf, cgetrf, zgetrf, 
-	       slaswp, dlaswp, claswp, zlaswp, 
-	       sgetrs, dgetrs, cgetrs, zgetrs, 
-	       slauu2, dlauu2, clauu2, zlauu2, 
-	       slauum, dlauum, clauum, zlauum, 
-	       spotf2, dpotf2, cpotf2, zpotf2, 
-	       spotrf, dpotrf, cpotrf, zpotrf, 
-	       strti2, dtrti2, ctrti2, ztrti2, 
-	       strtri, dtrtri, ctrtri, ztrtri, 
+	       sgesv,  dgesv,  cgesv,  zgesv,
+	       sgetf2, dgetf2, cgetf2, zgetf2,
+	       sgetrf, dgetrf, cgetrf, zgetrf,
+	       slaswp, dlaswp, claswp, zlaswp,
+	       sgetrs, dgetrs, cgetrs, zgetrs,
+	       slauu2, dlauu2, clauu2, zlauu2,
+	       slauum, dlauum, clauum, zlauum,
+	       spotf2, dpotf2, cpotf2, zpotf2,
+	       spotrf, dpotrf, cpotrf, zpotrf,
+	       strti2, dtrti2, ctrti2, ztrti2,
+	       strtri, dtrtri, ctrtri, ztrtri,
 	       spotri, dpotri, cpotri, zpotri,
 	       );
 
@@ -115,7 +119,7 @@
 		# ALLAUX  -- Auxiliary routines called from all precisions
 		# already provided by @blasobjs: xerbla, lsame
 		ilaenv, ieeeck, lsamen,  iparmq,
-		ilaprec, ilatrans, ilauplo, iladiag, 
+		ilaprec, ilatrans, ilauplo, iladiag,
 		ilaver, slamch, slamc3,
 
 		# SCLAUX  -- Auxiliary routines called from both REAL and COMPLEX.
@@ -181,7 +185,7 @@
 		slaqtr, slar1v, slar2v, ilaslr, ilaslc,
 		slarf,  slarfb, slarfg, slarfgp, slarft, slarfx, slargv,
 		slarrv, slartv,
-		slarz,  slarzb, slarzt, slasy2, slasyf, 
+		slarz,  slarzb, slarzt, slasy2, slasyf,
 		slatbs, slatdf, slatps, slatrd, slatrs, slatrz, slatzm,
 		sopgtr, sopmtr, sorg2l, sorg2r,
 		sorgbr, sorghr, sorgl2, sorglq, sorgql, sorgqr, sorgr2,
@@ -362,8 +366,8 @@
 		dtfttr, dtpttf, dtpttr, dtrttf, dtrttp,
 		dgejsv,  dgesvj,  dgsvj0,  dgsvj1,
 		dgeequb, dsyequb, dpoequb, dgbequb,
-                dbbcsd, dlapmr, dorbdb, dorbdb1, dorbdb2, dorbdb3, dorbdb4, 
-                dorbdb5, dorbdb6, dorcsd, dorcsd2by1, 
+                dbbcsd, dlapmr, dorbdb, dorbdb1, dorbdb2, dorbdb3, dorbdb4,
+                dorbdb5, dorbdb6, dorcsd, dorcsd2by1,
 		dgeqrt, dgeqrt2, dgeqrt3, dgemqrt,
 		dtpqrt, dtpqrt2, dtpmqrt, dtprfb,
 
@@ -436,8 +440,8 @@
 		zhfrk, ztfttp, zlanhf, zpftrf, zpftri, zpftrs, ztfsm, ztftri,
 		ztfttr, ztpttf, ztpttr, ztrttf, ztrttp,
 		zgeequb, zgbequb, zsyequb, zpoequb, zheequb,
-                zbbcsd, zlapmr, zunbdb, zunbdb1, zunbdb2, zunbdb3, zunbdb4, 
-                zunbdb5, zunbdb6, zuncsd, zuncsd2by1, 
+                zbbcsd, zlapmr, zunbdb, zunbdb1, zunbdb2, zunbdb3, zunbdb4,
+                zunbdb5, zunbdb6, zuncsd, zuncsd2by1,
 		zgeqrt, zgeqrt2, zgeqrt3, zgemqrt,
 		ztpqrt, ztpqrt2, ztpmqrt, ztprfb,
 		);
@@ -2701,20 +2705,20 @@
 @lapack_embeded_underscore_objs=(xerbla_array, chla_transtype, slasyf_rook,
 				 ssytf2_rook, ssytrf_rook, ssytrs_rook,
 				 ssytri_rook, ssycon_rook, ssysv_rook,
-				 chetf2_rook, chetrf_rook, chetri_rook, 
+				 chetf2_rook, chetrf_rook, chetri_rook,
 				 chetrs_rook, checon_rook, chesv_rook,
-				 clahef_rook, clasyf_rook, 
-				 csytf2_rook, csytrf_rook, csytrs_rook, 
-				 csytri_rook, csycon_rook, csysv_rook, 
-				 dlasyf_rook, 
-				 dsytf2_rook, dsytrf_rook, dsytrs_rook, 
-				 dsytri_rook, dsycon_rook, dsysv_rook, 
-				 zhetf2_rook, zhetrf_rook, zhetri_rook, 
+				 clahef_rook, clasyf_rook,
+				 csytf2_rook, csytrf_rook, csytrs_rook,
+				 csytri_rook, csycon_rook, csysv_rook,
+				 dlasyf_rook,
+				 dsytf2_rook, dsytrf_rook, dsytrs_rook,
+				 dsytri_rook, dsycon_rook, dsysv_rook,
+				 zhetf2_rook, zhetrf_rook, zhetri_rook,
 				 zhetrs_rook, zhecon_rook, zhesv_rook,
 				 zlahef_rook, zlasyf_rook,
 				 zsytf2_rook, zsytrf_rook, zsytrs_rook,
 				 zsytri_rook, zsycon_rook, zsysv_rook,
-				 
+
 
 
     );
@@ -2771,7 +2775,7 @@ if ($ARGV[6] == 1) {
 }
 
 @hplobjs  = (daxpy, dcopy, dscal, idamax, dgemv, dtrsv, dger, dgemm, dtrsm);
-@hplobjs2 = (HPL_dlaswp00N, HPL_dlaswp01N, HPL_dlaswp01T); 
+@hplobjs2 = (HPL_dlaswp00N, HPL_dlaswp01N, HPL_dlaswp01T);
 
 $bu = $ARGV[2];
 
@@ -2796,7 +2800,7 @@ if ($ARGV[0] eq "osx"){
 	}
 #    }
     exit(0);
-} 
+}
 
 if ($ARGV[0] eq "aix"){
 
@@ -2817,11 +2821,11 @@ if ($ARGV[0] eq "aix"){
 	}
 #    }
     exit(0);
-} 
+}
 
 if ($ARGV[0] eq "win2k"){
     print "EXPORTS\n";
-    $count = 1;    
+    $count = 1;
 
     @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
 
@@ -2846,7 +2850,7 @@ if ($ARGV[0] eq "win2k"){
 	print "\t$uppercase=$objs", "__  \@", $count, "\n";
 	$count ++;
     }
-    
+
     #for misc_common_objs
     foreach $objs (@misc_common_objs) {
 
@@ -2857,19 +2861,19 @@ if ($ARGV[0] eq "win2k"){
 	print "\t$uppercase=$objs", "_  \@", $count, "\n";
 	$count ++;
     }
-    
-    
+
+
     foreach $objs (@no_underscore_objs) {
 	print "\t",$objs,"=$objs","  \@", $count, "\n";
 	$count ++;
     }
-	
+
     exit(0);
 }
 
 if ($ARGV[0] eq "win2khpl"){
     print "EXPORTS\n";
-    $count = 1;    
+    $count = 1;
     foreach $objs (@hplobjs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
@@ -2894,7 +2898,7 @@ if ($ARGV[0] eq "microsoft"){
     @underscore_objs = (@underscore_objs, @misc_common_objs);
 
     print "EXPORTS\n";
-    $count = 1;    
+    $count = 1;
     foreach $objs (@underscore_objs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;

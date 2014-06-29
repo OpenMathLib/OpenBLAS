@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -103,7 +103,7 @@
 
 #define PREA	r30
 #define PREC	r31
-	
+
 #ifndef CONJ
 #define FMA1	FMADD
 #define FMA2	FMADD
@@ -1462,7 +1462,7 @@ LL(38):
 	LFD	f17,  1 * SIZE(BO)
 	LFD	f18,  2 * SIZE(BO)
 	LFD	f19,  3 * SIZE(BO)
- 
+
 	LFD	f20,  4 * SIZE(BO)
  	LFD	f21,  5 * SIZE(BO)
 	LFD	f22,  6 * SIZE(BO)
@@ -1482,7 +1482,7 @@ LL(38):
 	LFD	f17,  1 * SIZE(AO)
 	LFD	f18,  2 * SIZE(AO)
 	LFD	f19,  3 * SIZE(AO)
- 
+
 	LFD	f20,  4 * SIZE(AO)
  	LFD	f21,  5 * SIZE(AO)
 	LFD	f22,  6 * SIZE(AO)
@@ -1819,7 +1819,7 @@ LL(38):
 	addi	CO1, CO1, 4 * SIZE
 	addi	CO2, CO2, 4 * SIZE
 #endif
-	
+
 #ifdef RT
 	slwi	r0, K, 1 + ZBASE_SHIFT
 	add	AORIG, AORIG, r0
@@ -2945,7 +2945,7 @@ LL(18):
 	LFD	f17,  1 * SIZE(BO)
 	LFD	f18,  2 * SIZE(BO)
 	LFD	f19,  3 * SIZE(BO)
- 
+
 	FSUB	f0,  f16, f0
 	FSUB	f1,  f17, f1
 	FSUB	f4,  f18, f4
@@ -2965,7 +2965,7 @@ LL(18):
 	LFD	f25,  9 * SIZE(BO)
 	LFD	f26, 10 * SIZE(BO)
 	LFD	f27, 11 * SIZE(BO)
- 
+
 	FSUB	f2,  f24, f2
 	FSUB	f3,  f25, f3
 	FSUB	f6,  f26, f6
@@ -2992,7 +2992,7 @@ LL(18):
 	FSUB	f1,  f17, f1
 	FSUB	f2,  f18, f2
 	FSUB	f3,  f19, f3
- 
+
 	LFD	f20,  4 * SIZE(AO)
  	LFD	f21,  5 * SIZE(AO)
 	LFD	f22,  6 * SIZE(AO)
@@ -3007,7 +3007,7 @@ LL(18):
 	LFD	f25,  9 * SIZE(AO)
 	LFD	f26, 10 * SIZE(AO)
 	LFD	f27, 11 * SIZE(AO)
- 
+
 	FSUB	f8,  f24, f8
 	FSUB	f9,  f25, f9
 	FSUB	f10, f26, f10
@@ -3842,7 +3842,7 @@ LL(18):
 	addi	CO3, CO3, 4 * SIZE
 	addi	CO4, CO4, 4 * SIZE
 #endif
-	
+
 #ifdef RT
 	slwi	r0, K, 1 + ZBASE_SHIFT
 	add	AORIG, AORIG, r0
@@ -4138,7 +4138,7 @@ LL(27):
 	LFD	f17,  1 * SIZE(BO)
 	LFD	f18,  2 * SIZE(BO)
 	LFD	f19,  3 * SIZE(BO)
- 
+
 	FSUB	f0,  f16, f0
 	FSUB	f1,  f17, f1
 	FSUB	f4,  f18, f4
@@ -4587,7 +4587,7 @@ LL(27):
 	addi	CO3, CO3, 2 * SIZE
 	addi	CO4, CO4, 2 * SIZE
 #endif
-	
+
 #ifdef RT
 	slwi	r0, K, 0 + ZBASE_SHIFT
 	add	AORIG, AORIG, r0

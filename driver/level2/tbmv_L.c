@@ -54,7 +54,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
     gemvbuffer = (FLOAT *)(((BLASLONG)buffer + n * sizeof(FLOAT) + 4095) & ~4095);
     COPY_K(n, b, incb, buffer, 1);
   }
-  
+
   a += (n - 1) * lda;
 
   for (i = n - 1; i >= 0; i--) {
@@ -65,7 +65,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
 
     if (length > 0) {
       AXPYU_K(length, 0, 0,
-	     B[i], 
+	     B[i],
 	     a + 1, 1, B + i + 1, 1, NULL, 0);
     }
 #endif
@@ -77,7 +77,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
     B[i] *= a[k];
 #endif
 #endif
-    
+
 #ifdef TRANSA
     length  = i;
     if (length > k) length = k;
@@ -89,7 +89,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
 
     a -= lda;
   }
-    
+
   if (incb != 1) {
     COPY_K(n, buffer, 1, b, incb);
   }

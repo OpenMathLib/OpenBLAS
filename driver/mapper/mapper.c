@@ -92,7 +92,7 @@ static int mapper_release(struct inode *inode, struct file *fp){
 #ifdef CONFIG_BIGPHYS_AREA
       bigphysarea_free_pages(buffer[pos].address);
 #else
-      
+
       for (addr = buffer[pos].address; addr < buffer[pos].address + buffer[pos].size; addr += PAGE_SIZE) {
       	ClearPageReserved(virt_to_page(addr));
       }
@@ -121,7 +121,7 @@ int mapper_mapper(struct file *fp, struct vm_area_struct *vma){
 
   all_length   = vma->vm_end - vma->vm_start;
   current_addr = vma -> vm_start;
-  
+
   spin_lock(&lock);
 
   while (all_length > 0) {
@@ -133,56 +133,56 @@ int mapper_mapper(struct file *fp, struct vm_area_struct *vma){
 
     pos = 0;
     while ((pos < MAX_BUFF_SIZE) && (buffer[pos].address != 0)) pos ++;
-    
+
     if (pos >= MAX_BUFF_SIZE) {
-      
+
       printk("Memory Allocator : too much memory allocation requested.\n");
 
       spin_unlock(&lock);
-      
+
       return -EIO;
     }
-    
+
 #ifdef CONFIG_BIGPHYS_AREA
     alloc_addr = (caddr_t)bigphysarea_alloc_pages(length >> PAGE_SHIFT, 1, GFP_KERNEL);
 #else
     alloc_addr = (caddr_t)kmalloc(length, GFP_KERNEL);
 #endif
-    
+
     if (alloc_addr == (caddr_t)NULL) {
-      
+
       spin_unlock(&lock);
-      
+
       return -EIO;
     }
-    
+
 #ifndef CONFIG_BIGPHYS_AREA
     for (addr = alloc_addr; addr < alloc_addr + length; addr += PAGE_SIZE) {
       clear_page(addr);
       SetPageReserved(virt_to_page(addr));
     }
 #endif
-    
+
     if ((ret = remap_pfn_range(vma,
 			       current_addr,
 			       virt_to_phys((void *)alloc_addr) >> PAGE_SHIFT,
 			     length,
 			       PAGE_SHARED)) < 0) {
-      
+
 #ifdef CONFIG_BIGPHYS_AREA
       bigphysarea_free_pages((caddr_t)alloc_addr);
 #else
-      
+
       for (addr = alloc_addr; addr < alloc_addr + length; addr += PAGE_SIZE)  ClearPageReserved(virt_to_page(addr));
-      
+
       kfree((caddr_t)alloc_addr);
 #endif
-      
+
       spin_unlock(&lock);
-      
+
       return ret;
     }
-    
+
     buffer[pos].pid = current -> tgid;
     buffer[pos].address = alloc_addr;
 #ifndef CONFIG_BIGPHYS_AREA
@@ -209,11 +209,11 @@ static int __init mapper_init(void){
   int ret, i;
 
   ret = alloc_chrdev_region(&mapper_dev, 0, 1, "mapper");
-  
+
   cdev_init(&mapper_cdev, &mapper_fops);
 
   ret = cdev_add(&mapper_cdev, mapper_dev, 1);
-  
+
   spin_lock_init(&lock);
 
   for (i = 0; i < MAX_BUFF_SIZE; i++) {
@@ -240,7 +240,7 @@ static void __exit mapper_exit(void){
 #endif
     }
   }
-  
+
   cdev_del(&mapper_cdev);
 
   unregister_chrdev_region(mapper_dev, 1);

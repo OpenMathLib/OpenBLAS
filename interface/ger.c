@@ -75,7 +75,7 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
   blasint    incy  = *INCY;
   blasint    lda   = *LDA;
   FLOAT *buffer;
-#ifdef SMP
+#ifdef SMPBUG
   int nthreads;
 #endif
 
@@ -107,7 +107,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint info, t;
-#ifdef SMP
+#ifdef SMPBUG
   int nthreads;
 #endif
 
@@ -157,7 +157,7 @@ void CNAME(enum CBLAS_ORDER order,
   /*     Quick return if possible. */
   if (m == 0 || n == 0) return;
   if (alpha == 0.) return;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -167,19 +167,20 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMP
+#ifdef SMPBUG
   nthreads = num_cpu_avail(2);
+
 
   if (nthreads == 1) {
 #endif
 
     GER(m, n, 0, alpha, x, incx, y, incy, a, lda, buffer);
 
-#ifdef SMP
+#ifdef SMPBUG
   } else {
-    
+
     GER_THREAD(m, n, alpha, x, incx, y, incy, a, lda, buffer, nthreads);
-    
+
   }
 #endif
 

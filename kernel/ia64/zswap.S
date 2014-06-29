@@ -93,7 +93,7 @@
 	cmp.gt	p15, p0 = r0, N
 	(p15) br.ret.sptk.many b0
 	}
-	;;	
+	;;
 #ifdef XDOUBLE
 	{ .mmi
 	ld8	X     = [r14]
@@ -152,7 +152,7 @@
 	;;
 	{ .mmi
 	adds	PRE1 = PREFETCH_SIZE * SIZE, X
-	adds	PRE2 = PREFETCH_SIZE * SIZE, Y	
+	adds	PRE2 = PREFETCH_SIZE * SIZE, Y
 	mov	ar.lc = I
 	}
 	{ .mib
@@ -323,7 +323,7 @@
 	(p16) LDFD	f125 = [Y],  INCYM1
 	(p18) add   YY = YY, INCYM1
 	}
-	{ .mmb	
+	{ .mmb
 	(p16) lfetch.excl.nt1	[PRE1], INCX8
 	(p16) lfetch.excl.nt1	[PRE2], INCY8
 	br.ctop.sptk.few .L52

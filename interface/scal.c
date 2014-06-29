@@ -45,7 +45,7 @@
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX){
-  
+
   blasint n    = *N;
   blasint incx = *INCX;
   FLOAT alpha = *ALPHA;
@@ -53,7 +53,7 @@ void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX){
 #else
 
 void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
- 
+
 #endif
 
 #ifdef SMP
@@ -78,6 +78,9 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
 #ifdef SMP
   nthreads = num_cpu_avail(1);
 
+  if (n <= 1048576 )
+	nthreads = 1;
+
   if (nthreads == 1) {
 #endif
 
@@ -90,11 +93,11 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
     mode  =  BLAS_DOUBLE | BLAS_REAL;
 #else
     mode  =  BLAS_SINGLE | BLAS_REAL;
-#endif  
-    
+#endif
+
     blas_level1_thread(mode, n, 0, 0,
 #ifndef CBLAS
-		       ALPHA, 
+		       ALPHA,
 #else
 		       &alpha,
 #endif
@@ -108,5 +111,5 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
   IDEBUG_END;
 
   return;
-  
+
 }

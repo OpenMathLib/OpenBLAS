@@ -78,7 +78,7 @@ static inline int syrk_beta(BLASLONG m_from, BLASLONG m_to, BLASLONG n_from, BLA
 
 #else
 
-    SCAL_K(MIN(m_to - i + m_from - n_from, m_to), 0, 0, alpha[0], 
+    SCAL_K(MIN(m_to - i + m_from - n_from, m_to), 0, 0, alpha[0],
 #ifdef COMPLEX
 	 alpha[1],
 #endif

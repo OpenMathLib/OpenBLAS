@@ -61,14 +61,14 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
   a += (m + 1) * m - 2;
 
   for (i = 0; i < m; i++) {
-    
+
 #if (TRANSA == 1) || (TRANSA == 3)
 #if TRANSA == 1
-      if (i > 0) AXPYU_K (i, 0, 0, 
+      if (i > 0) AXPYU_K (i, 0, 0,
 			  B[(m - i - 1) * 2 + 0], B[(m - i - 1) * 2 + 1],
 			  a + 2, 1, B + (m - i) * 2, 1, NULL, 0);
 #else
-      if (i > 0) AXPYC_K(i, 0, 0, 
+      if (i > 0) AXPYC_K(i, 0, 0,
 			  B[(m - i - 1) * 2 + 0], B[(m - i - 1) * 2 + 1],
 			  a + 2, 1, B + (m - i) * 2, 1, NULL, 0);
 #endif
@@ -110,7 +110,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 #endif
 
     }
-    
+
 
   if (incb != 1) {
     COPY_K(m, buffer, 1, b, incb);

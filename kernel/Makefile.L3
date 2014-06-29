@@ -22,7 +22,7 @@ ifeq ($(ARCH), arm64)
 USE_TRMM = 1
 endif
 
-ifeq ($(TARGET), LOONGSON3B)												 
+ifeq ($(TARGET), LOONGSON3B)
 USE_TRMM = 1
 endif
 
@@ -320,6 +320,28 @@ XBLASOBJS += \
 
 endif
 
+######  BLAS extensions #####
+SBLASOBJS += \
+	somatcopy_k_cn$(TSUFFIX).$(SUFFIX) somatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	somatcopy_k_ct$(TSUFFIX).$(SUFFIX) somatcopy_k_rt$(TSUFFIX).$(SUFFIX)
+
+DBLASOBJS += \
+	domatcopy_k_cn$(TSUFFIX).$(SUFFIX) domatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	domatcopy_k_ct$(TSUFFIX).$(SUFFIX) domatcopy_k_rt$(TSUFFIX).$(SUFFIX)
+
+CBLASOBJS += \
+	comatcopy_k_cn$(TSUFFIX).$(SUFFIX) comatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	comatcopy_k_ct$(TSUFFIX).$(SUFFIX) comatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	comatcopy_k_cnc$(TSUFFIX).$(SUFFIX) comatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
+	comatcopy_k_ctc$(TSUFFIX).$(SUFFIX) comatcopy_k_rtc$(TSUFFIX).$(SUFFIX)
+
+ZBLASOBJS += \
+	zomatcopy_k_cn$(TSUFFIX).$(SUFFIX) zomatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	zomatcopy_k_ct$(TSUFFIX).$(SUFFIX) zomatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	zomatcopy_k_cnc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
+	zomatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX)
+
+
 SGEMMINCOPYOBJ_P = $(SGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SGEMMITCOPYOBJ_P = $(SGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SGEMMONCOPYOBJ_P = $(SGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
@@ -513,7 +535,7 @@ $(KDIR)xgemm_kernel_b$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMMKERNEL) $(XGEMMD
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX -DCC $< -o $@
 
 
-ifdef USE_TRMM											 
+ifdef USE_TRMM
 $(KDIR)strmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -UTRANSA $< -o $@
 
@@ -3237,3 +3259,178 @@ $(KDIR)xtrsm_oltucopy$(TSUFFIX).$(PSUFFIX) : generic/ztrsm_ltcopy_$(XGEMM_UNROLL
 
 $(KDIR)xtrsm_oltncopy$(TSUFFIX).$(PSUFFIX) : generic/ztrsm_ltcopy_$(XGEMM_UNROLL_N).c
 	$(CC) -c $(PFLAGS) $(NO_UNINITIALIZED_WARN) -DXDOUBLE -DCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
+
+
+#####  BLAS extensions ######
+
+ifndef DOMATCOPY_CN
+DOMATCOPY_CN = ../arm/omatcopy_cn.c
+endif
+
+$(KDIR)domatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef DOMATCOPY_RN
+DOMATCOPY_RN = ../arm/omatcopy_rn.c
+endif
+
+$(KDIR)domatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DROWM $< -o $@
+
+ifndef DOMATCOPY_CT
+DOMATCOPY_CT = ../arm/omatcopy_ct.c
+endif
+
+$(KDIR)domatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef DOMATCOPY_RT
+DOMATCOPY_RT = ../arm/omatcopy_rt.c
+endif
+
+$(KDIR)domatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DROWM $< -o $@
+
+ifndef SOMATCOPY_CN
+SOMATCOPY_CN = ../arm/omatcopy_cn.c
+endif
+
+$(KDIR)somatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef SOMATCOPY_RN
+SOMATCOPY_RN = ../arm/omatcopy_rn.c
+endif
+
+$(KDIR)somatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DROWM $< -o $@
+
+ifndef SOMATCOPY_CT
+SOMATCOPY_CT = ../arm/omatcopy_ct.c
+endif
+
+$(KDIR)somatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef SOMATCOPY_RT
+SOMATCOPY_RT = ../arm/omatcopy_rt.c
+endif
+
+$(KDIR)somatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DROWM $< -o $@
+
+
+ifndef COMATCOPY_CN
+COMATCOPY_CN = ../arm/zomatcopy_cn.c
+endif
+
+$(KDIR)comatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef COMATCOPY_RN
+COMATCOPY_RN = ../arm/zomatcopy_rn.c
+endif
+
+$(KDIR)comatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef COMATCOPY_CT
+COMATCOPY_CT = ../arm/zomatcopy_ct.c
+endif
+
+$(KDIR)comatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef COMATCOPY_RT
+COMATCOPY_RT = ../arm/zomatcopy_rt.c
+endif
+
+$(KDIR)comatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef COMATCOPY_CNC
+COMATCOPY_CNC = ../arm/zomatcopy_cnc.c
+endif
+
+$(KDIR)comatcopy_k_cnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_CNC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef COMATCOPY_RNC
+COMATCOPY_RNC = ../arm/zomatcopy_rnc.c
+endif
+
+$(KDIR)comatcopy_k_rnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_RNC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+ifndef COMATCOPY_CTC
+COMATCOPY_CTC = ../arm/zomatcopy_ctc.c
+endif
+
+$(KDIR)comatcopy_k_ctc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_CTC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef COMATCOPY_RTC
+COMATCOPY_RTC = ../arm/zomatcopy_rtc.c
+endif
+
+$(KDIR)comatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_RTC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+
+ifndef ZOMATCOPY_CN
+ZOMATCOPY_CN = ../arm/zomatcopy_cn.c
+endif
+
+$(KDIR)zomatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef ZOMATCOPY_RN
+ZOMATCOPY_RN = ../arm/zomatcopy_rn.c
+endif
+
+$(KDIR)zomatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef ZOMATCOPY_CT
+ZOMATCOPY_CT = ../arm/zomatcopy_ct.c
+endif
+
+$(KDIR)zomatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef ZOMATCOPY_RT
+ZOMATCOPY_RT = ../arm/zomatcopy_rt.c
+endif
+
+$(KDIR)zomatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef ZOMATCOPY_CNC
+ZOMATCOPY_CNC = ../arm/zomatcopy_cnc.c
+endif
+
+$(KDIR)zomatcopy_k_cnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_CNC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef ZOMATCOPY_RNC
+ZOMATCOPY_RNC = ../arm/zomatcopy_rnc.c
+endif
+
+$(KDIR)zomatcopy_k_rnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_RNC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+ifndef ZOMATCOPY_CTC
+ZOMATCOPY_CTC = ../arm/zomatcopy_ctc.c
+endif
+
+$(KDIR)zomatcopy_k_ctc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_CTC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef ZOMATCOPY_RTC
+ZOMATCOPY_RTC = ../arm/zomatcopy_rtc.c
+endif
+
+$(KDIR)zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_RTC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+

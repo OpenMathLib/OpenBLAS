@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define N	r3
 #define XX	r4
 #define PRE	r5
@@ -68,7 +68,7 @@
 #define FZERO	f0
 #define ALPHA_R	f1
 #define ALPHA_I	f2
-	
+
 	PROLOGUE
 	PROFCODE
 
@@ -82,7 +82,7 @@
 #if (defined(_AIX) || defined(__APPLE__)) && !defined(__64BIT__) && defined(DOUBLE)
 	lwz	INCX,    56(SP)
 #endif
-	
+
 	slwi	INCX, INCX, ZBASE_SHIFT
 	li	INC1, SIZE
 	sub	X, X, INCX

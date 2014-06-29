@@ -127,7 +127,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lsl	LDA, OLD_LDA, #2					// lda = lda * 4
 
-	ldr	BO, B	
+	ldr	BO, B
 
 
 /*********************************************************************************************/
@@ -152,8 +152,8 @@ sgemm_ncopy_L2_M2_20:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L2_M2_20
-	
-	
+
+
 sgemm_ncopy_L2_M2_40:
 
 	ands	I, M , #1
@@ -165,7 +165,7 @@ sgemm_ncopy_L2_M2_60:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L2_M2_60
-	
+
 
 sgemm_ncopy_L2_M2_END:
 
@@ -194,8 +194,8 @@ sgemm_ncopy_L1_M2_20:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L1_M2_20
-	
-	
+
+
 sgemm_ncopy_L1_M2_40:
 
 	ands	I, M , #1
@@ -207,7 +207,7 @@ sgemm_ncopy_L1_M2_60:
 
 	subs	I , I , #1
 	bne	sgemm_ncopy_L1_M2_60
-	
+
 
 sgemm_ncopy_L1_M2_END:
 

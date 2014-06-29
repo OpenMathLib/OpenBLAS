@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define J	 0 + STACK(%esp)
 #define I	 4 + STACK(%esp)
 #define KK	 8 + STACK(%esp)
@@ -132,7 +132,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	C, %edi
@@ -152,7 +152,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -166,7 +166,7 @@
 	jle	.L13
 	ALIGN_4
 
-.L12:	
+.L12:
 	movl	 -16 * SIZE(B), %esi
 	movl	  -8 * SIZE(B), %esi
 	movl	   0 * SIZE(B), %esi
@@ -227,7 +227,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -533,7 +533,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	C, %edi
@@ -553,7 +553,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -567,7 +567,7 @@
 	jle	.L23
 	ALIGN_4
 
-.L22:	
+.L22:
 	movl	 -16 * SIZE(B), %esi
 	movl	  -8 * SIZE(B), %esi
 	movl	   0 * SIZE(B), %esi
@@ -610,7 +610,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -774,7 +774,7 @@
 #endif
 
 	leal	(, LDC, 2), %eax
-	addl	%eax, C	
+	addl	%eax, C
 	movl	B, B_ORIG
 	ALIGN_4
 
@@ -788,7 +788,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	STACK_A, A
 	movl	C, %edi
@@ -808,7 +808,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -822,7 +822,7 @@
 	jle	.L33
 	ALIGN_4
 
-.L32:	
+.L32:
 	movl	 -16 * SIZE(B), %esi
 	movl	  -8 * SIZE(B), %esi
 	movl	   0 * SIZE(B), %esi
@@ -861,7 +861,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -964,7 +964,7 @@
 	addl	$1, KK
 #endif
 
-	addl	LDC, C	
+	addl	LDC, C
 	movl	B, B_ORIG
 	ALIGN_4
 

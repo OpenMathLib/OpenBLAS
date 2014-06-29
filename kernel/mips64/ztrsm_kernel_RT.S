@@ -125,7 +125,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	daddiu	$sp, $sp, -128
 
 	SDARG	$16,   0($sp)

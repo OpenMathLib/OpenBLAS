@@ -122,7 +122,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
 #endif
 
     }
-    
+
 #if (TRANSA == 2) || (TRANSA == 4)
     if (is - min_i > 0){
 #if TRANSA == 2

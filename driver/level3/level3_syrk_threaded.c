@@ -49,7 +49,7 @@
 #endif
 
 //The array of job_t may overflow the stack.
-//Instead, use malloc to alloc job_t. 
+//Instead, use malloc to alloc job_t.
 #if MAX_CPU_NUMBER > BLAS3_MEM_ALLOC_THRESHOLD
 #define USE_ALLOC_HEAP
 #endif
@@ -217,7 +217,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   for (i = 1; i < DIVIDE_RATE; i++) {
     buffer[i] = buffer[i - 1] + GEMM_Q * div_n * COMPSIZE;
   }
-  
+
   for(ls = 0; ls < k; ls += min_l){
 
     min_l = k - ls;
@@ -228,7 +228,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     }
 
     min_i = m_to - m_from;
-    
+
     if (min_i >= GEMM_P * 2) {
       min_i = GEMM_P;
     } else {
@@ -244,22 +244,22 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #endif
 
     START_RPCC();
-    
+
 #ifndef LOWER
     ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
 #else
     ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_to - min_i, sa);
 #endif
-    
+
     STOP_RPCC(copy_A);
-    
+
     div_n = ((m_to - m_from + DIVIDE_RATE - 1) / DIVIDE_RATE
 	                              + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
-    
+
     for (xxx = m_from, bufferside = 0; xxx < m_to; xxx += div_n, bufferside ++) {
-      
+
       START_RPCC();
-      
+
       /* Make sure if no one is using buffer */
 #ifndef LOWER
       for (i = 0; i < mypos; i++)
@@ -267,9 +267,9 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       for (i = mypos + 1; i < args -> nthreads; i++)
 #endif
 	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;};
-      
+
       STOP_RPCC(waiting1);
-      
+
 #ifndef LOWER
 
       for(jjs = xxx; jjs < MIN(m_to, xxx + div_n); jjs += min_jj){
@@ -281,16 +281,16 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	} else {
 	  if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
 	}
-	
+
 	START_RPCC();
-	
-	OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, 
+
+	OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs,
 			buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE);
-	
+
 	STOP_RPCC(copy_B);
-	
+
 	START_RPCC();
-	
+
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
 			 sa, buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE,
 			 c, ldc, m_from, jjs);
@@ -310,20 +310,20 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	min_jj = MIN(m_to, xxx + div_n) - jjs;
 
 	if (min_jj > GEMM_UNROLL_MN) min_jj = GEMM_UNROLL_MN;
-	
+
 	START_RPCC();
-	
-	OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs, 
+
+	OCOPY_OPERATION(min_l, min_jj, a, lda, ls, jjs,
 			buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE);
-	
+
 	STOP_RPCC(copy_B);
-	
+
 	START_RPCC();
-	
+
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
 			 sa, buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE,
 			 c, ldc, m_to - min_i, jjs);
-	  
+
 	STOP_RPCC(kernel);
 
 #ifdef TIMING
@@ -333,7 +333,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       }
 
 #endif
-	
+
 #ifndef LOWER
       for (i = 0; i <= mypos; i++)
 #else
@@ -344,7 +344,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       WMB;
     }
 
-    
+
 #ifndef LOWER
     current = mypos + 1;
     while (current < args -> nthreads) {
@@ -355,42 +355,42 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
 	div_n = ((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE
 		 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
-	
+
 	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-	  
+
 	  START_RPCC();
-	  
+
 	  /* thread has to wait */
 	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
-	  
+
 	  STOP_RPCC(waiting2);
-	  
+
 	  START_RPCC();
-	  
+
 #ifndef LOWER
 	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1]  - xxx,  div_n), min_l, alpha,
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
-			   c, ldc, 
+			   c, ldc,
 			   m_from,
 			   xxx);
 #else
 	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1]  - xxx,  div_n), min_l, alpha,
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
-			   c, ldc, 
+			   c, ldc,
 			   m_to - min_i,
 			   xxx);
 #endif
-	  
+
 	  STOP_RPCC(kernel);
 #ifdef TIMING
 	  ops += 2 * min_i * MIN(range_n[current + 1]  - xxx,  div_n) * min_l;
 #endif
-	  
+
 	  if (m_to - m_from == min_i) {
 	    job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	  }
 	}
-	
+
 #ifndef LOWER
 	current ++;
 #else
@@ -410,38 +410,38 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
-      } else 
+      } else
 	if (min_i > GEMM_P) {
 	  min_i = ((min_i + 1) / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
 	}
 
       START_RPCC();
-      
+
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-      
+
       STOP_RPCC(copy_A);
-      
+
       current = mypos;
 
       do {
-	
+
 	div_n = ((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE
 		                                                     + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
-	
+
 	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-	  
+
 	  START_RPCC();
 
 	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), min_l, alpha,
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			   c, ldc, is, xxx);
-	  
+
 	  STOP_RPCC(kernel);
 
 #ifdef TIMING
 	  ops += 2 * min_i * MIN(range_n[current + 1]  - xxx, div_n) * min_l;
 #endif
-	  
+
 #ifndef LOWER
 	  if (is + min_i >= m_to) {
 #else
@@ -452,7 +452,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	    WMB;
 	  }
 	}
-	
+
 #ifndef LOWER
 	current ++;
       } while (current != args -> nthreads);
@@ -460,11 +460,11 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	current --;
       } while (current >= 0);
 #endif
-	
-     
+
+
     }
   }
-  
+
   START_RPCC();
 
   for (i = 0; i < args -> nthreads; i++) {
@@ -528,7 +528,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   double dnum;
 
   if ((nthreads  == 1) || (args -> n < nthreads * SWITCH_RATIO)) {
-    SYRK_LOCAL(args, range_m, range_n, sa, sb, 0); 
+    SYRK_LOCAL(args, range_m, range_n, sa, sb, 0);
     return 0;
   }
 
@@ -542,7 +542,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
   mask  = MAX(SGEMM_UNROLL_M, SGEMM_UNROLL_N) - 1;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -553,7 +553,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
   mask  = MAX(CGEMM_UNROLL_M, CGEMM_UNROLL_N) - 1;
-#endif  
+#endif
 #endif
 
   newarg.m        = args -> m;
@@ -577,7 +577,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 #endif
 
   newarg.common   = (void *)job;
-   
+
   if (!range_n) {
     n_from = 0;
     n_to   = args -> n;
@@ -597,17 +597,17 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   dnum = (double)n * (double)n /(double)nthreads;
 
   while (i < n){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di   = (double)i;
-      
+
       width = (((BLASLONG)(sqrt(di * di + dnum) - di) + mask) & ~mask);
-      
+
       if (num_cpu == 0) width = n - ((n - width) & ~mask);
-      
+
       if ((width > n - i) || (width < mask)) width = n - i;
-      
+
     } else {
       width = n - i;
     }
@@ -622,7 +622,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
@@ -639,21 +639,21 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   dnum = (double)n * (double)n /(double)nthreads;
 
   while (i < n){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
 	double di   = (double)i;
-	
+
 	width = (((BLASLONG)(sqrt(di * di + dnum) - di) + mask) & ~mask);
-	
+
       if ((width > n - i) || (width < mask)) width = n - i;
-	
+
     } else {
       width = n - i;
     }
 
     range[num_cpu + 1] = range[num_cpu] + width;
-    
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = inner_thread;
     queue[num_cpu].args    = &newarg;
@@ -662,7 +662,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
@@ -680,14 +680,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	}
       }
     }
-    
+
     queue[0].sa = sa;
     queue[0].sb = sb;
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
- 
+
 #ifdef USE_ALLOC_HEAP
   free(job);
 #endif

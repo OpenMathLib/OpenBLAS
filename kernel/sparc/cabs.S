@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 	PROLOGUE
 
 	add	%sp, -128, %sp

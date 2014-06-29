@@ -87,12 +87,12 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*sgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  
+
   int    (*strsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-  
+
   int    (*strsm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
@@ -114,7 +114,7 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*strmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-  
+
   int    (*strmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
@@ -131,7 +131,7 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*strmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  
+
   int    (*ssymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ssymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ssymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
@@ -176,12 +176,12 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  
+
   int    (*dtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
-  
+
   int    (*dtrsm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*dtrsm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*dtrsm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
@@ -203,7 +203,7 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
-  
+
   int    (*dtrmm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
@@ -220,7 +220,7 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dtrmm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  
+
   int    (*dsymm_iutcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dsymm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dsymm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
@@ -267,12 +267,12 @@ BLASLONG (*iqmin_k) (BLASLONG, xdouble *, BLASLONG);
   int    (*qgemm_itcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*qgemm_oncopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*qgemm_otcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  
+
   int    (*qtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-  
+
   int    (*qtrsm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrsm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrsm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
@@ -294,7 +294,7 @@ BLASLONG (*iqmin_k) (BLASLONG, xdouble *, BLASLONG);
   int    (*qtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-  
+
   int    (*qtrmm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
@@ -311,7 +311,7 @@ BLASLONG (*iqmin_k) (BLASLONG, xdouble *, BLASLONG);
   int    (*qtrmm_olnncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_oltucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_oltncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
-  
+
   int    (*qsymm_iutcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qsymm_iltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qsymm_outcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
@@ -372,7 +372,7 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*cgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  
+
   int    (*ctrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
@@ -381,7 +381,7 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*ctrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  
+
   int    (*ctrsm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*ctrsm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*ctrsm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
@@ -407,7 +407,7 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*ctrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  
+
   int    (*ctrmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
@@ -424,7 +424,7 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*ctrmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  
+
   int    (*csymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
@@ -443,7 +443,7 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*cgemm3m_itcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm3m_itcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm3m_itcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  
+
   int    (*cgemm3m_oncopyb)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
   int    (*cgemm3m_oncopyr)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
   int    (*cgemm3m_oncopyi)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
@@ -457,21 +457,21 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*csymm3m_ilcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm3m_iucopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm3m_ilcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  
+
   int    (*csymm3m_oucopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_olcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_oucopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_olcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_oucopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_olcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
-  
+
   int    (*chemm3m_iucopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_ilcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_iucopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_ilcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_iucopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_ilcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  
+
   int    (*chemm3m_oucopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*chemm3m_olcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*chemm3m_oucopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
@@ -532,7 +532,7 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*zgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  
+
   int    (*ztrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
@@ -541,7 +541,7 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*ztrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  
+
   int    (*ztrsm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*ztrsm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*ztrsm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
@@ -567,7 +567,7 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*ztrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  
+
   int    (*ztrmm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
@@ -584,7 +584,7 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*ztrmm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  
+
   int    (*zsymm_iutcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
@@ -603,7 +603,7 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*zgemm3m_itcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm3m_itcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm3m_itcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  
+
   int    (*zgemm3m_oncopyb)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
   int    (*zgemm3m_oncopyr)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
   int    (*zgemm3m_oncopyi)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
@@ -617,28 +617,28 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*zsymm3m_ilcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm3m_iucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm3m_ilcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  
+
   int    (*zsymm3m_oucopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_olcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_oucopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_olcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_oucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_olcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
-  
+
   int    (*zhemm3m_iucopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_ilcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_iucopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_ilcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_iucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_ilcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  
+
   int    (*zhemm3m_oucopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_olcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_oucopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_olcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_oucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_olcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
-  
+
   int	 (*zneg_tcopy)   (BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, double *, BLASLONG, blasint *, double *);
 
@@ -694,7 +694,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*xgemm_itcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm_oncopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm_otcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  
+
   int    (*xtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
@@ -703,7 +703,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*xtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-  
+
   int    (*xtrsm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrsm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrsm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
@@ -729,7 +729,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*xtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-  
+
   int    (*xtrmm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
@@ -746,7 +746,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*xtrmm_olnncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_oltucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_oltncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
-  
+
   int    (*xsymm_iutcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm_iltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm_outcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
@@ -765,7 +765,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*xgemm3m_itcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm3m_itcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm3m_itcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  
+
   int    (*xgemm3m_oncopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xgemm3m_oncopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xgemm3m_oncopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
@@ -779,21 +779,21 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*xsymm3m_ilcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm3m_iucopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm3m_ilcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
-  
+
   int    (*xsymm3m_oucopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_olcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_oucopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_olcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_oucopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_olcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
-  
+
   int    (*xhemm3m_iucopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_ilcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_iucopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_ilcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_iucopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_ilcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
-  
+
   int    (*xhemm3m_oucopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xhemm3m_olcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xhemm3m_oucopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
@@ -806,9 +806,46 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
 
 #endif
 
+
   void (*init)(void);
 
   int snum_opt, dnum_opt, qnum_opt;
+
+  int    (*saxpby_k)     (BLASLONG, float, float*, BLASLONG,float, float*, BLASLONG);
+  int    (*daxpby_k)     (BLASLONG, double, double*, BLASLONG,double, double*, BLASLONG);
+  int    (*caxpby_k)     (BLASLONG, float, float,  float*, BLASLONG,float,float, float*, BLASLONG);
+  int    (*zaxpby_k)     (BLASLONG, double, double,  double*, BLASLONG,double,double, double*, BLASLONG);
+
+  int    (*somatcopy_k_cn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*somatcopy_k_ct)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*somatcopy_k_rn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*somatcopy_k_rt)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
+
+  int    (*domatcopy_k_cn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*domatcopy_k_ct)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*domatcopy_k_rn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*domatcopy_k_rt)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
+
+  int    (*comatcopy_k_cn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*comatcopy_k_ct)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*comatcopy_k_rn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*comatcopy_k_rt)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+
+  int    (*comatcopy_k_cnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*comatcopy_k_ctc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*comatcopy_k_rnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+  int    (*comatcopy_k_rtc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+
+  int    (*zomatcopy_k_cn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*zomatcopy_k_ct)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*zomatcopy_k_rn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*zomatcopy_k_rt)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+
+  int    (*zomatcopy_k_cnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*zomatcopy_k_ctc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*zomatcopy_k_rnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+  int    (*zomatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+
 
 } gotoblas_t;
 
@@ -865,7 +902,7 @@ extern gotoblas_t *gotoblas;
 
 #else
 
-#define DTB_ENTRIES  DTB_DEFAULT_ENTRIES 
+#define DTB_ENTRIES  DTB_DEFAULT_ENTRIES
 
 #define GEMM_OFFSET_A	GEMM_DEFAULT_OFFSET_A
 #define GEMM_OFFSET_B	GEMM_DEFAULT_OFFSET_B

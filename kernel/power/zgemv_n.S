@@ -82,7 +82,7 @@
 #define	INCY	r7
 #endif
 #endif
-	
+
 #define I	r11
 #define	J	r12
 
@@ -2155,7 +2155,7 @@ LL(37):
 	add	Y2, Y2, INCY
 	b	LL(999)
 	.align 4
-	
+
 LL(100):
 	srawi.	J, N, 2
 	ble	LL(120)

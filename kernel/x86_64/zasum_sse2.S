@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
@@ -51,7 +51,7 @@
 	PROFCODE
 
 	SAVEREGISTERS
-	
+
 	xorps	%xmm0, %xmm0
 	testq	M, M
 	jle	.L999
@@ -105,7 +105,7 @@
 	decq	I
 	jle	.L11
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -213,7 +213,7 @@
 	addpd	%xmm5, %xmm1
 
 	addq	$4 * SIZE, X
-	ALIGN_3	
+	ALIGN_3
 
 .L22:
 	testq	$2, M
@@ -223,7 +223,7 @@
 	andps	%xmm15, %xmm6
 	addpd	%xmm6, %xmm3
 	addq	$2 * SIZE, X
-	
+
 .L23:
 	testq	$1, M
 	je	.L998
@@ -243,7 +243,7 @@
 	sarq	$2, I
 	jle	.L60
 	ALIGN_4
-	
+
 .L50:
 #if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
 	prefetcht0	PREFETCHSIZE * SIZE(X)
@@ -312,7 +312,7 @@
 
 .L999:
 	RESTOREREGISTERS
-	
+
 	ret
 
 	EPILOGUE

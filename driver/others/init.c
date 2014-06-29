@@ -13,19 +13,19 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the ISCAS nor the names of its contributors may 
-      be used to endorse or promote products derived from this software 
+   3. Neither the name of the ISCAS nor the names of its contributors may
+      be used to endorse or promote products derived from this software
       without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
@@ -181,8 +181,8 @@ static inline int rcount(unsigned long number) {
 }
 
 /***
-  Known issue: The number of CPUs/cores should less 
-  than sizeof(unsigned long). On 64 bits, the limit 
+  Known issue: The number of CPUs/cores should less
+  than sizeof(unsigned long). On 64 bits, the limit
   is 64. On 32 bits, it is 32.
 ***/
 static inline void get_cpumap(int node, unsigned long * node_info) {
@@ -197,14 +197,14 @@ static inline void get_cpumap(int node, unsigned long * node_info) {
   int k=0;
 
   sprintf(name, CPUMAP_NAME, node);
-  
+
   infile = open(name, O_RDONLY);
   for(i=0; i<32; i++){
     affinity[i] = 0;
   }
 
   if (infile != -1) {
-    
+
     read(infile, cpumap, sizeof(cpumap));
 
     for(i=0; i<160; i++){
@@ -212,7 +212,7 @@ static inline void get_cpumap(int node, unsigned long * node_info) {
 	break;
       if(cpumap[i] != ','){
 	name[k++]=cpumap[i];
-	
+
 	//Enough data for Hex
 	if(k >= NCPUBITS/4){
 	  affinity[count++] = strtoul(name, &dummy, 16);
@@ -249,7 +249,7 @@ static inline void get_share(int cpu, int level, unsigned long * share) {
   int bitmask_idx = 0;
 
   sprintf(name, SHARE_NAME, cpu, level);
-  
+
   infile = open(name, O_RDONLY);
 
   //  Init share
@@ -260,7 +260,7 @@ static inline void get_share(int cpu, int level, unsigned long * share) {
   share[bitmask_idx] = CPUMASK(cpu);
 
   if (infile != -1) {
-    
+
     read(infile, cpumap, sizeof(cpumap));
 
     for(i=0; i<160; i++){
@@ -268,8 +268,8 @@ static inline void get_share(int cpu, int level, unsigned long * share) {
 	break;
       if(cpumap[i] != ','){
 	name[k++]=cpumap[i];
-	
-	//Enough data 
+
+	//Enough data
 	if(k >= NCPUBITS/4){
 	  affinity[count++] = strtoul(name, &dummy, 16);
 	  k=0;
@@ -287,8 +287,8 @@ static inline void get_share(int cpu, int level, unsigned long * share) {
     for(i=0; i<count && i<MAX_BITMASK_LEN; i++){
       share[i]=affinity[count-i-1];
     }
-   
-   
+
+
     close(infile);
   }
 
@@ -369,7 +369,7 @@ static void numa_mapping(void) {
 #ifdef DEBUG
   fprintf(stderr, "\nFrom /sys ...\n\n");
 
-  for (cpu = 0; cpu < count; cpu++) 
+  for (cpu = 0; cpu < count; cpu++)
     fprintf(stderr, "CPU (%2d) : %08lx\n", cpu, common -> cpu_info[cpu]);
 #endif
 
@@ -406,7 +406,7 @@ static void numa_mapping(void) {
 #ifdef DEBUG
   fprintf(stderr, "\nSorting ...\n\n");
 
-  for (cpu = 0; cpu < count; cpu++) 
+  for (cpu = 0; cpu < count; cpu++)
     fprintf(stderr, "CPU (%2d) : %08lx\n", cpu, common -> cpu_info[cpu]);
 #endif
 
@@ -453,12 +453,12 @@ static void disable_hyperthread(void) {
       share[i] &= common->avail[i];
 
       if (popcount(share[i]) > 1) {
-      
+
 #ifdef DEBUG
 	fprintf(stderr, "Detected Hyper Threading on CPU %4x; disabled CPU %04lx.\n",
 		cpu, share[i] & ~(CPUMASK(cpu)));
 #endif
-      
+
 	common -> avail[i] &= ~((share[i] & ~ CPUMASK(cpu)));
       }
     }
@@ -514,7 +514,7 @@ static void setup_mempolicy(void) {
 
   for (cpu = 0; cpu < numprocs; cpu ++) {
     mynode = READ_NODE(common -> cpu_info[cpu_sub_mapping[cpu]]);
-    
+
     lnodemask |= (1UL << mynode);
 
     node_cpu[mynode] ++;
@@ -527,11 +527,11 @@ static void setup_mempolicy(void) {
   for (cpu = 0; cpu < MAX_NODES; cpu ++) if ((node_cpu[cpu] != 0) && (node_cpu[cpu] != maxcpu)) node_equal = 0;
 
   if (lnodemask) {
-  
+
 #ifdef DEBUG
     fprintf(stderr, "Node mask = %lx\n", lnodemask);
 #endif
-    
+
     my_set_mempolicy(MPOL_INTERLEAVE, &lnodemask, sizeof(lnodemask) * 8);
 
     numnodes = popcount(lnodemask);
@@ -551,11 +551,11 @@ static void open_shmem(void) {
   do {
 
     shmid = shmget(SH_MAGIC, 4096, 0666);
-    
+
     if (shmid == -1) {
       shmid = shmget(SH_MAGIC, 4096, IPC_CREAT | 0666);
     }
-    
+
     try ++;
 
   } while ((try < 10) && (shmid == -1));
@@ -599,7 +599,7 @@ static void local_cpu_map(void) {
     if (id > 0) {
       if (is_dead(id)) common -> cpu_use[cpu] = 0;
     }
-    
+
     bitmask_idx = CPUELT(cpu);
     if ((common -> cpu_use[cpu] == 0) && (lprocmask[bitmask_idx] & CPUMASK(cpu))) {
 
@@ -611,9 +611,9 @@ static void local_cpu_map(void) {
     }
 
     cpu ++;
-    
+
   } while ((mapping < numprocs) && (cpu < common -> final_num_procs));
-  
+
   disable_mapping = 0;
 
   if ((mapping < numprocs) || (numprocs == 1)) {
@@ -622,7 +622,7 @@ static void local_cpu_map(void) {
     }
     disable_mapping = 1;
   }
-  
+
 #ifdef DEBUG
   for (cpu = 0; cpu < numprocs; cpu ++) {
     fprintf(stderr, "Local Mapping  : %2d --> %2d (%2d)\n", cpu, cpu_mapping[cpu], cpu_sub_mapping[cpu]);
@@ -634,14 +634,14 @@ static void local_cpu_map(void) {
 
 int get_num_procs(void)  { return numprocs; }
 int get_num_nodes(void)  { return numnodes; }
-int get_node_equal(void) { 
+int get_node_equal(void) {
 
   return (((blas_cpu_number % numnodes) == 0) && node_equal);
-  
+
 }
 
 int gotoblas_set_affinity(int pos) {
-  
+
   cpu_set_t cpu_mask;
 
   int mynode = 1;
@@ -662,7 +662,7 @@ int gotoblas_set_affinity(int pos) {
 
     CPU_ZERO(&cpu_mask);
     CPU_SET (cpu_mapping[pos], &cpu_mask);
-    
+
     sched_setaffinity(0, sizeof(cpu_mask), &cpu_mask);
 
     node_mapping[WhereAmI()] = mynode;
@@ -672,7 +672,7 @@ int gotoblas_set_affinity(int pos) {
   return mynode;
 }
 
-int get_node(void) { 
+int get_node(void) {
 
   if (!disable_mapping) return node_mapping[WhereAmI()];
 
@@ -694,15 +694,15 @@ void gotoblas_affinity_init(void) {
   initialized = 1;
 
   sched_getaffinity(0, sizeof(cpu_orig_mask), &cpu_orig_mask[0]);
-    
+
 #ifdef USE_OPENMP
   numprocs = 0;
 #else
-  numprocs = readenv("OPENBLAS_NUM_THREADS");
-  if (numprocs == 0) numprocs = readenv("GOTO_NUM_THREADS");
+  numprocs = readenv_atoi("OPENBLAS_NUM_THREADS");
+  if (numprocs == 0) numprocs = readenv_atoi("GOTO_NUM_THREADS");
 #endif
 
-  if (numprocs == 0) numprocs = readenv("OMP_NUM_THREADS");
+  if (numprocs == 0) numprocs = readenv_atoi("OMP_NUM_THREADS");
 
   numnodes = 1;
 
@@ -746,9 +746,9 @@ void gotoblas_affinity_init(void) {
     }
 
     for (cpu = 0; cpu < common -> num_procs; cpu++) common -> cpu_info[cpu] = cpu;
-    
+
     numa_check();
-    
+
     disable_hyperthread();
 
     if (common -> num_nodes > 1) numa_mapping();
@@ -786,14 +786,14 @@ void gotoblas_affinity_init(void) {
 
     CPU_ZERO(&cpu_mask);
     CPU_SET (cpu_mapping[0], &cpu_mask);
-    
+
     sched_setaffinity(0, sizeof(cpu_mask), &cpu_mask);
 
     node_mapping[WhereAmI()] = READ_NODE(common -> cpu_info[cpu_sub_mapping[0]]);
 
     setup_mempolicy();
 
-    if (readenv("OPENBLAS_MAIN_FREE") || readenv("GOTOBLAS_MAIN_FREE")) {
+    if (readenv_atoi("OPENBLAS_MAIN_FREE") || readenv_atoi("GOTOBLAS_MAIN_FREE")) {
       sched_setaffinity(0, sizeof(cpu_orig_mask), &cpu_orig_mask[0]);
     }
 
@@ -817,13 +817,13 @@ void gotoblas_affinity_quit(void) {
   if ((numprocs == 1) || (initialized == 0)) return;
 
   if (!disable_mapping) {
-    
+
     blas_lock(&common -> lock);
-    
+
     for (i = 0; i < numprocs; i ++) common -> cpu_use[cpu_mapping[i]] = -1;
-    
+
     blas_unlock(&common -> lock);
-  
+
   }
 
   shmctl(shmid, IPC_STAT, &ds);

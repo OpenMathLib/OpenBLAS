@@ -9,4 +9,4 @@ diff -ruN common_linux.h.orig common_linux.h
 +	return 0;
  #endif
  }
- 
+

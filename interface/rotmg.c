@@ -27,8 +27,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /**************************************************************************************
 * 2014/05/02 Saar
-* 	fixed two bugs as reported by Brendan Tracey 
-*	Test with lapack-3.5.0	: OK 
+* 	fixed two bugs as reported by Brendan Tracey
+*	Test with lapack-3.5.0	: OK
 *
 **************************************************************************************/
 
@@ -62,7 +62,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 
 #endif
 
-	FLOAT du, dp1, dp2, dq2, dq1, dh11, dh21, dh12, dh22, dflag, dtemp;
+	FLOAT du, dp1, dp2, dq2, dq1, dh11=ZERO, dh21=ZERO, dh12=ZERO, dh22=ZERO, dflag=-ONE, dtemp;
 
 	if(*dd1 < ZERO)
 	{
@@ -108,7 +108,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 			if(dq2 < ZERO)
 			{
 				dflag = -ONE;
-				
+
 				dh11  = ZERO;
 				dh12  = ZERO;
 				dh21  = ZERO;
@@ -130,7 +130,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				*dd2  = *dd1 / du;
 				*dd1  = dtemp;
 				*dx1  = dy1 * du;
-			}			
+			}
 		}
 
 
@@ -169,7 +169,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 			}
 		}
-			
+
 		if(*dd2 != ZERO)
 		{
 			while( (ABS(*dd2) <= RGAMSQ) || (ABS(*dd2) >= GAMSQ) )
@@ -203,7 +203,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 			}
 		}
-					
+
 	}
 
 	if(dflag < ZERO)

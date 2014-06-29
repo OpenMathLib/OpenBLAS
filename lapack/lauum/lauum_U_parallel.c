@@ -54,7 +54,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -62,11 +62,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 
   if (args -> nthreads  == 1) {
-    LAUUM_U_SINGLE(args, NULL, NULL, sa, sb, 0); 
+    LAUUM_U_SINGLE(args, NULL, NULL, sa, sb, 0);
     return 0;
   }
 
@@ -95,7 +95,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
     bk = n - i;
     if (bk > blocking) bk = blocking;
-    
+
     newarg.n = i;
     newarg.k = bk;
     newarg.a = a + (    i * lda) * COMPSIZE;
@@ -118,6 +118,6 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
     CNAME(&newarg, NULL, NULL, sa, sb, 0);
   }
-  
+
   return 0;
 }

@@ -1285,12 +1285,12 @@
 
 .L50:
 	movl	N,  I
-//if incx ==0 || incy==0 jump to the tail	
+//if incx ==0 || incy==0 jump to the tail
 	cmpl	$0, INCX
 	je  .L56
 	cmpl	$0, INCY
 	je  .L56
-	
+
 	sarl	$2, I
 	jle	.L55
 	ALIGN_3

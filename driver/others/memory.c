@@ -13,19 +13,19 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the ISCAS nor the names of its contributors may 
-      be used to endorse or promote products derived from this software 
+   3. Neither the name of the ISCAS nor the names of its contributors may
+      be used to endorse or promote products derived from this software
       without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
@@ -136,8 +136,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
 
-#define CONSTRUCTOR	__attribute__ ((constructor)) 
-#define DESTRUCTOR	__attribute__ ((destructor)) 
+#define CONSTRUCTOR	__attribute__ ((constructor))
+#define DESTRUCTOR	__attribute__ ((destructor))
 
 #ifdef DYNAMIC_ARCH
 gotoblas_t *gotoblas = NULL;
@@ -171,32 +171,32 @@ int get_num_procs(void) {
 #ifdef OS_WINDOWS
 
 int get_num_procs(void) {
-  
+
   static int nums = 0;
 
   if (nums == 0) {
 
     SYSTEM_INFO sysinfo;
-    
+
     GetSystemInfo(&sysinfo);
 
     nums = sysinfo.dwNumberOfProcessors;
   }
-  
+
   return nums;
 }
 
 #endif
 
-#if defined(OS_FREEBSD) 
+#if defined(OS_FREEBSD)
 
 int get_num_procs(void) {
-  
+
   static int nums = 0;
 
   int m[2];
   size_t len;
-  
+
   if (nums == 0) {
     m[0] = CTL_HW;
     m[1] = HW_NCPU;
@@ -232,7 +232,7 @@ void set_stack_limit(int limitMB){
       rl.rlim_cur=StackSize;
       result=setrlimit(RLIMIT_STACK, &rl);
       if(result !=0){
-        fprintf(stderr, "OpenBLAS: set stack limit error =%d\n", result);                                                   
+        fprintf(stderr, "OpenBLAS: set stack limit error =%d\n", result);
       }
     }
   }
@@ -241,12 +241,12 @@ void set_stack_limit(int limitMB){
 #endif
 
 /*
-OpenBLAS uses the numbers of CPU cores in multithreading. 
+OpenBLAS uses the numbers of CPU cores in multithreading.
 It can be set by openblas_set_num_threads(int num_threads);
 */
 int blas_cpu_number  = 0;
 /*
-The numbers of threads in the thread pool. 
+The numbers of threads in the thread pool.
 This value is equal or large than blas_cpu_number. This means some threads are sleep.
 */
 int blas_num_threads = 0;
@@ -273,7 +273,7 @@ void openblas_fork_handler()
 }
 
 int blas_get_cpu_number(void){
-  char *p;
+  env_var_t p;
 #if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
   int max_num;
 #endif
@@ -288,21 +288,18 @@ int blas_get_cpu_number(void){
 
   blas_goto_num = 0;
 #ifndef USE_OPENMP
-  p = getenv("OPENBLAS_NUM_THREADS");
-  if (p) blas_goto_num = atoi(p);
+  if (readenv(p,"OPENBLAS_NUM_THREADS")) blas_goto_num = atoi(p);
   if (blas_goto_num < 0) blas_goto_num = 0;
 
   if (blas_goto_num == 0) {
-	    p = getenv("GOTO_NUM_THREADS");
-		if (p) blas_goto_num = atoi(p);
+		if (readenv(p,"GOTO_NUM_THREADS")) blas_goto_num = atoi(p);
 		if (blas_goto_num < 0) blas_goto_num = 0;
   }
-  
+
 #endif
 
   blas_omp_num = 0;
-  p = getenv("OMP_NUM_THREADS");
-  if (p) blas_omp_num = atoi(p);
+  if (readenv(p,"OMP_NUM_THREADS")) blas_omp_num = atoi(p);
   if (blas_omp_num < 0) blas_omp_num = 0;
 
   if (blas_goto_num > 0) blas_num_threads = blas_goto_num;
@@ -318,8 +315,8 @@ int blas_get_cpu_number(void){
 #ifdef DEBUG
   printf( "Adjusted number of threads : %3d\n", blas_num_threads);
 #endif
-  
-  blas_cpu_number = blas_num_threads;  
+
+  blas_cpu_number = blas_num_threads;
 
   return blas_num_threads;
 }
@@ -355,12 +352,12 @@ static void *alloc_mmap(void *address){
   void *map_address;
 
   if (address){
-    map_address = mmap(address, 
-		       BUFFER_SIZE, 
+    map_address = mmap(address,
+		       BUFFER_SIZE,
 		       MMAP_ACCESS, MMAP_POLICY | MAP_FIXED, -1, 0);
   } else {
-    map_address = mmap(address, 
-		       BUFFER_SIZE, 
+    map_address = mmap(address,
+		       BUFFER_SIZE,
 		       MMAP_ACCESS, MMAP_POLICY, -1, 0);
   }
 
@@ -387,7 +384,7 @@ static inline BLASULONG run_bench(BLASULONG address, BLASULONG size) {
   BLASULONG original, *p;
   BLASULONG start, stop, min;
   int iter, i, count;
-  
+
   min = (BLASULONG)-1;
 
   original = *(BLASULONG *)(address + size - PAGESIZE);
@@ -397,20 +394,20 @@ static inline BLASULONG run_bench(BLASULONG address, BLASULONG size) {
   for (iter = 0; iter < BENCH_ITERATION; iter ++ ) {
 
     p = (BLASULONG *)address;
-    
+
     count = size / PAGESIZE;
-    
+
     start = rpcc();
-    
+
     for (i = 0; i < count; i ++) {
       p = (BLASULONG *)(*p);
     }
-    
+
     stop = rpcc();
-    
+
     if (min > stop - start) min = stop - start;
   }
-  
+
   *(BLASULONG *)(address + size - PAGESIZE +  0) = original;
   *(BLASULONG *)(address + size - PAGESIZE +  8) = (BLASULONG)p;
 
@@ -442,11 +439,11 @@ static void *alloc_mmap(void *address){
     } else {
 #endif
 
-      map_address = mmap(NULL, BUFFER_SIZE * SCALING, 
+      map_address = mmap(NULL, BUFFER_SIZE * SCALING,
 			 MMAP_ACCESS, MMAP_POLICY, -1, 0);
-      
+
       if (map_address != (void *)-1) {
-		  
+
 #ifdef OS_LINUX
 #ifdef DEBUG
 		  int ret=0;
@@ -462,45 +459,45 @@ static void *alloc_mmap(void *address){
 #endif
 #endif
 
-	
+
 	allocsize = DGEMM_P * DGEMM_Q * sizeof(double);
-	
+
 	start   = (BLASULONG)map_address;
 	current = (SCALING - 1) * BUFFER_SIZE;
-	
+
 	while(current > 0) {
 	  *(BLASLONG *)start = (BLASLONG)start + PAGESIZE;
 	  start += PAGESIZE;
 	  current -= PAGESIZE;
 	}
-	
+
 	*(BLASLONG *)(start - PAGESIZE) = (BLASULONG)map_address;
-	
+
 	start = (BLASULONG)map_address;
-	
+
 	best = (BLASULONG)-1;
 	best_address = map_address;
-	
+
 	while ((start + allocsize  < (BLASULONG)map_address + (SCALING - 1) * BUFFER_SIZE)) {
-	  
+
 	  current = run_bench(start, allocsize);
-	  
+
 	  if (best > current) {
 	    best = current;
 	    best_address = (void *)start;
 	  }
-	  
+
 	  start += PAGESIZE;
-	  
+
 	}
-	
+
       if ((BLASULONG)best_address > (BLASULONG)map_address)
 	munmap(map_address,  (BLASULONG)best_address - (BLASULONG)map_address);
-      
+
       munmap((void *)((BLASULONG)best_address + BUFFER_SIZE), (SCALING - 1) * BUFFER_SIZE + (BLASULONG)map_address - (BLASULONG)best_address);
-      
+
       map_address = best_address;
-      
+
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
       hot_alloc = 2;
 #endif
@@ -632,7 +629,7 @@ static void alloc_devicedirver_free(struct release_t *release){
 }
 
 static void *alloc_devicedirver(void *address){
-  
+
   int fd;
   void *map_address;
 
@@ -646,7 +643,7 @@ static void *alloc_devicedirver(void *address){
 		     PROT_READ | PROT_WRITE,
 		     MAP_FILE | MAP_SHARED,
 		     fd, 0);
-  
+
   if (map_address != (void *)-1) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
@@ -671,9 +668,9 @@ static void alloc_shm_free(struct release_t *release){
 static void *alloc_shm(void *address){
   void *map_address;
   int shmid;
-  
+
   shmid = shmget(IPC_PRIVATE, BUFFER_SIZE,IPC_CREAT | 0600);
-  
+
   map_address = (void *)shmat(shmid, address, 0);
 
   if (map_address != (void *)-1){
@@ -725,7 +722,7 @@ static void *alloc_hugetlb(void *address){
 
 #if defined(OS_LINUX) || defined(OS_AIX)
   int shmid;
-  
+
   shmid = shmget(IPC_PRIVATE, BUFFER_SIZE,
 #ifdef OS_LINUX
 		 SHM_HUGETLB |
@@ -734,10 +731,10 @@ static void *alloc_hugetlb(void *address){
 		 SHM_LGPAGE | SHM_PIN |
 #endif
 		 IPC_CREAT | SHM_R | SHM_W);
-  
+
   if (shmid != -1) {
     map_address = (void *)shmat(shmid, address, SHM_RND);
-    
+
 #ifdef OS_LINUX
     my_mbind(map_address, BUFFER_SIZE, MPOL_PREFERRED, NULL, 0, 0);
 #endif
@@ -750,7 +747,7 @@ static void *alloc_hugetlb(void *address){
 
 #ifdef __sun__
   struct memcntl_mha mha;
-  
+
   mha.mha_cmd = MHA_MAPSIZE_BSSBRK;
   mha.mha_flags = 0;
   mha.mha_pagesize = HUGE_PAGESIZE;
@@ -769,19 +766,26 @@ static void *alloc_hugetlb(void *address){
   tp.PrivilegeCount = 1;
   tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
   
-  if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) return (void *) -1;
+  if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) {
+      CloseHandle(hToken);
+      return -1;
+  }
 
-  if (AdjustTokenPrivileges(hToken, FALSE, (PTOKEN_PRIVILEGES)&tp, 0, NULL, NULL) != TRUE) return (void *) -1;
+  if (AdjustTokenPrivileges(hToken, FALSE, &tp, 0, NULL, NULL) != TRUE) {
+      CloseHandle(hToken);
+      return -1;
+  }
 
   map_address  = (void *)VirtualAlloc(address,
 				      BUFFER_SIZE,
 				      MEM_LARGE_PAGES | MEM_RESERVE | MEM_COMMIT,
 				      PAGE_READWRITE);
 
-  AdjustTokenPrivileges(hToken, TRUE, &tp, 0, (PTOKEN_PRIVILEGES)NULL, NULL);
+  tp.Privileges[0].Attributes = 0;
+  AdjustTokenPrivileges(hToken, FALSE, &tp, 0, NULL, NULL);
 
   if (map_address == (void *)NULL) map_address = (void *)-1;
-  
+
 #endif
 
   if (map_address != (void *)-1){
@@ -829,7 +833,7 @@ static void *alloc_hugetlbfile(void *address){
 		     PROT_READ | PROT_WRITE,
 		     MAP_SHARED,
 		     fd, 0);
-  
+
   if (map_address != (void *)-1) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
@@ -882,7 +886,7 @@ static void gotoblas_memory_init(void);
 /*                2 : Thread                 */
 
 void *blas_memory_alloc(int procpos){
-  
+
   int position;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
   int mypos;
@@ -917,11 +921,11 @@ void *blas_memory_alloc(int procpos){
   void *(**func)(void *address);
 
   if (!memory_initialized) {
-    
+
     LOCK_COMMAND(&alloc_lock);
-    
+
     if (!memory_initialized) {
-      
+
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
       for (position = 0; position < NUM_BUFFERS; position ++){
 	memory[position].addr   = (void *)0;
@@ -930,7 +934,7 @@ void *blas_memory_alloc(int procpos){
 	memory[position].lock   = 0;
       }
 #endif
-      
+
 #ifdef DYNAMIC_ARCH
       gotoblas_dynamic_init();
 #endif
@@ -938,11 +942,11 @@ void *blas_memory_alloc(int procpos){
 #if defined(SMP) && defined(OS_LINUX) && !defined(NO_AFFINITY)
       gotoblas_affinity_init();
 #endif
-      
+
 #ifdef SMP
       if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
-      
+
 #if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64)
 #ifndef DYNAMIC_ARCH
       blas_set_parameter();
@@ -968,16 +972,16 @@ void *blas_memory_alloc(int procpos){
 
   do {
     if (!memory[position].used && (memory[position].pos == mypos)) {
-      
+
       blas_lock(&memory[position].lock);
-      
+
       if (!memory[position].used) goto allocation;
-      
+
       blas_unlock(&memory[position].lock);
     }
-    
+
     position ++;
-    
+
   } while (position < NUM_BUFFERS);
 
 
@@ -987,18 +991,18 @@ void *blas_memory_alloc(int procpos){
 
   do {
     if (!memory[position].used) {
-      
+
       blas_lock(&memory[position].lock);
 
       if (!memory[position].used) goto allocation;
-      
+
       blas_unlock(&memory[position].lock);
     }
-    
+
     position ++;
-    
+
   } while (position < NUM_BUFFERS);
-  
+
   goto error;
 
   allocation :
@@ -1055,13 +1059,13 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
-    memory[position].addr = map_address; 
+    memory[position].addr = map_address;
 
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)memory[position].addr, position);
 #endif
   }
- 
+
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
 
   if (memory[position].pos == -1) memory[position].pos = mypos;
@@ -1071,18 +1075,18 @@ void *blas_memory_alloc(int procpos){
 #ifdef DYNAMIC_ARCH
 
   if (memory_initialized == 1) {
-    
+
     LOCK_COMMAND(&alloc_lock);
-    
+
     if (memory_initialized == 1) {
-      
+
       if (!gotoblas) gotoblas_dynamic_init();
-      
+
       memory_initialized = 2;
     }
-    
+
     UNLOCK_COMMAND(&alloc_lock);
-    
+
   }
 #endif
 
@@ -1090,8 +1094,8 @@ void *blas_memory_alloc(int procpos){
 #ifdef DEBUG
   printf("Mapped   : %p  %3d\n\n",
 	  (void *)memory[position].addr, position);
-#endif  
-  
+#endif
+
   return (void *)memory[position].addr;
 
  error:
@@ -1106,8 +1110,8 @@ void blas_memory_free(void *free_area){
 
 #ifdef DEBUG
   printf("Unmapped Start : %p ...\n", free_area);
-#endif  
- 
+#endif
+
   position = 0;
 
   while ((memory[position].addr != free_area)
@@ -1117,21 +1121,21 @@ void blas_memory_free(void *free_area){
 
 #ifdef DEBUG
   printf("  Position : %d\n", position);
-#endif  
+#endif
 
   memory[position].used = 0;
 
 #ifdef DEBUG
   printf("Unmap Succeeded.\n\n");
-#endif  
+#endif
 
   return;
-  
+
  error:
   printf("BLAS : Bad memory unallocation! : %4d  %p\n", position,  free_area);
 
 #ifdef DEBUG
-  for (position = 0; position < NUM_BUFFERS; position++) 
+  for (position = 0; position < NUM_BUFFERS; position++)
     printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
 #endif
 
@@ -1151,7 +1155,7 @@ void blas_shutdown(void){
   for (pos = 0; pos < release_pos; pos ++) {
     release_info[pos].func(&release_info[pos]);
   }
-  
+
 #ifdef SEEK_ADDRESS
   base_address      = 0UL;
 #else
@@ -1173,7 +1177,7 @@ void blas_shutdown(void){
 }
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
- 
+
 #ifdef SMP
 #if   defined(USE_PTHREAD_LOCK)
 static pthread_mutex_t    init_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -1184,7 +1188,7 @@ static BLASULONG   init_lock = 0UL;
 #endif
 #endif
 
-static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, 
+static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
 			  void *sa, void *sb, BLASLONG pos) {
 
 #if !defined(ARCH_POWER) && !defined(ARCH_SPARC)
@@ -1247,7 +1251,7 @@ static void _init_thread_memory(void *buffer) {
 
   queue[num_cpu - 1].next = NULL;
   queue[0].sa = buffer;
-  
+
   exec_blas(num_cpu, queue);
 
 }
@@ -1266,15 +1270,15 @@ static void gotoblas_memory_init(void) {
 #ifdef SMP_SERVER
   if (blas_server_avail == 0) blas_thread_init();
 #endif
-    
+
   _init_thread_memory((void *)((BLASULONG)buffer + GEMM_OFFSET_A));
-  
+
 #else
-  
+
   _touch_memory(NULL, NULL, NULL, (void *)((BLASULONG)buffer + GEMM_OFFSET_A), NULL, 0);
-  
+
 #endif
-  
+
   blas_memory_free(buffer);
 }
 #endif

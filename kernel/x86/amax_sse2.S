@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -50,7 +50,7 @@
 #define X	%ecx
 #define INCX	%edx
 #define I	%eax
-	
+
 #ifdef USE_MIN
 #define maxpd	minpd
 #define maxsd	minsd
@@ -128,7 +128,7 @@
 	decl	I
 	jle	.L12
 	ALIGN_4
-	
+
 .L11:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -286,7 +286,7 @@
 	maxpd	%xmm5, %xmm1
 
 	addl	$4 * SIZE, X
-	ALIGN_3	
+	ALIGN_3
 
 .L17:
 	testl	$2, M
@@ -298,8 +298,8 @@
 #endif
 	maxpd	%xmm4, %xmm0
 	addl	$2 * SIZE, X
-	ALIGN_3	
-	
+	ALIGN_3
+
 .L18:
 	testl	$1, M
 	jle	.L998
@@ -318,7 +318,7 @@
 	sarl	$4, I
 	jle	.L45
 	ALIGN_4
-	
+
 .L41:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -469,7 +469,7 @@
 	andps	 %xmm3, %xmm5
 #endif
 	maxpd	%xmm5, %xmm1
-	ALIGN_3	
+	ALIGN_3
 
 .L47:
 	testl	$2, M
@@ -484,7 +484,7 @@
 #endif
 	maxpd	%xmm6, %xmm0
 	ALIGN_3
-	
+
 .L48:
 	testl	$1, M
 	je	.L998

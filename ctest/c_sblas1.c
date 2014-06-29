@@ -31,14 +31,14 @@ float F77_scnrm2(blasint *N, const float *X, blasint *incX)
    return cblas_scnrm2(*N, X, *incX);
 }
 
-void F77_scopy(blasint *N, const float *X, blasint *incX, 
+void F77_scopy(blasint *N, const float *X, blasint *incX,
                     float *Y, blasint *incY)
 {
    cblas_scopy(*N, X, *incX, Y, *incY);
    return;
 }
 
-float F77_sdot(blasint *N, const float *X, blasint *incX, 
+float F77_sdot(blasint *N, const float *X, blasint *incX,
                         const float *Y, blasint *incY)
 {
    return cblas_sdot(*N, X, *incX, Y, *incY);

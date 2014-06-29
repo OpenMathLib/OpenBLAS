@@ -1,13 +1,13 @@
 ZGEMVNKERNEL = zgemv_n_dup.S
-ZGEMVTKERNEL = zgemv_t_dup.S
+ZGEMVTKERNEL = zgemv_t.S
 
 SGEMMKERNEL    =  gemm_kernel_8x4_barcelona.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_8.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_8.c
 SGEMMONCOPY    =  gemm_ncopy_4_opteron.S
 SGEMMOTCOPY    =  gemm_tcopy_4_opteron.S
-SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX) 
-SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX) 
+SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 DGEMMKERNEL    =  gemm_kernel_4x4_barcelona.S

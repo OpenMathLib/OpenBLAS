@@ -41,7 +41,7 @@
 
 #define STACK	12
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -89,7 +89,7 @@
 	subl	$-32 * SIZE, X
 	subl	$-32 * SIZE, Y
 	addl	M, M
-	
+
 	testl	$SIZE, Y
 	je	.L05
 

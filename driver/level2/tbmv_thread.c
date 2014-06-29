@@ -105,18 +105,18 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
   if (incx != 1) {
 
     COPY_K(args -> n, x, incx, buffer, 1);
-    
+
     x = buffer;
     buffer += ((args -> n * COMPSIZE + 1023) & ~1023);
-  } 
+  }
 
   if (range_n) y += *range_n * COMPSIZE;
 
-  SCAL_K(args -> n, 0, 0, ZERO, 
+  SCAL_K(args -> n, 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y, 1, NULL, 0, NULL, 0);  
+	 y, 1, NULL, 0, NULL, 0);
 
   for (i = n_from; i < n_to; i++) {
 
@@ -148,7 +148,7 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #endif
     }
 #endif
-    
+
 #ifndef COMPLEX
 #ifdef UNIT
     *(y + i * COMPSIZE) += *(x + i * COMPSIZE);
@@ -183,19 +183,19 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #endif
 #endif
 #endif
-    
+
 #ifdef LOWER
     if (length > 0) {
 #ifndef TRANS
       MYAXPY(length, 0, 0,
-	     *(x + i * COMPSIZE + 0), 
+	     *(x + i * COMPSIZE + 0),
 #ifdef COMPLEX
 	     *(x + i * COMPSIZE + 1),
 #endif
 	     a + COMPSIZE, 1, y + (i + 1) * COMPSIZE, 1, NULL, 0);
 #else
       result = MYDOT(length, a + COMPSIZE, 1, x + (i + 1) * COMPSIZE, 1);
-      
+
 #ifndef COMPLEX
       *(y + i * COMPSIZE + 0) += result;
 #else
@@ -205,10 +205,10 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #endif
     }
 #endif
-    
+
     a += lda * COMPSIZE;
   }
-  
+
   return 0;
 }
 
@@ -236,7 +236,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -244,51 +244,51 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.n = n;
   args.k = k;
-  
+
   args.a = (void *)a;
   args.b = (void *)x;
   args.c = (void *)(buffer);
-    
+
   args.lda = lda;
   args.ldb = incx;
-  
+
   dnum = (double)n * (double)n / (double)nthreads;
   num_cpu  = 0;
-  
+
   if (n < 2 * k) {
 
 #ifndef LOWER
-    
+
     range_m[MAX_CPU_NUMBER] = n;
     i          = 0;
-    
+
     while (i < n){
-      
+
       if (nthreads - num_cpu > 1) {
-	
+
 	double di = (double)(n - i);
 	if (di * di - dnum > 0) {
 	  width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
 	} else {
 	width = n - i;
 	}
-	
+
 	if (width < 16) width = 16;
 	if (width > n - i) width = n - i;
-	
+
       } else {
 	width = n - i;
       }
-      
+
       range_m[MAX_CPU_NUMBER - num_cpu - 1] = range_m[MAX_CPU_NUMBER - num_cpu] - width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = trmv_kernel;
       queue[num_cpu].args    = &args;
@@ -297,37 +297,37 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-      
+
       num_cpu ++;
       i += width;
     }
-    
+
 #else
-    
+
     range_m[0] = 0;
     i          = 0;
-    
+
     while (i < n){
-      
+
       if (nthreads - num_cpu > 1) {
-	
+
 	double di = (double)(n - i);
 	if (di * di - dnum > 0) {
 	  width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
 	} else {
 	  width = n - i;
 	}
-	
+
 	if (width < 16) width = 16;
 	if (width > n - i) width = n - i;
-	
+
       } else {
 	width = n - i;
     }
-      
+
       range_m[num_cpu + 1] = range_m[num_cpu] + width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = trmv_kernel;
       queue[num_cpu].args    = &args;
@@ -336,27 +336,27 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
       num_cpu ++;
       i += width;
     }
-    
+
 #endif
   } else {
-    
+
     range_m[0] = 0;
     i          = n;
-    
+
     while (i > 0){
-      
+
       width  = blas_quickdivide(i + nthreads - num_cpu - 1, nthreads - num_cpu);
-      
+
       if (width < 4) width = 4;
       if (i < width) width = i;
-      
+
       range_m[num_cpu + 1] = range_m[num_cpu] + width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = trmv_kernel;
       queue[num_cpu].args    = &args;
@@ -365,7 +365,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-      
+
       num_cpu ++;
       i -= width;
     }
@@ -376,20 +376,20 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
   if (num_cpu) {
     queue[0].sa = NULL;
     queue[0].sb = buffer + num_cpu * (((n + 255) & ~255) + 16) * COMPSIZE;
-    
+
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-  
+
   for (i = 1; i < num_cpu; i ++) {
     AXPYU_K(n, 0, 0, ONE,
 #ifdef COMPLEX
-	    ZERO, 
+	    ZERO,
 #endif
 	    buffer + range_n[i] * COMPSIZE, 1, buffer, 1, NULL, 0);
   }
-  
+
   COPY_K(n, buffer, 1, x, incx);
 
   return 0;

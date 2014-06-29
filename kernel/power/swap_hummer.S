@@ -41,9 +41,9 @@
 
 #define N	r3
 #define X	r6
-#define INCX	r7	
+#define INCX	r7
 #define Y	r8
-#define INCY	r9	
+#define INCY	r9
 
 #define INCX2	r4
 #define INCY2	r5
@@ -78,7 +78,7 @@
 	stfpdux	f14, SP, r10
 	stfpdux	f15, SP, r10
 	stfpdux	f16, SP, r10
-	
+
 	slwi	INCX,  INCX, BASE_SHIFT
 	slwi	INCY,  INCY, BASE_SHIFT
 	add	INCX2, INCX, INCX
@@ -293,7 +293,7 @@ LL(23):
 LL(25):
 	andi.	r0,  N, 7
 	beq	LL(29)
-	
+
 	andi.	r0,  N, 4
 	beq	LL(27)
 
@@ -447,7 +447,7 @@ LL(33):
 LL(35):
 	andi.	r0,  N, 7
 	beq	LL(39)
-	
+
 	andi.	r0,  N, 4
 	beq	LL(37)
 
@@ -696,7 +696,7 @@ LL(999):
 	lfpdux	f16, SP, r10
 	lfpdux	f15, SP, r10
 	lfpdux	f14, SP, r10
-	
+
 	addi	SP, SP,  16
 	blr
 

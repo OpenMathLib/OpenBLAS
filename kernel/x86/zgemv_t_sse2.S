@@ -167,7 +167,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	movl	M,  I
 	sarl	$2, I
 	jle	.L05
@@ -223,7 +223,7 @@
 	movl	N,  J
 	ALIGN_4
 
-.L11:	
+.L11:
 	movl	BUFFER, X
 	addl	$16 * SIZE, X
 
@@ -377,7 +377,7 @@
 	pcmpeqb	%xmm5, %xmm5
 	psllq	$63,    %xmm5
 	shufps	$0xc0, %xmm5, %xmm5
-	
+
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	xorpd	%xmm5, %xmm0
 #else
@@ -426,7 +426,7 @@
 	decl	J
 	jg	.L11
 	ALIGN_4
-	
+
 .L999:
 	movl	M,%eax
 	sall	$ZBASE_SHIFT,%eax
@@ -440,7 +440,7 @@
 .L999x:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 	addl	$ARGS,%esp
 	ret

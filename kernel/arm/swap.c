@@ -58,5 +58,5 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT *x, 
 	return(0);
 
 }
-	
+
 

@@ -38,13 +38,13 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
 
 #define I	%rax
-	
+
 #ifdef USE_MIN
 #define maxsd	minsd
 #endif
@@ -103,7 +103,7 @@
 	decq	I
 	jle	.L13
 	ALIGN_4
-	
+
 .L12:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -183,7 +183,7 @@
 
 	maxsd	%xmm5,  %xmm0
 	maxsd	%xmm7,  %xmm1
-	ALIGN_3	
+	ALIGN_3
 
 .L17:
 	testq	$1, M
@@ -225,7 +225,7 @@
 	decq	I
 	jle	.L23
 	ALIGN_4
-	
+
 .L22:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -307,7 +307,7 @@
 
 	maxsd	%xmm5,  %xmm0
 	maxsd	%xmm7,  %xmm1
-	ALIGN_3	
+	ALIGN_3
 
 .L27:
 	testq	$1, M

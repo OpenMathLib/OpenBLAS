@@ -130,7 +130,7 @@
 #endif
 
 	PROLOGUE
-	
+
 	LDARG	LDC,   0($sp)
 	daddiu	$sp, $sp, -128
 
@@ -759,7 +759,7 @@
 	bgtz	J, .L10
 	move	B, BO
 	.align 3
-	
+
 .L20:
 	andi	J,  N, 2
 	MTC	$0,  c11

@@ -149,7 +149,7 @@
 	add	I, -1, I
 	cmp	I, 0
 	ble,pt	%icc, .LL12
-	nop	
+	nop
 
 #define PREFETCHSIZE 40
 

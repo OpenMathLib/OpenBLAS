@@ -50,18 +50,18 @@
 #define INCY	%r10
 #define FLAG	%r11
 #endif
-		
+
 #include "l1param.h"
-	
+
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	movq	40(%rsp), INCY
 #endif
 
 	EMMS
-	
+
 	testq	N, N	# if m == 0 goto End
 	jle	.L999
 
@@ -363,4 +363,4 @@
 	ret
 
 	EPILOGUE
-	
+

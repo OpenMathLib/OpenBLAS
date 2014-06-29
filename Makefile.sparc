@@ -27,7 +27,7 @@ LIBNAME		= $(LIBPREFIX).a
 
 ifndef SMP
 LIBCXML		= -L/opt/SUNWspro/lib/v9
-LIBATLAS	= -L$(HOME)/misc/lib -lf77blas -latlas -lm 
+LIBATLAS	= -L$(HOME)/misc/lib -lf77blas -latlas -lm
 else
 LIBCXML		= -lcxmlp -lots -lm
 endif

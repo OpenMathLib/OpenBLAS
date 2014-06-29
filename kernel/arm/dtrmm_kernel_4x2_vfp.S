@@ -198,7 +198,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fldd		d0, ALPHA
 
-		
+
 	fmuld	d4 , d0 , d8
 	fmuld	d5 , d0 , d9
 
@@ -248,7 +248,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fldd		d0, ALPHA
 
-		
+
 	fmuld	d4 , d0 , d8
 
 	fstd	d4 , [CO1]
@@ -508,10 +508,10 @@ _L2_M4_22:
 
 	subs	L, L, #1
 	bgt	_L2_M4_22
-	
+
 
 _L2_M4_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L2_M4_100
 
@@ -521,7 +521,7 @@ _L2_M4_42:
 
 	subs	L, L, #1
 	bgt	_L2_M4_42
-	
+
 _L2_M4_100:
 
 	SAVE4x2
@@ -613,10 +613,10 @@ _L2_M2_22:
 
 	subs	L, L, #1
 	bgt	_L2_M2_22
-	
+
 
 _L2_M2_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L2_M2_100
 
@@ -626,7 +626,7 @@ _L2_M2_42:
 
 	subs	L, L, #1
 	bgt	_L2_M2_42
-	
+
 _L2_M2_100:
 
 	SAVE2x2
@@ -710,10 +710,10 @@ _L2_M1_22:
 
 	subs	L, L, #1
 	bgt	_L2_M1_22
-	
+
 
 _L2_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L2_M1_100
 
@@ -723,7 +723,7 @@ _L2_M1_42:
 
 	subs	L, L, #1
 	bgt	_L2_M1_42
-	
+
 _L2_M1_100:
 
 	SAVE1x2
@@ -774,7 +774,7 @@ _L1_BEGIN:
 	tst	J , #1
 	ble	_L999
 
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	add	r3 , r4, CO1
@@ -851,10 +851,10 @@ _L1_M4_22:
 
 	subs	L, L, #1
 	bgt	_L1_M4_22
-	
+
 
 _L1_M4_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L1_M4_100
 
@@ -864,7 +864,7 @@ _L1_M4_42:
 
 	subs	L, L, #1
 	bgt	_L1_M4_42
-	
+
 _L1_M4_100:
 
 	SAVE4x1
@@ -956,10 +956,10 @@ _L1_M2_22:
 
 	subs	L, L, #1
 	bgt	_L1_M2_22
-	
+
 
 _L1_M2_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L1_M2_100
 
@@ -969,7 +969,7 @@ _L1_M2_42:
 
 	subs	L, L, #1
 	bgt	_L1_M2_42
-	
+
 _L1_M2_100:
 
 	SAVE2x1
@@ -1053,10 +1053,10 @@ _L1_M1_22:
 
 	subs	L, L, #1
 	bgt	_L1_M1_22
-	
+
 
 _L1_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L1_M1_100
 
@@ -1066,7 +1066,7 @@ _L1_M1_42:
 
 	subs	L, L, #1
 	bgt	_L1_M1_42
-	
+
 _L1_M1_100:
 
 	SAVE1x1

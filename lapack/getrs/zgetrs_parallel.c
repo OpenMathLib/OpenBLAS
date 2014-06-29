@@ -104,7 +104,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
       mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 
       gemm_thread_n(mode, args, NULL, NULL, inner_thread, sa, sb, args -> nthreads);
     }

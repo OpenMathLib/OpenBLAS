@@ -50,6 +50,6 @@ BOOL APIENTRY DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved) {
   if (reason == DLL_PROCESS_DETACH) {
     gotoblas_quit();
   }
-  
+
   return TRUE;
 }

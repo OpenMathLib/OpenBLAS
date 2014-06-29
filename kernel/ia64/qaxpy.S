@@ -74,7 +74,7 @@
 
 #define PR	r30
 #define ARLC	r31
-	
+
 #define ALPHA	f8
 #define SP	r12
 
@@ -268,7 +268,7 @@
 	(p16) lfetch.nt1	[PRE1], INCX8
 	nop   __LINE__
 	(p17) FMA	f11 = ALPHA, f42, f90
-	}	
+	}
 	;;
 	{ .mmi
 	(p16) LDFD	f56  = [X1], INCX4

@@ -144,6 +144,12 @@
 #define DNEG_TCOPY		dneg_tcopy
 #define DLASWP_NCOPY		dlaswp_ncopy
 
+#define	DAXPBY_K		daxpby_k
+#define DOMATCOPY_K_CN		domatcopy_k_cn
+#define DOMATCOPY_K_RN		domatcopy_k_rn
+#define DOMATCOPY_K_CT		domatcopy_k_ct
+#define DOMATCOPY_K_RT		domatcopy_k_rt
+
 #else
 
 #define	DAMAX_K			gotoblas -> damax_k
@@ -254,6 +260,12 @@
 
 #define DNEG_TCOPY		gotoblas -> dneg_tcopy
 #define DLASWP_NCOPY		gotoblas -> dlaswp_ncopy
+
+#define	DAXPBY_K		gotoblas -> daxpby_k
+#define DOMATCOPY_K_CN		gotoblas -> domatcopy_k_cn
+#define DOMATCOPY_K_RN		gotoblas -> domatcopy_k_rn
+#define DOMATCOPY_K_CT		gotoblas -> domatcopy_k_ct
+#define DOMATCOPY_K_RT		gotoblas -> domatcopy_k_rt
 
 #endif
 

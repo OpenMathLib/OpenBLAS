@@ -86,7 +86,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 #ifdef WINDOWS_ABI
 	pushq	%rdi
 	pushq	%rsi
@@ -202,7 +202,7 @@
 	leaq	(BO, M8, 2), BO
 
 #endif
-	
+
 	addq	$8 * SIZE, AO1
 	addq	$8 * SIZE, AO2
 	decq	I
@@ -246,7 +246,7 @@
 	leaq	(BO, M8, 2), BO
 
 #endif
-	
+
 	addq	$4 * SIZE, AO1
 	addq	$4 * SIZE, AO2
 	ALIGN_4
@@ -257,7 +257,7 @@
 	jle	.L14
 #ifndef DOUBLE
 	vmovsd	0 * SIZE(AO1), %xmm0
-	vmovsd	0 * SIZE(AO2), %xmm1 
+	vmovsd	0 * SIZE(AO2), %xmm1
 
 	vmovsd	%xmm0,    0 * SIZE(BO)
 	vmovsd	%xmm1,    2 * SIZE(BO)
@@ -268,7 +268,7 @@
 	vmovups	%xmm0,    0 * SIZE(BO)
 	vmovups	%xmm1,    2 * SIZE(BO)
 #endif
-	
+
 	leaq	(BO, M8, 2), BO
 	addq	$2 * SIZE, AO1
 	addq	$2 * SIZE, AO2

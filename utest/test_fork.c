@@ -61,20 +61,20 @@ void test_fork_safety(void)
 {
     int n = 1000;
     int i;
-     
+
     double *a, *b, *c, *d;
     size_t n_bytes;
-     
+
     pid_t fork_pid;
     pid_t fork_pid_nested;
 
     n_bytes = sizeof(*a) * n * n;
-     
+
     a = xmalloc(n_bytes);
     b = xmalloc(n_bytes);
     c = xmalloc(n_bytes);
     d = xmalloc(n_bytes);
-    
+
     // Put ones in a and b
     for(i = 0; i < n * n; ++i) {
         a[i] = 1;

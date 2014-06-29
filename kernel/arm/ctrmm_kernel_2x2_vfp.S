@@ -91,7 +91,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **************************************************************************************/
 
 
-#if defined(NN) || defined(NT) || defined(TN) || defined(TT) 
+#if defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
 	#define	KMAC_R	fnmacs
 	#define	KMAC_I	fmacs
@@ -848,7 +848,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ble	_L1_BEGIN
 
 _L2_BEGIN:
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	lsl	r4 , r4 , #1					// LDC * 2
@@ -951,7 +951,7 @@ _L2_M2_22:
 
 	b	 _L2_M2_44
 
-	
+
 _L2_M2_30:
 	tst	L, #3
 	ble	_L2_M2_40
@@ -1016,7 +1016,7 @@ _L2_M2_46:
 
 	subs	L, L, #1
 	bne	_L2_M2_46
-	
+
 _L2_M2_100:
 
 	SAVE2x2
@@ -1103,10 +1103,10 @@ _L2_M1_22:
 
 	subs	L, L, #1
 	bgt	_L2_M1_22
-	
+
 
 _L2_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L2_M1_100
 
@@ -1116,7 +1116,7 @@ _L2_M1_42:
 
 	subs	L, L, #1
 	bgt	_L2_M1_42
-	
+
 _L2_M1_100:
 
 	SAVE1x2
@@ -1147,7 +1147,7 @@ _L2_END:
 	lsl	r4, r4, #4					// k * 2 * 4 * 2
 	add	r3, r3, r4					// B = B + K * 2 * 8
 	mov	BC, r3
-	
+
 #if !defined(LEFT)
         ldr     r3 , KK
         add     r3 , r3 , #2                                    // number of values in BO
@@ -1167,7 +1167,7 @@ _L1_BEGIN:
 	tst	J , #1
 	ble	_L999
 
-	
+
 	ldr	CO1, C						// CO1 = C
 	ldr	r4 , LDC
 	add	r3 , r4, CO1
@@ -1265,7 +1265,7 @@ _L1_M2_22:
 
 	b	 _L1_M2_44
 
-	
+
 _L1_M2_30:
 	tst	L, #3
 	ble	_L1_M2_40
@@ -1330,7 +1330,7 @@ _L1_M2_46:
 
 	subs	L, L, #1
 	bne	_L1_M2_46
-	
+
 _L1_M2_100:
 
 	SAVE2x1
@@ -1418,10 +1418,10 @@ _L1_M1_22:
 
 	subs	L, L, #1
 	bgt	_L1_M1_22
-	
+
 
 _L1_M1_40:
-	
+
 	ands	L , K1, #7					// L = L % 8
 	ble	_L1_M1_100
 
@@ -1431,7 +1431,7 @@ _L1_M1_42:
 
 	subs	L, L, #1
 	bgt	_L1_M1_42
-	
+
 _L1_M1_100:
 
 	SAVE1x1

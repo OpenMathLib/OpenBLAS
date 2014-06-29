@@ -45,7 +45,7 @@
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
-  
+
   blasint n    = *N;
   blasint incx = *INCX;
   blasint incy = *INCY;
@@ -78,12 +78,12 @@ void CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
 
 #ifdef SMP
   nthreads = num_cpu_avail(1);
-  
+
   //disable multi-thread when incx==0 or incy==0
   //In that case, the threads would be dependent.
   if (incx == 0 || incy == 0)
 	  nthreads = 1;
-  
+
   if (nthreads == 1) {
 #endif
 
@@ -91,15 +91,15 @@ void CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
 
 #ifdef SMP
   } else {
-    
+
 #ifdef XDOUBLE
     mode  =  BLAS_XDOUBLE | BLAS_REAL;
 #elif defined(DOUBLE)
     mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
     mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
-    
+#endif
+
     blas_level1_thread(mode, n, 0, 0, dummyalpha,
 		       x, incx, y, incy, NULL, 0, (void *)SWAP_K, nthreads);
   }
@@ -111,5 +111,5 @@ void CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
   IDEBUG_END;
 
   return;
-  
+
 }

@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	16
-	
+
 #define M	 4 + STACK + ARGS(%esp)
 #define N	 8 + STACK + ARGS(%esp)
 #define K	12 + STACK + ARGS(%esp)
@@ -125,13 +125,13 @@
 	movl	OFFSET, %eax
 #ifndef LEFT
 	negl	%eax
-#endif	
+#endif
 	movl	%eax, KK
 #endif
 
 	movl	M,  %ebx
 	testl	%ebx, %ebx
-	jle	.L999	
+	jle	.L999
 
 	subl	$-16 * SIZE, A
 	subl	$-16 * SIZE, B
@@ -148,7 +148,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	B, BX
 
@@ -169,7 +169,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	movl	BX, %eax
 	PREFETCHB  -16 * SIZE(%eax)
@@ -193,7 +193,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -420,7 +420,7 @@
 
 	addsubpd	%xmm5, %xmm4
 	addsubpd	%xmm7, %xmm6
-	
+
 #if! defined(TRMMKERNEL) && !defined(BETAZERO)
 	addpd	%xmm0, %xmm4
 	addpd	%xmm1, %xmm6
@@ -468,7 +468,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	movl	C, C1		# coffset = c
 	movl	A, AA		# aoffset = a
@@ -487,7 +487,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	movaps	-16 * SIZE(AA), %xmm0
 	pxor	%xmm2, %xmm2
@@ -505,7 +505,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -663,7 +663,7 @@
 	mulpd	%xmm2, %xmm4
 	mulpd	%xmm3, %xmm5
 	addsubpd	%xmm5, %xmm4
-	
+
 #if! defined(TRMMKERNEL) && !defined(BETAZERO)
 	addpd	%xmm0, %xmm4
 #endif

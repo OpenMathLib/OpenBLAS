@@ -58,5 +58,5 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 	return(0);
 
 }
-	
+
 

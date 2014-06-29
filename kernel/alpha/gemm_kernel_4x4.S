@@ -167,7 +167,7 @@
 	sra	N, 2, J
 	ble	J, $L40
 	.align 4
-	
+
 $L01:
 	mov	C,  C1
 	addq	C,  LDC, C2
@@ -291,7 +291,7 @@ $L11:
  	fclr	c09
 	lda	AO,    4 * SIZE(AO)
 	fclr	c10
-#endif	
+#endif
 
 	lds	$f31,  7 * SIZE(C4)
 	fclr	c14
@@ -1456,7 +1456,7 @@ $L40:
 	fclr	t1
 	addq	C2, LDC, C
 	fclr	t2
-	
+
 #if defined(TRMMKERNEL) &&  defined(LEFT)
 	mov	OFFSET, KK
 #endif

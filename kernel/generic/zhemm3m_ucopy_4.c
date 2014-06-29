@@ -72,7 +72,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
   while (js > 0){
 
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
     if (offset > -1) ao2 = a + posY * 2 + (posX + 1) * lda; else ao2 = a + (posX + 1) * 2 + posY * lda;
     if (offset > -2) ao3 = a + posY * 2 + (posX + 2) * lda; else ao3 = a + (posX + 2) * 2 + posY * lda;
@@ -120,7 +120,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    break;
 	  }
 	}
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
       if (offset >  -1) ao2 += 2; else ao2 += lda;
       if (offset >  -2) ao3 += 2; else ao3 += lda;
@@ -143,7 +143,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
   if (n & 2) {
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
     if (offset > -1) ao2 = a + posY * 2 + (posX + 1) * lda; else ao2 = a + (posX + 1) * 2 + posY * lda;
 
@@ -169,7 +169,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    break;
 	  }
 	}
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
       if (offset >  -1) ao2 += 2; else ao2 += lda;
 
@@ -181,13 +181,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
       offset --;
       i --;
     }
-    
+
     posX += 2;
   }
 
   if (n & 1) {
     offset = posX - posY;
-    
+
     if (offset >  0) ao1 = a + posY * 2 + (posX + 0) * lda; else ao1 = a + (posX + 0) * 2 + posY * lda;
 
     i     = m;
@@ -201,7 +201,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	} else {
 	    data01 = CMULT(*(ao1 + 0), ZERO);
 	}
-      
+
       if (offset >   0) ao1 += 2; else ao1 += lda;
 
       b[ 0] = data01;

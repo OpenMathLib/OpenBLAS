@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
@@ -51,7 +51,7 @@
 	PROFCODE
 
 	SAVEREGISTERS
-	
+
 	pxor	%xmm0, %xmm0
 	testq	M, M
 	jle	.L999
@@ -64,7 +64,7 @@
 
 	pcmpeqb	%xmm15, %xmm15
 	psrld	$1, %xmm15
-	
+
 	salq	$ZBASE_SHIFT, INCX
 
 	cmpq	$2 * SIZE, INCX
@@ -116,7 +116,7 @@
 	decq	I
 	jle	.L12
 	ALIGN_3
-	
+
 .L11:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -267,7 +267,7 @@
 	sarq	$2, I
 	jle	.L105
 	ALIGN_4
-	
+
 .L101:
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -314,19 +314,19 @@
 #ifndef HAVE_SSE3
 	movhlps	%xmm0, %xmm1
 	addps	%xmm1, %xmm0
-	
+
 	movaps	%xmm0, %xmm1
 	shufps  $1, %xmm0, %xmm0
 	addss	 %xmm1, %xmm0
 #else
 	haddps	%xmm0, %xmm0
 	haddps	%xmm0, %xmm0
-#endif	
+#endif
 	ALIGN_4
 
 .L999:
 	RESTOREREGISTERS
-	
+
 	ret
 
 	EPILOGUE

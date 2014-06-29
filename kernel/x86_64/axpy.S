@@ -44,14 +44,14 @@
 #define INCX	ARG5	/* rdx */
 #define Y	ARG6	/* rcx */
 #define INCY	ARG2	/* r8  */
-	
+
 #define ALPHA	 8(%rsp)
 
 #include "l1param.h"
 
 	PROLOGUE
 	PROFCODE
-	
+
 	movq	24(%rsp), INCY
 
 	FLD	ALPHA
@@ -61,7 +61,7 @@
 
 	testq	M, M
 	jle	.L40
-	
+
 	cmpq	$SIZE, INCX
 	jne	.L14
 	cmpq	$SIZE, INCY

@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
@@ -49,7 +49,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	fldz
 	testq	M, M
 	jle	.L999
@@ -68,7 +68,7 @@
 	sarq	$3, I
 	jle	.L20
 	ALIGN_4
-	
+
 .L10:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -129,7 +129,7 @@
 	sarq	$3,   I
 	jle	.L60
 	ALIGN_4
-	
+
 .L50:
 	FLD	(X)
 	addq	INCX, X

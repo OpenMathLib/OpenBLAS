@@ -14,7 +14,7 @@ endif
 # LIBMKL		= -L$(MKLPATH)/32 -lmkl_lapack -lmkl_ia32 -lguide -lpthread -lm
 
 ifndef SMP
-LIBATLAS	= -L$(ATLAS) -lf77blas -latlas -lg2c -lm 
+LIBATLAS	= -L$(ATLAS) -lf77blas -latlas -lg2c -lm
 else
 LIBATLAS	= -L$(ATLAS) -lptf77blas -latlas -lpthread -lg2c -lm
 endif
@@ -50,7 +50,7 @@ LIBSUNPERF	= -L/opt/SUNWspro/lib/sse2 -Wl,-R,/opt/SUNWspro/lib/sse2 -lsunperf
 LIBVECLIB	= /System/Library/Frameworks/vecLib.framework/Versions/Current/vecLib
 
 ifndef SMP
-LIBATLAS	= -L$(ATLASPATH)/32 -lcblas -lf77blas -latlas -lm 
+LIBATLAS	= -L$(ATLASPATH)/32 -lcblas -lf77blas -latlas -lm
 else
 LIBATLAS	= -L$(ATLASPATH)/32 -lptf77blas -lptatlas -lpthread -lm
 endif

@@ -47,9 +47,9 @@ __global__ void cuda_dgemm_kernel(int, int, int, double *, double *, double *);
 extern "C" {
 #endif
 
-int sgemm_beta(BLASLONG, BLASLONG, BLASLONG, float, 
+int sgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,
 	       float  *, BLASLONG, float   *, BLASLONG, float  *, BLASLONG);
-int dgemm_beta(BLASLONG, BLASLONG, BLASLONG, double, 
+int dgemm_beta(BLASLONG, BLASLONG, BLASLONG, double,
 	       double *, BLASLONG, double  *, BLASLONG, double *, BLASLONG);
 int cgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,  float,
 	       float  *, BLASLONG, float   *, BLASLONG, float  *, BLASLONG);
@@ -57,12 +57,12 @@ int zgemm_beta(BLASLONG, BLASLONG, BLASLONG, double, double,
 	       double *, BLASLONG, double  *, BLASLONG, double *, BLASLONG);
 
 #ifdef EXPRECISION
-int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble, 
+int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);
 int xgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);
 #else
-int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble *, 
+int qgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble *,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);
 int xgemm_beta(BLASLONG, BLASLONG, BLASLONG, xdouble *,
 	       xdouble *, BLASLONG, xdouble  *, BLASLONG, xdouble *, BLASLONG);
@@ -1731,6 +1731,37 @@ int zgemc_oncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, BLA
 int zgemc_otcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, BLASLONG ldb, double *c);
 int xgemc_oncopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xdouble *b, BLASLONG ldb, xdouble *c);
 int xgemc_otcopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xdouble *b, BLASLONG ldb, xdouble *c);
+
+int somatcopy_k_cn(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLASLONG);
+int somatcopy_k_rn(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLASLONG);
+int somatcopy_k_ct(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLASLONG);
+int somatcopy_k_rt(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLASLONG);
+
+int domatcopy_k_cn(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+int domatcopy_k_rn(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+int domatcopy_k_ct(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+int domatcopy_k_rt(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+
+int comatcopy_k_cn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_ct(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rt(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+
+int comatcopy_k_cnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_ctc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int comatcopy_k_rtc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+
+int zomatcopy_k_cn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_ct(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rt(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+
+int zomatcopy_k_cnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_ctc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zomatcopy_k_rtc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+
 
 #ifdef __CUDACC__
 }

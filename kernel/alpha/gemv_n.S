@@ -621,7 +621,7 @@ $L16:
 	LD	a1,  1 * SIZE(A1)
 	LD	a2,  0 * SIZE(A2)
 	LD	a3,  1 * SIZE(A2)
-	
+
 	LD	y0,  0 * SIZE(Y1)
 	LD	y1,  1 * SIZE(Y1)
 
@@ -854,7 +854,7 @@ $L22:
 
 	lds	$f31, (PREFETCHSIZE + 0) * SIZE(Y1)
 	lda	A1,  8 * SIZE(A1)
-	lda	Y1,  8 * SIZE(Y1) 
+	lda	Y1,  8 * SIZE(Y1)
 	bgt	I, $L22
 	.align 4
 
@@ -954,7 +954,7 @@ $L26:
 	LD	a1,  1 * SIZE(A1)
 	LD	a2,  0 * SIZE(A2)
 	LD	a3,  1 * SIZE(A2)
-	
+
 	LD	y0,  0 * SIZE(Y1)
 	LD	y1,  1 * SIZE(Y1)
 
@@ -1173,7 +1173,7 @@ $L36:
 
 	LD	a0,  0 * SIZE(A1)
 	LD	a1,  1 * SIZE(A1)
-	
+
 	LD	y0,  0 * SIZE(Y1)
 	MUL	alpha1, a0, a0
 	LD	y1,  1 * SIZE(Y1)

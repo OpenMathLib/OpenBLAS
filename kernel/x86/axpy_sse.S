@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_ALPHA 	16 + STACK + ARGS(%esp)
 #define STACK_X		20 + STACK + ARGS(%esp)
@@ -82,7 +82,7 @@
 
 	testl	M, M
 	jle	.L19
-	
+
 	cmpl	$SIZE, INCX
 	jne	.L50
 	cmpl	$SIZE, INCY
@@ -354,7 +354,7 @@
 .L20:
 
 #ifdef ALIGNED_ACCESS
-	
+
 	testl	$SIZE, X
 	jne	.L30
 

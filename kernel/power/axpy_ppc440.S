@@ -38,12 +38,12 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #ifdef linux
 #ifndef __64BIT__
 #define N	r3
 #define X	r6
-#define INCX	r7	
+#define INCX	r7
 #define Y	r8
 #define INCY	r9
 #define	YY	r5
@@ -51,7 +51,7 @@
 #else
 #define N	r3
 #define X	r7
-#define INCX	r8	
+#define INCX	r8
 #define Y	r9
 #define INCY	r10
 #define	YY	r5
@@ -63,7 +63,7 @@
 #if !defined(__64BIT__) && defined(DOUBLE)
 #define N	r3
 #define X	r8
-#define INCX	r9	
+#define INCX	r9
 #define Y	r10
 #define INCY	r4
 #define	YY	r6
@@ -71,7 +71,7 @@
 #else
 #define N	r3
 #define X	r7
-#define INCX	r8	
+#define INCX	r8
 #define Y	r9
 #define INCY	r10
 #define	YY	r5
@@ -106,7 +106,7 @@
 #if (defined(_AIX) || defined(__APPLE__)) && !defined(__64BIT__) && defined(DOUBLE)
 	lwz	INCY,    56 + STACKSIZE(SP)
 #endif
-	
+
 	fmr	ALPHA, f1
 	slwi	INCX, INCX, BASE_SHIFT
 	slwi	INCY, INCY, BASE_SHIFT

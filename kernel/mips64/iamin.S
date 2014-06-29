@@ -42,7 +42,7 @@
 #define N	$4
 #define	X	$5
 #define INCX	$6
-	
+
 #define I	$3
 #define TEMP	$7
 
@@ -69,9 +69,9 @@
 #define	x2	$8
 #define	x3	$9
 #define	x4	$10
-	
+
 	PROLOGUE
-	
+
 #ifdef F_INTERFACE
 	LDINT	N,     0(N)
 	LDINT	INCX,  0(INCX)

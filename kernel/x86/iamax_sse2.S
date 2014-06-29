@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
 #define STACK_INCX	12 + STACK + ARGS(%esp)
@@ -54,7 +54,7 @@
 #define MM	%ebp
 #define XX	%edi
 #define TEMP	%ebx
-	
+
 #ifdef USE_MIN
 #define maxpd	minpd
 #define maxsd	minsd
@@ -137,7 +137,7 @@
 	sarl	$4, I
 	jle	.L15
 	ALIGN_4
-	
+
 .L11:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(XX)
@@ -249,7 +249,7 @@
 #endif
 	maxpd	%xmm4, %xmm1
 	addl	$4 * SIZE, XX
-	ALIGN_3	
+	ALIGN_3
 
 .L17:
 	testl	$2, MM
@@ -261,7 +261,7 @@
 #endif
 	maxpd	%xmm4, %xmm2
 	addl	$2 * SIZE, XX
-	
+
 .L18:
 	testl	$1, MM
 	je	.L20
@@ -306,7 +306,7 @@
 	sarl	$3, I
 	jle	.L25
 	ALIGN_4
-	
+
 .L22:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(XX)
@@ -425,7 +425,7 @@
 	incl	RET
 	comisd	%xmm0, %xmm4
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L27:
 	testl	$2, MM
@@ -445,7 +445,7 @@
 	comisd	%xmm0, %xmm2
 	je	.L999
 	ALIGN_3
-	
+
 .L28:
 	incl	RET
 	jmp	.L999
@@ -584,7 +584,7 @@
 #endif
 	maxpd	%xmm4, %xmm1
 	addl	$4 * SIZE, XX
-	ALIGN_3	
+	ALIGN_3
 
 .L57:
 	testl	$2, MM
@@ -597,7 +597,7 @@
 #endif
 	maxpd	%xmm4, %xmm2
 	addl	$2 * SIZE, XX
-	
+
 .L58:
 	testl	$1, MM
 	je	.L60
@@ -626,7 +626,7 @@
 	sarl	$3, I
 	jle	.L65
 	ALIGN_4
-	
+
 .L62:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(XX)
@@ -704,13 +704,13 @@
 	movsd	4 * SIZE(XX), %xmm1
 	movsd	5 * SIZE(XX), %xmm2
 	movsd	6 * SIZE(XX), %xmm3
-	
+
 #ifdef USE_ABS
 	andpd	 %xmm7, %xmm1
 	andpd	 %xmm7, %xmm2
 	andpd	 %xmm7, %xmm3
 #endif
-	
+
 	comisd	%xmm0, %xmm1
 	je	.L999
 	incl	RET
@@ -750,7 +750,7 @@
 	incl	RET
 	comisd	%xmm0, %xmm4
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L67:
 	testl	$2, MM
@@ -770,7 +770,7 @@
 	comisd	%xmm0, %xmm2
 	je	.L999
 	ALIGN_3
-	
+
 .L68:
 	incl	RET
 	jmp	.L999
@@ -781,7 +781,7 @@
 	sarl	$4, I
 	jle	.L85
 	ALIGN_4
-	
+
 .L81:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(XX)
@@ -932,7 +932,7 @@
 	andpd	%xmm7, %xmm4
 #endif
 	maxpd	%xmm4, %xmm1
-	ALIGN_3	
+	ALIGN_3
 
 .L87:
 	testl	$2, MM
@@ -947,7 +947,7 @@
 #endif
 	maxpd	%xmm4, %xmm2
 	ALIGN_3
-	
+
 .L88:
 	testl	$1, MM
 	je	.L90
@@ -976,7 +976,7 @@
 	sarl	$3, I
 	jle	.L95
 	ALIGN_4
-	
+
 .L92:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(XX)
@@ -1116,7 +1116,7 @@
 	incl	RET
 	comisd	%xmm0, %xmm4
 	je	.L999
-	ALIGN_3	
+	ALIGN_3
 
 .L97:
 	testl	$2, MM
@@ -1137,7 +1137,7 @@
 	comisd	%xmm0, %xmm2
 	je	.L999
 	ALIGN_3
-	
+
 .L98:
 	incl	RET
 	ALIGN_3

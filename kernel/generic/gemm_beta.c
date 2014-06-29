@@ -38,7 +38,7 @@
 
 #include "common.h"
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta, 
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 	  FLOAT *dummy2, BLASLONG dummy3, FLOAT *dummy4, BLASLONG dummy5,
 	  FLOAT *c, BLASLONG ldc){
 
@@ -89,7 +89,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
     do {
       c_offset1 = c_offset;
       c_offset += ldc;
-      
+
       i = (m >> 3);
       if (i > 0){
 	do {

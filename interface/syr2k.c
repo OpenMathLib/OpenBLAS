@@ -82,11 +82,11 @@ static int (*syr2k[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BL
 #ifndef CBLAS
 
 void NAME(char *UPLO, char *TRANS,
-         blasint *N, blasint *K, 
-         FLOAT *alpha, FLOAT *a, blasint *ldA, 
+         blasint *N, blasint *K,
+         FLOAT *alpha, FLOAT *a, blasint *ldA,
 	               FLOAT *b, blasint *ldB,
          FLOAT *beta,  FLOAT *c, blasint *ldC){
-  
+
   char uplo_arg  = *UPLO;
   char trans_arg = *TRANS;
 
@@ -103,7 +103,7 @@ void NAME(char *UPLO, char *TRANS,
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -111,7 +111,7 @@ void NAME(char *UPLO, char *TRANS,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
@@ -138,7 +138,7 @@ void NAME(char *UPLO, char *TRANS,
 
   TOUPPER(uplo_arg);
   TOUPPER(trans_arg);
-  
+
   uplo  = -1;
   trans = -1;
 
@@ -150,7 +150,7 @@ void NAME(char *UPLO, char *TRANS,
   if (trans_arg == 'T') trans = 1;
   if (trans_arg == 'C') trans = 1;
 #else
-#ifdef HEMM 
+#ifdef HEMM
   if (trans_arg == 'N') trans = 0;
   if (trans_arg == 'C') trans = 1;
 #else
@@ -160,7 +160,7 @@ void NAME(char *UPLO, char *TRANS,
 
 #endif
 
-  
+
   nrowa = args.n;
   if (trans & 1) nrowa = args.k;
 
@@ -216,7 +216,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -224,7 +224,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
@@ -273,10 +273,10 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #endif
 
     info = -1;
-    
+
     nrowa = args.n;
     if (trans & 1) nrowa = args.k;
-    
+
     if (args.ldc < MAX(1,args.n)) info = 12;
     if (args.ldb < MAX(1,nrowa))  info =  9;
     if (args.lda < MAX(1,nrowa))  info =  7;
@@ -291,7 +291,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #ifdef HEMM
     CAlpha[0] =  alpha[0];
     CAlpha[1] = -alpha[1];
-    
+
     args.alpha = (void *)CAlpha;
 #endif
 
@@ -310,10 +310,10 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #endif
 
     info = -1;
-    
+
     nrowa = args.n;
     if (trans & 1) nrowa = args.k;
-    
+
     if (args.ldc < MAX(1,args.n)) info = 12;
     if (args.ldb < MAX(1,nrowa))  info =  9;
     if (args.lda < MAX(1,nrowa))  info =  7;
@@ -331,16 +331,16 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #endif
 
   if (args.n == 0) return;
-  
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
 
   buffer = (FLOAT *)blas_memory_alloc(0);
-    
+
   sa = (FLOAT *)((BLASLONG)buffer + GEMM_OFFSET_A);
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-  
+
 #ifdef SMP
   if (!trans){
     mode |= (BLAS_TRANSA_N | BLAS_TRANSB_T);
@@ -357,18 +357,18 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #endif
 
     (syr2k[(uplo << 1) | trans ])(&args, NULL, NULL, sa, sb, 0);
-    
+
 #ifdef SMP
 
   } else {
 
     syrk_thread(mode, &args, NULL, NULL, syr2k[(uplo << 1) | trans ], sa, sb, args.nthreads);
-    
+
   }
 #endif
-  
+
   blas_memory_free(buffer);
-      
+
   FUNCTION_PROFILE_END(COMPSIZE * COMPSIZE, 2 * args.n * args.k + args.n * args.n, 2 * args.n * args.n * args.k);
 
   IDEBUG_END;

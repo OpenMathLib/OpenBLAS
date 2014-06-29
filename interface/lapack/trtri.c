@@ -74,7 +74,7 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
   extern
 #endif
   FLOAT *sa, *sb;
-  
+
   PRINT_DEBUG_NAME;
 
   args.n    = *N;
@@ -95,7 +95,7 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
 
   info  = 0;
   if (args.lda  < MAX(1,args.n)) info = 5;
-  if (args.n    < 0)             info = 3; 
+  if (args.n    < 0)             info = 3;
   if (diag < 0)                  info = 2;
   if (uplo < 0)                  info = 1;
   if (info) {
@@ -107,7 +107,7 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
   *Info = 0;
 
   if (args.n == 0) return 0;
-  
+
   if (diag) {
     if (AMIN_K(args.n, args.a, args.lda + 1) == ZERO) {
       *Info = IAMIN_K(args.n, args.a, args.lda + 1);
@@ -133,12 +133,12 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
 #endif
 
     *Info = (trtri_single[(uplo << 1) | diag])(&args, NULL, NULL, sa, sb, 0);
-    
+
 #ifdef SMP
   } else {
 
     *Info = (trtri_parallel[(uplo << 1) | diag])(&args, NULL, NULL, sa, sb, 0);
-   
+
   }
 #endif
 

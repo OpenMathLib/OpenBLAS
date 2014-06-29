@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 PLAT = _LINUX
 DRVOPTS  = $(OPTS)
-LOADER   = $(FORTRAN) -pthread
+LOADER   = $(FORTRAN)
 ARCHFLAGS= -ru
 #RANLIB   = ranlib
 

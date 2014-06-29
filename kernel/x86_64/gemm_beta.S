@@ -118,7 +118,7 @@
 #ifdef OPTERON
 	prefetchw	32 * SIZE(C1)
 #endif
-	
+
 	MOVSD	%xmm0, 0 * SIZE(C1)
 	MOVSD	%xmm0, 1 * SIZE(C1)
 	MOVSD	%xmm0, 2 * SIZE(C1)

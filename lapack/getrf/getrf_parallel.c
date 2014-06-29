@@ -44,7 +44,7 @@ static FLOAT dm1 = -1.;
 double sqrt(double);
 
 //In this case, the recursive getrf_parallel may overflow the stack.
-//Instead, use malloc to alloc job_t. 
+//Instead, use malloc to alloc job_t.
 #if MAX_CPU_NUMBER > GETRF_MEM_ALLOC_THRESHOLD
 #define USE_ALLOC_HEAP
 #endif
@@ -123,21 +123,21 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
     for (jjs = js; jjs < js + min_j; jjs += GEMM_UNROLL_N){
       min_jj = js + min_j - jjs;
       if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-      
+
       if (0 && GEMM_UNROLL_N <= 8) {
 
-	LASWP_NCOPY(min_jj, off + 1, off + k, 
+	LASWP_NCOPY(min_jj, off + 1, off + k,
 		    c + (- off + jjs * lda) * COMPSIZE, lda,
 		    ipiv, sbb + k * (jjs - js) * COMPSIZE);
 
       } else {
 
-	LASWP_PLUS(min_jj, off + 1, off + k, ZERO, 
+	LASWP_PLUS(min_jj, off + 1, off + k, ZERO,
 #ifdef COMPLEX
 		   ZERO,
 #endif
 		   c + (- off + jjs * lda) * COMPSIZE, lda, NULL, 0, ipiv, 1);
-	
+
 	GEMM_ONCOPY (k, min_jj, c + jjs * lda * COMPSIZE, lda, sbb + (jjs - js) * k * COMPSIZE);
 
       }
@@ -145,13 +145,13 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
       for (is = 0; is < k; is += GEMM_P) {
 	min_i = k - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	TRSM_KERNEL_LT(min_i, min_jj, k, dm1,
 #ifdef COMPLEX
 		       ZERO,
 #endif
 		       sb  + k * is * COMPSIZE,
-		       sbb + (jjs - js) * k * COMPSIZE, 
+		       sbb + (jjs - js) * k * COMPSIZE,
 		       c   + (is + jjs * lda) * COMPSIZE, lda, is);
       }
     }
@@ -161,9 +161,9 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
     for (is = 0; is < m; is += GEMM_P){
       min_i = m - is;
       if (min_i > GEMM_P) min_i = GEMM_P;
-      
+
       GEMM_ITCOPY (k, min_i, b + is * COMPSIZE, lda, sa);
-      
+
       GEMM_KERNEL_N(min_i, min_j, k, dm1,
 #ifdef COMPLEX
 		    ZERO,
@@ -234,7 +234,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
   c     += range_m[0] * COMPSIZE;
 
   div_n = (n_to - n_from + DIVIDE_RATE - 1) / DIVIDE_RATE;
-  
+
   buffer[0] = sbb;
 
 
@@ -243,10 +243,10 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
   }
 
   for (xxx = n_from, bufferside = 0; xxx < n_to; xxx += div_n, bufferside ++) {
-    
+
     for (i = 0; i < args -> nthreads; i++)
       while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {};
-    
+
     for(jjs = xxx; jjs < MIN(n_to, xxx + div_n); jjs += min_jj){
       min_jj = MIN(n_to, xxx + div_n) - jjs;
       if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
@@ -254,43 +254,43 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
       if (0 && GEMM_UNROLL_N <= 8) {
 	printf("helllo\n");
 
-	LASWP_NCOPY(min_jj, off + 1, off + k, 
+	LASWP_NCOPY(min_jj, off + 1, off + k,
 		    b + (- off + jjs * lda) * COMPSIZE, lda,
 		    ipiv, buffer[bufferside] + (jjs - xxx) * k * COMPSIZE);
 
       } else {
 
-	LASWP_PLUS(min_jj, off + 1, off + k, ZERO, 
+	LASWP_PLUS(min_jj, off + 1, off + k, ZERO,
 #ifdef COMPLEX
 		   ZERO,
 #endif
 		   b + (- off + jjs * lda) * COMPSIZE, lda, NULL, 0, ipiv, 1);
-	
-	GEMM_ONCOPY (k, min_jj, b + jjs * lda * COMPSIZE, lda, 
+
+	GEMM_ONCOPY (k, min_jj, b + jjs * lda * COMPSIZE, lda,
 		     buffer[bufferside] + (jjs - xxx) * k * COMPSIZE);
       }
 
       for (is = 0; is < k; is += GEMM_P) {
 	min_i = k - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
-	
+
 	TRSM_KERNEL_LT(min_i, min_jj, k, dm1,
 #ifdef COMPLEX
 		       ZERO,
 #endif
 		       sb + k * is * COMPSIZE,
-		       buffer[bufferside] + (jjs - xxx) * k * COMPSIZE, 
+		       buffer[bufferside] + (jjs - xxx) * k * COMPSIZE,
 		       b   + (is + jjs * lda) * COMPSIZE, lda, is);
       }
     }
-	
+
     for (i = 0; i < args -> nthreads; i++)
       job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
 
   }
-  
+
   flag[mypos * CACHE_LINE_SIZE] = 0;
-  
+
   if (m == 0) {
     for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
       job[mypos].working[mypos][CACHE_LINE_SIZE * xxx] = 0;
@@ -301,21 +301,21 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
     min_i = m - is;
     if (min_i >= GEMM_P * 2) {
       min_i = GEMM_P;
-    } else 
+    } else
       if (min_i > GEMM_P) {
 	min_i = ((min_i + 1) / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
       }
-      
+
       ICOPY_OPERATION(k, min_i, a, lda, 0, is, sa);
-      
+
       current = mypos;
 
       do {
-	
+
 	div_n = (range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE;
-	
+
 	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-	  
+
 	  if ((current != mypos) && (!is)) {
 	    	    while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {};
 	  }
@@ -323,18 +323,18 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), k,
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			   c, lda, is, xxx);
-	  
+
 	  if (is + min_i >= m) {
 	    job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
 	  }
 	}
-	
+
 	current ++;
 	if (current >= args -> nthreads) current = 0;
-	
+
       } while (current != mypos);
   }
-  
+
   for (i = 0; i < args -> nthreads; i++) {
     for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
       while (job[mypos].working[i][CACHE_LINE_SIZE * xxx] ) {};
@@ -382,7 +382,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -390,7 +390,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 
   m    = args -> m;
@@ -408,7 +408,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   }
 
   if (m <= 0 || n <= 0) return 0;
-  
+
   newarg.c   = ipiv;
   newarg.lda = lda;
 
@@ -428,14 +428,14 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   bk = mn;
   if (bk > next_bk) bk = next_bk;
-  
+
   range_n_new[0] = offset;
   range_n_new[1] = offset + bk;
-  
+
   iinfo   = CNAME(args, NULL, range_n_new, sa, sb, 0);
-  
+
   if (iinfo && !info) info = iinfo;
-  
+
 #ifdef USE_ALLOC_HEAP
   job = (job_t*)malloc(MAX_CPU_NUMBER * sizeof(job_t));
   if(job==NULL){
@@ -449,24 +449,24 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   TRSM_ILTCOPY(bk, bk, a, lda, 0, sb);
 
   sbb = (FLOAT *)((((BLASULONG)(sb + bk * bk * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
-  
+
   is = 0;
   num_cpu = 0;
 
   while (is < mn) {
-    
+
     width  = (FORMULA1(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
     if (width > mn - is - bk) width = mn - is - bk;
 
     if (width < bk) {
       next_bk = (FORMULA2(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N) & ~(GEMM_UNROLL_N - 1);
-      
+
       if (next_bk > bk) next_bk = bk;
 
       width = next_bk;
       if (width > mn - is - bk) width = mn - is - bk;
     }
-    
+
     if (num_cpu > 0) exec_blas_async_wait(num_cpu, &queue[0]);
 
     mm = m - bk - is;
@@ -479,7 +479,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     newarg.n   = nn;
     newarg.k   = bk;
     newarg.ldb = is + offset;
-    
+
     nn -= width;
 
     range_n_mine[0] = 0;
@@ -489,16 +489,16 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     range_M[0] = 0;
 
     num_cpu  = 0;
-    
+
     while (nn > 0){
-      
+
       if (mm >= nn) {
 
 	width  = blas_quickdivide(nn + args -> nthreads - num_cpu, args -> nthreads - num_cpu - 1);
 	if (nn < width) width = nn;
 	nn -= width;
 	range_N[num_cpu + 1] = range_N[num_cpu] + width;
-	
+
 	width  = blas_quickdivide(mm + args -> nthreads - num_cpu, args -> nthreads - num_cpu - 1);
 	if (mm < width) width = mm;
 	if (nn <=    0) width = mm;
@@ -517,7 +517,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	if (mm <=    0) width = nn;
 	nn -= width;
 	range_N[num_cpu + 1] = range_N[num_cpu] + width;
-	
+
       }
 
       queue[num_cpu].mode    = mode;
@@ -529,13 +529,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
       flag[num_cpu * CACHE_LINE_SIZE] = 1;
-      
+
       num_cpu ++;
 
     }
-    
+
     newarg.nthreads = num_cpu;
-    
+
     if (num_cpu > 0) {
       for (j = 0; j < num_cpu; j++) {
 	for (i = 0; i < num_cpu; i++) {
@@ -550,20 +550,20 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
     bk = mn - is;
     if (bk > next_bk) bk = next_bk;
-    
+
     range_n_new[0] = offset + is;
     range_n_new[1] = offset + is + bk;
 
     if (num_cpu > 0) {
 
       queue[num_cpu - 1].next = NULL;
-      
+
       exec_blas_async(0, &queue[0]);
-      
+
       inner_basic_thread(&newarg, NULL, range_n_mine, sa, sbb, -1);
-      
+
       iinfo   = GETRF_SINGLE(args, NULL, range_n_new, sa, sbb, 0);
-      
+
       if (iinfo && !info) info = iinfo + is;
 
       for (i = 0; i < num_cpu; i ++) while (flag[i * CACHE_LINE_SIZE]) {};
@@ -577,19 +577,19 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       iinfo   = GETRF_SINGLE(args, NULL, range_n_new, sa, sbb, 0);
 
       if (iinfo && !info) info = iinfo + is;
-    
+
     }
-    
+
   }
-  
+
   next_bk = init_bk;
   is = 0;
-  
+
   while (is < mn) {
-    
+
     bk = mn - is;
     if (bk > next_bk) bk = next_bk;
-    
+
     width  = (FORMULA1(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
     if (width > mn - is - bk) width = mn - is - bk;
 
@@ -598,13 +598,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       if (next_bk > bk) next_bk = bk;
     }
 
-    blas_level1_thread(mode, bk, is + bk + offset + 1, mn + offset, (void *)dummyalpha, 
+    blas_level1_thread(mode, bk, is + bk + offset + 1, mn + offset, (void *)dummyalpha,
 		       a + (- offset + is * lda) * COMPSIZE, lda, NULL, 0,
 		       ipiv, 1, (void *)LASWP_PLUS, args -> nthreads);
-    
+
     is += bk;
   }
-  
+
 #ifdef USE_ALLOC_HEAP
   free(job);
 #endif
@@ -638,7 +638,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -646,7 +646,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 
   m    = args -> m;
@@ -664,7 +664,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   }
 
   if (m <= 0 || n <= 0) return 0;
-  
+
   newarg.c   = ipiv;
   newarg.lda = lda;
   newarg.common = NULL;
@@ -700,9 +700,9 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   range_n_new[0] = offset;
   range_n_new[1] = offset + bk;
-  
+
   info   = CNAME(args, NULL, range_n_new, sa, sb, 0);
-  
+
   TRSM_ILTCOPY(bk, bk, a, lda, 0, sb);
 
   is = 0;
@@ -714,7 +714,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
     width  = FORMULA1(m, n, is, bk, args -> nthreads);
     width = (width + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
-    
+
     if (width < bk) {
 
       next_bk = FORMULA2(m, n, is, bk, args -> nthreads);
@@ -729,7 +729,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
       width = next_bk;
     }
-    
+
     if (width > mn - is - bk) {
       next_bk = mn - is - bk;
       width   = next_bk;
@@ -742,10 +742,10 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
     range[0] = 0;
     range[1] = width;
-    
+
     num_cpu = 1;
     nn -= width;
-    
+
     newarg.a   = sb;
     newarg.b   = a + (is + is * lda) * COMPSIZE;
     newarg.d   = (void *)flag;
@@ -753,16 +753,16 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     newarg.n   = n - bk - is;
     newarg.k   = bk;
     newarg.ldb = is + offset;
-    
+
     while (nn > 0){
-      
+
       width  = blas_quickdivide(nn + args -> nthreads - num_cpu, args -> nthreads - num_cpu);
-      
+
       nn -= width;
       if (nn < 0) width = width + nn;
-      
+
       range[num_cpu + 1] = range[num_cpu] + width;
-      
+
       queue[num_cpu].mode    = mode;
       //queue[num_cpu].routine = inner_advanced_thread;
       queue[num_cpu].routine = (void *)inner_basic_thread;
@@ -776,21 +776,21 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
       num_cpu ++;
     }
-    
+
     queue[num_cpu - 1].next = NULL;
 
     is += bk;
-    
+
     bk = n - is;
     if (bk > next_bk) bk = next_bk;
-    
+
     range_n_new[0] = offset + is;
     range_n_new[1] = offset + is + bk;
-    
+
     if (num_cpu > 1) {
 
       exec_blas_async(1, &queue[1]);
-    
+
 #if 0
       inner_basic_thread(&newarg, NULL, &range[0], sa, sbb, 0);
 
@@ -823,30 +823,30 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #endif
 
       for (i = 1; i < num_cpu; i ++) while (flag[i * CACHE_LINE_SIZE]) {};
-      
+
       TRSM_ILTCOPY(bk, bk, a + (is +  is * lda) * COMPSIZE, lda, 0, sb);
-      
+
     } else {
 
       inner_basic_thread(&newarg, NULL, &range[0], sa, sbb, -1);
-      
+
       iinfo = GETRF_SINGLE(args, NULL, range_n_new, sa, sbb, 0);
     }
 
       if (iinfo && !info) info = iinfo + is;
-      
+
   }
-  
+
   next_bk = init_bk;
   bk      = init_bk;
-  
+
   is = 0;
-  
+
   while (is < mn) {
-    
+
     bk = mn - is;
     if (bk > next_bk) bk = next_bk;
-    
+
     width  = FORMULA1(m, n, is, bk, args -> nthreads);
     width = (width + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
 
@@ -867,13 +867,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       width   = next_bk;
     }
 
-    blas_level1_thread(mode, bk, is + bk + offset + 1, mn + offset, (void *)dummyalpha, 
+    blas_level1_thread(mode, bk, is + bk + offset + 1, mn + offset, (void *)dummyalpha,
 		       a + (- offset + is * lda) * COMPSIZE, lda, NULL, 0,
 		       ipiv, 1, (void *)LASWP_PLUS, args -> nthreads);
-    
+
     is += bk;
   }
-  
+
   return info;
 }
 

@@ -85,7 +85,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG,  FLOAT * , BLASLONG, FLOAT *, BLASLONG, FLOAT *) = {
     GEMV_N, GEMV_T,
   };
-  
+
   blasint info;
   blasint lenx, leny;
   blasint i;
@@ -109,7 +109,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   if (n < 0)		info = 3;
   if (m < 0)		info = 2;
   if (i < 0)          info = 1;
-  
+
   trans = i;
 
   if (info != 0){
@@ -150,7 +150,7 @@ void CNAME(enum CBLAS_ORDER order,
     if (TransA == CblasTrans)       trans = 1;
     if (TransA == CblasConjNoTrans) trans = 0;
     if (TransA == CblasConjTrans)   trans = 1;
-    
+
     info = -1;
 
     if (incy == 0)	  info = 11;
@@ -159,7 +159,7 @@ void CNAME(enum CBLAS_ORDER order,
     if (n < 0)		  info = 3;
     if (m < 0)		  info = 2;
     if (trans < 0)        info = 1;
-    
+
   }
 
   if (order == CblasRowMajor) {
@@ -198,7 +198,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (trans) leny = n;
 
   if (beta != ONE) SCAL_K(leny, 0, 0, beta, y, abs(incy), NULL, 0, NULL, 0);
-  
+
   if (alpha == ZERO) return;
 
   IDEBUG_START;
@@ -215,17 +215,17 @@ void CNAME(enum CBLAS_ORDER order,
 
   if (nthreads == 1) {
 #endif
-    
+
     (gemv[(int)trans])(m, n, 0, alpha, a, lda, x, incx, y, incy, buffer);
-    
+
 #ifdef SMP
   } else {
-    
+
     (gemv_thread[(int)trans])(m, n, alpha, a, lda, x, incx, y, incy, buffer, nthreads);
-    
+
   }
 #endif
-  
+
   blas_memory_free(buffer);
 
   FUNCTION_PROFILE_END(1, m * n + m + n,  2 * m * n);

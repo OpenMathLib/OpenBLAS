@@ -95,7 +95,7 @@ int support_avx(){
 #ifndef NO_AVX
   int eax, ebx, ecx, edx;
   int ret=0;
-  
+
   cpuid(1, &eax, &ebx, &ecx, &edx);
   if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0 && (ecx & (1 << 26)) != 0){
     xgetbv(0, &eax, &edx);
@@ -116,18 +116,24 @@ extern void openblas_warning(int verbose, const char * msg);
 
 static int get_vendor(void){
   int eax, ebx, ecx, edx;
-  char vendor[13];
+
+  union
+  {
+        char vchar[16];
+        int  vint[4];
+  } vendor;
 
   cpuid(0, &eax, &ebx, &ecx, &edx);
-  
-  *(int *)(&vendor[0]) = ebx;
-  *(int *)(&vendor[4]) = edx;
-  *(int *)(&vendor[8]) = ecx;
-  vendor[12] = (char)0;
 
-  if (!strcmp(vendor, "GenuineIntel")) return VENDOR_INTEL;
-  if (!strcmp(vendor, "AuthenticAMD")) return VENDOR_AMD;
-  if (!strcmp(vendor, "CentaurHauls")) return VENDOR_CENTAUR;
+  *(&vendor.vint[0]) = ebx;
+  *(&vendor.vint[1]) = edx;
+  *(&vendor.vint[2]) = ecx;
+
+  vendor.vchar[12] = '\0';
+
+  if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
+  if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
+  if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
 
@@ -173,7 +179,7 @@ static gotoblas_t *get_coretype(void){
 	// Pentium (Clarkdale) / Pentium Mobile (Arrandale)
 	// Xeon (Clarkdale), 32nm
 	if (model ==  5) return &gotoblas_NEHALEM;
-		  
+
 	//Intel Xeon Processor 5600 (Westmere-EP)
 	//Xeon Processor E7 (Westmere-EX)
 	//Xeon E7540
@@ -232,7 +238,7 @@ static gotoblas_t *get_coretype(void){
     if (family <= 0xe) {
         // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
         cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
-        if (eax & 0xffff >= 0x01) {
+        if ( (eax & 0xffff)  >= 0x01) {
             cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
             if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
               return NULL;
@@ -244,7 +250,7 @@ static gotoblas_t *get_coretype(void){
       }
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) {
-	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3; 
+	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3;
 	else return &gotoblas_OPTERON;
       }  else if (exfamily == 5) {
 	return &gotoblas_BOBCAT;
@@ -279,7 +285,7 @@ static gotoblas_t *get_coretype(void){
       break;
     }
   }
-  
+
   return NULL;
 }
 
@@ -320,7 +326,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_DUNNINGTON)   return corename[ 9];
   if (gotoblas == &gotoblas_NEHALEM)      return corename[10];
   if (gotoblas == &gotoblas_ATHLON)       return corename[11];
-  if (gotoblas == &gotoblas_OPTERON_SSE3) return corename[12]; 
+  if (gotoblas == &gotoblas_OPTERON_SSE3) return corename[12];
   if (gotoblas == &gotoblas_OPTERON)      return corename[13];
   if (gotoblas == &gotoblas_BARCELONA)    return corename[14];
   if (gotoblas == &gotoblas_NANO)         return corename[15];
@@ -333,12 +339,80 @@ char *gotoblas_corename(void) {
   return corename[0];
 }
 
+
+static gotoblas_t *force_coretype(char *coretype){
+
+	int i ;
+	int found = -1;
+	char message[128];
+	char mname[20];
+
+	for ( i=1 ; i <= 20; i++)
+	{
+		if (!strncasecmp(coretype,corename[i],20))
+		{
+			found = i;
+			break;
+		}
+	}
+	if (found < 0)
+	{
+		strncpy(mname,coretype,20);
+    		sprintf(message, "Core not found: %s\n",mname);
+    		openblas_warning(1, message);
+		return(NULL);
+	}
+
+	switch (found)
+	{
+
+		case 20: return (&gotoblas_HASWELL);
+		case 19: return (&gotoblas_PILEDRIVER);
+		case 18: return (&gotoblas_BULLDOZER);
+		case 17: return (&gotoblas_BOBCAT);
+		case 16: return (&gotoblas_SANDYBRIDGE);
+		case 15: return (&gotoblas_NANO);
+		case 14: return (&gotoblas_BARCELONA);
+		case 13: return (&gotoblas_OPTERON);
+		case 12: return (&gotoblas_OPTERON_SSE3);
+		case 11: return (&gotoblas_ATHLON);
+		case 10: return (&gotoblas_NEHALEM);
+		case  9: return (&gotoblas_DUNNINGTON);
+		case  8: return (&gotoblas_PENRYN);
+		case  7: return (&gotoblas_CORE2);
+		case  6: return (&gotoblas_ATOM);
+		case  5: return (&gotoblas_BANIAS);
+		case  4: return (&gotoblas_PRESCOTT);
+		case  3: return (&gotoblas_NORTHWOOD);
+		case  2: return (&gotoblas_COPPERMINE);
+		case  1: return (&gotoblas_KATMAI);
+	}
+	return(NULL);
+
+}
+
+
+
+
 void gotoblas_dynamic_init(void) {
-  
+
+  char coremsg[128];
+  char coren[22];
+  char *p;
+
+
   if (gotoblas) return;
 
-  gotoblas = get_coretype();
-  
+  p = getenv("OPENBLAS_CORETYPE");
+  if ( p )
+  {
+	gotoblas = force_coretype(p);
+  }
+  else
+  {
+  	gotoblas = get_coretype();
+  }
+
 #ifdef ARCH_X86
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
@@ -353,18 +427,21 @@ void gotoblas_dynamic_init(void) {
           gotoblas = &gotoblas_PRESCOTT;
   }
 #endif
-  
+
   if (gotoblas && gotoblas -> init) {
+    strncpy(coren,gotoblas_corename(),20);
+    sprintf(coremsg, "Core: %s\n",coren);
+    openblas_warning(2, coremsg);
     gotoblas -> init();
   } else {
     openblas_warning(0, "OpenBLAS : Architecture Initialization failed. No initialization function found.\n");
     exit(1);
   }
-  
+
 }
 
 void gotoblas_dynamic_quit(void) {
-  
+
   gotoblas = NULL;
 
 }

@@ -57,7 +57,7 @@
 #define Y		40 + STACKSIZE(%esp)
 #define STACK_INCY	44 + STACKSIZE(%esp)
 #define BUFFER		48 + STACKSIZE(%esp)
-	
+
 #define I	%eax
 #define J	%ebx
 
@@ -95,7 +95,7 @@
 	jle	.L999
 
 	movl	BUFFER, Y1
-	
+
 	movl	M,  I
 	sarl	$3, I
 	jle	.L05
@@ -365,7 +365,7 @@
 
 	addsd	%xmm6, %xmm0
 	addsd	%xmm7, %xmm1
-	
+
 	addl	$4 * SIZE, A1
 	addl	$4 * SIZE, X
 	ALIGN_4
@@ -582,7 +582,7 @@
 	mulsd	%xmm3, %xmm5
 	addsd	%xmm4, %xmm0
 	addsd	%xmm5, %xmm1
-	
+
 	addl	$2 * SIZE, A1
 	ALIGN_4
 
@@ -605,11 +605,11 @@
 
 	movsd	%xmm0, (Y1)
 	ALIGN_4
-	
+
 .L999:
 	popl	%ebx
 	popl	%esi
-	popl	%edi	
+	popl	%edi
 	popl	%ebp
 	ret
 

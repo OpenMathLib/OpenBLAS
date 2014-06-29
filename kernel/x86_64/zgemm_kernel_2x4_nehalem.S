@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define OLD_K	%rdx
@@ -51,7 +51,7 @@
 #define B	%r8
 #define C	%r9
 #define LDC	%rbp
-	
+
 #define I	%r11
 #define AO	%rdi
 #define BO	%rsi
@@ -114,7 +114,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 
 	movq	%rbx,  0(%rsp)
@@ -163,7 +163,7 @@
 
 	movlps	 %xmm0, ALPHA_R
 	movlps	 %xmm1, ALPHA_I
-	
+
 	subq	$-32 * SIZE, A
 	subq	$-32 * SIZE, B
 
@@ -177,7 +177,7 @@
 	movq	%r11, OFFSET
 #ifndef LEFT
 	negq	%r11
-#endif	
+#endif
 	movq	%r11, KK
 #endif
 
@@ -210,7 +210,7 @@
 .L11:
 	prefetcht2	 -32 * SIZE(BB)
 	subq		 $-16 * SIZE, BB
-	
+
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
 	(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -223,7 +223,7 @@
 	salq	$ZBASE_SHIFT, %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 4), BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	xorps	%xmm2, %xmm2
@@ -251,7 +251,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -266,7 +266,7 @@
 	jle	.L15
 	ALIGN_3
 
-.L12:	
+.L12:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm12
@@ -547,7 +547,7 @@
 	decq	I			# i --
 	BRANCH
 	jg	.L11
-	ALIGN_4	
+	ALIGN_4
 
 .L20:
 	testq	$1, M
@@ -566,7 +566,7 @@
 	salq	$ZBASE_SHIFT, %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 4), BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movddup  -32 * SIZE(AO), %xmm0
@@ -585,7 +585,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -600,7 +600,7 @@
 	jle	.L25
 	ALIGN_3
 
-.L22:	
+.L22:
 	ADD1	%xmm1, %xmm8
 	pshufd	$0xa0, %xmm5, %xmm1
 	mulps	%xmm0, %xmm1
@@ -783,8 +783,8 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	addq	$1, KK
 #endif
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L29:
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addq	$4, KK
@@ -831,7 +831,7 @@
 	salq	$ZBASE_SHIFT, %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 2), BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movaps	-32 * SIZE(AO), %xmm0
@@ -852,7 +852,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -867,7 +867,7 @@
 	jle	.L35
 	ALIGN_3
 
-.L32:	
+.L32:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -1048,7 +1048,7 @@
 	decq	I			# i --
 	BRANCH
 	jg	.L31
-	ALIGN_4	
+	ALIGN_4
 
 .L40:
 	testq	$1, M
@@ -1067,7 +1067,7 @@
 	salq	$ZBASE_SHIFT, %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 2), BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movddup  -32 * SIZE(AO), %xmm0
@@ -1086,7 +1086,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1101,7 +1101,7 @@
 	jle	.L45
 	ALIGN_3
 
-.L42:	
+.L42:
 	ADD1	%xmm1, %xmm8
 	pshufd	$0xa0, %xmm5, %xmm1
 	mulps	%xmm0, %xmm1
@@ -1230,8 +1230,8 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	addq	$1, KK
 #endif
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L49:
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addq	$2, KK
@@ -1273,7 +1273,7 @@
 	salq	$ZBASE_SHIFT, %rax
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 1), BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movaps	-32 * SIZE(AO), %xmm0
@@ -1293,7 +1293,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1308,7 +1308,7 @@
 	jle	.L55
 	ALIGN_3
 
-.L52:	
+.L52:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -1436,7 +1436,7 @@
 	decq	I			# i --
 	BRANCH
 	jg	.L51
-	ALIGN_4	
+	ALIGN_4
 
 .L60:
 	testq	$1, M
@@ -1455,7 +1455,7 @@
 	salq	$ZBASE_SHIFT, %rax
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 1), BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movddup  -32 * SIZE(AO), %xmm0
@@ -1469,7 +1469,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movq	K, %rax
 	subq	KK, %rax
-	movq	%rax, KKK	
+	movq	%rax, KKK
 #else
 	movq	KK, %rax
 #ifdef LEFT
@@ -1484,7 +1484,7 @@
 	jle	.L65
 	ALIGN_3
 
-.L62:	
+.L62:
 	ADD1	%xmm1, %xmm8
 	pshufd	$0xa0, %xmm5, %xmm1
 	mulps	%xmm0, %xmm1
@@ -1597,8 +1597,8 @@
 #endif
 
 	movsd	%xmm8,  (CO1)
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L999:
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp

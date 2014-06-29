@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define M	%rdi
 #define N	%rsi
 #define K	%rdx
@@ -96,7 +96,7 @@
 #endif
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
@@ -136,14 +136,14 @@
 
 	movsd	 %xmm0, ALPHA_R
 	movsd	 %xmm1, ALPHA_I
-	
+
 	salq	$ZBASE_SHIFT, LDC
 
 	movq	N,  J
 	sarq	$1, J
 	jle	.L40
 	ALIGN_4
-	
+
 .L10:
 	movq	C, CO1
 	leaq	(C, LDC, 1), CO2
@@ -154,7 +154,7 @@
 	movq	K, %rax
 	salq	$BASE_SHIFT + 1, %rax
 	leaq	(B, %rax), BB
-	
+
 	movq	M,  I
 	sarq	$2, I
 	jle	.L20
@@ -202,7 +202,7 @@
 	addsd	 %xmm7, %xmm14
 	movsd	 3 * SIZE(AO), %xmm7
 	mulsd	 %xmm3, %xmm2
- 
+
 	addsd	 %xmm6, %xmm15
 	PREFETCH ((PREFETCHSIZE) >> 1 + 0) * SIZE(BO)
 	movaps	 %xmm4, %xmm6
@@ -771,7 +771,7 @@
 	movsd	%xmm9,   0 * SIZE(CO2)
 	movsd	%xmm11,  1 * SIZE(CO2)
 	ALIGN_4
-	
+
 .L39:
 	movq	BO, B
 	decq	J			# j --
@@ -1185,7 +1185,7 @@
 	movsd	%xmm8,  0 * SIZE(CO1)
 	movsd	%xmm9,  1 * SIZE(CO1)
 	ALIGN_4
-	
+
 .L999:
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp

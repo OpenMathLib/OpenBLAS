@@ -38,12 +38,12 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #define N	r3
 #define X	r4
-#define INCX	r5	
+#define INCX	r5
 #define Y	r6
-#define INCY	r7	
+#define INCY	r7
 
 #define INCX2	r8
 #define INCY2	r9
@@ -75,7 +75,7 @@
 
 	stfpdux	f14, SP, r10
 	stfpdux	f15, SP, r10
-	
+
 	slwi	INCX,  INCX, BASE_SHIFT
 	slwi	INCY,  INCY, BASE_SHIFT
 	add	INCX2, INCX, INCX
@@ -277,7 +277,7 @@ LL(23):
 LL(25):
 	andi.	r0,  N, 7
 	beq	LL(29)
-	
+
 	andi.	r0,  N, 4
 	beq	LL(26)
 
@@ -416,7 +416,7 @@ LL(33):
 LL(35):
 	andi.	r0,  N, 7
 	beq	LL(999)
-	
+
 	andi.	r0,  N, 4
 	beq	LL(36)
 
@@ -645,7 +645,7 @@ LL(999):
 
 	lfpdux	f15, SP, r10
 	lfpdux	f14, SP, r10
-	
+
 	addi	SP, SP,  16
 	blr
 

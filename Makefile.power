@@ -5,7 +5,7 @@ FLAMEPATH	= $(HOME)/flame/lib
 #ifeq ($(CORE), CELL)
 #CELL_SDK_ROOT = /opt/IBM/cell-sdk-1.1/sysroot/usr
 #SPU_CC	         = spu-gcc
-#EXTRALIB	+= -lspe 
+#EXTRALIB	+= -lspe
 #endif
 
 ifeq ($(OSNAME), Linux)
@@ -38,7 +38,7 @@ ASFLAGS		= -a32
 endif
 endif
 
-# CCOMMON_OPT	+= -maltivec -mabi=altivec 
+# CCOMMON_OPT	+= -maltivec -mabi=altivec
 
 LIBFLAME	= -L$(FLAMEPATH) -llapack2flame -lflame-lapack -lflame-base $(LIBS)
 
@@ -57,7 +57,7 @@ endif
 
 LIBVECLIB	= -framework VecLib
 ifndef SMP
-LIBATLAS	= -L/usr/lib/atlas3.7.11 -lf77blas -latlas -lg2c -lm 
+LIBATLAS	= -L/usr/lib/atlas3.7.11 -lf77blas -latlas -lg2c -lm
 LIBESSL		= -lessl $(ESSLPATH) ../../level1/others/libmisc.a -lm
 else
 LIBATLAS	= -L/usr/lib/atlas3.7.11p -lptf77blas -latlas -lm -lpthread
@@ -73,7 +73,7 @@ endif
 LIBVECLIB	= /System/Library/Frameworks/vecLib.framework/Versions/Current/vecLib
 
 ifndef SMP
-LIBATLAS	= -L/usr/lib64/atlas3.7.11  -lf77blas -latlas -lg2c -lm 
+LIBATLAS	= -L/usr/lib64/atlas3.7.11  -lf77blas -latlas -lg2c -lm
 LIBESSL		= -lessl $(ESSLPATH) -lm
 else
 LIBATLAS	= -L/usr/lib64/atlas3.7.11p -lptf77blas -latlas -lm -lpthread

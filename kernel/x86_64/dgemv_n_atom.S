@@ -47,7 +47,7 @@
 #ifndef WINDOWS_ABI
 
 #define STACKSIZE	64
-	
+
 #define OLD_INCX	 8 + STACKSIZE(%rsp)
 #define OLD_Y		16 + STACKSIZE(%rsp)
 #define OLD_INCY	24 + STACKSIZE(%rsp)
@@ -66,7 +66,7 @@
 #else
 
 #define STACKSIZE	256
-	
+
 #define OLD_A		 40 + STACKSIZE(%rsp)
 #define OLD_LDA		 48 + STACKSIZE(%rsp)
 #define OLD_X		 56 + STACKSIZE(%rsp)
@@ -87,7 +87,7 @@
 #define INCY	  %r10
 
 #endif
-	
+
 #define I	%rax
 #define J	%r11
 #define A1	%r12
@@ -95,7 +95,7 @@
 #define Y1	%r14
 #define BUFFER	%r15
 #define MM	%rbx
-	
+
 #define ALPHA %xmm15
 
 	PROLOGUE

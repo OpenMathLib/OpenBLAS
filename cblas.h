@@ -17,13 +17,13 @@ void goto_set_num_threads(int num_threads);
 char* openblas_get_config(void);
 
 /* Get the parallelization type which is used by OpenBLAS */
-int openblas_get_parallel(void); 
+int openblas_get_parallel(void);
 /* OpenBLAS is compiled for sequential use  */
 #define OPENBLAS_SEQUENTIAL  0
 /* OpenBLAS is compiled using normal threading model */
-#define OPENBLAS_THREAD  1 
+#define OPENBLAS_THREAD  1
 /* OpenBLAS is compiled using OpenMP threading model */
-#define OPENBLAS_OPENMP 2 
+#define OPENBLAS_OPENMP 2
 
 
 /*
@@ -304,6 +304,16 @@ void cblas_zher2k(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBL
                   OPENBLAS_CONST double *alpha, OPENBLAS_CONST double *A, OPENBLAS_CONST blasint lda, OPENBLAS_CONST double *B, OPENBLAS_CONST blasint ldb, OPENBLAS_CONST double beta, double *C, OPENBLAS_CONST blasint ldc);
 
 void cblas_xerbla(blasint p, char *rout, char *form, ...);
+
+/*** BLAS extensions ***/
+
+void cblas_saxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST float alpha, OPENBLAS_CONST float *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST float beta, float *y, OPENBLAS_CONST blasint incy);
+
+void cblas_daxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST double alpha, OPENBLAS_CONST double *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST double beta, double *y, OPENBLAS_CONST blasint incy);
+
+void cblas_caxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST float *alpha, OPENBLAS_CONST float *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST float *beta, float *y, OPENBLAS_CONST blasint incy);
+
+void cblas_zaxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST double *alpha, OPENBLAS_CONST double *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST double *beta, double *y, OPENBLAS_CONST blasint incy);
 
 #ifdef __cplusplus
 }

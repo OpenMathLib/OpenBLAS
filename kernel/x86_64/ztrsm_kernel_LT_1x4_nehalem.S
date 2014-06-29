@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define OLD_K	%rdx
@@ -51,7 +51,7 @@
 #define B	%r8
 #define C	%r9
 #define LDC	%r10
-	
+
 #define I	%r11
 #define AO	%rdi
 #define BO	%rsi
@@ -97,7 +97,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 
 	movq	%rbx,  0(%rsp)
@@ -187,7 +187,7 @@
        movq	K, %rax
        salq	$2 + ZBASE_SHIFT, %rax
        subq	%rax, B
-       
+
        leaq	(, LDC, 4), %rax
        subq	%rax, C
 #endif
@@ -201,7 +201,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 
 	movq	K, %rax
 	salq	$ZBASE_SHIFT + 2, %rax
@@ -231,7 +231,7 @@
 	leaq	(B,  %rax, 4), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	prefetchnta	 -16 * SIZE(BB)
 	subq		 $-8 * SIZE, BB
@@ -267,7 +267,7 @@
 	jle	.L15
 	ALIGN_3
 
-.L12:	
+.L12:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm12
@@ -859,7 +859,7 @@
        movq	K, %rax
        salq	$1 + ZBASE_SHIFT, %rax
        subq	%rax, B
-       
+
        leaq	(, LDC, 2), %rax
        subq	%rax, C
 #endif
@@ -873,7 +873,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, KK
@@ -899,7 +899,7 @@
 	leaq	(B,  %rax, 2), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movaps	-16 * SIZE(AO), %xmm0
@@ -925,7 +925,7 @@
 	jle	.L25
 	ALIGN_3
 
-.L22:	
+.L22:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -1275,7 +1275,7 @@
        movq	K, %rax
        salq	$ZBASE_SHIFT, %rax
        subq	%rax, B
-       
+
        subq	LDC, C
 #endif
 	movq	C, CO1
@@ -1286,7 +1286,7 @@
 #ifdef LN
 	movq	OFFSET, KK
 	addq	M, KK
-#endif	
+#endif
 
 #ifdef LT
 	movq	OFFSET, KK
@@ -1312,7 +1312,7 @@
 	leaq	(B,  %rax, 1), BO
 #else
 	movq	B, BO
-#endif	
+#endif
 
 	xorps	%xmm1, %xmm1
 	movaps	-16 * SIZE(AO), %xmm0
@@ -1335,7 +1335,7 @@
 	jle	.L35
 	ALIGN_3
 
-.L32:	
+.L32:
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -1555,7 +1555,7 @@
 #ifdef RT
 	subq	$1, KK
 #endif
-	ALIGN_4	
+	ALIGN_4
 
 .L999:
 	movq	  0(%rsp), %rbx

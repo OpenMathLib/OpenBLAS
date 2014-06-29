@@ -73,7 +73,7 @@
 #define xmm14	xmm6
 #define xmm15	xmm7
 
-	
+
 	PROLOGUE
 	PROFCODE
 
@@ -94,7 +94,7 @@
 
 	testl	M, M
 	jle	.L999
-	
+
 	xorps	%xmm7, %xmm7
 	comisd	%xmm0, %xmm7
 	jne	.L100
@@ -193,7 +193,7 @@
 	jle	.L22
 	ALIGN_4
 
-.L21:	
+.L21:
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -294,10 +294,10 @@
 #else
 	pshufd	$0x44, %xmm0, %xmm6
 #endif
-	
+
 	xorps	%xmm7, %xmm7
 	subsd	%xmm1, %xmm7
-	movlhps	%xmm1, %xmm7	
+	movlhps	%xmm1, %xmm7
 
 	cmpl	$2 * SIZE, INCX
 	jne	.L120
@@ -869,7 +869,7 @@
 #endif
 	pxor	%xmm7,  %xmm7
 	subsd	%xmm1,  %xmm7
-	movlhps	%xmm1,  %xmm7	
+	movlhps	%xmm1,  %xmm7
 	shufpd	$1, %xmm7, %xmm7
 
 	movhps	0 * SIZE(X), %xmm0
@@ -1150,7 +1150,7 @@
 #endif
 	pxor	%xmm7, %xmm7
 	subsd	%xmm1,  %xmm7
-	movlhps	%xmm1,  %xmm7	
+	movlhps	%xmm1,  %xmm7
 
 	subl	$-16 * SIZE, X
 
@@ -1427,7 +1427,7 @@
 #endif
 	pxor	%xmm7, %xmm7
 	subsd	%xmm1, %xmm7
-	movlhps	%xmm1, %xmm7	
+	movlhps	%xmm1, %xmm7
 
 	movl	X, XX
 

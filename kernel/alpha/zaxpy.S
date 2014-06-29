@@ -126,7 +126,7 @@ $MainLoop:
 	LD	$f0,  0*SIZE($18)
 	MUL	$f29, $f1,  $f23
 	LD	$f1,  1*SIZE($18)
-	
+
 	MUL	$f29, $f2,  $f24
 	unop
 	MUL	$f30, $f3,  $f25
@@ -151,7 +151,7 @@ $MainLoop:
 	addq	$20, 8*SIZE, $20
 	MUL	$f29, $f5,  $f23
 	LD	$f5,  5*SIZE($18)
-	
+
 	ADD	$f16, $f8,  $f16
 	LD	$f8,  0*SIZE($20)
 	MUL	$f29, $f6,  $f24
@@ -181,7 +181,7 @@ $MainLoop:
 	ADD1	$f24, $f25, $f18
 	ST	$f19,-5*SIZE($20)
 	ADD2	$f26, $f27, $f19
-	
+
 	ADD	$f16, $f12, $f16
 	LD	$f12, 4*SIZE($20)
 	ADD	$f17, $f13, $f17
@@ -207,7 +207,7 @@ $MainLoopEnd:
 	MUL	$f30, $f1,  $f21
 	MUL	$f30, $f0,  $f22
 	MUL	$f29, $f1,  $f23
-	
+
 	MUL	$f29, $f2,  $f24
 	MUL	$f30, $f3,  $f25
 	MUL	$f30, $f2,  $f26
@@ -222,7 +222,7 @@ $MainLoopEnd:
 	MUL	$f30, $f4,  $f22
 	ADD2	$f26, $f27, $f19
 	MUL	$f29, $f5,  $f23
-	
+
 	ADD	$f16, $f8,  $f16
 	MUL	$f29, $f6,  $f24
 	ADD	$f17, $f28, $f17
@@ -242,7 +242,7 @@ $MainLoopEnd:
 	ADD1	$f24, $f25, $f18
 	ST	$f19, 3*SIZE($20)
 	ADD2	$f26, $f27, $f19
-	
+
 	ADD	$f16, $f12, $f16
 	ADD	$f17, $f13, $f17
 	ADD	$f18, $f14, $f18
@@ -281,7 +281,7 @@ $RemainLoop:
 	LD	$f0,  0*SIZE($18)
 	MUL	$f29, $f1,  $f23
 	LD	$f1,  1*SIZE($18)
-	
+
 	ADD1	$f20, $f21, $f16
 	ADD2	$f22, $f23, $f17
 	ADD	$f16, $f8,  $f16
@@ -300,7 +300,7 @@ $RemainLoopEnd:
 	MUL	$f30, $f1,  $f21
 	MUL	$f30, $f0,  $f22
 	MUL	$f29, $f1,  $f23
-	
+
 	ADD1	$f20, $f21, $f16
 	ADD2	$f22, $f23, $f17
 	ADD	$f16, $f8,  $f16
@@ -326,11 +326,11 @@ $End:
 
 $Sub:
 	SXSUBL	$16,  SIZE, $22
-	addq	$22,  $22,  $22		# Complex 
+	addq	$22,  $22,  $22		# Complex
 	.align 4
 
-	addq	$19, $19, $19		# Complex 
-	addq	$21, $21, $21		# Complex 
+	addq	$19, $19, $19		# Complex
+	addq	$21, $21, $21		# Complex
 
 	ble	$4, $SubRemain
 	LD	$f0,  0*SIZE($18)
@@ -409,7 +409,7 @@ $SubMainLoop:
 	unop
 	MUL	$f29, $f5,  $f23
 	LD	$f5,  1*SIZE($18)
-	
+
 	ADD	$f16, $f8,  $f16
 	LD	$f8,  0*SIZE($24)
 	MUL	$f29, $f6,  $f24
@@ -486,7 +486,7 @@ $SubMainLoopEnd:
 	MUL	$f30, $f1,  $f21
 	MUL	$f30, $f0,  $f22
 	MUL	$f29, $f1,  $f23
-	
+
 	MUL	$f29, $f2,  $f24
 	MUL	$f30, $f3,  $f25
 	MUL	$f30, $f2,  $f26
@@ -501,7 +501,7 @@ $SubMainLoopEnd:
 	MUL	$f30, $f4,  $f22
 	ADD2	$f26, $f27, $f19
 	MUL	$f29, $f5,  $f23
-	
+
 	ADD	$f16, $f8,  $f16
 	MUL	$f29, $f6,  $f24
 	ADD	$f17, $f28, $f17
@@ -586,7 +586,7 @@ $SubRemainLoopEnd:
 	MUL	$f30, $f1,  $f21
 	MUL	$f30, $f0,  $f22
 	MUL	$f29, $f1,  $f23
-	
+
 	ADD1	$f20, $f21, $f16
 	ADD2	$f22, $f23, $f17
 	ADD	$f16, $f8,  $f16

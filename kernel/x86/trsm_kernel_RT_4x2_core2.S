@@ -45,7 +45,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -55,7 +55,7 @@
 #define STACK_C	32 + STACK + ARGS(%esi)
 #define STACK_LDC	36 + STACK + ARGS(%esi)
 #define STACK_OFFT	40 + STACK + ARGS(%esi)
-	
+
 #define K	16(%esp)
 #define N	20(%esp)
 #define M	24(%esp)
@@ -141,7 +141,7 @@
 
 #ifdef RN
 	negl	KK
-#endif	
+#endif
 
 #ifdef RT
        movl	N, %eax
@@ -153,13 +153,13 @@
 	testl	$1, %eax
 	jle	.L100
 	ALIGN_2
-	
+
 .L101:
 #ifdef LN
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	16 * SIZE + BUFFER, BB
 
@@ -175,7 +175,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(B,  %eax, 1), B
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -191,7 +191,7 @@
 	sarl	$3, %eax
 	jle	.L103
 	ALIGN_4
-	
+
 .L102:
 	movddup	 -16 * SIZE(B), %xmm0
 	movddup	 -15 * SIZE(B), %xmm1
@@ -239,7 +239,7 @@
 	decl	%eax
 	jne	.L104
 	ALIGN_4
-	
+
 .L105:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -281,7 +281,7 @@
 	movl	KK, %eax
 	sall	$0 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -301,7 +301,7 @@
 	sarl	$3, %eax
 	je	.L112
 
-.L111:	
+.L111:
 	mulpd	%xmm1, %xmm0
 	mulpd	-14 * SIZE(AA), %xmm1
 	addpd	%xmm0, %xmm4
@@ -567,7 +567,7 @@
 	BRANCH
 	decl	%ebx			# i --
 	jg	.L110
-	ALIGN_2	
+	ALIGN_2
 
 .L130:
 	movl	M,  %ebx
@@ -593,7 +593,7 @@
 	movl	KK, %eax
 	sall	$0 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -611,7 +611,7 @@
 	sarl	$3, %eax
 	je	.L132
 
-.L131:	
+.L131:
 	mulpd	%xmm0,  %xmm1
 	movapd	-14 * SIZE(AA), %xmm0
 	addpd	%xmm1, %xmm4
@@ -757,7 +757,7 @@
 
 	movddup	%xmm0, %xmm1
 	unpckhpd %xmm0, %xmm0
-	
+
 	movapd	%xmm1, -16 * SIZE(BB)
 	movapd	%xmm0, -14 * SIZE(BB)
 #else
@@ -815,7 +815,7 @@
 	movl	KK, %eax
 	sall	$0 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	movsd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -833,7 +833,7 @@
 	sarl	$3, %eax
 	je	.L152
 
-.L151:	
+.L151:
 	mulsd	%xmm0,  %xmm1
 	movsd	-15 * SIZE(AA), %xmm0
 	addsd	%xmm1, %xmm4
@@ -1005,14 +1005,14 @@
 	movl	%eax, J
 	jle	.L999
 	ALIGN_2
-	
+
 .L01:
 /* Copying to Sub Buffer */
 #ifdef LN
 	movl	OFFSET, %eax
 	addl	M, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	16 * SIZE + BUFFER, BB
 
@@ -1028,7 +1028,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(B,  %eax, 2), B
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 #ifdef LT
 	movl	OFFSET, %eax
@@ -1044,7 +1044,7 @@
 	sarl	$2, %eax
 	jle	.L03
 	ALIGN_2
-	
+
 .L02:
 	movddup	 -16 * SIZE(B), %xmm0
 	movddup	 -15 * SIZE(B), %xmm1
@@ -1094,7 +1094,7 @@
 	decl	%eax
 	jne	.L04
 	ALIGN_4
-	
+
 .L05:
 #if defined(LT) || defined(RN)
 	movl	A, AA
@@ -1138,7 +1138,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1554,7 +1554,7 @@
 
 	decl	%ebx			# i --
 	jg	.L10
-	ALIGN_2	
+	ALIGN_2
 
 .L30:
 	movl	M,  %ebx
@@ -1580,7 +1580,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	movapd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1600,7 +1600,7 @@
 	sarl	$3, %eax
 	je	.L32
 
-.L31:	
+.L31:
 	mulpd	%xmm0,  %xmm1
 	mulpd	-14 * SIZE(BB), %xmm0
 	addpd	%xmm1, %xmm4
@@ -1850,7 +1850,7 @@
 	movl	KK, %eax
 	sall	$1 + BASE_SHIFT, %eax
 	leal	(BB, %eax, 2), BB
-#endif	
+#endif
 
 	movsd	-16 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -1870,7 +1870,7 @@
 	sarl	$3, %eax
 	je	.L52
 
-.L51:	
+.L51:
 	mulsd	%xmm0,  %xmm1
 	mulsd	-14 * SIZE(BB), %xmm0
 	addsd	%xmm1, %xmm4

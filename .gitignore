@@ -21,8 +21,10 @@ lapack-netlib/TESTING/testing_results.txt
 lib.grd
 nohup.out
 config.h
+config_kernel.h
 Makefile.conf
 Makefile.conf_last
+Makefile_kernel.conf
 config_last.h
 getarch
 getarch_2nd
@@ -41,6 +43,8 @@ ctest/xzcblat2
 ctest/xzcblat3
 exports/linktest.c
 exports/linux.def
+kernel/setparam_*.c
+kernel/kernel_*.h
 test/CBLAT2.SUMM
 test/CBLAT3.SUMM
 test/DBLAT2.SUMM

@@ -150,7 +150,7 @@
 	cmp	N, 0
 	ble	.LL19
 	nop
-	
+
 	sll	INCX, BASE_SHIFT, INCX
 	sll	INCY, BASE_SHIFT, INCY
 
@@ -480,7 +480,7 @@
 .LL19:
 	return	%i7 + 8
 	nop
-	
+
 .LL50:
 	mov	X, XX
 	mov	Y, YY

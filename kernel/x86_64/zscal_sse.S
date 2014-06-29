@@ -66,7 +66,7 @@
 #endif
 
 	SAVEREGISTERS
-	
+
 	salq	$ZBASE_SHIFT, INCX
 	xor	FLAG, FLAG
 
@@ -1040,7 +1040,7 @@
 
 
 #else
-	
+
 	pshufd	$0, %xmm0, %xmm14
 	pshufd	$0, %xmm1, %xmm1
 	subps	  %xmm1,   %xmm15
@@ -1353,7 +1353,7 @@
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS
-	
+
 	ret
 
 	EPILOGUE

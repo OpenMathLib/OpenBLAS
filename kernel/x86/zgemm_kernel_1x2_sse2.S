@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS	 0
-	
+
 #define STACK_M	 4 + STACK + ARGS(%esi)
 #define STACK_N	 8 + STACK + ARGS(%esi)
 #define STACK_K	12 + STACK + ARGS(%esi)
@@ -242,7 +242,7 @@
 
 	movlpd	 %xmm0, 0 + ALPHA_R
 	movlpd	 %xmm0, 8 + ALPHA_R
-	
+
 	movlpd	 %xmm1, 8 + ALPHA_I
 	xorpd	 %xmm7, %xmm1
 	movlpd	 %xmm1, 0 + ALPHA_I
@@ -258,7 +258,7 @@
 	movss	%xmm4, KK
 #ifndef LEFT
 	negl	KK
-#endif	
+#endif
 #endif
 
 	sall	$ZBASE_SHIFT, LDC
@@ -272,7 +272,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, %ecx
 
@@ -362,7 +362,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 8), BB
-#endif	
+#endif
 
 	movapd	 0 * SIZE(AA), %xmm0
 	pxor	%xmm4, %xmm4
@@ -381,7 +381,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -396,7 +396,7 @@
 	andl	$-8, %eax
 	sall	$4, %eax
 	je	.L15
-.L1X:	
+.L1X:
 	KERNEL1(16  *  0)
 	KERNEL2(16  *  0)
 	KERNEL3(16  *  0)
@@ -576,7 +576,7 @@
 
 	pshufd	$0x4e, %xmm4, %xmm5
 	pshufd	$0x4e, %xmm6, %xmm7
-	
+
 	mulpd	%xmm2, %xmm4
 	mulpd	%xmm3, %xmm5
 	mulpd	%xmm2, %xmm6
@@ -611,7 +611,7 @@
 	addl	$2 * SIZE, %esi		# coffset += 4
 	decl	%ebx			# i --
 	jg	.L10
-	ALIGN_4	
+	ALIGN_4
 
 .L99:
 #if defined(TRMMKERNEL) && !defined(LEFT)
@@ -634,7 +634,7 @@
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movl	OFFSET, %eax
 	movl	%eax, KK
-#endif	
+#endif
 
 	leal	BUFFER, %ecx
 	movapd	POSINV, %xmm7
@@ -705,7 +705,7 @@
 	movl	C, %esi		# coffset = c
 	movl	A, AA		# aoffset = a
 	movl	M,  %ebx
-	testl	%ebx, %ebx	
+	testl	%ebx, %ebx
 	jle	.L500
 	ALIGN_4
 
@@ -721,7 +721,7 @@
 	leal	(, %eax, SIZE), %eax
 	leal	(AA, %eax, 2), AA
 	leal	(BB, %eax, 4), BB
-#endif	
+#endif
 
 	pxor	%xmm4, %xmm4
 	pxor	%xmm5, %xmm5
@@ -738,7 +738,7 @@
 #elif (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
 	movl	K, %eax
 	subl	KK, %eax
-	movl	%eax, KKK	
+	movl	%eax, KKK
 #else
 	movl	KK, %eax
 #ifdef LEFT
@@ -864,7 +864,7 @@
 #endif
 
 	pshufd	$0x4e, %xmm4, %xmm5
-	
+
 	mulpd	%xmm2, %xmm4
 	mulpd	%xmm3, %xmm5
 
@@ -893,13 +893,13 @@
 	addl	$2 * SIZE, %esi		# coffset += 4
 	decl	%ebx			# i --
 	jg	.L110
-	ALIGN_4	
+	ALIGN_4
 
 .L500:
 	movl	OLD_STACK, %esp
 
 	EMMS
-	
+
 	popl	%ebx
 	popl	%esi
 	popl	%edi

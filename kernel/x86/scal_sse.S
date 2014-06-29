@@ -280,7 +280,7 @@
 	movaps	%xmm0, %xmm4
 	mulps	-20 * SIZE(X), %xmm4
 
-	decl	I 
+	decl	I
 	jle	.L112
 	ALIGN_4
 
@@ -353,13 +353,13 @@
 	movaps	%xmm4,  -4 * SIZE(X)
 
 #else
-	
+
 	movaps	-32 * SIZE(X), %xmm1
 	movaps	-28 * SIZE(X), %xmm2
 	movaps	-24 * SIZE(X), %xmm3
 	movaps	-20 * SIZE(X), %xmm4
 
-	decl	I 
+	decl	I
 	jle	.L112
 	ALIGN_4
 

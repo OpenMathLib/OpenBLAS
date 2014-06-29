@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #ifndef __64BIT__
 #define LOAD	lwz
 #else
@@ -105,7 +105,7 @@
 #define PREA	r30
 #define PREC	r31
 #define PREB	PREA
-	
+
 #ifndef NEEDPARAM
 
 #ifndef DOUBLE
@@ -778,7 +778,7 @@ LL(KERNEL_MainFinish):
 
 	addi	CO1, CO1, 4 * SIZE
 	addi	CO2, CO2, 4 * SIZE
-	
+
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))

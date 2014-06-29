@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-	
+
 #define STACK	 8
 #define ARGS     0
 
@@ -123,7 +123,7 @@
 	decl	I
 	jle	.L12
 	ALIGN_3
-	
+
 .L11:
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
@@ -278,7 +278,7 @@
 	sarl	$3, I
 	jle	.L105
 	ALIGN_4
-	
+
 .L101:
 	movss	(X), %xmm4
 	addl	INCX, X
@@ -344,7 +344,7 @@
 #ifndef HAVE_SSE3
 	movhlps	%xmm0, %xmm1
 	addps	%xmm1, %xmm0
-	
+
 	movaps	%xmm0, %xmm1
 	shufps  $1, %xmm0, %xmm0
 	addss	 %xmm1, %xmm0

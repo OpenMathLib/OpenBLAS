@@ -92,7 +92,7 @@
 	movsd	-32 * SIZE(X), %xmm4
 	movsd	-32 * SIZE(Y), %xmm0
 
-	pshufd	$0xb1,  %xmm0, %xmm1 
+	pshufd	$0xb1,  %xmm0, %xmm1
 	mulps	%xmm4,  %xmm0
 	mulps	%xmm4,  %xmm1
 	addq	$2 * SIZE, X
@@ -126,7 +126,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movaps	-16 * SIZE(Y), %xmm8
@@ -134,7 +134,7 @@
 	movaps	-16 * SIZE(X), %xmm4
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movaps	-12 * SIZE(Y), %xmm9
@@ -146,7 +146,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movaps	 -8 * SIZE(Y), %xmm10
@@ -154,7 +154,7 @@
 	movaps	 -8 * SIZE(X), %xmm6
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movaps	 -4 * SIZE(Y), %xmm11
@@ -166,7 +166,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(X)
 #endif
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movaps	  0 * SIZE(Y), %xmm8
@@ -174,7 +174,7 @@
 	movaps	  0 * SIZE(X), %xmm4
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movaps	  4 * SIZE(Y), %xmm9
@@ -186,7 +186,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movaps	  8 * SIZE(Y), %xmm10
@@ -194,7 +194,7 @@
 	movaps	  8 * SIZE(X), %xmm6
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movaps	 12 * SIZE(Y), %xmm11
@@ -210,7 +210,7 @@
 	ALIGN_3
 
 .L12:
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movaps	-16 * SIZE(Y), %xmm8
@@ -218,7 +218,7 @@
 	movaps	-16 * SIZE(X), %xmm4
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movaps	-12 * SIZE(Y), %xmm9
@@ -226,7 +226,7 @@
 	movaps	-12 * SIZE(X), %xmm5
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movaps	 -8 * SIZE(Y), %xmm10
@@ -234,7 +234,7 @@
 	movaps	 -8 * SIZE(X), %xmm6
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movaps	 -4 * SIZE(Y), %xmm11
@@ -242,25 +242,25 @@
 	movaps	 -4 * SIZE(X), %xmm7
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	mulps	%xmm6,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	mulps	%xmm7,  %xmm12
@@ -277,7 +277,7 @@
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -286,7 +286,7 @@
 	movaps	-28 * SIZE(X), %xmm5
 	movaps	-28 * SIZE(Y), %xmm9
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
@@ -295,7 +295,7 @@
 	movaps	-24 * SIZE(X), %xmm6
 	movaps	-24 * SIZE(Y), %xmm10
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	mulps	%xmm6,  %xmm12
@@ -304,7 +304,7 @@
 	movaps	-20 * SIZE(X), %xmm7
 	movaps	-20 * SIZE(Y), %xmm11
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	mulps	%xmm7,  %xmm12
@@ -323,13 +323,13 @@
 	movaps	-28 * SIZE(X), %xmm5
 	movaps	-28 * SIZE(Y), %xmm9
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
@@ -346,7 +346,7 @@
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -369,7 +369,7 @@
 #endif
 	movsd	-32 * SIZE(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -410,7 +410,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -420,7 +420,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -434,7 +434,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -444,7 +444,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -458,7 +458,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -468,7 +468,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -482,7 +482,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -492,7 +492,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -510,7 +510,7 @@
 
 .L22:
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -520,7 +520,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -530,7 +530,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -540,7 +540,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -550,7 +550,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -559,7 +559,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -567,7 +567,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -575,7 +575,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -596,7 +596,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -607,7 +607,7 @@
 	movaps	-24 * SIZE(Y), %xmm11
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -618,7 +618,7 @@
 	movaps	-20 * SIZE(Y), %xmm8
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -626,7 +626,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -645,7 +645,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -656,7 +656,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -677,7 +677,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -698,7 +698,7 @@
 #endif
 	movsd	-32 * SIZE(X), %xmm4
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x59,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -745,7 +745,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movsd	-16 * SIZE(Y), %xmm8
@@ -754,7 +754,7 @@
 	movaps	-16 * SIZE(X), %xmm4
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movsd	-12 * SIZE(Y), %xmm9
@@ -767,7 +767,7 @@
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movsd	 -8 * SIZE(Y), %xmm10
@@ -776,7 +776,7 @@
 	movaps	 -8 * SIZE(X), %xmm6
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movsd	 -4 * SIZE(Y), %xmm11
@@ -789,7 +789,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(X)
 #endif
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movsd	  0 * SIZE(Y), %xmm8
@@ -798,7 +798,7 @@
 	movaps	  0 * SIZE(X), %xmm4
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movsd	  4 * SIZE(Y), %xmm9
@@ -811,7 +811,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movsd	  8 * SIZE(Y), %xmm10
@@ -820,7 +820,7 @@
 	movaps	  8 * SIZE(X), %xmm6
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movsd	 12 * SIZE(Y), %xmm11
@@ -837,7 +837,7 @@
 	ALIGN_3
 
 .L32:
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movsd	-16 * SIZE(Y), %xmm8
@@ -846,7 +846,7 @@
 	movaps	-16 * SIZE(X), %xmm4
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movsd	-12 * SIZE(Y), %xmm9
@@ -855,7 +855,7 @@
 	movaps	-12 * SIZE(X), %xmm5
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movsd	 -8 * SIZE(Y), %xmm10
@@ -864,7 +864,7 @@
 	movaps	 -8 * SIZE(X), %xmm6
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movsd	 -4 * SIZE(Y), %xmm11
@@ -873,25 +873,25 @@
 	movaps	 -4 * SIZE(X), %xmm7
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	mulps	%xmm6,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	mulps	%xmm7,  %xmm12
@@ -909,7 +909,7 @@
 	movsd	-32 * SIZE(Y), %xmm8
 	movhps	-30 * SIZE(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -919,7 +919,7 @@
 	movsd	-28 * SIZE(Y), %xmm9
 	movhps	-26 * SIZE(Y), %xmm9
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
@@ -929,7 +929,7 @@
 	movsd	-24 * SIZE(Y), %xmm10
 	movhps	-22 * SIZE(Y), %xmm10
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	mulps	%xmm6,  %xmm12
@@ -939,7 +939,7 @@
 	movsd	-20 * SIZE(Y), %xmm11
 	movhps	-18 * SIZE(Y), %xmm11
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	mulps	%xmm7,  %xmm12
@@ -957,7 +957,7 @@
 	movsd	-32 * SIZE(Y), %xmm8
 	movhps	-30 * SIZE(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -967,7 +967,7 @@
 	movsd	-28 * SIZE(Y), %xmm9
 	movhps	-26 * SIZE(Y), %xmm9
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
@@ -985,7 +985,7 @@
 	movsd	-32 * SIZE(Y), %xmm8
 	movhps	-30 * SIZE(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -1008,7 +1008,7 @@
 #endif
 	movsd	-32 * SIZE(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -1045,7 +1045,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1055,7 +1055,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1069,7 +1069,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1079,7 +1079,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1093,7 +1093,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1103,7 +1103,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1117,7 +1117,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1127,7 +1127,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1145,7 +1145,7 @@
 
 .L42:
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1155,7 +1155,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1165,7 +1165,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1175,7 +1175,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1185,7 +1185,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1194,7 +1194,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1202,7 +1202,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1210,7 +1210,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1231,7 +1231,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1242,7 +1242,7 @@
 	movaps	-24 * SIZE(Y), %xmm11
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1253,7 +1253,7 @@
 	movaps	-20 * SIZE(Y), %xmm8
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1261,7 +1261,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1280,7 +1280,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1291,7 +1291,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1312,7 +1312,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1335,7 +1335,7 @@
 	movss	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x03,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1368,7 +1368,7 @@
 #endif
 	movsd	-32 * SIZE(Y), %xmm4
 
-	pshufd	$0xb1,  %xmm0, %xmm1 
+	pshufd	$0xb1,  %xmm0, %xmm1
 	mulps	%xmm4,  %xmm0
 	mulps	%xmm4,  %xmm1
 	addq	$2 * SIZE, X
@@ -1408,7 +1408,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1418,7 +1418,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1432,7 +1432,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1442,7 +1442,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1456,7 +1456,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1466,7 +1466,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1480,7 +1480,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1490,7 +1490,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1508,7 +1508,7 @@
 
 .L52:
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1518,7 +1518,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1528,7 +1528,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1538,7 +1538,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1548,7 +1548,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1557,7 +1557,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1565,7 +1565,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1573,7 +1573,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1594,7 +1594,7 @@
 	movaps	-28 * SIZE(X), %xmm10
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1605,7 +1605,7 @@
 	movaps	-24 * SIZE(X), %xmm11
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1616,7 +1616,7 @@
 	movaps	-20 * SIZE(X), %xmm8
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x39,  %xmm10, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1624,7 +1624,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x39,  %xmm11, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1643,7 +1643,7 @@
 	movaps	-32 * SIZE(X), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1654,7 +1654,7 @@
 	movaps	-28 * SIZE(X), %xmm10
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x39,  %xmm9, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1675,7 +1675,7 @@
 	movaps	-32 * SIZE(X), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1696,7 +1696,7 @@
 #endif
 	movsd	-32 * SIZE(Y), %xmm4
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0xa9,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1733,7 +1733,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1743,7 +1743,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1757,7 +1757,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1767,7 +1767,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1781,7 +1781,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1791,7 +1791,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1805,7 +1805,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1815,7 +1815,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1833,7 +1833,7 @@
 
 .L62:
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1843,7 +1843,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1853,7 +1853,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1863,7 +1863,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1873,7 +1873,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1882,7 +1882,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1890,7 +1890,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1898,7 +1898,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1919,7 +1919,7 @@
 	movaps	-28 * SIZE(X), %xmm10
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1930,7 +1930,7 @@
 	movaps	-24 * SIZE(X), %xmm11
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -1941,7 +1941,7 @@
 	movaps	-20 * SIZE(X), %xmm8
 
 	movss	%xmm11, %xmm10
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	shufps	$0x93,  %xmm11, %xmm10
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
@@ -1949,7 +1949,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	shufps	$0x93,  %xmm8, %xmm11
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
@@ -1968,7 +1968,7 @@
 	movaps	-32 * SIZE(X), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -1979,7 +1979,7 @@
 	movaps	-28 * SIZE(X), %xmm10
 
 	movss	%xmm10, %xmm9
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	shufps	$0x93,  %xmm10, %xmm9
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
@@ -2000,7 +2000,7 @@
 	movaps	-32 * SIZE(X), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -2023,7 +2023,7 @@
 	movss	-32 * SIZE(X), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x03,  %xmm8, %xmm8
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -2046,7 +2046,7 @@
 #endif
 	movsd	-32 * SIZE(X), %xmm4
 
-	pshufd	$0xb1,  %xmm0, %xmm1 
+	pshufd	$0xb1,  %xmm0, %xmm1
 	mulps	%xmm4,  %xmm0
 	mulps	%xmm4,  %xmm1
 	addq	$2 * SIZE, X
@@ -2095,7 +2095,7 @@
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(Y)
 #endif
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	movaps	-16 * SIZE(Y), %xmm4
@@ -2104,7 +2104,7 @@
 	movhps	-14 * SIZE(X), %xmm8
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
 	movaps	-12 * SIZE(Y), %xmm5
@@ -2113,7 +2113,7 @@
 	movhps	-10 * SIZE(X), %xmm9
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
 	movaps	 -8 * SIZE(Y), %xmm6
@@ -2122,7 +2122,7 @@
 	movhps	 -6 * SIZE(X), %xmm10
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
 	movaps	 -4 * SIZE(Y), %xmm7
@@ -2131,7 +2131,7 @@
 	movhps	 -2 * SIZE(X), %xmm11
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	movaps	  0 * SIZE(Y), %xmm4
@@ -2140,7 +2140,7 @@
 	movhps	  2 * SIZE(X), %xmm8
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
 	movaps	  4 * SIZE(Y), %xmm5
@@ -2149,7 +2149,7 @@
 	movhps	  6 * SIZE(X), %xmm9
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
 	movaps	  8 * SIZE(Y), %xmm6
@@ -2158,7 +2158,7 @@
 	movhps	 10 * SIZE(X), %xmm10
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
 	movaps	 12 * SIZE(Y), %xmm7
@@ -2175,7 +2175,7 @@
 	ALIGN_3
 
 .L52:
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	movaps	-16 * SIZE(Y), %xmm4
@@ -2184,7 +2184,7 @@
 	movhps	-14 * SIZE(X), %xmm8
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
 	movaps	-12 * SIZE(Y), %xmm5
@@ -2193,7 +2193,7 @@
 	movhps	-10 * SIZE(X), %xmm9
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
 	movaps	 -8 * SIZE(Y), %xmm6
@@ -2202,7 +2202,7 @@
 	movhps	 -6 * SIZE(X), %xmm10
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
 	movaps	 -4 * SIZE(Y), %xmm7
@@ -2211,25 +2211,25 @@
 	movhps	 -2 * SIZE(X), %xmm11
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
 	mulps	%xmm9,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
 	mulps	%xmm10, %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
 	mulps	%xmm11, %xmm12
@@ -2251,7 +2251,7 @@
 	movlps	-28 * SIZE(X), %xmm9
 	movhps	-26 * SIZE(X), %xmm9
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
@@ -2261,7 +2261,7 @@
 	movlps	-24 * SIZE(X), %xmm10
 	movhps	-22 * SIZE(X), %xmm10
 
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
 	mulps	%xmm9,  %xmm12
@@ -2271,13 +2271,13 @@
 	movlps	-20 * SIZE(X), %xmm11
 	movhps	-18 * SIZE(X), %xmm11
 
-	pshufd	$0xb1,  %xmm6,  %xmm12 
+	pshufd	$0xb1,  %xmm6,  %xmm12
 	mulps	%xmm10, %xmm6
 	addps	%xmm6,  %xmm0
 	mulps	%xmm10, %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm7,  %xmm12 
+	pshufd	$0xb1,  %xmm7,  %xmm12
 	mulps	%xmm11, %xmm7
 	addps	%xmm7,  %xmm0
 	mulps	%xmm11, %xmm12
@@ -2295,7 +2295,7 @@
 	movlps	-32 * SIZE(X), %xmm8
 	movhps	-30 * SIZE(X), %xmm8
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
@@ -2305,7 +2305,7 @@
 	movlps	-28 * SIZE(X), %xmm9
 	movhps	-26 * SIZE(X), %xmm9
 
-	pshufd	$0xb1,  %xmm5, %xmm12 
+	pshufd	$0xb1,  %xmm5, %xmm12
 	mulps	%xmm9,  %xmm5
 	addps	%xmm5,  %xmm0
 	mulps	%xmm9,  %xmm12
@@ -2323,7 +2323,7 @@
 	movlps	-32 * SIZE(X), %xmm8
 	movhps	-30 * SIZE(X), %xmm8
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
@@ -2347,7 +2347,7 @@
 #endif
 	movsd	-32 * SIZE(X), %xmm8
 
-	pshufd	$0xb1,  %xmm4, %xmm12 
+	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
@@ -2409,7 +2409,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2419,7 +2419,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2433,7 +2433,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2443,7 +2443,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2457,7 +2457,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2467,7 +2467,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2481,7 +2481,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2491,7 +2491,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2509,7 +2509,7 @@
 
 .L72:
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2519,7 +2519,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2529,7 +2529,7 @@
 	addps	%xmm12, %xmm3
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2539,7 +2539,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2549,7 +2549,7 @@
 	addps	%xmm12, %xmm3
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2559,7 +2559,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2567,7 +2567,7 @@
 	addps	%xmm12, %xmm3
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2575,7 +2575,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2594,7 +2594,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2605,7 +2605,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2616,7 +2616,7 @@
 	movaps	-24 * SIZE(Y), %xmm11
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2627,7 +2627,7 @@
 	movaps	-20 * SIZE(Y), %xmm8
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2648,7 +2648,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2656,7 +2656,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2678,7 +2678,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2698,7 +2698,7 @@
 	movss	%xmm5, %xmm8
 
 	shufps	$0x24, %xmm4, %xmm4
-	pshufd	$0x18, %xmm8, %xmm12 
+	pshufd	$0x18, %xmm8, %xmm12
 	shufps	$0x24, %xmm8, %xmm8
 
 	mulps	%xmm4,  %xmm8
@@ -2748,7 +2748,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2759,7 +2759,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2774,7 +2774,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2785,7 +2785,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2800,7 +2800,7 @@
 #endif
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2811,7 +2811,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2826,7 +2826,7 @@
 #endif
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2837,7 +2837,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2856,7 +2856,7 @@
 
 .L82:
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2867,7 +2867,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2878,7 +2878,7 @@
 	addps	%xmm12, %xmm3
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2889,7 +2889,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2900,7 +2900,7 @@
 	addps	%xmm12, %xmm3
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2911,7 +2911,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2919,7 +2919,7 @@
 	addps	%xmm12, %xmm3
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2927,7 +2927,7 @@
 	addps	%xmm12, %xmm1
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -2947,7 +2947,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -2959,7 +2959,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -2971,7 +2971,7 @@
 	movaps	-24 * SIZE(Y), %xmm11
 
 	movss	%xmm11, %xmm10
-	pshufd	$0x1b,  %xmm10, %xmm12 
+	pshufd	$0x1b,  %xmm10, %xmm12
 	movss	%xmm7,  %xmm6
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
@@ -2983,7 +2983,7 @@
 	movaps	-20 * SIZE(Y), %xmm8
 
 	movss	%xmm8,  %xmm11
-	pshufd	$0x1b,  %xmm11, %xmm12 
+	pshufd	$0x1b,  %xmm11, %xmm12
 	movss	%xmm4,  %xmm7
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
@@ -3003,7 +3003,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -3015,7 +3015,7 @@
 	movaps	-28 * SIZE(Y), %xmm10
 
 	movss	%xmm10, %xmm9
-	pshufd	$0x1b,  %xmm9, %xmm12 
+	pshufd	$0x1b,  %xmm9, %xmm12
 	movss	%xmm6,  %xmm5
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
@@ -3038,7 +3038,7 @@
 	movaps	-32 * SIZE(Y), %xmm9
 
 	movss	%xmm9,  %xmm8
-	pshufd	$0x1b,  %xmm8, %xmm12 
+	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -3058,7 +3058,7 @@
 	movss	%xmm5, %xmm8
 
 	shufps	$0x24, %xmm4, %xmm4
-	pshufd	$0x18, %xmm8, %xmm12 
+	pshufd	$0x18, %xmm8, %xmm12
 	shufps	$0x24, %xmm8, %xmm8
 
 	mulps	%xmm4,  %xmm8
@@ -3121,7 +3121,7 @@
 	ALIGN_3
 
 .L203:
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movsd	(Y), %xmm8
@@ -3135,7 +3135,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movsd	(Y), %xmm9
@@ -3149,7 +3149,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movsd	(Y), %xmm10
@@ -3163,7 +3163,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movsd	(Y), %xmm11
@@ -3177,7 +3177,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movsd	(Y), %xmm8
@@ -3191,7 +3191,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movsd	(Y), %xmm9
@@ -3205,7 +3205,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movsd	(Y), %xmm10
@@ -3219,7 +3219,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movsd	(Y), %xmm11
@@ -3239,7 +3239,7 @@
 	ALIGN_3
 
 .L204:
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	movsd	(Y), %xmm8
@@ -3253,7 +3253,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	movsd	(Y), %xmm9
@@ -3267,7 +3267,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	movsd	(Y), %xmm10
@@ -3281,7 +3281,7 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	movsd	(Y), %xmm11
@@ -3295,25 +3295,25 @@
 	addq	INCX, X
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
 	addps	%xmm12, %xmm3
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	mulps	%xmm6,  %xmm12
 	addps	%xmm12, %xmm1
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	mulps	%xmm7,  %xmm12
@@ -3333,7 +3333,7 @@
 	movhps	(Y), %xmm8
 	addq	INCY, Y
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -3348,7 +3348,7 @@
 	movhps	(Y), %xmm9
 	addq	INCY, Y
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
@@ -3363,7 +3363,7 @@
 	movhps	(Y), %xmm10
 	addq	INCY, Y
 
-	pshufd	$0xb1,  %xmm10, %xmm12 
+	pshufd	$0xb1,  %xmm10, %xmm12
 	mulps	%xmm6,  %xmm10
 	addps	%xmm10, %xmm0
 	mulps	%xmm6,  %xmm12
@@ -3378,7 +3378,7 @@
 	movhps	(Y), %xmm11
 	addq	INCY, Y
 
-	pshufd	$0xb1,  %xmm11, %xmm12 
+	pshufd	$0xb1,  %xmm11, %xmm12
 	mulps	%xmm7,  %xmm11
 	addps	%xmm11, %xmm2
 	mulps	%xmm7,  %xmm12
@@ -3398,7 +3398,7 @@
 	movhps	(Y), %xmm8
 	addq	INCY, Y
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -3413,7 +3413,7 @@
 	movhps	(Y), %xmm9
 	addq	INCY, Y
 
-	pshufd	$0xb1,  %xmm9, %xmm12 
+	pshufd	$0xb1,  %xmm9, %xmm12
 	mulps	%xmm5,  %xmm9
 	addps	%xmm9,  %xmm2
 	mulps	%xmm5,  %xmm12
@@ -3433,7 +3433,7 @@
 	movhps	(Y), %xmm8
 	addq	INCY, Y
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -3453,7 +3453,7 @@
 #endif
 	movsd	(Y), %xmm8
 
-	pshufd	$0xb1,  %xmm8, %xmm12 
+	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
@@ -3483,7 +3483,7 @@
 	subss	 %xmm3, %xmm1
 #endif
 	unpcklps %xmm1, %xmm0
-	
+
 #ifdef WINDOWS_ABI
 	movq	%xmm0, %rax
 #endif

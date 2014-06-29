@@ -62,7 +62,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
   }
 
   for (i = 0; i < n; i++) {
-    
+
 #if (TRANSA == 1) || (TRANSA == 3)
     length  = i;
     if (length > k) length = k;

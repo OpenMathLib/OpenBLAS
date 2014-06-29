@@ -11,9 +11,9 @@
 #define  TEST_ROW_MJR	1
 #define  UNDEFINED     -1
 
-void F77_zgemm(int *order, char *transpa, char *transpb, int *m, int *n, 
+void F77_zgemm(int *order, char *transpa, char *transpb, int *m, int *n,
      int *k, CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda,
-     CBLAS_TEST_ZOMPLEX *b, int *ldb, CBLAS_TEST_ZOMPLEX *beta, 
+     CBLAS_TEST_ZOMPLEX *b, int *ldb, CBLAS_TEST_ZOMPLEX *beta,
      CBLAS_TEST_ZOMPLEX *c, int *ldc ) {
 
   CBLAS_TEST_ZOMPLEX *A, *B, *C;
@@ -133,7 +133,7 @@ void F77_zhemm(int *order, char *rtlf, char *uplow, int *m, int *n,
            C[i*LDC+j].real=c[j*(*ldc)+i].real;
            C[i*LDC+j].imag=c[j*(*ldc)+i].imag;
         }
-     cblas_zhemm( CblasRowMajor, side, uplo, *m, *n, alpha, A, LDA, B, LDB, 
+     cblas_zhemm( CblasRowMajor, side, uplo, *m, *n, alpha, A, LDA, B, LDB,
                   beta, C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ ) {
@@ -145,10 +145,10 @@ void F77_zhemm(int *order, char *rtlf, char *uplow, int *m, int *n,
      free(C);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_zhemm( CblasColMajor, side, uplo, *m, *n, alpha, a, *lda, b, *ldb, 
+     cblas_zhemm( CblasColMajor, side, uplo, *m, *n, alpha, a, *lda, b, *ldb,
                   beta, c, *ldc );
   else
-     cblas_zhemm( UNDEFINED, side, uplo, *m, *n, alpha, a, *lda, b, *ldb, 
+     cblas_zhemm( UNDEFINED, side, uplo, *m, *n, alpha, a, *lda, b, *ldb,
                   beta, c, *ldc );
 }
 void F77_zsymm(int *order, char *rtlf, char *uplow, int *m, int *n,
@@ -189,7 +189,7 @@ void F77_zsymm(int *order, char *rtlf, char *uplow, int *m, int *n,
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
-     cblas_zsymm( CblasRowMajor, side, uplo, *m, *n, alpha, A, LDA, B, LDB, 
+     cblas_zsymm( CblasRowMajor, side, uplo, *m, *n, alpha, A, LDA, B, LDB,
                   beta, C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
@@ -199,15 +199,15 @@ void F77_zsymm(int *order, char *rtlf, char *uplow, int *m, int *n,
      free(C);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_zsymm( CblasColMajor, side, uplo, *m, *n, alpha, a, *lda, b, *ldb, 
+     cblas_zsymm( CblasColMajor, side, uplo, *m, *n, alpha, a, *lda, b, *ldb,
                   beta, c, *ldc );
   else
-     cblas_zsymm( UNDEFINED, side, uplo, *m, *n, alpha, a, *lda, b, *ldb, 
+     cblas_zsymm( UNDEFINED, side, uplo, *m, *n, alpha, a, *lda, b, *ldb,
                   beta, c, *ldc );
 }
 
 void F77_zherk(int *order, char *uplow, char *transp, int *n, int *k,
-     double *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda, 
+     double *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda,
      double *beta, CBLAS_TEST_ZOMPLEX *c, int *ldc ) {
 
   int i,j,LDA,LDC;
@@ -244,7 +244,7 @@ void F77_zherk(int *order, char *uplow, char *transp, int *n, int *k,
            C[i*LDC+j].real=c[j*(*ldc)+i].real;
            C[i*LDC+j].imag=c[j*(*ldc)+i].imag;
         }
-     cblas_zherk(CblasRowMajor, uplo, trans, *n, *k, *alpha, A, LDA, *beta, 
+     cblas_zherk(CblasRowMajor, uplo, trans, *n, *k, *alpha, A, LDA, *beta,
 	         C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*n; i++ ) {
@@ -255,15 +255,15 @@ void F77_zherk(int *order, char *uplow, char *transp, int *n, int *k,
      free(C);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_zherk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta, 
+     cblas_zherk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta,
 	         c, *ldc );
   else
-     cblas_zherk(UNDEFINED, uplo, trans, *n, *k, *alpha, a, *lda, *beta, 
+     cblas_zherk(UNDEFINED, uplo, trans, *n, *k, *alpha, a, *lda, *beta,
 	         c, *ldc );
 }
 
 void F77_zsyrk(int *order, char *uplow, char *transp, int *n, int *k,
-     CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda, 
+     CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, int *lda,
      CBLAS_TEST_ZOMPLEX *beta, CBLAS_TEST_ZOMPLEX *c, int *ldc ) {
 
   int i,j,LDA,LDC;
@@ -300,7 +300,7 @@ void F77_zsyrk(int *order, char *uplow, char *transp, int *n, int *k,
            C[i*LDC+j].real=c[j*(*ldc)+i].real;
            C[i*LDC+j].imag=c[j*(*ldc)+i].imag;
         }
-     cblas_zsyrk(CblasRowMajor, uplo, trans, *n, *k, alpha, A, LDA, beta, 
+     cblas_zsyrk(CblasRowMajor, uplo, trans, *n, *k, alpha, A, LDA, beta,
 	         C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*n; i++ ) {
@@ -311,10 +311,10 @@ void F77_zsyrk(int *order, char *uplow, char *transp, int *n, int *k,
      free(C);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_zsyrk(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, beta, 
+     cblas_zsyrk(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, beta,
 	         c, *ldc );
   else
-     cblas_zsyrk(UNDEFINED, uplo, trans, *n, *k, alpha, a, *lda, beta, 
+     cblas_zsyrk(UNDEFINED, uplo, trans, *n, *k, alpha, a, *lda, beta,
 	         c, *ldc );
 }
 void F77_zher2k(int *order, char *uplow, char *transp, int *n, int *k,
@@ -363,7 +363,7 @@ void F77_zher2k(int *order, char *uplow, char *transp, int *n, int *k,
            C[i*LDC+j].real=c[j*(*ldc)+i].real;
            C[i*LDC+j].imag=c[j*(*ldc)+i].imag;
         }
-     cblas_zher2k(CblasRowMajor, uplo, trans, *n, *k, alpha, A, LDA, 
+     cblas_zher2k(CblasRowMajor, uplo, trans, *n, *k, alpha, A, LDA,
 		  B, LDB, *beta, C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*n; i++ ) {
@@ -375,10 +375,10 @@ void F77_zher2k(int *order, char *uplow, char *transp, int *n, int *k,
      free(C);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_zher2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, 
+     cblas_zher2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda,
 		   b, *ldb, *beta, c, *ldc );
   else
-     cblas_zher2k(UNDEFINED, uplo, trans, *n, *k, alpha, a, *lda, 
+     cblas_zher2k(UNDEFINED, uplo, trans, *n, *k, alpha, a, *lda,
 		   b, *ldb, *beta, c, *ldc );
 }
 void F77_zsyr2k(int *order, char *uplow, char *transp, int *n, int *k,
@@ -427,7 +427,7 @@ void F77_zsyr2k(int *order, char *uplow, char *transp, int *n, int *k,
            C[i*LDC+j].real=c[j*(*ldc)+i].real;
            C[i*LDC+j].imag=c[j*(*ldc)+i].imag;
         }
-     cblas_zsyr2k(CblasRowMajor, uplo, trans, *n, *k, alpha, A, LDA, 
+     cblas_zsyr2k(CblasRowMajor, uplo, trans, *n, *k, alpha, A, LDA,
 		  B, LDB, beta, C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*n; i++ ) {
@@ -439,14 +439,14 @@ void F77_zsyr2k(int *order, char *uplow, char *transp, int *n, int *k,
      free(C);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_zsyr2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda, 
+     cblas_zsyr2k(CblasColMajor, uplo, trans, *n, *k, alpha, a, *lda,
 		   b, *ldb, beta, c, *ldc );
   else
-     cblas_zsyr2k(UNDEFINED, uplo, trans, *n, *k, alpha, a, *lda, 
+     cblas_zsyr2k(UNDEFINED, uplo, trans, *n, *k, alpha, a, *lda,
 		   b, *ldb, beta, c, *ldc );
 }
 void F77_ztrmm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
-       int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, 
+       int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a,
        int *lda, CBLAS_TEST_ZOMPLEX *b, int *ldb) {
   int i,j,LDA,LDB;
   CBLAS_TEST_ZOMPLEX *A, *B;
@@ -486,7 +486,7 @@ void F77_ztrmm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
            B[i*LDB+j].real=b[j*(*ldb)+i].real;
            B[i*LDB+j].imag=b[j*(*ldb)+i].imag;
         }
-     cblas_ztrmm(CblasRowMajor, side, uplo, trans, diag, *m, *n, alpha, 
+     cblas_ztrmm(CblasRowMajor, side, uplo, trans, diag, *m, *n, alpha,
 		 A, LDA, B, LDB );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ ) {
@@ -497,15 +497,15 @@ void F77_ztrmm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
      free(B);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_ztrmm(CblasColMajor, side, uplo, trans, diag, *m, *n, alpha, 
+     cblas_ztrmm(CblasColMajor, side, uplo, trans, diag, *m, *n, alpha,
 		   a, *lda, b, *ldb);
   else
-     cblas_ztrmm(UNDEFINED, side, uplo, trans, diag, *m, *n, alpha, 
+     cblas_ztrmm(UNDEFINED, side, uplo, trans, diag, *m, *n, alpha,
 		   a, *lda, b, *ldb);
 }
 
 void F77_ztrsm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
-         int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a, 
+         int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha, CBLAS_TEST_ZOMPLEX *a,
          int *lda, CBLAS_TEST_ZOMPLEX *b, int *ldb) {
   int i,j,LDA,LDB;
   CBLAS_TEST_ZOMPLEX *A, *B;
@@ -545,7 +545,7 @@ void F77_ztrsm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
            B[i*LDB+j].real=b[j*(*ldb)+i].real;
            B[i*LDB+j].imag=b[j*(*ldb)+i].imag;
         }
-     cblas_ztrsm(CblasRowMajor, side, uplo, trans, diag, *m, *n, alpha, 
+     cblas_ztrsm(CblasRowMajor, side, uplo, trans, diag, *m, *n, alpha,
 		 A, LDA, B, LDB );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ ) {
@@ -556,9 +556,9 @@ void F77_ztrsm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
      free(B);
   }
   else if (*order == TEST_COL_MJR)
-     cblas_ztrsm(CblasColMajor, side, uplo, trans, diag, *m, *n, alpha, 
+     cblas_ztrsm(CblasColMajor, side, uplo, trans, diag, *m, *n, alpha,
 		   a, *lda, b, *ldb);
   else
-     cblas_ztrsm(UNDEFINED, side, uplo, trans, diag, *m, *n, alpha, 
+     cblas_ztrsm(UNDEFINED, side, uplo, trans, diag, *m, *n, alpha,
 		   a, *lda, b, *ldb);
 }

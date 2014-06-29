@@ -90,8 +90,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#define L_BUFFER_SIZE 512*8*4
-#define LB2_OFFSET    512*8*2
+#define L_BUFFER_SIZE 8192
 
 #define Ndiv6	 24(%rsp)
 #define Nmod6	 32(%rsp)
@@ -101,7 +100,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define KK	 64(%rsp)
 #define KKK	 72(%rsp)
 #define BUFFER1	           128(%rsp)
-#define BUFFER2	LB2_OFFSET+128(%rsp)
 
 #if defined(OS_WINDOWS)
 #if   L_BUFFER_SIZE > 16384

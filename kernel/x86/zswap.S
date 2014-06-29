@@ -41,7 +41,7 @@
 
 #define STACK	16
 #define ARGS     0
-	
+
 #define N	 4 + STACK + ARGS(%esp)
 #ifdef XDOUBLE
 #define X	48 + STACK + ARGS(%esp)

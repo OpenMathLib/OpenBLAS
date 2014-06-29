@@ -43,7 +43,7 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 	BLASLONG ix=0,iy=0;
 	FLOAT dot[2];
 	FLOAT _Complex result;
-	
+
 	dot[0]=0.0;
 	dot[1]=0.0;
 
@@ -74,5 +74,5 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 	return(result);
 
 }
-	
+
 

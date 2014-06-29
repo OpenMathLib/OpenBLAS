@@ -52,7 +52,7 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
 
   int num_cpu;
   int mask = 0;
-  
+
   if (!(mode & BLAS_COMPLEX)) {
 
     switch (mode & BLAS_PREC) {
@@ -83,7 +83,7 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
 #endif
     }
   }
-  
+
   n_from = 0;
   n_to   = arg -> n;
 
@@ -96,29 +96,29 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
 
     nf = (double)(n_from);
     nt = (double)(n_to);
-    
+
     dnum = (nt * nt - nf * nf) / (double)nthreads;
-    
+
     num_cpu  = 0;
-    
+
     range[0] = n_from;
     i        = n_from;
-    
+
     while (i < n_to){
-      
+
       if (nthreads - num_cpu > 1) {
-	
+
 	di = (double)i;
 	width = ((BLASLONG)( sqrt(di * di + dnum) - di) + mask) & ~mask;
-	
+
 	if ((width <= 0) || (width > n_to - i)) width = n_to - i;
-	
+
       } else {
 	width = n_to - i;
       }
-      
+
       range[num_cpu + 1] = range[num_cpu] + width;
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = function;
       queue[num_cpu].args    = arg;
@@ -127,38 +127,38 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-      
+
       num_cpu ++;
       i += width;
     }
-  
+
   } else {
 
     nf = (double)(arg -> n - n_from);
     nt = (double)(arg -> n - n_to);
 
     dnum = (nt * nt - nf * nf) / (double)nthreads;
-    
+
     num_cpu  = 0;
-    
+
     range[0] = n_from;
     i        = n_from;
-    
+
     while (i < n_to){
-      
+
       if (nthreads - num_cpu > 1) {
-	
+
 	di = (double)(arg -> n - i);
 	width = ((BLASLONG)(-sqrt(di * di + dnum) + di) + mask) & ~mask;
-	
+
 	if ((width <= 0) || (width > n_to - i)) width = n_to - i;
-	
+
       } else {
 	width = n_to - i;
       }
-      
+
       range[num_cpu + 1] = range[num_cpu] + width;
-      
+
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = function;
       queue[num_cpu].args    = arg;
@@ -167,7 +167,7 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
       queue[num_cpu].sa      = NULL;
       queue[num_cpu].sb      = NULL;
       queue[num_cpu].next    = &queue[num_cpu + 1];
-      
+
       num_cpu ++;
       i += width;
     }
@@ -178,9 +178,9 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
     queue[0].sa = sa;
     queue[0].sb = sb;
     queue[num_cpu - 1].next = NULL;
-   
+
     exec_blas(num_cpu, queue);
   }
-  
+
   return 0;
 }

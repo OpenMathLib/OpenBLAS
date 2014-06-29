@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
- 
+
 #define OLD_M	%rdi
 #define OLD_N	%rsi
 #define M	%r13
@@ -49,7 +49,7 @@
 #define B	%r8
 #define C	%r9
 #define LDC	%r10
-	
+
 #define I	%r11
 #define AO	%rdi
 #define BO	%rsi
@@ -133,10 +133,10 @@
         vmulpd                  %xmm3 , %xmm8 , %xmm3
 
         vmovddup        -15 * SIZE(BO), %xmm9
-        vfnmaddpd       %xmm4 , %xmm0 , %xmm9 , %xmm4 
-        vfnmaddpd       %xmm5 , %xmm1 , %xmm9 , %xmm5 
-        vfnmaddpd       %xmm6 , %xmm2 , %xmm9 , %xmm6 
-        vfnmaddpd       %xmm7 , %xmm3 , %xmm9 , %xmm7 
+        vfnmaddpd       %xmm4 , %xmm0 , %xmm9 , %xmm4
+        vfnmaddpd       %xmm5 , %xmm1 , %xmm9 , %xmm5
+        vfnmaddpd       %xmm6 , %xmm2 , %xmm9 , %xmm6
+        vfnmaddpd       %xmm7 , %xmm3 , %xmm9 , %xmm7
 
         vmovddup        -13 * SIZE(BO), %xmm10
         vmulpd                  %xmm4 , %xmm10, %xmm4
@@ -198,8 +198,8 @@
         vmulpd                  %xmm1 , %xmm8 , %xmm1
 
         vmovddup        -15 * SIZE(BO), %xmm9
-        vfnmaddpd       %xmm2 , %xmm0 , %xmm9 , %xmm2 
-        vfnmaddpd       %xmm3 , %xmm1 , %xmm9 , %xmm3 
+        vfnmaddpd       %xmm2 , %xmm0 , %xmm9 , %xmm2
+        vfnmaddpd       %xmm3 , %xmm1 , %xmm9 , %xmm3
 
         vmovddup        -13 * SIZE(BO), %xmm10
         vmulpd                  %xmm2 , %xmm10, %xmm2
@@ -242,7 +242,7 @@
         vmulpd                  %xmm0 , %xmm8 , %xmm0
 
         vmovddup        -15 * SIZE(BO), %xmm9
-        vfnmaddpd       %xmm2 , %xmm0 , %xmm9 , %xmm2 
+        vfnmaddpd       %xmm2 , %xmm0 , %xmm9 , %xmm2
 
         vmovddup        -13 * SIZE(BO), %xmm10
         vmulpd                  %xmm2 , %xmm10, %xmm2
@@ -253,7 +253,7 @@
 
 	vmovups	%xmm0 , -16 * SIZE(AO)
 	vmovups	%xmm2 , -14 * SIZE(AO)
-        
+
 .endm
 
 
@@ -278,7 +278,7 @@
         vmulsd                  %xmm2 , %xmm8 , %xmm2
 
         vmovsd          -15 * SIZE(BO), %xmm9
-        vfnmaddsd       %xmm0 , %xmm2 , %xmm9 , %xmm0 
+        vfnmaddsd       %xmm0 , %xmm2 , %xmm9 , %xmm0
 
         vmovsd          -13 * SIZE(BO), %xmm10
         vmulsd                  %xmm0 , %xmm10, %xmm0
@@ -336,7 +336,7 @@
 	vmovups	%xmm1 , -14 * SIZE(AO)
 	vmovups	%xmm2 , -12 * SIZE(AO)
 	vmovups	%xmm3 , -10 * SIZE(AO)
-	
+
 .endm
 
 
@@ -428,7 +428,7 @@
 
 	PROLOGUE
 	PROFCODE
-	
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,   (%rsp)
 	movq	%rbp,  8(%rsp)
@@ -566,7 +566,7 @@
 
 	decq	I			# i --
 	jg	.L51
-	ALIGN_4	
+	ALIGN_4
 
 /*********************************************************************************/
 
@@ -634,7 +634,7 @@
 	leaq	(AO, %rax, 4), AO
 	leaq	(BO, %rax, 2), BO
 
-	ALIGN_4	
+	ALIGN_4
 
 /*********************************************************************************/
 
@@ -700,7 +700,7 @@
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 2), BO
 
-	ALIGN_4	
+	ALIGN_4
 /********************************************************************************/
 .L70:
 	testq	$1, M
@@ -763,8 +763,8 @@
 	leaq	(AO, %rax, 1), AO
 	leaq	(BO, %rax, 2), BO
 
-	ALIGN_4	
-	
+	ALIGN_4
+
 .L79:
 
         addq    $2, KK			// number of values in B # only for RN Kernel
@@ -847,7 +847,7 @@
 
 	decq	I			# i --
 	jg	.L91
-	ALIGN_4	
+	ALIGN_4
 
 /*****************************************************************************/
 .L90_A:
@@ -909,7 +909,7 @@
 	leaq	(AO, %rax, 4), AO
 	addq	%rax, BO
 
-	ALIGN_4	
+	ALIGN_4
 
 /*************************************************************************************/
 .L100:
@@ -972,7 +972,7 @@
 	leaq	(AO, %rax, 2), AO
 	addq	%rax, BO
 
-	ALIGN_4	
+	ALIGN_4
 
 .L110:
 	testq	$1, M
@@ -1034,7 +1034,7 @@
 	addq	%rax, AO
 	addq	%rax, BO
 
-	ALIGN_4	
+	ALIGN_4
 
 .L119:
 
@@ -1045,7 +1045,7 @@
 
 	ALIGN_4
 
-	
+
 .L999:
 	movq	   (%rsp), %rbx
 	movq	  8(%rsp), %rbp

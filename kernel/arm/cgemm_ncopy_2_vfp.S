@@ -150,7 +150,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sub	r4, fp, #128
 	vstm	r4, { s8 - s15} 				// store floating point registers
 
-	ldr	BO, B	
+	ldr	BO, B
 
 /*********************************************************************************************/
 
@@ -181,8 +181,8 @@ cgemm_ncopy_L2_M2_20:
 	COPY2x2
 	subs	I , I , #1
 	bne	cgemm_ncopy_L2_M2_20
-	
-	
+
+
 cgemm_ncopy_L2_M2_40:
 
 	ands	I, M , #1
@@ -194,7 +194,7 @@ cgemm_ncopy_L2_M2_60:
 
 	subs	I , I , #1
 	bne	cgemm_ncopy_L2_M2_60
-	
+
 
 cgemm_ncopy_L2_M2_END:
 
@@ -225,8 +225,8 @@ cgemm_ncopy_L1_M2_20:
 
 	subs	I , I , #1
 	bne	cgemm_ncopy_L1_M2_20
-	
-	
+
+
 cgemm_ncopy_L1_M2_40:
 
 	ands	I, M , #1
@@ -238,7 +238,7 @@ cgemm_ncopy_L1_M2_60:
 
 	subs	I , I , #1
 	bne	cgemm_ncopy_L1_M2_60
-	
+
 
 cgemm_ncopy_L1_M2_END:
 

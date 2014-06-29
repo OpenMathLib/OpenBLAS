@@ -17,13 +17,13 @@ void goto_set_num_threads(int num_threads);
 char* openblas_get_config(void);
 
 /* Get the parallelization type which is used by OpenBLAS */
-int openblas_get_parallel(void); 
+int openblas_get_parallel(void);
 /* OpenBLAS is compiled for sequential use  */
 #define OPENBLAS_SEQUENTIAL  0
 /* OpenBLAS is compiled using normal threading model */
-#define OPENBLAS_THREAD  1 
+#define OPENBLAS_THREAD  1
 /* OpenBLAS is compiled using OpenMP threading model */
-#define OPENBLAS_OPENMP 2 
+#define OPENBLAS_OPENMP 2
 
 
 #define CBLAS_INDEX size_t
@@ -295,6 +295,17 @@ void cblas_zher2k(enum CBLAS_ORDER Order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANS
                   double *alpha, double *A, blasint lda, double *B, blasint ldb, double beta, double *C, blasint ldc);
 
 void cblas_xerbla(blasint p, char *rout, char *form, ...);
+
+/*** BLAS extensions ***/
+
+void cblas_saxpby(blasint n, float alpha, float *x, blasint incx,float beta, float *y, blasint incy);
+
+void cblas_daxpby(blasint n, double alpha, double *x, blasint incx,double beta, double *y, blasint incy);
+
+void cblas_caxpby(blasint n, float *alpha, float *x, blasint incx,float *beta, float *y, blasint incy);
+
+void cblas_zaxpby(blasint n, double *alpha, double *x, blasint incx,double *beta, double *y, blasint incy);
+
 
 #ifdef __cplusplus
 }

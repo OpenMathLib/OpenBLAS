@@ -117,40 +117,40 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #else
     COPY_K(args -> m - m_from, x + m_from * incx * COMPSIZE, incx, buffer + m_from * COMPSIZE, 1);
 #endif
-    
+
     x = buffer;
     buffer += ((COMPSIZE * args -> m + 1023) & ~1023);
-  } 
+  }
 
 #ifndef TRANS
   if (range_n) y += *range_n * COMPSIZE;
 
 #ifndef LOWER
-  SCAL_K(m_to, 0, 0, ZERO, 
+  SCAL_K(m_to, 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y, 1, NULL, 0, NULL, 0);  
+	 y, 1, NULL, 0, NULL, 0);
 #else
-  SCAL_K(args -> m - m_from, 0, 0, ZERO, 
+  SCAL_K(args -> m - m_from, 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y + m_from * COMPSIZE, 1, NULL, 0, NULL, 0);  
+	 y + m_from * COMPSIZE, 1, NULL, 0, NULL, 0);
 #endif
 
 #else
 
-  SCAL_K(m_to - m_from, 0, 0, ZERO, 
+  SCAL_K(m_to - m_from, 0, 0, ZERO,
 #ifdef COMPLEX
 	 ZERO,
 #endif
-	 y + m_from * COMPSIZE, 1, NULL, 0, NULL, 0);  
+	 y + m_from * COMPSIZE, 1, NULL, 0, NULL, 0);
 
 #endif
 
   for (is = m_from; is < m_to; is += DTB_ENTRIES){
-    
+
     min_i = MIN(m_to - is, DTB_ENTRIES);
 
 #ifndef LOWER
@@ -178,13 +178,13 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
       if (i - is > 0) {
 #ifndef TRANS
 	MYAXPY(i - is, 0, 0,
-		*(x + i * COMPSIZE + 0), 
+		*(x + i * COMPSIZE + 0),
 #ifdef COMPLEX
-		*(x + i * COMPSIZE + 1), 
+		*(x + i * COMPSIZE + 1),
 #endif
 		a + (is + i * lda) * COMPSIZE, 1, y + is * COMPSIZE, 1, NULL, 0);
 #else
-       
+
 	result = MYDOT(i - is,  a + (is + i * lda) * COMPSIZE, 1, x + is * COMPSIZE, 1);
 
 #ifndef COMPLEX
@@ -227,7 +227,7 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #ifdef LOWER
       if (is + min_i > i + 1) {
 #ifndef TRANS
-	MYAXPY(is + min_i - i - 1, 0, 0, 
+	MYAXPY(is + min_i - i - 1, 0, 0,
 		*(x + i * COMPSIZE + 0),
 #ifdef COMPLEX
 		*(x + i * COMPSIZE + 1),
@@ -248,7 +248,7 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
       }
 #endif
     }
-    
+
 #ifdef LOWER
     if (args -> m >  is + min_i){
       MYGEMV(args -> m - is - min_i, min_i, 0,
@@ -259,9 +259,9 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 	     a + (is + min_i + is * lda) * COMPSIZE, lda,
 #ifndef TRANS
 	     x +  is          * COMPSIZE, 1,
-	     y + (is + min_i) * COMPSIZE, 1, 
+	     y + (is + min_i) * COMPSIZE, 1,
 #else
-	     x + (is + min_i) * COMPSIZE, 1, 
+	     x + (is + min_i) * COMPSIZE, 1,
 	     y +  is          * COMPSIZE, 1,
 #endif
 	     buffer);
@@ -296,7 +296,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *bu
   int mode  =  BLAS_DOUBLE  | BLAS_REAL;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif  
+#endif
 #else
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
@@ -304,32 +304,32 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *bu
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif  
+#endif
 #endif
 #endif
 
   args.m = m;
-  
+
   args.a = (void *)a;
   args.b = (void *)x;
   args.c = (void *)(buffer);
-    
+
   args.lda = lda;
   args.ldb = incx;
   args.ldc = incx;
-  
+
   dnum = (double)m * (double)m / (double)nthreads;
   num_cpu  = 0;
-  
+
 #ifndef LOWER
 
   range_m[MAX_CPU_NUMBER] = m;
   i          = 0;
-    
+
   while (i < m){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di = (double)(m - i);
       if (di * di - dnum > 0) {
 	width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
@@ -339,14 +339,14 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *bu
 
       if (width < 16) width = 16;
       if (width > m - i) width = m - i;
-	
+
     } else {
       width = m - i;
     }
-    
+
     range_m[MAX_CPU_NUMBER - num_cpu - 1] = range_m[MAX_CPU_NUMBER - num_cpu] - width;
     range_n[num_cpu] = num_cpu * (((m + 15) & ~15) + 16);
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = trmv_kernel;
     queue[num_cpu].args    = &args;
@@ -355,20 +355,20 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *bu
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
-  
+
 #else
 
   range_m[0] = 0;
   i          = 0;
-    
+
   while (i < m){
-    
+
     if (nthreads - num_cpu > 1) {
-      
+
       double di = (double)(m - i);
       if (di * di - dnum > 0) {
 	width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
@@ -378,14 +378,14 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *bu
 
       if (width < 16) width = 16;
       if (width > m - i) width = m - i;
-	
+
     } else {
       width = m - i;
     }
-    
+
     range_m[num_cpu + 1] = range_m[num_cpu] + width;
     range_n[num_cpu] = num_cpu * (((m + 15) & ~15) + 16);
-      
+
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = trmv_kernel;
     queue[num_cpu].args    = &args;
@@ -394,46 +394,46 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *bu
     queue[num_cpu].sa      = NULL;
     queue[num_cpu].sb      = NULL;
     queue[num_cpu].next    = &queue[num_cpu + 1];
-    
+
     num_cpu ++;
     i += width;
   }
-  
+
 #endif
 
   if (num_cpu) {
     queue[0].sa = NULL;
     queue[0].sb = buffer + num_cpu * (((m + 255) & ~255) + 16) * COMPSIZE;
-    
+
     queue[num_cpu - 1].next = NULL;
-    
+
     exec_blas(num_cpu, queue);
   }
-   
+
 #ifndef TRANS
   for (i = 1; i < num_cpu; i ++) {
-    
+
 #ifndef LOWER
-    
+
     AXPYU_K(range_m[MAX_CPU_NUMBER - i], 0, 0, ONE,
 #ifdef COMPLEX
-	    ZERO, 
+	    ZERO,
 #endif
 	    buffer + range_n[i] * COMPSIZE, 1, buffer, 1, NULL, 0);
-    
+
 #else
-    
+
     AXPYU_K(m - range_m[i], 0, 0, ONE,
 #ifdef COMPLEX
-	    ZERO, 
+	    ZERO,
 #endif
 	    buffer + (range_n[i] + range_m[i]) * COMPSIZE, 1, buffer + range_m[i] * COMPSIZE, 1, NULL, 0);
-    
+
 #endif
 
   }
 #endif
-  
+
   COPY_K(m, buffer, 1, x, incx);
 
   return 0;

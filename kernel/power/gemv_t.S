@@ -797,7 +797,7 @@ LL(12):
 
 	addi	BO,  BO,  16 * SIZE
  	bdnz	LL(12)
-	.align 4	
+	.align 4
 
 LL(13):
 	FMADD	y01, a1, b1, y01
@@ -1551,7 +1551,7 @@ LL(19):
 	cmpi	cr0, 0, J, 0
 	bgt	LL(11)
 	.align 4
-	
+
 LL(20):
 	andi.	J, N, 7
 	ble	LL(99)
@@ -1778,7 +1778,7 @@ LL(22):
 
 	addi	BO,  BO,  16 * SIZE
  	bdnz	LL(22)
-	.align 4	
+	.align 4
 
 LL(23):
 	FMADD	y01, a1, b1, y01
@@ -2332,7 +2332,7 @@ LL(32):
 
 	addi	BO,  BO,  16 * SIZE
  	bdnz	LL(32)
-	.align 4	
+	.align 4
 
 LL(33):
 	FMADD	y01, a1, b1, y01
@@ -2594,7 +2594,7 @@ LL(40):
 	mr     AO1, A
 	add    A,   A, LDA
 	mr     BO, XP
-	
+
 	lfd	 y01, FZERO
 	fmr	 y02, y01
 	fmr	 y03, y01
@@ -2715,7 +2715,7 @@ LL(42):
 	addi	BO,  BO,  16 * SIZE
 	DCBT(AO1, PREA)
  	bdnz	LL(42)
-	.align 4	
+	.align 4
 
 LL(43):
 	FMADD	y01, a1, b1, y01

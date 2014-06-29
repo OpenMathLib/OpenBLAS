@@ -38,10 +38,10 @@
 
 #define ASSEMBLER
 #include "common.h"
-		
+
 #define N	r3
 #define X	r6
-#define INCX	r7	
+#define INCX	r7
 #define Y	r8
 #define INCY	r9
 
@@ -481,7 +481,7 @@ LL(117):
 LL(999):
 	li	r10, 16
 	subi	SP, SP, 16
-	
+
 	lfpdux	f25, SP, r10
 	lfpdux	f24, SP, r10
 	lfpdux	f23, SP, r10

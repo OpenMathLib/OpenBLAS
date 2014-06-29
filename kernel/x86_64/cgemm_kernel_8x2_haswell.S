@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 /*********************************************************************
-* 2013/11/13 Saar
+* 2014/06/28 Saar
 *        BLASTEST               : OK
 *        CTEST                  : OK
 *        TEST                   : OK
@@ -93,8 +93,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#define L_BUFFER_SIZE 512*8*4
-#define LB2_OFFSET    512*8*2
+#define L_BUFFER_SIZE 8192
 
 #define Ndiv6	 24(%rsp)
 #define Nmod6	 32(%rsp)
@@ -105,7 +104,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define KK       72(%rsp)
 #define KKK      80(%rsp)
 #define BUFFER1	           128(%rsp)
-#define BUFFER2	LB2_OFFSET+128(%rsp)
 
 #if defined(OS_WINDOWS)
 #if   L_BUFFER_SIZE > 16384
@@ -818,16 +816,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef WINDOWS_ABI
 	movq	%rdi,    48(%rsp)
 	movq	%rsi,    56(%rsp)
-	movups	%xmm6,   64(%rsp)
-	movups	%xmm7,   80(%rsp)
-	movups	%xmm8,   96(%rsp)
-	movups	%xmm9,  112(%rsp)
-	movups	%xmm10, 128(%rsp)
-	movups	%xmm11, 144(%rsp)
-	movups	%xmm12, 160(%rsp)
-	movups	%xmm13, 176(%rsp)
-	movups	%xmm14, 192(%rsp)
-	movups	%xmm15, 208(%rsp)
+	vmovups	%xmm6,   64(%rsp)
+	vmovups	%xmm7,   80(%rsp)
+	vmovups	%xmm8,   96(%rsp)
+	vmovups	%xmm9,  112(%rsp)
+	vmovups	%xmm10, 128(%rsp)
+	vmovups	%xmm11, 144(%rsp)
+	vmovups	%xmm12, 160(%rsp)
+	vmovups	%xmm13, 176(%rsp)
+	vmovups	%xmm14, 192(%rsp)
+	vmovups	%xmm15, 208(%rsp)
 
 	movq	ARG1,      OLD_M
 	movq	ARG2,      OLD_N
@@ -840,6 +838,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movsd	OLD_OFFSET, %xmm12
 #endif
 	vmovaps	%xmm3, %xmm0
+	vmovsd   OLD_ALPHA_I, %xmm1
 
 #else
 	movq	STACKSIZE +  8(%rsp), LDC
@@ -2255,6 +2254,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .L999:
+	vzeroupper
+
 	movq   		SP, %rsp
 	movq	   (%rsp), %rbx
 	movq	  8(%rsp), %rbp
@@ -2266,16 +2267,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef WINDOWS_ABI
 	movq	 48(%rsp), %rdi
 	movq	 56(%rsp), %rsi
-	movups	 64(%rsp), %xmm6
-	movups	 80(%rsp), %xmm7
-	movups	 96(%rsp), %xmm8
-	movups	112(%rsp), %xmm9
-	movups	128(%rsp), %xmm10
-	movups	144(%rsp), %xmm11
-	movups	160(%rsp), %xmm12
-	movups	176(%rsp), %xmm13
-	movups	192(%rsp), %xmm14
-	movups	208(%rsp), %xmm15
+	vmovups	 64(%rsp), %xmm6
+	vmovups	 80(%rsp), %xmm7
+	vmovups	 96(%rsp), %xmm8
+	vmovups	112(%rsp), %xmm9
+	vmovups	128(%rsp), %xmm10
+	vmovups	144(%rsp), %xmm11
+	vmovups	160(%rsp), %xmm12
+	vmovups	176(%rsp), %xmm13
+	vmovups	192(%rsp), %xmm14
+	vmovups	208(%rsp), %xmm15
 #endif
 
 	addq	$ STACKSIZE, %rsp
