@@ -25,31 +25,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
-/*********************************************************************
-* 2014/06/28 Saar
-*        BLASTEST               : OK
-*        CTEST                  : OK
-*        TEST                   : OK
-*
-* 2013/10/28 Saar
-* Parameter:
-*       CGEMM_DEFAULT_UNROLL_N  2
-*       CGEMM_DEFAULT_UNROLL_M  8
-*       CGEMM_DEFAULT_P         384
-*       CGEMM_DEFAULT_Q         192
-*	A_PR1			512
-*	B_PR1			512
-*
-* Performance at 6912x6912x6912:
-*       1 thread:       84 GFLOPS       (SANDYBRIDGE:  60)      (MKL:   86)
-*       2 threads:     153 GFLOPS       (SANDYBRIDGE: 114)      (MKL:  155)
-*       3 threads:     224 GFLOPS       (SANDYBRIDGE: 162)      (MKL:  222)
-*       4 threads:     278 GFLOPS       (SANDYBRIDGE: 223)      (MKL:  279)
-*
-*
-*********************************************************************/
-
-
 
 #define ASSEMBLER
 #include "common.h"
@@ -132,61 +107,82 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-#if defined(BULLDOZER)
 
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
-#define	VFMADDPS_R( y0,y1,y2 ) vfmaddps y0,y1,y2,y0
+#define	VFMADDPS_YR( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm2;\
+                               vaddps y0,%ymm2,y0
 
-#define VFMADDPS_I( y0,y1,y2 ) vfmaddps y0,y1,y2,y0
+#define	VFMADDPS_YI( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm3;\
+                               vaddps y0,%ymm3,y0
 
-#elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
+#define	VFMADDPS_R( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm2;\
+                               vaddps y0,%xmm2,y0
 
-#define VFMADDPS_R( y0,y1,y2 ) vfnmaddps y0,y1,y2,y0
+#define	VFMADDPS_I( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm3;\
+                               vaddps y0,%xmm3,y0
 
-#define	VFMADDPS_I( y0,y1,y2 ) vfmaddps y0,y1,y2,y0
-
-#elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
-
-#define	VFMADDPS_R( y0,y1,y2 ) vfmaddps y0,y1,y2,y0
-
-#define	VFMADDPS_I( y0,y1,y2 ) vfnmaddps y0,y1,y2,y0
-
-#else
-
-#define	VFMADDPS_R( y0,y1,y2 ) vfnmaddps y0,y1,y2,y0
-
-#define	VFMADDPS_I( y0,y1,y2 ) vfnmaddps y0,y1,y2,y0
-
-#endif
-
-#else
-
-#if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
-
-#define	VFMADDPS_R( y0,y1,y2 ) vfmadd231ps y1,y2,y0
-
-#define	VFMADDPS_I( y0,y1,y2 ) vfmadd231ps y1,y2,y0
 
 #elif defined(RN) || defined(RT) || defined(CN) || defined(CT)
 
-#define	VFMADDPS_R( y0,y1,y2 ) vfnmadd231ps y1,y2,y0
+#define	VFMADDPS_YR( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm2;\
+                               vsubps %ymm2,y0,y0
 
-#define	VFMADDPS_I( y0,y1,y2 ) vfmadd231ps y1,y2,y0
+#define	VFMADDPS_YI( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm3;\
+                               vaddps y0,%ymm3,y0
+
+#define	VFMADDPS_R( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm2;\
+                               vsubps %xmm2,y0,y0
+
+#define	VFMADDPS_I( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm3;\
+                               vaddps y0,%xmm3,y0
+
 
 #elif defined(NR) || defined(NC) || defined(TR) || defined(TC)
 
-#define	VFMADDPS_R( y0,y1,y2 ) vfmadd231ps y1,y2,y0
+#define	VFMADDPS_YR( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm2;\
+                               vaddps y0,%ymm2,y0
 
-#define	VFMADDPS_I( y0,y1,y2 ) vfnmadd231ps y1,y2,y0
+#define	VFMADDPS_YI( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm3;\
+                               vsubps %ymm3,y0,y0
+
+#define	VFMADDPS_R( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm2;\
+                               vaddps y0,%xmm2,y0
+
+#define	VFMADDPS_I( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm3;\
+                               vsubps %xmm3,y0,y0
+
 
 #else
 
-#define	VFMADDPS_R( y0,y1,y2 ) vfnmadd231ps y1,y2,y0
+#define	VFMADDPS_YR( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm2;\
+                               vsubps %ymm2,y0,y0
 
-#define	VFMADDPS_I( y0,y1,y2 ) vfnmadd231ps y1,y2,y0
+#define	VFMADDPS_YI( y0,y1,y2 ) \
+                               vmulps y1,y2,%ymm3;\
+                               vsubps %ymm3,y0,y0
 
-#endif
+#define	VFMADDPS_R( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm2;\
+                               vsubps %xmm2,y0,y0
+
+#define	VFMADDPS_I( y0,y1,y2 ) \
+                               vmulps y1,y2,%xmm3;\
+                               vsubps %xmm3,y0,y0
+
 
 #endif
 
@@ -200,18 +196,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         vmovups         -16 * SIZE(AO, %rax, SIZE), %ymm0
         vbroadcastss         -8 * SIZE(BO, BI, SIZE), %ymm4
-        VFMADDPS_R(        %ymm8,%ymm4,%ymm0  )
+        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
         vmovups          -8 * SIZE(AO, %rax, SIZE), %ymm1
-        VFMADDPS_R(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
         vbroadcastss         -7 * SIZE(BO, BI, SIZE), %ymm5
-        VFMADDPS_I(        %ymm9,%ymm5,%ymm0  )
-        VFMADDPS_I(        %ymm13,%ymm5,%ymm1 )
+        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
+        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
         vbroadcastss         -6 * SIZE(BO, BI, SIZE), %ymm6
-        VFMADDPS_R(        %ymm10,%ymm6,%ymm0 )
-        VFMADDPS_R(        %ymm14,%ymm6,%ymm1 )
+        VFMADDPS_YR(        %ymm10,%ymm6,%ymm0 )
+        VFMADDPS_YR(        %ymm14,%ymm6,%ymm1 )
         vbroadcastss         -5 * SIZE(BO, BI, SIZE), %ymm7
-        VFMADDPS_I(        %ymm11,%ymm7,%ymm0 )
-        VFMADDPS_I(        %ymm15,%ymm7,%ymm1 )
+        VFMADDPS_YI(        %ymm11,%ymm7,%ymm0 )
+        VFMADDPS_YI(        %ymm15,%ymm7,%ymm1 )
         addq    $ 4 , BI                           
         addq    $ 16, %rax                         
 .endm
@@ -549,11 +545,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vmovups         -16 * SIZE(AO, %rax, SIZE), %ymm0
         vmovups          -8 * SIZE(AO, %rax, SIZE), %ymm1
         vbroadcastss         -4 * SIZE(BO, BI, SIZE), %ymm4
-        VFMADDPS_R(        %ymm8,%ymm4,%ymm0  )
-        VFMADDPS_R(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
+        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
         vbroadcastss         -3 * SIZE(BO, BI, SIZE), %ymm5
-        VFMADDPS_I(        %ymm9,%ymm5,%ymm0  )
-        VFMADDPS_I(        %ymm13,%ymm5,%ymm1 )
+        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
+        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
         addq    $ 2 , BI                           
         addq    $ 16, %rax                         
 .endm
