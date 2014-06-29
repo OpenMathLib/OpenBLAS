@@ -249,8 +249,14 @@ ifndef NOFORTRAN
 	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 ifeq ($(F_COMPILER), GFORTRAN)
 	-@echo "TIMER       = INT_ETIME" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifdef SMP
+	-@echo "LOADER      = $(FC) -pthread" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
+	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 else
 	-@echo "TIMER       = NONE" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
