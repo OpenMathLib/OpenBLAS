@@ -1,5 +1,5 @@
 ZGEMVNKERNEL = zgemv_n_dup.S
-ZGEMVTKERNEL = zgemv_t_dup.S
+ZGEMVTKERNEL = zgemv_t.S
 
 SGEMMKERNEL    =  gemm_kernel_8x4_sse.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_8.c
