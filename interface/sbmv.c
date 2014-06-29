@@ -43,12 +43,13 @@
 #include "functable.h"
 #endif
 
+/*
 #ifdef SMP
 #ifdef __64BIT__
 #define SMPTEST 1
 #endif
 #endif
-
+*/
 
 #ifdef XDOUBLE
 #define ERROR_NAME "QSBMV "
