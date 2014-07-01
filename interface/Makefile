@@ -1,6 +1,8 @@
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
+SUPPORT_GEMM3M = 0
+
 ifeq ($(ARCH), x86)
 SUPPORT_GEMM3M = 0
 endif
@@ -124,7 +126,7 @@ ZBLAS3OBJS    = \
 	       	zhemm.$(SUFFIX) zherk.$(SUFFIX) zher2k.$(SUFFIX) \
 		zomatcopy.$(SUFFIX) zimatcopy.$(SUFFIX)
 
-ifdef SUPPORT_GEMM3M
+ifeq ($(SUPPORT_GEMM3M), 1)
 
 CBLAS3OBJS   +=  cgemm3m.$(SUFFIX) csymm3m.$(SUFFIX) chemm3m.$(SUFFIX)
 
@@ -182,7 +184,7 @@ XBLAS3OBJS    = \
 		xtrsm.$(SUFFIX) xsyrk.$(SUFFIX) xsyr2k.$(SUFFIX) \
 		xhemm.$(SUFFIX) xherk.$(SUFFIX) xher2k.$(SUFFIX)
 
-ifdef SUPPORT_GEMM3M
+ifeq ($(SUPPORT_GEMM3M), 1)
 
 XBLAS3OBJS   +=  xgemm3m.$(SUFFIX) xsymm3m.$(SUFFIX) xhemm3m.$(SUFFIX)
 
@@ -238,7 +240,7 @@ XBLAS3OBJS    = \
 		xtrsm.$(SUFFIX) xsyrk.$(SUFFIX) xsyr2k.$(SUFFIX) \
 		xhemm.$(SUFFIX) xherk.$(SUFFIX) xher2k.$(SUFFIX)
 
-ifdef SUPPORT_GEMM3M
+ifeq ($(SUPPORT_GEMM3M), 1)
 
 XBLAS3OBJS   +=  xgemm3m.$(SUFFIX) xsymm3m.$(SUFFIX) xhemm3m.$(SUFFIX)
 

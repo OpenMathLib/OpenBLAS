@@ -1,9 +1,11 @@
+USE_GEMM3M = 0
+
 ifeq ($(ARCH), x86)
-USE_GEMM3M = 1
+USE_GEMM3M = 0
 endif
 
 ifeq ($(ARCH), x86_64)
-USE_GEMM3M = 1
+USE_GEMM3M = 0
 endif
 
 ifeq ($(ARCH), ia64)
@@ -122,7 +124,7 @@ XBLASOBJS	+= \
 	xtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) xtrsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
 	xtrsm_kernel_RR$(TSUFFIX).$(SUFFIX) xtrsm_kernel_RC$(TSUFFIX).$(SUFFIX) \
 
-ifdef USE_GEMM3M
+ifeq ($(USE_GEMM3M), 1)
 
 CBLASOBJS    +=  cgemm3m_kernel$(TSUFFIX).$(SUFFIX)
 ZBLASOBJS    +=  zgemm3m_kernel$(TSUFFIX).$(SUFFIX)
@@ -256,7 +258,7 @@ XBLASOBJS += \
 	xhemm_iutcopy$(TSUFFIX).$(SUFFIX) xhemm_iltcopy$(TSUFFIX).$(SUFFIX) \
 	xhemm_outcopy$(TSUFFIX).$(SUFFIX) xhemm_oltcopy$(TSUFFIX).$(SUFFIX)
 
-ifdef USE_GEMM3M
+ifeq ($(USE_GEMM3M), 1)
 
 CBLASOBJS += \
 	cgemm3m_incopyb$(TSUFFIX).$(SUFFIX) cgemm3m_itcopyb$(TSUFFIX).$(SUFFIX) \
