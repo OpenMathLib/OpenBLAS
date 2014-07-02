@@ -141,11 +141,11 @@ void CNAME(enum CBLAS_ORDER order,
     t    = incx;
     incx = incy;
     incy = t;
-/*
+
     buffer = x;
     x = y;
     y = buffer;
-*/
+
     if (lda < MAX(1,m)) info = 9;
     if (incy == 0)      info = 7;
     if (incx == 0)      info = 5;
