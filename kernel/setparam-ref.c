@@ -740,6 +740,23 @@ static void init_parameter(void) {
 #endif
 #endif
 
+#ifdef DUNNINGTON
+
+#ifdef DEBUG
+  fprintf(stderr, "Dunnington\n");
+#endif
+
+  TABLE_NAME.sgemm_p =  42 * (l2 >> 9) + 8;
+  TABLE_NAME.dgemm_p =  42 * (l2 >> 9) + 8;
+  TABLE_NAME.cgemm_p =  21 * (l2 >> 9) + 4;
+  TABLE_NAME.zgemm_p =  21 * (l2 >> 9) + 4;
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p =  42 * (l2 >> 9) + 8;
+  TABLE_NAME.xgemm_p =  21 * (l2 >> 9) + 4;
+#endif
+#endif
+
+
 #ifdef NEHALEM
 
 #ifdef DEBUG
