@@ -714,13 +714,13 @@ static void init_parameter(void) {
   fprintf(stderr, "Core2\n");
 #endif
 
-  TABLE_NAME.sgemm_p =  92 * (l2 >> 9);
-  TABLE_NAME.dgemm_p =  46 * (l2 >> 9);
-  TABLE_NAME.cgemm_p =  46 * (l2 >> 9);
-  TABLE_NAME.zgemm_p =  23 * (l2 >> 9);
+  TABLE_NAME.sgemm_p =  92 * (l2 >> 9) + 8;
+  TABLE_NAME.dgemm_p =  46 * (l2 >> 9) + 8;
+  TABLE_NAME.cgemm_p =  46 * (l2 >> 9) + 4;
+  TABLE_NAME.zgemm_p =  23 * (l2 >> 9) + 4;
 #ifdef EXPRECISION
-  TABLE_NAME.qgemm_p =  92 * (l2 >> 9);
-  TABLE_NAME.xgemm_p =  46 * (l2 >> 9);
+  TABLE_NAME.qgemm_p =  92 * (l2 >> 9) + 8;
+  TABLE_NAME.xgemm_p =  46 * (l2 >> 9) + 4;
 #endif
 #endif
 
