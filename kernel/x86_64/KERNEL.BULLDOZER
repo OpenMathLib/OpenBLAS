@@ -6,7 +6,6 @@ ZGEMVTKERNEL = zgemv_t.S
 
 DGEMVNKERNEL = dgemv_n_bulldozer.S
 DGEMVTKERNEL = dgemv_t_bulldozer.S
-DAXPYKERNEL  = daxpy_bulldozer.S
 DDOTKERNEL   = ddot_bulldozer.S
 DCOPYKERNEL  = dcopy_bulldozer.S
 
