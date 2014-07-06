@@ -165,7 +165,8 @@ int get_L2_size(void){
 
 #if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER) || \
     defined(CORE_PRESCOTT) || defined(CORE_CORE2) || defined(PENRYN) || defined(DUNNINGTON) || \
-  defined(CORE_NEHALEM) || defined(CORE_SANDYBRIDGE) || defined(ATOM) || defined(GENERIC)
+    defined(CORE_NEHALEM) || defined(CORE_SANDYBRIDGE) || defined(ATOM) || defined(GENERIC) || \
+    defined(PILEDRIVER) || defined(HASWELL)
 
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 

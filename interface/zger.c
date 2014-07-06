@@ -42,6 +42,13 @@
 #include "functable.h"
 #endif
 
+#ifdef SMP
+#ifdef __64BIT__
+#define SMPTEST 1
+#endif
+#endif
+
+
 #ifdef XDOUBLE
 #ifndef CONJ
 #define ERROR_NAME "XGERU  "
@@ -109,7 +116,7 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
   blasint    incy  = *INCY;
   blasint    lda   = *LDA;
   FLOAT *buffer;
-#ifdef SMPBUG
+#ifdef SMPTEST
   int nthreads;
 #endif
 
@@ -144,7 +151,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint info, t;
-#ifdef SMPBUG
+#ifdef SMPTEST
   int nthreads;
 #endif
 
@@ -205,7 +212,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPBUG
+#ifdef SMPTEST
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
@@ -221,7 +228,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 #endif
 
-#ifdef SMPBUG
+#ifdef SMPTEST
 
   } else {
 

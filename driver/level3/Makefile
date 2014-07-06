@@ -1,12 +1,14 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
+USE_GEMM3M = 0
+
 ifeq ($(ARCH), x86)
-USE_GEMM3M = 1
+USE_GEMM3M = 0
 endif
 
 ifeq ($(ARCH), x86_64)
-USE_GEMM3M = 1
+USE_GEMM3M = 0
 endif
 
 ifeq ($(ARCH), ia64)
@@ -168,7 +170,7 @@ XBLASOBJS	+= \
 	xher2k_kernel_UN.$(SUFFIX) xher2k_kernel_UC.$(SUFFIX) \
 	xher2k_kernel_LN.$(SUFFIX) xher2k_kernel_LC.$(SUFFIX)
 
-ifdef USE_GEMM3M
+ifeq ($(USE_GEMM3M), 1)
 
 CBLASOBJS   +=  \
 	cgemm3m_nn.$(SUFFIX) cgemm3m_cn.$(SUFFIX) cgemm3m_tn.$(SUFFIX) cgemm3m_nc.$(SUFFIX) \
@@ -239,7 +241,7 @@ CBLASOBJS    += cherk_thread_UN.$(SUFFIX) cherk_thread_UC.$(SUFFIX) cherk_thread
 ZBLASOBJS    += zherk_thread_UN.$(SUFFIX) zherk_thread_UC.$(SUFFIX) zherk_thread_LN.$(SUFFIX) zherk_thread_LC.$(SUFFIX)
 XBLASOBJS    += xherk_thread_UN.$(SUFFIX) xherk_thread_UC.$(SUFFIX) xherk_thread_LN.$(SUFFIX) xherk_thread_LC.$(SUFFIX)
 
-ifdef USE_GEMM3M
+ifeq ($(USE_GEMM3M), 1)
 
 CBLASOBJS    += cgemm3m_thread_nn.$(SUFFIX) cgemm3m_thread_nt.$(SUFFIX) cgemm3m_thread_nr.$(SUFFIX) cgemm3m_thread_nc.$(SUFFIX)
 CBLASOBJS    += cgemm3m_thread_tn.$(SUFFIX) cgemm3m_thread_tt.$(SUFFIX) cgemm3m_thread_tr.$(SUFFIX) cgemm3m_thread_tc.$(SUFFIX)
