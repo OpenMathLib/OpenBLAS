@@ -286,7 +286,7 @@
          ZLANHF = ZERO
          RETURN
       ELSE IF( N.EQ.1 ) THEN
-         ZLANHF = ABS( A(0) )
+         ZLANHF = ABS(DBLE(A(0)))
          RETURN
       END IF
 *

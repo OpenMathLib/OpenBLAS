@@ -286,7 +286,7 @@
          CLANHF = ZERO
          RETURN
       ELSE IF( N.EQ.1 ) THEN
-         CLANHF = ABS( A(0) )
+         CLANHF = ABS(REAL(A(0)))
          RETURN
       END IF
 *
