@@ -952,6 +952,15 @@ int main(int argc, char *argv[]){
 #else
     get_cpuconfig();
 #endif
+
+#ifdef FORCE
+    printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
+#else
+#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__)
+    printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
+#endif
+#endif
+
  break;
 
   case '2' : /* SMP */
