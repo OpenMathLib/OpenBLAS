@@ -16,6 +16,9 @@ void goto_set_num_threads(int num_threads);
 /*Get the build configure on runtime.*/
 char* openblas_get_config(void);
 
+/*Get the CPU corename on runtime.*/
+char* openblas_get_corename(void);
+
 /* Get the parallelization type which is used by OpenBLAS */
 int openblas_get_parallel(void);
 /* OpenBLAS is compiled for sequential use  */

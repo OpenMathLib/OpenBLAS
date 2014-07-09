@@ -42,6 +42,12 @@
 #include "functable.h"
 #endif
 
+#ifdef SMP
+#ifdef __64BIT__
+#define SMPTEST 1
+#endif
+#endif
+
 #ifdef XDOUBLE
 #define ERROR_NAME "QGER  "
 #elif defined DOUBLE
@@ -75,7 +81,7 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
   blasint    incy  = *INCY;
   blasint    lda   = *LDA;
   FLOAT *buffer;
-#ifdef SMPBUG
+#ifdef SMPTEST
   int nthreads;
 #endif
 
@@ -107,7 +113,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint info, t;
-#ifdef SMPBUG
+#ifdef SMPTEST
   int nthreads;
 #endif
 
@@ -167,7 +173,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   buffer = (FLOAT *)blas_memory_alloc(1);
 
-#ifdef SMPBUG
+#ifdef SMPTEST
   nthreads = num_cpu_avail(2);
 
 
@@ -176,7 +182,7 @@ void CNAME(enum CBLAS_ORDER order,
 
     GER(m, n, 0, alpha, x, incx, y, incy, a, lda, buffer);
 
-#ifdef SMPBUG
+#ifdef SMPTEST
   } else {
 
     GER_THREAD(m, n, alpha, x, incx, y, incy, a, lda, buffer, nthreads);

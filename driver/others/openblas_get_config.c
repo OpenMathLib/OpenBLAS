@@ -32,6 +32,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#include <string.h>
+
 static char* openblas_config_str=""
 #ifdef USE64BITINT
   "USE64BITINT "
@@ -51,9 +53,32 @@ static char* openblas_config_str=""
 #ifdef NO_AFFINITY
   "NO_AFFINITY "
 #endif
+#ifndef DYNAMIC_ARCH
+  CHAR_CORENAME
+#endif
   ;
 
+#ifdef DYNAMIC_ARCH
+char *gotoblas_corename();
+static char tmp_config_str[256];
+#endif
+
+
 char* CNAME() {
+#ifndef DYNAMIC_ARCH
   return openblas_config_str;
+#else
+  strcpy(tmp_config_str, openblas_config_str);
+  strcat(tmp_config_str, gotoblas_corename());
+  return tmp_config_str;
+#endif
 }
 
+
+char* openblas_get_corename() {
+#ifndef DYNAMIC_ARCH 
+  return CHAR_CORENAME;
+#else
+  return gotoblas_corename();
+#endif
+}

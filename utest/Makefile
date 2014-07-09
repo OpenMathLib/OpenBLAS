@@ -1,15 +1,19 @@
 UTEST_CHECK = 1
 TOPDIR	= ..
-include $(TOPDIR)/Makefile.system
 
 TARGET=openblas_utest
+
+.PHONY : all
+.NOTPARALLEL : all run_test $(TARGET)
 
 CUNIT_URL=http://downloads.sourceforge.net/project/cunit/CUnit/2.1-2/CUnit-2.1-2-src.tar.bz2
 CUNIT_DIR=$(CURDIR)/CUnit-2.1-2
 
 CUNIT_LIB=$(CUNIT_DIR)/lib/libcunit.a
 
-CFLAGS+=-I$(CUNIT_DIR)/include
+CFLAGS +=-I$(CUNIT_DIR)/include
+
+include $(TOPDIR)/Makefile.system
 
 OBJS=main.o test_rot.o test_swap.o test_axpy.o test_dotu.o test_rotmg.o test_dsdot.o test_amax.o test_fork.o
 

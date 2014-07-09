@@ -73,7 +73,7 @@
 	       );
 
 @gemm3mobjs = (
-	       zgemm3m, cgemm3m, zsymm3m, csymm3m, zhemm3m, chemm3m,
+	       
 	       );
 
 
@@ -85,6 +85,7 @@
 @misc_no_underscore_objs = (
                             goto_set_num_threads,
                             openblas_get_config,
+                            openblas_get_corename,
                            );
 
 @misc_underscore_objs = (
