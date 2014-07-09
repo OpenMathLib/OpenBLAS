@@ -1,5 +1,7 @@
 SGEMVNKERNEL = ../arm/gemv_n.c
 SGEMVTKERNEL = ../arm/gemv_t.c
+CGEMVNKERNEL = ../arm/zgemv_n.c
+CGEMVTKERNEL = ../arm/zgemv_t.c
 
 
 #################################################################################
@@ -77,12 +79,12 @@ ZSCALKERNEL  = zscal.c
 
 # BAD SGEMVNKERNEL = gemv_n_vfp.S
 DGEMVNKERNEL = gemv_n_vfp.S
-CGEMVNKERNEL = cgemv_n_vfp.S
+#CGEMVNKERNEL = cgemv_n_vfp.S
 ZGEMVNKERNEL = zgemv_n_vfp.S
 
 # BAD SGEMVTKERNEL = gemv_t_vfp.S
 DGEMVTKERNEL = gemv_t_vfp.S
-CGEMVTKERNEL = cgemv_t_vfp.S
+#CGEMVTKERNEL = cgemv_t_vfp.S
 ZGEMVTKERNEL = zgemv_t_vfp.S
 
 STRMMKERNEL  =  strmm_kernel_4x4_vfpv3.S
