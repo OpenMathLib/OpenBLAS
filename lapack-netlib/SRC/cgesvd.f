@@ -321,24 +321,24 @@
 *
             MNTHR = ILAENV( 6, 'CGESVD', JOBU // JOBVT, M, N, 0, 0 )
 *           Compute space needed for CGEQRF
-            CALL CGEQRF( M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CGEQRF=DUM(1)
+            CALL CGEQRF( M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGEQRF=CDUM(1)
 *           Compute space needed for CUNGQR
-            CALL CUNGQR( M, N, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGQR_N=DUM(1)
-            CALL CUNGQR( M, M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGQR_M=DUM(1)
+            CALL CUNGQR( M, N, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CUNGQR_N=CDUM(1)
+            CALL CUNGQR( M, M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CUNGQR_M=CDUM(1)
 *           Compute space needed for CGEBRD
-            CALL CGEBRD( N, N, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-            LWORK_CGEBRD=DUM(1)
+            CALL CGEBRD( N, N, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGEBRD=CDUM(1)
 *           Compute space needed for CUNGBR
-            CALL CUNGBR( 'P', N, N, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_P=DUM(1)
-            CALL CUNGBR( 'Q', N, N, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_Q=DUM(1)
+            CALL CUNGBR( 'P', N, N, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_P=CDUM(1)
+            CALL CUNGBR( 'Q', N, N, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_Q=CDUM(1)
 *
             MNTHR = ILAENV( 6, 'CGESVD', JOBU // JOBVT, M, N, 0, 0 )
             IF( M.GE.MNTHR ) THEN
@@ -444,20 +444,20 @@
 *
 *              Path 10 (M at least N, but not much larger)
 *
-               CALL CGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-               LWORK_CGEBRD=DUM(1)
+               CALL CGEBRD( M, N, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+               LWORK_CGEBRD=CDUM(1)
                MAXWRK = 2*N + LWORK_CGEBRD
                IF( WNTUS .OR. WNTUO ) THEN
-                  CALL CUNGBR( 'Q', M, N, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-                  LWORK_CUNGBR_Q=DUM(1)
+                  CALL CUNGBR( 'Q', M, N, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                  LWORK_CUNGBR_Q=CDUM(1)
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_CUNGBR_Q )
                END IF
                IF( WNTUA ) THEN
-                  CALL CUNGBR( 'Q', M, M, N, A, LDA, DUM(1),
-     $                   DUM(1), -1, IERR )
-                  LWORK_CUNGBR_Q=DUM(1)
+                  CALL CUNGBR( 'Q', M, M, N, A, LDA, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                  LWORK_CUNGBR_Q=CDUM(1)
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_CUNGBR_Q )
                END IF
                IF( .NOT.WNTVN ) THEN
@@ -471,25 +471,26 @@
 *
             MNTHR = ILAENV( 6, 'CGESVD', JOBU // JOBVT, M, N, 0, 0 )
 *           Compute space needed for CGELQF
-            CALL CGELQF( M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CGELQF=DUM(1)
+            CALL CGELQF( M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGELQF=CDUM(1)
 *           Compute space needed for CUNGLQ
-            CALL CUNGLQ( N, N, M, DUM(1), N, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGLQ_N=DUM(1)
-            CALL CUNGLQ( M, N, M, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_CUNGLQ_M=DUM(1)
+            CALL CUNGLQ( N, N, M, CDUM(1), N, CDUM(1), CDUM(1), -1,
+     $                   IERR )
+            LWORK_CUNGLQ_N=CDUM(1)
+            CALL CUNGLQ( M, N, M, A, LDA, CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CUNGLQ_M=CDUM(1)
 *           Compute space needed for CGEBRD
-            CALL CGEBRD( M, M, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-            LWORK_CGEBRD=DUM(1)
+            CALL CGEBRD( M, M, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+            LWORK_CGEBRD=CDUM(1)
 *            Compute space needed for CUNGBR P
-            CALL CUNGBR( 'P', M, M, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_P=DUM(1)
+            CALL CUNGBR( 'P', M, M, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_P=CDUM(1)
 *           Compute space needed for CUNGBR Q
-            CALL CUNGBR( 'Q', M, M, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-            LWORK_CUNGBR_Q=DUM(1)
+            CALL CUNGBR( 'Q', M, M, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+            LWORK_CUNGBR_Q=CDUM(1)
             IF( N.GE.MNTHR ) THEN
                IF( WNTVN ) THEN
 *
@@ -593,21 +594,21 @@
 *
 *              Path 10t(N greater than M, but not much larger)
 *
-               CALL CGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
-     $                   DUM(1), DUM(1), -1, IERR )
-               LWORK_CGEBRD=DUM(1)
+               CALL CGEBRD( M, N, A, LDA, S, DUM(1), CDUM(1),
+     $                   CDUM(1), CDUM(1), -1, IERR )
+               LWORK_CGEBRD=CDUM(1)
                MAXWRK = 2*M + LWORK_CGEBRD
                IF( WNTVS .OR. WNTVO ) THEN
 *                Compute space needed for CUNGBR P
-                 CALL CUNGBR( 'P', M, N, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-                 LWORK_CUNGBR_P=DUM(1)
+                 CALL CUNGBR( 'P', M, N, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                 LWORK_CUNGBR_P=CDUM(1)
                  MAXWRK = MAX( MAXWRK, 2*M+LWORK_CUNGBR_P )
                END IF
                IF( WNTVA ) THEN
-                 CALL CUNGBR( 'P', N,  N, M, A, N, DUM(1),
-     $                   DUM(1), -1, IERR )
-                 LWORK_CUNGBR_P=DUM(1)
+                 CALL CUNGBR( 'P', N,  N, M, A, N, CDUM(1),
+     $                   CDUM(1), -1, IERR )
+                 LWORK_CUNGBR_P=CDUM(1)
                  MAXWRK = MAX( MAXWRK, 2*M+LWORK_CUNGBR_P )
                END IF
                IF( .NOT.WNTUN ) THEN

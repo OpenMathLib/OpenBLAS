@@ -1,5 +1,7 @@
 SGEMVNKERNEL = ../arm/gemv_n.c
 SGEMVTKERNEL = ../arm/gemv_t.c
+CGEMVNKERNEL = ../arm/zgemv_n.c
+CGEMVTKERNEL = ../arm/zgemv_t.c
 
 DGEMVNKERNEL = ../arm/gemv_n.c
 DGEMVTKERNEL = ../arm/gemv_t.c
@@ -96,12 +98,12 @@ ZSWAPKERNEL  = swap_vfp.S
 
 # BAD SGEMVNKERNEL = gemv_n_vfp.S
 # BAD DGEMVNKERNEL = gemv_n_vfp.S
-CGEMVNKERNEL = cgemv_n_vfp.S
+# CGEMVNKERNEL = cgemv_n_vfp.S
 ZGEMVNKERNEL = zgemv_n_vfp.S
 
 # BAD SGEMVTKERNEL = gemv_t_vfp.S
 # BAD DGEMVTKERNEL = gemv_t_vfp.S
-CGEMVTKERNEL = cgemv_t_vfp.S
+# CGEMVTKERNEL = cgemv_t_vfp.S
 ZGEMVTKERNEL = zgemv_t_vfp.S
 
 STRMMKERNEL	= strmm_kernel_4x2_vfp.S
