@@ -155,7 +155,7 @@ SLASRC = \
    sbbcsd.o slapmr.o sorbdb.o sorbdb1.o sorbdb2.o sorbdb3.o sorbdb4.o \
    sorbdb5.o sorbdb6.o sorcsd.o sorcsd2by1.o \
    sgeqrt.o sgeqrt2.o sgeqrt3.o sgemqrt.o \
-   stpqrt.o stpqrt2.o stpmqrt.o stprfb.o
+   stpqrt.o stpqrt2.o stpmqrt.o stprfb.o spotri.o
 
 DSLASRC = spotrs.o 
 
@@ -236,7 +236,7 @@ CLASRC = \
    cbbcsd.o clapmr.o cunbdb.o cunbdb1.o cunbdb2.o cunbdb3.o cunbdb4.o \
    cunbdb5.o cunbdb6.o cuncsd.o cuncsd2by1.o \
    cgeqrt.o cgeqrt2.o cgeqrt3.o cgemqrt.o \
-   ctpqrt.o ctpqrt2.o ctpmqrt.o ctprfb.o
+   ctpqrt.o ctpqrt2.o ctpmqrt.o ctprfb.o cpotri.o
 
 ifdef USEXBLAS
 CXLASRC = cgesvxx.o cgerfsx.o cla_gerfsx_extended.o cla_geamv.o \
@@ -316,7 +316,7 @@ DLASRC = \
    dbbcsd.o dlapmr.o dorbdb.o dorbdb1.o dorbdb2.o dorbdb3.o dorbdb4.o \
    dorbdb5.o dorbdb6.o dorcsd.o dorcsd2by1.o \
    dgeqrt.o dgeqrt2.o dgeqrt3.o dgemqrt.o \
-   dtpqrt.o dtpqrt2.o dtpmqrt.o dtprfb.o
+   dtpqrt.o dtpqrt2.o dtpmqrt.o dtprfb.o dpotri.o
 
 ifdef USEXBLAS
 DXLASRC = dgesvxx.o dgerfsx.o dla_gerfsx_extended.o dla_geamv.o		\
@@ -400,7 +400,7 @@ ZLASRC = \
    zbbcsd.o zlapmr.o zunbdb.o zunbdb1.o zunbdb2.o zunbdb3.o zunbdb4.o \
    zunbdb5.o zunbdb6.o zuncsd.o zuncsd2by1.o \
    zgeqrt.o zgeqrt2.o zgeqrt3.o zgemqrt.o \
-   ztpqrt.o ztpqrt2.o ztpmqrt.o ztprfb.o
+   ztpqrt.o ztpqrt2.o ztpmqrt.o ztprfb.o zpotri.o
 
 ifdef USEXBLAS
 ZXLASRC = zgesvxx.o zgerfsx.o zla_gerfsx_extended.o zla_geamv.o		\

@@ -356,25 +356,25 @@ ZBLASOBJS    = $(ZBLAS1OBJS) $(ZBLAS2OBJS) $(ZBLAS3OBJS)
 XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 
 #SLAPACKOBJS	= \
-#	sgetf2.$(SUFFIX) sgetrf.$(SUFFIX) slauu2.$(SUFFIX) slauum.$(SUFFIX) \
-#	spotf2.$(SUFFIX) spotrf.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) \
-#	slaswp.$(SUFFIX) sgetrs.$(SUFFIX) sgesv.$(SUFFIX)  spotri.$(SUFFIX) \
+#	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
+#	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX) slauu2.$(SUFFIX)  \
+#	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) spotri.$(SUFFIX)
 
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
 	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX) slauu2.$(SUFFIX)  \
-	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) spotri.$(SUFFIX)
+	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
-#	dgetf2.$(SUFFIX) dgetrf.$(SUFFIX) dlauu2.$(SUFFIX) dlauum.$(SUFFIX) \
-#	dpotf2.$(SUFFIX) dpotrf.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) \
-#	dlaswp.$(SUFFIX) dgetrs.$(SUFFIX) dgesv.$(SUFFIX)  dpotri.$(SUFFIX) \
+#	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
+#	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX) dlauu2.$(SUFFIX)  \
+#	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) dpotri.$(SUFFIX)
 
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
 	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX) dlauu2.$(SUFFIX)  \
-	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) dpotri.$(SUFFIX)
+	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX)
 
 
 QLAPACKOBJS	= \
@@ -382,28 +382,29 @@ QLAPACKOBJS	= \
 	qpotf2.$(SUFFIX) qpotrf.$(SUFFIX) qtrti2.$(SUFFIX) qtrtri.$(SUFFIX) \
 	qlaswp.$(SUFFIX) qgetrs.$(SUFFIX) qgesv.$(SUFFIX)  qpotri.$(SUFFIX) \
 
+
 #CLAPACKOBJS	= \
-#	cgetf2.$(SUFFIX) cgetrf.$(SUFFIX) clauu2.$(SUFFIX) clauum.$(SUFFIX) \
-#	cpotf2.$(SUFFIX) cpotrf.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) \
-#	claswp.$(SUFFIX) cgetrs.$(SUFFIX) cgesv.$(SUFFIX)  cpotri.$(SUFFIX) \
+#	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
+#	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
+#	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) cpotri.$(SUFFIX)
+
 
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
 	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
-	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) cpotri.$(SUFFIX)
+	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) 
 
 
 #ZLAPACKOBJS	= \
-#	zgetf2.$(SUFFIX) zgetrf.$(SUFFIX) zlauu2.$(SUFFIX) zlauum.$(SUFFIX) \
-#	zpotf2.$(SUFFIX) zpotrf.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) \
-#	zlaswp.$(SUFFIX) zgetrs.$(SUFFIX) zgesv.$(SUFFIX)  zpotri.$(SUFFIX) \
+#	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
+#	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
+#	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) zpotri.$(SUFFIX)
+
 
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
 	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
-	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) zpotri.$(SUFFIX)
-
-
+	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) 
 
 
 XLAPACKOBJS	= \
