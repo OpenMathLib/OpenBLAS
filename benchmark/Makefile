@@ -17,24 +17,28 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
        sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
+       strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
        sgemm.acml dgemm.acml cgemm.acml zgemm.acml \
        strmm.acml dtrmm.acml ctrmm.acml ztrmm.acml \
+       strsm.acml dtrsm.acml ctrsm.acml ztrsm.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
        sgemm.atlas dgemm.atlas cgemm.atlas zgemm.atlas \
        strmm.atlas dtrmm.atlas ctrmm.atlas ztrmm.atlas \
+       strsm.atlas dtrsm.atlas ctrsm.atlas ztrsm.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
        sgemm.mkl dgemm.mkl cgemm.mkl zgemm.mkl \
        strmm.mkl dtrmm.mkl ctrmm.mkl ztrmm.mkl \
+       strsm.mkl dtrsm.mkl ctrsm.mkl ztrsm.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
 all :: goto atlas acml mkl
@@ -316,6 +320,61 @@ ztrmm.mkl : ztrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 
+##################################### Strsm ####################################################
+strsm.goto : strsm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+strsm.acml : strsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strsm.atlas : strsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strsm.mkl : strsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dtrsm ####################################################
+dtrsm.goto : dtrsm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dtrsm.acml : dtrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrsm.atlas : dtrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrsm.mkl : dtrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ctrsm ####################################################
+
+ctrsm.goto : ctrsm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+ctrsm.acml : ctrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrsm.atlas : ctrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrsm.mkl : ctrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ztrsm ####################################################
+
+ztrsm.goto : ztrsm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+ztrsm.acml : ztrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrsm.atlas : ztrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrsm.mkl : ztrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 
 
 ###################################################################################################
@@ -380,7 +439,17 @@ ctrmm.$(SUFFIX) : trmm.c
 ztrmm.$(SUFFIX) : trmm.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
+strsm.$(SUFFIX) : trsm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
+dtrsm.$(SUFFIX) : trsm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+ctrsm.$(SUFFIX) : trsm.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+ztrsm.$(SUFFIX) : trsm.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 
 clean ::
