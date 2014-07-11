@@ -1,157 +1,205 @@
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
+LIBACML = -fopenmp /opt/pb/acml-5-3-1-gfortran-64bit/gfortran64_fma4_mp/lib/libacml_mp.a -lgfortran -lm
+
+LIBATLAS = -fopenmp /usr/lib64/atlas/liblapack.a /usr/lib64/atlas/libptcblas.a /usr/lib64/atlas/libptf77blas.a /usr/lib64/atlas/libatlas.a -lgfortran -lm
+
+MKL=/home/saar/intel_mkl
+LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
+
 CULA_INC = -I/usr/local/cula/include
 CULA_LIB = -L/usr/local/cula/lib64 -Wl,-rpath,/usr/local/cula/lib64 -lcula_fortran -lcula -lcublas
 
-all :: dlinpack.goto dlinpack.mkl dlinpack.acml dcholesky.goto dcholesky.mkl dcholesky.acml
-	./dlinpack.goto  4000 4000 1
-	-./dlinpack.mkl  4000 4000 1
-	-./dlinpack.acml 4000 4000 1
-	./dcholesky.goto  4000 4000 1
-	-./dcholesky.mkl  4000 4000 1
-	-./dcholesky.acml 4000 4000 1
 
+
+goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
+       scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
+       sgemm.goto dgemm.goto cgemm.goto zgemm.goto
+
+acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
+       scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
+       sgemm.acml dgemm.acml cgemm.acml zgemm.acml
+
+atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
+       scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
+       sgemm.atlas dgemm.atlas cgemm.atlas zgemm.atlas
+
+mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
+       scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
+       sgemm.mkl dgemm.mkl cgemm.mkl zgemm.mkl
+
+all :: goto atlas acml mkl
+
+##################################### Slinpack ####################################################
 slinpack.goto : slinpack.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-dlinpack.goto : dlinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-qlinpack.goto : qlinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-clinpack.goto : clinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-zlinpack.goto : zlinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-xlinpack.goto : xlinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-scholesky.goto : scholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-dcholesky.goto : dcholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-qcholesky.goto : qcholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-ccholesky.goto : ccholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-zcholesky.goto : zcholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-xcholesky.goto : xcholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
-
-slinpack.mkl : slinpack.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-dlinpack.mkl : dlinpack.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-clinpack.mkl : clinpack.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-zlinpack.mkl : zlinpack.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-scholesky.mkl : scholesky.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-dcholesky.mkl : dcholesky.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-ccholesky.mkl : ccholesky.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-zcholesky.mkl : zcholesky.$(SUFFIX)
-	-$(CC) -static $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 slinpack.acml : slinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+slinpack.atlas : slinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+slinpack.mkl : slinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dlinpack ####################################################
+dlinpack.goto : dlinpack.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
 dlinpack.acml : dlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dlinpack.atlas : dlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dlinpack.mkl : dlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Clinpack ####################################################
+
+clinpack.goto : clinpack.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
 
 clinpack.acml : clinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+clinpack.atlas : clinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+clinpack.mkl : clinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zlinpack ####################################################
+
+zlinpack.goto : zlinpack.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
 zlinpack.acml : zlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zlinpack.atlas : zlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zlinpack.mkl : zlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Scholesky ###################################################
+
+scholesky.goto : scholesky.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
 
 scholesky.acml : scholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+scholesky.atlas : scholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+scholesky.mkl : scholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dcholesky ###################################################
+
+dcholesky.goto : dcholesky.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
 dcholesky.acml : dcholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dcholesky.atlas : dcholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dcholesky.mkl : dcholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ccholesky ###################################################
+
+ccholesky.goto : ccholesky.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
 
 ccholesky.acml : ccholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+ccholesky.atlas : ccholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ccholesky.mkl : ccholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zcholesky.goto : zcholesky.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+##################################### Zcholesky ###################################################
+
+xcholesky.goto : xcholesky.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
 zcholesky.acml : zcholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-slinpack.flame : slinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+zcholesky.atlas : zcholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-dlinpack.flame : dlinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+zcholesky.mkl : zcholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-clinpack.flame : clinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-zlinpack.flame : zlinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+##################################### Sgemm ####################################################
+sgemm.goto : sgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
 
-scholesky.flame : scholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+sgemm.acml : sgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-dcholesky.flame : dcholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+sgemm.atlas : sgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-ccholesky.flame : ccholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+sgemm.mkl : sgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-zcholesky.flame : zcholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBFLAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+##################################### Dgemm ####################################################
+dgemm.goto : dgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
 
-slinpack.sun : slinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+dgemm.acml : dgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-dlinpack.sun : dlinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+dgemm.atlas : dgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-clinpack.sun : clinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+dgemm.mkl : dgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-zlinpack.sun : zlinpack.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+##################################### Cgemm ####################################################
 
-scholesky.sun : scholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+cgemm.goto : cgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
 
-dcholesky.sun : dcholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+cgemm.acml : cgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-ccholesky.sun : ccholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+cgemm.atlas : cgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-zcholesky.sun : zcholesky.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBSUNPERF) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+cgemm.mkl : cgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
-slinpack.cula : slinpack.$(SUFFIX) cula_wrapper.$(SUFFIX)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CULA_LIB) ../$(LIBNAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+##################################### Zgemm ####################################################
 
-clinpack.cula : clinpack.$(SUFFIX) cula_wrapper.$(SUFFIX)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CULA_LIB) ../$(LIBNAME) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+zgemm.goto : zgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
 
-cula_wrapper.$(SUFFIX) : cula_wrapper.c
-	$(CC) $(CFLAGS) -c $(CULA_INC) -o $(@F) $^
+zgemm.acml : zgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgemm.atlas : zgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgemm.mkl : zgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+###################################################################################################
 
 slinpack.$(SUFFIX) : linpack.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
@@ -159,17 +207,11 @@ slinpack.$(SUFFIX) : linpack.c
 dlinpack.$(SUFFIX) : linpack.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
-qlinpack.$(SUFFIX) : linpack.c
-	$(CC) $(CFLAGS) -c -UCOMPLEX -DXDOUBLE -o $(@F) $^
-
 clinpack.$(SUFFIX) : linpack.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
 zlinpack.$(SUFFIX) : linpack.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
-
-xlinpack.$(SUFFIX) : linpack.c
-	$(CC) $(CFLAGS) -c -DCOMPLEX -DXDOUBLE -o $(@F) $^
 
 scholesky.$(SUFFIX) : cholesky.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
@@ -177,19 +219,27 @@ scholesky.$(SUFFIX) : cholesky.c
 dcholesky.$(SUFFIX) : cholesky.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
-qcholesky.$(SUFFIX) : cholesky.c
-	$(CC) $(CFLAGS) -c -UCOMPLEX -DXDOUBLE -o $(@F) $^
-
 ccholesky.$(SUFFIX) : cholesky.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
 zcholesky.$(SUFFIX) : cholesky.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
-xcholesky.$(SUFFIX) : cholesky.c
-	$(CC) $(CFLAGS) -c -DCOMPLEX -DXDOUBLE -o $(@F) $^
+sgemm.$(SUFFIX) : gemm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dgemm.$(SUFFIX) : gemm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cgemm.$(SUFFIX) : gemm.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zgemm.$(SUFFIX) : gemm.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 clean ::
-	@rm -f *.goto *.mkl *.acml *.sun *.cula
+	@rm -f *.goto *.mkl *.acml *.atlas
 
 include $(TOPDIR)/Makefile.tail
+
