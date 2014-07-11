@@ -18,6 +18,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        chemm.goto zhemm.goto \
        cherk.goto zherk.goto \
+       cher2k.goto zher2k.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -29,6 +30,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        chemm.acml zhemm.acml \
        cherk.acml zherk.acml \
+       cher2k.acml zher2k.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
@@ -40,6 +42,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        chemm.atlas zhemm.atlas \
        cherk.atlas zherk.atlas \
+       cher2k.atlas zher2k.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
@@ -51,6 +54,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        chemm.mkl zhemm.mkl \
        cherk.mkl zherk.mkl \
+       cher2k.mkl zher2k.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
 all :: goto atlas acml mkl
@@ -551,7 +555,33 @@ zherk.atlas : zherk.$(SUFFIX)
 zherk.mkl : zherk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Cher2k ####################################################
 
+cher2k.goto : cher2k.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+cher2k.acml : cher2k.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cher2k.atlas : cher2k.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cher2k.mkl : cher2k.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zher2k ####################################################
+
+zher2k.goto : zher2k.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zher2k.acml : zher2k.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zher2k.atlas : zher2k.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zher2k.mkl : zher2k.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ###################################################################################################
 
@@ -662,6 +692,13 @@ cherk.$(SUFFIX) : herk.c
 
 zherk.$(SUFFIX) : herk.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+cher2k.$(SUFFIX) : her2k.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zher2k.$(SUFFIX) : her2k.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 
 
