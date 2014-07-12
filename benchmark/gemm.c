@@ -123,17 +123,18 @@ int MAIN__(int argc, char *argv[]){
   FLOAT *a, *b, *c;
   FLOAT alpha[] = {1.0, 1.0};
   FLOAT beta [] = {1.0, 1.0};
-
   char trans='N';
-
   blasint m, i, j;
+  int loops = 1;
+  int l;
+  char *p;
 
   int from =   1;
   int to   = 200;
   int step =   1;
 
   struct timeval start, stop;
-  double time1;
+  double time1,timeg;
 
   argc--;argv++;
 
@@ -155,6 +156,9 @@ int MAIN__(int argc, char *argv[]){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
+  p = getenv("OPENBLAS_LOOPS");
+  if ( p != NULL )
+	loops = atoi(p);
 
 
 #ifdef linux
@@ -166,29 +170,37 @@ int MAIN__(int argc, char *argv[]){
   for(m = from; m <= to; m += step)
   {
 
+    timeg=0;
+
     fprintf(stderr, " %6d : ", (int)m);
 
-    for(j = 0; j < m; j++){
-      for(i = 0; i < m * COMPSIZE; i++){
-	a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-	b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-	c[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-      }
+    for (l=0; l<loops; l++)
+    {
+  
+    	for(j = 0; j < m; j++){
+      		for(i = 0; i < m * COMPSIZE; i++){
+			a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			c[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      		}
+    	}
+
+    	gettimeofday( &start, (struct timezone *)0);
+
+    	GEMM (&trans, &trans, &m, &m, &m, alpha, a, &m, b, &m, beta, c, &m );
+
+    	gettimeofday( &stop, (struct timezone *)0);
+
+    	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+
+	timeg += time1;
+
     }
 
-    gettimeofday( &start, (struct timezone *)0);
-
-    GEMM (&trans, &trans, &m, &m, &m, alpha, a, &m, b, &m, beta, c, &m );
-
-    gettimeofday( &stop, (struct timezone *)0);
-
-    time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-
-    gettimeofday( &start, (struct timezone *)0);
-
+    timeg /= loops;
     fprintf(stderr,
 	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)m / time1 * 1.e-6);
+	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)m / timeg * 1.e-6);
 
   }
 
