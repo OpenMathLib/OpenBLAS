@@ -1,12 +1,30 @@
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
-LIBACML = -fopenmp /opt/pb/acml-5-3-1-gfortran-64bit/gfortran64_fma4_mp/lib/libacml_mp.a -lgfortran -lm
+# ACML standard
+ACML=/opt/acml5.3.1/gfortran64_mp/lib
+LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
-LIBATLAS = -fopenmp /usr/lib64/atlas/liblapack.a /usr/lib64/atlas/libptcblas.a /usr/lib64/atlas/libptf77blas.a /usr/lib64/atlas/libatlas.a -lgfortran -lm
+# ACML custom
+#ACML=/opt/pb/acml-5-3-1-gfortran-64bit/gfortran64_fma4_mp/lib
+#LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
-MKL=/home/saar/intel_mkl
+# Atlas Ubuntu 
+#ATLAS=/usr/lib/atlas-base
+#LIBATLAS = -fopenmp $(ATLAS)/liblapack_atlas.a  $(ATLAS)/libptcblas.a  $(ATLAS)/libptf77blas.a  $(ATLAS)/libatlas.a -lgfortran -lm
+
+# Atlas RHEL and Fedora
+ATLAS=/usr/lib64/atlas
+LIBATLAS = -fopenmp $(ATLAS)/liblapack.a  $(ATLAS)/libptcblas.a  $(ATLAS)/libptf77blas.a  $(ATLAS)/libatlas.a -lgfortran -lm
+
+# Intel standard
+MKL=/opt/intel/mkl/lib/intel64
 LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
+
+# Intel custom
+#MKL=/home/saar/intel_mkl
+#LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
+
 
 
 goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
