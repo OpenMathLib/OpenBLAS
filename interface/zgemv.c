@@ -233,7 +233,19 @@ void CNAME(enum CBLAS_ORDER order,
   buffer = (FLOAT *)blas_memory_alloc(1);
 
 #ifdef SMP
-  nthreads = num_cpu_avail(2);
+
+  int  nthreads_max = num_cpu_avail(2);
+  int  nthreads_avail = nthreads_max;
+
+  double MNK = (double) m * (double) n;
+  if ( MNK <= (80.0 * 20.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
+        nthreads_max = 1;
+
+  if ( nthreads_max > nthreads_avail )
+        nthreads = nthreads_avail;
+  else
+        nthreads = nthreads_max;
+
 
   if (nthreads == 1) {
 #endif
