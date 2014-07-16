@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.10.rc2
+VERSION = 0.2.10
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -25,8 +25,19 @@ VERSION = 0.2.10.rc2
 # FC = gfortran
 
 # Even you can specify cross compiler. Meanwhile, please set HOSTCC.
+
+# cross compiler for Windows
 # CC = x86_64-w64-mingw32-gcc
 # FC = x86_64-w64-mingw32-gfortran
+
+# cross compiler for 32bit ARM
+# CC = arm-linux-gnueabihf-gcc
+# FC = arm-linux-gnueabihf-gfortran
+
+# cross compiler for 64bit ARM
+# CC = aarch64-linux-gnu-gcc
+# FC = aarch64-linux-gnu-gfortran
+
 
 # If you use the cross compiler, please set this host compiler.
 # HOSTCC = gcc
@@ -87,6 +98,9 @@ NO_AFFINITY = 1
 # Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers
 # and OS. However, the performance is low.
 # NO_AVX = 1
+
+# Don't use Haswell optimizations if binutils is too old (e.g. RHEL6)
+# NO_AVX2 = 1
 
 # Don't use parallel make.
 # NO_PARALLEL_MAKE = 1

@@ -1,5 +1,3 @@
-SGEMVNKERNEL = sgemv_n.S
-SGEMVTKERNEL = sgemv_t.S
 
 SGEMMKERNEL    =  sgemm_kernel_16x4_sandy.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c

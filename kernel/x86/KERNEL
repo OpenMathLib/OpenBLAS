@@ -1,263 +1,3 @@
-GEMVDEP = ../l2param.h
-
-ifdef HAVE_SSE
-
-ifndef SAMAXKERNEL
-SAMAXKERNEL = amax_sse.S
-endif
-
-ifndef CAMAXKERNEL
-CAMAXKERNEL = zamax_sse.S
-endif
-
-ifndef SAMINKERNEL
-SAMINKERNEL = amax_sse.S
-endif
-
-ifndef CAMINKERNEL
-CAMINKERNEL = zamax_sse.S
-endif
-
-ifndef ISAMAXKERNEL
-ISAMAXKERNEL = iamax_sse.S
-endif
-
-ifndef ICAMAXKERNEL
-ICAMAXKERNEL = izamax_sse.S
-endif
-
-ifndef ISAMINKERNEL
-ISAMINKERNEL = iamax_sse.S
-endif
-
-ifndef ICAMINKERNEL
-ICAMINKERNEL = izamax_sse.S
-endif
-
-ifndef ISMAXKERNEL
-ISMAXKERNEL = iamax_sse.S
-endif
-
-ifndef ISMINKERNEL
-ISMINKERNEL = iamax_sse.S
-endif
-
-ifndef SMAXKERNEL
-SMAXKERNEL = amax_sse.S
-endif
-
-ifndef SMINKERNEL
-SMINKERNEL = amax_sse.S
-endif
-
-ifndef SASUMKERNEL
-SASUMKERNEL = asum_sse.S
-endif
-
-ifndef CASUMKERNEL
-CASUMKERNEL = zasum_sse.S
-endif
-
-ifndef SDOTKERNEL
-SDOTKERNEL = ../arm/dot.c
-endif
-
-ifndef CDOTKERNEL
-CDOTKERNEL = zdot_sse.S
-endif
-
-ifndef SCOPYKERNEL
-SCOPYKERNEL = copy_sse.S
-endif
-
-ifndef CCOPYKERNEL
-CCOPYKERNEL = zcopy_sse.S
-endif
-
-ifndef SSACALKERNEL
-SSCALKERNEL = scal_sse.S
-endif
-
-ifndef CSACALKERNEL
-CSCALKERNEL = zscal_sse.S
-endif
-
-ifndef SAXPYKERNEL
-SAXPYKERNEL = axpy_sse.S
-endif
-
-ifndef CAXPYKERNEL
-CAXPYKERNEL = zaxpy_sse.S
-endif
-
-ifndef SROTKERNEL
-SROTKERNEL = rot_sse.S
-endif
-
-ifndef CROTKERNEL
-CROTKERNEL = zrot_sse.S
-endif
-
-ifndef SSWAPKERNEL
-SSWAPKERNEL =  swap_sse.S
-endif
-
-ifndef CSWAPKERNEL
-CSWAPKERNEL = zswap_sse.S
-endif
-
-ifndef SGEMVNKERNEL
-SGEMVNKERNEL = ../arm/gemv_n.c
-endif
-
-ifndef SGEMVTKERNEL
-SGEMVTKERNEL = ../arm/gemv_t.c
-endif
-
-ifndef CGEMVNKERNEL
-CGEMVNKERNEL = zgemv_n_sse.S
-endif
-
-ifndef CGEMVTKERNEL
-CGEMVTKERNEL = zgemv_t_sse.S
-endif
-
-endif
-
-
-ifdef HAVE_SSE2
-
-ifndef DAMAXKERNEL
-DAMAXKERNEL = amax_sse2.S
-endif
-
-ifndef ZAMAXKERNEL
-ZAMAXKERNEL = zamax_sse2.S
-endif
-
-ifndef DAMINKERNEL
-DAMINKERNEL = amax_sse2.S
-endif
-
-ifndef ZAMINKERNEL
-ZAMINKERNEL = zamax_sse2.S
-endif
-
-ifndef IDAMAXKERNEL
-IDAMAXKERNEL = iamax_sse2.S
-endif
-
-ifndef IZAMAXKERNEL
-IZAMAXKERNEL = izamax_sse2.S
-endif
-
-ifndef IDAMINKERNEL
-IDAMINKERNEL = iamax_sse2.S
-endif
-
-ifndef IZAMINKERNEL
-IZAMINKERNEL = izamax_sse2.S
-endif
-
-ifndef IDMAXKERNEL
-IDMAXKERNEL = iamax_sse2.S
-endif
-
-ifndef IDMINKERNEL
-IDMINKERNEL = iamax_sse2.S
-endif
-
-ifndef DMAXKERNEL
-DMAXKERNEL = amax_sse2.S
-endif
-
-ifndef DMINKERNEL
-DMINKERNEL = amax_sse2.S
-endif
-
-ifndef DDOTKERNEL
-DDOTKERNEL = dot_sse2.S
-endif
-
-ifndef ZDOTKERNEL
-ZDOTKERNEL = zdot_sse2.S
-endif
-
-ifndef DCOPYKERNEL
-# DCOPYKERNEL = copy_sse2.S
-endif
-
-ifndef ZCOPYKERNEL
-ZCOPYKERNEL = zcopy_sse2.S
-endif
-
-ifndef DSACALKERNEL
-DSCALKERNEL = scal_sse2.S
-endif
-
-ifndef ZSACALKERNEL
-ZSCALKERNEL = zscal_sse2.S
-endif
-
-ifndef DASUMKERNEL
-DASUMKERNEL = asum_sse2.S
-endif
-
-ifndef ZASUMKERNEL
-ZASUMKERNEL = zasum_sse2.S
-endif
-
-ifndef DAXPYKERNEL
-DAXPYKERNEL = axpy_sse2.S
-endif
-
-ifndef ZAXPYKERNEL
-ZAXPYKERNEL = zaxpy_sse2.S
-endif
-
-ifndef SNRM2KERNEL
-SNRM2KERNEL = nrm2_sse.S
-endif
-
-ifndef CNRM2KERNEL
-CNRM2KERNEL = znrm2_sse.S
-endif
-
-ifndef DROTKERNEL
-DROTKERNEL = rot_sse2.S
-endif
-
-ifndef ZROTKERNEL
-ZROTKERNEL = zrot_sse2.S
-endif
-
-ifndef DSWAPKERNEL
-DSWAPKERNEL =  swap_sse2.S
-endif
-
-ifndef ZSWAPKERNEL
-ZSWAPKERNEL = zswap_sse2.S
-endif
-
-ifndef DGEMVNKERNEL
-DGEMVNKERNEL = gemv_n_sse2.S
-endif
-
-ifndef DGEMVTKERNEL
-DGEMVTKERNEL = gemv_t_sse2.S
-endif
-
-ifndef ZGEMVNKERNEL
-ZGEMVNKERNEL = zgemv_n_sse2.S
-endif
-
-ifndef ZGEMVTKERNEL
-ZGEMVTKERNEL = zgemv_t_sse2.S
-endif
-
-endif
-
-
 ifndef SAMINKERNEL
 SAMINKERNEL = amax.S
 endif
@@ -394,21 +134,41 @@ XGEMMITCOPYOBJ =
 XGEMMONCOPYOBJ =  xgemm_oncopy$(TSUFFIX).$(SUFFIX)
 XGEMMOTCOPYOBJ =  xgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-SGEMM_BETA = gemm_beta.S
-DGEMM_BETA = gemm_beta.S
-QGEMM_BETA = ../generic/gemm_beta.c
-CGEMM_BETA = zgemm_beta.S
-ZGEMM_BETA = zgemm_beta.S
-XGEMM_BETA = ../generic/zgemm_beta.c
+QTRSMKERNEL_LN  =  qtrsm_kernel_LN_2x2.S
+QTRSMKERNEL_LT  =  qtrsm_kernel_LT_2x2.S
+QTRSMKERNEL_RN  =  qtrsm_kernel_LT_2x2.S
+QTRSMKERNEL_RT  =  qtrsm_kernel_RT_2x2.S
 
-QTRSMKERNEL_LN	=  qtrsm_kernel_LN_2x2.S
-QTRSMKERNEL_LT	=  qtrsm_kernel_LT_2x2.S
-QTRSMKERNEL_RN	=  qtrsm_kernel_LT_2x2.S
-QTRSMKERNEL_RT	=  qtrsm_kernel_RT_2x2.S
-
-XTRSMKERNEL_LN	=  xtrsm_kernel_LT_1x1.S
-XTRSMKERNEL_LT	=  xtrsm_kernel_LT_1x1.S
-XTRSMKERNEL_RN	=  xtrsm_kernel_LT_1x1.S
-XTRSMKERNEL_RT	=  xtrsm_kernel_LT_1x1.S
+XTRSMKERNEL_LN  =  xtrsm_kernel_LT_1x1.S
+XTRSMKERNEL_LT  =  xtrsm_kernel_LT_1x1.S
+XTRSMKERNEL_RN  =  xtrsm_kernel_LT_1x1.S
+XTRSMKERNEL_RT  =  xtrsm_kernel_LT_1x1.S
 
 XGEMM3MKERNEL    =  xgemm3m_kernel_2x2.S
+
+
+# bug in zdot assembler kernel
+ifndef ZDOTKERNEL
+ZDOTKERNEL   = ../arm/zdot.c
+endif
+
+DSDOTKERNEL   = ../arm/dot.c
+
+# Bug in znrm2 assembler kernel
+ifndef ZNRM2KERNEL
+ZNRM2KERNEL  = ../arm/znrm2.c
+endif
+
+# Bug in zgemv_t  assembler kernel
+ifndef ZGEMVTKERNEL
+ZGEMVTKERNEL = ../arm/zgemv_t.c
+endif
+
+SGEMM_BETA = ../generic/gemm_beta.c
+DGEMM_BETA = ../generic/gemm_beta.c
+CGEMM_BETA = ../generic/zgemm_beta.c
+ZGEMM_BETA = ../generic/zgemm_beta.c
+
+QGEMM_BETA = ../generic/gemm_beta.c
+XGEMM_BETA = ../generic/zgemm_beta.c
+

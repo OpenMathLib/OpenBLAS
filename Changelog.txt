@@ -1,5 +1,25 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.10
+16-Jul-2014
+common:
+	* Added BLAS extensions as following.
+	  s/d/c/zaxpby, s/d/c/zimatcopy, s/d/c/zomatcopy.
+	* Added OPENBLAS_CORETYPE environment for dynamic_arch. (a86d34)
+	* Added NO_AVX2 flag for old binutils. (#401)
+	* Support outputing the CPU corename on runtime.(#407)
+	* Patched LAPACK to fix bug 114, 117, 118. 
+	  (http://www.netlib.org/lapack/bug_list.html)
+	* Disabled ?gemm3m for a work-around fix. (#400)
+x86/x86-64:
+	* Fixed lots of bugs for optimized kernels on sandybridge,Haswell, 
+	  bulldozer, and piledriver.
+	  https://github.com/xianyi/OpenBLAS/wiki/Fixed-optimized-kernels-To-do-List
+
+ARM:
+	* Improved LAPACK testing.
+
+====================================================================
 Version 0.2.9
 10-Jun-2014
 common:
