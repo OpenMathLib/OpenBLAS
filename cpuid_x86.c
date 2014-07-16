@@ -1062,7 +1062,11 @@ int get_cpuname(void){
         case 12:
 	case 15:
           if(support_avx())
+#ifndef NO_AVX2
             return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
           else
 	    return CPUTYPE_NEHALEM;
 	}
@@ -1072,7 +1076,11 @@ int get_cpuname(void){
         case 5:
 	case 6:
           if(support_avx())
+#ifndef NO_AVX2
             return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
           else
 	    return CPUTYPE_NEHALEM;
         }
@@ -1471,7 +1479,11 @@ int get_coretype(void){
         case 12:
 	case 15:
           if(support_avx())
+#ifndef NO_AVX2
             return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
           else
 	    return CORE_NEHALEM;
 	}
@@ -1481,7 +1493,11 @@ int get_coretype(void){
         case 5:
 	case 6:
           if(support_avx())
+#ifndef NO_AVX2
             return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
           else
 	    return CORE_NEHALEM;
         }
