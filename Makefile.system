@@ -780,7 +780,7 @@ ifeq ($(NO_AVX), 1)
 CCOMMON_OPT	+= -DNO_AVX
 endif
 
-ifeq ($(BINARY), 32)
+ifeq ($(ARCH), x86)
 CCOMMON_OPT	+= -DNO_AVX
 endif
 
