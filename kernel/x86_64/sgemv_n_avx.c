@@ -70,12 +70,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	n1 = n / 512 ;
 	n2 = n % 512 ;
 
-	m1 = m / 32;
-	m2 = m % 32;
+	m1 = m / 64;
+	m2 = m % 64;
 
-	x_ptr = x;
-	a_ptr = a;
 	y_ptr = y;
+	x_ptr = x;
 
 	for (j=0; j<n1; j++)
 	{
@@ -85,12 +84,19 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		else
 			copy_x(512,x_ptr,xbuffer,inc_x);
 
-		x_ptr += 512 * inc_x;
-		a_ptr += j * 512;
+		a_ptr = a + j * 512 * lda;
 		y_ptr = y;
 
-
 		for(i = 0; i<m1; i++ )
+		{
+			sgemv_kernel_64(512,alpha,a_ptr,lda,xbuffer,ybuffer);
+			add_y(64,ybuffer,y_ptr,inc_y);
+			y_ptr += 64 * inc_y;
+			a_ptr += 64;			
+
+		}
+
+		if ( m2 & 32 )
 		{
 			sgemv_kernel_32(512,alpha,a_ptr,lda,xbuffer,ybuffer);
 			add_y(32,ybuffer,y_ptr,inc_y);
@@ -98,6 +104,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			a_ptr += 32;			
 
 		}
+
 		if ( m2 & 16 )
 		{
 			sgemv_kernel_16(512,alpha,a_ptr,lda,xbuffer,ybuffer);
@@ -131,6 +138,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			sgemv_kernel_1(512,alpha,a_ptr,lda,xbuffer,ybuffer);
 			add_y(1,ybuffer,y_ptr,inc_y);
 		}
+		x_ptr += 512 * inc_x;
 
 	}
 
@@ -142,9 +150,19 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		else
 			copy_x(n2,x_ptr,xbuffer,inc_x);
 
+		a_ptr = a + n1 * 512 * lda;
 		y_ptr = y;
 
 		for(i = 0; i<m1; i++ )
+		{
+			sgemv_kernel_64(n2,alpha,a_ptr,lda,xbuffer,ybuffer);
+			add_y(64,ybuffer,y_ptr,inc_y);
+			y_ptr += 64 * inc_y;
+			a_ptr += 64;			
+
+		}
+
+		if ( m2 & 32 )
 		{
 			sgemv_kernel_32(n2,alpha,a_ptr,lda,xbuffer,ybuffer);
 			add_y(32,ybuffer,y_ptr,inc_y);
