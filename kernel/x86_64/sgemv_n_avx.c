@@ -61,8 +61,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	FLOAT *a_ptr;
 	FLOAT *x_ptr;
 	FLOAT *y_ptr;
-	BLASLONG n1,n2;
-	BLASLONG m1,m2;
+	BLASLONG n1;
+	BLASLONG m1;
+	BLASLONG register m2;
+	BLASLONG register n2;
 	FLOAT *xbuffer,*ybuffer;
 	xbuffer = buffer;
 	ybuffer = xbuffer + 2048 + 256;

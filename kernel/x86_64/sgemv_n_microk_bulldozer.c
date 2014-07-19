@@ -25,13 +25,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-static void sgemv_kernel_64( long n, float alpha, float *a, long lda, float *x, float *y)
+static void  sgemv_kernel_64( long n, float alpha, float *a, long lda, float *x, float *y)
 {
 
 
 	float *pre = a + lda*3;
 
-	__asm __volatile
+	__asm__  __volatile__
 	(
 	"movq 	        %0, 	 %%rax\n\t"		// n -> rax
 	"vbroadcastss   %1, 	 %%ymm1\n\t"		// alpha -> ymm1
@@ -103,10 +103,10 @@ static void sgemv_kernel_64( long n, float alpha, float *a, long lda, float *x, 
           "m" (x),      // 4
           "m" (y),      // 5
 	  "m" (pre)	// 6
-	: "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11",
-	  "xmm0" , "xmm1", 
-	  "xmm8", "xmm9", "xmm10", "xmm11",
-	  "xmm12", "xmm13", "xmm14", "xmm15",
+	: "%rax", "%rcx", "%rdx", "%rsi", "%rdi", "%r8", 
+	  "%xmm0", "%xmm1", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 
@@ -114,13 +114,13 @@ static void sgemv_kernel_64( long n, float alpha, float *a, long lda, float *x, 
 
 
 
-static void sgemv_kernel_32( long n, float alpha, float *a, long lda, float *x, float *y)
+static void  sgemv_kernel_32( long n, float alpha, float *a, long lda, float *x, float *y)
 {
 
 
 	float *pre = a + lda*3;
 
-	__asm __volatile
+	__asm__ __volatile__
 	(
 	"movq 	        %0, 	 %%rax\n\t"		// n -> rax
 	"vbroadcastss   %1, 	 %%xmm1\n\t"		// alpha -> xmm1
@@ -190,21 +190,16 @@ static void sgemv_kernel_32( long n, float alpha, float *a, long lda, float *x, 
           "m" (x),      // 4
           "m" (y),      // 5
 	  "m" (pre)	// 6
-	: "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11",
-	  "xmm0" , "xmm1", 
-	  "xmm8", "xmm9", "xmm10", "xmm11",
-	  "xmm12", "xmm13", "xmm14", "xmm15",
-	  "memory"
 	);
 
 } 
 
-static void sgemv_kernel_16( long n, float alpha, float *a, long lda, float *x, float *y)
+static void  sgemv_kernel_16( long n, float alpha, float *a, long lda, float *x, float *y)
 {
 
-	float *pre = a + lda*1;
+	float *pre = a + lda*3;
 
-	__asm __volatile
+	__asm__ __volatile__
 	(
 	"movq 	        %0, 	 %%rax\n\t"		// n -> rax
 	"vbroadcastss   %1, 	 %%ymm1\n\t"		// alpha -> ymm1
@@ -248,20 +243,21 @@ static void sgemv_kernel_16( long n, float alpha, float *a, long lda, float *x, 
           "m" (x),      // 4
           "m" (y),      // 5
 	  "m" (pre)	// 6
-	: "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11",
-	  "xmm0" , "xmm1", 
-	  "xmm12", "xmm13", "xmm14", "xmm15",
+	: "%rax", "%rcx", "%rdx", "%rsi", "%rdi", "%r8", 
+	  "%xmm0", "%xmm1", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 
 } 
 
 
-static void sgemv_kernel_8( long n, float alpha, float *a, long lda, float *x, float *y)
+static void  sgemv_kernel_8( long n, float alpha, float *a, long lda, float *x, float *y)
 {
 
 
-	__asm __volatile
+	__asm__ __volatile__
 	(
 	"movq 	        %0, 	 %%rax\n\t"		// n -> rax
 	"vbroadcastss   %1, 	 %%ymm1\n\t"		// alpha -> ymm1
@@ -295,20 +291,21 @@ static void sgemv_kernel_8( long n, float alpha, float *a, long lda, float *x, f
           "m" (lda),    // 3
           "m" (x),      // 4
           "m" (y)       // 5
-	: "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11",
-	  "xmm0" , "xmm1", 
-	  "xmm12", "xmm13", "xmm14", "xmm15",
+	: "%rax", "%rcx", "%rdx", "%rsi", "%rdi", "%r8", 
+	  "%xmm0", "%xmm1", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 
 } 
 
 
-static void sgemv_kernel_4( long n, float alpha, float *a, long lda, float *x, float *y)
+static void  sgemv_kernel_4( long n, float alpha, float *a, long lda, float *x, float *y)
 {
 
 
-	__asm __volatile
+	__asm__ __volatile__
 	(
 	"movq 	        %0, 	 %%rax\n\t"		// n -> rax
 	"vbroadcastss   %1, 	 %%xmm1\n\t"		// alpha -> xmm1
@@ -342,19 +339,20 @@ static void sgemv_kernel_4( long n, float alpha, float *a, long lda, float *x, f
           "m" (lda),    // 3
           "m" (x),      // 4
           "m" (y)       // 5
-	: "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11",
-	  "xmm0" , "xmm1", 
-	  "xmm12", "xmm13", "xmm14", "xmm15",
+	: "%rax", "%rcx", "%rdx", "%rsi", "%rdi", "%r8", 
+	  "%xmm0", "%xmm1", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 
 } 
 
-static void sgemv_kernel_2( long n, float alpha, float *a, long lda, float *x, float *y)
+static void  sgemv_kernel_2( long n, float alpha, float *a, long lda, float *x, float *y)
 {
 
 
-	__asm __volatile
+	__asm__ __volatile__
 	(
 	"movq 	        %0, 	 %%rax\n\t"		// n -> rax
 	"vmovss         %1, 	 %%xmm1\n\t"		// alpha -> xmm1
@@ -392,9 +390,10 @@ static void sgemv_kernel_2( long n, float alpha, float *a, long lda, float *x, f
           "m" (lda),    // 3
           "m" (x),      // 4
           "m" (y)       // 5
-	: "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11",
-	  "xmm0" , "xmm1", 
-	  "xmm12", "xmm13", "xmm14", "xmm15",
+	: "%rax", "%rcx", "%rdx", "%rsi", "%rdi", "%r8", 
+	  "%xmm0", "%xmm1", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 
@@ -402,11 +401,11 @@ static void sgemv_kernel_2( long n, float alpha, float *a, long lda, float *x, f
 
 
 
-static void sgemv_kernel_1( long n, float alpha, float *a, long lda, float *x, float *y)
+static void  sgemv_kernel_1( long n, float alpha, float *a, long lda, float *x, float *y)
 {
 
 
-	__asm __volatile
+	__asm__ __volatile__
 	(
 	"movq 	        %0, 	 %%rax\n\t"		// n -> rax
 	"vmovss         %1, 	 %%xmm1\n\t"		// alpha -> xmm1
@@ -440,9 +439,10 @@ static void sgemv_kernel_1( long n, float alpha, float *a, long lda, float *x, f
           "m" (lda),    // 3
           "m" (x),      // 4
           "m" (y)       // 5
-	: "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11",
-	  "xmm0" , "xmm1", 
-	  "xmm12", "xmm13", "xmm14", "xmm15",
+	: "%rax", "%rcx", "%rdx", "%rsi", "%rdi", "%r8", 
+	  "%xmm0", "%xmm1", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 

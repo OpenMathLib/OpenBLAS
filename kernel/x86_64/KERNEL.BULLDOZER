@@ -1,4 +1,9 @@
+ifdef OS_WINDOWS
+SGEMVNKERNEL = ../arm/gemv_n.c
+else
 SGEMVNKERNEL = sgemv_n_avx.c
+endif
+
 
 ZGEMVNKERNEL = zgemv_n_dup.S
 ZGEMVTKERNEL = zgemv_t.S
