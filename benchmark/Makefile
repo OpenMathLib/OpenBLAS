@@ -2,12 +2,12 @@ TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
 # ACML standard
-ACML=/opt/acml5.3.1/gfortran64_mp/lib
-LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
+#ACML=/opt/acml5.3.1/gfortran64_mp/lib
+#LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
 # ACML custom
-#ACML=/opt/pb/acml-5-3-1-gfortran-64bit/gfortran64_fma4_mp/lib
-#LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
+ACML=/opt/pb/acml-5-3-1-gfortran-64bit/gfortran64_fma4_mp/lib
+LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
 # Atlas Ubuntu 
 #ATLAS=/usr/lib/atlas-base
@@ -37,6 +37,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        chemm.goto zhemm.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
+       sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -49,6 +50,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        chemm.acml zhemm.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
+       sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
@@ -61,6 +63,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        chemm.atlas zhemm.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
+       sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
@@ -73,6 +76,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        chemm.mkl zhemm.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
+       sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
 all :: goto atlas acml mkl
@@ -601,6 +605,61 @@ zher2k.atlas : zher2k.$(SUFFIX)
 zher2k.mkl : zher2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Sgemv ####################################################
+sgemv.goto : sgemv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+sgemv.acml : sgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgemv.atlas : sgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgemv.mkl : sgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dgemv ####################################################
+dgemv.goto : dgemv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dgemv.acml : dgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgemv.atlas : dgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgemv.mkl : dgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Cgemv ####################################################
+
+cgemv.goto : cgemv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+cgemv.acml : cgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgemv.atlas : cgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgemv.mkl : cgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zgemv ####################################################
+
+zgemv.goto : zgemv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zgemv.acml : zgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgemv.atlas : zgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgemv.mkl : zgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 ###################################################################################################
 
 slinpack.$(SUFFIX) : linpack.c
@@ -717,7 +776,17 @@ cher2k.$(SUFFIX) : her2k.c
 zher2k.$(SUFFIX) : her2k.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
+sgemv.$(SUFFIX) : gemv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
+dgemv.$(SUFFIX) : gemv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cgemv.$(SUFFIX) : gemv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zgemv.$(SUFFIX) : gemv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 
 clean ::

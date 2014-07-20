@@ -247,7 +247,7 @@ ifndef NOFORTRAN
 	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
-ifeq ($(FC), GFORTRAN)
+ifeq ($(FC), gfortran)
 	-@echo "TIMER       = INT_ETIME" >> $(NETLIB_LAPACK_DIR)/make.inc
 ifdef SMP
 	-@echo "LOADER      = $(FC) -pthread" >> $(NETLIB_LAPACK_DIR)/make.inc

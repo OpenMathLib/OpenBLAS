@@ -405,11 +405,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
 #ifndef COMPLEX
   double MNK = (double) args.m * (double) args.n * (double) args.k;
-  if ( MNK <= (1024.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
+  if ( MNK <= (16.0 * 1024.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	nthreads_max = 1;
   else
   {
-  	if ( MNK <= (65536.0 * (double) GEMM_MULTITHREAD_THRESHOLD) )
+  	if ( MNK <= (2.0 * 65536.0 * (double) GEMM_MULTITHREAD_THRESHOLD) )
 	{
 		nthreads_max = 4;
 		if ( args.m < 16 * GEMM_MULTITHREAD_THRESHOLD )
