@@ -29,7 +29,7 @@ static void  sgemv_kernel_64( long n, float alpha, float *a, long lda, float *x,
 {
 
 
-	float *pre = a + lda*3;
+	float *pre = a + lda*2;
 
 	__asm__  __volatile__
 	(
@@ -58,20 +58,19 @@ static void  sgemv_kernel_64( long n, float alpha, float *a, long lda, float *x,
 	"leaq     (%%r8 , %%rcx, 4), %%r8	 \n\t"	// add lda to pointer for prefetch
 
 	"prefetcht0	(%%r8)\n\t"			// Prefetch
-	"prefetcht0   64(%%r8)\n\t"			// Prefetch
-	"prefetcht0  128(%%r8)\n\t"			// Prefetch
-	"prefetcht0  192(%%r8)\n\t"			// Prefetch
-
 	"vmulps   0*4(%%rsi), %%ymm0, %%ymm4 \n\t" // multiply a and c and add to temp
 	"vmulps   8*4(%%rsi), %%ymm0, %%ymm5 \n\t" // multiply a and c and add to temp
+	"prefetcht0   64(%%r8)\n\t"			// Prefetch
 	"vmulps  16*4(%%rsi), %%ymm0, %%ymm6 \n\t" // multiply a and c and add to temp
 	"vmulps  24*4(%%rsi), %%ymm0, %%ymm7 \n\t" // multiply a and c and add to temp
 
 	"vaddps %%ymm8 , %%ymm4, %%ymm8 \n\t" // multiply a and c and add to temp
 	"vaddps %%ymm9 , %%ymm5, %%ymm9 \n\t" // multiply a and c and add to temp
+	"prefetcht0  128(%%r8)\n\t"			// Prefetch
 	"vaddps %%ymm10, %%ymm6, %%ymm10\n\t" // multiply a and c and add to temp
 	"vaddps %%ymm11, %%ymm7, %%ymm11\n\t" // multiply a and c and add to temp
 
+	"prefetcht0  192(%%r8)\n\t"			// Prefetch
 	"vmulps  32*4(%%rsi), %%ymm0, %%ymm4 \n\t" // multiply a and c and add to temp
 	"vmulps  40*4(%%rsi), %%ymm0, %%ymm5 \n\t" // multiply a and c and add to temp
 	"vmulps  48*4(%%rsi), %%ymm0, %%ymm6 \n\t" // multiply a and c and add to temp
