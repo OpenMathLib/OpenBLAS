@@ -30,6 +30,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER) || defined(PILEDRIVER)
 #include "sgemv_n_microk_bulldozer.c"
+#else
+#include "sgemv_n_microk_sandy.c"
 #endif
 
 static void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src)
