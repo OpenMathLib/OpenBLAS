@@ -1,3 +1,11 @@
+ifdef OS_WINDOWS
+#SGEMVNKERNEL = ../arm/gemv_n.c
+SGEMVTKERNEL = ../arm/gemv_t.c
+else
+#SGEMVNKERNEL = sgemv_n_avx.c
+SGEMVTKERNEL = sgemv_t_avx.c
+endif
+
 
 SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
