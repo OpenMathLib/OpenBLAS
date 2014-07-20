@@ -80,7 +80,8 @@ static void  sgemv_kernel_16( long n, float alpha, float *a, long lda, float *x,
 	"vhaddps	%%xmm12, %%xmm12, %%xmm12\n\t"	
 	"vhaddps	%%xmm12, %%xmm12, %%xmm12\n\t"	
 
-	"vfmaddss	(%%rdx), %%xmm12, %%xmm1, %%xmm12\n\t"
+	"vmulss		%%xmm12, %%xmm1, %%xmm12 \n\t"
+	"vaddss	       (%%rdx), %%xmm12, %%xmm12\n\t"
 	"vmovss		%%xmm12, (%%rdx)	 \n\t"  // store temp -> y
 
 	:
