@@ -18,12 +18,12 @@ ATLAS=/usr/lib64/atlas
 LIBATLAS = -fopenmp $(ATLAS)/liblapack.a  $(ATLAS)/libptcblas.a  $(ATLAS)/libptf77blas.a  $(ATLAS)/libatlas.a -lgfortran -lm
 
 # Intel standard
-MKL=/opt/intel/mkl/lib/intel64
-LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
+# MKL=/opt/intel/mkl/lib/intel64
+# LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
 
 # Intel custom
-#MKL=/home/saar/intel_mkl
-#LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
+MKL=/home/saar/intel_mkl
+LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
 
 
 
@@ -34,6 +34,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
        ssyrk.goto dsyrk.goto csyrk.goto zsyrk.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
+       sger.goto dger.goto \
        chemm.goto zhemm.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
@@ -47,6 +48,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        strsm.acml dtrsm.acml ctrsm.acml ztrsm.acml \
        ssyrk.acml dsyrk.acml csyrk.acml zsyrk.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
+       sger.acml dger.acml \
        chemm.acml zhemm.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
@@ -60,6 +62,8 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        strsm.atlas dtrsm.atlas ctrsm.atlas ztrsm.atlas \
        ssyrk.atlas dsyrk.atlas csyrk.atlas zsyrk.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
+       sger.atlas dger.atlas \
+       chemm.acml zhemm.acml \
        chemm.atlas zhemm.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
@@ -73,6 +77,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        strsm.mkl dtrsm.mkl ctrsm.mkl ztrsm.mkl \
        ssyrk.mkl dsyrk.mkl csyrk.mkl zsyrk.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
+       sger.mkl dger.mkl \
        chemm.mkl zhemm.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
@@ -659,6 +664,31 @@ zgemv.atlas : zgemv.$(SUFFIX)
 zgemv.mkl : zgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Sger ####################################################
+sger.goto : sger.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+sger.acml : sger.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sger.atlas : sger.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sger.mkl : sger.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dger ####################################################
+dger.goto : dger.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dger.acml : dger.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dger.atlas : dger.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dger.mkl : dger.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ###################################################################################################
 
@@ -787,6 +817,13 @@ cgemv.$(SUFFIX) : gemv.c
 
 zgemv.$(SUFFIX) : gemv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+sger.$(SUFFIX) : ger.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dger.$(SUFFIX) : ger.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 
 clean ::
