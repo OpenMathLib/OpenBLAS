@@ -538,10 +538,10 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   mask  = MAX(QGEMM_UNROLL_M, QGEMM_UNROLL_N) - 1;
 #elif defined(DOUBLE)
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
-  mask  = MAX(DGEMM_UNROLL_M, DGEMM_UNROLL_N) - 1;
+  mask  = DGEMM_UNROLL_MN - 1;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
-  mask  = MAX(SGEMM_UNROLL_M, SGEMM_UNROLL_N) - 1;
+  mask  = SGEMM_UNROLL_MN - 1;
 #endif
 #else
 #ifdef XDOUBLE
@@ -549,10 +549,10 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   mask  = MAX(XGEMM_UNROLL_M, XGEMM_UNROLL_N) - 1;
 #elif defined(DOUBLE)
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
-  mask  = MAX(ZGEMM_UNROLL_M, ZGEMM_UNROLL_N) - 1;
+  mask  = ZGEMM_UNROLL_MN - 1;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-  mask  = MAX(CGEMM_UNROLL_M, CGEMM_UNROLL_N) - 1;
+  mask  = CGEMM_UNROLL_MN - 1;
 #endif
 #endif
 

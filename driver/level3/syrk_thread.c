@@ -57,10 +57,10 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
 
     switch (mode & BLAS_PREC) {
     case BLAS_SINGLE:
-      mask = MAX(SGEMM_UNROLL_M, SGEMM_UNROLL_N) - 1;
+      mask = SGEMM_UNROLL_MN - 1;
       break;
     case BLAS_DOUBLE:
-      mask = MAX(DGEMM_UNROLL_M, DGEMM_UNROLL_N) - 1;
+      mask = DGEMM_UNROLL_MN - 1;
       break;
 #ifdef EXPRECISION
     case BLAS_XDOUBLE:
@@ -71,10 +71,10 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
   } else {
     switch (mode & BLAS_PREC) {
     case BLAS_SINGLE:
-      mask = MAX(CGEMM_UNROLL_M, CGEMM_UNROLL_N) - 1;
+      mask = CGEMM_UNROLL_MN - 1;
       break;
     case BLAS_DOUBLE:
-      mask = MAX(ZGEMM_UNROLL_M, ZGEMM_UNROLL_N) - 1;
+      mask = ZGEMM_UNROLL_MN - 1;
       break;
 #ifdef EXPRECISION
     case BLAS_XDOUBLE:
