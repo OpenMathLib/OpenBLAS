@@ -90,7 +90,7 @@ int detect(void)
 	while (fgets(buffer, sizeof(buffer), infile))
 	{
 
-		if (!strncmp("model name", buffer, 10))
+		if ((!strncmp("model name", buffer, 10)) || (!strncmp("Processor", buffer, 9)))
 		{
 			p = strchr(buffer, ':') + 2;
 			break;
