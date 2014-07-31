@@ -142,8 +142,8 @@ static void *huge_malloc(BLASLONG size){
 int MAIN__(int argc, char *argv[]){
 
   FLOAT *a,*vl,*vr,*wi,*wr,*work,*rwork;
-  FLOAT wkopt;
-  char job[2]="V";
+  FLOAT wkopt[4];
+  char job='V';
   char *p;
 
   blasint m, i, j, info,lwork;
@@ -162,11 +162,11 @@ int MAIN__(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  if ((p = getenv("OPENBLAS_JOB")))  job[0]=*p;
+  if ((p = getenv("OPENBLAS_JOB")))  job=*p;
 
-  if ( job[0] == 'N' ) factor = 10.0;
+  if ( job == 'N' ) factor = 10.0;
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Job=%s\n", from, to, step,job);
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Job=%c\n", from, to, step,job);
 
   if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
@@ -202,12 +202,12 @@ int MAIN__(int argc, char *argv[]){
     lwork = -1;
     m=to;
 #ifndef COMPLEX
-    GEEV (job, job, &m, a, &m, wr, wi, vl, &m, vr, &m, &wkopt, &lwork, &info);
+    GEEV (&job, &job, &m, a, &m, wr, wi, vl, &m, vr, &m, wkopt, &lwork, &info);
 #else
-    GEEV (job, job, &m, a, &m, wr, vl, &m, vr, &m, &wkopt, &lwork,rwork, &info);
+    GEEV (&job, &job, &m, a, &m, wr, vl, &m, vr, &m, wkopt, &lwork,rwork, &info);
 #endif
 
-  lwork = (blasint)wkopt;
+  lwork = (blasint)wkopt[0];
   if (( work = (FLOAT *)malloc(sizeof(FLOAT) * lwork * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
@@ -226,16 +226,16 @@ int MAIN__(int argc, char *argv[]){
 
     lwork = -1;
 #ifndef COMPLEX
-    GEEV (job, job, &m, a, &m, wr, wi, vl, &m, vr, &m, &wkopt, &lwork, &info);
+    GEEV (&job, &job, &m, a, &m, wr, wi, vl, &m, vr, &m, wkopt, &lwork, &info);
 #else
-    GEEV (job, job, &m, a, &m, wr, vl, &m, vr, &m, &wkopt, &lwork,rwork, &info);
+    GEEV (&job, &job, &m, a, &m, wr, vl, &m, vr, &m, wkopt, &lwork,rwork, &info);
 #endif
 
-    lwork = (blasint)wkopt;
+    lwork = (blasint)wkopt[0];
 #ifndef COMPLEX
-    GEEV (job, job, &m, a, &m, wr, wi, vl, &m, vr, &m, work, &lwork, &info);
+    GEEV (&job, &job, &m, a, &m, wr, wi, vl, &m, vr, &m, work, &lwork, &info);
 #else
-    GEEV (job, job, &m, a, &m, wr, vl, &m, vr, &m, work, &lwork,rwork, &info);
+    GEEV (&job, &job, &m, a, &m, wr, vl, &m, vr, &m, work, &lwork,rwork, &info);
 #endif
 
     gettimeofday( &stop, (struct timezone *)0);
