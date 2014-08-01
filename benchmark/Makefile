@@ -41,6 +41,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
+       sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -57,6 +58,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
+       sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
@@ -74,6 +76,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
+       sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
@@ -90,6 +93,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
+       sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
 all :: goto atlas acml mkl
@@ -779,6 +783,61 @@ zgeev.mkl : zgeev.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 
+##################################### Sgetri ####################################################
+sgetri.goto : sgetri.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+sgetri.acml : sgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgetri.atlas : sgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgetri.mkl : sgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dgetri ####################################################
+dgetri.goto : dgetri.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dgetri.acml : dgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgetri.atlas : dgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgetri.mkl : dgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Cgetri ####################################################
+
+cgetri.goto : cgetri.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+cgetri.acml : cgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgetri.atlas : cgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgetri.mkl : cgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zgetri ####################################################
+
+zgetri.goto : zgetri.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zgetri.acml : zgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgetri.atlas : zgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgetri.mkl : zgetri.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 
 ###################################################################################################
 
@@ -931,6 +990,19 @@ cgeev.$(SUFFIX) : geev.c
 
 zgeev.$(SUFFIX) : geev.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+sgetri.$(SUFFIX) : getri.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dgetri.$(SUFFIX) : getri.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cgetri.$(SUFFIX) : getri.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zgetri.$(SUFFIX) : getri.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 
 
