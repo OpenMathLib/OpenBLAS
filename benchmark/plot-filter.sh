@@ -33,6 +33,28 @@
 #   ./dgemm.goto 2>&1|./plotfilter.sh >OpenBLAS
 # ************************************************************************
 
+if [ $# -eq 1 ]
+then
+	arg1=$1
+else
+	arg1=0
+fi
 
-awk '/MFlops/ { print $1,int($3) }'|tail --lines=+2
+case $arg1 in
+
+L)
+	# Linpack Benchmark
+	awk '/MFlops/ { print $1,int($8) }'|tail --lines=+2
+	;;
+
+C)
+	# Cholesky Benchmark
+	awk '/MFlops/ { print $3,int($9) }'|tail --lines=+2
+	;;
+
+
+*)
+	awk '/MFlops/ { print $1,int($3) }'|tail --lines=+2
+	;;
+esac
 

@@ -40,6 +40,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
+       sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -55,6 +56,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
+       sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
@@ -71,6 +73,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
+       sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
@@ -86,6 +89,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
+       sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
 all :: goto atlas acml mkl
@@ -720,6 +724,61 @@ dsymv.atlas : dsymv.$(SUFFIX)
 dsymv.mkl : dsymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Sgeev ####################################################
+sgeev.goto : sgeev.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+sgeev.acml : sgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgeev.atlas : sgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgeev.mkl : sgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dgeev ####################################################
+dgeev.goto : dgeev.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dgeev.acml : dgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgeev.atlas : dgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgeev.mkl : dgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Cgeev ####################################################
+
+cgeev.goto : cgeev.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+cgeev.acml : cgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgeev.atlas : cgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgeev.mkl : cgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zgeev ####################################################
+
+zgeev.goto : zgeev.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zgeev.acml : zgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgeev.atlas : zgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgeev.mkl : zgeev.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 
 ###################################################################################################
 
@@ -860,6 +919,19 @@ ssymv.$(SUFFIX) : symv.c
 
 dsymv.$(SUFFIX) : symv.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+sgeev.$(SUFFIX) : geev.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dgeev.$(SUFFIX) : geev.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cgeev.$(SUFFIX) : geev.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zgeev.$(SUFFIX) : geev.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 
 clean ::
