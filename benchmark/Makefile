@@ -42,6 +42,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
+       spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -59,6 +60,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
+       spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
@@ -77,6 +79,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
+       spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
@@ -94,6 +97,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
+       spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
 all :: goto atlas acml mkl
@@ -838,6 +842,60 @@ zgetri.mkl : zgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 
+##################################### Spotrf ####################################################
+spotrf.goto : spotrf.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+spotrf.acml : spotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+spotrf.atlas : spotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+spotrf.mkl : spotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dpotrf ####################################################
+dpotrf.goto : dpotrf.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dpotrf.acml : dpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dpotrf.atlas : dpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dpotrf.mkl : dpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Cpotrf ####################################################
+
+cpotrf.goto : cpotrf.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+cpotrf.acml : cpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cpotrf.atlas : cpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cpotrf.mkl : cpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zpotrf ####################################################
+
+zpotrf.goto : zpotrf.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zpotrf.acml : zpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zpotrf.atlas : zpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zpotrf.mkl : zpotrf.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 
 ###################################################################################################
 
@@ -1002,6 +1060,19 @@ cgetri.$(SUFFIX) : getri.c
 
 zgetri.$(SUFFIX) : getri.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+spotrf.$(SUFFIX) : potrf.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dpotrf.$(SUFFIX) : potrf.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cpotrf.$(SUFFIX) : potrf.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zpotrf.$(SUFFIX) : potrf.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 
 
