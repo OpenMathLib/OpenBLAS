@@ -114,5 +114,8 @@ In chronological order:
 * carlkl <https://github.com/carlkl>
   * [2013-12-13] Fixed LAPACKE building bug on Windows
 
+* Isaac Dunham <https://github.com/idunham>
+  * [2014-08-03] Fixed link error on Linux/musl
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]
