@@ -1,8 +1,8 @@
 ifdef OS_WINDOWS
-SGEMVNKERNEL = ../arm/gemv_n.c
+SGEMVNKERNEL = sgemv_n.c
 SGEMVTKERNEL = ../arm/gemv_t.c
 else
-SGEMVNKERNEL = sgemv_n_avx.c
+SGEMVNKERNEL = sgemv_n.c
 SGEMVTKERNEL = sgemv_t_avx.c
 endif
 
