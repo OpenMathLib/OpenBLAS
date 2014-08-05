@@ -46,8 +46,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void sgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 {
-	int i;
-	float *a0,*a1,*a2,*a3;
+	BLASLONG i;
+	FLOAT *a0,*a1,*a2,*a3;
 	a0 = ap[0];
 	a1 = ap[1];
 	a2 = ap[2];
@@ -66,8 +66,8 @@ static void sgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
 static void sgemv_kernel_16x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 {
-	int i;
-	float *a0;
+	BLASLONG i;
+	FLOAT *a0;
 	a0 = ap;
 
 	for ( i=0; i< n; i+=4 )
@@ -130,11 +130,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	BLASLONG m2;
 	BLASLONG n2;
 	FLOAT xbuffer[4],*ybuffer;
+
 	ybuffer = buffer;
 	
 	n1 = n / 4 ;
 	n2 = n % 4 ;
-
 	
 	m1 = m - ( m % 16 );
 	m2 = (m % NBMAX) - (m % 16) ;
