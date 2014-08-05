@@ -35,6 +35,7 @@ static void sgemv_kernel_16x4( long n, float **ap, float *x, float *y)
 
 	__asm__  __volatile__
 	(
+	"vzeroupper			 \n\t"
 	"vbroadcastss    (%2), %%ymm12	 \n\t"	// x0 
 	"vbroadcastss   4(%2), %%ymm13	 \n\t"	// x1 
 	"vbroadcastss   8(%2), %%ymm14	 \n\t"	// x2 
@@ -64,6 +65,7 @@ static void sgemv_kernel_16x4( long n, float **ap, float *x, float *y)
         "addq		$16, %0	  	 	      \n\t"
 	"subq	        $16, %1			      \n\t"		
 	"jnz		.L01LOOP%=		      \n\t"
+	"vzeroupper			 \n\t"
 
 	:
         : 
