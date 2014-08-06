@@ -30,6 +30,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER) || defined(PILEDRIVER)
 #include "sgemv_t_microk_bulldozer-2.c"
+#elif defined(HASWELL)
+#include "sgemv_t_microk_haswell-2.c"
 #endif
 
 /*
