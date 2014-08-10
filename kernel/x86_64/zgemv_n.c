@@ -28,6 +28,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#if defined(HASWELL)
+#include "zgemv_n_microk_haswell-2.c"
+#endif
+
 
 #define NBMAX 1024
 

@@ -43,7 +43,7 @@ static void dgemv_kernel_16x4( BLASLONG n, float **ap, float *x, float *y)
 
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
-	"prefetcht0	 192(%4,%0,8)		 \n\t"
+	"prefetcht0	 192(%3,%0,8)		 \n\t"
 	"vmovups	(%3,%0,8), %%ymm4	 \n\t"	// 4 * y
 	"vmovups      32(%3,%0,8), %%ymm5	 \n\t"	// 4 * y
 
