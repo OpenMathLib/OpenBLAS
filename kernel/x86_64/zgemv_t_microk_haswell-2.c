@@ -49,6 +49,7 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	".align 16				        \n\t"
 	".L01LOOP%=:				        \n\t"
 
+        "prefetcht0      384(%2,%0,8)                   \n\t"
 	"vmovddup	   (%2,%0,8), %%xmm0            \n\t"  // real value from x0
 	"vmovddup	  8(%2,%0,8), %%xmm1            \n\t"  // imag value from x0
 	"vmovddup	 16(%2,%0,8), %%xmm2            \n\t"  // real value from x1
@@ -56,9 +57,13 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vinsertf128	 $1, %%xmm2, %%ymm0 , %%ymm0	\n\t"  // real values from x0 and x1
 	"vinsertf128	 $1, %%xmm3, %%ymm1 , %%ymm1	\n\t"  // imag values from x0 and x1
 
+        "prefetcht0      384(%4,%0,8)                   \n\t"
 	"vmovups	(%4,%0,8), %%ymm4	        \n\t" // 2 complex values from a0
+        "prefetcht0      384(%5,%0,8)                   \n\t"
 	"vmovups	(%5,%0,8), %%ymm5               \n\t" // 2 complex values from a1
+        "prefetcht0      384(%6,%0,8)                   \n\t"
 	"vmovups	(%6,%0,8), %%ymm6	        \n\t" // 2 complex values from a2
+        "prefetcht0      384(%7,%0,8)                   \n\t"
 	"vmovups	(%7,%0,8), %%ymm7               \n\t" // 2 complex values from a3
 
 	"vfmadd231pd      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
@@ -70,9 +75,29 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vfmadd231pd      %%ymm7 , %%ymm0, %%ymm14      \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
 	"vfmadd231pd      %%ymm7 , %%ymm1, %%ymm15      \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
 
+	"vmovddup	 32(%2,%0,8), %%xmm0            \n\t"  // real value from x0
+	"vmovddup	 40(%2,%0,8), %%xmm1            \n\t"  // imag value from x0
+	"vmovddup	 48(%2,%0,8), %%xmm2            \n\t"  // real value from x1
+	"vmovddup	 56(%2,%0,8), %%xmm3            \n\t"  // imag value from x1
+	"vinsertf128	 $1, %%xmm2, %%ymm0 , %%ymm0	\n\t"  // real values from x0 and x1
+	"vinsertf128	 $1, %%xmm3, %%ymm1 , %%ymm1	\n\t"  // imag values from x0 and x1
 
-        "addq		$4 , %0	  	 	        \n\t"
-	"subq	        $2 , %1			        \n\t"		
+	"vmovups       32(%4,%0,8), %%ymm4	        \n\t" // 2 complex values from a0
+	"vmovups       32(%5,%0,8), %%ymm5              \n\t" // 2 complex values from a1
+	"vmovups       32(%6,%0,8), %%ymm6	        \n\t" // 2 complex values from a2
+	"vmovups       32(%7,%0,8), %%ymm7               \n\t" // 2 complex values from a3
+
+	"vfmadd231pd      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231pd      %%ymm4 , %%ymm1, %%ymm9       \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	"vfmadd231pd      %%ymm5 , %%ymm0, %%ymm10      \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231pd      %%ymm5 , %%ymm1, %%ymm11      \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	"vfmadd231pd      %%ymm6 , %%ymm0, %%ymm12      \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231pd      %%ymm6 , %%ymm1, %%ymm13      \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	"vfmadd231pd      %%ymm7 , %%ymm0, %%ymm14      \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231pd      %%ymm7 , %%ymm1, %%ymm15      \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+
+        "addq		$8 , %0	  	 	        \n\t"
+	"subq	        $4 , %1			        \n\t"		
 	"jnz		.L01LOOP%=		        \n\t"
 
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )

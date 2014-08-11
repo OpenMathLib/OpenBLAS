@@ -6,6 +6,7 @@ DGEMVTKERNEL = dgemv_t.c
 ifndef OS_WINDOWS 
 ZGEMVNKERNEL = zgemv_n.c
 endif
+ZGEMVTKERNEL = zgemv_t.c
 
 SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
