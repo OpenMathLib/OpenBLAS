@@ -26,9 +26,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #define HAVE_KERNEL_16x4 1
-static void sgemv_kernel_16x4( BLASLONG n, float **ap, float *x, float *y) __attribute__ ((noinline));
+static void sgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) __attribute__ ((noinline));
 
-static void sgemv_kernel_16x4( BLASLONG n, float **ap, float *x, float *y)
+static void sgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 {
 
 	BLASLONG register i = 0;
