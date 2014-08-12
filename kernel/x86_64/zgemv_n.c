@@ -48,8 +48,7 @@ static void zgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
 	for ( i=0; i< 2*n; i+=2 )
 	{
-#if !defined(CONJ) 
-#if !defined(XCONJ)
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
 		y[i]   += a0[i]*x[0] - a0[i+1] * x[1];
 		y[i+1] += a0[i]*x[1] + a0[i+1] * x[0];
 		y[i]   += a1[i]*x[2] - a1[i+1] * x[3];
@@ -68,29 +67,6 @@ static void zgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 		y[i]   += a3[i]*x[6] + a3[i+1] * x[7];
 		y[i+1] += a3[i]*x[7] - a3[i+1] * x[6];
 #endif
-#else
-#if !defined(XCONJ)
-		y[i]   += a0[i]*x[0] + a0[i+1] * x[1];
-		y[i+1] -= a0[i]*x[1] - a0[i+1] * x[0];
-		y[i]   += a1[i]*x[2] + a1[i+1] * x[3];
-		y[i+1] -= a1[i]*x[3] - a1[i+1] * x[2];
-		y[i]   += a2[i]*x[4] + a2[i+1] * x[5];
-		y[i+1] -= a2[i]*x[5] - a2[i+1] * x[4];
-		y[i]   += a3[i]*x[6] + a3[i+1] * x[7];
-		y[i+1] -= a3[i]*x[7] - a3[i+1] * x[6];
-
-#else
-		y[i]   += a0[i]*x[0] - a0[i+1] * x[1];
-		y[i+1] -= a0[i]*x[1] + a0[i+1] * x[0];
-		y[i]   += a1[i]*x[2] - a1[i+1] * x[3];
-		y[i+1] -= a1[i]*x[3] + a1[i+1] * x[2];
-		y[i]   += a2[i]*x[4] - a2[i+1] * x[5];
-		y[i+1] -= a2[i]*x[5] + a2[i+1] * x[4];
-		y[i]   += a3[i]*x[6] - a3[i+1] * x[7];
-		y[i+1] -= a3[i]*x[7] + a3[i+1] * x[6];
-
-#endif
-#endif
 	}
 }
 	
@@ -104,23 +80,12 @@ static void zgemv_kernel_16x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 
 	for ( i=0; i< 2*n; i+=2 )
 	{
-#if !defined(CONJ) 
-#if !defined(XCONJ)
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
 		y[i]   += a0[i]*x[0] - a0[i+1] * x[1];
 		y[i+1] += a0[i]*x[1] + a0[i+1] * x[0];
 #else 
 		y[i]   += a0[i]*x[0] + a0[i+1] * x[1];
 		y[i+1] += a0[i]*x[1] - a0[i+1] * x[0];
-#endif
-#else
-#if !defined(XCONJ)
-		y[i]   += a0[i]*x[0] + a0[i+1] * x[1];
-		y[i+1] -= a0[i]*x[1] - a0[i+1] * x[0];
-
-#else
-		y[i]   += a0[i]*x[0] - a0[i+1] * x[1];
-		y[i+1] -= a0[i]*x[1] + a0[i+1] * x[0];
-#endif
 #endif
 
 	}
@@ -139,17 +104,24 @@ static void zero_y(BLASLONG n, FLOAT *dest)
 
 
 
-static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
+static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT alpha_r, FLOAT alpha_i)
 {
 	BLASLONG i;
+	FLOAT temp_r;
+	FLOAT temp_i;
 	for ( i=0; i<n; i++ )
 	{
-		*dest += *src;
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-		*(dest+1) += *(src+1);
+#if !defined(XCONJ) 
+		temp_r = alpha_r * src[0] - alpha_i * src[1];
+		temp_i = alpha_r * src[1] + alpha_i * src[0];
 #else
-		*(dest+1) -= *(src+1);
+		temp_r =  alpha_r * src[0] + alpha_i * src[1];
+		temp_i = -alpha_r * src[1] + alpha_i * src[0];
 #endif
+
+		*dest += temp_r;
+		*(dest+1) += temp_i;
+
 		src+=2;
 		dest += inc_dest;
 	}
@@ -201,33 +173,18 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r,FLOAT alpha_i, 
 		for( i = 0; i < n1 ; i++)
 		{
 
-#if !defined(XCONJ)
-			xbuffer[0] = alpha_r * x_ptr[0] - alpha_i * x_ptr[1];
-			xbuffer[1] = alpha_r * x_ptr[1] + alpha_i * x_ptr[0];
+			xbuffer[0] = x_ptr[0];
+			xbuffer[1] = x_ptr[1];
 			x_ptr += inc_x;	
-			xbuffer[2] = alpha_r * x_ptr[0] - alpha_i * x_ptr[1];
-			xbuffer[3] = alpha_r * x_ptr[1] + alpha_i * x_ptr[0];
+			xbuffer[2] = x_ptr[0];
+			xbuffer[3] = x_ptr[1];
 			x_ptr += inc_x;	
-			xbuffer[4] = alpha_r * x_ptr[0] - alpha_i * x_ptr[1];
-			xbuffer[5] = alpha_r * x_ptr[1] + alpha_i * x_ptr[0];
+			xbuffer[4] = x_ptr[0];
+			xbuffer[5] = x_ptr[1];
 			x_ptr += inc_x;	
-			xbuffer[6] = alpha_r * x_ptr[0] - alpha_i * x_ptr[1];
-			xbuffer[7] = alpha_r * x_ptr[1] + alpha_i * x_ptr[0];
+			xbuffer[6] = x_ptr[0];
+			xbuffer[7] = x_ptr[1];
 			x_ptr += inc_x;	
-#else
-			xbuffer[0] = alpha_r * x_ptr[0] + alpha_i * x_ptr[1];
-			xbuffer[1] = alpha_r * x_ptr[1] - alpha_i * x_ptr[0];
-			x_ptr += inc_x;	
-			xbuffer[2] = alpha_r * x_ptr[0] + alpha_i * x_ptr[1];
-			xbuffer[3] = alpha_r * x_ptr[1] - alpha_i * x_ptr[0];
-			x_ptr += inc_x;	
-			xbuffer[4] = alpha_r * x_ptr[0] + alpha_i * x_ptr[1];
-			xbuffer[5] = alpha_r * x_ptr[1] - alpha_i * x_ptr[0];
-			x_ptr += inc_x;	
-			xbuffer[6] = alpha_r * x_ptr[0] + alpha_i * x_ptr[1];
-			xbuffer[7] = alpha_r * x_ptr[1] - alpha_i * x_ptr[0];
-			x_ptr += inc_x;	
-#endif
 
 			ap[0] = a_ptr;
 			ap[1] = a_ptr + lda;
@@ -239,24 +196,18 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r,FLOAT alpha_i, 
 
 		for( i = 0; i < n2 ; i++)
 		{
-#if !defined(XCONJ)
-			xbuffer[0] = alpha_r * x_ptr[0] - alpha_i * x_ptr[1];
-			xbuffer[1] = alpha_r * x_ptr[1] + alpha_i * x_ptr[0];
+			xbuffer[0] = x_ptr[0];
+			xbuffer[1] = x_ptr[1];
 			x_ptr += inc_x;	
-#else
-			xbuffer[0] = alpha_r * x_ptr[0] + alpha_i * x_ptr[1];
-			xbuffer[1] = alpha_r * x_ptr[1] - alpha_i * x_ptr[0];
-			x_ptr += inc_x;	
-#endif
-
 			zgemv_kernel_16x1(NB,a_ptr,xbuffer,ybuffer);
 			a_ptr += 1 * lda;
 
 		}
-		add_y(NB,ybuffer,y_ptr,inc_y);
+		add_y(NB,ybuffer,y_ptr,inc_y,alpha_r,alpha_i);
 		a     += 2 * NB;
 		y_ptr += NB * inc_y;
 	}
+
 	j=0;
 	while ( j < (m % 16))
 	{
@@ -266,24 +217,13 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r,FLOAT alpha_i, 
 		FLOAT temp_i = 0.0;
 		for( i = 0; i < n; i++ )
 		{
-#if  !defined(CONJ)
-#if  !defined(XCONJ)
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
 			temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
 			temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
 #else
 			temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
 			temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
 #endif
-#else
-#if  !defined(XCONJ)
-			temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-			temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-#else
-			temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-			temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-#endif
-#endif
-
 
 			a_ptr += lda;
 			x_ptr += inc_x;
