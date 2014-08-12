@@ -99,8 +99,8 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 #else
         "vpermilpd      $0x5 , %%ymm12, %%ymm12               \n\t"
         "vpermilpd      $0x5 , %%ymm14, %%ymm14               \n\t"
-        "vaddsubpd      %%ymm13, %%ymm12, %%ymm8              \n\t"
-        "vaddsubpd      %%ymm15, %%ymm14, %%ymm9              \n\t"
+        "vaddsubpd      %%ymm12, %%ymm13, %%ymm8              \n\t"
+        "vaddsubpd      %%ymm14, %%ymm15, %%ymm9              \n\t"
         "vpermilpd      $0x5 , %%ymm8 , %%ymm8                \n\t"
         "vpermilpd      $0x5 , %%ymm9 , %%ymm9                \n\t"
 #endif
