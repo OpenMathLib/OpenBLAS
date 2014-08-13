@@ -53,19 +53,14 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmovups      32(%4,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
 
-	"vxorpd		%%ymm12, %%ymm12, %%ymm12	\n\t"
-	"vxorpd		%%ymm13, %%ymm13, %%ymm13	\n\t"
-	"vxorpd		%%ymm14, %%ymm14, %%ymm14	\n\t"
-	"vxorpd		%%ymm15, %%ymm15, %%ymm15	\n\t"
-
 	"prefetcht0      192(%5,%0,8)			\n\t"
 	"vmovups	(%5,%0,8), %%ymm10              \n\t" // 2 complex values form a1
 	"vmovups      32(%5,%0,8), %%ymm11              \n\t" // 2 complex values form a1
 
-	"vfmadd231pd      %%ymm8 , %%ymm0, %%ymm12      \n\t" // a_r[0] * x_r , a_i[0] * x_r, a_r[1] * x_r, a_i[1] * x_r
-	"vfmadd231pd      %%ymm8 , %%ymm1, %%ymm13      \n\t" // a_r[0] * x_i , a_i[0] * x_i, a_r[1] * x_i, a_i[1] * x_i
-	"vfmadd231pd      %%ymm9 , %%ymm0, %%ymm14      \n\t" // a_r[2] * x_r , a_i[2] * x_r, a_r[3] * x_r, a_i[3] * x_r
-	"vfmadd231pd      %%ymm9 , %%ymm1, %%ymm15      \n\t" // a_r[2] * x_i , a_i[2] * x_i, a_r[3] * x_i, a_i[3] * x_i
+	"vmulpd      %%ymm8 , %%ymm0, %%ymm12      \n\t" // a_r[0] * x_r , a_i[0] * x_r, a_r[1] * x_r, a_i[1] * x_r
+	"vmulpd      %%ymm8 , %%ymm1, %%ymm13      \n\t" // a_r[0] * x_i , a_i[0] * x_i, a_r[1] * x_i, a_i[1] * x_i
+	"vmulpd      %%ymm9 , %%ymm0, %%ymm14      \n\t" // a_r[2] * x_r , a_i[2] * x_r, a_r[3] * x_r, a_i[3] * x_r
+	"vmulpd      %%ymm9 , %%ymm1, %%ymm15      \n\t" // a_r[2] * x_i , a_i[2] * x_i, a_r[3] * x_i, a_i[3] * x_i
 
 	"prefetcht0      192(%6,%0,8)			\n\t"
 	"vmovups	(%6,%0,8), %%ymm8	        \n\t" // 2 complex values form a2
@@ -90,6 +85,9 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vfmadd231pd      %%ymm11, %%ymm6, %%ymm14      \n\t" // a_r[2] * x_r , a_i[2] * x_r, a_r[3] * x_r, a_i[3] * x_r
 	"vfmadd231pd      %%ymm11, %%ymm7, %%ymm15      \n\t" // a_r[2] * x_i , a_i[2] * x_i, a_r[3] * x_i, a_i[3] * x_i
 
+	"prefetcht0      192(%3,%0,8)			\n\t"
+	"vmovups	  (%3,%0,8),  %%ymm10           \n\t"
+	"vmovups	32(%3,%0,8),  %%ymm11           \n\t"
 
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
         "vpermilpd      $0x5 , %%ymm13, %%ymm13               \n\t"
@@ -105,18 +103,8 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "vpermilpd      $0x5 , %%ymm9 , %%ymm9                \n\t"
 #endif
 
-	"prefetcht0      192(%3,%0,8)			\n\t"
-	"vmovups	  (%3,%0,8),  %%ymm12           \n\t"
-	"vmovups	32(%3,%0,8),  %%ymm13           \n\t"
-
-#if !defined(XCONJ)
-        "vaddpd         %%ymm8, %%ymm12, %%ymm12              \n\t"
-        "vaddpd         %%ymm9, %%ymm13, %%ymm13              \n\t"
-#else
-        "vaddsubpd              %%ymm12, %%ymm8, %%ymm12              \n\t"
-        "vaddsubpd              %%ymm13, %%ymm9, %%ymm13              \n\t"
-#endif
-
+        "vaddpd         %%ymm8, %%ymm10, %%ymm12              \n\t"
+        "vaddpd         %%ymm9, %%ymm11, %%ymm13              \n\t"
 
 	"vmovups  %%ymm12,   (%3,%0,8)		        \n\t" // 2 complex values to y	
 	"vmovups  %%ymm13, 32(%3,%0,8)		        \n\t"	

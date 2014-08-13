@@ -25,7 +25,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-
+#include <stdlib.h>
+#include <stdio.h>
 #include "common.h"
 
 #if defined(HASWELL)
@@ -140,6 +141,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r,FLOAT alpha_i, 
 	BLASLONG m2;
 	BLASLONG n2;
 	FLOAT xbuffer[8],*ybuffer;
+
+
+#if 0
+printf("%s %d %d %.16f %.16f %d %d %d\n","zgemv_n",m,n,alpha_r,alpha_i,lda,inc_x,inc_y);
+#endif
+
+	if ( m < 1 ) return(0);
+	if ( n < 1 ) return(0);
 
 	ybuffer = buffer;
 	
