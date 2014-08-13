@@ -31,7 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(HASWELL)
 #include "zgemv_n_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "zgemv_n_microk_sandy-2.c"
 #endif
+
 
 
 #define NBMAX 1024
