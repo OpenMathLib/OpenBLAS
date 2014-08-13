@@ -141,6 +141,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 	BLASLONG n2;
 	FLOAT ybuffer[8],*xbuffer;
 
+        if ( m < 1 ) return(0);
+        if ( n < 1 ) return(0);
+
         inc_x *= 2;
         inc_y *= 2;
         lda   *= 2;
