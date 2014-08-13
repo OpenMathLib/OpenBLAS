@@ -50,22 +50,13 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	".align 16				        \n\t"
 	".L01LOOP%=:				        \n\t"
 
-	"vxorpd		%%ymm12, %%ymm12, %%ymm12	\n\t"
-	"vxorpd		%%ymm13, %%ymm13, %%ymm13	\n\t"
-	"vxorpd		%%ymm14, %%ymm14, %%ymm14	\n\t"
-	"vxorpd		%%ymm15, %%ymm15, %%ymm15	\n\t"
-
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmovups      32(%4,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
 
-	"vmulpd		  %%ymm8 , %%ymm0 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
-	"vmulpd		  %%ymm8 , %%ymm1 , %%ymm11	\n\t"
-	"vaddpd		  %%ymm13, %%ymm11, %%ymm13	\n\t"
-	"vmulpd		  %%ymm9 , %%ymm0 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
-	"vmulpd		  %%ymm9 , %%ymm1 , %%ymm11	\n\t"
-	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
+	"vmulpd		  %%ymm8 , %%ymm0 , %%ymm12	\n\t"
+	"vmulpd		  %%ymm8 , %%ymm1 , %%ymm13	\n\t"
+	"vmulpd		  %%ymm9 , %%ymm0 , %%ymm14	\n\t"
+	"vmulpd		  %%ymm9 , %%ymm1 , %%ymm15	\n\t"
 
 	"vmovups	(%5,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmovups      32(%5,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
@@ -103,6 +94,10 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vmulpd		  %%ymm9 , %%ymm7 , %%ymm11	\n\t"
 	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
 
+	"prefetcht0      192(%3,%0,8)			\n\t"
+	"vmovups	  (%3,%0,8),  %%ymm10           \n\t"
+	"vmovups	32(%3,%0,8),  %%ymm11           \n\t"
+
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
         "vpermilpd      $0x5 , %%ymm13, %%ymm13               \n\t"
         "vpermilpd      $0x5 , %%ymm15, %%ymm15               \n\t"
@@ -117,18 +112,8 @@ static void zgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "vpermilpd      $0x5 , %%ymm9 , %%ymm9                \n\t"
 #endif
 
-	"prefetcht0      192(%3,%0,8)			\n\t"
-	"vmovups	  (%3,%0,8),  %%ymm12           \n\t"
-	"vmovups	32(%3,%0,8),  %%ymm13           \n\t"
-
-#if !defined(XCONJ)
-        "vaddpd         %%ymm8, %%ymm12, %%ymm12              \n\t"
-        "vaddpd         %%ymm9, %%ymm13, %%ymm13              \n\t"
-#else
-        "vaddsubpd              %%ymm12, %%ymm8, %%ymm12              \n\t"
-        "vaddsubpd              %%ymm13, %%ymm9, %%ymm13              \n\t"
-#endif
-
+        "vaddpd         %%ymm8, %%ymm10, %%ymm12              \n\t"
+        "vaddpd         %%ymm9, %%ymm11, %%ymm13              \n\t"
 
 	"vmovups  %%ymm12,   (%3,%0,8)		        \n\t" // 2 complex values to y	
 	"vmovups  %%ymm13, 32(%3,%0,8)		        \n\t"	
