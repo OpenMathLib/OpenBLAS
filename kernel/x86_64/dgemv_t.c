@@ -104,6 +104,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	BLASLONG n2;
 	FLOAT ybuffer[4],*xbuffer;
 
+        if ( m < 1 ) return(0);
+        if ( n < 1 ) return(0);
+
 	xbuffer = buffer;
 	
 	n1 = n / 4 ;
