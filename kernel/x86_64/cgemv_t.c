@@ -28,19 +28,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-/*
-#if defined(BULLDOZER)
-#include "zgemv_t_microk_bulldozer-2.c"
-#elif defined(HASWELL)
-#include "zgemv_t_microk_haswell-2.c"
+#if defined(HASWELL)
+#include "cgemv_t_microk_haswell-2.c"
 #endif
-*/
 
 #define NBMAX 2048
 
 #ifndef HAVE_KERNEL_16x4
 
-static void zgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
+static void cgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 {
 	BLASLONG i;
 	FLOAT *a0,*a1,*a2,*a3;
@@ -92,7 +88,7 @@ static void zgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	
 #endif
 
-static void zgemv_kernel_16x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
+static void cgemv_kernel_16x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 {
 	BLASLONG i;
 	FLOAT *a0;
@@ -113,7 +109,7 @@ static void zgemv_kernel_16x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	*y      = temp_r;
 	*(y+1)  = temp_i;
 }
-	
+
 static void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src)
 {
         BLASLONG i;
@@ -176,7 +172,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			ap[1] = a_ptr + lda;
 			ap[2] = ap[1] + lda;
 			ap[3] = ap[2] + lda;
-			zgemv_kernel_16x4(NB,ap,xbuffer,ybuffer);
+			cgemv_kernel_16x4(NB,ap,xbuffer,ybuffer);
 			a_ptr += 4 * lda;
 
 #if !defined(XCONJ)
@@ -210,7 +206,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 		for( i = 0; i < n2 ; i++)
 		{
-			zgemv_kernel_16x1(NB,a_ptr,xbuffer,ybuffer);
+			cgemv_kernel_16x1(NB,a_ptr,xbuffer,ybuffer);
 			a_ptr += 1 * lda;
 
 #if !defined(XCONJ)
