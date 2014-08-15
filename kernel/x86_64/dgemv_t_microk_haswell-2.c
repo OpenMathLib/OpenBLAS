@@ -26,45 +26,64 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #define HAVE_KERNEL_16x4 1
-static void sgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) __attribute__ ((noinline));
+static void dgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) __attribute__ ((noinline));
 
-static void sgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
+static void dgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 {
 
 	BLASLONG register i = 0;
 
 	__asm__  __volatile__
 	(
-	"vzeroupper			 \n\t"
-	"vbroadcastss    (%2), %%ymm12	 \n\t"	// x0 
-	"vbroadcastss   4(%2), %%ymm13	 \n\t"	// x1 
-	"vbroadcastss   8(%2), %%ymm14	 \n\t"	// x2 
-	"vbroadcastss  12(%2), %%ymm15	 \n\t"	// x3 
+	"vzeroupper			         \n\t"
+	"vxorpd		%%ymm4 , %%ymm4, %%ymm4  \n\t"
+	"vxorpd		%%ymm5 , %%ymm5, %%ymm5  \n\t"
+	"vxorpd		%%ymm6 , %%ymm6, %%ymm6  \n\t"
+	"vxorpd		%%ymm7 , %%ymm7, %%ymm7  \n\t"
 
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
-	"vmovups	(%3,%0,4), %%ymm4	 \n\t"	// 8 * y
-	"vmovups      32(%3,%0,4), %%ymm5	 \n\t"	// 8 * y
+	"prefetcht0	 384(%2,%0,8)		 \n\t"
+	"vmovups	(%2,%0,8), %%ymm12       \n\t"	// 4 * x
+	"vmovups      32(%2,%0,8), %%ymm13       \n\t"	// 4 * x
 
-	"prefetcht0	 192(%4,%0,4)		       \n\t"
-	"vfmadd231ps   (%4,%0,4), %%ymm12, %%ymm4      \n\t" 
-	"vfmadd231ps 32(%4,%0,4), %%ymm12, %%ymm5      \n\t" 
-	"prefetcht0	 192(%5,%0,4)		       \n\t"
-	"vfmadd231ps   (%5,%0,4), %%ymm13, %%ymm4      \n\t" 
-	"vfmadd231ps 32(%5,%0,4), %%ymm13, %%ymm5      \n\t" 
-	"prefetcht0	 192(%6,%0,4)		       \n\t"
-	"vfmadd231ps   (%6,%0,4), %%ymm14, %%ymm4      \n\t" 
-	"vfmadd231ps 32(%6,%0,4), %%ymm14, %%ymm5      \n\t" 
-	"prefetcht0	 192(%7,%0,4)		       \n\t"
-	"vfmadd231ps   (%7,%0,4), %%ymm15, %%ymm4      \n\t" 
-	"vfmadd231ps 32(%7,%0,4), %%ymm15, %%ymm5      \n\t" 
+	"prefetcht0	 384(%4,%0,8)		       \n\t"
+	"vfmadd231pd   (%4,%0,8), %%ymm12, %%ymm4      \n\t" 
+	"vfmadd231pd   (%5,%0,8), %%ymm12, %%ymm5      \n\t" 
+	"prefetcht0	 384(%5,%0,8)		       \n\t"
+	"vfmadd231pd 32(%4,%0,8), %%ymm13, %%ymm4      \n\t" 
+	"vfmadd231pd 32(%5,%0,8), %%ymm13, %%ymm5      \n\t" 
+	"prefetcht0	 384(%6,%0,8)		       \n\t"
+	"vfmadd231pd   (%6,%0,8), %%ymm12, %%ymm6      \n\t" 
+	"vfmadd231pd   (%7,%0,8), %%ymm12, %%ymm7      \n\t" 
+	"prefetcht0	 384(%7,%0,8)		       \n\t"
+	"vfmadd231pd 32(%6,%0,8), %%ymm13, %%ymm6      \n\t" 
+	"vfmadd231pd 32(%7,%0,8), %%ymm13, %%ymm7      \n\t" 
 
-	"vmovups  %%ymm4,   (%3,%0,4)		      \n\t"	// 8 * y
-	"vmovups  %%ymm5, 32(%3,%0,4)		      \n\t"	// 8 * y
-
-        "addq		$16, %0	  	 	      \n\t"
-	"subq	        $16, %1			      \n\t"		
+        "addq		$8 , %0	  	 	      \n\t"
+	"subq	        $8 , %1			      \n\t"		
 	"jnz		.L01LOOP%=		      \n\t"
+
+	"vextractf128   $1 , %%ymm4, %%xmm12	      \n\t"
+	"vextractf128   $1 , %%ymm5, %%xmm13	      \n\t"
+	"vextractf128   $1 , %%ymm6, %%xmm14	      \n\t"
+	"vextractf128   $1 , %%ymm7, %%xmm15	      \n\t"
+
+	"vaddpd		%%xmm4, %%xmm12, %%xmm4       \n\t"
+	"vaddpd		%%xmm5, %%xmm13, %%xmm5       \n\t"
+	"vaddpd		%%xmm6, %%xmm14, %%xmm6       \n\t"
+	"vaddpd		%%xmm7, %%xmm15, %%xmm7       \n\t"
+
+        "vhaddpd        %%xmm4, %%xmm4, %%xmm4  \n\t"
+        "vhaddpd        %%xmm5, %%xmm5, %%xmm5  \n\t"
+        "vhaddpd        %%xmm6, %%xmm6, %%xmm6  \n\t"
+        "vhaddpd        %%xmm7, %%xmm7, %%xmm7  \n\t"
+
+        "vmovsd         %%xmm4,    (%3)         \n\t"
+        "vmovsd         %%xmm5,   8(%3)         \n\t"
+        "vmovsd         %%xmm6,  16(%3)         \n\t"
+        "vmovsd         %%xmm7,  24(%3)         \n\t"
+
 	"vzeroupper			 \n\t"
 
 	:
@@ -78,7 +97,7 @@ static void sgemv_kernel_16x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
           "r" (ap[2]),  // 6
           "r" (ap[3])   // 7
 	: "cc", 
-	  "%xmm4", "%xmm5", 
+	  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);

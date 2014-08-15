@@ -28,23 +28,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-
-#if defined(BULLDOZER) || defined(PILEDRIVER)
-#include "sgemv_n_microk_bulldozer-2.c"
-#elif defined(HASWELL)
-#include "sgemv_n_microk_haswell-2.c"
-#elif defined(SANDYBRIDGE)
-#include "sgemv_n_microk_sandy-2.c"
-#elif defined(NEHALEM)
-#include "sgemv_n_microk_nehalem-2.c"
+#if defined(HASWELL)
+#include "dgemv_t_microk_haswell-2.c"
 #endif
 
-
-#define NBMAX 4096
+#define NBMAX 2048
 
 #ifndef HAVE_KERNEL_16x4
 
-static void sgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
+static void dgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 {
 	BLASLONG i;
 	FLOAT *a0,*a1,*a2,*a3;
@@ -52,70 +44,51 @@ static void sgemv_kernel_16x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	a1 = ap[1];
 	a2 = ap[2];
 	a3 = ap[3];
+	FLOAT temp0 = 0.0;
+	FLOAT temp1 = 0.0;
+	FLOAT temp2 = 0.0;
+	FLOAT temp3 = 0.0;
 
 	for ( i=0; i< n; i+=4 )
 	{
-		y[i] += a0[i]*x[0] + a1[i]*x[1] + a2[i]*x[2] + a3[i]*x[3];		
-		y[i+1] += a0[i+1]*x[0] + a1[i+1]*x[1] + a2[i+1]*x[2] + a3[i+1]*x[3];		
-		y[i+2] += a0[i+2]*x[0] + a1[i+2]*x[1] + a2[i+2]*x[2] + a3[i+2]*x[3];		
-		y[i+3] += a0[i+3]*x[0] + a1[i+3]*x[1] + a2[i+3]*x[2] + a3[i+3]*x[3];		
+		temp0 += a0[i]*x[i] + a0[i+1]*x[i+1] + a0[i+2]*x[i+2] + a0[i+3]*x[i+3];		
+		temp1 += a1[i]*x[i] + a1[i+1]*x[i+1] + a1[i+2]*x[i+2] + a1[i+3]*x[i+3];		
+		temp2 += a2[i]*x[i] + a2[i+1]*x[i+1] + a2[i+2]*x[i+2] + a2[i+3]*x[i+3];		
+		temp3 += a3[i]*x[i] + a3[i+1]*x[i+1] + a3[i+2]*x[i+2] + a3[i+3]*x[i+3];		
 	}
+	y[0] = temp0;
+	y[1] = temp1;
+	y[2] = temp2;
+	y[3] = temp3;
 }
 	
 #endif
 
-static void sgemv_kernel_16x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
+static void dgemv_kernel_16x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 {
 	BLASLONG i;
 	FLOAT *a0;
 	a0 = ap;
+	FLOAT temp = 0.0;
 
 	for ( i=0; i< n; i+=4 )
 	{
-		y[i] += a0[i]*x[0];		
-		y[i+1] += a0[i+1]*x[0];		
-		y[i+2] += a0[i+2]*x[0];		
-		y[i+3] += a0[i+3]*x[0];		
+		temp += a0[i]*x[i] + a0[i+1]*x[i+1] + a0[i+2]*x[i+2] + a0[i+3]*x[i+3];		
 	}
+	*y = temp;
 }
 	
-
-static void zero_y(BLASLONG n, FLOAT *dest)
+static void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src)
 {
-	BLASLONG i;
-	for ( i=0; i<n; i++ )
-	{
-		*dest = 0.0;
-		dest++;
-	}
+        BLASLONG i;
+        for ( i=0; i<n; i++ )
+        {
+                *dest = *src;
+                dest++;
+                src += inc_src;
+        }
 }
 
-
-
-static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
-{
-	BLASLONG i;
-	if ( inc_dest == 1 )
-	{
-		for ( i=0; i<n; i+=4 )
-		{
-			dest[i] += src[i];
-			dest[i+1] += src[i+1];
-			dest[i+2] += src[i+2];
-			dest[i+3] += src[i+3];
-		}
-
-	}
-	else
-	{
-		for ( i=0; i<n; i++ )
-		{
-			*dest += *src;
-			src++;
-			dest += inc_dest;
-		}
-	}
-}
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
 {
@@ -129,12 +102,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	BLASLONG m1;
 	BLASLONG m2;
 	BLASLONG n2;
-	FLOAT xbuffer[4],*ybuffer;
+	FLOAT ybuffer[4],*xbuffer;
 
         if ( m < 1 ) return(0);
         if ( n < 1 ) return(0);
 
-	ybuffer = buffer;
+	xbuffer = buffer;
 	
 	n1 = n / 4 ;
 	n2 = n % 4 ;
@@ -142,7 +115,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	m1 = m - ( m % 16 );
 	m2 = (m % NBMAX) - (m % 16) ;
 	
-	y_ptr = y;
 
 	BLASLONG NB = NBMAX;
 
@@ -156,54 +128,61 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			NB = m2;
 		}
 		
+		y_ptr = y;
 		a_ptr = a;
 		x_ptr = x;
-		zero_y(NB,ybuffer);
+		copy_x(NB,x_ptr,xbuffer,inc_x);
 		for( i = 0; i < n1 ; i++)
 		{
-			xbuffer[0] = alpha * x_ptr[0];
-			x_ptr += inc_x;	
-			xbuffer[1] = alpha * x_ptr[0];
-			x_ptr += inc_x;	
-			xbuffer[2] = alpha * x_ptr[0];
-			x_ptr += inc_x;	
-			xbuffer[3] = alpha * x_ptr[0];
-			x_ptr += inc_x;	
 			ap[0] = a_ptr;
 			ap[1] = a_ptr + lda;
 			ap[2] = ap[1] + lda;
 			ap[3] = ap[2] + lda;
-			sgemv_kernel_16x4(NB,ap,xbuffer,ybuffer);
+			dgemv_kernel_16x4(NB,ap,xbuffer,ybuffer);
 			a_ptr += 4 * lda;
+			*y_ptr += ybuffer[0]*alpha;
+			y_ptr  += inc_y;
+			*y_ptr += ybuffer[1]*alpha;
+			y_ptr  += inc_y;
+			*y_ptr += ybuffer[2]*alpha;
+			y_ptr  += inc_y;
+			*y_ptr += ybuffer[3]*alpha;
+			y_ptr  += inc_y;
 		}
 
 		for( i = 0; i < n2 ; i++)
 		{
-			xbuffer[0] = alpha * x_ptr[0];
-			x_ptr += inc_x;	
-			sgemv_kernel_16x1(NB,a_ptr,xbuffer,ybuffer);
+			dgemv_kernel_16x1(NB,a_ptr,xbuffer,ybuffer);
 			a_ptr += 1 * lda;
+			*y_ptr += ybuffer[0]*alpha;
+			y_ptr  += inc_y;
 
 		}
-		add_y(NB,ybuffer,y_ptr,inc_y);
-		a     += NB;
-		y_ptr += NB * inc_y;
+		a += NB;
+		x += NB * inc_x;	
+	}
+
+	BLASLONG m3 = m % 16;
+	if ( m3 == 0 ) return(0);
+	x_ptr = x;
+	for ( i=0; i< m3; i++ )
+	{
+		xbuffer[i] = *x_ptr;
+		x_ptr += inc_x;
 	}
 	j=0;
-	while ( j < (m % 16))
+	a_ptr = a;
+	y_ptr = y;
+	while ( j < n)
 	{
-		a_ptr = a;
-		x_ptr = x;
 		FLOAT temp = 0.0;
-		for( i = 0; i < n; i++ )
+		for( i = 0; i < m3; i++ )
 		{
-			temp += a_ptr[0] * x_ptr[0];
-			a_ptr += lda;
-			x_ptr += inc_x;
+			temp += a_ptr[i] * xbuffer[i];
 		}
+		a_ptr += lda;
 		y_ptr[0] += alpha * temp;
 		y_ptr += inc_y;
-		a++;
 		j++;
 	}
 	return(0);

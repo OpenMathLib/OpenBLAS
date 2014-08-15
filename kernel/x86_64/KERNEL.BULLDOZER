@@ -1,14 +1,8 @@
-ifdef OS_WINDOWS
 SGEMVNKERNEL = sgemv_n.c
-SGEMVTKERNEL = ../arm/gemv_t.c
-else
-SGEMVNKERNEL = sgemv_n.c
-SGEMVTKERNEL = sgemv_t_avx.c
-endif
-
+SGEMVTKERNEL = sgemv_t.c
 
 ZGEMVNKERNEL = zgemv_n_dup.S
-ZGEMVTKERNEL = zgemv_t.S
+ZGEMVTKERNEL = zgemv_t.c
 
 DGEMVNKERNEL = dgemv_n_bulldozer.S
 DGEMVTKERNEL = dgemv_t_bulldozer.S
