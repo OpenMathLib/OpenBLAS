@@ -803,6 +803,10 @@ ifeq ($(USE_OPENMP), 1)
 CCOMMON_OPT	+= -DUSE_OPENMP
 endif
 
+ifeq ($(BIGNUMA), 1)
+CCOMMON_OPT	+= -DBIGNUMA
+endif
+
 endif
 
 ifeq ($(NO_WARMUP), 1)

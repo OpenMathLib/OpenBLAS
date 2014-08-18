@@ -25,6 +25,32 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
+/*********************************************************************
+* 2014/07/29 Saar
+*        BLASTEST               : OK
+*        CTEST                  : OK
+*        TEST                   : OK
+*
+* 2013/10/28 Saar
+* Parameter:
+*       CGEMM_DEFAULT_UNROLL_N  2
+*       CGEMM_DEFAULT_UNROLL_M  8
+*       CGEMM_DEFAULT_P         768
+*       CGEMM_DEFAULT_Q         512
+*       A_PR1                   512
+*       B_PR1                   512
+*
+* 2014/07/29 Saar
+* Performance at 6192x6192x6192:
+*       1 thread:       49 GFLOPS       (MKL:   52)
+*       2 threads:      99 GFLOPS       (MKL:  102)
+*       3 threads:     148 GFLOPS       (MKL:  150)
+*       4 threads:     195 GFLOPS       (MKL:  194)
+*       8 threads:     354 GFLOPS       (MKL:  317)
+*
+*
+*********************************************************************/
+
 
 #define ASSEMBLER
 #include "common.h"
@@ -192,22 +218,108 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /***************************************************************************************************************************/
 
-.macro KERNEL8x2_SUB
+.macro KERNEL8x2_1
 
         vmovups         -16 * SIZE(AO, %rax, SIZE), %ymm0
         vbroadcastss         -8 * SIZE(BO, BI, SIZE), %ymm4
-        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
         vmovups          -8 * SIZE(AO, %rax, SIZE), %ymm1
-        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
         vbroadcastss         -7 * SIZE(BO, BI, SIZE), %ymm5
-        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
-        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
+	prefetcht0	A_PR1(AO, %rax, SIZE)
+
+        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
         vbroadcastss         -6 * SIZE(BO, BI, SIZE), %ymm6
-        VFMADDPS_YR(        %ymm10,%ymm6,%ymm0 )
-        VFMADDPS_YR(        %ymm14,%ymm6,%ymm1 )
+        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
         vbroadcastss         -5 * SIZE(BO, BI, SIZE), %ymm7
+        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
+
+
+        VFMADDPS_YR(        %ymm10,%ymm6,%ymm0 )
+        vbroadcastss         -4 * SIZE(BO, BI, SIZE), %ymm4
         VFMADDPS_YI(        %ymm11,%ymm7,%ymm0 )
+        vbroadcastss         -3 * SIZE(BO, BI, SIZE), %ymm5
+        VFMADDPS_YR(        %ymm14,%ymm6,%ymm1 )
+        vmovups           0 * SIZE(AO, %rax, SIZE), %ymm0
         VFMADDPS_YI(        %ymm15,%ymm7,%ymm1 )
+
+        vmovups           8 * SIZE(AO, %rax, SIZE), %ymm1
+	prefetcht0	A_PR1+64(AO, %rax, SIZE)
+
+        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
+        vbroadcastss         -2 * SIZE(BO, BI, SIZE), %ymm6
+        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
+        vbroadcastss         -1 * SIZE(BO, BI, SIZE), %ymm7
+        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
+
+
+        VFMADDPS_YR(        %ymm10,%ymm6,%ymm0 )
+        vbroadcastss          0 * SIZE(BO, BI, SIZE), %ymm4
+        VFMADDPS_YI(        %ymm11,%ymm7,%ymm0 )
+        vbroadcastss          1 * SIZE(BO, BI, SIZE), %ymm5
+        VFMADDPS_YR(        %ymm14,%ymm6,%ymm1 )
+        vmovups          16 * SIZE(AO, %rax, SIZE), %ymm0
+        VFMADDPS_YI(        %ymm15,%ymm7,%ymm1 )
+
+        vmovups          24 * SIZE(AO, %rax, SIZE), %ymm1
+	prefetcht0	A_PR1+128(AO, %rax, SIZE)
+
+        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
+        vbroadcastss          2 * SIZE(BO, BI, SIZE), %ymm6
+        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
+        vbroadcastss          3 * SIZE(BO, BI, SIZE), %ymm7
+        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
+
+
+        VFMADDPS_YR(        %ymm10,%ymm6,%ymm0 )
+        vbroadcastss          4 * SIZE(BO, BI, SIZE), %ymm4
+        VFMADDPS_YI(        %ymm11,%ymm7,%ymm0 )
+        vbroadcastss          5 * SIZE(BO, BI, SIZE), %ymm5
+        VFMADDPS_YR(        %ymm14,%ymm6,%ymm1 )
+        vmovups          32 * SIZE(AO, %rax, SIZE), %ymm0
+        VFMADDPS_YI(        %ymm15,%ymm7,%ymm1 )
+
+        vmovups          40 * SIZE(AO, %rax, SIZE), %ymm1
+	prefetcht0	A_PR1+192(AO, %rax, SIZE)
+
+        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
+        vbroadcastss          6 * SIZE(BO, BI, SIZE), %ymm6
+        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
+        vbroadcastss          7 * SIZE(BO, BI, SIZE), %ymm7
+        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
+
+        VFMADDPS_YR(        %ymm10,%ymm6,%ymm0 )
+        VFMADDPS_YI(        %ymm11,%ymm7,%ymm0 )
+        addq    $ 16, BI                           
+        VFMADDPS_YR(        %ymm14,%ymm6,%ymm1 )
+        VFMADDPS_YI(        %ymm15,%ymm7,%ymm1 )
+
+        addq    $ 64, %rax                         
+.endm
+
+
+.macro KERNEL8x2_SUB
+
+        vmovups         -16 * SIZE(AO, %rax, SIZE), %ymm0
+        vmovups          -8 * SIZE(AO, %rax, SIZE), %ymm1
+        vbroadcastss         -8 * SIZE(BO, BI, SIZE), %ymm4
+        vbroadcastss         -7 * SIZE(BO, BI, SIZE), %ymm5
+
+        VFMADDPS_YR(        %ymm8,%ymm4,%ymm0  )
+        vbroadcastss         -6 * SIZE(BO, BI, SIZE), %ymm6
+        VFMADDPS_YI(        %ymm9,%ymm5,%ymm0  )
+        vbroadcastss         -5 * SIZE(BO, BI, SIZE), %ymm7
+        VFMADDPS_YR(        %ymm12,%ymm4,%ymm1 )
+        VFMADDPS_YI(        %ymm13,%ymm5,%ymm1 )
+
+
+        VFMADDPS_YR(        %ymm10,%ymm6,%ymm0 )
+        VFMADDPS_YI(        %ymm11,%ymm7,%ymm0 )
+        VFMADDPS_YR(        %ymm14,%ymm6,%ymm1 )
+        VFMADDPS_YI(        %ymm15,%ymm7,%ymm1 )
+
         addq    $ 4 , BI                           
         addq    $ 16, %rax                         
 .endm
@@ -984,47 +1096,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L2_8_12:
 
-	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
+	KERNEL8x2_1
 
-	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
+	KERNEL8x2_1
 
 	je	.L2_8_16
 
-	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
+	KERNEL8x2_1
 
-	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
-	prefetcht0	A_PR1(AO,%rax,SIZE)
-	KERNEL8x2_SUB
+	KERNEL8x2_1
 
 	je	.L2_8_16
 
@@ -1152,7 +1236,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L2_4_12:
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	prefetcht0	A_PR1(AO,%rax,SIZE)
@@ -1160,7 +1243,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x2_SUB
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	prefetcht0	A_PR1(AO,%rax,SIZE)
@@ -1170,7 +1252,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	je	.L2_4_16
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	prefetcht0	A_PR1(AO,%rax,SIZE)
@@ -1178,7 +1259,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x2_SUB
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	prefetcht0	A_PR1(AO,%rax,SIZE)
@@ -1305,14 +1385,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L2_4_22:
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
@@ -1321,14 +1399,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	je	.L2_4_26
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
@@ -1507,13 +1583,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L2_4_42:
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
@@ -1522,13 +1596,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	je	.L2_4_46
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 
-	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB

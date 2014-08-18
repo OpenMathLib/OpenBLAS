@@ -1,3 +1,5 @@
+SGEMVNKERNEL = sgemv_n.c
+SGEMVTKERNEL = sgemv_t.c
 
 SGEMMKERNEL    =  gemm_kernel_4x8_nehalem.S
 SGEMMINCOPY    =  gemm_ncopy_4.S

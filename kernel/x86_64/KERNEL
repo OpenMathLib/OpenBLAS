@@ -373,11 +373,11 @@ endif
 GEMVDEP = ../l2param.h
 
 ifndef SGEMVNKERNEL
-SGEMVNKERNEL = ../arm/gemv_n.c
+SGEMVNKERNEL = sgemv_n.c
 endif
 
 ifndef SGEMVTKERNEL
-SGEMVTKERNEL = ../arm/gemv_t.c
+SGEMVTKERNEL = sgemv_t.c
 endif
 
 ifndef DGEMVNKERNEL

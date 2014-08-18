@@ -524,10 +524,21 @@ static __inline void blas_unlock(volatile BLASULONG *address){
   *address = 0;
 }
 
+
+#ifdef OS_WINDOWS
 static __inline int readenv_atoi(char *env) {
   env_var_t p;
   return readenv(p,env) ? 0 : atoi(p);
 }
+#else
+static __inline int readenv_atoi(char *env) {
+  char *p;
+  if (( p = getenv(env) ))
+  	return (atoi(p));
+  else
+	return(0);
+}
+#endif
 
 
 #if !defined(XDOUBLE) || !defined(QUAD_PRECISION)

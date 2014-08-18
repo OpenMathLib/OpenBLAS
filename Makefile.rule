@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.10
+VERSION = 0.2.11
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -94,6 +94,9 @@ NO_WARMUP = 1
 
 # If you want to disable CPU/Memory affinity on Linux.
 NO_AFFINITY = 1
+
+# if you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
+# BIGNUMA = 1
 
 # Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers
 # and OS. However, the performance is low.

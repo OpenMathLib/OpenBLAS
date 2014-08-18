@@ -85,8 +85,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <string.h>
 
+#if defined(BIGNUMA)
+// max number of nodes as defined in numa.h
+// max cpus as defined in sched.h
+#define MAX_NODES	128
+#define MAX_CPUS	CPU_SETSIZE
+#else
 #define MAX_NODES	16
 #define MAX_CPUS	256
+#endif
+
 #define NCPUBITS        (8*sizeof(unsigned long))
 #define MAX_BITMASK_LEN (MAX_CPUS/NCPUBITS)
 #define CPUELT(cpu)	((cpu) / NCPUBITS)
@@ -544,16 +552,26 @@ static inline int is_dead(int id) {
 
   return shmctl(id, IPC_STAT, &ds);
 }
+
 static void open_shmem(void) {
 
   int try = 0;
 
   do {
 
+#if defined(BIGNUMA)
+    // raised to 32768, enough for 128 nodes and 1024 cups
+    shmid = shmget(SH_MAGIC, 32768, 0666);
+#else
     shmid = shmget(SH_MAGIC, 4096, 0666);
+#endif
 
     if (shmid == -1) {
+#if defined(BIGNUMA)
+      shmid = shmget(SH_MAGIC, 32768, IPC_CREAT | 0666);
+#else
       shmid = shmget(SH_MAGIC, 4096, IPC_CREAT | 0666);
+#endif
     }
 
     try ++;
@@ -847,7 +865,7 @@ void gotoblas_set_affinity2(int threads) {};
 
 void gotoblas_affinity_reschedule(void) {};
 
-int get_num_procs(void) { return get_nprocs(); }
+int get_num_procs(void) { return sysconf(_SC_NPROCESSORS_ONLN); }
 
 int get_num_nodes(void) { return 1; }
 

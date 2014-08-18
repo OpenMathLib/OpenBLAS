@@ -119,7 +119,11 @@ static __inline double getmflops(int ratio, int m, double secs){
 
 int MAIN__(int argc, char *argv[]){
 
+#ifndef COMPLEX
   char *trans[] = {"T", "N"};
+#else
+  char *trans[] = {"C", "N"};
+#endif
   char *uplo[]  = {"U", "L"};
   FLOAT alpha[] = {1.0, 0.0};
   FLOAT beta [] = {0.0, 0.0};

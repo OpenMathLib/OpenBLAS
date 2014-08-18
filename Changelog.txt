@@ -1,6 +1,21 @@
 OpenBLAS ChangeLog
 ====================================================================
 Version 0.2.10
+18-Aug-2014
+common:
+	* Added some benchmark codes.
+	* Fix link error on Linux/musl.(Thanks Isaac Dunham)
+
+x86/x86-64:
+	* Improved s/c/zgemm performance for Intel Haswell.
+	* Improved s/d/c/zgemv performance.
+	* Support the big numa machine.(EXPERIMENT)
+
+ARM:
+	* Fix detection when cpuinfo uses "Processor". (Thanks Isaiah)
+
+====================================================================
+Version 0.2.10
 16-Jul-2014
 common:
 	* Added BLAS extensions as following.

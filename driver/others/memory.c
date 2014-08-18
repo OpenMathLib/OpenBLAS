@@ -162,7 +162,7 @@ int get_num_procs(void);
 #else
 int get_num_procs(void) {
   static int nums = 0;
-  if (!nums) nums = get_nprocs();
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_ONLN);
   return nums;
 }
 #endif
