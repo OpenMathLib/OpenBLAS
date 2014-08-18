@@ -1,3 +1,5 @@
+DSYMV_U_KERNEL = dsymv_U.c
+
 SGEMVNKERNEL = sgemv_n.c
 SGEMVTKERNEL = sgemv_t.c
 
