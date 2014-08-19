@@ -25,10 +25,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#define HAVE_KERNEL_16x2 1
-static void ssymv_kernel_16x2( BLASLONG n, FLOAT *a1, FLOAT *a2, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2) __attribute__ ((noinline));
+#define HAVE_KERNEL_4x4 1
+static void ssymv_kernel_4x4( BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT *a3, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2) __attribute__ ((noinline));
 
-static void ssymv_kernel_16x2(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2)
+static void ssymv_kernel_4x4(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT *a3, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2)
 {
 
 	BLASLONG register i = 0;
@@ -37,64 +37,57 @@ static void ssymv_kernel_16x2(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *x, FLOAT 
 	(
 	"vxorps		%%xmm0 , %%xmm0 , %%xmm0     \n\t"	// temp2[0]
 	"vxorps		%%xmm1 , %%xmm1 , %%xmm1     \n\t"	// temp2[1]
-	"vbroadcastss	(%6),    %%xmm2	             \n\t"	// temp1[0]
-	"vbroadcastss  4(%6),    %%xmm3	             \n\t"	// temp1[1]
+	"vxorps		%%xmm2 , %%xmm2 , %%xmm2     \n\t"	// temp2[2]
+	"vxorps		%%xmm3 , %%xmm3 , %%xmm3     \n\t"	// temp2[3]
+	"vbroadcastss	(%8),    %%xmm4	             \n\t"	// temp1[0]
+	"vbroadcastss  4(%8),    %%xmm5	             \n\t"	// temp1[1]
+	"vbroadcastss  8(%8),    %%xmm6	             \n\t"	// temp1[1]
+	"vbroadcastss 12(%8),    %%xmm7	             \n\t"	// temp1[1]
 
 	"xorq		%0,%0			     \n\t"
 
-	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	".align 16				     \n\t"
+	".L01LOOP%=:				     \n\t"
 
-	"prefetcht0	 192(%4,%0,4)		       \n\t"
-	"vmovups	(%4,%0,4), %%xmm4	 \n\t"	// 2 * a0
-	"vmovups      16(%4,%0,4), %%xmm5	 \n\t"	// 2 * a0
-	"prefetcht0	 192(%2,%0,4)		       \n\t"
-	"vmovups	(%2,%0,4), %%xmm8	 \n\t"	// 2 * x
-	"vmovups      16(%2,%0,4), %%xmm9	 \n\t"	// 2 * x
-	"prefetcht0	 192(%3,%0,4)		       \n\t"
-	"vmovups      32(%4,%0,4), %%xmm6	 \n\t"	// 2 * a0
-	"vmovups      48(%4,%0,4), %%xmm7	 \n\t"	// 2 * a0
-	"vmovups      32(%2,%0,4), %%xmm10	 \n\t"	// 2 * x
-	"vmovups      48(%2,%0,4), %%xmm11	 \n\t"	// 2 * x
+	"vmovups	(%2,%0,4), %%xmm8	           \n\t"  // 4 * x
+	"vmovups	(%3,%0,4), %%xmm9	           \n\t"  // 4 * y
 
-	"prefetcht0	 192(%5,%0,4)		            \n\t"
-	"vfmaddps    (%3,%0,4), %%xmm2 , %%xmm4 , %%xmm12   \n\t" // y += temp1 * a0
-	"vfmaddps      %%xmm0 , %%xmm8 , %%xmm4 , %%xmm0    \n\t" // temp2 += a0 * x
-	"vfmaddps  16(%3,%0,4), %%xmm2 , %%xmm5 , %%xmm13   \n\t" // y += temp1 * a0
-	"vmovups	(%5,%0,4), %%xmm4	            \n\t"	// 2 * a1
-	"vfmaddps      %%xmm0 , %%xmm9 , %%xmm5 , %%xmm0    \n\t" // temp2 += a0 * x
-	"vfmaddps  32(%3,%0,4), %%xmm2 , %%xmm6 , %%xmm14   \n\t" // y += temp1 * a0
-	"vmovups      16(%5,%0,4), %%xmm5	            \n\t"	// 2 * a1
-	"vfmaddps      %%xmm0 , %%xmm10, %%xmm6 , %%xmm0    \n\t" // temp2 += a0 * x
-	"vfmaddps  48(%3,%0,4), %%xmm2 , %%xmm7 , %%xmm15   \n\t" // y += temp1 * a0
-	"vmovups      32(%5,%0,4), %%xmm6	            \n\t"	// 2 * a1
-	"vfmaddps      %%xmm0 , %%xmm11, %%xmm7 , %%xmm0    \n\t" // temp2 += a0 * x
-	"vmovups      48(%5,%0,4), %%xmm7	            \n\t"	// 2 * a1
+	"vmovups	(%4,%0,4), %%xmm12	           \n\t"  // 4 * a
+	"vmovups	(%5,%0,4), %%xmm13	           \n\t"  // 4 * a
 
-	"vfmaddps %%xmm12, %%xmm3 , %%xmm4 , %%xmm12   \n\t" // y += temp1 * a1
-	"vfmaddps %%xmm13, %%xmm3 , %%xmm5 , %%xmm13   \n\t" // y += temp1 * a1
-	"vmovups  %%xmm12,   (%3,%0,4)		       \n\t"	// 2 * y
-	"vfmaddps %%xmm14, %%xmm3 , %%xmm6 , %%xmm14   \n\t" // y += temp1 * a1
-	"vmovups  %%xmm13, 16(%3,%0,4)		       \n\t"	// 2 * y
-	"vfmaddps %%xmm15, %%xmm3 , %%xmm7 , %%xmm15   \n\t" // y += temp1 * a1
-	"vmovups  %%xmm14, 32(%3,%0,4)		       \n\t"	// 2 * y
+	"vfmaddps	%%xmm0 , %%xmm8, %%xmm12 , %%xmm0  \n\t"  // temp2 += x * a
+	"vfmaddps	%%xmm9 , %%xmm4, %%xmm12 , %%xmm9  \n\t"  // y     += temp1 * a
 
-	"vfmaddps %%xmm1 , %%xmm8 , %%xmm4 , %%xmm1   \n\t" // temp2 += a1 * x
-	"vfmaddps %%xmm1 , %%xmm9 , %%xmm5 , %%xmm1   \n\t" // temp2 += a1 * x
-	"vmovups  %%xmm15, 48(%3,%0,4)		      \n\t"	// 2 * y
-	"vfmaddps %%xmm1 , %%xmm10, %%xmm6 , %%xmm1   \n\t" // temp2 += a1 * x
-	"vfmaddps %%xmm1 , %%xmm11, %%xmm7 , %%xmm1   \n\t" // temp2 += a1 * x
+	"vfmaddps	%%xmm1 , %%xmm8, %%xmm13 , %%xmm1  \n\t"  // temp2 += x * a
+	"vmovups	(%6,%0,4), %%xmm14	           \n\t"  // 4 * a
+	"vfmaddps	%%xmm9 , %%xmm5, %%xmm13 , %%xmm9  \n\t"  // y     += temp1 * a
 
-        "addq		$16, %0	  	 	      \n\t"
-	"subq	        $16, %1			      \n\t"		
+	"vfmaddps	%%xmm2 , %%xmm8, %%xmm14 , %%xmm2  \n\t"  // temp2 += x * a
+	"vmovups	(%7,%0,4), %%xmm15	           \n\t"  // 4 * a
+	"vfmaddps	%%xmm9 , %%xmm6, %%xmm14 , %%xmm9  \n\t"  // y     += temp1 * a
+
+	"vfmaddps	%%xmm3 , %%xmm8, %%xmm15 , %%xmm3  \n\t"  // temp2 += x * a
+	"vfmaddps	%%xmm9 , %%xmm7, %%xmm15 , %%xmm9  \n\t"  // y     += temp1 * a
+
+	"vmovups	%%xmm9 , (%3,%0,4)		   \n\t"
+
+	"addq		$4 , %0	  	 	      \n\t"
+	"subq	        $4 , %1			      \n\t"		
 	"jnz		.L01LOOP%=		      \n\t"
 
 	"vhaddps        %%xmm0, %%xmm0, %%xmm0  \n\t"
 	"vhaddps        %%xmm1, %%xmm1, %%xmm1  \n\t"
+	"vhaddps        %%xmm2, %%xmm2, %%xmm2  \n\t"
+	"vhaddps        %%xmm3, %%xmm3, %%xmm3  \n\t"
 	"vhaddps        %%xmm0, %%xmm0, %%xmm0  \n\t"
 	"vhaddps        %%xmm1, %%xmm1, %%xmm1  \n\t"
-	"vmovss         %%xmm0 , (%7)		\n\t"	// save temp2
-	"vmovss         %%xmm1 ,4(%7)		\n\t"	// save temp2
+	"vhaddps        %%xmm2, %%xmm2, %%xmm2  \n\t"
+	"vhaddps        %%xmm3, %%xmm3, %%xmm3  \n\t"
+
+	"vmovss         %%xmm0 ,  (%9)		\n\t"	// save temp2
+	"vmovss         %%xmm1 , 4(%9)		\n\t"	// save temp2
+	"vmovss         %%xmm2 , 8(%9)		\n\t"	// save temp2
+	"vmovss         %%xmm3 ,12(%9)		\n\t"	// save temp2
 
 	:
         : 
@@ -102,10 +95,12 @@ static void ssymv_kernel_16x2(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *x, FLOAT 
 	  "r" (n),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
-          "r" (a0),  // 4
-          "r" (a1),  // 5
-          "r" (temp1),  // 6
-          "r" (temp2)   // 7
+          "r" (a0),     // 4
+          "r" (a1),     // 5
+          "r" (a2),     // 6
+          "r" (a3),     // 7
+          "r" (temp1),  // 8
+          "r" (temp2)   // 9
 	: "cc", 
 	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
 	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
