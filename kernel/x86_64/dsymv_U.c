@@ -28,42 +28,96 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+
 #if defined(BULLDOZER)
 #include "dsymv_U_microk_bulldozer-2.c"
+#elif defined(NEHALEM)
+#include "dsymv_U_microk_nehalem-2.c"
 #endif
 
+#ifndef HAVE_KERNEL_4x4
 
-#ifndef HAVE_KERNEL_8x2
-
-static void dsymv_kernel_8x2(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *xp, FLOAT *yp, FLOAT *temp1, FLOAT *temp2)
+static void dsymv_kernel_4x4(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT *a3, FLOAT *xp, FLOAT *yp, FLOAT *temp1, FLOAT *temp2)
 {
 	FLOAT at0,at1,at2,at3;
-	FLOAT tmp2[2] = { 0.0, 0.0 };
+	FLOAT x;
+	FLOAT tmp2[4] = { 0.0, 0.0, 0.0, 0.0 };
 	FLOAT tp0;
 	FLOAT tp1;
+	FLOAT tp2;
+	FLOAT tp3;
 	BLASLONG i;
 
 	tp0 = temp1[0];
 	tp1 = temp1[1];
+	tp2 = temp1[2];
+	tp3 = temp1[3];
 	
-	for (i=0; i<n; i+=2)
+	for (i=0; i<n; i++)
 	{
 		at0     = a0[i];
 		at1     = a1[i];
-		at2     = a0[i+1];
-		at3     = a1[i+1];
-		yp[i]   += tp0 * at0 + tp1 *at1;
-		yp[i+1] += tp0 * at2 + tp1 *at3;
-		tmp2[0] += at0 * xp[i] + at2 * xp[i+1];
-		tmp2[1] += at1 * xp[i] + at3 * xp[i+1];
+		at2     = a2[i];
+		at3     = a3[i];
+		x       = xp[i];
+		yp[i]   += tp0 * at0 + tp1 *at1 + tp2 * at2 + tp3 * at3;
+		tmp2[0] += at0 * x;
+		tmp2[1] += at1 * x;
+		tmp2[2] += at2 * x;
+		tmp2[3] += at3 * x;
 
 	}
-	temp2[0] = tmp2[0];
-	temp2[1] = tmp2[1];
 
+	temp2[0] += tmp2[0];
+	temp2[1] += tmp2[1];
+	temp2[2] += tmp2[2];
+	temp2[3] += tmp2[3];
 }
 
 #endif
+
+
+#ifndef HAVE_KERNEL_1x4
+
+static void dsymv_kernel_1x4(BLASLONG from, BLASLONG to, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT *a3, FLOAT *xp, FLOAT *yp, FLOAT *temp1, FLOAT *temp2)
+{
+	FLOAT at0,at1,at2,at3;
+	FLOAT x;
+	FLOAT tmp2[4] = { 0.0, 0.0, 0.0, 0.0 };
+	FLOAT tp0;
+	FLOAT tp1;
+	FLOAT tp2;
+	FLOAT tp3;
+	BLASLONG i;
+
+	tp0 = temp1[0];
+	tp1 = temp1[1];
+	tp2 = temp1[2];
+	tp3 = temp1[3];
+	
+	for (i=from; i<to; i++)
+	{
+		at0     = a0[i];
+		at1     = a1[i];
+		at2     = a2[i];
+		at3     = a3[i];
+		x       = xp[i];
+		yp[i]   += tp0 * at0 + tp1 *at1 + tp2 * at2 + tp3 * at3;
+		tmp2[0] += at0 * x;
+		tmp2[1] += at1 * x;
+		tmp2[2] += at2 * x;
+		tmp2[3] += at3 * x;
+
+	}
+
+	temp2[0] += tmp2[0];
+	temp2[1] += tmp2[1];
+	temp2[2] += tmp2[2];
+	temp2[3] += tmp2[3];
+}
+
+#endif
+
 
 static void dsymv_kernel_8x1(BLASLONG n, FLOAT *a0, FLOAT *xp, FLOAT *yp, FLOAT *temp1, FLOAT *temp2)
 {
@@ -99,13 +153,16 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
 	BLASLONG ix,iy;
 	BLASLONG jx,jy;
 	BLASLONG j;
+	BLASLONG j1;
+	BLASLONG j2;
 	BLASLONG m2;
 	FLOAT temp1;
 	FLOAT temp2;
 	FLOAT *xp, *yp;
-	FLOAT *a0,*a1;
-	FLOAT tmp1[2];
-	FLOAT tmp2[2];
+	FLOAT *a0,*a1,*a2,*a3;
+	FLOAT at0,at1,at2,at3;
+	FLOAT tmp1[4];
+	FLOAT tmp2[4];
 
 #if 0
 	if( m != offset )
@@ -145,37 +202,45 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
 	xp = x;
 	yp = y;
 
-	m2 = m - ( mrange % 2 );
+	m2 = m - ( mrange % 4 );
 
-	for (j=m1; j<m2; j+=2)
+	for (j=m1; j<m2; j+=4)
 	{
 		tmp1[0] = alpha * xp[j];
 		tmp1[1] = alpha * xp[j+1];
+		tmp1[2] = alpha * xp[j+2];
+		tmp1[3] = alpha * xp[j+3];
 		tmp2[0] = 0.0;
 		tmp2[1] = 0.0;
+		tmp2[2] = 0.0;
+		tmp2[3] = 0.0;
 		a0    = &a[j*lda];
 		a1    = a0+lda;
-		FLOAT at0,at1;
-		BLASLONG j1 = (j/8)*8;		
+		a2    = a1+lda;
+		a3    = a2+lda;
+		j1 = (j/8)*8;		
 		if ( j1 )
-			dsymv_kernel_8x2(j1, a0, a1, xp, yp, tmp1, tmp2);
+			dsymv_kernel_4x4(j1, a0, a1, a2, a3, xp, yp, tmp1, tmp2);
+		if ( j1 < j )
+			dsymv_kernel_1x4(j1, j,  a0, a1, a2, a3, xp, yp, tmp1, tmp2);
 
-		for (i=j1; i<j; i++)
+		j2 = 0;
+		for ( j1 = j ; j1 < j+4 ; j1++ )
 		{
-			at0     = a0[i];
-			at1     = a1[i];
-			yp[i]   += tmp1[0] * at0 + tmp1[1] *at1;
-			tmp2[0] += at0 * xp[i];
-			tmp2[1] += at1 * xp[i];
-			
+			temp1 = tmp1[j2];
+			temp2 = tmp2[j2];
+			a0    = &a[j1*lda];
+			for ( i=j ; i<j1; i++ )
+			{
+				yp[i] += temp1 * a0[i];	
+				temp2 += a0[i] * xp[i];
+				
+			}
+			y[j1] += temp1 * a0[j1] + alpha * temp2;
+			j2++;
+
 		}
 
-		at1     = a1[j];
-		yp[j]   += tmp1[1] * at1;
-		tmp2[1] += at1 * xp[j];
-
-		yp[j]   += tmp1[0] * a0[j]   + alpha * tmp2[0];
-		yp[j+1] += tmp1[1] * a1[j+1] + alpha * tmp2[1];
 	}
 
 	for ( ; j<m; j++)
@@ -184,7 +249,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
 		temp2 = 0.0;
 		a0    = &a[j*lda];
 		FLOAT at0;
-		BLASLONG j1 = (j/8)*8;		
+		j1 = (j/8)*8;		
 
 		if ( j1 )
 			dsymv_kernel_8x1(j1, a0, xp, yp, &temp1, &temp2);
