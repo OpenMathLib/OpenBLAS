@@ -35,7 +35,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyrk.goto dsyrk.goto csyrk.goto zsyrk.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto \
-       ssymv.goto dsymv.goto \
+       ssymv.goto dsymv.goto csymv.goto zsymv.goto \
        chemm.goto zhemm.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
@@ -53,7 +53,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyrk.acml dsyrk.acml csyrk.acml zsyrk.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml \
-       ssymv.acml dsymv.acml \
+       ssymv.acml dsymv.acml csymv.acml zsymv.acml \
        chemm.acml zhemm.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
@@ -71,7 +71,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        ssyrk.atlas dsyrk.atlas csyrk.atlas zsyrk.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas \
-       ssymv.atlas dsymv.atlas \
+       ssymv.atlas dsymv.atlas csymv.atlas zsymv.atlas \
        chemm.acml zhemm.acml \
        chemm.atlas zhemm.atlas \
        cherk.atlas zherk.atlas \
@@ -90,7 +90,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyrk.mkl dsyrk.mkl csyrk.mkl zsyrk.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl \
-       ssymv.mkl dsymv.mkl \
+       ssymv.mkl dsymv.mkl csymv.mkl zsymv.mkl \
        chemm.mkl zhemm.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
@@ -732,6 +732,32 @@ dsymv.atlas : dsymv.$(SUFFIX)
 dsymv.mkl : dsymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Csymv ####################################################
+csymv.goto : csymv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+csymv.acml : csymv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+csymv.atlas : csymv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+csymv.mkl : csymv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dsymv ####################################################
+zsymv.goto : zsymv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zsymv.acml : zsymv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zsymv.atlas : zsymv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zsymv.mkl : zsymv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Sgeev ####################################################
 sgeev.goto : sgeev.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
@@ -1036,6 +1062,12 @@ ssymv.$(SUFFIX) : symv.c
 
 dsymv.$(SUFFIX) : symv.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+csymv.$(SUFFIX) : symv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zsymv.$(SUFFIX) : symv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 sgeev.$(SUFFIX) : geev.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
