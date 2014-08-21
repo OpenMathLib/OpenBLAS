@@ -31,7 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(BULLDOZER)
 #include "dsymv_L_microk_bulldozer-2.c"
 #elif defined(NEHALEM)
-#include "dsymv_U_microk_nehalem-2.c"
+#include "dsymv_L_microk_nehalem-2.c"
 #endif
 
 
