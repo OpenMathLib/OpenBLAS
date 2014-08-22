@@ -108,7 +108,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
-all :: goto atlas acml mkl
+all :: goto mkl atlas acml
 
 ##################################### Slinpack ####################################################
 slinpack.goto : slinpack.$(SUFFIX) ../$(LIBNAME)
