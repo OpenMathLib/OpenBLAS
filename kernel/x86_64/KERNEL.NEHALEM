@@ -1,3 +1,5 @@
+SDOTKERNEL     = sdot.c
+
 DSYMV_U_KERNEL = dsymv_U.c
 DSYMV_L_KERNEL = dsymv_L.c
 SSYMV_U_KERNEL = ssymv_U.c

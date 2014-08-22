@@ -30,6 +30,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER) || defined(PILEDRIVER)
 #include "sdot_microk_bulldozer-2.c"
+#elif defined(NEHALEM)
+#include "sdot_microk_nehalem-2.c"
 #endif
 
 
