@@ -25,10 +25,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#define HAVE_KERNEL_16 1
-static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *dot) __attribute__ ((noinline));
+#define HAVE_KERNEL_8 1
+static void ddot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *dot) __attribute__ ((noinline));
 
-static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
+static void ddot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 {
 
 
@@ -36,44 +36,44 @@ static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 
 	__asm__  __volatile__
 	(
-	"xorps		%%xmm4, %%xmm4	             \n\t"
-	"xorps		%%xmm5, %%xmm5	             \n\t"
-	"xorps		%%xmm6, %%xmm6	             \n\t"
-	"xorps		%%xmm7, %%xmm7	             \n\t"
+	"xorpd		%%xmm4, %%xmm4	             \n\t"
+	"xorpd		%%xmm5, %%xmm5	             \n\t"
+	"xorpd		%%xmm6, %%xmm6	             \n\t"
+	"xorpd		%%xmm7, %%xmm7	             \n\t"
 
 	".align 16				            \n\t"
 	".L01LOOP%=:				            \n\t"
-        "movups                  (%2,%0,4), %%xmm12         \n\t"  // 4 * x
-        "movups                  (%3,%0,4), %%xmm8          \n\t"  // 4 * x
-        "movups                16(%2,%0,4), %%xmm13         \n\t"  // 4 * x
-        "movups                16(%3,%0,4), %%xmm9          \n\t"  // 4 * x
-        "movups                32(%2,%0,4), %%xmm14         \n\t"  // 4 * x
-        "movups                32(%3,%0,4), %%xmm10         \n\t"  // 4 * x
-        "movups                48(%2,%0,4), %%xmm15         \n\t"  // 4 * x
-        "movups                48(%3,%0,4), %%xmm11         \n\t"  // 4 * x
 
-	"mulps          %%xmm8 , %%xmm12 		    \n\t"  
-	"mulps          %%xmm9 , %%xmm13 		    \n\t"  
-	"mulps          %%xmm10, %%xmm14 		    \n\t"  
-	"mulps          %%xmm11, %%xmm15 		    \n\t"  
+        "movups                  (%2,%0,8), %%xmm12         \n\t"  // 2 * x
+        "movups                  (%3,%0,8), %%xmm8          \n\t"  // 2 * y
+        "movups                16(%2,%0,8), %%xmm13         \n\t"  // 2 * x
+        "movups                16(%3,%0,8), %%xmm9          \n\t"  // 2 * y
+        "movups                32(%2,%0,8), %%xmm14         \n\t"  // 2 * x
+        "movups                32(%3,%0,8), %%xmm10         \n\t"  // 2 * y
+        "movups                48(%2,%0,8), %%xmm15         \n\t"  // 2 * x
+        "movups                48(%3,%0,8), %%xmm11         \n\t"  // 2 * y
 
-	"addps		%%xmm12, %%xmm4   \n\t"
-	"addps		%%xmm13, %%xmm5   \n\t"
-	"addps		%%xmm14, %%xmm6   \n\t"
-	"addps		%%xmm15, %%xmm7   \n\t"
+	"mulpd          %%xmm8 , %%xmm12 		    \n\t"  
+	"mulpd          %%xmm9 , %%xmm13 		    \n\t"  
+	"mulpd          %%xmm10, %%xmm14 		    \n\t"  
+	"mulpd          %%xmm11, %%xmm15 		    \n\t"  
 
-	"addq		$16, %0	  	 	             \n\t"
-	"subq	        $16, %1			             \n\t"		
+	"addpd		%%xmm12, %%xmm4   \n\t"
+	"addpd		%%xmm13, %%xmm5   \n\t"
+	"addpd		%%xmm14, %%xmm6   \n\t"
+	"addpd		%%xmm15, %%xmm7   \n\t"
+
+	"addq		$8 , %0	  	 	             \n\t"
+	"subq	        $8 , %1			             \n\t"		
 	"jnz		.L01LOOP%=		             \n\t"
 
-	"addps        %%xmm5, %%xmm4	\n\t"
-	"addps        %%xmm7, %%xmm6	\n\t"
-	"addps        %%xmm6, %%xmm4	\n\t"
+	"addpd        %%xmm5, %%xmm4	\n\t"
+	"addpd        %%xmm7, %%xmm6	\n\t"
+	"addpd        %%xmm6, %%xmm4	\n\t"
 
-	"haddps        %%xmm4, %%xmm4	\n\t"
-	"haddps        %%xmm4, %%xmm4	\n\t"
+	"haddpd        %%xmm4, %%xmm4	\n\t"
 
-	"movss	       %%xmm4,    (%4)	\n\t"
+	"movsd	       %%xmm4,    (%4)	\n\t"
 
 	:
         : 
@@ -82,9 +82,9 @@ static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (dot)     // 4
-	: "cc", 
+	: "cc",  
 	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
-	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
