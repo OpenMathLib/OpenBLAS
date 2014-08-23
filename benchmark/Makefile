@@ -36,6 +36,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto \
        sdot.goto ddot.goto \
+       saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        ssymv.goto dsymv.goto csymv.goto zsymv.goto \
        chemv.goto zhemv.goto \
        chemm.goto zhemm.goto \
@@ -56,6 +57,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml \
        sdot.acml ddot.acml \
+       saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        ssymv.acml dsymv.acml csymv.acml zsymv.acml \
        chemv.acml zhemv.acml \
        chemm.acml zhemm.acml \
@@ -76,6 +78,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas \
        sdot.atlas ddot.atlas \
+       saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
        ssymv.atlas dsymv.atlas csymv.atlas zsymv.atlas \
        chemv.atlas zhemv.atlas \
        chemm.acml zhemm.acml \
@@ -97,6 +100,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl \
        sdot.mkl ddot.mkl \
+       saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
        ssymv.mkl dsymv.mkl csymv.mkl zsymv.mkl \
        chemv.mkl zhemv.mkl \
        chemm.mkl zhemm.mkl \
@@ -984,6 +988,61 @@ ddot.atlas : ddot.$(SUFFIX)
 ddot.mkl : ddot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Saxpy ####################################################
+saxpy.goto : saxpy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+saxpy.acml : saxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpy.atlas : saxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpy.mkl : saxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Daxpy ####################################################
+daxpy.goto : daxpy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+daxpy.acml : daxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpy.atlas : daxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpy.mkl : daxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Caxpy ####################################################
+
+caxpy.goto : caxpy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+caxpy.acml : caxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpy.atlas : caxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpy.mkl : caxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zaxpy ####################################################
+
+zaxpy.goto : zaxpy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zaxpy.acml : zaxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpy.atlas : zaxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpy.mkl : zaxpy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 
 ###################################################################################################
 
@@ -1179,8 +1238,17 @@ sdot.$(SUFFIX) : dot.c
 ddot.$(SUFFIX) : dot.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
+saxpy.$(SUFFIX) : axpy.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
+daxpy.$(SUFFIX) : axpy.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
+caxpy.$(SUFFIX) : axpy.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zaxpy.$(SUFFIX) : axpy.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 
 
