@@ -1,3 +1,5 @@
+SAXPYKERNEL = saxpy.c
+
 SDOTKERNEL     = sdot.c
 DDOTKERNEL     = ddot.c
 
