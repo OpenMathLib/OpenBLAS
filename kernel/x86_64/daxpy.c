@@ -31,6 +31,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NEHALEM)
 #include "daxpy_microk_nehalem-2.c"
+#elif defined(BULLDOZER)
+#include "daxpy_microk_bulldozer-2.c"
 #endif
 
 
