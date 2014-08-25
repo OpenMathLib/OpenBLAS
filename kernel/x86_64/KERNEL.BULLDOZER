@@ -1,5 +1,6 @@
 DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
+ZAXPYKERNEL = zaxpy.c
 
 SDOTKERNEL     = sdot.c
 DDOTKERNEL     = ddot.c
