@@ -28,81 +28,103 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(BULLDOZER) || defined(PILEDRIVER)
-#include "sdot_microk_bulldozer-2.c"
-#elif defined(NEHALEM)
-#include "sdot_microk_nehalem-2.c"
+
+#if defined(BULLDOZER)
+#include "caxpy_microk_bulldozer-2.c"
 #endif
 
 
-#ifndef HAVE_KERNEL_16
+#ifndef HAVE_KERNEL_8
 
-static void sdot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
+static void caxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
-	BLASLONG register i = 0;
-	FLOAT dot = 0.0;
+	BLASLONG register i  = 0;
+	BLASLONG register ix = 0;
+	FLOAT da_r = alpha[0];
+	FLOAT da_i = alpha[1];
+	
 
 	while(i < n)
         {
-              dot += y[i]  * x[i]
-                  + y[i+1] * x[i+1]
-                  + y[i+2] * x[i+2]
-                  + y[i+3] * x[i+3]
-                  + y[i+4] * x[i+4]
-                  + y[i+5] * x[i+5]
-                  + y[i+6] * x[i+6]
-                  + y[i+7] * x[i+7] ;
+#if !defined(CONJ)
+              y[ix]   += ( da_r * x[ix]   - da_i * x[ix+1] ) ;
+              y[ix+1] += ( da_r * x[ix+1] + da_i * x[ix]   ) ;
+              y[ix+2] += ( da_r * x[ix+2] - da_i * x[ix+3] ) ;
+              y[ix+3] += ( da_r * x[ix+3] + da_i * x[ix+2] ) ;
+#else
+              y[ix]   += ( da_r * x[ix]   + da_i * x[ix+1] ) ;
+              y[ix+1] -= ( da_r * x[ix+1] - da_i * x[ix]   ) ;
+              y[ix+2] += ( da_r * x[ix+2] + da_i * x[ix+3] ) ;
+              y[ix+3] -= ( da_r * x[ix+3] - da_i * x[ix+2] ) ;
+#endif
 
-              i+=8 ;
+              ix+=4 ;
+              i+=2 ;
 
        }
-       *d += dot;
 
 }
 
 #endif
 
-FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
+	FLOAT da[2];
 
-	FLOAT  dot = 0.0 ;
-
-	if ( n <= 0 )  return(dot);
+	if ( n <= 0 )  return(0);
 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -16;
+		int n1 = n & -8;
 
 		if ( n1 )
-			sdot_kernel_16(n1, x, y , &dot );
-
-
+		{
+			da[0] = da_r;
+			da[1] = da_i;
+			caxpy_kernel_8(n1, x, y , &da );
+			ix = 2 * n1;
+		}
 		i = n1;
 		while(i < n)
 		{
-
-			dot += y[i] * x[i] ;
+#if !defined(CONJ)
+                	y[ix]   += ( da_r * x[ix]   - da_i * x[ix+1] ) ;
+                	y[ix+1] += ( da_r * x[ix+1] + da_i * x[ix]   ) ;
+#else
+                	y[ix]   += ( da_r * x[ix]   + da_i * x[ix+1] ) ;
+                	y[ix+1] -= ( da_r * x[ix+1] - da_i * x[ix]   ) ;
+#endif
 			i++ ;
+			ix += 2;
 
 		}
-		return(dot);
+		return(0);
 
 
 	}
 
+	inc_x *=2;
+	inc_y *=2;
+
 	while(i < n)
 	{
 
-		dot += y[iy] * x[ix] ;
+#if !defined(CONJ)
+                y[iy]   += ( da_r * x[ix]   - da_i * x[ix+1] ) ;
+                y[iy+1] += ( da_r * x[ix+1] + da_i * x[ix]   ) ;
+#else
+                y[iy]   += ( da_r * x[ix]   + da_i * x[ix+1] ) ;
+                y[iy+1] -= ( da_r * x[ix+1] - da_i * x[ix]   ) ;
+#endif
 		ix  += inc_x ;
 		iy  += inc_y ;
 		i++ ;
 
 	}
-	return(dot);
+	return(0);
 
 }
 

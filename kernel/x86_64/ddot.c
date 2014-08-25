@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_8
 
-void ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
+static void ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 {
 	BLASLONG register i = 0;
 	FLOAT dot = 0.0;

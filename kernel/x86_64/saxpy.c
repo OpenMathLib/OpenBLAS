@@ -36,7 +36,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_16
 
-void saxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void saxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 	BLASLONG register i = 0;
 	FLOAT a = *alpha;
