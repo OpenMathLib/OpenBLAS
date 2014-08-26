@@ -1,6 +1,6 @@
 OpenBLAS ChangeLog
 ====================================================================
-Version 0.2.10
+Version 0.2.11
 18-Aug-2014
 common:
 	* Added some benchmark codes.
