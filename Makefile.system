@@ -350,11 +350,6 @@ ifeq ($(C_COMPILER), INTEL)
 CCOMMON_OPT    += -wd981
 endif
 
-ifeq ($(ARCH), x86_64)
-ifeq ($(C_COMPILER), CLANG)
-CCOMMON_OPT    += -no-integrated-as
-endif
-endif
 
 ifeq ($(USE_OPENMP), 1)
 # ifeq logical or. GCC or LSB
