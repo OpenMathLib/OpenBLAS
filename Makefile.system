@@ -339,7 +339,7 @@ FCOMMON_OPT	+= -m128bit-long-double
 endif
 ifeq ($(C_COMPILER), CLANG)
 EXPRECISION	= 1
-CCOMMON_OPT	+= -DEXPRECISION
+CCOMMON_OPT	+= -DEXPRECISION 
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -348,6 +348,12 @@ endif
 
 ifeq ($(C_COMPILER), INTEL)
 CCOMMON_OPT    += -wd981
+endif
+
+ifeq ($(ARCH), x86_64)
+ifeq ($(C_COMPILER), CLANG)
+CCOMMON_OPT    += -no-integrated-as
+endif
 endif
 
 ifeq ($(USE_OPENMP), 1)
