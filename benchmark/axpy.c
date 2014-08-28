@@ -33,24 +33,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#undef GEMM
+#undef AXPY
 
-#ifndef COMPLEX
-
+#ifdef COMPLEX
 #ifdef DOUBLE
-#define GEMM   BLASFUNC(dgemm)
+#define AXPY   BLASFUNC(zaxpy)
 #else
-#define GEMM   BLASFUNC(sgemm)
+#define AXPY   BLASFUNC(caxpy)
 #endif
-
 #else
-
 #ifdef DOUBLE
-#define GEMM   BLASFUNC(zgemm)
+#define AXPY   BLASFUNC(daxpy)
 #else
-#define GEMM   BLASFUNC(cgemm)
+#define AXPY   BLASFUNC(saxpy)
 #endif
-
 #endif
 
 #if defined(__WIN32__) || defined(__WIN64__)
@@ -120,11 +116,10 @@ static void *huge_malloc(BLASLONG size){
 
 int MAIN__(int argc, char *argv[]){
 
-  FLOAT *a, *b, *c;
-  FLOAT alpha[] = {1.0, 1.0};
-  FLOAT beta [] = {1.0, 1.0};
-  char trans='N';
-  blasint m, i, j;
+  FLOAT *x, *y;
+  FLOAT alpha[2] = { 2.0, 2.0 };
+  blasint m, i;
+  blasint inc_x=1,inc_y=1;
   int loops = 1;
   int l;
   char *p;
@@ -142,26 +137,19 @@ int MAIN__(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  if ((p = getenv("OPENBLAS_TRANS")))  trans=*p;
+  if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
+  if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
+  if ((p = getenv("OPENBLAS_INCY")))   inc_y = atoi(p);
 
-  fprintf(stderr, "From : %3d  To : %3d Step=%d : Trans=%c\n", from, to, step, trans);
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,inc_x,inc_y,loops);
 
-  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
+  if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-  if (( b = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
+  if (( y = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_y) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-
-  if (( c = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
-    fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
-
-  p = getenv("OPENBLAS_LOOPS");
-  if ( p != NULL )
-	loops = atoi(p);
-
 
 #ifdef linux
   srandom(getpid());
@@ -172,24 +160,24 @@ int MAIN__(int argc, char *argv[]){
   for(m = from; m <= to; m += step)
   {
 
-    timeg=0;
+   timeg=0;
 
-    fprintf(stderr, " %6d : ", (int)m);
+   fprintf(stderr, " %6d : ", (int)m);
 
-    for (l=0; l<loops; l++)
-    {
-  
-    	for(j = 0; j < m; j++){
-      		for(i = 0; i < m * COMPSIZE; i++){
-			a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-			b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-			c[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-      		}
-    	}
 
+   for (l=0; l<loops; l++)
+   {
+
+   	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
+			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   	}
+
+   	for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
+			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   	}
     	gettimeofday( &start, (struct timezone *)0);
 
-    	GEMM (&trans, &trans, &m, &m, &m, alpha, a, &m, b, &m, beta, c, &m );
+    	AXPY (&m, alpha, x, &inc_x, y, &inc_y );
 
     	gettimeofday( &stop, (struct timezone *)0);
 
@@ -200,9 +188,10 @@ int MAIN__(int argc, char *argv[]){
     }
 
     timeg /= loops;
+
     fprintf(stderr,
 	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)m / timeg * 1.e-6);
+	    COMPSIZE * COMPSIZE * 2. * (double)m / timeg * 1.e-6);
 
   }
 

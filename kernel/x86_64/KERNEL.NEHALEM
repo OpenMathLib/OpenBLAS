@@ -1,5 +1,17 @@
+SAXPYKERNEL = saxpy.c
+DAXPYKERNEL = daxpy.c
+
+SDOTKERNEL     = sdot.c
+DDOTKERNEL     = ddot.c
+
+DSYMV_U_KERNEL = dsymv_U.c
+DSYMV_L_KERNEL = dsymv_L.c
+SSYMV_U_KERNEL = ssymv_U.c
+SSYMV_L_KERNEL = ssymv_L.c
+
 SGEMVNKERNEL = sgemv_n.c
 SGEMVTKERNEL = sgemv_t.c
+DGEMVNKERNEL = dgemv_n.c
 
 SGEMMKERNEL    =  gemm_kernel_4x8_nehalem.S
 SGEMMINCOPY    =  gemm_ncopy_4.S

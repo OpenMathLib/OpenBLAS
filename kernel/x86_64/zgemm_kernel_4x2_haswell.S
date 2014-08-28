@@ -222,8 +222,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         VFMADDPD_I(        %ymm5 ,%ymm3,%ymm0 )
         VFMADDPD_I(        %ymm7 ,%ymm3,%ymm1 )
 
-        addq    $6*SIZE, BO                           
-        addq    $8*SIZE, AO                           
+        addq    $ 6*SIZE, BO                           
+        addq    $ 8*SIZE, AO                           
         decq	%rax                         
 .endm
 
@@ -362,8 +362,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         VFMADDPD_I(        %xmm5 ,%xmm3,%xmm0 )
         VFMADDPD_I(        %xmm7 ,%xmm3,%xmm1 )
 
-        addq    $6*SIZE, BO                           
-        addq    $4*SIZE, AO                           
+        addq    $ 6*SIZE, BO                           
+        addq    $ 4*SIZE, AO                           
         decq    %rax                         
 .endm
 
@@ -491,8 +491,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         VFMADDPD_R(        %xmm4 ,%xmm2,%xmm0 )
         VFMADDPD_I(        %xmm5 ,%xmm3,%xmm0 )
 
-        addq    $6*SIZE, BO                           
-        addq    $2*SIZE, AO                           
+        addq    $ 6*SIZE, BO                           
+        addq    $ 2*SIZE, AO                           
         decq    %rax                         
 .endm
 
