@@ -151,23 +151,26 @@ int MAIN__(int argc, char *argv[]){
   if ((p = getenv("OPENBLAS_TRANS")))  trans=*p;
   if ((p = getenv("OPENBLAS_PARAM_N"))) {
 	  n = atoi(p);
-	  if ((n>0) && (n<=to)) has_param_n = 1;
+	  if ((n>0)) has_param_n = 1;
   }
+
+  int tomax = to;
+  if ( n > tomax ) tomax = n;
 
   if ( has_param_n == 1 )
     fprintf(stderr, "From : %3d  To : %3d Step = %3d Trans = '%c' N = %d Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,trans,n,inc_x,inc_y,loops);
   else
     fprintf(stderr, "From : %3d  To : %3d Step = %3d Trans = '%c' Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,trans,inc_x,inc_y,loops);
 
-  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
+  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * tomax * tomax * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-  if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
+  if (( x = (FLOAT *)malloc(sizeof(FLOAT) * tomax * abs(inc_x) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-  if (( y = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_y) * COMPSIZE)) == NULL){
+  if (( y = (FLOAT *)malloc(sizeof(FLOAT) * tomax * abs(inc_y) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
