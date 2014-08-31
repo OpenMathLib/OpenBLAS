@@ -273,28 +273,24 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	}
 
 	if ( m3 == 0 ) return(0);
-	xbuffer = buffer;
+
 	x_ptr = x;
+	a_ptr = a;
 	for ( i=0; i< m3; i++ )
 	{
-		xbuffer[i] = *x_ptr;
-		x_ptr += inc_x;
-	}
-	j=0;
-	a_ptr = a;
-	y_ptr = y;
-	while ( j < n)
-	{
-		FLOAT temp = 0.0;
-		for( i = 0; i < m3; i++ )
+		FLOAT xtemp = *x_ptr * alpha;
+		FLOAT *aj = a_ptr;
+		y_ptr = y;
+		for ( j=0; j<n; j++ )
 		{
-			temp += a_ptr[i] * xbuffer[i];
+			*y_ptr += *aj * xtemp;
+			 y_ptr += inc_y;
+			 aj    += lda;
 		}
-		a_ptr += lda;
-		y_ptr[0] += alpha * temp;
-		y_ptr += inc_y;
-		j++;
+		x_ptr += inc_x;
+		a_ptr++ ;
 	}
+	
 	return(0);
 }
 
