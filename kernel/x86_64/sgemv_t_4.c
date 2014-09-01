@@ -64,23 +64,63 @@ static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	
 #endif
 
+static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT *y)  __attribute__ ((noinline));
+
+static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT *y)
+{
+	BLASLONG i;
+
+	i=0;
+
+        __asm__  __volatile__
+ 	(
+	"xorps %%xmm10 , %%xmm10		\n\t"
+	"xorps %%xmm11 , %%xmm11		\n\t"
+
+        ".align 16                              \n\t"
+        ".L01LOOP%=:                            \n\t"
+
+	"movups  (%5,%0,4) , %%xmm14		\n\t" // x
+	"movups  (%3,%0,4) , %%xmm12		\n\t" // ap0
+	"movups  (%4,%0,4) , %%xmm13		\n\t" // ap1
+	"mulps   %%xmm14   , %%xmm12 		\n\t"
+	"mulps   %%xmm14   , %%xmm13 		\n\t"
+        "addq           $4 , %0                 \n\t"
+	"addps   %%xmm12   , %%xmm10		\n\t"
+        "subq           $4 , %1                 \n\t"
+	"addps   %%xmm13   , %%xmm11		\n\t"
+
+        "jnz            .L01LOOP%=              \n\t"
+
+	"haddps        %%xmm10, %%xmm10         \n\t"
+	"haddps        %%xmm11, %%xmm11         \n\t"
+	"haddps        %%xmm10, %%xmm10         \n\t"
+	"haddps        %%xmm11, %%xmm11         \n\t"
+
+	"movss	       %%xmm10, (%2)	        \n\t"
+	"movss	       %%xmm11,4(%2)	        \n\t"
+
+        :
+   	:
+	"r" (i),	 // 0
+	"r" (n),	 // 1
+        "r" (y),         // 2    
+        "r" (ap0),       // 3
+        "r" (ap1),       // 4
+        "r" (x)          // 5
+        : "cc",
+       	"%xmm10", "%xmm11", "%xmm12",
+       	"memory"
+       	);
+
+
+}
+	
 static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)  __attribute__ ((noinline));
 
 static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 {
 	BLASLONG i;
-	FLOAT *a0;
-	a0 = ap;
-	FLOAT temp = 0.0;
-
-	if (n <=0 ) return;
-/*
-	for ( i=0; i< n; i+=4 )
-	{
-		temp += a0[i]*x[i] + a0[i+1]*x[i+1] + a0[i+2]*x[i+2] + a0[i+3]*x[i+3];		
-	}
-	*y = temp;
-*/
 
 	i=0;
 
@@ -259,7 +299,19 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			a_ptr += n1 * lda4 ;
 		}
 
-		for( i = 0; i < n2 ; i++)
+		if ( n2 & 2 )
+		{
+
+			sgemv_kernel_4x2(NB,ap[0],ap[1],xbuffer,ybuffer);
+			a_ptr  += lda * 2;
+			*y_ptr += ybuffer[0] * alpha;
+			y_ptr  += inc_y;
+			*y_ptr += ybuffer[1] * alpha;
+			y_ptr  += inc_y;
+
+		}
+
+		if ( n2 & 1 )
 		{
 
 			sgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer);
@@ -276,20 +328,55 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 	x_ptr = x;
 	a_ptr = a;
-	for ( i=0; i< m3; i++ )
+	if ( m3 == 3 )
 	{
-		FLOAT xtemp = *x_ptr * alpha;
+		FLOAT xtemp0 = *x_ptr * alpha;
+		x_ptr += inc_x;
+		FLOAT xtemp1 = *x_ptr * alpha;
+		x_ptr += inc_x;
+		FLOAT xtemp2 = *x_ptr * alpha;
+
 		FLOAT *aj = a_ptr;
 		y_ptr = y;
 		for ( j=0; j<n; j++ )
 		{
-			*y_ptr += *aj * xtemp;
+			*y_ptr += *aj * xtemp0 + *(aj+1) * xtemp1 + *(aj+2) *xtemp2;
 			 y_ptr += inc_y;
 			 aj    += lda;
 		}
-		x_ptr += inc_x;
-		a_ptr++ ;
+		return(0);
+
 	}
+
+	if ( m3 == 2 )
+	{
+		FLOAT xtemp0 = *x_ptr * alpha;
+		x_ptr += inc_x;
+		FLOAT xtemp1 = *x_ptr * alpha;
+
+		FLOAT *aj = a_ptr;
+		y_ptr = y;
+		for ( j=0; j<n; j++ )
+		{
+			*y_ptr += *aj * xtemp0 + *(aj+1) * xtemp1 ;
+			 y_ptr += inc_y;
+			 aj    += lda;
+		}
+		return(0);
+
+	}
+
+	FLOAT xtemp = *x_ptr * alpha;
+	FLOAT *aj = a_ptr;
+	y_ptr = y;
+	for ( j=0; j<n; j++ )
+	{
+		*y_ptr += *aj * xtemp;
+		 y_ptr += inc_y;
+		 aj    += lda;
+	}
+	x_ptr += inc_x;
+	a_ptr++ ;
 	
 	return(0);
 }
