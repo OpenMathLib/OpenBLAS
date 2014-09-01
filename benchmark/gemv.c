@@ -128,6 +128,7 @@ int MAIN__(int argc, char *argv[]){
   blasint inc_x=1,inc_y=1;
   blasint n=0;
   int has_param_n = 0;
+  int has_param_m = 0;
   int loops = 1;
   int l;
   char *p;
@@ -145,6 +146,9 @@ int MAIN__(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
+
+  int tomax = to;
+
   if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
   if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
   if ((p = getenv("OPENBLAS_INCY")))   inc_y = atoi(p);
@@ -152,15 +156,18 @@ int MAIN__(int argc, char *argv[]){
   if ((p = getenv("OPENBLAS_PARAM_N"))) {
 	  n = atoi(p);
 	  if ((n>0)) has_param_n = 1;
+  	  if ( n > tomax ) tomax = n;
   }
+  if ( has_param_n == 0 )
+  	if ((p = getenv("OPENBLAS_PARAM_M"))) {
+		  m = atoi(p);
+		  if ((m>0)) has_param_m = 1;
+  	  	  if ( m > tomax ) tomax = m;
+  	}
 
-  int tomax = to;
-  if ( n > tomax ) tomax = n;
 
-  if ( has_param_n == 1 )
-    fprintf(stderr, "From : %3d  To : %3d Step = %3d Trans = '%c' N = %d Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,trans,n,inc_x,inc_y,loops);
-  else
-    fprintf(stderr, "From : %3d  To : %3d Step = %3d Trans = '%c' Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,trans,inc_x,inc_y,loops);
+
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Trans = '%c' Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,trans,inc_x,inc_y,loops);
 
   if (( a = (FLOAT *)malloc(sizeof(FLOAT) * tomax * tomax * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
@@ -180,50 +187,80 @@ int MAIN__(int argc, char *argv[]){
 
   fprintf(stderr, "   SIZE       Flops\n");
 
-  for(m = from; m <= to; m += step)
+  if (has_param_m == 0)
   {
 
-   timeg=0;
+  	for(m = from; m <= to; m += step)
+  	{
+   		timeg=0;
+   		if ( has_param_n == 0 ) n = m;
+   		fprintf(stderr, " %6dx%d : ", (int)m,(int)n);
+   		for(j = 0; j < m; j++){
+      			for(i = 0; i < n * COMPSIZE; i++){
+				a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      			}
+   		}
 
-   if ( has_param_n == 0 ) n = m;
+    		for (l=0; l<loops; l++)
+    		{
 
-   fprintf(stderr, " %6dx%d : ", (int)m,(int)n);
+   			for(i = 0; i < n * COMPSIZE * abs(inc_x); i++){
+				x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   			}
 
-   for(j = 0; j < m; j++){
-      		for(i = 0; i < n * COMPSIZE; i++){
-			a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-      		}
-   }
+   			for(i = 0; i < n * COMPSIZE * abs(inc_y); i++){
+				y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   			}
+    			gettimeofday( &start, (struct timezone *)0);
+    			GEMV (&trans, &m, &n, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
+    			gettimeofday( &stop, (struct timezone *)0);
+    			time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+			timeg += time1;
 
+    		}
 
-    for (l=0; l<loops; l++)
-    {
+    		timeg /= loops;
 
-   	for(i = 0; i < n * COMPSIZE * abs(inc_x); i++){
-			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
+    		fprintf(stderr, " %10.2f MFlops\n", COMPSIZE * COMPSIZE * 2. * (double)m * (double)n / timeg * 1.e-6);
 
-   	for(i = 0; i < n * COMPSIZE * abs(inc_y); i++){
-			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
-    	gettimeofday( &start, (struct timezone *)0);
+  	}
+  }
+  else
+  {
 
-    	GEMV (&trans, &m, &n, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
+  	for(n = from; n <= to; n += step)
+  	{
+   		timeg=0;
+   		fprintf(stderr, " %6dx%d : ", (int)m,(int)n);
+   		for(j = 0; j < m; j++){
+      			for(i = 0; i < n * COMPSIZE; i++){
+				a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      			}
+   		}
 
-    	gettimeofday( &stop, (struct timezone *)0);
+    		for (l=0; l<loops; l++)
+    		{
 
-    	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+   			for(i = 0; i < n * COMPSIZE * abs(inc_x); i++){
+				x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   			}
 
-	timeg += time1;
+   			for(i = 0; i < n * COMPSIZE * abs(inc_y); i++){
+				y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   			}
+    			gettimeofday( &start, (struct timezone *)0);
+    			GEMV (&trans, &m, &n, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
+    			gettimeofday( &stop, (struct timezone *)0);
+    			time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+			timeg += time1;
 
-    }
+    		}
 
-    timeg /= loops;
+    		timeg /= loops;
 
-    fprintf(stderr,
-	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)n / timeg * 1.e-6);
+    		fprintf(stderr, " %10.2f MFlops\n", COMPSIZE * COMPSIZE * 2. * (double)m * (double)n / timeg * 1.e-6);
 
+  	}
   }
 
   return 0;
