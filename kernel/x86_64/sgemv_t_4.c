@@ -30,6 +30,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NEHALEM)
 #include "sgemv_t_microk_nehalem-4.c"
+#elif defined(BULLDOZER)
+#include "sgemv_t_microk_bulldozer-4.c"
 #endif
 
 #define NBMAX 4096
@@ -202,9 +204,9 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
 	"movups  (%4,%0,4) , %%xmm11		\n\t"
 	"mulps   %%xmm10   , %%xmm12 		\n\t"
         "addq           $4 , %0                 \n\t"
-	"addps   %%xmm11   , %%xmm12		\n\t"
+	"addps   %%xmm12   , %%xmm11		\n\t"
         "subq           $4 , %1                 \n\t"
-	"movups  %%xmm12, -16(%4,%0,4)		\n\t"
+	"movups  %%xmm11, -16(%4,%0,4)		\n\t"
 
         "jnz            .L01LOOP%=              \n\t"
 
