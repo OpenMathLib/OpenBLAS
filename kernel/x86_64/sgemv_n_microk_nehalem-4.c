@@ -58,13 +58,15 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
-	"movups	       (%3,%0,4), %%xmm4	 \n\t"	// 4 * y
 	"xorps           %%xmm5 , %%xmm5	 \n\t"
+	"movups	       (%3,%0,4), %%xmm4	 \n\t"	// 4 * y
 
+	".align 2				       \n\t"
 	"movups             (%4,%0,4), %%xmm8          \n\t" 
 	"movups             (%5,%0,4), %%xmm9          \n\t" 
 	"movups             (%6,%0,4), %%xmm10         \n\t" 
 	"movups             (%7,%0,4), %%xmm11         \n\t" 
+	".align 2				       \n\t"
 	"mulps		%%xmm12, %%xmm8		       \n\t"
 	"mulps		%%xmm13, %%xmm9		       \n\t"
 	"mulps		%%xmm14, %%xmm10	       \n\t"
@@ -78,6 +80,7 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"movups             (%5,%8,4), %%xmm9          \n\t" 
 	"movups             (%6,%8,4), %%xmm10         \n\t" 
 	"movups             (%7,%8,4), %%xmm11         \n\t" 
+	".align 2				       \n\t"
 	"mulps		%%xmm0 , %%xmm8		       \n\t"
 	"mulps		%%xmm1 , %%xmm9		       \n\t"
 	"mulps		%%xmm2 , %%xmm10	       \n\t"
