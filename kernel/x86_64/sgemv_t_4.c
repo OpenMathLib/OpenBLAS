@@ -32,6 +32,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_t_microk_nehalem-4.c"
 #elif defined(BULLDOZER)
 #include "sgemv_t_microk_bulldozer-4.c"
+#elif defined(SANDYBRIDGE)
+#include "sgemv_t_microk_sandy-4.c"
 #endif
 
 #define NBMAX 4096
