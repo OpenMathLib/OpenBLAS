@@ -80,9 +80,9 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
  	(
 	"xorps %%xmm10 , %%xmm10		\n\t"
 	"xorps %%xmm11 , %%xmm11		\n\t"
-
-        ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+		
+	"testq	$4 , %1				\n\t"
+	"jz	.L01LABEL%=			\n\t"
 
 	"movups  (%5,%0,4) , %%xmm14		\n\t" // x
 	"movups  (%3,%0,4) , %%xmm12		\n\t" // ap0
@@ -94,7 +94,35 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
         "subq           $4 , %1                 \n\t"
 	"addps   %%xmm13   , %%xmm11		\n\t"
 
+        ".L01LABEL%=:                           \n\t"
+
+	"cmpq	$0, %1				\n\t"
+	"je	.L01END%=			\n\t"
+
+        ".align 16                              \n\t"
+        ".L01LOOP%=:                            \n\t"
+
+	"movups  (%5,%0,4) , %%xmm14		\n\t" // x
+	"movups  (%3,%0,4) , %%xmm12		\n\t" // ap0
+	"movups  (%4,%0,4) , %%xmm13		\n\t" // ap1
+	"mulps   %%xmm14   , %%xmm12 		\n\t"
+	"mulps   %%xmm14   , %%xmm13 		\n\t"
+	"addps   %%xmm12   , %%xmm10		\n\t"
+	"addps   %%xmm13   , %%xmm11		\n\t"
+
+	"movups  16(%5,%0,4) , %%xmm14		\n\t" // x
+	"movups  16(%3,%0,4) , %%xmm12		\n\t" // ap0
+	"movups  16(%4,%0,4) , %%xmm13		\n\t" // ap1
+	"mulps   %%xmm14   , %%xmm12 		\n\t"
+	"mulps   %%xmm14   , %%xmm13 		\n\t"
+	"addps   %%xmm12   , %%xmm10		\n\t"
+	"addps   %%xmm13   , %%xmm11		\n\t"
+
+        "addq           $8 , %0                 \n\t"
+        "subq           $8 , %1                 \n\t"
         "jnz            .L01LOOP%=              \n\t"
+
+        ".L01END%=:                             \n\t"
 
 	"haddps        %%xmm10, %%xmm10         \n\t"
 	"haddps        %%xmm11, %%xmm11         \n\t"
@@ -113,7 +141,8 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
         "r" (ap1),       // 4
         "r" (x)          // 5
         : "cc",
-       	"%xmm10", "%xmm11", "%xmm12",
+       	"%xmm4", "%xmm5", "%xmm10", "%xmm11",
+       	"%xmm12", "%xmm13", "%xmm14", "%xmm15",
        	"memory"
        	);
 
@@ -130,10 +159,11 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 
         __asm__  __volatile__
  	(
+	"xorps %%xmm9  , %%xmm9 		\n\t"
 	"xorps %%xmm10 , %%xmm10		\n\t"
-
-        ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+	
+	"testq	$4 , %1				\n\t"
+	"jz	.L01LABEL%=			\n\t"
 
 	"movups  (%3,%0,4) , %%xmm12		\n\t"
 	"movups  (%4,%0,4) , %%xmm11		\n\t"
@@ -142,8 +172,30 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"addps   %%xmm12   , %%xmm10		\n\t"
         "subq           $4 , %1                 \n\t"
 
+        ".L01LABEL%=:                           \n\t"
+
+	"cmpq	$0, %1				\n\t"
+	"je	.L01END%=			\n\t"
+
+        ".align 16                              \n\t"
+        ".L01LOOP%=:                            \n\t"
+
+	"movups    (%3,%0,4) , %%xmm12		\n\t"
+	"movups  16(%3,%0,4) , %%xmm14		\n\t"
+	"movups    (%4,%0,4) , %%xmm11		\n\t"
+	"movups  16(%4,%0,4) , %%xmm13		\n\t"
+	"mulps   %%xmm11   , %%xmm12 		\n\t"
+	"mulps   %%xmm13   , %%xmm14 		\n\t"
+        "addq           $8 , %0                 \n\t"
+	"addps   %%xmm12   , %%xmm10		\n\t"
+        "subq           $8 , %1                 \n\t"
+	"addps   %%xmm14   , %%xmm9 		\n\t"
+
         "jnz            .L01LOOP%=              \n\t"
 
+        ".L01END%=:                             \n\t"
+
+	"addps	       %%xmm9 , %%xmm10         \n\t"
 	"haddps        %%xmm10, %%xmm10         \n\t"
 	"haddps        %%xmm10, %%xmm10         \n\t"
 
@@ -157,7 +209,8 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
         "r" (ap),        // 3
         "r" (x)          // 4
         : "cc",
-       	"%xmm10", "%xmm11", "%xmm12",
+       	"%xmm9", "%xmm10" ,
+       	"%xmm11", "%xmm12", "%xmm13", "%xmm14",
        	"memory"
        	);
 
