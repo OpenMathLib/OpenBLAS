@@ -251,7 +251,9 @@ void blas_set_parameter(void){
 
   env_var_t p;
   int factor;
-#if !defined(BULLDOZER)
+#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(SANDYBRIDGE) || defined(NEHALEM) || defined(HASWELL)
+  int size = 16;
+#else
   int size = get_L2_size();
 #endif
 

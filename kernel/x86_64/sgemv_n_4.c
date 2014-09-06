@@ -33,6 +33,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_n_microk_bulldozer-4.c"
 #elif defined(NEHALEM)
 #include "sgemv_n_microk_nehalem-4.c"
+#elif defined(SANDYBRIDGE)
+#include "sgemv_n_microk_sandy-4.c"
 #endif
 
 
