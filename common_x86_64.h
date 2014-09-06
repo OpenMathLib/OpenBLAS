@@ -105,8 +105,8 @@ static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 }
 
 /*
-
 #define WHEREAMI
+*/
 
 static inline int WhereAmI(void){
   int eax, ebx, ecx, edx;
@@ -118,7 +118,6 @@ static inline int WhereAmI(void){
   return apicid;
 }
 
-*/
 
 #ifdef CORE_BARCELONA
 #define IFLUSH		gotoblas_iflush()
