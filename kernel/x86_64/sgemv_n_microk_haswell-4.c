@@ -105,41 +105,42 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
+	// "prefetcht0	 192(%3,%0,4)		       \n\t"
 	"vmovups	(%3,%0,4), %%ymm4	 \n\t"	// 8 * y
 	"vmovups      32(%3,%0,4), %%ymm5	 \n\t"	// 8 * y
 
-	"prefetcht0	 192(%4,%0,4)		       \n\t"
+	// "prefetcht0	 192(%4,%0,4)		       \n\t"
 	"vfmadd231ps   (%4,%0,4), %%ymm12, %%ymm4      \n\t" 
 	"vfmadd231ps 32(%4,%0,4), %%ymm12, %%ymm5      \n\t" 
-	"prefetcht0	 192(%5,%0,4)		       \n\t"
+	// "prefetcht0	 192(%5,%0,4)		       \n\t"
 	"vfmadd231ps   (%5,%0,4), %%ymm13, %%ymm4      \n\t" 
 	"vfmadd231ps 32(%5,%0,4), %%ymm13, %%ymm5      \n\t" 
-	"prefetcht0	 192(%6,%0,4)		       \n\t"
+	// "prefetcht0	 192(%6,%0,4)		       \n\t"
 	"vfmadd231ps   (%6,%0,4), %%ymm14, %%ymm4      \n\t" 
 	"vfmadd231ps 32(%6,%0,4), %%ymm14, %%ymm5      \n\t" 
-	"prefetcht0	 192(%7,%0,4)		       \n\t"
+	// "prefetcht0	 192(%7,%0,4)		       \n\t"
 	"vfmadd231ps   (%7,%0,4), %%ymm15, %%ymm4      \n\t" 
 	"vfmadd231ps 32(%7,%0,4), %%ymm15, %%ymm5      \n\t" 
 
-	"prefetcht0	 192(%4,%8,4)		       \n\t"
+	// "prefetcht0	 192(%4,%8,4)		       \n\t"
 	"vfmadd231ps   (%4,%8,4), %%ymm0 , %%ymm4      \n\t" 
+        "addq		$16, %0	  	 	      \n\t"
 	"vfmadd231ps 32(%4,%8,4), %%ymm0 , %%ymm5      \n\t" 
-	"prefetcht0	 192(%5,%8,4)		       \n\t"
+	// "prefetcht0	 192(%5,%8,4)		       \n\t"
 	"vfmadd231ps   (%5,%8,4), %%ymm1 , %%ymm4      \n\t" 
 	"vfmadd231ps 32(%5,%8,4), %%ymm1 , %%ymm5      \n\t" 
-	"prefetcht0	 192(%6,%8,4)		       \n\t"
+	// "prefetcht0	 192(%6,%8,4)		       \n\t"
 	"vfmadd231ps   (%6,%8,4), %%ymm2 , %%ymm4      \n\t" 
 	"vfmadd231ps 32(%6,%8,4), %%ymm2 , %%ymm5      \n\t" 
-	"prefetcht0	 192(%7,%8,4)		       \n\t"
+	// "prefetcht0	 192(%7,%8,4)		       \n\t"
 	"vfmadd231ps   (%7,%8,4), %%ymm3 , %%ymm4      \n\t" 
 	"vfmadd231ps 32(%7,%8,4), %%ymm3 , %%ymm5      \n\t" 
 
-	"vmovups  %%ymm4,   (%3,%0,4)		      \n\t"	// 8 * y
-	"vmovups  %%ymm5, 32(%3,%0,4)		      \n\t"	// 8 * y
-
         "addq		$16, %8	  	 	      \n\t"
-        "addq		$16, %0	  	 	      \n\t"
+	"vmovups  %%ymm4,-64(%3,%0,4)		      \n\t"	// 8 * y
 	"subq	        $16, %1			      \n\t"		
+	"vmovups  %%ymm5,-32(%3,%0,4)		      \n\t"	// 8 * y
+
 	"jnz		.L01LOOP%=		      \n\t"
 
         ".L16END%=:                             \n\t"
