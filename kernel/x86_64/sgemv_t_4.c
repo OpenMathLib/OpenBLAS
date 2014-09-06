@@ -446,12 +446,45 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		}
 		else
 		{
-			for ( j=0; j<n; j++ )
+
+			if ( inc_y == 1 )
 			{
-				*y_ptr += *aj * xtemp0 + *(aj+1) * xtemp1 + *(aj+2) * xtemp2;
-			 	y_ptr += inc_y;
-			 	aj    += lda;
+
+				BLASLONG register lda2 = lda << 1;
+				BLASLONG register lda4 = lda << 2;
+				BLASLONG register lda3 = lda2 + lda;
+
+				for ( j=0; j< ( n & -4 ); j+=4 )
+				{
+
+					y_ptr[j]    += *aj        * xtemp0 + *(aj+1)      * xtemp1 + *(aj+2)      * xtemp2;
+					y_ptr[j+1]  += *(aj+lda)  * xtemp0 + *(aj+lda+1)  * xtemp1 + *(aj+lda+2)  * xtemp2;
+					y_ptr[j+2]  += *(aj+lda2) * xtemp0 + *(aj+lda2+1) * xtemp1 + *(aj+lda2+2) * xtemp2;
+					y_ptr[j+3]  += *(aj+lda3) * xtemp0 + *(aj+lda3+1) * xtemp1 + *(aj+lda3+2) * xtemp2;
+			 		aj          += lda4;
+				}
+
+				for ( ; j< n ; j++ )
+				{
+
+					y_ptr[j]    += *aj * xtemp0 + *(aj+1) * xtemp1 + *(aj+2) * xtemp2 ;
+			 		aj          += lda;
+				}
+
 			}
+			else
+			{
+
+				for ( j=0; j<n; j++ )
+				{
+					*y_ptr += *aj * xtemp0 + *(aj+1) * xtemp1 + *(aj+2) * xtemp2;
+				 	y_ptr += inc_y;
+			 		aj    += lda;
+				}
+
+
+			}
+
 		}
 		return(0);
 	}
@@ -487,14 +520,40 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		}
 		else
 		{
-
-			for ( j=0; j<n; j++ )
+			if ( inc_y == 1 )
 			{
-				*y_ptr += *aj * xtemp0 + *(aj+1) * xtemp1 ;
-			 	y_ptr += inc_y;
-			 	aj    += lda;
-			}
 
+				BLASLONG register lda2 = lda << 1;
+				BLASLONG register lda4 = lda << 2;
+				BLASLONG register lda3 = lda2 + lda;
+
+				for ( j=0; j< ( n & -4 ); j+=4 )
+				{
+
+					y_ptr[j]    += *aj        * xtemp0 + *(aj+1)      * xtemp1 ;
+					y_ptr[j+1]  += *(aj+lda)  * xtemp0 + *(aj+lda+1)  * xtemp1 ;
+					y_ptr[j+2]  += *(aj+lda2) * xtemp0 + *(aj+lda2+1) * xtemp1 ;
+					y_ptr[j+3]  += *(aj+lda3) * xtemp0 + *(aj+lda3+1) * xtemp1 ;
+			 		aj          += lda4;
+				}
+
+				for ( ; j< n ; j++ )
+				{
+
+					y_ptr[j]    += *aj * xtemp0 + *(aj+1) * xtemp1 ;
+			 		aj          += lda;
+				}
+
+			}
+			else
+			{
+				for ( j=0; j<n; j++ )
+				{
+					*y_ptr += *aj * xtemp0 + *(aj+1) * xtemp1 ;
+			 		y_ptr += inc_y;
+			 		aj    += lda;
+				}
+			}
 
 		}
 		return(0);
@@ -523,11 +582,37 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	}
 	else
 	{
-		for ( j=0; j<n; j++ )
+		if ( inc_y == 1 )
 		{
-			*y_ptr += *aj * xtemp;
-		 	y_ptr += inc_y;
-		 	aj    += lda;
+
+			BLASLONG register lda2 = lda << 1;
+			BLASLONG register lda4 = lda << 2;
+			BLASLONG register lda3 = lda2 + lda;
+			for ( j=0; j< ( n & -4 ); j+=4 )
+			{
+				y_ptr[j]    += *aj        * xtemp;
+				y_ptr[j+1]  += *(aj+lda)  * xtemp;
+				y_ptr[j+2]  += *(aj+lda2) * xtemp;
+				y_ptr[j+3]  += *(aj+lda3) * xtemp;
+		 		aj          += lda4  ;
+			}
+
+			for ( ; j<n; j++ )
+			{
+				y_ptr[j]  += *aj * xtemp;
+		 		aj        += lda;
+			}
+
+		}
+		else
+		{
+			for ( j=0; j<n; j++ )
+			{
+				*y_ptr += *aj * xtemp;
+		 		y_ptr += inc_y;
+		 		aj    += lda;
+			}
+
 		}
 	}
 
