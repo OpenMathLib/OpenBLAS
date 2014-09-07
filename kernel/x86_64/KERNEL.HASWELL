@@ -1,4 +1,4 @@
-SGEMVNKERNEL = sgemv_n_4.c
+SGEMVNKERNEL = sgemv_n.c
 SGEMVTKERNEL = sgemv_t.c
 
 DGEMVNKERNEL = dgemv_n.c
