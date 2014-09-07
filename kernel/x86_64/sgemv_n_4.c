@@ -438,25 +438,153 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 	}
 
-	if ( m3 == 0 ) return;
+	if ( m3 == 0 ) return(0);
 
-	j=0;
-	while ( j < m3 )
+	if ( m3 == 3 )
+	{
+		a_ptr = a;
+		x_ptr = x;
+		FLOAT temp0 = 0.0;
+		FLOAT temp1 = 0.0;
+		FLOAT temp2 = 0.0;
+		if ( lda == 3 && inc_x ==1 )
+		{
+
+			for( i = 0; i < ( n & -4 ); i+=4 )
+			{
+
+				temp0 += a_ptr[0] * x_ptr[0] + a_ptr[3] * x_ptr[1];
+				temp1 += a_ptr[1] * x_ptr[0] + a_ptr[4] * x_ptr[1];
+				temp2 += a_ptr[2] * x_ptr[0] + a_ptr[5] * x_ptr[1];
+
+				temp0 += a_ptr[6] * x_ptr[2] + a_ptr[9]  * x_ptr[3];
+				temp1 += a_ptr[7] * x_ptr[2] + a_ptr[10] * x_ptr[3];
+				temp2 += a_ptr[8] * x_ptr[2] + a_ptr[11] * x_ptr[3];
+
+				a_ptr += 12;
+				x_ptr += 4;
+			}
+
+			for( ; i < n; i++ )
+			{
+				temp0 += a_ptr[0] * x_ptr[0];
+				temp1 += a_ptr[1] * x_ptr[0];
+				temp2 += a_ptr[2] * x_ptr[0];
+				a_ptr += 3;
+				x_ptr ++;
+			}
+
+		}
+		else
+		{
+
+			for( i = 0; i < n; i++ )
+			{
+				temp0 += a_ptr[0] * x_ptr[0];
+				temp1 += a_ptr[1] * x_ptr[0];
+				temp2 += a_ptr[2] * x_ptr[0];
+				a_ptr += lda;
+				x_ptr += inc_x;
+
+
+			}
+
+		}
+		y_ptr[0] += alpha * temp0;
+		y_ptr += inc_y;
+		y_ptr[0] += alpha * temp1;
+		y_ptr += inc_y;
+		y_ptr[0] += alpha * temp2;
+		return(0);
+	}
+
+
+	if ( m3 == 2 )
+	{
+		a_ptr = a;
+		x_ptr = x;
+		FLOAT temp0 = 0.0;
+		FLOAT temp1 = 0.0;
+		if ( lda == 2 && inc_x ==1 )
+		{
+
+			for( i = 0; i < (n & -4) ; i+=4 )
+			{
+				temp0 += a_ptr[0] * x_ptr[0] + a_ptr[2] * x_ptr[1];
+				temp1 += a_ptr[1] * x_ptr[0] + a_ptr[3] * x_ptr[1];
+				temp0 += a_ptr[4] * x_ptr[2] + a_ptr[6] * x_ptr[3];
+				temp1 += a_ptr[5] * x_ptr[2] + a_ptr[7] * x_ptr[3];
+				a_ptr += 8;
+				x_ptr += 4;
+
+			}
+
+
+			for( ; i < n; i++ )
+			{
+				temp0 += a_ptr[0]   * x_ptr[0];
+				temp1 += a_ptr[1]   * x_ptr[0];
+				a_ptr += 2;
+				x_ptr ++;
+			}
+
+		}
+		else
+		{
+
+			for( i = 0; i < n; i++ )
+			{
+				temp0 += a_ptr[0] * x_ptr[0];
+				temp1 += a_ptr[1] * x_ptr[0];
+				a_ptr += lda;
+				x_ptr += inc_x;
+
+
+			}
+
+		}
+		y_ptr[0] += alpha * temp0;
+		y_ptr += inc_y;
+		y_ptr[0] += alpha * temp1;
+		return(0);
+	}
+
+	if ( m3 == 1 )
 	{
 		a_ptr = a;
 		x_ptr = x;
 		FLOAT temp = 0.0;
-		for( i = 0; i < n; i++ )
+		if ( lda == 1 && inc_x ==1 )
 		{
-			temp += a_ptr[0] * x_ptr[0];
-			a_ptr += lda;
-			x_ptr += inc_x;
+
+			for( i = 0; i < (n & -4); i+=4 )
+			{
+				temp += a_ptr[i] * x_ptr[i] + a_ptr[i+1] * x_ptr[i+1] + a_ptr[i+2] * x_ptr[i+2] + a_ptr[i+3] * x_ptr[i+3];
+	
+			}
+
+			for( ; i < n; i++ )
+			{
+				temp += a_ptr[i] * x_ptr[i];
+			}
+
+		}
+		else
+		{
+
+			for( i = 0; i < n; i++ )
+			{
+				temp += a_ptr[0] * x_ptr[0];
+				a_ptr += lda;
+				x_ptr += inc_x;
+			}
+
 		}
 		y_ptr[0] += alpha * temp;
-		y_ptr += inc_y;
-		a++;
-		j++;
+		return(0);
 	}
+
+
 	return(0);
 }
 
