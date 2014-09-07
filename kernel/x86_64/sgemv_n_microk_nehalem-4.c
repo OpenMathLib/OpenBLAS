@@ -28,9 +28,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define HAVE_KERNEL_4x8 1
-static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLONG lda4) __attribute__ ((noinline));
+static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLONG lda4, FLOAT *alpha) __attribute__ ((noinline));
 
-static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLONG lda4)
+static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLONG lda4, FLOAT *alpha)
 {
 
 	BLASLONG register i = 0;
@@ -55,11 +55,15 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"shufps $0,  %%xmm2 , %%xmm2 \n\t"	
 	"shufps $0,  %%xmm3 , %%xmm3 \n\t"	
 
+	"movss    (%9), %%xmm6	     \n\t"	// alpha 
+	"shufps $0,  %%xmm6 , %%xmm6 \n\t"	
+
 
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
+	"xorps           %%xmm4 , %%xmm4	 \n\t"
 	"xorps           %%xmm5 , %%xmm5	 \n\t"
-	"movups	       (%3,%0,4), %%xmm4	 \n\t"	// 4 * y
+	"movups             (%3,%0,4), %%xmm7          \n\t" // 4 * y
 
 	".align 2				       \n\t"
 	"movups             (%4,%0,4), %%xmm8          \n\t" 
@@ -85,16 +89,19 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"mulps		%%xmm1 , %%xmm9		       \n\t"
 	"mulps		%%xmm2 , %%xmm10	       \n\t"
 	"mulps		%%xmm3 , %%xmm11	       \n\t"
-        "addq		$4 , %8	  	 	       \n\t"
 	"addps		%%xmm8 , %%xmm4		       \n\t"
 	"addps		%%xmm9 , %%xmm5		       \n\t"
-        "addq		$4 , %0	  	 	       \n\t"
 	"addps		%%xmm10, %%xmm4	       	       \n\t"
 	"addps		%%xmm11, %%xmm5 	       \n\t"
-	"subq	        $4 , %1			       \n\t"		
 
-	"addps		%%xmm4 , %%xmm5 	       \n\t"
-	"movups  %%xmm5 , -16(%3,%0,4)		       \n\t"	// 4 * y
+        "addq		$4 , %8	  	 	       \n\t"
+	"addps		%%xmm5 , %%xmm4 	       \n\t"
+        "addq		$4 , %0	  	 	       \n\t"
+	"mulps		%%xmm6 , %%xmm4		       \n\t" 
+	"subq	        $4 , %1			       \n\t"		
+	"addps		%%xmm4 , %%xmm7 	       \n\t"
+
+	"movups  %%xmm7 , -16(%3,%0,4)		       \n\t"	// 4 * y
 
 	"jnz		.L01LOOP%=		       \n\t"
 
@@ -108,11 +115,13 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
           "r" (ap[1]),  // 5
           "r" (ap[2]),  // 6
           "r" (ap[3]),  // 7
-          "r" (lda4)    // 8
+          "r" (lda4),   // 8
+          "r" (alpha)   // 9
 	: "cc", 
 	  "%xmm0", "%xmm1", 
 	  "%xmm2", "%xmm3", 
 	  "%xmm4", "%xmm5", 
+	  "%xmm6", "%xmm7", 
 	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
@@ -124,9 +133,9 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 
 #define HAVE_KERNEL_4x4 1
-static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) __attribute__ ((noinline));
+static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
 
-static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
+static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 
 	BLASLONG register i = 0;
@@ -142,9 +151,13 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"shufps $0,  %%xmm14, %%xmm14\n\t"	
 	"shufps $0,  %%xmm15, %%xmm15\n\t"	
 
+	"movss    (%8), %%xmm6	     \n\t"	// alpha 
+	"shufps $0,  %%xmm6 , %%xmm6 \n\t"	
+
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
-	"movups	       (%3,%0,4), %%xmm4	 \n\t"	// 4 * y
+	"xorps           %%xmm4 , %%xmm4	 \n\t"
+	"movups	       (%3,%0,4), %%xmm7	 \n\t"	// 4 * y
 
 	"movups             (%4,%0,4), %%xmm8          \n\t" 
 	"movups             (%5,%0,4), %%xmm9          \n\t" 
@@ -161,6 +174,8 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"addps		%%xmm10 , %%xmm4	       \n\t"
 	"addps		%%xmm4 , %%xmm11	       \n\t"
 
+	"mulps		%%xmm6 , %%xmm11	       \n\t" 
+	"addps		%%xmm7 , %%xmm11 	       \n\t"
 	"movups  %%xmm11, -16(%3,%0,4)		       \n\t"	// 4 * y
 
 	"jnz		.L01LOOP%=		       \n\t"
@@ -174,7 +189,8 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
           "r" (ap[0]),  // 4
           "r" (ap[1]),  // 5
           "r" (ap[2]),  // 6
-          "r" (ap[3])   // 7
+          "r" (ap[3]),  // 7
+          "r" (alpha)   // 8
 	: "cc", 
 	  "%xmm4", "%xmm5", 
 	  "%xmm6", "%xmm7", 
