@@ -52,7 +52,8 @@
 	       cblas_zhpr, cblas_zscal, cblas_zswap, cblas_zsymm, cblas_zsyr2k, cblas_zsyrk,
 	       cblas_ztbmv, cblas_ztbsv, cblas_ztpmv, cblas_ztpsv, cblas_ztrmm, cblas_ztrmv, cblas_ztrsm,
 	       cblas_ztrsv, cblas_cdotc_sub, cblas_cdotu_sub, cblas_zdotc_sub, cblas_zdotu_sub,
-               cblas_saxpby,cblas_daxpby,cblas_caxpby,cblas_zaxpby
+               cblas_saxpby,cblas_daxpby,cblas_caxpby,cblas_zaxpby,
+	       cblas_somatcopy, cblas_domatcopy, cblas_comatcopy, cblas_zomatcopy
                );
 
 @exblasobjs = (
