@@ -248,6 +248,8 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
+	"vxorps		%%ymm4 , %%ymm4, %%ymm4        \n\t"
+	"vxorps		%%ymm5 , %%ymm5, %%ymm5        \n\t"
 	"vmovups	(%3,%0,4), %%ymm8	 \n\t"	// 8 * y
 	"vmovups      32(%3,%0,4), %%ymm9	 \n\t"	// 8 * y
 
