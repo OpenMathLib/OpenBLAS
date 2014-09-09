@@ -1,8 +1,8 @@
-SGEMVNKERNEL = sgemv_n.c
-SGEMVTKERNEL = sgemv_t.c
+SGEMVNKERNEL = sgemv_n_4.c
+SGEMVTKERNEL = sgemv_t_4.c
 
-DGEMVNKERNEL = dgemv_n.c
-DGEMVTKERNEL = dgemv_t.c
+DGEMVNKERNEL = dgemv_n_4.c
+DGEMVTKERNEL = dgemv_t_4.c
 
 ZGEMVNKERNEL = zgemv_n.c
 ZGEMVTKERNEL = zgemv_t.c
