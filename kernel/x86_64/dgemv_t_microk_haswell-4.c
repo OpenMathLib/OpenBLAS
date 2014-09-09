@@ -61,25 +61,25 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
 	".align 16				 \n\t"
 	".L01LOOP%=:				 \n\t"
-	"prefetcht0	 384(%2,%0,8)		 \n\t"
+	// "prefetcht0	 384(%2,%0,8)		 \n\t"
 	"vmovups	(%2,%0,8), %%ymm12       \n\t"	// 4 * x
 	"vmovups      32(%2,%0,8), %%ymm13       \n\t"	// 4 * x
 
-	"prefetcht0	 384(%4,%0,8)		       \n\t"
+	// "prefetcht0	 384(%4,%0,8)		       \n\t"
 	"vfmadd231pd   (%4,%0,8), %%ymm12, %%ymm4      \n\t" 
 	"vfmadd231pd   (%5,%0,8), %%ymm12, %%ymm5      \n\t" 
-	"prefetcht0	 384(%5,%0,8)		       \n\t"
-	"vfmadd231pd 32(%4,%0,8), %%ymm13, %%ymm4      \n\t" 
-	"vfmadd231pd 32(%5,%0,8), %%ymm13, %%ymm5      \n\t" 
-	"prefetcht0	 384(%6,%0,8)		       \n\t"
+	// "prefetcht0	 384(%5,%0,8)		       \n\t"
 	"vfmadd231pd   (%6,%0,8), %%ymm12, %%ymm6      \n\t" 
 	"vfmadd231pd   (%7,%0,8), %%ymm12, %%ymm7      \n\t" 
-	"prefetcht0	 384(%7,%0,8)		       \n\t"
-	"vfmadd231pd 32(%6,%0,8), %%ymm13, %%ymm6      \n\t" 
-	"vfmadd231pd 32(%7,%0,8), %%ymm13, %%ymm7      \n\t" 
+	// "prefetcht0	 384(%6,%0,8)		       \n\t"
+	"vfmadd231pd 32(%4,%0,8), %%ymm13, %%ymm4      \n\t" 
+	"vfmadd231pd 32(%5,%0,8), %%ymm13, %%ymm5      \n\t" 
+        "addq		$8 , %0	  	 	       \n\t"
+	// "prefetcht0	 384(%7,%0,8)		       \n\t"
+	"vfmadd231pd -32(%6,%0,8), %%ymm13, %%ymm6     \n\t" 
+	"subq	        $8 , %1			       \n\t"		
+	"vfmadd231pd -32(%7,%0,8), %%ymm13, %%ymm7     \n\t" 
 
-        "addq		$8 , %0	  	 	      \n\t"
-	"subq	        $8 , %1			      \n\t"		
 	"jnz		.L01LOOP%=		      \n\t"
 
         ".L16END%=:                                   \n\t"

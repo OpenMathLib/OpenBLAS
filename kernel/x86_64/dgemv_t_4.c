@@ -28,17 +28,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-/*
-#if defined(NEHALEM)
-#include "dgemv_t_microk_nehalem-4.c"
-#elif defined(BULLDOZER) || defined(PILEDRIVER)
-#include "dgemv_t_microk_bulldozer-4.c"
-#elif defined(SANDYBRIDGE)
-#include "dgemv_t_microk_sandy-4.c"
-#elif defined(HASWELL)
+#if defined(HASWELL)
 #include "dgemv_t_microk_haswell-4.c"
 #endif
-*/
 
 #define NBMAX 2048
 
