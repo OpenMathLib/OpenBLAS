@@ -10,8 +10,8 @@ DSYMV_L_KERNEL = dsymv_L.c
 SSYMV_U_KERNEL = ssymv_U.c
 SSYMV_L_KERNEL = ssymv_L.c
 
-SGEMVNKERNEL = sgemv_n.c
-SGEMVTKERNEL = sgemv_t.c
+SGEMVNKERNEL = sgemv_n_4.c
+SGEMVTKERNEL = sgemv_t_4.c
 
 ZGEMVNKERNEL = zgemv_n_dup.S
 ZGEMVTKERNEL = zgemv_t.c
