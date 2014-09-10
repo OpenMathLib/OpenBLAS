@@ -306,7 +306,23 @@ void cblas_caxpby(blasint n, float *alpha, float *x, blasint incx,float *beta, f
 
 void cblas_zaxpby(blasint n, double *alpha, double *x, blasint incx,double *beta, double *y, blasint incy);
 
+void cblas_somatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  float calpha,  float *a, 
+		      blasint clda, float *b,  blasint cldb); 
+void cblas_domatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  double calpha,  double *a,
+		      blasint clda, double *b,  blasint cldb); 
+void cblas_comatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  void* calpha,  void* a, 
+		      blasint clda, void *b,  blasint cldb); 
+void cblas_zomatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  void* calpha,  void* a, 
+		      blasint clda,  void *b,  blasint cldb); 
 
+void cblas_simatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  float calpha, float *a, 
+		      blasint clda,  blasint cldb); 
+void cblas_dimatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  double calpha, double *a,
+		      blasint clda,  blasint cldb); 
+void cblas_cimatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  float* calpha, float* a, 
+		      blasint clda,  blasint cldb); 
+void cblas_zimatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  double* calpha, double* a, 
+		      blasint clda,  blasint cldb); 
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */
