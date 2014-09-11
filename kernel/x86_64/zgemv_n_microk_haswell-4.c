@@ -295,3 +295,106 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 
 
 
+
+#define HAVE_KERNEL_ADDY 1
+
+static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT alpha_r, FLOAT alpha_i)  __attribute__ ((noinline));
+
+static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT alpha_r, FLOAT alpha_i)
+{
+	BLASLONG i;
+
+	if ( inc_dest != 2 )
+	{
+
+		FLOAT temp_r;
+		FLOAT temp_i;
+		for ( i=0; i<n; i++ )
+		{
+#if !defined(XCONJ) 
+			temp_r = alpha_r * src[0] - alpha_i * src[1];
+			temp_i = alpha_r * src[1] + alpha_i * src[0];
+#else
+			temp_r =  alpha_r * src[0] + alpha_i * src[1];
+			temp_i = -alpha_r * src[1] + alpha_i * src[0];
+#endif
+
+			*dest += temp_r;
+			*(dest+1) += temp_i;
+
+			src+=2;
+			dest += inc_dest;
+		}
+		return;
+	}
+
+	i=0;
+
+	__asm__  __volatile__
+	(
+
+	"vzeroupper			 \n\t"
+
+	"vbroadcastsd	  (%4), %%ymm0                  \n\t"  // alpha_r
+	"vbroadcastsd	  (%5), %%ymm1                  \n\t"  // alpha_i
+
+	".align 16				        \n\t"
+	".L01LOOP%=:				        \n\t"
+	"prefetcht0      192(%2,%0,8)			\n\t"
+	"vmovups	(%2,%0,8), %%ymm8	        \n\t" // 2 complex values from src
+	"vmovups      32(%2,%0,8), %%ymm9	        \n\t" 
+
+	"vmulpd      %%ymm8 , %%ymm0, %%ymm12      \n\t" // a_r[0] * x_r , a_i[0] * x_r, a_r[1] * x_r, a_i[1] * x_r
+	"vmulpd      %%ymm8 , %%ymm1, %%ymm13      \n\t" // a_r[0] * x_i , a_i[0] * x_i, a_r[1] * x_i, a_i[1] * x_i
+	"vmulpd      %%ymm9 , %%ymm0, %%ymm14      \n\t" // a_r[2] * x_r , a_i[2] * x_r, a_r[3] * x_r, a_i[3] * x_r
+	"vmulpd      %%ymm9 , %%ymm1, %%ymm15      \n\t" // a_r[2] * x_i , a_i[2] * x_i, a_r[3] * x_i, a_i[3] * x_i
+
+	"prefetcht0      192(%3,%0,8)			\n\t"
+	"vmovups	  (%3,%0,8),  %%ymm10           \n\t" // 2 complex values from dest
+	"vmovups	32(%3,%0,8),  %%ymm11           \n\t"
+
+#if !defined(XCONJ)
+        "vpermilpd      $0x5 , %%ymm13, %%ymm13               \n\t"
+        "vpermilpd      $0x5 , %%ymm15, %%ymm15               \n\t"
+        "vaddsubpd      %%ymm13, %%ymm12, %%ymm8              \n\t"
+        "vaddsubpd      %%ymm15, %%ymm14, %%ymm9              \n\t"
+#else
+        "vpermilpd      $0x5 , %%ymm12, %%ymm12               \n\t"
+        "vpermilpd      $0x5 , %%ymm14, %%ymm14               \n\t"
+        "vaddsubpd      %%ymm12, %%ymm13, %%ymm8              \n\t"
+        "vaddsubpd      %%ymm14, %%ymm15, %%ymm9              \n\t"
+        "vpermilpd      $0x5 , %%ymm8 , %%ymm8                \n\t"
+        "vpermilpd      $0x5 , %%ymm9 , %%ymm9                \n\t"
+#endif
+
+        "vaddpd         %%ymm8, %%ymm10, %%ymm12              \n\t"
+        "vaddpd         %%ymm9, %%ymm11, %%ymm13              \n\t"
+
+	"vmovups  %%ymm12,   (%3,%0,8)		        \n\t" // 2 complex values to y	
+	"vmovups  %%ymm13, 32(%3,%0,8)		        \n\t"	
+
+        "addq		$8 , %0	  	 	        \n\t"
+	"subq	        $4 , %1			        \n\t"		
+	"jnz		.L01LOOP%=		        \n\t"
+	"vzeroupper			 \n\t"
+
+	:
+        : 
+          "r" (i),	      // 0	
+	  "r" (n),  	      // 1
+          "r" (src),          // 2
+          "r" (dest),         // 3
+          "r" (&alpha_r),     // 4
+          "r" (&alpha_i)      // 5
+	: "cc", 
+	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
+	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
+	  "memory"
+	);
+
+	return;
+
+}
+
