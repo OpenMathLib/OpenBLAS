@@ -351,14 +351,14 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
         "vpermilps      $0xb1 , %%ymm9 , %%ymm9                \n\t"
 #endif
 
+        "addq		$16, %0	  	 	        \n\t"
         "vaddps         %%ymm8, %%ymm10, %%ymm12              \n\t"
         "vaddps         %%ymm9, %%ymm11, %%ymm13              \n\t"
 
-	"vmovups  %%ymm12,   (%3,%0,4)		        \n\t" // 4 complex values to y	
-	"vmovups  %%ymm13, 32(%3,%0,4)		        \n\t"	
-
-        "addq		$16, %0	  	 	        \n\t"
 	"subq	        $8 , %1			        \n\t"		
+	"vmovups  %%ymm12,-64(%3,%0,4)		        \n\t" // 4 complex values to y	
+	"vmovups  %%ymm13,-32(%3,%0,4)		        \n\t"	
+
 	"jnz		.L01LOOP%=		        \n\t"
 
 	".L01END%=:				        \n\t"
@@ -481,14 +481,14 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
         "vpermilps      $0xb1 , %%ymm9 , %%ymm9                \n\t"
 #endif
 
+        "addq		$16, %0	  	 	        \n\t"
         "vaddps         %%ymm8, %%ymm10, %%ymm12              \n\t"
         "vaddps         %%ymm9, %%ymm11, %%ymm13              \n\t"
 
-	"vmovups  %%ymm12,   (%3,%0,4)		        \n\t" // 4 complex values to y	
-	"vmovups  %%ymm13, 32(%3,%0,4)		        \n\t"	
-
-        "addq		$16, %0	  	 	        \n\t"
 	"subq	        $8 , %1			        \n\t"		
+	"vmovups  %%ymm12,-64(%3,%0,4)		        \n\t" // 4 complex values to y	
+	"vmovups  %%ymm13,-32(%3,%0,4)		        \n\t"	
+
 	"jnz		.L01LOOP%=		        \n\t"
 
 	".L01END%=:				        \n\t"
@@ -503,7 +503,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 
 	"vmovups	  (%3,%0,4),  %%ymm10           \n\t"
 
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+#if !defined(XCONJ)
         "vpermilps      $0xb1 , %%ymm13, %%ymm13               \n\t"
         "vaddsubps      %%ymm13, %%ymm12, %%ymm8              \n\t"
 #else
