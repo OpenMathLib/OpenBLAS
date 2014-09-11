@@ -4,10 +4,10 @@ SGEMVTKERNEL = sgemv_t_4.c
 DGEMVNKERNEL = dgemv_n_4.c
 DGEMVTKERNEL = dgemv_t_4.c
 
-ZGEMVNKERNEL = zgemv_n.c
+ZGEMVNKERNEL = zgemv_n_4.c
 ZGEMVTKERNEL = zgemv_t.c
 
-CGEMVNKERNEL = cgemv_n.c
+CGEMVNKERNEL = cgemv_n_4.c
 CGEMVTKERNEL = cgemv_t.c
 
 SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S

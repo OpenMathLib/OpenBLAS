@@ -29,6 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "common.h"
 
+
 #if defined(HASWELL)
 #include "zgemv_n_microk_haswell-4.c"
 #endif
@@ -270,7 +271,7 @@ printf("%s %d %d %.16f %.16f %d %d %d\n","zgemv_n",m,n,alpha_r,alpha_i,lda,inc_x
 		ap[3] = ap[2] + lda;
 		x_ptr = x;
 		//zero_y(NB,ybuffer);
-		memset(ybuffer,0,NB*8);
+		memset(ybuffer,0,NB*16);
 
 		if ( inc_x == 2 )
 		{
