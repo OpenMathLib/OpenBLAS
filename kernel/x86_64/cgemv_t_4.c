@@ -36,7 +36,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 */
 
-#define NBMAX 1028
+#define NBMAX 2048
 
 #ifndef HAVE_KERNEL_4x4
 
@@ -313,7 +313,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			for( i = 0; i < n1 ; i++)
 			{
-				memset(ybuffer,0,64);
+				memset(ybuffer,0,32);
 				zgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha);
 				ap[0] += lda4;
 				ap[1] += lda4;
@@ -338,7 +338,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			for( i = 0; i < n2 ; i++)
 			{
-				memset(ybuffer,0,64);
+				memset(ybuffer,0,32);
 				zgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha);
 				a_ptr += lda;
 				y_ptr[0] += ybuffer[0];
