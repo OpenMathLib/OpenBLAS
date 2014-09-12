@@ -811,24 +811,6 @@ void goto_set_num_threads(int num_threads) {
     LOCK_COMMAND(&server_lock);
 
     increased_threads = 1;
-
-    for(i = blas_num_threads - 1; i < num_threads - 1; i++){
-
-      thread_status[i].queue  = (blas_queue_t *)NULL;
-      thread_status[i].status = THREAD_STATUS_WAKEUP;
-
-      pthread_mutex_init(&thread_status[i].lock, NULL);
-      pthread_cond_init (&thread_status[i].wakeup, NULL);
-
-#ifdef NEED_STACKATTR
-      pthread_create(&blas_threads[i], &attr,
-		     (void *)&blas_thread_server, (void *)i);
-#else
-      pthread_create(&blas_threads[i], NULL,
-		     (void *)&blas_thread_server, (void *)i);
-#endif
-    }
-
     blas_num_threads = num_threads;
 
     UNLOCK_COMMAND(&server_lock);
