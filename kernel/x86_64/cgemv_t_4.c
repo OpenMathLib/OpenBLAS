@@ -247,7 +247,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 	
 	m3 = m & 3 ;
 	m1 = m - m3;
-	m2 = (m % (NBMAX-1)) - m3 ;
+	m2 = (m & (NBMAX-1)) - m3 ;
 	
 	alpha[0] = alpha_r;
 	alpha[1] = alpha_i;

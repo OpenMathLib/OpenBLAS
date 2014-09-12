@@ -28,15 +28,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-/*
+
 #if defined(BULLDOZER) || defined(PILEDRIVER)
-#include "zgemv_t_microk_bulldozer-2.c"
+#include "zgemv_t_microk_bulldozer-4.c"
 #elif defined(HASWELL)
 #include "zgemv_t_microk_haswell-2.c"
 #endif
-*/
 
-#define NBMAX 1028
+
+#define NBMAX 1024
 
 #ifndef HAVE_KERNEL_4x4
 
@@ -247,7 +247,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 	
 	m3 = m & 3 ;
 	m1 = m - m3;
-	m2 = (m % (NBMAX-1)) - m3 ;
+	m2 = (m & (NBMAX-1)) - m3 ;
 	
 	alpha[0] = alpha_r;
 	alpha[1] = alpha_i;
