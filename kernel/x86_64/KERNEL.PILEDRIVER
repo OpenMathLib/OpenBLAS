@@ -2,10 +2,11 @@ SGEMVNKERNEL = sgemv_n_4.c
 SGEMVTKERNEL = sgemv_t_4.c
 
 ZGEMVNKERNEL = zgemv_n_dup.S
-ZGEMVTKERNEL = zgemv_t_4.S
+ZGEMVTKERNEL = zgemv_t_4.c
 
 DGEMVNKERNEL = dgemv_n_bulldozer.S
 DGEMVTKERNEL = dgemv_t_bulldozer.S
+
 DDOTKERNEL   = ddot_bulldozer.S
 DCOPYKERNEL  = dcopy_bulldozer.S
 
