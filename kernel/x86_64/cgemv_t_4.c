@@ -28,19 +28,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-/*
-#if defined(BULLDOZER) || defined(PILEDRIVER)
-#include "zgemv_t_microk_bulldozer-2.c"
-#elif defined(HASWELL)
-#include "zgemv_t_microk_haswell-2.c"
+#if defined(HASWELL)
+#include "cgemv_t_microk_haswell-4.c"
 #endif
-*/
 
 #define NBMAX 2048
 
 #ifndef HAVE_KERNEL_4x4
 
-static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void cgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 	BLASLONG i;
 	FLOAT *a0,*a1,*a2,*a3;
@@ -112,7 +108,7 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *
 
 #ifndef HAVE_KERNEL_4x2
 
-static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void cgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 	BLASLONG i;
 	FLOAT *a0,*a1;
@@ -163,7 +159,7 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *
 
 #ifndef HAVE_KERNEL_4x1
 
-static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 	BLASLONG i;
 	FLOAT *a0;
@@ -281,7 +277,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			for( i = 0; i < n1 ; i++)
 			{
-				zgemv_kernel_4x4(NB,ap,xbuffer,y_ptr,alpha);
+				cgemv_kernel_4x4(NB,ap,xbuffer,y_ptr,alpha);
 				ap[0] += lda4;
 				ap[1] += lda4;
 				ap[2] += lda4;
@@ -293,7 +289,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			if ( n2 & 2 )
 			{
-				zgemv_kernel_4x2(NB,ap,xbuffer,y_ptr,alpha);
+				cgemv_kernel_4x2(NB,ap,xbuffer,y_ptr,alpha);
 				a_ptr += lda * 2;
 				y_ptr += 4;
 
@@ -301,7 +297,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			if ( n2 & 1 )
 			{
-				zgemv_kernel_4x1(NB,a_ptr,xbuffer,y_ptr,alpha);
+				cgemv_kernel_4x1(NB,a_ptr,xbuffer,y_ptr,alpha);
 				a_ptr += lda;
 				y_ptr += 2;
 
@@ -314,7 +310,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			for( i = 0; i < n1 ; i++)
 			{
 				memset(ybuffer,0,32);
-				zgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha);
+				cgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha);
 				ap[0] += lda4;
 				ap[1] += lda4;
 				ap[2] += lda4;
@@ -339,7 +335,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			for( i = 0; i < n2 ; i++)
 			{
 				memset(ybuffer,0,32);
-				zgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha);
+				cgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha);
 				a_ptr += lda;
 				y_ptr[0] += ybuffer[0];
 				y_ptr[1] += ybuffer[1];
