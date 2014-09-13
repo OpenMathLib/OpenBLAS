@@ -251,3 +251,289 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 } 
 
 
+#define HAVE_KERNEL_4x2 1
+static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
+
+static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+{
+
+	BLASLONG register i = 0;
+
+	__asm__  __volatile__
+	(
+	"vzeroupper			 \n\t"
+
+	"vxorps		%%ymm8 , %%ymm8 , %%ymm8 	\n\t" // temp
+	"vxorps		%%ymm9 , %%ymm9 , %%ymm9 	\n\t" // temp
+	"vxorps		%%ymm10, %%ymm10, %%ymm10	\n\t" // temp
+	"vxorps		%%ymm11, %%ymm11, %%ymm11	\n\t" // temp
+
+        "testq          $0x04, %1                      \n\t"
+        "jz             .L08LABEL%=                    \n\t"
+
+	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
+	"vmovups	(%5,%0,4), %%ymm5               \n\t" // 4 complex values from a1
+
+	"vmovups	    (%2,%0,4)  , %%ymm6		\n\t" // 4 complex values from x
+	"vpermilps        $0xb1, %%ymm6, %%ymm7		\n\t" // exchange real and imap parts
+	"vblendps $0x55, %%ymm6, %%ymm7, %%ymm0         \n\t" // only the real parts
+	"vblendps $0x55, %%ymm7, %%ymm6, %%ymm1         \n\t" // only the imag parts
+	
+
+	"vfmadd231ps      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm4 , %%ymm1, %%ymm9       \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	"vfmadd231ps      %%ymm5 , %%ymm0, %%ymm10      \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm5 , %%ymm1, %%ymm11      \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	
+        "addq		$8  , %0	  	 	        \n\t"
+	"subq	        $4  , %1			        \n\t"		
+
+        ".L08LABEL%=:                                  \n\t"
+	"cmpq           $0, %1                         \n\t"
+        "je             .L08END%=                      \n\t"
+
+	".align 16				        \n\t"
+	".L01LOOP%=:				        \n\t"
+        "prefetcht0      192(%4,%0,4)                   \n\t"
+	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
+        "prefetcht0      192(%5,%0,4)                   \n\t"
+	"vmovups	(%5,%0,4), %%ymm5               \n\t" // 4 complex values from a1
+
+        "prefetcht0      192(%2,%0,4)                   \n\t"
+	"vmovups	    (%2,%0,4)  , %%ymm6		\n\t" // 4 complex values from x
+	"vpermilps        $0xb1, %%ymm6, %%ymm7		\n\t" // exchange real and imap parts
+	"vblendps $0x55, %%ymm6, %%ymm7, %%ymm0         \n\t" // only the real parts
+	"vblendps $0x55, %%ymm7, %%ymm6, %%ymm1         \n\t" // only the imag parts
+	
+	"vfmadd231ps      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm4 , %%ymm1, %%ymm9       \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	"vfmadd231ps      %%ymm5 , %%ymm0, %%ymm10      \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm5 , %%ymm1, %%ymm11      \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+
+	"vmovups       32(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
+	"vmovups       32(%5,%0,4), %%ymm5              \n\t" // 4 complex values from a1
+
+	"vmovups	  32(%2,%0,4)  , %%ymm6		\n\t" // 4 complex values from x
+	"vpermilps        $0xb1, %%ymm6, %%ymm7		\n\t" // exchange real and imap parts
+	"vblendps $0x55, %%ymm6, %%ymm7, %%ymm0         \n\t" // only the real parts
+	"vblendps $0x55, %%ymm7, %%ymm6, %%ymm1         \n\t" // only the imag parts
+
+	"vfmadd231ps      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm4 , %%ymm1, %%ymm9       \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	"vfmadd231ps      %%ymm5 , %%ymm0, %%ymm10      \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm5 , %%ymm1, %%ymm11      \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+
+        "addq		$16 , %0	  	 	        \n\t"
+	"subq	        $8  , %1			        \n\t"		
+	"jnz		.L01LOOP%=		        \n\t"
+
+        ".L08END%=:                                   \n\t"
+
+        "vbroadcastss    (%6)  , %%xmm0                \n\t"  // value from alpha
+        "vbroadcastss   4(%6)  , %%xmm1                \n\t"  // value from alpha
+
+
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+        "vpermilps      $0xb1 , %%ymm9 , %%ymm9                \n\t"
+        "vpermilps      $0xb1 , %%ymm11, %%ymm11               \n\t"
+        "vaddsubps      %%ymm9 , %%ymm8, %%ymm8                \n\t" 
+        "vaddsubps      %%ymm11, %%ymm10, %%ymm10              \n\t"
+#else
+        "vpermilps      $0xb1 , %%ymm8 , %%ymm8                \n\t"
+        "vpermilps      $0xb1 , %%ymm10, %%ymm10               \n\t"
+        "vaddsubps      %%ymm8 , %%ymm9 , %%ymm8               \n\t"
+        "vaddsubps      %%ymm10, %%ymm11, %%ymm10              \n\t"
+        "vpermilps      $0xb1 , %%ymm8 , %%ymm8                \n\t"
+        "vpermilps      $0xb1 , %%ymm10, %%ymm10               \n\t"
+#endif
+
+	"vmovsd         (%3), %%xmm4			\n\t" // read y
+	"vmovsd        8(%3), %%xmm5			\n\t"
+
+	"vextractf128   $1, %%ymm8 , %%xmm9		      \n\t"
+	"vextractf128   $1, %%ymm10, %%xmm11	      	      \n\t"
+
+	"vaddps		%%xmm8 , %%xmm9 , %%xmm8       \n\t"
+	"vaddps		%%xmm10, %%xmm11, %%xmm10      \n\t"
+
+	"vshufpd        $0x1, %%xmm8 , %%xmm8 , %%xmm9   \n\t"
+	"vshufpd        $0x1, %%xmm10, %%xmm10, %%xmm11  \n\t"
+
+	"vaddps		%%xmm8 , %%xmm9 , %%xmm8       \n\t"
+	"vaddps		%%xmm10, %%xmm11, %%xmm10      \n\t"
+
+        "vmulps         %%xmm8 , %%xmm1 , %%xmm9              \n\t"  // t_r * alpha_i , t_i * alpha_i
+        "vmulps         %%xmm8 , %%xmm0 , %%xmm8              \n\t"  // t_r * alpha_r , t_i * alpha_r
+        "vmulps         %%xmm10, %%xmm1 , %%xmm11             \n\t"  // t_r * alpha_i , t_i * alpha_i
+        "vmulps         %%xmm10, %%xmm0 , %%xmm10             \n\t"  // t_r * alpha_r , t_i * alpha_r
+
+#if !defined(XCONJ)
+        "vpermilps      $0xb1 , %%xmm9 , %%xmm9                \n\t"
+        "vpermilps      $0xb1 , %%xmm11, %%xmm11               \n\t"
+        "vaddsubps      %%xmm9 , %%xmm8, %%xmm8               \n\t"
+        "vaddsubps      %%xmm11, %%xmm10, %%xmm10             \n\t"
+#else
+        "vpermilps      $0xb1 , %%xmm8 , %%xmm8                \n\t"
+        "vpermilps      $0xb1 , %%xmm10, %%xmm10               \n\t"
+        "vaddsubps      %%xmm8 , %%xmm9 , %%xmm8              \n\t"
+        "vaddsubps      %%xmm10, %%xmm11, %%xmm10             \n\t"
+        "vpermilps      $0xb1 , %%xmm8 , %%xmm8                \n\t"
+        "vpermilps      $0xb1 , %%xmm10, %%xmm10               \n\t"
+#endif
+
+
+	"vaddps		%%xmm8 , %%xmm4 , %%xmm8       \n\t"
+	"vaddps		%%xmm10, %%xmm5 , %%xmm10      \n\t"
+
+	"vmovsd	%%xmm8 ,   (%3)			\n\t"
+	"vmovsd	%%xmm10,  8(%3)			\n\t"
+
+	"vzeroupper			 \n\t"
+
+	:
+        : 
+          "r" (i),	// 0	
+	  "r" (n),  	// 1
+          "r" (x),      // 2
+          "r" (y),      // 3
+          "r" (ap[0]),  // 4
+          "r" (ap[1]),  // 5
+          "r" (alpha)   // 6
+	: "cc", 
+	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
+	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
+	  "memory"
+	);
+
+} 
+
+
+#define HAVE_KERNEL_4x1 1
+static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
+
+static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+{
+
+	BLASLONG register i = 0;
+
+	__asm__  __volatile__
+	(
+	"vzeroupper			 \n\t"
+
+	"vxorps		%%ymm8 , %%ymm8 , %%ymm8 	\n\t" // temp
+	"vxorps		%%ymm9 , %%ymm9 , %%ymm9 	\n\t" // temp
+
+        "testq          $0x04, %1                      \n\t"
+        "jz             .L08LABEL%=                    \n\t"
+
+	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
+
+	"vmovups	    (%2,%0,4)  , %%ymm6		\n\t" // 4 complex values from x
+	"vpermilps        $0xb1, %%ymm6, %%ymm7		\n\t" // exchange real and imap parts
+	"vblendps $0x55, %%ymm6, %%ymm7, %%ymm0         \n\t" // only the real parts
+	"vblendps $0x55, %%ymm7, %%ymm6, %%ymm1         \n\t" // only the imag parts
+	
+
+	"vfmadd231ps      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm4 , %%ymm1, %%ymm9       \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+	
+        "addq		$8  , %0	  	 	        \n\t"
+	"subq	        $4  , %1			        \n\t"		
+
+        ".L08LABEL%=:                                  \n\t"
+	"cmpq           $0, %1                         \n\t"
+        "je             .L08END%=                      \n\t"
+
+	".align 16				        \n\t"
+	".L01LOOP%=:				        \n\t"
+        "prefetcht0      192(%4,%0,4)                   \n\t"
+	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
+
+        "prefetcht0      192(%2,%0,4)                   \n\t"
+	"vmovups	    (%2,%0,4)  , %%ymm6		\n\t" // 4 complex values from x
+	"vpermilps        $0xb1, %%ymm6, %%ymm7		\n\t" // exchange real and imap parts
+	"vblendps $0x55, %%ymm6, %%ymm7, %%ymm0         \n\t" // only the real parts
+	"vblendps $0x55, %%ymm7, %%ymm6, %%ymm1         \n\t" // only the imag parts
+	
+	"vfmadd231ps      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm4 , %%ymm1, %%ymm9       \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+
+	"vmovups       32(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
+
+	"vmovups	  32(%2,%0,4)  , %%ymm6		\n\t" // 4 complex values from x
+	"vpermilps        $0xb1, %%ymm6, %%ymm7		\n\t" // exchange real and imap parts
+	"vblendps $0x55, %%ymm6, %%ymm7, %%ymm0         \n\t" // only the real parts
+	"vblendps $0x55, %%ymm7, %%ymm6, %%ymm1         \n\t" // only the imag parts
+
+	"vfmadd231ps      %%ymm4 , %%ymm0, %%ymm8       \n\t" // ar0*xr0,al0*xr0,ar1*xr1,al1*xr1 
+	"vfmadd231ps      %%ymm4 , %%ymm1, %%ymm9       \n\t" // ar0*xl0,al0*xl0,ar1*xl1,al1*xl1 
+
+        "addq		$16 , %0	  	 	        \n\t"
+	"subq	        $8  , %1			        \n\t"		
+	"jnz		.L01LOOP%=		        \n\t"
+
+        ".L08END%=:                                   \n\t"
+
+        "vbroadcastss    (%5)  , %%xmm0                \n\t"  // value from alpha
+        "vbroadcastss   4(%5)  , %%xmm1                \n\t"  // value from alpha
+
+
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+        "vpermilps      $0xb1 , %%ymm9 , %%ymm9                \n\t"
+        "vaddsubps      %%ymm9 , %%ymm8, %%ymm8                \n\t" 
+#else
+        "vpermilps      $0xb1 , %%ymm8 , %%ymm8                \n\t"
+        "vaddsubps      %%ymm8 , %%ymm9 , %%ymm8               \n\t"
+        "vpermilps      $0xb1 , %%ymm8 , %%ymm8                \n\t"
+#endif
+
+	"vmovsd         (%3), %%xmm4			\n\t" // read y
+
+	"vextractf128   $1, %%ymm8 , %%xmm9		      \n\t"
+
+	"vaddps		%%xmm8 , %%xmm9 , %%xmm8       \n\t"
+
+	"vshufpd        $0x1, %%xmm8 , %%xmm8 , %%xmm9   \n\t"
+
+	"vaddps		%%xmm8 , %%xmm9 , %%xmm8       \n\t"
+
+        "vmulps         %%xmm8 , %%xmm1 , %%xmm9              \n\t"  // t_r * alpha_i , t_i * alpha_i
+        "vmulps         %%xmm8 , %%xmm0 , %%xmm8              \n\t"  // t_r * alpha_r , t_i * alpha_r
+
+#if !defined(XCONJ)
+        "vpermilps      $0xb1 , %%xmm9 , %%xmm9                \n\t"
+        "vaddsubps      %%xmm9 , %%xmm8, %%xmm8               \n\t"
+#else
+        "vpermilps      $0xb1 , %%xmm8 , %%xmm8                \n\t"
+        "vaddsubps      %%xmm8 , %%xmm9 , %%xmm8              \n\t"
+        "vpermilps      $0xb1 , %%xmm8 , %%xmm8                \n\t"
+#endif
+
+
+	"vaddps		%%xmm8 , %%xmm4 , %%xmm8       \n\t"
+
+	"vmovsd	%%xmm8 ,   (%3)			\n\t"
+
+	"vzeroupper			 \n\t"
+
+	:
+        : 
+          "r" (i),	// 0	
+	  "r" (n),  	// 1
+          "r" (x),      // 2
+          "r" (y),      // 3
+          "r" (ap),     // 4
+          "r" (alpha)   // 5
+	: "cc", 
+	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
+	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
+	  "memory"
+	);
+
+} 
+
+
