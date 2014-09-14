@@ -50,54 +50,54 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	".align 16				        \n\t"
 	".L01LOOP%=:				        \n\t"
 
-        "prefetcht0      256(%4,%0,8)                   \n\t"
+        //"prefetcht0      256(%4,%0,8)                   \n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmovups      32(%4,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
 
 	"vmulpd		  %%ymm8 , %%ymm0 , %%ymm12	\n\t"
 	"vmulpd		  %%ymm8 , %%ymm1 , %%ymm13	\n\t"
-        "prefetcht0      256(%5,%0,8)                   \n\t"
+        //"prefetcht0      256(%5,%0,8)                   \n\t"
 	"vmulpd		  %%ymm9 , %%ymm0 , %%ymm14	\n\t"
 	"vmovups	(%5,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmulpd		  %%ymm9 , %%ymm1 , %%ymm15	\n\t"
 	"vmovups      32(%5,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
 
 	"vmulpd		  %%ymm8 , %%ymm2 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
 	"vmulpd		  %%ymm8 , %%ymm3 , %%ymm11	\n\t"
+	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
 	"vaddpd		  %%ymm13, %%ymm11, %%ymm13	\n\t"
-        "prefetcht0      256(%6,%0,8)                   \n\t"
+        //"prefetcht0      256(%6,%0,8)                   \n\t"
 	"vmulpd		  %%ymm9 , %%ymm2 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
 	"vmovups	(%6,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
+	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
 	"vmulpd		  %%ymm9 , %%ymm3 , %%ymm11	\n\t"
-	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
 
 	"vmovups      32(%6,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
+	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
 
 	"vmulpd		  %%ymm8 , %%ymm4 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
 	"vmulpd		  %%ymm8 , %%ymm5 , %%ymm11	\n\t"
+	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
 	"vaddpd		  %%ymm13, %%ymm11, %%ymm13	\n\t"
-        "prefetcht0      256(%7,%0,8)                   \n\t"
+        // "prefetcht0      256(%7,%0,8)                   \n\t"
 	"vmulpd		  %%ymm9 , %%ymm4 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
 	"vmovups	(%7,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
+	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
 	"vmulpd		  %%ymm9 , %%ymm5 , %%ymm11	\n\t"
-	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
 
 	"vmovups      32(%7,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
-
-	"vmulpd		  %%ymm8 , %%ymm6 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
-	"vmulpd		  %%ymm8 , %%ymm7 , %%ymm11	\n\t"
-	"vaddpd		  %%ymm13, %%ymm11, %%ymm13	\n\t"
-	"vmulpd		  %%ymm9 , %%ymm6 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
-	"vmulpd		  %%ymm9 , %%ymm7 , %%ymm11	\n\t"
 	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
 
-	"prefetcht0      256(%3,%0,8)			\n\t"
+	"vmulpd		  %%ymm8 , %%ymm6 , %%ymm10	\n\t"
+	"vmulpd		  %%ymm8 , %%ymm7 , %%ymm11	\n\t"
+	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
+	"vaddpd		  %%ymm13, %%ymm11, %%ymm13	\n\t"
+	"vmulpd		  %%ymm9 , %%ymm6 , %%ymm10	\n\t"
+	"vmulpd		  %%ymm9 , %%ymm7 , %%ymm11	\n\t"
+	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
+	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
+
+	// "prefetcht0      256(%3,%0,8)			\n\t"
 	"vmovups	  (%3,%0,8),  %%ymm10           \n\t"
 	"vmovups	32(%3,%0,8),  %%ymm11           \n\t"
 
@@ -167,30 +167,30 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	".align 16				        \n\t"
 	".L01LOOP%=:				        \n\t"
 
-        "prefetcht0      256(%4,%0,8)                   \n\t"
+        // "prefetcht0      256(%4,%0,8)                   \n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmovups      32(%4,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
 	"vmulpd		  %%ymm8 , %%ymm0 , %%ymm12	\n\t"
 	"vmulpd		  %%ymm8 , %%ymm1 , %%ymm13	\n\t"
 
-        "prefetcht0      256(%5,%0,8)                   \n\t"
+        // "prefetcht0      256(%5,%0,8)                   \n\t"
 	"vmulpd		  %%ymm9 , %%ymm0 , %%ymm14	\n\t"
 	"vmovups	(%5,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmulpd		  %%ymm9 , %%ymm1 , %%ymm15	\n\t"
 	"vmovups      32(%5,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
 
 	"vmulpd		  %%ymm8 , %%ymm2 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
 	"vmulpd		  %%ymm8 , %%ymm3 , %%ymm11	\n\t"
+	"vaddpd		  %%ymm12, %%ymm10, %%ymm12	\n\t"
 	"vaddpd		  %%ymm13, %%ymm11, %%ymm13	\n\t"
 
 	"vmulpd		  %%ymm9 , %%ymm2 , %%ymm10	\n\t"
-	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
 	"vmulpd		  %%ymm9 , %%ymm3 , %%ymm11	\n\t"
+	"vaddpd		  %%ymm14, %%ymm10, %%ymm14	\n\t"
 	"vaddpd		  %%ymm15, %%ymm11, %%ymm15	\n\t"
 
 	
-	"prefetcht0      256(%3,%0,8)			\n\t"
+	// "prefetcht0      256(%3,%0,8)			\n\t"
 	"vmovups	  (%3,%0,8),  %%ymm10           \n\t"
 	"vmovups	32(%3,%0,8),  %%ymm11           \n\t"
 
@@ -256,7 +256,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	".align 16				        \n\t"
 	".L01LOOP%=:				        \n\t"
 
-        "prefetcht0      256(%4,%0,8)                   \n\t"
+        // "prefetcht0      256(%4,%0,8)                   \n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
 	"vmovups      32(%4,%0,8), %%ymm9	        \n\t" // 2 complex values form a0
 	"vmulpd		  %%ymm8 , %%ymm0 , %%ymm12	\n\t"
@@ -265,7 +265,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"vmulpd		  %%ymm9 , %%ymm0 , %%ymm14	\n\t"
 	"vmulpd		  %%ymm9 , %%ymm1 , %%ymm15	\n\t"
 
-	"prefetcht0      256(%3,%0,8)			\n\t"
+	// "prefetcht0      256(%3,%0,8)			\n\t"
 	"vmovups	  (%3,%0,8),  %%ymm10           \n\t"
 	"vmovups	32(%3,%0,8),  %%ymm11           \n\t"
 
@@ -357,7 +357,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 
 	".align 16				        \n\t"
 	".L01LOOP%=:				        \n\t"
-	"prefetcht0      192(%2,%0,8)			\n\t"
+	// "prefetcht0      192(%2,%0,8)			\n\t"
 	"vmovups	(%2,%0,8), %%ymm8	        \n\t" // 2 complex values from src
 	"vmovups      32(%2,%0,8), %%ymm9	        \n\t" 
 
@@ -366,7 +366,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 	"vmulpd      %%ymm9 , %%ymm0, %%ymm14      \n\t" // a_r[2] * x_r , a_i[2] * x_r, a_r[3] * x_r, a_i[3] * x_r
 	"vmulpd      %%ymm9 , %%ymm1, %%ymm15      \n\t" // a_r[2] * x_i , a_i[2] * x_i, a_r[3] * x_i, a_i[3] * x_i
 
-	"prefetcht0      192(%3,%0,8)			\n\t"
+	// "prefetcht0      192(%3,%0,8)			\n\t"
 	"vmovups	  (%3,%0,8),  %%ymm10           \n\t" // 2 complex values from dest
 	"vmovups	32(%3,%0,8),  %%ymm11           \n\t"
 
