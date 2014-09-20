@@ -4,11 +4,11 @@ include $(TOPDIR)/Makefile.system
 SUPPORT_GEMM3M = 0
 
 ifeq ($(ARCH), x86)
-SUPPORT_GEMM3M = 0
+SUPPORT_GEMM3M = 1
 endif
 
 ifeq ($(ARCH), x86_64)
-SUPPORT_GEMM3M = 0
+SUPPORT_GEMM3M = 1
 endif
 
 ifeq ($(ARCH), ia64)

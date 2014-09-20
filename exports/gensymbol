@@ -75,7 +75,9 @@
 	       );
 
 @gemm3mobjs = (
-	       
+	       cgemm3m,zgemm3m,
+	       chemm3m,zhemm3m,
+	       csymm3m,zsymm3m
 	       );
 
 

@@ -4,11 +4,11 @@ include ../../Makefile.system
 USE_GEMM3M = 0
 
 ifeq ($(ARCH), x86)
-USE_GEMM3M = 0
+USE_GEMM3M = 1
 endif
 
 ifeq ($(ARCH), x86_64)
-USE_GEMM3M = 0
+USE_GEMM3M = 1
 endif
 
 ifeq ($(ARCH), ia64)
