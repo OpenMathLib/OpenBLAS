@@ -334,6 +334,16 @@ CZBLAS3OBJS   = \
 	cblas_zhemm.$(SUFFIX) cblas_zherk.$(SUFFIX) cblas_zher2k.$(SUFFIX)\
 	cblas_zomatcopy.$(SUFFIX) cblas_zimatcopy.$(SUFFIX) 
 
+ifeq ($(SUPPORT_GEMM3M), 1)
+
+# CBLAS3OBJS   +=  cgemm3m.$(SUFFIX) csymm3m.$(SUFFIX) chemm3m.$(SUFFIX)
+CCBLAS3OBJS   +=  cblas_cgemm3m.$(SUFFIX)
+
+# ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX) zsymm3m.$(SUFFIX) zhemm3m.$(SUFFIX)
+CZBLAS3OBJS   +=  cblas_zgemm3m.$(SUFFIX)
+
+endif
+
 
 ifndef NO_CBLAS
 
@@ -1776,6 +1786,13 @@ cblas_cher2k.$(SUFFIX) cblas_cher2k.$(PSUFFIX) : syr2k.c
 
 cblas_zher2k.$(SUFFIX) cblas_zher2k.$(PSUFFIX) : syr2k.c
 	$(CC) -DCBLAS -c $(CFLAGS) -DHEMM $< -o $(@F)
+
+cblas_cgemm3m.$(SUFFIX) cblas_cgemm3m.$(PSUFFIX) : gemm.c
+	$(CC) -DCBLAS -c $(CFLAGS) -DGEMM3M $< -o $(@F)
+
+cblas_zgemm3m.$(SUFFIX) cblas_zgemm3m.$(PSUFFIX) : gemm.c
+	$(CC) -DCBLAS -c $(CFLAGS) -DGEMM3M $< -o $(@F)
+
 
 sgetf2.$(SUFFIX) sgetf2.$(PSUFFIX) : lapack/getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
