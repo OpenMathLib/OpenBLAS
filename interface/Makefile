@@ -128,9 +128,11 @@ ZBLAS3OBJS    = \
 
 ifeq ($(SUPPORT_GEMM3M), 1)
 
-CBLAS3OBJS   +=  cgemm3m.$(SUFFIX) csymm3m.$(SUFFIX) chemm3m.$(SUFFIX)
+# CBLAS3OBJS   +=  cgemm3m.$(SUFFIX) csymm3m.$(SUFFIX) chemm3m.$(SUFFIX)
+CBLAS3OBJS   +=  cgemm3m.$(SUFFIX)
 
-ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX) zsymm3m.$(SUFFIX) zhemm3m.$(SUFFIX)
+# ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX) zsymm3m.$(SUFFIX) zhemm3m.$(SUFFIX)
+ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX)
 
 endif
 

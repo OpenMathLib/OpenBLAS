@@ -22,8 +22,8 @@
 *  3                 NUMBER OF VALUES OF BETA
 *  (0.0,0.0) (1.0,0.0) (1.3,-1.1)       VALUES OF BETA
 *  ZGEMM3M  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHEMM3M  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZSYMM3M  T PUT F FOR NO TEST. SAME COLUMNS.
+*  ZHEMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*  ZSYMM  T PUT F FOR NO TEST. SAME COLUMNS.
 *  ZTRMM  T PUT F FOR NO TEST. SAME COLUMNS.
 *  ZTRSM  T PUT F FOR NO TEST. SAME COLUMNS.
 *  ZHERK  T PUT F FOR NO TEST. SAME COLUMNS.
@@ -95,7 +95,7 @@
       COMMON             /INFOC/INFOT, NOUTC, OK, LERR
       COMMON             /SRNAMC/SRNAMT
 *     .. Data statements ..
-      DATA               SNAMES/'ZGEMM3M ', 'ZHEMM3M ', 'ZSYMM3M ',
+      DATA               SNAMES/'ZGEMM3M ', 'ZHEMM ', 'ZSYMM ',
      $                   'ZTRMM ',
      $                   'ZTRSM ', 'ZHERK ', 'ZSYRK ', 'ZHER2K',
      $                   'ZSYR2K'/
@@ -290,7 +290,7 @@
      $                  NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
      $                  CC, CS, CT, G )
             GO TO 190
-*           Test ZHEMM3M, 02, ZSYMM3M, 03.
+*           Test ZHEMM, 02, ZSYMM, 03.
   150       CALL ZCHK2( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
      $                  NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
@@ -654,7 +654,7 @@
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
      $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G )
 *
-*  Tests ZHEMM3M and ZSYMM3M.
+*  Tests ZHEMM and ZSYMM.
 *
 *  Auxiliary routine for test program for Level 3 Blas.
 *
@@ -697,7 +697,7 @@
       LOGICAL            LZE, LZERES
       EXTERNAL           LZE, LZERES
 *     .. External Subroutines ..
-      EXTERNAL           ZHEMM3M, ZMAKE, ZMMCH, ZSYMM3M
+      EXTERNAL           ZHEMM, ZMAKE, ZMMCH, ZSYMM
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
 *     .. Scalars in Common ..
@@ -812,10 +812,10 @@
                         IF( REWI )
      $                     REWIND NTRA
                         IF( CONJ )THEN
-                           CALL ZHEMM3M( SIDE, UPLO, M, N, ALPHA, AA, LDA,
+                           CALL ZHEMM( SIDE, UPLO, M, N, ALPHA, AA, LDA,
      $                                 BB, LDB, BETA, CC, LDC )
                         ELSE
-                           CALL ZSYMM3M( SIDE, UPLO, M, N, ALPHA, AA, LDA,
+                           CALL ZSYMM( SIDE, UPLO, M, N, ALPHA, AA, LDA,
      $                                 BB, LDB, BETA, CC, LDC )
                         END IF
 *
@@ -1974,7 +1974,7 @@
 *     .. Local Arrays ..
       COMPLEX*16         A( 2, 1 ), B( 2, 1 ), C( 2, 1 )
 *     .. External Subroutines ..
-      EXTERNAL           ZGEMM3M, ZHEMM3M, ZHER2K, ZHERK, CHKXER, ZSYMM3M,
+      EXTERNAL           ZGEMM3M, ZHEMM, ZHER2K, ZHERK, CHKXER, ZSYMM,
      $                   ZSYR2K, ZSYRK, ZTRMM, ZTRSM
 *     .. Common blocks ..
       COMMON             /INFOC/INFOT, NOUTC, OK, LERR
@@ -2169,137 +2169,137 @@
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       GO TO 100
    20 INFOT = 1
-      CALL ZHEMM3M( '/', 'U', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( '/', 'U', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 2
-      CALL ZHEMM3M( 'L', '/', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', '/', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZHEMM3M( 'L', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZHEMM3M( 'R', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZHEMM3M( 'L', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZHEMM3M( 'R', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZHEMM3M( 'L', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZHEMM3M( 'R', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZHEMM3M( 'L', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZHEMM3M( 'R', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZHEMM3M( 'L', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
+      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZHEMM3M( 'R', 'U', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'U', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZHEMM3M( 'L', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
+      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZHEMM3M( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM3M( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM3M( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM3M( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM3M( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZHEMM3M( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZHEMM3M( 'R', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZHEMM3M( 'L', 'L', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZHEMM3M( 'R', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       GO TO 100
    30 INFOT = 1
-      CALL ZSYMM3M( '/', 'U', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( '/', 'U', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 2
-      CALL ZSYMM3M( 'L', '/', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', '/', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZSYMM3M( 'L', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZSYMM3M( 'R', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZSYMM3M( 'L', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL ZSYMM3M( 'R', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZSYMM3M( 'L', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZSYMM3M( 'R', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZSYMM3M( 'L', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL ZSYMM3M( 'R', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZSYMM3M( 'L', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
+      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZSYMM3M( 'R', 'U', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'U', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZSYMM3M( 'L', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
+      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL ZSYMM3M( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM3M( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM3M( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM3M( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM3M( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZSYMM3M( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZSYMM3M( 'R', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZSYMM3M( 'L', 'L', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
-      CALL ZSYMM3M( 'R', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       GO TO 100
    40 INFOT = 1
