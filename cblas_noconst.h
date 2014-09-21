@@ -231,7 +231,11 @@ void cblas_dgemm(enum CBLAS_ORDER Order, enum CBLAS_TRANSPOSE TransA, enum CBLAS
 		 double alpha, double *A, blasint lda, double *B, blasint ldb, double beta, double *C, blasint ldc);
 void cblas_cgemm(enum CBLAS_ORDER Order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint M, blasint N, blasint K,
 		 float *alpha, float *A, blasint lda, float *B, blasint ldb, float *beta, float *C, blasint ldc);
+void cblas_cgemm3m(enum CBLAS_ORDER Order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint M, blasint N, blasint K,
+		 float *alpha, float *A, blasint lda, float *B, blasint ldb, float *beta, float *C, blasint ldc);
 void cblas_zgemm(enum CBLAS_ORDER Order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint M, blasint N, blasint K,
+		 double *alpha, double *A, blasint lda, double *B, blasint ldb, double *beta, double *C, blasint ldc);
+void cblas_zgemm3m(enum CBLAS_ORDER Order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint M, blasint N, blasint K,
 		 double *alpha, double *A, blasint lda, double *B, blasint ldb, double *beta, double *C, blasint ldc);
 
 void cblas_ssymm(enum CBLAS_ORDER Order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo, blasint M, blasint N,
