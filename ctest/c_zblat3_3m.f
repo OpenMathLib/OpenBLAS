@@ -1,19 +1,18 @@
       PROGRAM ZBLAT3
 *
-*  Test program for the COMPLEX*16       Level 3 Blas.
+*  Test program for the COMPLEX*16          Level 3 Blas.
 *
-*  The program must be driven by a short data file. The first 14 records
+*  The program must be driven by a short data file. The first 13 records
 *  of the file are read using list-directed input, the last 9 records
-*  are read using the format ( A8, L2 ). An annotated example of a data
+*  are read using the format ( A13,L2 ). An annotated example of a data
 *  file can be obtained by deleting the first 3 characters from the
-*  following 23 lines:
-*  'ZBLAT3.SUMM'     NAME OF SUMMARY OUTPUT FILE
-*  6                 UNIT NUMBER OF SUMMARY FILE
-*  'ZBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
+*  following 22 lines:
+*  'CBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
 *  -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
 *  F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
 *  F        LOGICAL FLAG, T TO STOP ON FAILURES.
 *  T        LOGICAL FLAG, T TO TEST ERROR EXITS.
+*  2        0 TO TEST COLUMN-MAJOR, 1 TO TEST ROW-MAJOR, 2 TO TEST BOTH
 *  16.0     THRESHOLD VALUE OF TEST RATIO
 *  6                 NUMBER OF VALUES OF N
 *  0 1 2 3 5 9       VALUES OF N
@@ -21,7 +20,7 @@
 *  (0.0,0.0) (1.0,0.0) (0.7,-0.9)       VALUES OF ALPHA
 *  3                 NUMBER OF VALUES OF BETA
 *  (0.0,0.0) (1.0,0.0) (1.3,-1.1)       VALUES OF BETA
-*  ZGEMM3M  T PUT F FOR NO TEST. SAME COLUMNS.
+*  ZGEMM  T PUT F FOR NO TEST. SAME COLUMNS.
 *  ZHEMM  T PUT F FOR NO TEST. SAME COLUMNS.
 *  ZSYMM  T PUT F FOR NO TEST. SAME COLUMNS.
 *  ZTRMM  T PUT F FOR NO TEST. SAME COLUMNS.
@@ -47,8 +46,8 @@
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *     .. Parameters ..
-      INTEGER            NIN
-      PARAMETER          ( NIN = 5 )
+      INTEGER            NIN, NOUT
+      PARAMETER          ( NIN = 5, NOUT = 6 )
       INTEGER            NSUBS
       PARAMETER          ( NSUBS = 9 )
       COMPLEX*16         ZERO, ONE
@@ -62,12 +61,13 @@
       PARAMETER          ( NIDMAX = 9, NALMAX = 7, NBEMAX = 7 )
 *     .. Local Scalars ..
       DOUBLE PRECISION   EPS, ERR, THRESH
-      INTEGER            I, ISNUM, J, N, NALF, NBET, NIDIM, NOUT, NTRA
+      INTEGER            I, ISNUM, J, N, NALF, NBET, NIDIM, NTRA,
+     $                   LAYOUT
       LOGICAL            FATAL, LTESTT, REWI, SAME, SFATAL, TRACE,
-     $                   TSTERR
+     $                   TSTERR, CORDER, RORDER
       CHARACTER*1        TRANSA, TRANSB
-      CHARACTER*8        SNAMET
-      CHARACTER*32       SNAPS, SUMMRY
+      CHARACTER*13       SNAMET
+      CHARACTER*32       SNAPS
 *     .. Local Arrays ..
       COMPLEX*16         AA( NMAX*NMAX ), AB( NMAX, 2*NMAX ),
      $                   ALF( NALMAX ), AS( NMAX*NMAX ),
@@ -78,34 +78,29 @@
       DOUBLE PRECISION   G( NMAX )
       INTEGER            IDIM( NIDMAX )
       LOGICAL            LTEST( NSUBS )
-      CHARACTER*8        SNAMES( NSUBS )
+      CHARACTER*13       SNAMES( NSUBS )
 *     .. External Functions ..
       DOUBLE PRECISION   DDIFF
       LOGICAL            LZE
       EXTERNAL           DDIFF, LZE
 *     .. External Subroutines ..
-      EXTERNAL           ZCHK1, ZCHK2, ZCHK3, ZCHK4, ZCHK5, ZCHKE, ZMMCH
+      EXTERNAL           ZCHK1, ZCHK2, ZCHK3, ZCHK4, ZCHK5,ZMMCH
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
 *     .. Scalars in Common ..
       INTEGER            INFOT, NOUTC
       LOGICAL            LERR, OK
-      CHARACTER*8        SRNAMT
+      CHARACTER*13       SRNAMT
 *     .. Common blocks ..
       COMMON             /INFOC/INFOT, NOUTC, OK, LERR
       COMMON             /SRNAMC/SRNAMT
 *     .. Data statements ..
-      DATA               SNAMES/'ZGEMM3M ', 'ZHEMM ', 'ZSYMM ',
-     $                   'ZTRMM ',
-     $                   'ZTRSM ', 'ZHERK ', 'ZSYRK ', 'ZHER2K',
-     $                   'ZSYR2K'/
+      DATA               SNAMES/'cblas_zgemm3m ', 'cblas_zhemm ',
+     $                   'cblas_zsymm ', 'cblas_ztrmm ', 'cblas_ztrsm ',
+     $                   'cblas_zherk ', 'cblas_zsyrk ', 'cblas_zher2k',
+     $                   'cblas_zsyr2k'/
 *     .. Executable Statements ..
 *
-*     Read name and unit number for summary output file and open file.
-*
-      READ( NIN, FMT = * )SUMMRY
-      READ( NIN, FMT = * )NOUT
-      OPEN( NOUT, FILE = SUMMRY, STATUS = 'NEW' )
       NOUTC = NOUT
 *
 *     Read name and unit number for snapshot output file and open file.
@@ -123,6 +118,8 @@
       READ( NIN, FMT = * )SFATAL
 *     Read the flag that indicates whether error exits are to be tested.
       READ( NIN, FMT = * )TSTERR
+*     Read the flag that indicates whether row-major data layout to be tested.
+      READ( NIN, FMT = * )LAYOUT
 *     Read the threshold value of the test ratio
       READ( NIN, FMT = * )THRESH
 *
@@ -169,6 +166,22 @@
       WRITE( NOUT, FMT = * )
       WRITE( NOUT, FMT = 9999 )THRESH
       WRITE( NOUT, FMT = * )
+
+      RORDER = .FALSE.
+      CORDER = .FALSE.
+      IF (LAYOUT.EQ.2) THEN
+         RORDER = .TRUE.
+         CORDER = .TRUE.
+         WRITE( *, FMT = 10002 )
+      ELSE IF (LAYOUT.EQ.1) THEN
+         RORDER = .TRUE.
+         WRITE( *, FMT = 10001 )
+      ELSE IF (LAYOUT.EQ.0) THEN
+         CORDER = .TRUE.
+         WRITE( *, FMT = 10000 )
+      END IF
+      WRITE( *, FMT = * )
+
 *
 *     Read names of subroutines and flags which indicate
 *     whether they are to be tested.
@@ -275,7 +288,7 @@
             SRNAMT = SNAMES( ISNUM )
 *           Test error exits.
             IF( TSTERR )THEN
-               CALL ZCHKE( ISNUM, SNAMES( ISNUM ), NOUT )
+               CALL CZ3CHKE( SNAMES( ISNUM ) )
                WRITE( NOUT, FMT = * )
             END IF
 *           Test computations.
@@ -284,33 +297,75 @@
             FATAL = .FALSE.
             GO TO ( 140, 150, 150, 160, 160, 170, 170,
      $              180, 180 )ISNUM
-*           Test ZGEMM3M, 01.
-  140       CALL ZCHK1( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
-     $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
-     $                  NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
-     $                  CC, CS, CT, G )
+*           Test ZGEMM, 01.
+  140       IF (CORDER) THEN
+            CALL ZCHK1(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
+     $                 CC, CS, CT, G, 0 )
+            END IF
+            IF (RORDER) THEN
+            CALL ZCHK1(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
+     $                 CC, CS, CT, G, 1 )
+            END IF
             GO TO 190
 *           Test ZHEMM, 02, ZSYMM, 03.
-  150       CALL ZCHK2( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
-     $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
-     $                  NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
-     $                  CC, CS, CT, G )
+  150       IF (CORDER) THEN
+            CALL ZCHK2(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
+     $                 CC, CS, CT, G, 0 )
+            END IF
+            IF (RORDER) THEN
+            CALL ZCHK2(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
+     $                 CC, CS, CT, G, 1 )
+            END IF
             GO TO 190
 *           Test ZTRMM, 04, ZTRSM, 05.
-  160       CALL ZCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
-     $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NMAX, AB,
-     $                  AA, AS, AB( 1, NMAX + 1 ), BB, BS, CT, G, C )
+  160       IF (CORDER) THEN
+            CALL ZCHK3(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NMAX, AB,
+     $                 AA, AS, AB( 1, NMAX + 1 ), BB, BS, CT, G, C,
+     $		       0 )
+            END IF
+            IF (RORDER) THEN
+            CALL ZCHK3(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NMAX, AB,
+     $                 AA, AS, AB( 1, NMAX + 1 ), BB, BS, CT, G, C,
+     $		       1 )
+            END IF
             GO TO 190
 *           Test ZHERK, 06, ZSYRK, 07.
-  170       CALL ZCHK4( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
-     $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
-     $                  NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
-     $                  CC, CS, CT, G )
+  170       IF (CORDER) THEN
+            CALL ZCHK4(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
+     $                 CC, CS, CT, G, 0 )
+            END IF
+            IF (RORDER) THEN
+            CALL ZCHK4(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, AB( 1, NMAX + 1 ), BB, BS, C,
+     $                 CC, CS, CT, G, 1 )
+            END IF
             GO TO 190
 *           Test ZHER2K, 08, ZSYR2K, 09.
-  180       CALL ZCHK5( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
-     $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
-     $                  NMAX, AB, AA, AS, BB, BS, C, CC, CS, CT, G, W )
+  180       IF (CORDER) THEN
+            CALL ZCHK5(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
+     $		       0 )
+            END IF
+            IF (RORDER) THEN
+            CALL ZCHK5(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
+     $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
+     $                 NMAX, AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
+     $		       1 )
+            END IF
             GO TO 190
 *
   190       IF( FATAL.AND.SFATAL )
@@ -333,13 +388,16 @@
       CLOSE ( NOUT )
       STOP
 *
- 9999 FORMAT( ' ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LES',
+10002 FORMAT( ' COLUMN-MAJOR AND ROW-MAJOR DATA LAYOUTS ARE TESTED' )
+10001 FORMAT(' ROW-MAJOR DATA LAYOUT IS TESTED' )
+10000 FORMAT(' COLUMN-MAJOR DATA LAYOUT IS TESTED' )
+ 9999 FORMAT(' ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LES',
      $      'S THAN', F8.2 )
- 9998 FORMAT( ' RELATIVE MACHINE PRECISION IS TAKEN TO BE', 1P, D9.1 )
- 9997 FORMAT( ' NUMBER OF VALUES OF ', A, ' IS LESS THAN 1 OR GREATER ',
+ 9998 FORMAT(' RELATIVE MACHINE PRECISION IS TAKEN TO BE', 1P, E9.1 )
+ 9997 FORMAT(' NUMBER OF VALUES OF ', A, ' IS LESS THAN 1 OR GREATER ',
      $      'THAN ', I2 )
  9996 FORMAT( ' VALUE OF N IS LESS THAN 0 OR GREATER THAN ', I2 )
- 9995 FORMAT( ' TESTS OF THE COMPLEX*16       LEVEL 3 BLAS', //' THE F',
+ 9995 FORMAT('TESTS OF THE COMPLEX*16        LEVEL 3 BLAS', //' THE F',
      $      'OLLOWING PARAMETER VALUES WILL BE USED:' )
  9994 FORMAT( '   FOR N              ', 9I6 )
  9993 FORMAT( '   FOR ALPHA          ',
@@ -348,16 +406,16 @@
      $      7( '(', F4.1, ',', F4.1, ')  ', : ) )
  9991 FORMAT( ' AMEND DATA FILE OR INCREASE ARRAY SIZES IN PROGRAM',
      $      /' ******* TESTS ABANDONED *******' )
- 9990 FORMAT( ' SUBPROGRAM NAME ', A8, ' NOT RECOGNIZED', /' ******* T',
+ 9990 FORMAT(' SUBPROGRAM NAME ', A13,' NOT RECOGNIZED', /' ******* T',
      $      'ESTS ABANDONED *******' )
- 9989 FORMAT( ' ERROR IN ZMMCH -  IN-LINE DOT PRODUCTS ARE BEING EVALU',
+ 9989 FORMAT(' ERROR IN ZMMCH -  IN-LINE DOT PRODUCTS ARE BEING EVALU',
      $      'ATED WRONGLY.', /' ZMMCH WAS CALLED WITH TRANSA = ', A1,
-     $      ' AND TRANSB = ', A1, /' AND RETURNED SAME = ', L1, ' AND ',
-     $      'ERR = ', F12.3, '.', /' THIS MAY BE DUE TO FAULTS IN THE ',
-     $      'ARITHMETIC OR THE COMPILER.', /' ******* TESTS ABANDONED ',
+     $      'AND TRANSB = ', A1, /' AND RETURNED SAME = ', L1, ' AND ',
+     $    ' ERR = ', F12.3, '.', /' THIS MAY BE DUE TO FAULTS IN THE ',
+     $     'ARITHMETIC OR THE COMPILER.', /' ******* TESTS ABANDONED ',
      $      '*******' )
- 9988 FORMAT( A8, L2 )
- 9987 FORMAT( 1X, A8, ' WAS NOT TESTED' )
+ 9988 FORMAT( A13,L2 )
+ 9987 FORMAT( 1X, A13,' WAS NOT TESTED' )
  9986 FORMAT( /' END OF TESTS' )
  9985 FORMAT( /' ******* FATAL ERROR - TESTS ABANDONED *******' )
  9984 FORMAT( ' ERROR-EXITS WILL NOT BE TESTED' )
@@ -367,9 +425,10 @@
       END
       SUBROUTINE ZCHK1( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
-     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G )
+     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G,
+     $                  IORDER )
 *
-*  Tests ZGEMM3M.
+*  Tests ZGEMM.
 *
 *  Auxiliary routine for test program for Level 3 Blas.
 *
@@ -381,14 +440,14 @@
 *
 *     .. Parameters ..
       COMPLEX*16         ZERO
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ) )
+      PARAMETER          ( ZERO = ( 0.0, 0.0 ) )
       DOUBLE PRECISION   RZERO
-      PARAMETER          ( RZERO = 0.0D0 )
+      PARAMETER          ( RZERO = 0.0 )
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   EPS, THRESH
-      INTEGER            NALF, NBET, NIDIM, NMAX, NOUT, NTRA
+      INTEGER            NALF, NBET, NIDIM, NMAX, NOUT, NTRA, IORDER
       LOGICAL            FATAL, REWI, TRACE
-      CHARACTER*8        SNAME
+      CHARACTER*13       SNAME
 *     .. Array Arguments ..
       COMPLEX*16         A( NMAX, NMAX ), AA( NMAX*NMAX ), ALF( NALF ),
      $                   AS( NMAX*NMAX ), B( NMAX, NMAX ),
@@ -412,7 +471,7 @@
       LOGICAL            LZE, LZERES
       EXTERNAL           LZE, LZERES
 *     .. External Subroutines ..
-      EXTERNAL           ZGEMM3M, ZMAKE, ZMMCH
+      EXTERNAL           CZGEMM3M, ZMAKE, ZMMCH
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
 *     .. Scalars in Common ..
@@ -469,7 +528,7 @@
 *
 *                 Generate the matrix A.
 *
-                  CALL ZMAKE( 'GE', ' ', ' ', MA, NA, A, NMAX, AA, LDA,
+                  CALL ZMAKE( 'ge', ' ', ' ', MA, NA, A, NMAX, AA, LDA,
      $                        RESET, ZERO )
 *
                   DO 70 ICB = 1, 3
@@ -494,7 +553,7 @@
 *
 *                    Generate the matrix B.
 *
-                     CALL ZMAKE( 'GE', ' ', ' ', MB, NB, B, NMAX, BB,
+                     CALL ZMAKE( 'ge', ' ', ' ', MB, NB, B, NMAX, BB,
      $                           LDB, RESET, ZERO )
 *
                      DO 60 IA = 1, NALF
@@ -505,7 +564,7 @@
 *
 *                          Generate the matrix C.
 *
-                           CALL ZMAKE( 'GE', ' ', ' ', M, N, C, NMAX,
+                           CALL ZMAKE( 'ge', ' ', ' ', M, N, C, NMAX,
      $                                 CC, LDC, RESET, ZERO )
 *
                            NC = NC + 1
@@ -536,13 +595,14 @@
 *                          Call the subroutine.
 *
                            IF( TRACE )
-     $                        WRITE( NTRA, FMT = 9995 )NC, SNAME,
-     $                        TRANSA, TRANSB, M, N, K, ALPHA, LDA, LDB,
-     $                        BETA, LDC
+     $                        CALL ZPRCN1(NTRA, NC, SNAME, IORDER,
+     $                        TRANSA, TRANSB, M, N, K, ALPHA, LDA,
+     $                        LDB, BETA, LDC)
                            IF( REWI )
      $                        REWIND NTRA
-                           CALL ZGEMM3M( TRANSA, TRANSB, M, N, K, ALPHA,
-     $                                 AA, LDA, BB, LDB, BETA, CC, LDC )
+                           CALL CZGEMM3M( IORDER, TRANSA, TRANSB, M, N,
+     $                                 K, ALPHA, AA, LDA, BB, LDB,
+     $                                 BETA, CC, LDC )
 *
 *                          Check if error-exit was taken incorrectly.
 *
@@ -568,7 +628,7 @@
                            IF( NULL )THEN
                               ISAME( 12 ) = LZE( CS, CC, LCC )
                            ELSE
-                              ISAME( 12 ) = LZERES( 'GE', ' ', M, N, CS,
+                             ISAME( 12 ) = LZERES( 'ge', ' ', M, N, CS,
      $                                      CC, LDC )
                            END IF
                            ISAME( 13 ) = LDCS.EQ.LDC
@@ -591,10 +651,10 @@
 *
 *                             Check the result.
 *
-                              CALL ZMMCH( TRANSA, TRANSB, M, N, K,
-     $                                    ALPHA, A, NMAX, B, NMAX, BETA,
-     $                                    C, NMAX, CT, G, CC, LDC, EPS,
-     $                                    ERR, FATAL, NOUT, .TRUE. )
+                             CALL ZMMCH( TRANSA, TRANSB, M, N, K,
+     $                                   ALPHA, A, NMAX, B, NMAX, BETA,
+     $                                   C, NMAX, CT, G, CC, LDC, EPS,
+     $                                   ERR, FATAL, NOUT, .TRUE. )
                               ERRMAX = MAX( ERRMAX, ERR )
 *                             If got really bad answer, report and
 *                             return.
@@ -619,40 +679,84 @@
 *     Report result.
 *
       IF( ERRMAX.LT.THRESH )THEN
-         WRITE( NOUT, FMT = 9999 )SNAME, NC
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10000 )SNAME, NC
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10001 )SNAME, NC
       ELSE
-         WRITE( NOUT, FMT = 9997 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10002 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10003 )SNAME, NC, ERRMAX
       END IF
       GO TO 130
 *
   120 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
-      WRITE( NOUT, FMT = 9995 )NC, SNAME, TRANSA, TRANSB, M, N, K,
-     $   ALPHA, LDA, LDB, BETA, LDC
+      CALL ZPRCN1(NOUT, NC, SNAME, IORDER, TRANSA, TRANSB,
+     $           M, N, K, ALPHA, LDA, LDB, BETA, LDC)
 *
   130 CONTINUE
       RETURN
 *
- 9999 FORMAT( ' ', A8, ' PASSED THE COMPUTATIONAL TESTS (', I6, ' CALL',
-     $      'S)' )
- 9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
+10003 FORMAT( ' ', A13,' COMPLETED THE ROW-MAJOR    COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10002 FORMAT( ' ', A13,' COMPLETED THE COLUMN-MAJOR COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10001 FORMAT( ' ', A13,' PASSED THE ROW-MAJOR    COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+10000 FORMAT( ' ', A13,' PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+ 9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ', A8, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
- 9996 FORMAT( ' ******* ', A8, ' FAILED ON CALL NUMBER:' )
- 9995 FORMAT( 1X, I6, ': ', A8, '(''', A1, ''',''', A1, ''',',
-     $      3( I3, ',' ), '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3,
-     $      ',(', F4.1, ',', F4.1, '), C,', I3, ').' )
- 9994 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
+ 9996 FORMAT( ' ******* ', A13,' FAILED ON CALL NUMBER:' )
+ 9995 FORMAT( 1X, I6, ': ', A13,'(''', A1, ''',''', A1, ''',',
+     $     3( I3, ',' ), '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3,
+     $     ',(', F4.1, ',', F4.1, '), C,', I3, ').' )
+ 9994 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
 *     End of ZCHK1.
 *
       END
+*
+      SUBROUTINE ZPRCN1(NOUT, NC, SNAME, IORDER, TRANSA, TRANSB, M, N,
+     $                 K, ALPHA, LDA, LDB, BETA, LDC)
+      INTEGER          NOUT, NC, IORDER, M, N, K, LDA, LDB, LDC
+      DOUBLE COMPLEX   ALPHA, BETA
+      CHARACTER*1      TRANSA, TRANSB
+      CHARACTER*13     SNAME
+      CHARACTER*14     CRC, CTA,CTB
+
+      IF (TRANSA.EQ.'N')THEN
+         CTA = '  CblasNoTrans'
+      ELSE IF (TRANSA.EQ.'T')THEN
+         CTA = '    CblasTrans'
+      ELSE
+         CTA = 'CblasConjTrans'
+      END IF
+      IF (TRANSB.EQ.'N')THEN
+         CTB = '  CblasNoTrans'
+      ELSE IF (TRANSB.EQ.'T')THEN
+         CTB = '    CblasTrans'
+      ELSE
+         CTB = 'CblasConjTrans'
+      END IF
+      IF (IORDER.EQ.1)THEN
+         CRC = ' CblasRowMajor'
+      ELSE
+         CRC = ' CblasColMajor'
+      END IF
+      WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CTA,CTB
+      WRITE(NOUT, FMT = 9994)M, N, K, ALPHA, LDA, LDB, BETA, LDC
+
+ 9995 FORMAT( 1X, I6, ': ', A13,'(', A15, ',', A14, ',', A14, ',')
+ 9994 FORMAT( 10X, 3( I3, ',' ) ,' (', F4.1,',',F4.1,') , A,',
+     $ I3, ', B,', I3, ', (', F4.1,',',F4.1,') , C,', I3, ').' )
+      END
+*
       SUBROUTINE ZCHK2( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
-     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G )
+     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G,
+     $                  IORDER )
 *
 *  Tests ZHEMM and ZSYMM.
 *
@@ -671,9 +775,9 @@
       PARAMETER          ( RZERO = 0.0D0 )
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   EPS, THRESH
-      INTEGER            NALF, NBET, NIDIM, NMAX, NOUT, NTRA
+      INTEGER            NALF, NBET, NIDIM, NMAX, NOUT, NTRA, IORDER
       LOGICAL            FATAL, REWI, TRACE
-      CHARACTER*8        SNAME
+      CHARACTER*13       SNAME
 *     .. Array Arguments ..
       COMPLEX*16         A( NMAX, NMAX ), AA( NMAX*NMAX ), ALF( NALF ),
      $                   AS( NMAX*NMAX ), B( NMAX, NMAX ),
@@ -697,7 +801,7 @@
       LOGICAL            LZE, LZERES
       EXTERNAL           LZE, LZERES
 *     .. External Subroutines ..
-      EXTERNAL           ZHEMM, ZMAKE, ZMMCH, ZSYMM
+      EXTERNAL           CZHEMM, ZMAKE, ZMMCH, CZSYMM
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
 *     .. Scalars in Common ..
@@ -708,7 +812,7 @@
 *     .. Data statements ..
       DATA               ICHS/'LR'/, ICHU/'UL'/
 *     .. Executable Statements ..
-      CONJ = SNAME( 2: 3 ).EQ.'HE'
+      CONJ = SNAME( 8: 9 ).EQ.'he'
 *
       NARGS = 12
       NC = 0
@@ -740,7 +844,7 @@
 *
 *           Generate the matrix B.
 *
-            CALL ZMAKE( 'GE', ' ', ' ', M, N, B, NMAX, BB, LDB, RESET,
+            CALL ZMAKE( 'ge', ' ', ' ', M, N, B, NMAX, BB, LDB, RESET,
      $                  ZERO )
 *
             DO 80 ICS = 1, 2
@@ -766,7 +870,7 @@
 *
 *                 Generate the hermitian or symmetric matrix A.
 *
-                  CALL ZMAKE( SNAME( 2: 3 ), UPLO, ' ', NA, NA, A, NMAX,
+                  CALL ZMAKE(SNAME( 8: 9 ), UPLO, ' ', NA, NA, A, NMAX,
      $                        AA, LDA, RESET, ZERO )
 *
                   DO 60 IA = 1, NALF
@@ -777,7 +881,7 @@
 *
 *                       Generate the matrix C.
 *
-                        CALL ZMAKE( 'GE', ' ', ' ', M, N, C, NMAX, CC,
+                        CALL ZMAKE( 'ge', ' ', ' ', M, N, C, NMAX, CC,
      $                              LDC, RESET, ZERO )
 *
                         NC = NC + 1
@@ -807,16 +911,19 @@
 *                       Call the subroutine.
 *
                         IF( TRACE )
-     $                     WRITE( NTRA, FMT = 9995 )NC, SNAME, SIDE,
-     $                     UPLO, M, N, ALPHA, LDA, LDB, BETA, LDC
+     $                      CALL ZPRCN2(NTRA, NC, SNAME, IORDER,
+     $                      SIDE, UPLO, M, N, ALPHA, LDA, LDB,
+     $                      BETA, LDC)
                         IF( REWI )
      $                     REWIND NTRA
                         IF( CONJ )THEN
-                           CALL ZHEMM( SIDE, UPLO, M, N, ALPHA, AA, LDA,
-     $                                 BB, LDB, BETA, CC, LDC )
+                           CALL CZHEMM( IORDER, SIDE, UPLO, M, N,
+     $                                 ALPHA, AA, LDA, BB, LDB, BETA,
+     $                                 CC, LDC )
                         ELSE
-                           CALL ZSYMM( SIDE, UPLO, M, N, ALPHA, AA, LDA,
-     $                                 BB, LDB, BETA, CC, LDC )
+                           CALL CZSYMM( IORDER, SIDE, UPLO, M, N,
+     $                                 ALPHA, AA, LDA, BB, LDB, BETA,
+     $                                 CC, LDC )
                         END IF
 *
 *                       Check if error-exit was taken incorrectly.
@@ -842,7 +949,7 @@
                         IF( NULL )THEN
                            ISAME( 11 ) = LZE( CS, CC, LCC )
                         ELSE
-                           ISAME( 11 ) = LZERES( 'GE', ' ', M, N, CS,
+                           ISAME( 11 ) = LZERES( 'ge', ' ', M, N, CS,
      $                                   CC, LDC )
                         END IF
                         ISAME( 12 ) = LDCS.EQ.LDC
@@ -898,40 +1005,79 @@
 *     Report result.
 *
       IF( ERRMAX.LT.THRESH )THEN
-         WRITE( NOUT, FMT = 9999 )SNAME, NC
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10000 )SNAME, NC
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10001 )SNAME, NC
       ELSE
-         WRITE( NOUT, FMT = 9997 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10002 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10003 )SNAME, NC, ERRMAX
       END IF
       GO TO 120
 *
   110 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
-      WRITE( NOUT, FMT = 9995 )NC, SNAME, SIDE, UPLO, M, N, ALPHA, LDA,
-     $   LDB, BETA, LDC
+      CALL ZPRCN2(NOUT, NC, SNAME, IORDER, SIDE, UPLO, M, N, ALPHA, LDA,
+     $           LDB, BETA, LDC)
 *
   120 CONTINUE
       RETURN
 *
- 9999 FORMAT( ' ', A8, ' PASSED THE COMPUTATIONAL TESTS (', I6, ' CALL',
-     $      'S)' )
- 9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
+10003 FORMAT( ' ', A13,' COMPLETED THE ROW-MAJOR    COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10002 FORMAT( ' ', A13,' COMPLETED THE COLUMN-MAJOR COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10001 FORMAT( ' ', A13,' PASSED THE ROW-MAJOR    COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+10000 FORMAT( ' ', A13,' PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+ 9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ', A8, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
- 9996 FORMAT( ' ******* ', A8, ' FAILED ON CALL NUMBER:' )
- 9995 FORMAT( 1X, I6, ': ', A8, '(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+ 9996 FORMAT( ' ******* ', A13,' FAILED ON CALL NUMBER:' )
+ 9995 FORMAT(1X, I6, ': ', A13,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
      $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1,
      $      ',', F4.1, '), C,', I3, ')    .' )
- 9994 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
+ 9994 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
 *     End of ZCHK2.
 *
       END
+*
+      SUBROUTINE ZPRCN2(NOUT, NC, SNAME, IORDER, SIDE, UPLO, M, N,
+     $                 ALPHA, LDA, LDB, BETA, LDC)
+      INTEGER          NOUT, NC, IORDER, M, N, LDA, LDB, LDC
+      DOUBLE COMPLEX   ALPHA, BETA
+      CHARACTER*1      SIDE, UPLO
+      CHARACTER*13     SNAME
+      CHARACTER*14     CRC, CS,CU
+
+      IF (SIDE.EQ.'L')THEN
+         CS =  '     CblasLeft'
+      ELSE
+         CS =  '    CblasRight'
+      END IF
+      IF (UPLO.EQ.'U')THEN
+         CU =  '    CblasUpper'
+      ELSE
+         CU =  '    CblasLower'
+      END IF
+      IF (IORDER.EQ.1)THEN
+         CRC = ' CblasRowMajor'
+      ELSE
+         CRC = ' CblasColMajor'
+      END IF
+      WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CS,CU
+      WRITE(NOUT, FMT = 9994)M, N, ALPHA, LDA, LDB, BETA, LDC
+
+ 9995 FORMAT( 1X, I6, ': ', A13,'(', A15, ',', A14, ',', A14, ',')
+ 9994 FORMAT( 10X, 2( I3, ',' ),' (',F4.1,',',F4.1, '), A,', I3,
+     $ ', B,', I3, ', (',F4.1,',',F4.1, '), ', 'C,', I3, ').' )
+      END
+*
       SUBROUTINE ZCHK3( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NMAX, A, AA, AS,
-     $                  B, BB, BS, CT, G, C )
+     $                  B, BB, BS, CT, G, C, IORDER )
 *
 *  Tests ZTRMM and ZTRSM.
 *
@@ -944,16 +1090,15 @@
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *     .. Parameters ..
-      COMPLEX*16         ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
-     $                   ONE = ( 1.0D0, 0.0D0 ) )
-      DOUBLE PRECISION   RZERO
-      PARAMETER          ( RZERO = 0.0D0 )
+      COMPLEX*16    ZERO, ONE
+      PARAMETER     ( ZERO = ( 0.0D0, 0.0D0 ), ONE = ( 1.0D0, 0.0D0 ) )
+      DOUBLE PRECISION  RZERO
+      PARAMETER     ( RZERO = 0.0D0 )
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   EPS, THRESH
-      INTEGER            NALF, NIDIM, NMAX, NOUT, NTRA
+      INTEGER            NALF, NIDIM, NMAX, NOUT, NTRA, IORDER
       LOGICAL            FATAL, REWI, TRACE
-      CHARACTER*8        SNAME
+      CHARACTER*13       SNAME
 *     .. Array Arguments ..
       COMPLEX*16         A( NMAX, NMAX ), AA( NMAX*NMAX ), ALF( NALF ),
      $                   AS( NMAX*NMAX ), B( NMAX, NMAX ),
@@ -964,11 +1109,11 @@
 *     .. Local Scalars ..
       COMPLEX*16         ALPHA, ALS
       DOUBLE PRECISION   ERR, ERRMAX
-      INTEGER            I, IA, ICD, ICS, ICT, ICU, IM, IN, J, LAA, LBB,
+      INTEGER           I, IA, ICD, ICS, ICT, ICU, IM, IN, J, LAA, LBB,
      $                   LDA, LDAS, LDB, LDBS, M, MS, N, NA, NARGS, NC,
      $                   NS
       LOGICAL            LEFT, NULL, RESET, SAME
-      CHARACTER*1        DIAG, DIAGS, SIDE, SIDES, TRANAS, TRANSA, UPLO,
+      CHARACTER*1       DIAG, DIAGS, SIDE, SIDES, TRANAS, TRANSA, UPLO,
      $                   UPLOS
       CHARACTER*2        ICHD, ICHS, ICHU
       CHARACTER*3        ICHT
@@ -978,7 +1123,7 @@
       LOGICAL            LZE, LZERES
       EXTERNAL           LZE, LZERES
 *     .. External Subroutines ..
-      EXTERNAL           ZMAKE, ZMMCH, ZTRMM, ZTRSM
+      EXTERNAL           ZMAKE, ZMMCH, CZTRMM, CZTRSM
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
 *     .. Scalars in Common ..
@@ -987,7 +1132,7 @@
 *     .. Common blocks ..
       COMMON             /INFOC/INFOT, NOUTC, OK, LERR
 *     .. Data statements ..
-      DATA               ICHU/'UL'/, ICHT/'NTC'/, ICHD/'UN'/, ICHS/'LR'/
+      DATA              ICHU/'UL'/, ICHT/'NTC'/, ICHD/'UN'/, ICHS/'LR'/
 *     .. Executable Statements ..
 *
       NARGS = 11
@@ -1047,12 +1192,12 @@
 *
 *                          Generate the matrix A.
 *
-                           CALL ZMAKE( 'TR', UPLO, DIAG, NA, NA, A,
+                           CALL ZMAKE( 'tr', UPLO, DIAG, NA, NA, A,
      $                                 NMAX, AA, LDA, RESET, ZERO )
 *
 *                          Generate the matrix B.
 *
-                           CALL ZMAKE( 'GE', ' ', ' ', M, N, B, NMAX,
+                           CALL ZMAKE( 'ge', ' ', ' ', M, N, B, NMAX,
      $                                 BB, LDB, RESET, ZERO )
 *
                            NC = NC + 1
@@ -1078,24 +1223,26 @@
 *
 *                          Call the subroutine.
 *
-                           IF( SNAME( 4: 5 ).EQ.'MM' )THEN
+                           IF( SNAME( 10: 11 ).EQ.'mm' )THEN
                               IF( TRACE )
-     $                           WRITE( NTRA, FMT = 9995 )NC, SNAME,
+     $                           CALL ZPRCN3( NTRA, NC, SNAME, IORDER,
      $                           SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA,
-     $                           LDA, LDB
+     $                           LDA, LDB)
                               IF( REWI )
      $                           REWIND NTRA
-                              CALL ZTRMM( SIDE, UPLO, TRANSA, DIAG, M,
-     $                                    N, ALPHA, AA, LDA, BB, LDB )
-                           ELSE IF( SNAME( 4: 5 ).EQ.'SM' )THEN
+                              CALL CZTRMM(IORDER, SIDE, UPLO, TRANSA,
+     $                                    DIAG, M, N, ALPHA, AA, LDA,
+     $                                    BB, LDB )
+                           ELSE IF( SNAME( 10: 11 ).EQ.'sm' )THEN
                               IF( TRACE )
-     $                           WRITE( NTRA, FMT = 9995 )NC, SNAME,
+     $                           CALL ZPRCN3( NTRA, NC, SNAME, IORDER,
      $                           SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA,
-     $                           LDA, LDB
+     $                           LDA, LDB)
                               IF( REWI )
      $                           REWIND NTRA
-                              CALL ZTRSM( SIDE, UPLO, TRANSA, DIAG, M,
-     $                                    N, ALPHA, AA, LDA, BB, LDB )
+                              CALL CZTRSM(IORDER, SIDE, UPLO, TRANSA,
+     $                                   DIAG, M, N, ALPHA, AA, LDA,
+     $                                   BB, LDB )
                            END IF
 *
 *                          Check if error-exit was taken incorrectly.
@@ -1120,7 +1267,7 @@
                            IF( NULL )THEN
                               ISAME( 10 ) = LZE( BS, BB, LBB )
                            ELSE
-                              ISAME( 10 ) = LZERES( 'GE', ' ', M, N, BS,
+                             ISAME( 10 ) = LZERES( 'ge', ' ', M, N, BS,
      $                                      BB, LDB )
                            END IF
                            ISAME( 11 ) = LDBS.EQ.LDB
@@ -1140,24 +1287,24 @@
                            END IF
 *
                            IF( .NOT.NULL )THEN
-                              IF( SNAME( 4: 5 ).EQ.'MM' )THEN
+                              IF( SNAME( 10: 11 ).EQ.'mm' )THEN
 *
 *                                Check the result.
 *
                                  IF( LEFT )THEN
-                                    CALL ZMMCH( TRANSA, 'N', M, N, M,
-     $                                          ALPHA, A, NMAX, B, NMAX,
-     $                                          ZERO, C, NMAX, CT, G,
-     $                                          BB, LDB, EPS, ERR,
-     $                                          FATAL, NOUT, .TRUE. )
+                                   CALL ZMMCH( TRANSA, 'N', M, N, M,
+     $                                         ALPHA, A, NMAX, B, NMAX,
+     $                                         ZERO, C, NMAX, CT, G,
+     $                                         BB, LDB, EPS, ERR,
+     $                                         FATAL, NOUT, .TRUE. )
                                  ELSE
-                                    CALL ZMMCH( 'N', TRANSA, M, N, N,
-     $                                          ALPHA, B, NMAX, A, NMAX,
-     $                                          ZERO, C, NMAX, CT, G,
-     $                                          BB, LDB, EPS, ERR,
-     $                                          FATAL, NOUT, .TRUE. )
+                                   CALL ZMMCH( 'N', TRANSA, M, N, N,
+     $                                         ALPHA, B, NMAX, A, NMAX,
+     $                                         ZERO, C, NMAX, CT, G,
+     $                                         BB, LDB, EPS, ERR,
+     $                                         FATAL, NOUT, .TRUE. )
                                  END IF
-                              ELSE IF( SNAME( 4: 5 ).EQ.'SM' )THEN
+                              ELSE IF( SNAME( 10: 11 ).EQ.'sm' )THEN
 *
 *                                Compute approximation to original
 *                                matrix.
@@ -1209,40 +1356,92 @@
 *     Report result.
 *
       IF( ERRMAX.LT.THRESH )THEN
-         WRITE( NOUT, FMT = 9999 )SNAME, NC
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10000 )SNAME, NC
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10001 )SNAME, NC
       ELSE
-         WRITE( NOUT, FMT = 9997 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10002 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10003 )SNAME, NC, ERRMAX
       END IF
       GO TO 160
 *
   150 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
-      WRITE( NOUT, FMT = 9995 )NC, SNAME, SIDE, UPLO, TRANSA, DIAG, M,
-     $   N, ALPHA, LDA, LDB
+      CALL ZPRCN3( NTRA, NC, SNAME, IORDER, SIDE, UPLO, TRANSA, DIAG,
+     $      M, N, ALPHA, LDA, LDB)
 *
   160 CONTINUE
       RETURN
 *
- 9999 FORMAT( ' ', A8, ' PASSED THE COMPUTATIONAL TESTS (', I6, ' CALL',
-     $      'S)' )
- 9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
+10003 FORMAT( ' ', A13,' COMPLETED THE ROW-MAJOR    COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10002 FORMAT( ' ', A13,' COMPLETED THE COLUMN-MAJOR COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10001 FORMAT( ' ', A13,' PASSED THE ROW-MAJOR    COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+10000 FORMAT( ' ', A13,' PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+ 9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ', A8, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
- 9996 FORMAT( ' ******* ', A8, ' FAILED ON CALL NUMBER:' )
- 9995 FORMAT( 1X, I6, ': ', A8, '(', 4( '''', A1, ''',' ), 2( I3, ',' ),
-     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ')         ',
+ 9996 FORMAT(' ******* ', A13,' FAILED ON CALL NUMBER:' )
+ 9995 FORMAT(1X, I6, ': ', A13,'(', 4( '''', A1, ''',' ), 2( I3, ',' ),
+     $     '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ')         ',
      $      '      .' )
- 9994 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
+ 9994 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
 *     End of ZCHK3.
 *
       END
+*
+      SUBROUTINE ZPRCN3(NOUT, NC, SNAME, IORDER, SIDE, UPLO, TRANSA,
+     $                 DIAG, M, N, ALPHA, LDA, LDB)
+      INTEGER          NOUT, NC, IORDER, M, N, LDA, LDB
+      DOUBLE COMPLEX   ALPHA
+      CHARACTER*1      SIDE, UPLO, TRANSA, DIAG
+      CHARACTER*13     SNAME
+      CHARACTER*14     CRC, CS, CU, CA, CD
+
+      IF (SIDE.EQ.'L')THEN
+         CS =  '     CblasLeft'
+      ELSE
+         CS =  '    CblasRight'
+      END IF
+      IF (UPLO.EQ.'U')THEN
+         CU =  '    CblasUpper'
+      ELSE
+         CU =  '    CblasLower'
+      END IF
+      IF (TRANSA.EQ.'N')THEN
+         CA =  '  CblasNoTrans'
+      ELSE IF (TRANSA.EQ.'T')THEN
+         CA =  '    CblasTrans'
+      ELSE
+         CA =  'CblasConjTrans'
+      END IF
+      IF (DIAG.EQ.'N')THEN
+         CD =  '  CblasNonUnit'
+      ELSE
+         CD =  '     CblasUnit'
+      END IF
+      IF (IORDER.EQ.1)THEN
+         CRC = ' CblasRowMajor'
+      ELSE
+         CRC = ' CblasColMajor'
+      END IF
+      WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CS,CU
+      WRITE(NOUT, FMT = 9994)CA, CD, M, N, ALPHA, LDA, LDB
+
+ 9995 FORMAT( 1X, I6, ': ', A13,'(', A15, ',', A14, ',', A14, ',')
+ 9994 FORMAT( 10X, 2( A15, ',') , 2( I3, ',' ), ' (', F4.1, ',',
+     $    F4.1, '), A,', I3, ', B,', I3, ').' )
+      END
+*
       SUBROUTINE ZCHK4( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
-     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G )
+     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G,
+     $                  IORDER )
 *
 *  Tests ZHERK and ZSYRK.
 *
@@ -1261,9 +1460,9 @@
       PARAMETER          ( RONE = 1.0D0, RZERO = 0.0D0 )
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   EPS, THRESH
-      INTEGER            NALF, NBET, NIDIM, NMAX, NOUT, NTRA
+      INTEGER            NALF, NBET, NIDIM, NMAX, NOUT, NTRA, IORDER
       LOGICAL            FATAL, REWI, TRACE
-      CHARACTER*8        SNAME
+      CHARACTER*13       SNAME
 *     .. Array Arguments ..
       COMPLEX*16         A( NMAX, NMAX ), AA( NMAX*NMAX ), ALF( NALF ),
      $                   AS( NMAX*NMAX ), B( NMAX, NMAX ),
@@ -1287,7 +1486,7 @@
       LOGICAL            LZE, LZERES
       EXTERNAL           LZE, LZERES
 *     .. External Subroutines ..
-      EXTERNAL           ZHERK, ZMAKE, ZMMCH, ZSYRK
+      EXTERNAL           CZHERK, ZMAKE, ZMMCH, CZSYRK
 *     .. Intrinsic Functions ..
       INTRINSIC          DCMPLX, MAX, DBLE
 *     .. Scalars in Common ..
@@ -1298,14 +1497,12 @@
 *     .. Data statements ..
       DATA               ICHT/'NC'/, ICHU/'UL'/
 *     .. Executable Statements ..
-      CONJ = SNAME( 2: 3 ).EQ.'HE'
+      CONJ = SNAME( 8: 9 ).EQ.'he'
 *
       NARGS = 10
       NC = 0
       RESET = .TRUE.
       ERRMAX = RZERO
-      RALS = RONE
-      RBETS = RONE
 *
       DO 100 IN = 1, NIDIM
          N = IDIM( IN )
@@ -1344,7 +1541,7 @@
 *
 *              Generate the matrix A.
 *
-               CALL ZMAKE( 'GE', ' ', ' ', MA, NA, A, NMAX, AA, LDA,
+               CALL ZMAKE( 'ge', ' ', ' ', MA, NA, A, NMAX, AA, LDA,
      $                     RESET, ZERO )
 *
                DO 70 ICU = 1, 2
@@ -1371,7 +1568,7 @@
 *
 *                       Generate the matrix C.
 *
-                        CALL ZMAKE( SNAME( 2: 3 ), UPLO, ' ', N, N, C,
+                        CALL ZMAKE( SNAME( 8: 9 ), UPLO, ' ', N, N, C,
      $                              NMAX, CC, LDC, RESET, ZERO )
 *
                         NC = NC + 1
@@ -1405,20 +1602,22 @@
 *
                         IF( CONJ )THEN
                            IF( TRACE )
-     $                        WRITE( NTRA, FMT = 9994 )NC, SNAME, UPLO,
-     $                        TRANS, N, K, RALPHA, LDA, RBETA, LDC
+     $                        CALL ZPRCN6( NTRA, NC, SNAME, IORDER,
+     $                        UPLO, TRANS, N, K, RALPHA, LDA, RBETA,
+     $                        LDC)
                            IF( REWI )
      $                        REWIND NTRA
-                           CALL ZHERK( UPLO, TRANS, N, K, RALPHA, AA,
-     $                                 LDA, RBETA, CC, LDC )
+                           CALL CZHERK( IORDER, UPLO, TRANS, N, K,
+     $                                 RALPHA, AA, LDA, RBETA, CC,
+     $                                 LDC )
                         ELSE
                            IF( TRACE )
-     $                        WRITE( NTRA, FMT = 9993 )NC, SNAME, UPLO,
-     $                        TRANS, N, K, ALPHA, LDA, BETA, LDC
+     $                        CALL ZPRCN4( NTRA, NC, SNAME, IORDER,
+     $                        UPLO, TRANS, N, K, ALPHA, LDA, BETA, LDC)
                            IF( REWI )
      $                        REWIND NTRA
-                           CALL ZSYRK( UPLO, TRANS, N, K, ALPHA, AA,
-     $                                 LDA, BETA, CC, LDC )
+                           CALL CZSYRK( IORDER, UPLO, TRANS, N, K,
+     $                                 ALPHA, AA, LDA, BETA, CC, LDC )
                         END IF
 *
 *                       Check if error-exit was taken incorrectly.
@@ -1450,7 +1649,7 @@
                         IF( NULL )THEN
                            ISAME( 9 ) = LZE( CS, CC, LCC )
                         ELSE
-                           ISAME( 9 ) = LZERES( SNAME( 2: 3 ), UPLO, N,
+                           ISAME( 9 ) = LZERES( SNAME( 8: 9 ), UPLO, N,
      $                                  N, CS, CC, LDC )
                         END IF
                         ISAME( 10 ) = LDCS.EQ.LDC
@@ -1530,9 +1729,11 @@
 *     Report result.
 *
       IF( ERRMAX.LT.THRESH )THEN
-         WRITE( NOUT, FMT = 9999 )SNAME, NC
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10000 )SNAME, NC
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10001 )SNAME, NC
       ELSE
-         WRITE( NOUT, FMT = 9997 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10002 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10003 )SNAME, NC, ERRMAX
       END IF
       GO TO 130
 *
@@ -1543,40 +1744,114 @@
   120 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
       IF( CONJ )THEN
-         WRITE( NOUT, FMT = 9994 )NC, SNAME, UPLO, TRANS, N, K, RALPHA,
-     $      LDA, RBETA, LDC
+      CALL ZPRCN6( NOUT, NC, SNAME, IORDER, UPLO, TRANS, N, K, RALPHA,
+     $   LDA, rBETA, LDC)
       ELSE
-         WRITE( NOUT, FMT = 9993 )NC, SNAME, UPLO, TRANS, N, K, ALPHA,
-     $      LDA, BETA, LDC
+      CALL ZPRCN4( NOUT, NC, SNAME, IORDER, UPLO, TRANS, N, K, ALPHA,
+     $   LDA, BETA, LDC)
       END IF
 *
   130 CONTINUE
       RETURN
 *
- 9999 FORMAT( ' ', A8, ' PASSED THE COMPUTATIONAL TESTS (', I6, ' CALL',
-     $      'S)' )
- 9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
+10003 FORMAT( ' ', A13,' COMPLETED THE ROW-MAJOR    COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10002 FORMAT( ' ', A13,' COMPLETED THE COLUMN-MAJOR COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10001 FORMAT( ' ', A13,' PASSED THE ROW-MAJOR    COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+10000 FORMAT( ' ', A13,' PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+ 9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ', A8, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
- 9996 FORMAT( ' ******* ', A8, ' FAILED ON CALL NUMBER:' )
+ 9996 FORMAT( ' ******* ', A13,' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
- 9994 FORMAT( 1X, I6, ': ', A8, '(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ')               ',
+ 9994 FORMAT(1X, I6, ': ', A13,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+     $     F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ')               ',
      $      '          .' )
- 9993 FORMAT( 1X, I6, ': ', A8, '(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+ 9993 FORMAT(1X, I6, ': ', A13,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
      $      '(', F4.1, ',', F4.1, ') , A,', I3, ',(', F4.1, ',', F4.1,
      $      '), C,', I3, ')          .' )
- 9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
+ 9992 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of ZCHK4.
+*     End of CCHK4.
 *
       END
+*
+      SUBROUTINE ZPRCN4(NOUT, NC, SNAME, IORDER, UPLO, TRANSA,
+     $                 N, K, ALPHA, LDA, BETA, LDC)
+      INTEGER          NOUT, NC, IORDER, N, K, LDA, LDC
+      DOUBLE COMPLEX   ALPHA, BETA
+      CHARACTER*1      UPLO, TRANSA
+      CHARACTER*13     SNAME
+      CHARACTER*14     CRC, CU, CA
+
+      IF (UPLO.EQ.'U')THEN
+         CU =  '    CblasUpper'
+      ELSE
+         CU =  '    CblasLower'
+      END IF
+      IF (TRANSA.EQ.'N')THEN
+         CA =  '  CblasNoTrans'
+      ELSE IF (TRANSA.EQ.'T')THEN
+         CA =  '    CblasTrans'
+      ELSE
+         CA =  'CblasConjTrans'
+      END IF
+      IF (IORDER.EQ.1)THEN
+         CRC = ' CblasRowMajor'
+      ELSE
+         CRC = ' CblasColMajor'
+      END IF
+      WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
+      WRITE(NOUT, FMT = 9994)N, K, ALPHA, LDA, BETA, LDC
+
+ 9995 FORMAT( 1X, I6, ': ', A13,'(', 3( A15, ',') )
+ 9994 FORMAT( 10X, 2( I3, ',' ), ' (', F4.1, ',', F4.1 ,'), A,',
+     $        I3, ', (', F4.1,',', F4.1, '), C,', I3, ').' )
+      END
+*
+*
+      SUBROUTINE ZPRCN6(NOUT, NC, SNAME, IORDER, UPLO, TRANSA,
+     $                 N, K, ALPHA, LDA, BETA, LDC)
+      INTEGER          NOUT, NC, IORDER, N, K, LDA, LDC
+      DOUBLE PRECISION ALPHA, BETA
+      CHARACTER*1      UPLO, TRANSA
+      CHARACTER*13     SNAME
+      CHARACTER*14     CRC, CU, CA
+
+      IF (UPLO.EQ.'U')THEN
+         CU =  '    CblasUpper'
+      ELSE
+         CU =  '    CblasLower'
+      END IF
+      IF (TRANSA.EQ.'N')THEN
+         CA =  '  CblasNoTrans'
+      ELSE IF (TRANSA.EQ.'T')THEN
+         CA =  '    CblasTrans'
+      ELSE
+         CA =  'CblasConjTrans'
+      END IF
+      IF (IORDER.EQ.1)THEN
+         CRC = ' CblasRowMajor'
+      ELSE
+         CRC = ' CblasColMajor'
+      END IF
+      WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
+      WRITE(NOUT, FMT = 9994)N, K, ALPHA, LDA, BETA, LDC
+
+ 9995 FORMAT( 1X, I6, ': ', A13,'(', 3( A15, ',') )
+ 9994 FORMAT( 10X, 2( I3, ',' ),
+     $      F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ').' )
+      END
+*
       SUBROUTINE ZCHK5( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
-     $                  AB, AA, AS, BB, BS, C, CC, CS, CT, G, W )
+     $                  AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
+     $                  IORDER )
 *
 *  Tests ZHER2K and ZSYR2K.
 *
@@ -1589,16 +1864,15 @@
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
 *     .. Parameters ..
-      COMPLEX*16         ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
-     $                   ONE = ( 1.0D0, 0.0D0 ) )
-      DOUBLE PRECISION   RONE, RZERO
-      PARAMETER          ( RONE = 1.0D0, RZERO = 0.0D0 )
+      COMPLEX*16    ZERO, ONE
+      PARAMETER     ( ZERO = ( 0.0D0, 0.0D0 ), ONE = ( 1.0D0, 0.0D0 ) )
+      DOUBLE PRECISION RONE, RZERO
+      PARAMETER     ( RONE = 1.0D0, RZERO = 0.0D0 )
 *     .. Scalar Arguments ..
-      DOUBLE PRECISION   EPS, THRESH
-      INTEGER            NALF, NBET, NIDIM, NMAX, NOUT, NTRA
-      LOGICAL            FATAL, REWI, TRACE
-      CHARACTER*8        SNAME
+      DOUBLE PRECISION  EPS, THRESH
+      INTEGER           NALF, NBET, NIDIM, NMAX, NOUT, NTRA, IORDER
+      LOGICAL           FATAL, REWI, TRACE
+      CHARACTER*13      SNAME
 *     .. Array Arguments ..
       COMPLEX*16         AA( NMAX*NMAX ), AB( 2*NMAX*NMAX ),
      $                   ALF( NALF ), AS( NMAX*NMAX ), BB( NMAX*NMAX ),
@@ -1622,7 +1896,7 @@
       LOGICAL            LZE, LZERES
       EXTERNAL           LZE, LZERES
 *     .. External Subroutines ..
-      EXTERNAL           ZHER2K, ZMAKE, ZMMCH, ZSYR2K
+      EXTERNAL           CZHER2K, ZMAKE, ZMMCH, CZSYR2K
 *     .. Intrinsic Functions ..
       INTRINSIC          DCMPLX, DCONJG, MAX, DBLE
 *     .. Scalars in Common ..
@@ -1633,7 +1907,7 @@
 *     .. Data statements ..
       DATA               ICHT/'NC'/, ICHU/'UL'/
 *     .. Executable Statements ..
-      CONJ = SNAME( 2: 3 ).EQ.'HE'
+      CONJ = SNAME( 8: 9 ).EQ.'he'
 *
       NARGS = 12
       NC = 0
@@ -1678,10 +1952,10 @@
 *              Generate the matrix A.
 *
                IF( TRAN )THEN
-                  CALL ZMAKE( 'GE', ' ', ' ', MA, NA, AB, 2*NMAX, AA,
+                  CALL ZMAKE( 'ge', ' ', ' ', MA, NA, AB, 2*NMAX, AA,
      $                        LDA, RESET, ZERO )
                ELSE
-                  CALL ZMAKE( 'GE', ' ', ' ', MA, NA, AB, NMAX, AA, LDA,
+                 CALL ZMAKE( 'ge', ' ', ' ', MA, NA, AB, NMAX, AA, LDA,
      $                        RESET, ZERO )
                END IF
 *
@@ -1690,10 +1964,10 @@
                LDB = LDA
                LBB = LAA
                IF( TRAN )THEN
-                  CALL ZMAKE( 'GE', ' ', ' ', MA, NA, AB( K + 1 ),
+                  CALL ZMAKE( 'ge', ' ', ' ', MA, NA, AB( K + 1 ),
      $                        2*NMAX, BB, LDB, RESET, ZERO )
                ELSE
-                  CALL ZMAKE( 'GE', ' ', ' ', MA, NA, AB( K*NMAX + 1 ),
+                  CALL ZMAKE( 'ge', ' ', ' ', MA, NA, AB( K*NMAX + 1 ),
      $                        NMAX, BB, LDB, RESET, ZERO )
                END IF
 *
@@ -1717,7 +1991,7 @@
 *
 *                       Generate the matrix C.
 *
-                        CALL ZMAKE( SNAME( 2: 3 ), UPLO, ' ', N, N, C,
+                        CALL ZMAKE( SNAME( 8: 9 ), UPLO, ' ', N, N, C,
      $                              NMAX, CC, LDC, RESET, ZERO )
 *
                         NC = NC + 1
@@ -1751,20 +2025,24 @@
 *
                         IF( CONJ )THEN
                            IF( TRACE )
-     $                        WRITE( NTRA, FMT = 9994 )NC, SNAME, UPLO,
-     $                        TRANS, N, K, ALPHA, LDA, LDB, RBETA, LDC
+     $                        CALL ZPRCN7( NTRA, NC, SNAME, IORDER,
+     $                        UPLO, TRANS, N, K, ALPHA, LDA, LDB,
+     $                        RBETA, LDC)
                            IF( REWI )
      $                        REWIND NTRA
-                           CALL ZHER2K( UPLO, TRANS, N, K, ALPHA, AA,
-     $                                  LDA, BB, LDB, RBETA, CC, LDC )
+                           CALL CZHER2K( IORDER, UPLO, TRANS, N, K,
+     $                                  ALPHA, AA, LDA, BB, LDB, RBETA,
+     $                                  CC, LDC )
                         ELSE
                            IF( TRACE )
-     $                        WRITE( NTRA, FMT = 9993 )NC, SNAME, UPLO,
-     $                        TRANS, N, K, ALPHA, LDA, LDB, BETA, LDC
+     $                        CALL ZPRCN5( NTRA, NC, SNAME, IORDER,
+     $                        UPLO, TRANS, N, K, ALPHA, LDA, LDB,
+     $                        BETA, LDC)
                            IF( REWI )
      $                        REWIND NTRA
-                           CALL ZSYR2K( UPLO, TRANS, N, K, ALPHA, AA,
-     $                                  LDA, BB, LDB, BETA, CC, LDC )
+                           CALL CZSYR2K( IORDER, UPLO, TRANS, N, K,
+     $                                  ALPHA, AA, LDA, BB, LDB, BETA,
+     $                                  CC, LDC )
                         END IF
 *
 *                       Check if error-exit was taken incorrectly.
@@ -1794,7 +2072,7 @@
                         IF( NULL )THEN
                            ISAME( 11 ) = LZE( CS, CC, LCC )
                         ELSE
-                           ISAME( 11 ) = LZERES( 'HE', UPLO, N, N, CS,
+                           ISAME( 11 ) = LZERES( 'he', UPLO, N, N, CS,
      $                                   CC, LDC )
                         END IF
                         ISAME( 12 ) = LDCS.EQ.LDC
@@ -1847,9 +2125,9 @@
                                     END IF
    50                            CONTINUE
                                  CALL ZMMCH( TRANST, 'N', LJ, 1, 2*K,
-     $                                       ONE, AB( JJAB ), 2*NMAX, W,
+     $                                      ONE, AB( JJAB ), 2*NMAX, W,
      $                                       2*NMAX, BETA, C( JJ, J ),
-     $                                       NMAX, CT, G, CC( JC ), LDC,
+     $                                      NMAX, CT, G, CC( JC ), LDC,
      $                                       EPS, ERR, FATAL, NOUT,
      $                                       .TRUE. )
                               ELSE
@@ -1858,20 +2136,20 @@
                                        W( I ) = ALPHA*DCONJG( AB( ( K +
      $                                          I - 1 )*NMAX + J ) )
                                        W( K + I ) = DCONJG( ALPHA*
-     $                                              AB( ( I - 1 )*NMAX +
+     $                                             AB( ( I - 1 )*NMAX +
      $                                              J ) )
                                     ELSE
-                                       W( I ) = ALPHA*AB( ( K + I - 1 )*
+                                      W( I ) = ALPHA*AB( ( K + I - 1 )*
      $                                          NMAX + J )
-                                       W( K + I ) = ALPHA*
-     $                                              AB( ( I - 1 )*NMAX +
+                                      W( K + I ) = ALPHA*
+     $                                             AB( ( I - 1 )*NMAX +
      $                                              J )
                                     END IF
    60                            CONTINUE
                                  CALL ZMMCH( 'N', 'N', LJ, 1, 2*K, ONE,
      $                                       AB( JJ ), NMAX, W, 2*NMAX,
-     $                                       BETA, C( JJ, J ), NMAX, CT,
-     $                                       G, CC( JC ), LDC, EPS, ERR,
+     $                                      BETA, C( JJ, J ), NMAX, CT,
+     $                                      G, CC( JC ), LDC, EPS, ERR,
      $                                       FATAL, NOUT, .TRUE. )
                               END IF
                               IF( UPPER )THEN
@@ -1904,9 +2182,11 @@
 *     Report result.
 *
       IF( ERRMAX.LT.THRESH )THEN
-         WRITE( NOUT, FMT = 9999 )SNAME, NC
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10000 )SNAME, NC
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10001 )SNAME, NC
       ELSE
-         WRITE( NOUT, FMT = 9997 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.0) WRITE( NOUT, FMT = 10002 )SNAME, NC, ERRMAX
+         IF ( IORDER.EQ.1) WRITE( NOUT, FMT = 10003 )SNAME, NC, ERRMAX
       END IF
       GO TO 160
 *
@@ -1917,963 +2197,111 @@
   150 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
       IF( CONJ )THEN
-         WRITE( NOUT, FMT = 9994 )NC, SNAME, UPLO, TRANS, N, K, ALPHA,
-     $      LDA, LDB, RBETA, LDC
+         CALL ZPRCN7( NOUT, NC, SNAME, IORDER, UPLO, TRANS, N, K,
+     $      ALPHA, LDA, LDB, RBETA, LDC)
       ELSE
-         WRITE( NOUT, FMT = 9993 )NC, SNAME, UPLO, TRANS, N, K, ALPHA,
-     $      LDA, LDB, BETA, LDC
+         CALL ZPRCN5( NOUT, NC, SNAME, IORDER, UPLO, TRANS, N, K,
+     $      ALPHA, LDA, LDB, BETA, LDC)
       END IF
 *
   160 CONTINUE
       RETURN
 *
- 9999 FORMAT( ' ', A8, ' PASSED THE COMPUTATIONAL TESTS (', I6, ' CALL',
-     $      'S)' )
- 9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
+10003 FORMAT( ' ', A13,' COMPLETED THE ROW-MAJOR    COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10002 FORMAT( ' ', A13,' COMPLETED THE COLUMN-MAJOR COMPUTATIONAL ',
+     $ 'TESTS (', I6, ' CALLS)', /' ******* BUT WITH MAXIMUM TEST ',
+     $ 'RATIO ', F8.2, ' - SUSPECT *******' )
+10001 FORMAT( ' ', A13,' PASSED THE ROW-MAJOR    COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+10000 FORMAT( ' ', A13,' PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS',
+     $ ' (', I6, ' CALL', 'S)' )
+ 9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ', A8, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
- 9996 FORMAT( ' ******* ', A8, ' FAILED ON CALL NUMBER:' )
+ 9996 FORMAT( ' ******* ', A13,' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
- 9994 FORMAT( 1X, I6, ': ', A8, '(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+ 9994 FORMAT(1X, I6, ': ', A13,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
      $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',', F4.1,
      $      ', C,', I3, ')           .' )
- 9993 FORMAT( 1X, I6, ': ', A8, '(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+ 9993 FORMAT(1X, I6, ': ', A13,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
      $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1,
      $      ',', F4.1, '), C,', I3, ')    .' )
- 9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
+ 9992 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
 *     End of ZCHK5.
 *
       END
-      SUBROUTINE ZCHKE( ISNUM, SRNAMT, NOUT )
 *
-*  Tests the error exits from the Level 3 Blas.
-*  Requires a special version of the error-handling routine XERBLA.
-*  ALPHA, RALPHA, BETA, RBETA, A, B and C should not need to be defined.
-*
-*  Auxiliary routine for test program for Level 3 Blas.
-*
-*  -- Written on 8-February-1989.
-*     Jack Dongarra, Argonne National Laboratory.
-*     Iain Duff, AERE Harwell.
-*     Jeremy Du Croz, Numerical Algorithms Group Ltd.
-*     Sven Hammarling, Numerical Algorithms Group Ltd.
-*
-*     .. Scalar Arguments ..
-      INTEGER            ISNUM, NOUT
-      CHARACTER*8        SRNAMT
-*     .. Scalars in Common ..
-      INTEGER            INFOT, NOUTC
-      LOGICAL            LERR, OK
-*     .. Local Scalars ..
-      COMPLEX*16         ALPHA, BETA
-      DOUBLE PRECISION   RALPHA, RBETA
-*     .. Local Arrays ..
-      COMPLEX*16         A( 2, 1 ), B( 2, 1 ), C( 2, 1 )
-*     .. External Subroutines ..
-      EXTERNAL           ZGEMM3M, ZHEMM, ZHER2K, ZHERK, CHKXER, ZSYMM,
-     $                   ZSYR2K, ZSYRK, ZTRMM, ZTRSM
-*     .. Common blocks ..
-      COMMON             /INFOC/INFOT, NOUTC, OK, LERR
-*     .. Executable Statements ..
-*     OK is set to .FALSE. by the special version of XERBLA or by CHKXER
-*     if anything is wrong.
-      OK = .TRUE.
-*     LERR is set to .TRUE. by the special version of XERBLA each time
-*     it is called, and is then tested and re-set by CHKXER.
-      LERR = .FALSE.
-      GO TO ( 10, 20, 30, 40, 50, 60, 70, 80,
-     $        90 )ISNUM
-   10 INFOT = 1
-      CALL ZGEMM3M( '/', 'N', 0, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 1
-      CALL ZGEMM3M( '/', 'C', 0, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 1
-      CALL ZGEMM3M( '/', 'T', 0, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZGEMM3M( 'N', '/', 0, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZGEMM3M( 'C', '/', 0, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZGEMM3M( 'T', '/', 0, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'N', 'N', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'N', 'C', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'N', 'T', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'C', 'N', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'C', 'C', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'C', 'T', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'T', 'N', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'T', 'C', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEMM3M( 'T', 'T', -1, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'N', 'N', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'N', 'C', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'N', 'T', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'C', 'N', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'C', 'C', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'C', 'T', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'T', 'N', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'T', 'C', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZGEMM3M( 'T', 'T', 0, -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'N', 'N', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'N', 'C', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'N', 'T', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'C', 'N', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'C', 'C', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'C', 'T', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'T', 'N', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'T', 'C', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEMM3M( 'T', 'T', 0, 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'N', 'N', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'N', 'C', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'N', 'T', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'C', 'N', 0, 0, 2, ALPHA, A, 1, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'C', 'C', 0, 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'C', 'T', 0, 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'T', 'N', 0, 0, 2, ALPHA, A, 1, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'T', 'C', 0, 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEMM3M( 'T', 'T', 0, 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'N', 'N', 0, 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'C', 'N', 0, 0, 2, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'T', 'N', 0, 0, 2, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'N', 'C', 0, 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'C', 'C', 0, 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'T', 'C', 0, 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'N', 'T', 0, 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'C', 'T', 0, 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEMM3M( 'T', 'T', 0, 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'N', 'N', 2, 0, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'N', 'C', 2, 0, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'N', 'T', 2, 0, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'C', 'N', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'C', 'C', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'C', 'T', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'T', 'N', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'T', 'C', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 13
-      CALL ZGEMM3M( 'T', 'T', 2, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   20 INFOT = 1
-      CALL ZHEMM( '/', 'U', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZHEMM( 'L', '/', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHEMM( 'L', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHEMM( 'R', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHEMM( 'L', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHEMM( 'R', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHEMM( 'L', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHEMM( 'R', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHEMM( 'L', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHEMM( 'R', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHEMM( 'R', 'U', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHEMM( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHEMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHEMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHEMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHEMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   30 INFOT = 1
-      CALL ZSYMM( '/', 'U', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZSYMM( 'L', '/', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYMM( 'L', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYMM( 'R', 'U', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYMM( 'L', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYMM( 'R', 'L', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYMM( 'L', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYMM( 'R', 'U', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYMM( 'L', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYMM( 'R', 'L', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYMM( 'R', 'U', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYMM( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   40 INFOT = 1
-      CALL ZTRMM( '/', 'U', 'N', 'N', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZTRMM( 'L', '/', 'N', 'N', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZTRMM( 'L', 'U', '/', 'N', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZTRMM( 'L', 'U', 'N', '/', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'L', 'U', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'L', 'U', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'L', 'U', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'R', 'U', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'R', 'U', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'R', 'U', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'L', 'L', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'L', 'L', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'L', 'L', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'R', 'L', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'R', 'L', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRMM( 'R', 'L', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'L', 'U', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'L', 'U', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'L', 'U', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'R', 'U', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'R', 'U', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'R', 'U', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'L', 'L', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'L', 'L', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'L', 'L', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'R', 'L', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'R', 'L', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRMM( 'R', 'L', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'L', 'U', 'N', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'L', 'U', 'C', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'L', 'U', 'T', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'R', 'U', 'N', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'R', 'U', 'C', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'R', 'U', 'T', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'L', 'L', 'N', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'L', 'L', 'C', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'L', 'L', 'T', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'R', 'L', 'N', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'R', 'L', 'C', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRMM( 'R', 'L', 'T', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'L', 'U', 'N', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'L', 'U', 'C', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'L', 'U', 'T', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'R', 'U', 'N', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'R', 'U', 'C', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'R', 'U', 'T', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'L', 'L', 'N', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'L', 'L', 'C', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'L', 'L', 'T', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'R', 'L', 'N', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'R', 'L', 'C', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRMM( 'R', 'L', 'T', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   50 INFOT = 1
-      CALL ZTRSM( '/', 'U', 'N', 'N', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZTRSM( 'L', '/', 'N', 'N', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZTRSM( 'L', 'U', '/', 'N', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZTRSM( 'L', 'U', 'N', '/', 0, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'L', 'U', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'L', 'U', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'L', 'U', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'R', 'U', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'R', 'U', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'R', 'U', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'L', 'L', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'L', 'L', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'L', 'L', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'R', 'L', 'N', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'R', 'L', 'C', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZTRSM( 'R', 'L', 'T', 'N', -1, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'L', 'U', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'L', 'U', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'L', 'U', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'R', 'U', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'R', 'U', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'R', 'U', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'L', 'L', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'L', 'L', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'L', 'L', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'R', 'L', 'N', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'R', 'L', 'C', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 6
-      CALL ZTRSM( 'R', 'L', 'T', 'N', 0, -1, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'L', 'U', 'N', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'L', 'U', 'C', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'L', 'U', 'T', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'R', 'U', 'N', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'R', 'U', 'C', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'R', 'U', 'T', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'L', 'L', 'N', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'L', 'L', 'C', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'L', 'L', 'T', 'N', 2, 0, ALPHA, A, 1, B, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'R', 'L', 'N', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'R', 'L', 'C', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZTRSM( 'R', 'L', 'T', 'N', 0, 2, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'L', 'U', 'N', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'L', 'U', 'C', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'L', 'U', 'T', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'R', 'U', 'N', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'R', 'U', 'C', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'R', 'U', 'T', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'L', 'L', 'N', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'L', 'L', 'C', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'L', 'L', 'T', 'N', 2, 0, ALPHA, A, 2, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'R', 'L', 'N', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'R', 'L', 'C', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 11
-      CALL ZTRSM( 'R', 'L', 'T', 'N', 2, 0, ALPHA, A, 1, B, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   60 INFOT = 1
-      CALL ZHERK( '/', 'N', 0, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZHERK( 'U', 'T', 0, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHERK( 'U', 'N', -1, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHERK( 'U', 'C', -1, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHERK( 'L', 'N', -1, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHERK( 'L', 'C', -1, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHERK( 'U', 'N', 0, -1, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHERK( 'U', 'C', 0, -1, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHERK( 'L', 'N', 0, -1, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHERK( 'L', 'C', 0, -1, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHERK( 'U', 'N', 2, 0, RALPHA, A, 1, RBETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHERK( 'U', 'C', 0, 2, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHERK( 'L', 'N', 2, 0, RALPHA, A, 1, RBETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHERK( 'L', 'C', 0, 2, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZHERK( 'U', 'N', 2, 0, RALPHA, A, 2, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZHERK( 'U', 'C', 2, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZHERK( 'L', 'N', 2, 0, RALPHA, A, 2, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZHERK( 'L', 'C', 2, 0, RALPHA, A, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   70 INFOT = 1
-      CALL ZSYRK( '/', 'N', 0, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZSYRK( 'U', 'C', 0, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYRK( 'U', 'N', -1, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYRK( 'U', 'T', -1, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYRK( 'L', 'N', -1, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYRK( 'L', 'T', -1, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYRK( 'U', 'N', 0, -1, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYRK( 'U', 'T', 0, -1, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYRK( 'L', 'N', 0, -1, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYRK( 'L', 'T', 0, -1, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYRK( 'U', 'N', 2, 0, ALPHA, A, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYRK( 'U', 'T', 0, 2, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYRK( 'L', 'N', 2, 0, ALPHA, A, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYRK( 'L', 'T', 0, 2, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZSYRK( 'U', 'N', 2, 0, ALPHA, A, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZSYRK( 'U', 'T', 2, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZSYRK( 'L', 'N', 2, 0, ALPHA, A, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZSYRK( 'L', 'T', 2, 0, ALPHA, A, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   80 INFOT = 1
-      CALL ZHER2K( '/', 'N', 0, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZHER2K( 'U', 'T', 0, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHER2K( 'U', 'N', -1, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHER2K( 'U', 'C', -1, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHER2K( 'L', 'N', -1, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZHER2K( 'L', 'C', -1, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHER2K( 'U', 'N', 0, -1, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHER2K( 'U', 'C', 0, -1, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHER2K( 'L', 'N', 0, -1, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZHER2K( 'L', 'C', 0, -1, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHER2K( 'U', 'N', 2, 0, ALPHA, A, 1, B, 1, RBETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHER2K( 'U', 'C', 0, 2, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHER2K( 'L', 'N', 2, 0, ALPHA, A, 1, B, 1, RBETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZHER2K( 'L', 'C', 0, 2, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHER2K( 'U', 'N', 2, 0, ALPHA, A, 2, B, 1, RBETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHER2K( 'U', 'C', 0, 2, ALPHA, A, 2, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHER2K( 'L', 'N', 2, 0, ALPHA, A, 2, B, 1, RBETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZHER2K( 'L', 'C', 0, 2, ALPHA, A, 2, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHER2K( 'U', 'N', 2, 0, ALPHA, A, 2, B, 2, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHER2K( 'U', 'C', 2, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHER2K( 'L', 'N', 2, 0, ALPHA, A, 2, B, 2, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZHER2K( 'L', 'C', 2, 0, ALPHA, A, 1, B, 1, RBETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      GO TO 100
-   90 INFOT = 1
-      CALL ZSYR2K( '/', 'N', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZSYR2K( 'U', 'C', 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYR2K( 'U', 'N', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYR2K( 'U', 'T', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYR2K( 'L', 'N', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZSYR2K( 'L', 'T', -1, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYR2K( 'U', 'N', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYR2K( 'U', 'T', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYR2K( 'L', 'N', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 4
-      CALL ZSYR2K( 'L', 'T', 0, -1, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYR2K( 'U', 'N', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYR2K( 'U', 'T', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYR2K( 'L', 'N', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 7
-      CALL ZSYR2K( 'L', 'T', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYR2K( 'U', 'N', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYR2K( 'U', 'T', 0, 2, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYR2K( 'L', 'N', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 9
-      CALL ZSYR2K( 'L', 'T', 0, 2, ALPHA, A, 2, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYR2K( 'U', 'N', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYR2K( 'U', 'T', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYR2K( 'L', 'N', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-      INFOT = 12
-      CALL ZSYR2K( 'L', 'T', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
-      CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-*
-  100 IF( OK )THEN
-         WRITE( NOUT, FMT = 9999 )SRNAMT
+      SUBROUTINE ZPRCN5(NOUT, NC, SNAME, IORDER, UPLO, TRANSA,
+     $                 N, K, ALPHA, LDA, LDB, BETA, LDC)
+      INTEGER          NOUT, NC, IORDER, N, K, LDA, LDB, LDC
+      DOUBLE COMPLEX   ALPHA, BETA
+      CHARACTER*1      UPLO, TRANSA
+      CHARACTER*13     SNAME
+      CHARACTER*14     CRC, CU, CA
+
+      IF (UPLO.EQ.'U')THEN
+         CU =  '    CblasUpper'
       ELSE
-         WRITE( NOUT, FMT = 9998 )SRNAMT
+         CU =  '    CblasLower'
       END IF
-      RETURN
-*
- 9999 FORMAT( ' ', A8, ' PASSED THE TESTS OF ERROR-EXITS' )
- 9998 FORMAT( ' ******* ', A8, ' FAILED THE TESTS OF ERROR-EXITS *****',
-     $      '**' )
-*
-*     End of ZCHKE.
-*
+      IF (TRANSA.EQ.'N')THEN
+         CA =  '  CblasNoTrans'
+      ELSE IF (TRANSA.EQ.'T')THEN
+         CA =  '    CblasTrans'
+      ELSE
+         CA =  'CblasConjTrans'
+      END IF
+      IF (IORDER.EQ.1)THEN
+         CRC = ' CblasRowMajor'
+      ELSE
+         CRC = ' CblasColMajor'
+      END IF
+      WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
+      WRITE(NOUT, FMT = 9994)N, K, ALPHA, LDA, LDB, BETA, LDC
+
+ 9995 FORMAT( 1X, I6, ': ', A13,'(', 3( A15, ',') )
+ 9994 FORMAT( 10X, 2( I3, ',' ), ' (', F4.1, ',', F4.1, '), A,',
+     $  I3, ', B', I3, ', (', F4.1, ',', F4.1, '), C,', I3, ').' )
       END
+*
+*
+      SUBROUTINE ZPRCN7(NOUT, NC, SNAME, IORDER, UPLO, TRANSA,
+     $                 N, K, ALPHA, LDA, LDB, BETA, LDC)
+      INTEGER          NOUT, NC, IORDER, N, K, LDA, LDB, LDC
+      DOUBLE COMPLEX   ALPHA
+      DOUBLE PRECISION BETA
+      CHARACTER*1      UPLO, TRANSA
+      CHARACTER*13     SNAME
+      CHARACTER*14     CRC, CU, CA
+
+      IF (UPLO.EQ.'U')THEN
+         CU =  '    CblasUpper'
+      ELSE
+         CU =  '    CblasLower'
+      END IF
+      IF (TRANSA.EQ.'N')THEN
+         CA =  '  CblasNoTrans'
+      ELSE IF (TRANSA.EQ.'T')THEN
+         CA =  '    CblasTrans'
+      ELSE
+         CA =  'CblasConjTrans'
+      END IF
+      IF (IORDER.EQ.1)THEN
+         CRC = ' CblasRowMajor'
+      ELSE
+         CRC = ' CblasColMajor'
+      END IF
+      WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
+      WRITE(NOUT, FMT = 9994)N, K, ALPHA, LDA, LDB, BETA, LDC
+
+ 9995 FORMAT( 1X, I6, ': ', A13,'(', 3( A15, ',') )
+ 9994 FORMAT( 10X, 2( I3, ',' ), ' (', F4.1, ',', F4.1, '), A,',
+     $      I3, ', B', I3, ',', F4.1, ', C,', I3, ').' )
+      END
+*
       SUBROUTINE ZMAKE( TYPE, UPLO, DIAG, M, N, A, NMAX, AA, LDA, RESET,
      $                  TRANSL )
 *
@@ -2881,7 +2309,7 @@
 *  Stores the values in the array AA in the data structure required
 *  by the routine, with unwanted elements set to rogue value.
 *
-*  TYPE is 'GE', 'HE', 'SY' or 'TR'.
+*  TYPE is 'ge', 'he', 'sy' or 'tr'.
 *
 *  Auxiliary routine for test program for Level 3 Blas.
 *
@@ -2918,10 +2346,10 @@
 *     .. Intrinsic Functions ..
       INTRINSIC          DCMPLX, DCONJG, DBLE
 *     .. Executable Statements ..
-      GEN = TYPE.EQ.'GE'
-      HER = TYPE.EQ.'HE'
-      SYM = TYPE.EQ.'SY'
-      TRI = TYPE.EQ.'TR'
+      GEN = TYPE.EQ.'ge'
+      HER = TYPE.EQ.'he'
+      SYM = TYPE.EQ.'sy'
+      TRI = TYPE.EQ.'tr'
       UPPER = ( HER.OR.SYM.OR.TRI ).AND.UPLO.EQ.'U'
       LOWER = ( HER.OR.SYM.OR.TRI ).AND.UPLO.EQ.'L'
       UNIT = TRI.AND.DIAG.EQ.'U'
@@ -2957,7 +2385,7 @@
 *
 *     Store elements in array AS in data structure required by routine.
 *
-      IF( TYPE.EQ.'GE' )THEN
+      IF( TYPE.EQ.'ge' )THEN
          DO 50 J = 1, N
             DO 30 I = 1, M
                AA( I + ( J - 1 )*LDA ) = A( I, J )
@@ -2966,7 +2394,7 @@
                AA( I + ( J - 1 )*LDA ) = ROGUE
    40       CONTINUE
    50    CONTINUE
-      ELSE IF( TYPE.EQ.'HE'.OR.TYPE.EQ.'SY'.OR.TYPE.EQ.'TR' )THEN
+      ELSE IF( TYPE.EQ.'he'.OR.TYPE.EQ.'sy'.OR.TYPE.EQ.'tr' )THEN
          DO 90 J = 1, N
             IF( UPPER )THEN
                IBEG = 1
@@ -3229,7 +2657,7 @@
 *
 *  Tests if selected elements in two arrays are equal.
 *
-*  TYPE is 'GE' or 'HE' or 'SY'.
+*  TYPE is 'ge' or 'he' or 'sy'.
 *
 *  Auxiliary routine for test program for Level 3 Blas.
 *
@@ -3250,14 +2678,14 @@
       LOGICAL            UPPER
 *     .. Executable Statements ..
       UPPER = UPLO.EQ.'U'
-      IF( TYPE.EQ.'GE' )THEN
+      IF( TYPE.EQ.'ge' )THEN
          DO 20 J = 1, N
             DO 10 I = M + 1, LDA
                IF( AA( I, J ).NE.AS( I, J ) )
      $            GO TO 70
    10       CONTINUE
    20    CONTINUE
-      ELSE IF( TYPE.EQ.'HE'.OR.TYPE.EQ.'SY' )THEN
+      ELSE IF( TYPE.EQ.'he'.OR.TYPE.EQ.'sy' )THEN
          DO 50 J = 1, N
             IF( UPPER )THEN
                IBEG = 1
@@ -3358,91 +2786,6 @@
       RETURN
 *
 *     End of DDIFF.
-*
-      END
-      SUBROUTINE CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-*
-*  Tests whether XERBLA has detected an error when it should.
-*
-*  Auxiliary routine for test program for Level 3 Blas.
-*
-*  -- Written on 8-February-1989.
-*     Jack Dongarra, Argonne National Laboratory.
-*     Iain Duff, AERE Harwell.
-*     Jeremy Du Croz, Numerical Algorithms Group Ltd.
-*     Sven Hammarling, Numerical Algorithms Group Ltd.
-*
-*     .. Scalar Arguments ..
-      INTEGER            INFOT, NOUT
-      LOGICAL            LERR, OK
-      CHARACTER*8        SRNAMT
-*     .. Executable Statements ..
-      IF( .NOT.LERR )THEN
-         WRITE( NOUT, FMT = 9999 )INFOT, SRNAMT
-         OK = .FALSE.
-      END IF
-      LERR = .FALSE.
-      RETURN
-*
- 9999 FORMAT( ' ***** ILLEGAL VALUE OF PARAMETER NUMBER ', I2, ' NOT D',
-     $      'ETECTED BY ', A8, ' *****' )
-*
-*     End of CHKXER.
-*
-      END
-      SUBROUTINE XERBLA( SRNAME, INFO )
-*
-*  This is a special version of XERBLA to be used only as part of
-*  the test program for testing error exits from the Level 3 BLAS
-*  routines.
-*
-*  XERBLA  is an error handler for the Level 3 BLAS routines.
-*
-*  It is called by the Level 3 BLAS routines if an input parameter is
-*  invalid.
-*
-*  Auxiliary routine for test program for Level 3 Blas.
-*
-*  -- Written on 8-February-1989.
-*     Jack Dongarra, Argonne National Laboratory.
-*     Iain Duff, AERE Harwell.
-*     Jeremy Du Croz, Numerical Algorithms Group Ltd.
-*     Sven Hammarling, Numerical Algorithms Group Ltd.
-*
-*     .. Scalar Arguments ..
-      INTEGER            INFO
-      CHARACTER*8        SRNAME
-*     .. Scalars in Common ..
-      INTEGER            INFOT, NOUT
-      LOGICAL            LERR, OK
-      CHARACTER*8        SRNAMT
-*     .. Common blocks ..
-      COMMON             /INFOC/INFOT, NOUT, OK, LERR
-      COMMON             /SRNAMC/SRNAMT
-*     .. Executable Statements ..
-      LERR = .TRUE.
-      IF( INFO.NE.INFOT )THEN
-         IF( INFOT.NE.0 )THEN
-            WRITE( NOUT, FMT = 9999 )INFO, INFOT
-         ELSE
-            WRITE( NOUT, FMT = 9997 )INFO
-         END IF
-         OK = .FALSE.
-      END IF
-      IF( SRNAME.NE.SRNAMT )THEN
-         WRITE( NOUT, FMT = 9998 )SRNAME, SRNAMT
-         OK = .FALSE.
-      END IF
-      RETURN
-*
- 9999 FORMAT( ' ******* XERBLA WAS CALLED WITH INFO = ', I6, ' INSTEAD',
-     $      ' OF ', I2, ' *******' )
- 9998 FORMAT( ' ******* XERBLA WAS CALLED WITH SRNAME = ', A8, ' INSTE',
-     $      'AD OF ', A8, ' *******' )
- 9997 FORMAT( ' ******* XERBLA WAS CALLED WITH INFO = ', I6,
-     $      ' *******' )
-*
-*     End of XERBLA
 *
       END
 
