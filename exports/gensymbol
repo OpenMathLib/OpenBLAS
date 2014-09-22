@@ -54,7 +54,7 @@
 	       cblas_ztrsv, cblas_cdotc_sub, cblas_cdotu_sub, cblas_zdotc_sub, cblas_zdotu_sub,
                cblas_saxpby,cblas_daxpby,cblas_caxpby,cblas_zaxpby,
 	       cblas_somatcopy, cblas_domatcopy, cblas_comatcopy, cblas_zomatcopy, 
-	       cblas_simatcopy, cblas_dimatcopy, cblas_cimatcopy, cblas_zimatcopy
+	       cblas_simatcopy, cblas_dimatcopy, cblas_cimatcopy, cblas_zimatcopy,
                );
 
 @exblasobjs = (
@@ -75,7 +75,7 @@
 	       );
 
 @gemm3mobjs = (
-	       
+	       cgemm3m,zgemm3m
 	       );
 
 

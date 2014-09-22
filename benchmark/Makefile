@@ -112,6 +112,11 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
+
+goto_3m :: cgemm3m.goto zgemm3m.goto
+
+mkl_3m  :: cgemm3m.mkl zgemm3m.mkl
+
 all :: goto mkl atlas acml
 
 ##################################### Slinpack ####################################################
@@ -1043,6 +1048,22 @@ zaxpy.mkl : zaxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 
+##################################### Cgemm3m ####################################################
+
+cgemm3m.goto : cgemm3m.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+cgemm3m.mkl : cgemm3m.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zgemm3m ####################################################
+
+zgemm3m.goto : zgemm3m.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zgemm3m.mkl : zgemm3m.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 
 ###################################################################################################
 
@@ -1250,6 +1271,11 @@ caxpy.$(SUFFIX) : axpy.c
 zaxpy.$(SUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
+cgemm3m.$(SUFFIX) : gemm3m.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zgemm3m.$(SUFFIX) : gemm3m.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 
 clean ::

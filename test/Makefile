@@ -88,6 +88,31 @@ else
 endif
 endif
 
+
+level3_3m : zblat3_3m cblat3_3m
+	rm -f ?BLAT3_3M.SUMM
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat3_3m < ./cblat3_3m.dat
+	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./zblat3_3m < ./zblat3_3m.dat
+	@$(GREP) -q FATAL ZBLAT3_3M.SUMM && cat ZBLAT3_3M.SUMM || exit 0
+ifdef SMP
+	rm -f ?BLAT3_3M.SUMM
+ifeq ($(USE_OPENMP), 1)
+	OMP_NUM_THREADS=2 ./cblat3_3m < ./cblat3_3m.dat
+	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
+	OMP_NUM_THREADS=2 ./zblat3_3m < ./zblat3_3m.dat
+	@$(GREP) -q FATAL ZBLAT3_3M.SUMM && cat ZBLAT3_3M.SUMM || exit 0
+else
+	OPENBLAS_NUM_THREADS=2 ./cblat3_3m < ./cblat3_3m.dat
+	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=2 ./zblat3_3m < ./zblat3_3m.dat
+	@$(GREP) -q FATAL ZBLAT3_3M.SUMM && cat ZBLAT3_3M.SUMM || exit 0
+endif
+endif
+
+
+
+
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
 CEXTRALIB =
 
@@ -131,6 +156,15 @@ cblat3 : cblat3.$(SUFFIX) ../$(LIBNAME)
 zblat3 : zblat3.$(SUFFIX) ../$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o zblat3 zblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
+cblat3_3m : cblat3_3m.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o cblat3_3m cblat3_3m.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+
+zblat3_3m : zblat3_3m.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o zblat3_3m zblat3_3m.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+
+
+
+
 clean:
 	@rm -f *.$(SUFFIX) *.$(PSUFFIX) gmon.$(SUFFIX)ut *.SUMM *.cxml *.exe *.pdb *.dwf \
 	sblat1 dblat1 cblat1 zblat1 \
@@ -139,6 +173,8 @@ clean:
 	sblat1p dblat1p cblat1p zblat1p \
 	sblat2p dblat2p cblat2p zblat2p \
 	sblat3p dblat3p cblat3p zblat3p \
+	zblat3_3m zblat3_3mp \
+	cblat3_3m cblat3_3mp \
 	*.stackdump *.dll
 
 libs:
