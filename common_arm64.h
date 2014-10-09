@@ -119,9 +119,9 @@ static inline int blas_quickdivide(blasint x, blasint y){
 }
 
 #if defined(DOUBLE)
-#define GET_IMAGE(res)  __asm__ __volatile__("vstr.f64 d1, %0" : "=m"(res) : : "memory")
+#define GET_IMAGE(res)  __asm__ __volatile__("str d1, %0" : "=m"(res) : : "memory")
 #else
-#define GET_IMAGE(res)  __asm__ __volatile__("vstr.f32 s1, %0" : "=m"(res) : : "memory")
+#define GET_IMAGE(res)  __asm__ __volatile__("str s1, %0" : "=m"(res) : : "memory")
 #endif
 
 #define GET_IMAGE_CANCEL
@@ -138,7 +138,6 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
 #define PROLOGUE \
-	.arm		 ;\
 	.global	REALNAME ;\
 	.func	REALNAME  ;\
 REALNAME:

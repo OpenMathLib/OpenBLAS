@@ -746,12 +746,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SUBARCHITECTURE "ARMV8"
 #define SUBDIRNAME      "arm64"
 #define ARCHCONFIG   "-DARMV8 " \
-       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
-       "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
-       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 " \
-       "-DHAVE_VFP -DHAVE_VFPV3 -DHAVE_VFPV4"
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " 
 #define LIBNAME   "armv8"
-#define CORENAME  "ARMV8"
+#define CORENAME  "XGENE1"
 #else
 #endif
 
@@ -798,6 +797,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef __arm__
 #include "cpuid_arm.c"
+#define OPENBLAS_SUPPORTED
+#endif
+
+#ifdef __aarch64__
+#include "cpuid_arm64.c"
 #define OPENBLAS_SUPPORTED
 #endif
 
@@ -856,7 +860,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__)
+#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -956,7 +960,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__)
+#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif
