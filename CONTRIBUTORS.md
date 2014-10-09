@@ -117,5 +117,9 @@ In chronological order:
 * Isaac Dunham <https://github.com/idunham>
   * [2014-08-03] Fixed link error on Linux/musl
 
+* Dave Nuechterlein
+  * [2014-10-10] trmm and sgemm kernels (optimized for APM's X-Gene 1).
+                 ARMv8 support.
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]
