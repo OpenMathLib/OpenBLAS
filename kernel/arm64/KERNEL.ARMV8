@@ -81,14 +81,10 @@ CGEMVTKERNEL = ../arm/zgemv_t.c
 ZGEMVTKERNEL = ../arm/zgemv_t.c
 
 STRMMKERNEL	= ../generic/trmmkernel_4x4.c
-#STRMMKERNEL    =  sgemm_kernel_4x4.S
 DTRMMKERNEL	= ../generic/trmmkernel_2x2.c
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 
-#SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
-#SGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
-#SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
 SGEMMKERNEL    =  sgemm_kernel_4x4.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
@@ -134,7 +130,5 @@ ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 
 
-CGEMM3MKERNEL    =  zgemm3m_kernel_8x4_core2.S
-ZGEMM3MKERNEL    =  zgemm3m_kernel_4x2_atom.S
 
 
