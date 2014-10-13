@@ -49,6 +49,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BlasTransConj    2
 #define BlasConj         3
 
+#ifndef CBLAS
 void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha, FLOAT *a, blasint *lda, FLOAT *b, blasint *ldb)
 {
 
@@ -69,6 +70,26 @@ void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha,
 	if ( Trans == 'C' ) trans = BlasTransConj;
 	if ( Trans == 'R' ) trans = BlasConj;
 
+#else 
+void CNAME(enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows, blasint ccols, FLOAT  *alpha, FLOAT *a, blasint clda, FLOAT*b, blasint cldb)
+{
+	blasint *rows, *cols, *lda, *ldb; 
+	int order=-1,trans=-1;
+	blasint info = -1;
+
+	if ( CORDER == CblasColMajor ) order = BlasColMajor; 
+	if ( CORDER == CblasRowMajor ) order = BlasRowMajor; 
+
+	if ( CTRANS == CblasNoTrans) trans = BlasNoTrans; 
+	if ( CTRANS == CblasConjNoTrans ) trans = BlasConj; 
+	if ( CTRANS == CblasTrans) trans = BlasTrans; 
+	if ( CTRANS == CblasConjTrans) trans = BlasTransConj; 
+
+	rows = &crows; 
+	cols = &ccols; 
+	lda  = &clda; 
+	ldb  = &cldb; 
+#endif
 	if ( order == BlasColMajor)
 	{
         	if ( trans == BlasNoTrans      &&  *ldb < *rows ) info = 9;

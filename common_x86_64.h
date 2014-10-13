@@ -46,6 +46,7 @@
 #define	__volatile__
 #endif
 
+/*
 #ifdef HAVE_SSE2
 #define MB   __asm__ __volatile__ ("mfence");
 #define WMB  __asm__ __volatile__ ("sfence");
@@ -53,6 +54,10 @@
 #define MB
 #define WMB
 #endif
+*/
+
+#define MB
+#define WMB
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
@@ -99,7 +104,9 @@ static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 			     : "0" (op));
 }
 
+/*
 #define WHEREAMI
+*/
 
 static inline int WhereAmI(void){
   int eax, ebx, ecx, edx;
@@ -110,6 +117,7 @@ static inline int WhereAmI(void){
 
   return apicid;
 }
+
 
 #ifdef CORE_BARCELONA
 #define IFLUSH		gotoblas_iflush()

@@ -4,11 +4,11 @@ include $(TOPDIR)/Makefile.system
 SUPPORT_GEMM3M = 0
 
 ifeq ($(ARCH), x86)
-SUPPORT_GEMM3M = 0
+SUPPORT_GEMM3M = 1
 endif
 
 ifeq ($(ARCH), x86_64)
-SUPPORT_GEMM3M = 0
+SUPPORT_GEMM3M = 1
 endif
 
 ifeq ($(ARCH), ia64)
@@ -128,9 +128,11 @@ ZBLAS3OBJS    = \
 
 ifeq ($(SUPPORT_GEMM3M), 1)
 
-CBLAS3OBJS   +=  cgemm3m.$(SUFFIX) csymm3m.$(SUFFIX) chemm3m.$(SUFFIX)
+# CBLAS3OBJS   +=  cgemm3m.$(SUFFIX) csymm3m.$(SUFFIX) chemm3m.$(SUFFIX)
+CBLAS3OBJS   +=  cgemm3m.$(SUFFIX)
 
-ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX) zsymm3m.$(SUFFIX) zhemm3m.$(SUFFIX)
+# ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX) zsymm3m.$(SUFFIX) zhemm3m.$(SUFFIX)
+ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX)
 
 endif
 
@@ -267,7 +269,7 @@ CSBLAS2OBJS   = \
 
 CSBLAS3OBJS   = \
 	cblas_sgemm.$(SUFFIX) cblas_ssymm.$(SUFFIX) cblas_strmm.$(SUFFIX) cblas_strsm.$(SUFFIX) \
-	cblas_ssyrk.$(SUFFIX) cblas_ssyr2k.$(SUFFIX)
+	cblas_ssyrk.$(SUFFIX) cblas_ssyr2k.$(SUFFIX) cblas_somatcopy.$(SUFFIX)  cblas_simatcopy.$(SUFFIX) 
 
 CDBLAS1OBJS   = \
 	cblas_idamax.$(SUFFIX) cblas_dasum.$(SUFFIX) cblas_daxpy.$(SUFFIX) \
@@ -283,7 +285,7 @@ CDBLAS2OBJS   = \
 
 CDBLAS3OBJS   += \
 	cblas_dgemm.$(SUFFIX) cblas_dsymm.$(SUFFIX) cblas_dtrmm.$(SUFFIX) cblas_dtrsm.$(SUFFIX) \
-	cblas_dsyrk.$(SUFFIX) cblas_dsyr2k.$(SUFFIX)
+	cblas_dsyrk.$(SUFFIX) cblas_dsyr2k.$(SUFFIX) cblas_domatcopy.$(SUFFIX)  cblas_dimatcopy.$(SUFFIX) 
 
 CCBLAS1OBJS   = \
 	cblas_icamax.$(SUFFIX) cblas_scasum.$(SUFFIX)  cblas_caxpy.$(SUFFIX) \
@@ -305,7 +307,9 @@ CCBLAS2OBJS   = \
 CCBLAS3OBJS   = \
 	cblas_cgemm.$(SUFFIX) cblas_csymm.$(SUFFIX) cblas_ctrmm.$(SUFFIX) cblas_ctrsm.$(SUFFIX) \
 	cblas_csyrk.$(SUFFIX) cblas_csyr2k.$(SUFFIX) \
-	cblas_chemm.$(SUFFIX) cblas_cherk.$(SUFFIX) cblas_cher2k.$(SUFFIX)
+	cblas_chemm.$(SUFFIX) cblas_cherk.$(SUFFIX) cblas_cher2k.$(SUFFIX) \
+	cblas_comatcopy.$(SUFFIX) cblas_cimatcopy.$(SUFFIX) 
+
 
 CZBLAS1OBJS   = \
 	cblas_izamax.$(SUFFIX) cblas_dzasum.$(SUFFIX)  cblas_zaxpy.$(SUFFIX) \
@@ -327,7 +331,19 @@ CZBLAS2OBJS   = \
 CZBLAS3OBJS   = \
 	cblas_zgemm.$(SUFFIX) cblas_zsymm.$(SUFFIX) cblas_ztrmm.$(SUFFIX) cblas_ztrsm.$(SUFFIX) \
 	cblas_zsyrk.$(SUFFIX) cblas_zsyr2k.$(SUFFIX) \
-	cblas_zhemm.$(SUFFIX) cblas_zherk.$(SUFFIX) cblas_zher2k.$(SUFFIX)
+	cblas_zhemm.$(SUFFIX) cblas_zherk.$(SUFFIX) cblas_zher2k.$(SUFFIX)\
+	cblas_zomatcopy.$(SUFFIX) cblas_zimatcopy.$(SUFFIX) 
+
+ifeq ($(SUPPORT_GEMM3M), 1)
+
+# CBLAS3OBJS   +=  cgemm3m.$(SUFFIX) csymm3m.$(SUFFIX) chemm3m.$(SUFFIX)
+CCBLAS3OBJS   +=  cblas_cgemm3m.$(SUFFIX)
+
+# ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX) zsymm3m.$(SUFFIX) zhemm3m.$(SUFFIX)
+CZBLAS3OBJS   +=  cblas_zgemm3m.$(SUFFIX)
+
+endif
+
 
 ifndef NO_CBLAS
 
@@ -1771,6 +1787,13 @@ cblas_cher2k.$(SUFFIX) cblas_cher2k.$(PSUFFIX) : syr2k.c
 cblas_zher2k.$(SUFFIX) cblas_zher2k.$(PSUFFIX) : syr2k.c
 	$(CC) -DCBLAS -c $(CFLAGS) -DHEMM $< -o $(@F)
 
+cblas_cgemm3m.$(SUFFIX) cblas_cgemm3m.$(PSUFFIX) : gemm.c
+	$(CC) -DCBLAS -c $(CFLAGS) -DGEMM3M $< -o $(@F)
+
+cblas_zgemm3m.$(SUFFIX) cblas_zgemm3m.$(PSUFFIX) : gemm.c
+	$(CC) -DCBLAS -c $(CFLAGS) -DGEMM3M $< -o $(@F)
+
+
 sgetf2.$(SUFFIX) sgetf2.$(PSUFFIX) : lapack/getf2.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
@@ -2035,25 +2058,49 @@ cblas_caxpby.$(SUFFIX) cblas_caxpby.$(PSUFFIX) : zaxpby.c
 domatcopy.$(SUFFIX) domatcopy.$(PSUFFIX) : omatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+cblas_domatcopy.$(SUFFIX) cblas_domatcopy.$(PSUFFIX) : omatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F) 
+
 somatcopy.$(SUFFIX) somatcopy.$(PSUFFIX) : omatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+cblas_somatcopy.$(SUFFIX) cblas_somatcopy.$(PSUFFIX) : omatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 
 comatcopy.$(SUFFIX) comatcopy.$(PSUFFIX) : zomatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+cblas_comatcopy.$(SUFFIX) cblas_comatcopy.$(PSUFFIX) : zomatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
+
 zomatcopy.$(SUFFIX) zomatcopy.$(PSUFFIX) : zomatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+cblas_zomatcopy.$(SUFFIX) cblas_zomatcopy.$(PSUFFIX) : zomatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 
 dimatcopy.$(SUFFIX) dimatcopy.$(PSUFFIX) : imatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+cblas_dimatcopy.$(SUFFIX) cblas_dimatcopy.$(PSUFFIX) : imatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
+
 simatcopy.$(SUFFIX) simatcopy.$(PSUFFIX) : imatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+cblas_simatcopy.$(SUFFIX) cblas_simatcopy.$(PSUFFIX) : imatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 
 cimatcopy.$(SUFFIX) cimatcopy.$(PSUFFIX) : zimatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+cblas_cimatcopy.$(SUFFIX) cblas_cimatcopy.$(PSUFFIX) : zimatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
+
 zimatcopy.$(SUFFIX) zimatcopy.$(PSUFFIX) : zimatcopy.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+cblas_zimatcopy.$(SUFFIX) cblas_zimatcopy.$(PSUFFIX) : zimatcopy.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 
 

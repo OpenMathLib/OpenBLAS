@@ -181,8 +181,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	VFMADD231PS_(  	%ymm14,%ymm3,%ymm0 )
 	VFMADD231PS_(  	%ymm15,%ymm3,%ymm1 )
 
-	addq	$6*SIZE, BO 
-	addq	$16*SIZE, AO 
+	addq	$ 6*SIZE, BO 
+	addq	$ 16*SIZE, AO 
 	decq	%rax 
 .endm
 
@@ -268,8 +268,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	VFMADD231PS_(  	%ymm12,%ymm2,%ymm0  )
 	VFMADD231PS_(  	%ymm14,%ymm3,%ymm0 )
 
-	addq	$6*SIZE, BO 
-	addq	$8*SIZE, AO 
+	addq	$ 6*SIZE, BO 
+	addq	$ 8*SIZE, AO 
 	decq	%rax 
 .endm
 
@@ -327,8 +327,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	VFMADD231PS_(  	%xmm12,%xmm2,%xmm0  )
 	VFMADD231PS_(  	%xmm14,%xmm3,%xmm0 )
 
-	addq	$6*SIZE, BO 
-	addq	$4*SIZE, AO 
+	addq	$ 6*SIZE, BO 
+	addq	$ 4*SIZE, AO 
 	decq	%rax 
 .endm
 
@@ -392,8 +392,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	VFMADD231SS_(  	%xmm14,%xmm3,%xmm0 )
 	VFMADD231SS_(  	%xmm15,%xmm3,%xmm1 )
 
-	addq	$6*SIZE, BO 
-	addq	$2*SIZE, AO 
+	addq	$ 6*SIZE, BO 
+	addq	$ 2*SIZE, AO 
 	decq	%rax 
 .endm
 
@@ -478,8 +478,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	VFMADD231SS_(  	%xmm12,%xmm2,%xmm0  )
 	VFMADD231SS_(  	%xmm14,%xmm3,%xmm0 )
 
-	addq	$6*SIZE, BO 
-	addq	$1*SIZE, AO 
+	addq	$ 6*SIZE, BO 
+	addq	$ 1*SIZE, AO 
 	decq	%rax 
 .endm
 

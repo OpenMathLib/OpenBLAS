@@ -405,49 +405,12 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
 #ifndef COMPLEX
   double MNK = (double) args.m * (double) args.n * (double) args.k;
-  if ( MNK <= (16.0 * 1024.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
+  if ( MNK <= (65536.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	nthreads_max = 1;
-  else
-  {
-  	if ( MNK <= (2.0 * 65536.0 * (double) GEMM_MULTITHREAD_THRESHOLD) )
-	{
-		nthreads_max = 4;
-		if ( args.m < 16 * GEMM_MULTITHREAD_THRESHOLD )
-		{
-			nthreads_max = 2;
-			if ( args.m <     3 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 1;
-			if ( args.n <     1 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 1;
-			if ( args.k <     3 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 1;
-		}
-		else
-		{
-			if ( args.n <=    1 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 2;
-		}
-	}
-  }
 #else
   double MNK = (double) args.m * (double) args.n * (double) args.k;
-  if ( MNK <= (256.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
+  if ( MNK <= (8192.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	nthreads_max = 1;
-  else
-  {
-  	if ( MNK <= (16384.0 * (double) GEMM_MULTITHREAD_THRESHOLD) )
-	{
-		nthreads_max = 4;
-		if ( args.m < 3 * GEMM_MULTITHREAD_THRESHOLD )
-		{
-			nthreads_max = 2;
-			if ( args.m <=    1 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 1;
-			if ( args.n <     1 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 1;
-			if ( args.k <     1 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 1;
-		}
-		else
-		{
-				if ( args.n <     2 * GEMM_MULTITHREAD_THRESHOLD ) nthreads_max = 2;
-		}
-	}
-  }
-
 #endif
   args.common = NULL;
 

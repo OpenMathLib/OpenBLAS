@@ -74,6 +74,18 @@ else
 	OPENBLAS_NUM_THREADS=2 ./xzcblat3 < zin3
 endif
 
+all3_3m: xzcblat3_3m xccblat3_3m
+ifeq ($(USE_OPENMP), 1)
+	OMP_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
+	OMP_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+else
+	OPENBLAS_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
+	OPENBLAS_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+endif
+
+
+
+
 clean ::
 	rm -f x*
 
@@ -103,6 +115,9 @@ xccblat2: $(ctestl2o) c_cblat2.o $(TOPDIR)/$(LIBNAME)
 xccblat3: $(ctestl3o) c_cblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat3 c_cblat3.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 
+xccblat3_3m: $(ctestl3o) c_cblat3_3m.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xccblat3_3m c_cblat3_3m.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+
 # Double complex
 xzcblat1: $(ztestl1o) c_zblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat1 c_zblat1.o $(ztestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
@@ -110,5 +125,10 @@ xzcblat2: $(ztestl2o) c_zblat2.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat2 c_zblat2.o $(ztestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xzcblat3: $(ztestl3o) c_zblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat3 c_zblat3.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+
+
+xzcblat3_3m: $(ztestl3o) c_zblat3_3m.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xzcblat3_3m c_zblat3_3m.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+
 
 include $(TOPDIR)/Makefile.tail

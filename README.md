@@ -55,15 +55,22 @@ Please read GotoBLAS_01Readme.txt
 
 #### x86/x86-64:
 - **Intel Xeon 56xx (Westmere)**: Used GotoBLAS2 Nehalem codes.
-- **Intel Sandy Bridge**: Optimized Level-3 BLAS with AVX on x86-64.
-- **Intel Haswell**: Optimized Level-3 BLAS with AVX on x86-64 (identical to Sandy Bridge).
+- **Intel Sandy Bridge**: Optimized Level-3 and Level-2 BLAS with AVX on x86-64.
+- **Intel Haswell**: Optimized Level-3 and Level-2 BLAS with AVX2 and FMA  on x86-64.
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
-- **AMD Bulldozer**: x86-64 S/DGEMM AVX kernels. (Thank Werner Saar)
-- **AMD PILEDRIVER**: Used Bulldozer codes.
+- **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thank Werner Saar)
+- **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
 
 #### MIPS64:
 - **ICT Loongson 3A**: Optimized Level-3 BLAS and the part of Level-1,2.
 - **ICT Loongson 3B**: Experimental
+
+#### ARM:
+- **ARMV6**: Optimized BLAS for vfpv2 and vfpv3-d16 ( e.g. BCM2835, Cortex M0+ )
+- **ARMV7**: Optimized BLAS for vfpv3-d32 ( e.g. Cortex A8, A9 and A15 )
+
+#### ARM64:
+- **ARMV8**: Experimental
 
 ### Support OS:
 - **GNU/Linux**
@@ -116,8 +123,8 @@ Please see Changelog.txt to obtain the differences between GotoBLAS2 1.13 BSD ve
 * Please read [Faq](https://github.com/xianyi/OpenBLAS/wiki/Faq) at first.
 * Please use gcc version 4.6 and above to compile Sandy Bridge AVX kernels on Linux/MingW/BSD.
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture. The Clang 3.0 will generate the wrong AVX binary code.
-* The number of CPUs/Cores should less than or equal to 256.
-* On Linux, OpenBLAS sets the processor affinity by default. This may cause [the conflict with R parallel](https://stat.ethz.ch/pipermail/r-sig-hpc/2012-April/001348.html). You can build the library with NO_AFFINITY=1.
+* The number of CPUs/Cores should less than or equal to 256. On Linux x86_64(amd64), there is experimental support for up to 1024 CPUs/Cores and 128 numa nodes if you build the library with BIGNUMA=1.
+* OpenBLAS does not set processor affinity by default. On Linux, you can enable processor affinity by commenting the line NO_AFFINITY=1 in Makefile.rule. But this may cause [the conflict with R parallel](https://stat.ethz.ch/pipermail/r-sig-hpc/2012-April/001348.html).
 * On Loongson 3A. make test would be failed because of pthread_create error. The error code is EAGAIN. However, it will be OK when you run the same testcase on shell.
 
 ## Contributing

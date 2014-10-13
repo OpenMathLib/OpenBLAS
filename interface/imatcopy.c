@@ -50,6 +50,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef malloc
 #undef free
 
+#ifndef CBLAS
 void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha, FLOAT *a, blasint *lda, blasint *ldb)
 {
 
@@ -71,6 +72,28 @@ void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha,
 	if ( Trans == 'R' ) trans = BlasNoTrans;
 	if ( Trans == 'T' ) trans = BlasTrans;
 	if ( Trans == 'C' ) trans = BlasTrans;
+#else 
+void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows, blasint ccols, FLOAT calpha, FLOAT *a, blasint clda, blasint cldb)
+{
+	char Order, Trans;
+	int order=-1,trans=-1;
+	blasint info = -1;
+	FLOAT *b;
+	size_t msize;
+	blasint *lda, *ldb, *rows, *cols; 
+	FLOAT *alpha; 
+
+	if ( CORDER == CblasColMajor) order = BlasColMajor; 
+	if ( CORDER == CblasRowMajor) order = BlasRowMajor; 
+	if ( CTRANS == CblasNoTrans || CTRANS == CblasConjNoTrans) trans = BlasNoTrans; 
+	if ( CTRANS == CblasTrans   || CTRANS == CblasConjTrans  ) trans = BlasTrans; 
+
+	rows = &crows; 
+	cols = &ccols; 
+	alpha = &calpha; 
+	lda = &clda; 
+	ldb = &cldb; 	
+#endif 
 
 	if ( order == BlasColMajor)
 	{

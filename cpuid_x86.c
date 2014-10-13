@@ -59,9 +59,16 @@
 void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx);
 #else
 static inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
+#if defined(__i386__) && defined(__PIC__)
+  __asm__ __volatile__
+    ("mov %%ebx, %%edi;"
+     "cpuid;"
+     "xchgl %%ebx, %%edi;"
+     : "=a" (*eax), "=D" (*ebx), "=c" (*ecx), "=d" (*edx) : "a" (op) : "cc");
+#else
   __asm__ __volatile__
     ("cpuid": "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx) : "a" (op) : "cc");
-
+#endif
 }
 #endif
 

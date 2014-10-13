@@ -173,12 +173,14 @@ typedef struct { double real; double imag; } CBLAS_TEST_ZOMPLEX;
    #define F77_dtrmm      cdtrmm_
    #define F77_dtrsm      cdtrsm_
    #define F77_cgemm      ccgemm_
+   #define F77_cgemm3m    ccgemm3m_
    #define F77_csymm      ccsymm_
    #define F77_csyrk      ccsyrk_
    #define F77_csyr2k     ccsyr2k_
    #define F77_ctrmm      cctrmm_
    #define F77_ctrsm      cctrsm_
    #define F77_zgemm      czgemm_
+   #define F77_zgemm3m    czgemm3m_
    #define F77_zsymm      czsymm_
    #define F77_zsyrk      czsyrk_
    #define F77_zsyr2k     czsyr2k_
@@ -333,12 +335,14 @@ typedef struct { double real; double imag; } CBLAS_TEST_ZOMPLEX;
    #define F77_dtrmm      CDTRMM
    #define F77_dtrsm      CDTRSM
    #define F77_cgemm      CCGEMM
+   #define F77_cgemm3m    CCGEMM3M
    #define F77_csymm      CCSYMM
    #define F77_csyrk      CCSYRK
    #define F77_csyr2k     CCSYR2K
    #define F77_ctrmm      CCTRMM
    #define F77_ctrsm      CCTRSM
    #define F77_zgemm      CZGEMM
+   #define F77_zgemm3m    CZGEMM3M
    #define F77_zsymm      CZSYMM
    #define F77_zsyrk      CZSYRK
    #define F77_zsyr2k     CZSYR2K
@@ -493,12 +497,14 @@ typedef struct { double real; double imag; } CBLAS_TEST_ZOMPLEX;
    #define F77_dtrmm      cdtrmm
    #define F77_dtrsm      cdtrsm
    #define F77_cgemm      ccgemm
+   #define F77_cgemm3m    ccgemm3m
    #define F77_csymm      ccsymm
    #define F77_csyrk      ccsyrk
    #define F77_csyr2k     ccsyr2k
    #define F77_ctrmm      cctrmm
    #define F77_ctrsm      cctrsm
    #define F77_zgemm      czgemm
+   #define F77_zgemm3m    czgemm3m
    #define F77_zsymm      czsymm
    #define F77_zsyrk      czsyrk
    #define F77_zsyr2k     czsyr2k

@@ -435,6 +435,9 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*chemm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
 
+  int cgemm3m_p, cgemm3m_q, cgemm3m_r;
+  int cgemm3m_unroll_m, cgemm3m_unroll_n, cgemm3m_unroll_mn;
+
   int    (*cgemm3m_kernel)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
 
   int    (*cgemm3m_incopyb)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
@@ -594,6 +597,9 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*zhemm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm_oltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+
+  int zgemm3m_p, zgemm3m_q, zgemm3m_r;
+  int zgemm3m_unroll_m, zgemm3m_unroll_n, zgemm3m_unroll_mn;
 
   int    (*zgemm3m_kernel)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
 
@@ -757,6 +763,9 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*xhemm_outcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm_oltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
 
+  int xgemm3m_p, xgemm3m_q, xgemm3m_r;
+  int xgemm3m_unroll_m, xgemm3m_unroll_n, xgemm3m_unroll_mn;
+
   int    (*xgemm3m_kernel)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
 
   int    (*xgemm3m_incopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
@@ -900,6 +909,27 @@ extern gotoblas_t *gotoblas;
 #define	XGEMM_UNROLL_N	gotoblas -> xgemm_unroll_n
 #define XGEMM_UNROLL_MN	gotoblas -> xgemm_unroll_mn
 
+#define	CGEMM3M_P		gotoblas -> cgemm3m_p
+#define	CGEMM3M_Q		gotoblas -> cgemm3m_q
+#define	CGEMM3M_R		gotoblas -> cgemm3m_r
+#define	CGEMM3M_UNROLL_M	gotoblas -> cgemm3m_unroll_m
+#define	CGEMM3M_UNROLL_N	gotoblas -> cgemm3m_unroll_n
+#define CGEMM3M_UNROLL_MN	gotoblas -> cgemm3m_unroll_mn
+
+#define	ZGEMM3M_P		gotoblas -> zgemm3m_p
+#define	ZGEMM3M_Q		gotoblas -> zgemm3m_q
+#define	ZGEMM3M_R		gotoblas -> zgemm3m_r
+#define	ZGEMM3M_UNROLL_M	gotoblas -> zgemm3m_unroll_m
+#define	ZGEMM3M_UNROLL_N	gotoblas -> zgemm3m_unroll_n
+#define ZGEMM3M_UNROLL_MN	gotoblas -> zgemm3m_unroll_mn
+
+#define	XGEMM3M_P		gotoblas -> xgemm3m_p
+#define	XGEMM3M_Q		gotoblas -> xgemm3m_q
+#define	XGEMM3M_R		gotoblas -> xgemm3m_r
+#define	XGEMM3M_UNROLL_M	gotoblas -> xgemm3m_unroll_m
+#define	XGEMM3M_UNROLL_N	gotoblas -> xgemm3m_unroll_n
+#define XGEMM3M_UNROLL_MN	gotoblas -> xgemm3m_unroll_mn
+
 #else
 
 #define DTB_ENTRIES  DTB_DEFAULT_ENTRIES
@@ -971,6 +1001,55 @@ extern gotoblas_t *gotoblas;
 #define XGEMM_UNROLL_M	XGEMM_DEFAULT_UNROLL_M
 #define XGEMM_UNROLL_N	XGEMM_DEFAULT_UNROLL_N
 #define XGEMM_UNROLL_MN	MAX((XGEMM_UNROLL_M), (XGEMM_UNROLL_N))
+
+#ifdef CGEMM3M_DEFAULT_UNROLL_N
+
+#define	CGEMM3M_P		CGEMM3M_DEFAULT_P
+#define	CGEMM3M_Q		CGEMM3M_DEFAULT_Q
+#define	CGEMM3M_R		CGEMM3M_DEFAULT_R
+#define CGEMM3M_UNROLL_M	CGEMM3M_DEFAULT_UNROLL_M
+#define CGEMM3M_UNROLL_N	CGEMM3M_DEFAULT_UNROLL_N
+#define CGEMM3M_UNROLL_MN	MAX((CGEMM3M_UNROLL_M), (CGEMM3M_UNROLL_N))
+
+#else
+
+#define	CGEMM3M_P		SGEMM_DEFAULT_P
+#define	CGEMM3M_Q		SGEMM_DEFAULT_Q
+#define	CGEMM3M_R		SGEMM_DEFAULT_R
+#define CGEMM3M_UNROLL_M	SGEMM_DEFAULT_UNROLL_M
+#define CGEMM3M_UNROLL_N	SGEMM_DEFAULT_UNROLL_N
+#define CGEMM3M_UNROLL_MN	MAX((CGEMM_UNROLL_M), (CGEMM_UNROLL_N))
+
+#endif
+
+
+#ifdef ZGEMM3M_DEFAULT_UNROLL_N
+
+#define	ZGEMM3M_P		ZGEMM3M_DEFAULT_P
+#define	ZGEMM3M_Q		ZGEMM3M_DEFAULT_Q
+#define	ZGEMM3M_R		ZGEMM3M_DEFAULT_R
+#define ZGEMM3M_UNROLL_M	ZGEMM3M_DEFAULT_UNROLL_M
+#define ZGEMM3M_UNROLL_N	ZGEMM3M_DEFAULT_UNROLL_N
+#define ZGEMM3M_UNROLL_MN	MAX((ZGEMM_UNROLL_M), (ZGEMM_UNROLL_N))
+
+#else
+
+#define	ZGEMM3M_P		DGEMM_DEFAULT_P
+#define	ZGEMM3M_Q		DGEMM_DEFAULT_Q
+#define	ZGEMM3M_R		DGEMM_DEFAULT_R
+#define ZGEMM3M_UNROLL_M	DGEMM_DEFAULT_UNROLL_M
+#define ZGEMM3M_UNROLL_N	DGEMM_DEFAULT_UNROLL_N
+#define ZGEMM3M_UNROLL_MN	MAX((ZGEMM_UNROLL_M), (ZGEMM_UNROLL_N))
+
+#endif
+
+#define	XGEMM3M_P		QGEMM_DEFAULT_P
+#define	XGEMM3M_Q		QGEMM_DEFAULT_Q
+#define	XGEMM3M_R		QGEMM_DEFAULT_R
+#define XGEMM3M_UNROLL_M	QGEMM_DEFAULT_UNROLL_M
+#define XGEMM3M_UNROLL_N	QGEMM_DEFAULT_UNROLL_N
+#define XGEMM3M_UNROLL_MN	MAX((QGEMM_UNROLL_M), (QGEMM_UNROLL_N))
+
 
 #endif
 #endif
@@ -1054,14 +1133,14 @@ extern gotoblas_t *gotoblas;
 #endif
 
 #ifdef XDOUBLE
-#define GEMM3M_UNROLL_M	QGEMM_UNROLL_M
-#define GEMM3M_UNROLL_N	QGEMM_UNROLL_N
+#define GEMM3M_UNROLL_M	XGEMM3M_UNROLL_M
+#define GEMM3M_UNROLL_N	XGEMM3M_UNROLL_N
 #elif defined(DOUBLE)
-#define GEMM3M_UNROLL_M	DGEMM_UNROLL_M
-#define GEMM3M_UNROLL_N	DGEMM_UNROLL_N
+#define GEMM3M_UNROLL_M	ZGEMM3M_UNROLL_M
+#define GEMM3M_UNROLL_N	ZGEMM3M_UNROLL_N
 #else
-#define GEMM3M_UNROLL_M	SGEMM_UNROLL_M
-#define GEMM3M_UNROLL_N	SGEMM_UNROLL_N
+#define GEMM3M_UNROLL_M	CGEMM3M_UNROLL_M
+#define GEMM3M_UNROLL_N	CGEMM3M_UNROLL_N
 #endif
 
 
@@ -1123,31 +1202,31 @@ extern gotoblas_t *gotoblas;
 
 #ifndef GEMM3M_P
 #ifdef XDOUBLE
-#define GEMM3M_P	QGEMM_P
+#define GEMM3M_P	XGEMM3M_P
 #elif defined(DOUBLE)
-#define GEMM3M_P	DGEMM_P
+#define GEMM3M_P	ZGEMM3M_P
 #else
-#define GEMM3M_P	SGEMM_P
+#define GEMM3M_P	CGEMM3M_P
 #endif
 #endif
 
 #ifndef GEMM3M_Q
 #ifdef XDOUBLE
-#define GEMM3M_Q	QGEMM_Q
+#define GEMM3M_Q	XGEMM3M_Q
 #elif defined(DOUBLE)
-#define GEMM3M_Q	DGEMM_Q
+#define GEMM3M_Q	ZGEMM3M_Q
 #else
-#define GEMM3M_Q	SGEMM_Q
+#define GEMM3M_Q	CGEMM3M_Q
 #endif
 #endif
 
 #ifndef GEMM3M_R
 #ifdef XDOUBLE
-#define GEMM3M_R	QGEMM_R
+#define GEMM3M_R	XGEMM3M_R
 #elif defined(DOUBLE)
-#define GEMM3M_R	DGEMM_R
+#define GEMM3M_R	ZGEMM3M_R
 #else
-#define GEMM3M_R	SGEMM_R
+#define GEMM3M_R	CGEMM3M_R
 #endif
 #endif
 

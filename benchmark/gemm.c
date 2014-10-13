@@ -142,7 +142,9 @@ int MAIN__(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d\n", from, to, step);
+  if ((p = getenv("OPENBLAS_TRANS")))  trans=*p;
+
+  fprintf(stderr, "From : %3d  To : %3d Step=%d : Trans=%c\n", from, to, step, trans);
 
   if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);

@@ -216,7 +216,7 @@ void CNAME(enum CBLAS_ORDER order,
   int  nthreads_avail = nthreads_max;
 
   double MNK = (double) m * (double) n;
-  if ( MNK <= (500.0 * 100.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
+  if ( MNK <= (24.0 * 24.0  * (double) (GEMM_MULTITHREAD_THRESHOLD*GEMM_MULTITHREAD_THRESHOLD) )  )
         nthreads_max = 1;
 
   if ( nthreads_max > nthreads_avail )

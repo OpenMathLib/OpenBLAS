@@ -293,6 +293,14 @@ gotoblas_t TABLE_NAME = {
 #endif
   chemm_outcopyTS,  chemm_oltcopyTS,
 
+  0, 0, 0,
+#ifdef CGEMM3M_DEFAULT_UNROLL_M
+  CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N, MAX(CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N),
+#else
+  SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N, MAX(SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N),
+#endif
+
+
   cgemm3m_kernelTS,
 
   cgemm3m_incopybTS,  cgemm3m_incopyrTS,
@@ -391,6 +399,14 @@ gotoblas_t TABLE_NAME = {
 #endif
   zhemm_outcopyTS,  zhemm_oltcopyTS,
 
+  0, 0, 0,
+#ifdef ZGEMM3M_DEFAULT_UNROLL_M
+  ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N, MAX(ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N),
+#else
+  DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N, MAX(DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N),
+#endif
+
+
   zgemm3m_kernelTS,
 
   zgemm3m_incopybTS,  zgemm3m_incopyrTS,
@@ -485,6 +501,9 @@ gotoblas_t TABLE_NAME = {
   xhemm_outcopyTS,  xhemm_oltcopyTS,
 #endif
   xhemm_outcopyTS,  xhemm_oltcopyTS,
+
+  0, 0, 0,
+  QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N, MAX(QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N),
 
   xgemm3m_kernelTS,
 
@@ -661,9 +680,23 @@ static void init_parameter(void) {
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
   TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+
+#ifdef CGEMM3M_DEFAULT_Q
+  TABLE_NAME.cgemm3m_q = CGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.cgemm3m_q = SGEMM_DEFAULT_Q;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_Q
+  TABLE_NAME.zgemm3m_q = ZGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.zgemm3m_q = DGEMM_DEFAULT_Q;
+#endif
+
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_q = QGEMM_DEFAULT_Q;
   TABLE_NAME.xgemm_q = XGEMM_DEFAULT_Q;
+  TABLE_NAME.xgemm3m_q = QGEMM_DEFAULT_Q;
 #endif
 
 #if defined(CORE_KATMAI)  || defined(CORE_COPPERMINE) || defined(CORE_BANIAS) || defined(CORE_YONAH) || defined(CORE_ATHLON)
@@ -918,20 +951,56 @@ static void init_parameter(void) {
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+
+
+
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
 #endif
+
 #endif
+
+
+#ifdef CGEMM3M_DEFAULT_P
+  TABLE_NAME.cgemm3m_p = CGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.cgemm3m_p = TABLE_NAME.sgemm_p;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_P
+  TABLE_NAME.zgemm3m_p = ZGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.zgemm3m_p = TABLE_NAME.dgemm_p;
+#endif
+
+#ifdef EXPRECISION
+  TABLE_NAME.xgemm3m_p = TABLE_NAME.qgemm_p;
+#endif
+
 
 
   TABLE_NAME.sgemm_p = (TABLE_NAME.sgemm_p + SGEMM_DEFAULT_UNROLL_M - 1) & ~(SGEMM_DEFAULT_UNROLL_M - 1);
   TABLE_NAME.dgemm_p = (TABLE_NAME.dgemm_p + DGEMM_DEFAULT_UNROLL_M - 1) & ~(DGEMM_DEFAULT_UNROLL_M - 1);
   TABLE_NAME.cgemm_p = (TABLE_NAME.cgemm_p + CGEMM_DEFAULT_UNROLL_M - 1) & ~(CGEMM_DEFAULT_UNROLL_M - 1);
   TABLE_NAME.zgemm_p = (TABLE_NAME.zgemm_p + ZGEMM_DEFAULT_UNROLL_M - 1) & ~(ZGEMM_DEFAULT_UNROLL_M - 1);
+
+#ifdef CGEMM3M_DEFAULT_UNROLL_M
+  TABLE_NAME.cgemm3m_p = (TABLE_NAME.cgemm3m_p + CGEMM3M_DEFAULT_UNROLL_M - 1) & ~(CGEMM3M_DEFAULT_UNROLL_M - 1);
+#else
+  TABLE_NAME.cgemm3m_p = (TABLE_NAME.cgemm3m_p + SGEMM_DEFAULT_UNROLL_M - 1) & ~(SGEMM_DEFAULT_UNROLL_M - 1);
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_UNROLL_M
+  TABLE_NAME.zgemm3m_p = (TABLE_NAME.zgemm3m_p + ZGEMM3M_DEFAULT_UNROLL_M - 1) & ~(ZGEMM3M_DEFAULT_UNROLL_M - 1);
+#else
+  TABLE_NAME.zgemm3m_p = (TABLE_NAME.zgemm3m_p + DGEMM_DEFAULT_UNROLL_M - 1) & ~(DGEMM_DEFAULT_UNROLL_M - 1);
+#endif
+
 #ifdef QUAD_PRECISION
   TABLE_NAME.qgemm_p = (TABLE_NAME.qgemm_p + QGEMM_DEFAULT_UNROLL_M - 1) & ~(QGEMM_DEFAULT_UNROLL_M - 1);
   TABLE_NAME.xgemm_p = (TABLE_NAME.xgemm_p + XGEMM_DEFAULT_UNROLL_M - 1) & ~(XGEMM_DEFAULT_UNROLL_M - 1);
+  TABLE_NAME.xgemm3m_p = (TABLE_NAME.xgemm3m_p + QGEMM_DEFAULT_UNROLL_M - 1) & ~(QGEMM_DEFAULT_UNROLL_M - 1);
 #endif
 
 #ifdef DEBUG
@@ -965,11 +1034,32 @@ static void init_parameter(void) {
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.zgemm_q * 16) - 15) & ~15);
 
+  TABLE_NAME.cgemm3m_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.cgemm3m_p * TABLE_NAME.cgemm3m_q *  8 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
+			       ) / (TABLE_NAME.cgemm3m_q *  8) - 15) & ~15);
+
+  TABLE_NAME.zgemm3m_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.zgemm3m_p * TABLE_NAME.zgemm3m_q * 16 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
+			       ) / (TABLE_NAME.zgemm3m_q * 16) - 15) & ~15);
+
+
+
+
 #ifdef EXPRECISION
   TABLE_NAME.xgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.xgemm_p * TABLE_NAME.xgemm_q * 32 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 		       ) / (TABLE_NAME.xgemm_q * 32) - 15) & ~15);
+
+  TABLE_NAME.xgemm3m_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.xgemm3m_p * TABLE_NAME.xgemm3m_q * 32 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
+		       ) / (TABLE_NAME.xgemm3m_q * 32) - 15) & ~15);
+
 #endif
+
+
 
 }

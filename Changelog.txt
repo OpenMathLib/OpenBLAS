@@ -1,6 +1,21 @@
 OpenBLAS ChangeLog
 ====================================================================
-Version 0.2.10
+Version 0.2.12
+13-Oct-2014
+common:
+	* Added CBLAS interface for ?omatcopy and ?imatcopy.
+	* Enable ?gemm3m functions.
+	* Added benchmark for ?gemm3m.
+	* Optimized multithreading lower limits.
+	* Disabled SYMM3M and HEMM3M functions 
+	  because of segment violations.
+
+x86/x86-64:
+	* Improved axpy and symv performance on AMD Bulldozer.
+	* Improved gemv performance on modern Intel and AMD CPUs.
+
+====================================================================
+Version 0.2.11
 18-Aug-2014
 common:
 	* Added some benchmark codes.
