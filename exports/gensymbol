@@ -2784,22 +2784,26 @@ $bu = $ARGV[2];
 
 $bu = "" if (($bu eq "0") || ($bu eq "1"));
 
+$symbolprefix = $ARGV[9];
+
+$symbolsuffix = $ARGV[10];
+
 if ($ARGV[0] eq "osx"){
 
     @underscore_objs = (@underscore_objs, @misc_common_objs);
     @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
 
     foreach $objs (@underscore_objs) {
-	print "_", $objs, $bu, "\n";
+	print "_", $symbolprefix, $objs, $bu, $symbolsuffix, "\n";
     }
 
     foreach $objs (@need_2underscore_objs) {
-	print "_", $objs, $bu, $bu, "\n";
+	print "_", $symbolprefix, $objs, $bu, $bu, $symbolsuffix, "\n";
     }
 
 #    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
-	    print "_", $objs, "\n";
+	    print "_", $symbolprefix, $objs, $symbolsuffix, "\n";
 	}
 #    }
     exit(0);
@@ -2811,16 +2815,58 @@ if ($ARGV[0] eq "aix"){
     @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
 
     foreach $objs (@underscore_objs) {
-	print $objs, $bu, "\n";
+	print $symbolprefix, $objs, $bu, $symbolsuffix, "\n";
     }
 
     foreach $objs (@need_2underscore_objs) {
-	print $objs, $bu, $bu, "\n";
+	print $symbolprefix, $objs, $bu, $bu, $symbolsuffix, "\n";
     }
 
 #    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
-	    print $objs, "\n";
+	    print $symbolprefix, $objs, $symbolsuffix, "\n";
+	}
+#    }
+    exit(0);
+}
+
+if ($ARGV[0] eq "objcopy"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
+
+    foreach $objs (@underscore_objs) {
+	print $objs, $bu, " ", $symbolprefix, $objs, $bu, $symbolsuffix, "\n";
+    }
+
+    foreach $objs (@need_2underscore_objs) {
+	print $objs, $bu, $bu, " ", $symbolprefix, $objs, $bu, $bu, $symbolsuffix, "\n";
+    }
+
+#    if ($ARGV[4] == 0) {
+	foreach $objs (@no_underscore_objs) {
+	    print $objs, " ", $symbolprefix, $objs, $symbolsuffix, "\n";
+	}
+#    }
+    exit(0);
+}
+
+if ($ARGV[0] eq "objconv"){
+
+    @underscore_objs = (@underscore_objs, @misc_common_objs);
+    @no_underscore_objs = (@no_underscore_objs, @misc_common_objs);
+
+    foreach $objs (@underscore_objs) {
+	print "-nr:_", $objs, $bu, ":_", $symbolprefix, $objs, $bu, $symbolsuffix, "\n";
+    }
+
+    foreach $objs (@need_2underscore_objs) {
+	print "-nr:_", $objs, $bu, $bu, ":_", $symbolprefix, $objs, $bu, $bu, $symbolsuffix, "\n";
+    }
+
+#    if ($ARGV[4] == 0) {
+	foreach $objs (@no_underscore_objs) {
+	    print "-nr:_", $objs, ":_", $symbolprefix, $objs, $symbolsuffix, "\n";
 	}
 #    }
     exit(0);
@@ -2835,22 +2881,22 @@ if ($ARGV[0] eq "win2k"){
     foreach $objs (@underscore_objs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t$objs=$objs","_  \@", $count, "\n";
+	print "\t",$symbolprefix, $objs, $symbolsuffix, "=$objs","_  \@", $count, "\n";
 	$count ++;
-	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+	print "\t",$symbolprefix, $objs, "_", $symbolsuffix, "=$objs","_  \@", $count, "\n";
 	$count ++;
-	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	print "\t",$symbolprefix, $uppercase, $symbolsuffix, "=$objs", "_  \@", $count, "\n";
 	$count ++;
     }
 
     foreach $objs (@need_2underscore_objs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t$objs=$objs","__  \@", $count, "\n";
+	print "\t",$symbolprefix, $objs, $symbolsuffix, "=$objs","__  \@", $count, "\n";
 	$count ++;
-	print "\t",$objs, "__=$objs","__  \@", $count, "\n";
+	print "\t",$symbolprefix, $objs, "__", $symbolsuffix, "=$objs","__  \@", $count, "\n";
 	$count ++;
-	print "\t$uppercase=$objs", "__  \@", $count, "\n";
+	print "\t",$symbolprefix, $uppercase, $symbolsuffix, "=$objs", "__  \@", $count, "\n";
 	$count ++;
     }
 
@@ -2859,15 +2905,15 @@ if ($ARGV[0] eq "win2k"){
 
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+	print "\t",$symbolprefix, $objs, "_", $symbolsuffix, "=$objs","_  \@", $count, "\n";
 	$count ++;
-	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	print "\t",$symbolprefix, $uppercase, $symbolsuffix, "=$objs", "_  \@", $count, "\n";
 	$count ++;
     }
 
 
     foreach $objs (@no_underscore_objs) {
-	print "\t",$objs,"=$objs","  \@", $count, "\n";
+	print "\t",$symbolprefix,$objs,$symbolsuffix,"=$objs","  \@", $count, "\n";
 	$count ++;
     }
 
@@ -2880,11 +2926,11 @@ if ($ARGV[0] eq "win2khpl"){
     foreach $objs (@hplobjs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
-   	print "\t$objs=$objs","_  \@", $count, "\n";
+   	print "\t",$symbolprefix, $objs, $symbolsuffix, "=$objs","_  \@", $count, "\n";
 	$count ++;
-   	print "\t",$objs, "_=$objs","_  \@", $count, "\n";
+   	print "\t",$symbolprefix, $objs, "_", $symbolsuffix, "=$objs","_  \@", $count, "\n";
 	$count ++;
-	print "\t$uppercase=$objs", "_  \@", $count, "\n";
+	print "\t",$symbolprefix, $uppercase, $symbolsuffix, "=$objs", "_  \@", $count, "\n";
 	$count ++;
     }
 
@@ -2905,24 +2951,24 @@ if ($ARGV[0] eq "microsoft"){
     foreach $objs (@underscore_objs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
-   	print "\t$objs = $objs","_\n";
+   	print "\t",$symbolprefix, $objs, $symbolsuffix, " = $objs","_\n";
 	$count ++;
-   	print "\t$objs\_ = $objs","_\n";
+   	print "\t",$symbolprefix, $objs, "\_", $symbolsuffix, " = $objs","_\n";
 	$count ++;
-   	print "\t$uppercase = $objs","_\n";
+   	print "\t",$symbolprefix, $uppercase, $symbolsuffix, " = $objs","_\n";
 	$count ++;
-   	print "\t$uppercase\_ = $objs","_\n";
+   	print "\t",$symbolprefix, $uppercase, "\_", $symbolsuffix, " = $objs","_\n";
 	$count ++;
     }
 
     foreach $objs (@need_2underscore_objs) {
 	$uppercase = $objs;
 	$uppercase =~ tr/[a-z]/[A-Z]/;
-	print "\t$objs=$objs","__  \@", $count, "\n";
+	print "\t",$symbolprefix, $objs, $symbolsuffix, "=$objs","__  \@", $count, "\n";
 	$count ++;
-	print "\t",$objs, "__=$objs","__  \@", $count, "\n";
+	print "\t",$symbolprefix, $objs, "__", $symbolsuffix, "=$objs","__  \@", $count, "\n";
 	$count ++;
-	print "\t$uppercase=$objs", "__  \@", $count, "\n";
+	print "\t",$symbolprefix, $uppercase, $symbolsuffix, "=$objs", "__  \@", $count, "\n";
 	$count ++;
     }
 
@@ -2936,16 +2982,16 @@ if ($ARGV[0] eq "linktest"){
 
     print "int main(void){\n";
     foreach $objs (@underscore_objs) {
-	print $objs, $bu, "();\n" if $objs ne "xerbla";
+	print $symbolprefix, $objs, $bu, $symbolsuffix, "();\n" if $objs ne "xerbla";
     }
 
     foreach $objs (@need_2underscore_objs) {
-	print $objs, $bu, $bu, "();\n";
+	print $symbolprefix, $objs, $bu, $bu, $symbolsuffix, "();\n";
     }
 
 #    if ($ARGV[4] == 0) {
 	foreach $objs (@no_underscore_objs) {
-	print $objs, "();\n";
+	print $symbolprefix, $objs, $symbolsuffix, "();\n";
 	}
 #    }
 

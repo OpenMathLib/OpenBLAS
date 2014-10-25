@@ -186,6 +186,8 @@ LD	= $(CROSS_SUFFIX)ld
 RANLIB	= $(CROSS_SUFFIX)ranlib
 NM	= $(CROSS_SUFFIX)nm
 DLLWRAP = $(CROSS_SUFFIX)dllwrap
+OBJCOPY = $(CROSS_SUFFIX)objcopy
+OBJCONV = $(CROSS_SUFFIX)objconv
 
 #
 #  OS dependent settings
@@ -843,6 +845,14 @@ ifndef LIBNAMESUFFIX
 LIBPREFIX = libopenblas
 else
 LIBPREFIX = libopenblas_$(LIBNAMESUFFIX)
+endif
+
+ifndef SYMBOLPREFIX
+SYMBOLPREFIX =
+endif
+
+ifndef SYMBOLSUFFIX
+SYMBOLSUFFIX =
 endif
 
 KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)

@@ -88,12 +88,18 @@ dll  : ../$(LIBDLLNAME)
 	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive $(FEXTRALIB) $(EXTRALIB)
 
 libopenblas.def : gensymbol
-	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
+	perl ./gensymbol win2k    $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > $(@F)
 
 libgoto_hpl.def : gensymbol
-	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
+	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > $(@F)
 
+ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
+else
+../$(LIBNAME).renamed : ../$(LIBNAME) objconv.def
+	$(OBJCONV) @objconv.def ../$(LIBNAME) ../$(LIBNAME).renamed
+$(LIBDYNNAME) : ../$(LIBNAME).renamed osx.def
+endif
 	$(FC) $(FFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 
 dllinit.$(SUFFIX) : dllinit.c
@@ -103,16 +109,22 @@ ifeq ($(OSNAME), Linux)
 
 so : ../$(LIBSONAME)
 
+ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
 ../$(LIBSONAME) : ../$(LIBNAME) linktest.c
+else
+../$(LIBNAME).renamed : ../$(LIBNAME) objcopy.def
+	$(OBJCOPY) --redefine-syms objcopy.def ../$(LIBNAME) ../$(LIBNAME).renamed
+../$(LIBSONAME) : ../$(LIBNAME).renamed linktest.c
+endif
 ifneq ($(C_COMPILER), LSB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
-	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
+	-Wl,--whole-archive $< -Wl,--no-whole-archive \
 	-Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 else
 #for LSB
 	env LSBCC_SHAREDLIBS=gfortran $(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
-	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
+	-Wl,--whole-archive $< -Wl,--no-whole-archive \
 	-Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
 	$(FC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 endif
@@ -125,9 +137,15 @@ ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
 
 so : ../$(LIBSONAME)
 
+ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
 ../$(LIBSONAME) : ../$(LIBNAME) linktest.c
+else
+../$(LIBNAME).renamed : ../$(LIBNAME) objcopy.def
+	$(OBJCOPY) --redefine-syms objcopy.def ../$(LIBNAME) ../$(LIBNAME).renamed
+../$(LIBSONAME) : ../$(LIBNAME).renamed linktest.c
+endif
 	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
-	-Wl,--whole-archive ../$(LIBNAME) -Wl,--no-whole-archive \
+	-Wl,--whole-archive $< -Wl,--no-whole-archive \
 	$(FEXTRALIB) $(EXTRALIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 	rm -f linktest
@@ -178,17 +196,23 @@ static : ../$(LIBNAME)
 	rm -f goto.$(SUFFIX)
 
 osx.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
+	perl ./gensymbol osx $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > $(@F)
 
 aix.def : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > $(@F)
+	perl ./gensymbol aix $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > $(@F)
+
+objcopy.def : gensymbol ../Makefile.system ../getarch.c
+	perl ./gensymbol objcopy $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > $(@F)
+
+objconv.def : gensymbol ../Makefile.system ../getarch.c
+	perl ./gensymbol objconv $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS)  $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > $(@F)
 
 test : linktest.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) -lm && echo OK.
 	rm -f linktest
 
 linktest.c : gensymbol ../Makefile.system ../getarch.c
-	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) > linktest.c
+	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > linktest.c
 
 clean ::
 	@rm -f *.def *.dylib __.SYMDEF*
