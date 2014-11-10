@@ -853,11 +853,24 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
   if (get_vendor() == VENDOR_INTEL) {
     cpuid(0x80000000, &cpuid_level, &ebx, &ecx, &edx);
     if (cpuid_level >= 0x80000006) {
-      cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
+      if(L2.size<=0){
+	//If we didn't detect L2 correctly before,
+	cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 
-      L2.size         = BITMASK(ecx, 16, 0xffff);
-      L2.associative  = BITMASK(ecx, 12, 0x0f);
-      L2.linesize     = BITMASK(ecx,  0, 0xff);
+	L2.size         = BITMASK(ecx, 16, 0xffff);
+	L2.associative  = BITMASK(ecx, 12, 0x0f);
+
+	switch (L2.associative){
+	case 0x06:
+	  L2.associative = 8;
+	  break;
+	case 0x08:
+	  L2.associative = 16;
+	  break;
+	}
+
+	L2.linesize     = BITMASK(ecx,  0, 0xff);
+      }
     }
   }
 
@@ -916,10 +929,22 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
     if (L2ITB.associative == 0xff) L2ITB.associative = 0;
     L2ITB.linesize    = BITMASK(ebx,  0, 0xff);
 
-    L2.size        = BITMASK(ecx, 16, 0xffff);
-    L2.associative = BITMASK(ecx, 12, 0xf);
-    if (L2.associative == 0xff) L2.associative = 0;
-    L2.linesize    = BITMASK(ecx,  0, 0xff);
+    if(L2.size <= 0){
+      //If we didn't detect L2 correctly before,
+      L2.size        = BITMASK(ecx, 16, 0xffff);
+      L2.associative = BITMASK(ecx, 12, 0xf);
+      switch (L2.associative){
+      case 0x06:
+	L2.associative = 8;
+	break;
+      case 0x08:
+	L2.associative = 16;
+	break;
+      }
+
+      if (L2.associative == 0xff) L2.associative = 0;
+      L2.linesize    = BITMASK(ecx,  0, 0xff);
+    }
 
     L3.size        = BITMASK(edx, 18, 0x3fff) * 512;
     L3.associative = BITMASK(edx, 12, 0xf);
