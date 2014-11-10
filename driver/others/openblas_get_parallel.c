@@ -40,6 +40,8 @@ static int parallel = 1;
 static int parallel = 0;
 #endif
 
+
+#ifdef NEEDBUNDERSCORE
 int CNAME() {
   return parallel;
 }
@@ -48,5 +50,10 @@ int NAME() {
   return parallel;
 }
 
-
+#else
+//The CNAME and NAME are the same.
+int NAME() {
+  return parallel;
+}
+#endif
 
