@@ -3,6 +3,7 @@
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
+$hostarch = "x86_64" if ($hostarch eq "amd64");
 
 $binary = $ENV{"BINARY"};
 
