@@ -726,8 +726,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(TRMMKERNEL)
 
-	vaddps 	        (CO1), %xmm4,%xmm4
-	vaddps  1 * SIZE(CO1), %xmm5,%xmm5
+	vaddss 	        (CO1), %xmm4,%xmm4
+	vaddss  1 * SIZE(CO1), %xmm5,%xmm5
 
 #endif
 
@@ -756,7 +756,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(TRMMKERNEL)
 
-	vaddps 	        (CO1), %xmm4,%xmm4
+	vaddss 	        (CO1), %xmm4,%xmm4
 
 #endif
 
