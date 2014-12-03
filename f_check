@@ -16,6 +16,7 @@ $config   = shift(@ARGV);
 $nofortran = 0;
 
 $compiler = join(" ", @ARGV);
+$compiler_bin = shift(@ARGV);
 
 # f77 is too ambiguous
 $compiler = "" if $compiler eq "f77";
@@ -53,7 +54,7 @@ if ($compiler eq "") {
 
 } else {
 
-    $data = `which $compiler > /dev/null 2> /dev/null`;
+    $data = `which $compiler_bin > /dev/null 2> /dev/null`;
     $vendor = "";
 
     if (!$?) {
@@ -204,7 +205,7 @@ if ($compiler eq "") {
     }
 }
 
-$data = `which $compiler > /dev/null 2> /dev/null`;
+$data = `which $compiler_bin > /dev/null 2> /dev/null`;
 
 if (!$?) {
 
