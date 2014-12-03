@@ -28,6 +28,10 @@ ifeq ($(TARGET), LOONGSON3B)
 USE_TRMM = 1
 endif
 
+ifeq ($(TARGET), GENERIC)
+USE_TRMM = 1
+endif
+
 
 
 SKERNELOBJS	+= \

@@ -13,7 +13,7 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the ISCAS nor the names of its contributors may
+   3. Neither the name of the OpenBLAS project nor the names of its contributors may
       be used to endorse or promote products derived from this software
       without specific prior written permission.
 
@@ -40,6 +40,8 @@ static int parallel = 1;
 static int parallel = 0;
 #endif
 
+
+#ifdef NEEDBUNDERSCORE
 int CNAME() {
   return parallel;
 }
@@ -48,5 +50,10 @@ int NAME() {
   return parallel;
 }
 
-
+#else
+//The CNAME and NAME are the same.
+int NAME() {
+  return parallel;
+}
+#endif
 

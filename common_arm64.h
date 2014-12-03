@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011, Lab of Parallel Software and Computational Science,ICSAS
+Copyright (c) 2011-2014, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,10 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the ISCAS nor the names of its contributors may
-      be used to endorse or promote products derived from this software
-      without specific prior written permission.
+   3. Neither the name of the OpenBLAS project nor the names of 
+      its contributors may be used to endorse or promote products 
+      derived from this software without specific prior written 
+      permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -27,7 +28,6 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 **********************************************************************************/
 
 /*********************************************************************/
@@ -119,9 +119,9 @@ static inline int blas_quickdivide(blasint x, blasint y){
 }
 
 #if defined(DOUBLE)
-#define GET_IMAGE(res)  __asm__ __volatile__("vstr.f64 d1, %0" : "=m"(res) : : "memory")
+#define GET_IMAGE(res)  __asm__ __volatile__("str d1, %0" : "=m"(res) : : "memory")
 #else
-#define GET_IMAGE(res)  __asm__ __volatile__("vstr.f32 s1, %0" : "=m"(res) : : "memory")
+#define GET_IMAGE(res)  __asm__ __volatile__("str s1, %0" : "=m"(res) : : "memory")
 #endif
 
 #define GET_IMAGE_CANCEL
@@ -138,7 +138,6 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
 #define PROLOGUE \
-	.arm		 ;\
 	.global	REALNAME ;\
 	.func	REALNAME  ;\
 REALNAME:

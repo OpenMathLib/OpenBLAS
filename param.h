@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011,2012 Lab of Parallel Software and Computational Science,ISCAS
+Copyright (c) 2011-2014, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,10 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the ISCAS nor the names of its contributors may
-      be used to endorse or promote products derived from this software
-      without specific prior written permission.
+   3. Neither the name of the OpenBLAS project nor the names of 
+      its contributors may be used to endorse or promote products 
+      derived from this software without specific prior written 
+      permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -2039,8 +2040,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN 0x03fffUL
 
-#define SGEMM_DEFAULT_UNROLL_M  2
-#define SGEMM_DEFAULT_UNROLL_N  2
+#define SGEMM_DEFAULT_UNROLL_M  4
+#define SGEMM_DEFAULT_UNROLL_N  4
 
 #define DGEMM_DEFAULT_UNROLL_M  2
 #define DGEMM_DEFAULT_UNROLL_N  2
@@ -2122,25 +2123,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN 0x0ffffUL
 
-#define SGEMM_DEFAULT_UNROLL_N 4
-#define DGEMM_DEFAULT_UNROLL_N 4
+#define SGEMM_DEFAULT_UNROLL_N 2
+#define DGEMM_DEFAULT_UNROLL_N 2
 #define QGEMM_DEFAULT_UNROLL_N 2
 #define CGEMM_DEFAULT_UNROLL_N 2
 #define ZGEMM_DEFAULT_UNROLL_N 2
 #define XGEMM_DEFAULT_UNROLL_N 1
 
 #ifdef ARCH_X86
-#define SGEMM_DEFAULT_UNROLL_M 4
+#define SGEMM_DEFAULT_UNROLL_M 2
 #define DGEMM_DEFAULT_UNROLL_M 2
 #define QGEMM_DEFAULT_UNROLL_M 2
 #define CGEMM_DEFAULT_UNROLL_M 2
-#define ZGEMM_DEFAULT_UNROLL_M 1
+#define ZGEMM_DEFAULT_UNROLL_M 2
 #define XGEMM_DEFAULT_UNROLL_M 1
 #else
-#define SGEMM_DEFAULT_UNROLL_M 8
-#define DGEMM_DEFAULT_UNROLL_M 4
+#define SGEMM_DEFAULT_UNROLL_M 2
+#define DGEMM_DEFAULT_UNROLL_M 2
 #define QGEMM_DEFAULT_UNROLL_M 2
-#define CGEMM_DEFAULT_UNROLL_M 4
+#define CGEMM_DEFAULT_UNROLL_M 2
 #define ZGEMM_DEFAULT_UNROLL_M 2
 #define XGEMM_DEFAULT_UNROLL_M 1
 #endif

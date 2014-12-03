@@ -1,5 +1,26 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.13
+3-Dec-2014
+common:
+	* Add SYMBOLPREFIX and SYMBOLSUFFIX makefile options
+	  for adding a prefix or suffix to all exported symbol names
+	  in the shared library.(#459, Thanks Tony Kelman)
+	* Provide OpenBLASConfig.cmake at installation.
+	* Fix Fortran compiler detection on FreeBSD.
+	  (#470, Thanks Mike Nolta)
+
+
+x86/x86-64:
+	* Add generic kernel files for x86-64. make TARGET=GENERIC
+	* Fix a bug of sgemm kernel on Intel Sandy Bridge.
+	* Fix c_check bug on some amd64 systems. (#471, Thanks Mike Nolta)
+
+ARM:
+	* Support APM's X-Gene 1 AArch64 processors.
+	  Optimize trmm and sgemm. (#465, Thanks Dave Nuechterlein)
+
+====================================================================
 Version 0.2.12
 13-Oct-2014
 common:
