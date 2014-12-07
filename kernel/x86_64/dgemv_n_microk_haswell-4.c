@@ -50,7 +50,7 @@ static void dgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vbroadcastsd    (%9), %%ymm6 	 \n\t"	// alpha 
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L8LABEL%=                     \n\t"
+        "jz             2f                     \n\t"
 
 	"vmovupd	(%3,%0,8), %%ymm7	       \n\t"	// 4 * y
 	"vxorpd		%%ymm4 , %%ymm4, %%ymm4        \n\t"
@@ -77,14 +77,14 @@ static void dgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
         "addq		$4 , %0	  	 	       \n\t"
 	"subq	        $4 , %1			       \n\t"		
 
-        ".L8LABEL%=:                                   \n\t"
+        "2:                                   \n\t"
 
         "cmpq           $0, %1                         \n\t"
-        "je             .L16END%=                      \n\t"
+        "je             3f                      \n\t"
 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 
 	"vxorpd		%%ymm4 , %%ymm4, %%ymm4        \n\t"
 	"vxorpd		%%ymm5 , %%ymm5, %%ymm5        \n\t"
@@ -118,9 +118,9 @@ static void dgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"subq	        $8 , %1			      \n\t"		
 	"vmovupd  %%ymm9,-32(%3,%0,8)		      \n\t"	// 4 * y
 
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
-        ".L16END%=:                             \n\t"
+        "3:                             \n\t"
 	"vzeroupper			        \n\t"
 
 	:
@@ -168,7 +168,7 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vbroadcastsd    (%8), %%ymm6 	 \n\t"	// alpha 
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L8LABEL%=                     \n\t"
+        "jz             2f                     \n\t"
 
 	"vxorpd		%%ymm4 , %%ymm4, %%ymm4        \n\t"
 	"vxorpd		%%ymm5 , %%ymm5, %%ymm5        \n\t"
@@ -188,14 +188,14 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
         "addq		$4 , %0	  	 	       \n\t"
 	"subq	        $4 , %1			       \n\t"		
 
-        ".L8LABEL%=:                                   \n\t"
+        "2:                                   \n\t"
 
         "cmpq           $0, %1                         \n\t"
-        "je             .L8END%=                       \n\t"
+        "je             3f                       \n\t"
 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"vxorpd		%%ymm4 , %%ymm4, %%ymm4        \n\t"
 	"vxorpd		%%ymm5 , %%ymm5, %%ymm5        \n\t"
 	"vmovupd	(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
@@ -218,9 +218,9 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$8 , %0	  	 	      \n\t"
 	"subq	        $8 , %1			      \n\t"		
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
-        ".L8END%=:                                    \n\t"
+        "3:                                    \n\t"
 	"vzeroupper			              \n\t"
 
 	:

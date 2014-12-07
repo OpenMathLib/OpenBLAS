@@ -60,7 +60,7 @@ static void dgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"xorpd           %%xmm4 , %%xmm4	 \n\t"
 	"xorpd           %%xmm5 , %%xmm5	 \n\t"
 	"movups             (%3,%0,8), %%xmm7          \n\t" // 2 * y
@@ -142,7 +142,7 @@ static void dgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
         "addq		$4 , %0	  	 	       \n\t"
 	"subq	        $4 , %1			       \n\t"		
-	"jnz		.L01LOOP%=		       \n\t"
+	"jnz		1b		       \n\t"
 
 	:
         : 
@@ -194,7 +194,7 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"shufpd $0,  %%xmm6 , %%xmm6 \n\t"	
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"xorpd           %%xmm4 , %%xmm4	 \n\t"
 	"xorpd           %%xmm5 , %%xmm5	 \n\t"
 	"movups	       (%3,%0,8), %%xmm7	 \n\t"	// 2 * y
@@ -239,7 +239,7 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$4 , %0	  	 	       \n\t"
 	"subq	        $4 , %1			       \n\t"		
-	"jnz		.L01LOOP%=		       \n\t"
+	"jnz		1b		       \n\t"
 
 	:
         : 

@@ -40,7 +40,7 @@ static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"shufpd          $0,  %%xmm0, %%xmm0                \n\t"
 
 	".align 16				            \n\t"
-	".L01LOOP%=:				            \n\t"
+	"1:				            \n\t"
         // "prefetcht0      192(%2,%0,8)                       \n\t"
         // "prefetcht0      192(%3,%0,8)                       \n\t"
 
@@ -70,7 +70,7 @@ static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	"addq		$8 , %0	  	 	             \n\t"
 	"subq	        $8 , %1			             \n\t"		
-	"jnz		.L01LOOP%=		             \n\t"
+	"jnz		1b		             \n\t"
 
 	:
         : 

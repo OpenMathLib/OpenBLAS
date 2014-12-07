@@ -50,7 +50,7 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vbroadcastss    (%9), %%ymm6 	 \n\t"	// alpha 
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L08LABEL%=                    \n\t"
+        "jz             2f                    \n\t"
 
 	"vmovups	(%3,%0,4), %%xmm7	       \n\t"	// 4 * y
 	"vxorps		%%xmm4 , %%xmm4, %%xmm4        \n\t"
@@ -76,10 +76,10 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
         "addq		$4 , %0	  	 	       \n\t"
 	"subq	        $4 , %1			       \n\t"		
 
-        ".L08LABEL%=:                                  \n\t"
+        "2:                                  \n\t"
 
         "testq          $0x08, %1                      \n\t"
-        "jz             .L16LABEL%=                    \n\t"
+        "jz             3f                    \n\t"
 
 	"vmovups	(%3,%0,4), %%ymm7	       \n\t"	// 8 * y
 	"vxorps		%%ymm4 , %%ymm4, %%ymm4        \n\t"
@@ -106,14 +106,14 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
         "addq		$8 , %0	  	 	       \n\t"
 	"subq	        $8 , %1			       \n\t"		
 
-        ".L16LABEL%=:                                  \n\t"
+        "3:                                  \n\t"
 
         "cmpq           $0, %1                         \n\t"
-        "je             .L16END%=                      \n\t"
+        "je             4f                      \n\t"
 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 
 	"vxorps		%%ymm4 , %%ymm4, %%ymm4        \n\t"
 	"vxorps		%%ymm5 , %%ymm5, %%ymm5        \n\t"
@@ -147,9 +147,9 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"subq	        $16, %1			      \n\t"		
 	"vmovups  %%ymm9,-32(%3,%0,4)		      \n\t"	// 8 * y
 
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
-        ".L16END%=:                             \n\t"
+        "4:                             \n\t"
 	"vzeroupper			        \n\t"
 
 	:
@@ -197,7 +197,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vbroadcastss    (%8), %%ymm6 	 \n\t"	// alpha 
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L08LABEL%=                    \n\t"
+        "jz             2f                    \n\t"
 
 	"vxorps		%%ymm4 , %%ymm4, %%ymm4        \n\t"
 	"vxorps		%%ymm5 , %%ymm5, %%ymm5        \n\t"
@@ -217,10 +217,10 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
         "addq		$4 , %0	  	 	       \n\t"
 	"subq	        $4 , %1			       \n\t"		
 
-        ".L08LABEL%=:                                  \n\t"
+        "2:                                  \n\t"
 
         "testq          $0x08, %1                      \n\t"
-        "jz             .L16LABEL%=                    \n\t"
+        "jz             3f                    \n\t"
 
 	"vxorps		%%ymm4 , %%ymm4, %%ymm4        \n\t"
 	"vxorps		%%ymm5 , %%ymm5, %%ymm5        \n\t"
@@ -240,14 +240,14 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
         "addq		$8 , %0	  	 	       \n\t"
 	"subq	        $8 , %1			       \n\t"		
 
-        ".L16LABEL%=:                                  \n\t"
+        "3:                                  \n\t"
 
         "cmpq           $0, %1                         \n\t"
-        "je             .L16END%=                      \n\t"
+        "je             4f                      \n\t"
 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"vxorps		%%ymm4 , %%ymm4, %%ymm4        \n\t"
 	"vxorps		%%ymm5 , %%ymm5, %%ymm5        \n\t"
 	"vmovups	(%3,%0,4), %%ymm8	 \n\t"	// 8 * y
@@ -270,9 +270,9 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$16, %0	  	 	      \n\t"
 	"subq	        $16, %1			      \n\t"		
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
-        ".L16END%=:                             \n\t"
+        "4:                             \n\t"
 	"vzeroupper			 \n\t"
 
 	:

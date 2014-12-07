@@ -40,7 +40,7 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vbroadcastss	       4(%4), %%xmm1		    \n\t"  // imag part of alpha
 
 	".align 16				            \n\t"
-	".L01LOOP%=:				            \n\t"
+	"1:				            \n\t"
 
 	"prefetcht0  768(%2,%0,4)                           \n\t"
 	"vmovups        (%2,%0,4), %%xmm5                   \n\t" // 2 complex values from x
@@ -113,7 +113,7 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	"addq		$16, %0	  	 	             \n\t"
 	"subq	        $8 , %1			             \n\t"		
-	"jnz		.L01LOOP%=		             \n\t"
+	"jnz		1b		             \n\t"
 
 	:
         : 

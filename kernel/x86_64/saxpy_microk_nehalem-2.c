@@ -40,7 +40,7 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"shufps          $0,  %%xmm0, %%xmm0                \n\t"
 
 	".align 16				            \n\t"
-	".L01LOOP%=:				            \n\t"
+	"1:				            \n\t"
         // "prefetcht0      192(%2,%0,4)                       \n\t"
         // "prefetcht0      192(%3,%0,4)                       \n\t"
 
@@ -70,7 +70,7 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	"addq		$16, %0	  	 	             \n\t"
 	"subq	        $16, %1			             \n\t"		
-	"jnz		.L01LOOP%=		             \n\t"
+	"jnz		1b		             \n\t"
 
 	:
         : 

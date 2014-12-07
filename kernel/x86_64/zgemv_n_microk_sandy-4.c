@@ -48,7 +48,7 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
         //"prefetcht0      256(%4,%0,8)                   \n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
@@ -123,7 +123,7 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 	"vzeroupper			 \n\t"
 
 	:
@@ -165,7 +165,7 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vbroadcastsd	24(%2), %%ymm3                  \n\t"  // imag part x1
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
         // "prefetcht0      256(%4,%0,8)                   \n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
@@ -216,7 +216,7 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 	"vzeroupper			 \n\t"
 
 	:
@@ -254,7 +254,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"vbroadcastsd	 8(%2), %%ymm1                  \n\t"  // imag part x0
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
         // "prefetcht0      256(%4,%0,8)                   \n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
@@ -291,7 +291,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 	"vzeroupper			 \n\t"
 
 	:
@@ -356,7 +356,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 	"vbroadcastsd	  (%5), %%ymm1                  \n\t"  // alpha_i
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 	// "prefetcht0      192(%2,%0,8)			\n\t"
 	"vmovups	(%2,%0,8), %%ymm8	        \n\t" // 2 complex values from src
 	"vmovups      32(%2,%0,8), %%ymm9	        \n\t" 
@@ -392,7 +392,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 	"vzeroupper			 \n\t"
 
 	:

@@ -49,10 +49,10 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vbroadcastss	28(%2), %%ymm7                  \n\t"  // imag part x3
 
 	"cmpq		$0 , %1				\n\t"
-	"je		.L01END%=		        \n\t"
+	"je		2f			        \n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 	"prefetcht0      320(%4,%0,4)			\n\t"
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
 	"vmovups      32(%4,%0,4), %%ymm9	        \n\t" // 4 complex values form a0
@@ -115,12 +115,12 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
         "addq		$16, %0	  	 	        \n\t"
 	"subq	        $8 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
-	".L01END%=:				        \n\t"
+	"2:				        \n\t"
 
 	"cmpq		$4, %8				\n\t"
-	"jne		.L02END%=			\n\t"
+	"jne		3f				\n\t"
 
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
 	"vmovups	(%5,%0,4), %%ymm10              \n\t" // 4 complex values form a1
@@ -155,7 +155,7 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
 	"vmovups  %%ymm12,   (%3,%0,4)		        \n\t" // 4 complex values to y	
 
-	".L02END%=:				        \n\t"
+	"3:				        \n\t"
 	"vzeroupper			 \n\t"
 
 	:
@@ -200,10 +200,10 @@ static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vbroadcastss	12(%2), %%ymm3                  \n\t"  // imag part x1
 
 	"cmpq		$0 , %1				\n\t"
-	"je		.L01END%=		        \n\t"
+	"je		2f			        \n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 	"prefetcht0      320(%4,%0,4)			\n\t"
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
 	"vmovups      32(%4,%0,4), %%ymm9	        \n\t" // 4 complex values form a0
@@ -248,12 +248,12 @@ static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
         "addq		$16, %0	  	 	        \n\t"
 	"subq	        $8 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
-	".L01END%=:				        \n\t"
+	"2:				        \n\t"
 
 	"cmpq		$4, %6				\n\t"
-	"jne		.L02END%=			\n\t"
+	"jne		3f				\n\t"
 
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
 	"vmovups	(%5,%0,4), %%ymm10              \n\t" // 4 complex values form a1
@@ -279,7 +279,7 @@ static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
 	"vmovups  %%ymm12,   (%3,%0,4)		        \n\t" // 4 complex values to y	
 
-	".L02END%=:				        \n\t"
+	"3:				        \n\t"
 	"vzeroupper			 \n\t"
 
 	:
@@ -320,10 +320,10 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"vbroadcastss	 4(%2), %%ymm1                  \n\t"  // imag part x0
 
 	"cmpq		$0 , %1				\n\t"
-	"je		.L01END%=		        \n\t"
+	"je		2f			        \n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 	"prefetcht0      320(%4,%0,4)			\n\t"
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
 	"vmovups      32(%4,%0,4), %%ymm9	        \n\t" // 4 complex values form a0
@@ -359,12 +359,12 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"vmovups  %%ymm12,-64(%3,%0,4)		        \n\t" // 4 complex values to y	
 	"vmovups  %%ymm13,-32(%3,%0,4)		        \n\t"	
 
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
-	".L01END%=:				        \n\t"
+	"2:				        \n\t"
 
 	"cmpq		$4, %5				\n\t"
-	"jne		.L02END%=			\n\t"
+	"jne		3f				\n\t"
 
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
 
@@ -386,7 +386,7 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 
 	"vmovups  %%ymm12,   (%3,%0,4)		        \n\t" // 4 complex values to y	
 
-	".L02END%=:				        \n\t"
+	"3:				        \n\t"
 	"vzeroupper			 \n\t"
 
 	:
@@ -452,10 +452,10 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 	"vbroadcastss	  (%5), %%ymm1                  \n\t"  // alpha_i
 
 	"cmpq		$0 , %1				\n\t"
-	"je		.L01END%=		        \n\t"
+	"je		2f			        \n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 	"vmovups	(%2,%0,4), %%ymm8	        \n\t" // 4 complex values from src
 	"vmovups      32(%2,%0,4), %%ymm9	        \n\t" 
 
@@ -489,12 +489,12 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 	"vmovups  %%ymm12,-64(%3,%0,4)		        \n\t" // 4 complex values to y	
 	"vmovups  %%ymm13,-32(%3,%0,4)		        \n\t"	
 
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
-	".L01END%=:				        \n\t"
+	"2:				        \n\t"
 
 	"cmpq		$4, %6				\n\t"
-	"jne		.L02END%=			\n\t"
+	"jne		3f				\n\t"
 
 	"vmovups	(%2,%0,4), %%ymm8	        \n\t" // 4 complex values src
 
@@ -516,7 +516,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 
 	"vmovups  %%ymm12,   (%3,%0,4)		        \n\t" // 4 complex values to y	
 
-	".L02END%=:				        \n\t"
+	"3:				        \n\t"
 	"vzeroupper			 \n\t"
 
 	:
