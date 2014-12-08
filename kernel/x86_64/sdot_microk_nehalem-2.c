@@ -42,7 +42,7 @@ static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	"xorps		%%xmm7, %%xmm7	             \n\t"
 
 	".align 16				            \n\t"
-	".L01LOOP%=:				            \n\t"
+	"1:				            \n\t"
         "movups                  (%2,%0,4), %%xmm12         \n\t"  // 4 * x
         "movups                  (%3,%0,4), %%xmm8          \n\t"  // 4 * x
         "movups                16(%2,%0,4), %%xmm13         \n\t"  // 4 * x
@@ -64,7 +64,7 @@ static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 
 	"addq		$16, %0	  	 	             \n\t"
 	"subq	        $16, %1			             \n\t"		
-	"jnz		.L01LOOP%=		             \n\t"
+	"jnz		1b		             \n\t"
 
 	"addps        %%xmm5, %%xmm4	\n\t"
 	"addps        %%xmm7, %%xmm6	\n\t"

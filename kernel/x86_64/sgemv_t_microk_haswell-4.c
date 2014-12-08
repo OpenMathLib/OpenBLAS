@@ -42,7 +42,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vxorps		%%ymm7 , %%ymm7, %%ymm7  \n\t"
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L08LABEL%=                    \n\t"
+        "jz             2f                    \n\t"
 
 	"vmovups	(%2,%0,4), %%xmm12             \n\t"	// 4 * x
 
@@ -54,10 +54,10 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "addq		$4 , %0	  	 	      \n\t"
 	"subq	        $4 , %1			      \n\t"		
 
-        ".L08LABEL%=:                                  \n\t"
+        "2:                                  \n\t"
 
         "testq          $0x08, %1                      \n\t"
-        "jz             .L16LABEL%=                    \n\t"
+        "jz             3f                    \n\t"
 
 	"vmovups	(%2,%0,4), %%ymm12             \n\t"	// 8 * x
 
@@ -69,14 +69,14 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "addq		$8 , %0	  	 	      \n\t"
 	"subq	        $8 , %1			      \n\t"		
 
-        ".L16LABEL%=:                                  \n\t"
+        "3:                                  \n\t"
 
         "cmpq           $0, %1                         \n\t"
-        "je             .L16END%=                      \n\t"
+        "je             4f                      \n\t"
 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"prefetcht0	 384(%2,%0,4)		 \n\t"
 	"vmovups	(%2,%0,4), %%ymm12       \n\t"	// 8 * x
 	"vmovups      32(%2,%0,4), %%ymm13       \n\t"	// 8 * x
@@ -96,9 +96,9 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 
         "addq		$16, %0	  	 	      \n\t"
 	"subq	        $16, %1			      \n\t"		
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
-        ".L16END%=:                                   \n\t"
+        "4:                                   \n\t"
 
 	"vextractf128   $1 , %%ymm4, %%xmm12	      \n\t"
 	"vextractf128   $1 , %%ymm5, %%xmm13	      \n\t"

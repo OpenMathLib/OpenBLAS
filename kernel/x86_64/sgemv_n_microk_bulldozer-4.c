@@ -49,7 +49,7 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vbroadcastss    (%9), %%xmm8 	 \n\t"	// alpha 
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L08LABEL%=                    \n\t"
+        "jz             2f                    \n\t"
 
 	"vxorps		%%xmm4, %%xmm4 , %%xmm4  \n\t"
 	"vxorps		%%xmm5, %%xmm5 , %%xmm5  \n\t"
@@ -71,10 +71,10 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"subq	        $4 , %1			       \n\t"		
 	"vmovups  %%xmm6, -16(%3,%0,4)		       \n\t"	// 4 * y
 
-	".L08LABEL%=:                                  \n\t"
+	"2:                                  \n\t"
 
         "testq          $0x08, %1                      \n\t"
-        "jz             .L16LABEL%=                    \n\t"
+        "jz             3f                    \n\t"
 
 	"vxorps		%%xmm4, %%xmm4 , %%xmm4  \n\t"
 	"vxorps		%%xmm5, %%xmm5 , %%xmm5  \n\t"
@@ -107,13 +107,13 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"subq	        $8 , %1			      \n\t"		
 
 
-        ".L16LABEL%=:                                  \n\t"
+        "3:                                  \n\t"
 
         "cmpq           $0, %1                         \n\t"
-        "je             .L16END%=                      \n\t"
+        "je             4f                      \n\t"
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 
 	"vxorps		%%xmm4, %%xmm4 , %%xmm4  \n\t"
 	"vxorps		%%xmm5, %%xmm5 , %%xmm5  \n\t"
@@ -178,9 +178,9 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vmovups  %%xmm7,-16(%3,%0,4)		      \n\t"	// 4 * y
 
 	"subq	        $16, %1			      \n\t"		
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
-	".L16END%=:                             \n\t"
+	"4:                             \n\t"
 
 	:
         : 
@@ -227,7 +227,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vbroadcastss    (%8), %%xmm8 	 \n\t"	// alpha 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"vxorps		%%xmm4, %%xmm4 , %%xmm4  \n\t"
 	"vxorps		%%xmm5, %%xmm5 , %%xmm5  \n\t"
 
@@ -243,7 +243,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$4 , %0	  	 	      \n\t"
 	"subq	        $4 , %1			      \n\t"		
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      	\n\t"
 
 	:
         : 

@@ -47,7 +47,7 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vxorpd		%%xmm15, %%xmm15, %%xmm15	\n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
 	"vmovddup	   (%2,%0,8), %%xmm0            \n\t"  // real value from x0
 	"vmovddup	  8(%2,%0,8), %%xmm1            \n\t"  // imag value from x0
@@ -123,7 +123,7 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
 	"vmovddup               (%8)  , %%xmm0                \n\t"  // value from alpha
 	"vmovddup	       8(%8)  , %%xmm1                \n\t"  // value from alpha
@@ -236,7 +236,7 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vxorpd		%%xmm11, %%xmm11, %%xmm11	\n\t" // temp
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
 	"vmovddup	   (%2,%0,8), %%xmm0            \n\t"  // real value from x0
 	"vmovddup	  8(%2,%0,8), %%xmm1            \n\t"  // imag value from x0
@@ -286,7 +286,7 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
 	"vmovddup               (%6)  , %%xmm0                \n\t"  // value from alpha
 	"vmovddup	       8(%6)  , %%xmm1                \n\t"  // value from alpha
@@ -369,7 +369,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *
 	"vxorpd		%%xmm9 , %%xmm9 , %%xmm9 	\n\t" // temp
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
 	"vmovddup	   (%2,%0,8), %%xmm0            \n\t"  // real value from x0
 	"vmovddup	  8(%2,%0,8), %%xmm1            \n\t"  // imag value from x0
@@ -404,7 +404,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *
 	"vfmaddpd   %%xmm8 ,   %%xmm5 , %%xmm2, %%xmm8       \n\t" // ar0*xr0,al0*xr0 
 	"vfmaddpd   %%xmm9 ,   %%xmm5 , %%xmm3, %%xmm9       \n\t" // ar0*xl0,al0*xl0 
 
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
 	"vmovddup               (%5)  , %%xmm0                \n\t"  // value from alpha
 	"vmovddup	       8(%5)  , %%xmm1                \n\t"  // value from alpha

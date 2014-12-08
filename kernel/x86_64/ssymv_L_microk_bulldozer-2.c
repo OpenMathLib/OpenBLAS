@@ -44,7 +44,7 @@ static void ssymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vbroadcastss 12(%8),    %%xmm7	             \n\t"	// temp1[3]
 
 	".align 16				     \n\t"
-	".L01LOOP%=:				     \n\t"
+	"1:				     \n\t"
 
 	"vmovups	(%4,%0,4), %%xmm12	           \n\t"  // 2 * a
 	"vmovups	(%2,%0,4), %%xmm8	           \n\t"  // 2 * x
@@ -71,7 +71,7 @@ static void ssymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vmovups	%%xmm9 ,  -16(%3,%0,4)		   \n\t"
 
 	"cmpq		%0 , %1			      \n\t"
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
 	"vmovss		  (%9), %%xmm4		      \n\t"
 	"vmovss		 4(%9), %%xmm5		      \n\t"

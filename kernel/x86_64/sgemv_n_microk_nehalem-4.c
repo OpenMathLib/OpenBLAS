@@ -60,7 +60,7 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"xorps           %%xmm4 , %%xmm4	 \n\t"
 	"xorps           %%xmm5 , %%xmm5	 \n\t"
 	"movups             (%3,%0,4), %%xmm7          \n\t" // 4 * y
@@ -103,7 +103,7 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 	"movups  %%xmm7 , -16(%3,%0,4)		       \n\t"	// 4 * y
 
-	"jnz		.L01LOOP%=		       \n\t"
+	"jnz		1b		       \n\t"
 
 	:
         : 
@@ -155,7 +155,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"shufps $0,  %%xmm6 , %%xmm6 \n\t"	
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 	"xorps           %%xmm4 , %%xmm4	 \n\t"
 	"movups	       (%3,%0,4), %%xmm7	 \n\t"	// 4 * y
 
@@ -178,7 +178,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"addps		%%xmm7 , %%xmm11 	       \n\t"
 	"movups  %%xmm11, -16(%3,%0,4)		       \n\t"	// 4 * y
 
-	"jnz		.L01LOOP%=		       \n\t"
+	"jnz		1b		       \n\t"
 
 	:
         : 

@@ -39,7 +39,7 @@ static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vmovddup		(%4), %%xmm0		    \n\t"  // alpha	
 
 	".align 16				            \n\t"
-	".L01LOOP%=:				            \n\t"
+	"1:				            \n\t"
 
         "prefetcht0      768(%3,%0,8)                       \n\t"
         "vmovups                  (%2,%0,8), %%xmm12         \n\t"  // 2 * x
@@ -61,7 +61,7 @@ static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	"addq		$8 , %0	  	 	             \n\t"
 	"subq	        $8 , %1			             \n\t"		
-	"jnz		.L01LOOP%=		             \n\t"
+	"jnz		1b		             \n\t"
 
 	:
         : 

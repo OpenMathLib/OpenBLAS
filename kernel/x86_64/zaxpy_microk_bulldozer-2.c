@@ -40,7 +40,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vmovddup	       8(%4), %%xmm1		    \n\t"  // imag part of alpha
 
 	".align 16				            \n\t"
-	".L01LOOP%=:				            \n\t"
+	"1:				            \n\t"
 
 	"prefetcht0  768(%2,%0,8)                           \n\t"
 	"vmovups        (%2,%0,8), %%xmm5                   \n\t" // 1 complex values from x
@@ -113,7 +113,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	"addq		$8 , %0	  	 	             \n\t"
 	"subq	        $4 , %1			             \n\t"		
-	"jnz		.L01LOOP%=		             \n\t"
+	"jnz		1b		             \n\t"
 
 	:
         : 
