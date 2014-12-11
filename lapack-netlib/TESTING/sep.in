@@ -1,6 +1,6 @@
 SEP:  Data file for testing Symmetric Eigenvalue Problem routines
-6                                 Number of values of N
-0 1 2 3 5 20                      Values of N (dimension)
+8                                 Number of values of N
+0 1 2 3 5 19 20 21                Values of N (dimension)
 5                                 Number of values of NB
 1 3  3  3 10                      Values of NB (blocksize)
 2 2  2  2  2                      Values of NBMIN (minimum blocksize)
