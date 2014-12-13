@@ -46,11 +46,11 @@ ifndef NO_CBLAS
 endif
 
 ifndef NO_LAPACKE
-	@echo Copying LAPACKE header files to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
-	@-install -pDm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h
-	@-install -pDm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_config.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_config.h
-	@-install -pDm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling_with_flags.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_mangling.h
-	@-install -pDm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_utils.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_utils.h
+	@echo Copying LAPACKE header files to $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
+	@-install -pm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h
+	@-install -pm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_config.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_config.h
+	@-install -pm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling_with_flags.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_mangling.h
+	@-install -pm644 $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_utils.h $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_utils.h
 endif
 
 #for install static library
