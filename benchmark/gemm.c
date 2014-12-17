@@ -124,8 +124,9 @@ int MAIN__(int argc, char *argv[]){
   FLOAT alpha[] = {1.0, 1.0};
   FLOAT beta [] = {1.0, 1.0};
   char trans='N';
-  blasint m, i, j;
+  blasint m, n, i, j;
   int loops = 1;
+  int has_param_n=0;
   int l;
   char *p;
 
@@ -162,6 +163,11 @@ int MAIN__(int argc, char *argv[]){
   if ( p != NULL )
 	loops = atoi(p);
 
+  if ((p = getenv("OPENBLAS_PARAM_N"))) {
+          n = atoi(p);
+	  has_param_n=1;	  
+  }
+
 
 #ifdef linux
   srandom(getpid());
@@ -174,7 +180,14 @@ int MAIN__(int argc, char *argv[]){
 
     timeg=0;
 
-    fprintf(stderr, " %6d : ", (int)m);
+    if ( has_param_n == 1 && n <= m )
+    	n=n;
+    else
+    	n=m;
+
+
+
+    fprintf(stderr, " %6dx%d : ", (int)m, (int)n);
 
     for (l=0; l<loops; l++)
     {
@@ -189,7 +202,7 @@ int MAIN__(int argc, char *argv[]){
 
     	gettimeofday( &start, (struct timezone *)0);
 
-    	GEMM (&trans, &trans, &m, &m, &m, alpha, a, &m, b, &m, beta, c, &m );
+    	GEMM (&trans, &trans, &m, &n, &m, alpha, a, &m, b, &m, beta, c, &m );
 
     	gettimeofday( &stop, (struct timezone *)0);
 
@@ -202,7 +215,7 @@ int MAIN__(int argc, char *argv[]){
     timeg /= loops;
     fprintf(stderr,
 	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)m / timeg * 1.e-6);
+	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)n / timeg * 1.e-6);
 
   }
 
