@@ -1092,18 +1092,48 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x1
 
-	vxorpd		%xmm4 , %xmm4 , %xmm4
-	vxorpd		%xmm5 , %xmm5 , %xmm5
+	vxorpd		%ymm4 , %ymm4 , %ymm4
+	vxorpd		%ymm5 , %ymm5 , %ymm5
+	vxorpd		%ymm6 , %ymm6 , %ymm6
+	vxorpd		%ymm7 , %ymm7 , %ymm7
+
+.endm
+
+
+.macro KERNEL4x1
+
+	vbroadcastsd	-12 * SIZE(BO), %ymm0
+	vbroadcastsd	-11 * SIZE(BO), %ymm1
+	vbroadcastsd	-10 * SIZE(BO), %ymm2
+	vbroadcastsd	-9  * SIZE(BO), %ymm3
+
+	vfmadd231pd  	-16 * SIZE(AO) ,%ymm0  , %ymm4
+	vfmadd231pd  	-12 * SIZE(AO) ,%ymm1  , %ymm5
+
+	vbroadcastsd	-8  * SIZE(BO), %ymm0
+	vbroadcastsd	-7  * SIZE(BO), %ymm1
+
+	vfmadd231pd  	-8  * SIZE(AO) ,%ymm2  , %ymm6
+	vfmadd231pd  	-4  * SIZE(AO) ,%ymm3  , %ymm7
+
+	vbroadcastsd	-6  * SIZE(BO), %ymm2
+	vbroadcastsd	-5  * SIZE(BO), %ymm3
+
+	vfmadd231pd  	 0  * SIZE(AO) ,%ymm0  , %ymm4
+	vfmadd231pd  	 4  * SIZE(AO) ,%ymm1  , %ymm5
+	vfmadd231pd  	 8  * SIZE(AO) ,%ymm2  , %ymm6
+	vfmadd231pd  	 12 * SIZE(AO) ,%ymm3  , %ymm7
+
+	addq		$ 8 *SIZE, BO
+	addq		$ 32*SIZE, AO
 
 .endm
 
 
 .macro KERNEL4x1_SUB
-	vmovddup	-12 * SIZE(BO), %xmm2
-	vmovups 	-16 * SIZE(AO), %xmm0
-	vmovups 	-14 * SIZE(AO), %xmm1
-	vfmadd231pd  	%xmm0 ,%xmm2  , %xmm4
-	vfmadd231pd  	%xmm1 ,%xmm2  , %xmm5
+	vbroadcastsd	-12 * SIZE(BO), %ymm2
+	vmovups 	-16 * SIZE(AO), %ymm0
+	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm4
 	addq		$ 1*SIZE, BO
 	addq		$ 4*SIZE, AO
 
@@ -1112,21 +1142,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro SAVE4x1
 
-	vmovddup	ALPHA, %xmm0
+	vbroadcastsd	ALPHA, %ymm0
 
-	vmulpd	%xmm0 , %xmm4 , %xmm4
-	vmulpd	%xmm0 , %xmm5 , %xmm5
+	vaddpd	%ymm4,%ymm5, %ymm4 
+	vaddpd	%ymm6,%ymm7, %ymm6 
+	vaddpd	%ymm4,%ymm6, %ymm4 
+
+	vmulpd	%ymm0 , %ymm4 , %ymm4
 
 
 #if !defined(TRMMKERNEL)
 
-	vaddpd 	                (CO1)     , %xmm4, %xmm4
-	vaddpd 	        2 * SIZE(CO1)     , %xmm5, %xmm5
+	vaddpd 	                (CO1)     , %ymm4, %ymm4
 
 #endif
 
-	vmovups	%xmm4 ,  	(CO1)
-	vmovups	%xmm5 , 2 * SIZE(CO1)
+	vmovups	%ymm4 ,  	(CO1)
 
 	addq	$ 4*SIZE, CO1
 .endm
@@ -2112,15 +2143,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_12:
 
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
+	KERNEL4x1
 
 	dec	%rax
 	jne	.L1_12
@@ -3180,15 +3203,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L1_12:
 
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
-	KERNEL4x1_SUB
+	KERNEL4x1
 
 	dec	%rax
 	jne	.L1_12
