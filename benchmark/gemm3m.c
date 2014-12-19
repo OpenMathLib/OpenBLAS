@@ -118,7 +118,7 @@ static void *huge_malloc(BLASLONG size){
 
 #endif
 
-int MAIN__(int argc, char *argv[]){
+int main(int argc, char *argv[]){
 
   FLOAT *a, *b, *c;
   FLOAT alpha[] = {1.0, 1.0};
@@ -209,4 +209,4 @@ int MAIN__(int argc, char *argv[]){
   return 0;
 }
 
-void main(int argc, char *argv[]) __attribute__((weak, alias("MAIN__")));
+// void main(int argc, char *argv[]) __attribute__((weak, alias("MAIN__")));

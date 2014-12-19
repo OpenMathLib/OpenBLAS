@@ -114,7 +114,7 @@ int gettimeofday(struct timeval *tv, void *tz){
 
 #endif
 
-int MAIN__(int argc, char *argv[]){
+int main(int argc, char *argv[]){
 
 #ifndef COMPLEX
   char *trans[] = {"T", "N"};
@@ -278,5 +278,5 @@ int MAIN__(int argc, char *argv[]){
   return 0;
 }
 
-void main(int argc, char *argv[]) __attribute__((weak, alias("MAIN__")));
+// void main(int argc, char *argv[]) __attribute__((weak, alias("MAIN__")));
 
