@@ -102,7 +102,7 @@
       REAL               RZERO
       PARAMETER          ( RZERO = 0.0 )
       INTEGER            NMAX
-      PARAMETER          ( NMAX = 65 )
+      PARAMETER          ( NMAX = 128 )
       INTEGER            NIDMAX, NALMAX, NBEMAX
       PARAMETER          ( NIDMAX = 9, NALMAX = 7, NBEMAX = 7 )
 *     .. Local Scalars ..
