@@ -26,16 +26,16 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
   THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************
-* Contents: Native high-level C interface to LAPACK function dgesv
+* Contents: Native high-level C interface to LAPACK function ilaver
 * Author: Intel Corporation
 * Generated November, 2011
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
-void LAPACKE_ilaver( const lapack_int* vers_major,
-                     const lapack_int* vers_minor,
-                     const lapack_int* vers_patch )
+void LAPACKE_ilaver( lapack_int* vers_major,
+                     lapack_int* vers_minor,
+                     lapack_int* vers_patch )
 {
     /* Call LAPACK function */
     LAPACK_ilaver( vers_major, vers_minor, vers_patch );
