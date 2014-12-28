@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(BULLDOZER) || defined(PILEDRIVER)
+#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
 #include "ddot_microk_bulldozer-2.c"
 #elif defined(NEHALEM)
 #include "ddot_microk_nehalem-2.c"

@@ -60,6 +60,7 @@ Please read GotoBLAS_01Readme.txt
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thank Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
+- **AMD STEAMROLLER**: Uses Bulldozer codes with some optimizations.
 
 #### MIPS64:
 - **ICT Loongson 3A**: Optimized Level-3 BLAS and the part of Level-1,2.
