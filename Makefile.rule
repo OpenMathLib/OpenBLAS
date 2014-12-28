@@ -15,7 +15,7 @@ VERSION = 0.2.13
 # TARGET = PENRYN
 
 # If you want to support multiple architecture in one binary
-DYNAMIC_ARCH = 1
+# DYNAMIC_ARCH = 1
 
 # C compiler including binary type(32bit / 64bit). Default is gcc.
 # Don't use Intel Compiler or PGI, it won't generate right codes as I expect.
