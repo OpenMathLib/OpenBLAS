@@ -66,6 +66,7 @@ extern gotoblas_t  gotoblas_BOBCAT;
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BULLDOZER;
 extern gotoblas_t  gotoblas_PILEDRIVER;
+extern gotoblas_t  gotoblas_STEAMROLLER;
 #ifdef NO_AVX2
 #define gotoblas_HASWELL gotoblas_SANDYBRIDGE
 #else
@@ -77,6 +78,7 @@ extern gotoblas_t  gotoblas_HASWELL;
 #define gotoblas_HASWELL gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
+#define gotoblas_STEAMROLLER gotoblas_BARCELONA
 #endif
 
 
@@ -275,7 +277,17 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
+	}else if(model == 0){
+	  //AMD STEAMROLLER
+	  if(support_avx())
+	    return &gotoblas_STEAMROLLER;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	  }
 	}
+
+
       } else {
 	return &gotoblas_BARCELONA;
       }
@@ -315,6 +327,7 @@ static char *corename[] = {
     "Bulldozer",
     "Piledriver",
     "Haswell",
+    "Steamroller",
 };
 
 char *gotoblas_corename(void) {
@@ -339,6 +352,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_BULLDOZER)    return corename[18];
   if (gotoblas == &gotoblas_PILEDRIVER)   return corename[19];
   if (gotoblas == &gotoblas_HASWELL)      return corename[20];
+  if (gotoblas == &gotoblas_STEAMROLLER)  return corename[21];
 
   return corename[0];
 }
@@ -351,7 +365,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	char mname[20];
 
-	for ( i=1 ; i <= 20; i++)
+	for ( i=1 ; i <= 21; i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{
@@ -370,6 +384,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	switch (found)
 	{
 
+		case 21: return (&gotoblas_STEAMROLLER);
 		case 20: return (&gotoblas_HASWELL);
 		case 19: return (&gotoblas_PILEDRIVER);
 		case 18: return (&gotoblas_BULLDOZER);
