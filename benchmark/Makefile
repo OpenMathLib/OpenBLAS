@@ -10,7 +10,7 @@ include $(TOPDIR)/Makefile.system
 #LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
 # ACML 6.1 custom
-ACML=/home/saar/acml6.1/gfortran64_mp/lib
+ACML=/home/werner/project/acml6.1/gfortran64_mp/lib
 LIBACML = -fopenmp $(ACML)/libacml_mp.so -lgfortran -lm
  
 
