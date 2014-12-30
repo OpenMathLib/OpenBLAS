@@ -38,7 +38,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_t_microk_haswell-4.c"
 #endif
 
+#if defined(STEAMROLLER)
+#define NBMAX 2048
+#else
 #define NBMAX 4096
+#endif
 
 #ifndef HAVE_KERNEL_4x4
 

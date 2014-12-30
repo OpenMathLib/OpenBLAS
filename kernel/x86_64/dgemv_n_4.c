@@ -31,7 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NEHALEM)
 #include "dgemv_n_microk_nehalem-4.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(STEAMROLLER)
 #include "dgemv_n_microk_haswell-4.c"
 #endif
 
