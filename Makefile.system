@@ -311,6 +311,10 @@ ifdef SANITY_CHECK
 CCOMMON_OPT	+= -DSANITY_CHECK -DREFNAME=$(*F)f$(BU)
 endif
 
+ifdef MAX_STACK_ALLOC
+CCOMMON_OPT	+= -DMAX_STACK_ALLOC=$(MAX_STACK_ALLOC)
+endif
+
 #
 #  Architecture dependent settings
 #

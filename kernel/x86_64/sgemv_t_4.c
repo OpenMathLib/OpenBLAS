@@ -306,7 +306,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         if ( n < 1 ) return(0);
 
 	xbuffer = buffer;
-	ytemp   = buffer + NBMAX;
+	ytemp   = buffer + (m < NBMAX ? m : NBMAX);
 	
 	n0 = n / NBMAX;
         n1 = (n % NBMAX)  >> 2 ;
