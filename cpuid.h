@@ -39,6 +39,10 @@
 #ifndef CPUID_H
 #define CPUID_H
 
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+#define INTEL_AMD
+#endif
+
 #define VENDOR_INTEL      1
 #define VENDOR_UMC        2
 #define VENDOR_AMD        3
@@ -59,7 +63,7 @@
 #define FAMILY_PM     7
 #define FAMILY_IA64   8
 
-#if defined(__i386__) || defined(__x86_64__)
+#ifdef INTEL_AMD
 #define GET_EXFAMILY  1
 #define GET_EXMODEL   2
 #define GET_TYPE      3

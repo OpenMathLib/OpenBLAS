@@ -69,8 +69,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#if defined(__WIN32__) || defined(__WIN64__) || defined(__CYGWIN32__) || defined(__CYGWIN64__)
+#if defined(__WIN32__) || defined(__WIN64__) || defined(__CYGWIN32__) || defined(__CYGWIN64__) || defined(_WIN32) || defined(_WIN64)
 #define OS_WINDOWS
+#endif
+
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+#define INTEL_AMD
 #endif
 
 #include <stdio.h>
@@ -783,7 +787,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OPENBLAS_SUPPORTED
 #endif
 
-#if defined(__i386__) || (__x86_64__)
+#ifdef INTEL_AMD
 #include "cpuid_x86.c"
 #define OPENBLAS_SUPPORTED
 #endif
@@ -878,7 +882,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -898,7 +902,7 @@ int main(int argc, char *argv[]){
 #endif
 
 
-#if defined(__i386__) || defined(__x86_64__)
+#ifdef INTEL_AMD
 #ifndef FORCE
     get_sse();
 #else
@@ -978,7 +982,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(__i386__) || defined(__x86_64__) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif
