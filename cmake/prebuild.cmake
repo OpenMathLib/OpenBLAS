@@ -29,7 +29,20 @@ include("${CMAKE_SOURCE_DIR}/cmake/c_check.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/f_check.cmake")
 
 # compile getarch
-# TODO: need to use execute_process here, or compilation won't happen until later - maybe make temporary CMakeLists.txt file using file() ?
+enable_language(ASM)
+set(GETARCH_DIR "${PROJECT_BINARY_DIR}/getarch_build")
+file(MAKE_DIRECTORY ${GETARCH_DIR})
+try_compile(GETARCH_RESULT ${GETARCH_DIR}
+  SOURCES ${CMAKE_SOURCE_DIR}/getarch.c ${CMAKE_SOURCE_DIR}/cpuid.S ${CPUIDEMO}
+  COMPILE_DEFINITIONS ${EXFLAGS} -I${CMAKE_SOURCE_DIR}
+  OUTPUT_VARIABLE GETARCH_LOG
+  )
+
+message(STATUS "GETARCH RESULT: ${GETARCH_RESULT}")
+message(STATUS "GETARCH LOG: ${GETARCH_LOG}")
+
+# TODO: need to append output of getarch binary to TARGET_CONF, not sure if I can get at it after using try_compile - may need to create CMakeLists.txt on the fly and build/execute
+
 #add_executable(getarch getarch.c cpuid.S ${CPUIDEMU}
 #  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 #
