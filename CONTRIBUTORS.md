@@ -121,5 +121,8 @@ In chronological order:
   * [2014-10-10] trmm and sgemm kernels (optimized for APM's X-Gene 1).
                  ARMv8 support.
 
+* Dan Kortschak
+  * [2015-01-07] Added test for drotmg bug #484.
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]
