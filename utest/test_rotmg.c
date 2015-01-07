@@ -65,3 +65,36 @@ void test_drotmg()
 		CU_ASSERT_DOUBLE_EQUAL(te_param[i], tr_param[i], CHECK_EPS);
 	}
 }
+
+void test_drotmg_D1eqD2_X1eqX2()
+{
+	double te_d1, tr_d1;
+	double te_d2, tr_d2;
+	double te_x1, tr_x1;
+	double te_y1, tr_y1;
+	double te_param[5];
+	double tr_param[5];
+	int i=0;
+	te_d1= tr_d1=2.;
+	te_d2= tr_d2=2.;
+	te_x1= tr_x1=8.;
+	te_y1= tr_y1=8.;
+
+	for(i=0; i<5; i++){
+	  te_param[i]=tr_param[i]=0.0;
+	}
+
+	//OpenBLAS
+	BLASFUNC(drotmg)(&te_d1, &te_d2, &te_x1, &te_y1, te_param);
+	//reference
+	BLASFUNC_REF(drotmg)(&tr_d1, &tr_d2, &tr_x1, &tr_y1, tr_param);
+
+	CU_ASSERT_DOUBLE_EQUAL(te_d1, tr_d1, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_d2, tr_d2, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_x1, tr_x1, CHECK_EPS);
+	CU_ASSERT_DOUBLE_EQUAL(te_y1, tr_y1, CHECK_EPS);
+
+	for(i=0; i<5; i++){
+		CU_ASSERT_DOUBLE_EQUAL(te_param[i], tr_param[i], CHECK_EPS);
+	}
+}
