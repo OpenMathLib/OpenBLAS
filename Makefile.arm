@@ -1,3 +1,8 @@
+# ifeq logical or
+ifeq ($(CORE), $(filter $(CORE),CORTEXA9 CORTEXA15))
+CCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
+FCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
+endif
 
 ifeq ($(CORE), ARMV7)
 CCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a

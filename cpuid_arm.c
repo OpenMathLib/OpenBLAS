@@ -30,13 +30,24 @@
 #define CPU_UNKNOWN     	0
 #define CPU_ARMV6       	1
 #define CPU_ARMV7       	2
-#define CPU_CORTEXA15       	3
+#define CPU_CORTEXA9       	3
+#define CPU_CORTEXA15       	4
 
 static char *cpuname[] = {
   "UNKOWN",
   "ARMV6",
   "ARMV7",
+  "CORTEXA9",
   "CORTEXA15"
+};
+
+
+static char *cpuname_lower[] = {
+  "unknown",
+  "armv6",
+  "armv7",
+  "cortexa9",
+  "cortexa15"
 };
 
 
@@ -85,6 +96,29 @@ int detect(void)
   	char buffer[512], *p;
   	p = (char *) NULL ;
 
+  	infile = fopen("/proc/cpuinfo", "r");
+	while (fgets(buffer, sizeof(buffer), infile))
+	{
+
+		if (!strncmp("CPU part", buffer, 8))
+		{
+			p = strchr(buffer, ':') + 2;
+			break;
+      		}
+  	}
+
+  	fclose(infile);
+  	if(p != NULL) {
+	  if (strstr(p, "0xc09")) {
+	    return CPU_CORTEXA9;
+	  }
+	  if (strstr(p, "0xc15")) {
+	    return CPU_CORTEXA15;
+	  }
+
+	}
+
+  	p = (char *) NULL ;
   	infile = fopen("/proc/cpuinfo", "r");
 
 	while (fgets(buffer, sizeof(buffer), infile))
@@ -142,21 +176,7 @@ void get_architecture(void)
 void get_subarchitecture(void)
 {
 	int d = detect();
-	switch (d)
-	{
-
-		case CPU_ARMV7:
-			printf("ARMV7");
-			break;
-
-		case CPU_ARMV6:
-			printf("ARMV6");
-			break;
-
-		default:
-			printf("UNKNOWN");
-			break;
-	}
+	printf("%s", cpuname[d]);
 }
 
 void get_subdirname(void)
@@ -170,6 +190,36 @@ void get_cpuconfig(void)
 	int d = detect();
 	switch (d)
 	{
+	       case CPU_CORTEXA9:
+    			printf("#define CORTEXA9\n");
+    			printf("#define HAVE_VFP\n");
+    			printf("#define HAVE_VFPV3\n");
+			if ( get_feature("neon"))	printf("#define HAVE_NEON\n");
+			if ( get_feature("vfpv4"))	printf("#define HAVE_VFPV4\n");
+    			printf("#define L1_DATA_SIZE 32768\n");
+    			printf("#define L1_DATA_LINESIZE 32\n");
+    			printf("#define L2_SIZE 1048576\n");
+    			printf("#define L2_LINESIZE 32\n");
+    			printf("#define DTB_DEFAULT_ENTRIES 128\n");
+    			printf("#define DTB_SIZE 4096\n");
+    			printf("#define L2_ASSOCIATIVE 4\n");
+			break;
+
+	       case CPU_CORTEXA15:
+    			printf("#define CORTEXA15\n");
+    			printf("#define HAVE_VFP\n");
+    			printf("#define HAVE_VFPV3\n");
+			if ( get_feature("neon"))	printf("#define HAVE_NEON\n");
+			if ( get_feature("vfpv4"))	printf("#define HAVE_VFPV4\n");
+    			printf("#define L1_DATA_SIZE 32768\n");
+    			printf("#define L1_DATA_LINESIZE 32\n");
+    			printf("#define L2_SIZE 1048576\n");
+    			printf("#define L2_LINESIZE 32\n");
+    			printf("#define DTB_DEFAULT_ENTRIES 128\n");
+    			printf("#define DTB_SIZE 4096\n");
+    			printf("#define L2_ASSOCIATIVE 4\n");
+			break;
+
 
 		case CPU_ARMV7:
     			printf("#define ARMV7\n");
@@ -206,18 +256,7 @@ void get_libname(void)
 {
 
 	int d = detect();
-	switch (d)
-	{
-
-		case CPU_ARMV7:
-    			printf("armv7\n");
-			break;
-
-		case CPU_ARMV6:
-    			printf("armv6\n");
-			break;
-
-	}
+	printf("%s", cpuname_lower[d]);
 }
 
 
