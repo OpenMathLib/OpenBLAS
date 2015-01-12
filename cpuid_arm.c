@@ -112,7 +112,7 @@ int detect(void)
 	  if (strstr(p, "0xc09")) {
 	    return CPU_CORTEXA9;
 	  }
-	  if (strstr(p, "0xc15")) {
+	  if (strstr(p, "0xc0f")) {
 	    return CPU_CORTEXA15;
 	  }
 
