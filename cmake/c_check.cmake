@@ -17,11 +17,12 @@
 # TODO: is ${BINARY} sufficient for the __32BIT__ define?
 # TODO: CMAKE_SYSTEM_PROCESSOR is not set by CMake, need to set it manually when doing a cross-compile
 # TODO: CMAKE_CXX_COMPILER_ID and CMAKE_SYSTEM_NAME are probably not the same strings as OpenBLAS is expecting
-# TODO: detect this
+# TODO: detect NEED_FU
 set(NEED_FU 1)
 
+string(TOUPPER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME_UC)
 file(WRITE ${TARGET_CONF}
-  "#define OS_${CMAKE_SYSTEM_NAME}\t1\n"
+  "#define OS_${CMAKE_SYSTEM_NAME_UC}\t1\n"
   "#define ARCH_${CMAKE_SYSTEM_PROCESSOR}\t1\n"
   "#define C_${CMAKE_CXX_COMPILER_ID}\t1\n"
   "#define __${BINARY}BIT__\t1\n"
