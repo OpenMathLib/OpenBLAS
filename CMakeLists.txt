@@ -56,3 +56,25 @@ foreach (BLAS_DIR ${BLASDIRS})
   add_subdirectory(${BLAS_DIR})
 endforeach ()
 
+#Save the config files for installation
+#	@cp Makefile.conf Makefile.conf_last
+#	@cp config.h config_last.h
+#ifdef QUAD_PRECISION
+#	@echo "#define QUAD_PRECISION">> config_last.h
+#endif
+#ifeq ($(EXPRECISION), 1)
+#	@echo "#define EXPRECISION">> config_last.h
+#endif
+###
+#ifeq ($(DYNAMIC_ARCH), 1)
+#	@$(MAKE) -C kernel commonlibs || exit 1
+#	@for d in $(DYNAMIC_CORE) ; \
+#	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
+#	done
+#	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
+#endif
+#ifdef USE_THREAD
+#	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
+#endif
+#	@touch lib.grd
+
