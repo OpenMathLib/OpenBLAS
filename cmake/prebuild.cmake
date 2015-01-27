@@ -9,6 +9,43 @@
 ##              Next it runs f_check and appends some fortran information to the files.
 ##              Finally it runs getarch and getarch_2nd for even more environment information.
 
+# List of vars set by this file and included files:
+# OSNAME
+# ARCH
+# C_COMPILER
+# BINARY32
+# BINARY64
+# CEXTRALIB
+# F_COMPILER
+# FC
+# BU
+# CORE
+# LIBCORE
+# NUM_CORES <- REQUIRED
+# HAVE_MMX
+# HAVE_SSE
+# HAVE_SSE2
+# HAVE_SSE3
+# MAKE
+# SGEMM_UNROLL_M
+# SGEMM_UNROLL_N
+# DGEMM_UNROLL_M
+# DGEMM_UNROLL_M
+# QGEMM_UNROLL_N
+# QGEMM_UNROLL_N
+# CGEMM_UNROLL_M
+# CGEMM_UNROLL_M
+# ZGEMM_UNROLL_N
+# ZGEMM_UNROLL_N
+# XGEMM_UNROLL_M
+# XGEMM_UNROLL_N
+# CGEMM3M_UNROLL_M
+# CGEMM3M_UNROLL_N
+# ZGEMM3M_UNROLL_M
+# ZGEMM3M_UNROLL_M
+# XGEMM3M_UNROLL_N
+# XGEMM3M_UNROLL_N
+
 # CPUIDEMU = ../../cpuid/table.o
 
 if (DEFINED CPUIDEMU)
@@ -65,4 +102,7 @@ message(STATUS "GETARCH LOG: ${GETARCH_LOG}")
 #  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 # TODO: need to read in the vars from Makefile.conf/Makefile_kernel.conf
+
+# temporarily hardcoded to get system.cmake working
+set(NUM_CORES 4)
 

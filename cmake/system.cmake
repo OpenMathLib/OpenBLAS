@@ -88,8 +88,8 @@ if (NOT DEFINED NUM_THREADS)
   set(NUM_THREADS ${NUM_CORES})
 endif ()
 
-if (NUM_THREADS EQUALS 1)
-  # TODO: was "override USE_THREAD = 0", do we need override here? -hpa
+if (${NUM_THREADS} EQUAL 1)
+  # TODO: was "override USE_THREAD = 0", do we need "override" here? -hpa
   set(USE_THREAD 0)
 endif ()
 
@@ -101,7 +101,7 @@ if (DEFINED USE_THREAD)
   endif ()
 else ()
   # N.B. this is NUM_THREAD in Makefile.system which is probably a bug -hpa
-  if (${NUM_THREADS} EQUALS 1)
+  if (${NUM_THREADS} EQUAL 1)
     unset(SMP)
   else ()
     set(SMP 1)
