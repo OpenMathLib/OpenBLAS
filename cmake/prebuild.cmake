@@ -19,7 +19,7 @@
 # F_COMPILER
 # FC
 # BU
-# CORE
+# CORE <- REQUIRED
 # LIBCORE
 # NUM_CORES <- REQUIRED
 # HAVE_MMX
@@ -105,4 +105,5 @@ message(STATUS "GETARCH LOG: ${GETARCH_LOG}")
 
 # temporarily hardcoded to get system.cmake working
 set(NUM_CORES 4)
+set(CORE "GENERIC")
 
