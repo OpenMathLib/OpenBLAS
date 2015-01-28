@@ -1,4 +1,6 @@
 
+include_directories(${CMAKE_SOURCE_DIR})
+
 # sources that need to be compiled twice, once with no flags and once with LOWER
 set(UL_SOURCES
   sbmv_k.c

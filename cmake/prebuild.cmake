@@ -106,4 +106,8 @@ message(STATUS "GETARCH LOG: ${GETARCH_LOG}")
 # temporarily hardcoded to get system.cmake working
 set(NUM_CORES 4)
 set(CORE "GENERIC")
+# TODO: this should be done by getarch! see above
+file(APPEND ${TARGET_CONF}
+  "#define ${CORE}"
+)
 
