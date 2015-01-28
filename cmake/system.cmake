@@ -109,7 +109,7 @@ else ()
 endif ()
 
 if (${SMP})
-  message("SMP enabled.")
+  message(STATUS "SMP enabled.")
 endif ()
 
 if (NOT DEFINED NEED_PIC)

@@ -68,29 +68,27 @@ include("${CMAKE_SOURCE_DIR}/cmake/f_check.cmake")
 # compile getarch
 enable_language(ASM)
 set(GETARCH_DIR "${PROJECT_BINARY_DIR}/getarch_build")
+set(GETARCH_BIN "getarch${CMAKE_EXECUTABLE_SUFFIX}")
 file(MAKE_DIRECTORY ${GETARCH_DIR})
 try_compile(GETARCH_RESULT ${GETARCH_DIR}
   SOURCES ${CMAKE_SOURCE_DIR}/getarch.c ${CMAKE_SOURCE_DIR}/cpuid.S ${CPUIDEMO}
-  COMPILE_DEFINITIONS ${EXFLAGS} -I${CMAKE_SOURCE_DIR}
+  COMPILE_DEFINITIONS ${EXFLAGS} ${GETARCH_FLAGS} -I${CMAKE_SOURCE_DIR}
   OUTPUT_VARIABLE GETARCH_LOG
-  )
+  COPY_FILE ${GETARCH_BIN}
+)
 
-message(STATUS "GETARCH RESULT: ${GETARCH_RESULT}")
-message(STATUS "GETARCH LOG: ${GETARCH_LOG}")
+message(STATUS "Running getarch")
 
-# TODO: need to append output of getarch binary to TARGET_CONF, use COPY_FILE param (look at try_compile docs) to copy the resulting binary somewhere then run it
+# use the cmake binary w/ the -E param to run a shell command in a cross-platform way
+execute_process(COMMAND ${GETARCH_BIN} 0 OUTPUT_VARIABLE GETARCH_MAKE_OUT)
+execute_process(COMMAND ${GETARCH_BIN} 1 OUTPUT_VARIABLE GETARCH_CONF_OUT)
 
-#add_executable(getarch getarch.c cpuid.S ${CPUIDEMU}
-#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-#
-## run getarch, which appends even more to the TARGET files
-#message(STATUS "Running getarch")
-#execute_process(COMMAND getarch 0 >> ${TARGET_MAKE}
-#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-#execute_process(COMMAND getarch 1 >> ${TARGET_CONF}
-#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-#
-## config.h is ready for getarch_2nd now, so compile that
+message(STATUS "GETARCH results:\n${GETARCH_MAKE_OUT}")
+
+# append config data from getarch even more to the TARGET file
+file(APPEND ${TARGET_CONF} ${GETARCH_CONF_OUT})
+
+## TODO: config.h is ready for getarch_2nd now, so compile that
 #set(GETARCH2_SOURCES getarch_2nd.c config.h)
 #add_executable(getarch_2nd getarch_2nd.c config.h)
 #
@@ -101,13 +99,8 @@ message(STATUS "GETARCH LOG: ${GETARCH_LOG}")
 #execute_process(COMMAND getarch_2nd 1 >> ${TARGET_CONF}
 #  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
-# TODO: need to read in the vars from Makefile.conf/Makefile_kernel.conf
-
-# temporarily hardcoded to get system.cmake working
+# TODO: parse the MAKE variables from getarch/getarch2 (GETARCH_MAKE_OUT) into CMAKE vars
+#       for now I temporarily hardcoded to get system.cmake working
 set(NUM_CORES 4)
 set(CORE "GENERIC")
-# TODO: this should be done by getarch! see above
-file(APPEND ${TARGET_CONF}
-  "#define ${CORE}"
-)
 
