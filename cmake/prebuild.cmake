@@ -78,7 +78,7 @@ try_compile(GETARCH_RESULT ${GETARCH_DIR}
 message(STATUS "GETARCH RESULT: ${GETARCH_RESULT}")
 message(STATUS "GETARCH LOG: ${GETARCH_LOG}")
 
-# TODO: need to append output of getarch binary to TARGET_CONF, not sure if I can get at it after using try_compile - may need to create CMakeLists.txt on the fly and build/execute
+# TODO: need to append output of getarch binary to TARGET_CONF, use COPY_FILE param (look at try_compile docs) to copy the resulting binary somewhere then run it
 
 #add_executable(getarch getarch.c cpuid.S ${CPUIDEMU}
 #  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
