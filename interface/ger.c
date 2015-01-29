@@ -172,7 +172,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (incx < 0) x -= (m - 1) * incx;
 
 #ifdef MAX_STACK_ALLOC
-  int stack_alloc_size = m;
+  volatile int stack_alloc_size = m;
   if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
       stack_alloc_size = 0;
   FLOAT stack_buffer[stack_alloc_size];
