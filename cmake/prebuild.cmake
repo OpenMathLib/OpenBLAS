@@ -54,7 +54,7 @@ endif ()
 
 if (DEFINED TARGET_CORE)
   # set the C flags for just this file
-  set_source_files_properties(getarch_2nd.c PROPERTIES COMPILE_FLAGS "-DBUILD_KERNEL")
+  set(GETARCH2_FLAGS "-DBUILD_KERNEL")
   set(TARGET_MAKE "Makefile_kernel.conf")
   set(TARGET_CONF "config_kernel.h")
 else()
@@ -85,19 +85,31 @@ execute_process(COMMAND ${GETARCH_BIN} 1 OUTPUT_VARIABLE GETARCH_CONF_OUT)
 
 message(STATUS "GETARCH results:\n${GETARCH_MAKE_OUT}")
 
-# append config data from getarch even more to the TARGET file
+# append config data from getarch to the TARGET file
 file(APPEND ${TARGET_CONF} ${GETARCH_CONF_OUT})
 
 ## TODO: config.h is ready for getarch_2nd now, so compile that
-#set(GETARCH2_SOURCES getarch_2nd.c config.h)
-#add_executable(getarch_2nd getarch_2nd.c config.h)
-#
-## finally run getarch_2nd, appending yet more to the TARGET files
-#message(STATUS "Running getarch_2nd")
-#execute_process(COMMAND getarch_2nd 0 >> ${TARGET_MAKE}
-#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-#execute_process(COMMAND getarch_2nd 1 >> ${TARGET_CONF}
-#  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+set(GETARCH2_DIR "${PROJECT_BINARY_DIR}/getarch2_build")
+set(GETARCH2_BIN "getarch_2nd${CMAKE_EXECUTABLE_SUFFIX}")
+file(MAKE_DIRECTORY ${GETARCH2_DIR})
+try_compile(GETARCH2_RESULT ${GETARCH2_DIR}
+  SOURCES ${CMAKE_SOURCE_DIR}/getarch_2nd.c
+  COMPILE_DEFINITIONS ${EXFLAGS} ${GETARCH_FLAGS} ${GETARCH2_FLAGS} -I${CMAKE_SOURCE_DIR}
+  OUTPUT_VARIABLE GETARCH2_LOG
+  COPY_FILE ${GETARCH2_BIN}
+)
+
+message(STATUS "getarch2 result ${GETARCH2_RESULT}")
+message(STATUS "getarch2 log ${GETARCH2_LOG}")
+# use the cmake binary w/ the -E param to run a shell command in a cross-platform way
+execute_process(COMMAND ${GETARCH2_BIN} 0 OUTPUT_VARIABLE GETARCH2_MAKE_OUT)
+execute_process(COMMAND ${GETARCH2_BIN} 1 OUTPUT_VARIABLE GETARCH2_CONF_OUT)
+
+message(STATUS "GETARCH_2 results:\n${GETARCH2_MAKE_OUT}")
+message(STATUS "GETARCH_2 cresults:\n${GETARCH2_CONF_OUT}")
+
+# append config data from getarch_2nd to the TARGET file
+file(APPEND ${TARGET_CONF} ${GETARCH2_CONF_OUT})
 
 # TODO: parse the MAKE variables from getarch/getarch2 (GETARCH_MAKE_OUT) into CMAKE vars
 #       for now I temporarily hardcoded to get system.cmake working
