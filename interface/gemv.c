@@ -209,7 +209,9 @@ void CNAME(enum CBLAS_ORDER order,
   if (incy < 0) y -= (leny - 1) * incy;
 
 #ifdef MAX_STACK_ALLOC
-  int stack_alloc_size = m + n;
+  // make it volatile because some gemv implementation (ex: dgemv_n.S)
+  // do not restore all register
+  volatile int stack_alloc_size = m + n;
   if(stack_alloc_size < 128)
       //dgemv_n.S require a 128 bytes buffer
       stack_alloc_size = 128;
