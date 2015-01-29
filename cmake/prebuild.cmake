@@ -65,6 +65,19 @@ endif ()
 include("${CMAKE_SOURCE_DIR}/cmake/c_check.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/f_check.cmake")
 
+# Reads string from getarch into CMake vars. Format of getarch vars is VARNAME=VALUE
+function(ParseGetArchVars GETARCH_IN)
+  string(REGEX MATCHALL "[0-9_a-zA-Z]+=[0-9_a-zA-Z]+" GETARCH_RESULT_LIST "${GETARCH_IN}")
+  foreach (GETARCH_LINE ${GETARCH_RESULT_LIST})
+    # split the line into var and value, then assign the value to a CMake var
+    string(REGEX MATCHALL "[0-9_a-zA-Z]+" SPLIT_VAR "${GETARCH_LINE}")
+    list(GET SPLIT_VAR 0 VAR_NAME)
+    list(GET SPLIT_VAR 1 VAR_VALUE)
+    message(STATUS "Setting ${VAR_NAME} to ${VAR_VALUE}")
+    set(${VAR_NAME} ${VAR_VALUE} PARENT_SCOPE)
+  endforeach ()
+endfunction ()
+
 # compile getarch
 enable_language(ASM)
 set(GETARCH_DIR "${PROJECT_BINARY_DIR}/getarch_build")
@@ -85,18 +98,9 @@ execute_process(COMMAND ${GETARCH_BIN} 1 OUTPUT_VARIABLE GETARCH_CONF_OUT)
 
 #message(STATUS "GETARCH results:\n${GETARCH_MAKE_OUT}")
 
-# append config data from getarch to the TARGET file
+# append config data from getarch to the TARGET file and read in CMake vars
 file(APPEND ${TARGET_CONF} ${GETARCH_CONF_OUT})
-
-# TODO: make this a function, the exact same code is used again with getarch2
-string(REGEX MATCHALL "[0-9_a-zA-Z]+=[0-9_a-zA-Z]+" GETARCH_RESULT_LIST "${GETARCH_MAKE_OUT}")
-foreach (GETARCH_LINE ${GETARCH_RESULT_LIST})
-  # split the line into var and value, then assign the value to a CMake var
-  string(REGEX MATCHALL "[0-9_a-zA-Z]+" SPLIT_VAR "${GETARCH_LINE}")
-  list(GET SPLIT_VAR 0 VAR_NAME)
-  list(GET SPLIT_VAR 1 VAR_VALUE)
-  set(${VAR_NAME} ${VAR_VALUE})
-endforeach ()
+ParseGetArchVars(${GETARCH_MAKE_OUT})
 
 set(GETARCH2_DIR "${PROJECT_BINARY_DIR}/getarch2_build")
 set(GETARCH2_BIN "getarch_2nd${CMAKE_EXECUTABLE_SUFFIX}")
@@ -112,17 +116,7 @@ try_compile(GETARCH2_RESULT ${GETARCH2_DIR}
 execute_process(COMMAND ${GETARCH2_BIN} 0 OUTPUT_VARIABLE GETARCH2_MAKE_OUT)
 execute_process(COMMAND ${GETARCH2_BIN} 1 OUTPUT_VARIABLE GETARCH2_CONF_OUT)
 
-#message(STATUS "GETARCH_2 results:\n${GETARCH2_MAKE_OUT}")
-
-# append config data from getarch_2nd to the TARGET file
+# append config data from getarch_2nd to the TARGET file and read in CMake vars
 file(APPEND ${TARGET_CONF} ${GETARCH2_CONF_OUT})
-
-string(REGEX MATCHALL "[0-9_a-zA-Z]+=[0-9_a-zA-Z]+" GETARCH_RESULT_LIST "${GETARCH2_MAKE_OUT}")
-foreach (GETARCH_LINE ${GETARCH_RESULT_LIST})
-  # split the line into var and value, then assign the value to a CMake var
-  string(REGEX MATCHALL "[0-9_a-zA-Z]+" SPLIT_VAR "${GETARCH_LINE}")
-  list(GET SPLIT_VAR 0 VAR_NAME)
-  list(GET SPLIT_VAR 1 VAR_VALUE)
-  set(${VAR_NAME} ${VAR_VALUE})
-endforeach ()
+ParseGetArchVars(${GETARCH2_MAKE_OUT})
 
