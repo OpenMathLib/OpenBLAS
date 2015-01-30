@@ -60,16 +60,31 @@ endfunction ()
 
 # these sources are compiled with combinations of TRANS, UPPER, and UNIT, for 32 combinations total
 set(TRM_SOURCES trmm_L.c trmm_R.c trsm_L.c trsm_R.c)
-AllCombinations("TRANS UPPER UNIT")
-set(TRM_DEFINE_COMBOS LIST_OUT)
-message(STATUS "alcombos result: ${LIST_OUT}")
-foreach (TRM_SOURCE ${TRM_SOURCES})
-  foreach (TRM_DEFINES ${TRM_DEFINE_COMBOS})
-    string(REGEX MATCH "[a-z]+_[LR]" TRM_NAME ${TRM_SOURCE})
-    string(TOUPPER ${TRM_NAME} TRM_NAME)
-    # TODO: TRM_DEFINES is a colon-separated list of defines to set for this object - need to parse it and set them using set_target_properties, and also come up with a unique id for the lib name (e.g. first letter of each define, so TRANS UPPER UNIT is TUU)
-    #add_library(${TRM_NAME}_${TRM_DEFINE}_OBJS OBJECT ${TRM_SOURCE})
-    #set_target_properties(${TRM_NAME}_${TRM_DEFINE}_OBJS PROPERTIES COMPILE_DEFINITIONS ${TRM_DEFINE})
+AllCombinations("TRANS;UPPER;UNIT")
+set(TRM_DEFINE_COMBOS ${LIST_OUT})
+foreach (trm_source ${TRM_SOURCES})
+  foreach (trm_defines ${TRM_DEFINE_COMBOS})
+
+    # replace colon separated list with semicolons, this turns it into a CMake list that we can use foreach with
+    string(REPLACE ":" ";" trm_defines ${trm_defines})
+
+    # build a unique variable name for this obj file by picking two letters from the defines (can't use one in this case)
+    set(trm_obj_name "")
+    foreach (trm_define ${trm_defines})
+      string(REGEX MATCH "^[A-Z][A-Z]" letter ${trm_define})
+      set(trm_obj_name "${trm_obj_name}${letter}")
+    endforeach ()
+
+    # parse file name
+    string(REGEX MATCH "[a-z]+_[LR]" trm_name ${trm_source})
+    string(TOUPPER ${trm_name} trm_name)
+
+    # prepend the uppercased file name to the obj name
+    set(trm_obj_name "${trm_name}_${trm_obj_name}_OBJS")
+
+    # now add the object and set the defines
+    add_library(${trm_obj_name} OBJECT ${trm_source})
+    set_target_properties(${trm_obj_name} PROPERTIES COMPILE_DEFINITIONS "${trm_defines}")
   endforeach ()
 endforeach ()
 
