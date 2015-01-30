@@ -61,7 +61,10 @@ function(AllCombinations list_in)
 endfunction ()
 
 # generates object files for each of the sources for each of the combinations of the preprocessor definitions passed in
-function(GenerateObjects sources_in defines_in)
+# @param sources_in the source files to build from
+# @param defines_in the preprocessor definitions that will be combined to create the object files
+# @param all_defines_in (optional) preprocessor definitions that will be applied to all objects
+function(GenerateObjects sources_in defines_in all_defines_in)
   AllCombinations("${defines_in}")
   set(define_combos ${LIST_OUT})
   foreach (source_file ${sources_in})
@@ -78,7 +81,7 @@ function(GenerateObjects sources_in defines_in)
       endforeach ()
 
       # parse file name
-      string(REGEX MATCH "^[a-zA-Z_]+" source_name ${source_file})
+      string(REGEX MATCH "^[a-zA-Z_0-9]+" source_name ${source_file})
       string(TOUPPER ${source_name} source_name)
 
       # prepend the uppercased file name to the obj name
@@ -86,26 +89,23 @@ function(GenerateObjects sources_in defines_in)
 
       # now add the object and set the defines
       add_library(${obj_name} OBJECT ${source_file})
-      if (NOT "${def_combo}" STREQUAL " ") # using space as the empty set
-        set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${def_combo}")
+      set(cur_defines ${def_combo})
+      if ("${cur_defines}" STREQUAL " ")
+        set(cur_defines ${all_defines_in})
+      else ()
+        list(APPEND cur_defines ${all_defines_in})
+      endif ()
+      if (cur_defines AND NOT "${cur_defines}" STREQUAL " ") # using space as the empty set
+        set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${cur_defines}")
       endif ()
     endforeach ()
   endforeach ()
 endfunction ()
 
-# these sources are compiled with combinations of TRANS, UPPER, and UNIT, for 32 combinations total
-set(TRM_SOURCES trmm_L.c trmm_R.c trsm_L.c trsm_R.c)
-set(TRM_DEFINES TRANS UPPER UNIT)
-GenerateObjects("${TRM_SOURCES}" "${TRM_DEFINES}")
-
-# TODO: also need to set NN for all these objs (add param to GenerateObjects for defines that apply to all
-GenerateObjects("symm_k.c" "LOWER;RSIDE")
-
-#	dsymm_LU.c dsymm_LL.c dsymm_RU.c dsymm_RL.c
-#	dsyrk_UN.c dsyrk_UT.c dsyrk_LN.c dsyrk_LT.c
-#	dsyr2k_UN.c dsyr2k_UT.c dsyr2k_LN.c dsyr2k_LT.c
-#	dsyrk_kernel_U.c  dsyrk_kernel_L.c
-#	dsyr2k_kernel_U.c dsyr2k_kernel_L.c
+GenerateObjects("trmm_L.c;trmm_R.c;trsm_L.c;trsm_R.c" "TRANS;UPPER;UNIT" "DOUBLE")
+GenerateObjects("symm_k.c" "LOWER;RSIDE" "NN;DOUBLE")
+GenerateObjects("syrk_k.c;syr2k_k.c" "LOWER;TRANS" "DOUBLE")
+GenerateObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "DOUBLE")
 
 #if (SMP)
 #
