@@ -50,6 +50,7 @@ endfunction ()
 function(GenerateObjects sources_in defines_in all_defines_in)
   AllCombinations("${defines_in}")
   set(define_combos ${LIST_OUT})
+  set(OBJ_LIST_OUT "")
   foreach (source_file ${sources_in})
     foreach (def_combo ${define_combos})
 
@@ -81,7 +82,9 @@ function(GenerateObjects sources_in defines_in all_defines_in)
       if (cur_defines AND NOT "${cur_defines}" STREQUAL " ") # using space as the empty set
         set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${cur_defines}")
       endif ()
+      list(APPEND OBJ_LIST_OUT ${obj_name})
     endforeach ()
   endforeach ()
+  set(OBJ_LIST_OUT ${OBJ_LIST_OUT} PARENT_SCOPE)
 endfunction ()
 

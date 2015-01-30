@@ -6,7 +6,7 @@ else ()
   set(MEMORY memory.c)
 endif ()
 
-add_library(COMMONOBJS OBJECT
+add_library(COMMON_OBJS OBJECT
   ${MEMORY}
   xerbla.c
   abs.c # TODO: this is split into c_abs (DOUBLE unset) and z_abs (DOUBLE set) in the Makefile

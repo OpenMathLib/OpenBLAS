@@ -41,5 +41,8 @@ add_library(DBLAS3OBJS OBJECT
 
 # trmm is trsm with a compiler flag set
 add_library(TRMM_OBJ OBJECT trsm.c)
-set_target_properties(TRMM_OBJ PROPERTIES COMPILE_DEFINITIONS TRMM)
+set_target_properties(TRMM_OBJ PROPERTIES COMPILE_DEFINITIONS "TRMM")
+
+list(APPEND DBLAS_OBJS "DBLAS1OBJS;AMAX_OBJ;AMIN_OBJ;MIN_OBJ;DBLAS2OBJS;DBLAS3OBJS;TRMM_OBJ")
+set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
 

@@ -27,12 +27,18 @@ set(GEMM_DEFINES NN NT TN TT)
 foreach (GEMM_DEFINE ${GEMM_DEFINES})
   add_library(GEMM_${GEMM_DEFINE}_OBJS OBJECT gemm.c)
   set_target_properties(GEMM_${GEMM_DEFINE}_OBJS PROPERTIES COMPILE_DEFINITIONS ${GEMM_DEFINE})
+  list(APPEND DBLAS_OBJS GEMM_${GEMM_DEFINE}_OBJS)
 endforeach ()
 
+
 GenerateObjects("trmm_L.c;trmm_R.c;trsm_L.c;trsm_R.c" "TRANS;UPPER;UNIT" "DOUBLE")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateObjects("symm_k.c" "LOWER;RSIDE" "NN;DOUBLE")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateObjects("syrk_k.c;syr2k_k.c" "LOWER;TRANS" "DOUBLE")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "DOUBLE")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 #if (SMP)
 #
@@ -59,3 +65,6 @@ GenerateObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "DOUBLE")
 #	   dgemm_thread_tn.c dgemm_thread_tt.c
 #endif
 #
+
+set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
+
