@@ -35,9 +35,10 @@ endforeach ()
 function(AllCombinations list_in)
   list(LENGTH list_in list_count)
   set(num_combos 1)
-  math(EXPR num_combos "${num_combos} << ${list_count}")
+  # subtract 1 since we will iterate from 0 to num_combos
+  math(EXPR num_combos "(${num_combos} << ${list_count}) - 1")
   set(LIST_OUT "")
-  foreach (c RANGE ${num_combos})
+  foreach (c RANGE 0 ${num_combos})
     set(current_combo "")
     # this is a little ridiculous just to iterate through a list w/ indices
     math(EXPR last_list_index "${list_count} - 1")
@@ -55,6 +56,7 @@ function(AllCombinations list_in)
     endforeach ()
     list(APPEND LIST_OUT ${current_combo})
   endforeach ()
+  list(APPEND LIST_OUT " ") # Empty set is a valic combination, but CMake isn't appending the empty string for some reason, use a space
   set(LIST_OUT ${LIST_OUT} PARENT_SCOPE)
 endfunction ()
 
@@ -76,7 +78,7 @@ function(GenerateObjects sources_in defines_in)
       endforeach ()
 
       # parse file name
-      string(REGEX MATCH "[a-z]+_[LR]" source_name ${source_file})
+      string(REGEX MATCH "^[a-zA-Z_]+" source_name ${source_file})
       string(TOUPPER ${source_name} source_name)
 
       # prepend the uppercased file name to the obj name
@@ -84,7 +86,9 @@ function(GenerateObjects sources_in defines_in)
 
       # now add the object and set the defines
       add_library(${obj_name} OBJECT ${source_file})
-      set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${def_combo}")
+      if (NOT "${def_combo}" STREQUAL " ") # using space as the empty set
+        set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${def_combo}")
+      endif ()
     endforeach ()
   endforeach ()
 endfunction ()
@@ -93,6 +97,9 @@ endfunction ()
 set(TRM_SOURCES trmm_L.c trmm_R.c trsm_L.c trsm_R.c)
 set(TRM_DEFINES TRANS UPPER UNIT)
 GenerateObjects("${TRM_SOURCES}" "${TRM_DEFINES}")
+
+# TODO: also need to set NN for all these objs (add param to GenerateObjects for defines that apply to all
+GenerateObjects("symm_k.c" "LOWER;RSIDE")
 
 #	dsymm_LU.c dsymm_LL.c dsymm_RU.c dsymm_RL.c
 #	dsyrk_UN.c dsyrk_UT.c dsyrk_LN.c dsyrk_LT.c
