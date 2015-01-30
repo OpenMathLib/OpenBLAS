@@ -65,18 +65,6 @@ endif ()
 include("${CMAKE_SOURCE_DIR}/cmake/c_check.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/f_check.cmake")
 
-# Reads string from getarch into CMake vars. Format of getarch vars is VARNAME=VALUE
-function(ParseGetArchVars GETARCH_IN)
-  string(REGEX MATCHALL "[0-9_a-zA-Z]+=[0-9_a-zA-Z]+" GETARCH_RESULT_LIST "${GETARCH_IN}")
-  foreach (GETARCH_LINE ${GETARCH_RESULT_LIST})
-    # split the line into var and value, then assign the value to a CMake var
-    string(REGEX MATCHALL "[0-9_a-zA-Z]+" SPLIT_VAR "${GETARCH_LINE}")
-    list(GET SPLIT_VAR 0 VAR_NAME)
-    list(GET SPLIT_VAR 1 VAR_VALUE)
-    set(${VAR_NAME} ${VAR_VALUE} PARENT_SCOPE)
-  endforeach ()
-endfunction ()
-
 # compile getarch
 enable_language(ASM)
 set(GETARCH_DIR "${PROJECT_BINARY_DIR}/getarch_build")

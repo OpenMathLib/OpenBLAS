@@ -13,6 +13,7 @@ project(OpenBLAS)
 
 message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with.")
 
+include("${CMAKE_SOURCE_DIR}/cmake/utils.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/system.cmake")
 
 set(BLASDIRS interface driver/level2 driver/level3 driver/others)
