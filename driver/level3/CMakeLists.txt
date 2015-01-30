@@ -58,35 +58,41 @@ function(AllCombinations list_in)
   set(LIST_OUT ${LIST_OUT} PARENT_SCOPE)
 endfunction ()
 
+# generates object files for each of the sources for each of the combinations of the preprocessor definitions passed in
+function(GenerateObjects sources_in defines_in)
+  AllCombinations("${defines_in}")
+  set(define_combos ${LIST_OUT})
+  foreach (source_file ${sources_in})
+    foreach (def_combo ${define_combos})
+
+      # replace colon separated list with semicolons, this turns it into a CMake list that we can use foreach with
+      string(REPLACE ":" ";" def_combo ${def_combo})
+
+      # build a unique variable name for this obj file by picking two letters from the defines (can't use one in this case)
+      set(obj_name "")
+      foreach (combo_elem ${def_combo})
+        string(REGEX MATCH "^[A-Z][A-Z]" letter ${combo_elem})
+        set(obj_name "${obj_name}${letter}")
+      endforeach ()
+
+      # parse file name
+      string(REGEX MATCH "[a-z]+_[LR]" source_name ${source_file})
+      string(TOUPPER ${source_name} source_name)
+
+      # prepend the uppercased file name to the obj name
+      set(obj_name "${source_name}_${obj_name}_OBJS")
+
+      # now add the object and set the defines
+      add_library(${obj_name} OBJECT ${source_file})
+      set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${def_combo}")
+    endforeach ()
+  endforeach ()
+endfunction ()
+
 # these sources are compiled with combinations of TRANS, UPPER, and UNIT, for 32 combinations total
 set(TRM_SOURCES trmm_L.c trmm_R.c trsm_L.c trsm_R.c)
-AllCombinations("TRANS;UPPER;UNIT")
-set(TRM_DEFINE_COMBOS ${LIST_OUT})
-foreach (trm_source ${TRM_SOURCES})
-  foreach (trm_defines ${TRM_DEFINE_COMBOS})
-
-    # replace colon separated list with semicolons, this turns it into a CMake list that we can use foreach with
-    string(REPLACE ":" ";" trm_defines ${trm_defines})
-
-    # build a unique variable name for this obj file by picking two letters from the defines (can't use one in this case)
-    set(trm_obj_name "")
-    foreach (trm_define ${trm_defines})
-      string(REGEX MATCH "^[A-Z][A-Z]" letter ${trm_define})
-      set(trm_obj_name "${trm_obj_name}${letter}")
-    endforeach ()
-
-    # parse file name
-    string(REGEX MATCH "[a-z]+_[LR]" trm_name ${trm_source})
-    string(TOUPPER ${trm_name} trm_name)
-
-    # prepend the uppercased file name to the obj name
-    set(trm_obj_name "${trm_name}_${trm_obj_name}_OBJS")
-
-    # now add the object and set the defines
-    add_library(${trm_obj_name} OBJECT ${trm_source})
-    set_target_properties(${trm_obj_name} PROPERTIES COMPILE_DEFINITIONS "${trm_defines}")
-  endforeach ()
-endforeach ()
+set(TRM_DEFINES TRANS UPPER UNIT)
+GenerateObjects("${TRM_SOURCES}" "${TRM_DEFINES}")
 
 #	dsymm_LU.c dsymm_LL.c dsymm_RU.c dsymm_RL.c
 #	dsyrk_UN.c dsyrk_UT.c dsyrk_LN.c dsyrk_LT.c
