@@ -39,7 +39,7 @@ set(SUBDIRS_ALL ${SUBDIRS} test ctest utest exports benchmark ../laswp ../bench)
 
 # all :: libs netlib tests shared
 
-# libs:
+# libs :
 if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
   message(FATAL_ERROR "Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for details.")
 endif ()
@@ -61,10 +61,13 @@ endforeach ()
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
 foreach (DBLAS_OBJ ${DBLAS_OBJS})
+  get_target_property(PREV_DEFS ${DBLAS_OBJ} COMPILE_DEFINITIONS)
+  set_target_properties(${DBLAS_OBJ} PROPERTIES COMPILE_DEFINITIONS "${PREV_DEFS};DOUBLE")
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${DBLAS_OBJ}>")
 endforeach ()
 add_library(openblas ${TARGET_OBJS})
 
+# TODO: Why is the config saved here? Is this necessary with CMake?
 #Save the config files for installation
 #	@cp Makefile.conf Makefile.conf_last
 #	@cp config.h config_last.h

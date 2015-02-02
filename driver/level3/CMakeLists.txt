@@ -31,13 +31,13 @@ foreach (GEMM_DEFINE ${GEMM_DEFINES})
 endforeach ()
 
 
-GenerateObjects("trmm_L.c;trmm_R.c;trsm_L.c;trsm_R.c" "TRANS;UPPER;UNIT" "DOUBLE")
+GenerateObjects("trmm_L.c;trmm_R.c;trsm_L.c;trsm_R.c" "TRANS;UPPER;UNIT" "")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-GenerateObjects("symm_k.c" "LOWER;RSIDE" "NN;DOUBLE")
+GenerateObjects("symm_k.c" "LOWER;RSIDE" "NN")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-GenerateObjects("syrk_k.c;syr2k_k.c" "LOWER;TRANS" "DOUBLE")
+GenerateObjects("syrk_k.c;syr2k_k.c" "LOWER;TRANS" "")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-GenerateObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "DOUBLE")
+GenerateObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 #if (SMP)
