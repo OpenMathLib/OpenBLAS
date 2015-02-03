@@ -64,3 +64,40 @@ if (${CMAKE_C_COMPILER} STREQUAL "PATHSCALE")
   endif ()
 endif ()
 
+if (${CMAKE_C_COMPILER} STREQUAL "OPEN64")
+
+  if (${ARCH} STREQUAL "mips64")
+
+    if (NOT BINARY64)
+      set(CCOMMON_OPT "${CCOMMON_OPT} -n32")
+    else ()
+      set(CCOMMON_OPT "${CCOMMON_OPT} -n64")
+    endif ()
+
+    if (${CORE} STREQUAL "LOONGSON3A")
+      set(CCOMMON_OPT "${CCOMMON_OPT} -loongson3 -static")
+    endif ()
+
+    if (${CORE} STREQUAL "LOONGSON3B")
+      set(CCOMMON_OPT "${CCOMMON_OPT} -loongson3 -static")
+    endif ()
+
+  else ()
+
+    if (BINARY64)
+      set(CCOMMON_OPT "${CCOMMON_OPT} -m32")
+    else ()
+      set(CCOMMON_OPT "${CCOMMON_OPT} -m64")
+    endif ()
+  endif
+endif
+
+if (${CMAKE_C_COMPILER} STREQUAL "SUN")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -w")
+  if (${ARCH} STREQUAL "x86")
+    set(CCOMMON_OPT "${CCOMMON_OPT} -m32")
+  else ()
+    set(FCOMMON_OPT "${FCOMMON_OPT} -m64")
+  endif ()
+endif ()
+
