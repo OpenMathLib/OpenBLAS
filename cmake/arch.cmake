@@ -90,13 +90,13 @@ if (${ARCH} STREQUAL "ia64")
     if (${CMAKE_C_COMPILER} STREQUAL "GNU")
       # EXPRECISION	= 1
       # CCOMMON_OPT	+= -DEXPRECISION
-    endif
-  endif
-endif
+    endif ()
+  endif ()
+endif ()
 
 if (${ARCH} STREQUAL "mips64")
   set(NO_BINARY_MODE 1)
-endif
+endif ()
 
 if (${ARCH} STREQUAL "alpha")
   set(NO_BINARY_MODE 1)

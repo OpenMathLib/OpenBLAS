@@ -73,7 +73,7 @@ endif ()
 if (CYGWIN)
   set(NEED_PIC 0)
   set(NO_EXPRECISION 1)
-endif
+endif ()
 
 if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Interix")
   if (SMP)
@@ -98,5 +98,5 @@ endif ()
 if (SANITY_CHECK)
   # TODO: need some way to get $(*F) (target filename)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DSANITY_CHECK -DREFNAME=$(*F)f${BU}")
-endif
+endif ()
 
