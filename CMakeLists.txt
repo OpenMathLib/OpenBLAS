@@ -4,6 +4,10 @@
 
 cmake_minimum_required(VERSION 2.8.4)
 project(OpenBLAS)
+set(OpenBLAS_MAJOR_VERSION 0)
+set(OpenBLAS_MINOR_VERSION 2)
+set(OpenBLAS_PATCH_VERSION 13)
+set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 # is this necessary? lapack-netlib has its own fortran checks in its CMakeLists.txt
 #enable_language(Fortran)

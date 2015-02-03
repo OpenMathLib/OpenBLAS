@@ -7,8 +7,20 @@
 ##              This is triggered by prebuild.cmake and runs before any of the code is built.
 ##              Appends Fortran information to config.h and Makefile.conf.
 
+# CMake vars set by this file:
+# F_COMPILER
+# FC
+# BU
+# NOFORTRAN
+# NEED2UNDERSCORES
+# FEXTRALIB
 
-if (NOT ${ONLY_CBLAS})
+# Defines set by this file:
+# BUNDERSCORE
+# NEEDBUNDERSCORE
+# NEED2UNDERSCORES
+
+if (NOT ONLY_CBLAS)
   # N.B. f_check is not cross-platform, so instead try to use CMake variables
   # run f_check (appends to TARGET files)
 #  message(STATUS "Running f_check...")
@@ -30,6 +42,7 @@ else ()
   #When we only build CBLAS, we set NOFORTRAN=2
   set(NOFORTRAN 2)
   set(NO_FBLAS 1)
+  #set(F_COMPILER GFORTRAN) # CMake handles the fortran compiler
   set(BU "_")
   file(APPEND ${TARGET_CONF}
     "#define BUNDERSCORE _\n"

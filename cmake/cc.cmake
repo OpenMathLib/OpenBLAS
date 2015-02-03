@@ -6,8 +6,8 @@
 if (${CMAKE_C_COMPILER} STREQUAL "GNU" OR ${CMAKE_C_COMPILER} STREQUAL "LSB" OR ${CMAKE_C_COMPILER} STREQUAL "Clang")
 
   set(CCOMMON_OPT "${CCOMMON_OPT} -Wall")
-  COMMON_PROF += -fno-inline
-  NO_UNINITIALIZED_WARN =  -Wno-uninitialized
+  set(COMMON_PROF "${COMMON_PROF} -fno-inline")
+  set(NO_UNINITIALIZED_WARN "-Wno-uninitialized")
 
   if (QUIET_MAKE)
     set(CCOMMON_OPT "${CCOMMON_OPT} ${NO_UNINITIALIZED_WARN} -Wno-unused")
@@ -89,8 +89,8 @@ if (${CMAKE_C_COMPILER} STREQUAL "OPEN64")
     else ()
       set(CCOMMON_OPT "${CCOMMON_OPT} -m64")
     endif ()
-  endif
-endif
+  endif ()
+endif ()
 
 if (${CMAKE_C_COMPILER} STREQUAL "SUN")
   set(CCOMMON_OPT "${CCOMMON_OPT} -w")

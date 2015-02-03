@@ -6,19 +6,10 @@
 ##              Next it runs f_check and appends some fortran information to the files.
 ##              Finally it runs getarch and getarch_2nd for even more environment information.
 
-# List of vars set by this file and included files:
-# OSNAME
-# ARCH
-# C_COMPILER
-# BINARY32
-# BINARY64
-# CEXTRALIB
-# F_COMPILER
-# FC
-# BU
-# CORE <- REQUIRED
+# CMake vars set by this file:
+# CORE
 # LIBCORE
-# NUM_CORES <- REQUIRED
+# NUM_CORES
 # HAVE_MMX
 # HAVE_SSE
 # HAVE_SSE2

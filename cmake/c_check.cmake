@@ -4,6 +4,26 @@
 ##              This is triggered by prebuild.cmake and runs before any of the code is built.
 ##              Creates config.h and Makefile.conf.
 
+# CMake vars set by this file:
+# OSNAME (use CMAKE_SYSTEM_NAME)
+# ARCH
+# C_COMPILER (use CMAKE_C_COMPILER)
+# BINARY32
+# BINARY64
+# FU
+# CROSS_SUFFIX
+# CROSS
+# CEXTRALIB
+
+# Defines set by this file:
+# OS_
+# ARCH_
+# C_
+# __32BIT__
+# __64BIT__
+# FUNDERSCORE
+# PTHREAD_CREATE_FUNC
+
 # N.B. c_check (and ctest.c) is not cross-platform, so instead try to use CMake variables.
 
 # TODO: detect NEED_FU
@@ -23,17 +43,25 @@ if (NOT DEFINED BINARY)
   endif ()
 endif ()
 
+if (BINARY EQUAL 64)
+  set(BINARY64 1)
+else ()
+  set(BINARY32 1)
+endif ()
+
 # CMake docs define these:
 # CMAKE_SYSTEM_PROCESSOR - The name of the CPU CMake is building for.
 # CMAKE_HOST_SYSTEM_PROCESSOR - The name of the CPU CMake is running on.
-set(HOST_ARCH ${CMAKE_SYSTEM_PROCESSOR})
-if (${HOST_ARCH} STREQUAL "AMD64")
-  set(HOST_ARCH "X86_64")
+#
+# TODO: CMAKE_SYSTEM_PROCESSOR doesn't seem to be correct - instead get it from the compiler a la c_check
+set(ARCH ${CMAKE_SYSTEM_PROCESSOR})
+if (${ARCH} STREQUAL "AMD64")
+  set(ARCH "X86_64")
 endif ()
 
 # If you are using a 32-bit compiler on a 64-bit system CMAKE_SYSTEM_PROCESSOR will be wrong
-if (${HOST_ARCH} STREQUAL "X86_64" AND BINARY EQUAL 32)
-  set(HOST_ARCH X86)
+if (${ARCH} STREQUAL "X86_64" AND BINARY EQUAL 32)
+  set(ARCH X86)
 endif ()
 
 set(COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
@@ -43,7 +71,7 @@ endif ()
 
 file(WRITE ${TARGET_CONF}
   "#define OS_${HOST_OS}\t1\n"
-  "#define ARCH_${HOST_ARCH}\t1\n"
+  "#define ARCH_${ARCH}\t1\n"
   "#define C_${COMPILER_ID}\t1\n"
   "#define __${BINARY}BIT__\t1\n"
   "#define FUNDERSCORE\t${NEED_FU}\n")
