@@ -12,7 +12,7 @@ if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64")
   endif ()
 
   if (NOT NO_EXPRECISION)
-    if (${CMAKE_Fortran_COMPILER} MATCHES "gfortran.*")
+    if (${F_COMPILER} MATCHES "GFORTRAN")
       # N.B. I'm not sure if CMake differentiates between GCC and LSB -hpa
       if (${CMAKE_C_COMPILER} STREQUAL "GNU" OR ${CMAKE_C_COMPILER} STREQUAL "LSB")
         set(EXPRECISION	1)
@@ -86,7 +86,7 @@ if (${ARCH} STREQUAL "ia64")
   set(NO_BINARY_MODE 1)
   set(BINARY_DEFINED 1)
 
-  if (${CMAKE_Fortran_COMPILER} MATCHES "gfortran.*")
+  if (${F_COMPILER} MATCHES "GFORTRAN")
     if (${CMAKE_C_COMPILER} STREQUAL "GNU")
       # EXPRECISION	= 1
       # CCOMMON_OPT	+= -DEXPRECISION

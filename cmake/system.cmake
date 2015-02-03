@@ -72,7 +72,7 @@ if (CMAKE_CXX_COMPILER STREQUAL loongcc)
 endif ()
 
 #if don't use Fortran, it will only compile CBLAS.
-if (${ONLY_CBLAS})
+if (ONLY_CBLAS)
   set(NO_LAPACK 1)
 else ()
   set(ONLY_CBLAS 0)
@@ -81,12 +81,10 @@ endif ()
 include("${CMAKE_SOURCE_DIR}/cmake/prebuild.cmake")
 
 if (NOT DEFINED NUM_THREADS)
-  # TODO: NUM_CORES comes from `getarch.c` or `cpuid_x86.c`. This is built and executed above in `Makefile.prebuild`, and the results are in `Makefile.conf` and `Makefile_kernel.conf`. -hpa
   set(NUM_THREADS ${NUM_CORES})
 endif ()
 
 if (${NUM_THREADS} EQUAL 1)
-  # TODO: was "override USE_THREAD = 0", do we need "override" here? -hpa
   set(USE_THREAD 0)
 endif ()
 
@@ -150,7 +148,7 @@ if (NEED_PIC)
     set(CCOMMON_OPT "${CCOMMON_OPT} -fPIC")
   endif ()
 
-  if (${CMAKE_Fortran_COMPILER} STREQUAL "SUN")
+  if (${F_COMPILER} STREQUAL "SUN")
     set(FCOMMON_OPT "${FCOMMON_OPT} -pic")
   else ()
     set(FCOMMON_OPT "${FCOMMON_OPT} -fPIC")
