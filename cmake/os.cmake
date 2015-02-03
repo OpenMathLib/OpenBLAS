@@ -1,7 +1,5 @@
 ##
 ## Author: Hank Anderson <hank@statease.com>
-## Created: 12/29/14
-## Last Modified: 12/29/14
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Detects the OS and sets appropriate variables.
 
@@ -58,7 +56,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
   # Ensure the correct stack alignment on Win32
   # http://permalink.gmane.org/gmane.comp.lib.openblas.general/97
-  if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86")
+  if (${ARCH} STREQUAL "x86")
     set(CCOMMON_OPT "${CCOMMON_OPT} -mincoming-stack-boundary=2")
     set(FCOMMON_OPT "${FCOMMON_OPT} -mincoming-stack-boundary=2")
   endif ()
@@ -88,7 +86,7 @@ if (QUAD_PRECISION)
   set(NO_EXPRECISION 1)
 endif ()
 
-if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86")
+if (${ARCH} STREQUAL "x86")
   set(NO_EXPRECISION 1)
 endif ()
 

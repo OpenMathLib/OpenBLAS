@@ -1,8 +1,5 @@
 ##
 ## Author: Hank Anderson <hank@statease.com>
-## Copyright: (c) Stat-Ease, Inc.
-## Created: 12/29/14
-## Last Modified: 12/29/14
 ## Description: Ported from OpenBLAS/Makefile.system
 ##
 
@@ -133,4 +130,9 @@ set(OBJCONV "$(CROSS_SUFFIX)objconv")
 #  OS dependent settings
 #
 include("${CMAKE_SOURCE_DIR}/cmake/os.cmake")
+
+#
+#  Architecture dependent settings
+#
+include("${CMAKE_SOURCE_DIR}/cmake/arch.cmake")
 

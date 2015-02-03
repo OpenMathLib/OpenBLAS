@@ -1,8 +1,5 @@
 ##
 ## Author: Hank Anderson <hank@statease.com>
-## Copyright: (c) Stat-Ease, Inc.
-## Created: 12/29/14
-## Last Modified: 12/29/14
 ## Description: Ported from OpenBLAS/Makefile.prebuild
 ##              This is triggered by system.cmake and runs before any of the code is built.
 ##              Creates config.h and Makefile.conf by first running the c_check perl script (which creates those files).

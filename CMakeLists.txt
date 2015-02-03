@@ -1,8 +1,5 @@
 ##
 ## Author: Hank Anderson <hank@statease.com>
-## Copyright: (c) Stat-Ease, Inc.
-## Created: 12/23/14
-## Last Modified: 12/23/14
 ##
 
 cmake_minimum_required(VERSION 2.8.4)

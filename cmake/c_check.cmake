@@ -1,8 +1,5 @@
 ##
 ## Author: Hank Anderson <hank@statease.com>
-## Copyright: (c) Stat-Ease, Inc.
-## Created: 12/29/14
-## Last Modified: 12/29/14
 ## Description: Ported from the OpenBLAS/c_check perl script.
 ##              This is triggered by prebuild.cmake and runs before any of the code is built.
 ##              Creates config.h and Makefile.conf.
