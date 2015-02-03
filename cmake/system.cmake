@@ -134,3 +134,6 @@ include("${CMAKE_SOURCE_DIR}/cmake/arch.cmake")
 # C Compiler dependent settings
 include("${CMAKE_SOURCE_DIR}/cmake/cc.cmake")
 
+# Fortran Compiler dependent settings
+include("${CMAKE_SOURCE_DIR}/cmake/fc.cmake")
+
