@@ -338,7 +338,6 @@ set(LAPACK_FPFLAGS "${LAPACK_FPFLAGS} ${FPFLAGS}")
 
 #Disable -fopenmp for LAPACK Fortran codes on Windows.
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  message(STATUS "FFLAGS: ${LAPACK_FFLAGS}")
   set(FILTER_FLAGS "-fopenmp;-mp;-openmp;-xopenmp=parralel")
   foreach (FILTER_FLAG ${FILTER_FLAGS})
     string(REPLACE ${FILTER_FLAG} "" LAPACK_FFLAGS ${LAPACK_FFLAGS})
@@ -358,4 +357,167 @@ endif ()
 if (${CMAKE_C_COMPILER} STREQUAL "LSB")
   set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_COMPLEX_STRUCTURE")
 endif ()
+
+if (NOT DEFINED SUFFIX)
+  set(SUFFIX o)
+endif ()
+
+if (NOT DEFINED PSUFFIX)
+  set(PSUFFIX po)
+endif ()
+
+if (NOT DEFINED LIBSUFFIX)
+  set(LIBSUFFIX a)
+endif ()
+
+if (DYNAMIC_ARCH)
+  if (DEFINED SMP)
+    set(LIBNAME "${LIBPREFIX}p${REVISION}.${LIBSUFFIX}")
+    set(LIBNAME_P	"${LIBPREFIX}p${REVISION}_p.${LIBSUFFIX}")
+  else ()
+    set(LIBNAME "${LIBPREFIX}${REVISION}.${LIBSUFFIX}")
+    set(LIBNAME_P	"${LIBPREFIX}${REVISION}_p.${LIBSUFFIX}")
+  endif ()
+else ()
+  if (DEFINED SMP)
+    set(LIBNAME "${LIBPREFIX}_${LIBCORE}p${REVISION}.${LIBSUFFIX}")
+    set(LIBNAME_P	"${LIBPREFIX}_${LIBCORE}p${REVISION}_p.${LIBSUFFIX}")
+  else ()
+    set(LIBNAME	"${LIBPREFIX}_${LIBCORE}${REVISION}.${LIBSUFFIX}")
+    set(LIBNAME_P	"${LIBPREFIX}_${LIBCORE}${REVISION}_p.${LIBSUFFIX}")
+  endif ()
+endif ()
+
+
+set(LIBDLLNAME "${LIBPREFIX}.dll")
+set(LIBSONAME "${LIBNAME}.${LIBSUFFIX}.so")
+set(LIBDYNNAME "${LIBNAME}.${LIBSUFFIX}.dylib")
+set(LIBDEFNAME "${LIBNAME}.${LIBSUFFIX}.def")
+set(LIBEXPNAME "${LIBNAME}.${LIBSUFFIX}.exp")
+set(LIBZIPNAME "${LIBNAME}.${LIBSUFFIX}.zip")
+
+set(LIBS "${CMAKE_SOURCE_DIR}/${LIBNAME}")
+set(LIBS_P "${CMAKE_SOURCE_DIR}/${LIBNAME_P}")
+
+
+set(LIB_COMPONENTS BLAS)
+if (NOT NO_CBLAS)
+  set(LIB_COMPONENTS "${LIB_COMPONENTS} CBLAS")
+endif ()
+
+if (NOT NO_LAPACK)
+  set(LIB_COMPONENTS "${LIB_COMPONENTS} LAPACK")
+  if (NOT NO_LAPACKE)
+    set(LIB_COMPONENTS "${LIB_COMPONENTS} LAPACKE")
+  endif ()
+endif ()
+
+if (ONLY_CBLAS)
+  set(LIB_COMPONENTS CBLAS)
+endif ()
+
+#export OSNAME
+#export ARCH
+#export CORE
+#export LIBCORE
+#export PGCPATH
+#export CONFIG
+#export CC
+#export FC
+#export BU
+#export FU
+#export NEED2UNDERSCORES
+#export USE_THREAD
+#export NUM_THREADS
+#export NUM_CORES
+#export SMP
+#export MAKEFILE_RULE
+#export NEED_PIC
+#export BINARY
+#export BINARY32
+#export BINARY64
+#export F_COMPILER
+#export C_COMPILER
+#export USE_OPENMP
+#export CROSS
+#export CROSS_SUFFIX
+#export NOFORTRAN
+#export NO_FBLAS
+#export EXTRALIB
+#export CEXTRALIB
+#export FEXTRALIB
+#export HAVE_SSE
+#export HAVE_SSE2
+#export HAVE_SSE3
+#export HAVE_SSSE3
+#export HAVE_SSE4_1
+#export HAVE_SSE4_2
+#export HAVE_SSE4A
+#export HAVE_SSE5
+#export HAVE_AVX
+#export HAVE_VFP
+#export HAVE_VFPV3
+#export HAVE_VFPV4
+#export HAVE_NEON
+#export KERNELDIR
+#export FUNCTION_PROFILE
+#export TARGET_CORE
+#
+#export SGEMM_UNROLL_M
+#export SGEMM_UNROLL_N
+#export DGEMM_UNROLL_M
+#export DGEMM_UNROLL_N
+#export QGEMM_UNROLL_M
+#export QGEMM_UNROLL_N
+#export CGEMM_UNROLL_M
+#export CGEMM_UNROLL_N
+#export ZGEMM_UNROLL_M
+#export ZGEMM_UNROLL_N
+#export XGEMM_UNROLL_M
+#export XGEMM_UNROLL_N
+#export CGEMM3M_UNROLL_M
+#export CGEMM3M_UNROLL_N
+#export ZGEMM3M_UNROLL_M
+#export ZGEMM3M_UNROLL_N
+#export XGEMM3M_UNROLL_M
+#export XGEMM3M_UNROLL_N
+
+
+#if (USE_CUDA)
+#  export CUDADIR
+#  export CUCC
+#  export CUFLAGS
+#  export CULIB
+#endif
+
+#.SUFFIXES: .$(PSUFFIX) .$(SUFFIX) .f
+#
+#.f.$(SUFFIX):
+#	$(FC) $(FFLAGS) -c $<  -o $(@F)
+#
+#.f.$(PSUFFIX):
+#	$(FC) $(FPFLAGS) -pg -c $<  -o $(@F)
+
+# these are not cross-platform
+#ifdef BINARY64
+#PATHSCALEPATH	= /opt/pathscale/lib/3.1
+#PGIPATH		= /opt/pgi/linux86-64/7.1-5/lib
+#else
+#PATHSCALEPATH	= /opt/pathscale/lib/3.1/32
+#PGIPATH		= /opt/pgi/linux86/7.1-5/lib
+#endif
+
+#ACMLPATH	= /opt/acml/4.3.0
+#ifneq ($(OSNAME), Darwin)
+#MKLPATH         = /opt/intel/mkl/10.2.2.025/lib
+#else
+#MKLPATH         = /Library/Frameworks/Intel_MKL.framework/Versions/10.0.1.014/lib
+#endif
+#ATLASPATH	= /opt/atlas/3.9.17/opteron
+#FLAMEPATH	= $(HOME)/flame/lib
+#ifneq ($(OSNAME), SunOS)
+#SUNPATH		= /opt/sunstudio12.1
+#else
+#SUNPATH		= /opt/SUNWspro
+#endif
 
