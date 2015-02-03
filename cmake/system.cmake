@@ -125,14 +125,12 @@ set(DLLWRAP "$(CROSS_SUFFIX)dllwrap")
 set(OBJCOPY "$(CROSS_SUFFIX)objcopy")
 set(OBJCONV "$(CROSS_SUFFIX)objconv")
 
-
-#
-#  OS dependent settings
-#
+# OS dependent settings
 include("${CMAKE_SOURCE_DIR}/cmake/os.cmake")
 
-#
-#  Architecture dependent settings
-#
+# Architecture dependent settings
 include("${CMAKE_SOURCE_DIR}/cmake/arch.cmake")
+
+# C Compiler dependent settings
+include("${CMAKE_SOURCE_DIR}/cmake/cc.cmake")
 
