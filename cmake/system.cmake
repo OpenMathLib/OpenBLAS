@@ -128,5 +128,9 @@ set(DLLWRAP "$(CROSS_SUFFIX)dllwrap")
 set(OBJCOPY "$(CROSS_SUFFIX)objcopy")
 set(OBJCONV "$(CROSS_SUFFIX)objconv")
 
-# TODO: convert rest of Makefile.system, left off at "OS dependent settings"
+
+#
+#  OS dependent settings
+#
+include("${CMAKE_SOURCE_DIR}/cmake/os.cmake")
 
