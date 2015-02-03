@@ -324,4 +324,38 @@ if (NOT DEFINED COMMON_OPT)
   set(COMMON_OPT "-O2")
 endif ()
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_OPT} ${CCOMMON_OPT}")
+# TODO: not sure what PFLAGS is -hpa
+set(PFLAGS "${PFLAGS} ${COMMON_OPT} ${CCOMMON_OPT} -I${TOPDIR} -DPROFILE ${COMMON_PROF}")
+
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${COMMON_OPT} ${FCOMMON_OPT}")
+# TODO: not sure what FPFLAGS is -hpa
+set(FPFLAGS "${FPFLAGS} ${COMMON_OPT} ${FCOMMON_OPT} ${COMMON_PROF}")
+
+#For LAPACK Fortran codes.
+set(LAPACK_FFLAGS "${LAPACK_FFLAGS} ${CMAKE_Fortran_FLAGS}")
+set(LAPACK_FPFLAGS "${LAPACK_FPFLAGS} ${FPFLAGS}")
+
+#Disable -fopenmp for LAPACK Fortran codes on Windows.
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  message(STATUS "FFLAGS: ${LAPACK_FFLAGS}")
+  set(FILTER_FLAGS "-fopenmp;-mp;-openmp;-xopenmp=parralel")
+  foreach (FILTER_FLAG ${FILTER_FLAGS})
+    string(REPLACE ${FILTER_FLAG} "" LAPACK_FFLAGS ${LAPACK_FFLAGS})
+    string(REPLACE ${FILTER_FLAG} "" LAPACK_FPFLAGS ${LAPACK_FPFLAGS})
+  endforeach ()
+endif ()
+
+set(LAPACK_CFLAGS "${CMAKE_C_CFLAGS} -DHAVE_LAPACK_CONFIG_H")
+if (INTERFACE64)
+  set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_ILP64")
+endif ()
+
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DOPENBLAS_OS_WINDOWS")
+endif ()
+
+if (${CMAKE_C_COMPILER} STREQUAL "LSB")
+  set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_COMPLEX_STRUCTURE")
+endif ()
 
