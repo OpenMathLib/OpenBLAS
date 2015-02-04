@@ -27,68 +27,59 @@ set(BLAS3_SOURCES
   omatcopy.c imatcopy.c
 )
 
+# generate the BLAS objs once with and once without cblas
+set (CBLAS_FLAGS "")
 
 if (NOT DEFINED NO_FBLAS)
-
-  GenerateNamedObjects("${BLAS1_SOURCES}" "DOUBLE" "" "")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("${BLAS2_SOURCES}" "DOUBLE" "" "")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("${BLAS3_SOURCES}" "DOUBLE" "" "")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
-  # trmm is trsm with a compiler flag set
-  GenerateNamedObjects("trsm.c" "DOUBLE" "TRMM" "trmm")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
-  # max and imax are compiled 4 times
-  GenerateNamedObjects("max.c" "DOUBLE" "" "")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS" "amax")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS;USE_MIN" "amin")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("max.c" "DOUBLE" "USE_MIN" "min")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
-  GenerateNamedObjects("imax.c" "DOUBLE" "" "i*max")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS" "i*amax")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS;USE_MIN" "i*amin")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("imax.c" "DOUBLE" "USE_MIN" "i*min")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
+  list(APPEND CBLAS_FLAGS 0)
 endif ()
 
 if (NOT DEFINED NO_CBLAS)
-
-  add_library(ISAMAX_OBJ OBJECT imax.c)
-  set_target_properties(ISAMAX_OBJ PROPERTIES COMPILE_DEFINITIONS "CBLAS;USE_ABS")
-
-  add_library(CDBLAS1_OBJS OBJECT ${BLAS1_SOURCES})
-  add_library(CDBLAS2_OBJS OBJECT ${BLAS2_SOURCES})
-  add_library(CDBLAS3_OBJS OBJECT ${BLAS3_SOURCES})
-
-  # trmm is trsm with a compiler flag set
-  add_library(CTRMM_OBJ OBJECT trsm.c)
-  set_target_properties(CTRMM_OBJ PROPERTIES COMPILE_DEFINITIONS "CBLAS;TRMM")
-
-  set_target_properties(CDBLAS1_OBJS PROPERTIES COMPILE_DEFINITIONS "CBLAS")
-  set_target_properties(CDBLAS2_OBJS PROPERTIES COMPILE_DEFINITIONS "CBLAS")
-  set_target_properties(CDBLAS3_OBJS PROPERTIES COMPILE_DEFINITIONS "CBLAS")
-
-  list(APPEND DBLAS_OBJS "CDBLAS1_OBJS;CDBLAS2_OBJS;CDBLAS3_OBJS;ISAMAX_OBJ;CTRMM_OBJ")
+  list(APPEND CBLAS_FLAGS 1)
 endif ()
 
+foreach (CBLAS_FLAG ${CBLAS_FLAGS})
+
+  GenerateNamedObjects("${BLAS1_SOURCES}" "DOUBLE" "" "" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("${BLAS2_SOURCES}" "DOUBLE" "" "" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("${BLAS3_SOURCES}" "DOUBLE" "" "" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  # trmm is trsm with a compiler flag set
+  GenerateNamedObjects("trsm.c" "DOUBLE" "TRMM" "trmm" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  # max and imax are compiled 4 times
+  GenerateNamedObjects("max.c" "DOUBLE" "" "" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS" "amax" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS;USE_MIN" "amin" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("max.c" "DOUBLE" "USE_MIN" "min" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  GenerateNamedObjects("imax.c" "DOUBLE" "" "i*max" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS" "i*amax" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS;USE_MIN" "i*amin" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("imax.c" "DOUBLE" "USE_MIN" "i*min" ${CBLAS_FLAG})
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+endforeach ()
+
 if (NOT DEFINED NO_LAPACK)
-  add_library(DLAPACK_OBJS OBJECT
+  set(LAPACK_SOURCES
     lapack/getrf.c lapack/getrs.c lapack/potrf.c lapack/getf2.c
     lapack/potf2.c lapack/laswp.c lapack/gesv.c lapack/lauu2.c
     lapack/lauum.c lapack/trti2.c lapack/trtri.c
   )
-  list(APPEND DBLAS_OBJS "DLAPACK_OBJS")
+  GenerateNamedObjects("${LAPACK_SOURCES}" "DOUBLE" "" "" 0)
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 endif ()
 
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS

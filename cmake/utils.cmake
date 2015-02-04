@@ -94,7 +94,7 @@ endfunction ()
 # @param defines_in (optional) preprocessor definitions that will be applied to all objects
 # @param name_in (optional) if this is set this name will be used instead of the filename. Use a * to indicate where the float character should go, if no star the character will be prepended.
 #                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
-function(GenerateNamedObjects sources_in float_type_in defines_in name_in)
+function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cblas)
   set(OBJ_LIST_OUT "")
   foreach (source_file ${sources_in})
 
@@ -114,10 +114,18 @@ function(GenerateNamedObjects sources_in float_type_in defines_in name_in)
     endif ()
 
     # now add the object and set the defines
-    add_library(${obj_name} OBJECT ${source_file})
-    set(obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
+    set(obj_defines ${defines_in})
+
+    if (use_cblas)
+      set(obj_name "cblas_${obj_name}")
+      list(APPEND obj_defines "CBLAS")
+    endif ()
+
+    list(APPEND obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
     list(APPEND obj_defines ${defines_in})
     list(APPEND obj_defines ${float_type_in})
+
+    add_library(${obj_name} OBJECT ${source_file})
     set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${obj_defines}")
 
     list(APPEND OBJ_LIST_OUT ${obj_name})
