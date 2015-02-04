@@ -6,8 +6,32 @@ else ()
   set(MEMORY memory.c)
 endif ()
 
+if (SMP)
+
+  if (USE_OPENMP)
+    set(BLAS_SERVER blas_server_omp.c)
+  elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    set(BLAS_SERVER blas_server_win32.c)
+  endif ()
+
+  if (NOT DEFINED BLAS_SERVER)
+    set(BLAS_SERVER blas_server.c)
+  endif ()
+
+  set(SMP_SOURCES
+    ${BLAS_SERVER}
+    divtable.c # TODO: Makefile has -UDOUBLE
+    blas_l1_thread.c
+  )
+
+  if (NOT NO_AFFINITY)
+    list(APPEND SMP_SOURCES init.c)
+  endif ()
+endif ()
+
 add_library(COMMON_OBJS OBJECT
   ${MEMORY}
+  ${SMP_SOURCES}
   xerbla.c
   abs.c # TODO: this is split into c_abs (DOUBLE unset) and z_abs (DOUBLE set) in the Makefile
   openblas_set_num_threads.c
@@ -16,13 +40,6 @@ add_library(COMMON_OBJS OBJECT
   openblas_error_handle.c
 )
 
-#ifdef SMP
-#COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX)
-#ifndef NO_AFFINITY
-#COMMONOBJS	+= init.$(SUFFIX)
-#endif
-#endif
-#
 #ifeq ($(DYNAMIC_ARCH), 1)
 #COMMONOBJS	+=  dynamic.$(SUFFIX)
 #else
@@ -48,25 +65,7 @@ add_library(COMMON_OBJS OBJECT
 list(APPEND DBLAS_OBJS "COMMON_OBJS")
 
 #LIBOTHERS = libothers.$(LIBSUFFIX)
-#
-#ifeq ($(USE_OPENMP), 1)
-#BLAS_SERVER = blas_server_omp.c
-#else
-#ifeq ($(OSNAME), WINNT)
-#BLAS_SERVER = blas_server_win32.c
-#endif
-#ifeq ($(OSNAME), CYGWIN_NT)
-#BLAS_SERVER = blas_server_win32.c
-#endif
-#ifeq ($(OSNAME), Interix)
-#BLAS_SERVER = blas_server_win32.c
-#endif
-#endif
-#
-#ifndef BLAS_SERVER
-#BLAS_SERVER = blas_server.c
-#endif
-#
+
 #ifeq ($(DYNAMIC_ARCH), 1)
 #HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
 #else
