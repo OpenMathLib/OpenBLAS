@@ -1,0 +1,83 @@
+
+include_directories(${CMAKE_SOURCE_DIR})
+
+# TODO: laswp needs arch specific code
+# TODO: getrs needs to be compiled with and without TRANS (and up to TRANS=4 in the complex case)
+# TODO: trti2 needs to be compiled with and without UNIT
+# TODO: trtri needs to be compiled with and without UNIT
+
+set(LAPACK_SOURCES
+  getf2/getf2_k.c
+  getrf/getrf_single.c
+  getrs/getrs_single.c
+  potrf/potrf_U_single.c
+  potrf/potrf_L_single.c
+  potf2/potf2_U.c
+  potf2/potf2_L.c
+  lauu2/lauu2_U.c
+  lauu2/lauu2_L.c
+  lauum/lauum_U_single.c
+  lauum/lauum_L_single.c
+  trti2/trti2_U.c
+  trti2/trti2_L.c
+  trtri/trtri_U_single.c
+  trtri/trtri_L_single.c
+)
+
+set(ZLAPACK_SOURCES
+  getf2/zgetf2_k.c
+  getrf/getrf_single.c
+  getrs/zgetrs_single.c
+  potrf/potrf_U_single.c
+  potrf/potrf_L_single.c
+  potf2/potf2_U.c
+  potf2/potf2_L.c
+  lauu2/zlauu2_U.c
+  lauu2/zlauu2_L.c
+  lauum/lauum_U_single.c
+  lauum/lauum_L_single.c
+  trti2/ztrti2_U.c
+  trti2/ztrti2_L.c
+  trtri/trtri_U_single.c
+  trtri/trtri_L_single.c
+)
+
+GenerateNamedObjects("${LAPACK_SOURCES}" "DOUBLE" "" "" 0)
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+if (SMP)
+
+  if (USE_OPENMP)
+    set(GETRF_SRC getrf/getrf_parallel_omp.c)
+  else ()
+    set(GETRF_SRC getrf/getrf_parallel.c)
+  endif ()
+
+  set(PARALLEL_SOURCES
+    ${GETRF_SRC}
+    getrs/getrs_parallel.c
+    potrf/potrf_U_parallel.c
+    potrf/potrf_L_parallel.c
+    lauum/lauum_U_parallel.c
+    lauum/lauum_L_parallel.c
+    trtri/trtri_U_parallel.c
+    trtri/trtri_L_parallel.c
+  )
+
+  set(ZPARALLEL_SOURCES
+    ${GETRF_SRC}
+    getrs/zgetrs_parallel.c
+    potrf/potrf_U_parallel.c
+    potrf/potrf_L_parallel.c
+    lauum/lauum_U_parallel.c
+    lauum/lauum_L_parallel.c
+    trtri/trtri_U_parallel.c
+    trtri/trtri_L_parallel.c
+  )
+
+  GenerateNamedObjects("${PARALLEL_SOURCES}" "DOUBLE" "" "" 0)
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+endif ()
+
+set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
+

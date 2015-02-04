@@ -32,7 +32,7 @@ if (DEFINED SANITY_CHECK)
 endif ()
 
 set(SUBDIRS	${BLASDIRS})
-if (NOT ${NO_LAPACK})
+if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
 endif ()
 
@@ -55,8 +55,8 @@ if (${NO_STATIC} AND ${NO_SHARED})
 endif ()
 
 set(DBLAS_OBJS "")
-foreach (BLAS_DIR ${BLASDIRS})
-  add_subdirectory(${BLAS_DIR})
+foreach (SUBDIR ${SUBDIRS})
+  add_subdirectory(${SUBDIR})
 endforeach ()
 
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
