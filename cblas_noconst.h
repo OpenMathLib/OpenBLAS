@@ -13,6 +13,12 @@ extern "C" {
 void openblas_set_num_threads(int num_threads);
 void goto_set_num_threads(int num_threads);
 
+/*Get the number of threads on runtime.*/
+int openblas_get_num_threads(void);
+
+/*Get the number of physical processors (cores).*/
+int openblas_get_num_procs(void);
+
 /*Get the build configure on runtime.*/
 char* openblas_get_config(void);
 
