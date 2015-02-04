@@ -92,21 +92,26 @@ endfunction ()
 # @param sources_in the source files to build from
 # @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
 # @param defines_in (optional) preprocessor definitions that will be applied to all objects
-function(GenerateNamedObjects sources_in float_type_in defines_in)
+# @param name_in (optional) if this is set this name will be used instead of the filename. Use a * to indicate where the float character should go, if no star the character will be prepended.
+#                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
+function(GenerateNamedObjects sources_in float_type_in defines_in name_in)
   set(OBJ_LIST_OUT "")
   foreach (source_file ${sources_in})
-
-    get_filename_component(source_name ${source_file} NAME_WE)
 
     string(SUBSTRING ${float_type_in} 0 1 float_char)
     string(TOLOWER ${float_char} float_char)
 
-    # build a unique variable name for this obj file by picking two letters from the defines (can't use one in this case)
-    set(obj_name "${float_char}${source_name}")
-
-    # parse file name
-    string(REGEX MATCH "^[a-zA-Z_0-9]+" source_name ${source_file})
-    string(TOUPPER ${source_name} source_name)
+    if (NOT name_in)
+      get_filename_component(source_name ${source_file} NAME_WE)
+      set(obj_name "${float_char}${source_name}")
+    else ()
+      # replace * with float_char
+      if (${name_in} MATCHES "\\*")
+        string(REPLACE "*" ${float_char} obj_name ${name_in})
+      else ()
+        set(obj_name "${float_char}${name_in}")
+      endif ()
+    endif ()
 
     # now add the object and set the defines
     add_library(${obj_name} OBJECT ${source_file})

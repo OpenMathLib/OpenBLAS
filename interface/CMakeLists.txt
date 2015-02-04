@@ -30,25 +30,36 @@ set(BLAS3_SOURCES
 
 if (NOT DEFINED NO_FBLAS)
 
-  # N.B. The original Makefile passed in -UUSE_MIN and -UUSE_ABS (where appropriate), no way to do that at a source-level in cmake. REMOVE_DEFINITIONS removes a definition for the rest of the compilation.
-  add_library(AMAX_OBJ OBJECT max.c)
-  set_target_properties(AMAX_OBJ PROPERTIES COMPILE_DEFINITIONS "USE_ABS")
-  add_library(AMIN_OBJ OBJECT max.c)
-  set_target_properties(AMIN_OBJ PROPERTIES COMPILE_DEFINITIONS "USE_ABS;USE_MIN")
-  add_library(MIN_OBJ OBJECT max.c)
-  set_target_properties(MIN_OBJ PROPERTIES COMPILE_DEFINITIONS "USE_MIN")
-  add_library(MAX_OBJ OBJECT max.c)
-
-  GenerateNamedObjects("${BLAS1_SOURCES}" "DOUBLE" "")
-  GenerateNamedObjects("${BLAS2_SOURCES}" "DOUBLE" "")
-  GenerateNamedObjects("${BLAS3_SOURCES}" "DOUBLE" "")
+  GenerateNamedObjects("${BLAS1_SOURCES}" "DOUBLE" "" "")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("${BLAS2_SOURCES}" "DOUBLE" "" "")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("${BLAS3_SOURCES}" "DOUBLE" "" "")
   list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
   # trmm is trsm with a compiler flag set
-  add_library(TRMM_OBJ OBJECT trsm.c)
-  set_target_properties(TRMM_OBJ PROPERTIES COMPILE_DEFINITIONS "TRMM")
+  GenerateNamedObjects("trsm.c" "DOUBLE" "TRMM" "trmm")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-  list(APPEND DBLAS_OBJS "AMAX_OBJ;AMIN_OBJ;MIN_OBJ;MAX_OBJ;TRMM_OBJ")
+  # max and imax are compiled 4 times
+  GenerateNamedObjects("max.c" "DOUBLE" "" "")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS" "amax")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS;USE_MIN" "amin")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("max.c" "DOUBLE" "USE_MIN" "min")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  GenerateNamedObjects("imax.c" "DOUBLE" "" "i*max")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS" "i*amax")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS;USE_MIN" "i*amin")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("imax.c" "DOUBLE" "USE_MIN" "i*min")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
 endif ()
 
 if (NOT DEFINED NO_CBLAS)
