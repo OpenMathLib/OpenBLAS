@@ -26,7 +26,7 @@
 
 # N.B. c_check (and ctest.c) is not cross-platform, so instead try to use CMake variables.
 
-# TODO: detect NEED_FU
+# TODO: detect NEED_FU/FU
 set(NEED_FU 1)
 
 # Convert CMake vars into the format that OpenBLAS expects

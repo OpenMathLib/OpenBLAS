@@ -88,3 +88,35 @@ function(GenerateObjects sources_in defines_in all_defines_in)
   set(OBJ_LIST_OUT ${OBJ_LIST_OUT} PARENT_SCOPE)
 endfunction ()
 
+# generates object files for each of the sources, using the BLAS naming scheme to pass the funciton name as a preprocessor definition
+# @param sources_in the source files to build from
+# @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
+# @param defines_in (optional) preprocessor definitions that will be applied to all objects
+function(GenerateNamedObjects sources_in float_type_in defines_in)
+  set(OBJ_LIST_OUT "")
+  foreach (source_file ${sources_in})
+
+    get_filename_component(source_name ${source_file} NAME_WE)
+
+    string(SUBSTRING ${float_type_in} 0 1 float_char)
+    string(TOLOWER ${float_char} float_char)
+
+    # build a unique variable name for this obj file by picking two letters from the defines (can't use one in this case)
+    set(obj_name "${float_char}${source_name}")
+
+    # parse file name
+    string(REGEX MATCH "^[a-zA-Z_0-9]+" source_name ${source_file})
+    string(TOUPPER ${source_name} source_name)
+
+    # now add the object and set the defines
+    add_library(${obj_name} OBJECT ${source_file})
+    set(obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
+    list(APPEND obj_defines ${defines_in})
+    list(APPEND obj_defines ${float_type_in})
+    set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${obj_defines}")
+
+    list(APPEND OBJ_LIST_OUT ${obj_name})
+
+  endforeach ()
+  set(OBJ_LIST_OUT ${OBJ_LIST_OUT} PARENT_SCOPE)
+endfunction ()

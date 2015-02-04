@@ -27,8 +27,7 @@ if (NOT ONLY_CBLAS)
 #  execute_process(COMMAND perl f_check ${TARGET_MAKE} ${TARGET_CONF} ${CMAKE_Fortran_COMPILER}
 #    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
-  # TODO: is BU makefile macro needed?
-  # TODO: detect whether underscore needed, set #defines appropriately - use try_compile
+  # TODO: detect whether underscore needed, set #defines and BU appropriately - use try_compile
   # TODO: set FEXTRALIB flags a la f_check?
 
   set(BU "_")

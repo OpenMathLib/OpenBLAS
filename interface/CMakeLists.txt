@@ -39,15 +39,16 @@ if (NOT DEFINED NO_FBLAS)
   set_target_properties(MIN_OBJ PROPERTIES COMPILE_DEFINITIONS "USE_MIN")
   add_library(MAX_OBJ OBJECT max.c)
 
-  add_library(DBLAS1OBJS OBJECT ${BLAS1_SOURCES})
-  add_library(DBLAS2OBJS OBJECT ${BLAS2_SOURCES})
-  add_library(DBLAS3OBJS OBJECT ${BLAS3_SOURCES})
+  GenerateNamedObjects("${BLAS1_SOURCES}" "DOUBLE" "")
+  GenerateNamedObjects("${BLAS2_SOURCES}" "DOUBLE" "")
+  GenerateNamedObjects("${BLAS3_SOURCES}" "DOUBLE" "")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
   # trmm is trsm with a compiler flag set
   add_library(TRMM_OBJ OBJECT trsm.c)
   set_target_properties(TRMM_OBJ PROPERTIES COMPILE_DEFINITIONS "TRMM")
 
-  list(APPEND DBLAS_OBJS "DBLAS1OBJS;DBLAS2OBJS;DBLAS3OBJS;AMAX_OBJ;AMIN_OBJ;MIN_OBJ;MAX_OBJ;TRMM_OBJ")
+  list(APPEND DBLAS_OBJS "AMAX_OBJ;AMIN_OBJ;MIN_OBJ;MAX_OBJ;TRMM_OBJ")
 endif ()
 
 if (NOT DEFINED NO_CBLAS)

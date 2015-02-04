@@ -251,7 +251,7 @@ set(KERNELDIR	"${CMAKE_SOURCE_DIR}/kernel/${ARCH}")
 # include ${CMAKE_SOURCE_DIR}/cmake/${ARCH}.cmake
 
 # TODO: Need to figure out how to get $(*F) in cmake
-set(CCOMMON_OPT "${CCOMMON_OPT} -DASMNAME=${FU}$(*F) -DASMFNAME=${FU}$(*F)${BU} -DNAME=$(*F)${BU} -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)${BU}\" -DCHAR_CNAME=\"$(*F)\"")
+#set(CCOMMON_OPT "${CCOMMON_OPT} -DASMNAME=${FU}$(*F) -DASMFNAME=${FU}$(*F)${BU} -DNAME=$(*F)${BU} -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)${BU}\" -DCHAR_CNAME=\"$(*F)\"")
 
 if (${CORE} STREQUAL "PPC440")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DALLOC_QALLOC")
