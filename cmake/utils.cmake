@@ -68,12 +68,12 @@ endfunction ()
 # @param defines_in (optional) preprocessor definitions that will be applied to all objects
 # @param name_in (optional) if this is set this name will be used instead of the filename. Use a * to indicate where the float character should go, if no star the character will be prepended.
 #                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
-# @param replace_k_with replaces the "k" in the filename with this string (e.g. symm_k should be symm_TU)
+# @param replace_last_with replaces the last character in the filename with this string (e.g. symm_k should be symm_TU)
 # @param append_with appends the filename with this string (e.g. trmm_R should be trmm_RTUU or some other combination of characters)
 function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cblas)
 
   if (DEFINED ARGV5)
-    set(replace_k_with ${ARGV5})
+    set(replace_last_with ${ARGV5})
   endif ()
 
   if (DEFINED ARGV6)
@@ -98,8 +98,8 @@ function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cb
       endif ()
     endif ()
 
-    if (replace_k_with)
-      string(REGEX REPLACE "k$" ${replace_k_with} obj_name ${obj_name})
+    if (replace_last_with)
+      string(REGEX REPLACE ".$" ${replace_last_with} obj_name ${obj_name})
     else ()
       set(obj_name "${obj_name}${append_with}")
     endif ()
@@ -130,8 +130,11 @@ endfunction ()
 # @param defines_in the preprocessor definitions that will be combined to create the object files
 # @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
 # @param all_defines_in (optional) preprocessor definitions that will be applied to all objects
-# @param replace_k If 1, replace the "k" in the filename with the define combo letters. E.g. symm_k with TRANS and UNIT defined will be symm_TU. If 0, appends, or if 2 appends with an underscore.
-function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_type_in all_defines_in replace_k)
+# @param replace_scheme If 1, replace the "k" in the filename with the define combo letters. E.g. symm_k.c with TRANS and UNIT defined will be symm_TU.
+#                  If 0, it will simply append the code, e.g. symm_L.c with TRANS and UNIT will be symm_LTU.
+#                  If 2, it will append the code with an underscore, e.g. symm.c with TRANS and UNIT will be symm_TU.
+#                  If 3, it will insert the code *around* the last character with an underscore, e.g. symm_L.c with TRANS and UNIT will be symm_TLU (required by BLAS level2 objects).
+function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_type_in all_defines_in replace_scheme)
 
   AllCombinations("${defines_in}" "${absent_codes_in}")
   set(define_combos ${LIST_OUT})
@@ -159,20 +162,28 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_
         list(APPEND cur_defines ${all_defines_in})
       endif ()
 
-      set(replace_k_name "")
-      set(append_name "")
-      if (replace_k EQUAL 1)
-        set(replace_k_name ${define_code})
+      set(replace_code "")
+      set(append_code "")
+      if (replace_scheme EQUAL 1)
+        set(replace_code ${define_code})
       else ()
-        if (replace_k EQUAL 2)
-          set(append_name "_${define_code}")
+        if (replace_scheme EQUAL 2)
+          set(append_code "_${define_code}")
+        elseif (replace_scheme EQUAL 3)
+          # first extract the last letter
+          string(REGEX MATCH "[a-zA-Z]\\." last_letter ${source_file})
+          string(SUBSTRING ${last_letter} 0 1 last_letter) # remove period from match
+          # break the code up into the first letter and the remaining (should only be 2 anyway)
+          string(SUBSTRING ${define_code} 0 1 define_code_first)
+          string(SUBSTRING ${define_code} 1 -1 define_code_second)
+          set(replace_code "${define_code_first}${last_letter}${define_code_second}")
         else ()
-          set(append_name ${define_code})
+          set(append_code ${define_code}) # replace_scheme should be 0
         endif ()
       endif ()
 
-      GenerateNamedObjects("${source_file}" "${float_type_in}" "${cur_defines}" "" 0 "${replace_k_name}" "${append_name}") 
-      list(APPEND COMBO_OBJ_LIST_OUT ${obj_name})
+      GenerateNamedObjects("${source_file}" "${float_type_in}" "${cur_defines}" "" 0 "${replace_code}" "${append_code}") 
+      list(APPEND COMBO_OBJ_LIST_OUT "${OBJ_LIST_OUT}")
     endforeach ()
   endforeach ()
 

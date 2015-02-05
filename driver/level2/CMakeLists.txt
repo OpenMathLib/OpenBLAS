@@ -1,8 +1,6 @@
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-# TODO: These all need NAME/CNAME set (see GenerateNamedObjects)
-
 # sources that need to be compiled twice, once with no flags and once with LOWER
 set(UL_SOURCES
   sbmv_k.c
@@ -29,30 +27,20 @@ set(NU_SOURCES
   trsv_L.c
 )
 
-# first compile all the objects that don't need specific preprocessor defines
-add_library(DBLAS_NONE OBJECT
-  gbmv_k.c # gbmv_N
-  ${UL_SOURCES}
-  ${NU_SOURCES}
-)
-
-# then do objects with transpose/triangular/etc definitions
-
-# objects that need TRANS set
-add_library(DBLAS_T OBJECT gbmv_k.c ${NU_SOURCES})
-set_target_properties(DBLAS_T PROPERTIES COMPILE_DEFINITIONS "TRANS")
-
 # objects that need LOWER set
-add_library(DBLAS_L OBJECT ${UL_SOURCES})
-set_target_properties(DBLAS_L PROPERTIES COMPILE_DEFINITIONS "LOWER")
-
-# objects that need UNIT set
-add_library(DBLAS_U OBJECT ${NU_SOURCES})
-set_target_properties(DBLAS_U PROPERTIES COMPILE_DEFINITIONS "UNIT")
+GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "DOUBLE" "" 1)
+list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
 # objects that need TRANS and UNIT set
-add_library(DBLAS_TU OBJECT ${NU_SOURCES})
-set_target_properties(DBLAS_TU PROPERTIES COMPILE_DEFINITIONS "UNIT;TRANS")
+# N.B. BLAS wants to put the U/L from the filename in the *MIDDLE* because of course why not have a different naming scheme for every single object -hpa
+GenerateCombinationObjects("${NU_SOURCES}" "TRANS;UNIT" "N;N" "DOUBLE" "" 3)
+list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+
+# gbmv uses a lowercase n and t. WHY? WHO KNOWS!
+GenerateNamedObjects("gbmv_k.c" "DOUBLE" "" "gbmv_n" 0)
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("gbmv_k.c" "DOUBLE" "TRANS" "gbmv_t" 0)
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 #if (DEFINED SMP)
 #  add_library(DBLASOBJS_SMP
@@ -81,6 +69,5 @@ set_target_properties(DBLAS_TU PROPERTIES COMPILE_DEFINITIONS "UNIT;TRANS")
 #  )
 #endif ()
 
-list(APPEND DBLAS_OBJS "DBLAS_NONE;DBLAS_T;DBLAS_L;DBLAS_U;DBLAS_TU")
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
 
