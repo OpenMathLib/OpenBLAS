@@ -83,8 +83,10 @@ function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cb
   set(OBJ_LIST_OUT "")
   foreach (source_file ${sources_in})
 
-    string(SUBSTRING ${float_type_in} 0 1 float_char)
-    string(TOLOWER ${float_char} float_char)
+    if (NOT float_type_in STREQUAL "")
+      string(SUBSTRING ${float_type_in} 0 1 float_char)
+      string(TOLOWER ${float_char} float_char)
+    endif ()
 
     if (NOT name_in)
       get_filename_component(source_name ${source_file} NAME_WE)
@@ -134,7 +136,12 @@ endfunction ()
 #                  If 0, it will simply append the code, e.g. symm_L.c with TRANS and UNIT will be symm_LTU.
 #                  If 2, it will append the code with an underscore, e.g. symm.c with TRANS and UNIT will be symm_TU.
 #                  If 3, it will insert the code *around* the last character with an underscore, e.g. symm_L.c with TRANS and UNIT will be symm_TLU (required by BLAS level2 objects).
+# @param alternate_name replaces the source name as the object name (define codes are still appended)
 function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_type_in all_defines_in replace_scheme)
+
+  if (DEFINED ARGV6)
+    set(alternate_name ${ARGV6})
+  endif ()
 
   AllCombinations("${defines_in}" "${absent_codes_in}")
   set(define_combos ${LIST_OUT})
@@ -182,7 +189,7 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_
         endif ()
       endif ()
 
-      GenerateNamedObjects("${source_file}" "${float_type_in}" "${cur_defines}" "" 0 "${replace_code}" "${append_code}") 
+      GenerateNamedObjects("${source_file}" "${float_type_in}" "${cur_defines}" "${alternate_name}" 0 "${replace_code}" "${append_code}")
       list(APPEND COMBO_OBJ_LIST_OUT "${OBJ_LIST_OUT}")
     endforeach ()
   endforeach ()

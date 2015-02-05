@@ -28,6 +28,10 @@ foreach (GEMM_DEFINE ${GEMM_DEFINES})
   string(TOLOWER ${GEMM_DEFINE} GEMM_DEFINE_LC)
   GenerateNamedObjects("gemm.c" "DOUBLE" "${GEMM_DEFINE}" "gemm_${GEMM_DEFINE_LC}" 0)
   list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  if (SMP AND NOT USE_SIMPLE_THREADED_LEVEL3)
+    GenerateNamedObjects("gemm.c" "DOUBLE" "${GEMM_DEFINE};THREADED_LEVEL3" "gemm_thread_${GEMM_DEFINE_LC}" 0)
+    list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  endif ()
 endforeach ()
 
 GenerateCombinationObjects("trmm_L.c;trmm_R.c;trsm_L.c;trsm_R.c" "TRANS;UPPER;UNIT" "N;L;N" "DOUBLE" "" 0)
@@ -39,19 +43,20 @@ list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 GenerateCombinationObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "U" "DOUBLE" "" 2)
 list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
-#if (SMP)
-#
-#  COMMONOBJS  += gemm_thread_m.c gemm_thread_n.c gemm_thread_mn.c gemm_thread_variable.c
-#  COMMONOBJS  += syrk_thread.c
-#
-#  if (USE_SIMPLE_THREADED_LEVEL3)
-#    DBLASOBJS    += dgemm_thread_nn.c dgemm_thread_nt.c dgemm_thread_tn.c dgemm_thread_tt.c
-#    DBLASOBJS    += dsymm_thread_LU.c dsymm_thread_LL.c dsymm_thread_RU.c dsymm_thread_RL.c
-#    DBLASOBJS    += dsyrk_thread_UN.c dsyrk_thread_UT.c dsyrk_thread_LN.c dsyrk_thread_LT.c
-#
-#  endif ()
-#endif ()
-#
+if (SMP)
+
+  # N.B. these do NOT have a float type (e.g. DOUBLE) defined!
+  GenerateNamedObjects("gemm_thread_m.c;gemm_thread_n.c;gemm_thread_mn.c;gemm_thread_variable.c;syrk_thread.c" "" "" "" 0)
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  if (NOT USE_SIMPLE_THREADED_LEVEL3)
+    GenerateCombinationObjects("syrk_k.c" "LOWER;TRANS" "U;N" "DOUBLE" "THREADED_LEVEL3" 2 "syrk_thread")
+    list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+    GenerateCombinationObjects("symm_k.c" "RSIDE;LOWER" "L;U" "DOUBLE" "THREADED_LEVEL3;NN" 2 "symm_thread")
+    list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+  endif ()
+endif ()
+
 #HPLOBJS =
 #	dgemm_nn.c dgemm_nt.c dgemm_tn.c dgemm_tt.c
 #	dtrsm_LNUU.c dtrsm_LNUN.c dtrsm_LNLU.c dtrsm_LNLN.c
