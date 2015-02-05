@@ -15,9 +15,10 @@ endfunction ()
 # Returns all combinations of the input list, as a list with colon-separated combinations
 # E.g. input of A B C returns A B C A:B A:C B:C
 # N.B. The input is meant to be a list, and to past a list to a function in CMake you must quote it (e.g. AllCombinations("${LIST_VAR}")).
+# #param absent_codes codes to use when an element is absent from a combination. For example, if you have TRANS;UNIT;UPPER you may want the code to be NNL when nothing is present.
 # @returns LIST_OUT a list of combinations
 #          CODES_OUT a list of codes corresponding to each combination, with N meaning the item is not present, and the first letter of the list item meaning it is presen
-function(AllCombinations list_in)
+function(AllCombinations list_in absent_codes_in)
   list(LENGTH list_in list_count)
   set(num_combos 1)
   # subtract 1 since we will iterate from 0 to num_combos
@@ -43,7 +44,7 @@ function(AllCombinations list_in)
         endif ()
         string(SUBSTRING ${list_elem} 0 1 code_char)
       else ()
-        set(code_char "N")
+        list(GET absent_codes_in ${list_index} code_char)
       endif ()
       set(current_code "${current_code}${code_char}")
     endforeach ()
@@ -122,9 +123,9 @@ endfunction ()
 # @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
 # @param all_defines_in (optional) preprocessor definitions that will be applied to all objects
 # @param replace_k If 1, replace the "k" in the filename with the define combo letters. E.g. symm_k with TRANS and UNIT defined will be symm_TU. If 0, appends, or if 2 appends with an underscore.
-function(GenerateCombinationObjects sources_in defines_in float_type_in all_defines_in replace_k)
+function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_type_in all_defines_in replace_k)
 
-  AllCombinations("${defines_in}")
+  AllCombinations("${defines_in}" "${absent_codes_in}")
   set(define_combos ${LIST_OUT})
   set(define_codes ${CODES_OUT})
 
