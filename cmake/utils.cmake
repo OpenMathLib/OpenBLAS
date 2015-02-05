@@ -23,6 +23,7 @@ function(AllCombinations list_in)
   # subtract 1 since we will iterate from 0 to num_combos
   math(EXPR num_combos "(${num_combos} << ${list_count}) - 1")
   set(LIST_OUT "")
+  set(CODES_OUT "")
   foreach (c RANGE 0 ${num_combos})
 
     set(current_combo "")
@@ -119,8 +120,8 @@ endfunction ()
 # @param sources_in the source files to build from
 # @param defines_in the preprocessor definitions that will be combined to create the object files
 # @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
-# @param replace_k Replace the "k" in the filename with the define combo letters (else it appends). E.g. symm_k with TRANS and UNIT defined will be symm_TU.
 # @param all_defines_in (optional) preprocessor definitions that will be applied to all objects
+# @param replace_k If 1, replace the "k" in the filename with the define combo letters. E.g. symm_k with TRANS and UNIT defined will be symm_TU. If 0, appends, or if 2 appends with an underscore.
 function(GenerateCombinationObjects sources_in defines_in float_type_in all_defines_in replace_k)
 
   AllCombinations("${defines_in}")
@@ -151,10 +152,14 @@ function(GenerateCombinationObjects sources_in defines_in float_type_in all_defi
 
       set(replace_k_name "")
       set(append_name "")
-      if (replace_k)
+      if (replace_k EQUAL 1)
         set(replace_k_name ${define_code})
       else ()
-        set(append_name ${define_code})
+        if (replace_k EQUAL 2)
+          set(append_name "_${define_code}")
+        else ()
+          set(append_name ${define_code})
+        endif ()
       endif ()
 
       GenerateNamedObjects("${source_file}" "${float_type_in}" "${cur_defines}" "" 0 "${replace_k_name}" "${append_name}") 
@@ -164,3 +169,4 @@ function(GenerateCombinationObjects sources_in defines_in float_type_in all_defi
 
   set(COMBO_OBJ_LIST_OUT ${COMBO_OBJ_LIST_OUT} PARENT_SCOPE)
 endfunction ()
+

@@ -50,7 +50,7 @@ GenerateCombinationObjects("symm_k.c" "LOWER;RSIDE" "DOUBLE" "NN" 1)
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateCombinationObjects("syrk_k.c;syr2k_k.c" "LOWER;TRANS" "DOUBLE" "" 1)
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-GenerateCombinationObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "DOUBLE" "" 1)
+GenerateCombinationObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "DOUBLE" "" 2)
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 #if (SMP)
