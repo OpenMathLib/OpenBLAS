@@ -15,6 +15,8 @@ endfunction ()
 # Returns all combinations of the input list, as a list with colon-separated combinations
 # E.g. input of A B C returns A B C A:B A:C B:C
 # N.B. The input is meant to be a list, and to past a list to a function in CMake you must quote it (e.g. AllCombinations("${LIST_VAR}")).
+# @returns LIST_OUT a list of combinations
+#          CODES_OUT a list of codes corresponding to each combination, with N meaning the item is not present, and the first letter of the list item meaning it is presen
 function(AllCombinations list_in)
   list(LENGTH list_in list_count)
   set(num_combos 1)
@@ -22,7 +24,10 @@ function(AllCombinations list_in)
   math(EXPR num_combos "(${num_combos} << ${list_count}) - 1")
   set(LIST_OUT "")
   foreach (c RANGE 0 ${num_combos})
+
     set(current_combo "")
+    set(current_code "")
+
     # this is a little ridiculous just to iterate through a list w/ indices
     math(EXPR last_list_index "${list_count} - 1")
     foreach (list_index RANGE 0 ${last_list_index})
@@ -35,57 +40,24 @@ function(AllCombinations list_in)
         else ()
           set(current_combo ${list_elem})
         endif ()
-      endif ()
-    endforeach ()
-    list(APPEND LIST_OUT ${current_combo})
-  endforeach ()
-  list(APPEND LIST_OUT " ") # Empty set is a valic combination, but CMake isn't appending the empty string for some reason, use a space
-  set(LIST_OUT ${LIST_OUT} PARENT_SCOPE)
-endfunction ()
-
-# generates object files for each of the sources for each of the combinations of the preprocessor definitions passed in
-# @param sources_in the source files to build from
-# @param defines_in the preprocessor definitions that will be combined to create the object files
-# @param all_defines_in (optional) preprocessor definitions that will be applied to all objects
-function(GenerateObjects sources_in defines_in all_defines_in)
-  AllCombinations("${defines_in}")
-  set(define_combos ${LIST_OUT})
-  set(OBJ_LIST_OUT "")
-  foreach (source_file ${sources_in})
-    foreach (def_combo ${define_combos})
-
-      # replace colon separated list with semicolons, this turns it into a CMake list that we can use foreach with
-      string(REPLACE ":" ";" def_combo ${def_combo})
-
-      # build a unique variable name for this obj file by picking two letters from the defines (can't use one in this case)
-      set(obj_name "")
-      foreach (combo_elem ${def_combo})
-        string(REGEX MATCH "^[A-Z][A-Z]" letter ${combo_elem})
-        set(obj_name "${obj_name}${letter}")
-      endforeach ()
-
-      # parse file name
-      string(REGEX MATCH "^[a-zA-Z_0-9]+" source_name ${source_file})
-      string(TOUPPER ${source_name} source_name)
-
-      # prepend the uppercased file name to the obj name
-      set(obj_name "${source_name}_${obj_name}_OBJS")
-
-      # now add the object and set the defines
-      add_library(${obj_name} OBJECT ${source_file})
-      set(cur_defines ${def_combo})
-      if ("${cur_defines}" STREQUAL " ")
-        set(cur_defines ${all_defines_in})
+        string(SUBSTRING ${list_elem} 0 1 code_char)
       else ()
-        list(APPEND cur_defines ${all_defines_in})
+        set(code_char "N")
       endif ()
-      if (cur_defines AND NOT "${cur_defines}" STREQUAL " ") # using space as the empty set
-        set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${cur_defines}")
-      endif ()
-      list(APPEND OBJ_LIST_OUT ${obj_name})
+      set(current_code "${current_code}${code_char}")
     endforeach ()
+
+    if (current_combo STREQUAL "")
+      list(APPEND LIST_OUT " ") # Empty set is a valid combination, but CMake isn't appending the empty string for some reason, use a space
+    else ()
+      list(APPEND LIST_OUT ${current_combo})
+    endif ()
+    list(APPEND CODES_OUT ${current_code})
+
   endforeach ()
-  set(OBJ_LIST_OUT ${OBJ_LIST_OUT} PARENT_SCOPE)
+
+  set(LIST_OUT ${LIST_OUT} PARENT_SCOPE)
+  set(CODES_OUT ${CODES_OUT} PARENT_SCOPE)
 endfunction ()
 
 # generates object files for each of the sources, using the BLAS naming scheme to pass the funciton name as a preprocessor definition
@@ -94,7 +66,10 @@ endfunction ()
 # @param defines_in (optional) preprocessor definitions that will be applied to all objects
 # @param name_in (optional) if this is set this name will be used instead of the filename. Use a * to indicate where the float character should go, if no star the character will be prepended.
 #                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
-function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cblas)
+# @param replace_k_with replaces the "k" in the filename with this string (e.g. symm_k should be symm_TU)
+# @param append_with appends the filename with this string (e.g. trmm_R should be trmm_RTUU or some other combination of characters)
+function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cblas replace_k_with append_with)
+
   set(OBJ_LIST_OUT "")
   foreach (source_file ${sources_in})
 
@@ -111,6 +86,12 @@ function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cb
       else ()
         set(obj_name "${float_char}${name_in}")
       endif ()
+    endif ()
+
+    if (replace_k_with)
+      string(REGEX REPLACE "k$" ${replace_k_with} obj_name ${obj_name})
+    else ()
+      set(obj_name "${obj_name}${append_with}")
     endif ()
 
     # now add the object and set the defines
@@ -132,4 +113,54 @@ function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cb
 
   endforeach ()
   set(OBJ_LIST_OUT ${OBJ_LIST_OUT} PARENT_SCOPE)
+endfunction ()
+
+# generates object files for each of the sources for each of the combinations of the preprocessor definitions passed in
+# @param sources_in the source files to build from
+# @param defines_in the preprocessor definitions that will be combined to create the object files
+# @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
+# @param replace_k Replace the "k" in the filename with the define combo letters (else it appends). E.g. symm_k with TRANS and UNIT defined will be symm_TU.
+# @param all_defines_in (optional) preprocessor definitions that will be applied to all objects
+function(GenerateCombinationObjects sources_in defines_in float_type_in all_defines_in replace_k)
+
+  AllCombinations("${defines_in}")
+  set(define_combos ${LIST_OUT})
+  set(define_codes ${CODES_OUT})
+
+  set(COMBO_OBJ_LIST_OUT "")
+  list(LENGTH define_combos num_combos)
+  math(EXPR num_combos "${num_combos} - 1")
+
+  foreach (c RANGE 0 ${num_combos})
+
+    list(GET define_combos ${c} define_combo)
+    list(GET define_codes ${c} define_code)
+
+    foreach (source_file ${sources_in})
+
+      # replace colon separated list with semicolons, this turns it into a CMake list that we can use foreach with
+      string(REPLACE ":" ";" define_combo ${define_combo})
+
+      # now add the object and set the defines
+      set(cur_defines ${define_combo})
+      if ("${cur_defines}" STREQUAL " ")
+        set(cur_defines ${all_defines_in})
+      else ()
+        list(APPEND cur_defines ${all_defines_in})
+      endif ()
+
+      set(replace_k_name "")
+      set(append_name "")
+      if (replace_k)
+        set(replace_k_name ${define_code})
+      else ()
+        set(append_name ${define_code})
+      endif ()
+
+      GenerateNamedObjects("${source_file}" "${float_type_in}" "${cur_defines}" "" 0 "${replace_k_name}" "${append_name}") 
+      list(APPEND COMBO_OBJ_LIST_OUT ${obj_name})
+    endforeach ()
+  endforeach ()
+
+  set(COMBO_OBJ_LIST_OUT ${COMBO_OBJ_LIST_OUT} PARENT_SCOPE)
 endfunction ()

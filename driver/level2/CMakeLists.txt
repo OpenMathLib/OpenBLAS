@@ -1,6 +1,8 @@
 
 include_directories(${CMAKE_SOURCE_DIR})
 
+# TODO: These all need NAME/CNAME set (see GenerateNamedObjects)
+
 # sources that need to be compiled twice, once with no flags and once with LOWER
 set(UL_SOURCES
   sbmv_k.c
