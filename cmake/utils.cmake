@@ -70,7 +70,15 @@ endfunction ()
 #                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
 # @param replace_k_with replaces the "k" in the filename with this string (e.g. symm_k should be symm_TU)
 # @param append_with appends the filename with this string (e.g. trmm_R should be trmm_RTUU or some other combination of characters)
-function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cblas replace_k_with append_with)
+function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cblas)
+
+  if (DEFINED ARGV5)
+    set(replace_k_with ${ARGV5})
+  endif ()
+
+  if (DEFINED ARGV6)
+    set(append_with ${ARGV6})
+  endif ()
 
   set(OBJ_LIST_OUT "")
   foreach (source_file ${sources_in})
