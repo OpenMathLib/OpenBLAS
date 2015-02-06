@@ -70,7 +70,21 @@ endfunction ()
 #                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
 # @param replace_last_with replaces the last character in the filename with this string (e.g. symm_k should be symm_TU)
 # @param append_with appends the filename with this string (e.g. trmm_R should be trmm_RTUU or some other combination of characters)
-function(GenerateNamedObjects sources_in float_type_in defines_in name_in use_cblas)
+function(GenerateNamedObjects sources_in float_type_in)
+
+  if (DEFINED ARGV2)
+    set(defines_in ${ARGV2})
+  endif ()
+
+  if (DEFINED ARGV3)
+    set(name_in ${ARGV3})
+  endif ()
+
+  if (DEFINED ARGV4)
+    set(use_cblas ${ARGV4})
+  else ()
+    set(use_cblas 0)
+  endif ()
 
   if (DEFINED ARGV5)
     set(replace_last_with ${ARGV5})
@@ -196,7 +210,6 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_
             set(extra_underscore "_")
           endif ()
           string(REGEX REPLACE "(.+)(_[^_]+)$" "\\1${extra_underscore}${define_code}\\2" alternate_name ${alternate_name})
-          message(STATUS ${alternate_name})
         else()
           set(append_code ${define_code}) # replace_scheme should be 0
         endif ()

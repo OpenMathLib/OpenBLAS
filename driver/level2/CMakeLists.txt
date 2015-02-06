@@ -11,7 +11,7 @@ set(UL_SOURCES
   syr2_k.c
 )
 
-# sources that need to be compiled several times, for UNIT, TRANS
+# sources that need to be compiled several times, for UNIT, TRANSA
 set(NU_SOURCES
   tbmv_U.c
   tbsv_U.c
@@ -31,43 +31,52 @@ set(NU_SOURCES
 GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "DOUBLE" "" 1)
 list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
-# objects that need TRANS and UNIT set
+# objects that need TRANSA and UNIT set
 # N.B. BLAS wants to put the U/L from the filename in the *MIDDLE* because of course why not have a different naming scheme for every single object -hpa
-GenerateCombinationObjects("${NU_SOURCES}" "TRANS;UNIT" "N;N" "DOUBLE" "" 3)
+GenerateCombinationObjects("${NU_SOURCES}" "TRANSA;UNIT" "N;N" "DOUBLE" "" 3)
 list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
 # gbmv uses a lowercase n and t. WHY? WHO KNOWS!
-GenerateNamedObjects("gbmv_k.c" "DOUBLE" "" "gbmv_n" 0)
+GenerateNamedObjects("gbmv_k.c" "DOUBLE" "" "gbmv_n")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-GenerateNamedObjects("gbmv_k.c" "DOUBLE" "TRANS" "gbmv_t" 0)
+GenerateNamedObjects("gbmv_k.c" "DOUBLE" "TRANS" "gbmv_t")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-#if (DEFINED SMP)
-#  add_library(DBLASOBJS_SMP
-#    dgemv_thread_n.c	dgemv_thread_t.c
-#    dger_thread.c
-#    dsymv_thread_U.c	dsymv_thread_L.c
-#    dsyr_thread_U.c		dsyr_thread_L.c
-#    dsyr2_thread_U.c	dsyr2_thread_L.c
-#    dspr_thread_U.c		dspr_thread_L.c
-#    dspr2_thread_U.c	dspr2_thread_L.c
-#    dtrmv_thread_NUU.c	dtrmv_thread_NUN.c
-#    dtrmv_thread_NLU.c	dtrmv_thread_NLN.c
-#    dtrmv_thread_TUU.c	dtrmv_thread_TUN.c
-#    dtrmv_thread_TLU.c	dtrmv_thread_TLN.c
-#    dspmv_thread_U.c	dspmv_thread_L.c
-#    dtpmv_thread_NUU.c	dtpmv_thread_NUN.c
-#    dtpmv_thread_NLU.c	dtpmv_thread_NLN.c
-#    dtpmv_thread_TUU.c	dtpmv_thread_TUN.c
-#    dtpmv_thread_TLU.c	dtpmv_thread_TLN.c
-#    dgbmv_thread_n.c	dgbmv_thread_t.c
-#    dsbmv_thread_U.c	dsbmv_thread_L.c
-#    dtbmv_thread_NUU.c	dtbmv_thread_NUN.c
-#    dtbmv_thread_NLU.c	dtbmv_thread_NLN.c
-#    dtbmv_thread_TUU.c	dtbmv_thread_TUN.c
-#    dtbmv_thread_TLU.c	dtbmv_thread_TLN.c
-#  )
-#endif ()
+if (SMP)
+
+  # gbmv uses a lowercase n and t
+  GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "" "gbmv_thread_n")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "TRANS" "gbmv_thread_t")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  GenerateNamedObjects("ger_thread.c" "DOUBLE")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  set(UL_SMP_SOURCES
+    symv_thread.c
+    syr_thread.c
+    syr2_thread.c
+    spr_thread.c
+    spr2_thread.c
+    spmv_thread.c
+    sbmv_thread.c
+  )
+
+  GenerateCombinationObjects("${UL_SMP_SOURCES}" "LOWER" "U" "DOUBLE" "" 2)
+  list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+
+
+  set(NU_SMP_SOURCES
+    trmv_thread.c
+    tpmv_thread.c
+    tbmv_thread.c
+  )
+
+  GenerateCombinationObjects("${NU_SMP_SOURCES}" "TRANSA;LOWER;UNIT" "N;U;N" "DOUBLE" "" 2)
+  list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+
+endif ()
 
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
 
