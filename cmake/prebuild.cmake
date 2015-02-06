@@ -54,7 +54,6 @@ include("${CMAKE_SOURCE_DIR}/cmake/c_check.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/f_check.cmake")
 
 # compile getarch
-enable_language(ASM)
 set(GETARCH_DIR "${PROJECT_BINARY_DIR}/getarch_build")
 set(GETARCH_BIN "getarch${CMAKE_EXECUTABLE_SUFFIX}")
 file(MAKE_DIRECTORY ${GETARCH_DIR})

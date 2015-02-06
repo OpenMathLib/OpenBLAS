@@ -9,8 +9,8 @@ set(OpenBLAS_MINOR_VERSION 2)
 set(OpenBLAS_PATCH_VERSION 13)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
-# is this necessary? lapack-netlib has its own fortran checks in its CMakeLists.txt
 enable_language(Fortran)
+enable_language(ASM)
 
 message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with.")
 
@@ -19,7 +19,7 @@ include("${CMAKE_SOURCE_DIR}/cmake/system.cmake")
 
 set(BLASDIRS interface driver/level2 driver/level3 driver/others)
 
-if (NOT ${DYNAMIC_ARCH})
+if (NOT DYNAMIC_ARCH)
   list(APPEND BLASDIRS kernel)
 endif ()
 

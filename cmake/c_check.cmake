@@ -26,8 +26,8 @@
 
 # N.B. c_check (and ctest.c) is not cross-platform, so instead try to use CMake variables.
 
-# TODO: detect NEED_FU/FU
-set(NEED_FU 1)
+# TODO: detect FU (front underscore) by compiling ctest1.c
+set(FU "_")
 
 # Convert CMake vars into the format that OpenBLAS expects
 string(TOUPPER ${CMAKE_SYSTEM_NAME} HOST_OS)
@@ -74,5 +74,5 @@ file(WRITE ${TARGET_CONF}
   "#define ARCH_${ARCH}\t1\n"
   "#define C_${COMPILER_ID}\t1\n"
   "#define __${BINARY}BIT__\t1\n"
-  "#define FUNDERSCORE\t${NEED_FU}\n")
+  "#define FUNDERSCORE\t${FU}\n")
 
