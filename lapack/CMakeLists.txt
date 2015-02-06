@@ -4,12 +4,10 @@ include_directories(${CMAKE_SOURCE_DIR})
 # TODO: laswp needs arch specific code
 # TODO: getrs needs to be compiled with and without TRANS (and up to TRANS=4 in the complex case)
 # TODO: trti2 needs to be compiled with and without UNIT
-# TODO: trtri needs to be compiled with and without UNIT
 
 set(LAPACK_SOURCES
   getf2/getf2_k.c
   getrf/getrf_single.c
-  getrs/getrs_single.c
   potrf/potrf_U_single.c
   potrf/potrf_L_single.c
   potf2/potf2_U.c
@@ -20,6 +18,15 @@ set(LAPACK_SOURCES
   lauum/lauum_L_single.c
   trti2/trti2_U.c
   trti2/trti2_L.c
+)
+
+# sources that need TRANS set
+set(TRANS_SOURCES
+  getrs/getrs_single.c
+)
+
+# sources that need UNIT set
+set(UNIT_SOURCES
   trtri/trtri_U_single.c
   trtri/trtri_L_single.c
 )
@@ -55,11 +62,17 @@ if (SMP)
 
   set(PARALLEL_SOURCES
     ${GETRF_SRC}
-    getrs/getrs_parallel.c
     potrf/potrf_U_parallel.c
     potrf/potrf_L_parallel.c
     lauum/lauum_U_parallel.c
     lauum/lauum_L_parallel.c
+  )
+
+  list(APPEND TRANS_SOURCES
+    getrs/getrs_parallel.c
+  )
+
+  list(APPEND UNIT_SOURCES
     trtri/trtri_U_parallel.c
     trtri/trtri_L_parallel.c
   )
@@ -78,6 +91,11 @@ if (SMP)
   GenerateNamedObjects("${PARALLEL_SOURCES}" "DOUBLE" "" "" 0)
   list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 endif ()
+
+GenerateCombinationObjects("${TRANS_SOURCES}" "TRANS" "N" "DOUBLE" "" 4)
+list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+GenerateCombinationObjects("${UNIT_SOURCES}" "UNIT" "N" "DOUBLE" "" 4)
+list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
 

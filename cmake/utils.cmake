@@ -136,6 +136,7 @@ endfunction ()
 #                  If 0, it will simply append the code, e.g. symm_L.c with TRANS and UNIT will be symm_LTU.
 #                  If 2, it will append the code with an underscore, e.g. symm.c with TRANS and UNIT will be symm_TU.
 #                  If 3, it will insert the code *around* the last character with an underscore, e.g. symm_L.c with TRANS and UNIT will be symm_TLU (required by BLAS level2 objects).
+#                  If 4, it will insert the code before the last underscore. E.g. trtri_U_parallel with TRANS will be trtri_UT_parallel
 # @param alternate_name replaces the source name as the object name (define codes are still appended)
 function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_type_in all_defines_in replace_scheme)
 
@@ -184,7 +185,19 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_
           string(SUBSTRING ${define_code} 0 1 define_code_first)
           string(SUBSTRING ${define_code} 1 -1 define_code_second)
           set(replace_code "${define_code_first}${last_letter}${define_code_second}")
-        else ()
+        elseif (replace_scheme EQUAL 4)
+          # insert code before the last underscore and pass that in as the alternate_name
+          get_filename_component(alternate_name ${source_file} NAME_WE)
+          set(extra_underscore "")
+          # check if filename has two underscores, insert another if not (e.g. getrs_parallel needs to become getrs_U_parallel not getrsU_parallel)
+          string(REGEX MATCH "_[a-zA-Z]+_" underscores ${alternate_name})
+          string(LENGTH "${underscores}" underscores)
+          if (underscores EQUAL 0)
+            set(extra_underscore "_")
+          endif ()
+          string(REGEX REPLACE "(.+)(_[^_]+)$" "\\1${extra_underscore}${define_code}\\2" alternate_name ${alternate_name})
+          message(STATUS ${alternate_name})
+        else()
           set(append_code ${define_code}) # replace_scheme should be 0
         endif ()
       endif ()
