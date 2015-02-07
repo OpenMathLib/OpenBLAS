@@ -7,28 +7,31 @@ include_directories(${CMAKE_SOURCE_DIR})
 # Makefile.L1
 
 # these are using hardcoded filenames for now, should get them from the KERNEL vars, e.g. DAMAXKERNEL instead of amax.S
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "USE_ABS" "amax_k" 0)
+GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "USE_ABS" "amax_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "USE_ABS;USE_MIN" "amin_k" 0)
+GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "USE_ABS;USE_MIN" "amin_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "" "max_k" 0)
+GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "" "max_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "" "min_k" 0)
+GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "" "min_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "USE_ABS" "i*amax_k" 0)
+GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "USE_ABS" "i*amax_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "USE_ABS;USE_MIN" "i*amin_k" 0)
+GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "USE_ABS;USE_MIN" "i*amin_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "" "i*max_k" 0)
+GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "" "i*max_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "" "i*min_k" 0)
+GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "" "i*min_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("${KERNELDIR}/scal.S" "DOUBLE" "" "scal_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 #DBLASOBJS	+= \
@@ -37,6 +40,16 @@ list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 #	daxpby_k$(TSUFFIX).$(SUFFIX)
 
 # Makefile.L2
+
+GenerateNamedObjects("${KERNELDIR}/gemv_n.S" "DOUBLE")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("${KERNELDIR}/gemv_t.S" "DOUBLE" "TRANS")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "DOUBLE" "" 1)
+list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+
 #DBLASOBJS	+= \
 #	dgemv_n$(TSUFFIX).$(SUFFIX) dgemv_t$(TSUFFIX).$(SUFFIX) dsymv_U$(TSUFFIX).$(SUFFIX) dsymv_L$(TSUFFIX).$(SUFFIX) \
 #	dger_k$(TSUFFIX).$(SUFFIX)
