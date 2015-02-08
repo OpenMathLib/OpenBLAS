@@ -56,12 +56,16 @@ endif ()
 # TODO: CMAKE_SYSTEM_PROCESSOR doesn't seem to be correct - instead get it from the compiler a la c_check
 set(ARCH ${CMAKE_SYSTEM_PROCESSOR})
 if (${ARCH} STREQUAL "AMD64")
-  set(ARCH "X86_64")
+  set(ARCH "x86_64")
 endif ()
 
 # If you are using a 32-bit compiler on a 64-bit system CMAKE_SYSTEM_PROCESSOR will be wrong
-if (${ARCH} STREQUAL "X86_64" AND BINARY EQUAL 32)
-  set(ARCH X86)
+if (${ARCH} STREQUAL "x86_64" AND BINARY EQUAL 32)
+  set(ARCH x86)
+endif ()
+
+if (${ARCH} STREQUAL "X86")
+  set(ARCH x86)
 endif ()
 
 set(COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
@@ -69,9 +73,11 @@ if (${COMPILER_ID} STREQUAL "GNU")
   set(COMPILER_ID "GCC")
 endif ()
 
+string(TOUPPER ${ARCH} UC_ARCH)
+
 file(WRITE ${TARGET_CONF}
   "#define OS_${HOST_OS}\t1\n"
-  "#define ARCH_${ARCH}\t1\n"
+  "#define ARCH_${UC_ARCH}\t1\n"
   "#define C_${COMPILER_ID}\t1\n"
   "#define __${BINARY}BIT__\t1\n"
   "#define FUNDERSCORE\t${FU}\n")

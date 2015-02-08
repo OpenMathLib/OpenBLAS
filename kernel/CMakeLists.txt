@@ -3,6 +3,14 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 # TODO: need to read ${KERNELDIR}/KERNEL into CMake vars
 
+# Makeflie
+
+message(STATUS "${ARCH}")
+if (${ARCH} STREQUAL "x86")
+  GenerateNamedObjects("${KERNELDIR}/cpuid.S" "")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+endif ()
+
 
 # Makefile.L1
 

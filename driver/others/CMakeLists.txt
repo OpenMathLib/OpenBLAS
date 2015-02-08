@@ -29,9 +29,7 @@ if (SMP)
   endif ()
 endif ()
 
-add_library(COMMON_OBJS OBJECT
-  ${MEMORY}
-  ${SMP_SOURCES}
+set(COMMON_SOURCES
   xerbla.c
   abs.c # TODO: this is split into c_abs (DOUBLE unset) and z_abs (DOUBLE set) in the Makefile
   openblas_set_num_threads.c
@@ -40,12 +38,12 @@ add_library(COMMON_OBJS OBJECT
   openblas_error_handle.c
 )
 
-#ifeq ($(DYNAMIC_ARCH), 1)
-#COMMONOBJS	+=  dynamic.$(SUFFIX)
-#else
-#COMMONOBJS	+=  parameter.$(SUFFIX)
-#endif
-#
+if (DYNAMIC_ARCH)
+  list(APPEND COMMON_SOURCES dynamic.c)
+else ()
+  list(APPEND COMMON_SOURCES parameter.c)
+endif ()
+
 #ifdef EXPRECISION
 #COMMONOBJS	+= x_abs.$(SUFFIX) qlamch.$(SUFFIX) qlamc3.$(SUFFIX)
 #endif
@@ -61,6 +59,12 @@ add_library(COMMON_OBJS OBJECT
 #ifdef FUNCTION_PROFILE
 #COMMONOBJS	+= profile.$(SUFFIX)
 #endif
+
+add_library(COMMON_OBJS OBJECT
+  ${MEMORY}
+  ${SMP_SOURCES}
+  ${COMMON_SOURCES}
+)
 
 list(APPEND DBLAS_OBJS "COMMON_OBJS")
 
