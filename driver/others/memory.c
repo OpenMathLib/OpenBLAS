@@ -241,9 +241,6 @@ void set_stack_limit(int limitMB){
 */
 #endif
 
-int openblas_get_num_procs(void) {
-  return get_num_procs();
-}
 
 /*
 OpenBLAS uses the numbers of CPU cores in multithreading.
@@ -327,8 +324,21 @@ int blas_get_cpu_number(void){
 }
 #endif
 
+
+int openblas_get_num_procs(void) {
+#ifndef SMP
+  return 1;
+#else
+  return get_num_procs();
+#endif
+}
+
 int openblas_get_num_threads(void) {
+#ifndef SMP
+  return 1;
+#else
   return blas_get_cpu_number();
+#endif
 }
 
 struct release_t {
