@@ -44,10 +44,15 @@ list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 if (SMP)
 
-  # gbmv uses a lowercase n and t
+  # gbmv uses a lowercase n and t. N.B. this uses TRANSA where gbmv.c uses TRANS. Intentional?
   GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "" "gbmv_thread_n")
   list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "TRANS" "gbmv_thread_t")
+  GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "TRANSA" "gbmv_thread_t")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+  GenerateNamedObjects("gemv_thread.c" "DOUBLE" "" "gemv_thread_n")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  GenerateNamedObjects("gemv_thread.c" "DOUBLE" "TRANSA" "gemv_thread_t")
   list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
   GenerateNamedObjects("ger_thread.c" "DOUBLE")
