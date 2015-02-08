@@ -364,6 +364,12 @@ endif
 
 
 ifeq ($(USE_OPENMP), 1)
+
+#check 
+ifeq ($(USE_THREAD), 0)
+$(error OpenBLAS: Cannot set both USE_OPENMP=1 and USE_THREAD=0. The USE_THREAD=0 is only for building single thread version.)
+endif
+
 # ifeq logical or. GCC or LSB
 ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
 CCOMMON_OPT    += -fopenmp
