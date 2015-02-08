@@ -31,13 +31,32 @@ list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "" "i*min_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
+GenerateNamedObjects("${KERNELDIR}/asum.S" "DOUBLE" "" "asum_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("${KERNELDIR}/axpy.S" "DOUBLE" "" "axpy_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("${KERNELDIR}/copy.S" "DOUBLE" "C_INTERFACE" "copy_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("${KERNELDIR}/dot.S" "DOUBLE" "" "dot_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("${KERNELDIR}/nrm2.S" "DOUBLE" "" "nrm2_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("${KERNELDIR}/rot.S" "DOUBLE" "" "rot_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
 GenerateNamedObjects("${KERNELDIR}/scal.S" "DOUBLE" "" "scal_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-#DBLASOBJS	+= \
-#	dasum_k$(TSUFFIX).$(SUFFIX) daxpy_k$(TSUFFIX).$(SUFFIX) dcopy_k$(TSUFFIX).$(SUFFIX) ddot_k$(TSUFFIX).$(SUFFIX) \
-#	dnrm2_k$(TSUFFIX).$(SUFFIX) drot_k$(TSUFFIX).$(SUFFIX) dscal_k$(TSUFFIX).$(SUFFIX) dswap_k$(TSUFFIX).$(SUFFIX) \
-#	daxpby_k$(TSUFFIX).$(SUFFIX)
+GenerateNamedObjects("${KERNELDIR}/swap.S" "DOUBLE" "" "swap_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("arm/axpby.c" "DOUBLE" "" "axpby_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 # Makefile.L2
 
@@ -50,10 +69,8 @@ list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "DOUBLE" "" 1)
 list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
-#DBLASOBJS	+= \
-#	dgemv_n$(TSUFFIX).$(SUFFIX) dgemv_t$(TSUFFIX).$(SUFFIX) dsymv_U$(TSUFFIX).$(SUFFIX) dsymv_L$(TSUFFIX).$(SUFFIX) \
-#	dger_k$(TSUFFIX).$(SUFFIX)
-
+GenerateNamedObjects("generic/ger.c" "DOUBLE" "" "ger_k")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 # Makefile.L3
 #DKERNELOBJS	+= \
