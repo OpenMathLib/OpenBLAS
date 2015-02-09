@@ -5,7 +5,6 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 if (${ARCH} STREQUAL "x86")
   GenerateNamedObjects("${KERNELDIR}/cpuid.S" "")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 endif ()
 
 
@@ -31,69 +30,29 @@ set(DSWAPKERNEL swap.S)
 set(DAXPBYKERNEL ../arm/axpby.c)
 
 GenerateNamedObjects("${KERNELDIR}/${DAMAXKERNEL}" "DOUBLE" "USE_ABS" "amax_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DAMINKERNEL}" "DOUBLE" "USE_ABS;USE_MIN" "amin_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DMAXKERNEL}" "DOUBLE" "" "max_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DMINKERNEL}" "DOUBLE" "" "min_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${IDAMAXKERNEL}" "DOUBLE" "USE_ABS" "i*amax_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${IDAMINKERNEL}" "DOUBLE" "USE_ABS;USE_MIN" "i*amin_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${IDMAXKERNEL}" "DOUBLE" "" "i*max_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${IDMINKERNEL}" "DOUBLE" "" "i*min_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DASUMKERNEL}" "DOUBLE" "" "asum_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DAXPYKERNEL}" "DOUBLE" "" "axpy_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DCOPYKERNEL}" "DOUBLE" "C_INTERFACE" "copy_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DDOTKERNEL}" "DOUBLE" "" "dot_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DNRM2KERNEL}" "DOUBLE" "" "nrm2_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DROTKERNEL}" "DOUBLE" "" "rot_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DSCALKERNEL}" "DOUBLE" "" "scal_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DSWAPKERNEL}" "DOUBLE" "" "swap_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/${DAXPBYKERNEL}" "DOUBLE" "" "axpby_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 # Makefile.L2
 
 GenerateNamedObjects("${KERNELDIR}/gemv_n.S" "DOUBLE")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateNamedObjects("${KERNELDIR}/gemv_t.S" "DOUBLE" "TRANS")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-
 GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "DOUBLE" "" 1)
-list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
-
 GenerateNamedObjects("generic/ger.c" "DOUBLE" "" "ger_k")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 # Makefile.L3
 
