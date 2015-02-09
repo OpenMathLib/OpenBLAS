@@ -1,11 +1,8 @@
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-# TODO: need to read ${KERNELDIR}/KERNEL into CMake vars
-
 # Makeflie
 
-message(STATUS "${ARCH}")
 if (${ARCH} STREQUAL "x86")
   GenerateNamedObjects("${KERNELDIR}/cpuid.S" "")
   list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
@@ -14,56 +11,74 @@ endif ()
 
 # Makefile.L1
 
-# these are using hardcoded filenames for now, should get them from the KERNEL vars, e.g. DAMAXKERNEL instead of amax.S
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "USE_ABS" "amax_k")
+# TODO: need to read ${KERNELDIR}/KERNEL into CMake vars
+set(DAMAXKERNEL amax.S)
+set(DAMINKERNEL amax.S)
+set(DMAXKERNEL amax.S)
+set(DMINKERNEL amax.S)
+set(IDAMAXKERNEL iamax.S)
+set(IDAMINKERNEL iamax.S)
+set(IDMAXKERNEL iamax.S)
+set(IDMINKERNEL iamax.S)
+set(DASUMKERNEL asum.S)
+set(DAXPYKERNEL axpy.S)
+set(DCOPYKERNEL copy.S)
+set(DDOTKERNEL dot.S)
+set(DNRM2KERNEL nrm2.S)
+set(DROTKERNEL rot.S)
+set(DSCALKERNEL scal.S)
+set(DSWAPKERNEL swap.S)
+set(DAXPBYKERNEL ../arm/axpby.c)
+
+GenerateNamedObjects("${KERNELDIR}/${DAMAXKERNEL}" "DOUBLE" "USE_ABS" "amax_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "USE_ABS;USE_MIN" "amin_k")
+GenerateNamedObjects("${KERNELDIR}/${DAMINKERNEL}" "DOUBLE" "USE_ABS;USE_MIN" "amin_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "" "max_k")
+GenerateNamedObjects("${KERNELDIR}/${DMAXKERNEL}" "DOUBLE" "" "max_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/amax.S" "DOUBLE" "" "min_k")
+GenerateNamedObjects("${KERNELDIR}/${DMINKERNEL}" "DOUBLE" "" "min_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "USE_ABS" "i*amax_k")
+GenerateNamedObjects("${KERNELDIR}/${IDAMAXKERNEL}" "DOUBLE" "USE_ABS" "i*amax_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "USE_ABS;USE_MIN" "i*amin_k")
+GenerateNamedObjects("${KERNELDIR}/${IDAMINKERNEL}" "DOUBLE" "USE_ABS;USE_MIN" "i*amin_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "" "i*max_k")
+GenerateNamedObjects("${KERNELDIR}/${IDMAXKERNEL}" "DOUBLE" "" "i*max_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/iamax.S" "DOUBLE" "" "i*min_k")
+GenerateNamedObjects("${KERNELDIR}/${IDMINKERNEL}" "DOUBLE" "" "i*min_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/asum.S" "DOUBLE" "" "asum_k")
+GenerateNamedObjects("${KERNELDIR}/${DASUMKERNEL}" "DOUBLE" "" "asum_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/axpy.S" "DOUBLE" "" "axpy_k")
+GenerateNamedObjects("${KERNELDIR}/${DAXPYKERNEL}" "DOUBLE" "" "axpy_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/copy.S" "DOUBLE" "C_INTERFACE" "copy_k")
+GenerateNamedObjects("${KERNELDIR}/${DCOPYKERNEL}" "DOUBLE" "C_INTERFACE" "copy_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/dot.S" "DOUBLE" "" "dot_k")
+GenerateNamedObjects("${KERNELDIR}/${DDOTKERNEL}" "DOUBLE" "" "dot_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/nrm2.S" "DOUBLE" "" "nrm2_k")
+GenerateNamedObjects("${KERNELDIR}/${DNRM2KERNEL}" "DOUBLE" "" "nrm2_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/rot.S" "DOUBLE" "" "rot_k")
+GenerateNamedObjects("${KERNELDIR}/${DROTKERNEL}" "DOUBLE" "" "rot_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/scal.S" "DOUBLE" "" "scal_k")
+GenerateNamedObjects("${KERNELDIR}/${DSCALKERNEL}" "DOUBLE" "" "scal_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("${KERNELDIR}/swap.S" "DOUBLE" "" "swap_k")
+GenerateNamedObjects("${KERNELDIR}/${DSWAPKERNEL}" "DOUBLE" "" "swap_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-GenerateNamedObjects("arm/axpby.c" "DOUBLE" "" "axpby_k")
+GenerateNamedObjects("${KERNELDIR}/${DAXPBYKERNEL}" "DOUBLE" "" "axpby_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 # Makefile.L2
@@ -81,17 +96,45 @@ GenerateNamedObjects("generic/ger.c" "DOUBLE" "" "ger_k")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 # Makefile.L3
-#DKERNELOBJS	+= \
-#	dgemm_kernel$(TSUFFIX).$(SUFFIX) \
-#	$(DGEMMINCOPYOBJ) $(DGEMMITCOPYOBJ) \
-#	$(DGEMMONCOPYOBJ) $(DGEMMOTCOPYOBJ)
 
-#DBLASOBJS	+= \
-#	dgemm_beta$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_kernel_LN$(TSUFFIX).$(SUFFIX) dtrmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_kernel_RN$(TSUFFIX).$(SUFFIX) dtrmm_kernel_RT$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_kernel_LN$(TSUFFIX).$(SUFFIX) dtrsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) dtrsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
+set(DGEMM_BETA ../generic/gemm_beta.c)
+set(DGEMMKERNEL gemm_kernel_2x4_penryn.S)
+
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+if (DGEMMINCOPY)
+  GenerateNamedObjects(${DGEMMINCOPY} "DOUBLE")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+endif ()
+
+if (DGEMMITCOPY)
+  GenerateNamedObjects(${DGEMMITCOPY} "DOUBLE")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+endif ()
+
+if (DGEMMONCOPY)
+  GenerateNamedObjects(${DGEMMONCOPY} "DOUBLE")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+endif ()
+
+if (DGEMMOTCOPY)
+  GenerateNamedObjects(${DGEMMOTCOPY} "DOUBLE")
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+endif ()
+
+GenerateNamedObjects("${KERNELDIR}/${DGEMM_BETA}" "DOUBLE")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateCombinationObjects("${KERNELDIR}/${DGEMMKERNEL}" "LEFT;TRANSA" "R;N" "DOUBLE" "TRMMKERNEL" 2 "trmm_kernel")
+list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE" "UPPER;LN;TRSMKERNEL" "trsm_kernel_LN")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE" "LT;TRSMKERNEL" "trsm_kernel_LT")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE" "UPPER;RN;TRSMKERNEL" "trsm_kernel_RN")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE" "RT;TRSMKERNEL" "trsm_kernel_RT")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 #DBLASOBJS += \
 #	dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) \
