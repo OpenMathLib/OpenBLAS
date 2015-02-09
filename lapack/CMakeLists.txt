@@ -1,7 +1,6 @@
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-# TODO: laswp needs arch specific code
 # TODO: getrs needs to be compiled with and without TRANS (and up to TRANS=4 in the complex case)
 # TODO: trti2 needs to be compiled with and without UNIT
 
@@ -49,7 +48,11 @@ set(ZLAPACK_SOURCES
   trtri/trtri_L_single.c
 )
 
-GenerateNamedObjects("${LAPACK_SOURCES}" "DOUBLE" "" "" 0)
+GenerateNamedObjects("${LAPACK_SOURCES}" "DOUBLE")
+
+# TODO: laswp needs arch specific code
+GenerateNamedObjects("laswp/generic/laswp_k.c" "DOUBLE" "" "laswp_plus")
+GenerateNamedObjects("laswp/generic/laswp_k.c" "DOUBLE" "MINUS" "laswp_minus")
 
 if (SMP)
 
