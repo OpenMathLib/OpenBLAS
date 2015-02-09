@@ -138,7 +138,9 @@ function(GenerateNamedObjects sources_in float_type_in)
     list(APPEND OBJ_LIST_OUT ${obj_name})
 
   endforeach ()
-  set(OBJ_LIST_OUT ${OBJ_LIST_OUT} PARENT_SCOPE)
+
+  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+  set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE)
 endfunction ()
 
 # generates object files for each of the sources for each of the combinations of the preprocessor definitions passed in
@@ -220,6 +222,6 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_
     endforeach ()
   endforeach ()
 
-  set(COMBO_OBJ_LIST_OUT ${COMBO_OBJ_LIST_OUT} PARENT_SCOPE)
+  set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE)
 endfunction ()
 

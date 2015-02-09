@@ -50,7 +50,6 @@ set(ZLAPACK_SOURCES
 )
 
 GenerateNamedObjects("${LAPACK_SOURCES}" "DOUBLE" "" "" 0)
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 if (SMP)
 
@@ -89,13 +88,10 @@ if (SMP)
   )
 
   GenerateNamedObjects("${PARALLEL_SOURCES}" "DOUBLE" "" "" 0)
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 endif ()
 
 GenerateCombinationObjects("${TRANS_SOURCES}" "TRANS" "N" "DOUBLE" "" 4)
-list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 GenerateCombinationObjects("${UNIT_SOURCES}" "UNIT" "N" "DOUBLE" "" 4)
-list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
 

@@ -29,34 +29,25 @@ set(NU_SOURCES
 
 # objects that need LOWER set
 GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "DOUBLE" "" 1)
-list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
 # objects that need TRANSA and UNIT set
 # N.B. BLAS wants to put the U/L from the filename in the *MIDDLE* because of course why not have a different naming scheme for every single object -hpa
 GenerateCombinationObjects("${NU_SOURCES}" "TRANSA;UNIT" "N;N" "DOUBLE" "" 3)
-list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
 # gbmv uses a lowercase n and t. WHY? WHO KNOWS!
 GenerateNamedObjects("gbmv_k.c" "DOUBLE" "" "gbmv_n")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateNamedObjects("gbmv_k.c" "DOUBLE" "TRANS" "gbmv_t")
-list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 if (SMP)
 
   # gbmv uses a lowercase n and t. N.B. this uses TRANSA where gbmv.c uses TRANS. Intentional?
   GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "" "gbmv_thread_n")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
   GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "TRANSA" "gbmv_thread_t")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
   GenerateNamedObjects("gemv_thread.c" "DOUBLE" "" "gemv_thread_n")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
   GenerateNamedObjects("gemv_thread.c" "DOUBLE" "TRANSA" "gemv_thread_t")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
   GenerateNamedObjects("ger_thread.c" "DOUBLE")
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
   set(UL_SMP_SOURCES
     symv_thread.c
@@ -69,8 +60,6 @@ if (SMP)
   )
 
   GenerateCombinationObjects("${UL_SMP_SOURCES}" "LOWER" "U" "DOUBLE" "" 2)
-  list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
-
 
   set(NU_SMP_SOURCES
     trmv_thread.c
@@ -79,7 +68,6 @@ if (SMP)
   )
 
   GenerateCombinationObjects("${NU_SMP_SOURCES}" "TRANSA;LOWER;UNIT" "N;U;N" "DOUBLE" "" 2)
-  list(APPEND DBLAS_OBJS ${COMBO_OBJ_LIST_OUT})
 
 endif ()
 
