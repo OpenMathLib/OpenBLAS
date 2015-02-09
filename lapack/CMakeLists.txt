@@ -1,8 +1,6 @@
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-# TODO: getrs needs to be compiled with and without TRANS (and up to TRANS=4 in the complex case)
-# TODO: trti2 needs to be compiled with and without UNIT
 
 set(LAPACK_SOURCES
   getf2/getf2_k.c
@@ -15,8 +13,6 @@ set(LAPACK_SOURCES
   lauu2/lauu2_L.c
   lauum/lauum_U_single.c
   lauum/lauum_L_single.c
-  trti2/trti2_U.c
-  trti2/trti2_L.c
 )
 
 # sources that need TRANS set
@@ -30,6 +26,12 @@ set(UNIT_SOURCES
   trtri/trtri_L_single.c
 )
 
+set(UNIT_SOURCES2
+  trti2/trti2_U.c
+  trti2/trti2_L.c
+)
+
+# TODO: getrs needs to be compiled with up to TRANS=4 in the complex case
 set(ZLAPACK_SOURCES
   getf2/zgetf2_k.c
   getrf/getrf_single.c
@@ -95,6 +97,7 @@ endif ()
 
 GenerateCombinationObjects("${TRANS_SOURCES}" "TRANS" "N" "DOUBLE" "" 4)
 GenerateCombinationObjects("${UNIT_SOURCES}" "UNIT" "N" "DOUBLE" "" 4)
+GenerateCombinationObjects("${UNIT_SOURCES2}" "UNIT" "N" "DOUBLE" "" 0)
 
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
 
