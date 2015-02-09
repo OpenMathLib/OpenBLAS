@@ -56,25 +56,34 @@ GenerateNamedObjects("generic/ger.c" "DOUBLE" "" "ger_k")
 
 # Makefile.L3
 
+# TODO: these are from KERNEL.PENRYN - they should be read in from the appropriate ${KERNELDIR}/KERNEL file
 set(DGEMM_BETA ../generic/gemm_beta.c)
 set(DGEMMKERNEL gemm_kernel_2x4_penryn.S)
+set(DGEMMINCOPY gemm_ncopy_2.S)
+set(DGEMMITCOPY gemm_tcopy_2.S)
+set(DGEMMONCOPY ../generic/gemm_ncopy_4.c)
+set(DGEMMOTCOPY ../generic/gemm_tcopy_4.c)
+set(DGEMMINCOPYOBJ gemm_incopy)
+set(DGEMMITCOPYOBJ gemm_itcopy)
+set(DGEMMONCOPYOBJ gemm_oncopy)
+set(DGEMMOTCOPYOBJ gemm_otcopy)
 
-GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE")
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE" "" "gemm_kernel")
 
 if (DGEMMINCOPY)
-  GenerateNamedObjects(${DGEMMINCOPY} "DOUBLE")
+  GenerateNamedObjects("${KERNELDIR}/${DGEMMINCOPY}" "DOUBLE" "" "${DGEMMINCOPYOBJ}")
 endif ()
 
 if (DGEMMITCOPY)
-  GenerateNamedObjects(${DGEMMITCOPY} "DOUBLE")
+  GenerateNamedObjects("${KERNELDIR}/${DGEMMITCOPY}" "DOUBLE" "" "${DGEMMITCOPYOBJ}")
 endif ()
 
 if (DGEMMONCOPY)
-  GenerateNamedObjects(${DGEMMONCOPY} "DOUBLE")
+  GenerateNamedObjects("${KERNELDIR}/${DGEMMONCOPY}" "DOUBLE" "" "${DGEMMONCOPYOBJ}")
 endif ()
 
 if (DGEMMOTCOPY)
-  GenerateNamedObjects(${DGEMMOTCOPY} "DOUBLE")
+  GenerateNamedObjects("${KERNELDIR}/${DGEMMOTCOPY}" "DOUBLE" "" "${DGEMMOTCOPYOBJ}")
 endif ()
 
 GenerateNamedObjects("${KERNELDIR}/${DGEMM_BETA}" "DOUBLE")
