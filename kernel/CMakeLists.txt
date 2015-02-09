@@ -136,29 +136,111 @@ list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "DOUBLE" "RT;TRSMKERNEL" "trsm_kernel_RT")
 list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-#DBLASOBJS += \
-#	dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_ilnucopy$(TSUFFIX).$(SUFFIX) dtrmm_ilnncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_iutucopy$(TSUFFIX).$(SUFFIX) dtrmm_iutncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_iltucopy$(TSUFFIX).$(SUFFIX) dtrmm_iltncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_ounucopy$(TSUFFIX).$(SUFFIX) dtrmm_ounncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_olnucopy$(TSUFFIX).$(SUFFIX) dtrmm_olnncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_outucopy$(TSUFFIX).$(SUFFIX) dtrmm_outncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrmm_oltucopy$(TSUFFIX).$(SUFFIX) dtrmm_oltncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_iunucopy$(TSUFFIX).$(SUFFIX) dtrsm_iunncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_ilnucopy$(TSUFFIX).$(SUFFIX) dtrsm_ilnncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_iutucopy$(TSUFFIX).$(SUFFIX) dtrsm_iutncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_iltucopy$(TSUFFIX).$(SUFFIX) dtrsm_iltncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_ounucopy$(TSUFFIX).$(SUFFIX) dtrsm_ounncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_olnucopy$(TSUFFIX).$(SUFFIX) dtrsm_olnncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_outucopy$(TSUFFIX).$(SUFFIX) dtrsm_outncopy$(TSUFFIX).$(SUFFIX) \
-#	dtrsm_oltucopy$(TSUFFIX).$(SUFFIX) dtrsm_oltncopy$(TSUFFIX).$(SUFFIX) \
-#	dsymm_iutcopy$(TSUFFIX).$(SUFFIX) dsymm_iltcopy$(TSUFFIX).$(SUFFIX) \
-#	dsymm_outcopy$(TSUFFIX).$(SUFFIX) dsymm_oltcopy$(TSUFFIX).$(SUFFIX)
+# These don't use a scheme that is easy to iterate over - the filenames have part of the DEFINE codes in them, for UPPER/TRANS but not for UNIT/OUTER. Also TRANS is not passed in as a define.
+# Could simplify it a bit by pairing up by -UUNIT/-DUNIT.
+GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "UNIT" "trmm_iunucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "" "trmm_iunncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;UNIT" "trmm_ounucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER" "trmm_ounncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
-#DBLASOBJS += \
-#	domatcopy_k_cn$(TSUFFIX).$(SUFFIX) domatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
-#	domatcopy_k_ct$(TSUFFIX).$(SUFFIX) domatcopy_k_rt$(TSUFFIX).$(SUFFIX)
+GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER;UNIT" "trmm_ilnucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER" "trmm_ilnncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER;UNIT" "trmm_olnucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER" "trmm_olnncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "UNIT" "trmm_iutucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "" "trmm_iutncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;UNIT" "trmm_outucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER" "trmm_outncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER;UNIT" "trmm_iltucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER" "trmm_iltncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER;UNIT" "trmm_oltucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER" "trmm_oltncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "UNIT" "trsm_iunucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "" "trsm_iunncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;UNIT" "trsm_ounucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER" "trsm_ounncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER;UNIT" "trsm_ilnucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER" "trsm_ilnncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER;UNIT" "trsm_olnucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER" "trsm_olnncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "UNIT" "trsm_iutucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "" "trsm_iutncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;UNIT" "trsm_outucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER" "trsm_outncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER;UNIT" "trsm_iltucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "LOWER" "trsm_iltncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER;UNIT" "trsm_oltucopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "DOUBLE" "OUTER;LOWER" "trsm_oltncopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/symm_ucopy_${DGEMM_UNROLL_N}.c" "DOUBLE" "OUTER" "symm_outcopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/symm_ucopy_${DGEMM_UNROLL_N}.c" "DOUBLE" "" "symm_iutcopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+GenerateNamedObjects("generic/symm_lcopy_${DGEMM_UNROLL_N}.c" "DOUBLE" "LOWER;OUTER" "symm_oltcopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("generic/symm_lcopy_${DGEMM_UNROLL_N}.c" "DOUBLE" "LOWER" "symm_iltcopy")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+
+if (NOT DEFINED DOMATCOPY_CN)
+  set(DOMATCOPY_CN ../arm/omatcopy_cn.c)
+endif ()
+if (NOT DEFINED DOMATCOPY_RN)
+  set(DOMATCOPY_RN ../arm/omatcopy_rn.c)
+endif ()
+if (NOT DEFINED DOMATCOPY_CT)
+  set(DOMATCOPY_CT ../arm/omatcopy_ct.c)
+endif ()
+if (NOT DEFINED DOMATCOPY_RT)
+  set(DOMATCOPY_RT ../arm/omatcopy_rt.c)
+endif ()
+
+GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_CN}" "DOUBLE" "" "domatcopy_k_cn")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_RN}" "DOUBLE" "ROWM" "domatcopy_k_rn")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_CT}" "DOUBLE" "" "domatcopy_k_ct")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
+GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_RT}" "DOUBLE" "ROWM" "domatcopy_k_rt")
+list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
 
 # Makefile.LA
 #DBLASOBJS	+= dneg_tcopy$(TSUFFIX).$(SUFFIX) dlaswp_ncopy$(TSUFFIX).$(SUFFIX)
