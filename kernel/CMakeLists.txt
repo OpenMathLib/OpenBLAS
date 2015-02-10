@@ -7,6 +7,14 @@ if (${ARCH} STREQUAL "x86")
   GenerateNamedObjects("${KERNELDIR}/cpuid.S" "")
 endif ()
 
+# TODO: Read from ${KERNELDIR}/KERNEL - some architectures use a different lsame
+set(LSAME_KERNEL lsame.S)
+set(SCABS_KERNEL cabs.S)
+set(DCABS_KERNEL cabs.S)
+GenerateNamedObjects("${KERNELDIR}/${LSAME_KERNEL}" "" "F_INTERFACE" "lsame")
+GenerateNamedObjects("${KERNELDIR}/${SCABS_KERNEL}" "SINGLE" "COMPLEX;F_INTERFACE" "cabs1")
+GenerateNamedObjects("${KERNELDIR}/${DCABS_KERNEL}" "DOUBLE" "COMPLEX;F_INTERFACE" "cabs1")
+
 
 # Makefile.L1
 
