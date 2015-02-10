@@ -71,6 +71,16 @@ endforeach ()
 
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 
+# aux files
+set(ALLAUX
+  ${NETLIB_LAPACK_DIR}/SRC/ilaenv.f ${NETLIB_LAPACK_DIR}/SRC/ieeeck.f ${NETLIB_LAPACK_DIR}/SRC/lsamen.f ${NETLIB_LAPACK_DIR}/SRC/xerbla_array.f ${NETLIB_LAPACK_DIR}/SRC/iparmq.f
+  ${NETLIB_LAPACK_DIR}/SRC/ilaprec.f ${NETLIB_LAPACK_DIR}/SRC/ilatrans.f ${NETLIB_LAPACK_DIR}/SRC/ilauplo.f ${NETLIB_LAPACK_DIR}/SRC/iladiag.f ${NETLIB_LAPACK_DIR}/SRC/chla_transtype.f
+  ${NETLIB_LAPACK_DIR}/INSTALL/ilaver.f ${NETLIB_LAPACK_DIR}/INSTALL/slamch.f
+)
+add_library(AUX_OBJ OBJECT ${ALLAUX})
+set_target_properties(${AUX_OBJ} PROPERTIES COMPILE_FLAGS ${LAPACK_FFLAGS})
+list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:AUX_OBJ>")
+
 # N.B. if a source is added or removed you MUST re-run the cmake command manually; make will not do it.
 file(GLOB DLA_SOURCES "${NETLIB_LAPACK_DIR}/SRC/d*.f")
 
