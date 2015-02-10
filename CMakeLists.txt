@@ -12,7 +12,7 @@ set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${Open
 enable_language(Fortran)
 enable_language(ASM)
 
-message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with.")
+message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only DOUBLE and x86 support is currently available.")
 
 include("${CMAKE_SOURCE_DIR}/cmake/utils.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/system.cmake")
@@ -70,23 +70,11 @@ endforeach ()
 # netlib:
 
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
-
-# aux files
-set(ALLAUX
-  ${NETLIB_LAPACK_DIR}/SRC/ilaenv.f ${NETLIB_LAPACK_DIR}/SRC/ieeeck.f ${NETLIB_LAPACK_DIR}/SRC/lsamen.f ${NETLIB_LAPACK_DIR}/SRC/xerbla_array.f ${NETLIB_LAPACK_DIR}/SRC/iparmq.f
-  ${NETLIB_LAPACK_DIR}/SRC/ilaprec.f ${NETLIB_LAPACK_DIR}/SRC/ilatrans.f ${NETLIB_LAPACK_DIR}/SRC/ilauplo.f ${NETLIB_LAPACK_DIR}/SRC/iladiag.f ${NETLIB_LAPACK_DIR}/SRC/chla_transtype.f
-  ${NETLIB_LAPACK_DIR}/INSTALL/ilaver.f ${NETLIB_LAPACK_DIR}/INSTALL/slamch.f
-)
-add_library(AUX_OBJ OBJECT ${ALLAUX})
-set_target_properties(${AUX_OBJ} PROPERTIES COMPILE_FLAGS ${LAPACK_FFLAGS})
-list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:AUX_OBJ>")
-
-# N.B. if a source is added or removed you MUST re-run the cmake command manually; make will not do it.
-file(GLOB DLA_SOURCES "${NETLIB_LAPACK_DIR}/SRC/d*.f")
-
-add_library(DLA_OBJ OBJECT ${DLA_SOURCES})
-set_target_properties(${DLA_OBJ} PROPERTIES COMPILE_FLAGS ${LAPACK_FFLAGS})
-list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:DLA_OBJ>")
+# Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
+include("${CMAKE_SOURCE_DIR}/cmake/lapack.cmake")
+add_library(LA_OBJ OBJECT ${LA_SOURCES})
+set_target_properties(LA_OBJ PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
+list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LA_OBJ>")
 
 # add objects to the openblas lib
 add_library(openblas ${TARGET_OBJS})

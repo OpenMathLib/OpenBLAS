@@ -191,3 +191,10 @@ if (${F_COMPILER} STREQUAL "COMPAQ")
   endif ()
 endif ()
 
+# from the root Makefile - this is for lapack-netlib to compile the correct secnd file.
+if (${F_COMPILER} STREQUAL "GFORTRAN")
+  set(TIMER "INT_ETIME")
+else ()
+  set(TIMER "NONE")
+endif ()
+
