@@ -342,6 +342,11 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   endforeach ()
 endif ()
 
+if (${F_COMPILER} STREQUAL "GFORTRAN")
+  # lapack-netlib is rife with uninitialized warnings -hpa
+  set(LAPACK_FFLAGS "${LAPACK_FFLAGS} -Wno-maybe-uninitialized")
+endif ()
+
 set(LAPACK_CFLAGS "${CMAKE_C_CFLAGS} -DHAVE_LAPACK_CONFIG_H")
 if (INTERFACE64)
   set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_ILP64")
