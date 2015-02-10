@@ -128,7 +128,7 @@ function(GenerateNamedObjects sources_in float_type_in)
       list(APPEND obj_defines "CBLAS")
     endif ()
 
-    list(APPEND obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
+    list(APPEND obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CHAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
     list(APPEND obj_defines ${defines_in})
     list(APPEND obj_defines ${float_type_in})
 

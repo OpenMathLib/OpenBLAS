@@ -66,6 +66,19 @@ foreach (DBLAS_OBJ ${DBLAS_OBJS})
   set_target_properties(${DBLAS_OBJ} PROPERTIES COMPILE_DEFINITIONS "${PREV_DEFS};DOUBLE")
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${DBLAS_OBJ}>")
 endforeach ()
+
+# netlib:
+
+# Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
+
+# N.B. if a source is added or removed you MUST re-run the cmake command manually; make will not do it.
+file(GLOB DLA_SOURCES "${NETLIB_LAPACK_DIR}/SRC/d*.f")
+
+add_library(DLA_OBJ OBJECT ${DLA_SOURCES})
+set_target_properties(${DLA_OBJ} PROPERTIES COMPILE_FLAGS ${LAPACK_FFLAGS})
+list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:DLA_OBJ>")
+
+# add objects to the openblas lib
 add_library(openblas ${TARGET_OBJS})
 
 # TODO: Why is the config saved here? Is this necessary with CMake?
