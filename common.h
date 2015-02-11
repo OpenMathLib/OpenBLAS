@@ -82,7 +82,10 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 
 #ifdef OS_LINUX
 #include <malloc.h>
@@ -307,7 +310,11 @@ typedef int blasint;
 #endif
 
 #if defined(OS_WINDOWS)
+#ifdef _MSC_VER
+#define YIELDING    YieldProcessor()
+#else
 #define YIELDING	SwitchToThread()
+#endif
 #endif
 
 #if defined(ARMV7) || defined(ARMV6) || defined(ARMV8) || defined(ARMV5)
