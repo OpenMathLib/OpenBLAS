@@ -31,12 +31,14 @@ endif ()
 
 set(COMMON_SOURCES
   xerbla.c
-  abs.c # TODO: this is split into c_abs (DOUBLE unset) and z_abs (DOUBLE set) in the Makefile
   openblas_set_num_threads.c
-  openblas_get_config.c
-  openblas_get_parallel.c
   openblas_error_handle.c
 )
+
+# these need to have NAME/CNAME set, so use GenerateNamedObjects
+GenerateNamedObjects("abs.c" "" "" "c_abs")
+GenerateNamedObjects("abs.c" "" "DOUBLE" "z_abs")
+GenerateNamedObjects("openblas_get_config.c;openblas_get_parallel.c")
 
 if (DYNAMIC_ARCH)
   list(APPEND COMMON_SOURCES dynamic.c)

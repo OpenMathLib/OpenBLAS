@@ -70,7 +70,11 @@ endfunction ()
 #                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
 # @param replace_last_with replaces the last character in the filename with this string (e.g. symm_k should be symm_TU)
 # @param append_with appends the filename with this string (e.g. trmm_R should be trmm_RTUU or some other combination of characters)
-function(GenerateNamedObjects sources_in float_type_in)
+function(GenerateNamedObjects sources_in)
+
+  if (DEFINED ARGV1)
+    set(float_type_in ${ARGV1})
+  endif ()
 
   if (DEFINED ARGV2)
     set(defines_in ${ARGV2})
@@ -97,7 +101,7 @@ function(GenerateNamedObjects sources_in float_type_in)
   set(OBJ_LIST_OUT "")
   foreach (source_file ${sources_in})
 
-    if (NOT float_type_in STREQUAL "")
+    if (DEFINED float_type_in AND NOT float_type_in STREQUAL "")
       string(SUBSTRING ${float_type_in} 0 1 float_char)
       string(TOLOWER ${float_char} float_char)
     endif ()

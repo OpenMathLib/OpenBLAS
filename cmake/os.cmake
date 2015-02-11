@@ -57,7 +57,9 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   # Ensure the correct stack alignment on Win32
   # http://permalink.gmane.org/gmane.comp.lib.openblas.general/97
   if (${ARCH} STREQUAL "x86")
-    set(CCOMMON_OPT "${CCOMMON_OPT} -mincoming-stack-boundary=2")
+    if (NOT MSVC)
+      set(CCOMMON_OPT "${CCOMMON_OPT} -mincoming-stack-boundary=2")
+    endif ()
     set(FCOMMON_OPT "${FCOMMON_OPT} -mincoming-stack-boundary=2")
   endif ()
   
