@@ -100,7 +100,7 @@ void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx);
 
 #define WHEREAMI
 
-static inline int WhereAmI(void){
+static __inline int WhereAmI(void){
   int eax, ebx, ecx, edx;
   int apicid;
 

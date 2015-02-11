@@ -67,7 +67,7 @@ double sqrt(double);
 #undef  GETRF_FACTOR
 #define GETRF_FACTOR 1.00
 
-static inline BLASLONG FORMULA1(BLASLONG M, BLASLONG N, BLASLONG IS, BLASLONG BK, BLASLONG T) {
+static __inline BLASLONG FORMULA1(BLASLONG M, BLASLONG N, BLASLONG IS, BLASLONG BK, BLASLONG T) {
 
   double m = (double)(M - IS - BK);
   double n = (double)(N - IS - BK);
