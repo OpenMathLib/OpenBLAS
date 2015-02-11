@@ -373,7 +373,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   BLASLONG num_cpu;
 
+#ifdef _MSC_VER
+  BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE];
+#else
   volatile BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE] __attribute__((aligned(128)));
+#endif
 
 #ifndef COMPLEX
 #ifdef XDOUBLE
