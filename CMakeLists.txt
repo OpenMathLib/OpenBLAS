@@ -12,7 +12,7 @@ set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${Open
 enable_language(Fortran)
 enable_language(ASM)
 
-message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only DOUBLE and x86 support is currently available.")
+message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only x86 support is currently available.")
 
 include("${CMAKE_SOURCE_DIR}/cmake/utils.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/system.cmake")
@@ -34,6 +34,36 @@ endif ()
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
+endif ()
+
+# set which float types we want to build for
+if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_COMPLEX AND NOT DEFINED BUILD_COMPLEX16)
+  # if none are defined, build for all
+  set(BUILD_SINGLE true)
+  set(BUILD_DOUBLE true)
+  set(BUILD_COMPLEX true)
+  set(BUILD_COMPLEX16 true)
+endif ()
+
+set(FLOAT_TYPES "")
+if (BUILD_SINGLE)
+  message(STATUS "Building Single Precision")
+  list(APPEND FLOAT_TYPES "SINGLE") # defines nothing
+endif ()
+
+if (BUILD_DOUBLE)
+  message(STATUS "Building Double Precision")
+  list(APPEND FLOAT_TYPES "DOUBLE") # defines DOUBLE
+endif ()
+
+if (BUILD_COMPLEX)
+  message(STATUS "Building Complex Precision")
+  list(APPEND FLOAT_TYPES "COMPLEX") # defines COMPLEX
+endif ()
+
+if (BUILD_COMPLEX16)
+  message(STATUS "Building Double Complex Precision")
+  list(APPEND FLOAT_TYPES "ZCOMPLEX") # defines COMPLEX and DOUBLE
 endif ()
 
 set(SUBDIRS_ALL ${SUBDIRS} test ctest utest exports benchmark ../laswp ../bench)
@@ -62,8 +92,8 @@ endforeach ()
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
 foreach (DBLAS_OBJ ${DBLAS_OBJS})
-  get_target_property(PREV_DEFS ${DBLAS_OBJ} COMPILE_DEFINITIONS)
-  set_target_properties(${DBLAS_OBJ} PROPERTIES COMPILE_DEFINITIONS "${PREV_DEFS};DOUBLE")
+  #get_target_property(PREV_DEFS ${DBLAS_OBJ} COMPILE_DEFINITIONS)
+  #set_target_properties(${DBLAS_OBJ} PROPERTIES COMPILE_DEFINITIONS "${PREV_DEFS};DOUBLE")
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${DBLAS_OBJ}>")
 endforeach ()
 

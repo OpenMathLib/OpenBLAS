@@ -50,11 +50,11 @@ set(ZLAPACK_SOURCES
   trtri/trtri_L_single.c
 )
 
-GenerateNamedObjects("${LAPACK_SOURCES}" "DOUBLE")
+GenerateNamedObjects("${LAPACK_SOURCES}")
 
 # TODO: laswp needs arch specific code
-GenerateNamedObjects("laswp/generic/laswp_k.c" "DOUBLE" "" "laswp_plus")
-GenerateNamedObjects("laswp/generic/laswp_k.c" "DOUBLE" "MINUS" "laswp_minus")
+GenerateNamedObjects("laswp/generic/laswp_k.c" "" "laswp_plus")
+GenerateNamedObjects("laswp/generic/laswp_k.c" "MINUS" "laswp_minus")
 
 if (SMP)
 
@@ -92,12 +92,12 @@ if (SMP)
     trtri/trtri_L_parallel.c
   )
 
-  GenerateNamedObjects("${PARALLEL_SOURCES}" "DOUBLE" "" "" 0)
+  GenerateNamedObjects("${PARALLEL_SOURCES}")
 endif ()
 
-GenerateCombinationObjects("${TRANS_SOURCES}" "TRANS" "N" "DOUBLE" "" 4)
-GenerateCombinationObjects("${UNIT_SOURCES}" "UNIT" "N" "DOUBLE" "" 4)
-GenerateCombinationObjects("${UNIT_SOURCES2}" "UNIT" "N" "DOUBLE" "" 0)
+GenerateCombinationObjects("${TRANS_SOURCES}" "TRANS" "N" "" 4)
+GenerateCombinationObjects("${UNIT_SOURCES}" "UNIT" "N" "" 4)
+GenerateCombinationObjects("${UNIT_SOURCES2}" "UNIT" "N" "" 0)
 
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
 

@@ -64,85 +64,98 @@ endfunction ()
 
 # generates object files for each of the sources, using the BLAS naming scheme to pass the funciton name as a preprocessor definition
 # @param sources_in the source files to build from
-# @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
 # @param defines_in (optional) preprocessor definitions that will be applied to all objects
 # @param name_in (optional) if this is set this name will be used instead of the filename. Use a * to indicate where the float character should go, if no star the character will be prepended.
 #                           e.g. with DOUBLE set, "i*max" will generate the name "idmax", and "max" will be "dmax"
 # @param replace_last_with replaces the last character in the filename with this string (e.g. symm_k should be symm_TU)
 # @param append_with appends the filename with this string (e.g. trmm_R should be trmm_RTUU or some other combination of characters)
+# @param no_float_type turns off the float type define for this build (e.g. SINGLE/DOUBLE/etc)
 function(GenerateNamedObjects sources_in)
 
   if (DEFINED ARGV1)
-    set(float_type_in ${ARGV1})
+    set(defines_in ${ARGV1})
   endif ()
 
   if (DEFINED ARGV2)
-    set(defines_in ${ARGV2})
+    set(name_in ${ARGV2})
   endif ()
 
   if (DEFINED ARGV3)
-    set(name_in ${ARGV3})
-  endif ()
-
-  if (DEFINED ARGV4)
-    set(use_cblas ${ARGV4})
+    set(use_cblas ${ARGV3})
   else ()
     set(use_cblas 0)
   endif ()
 
+  if (DEFINED ARGV4)
+    set(replace_last_with ${ARGV4})
+  endif ()
+
   if (DEFINED ARGV5)
-    set(replace_last_with ${ARGV5})
+    set(append_with ${ARGV5})
   endif ()
 
   if (DEFINED ARGV6)
-    set(append_with ${ARGV6})
+    set(no_float_type ${ARGV6})
+  else ()
+    set(no_float_type false)
+  endif ()
+
+  if (no_float_type)
+    set(float_list "DUMMY") # still need to loop once
+  else ()
+    set(float_list "${FLOAT_TYPES}")
   endif ()
 
   set(OBJ_LIST_OUT "")
-  foreach (source_file ${sources_in})
+  foreach (float_type ${float_list})
+    foreach (source_file ${sources_in})
 
-    if (DEFINED float_type_in AND NOT float_type_in STREQUAL "")
-      string(SUBSTRING ${float_type_in} 0 1 float_char)
-      string(TOLOWER ${float_char} float_char)
-    endif ()
-
-    if (NOT name_in)
-      get_filename_component(source_name ${source_file} NAME_WE)
-      set(obj_name "${float_char}${source_name}")
-    else ()
-      # replace * with float_char
-      if (${name_in} MATCHES "\\*")
-        string(REPLACE "*" ${float_char} obj_name ${name_in})
-      else ()
-        set(obj_name "${float_char}${name_in}")
+      if (NOT no_float_type)
+        string(SUBSTRING ${float_type} 0 1 float_char)
+        string(TOLOWER ${float_char} float_char)
       endif ()
-    endif ()
 
-    if (replace_last_with)
-      string(REGEX REPLACE ".$" ${replace_last_with} obj_name ${obj_name})
-    else ()
-      set(obj_name "${obj_name}${append_with}")
-    endif ()
+      if (NOT name_in)
+        get_filename_component(source_name ${source_file} NAME_WE)
+        set(obj_name "${float_char}${source_name}")
+      else ()
+        # replace * with float_char
+        if (${name_in} MATCHES "\\*")
+          string(REPLACE "*" ${float_char} obj_name ${name_in})
+        else ()
+          set(obj_name "${float_char}${name_in}")
+        endif ()
+      endif ()
 
-    # now add the object and set the defines
-    set(obj_defines ${defines_in})
+      if (replace_last_with)
+        string(REGEX REPLACE ".$" ${replace_last_with} obj_name ${obj_name})
+      else ()
+        set(obj_name "${obj_name}${append_with}")
+      endif ()
 
-    if (use_cblas)
-      set(obj_name "cblas_${obj_name}")
-      list(APPEND obj_defines "CBLAS")
-    endif ()
+      # now add the object and set the defines
+      set(obj_defines ${defines_in})
 
-    list(APPEND obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CHAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
-    list(APPEND obj_defines ${defines_in})
-    if (NOT ${float_type_in} STREQUAL "SINGLE")
-      list(APPEND obj_defines ${float_type_in})
-    endif ()
+      if (use_cblas)
+        set(obj_name "cblas_${obj_name}")
+        list(APPEND obj_defines "CBLAS")
+      endif ()
 
-    add_library(${obj_name} OBJECT ${source_file})
-    set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${obj_defines}")
+      list(APPEND obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CHAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
+      list(APPEND obj_defines ${defines_in})
+      if (${float_type} STREQUAL "DOUBLE" OR ${float_type} STREQUAL "ZCOMPLEX")
+        list(APPEND obj_defines "DOUBLE")
+      endif ()
+      if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+        list(APPEND obj_defines "COMPLEX")
+      endif ()
 
-    list(APPEND OBJ_LIST_OUT ${obj_name})
+      add_library(${obj_name} OBJECT ${source_file})
+      set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${obj_defines}")
 
+      list(APPEND OBJ_LIST_OUT ${obj_name})
+
+    endforeach ()
   endforeach ()
 
   list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
@@ -152,7 +165,6 @@ endfunction ()
 # generates object files for each of the sources for each of the combinations of the preprocessor definitions passed in
 # @param sources_in the source files to build from
 # @param defines_in the preprocessor definitions that will be combined to create the object files
-# @param float_type_in the float type to define for this build (e.g. SINGLE/DOUBLE/etc)
 # @param all_defines_in (optional) preprocessor definitions that will be applied to all objects
 # @param replace_scheme If 1, replace the "k" in the filename with the define combo letters. E.g. symm_k.c with TRANS and UNIT defined will be symm_TU.
 #                  If 0, it will simply append the code, e.g. symm_L.c with TRANS and UNIT will be symm_LTU.
@@ -160,10 +172,15 @@ endfunction ()
 #                  If 3, it will insert the code *around* the last character with an underscore, e.g. symm_L.c with TRANS and UNIT will be symm_TLU (required by BLAS level2 objects).
 #                  If 4, it will insert the code before the last underscore. E.g. trtri_U_parallel with TRANS will be trtri_UT_parallel
 # @param alternate_name replaces the source name as the object name (define codes are still appended)
-function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_type_in all_defines_in replace_scheme)
+# @param no_float_type turns off the float type define for this build (e.g. SINGLE/DOUBLE/etc)
+function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_defines_in replace_scheme)
+
+  if (DEFINED ARGV5)
+    set(alternate_name ${ARGV5})
+  endif ()
 
   if (DEFINED ARGV6)
-    set(alternate_name ${ARGV6})
+    set(no_float_type ${ARGV6})
   endif ()
 
   AllCombinations("${defines_in}" "${absent_codes_in}")
@@ -223,7 +240,7 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in float_
         endif ()
       endif ()
 
-      GenerateNamedObjects("${source_file}" "${float_type_in}" "${cur_defines}" "${alternate_name}" 0 "${replace_code}" "${append_code}")
+      GenerateNamedObjects("${source_file}" "${cur_defines}" "${alternate_name}" 0 "${replace_code}" "${append_code}" "${no_float_type}")
       list(APPEND COMBO_OBJ_LIST_OUT "${OBJ_LIST_OUT}")
     endforeach ()
   endforeach ()

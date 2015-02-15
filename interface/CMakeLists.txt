@@ -40,23 +40,23 @@ endif ()
 
 foreach (CBLAS_FLAG ${CBLAS_FLAGS})
 
-  GenerateNamedObjects("${BLAS1_SOURCES}" "DOUBLE" "" "" ${CBLAS_FLAG})
-  GenerateNamedObjects("${BLAS2_SOURCES}" "DOUBLE" "" "" ${CBLAS_FLAG})
-  GenerateNamedObjects("${BLAS3_SOURCES}" "DOUBLE" "" "" ${CBLAS_FLAG})
+  GenerateNamedObjects("${BLAS1_SOURCES}" "" "" ${CBLAS_FLAG})
+  GenerateNamedObjects("${BLAS2_SOURCES}" "" "" ${CBLAS_FLAG})
+  GenerateNamedObjects("${BLAS3_SOURCES}" "" "" ${CBLAS_FLAG})
 
   # trmm is trsm with a compiler flag set
-  GenerateNamedObjects("trsm.c" "DOUBLE" "TRMM" "trmm" ${CBLAS_FLAG})
+  GenerateNamedObjects("trsm.c" "TRMM" "trmm" ${CBLAS_FLAG})
 
   # max and imax are compiled 4 times
-  GenerateNamedObjects("max.c" "DOUBLE" "" "" ${CBLAS_FLAG})
-  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS" "amax" ${CBLAS_FLAG})
-  GenerateNamedObjects("max.c" "DOUBLE" "USE_ABS;USE_MIN" "amin" ${CBLAS_FLAG})
-  GenerateNamedObjects("max.c" "DOUBLE" "USE_MIN" "min" ${CBLAS_FLAG})
+  GenerateNamedObjects("max.c" "" "" ${CBLAS_FLAG})
+  GenerateNamedObjects("max.c" "USE_ABS" "amax" ${CBLAS_FLAG})
+  GenerateNamedObjects("max.c" "USE_ABS;USE_MIN" "amin" ${CBLAS_FLAG})
+  GenerateNamedObjects("max.c" "USE_MIN" "min" ${CBLAS_FLAG})
 
-  GenerateNamedObjects("imax.c" "DOUBLE" "" "i*max" ${CBLAS_FLAG})
-  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS" "i*amax" ${CBLAS_FLAG})
-  GenerateNamedObjects("imax.c" "DOUBLE" "USE_ABS;USE_MIN" "i*amin" ${CBLAS_FLAG})
-  GenerateNamedObjects("imax.c" "DOUBLE" "USE_MIN" "i*min" ${CBLAS_FLAG})
+  GenerateNamedObjects("imax.c" "" "i*max" ${CBLAS_FLAG})
+  GenerateNamedObjects("imax.c" "USE_ABS" "i*amax" ${CBLAS_FLAG})
+  GenerateNamedObjects("imax.c" "USE_ABS;USE_MIN" "i*amin" ${CBLAS_FLAG})
+  GenerateNamedObjects("imax.c" "USE_MIN" "i*min" ${CBLAS_FLAG})
 
 endforeach ()
 
@@ -66,7 +66,7 @@ if (NOT DEFINED NO_LAPACK)
     lapack/potf2.c lapack/laswp.c lapack/gesv.c lapack/lauu2.c
     lapack/lauum.c lapack/trti2.c lapack/trtri.c
   )
-  GenerateNamedObjects("${LAPACK_SOURCES}" "DOUBLE" "" "" 0)
+  GenerateNamedObjects("${LAPACK_SOURCES}")
 endif ()
 
 set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS

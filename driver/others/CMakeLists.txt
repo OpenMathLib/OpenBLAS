@@ -35,10 +35,10 @@ set(COMMON_SOURCES
   openblas_error_handle.c
 )
 
-# these need to have NAME/CNAME set, so use GenerateNamedObjects
-GenerateNamedObjects("abs.c" "" "" "c_abs")
-GenerateNamedObjects("abs.c" "" "DOUBLE" "z_abs")
-GenerateNamedObjects("openblas_get_config.c;openblas_get_parallel.c")
+# these need to have NAME/CNAME set, so use GenerateNamedObjects, but don't use standard name mangling
+GenerateNamedObjects("abs.c" "" "c_abs" 0 "" "" 1 )
+GenerateNamedObjects("abs.c" "DOUBLE" "z_abs" 0 "" "" 1)
+GenerateNamedObjects("openblas_get_config.c;openblas_get_parallel.c" "" "" 0 "" "" 1)
 
 if (DYNAMIC_ARCH)
   list(APPEND COMMON_SOURCES dynamic.c)

@@ -28,26 +28,26 @@ set(NU_SOURCES
 )
 
 # objects that need LOWER set
-GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "DOUBLE" "" 1)
+GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "" 1)
 
 # objects that need TRANSA and UNIT set
 # N.B. BLAS wants to put the U/L from the filename in the *MIDDLE* because of course why not have a different naming scheme for every single object -hpa
-GenerateCombinationObjects("${NU_SOURCES}" "TRANSA;UNIT" "N;N" "DOUBLE" "" 3)
+GenerateCombinationObjects("${NU_SOURCES}" "TRANSA;UNIT" "N;N" "" 3)
 
 # gbmv uses a lowercase n and t. WHY? WHO KNOWS!
-GenerateNamedObjects("gbmv_k.c" "DOUBLE" "" "gbmv_n")
-GenerateNamedObjects("gbmv_k.c" "DOUBLE" "TRANS" "gbmv_t")
+GenerateNamedObjects("gbmv_k.c" "" "gbmv_n")
+GenerateNamedObjects("gbmv_k.c" "TRANS" "gbmv_t")
 
 if (SMP)
 
   # gbmv uses a lowercase n and t. N.B. this uses TRANSA where gbmv.c uses TRANS. Intentional?
-  GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "" "gbmv_thread_n")
-  GenerateNamedObjects("gbmv_thread.c" "DOUBLE" "TRANSA" "gbmv_thread_t")
+  GenerateNamedObjects("gbmv_thread.c" "" "gbmv_thread_n")
+  GenerateNamedObjects("gbmv_thread.c" "TRANSA" "gbmv_thread_t")
 
-  GenerateNamedObjects("gemv_thread.c" "DOUBLE" "" "gemv_thread_n")
-  GenerateNamedObjects("gemv_thread.c" "DOUBLE" "TRANSA" "gemv_thread_t")
+  GenerateNamedObjects("gemv_thread.c" "" "gemv_thread_n")
+  GenerateNamedObjects("gemv_thread.c" "TRANSA" "gemv_thread_t")
 
-  GenerateNamedObjects("ger_thread.c" "DOUBLE")
+  GenerateNamedObjects("ger_thread.c")
 
   set(UL_SMP_SOURCES
     symv_thread.c
@@ -59,7 +59,7 @@ if (SMP)
     sbmv_thread.c
   )
 
-  GenerateCombinationObjects("${UL_SMP_SOURCES}" "LOWER" "U" "DOUBLE" "" 2)
+  GenerateCombinationObjects("${UL_SMP_SOURCES}" "LOWER" "U" "" 2)
 
   set(NU_SMP_SOURCES
     trmv_thread.c
@@ -67,7 +67,7 @@ if (SMP)
     tbmv_thread.c
   )
 
-  GenerateCombinationObjects("${NU_SMP_SOURCES}" "TRANSA;LOWER;UNIT" "N;U;N" "DOUBLE" "" 2)
+  GenerateCombinationObjects("${NU_SMP_SOURCES}" "TRANSA;LOWER;UNIT" "N;U;N" "" 2)
 
 endif ()
 
