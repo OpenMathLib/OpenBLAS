@@ -149,6 +149,7 @@
 #define DOMATCOPY_K_RN		domatcopy_k_rn
 #define DOMATCOPY_K_CT		domatcopy_k_ct
 #define DOMATCOPY_K_RT		domatcopy_k_rt
+#define DGEADD_K                dgeadd_k 
 
 #else
 
@@ -266,6 +267,8 @@
 #define DOMATCOPY_K_RN		gotoblas -> domatcopy_k_rn
 #define DOMATCOPY_K_CT		gotoblas -> domatcopy_k_ct
 #define DOMATCOPY_K_RT		gotoblas -> domatcopy_k_rt
+
+#define DGEADD_K                gotoblas -> dgeadd_k 
 
 #endif
 
