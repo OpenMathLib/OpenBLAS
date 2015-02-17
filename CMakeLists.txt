@@ -92,8 +92,6 @@ endforeach ()
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
 foreach (DBLAS_OBJ ${DBLAS_OBJS})
-  #get_target_property(PREV_DEFS ${DBLAS_OBJ} COMPILE_DEFINITIONS)
-  #set_target_properties(${DBLAS_OBJ} PROPERTIES COMPILE_DEFINITIONS "${PREV_DEFS};DOUBLE")
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${DBLAS_OBJ}>")
 endforeach ()
 
