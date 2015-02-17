@@ -70,7 +70,7 @@ endfunction ()
 # @param replace_last_with replaces the last character in the filename with this string (e.g. symm_k should be symm_TU)
 # @param append_with appends the filename with this string (e.g. trmm_R should be trmm_RTUU or some other combination of characters)
 # @param no_float_type turns off the float type define for this build (e.g. SINGLE/DOUBLE/etc)
-# @param complex_only/real_only some routines have separate source files for complex and non-complex float types.
+# @param complex_filename_scheme some routines have separate source files for complex and non-complex float types.
 #                               0 - compiles for all types
 #                               1 - compiles the sources for non-complex types only (SINGLE/DOUBLE)
 #                               2 - compiles for complex types only (COMPLEX/DOUBLE COMPLEX)
@@ -88,7 +88,7 @@ function(GenerateNamedObjects sources_in)
   if (DEFINED ARGV3)
     set(use_cblas ${ARGV3})
   else ()
-    set(use_cblas 0)
+    set(use_cblas false)
   endif ()
 
   if (DEFINED ARGV4)
@@ -108,7 +108,7 @@ function(GenerateNamedObjects sources_in)
   set(real_only false)
   set(complex_only false)
   set(mangle_complex_sources false)
-  if (DEFINED ARGV7)
+  if (DEFINED ARGV7 AND NOT "${ARGV7}" STREQUAL "")
     if (${ARGV7} EQUAL 1)
       set(real_only true)
     elseif (${ARGV7} EQUAL 2)
@@ -204,6 +204,7 @@ endfunction ()
 #                  If 4, it will insert the code before the last underscore. E.g. trtri_U_parallel with TRANS will be trtri_UT_parallel
 # @param alternate_name replaces the source name as the object name (define codes are still appended)
 # @param no_float_type turns off the float type define for this build (e.g. SINGLE/DOUBLE/etc)
+# @param complex_filename_scheme see GenerateNamedObjects
 function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_defines_in replace_scheme)
 
   if (DEFINED ARGV5)
@@ -212,6 +213,10 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
 
   if (DEFINED ARGV6)
     set(no_float_type ${ARGV6})
+  endif ()
+
+  if (DEFINED ARGV7)
+    set(complex_filename_scheme ${ARGV7})
   endif ()
 
   AllCombinations("${defines_in}" "${absent_codes_in}")
@@ -271,7 +276,7 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
         endif ()
       endif ()
 
-      GenerateNamedObjects("${source_file}" "${cur_defines}" "${alternate_name}" 0 "${replace_code}" "${append_code}" "${no_float_type}")
+      GenerateNamedObjects("${source_file}" "${cur_defines}" "${alternate_name}" 0 "${replace_code}" "${append_code}" "${no_float_type}" "${complex_filename_scheme}")
       list(APPEND COMBO_OBJ_LIST_OUT "${OBJ_LIST_OUT}")
     endforeach ()
   endforeach ()

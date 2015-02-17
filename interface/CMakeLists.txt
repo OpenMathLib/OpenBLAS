@@ -31,6 +31,7 @@ set(BLAS2_SOURCES
   tpsv.c tpmv.c
 )
 
+# these do not have separate 'z' sources
 set(BLAS3_SOURCES
   gemm.c symm.c
   trsm.c syrk.c syr2k.c
@@ -53,12 +54,19 @@ endif ()
 
 foreach (CBLAS_FLAG ${CBLAS_FLAGS})
 
-  GenerateNamedObjects("${BLAS1_SOURCES}" "" "" ${CBLAS_FLAG})
-  GenerateNamedObjects("${BLAS1_REAL_ONLY_SOURCES}" "" "" ${CBLAS_FLAG} "" "" 0 1)
-  GenerateNamedObjects("${BLAS1_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" 0 3)
-  GenerateNamedObjects("${BLAS2_SOURCES}" "" "" ${CBLAS_FLAG} "" "" 0 3)
-  GenerateNamedObjects("${BLAS3_SOURCES}" "" "" ${CBLAS_FLAG})
-  GenerateNamedObjects("${BLAS3_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" 0 3)
+  # TODO: don't compile complex sources with cblas for now, the naming schemes are all different and they will have to be handled separately from SINGLE/DOUBLE
+  set(DISABLE_COMPLEX 0)
+  set(MANGLE_COMPLEX 3)
+  if (CBLAS_FLAG EQUAL 1)
+    set(DISABLE_COMPLEX 1)
+    set(MANGLE_COMPLEX 1)
+  endif ()
+  GenerateNamedObjects("${BLAS1_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${DISABLE_COMPLEX})
+  GenerateNamedObjects("${BLAS1_REAL_ONLY_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false 1)
+  GenerateNamedObjects("${BLAS1_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
+  GenerateNamedObjects("${BLAS2_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
+  GenerateNamedObjects("${BLAS3_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${DISABLE_COMPLEX})
+  GenerateNamedObjects("${BLAS3_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
 
   # trmm is trsm with a compiler flag set
   GenerateNamedObjects("trsm.c" "TRMM" "trmm" ${CBLAS_FLAG})
