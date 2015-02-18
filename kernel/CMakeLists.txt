@@ -71,96 +71,112 @@ GenerateNamedObjects("generic/ger.c" "" "ger_k" false "" "" "" 3)
 foreach (float_type ${FLOAT_TYPES})
   string(SUBSTRING ${float_type} 0 1 float_char)
   GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "" "gemm_kernel" false "" "" false ${float_type})
+
+  if (${float_char}GEMMINCOPY)
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMINCOPY}" "" "${${float_char}GEMMINCOPYOBJ}" false "" "" false ${float_type})
+  endif ()
+
+  if (${float_char}GEMMITCOPY)
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMITCOPY}" "" "${${float_char}GEMMITCOPYOBJ}" false "" "" false ${float_type})
+  endif ()
+
+  if (${float_char}GEMMONCOPY)
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMONCOPY}" "" "${${float_char}GEMMONCOPYOBJ}" false "" "" false ${float_type})
+  endif ()
+
+  if (${float_char}GEMMOTCOPY)
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMOTCOPY}" "" "${${float_char}GEMMOTCOPYOBJ}" false "" "" false ${float_type})
+  endif ()
+
+  GenerateCombinationObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "UPPER;LN;TRSMKERNEL" "trsm_kernel_LN" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "LT;TRSMKERNEL" "trsm_kernel_LT" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "UPPER;RN;TRSMKERNEL" "trsm_kernel_RN" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "RT;TRSMKERNEL" "trsm_kernel_RT" false "" "" false ${float_type})
+
+  # These don't use a scheme that is easy to iterate over - the filenames have part of the DEFINE codes in them, for UPPER/TRANS but not for UNIT/OUTER. Also TRANS is not passed in as a define.
+  # Could simplify it a bit by pairing up by -UUNIT/-DUNIT.
+  GenerateNamedObjects("generic/trmm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "UNIT" "trmm_iunucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "" "trmm_iunncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;UNIT" "trmm_ounucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER" "trmm_ounncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/trmm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER;UNIT" "trmm_ilnucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER" "trmm_ilnncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trmm_olnucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER" "trmm_olnncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/trmm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "UNIT" "trmm_iutucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "" "trmm_iutncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;UNIT" "trmm_outucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER" "trmm_outncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/trmm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER;UNIT" "trmm_iltucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER" "trmm_iltncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trmm_oltucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trmm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER" "trmm_oltncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/trsm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "UNIT" "trsm_iunucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "" "trsm_iunncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;UNIT" "trsm_ounucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_uncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER" "trsm_ounncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/trsm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER;UNIT" "trsm_ilnucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER" "trsm_ilnncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trsm_olnucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_lncopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER" "trsm_olnncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/trsm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "UNIT" "trsm_iutucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "" "trsm_iutncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;UNIT" "trsm_outucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER" "trsm_outncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/trsm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER;UNIT" "trsm_iltucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER" "trsm_iltncopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trsm_oltucopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/trsm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "OUTER;LOWER" "trsm_oltncopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/symm_ucopy_${${float_char}GEMM_UNROLL_N}.c" "OUTER" "symm_outcopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/symm_ucopy_${${float_char}GEMM_UNROLL_N}.c" "" "symm_iutcopy" false "" "" false ${float_type})
+
+  GenerateNamedObjects("generic/symm_lcopy_${${float_char}GEMM_UNROLL_N}.c" "LOWER;OUTER" "symm_oltcopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/symm_lcopy_${${float_char}GEMM_UNROLL_N}.c" "LOWER" "symm_iltcopy" false "" "" false ${float_type})
+
+  if (NOT DEFINED ${float_char}OMATCOPY_CN)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_CN ../arm/zomatcopy_cn.c)
+    else ()
+      set(${float_char}OMATCOPY_CN ../arm/omatcopy_cn.c)
+    endif ()
+  endif ()
+  if (NOT DEFINED ${float_char}OMATCOPY_RN)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_RN ../arm/zomatcopy_rn.c)
+    else ()
+      set(${float_char}OMATCOPY_RN ../arm/omatcopy_rn.c)
+    endif  ()
+  endif ()
+  if (NOT DEFINED ${float_char}OMATCOPY_CT)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_CT ../arm/zomatcopy_ct.c)
+    else ()
+      set(${float_char}OMATCOPY_CT ../arm/omatcopy_ct.c)
+    endif ()
+  endif ()
+  if (NOT DEFINED ${float_char}OMATCOPY_RT)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_RT ../arm/zomatcopy_rt.c)
+    else ()
+      set(${float_char}OMATCOPY_RT ../arm/omatcopy_rt.c)
+    endif ()
+  endif ()
+
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CN}" "" "domatcopy_k_cn" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RN}" "ROWM" "domatcopy_k_rn" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CT}" "" "domatcopy_k_ct" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RT}" "ROWM" "domatcopy_k_rt" false "" "" false ${float_type})
+
 endforeach ()
-
-if (DGEMMINCOPY)
-  GenerateNamedObjects("${KERNELDIR}/${DGEMMINCOPY}" "" "${DGEMMINCOPYOBJ}")
-endif ()
-
-if (DGEMMITCOPY)
-  GenerateNamedObjects("${KERNELDIR}/${DGEMMITCOPY}" "" "${DGEMMITCOPYOBJ}")
-endif ()
-
-if (DGEMMONCOPY)
-  GenerateNamedObjects("${KERNELDIR}/${DGEMMONCOPY}" "" "${DGEMMONCOPYOBJ}")
-endif ()
-
-if (DGEMMOTCOPY)
-  GenerateNamedObjects("${KERNELDIR}/${DGEMMOTCOPY}" "" "${DGEMMOTCOPYOBJ}")
-endif ()
-
-GenerateNamedObjects("${KERNELDIR}/${DGEMM_BETA}")
-GenerateCombinationObjects("${KERNELDIR}/${DGEMMKERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel")
-GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "UPPER;LN;TRSMKERNEL" "trsm_kernel_LN")
-GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "LT;TRSMKERNEL" "trsm_kernel_LT")
-GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "UPPER;RN;TRSMKERNEL" "trsm_kernel_RN")
-GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "RT;TRSMKERNEL" "trsm_kernel_RT")
-
-# These don't use a scheme that is easy to iterate over - the filenames have part of the DEFINE codes in them, for UPPER/TRANS but not for UNIT/OUTER. Also TRANS is not passed in as a define.
-# Could simplify it a bit by pairing up by -UUNIT/-DUNIT.
-GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "UNIT" "trmm_iunucopy")
-GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "" "trmm_iunncopy")
-GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "OUTER;UNIT" "trmm_ounucopy")
-GenerateNamedObjects("generic/trmm_uncopy_${DGEMM_UNROLL_M}.c" "OUTER" "trmm_ounncopy")
-
-GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "LOWER;UNIT" "trmm_ilnucopy")
-GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "LOWER" "trmm_ilnncopy")
-GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trmm_olnucopy")
-GenerateNamedObjects("generic/trmm_lncopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER" "trmm_olnncopy")
-
-GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "UNIT" "trmm_iutucopy")
-GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "" "trmm_iutncopy")
-GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "OUTER;UNIT" "trmm_outucopy")
-GenerateNamedObjects("generic/trmm_utcopy_${DGEMM_UNROLL_M}.c" "OUTER" "trmm_outncopy")
-
-GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "LOWER;UNIT" "trmm_iltucopy")
-GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "LOWER" "trmm_iltncopy")
-GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trmm_oltucopy")
-GenerateNamedObjects("generic/trmm_ltcopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER" "trmm_oltncopy")
-
-GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "UNIT" "trsm_iunucopy")
-GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "" "trsm_iunncopy")
-GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "OUTER;UNIT" "trsm_ounucopy")
-GenerateNamedObjects("generic/trsm_uncopy_${DGEMM_UNROLL_M}.c" "OUTER" "trsm_ounncopy")
-
-GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "LOWER;UNIT" "trsm_ilnucopy")
-GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "LOWER" "trsm_ilnncopy")
-GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trsm_olnucopy")
-GenerateNamedObjects("generic/trsm_lncopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER" "trsm_olnncopy")
-
-GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "UNIT" "trsm_iutucopy")
-GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "" "trsm_iutncopy")
-GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "OUTER;UNIT" "trsm_outucopy")
-GenerateNamedObjects("generic/trsm_utcopy_${DGEMM_UNROLL_M}.c" "OUTER" "trsm_outncopy")
-
-GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "LOWER;UNIT" "trsm_iltucopy")
-GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "LOWER" "trsm_iltncopy")
-GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER;UNIT" "trsm_oltucopy")
-GenerateNamedObjects("generic/trsm_ltcopy_${DGEMM_UNROLL_M}.c" "OUTER;LOWER" "trsm_oltncopy")
-
-GenerateNamedObjects("generic/symm_ucopy_${DGEMM_UNROLL_N}.c" "OUTER" "symm_outcopy")
-GenerateNamedObjects("generic/symm_ucopy_${DGEMM_UNROLL_N}.c" "" "symm_iutcopy")
-
-GenerateNamedObjects("generic/symm_lcopy_${DGEMM_UNROLL_N}.c" "LOWER;OUTER" "symm_oltcopy")
-GenerateNamedObjects("generic/symm_lcopy_${DGEMM_UNROLL_N}.c" "LOWER" "symm_iltcopy")
-
-if (NOT DEFINED DOMATCOPY_CN)
-  set(DOMATCOPY_CN ../arm/omatcopy_cn.c)
-endif ()
-if (NOT DEFINED DOMATCOPY_RN)
-  set(DOMATCOPY_RN ../arm/omatcopy_rn.c)
-endif ()
-if (NOT DEFINED DOMATCOPY_CT)
-  set(DOMATCOPY_CT ../arm/omatcopy_ct.c)
-endif ()
-if (NOT DEFINED DOMATCOPY_RT)
-  set(DOMATCOPY_RT ../arm/omatcopy_rt.c)
-endif ()
-
-GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_CN}" "" "domatcopy_k_cn")
-GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_RN}" "ROWM" "domatcopy_k_rn")
-GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_CT}" "" "domatcopy_k_ct")
-GenerateNamedObjects("${KERNELDIR}/${DOMATCOPY_RT}" "ROWM" "domatcopy_k_rt")
 
 # Makefile.LA
 #DBLASOBJS	+= dneg_tcopy$(TSUFFIX).$(SUFFIX) dlaswp_ncopy$(TSUFFIX).$(SUFFIX)
