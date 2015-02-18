@@ -13,11 +13,9 @@ function(ParseGetArchVars GETARCH_IN)
 endfunction ()
 
 # Reads a Makefile into CMake vars.
-# TODO: read nested Makefiles (I think 1 level should do)
 # TODO: respect IFDEF/IFNDEF?
 # TODO: regex replace makefile vars, e.g. $(TSUFFIX) is set to the target arch in the var CGEMMOTCOPYOBJ = cgemm_otcopy$(TSUFFIX).$(SUFFIX)
-# TODO: bail when makefile is missing, like -include
-function(ParseMakefileVars MAKEFILE_IN)
+macro(ParseMakefileVars MAKEFILE_IN)
   message(STATUS "Reading vars from ${MAKEFILE_IN}...")
   file(STRINGS ${MAKEFILE_IN} makefile_contents)
   foreach (makefile_line ${makefile_contents})
@@ -25,13 +23,18 @@ function(ParseMakefileVars MAKEFILE_IN)
     if (NOT "${line_match}" STREQUAL "")
       set(var_name ${CMAKE_MATCH_1})
       set(var_value ${CMAKE_MATCH_2})
-      set(${VAR_NAME} ${VAR_VALUE} PARENT_SCOPE)
+      set(${var_name} ${var_value})
       message(STATUS "found var ${var_name} = ${var_value}")
     else ()
-      message(STATUS "couldn't parse ${makefile_line} into a var")
+      string(REGEX MATCH "include \\$\\(KERNELDIR\\)/(.+)$" line_match "${makefile_line}")
+      if (NOT "${line_match}" STREQUAL "")
+        ParseMakefileVars(${KERNELDIR}/${CMAKE_MATCH_1})
+      else ()
+        message(STATUS "couldn't parse ${makefile_line} into a var")
+      endif ()
     endif ()
   endforeach ()
-endfunction ()
+endmacro ()
 
 # Returns all combinations of the input list, as a list with colon-separated combinations
 # E.g. input of A B C returns A B C A:B A:C B:C

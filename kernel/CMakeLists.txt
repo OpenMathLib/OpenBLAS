@@ -2,7 +2,7 @@
 include_directories(${CMAKE_SOURCE_DIR})
 include("${CMAKE_SOURCE_DIR}/cmake/kernel.cmake")
 
-# Makeflie
+# Makefile
 
 if (DEFINED TARGET_CORE)
   #override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
@@ -31,11 +31,7 @@ GenerateNamedObjects("${KERNELDIR}/${SCABS_KERNEL}" "COMPLEX;F_INTERFACE" "scabs
 GenerateNamedObjects("${KERNELDIR}/${DCABS_KERNEL}" "DOUBLE;COMPLEX;F_INTERFACE" "dcabs1" false "" "" true)
 
 # Makefile.L1
-
-# TODO: need to read ${KERNELDIR}/KERNEL into CMake vars
-
 foreach (float_type ${FLOAT_TYPES})
-
   # a bit of metaprogramming here to pull out the appropriate KERNEL var
   string(SUBSTRING ${float_type} 0 1 float_char)
   GenerateNamedObjects("${KERNELDIR}/${${float_char}AMAXKERNEL}" "USE_ABS" "amax_k" false "" "" false ${float_type})
@@ -58,27 +54,14 @@ foreach (float_type ${FLOAT_TYPES})
 endforeach ()
 
 # Makefile.L2
-
 GenerateNamedObjects("${KERNELDIR}/gemv_n.S" "DOUBLE")
 GenerateNamedObjects("${KERNELDIR}/gemv_t.S" "TRANS")
 GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "" 1 "" "" 3)
 GenerateNamedObjects("generic/ger.c" "" "ger_k" false "" "" "" 3)
 
 # Makefile.L3
-
-# TODO: these are from KERNEL.PENRYN - they should be read in from the appropriate ${KERNELDIR}/KERNEL file
-set(DGEMM_BETA ../generic/gemm_beta.c)
-set(DGEMMKERNEL gemm_kernel_2x4_penryn.S)
-set(DGEMMINCOPY gemm_ncopy_2.S)
-set(DGEMMITCOPY gemm_tcopy_2.S)
-set(DGEMMONCOPY ../generic/gemm_ncopy_4.c)
-set(DGEMMOTCOPY ../generic/gemm_tcopy_4.c)
-set(DGEMMINCOPYOBJ gemm_incopy)
-set(DGEMMITCOPYOBJ gemm_itcopy)
-set(DGEMMONCOPYOBJ gemm_oncopy)
-set(DGEMMOTCOPYOBJ gemm_otcopy)
-
-GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "" "gemm_kernel" false "" "" "" 3)
+message(STATUS "dgemm: ${DGEMMKERNEL}")
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "" "gemm_kernel" false "" "" false 3)
 
 if (DGEMMINCOPY)
   GenerateNamedObjects("${KERNELDIR}/${DGEMMINCOPY}" "" "${DGEMMINCOPYOBJ}")
