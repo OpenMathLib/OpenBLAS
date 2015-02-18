@@ -28,15 +28,15 @@ set(NU_SOURCES
 )
 
 # objects that need LOWER set
-GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "" 1)
+GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "" 1 "" "" 3)
 
 # objects that need TRANSA and UNIT set
 # N.B. BLAS wants to put the U/L from the filename in the *MIDDLE* because of course why not have a different naming scheme for every single object -hpa
-GenerateCombinationObjects("${NU_SOURCES}" "TRANSA;UNIT" "N;N" "" 3)
+GenerateCombinationObjects("${NU_SOURCES}" "TRANSA;UNIT" "N;N" "" 3 "" "" 3)
 
 # gbmv uses a lowercase n and t. WHY? WHO KNOWS!
-GenerateNamedObjects("gbmv_k.c" "" "gbmv_n")
-GenerateNamedObjects("gbmv_k.c" "TRANS" "gbmv_t")
+GenerateNamedObjects("gbmv_k.c" "" "gbmv_n" false "" "" "" 3)
+GenerateNamedObjects("gbmv_k.c" "TRANS" "gbmv_t" false "" "" "" 3)
 
 if (SMP)
 

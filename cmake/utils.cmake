@@ -12,6 +12,27 @@ function(ParseGetArchVars GETARCH_IN)
   endforeach ()
 endfunction ()
 
+# Reads a Makefile into CMake vars.
+# TODO: read nested Makefiles (I think 1 level should do)
+# TODO: respect IFDEF/IFNDEF?
+# TODO: regex replace makefile vars, e.g. $(TSUFFIX) is set to the target arch in the var CGEMMOTCOPYOBJ = cgemm_otcopy$(TSUFFIX).$(SUFFIX)
+# TODO: bail when makefile is missing, like -include
+function(ParseMakefileVars MAKEFILE_IN)
+  message(STATUS "Reading vars from ${MAKEFILE_IN}...")
+  file(STRINGS ${MAKEFILE_IN} makefile_contents)
+  foreach (makefile_line ${makefile_contents})
+    string(REGEX MATCH "([0-9_a-zA-Z]+)[ \t]*=[ \t]*(.+)$" line_match "${makefile_line}")
+    if (NOT "${line_match}" STREQUAL "")
+      set(var_name ${CMAKE_MATCH_1})
+      set(var_value ${CMAKE_MATCH_2})
+      set(${VAR_NAME} ${VAR_VALUE} PARENT_SCOPE)
+      message(STATUS "found var ${var_name} = ${var_value}")
+    else ()
+      message(STATUS "couldn't parse ${makefile_line} into a var")
+    endif ()
+  endforeach ()
+endfunction ()
+
 # Returns all combinations of the input list, as a list with colon-separated combinations
 # E.g. input of A B C returns A B C A:B A:C B:C
 # N.B. The input is meant to be a list, and to past a list to a function in CMake you must quote it (e.g. AllCombinations("${LIST_VAR}")).
@@ -75,6 +96,7 @@ endfunction ()
 #                               1 - compiles the sources for non-complex types only (SINGLE/DOUBLE)
 #                               2 - compiles for complex types only (COMPLEX/DOUBLE COMPLEX)
 #                               3 - compiles for all types, but changes source names for complex by prepending z (e.g. axpy.c becomes zaxpy.c)
+#                               STRING - compiles only the given type (e.g. DOUBLE)
 function(GenerateNamedObjects sources_in)
 
   if (DEFINED ARGV1)
@@ -105,6 +127,12 @@ function(GenerateNamedObjects sources_in)
     set(no_float_type false)
   endif ()
 
+  if (no_float_type)
+    set(float_list "DUMMY") # still need to loop once
+  else ()
+    set(float_list "${FLOAT_TYPES}")
+  endif ()
+
   set(real_only false)
   set(complex_only false)
   set(mangle_complex_sources false)
@@ -115,20 +143,17 @@ function(GenerateNamedObjects sources_in)
       set(complex_only true)
     elseif (${ARGV7} EQUAL 3)
       set(mangle_complex_sources true)
+    elseif (NOT ${ARGV7} EQUAL 0)
+      set(float_list ${ARGV7})
     endif ()
   endif ()
 
-  if (no_float_type)
-    set(float_list "DUMMY") # still need to loop once
-  else ()
-    set(float_list "${FLOAT_TYPES}")
-    if (complex_only)
-      list(REMOVE_ITEM float_list "SINGLE")
-      list(REMOVE_ITEM float_list "DOUBLE")
-    elseif (real_only)
-      list(REMOVE_ITEM float_list "COMPLEX")
-      list(REMOVE_ITEM float_list "ZCOMPLEX")
-    endif ()
+  if (complex_only)
+    list(REMOVE_ITEM float_list "SINGLE")
+    list(REMOVE_ITEM float_list "DOUBLE")
+  elseif (real_only)
+    list(REMOVE_ITEM float_list "COMPLEX")
+    list(REMOVE_ITEM float_list "ZCOMPLEX")
   endif ()
 
   set(OBJ_LIST_OUT "")

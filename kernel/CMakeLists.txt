@@ -1,67 +1,68 @@
 
 include_directories(${CMAKE_SOURCE_DIR})
+include("${CMAKE_SOURCE_DIR}/cmake/kernel.cmake")
 
 # Makeflie
+
+if (DEFINED TARGET_CORE)
+  #override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+  set(BUILD_KERNEL 1)
+  set(KDIR "")
+  set(TSUFFIX "_${TARGET_CORE}")
+else ()
+  set(TARGET_CORE ${CORE})
+  set(KDIR "")
+  set(TSUFFIX "")
+endif ()
+
+SetDefaultL1()
+#-include $(KERNELDIR)/KERNEL.$(TARGET_CORE)
+#include $(KERNELDIR)/KERNEL
+ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
+ParseMakefileVars("${KERNELDIR}/KERNEL")
 
 if (${ARCH} STREQUAL "x86")
   GenerateNamedObjects("${KERNELDIR}/cpuid.S" "")
 endif ()
 
-# TODO: Read from ${KERNELDIR}/KERNEL - some architectures use a different lsame
-set(LSAME_KERNEL lsame.S)
-set(SCABS_KERNEL cabs.S)
-set(DCABS_KERNEL cabs.S)
 # don't use float type name mangling here
-GenerateNamedObjects("${KERNELDIR}/${LSAME_KERNEL}" "F_INTERFACE" "lsame" 0 "" "" 1)
-GenerateNamedObjects("${KERNELDIR}/${SCABS_KERNEL}" "COMPLEX;F_INTERFACE" "scabs1" "" "" 1)
-GenerateNamedObjects("${KERNELDIR}/${DCABS_KERNEL}" "DOUBLE;COMPLEX;F_INTERFACE" "dcabs1" 0 "" "" 1)
-
+GenerateNamedObjects("${KERNELDIR}/${LSAME_KERNEL}" "F_INTERFACE" "lsame" false "" "" true)
+GenerateNamedObjects("${KERNELDIR}/${SCABS_KERNEL}" "COMPLEX;F_INTERFACE" "scabs1" false "" "" true)
+GenerateNamedObjects("${KERNELDIR}/${DCABS_KERNEL}" "DOUBLE;COMPLEX;F_INTERFACE" "dcabs1" false "" "" true)
 
 # Makefile.L1
 
 # TODO: need to read ${KERNELDIR}/KERNEL into CMake vars
-set(DAMAXKERNEL amax.S)
-set(DAMINKERNEL amax.S)
-set(DMAXKERNEL amax.S)
-set(DMINKERNEL amax.S)
-set(IDAMAXKERNEL iamax.S)
-set(IDAMINKERNEL iamax.S)
-set(IDMAXKERNEL iamax.S)
-set(IDMINKERNEL iamax.S)
-set(DASUMKERNEL asum.S)
-set(DAXPYKERNEL axpy.S)
-set(DCOPYKERNEL copy.S)
-set(DDOTKERNEL dot.S)
-set(DNRM2KERNEL nrm2.S)
-set(DROTKERNEL rot.S)
-set(DSCALKERNEL scal.S)
-set(DSWAPKERNEL swap.S)
-set(DAXPBYKERNEL ../arm/axpby.c)
 
-GenerateNamedObjects("${KERNELDIR}/${DAMAXKERNEL}" "USE_ABS" "amax_k")
-GenerateNamedObjects("${KERNELDIR}/${DAMINKERNEL}" "USE_ABS;USE_MIN" "amin_k")
-GenerateNamedObjects("${KERNELDIR}/${DMAXKERNEL}" "" "max_k")
-GenerateNamedObjects("${KERNELDIR}/${DMINKERNEL}" "" "min_k")
-GenerateNamedObjects("${KERNELDIR}/${IDAMAXKERNEL}" "USE_ABS" "i*amax_k")
-GenerateNamedObjects("${KERNELDIR}/${IDAMINKERNEL}" "USE_ABS;USE_MIN" "i*amin_k")
-GenerateNamedObjects("${KERNELDIR}/${IDMAXKERNEL}" "" "i*max_k")
-GenerateNamedObjects("${KERNELDIR}/${IDMINKERNEL}" "" "i*min_k")
-GenerateNamedObjects("${KERNELDIR}/${DASUMKERNEL}" "" "asum_k")
-GenerateNamedObjects("${KERNELDIR}/${DAXPYKERNEL}" "" "axpy_k")
-GenerateNamedObjects("${KERNELDIR}/${DCOPYKERNEL}" "C_INTERFACE" "copy_k")
-GenerateNamedObjects("${KERNELDIR}/${DDOTKERNEL}" "" "dot_k")
-GenerateNamedObjects("${KERNELDIR}/${DNRM2KERNEL}" "" "nrm2_k")
-GenerateNamedObjects("${KERNELDIR}/${DROTKERNEL}" "" "rot_k")
-GenerateNamedObjects("${KERNELDIR}/${DSCALKERNEL}" "" "scal_k")
-GenerateNamedObjects("${KERNELDIR}/${DSWAPKERNEL}" "" "swap_k")
-GenerateNamedObjects("${KERNELDIR}/${DAXPBYKERNEL}" "" "axpby_k")
+foreach (float_type ${FLOAT_TYPES})
+
+  # a bit of metaprogramming here to pull out the appropriate KERNEL var
+  string(SUBSTRING ${float_type} 0 1 float_char)
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}AMAXKERNEL}" "USE_ABS" "amax_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}AMINKERNEL}" "USE_ABS;USE_MIN" "amin_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}MAXKERNEL}" "" "max_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}MINKERNEL}" "" "min_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${I${float_char}AMAXKERNEL}" "USE_ABS" "i*amax_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${I${float_char}AMINKERNEL}" "USE_ABS;USE_MIN" "i*amin_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${I${float_char}MAXKERNEL}" "" "i*max_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${I${float_char}MINKERNEL}" "" "i*min_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}ASUMKERNEL}" "" "asum_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}AXPYKERNEL}" "" "axpy_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}COPYKERNEL}" "C_INTERFACE" "copy_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}DOTKERNEL}" "" "dot_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}NRM2KERNEL}" "" "nrm2_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}ROTKERNEL}" "" "rot_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}SCALKERNEL}" "" "scal_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}SWAPKERNEL}" "" "swap_k" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}AXPBYKERNEL}" "" "axpby_k" false "" "" false ${float_type})
+endforeach ()
 
 # Makefile.L2
 
 GenerateNamedObjects("${KERNELDIR}/gemv_n.S" "DOUBLE")
 GenerateNamedObjects("${KERNELDIR}/gemv_t.S" "TRANS")
-GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "" 1)
-GenerateNamedObjects("generic/ger.c" "" "ger_k")
+GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "" 1 "" "" 3)
+GenerateNamedObjects("generic/ger.c" "" "ger_k" false "" "" "" 3)
 
 # Makefile.L3
 
@@ -77,7 +78,7 @@ set(DGEMMITCOPYOBJ gemm_itcopy)
 set(DGEMMONCOPYOBJ gemm_oncopy)
 set(DGEMMOTCOPYOBJ gemm_otcopy)
 
-GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "" "gemm_kernel")
+GenerateNamedObjects("${KERNELDIR}/${DGEMMKERNEL}" "" "gemm_kernel" false "" "" "" 3)
 
 if (DGEMMINCOPY)
   GenerateNamedObjects("${KERNELDIR}/${DGEMMINCOPY}" "" "${DGEMMINCOPYOBJ}")
