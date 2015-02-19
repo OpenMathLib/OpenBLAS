@@ -3,19 +3,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 set(USE_GEMM3M 0)
 
 if (DEFINED ARCH)
-  if (${ARCH} STREQUAL "x86")
-    set(USE_GEMM3M 1)
-  endif ()
-
-  if (${ARCH} STREQUAL "x86_64")
-    set(USE_GEMM3M 1)
-  endif ()
-
-  if (${ARCH} STREQUAL "ia64")
-    set(USE_GEMM3M 1)
-  endif ()
-
-  if (${ARCH} STREQUAL "MIPS")
+  if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64" OR ${ARCH} STREQUAL "ia64" OR ${ARCH} STREQUAL "MIPS")
     set(USE_GEMM3M 1)
   endif ()
 endif ()
@@ -47,6 +35,14 @@ if (SMP)
     GenerateCombinationObjects("symm_k.c" "RSIDE;LOWER" "L;U" "THREADED_LEVEL3;NN" 2 "symm_thread")
   endif ()
 endif ()
+
+foreach (float_type ${FLOAT_TYPES})
+  set(VERBOSE_GEN true)
+  if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+    GenerateCombinationObjects("zherk_kernel" "LOWER;CONJ" "U;N" "HERK" 2 "herk_kernel" false ${float_type})
+  endif ()
+  set(VERBOSE_GEN false)
+endforeach ()
 
 #HPLOBJS =
 #	dgemm_nn.c dgemm_nt.c dgemm_tn.c dgemm_tt.c
