@@ -68,6 +68,17 @@ GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "" 1 "" "" 3)
 GenerateNamedObjects("generic/ger.c" "" "ger_k" false "" "" "" 3)
 
 # Makefile.L3
+set(USE_GEMM3M false)
+set(USE_TRMM false)
+
+if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64" OR ${ARCH} STREQUAL "ia64" OR ${ARCH} STREQUAL "MIPS")
+  set(USE_GEMM3M true)
+endif ()
+
+if (${ARCH} STREQUAL "arm" OR ${ARCH} STREQUAL "arm64" OR "${TARGET}" STREQUAL "LONGSOON3B" OR "${TARGET}" STREQUAL "GENERIC")
+  set(USE_TRMM true)
+endif ()
+
 foreach (float_type ${FLOAT_TYPES})
   string(SUBSTRING ${float_type} 0 1 float_char)
   GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "" "gemm_kernel" false "" "" false ${float_type})
@@ -88,12 +99,32 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMOTCOPY}" "${float_type}" "${${float_char}GEMMOTCOPYOBJ}" false "" "" true ${float_type})
   endif ()
 
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMM_BETA}" "" "" false "" "" false ${float_type})
-  GenerateCombinationObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "UPPER;LN;TRSMKERNEL" "trsm_kernel_LN" false "" "" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "LT;TRSMKERNEL" "trsm_kernel_LT" false "" "" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "UPPER;RN;TRSMKERNEL" "trsm_kernel_RN" false "" "" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "RT;TRSMKERNEL" "trsm_kernel_RT" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMM_BETA}" "" "gemm_beta" false "" "" false ${float_type})
+
+  if (USE_TRMM)
+    set(TRMM_KERNEL "${${float_char}TRMMKERNEL}")
+  else ()
+    set(TRMM_KERNEL "${${float_char}GEMMKERNEL}")
+  endif ()
+
+  if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+    # screw it, just enumerate all these. there is an extra define for these indicating which side is a conjugate (e.g. CN NC NN) that I don't really want to work into GenerateCombinationObjects
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;NN" "trmm_kernel_LN" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;TRANSA;NN" "trmm_kernel_LT" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;CONJ;CN" "trmm_kernel_LR" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;TRANSA;CONJ;CN" "trmm_kernel_LC" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "NN" "trmm_kernel_RN" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "TRANSA;NN" "trmm_kernel_RT" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "CONJ;NC" "trmm_kernel_RR" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "TRANSA;CONJ;NC" "trmm_kernel_RC" false "" "" false ${float_type})
+  else ()
+    GenerateCombinationObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel" false ${float_type})
+  endif ()
+
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LN}" "UPPER;LN;TRSMKERNEL" "trsm_kernel_LN" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LT}" "LT;TRSMKERNEL" "trsm_kernel_LT" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RN}" "UPPER;RN;TRSMKERNEL" "trsm_kernel_RN" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RT}" "RT;TRSMKERNEL" "trsm_kernel_RT" false "" "" false ${float_type})
 
   # These don't use a scheme that is easy to iterate over - the filenames have part of the DEFINE codes in them, for UPPER/TRANS but not for UNIT/OUTER. Also TRANS is not passed in as a define.
   # Could simplify it a bit by pairing up by -UUNIT/-DUNIT.
