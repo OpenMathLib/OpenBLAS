@@ -165,6 +165,7 @@ function(GenerateNamedObjects sources_in)
     list(REMOVE_ITEM float_list "ZCOMPLEX")
   endif ()
 
+  set(float_char "")
   set(OBJ_LIST_OUT "")
   foreach (float_type ${float_list})
     foreach (source_file ${sources_in})

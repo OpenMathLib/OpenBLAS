@@ -73,19 +73,19 @@ foreach (float_type ${FLOAT_TYPES})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "" "gemm_kernel" false "" "" false ${float_type})
 
   if (${float_char}GEMMINCOPY)
-    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMINCOPY}" "" "${${float_char}GEMMINCOPYOBJ}" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMINCOPY}" "${float_type}" "${${float_char}GEMMINCOPYOBJ}" false "" "" true ${float_type})
   endif ()
 
   if (${float_char}GEMMITCOPY)
-    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMITCOPY}" "" "${${float_char}GEMMITCOPYOBJ}" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMITCOPY}" "${float_type}" "${${float_char}GEMMITCOPYOBJ}" false "" "" true ${float_type})
   endif ()
 
   if (${float_char}GEMMONCOPY)
-    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMONCOPY}" "" "${${float_char}GEMMONCOPYOBJ}" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMONCOPY}" "${float_type}" "${${float_char}GEMMONCOPYOBJ}" false "" "" true ${float_type})
   endif ()
 
   if (${float_char}GEMMOTCOPY)
-    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMOTCOPY}" "" "${${float_char}GEMMOTCOPYOBJ}" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMOTCOPY}" "${float_type}" "${${float_char}GEMMOTCOPYOBJ}" false "" "" true ${float_type})
   endif ()
 
   GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMM_BETA}" "" "" false "" "" false ${float_type})
