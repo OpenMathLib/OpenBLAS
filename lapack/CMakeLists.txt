@@ -58,11 +58,11 @@ set(ZLAPACK_SOURCES
 )
 
 GenerateNamedObjects("${LAPACK_SOURCES}")
-GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" 0 "" "" "" 3)
+GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" false "" "" false 3)
 
 # TODO: laswp needs arch specific code
-GenerateNamedObjects("laswp/generic/laswp_k.c" "" "laswp_plus")
-GenerateNamedObjects("laswp/generic/laswp_k.c" "MINUS" "laswp_minus")
+GenerateNamedObjects("laswp/generic/laswp_k.c" "" "laswp_plus" false "" "" false 3)
+GenerateNamedObjects("laswp/generic/laswp_k.c" "MINUS" "laswp_minus" false "" "" false 3)
 
 if (SMP)
 

@@ -88,6 +88,7 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMOTCOPY}" "" "${${float_char}GEMMOTCOPYOBJ}" false "" "" false ${float_type})
   endif ()
 
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMM_BETA}" "" "" false "" "" false ${float_type})
   GenerateCombinationObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "UPPER;LN;TRSMKERNEL" "trsm_kernel_LN" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "LT;TRSMKERNEL" "trsm_kernel_LT" false "" "" false ${float_type})
