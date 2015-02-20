@@ -37,11 +37,14 @@ if (SMP)
 endif ()
 
 foreach (float_type ${FLOAT_TYPES})
-  set(VERBOSE_GEN true)
   if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
-    GenerateCombinationObjects("zherk_kernel" "LOWER;CONJ" "U;N" "HERK" 2 "herk_kernel" false ${float_type})
+    GenerateCombinationObjects("zherk_kernel.c" "LOWER;CONJ" "U;N" "HERK" 2 "herk_kernel" false ${float_type})
+    # TRANS needs to be set/unset when CONJ is set/unset, so can't use it as a combination
+    GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK" 3 "herk_N" false ${float_type})
+    GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;TRANS;CONJ" 3 "herk_C" false ${float_type})
+    GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;THREADED_LEVEL3" 3 "herk_thread_N" false ${float_type})
+    GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;THREADED_LEVEL3;TRANS;CONJ" 3 "herk_thread_C" false ${float_type})
   endif ()
-  set(VERBOSE_GEN false)
 endforeach ()
 
 #HPLOBJS =

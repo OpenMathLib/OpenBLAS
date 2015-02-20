@@ -241,14 +241,17 @@ endfunction ()
 # @param complex_filename_scheme see GenerateNamedObjects
 function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_defines_in replace_scheme)
 
+  set(alternate_name_in "")
   if (DEFINED ARGV5)
-    set(alternate_name ${ARGV5})
+    set(alternate_name_in ${ARGV5})
   endif ()
 
+  set(no_float_type false)
   if (DEFINED ARGV6)
     set(no_float_type ${ARGV6})
   endif ()
 
+  set(complex_filename_scheme "")
   if (DEFINED ARGV7)
     set(complex_filename_scheme ${ARGV7})
   endif ()
@@ -267,6 +270,8 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
     list(GET define_codes ${c} define_code)
 
     foreach (source_file ${sources_in})
+
+      set(alternate_name ${alternate_name_in})
 
       # replace colon separated list with semicolons, this turns it into a CMake list that we can use foreach with
       string(REPLACE ":" ";" define_combo ${define_combo})
@@ -287,8 +292,12 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
         if (replace_scheme EQUAL 2)
           set(append_code "_${define_code}")
         elseif (replace_scheme EQUAL 3)
+          if ("${alternate_name}" STREQUAL "")
+            string(REGEX MATCH "[a-zA-Z]\\." last_letter ${source_file})
+          else ()
+            string(REGEX MATCH "[a-zA-Z]$" last_letter ${alternate_name})
+          endif ()
           # first extract the last letter
-          string(REGEX MATCH "[a-zA-Z]\\." last_letter ${source_file})
           string(SUBSTRING ${last_letter} 0 1 last_letter) # remove period from match
           # break the code up into the first letter and the remaining (should only be 2 anyway)
           string(SUBSTRING ${define_code} 0 1 define_code_first)
@@ -296,7 +305,9 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
           set(replace_code "${define_code_first}${last_letter}${define_code_second}")
         elseif (replace_scheme EQUAL 4)
           # insert code before the last underscore and pass that in as the alternate_name
-          get_filename_component(alternate_name ${source_file} NAME_WE)
+          if ("${alternate_name}" STREQUAL "")
+            get_filename_component(alternate_name ${source_file} NAME_WE)
+          endif ()
           set(extra_underscore "")
           # check if filename has two underscores, insert another if not (e.g. getrs_parallel needs to become getrs_U_parallel not getrsU_parallel)
           string(REGEX MATCH "_[a-zA-Z]+_" underscores ${alternate_name})
