@@ -17,13 +17,11 @@ set(NU_SOURCES
   tbsv_U.c
   tpmv_U.c
   tpsv_U.c
-  trmv_U.c
   trsv_U.c
   tbmv_L.c
   tbsv_L.c
   tpmv_L.c
   tpsv_L.c
-  trmv_L.c
   trsv_L.c
 )
 
@@ -37,6 +35,22 @@ GenerateCombinationObjects("${NU_SOURCES}" "TRANSA;UNIT" "N;N" "" 3 "" "" 3)
 # gbmv uses a lowercase n and t. WHY? WHO KNOWS!
 GenerateNamedObjects("gbmv_k.c" "" "gbmv_n" false "" "" "" 3)
 GenerateNamedObjects("gbmv_k.c" "TRANS" "gbmv_t" false "" "" "" 3)
+
+# special defines for complex trmv
+foreach (float_type ${FLOAT_TYPES})
+  if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+    GenerateCombinationObjects("ztrmv_U.c" "UNIT" "N" "TRANSA=1" 0 "trmv_NU" false ${float_type})
+    GenerateCombinationObjects("ztrmv_U.c" "UNIT" "N" "TRANSA=2" 0 "trmv_TL" false ${float_type})
+    GenerateCombinationObjects("ztrmv_U.c" "UNIT" "N" "TRANSA=3" 0 "trmv_RU" false ${float_type})
+    GenerateCombinationObjects("ztrmv_U.c" "UNIT" "N" "TRANSA=4" 0 "trmv_CL" false ${float_type})
+    GenerateCombinationObjects("ztrmv_L.c" "UNIT" "N" "TRANSA=1" 0 "trmv_NL" false ${float_type})
+    GenerateCombinationObjects("ztrmv_L.c" "UNIT" "N" "TRANSA=2" 0 "trmv_TU" false ${float_type})
+    GenerateCombinationObjects("ztrmv_L.c" "UNIT" "N" "TRANSA=3" 0 "trmv_RL" false ${float_type})
+    GenerateCombinationObjects("ztrmv_L.c" "UNIT" "N" "TRANSA=4" 0 "trmv_CU" false ${float_type})
+  else ()
+    GenerateCombinationObjects("trmv_U.c;trmv_L.c" "TRANSA;UNIT" "N;N" "" 3 "" false ${float_type})
+  endif ()
+endforeach ()
 
 if (SMP)
 
@@ -68,6 +82,13 @@ if (SMP)
   )
 
   GenerateCombinationObjects("${NU_SMP_SOURCES}" "TRANSA;LOWER;UNIT" "N;U;N" "" 2)
+
+  foreach (float_type ${FLOAT_TYPES})
+    if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+      GenerateCombinationObjects("trmv_thread.c" "LOWER;UNIT" "U;N" "TRANSA=3" 0 "trmv_thread_R" false ${float_type})
+      GenerateCombinationObjects("trmv_thread.c" "LOWER;UNIT" "U;N" "TRANSA=4" 0 "trmv_thread_C" false ${float_type})
+    endif ()
+  endforeach ()
 
 endif ()
 
