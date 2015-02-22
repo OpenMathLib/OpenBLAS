@@ -16,8 +16,6 @@ else ()
 endif ()
 
 SetDefaultL1()
-#-include $(KERNELDIR)/KERNEL.$(TARGET_CORE)
-#include $(KERNELDIR)/KERNEL
 ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
 ParseMakefileVars("${KERNELDIR}/KERNEL")
 
@@ -53,12 +51,19 @@ foreach (float_type ${FLOAT_TYPES})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}ASUMKERNEL}" "" "asum_k" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}AXPYKERNEL}" "" "axpy_k" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}COPYKERNEL}" "C_INTERFACE" "copy_k" false "" "" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}DOTKERNEL}" "" "dot_k" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}NRM2KERNEL}" "" "nrm2_k" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}ROTKERNEL}" "" "rot_k" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}SCALKERNEL}" "" "scal_k" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}SWAPKERNEL}" "" "swap_k" false "" "" false ${float_type})
   GenerateNamedObjects("${KERNELDIR}/${${float_char}AXPBYKERNEL}" "" "axpby_k" false "" "" false ${float_type})
+
+  if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}AXPYKERNEL}" "CONJ" "axpyc_k" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}DOTKERNEL}" "" "dotu_k" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}DOTKERNEL}" "CONJ" "dotc_k" false "" "" false ${float_type})
+  else ()
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}DOTKERNEL}" "" "dot_k" false "" "" false ${float_type})
+  endif ()
 endforeach ()
 
 # Makefile.L2

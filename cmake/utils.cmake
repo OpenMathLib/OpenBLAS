@@ -321,7 +321,7 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
         endif ()
       endif ()
 
-      GenerateNamedObjects("${source_file}" "${cur_defines}" "${alternate_name}" 0 "${replace_code}" "${append_code}" "${no_float_type}" "${complex_filename_scheme}")
+      GenerateNamedObjects("${source_file}" "${cur_defines}" "${alternate_name}" false "${replace_code}" "${append_code}" "${no_float_type}" "${complex_filename_scheme}")
       list(APPEND COMBO_OBJ_LIST_OUT "${OBJ_LIST_OUT}")
     endforeach ()
   endforeach ()

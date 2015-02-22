@@ -84,6 +84,24 @@ foreach (CBLAS_FLAG ${CBLAS_FLAGS})
 
 endforeach ()
 
+# complex-specific sources
+foreach (float_type ${FLOAT_TYPES})
+  if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+    GenerateNamedObjects("zger.c" "" "geru" false "" "" false ${float_type})
+    GenerateNamedObjects("zger.c" "CONJ" "gerc" false "" "" false ${float_type})
+  endif ()
+  if (${float_type} STREQUAL "COMPLEX")
+    GenerateNamedObjects("zscal.c" "SSCAL" "sscal" false "" "" false "COMPLEX")
+    GenerateNamedObjects("nrm2.c" "" "scnrm2" false "" "" true "COMPLEX")
+  endif ()
+
+  if (${float_type} STREQUAL "ZCOMPLEX")
+    GenerateNamedObjects("zscal.c" "SSCAL" "dscal" false "" "" false "ZCOMPLEX")
+    GenerateNamedObjects("nrm2.c" "" "dznrm2" false "" "" true "ZCOMPLEX")
+  endif ()
+endforeach ()
+
+
 if (NOT DEFINED NO_LAPACK)
   set(LAPACK_SOURCES
     lapack/gesv.c
