@@ -54,14 +54,6 @@ endforeach ()
 
 if (SMP)
 
-  # gbmv uses a lowercase n and t. N.B. this uses TRANSA where gbmv.c uses TRANS. Intentional?
-  GenerateNamedObjects("gbmv_thread.c" "" "gbmv_thread_n")
-  GenerateNamedObjects("gbmv_thread.c" "TRANSA" "gbmv_thread_t")
-
-  GenerateNamedObjects("gemv_thread.c" "" "gemv_thread_n")
-  GenerateNamedObjects("gemv_thread.c" "TRANSA" "gemv_thread_t")
-
-  GenerateNamedObjects("ger_thread.c")
 
   set(UL_SMP_SOURCES
     symv_thread.c
@@ -84,10 +76,41 @@ if (SMP)
   GenerateCombinationObjects("${NU_SMP_SOURCES}" "TRANSA;LOWER;UNIT" "N;U;N" "" 2)
 
   foreach (float_type ${FLOAT_TYPES})
+
+    GenerateNamedObjects("gemv_thread.c" "" "gemv_thread_n" false "" "" false ${float_type})
+    GenerateNamedObjects("gemv_thread.c" "TRANSA" "gemv_thread_t" false "" "" false ${float_type})
+
+    GenerateNamedObjects("gbmv_thread.c" "" "gbmv_thread_n" false "" "" false ${float_type})
+    GenerateNamedObjects("gbmv_thread.c" "TRANSA" "gbmv_thread_t" false "" "" false ${float_type})
+
+
     if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
       GenerateCombinationObjects("trmv_thread.c" "LOWER;UNIT" "U;N" "TRANSA=3" 0 "trmv_thread_R" false ${float_type})
       GenerateCombinationObjects("trmv_thread.c" "LOWER;UNIT" "U;N" "TRANSA=4" 0 "trmv_thread_C" false ${float_type})
+
+      GenerateNamedObjects("gemv_thread.c" "CONJ" "gemv_thread_r" false "" "" false ${float_type})
+      GenerateNamedObjects("gemv_thread.c" "CONJ;TRANSA" "gemv_thread_c" false "" "" false ${float_type})
+      GenerateNamedObjects("gemv_thread.c" "XCONJ" "gemv_thread_o" false "" "" false ${float_type})
+      GenerateNamedObjects("gemv_thread.c" "XCONJ;TRANSA" "gemv_thread_u" false "" "" false ${float_type})
+      GenerateNamedObjects("gemv_thread.c" "XCONJ;CONJ" "gemv_thread_s" false "" "" false ${float_type})
+      GenerateNamedObjects("gemv_thread.c" "XCONJ;CONJ;TRANSA" "gemv_thread_d" false "" "" false ${float_type})
+
+      GenerateNamedObjects("gbmv_thread.c" "CONJ" "gbmv_thread_r" false "" "" false ${float_type})
+      GenerateNamedObjects("gbmv_thread.c" "CONJ;TRANSA" "gbmv_thread_c" false "" "" false ${float_type})
+      GenerateNamedObjects("gbmv_thread.c" "XCONJ" "gbmv_thread_o" false "" "" false ${float_type})
+      GenerateNamedObjects("gbmv_thread.c" "XCONJ;TRANSA" "gbmv_thread_u" false "" "" false ${float_type})
+      GenerateNamedObjects("gbmv_thread.c" "XCONJ;CONJ" "gbmv_thread_s" false "" "" false ${float_type})
+      GenerateNamedObjects("gbmv_thread.c" "XCONJ;CONJ;TRANSA" "gbmv_thread_d" false "" "" false ${float_type})
+
+      GenerateNamedObjects("ger_thread.c" "" "ger_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("ger_thread.c" "CONJ" "ger_thread_C" false "" "" false ${float_type})
+      GenerateNamedObjects("ger_thread.c" "XCONJ" "ger_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("ger_thread.c" "XCONJ;CONJ" "ger_thread_D" false "" "" false ${float_type})
+
+    else ()
+      GenerateNamedObjects("ger_thread.c" "" "" false "" "" false ${float_type})
     endif ()
+
   endforeach ()
 
 endif ()
