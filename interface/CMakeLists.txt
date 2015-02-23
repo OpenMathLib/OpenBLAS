@@ -94,7 +94,6 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("zscal.c" "SSCAL" "sscal" false "" "" false "COMPLEX")
     GenerateNamedObjects("nrm2.c" "" "scnrm2" false "" "" true "COMPLEX")
   endif ()
-
   if (${float_type} STREQUAL "ZCOMPLEX")
     GenerateNamedObjects("zscal.c" "SSCAL" "dscal" false "" "" false "ZCOMPLEX")
     GenerateNamedObjects("nrm2.c" "" "dznrm2" false "" "" true "ZCOMPLEX")

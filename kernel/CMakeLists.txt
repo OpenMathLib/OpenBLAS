@@ -71,6 +71,15 @@ GenerateNamedObjects("${KERNELDIR}/gemv_n.S" "DOUBLE")
 GenerateNamedObjects("${KERNELDIR}/gemv_t.S" "TRANS")
 GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "" 1 "" "" 3)
 GenerateNamedObjects("generic/ger.c" "" "ger_k" false "" "" "" 3)
+foreach (float_type ${FLOAT_TYPES})
+  string(SUBSTRING ${float_type} 0 1 float_char)
+  if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GERUKERNEL}" "" "geru_k" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GERCKERNEL}" "CONJ" "gerc_k" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GERUKERNEL}" "XCONJ" "gerv_k" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GERCKERNEL}" "CONJ;XCONJ" "gerd_k" false "" "" false ${float_type})
+  endif ()
+endforeach ()
 
 # Makefile.L3
 set(USE_GEMM3M false)
@@ -113,7 +122,14 @@ foreach (float_type ${FLOAT_TYPES})
   endif ()
 
   if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
-    # screw it, just enumerate all these. there is an extra define for these indicating which side is a conjugate (e.g. CN NC NN) that I don't really want to work into GenerateCombinationObjects
+
+    # just enumerate all these. there is an extra define for these indicating which side is a conjugate (e.g. CN NC NN) that I don't really want to work into GenerateCombinationObjects
+
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "NN" "gemm_kernel_n" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "CN" "gemm_kernel_l" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "NC" "gemm_kernel_r" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "CC" "gemm_kernel_b" false "" "" false ${float_type})
+
     GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;NN" "trmm_kernel_LN" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;TRANSA;NN" "trmm_kernel_LT" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;CONJ;CN" "trmm_kernel_LR" false "" "" false ${float_type})
@@ -122,6 +138,12 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "TRANSA;NN" "trmm_kernel_RT" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "CONJ;NC" "trmm_kernel_RR" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "TRANSA;CONJ;NC" "trmm_kernel_RC" false "" "" false ${float_type})
+
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LN}" "UPPER;LN;TRSMKERNEL;CONJ" "trsm_kernel_LR" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LT}" "UPPER;LT;TRSMKERNEL;CONJ" "trsm_kernel_LC" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RN}" "UPPER;RN;TRSMKERNEL;CONJ" "trsm_kernel_RR" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RT}" "UPPER;RN;TRSMKERNEL;CONJ" "trsm_kernel_RC" false "" "" false ${float_type})
+
   else ()
     GenerateCombinationObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel" false ${float_type})
   endif ()
