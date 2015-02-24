@@ -84,9 +84,6 @@ foreach (float_type ${FLOAT_TYPES})
 
     if (SMP)
 
-      GenerateCombinationObjects("trmv_thread.c" "LOWER;UNIT" "U;N" "TRANSA=3" 0 "trmv_thread_R" false ${float_type})
-      GenerateCombinationObjects("trmv_thread.c" "LOWER;UNIT" "U;N" "TRANSA=4" 0 "trmv_thread_C" false ${float_type})
-
       GenerateNamedObjects("gemv_thread.c" "CONJ" "gemv_thread_r" false "" "" false ${float_type})
       GenerateNamedObjects("gemv_thread.c" "CONJ;TRANSA" "gemv_thread_c" false "" "" false ${float_type})
       GenerateNamedObjects("gemv_thread.c" "XCONJ" "gemv_thread_o" false "" "" false ${float_type})
@@ -106,8 +103,8 @@ foreach (float_type ${FLOAT_TYPES})
       GenerateNamedObjects("ger_thread.c" "XCONJ" "ger_thread_V" false "" "" false ${float_type})
       GenerateNamedObjects("ger_thread.c" "XCONJ;CONJ" "ger_thread_D" false "" "" false ${float_type})
 
-      foreach (nu_smp_src ${NU_SMP_SOURCSE})
-        string(REGEX MATCH "[a-z]+" op_name ${nu_smp_src})
+      foreach (nu_smp_src ${NU_SMP_SOURCES})
+        string(REGEX MATCH "[a-z]+_[a-z]+" op_name ${nu_smp_src})
         GenerateCombinationObjects("${nu_smp_src}" "LOWER;UNIT" "U;N" "TRANSA=1" 0 "${op_name}_N" false ${float_type})
         GenerateCombinationObjects("${nu_smp_src}" "LOWER;UNIT" "U;N" "TRANSA=2" 0 "${op_name}_T" false ${float_type})
         GenerateCombinationObjects("${nu_smp_src}" "LOWER;UNIT" "U;N" "TRANSA=3" 0 "${op_name}_R" false ${float_type})
