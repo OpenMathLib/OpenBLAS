@@ -53,7 +53,7 @@ GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "" 1 "" "" 3)
 GenerateNamedObjects("gbmv_k.c" "" "gbmv_n" false "" "" "" 3)
 GenerateNamedObjects("gbmv_k.c" "TRANS" "gbmv_t" false "" "" "" 3)
 
-# special defines for complex trmv
+# special defines for complex
 foreach (float_type ${FLOAT_TYPES})
 
   if (SMP)
