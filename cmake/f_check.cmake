@@ -20,6 +20,13 @@
 # NEEDBUNDERSCORE
 # NEED2UNDERSCORES
 
+if (MSVC)
+  # had to do this for MSVC, else CMake automatically assumes I have ifort... -hpa
+  include(CMakeForceCompiler)
+  CMAKE_FORCE_Fortran_COMPILER(gfortran GNU)
+endif ()
+enable_language(Fortran)
+
 if (NOT ONLY_CBLAS)
   # N.B. f_check is not cross-platform, so instead try to use CMake variables
   # run f_check (appends to TARGET files)
