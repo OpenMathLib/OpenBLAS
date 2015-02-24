@@ -62,14 +62,6 @@ endif ()
 #COMMONOBJS	+= profile.$(SUFFIX)
 #endif
 
-add_library(COMMON_OBJS OBJECT
-  ${MEMORY}
-  ${SMP_SOURCES}
-  ${COMMON_SOURCES}
-)
-
-list(APPEND DBLAS_OBJS "COMMON_OBJS")
-
 #LIBOTHERS = libothers.$(LIBSUFFIX)
 
 #ifeq ($(DYNAMIC_ARCH), 1)
@@ -78,5 +70,4 @@ list(APPEND DBLAS_OBJS "COMMON_OBJS")
 #HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) parameter.$(SUFFIX)
 #endif
 
-set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
-
+add_library(driver_others OBJECT ${OPENBLAS_SRC} ${MEMORY} ${SMP_SOURCES} ${COMMON_SOURCES})

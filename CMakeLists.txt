@@ -75,24 +75,16 @@ if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
   message(FATAL_ERROR "Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for details.")
 endif ()
 
-# Let CMake handle this
-#if (${NOFORTRAN})
-#  message(ERROR "OpenBLAS: Detecting fortran compiler failed. Please install fortran compiler, e.g. gfortran, ifort, openf90.")
-#endif ()
-
 if (${NO_STATIC} AND ${NO_SHARED})
   message(FATAL_ERROR "Neither static nor shared are enabled.")
 endif ()
 
-set(DBLAS_OBJS "")
-foreach (SUBDIR ${SUBDIRS})
-  add_subdirectory(${SUBDIR})
-endforeach ()
-
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
-foreach (DBLAS_OBJ ${DBLAS_OBJS})
-  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${DBLAS_OBJ}>")
+foreach (SUBDIR ${SUBDIRS})
+  add_subdirectory(${SUBDIR})
+  string(REPLACE "/" "_" subdir_obj ${SUBDIR})
+  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${subdir_obj}>")
 endforeach ()
 
 # netlib:

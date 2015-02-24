@@ -13,7 +13,6 @@ function(ParseGetArchVars GETARCH_IN)
 endfunction ()
 
 # Reads a Makefile into CMake vars.
-# TODO: respect IFDEF/IFNDEF?
 macro(ParseMakefileVars MAKEFILE_IN)
   message(STATUS "Reading vars from ${MAKEFILE_IN}...")
   file(STRINGS ${MAKEFILE_IN} makefile_contents)
@@ -215,16 +214,30 @@ function(GenerateNamedObjects sources_in)
         endif ()
       endif ()
 
-      add_library(${obj_name} OBJECT ${source_file})
-      set_target_properties(${obj_name} PROPERTIES COMPILE_DEFINITIONS "${obj_defines}")
+      if (VERBOSE_GEN)
+        message(STATUS "${obj_name}:${source_file}")
+        message(STATUS "${obj_defines}")
+      endif ()
 
-      list(APPEND OBJ_LIST_OUT ${obj_name})
+      # create a copy of the source to avoid duplicate obj filename problem with ar.exe
+      get_filename_component(source_extension ${source_file} EXT)
+      set(new_source_file "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${obj_name}${source_extension}")
+      if (IS_ABSOLUTE ${source_file})
+        set(old_source_file ${source_file})
+      else ()
+        set(old_source_file "${CMAKE_CURRENT_LIST_DIR}/${source_file}")
+      endif ()
+
+      string(REPLACE ";" "\n#define " define_source "${obj_defines}")
+      string(REPLACE "=" " " define_source "${define_source}")
+      file(WRITE ${new_source_file} "#define ${define_source}\n#include \"${old_source_file}\"")
+      list(APPEND SRC_LIST_OUT ${new_source_file})
 
     endforeach ()
   endforeach ()
 
-  list(APPEND DBLAS_OBJS ${OBJ_LIST_OUT})
-  set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE)
+  list(APPEND OPENBLAS_SRC ${SRC_LIST_OUT})
+  set(OPENBLAS_SRC ${OPENBLAS_SRC} PARENT_SCOPE)
 endfunction ()
 
 # generates object files for each of the sources for each of the combinations of the preprocessor definitions passed in
@@ -260,7 +273,6 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
   set(define_combos ${LIST_OUT})
   set(define_codes ${CODES_OUT})
 
-  set(COMBO_OBJ_LIST_OUT "")
   list(LENGTH define_combos num_combos)
   math(EXPR num_combos "${num_combos} - 1")
 
@@ -322,10 +334,9 @@ function(GenerateCombinationObjects sources_in defines_in absent_codes_in all_de
       endif ()
 
       GenerateNamedObjects("${source_file}" "${cur_defines}" "${alternate_name}" false "${replace_code}" "${append_code}" "${no_float_type}" "${complex_filename_scheme}")
-      list(APPEND COMBO_OBJ_LIST_OUT "${OBJ_LIST_OUT}")
     endforeach ()
   endforeach ()
 
-  set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE)
+  set(OPENBLAS_SRC ${OPENBLAS_SRC} PARENT_SCOPE)
 endfunction ()
 

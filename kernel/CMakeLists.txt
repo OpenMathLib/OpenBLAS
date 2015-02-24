@@ -251,4 +251,4 @@ endforeach ()
 # Makefile.LA
 #DBLASOBJS	+= dneg_tcopy$(TSUFFIX).$(SUFFIX) dlaswp_ncopy$(TSUFFIX).$(SUFFIX)
 
-set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
+add_library(kernel OBJECT ${OPENBLAS_SRC})

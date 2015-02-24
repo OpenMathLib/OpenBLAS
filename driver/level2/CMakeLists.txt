@@ -115,5 +115,4 @@ if (SMP)
 
 endif ()
 
-set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
-
+add_library(driver_level2 OBJECT ${OPENBLAS_SRC})

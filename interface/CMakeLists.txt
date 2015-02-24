@@ -117,5 +117,4 @@ if (NOT DEFINED NO_LAPACK)
   GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" 0 "" "" 0 3)
 endif ()
 
-set(DBLAS_OBJS ${DBLAS_OBJS} PARENT_SCOPE) # list append removes the scope from DBLAS_OBJS
-
+add_library(interface OBJECT ${OPENBLAS_SRC})
