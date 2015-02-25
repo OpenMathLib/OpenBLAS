@@ -3445,28 +3445,28 @@ $(KDIR)zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_RTC)
 
 
 ifndef SGEADD_K
-SGEADD_K = ../arm/geadd.c
+SGEADD_K = ../generic/geadd.c
 endif
 
 $(KDIR)sgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEADD_K)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UROWM $< -o $@
 
 ifndef DGEADD_K
-DGEADD_K = ../arm/geadd.c
+DGEADD_K = ../generic/geadd.c
 endif
 
 $(KDIR)dgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEADD_K)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -UROWM $< -o $@
 
 ifndef CGEADD_K
-CGEADD_K = ../arm/zgeadd.c
+CGEADD_K = ../generic/zgeadd.c
 endif
 
 $(KDIR)cgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEADD_K)
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM $< -o $@
 
 ifndef ZGEADD_K
-ZGEADD_K = ../arm/zgeadd.c
+ZGEADD_K = ../generic/zgeadd.c
 endif
 
 $(KDIR)zgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEADD_K)

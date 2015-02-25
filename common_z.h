@@ -404,7 +404,7 @@
 #define ZOMATCOPY_K_CTC         gotoblas -> zomatcopy_k_ctc
 #define ZOMATCOPY_K_RTC         gotoblas -> zomatcopy_k_rtc
 
-#define ZGEADD_K                zgeadd_k 
+#define ZGEADD_K                gotoblas -> zgeadd_k
 
 #endif
 
