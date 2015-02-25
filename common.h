@@ -310,7 +310,7 @@ typedef int blasint;
 #endif
 
 #if defined(OS_WINDOWS)
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #define YIELDING    YieldProcessor()
 #else
 #define YIELDING	SwitchToThread()

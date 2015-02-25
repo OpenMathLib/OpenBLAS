@@ -769,12 +769,12 @@ static void *alloc_hugetlb(void *address){
   
   if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) {
       CloseHandle(hToken);
-      return -1;
+      return (void*)-1;
   }
 
   if (AdjustTokenPrivileges(hToken, FALSE, &tp, 0, NULL, NULL) != TRUE) {
       CloseHandle(hToken);
-      return -1;
+      return (void*)-1;
   }
 
   map_address  = (void *)VirtualAlloc(address,

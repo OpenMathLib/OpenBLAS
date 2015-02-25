@@ -40,7 +40,7 @@
 #include <string.h>
 #include "cpuid.h"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #define C_INLINE __inline
 #else
 #define C_INLINE inline
@@ -154,7 +154,7 @@ static C_INLINE int have_excpuid(void){
 #ifndef NO_AVX
 static C_INLINE void xgetbv(int op, int * eax, int * edx){
   //Use binary code for xgetbv
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
   *eax = __xgetbv(op);
 #else
   __asm__ __volatile__
