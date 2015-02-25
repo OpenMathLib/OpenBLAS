@@ -91,12 +91,10 @@ endforeach ()
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
 include("${CMAKE_SOURCE_DIR}/cmake/lapack.cmake")
-add_library(LA_OBJ OBJECT ${LA_SOURCES})
-set_target_properties(LA_OBJ PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
-list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LA_OBJ>")
+set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
 
 # add objects to the openblas lib
-add_library(openblas ${TARGET_OBJS})
+add_library(openblas ${LA_SOURCES} ${TARGET_OBJS})
 
 # TODO: Why is the config saved here? Is this necessary with CMake?
 #Save the config files for installation
