@@ -59,7 +59,7 @@
 #endif
 */
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 
 void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx)
 {
