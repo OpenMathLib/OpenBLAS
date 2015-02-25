@@ -329,23 +329,27 @@ endif
 ######  BLAS extensions #####
 SBLASOBJS += \
 	somatcopy_k_cn$(TSUFFIX).$(SUFFIX) somatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
-	somatcopy_k_ct$(TSUFFIX).$(SUFFIX) somatcopy_k_rt$(TSUFFIX).$(SUFFIX)
+	somatcopy_k_ct$(TSUFFIX).$(SUFFIX) somatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	sgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 DBLASOBJS += \
 	domatcopy_k_cn$(TSUFFIX).$(SUFFIX) domatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
-	domatcopy_k_ct$(TSUFFIX).$(SUFFIX) domatcopy_k_rt$(TSUFFIX).$(SUFFIX)
+	domatcopy_k_ct$(TSUFFIX).$(SUFFIX) domatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	dgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 CBLASOBJS += \
 	comatcopy_k_cn$(TSUFFIX).$(SUFFIX) comatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	comatcopy_k_ct$(TSUFFIX).$(SUFFIX) comatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	comatcopy_k_cnc$(TSUFFIX).$(SUFFIX) comatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
-	comatcopy_k_ctc$(TSUFFIX).$(SUFFIX) comatcopy_k_rtc$(TSUFFIX).$(SUFFIX)
+	comatcopy_k_ctc$(TSUFFIX).$(SUFFIX) comatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
+	cgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 ZBLASOBJS += \
 	zomatcopy_k_cn$(TSUFFIX).$(SUFFIX) zomatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	zomatcopy_k_ct$(TSUFFIX).$(SUFFIX) zomatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	zomatcopy_k_cnc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
-	zomatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX)
+	zomatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
+	zgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 
 SGEMMINCOPYOBJ_P = $(SGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
@@ -3439,4 +3443,32 @@ endif
 $(KDIR)zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_RTC)
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
 
+
+ifndef SGEADD_K
+SGEADD_K = ../arm/geadd.c
+endif
+
+$(KDIR)sgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEADD_K)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef DGEADD_K
+DGEADD_K = ../arm/geadd.c
+endif
+
+$(KDIR)dgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEADD_K)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef CGEADD_K
+CGEADD_K = ../arm/zgeadd.c
+endif
+
+$(KDIR)cgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEADD_K)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM $< -o $@
+
+ifndef ZGEADD_K
+ZGEADD_K = ../arm/zgeadd.c
+endif
+
+$(KDIR)zgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEADD_K)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM $< -o $@
 

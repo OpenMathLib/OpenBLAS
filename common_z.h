@@ -220,6 +220,7 @@
 #define ZOMATCOPY_K_CTC         zomatcopy_k_ctc
 #define ZOMATCOPY_K_RTC         zomatcopy_k_rtc
 
+#define ZGEADD_K                zgeadd_k 
 
 #else
 
@@ -402,6 +403,8 @@
 #define ZOMATCOPY_K_RNC         gotoblas -> zomatcopy_k_rnc
 #define ZOMATCOPY_K_CTC         gotoblas -> zomatcopy_k_ctc
 #define ZOMATCOPY_K_RTC         gotoblas -> zomatcopy_k_rtc
+
+#define ZGEADD_K                zgeadd_k 
 
 #endif
 

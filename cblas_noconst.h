@@ -333,6 +333,16 @@ void cblas_cimatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  bl
 		      blasint clda,  blasint cldb); 
 void cblas_zimatcopy( enum CBLAS_ORDER CORDER,  enum CBLAS_TRANSPOSE CTRANS,  blasint crows,  blasint ccols,  double* calpha, double* a, 
 		      blasint clda,  blasint cldb); 
+
+void cblas_sgeadd( enum CBLAS_ORDER CORDER, blasint crows,  blasint ccols,  float calpha, float *a,  blasint clda,  float cbeta, 
+		  float *c,  blasint cldc); 
+void cblas_dgeadd( enum CBLAS_ORDER CORDER, blasint crows,  blasint ccols,  double calpha, double *a,  blasint clda,  double cbeta, 
+		  double *c,  blasint cldc); 
+void cblas_cgeadd( enum CBLAS_ORDER CORDER, blasint crows,  blasint ccols,  float *calpha, float *a,  blasint clda,  float *cbeta, 
+		  float *c,  blasint cldc); 
+void cblas_zgeadd( enum CBLAS_ORDER CORDER, blasint crows,  blasint ccols,  double *calpha, double *a,  blasint clda,  double *cbeta, 
+		  double *c,  blasint cldc); 
+
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */

@@ -153,6 +153,7 @@
 #define SOMATCOPY_K_CT          somatcopy_k_ct
 #define SOMATCOPY_K_RT          somatcopy_k_rt
 
+#define SGEADD_K                sgeadd_k 
 
 #else
 
@@ -274,6 +275,7 @@
 #define SOMATCOPY_K_CT          gotoblas -> somatcopy_k_ct
 #define SOMATCOPY_K_RT          gotoblas -> somatcopy_k_rt
 
+#define SGEADD_K                gotoblas -> sgeadd_k 
 
 #endif
 

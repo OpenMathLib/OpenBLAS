@@ -220,6 +220,7 @@
 #define COMATCOPY_K_CTC         comatcopy_k_ctc
 #define COMATCOPY_K_RTC         comatcopy_k_rtc
 
+#define CGEADD_K                cgeadd_k 
 
 #else
 
@@ -402,6 +403,7 @@
 #define COMATCOPY_K_RNC         gotoblas -> comatcopy_k_rnc
 #define COMATCOPY_K_CTC         gotoblas -> comatcopy_k_ctc
 #define COMATCOPY_K_RTC         gotoblas -> comatcopy_k_rtc
+#define CGEADD_K                gotoblas -> cgeadd_k 
 
 #endif
 

@@ -634,7 +634,7 @@
 #define OMATCOPY_K_RN		DOMATCOPY_K_RN
 #define OMATCOPY_K_CT		DOMATCOPY_K_CT
 #define OMATCOPY_K_RT		DOMATCOPY_K_RT
-
+#define GEADD_K                 DGEADD_K 
 #else
 
 #define	AMAX_K			SAMAX_K
@@ -932,6 +932,7 @@
 #define OMATCOPY_K_CT		SOMATCOPY_K_CT
 #define OMATCOPY_K_RT		SOMATCOPY_K_RT
 
+#define GEADD_K 		SGEADD_K 
 #endif
 #else
 #ifdef XDOUBLE
@@ -1746,6 +1747,7 @@
 #define OMATCOPY_K_RNC		ZOMATCOPY_K_RNC
 #define OMATCOPY_K_CTC		ZOMATCOPY_K_CTC
 #define OMATCOPY_K_RTC		ZOMATCOPY_K_RTC
+#define GEADD_K                 ZGEADD_K 
 
 #else
 
@@ -2158,6 +2160,8 @@
 #define OMATCOPY_K_RNC		COMATCOPY_K_RNC
 #define OMATCOPY_K_CTC		COMATCOPY_K_CTC
 #define OMATCOPY_K_RTC		COMATCOPY_K_RTC
+
+#define GEADD_K                 CGEADD_K 
 
 #endif
 #endif
