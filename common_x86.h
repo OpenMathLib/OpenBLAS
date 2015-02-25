@@ -313,7 +313,11 @@ REALNAME:
 
 #define PROFCODE
 
+#ifdef __clang__
+#define EPILOGUE .end
+#else
 #define EPILOGUE .end	 REALNAME
+#endif
 #endif
 
 #if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(__ELF__)
