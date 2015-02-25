@@ -132,8 +132,10 @@ include("${CMAKE_SOURCE_DIR}/cmake/arch.cmake")
 # C Compiler dependent settings
 include("${CMAKE_SOURCE_DIR}/cmake/cc.cmake")
 
-# Fortran Compiler dependent settings
-include("${CMAKE_SOURCE_DIR}/cmake/fc.cmake")
+if (NOT NOFORTRAN)
+  # Fortran Compiler dependent settings
+  include("${CMAKE_SOURCE_DIR}/cmake/fc.cmake")
+endif ()
 
 if (BINARY64)
   if (INTERFACE64)
@@ -342,7 +344,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   endforeach ()
 endif ()
 
-if (${F_COMPILER} STREQUAL "GFORTRAN")
+if ("${F_COMPILER}" STREQUAL "GFORTRAN")
   # lapack-netlib is rife with uninitialized warnings -hpa
   set(LAPACK_FFLAGS "${LAPACK_FFLAGS} -Wno-maybe-uninitialized")
 endif ()
@@ -356,7 +358,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DOPENBLAS_OS_WINDOWS")
 endif ()
 
-if (${CMAKE_C_COMPILER} STREQUAL "LSB")
+if (${CMAKE_C_COMPILER} STREQUAL "LSB" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_COMPLEX_STRUCTURE")
 endif ()
 

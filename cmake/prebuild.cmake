@@ -51,7 +51,10 @@ else()
 endif ()
 
 include("${CMAKE_SOURCE_DIR}/cmake/c_check.cmake")
-include("${CMAKE_SOURCE_DIR}/cmake/f_check.cmake")
+
+if (NOT NOFORTRAN)
+  include("${CMAKE_SOURCE_DIR}/cmake/f_check.cmake")
+endif ()
 
 # compile getarch
 set(GETARCH_SRC

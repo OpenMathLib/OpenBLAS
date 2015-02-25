@@ -344,4 +344,4 @@ set(LA_SOURCES "")
 foreach (LA_FILE ${LA_REL_SRC})
   list(APPEND LA_SOURCES "${NETLIB_LAPACK_DIR}/SRC/${LA_FILE}")
 endforeach ()
-
+set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
