@@ -20,7 +20,7 @@ ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
 ParseMakefileVars("${KERNELDIR}/KERNEL")
 
 if (${ARCH} STREQUAL "x86")
-  GenerateNamedObjects("${KERNELDIR}/cpuid.S" "")
+  GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
 endif ()
 
 # don't use float type name mangling here
