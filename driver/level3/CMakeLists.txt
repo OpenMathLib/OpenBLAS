@@ -12,6 +12,7 @@ endif ()
 
 # loop through gemm.c defines
 set(GEMM_DEFINES NN NT TN TT)
+set(GEMM_COMPLEX_DEFINES RN CN RT CT NR TR RR CR NC TC RC CC)
 foreach (GEMM_DEFINE ${GEMM_DEFINES})
   string(TOLOWER ${GEMM_DEFINE} GEMM_DEFINE_LC)
   GenerateNamedObjects("gemm.c" "${GEMM_DEFINE}" "gemm_${GEMM_DEFINE_LC}" 0)
@@ -53,6 +54,14 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateCombinationObjects("trsm_L.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trsm_LC" false ${float_type})
     GenerateCombinationObjects("trsm_R.c" "UPPER;UNIT" "L;N" "CONJ" 0 "trsm_RR" false ${float_type})
     GenerateCombinationObjects("trsm_R.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trsm_RC" false ${float_type})
+    # special gemm defines for complex
+    foreach (gemm_define ${GEMM_COMPLEX_DEFINES})
+      string(TOLOWER ${gemm_define} gemm_define_LC)
+      GenerateNamedObjects("gemm.c" "${gemm_define}" "gemm_${gemm_define_LC}" false "" "" false ${float_type})
+      if (SMP AND NOT USE_SIMPLE_THREADED_LEVEL3)
+        GenerateNamedObjects("gemm.c" "${gemm_define};THREADED_LEVEL3" "gemm_thread_${gemm_define_LC}" false "" "" false ${float_type})
+      endif ()
+    endforeach ()
   endif ()
 endforeach ()
 
