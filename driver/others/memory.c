@@ -1353,6 +1353,8 @@ void DESTRUCTOR gotoblas_quit(void) {
 
   if (gotoblas_initialized == 0) return;
 
+  blas_shutdown();
+
 #ifdef PROFILE
    moncontrol (0);
 #endif
@@ -1374,8 +1376,6 @@ void DESTRUCTOR gotoblas_quit(void) {
 #ifdef PROFILE
    moncontrol (1);
 #endif
-
-   blas_shutdown();
 }
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))
