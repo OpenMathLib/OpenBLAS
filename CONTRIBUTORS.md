@@ -124,5 +124,8 @@ In chronological order:
 * Dan Kortschak
   * [2015-01-07] Added test for drotmg bug #484.
 
+* Ton van den Heuvel <https://github.com/ton>
+  * [2015-03-18] Fix race condition during shutdown causing a crash in gotoblas_set_affinity().
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]
