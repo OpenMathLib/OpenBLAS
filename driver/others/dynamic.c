@@ -363,7 +363,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	int i ;
 	int found = -1;
 	char message[128];
-	char mname[20];
+	//char mname[20];
 
 	for ( i=1 ; i <= 21; i++)
 	{
@@ -375,8 +375,8 @@ static gotoblas_t *force_coretype(char *coretype){
 	}
 	if (found < 0)
 	{
-		strncpy(mname,coretype,20);
-    		sprintf(message, "Core not found: %s\n",mname);
+	        //strncpy(mname,coretype,20);
+	        snprintf(message, 128, "Core not found: %s\n",coretype);
     		openblas_warning(1, message);
 		return(NULL);
 	}
