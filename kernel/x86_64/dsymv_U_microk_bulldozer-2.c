@@ -47,7 +47,7 @@ static void dsymv_kernel_4x4(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT 
 	"xorq		%0,%0			     \n\t"
 
 	".align 16				     \n\t"
-	".L01LOOP%=:				     \n\t"
+	"1:				     \n\t"
 
 	"vmovups	(%4,%0,8), %%xmm12	           \n\t"  // 2 * a
 	"vmovups	(%2,%0,8), %%xmm8	           \n\t"  // 2 * x
@@ -93,7 +93,7 @@ static void dsymv_kernel_4x4(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT 
 	"vmovups	%%xmm9 ,  -32(%3,%0,8)		   \n\t"
 	"vmovups	%%xmm11 , -16(%3,%0,8)		   \n\t"
 
-	"jnz		.L01LOOP%=		      \n\t"
+	"jnz		1b		      \n\t"
 
 	"vhaddpd        %%xmm0, %%xmm0, %%xmm0  \n\t"
 	"vhaddpd        %%xmm1, %%xmm1, %%xmm1  \n\t"

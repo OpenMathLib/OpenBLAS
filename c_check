@@ -81,6 +81,10 @@ if (($architecture eq "mips32") || ($architecture eq "mips64")) {
     $defined = 1;
 }
 
+if (($architecture eq "arm") || ($architecture eq "arm64")) {
+    $defined = 1;
+}
+
 if ($architecture eq "alpha") {
     $defined = 1;
     $binary = 64;

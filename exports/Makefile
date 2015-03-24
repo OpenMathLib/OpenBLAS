@@ -100,7 +100,12 @@ else
 	$(OBJCONV) @objconv.def ../$(LIBNAME) ../$(LIBNAME).renamed
 $(LIBDYNNAME) : ../$(LIBNAME).renamed osx.def
 endif
+ifeq ($(NOFORTRAN), 2)
+#only build cblas without Fortran
+	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+else
 	$(FC) $(FFLAGS) -all_load -headerpad_max_install_names -install_name $(CURDIR)/../$(LIBDYNNAME) -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+endif
 
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<

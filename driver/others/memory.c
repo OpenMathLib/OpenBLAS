@@ -241,6 +241,7 @@ void set_stack_limit(int limitMB){
 */
 #endif
 
+
 /*
 OpenBLAS uses the numbers of CPU cores in multithreading.
 It can be set by openblas_set_num_threads(int num_threads);
@@ -322,6 +323,23 @@ int blas_get_cpu_number(void){
   return blas_num_threads;
 }
 #endif
+
+
+int openblas_get_num_procs(void) {
+#ifndef SMP
+  return 1;
+#else
+  return get_num_procs();
+#endif
+}
+
+int openblas_get_num_threads(void) {
+#ifndef SMP
+  return 1;
+#else
+  return blas_get_cpu_number();
+#endif
+}
 
 struct release_t {
   void *address;
@@ -1335,6 +1353,8 @@ void DESTRUCTOR gotoblas_quit(void) {
 
   if (gotoblas_initialized == 0) return;
 
+  blas_shutdown();
+
 #ifdef PROFILE
    moncontrol (0);
 #endif
@@ -1356,8 +1376,6 @@ void DESTRUCTOR gotoblas_quit(void) {
 #ifdef PROFILE
    moncontrol (1);
 #endif
-
-   blas_shutdown();
 }
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))

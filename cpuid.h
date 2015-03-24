@@ -104,10 +104,11 @@
 #define CORE_ATOM	18
 #define CORE_NANO	19
 #define CORE_SANDYBRIDGE 20
-#define CORE_BOBCAT     21
-#define CORE_BULLDOZER  22
+#define CORE_BOBCAT      21
+#define CORE_BULLDOZER   22
 #define CORE_PILEDRIVER  23
-#define CORE_HASWELL 24
+#define CORE_HASWELL     24
+#define CORE_STEAMROLLER 25
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -200,6 +201,7 @@ typedef struct {
 #define CPUTYPE_BOBCAT                  45
 #define CPUTYPE_BULLDOZER               46
 #define CPUTYPE_PILEDRIVER              47
-#define CPUTYPE_HASWELL 48
+#define CPUTYPE_HASWELL 		48
+#define CPUTYPE_STEAMROLLER 		49
 
 #endif

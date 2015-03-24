@@ -47,7 +47,7 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vxorpd		%%ymm15, %%ymm15, %%ymm15	\n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
         "prefetcht0      192(%2,%0,8)                   \n\t"
 	"vmovddup	   (%2,%0,8), %%xmm0            \n\t"  // real value from x0
@@ -96,7 +96,7 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
         "vmovddup               (%8)  , %%xmm0                \n\t"  // value from alpha
         "vmovddup              8(%8)  , %%xmm1                \n\t"  // value from alpha
@@ -220,7 +220,7 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vxorpd		%%ymm11, %%ymm11, %%ymm11	\n\t" // temp
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
         "prefetcht0      192(%2,%0,8)                   \n\t"
 	"vmovddup	   (%2,%0,8), %%xmm0            \n\t"  // real value from x0
@@ -255,7 +255,7 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
         "vmovddup               (%6)  , %%xmm0                \n\t"  // value from alpha
         "vmovddup              8(%6)  , %%xmm1                \n\t"  // value from alpha
@@ -342,7 +342,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *
 	"vxorpd		%%ymm9 , %%ymm9 , %%ymm9 	\n\t" // temp
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
 
         "prefetcht0      192(%2,%0,8)                   \n\t"
 	"vmovddup	   (%2,%0,8), %%xmm0            \n\t"  // real value from x0
@@ -370,7 +370,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *
 
         "addq		$8 , %0	  	 	        \n\t"
 	"subq	        $4 , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
         "vmovddup               (%5)  , %%xmm0                \n\t"  // value from alpha
         "vmovddup              8(%5)  , %%xmm1                \n\t"  // value from alpha

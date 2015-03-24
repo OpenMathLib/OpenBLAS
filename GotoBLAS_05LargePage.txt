@@ -9,10 +9,10 @@
 
     If you want to allocate 64 large pages,
 
-    $shell> echo  0 > /pros/sys/vm/nr_hugepages		# need to be reset
-    $shell> echo 65 > /pros/sys/vm/nr_hugepages		# add 1 extra page
-    $shell> echo 3355443200 > /pros/sys/kernel/shmmax   # just large number
-    $shell> echo 3355443200 > /pros/sys/kernel/shmall
+    $shell> echo  0 > /proc/sys/vm/nr_hugepages		# need to be reset
+    $shell> echo 65 > /proc/sys/vm/nr_hugepages		# add 1 extra page
+    $shell> echo 3355443200 > /proc/sys/kernel/shmmax   # just large number
+    $shell> echo 3355443200 > /proc/sys/kernel/shmall
 
     Also may add a few lines into /etc/security/limits.conf file.
 

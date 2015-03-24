@@ -41,7 +41,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"xorps		%%xmm7 , %%xmm7	         \n\t"
 
 	".align 16				 \n\t"
-	".L01LOOP%=:				 \n\t"
+	"1:				 \n\t"
 
 	"movups	       (%2,%0,4), %%xmm12              \n\t"   // 4 * x
 	"movups        (%4,%0,4), %%xmm8               \n\t"   // 4 * a0
@@ -60,7 +60,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"addps		%%xmm10, %%xmm6		       \n\t"
 	"addps		%%xmm11, %%xmm7		       \n\t"
 
-	"jnz		.L01LOOP%=		       \n\t"
+	"jnz		1b		       \n\t"
 
         "haddps        %%xmm4, %%xmm4  \n\t"
         "haddps        %%xmm5, %%xmm5  \n\t"

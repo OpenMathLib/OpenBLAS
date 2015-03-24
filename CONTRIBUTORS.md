@@ -121,5 +121,11 @@ In chronological order:
   * [2014-10-10] trmm and sgemm kernels (optimized for APM's X-Gene 1).
                  ARMv8 support.
 
+* Dan Kortschak
+  * [2015-01-07] Added test for drotmg bug #484.
+
+* Ton van den Heuvel <https://github.com/ton>
+  * [2015-03-18] Fix race condition during shutdown causing a crash in gotoblas_set_affinity().
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]

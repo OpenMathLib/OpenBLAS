@@ -31,7 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NEHALEM)
 #include "dgemv_n_microk_nehalem-4.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(STEAMROLLER)
 #include "dgemv_n_microk_haswell-4.c"
 #endif
 
@@ -125,7 +125,7 @@ static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"shufpd $0,  %%xmm13, %%xmm13    \n\t"	
 
 	".align 16				       \n\t"
-	".L01LOOP%=:				       \n\t"
+	"1:				       \n\t"
 	"movups	       (%3,%0,8), %%xmm4	       \n\t"	// 2 * y
 	"movups	     16(%3,%0,8), %%xmm5	       \n\t"	// 2 * y
 
@@ -148,7 +148,7 @@ static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$4 , %0	  	 	       \n\t"
 	"subq	        $4 , %1			       \n\t"		
-	"jnz		.L01LOOP%=		       \n\t"
+	"jnz		1b		       \n\t"
 
 	:
         : 
@@ -187,7 +187,7 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         "shufpd $0,  %%xmm12, %%xmm12            \n\t"
 
         ".align 16                               \n\t"
-        ".L01LOOP%=:                             \n\t"
+        "1:                             \n\t"
         "movups       (%4,%0,8), %%xmm8          \n\t"  // 2 * a
         "movups     16(%4,%0,8), %%xmm9          \n\t"  // 2 * a
         "movups       (%3,%0,8), %%xmm4          \n\t"  // 2 * y
@@ -203,7 +203,7 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         "addq           $4 , %0                  \n\t"
         "subq           $4 , %1                  \n\t"
 
-        "jnz            .L01LOOP%=               \n\t"
+        "jnz            1b               \n\t"
 
         :
         :

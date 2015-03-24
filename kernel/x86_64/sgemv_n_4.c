@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(BULLDOZER) || defined(PILEDRIVER)
+#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
 #include "sgemv_n_microk_bulldozer-4.c"
 #elif defined(NEHALEM)
 #include "sgemv_n_microk_nehalem-4.c"
@@ -39,8 +39,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_n_microk_haswell-4.c"
 #endif
 
-
+#if defined(STEAMROLLER)
+#define NBMAX 2048
+#else
 #define NBMAX 4096
+#endif
 
 #ifndef HAVE_KERNEL_4x8
 
@@ -129,7 +132,7 @@ static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"shufps $0,  %%xmm13, %%xmm13    \n\t"	
 
 	".align 16				       \n\t"
-	".L01LOOP%=:				       \n\t"
+	"1:				       \n\t"
 	"movups	       (%3,%0,4), %%xmm4	       \n\t"	// 4 * y
 
 	"movups             (%4,%0,4), %%xmm8          \n\t" 
@@ -143,7 +146,7 @@ static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"movups  %%xmm4 , -16(%3,%0,4)		       \n\t"	// 4 * y
 
 	"subq	        $4 , %1			       \n\t"		
-	"jnz		.L01LOOP%=		       \n\t"
+	"jnz		1b		       \n\t"
 
 	:
         : 
@@ -166,7 +169,7 @@ static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
 #endif
 
-#ifndef HAVE_KERNEL_4x2
+#ifndef HAVE_KERNEL_4x1
 
 static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
 
@@ -184,10 +187,10 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         "shufps $0,  %%xmm12, %%xmm12            \n\t"
 
         "cmpq           $0, %1                   \n\t"
-        "je             .L16END%=                \n\t"
+        "je             2f                \n\t"
 
         ".align 16                               \n\t"
-        ".L01LOOP%=:                             \n\t"
+        "1:                             \n\t"
         "movups       (%3,%0,4), %%xmm4          \n\t"  // 4 * y
         "movups     16(%3,%0,4), %%xmm5          \n\t"  // 4 * y
         "movups       (%4,%0,4), %%xmm8          \n\t"  // 4 * a
@@ -203,12 +206,12 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
 
         "subq           $8 , %1                  \n\t"
 
-        "jnz            .L01LOOP%=               \n\t"
+        "jnz            1b               \n\t"
 
-        ".L16END%=:                              \n\t"
+        "2:                              \n\t"
 
         "testq          $0x04, %5                \n\t"
-        "jz             .L08LABEL%=              \n\t"
+        "jz             3f              \n\t"
 
         "movups       (%3,%0,4), %%xmm4          \n\t"  // 4 * y
         "movups       (%4,%0,4), %%xmm8          \n\t"  // 4 * a
@@ -218,7 +221,7 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         "addq           $4 , %0                  \n\t"
         "subq           $4 , %1                  \n\t"
 
-        ".L08LABEL%=:      			 \n\t" 
+        "3:      			 \n\t" 
         :
         :
           "r" (i),      // 0    
@@ -262,7 +265,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
         (
 
         ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+        "1:                            \n\t"
 
         "movups  (%2,%0,4) , %%xmm12            \n\t"
         "movups  (%3,%0,4) , %%xmm11            \n\t"
@@ -271,7 +274,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
         "movups  %%xmm11, -16(%3,%0,4)          \n\t"
 
         "subq           $4 , %1                 \n\t"
-        "jnz            .L01LOOP%=              \n\t"
+        "jnz            1b              \n\t"
 
         :
         :

@@ -208,7 +208,20 @@ void CNAME(enum CBLAS_ORDER order,
   if (incx < 0) x -= (lenx - 1) * incx;
   if (incy < 0) y -= (leny - 1) * incy;
 
+#ifdef MAX_STACK_ALLOC
+  // make it volatile because some gemv implementation (ex: dgemv_n.S)
+  // do not restore all register
+  volatile int stack_alloc_size = m + n;
+  if(stack_alloc_size < 128)
+      //dgemv_n.S require a 128 bytes buffer
+      stack_alloc_size = 128;
+  if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
+      stack_alloc_size = 0;
+  FLOAT stack_buffer[stack_alloc_size];
+  buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc(1);
+#else
   buffer = (FLOAT *)blas_memory_alloc(1);
+#endif
 
 #ifdef SMP
 
@@ -237,7 +250,10 @@ void CNAME(enum CBLAS_ORDER order,
   }
 #endif
 
-  blas_memory_free(buffer);
+#ifdef MAX_STACK_ALLOC
+  if(!stack_alloc_size)
+#endif
+    blas_memory_free(buffer);
 
   FUNCTION_PROFILE_END(1, m * n + m + n,  2 * m * n);
 

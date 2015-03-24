@@ -1,5 +1,25 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.14
+24-Mar-2015
+common:
+	* Improve OpenBLASConfig.cmake. (#474, #475. Thanks, xantares.)
+	* Improve ger and gemv for small matrices by stack allocation.
+	  e.g. make -DMAX_STACK_ALLOC=2048 (#482. Thanks, Jerome Robert.)
+	* Introduce openblas_get_num_threads and openblas_get_num_procs.
+	  (#497. Thanks, Erik Schnetter.)
+	* Add ATLAS-style ?geadd function. (#509. Thanks, Martin Köhler.)
+	* Fix c/zsyr bug with negative incx. (#492.)
+	* Fix race condition during shutdown causing a crash in
+	  gotoblas_set_affinity(). (#508. Thanks, Ton van den Heuvel.)
+
+x86/x86-64:
+	* Support AMD Streamroller.
+
+ARM:
+	* Add Cortex-A9 and Cortex-A15 targets.
+
+====================================================================
 Version 0.2.13
 3-Dec-2014
 common:

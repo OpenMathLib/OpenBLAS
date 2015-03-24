@@ -23,7 +23,8 @@
 	       zhpr,zrotg,zscal,zswap,zsymm,zsyr2k,zsyrk,ztbmv,
 	       ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv, zsymv,
 	       xerbla,
-	       saxpby,daxpby,caxpby,zaxpby
+	       saxpby,daxpby,caxpby,zaxpby, 
+	       sgeadd,dgeadd,cgeadd,zgeadd, 
 	       );
 
 @cblasobjs  = (
@@ -55,6 +56,7 @@
                cblas_saxpby,cblas_daxpby,cblas_caxpby,cblas_zaxpby,
 	       cblas_somatcopy, cblas_domatcopy, cblas_comatcopy, cblas_zomatcopy, 
 	       cblas_simatcopy, cblas_dimatcopy, cblas_cimatcopy, cblas_zimatcopy,
+	       cblas_sgeadd, cblas_dgeadd,cblas_cgeadd, cblas_zgeadd 
                );
 
 @exblasobjs = (
@@ -81,7 +83,10 @@
 
 #both underscore and no underscore
 @misc_common_objs = (
-                     openblas_set_num_threads, openblas_get_parallel,
+                     openblas_get_parallel,
+                     openblas_get_num_procs,
+                     openblas_set_num_threads,
+                     openblas_get_num_threads,
                     );
 
 @misc_no_underscore_objs = (

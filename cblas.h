@@ -13,6 +13,12 @@ extern "C" {
 void openblas_set_num_threads(int num_threads);
 void goto_set_num_threads(int num_threads);
 
+/*Get the number of threads on runtime.*/
+int openblas_get_num_threads(void);
+
+/*Get the number of physical processors (cores).*/
+int openblas_get_num_procs(void);
+
 /*Get the build configure on runtime.*/
 char* openblas_get_config(void);
 
@@ -340,6 +346,16 @@ void cblas_cimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum
 		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb); 
 void cblas_zimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double* calpha, double* a, 
 		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb); 
+
+void cblas_sgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float cbeta, 
+		  float *c, OPENBLAS_CONST blasint cldc); 
+void cblas_dgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double calpha, double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double cbeta, 
+		  double *c, OPENBLAS_CONST blasint cldc); 
+void cblas_cgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float *calpha, float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float *cbeta, 
+		  float *c, OPENBLAS_CONST blasint cldc); 
+void cblas_zgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double *calpha, double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double *cbeta, 
+		  double *c, OPENBLAS_CONST blasint cldc); 
+
 
 #ifdef __cplusplus
 }

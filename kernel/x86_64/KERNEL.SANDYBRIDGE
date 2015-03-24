@@ -34,16 +34,16 @@ CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-
-ZGEMMKERNEL    =  zgemm_kernel_4x4_sandy.S
-ZGEMMINCOPY    =
-ZGEMMITCOPY    =
+ZGEMMKERNEL    =  zgemm_kernel_1x4_nehalem.S
+ZGEMMINCOPY    =  zgemm_ncopy_1.S
+ZGEMMITCOPY    =  zgemm_tcopy_1.S
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_4.c
 ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_4.c
-ZGEMMINCOPYOBJ =
-ZGEMMITCOPYOBJ =
+ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
+ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 
 #STRSMKERNEL_LN	=  trsm_kernel_LN_4x8_nehalem.S
 #STRSMKERNEL_LT	=  trsm_kernel_LT_4x8_nehalem.S

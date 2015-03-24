@@ -61,6 +61,9 @@ endif
 ifeq ($(TARGET), PILEDRIVER)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
+ifeq ($(TARGET), STEAMROLLER)
+GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
 endif
 
 
@@ -83,6 +86,9 @@ ifeq ($(TARGET_CORE), BULLDOZER)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 ifeq ($(TARGET_CORE), PILEDRIVER)
+GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
+ifeq ($(TARGET_CORE), STEAMROLLER)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 endif
@@ -305,6 +311,10 @@ ifdef SANITY_CHECK
 CCOMMON_OPT	+= -DSANITY_CHECK -DREFNAME=$(*F)f$(BU)
 endif
 
+ifdef MAX_STACK_ALLOC
+CCOMMON_OPT	+= -DMAX_STACK_ALLOC=$(MAX_STACK_ALLOC)
+endif
+
 #
 #  Architecture dependent settings
 #
@@ -354,6 +364,12 @@ endif
 
 
 ifeq ($(USE_OPENMP), 1)
+
+#check 
+ifeq ($(USE_THREAD), 0)
+$(error OpenBLAS: Cannot set both USE_OPENMP=1 and USE_THREAD=0. The USE_THREAD=0 is only for building single thread version.)
+endif
+
 # ifeq logical or. GCC or LSB
 ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB))
 CCOMMON_OPT    += -fopenmp
@@ -392,7 +408,7 @@ endif
 ifeq ($(ARCH), x86_64)
 DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
 ifneq ($(NO_AVX), 1)
-DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER STEAMROLLER
 endif
 ifneq ($(NO_AVX2), 1)
 DYNAMIC_CORE += HASWELL

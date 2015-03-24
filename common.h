@@ -327,6 +327,14 @@ typedef int blasint;
 #endif
 #endif
 
+/*
+#ifdef STEAMROLLER
+#ifndef YIELDING
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
+#endif
+*/
+
 #ifndef YIELDING
 #define YIELDING	sched_yield()
 #endif

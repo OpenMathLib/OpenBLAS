@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(HASWELL)
+#if defined(HASWELL) || defined(STEAMROLLER)
 #include "dgemv_t_microk_haswell-4.c"
 #endif
 
@@ -78,7 +78,7 @@ static void dgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
 	"xorpd %%xmm11 , %%xmm11		\n\t"
 		
 	"testq	$2 , %1				\n\t"
-	"jz	.L01LABEL%=			\n\t"
+	"jz	2f			\n\t"
 
 	"movups  (%5,%0,8) , %%xmm14		\n\t" // x
 	"movups  (%3,%0,8) , %%xmm12		\n\t" // ap0
@@ -90,13 +90,13 @@ static void dgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
         "subq           $2 , %1                 \n\t"
 	"addpd   %%xmm13   , %%xmm11		\n\t"
 
-        ".L01LABEL%=:                           \n\t"
+        "2:                           \n\t"
 
 	"cmpq	$0, %1				\n\t"
-	"je	.L01END%=			\n\t"
+	"je	3f			\n\t"
 
         ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+        "1:                            \n\t"
 
 	"movups  (%5,%0,8) , %%xmm14		\n\t" // x
 	"movups  (%3,%0,8) , %%xmm12		\n\t" // ap0
@@ -116,9 +116,9 @@ static void dgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
 
         "addq           $4 , %0                 \n\t"
         "subq           $4 , %1                 \n\t"
-        "jnz            .L01LOOP%=              \n\t"
+        "jnz            1b              \n\t"
 
-        ".L01END%=:                             \n\t"
+        "3:                             \n\t"
 
 	"haddpd        %%xmm10, %%xmm10         \n\t"
 	"haddpd        %%xmm11, %%xmm11         \n\t"
@@ -157,7 +157,7 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"xorpd %%xmm10 , %%xmm10		\n\t"
 	
 	"testq	$2 , %1				\n\t"
-	"jz	.L01LABEL%=			\n\t"
+	"jz	2f			\n\t"
 
 	"movups  (%3,%0,8) , %%xmm12		\n\t"
 	"movups  (%4,%0,8) , %%xmm11		\n\t"
@@ -166,13 +166,13 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"addpd   %%xmm12   , %%xmm10		\n\t"
         "subq           $2 , %1                 \n\t"
 
-        ".L01LABEL%=:                           \n\t"
+        "2:                           \n\t"
 
 	"cmpq	$0, %1				\n\t"
-	"je	.L01END%=			\n\t"
+	"je	3f			\n\t"
 
         ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+        "1:                            \n\t"
 
 	"movups    (%3,%0,8) , %%xmm12		\n\t"
 	"movups  16(%3,%0,8) , %%xmm14		\n\t"
@@ -185,9 +185,9 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
         "subq           $4 , %1                 \n\t"
 	"addpd   %%xmm14   , %%xmm9 		\n\t"
 
-        "jnz            .L01LOOP%=              \n\t"
+        "jnz            1b              \n\t"
 
-        ".L01END%=:                             \n\t"
+        "3:                             \n\t"
 
 	"addpd	       %%xmm9 , %%xmm10         \n\t"
 	"haddpd        %%xmm10, %%xmm10         \n\t"
@@ -246,7 +246,7 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
 	"shufpd  $0 , %%xmm10 , %%xmm10		\n\t"
 
         ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+        "1:                            \n\t"
 
 	"movups  (%3,%0,8) , %%xmm12		\n\t"
 	"movups  (%4,%0,8) , %%xmm11		\n\t"
@@ -256,7 +256,7 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
         "subq           $2 , %1                 \n\t"
 	"movups  %%xmm11, -16(%4,%0,8)		\n\t"
 
-        "jnz            .L01LOOP%=              \n\t"
+        "jnz            1b              \n\t"
 
         :
    	:

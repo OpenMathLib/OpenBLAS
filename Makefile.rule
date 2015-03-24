@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.13
+VERSION = 0.2.14
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -158,6 +158,19 @@ COMMON_PROF = -pg
 
 # Build Debug version
 # DEBUG = 1
+
+# Improve GEMV and GER for small matrices by stack allocation.
+# For details, https://github.com/xianyi/OpenBLAS/pull/482
+#
+# MAX_STACK_ALLOC=2048
+
+# Add a prefix or suffix to all exported symbol names in the shared library.
+# Avoid conflicts with other BLAS libraries, especially when using
+# 64 bit integer interfaces in OpenBLAS.
+# For details, https://github.com/xianyi/OpenBLAS/pull/459
+#
+# SYMBOLPREFIX=
+# SYMBOLSUFFIX=
 
 #
 #  End of user configuration

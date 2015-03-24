@@ -548,8 +548,9 @@ gotoblas_t TABLE_NAME = {
   comatcopy_k_cnTS, comatcopy_k_ctTS, comatcopy_k_rnTS, comatcopy_k_rtTS,
   comatcopy_k_cncTS, comatcopy_k_ctcTS, comatcopy_k_rncTS, comatcopy_k_rtcTS,
   zomatcopy_k_cnTS, zomatcopy_k_ctTS, zomatcopy_k_rnTS, zomatcopy_k_rtTS,
-  zomatcopy_k_cncTS, zomatcopy_k_ctcTS, zomatcopy_k_rncTS, zomatcopy_k_rtcTS
+  zomatcopy_k_cncTS, zomatcopy_k_ctcTS, zomatcopy_k_rncTS, zomatcopy_k_rtcTS,
 
+  sgeadd_kTS, dgeadd_kTS, cgeadd_kTS, zgeadd_kTS
 
 };
 
@@ -940,6 +941,23 @@ static void init_parameter(void) {
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
 #endif
 #endif
+
+#ifdef STEAMROLLER
+
+#ifdef DEBUG
+  fprintf(stderr, "Steamroller\n");
+#endif
+
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+#endif
+#endif
+
 
 #ifdef NANO
 

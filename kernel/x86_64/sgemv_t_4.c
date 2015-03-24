@@ -30,7 +30,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NEHALEM)
 #include "sgemv_t_microk_nehalem-4.c"
-#elif defined(BULLDOZER) || defined(PILEDRIVER)
+#elif defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
 #include "sgemv_t_microk_bulldozer-4.c"
 #elif defined(SANDYBRIDGE)
 #include "sgemv_t_microk_sandy-4.c"
@@ -38,7 +38,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_t_microk_haswell-4.c"
 #endif
 
+#if defined(STEAMROLLER)
+#define NBMAX 2048
+#else
 #define NBMAX 4096
+#endif
 
 #ifndef HAVE_KERNEL_4x4
 
@@ -84,7 +88,7 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
 	"xorps %%xmm11 , %%xmm11		\n\t"
 		
 	"testq	$4 , %1				\n\t"
-	"jz	.L01LABEL%=			\n\t"
+	"jz	2f			\n\t"
 
 	"movups  (%5,%0,4) , %%xmm14		\n\t" // x
 	"movups  (%3,%0,4) , %%xmm12		\n\t" // ap0
@@ -96,13 +100,13 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
         "subq           $4 , %1                 \n\t"
 	"addps   %%xmm13   , %%xmm11		\n\t"
 
-        ".L01LABEL%=:                           \n\t"
+        "2:                           \n\t"
 
 	"cmpq	$0, %1				\n\t"
-	"je	.L01END%=			\n\t"
+	"je	3f			\n\t"
 
         ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+        "1:                            \n\t"
 
 	"movups  (%5,%0,4) , %%xmm14		\n\t" // x
 	"movups  (%3,%0,4) , %%xmm12		\n\t" // ap0
@@ -122,9 +126,9 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
 
         "addq           $8 , %0                 \n\t"
         "subq           $8 , %1                 \n\t"
-        "jnz            .L01LOOP%=              \n\t"
+        "jnz            1b              \n\t"
 
-        ".L01END%=:                             \n\t"
+        "3:                             \n\t"
 
 	"haddps        %%xmm10, %%xmm10         \n\t"
 	"haddps        %%xmm11, %%xmm11         \n\t"
@@ -165,7 +169,7 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"xorps %%xmm10 , %%xmm10		\n\t"
 	
 	"testq	$4 , %1				\n\t"
-	"jz	.L01LABEL%=			\n\t"
+	"jz	2f			\n\t"
 
 	"movups  (%3,%0,4) , %%xmm12		\n\t"
 	"movups  (%4,%0,4) , %%xmm11		\n\t"
@@ -174,13 +178,13 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"addps   %%xmm12   , %%xmm10		\n\t"
         "subq           $4 , %1                 \n\t"
 
-        ".L01LABEL%=:                           \n\t"
+        "2:                           \n\t"
 
 	"cmpq	$0, %1				\n\t"
-	"je	.L01END%=			\n\t"
+	"je	3f			\n\t"
 
         ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+        "1:                            \n\t"
 
 	"movups    (%3,%0,4) , %%xmm12		\n\t"
 	"movups  16(%3,%0,4) , %%xmm14		\n\t"
@@ -193,9 +197,9 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
         "subq           $8 , %1                 \n\t"
 	"addps   %%xmm14   , %%xmm9 		\n\t"
 
-        "jnz            .L01LOOP%=              \n\t"
+        "jnz            1b              \n\t"
 
-        ".L01END%=:                             \n\t"
+        "3:                             \n\t"
 
 	"addps	       %%xmm9 , %%xmm10         \n\t"
 	"haddps        %%xmm10, %%xmm10         \n\t"
@@ -255,7 +259,7 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
 	"shufps  $0 , %%xmm10 , %%xmm10		\n\t"
 
         ".align 16                              \n\t"
-        ".L01LOOP%=:                            \n\t"
+        "1:                            \n\t"
 
 	"movups  (%3,%0,4) , %%xmm12		\n\t"
 	"movups  (%4,%0,4) , %%xmm11		\n\t"
@@ -265,7 +269,7 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
         "subq           $4 , %1                 \n\t"
 	"movups  %%xmm11, -16(%4,%0,4)		\n\t"
 
-        "jnz            .L01LOOP%=              \n\t"
+        "jnz            1b              \n\t"
 
         :
    	:
@@ -302,7 +306,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         if ( n < 1 ) return(0);
 
 	xbuffer = buffer;
-	ytemp   = buffer + NBMAX;
+	ytemp   = buffer + (m < NBMAX ? m : NBMAX);
 	
 	n0 = n / NBMAX;
         n1 = (n % NBMAX)  >> 2 ;

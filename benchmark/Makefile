@@ -6,8 +6,13 @@ include $(TOPDIR)/Makefile.system
 #LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
 # ACML custom
-ACML=/opt/pb/acml-5-3-1-gfortran-64bit/gfortran64_fma4_mp/lib
-LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
+#ACML=/opt/pb/acml-5-3-1-gfortran-64bit/gfortran64_fma4_mp/lib
+#LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
+
+# ACML 6.1 custom
+ACML=/home/werner/project/acml6.1/gfortran64_mp/lib
+LIBACML = -fopenmp $(ACML)/libacml_mp.so -lgfortran -lm
+ 
 
 # Atlas Ubuntu 
 #ATLAS=/usr/lib/atlas-base

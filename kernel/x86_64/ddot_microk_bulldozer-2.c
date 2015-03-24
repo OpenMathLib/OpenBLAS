@@ -42,7 +42,7 @@ static void ddot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	"vxorpd		%%xmm7, %%xmm7, %%xmm7	             \n\t"
 
 	".align 16				             \n\t"
-	".L01LOOP%=:				             \n\t"
+	"1:				             \n\t"
         "vmovups                  (%2,%0,8), %%xmm12         \n\t"  // 2 * x
         "vmovups                16(%2,%0,8), %%xmm13         \n\t"  // 2 * x
         "vmovups                32(%2,%0,8), %%xmm14         \n\t"  // 2 * x
@@ -55,7 +55,7 @@ static void ddot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 
 	"addq		$8 , %0	  	 	             \n\t"
 	"subq	        $8 , %1			             \n\t"		
-	"jnz		.L01LOOP%=		             \n\t"
+	"jnz		1b		             \n\t"
 
 	"vaddpd        %%xmm4, %%xmm5, %%xmm4	\n\t"
 	"vaddpd        %%xmm6, %%xmm7, %%xmm6	\n\t"

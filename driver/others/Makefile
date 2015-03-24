@@ -1,7 +1,7 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
-COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) openblas_set_num_threads.$(SUFFIX) openblas_get_config.$(SUFFIX) openblas_get_parallel.$(SUFFIX) openblas_error_handle.$(SUFFIX)
+COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) openblas_set_num_threads.$(SUFFIX) openblas_get_num_threads.$(SUFFIX) openblas_get_num_procs.$(SUFFIX) openblas_get_config.$(SUFFIX) openblas_get_parallel.$(SUFFIX) openblas_error_handle.$(SUFFIX)
 
 #COMMONOBJS	+= slamch.$(SUFFIX) slamc3.$(SUFFIX) dlamch.$(SUFFIX)  dlamc3.$(SUFFIX)
 
@@ -101,6 +101,12 @@ blas_server.$(SUFFIX) : $(BLAS_SERVER) ../../common.h ../../common_thread.h ../.
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 openblas_set_num_threads.$(SUFFIX) : openblas_set_num_threads.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+
+openblas_get_num_threads.$(SUFFIX) : openblas_get_num_threads.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+
+openblas_get_num_procs.$(SUFFIX) : openblas_get_num_procs.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 openblas_get_config.$(SUFFIX) : openblas_get_config.c

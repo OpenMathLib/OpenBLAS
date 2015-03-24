@@ -47,7 +47,7 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vxorps		%%ymm15, %%ymm15, %%ymm15	\n\t"
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L08LABEL%=                    \n\t"
+        "jz             2f                      \n\t"
 
 	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
 	"vmovups	(%5,%0,4), %%ymm5               \n\t" // 4 complex values from a1
@@ -72,12 +72,12 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
         "addq		$8  , %0	  	 	        \n\t"
 	"subq	        $4  , %1			        \n\t"		
 
-        ".L08LABEL%=:                                  \n\t"
+        "2:                                  \n\t"
 	"cmpq           $0, %1                         \n\t"
-        "je             .L08END%=                      \n\t"
+        "je             3f                      \n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
         "prefetcht0      192(%4,%0,4)                   \n\t"
 	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
         "prefetcht0      192(%5,%0,4)                   \n\t"
@@ -125,9 +125,9 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$16 , %0	  	 	        \n\t"
 	"subq	        $8  , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
-        ".L08END%=:                                   \n\t"
+        "3:                                   \n\t"
 
         "vbroadcastss    (%8)  , %%xmm0                \n\t"  // value from alpha
         "vbroadcastss   4(%8)  , %%xmm1                \n\t"  // value from alpha
@@ -269,7 +269,7 @@ static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vxorps		%%ymm11, %%ymm11, %%ymm11	\n\t" // temp
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L08LABEL%=                    \n\t"
+        "jz             2f                    \n\t"
 
 	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
 	"vmovups	(%5,%0,4), %%ymm5               \n\t" // 4 complex values from a1
@@ -288,12 +288,12 @@ static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
         "addq		$8  , %0	  	 	        \n\t"
 	"subq	        $4  , %1			        \n\t"		
 
-        ".L08LABEL%=:                                  \n\t"
+        "2:                                  \n\t"
 	"cmpq           $0, %1                         \n\t"
-        "je             .L08END%=                      \n\t"
+        "je             3f                      \n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
         "prefetcht0      192(%4,%0,4)                   \n\t"
 	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
         "prefetcht0      192(%5,%0,4)                   \n\t"
@@ -325,9 +325,9 @@ static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
         "addq		$16 , %0	  	 	        \n\t"
 	"subq	        $8  , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
-        ".L08END%=:                                   \n\t"
+        "3:                                   \n\t"
 
         "vbroadcastss    (%6)  , %%xmm0                \n\t"  // value from alpha
         "vbroadcastss   4(%6)  , %%xmm1                \n\t"  // value from alpha
@@ -426,7 +426,7 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *
 	"vxorps		%%ymm9 , %%ymm9 , %%ymm9 	\n\t" // temp
 
         "testq          $0x04, %1                      \n\t"
-        "jz             .L08LABEL%=                    \n\t"
+        "jz             2f                    \n\t"
 
 	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
 
@@ -442,12 +442,12 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *
         "addq		$8  , %0	  	 	        \n\t"
 	"subq	        $4  , %1			        \n\t"		
 
-        ".L08LABEL%=:                                  \n\t"
+        "2:                                  \n\t"
 	"cmpq           $0, %1                         \n\t"
-        "je             .L08END%=                      \n\t"
+        "je             3f                      \n\t"
 
 	".align 16				        \n\t"
-	".L01LOOP%=:				        \n\t"
+	"1:				        \n\t"
         "prefetcht0      192(%4,%0,4)                   \n\t"
 	"vmovups	(%4,%0,4), %%ymm4	        \n\t" // 4 complex values from a0
 
@@ -472,9 +472,9 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *
 
         "addq		$16 , %0	  	 	        \n\t"
 	"subq	        $8  , %1			        \n\t"		
-	"jnz		.L01LOOP%=		        \n\t"
+	"jnz		1b		        \n\t"
 
-        ".L08END%=:                                   \n\t"
+        "3:                                   \n\t"
 
         "vbroadcastss    (%5)  , %%xmm0                \n\t"  // value from alpha
         "vbroadcastss   4(%5)  , %%xmm1                \n\t"  // value from alpha
