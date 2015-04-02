@@ -221,10 +221,39 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	//Intel Broadwell
+	if (model == 13) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
 	return NULL;
       case 4:
 		//Intel Haswell
 	if (model == 5 || model == 6) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Broadwell
+	if (model == 7 || model == 15) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	return NULL;
+      case 5:
+	//Intel Broadwell
+	if (model == 6) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
