@@ -34,6 +34,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sdot_microk_nehalem-2.c"
 #elif defined(HASWELL)
 #include "sdot_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "sdot_microk_sandy-2.c"
 #endif
 
 
