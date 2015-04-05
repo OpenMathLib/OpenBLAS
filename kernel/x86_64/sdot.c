@@ -32,6 +32,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sdot_microk_bulldozer-2.c"
 #elif defined(NEHALEM)
 #include "sdot_microk_nehalem-2.c"
+#elif defined(HASWELL)
+#include "sdot_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "sdot_microk_sandy-2.c"
 #endif
 
 
@@ -74,7 +78,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -16;
+		int n1 = n & -32;
 
 		if ( n1 )
 			sdot_kernel_16(n1, x, y , &dot );

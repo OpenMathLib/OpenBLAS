@@ -31,8 +31,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
 #include "ddot_microk_bulldozer-2.c"
-#elif defined(NEHALEM)
+#elif defined(NEHALEM) 
 #include "ddot_microk_nehalem-2.c"
+#elif defined(HASWELL)
+#include "ddot_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "ddot_microk_sandy-2.c"
 #endif
 
 
@@ -75,11 +79,10 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -8;
+		int n1 = n & -16;
 
 		if ( n1 )
 			ddot_kernel_8(n1, x, y , &dot );
-
 
 		i = n1;
 		while(i < n)

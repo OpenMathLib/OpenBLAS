@@ -10,6 +10,10 @@ ZGEMVTKERNEL = zgemv_t_4.c
 CGEMVNKERNEL = cgemv_n_4.c
 CGEMVTKERNEL = cgemv_t_4.c
 
+SDOTKERNEL = sdot.c
+DDOTKERNEL = ddot.c
+
+
 SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
