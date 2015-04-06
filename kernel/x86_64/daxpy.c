@@ -35,6 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "daxpy_microk_bulldozer-2.c"
 #elif defined(HASWELL)
 #include "daxpy_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "daxpy_microk_sandy-2.c"
 #endif
 
 
@@ -73,7 +75,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
+#if defined(SANDYBRIDGE)
+		int n1 = n & -32;
+#else
 		int n1 = n & -16;
+#endif
 
 		if ( n1 )
 			daxpy_kernel_8(n1, x, y , &da );

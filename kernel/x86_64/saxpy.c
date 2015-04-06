@@ -33,6 +33,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "saxpy_microk_nehalem-2.c"
 #elif defined(HASWELL)
 #include "saxpy_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "saxpy_microk_sandy-2.c"
 #endif
 
 
@@ -71,7 +73,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
+#if defined(SANDYBRIDGE)
+		int n1 = n & -64;
+#else
 		int n1 = n & -32;
+#endif
 
 		if ( n1 )
 			saxpy_kernel_16(n1, x, y , &da );
