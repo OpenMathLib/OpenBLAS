@@ -328,17 +328,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(TRMMKERNEL)
 
-	vaddps 	        (CO1), %xmm4,%xmm4
-	vaddps  1 * SIZE(CO1), %xmm5,%xmm5
+	vaddss 	        (CO1), %xmm4,%xmm4
+	vaddss  1 * SIZE(CO1), %xmm5,%xmm5
 
-	vaddps 	        (CO1, LDC), %xmm6,%xmm6
-	vaddps  1 * SIZE(CO1, LDC), %xmm7,%xmm7
+	vaddss 	        (CO1, LDC), %xmm6,%xmm6
+	vaddss  1 * SIZE(CO1, LDC), %xmm7,%xmm7
 
-	vaddps 	        (CO2), %xmm8,%xmm8
-	vaddps  1 * SIZE(CO2), %xmm9,%xmm9
+	vaddss 	        (CO2), %xmm8,%xmm8
+	vaddss  1 * SIZE(CO2), %xmm9,%xmm9
 
-	vaddps 	        (CO2, LDC), %xmm10,%xmm10
-	vaddps  1 * SIZE(CO2, LDC), %xmm11,%xmm11
+	vaddss 	        (CO2, LDC), %xmm10,%xmm10
+	vaddss  1 * SIZE(CO2, LDC), %xmm11,%xmm11
 
 #endif
 
@@ -389,10 +389,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(TRMMKERNEL)
 
-	vaddps 	        (CO1), %xmm4,%xmm4
-	vaddps 	        (CO1, LDC), %xmm6,%xmm6
-	vaddps 	        (CO2), %xmm8,%xmm8
-	vaddps 	        (CO2, LDC), %xmm10,%xmm10
+	vaddss 	        (CO1), %xmm4,%xmm4
+	vaddss 	        (CO1, LDC), %xmm6,%xmm6
+	vaddss 	        (CO2), %xmm8,%xmm8
+	vaddss 	        (CO2, LDC), %xmm10,%xmm10
 
 #endif
 
@@ -557,11 +557,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(TRMMKERNEL)
 
-	vaddps 	        (CO1), %xmm4,%xmm4
-	vaddps  1 * SIZE(CO1), %xmm5,%xmm5
+	vaddss 	        (CO1), %xmm4,%xmm4
+	vaddss  1 * SIZE(CO1), %xmm5,%xmm5
 
-	vaddps 	        (CO1, LDC), %xmm6,%xmm6
-	vaddps  1 * SIZE(CO1, LDC), %xmm7,%xmm7
+	vaddss 	        (CO1, LDC), %xmm6,%xmm6
+	vaddss  1 * SIZE(CO1, LDC), %xmm7,%xmm7
 
 #endif
 
@@ -597,8 +597,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(TRMMKERNEL)
 
-	vaddps 	        (CO1), %xmm4,%xmm4
-	vaddps 	        (CO1, LDC), %xmm6,%xmm6
+	vaddss 	        (CO1), %xmm4,%xmm4
+	vaddss 	        (CO1, LDC), %xmm6,%xmm6
 
 #endif
 
