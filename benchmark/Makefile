@@ -10,7 +10,7 @@ include $(TOPDIR)/Makefile.system
 #LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
 # ACML 6.1 custom
-ACML=/home/werner/project/acml6.1/gfortran64_mp/lib
+ACML=/home/saar/acml6.1/gfortran64_mp/lib
 LIBACML = -fopenmp $(ACML)/libacml_mp.so -lgfortran -lm
  
 
@@ -40,7 +40,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyrk.goto dsyrk.goto csyrk.goto zsyrk.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto \
-       sdot.goto ddot.goto \
+       sdot.goto ddot.goto cdot.goto zdot.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        ssymv.goto dsymv.goto csymv.goto zsymv.goto \
        chemv.goto zhemv.goto \
@@ -61,7 +61,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyrk.acml dsyrk.acml csyrk.acml zsyrk.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml \
-       sdot.acml ddot.acml \
+       sdot.acml ddot.acml cdot.acml zdot.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        ssymv.acml dsymv.acml csymv.acml zsymv.acml \
        chemv.acml zhemv.acml \
@@ -104,7 +104,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyrk.mkl dsyrk.mkl csyrk.mkl zsyrk.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl \
-       sdot.mkl ddot.mkl \
+       sdot.mkl ddot.mkl cdot.mkl zdot.mkl \
        saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
        ssymv.mkl dsymv.mkl csymv.mkl zsymv.mkl \
        chemv.mkl zhemv.mkl \
@@ -998,6 +998,32 @@ ddot.atlas : ddot.$(SUFFIX)
 ddot.mkl : ddot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Cdot ####################################################
+cdot.goto : cdot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+cdot.acml : cdot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cdot.atlas : cdot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cdot.mkl : cdot-intel.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zdot ####################################################
+zdot.goto : zdot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zdot.acml : zdot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zdot.atlas : zdot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zdot.mkl : zdot-intel.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Saxpy ####################################################
 saxpy.goto : saxpy.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
@@ -1263,6 +1289,20 @@ sdot.$(SUFFIX) : dot.c
 
 ddot.$(SUFFIX) : dot.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cdot.$(SUFFIX) : zdot.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zdot.$(SUFFIX) : zdot.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+cdot-intel.$(SUFFIX) : zdot-intel.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zdot-intel.$(SUFFIX) : zdot-intel.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
 
 saxpy.$(SUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
