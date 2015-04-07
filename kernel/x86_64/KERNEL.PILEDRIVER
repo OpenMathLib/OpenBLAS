@@ -1,3 +1,7 @@
+DAXPYKERNEL = daxpy.c
+CAXPYKERNEL = caxpy.c
+ZAXPYKERNEL = zaxpy.c
+
 SGEMVNKERNEL = sgemv_n_4.c
 SGEMVTKERNEL = sgemv_t_4.c
 
@@ -7,6 +11,7 @@ ZGEMVTKERNEL = zgemv_t_4.c
 DGEMVNKERNEL = dgemv_n_bulldozer.S
 DGEMVTKERNEL = dgemv_t_bulldozer.S
 
+SDOTKERNEL   = sdot.c
 DDOTKERNEL   = ddot_bulldozer.S
 DCOPYKERNEL  = dcopy_bulldozer.S
 

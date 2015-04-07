@@ -25,87 +25,54 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#define HAVE_KERNEL_16 1
+static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *alpha) __attribute__ ((noinline));
 
-#include "common.h"
-
-
-#if defined(NEHALEM)
-#include "saxpy_microk_nehalem-2.c"
-#elif defined(HASWELL)
-#include "saxpy_microk_haswell-2.c"
-#elif defined(SANDYBRIDGE)
-#include "saxpy_microk_sandy-2.c"
-#endif
-
-
-#ifndef HAVE_KERNEL_16
-
-static void saxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
+
+
 	BLASLONG register i = 0;
-	FLOAT a = *alpha;
 
-	while(i < n)
-        {
-              y[i]   += a * x[i];
-              y[i+1] += a * x[i+1];
-              y[i+2] += a * x[i+2];
-              y[i+3] += a * x[i+3];
-              y[i+4] += a * x[i+4];
-              y[i+5] += a * x[i+5];
-              y[i+6] += a * x[i+6];
-              y[i+7] += a * x[i+7];
-              i+=8 ;
+	__asm__  __volatile__
+	(
+	"vbroadcastss		(%4), %%ymm0		    \n\t"  // alpha	
 
-       }
+	".align 16				            \n\t"
+	"1:				            \n\t"
 
-}
+        "vmovups                  (%3,%0,4), %%ymm12         \n\t"  // 8 * y
+        "vmovups                32(%3,%0,4), %%ymm13         \n\t"  // 8 * y
+        "vmovups                64(%3,%0,4), %%ymm14         \n\t"  // 8 * y
+        "vmovups                96(%3,%0,4), %%ymm15         \n\t"  // 8 * y
+	"vfmadd231ps       (%2,%0,4), %%ymm0  , %%ymm12  	     \n\t"   // y += alpha * x
+	"vfmadd231ps     32(%2,%0,4), %%ymm0  , %%ymm13  	     \n\t"   // y += alpha * x
+	"vfmadd231ps     64(%2,%0,4), %%ymm0  , %%ymm14  	     \n\t"   // y += alpha * x
+	"vfmadd231ps     96(%2,%0,4), %%ymm0  , %%ymm15  	     \n\t"   // y += alpha * x
+	"vmovups	%%ymm12,   (%3,%0,4)		     \n\t"
+	"vmovups	%%ymm13, 32(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm14, 64(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm15, 96(%3,%0,4)		     \n\t"
 
-#endif
+	"addq		$32, %0	  	 	             \n\t"
+	"subq	        $32, %1			             \n\t"		
+	"jnz		1b		             \n\t"
+	"vzeroupper				     \n\t"
 
-int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
-{
-	BLASLONG i=0;
-	BLASLONG ix=0,iy=0;
+	:
+        : 
+          "r" (i),	// 0	
+	  "r" (n),  	// 1
+          "r" (x),      // 2
+          "r" (y),      // 3
+          "r" (alpha)   // 4
+	: "cc", 
+	  "%xmm0", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
+	  "memory"
+	);
 
-	if ( n <= 0 )  return(0);
-
-	if ( (inc_x == 1) && (inc_y == 1) )
-	{
-
-#if defined(SANDYBRIDGE)
-		int n1 = n & -64;
-#else
-		int n1 = n & -32;
-#endif
-
-		if ( n1 )
-			saxpy_kernel_16(n1, x, y , &da );
-
-		i = n1;
-		while(i < n)
-		{
-
-			y[i] += da * x[i] ;
-			i++ ;
-
-		}
-		return(0);
-
-
-	}
-
-	while(i < n)
-	{
-
-		y[iy] += da * x[ix] ;
-		ix  += inc_x ;
-		iy  += inc_y ;
-		i++ ;
-
-	}
-	return(0);
-
-}
+} 
 
 
