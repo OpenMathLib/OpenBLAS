@@ -30,8 +30,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <complex.h>
 
 
-#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#if defined(BULLDOZER) || defined(PILEDRIVER)
 #include "zdot_microk_bulldozer-2.c"
+#elif defined(STEAMROLLER) 
+#include "zdot_microk_steamroller-2.c"
 #elif defined(NEHALEM) 
 #include "zdot_microk_nehalem-2.c"
 #elif defined(HASWELL)

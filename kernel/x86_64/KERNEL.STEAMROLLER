@@ -3,7 +3,7 @@ CAXPYKERNEL = caxpy.c
 ZAXPYKERNEL = zaxpy.c
 
 SDOTKERNEL     = sdot.c
-DDOTKERNEL     = ddot_bullozer.S
+DDOTKERNEL     = ddot.c
 CDOTKERNEL     = cdot.c
 ZDOTKERNEL     = zdot.c
 
