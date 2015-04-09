@@ -12,6 +12,9 @@ CGEMVTKERNEL = cgemv_t_4.c
 
 SDOTKERNEL = sdot.c
 DDOTKERNEL = ddot.c
+CDOTKERNEL = cdot.c
+ZDOTKERNEL = zdot.c
+
 
 DAXPYKERNEL = daxpy.c
 SAXPYKERNEL = saxpy.c
