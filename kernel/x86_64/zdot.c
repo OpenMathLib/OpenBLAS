@@ -34,8 +34,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "zdot_microk_bulldozer-2.c"
 #elif defined(STEAMROLLER) || defined(PILEDRIVER)
 #include "zdot_microk_steamroller-2.c"
-#elif defined(NEHALEM) 
-#include "zdot_microk_nehalem-2.c"
 #elif defined(HASWELL)
 #include "zdot_microk_haswell-2.c"
 #elif defined(SANDYBRIDGE)

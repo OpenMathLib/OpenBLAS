@@ -34,6 +34,10 @@ static void zdot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 
 	BLASLONG register i = 0;
 
+  if ( n <=1280 )
+  {
+
+
 	__asm__  __volatile__
 	(
 	"vzeroupper					     \n\t"
@@ -111,6 +115,93 @@ static void zdot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
+	return;
+  }
+
+
+	__asm__  __volatile__
+	(
+	"vzeroupper					     \n\t"
+	"vxorpd		%%ymm0, %%ymm0, %%ymm0	             \n\t"
+	"vxorpd		%%ymm1, %%ymm1, %%ymm1	             \n\t"
+	"vxorpd		%%ymm2, %%ymm2, %%ymm2	             \n\t"
+	"vxorpd		%%ymm3, %%ymm3, %%ymm3	             \n\t"
+	"vxorpd		%%ymm4, %%ymm4, %%ymm4	             \n\t"
+	"vxorpd		%%ymm5, %%ymm5, %%ymm5	             \n\t"
+	"vxorpd		%%ymm6, %%ymm6, %%ymm6	             \n\t"
+	"vxorpd		%%ymm7, %%ymm7, %%ymm7	             \n\t"
+
+	".align 16			             \n\t"
+	"1:				             \n\t"
+	"prefetcht0	512(%2,%0,8)		     \n\t"
+        "vmovups                  (%2,%0,8), %%ymm8          \n\t"  // 2 * x
+        "vmovups                32(%2,%0,8), %%ymm9          \n\t"  // 2 * x
+
+	"prefetcht0	512(%3,%0,8)		     \n\t"
+        "vmovups                  (%3,%0,8), %%ymm12         \n\t"  // 2 * y
+        "vmovups                32(%3,%0,8), %%ymm13         \n\t"  // 2 * y
+
+	"prefetcht0	576(%2,%0,8)		     \n\t"
+        "vmovups                64(%2,%0,8), %%ymm10         \n\t"  // 2 * x
+        "vmovups                96(%2,%0,8), %%ymm11         \n\t"  // 2 * x
+
+	"prefetcht0	576(%3,%0,8)		     \n\t"
+        "vmovups                64(%3,%0,8), %%ymm14         \n\t"  // 2 * y
+        "vmovups                96(%3,%0,8), %%ymm15         \n\t"  // 2 * y
+
+	"vfmadd231pd       %%ymm8 , %%ymm12, %%ymm0     \n\t"  // x_r * y_r, x_i * y_i
+	"vfmadd231pd       %%ymm9 , %%ymm13, %%ymm1     \n\t"  // x_r * y_r, x_i * y_i
+	"vpermpd      $0xb1 , %%ymm12, %%ymm12               \n\t"
+	"vpermpd      $0xb1 , %%ymm13, %%ymm13               \n\t"
+
+	"vfmadd231pd       %%ymm10, %%ymm14, %%ymm2     \n\t"  // x_r * y_r, x_i * y_i
+	"vfmadd231pd       %%ymm11, %%ymm15, %%ymm3     \n\t"  // x_r * y_r, x_i * y_i
+	"vpermpd      $0xb1 , %%ymm14, %%ymm14               \n\t"
+	"vpermpd      $0xb1 , %%ymm15, %%ymm15               \n\t"
+
+	"vfmadd231pd       %%ymm8 , %%ymm12, %%ymm4     \n\t"  // x_r * y_i, x_i * y_r
+	"addq		$16 , %0	  	 	             \n\t"
+	"vfmadd231pd       %%ymm9 , %%ymm13, %%ymm5     \n\t"  // x_r * y_i, x_i * y_r
+	"vfmadd231pd       %%ymm10, %%ymm14, %%ymm6     \n\t"  // x_r * y_i, x_i * y_r
+	"subq	        $8 , %1			             \n\t"		
+	"vfmadd231pd       %%ymm11, %%ymm15, %%ymm7     \n\t"  // x_r * y_i, x_i * y_r
+
+	"jnz		1b		             \n\t"
+
+	"vaddpd        %%ymm0, %%ymm1, %%ymm0	\n\t"
+	"vaddpd        %%ymm2, %%ymm3, %%ymm2	\n\t"
+	"vaddpd        %%ymm0, %%ymm2, %%ymm0	\n\t"
+
+	"vaddpd        %%ymm4, %%ymm5, %%ymm4	\n\t"
+	"vaddpd        %%ymm6, %%ymm7, %%ymm6	\n\t"
+	"vaddpd        %%ymm4, %%ymm6, %%ymm4	\n\t"
+
+	"vextractf128 $1 , %%ymm0 , %%xmm1	\n\t"
+	"vextractf128 $1 , %%ymm4 , %%xmm5	\n\t"
+
+	"vaddpd        %%xmm0, %%xmm1, %%xmm0	\n\t"
+	"vaddpd        %%xmm4, %%xmm5, %%xmm4	\n\t"
+
+	"vmovups       %%xmm0,    (%4)		\n\t"
+	"vmovups       %%xmm4,  16(%4)		\n\t"
+	"vzeroupper					     \n\t"
+
+	:
+        : 
+          "r" (i),	// 0	
+	  "r" (n),  	// 1
+          "r" (x),      // 2
+          "r" (y),      // 3
+          "r" (dot)     // 4
+	: "cc", 
+	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
+	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
+	  "memory"
+	);
+
+
 
 
 
