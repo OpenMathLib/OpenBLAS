@@ -4,6 +4,9 @@ ZAXPYKERNEL = zaxpy.c
 
 SDOTKERNEL     = sdot.c
 DDOTKERNEL     = ddot.c
+CDOTKERNEL     = cdot.c
+ZDOTKERNEL     = zdot.c
+
 
 DSYMV_U_KERNEL = dsymv_U.c
 DSYMV_L_KERNEL = dsymv_L.c
