@@ -5,6 +5,9 @@ ZGEMVNKERNEL = zgemv_n_4.c
 
 SDOTKERNEL = sdot.c
 DDOTKERNEL = ddot.c
+CDOTKERNEL = cdot.c
+ZDOTKERNEL = zdot.c
+
 
 SAXPYKERNEL = saxpy.c
 DAXPYKERNEL = daxpy.c

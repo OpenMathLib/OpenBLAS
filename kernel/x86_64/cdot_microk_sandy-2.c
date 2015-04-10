@@ -54,28 +54,36 @@ static void cdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
         "vmovups                  (%3,%0,4), %%ymm12         \n\t"  // 2 * y
         "vmovups                32(%3,%0,4), %%ymm13         \n\t"  // 2 * y
 
-        "vmovups                64(%2,%0,4), %%ymm10         \n\t"  // 2 * x
-        "vmovups                96(%2,%0,4), %%ymm11         \n\t"  // 2 * x
-
         "vmovups                64(%3,%0,4), %%ymm14         \n\t"  // 2 * y
         "vmovups                96(%3,%0,4), %%ymm15         \n\t"  // 2 * y
 
-	"vfmadd231ps       %%ymm8 , %%ymm12, %%ymm0     \n\t"  // x_r * y_r, x_i * y_i
-	"vfmadd231ps       %%ymm9 , %%ymm13, %%ymm1     \n\t"  // x_r * y_r, x_i * y_i
+	"vmulps		   %%ymm8 , %%ymm12, %%ymm10	\n\t"
+	"vmulps		   %%ymm9 , %%ymm13, %%ymm11	\n\t"
 	"vpermilps      $0xb1 , %%ymm12, %%ymm12               \n\t"
 	"vpermilps      $0xb1 , %%ymm13, %%ymm13               \n\t"
+	"vaddps		   %%ymm0 , %%ymm10, %%ymm0	\n\t"
+	"vaddps		   %%ymm1 , %%ymm11, %%ymm1	\n\t"
+	"vmulps		   %%ymm8 , %%ymm12, %%ymm10	\n\t"
+	"vmulps		   %%ymm9 , %%ymm13, %%ymm11	\n\t"
 
-	"vfmadd231ps       %%ymm10, %%ymm14, %%ymm2     \n\t"  // x_r * y_r, x_i * y_i
-	"vfmadd231ps       %%ymm11, %%ymm15, %%ymm3     \n\t"  // x_r * y_r, x_i * y_i
+        "vmovups                64(%2,%0,4), %%ymm8         \n\t"  // 2 * x
+        "vmovups                96(%2,%0,4), %%ymm9         \n\t"  // 2 * x
+
+	"vaddps		   %%ymm4 , %%ymm10, %%ymm4	\n\t"
+	"vaddps		   %%ymm5 , %%ymm11, %%ymm5	\n\t"
+
+	"vmulps		   %%ymm8 , %%ymm14, %%ymm10	\n\t"
+	"vmulps		   %%ymm9 , %%ymm15, %%ymm11	\n\t"
 	"vpermilps      $0xb1 , %%ymm14, %%ymm14               \n\t"
 	"vpermilps      $0xb1 , %%ymm15, %%ymm15               \n\t"
-
-	"vfmadd231ps       %%ymm8 , %%ymm12, %%ymm4     \n\t"  // x_r * y_i, x_i * y_r
+	"vaddps		   %%ymm2 , %%ymm10, %%ymm2	\n\t"
+	"vaddps		   %%ymm3 , %%ymm11, %%ymm3	\n\t"
+	"vmulps		   %%ymm8 , %%ymm14, %%ymm10	\n\t"
+	"vmulps		   %%ymm9 , %%ymm15, %%ymm11	\n\t"
 	"addq		$32 , %0	  	 	             \n\t"
-	"vfmadd231ps       %%ymm9 , %%ymm13, %%ymm5     \n\t"  // x_r * y_i, x_i * y_r
-	"vfmadd231ps       %%ymm10, %%ymm14, %%ymm6     \n\t"  // x_r * y_i, x_i * y_r
 	"subq	        $16 , %1			             \n\t"		
-	"vfmadd231ps       %%ymm11, %%ymm15, %%ymm7     \n\t"  // x_r * y_i, x_i * y_r
+	"vaddps		   %%ymm6 , %%ymm10, %%ymm6	\n\t"
+	"vaddps		   %%ymm7 , %%ymm11, %%ymm7	\n\t"
 
 	"jnz		1b		             \n\t"
 

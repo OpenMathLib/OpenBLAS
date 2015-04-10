@@ -62,8 +62,8 @@ static void zdot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 
 	"vfmadd231pd       %%ymm8 , %%ymm12, %%ymm0     \n\t"  // x_r * y_r, x_i * y_i
 	"vfmadd231pd       %%ymm9 , %%ymm13, %%ymm1     \n\t"  // x_r * y_r, x_i * y_i
-	"vpermpd      $0xb1 , %%ymm13, %%ymm13               \n\t"
 	"vpermpd      $0xb1 , %%ymm12, %%ymm12               \n\t"
+	"vpermpd      $0xb1 , %%ymm13, %%ymm13               \n\t"
 
 	"vfmadd231pd       %%ymm10, %%ymm14, %%ymm2     \n\t"  // x_r * y_r, x_i * y_i
 	"vfmadd231pd       %%ymm11, %%ymm15, %%ymm3     \n\t"  // x_r * y_r, x_i * y_i
