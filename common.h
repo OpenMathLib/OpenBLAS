@@ -499,6 +499,8 @@ void  blas_set_parameter(void);
 int   blas_get_cpu_number(void);
 void *blas_memory_alloc  (int);
 void  blas_memory_free   (void *);
+void *blas_memory_alloc_nolock  (int); //use malloc without blas_lock
+void  blas_memory_free_nolock   (void *);
 
 int  get_num_procs (void);
 

@@ -211,15 +211,24 @@ void CNAME(enum CBLAS_ORDER order,
 #ifdef MAX_STACK_ALLOC
   // make it volatile because some gemv implementation (ex: dgemv_n.S)
   // do not restore all register
-  volatile int stack_alloc_size = m + n;
-  if(stack_alloc_size < 128)
+  volatile int stack_alloc_size = 0;
+  if (trans == 0) {
+    stack_alloc_size = m + n;
+    if(stack_alloc_size < 128)
       //dgemv_n.S require a 128 bytes buffer
       stack_alloc_size = 128;
-  if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
+
+    if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
       stack_alloc_size = 0;
-  FLOAT stack_buffer[stack_alloc_size];
-  buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc(1);
+    FLOAT stack_buffer[stack_alloc_size];
+    buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc_nolock(1);
+
+  }else{
+    //for gemv_t, only malloc
+    buffer = (FLOAT *)blas_memory_alloc_nolock(1);
+  }
 #else
+  //Original OpenBLAS/GotoBLAS codes.
   buffer = (FLOAT *)blas_memory_alloc(1);
 #endif
 
@@ -251,10 +260,13 @@ void CNAME(enum CBLAS_ORDER order,
 #endif
 
 #ifdef MAX_STACK_ALLOC
-  if(!stack_alloc_size)
-#endif
+  if(!stack_alloc_size){
+    blas_memory_free_nolock(buffer);
+  }
+#else
     blas_memory_free(buffer);
-
+#endif
+  
   FUNCTION_PROFILE_END(1, m * n + m + n,  2 * m * n);
 
   IDEBUG_END;

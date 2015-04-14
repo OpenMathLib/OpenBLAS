@@ -1161,6 +1161,16 @@ void blas_memory_free(void *free_area){
   return;
 }
 
+void *blas_memory_alloc_nolock(int unused) {
+  void *map_address;
+  map_address = (void *)malloc(BUFFER_SIZE + FIXED_PAGESIZE);
+  return map_address;
+}
+
+void blas_memory_free_nolock(void * map_address) {
+  free(map_address);
+}
+
 void blas_shutdown(void){
 
   int pos;
