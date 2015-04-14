@@ -1,3 +1,4 @@
+SAXPYKERNEL = saxpy.c
 DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
 ZAXPYKERNEL = zaxpy.c
