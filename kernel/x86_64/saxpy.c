@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "saxpy_microk_haswell-2.c"
 #elif defined(SANDYBRIDGE)
 #include "saxpy_microk_sandy-2.c"
-#elif defined(PILEDRIVER)
+#elif defined(PILEDRIVER) || defined(STEAMROLLER)
 #include "saxpy_microk_piledriver-2.c"
 #endif
 
