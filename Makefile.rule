@@ -162,7 +162,7 @@ COMMON_PROF = -pg
 # Improve GEMV and GER for small matrices by stack allocation.
 # For details, https://github.com/xianyi/OpenBLAS/pull/482
 #
-# MAX_STACK_ALLOC=2048
+ MAX_STACK_ALLOC=2048
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoid conflicts with other BLAS libraries, especially when using
