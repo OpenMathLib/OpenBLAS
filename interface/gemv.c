@@ -189,7 +189,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 
 #endif
-
+  //printf("m=%d, n=%d, trans=%d, incx=%d, incy=%d, alpha=%f, beta=%f\n", m, n, trans, incx, incy, alpha, beta);
   if ((m==0) || (n==0)) return;
 
   lenx = n;
@@ -213,6 +213,9 @@ void CNAME(enum CBLAS_ORDER order,
   // do not restore all register
   volatile int stack_alloc_size = 0;
   if (trans == 0) {
+    //for gemv_n, try to allocate on stack
+    //for gemv_t, use malloc
+
     stack_alloc_size = m + n;
     if(stack_alloc_size < 128)
       //dgemv_n.S require a 128 bytes buffer
@@ -220,13 +223,11 @@ void CNAME(enum CBLAS_ORDER order,
 
     if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
       stack_alloc_size = 0;
-    FLOAT stack_buffer[stack_alloc_size];
-    buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc_nolock(1);
-
-  }else{
-    //for gemv_t, only malloc
-    buffer = (FLOAT *)blas_memory_alloc_nolock(1);
   }
+
+  FLOAT stack_buffer[stack_alloc_size];
+  buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc_nolock(1);
+  //  printf("stack_alloc_size=%d\n", stack_alloc_size);
 #else
   //Original OpenBLAS/GotoBLAS codes.
   buffer = (FLOAT *)blas_memory_alloc(1);
