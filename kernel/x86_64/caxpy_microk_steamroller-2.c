@@ -39,7 +39,7 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	BLASLONG register i = 0;
 
-  if ( n < 640 )
+  if ( n <= 2048 )
   {
 
 	__asm__  __volatile__
@@ -72,31 +72,31 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vpermilps	$0xb1 , %%xmm9 , %%xmm8 	    \n\t"  // exchange real and imag part
 	"vpermilps	$0xb1 , %%xmm11, %%xmm10 	    \n\t"  // exchange real and imag part
 
-	"vfmaddps    (%3,%0,4), %%xmm0 , %%xmm5, %%xmm5     \n\t"
+	"vfmadd213ps    (%3,%0,4), %%xmm0 , %%xmm5          \n\t"
 	".align 2					    \n\t"
-	"vfmaddps  16(%3,%0,4), %%xmm0 , %%xmm7, %%xmm7     \n\t"
-	"vfmaddps  32(%3,%0,4), %%xmm0 , %%xmm9, %%xmm9     \n\t"
-	"vfmaddps  48(%3,%0,4), %%xmm0 , %%xmm11,%%xmm11    \n\t"
+	"vfmadd213ps  16(%3,%0,4), %%xmm0 , %%xmm7          \n\t"
+	"vfmadd213ps  32(%3,%0,4), %%xmm0 , %%xmm9          \n\t"
+	"vfmadd213ps  48(%3,%0,4), %%xmm0 , %%xmm11         \n\t"
 
-	"vfmaddps	%%xmm5 , %%xmm1 , %%xmm4 , %%xmm5   \n\t"
-	"vfmaddps	%%xmm7 , %%xmm1 , %%xmm6 , %%xmm7   \n\t"
-	"vfmaddps	%%xmm9 , %%xmm1 , %%xmm8 , %%xmm9   \n\t"
-	"vfmaddps	%%xmm11, %%xmm1 , %%xmm10, %%xmm11  \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm4 , %%xmm5   \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm6 , %%xmm7   \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm8 , %%xmm9   \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm10, %%xmm11  \n\t"
 
 	"vpermilps	$0xb1 , %%xmm12, %%xmm4 	    \n\t"  // exchange real and imag part
 	"vpermilps	$0xb1 , %%xmm13, %%xmm6 	    \n\t"  // exchange real and imag part
 	"vpermilps	$0xb1 , %%xmm14, %%xmm8 	    \n\t"  // exchange real and imag part
 	"vpermilps	$0xb1 , %%xmm15, %%xmm10 	    \n\t"  // exchange real and imag part
 
-	"vfmaddps  64(%3,%0,4), %%xmm0 , %%xmm12, %%xmm12   \n\t"
-	"vfmaddps  80(%3,%0,4), %%xmm0 , %%xmm13, %%xmm13   \n\t"
-	"vfmaddps  96(%3,%0,4), %%xmm0 , %%xmm14, %%xmm14   \n\t"
-	"vfmaddps 112(%3,%0,4), %%xmm0 , %%xmm15, %%xmm15   \n\t"
+	"vfmadd213ps  64(%3,%0,4), %%xmm0 , %%xmm12   \n\t"
+	"vfmadd213ps  80(%3,%0,4), %%xmm0 , %%xmm13   \n\t"
+	"vfmadd213ps  96(%3,%0,4), %%xmm0 , %%xmm14   \n\t"
+	"vfmadd213ps 112(%3,%0,4), %%xmm0 , %%xmm15   \n\t"
 
-	"vfmaddps	%%xmm12, %%xmm1 , %%xmm4 , %%xmm12  \n\t"
-	"vfmaddps	%%xmm13, %%xmm1 , %%xmm6 , %%xmm13  \n\t"
-	"vfmaddps	%%xmm14, %%xmm1 , %%xmm8 , %%xmm14  \n\t"
-	"vfmaddps	%%xmm15, %%xmm1 , %%xmm10, %%xmm15  \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm4 , %%xmm12  \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm6 , %%xmm13  \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm8 , %%xmm14  \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm10, %%xmm15  \n\t"
 
 	"vmovups	%%xmm5 ,   (%3,%0,4)		    \n\t"
 	".align 2					    \n\t"
@@ -158,16 +158,16 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vpermilps	$0xb1 , %%xmm11, %%xmm10 	    \n\t"  // exchange real and imag part
 
 	"prefetcht0	512(%3,%0,4)			    \n\t"
-	"vfmaddps    (%3,%0,4), %%xmm0 , %%xmm5, %%xmm5     \n\t"
+	"vfmadd213ps    (%3,%0,4), %%xmm0 , %%xmm5          \n\t"
 	".align 2					    \n\t"
-	"vfmaddps  16(%3,%0,4), %%xmm0 , %%xmm7, %%xmm7     \n\t"
-	"vfmaddps  32(%3,%0,4), %%xmm0 , %%xmm9, %%xmm9     \n\t"
-	"vfmaddps  48(%3,%0,4), %%xmm0 , %%xmm11,%%xmm11    \n\t"
+	"vfmadd213ps  16(%3,%0,4), %%xmm0 , %%xmm7          \n\t"
+	"vfmadd213ps  32(%3,%0,4), %%xmm0 , %%xmm9          \n\t"
+	"vfmadd213ps  48(%3,%0,4), %%xmm0 , %%xmm11         \n\t"
 
-	"vfmaddps	%%xmm5 , %%xmm1 , %%xmm4 , %%xmm5   \n\t"
-	"vfmaddps	%%xmm7 , %%xmm1 , %%xmm6 , %%xmm7   \n\t"
-	"vfmaddps	%%xmm9 , %%xmm1 , %%xmm8 , %%xmm9   \n\t"
-	"vfmaddps	%%xmm11, %%xmm1 , %%xmm10, %%xmm11  \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm4 , %%xmm5   \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm6 , %%xmm7   \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm8 , %%xmm9   \n\t"
+	"vfmadd231ps	%%xmm1 , %%xmm10, %%xmm11  \n\t"
 
 	"vmovups	%%xmm5 ,   (%3,%0,4)		    \n\t"
 	".align 2					    \n\t"
