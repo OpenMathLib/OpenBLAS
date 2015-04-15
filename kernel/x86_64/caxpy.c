@@ -78,13 +78,13 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -8;
+		int n1 = n & -16;
 
 		if ( n1 )
 		{
 			da[0] = da_r;
 			da[1] = da_i;
-			caxpy_kernel_8(n1, x, y , &da );
+			caxpy_kernel_8(n1, x, y , da );
 			ix = 2 * n1;
 		}
 		i = n1;
