@@ -35,6 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "caxpy_microk_bulldozer-2.c"
 #elif defined(HASWELL)
 #include "caxpy_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "caxpy_microk_sandy-2.c"
 #endif
 
 
