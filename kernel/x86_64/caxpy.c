@@ -33,6 +33,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "caxpy_microk_steamroller-2.c"
 #elif defined(BULLDOZER)
 #include "caxpy_microk_bulldozer-2.c"
+#elif defined(HASWELL)
+#include "caxpy_microk_haswell-2.c"
 #endif
 
 
@@ -80,7 +82,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -16;
+		int n1 = n & -32;
 
 		if ( n1 )
 		{
@@ -89,6 +91,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 			caxpy_kernel_8(n1, x, y , da );
 			ix = 2 * n1;
 		}
+
 		i = n1;
 		while(i < n)
 		{
