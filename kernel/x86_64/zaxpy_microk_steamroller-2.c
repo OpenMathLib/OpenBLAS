@@ -39,7 +39,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	BLASLONG register i = 0;
 
-  if ( n < 384 )
+  if ( n < 640 )
   {
 
 	__asm__  __volatile__
@@ -56,47 +56,47 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	".align 16				            \n\t"
 	"1:				            \n\t"
 
-	"vmovups        (%2,%0,8), %%xmm5                   \n\t" // 1 complex values from x
+	"vmovups        (%2,%0,8), %%xmm5                   \n\t" // 2 complex values from x
 	".align 2					    \n\t"
-	"vmovups      16(%2,%0,8), %%xmm7                   \n\t" // 1 complex values from x
-	"vmovups      32(%2,%0,8), %%xmm9                   \n\t" // 1 complex values from x
-	"vmovups      48(%2,%0,8), %%xmm11                  \n\t" // 1 complex values from x
+	"vmovups      16(%2,%0,8), %%xmm7                   \n\t" // 2 complex values from x
+	"vmovups      32(%2,%0,8), %%xmm9                   \n\t" // 2 complex values from x
+	"vmovups      48(%2,%0,8), %%xmm11                  \n\t" // 2 complex values from x
 
-	"vmovups      64(%2,%0,8), %%xmm12                  \n\t" // 1 complex values from x
-	"vmovups      80(%2,%0,8), %%xmm13                  \n\t" // 1 complex values from x
-	"vmovups      96(%2,%0,8), %%xmm14                  \n\t" // 1 complex values from x
-	"vmovups     112(%2,%0,8), %%xmm15                  \n\t" // 1 complex values from x
+	"vmovups      64(%2,%0,8), %%xmm12                  \n\t" // 2 complex values from x
+	"vmovups      80(%2,%0,8), %%xmm13                  \n\t" // 2 complex values from x
+	"vmovups      96(%2,%0,8), %%xmm14                  \n\t" // 2 complex values from x
+	"vmovups     112(%2,%0,8), %%xmm15                  \n\t" // 2 complex values from x
 
 	"vpermilpd	$0x1 , %%xmm5 , %%xmm4 	    \n\t"  // exchange real and imag part
 	"vpermilpd	$0x1 , %%xmm7 , %%xmm6 	    \n\t"  // exchange real and imag part
 	"vpermilpd	$0x1 , %%xmm9 , %%xmm8 	    \n\t"  // exchange real and imag part
 	"vpermilpd	$0x1 , %%xmm11, %%xmm10 	    \n\t"  // exchange real and imag part
 
-	"vfmaddpd    (%3,%0,8), %%xmm0 , %%xmm5, %%xmm5     \n\t"
+	"vfmadd213pd    (%3,%0,8), %%xmm0 , %%xmm5          \n\t"
 	".align 2					    \n\t"
-	"vfmaddpd  16(%3,%0,8), %%xmm0 , %%xmm7, %%xmm7     \n\t"
-	"vfmaddpd  32(%3,%0,8), %%xmm0 , %%xmm9, %%xmm9     \n\t"
-	"vfmaddpd  48(%3,%0,8), %%xmm0 , %%xmm11,%%xmm11    \n\t"
+	"vfmadd213pd  16(%3,%0,8), %%xmm0 , %%xmm7          \n\t"
+	"vfmadd213pd  32(%3,%0,8), %%xmm0 , %%xmm9          \n\t"
+	"vfmadd213pd  48(%3,%0,8), %%xmm0 , %%xmm11         \n\t"
 
-	"vfmaddpd	%%xmm5 , %%xmm1 , %%xmm4 , %%xmm5   \n\t"
-	"vfmaddpd	%%xmm7 , %%xmm1 , %%xmm6 , %%xmm7   \n\t"
-	"vfmaddpd	%%xmm9 , %%xmm1 , %%xmm8 , %%xmm9   \n\t"
-	"vfmaddpd	%%xmm11, %%xmm1 , %%xmm10, %%xmm11  \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm4 , %%xmm5   \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm6 , %%xmm7   \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm8 , %%xmm9   \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm10, %%xmm11  \n\t"
 
 	"vpermilpd	$0x1 , %%xmm12, %%xmm4 	    \n\t"  // exchange real and imag part
 	"vpermilpd	$0x1 , %%xmm13, %%xmm6 	    \n\t"  // exchange real and imag part
 	"vpermilpd	$0x1 , %%xmm14, %%xmm8 	    \n\t"  // exchange real and imag part
 	"vpermilpd	$0x1 , %%xmm15, %%xmm10 	    \n\t"  // exchange real and imag part
 
-	"vfmaddpd  64(%3,%0,8), %%xmm0 , %%xmm12, %%xmm12   \n\t"
-	"vfmaddpd  80(%3,%0,8), %%xmm0 , %%xmm13, %%xmm13   \n\t"
-	"vfmaddpd  96(%3,%0,8), %%xmm0 , %%xmm14, %%xmm14   \n\t"
-	"vfmaddpd 112(%3,%0,8), %%xmm0 , %%xmm15, %%xmm15   \n\t"
+	"vfmadd213pd  64(%3,%0,8), %%xmm0 , %%xmm12   \n\t"
+	"vfmadd213pd  80(%3,%0,8), %%xmm0 , %%xmm13   \n\t"
+	"vfmadd213pd  96(%3,%0,8), %%xmm0 , %%xmm14   \n\t"
+	"vfmadd213pd 112(%3,%0,8), %%xmm0 , %%xmm15   \n\t"
 
-	"vfmaddpd	%%xmm12, %%xmm1 , %%xmm4 , %%xmm12  \n\t"
-	"vfmaddpd	%%xmm13, %%xmm1 , %%xmm6 , %%xmm13  \n\t"
-	"vfmaddpd	%%xmm14, %%xmm1 , %%xmm8 , %%xmm14  \n\t"
-	"vfmaddpd	%%xmm15, %%xmm1 , %%xmm10, %%xmm15  \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm4 , %%xmm12  \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm6 , %%xmm13  \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm8 , %%xmm14  \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm10, %%xmm15  \n\t"
 
 	"vmovups	%%xmm5 ,   (%3,%0,8)		    \n\t"
 	".align 2					    \n\t"
@@ -146,11 +146,11 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"1:				            \n\t"
 
 	"prefetcht0	512(%2,%0,8)			    \n\t"
-	"vmovups        (%2,%0,8), %%xmm5                   \n\t" // 1 complex values from x
+	"vmovups        (%2,%0,8), %%xmm5                   \n\t" // 2 complex values from x
 	".align 2					    \n\t"
-	"vmovups      16(%2,%0,8), %%xmm7                   \n\t" // 1 complex values from x
-	"vmovups      32(%2,%0,8), %%xmm9                   \n\t" // 1 complex values from x
-	"vmovups      48(%2,%0,8), %%xmm11                  \n\t" // 1 complex values from x
+	"vmovups      16(%2,%0,8), %%xmm7                   \n\t" // 2 complex values from x
+	"vmovups      32(%2,%0,8), %%xmm9                   \n\t" // 2 complex values from x
+	"vmovups      48(%2,%0,8), %%xmm11                  \n\t" // 2 complex values from x
 
 	"vpermilpd	$0x1 , %%xmm5 , %%xmm4 	    \n\t"  // exchange real and imag part
 	"vpermilpd	$0x1 , %%xmm7 , %%xmm6 	    \n\t"  // exchange real and imag part
@@ -158,16 +158,16 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vpermilpd	$0x1 , %%xmm11, %%xmm10 	    \n\t"  // exchange real and imag part
 
 	"prefetcht0	512(%3,%0,8)			    \n\t"
-	"vfmaddpd    (%3,%0,8), %%xmm0 , %%xmm5, %%xmm5     \n\t"
+	"vfmadd213pd    (%3,%0,8), %%xmm0 , %%xmm5          \n\t"
 	".align 2					    \n\t"
-	"vfmaddpd  16(%3,%0,8), %%xmm0 , %%xmm7, %%xmm7     \n\t"
-	"vfmaddpd  32(%3,%0,8), %%xmm0 , %%xmm9, %%xmm9     \n\t"
-	"vfmaddpd  48(%3,%0,8), %%xmm0 , %%xmm11,%%xmm11    \n\t"
+	"vfmadd213pd  16(%3,%0,8), %%xmm0 , %%xmm7          \n\t"
+	"vfmadd213pd  32(%3,%0,8), %%xmm0 , %%xmm9          \n\t"
+	"vfmadd213pd  48(%3,%0,8), %%xmm0 , %%xmm11         \n\t"
 
-	"vfmaddpd	%%xmm5 , %%xmm1 , %%xmm4 , %%xmm5   \n\t"
-	"vfmaddpd	%%xmm7 , %%xmm1 , %%xmm6 , %%xmm7   \n\t"
-	"vfmaddpd	%%xmm9 , %%xmm1 , %%xmm8 , %%xmm9   \n\t"
-	"vfmaddpd	%%xmm11, %%xmm1 , %%xmm10, %%xmm11  \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm4 , %%xmm5   \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm6 , %%xmm7   \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm8 , %%xmm9   \n\t"
+	"vfmadd231pd	%%xmm1 , %%xmm10, %%xmm11  \n\t"
 
 	"vmovups	%%xmm5 ,   (%3,%0,8)		    \n\t"
 	".align 2					    \n\t"
@@ -176,7 +176,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vmovups	%%xmm11, 48(%3,%0,8)		    \n\t"
 
 	"addq		$8 , %0	  	 	             \n\t"
-	"subq	        $4, %1			             \n\t"		
+	"subq	        $4 , %1			             \n\t"		
 	"jnz		1b		             \n\t"
 	"vzeroupper					    \n\t"
 

@@ -12,6 +12,7 @@ ZDOTKERNEL = zdot.c
 SAXPYKERNEL = saxpy.c
 DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
+ZAXPYKERNEL = zaxpy.c
 
 SGEMMKERNEL    =  sgemm_kernel_16x4_sandy.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
