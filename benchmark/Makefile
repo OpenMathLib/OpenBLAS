@@ -43,6 +43,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sdot.goto ddot.goto cdot.goto zdot.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        sscal.goto dscal.goto cscal.goto zscal.goto \
+       sasum.goto dasum.goto casum.goto zasum.goto \
        ssymv.goto dsymv.goto csymv.goto zsymv.goto \
        chemv.goto zhemv.goto \
        chemm.goto zhemm.goto \
@@ -65,6 +66,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sdot.acml ddot.acml cdot.acml zdot.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        sscal.acml dscal.acml cscal.acml zscal.acml \
+       sasum.acml dasum.acml casum.acml zasum.acml \
        ssymv.acml dsymv.acml csymv.acml zsymv.acml \
        chemv.acml zhemv.acml \
        chemm.acml zhemm.acml \
@@ -87,6 +89,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sdot.atlas ddot.atlas \
        saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
        sscal.atlas dscal.atlas cscal.atlas zscal.atlas \
+       sasum.atlas dasum.atlas casum.atlas zasum.atlas \
        ssymv.atlas dsymv.atlas csymv.atlas zsymv.atlas \
        chemv.atlas zhemv.atlas \
        chemm.acml zhemm.acml \
@@ -110,6 +113,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sdot.mkl ddot.mkl cdot.mkl zdot.mkl \
        saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
        sscal.mkl dscal.mkl cscal.mkl zscal.mkl \
+       sasum.mkl dasum.mkl casum.mkl zasum.mkl \
        ssymv.mkl dsymv.mkl csymv.mkl zsymv.mkl \
        chemv.mkl zhemv.mkl \
        chemm.mkl zhemm.mkl \
@@ -1136,6 +1140,62 @@ zscal.atlas : zscal.$(SUFFIX)
 zscal.mkl : zscal.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Sasum ####################################################
+sasum.goto : sasum.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+sasum.acml : sasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sasum.atlas : sasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sasum.mkl : sasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dasum ####################################################
+dasum.goto : dasum.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dasum.acml : dasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dasum.atlas : dasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dasum.mkl : dasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Casum ####################################################
+
+casum.goto : casum.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+casum.acml : casum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+casum.atlas : casum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+casum.mkl : casum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zasum ####################################################
+
+zasum.goto : zasum.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zasum.acml : zasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zasum.atlas : zasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zasum.mkl : zasum.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
+
 
 ##################################### Cgemm3m ####################################################
 
@@ -1385,6 +1445,20 @@ cscal.$(SUFFIX) : scal.c
 
 zscal.$(SUFFIX) : scal.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+sasum.$(SUFFIX) : asum.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dasum.$(SUFFIX) : asum.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+casum.$(SUFFIX) : asum.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zasum.$(SUFFIX) : asum.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
 
 
 cgemm3m.$(SUFFIX) : gemm3m.c
