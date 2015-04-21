@@ -38,6 +38,7 @@
 
 #include <stdio.h>
 #include "common.h"
+#include "l1param.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
 #endif
@@ -214,6 +215,9 @@ void CNAME(enum CBLAS_ORDER order,
   volatile int stack_alloc_size = 0;
   //for gemv_n and gemv_t, try to allocate on stack
   stack_alloc_size = m + n;
+#ifdef ALIGNED_ACCESS
+  stack_alloc_size += 3;
+#endif
   if(stack_alloc_size < 128)
     //dgemv_n.S require a 128 bytes buffer
     stack_alloc_size = 128;
