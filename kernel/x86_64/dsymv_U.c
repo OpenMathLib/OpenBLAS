@@ -31,6 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
 #include "dsymv_U_microk_bulldozer-2.c"
+#elif defined(HASWELL)
+#include "dsymv_U_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "dsymv_U_microk_sandy-2.c"
 #elif defined(NEHALEM)
 #include "dsymv_U_microk_nehalem-2.c"
 #endif
