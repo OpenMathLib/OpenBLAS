@@ -169,4 +169,4 @@ cchkee.o: cchkee.f
 zchkee.o: zchkee.f
 	$(FORTRAN) $(DRVOPTS) -c $< -o $@
 
-.f.o : ; $(FORTRAN) $(OPTS) -c $< -o $@
+.f.o : ; $(FORTRAN) $(DRVOPTS) -c $< -o $@
