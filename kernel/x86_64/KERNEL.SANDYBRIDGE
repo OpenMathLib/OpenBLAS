@@ -8,9 +8,10 @@ DDOTKERNEL = ddot.c
 CDOTKERNEL = cdot.c
 ZDOTKERNEL = zdot.c
 
+SSYMV_L_KERNEL = ssymv_L.c
+SSYMV_U_KERNEL = ssymv_U.c
 DSYMV_L_KERNEL = dsymv_L.c
 DSYMV_U_KERNEL = dsymv_U.c
-
 
 SAXPYKERNEL = saxpy.c
 DAXPYKERNEL = daxpy.c
