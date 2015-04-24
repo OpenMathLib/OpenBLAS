@@ -101,6 +101,27 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 
 	}
 
+	BLASLONG n1 = n & -4;
+
+	while(i < n1)
+	{
+
+		FLOAT m1      = da * x[ix] ;
+		FLOAT m2      = da * x[ix+inc_x] ;
+		FLOAT m3      = da * x[ix+2*inc_x] ;
+		FLOAT m4      = da * x[ix+3*inc_x] ;
+
+		y[iy]         += m1 ;
+		y[iy+inc_y]   += m2 ;
+		y[iy+2*inc_y] += m3 ;
+		y[iy+3*inc_y] += m4 ;
+
+		ix  += inc_x*4 ;
+		iy  += inc_y*4 ;
+		i+=4 ;
+
+	}
+
 	while(i < n)
 	{
 
