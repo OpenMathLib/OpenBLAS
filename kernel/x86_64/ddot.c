@@ -101,15 +101,40 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 	}
 
+	FLOAT temp1 = 0.0;
+	FLOAT temp2 = 0.0;
+
+        BLASLONG n1 = n & -4;	
+
+	while(i < n1)
+	{
+
+		FLOAT m1 = y[iy]       * x[ix] ;
+		FLOAT m2 = y[iy+inc_y] * x[ix+inc_x] ;
+
+		FLOAT m3 = y[iy+2*inc_y] * x[ix+2*inc_x] ;
+		FLOAT m4 = y[iy+3*inc_y] * x[ix+3*inc_x] ;
+
+		ix  += inc_x*4 ;
+		iy  += inc_y*4 ;
+
+		temp1 += m1+m3;
+		temp2 += m2+m4;
+
+		i+=4 ;
+
+	}
+
 	while(i < n)
 	{
 
-		dot += y[iy] * x[ix] ;
+		temp1 += y[iy] * x[ix] ;
 		ix  += inc_x ;
 		iy  += inc_y ;
 		i++ ;
 
 	}
+	dot = temp1 + temp2;
 	return(dot);
 
 }
