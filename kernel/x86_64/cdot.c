@@ -109,7 +109,7 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -16;
+		BLASLONG n1 = n & -16;
 
 		if ( n1 )
 		{
@@ -119,8 +119,10 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 			dot[4] += dot[6];
 			dot[5] += dot[7];
 		}
+
 		i = n1;
-		int j = i * 2;
+		BLASLONG j = i * 2;
+
 		while( i < n )
 		{
 

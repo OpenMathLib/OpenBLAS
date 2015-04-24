@@ -105,13 +105,14 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -8;
+		BLASLONG n1 = n & -8;
 
 		if ( n1 )
 			zdot_kernel_8(n1, x, y , dot );
 
 		i = n1;
-		int j = i * 2;
+		BLASLONG j = i * 2;
+
 		while( i < n )
 		{
 

@@ -83,7 +83,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -16;
+		BLASLONG n1 = n & -16;
 
 		if ( n1 )
 			ddot_kernel_8(n1, x, y , &dot );
