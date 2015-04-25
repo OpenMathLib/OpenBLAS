@@ -35,11 +35,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #undef GER
 
-
+#ifdef COMPLEX
+#ifdef DOUBLE
+#define GER   BLASFUNC(zgeru)
+#else
+#define GER   BLASFUNC(cgeru)
+#endif
+#else
 #ifdef DOUBLE
 #define GER   BLASFUNC(dger)
 #else
 #define GER   BLASFUNC(sger)
+#endif
 #endif
 
 

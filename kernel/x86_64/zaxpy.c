@@ -84,7 +84,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -16;
+		BLASLONG n1 = n & -16;
 
 		if ( n1 )
 		{
