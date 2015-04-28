@@ -25,10 +25,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#define HAVE_KERNEL_8 1
-static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *alpha) __attribute__ ((noinline));
+#define HAVE_KERNEL_16 1
+static void sger_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *alpha) __attribute__ ((noinline));
 
-static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void sger_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 
 
@@ -36,15 +36,18 @@ static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	__asm__  __volatile__
 	(
-	"vbroadcastsd		(%4), %%ymm0		    \n\t"  // alpha	
-	"vmovups	  (%3,%0,8), %%ymm8         \n\t"
-	"vmovups	32(%3,%0,8), %%ymm9         \n\t"
-	"vmovups	64(%3,%0,8), %%ymm10        \n\t"
-	"vmovups	96(%3,%0,8), %%ymm11        \n\t"
-	"vmovups	  (%2,%0,8), %%ymm4         \n\t"
-	"vmovups	32(%2,%0,8), %%ymm5         \n\t"
-	"vmovups	64(%2,%0,8), %%ymm6         \n\t"
-	"vmovups	96(%2,%0,8), %%ymm7        \n\t"
+	"vbroadcastss		(%4), %%xmm0		    \n\t"  // alpha	
+	"prefetcht0	256(%3,%0,4)			    \n\t"
+	"vmovups	  (%3,%0,4), %%xmm8         \n\t"
+	"vmovups	16(%3,%0,4), %%xmm9         \n\t"
+	"vmovups	32(%3,%0,4), %%xmm10        \n\t"
+	"vmovups	48(%3,%0,4), %%xmm11        \n\t"
+
+	"prefetcht0	256(%2,%0,4)			    \n\t"
+	"vmovups	  (%2,%0,4), %%xmm4         \n\t"
+	"vmovups	16(%2,%0,4), %%xmm5         \n\t"
+	"vmovups	32(%2,%0,4), %%xmm6         \n\t"
+	"vmovups	48(%2,%0,4), %%xmm7        \n\t"
 
 	"addq		$16, %0	  	 	             \n\t"
 	"subq	        $16, %1			             \n\t"		
@@ -53,49 +56,51 @@ static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	".align 16				            \n\t"
 	"1:				            \n\t"
 
-	"vmulpd		%%ymm4, %%ymm0, %%ymm4		\n\t"
-	"vaddpd		%%ymm8 , %%ymm4, %%ymm12	     \n\t"
-	"vmulpd		%%ymm5, %%ymm0, %%ymm5		\n\t"
-	"vaddpd		%%ymm9 , %%ymm5, %%ymm13	     \n\t"
-	"vmulpd		%%ymm6, %%ymm0, %%ymm6		\n\t"
-	"vaddpd		%%ymm10, %%ymm6, %%ymm14	     \n\t"
-	"vmulpd		%%ymm7, %%ymm0, %%ymm7		\n\t"
-	"vaddpd		%%ymm11, %%ymm7, %%ymm15	     \n\t"
+	"vmulps		%%xmm4, %%xmm0, %%xmm4		\n\t"
+	"vaddps		%%xmm8 , %%xmm4, %%xmm12	     \n\t"
+	"vmulps		%%xmm5, %%xmm0, %%xmm5		\n\t"
+	"vaddps		%%xmm9 , %%xmm5, %%xmm13	     \n\t"
+	"vmulps		%%xmm6, %%xmm0, %%xmm6		\n\t"
+	"vaddps		%%xmm10, %%xmm6, %%xmm14	     \n\t"
+	"vmulps		%%xmm7, %%xmm0, %%xmm7		\n\t"
+	"vaddps		%%xmm11, %%xmm7, %%xmm15	     \n\t"
 
-	"vmovups	  (%3,%0,8), %%ymm8         \n\t"
-	"vmovups	32(%3,%0,8), %%ymm9         \n\t"
-	"vmovups	64(%3,%0,8), %%ymm10        \n\t"
-	"vmovups	96(%3,%0,8), %%ymm11        \n\t"
+	"prefetcht0	256(%3,%0,4)			    \n\t"
+	"vmovups	  (%3,%0,4), %%xmm8         \n\t"
+	"vmovups	16(%3,%0,4), %%xmm9         \n\t"
+	"vmovups	32(%3,%0,4), %%xmm10        \n\t"
+	"vmovups	48(%3,%0,4), %%xmm11        \n\t"
 
-	"vmovups	  (%2,%0,8), %%ymm4         \n\t"
-	"vmovups	32(%2,%0,8), %%ymm5         \n\t"
-	"vmovups	64(%2,%0,8), %%ymm6         \n\t"
-	"vmovups	96(%2,%0,8), %%ymm7        \n\t"
+	"prefetcht0	256(%2,%0,4)			    \n\t"
+	"vmovups	  (%2,%0,4), %%xmm4         \n\t"
+	"vmovups	16(%2,%0,4), %%xmm5         \n\t"
+	"vmovups	32(%2,%0,4), %%xmm6         \n\t"
+	"vmovups	48(%2,%0,4), %%xmm7        \n\t"
 
-	"vmovups	%%ymm12, -128(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm13,  -96(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm14,  -64(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm15,  -32(%3,%0,8)		     \n\t"
+	"vmovups	%%xmm12,  -64(%3,%0,4)		     \n\t"
+	"vmovups	%%xmm13,  -48(%3,%0,4)		     \n\t"
+	"vmovups	%%xmm14,  -32(%3,%0,4)		     \n\t"
+	"vmovups	%%xmm15,  -16(%3,%0,4)		     \n\t"
 
 	"addq		$16, %0	  	 	             \n\t"
 	"subq	        $16, %1			             \n\t"		
 	"jnz		1b		             \n\t"
 
 	"2:				            \n\t"
-	"vmulpd		%%ymm4, %%ymm0, %%ymm4		\n\t"
-	"vmulpd		%%ymm5, %%ymm0, %%ymm5		\n\t"
-	"vmulpd		%%ymm6, %%ymm0, %%ymm6		\n\t"
-	"vmulpd		%%ymm7, %%ymm0, %%ymm7		\n\t"
+	"vmulps		%%xmm4, %%xmm0, %%xmm4		\n\t"
+	"vmulps		%%xmm5, %%xmm0, %%xmm5		\n\t"
+	"vmulps		%%xmm6, %%xmm0, %%xmm6		\n\t"
+	"vmulps		%%xmm7, %%xmm0, %%xmm7		\n\t"
 
-	"vaddpd		%%ymm8 , %%ymm4, %%ymm12	     \n\t"
-	"vaddpd		%%ymm9 , %%ymm5, %%ymm13	     \n\t"
-	"vaddpd		%%ymm10, %%ymm6, %%ymm14	     \n\t"
-	"vaddpd		%%ymm11, %%ymm7, %%ymm15	     \n\t"
+	"vaddps		%%xmm8 , %%xmm4, %%xmm12	     \n\t"
+	"vaddps		%%xmm9 , %%xmm5, %%xmm13	     \n\t"
+	"vaddps		%%xmm10, %%xmm6, %%xmm14	     \n\t"
+	"vaddps		%%xmm11, %%xmm7, %%xmm15	     \n\t"
 
-	"vmovups	%%ymm12, -128(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm13,  -96(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm14,  -64(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm15,  -32(%3,%0,8)		     \n\t"
+	"vmovups	%%xmm12,  -64(%3,%0,4)		     \n\t"
+	"vmovups	%%xmm13,  -48(%3,%0,4)		     \n\t"
+	"vmovups	%%xmm14,  -32(%3,%0,4)		     \n\t"
+	"vmovups	%%xmm15,  -16(%3,%0,4)		     \n\t"
 
 	"vzeroupper					     \n\t"
 
