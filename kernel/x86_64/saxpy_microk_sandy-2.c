@@ -37,48 +37,67 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	__asm__  __volatile__
 	(
 	"vbroadcastss		(%4), %%ymm0		    \n\t"  // alpha	
-
-	".align 16				            \n\t"
-	"1:				            \n\t"
 	"vmovups	  (%3,%0,4), %%ymm8         \n\t"
 	"vmovups	32(%3,%0,4), %%ymm9         \n\t"
 	"vmovups	64(%3,%0,4), %%ymm10        \n\t"
 	"vmovups	96(%3,%0,4), %%ymm11        \n\t"
-	"vmovups       128(%3,%0,4), %%ymm12        \n\t"
-	"vmovups       160(%3,%0,4), %%ymm13        \n\t"
-	"vmovups       192(%3,%0,4), %%ymm14        \n\t"
-	"vmovups       224(%3,%0,4), %%ymm15        \n\t"
+	"vmovups	  (%2,%0,4), %%ymm4         \n\t"
+	"vmovups	32(%2,%0,4), %%ymm5         \n\t"
+	"vmovups	64(%2,%0,4), %%ymm6         \n\t"
+	"vmovups	96(%2,%0,4), %%ymm7        \n\t"
 
-	"vmulps		(%2,%0,4), %%ymm0, %%ymm1		\n\t"
-	"vmulps	      32(%2,%0,4), %%ymm0, %%ymm2		\n\t"
-	"vaddps		%%ymm8 , %%ymm1, %%ymm8		     \n\t"
-	"vmulps	      64(%2,%0,4), %%ymm0, %%ymm3		\n\t"
-	"vaddps		%%ymm9 , %%ymm2, %%ymm9		     \n\t"
-	"vmulps	      96(%2,%0,4), %%ymm0, %%ymm4		\n\t"
-	"vaddps		%%ymm10, %%ymm3, %%ymm10	     \n\t"
-	"vmulps	     128(%2,%0,4), %%ymm0, %%ymm5		\n\t"
-	"vaddps		%%ymm11, %%ymm4, %%ymm11	     \n\t"
-	"vmulps	     160(%2,%0,4), %%ymm0, %%ymm6		\n\t"
-	"vaddps		%%ymm12, %%ymm5, %%ymm12	     \n\t"
-	"vmulps	     192(%2,%0,4), %%ymm0, %%ymm7		\n\t"
-	"vmulps	     224(%2,%0,4), %%ymm0, %%ymm1	     \n\t"
+	"addq		$32, %0	  	 	             \n\t"
+	"subq	        $32, %1			             \n\t"		
+	"jz		2f		             \n\t"
 
-	"vaddps		%%ymm13, %%ymm6, %%ymm13	     \n\t"
-	"vmovups	%%ymm8 ,   (%3,%0,4)		     \n\t"
-	"vaddps		%%ymm14, %%ymm7, %%ymm14	     \n\t"
-	"vmovups	%%ymm9 , 32(%3,%0,4)		     \n\t"
-	"vaddps		%%ymm15, %%ymm1, %%ymm15	     \n\t"
-	"vmovups	%%ymm10, 64(%3,%0,4)		     \n\t"
-	"vmovups	%%ymm11, 96(%3,%0,4)		     \n\t"
-	"vmovups	%%ymm12,128(%3,%0,4)		     \n\t"
-	"vmovups	%%ymm13,160(%3,%0,4)		     \n\t"
-	"vmovups	%%ymm14,192(%3,%0,4)		     \n\t"
-	"vmovups	%%ymm15,224(%3,%0,4)		     \n\t"
+	".align 16				            \n\t"
+	"1:				            \n\t"
 
-	"addq		$64, %0	  	 	             \n\t"
-	"subq	        $64, %1			             \n\t"		
+	"vmulps		%%ymm4, %%ymm0, %%ymm4		\n\t"
+	"vaddps		%%ymm8 , %%ymm4, %%ymm12	     \n\t"
+	"vmulps		%%ymm5, %%ymm0, %%ymm5		\n\t"
+	"vaddps		%%ymm9 , %%ymm5, %%ymm13	     \n\t"
+	"vmulps		%%ymm6, %%ymm0, %%ymm6		\n\t"
+	"vaddps		%%ymm10, %%ymm6, %%ymm14	     \n\t"
+	"vmulps		%%ymm7, %%ymm0, %%ymm7		\n\t"
+	"vaddps		%%ymm11, %%ymm7, %%ymm15	     \n\t"
+
+	"vmovups	  (%3,%0,4), %%ymm8         \n\t"
+	"vmovups	32(%3,%0,4), %%ymm9         \n\t"
+	"vmovups	64(%3,%0,4), %%ymm10        \n\t"
+	"vmovups	96(%3,%0,4), %%ymm11        \n\t"
+
+	"vmovups	  (%2,%0,4), %%ymm4         \n\t"
+	"vmovups	32(%2,%0,4), %%ymm5         \n\t"
+	"vmovups	64(%2,%0,4), %%ymm6         \n\t"
+	"vmovups	96(%2,%0,4), %%ymm7        \n\t"
+
+	"vmovups	%%ymm12, -128(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm13,  -96(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm14,  -64(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm15,  -32(%3,%0,4)		     \n\t"
+
+	"addq		$32, %0	  	 	             \n\t"
+	"subq	        $32, %1			             \n\t"		
 	"jnz		1b		             \n\t"
-	"vzeroupper				     \n\t"
+
+	"2:				            \n\t"
+	"vmulps		%%ymm4, %%ymm0, %%ymm4		\n\t"
+	"vmulps		%%ymm5, %%ymm0, %%ymm5		\n\t"
+	"vmulps		%%ymm6, %%ymm0, %%ymm6		\n\t"
+	"vmulps		%%ymm7, %%ymm0, %%ymm7		\n\t"
+
+	"vaddps		%%ymm8 , %%ymm4, %%ymm12	     \n\t"
+	"vaddps		%%ymm9 , %%ymm5, %%ymm13	     \n\t"
+	"vaddps		%%ymm10, %%ymm6, %%ymm14	     \n\t"
+	"vaddps		%%ymm11, %%ymm7, %%ymm15	     \n\t"
+
+	"vmovups	%%ymm12, -128(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm13,  -96(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm14,  -64(%3,%0,4)		     \n\t"
+	"vmovups	%%ymm15,  -32(%3,%0,4)		     \n\t"
+
+	"vzeroupper					     \n\t"
 
 	:
         : 
@@ -90,7 +109,7 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	: "cc", 
 	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
 	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
-	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);

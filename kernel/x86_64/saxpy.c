@@ -75,11 +75,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-#if defined(SANDYBRIDGE)
-		BLASLONG n1 = n & -64;
-#else
 		BLASLONG n1 = n & -32;
-#endif
 
 		if ( n1 )
 			saxpy_kernel_16(n1, x, y , &da );
