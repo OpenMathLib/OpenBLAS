@@ -1,4 +1,5 @@
 SGERKERNEL = sger.c
+DGERKERNEL = dger.c
 
 SGEMVNKERNEL = sgemv_n_4.c
 SGEMVTKERNEL = sgemv_t_4.c
