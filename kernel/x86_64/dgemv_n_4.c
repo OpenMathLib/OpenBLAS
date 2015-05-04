@@ -37,48 +37,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define NBMAX 2048
-
-#ifndef HAVE_KERNEL_4x8
-
-static void dgemv_kernel_4x8(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, BLASLONG lda4, FLOAT *alpha)
-{
-	BLASLONG i;
-	FLOAT *a0,*a1,*a2,*a3;
-	FLOAT *b0,*b1,*b2,*b3;
-	FLOAT *x4;
-	FLOAT x[8];
-	a0 = ap[0];
-	a1 = ap[1];
-	a2 = ap[2];
-	a3 = ap[3];
-	b0 = a0 + lda4 ;
-	b1 = a1 + lda4 ;
-	b2 = a2 + lda4 ;
-	b3 = a3 + lda4 ;
-	x4 = x + 4;
-
-	for ( i=0; i<8; i++)
-		x[i] = xo[i] * *alpha;
-
-	for ( i=0; i< n; i+=4 )
-	{
-
-		y[i] += a0[i]*x[0] + a1[i]*x[1] + a2[i]*x[2] + a3[i]*x[3];		
-		y[i+1] += a0[i+1]*x[0] + a1[i+1]*x[1] + a2[i+1]*x[2] + a3[i+1]*x[3];		
-		y[i+2] += a0[i+2]*x[0] + a1[i+2]*x[1] + a2[i+2]*x[2] + a3[i+2]*x[3];		
-		y[i+3] += a0[i+3]*x[0] + a1[i+3]*x[1] + a2[i+3]*x[2] + a3[i+3]*x[3];		
-
-		y[i] += b0[i]*x4[0] + b1[i]*x4[1] + b2[i]*x4[2] + b3[i]*x4[3];		
-		y[i+1] += b0[i+1]*x4[0] + b1[i+1]*x4[1] + b2[i+1]*x4[2] + b3[i+1]*x4[3];		
-		y[i+2] += b0[i+2]*x4[0] + b1[i+2]*x4[1] + b2[i+2]*x4[2] + b3[i+2]*x4[3];		
-		y[i+3] += b0[i+3]*x4[0] + b1[i+3]*x4[1] + b2[i+3]*x4[2] + b3[i+3]*x4[3];		
-
-	}
-}
-	
-#endif
-
-
 #ifndef HAVE_KERNEL_4x4
 
 static void dgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT *alpha)
@@ -257,7 +215,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	BLASLONG m3;
 	BLASLONG n2;
 	BLASLONG lda4 =  lda << 2;
-	BLASLONG lda8 =  lda << 3;
 	FLOAT xbuffer[8],*ybuffer;
 
         if ( m < 1 ) return(0);
@@ -265,22 +222,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 	ybuffer = buffer;
 	
-        if ( inc_x == 1 )
-	{
-		n1 = n >> 3 ;
-		n2 = n &  7 ;
-	}
-	else
-	{
-		n1 = n >> 2 ;
-		n2 = n &  3 ;
+	n1 = n >> 2 ;
+	n2 = n &  3 ;
 
-	}
-	
         m3 = m & 3  ;
         m1 = m & -4 ;
         m2 = (m & (NBMAX-1)) - m3 ;
-
 
 	y_ptr = y;
 
@@ -315,21 +262,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			for( i = 0; i < n1 ; i++)
 			{
-				dgemv_kernel_4x8(NB,ap,x_ptr,ybuffer,lda4,&alpha);
-				ap[0] += lda8; 
-				ap[1] += lda8; 
-				ap[2] += lda8; 
-				ap[3] += lda8; 
-				a_ptr += lda8;
-				x_ptr += 8;	
-			}
-
-
-			if ( n2 & 4 )
-			{
 				dgemv_kernel_4x4(NB,ap,x_ptr,ybuffer,&alpha);
 				ap[0] += lda4; 
 				ap[1] += lda4; 
+				ap[2] += lda4; 
+				ap[3] += lda4; 
 				a_ptr += lda4;
 				x_ptr += 4;	
 			}
