@@ -27,11 +27,17 @@ ctestl2o = c_cblas2.o c_c2chke.o auxiliary.o c_xerbla.o constant.o
 
 ctestl3o = c_cblas3.o c_c3chke.o auxiliary.o c_xerbla.o constant.o
 
+ctestl3o_3m = c_cblas3_3m.o c_c3chke_3m.o auxiliary.o c_xerbla.o constant.o
+
 ztestl1o = c_zblas1.o
 
 ztestl2o = c_zblas2.o c_z2chke.o auxiliary.o c_xerbla.o constant.o
 
 ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
+
+ztestl3o_3m = c_zblas3_3m.o c_z3chke_3m.o auxiliary.o c_xerbla.o constant.o
+
+
 
 all :: all1 all2 all3
 
@@ -115,8 +121,8 @@ xccblat2: $(ctestl2o) c_cblat2.o $(TOPDIR)/$(LIBNAME)
 xccblat3: $(ctestl3o) c_cblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat3 c_cblat3.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 
-xccblat3_3m: $(ctestl3o) c_cblat3_3m.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xccblat3_3m c_cblat3_3m.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xccblat3_3m: $(ctestl3o_3m) c_cblat3_3m.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xccblat3_3m c_cblat3_3m.o $(ctestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 
 # Double complex
 xzcblat1: $(ztestl1o) c_zblat1.o $(TOPDIR)/$(LIBNAME)
@@ -127,8 +133,8 @@ xzcblat3: $(ztestl3o) c_zblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat3 c_zblat3.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 
 
-xzcblat3_3m: $(ztestl3o) c_zblat3_3m.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xzcblat3_3m c_zblat3_3m.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+xzcblat3_3m: $(ztestl3o_3m) c_zblat3_3m.o $(TOPDIR)/$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o xzcblat3_3m c_zblat3_3m.o $(ztestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 
 
 include $(TOPDIR)/Makefile.tail
