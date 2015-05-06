@@ -130,10 +130,20 @@ int main(int argc, char *argv[]){
   char trans='N';
   char diag ='U';
 
+
+  int l;
+  int loops = 1;
+  double timeg;
+
   if ((p = getenv("OPENBLAS_SIDE"))) side=*p; 
   if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p;
   if ((p = getenv("OPENBLAS_TRANS"))) trans=*p;
   if ((p = getenv("OPENBLAS_DIAG"))) diag=*p;
+
+  p = getenv("OPENBLAS_LOOPS");
+  if ( p != NULL )
+        loops = atoi(p);
+
 
   blasint m, i, j;
 
@@ -150,7 +160,7 @@ int main(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Side = %c Uplo = %c Trans = %c Diag = %c\n", from, to, step,side,uplo,trans,diag);
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Side = %c Uplo = %c Trans = %c Diag = %c Loops = %d\n", from, to, step,side,uplo,trans,diag,loops);
 
   if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
@@ -171,28 +181,35 @@ int main(int argc, char *argv[]){
   for(m = from; m <= to; m += step)
   {
 
-    fprintf(stderr, " %6d : ", (int)m);
+	timeg=0.0;
 
-    for(j = 0; j < m; j++){
-      for(i = 0; i < m * COMPSIZE; i++){
-	a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-	b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-      }
-    }
+        fprintf(stderr, " %6d : ", (int)m);
 
-    gettimeofday( &start, (struct timezone *)0);
+	for (l=0; l<loops; l++)
+    	{
 
-    TRSM (&side, &uplo, &trans, &diag, &m, &m, alpha, a, &m, b, &m);
 
-    gettimeofday( &stop, (struct timezone *)0);
+   		 for(j = 0; j < m; j++){
+      			for(i = 0; i < m * COMPSIZE; i++){
+				a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+				b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      		 	}
+    		 }
 
-    time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+    		gettimeofday( &start, (struct timezone *)0);
 
-    gettimeofday( &start, (struct timezone *)0);
+    		TRSM (&side, &uplo, &trans, &diag, &m, &m, alpha, a, &m, b, &m);
 
-    fprintf(stderr,
-	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 1. * (double)m * (double)m * (double)m / time1 * 1.e-6);
+    		gettimeofday( &stop, (struct timezone *)0);
+
+    		time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+
+		timeg += time1;
+        }
+
+	time1 = timeg/loops;
+
+        fprintf(stderr, " %10.2f MFlops\n", COMPSIZE * COMPSIZE * 1. * (double)m * (double)m * (double)m / time1 * 1.e-6);
 
   }
 
