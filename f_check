@@ -38,6 +38,7 @@ OUTER:
         foreach $path (@path) {
             if (-x $path . "/" . $lists) {
                 $compiler = $lists;
+                $compiler_bin = $lists;
                 last OUTER;
             }
         }

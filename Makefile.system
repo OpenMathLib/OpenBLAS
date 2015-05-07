@@ -23,7 +23,7 @@ CC = gcc
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
      CC = clang
-     EXTRALIB += -Wl,-no_compact_unwind
+#     EXTRALIB += -Wl,-no_compact_unwind
 endif
 endif
 
@@ -558,9 +558,6 @@ FCOMMON_OPT += -Wall
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
-ifeq ($(UNAME_S),Darwin)
-EXTRALIB += -L/usr/local/lib/gcc/4.9/
-endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), mips64)
