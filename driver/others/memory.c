@@ -709,8 +709,6 @@ static void *alloc_shm(void *address){
   return map_address;
 }
 
-#endif
-
 #if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
 
 static void alloc_hugetlb_free(struct release_t *release){
@@ -817,6 +815,8 @@ static void *alloc_hugetlb(void *address){
 }
 #endif
 
+#endif
+
 #ifdef  ALLOC_HUGETLBFILE
 
 static int hugetlb_pid = 0;
@@ -917,11 +917,12 @@ void *blas_memory_alloc(int procpos){
 #ifdef ALLOC_DEVICEDRIVER
     alloc_devicedirver,
 #endif
-#if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
-    alloc_hugetlb,
-#endif
+/* Hugetlb implicitly assumes ALLOC_SHM */
 #ifdef ALLOC_SHM
     alloc_shm,
+#endif
+#if ((defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
+    alloc_hugetlb,
 #endif
 #ifdef ALLOC_MMAP
     alloc_mmap,
@@ -1062,7 +1063,7 @@ void *blas_memory_alloc(int procpos){
 	}
 #endif
 
-#if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
+#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
 	if ((*func == alloc_hugetlb) && (map_address != (void *)-1)) hugetlb_allocated = 1;
 #endif
 
