@@ -29,6 +29,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER)
 #include "dscal_microk_bulldozer-2.c"
+#elif defined(SANDYBRIDGE)
+#include "dscal_microk_sandy-2.c"
 #endif
 
 
