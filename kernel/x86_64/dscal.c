@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(HAVE_KERNEL_8)
 
-void dscal_kernel_8( BLASLONG n, FLOAT *da , FLOAT *x )
+static void dscal_kernel_8( BLASLONG n, FLOAT *da , FLOAT *x )
 {
 
 	BLASLONG i;
@@ -60,7 +60,7 @@ void dscal_kernel_8( BLASLONG n, FLOAT *da , FLOAT *x )
 }
 
 
-void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha , FLOAT *x )
+static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha , FLOAT *x )
 {
 
 	BLASLONG i;
@@ -82,9 +82,9 @@ void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha , FLOAT *x )
 #endif
 
 
-void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)  __attribute__ ((noinline));
+static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)  __attribute__ ((noinline));
 
-void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)
+static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)
 {
 
 	FLOAT *x1;
