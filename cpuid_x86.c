@@ -1198,11 +1198,20 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
 	case 0:
-	  if(support_avx())
-	    return CPUTYPE_STEAMROLLER;
-	  else
-	    return CPUTYPE_BARCELONA; //OS don't support AVX.
+	  switch(exmodel){
+	  case 3:
+	    if(support_avx())
+	      return CPUTYPE_STEAMROLLER;
+	    else
+	      return CPUTYPE_BARCELONA; //OS don't support AVX.
 
+	  case 6:
+	    if(support_avx())
+	      return CPUTYPE_EXCAVATOR;
+	    else
+	      return CPUTYPE_BARCELONA; //OS don't support AVX.
+	  }
+	  break;
 	}
 	break;
       case  5:
@@ -1332,6 +1341,7 @@ static char *cpuname[] = {
   "PILEDRIVER",
   "HASWELL",
   "STEAMROLLER",
+  "EXCAVATOR",
 };
 
 static char *lowercpuname[] = {
@@ -1384,6 +1394,7 @@ static char *lowercpuname[] = {
   "piledriver",
   "haswell",
   "steamroller",
+  "excavator",
 };
 
 static char *corename[] = {
@@ -1413,6 +1424,7 @@ static char *corename[] = {
   "PILEDRIVER",
   "HASWELL",
   "STEAMROLLER",
+  "EXCAVATOR",
 };
 
 static char *corename_lower[] = {
@@ -1442,6 +1454,7 @@ static char *corename_lower[] = {
   "piledriver",
   "haswell",
   "steamroller",
+  "excavator",
 };
 
 
@@ -1644,10 +1657,20 @@ int get_coretype(void){
 	    return CORE_BARCELONA; //OS don't support AVX.
 	
 	case 0:
-	  if(support_avx())
-	    return CORE_STEAMROLLER;
-	  else
-	    return CORE_BARCELONA; //OS don't support AVX.
+	  switch(exmodel){
+	  case 3:
+	    if(support_avx())
+	      return CORE_STEAMROLLER;
+	    else
+	      return CORE_BARCELONA; //OS don't support AVX.
+
+	  case 6:
+	    if(support_avx())
+	      return CORE_EXCAVATOR;
+	    else
+	      return CORE_BARCELONA; //OS don't support AVX.
+	  }
+	  break;
 	}
 
 

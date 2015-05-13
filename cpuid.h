@@ -109,6 +109,7 @@
 #define CORE_PILEDRIVER  23
 #define CORE_HASWELL     24
 #define CORE_STEAMROLLER 25
+#define CORE_EXCAVATOR   26
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -203,5 +204,6 @@ typedef struct {
 #define CPUTYPE_PILEDRIVER              47
 #define CPUTYPE_HASWELL 		48
 #define CPUTYPE_STEAMROLLER 		49
+#define CPUTYPE_EXCAVATOR 		50
 
 #endif
