@@ -81,6 +81,77 @@ void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha , FLOAT *x )
 
 #endif
 
+
+void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)  __attribute__ ((noinline));
+
+void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)
+{
+
+	FLOAT *x1;
+	BLASLONG inc_x3;
+
+	inc_x <<= 3;
+	inc_x3 = (inc_x << 1) + inc_x;
+
+        __asm__  __volatile__
+        (
+        "movddup               (%3), %%xmm0                 \n\t"  // alpha     
+
+	"leaq		(%1,%4,4), %2		            \n\t"
+
+        ".align 16                                          \n\t"
+
+        "1:                                                 \n\t"
+	"movsd	(%1)     , %%xmm4			    \n\t"
+	"movhpd (%1,%4,1), %%xmm4			    \n\t"
+	"movsd	(%1,%4,2), %%xmm5			    \n\t"
+	"movhpd (%1,%5,1), %%xmm5			    \n\t"
+
+	"movsd	(%2)     , %%xmm6			    \n\t"
+	"movhpd (%2,%4,1), %%xmm6			    \n\t"
+	"movsd	(%2,%4,2), %%xmm7			    \n\t"
+	"movhpd (%2,%5,1), %%xmm7			    \n\t"
+
+	"mulpd  %%xmm0, %%xmm4				    \n\t"
+	"mulpd  %%xmm0, %%xmm5				    \n\t"
+	"mulpd  %%xmm0, %%xmm6				    \n\t"
+	"mulpd  %%xmm0, %%xmm7				    \n\t"
+
+	"movsd  %%xmm4 , (%1)				    \n\t"
+	"movhpd %%xmm4 , (%1,%4,1)			    \n\t"
+	"movsd  %%xmm5 , (%1,%4,2)			    \n\t"
+	"movhpd %%xmm5 , (%1,%5,1)			    \n\t"
+
+	"movsd  %%xmm6 , (%2)				    \n\t"
+	"movhpd %%xmm6 , (%2,%4,1)			    \n\t"
+	"movsd  %%xmm7 , (%2,%4,2)			    \n\t"
+	"movhpd %%xmm7 , (%2,%5,1)			    \n\t"
+
+	"leaq   (%1,%4,8), %1				    \n\t"
+	"leaq   (%2,%4,8), %2				    \n\t"
+
+	"subq	$8, %0					    \n\t"
+	"jnz    1b					    \n\t"
+
+        :
+        :
+          "r" (n),      // 0
+          "r" (x),      // 1
+          "r" (x1),     // 2
+          "r" (alpha),  // 3
+          "r" (inc_x),  // 4
+          "r" (inc_x3)  // 5
+        : "cc", "%0", "%1", "%2",
+          "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+          "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+          "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+          "%xmm12", "%xmm13", "%xmm14", "%xmm15",
+          "memory"
+        );
+
+
+}
+
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
 	BLASLONG i=0,j=0;
@@ -90,6 +161,18 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 
 		if ( da == 0.0 )
 		{
+
+			BLASLONG n1 = n & -2;
+
+			while(j < n1)
+			{
+			
+				x[i]=0.0;
+				x[i+inc_x]=0.0;
+				i += 2*inc_x ;
+				j+=2;
+
+			}
 
 			while(j < n)
 			{
@@ -102,6 +185,14 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 		}
 		else
 		{
+
+			BLASLONG n1 = n & -8;
+			if ( n1 > 0 )
+			{
+				dscal_kernel_inc_8(n1, &da, x, inc_x);
+				i = n1 * inc_x;
+				j = n1;
+		        }			
 
 			while(j < n)
 			{
