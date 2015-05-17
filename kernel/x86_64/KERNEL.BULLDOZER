@@ -1,4 +1,5 @@
 DSCALKERNEL = dscal.c
+ZSCALKERNEL = zscal.c
 
 DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
