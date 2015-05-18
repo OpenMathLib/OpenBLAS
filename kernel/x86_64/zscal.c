@@ -30,8 +30,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(HASWELL)
 #include "zscal_microk_haswell-2.c"
-#elif defined(BULLDOZER)
+#elif defined(BULLDOZER)  || defined(PILEDRIVER)
 #include "zscal_microk_bulldozer-2.c"
+#elif defined(STEAMROLLER)
+#include "zscal_microk_steamroller-2.c"
 #endif
 
 
