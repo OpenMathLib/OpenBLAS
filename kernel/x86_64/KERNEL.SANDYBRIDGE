@@ -1,4 +1,5 @@
 DSCALKERNEL = dscal.c
+CSCALKERNEL = cscal.c
 
 SGERKERNEL = sger.c
 DGERKERNEL = dger.c
