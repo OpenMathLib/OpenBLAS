@@ -71,8 +71,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef COMMON_ARM
 #define COMMON_ARM
 
+#if defined(ARMV5) || defined(ARMV6)
+
+#define MB
+#define WMB
+
+#else
+
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
+
+#endif
 
 #define INLINE inline
 
