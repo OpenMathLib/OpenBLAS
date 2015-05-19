@@ -25,7 +25,7 @@ $compiler = "" if $compiler eq "f77";
 
 if ($compiler eq "") {
 
-    @lists = ("g95", "gfortran", "frt", "fort", "openf90", "openf95",
+    @lists = ("gfortran", "g95", "frt", "fort", "openf90", "openf95",
 	      "sunf77", "sunf90", "sunf95",
               "xlf95", "xlf90", "xlf",
               "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
