@@ -3,11 +3,11 @@
 #
 # 1. Not specified
 #   1.1 Automatically detect, then check compiler
-#   1.2 If no fortran compiler is detected, g77 is default with NOFORTRAN definition
+#   1.2 If no fortran compiler is detected, gfortran is default with NOFORTRAN definition
 # 2. Specified
 #   2.1 If path is correct, check compiler
 #   2.2 If path is not correct, but still valid compiler name, force setting
-#     2.2.2 Path is not correct, invalid compiler name, then g77 is default with NOFORTRAN definition
+#     2.2.2 Path is not correct, invalid compiler name, then gfortran is default with NOFORTRAN definition
 #
 
 $makefile = shift(@ARGV);
@@ -25,7 +25,7 @@ $compiler = "" if $compiler eq "f77";
 
 if ($compiler eq "") {
 
-    @lists = ("g77", "g95", "gfortran", "frt", "fort", "openf90", "openf95",
+    @lists = ("g95", "gfortran", "frt", "fort", "openf90", "openf95",
 	      "sunf77", "sunf90", "sunf95",
               "xlf95", "xlf90", "xlf",
               "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
@@ -49,8 +49,8 @@ OUTER:
 if ($compiler eq "") {
 
     $nofortran = 1;
-    $compiler = "g77";
-    $vendor = G77;
+    $compiler = "gfortran";
+    $vendor = GFORTRAN;
     $bu       = "_";
 
 } else {
@@ -197,8 +197,8 @@ if ($compiler eq "") {
 
 	if ($vendor eq "") {
 	    $nofortran = 1;
-	    $compiler = "g77";
-	    $vendor = G77;
+	    $compiler = "gfortran";
+	    $vendor = GFORTRAN;
 	    $bu       = "_";
 	    $openmp = "";
 	}

@@ -202,6 +202,12 @@ DLLWRAP = $(CROSS_SUFFIX)dllwrap
 OBJCOPY = $(CROSS_SUFFIX)objcopy
 OBJCONV = $(CROSS_SUFFIX)objconv
 
+
+# For detect fortran failed, only build BLAS.
+ifeq ($(NOFORTRAN), 1)
+NO_LAPACK = 1
+endif
+
 #
 #  OS dependent settings
 #
