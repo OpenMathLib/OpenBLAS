@@ -43,6 +43,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto cdot.goto zdot.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
+       scopy.goto dcopy.goto ccopy.goto zcopy.goto \
        sscal.goto dscal.goto cscal.goto zscal.goto \
        sasum.goto dasum.goto casum.goto zasum.goto \
        ssymv.goto dsymv.goto csymv.goto zsymv.goto \
@@ -66,6 +67,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sger.acml dger.acml cger.acml zger.acml \
        sdot.acml ddot.acml cdot.acml zdot.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
+       scopy.acml dcopy.acml ccopy.acml zcopy.acml \
        sscal.acml dscal.acml cscal.acml zscal.acml \
        sasum.acml dasum.acml casum.acml zasum.acml \
        ssymv.acml dsymv.acml csymv.acml zsymv.acml \
@@ -89,6 +91,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sger.atlas dger.atlas cger.atlas zger.atlas\
        sdot.atlas ddot.atlas \
        saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
+       scopy.atlas dcopy.atlas ccopy.atlas zcopy.atlas \
        sscal.atlas dscal.atlas cscal.atlas zscal.atlas \
        sasum.atlas dasum.atlas casum.atlas zasum.atlas \
        ssymv.atlas dsymv.atlas csymv.atlas zsymv.atlas \
@@ -113,6 +116,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sger.mkl dger.mkl cger.mkl zger.mkl \
        sdot.mkl ddot.mkl cdot.mkl zdot.mkl \
        saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
+       scopy.mkl dcopy.mkl ccopy.mkl zcopy.mkl \
        sscal.mkl dscal.mkl cscal.mkl zscal.mkl \
        sasum.mkl dasum.mkl casum.mkl zasum.mkl \
        ssymv.mkl dsymv.mkl csymv.mkl zsymv.mkl \
@@ -136,6 +140,7 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        sger.veclib dger.veclib cger.veclib zger.veclib \
        sdot.veclib ddot.veclib cdot.veclib zdot.veclib \
        saxpy.veclib daxpy.veclib caxpy.veclib zaxpy.veclib \
+       scopy.veclib dcopy.veclib ccopy.veclib zcopy.veclib \
        sscal.veclib dscal.veclib cscal.veclib zscal.veclib \
        sasum.veclib dasum.veclib casum.veclib zasum.veclib \
        ssymv.veclib dsymv.veclib csymv.veclib zsymv.veclib \
@@ -1346,6 +1351,73 @@ zaxpy.mkl : zaxpy.$(SUFFIX)
 zaxpy.veclib : zaxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+
+##################################### Scopy ####################################################
+scopy.goto : scopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+scopy.acml : scopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+scopy.atlas : scopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+scopy.mkl : scopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+scopy.veclib : scopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dcopy ####################################################
+dcopy.goto : dcopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+dcopy.acml : dcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dcopy.atlas : dcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dcopy.mkl : dcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dcopy.veclib : dcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ccopy ####################################################
+
+ccopy.goto : ccopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+ccopy.acml : ccopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ccopy.atlas : ccopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ccopy.mkl : ccopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ccopy.veclib : ccopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zcopy ####################################################
+
+zcopy.goto : zcopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
+
+zcopy.acml : zcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zcopy.atlas : zcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zcopy.mkl : zcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zcopy.veclib : zcopy.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Sscal ####################################################
 sscal.goto : sscal.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) -lm
@@ -1726,6 +1798,19 @@ caxpy.$(SUFFIX) : axpy.c
 
 zaxpy.$(SUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+scopy.$(SUFFIX) : copy.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dcopy.$(SUFFIX) : copy.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+ccopy.$(SUFFIX) : copy.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zcopy.$(SUFFIX) : copy.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 sscal.$(SUFFIX) : scal.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^

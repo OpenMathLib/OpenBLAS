@@ -52,6 +52,11 @@ C)
 	awk '/MFlops/ { print $3,int($9) }'|tail --lines=+2
 	;;
 
+B)
+	# Copy Benchmark	
+	awk '/MBytes/ { print $1,int($3) }'|tail --lines=+2
+	;;
+
 
 *)
 	awk '/MFlops/ { print $1,int($3) }'|tail --lines=+2
