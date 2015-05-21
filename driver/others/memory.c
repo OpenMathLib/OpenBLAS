@@ -90,7 +90,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef OS_WINDOWS
 #include <sys/mman.h>
+#ifndef NO_SYSV_IPC
 #include <sys/shm.h>
+#endif
 #include <sys/ipc.h>
 #endif
 
@@ -167,6 +169,14 @@ int get_num_procs(void) {
   return nums;
 }
 #endif
+#endif
+
+#ifdef OS_ANDROID
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_ONLN);
+  return nums;
+}
 #endif
 
 #ifdef OS_WINDOWS
@@ -266,7 +276,7 @@ void openblas_fork_handler()
   //   http://gcc.gnu.org/bugzilla/show_bug.cgi?id=60035
   // In the mean time build with USE_OPENMP=0 or link against another
   // implementation of OpenMP.
-#if !defined(OS_WINDOWS) && defined(SMP_SERVER)
+#if !(defined(OS_WINDOWS) || defined(OS_ANDROID)) && defined(SMP_SERVER)
   int err;
   err = pthread_atfork ((void (*)(void)) BLASFUNC(blas_thread_shutdown), NULL, NULL);
   if(err != 0)
@@ -276,7 +286,7 @@ void openblas_fork_handler()
 
 int blas_get_cpu_number(void){
   env_var_t p;
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   int max_num;
 #endif
   int blas_goto_num   = 0;
@@ -284,7 +294,7 @@ int blas_get_cpu_number(void){
 
   if (blas_num_threads) return blas_num_threads;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   max_num = get_num_procs();
 #endif
 
@@ -308,7 +318,7 @@ int blas_get_cpu_number(void){
   else if (blas_omp_num > 0) blas_num_threads = blas_omp_num;
   else blas_num_threads = MAX_CPU_NUMBER;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   if (blas_num_threads > max_num) blas_num_threads = max_num;
 #endif
 

@@ -57,6 +57,7 @@ $os = osf             if ($data =~ /OS_OSF/);
 $os = WINNT           if ($data =~ /OS_WINNT/);
 $os = CYGWIN_NT       if ($data =~ /OS_CYGWIN_NT/);
 $os = Interix         if ($data =~ /OS_INTERIX/);
+$os = Android         if ($data =~ /OS_ANDROID/);
 
 $architecture = x86    if ($data =~ /ARCH_X86/);
 $architecture = x86_64 if ($data =~ /ARCH_X86_64/);

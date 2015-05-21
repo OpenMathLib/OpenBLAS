@@ -93,6 +93,10 @@ extern "C" {
 #include <sched.h>
 #endif
 
+#ifdef OS_ANDROID
+#define NO_SYSV_IPC
+#endif
+
 #ifdef OS_WINDOWS
 #ifdef  ATOM
 #define GOTO_ATOM ATOM
@@ -106,7 +110,9 @@ extern "C" {
 #endif
 #else
 #include <sys/mman.h>
+#ifndef NO_SYSV_IPC
 #include <sys/shm.h>
+#endif
 #include <sys/time.h>
 #include <unistd.h>
 #include <math.h>
