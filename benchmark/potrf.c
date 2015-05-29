@@ -88,6 +88,10 @@ double fabs(double);
 
 #if defined(__WIN32__) || defined(__WIN64__)
 
+#ifndef DELTA_EPOCH_IN_MICROSECS
+#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
+#endif
+
 int gettimeofday(struct timeval *tv, void *tz){
 
   FILETIME ft;
