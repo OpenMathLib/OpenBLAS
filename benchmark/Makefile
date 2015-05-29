@@ -33,6 +33,111 @@ LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread 
 # Apple vecLib
 LIBVECLIB = -framework Accelerate
 
+ifeq ($(OSNAME), WINNT)
+
+goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
+       scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
+       sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
+       strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
+       strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
+       ssyrk.goto dsyrk.goto csyrk.goto zsyrk.goto \
+       ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
+       sger.goto dger.goto cger.goto zger.goto \
+       sdot.goto ddot.goto \
+       saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
+       scopy.goto dcopy.goto ccopy.goto zcopy.goto \
+       sswap.goto dswap.goto cswap.goto zswap.goto \
+       sscal.goto dscal.goto cscal.goto zscal.goto \
+       sasum.goto dasum.goto casum.goto zasum.goto \
+       ssymv.goto dsymv.goto csymv.goto zsymv.goto \
+       chemv.goto zhemv.goto \
+       chemm.goto zhemm.goto \
+       cherk.goto zherk.goto \
+       cher2k.goto zher2k.goto \
+       sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
+       sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
+       sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
+       spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
+       ssymm.goto dsymm.goto csymm.goto zsymm.goto
+
+acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
+       scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
+       sgemm.acml dgemm.acml cgemm.acml zgemm.acml \
+       strmm.acml dtrmm.acml ctrmm.acml ztrmm.acml \
+       strsm.acml dtrsm.acml ctrsm.acml ztrsm.acml \
+       ssyrk.acml dsyrk.acml csyrk.acml zsyrk.acml \
+       ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
+       sger.acml dger.acml cger.acml zger.acml \
+       sdot.acml ddot.acml \
+       saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
+       scopy.acml dcopy.acml ccopy.acml zcopy.acml \
+       sswap.acml dswap.acml cswap.acml zswap.acml \
+       sscal.acml dscal.acml cscal.acml zscal.acml \
+       sasum.acml dasum.acml casum.acml zasum.acml \
+       ssymv.acml dsymv.acml csymv.acml zsymv.acml \
+       chemv.acml zhemv.acml \
+       chemm.acml zhemm.acml \
+       cherk.acml zherk.acml \
+       cher2k.acml zher2k.acml \
+       sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
+       sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
+       sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
+       spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
+       ssymm.acml dsymm.acml csymm.acml zsymm.acml
+
+atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
+       scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
+       sgemm.atlas dgemm.atlas cgemm.atlas zgemm.atlas \
+       strmm.atlas dtrmm.atlas ctrmm.atlas ztrmm.atlas \
+       strsm.atlas dtrsm.atlas ctrsm.atlas ztrsm.atlas \
+       ssyrk.atlas dsyrk.atlas csyrk.atlas zsyrk.atlas \
+       ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
+       sger.atlas dger.atlas cger.atlas zger.atlas\
+       sdot.atlas ddot.atlas \
+       saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
+       scopy.atlas dcopy.atlas ccopy.atlas zcopy.atlas \
+       sswap.atlas dswap.atlas cswap.atlas zswap.atlas \
+       sscal.atlas dscal.atlas cscal.atlas zscal.atlas \
+       sasum.atlas dasum.atlas casum.atlas zasum.atlas \
+       ssymv.atlas dsymv.atlas csymv.atlas zsymv.atlas \
+       chemv.atlas zhemv.atlas \
+       chemm.acml zhemm.acml \
+       chemm.atlas zhemm.atlas \
+       cherk.atlas zherk.atlas \
+       cher2k.atlas zher2k.atlas \
+       sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
+       sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
+       sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
+       spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
+       ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
+
+mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
+       scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
+       sgemm.mkl dgemm.mkl cgemm.mkl zgemm.mkl \
+       strmm.mkl dtrmm.mkl ctrmm.mkl ztrmm.mkl \
+       strsm.mkl dtrsm.mkl ctrsm.mkl ztrsm.mkl \
+       ssyrk.mkl dsyrk.mkl csyrk.mkl zsyrk.mkl \
+       ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
+       sger.mkl dger.mkl cger.mkl zger.mkl \
+       sdot.mkl ddot.mkl \
+       saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
+       scopy.mkl dcopy.mkl ccopy.mkl zcopy.mkl \
+       sswap.mkl dswap.mkl cswap.mkl zswap.mkl \
+       sscal.mkl dscal.mkl cscal.mkl zscal.mkl \
+       sasum.mkl dasum.mkl casum.mkl zasum.mkl \
+       ssymv.mkl dsymv.mkl csymv.mkl zsymv.mkl \
+       chemv.mkl zhemv.mkl \
+       chemm.mkl zhemm.mkl \
+       cherk.mkl zherk.mkl \
+       cher2k.mkl zher2k.mkl \
+       sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
+       sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
+       sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
+       spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
+       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
+
+else
+
 goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
        sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
@@ -66,7 +171,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyrk.acml dsyrk.acml csyrk.acml zsyrk.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml cger.acml zger.acml \
-       sdot.acml ddot.acml cdot.acml zdot.acml \
+       sdot.acml ddot.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        scopy.acml dcopy.acml ccopy.acml zcopy.acml \
        sswap.acml dswap.acml cswap.acml zswap.acml \
@@ -134,6 +239,13 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
 
+
+
+
+endif
+
+
+
 veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        scholesky.veclib dcholesky.veclib ccholesky.veclib zcholesky.veclib \
        sgemm.veclib dgemm.veclib cgemm.veclib zgemm.veclib \
@@ -164,6 +276,9 @@ goto_3m :: cgemm3m.goto zgemm3m.goto
 mkl_3m :: cgemm3m.mkl zgemm3m.mkl
 
 all :: goto mkl atlas acml veclib
+
+exe :
+	@./Make_exe.sh
 
 ##################################### Slinpack ####################################################
 slinpack.goto : slinpack.$(SUFFIX) ../$(LIBNAME)
