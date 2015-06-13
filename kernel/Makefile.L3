@@ -32,6 +32,10 @@ ifeq ($(TARGET), GENERIC)
 USE_TRMM = 1
 endif
 
+ifeq ($(CORE), HASWELL)
+USE_TRMM = 1
+endif
+
 
 
 SKERNELOBJS	+= \
