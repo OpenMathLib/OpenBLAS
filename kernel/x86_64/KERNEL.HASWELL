@@ -40,7 +40,7 @@ SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-DTRMMKERNEL    =  ../generic/trmmkernel_4x8.c
+DTRMMKERNEL    =  dtrmm_kernel_4x8_haswell.c
 DGEMMKERNEL    =  dgemm_kernel_4x8_haswell.S
 DGEMMINCOPY    =  ../generic/gemm_ncopy_4.c
 DGEMMITCOPY    =  ../generic/gemm_tcopy_4.c
