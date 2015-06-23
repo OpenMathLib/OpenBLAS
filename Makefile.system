@@ -591,7 +591,7 @@ else
 FCOMMON_OPT += -m32
 endif
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -fopenmp
 endif
 endif
@@ -603,14 +603,14 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
 
 ifeq ($(F_COMPILER), FUJITSU)
 CCOMMON_OPT += -DF_INTERFACE_FUJITSU
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
@@ -628,7 +628,7 @@ endif
 else
 FCOMMON_OPT += -q32
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
@@ -646,7 +646,7 @@ FCOMMON_OPT += -tp p7-64
 else
 FCOMMON_OPT += -tp p7
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
 endif
@@ -675,7 +675,7 @@ FCOMMON_OPT += -mabi=n32
 endif
 endif
 
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
 endif
@@ -712,7 +712,7 @@ FCOMMON_OPT += -m64
 endif
 endif
 
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FEXTRALIB   += -lstdc++
 FCOMMON_OPT += -mp
 endif
@@ -760,14 +760,14 @@ FCOMMON_OPT  += -m32
 else
 FCOMMON_OPT  += -m64
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -xopenmp=parallel
 endif
 endif
 
 ifeq ($(F_COMPILER), COMPAQ)
 CCOMMON_OPT  += -DF_INTERFACE_COMPAQ
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
