@@ -46,21 +46,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static void __inline blas_lock(volatile BLASULONG *address){
 
   int register ret;
+  int register tmp;
 
   do {
     while (*address) {YIELDING;};
 
     __asm__ __volatile__(
                          "1:                                                            \n\t"
-                         "ldrex r2, [%1]                                                \n\t"
-                         "mov   r2, #0                                                  \n\t"
-                         "strex r3, r2, [%1]                                            \n\t"
-                         "cmp   r3, #0                                                  \n\t"
-                         "bne   1b                                                      \n\t"
-                         "mov   %0 , r3                                                 \n\t"
-                         : "=r"(ret), "=r"(address)
+                         "ldaxr %2, [%1]                                                \n\t"
+                         "mov   %2, #0                                                  \n\t"
+                         "stlxr %w0, %2, [%1]                                            \n\t"
+                         "cbnz  %w0, 1b                                                  \n\t"
+			 "mov   %0 , #0                                                  \n\t"
+                         : "=r"(ret), "=r"(address), "=r"(tmp)
                          : "1"(address)
-                         : "memory", "r2" , "r3"
+                         : "memory", "%w0"
+			   //, "%r2" , "%r3"
 
 
     );
