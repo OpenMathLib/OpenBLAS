@@ -190,6 +190,20 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> c, args -> ldc, sb);
 	} else
 #endif
+#ifdef INTEGER_PRECISION
+	if (mode & BLAS_INTEGER){
+	  /* REAL / Extended Double */
+	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, int,
+			int *, BLASLONG, int *, BLASLONG,
+			int *, BLASLONG, void *) = func;
+
+	  afunc(args -> m, args -> n, args -> k,
+		((int *)args -> alpha)[0],
+		args -> a, args -> lda,
+		args -> b, args -> ldb,
+		args -> c, args -> ldc, sb);
+	} else
+#endif
 	  if (mode & BLAS_DOUBLE){
 	    /* REAL / Double */
 	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,

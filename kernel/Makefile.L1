@@ -210,6 +210,10 @@ ifndef XAXPYKERNEL
 XAXPYKERNEL = zaxpy.S
 endif
 
+ifndef IAXPYKERNEL
+IAXPYKERNEL = ../generic/iaxpy.c
+endif
+
 ### COPY ###
 
 ifndef SCOPYKERNEL
@@ -471,6 +475,9 @@ QBLASOBJS	+= \
 	qasum_k$(TSUFFIX).$(SUFFIX) qaxpy_k$(TSUFFIX).$(SUFFIX) qcopy_k$(TSUFFIX).$(SUFFIX) qdot_k$(TSUFFIX).$(SUFFIX) \
 	qnrm2_k$(TSUFFIX).$(SUFFIX) qrot_k$(TSUFFIX).$(SUFFIX) qscal_k$(TSUFFIX).$(SUFFIX) qswap_k$(TSUFFIX).$(SUFFIX)
 
+IBLASOBJS       += \
+	iaxpy_k$(TSUFFIX).$(SUFFIX)
+
 CBLASOBJS	+= \
 	camax_k$(TSUFFIX).$(SUFFIX)  camin_k$(TSUFFIX).$(SUFFIX) icamax_k$(TSUFFIX).$(SUFFIX) icamin_k$(TSUFFIX).$(SUFFIX) \
 	casum_k$(TSUFFIX).$(SUFFIX) caxpy_k$(TSUFFIX).$(SUFFIX) caxpyc_k$(TSUFFIX).$(SUFFIX) ccopy_k$(TSUFFIX).$(SUFFIX) \
@@ -644,6 +651,9 @@ $(KDIR)daxpy_k$(TSUFFIX).$(SUFFIX)  $(KDIR)daxpy_k$(TPSUFFIX).$(PSUFFIX)  : $(KE
 
 $(KDIR)qaxpy_k$(TSUFFIX).$(SUFFIX)  $(KDIR)qaxpy_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(QAXPYKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -DXDOUBLE $< -o $@
+
+$(KDIR)iaxpy_k$(TSUFFIX).$(SUFFIX)  $(KDIR)iaxpy_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(IAXPYKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -DINTEGER $< -o $@
 
 $(KDIR)caxpy_k$(TSUFFIX).$(SUFFIX)  $(KDIR)caxpy_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(CAXPYKERNEL)
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DCOMPLEX -UCONJ -UDOUBLE $< -o $@

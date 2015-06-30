@@ -103,6 +103,8 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
     mode  =  BLAS_XDOUBLE | BLAS_REAL;
 #elif defined(DOUBLE)
     mode  =  BLAS_DOUBLE  | BLAS_REAL;
+#elif defined(INTEGER)
+    mode  =  BLAS_INTEGER | BLAS_REAL;
 #else
     mode  =  BLAS_SINGLE  | BLAS_REAL;
 #endif

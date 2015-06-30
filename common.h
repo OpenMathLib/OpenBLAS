@@ -276,6 +276,11 @@ typedef int blasint;
 #define SIZE	8
 #define  BASE_SHIFT 3
 #define ZBASE_SHIFT 4
+#elif defined(INTEGER) //extend for integer matrix
+#define FLOAT	int
+#define SIZE    4
+#define  BASE_SHIFT 2
+#define ZBASE_SHIFT 3
 #else
 #define FLOAT	float
 #define SIZE    4

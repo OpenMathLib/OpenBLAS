@@ -114,6 +114,9 @@ NO_AFFINITY = 1
 # Support for IEEE quad precision(it's *real* REAL*16)( under testing)
 # QUAD_PRECISION = 1
 
+# Support for integer matrix and vector (e.g. iaxpy)
+# INTEGER_PRECISION = 1
+
 # Theads are still working for a while after finishing BLAS operation
 # to reduce thread activate/deactivate overhead. You can determine
 # time out to improve performance. This number should be from 4 to 30

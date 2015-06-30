@@ -47,6 +47,10 @@
 #include "common_z.h"
 #include "common_x.h"
 
+#ifdef INTEGER_PRECISION
+#include "common_i.h"
+#endif
+
 #ifndef COMPLEX
 #ifdef XDOUBLE
 
@@ -635,6 +639,9 @@
 #define OMATCOPY_K_CT		DOMATCOPY_K_CT
 #define OMATCOPY_K_RT		DOMATCOPY_K_RT
 #define GEADD_K                 DGEADD_K 
+
+#elif defined(INTEGER)
+#define AXPYU_K                 IAXPYU_K
 #else
 
 #define	AMAX_K			SAMAX_K

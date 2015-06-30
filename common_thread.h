@@ -65,6 +65,7 @@ extern int blas_omp_linked;
 #define BLAS_XDOUBLE	0x0002U
 #define BLAS_REAL	0x0000U
 #define BLAS_COMPLEX	0x0004U
+#define BLAS_INTEGER    0x0008U
 
 #define BLAS_TRANSA	0x0030U	/* 2bit */
 #define BLAS_TRANSA_N	0x0000U

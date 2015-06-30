@@ -253,6 +253,15 @@ XBLAS3OBJS   +=  xgemm3m.$(SUFFIX) xsymm3m.$(SUFFIX) xhemm3m.$(SUFFIX)
 endif
 endif
 
+ifdef INTEGER_PRECISION
+
+IBLAS1OBJS = \
+	     iaxpy.$(SUFFIX)
+
+IBLAS2OBJS = 
+IBLAS3OBJS = 
+endif
+
 endif
 
 HPLOBJS = dgemm.$(SUFFIX) dtrsm.$(SUFFIX) \
@@ -343,6 +352,9 @@ CZBLAS3OBJS   = \
 	cblas_zomatcopy.$(SUFFIX) cblas_zimatcopy.$(SUFFIX) \
 	cblas_zgeadd.$(SUFFIX)
 
+CIBLAS1OBJS = \
+	cblas_iaxpy.$(SUFFIX)
+
 
 ifeq ($(SUPPORT_GEMM3M), 1)
 
@@ -372,6 +384,10 @@ ZBLAS1OBJS   += $(CZBLAS1OBJS)
 ZBLAS2OBJS   += $(CZBLAS2OBJS)
 ZBLAS3OBJS   += $(CZBLAS3OBJS)
 
+IBLAS1OBJS   += $(CIBLAS1OBJS)
+IBLAS2OBJS   += $(CIBLAS2OBJS)
+IBLAS3OBJS   += $(CIBLAS3OBJS)
+
 endif
 
 SBLASOBJS    = $(SBLAS1OBJS) $(SBLAS2OBJS) $(SBLAS3OBJS)
@@ -380,6 +396,7 @@ QBLASOBJS    = $(QBLAS1OBJS) $(QBLAS2OBJS) $(QBLAS3OBJS)
 CBLASOBJS    = $(CBLAS1OBJS) $(CBLAS2OBJS) $(CBLAS3OBJS)
 ZBLASOBJS    = $(ZBLAS1OBJS) $(ZBLAS2OBJS) $(ZBLAS3OBJS)
 XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
+IBLASOBJS    = $(IBLAS1OBJS) $(IBLAS2OBJS) $(IBLAS3OBJS)
 
 #SLAPACKOBJS	= \
 #	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
@@ -458,6 +475,10 @@ ifdef QUAD_PRECISION
 FUNCOBJS   += $(QBLASOBJS) $(XBLASOBJS)
 endif
 
+ifdef INTEGER_PRECISION
+FUNCOBJS   += $(IBLASOBJS)
+endif
+
 FUNCALLFILES = $(FUNCOBJS:.$(SUFFIX)=)
 
 include $(TOPDIR)/Makefile.tail
@@ -476,17 +497,18 @@ endif
 clean ::
 	@rm -f functable.h
 
-level1 : $(SBLAS1OBJS) $(DBLAS1OBJS) $(QBLAS1OBJS) $(CBLAS1OBJS) $(ZBLAS1OBJS) $(XBLAS1OBJS)
+level1 : $(SBLAS1OBJS) $(DBLAS1OBJS) $(QBLAS1OBJS) $(CBLAS1OBJS) $(ZBLAS1OBJS) $(XBLAS1OBJS) $(IBLAS1OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
-level2 : $(SBLAS2OBJS) $(DBLAS2OBJS) $(QBLAS2OBJS) $(CBLAS2OBJS) $(ZBLAS2OBJS) $(XBLAS2OBJS)
+level2 : $(SBLAS2OBJS) $(DBLAS2OBJS) $(QBLAS2OBJS) $(CBLAS2OBJS) $(ZBLAS2OBJS) $(XBLAS2OBJS) $(IBLAS2OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
-level3 : $(SBLAS3OBJS) $(DBLAS3OBJS) $(QBLAS3OBJS) $(CBLAS3OBJS) $(ZBLAS3OBJS) $(XBLAS3OBJS)
+level3 : $(SBLAS3OBJS) $(DBLAS3OBJS) $(QBLAS3OBJS) $(CBLAS3OBJS) $(ZBLAS3OBJS) $(XBLAS3OBJS) $(IBLAS3OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
 $(CSBLASOBJS) $(CSBLASOBJS_P) $(CDBLASOBJS) $(CDBLASOBJS_P) $(CQBLASOBJS) $(CQBLASOBJS_P) \
-$(CCBLASOBJS) $(CCBLASOBJS_P) $(CZBLASOBJS) $(CZBLASOBJS_P) $(CXBLASOBJS) $(CXBLASOBJS_P) : override CFLAGS += -DCBLAS
+$(CCBLASOBJS) $(CCBLASOBJS_P) $(CZBLASOBJS) $(CZBLASOBJS_P) $(CXBLASOBJS) $(CXBLASOBJS_P) \
+$(CIBLASOBJS) $(CIBLASOBJS_P) : override CFLAGS += -DCBLAS
 
 srot.$(SUFFIX) srot.$(PSUFFIX) : rot.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
@@ -723,6 +745,9 @@ saxpy.$(SUFFIX) saxpy.$(PSUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 daxpy.$(SUFFIX) daxpy.$(PSUFFIX) : axpy.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+
+iaxpy.$(SUFFIX) iaxpy.$(PSUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 qaxpy.$(SUFFIX) qaxpy.$(PSUFFIX) : axpy.c
@@ -1435,6 +1460,9 @@ cblas_saxpy.$(SUFFIX) cblas_saxpy.$(PSUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
 cblas_daxpy.$(SUFFIX) cblas_daxpy.$(PSUFFIX) : axpy.c
+	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
+
+cblas_iaxpy.$(SUFFIX) cblas_iaxpy.$(PSUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
 cblas_caxpy.$(SUFFIX) cblas_caxpy.$(PSUFFIX) : zaxpy.c

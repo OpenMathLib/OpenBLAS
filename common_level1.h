@@ -60,6 +60,8 @@ int    daxpy_k (BLASLONG, BLASLONG, BLASLONG, double,
 	       double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
 int    qaxpy_k (BLASLONG, BLASLONG, BLASLONG, xdouble,
 	       xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+int    iaxpy_k (BLASLONG, BLASLONG, BLASLONG, int,
+	       int  *, BLASLONG, int  *, BLASLONG, int  *, BLASLONG);
 int    caxpy_k (BLASLONG, BLASLONG, BLASLONG, float,  float,
 	       float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
 int    zaxpy_k (BLASLONG, BLASLONG, BLASLONG, double, double,

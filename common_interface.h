@@ -93,6 +93,7 @@ openblas_complex_xdouble BLASFUNC(xdotc)  (blasint *, xdouble  *, blasint *, xdo
 
 void    BLASFUNC(saxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
 void    BLASFUNC(daxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
+void    BLASFUNC(iaxpy) (blasint *, int  *, int  *, blasint *, int  *, blasint *);
 void    BLASFUNC(qaxpy) (blasint *, xdouble *, xdouble *, blasint *, xdouble *, blasint *);
 void    BLASFUNC(caxpy) (blasint *, float  *, float  *, blasint *, float  *, blasint *);
 void    BLASFUNC(zaxpy) (blasint *, double *, double *, blasint *, double *, blasint *);
