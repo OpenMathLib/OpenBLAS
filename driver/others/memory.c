@@ -139,8 +139,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#define CONSTRUCTOR __cdecl
+#define DESTRUCTOR __cdecl
+#else
 #define CONSTRUCTOR	__attribute__ ((constructor))
 #define DESTRUCTOR	__attribute__ ((destructor))
+#endif
 
 #ifdef DYNAMIC_ARCH
 gotoblas_t *gotoblas = NULL;
@@ -795,12 +800,12 @@ static void *alloc_hugetlb(void *address){
   
   if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) {
       CloseHandle(hToken);
-      return -1;
+      return (void*)-1;
   }
 
   if (AdjustTokenPrivileges(hToken, FALSE, &tp, 0, NULL, NULL) != TRUE) {
       CloseHandle(hToken);
-      return -1;
+      return (void*)-1;
   }
 
   map_address  = (void *)VirtualAlloc(address,
@@ -1398,6 +1403,28 @@ void DESTRUCTOR gotoblas_quit(void) {
    moncontrol (1);
 #endif
 }
+
+#if defined(_MSC_VER) && !defined(__clang__)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+{
+  switch (ul_reason_for_call)
+  {
+    case DLL_PROCESS_ATTACH:
+      gotoblas_init();
+      break;
+    case DLL_THREAD_ATTACH:
+      break;
+    case DLL_THREAD_DETACH:
+      break;
+    case DLL_PROCESS_DETACH:
+      gotoblas_quit();
+      break;
+    default:
+      break;
+  }
+  return TRUE;
+}
+#endif
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))
 /* Don't call me; this is just work around for PGI / Sun bug */

@@ -43,7 +43,7 @@
 
 #if !defined(XDOUBLE) || !defined(QUAD_PRECISION)
 
-static inline void SYMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void SYMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -141,7 +141,7 @@ static inline void SYMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void SYMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void SYMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -232,7 +232,7 @@ static inline void SYMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
 }
 
 
-static inline void ZSYMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZSYMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -362,7 +362,7 @@ static inline void ZSYMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZSYMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZSYMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -486,7 +486,7 @@ static inline void ZSYMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZHEMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZHEMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -613,7 +613,7 @@ static inline void ZHEMCOPY_L(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZHEMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZHEMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -735,7 +735,7 @@ static inline void ZHEMCOPY_U(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
 }
 
 
-static inline void ZHEMCOPY_M(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZHEMCOPY_M(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -862,7 +862,7 @@ static inline void ZHEMCOPY_M(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZHEMCOPY_V(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZHEMCOPY_V(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -984,7 +984,7 @@ static inline void ZHEMCOPY_V(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
 }
 
 
-static inline void TRMCOPY_NL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void TRMCOPY_NL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -1082,7 +1082,7 @@ static inline void TRMCOPY_NL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void TRMCOPY_TL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void TRMCOPY_TL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -1180,7 +1180,7 @@ static inline void TRMCOPY_TL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void TRMCOPY_NU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void TRMCOPY_NU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -1270,7 +1270,7 @@ static inline void TRMCOPY_NU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void TRMCOPY_TU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void TRMCOPY_TU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -1360,7 +1360,7 @@ static inline void TRMCOPY_TU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZTRMCOPY_NL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZTRMCOPY_NL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -1490,7 +1490,7 @@ static inline void ZTRMCOPY_NL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZTRMCOPY_TL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZTRMCOPY_TL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -1620,7 +1620,7 @@ static inline void ZTRMCOPY_TL(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZTRMCOPY_NU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZTRMCOPY_NU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
@@ -1744,7 +1744,7 @@ static inline void ZTRMCOPY_NU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   }
 }
 
-static inline void ZTRMCOPY_TU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
+static __inline void ZTRMCOPY_TU(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b){
   BLASLONG is, js;
 
   FLOAT *aa1, *aa2;
