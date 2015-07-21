@@ -35,9 +35,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **************************************************************************************/
 
 #include "common.h"
-#include <complex.h>
 
+#ifndef _MSC_VER
+#include <complex.h>
 FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+#else
+openblas_complex_double CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+#endif
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;

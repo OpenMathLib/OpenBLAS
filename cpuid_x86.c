@@ -40,6 +40,12 @@
 #include <string.h>
 #include "cpuid.h"
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#define C_INLINE __inline
+#else
+#define C_INLINE inline
+#endif
+
 /*
 #ifdef NO_AVX
 #define CPUTYPE_HASWELL CPUTYPE_NEHALEM
@@ -53,12 +59,26 @@
 #endif
 */
 
+#if defined(_MSC_VER) && !defined(__clang__)
+
+void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx)
+{
+  int cpuInfo[4] = {-1};
+  __cpuid(cpuInfo, op);
+  *eax = cpuInfo[0];
+  *ebx = cpuInfo[1];
+  *ecx = cpuInfo[2];
+  *edx = cpuInfo[3];
+}
+
+#else
+
 #ifndef CPUIDEMU
 
 #if defined(__APPLE__) && defined(__i386__)
 void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx);
 #else
-static inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
+static C_INLINE void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 #if defined(__i386__) && defined(__PIC__)
   __asm__ __volatile__
     ("mov %%ebx, %%edi;"
@@ -115,14 +135,16 @@ void cpuid(unsigned int op, unsigned int *eax, unsigned int *ebx, unsigned int *
 
 #endif
 
-static inline int have_cpuid(void){
+#endif // _MSC_VER
+
+static C_INLINE int have_cpuid(void){
   int eax, ebx, ecx, edx;
 
   cpuid(0, &eax, &ebx, &ecx, &edx);
   return eax;
 }
 
-static inline int have_excpuid(void){
+static C_INLINE int have_excpuid(void){
   int eax, ebx, ecx, edx;
 
   cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
@@ -130,10 +152,14 @@ static inline int have_excpuid(void){
 }
 
 #ifndef NO_AVX
-static inline void xgetbv(int op, int * eax, int * edx){
+static C_INLINE void xgetbv(int op, int * eax, int * edx){
   //Use binary code for xgetbv
+#if defined(_MSC_VER) && !defined(__clang__)
+  *eax = __xgetbv(op);
+#else
   __asm__ __volatile__
     (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+#endif
 }
 #endif
 

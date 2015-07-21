@@ -47,12 +47,12 @@ double dsdot_k(BLASLONG, float   *, BLASLONG, float *, BLASLONG);
 double  ddot_k(BLASLONG, double  *, BLASLONG, double  *, BLASLONG);
 xdouble qdot_k(BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
 
-float   _Complex cdotc_k (BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
-float   _Complex cdotu_k (BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
-double  _Complex zdotc_k (BLASLONG, double *, BLASLONG, double *, BLASLONG);
-double  _Complex zdotu_k (BLASLONG, double *, BLASLONG, double *, BLASLONG);
-xdouble _Complex xdotc_k (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-xdouble _Complex xdotu_k (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+openblas_complex_float cdotc_k (BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
+openblas_complex_float cdotu_k (BLASLONG, float  *, BLASLONG, float  *, BLASLONG);
+openblas_complex_double zdotc_k (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+openblas_complex_double zdotu_k (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+openblas_complex_xdouble xdotc_k (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+openblas_complex_xdouble xdotu_k (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
 
 int    saxpy_k (BLASLONG, BLASLONG, BLASLONG, float,
 	       float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG);

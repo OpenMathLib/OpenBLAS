@@ -65,3 +65,5 @@ test/sblat3
 test/zblat1
 test/zblat2
 test/zblat3
+build
+build.*
