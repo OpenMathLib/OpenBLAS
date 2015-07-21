@@ -171,37 +171,37 @@
 
 #ifdef linux
 #ifdef __64BIT__
-	ld	LDC,    112 + STACKSIZE(SP)
+	ld	LDC, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	LDC,    112 + STACKSIZE(SP)
+	ld	LDC, FRAMESLOT(0) + STACKSIZE(SP)
 #else
 #ifdef DOUBLE
-	lwz	B,       56 + STACKSIZE(SP)
-	lwz	C,       60 + STACKSIZE(SP)
-	lwz	LDC,     64 + STACKSIZE(SP)
+	lwz	B,   FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	C,   FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	LDC, FRAMESLOT(2) + STACKSIZE(SP)
 #else
-	lwz	LDC,     56 + STACKSIZE(SP)
+	lwz	LDC, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 #endif
 #endif
 
 #ifdef TRMMKERNEL
 #if defined(linux) && defined(__64BIT__)
-	ld	OFFSET,  120 + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	OFFSET,  120 + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
 #else
 #ifdef DOUBLE
-	lwz	OFFSET,   68 + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(3) + STACKSIZE(SP)
 #else
-	lwz	OFFSET,   60 + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
 #endif
 #endif
 #endif
@@ -233,25 +233,25 @@
 
 #ifdef linux
 #ifndef __64BIT__
-	lwz	PREA,   16 + STACKSIZE(SP)
-	lwz	PREC,   20 + STACKSIZE(SP)
+	lwz	PREA,  FRAMESLOT(2) + STACKSIZE(SP)
+	lwz	PREC,  FRAMESLOT(3) + STACKSIZE(SP)
 #else
-	ld	PREA,  136 + STACKSIZE(SP)
-	ld	PREC,  144 + STACKSIZE(SP)
+	ld	PREA,  FRAMESLOT(3) + STACKSIZE(SP)
+	ld	PREC,  FRAMESLOT(4) + STACKSIZE(SP)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	PREA,  136 + STACKSIZE(SP)
-	ld	PREC,  144 + STACKSIZE(SP)
+	ld	PREA,  FRAMESLOT(3) + STACKSIZE(SP)
+	ld	PREC,  FRAMESLOT(4) + STACKSIZE(SP)
 #else
 #ifdef DOUBLE
-	lwz	PREA,   72 + STACKSIZE(SP)
-	lwz	PREC,   76 + STACKSIZE(SP)
+	lwz	PREA,  FRAMESLOT(4) + STACKSIZE(SP)
+	lwz	PREC,  FRAMESLOT(5) + STACKSIZE(SP)
 #else
-	lwz	PREA,   68 + STACKSIZE(SP)
-	lwz	PREC,   72 + STACKSIZE(SP)
+	lwz	PREA,  FRAMESLOT(3) + STACKSIZE(SP)
+	lwz	PREC,  FRAMESLOT(4) + STACKSIZE(SP)
 #endif
 #endif
 #endif

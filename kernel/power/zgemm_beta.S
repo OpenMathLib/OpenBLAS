@@ -64,24 +64,24 @@
 
 #ifdef linux
 #ifndef __64BIT__
-	lwz	LDC,      8 + STACKSIZE(SP)
+	lwz	LDC,    FRAMESLOT(0) + STACKSIZE(SP)
 #else
-	ld	C,      120 + STACKSIZE(SP)
-	ld	LDC,    128 + STACKSIZE(SP)
+	ld	C,      FRAMESLOT(1) + STACKSIZE(SP)
+	ld	LDC,    FRAMESLOT(2) + STACKSIZE(SP)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	C,      120 + STACKSIZE(SP)
-	ld	LDC,    128 + STACKSIZE(SP)
+	ld	C,      FRAMESLOT(1) + STACKSIZE(SP)
+	ld	LDC,    FRAMESLOT(2) + STACKSIZE(SP)
 #else
 #ifdef DOUBLE
-	lwz	C,       68 + STACKSIZE(SP)
-	lwz	LDC,     72 + STACKSIZE(SP)
+	lwz	C,      FRAMESLOT(3) + STACKSIZE(SP)
+	lwz	LDC,    FRAMESLOT(4) + STACKSIZE(SP)
 #else
-	lwz	C,       60 + STACKSIZE(SP)
-	lwz	LDC,     64 + STACKSIZE(SP)
+	lwz	C,      FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	LDC,    FRAMESLOT(2) + STACKSIZE(SP)
 #endif
 #endif
 #endif

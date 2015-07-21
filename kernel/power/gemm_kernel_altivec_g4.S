@@ -241,7 +241,7 @@
 
 #if defined(_AIX) || defined(__APPLE__)
 #if !defined(__64BIT__) && defined(DOUBLE)
-	lwz	LDC,    56 + STACKSIZE(SP)
+	lwz	LDC, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 #endif
 
