@@ -6,10 +6,29 @@ cmake_minimum_required(VERSION 2.8.4)
 project(OpenBLAS)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 2)
-set(OpenBLAS_PATCH_VERSION 13)
+set(OpenBLAS_PATCH_VERSION 14)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 enable_language(ASM)
+enable_language(C)
+
+set(OpenBLAS_LIBNAME openblas)
+
+#######
+option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS and CBLAS)" ON)
+option(BUILD_DEBUG "Build Debug Version" OFF)
+#######
+if(BUILD_WITHOUT_LAPACK)
+set(NO_LAPACK 1)
+endif()
+
+if(BUILD_DEBUG)
+set(CMAKE_BUILD_TYPE Debug)
+else()
+set(CMAKE_BUILD_TYPE Release)
+endif()
+#######
+
 
 message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only x86 support is currently available.")
 
@@ -32,6 +51,7 @@ endif ()
 
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
+  message ("error 1")
   list(APPEND SUBDIRS lapack)
 endif ()
 
@@ -90,15 +110,29 @@ endforeach ()
 
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
-if (NOT NOFORTRAN)
+if (NOT NOFORTRAN AND NOT NO_LAPACK)
+  message ("error 2")
   include("${CMAKE_SOURCE_DIR}/cmake/lapack.cmake")
-endif ()
 if (NOT NO_LAPACKE)
   include("${CMAKE_SOURCE_DIR}/cmake/lapacke.cmake")
 endif ()
+endif ()
 
 # add objects to the openblas lib
-add_library(openblas ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
+add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
+
+#only build shared library for MSVC
+if(NOT MSVC)
+add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
+set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
+set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+endif()
+
+set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 
+  VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
+  SOVERSION ${OpenBLAS_MAJOR_VERSION}
+)
+
 
 # TODO: Why is the config saved here? Is this necessary with CMake?
 #Save the config files for installation

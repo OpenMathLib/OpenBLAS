@@ -16,8 +16,9 @@ else ()
 endif ()
 
 SetDefaultL1()
-ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
+SetDefaultL2()
 ParseMakefileVars("${KERNELDIR}/KERNEL")
+ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
 
 if (${ARCH} STREQUAL "x86")
   GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
@@ -67,7 +68,6 @@ foreach (float_type ${FLOAT_TYPES})
 endforeach ()
 
 # Makefile.L2
-SetDefaultL2()
 GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "" 1 "" "" 3)
 GenerateNamedObjects("generic/ger.c" "" "ger_k" false "" "" "" 3)
 foreach (float_type ${FLOAT_TYPES})

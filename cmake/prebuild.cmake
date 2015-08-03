@@ -79,10 +79,10 @@ try_compile(GETARCH_RESULT ${GETARCH_DIR}
 message(STATUS "Running getarch")
 
 # use the cmake binary w/ the -E param to run a shell command in a cross-platform way
-execute_process(COMMAND ${GETARCH_BIN} 0 OUTPUT_VARIABLE GETARCH_MAKE_OUT)
-execute_process(COMMAND ${GETARCH_BIN} 1 OUTPUT_VARIABLE GETARCH_CONF_OUT)
+execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH_BIN} 0 OUTPUT_VARIABLE GETARCH_MAKE_OUT)
+execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH_BIN} 1 OUTPUT_VARIABLE GETARCH_CONF_OUT)
 
-#message(STATUS "GETARCH results:\n${GETARCH_MAKE_OUT}")
+message(STATUS "GETARCH results:\n${GETARCH_MAKE_OUT}")
 
 # append config data from getarch to the TARGET file and read in CMake vars
 file(APPEND ${TARGET_CONF} ${GETARCH_CONF_OUT})
@@ -99,8 +99,8 @@ try_compile(GETARCH2_RESULT ${GETARCH2_DIR}
 )
 
 # use the cmake binary w/ the -E param to run a shell command in a cross-platform way
-execute_process(COMMAND ${GETARCH2_BIN} 0 OUTPUT_VARIABLE GETARCH2_MAKE_OUT)
-execute_process(COMMAND ${GETARCH2_BIN} 1 OUTPUT_VARIABLE GETARCH2_CONF_OUT)
+execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH2_BIN} 0 OUTPUT_VARIABLE GETARCH2_MAKE_OUT)
+execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH2_BIN} 1 OUTPUT_VARIABLE GETARCH2_CONF_OUT)
 
 # append config data from getarch_2nd to the TARGET file and read in CMake vars
 file(APPEND ${TARGET_CONF} ${GETARCH2_CONF_OUT})
