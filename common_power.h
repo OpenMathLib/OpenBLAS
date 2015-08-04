@@ -495,6 +495,15 @@ static inline int blas_quickdivide(blasint x, blasint y){
 REALNAME:
 #define EPILOGUE	.size	REALNAME, .-REALNAME
 #else
+#if _CALL_ELF == 2
+#define PROLOGUE \
+	.section .text;\
+	.align 6;\
+	.globl	REALNAME;\
+	.type	REALNAME, @function;\
+REALNAME:
+#define EPILOGUE	.size	REALNAME, .-REALNAME
+#else
 #define PROLOGUE \
 	.section .text;\
 	.align 5;\
@@ -513,6 +522,7 @@ REALNAME:;\
 	.byte 0,0,0,1,128,0,0,0 ; \
 	.size	.REALNAME, .-.REALNAME; \
 	.section	.note.GNU-stack,"",@progbits
+#endif
 #endif
 
 #ifdef PROFILE
@@ -792,4 +802,25 @@ Lmcount$lazy_ptr:
 #ifndef MAP_ANONYMOUS
 #define MAP_ANONYMOUS MAP_ANON
 #endif
+
+#ifdef OS_LINUX
+#ifndef __64BIT__
+#define FRAMESLOT(X) (((X) * 4) + 8)
+#else
+#if _CALL_ELF == 2
+#define FRAMESLOT(X) (((X) * 8) + 96)
+#else
+#define FRAMESLOT(X) (((X) * 8) + 112)
+#endif
+#endif
+#endif
+
+#if defined(OS_AIX) || defined(OS_DARWIN)
+#ifndef __64BIT__
+#define FRAMESLOT(X) (((X) * 4) + 56)
+#else
+#define FRAMESLOT(X) (((X) * 8) + 112)
+#endif
+#endif
+
 #endif
