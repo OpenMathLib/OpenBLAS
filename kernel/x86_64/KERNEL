@@ -440,10 +440,18 @@ XGEMMITCOPYOBJ =
 XGEMMONCOPYOBJ =  xgemm_oncopy$(TSUFFIX).$(SUFFIX)
 XGEMMOTCOPYOBJ =  xgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+ifndef SGEMM_BETA
 SGEMM_BETA = gemm_beta.S
+endif
+ifndef DGEMM_BETA
 DGEMM_BETA = gemm_beta.S
+endif
+ifndef CGEMM_BETA
 CGEMM_BETA = zgemm_beta.S
+endif
+ifndef ZGEMM_BETA
 ZGEMM_BETA = zgemm_beta.S
+endif
 QGEMM_BETA = ../generic/gemm_beta.c
 XGEMM_BETA = ../generic/zgemm_beta.c
 

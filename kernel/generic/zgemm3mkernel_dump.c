@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013, The OpenBLAS Project
+Copyright (c) 2011-2015, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -13,6 +13,7 @@ distribution.
 3. Neither the name of the OpenBLAS project nor the names of
 its contributors may be used to endorse or promote products
 derived from this software without specific prior written permission.
+
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -25,35 +26,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-/**************************************************************************************
-* 2013/09/14 Saar
-*	 BLASTEST float		: OK
-* 	 BLASTEST double	: OK
-* 	 CTEST			: OK
-* 	 TEST			: OK
-*
-**************************************************************************************/
-
 #include "common.h"
 
-int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
+int CNAME(BLASLONG bm, BLASLONG bn, BLASLONG bk, FLOAT alphar, FLOAT alphai, FLOAT * ba, FLOAT * bb, FLOAT * C, BLASLONG ldc)
 {
-	BLASLONG i=0,j=0;
-
-	while(j < n)
-	{
-
-		if ( da == 0.0 )
-			x[i]=0.0;
-		else
-			x[i] = da * x[i] ;
-
-		i += inc_x ;
-		j++;
-
-	}
-	return 0;
-
+  return 0;
 }
-
-

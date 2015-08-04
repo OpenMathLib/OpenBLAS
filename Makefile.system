@@ -336,6 +336,11 @@ ifeq ($(ARCH), x86)
 ifndef BINARY
 NO_BINARY_MODE	= 1
 endif
+
+ifeq ($(CORE), generic)
+NO_EXPRECISION = 1
+endif
+
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
 # ifeq logical or. GCC or LSB
@@ -354,6 +359,11 @@ endif
 endif
 
 ifeq ($(ARCH), x86_64)
+
+ifeq ($(CORE), generic)
+NO_EXPRECISION = 1
+endif
+
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
 # ifeq logical or. GCC or LSB
