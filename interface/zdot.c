@@ -57,19 +57,23 @@
 #ifdef RETURN_BY_STRUCT
 MYTYPE         NAME(                        blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY) {
 #elif defined RETURN_BY_STACK
-void           NAME(FLOAT _Complex *result, blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY) {
+void           NAME(OPENBLAS_COMPLEX_FLOAT *result, blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY) {
 #else
-FLOAT _Complex NAME(                        blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY) {
+OPENBLAS_COMPLEX_FLOAT NAME(                        blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY) {
 #endif
 
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   BLASLONG incy = *INCY;
 #ifndef RETURN_BY_STACK
-  FLOAT _Complex ret;
+  OPENBLAS_COMPLEX_FLOAT ret;
 #endif
 #ifdef RETURN_BY_STRUCT
   MYTYPE  myret;
+#endif
+
+#ifndef RETURN_BY_STRUCT
+  OPENBLAS_COMPLEX_FLOAT zero=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0, 0.0);
 #endif
 
   PRINT_DEBUG_NAME;
@@ -80,10 +84,10 @@ FLOAT _Complex NAME(                        blasint *N, FLOAT *x, blasint *INCX,
     myret.i = 0.;
     return myret;
 #elif defined RETURN_BY_STACK
-    *result = ZERO;
+    *result = zero;
     return;
 #else
-    return ZERO;
+    return zero;
 #endif
   }
 
@@ -144,21 +148,21 @@ FLOAT _Complex NAME(                        blasint *N, FLOAT *x, blasint *INCX,
 #else
 
 #ifdef FORCE_USE_STACK
-void           CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy, FLOAT _Complex *result){
+void           CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy, OPENBLAS_COMPLEX_FLOAT *result){
 #else
-FLOAT _Complex CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
+OPENBLAS_COMPLEX_FLOAT CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
 
-  FLOAT _Complex ret;
+  OPENBLAS_COMPLEX_FLOAT ret;
 #endif
 
   PRINT_DEBUG_CNAME;
 
   if (n <= 0) {
 #ifdef FORCE_USE_STACK
-    *result = ZERO;
+    *result = OPENBLAS_MAKE_COMPLEX_FLOAT(0.0, 0.0);
     return;
 #else
-    return ZERO;
+    return OPENBLAS_MAKE_COMPLEX_FLOAT(0.0, 0.0);
 #endif
   }
 

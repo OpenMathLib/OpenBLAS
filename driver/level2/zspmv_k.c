@@ -49,7 +49,8 @@ int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i,
   FLOAT *gemvbuffer = (FLOAT *)buffer;
   FLOAT *bufferY    = gemvbuffer;
   FLOAT *bufferX    = gemvbuffer;
-  FLOAT _Complex result;
+
+  OPENBLAS_COMPLEX_FLOAT result;
 
   if (incy != 1) {
     Y = bufferY;

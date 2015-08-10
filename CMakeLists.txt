@@ -15,11 +15,13 @@ enable_language(C)
 set(OpenBLAS_LIBNAME openblas)
 
 #######
-option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS and CBLAS)" ON)
+option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
+option(BUILD_WITHOUT_CBLAS "Without CBLAS" ON)
 option(BUILD_DEBUG "Build Debug Version" OFF)
 #######
 if(BUILD_WITHOUT_LAPACK)
 set(NO_LAPACK 1)
+set(NO_LAPACKE 1)
 endif()
 
 if(BUILD_DEBUG)
@@ -27,6 +29,11 @@ set(CMAKE_BUILD_TYPE Debug)
 else()
 set(CMAKE_BUILD_TYPE Release)
 endif()
+
+if(BUILD_WITHOUT_CBLAS)
+set(NO_CBLAS 1)
+endif()
+
 #######
 
 
@@ -51,7 +58,6 @@ endif ()
 
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
-  message ("error 1")
   list(APPEND SUBDIRS lapack)
 endif ()
 
@@ -111,15 +117,21 @@ endforeach ()
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
 if (NOT NOFORTRAN AND NOT NO_LAPACK)
-  message ("error 2")
   include("${CMAKE_SOURCE_DIR}/cmake/lapack.cmake")
 if (NOT NO_LAPACKE)
   include("${CMAKE_SOURCE_DIR}/cmake/lapacke.cmake")
 endif ()
 endif ()
 
+#Only generate .def for dll on MSVC
+if(MSVC)
+set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
+endif()
+
 # add objects to the openblas lib
-add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
+add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${PROJECT_BINARY_DIR}/openblas.def)
+
+include("${CMAKE_SOURCE_DIR}/cmake/export.cmake")
 
 #only build shared library for MSVC
 if(NOT MSVC)

@@ -42,11 +42,13 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
 	FLOAT temp[2];
+	BLASLONG inc_x2;
+	BLASLONG inc_y2;
 
 	if ( n < 0     )  return(0);
 
-	BLASLONG inc_x2 = 2 * inc_x;
-	BLASLONG inc_y2 = 2 * inc_y;
+	inc_x2 = 2 * inc_x;
+	inc_y2 = 2 * inc_y;
 
 	while(i < n)
 	{

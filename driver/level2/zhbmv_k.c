@@ -56,6 +56,8 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
   FLOAT *bufferX    = sbmvbuffer;
   FLOAT temp[2];
 
+  OPENBLAS_COMPLEX_FLOAT result;
+
   if (incy != 1) {
     Y = bufferY;
     bufferX    = (FLOAT *)(((BLASLONG)bufferY + n * sizeof(FLOAT) * COMPSIZE + 4095) & ~4095);
@@ -93,7 +95,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
     Y[i * 2 + 1] +=  alpha_r * temp[1] + alpha_i * temp[0];
 
     if (length > 0) {
-      FLOAT _Complex result = DOTC_K(length, a + offset * COMPSIZE, 1, X + (i - length) * COMPSIZE, 1);
+      result = DOTC_K(length, a + offset * COMPSIZE, 1, X + (i - length) * COMPSIZE, 1);
 
       Y[i * 2 + 0] += alpha_r * CREAL(result) - alpha_i * CIMAG(result);
       Y[i * 2 + 1] += alpha_r * CIMAG(result) + alpha_i * CREAL(result);
@@ -118,7 +120,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
     Y[i * 2 + 1] +=  alpha_r * temp[1] + alpha_i * temp[0];
 
     if (length > 0) {
-      FLOAT _Complex result = DOTC_K(length, a + COMPSIZE, 1, X + (i + 1) * COMPSIZE, 1);
+      result = DOTC_K(length, a + COMPSIZE, 1, X + (i + 1) * COMPSIZE, 1);
 
       Y[i * 2 + 0] += alpha_r * CREAL(result) - alpha_i * CIMAG(result);
       Y[i * 2 + 1] += alpha_r * CIMAG(result) + alpha_i * CREAL(result);
@@ -143,7 +145,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
     Y[i * 2 + 1] +=  alpha_r * temp[1] + alpha_i * temp[0];
 
     if (length > 0) {
-      FLOAT _Complex result = DOTU_K(length, a + offset * COMPSIZE, 1, X + (i - length) * COMPSIZE, 1);
+      result = DOTU_K(length, a + offset * COMPSIZE, 1, X + (i - length) * COMPSIZE, 1);
 
       Y[i * 2 + 0] +=   alpha_r * CREAL(result) - alpha_i * CIMAG(result);
       Y[i * 2 + 1] +=  alpha_r * CIMAG(result) + alpha_i * CREAL(result);
@@ -168,7 +170,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
     Y[i * 2 + 1] +=  alpha_r * temp[1] + alpha_i * temp[0];
 
     if (length > 0) {
-      FLOAT _Complex result = DOTU_K(length, a + COMPSIZE, 1, X + (i + 1) * COMPSIZE, 1);
+      result = DOTU_K(length, a + COMPSIZE, 1, X + (i + 1) * COMPSIZE, 1);
 
       Y[i * 2 + 0] += alpha_r * CREAL(result) - alpha_i * CIMAG(result);
       Y[i * 2 + 1] += alpha_r * CIMAG(result) + alpha_i * CREAL(result);

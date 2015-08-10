@@ -420,6 +420,21 @@ if (ONLY_CBLAS)
   set(LIB_COMPONENTS CBLAS)
 endif ()
 
+
+# For GEMM3M
+set(USE_GEMM3M 0)
+
+if (DEFINED ARCH)
+  if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64" OR ${ARCH} STREQUAL "ia64" OR ${ARCH} STREQUAL "MIPS")
+    set(USE_GEMM3M 1)
+  endif ()
+
+  if (${CORE} STREQUAL "generic")
+    set(USE_GEMM3M 0)
+  endif ()
+endif ()
+
+
 #export OSNAME
 #export ARCH
 #export CORE

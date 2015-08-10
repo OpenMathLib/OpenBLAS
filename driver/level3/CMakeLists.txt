@@ -1,13 +1,5 @@
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(USE_GEMM3M 0)
-
-if (DEFINED ARCH)
-  if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64" OR ${ARCH} STREQUAL "ia64" OR ${ARCH} STREQUAL "MIPS")
-    set(USE_GEMM3M 1)
-  endif ()
-endif ()
-
 # N.B. In the original makefile there was a BLOCKS define used in the compilation of these files but I don't see any evidence of it being set anywhere. -hpa
 
 # loop through gemm.c defines
@@ -54,12 +46,41 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateCombinationObjects("trsm_L.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trsm_LC" false ${float_type})
     GenerateCombinationObjects("trsm_R.c" "UPPER;UNIT" "L;N" "CONJ" 0 "trsm_RR" false ${float_type})
     GenerateCombinationObjects("trsm_R.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trsm_RC" false ${float_type})
+
+    #hemm
+    GenerateCombinationObjects("zhemm_k.c" "LOWER" "U" "NN" 0 "hemm_L" false ${float_type})
+    GenerateCombinationObjects("zhemm_k.c" "LOWER" "U" "NC;RSIDE" 0 "hemm_R" false ${float_type})
+
+    #her2k
+    GenerateCombinationObjects("zher2k_kernel.c" "LOWER;CONJ" "U;N" "" 2 "her2k_kernel" false ${float_type})
+    GenerateNamedObjects("zher2k_k.c" "HER2K" "her2k_UN" false "" "" false ${float_type})
+    GenerateNamedObjects("zher2k_k.c" "HER2K;TRANS;CONJ" "her2k_UC" false "" "" false ${float_type})
+    GenerateNamedObjects("zher2k_k.c" "HER2K;LOWER" "her2k_LN" false "" "" false ${float_type})
+    GenerateNamedObjects("zher2k_k.c" "HER2K;LOWER;TRANS;CONJ" "her2k_LC" false "" "" false ${float_type})
+
+    if (SMP AND NOT USE_SIMPLE_THREADED_LEVEL3)
+      #hemm
+      GenerateCombinationObjects("zhemm_k.c" "LOWER" "U" "NN;THREADED_LEVEL3" 0 "hemm_thread_L" false ${float_type})
+      GenerateCombinationObjects("zhemm_k.c" "LOWER" "U" "NC;RSIDE;THREADED_LEVEL3" 0 "hemm_thread_R" false ${float_type})
+      #her2k
+      GenerateNamedObjects("zher2k_k.c" "HER2K" "her2k_UN" false "" "" false ${float_type})
+      GenerateNamedObjects("zher2k_k.c" "HER2K;TRANS;CONJ" "her2k_UC" false "" "" false ${float_type})
+      GenerateNamedObjects("zher2k_k.c" "HER2K;LOWER" "her2k_LN" false "" "" false ${float_type})
+      GenerateNamedObjects("zher2k_k.c" "HER2K;LOWER;TRANS;CONJ" "her2k_LC" false "" "" false ${float_type})
+    endif()
+
     # special gemm defines for complex
     foreach (gemm_define ${GEMM_COMPLEX_DEFINES})
       string(TOLOWER ${gemm_define} gemm_define_LC)
       GenerateNamedObjects("gemm.c" "${gemm_define}" "gemm_${gemm_define_LC}" false "" "" false ${float_type})
+      if(USE_GEMM3M)
+	GenerateNamedObjects("gemm3m.c" "${gemm_define}" "gemm3m_${gemm_define_LC}" false "" "" false ${float_type})
+      endif()
       if (SMP AND NOT USE_SIMPLE_THREADED_LEVEL3)
         GenerateNamedObjects("gemm.c" "${gemm_define};THREADED_LEVEL3" "gemm_thread_${gemm_define_LC}" false "" "" false ${float_type})
+	if(USE_GEMM3M)
+	  GenerateNamedObjects("gemm3m.c" "${gemm_define};THREADED_LEVEL3" "gemm3m_thread_${gemm_define_LC}" false "" "" false ${float_type})
+	endif()
       endif ()
     endforeach ()
   endif ()

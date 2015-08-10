@@ -1,13 +1,16 @@
 
 include_directories(${CMAKE_SOURCE_DIR})
 
+
 set(BLAS1_SOURCES
   copy.c
-  asum.c nrm2.c
+  nrm2.c
 )
 
 set(BLAS1_REAL_ONLY_SOURCES
   rotm.c rotmg.c # N.B. these do not have complex counterparts
+  rot.c
+  asum.c
 )
 
 # these will have 'z' prepended for the complex version
@@ -15,7 +18,7 @@ set(BLAS1_MANGLED_SOURCES
   axpy.c swap.c
   scal.c
   dot.c
-  rot.c rotg.c
+  rotg.c
   axpby.c
 )
 
@@ -31,6 +34,13 @@ set(BLAS2_SOURCES
   tpsv.c tpmv.c
 )
 
+set(BLAS2_COMPLEX_ONLY_MANGLED_SOURCES
+  hemv.c hbmv.c
+  her.c her2.c
+  hpmv.c hpr.c
+  hpr2.c
+)
+
 # these do not have separate 'z' sources
 set(BLAS3_SOURCES
   gemm.c symm.c
@@ -39,6 +49,7 @@ set(BLAS3_SOURCES
 
 set(BLAS3_MANGLED_SOURCES
   omatcopy.c imatcopy.c
+  geadd.c
 )
 
 # generate the BLAS objs once with and once without cblas
@@ -65,8 +76,13 @@ foreach (CBLAS_FLAG ${CBLAS_FLAGS})
   GenerateNamedObjects("${BLAS1_REAL_ONLY_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false 1)
   GenerateNamedObjects("${BLAS1_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
   GenerateNamedObjects("${BLAS2_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
+  GenerateNamedObjects("${BLAS2_COMPLEX_ONLY_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false 4)
   GenerateNamedObjects("${BLAS3_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${DISABLE_COMPLEX})
   GenerateNamedObjects("${BLAS3_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
+
+  #sdsdot, dsdot
+  GenerateNamedObjects("sdsdot.c" "" "sdsdot" ${CBLAS_FLAG} "" "" true "SINGLE")
+  GenerateNamedObjects("dsdot.c" "" "dsdot" ${CBLAS_FLAG} "" "" true "SINGLE")
 
   # trmm is trsm with a compiler flag set
   GenerateNamedObjects("trsm.c" "TRMM" "trmm" ${CBLAS_FLAG})
@@ -86,17 +102,36 @@ endforeach ()
 
 # complex-specific sources
 foreach (float_type ${FLOAT_TYPES})
+
   if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
     GenerateNamedObjects("zger.c" "" "geru" false "" "" false ${float_type})
     GenerateNamedObjects("zger.c" "CONJ" "gerc" false "" "" false ${float_type})
+    GenerateNamedObjects("zdot.c" "CONJ" "dotc" false "" "" false ${float_type})
+    GenerateNamedObjects("zdot.c" "" "dotu" false "" "" false ${float_type})
+
+    GenerateNamedObjects("symm.c" "HEMM" "hemm" false "" "" false ${float_type})
+    GenerateNamedObjects("syrk.c" "HEMM" "herk" false "" "" false ${float_type})
+    GenerateNamedObjects("syr2k.c" "HEMM" "her2k" false "" "" false ${float_type})
+
+    if (USE_GEMM3M)
+      GenerateNamedObjects("gemm.c" "GEMM3M" "gemm3m" false "" "" false ${float_type})
+    endif()
   endif ()
   if (${float_type} STREQUAL "COMPLEX")
     GenerateNamedObjects("zscal.c" "SSCAL" "sscal" false "" "" false "COMPLEX")
     GenerateNamedObjects("nrm2.c" "" "scnrm2" false "" "" true "COMPLEX")
+    GenerateNamedObjects("zrot.c" "" "csrot" false "" "" true "COMPLEX")
+    GenerateNamedObjects("max.c" "USE_ABS;USE_MIN" "scamin" false "" "" true "COMPLEX")
+    GenerateNamedObjects("max.c" "USE_ABS" "scamax" false "" "" true "COMPLEX")
+    GenerateNamedObjects("asum.c" "" "scasum" false "" "" true "COMPLEX")
   endif ()
   if (${float_type} STREQUAL "ZCOMPLEX")
     GenerateNamedObjects("zscal.c" "SSCAL" "dscal" false "" "" false "ZCOMPLEX")
     GenerateNamedObjects("nrm2.c" "" "dznrm2" false "" "" true "ZCOMPLEX")
+    GenerateNamedObjects("zrot.c" "" "zdrot" false "" "" true "ZCOMPLEX")
+    GenerateNamedObjects("max.c" "USE_ABS;USE_MIN" "dzamin" false "" "" true "ZCOMPLEX")
+    GenerateNamedObjects("max.c" "USE_ABS" "dzamax" false "" "" true "ZCOMPLEX")
+    GenerateNamedObjects("asum.c" "" "dzasum" false "" "" true "ZCOMPLEX")
   endif ()
 endforeach ()
 

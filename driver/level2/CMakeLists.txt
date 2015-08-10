@@ -46,12 +46,28 @@ set(NU_SMP_SOURCES
   tbmv_thread.c
 )
 
+set(ULVM_COMPLEX_SOURCES
+  hbmv_k.c
+  hpmv_k.c
+  hpr_k.c
+  hpr2_k.c
+  her_k.c
+  her2_k.c
+)
+
 # objects that need LOWER set
 GenerateCombinationObjects("${UL_SOURCES}" "LOWER" "U" "" 1 "" "" 3)
 
 # gbmv uses a lowercase n and t
 GenerateNamedObjects("gbmv_k.c" "" "gbmv_n" false "" "" "" 3)
 GenerateNamedObjects("gbmv_k.c" "TRANS" "gbmv_t" false "" "" "" 3)
+# c/zgbmv 
+GenerateNamedObjects("zgbmv_k.c" "CONJ" "gbmv_r" false "" "" "" 2)
+GenerateNamedObjects("zgbmv_k.c" "TRANS;CONJ" "gbmv_c" false "" "" "" 2)
+GenerateNamedObjects("zgbmv_k.c" "XCONJ" "gbmv_o" false "" "" "" 2)
+GenerateNamedObjects("zgbmv_k.c" "TRANS;XCONJ" "gbmv_u" false "" "" "" 2)
+GenerateNamedObjects("zgbmv_k.c" "CONJ;XCONJ" "gbmv_s" false "" "" "" 2)
+GenerateNamedObjects("zgbmv_k.c" "TRANS;CONJ;XCONJ" "gbmv_d" false "" "" "" 2)
 
 # special defines for complex
 foreach (float_type ${FLOAT_TYPES})
@@ -82,6 +98,14 @@ foreach (float_type ${FLOAT_TYPES})
       GenerateCombinationObjects("z${l_source}" "UNIT" "N" "TRANSA=4" 0 "${op_name}_CU" false ${float_type})
     endforeach ()
 
+    foreach (ulvm_source ${ULVM_COMPLEX_SOURCES})
+      string(REGEX MATCH "[a-z0-9]+" op_name ${ulvm_source})
+      GenerateNamedObjects("z${ulvm_source}" "" "${op_name}_U" false "" "" false ${float_type})
+      GenerateNamedObjects("z${ulvm_source}" "LOWER" "${op_name}_L" false "" "" false ${float_type})
+      GenerateNamedObjects("z${ulvm_source}" "HEMVREV" "${op_name}_V" false "" "" false ${float_type})
+      GenerateNamedObjects("z${ulvm_source}" "LOWER;HEMVREV" "${op_name}_M" false "" "" false ${float_type})
+    endforeach()
+
     if (SMP)
 
       GenerateNamedObjects("gemv_thread.c" "CONJ" "gemv_thread_r" false "" "" false ${float_type})
@@ -102,6 +126,41 @@ foreach (float_type ${FLOAT_TYPES})
       GenerateNamedObjects("ger_thread.c" "CONJ" "ger_thread_C" false "" "" false ${float_type})
       GenerateNamedObjects("ger_thread.c" "XCONJ" "ger_thread_V" false "" "" false ${float_type})
       GenerateNamedObjects("ger_thread.c" "XCONJ;CONJ" "ger_thread_D" false "" "" false ${float_type})
+
+      GenerateNamedObjects("sbmv_thread.c" "HEMV" "hbmv_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("sbmv_thread.c" "HEMV;LOWER" "hbmv_thread_L" false "" "" false ${float_type})
+      GenerateNamedObjects("sbmv_thread.c" "HEMVREV" "hbmv_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("sbmv_thread.c" "LOWER;HEMVREV" "hbmv_thread_M" false "" "" false ${float_type})
+
+      GenerateNamedObjects("spmv_thread.c" "HEMV" "hpmv_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("spmv_thread.c" "HEMV;LOWER" "hpmv_thread_L" false "" "" false ${float_type})
+      GenerateNamedObjects("spmv_thread.c" "HEMVREV" "hpmv_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("spmv_thread.c" "LOWER;HEMVREV" "hpmv_thread_M" false "" "" false ${float_type})
+
+      GenerateNamedObjects("spr_thread.c" "HEMV" "hpr_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("spr_thread.c" "HEMV;LOWER" "hpr_thread_L" false "" "" false ${float_type})
+      GenerateNamedObjects("spr_thread.c" "HEMVREV" "hpr_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("spr_thread.c" "LOWER;HEMVREV" "hpr_thread_M" false "" "" false ${float_type})
+
+      GenerateNamedObjects("spr2_thread.c" "HEMV" "hpr2_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("spr2_thread.c" "HEMV;LOWER" "hpr2_thread_L" false "" "" false ${float_type})
+      GenerateNamedObjects("spr2_thread.c" "HEMVREV" "hpr2_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("spr2_thread.c" "LOWER;HEMVREV" "hpr2_thread_M" false "" "" false ${float_type})
+
+      GenerateNamedObjects("symv_thread.c" "HEMV" "hemv_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("symv_thread.c" "HEMV;LOWER" "hemv_thread_L" false "" "" false ${float_type})
+      GenerateNamedObjects("symv_thread.c" "HEMVREV" "hemv_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("symv_thread.c" "LOWER;HEMVREV" "hemv_thread_M" false "" "" false ${float_type})
+
+      GenerateNamedObjects("syr_thread.c" "HER" "her_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("syr_thread.c" "HER;LOWER" "her_thread_L" false "" "" false ${float_type})
+      GenerateNamedObjects("syr_thread.c" "HEMVREV" "her_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("syr_thread.c" "LOWER;HEMVREV" "her_thread_M" false "" "" false ${float_type})
+
+      GenerateNamedObjects("syr2_thread.c" "HER2" "her2_thread_U" false "" "" false ${float_type})
+      GenerateNamedObjects("syr2_thread.c" "HER2;LOWER" "her2_thread_L" false "" "" false ${float_type})
+      GenerateNamedObjects("syr2_thread.c" "HEMVREV" "her2_thread_V" false "" "" false ${float_type})
+      GenerateNamedObjects("syr2_thread.c" "LOWER;HEMVREV" "her2_thread_M" false "" "" false ${float_type})
 
       foreach (nu_smp_src ${NU_SMP_SOURCES})
         string(REGEX MATCH "[a-z]+_[a-z]+" op_name ${nu_smp_src})

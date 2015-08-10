@@ -25,7 +25,10 @@ if (MSVC)
   include(CMakeForceCompiler)
   CMAKE_FORCE_Fortran_COMPILER(gfortran GNU)
 endif ()
+
+if (NOT NO_LAPACK)
 enable_language(Fortran)
+endif()
 
 if (NOT ONLY_CBLAS)
   # N.B. f_check is not cross-platform, so instead try to use CMake variables

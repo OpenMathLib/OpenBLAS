@@ -40,24 +40,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <complex.h>
 FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 #else
-openblas_complex_double CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 #endif
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
 	FLOAT dot[2];
-	FLOAT _Complex result;
+	OPENBLAS_COMPLEX_FLOAT result;
+	BLASLONG inc_x2;
+	BLASLONG inc_y2;
 
 	dot[0]=0.0;
 	dot[1]=0.0;
 
-	__real__ result = 0.0 ;
-	__imag__ result = 0.0 ;
+	CREAL(result) = 0.0 ;
+	CIMAG(result) = 0.0 ;
 
 	if ( n < 1 )  return(result);
 
-	BLASLONG inc_x2 = 2 * inc_x ;
-	BLASLONG inc_y2 = 2 * inc_y ;
+	inc_x2 = 2 * inc_x ;
+	inc_y2 = 2 * inc_y ;
 
 	while(i < n)
 	{
@@ -73,8 +75,8 @@ openblas_complex_double CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BL
 		i++ ;
 
 	}
-	__real__ result = dot[0];
-	__imag__ result = dot[1];
+	CREAL(result) = dot[0];
+	CIMAG(result) = dot[1];
 	return(result);
 
 }

@@ -3459,7 +3459,7 @@ ifndef DGEADD_K
 DGEADD_K = ../generic/geadd.c
 endif
 
-$(KDIR)dgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEADD_K)
+$(KDIR)dgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEADD_K)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -UROWM $< -o $@
 
 ifndef CGEADD_K

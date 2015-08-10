@@ -17,6 +17,7 @@ endif ()
 
 SetDefaultL1()
 SetDefaultL2()
+SetDefaultL3()
 ParseMakefileVars("${KERNELDIR}/KERNEL")
 ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
 
@@ -65,7 +66,19 @@ foreach (float_type ${FLOAT_TYPES})
   else ()
     GenerateNamedObjects("${KERNELDIR}/${${float_char}DOTKERNEL}" "" "dot_k" false "" "" false ${float_type})
   endif ()
+
+  if (${float_type} STREQUAL "COMPLEX")
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}ROTKERNEL}" "" "srot_k" false "" "" false ${float_type})
+  endif()
+  if (${float_type} STREQUAL "ZCOMPLEX")
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}ROTKERNEL}" "" "drot_k" false "" "" false ${float_type})
+  endif()
+
 endforeach ()
+
+#dsdot,sdsdot
+GenerateNamedObjects("${KERNELDIR}/${DSDOTKERNEL}" "DSDOT" "d*dot_k" false "" "" false "SINGLE")
+GenerateNamedObjects("${KERNELDIR}/${DSDOTKERNEL}" "DSDOT" "dsdot_k" false "" "" false "SINGLE")
 
 # Makefile.L2
 GenerateCombinationObjects("generic/symv_k.c" "LOWER" "U" "" 1 "" "" 3)
@@ -86,6 +99,12 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMVTKERNEL}" "XCONJ;TRANSA" "gemv_u" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMVNKERNEL}" "XCONJ;CONJ" "gemv_s" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMVTKERNEL}" "XCONJ;CONJ;TRANSA" "gemv_d" false "" "" false ${float_type})
+
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}HEMV_U_KERNEL}" "HEMV" "hemv_U" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}HEMV_L_KERNEL}" "HEMV;LOWER" "hemv_L" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}HEMV_V_KERNEL}" "HEMV;HEMVREV" "hemv_V" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}HEMV_M_KERNEL}" "HEMV;HEMVREV;LOWER" "hemv_M" false "" "" false ${float_type})
+
   else ()
     GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMVNKERNEL}" "" "gemv_n" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMVTKERNEL}" "TRANS" "gemv_t" false "" "" false ${float_type})
@@ -93,14 +112,9 @@ foreach (float_type ${FLOAT_TYPES})
 endforeach ()
 
 # Makefile.L3
-set(USE_GEMM3M false)
 set(USE_TRMM false)
 
-if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64" OR ${ARCH} STREQUAL "ia64" OR ${ARCH} STREQUAL "MIPS")
-  set(USE_GEMM3M true)
-endif ()
-
-if (${ARCH} STREQUAL "arm" OR ${ARCH} STREQUAL "arm64" OR "${TARGET}" STREQUAL "LONGSOON3B" OR "${TARGET}" STREQUAL "GENERIC")
+if (${ARCH} STREQUAL "arm" OR ${ARCH} STREQUAL "arm64" OR "${TARGET}" STREQUAL "LONGSOON3B" OR "${TARGET}" STREQUAL "GENERIC" OR "${CORE}" STREQUAL "generic")
   set(USE_TRMM true)
 endif ()
 
@@ -154,6 +168,13 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LT}" "UPPER;LT;TRSMKERNEL;CONJ" "trsm_kernel_LC" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RN}" "UPPER;RN;TRSMKERNEL;CONJ" "trsm_kernel_RR" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RT}" "UPPER;RN;TRSMKERNEL;CONJ" "trsm_kernel_RC" false "" "" false ${float_type})
+
+
+    #hemm
+  GenerateNamedObjects("generic/zhemm_utcopy_${${float_char}GEMM_UNROLL_M}.c" "" "hemm_iutcopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/zhemm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER" "hemm_iltcopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/zhemm_utcopy_${${float_char}GEMM_UNROLL_N}.c" "OUTER" "hemm_outcopy" false "" "" false ${float_type})
+  GenerateNamedObjects("generic/zhemm_ltcopy_${${float_char}GEMM_UNROLL_N}.c" "OUTER;LOWER" "hemm_oltcopy" false "" "" false ${float_type})
 
   else ()
     GenerateCombinationObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel" false ${float_type})
@@ -241,11 +262,40 @@ foreach (float_type ${FLOAT_TYPES})
     endif ()
   endif ()
 
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CN}" "" "domatcopy_k_cn" false "" "" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RN}" "ROWM" "domatcopy_k_rn" false "" "" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CT}" "" "domatcopy_k_ct" false "" "" false ${float_type})
-  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RT}" "ROWM" "domatcopy_k_rt" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CN}" "" "omatcopy_k_cn" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RN}" "ROWM" "omatcopy_k_rn" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CT}" "" "omatcopy_k_ct" false "" "" false ${float_type})
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RT}" "ROWM" "omatcopy_k_rt" false "" "" false ${float_type})
 
+  if (NOT DEFINED ${float_char}OMATCOPY_CNC)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_CNC ../arm/zomatcopy_cnc.c)
+    endif ()
+  endif ()
+  if (NOT DEFINED ${float_char}OMATCOPY_RNC)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_RNC ../arm/zomatcopy_rnc.c)
+    endif  ()
+  endif ()
+  if (NOT DEFINED ${float_char}OMATCOPY_CTC)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_CTC ../arm/zomatcopy_ctc.c)
+    endif ()
+  endif ()
+  if (NOT DEFINED ${float_char}OMATCOPY_RTC)
+    if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+      set(${float_char}OMATCOPY_RTC ../arm/zomatcopy_rtc.c)
+    endif ()
+  endif ()
+
+  if (${float_char} STREQUAL "Z" OR ${float_char} STREQUAL "C")
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CNC}" "CONJ" "omatcopy_k_cnc" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RNC}" "CONJ;ROWM" "omatcopy_k_rnc" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_CTC}" "CONJ" "omatcopy_k_ctc" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}OMATCOPY_RTC}" "CONJ;ROWM" "omatcopy_k_rtc" false "" "" false ${float_type})
+  endif()
+
+  GenerateNamedObjects("${KERNELDIR}/${${float_char}GEADD_KERNEL}" "" "geadd_k" false "" "" false ${float_type})
 endforeach ()
 
 # Makefile.LA

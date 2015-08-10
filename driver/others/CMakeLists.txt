@@ -33,6 +33,8 @@ set(COMMON_SOURCES
   xerbla.c
   openblas_set_num_threads.c
   openblas_error_handle.c
+  openblas_get_num_procs.c
+  openblas_get_num_threads.c
 )
 
 # these need to have NAME/CNAME set, so use GenerateNamedObjects, but don't use standard name mangling
