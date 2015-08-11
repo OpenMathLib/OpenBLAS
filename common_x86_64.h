@@ -65,7 +65,11 @@
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
+#ifndef C_MSVC
+  int ret;
+#else
   BLASULONG ret;
+#endif
 
   do {
     while (*address) {YIELDING;};

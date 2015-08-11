@@ -15,8 +15,10 @@ enable_language(C)
 set(OpenBLAS_LIBNAME openblas)
 
 #######
+if(MSVC)
 option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
-option(BUILD_WITHOUT_CBLAS "Without CBLAS" ON)
+endif()
+option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
 option(BUILD_DEBUG "Build Debug Version" OFF)
 #######
 if(BUILD_WITHOUT_LAPACK)
@@ -129,15 +131,28 @@ set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
 endif()
 
 # add objects to the openblas lib
-add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${PROJECT_BINARY_DIR}/openblas.def)
+add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
 include("${CMAKE_SOURCE_DIR}/cmake/export.cmake")
 
-#only build shared library for MSVC
+
 if(NOT MSVC)
+#only build shared library for MSVC
 add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
 set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
 set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
+if(SMP)
+target_link_libraries(${OpenBLAS_LIBNAME} pthread)
+target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
+endif()
+
+#build test and ctest
+enable_testing()
+add_subdirectory(test)
+if(NOT NO_CBLAS)
+add_subdirectory(ctest)
+endif()
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 

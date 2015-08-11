@@ -2058,7 +2058,7 @@ endif ()
 # add lapack-netlib folder to the sources
 set(LAPACKE_SOURCES "")
 foreach (LAE_FILE ${LAPACKE_REL_SRC})
-  list(APPEND LAPACKE_SOURCES "${NETLIB_LAPACK_DIR}/lapacke/SRC/${LAE_FILE}")
+  list(APPEND LAPACKE_SOURCES "${NETLIB_LAPACK_DIR}/lapacke/src/${LAE_FILE}")
 endforeach ()
 
 set(lapacke_include_dir "${NETLIB_LAPACK_DIR}/lapacke/include")

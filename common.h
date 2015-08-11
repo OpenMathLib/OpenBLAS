@@ -460,6 +460,9 @@ typedef char* env_var_t;
      (__GNUC__ >= 3 && !defined(__cplusplus)) || \
      _MSC_VER >= 1800) // Visual Studio 2013 supports complex
   #define OPENBLAS_COMPLEX_C99
+#ifndef __cplusplus
+  #include <complex.h>
+#endif
   typedef float _Complex openblas_complex_float;
   typedef double _Complex openblas_complex_double;
   typedef xdouble _Complex openblas_complex_xdouble;

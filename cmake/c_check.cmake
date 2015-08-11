@@ -25,9 +25,14 @@
 # PTHREAD_CREATE_FUNC
 
 # N.B. c_check (and ctest.c) is not cross-platform, so instead try to use CMake variables.
-
-# TODO: detect FU (front underscore) by compiling ctest1.c
+set(FU "")
+if(APPLE)
 set(FU "_")
+elseif(MSVC)
+set(FU "_")
+elseif(UNIX)
+set(FU "")
+endif()
 
 # Convert CMake vars into the format that OpenBLAS expects
 string(TOUPPER ${CMAKE_SYSTEM_NAME} HOST_OS)
