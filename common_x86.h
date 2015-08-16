@@ -65,6 +65,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
   } while (ret);
 
 }
+#define BLAS_LOCK_DEFINED
 
 static __inline unsigned long long rpcc(void){
   unsigned int a, d;
@@ -73,6 +74,7 @@ static __inline unsigned long long rpcc(void){
 
   return ((unsigned long long)a + ((unsigned long long)d << 32));
 };
+#define RPCC_DEFINED
 
 static __inline unsigned long getstackaddr(void){
   unsigned long addr;

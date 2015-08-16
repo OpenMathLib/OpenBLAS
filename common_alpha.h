@@ -76,6 +76,7 @@ static void __inline blas_lock(unsigned long *address){
     "30:", address);
 #endif
 }
+#define BLAS_LOCK_DEFINED
 
 static __inline unsigned int rpcc(void){
 
@@ -89,6 +90,7 @@ static __inline unsigned int rpcc(void){
 
   return r0;
 }
+#define RPCC_DEFINED
 
 
 #define HALT 	ldq	$0, 0($0)

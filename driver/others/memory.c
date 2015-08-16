@@ -1153,6 +1153,9 @@ void blas_memory_free(void *free_area){
   printf("  Position : %d\n", position);
 #endif
 
+  // arm: ensure all writes are finished before other thread takes this memory
+  WMB;
+
   memory[position].used = 0;
 
 #ifdef DEBUG

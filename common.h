@@ -410,7 +410,49 @@ typedef char env_var_t[MAX_PATH];
 typedef char* env_var_t;
 #define readenv(p, n) ((p)=getenv(n))
 #endif
+
+#if !defined(RPCC_DEFINED) && !defined(OS_WINDOWS)
+#ifdef _POSIX_MONOTONIC_CLOCK
+#if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2, 17) // don't require -lrt
+#define USE_MONOTONIC
+#elif defined(OS_ANDROID)
+#define USE_MONOTONIC
 #endif
+#endif
+/* use similar scale as x86 rdtsc for timeouts to work correctly */
+static inline unsigned long long rpcc(void){
+#ifdef USE_MONOTONIC
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return (unsigned long long)ts.tv_sec * 1000000000ull + ts.tv_nsec;
+#else
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  return (unsigned long long)tv.tv_sec * 1000000000ull + tv.tv_usec * 1000;
+#endif
+}
+#define RPCC_DEFINED
+#define RPCC64BIT
+#endif // !RPCC_DEFINED
+
+#if !defined(BLAS_LOCK_DEFINED) && defined(__GNUC__)
+static void __inline blas_lock(volatile BLASULONG *address){
+
+  do {
+    while (*address) {YIELDING;};
+
+  } while (!__sync_bool_compare_and_swap(address, 0, 1));
+}
+#define BLAS_LOCK_DEFINED
+#endif
+
+#ifndef RPCC_DEFINED
+#error "rpcc() implementation is missing for your platform"
+#endif
+#ifndef BLAS_LOCK_DEFINED
+#error "blas_lock() implementation is missing for your platform"
+#endif
+#endif // !ASSEMBLER
 
 #ifdef OS_LINUX
 #include "common_linux.h"

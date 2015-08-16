@@ -425,6 +425,10 @@ static int blas_thread_server(void *arg){
       main_status[cpu] = MAIN_FINISH;
 #endif
 
+      // arm: make sure all results are written out _before_
+      // thread is marked as done and other threads use them
+      WMB;
+
       thread_status[cpu].queue = (blas_queue_t * volatile) ((long)thread_status[cpu].queue & 0);  /* Need a trick */
       WMB;
 
@@ -775,7 +779,12 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   stop = rpcc();
 #endif
 
-  if ((num > 1) && queue -> next) exec_blas_async_wait(num - 1, queue -> next);
+  if ((num > 1) && queue -> next) {
+    exec_blas_async_wait(num - 1, queue -> next);
+
+    // arm: make sure results from other threads are visible
+    MB;
+  }
 
 #ifdef TIMING_DEBUG
   fprintf(STDERR, "Thread[0] : %16lu %16lu (%8lu cycles)\n",

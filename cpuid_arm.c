@@ -192,6 +192,7 @@ void get_cpuconfig(void)
 	{
 	       case CPU_CORTEXA9:
     			printf("#define CORTEXA9\n");
+    			printf("#define ARMV7\n");
     			printf("#define HAVE_VFP\n");
     			printf("#define HAVE_VFPV3\n");
 			if ( get_feature("neon"))	printf("#define HAVE_NEON\n");
@@ -207,6 +208,7 @@ void get_cpuconfig(void)
 
 	       case CPU_CORTEXA15:
     			printf("#define CORTEXA15\n");
+    			printf("#define ARMV7\n");
     			printf("#define HAVE_VFP\n");
     			printf("#define HAVE_VFPV3\n");
 			if ( get_feature("neon"))	printf("#define HAVE_NEON\n");
