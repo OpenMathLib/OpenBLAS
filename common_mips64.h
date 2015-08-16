@@ -118,6 +118,7 @@ static inline unsigned int rpcc(void){
 #endif
   return ret;
 }
+#define RPCC_DEFINED
 
 #if defined(LOONGSON3A) || defined(LOONGSON3B)
 #ifndef NO_AFFINITY

@@ -71,16 +71,6 @@ static void __inline blas_lock(volatile BLASULONG *address){
 }
 
 
-static inline unsigned long long rpcc(void){
-  unsigned long long ret=0;
-  double v;
-  struct timeval tv;
-  gettimeofday(&tv,NULL);
-  v=(double) tv.tv_sec + (double) tv.tv_usec * 1e-6;
-  ret = (unsigned long long) ( v * 1000.0d );
-  return ret;
-}
-
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
 }

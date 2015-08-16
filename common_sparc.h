@@ -66,6 +66,7 @@ static __inline unsigned long rpcc(void){
 
   return clocks;
 };
+#define RPCC_DEFINED
 
 #ifdef __64BIT__
 #define RPCC64BIT

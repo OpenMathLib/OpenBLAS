@@ -73,6 +73,7 @@ static __inline unsigned long long rpcc(void){
 
   return ((unsigned long long)a + ((unsigned long long)d << 32));
 };
+#define RPCC_DEFINED
 
 static __inline unsigned long getstackaddr(void){
   unsigned long addr;

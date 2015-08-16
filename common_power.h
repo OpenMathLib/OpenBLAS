@@ -103,6 +103,7 @@ static inline unsigned long rpcc(void){
 #endif
 
 }
+#define RPCC_DEFINED
 
 #ifdef __64BIT__
 #define RPCC64BIT

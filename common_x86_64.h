@@ -82,6 +82,7 @@ static __inline BLASULONG rpcc(void){
 
   return ((BLASULONG)a + ((BLASULONG)d << 32));
 }
+#define RPCC_DEFINED
 
 #define RPCC64BIT
 

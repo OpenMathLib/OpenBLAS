@@ -75,6 +75,7 @@ static __inline unsigned long rpcc(void) {
   __asm__ __volatile__ ("mov %0=ar.itc" : "=r"(clocks));
   return clocks;
 }
+#define RPCC_DEFINED
 
 
 static __inline unsigned long stmxcsr(void){
@@ -103,6 +104,7 @@ static __inline void blas_lock(volatile unsigned long *address){
 static __inline unsigned int rpcc(void) {
   return __getReg(_IA64_REG_AR_ITC);
 }
+#define RPCC_DEFINED
 
 static __inline unsigned int stmxcsr(void) {
   return __getReg(_IA64_REG_AR_FPSR);

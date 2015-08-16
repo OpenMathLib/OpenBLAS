@@ -89,6 +89,7 @@ static __inline unsigned int rpcc(void){
 
   return r0;
 }
+#define RPCC_DEFINED
 
 
 #define HALT 	ldq	$0, 0($0)

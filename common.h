@@ -410,7 +410,35 @@ typedef char env_var_t[MAX_PATH];
 typedef char* env_var_t;
 #define readenv(p, n) ((p)=getenv(n))
 #endif
+
+#if !defined(RPCC_DEFINED) && !defined(OS_WINDOWS)
+#ifdef _POSIX_MONOTONIC_CLOCK
+#if defined(__GNUC_PREREQ) && __GLIBC_PREREQ(2, 17) // don't require -lrt
+#define USE_MONOTONIC
+#elif defined(OS_ANDROID)
+#define USE_MONOTONIC
 #endif
+#endif
+/* use similar scale as x86 rdtsc for timeouts to work correctly */
+static inline unsigned long long rpcc(void){
+#ifdef USE_MONOTONIC
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return (unsigned long long)ts.tv_sec * 1000000000ull + ts.tv_nsec;
+#else
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  return (unsigned long long)tv.tv_sec * 1000000000ull + tv.tv_usec * 1000;
+#endif
+}
+#define RPCC_DEFINED
+#define RPCC64BIT
+#endif // !RPCC_DEFINED
+
+#ifndef RPCC_DEFINED
+#error "rpcc() implementation is missing for your platform"
+#endif
+#endif // !ASSEMBLER
 
 #ifdef OS_LINUX
 #include "common_linux.h"
