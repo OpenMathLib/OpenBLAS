@@ -413,7 +413,7 @@ typedef char* env_var_t;
 
 #if !defined(RPCC_DEFINED) && !defined(OS_WINDOWS)
 #ifdef _POSIX_MONOTONIC_CLOCK
-#if defined(__GNUC_PREREQ) && __GLIBC_PREREQ(2, 17) // don't require -lrt
+#if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2, 17) // don't require -lrt
 #define USE_MONOTONIC
 #elif defined(OS_ANDROID)
 #define USE_MONOTONIC
