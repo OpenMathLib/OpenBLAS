@@ -98,6 +98,7 @@ static void INLINE blas_lock(volatile unsigned long *address){
 
   } while (ret);
 }
+#define BLAS_LOCK_DEFINED
 
 static inline unsigned int rpcc(void){
   unsigned long ret;

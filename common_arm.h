@@ -51,6 +51,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSEMBLER
 
+#if defined(ARMV6) || defined(ARMV7) || defined(ARMV8)
+
 static void __inline blas_lock(volatile BLASULONG *address){
 
   int register ret;
@@ -71,6 +73,8 @@ static void __inline blas_lock(volatile BLASULONG *address){
   MB;
 }
 
+#define BLAS_LOCK_DEFINED
+#endif
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;

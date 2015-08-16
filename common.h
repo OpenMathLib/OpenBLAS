@@ -435,8 +435,22 @@ static inline unsigned long long rpcc(void){
 #define RPCC64BIT
 #endif // !RPCC_DEFINED
 
+#if !defined(BLAS_LOCK_DEFINED) && defined(__GNUC__)
+static void __inline blas_lock(volatile BLASULONG *address){
+
+  do {
+    while (*address) {YIELDING;};
+
+  } while (!__sync_bool_compare_and_swap(address, 0, 1));
+}
+#define BLAS_LOCK_DEFINED
+#endif
+
 #ifndef RPCC_DEFINED
 #error "rpcc() implementation is missing for your platform"
+#endif
+#ifndef BLAS_LOCK_DEFINED
+#error "blas_lock() implementation is missing for your platform"
 #endif
 #endif // !ASSEMBLER
 

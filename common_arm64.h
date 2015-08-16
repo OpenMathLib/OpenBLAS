@@ -69,6 +69,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
   } while (ret);
 
 }
+#define BLAS_LOCK_DEFINED
 
 
 static inline int blas_quickdivide(blasint x, blasint y){
