@@ -80,7 +80,10 @@ static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
 }
 
-#if defined(DOUBLE)
+#if !defined(HAVE_VFP)
+/* no FPU, soft float */
+#define GET_IMAGE(res)
+#elif defined(DOUBLE)
 #define GET_IMAGE(res)  __asm__ __volatile__("vstr.f64 d1, %0" : "=m"(res) : : "memory")
 #else
 #define GET_IMAGE(res)  __asm__ __volatile__("vstr.f32 s1, %0" : "=m"(res) : : "memory")
