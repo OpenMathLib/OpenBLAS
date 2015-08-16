@@ -124,4 +124,8 @@ REALNAME:
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
+#if !defined(ARMV5) && !defined(ARMV6) && !defined(ARMV7) && !defined(ARMV8)
+#error "you must define ARMV5, ARMV6, ARMV7 or ARMV8"
+#endif
+
 #endif
