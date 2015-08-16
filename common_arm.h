@@ -59,22 +59,16 @@ static void __inline blas_lock(volatile BLASULONG *address){
     while (*address) {YIELDING;};
 
     __asm__ __volatile__(
-			 "1:								\n\t"
-                         "ldrex r2, [%1]                                                \n\t"
-                         "mov   r2, #0                                                  \n\t"
-                         "strex r3, r2, [%1]                                            \n\t"
-			 "cmp	r3, #0							\n\t"
-			 "bne	1b							\n\t"
-			 "mov	%0 , r3							\n\t"
-                         : "=r"(ret), "=r"(address)
-                         : "1"(address)
-                         : "memory", "r2" , "r3"
-
-
+                         "ldrex r2, [%1]      \n\t"
+                         "strex %0, %2, [%1]  \n\t"
+                         "orr   %0, r2        \n\t"
+                         : "=&r"(ret)
+                         : "r"(address), "r"(1)
+                         : "memory", "r2"
     );
 
   } while (ret);
-
+  MB;
 }
 
 
