@@ -27,7 +27,10 @@ if (MSVC)
 endif ()
 
 if (NOT NO_LAPACK)
-enable_language(Fortran)
+  enable_language(Fortran)
+else()
+  include(CMakeForceCompiler)
+  CMAKE_FORCE_Fortran_COMPILER(gfortran GNU)
 endif()
 
 if (NOT ONLY_CBLAS)
