@@ -49,12 +49,10 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 #ifndef UNIT
   FLOAT atemp1, atemp2, btemp1, btemp2;
 #endif
-  FLOAT *gemvbuffer = (FLOAT *)buffer;
   FLOAT *B = b;
 
   if (incb != 1) {
     B = buffer;
-    gemvbuffer = (FLOAT *)(((BLASLONG)buffer + m * sizeof(FLOAT) * 2 + 4095) & ~4095);
     COPY_K(m, b, incb, buffer, 1);
   }
 
