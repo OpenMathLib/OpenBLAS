@@ -26,7 +26,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /***********************************************************
- * 2014/06/10 Saar
+ * 2014-06-10 Saar
+ * 2015-09-07 grisuthedragon 
 ***********************************************************/
 
 #include <stdio.h>
@@ -49,6 +50,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BlasTransConj    2
 #define BlasConj         3
 
+#define NEW_IMATCOPY 
 
 #ifndef CBLAS
 void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha, FLOAT *a, blasint *lda, blasint *ldb)
@@ -123,6 +125,52 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
     		BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     		return;
   	}
+
+#ifdef NEW_IMATCOPY
+    if (*lda == *ldb) {
+        if ( order == BlasColMajor )
+        {
+
+            if ( trans == BlasNoTrans )
+            {
+                IMATCOPY_K_CN(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+            if ( trans == BlasConj )
+            {
+                IMATCOPY_K_CNC(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+            if ( trans == BlasTrans )
+            {
+                IMATCOPY_K_CT(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+            if ( trans == BlasTransConj )
+            {
+                IMATCOPY_K_CTC(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+        }
+        else
+        {
+
+            if ( trans == BlasNoTrans )
+            {
+                IMATCOPY_K_RN(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+            if ( trans == BlasConj )
+            {
+                IMATCOPY_K_RNC(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+            if ( trans == BlasTrans )
+            {
+                IMATCOPY_K_RT(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+            if ( trans == BlasTransConj )
+            {
+                IMATCOPY_K_RTC(*rows, *cols, alpha[0], alpha[1], a, *lda );
+            }
+        }
+        return(0); 
+    }
+#endif
 
 	if ( *lda >  *ldb )
                 msize = (*lda) * (*ldb)  * sizeof(FLOAT) * 2;

@@ -1736,31 +1736,55 @@ int somatcopy_k_cn(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLAS
 int somatcopy_k_rn(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLASLONG);
 int somatcopy_k_ct(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLASLONG);
 int somatcopy_k_rt(BLASLONG, BLASLONG,  float, float *, BLASLONG, float  *, BLASLONG);
+int simatcopy_k_cn(BLASLONG, BLASLONG,  float, float *, BLASLONG);
+int simatcopy_k_rn(BLASLONG, BLASLONG,  float, float *, BLASLONG);
+int simatcopy_k_ct(BLASLONG, BLASLONG,  float, float *, BLASLONG);
+int simatcopy_k_rt(BLASLONG, BLASLONG,  float, float *, BLASLONG);
 
 int domatcopy_k_cn(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
 int domatcopy_k_rn(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
 int domatcopy_k_ct(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
 int domatcopy_k_rt(BLASLONG, BLASLONG,  double, double *, BLASLONG, double  *, BLASLONG);
+int dimatcopy_k_cn(BLASLONG, BLASLONG,  double, double *, BLASLONG);
+int dimatcopy_k_rn(BLASLONG, BLASLONG,  double, double *, BLASLONG);
+int dimatcopy_k_ct(BLASLONG, BLASLONG,  double, double *, BLASLONG);
+int dimatcopy_k_rt(BLASLONG, BLASLONG,  double, double *, BLASLONG);
 
 int comatcopy_k_cn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
 int comatcopy_k_rn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
 int comatcopy_k_ct(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
 int comatcopy_k_rt(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int cimatcopy_k_cn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
+int cimatcopy_k_rn(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
+int cimatcopy_k_ct(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
+int cimatcopy_k_rt(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
 
 int comatcopy_k_cnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
 int comatcopy_k_rnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
 int comatcopy_k_ctc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
 int comatcopy_k_rtc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG, float  *, BLASLONG);
+int cimatcopy_k_cnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
+int cimatcopy_k_rnc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
+int cimatcopy_k_ctc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
+int cimatcopy_k_rtc(BLASLONG, BLASLONG,  float, float, float *, BLASLONG);
 
 int zomatcopy_k_cn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
 int zomatcopy_k_rn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
 int zomatcopy_k_ct(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
 int zomatcopy_k_rt(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zimatcopy_k_cn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
+int zimatcopy_k_rn(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
+int zimatcopy_k_ct(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
+int zimatcopy_k_rt(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
 
 int zomatcopy_k_cnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
 int zomatcopy_k_rnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
 int zomatcopy_k_ctc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
 int zomatcopy_k_rtc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG, double  *, BLASLONG);
+int zimatcopy_k_cnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
+int zimatcopy_k_rnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
+int zimatcopy_k_ctc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
+int zimatcopy_k_rtc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
 
 int sgeadd_k(BLASLONG, BLASLONG, float, float*, BLASLONG, float, float *, BLASLONG); 
 int dgeadd_k(BLASLONG, BLASLONG, double, double*, BLASLONG, double, double *, BLASLONG); 
