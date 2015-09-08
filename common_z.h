@@ -220,6 +220,15 @@
 #define ZOMATCOPY_K_CTC         zomatcopy_k_ctc
 #define ZOMATCOPY_K_RTC         zomatcopy_k_rtc
 
+#define ZIMATCOPY_K_CN          zimatcopy_k_cn
+#define ZIMATCOPY_K_RN          zimatcopy_k_rn
+#define ZIMATCOPY_K_CT          zimatcopy_k_ct
+#define ZIMATCOPY_K_RT          zimatcopy_k_rt
+#define ZIMATCOPY_K_CNC         zimatcopy_k_cnc
+#define ZIMATCOPY_K_RNC         zimatcopy_k_rnc
+#define ZIMATCOPY_K_CTC         zimatcopy_k_ctc
+#define ZIMATCOPY_K_RTC         zimatcopy_k_rtc
+
 #define ZGEADD_K                zgeadd_k 
 
 #else
@@ -403,6 +412,15 @@
 #define ZOMATCOPY_K_RNC         gotoblas -> zomatcopy_k_rnc
 #define ZOMATCOPY_K_CTC         gotoblas -> zomatcopy_k_ctc
 #define ZOMATCOPY_K_RTC         gotoblas -> zomatcopy_k_rtc
+
+#define ZIMATCOPY_K_CN          gotoblas -> zimatcopy_k_cn
+#define ZIMATCOPY_K_RN          gotoblas -> zimatcopy_k_rn
+#define ZIMATCOPY_K_CT          gotoblas -> zimatcopy_k_ct
+#define ZIMATCOPY_K_RT          gotoblas -> zimatcopy_k_rt
+#define ZIMATCOPY_K_CNC         gotoblas -> zimatcopy_k_cnc
+#define ZIMATCOPY_K_RNC         gotoblas -> zimatcopy_k_rnc
+#define ZIMATCOPY_K_CTC         gotoblas -> zimatcopy_k_ctc
+#define ZIMATCOPY_K_RTC         gotoblas -> zimatcopy_k_rtc
 
 #define ZGEADD_K                gotoblas -> zgeadd_k
 
