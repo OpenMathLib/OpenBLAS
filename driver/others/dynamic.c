@@ -263,6 +263,15 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	//Intel Skylake
+	if (model == 14) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
 	return NULL;
       }
       case 0xf:
