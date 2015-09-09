@@ -53,7 +53,7 @@ double LAPACKE_zlantr( int matrix_order, char norm, char uplo, char diag,
     /* Allocate memory for working array(s) */
     if( LAPACKE_lsame( norm, 'i' ) || LAPACKE_lsame( norm, '1' ) ||
         LAPACKE_lsame( norm, '0' ) ) {
-        work = (double*)LAPACKE_malloc( sizeof(double) * MAX(1,m) );
+        work = (double*)LAPACKE_malloc( sizeof(double) * MAX(1,MAX(m,n)) );
         if( work == NULL ) {
             info = LAPACK_WORK_MEMORY_ERROR;
             goto exit_level_0;
