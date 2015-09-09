@@ -1136,12 +1136,33 @@ int get_cpuname(void){
 #endif
           else
 	    return CPUTYPE_NEHALEM;
+	case 14:
+	  //Skylake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
         }
         break;
       case 5:
         switch (model) {
 	case 6:
 	  //Broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	case 5:
+        case 14:
+	  // Skylake
           if(support_avx())
 #ifndef NO_AVX2
             return CPUTYPE_HASWELL;
@@ -1611,12 +1632,33 @@ int get_coretype(void){
 #endif
           else
 	    return CORE_NEHALEM;
+	case 14:
+	  //Skylake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
         }
         break;
       case 5:
         switch (model) {
 	case 6:
 	  //broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
+	case 5:
+	case 14:
+	  // Skylake
           if(support_avx())
 #ifndef NO_AVX2
             return CORE_HASWELL;
