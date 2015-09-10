@@ -51,7 +51,7 @@ float LAPACKE_clansy( int matrix_order, char norm, char uplo, lapack_int n,
 #endif
     /* Allocate memory for working array(s) */
     if( LAPACKE_lsame( norm, 'i' ) || LAPACKE_lsame( norm, '1' ) ||
-        LAPACKE_lsame( norm, '0' ) ) {
+        LAPACKE_lsame( norm, 'O' ) ) {
         work = (float*)LAPACKE_malloc( sizeof(float) * MAX(1,n) );
         if( work == NULL ) {
             info = LAPACK_WORK_MEMORY_ERROR;
@@ -62,7 +62,7 @@ float LAPACKE_clansy( int matrix_order, char norm, char uplo, lapack_int n,
     res = LAPACKE_clansy_work( matrix_order, norm, uplo, n, a, lda, work );
     /* Release memory and exit */
     if( LAPACKE_lsame( norm, 'i' ) || LAPACKE_lsame( norm, '1' ) ||
-        LAPACKE_lsame( norm, '0' ) ) {
+        LAPACKE_lsame( norm, 'O' ) ) {
         LAPACKE_free( work );
     }
 exit_level_0:
