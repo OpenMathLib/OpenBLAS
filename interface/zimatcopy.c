@@ -168,7 +168,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
                 IMATCOPY_K_RTC(*rows, *cols, alpha[0], alpha[1], a, *lda );
             }
         }
-        return(0); 
+        return; 
     }
 #endif
 
