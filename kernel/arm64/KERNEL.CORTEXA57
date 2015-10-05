@@ -1,2 +1,6 @@
 include $(KERNELDIR)/KERNEL.ARMV8
 
+SAMAXKERNEL  = amax.S
+DAMAXKERNEL  = amax.S
+CAMAXKERNEL  = zamax.S
+ZAMAXKERNEL  = zamax.S
