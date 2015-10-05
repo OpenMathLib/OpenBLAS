@@ -86,6 +86,7 @@ extern "C" {
 #if !defined(_MSC_VER)
 #include <unistd.h>
 #endif
+#include <time.h>
 
 #ifdef OS_LINUX
 #include <malloc.h>
