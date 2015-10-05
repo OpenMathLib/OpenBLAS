@@ -139,8 +139,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
 
-#define CONSTRUCTOR	__attribute__ ((constructor))
-#define DESTRUCTOR	__attribute__ ((destructor))
+#define CONSTRUCTOR	__attribute__ ((constructor(101)))
+#define DESTRUCTOR	__attribute__ ((destructor(101)))
 
 #ifdef DYNAMIC_ARCH
 gotoblas_t *gotoblas = NULL;
