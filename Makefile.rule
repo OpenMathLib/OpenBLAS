@@ -169,6 +169,9 @@ COMMON_PROF = -pg
 # 64 bit integer interfaces in OpenBLAS.
 # For details, https://github.com/xianyi/OpenBLAS/pull/459
 #
+# The same prefix and suffix are also added to the library name,
+# i.e. you get lib$(SYMBOLPREFIX)openblas$(SYMBOLSUFFIX) rather than libopenblas
+#
 # SYMBOLPREFIX=
 # SYMBOLSUFFIX=
 
