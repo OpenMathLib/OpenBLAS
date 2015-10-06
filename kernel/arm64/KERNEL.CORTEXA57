@@ -4,3 +4,9 @@ SAMAXKERNEL  = amax.S
 DAMAXKERNEL  = amax.S
 CAMAXKERNEL  = zamax.S
 ZAMAXKERNEL  = zamax.S
+
+ISAMAXKERNEL = isamax.S
+IDAMAXKERNEL = idamax.S
+ICAMAXKERNEL = izamax.S
+IZAMAXKERNEL = izamax.S
+
