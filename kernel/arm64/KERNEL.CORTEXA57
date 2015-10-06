@@ -15,3 +15,8 @@ DASUMKERNEL  = asum.S
 CASUMKERNEL  = casum.S
 ZASUMKERNEL  = zasum.S
 
+SAXPYKERNEL  = axpy.S
+DAXPYKERNEL  = axpy.S
+CAXPYKERNEL  = zaxpy.S
+ZAXPYKERNEL  = zaxpy.S
+
