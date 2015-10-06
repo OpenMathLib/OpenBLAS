@@ -20,3 +20,9 @@ DAXPYKERNEL  = axpy.S
 CAXPYKERNEL  = zaxpy.S
 ZAXPYKERNEL  = zaxpy.S
 
+SCOPYKERNEL  = copy.S
+DCOPYKERNEL  = copy.S
+CCOPYKERNEL  = copy.S
+ZCOPYKERNEL  = copy.S
+
+
