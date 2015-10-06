@@ -45,4 +45,9 @@ DSCALKERNEL  = scal.S
 CSCALKERNEL  = zscal.S
 ZSCALKERNEL  = zscal.S
 
+SSWAPKERNEL  = swap.S
+DSWAPKERNEL  = swap.S
+CSWAPKERNEL  = swap.S
+ZSWAPKERNEL  = swap.S
+
 
