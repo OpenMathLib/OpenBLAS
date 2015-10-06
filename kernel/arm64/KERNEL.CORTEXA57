@@ -34,3 +34,10 @@ SNRM2KERNEL  = snrm2.S
 DNRM2KERNEL  = dnrm2.S
 CNRM2KERNEL  = znrm2.S
 ZNRM2KERNEL  = znrm2.S
+
+SROTKERNEL   = rot.S
+DROTKERNEL   = rot.S
+CROTKERNEL   = zrot.S
+ZROTKERNEL   = zrot.S
+
+
