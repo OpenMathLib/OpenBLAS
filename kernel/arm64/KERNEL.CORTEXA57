@@ -25,4 +25,7 @@ DCOPYKERNEL  = copy.S
 CCOPYKERNEL  = copy.S
 ZCOPYKERNEL  = copy.S
 
-
+DOTKERNEL    = dot.S
+DDOTKERNEL   = dot.S
+CDOTKERNEL   = zdot.S
+ZDOTKERNEL   = zdot.S
