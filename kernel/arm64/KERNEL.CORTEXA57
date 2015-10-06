@@ -40,4 +40,9 @@ DROTKERNEL   = rot.S
 CROTKERNEL   = zrot.S
 ZROTKERNEL   = zrot.S
 
+SCALKERNEL  = scal.S
+DSCALKERNEL  = scal.S
+CSCALKERNEL  = zscal.S
+ZSCALKERNEL  = zscal.S
+
 
