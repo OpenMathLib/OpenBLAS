@@ -10,3 +10,8 @@ IDAMAXKERNEL = idamax.S
 ICAMAXKERNEL = izamax.S
 IZAMAXKERNEL = izamax.S
 
+SASUMKERNEL  = asum.S
+DASUMKERNEL  = asum.S
+CASUMKERNEL  = casum.S
+ZASUMKERNEL  = zasum.S
+
