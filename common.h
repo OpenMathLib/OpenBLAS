@@ -114,6 +114,7 @@ extern "C" {
 #include <sys/shm.h>
 #endif
 #include <sys/time.h>
+#include <time.h>
 #include <unistd.h>
 #include <math.h>
 #ifdef SMP
