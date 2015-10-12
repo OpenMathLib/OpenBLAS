@@ -15,6 +15,7 @@ lapack-netlib/make.inc
 lapack-netlib/lapacke/include/lapacke_mangling.h
 lapack-netlib/TESTING/testing_results.txt
 *.so
+*.so.*
 *.a
 .svn
 *~

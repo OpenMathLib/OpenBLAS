@@ -152,6 +152,10 @@
 #define SOMATCOPY_K_RN          somatcopy_k_rn
 #define SOMATCOPY_K_CT          somatcopy_k_ct
 #define SOMATCOPY_K_RT          somatcopy_k_rt
+#define SIMATCOPY_K_CN          simatcopy_k_cn
+#define SIMATCOPY_K_RN          simatcopy_k_rn
+#define SIMATCOPY_K_CT          simatcopy_k_ct
+#define SIMATCOPY_K_RT          simatcopy_k_rt
 
 #define SGEADD_K                sgeadd_k 
 
@@ -274,6 +278,10 @@
 #define SOMATCOPY_K_RN          gotoblas -> somatcopy_k_rn
 #define SOMATCOPY_K_CT          gotoblas -> somatcopy_k_ct
 #define SOMATCOPY_K_RT          gotoblas -> somatcopy_k_rt
+#define SIMATCOPY_K_CN          gotoblas -> simatcopy_k_cn
+#define SIMATCOPY_K_RN          gotoblas -> simatcopy_k_rn
+#define SIMATCOPY_K_CT          gotoblas -> simatcopy_k_ct
+#define SIMATCOPY_K_RT          gotoblas -> simatcopy_k_rt
 
 #define SGEADD_K                gotoblas -> sgeadd_k 
 

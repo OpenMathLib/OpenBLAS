@@ -127,5 +127,8 @@ In chronological order:
 * Ton van den Heuvel <https://github.com/ton>
   * [2015-03-18] Fix race condition during shutdown causing a crash in gotoblas_set_affinity().
 
+* Martin Koehler <https://github.com/grisuthedragon/>
+  * [2015-09-07] Improved imatcopy
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]

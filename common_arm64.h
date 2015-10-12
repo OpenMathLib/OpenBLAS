@@ -45,41 +45,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
-  int register ret;
-  int register tmp;
+  long register ret;
 
   do {
     while (*address) {YIELDING;};
 
     __asm__ __volatile__(
-                         "1:                                                            \n\t"
-                         "ldaxr %2, [%1]                                                \n\t"
-                         "mov   %2, #0                                                  \n\t"
-                         "stlxr %w0, %2, [%1]                                            \n\t"
-                         "cbnz  %w0, 1b                                                  \n\t"
-			 "mov   %0 , #0                                                  \n\t"
-                         : "=r"(ret), "=r"(address), "=r"(tmp)
-                         : "1"(address)
-                         : "memory", "%w0"
-			   //, "%r2" , "%r3"
-
-
+                         "ldaxr %0, [%1]      \n\t"
+                         "stlxr w2, %2, [%1]  \n\t"
+                         "orr   %0, %0, x2    \n\t"
+                         : "=r"(ret)
+                         : "r"(address), "r"(1l)
+                         : "memory", "x2"
     );
 
   } while (ret);
-
+  MB;
 }
+#define BLAS_LOCK_DEFINED
 
-
-static inline unsigned long long rpcc(void){
-  unsigned long long ret=0;
-  double v;
-  struct timeval tv;
-  gettimeofday(&tv,NULL);
-  v=(double) tv.tv_sec + (double) tv.tv_usec * 1e-6;
-  ret = (unsigned long long) ( v * 1000.0d );
-  return ret;
-}
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;

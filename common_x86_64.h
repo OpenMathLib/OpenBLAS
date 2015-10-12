@@ -86,6 +86,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
   } while (ret);
 
 }
+#define BLAS_LOCK_DEFINED
 
 static __inline BLASULONG rpcc(void){
 #ifdef C_MSVC
@@ -98,6 +99,7 @@ static __inline BLASULONG rpcc(void){
   return ((BLASULONG)a + ((BLASULONG)d << 32));
 #endif
 }
+#define RPCC_DEFINED
 
 #define RPCC64BIT
 

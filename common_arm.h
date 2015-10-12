@@ -51,6 +51,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSEMBLER
 
+#if defined(ARMV6) || defined(ARMV7) || defined(ARMV8)
+
 static void __inline blas_lock(volatile BLASULONG *address){
 
   int register ret;
@@ -59,40 +61,29 @@ static void __inline blas_lock(volatile BLASULONG *address){
     while (*address) {YIELDING;};
 
     __asm__ __volatile__(
-			 "1:								\n\t"
-                         "ldrex r2, [%1]                                                \n\t"
-                         "mov   r2, #0                                                  \n\t"
-                         "strex r3, r2, [%1]                                            \n\t"
-			 "cmp	r3, #0							\n\t"
-			 "bne	1b							\n\t"
-			 "mov	%0 , r3							\n\t"
-                         : "=r"(ret), "=r"(address)
-                         : "1"(address)
-                         : "memory", "r2" , "r3"
-
-
+                         "ldrex r2, [%1]      \n\t"
+                         "strex %0, %2, [%1]  \n\t"
+                         "orr   %0, r2        \n\t"
+                         : "=&r"(ret)
+                         : "r"(address), "r"(1)
+                         : "memory", "r2"
     );
 
   } while (ret);
-
+  MB;
 }
 
-
-static inline unsigned long long rpcc(void){
-  unsigned long long ret=0;
-  double v;
-  struct timeval tv;
-  gettimeofday(&tv,NULL);
-  v=(double) tv.tv_sec + (double) tv.tv_usec * 1e-6;
-  ret = (unsigned long long) ( v * 1000.0d );
-  return ret;
-}
+#define BLAS_LOCK_DEFINED
+#endif
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
 }
 
-#if defined(DOUBLE)
+#if !defined(HAVE_VFP)
+/* no FPU, soft float */
+#define GET_IMAGE(res)
+#elif defined(DOUBLE)
 #define GET_IMAGE(res)  __asm__ __volatile__("vstr.f64 d1, %0" : "=m"(res) : : "memory")
 #else
 #define GET_IMAGE(res)  __asm__ __volatile__("vstr.f32 s1, %0" : "=m"(res) : : "memory")
@@ -138,6 +129,10 @@ REALNAME:
 
 #ifndef MAP_ANONYMOUS
 #define MAP_ANONYMOUS MAP_ANON
+#endif
+
+#if !defined(ARMV5) && !defined(ARMV6) && !defined(ARMV7) && !defined(ARMV8)
+#error "you must define ARMV5, ARMV6, ARMV7 or ARMV8"
 #endif
 
 #endif

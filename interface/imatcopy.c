@@ -26,7 +26,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /***********************************************************
- * 2014/06/10 Saar
+ * 2014-06-10 Saar
+ * 2015-09-07 grisuthedragon 
 ***********************************************************/
 
 #include <stdio.h>
@@ -49,6 +50,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #undef malloc
 #undef free
+
+/* Enables the New IMATCOPY code with inplace operation if lda == ldb   */
+#define NEW_IMATCOPY
 
 #ifndef CBLAS
 void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha, FLOAT *a, blasint *lda, blasint *ldb)
@@ -75,7 +79,6 @@ void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha,
 #else 
 void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows, blasint ccols, FLOAT calpha, FLOAT *a, blasint clda, blasint cldb)
 {
-	char Order, Trans;
 	int order=-1,trans=-1;
 	blasint info = -1;
 	FLOAT *b;
@@ -117,6 +120,34 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
     		BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     		return;
   	}
+#ifdef NEW_IMATCOPY
+    if ( *lda == *ldb ) {
+        if ( order == BlasColMajor )
+        {
+            if ( trans == BlasNoTrans )
+            {
+                IMATCOPY_K_CN(*rows, *cols, *alpha, a, *lda );
+            }
+            else
+            {
+                IMATCOPY_K_CT(*rows, *cols, *alpha, a, *lda );
+            }
+        }
+        else
+        {
+            if ( trans == BlasNoTrans )
+            {
+                IMATCOPY_K_RN(*rows, *cols, *alpha, a, *lda );
+            }
+            else
+            {
+                IMATCOPY_K_RT(*rows, *cols, *alpha, a, *lda );
+            }
+        }
+        return; 
+    }
+
+#endif
 
 	if ( *lda >  *ldb )
 		msize = (*lda) * (*ldb)  * sizeof(FLOAT);

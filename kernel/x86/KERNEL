@@ -98,6 +98,23 @@ ifndef XAXPYKERNEL
 XAXPYKERNEL = xaxpy.S
 endif
 
+#Use C kernel for sgemv and dgemv
+ifndef SGEMVNKERNEL
+SGEMVNKERNEL = ../arm/gemv_n.c
+endif
+
+ifndef SGEMVTKERNEL
+SGEMVTKERNEL = ../arm/gemv_t.c
+endif
+
+ifndef DGEMVNKERNEL
+DGEMVNKERNEL = ../arm/gemv_n.c
+endif
+
+ifndef DGEMVTKERNEL
+DGEMVTKERNEL = ../arm/gemv_t.c
+endif
+
 ifndef QGEMVNKERNEL
 QGEMVNKERNEL = qgemv_n.S
 endif

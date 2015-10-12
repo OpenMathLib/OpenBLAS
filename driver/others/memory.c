@@ -143,8 +143,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CONSTRUCTOR __cdecl
 #define DESTRUCTOR __cdecl
 #else
-#define CONSTRUCTOR	__attribute__ ((constructor))
-#define DESTRUCTOR	__attribute__ ((destructor))
+#define CONSTRUCTOR	__attribute__ ((constructor(101)))
+#define DESTRUCTOR	__attribute__ ((destructor(101)))
 #endif
 
 #ifdef DYNAMIC_ARCH
@@ -1157,6 +1157,9 @@ void blas_memory_free(void *free_area){
 #ifdef DEBUG
   printf("  Position : %d\n", position);
 #endif
+
+  // arm: ensure all writes are finished before other thread takes this memory
+  WMB;
 
   memory[position].used = 0;
 

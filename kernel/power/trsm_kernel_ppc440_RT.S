@@ -185,24 +185,24 @@
 
 #if defined(_AIX) || defined(__APPLE__)
 #if !defined(__64BIT__) && defined(DOUBLE)
-	lwz	LDC,    56 + STACKSIZE(SP)
+	lwz	LDC, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 #endif
 
 	slwi	LDC, LDC, BASE_SHIFT
 
 #if defined(linux) && defined(__64BIT__)
-	ld	OFFSET,   112 + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	OFFSET,  112 + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
 #else
 #ifdef DOUBLE
-	lwz	OFFSET,   60 + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
 #else
-	lwz	OFFSET,   56 + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 #endif
 #endif

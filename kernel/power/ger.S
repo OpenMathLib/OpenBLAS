@@ -226,31 +226,31 @@
 
 #ifdef linux
 #ifndef __64BIT__
-	lwz	LDA,      8 + STACKSIZE(SP)
-	lwz	BUFFER,  12 + STACKSIZE(SP)
+	lwz	LDA,     FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	BUFFER,  FRAMESLOT(1) + STACKSIZE(SP)
 #else
-	ld	A,       112 + STACKSIZE(SP)
-	ld	LDA,     120 + STACKSIZE(SP)
-	ld	BUFFER,  128 + STACKSIZE(SP)
+	ld	A,       FRAMESLOT(0) + STACKSIZE(SP)
+	ld	LDA,     FRAMESLOT(1) + STACKSIZE(SP)
+	ld	BUFFER,  FRAMESLOT(2) + STACKSIZE(SP)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifndef __64BIT__
 #ifdef DOUBLE
-	lwz	INCY,    56 + STACKSIZE(SP)
-	lwz	A,       60 + STACKSIZE(SP)
-	lwz	LDA,     64 + STACKSIZE(SP)
-	lwz	BUFFER,  68 + STACKSIZE(SP)
+	lwz	INCY,    FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	A,       FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	LDA,     FRAMESLOT(2) + STACKSIZE(SP)
+	lwz	BUFFER,  FRAMESLOT(3) + STACKSIZE(SP)
 #else
-	lwz	A,       56 + STACKSIZE(SP)
-	lwz	LDA,     60 + STACKSIZE(SP)
-	lwz	BUFFER,  64 + STACKSIZE(SP)
+	lwz	A,       FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	LDA,     FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	BUFFER,  FRAMESLOT(2) + STACKSIZE(SP)
 #endif
 #else
-	ld	A,       112 + STACKSIZE(SP)
-	ld	LDA,     120 + STACKSIZE(SP)
-	ld	BUFFER,  128 + STACKSIZE(SP)
+	ld	A,       FRAMESLOT(0) + STACKSIZE(SP)
+	ld	LDA,     FRAMESLOT(1) + STACKSIZE(SP)
+	ld	BUFFER,  FRAMESLOT(2) + STACKSIZE(SP)
 #endif
 #endif
 

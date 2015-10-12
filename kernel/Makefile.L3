@@ -334,11 +334,15 @@ endif
 SBLASOBJS += \
 	somatcopy_k_cn$(TSUFFIX).$(SUFFIX) somatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	somatcopy_k_ct$(TSUFFIX).$(SUFFIX) somatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	simatcopy_k_cn$(TSUFFIX).$(SUFFIX) simatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	simatcopy_k_ct$(TSUFFIX).$(SUFFIX) simatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	sgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 DBLASOBJS += \
 	domatcopy_k_cn$(TSUFFIX).$(SUFFIX) domatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	domatcopy_k_ct$(TSUFFIX).$(SUFFIX) domatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	dimatcopy_k_cn$(TSUFFIX).$(SUFFIX) dimatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	dimatcopy_k_ct$(TSUFFIX).$(SUFFIX) dimatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	dgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 CBLASOBJS += \
@@ -346,6 +350,10 @@ CBLASOBJS += \
 	comatcopy_k_ct$(TSUFFIX).$(SUFFIX) comatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	comatcopy_k_cnc$(TSUFFIX).$(SUFFIX) comatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
 	comatcopy_k_ctc$(TSUFFIX).$(SUFFIX) comatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
+	cimatcopy_k_cn$(TSUFFIX).$(SUFFIX)  cimatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	cimatcopy_k_ct$(TSUFFIX).$(SUFFIX)  cimatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	cimatcopy_k_cnc$(TSUFFIX).$(SUFFIX) cimatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
+	cimatcopy_k_ctc$(TSUFFIX).$(SUFFIX) cimatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
 	cgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 ZBLASOBJS += \
@@ -353,6 +361,10 @@ ZBLASOBJS += \
 	zomatcopy_k_ct$(TSUFFIX).$(SUFFIX) zomatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	zomatcopy_k_cnc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
 	zomatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
+	zimatcopy_k_cn$(TSUFFIX).$(SUFFIX)  zimatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
+	zimatcopy_k_ct$(TSUFFIX).$(SUFFIX)  zimatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
+	zimatcopy_k_cnc$(TSUFFIX).$(SUFFIX) zimatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
+	zimatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zimatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
 	zgeadd_k$(TSUFFIX).$(SUFFIX) 
 
 
@@ -3305,6 +3317,34 @@ endif
 $(KDIR)domatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DOMATCOPY_RT)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DROWM $< -o $@
 
+ifndef DIMATCOPY_CN
+DIMATCOPY_CN = ../generic/imatcopy_cn.c
+endif
+
+$(KDIR)dimatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DIMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef DIMATCOPY_RN
+DIMATCOPY_RN = ../generic/imatcopy_rn.c
+endif
+
+$(KDIR)dimatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DIMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DROWM $< -o $@
+
+ifndef DIMATCOPY_CT
+DIMATCOPY_CT = ../generic/imatcopy_ct.c
+endif
+
+$(KDIR)dimatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DIMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef DIMATCOPY_RT
+DIMATCOPY_RT = ../generic/imatcopy_rt.c
+endif
+
+$(KDIR)dimatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DIMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DROWM $< -o $@
+
 ifndef SOMATCOPY_CN
 SOMATCOPY_CN = ../arm/omatcopy_cn.c
 endif
@@ -3331,6 +3371,34 @@ SOMATCOPY_RT = ../arm/omatcopy_rt.c
 endif
 
 $(KDIR)somatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SOMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DROWM $< -o $@
+
+ifndef SIMATCOPY_CN
+SIMATCOPY_CN = ../generic/imatcopy_cn.c
+endif
+
+$(KDIR)simatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SIMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef SIMATCOPY_RN
+SIMATCOPY_RN = ../generic/imatcopy_rn.c
+endif
+
+$(KDIR)simatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SIMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DROWM $< -o $@
+
+ifndef SIMATCOPY_CT
+SIMATCOPY_CT = ../generic/imatcopy_ct.c
+endif
+
+$(KDIR)simatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SIMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -UROWM $< -o $@
+
+ifndef SIMATCOPY_RT
+SIMATCOPY_RT = ../generic/imatcopy_rt.c
+endif
+
+$(KDIR)simatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SIMATCOPY_RT)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DROWM $< -o $@
 
 
@@ -3390,6 +3458,63 @@ endif
 $(KDIR)comatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(COMATCOPY_RTC)
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
 
+ifndef CIMATCOPY_CN
+CIMATCOPY_CN = ../generic/zimatcopy_cn.c
+endif
+
+$(KDIR)cimatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef CIMATCOPY_RN
+CIMATCOPY_RN = ../generic/zimatcopy_rn.c
+endif
+
+$(KDIR)cimatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef CIMATCOPY_CT
+CIMATCOPY_CT = ../generic/zimatcopy_ct.c
+endif
+
+$(KDIR)cimatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef CIMATCOPY_RT
+CIMATCOPY_RT = ../generic/zimatcopy_rt.c
+endif
+
+$(KDIR)cimatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef CIMATCOPY_CNC
+CIMATCOPY_CNC = ../generic/zimatcopy_cnc.c
+endif
+
+$(KDIR)cimatcopy_k_cnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_CNC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef CIMATCOPY_RNC
+CIMATCOPY_RNC = ../generic/zimatcopy_rnc.c
+endif
+
+$(KDIR)cimatcopy_k_rnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_RNC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+ifndef CIMATCOPY_CTC
+CIMATCOPY_CTC = ../generic/zimatcopy_ctc.c
+endif
+
+$(KDIR)cimatcopy_k_ctc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_CTC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef CIMATCOPY_RTC
+CIMATCOPY_RTC = ../generic/zimatcopy_rtc.c
+endif
+
+$(KDIR)cimatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CIMATCOPY_RTC)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+
 
 ifndef ZOMATCOPY_CN
 ZOMATCOPY_CN = ../arm/zomatcopy_cn.c
@@ -3445,6 +3570,62 @@ ZOMATCOPY_RTC = ../arm/zomatcopy_rtc.c
 endif
 
 $(KDIR)zomatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZOMATCOPY_RTC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+ifndef ZIMATCOPY_CN
+ZIMATCOPY_CN = ../generic/zimatcopy_cn.c
+endif
+
+$(KDIR)zimatcopy_k_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_CN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef ZIMATCOPY_RN
+ZIMATCOPY_RN = ../generic/zimatcopy_rn.c
+endif
+
+$(KDIR)zimatcopy_k_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_RN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef ZIMATCOPY_CT
+ZIMATCOPY_CT = ../generic/zimatcopy_ct.c
+endif
+
+$(KDIR)zimatcopy_k_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_CT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -UCONJ $< -o $@
+
+ifndef ZIMATCOPY_RT
+ZIMATCOPY_RT = ../generic/zimatcopy_rt.c
+endif
+
+$(KDIR)zimatcopy_k_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_RT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -UCONJ $< -o $@
+
+ifndef ZIMATCOPY_CNC
+ZIMATCOPY_CNC = ../generic/zimatcopy_cnc.c
+endif
+
+$(KDIR)zimatcopy_k_cnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_CNC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef ZIMATCOPY_RNC
+ZIMATCOPY_RNC = ../generic/zimatcopy_rnc.c
+endif
+
+$(KDIR)zimatcopy_k_rnc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_RNC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
+
+ifndef ZIMATCOPY_CTC
+ZIMATCOPY_CTC = ../generic/zimatcopy_ctc.c
+endif
+
+$(KDIR)zimatcopy_k_ctc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_CTC)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM -DCONJ $< -o $@
+
+ifndef ZIMATCOPY_RTC
+ZIMATCOPY_RTC = ../generic/zimatcopy_rtc.c
+endif
+
+$(KDIR)zimatcopy_k_rtc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZIMATCOPY_RTC)
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DROWM -DCONJ $< -o $@
 
 

@@ -77,6 +77,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
   } while (ret);
 
 }
+#define BLAS_LOCK_DEFINED
 
 static __inline unsigned long long rpcc(void){
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -89,6 +90,7 @@ static __inline unsigned long long rpcc(void){
   return ((unsigned long long)a + ((unsigned long long)d << 32));
 #endif
 };
+#define RPCC_DEFINED
 
 static __inline unsigned long getstackaddr(void){
 #if defined(_MSC_VER) && !defined(__clang__)

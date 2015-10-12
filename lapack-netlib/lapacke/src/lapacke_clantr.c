@@ -53,7 +53,7 @@ float LAPACKE_clantr( int matrix_order, char norm, char uplo, char diag,
     /* Allocate memory for working array(s) */
     if( LAPACKE_lsame( norm, 'i' ) || LAPACKE_lsame( norm, '1' ) ||
         LAPACKE_lsame( norm, '0' ) ) {
-        work = (float*)LAPACKE_malloc( sizeof(float) * MAX(1,m) );
+        work = (float*)LAPACKE_malloc( sizeof(float) * MAX(1,MAX(m,n)) );
         if( work == NULL ) {
             info = LAPACK_WORK_MEMORY_ERROR;
             goto exit_level_0;

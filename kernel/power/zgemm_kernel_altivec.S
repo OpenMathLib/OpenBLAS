@@ -240,20 +240,20 @@
 
 #ifdef linux
 #ifdef __64BIT__
-	ld	LDC,    112 + STACKSIZE(SP)
+	ld	LDC,   FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	LDC,    112 + STACKSIZE(SP)
+	ld	LDC,   FRAMESLOT(0) + STACKSIZE(SP)
 #else
 #ifdef DOUBLE
-	lwz	B,       56 + STACKSIZE(SP)
-	lwz	C,       60 + STACKSIZE(SP)
-	lwz	LDC,     64 + STACKSIZE(SP)
+	lwz	B,     FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	C,     FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	LDC,   FRAMESLOT(2) + STACKSIZE(SP)
 #else
-	lwz	LDC,     56 + STACKSIZE(SP)
+	lwz	LDC,   FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 #endif
 #endif
@@ -266,25 +266,25 @@
 
 #ifdef linux
 #ifndef __64BIT__
-	lwz	PREB,   16 + STACKSIZE(SP)
-	lwz	PREC,   20 + STACKSIZE(SP)
+	lwz	PREB,  FRAMESLOT(2) + STACKSIZE(SP)
+	lwz	PREC,  FRAMESLOT(3) + STACKSIZE(SP)
 #else
-	ld	PREB,  136 + STACKSIZE(SP)
-	ld	PREC,  144 + STACKSIZE(SP)
+	ld	PREB,  FRAMESLOT(3) + STACKSIZE(SP)
+	ld	PREC,  FRAMESLOT(4) + STACKSIZE(SP)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	PREB,  136 + STACKSIZE(SP)
-	ld	PREC,  144 + STACKSIZE(SP)
+	ld	PREB,  FRAMESLOT(3) + STACKSIZE(SP)
+	ld	PREC,  FRAMESLOT(4) + STACKSIZE(SP)
 #else
 #ifdef DOUBLE
-	lwz	PREB,   72 + STACKSIZE(SP)
-	lwz	PREC,   76 + STACKSIZE(SP)
+	lwz	PREB,  FRAMESLOT(4) + STACKSIZE(SP)
+	lwz	PREC,  FRAMESLOT(5) + STACKSIZE(SP)
 #else
-	lwz	PREB,   68 + STACKSIZE(SP)
-	lwz	PREC,   72 + STACKSIZE(SP)
+	lwz	PREB,  FRAMESLOT(3) + STACKSIZE(SP)
+	lwz	PREC,  FRAMESLOT(4) + STACKSIZE(SP)
 #endif
 #endif
 #endif
