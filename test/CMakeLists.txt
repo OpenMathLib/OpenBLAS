@@ -16,7 +16,14 @@ endforeach()
 # $1 exec, $2 input, $3 output_result
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh
 "rm -f $3\n"
-"$1 < $2"
+"$1 < $2\n"
+"grep -q FATAL $3\n"
+"if [ $? -eq 0 ]; then\n"
+"echo Error\n"
+"exit 1\n"
+"else\n"
+"exit 0\n"
+"fi\n"
 )
 
 set(float_types s d c z)
