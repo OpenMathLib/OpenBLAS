@@ -13,11 +13,24 @@ foreach (GEMM_DEFINE ${GEMM_DEFINES})
   endif ()
 endforeach ()
 
-GenerateCombinationObjects("trmm_L.c;trmm_R.c;trsm_L.c;trsm_R.c" "TRANS;UPPER;UNIT" "N;L;N" "" 0)
-GenerateCombinationObjects("symm_k.c" "RSIDE;LOWER" "L;U" "NN" 1)
-GenerateCombinationObjects("syrk_k.c;syr2k_k.c" "LOWER;TRANS" "U;N" "" 1)
-GenerateCombinationObjects("syrk_kernel.c;syr2k_kernel.c" "LOWER" "U" "" 2)
 
+set(TRMM_TRSM_SOURCES
+  trmm_L.c
+  trmm_R.c
+  trsm_L.c
+  trsm_R.c)
+
+foreach(trmm_trsm_source ${TRMM_TRSM_SOURCES})
+  string(REGEX MATCH "[a-z]+_[A-Z]+" op_name ${trmm_trsm_source})
+  GenerateCombinationObjects("${trmm_trsm_source}" "UPPER;UNIT" "L;N" "" 0 "${op_name}N")
+  GenerateCombinationObjects("${trmm_trsm_source}" "UPPER;UNIT" "L;N" "TRANSA" 0 "${op_name}T")
+endforeach()
+
+GenerateCombinationObjects("symm_k.c" "RSIDE;LOWER" "L;U" "NN" 1)
+GenerateCombinationObjects("syrk_k.c" "LOWER;TRANS" "U;N" "" 1)
+GenerateCombinationObjects("syr2k_k.c" "LOWER;TRANS" "U;N" "" 1)
+GenerateCombinationObjects("syrk_kernel.c" "LOWER" "U" "" 2)
+GenerateCombinationObjects("syr2k_kernel.c" "LOWER" "U" "" 2)
 if (SMP)
 
   # N.B. these do NOT have a float type (e.g. DOUBLE) defined!
@@ -39,13 +52,13 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;THREADED_LEVEL3;TRANS;CONJ" 3 "herk_thread_C" false ${float_type})
     # Need to set CONJ for trmm and trsm
     GenerateCombinationObjects("trmm_L.c" "UPPER;UNIT" "L;N" "CONJ" 0 "trmm_LR" false ${float_type})
-    GenerateCombinationObjects("trmm_L.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trmm_LC" false ${float_type})
+    GenerateCombinationObjects("trmm_L.c" "UPPER;UNIT" "L;N" "TRANSA;CONJ" 0 "trmm_LC" false ${float_type})
     GenerateCombinationObjects("trmm_R.c" "UPPER;UNIT" "L;N" "CONJ" 0 "trmm_RR" false ${float_type})
-    GenerateCombinationObjects("trmm_R.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trmm_RC" false ${float_type})
+    GenerateCombinationObjects("trmm_R.c" "UPPER;UNIT" "L;N" "TRANSA;CONJ" 0 "trmm_RC" false ${float_type})
     GenerateCombinationObjects("trsm_L.c" "UPPER;UNIT" "L;N" "CONJ" 0 "trsm_LR" false ${float_type})
-    GenerateCombinationObjects("trsm_L.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trsm_LC" false ${float_type})
+    GenerateCombinationObjects("trsm_L.c" "UPPER;UNIT" "L;N" "TRANSA;CONJ" 0 "trsm_LC" false ${float_type})
     GenerateCombinationObjects("trsm_R.c" "UPPER;UNIT" "L;N" "CONJ" 0 "trsm_RR" false ${float_type})
-    GenerateCombinationObjects("trsm_R.c" "UPPER;UNIT" "L;N" "TRANS;CONJ" 0 "trsm_RC" false ${float_type})
+    GenerateCombinationObjects("trsm_R.c" "UPPER;UNIT" "L;N" "TRANSA;CONJ" 0 "trsm_RC" false ${float_type})
 
     #hemm
     GenerateCombinationObjects("zhemm_k.c" "LOWER" "U" "NN" 0 "hemm_L" false ${float_type})
