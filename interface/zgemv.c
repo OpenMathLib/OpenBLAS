@@ -148,6 +148,9 @@ void CNAME(enum CBLAS_ORDER order,
   blasint info, t;
 #ifdef SMP
   int nthreads;
+  int nthreads_max;
+  int nthreads_avail;
+  double MNK;
 #endif
 
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASLONG,
