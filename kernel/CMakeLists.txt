@@ -114,7 +114,7 @@ endforeach ()
 # Makefile.L3
 set(USE_TRMM false)
 
-if (${ARCH} STREQUAL "arm" OR ${ARCH} STREQUAL "arm64" OR "${TARGET}" STREQUAL "LONGSOON3B" OR "${TARGET}" STREQUAL "GENERIC" OR "${CORE}" STREQUAL "generic")
+if (${ARCH} STREQUAL "arm" OR ${ARCH} STREQUAL "arm64" OR "${TARGET}" STREQUAL "LONGSOON3B" OR "${TARGET}" STREQUAL "GENERIC" OR "${CORE}" STREQUAL "generic" OR "${TARGET}" STREQUAL "HASWELL" OR "${CORE}" STREQUAL "haswell")
   set(USE_TRMM true)
 endif ()
 
