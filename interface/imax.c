@@ -136,6 +136,8 @@ blasint NAME(blasint *N, FLOAT *x, blasint *INCX){
 
   ret = (blasint)MAX_K(n, x, incx);
 
+  if(ret > n) ret=n;
+
   FUNCTION_PROFILE_END(COMPSIZE, n, 0);
 
   IDEBUG_END;
@@ -158,6 +160,8 @@ CBLAS_INDEX CNAME(blasint n, FLOAT *x, blasint incx){
   FUNCTION_PROFILE_START();
 
   ret = MAX_K(n, x, incx);
+
+  if (ret > n) ret=n;
 
   if (ret) ret --;
 
