@@ -142,6 +142,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(_MSC_VER) && !defined(__clang__)
 #define CONSTRUCTOR __cdecl
 #define DESTRUCTOR __cdecl
+#elif defined(OS_DARWIN) && defined(C_GCC)
+#define CONSTRUCTOR	__attribute__ ((constructor))
+#define DESTRUCTOR	__attribute__ ((destructor))
 #else
 #define CONSTRUCTOR	__attribute__ ((constructor(101)))
 #define DESTRUCTOR	__attribute__ ((destructor(101)))
