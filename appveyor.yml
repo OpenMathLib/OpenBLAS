@@ -36,7 +36,7 @@ skip_commits:
 before_build:
   - echo Running cmake...
   - cd c:\projects\OpenBLAS
-  - cmake .
+  - cmake -G "Visual Studio 12 Win64" .
 
 test_script:
 
