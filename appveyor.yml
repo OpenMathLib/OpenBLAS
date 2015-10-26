@@ -3,8 +3,8 @@ version: 0.2.14.{build}
 #environment:
 
 platform: 
-  - x86
   - x64
+
 configuration: Release
 
 clone_folder: c:\projects\OpenBLAS
