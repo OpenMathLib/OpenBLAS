@@ -165,9 +165,9 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("${KERNELDIR}/${TRMM_KERNEL}" "TRMMKERNEL;TRANSA;CONJ;NC" "trmm_kernel_RC" false "" "" false ${float_type})
 
     GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LN}" "UPPER;LN;TRSMKERNEL;CONJ" "trsm_kernel_LR" false "" "" false ${float_type})
-    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LT}" "UPPER;LT;TRSMKERNEL;CONJ" "trsm_kernel_LC" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_LT}" "LT;TRSMKERNEL;CONJ" "trsm_kernel_LC" false "" "" false ${float_type})
     GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RN}" "UPPER;RN;TRSMKERNEL;CONJ" "trsm_kernel_RR" false "" "" false ${float_type})
-    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RT}" "UPPER;RN;TRSMKERNEL;CONJ" "trsm_kernel_RC" false "" "" false ${float_type})
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}TRSMKERNEL_RT}" "RT;TRSMKERNEL;CONJ" "trsm_kernel_RC" false "" "" false ${float_type})
 
 
     #hemm
