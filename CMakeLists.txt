@@ -12,7 +12,11 @@ set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${Open
 enable_language(ASM)
 enable_language(C)
 
+if(MSVC)
+set(OpenBLAS_LIBNAME libopenblas)
+else()
 set(OpenBLAS_LIBNAME openblas)
+endif()
 
 #######
 if(MSVC)
