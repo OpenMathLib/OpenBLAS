@@ -325,11 +325,15 @@ endif ()
 
 #For x86 32-bit
 if (DEFINED BINARY AND BINARY EQUAL 32)
+if (NOT MSVC)
   set(COMMON_OPT "${COMMON_OPT} -m32")
+endif()
 endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_OPT} ${CCOMMON_OPT}")
+if(NOT MSVC)
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${COMMON_OPT} ${CCOMMON_OPT}")
+endif()
 # TODO: not sure what PFLAGS is -hpa
 set(PFLAGS "${PFLAGS} ${COMMON_OPT} ${CCOMMON_OPT} -I${TOPDIR} -DPROFILE ${COMMON_PROF}")
 

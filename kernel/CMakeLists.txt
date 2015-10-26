@@ -22,7 +22,11 @@ ParseMakefileVars("${KERNELDIR}/KERNEL")
 ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
 
 if (${ARCH} STREQUAL "x86")
+if (NOT MSVC)
   GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
+else()
+  GenerateNamedObjects("${KERNELDIR}/cpuid_win.c" "" "" false "" "" true)
+endif()
 endif ()
 
 # don't use float type name mangling here
