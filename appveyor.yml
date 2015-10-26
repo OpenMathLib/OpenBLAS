@@ -1,0 +1,42 @@
+version: 0.2.14.{build}
+
+#environment:
+
+platform: 
+  - x86
+  - x64
+configuration: Release
+
+clone_folder: c:\projects\OpenBLAS
+
+init:
+  - git config --global core.autocrlf input
+
+build:
+  project: OpenBLAS.sln
+
+clone_depth: 5
+
+#branches to build
+branches:
+  only:
+    - master
+    - develop
+    - cmake
+
+skip_tags: true
+
+matrix:
+  fast_finish: true
+
+skip_commits:
+# Add [av skip] to commit messages
+  message: /\[av skip\]/
+
+before_build:
+  - echo Running cmake...
+  - cd c:\projects\OpenBLAS
+  - cmake .
+
+test_script:
+
