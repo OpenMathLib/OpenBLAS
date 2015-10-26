@@ -7,7 +7,7 @@ static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOA
 static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOAT *C0, FLOAT *C1, FLOAT *C2,FLOAT *C3, FLOAT *C4, FLOAT *C5,FLOAT *C6, FLOAT *C7)
 {
 
-		BLASLONG I = 0;
+		BLASLONG i = 0;
 		BLASLONG temp1 = n * 8;
 
 		 __asm__  __volatile__
@@ -110,7 +110,7 @@ static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOA
 
 	        :
         	:
-		"a" (I),	 // 0
+		"a" (i),	 // 0
           	"r" (temp1),     // 1    
           	"S" (a),         // 2
           	"D" (b),         // 3
