@@ -56,11 +56,23 @@ static void __inline blas_lock(volatile BLASULONG *address){
   do {
     while (*address) {YIELDING;};
 
+#if defined(_MSC_VER) && !defined(__clang__)
+	// use intrinsic instead of inline assembly
+	ret = _InterlockedExchange(address, 1);
+	// inline assembly
+	/*__asm {
+		mov eax, address
+		mov ebx, 1
+		xchg [eax], ebx
+		mov ret, ebx
+	}*/
+#else
     __asm__ __volatile__(
 			 "xchgl %0, %1\n"
 			 : "=r"(ret), "=m"(*address)
 			 : "0"(1), "m"(*address)
 			 : "memory");
+#endif
 
   } while (ret);
 
@@ -68,31 +80,43 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #define BLAS_LOCK_DEFINED
 
 static __inline unsigned long long rpcc(void){
+#if defined(_MSC_VER) && !defined(__clang__)
+  return __rdtsc(); // use MSVC intrinsic
+#else
   unsigned int a, d;
 
   __asm__ __volatile__ ("rdtsc" : "=a" (a), "=d" (d));
 
   return ((unsigned long long)a + ((unsigned long long)d << 32));
+#endif
 };
 #define RPCC_DEFINED
 
 static __inline unsigned long getstackaddr(void){
+#if defined(_MSC_VER) && !defined(__clang__)
+  return (unsigned long)_ReturnAddress(); // use MSVC intrinsic
+#else
   unsigned long addr;
 
   __asm__ __volatile__ ("mov %%esp, %0"
 			 : "=r"(addr) : : "memory");
 
   return addr;
+#endif
 };
 
 
 static __inline long double sqrt_long(long double val) {
+#if defined(_MSC_VER) && !defined(__clang__)
+  return sqrt(val); // not sure if this will use fsqrt
+#else
   long double result;
 
   __asm__ __volatile__ ("fldt %1\n"
 		    "fsqrt\n"
 		    "fstpt %0\n" : "=m" (result) : "m"(val));
   return result;
+#endif
 }
 
 #define SQRT(a)  sqrt_long(a)
@@ -102,7 +126,7 @@ void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx);
 
 #define WHEREAMI
 
-static inline int WhereAmI(void){
+static __inline int WhereAmI(void){
   int eax, ebx, ecx, edx;
   int apicid;
 
@@ -148,9 +172,14 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 
   y = blas_quick_divide_table[y];
 
+#if defined(_MSC_VER) && !defined(__clang__)
+  (void*)result;
+  return x*y;
+#else
   __asm__ __volatile__  ("mull %0" :"=d" (result) :"a"(x), "0" (y));
 
   return result;
+#endif
 }
 #endif
 
@@ -286,7 +315,11 @@ REALNAME:
 
 #define PROFCODE
 
+#ifdef __clang__
+#define EPILOGUE .end
+#else
 #define EPILOGUE .end	 REALNAME
+#endif
 #endif
 
 #if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(__ELF__)

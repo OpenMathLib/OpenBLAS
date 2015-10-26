@@ -46,7 +46,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
 
   BLASLONG i, is, min_i;
 #if (TRANSA == 2) || (TRANSA == 4)
-  FLOAT _Complex temp;
+  OPENBLAS_COMPLEX_FLOAT temp;
 #endif
 #ifndef UNIT
   FLOAT atemp1, atemp2, btemp1, btemp2;

@@ -38,13 +38,16 @@ int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FL
 	BLASLONG ix,iy;
 	FLOAT temp;
 
+	BLASLONG inc_x2;
+	BLASLONG inc_y2;
+
 	if ( n < 0     )  return(0);
 
 	ix = 0;
 	iy = 0;
 
-	BLASLONG inc_x2 = 2 * inc_x;
-	BLASLONG inc_y2 = 2 * inc_y;
+	inc_x2 = 2 * inc_x;
+	inc_y2 = 2 * inc_y;
 
 	if ( beta_r == 0.0 && beta_i == 0.0)
 	{

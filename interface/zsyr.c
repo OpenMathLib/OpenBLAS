@@ -121,6 +121,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
   FLOAT *buffer;
   int trans, uplo;
   blasint info;
+  FLOAT * ALPHA = &alpha;
+  FLOAT alpha_r	= ALPHA[0];
+  FLOAT alpha_i	= ALPHA[1];
 #ifdef SMP
   int nthreads;
 #endif

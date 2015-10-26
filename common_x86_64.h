@@ -41,6 +41,10 @@
 
 #ifndef ASSEMBLER
 
+#ifdef C_MSVC
+#include <intrin.h>
+#endif
+
 #ifdef C_SUN
 #define	__asm__ __asm
 #define	__volatile__
@@ -61,32 +65,45 @@
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
+#ifndef C_MSVC
   int ret;
+#else
+  BLASULONG ret;
+#endif
 
   do {
     while (*address) {YIELDING;};
 
+#ifndef C_MSVC
     __asm__ __volatile__(
 			 "xchgl %0, %1\n"
 			 : "=r"(ret), "=m"(*address)
 			 : "0"(1), "m"(*address)
 			 : "memory");
-
+#else
+    ret=InterlockedExchange64((volatile LONG64 *)(address), 1);
+#endif
   } while (ret);
+
 }
 #define BLAS_LOCK_DEFINED
 
 static __inline BLASULONG rpcc(void){
+#ifdef C_MSVC
+  return __rdtsc();
+#else
   BLASULONG a, d;
 
   __asm__ __volatile__ ("rdtsc" : "=a" (a), "=d" (d));
 
   return ((BLASULONG)a + ((BLASULONG)d << 32));
+#endif
 }
 #define RPCC_DEFINED
 
 #define RPCC64BIT
 
+#ifndef C_MSVC
 static __inline BLASULONG getstackaddr(void){
   BLASULONG addr;
 
@@ -95,22 +112,32 @@ static __inline BLASULONG getstackaddr(void){
 
   return addr;
 }
+#endif
 
 static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 
+#ifdef C_MSVC
+  int cpuinfo[4];
+  __cpuid(cpuinfo, op);
+  *eax=cpuinfo[0];
+  *ebx=cpuinfo[1];
+  *ecx=cpuinfo[2];
+  *edx=cpuinfo[3];
+#else
         __asm__ __volatile__("cpuid"
 			     : "=a" (*eax),
 			     "=b" (*ebx),
 			     "=c" (*ecx),
 			     "=d" (*edx)
 			     : "0" (op));
+#endif
 }
 
 /*
 #define WHEREAMI
 */
 
-static inline int WhereAmI(void){
+static __inline int WhereAmI(void){
   int eax, ebx, ecx, edx;
   int apicid;
 
@@ -152,8 +179,12 @@ static inline int WhereAmI(void){
 #define GET_IMAGE_CANCEL
 
 #ifdef SMP
-#ifdef USE64BITINT
+#if defined(USE64BITINT)
 static __inline blasint blas_quickdivide(blasint x, blasint y){
+  return x / y;
+}
+#elif defined (C_MSVC)
+static __inline BLASLONG blas_quickdivide(BLASLONG x, BLASLONG y){
   return x / y;
 }
 #else

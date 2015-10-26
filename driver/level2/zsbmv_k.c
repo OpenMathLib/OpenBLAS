@@ -55,6 +55,8 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
   FLOAT *bufferY    = sbmvbuffer;
   FLOAT *bufferX    = sbmvbuffer;
 
+  OPENBLAS_COMPLEX_FLOAT result;
+
   if (incy != 1) {
     Y = bufferY;
     bufferX    = (FLOAT *)(((BLASLONG)bufferY + n * sizeof(FLOAT) * COMPSIZE + 4095) & ~4095);
@@ -83,7 +85,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 	    a + offset * COMPSIZE, 1, Y + (i - length) * COMPSIZE, 1, NULL, 0);
 
     if (length > 0) {
-      FLOAT _Complex result = DOTU_K(length, a + offset * COMPSIZE, 1, X + (i - length) * COMPSIZE, 1);
+      result = DOTU_K(length, a + offset * COMPSIZE, 1, X + (i - length) * COMPSIZE, 1);
 
       Y[i * 2 + 0] += alpha_r * CREAL(result) - alpha_i * CIMAG(result);
       Y[i * 2 + 1] += alpha_r * CIMAG(result) + alpha_i * CREAL(result);
@@ -100,7 +102,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
 	    a, 1, Y + i * COMPSIZE, 1, NULL, 0);
 
     if (length > 0) {
-      FLOAT _Complex result = DOTU_K(length, a + COMPSIZE, 1, X + (i + 1) * COMPSIZE, 1);
+      result = DOTU_K(length, a + COMPSIZE, 1, X + (i + 1) * COMPSIZE, 1);
 
       Y[i * 2 + 0] += alpha_r * CREAL(result) - alpha_i * CIMAG(result);
       Y[i * 2 + 1] += alpha_r * CIMAG(result) + alpha_i * CREAL(result);

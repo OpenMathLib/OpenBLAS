@@ -155,5 +155,11 @@ XSYMV_L_KERNEL =  ../generic/zsymv_k.c
 ZHEMV_U_KERNEL =  ../generic/zhemv_k.c
 ZHEMV_L_KERNEL =  ../generic/zhemv_k.c
 
+LSAME_KERNEL = ../generic/lsame.c
+SCABS_KERNEL	= ../generic/cabs.c
+DCABS_KERNEL	= ../generic/cabs.c
+QCABS_KERNEL	= ../generic/cabs.c
+
+#Dump kernel
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c

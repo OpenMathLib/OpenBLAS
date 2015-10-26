@@ -6,13 +6,7 @@
 
 void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
 
-  PRINT_DEBUG_NAME;
-
-  IDEBUG_START;
-
-  FUNCTION_PROFILE_START();
-
-#if defined(__i386__) || defined(__x86_64__) || defined(__ia64__)
+#if defined(__i386__) || defined(__x86_64__) || defined(__ia64__) || defined(_M_X64) || defined(_M_IX86)
 
   long double da_r = *(DA + 0);
   long double da_i = *(DA + 1);
@@ -21,6 +15,12 @@ void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   long double r;
 
   long double ada = fabs(da_r) + fabs(da_i);
+
+  PRINT_DEBUG_NAME;
+
+  IDEBUG_START;
+
+  FUNCTION_PROFILE_START();
 
   if (ada == ZERO) {
     *C        = ZERO;
@@ -53,6 +53,12 @@ void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
 
   FLOAT ada = fabs(da_r) + fabs(da_i);
   FLOAT adb;
+
+  PRINT_DEBUG_NAME;
+
+  IDEBUG_START;
+
+  FUNCTION_PROFILE_START();
 
   if (ada == ZERO) {
     *C        = ZERO;

@@ -60,7 +60,7 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #ifndef COMPLEX
   FLOAT result;
 #else
-  FLOAT _Complex result;
+  OPENBLAS_COMPLEX_FLOAT result;
 #endif
 
   a = (FLOAT *)args -> a;
