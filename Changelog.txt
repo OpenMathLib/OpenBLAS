@@ -1,5 +1,58 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.15
+27-Oct-2015
+common:
+	* Support cmake on x86/x86-64. Natively compiling on MS Visual Studio.
+	  (experimental. Thank Hank Anderson for the initial cmake porting work.)
+	  
+	  On Linux and Mac OSX, OpenBLAS cmake supports assembly kernels.
+	  e.g. cmake .
+	       make
+	       make test (Optional)
+
+	  On Windows MS Visual Studio, OpenBLAS cmake only support C kernels.
+	  (OpenBLAS uses AT&T style assembly, which is not supported by MSVC.)
+	  e.g. cmake -G "Visual Studio 12 Win64" .
+	       Open OpenBLAS.sln and build.
+	  
+	* Enable MAX_STACK_ALLOC flags by default.
+	  Improve ger and gemv for small matrices.
+	* Improve gemv parallel with small m and large n case.
+	* Improve ?imatcopy when lda==ldb (#633. Thanks, Martin Koehler)
+	* Add vecLib benchmarks (#565. Thanks, Andreas Noack.)
+	* Fix LAPACK lantr for row major matrices (#634. Thanks, Dan Kortschak)
+	* Fix LAPACKE lansy (#640. Thanks, Dan Kortschak)
+	* Import bug fixes for LAPACKE s/dormlq, c/zunmlq 
+	* Raise the signal when pthread_create fails (#668. Thanks, James K. Lowden)
+	* Remove g77 from compiler list.
+	* Enable AppVeyor Windows CI.
+
+x86/x86-64:
+	* Support pure C generic kernels for x86/x86-64.
+	* Support Intel Boardwell and Skylake by Haswell kernels.
+	* Support AMD Excavator by Steamroller kernels.
+	* Optimize s/d/c/zdot for Intel SandyBridge and Haswell.
+	* Optimize s/d/c/zdot for AMD Piledriver and Steamroller.
+	* Optimize s/d/c/zapxy for Intel SandyBridge and Haswell.
+	* Optimize s/d/c/zapxy for AMD Piledriver and Steamroller.
+	* Optimize d/c/zscal for Intel Haswell, dscal for Intel SandyBridge.
+	* Optimize d/c/zscal for AMD Bulldozer, Piledriver and Steamroller.
+	* Optimize s/dger for Intel SandyBridge.
+	* Optimize s/dsymv for Intel SandyBridge.
+	* Optimize ssymv for Intel Haswell.
+	* Optimize dgemv for Intel Nehalem and Haswell.
+	* Optimize dtrmm for Intel Haswell.
+
+ARM:
+	* Support Android NDK armeabi-v7a-hard ABI (-mfloat-abi=hard)
+	  e.g. make HOSTCC=gcc CC=arm-linux-androideabi-gcc NO_LAPACK=1 TARGET=ARMV7
+	* Fix lock, rpcc bugs (#616, #617. Thanks, Grazvydas Ignotas)
+POWER:
+	* Support ppc64le platform (ELF ABI v2. #612. Thanks, Matthew Brandyberry.)
+	* Support POWER7/8 by POWER6 kernels. (#612. Thanks, Fábio Perez.)
+
+====================================================================
 Version 0.2.14
 24-Mar-2015
 common:
