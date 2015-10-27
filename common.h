@@ -98,6 +98,10 @@ extern "C" {
 
 #ifdef OS_ANDROID
 #define NO_SYSV_IPC
+//Android NDK only supports complex.h since Android 5.0
+#if __ANDROID_API__ < 21
+#define FORCE_OPENBLAS_COMPLEX_STRUCT
+#endif
 #endif
 
 #ifdef OS_WINDOWS
@@ -501,12 +505,12 @@ static void __inline blas_lock(volatile BLASULONG *address){
 /* C99 supports complex floating numbers natively, which GCC also offers as an
    extension since version 3.0.  If neither are available, use a compatible
    structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
-#if (defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
-     (__GNUC__ >= 3 && !defined(__cplusplus)) )
+#if ((defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
+      (__GNUC__ >= 3 && !defined(__cplusplus))) && !(defined(FORCE_OPENBLAS_COMPLEX_STRUCT)))
   #define OPENBLAS_COMPLEX_C99
-#ifndef __cplusplus
-  #include <complex.h>
-#endif
+  #ifndef __cplusplus
+    #include <complex.h>
+  #endif
   typedef float _Complex openblas_complex_float;
   typedef double _Complex openblas_complex_double;
   typedef xdouble _Complex openblas_complex_xdouble;
