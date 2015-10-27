@@ -33,6 +33,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ssymv_U_microk_bulldozer-2.c"
 #elif defined(NEHALEM)
 #include "ssymv_U_microk_nehalem-2.c"
+#elif defined(HASWELL)
+#include "ssymv_U_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "ssymv_U_microk_sandy-2.c"
 #endif
 
 #ifndef HAVE_KERNEL_4x4

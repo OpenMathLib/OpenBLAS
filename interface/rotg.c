@@ -14,8 +14,7 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
 
 #endif
 
-
-#if defined(__i386__) || defined(__x86_64__) || defined(__ia64__)
+#if defined(__i386__) || defined(__x86_64__) || defined(__ia64__) || defined(_M_X64) || defined(_M_IX86)
 
   long double da = *DA;
   long double db = *DB;

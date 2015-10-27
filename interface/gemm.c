@@ -121,6 +121,9 @@ void NAME(char *TRANSA, char *TRANSB,
   FLOAT *sa, *sb;
 
 #ifdef SMP
+  int nthreads_max;
+  int nthreads_avail;
+  double MNK;
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -237,6 +240,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   XFLOAT *sa, *sb;
 
 #ifdef SMP
+  int nthreads_max;
+  int nthreads_avail;
+  double MNK;
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -400,15 +406,15 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   mode |= (transa << BLAS_TRANSA_SHIFT);
   mode |= (transb << BLAS_TRANSB_SHIFT);
 
-  int nthreads_max = num_cpu_avail(3);
-  int nthreads_avail = nthreads_max;
+  nthreads_max = num_cpu_avail(3);
+  nthreads_avail = nthreads_max;
 
 #ifndef COMPLEX
-  double MNK = (double) args.m * (double) args.n * (double) args.k;
+  MNK = (double) args.m * (double) args.n * (double) args.k;
   if ( MNK <= (65536.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	nthreads_max = 1;
 #else
-  double MNK = (double) args.m * (double) args.n * (double) args.k;
+  MNK = (double) args.m * (double) args.n * (double) args.k;
   if ( MNK <= (8192.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	nthreads_max = 1;
 #endif

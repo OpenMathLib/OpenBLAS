@@ -31,8 +31,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NEHALEM)
 #include "daxpy_microk_nehalem-2.c"
-#elif defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#elif defined(BULLDOZER)
 #include "daxpy_microk_bulldozer-2.c"
+#elif defined(STEAMROLLER)
+#include "daxpy_microk_steamroller-2.c"
+#elif defined(PILEDRIVER)
+#include "daxpy_microk_piledriver-2.c"
+#elif defined(HASWELL)
+#include "daxpy_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "daxpy_microk_sandy-2.c"
 #endif
 
 
@@ -71,7 +79,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -8;
+		BLASLONG n1 = n & -16;
 
 		if ( n1 )
 			daxpy_kernel_8(n1, x, y , &da );
@@ -86,6 +94,27 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 		}
 		return(0);
 
+
+	}
+
+	BLASLONG n1 = n & -4;
+
+	while(i < n1)
+	{
+
+		FLOAT m1      = da * x[ix] ;
+		FLOAT m2      = da * x[ix+inc_x] ;
+		FLOAT m3      = da * x[ix+2*inc_x] ;
+		FLOAT m4      = da * x[ix+3*inc_x] ;
+
+		y[iy]         += m1 ;
+		y[iy+inc_y]   += m2 ;
+		y[iy+2*inc_y] += m3 ;
+		y[iy+3*inc_y] += m4 ;
+
+		ix  += inc_x*4 ;
+		iy  += inc_y*4 ;
+		i+=4 ;
 
 	}
 

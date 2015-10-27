@@ -40,6 +40,12 @@
 #include <string.h>
 #include "cpuid.h"
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#define C_INLINE __inline
+#else
+#define C_INLINE inline
+#endif
+
 /*
 #ifdef NO_AVX
 #define CPUTYPE_HASWELL CPUTYPE_NEHALEM
@@ -53,12 +59,26 @@
 #endif
 */
 
+#if defined(_MSC_VER) && !defined(__clang__)
+
+void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx)
+{
+  int cpuInfo[4] = {-1};
+  __cpuid(cpuInfo, op);
+  *eax = cpuInfo[0];
+  *ebx = cpuInfo[1];
+  *ecx = cpuInfo[2];
+  *edx = cpuInfo[3];
+}
+
+#else
+
 #ifndef CPUIDEMU
 
 #if defined(__APPLE__) && defined(__i386__)
 void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx);
 #else
-static inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
+static C_INLINE void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 #if defined(__i386__) && defined(__PIC__)
   __asm__ __volatile__
     ("mov %%ebx, %%edi;"
@@ -115,14 +135,16 @@ void cpuid(unsigned int op, unsigned int *eax, unsigned int *ebx, unsigned int *
 
 #endif
 
-static inline int have_cpuid(void){
+#endif // _MSC_VER
+
+static C_INLINE int have_cpuid(void){
   int eax, ebx, ecx, edx;
 
   cpuid(0, &eax, &ebx, &ecx, &edx);
   return eax;
 }
 
-static inline int have_excpuid(void){
+static C_INLINE int have_excpuid(void){
   int eax, ebx, ecx, edx;
 
   cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
@@ -130,10 +152,14 @@ static inline int have_excpuid(void){
 }
 
 #ifndef NO_AVX
-static inline void xgetbv(int op, int * eax, int * edx){
+static C_INLINE void xgetbv(int op, int * eax, int * edx){
   //Use binary code for xgetbv
+#if defined(_MSC_VER) && !defined(__clang__)
+  *eax = __xgetbv(op);
+#else
   __asm__ __volatile__
     (".byte 0x0f, 0x01, 0xd0": "=a" (*eax), "=d" (*edx) : "c" (op) : "cc");
+#endif
 }
 #endif
 
@@ -1101,6 +1127,16 @@ int get_cpuname(void){
 #endif
           else
 	    return CPUTYPE_NEHALEM;
+	case 13:
+	  //Broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
 	}
 	break;
       case 4:
@@ -1115,8 +1151,54 @@ int get_cpuname(void){
 #endif
           else
 	    return CPUTYPE_NEHALEM;
+	case 7:
+	case 15:
+	  //Broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	case 14:
+	  //Skylake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
         }
         break;
+      case 5:
+        switch (model) {
+	case 6:
+	  //Broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	case 5:
+        case 14:
+	  // Skylake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	}
+	break;
       }
       break;
     case 0x7:
@@ -1163,11 +1245,20 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
 	case 0:
-	  if(support_avx())
-	    return CPUTYPE_STEAMROLLER;
-	  else
-	    return CPUTYPE_BARCELONA; //OS don't support AVX.
+	  switch(exmodel){
+	  case 3:
+	    if(support_avx())
+	      return CPUTYPE_STEAMROLLER;
+	    else
+	      return CPUTYPE_BARCELONA; //OS don't support AVX.
 
+	  case 6:
+	    if(support_avx())
+	      return CPUTYPE_EXCAVATOR;
+	    else
+	      return CPUTYPE_BARCELONA; //OS don't support AVX.
+	  }
+	  break;
 	}
 	break;
       case  5:
@@ -1297,6 +1388,7 @@ static char *cpuname[] = {
   "PILEDRIVER",
   "HASWELL",
   "STEAMROLLER",
+  "EXCAVATOR",
 };
 
 static char *lowercpuname[] = {
@@ -1349,6 +1441,7 @@ static char *lowercpuname[] = {
   "piledriver",
   "haswell",
   "steamroller",
+  "excavator",
 };
 
 static char *corename[] = {
@@ -1378,6 +1471,7 @@ static char *corename[] = {
   "PILEDRIVER",
   "HASWELL",
   "STEAMROLLER",
+  "EXCAVATOR",
 };
 
 static char *corename_lower[] = {
@@ -1407,6 +1501,7 @@ static char *corename_lower[] = {
   "piledriver",
   "haswell",
   "steamroller",
+  "excavator",
 };
 
 
@@ -1528,6 +1623,16 @@ int get_coretype(void){
 #endif
           else
 	    return CORE_NEHALEM;
+	case 13:
+	  //broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
 	}
 	break;
       case 4:
@@ -1542,8 +1647,54 @@ int get_coretype(void){
 #endif
           else
 	    return CORE_NEHALEM;
+	case 7:
+	case 15:
+	  //broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
+	case 14:
+	  //Skylake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
         }
         break;
+      case 5:
+        switch (model) {
+	case 6:
+	  //broadwell
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
+	case 5:
+	case 14:
+	  // Skylake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
+	}
+	break;
       }
       break;
 
@@ -1574,10 +1725,20 @@ int get_coretype(void){
 	    return CORE_BARCELONA; //OS don't support AVX.
 	
 	case 0:
-	  if(support_avx())
-	    return CORE_STEAMROLLER;
-	  else
-	    return CORE_BARCELONA; //OS don't support AVX.
+	  switch(exmodel){
+	  case 3:
+	    if(support_avx())
+	      return CORE_STEAMROLLER;
+	    else
+	      return CORE_BARCELONA; //OS don't support AVX.
+
+	  case 6:
+	    if(support_avx())
+	      return CORE_EXCAVATOR;
+	    else
+	      return CORE_BARCELONA; //OS don't support AVX.
+	  }
+	  break;
 	}
 
 

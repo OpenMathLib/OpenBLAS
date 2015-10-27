@@ -23,6 +23,7 @@ CC = gcc
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
      CC = clang
+#     EXTRALIB += -Wl,-no_compact_unwind
 endif
 endif
 
@@ -64,6 +65,9 @@ endif
 ifeq ($(TARGET), STEAMROLLER)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
+ifeq ($(TARGET), EXCAVATOR)
+GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
 endif
 
 
@@ -89,6 +93,9 @@ ifeq ($(TARGET_CORE), PILEDRIVER)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 ifeq ($(TARGET_CORE), STEAMROLLER)
+GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
+ifeq ($(TARGET_CORE), EXCAVATOR)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 endif
@@ -195,12 +202,18 @@ DLLWRAP = $(CROSS_SUFFIX)dllwrap
 OBJCOPY = $(CROSS_SUFFIX)objcopy
 OBJCONV = $(CROSS_SUFFIX)objconv
 
+
+# For detect fortran failed, only build BLAS.
+ifeq ($(NOFORTRAN), 1)
+NO_LAPACK = 1
+endif
+
 #
 #  OS dependent settings
 #
 
 ifeq ($(OSNAME), Darwin)
-export MACOSX_DEPLOYMENT_TARGET=10.2
+export MACOSX_DEPLOYMENT_TARGET=10.6
 MD5SUM = md5 -r
 endif
 
@@ -323,6 +336,11 @@ ifeq ($(ARCH), x86)
 ifndef BINARY
 NO_BINARY_MODE	= 1
 endif
+
+ifeq ($(CORE), generic)
+NO_EXPRECISION = 1
+endif
+
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
 # ifeq logical or. GCC or LSB
@@ -341,6 +359,11 @@ endif
 endif
 
 ifeq ($(ARCH), x86_64)
+
+ifeq ($(CORE), generic)
+NO_EXPRECISION = 1
+endif
+
 ifndef NO_EXPRECISION
 ifeq ($(F_COMPILER), GFORTRAN)
 # ifeq logical or. GCC or LSB
@@ -408,7 +431,7 @@ endif
 ifeq ($(ARCH), x86_64)
 DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
 ifneq ($(NO_AVX), 1)
-DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER STEAMROLLER
+DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER STEAMROLLER EXCAVATOR
 endif
 ifneq ($(NO_AVX2), 1)
 DYNAMIC_CORE += HASWELL
@@ -578,7 +601,7 @@ else
 FCOMMON_OPT += -m32
 endif
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -fopenmp
 endif
 endif
@@ -590,14 +613,14 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
 
 ifeq ($(F_COMPILER), FUJITSU)
 CCOMMON_OPT += -DF_INTERFACE_FUJITSU
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
@@ -615,7 +638,7 @@ endif
 else
 FCOMMON_OPT += -q32
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
@@ -633,7 +656,7 @@ FCOMMON_OPT += -tp p7-64
 else
 FCOMMON_OPT += -tp p7
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
 endif
@@ -662,7 +685,7 @@ FCOMMON_OPT += -mabi=n32
 endif
 endif
 
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
 endif
@@ -699,7 +722,7 @@ FCOMMON_OPT += -m64
 endif
 endif
 
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FEXTRALIB   += -lstdc++
 FCOMMON_OPT += -mp
 endif
@@ -747,14 +770,14 @@ FCOMMON_OPT  += -m32
 else
 FCOMMON_OPT  += -m64
 endif
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -xopenmp=parallel
 endif
 endif
 
 ifeq ($(F_COMPILER), COMPAQ)
 CCOMMON_OPT  += -DF_INTERFACE_COMPAQ
-ifdef USE_OPENMP
+ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -openmp
 endif
 endif
@@ -857,18 +880,18 @@ ifdef USE_SIMPLE_THREADED_LEVEL3
 CCOMMON_OPT	+= -DUSE_SIMPLE_THREADED_LEVEL3
 endif
 
-ifndef LIBNAMESUFFIX
-LIBPREFIX = libopenblas
-else
-LIBPREFIX = libopenblas_$(LIBNAMESUFFIX)
-endif
-
 ifndef SYMBOLPREFIX
 SYMBOLPREFIX =
 endif
 
 ifndef SYMBOLSUFFIX
 SYMBOLSUFFIX =
+endif
+
+ifndef LIBNAMESUFFIX
+LIBPREFIX = lib$(SYMBOLPREFIX)openblas$(SYMBOLSUFFIX)
+else
+LIBPREFIX = lib$(SYMBOLPREFIX)openblas$(SYMBOLSUFFIX)_$(LIBNAMESUFFIX)
 endif
 
 KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)

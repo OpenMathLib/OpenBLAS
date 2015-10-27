@@ -338,4 +338,4 @@ zchkaa.o: zchkaa.f
 	$(FORTRAN) $(DRVOPTS) -c $< -o $@
  
 .f.o: 
-	$(FORTRAN) $(OPTS) -c $< -o $@
+	$(FORTRAN) $(DRVOPTS) -c $< -o $@

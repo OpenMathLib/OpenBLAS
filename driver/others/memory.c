@@ -90,7 +90,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef OS_WINDOWS
 #include <sys/mman.h>
+#ifndef NO_SYSV_IPC
 #include <sys/shm.h>
+#endif
 #include <sys/ipc.h>
 #endif
 
@@ -137,8 +139,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#define CONSTRUCTOR __cdecl
+#define DESTRUCTOR __cdecl
+#elif defined(OS_DARWIN) && defined(C_GCC)
 #define CONSTRUCTOR	__attribute__ ((constructor))
 #define DESTRUCTOR	__attribute__ ((destructor))
+#else
+#define CONSTRUCTOR	__attribute__ ((constructor(101)))
+#define DESTRUCTOR	__attribute__ ((destructor(101)))
+#endif
 
 #ifdef DYNAMIC_ARCH
 gotoblas_t *gotoblas = NULL;
@@ -167,6 +177,14 @@ int get_num_procs(void) {
   return nums;
 }
 #endif
+#endif
+
+#ifdef OS_ANDROID
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_ONLN);
+  return nums;
+}
 #endif
 
 #ifdef OS_WINDOWS
@@ -266,7 +284,7 @@ void openblas_fork_handler()
   //   http://gcc.gnu.org/bugzilla/show_bug.cgi?id=60035
   // In the mean time build with USE_OPENMP=0 or link against another
   // implementation of OpenMP.
-#if !defined(OS_WINDOWS) && defined(SMP_SERVER)
+#if !(defined(OS_WINDOWS) || defined(OS_ANDROID)) && defined(SMP_SERVER)
   int err;
   err = pthread_atfork ((void (*)(void)) BLASFUNC(blas_thread_shutdown), NULL, NULL);
   if(err != 0)
@@ -276,7 +294,7 @@ void openblas_fork_handler()
 
 int blas_get_cpu_number(void){
   env_var_t p;
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   int max_num;
 #endif
   int blas_goto_num   = 0;
@@ -284,7 +302,7 @@ int blas_get_cpu_number(void){
 
   if (blas_num_threads) return blas_num_threads;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   max_num = get_num_procs();
 #endif
 
@@ -308,7 +326,7 @@ int blas_get_cpu_number(void){
   else if (blas_omp_num > 0) blas_num_threads = blas_omp_num;
   else blas_num_threads = MAX_CPU_NUMBER;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   if (blas_num_threads > max_num) blas_num_threads = max_num;
 #endif
 
@@ -709,8 +727,6 @@ static void *alloc_shm(void *address){
   return map_address;
 }
 
-#endif
-
 #if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
 
 static void alloc_hugetlb_free(struct release_t *release){
@@ -787,12 +803,12 @@ static void *alloc_hugetlb(void *address){
   
   if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) {
       CloseHandle(hToken);
-      return -1;
+      return (void*)-1;
   }
 
   if (AdjustTokenPrivileges(hToken, FALSE, &tp, 0, NULL, NULL) != TRUE) {
       CloseHandle(hToken);
-      return -1;
+      return (void*)-1;
   }
 
   map_address  = (void *)VirtualAlloc(address,
@@ -815,6 +831,8 @@ static void *alloc_hugetlb(void *address){
 
   return map_address;
 }
+#endif
+
 #endif
 
 #ifdef  ALLOC_HUGETLBFILE
@@ -917,11 +935,12 @@ void *blas_memory_alloc(int procpos){
 #ifdef ALLOC_DEVICEDRIVER
     alloc_devicedirver,
 #endif
-#if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
-    alloc_hugetlb,
-#endif
+/* Hugetlb implicitly assumes ALLOC_SHM */
 #ifdef ALLOC_SHM
     alloc_shm,
+#endif
+#if ((defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
+    alloc_hugetlb,
 #endif
 #ifdef ALLOC_MMAP
     alloc_mmap,
@@ -1062,7 +1081,7 @@ void *blas_memory_alloc(int procpos){
 	}
 #endif
 
-#if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
+#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
 	if ((*func == alloc_hugetlb) && (map_address != (void *)-1)) hugetlb_allocated = 1;
 #endif
 
@@ -1142,6 +1161,9 @@ void blas_memory_free(void *free_area){
   printf("  Position : %d\n", position);
 #endif
 
+  // arm: ensure all writes are finished before other thread takes this memory
+  WMB;
+
   memory[position].used = 0;
 
 #ifdef DEBUG
@@ -1159,6 +1181,16 @@ void blas_memory_free(void *free_area){
 #endif
 
   return;
+}
+
+void *blas_memory_alloc_nolock(int unused) {
+  void *map_address;
+  map_address = (void *)malloc(BUFFER_SIZE + FIXED_PAGESIZE);
+  return map_address;
+}
+
+void blas_memory_free_nolock(void * map_address) {
+  free(map_address);
 }
 
 void blas_shutdown(void){
@@ -1377,6 +1409,28 @@ void DESTRUCTOR gotoblas_quit(void) {
    moncontrol (1);
 #endif
 }
+
+#if defined(_MSC_VER) && !defined(__clang__)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+{
+  switch (ul_reason_for_call)
+  {
+    case DLL_PROCESS_ATTACH:
+      gotoblas_init();
+      break;
+    case DLL_THREAD_ATTACH:
+      break;
+    case DLL_THREAD_DETACH:
+      break;
+    case DLL_PROCESS_DETACH:
+      gotoblas_quit();
+      break;
+    default:
+      break;
+  }
+  return TRUE;
+}
+#endif
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))
 /* Don't call me; this is just work around for PGI / Sun bug */

@@ -106,7 +106,7 @@
 	stfd	f24,   80(SP)
 
 #if (defined(_AIX) || defined(__APPLE__)) && !defined(__64BIT__) && defined(DOUBLE)
-	lwz	INCY,    56 + STACKSIZE(SP)
+	lwz	INCY, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 
 	fmr	ALPHA, f1

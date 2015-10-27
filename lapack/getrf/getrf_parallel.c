@@ -67,7 +67,7 @@ double sqrt(double);
 #undef  GETRF_FACTOR
 #define GETRF_FACTOR 1.00
 
-static inline BLASLONG FORMULA1(BLASLONG M, BLASLONG N, BLASLONG IS, BLASLONG BK, BLASLONG T) {
+static __inline BLASLONG FORMULA1(BLASLONG M, BLASLONG N, BLASLONG IS, BLASLONG BK, BLASLONG T) {
 
   double m = (double)(M - IS - BK);
   double n = (double)(N - IS - BK);
@@ -373,7 +373,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   BLASLONG num_cpu;
 
+#ifdef _MSC_VER
+  BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE];
+#else
   volatile BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE] __attribute__((aligned(128)));
+#endif
 
 #ifndef COMPLEX
 #ifdef XDOUBLE

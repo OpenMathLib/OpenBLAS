@@ -1,9 +1,17 @@
+DSCALKERNEL = dscal.c
+CSCALKERNEL = cscal.c
+ZSCALKERNEL = zscal.c
+
+SAXPYKERNEL = saxpy.c
 DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
 ZAXPYKERNEL = zaxpy.c
 
 SDOTKERNEL     = sdot.c
 DDOTKERNEL     = ddot.c
+CDOTKERNEL     = cdot.c
+ZDOTKERNEL     = zdot.c
+
 
 DSYMV_U_KERNEL = dsymv_U.c
 DSYMV_L_KERNEL = dsymv_L.c

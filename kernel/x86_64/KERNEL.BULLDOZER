@@ -1,9 +1,14 @@
+DSCALKERNEL = dscal.c
+CSCALKERNEL = cscal.c
+ZSCALKERNEL = zscal.c
+
 DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
 ZAXPYKERNEL = zaxpy.c
 
 SDOTKERNEL     = sdot.c
-DDOTKERNEL     = ddot.c
+CDOTKERNEL     = cdot.c
+ZDOTKERNEL     = zdot.c
 
 DSYMV_U_KERNEL = dsymv_U.c
 DSYMV_L_KERNEL = dsymv_L.c
@@ -26,11 +31,11 @@ SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
 SGEMMONCOPY    =  gemm_ncopy_2_bulldozer.S
 SGEMMOTCOPY    =  gemm_tcopy_2_bulldozer.S
-
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 DGEMMKERNEL    =  dgemm_kernel_8x2_bulldozer.S
 DGEMMINCOPY    =  dgemm_ncopy_8_bulldozer.S
 DGEMMITCOPY    =  dgemm_tcopy_8_bulldozer.S
@@ -40,6 +45,7 @@ DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 CGEMMKERNEL    =  cgemm_kernel_4x2_bulldozer.S
 CGEMMINCOPY    =  ../generic/zgemm_ncopy_4.c
 CGEMMITCOPY    =  ../generic/zgemm_tcopy_4.c
@@ -49,6 +55,7 @@ CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 ZGEMMKERNEL    =  zgemm_kernel_2x2_bulldozer.S
 ZGEMMINCOPY    =
 ZGEMMITCOPY    =

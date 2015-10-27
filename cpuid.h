@@ -39,6 +39,10 @@
 #ifndef CPUID_H
 #define CPUID_H
 
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+#define INTEL_AMD
+#endif
+
 #define VENDOR_INTEL      1
 #define VENDOR_UMC        2
 #define VENDOR_AMD        3
@@ -59,7 +63,7 @@
 #define FAMILY_PM     7
 #define FAMILY_IA64   8
 
-#if defined(__i386__) || defined(__x86_64__)
+#ifdef INTEL_AMD
 #define GET_EXFAMILY  1
 #define GET_EXMODEL   2
 #define GET_TYPE      3
@@ -109,6 +113,7 @@
 #define CORE_PILEDRIVER  23
 #define CORE_HASWELL     24
 #define CORE_STEAMROLLER 25
+#define CORE_EXCAVATOR   26
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -203,5 +208,6 @@ typedef struct {
 #define CPUTYPE_PILEDRIVER              47
 #define CPUTYPE_HASWELL 		48
 #define CPUTYPE_STEAMROLLER 		49
+#define CPUTYPE_EXCAVATOR 		50
 
 #endif

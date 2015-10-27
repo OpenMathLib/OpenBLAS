@@ -115,7 +115,7 @@
 	stfd	f31,  136(SP)
 
 #if (defined(_AIX) || defined(__APPLE__)) && !defined(__64BIT__) && defined(DOUBLE)
-	lwz	INCY,    56 + STACKSIZE(SP)
+	lwz	INCY, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 
 	slwi	INCX, INCX, BASE_SHIFT

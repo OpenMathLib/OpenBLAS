@@ -53,12 +53,12 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *BETA, FLOAT *
 
 #endif
 
-  if (n <= 0) return;
-
   FLOAT alpha_r = *(ALPHA + 0);
   FLOAT alpha_i = *(ALPHA + 1);
   FLOAT beta_r  = *(BETA  + 0);
   FLOAT beta_i  = *(BETA  + 1);
+
+  if (n <= 0) return;
 
   FUNCTION_PROFILE_START();
 

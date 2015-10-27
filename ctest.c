@@ -44,6 +44,10 @@ COMPILER_DEC
 COMPILER_GNU
 #endif
 
+#if defined(__ANDROID__)
+OS_ANDROID
+#endif
+
 #if defined(__linux__)
 OS_LINUX
 #endif

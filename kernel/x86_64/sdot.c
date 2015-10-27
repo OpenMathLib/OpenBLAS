@@ -28,10 +28,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#if defined(BULLDOZER) 
 #include "sdot_microk_bulldozer-2.c"
+#elif defined(STEAMROLLER) || defined(PILEDRIVER)
+#include "sdot_microk_steamroller-2.c"
 #elif defined(NEHALEM)
 #include "sdot_microk_nehalem-2.c"
+#elif defined(HASWELL)
+#include "sdot_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "sdot_microk_sandy-2.c"
 #endif
 
 
@@ -74,7 +80,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -16;
+		BLASLONG n1 = n & -32;
 
 		if ( n1 )
 			sdot_kernel_16(n1, x, y , &dot );
@@ -90,6 +96,18 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 		}
 		return(dot);
 
+
+	}
+
+	BLASLONG n1 = n & -2;
+
+	while(i < n1)
+	{
+
+		dot += y[iy] * x[ix] + y[iy+inc_y] * x[ix+inc_x];
+		ix  += inc_x*2 ;
+		iy  += inc_y*2 ;
+		i+=2 ;
 
 	}
 

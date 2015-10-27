@@ -58,6 +58,7 @@ static void __inline blas_lock(volatile unsigned long *address){
 			 : "memory");
   } while (ret);
 }
+#define BLAS_LOCK_DEFINED
 
 static __inline unsigned long rpcc(void){
   unsigned long clocks;
@@ -66,6 +67,7 @@ static __inline unsigned long rpcc(void){
 
   return clocks;
 };
+#define RPCC_DEFINED
 
 #ifdef __64BIT__
 #define RPCC64BIT

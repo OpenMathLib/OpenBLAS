@@ -149,6 +149,11 @@
 #define DOMATCOPY_K_RN		domatcopy_k_rn
 #define DOMATCOPY_K_CT		domatcopy_k_ct
 #define DOMATCOPY_K_RT		domatcopy_k_rt
+
+#define DIMATCOPY_K_CN		dimatcopy_k_cn
+#define DIMATCOPY_K_RN		dimatcopy_k_rn
+#define DIMATCOPY_K_CT      dimatcopy_k_ct
+#define DIMATCOPY_K_RT      dimatcopy_k_rt
 #define DGEADD_K                dgeadd_k 
 
 #else
@@ -267,6 +272,10 @@
 #define DOMATCOPY_K_RN		gotoblas -> domatcopy_k_rn
 #define DOMATCOPY_K_CT		gotoblas -> domatcopy_k_ct
 #define DOMATCOPY_K_RT		gotoblas -> domatcopy_k_rt
+#define DIMATCOPY_K_CN		gotoblas -> dimatcopy_k_cn
+#define DIMATCOPY_K_RN		gotoblas -> dimatcopy_k_rn
+#define DIMATCOPY_K_CT		gotoblas -> dimatcopy_k_ct
+#define DIMATCOPY_K_RT		gotoblas -> dimatcopy_k_rt
 
 #define DGEADD_K                gotoblas -> dgeadd_k 
 

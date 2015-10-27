@@ -67,6 +67,7 @@ extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BULLDOZER;
 extern gotoblas_t  gotoblas_PILEDRIVER;
 extern gotoblas_t  gotoblas_STEAMROLLER;
+extern gotoblas_t  gotoblas_EXCAVATOR;
 #ifdef NO_AVX2
 #define gotoblas_HASWELL gotoblas_SANDYBRIDGE
 #else
@@ -79,6 +80,7 @@ extern gotoblas_t  gotoblas_HASWELL;
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #define gotoblas_STEAMROLLER gotoblas_BARCELONA
+#define gotoblas_EXCAVATOR gotoblas_BARCELONA
 #endif
 
 
@@ -221,10 +223,57 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	//Intel Broadwell
+	if (model == 13) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
 	return NULL;
       case 4:
 		//Intel Haswell
 	if (model == 5 || model == 6) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Broadwell
+	if (model == 7 || model == 15) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Skylake
+	if (model == 14) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	return NULL;
+      case 5:
+	//Intel Broadwell
+	if (model == 6) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Skylake
+	if (model == 14 || model == 5) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
@@ -278,12 +327,22 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}else if(model == 0){
-	  //AMD STEAMROLLER
-	  if(support_avx())
-	    return &gotoblas_STEAMROLLER;
-	  else{
-	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
-	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	  if (exmodel == 3) {
+	    //AMD STEAMROLLER
+	    if(support_avx())
+	      return &gotoblas_STEAMROLLER;
+	    else{
+	      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	    }
+	  }else if (exmodel == 6) {
+	    if(support_avx())
+	      return &gotoblas_EXCAVATOR;
+	    else{
+	      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	    }
+
 	  }
 	}
 
@@ -328,6 +387,7 @@ static char *corename[] = {
     "Piledriver",
     "Haswell",
     "Steamroller",
+    "Excavator",
 };
 
 char *gotoblas_corename(void) {
@@ -353,6 +413,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_PILEDRIVER)   return corename[19];
   if (gotoblas == &gotoblas_HASWELL)      return corename[20];
   if (gotoblas == &gotoblas_STEAMROLLER)  return corename[21];
+  if (gotoblas == &gotoblas_EXCAVATOR)    return corename[22];
 
   return corename[0];
 }
@@ -383,7 +444,7 @@ static gotoblas_t *force_coretype(char *coretype){
 
 	switch (found)
 	{
-
+		case 22: return (&gotoblas_EXCAVATOR);
 		case 21: return (&gotoblas_STEAMROLLER);
 		case 20: return (&gotoblas_HASWELL);
 		case 19: return (&gotoblas_PILEDRIVER);

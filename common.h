@@ -82,7 +82,10 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 
 #ifdef OS_LINUX
 #include <malloc.h>
@@ -91,6 +94,14 @@ extern "C" {
 
 #if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD)
 #include <sched.h>
+#endif
+
+#ifdef OS_ANDROID
+#define NO_SYSV_IPC
+//Android NDK only supports complex.h since Android 5.0
+#if __ANDROID_API__ < 21
+#define FORCE_OPENBLAS_COMPLEX_STRUCT
+#endif
 #endif
 
 #ifdef OS_WINDOWS
@@ -106,8 +117,11 @@ extern "C" {
 #endif
 #else
 #include <sys/mman.h>
+#ifndef NO_SYSV_IPC
 #include <sys/shm.h>
+#endif
 #include <sys/time.h>
+#include <time.h>
 #include <unistd.h>
 #include <math.h>
 #ifdef SMP
@@ -287,13 +301,6 @@ typedef int blasint;
 #define COMPSIZE  2
 #endif
 
-#if defined(C_PGI) || defined(C_SUN)
-#define CREAL(X)	(*((FLOAT *)&X + 0))
-#define CIMAG(X)	(*((FLOAT *)&X + 1))
-#else
-#define CREAL	__real__
-#define CIMAG	__imag__
-#endif
 
 #define Address_H(x) (((x)+(1<<15))>>16)
 #define Address_L(x) ((x)-((Address_H(x))<<16))
@@ -307,7 +314,11 @@ typedef int blasint;
 #endif
 
 #if defined(OS_WINDOWS)
+#if defined(_MSC_VER) && !defined(__clang__)
+#define YIELDING    YieldProcessor()
+#else
 #define YIELDING	SwitchToThread()
+#endif
 #endif
 
 #if defined(ARMV7) || defined(ARMV6) || defined(ARMV8) || defined(ARMV5)
@@ -404,7 +415,51 @@ typedef char env_var_t[MAX_PATH];
 typedef char* env_var_t;
 #define readenv(p, n) ((p)=getenv(n))
 #endif
+
+#if !defined(RPCC_DEFINED) && !defined(OS_WINDOWS)
+#ifdef _POSIX_MONOTONIC_CLOCK
+#if defined(__GLIBC_PREREQ) // cut the if condition if two lines, otherwise will fail at __GLIBC_PREREQ(2, 17)
+#if __GLIBC_PREREQ(2, 17) // don't require -lrt
+#define USE_MONOTONIC
 #endif
+#elif defined(OS_ANDROID)
+#define USE_MONOTONIC
+#endif
+#endif
+/* use similar scale as x86 rdtsc for timeouts to work correctly */
+static inline unsigned long long rpcc(void){
+#ifdef USE_MONOTONIC
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return (unsigned long long)ts.tv_sec * 1000000000ull + ts.tv_nsec;
+#else
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  return (unsigned long long)tv.tv_sec * 1000000000ull + tv.tv_usec * 1000;
+#endif
+}
+#define RPCC_DEFINED
+#define RPCC64BIT
+#endif // !RPCC_DEFINED
+
+#if !defined(BLAS_LOCK_DEFINED) && defined(__GNUC__)
+static void __inline blas_lock(volatile BLASULONG *address){
+
+  do {
+    while (*address) {YIELDING;};
+
+  } while (!__sync_bool_compare_and_swap(address, 0, 1));
+}
+#define BLAS_LOCK_DEFINED
+#endif
+
+#ifndef RPCC_DEFINED
+#error "rpcc() implementation is missing for your platform"
+#endif
+#ifndef BLAS_LOCK_DEFINED
+#error "blas_lock() implementation is missing for your platform"
+#endif
+#endif // !ASSEMBLER
 
 #ifdef OS_LINUX
 #include "common_linux.h"
@@ -450,18 +505,52 @@ typedef char* env_var_t;
 /* C99 supports complex floating numbers natively, which GCC also offers as an
    extension since version 3.0.  If neither are available, use a compatible
    structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
-#if (defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
-     (__GNUC__ >= 3 && !defined(__cplusplus)))
+#if ((defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
+      (__GNUC__ >= 3 && !defined(__cplusplus))) && !(defined(FORCE_OPENBLAS_COMPLEX_STRUCT)))
   #define OPENBLAS_COMPLEX_C99
+  #ifndef __cplusplus
+    #include <complex.h>
+  #endif
   typedef float _Complex openblas_complex_float;
   typedef double _Complex openblas_complex_double;
   typedef xdouble _Complex openblas_complex_xdouble;
+  #define openblas_make_complex_float(real, imag)    ((real) + ((imag) * _Complex_I))
+  #define openblas_make_complex_double(real, imag)   ((real) + ((imag) * _Complex_I))
+  #define openblas_make_complex_xdouble(real, imag)  ((real) + ((imag) * _Complex_I))
 #else
   #define OPENBLAS_COMPLEX_STRUCT
   typedef struct { float real, imag; } openblas_complex_float;
   typedef struct { double real, imag; } openblas_complex_double;
   typedef struct { xdouble real, imag; } openblas_complex_xdouble;
+  #define openblas_make_complex_float(real, imag)    {(real), (imag)}
+  #define openblas_make_complex_double(real, imag)   {(real), (imag)}
+  #define openblas_make_complex_xdouble(real, imag)  {(real), (imag)}
 #endif
+
+#ifdef XDOUBLE
+#define OPENBLAS_COMPLEX_FLOAT openblas_complex_xdouble
+#define OPENBLAS_MAKE_COMPLEX_FLOAT(r,i) openblas_make_complex_xdouble(r,i)
+#elif defined(DOUBLE)
+#define OPENBLAS_COMPLEX_FLOAT openblas_complex_double
+#define OPENBLAS_MAKE_COMPLEX_FLOAT(r,i) openblas_make_complex_double(r,i)
+#else
+#define OPENBLAS_COMPLEX_FLOAT openblas_complex_float
+#define OPENBLAS_MAKE_COMPLEX_FLOAT(r,i) openblas_make_complex_float(r,i)
+#endif
+
+#if defined(C_PGI) || defined(C_SUN)
+#define CREAL(X)	(*((FLOAT *)&X + 0))
+#define CIMAG(X)	(*((FLOAT *)&X + 1))
+#else
+#ifdef OPENBLAS_COMPLEX_STRUCT
+#define CREAL(Z)	((Z).real)
+#define CIMAG(Z)	((Z).imag)
+#else
+#define CREAL	__real__
+#define CIMAG	__imag__
+#endif
+#endif
+
 #endif  // ASSEMBLER
 
 #ifndef IFLUSH
@@ -476,6 +565,10 @@ typedef char* env_var_t;
 #ifdef USE_OPENMP
 #undef USE_OPENMP
 #endif
+#endif
+
+#if defined(C_MSVC)
+#define inline __inline
 #endif
 
 #ifndef ASSEMBLER
@@ -499,6 +592,8 @@ void  blas_set_parameter(void);
 int   blas_get_cpu_number(void);
 void *blas_memory_alloc  (int);
 void  blas_memory_free   (void *);
+void *blas_memory_alloc_nolock  (int); //use malloc without blas_lock
+void  blas_memory_free_nolock   (void *);
 
 int  get_num_procs (void);
 

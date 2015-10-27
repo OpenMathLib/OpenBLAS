@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2014, The OpenBLAS Project
+Copyright (c) 2011-2015, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,55 +30,28 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
-/*********************************************************************/
-/* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* All rights reserved.                                              */
-/*                                                                   */
-/* Redistribution and use in source and binary forms, with or        */
-/* without modification, are permitted provided that the following   */
-/* conditions are met:                                               */
-/*                                                                   */
-/*   1. Redistributions of source code must retain the above         */
-/*      copyright notice, this list of conditions and the following  */
-/*      disclaimer.                                                  */
-/*                                                                   */
-/*   2. Redistributions in binary form must reproduce the above      */
-/*      copyright notice, this list of conditions and the following  */
-/*      disclaimer in the documentation and/or other materials       */
-/*      provided with the distribution.                              */
-/*                                                                   */
-/*    THIS  SOFTWARE IS PROVIDED  BY THE  UNIVERSITY OF  TEXAS AT    */
-/*    AUSTIN  ``AS IS''  AND ANY  EXPRESS OR  IMPLIED WARRANTIES,    */
-/*    INCLUDING, BUT  NOT LIMITED  TO, THE IMPLIED  WARRANTIES OF    */
-/*    MERCHANTABILITY  AND FITNESS FOR  A PARTICULAR  PURPOSE ARE    */
-/*    DISCLAIMED.  IN  NO EVENT SHALL THE UNIVERSITY  OF TEXAS AT    */
-/*    AUSTIN OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,    */
-/*    INCIDENTAL,  SPECIAL, EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES    */
-/*    (INCLUDING, BUT  NOT LIMITED TO,  PROCUREMENT OF SUBSTITUTE    */
-/*    GOODS  OR  SERVICES; LOSS  OF  USE,  DATA,  OR PROFITS;  OR    */
-/*    BUSINESS INTERRUPTION) HOWEVER CAUSED  AND ON ANY THEORY OF    */
-/*    LIABILITY, WHETHER  IN CONTRACT, STRICT  LIABILITY, OR TORT    */
-/*    (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING IN ANY WAY OUT    */
-/*    OF  THE  USE OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE    */
-/*    POSSIBILITY OF SUCH DAMAGE.                                    */
-/*                                                                   */
-/* The views and conclusions contained in the software and           */
-/* documentation are those of the authors and should not be          */
-/* interpreted as representing official policies, either expressed   */
-/* or implied, of The University of Texas at Austin.                 */
-/*********************************************************************/
-
 #ifndef COMMON_ARM
 #define COMMON_ARM
 
+#if defined(ARMV5) || defined(ARMV6)
+
 #define MB
 #define WMB
+
+#else
+
+#define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
+#define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
+
+#endif
 
 #define INLINE inline
 
 #define RETURN_BY_COMPLEX
 
 #ifndef ASSEMBLER
+
+#if defined(ARMV6) || defined(ARMV7) || defined(ARMV8)
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
@@ -88,37 +61,29 @@ static void __inline blas_lock(volatile BLASULONG *address){
     while (*address) {YIELDING;};
 
     __asm__ __volatile__(
-                         "ldrex r2, [%1]                                                \n\t"
-                         "mov   r2, #0                                                  \n\t"
-                         "strex r3, r2, [%1]                                            \n\t"
-			 "mov	%0 , r3							\n\t"
-                         : "=r"(ret), "=r"(address)
-                         : "1"(address)
-                         : "memory", "r2" , "r3"
-
-
+                         "ldrex r2, [%1]      \n\t"
+                         "strex %0, %2, [%1]  \n\t"
+                         "orr   %0, r2        \n\t"
+                         : "=&r"(ret)
+                         : "r"(address), "r"(1)
+                         : "memory", "r2"
     );
 
   } while (ret);
-
+  MB;
 }
 
-
-static inline unsigned long long rpcc(void){
-  unsigned long long ret=0;
-  double v;
-  struct timeval tv;
-  gettimeofday(&tv,NULL);
-  v=(double) tv.tv_sec + (double) tv.tv_usec * 1e-6;
-  ret = (unsigned long long) ( v * 1000.0d );
-  return ret;
-}
+#define BLAS_LOCK_DEFINED
+#endif
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
 }
 
-#if defined(DOUBLE)
+#if !defined(HAVE_VFP)
+/* no FPU, soft float */
+#define GET_IMAGE(res)
+#elif defined(DOUBLE)
 #define GET_IMAGE(res)  __asm__ __volatile__("vstr.f64 d1, %0" : "=m"(res) : : "memory")
 #else
 #define GET_IMAGE(res)  __asm__ __volatile__("vstr.f32 s1, %0" : "=m"(res) : : "memory")
@@ -164,6 +129,10 @@ REALNAME:
 
 #ifndef MAP_ANONYMOUS
 #define MAP_ANONYMOUS MAP_ANON
+#endif
+
+#if !defined(ARMV5) && !defined(ARMV6) && !defined(ARMV7) && !defined(ARMV8)
+#error "you must define ARMV5, ARMV6, ARMV7 or ARMV8"
 #endif
 
 #endif

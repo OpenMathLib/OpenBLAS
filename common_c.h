@@ -220,6 +220,15 @@
 #define COMATCOPY_K_CTC         comatcopy_k_ctc
 #define COMATCOPY_K_RTC         comatcopy_k_rtc
 
+#define CIMATCOPY_K_CN          cimatcopy_k_cn
+#define CIMATCOPY_K_RN          cimatcopy_k_rn
+#define CIMATCOPY_K_CT          cimatcopy_k_ct
+#define CIMATCOPY_K_RT          cimatcopy_k_rt
+#define CIMATCOPY_K_CNC         cimatcopy_k_cnc
+#define CIMATCOPY_K_RNC         cimatcopy_k_rnc
+#define CIMATCOPY_K_CTC         cimatcopy_k_ctc
+#define CIMATCOPY_K_RTC         cimatcopy_k_rtc
+
 #define CGEADD_K                cgeadd_k 
 
 #else
@@ -403,6 +412,16 @@
 #define COMATCOPY_K_RNC         gotoblas -> comatcopy_k_rnc
 #define COMATCOPY_K_CTC         gotoblas -> comatcopy_k_ctc
 #define COMATCOPY_K_RTC         gotoblas -> comatcopy_k_rtc
+
+#define CIMATCOPY_K_CN          gotoblas -> cimatcopy_k_cn
+#define CIMATCOPY_K_RN          gotoblas -> cimatcopy_k_rn
+#define CIMATCOPY_K_CT          gotoblas -> cimatcopy_k_ct
+#define CIMATCOPY_K_RT          gotoblas -> cimatcopy_k_rt
+#define CIMATCOPY_K_CNC         gotoblas -> cimatcopy_k_cnc
+#define CIMATCOPY_K_RNC         gotoblas -> cimatcopy_k_rnc
+#define CIMATCOPY_K_CTC         gotoblas -> cimatcopy_k_ctc
+#define CIMATCOPY_K_RTC         gotoblas -> cimatcopy_k_rtc
+
 #define CGEADD_K                gotoblas -> cgeadd_k 
 
 #endif

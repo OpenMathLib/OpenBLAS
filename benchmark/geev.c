@@ -144,6 +144,7 @@ int main(int argc, char *argv[]){
   FLOAT *a,*vl,*vr,*wi,*wr,*work,*rwork;
   FLOAT wkopt[4];
   char job='V';
+  char jobr='N';
   char *p;
 
   blasint m, i, j, info,lwork;
@@ -202,9 +203,9 @@ int main(int argc, char *argv[]){
     lwork = -1;
     m=to;
 #ifndef COMPLEX
-    GEEV (&job, &job, &m, a, &m, wr, wi, vl, &m, vr, &m, wkopt, &lwork, &info);
+    GEEV (&job, &jobr, &m, a, &m, wr, wi, vl, &m, vr, &m, wkopt, &lwork, &info);
 #else
-    GEEV (&job, &job, &m, a, &m, wr, vl, &m, vr, &m, wkopt, &lwork,rwork, &info);
+    GEEV (&job, &jobr, &m, a, &m, wr, vl, &m, vr, &m, wkopt, &lwork,rwork, &info);
 #endif
 
   lwork = (blasint)wkopt[0];
@@ -226,16 +227,16 @@ int main(int argc, char *argv[]){
 
     lwork = -1;
 #ifndef COMPLEX
-    GEEV (&job, &job, &m, a, &m, wr, wi, vl, &m, vr, &m, wkopt, &lwork, &info);
+    GEEV (&job, &jobr, &m, a, &m, wr, wi, vl, &m, vr, &m, wkopt, &lwork, &info);
 #else
-    GEEV (&job, &job, &m, a, &m, wr, vl, &m, vr, &m, wkopt, &lwork,rwork, &info);
+    GEEV (&job, &jobr, &m, a, &m, wr, vl, &m, vr, &m, wkopt, &lwork,rwork, &info);
 #endif
 
     lwork = (blasint)wkopt[0];
 #ifndef COMPLEX
-    GEEV (&job, &job, &m, a, &m, wr, wi, vl, &m, vr, &m, work, &lwork, &info);
+    GEEV (&job, &jobr, &m, a, &m, wr, wi, vl, &m, vr, &m, work, &lwork, &info);
 #else
-    GEEV (&job, &job, &m, a, &m, wr, vl, &m, vr, &m, work, &lwork,rwork, &info);
+    GEEV (&job, &jobr, &m, a, &m, wr, vl, &m, vr, &m, work, &lwork,rwork, &info);
 #endif
 
     gettimeofday( &stop, (struct timezone *)0);

@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
 
   FLOAT *a, *b, *c;
   FLOAT alpha[] = {1.0, 1.0};
-  FLOAT beta [] = {1.0, 1.0};
+  FLOAT beta [] = {0.0, 0.0};
   char trans='N';
   blasint m, n, i, j;
   int loops = 1;
@@ -168,12 +168,21 @@ int main(int argc, char *argv[]){
 	  has_param_n=1;	  
   }
 
-
 #ifdef linux
   srandom(getpid());
 #endif
+ 
+	for(j = 0; j < m; j++){
+      		for(i = 0; i < to * COMPSIZE; i++){
+			a[i + j * to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			b[i + j * to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			c[i + j * to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      		}
+    	}
 
-  fprintf(stderr, "   SIZE       Flops\n");
+
+
+  fprintf(stderr, "   SIZE          Flops          Time\n");
 
   for(m = from; m <= to; m += step)
   {
@@ -188,34 +197,23 @@ int main(int argc, char *argv[]){
 
 
     fprintf(stderr, " %6dx%d : ", (int)m, (int)n);
+    gettimeofday( &start, (struct timezone *)0);
 
     for (l=0; l<loops; l++)
     {
-  
-    	for(j = 0; j < m; j++){
-      		for(i = 0; i < m * COMPSIZE; i++){
-			a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-			b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-			c[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-      		}
-    	}
-
-    	gettimeofday( &start, (struct timezone *)0);
 
     	GEMM (&trans, &trans, &m, &n, &m, alpha, a, &m, b, &m, beta, c, &m );
 
-    	gettimeofday( &stop, (struct timezone *)0);
 
-    	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-
-	timeg += time1;
 
     }
+   gettimeofday( &stop, (struct timezone *)0);
+   time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
 
-    timeg /= loops;
+    timeg = time1/loops;
     fprintf(stderr,
-	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)n / timeg * 1.e-6);
+	    " %10.2f MFlops %10.6f sec\n",
+	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)n / timeg * 1.e-6, time1);
 
   }
 

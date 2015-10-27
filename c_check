@@ -4,6 +4,8 @@
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
 $hostarch = "x86_64" if ($hostarch eq "amd64");
+$hostarch = "arm" if ($hostarch =~ /^arm.*/);
+$hostarch = "arm64" if ($hostarch eq "aarch64");
 
 $binary = $ENV{"BINARY"};
 
@@ -28,7 +30,7 @@ if ($ARGV[0] =~ /(.*)(-[.\d]+)/) {
 	$cross_suffix = $1;
     }
 } else {
-    if ($ARGV[0] =~ /(.*-)(.*)/) {
+    if ($ARGV[0] =~ /([^\/]*-)([^\/]*$)/) {
 	$cross_suffix = $1;
     }
 }
@@ -55,6 +57,7 @@ $os = osf             if ($data =~ /OS_OSF/);
 $os = WINNT           if ($data =~ /OS_WINNT/);
 $os = CYGWIN_NT       if ($data =~ /OS_CYGWIN_NT/);
 $os = Interix         if ($data =~ /OS_INTERIX/);
+$os = Android         if ($data =~ /OS_ANDROID/);
 
 $architecture = x86    if ($data =~ /ARCH_X86/);
 $architecture = x86_64 if ($data =~ /ARCH_X86_64/);

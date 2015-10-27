@@ -71,7 +71,13 @@ double fabs(double);
 #endif
 #endif
 
+
+
 #if defined(__WIN32__) || defined(__WIN64__)
+
+#ifndef DELTA_EPOCH_IN_MICROSECS
+#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
+#endif
 
 int gettimeofday(struct timeval *tv, void *tz){
 
@@ -98,6 +104,7 @@ int gettimeofday(struct timeval *tv, void *tz){
 }
 
 #endif
+
 
 static __inline double getmflops(int ratio, int m, double secs){
 

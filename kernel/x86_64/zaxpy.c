@@ -29,8 +29,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#if defined(BULLDOZER)
 #include "zaxpy_microk_bulldozer-2.c"
+#elif defined(PILEDRIVER) || defined(STEAMROLLER)
+#include "zaxpy_microk_steamroller-2.c"
+#elif defined(HASWELL)
+#include "zaxpy_microk_haswell-2.c"
+#elif defined(SANDYBRIDGE)
+#include "zaxpy_microk_sandy-2.c"
 #endif
 
 
@@ -78,13 +84,13 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		int n1 = n & -4;
+		BLASLONG n1 = n & -16;
 
 		if ( n1 )
 		{
 			da[0] = da_r;
 			da[1] = da_i;
-			zaxpy_kernel_4(n1, x, y , &da );
+			zaxpy_kernel_4(n1, x, y , da );
 			ix = 2 * n1;
 		}
 		i = n1;

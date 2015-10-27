@@ -38,6 +38,7 @@
 
 #include <stdio.h>
 #include "common.h"
+#include "l1param.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
 #endif
@@ -80,6 +81,9 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   FLOAT *buffer;
 #ifdef SMP
   int nthreads;
+  int nthreads_max;
+  int nthreads_avail;
+  double MNK;
 #endif
 
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG,  FLOAT * , BLASLONG, FLOAT *, BLASLONG, FLOAT *) = {
@@ -134,6 +138,9 @@ void CNAME(enum CBLAS_ORDER order,
   blasint info, t;
 #ifdef SMP
   int nthreads;
+  int nthreads_max;
+  int nthreads_avail;
+  double MNK;
 #endif
 
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG,  FLOAT * , BLASLONG, FLOAT *, BLASLONG, FLOAT *) = {
@@ -189,7 +196,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 
 #endif
-
+  //printf("m=%d, n=%d, trans=%d, incx=%d, incy=%d, alpha=%f, beta=%f\n", m, n, trans, incx, incy, alpha, beta);
   if ((m==0) || (n==0)) return;
 
   lenx = n;
@@ -211,24 +218,33 @@ void CNAME(enum CBLAS_ORDER order,
 #ifdef MAX_STACK_ALLOC
   // make it volatile because some gemv implementation (ex: dgemv_n.S)
   // do not restore all register
-  volatile int stack_alloc_size = m + n;
+  volatile int stack_alloc_size = 0;
+  //for gemv_n and gemv_t, try to allocate on stack
+  stack_alloc_size = m + n;
+#ifdef ALIGNED_ACCESS
+  stack_alloc_size += 3;
+#endif
   if(stack_alloc_size < 128)
-      //dgemv_n.S require a 128 bytes buffer
-      stack_alloc_size = 128;
+    //dgemv_n.S require a 128 bytes buffer
+    stack_alloc_size = 128;
+
   if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
-      stack_alloc_size = 0;
+    stack_alloc_size = 0;
+
   FLOAT stack_buffer[stack_alloc_size];
   buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc(1);
+  //  printf("stack_alloc_size=%d\n", stack_alloc_size);
 #else
+  //Original OpenBLAS/GotoBLAS codes.
   buffer = (FLOAT *)blas_memory_alloc(1);
 #endif
 
 #ifdef SMP
 
-  int  nthreads_max = num_cpu_avail(2);
-  int  nthreads_avail = nthreads_max;
+  nthreads_max = num_cpu_avail(2);
+  nthreads_avail = nthreads_max;
 
-  double MNK = (double) m * (double) n;
+  MNK = (double) m * (double) n;
   if ( MNK <= (24.0 * 24.0  * (double) (GEMM_MULTITHREAD_THRESHOLD*GEMM_MULTITHREAD_THRESHOLD) )  )
         nthreads_max = 1;
 
@@ -251,10 +267,13 @@ void CNAME(enum CBLAS_ORDER order,
 #endif
 
 #ifdef MAX_STACK_ALLOC
-  if(!stack_alloc_size)
-#endif
+  if(!stack_alloc_size){
     blas_memory_free(buffer);
-
+  }
+#else
+    blas_memory_free(buffer);
+#endif
+  
   FUNCTION_PROFILE_END(1, m * n + m + n,  2 * m * n);
 
   IDEBUG_END;

@@ -376,6 +376,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 				sgemv_kernel_4x4(NB,ap,x_ptr,ybuffer,&alpha);
 				ap[0] += lda4; 
 				ap[1] += lda4; 
+				ap[2] += lda4; 
+				ap[3] += lda4; 
 				a_ptr += lda4;
 				x_ptr += 4;	
 			}

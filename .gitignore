@@ -15,6 +15,7 @@ lapack-netlib/make.inc
 lapack-netlib/lapacke/include/lapacke_mangling.h
 lapack-netlib/TESTING/testing_results.txt
 *.so
+*.so.*
 *.a
 .svn
 *~
@@ -65,3 +66,5 @@ test/sblat3
 test/zblat1
 test/zblat2
 test/zblat3
+build
+build.*
