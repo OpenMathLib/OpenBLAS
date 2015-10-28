@@ -77,7 +77,7 @@ void CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT alpha_r, FLOA
   FLOAT *bufferY    = gemvbuffer;
   FLOAT *bufferX    = gemvbuffer;
 #ifdef TRANS
-  FLOAT _Complex temp;
+  OPENBLAS_COMPLEX_FLOAT temp;
 #endif
 
   if (incy != 1) {

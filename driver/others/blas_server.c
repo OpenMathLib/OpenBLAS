@@ -70,9 +70,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*********************************************************************/
 
 #include "common.h"
-#ifdef OS_LINUX
+#if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
 #include <dlfcn.h>
+#include <signal.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 #endif
 
 #ifndef likely
@@ -265,7 +267,7 @@ int get_node(void);
 
 static int increased_threads = 0;
 
-static int blas_thread_server(void *arg){
+static void* blas_thread_server(void *arg){
 
   /* Thread identifier */
   BLASLONG  cpu = (BLASLONG)arg;
@@ -458,7 +460,7 @@ static int blas_thread_server(void *arg){
 
   //pthread_exit(NULL);
 
-  return 0;
+  return NULL;
 }
 
 #ifdef MONITOR
@@ -565,14 +567,23 @@ int blas_thread_init(void){
 
 #ifdef NEED_STACKATTR
       ret=pthread_create(&blas_threads[i], &attr,
-		     (void *)&blas_thread_server, (void *)i);
+		     &blas_thread_server, (void *)i);
 #else
       ret=pthread_create(&blas_threads[i], NULL,
-		     (void *)&blas_thread_server, (void *)i);
+		     &blas_thread_server, (void *)i);
 #endif
       if(ret!=0){
-	fprintf(STDERR,"OpenBLAS: pthread_creat error in blas_thread_init function. Error code:%d\n",ret);
-	exit(1);
+	struct rlimit rlim;
+        const char *msg = strerror(ret);
+        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create: %s\n", msg);
+        if(0 == getrlimit(RLIMIT_NPROC, &rlim)) {
+          fprintf(STDERR, "OpenBLAS blas_thread_init: RLIMIT_NPROC "
+                  "%ld current, %ld max\n", (long)(rlim.rlim_cur), (long)(rlim.rlim_max));
+        }
+        if(0 != raise(SIGINT)) {
+          fprintf(STDERR, "OpenBLAS blas_thread_init: calling exit(3)\n");
+          exit(EXIT_FAILURE);
+        }
       }
     }
 
@@ -832,10 +843,10 @@ void goto_set_num_threads(int num_threads) {
 
 #ifdef NEED_STACKATTR
       pthread_create(&blas_threads[i], &attr,
-		     (void *)&blas_thread_server, (void *)i);
+		     &blas_thread_server, (void *)i);
 #else
       pthread_create(&blas_threads[i], NULL,
-		     (void *)&blas_thread_server, (void *)i);
+		     &blas_thread_server, (void *)i);
 #endif
     }
 

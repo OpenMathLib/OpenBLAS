@@ -75,6 +75,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   BLASLONG ls, is, js;
   BLASLONG min_l, min_i, min_j;
   BLASLONG jjs, min_jj;
+#if !((defined(UPPER) && !defined(TRANSA)) || (!defined(UPPER) && defined(TRANSA)))
+  BLASLONG start_ls;
+#endif
 
   m = args -> m;
   n = args -> n;
@@ -226,8 +229,6 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   }
 
 #else
-  BLASLONG start_ls;
-
   for(js = n; js > 0; js -= GEMM_R){
     min_j = js;
     if (min_j > GEMM_R) min_j = GEMM_R;

@@ -44,7 +44,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 
   BLASLONG i;
 #if (TRANSA == 2) || (TRANSA == 4)
-  FLOAT _Complex result;
+  OPENBLAS_COMPLEX_FLOAT result;
 #endif
 #ifndef UNIT
   FLOAT ar, ai, br, bi, ratio, den;

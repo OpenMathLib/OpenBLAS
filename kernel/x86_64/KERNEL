@@ -119,11 +119,11 @@ XCOPYKERNEL = zcopy.S
 endif
 
 ifndef SDOTKERNEL
-SDOTKERNEL = ../generic/dot.c 
+SDOTKERNEL = ../generic/dot.c
 endif
 
 ifndef DSDOTKERNEL
-DSDOTKERNEL = ../generic/dot.c 
+DSDOTKERNEL = ../generic/dot.c
 endif
 
 ifndef DDOTKERNEL

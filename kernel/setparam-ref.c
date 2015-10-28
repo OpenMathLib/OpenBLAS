@@ -550,6 +550,13 @@ gotoblas_t TABLE_NAME = {
   zomatcopy_k_cnTS, zomatcopy_k_ctTS, zomatcopy_k_rnTS, zomatcopy_k_rtTS,
   zomatcopy_k_cncTS, zomatcopy_k_ctcTS, zomatcopy_k_rncTS, zomatcopy_k_rtcTS,
 
+  simatcopy_k_cnTS, simatcopy_k_ctTS, simatcopy_k_rnTS, simatcopy_k_rtTS,
+  dimatcopy_k_cnTS, dimatcopy_k_ctTS, dimatcopy_k_rnTS, dimatcopy_k_rtTS,
+  cimatcopy_k_cnTS, cimatcopy_k_ctTS, cimatcopy_k_rnTS, cimatcopy_k_rtTS,
+  cimatcopy_k_cncTS, cimatcopy_k_ctcTS, cimatcopy_k_rncTS, cimatcopy_k_rtcTS,
+  zimatcopy_k_cnTS, zimatcopy_k_ctTS, zimatcopy_k_rnTS, zimatcopy_k_rtTS,
+  zimatcopy_k_cncTS, zimatcopy_k_ctcTS, zimatcopy_k_rncTS, zimatcopy_k_rtcTS,
+
   sgeadd_kTS, dgeadd_kTS, cgeadd_kTS, zgeadd_kTS
 
 };

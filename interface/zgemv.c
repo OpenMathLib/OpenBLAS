@@ -79,6 +79,9 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   FLOAT *buffer;
 #ifdef SMP
   int nthreads;
+  int nthreads_max;
+  int nthreads_avail;
+  double MNK;
 #endif
 
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASLONG,
@@ -91,13 +94,13 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   blasint    lenx, leny;
   blasint    i;
 
-  PRINT_DEBUG_NAME;
-
   FLOAT alpha_r = *(ALPHA + 0);
   FLOAT alpha_i = *(ALPHA + 1);
 
   FLOAT beta_r  = *(BETA + 0);
   FLOAT beta_i  = *(BETA + 1);
+
+  PRINT_DEBUG_NAME;
 
   TOUPPER(trans);
 
@@ -145,6 +148,9 @@ void CNAME(enum CBLAS_ORDER order,
   blasint info, t;
 #ifdef SMP
   int nthreads;
+  int nthreads_max;
+  int nthreads_avail;
+  double MNK;
 #endif
 
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASLONG,
@@ -153,13 +159,13 @@ void CNAME(enum CBLAS_ORDER order,
 	      GEMV_O, GEMV_U, GEMV_S, GEMV_D,
 	    };
 
-  PRINT_DEBUG_CNAME;
-
   FLOAT alpha_r = *(ALPHA + 0);
   FLOAT alpha_i = *(ALPHA + 1);
 
   FLOAT beta_r  = *(BETA + 0);
   FLOAT beta_i  = *(BETA + 1);
+
+  PRINT_DEBUG_CNAME;
 
   trans = -1;
   info  =  0;
@@ -234,10 +240,10 @@ void CNAME(enum CBLAS_ORDER order,
 
 #ifdef SMP
 
-  int  nthreads_max = num_cpu_avail(2);
-  int  nthreads_avail = nthreads_max;
+  nthreads_max = num_cpu_avail(2);
+  nthreads_avail = nthreads_max;
 
-  double MNK = (double) m * (double) n;
+  MNK = (double) m * (double) n;
   if ( MNK <= ( 256.0  * (double) (GEMM_MULTITHREAD_THRESHOLD * GEMM_MULTITHREAD_THRESHOLD)  ))
         nthreads_max = 1;
 
