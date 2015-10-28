@@ -28,7 +28,9 @@ endif
 
 ifeq ($(OSNAME), WINNT)
 ifeq ($(F_COMPILER), GFORTRAN)
+ifndef ONLY_CBLAS
 EXTRALIB += -lgfortran
+endif
 endif
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(C_COMPILER), GCC)
@@ -39,7 +41,9 @@ endif
 
 ifeq ($(OSNAME), CYGWIN_NT)
 ifeq ($(F_COMPILER), GFORTRAN)
+ifndef ONLY_CBLAS
 EXTRALIB += -lgfortran
+endif
 endif
 endif
 
