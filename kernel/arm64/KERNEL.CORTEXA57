@@ -50,4 +50,13 @@ DSWAPKERNEL  = swap.S
 CSWAPKERNEL  = swap.S
 ZSWAPKERNEL  = swap.S
 
+SGEMVNKERNEL = gemv_n.S
+DGEMVNKERNEL = gemv_n.S
+CGEMVNKERNEL = zgemv_n.S
+ZGEMVNKERNEL = zgemv_n.S
+
+SGEMVTKERNEL = gemv_t.S
+DGEMVTKERNEL = gemv_t.S
+CGEMVTKERNEL = zgemv_t.S
+ZGEMVTKERNEL = zgemv_t.S
 
