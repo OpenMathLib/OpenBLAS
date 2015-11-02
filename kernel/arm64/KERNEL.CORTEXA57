@@ -60,3 +60,11 @@ DGEMVTKERNEL = gemv_t.S
 CGEMVTKERNEL = zgemv_t.S
 ZGEMVTKERNEL = zgemv_t.S
 
+STRMMKERNEL = ../generic/trmmkernel_4x4.c
+
+SGEMMKERNEL    =  sgemm_kernel_4x4.S
+SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
+SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
+SGEMMONCOPYOBJ =  sgemm_oncopy.o
+SGEMMOTCOPYOBJ =  sgemm_otcopy.o
+
