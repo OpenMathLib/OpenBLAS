@@ -104,6 +104,11 @@
 #define PREFETCHWSIZE  72
 #endif
 
+#ifdef POWER8
+#define PREFETCHSIZE   16
+#define PREFETCHWSIZE  72
+#endif
+
 #ifdef PPCG4
 #define PREFETCHSIZE   16
 #define PREFETCHWSIZE  72

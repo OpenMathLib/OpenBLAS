@@ -174,6 +174,11 @@
 #define PREFETCHSIZE_C  40
 #endif
 
+#ifdef POWER8
+#define PREFETCHSIZE_A  96
+#define PREFETCHSIZE_C  40
+#endif
+
 #ifndef NEEDPARAM
 
 #ifndef __64BIT__

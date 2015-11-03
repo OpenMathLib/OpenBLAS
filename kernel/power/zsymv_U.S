@@ -166,7 +166,11 @@
 #define PREFETCHSIZE_A  112
 #endif
 
-#if defined(POWER4) || defined(POWER5) || defined(POWER6) || defined(PPC970)
+#ifdef POWER8
+#define PREFETCHSIZE_A  112
+#endif
+
+#if defined(POWER4) || defined(POWER5) || defined(POWER6) || defined(PPC970) || defined(POWER8)
 #define NOP1
 #define NOP2
 #else

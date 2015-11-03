@@ -144,6 +144,11 @@
 #define PREFETCHSIZE_C   8
 #endif
 
+#ifdef POWER8
+#define PREFETCHSIZE_A  24
+#define PREFETCHSIZE_C   8
+#endif
+
 #if !(defined(CONJ) && defined(XCONJ))
 #define FMADDR FMADD
 #define FMSUBR FNMSUB
