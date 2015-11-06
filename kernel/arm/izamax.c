@@ -53,24 +53,24 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0;
 	BLASLONG ix=0;
-	FLOAT maxf[2];
+	FLOAT maxf;
 	BLASLONG max=0;
 	BLASLONG inc_x2;
 
-	if (n < 0 || inc_x < 1 ) return(max);
+	if (n <= 0 || inc_x <= 0) return(max);
 
 	inc_x2 = 2 * inc_x;
 
-	maxf[0] = ABS(x[ix]);
-	maxf[1] = ABS(x[ix+1]);
+	maxf = CABS1(x,0);
+	ix += inc_x2;
+	i++;
 
 	while(i < n)
 	{
-		if( CABS1(x,ix) > CABS1(maxf,0) )
+		if( CABS1(x,ix) > maxf )
 		{
 			max = i;
-			maxf[0] = ABS(x[ix]);
-			maxf[1] = ABS(x[ix+1]);
+			maxf = CABS1(x,ix);
 		}
 		ix += inc_x2;
 		i++;
