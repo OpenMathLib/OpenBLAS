@@ -34,6 +34,13 @@
 #ifndef _LAPACKE_CONFIG_H_
 #define _LAPACKE_CONFIG_H_
 
+//For Android
+#if defined(__ANDROID__)
+#if __ANDROID_API__ < 21
+#define LAPACK_COMPLEX_STRUCTURE
+#endif
+#endif
+
 #ifdef __cplusplus
 #if defined(LAPACK_COMPLEX_CPP)
 #include <complex>
