@@ -68,3 +68,4 @@ test/zblat2
 test/zblat3
 build
 build.*
+*.swp
