@@ -53,7 +53,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0;
 	FLOAT sumf = 0.0;
-	if (n < 0 || inc_x < 1 ) return(sumf);
+	if (n <= 0 || inc_x <= 0) return(sumf);
 
 	n *= inc_x;
 	while(i < n)

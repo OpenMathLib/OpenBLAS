@@ -45,7 +45,6 @@ const static FLOAT dp1 = 1.;
 int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buffer){
 
   BLASLONG i;
-  FLOAT *gemvbuffer = (FLOAT *)buffer;
   FLOAT *B = b;
   BLASLONG length;
 #if (TRANSA == 2) || (TRANSA == 4)
@@ -57,7 +56,6 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG inc
 
   if (incb != 1) {
     B = buffer;
-    gemvbuffer = (FLOAT *)(((BLASLONG)buffer + n * sizeof(FLOAT) * COMPSIZE+ 4095) & ~4095);
     COPY_K(n, b, incb, buffer, 1);
   }
 
