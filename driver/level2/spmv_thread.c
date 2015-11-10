@@ -55,7 +55,7 @@
 static int spmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *dummy1, FLOAT *buffer, BLASLONG pos){
 
   FLOAT *a, *x, *y;
-  BLASLONG incx, incy;
+  BLASLONG incx;
   BLASLONG m_from, m_to, i;
 #ifndef COMPLEX
   FLOAT result;
@@ -68,7 +68,6 @@ static int spmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
   y = (FLOAT *)args -> c;
 
   incx = args -> ldb;
-  incy = args -> ldc;
 
   m_from = 0;
   m_to   = args -> m;

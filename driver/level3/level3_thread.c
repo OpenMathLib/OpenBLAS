@@ -230,7 +230,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   BLASLONG is, min_i, div_n;
 
   BLASLONG i, current;
-  BLASLONG l1stride, l2size;
+  BLASLONG l1stride;
 
 #ifdef TIMING
   BLASULONG rpcc_counter;
@@ -297,8 +297,6 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       && (alpha[1] == ZERO)
 #endif
       ) return 0;
-
-  l2size = GEMM_P * GEMM_Q;
 
 #if 0
   fprintf(stderr, "Thread[%ld]  m_from : %ld m_to : %ld n_from : %ld n_to : %ld N_from : %ld N_to : %ld\n",
@@ -706,7 +704,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     n = n_to - n_from;
   }
 
-  if ((args -> m < nthreads * SWITCH_RATIO) || (args -> n < nthreads * SWITCH_RATIO)) {
+  if ((m < nthreads * SWITCH_RATIO) || (n < nthreads * SWITCH_RATIO)) {
     GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
     return 0;
   }
