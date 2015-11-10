@@ -91,6 +91,27 @@
 #endif
 #endif
 
+
+#ifdef SMP
+#ifndef COMPLEX
+#ifdef XDOUBLE
+#define MODE	(BLAS_XDOUBLE | BLAS_REAL)
+#elif defined(DOUBLE)
+#define MODE	(BLAS_DOUBLE  | BLAS_REAL)
+#else
+#define MODE	(BLAS_SINGLE  | BLAS_REAL)
+#endif
+#else
+#ifdef XDOUBLE
+#define MODE	(BLAS_XDOUBLE | BLAS_COMPLEX)
+#elif defined(DOUBLE)
+#define MODE	(BLAS_DOUBLE  | BLAS_COMPLEX)
+#else
+#define MODE	(BLAS_SINGLE  | BLAS_COMPLEX)
+#endif
+#endif
+#endif
+
 static int (*symm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef GEMM3M
 #ifndef HEMM
@@ -134,26 +155,6 @@ void NAME(char *SIDE, char *UPLO,
 
   FLOAT *buffer;
   FLOAT *sa, *sb;
-
-#ifdef SMP
-#ifndef COMPLEX
-#ifdef XDOUBLE
-  int mode  =  BLAS_XDOUBLE | BLAS_REAL;
-#elif defined(DOUBLE)
-  int mode  =  BLAS_DOUBLE  | BLAS_REAL;
-#else
-  int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif
-#else
-#ifdef XDOUBLE
-  int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
-#elif defined(DOUBLE)
-  int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
-#else
-  int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif
-#endif
-#endif
 
 #if defined(SMP) && !defined(NO_AFFINITY)
   int nodes;
@@ -245,26 +246,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 
   FLOAT *buffer;
   FLOAT *sa, *sb;
-
-#ifdef SMP
-#ifndef COMPLEX
-#ifdef XDOUBLE
-  int mode  =  BLAS_XDOUBLE | BLAS_REAL;
-#elif defined(DOUBLE)
-  int mode  =  BLAS_DOUBLE  | BLAS_REAL;
-#else
-  int mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif
-#else
-#ifdef XDOUBLE
-  int mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
-#elif defined(DOUBLE)
-  int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
-#else
-  int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif
-#endif
-#endif
 
 #if defined(SMP) && !defined(NO_AFFINITY)
   int nodes;
@@ -407,7 +388,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 
       args.nthreads /= nodes;
 
-      gemm_thread_mn(mode, &args, NULL, NULL,
+      gemm_thread_mn(MODE, &args, NULL, NULL,
 		     symm[4 | (side << 1) | uplo ], sa, sb, nodes);
 
     } else {
@@ -419,7 +400,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 
 #else
 
-      GEMM_THREAD(mode, &args, NULL, NULL, symm[(side << 1) | uplo ], sa, sb, args.nthreads);
+      GEMM_THREAD(MODE, &args, NULL, NULL, symm[(side << 1) | uplo ], sa, sb, args.nthreads);
 
 #endif
 

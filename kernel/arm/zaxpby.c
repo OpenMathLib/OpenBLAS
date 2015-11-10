@@ -37,11 +37,9 @@ int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FL
 	BLASLONG i=0;
 	BLASLONG ix,iy;
 	FLOAT temp;
+	BLASLONG inc_x2, inc_y2;
 
-	BLASLONG inc_x2;
-	BLASLONG inc_y2;
-
-	if ( n < 0     )  return(0);
+	if ( n <= 0     )  return(0);
 
 	ix = 0;
 	iy = 0;
