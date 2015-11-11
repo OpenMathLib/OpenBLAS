@@ -6,6 +6,7 @@ $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
 $hostarch = "x86_64" if ($hostarch eq "amd64");
 $hostarch = "arm" if ($hostarch =~ /^arm.*/);
 $hostarch = "arm64" if ($hostarch eq "aarch64");
+$hostarch = "power" if ($hostarch =~ /^(powerpc|ppc).*/);
 
 $binary = $ENV{"BINARY"};
 

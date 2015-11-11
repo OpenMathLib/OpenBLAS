@@ -89,8 +89,10 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
 #define PROLOGUE \
+	.text ;\
+	.align	4 ;\
 	.global	REALNAME ;\
-	.func	REALNAME  ;\
+	.type	REALNAME, %function ;\
 REALNAME:
 
 #define EPILOGUE
@@ -107,7 +109,11 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
+#if defined(CORTEXA57)
+#define BUFFER_SIZE     (40 << 20)
+#else
 #define BUFFER_SIZE     (16 << 20)
+#endif
 
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)

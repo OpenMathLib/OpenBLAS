@@ -914,7 +914,6 @@ static volatile struct {
 } memory[NUM_BUFFERS];
 
 static int memory_initialized = 0;
-static void gotoblas_memory_init(void);
 
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
