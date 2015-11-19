@@ -110,7 +110,7 @@ REALNAME:
 #define HUGE_PAGESIZE   ( 4 << 20)
 
 #if defined(CORTEXA57)
-#define BUFFER_SIZE     (40 << 20)
+#define BUFFER_SIZE     (20 << 20)
 #else
 #define BUFFER_SIZE     (16 << 20)
 #endif
