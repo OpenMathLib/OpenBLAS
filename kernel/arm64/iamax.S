@@ -34,95 +34,51 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INDEX	x3	/* index of max/min value */
 #define Z	x4	/* vector index */
 #define I	x5	/* loop variable */
-#define X_COPY	x6	/* copy of X address */
-#define MAXF_Z	x7
 
 /*******************************************************************************
 * Macro definitions
 *******************************************************************************/
 
-#define MAXF	s5
-#define TMPF	s6
-#define TMPVF	{v6.s}[0]
+#if defined(USE_MIN)
+#define COND	le
+#else
+#define COND	ge
+#endif
+
+#if !defined(DOUBLE)
+#define MAXF	s0
+#define TMPF	s1
+#define TMPVF	{v1.s}[0]
 #define SZ	4
+#else
+#define MAXF	d0
+#define TMPF	d1
+#define TMPVF	{v1.d}[0]
+#define SZ	8
+#endif
 
 /******************************************************************************/
 
-.macro INIT_F1
-	ldr	MAXF, [X], #SZ
+.macro INIT_S
+#if !defined(DOUBLE)
+	lsl	INC_X, INC_X, #2
+	ld1	{v0.s}[0], [X], INC_X
+#else
+	lsl	INC_X, INC_X, #3
+	ld1	{v0.d}[0], [X], INC_X
+#endif
 	mov	Z, #1
 	mov	INDEX, Z
 	fabs	MAXF, MAXF
-.endm
-
-.macro KERNEL_F1
-	ldr	TMPF, [X], #SZ
-	add	Z, Z, #1
-	fabs	TMPF, TMPF
-	fcmp	TMPF, MAXF
-	fcsel	MAXF, MAXF, TMPF, le
-	csel	INDEX, INDEX, Z, le
-.endm
-
-.macro INIT_F4
-	ld1	{v0.4s}, [X], #16
-	fabs	v0.4s, v0.4s
-	fmaxv	MAXF, v0.4s
-	mov	Z, #5
-	mov	MAXF_Z, #1
-.endm
-
-.macro KERNEL_F4
-	ld1	{v0.4s}, [X], #16
-	fabs	v0.4s, v0.4s
-	fmaxv	TMPF, v0.4s
-	PRFM	PLDL1KEEP, [X, #512]
-	fcmp	TMPF, MAXF
-	fcsel	MAXF, MAXF, TMPF, le
-	csel	MAXF_Z, MAXF_Z, Z, le
-	add	Z, Z, #4
-.endm
-
-
-.macro KERNEL_F4_FINALIZE
-	mov	INDEX, MAXF_Z
-	sub	MAXF_Z, MAXF_Z, #1
-	lsl	MAXF_Z, MAXF_Z, #2
-	add	X_COPY, X_COPY, MAXF_Z
-	ldr	TMPF, [X_COPY], #SZ
-	fabs	TMPF, TMPF
-	fcmp	TMPF, MAXF
-	beq	KERNEL_F4_FINALIZE_DONE
-	add	INDEX, INDEX, #1
-	ldr	TMPF, [X_COPY], #SZ
-	fabs	TMPF, TMPF
-	fcmp	TMPF, MAXF
-	beq	KERNEL_F4_FINALIZE_DONE
-	add	INDEX, INDEX, #1
-	ldr	TMPF, [X_COPY], #SZ
-	fabs	TMPF, TMPF
-	fcmp	TMPF, MAXF
-	beq	KERNEL_F4_FINALIZE_DONE
-	add	INDEX, INDEX, #1
-KERNEL_F4_FINALIZE_DONE:
-.endm
-
-
-.macro INIT_S
-	lsl	INC_X, INC_X, #2
-	ld1	TMPVF, [X], INC_X
-	mov	Z, #1
-	mov	INDEX, Z
-	fabs	MAXF, TMPF
 .endm
 
 .macro KERNEL_S1
 	ld1	TMPVF, [X], INC_X
 	add	Z, Z, #1
 	fabs	TMPF, TMPF
-	fcmp	TMPF, MAXF
-	fcsel	MAXF, MAXF, TMPF, le
-	csel	INDEX, INDEX, Z, le
+	fcmp	MAXF, TMPF
+	fcsel	MAXF, MAXF, TMPF, COND
+	csel	INDEX, INDEX, Z, COND
 .endm
 
 /*******************************************************************************
@@ -136,45 +92,6 @@ KERNEL_F4_FINALIZE_DONE:
 	cmp	INC_X, xzr
 	ble	iamax_kernel_zero
 
-	PRFM	PLDL1KEEP, [X]
-	mov	X_COPY, X
-
-	cmp	INC_X, #1
-	bne	iamax_kernel_S_BEGIN
-
-iamax_kernel_F_BEGIN:
-	asr	I, N, #2
-	cmp	I, xzr
-	beq	iamax_kernel_F1_INIT
-
-	INIT_F4
-	subs	I, I, #1
-	beq	iamax_kernel_F4_FINALIZE
-
-iamax_kernel_F4:
-	KERNEL_F4
-	subs	I, I, #1
-	bne	iamax_kernel_F4
-
-iamax_kernel_F4_FINALIZE:
-	KERNEL_F4_FINALIZE
-
-iamax_kernel_F1:
-	ands	I, N, #3
-	ble	iamax_kernel_L999
-
-iamax_kernel_F10:
-	KERNEL_F1
-	subs	I, I, #1
-	bne	iamax_kernel_F10
-	b	iamax_kernel_L999
-
-iamax_kernel_F1_INIT:
-	INIT_F1
-	subs	N, N, #1
-	b	iamax_kernel_F1
-
-iamax_kernel_S_BEGIN:
 	INIT_S
 
 	subs	N, N, #1
@@ -185,6 +102,7 @@ iamax_kernel_S_BEGIN:
 	ble	iamax_kernel_S1
 
 iamax_kernel_S4:
+
 	KERNEL_S1
 	KERNEL_S1
 	KERNEL_S1
@@ -194,19 +112,23 @@ iamax_kernel_S4:
 	bne	iamax_kernel_S4
 
 iamax_kernel_S1:
+
 	ands	I, N, #3
 	ble	iamax_kernel_L999
 
 iamax_kernel_S10:
+
 	KERNEL_S1
 	subs	I, I, #1
 	bne	iamax_kernel_S10
 
 iamax_kernel_L999:
+
 	mov	x0, INDEX
 	ret
 
 iamax_kernel_zero:
+
 	mov	x0, xzr
 	ret
 

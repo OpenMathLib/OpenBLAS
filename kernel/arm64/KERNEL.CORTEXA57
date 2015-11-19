@@ -5,8 +5,8 @@ DAMAXKERNEL  = amax.S
 CAMAXKERNEL  = zamax.S
 ZAMAXKERNEL  = zamax.S
 
-ISAMAXKERNEL = isamax.S
-IDAMAXKERNEL = idamax.S
+ISAMAXKERNEL = iamax.S
+IDAMAXKERNEL = iamax.S
 ICAMAXKERNEL = izamax.S
 IZAMAXKERNEL = izamax.S
 
@@ -25,22 +25,22 @@ DCOPYKERNEL  = copy.S
 CCOPYKERNEL  = copy.S
 ZCOPYKERNEL  = copy.S
 
-DOTKERNEL    = dot.S
+SDOTKERNEL    = dot.S
 DDOTKERNEL   = dot.S
 CDOTKERNEL   = zdot.S
 ZDOTKERNEL   = zdot.S
 
-SNRM2KERNEL  = snrm2.S
-DNRM2KERNEL  = dnrm2.S
-CNRM2KERNEL  = znrm2.S
-ZNRM2KERNEL  = znrm2.S
+#SNRM2KERNEL  = snrm2.S
+#DNRM2KERNEL  = dnrm2.S
+#CNRM2KERNEL  = znrm2.S
+#ZNRM2KERNEL  = znrm2.S
 
 SROTKERNEL   = rot.S
 DROTKERNEL   = rot.S
 CROTKERNEL   = zrot.S
 ZROTKERNEL   = zrot.S
 
-SCALKERNEL  = scal.S
+SSCALKERNEL  = scal.S
 DSCALKERNEL  = scal.S
 CSCALKERNEL  = zscal.S
 ZSCALKERNEL  = zscal.S

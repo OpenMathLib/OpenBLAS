@@ -96,22 +96,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(XCONJ)
 #if !defined(DOUBLE)
 	ins	v0.s[1], v0.s[0]		// v0 = ALPHA_R, ALPHA_R 
-	fneg	s2, ALPHA_I
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	s2, s2, ALPHA_I
 	ins	v1.s[1], v2.s[0]
 	ext	v1.8b, v1.8b, v1.8b, #4		// v1 = ALPHA_I, -ALPHA_I 
 #else
 	ins	v0.d[1], v0.d[0]		// v0 = ALPHA_R, ALPHA_R 
-	fneg	d2, ALPHA_I
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	d2, d2, ALPHA_I
 	ins	v1.d[1], v2.d[0]
 	ext	v1.16b, v1.16b, v1.16b, #8	// v1 = ALPHA_I, -ALPHA_I 
 #endif
 #else // XCONJ
 #if !defined(DOUBLE)
-	fneg	s2, ALPHA_R
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	s2, s2, ALPHA_R
 	ins	v0.s[1], v2.s[0]		// v0 = -ALPHA_R, ALPHA_R 
 	ins	v1.s[1], v1.s[0]		// v1 = ALPHA_I, ALPHA_I 
 #else
-	fneg	d2, ALPHA_R
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	d2, d2, ALPHA_R
 	ins	v0.d[1], v2.d[0]		// v0 = -ALPHA_R, ALPHA_R 
 	ins	v1.d[1], v1.d[0]		// v1 = ALPHA_I, ALPHA_I 
 #endif
@@ -136,8 +140,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v11.4s, v12.4s}, [X_PTR], #32
 	ld2	{v13.4s, v14.4s}, [A_PTR], #32
 
-#if !defined(CONJ)
-#if !defined(XCONJ)
+#if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	fmla	v9.4s,  v11.4s, v13.4s		// [+ R(X) * A_R]
 	fmls	v9.4s,  v12.4s, v14.4s		// [- I(X) * A_I]
 	fmla	v10.4s, v11.4s, v14.4s		// [+ R(X) * A_I]
@@ -145,29 +148,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	fmla	v9.4s,  v11.4s, v13.4s		// [+ R(X) * A_R]
 	fmla	v9.4s,  v12.4s, v14.4s		// [+ I(X) * A_I]
-	fmla	v10.4s, v11.4s, v14.4s		// [+ R(X) * A_I]
-	fmls	v10.4s, v12.4s, v13.4s		// [- I(X) * A_R]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmla	v9.4s,  v11.4s, v13.4s		// [+ R(X) * A_R]
-	fmla	v9.4s,  v12.4s, v14.4s		// [+ I(X) * A_I]
 	fmls	v10.4s, v11.4s, v14.4s		// [- R(X) * A_I]
 	fmla	v10.4s, v12.4s, v13.4s		// [+ I(X) * A_R]
-#else
-	fmla	v9.4s,  v11.4s, v13.4s		// [+ R(X) * A_R]
-	fmls	v9.4s,  v12.4s, v14.4s		// [- I(X) * A_I]
-	fmls	v10.4s, v11.4s, v14.4s		// [- R(X) * A_I]
-	fmls	v10.4s, v12.4s, v13.4s		// [- I(X) * A_R]
 #endif
-#endif // CONJ
 
 #else // DOUBLE
 	ld2	{v11.2d, v12.2d}, [X_PTR], #32
 	ld2	{v13.2d, v14.2d}, [A_PTR], #32
 	prfm    PLDL1STRM, [X_PTR, #512]
-#if !defined(CONJ)
-#if !defined(XCONJ)
+
+#if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	fmla	v9.2d,  v11.2d, v13.2d		// [+ R(X) * A_R]
 	fmls	v9.2d,  v12.2d, v14.2d		// [- I(X) * A_I]
 	fmla	v10.2d, v11.2d, v14.2d		// [+ R(X) * A_I]
@@ -175,27 +165,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	fmla	v9.2d,  v11.2d, v13.2d		// [+ R(X) * A_R]
 	fmla	v9.2d,  v12.2d, v14.2d		// [+ I(X) * A_I]
-	fmla	v10.2d, v11.2d, v14.2d		// [+ R(X) * A_I]
-	fmls	v10.2d, v12.2d, v13.2d		// [- I(X) * A_R]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmla	v9.2d,  v11.2d, v13.2d		// [+ R(X) * A_R]
-	fmla	v9.2d,  v12.2d, v14.2d		// [+ I(X) * A_I]
 	fmls	v10.2d, v11.2d, v14.2d		// [- R(X) * A_I]
 	fmla	v10.2d, v12.2d, v13.2d		// [+ I(X) * A_R]
-#else
-	fmla	v9.2d,  v11.2d, v13.2d		// [+ R(X) * A_R]
-	fmls	v9.2d,  v12.2d, v14.2d		// [- I(X) * A_I]
-	fmls	v10.2d, v11.2d, v14.2d		// [- R(X) * A_I]
-	fmls	v10.2d, v12.2d, v13.2d		// [- I(X) * A_R]
 #endif
-#endif // CONJ
+
 	ld2	{v17.2d, v18.2d}, [X_PTR], #32
 	ld2	{v19.2d, v20.2d}, [A_PTR], #32
 	prfm    PLDL1STRM, [A_PTR, #512]
-#if !defined(CONJ)
-#if !defined(XCONJ)
+
+#if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	fmla	v15.2d, v17.2d, v19.2d		// [+ R(X) * A_R]
 	fmls	v15.2d, v18.2d, v20.2d		// [- I(X) * A_I]
 	fmla	v16.2d, v17.2d, v20.2d		// [+ R(X) * A_I]
@@ -203,22 +181,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	fmla	v15.2d, v17.2d, v19.2d		// [+ R(X) * A_R]
 	fmla	v15.2d, v18.2d, v20.2d		// [- I(X) * A_I]
-	fmla	v16.2d, v17.2d, v20.2d		// [+ R(X) * A_I]
-	fmls	v16.2d, v18.2d, v19.2d		// [+ I(X) * A_R]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmla	v15.2d, v17.2d, v19.2d		// [+ R(X) * A_R]
-	fmla	v15.2d, v18.2d, v20.2d		// [- I(X) * A_I]
 	fmls	v16.2d, v17.2d, v20.2d		// [+ R(X) * A_I]
 	fmla	v16.2d, v18.2d, v19.2d		// [+ I(X) * A_R]
-#else
-	fmla	v15.2d, v17.2d, v19.2d		// [+ R(X) * A_R]
-	fmls	v15.2d, v18.2d, v20.2d		// [- I(X) * A_I]
-	fmls	v16.2d, v17.2d, v20.2d		// [+ R(X) * A_I]
-	fmls	v16.2d, v18.2d, v19.2d		// [+ I(X) * A_R]
 #endif
-#endif // CONJ
+
 #endif //DOUBLE
 .endm
 
@@ -252,7 +218,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1r	{v4.2s}, [A_PTR], #4		// [A0, A0]
 	ld1	{v5.s}[0], [A_PTR], #4		// A1
 	ld1	{v6.2s}, [X_PTR], #8		// [X1, X0]
-	fneg	s16, s5
+	eor	v16.16b, v16.16b, v16.16b
+	fsub	s16, s16, s5
 	ins	v5.s[1], v16.s[0]		// [-A1, A1]
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
 	ext	v5.8b, v5.8b, v5.8b, #4		// [A1, -A1]
@@ -264,7 +231,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1r	{v4.2d}, [A_PTR], #8		// [A0, A0]
 	ld1	{v5.d}[0], [A_PTR], #8		// A1
 	ld1	{v6.2d}, [X_PTR], #16		// [X1, X0]
-	fneg	d16, d5
+	eor	v16.16b, v16.16b, v16.16b
+	fsub	d16, d16, d5
 	ins	v5.d[1], v16.d[0]		// [-A1, A1]
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
 	ext	v5.16b, v5.16b, v5.16b, #8	// [A1, -A1]
@@ -284,7 +252,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1r	{v4.2s}, [A_PTR], #4		// [A0, A0]
 	ld1	{v5.s}[0], [A_PTR], #4		// A1
 	ld1	{v6.2s}, [X_PTR], INC_X		// [X1, X0]
-	fneg	s16, s5
+	eor	v16.16b, v16.16b, v16.16b
+	fsub	s16, s16, s5
 	ins	v5.s[1], v16.s[0]		// [-A1, A1]
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
 	ext	v5.8b, v5.8b, v5.8b, #4		// [A1, -A1]
@@ -296,7 +265,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1r	{v4.2d}, [A_PTR], #8		// [A0, A0]
 	ld1	{v5.d}[0], [A_PTR], #8		// A1
 	ld1	{v6.2d}, [X_PTR], INC_X		// [X1, X0]
-	fneg	d16, d5
+	eor	v16.16b, v16.16b, v16.16b
+	fsub	d16, d16, d5
 	ins	v5.d[1], v16.d[0]		// [-A1, A1]
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
 	ext	v5.16b, v5.16b, v5.16b, #8	// [A1, -A1]

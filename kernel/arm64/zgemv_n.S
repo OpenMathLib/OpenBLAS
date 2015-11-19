@@ -110,15 +110,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	/******* INIT FOR F1 AND S1 LOOP ******/
 #if !defined(DOUBLE)
-	ins	v0.s[1], v0.s[0]		// R(ALPHA), R(ALPHA) 
-	fneg	s2, ALPHA_I
+	ins	v0.s[1], v0.s[0]		// R(ALPHA), R(ALPHA)
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	s2, s2, ALPHA_I
 	ins	v1.s[1], v2.s[0]		// -I(ALPHA), I(ALPHA) 
 #if !defined(XCONJ)
 	ext	v1.8b, v1.8b, v1.8b, #4		// I(ALPHA), -I(ALPHA)
 #endif
 #else
-	ins	v0.d[1], v0.d[0]		// R(ALPHA), R(ALPHA) 
-	fneg	d2, ALPHA_I
+	ins	v0.d[1], v0.d[0]		// R(ALPHA), R(ALPHA)
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	d2, d2, ALPHA_I
 	ins	v1.d[1], v2.d[0]		// -I(ALPHA), I(ALPHA) 
 #if !defined(XCONJ)
 	ext	v1.16b, v1.16b, v1.16b, #8	// I(ALPHA), -I(ALPHA)
@@ -156,8 +158,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	fmul	v11.4s, v9.4s, v7.4s		// [+ R(X) * R(ALPHA)]
 	fmls	v11.4s, v10.4s, v8.4s		// [- I(X) * I(ALPHA)]
-	fmul	v12.4s, v9.4s, v8.4s		// [R(X) * I(ALPHA)]
-	fneg	v12.4s, v12.4s			// [- R(X) * I(ALPHA)]
+	eor	v12.16b, v12.16b, v12.16b
+	fmls	v12.4s, v9.4s, v8.4s		// [- R(X) * I(ALPHA)]
 	fmla	v12.4s, v10.4s, v7.4s		// [- I(X) * R(ALPHA)]
 #endif
 #endif // CONJ
@@ -170,24 +172,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ins	v3.s[0], v2.s[1]
 #if !defined(CONJ)
 #if !defined(XCONJ)
-	fneg	s4, s3
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s3
 	ins	v3.s[1], v4.s[0]
 	ext	v3.8b, v3.8b, v3.8b, #4		// [I(TEMP), -I(TEMP)]
 	ins	v2.s[1], v2.s[0]		// [R(TEMP), R(TEMP)]
 #else
-	fneg	s4, s3
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s3
 	ins	v3.s[1], v4.s[0]		// [-I(TEMP), I(TEMP)]
 	ins	v2.s[1], v2.s[0]		// [R(TEMP), R(TEMP)]
 #endif
 #else // CONJ
 #if !defined(XCONJ)
 	ins	v3.s[1], v3.s[0]		// [I(TEMP), I(TEMP)]
-	fneg	s4, s2
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s2
 	ins	v2.s[1], v4.s[0]		// [-R(TEMP), R(TEMP)]
 #else
-	fneg	s3, s3
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s3, s4, s3
 	ins	v3.s[1], v3.s[0]		// [-I(TEMP), -I(TEMP)]
-	fneg	s4, s2
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s2
 	ins	v2.s[1], v4.s[0]		// [-R(TEMP), R(TEMP)]
 #endif
 #endif // CONJ
@@ -220,8 +227,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	fmul	v11.2d, v9.2d, v7.2d		// [+ R(X) * R(ALPHA)]
 	fmls	v11.2d, v10.2d, v8.2d		// [- I(X) * I(ALPHA)]
-	fmul	v12.2d, v9.2d, v8.2d		// [R(X) * I(ALPHA)]
-	fneg	v12.2d, v12.2d			// [- R(X) * I(ALPHA)]
+	eor	v12.16b, v12.16b, v12.16b
+	fmls	v12.2d, v9.2d, v8.2d		// [- R(X) * I(ALPHA)]
 	fmla	v12.2d, v10.2d, v7.2d		// [- I(X) * R(ALPHA)]
 #endif
 #endif // CONJ
@@ -234,24 +241,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ins	v3.d[0], v2.d[1]		// I(TEMP)
 #if !defined(CONJ)
 #if !defined(XCONJ)
-	fneg	d4, d3				// -I(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d3
 	ins	v3.d[1], v4.d[0]
 	ext	v3.16b, v3.16b, v3.16b, #8	// [I(TEMP), -I(TEMP)]
 	ins	v2.d[1], v2.d[0]		// [R(TEMP), R(TEMP)]
 #else
-	fneg	d4, d3				// -I(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d3
 	ins	v3.d[1], v4.d[0]		// [-I(TEMP), I(TEMP)]
 	ins	v2.d[1], v2.d[0]		// [R(TEMP), R(TEMP)]
 #endif
 #else // CONJ
 #if !defined(XCONJ)
 	ins	v3.d[1], v3.d[0]		// [I(TEMP), I(TEMP)]
-	fneg	d4, d2				// -R(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d2
 	ins	v2.d[1], v4.d[0]		// [-R(TEMP), R(TEMP)]
 #else
-	fneg	d3, d3				// -I(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d3, d4, d3
 	ins	v3.d[1], v3.d[0]		// [-I(TEMP), -I(TEMP)]
-	fneg	d4, d2				// -R(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d2
 	ins	v2.d[1], v4.d[0]		// [-R(TEMP), R(TEMP)]
 #endif
 #endif // CONJ
