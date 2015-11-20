@@ -104,6 +104,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <linux/unistd.h>
 #include <sys/syscall.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #endif
 
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
@@ -1359,6 +1361,18 @@ void CONSTRUCTOR gotoblas_init(void) {
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
    gotoblas_memory_init();
+#endif
+
+#if defined(OS_LINUX)
+   struct rlimit curlimit;
+   if ( getrlimit(RLIMIT_STACK, &curlimit ) == 0 )
+   {
+	if ( curlimit.rlim_cur != curlimit.rlim_max )
+	{
+		curlimit.rlim_cur = curlimit.rlim_max;
+		setrlimit(RLIMIT_STACK, &curlimit);
+	}
+   }
 #endif
 
 #ifdef SMP
