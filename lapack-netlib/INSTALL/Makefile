@@ -1,7 +1,8 @@
 include ../make.inc
 
 .SUFFIXES : .o .f 
-all:  testlsame testslamch testdlamch testsecond testdsecnd testieee testversion 
+# all:  testlsame testslamch testdlamch testsecond testdsecnd testieee testversion 
+all: slamch.o dlamch.o
 
 testlsame:  lsame.o lsametst.o
 	$(LOADER) $(LOADOPTS) -o testlsame lsame.o lsametst.o
