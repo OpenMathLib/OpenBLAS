@@ -37,18 +37,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define SSQ		s0
 #define SCALE		s1
-#define REGZERO		s6
-#define REGONE		s7
+#define REGZERO		s5
+#define REGONE		s6
 #else
 #define SSQ		d0
 #define SCALE		d1
-#define REGZERO		d6
-#define REGONE		d7
+#define REGZERO		d5
+#define REGONE		d6
 #endif
 
-/**************************************************************************************
+/*******************************************************************************
 * Macro definitions
-**************************************************************************************/
+*******************************************************************************/
 
 .macro KERNEL_F1
 #if !defined(DOUBLE)
@@ -57,31 +57,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	beq	KERNEL_F1_NEXT_\@
 	fabs	s4, s4
 	fcmp	SCALE, s4
-	bge	KERNEL_F1_SCALE_GE_XR_\@
+	bge	KERNEL_F1_SCALE_GE_X_\@
 	fdiv	s2, SCALE, s4
 	fmul	s2, s2, s2
 	fmul	s3, SSQ, s2
 	fadd	SSQ, REGONE, s3
 	fmov	SCALE, s4
 	b	KERNEL_F1_NEXT_\@
-KERNEL_F1_SCALE_GE_XR_\@:
+KERNEL_F1_SCALE_GE_X_\@:
 	fdiv	s2, s4, SCALE
-	fmla	SSQ, s2, v2.s[0]
-KERNEL_F1_NEXT_\@:
-	ldr	s5, [X], #4
-	fcmp	s5, REGZERO
-	beq	KERNEL_F1_END_\@
-	fabs	s5, s5
-	fcmp	SCALE, s5
-	bge	KERNEL_F1_SCALE_GE_XI_\@
-	fdiv	s2, SCALE, s5
-	fmul	s2, s2, s2
-	fmul	s3, SSQ, s2
-	fadd	SSQ, REGONE, s3
-	fmov	SCALE, s5
-	b	KERNEL_F1_END_\@
-KERNEL_F1_SCALE_GE_XI_\@:
-	fdiv	s2, s5, SCALE
 	fmla	SSQ, s2, v2.s[0]
 #else
 	ldr	d4, [X], #8
@@ -89,103 +73,55 @@ KERNEL_F1_SCALE_GE_XI_\@:
 	beq	KERNEL_F1_NEXT_\@
 	fabs	d4, d4
 	fcmp	SCALE, d4
-	bge	KERNEL_F1_SCALE_GE_XR_\@
+	bge	KERNEL_F1_SCALE_GE_X_\@
 	fdiv	d2, SCALE, d4
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d4
 	b	KERNEL_F1_NEXT_\@
-KERNEL_F1_SCALE_GE_XR_\@:
+KERNEL_F1_SCALE_GE_X_\@:
 	fdiv	d2, d4, SCALE
 	fmla	SSQ, d2, v2.d[0]
-KERNEL_F1_NEXT_\@:
-	ldr	d5, [X], #8
-	fcmp	d5, REGZERO
-	beq	KERNEL_F1_END_\@
-	fabs	d5, d5
-	fcmp	SCALE, d5
-	bge	KERNEL_F1_SCALE_GE_XI_\@
-	fdiv	d2, SCALE, d5
-	fmul	d2, d2, d2
-	fmul	d3, SSQ, d2
-	fadd	SSQ, REGONE, d3
-	fmov	SCALE, d5
-	b	KERNEL_F1_END_\@
-KERNEL_F1_SCALE_GE_XI_\@:
-	fdiv	d2, d5, SCALE
-	fmla	SSQ, d2, v2.d[0]
 #endif
-KERNEL_F1_END_\@:
+KERNEL_F1_NEXT_\@:
 .endm
 
 .macro KERNEL_S1
 #if !defined(DOUBLE)
 	ldr	s4, [X]
 	fcmp	s4, REGZERO
-	beq	KERNEL_S1_NEXT_\@
+	beq	KERNEL_S1_NEXT
 	fabs	s4, s4
 	fcmp	SCALE, s4
-	bge	KERNEL_S1_SCALE_GE_XR_\@
+	bge	KERNEL_S1_SCALE_GE_X
 	fdiv	s2, SCALE, s4
 	fmul	s2, s2, s2
 	fmul	s3, SSQ, s2
 	fadd	SSQ, REGONE, s3
 	fmov	SCALE, s4
-	b	KERNEL_S1_NEXT_\@
-KERNEL_S1_SCALE_GE_XR_\@:
+	b	KERNEL_S1_NEXT
+KERNEL_S1_SCALE_GE_X:
 	fdiv	s2, s4, SCALE
-	fmla	SSQ, s2, v2.s[0]
-KERNEL_S1_NEXT_\@:
-	ldr	s5, [X, #4]
-	fcmp	s5, REGZERO
-	beq	KERNEL_S1_END_\@
-	fabs	s5, s5
-	fcmp	SCALE, s5
-	bge	KERNEL_S1_SCALE_GE_XI_\@
-	fdiv	s2, SCALE, s5
-	fmul	s2, s2, s2
-	fmul	s3, SSQ, s2
-	fadd	SSQ, REGONE, s3
-	fmov	SCALE, s5
-	b	KERNEL_S1_END_\@
-KERNEL_S1_SCALE_GE_XI_\@:
-	fdiv	s2, s5, SCALE
 	fmla	SSQ, s2, v2.s[0]
 #else
 	ldr	d4, [X]
 	fcmp	d4, REGZERO
-	beq	KERNEL_S1_NEXT_\@
+	beq	KERNEL_S1_NEXT
 	fabs	d4, d4
 	fcmp	SCALE, d4
-	bge	KERNEL_S1_SCALE_GE_XR_\@
+	bge	KERNEL_S1_SCALE_GE_X
 	fdiv	d2, SCALE, d4
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d4
-	b	KERNEL_S1_NEXT_\@
-KERNEL_S1_SCALE_GE_XR_\@:
+	b	KERNEL_S1_NEXT
+KERNEL_S1_SCALE_GE_X:
 	fdiv	d2, d4, SCALE
 	fmla	SSQ, d2, v2.d[0]
-KERNEL_S1_NEXT_\@:
-	ldr	d5, [X, #8]
-	fcmp	d5, REGZERO
-	beq	KERNEL_S1_END_\@
-	fabs	d5, d5
-	fcmp	SCALE, d5
-	bge	KERNEL_S1_SCALE_GE_XI_\@
-	fdiv	d2, SCALE, d5
-	fmul	d2, d2, d2
-	fmul	d3, SSQ, d2
-	fadd	SSQ, REGONE, d3
-	fmov	SCALE, d5
-	b	KERNEL_S1_END_\@
-KERNEL_S1_SCALE_GE_XI_\@:
-	fdiv	d2, d5, SCALE
-	fmla	SSQ, d2, v2.d[0]
 #endif
-KERNEL_S1_END_\@:
+KERNEL_S1_NEXT:
 	add	X, X, INC_X
 .endm
 
@@ -202,9 +138,9 @@ KERNEL_S1_END_\@:
 
 .macro INIT_S
 #if !defined(DOUBLE)
-	lsl	INC_X, INC_X, #3		// INC_X * SIZE
+	lsl	INC_X, INC_X, #2		// INC_X * SIZE
 #else
-	lsl	INC_X, INC_X, #4		// INC_X * SIZE
+	lsl	INC_X, INC_X, #3		// INC_X * SIZE
 #endif
 .endm
 
@@ -215,9 +151,9 @@ KERNEL_S1_END_\@:
 	fmov	REGZERO, SCALE
 .endm
 
-/**************************************************************************************
+/*******************************************************************************
 * End of macro definitions
-**************************************************************************************/
+*******************************************************************************/
 
 	PROLOGUE
 
@@ -230,6 +166,7 @@ KERNEL_S1_END_\@:
 
 	cmp	INC_X, #0
 	beq	nrm2_kernel_L999
+
 
 	cmp	INC_X, #1
 	bne	nrm2_kernel_S_BEGIN
@@ -244,8 +181,8 @@ nrm2_kernel_F8:
 
 	KERNEL_F8
 
-	subs    I, I, #1
-        bne     nrm2_kernel_F8
+	subs	I, I, #1
+	bne	nrm2_kernel_F8
 
 nrm2_kernel_F1:
 
