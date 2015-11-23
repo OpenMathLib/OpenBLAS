@@ -182,7 +182,7 @@
 *> \param[out] RWORK
 *> \verbatim
 *>          RWORK is REAL array, dimension (MAX(1,LRWORK))
-*>          If JOBZ = 'N', LRWORK >= 5*min(M,N).
+*>          If JOBZ = 'N', LRWORK >= 7*min(M,N).
 *>          Otherwise, 
 *>          LRWORK >= min(M,N)*max(5*min(M,N)+7,2*max(M,N)+2*min(M,N)+1)
 *> \endverbatim
@@ -208,7 +208,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complexGEsing
 *
@@ -222,10 +222,10 @@
       SUBROUTINE CGESDD( JOBZ, M, N, A, LDA, S, U, LDU, VT, LDVT,
      $                   WORK, LWORK, RWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ

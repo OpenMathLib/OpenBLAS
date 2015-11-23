@@ -106,7 +106,7 @@
 *  =====================================================================
       PROGRAM DCHKAA
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -157,7 +157,7 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, DCHKEQ, DCHKGB, DCHKGE, DCHKGT, DCHKLQ,
      $                   DCHKPB, DCHKPO, DCHKPS, DCHKPP, DCHKPT, DCHKQ3,
-     $                   DCHKQL, DCHKQP, DCHKQR, DCHKRQ, DCHKSP, DCHKSY,
+     $                   DCHKQL, DCHKQR, DCHKRQ, DCHKSP, DCHKSY,
      $                   DCHKSY_ROOK, DCHKTB, DCHKTP, DCHKTR, DCHKTZ,
      $                   DDRVGB, DDRVGE, DDRVGT, DDRVLS, DDRVPB, DDRVPO,
      $                   DDRVPP, DDRVPT, DDRVSP, DDRVSY, DDRVSY_ROOK,
@@ -784,7 +784,7 @@
      $                   NRHS, THRESH, TSTERR, NMAX, A( 1, 1 ),
      $                   A( 1, 2 ), A( 1, 3 ), A( 1, 4 ), A( 1, 5 ),
      $                   B( 1, 1 ), B( 1, 2 ), B( 1, 3 ), B( 1, 4 ),
-     $                   WORK, RWORK, IWORK, NOUT )
+     $                   WORK, RWORK, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF
@@ -814,9 +814,6 @@
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
-            CALL DCHKQP( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR,
-     $                   A( 1, 1 ), A( 1, 2 ), B( 1, 1 ),
-     $                   B( 1, 3 ), WORK, IWORK, NOUT )
             CALL DCHKQ3( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
      $                   THRESH, A( 1, 1 ), A( 1, 2 ), B( 1, 1 ),
      $                   B( 1, 3 ), WORK, IWORK, NOUT )

@@ -1,3 +1,0 @@
-@echo off
-call "@GNUtoMS_BAT@"
-lib /machine:"@GNUtoMS_ARCH@" %*

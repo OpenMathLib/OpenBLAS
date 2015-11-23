@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> CERRLS tests the error exits for the COMPLEX least squares
-*> driver routines (CGELS, CGELSS, CGELSX, CGELSY, CGELSD).
+*> driver routines (CGELS, CGELSS, CGELSY, CGELSD).
 *> \endverbatim
 *
 *  Arguments:
@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRLS( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -86,8 +86,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CGELS, CGELSD, CGELSS, CGELSX, CGELSY,
-     $                   CHKXER
+      EXTERNAL           ALAESM, CGELS, CGELSD, CGELSS, CGELSY, CHKXER
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -161,30 +160,6 @@
          CALL CGELSS( 2, 0, 0, A, 2, B, 1, S, RCOND, IRNK, W, 2, RW,
      $                INFO )
          CALL CHKXER( 'CGELSS', INFOT, NOUT, LERR, OK )
-*
-*        CGELSX
-*
-         SRNAMT = 'CGELSX'
-         INFOT = 1
-         CALL CGELSX( -1, 0, 0, A, 1, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'CGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL CGELSX( 0, -1, 0, A, 1, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'CGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 3
-         CALL CGELSX( 0, 0, -1, A, 1, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'CGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 5
-         CALL CGELSX( 2, 0, 0, A, 1, B, 2, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'CGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 7
-         CALL CGELSX( 2, 0, 0, A, 2, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'CGELSX', INFOT, NOUT, LERR, OK )
 *
 *        CGELSY
 *

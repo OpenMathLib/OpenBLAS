@@ -1,7 +1,7 @@
 ####################################################################
 #  LAPACK make include file.                                       #
-#  LAPACK, Version 3.5.0                                           #
-#  November 2013                                                   #
+#  LAPACK, Version 3.6.0                                           #
+#  November 2015                                                   #
 ####################################################################
 #
 SHELL = /sbin/sh
@@ -75,6 +75,7 @@ XBLASLIB     =
 BLASLIB     = -lblas
 #BLASLIB     = -lblas_mp
 #BLASLIB      = ../../librefblas.a
+CBLASLIB     = ../../libcblas.a
 LAPACKLIB    = liblapack.a
 TMGLIB       = libtmglib.a
 LAPACKELIB   = liblapacke.a

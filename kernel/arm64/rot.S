@@ -59,10 +59,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 #if !defined(DOUBLE)
-	fneg	s2, S
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	s2, s2, S
 	ins	v1.s[1], v2.s[0]		// [-S, S]
 #else
-	fneg	d2, S
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	d2, d2, S
 	ins	v1.d[1], v2.d[0]		// [-S, S]
 #endif
 .endm

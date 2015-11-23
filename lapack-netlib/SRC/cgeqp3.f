@@ -127,7 +127,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup complexGEcomputational
 *
@@ -159,10 +159,10 @@
       SUBROUTINE CGEQP3( M, N, A, LDA, JPVT, TAU, WORK, LWORK, RWORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N
@@ -220,7 +220,7 @@
             NB = ILAENV( INB, 'CGEQRF', ' ', M, N, -1, -1 )
             LWKOPT = ( N + 1 )*NB
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = CMPLX( LWKOPT )
 *
          IF( ( LWORK.LT.IWS ) .AND. .NOT.LQUERY ) THEN
             INFO = -8
@@ -231,12 +231,6 @@
          CALL XERBLA( 'CGEQP3', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         RETURN
-      END IF
-*
-*     Quick return if possible.
-*
-      IF( MINMN.EQ.0 ) THEN
          RETURN
       END IF
 *
@@ -370,7 +364,7 @@
 *
       END IF
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = CMPLX( LWKOPT )
       RETURN
 *
 *     End of CGEQP3

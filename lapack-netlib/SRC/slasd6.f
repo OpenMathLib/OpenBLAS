@@ -164,7 +164,7 @@
 *>         row.
 *> \endverbatim
 *>
-*> \param[out] IDXQ
+*> \param[in,out] IDXQ
 *> \verbatim
 *>          IDXQ is INTEGER array, dimension (N)
 *>         This contains the permutation which will reintegrate the
@@ -298,7 +298,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -314,10 +314,10 @@
      $                   LDGNUM, POLES, DIFL, DIFR, Z, K, C, S, WORK,
      $                   IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDGCOL, LDGNUM, NL,
@@ -414,10 +414,9 @@
       CALL SLASD8( ICOMPQ, K, D, Z, VF, VL, DIFL, DIFR, LDGNUM,
      $             WORK( ISIGMA ), WORK( IW ), INFO )
 *
-*     Handle error returned
+*     Report the possible convergence failure.
 *
       IF( INFO.NE.0 ) THEN
-         CALL XERBLA( 'SLASD8', -INFO )
          RETURN
       END IF
 *

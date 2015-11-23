@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> ZERRLS tests the error exits for the COMPLEX*16 least squares
-*> driver routines (ZGELS, CGELSS, CGELSX, CGELSY, CGELSD).
+*> driver routines (ZGELS, CGELSS, CGELSY, CGELSD).
 *> \endverbatim
 *
 *  Arguments:
@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRLS( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -86,8 +86,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, ZGELS, ZGELSD, ZGELSS, ZGELSX,
-     $                   ZGELSY
+      EXTERNAL           ALAESM, CHKXER, ZGELS, ZGELSD, ZGELSS, ZGELSY
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -161,30 +160,6 @@
          CALL ZGELSS( 2, 0, 0, A, 2, B, 1, S, RCOND, IRNK, W, 2, RW,
      $                INFO )
          CALL CHKXER( 'ZGELSS', INFOT, NOUT, LERR, OK )
-*
-*        ZGELSX
-*
-         SRNAMT = 'ZGELSX'
-         INFOT = 1
-         CALL ZGELSX( -1, 0, 0, A, 1, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'ZGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL ZGELSX( 0, -1, 0, A, 1, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'ZGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 3
-         CALL ZGELSX( 0, 0, -1, A, 1, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'ZGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 5
-         CALL ZGELSX( 2, 0, 0, A, 1, B, 2, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'ZGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 7
-         CALL ZGELSX( 2, 0, 0, A, 2, B, 1, IP, RCOND, IRNK, W, RW,
-     $                INFO )
-         CALL CHKXER( 'ZGELSX', INFOT, NOUT, LERR, OK )
 *
 *        ZGELSY
 *

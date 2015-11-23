@@ -31,8 +31,9 @@
 *> \verbatim
 *>
 *>      This program sets problem and machine dependent parameters
-*>      useful for xHSEQR and its subroutines. It is called whenever 
-*>      ILAENV is called with 12 <= ISPEC <= 16
+*>      useful for xHSEQR and related subroutines for eigenvalue
+*>      problems. It is called whenever
+*>      IPARMQ is called with 12 <= ISPEC <= 16
 *> \endverbatim
 *
 *  Arguments:
@@ -75,19 +76,26 @@
 *>
 *>              ISPEC=16: (IACC22) IPARMQ is set to 0, 1 or 2 with the
 *>                        following meanings.
-*>                        0:  During the multi-shift QR sweep,
-*>                            xLAQR5 does not accumulate reflections and
-*>                            does not use matrix-matrix multiply to
-*>                            update the far-from-diagonal matrix
-*>                            entries.
-*>                        1:  During the multi-shift QR sweep,
-*>                            xLAQR5 and/or xLAQRaccumulates reflections and uses
-*>                            matrix-matrix multiply to update the
+*>                        0:  During the multi-shift QR/QZ sweep,
+*>                            blocked eigenvalue reordering, blocked
+*>                            Hessenberg-triangular reduction,
+*>                            reflections and/or rotations are not
+*>                            accumulated when updating the
 *>                            far-from-diagonal matrix entries.
-*>                        2:  During the multi-shift QR sweep.
-*>                            xLAQR5 accumulates reflections and takes
-*>                            advantage of 2-by-2 block structure during
-*>                            matrix-matrix multiplies.
+*>                        1:  During the multi-shift QR/QZ sweep,
+*>                            blocked eigenvalue reordering, blocked
+*>                            Hessenberg-triangular reduction,
+*>                            reflections and/or rotations are
+*>                            accumulated, and matrix-matrix
+*>                            multiplication is used to update the
+*>                            far-from-diagonal matrix entries.
+*>                        2:  During the multi-shift QR/QZ sweep,
+*>                            blocked eigenvalue reordering, blocked
+*>                            Hessenberg-triangular reduction,
+*>                            reflections and/or rotations are
+*>                            accumulated, and 2-by-2 block structure
+*>                            is exploited during matrix-matrix
+*>                            multiplies.
 *>                        (If xTRMM is slower than xGEMM, then
 *>                        IPARMQ(ISPEC=16)=1 may be more efficient than
 *>                        IPARMQ(ISPEC=16)=2 despite the greater level of
@@ -139,7 +147,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -214,10 +222,10 @@
 *  =====================================================================
       INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, ISPEC, LWORK, N
@@ -236,6 +244,8 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            NH, NS
+      INTEGER            I, IC, IZ
+      CHARACTER          SUBNAM*6
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          LOG, MAX, MOD, NINT, REAL
@@ -305,11 +315,74 @@
 *        .     by making this choice dependent also upon the
 *        .     NH=IHI-ILO+1.
 *
+*
+*        Convert NAME to upper case if the first character is lower case.
+*
          IPARMQ = 0
-         IF( NS.GE.KACMIN )
-     $      IPARMQ = 1
-         IF( NS.GE.K22MIN )
-     $      IPARMQ = 2
+         SUBNAM = NAME
+         IC = ICHAR( SUBNAM( 1: 1 ) )
+         IZ = ICHAR( 'Z' )
+         IF( IZ.EQ.90 .OR. IZ.EQ.122 ) THEN
+*
+*           ASCII character set
+*
+            IF( IC.GE.97 .AND. IC.LE.122 ) THEN
+               SUBNAM( 1: 1 ) = CHAR( IC-32 )
+               DO I = 2, 6
+                  IC = ICHAR( SUBNAM( I: I ) )
+                  IF( IC.GE.97 .AND. IC.LE.122 )
+     $               SUBNAM( I: I ) = CHAR( IC-32 )
+               END DO
+            END IF
+*
+         ELSE IF( IZ.EQ.233 .OR. IZ.EQ.169 ) THEN
+*
+*           EBCDIC character set
+*
+            IF( ( IC.GE.129 .AND. IC.LE.137 ) .OR.
+     $          ( IC.GE.145 .AND. IC.LE.153 ) .OR.
+     $          ( IC.GE.162 .AND. IC.LE.169 ) ) THEN
+               SUBNAM( 1: 1 ) = CHAR( IC+64 )
+               DO I = 2, 6
+                  IC = ICHAR( SUBNAM( I: I ) )
+                  IF( ( IC.GE.129 .AND. IC.LE.137 ) .OR.
+     $                ( IC.GE.145 .AND. IC.LE.153 ) .OR.
+     $                ( IC.GE.162 .AND. IC.LE.169 ) )SUBNAM( I:
+     $                I ) = CHAR( IC+64 )
+               END DO
+            END IF
+*
+         ELSE IF( IZ.EQ.218 .OR. IZ.EQ.250 ) THEN
+*
+*           Prime machines:  ASCII+128
+*
+            IF( IC.GE.225 .AND. IC.LE.250 ) THEN
+               SUBNAM( 1: 1 ) = CHAR( IC-32 )
+               DO I = 2, 6
+                  IC = ICHAR( SUBNAM( I: I ) )
+                  IF( IC.GE.225 .AND. IC.LE.250 )
+     $               SUBNAM( I: I ) = CHAR( IC-32 )
+               END DO
+            END IF
+         END IF
+*
+         IF( SUBNAM( 2:6 ).EQ.'GGHRD' .OR.
+     $       SUBNAM( 2:6 ).EQ.'GGHD3' ) THEN
+            IPARMQ = 1
+            IF( NH.GE.K22MIN )
+     $         IPARMQ = 2
+         ELSE IF ( SUBNAM( 4:6 ).EQ.'EXC' ) THEN
+            IF( NH.GE.KACMIN )
+     $         IPARMQ = 1
+            IF( NH.GE.K22MIN )
+     $         IPARMQ = 2
+         ELSE IF ( SUBNAM( 2:6 ).EQ.'HSEQR' .OR.
+     $             SUBNAM( 2:5 ).EQ.'LAQR' ) THEN
+            IF( NS.GE.KACMIN )
+     $         IPARMQ = 1
+            IF( NS.GE.K22MIN )
+     $         IPARMQ = 2
+         END IF
 *
       ELSE
 *        ===== invalid value of ispec =====

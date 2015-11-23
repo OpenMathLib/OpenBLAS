@@ -174,7 +174,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -193,10 +193,10 @@
      $                   SPDIAM, CLGAPL, CLGAPR, PIVMIN, SIGMA,
      $                   DPLUS, LPLUS, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            CLSTRT, CLEND, INFO, N
@@ -257,7 +257,8 @@
 
 *     Decide whether the code should accept the best among all
 *     representations despite large element growth or signal INFO=1
-      NOFAIL = .TRUE.
+*     Setting NOFAIL to .FALSE. for quick fix for bug 113
+      NOFAIL = .FALSE.
 *
 
 *     Compute the average gap length of the cluster

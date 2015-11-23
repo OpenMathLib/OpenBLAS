@@ -26,7 +26,11 @@ just_errors = 0
 prec='x'
 test='all'
 only_numbers=0
-dir="TESTING"
+test_dir='TESTING'
+bin_dir='bin/Release'
+
+abs_bin_dir=os.path.normpath(os.path.join(os.getcwd(),bin_dir))
+
 for o, a in opts:
    if o in ("-h", "--help"):
       print sys.argv[0]+" [-h|--help] [-d dir |--dir dir] [-s |--short] [-r |--run] [-e |--error] [-p p |--prec p] [-t test |--test test] [-n | --number]"
@@ -72,7 +76,7 @@ for o, a in opts:
       if o in ( '-p', '--prec' ):
          prec = a
       if o in ( '-d', '--dir' ):
-         dir = a
+         test_dir = a
       if o in ( '-t', '--test' ):
          test = a
       if o in ( '-n', '--number' ):
@@ -80,10 +84,12 @@ for o, a in opts:
          short_summary = 1
 
 # process options
-os.chdir(dir)
+
+os.chdir(test_dir)
+
 execution=1
 summary="\n\t\t\t-->   LAPACK TESTING SUMMARY  <--\n";
-if with_file: summary+= "\t\tProcessing LAPACK Testing output found in the "+dir+" direcory\n";
+if with_file: summary+= "\t\tProcessing LAPACK Testing output found in the "+test_dir+" direcory\n";
 summary+="SUMMARY             \tnb test run \tnumerical error   \tother error  \n";
 summary+="================   \t===========\t=================\t================  \n";
 nb_of_test=0
@@ -98,6 +104,7 @@ def run_summary_test( f, cmdline, short_summary):
    nb_test_fail=0
    nb_test_illegal=0
    nb_test_info=0
+      
    if (with_file):
       if not os.path.exists(cmdline):
         error_message=cmdline+" file not found"
@@ -108,13 +115,15 @@ def run_summary_test( f, cmdline, short_summary):
         r=0
    else:
       if os.name != 'nt':
-         cmdline="./" + cmdline
+         cmdline='./' + cmdline
+      else :
+         cmdline=abs_bin_dir+os.path.sep+cmdline
 
       outfile=cmdline.split()[4]
-      pipe = open(outfile,'w')
-      p = Popen(cmdline, shell=True, stdout=pipe)
+      #pipe = open(outfile,'w')
+      p = Popen(cmdline, shell=True)#, stdout=pipe)
       p.wait()
-      pipe.close()
+      #pipe.close()
       r=p.returncode
       pipe = open(outfile,'r')
       error_message=cmdline+" did not work"
@@ -215,7 +224,6 @@ for dtype in range_prec:
      print "------------------------- %s ------------------------" % name
      print " "
      sys.stdout.flush()
-
 
   dtests = (
   ("nep", "sep", "svd",

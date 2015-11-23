@@ -252,7 +252,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -268,10 +268,10 @@
      $                   PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
      $                   POLES, DIFL, DIFR, Z, K, C, S, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDB, LDBX, LDGCOL,
@@ -311,6 +311,7 @@
 *     Test the input parameters.
 *
       INFO = 0
+      N = NL + NR + 1
 *
       IF( ( ICOMPQ.LT.0 ) .OR. ( ICOMPQ.GT.1 ) ) THEN
          INFO = -1
@@ -320,11 +321,7 @@
          INFO = -3
       ELSE IF( ( SQRE.LT.0 ) .OR. ( SQRE.GT.1 ) ) THEN
          INFO = -4
-      END IF
-*
-      N = NL + NR + 1
-*
-      IF( NRHS.LT.1 ) THEN
+      ELSE IF( NRHS.LT.1 ) THEN
          INFO = -5
       ELSE IF( LDB.LT.N ) THEN
          INFO = -7

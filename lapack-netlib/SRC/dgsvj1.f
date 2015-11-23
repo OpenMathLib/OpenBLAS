@@ -37,8 +37,8 @@
 *>
 *> \verbatim
 *>
-*> DGSVJ1 is called from SGESVJ as a pre-processor and that is its main
-*> purpose. It applies Jacobi rotations in the same way as SGESVJ does, but
+*> DGSVJ1 is called from DGESVJ as a pre-processor and that is its main
+*> purpose. It applies Jacobi rotations in the same way as DGESVJ does, but
 *> it targets only particular pivots and it does not check convergence
 *> (stopping criterion). Few tunning parameters (marked by [TP]) are
 *> available for the implementer.
@@ -223,7 +223,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -236,10 +236,10 @@
       SUBROUTINE DGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
      $                   EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   EPS, SFMIN, TOL
@@ -271,7 +271,7 @@
       DOUBLE PRECISION   FASTR( 5 )
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DABS, DMAX1, DBLE, MIN0, DSIGN, DSQRT
+      INTRINSIC          DABS, MAX, DBLE, MIN, DSIGN, DSQRT
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DDOT, DNRM2
@@ -345,7 +345,7 @@
 *
 *     .. Row-cyclic pivot strategy with de Rijk's pivoting ..
 *
-      KBL = MIN0( 8, N )
+      KBL = MIN( 8, N )
       NBLR = N1 / KBL
       IF( ( NBLR*KBL ).NE.N1 )NBLR = NBLR + 1
 
@@ -356,7 +356,7 @@
       BLSKIP = ( KBL**2 ) + 1
 *[TP] BLKSKIP is a tuning parameter that depends on SWBAND and KBL.
 
-      ROWSKIP = MIN0( 5, KBL )
+      ROWSKIP = MIN( 5, KBL )
 *[TP] ROWSKIP is a tuning parameter.
       SWBAND = 0
 *[TP] SWBAND is a tuning parameter. It is meaningful and effective
@@ -399,7 +399,7 @@
 *        doing the block at ( ibr, jbc )
 
                IJBLSK = 0
-               DO 2100 p = igl, MIN0( igl+KBL-1, N1 )
+               DO 2100 p = igl, MIN( igl+KBL-1, N1 )
 
                   AAPP = SVA( p )
 
@@ -407,7 +407,7 @@
 
                      PSKIPPED = 0
 
-                     DO 2200 q = jgl, MIN0( jgl+KBL-1, N )
+                     DO 2200 q = jgl, MIN( jgl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 
@@ -454,7 +454,7 @@
                               END IF
                            END IF
 
-                           MXAAPQ = DMAX1( MXAAPQ, DABS( AAPQ ) )
+                           MXAAPQ = MAX( MXAAPQ, DABS( AAPQ ) )
 
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
@@ -481,11 +481,11 @@
      $                                              V( 1, p ), 1,
      $                                              V( 1, q ), 1,
      $                                              FASTR )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO,
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
-                                    MXSINJ = DMAX1( MXSINJ, DABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, DABS( T ) )
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
@@ -496,10 +496,10 @@
      $                                  DSQRT( ONE+THETA*THETA ) )
                                     CS = DSQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
-                                    MXSINJ = DMAX1( MXSINJ, DABS( SN ) )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, DABS( SN ) )
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO, 
+                                    AAPP = AAPP*DSQRT( MAX( ZERO, 
      $                                    ONE-T*AQOAP*AAPQ ) )
 
                                     APOAQ = D( p ) / D( q )
@@ -614,9 +614,9 @@
                                     CALL DLASCL( 'G', 0, 0, ONE, AAQQ,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  ELSE
                                     CALL DCOPY( M, A( 1, q ), 1, WORK,
      $                                          1 )
@@ -631,9 +631,9 @@
                                     CALL DLASCL( 'G', 0, 0, ONE, AAPP,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    SVA( p ) = AAPP*DSQRT( DMAX1( ZERO,
+                                    SVA( p ) = AAPP*DSQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  END IF
                               END IF
 *           END IF ROTOK THEN ... ELSE
@@ -704,7 +704,7 @@
 *
                   ELSE
                      IF( AAPP.EQ.ZERO )NOTROT = NOTROT +
-     $                   MIN0( jgl+KBL-1, N ) - jgl + 1
+     $                   MIN( jgl+KBL-1, N ) - jgl + 1
                      IF( AAPP.LT.ZERO )NOTROT = 0
 ***      IF ( NOTROT .GE. EMPTSW )  GO TO 2011
                   END IF
@@ -715,7 +715,7 @@
 *     end of the jbc-loop
  2011       CONTINUE
 *2011 bailed out of the jbc-loop
-            DO 2012 p = igl, MIN0( igl+KBL-1, N )
+            DO 2012 p = igl, MIN( igl+KBL-1, N )
                SVA( p ) = DABS( SVA( p ) )
  2012       CONTINUE
 ***   IF ( NOTROT .GE. EMPTSW ) GO TO 1994

@@ -21,7 +21,7 @@
 *>
 *> \verbatim
 *>
-*> CERRQP tests the error exits for CGEQPF and CGEQP3.
+*> CERRQP tests the error exits for CGEQP3.
 *> \endverbatim
 *
 *  Arguments:
@@ -47,17 +47,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRQP( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -85,7 +85,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CGEQP3, CGEQPF, CHKXER
+      EXTERNAL           ALAESM, CGEQP3, CHKXER
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -114,19 +114,6 @@
 *     Test error exits for QR factorization with pivoting
 *
       IF( LSAMEN( 2, C2, 'QP' ) ) THEN
-*
-*        CGEQPF
-*
-         SRNAMT = 'CGEQPF'
-         INFOT = 1
-         CALL CGEQPF( -1, 0, A, 1, IP, TAU, W, RW, INFO )
-         CALL CHKXER( 'CGEQPF', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL CGEQPF( 0, -1, A, 1, IP, TAU, W, RW, INFO )
-         CALL CHKXER( 'CGEQPF', INFOT, NOUT, LERR, OK )
-         INFOT = 4
-         CALL CGEQPF( 2, 0, A, 1, IP, TAU, W, RW, INFO )
-         CALL CHKXER( 'CGEQPF', INFOT, NOUT, LERR, OK )
 *
 *        CGEQP3
 *

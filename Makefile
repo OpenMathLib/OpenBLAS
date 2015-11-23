@@ -249,10 +249,14 @@ ifndef NOFORTRAN
 	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
-ifeq ($(FC), gfortran)
+ifeq ($(F_COMPILER), GFORTRAN)
 	-@echo "TIMER       = INT_ETIME" >> $(NETLIB_LAPACK_DIR)/make.inc
 ifdef SMP
+ifeq ($(OSNAME), WINNT)
+	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
 	-@echo "LOADER      = $(FC) -pthread" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 else
 	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
@@ -288,7 +292,17 @@ endif
 lapack-test :
 	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
 	make -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+ifneq ($(CROSS), 1)
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
+        ./testsecond; ./testdsecnd; ./testieee; ./testversion )
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+endif
+
+lapack-runtest:
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
+        ./testsecond; ./testdsecnd; ./testieee; ./testversion )
+	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+
 
 blas-test:
 	(cd $(NETLIB_LAPACK_DIR)/BLAS && rm -f x* *.out)

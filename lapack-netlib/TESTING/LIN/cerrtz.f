@@ -21,7 +21,7 @@
 *>
 *> \verbatim
 *>
-*> CERRTZ tests the error exits for CTZRQF and CTZRZF.
+*> CERRTZ tests the error exits for CTZRZF.
 *> \endverbatim
 *
 *  Arguments:
@@ -47,17 +47,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRTZ( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -82,7 +82,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, CTZRQF, CTZRZF
+      EXTERNAL           ALAESM, CHKXER, CTZRZF
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -112,19 +112,6 @@
 *
       WRITE( NOUT, FMT = * )
       IF( LSAMEN( 2, C2, 'TZ' ) ) THEN
-*
-*        CTZRQF
-*
-         SRNAMT = 'CTZRQF'
-         INFOT = 1
-         CALL CTZRQF( -1, 0, A, 1, TAU, INFO )
-         CALL CHKXER( 'CTZRQF', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL CTZRQF( 1, 0, A, 1, TAU, INFO )
-         CALL CHKXER( 'CTZRQF', INFOT, NOUT, LERR, OK )
-         INFOT = 4
-         CALL CTZRQF( 2, 2, A, 1, TAU, INFO )
-         CALL CHKXER( 'CTZRQF', INFOT, NOUT, LERR, OK )
 *
 *        CTZRZF
 *

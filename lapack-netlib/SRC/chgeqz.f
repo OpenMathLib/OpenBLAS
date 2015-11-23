@@ -284,7 +284,7 @@
      $                   ALPHA, BETA, Q, LDQ, Z, LDZ, WORK, LWORK,
      $                   RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.1) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -453,7 +453,7 @@
                CALL CSCAL( J-1, SIGNBC, T( 1, J ), 1 )
                CALL CSCAL( J, SIGNBC, H( 1, J ), 1 )
             ELSE
-               H( J, J ) = H( J, J )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( J, J ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, J ), 1 )
@@ -665,7 +665,7 @@
                CALL CSCAL( ILAST+1-IFRSTM, SIGNBC, H( IFRSTM, ILAST ),
      $                     1 )
             ELSE
-               H( ILAST, ILAST ) = H( ILAST, ILAST )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( ILAST, ILAST ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, ILAST ), 1 )
@@ -849,7 +849,7 @@
                CALL CSCAL( J-1, SIGNBC, T( 1, J ), 1 )
                CALL CSCAL( J, SIGNBC, H( 1, J ), 1 )
             ELSE
-               H( J, J ) = H( J, J )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( J, J ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, J ), 1 )

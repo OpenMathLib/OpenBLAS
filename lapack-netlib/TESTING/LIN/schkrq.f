@@ -192,7 +192,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_lin
 *
@@ -201,10 +201,10 @@
      $                   NRHS, THRESH, TSTERR, NMAX, A, AF, AQ, AR, AC,
      $                   B, X, XACT, TAU, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -416,7 +416,7 @@
 *                    Print information about the tests that did not
 *                    pass the threshold.
 *
-                     DO 20 I = 1, NTESTS
+                     DO 20 I = 1, NT
                         IF( RESULT( I ).GE.THRESH ) THEN
                            IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                        CALL ALAHD( NOUT, PATH )

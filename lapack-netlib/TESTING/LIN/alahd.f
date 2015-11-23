@@ -86,17 +86,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup aux_lin
 *
 *  =====================================================================
       SUBROUTINE ALAHD( IOUNIT, PATH )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -553,14 +553,11 @@
 *
          WRITE( IOUNIT, FMT = 9985 )PATH
          WRITE( IOUNIT, FMT = 9968 )
-         WRITE( IOUNIT, FMT = 9929 )C1, C1
+         WRITE( IOUNIT, FMT = 9929 )C1
          WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
          WRITE( IOUNIT, FMT = 9940 )1
          WRITE( IOUNIT, FMT = 9937 )2
          WRITE( IOUNIT, FMT = 9938 )3
-         WRITE( IOUNIT, FMT = 9940 )4
-         WRITE( IOUNIT, FMT = 9937 )5
-         WRITE( IOUNIT, FMT = 9938 )6
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
       ELSE IF( LSAMEN( 2, P2, 'LS' ) ) THEN
@@ -570,7 +567,7 @@
 *
          WRITE( IOUNIT, FMT = 9984 )PATH
          WRITE( IOUNIT, FMT = 9967 )
-         WRITE( IOUNIT, FMT = 9921 )C1, C1, C1, C1, C1
+         WRITE( IOUNIT, FMT = 9921 )C1, C1, C1, C1
          WRITE( IOUNIT, FMT = 9935 )1
          WRITE( IOUNIT, FMT = 9931 )2
          WRITE( IOUNIT, FMT = 9933 )3
@@ -946,13 +943,10 @@
      $      'otherwise', / 7X,
      $      'check if X is in the row space of A or A'' ',
      $      '(overdetermined case)' )
- 9929 FORMAT( ' Test ratios (1-3: ', A1, 'TZRQF, 4-6: ', A1,
-     $      'TZRZF):' )
- 9920 FORMAT( 3X, ' 7-10: same as 3-6', 3X, ' 11-14: same as 3-6',
-     $      3X, ' 15-18: same as 3-6' )
+ 9929 FORMAT( ' Test ratios (1-3: ', A1, 'TZRZF):' )
+ 9920 FORMAT( 3X, ' 7-10: same as 3-6', 3X, ' 11-14: same as 3-6' )
  9921 FORMAT( ' Test ratios:', / '    (1-2: ', A1, 'GELS, 3-6: ', A1,
-     $      'GELSX, 7-10: ', A1, 'GELSY, 11-14: ', A1, 'GELSS, 15-18: ',
-     $      A1, 'GELSD)' )
+     $      'GELSY, 7-10: ', A1, 'GELSS, 11-14: ', A1, 'GELSD)' )
  9928 FORMAT( 7X, 'where ALPHA = ( 1 + SQRT( 17 ) ) / 8' )
  9927 FORMAT( 3X, I2, ': ABS( Largest element in L )', / 12X,
      $      ' - ( 1 / ( 1 - ALPHA ) ) + THRESH' )

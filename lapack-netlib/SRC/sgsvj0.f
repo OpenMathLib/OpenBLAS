@@ -193,7 +193,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup realOTHERcomputational
 *
@@ -218,10 +218,10 @@
       SUBROUTINE SGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
      $                   SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, NSWEEP
@@ -253,7 +253,7 @@
       REAL               FASTR( 5 )
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, AMAX1, FLOAT, MIN0, SIGN, SQRT
+      INTRINSIC          ABS, MAX, FLOAT, MIN, SIGN, SQRT
 *     ..
 *     .. External Functions ..
       REAL               SDOT, SNRM2
@@ -329,7 +329,7 @@
 *     Jacobi SVD algorithm SGESVJ. For sweeps i=1:SWBAND the procedure
 *     ......
 
-      KBL = MIN0( 8, N )
+      KBL = MIN( 8, N )
 *[TP] KBL is a tuning parameter that defines the tile size in the
 *     tiling of the p-q loops of pivot pairs. In general, an optimal
 *     value of KBL depends on the matrix dimensions and on the
@@ -341,7 +341,7 @@
       BLSKIP = ( KBL**2 ) + 1
 *[TP] BLKSKIP is a tuning parameter that depends on SWBAND and KBL.
 
-      ROWSKIP = MIN0( 5, KBL )
+      ROWSKIP = MIN( 5, KBL )
 *[TP] ROWSKIP is a tuning parameter.
 
       LKAHEAD = 1
@@ -363,11 +363,11 @@
 
             igl = ( ibr-1 )*KBL + 1
 *
-            DO 1002 ir1 = 0, MIN0( LKAHEAD, NBL-ibr )
+            DO 1002 ir1 = 0, MIN( LKAHEAD, NBL-ibr )
 *
                igl = igl + ir1*KBL
 *
-               DO 2001 p = igl, MIN0( igl+KBL-1, N-1 )
+               DO 2001 p = igl, MIN( igl+KBL-1, N-1 )
 
 *     .. de Rijk's pivoting
                   q = ISAMAX( N-p+1, SVA( p ), 1 ) + p - 1
@@ -416,7 +416,7 @@
 *
                      PSKIPPED = 0
 *
-                     DO 2002 q = p + 1, MIN0( igl+KBL-1, N )
+                     DO 2002 q = p + 1, MIN( igl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 
@@ -451,7 +451,7 @@
                               END IF
                            END IF
 *
-                           MXAAPQ = AMAX1( MXAAPQ, ABS( AAPQ ) )
+                           MXAAPQ = MAX( MXAAPQ, ABS( AAPQ ) )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
@@ -483,11 +483,11 @@
      $                                              V( 1, p ), 1,
      $                                              V( 1, q ), 1,
      $                                              FASTR )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO, 
+                                    AAPP = AAPP*SQRT( MAX( ZERO, 
      $                                         ONE-T*AQOAP*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
 *
                                  ELSE
 *
@@ -499,10 +499,10 @@
                                     CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
 *
-                                    MXSINJ = AMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = D( p ) / D( q )
@@ -613,9 +613,9 @@
      $                                       A( 1, q ), 1 )
                                  CALL SLASCL( 'G', 0, 0, ONE, AAQQ, M,
      $                                        1, A( 1, q ), LDA, IERR )
-                                 SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                 SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                      ONE-AAPQ*AAPQ ) )
-                                 MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                 MXSINJ = MAX( MXSINJ, SFMIN )
                               END IF
 *           END IF ROTOK THEN ... ELSE
 *
@@ -679,7 +679,7 @@
                   ELSE
                      SVA( p ) = AAPP
                      IF( ( ir1.EQ.0 ) .AND. ( AAPP.EQ.ZERO ) )
-     $                   NOTROT = NOTROT + MIN0( igl+KBL-1, N ) - p
+     $                   NOTROT = NOTROT + MIN( igl+KBL-1, N ) - p
                   END IF
 *
  2001          CONTINUE
@@ -700,7 +700,7 @@
 *        doing the block at ( ibr, jbc )
 *
                IJBLSK = 0
-               DO 2100 p = igl, MIN0( igl+KBL-1, N )
+               DO 2100 p = igl, MIN( igl+KBL-1, N )
 *
                   AAPP = SVA( p )
 *
@@ -708,7 +708,7 @@
 *
                      PSKIPPED = 0
 *
-                     DO 2200 q = jgl, MIN0( jgl+KBL-1, N )
+                     DO 2200 q = jgl, MIN( jgl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 *
@@ -755,7 +755,7 @@
                               END IF
                            END IF
 *
-                           MXAAPQ = AMAX1( MXAAPQ, ABS( AAPQ ) )
+                           MXAAPQ = MAX( MXAAPQ, ABS( AAPQ ) )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
@@ -782,11 +782,11 @@
      $                                              V( 1, p ), 1,
      $                                              V( 1, q ), 1,
      $                                              FASTR )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
@@ -797,10 +797,10 @@
      $                                  SQRT( ONE+THETA*THETA ) )
                                     CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
-                                    MXSINJ = AMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO, 
+                                    AAPP = AAPP*SQRT( MAX( ZERO, 
      $                                         ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = D( p ) / D( q )
@@ -915,9 +915,9 @@
                                     CALL SLASCL( 'G', 0, 0, ONE, AAQQ,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  ELSE
                                     CALL SCOPY( M, A( 1, q ), 1, WORK,
      $                                          1 )
@@ -932,9 +932,9 @@
                                     CALL SLASCL( 'G', 0, 0, ONE, AAPP,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    SVA( p ) = AAPP*SQRT( AMAX1( ZERO,
+                                    SVA( p ) = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  END IF
                               END IF
 *           END IF ROTOK THEN ... ELSE
@@ -1002,7 +1002,7 @@
 *
                   ELSE
                      IF( AAPP.EQ.ZERO )NOTROT = NOTROT +
-     $                   MIN0( jgl+KBL-1, N ) - jgl + 1
+     $                   MIN( jgl+KBL-1, N ) - jgl + 1
                      IF( AAPP.LT.ZERO )NOTROT = 0
                   END IF
 
@@ -1012,7 +1012,7 @@
 *     end of the jbc-loop
  2011       CONTINUE
 *2011 bailed out of the jbc-loop
-            DO 2012 p = igl, MIN0( igl+KBL-1, N )
+            DO 2012 p = igl, MIN( igl+KBL-1, N )
                SVA( p ) = ABS( SVA( p ) )
  2012       CONTINUE
 *

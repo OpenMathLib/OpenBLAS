@@ -66,11 +66,16 @@
 *>          of the matrix B.  NRHS >= 0.
 *> \endverbatim
 *>
-*> \param[in] A
+*> \param[in,out] A
 *> \verbatim
 *>          A is REAL array, dimension (LDA,N)
 *>          The block diagonal matrix D and the multipliers used to
 *>          obtain the factor U or L as computed by SSYTRF.
+*>          Note that A is input / output. This might be counter-intuitive,
+*>          and one may think that A is input only. A is input / output. This
+*>          is because, at the start of the subroutine, we permute A in a
+*>          "better" form and then we permute A back to its original form at
+*>          the end.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -119,7 +124,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup realSYcomputational
 *
@@ -127,10 +132,10 @@
       SUBROUTINE SSYTRS2( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, 
      $                    WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

@@ -1,7 +1,7 @@
 ####################################################################
 #  LAPACK make include file.                                       #
-#  LAPACK, Version 3.5.0                                           #
-#  November 2013                                                   #
+#  LAPACK, Version 3.6.0                                           #
+#  November 2015                                                   #
 ####################################################################
 #
 SHELL = /bin/sh
@@ -11,6 +11,10 @@ SHELL = /bin/sh
 #  refers to the compiler options desired when NO OPTIMIZATION is
 #  selected.  Define LOADER and LOADOPTS to refer to the loader
 #  and desired load options for your machine.
+#
+#  Note: During a regular execution, LAPACK might create NaN and Inf
+#  and handle these quantities appropriately. As a consequence, one 
+#  should not compile LAPACK with flags such as -ffpe-trap=overflow.
 #
 FORTRAN  = gfortran -fimplicit-none -g -frecursive
 OPTS     =
@@ -70,6 +74,7 @@ XBLASLIB     =
 #  possible.)
 #
 BLASLIB      = ../../librefblas.a
+CBLASLIB     = ../../libcblas.a
 LAPACKLIB    = liblapack.a
 TMGLIB       = libtmglib.a
 LAPACKELIB   = liblapacke.a

@@ -52,12 +52,11 @@
 *>                                [  0  S  0 ]
 *>                                [  0  0  I ]
 *> 
-*> X11 is P-by-Q. The orthogonal matrices U1, U2, V1, and V2 are P-by-P,
-*> (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
-*> R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
-*> which R = MIN(P,M-P,Q,M-Q).
-*>
-*>\endverbatim
+*> X11 is P-by-Q. The orthogonal matrices U1, U2, and V1 are P-by-P,
+*> (M-P)-by-(M-P), and Q-by-Q, respectively. C and S are R-by-R
+*> nonnegative diagonal matrices satisfying C^2 + S^2 = I, in which
+*> R = MIN(P,M-P,Q,M-Q).
+*> \endverbatim
 *
 *  Arguments:
 *  ==========
@@ -65,60 +64,58 @@
 *> \param[in] JOBU1
 *> \verbatim
 *>          JOBU1 is CHARACTER
-*>           = 'Y':      U1 is computed;
-*>           otherwise:  U1 is not computed.
+*>          = 'Y':      U1 is computed;
+*>          otherwise:  U1 is not computed.
 *> \endverbatim
 *>
 *> \param[in] JOBU2
 *> \verbatim
 *>          JOBU2 is CHARACTER
-*>           = 'Y':      U2 is computed;
-*>           otherwise:  U2 is not computed.
+*>          = 'Y':      U2 is computed;
+*>          otherwise:  U2 is not computed.
 *> \endverbatim
 *>
 *> \param[in] JOBV1T
 *> \verbatim
 *>          JOBV1T is CHARACTER
-*>           = 'Y':      V1T is computed;
-*>           otherwise:  V1T is not computed.
+*>          = 'Y':      V1T is computed;
+*>          otherwise:  V1T is not computed.
 *> \endverbatim
 *>
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>           The number of rows and columns in X.
+*>          The number of rows in X.
 *> \endverbatim
 *>
 *> \param[in] P
 *> \verbatim
 *>          P is INTEGER
-*>           The number of rows in X11 and X12. 0 <= P <= M.
+*>          The number of rows in X11. 0 <= P <= M.
 *> \endverbatim
 *>
 *> \param[in] Q
 *> \verbatim
 *>          Q is INTEGER
-*>           The number of columns in X11 and X21. 0 <= Q <= M.
+*>          The number of columns in X11 and X21. 0 <= Q <= M.
 *> \endverbatim
 *>
 *> \param[in,out] X11
 *> \verbatim
 *>          X11 is REAL array, dimension (LDX11,Q)
-*>           On entry, part of the orthogonal matrix whose CSD is
-*>           desired.
+*>          On entry, part of the orthogonal matrix whose CSD is desired.
 *> \endverbatim
 *>
 *> \param[in] LDX11
 *> \verbatim
 *>          LDX11 is INTEGER
-*>           The leading dimension of X11. LDX11 >= MAX(1,P).
+*>          The leading dimension of X11. LDX11 >= MAX(1,P).
 *> \endverbatim
 *>
 *> \param[in,out] X21
 *> \verbatim
 *>          X21 is REAL array, dimension (LDX21,Q)
-*>           On entry, part of the orthogonal matrix whose CSD is
-*>           desired.
+*>          On entry, part of the orthogonal matrix whose CSD is desired.
 *> \endverbatim
 *>
 *> \param[in] LDX21
@@ -130,73 +127,74 @@
 *> \param[out] THETA
 *> \verbatim
 *>          THETA is REAL array, dimension (R), in which R =
-*>           MIN(P,M-P,Q,M-Q).
-*>           C = DIAG( COS(THETA(1)), ... , COS(THETA(R)) ) and
-*>           S = DIAG( SIN(THETA(1)), ... , SIN(THETA(R)) ).
+*>          MIN(P,M-P,Q,M-Q).
+*>          C = DIAG( COS(THETA(1)), ... , COS(THETA(R)) ) and
+*>          S = DIAG( SIN(THETA(1)), ... , SIN(THETA(R)) ).
 *> \endverbatim
 *>
 *> \param[out] U1
 *> \verbatim
 *>          U1 is REAL array, dimension (P)
-*>           If JOBU1 = 'Y', U1 contains the P-by-P orthogonal matrix U1.
+*>          If JOBU1 = 'Y', U1 contains the P-by-P orthogonal matrix U1.
 *> \endverbatim
 *>
 *> \param[in] LDU1
 *> \verbatim
 *>          LDU1 is INTEGER
-*>           The leading dimension of U1. If JOBU1 = 'Y', LDU1 >=
-*>           MAX(1,P).
+*>          The leading dimension of U1. If JOBU1 = 'Y', LDU1 >=
+*>          MAX(1,P).
 *> \endverbatim
 *>
 *> \param[out] U2
 *> \verbatim
 *>          U2 is REAL array, dimension (M-P)
-*>           If JOBU2 = 'Y', U2 contains the (M-P)-by-(M-P) orthogonal
-*>           matrix U2.
+*>          If JOBU2 = 'Y', U2 contains the (M-P)-by-(M-P) orthogonal
+*>          matrix U2.
 *> \endverbatim
 *>
 *> \param[in] LDU2
 *> \verbatim
 *>          LDU2 is INTEGER
-*>           The leading dimension of U2. If JOBU2 = 'Y', LDU2 >=
-*>           MAX(1,M-P).
+*>          The leading dimension of U2. If JOBU2 = 'Y', LDU2 >=
+*>          MAX(1,M-P).
 *> \endverbatim
 *>
 *> \param[out] V1T
 *> \verbatim
 *>          V1T is REAL array, dimension (Q)
-*>           If JOBV1T = 'Y', V1T contains the Q-by-Q matrix orthogonal
-*>           matrix V1**T.
+*>          If JOBV1T = 'Y', V1T contains the Q-by-Q matrix orthogonal
+*>          matrix V1**T.
 *> \endverbatim
 *>
 *> \param[in] LDV1T
 *> \verbatim
 *>          LDV1T is INTEGER
-*>           The leading dimension of V1T. If JOBV1T = 'Y', LDV1T >=
-*>           MAX(1,Q).
+*>          The leading dimension of V1T. If JOBV1T = 'Y', LDV1T >=
+*>          MAX(1,Q).
 *> \endverbatim
 *>
 *> \param[out] WORK
 *> \verbatim
 *>          WORK is REAL array, dimension (MAX(1,LWORK))
-*>           On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
-*>           If INFO > 0 on exit, WORK(2:R) contains the values PHI(1),
-*>           ..., PHI(R-1) that, together with THETA(1), ..., THETA(R),
-*>           define the matrix in intermediate bidiagonal-block form
-*>           remaining after nonconvergence. INFO specifies the number
-*>           of nonzero PHI's.
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*>          If INFO > 0 on exit, WORK(2:R) contains the values PHI(1),
+*>          ..., PHI(R-1) that, together with THETA(1), ..., THETA(R),
+*>          define the matrix in intermediate bidiagonal-block form
+*>          remaining after nonconvergence. INFO specifies the number
+*>          of nonzero PHI's.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>           The dimension of the array WORK.
+*>          The dimension of the array WORK.
+*>
+*>          If LWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the optimal size of the WORK array, returns
+*>          this value as the first entry of the work array, and no error
+*>          message related to LWORK is issued by XERBLA.
 *> \endverbatim
 *>
-*>           If LWORK = -1, then a workspace query is assumed; the routine
-*>           only calculates the optimal size of the WORK array, returns
-*>           this value as the first entry of the work array, and no error
-*>           message related to LWORK is issued by XERBLA.
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (M-MIN(P,M-P,Q,M-Q))
@@ -205,14 +203,15 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>           = 0:  successful exit.
-*>           < 0:  if INFO = -i, the i-th argument had an illegal value.
-*>           > 0:  SBBCSD did not converge. See the description of WORK
+*>          = 0:  successful exit.
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*>          > 0:  SBBCSD did not converge. See the description of WORK
 *>                above for details.
 *> \endverbatim
+*
+*> \par References:
+*  ================
 *>
-*>  \par Reference:
-*   ===============
 *>  [1] Brian D. Sutton. Computing the complete CS decomposition. Numer.
 *>      Algorithms, 50(1):33-65, 2009.
 *
@@ -233,7 +232,7 @@
      $                       X21, LDX21, THETA, U1, LDU1, U2, LDU2, V1T,
      $                       LDV1T, WORK, LWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2012

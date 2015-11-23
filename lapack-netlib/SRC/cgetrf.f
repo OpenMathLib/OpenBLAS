@@ -101,17 +101,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complexGEcomputational
 *
 *  =====================================================================
       SUBROUTINE CGETRF( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -131,7 +131,7 @@
       INTEGER            I, IINFO, J, JB, NB
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGEMM, CGETF2, CLASWP, CTRSM, XERBLA
+      EXTERNAL           CGEMM, CGETRF2, CLASWP, CTRSM, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
@@ -169,7 +169,7 @@
 *
 *        Use unblocked code.
 *
-         CALL CGETF2( M, N, A, LDA, IPIV, INFO )
+         CALL CGETRF2( M, N, A, LDA, IPIV, INFO )
       ELSE
 *
 *        Use blocked code.
@@ -180,7 +180,7 @@
 *           Factor diagonal and subdiagonal blocks and test for exact
 *           singularity.
 *
-            CALL CGETF2( M-J+1, JB, A( J, J ), LDA, IPIV( J ), IINFO )
+            CALL CGETRF2( M-J+1, JB, A( J, J ), LDA, IPIV( J ), IINFO )
 *
 *           Adjust INFO and the pivot indices.
 *

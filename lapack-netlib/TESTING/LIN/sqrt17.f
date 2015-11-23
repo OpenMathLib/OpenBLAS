@@ -142,7 +142,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_lin
 *
@@ -150,10 +150,10 @@
       REAL             FUNCTION SQRT17( TRANS, IRESID, M, N, NRHS, A,
      $                 LDA, X, LDX, B, LDB, C, WORK, LWORK )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -249,9 +249,8 @@
          IF( NORMB.NE.ZERO )
      $      ERR = ERR / NORMB
       ELSE
-         NORMX = SLANGE( 'One-norm', NCOLS, NRHS, X, LDX, RWORK )
-         IF( NORMX.NE.ZERO )
-     $      ERR = ERR / NORMX
+         IF( NORMRS.NE.ZERO )
+     $      ERR = ERR / NORMRS
       END IF
 *
       SQRT17 = ERR / ( SLAMCH( 'Epsilon' )*REAL( MAX( M, N, NRHS ) ) )

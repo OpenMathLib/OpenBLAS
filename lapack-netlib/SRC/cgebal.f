@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup complexGEcomputational
 *
@@ -161,10 +161,10 @@
 *  =====================================================================
       SUBROUTINE CGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -203,14 +203,6 @@
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, MAX, MIN, REAL
-*     ..
-*     .. Statement Functions ..
-      REAL               CABS1
-*     ..
-*     .. Statement Function definitions ..
-      CABS1( CDUM ) = ABS( REAL( CDUM ) ) + ABS( AIMAG( CDUM ) )
-*     ..
-*     .. Executable Statements ..
 *
 *     Test the input parameters
 *

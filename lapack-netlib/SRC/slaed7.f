@@ -244,7 +244,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -260,10 +260,10 @@
      $                   PERM, GIVPTR, GIVCOL, GIVNUM, WORK, IWORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            CURLVL, CURPBM, CUTPNT, ICOMPQ, INFO, LDQ, N,
@@ -304,7 +304,7 @@
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
       ELSE IF( ICOMPQ.EQ.1 .AND. QSIZ.LT.N ) THEN
-         INFO = -4
+         INFO = -3
       ELSE IF( LDQ.LT.MAX( 1, N ) ) THEN
          INFO = -9
       ELSE IF( MIN( 1, N ).GT.CUTPNT .OR. N.LT.CUTPNT ) THEN

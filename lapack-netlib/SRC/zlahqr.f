@@ -171,7 +171,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -195,10 +195,10 @@
       SUBROUTINE ZLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILOZ,
      $                   IHIZ, Z, LDZ, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, N
@@ -211,8 +211,6 @@
 *  =========================================================
 *
 *     .. Parameters ..
-      INTEGER            ITMAX
-      PARAMETER          ( ITMAX = 30 )
       COMPLEX*16         ZERO, ONE
       PARAMETER          ( ZERO = ( 0.0d0, 0.0d0 ),
      $                   ONE = ( 1.0d0, 0.0d0 ) )
@@ -226,7 +224,8 @@
      $                   V2, X, Y
       DOUBLE PRECISION   AA, AB, BA, BB, H10, H21, RTEMP, S, SAFMAX,
      $                   SAFMIN, SMLNUM, SX, T2, TST, ULP
-      INTEGER            I, I1, I2, ITS, J, JHI, JLO, K, L, M, NH, NZ
+      INTEGER            I, I1, I2, ITS, ITMAX, J, JHI, JLO, K, L, M,
+     $                   NH, NZ
 *     ..
 *     .. Local Arrays ..
       COMPLEX*16         V( 2 )
@@ -311,6 +310,10 @@
          I1 = 1
          I2 = N
       END IF
+*
+*     ITMAX is the total number of QR iterations allowed.
+*
+      ITMAX = 30 * MAX( 10, NH ) 
 *
 *     The main loop begins here. I is the loop index and decreases from
 *     IHI to ILO in steps of 1. Each iteration of the loop works

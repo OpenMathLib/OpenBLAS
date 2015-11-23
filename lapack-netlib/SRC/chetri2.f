@@ -96,11 +96,11 @@
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
 *>          WORK is size >= (N+NB+1)*(NB+3)
-*>          If LDWORK = -1, then a workspace query is assumed; the routine
+*>          If LWORK = -1, then a workspace query is assumed; the routine
 *>           calculates:
 *>              - the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array,
-*>              - and no error message related to LDWORK is issued by XERBLA.
+*>              - and no error message related to LWORK is issued by XERBLA.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -120,17 +120,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complexHEcomputational
 *
 *  =====================================================================
       SUBROUTINE CHETRI2( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

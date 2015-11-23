@@ -47,15 +47,15 @@
 *> \param[in] SIDE
 *> \verbatim
 *>          SIDE is CHARACTER*1
-*>          = 'L': apply Q or Q^H from the Left;
-*>          = 'R': apply Q or Q^H from the Right.
+*>          = 'L': apply Q or Q^T from the Left;
+*>          = 'R': apply Q or Q^T from the Right.
 *> \endverbatim
 *>
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          = 'N':  No transpose, apply Q;
-*>          = 'C':  Transpose, apply Q^H.
+*>          = 'T':  Transpose, apply Q^T.
 *> \endverbatim
 *>
 *> \param[in] M
@@ -128,7 +128,7 @@
 *>          (LDA,K) if SIDE = 'R'
 *>          On entry, the K-by-N or M-by-K matrix A.
 *>          On exit, A is overwritten by the corresponding block of 
-*>          Q*C or Q^H*C or C*Q or C*Q^H.  See Further Details.
+*>          Q*C or Q^T*C or C*Q or C*Q^T.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -144,7 +144,7 @@
 *>          B is REAL array, dimension (LDB,N)
 *>          On entry, the M-by-N matrix B.
 *>          On exit, B is overwritten by the corresponding block of
-*>          Q*C or Q^H*C or C*Q or C*Q^H.  See Further Details.
+*>          Q*C or Q^T*C or C*Q or C*Q^T.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDB
@@ -175,7 +175,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup realOTHERcomputational
 *
@@ -205,21 +205,21 @@
 *>
 *>  If TRANS='N' and SIDE='L', C is on exit replaced with Q * C.
 *>
-*>  If TRANS='C' and SIDE='L', C is on exit replaced with Q^H * C.
+*>  If TRANS='T' and SIDE='L', C is on exit replaced with Q^T * C.
 *>
 *>  If TRANS='N' and SIDE='R', C is on exit replaced with C * Q.
 *>
-*>  If TRANS='C' and SIDE='R', C is on exit replaced with C * Q^H.
+*>  If TRANS='T' and SIDE='R', C is on exit replaced with C * Q^T.
 *> \endverbatim
 *>
 *  =====================================================================
       SUBROUTINE STPMQRT( SIDE, TRANS, M, N, K, L, NB, V, LDV, T, LDT,
      $                    A, LDA, B, LDB, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS

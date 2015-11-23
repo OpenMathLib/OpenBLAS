@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.7)
 project(TIMING Fortran)
 add_executable(secondtst_NONE second_NONE.f secondtst.f)
 add_executable(secondtst_EXT_ETIME second_EXT_ETIME.f secondtst.f)

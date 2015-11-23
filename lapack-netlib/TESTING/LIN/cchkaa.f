@@ -102,17 +102,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       PROGRAM CCHKAA
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *  =====================================================================
 *
@@ -160,7 +160,7 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, CCHKEQ, CCHKGB, CCHKGE, CCHKGT, CCHKHE,
      $                   CCHKHE_ROOK, CCHKHP, CCHKLQ, CCHKPB, CCHKPO,
-     $                   CCHKPS, CCHKPP, CCHKPT, CCHKQ3, CCHKQL, CCHKQP,
+     $                   CCHKPS, CCHKPP, CCHKPT, CCHKQ3, CCHKQL,
      $                   CCHKQR, CCHKRQ, CCHKSP, CCHKSY, CCHKSY_ROOK,
      $                   CCHKTB, CCHKTP, CCHKTR, CCHKTZ, CDRVGB, CDRVGE,
      $                   CDRVGT, CDRVHE, CDRVHE_ROOK, CDRVHP, CDRVLS,
@@ -920,9 +920,6 @@
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
-            CALL CCHKQP( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR,
-     $                   A( 1, 1 ), A( 1, 2 ), S( 1 ),
-     $                   B( 1, 1 ), WORK, RWORK, IWORK, NOUT )
             CALL CCHKQ3( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
      $                   THRESH, A( 1, 1 ), A( 1, 2 ), S( 1 ),
      $                   B( 1, 1 ), WORK, RWORK, IWORK, NOUT )

@@ -21,7 +21,7 @@
 *>
 *> \verbatim
 *>
-*> SERRQP tests the error exits for SGEQPF and SGEQP3.
+*> SERRQP tests the error exits for SGEQP3.
 *> \endverbatim
 *
 *  Arguments:
@@ -47,17 +47,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRQP( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -83,7 +83,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, SGEQP3, SGEQPF
+      EXTERNAL           ALAESM, CHKXER, SGEQP3
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -109,19 +109,6 @@
       IF( LSAMEN( 2, C2, 'QP' ) ) THEN
 *
 *        Test error exits for QR factorization with pivoting
-*
-*        SGEQPF
-*
-         SRNAMT = 'SGEQPF'
-         INFOT = 1
-         CALL SGEQPF( -1, 0, A, 1, IP, TAU, W, INFO )
-         CALL CHKXER( 'SGEQPF', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL SGEQPF( 0, -1, A, 1, IP, TAU, W, INFO )
-         CALL CHKXER( 'SGEQPF', INFOT, NOUT, LERR, OK )
-         INFOT = 4
-         CALL SGEQPF( 2, 0, A, 1, IP, TAU, W, INFO )
-         CALL CHKXER( 'SGEQPF', INFOT, NOUT, LERR, OK )
 *
 *        SGEQP3
 *

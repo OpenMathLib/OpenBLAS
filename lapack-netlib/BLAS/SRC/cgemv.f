@@ -136,7 +136,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_blas_level2
 *
@@ -158,10 +158,10 @@
 *  =====================================================================
       SUBROUTINE CGEMV(TRANS,M,N,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
 *
-*  -- Reference BLAS level2 routine (version 3.4.0) --
+*  -- Reference BLAS level2 routine (version 3.6.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       COMPLEX ALPHA,BETA
@@ -285,24 +285,20 @@
           JX = KX
           IF (INCY.EQ.1) THEN
               DO 60 J = 1,N
-                  IF (X(JX).NE.ZERO) THEN
-                      TEMP = ALPHA*X(JX)
-                      DO 50 I = 1,M
-                          Y(I) = Y(I) + TEMP*A(I,J)
-   50                 CONTINUE
-                  END IF
+                  TEMP = ALPHA*X(JX)
+                  DO 50 I = 1,M
+                      Y(I) = Y(I) + TEMP*A(I,J)
+   50             CONTINUE
                   JX = JX + INCX
    60         CONTINUE
           ELSE
               DO 80 J = 1,N
-                  IF (X(JX).NE.ZERO) THEN
-                      TEMP = ALPHA*X(JX)
-                      IY = KY
-                      DO 70 I = 1,M
-                          Y(IY) = Y(IY) + TEMP*A(I,J)
-                          IY = IY + INCY
-   70                 CONTINUE
-                  END IF
+                  TEMP = ALPHA*X(JX)
+                  IY = KY
+                  DO 70 I = 1,M
+                      Y(IY) = Y(IY) + TEMP*A(I,J)
+                      IY = IY + INCY
+   70             CONTINUE
                   JX = JX + INCX
    80         CONTINUE
           END IF

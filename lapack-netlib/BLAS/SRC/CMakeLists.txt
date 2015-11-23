@@ -137,8 +137,13 @@ endif()
   
   
 add_library(blas ${ALLOBJ})
-if(UNIX)
-  target_link_libraries(blas m)
-endif()
+#if(UNIX)
+#  target_link_libraries(blas m)
+#endif()
+set_target_properties(
+  blas PROPERTIES
+  VERSION ${LAPACK_VERSION}
+  SOVERSION ${LAPACK_MAJOR_VERSION}
+  )
 target_link_libraries(blas)
 lapack_install_library(blas)

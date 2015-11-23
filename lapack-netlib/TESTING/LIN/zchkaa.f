@@ -102,17 +102,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       PROGRAM ZCHKAA
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *  =====================================================================
 *
@@ -160,7 +160,7 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, ZCHKEQ, ZCHKGB, ZCHKGE, ZCHKGT, ZCHKHE,
      $                   ZCHKHE_ROOK, ZCHKHP, ZCHKLQ, ZCHKPB, ZCHKPO,
-     $                   ZCHKPS, ZCHKPP, ZCHKPT, ZCHKQ3, ZCHKQL, ZCHKQP,
+     $                   ZCHKPS, ZCHKPP, ZCHKPT, ZCHKQ3, ZCHKQL,
      $                   ZCHKQR, ZCHKRQ, ZCHKSP, ZCHKSY, ZCHKSY_ROOK,
      $                   ZCHKTB, ZCHKTP, ZCHKTR, ZCHKTZ, ZDRVGB, ZDRVGE,
      $                   ZDRVGT, ZDRVHE, ZDRVHE_ROOK, ZDRVHP, ZDRVLS,
@@ -916,9 +916,6 @@
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
-            CALL ZCHKQP( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR,
-     $                   A( 1, 1 ), A( 1, 2 ), S( 1 ),
-     $                   B( 1, 1 ), WORK, RWORK, IWORK, NOUT )
             CALL ZCHKQ3( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
      $                   THRESH, A( 1, 1 ), A( 1, 2 ), S( 1 ),
      $                   B( 1, 1 ), WORK, RWORK, IWORK,

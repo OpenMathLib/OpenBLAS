@@ -172,37 +172,45 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fmul	v16.4s, v0.4s, v8.4s[0]
 	OP_ii	v16.4s, v1.4s, v9.4s[0]
-	fmul	v17.4s, v0.4s, v9.4s[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v17.4s, v17.4s
+	eor	v17.16b, v17.16b, v17.16b
+	fmls	v17.4s, v0.4s, v9.4s[0]
+#else
+	fmul	v17.4s, v0.4s, v9.4s[0]
 #endif
 	OP_ir	v17.4s, v1.4s, v8.4s[0]
 
 	fmul	v20.4s, v0.4s, v8.4s[1]
 	OP_ii	v20.4s, v1.4s, v9.4s[1]
-	fmul	v21.4s, v0.4s, v9.4s[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v21.4s, v21.4s
+	eor	v21.16b, v21.16b, v21.16b
+	fmls	v21.4s, v0.4s, v9.4s[1]
+#else
+	fmul	v21.4s, v0.4s, v9.4s[1]
 #endif
 	OP_ir	v21.4s, v1.4s, v8.4s[1]
 
 	fmul	v24.4s, v0.4s, v8.4s[2]
 	OP_ii	v24.4s, v1.4s, v9.4s[2]
-	fmul	v25.4s, v0.4s, v9.4s[2]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v25.4s, v25.4s
+	eor	v25.16b, v25.16b, v25.16b
+	fmls	v25.4s, v0.4s, v9.4s[2]
+#else
+	fmul	v25.4s, v0.4s, v9.4s[2]
 #endif
 	OP_ir	v25.4s, v1.4s, v8.4s[2]
 
 	fmul	v28.4s, v0.4s, v8.4s[3]
 	OP_ii	v28.4s, v1.4s, v9.4s[3]
-	fmul	v29.4s, v0.4s, v9.4s[3]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v29.4s, v29.4s
+	eor	v29.16b, v29.16b, v29.16b
+	fmls	v29.4s, v0.4s, v9.4s[3]
+#else
+	fmul	v29.4s, v0.4s, v9.4s[3]
 #endif
 	OP_ir	v29.4s, v1.4s, v8.4s[3]
 

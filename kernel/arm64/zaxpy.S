@@ -43,14 +43,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define	DA_R	s0	/* scale input value */
 #define	DA_I	s1	/* scale input value */
-#define TMPX	v2.2s
-#define TMPY	v3.2s
 #define SZ	4
 #else
 #define	DA_R	d0	/* scale input value */
 #define	DA_I	d1	/* scale input value */
-#define TMPX	v2.2d
-#define TMPY	v3.2d
 #define SZ	8
 #endif
 
@@ -61,22 +57,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(CONJ)
 #if !defined(DOUBLE)
 	ins	v0.s[1], v0.s[0]		// v0 = DA_R, DA_R 
-	fneg	s2, DA_I
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	s2, s2, DA_I
 	ins	v1.s[1], v2.s[0]		// v1 = -DA_I, DA_I 
 	ext	v1.8b, v1.8b, v1.8b, #4		// v1 = DA_I, -DA_I
 #else
 	ins	v0.d[1], v0.d[0]		// v0 = DA_R, DA_R 
-	fneg	d2, DA_I
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	d2, d2, DA_I
 	ins	v1.d[1], v2.d[0]		// v1 = -DA_I, DA_I 
 	ext	v1.16b, v1.16b, v1.16b, #8	// v1 = DA_I, -DA_I
 #endif
 #else
 #if !defined(DOUBLE)
-	fneg	s2, DA_R
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	s2, s2, DA_R
 	ins	v0.s[1], v2.s[0]		// v0 = -DA_R, DA_R 
 	ins	v1.s[1], v1.s[0]		// v1 = DA_I, DA_I 
 #else
-	fneg	d2, DA_R
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	d2, d2, DA_R
 	ins	v0.d[1], v2.d[0]		// v0 = -DA_R, DA_R 
 	ins	v1.d[1], v1.d[0]		// v1 = DA_I, DA_I 
 #endif
@@ -111,9 +111,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_INIT_F4
 
 #if !defined(DOUBLE)
-	// Replicate the lower 2 floats into the upper 2 slots
-	ins	v0.d[1], v0.d[0]		// v0 = DA_R, DA_R, DA_R, DA_R
-	ins	v1.d[1], v1.d[0]		// v1 = DA_I, DA_I, DA_I, DA_I
+	ins	v16.s[0], v0.s[0]
+	ins	v16.s[1], v16.s[0]
+	ins	v16.d[1], v16.d[0]
+#if !defined(CONJ)
+	ins	v17.s[0], v1.s[1]
+#else
+	ins	v17.s[0], v1.s[0]
+#endif
+	ins	v17.s[1], v17.s[0]
+	ins	v17.d[1], v17.d[0]
+#else //DOUBLE
+	ins	v16.d[0], v0.d[0]
+	ins	v16.d[1], v16.d[0]
+#if !defined(CONJ)
+	ins	v17.d[0], v1.d[1]
+#else
+	ins	v17.d[0], v1.d[0]
+#endif
+	ins	v17.d[1], v17.d[0]
 #endif
 
 .endm
@@ -121,55 +137,60 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F4
 
 #if !defined(DOUBLE)
-	ld1	{v2.4s,v3.4s}, [X], #32		// V2 = X[3], X[2], X[1], X[0]
-						// V3 = X[7], X[6], X[5], X[4]
-	ext	v6.8b, v2.8b, v2.8b, #4		// V6 =  -  ,  -  , X[0], X[1]
-	ins	v6.s[2], v2.s[3]		// V6 =  -  , X[3], X[0], X[1]
-	ins	v6.s[3], v2.s[2]		// V6 = X[2], X[3], X[0], X[1]
+	ld2	{v2.4s, v3.4s}, [X], #32
+	ld2	{v4.4s, v5.4s}, [Y_COPY], #32
 
-	ld1	{v4.4s,v5.4s}, [Y]		// V4 = Y[3], Y[2], Y[1], Y[0]
-						// V5 = Y[7], Y[6], Y[5], Y[4]
+	fmla	v4.4s, v2.4s, v16.4s
+#if !defined(CONJ)
+	fmls	v4.4s, v3.4s, v17.4s
+#else
+	fmla	v4.4s, v3.4s, v17.4s
+#endif
 
-	ext	v7.8b, v3.8b, v3.8b, #4		// V7 =  -  ,  -  , X[4], X[5]
-	ins	v7.s[2], v3.s[3]		// V7 =  -  , X[7], X[4], X[5]
-	ins	v7.s[3], v3.s[2]		// V7 = X[6], X[7], X[4], X[5]
+#if !defined(CONJ)
+	fmla	v5.4s, v2.4s, v17.4s
+#else
+	fmls	v5.4s, v2.4s, v17.4s
+#endif
+	fmla	v5.4s, v3.4s, v16.4s
 
-	fmla	v4.4s, v0.4s, v2.4s		// Y[iy]   += DA_R * X[ix]
-						// Y[iy+1] += +-DA_R * X[ix+1]
-	fmla	v4.4s, v1.4s, v6.4s		// Y[iy]   += +-DA_I * X[ix+1]
-						// Y[iy+1] += DA_I * X[ix]
-	st1	{v4.4s}, [Y], #16
-
-	fmla	v5.4s, v0.4s, v3.4s		// Y[iy]   += DA_R * X[ix]
-	fmla	v5.4s, v1.4s, v7.4s		// Y[iy]   += +-DA_I * X[ix+1]
-						// Y[iy+1] += +-DA_R * X[ix+1]
-						// Y[iy+1] += DA_I * X[ix]
-	st1	{v5.4s}, [Y], #16
+	st2	{v4.4s, v5.4s}, [Y], #32
 #else // DOUBLE
-	ld1	{v2.2d,v3.2d}, [X], #32			// CX0, CX1, CX2, CX3
-	ext	v20.16b, v2.16b, v2.16b, #8		// X[ix], X[ix+1]
-	ext	v21.16b, v3.16b, v3.16b, #8		// X[ix], X[ix+1]
+	ld2	{v2.2d, v3.2d}, [X], #32
+	ld2	{v4.2d, v5.2d}, [Y_COPY], #32
 
-	ld1	{v4.2d,v5.2d}, [X], #32			// CX0, CX1, CX2, CX3
-	ext	v22.16b, v4.16b, v4.16b, #8		// X[ix], X[ix+1]
-	ext	v23.16b, v5.16b, v5.16b, #8		// X[ix], X[ix+1]
+	fmla	v4.2d, v2.2d, v16.2d
+#if !defined(CONJ)
+	fmls	v4.2d, v3.2d, v17.2d
+#else
+	fmla	v4.2d, v3.2d, v17.2d
+#endif
+#if !defined(CONJ)
+	fmla	v5.2d, v2.2d, v17.2d
+#else
+	fmls	v5.2d, v2.2d, v17.2d
+#endif
+	fmla	v5.2d, v3.2d, v16.2d
 
-	ld1	{v16.2d,v17.2d}, [Y_COPY], #32	// CY0, CY1, CY2, CY3  
+	st2	{v4.2d, v5.2d}, [Y], #32
 
-	fmla	v16.2d, v0.2d, v2.2d
-	fmla	v17.2d, v0.2d, v3.2d
+	ld2	{v18.2d, v19.2d}, [X], #32
+	ld2	{v20.2d, v21.2d}, [Y_COPY], #32
 
-	ld1	{v18.2d,v19.2d}, [Y_COPY], #32	// CY0, CY1, CY2, CY3  
+	fmla	v20.2d, v18.2d, v16.2d
+#if !defined(CONJ)
+	fmls	v20.2d, v19.2d, v17.2d
+#else
+	fmla	v20.2d, v19.2d, v17.2d
+#endif
+#if !defined(CONJ)
+	fmla	v21.2d, v18.2d, v17.2d
+#else
+	fmls	v21.2d, v18.2d, v17.2d
+#endif
+	fmla	v21.2d, v19.2d, v16.2d
 
-	fmla	v16.2d, v1.2d, v20.2d
-	fmla	v17.2d, v1.2d, v21.2d
-	st1	{v16.2d,v17.2d}, [Y], #32
-
-	fmla	v18.2d, v0.2d, v4.2d
-	fmla	v19.2d, v0.2d, v5.2d
-	fmla	v18.2d, v1.2d, v22.2d
-	fmla	v19.2d, v1.2d, v23.2d
-	st1	{v18.2d,v19.2d}, [Y], #32
+	st2	{v20.2d, v21.2d}, [Y], #32
 #endif
 	PRFM	PLDL1KEEP, [X, #512]
 	PRFM	PLDL1KEEP, [Y, #512]

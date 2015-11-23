@@ -184,73 +184,89 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fmul	v16.2d, v0.2d, v8.2d[0]
 	OP_ii	v16.2d, v1.2d, v9.2d[0]
-	fmul	v17.2d, v0.2d, v9.2d[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v17.2d, v17.2d
+	eor	v17.16b, v17.16b, v17.16b
+	fmls	v17.2d, v0.2d, v9.2d[0]
+#else
+	fmul	v17.2d, v0.2d, v9.2d[0]
 #endif
 	OP_ir	v17.2d, v1.2d, v8.2d[0]
 
 	fmul	v18.2d, v2.2d, v8.2d[0]
 	OP_ii	v18.2d, v3.2d, v9.2d[0]
-	fmul	v19.2d, v2.2d, v9.2d[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v19.2d, v19.2d
+	eor	v19.16b, v19.16b, v19.16b
+	fmls	v19.2d, v2.2d, v9.2d[0]
+#else
+	fmul	v19.2d, v2.2d, v9.2d[0]
 #endif
 	OP_ir	v19.2d, v3.2d, v8.2d[0]
 
 	fmul	v20.2d, v0.2d, v8.2d[1]
 	OP_ii	v20.2d, v1.2d, v9.2d[1]
-	fmul	v21.2d, v0.2d, v9.2d[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v21.2d, v21.2d
+	eor	v21.16b, v21.16b, v21.16b
+	fmls	v21.2d, v0.2d, v9.2d[1]
+#else
+	fmul	v21.2d, v0.2d, v9.2d[1]
 #endif
 	OP_ir	v21.2d, v1.2d, v8.2d[1]
 
 	fmul	v22.2d, v2.2d, v8.2d[1]
 	OP_ii	v22.2d, v3.2d, v9.2d[1]
-	fmul	v23.2d, v2.2d, v9.2d[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v23.2d, v23.2d
+	eor	v23.16b, v23.16b, v23.16b
+	fmls	v23.2d, v2.2d, v9.2d[1]
+#else
+	fmul	v23.2d, v2.2d, v9.2d[1]
 #endif
 	OP_ir	v23.2d, v3.2d, v8.2d[1]
 
 	fmul	v24.2d, v0.2d, v10.2d[0]
 	OP_ii	v24.2d, v1.2d, v11.2d[0]
-	fmul	v25.2d, v0.2d, v11.2d[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v25.2d, v25.2d
+	eor	v25.16b, v25.16b, v25.16b
+	fmls	v25.2d, v0.2d, v11.2d[0]
+#else
+	fmul	v25.2d, v0.2d, v11.2d[0]
 #endif
 	OP_ir	v25.2d, v1.2d, v10.2d[0]
 
 	fmul	v26.2d, v2.2d, v10.2d[0]
 	OP_ii	v26.2d, v3.2d, v11.2d[0]
-	fmul	v27.2d, v2.2d, v11.2d[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v27.2d, v27.2d
+	eor	v27.16b, v27.16b, v27.16b
+	fmls	v27.2d, v2.2d, v11.2d[0]
+#else
+	fmul	v27.2d, v2.2d, v11.2d[0]
 #endif
 	OP_ir	v27.2d, v3.2d, v10.2d[0]
 
 	fmul	v28.2d, v0.2d, v10.2d[1]
 	OP_ii	v28.2d, v1.2d, v11.2d[1]
-	fmul	v29.2d, v0.2d, v11.2d[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v29.2d, v29.2d
+	eor	v29.16b, v29.16b, v29.16b
+	fmls	v29.2d, v0.2d, v11.2d[1]
+#else
+	fmul	v29.2d, v0.2d, v11.2d[1]
 #endif
 	OP_ir	v29.2d, v1.2d, v10.2d[1]
 
 	fmul	v30.2d, v2.2d, v10.2d[1]
 	OP_ii	v30.2d, v3.2d, v11.2d[1]
-	fmul	v31.2d, v2.2d, v11.2d[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v31.2d, v31.2d
+	eor	v31.16b, v31.16b, v31.16b
+	fmls	v31.2d, v2.2d, v11.2d[1]
+#else
+	fmul	v31.2d, v2.2d, v11.2d[1]
 #endif
 	OP_ir	v31.2d, v3.2d, v10.2d[1]
 

@@ -125,7 +125,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex16_lin
 *
@@ -133,10 +133,10 @@
       SUBROUTINE ZGET02( TRANS, M, N, NRHS, A, LDA, X, LDX, B, LDB,
      $                   RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -191,7 +191,7 @@
 *     Exit with RESID = 1/EPS if ANORM = 0.
 *
       EPS = DLAMCH( 'Epsilon' )
-      ANORM = ZLANGE( '1', N1, N2, A, LDA, RWORK )
+      ANORM = ZLANGE( '1', M, N, A, LDA, RWORK )
       IF( ANORM.LE.ZERO ) THEN
          RESID = ONE / EPS
          RETURN

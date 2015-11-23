@@ -29,7 +29,7 @@
 *>
 *> \verbatim
 *>
-*> CCHKTZ tests CTZRQF and CTZRZF.
+*> CCHKTZ tests CTZRZF.
 *> \endverbatim
 *
 *  Arguments:
@@ -129,7 +129,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
@@ -137,10 +137,10 @@
       SUBROUTINE CCHKTZ( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR, A,
      $                   COPYA, S, TAU, WORK, RWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -160,7 +160,7 @@
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 3 )
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 6 )
+      PARAMETER          ( NTESTS = 3 )
       REAL               ONE, ZERO
       PARAMETER          ( ONE = 1.0E0, ZERO = 0.0E0 )
 *     ..
@@ -175,12 +175,12 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
-      REAL               CQRT12, CRZT01, CRZT02, CTZT01, CTZT02, SLAMCH
-      EXTERNAL           CQRT12, CRZT01, CRZT02, CTZT01, CTZT02, SLAMCH
+      REAL               CQRT12, CRZT01, CRZT02, SLAMCH
+      EXTERNAL           CQRT12, CRZT01, CRZT02, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAHD, ALASUM, CERRTZ, CGEQR2, CLACPY, CLASET,
-     $                   CLATMS, CTZRQF, CTZRZF, SLAORD
+     $                   CLATMS, CTZRZF, SLAORD
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CMPLX, MAX, MIN
@@ -244,53 +244,6 @@
 *
                   MODE = IMODE - 1
 *
-*                 Test CTZRQF
-*
-*                 Generate test matrix of size m by n using
-*                 singular value distribution indicated by `mode'.
-*
-                  IF( MODE.EQ.0 ) THEN
-                     CALL CLASET( 'Full', M, N, CMPLX( ZERO ),
-     $                            CMPLX( ZERO ), A, LDA )
-                     DO 20 I = 1, MNMIN
-                        S( I ) = ZERO
-   20                CONTINUE
-                  ELSE
-                     CALL CLATMS( M, N, 'Uniform', ISEED,
-     $                            'Nonsymmetric', S, IMODE,
-     $                            ONE / EPS, ONE, M, N, 'No packing', A,
-     $                            LDA, WORK, INFO )
-                     CALL CGEQR2( M, N, A, LDA, WORK, WORK( MNMIN+1 ),
-     $                            INFO )
-                     CALL CLASET( 'Lower', M-1, N, CMPLX( ZERO ),
-     $                            CMPLX( ZERO ), A( 2 ), LDA )
-                     CALL SLAORD( 'Decreasing', MNMIN, S, 1 )
-                  END IF
-*
-*                 Save A and its singular values
-*
-                  CALL CLACPY( 'All', M, N, A, LDA, COPYA, LDA )
-*
-*                 Call CTZRQF to reduce the upper trapezoidal matrix to
-*                 upper triangular form.
-*
-                  SRNAMT = 'CTZRQF'
-                  CALL CTZRQF( M, N, A, LDA, TAU, INFO )
-*
-*                 Compute norm(svd(a) - svd(r))
-*
-                  RESULT( 1 ) = CQRT12( M, M, A, LDA, S, WORK,
-     $                          LWORK, RWORK )
-*
-*                 Compute norm( A - R*Q )
-*
-                  RESULT( 2 ) = CTZT01( M, N, COPYA, A, LDA, TAU, WORK,
-     $                          LWORK )
-*
-*                 Compute norm(Q'*Q - I).
-*
-                  RESULT( 3 ) = CTZT02( M, N, A, LDA, TAU, WORK, LWORK )
-*
 *                 Test CTZRZF
 *
 *                 Generate test matrix of size m by n using
@@ -326,22 +279,22 @@
 *
 *                 Compute norm(svd(a) - svd(r))
 *
-                  RESULT( 4 ) = CQRT12( M, M, A, LDA, S, WORK,
+                  RESULT( 1 ) = CQRT12( M, M, A, LDA, S, WORK,
      $                          LWORK, RWORK )
 *
 *                 Compute norm( A - R*Q )
 *
-                  RESULT( 5 ) = CRZT01( M, N, COPYA, A, LDA, TAU, WORK,
+                  RESULT( 2 ) = CRZT01( M, N, COPYA, A, LDA, TAU, WORK,
      $                          LWORK )
 *
 *                 Compute norm(Q'*Q - I).
 *
-                  RESULT( 6 ) = CRZT02( M, N, A, LDA, TAU, WORK, LWORK )
+                  RESULT( 3 ) = CRZT02( M, N, A, LDA, TAU, WORK, LWORK )
 *
 *                 Print information about the tests that did not pass
 *                 the threshold.
 *
-                  DO 40 K = 1, 6
+                  DO 40 K = 1, NTESTS
                      IF( RESULT( K ).GE.THRESH ) THEN
                         IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                     CALL ALAHD( NOUT, PATH )
@@ -350,7 +303,7 @@
                         NFAIL = NFAIL + 1
                      END IF
    40             CONTINUE
-                  NRUN = NRUN + 6
+                  NRUN = NRUN + 3
    50          CONTINUE
             END IF
    60    CONTINUE

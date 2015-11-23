@@ -104,7 +104,7 @@
 *>
 *> \param[in] WORK
 *> \verbatim
-*>          WORK is COMPLEX array, dimension (2*N)
+*>          WORK is REAL array, dimension (2*N)
 *> \endverbatim
 *
 *  Authors:
@@ -115,7 +115,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup complexSYcomputational
 *
@@ -123,10 +123,10 @@
       REAL FUNCTION CLA_SYRPVGRW( UPLO, N, INFO, A, LDA, AF, LDAF, IPIV,
      $                            WORK )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*1        UPLO

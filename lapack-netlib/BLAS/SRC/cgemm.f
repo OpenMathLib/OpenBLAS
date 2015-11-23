@@ -166,7 +166,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_blas_level3
 *
@@ -187,10 +187,10 @@
 *  =====================================================================
       SUBROUTINE CGEMM(TRANSA,TRANSB,M,N,K,ALPHA,A,LDA,B,LDB,BETA,C,LDC)
 *
-*  -- Reference BLAS level3 routine (version 3.4.0) --
+*  -- Reference BLAS level3 routine (version 3.6.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       COMPLEX ALPHA,BETA
@@ -317,12 +317,10 @@
    60                 CONTINUE
                   END IF
                   DO 80 L = 1,K
-                      IF (B(L,J).NE.ZERO) THEN
-                          TEMP = ALPHA*B(L,J)
-                          DO 70 I = 1,M
-                              C(I,J) = C(I,J) + TEMP*A(I,L)
-   70                     CONTINUE
-                      END IF
+                      TEMP = ALPHA*B(L,J)
+                      DO 70 I = 1,M
+                          C(I,J) = C(I,J) + TEMP*A(I,L)
+   70                 CONTINUE
    80             CONTINUE
    90         CONTINUE
           ELSE IF (CONJA) THEN
@@ -376,17 +374,15 @@
   170                 CONTINUE
                   END IF
                   DO 190 L = 1,K
-                      IF (B(J,L).NE.ZERO) THEN
-                          TEMP = ALPHA*CONJG(B(J,L))
-                          DO 180 I = 1,M
-                              C(I,J) = C(I,J) + TEMP*A(I,L)
-  180                     CONTINUE
-                      END IF
+                      TEMP = ALPHA*CONJG(B(J,L))
+                      DO 180 I = 1,M
+                          C(I,J) = C(I,J) + TEMP*A(I,L)
+  180                 CONTINUE
   190             CONTINUE
   200         CONTINUE
           ELSE
 *
-*           Form  C := alpha*A*B**T          + beta*C
+*           Form  C := alpha*A*B**T + beta*C
 *
               DO 250 J = 1,N
                   IF (BETA.EQ.ZERO) THEN
@@ -399,12 +395,10 @@
   220                 CONTINUE
                   END IF
                   DO 240 L = 1,K
-                      IF (B(J,L).NE.ZERO) THEN
-                          TEMP = ALPHA*B(J,L)
-                          DO 230 I = 1,M
-                              C(I,J) = C(I,J) + TEMP*A(I,L)
-  230                     CONTINUE
-                      END IF
+                      TEMP = ALPHA*B(J,L)
+                      DO 230 I = 1,M
+                          C(I,J) = C(I,J) + TEMP*A(I,L)
+  230                 CONTINUE
   240             CONTINUE
   250         CONTINUE
           END IF

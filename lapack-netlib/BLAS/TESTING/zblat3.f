@@ -104,7 +104,7 @@
       DOUBLE PRECISION   RZERO
       PARAMETER          ( RZERO = 0.0D0 )
       INTEGER            NMAX
-      PARAMETER          ( NMAX = 128 )
+      PARAMETER          ( NMAX = 65 )
       INTEGER            NIDMAX, NALMAX, NBEMAX
       PARAMETER          ( NIDMAX = 9, NALMAX = 7, NBEMAX = 7 )
 *     .. Local Scalars ..

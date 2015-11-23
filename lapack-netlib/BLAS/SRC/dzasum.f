@@ -23,7 +23,8 @@
 *>
 *> \verbatim
 *>
-*>    DZASUM takes the sum of the absolute values.
+*>    DZASUM takes the sum of the (|Re(.)| + |Im(.)|)'s of a complex vector and
+*>    returns a single precision result.
 *> \endverbatim
 *
 *  Authors:
@@ -34,7 +35,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup double_blas_level1
 *
@@ -51,10 +52,10 @@
 *  =====================================================================
       DOUBLE PRECISION FUNCTION DZASUM(N,ZX,INCX)
 *
-*  -- Reference BLAS level1 routine (version 3.4.0) --
+*  -- Reference BLAS level1 routine (version 3.6.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER INCX,N

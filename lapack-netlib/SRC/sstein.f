@@ -166,7 +166,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup realOTHERcomputational
 *
@@ -174,10 +174,10 @@
       SUBROUTINE SSTEIN( N, D, E, M, W, IBLOCK, ISPLIT, Z, LDZ, WORK,
      $                   IWORK, IFAIL, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDZ, M, N
@@ -297,7 +297,7 @@
          BLKSIZ = BN - B1 + 1
          IF( BLKSIZ.EQ.1 )
      $      GO TO 60
-         GPIND = B1
+         GPIND = J1
 *
 *        Compute reorthogonalization criterion and stopping criterion.
 *
@@ -370,9 +370,10 @@
 *
 *           Normalize and scale the righthand side vector Pb.
 *
+            JMAX = ISAMAX( BLKSIZ, WORK( INDRV1+1 ), 1 )
             SCL = BLKSIZ*ONENRM*MAX( EPS,
      $            ABS( WORK( INDRV4+BLKSIZ ) ) ) /
-     $            SASUM( BLKSIZ, WORK( INDRV1+1 ), 1 )
+     $            ABS( WORK( INDRV1+JMAX ) )
             CALL SSCAL( BLKSIZ, SCL, WORK( INDRV1+1 ), 1 )
 *
 *           Solve the system LU = Pb.

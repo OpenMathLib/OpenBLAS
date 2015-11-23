@@ -163,7 +163,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
@@ -172,10 +172,10 @@
      $                        THRESH, TSTERR, NMAX, A, AFAC, AINV, B, X,
      $                        XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -214,8 +214,8 @@
      $                   ITEMP, ITEMP2, IUPLO, IZERO, J, K, KL, KU, LDA,
      $                   LWORK, MODE, N, NB, NERRS, NFAIL, NIMAT, NRHS,
      $                   NRUN, NT
-      REAL               ALPHA, ANORM, CNDNUM, CONST, LAM_MAX, LAM_MIN,
-     $                   RCOND, RCONDC, STEMP
+      REAL               ALPHA, ANORM, CNDNUM, CONST, SING_MAX,
+     $                   SING_MIN, RCOND, RCONDC, STEMP
 *     ..
 *     .. Local Arrays ..
       CHARACTER          UPLOS( 2 )
@@ -228,13 +228,13 @@
       EXTERNAL           CLANGE, CLANSY, SGET06
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, CERRSY, CGEEVX, CGET04,
+      EXTERNAL           ALAERH, ALAHD, ALASUM, CERRSY, CGESVD, CGET04,
      $                   CLACPY, CLARHS, CLATB4, CLATMS, CLATSY, CSYT02,
      $                   CSYT03, CSYCON_ROOK, CSYT01_ROOK, CSYTRF_ROOK,
      $                   CSYTRI_ROOK, CSYTRS_ROOK, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, SQRT
+      INTRINSIC          MAX, MIN, SQRT
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -619,7 +619,8 @@
 *
 *
 *+    TEST 4
-*                 Compute largest 2-Norm of 2-by-2 diag blocks
+*                 Compute largest 2-Norm (condition number)
+*                 of 2-by-2 diag blocks
 *
                   RESULT( 4 ) = ZERO
                   STEMP = ZERO
@@ -638,30 +639,28 @@
 *
                      IF( IWORK( K ).LT.ZERO ) THEN
 *
-*                       Get the two eigenvalues of a 2-by-2 block,
-*                       store them in WORK array
+*                       Get the two singular values
+*                       (real and non-negative) of a 2-by-2 block,
+*                       store them in RWORK array
 *
                         BLOCK( 1, 1 ) = AFAC( ( K-2 )*LDA+K-1 )
-                        BLOCK( 2, 1 ) = AFAC( ( K-2 )*LDA+K )
-                        BLOCK( 1, 2 ) = BLOCK( 2, 1 )
+                        BLOCK( 1, 2 ) = AFAC( (K-1)*LDA+K-1 )
+                        BLOCK( 2, 1 ) = BLOCK( 1, 2 )
                         BLOCK( 2, 2 ) = AFAC( (K-1)*LDA+K )
 *
-                        CALL CGEEVX( 'N', 'N', 'N', 'N', 2, BLOCK,
-     $                               2, WORK, CDUMMY, 1, CDUMMY, 1,
-     $                               ITEMP, ITEMP2, RWORK, STEMP,
-     $                               RWORK( 3 ), RWORK( 5 ), WORK( 3 ),
-     $                               4, RWORK( 7 ), INFO )
+                        CALL CGESVD( 'N', 'N', 2, 2, BLOCK, 2, RWORK,
+     $                               CDUMMY, 1, CDUMMY, 1,
+     $                               WORK, 6, RWORK( 3 ), INFO )
 *
-                        LAM_MAX = MAX( ABS( WORK( 1 ) ),
-     $                            ABS( WORK( 2 ) ) )
-                        LAM_MIN = MIN( ABS( WORK( 1 ) ),
-     $                            ABS( WORK( 2 ) ) )
 *
-                        STEMP = LAM_MAX / LAM_MIN
+                        SING_MAX = RWORK( 1 )
+                        SING_MIN = RWORK( 2 )
+*
+                        STEMP = SING_MAX / SING_MIN
 *
 *                       STEMP should be bounded by CONST
 *
-                        STEMP = ABS( STEMP ) - CONST + THRESH
+                        STEMP = STEMP - CONST + THRESH
                         IF( STEMP.GT.RESULT( 4 ) )
      $                     RESULT( 4 ) = STEMP
                         K = K - 1
@@ -684,30 +683,27 @@
 *
                      IF( IWORK( K ).LT.ZERO ) THEN
 *
-*                       Get the two eigenvalues of a 2-by-2 block,
-*                       store them in WORK array
+*                       Get the two singular values
+*                       (real and non-negative) of a 2-by-2 block,
+*                       store them in RWORK array
 *
                         BLOCK( 1, 1 ) = AFAC( ( K-1 )*LDA+K )
                         BLOCK( 2, 1 ) = AFAC( ( K-1 )*LDA+K+1 )
                         BLOCK( 1, 2 ) = BLOCK( 2, 1 )
                         BLOCK( 2, 2 ) = AFAC( K*LDA+K+1 )
 *
-                        CALL CGEEVX( 'N', 'N', 'N', 'N', 2, BLOCK,
-     $                               2, WORK, CDUMMY, 1, CDUMMY, 1,
-     $                               ITEMP, ITEMP2, RWORK, STEMP,
-     $                               RWORK( 3 ), RWORK( 5 ), WORK( 3 ),
-     $                               4, RWORK( 7 ), INFO )
+                        CALL CGESVD( 'N', 'N', 2, 2, BLOCK, 2, RWORK,
+     $                               CDUMMY, 1, CDUMMY, 1,
+     $                               WORK, 6, RWORK(3), INFO )
 *
-                        LAM_MAX = MAX( ABS( WORK( 1 ) ),
-     $                            ABS( WORK( 2 ) ) )
-                        LAM_MIN = MIN( ABS( WORK( 1 ) ),
-     $                            ABS( WORK( 2 ) ) )
+                        SING_MAX = RWORK( 1 )
+                        SING_MIN = RWORK( 2 )
 *
-                        STEMP = LAM_MAX / LAM_MIN
+                        STEMP = SING_MAX / SING_MIN
 *
 *                       STEMP should be bounded by CONST
 *
-                        STEMP = ABS( STEMP ) - CONST + THRESH
+                        STEMP = STEMP - CONST + THRESH
                         IF( STEMP.GT.RESULT( 4 ) )
      $                     RESULT( 4 ) = STEMP
                         K = K + 1

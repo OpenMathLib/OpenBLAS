@@ -181,7 +181,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup realGEauxiliary
 *
@@ -221,10 +221,10 @@
       SUBROUTINE STGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
      $                   LDZ, J1, N1, N2, WORK, LWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ
@@ -595,9 +595,7 @@
 *
 *        Standardize existing 2-by-2 blocks.
 *
-         DO 50 I = 1, M*M
-            WORK(I) = ZERO
-   50    CONTINUE
+         CALL SLASET( 'Full', M, M, ZERO, ZERO, WORK, M )
          WORK( 1 ) = ONE
          T( 1, 1 ) = ONE
          IDUM = LWORK - M*M - 2

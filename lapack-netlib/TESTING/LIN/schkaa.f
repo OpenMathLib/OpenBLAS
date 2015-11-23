@@ -106,7 +106,7 @@
 *  =====================================================================
       PROGRAM SCHKAA
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -157,7 +157,7 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, SCHKEQ, SCHKGB, SCHKGE, SCHKGT, SCHKLQ,
      $                   SCHKPB, SCHKPO, SCHKPS, SCHKPP, SCHKPT, SCHKQ3,
-     $                   SCHKQL, SCHKQP, SCHKQR, SCHKRQ, SCHKSP, SCHKSY,
+     $                   SCHKQL, SCHKQR, SCHKRQ, SCHKSP, SCHKSY,
      $                   SCHKSY_ROOK, SCHKTB, SCHKTP, SCHKTR, SCHKTZ,
      $                   SDRVGB, SDRVGE, SDRVGT, SDRVLS, SDRVPB, SDRVPO,
      $                   SDRVPP, SDRVPT, SDRVSP, SDRVSY, SDRVSY_ROOK,
@@ -814,9 +814,6 @@
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
-            CALL SCHKQP( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR,
-     $                   A( 1, 1 ), A( 1, 2 ), B( 1, 1 ),
-     $                   B( 1, 3 ), WORK, IWORK, NOUT )
             CALL SCHKQ3( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
      $                   THRESH, A( 1, 1 ), A( 1, 2 ), B( 1, 1 ),
      $                   B( 1, 3 ), WORK, IWORK, NOUT )

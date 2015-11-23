@@ -33,8 +33,8 @@
 *>
 *> \verbatim
 *>
-*> CDRVLS tests the least squares driver routines CGELS, CGELSX, CGELSS,
-*> CGELSY and CGELSD.
+*> CDRVLS tests the least squares driver routines CGELS, CGELSS, CGELSY
+*> and CGELSD.
 *> \endverbatim
 *
 *  Arguments:
@@ -201,7 +201,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
@@ -211,10 +211,10 @@
      $                   COPYB, C, S, COPYS, WORK, RWORK, IWORK,
      $                   NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -234,7 +234,7 @@
 *
 *     .. Parameters ..
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 18 )
+      PARAMETER          ( NTESTS = 14 )
       INTEGER            SMLSIZ
       PARAMETER          ( SMLSIZ = 25 )
       REAL               ONE, ZERO
@@ -262,7 +262,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASVM, CERRLS, CGELS, CGELSD,
-     $                   CGELSS, CGELSX, CGELSY, CGEMM, CLACPY, CLARNV,
+     $                   CGELSS, CGELSY, CGEMM, CLACPY, CLARNV,
      $                   CQRT13, CQRT15, CQRT16, CSSCAL, SAXPY, 
      $                   XLAENV
 *     ..
@@ -444,78 +444,7 @@
 *
 *                    workspace used: MAX(M+MIN(M,N),NRHS*MIN(M,N),2*N+M)
 *
-                     DO 50 J = 1, N
-                        IWORK( J ) = 0
-   50                CONTINUE
                      LDWORK = MAX( 1, M )
-*
-*                    Test CGELSX
-*
-*                    CGELSX:  Compute the minimum-norm solution X
-*                    to min( norm( A * X - B ) )
-*                    using a complete orthogonal factorization.
-*
-                     CALL CLACPY( 'Full', M, N, COPYA, LDA, A, LDA )
-                     CALL CLACPY( 'Full', M, NRHS, COPYB, LDB, B, LDB )
-*
-                     SRNAMT = 'CGELSX'
-                     CALL CGELSX( M, N, NRHS, A, LDA, B, LDB, IWORK,
-     $                            RCOND, CRANK, WORK, RWORK, INFO )
-*
-                     IF( INFO.NE.0 )
-     $                  CALL ALAERH( PATH, 'CGELSX', INFO, 0, ' ', M, N,
-     $                               NRHS, -1, NB, ITYPE, NFAIL, NERRS,
-     $                               NOUT )
-*
-*                    workspace used: MAX( MNMIN+3*N, 2*MNMIN+NRHS )
-*
-*                    Test 3:  Compute relative error in svd
-*                             workspace: M*N + 4*MIN(M,N) + MAX(M,N)
-*
-                     RESULT( 3 ) = CQRT12( CRANK, CRANK, A, LDA, COPYS,
-     $                             WORK, LWORK, RWORK )
-*
-*                    Test 4:  Compute error in solution
-*                             workspace:  M*NRHS + M
-*
-                     CALL CLACPY( 'Full', M, NRHS, COPYB, LDB, WORK,
-     $                            LDWORK )
-                     CALL CQRT16( 'No transpose', M, N, NRHS, COPYA,
-     $                            LDA, B, LDB, WORK, LDWORK, RWORK,
-     $                            RESULT( 4 ) )
-*
-*                    Test 5:  Check norm of r'*A
-*                             workspace: NRHS*(M+N)
-*
-                     RESULT( 5 ) = ZERO
-                     IF( M.GT.CRANK )
-     $                  RESULT( 5 ) = CQRT17( 'No transpose', 1, M, N,
-     $                                NRHS, COPYA, LDA, B, LDB, COPYB,
-     $                                LDB, C, WORK, LWORK )
-*
-*                    Test 6:  Check if x is in the rowspace of A
-*                             workspace: (M+NRHS)*(N+2)
-*
-                     RESULT( 6 ) = ZERO
-*
-                     IF( N.GT.CRANK )
-     $                  RESULT( 6 ) = CQRT14( 'No transpose', M, N,
-     $                                NRHS, COPYA, LDA, B, LDB, WORK,
-     $                                LWORK )
-*
-*                    Print information about the tests that did not
-*                    pass the threshold.
-*
-                     DO 60 K = 3, 6
-                        IF( RESULT( K ).GE.THRESH ) THEN
-                           IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
-     $                        CALL ALAHD( NOUT, PATH )
-                           WRITE( NOUT, FMT = 9998 )M, N, NRHS, 0,
-     $                        ITYPE, K, RESULT( K )
-                           NFAIL = NFAIL + 1
-                        END IF
-   60                CONTINUE
-                     NRUN = NRUN + 4
 *
 *                    Loop for testing different block sizes.
 *
@@ -558,39 +487,39 @@
 *
 *                       workspace used: 2*MNMIN+NB*NB+NB*MAX(N,NRHS)
 *
-*                       Test 7:  Compute relative error in svd
+*                       Test 3:  Compute relative error in svd
 *                                workspace: M*N + 4*MIN(M,N) + MAX(M,N)
 *
-                        RESULT( 7 ) = CQRT12( CRANK, CRANK, A, LDA,
+                        RESULT( 3 ) = CQRT12( CRANK, CRANK, A, LDA,
      $                                COPYS, WORK, LWORK, RWORK )
 *
-*                       Test 8:  Compute error in solution
+*                       Test 4:  Compute error in solution
 *                                workspace:  M*NRHS + M
 *
                         CALL CLACPY( 'Full', M, NRHS, COPYB, LDB, WORK,
      $                               LDWORK )
                         CALL CQRT16( 'No transpose', M, N, NRHS, COPYA,
      $                               LDA, B, LDB, WORK, LDWORK, RWORK,
-     $                               RESULT( 8 ) )
+     $                               RESULT( 4 ) )
 *
-*                       Test 9:  Check norm of r'*A
+*                       Test 5:  Check norm of r'*A
 *                                workspace: NRHS*(M+N)
 *
-                        RESULT( 9 ) = ZERO
+                        RESULT( 5 ) = ZERO
                         IF( M.GT.CRANK )
-     $                     RESULT( 9 ) = CQRT17( 'No transpose', 1, M,
+     $                     RESULT( 5 ) = CQRT17( 'No transpose', 1, M,
      $                                   N, NRHS, COPYA, LDA, B, LDB,
      $                                   COPYB, LDB, C, WORK, LWORK )
 *
-*                       Test 10:  Check if x is in the rowspace of A
+*                       Test 6:  Check if x is in the rowspace of A
 *                                workspace: (M+NRHS)*(N+2)
 *
-                        RESULT( 10 ) = ZERO
+                        RESULT( 6 ) = ZERO
 *
                         IF( N.GT.CRANK )
-     $                     RESULT( 10 ) = CQRT14( 'No transpose', M, N,
-     $                                    NRHS, COPYA, LDA, B, LDB,
-     $                                    WORK, LWORK )
+     $                     RESULT( 6 ) = CQRT14( 'No transpose', M, N,
+     $                                   NRHS, COPYA, LDA, B, LDB,
+     $                                   WORK, LWORK )
 *
 *                       Test CGELSS
 *
@@ -613,6 +542,62 @@
 *
 *                       workspace used: 3*min(m,n) +
 *                                       max(2*min(m,n),nrhs,max(m,n))
+*
+*                       Test 7:  Compute relative error in svd
+*
+                        IF( RANK.GT.0 ) THEN
+                           CALL SAXPY( MNMIN, -ONE, COPYS, 1, S, 1 )
+                           RESULT( 7 ) = SASUM( MNMIN, S, 1 ) /
+     $                                    SASUM( MNMIN, COPYS, 1 ) /
+     $                                    ( EPS*REAL( MNMIN ) )
+                        ELSE
+                           RESULT( 7 ) = ZERO
+                        END IF
+*
+*                       Test 8:  Compute error in solution
+*
+                        CALL CLACPY( 'Full', M, NRHS, COPYB, LDB, WORK,
+     $                               LDWORK )
+                        CALL CQRT16( 'No transpose', M, N, NRHS, COPYA,
+     $                               LDA, B, LDB, WORK, LDWORK, RWORK,
+     $                               RESULT( 8 ) )
+*
+*                       Test 9:  Check norm of r'*A
+*
+                        RESULT( 9 ) = ZERO
+                        IF( M.GT.CRANK )
+     $                     RESULT( 9 ) = CQRT17( 'No transpose', 1, M,
+     $                                    N, NRHS, COPYA, LDA, B, LDB,
+     $                                    COPYB, LDB, C, WORK, LWORK )
+*
+*                       Test 10:  Check if x is in the rowspace of A
+*
+                        RESULT( 10 ) = ZERO
+                        IF( N.GT.CRANK )
+     $                     RESULT( 10 ) = CQRT14( 'No transpose', M, N,
+     $                                    NRHS, COPYA, LDA, B, LDB,
+     $                                    WORK, LWORK )
+*
+*                       Test CGELSD
+*
+*                       CGELSD:  Compute the minimum-norm solution X
+*                       to min( norm( A * X - B ) ) using a
+*                       divide and conquer SVD.
+*
+                        CALL XLAENV( 9, 25 )
+*
+                        CALL CLACPY( 'Full', M, N, COPYA, LDA, A, LDA )
+                        CALL CLACPY( 'Full', M, NRHS, COPYB, LDB, B,
+     $                               LDB )
+*
+                        SRNAMT = 'CGELSD'
+                        CALL CGELSD( M, N, NRHS, A, LDA, B, LDB, S,
+     $                               RCOND, CRANK, WORK, LWORK, RWORK,
+     $                               IWORK, INFO )
+                        IF( INFO.NE.0 )
+     $                     CALL ALAERH( PATH, 'CGELSD', INFO, 0, ' ', M,
+     $                                  N, NRHS, -1, NB, ITYPE, NFAIL,
+     $                                  NERRS, NOUT )
 *
 *                       Test 11:  Compute relative error in svd
 *
@@ -649,66 +634,10 @@
      $                                    NRHS, COPYA, LDA, B, LDB,
      $                                    WORK, LWORK )
 *
-*                       Test CGELSD
-*
-*                       CGELSD:  Compute the minimum-norm solution X
-*                       to min( norm( A * X - B ) ) using a
-*                       divide and conquer SVD.
-*
-                        CALL XLAENV( 9, 25 )
-*
-                        CALL CLACPY( 'Full', M, N, COPYA, LDA, A, LDA )
-                        CALL CLACPY( 'Full', M, NRHS, COPYB, LDB, B,
-     $                               LDB )
-*
-                        SRNAMT = 'CGELSD'
-                        CALL CGELSD( M, N, NRHS, A, LDA, B, LDB, S,
-     $                               RCOND, CRANK, WORK, LWORK, RWORK,
-     $                               IWORK, INFO )
-                        IF( INFO.NE.0 )
-     $                     CALL ALAERH( PATH, 'CGELSD', INFO, 0, ' ', M,
-     $                                  N, NRHS, -1, NB, ITYPE, NFAIL,
-     $                                  NERRS, NOUT )
-*
-*                       Test 15:  Compute relative error in svd
-*
-                        IF( RANK.GT.0 ) THEN
-                           CALL SAXPY( MNMIN, -ONE, COPYS, 1, S, 1 )
-                           RESULT( 15 ) = SASUM( MNMIN, S, 1 ) /
-     $                                    SASUM( MNMIN, COPYS, 1 ) /
-     $                                    ( EPS*REAL( MNMIN ) )
-                        ELSE
-                           RESULT( 15 ) = ZERO
-                        END IF
-*
-*                       Test 16:  Compute error in solution
-*
-                        CALL CLACPY( 'Full', M, NRHS, COPYB, LDB, WORK,
-     $                               LDWORK )
-                        CALL CQRT16( 'No transpose', M, N, NRHS, COPYA,
-     $                               LDA, B, LDB, WORK, LDWORK, RWORK,
-     $                               RESULT( 16 ) )
-*
-*                       Test 17:  Check norm of r'*A
-*
-                        RESULT( 17 ) = ZERO
-                        IF( M.GT.CRANK )
-     $                     RESULT( 17 ) = CQRT17( 'No transpose', 1, M,
-     $                                    N, NRHS, COPYA, LDA, B, LDB,
-     $                                    COPYB, LDB, C, WORK, LWORK )
-*
-*                       Test 18:  Check if x is in the rowspace of A
-*
-                        RESULT( 18 ) = ZERO
-                        IF( N.GT.CRANK )
-     $                     RESULT( 18 ) = CQRT14( 'No transpose', M, N,
-     $                                    NRHS, COPYA, LDA, B, LDB,
-     $                                    WORK, LWORK )
-*
 *                       Print information about the tests that did not
 *                       pass the threshold.
 *
-                        DO 80 K = 7, NTESTS
+                        DO 80 K = 3, NTESTS
                            IF( RESULT( K ).GE.THRESH ) THEN
                               IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                           CALL ALAHD( NOUT, PATH )

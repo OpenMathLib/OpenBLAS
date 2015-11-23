@@ -10,7 +10,7 @@ NEP:  Data file for testing Nonsymmetric Eigenvalue Problem routines
   0   5   7    3  200             Values of INIBL  (nibble crossover point)
   1   2   4    2    1             Values of ISHFTS (number of simultaneous shifts)
   0   1   2    0    1             Values of IACC22 (select structured matrix multiply: 0, 1 or 2)
-70.0                              Threshold value
+20.0                              Threshold value
 T                                 Put T to test the error exits
 1                                 Code to interpret the seed
 NEP  21

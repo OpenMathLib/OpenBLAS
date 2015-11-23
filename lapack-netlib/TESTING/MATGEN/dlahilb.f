@@ -117,17 +117,17 @@ C> \brief \b DLAHILB
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup double_matgen
 *
 *  =====================================================================
       SUBROUTINE DLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -140,7 +140,6 @@ C> \brief \b DLAHILB
       INTEGER TM, TI, R
       INTEGER M
       INTEGER I, J
-      COMPLEX*16 TMP
 
 *     .. Parameters ..
 *     NMAX_EXACT   the largest dimension where the generated data is
@@ -203,8 +202,7 @@ C> \brief \b DLAHILB
 
 *     Generate matrix B as simply the first NRHS columns of M * the
 *     identity.
-      TMP = DBLE(M)
-      CALL DLASET('Full', N, NRHS, 0.0D+0, TMP, B, LDB)
+      CALL DLASET('Full', N, NRHS, 0.0D+0, DBLE(M), B, LDB)
 
 *     Generate the true solutions in X.  Because B = the first NRHS
 *     columns of M*I, the true solutions are just the first NRHS columns

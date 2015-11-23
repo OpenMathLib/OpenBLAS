@@ -18,7 +18,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE ZSYCONV( UPLO, WAY, N, A, LDA, IPIV, WORK, INFO )
+*       SUBROUTINE ZSYCONV( UPLO, WAY, N, A, LDA, IPIV, E, INFO )
 * 
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO, WAY
@@ -26,7 +26,7 @@
 *       ..
 *       .. Array Arguments ..
 *       INTEGER            IPIV( * )
-*       COMPLEX*16         A( LDA, * ), WORK( * )
+*       COMPLEX*16         A( LDA, * ), E( * )
 *       ..
 *  
 *
@@ -65,7 +65,7 @@
 *>          The order of the matrix A.  N >= 0.
 *> \endverbatim
 *>
-*> \param[in] A
+*> \param[in,out] A
 *> \verbatim
 *>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          The block diagonal matrix D and the multipliers used to
@@ -85,9 +85,11 @@
 *>          as determined by ZSYTRF.
 *> \endverbatim
 *>
-*> \param[out] WORK
+*> \param[out] E
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension (N)
+*>          E is COMPLEX*16 array, dimension (N)
+*>          E stores the supdiagonal/subdiagonal of the symmetric 1-by-1
+*>          or 2-by-2 block diagonal matrix D in LDLT.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -105,17 +107,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex16SYcomputational
 *
 *  =====================================================================
-      SUBROUTINE ZSYCONV( UPLO, WAY, N, A, LDA, IPIV, WORK, INFO )
+      SUBROUTINE ZSYCONV( UPLO, WAY, N, A, LDA, IPIV, E, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, WAY
@@ -123,7 +125,7 @@
 *     ..
 *     .. Array Arguments ..
       INTEGER            IPIV( * )
-      COMPLEX*16         A( LDA, * ), WORK( * )
+      COMPLEX*16         A( LDA, * ), E( * )
 *     ..
 *
 *  =====================================================================
@@ -179,14 +181,15 @@
 *           Convert VALUE
 *
             I=N
-            WORK(1)=ZERO
+            E(1)=ZERO
             DO WHILE ( I .GT. 1 )
                IF( IPIV(I) .LT. 0 ) THEN
-                  WORK(I)=A(I-1,I)
+                  E(I)=A(I-1,I)
+                  E(I-1)=ZERO
                   A(I-1,I)=ZERO
                   I=I-1
                ELSE
-                  WORK(I)=ZERO
+                  E(I)=ZERO
                ENDIF
                I=I-1
             END DO
@@ -254,7 +257,7 @@
             I=N
             DO WHILE ( I .GT. 1 )
                IF( IPIV(I) .LT. 0 ) THEN
-                  A(I-1,I)=WORK(I)
+                  A(I-1,I)=E(I)
                   I=I-1
                ENDIF
                I=I-1
@@ -272,14 +275,15 @@
 *           Convert VALUE
 *
             I=1
-            WORK(N)=ZERO
+            E(N)=ZERO
             DO WHILE ( I .LE. N )
                IF( I.LT.N .AND. IPIV(I) .LT. 0 ) THEN
-                  WORK(I)=A(I+1,I)
+                  E(I)=A(I+1,I)
+                  E(I+1)=ZERO
                   A(I+1,I)=ZERO
                   I=I+1
                ELSE
-                  WORK(I)=ZERO
+                  E(I)=ZERO
                ENDIF
                I=I+1
             END DO
@@ -347,7 +351,7 @@
             I=1
             DO WHILE ( I .LE. N-1 )
                IF( IPIV(I) .LT. 0 ) THEN
-                  A(I+1,I)=WORK(I)
+                  A(I+1,I)=E(I)
                   I=I+1
                ENDIF
                I=I+1

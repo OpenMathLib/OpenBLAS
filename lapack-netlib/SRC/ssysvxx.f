@@ -498,7 +498,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup realSYdriver
 *
@@ -508,10 +508,10 @@
      $                    N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
      $                    NPARAMS, PARAMS, WORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.2) --
+*  -- LAPACK driver routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO
@@ -597,17 +597,17 @@
          INFO = -8
       ELSE IF( LSAME( FACT, 'F' ) .AND. .NOT.
      $        ( RCEQU .OR. LSAME( EQUED, 'N' ) ) ) THEN
-         INFO = -9
+         INFO = -10
       ELSE
          IF ( RCEQU ) THEN
             SMIN = BIGNUM
             SMAX = ZERO
-            DO 10 J = 1, N
+            DO 10 J = 1, N 
                SMIN = MIN( SMIN, S( J ) )
                SMAX = MAX( SMAX, S( J ) )
  10         CONTINUE
             IF( SMIN.LE.ZERO ) THEN
-               INFO = -10
+               INFO = -11
             ELSE IF( N.GT.0 ) THEN
                SCOND = MAX( SMIN, SMLNUM ) / MIN( SMAX, BIGNUM )
             ELSE
@@ -616,9 +616,9 @@
          END IF
          IF( INFO.EQ.0 ) THEN
             IF( LDB.LT.MAX( 1, N ) ) THEN
-               INFO = -12
+               INFO = -13
             ELSE IF( LDX.LT.MAX( 1, N ) ) THEN
-               INFO = -14
+               INFO = -15
             END IF
          END IF
       END IF

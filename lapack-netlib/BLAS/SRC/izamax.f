@@ -23,7 +23,7 @@
 *>
 *> \verbatim
 *>
-*>    IZAMAX finds the index of element having max. absolute value.
+*>    IZAMAX finds the index of the first element having maximum |Re(.)| + |Im(.)|
 *> \endverbatim
 *
 *  Authors:
@@ -34,7 +34,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup aux_blas
 *
@@ -51,10 +51,10 @@
 *  =====================================================================
       INTEGER FUNCTION IZAMAX(N,ZX,INCX)
 *
-*  -- Reference BLAS level1 routine (version 3.4.0) --
+*  -- Reference BLAS level1 routine (version 3.6.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER INCX,N
