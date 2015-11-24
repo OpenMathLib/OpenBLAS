@@ -1194,6 +1194,8 @@ extern gotoblas_t *gotoblas;
 #define XGEMM_DEFAULT_UNROLL_N 2
 #endif
 
+#define GEMM_THREAD gemm_thread_m
+
 #ifndef GEMM_THREAD
 #define GEMM_THREAD gemm_thread_n
 #endif
