@@ -34,7 +34,7 @@
 #
 include ../../make.inc
 
-SRC_OBJ = \
+SRC_OBJA = \
 lapacke_cbbcsd.o \
 lapacke_cbbcsd_work.o \
 lapacke_cbdsqr.o \
@@ -996,7 +996,9 @@ lapacke_dsytri2.o \
 lapacke_dsytri2_work.o \
 lapacke_dsytri2x.o \
 lapacke_dsytri2x_work.o \
-lapacke_dsytri_work.o \
+lapacke_dsytri_work.o
+
+SRC_OBJB = \
 lapacke_dsytrs.o \
 lapacke_dsytrs_rook.o \
 lapacke_dsytrs2.o \
@@ -2189,7 +2191,8 @@ lapacke_slagsy_work.o \
 lapacke_zlagsy.o \
 lapacke_zlagsy_work.o
 
-ALLOBJ = $(SRC_OBJ) $(MATGEN_OBJ) 
+ALLOBJA = $(SRC_OBJA)
+ALLOBJB = $(SRC_OBJB) $(MATGEN_OBJ)
 
 ifdef USEXBLAS
 ALLXOBJ = $(SXLASRC) $(DXLASRC) $(CXLASRC) $(ZXLASRC)
@@ -2203,8 +2206,9 @@ OBJ_FILES := $(C_FILES:.o=.o)
 
 all: ../../$(LAPACKELIB)
 
-../../$(LAPACKELIB): $(ALLOBJ) $(ALLXOBJ) $(DEPRECATED)
-	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLOBJ) $(ALLXOBJ) $(DEPRECATED)
+../../$(LAPACKELIB): $(ALLOBJA) $(ALLOBJB) $(ALLXOBJ) $(DEPRECATED)
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLOBJA)
+	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $(ALLOBJB) $(ALLXOBJ) $(DEPRECATED)
 	$(RANLIB) ../../$(LAPACKELIB)
 
 .c.o:
