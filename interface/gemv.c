@@ -37,6 +37,7 @@
 /*********************************************************************/
 
 #include <stdio.h>
+#include <assert.h>
 #include "common.h"
 #include "l1param.h"
 #ifdef FUNCTION_PROFILE
@@ -224,13 +225,17 @@ void CNAME(enum CBLAS_ORDER order,
 #ifdef ALIGNED_ACCESS
   stack_alloc_size += 3;
 #endif
-  if(stack_alloc_size < 128)
+//  if(stack_alloc_size < 128)
     //dgemv_n.S require a 128 bytes buffer
-    stack_alloc_size = 128;
+// increasing instead of capping 128 
+// ABI STACK for windows 288 bytes
+    stack_alloc_size += 288 / sizeof(FLOAT) ;
 
   if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
     stack_alloc_size = 0;
 
+// stack overflow check
+  volatile double stack_check = 3.14159265358979323846;
   FLOAT stack_buffer[stack_alloc_size];
   buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc(1);
   //  printf("stack_alloc_size=%d\n", stack_alloc_size);
@@ -265,6 +270,8 @@ void CNAME(enum CBLAS_ORDER order,
 
   }
 #endif
+// stack overflow check
+assert(stack_check==3.14159265358979323846);
 
 #ifdef MAX_STACK_ALLOC
   if(!stack_alloc_size){
