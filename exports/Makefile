@@ -100,9 +100,9 @@ libgoto_hpl.def : gensymbol
 ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 else
-../$(LIBNAME).renamed : ../$(LIBNAME) objconv.def
-	$(OBJCONV) @objconv.def ../$(LIBNAME) ../$(LIBNAME).renamed
-$(LIBDYNNAME) : ../$(LIBNAME).renamed osx.def
+../$(LIBNAME).osx.renamed : ../$(LIBNAME) objconv.def
+	$(OBJCONV) @objconv.def ../$(LIBNAME) ../$(LIBNAME).osx.renamed
+$(LIBDYNNAME) : ../$(LIBNAME).osx.renamed osx.def
 endif
 ifeq ($(NOFORTRAN), $(filter $(NOFORTRAN),1 2))
 #only build without Fortran
@@ -224,7 +224,7 @@ linktest.c : gensymbol ../Makefile.system ../getarch.c
 	perl ./gensymbol linktest  $(ARCH) $(BU) $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" > linktest.c
 
 clean ::
-	@rm -f *.def *.dylib __.SYMDEF*
+	@rm -f *.def *.dylib __.SYMDEF* *.renamed
 
 include ../Makefile.tail
 
