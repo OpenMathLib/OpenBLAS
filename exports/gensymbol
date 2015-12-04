@@ -548,7 +548,6 @@
 		slatmt,
 		sorm22,
 		spotrf2,
-		xerbla,
 		zgejsv,
 		zgesvdx,
 		zgesvj,
