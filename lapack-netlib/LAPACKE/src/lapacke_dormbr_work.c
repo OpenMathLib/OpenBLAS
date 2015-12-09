@@ -73,8 +73,12 @@ lapack_int LAPACKE_dormbr_work( int matrix_layout, char vect, char side,
             return (info < 0) ? (info - 1) : info;
         }
         /* Allocate memory for temporary array(s) */
-        a_t = (double*)
-            LAPACKE_malloc( sizeof(double) * lda_t * MAX(1,MIN(nq,k)) );
+        if( LAPACKE_lsame( vect, 'q' ) ) {
+          a_t = (double*)LAPACKE_malloc( sizeof(double) * lda_t * k );
+        } else {
+          a_t = (double*)LAPACKE_malloc( sizeof(double) * lda_t * nq );
+        }
+      
         if( a_t == NULL ) {
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;
@@ -85,7 +89,11 @@ lapack_int LAPACKE_dormbr_work( int matrix_layout, char vect, char side,
             goto exit_level_1;
         }
         /* Transpose input matrices */
-        LAPACKE_dge_trans( matrix_layout, r, MIN(nq,k), a, lda, a_t, lda_t );
+        if( LAPACKE_lsame( vect, 'q' ) ) {
+          LAPACKE_dge_trans( matrix_layout, nq, k, a, lda, a_t, lda_t );
+        } else {
+          LAPACKE_dge_trans( matrix_layout, k, nq, a, lda, a_t, lda_t );
+        }
         LAPACKE_dge_trans( matrix_layout, m, n, c, ldc, c_t, ldc_t );
         /* Call LAPACK function and adjust info */
         LAPACK_dormbr( &vect, &side, &trans, &m, &n, &k, a_t, &lda_t, tau, c_t,
