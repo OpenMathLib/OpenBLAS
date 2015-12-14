@@ -95,7 +95,7 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
     s = db / r;
     z = ONE;
     if (ada > adb) z = s;
-    if ((ada < adb) && (c != ZERO)) z = ONE / c;
+    if ((ada <= adb) && (c != ZERO)) z = ONE / c;
 
     *C = c;
     *S = s;
