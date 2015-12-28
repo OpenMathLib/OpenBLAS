@@ -998,7 +998,9 @@ int main(int argc, char *argv[]){
 #endif
 #endif
 
-#if NO_PARALLEL_MAKE==1
+#ifdef MAKE_NB_JOBS
+    printf("MAKE += -j %d\n", MAKE_NB_JOBS);
+#elif NO_PARALLEL_MAKE==1
     printf("MAKE += -j 1\n");
 #else
 #ifndef OS_WINDOWS
