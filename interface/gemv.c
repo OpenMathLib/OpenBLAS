@@ -270,10 +270,11 @@ void CNAME(enum CBLAS_ORDER order,
 
   }
 #endif
-// stack overflow check
-assert(stack_check==3.14159265358979323846);
 
 #ifdef MAX_STACK_ALLOC
+  // stack overflow check
+  assert(stack_check==3.14159265358979323846);
+
   if(!stack_alloc_size){
     blas_memory_free(buffer);
   }
