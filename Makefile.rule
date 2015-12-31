@@ -163,10 +163,11 @@ COMMON_PROF = -pg
 # Build Debug version
 # DEBUG = 1
 
-# Improve GEMV and GER for small matrices by stack allocation.
-# For details, https://github.com/xianyi/OpenBLAS/pull/482
+# Set maximum stack allocation.
+# The default value is 2048. 0 disable stack allocation a may reduce GER and GEMV
+# performance. For details, https://github.com/xianyi/OpenBLAS/pull/482
 #
- MAX_STACK_ALLOC=2048
+# MAX_STACK_ALLOC = 0
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoid conflicts with other BLAS libraries, especially when using
