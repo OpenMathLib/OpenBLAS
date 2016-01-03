@@ -77,6 +77,7 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   blasint incy = *INCY;
 
   FLOAT *buffer;
+  int buffer_size;
 #ifdef SMP
   int nthreads;
 #endif
@@ -141,7 +142,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint    lenx, leny;
-  int trans;
+  int trans, buffer_size;
   blasint info, t;
 #ifdef SMP
   int nthreads;
@@ -230,7 +231,13 @@ void CNAME(enum CBLAS_ORDER order,
   if (incx < 0) x -= (lenx - 1) * incx * 2;
   if (incy < 0) y -= (leny - 1) * incy * 2;
 
-  buffer = (FLOAT *)blas_memory_alloc(1);
+  buffer_size = 2 * (m + n) + 128 / sizeof(FLOAT);
+#ifdef WINDOWS_ABI
+  buffer_size += 160 / sizeof(FLOAT) ;
+#endif
+  // for alignment
+  buffer_size = (buffer_size + 3) & ~3;
+  STACK_ALLOC(buffer_size, FLOAT, buffer);
 
 #ifdef SMP
 
@@ -253,7 +260,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 #endif
 
-  blas_memory_free(buffer);
+  STACK_FREE(buffer);
 
   FUNCTION_PROFILE_END(4, m * n + m + n,  2 * m * n);
 

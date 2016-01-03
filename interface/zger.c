@@ -210,7 +210,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (incy < 0) y -= (n - 1) * incy * 2;
   if (incx < 0) x -= (m - 1) * incx * 2;
 
-  buffer = (FLOAT *)blas_memory_alloc(1);
+  STACK_ALLOC(2 * m, FLOAT, buffer);
 
 #ifdef SMPTEST
   // Threshold chosen so that speed-up is > 1 on a Xeon E5-2630
@@ -249,7 +249,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 #endif
 
-  blas_memory_free(buffer);
+  STACK_FREE(buffer);
 
   FUNCTION_PROFILE_END(4, m * n + m + n, 2 * m * n);
 
