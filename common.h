@@ -727,6 +727,7 @@ typedef struct {
 #endif
 
 #ifndef ASSEMBLER
+#include "common_stackalloc.h"
 #if 0
 #include "symcopy.h"
 #endif
