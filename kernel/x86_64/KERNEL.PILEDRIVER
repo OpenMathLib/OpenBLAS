@@ -66,25 +66,23 @@ ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 CGEMM3MKERNEL    =  zgemm3m_kernel_8x4_barcelona.S
 ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_barcelona.S
 
-STRSMKERNEL_LN  =  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT  =  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN  =  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT  =  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN  = strsm_kernel_LN_bulldozer.c 
+STRSMKERNEL_LT  = strsm_kernel_LT_bulldozer.c 
+STRSMKERNEL_RN  = strsm_kernel_RN_bulldozer.c 
+STRSMKERNEL_RT  = strsm_kernel_RT_bulldozer.c
 
-
-DTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
+DTRSMKERNEL_LN  = dtrsm_kernel_LN_bulldozer.c
 DTRSMKERNEL_LT  = dtrsm_kernel_LT_8x2_bulldozer.S
 DTRSMKERNEL_RN  = dtrsm_kernel_RN_8x2_bulldozer.S
-DTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_RT  = dtrsm_kernel_RT_bulldozer.c
 
-CTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
-CTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
-CTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
-CTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
+CTRSMKERNEL_LN  = ctrsm_kernel_LN_bulldozer.c
+CTRSMKERNEL_LT  = ctrsm_kernel_LT_bulldozer.c
+CTRSMKERNEL_RN  = ctrsm_kernel_RN_bulldozer.c
+CTRSMKERNEL_RT  = ctrsm_kernel_RT_bulldozer.c
 
-ZTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
-ZTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
-ZTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
-ZTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
-
+ZTRSMKERNEL_LN  = ztrsm_kernel_LN_bulldozer.c
+ZTRSMKERNEL_LT  = ztrsm_kernel_LT_bulldozer.c
+ZTRSMKERNEL_RN  = ztrsm_kernel_RN_bulldozer.c
+ZTRSMKERNEL_RT  = ztrsm_kernel_RT_bulldozer.c
 
