@@ -117,7 +117,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro INIT_F4
 
 	pld	[ YO, #Y_PRE ]
-        vsub.f32                s8 , s8 , s8
+        vldr.f32                s8 , =0
         vmov.f32                s9 , s8
         vmov.f32                s10, s8
         vmov.f32                s11, s8
@@ -220,7 +220,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-        vsub.f32                s8 , s8 , s8
+        vldr.f32                s8 , =0
         vmov.f32                s9 , s8
 
 .endm
@@ -267,7 +267,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S4
 
-        vsub.f32                s8 , s8 , s8
+        vldr.f32                s8 , =0
         vmov.f32                s9 , s8
         vmov.f32                s10, s8
         vmov.f32                s11, s8
@@ -384,7 +384,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-        vsub.f32                s8 , s8 , s8
+        vldr.f32                s8 , =0
         vmov.f32                s9 , s8
 
 .endm

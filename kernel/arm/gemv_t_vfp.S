@@ -75,8 +75,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F2
 
-	vsub.f64	d2 , d2 , d2
-	vsub.f64	d3 , d3 , d3
+	vldr.f64	d2 , =0
+	vldr.f64	d3 , =0
 
 .endm
 
@@ -123,7 +123,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vsub.f64	d2 , d2 , d2
+	vldr.f64	d2 , =0
 
 .endm
 
@@ -160,8 +160,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S2
 
-	vsub.f64	d2 , d2 , d2
-	vsub.f64	d3 , d3 , d3
+	vldr.f64	d2 , =0
+	vldr.f64	d3 , =0
 
 .endm
 
@@ -224,7 +224,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vsub.f64	d2 , d2 , d2
+	vldr.f64	d2 , =0
 
 .endm
 
@@ -276,8 +276,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F2
 
-	vsub.f32	s2 , s2 , s2
-	vsub.f32	s3 , s3 , s3
+	vldr.f32	s2 , =0
+	vldr.f32	s3 , =0
 
 .endm
 
@@ -321,7 +321,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vsub.f32	s2 , s2 , s2
+	vldr.f32	s2 , =0
 
 .endm
 
@@ -356,8 +356,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S2
 
-	vsub.f32	s2 , s2 , s2
-	vsub.f32	s3 , s3 , s3
+	vldr.f32	s2 , =0
+	vldr.f32	s3 , =0
 
 .endm
 
@@ -418,7 +418,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vsub.f32	s2 , s2 , s2
+	vldr.f32	s2 , =0
 
 .endm
 
