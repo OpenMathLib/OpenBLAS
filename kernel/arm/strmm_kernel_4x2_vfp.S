@@ -90,7 +90,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x2
 
-	vsub.f32		s8 , s8 , s8
+	vldr.f32		s8 , =0
 	vmov.f32		s9, s8
 	vmov.f32		s10, s8
 	vmov.f32		s11, s8
@@ -156,7 +156,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x2
 
-	vsub.f32		s8 , s8 , s8
+	vldr.f32		s8 , =0
 	vmov.f32		s9, s8
 	vmov.f32		s12, s8
 	vmov.f32		s13, s8
@@ -211,7 +211,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x2
 
-	vsub.f32		s8 , s8 , s8
+	vldr.f32		s8 , =0
 	vmov.f32		s12, s8
 
 .endm
@@ -259,7 +259,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x1
 
-	vsub.f32		s8 , s8 , s8
+	vldr.f32		s8 , =0
 	vmov.f32		s9, s8
 	vmov.f32		s10, s8
 	vmov.f32		s11, s8
@@ -309,7 +309,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x1
 
-	vsub.f32		s8 , s8 , s8
+	vldr.f32		s8 , =0
 	vmov.f32		s9 , s8
 
 .endm
@@ -348,7 +348,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x1
 
-	vsub.f32		s8 , s8 , s8
+	vldr.f32		s8 , =0
 
 .endm
 

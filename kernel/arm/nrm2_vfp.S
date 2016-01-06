@@ -446,12 +446,12 @@ nrm2_begin:
 #if defined(COMPLEX)
 
 #if defined(DOUBLE)
-	vsub.f64                d0 , d0 , d0		// scale=0.0
+	vldr.f64                d0 , =0		// scale=0.0
 	vldr.64			d1 , znrm2_one		// ssq=1.0
 	vmov.f64		d7 , d1			// value 1.0
 	vmov.f64		d6 , d0			// value 0.0
 #else
-	vsub.f32                s0 , s0 , s0		// scale=0.0
+	vldr.f32                s0 , =0		// scale=0.0
 	vldr.32			s1 , cnrm2_one		// ssq=1.0
 	vmov.f32		s7 , s1			// value 1.0
 	vmov.f32		s6 , s0			// value 0.0
@@ -460,12 +460,12 @@ nrm2_begin:
 #else
 
 #if defined(DOUBLE)
-	vsub.f64                d0 , d0 , d0		// scale=0.0
+	vldr.f64                d0 , =0		// scale=0.0
 	vldr.64			d1 , dnrm2_one		// ssq=1.0
 	vmov.f64		d7 , d1			// value 1.0
 	vmov.f64		d6 , d0			// value 0.0
 #else
-	vsub.f32                s0 , s0 , s0		// scale=0.0
+	vldr.f32                s0 , =0		// scale=0.0
 	vldr.32			s1 , snrm2_one		// ssq=1.0
 	vmov.f32		s7 , s1			// value 1.0
 	vmov.f32		s6 , s0			// value 0.0

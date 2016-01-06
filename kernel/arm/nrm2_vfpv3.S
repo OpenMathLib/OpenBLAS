@@ -400,17 +400,22 @@ KERNEL_S1_END_\@:
 * End of macro definitions
 **************************************************************************************/
 
+nrm2_zeros:
+        .align 5
+        .word 0x00000000
+        .word 0x00000000
+
 	PROLOGUE
 
 	.align 5
 
 #if defined(DOUBLE)
-	vsub.f64                d0 , d0 , d0		// scale=0.0
+	vldr.f64                d0 , nrm2_zeros		// scale=0.0
 	vmov.f64		d1 , #1.0		// ssq=1.0
 	vmov.f64		d7 , d1			// value 1.0
 	vmov.f64		d6 , d0			// value 0.0
 #else
-	vsub.f32                s0 , s0 , s0		// scale=0.0
+	vldr.f32                s0 , nrm2_zeros		// scale=0.0
 	vmov.f32		s1 , #1.0		// ssq=1.0
 	vmov.f32		s7 , s1			// value 1.0
 	vmov.f32		s6 , s0			// value 0.0
