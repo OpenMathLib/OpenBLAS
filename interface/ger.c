@@ -171,15 +171,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (incy < 0) y -= (n - 1) * incy;
   if (incx < 0) x -= (m - 1) * incx;
 
-#ifdef MAX_STACK_ALLOC
-  volatile int stack_alloc_size = m;
-  if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(FLOAT))
-      stack_alloc_size = 0;
-  FLOAT stack_buffer[stack_alloc_size];
-  buffer = stack_alloc_size ? stack_buffer : (FLOAT *)blas_memory_alloc(1);
-#else
-  buffer = (FLOAT *)blas_memory_alloc(1);
-#endif
+  STACK_ALLOC(m, FLOAT, buffer);
 
 #ifdef SMPTEST
   nthreads = num_cpu_avail(2);
@@ -198,11 +190,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 #endif
 
-#ifdef MAX_STACK_ALLOC
-  if(!stack_alloc_size)
-#endif
-    blas_memory_free(buffer);
-
+  STACK_FREE(buffer);
   FUNCTION_PROFILE_END(1, m * n + m + n, 2 * m * n);
 
   IDEBUG_END;
