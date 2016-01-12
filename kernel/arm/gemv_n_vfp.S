@@ -79,7 +79,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	pld     [ YO , #Y_PRE ]
 	pld     [ YO , #Y_PRE+32 ]
 
-	vldr.f64	d8 , =0
+	vsub.f64	d8 , d8 , d8
 	vmov.f64	d9  , d8
 	vmov.f64	d10 , d8
 	vmov.f64	d11 , d8
@@ -158,7 +158,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vldr.f64	d12 , =0
+	vsub.f64	d12 , d12 , d12
 
 .endm
 
@@ -185,7 +185,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S4
 
-	vldr.f64	d12 , =0
+	vsub.f64	d12 , d12 , d12
 	vmov.f64	d13 , d12
 	vmov.f64	d14 , d12
 	vmov.f64	d15 , d12
@@ -245,7 +245,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vldr.f64	d12 , =0
+	vsub.f64	d12 , d12 , d12
 
 .endm
 
@@ -279,7 +279,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	pld     [ YO , #Y_PRE ]
 
-	vldr.f32	s8 , =0
+	vsub.f32	s8 , s8 , s8
 	vmov.f32	s9  , s8
 	vmov.f32	s10 , s8
 	vmov.f32	s11 , s8
@@ -357,7 +357,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vldr.f32	s12 , =0
+	vsub.f32	s12 , s12 , s12
 
 .endm
 
@@ -384,7 +384,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S4
 
-	vldr.f32	s12 , =0
+	vsub.f32	s12 , s12 , s12
 	vmov.f32	s13 , s12
 	vmov.f32	s14 , s12
 	vmov.f32	s15 , s12
@@ -445,7 +445,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vldr.f32	s12 , =0
+	vsub.f32	s12 , s12 , s12
 
 .endm
 

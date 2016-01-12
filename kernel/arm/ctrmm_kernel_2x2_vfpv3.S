@@ -134,6 +134,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x2
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s18, s16
 	vmov.f32		s19, s16
@@ -350,6 +351,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x2
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s20, s16
 	vmov.f32		s21, s16
@@ -527,6 +529,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x1
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s18, s16
 	vmov.f32		s19, s16
@@ -703,6 +706,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x1
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s24, s16
 	vmov.f32		s25, s16
@@ -1016,12 +1020,9 @@ _L2_M2_32:
 
 	b	 _L2_M2_44
 
-ctrmm_f32zero:
-        .word 0x00000000
 
 _L2_M2_40:
 
-	vldr.f32		s16 , ctrmm_f32zero
 	INIT2x2
 
 
@@ -1073,7 +1074,6 @@ _L2_M1_BEGIN:
 
 _L2_M1_20:
 
-	vldr.f32		s16 , ctrmm_f32zero
 	INIT1x2
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1337,7 +1337,6 @@ _L1_M2_32:
 
 _L1_M2_40:
 
-	vldr.f32		s16 , =0
 	INIT2x1
 
 
@@ -1390,7 +1389,6 @@ _L1_M1_BEGIN:
 
 _L1_M1_20:
 
-	vldr.f32		s16 , =0
 	INIT1x1
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \

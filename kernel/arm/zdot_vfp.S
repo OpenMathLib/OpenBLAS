@@ -190,10 +190,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
 
-	vldr.f64                d0 , =0
-	vldr.f64                d1 , =0
-	vldr.f64                d2 , =0
-	vldr.f64                d3 , =0
+	vsub.f64                d0 , d0 , d0
+	vsub.f64                d1 , d1 , d1
+	vsub.f64                d2 , d2 , d2
+	vsub.f64                d3 , d3 , d3
 
 	cmp	N, #0
 	ble	zdot_kernel_L999

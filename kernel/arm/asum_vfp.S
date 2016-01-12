@@ -368,11 +368,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	.align 5
 
 #if defined(DOUBLE)
-	vldr.f64                d0 , =0
-	vldr.f64                d1 , =0
+	vsub.f64                d0 , d0 , d0
+	vsub.f64                d1 , d1 , d1
 #else
-	vldr.f32                s0 , =0
-	vldr.f32                s1 , =0
+	vsub.f32                s0 , s0 , s0
+	vsub.f32                s1 , s1 , s1
 #endif
 
 	cmp	N, #0

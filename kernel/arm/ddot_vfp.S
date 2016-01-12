@@ -152,8 +152,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
 
-	vldr.f64                d0 , =0
-	vldr.f64                d1 , =0
+	vsub.f64                d0 , d0 , d0
+	vsub.f64                d1 , d1 , d1
 
 	cmp	N, #0
 	ble	ddot_kernel_L999

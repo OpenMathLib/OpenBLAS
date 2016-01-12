@@ -342,9 +342,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	push    {r4}
 
 #if defined(DOUBLE)
-	vldr.f64                d0 , =0
+	vsub.f64                d0 , d0 , d0
 #else
-	vldr.f32                s0 , =0
+	vsub.f32                s0 , s0 , s0
 #endif
 	mov	INDEX, #0
 
