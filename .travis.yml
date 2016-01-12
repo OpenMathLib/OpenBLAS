@@ -24,7 +24,9 @@ before_install:
  - if [[ "$TARGET_BOX" == "WIN64" ]]; then sudo apt-get install -qq binutils-mingw-w64-x86-64 gcc-mingw-w64-x86-64 gfortran-mingw-w64-x86-64; fi
  - if [[ "$TARGET_BOX" == "LINUX32" ]]; then sudo apt-get install -qq  gcc-multilib gfortran-multilib; fi
 
-script: make QUIET_MAKE=1 DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE
+script: 
+ - make QUIET_MAKE=1 DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE
+ - if [[ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]]; then cd test; make DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
 
 # whitelist
 branches:
