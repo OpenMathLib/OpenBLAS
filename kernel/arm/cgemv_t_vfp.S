@@ -116,10 +116,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F2
 
-	vldr.f32	s12, =0
-	vldr.f32	s13, =0
-	vldr.f32	s14, =0
-	vldr.f32	s15, =0
+	vsub.f32	s12, s12, s12
+	vsub.f32	s13, s13, s13
+	vsub.f32	s14, s14, s14
+	vsub.f32	s15, s15, s15
 
 .endm
 
@@ -172,8 +172,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vldr.f32	s12, =0
-	vldr.f32	s13, =0
+	vsub.f32	s12, s12, s12
+	vsub.f32	s13, s13, s13
 
 .endm
 
@@ -215,10 +215,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S2
 
-	vldr.f32	s12, =0
-	vldr.f32	s13, =0
-	vldr.f32	s14, =0
-	vldr.f32	s15, =0
+	vsub.f32	s12, s12, s12
+	vsub.f32	s13, s13, s13
+	vsub.f32	s14, s14, s14
+	vsub.f32	s15, s15, s15
 
 .endm
 
@@ -281,8 +281,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vldr.f32	s12, =0
-	vldr.f32	s13, =0
+	vsub.f32	s12, s12, s12
+	vsub.f32	s13, s13, s13
 
 .endm
 

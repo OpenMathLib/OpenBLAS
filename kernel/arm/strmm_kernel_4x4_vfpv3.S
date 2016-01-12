@@ -88,6 +88,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x4
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s18, s16
 	vmov.f32		s19, s16
@@ -321,6 +322,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x4
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s20, s16
 	vmov.f32		s21, s16
@@ -403,6 +405,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x4
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s20, s16
 	vmov.f32		s24, s16
 	vmov.f32		s28, s16
@@ -461,6 +464,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x2
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s18, s16
 	vmov.f32		s19, s16
@@ -534,6 +538,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x2
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s20, s16
 	vmov.f32		s21, s16
@@ -588,6 +593,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x2
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s20, s16
 
 .endm
@@ -630,6 +636,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x1
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 	vmov.f32		s18, s16
 	vmov.f32		s19, s16
@@ -683,6 +690,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x1
 
+	vsub.f32		s16 , s16 , s16
 	vmov.f32		s17, s16
 
 .endm
@@ -720,6 +728,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 /******************************************************************************/
+
+.macro INIT1x1
+
+	vsub.f32		s16 , s16 , s16
+
+.endm
+
 
 
 .macro KERNEL1x1_SUB
@@ -940,24 +955,9 @@ _L4_M4_32:
 
 	b	 _L4_M4_44
 
-        /* Note on loading zero into a fp register
-         * vsub doesn't work since it cannot handle NaN and infinity
-         * vmov.Fn doesn't work with 0
-         * vmov.In and veor are neon
-         * vldr , =0 doesn't work since the function is larger than 2KB
-         *     and the assembler is not able to insert constant pool inside
-         *     the function body.
-         *
-         * Therefore, the best way I've found is to manually create multiple
-         * copies of the zero constant and `vldr` from different ones depending
-         * on where the instruction is.
-         */
-strmm_f32zero:
-        .word 0x00000000
 
 _L4_M4_40:
 
-	vldr.f32		s16 , strmm_f32zero
 	INIT4x4
 
 
@@ -1014,7 +1014,6 @@ _L4_M2_BEGIN:
 
 _L4_M2_20:
 
-	vldr.f32		s16 , strmm_f32zero
 	INIT2x4
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1113,7 +1112,6 @@ _L4_M1_BEGIN:
 
 _L4_M1_20:
 
-	vldr.f32		s16 , strmm_f32zero3
 	INIT1x4
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1254,14 +1252,9 @@ _L2_M4_BEGIN:
 	ldr	I, M
 	asrs	I, I, #2					// I = I / 4
 	ble	_L2_M2_BEGIN
-        b       _L2_M4_20
-
-strmm_f32zero3:
-        .word 0x00000000
 
 _L2_M4_20:
 
-	vldr.f32		s16 , strmm_f32zero3
 	INIT4x2
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1367,7 +1360,6 @@ _L2_M2_BEGIN:
 
 _L2_M2_20:
 
-	vldr.f32		s16 , strmm_f32zero3
 	INIT2x2
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1466,7 +1458,6 @@ _L2_M1_BEGIN:
 
 _L2_M1_20:
 
-	vldr.f32		s16 , strmm_f32zero4
 	INIT1x2
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1600,14 +1591,9 @@ _L1_M4_BEGIN:
 	ldr	I, M
 	asrs	I, I, #2					// I = I / 4
 	ble	_L1_M2_BEGIN
-        b       _L1_M4_20
-
-strmm_f32zero4:
-        .word 0x00000000
 
 _L1_M4_20:
 
-	vldr.f32		s16 , strmm_f32zero4
 	INIT4x1
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1714,7 +1700,6 @@ _L1_M2_BEGIN:
 
 _L1_M2_20:
 
-	vldr.f32		s16 , strmm_f32zero2
 	INIT2x1
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
@@ -1813,7 +1798,7 @@ _L1_M1_BEGIN:
 
 _L1_M1_20:
 
-	vldr.f32		s16 , strmm_f32zero2
+	INIT1x1
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || \
     (!defined(LEFT) && !defined(TRANSA))
@@ -1897,5 +1882,3 @@ _L999:
 
 	EPILOGUE
 
-strmm_f32zero2:
-        .word 0x00000000

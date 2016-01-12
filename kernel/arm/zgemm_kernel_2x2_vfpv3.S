@@ -147,7 +147,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x2
 
-	vldr.f64		d16 , =0
+	vsub.f64		d16 , d16 , d16
 	vmov.f64		d17, d16
 	vmov.f64		d18, d16
 	vmov.f64		d19, d16
@@ -404,7 +404,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x2
 
-	vldr.f64		d16 , =0
+	vsub.f64		d16 , d16 , d16
 	vmov.f64		d17, d16
 	vmov.f64		d20, d16
 	vmov.f64		d21, d16
@@ -586,7 +586,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x1
 
-	vldr.f64		d16 , =0
+	vsub.f64		d16 , d16 , d16
 	vmov.f64		d17, d16
 	vmov.f64		d18, d16
 	vmov.f64		d19, d16
@@ -766,7 +766,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x1
 
-	vldr.f64		d16 , =0
+	vsub.f64		d16 , d16 , d16
 	vmov.f64		d17, d16
 	vmov.f64		d24, d16
 	vmov.f64		d25, d16
