@@ -26,8 +26,8 @@ before_install:
 
 script: 
  - make QUIET_MAKE=1 DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE
- - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then cd test; make DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; cd ..; fi
- - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then cd ctest; make DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; cd ..; fi
+ - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C test DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
+ - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C ctest DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
 
 # whitelist
 branches:
