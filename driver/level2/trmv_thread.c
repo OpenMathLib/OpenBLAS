@@ -119,7 +119,7 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #endif
 
     x = buffer;
-    buffer += ((COMPSIZE * args -> m + 1023) & ~1023);
+    buffer += ((COMPSIZE * args -> m + 3) & ~3);
   }
 
 #ifndef TRANS
@@ -403,7 +403,7 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *bu
 
   if (num_cpu) {
     queue[0].sa = NULL;
-    queue[0].sb = buffer + num_cpu * (((m + 255) & ~255) + 16) * COMPSIZE;
+    queue[0].sb = buffer + num_cpu * (((m + 3) & ~3) + 16) * COMPSIZE;
 
     queue[num_cpu - 1].next = NULL;
 
