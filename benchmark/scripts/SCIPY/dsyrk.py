@@ -16,7 +16,7 @@ def run_dsyrk(N, l):
 
     start = time.time()
     for i in range(0, l):
-        C[...] = blas.dsyrk(1.0, A)
+        blas.dsyrk(1.0, A, c=C, overwrite_c=True)
     end = time.time()
 
     timediff = (end - start)
