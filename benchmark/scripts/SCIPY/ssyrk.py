@@ -14,7 +14,7 @@ def run_ssyrk(N,l):
 	C = zeros((N,N), dtype='float32')
 
 
-	start = time.time();
+	start = time.time()
 	for i in range(0,l):
 		C = blas.ssyrk(1.0,A)
 	end = time.time()
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 	if 'OPENBLAS_LOOPS' in os.environ:
 		p = os.environ['OPENBLAS_LOOPS']
 		if p:
-			LOOPS = int(p);
+			LOOPS = int(p)
 
 	print("From: %d To: %d Step=%d Loops=%d" % (N, NMAX, NINC, LOOPS))
 	print("\tSIZE\t\t\tFlops\t\t\t\t\tTime")
