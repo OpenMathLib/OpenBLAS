@@ -4,13 +4,14 @@ import os
 import sys
 import time
 import numpy
+from numpy import zeros
 from numpy.random import randn
 from scipy.linalg import blas
 
 def run_ssyrk(N,l):
 
 	A = randn(N,N).astype('float32')
-	C = randn(N,N).astype('float32')
+	C = zeros((N,N), dtype='float32')
 
 
 	start = time.time();
