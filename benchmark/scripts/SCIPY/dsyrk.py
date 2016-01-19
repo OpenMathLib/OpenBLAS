@@ -11,8 +11,8 @@ from scipy.linalg import blas
 
 def run_dsyrk(N, l):
 
-    A = randn(N, N).astype('float64')
-    C = zeros((N, N), dtype='float64')
+    A = randn(N, N).astype('float64', order='F')
+    C = zeros((N, N), dtype='float64', order='F')
 
     start = time.time()
     for i in range(0, l):
