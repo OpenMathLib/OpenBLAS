@@ -174,8 +174,11 @@ void CNAME(enum CBLAS_ORDER order,
   STACK_ALLOC(m, FLOAT, buffer);
 
 #ifdef SMPTEST
-  nthreads = num_cpu_avail(2);
-
+  // Threshold chosen so that speed-up is > 1 on a Xeon E5-2630
+  if(1L * m * n > 24L * GEMM_MULTITHREAD_THRESHOLD)
+    nthreads = num_cpu_avail(2);
+  else
+    nthreads = 1;
 
   if (nthreads == 1) {
 #endif

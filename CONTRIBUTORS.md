@@ -121,6 +121,11 @@ In chronological order:
   * [2014-10-10] trmm and sgemm kernels (optimized for APM's X-Gene 1).
                  ARMv8 support.
 
+* Jerome Robert <jeromerobert@gmx.com>
+  * [2015-01-01] Speed-up small `ger` and `gemv` using stack allocation (bug #478)
+  * [2015-12-23] `stack_check` in `gemv.c` (bug #722)
+  * [2016-01-19] Disable multi-threading in `ger` and `swap` for small matrices (bug #731)
+
 * Dan Kortschak
   * [2015-01-07] Added test for drotmg bug #484.
 
