@@ -335,7 +335,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
         if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
         else
-          if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+        	if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
+        	else
+          		if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
 
 
