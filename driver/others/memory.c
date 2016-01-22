@@ -142,7 +142,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(_MSC_VER) && !defined(__clang__)
 #define CONSTRUCTOR __cdecl
 #define DESTRUCTOR __cdecl
-#elif defined(OS_DARWIN) && defined(C_GCC)
+#elif (defined(OS_DARWIN) || defined(OS_SUNOS)) && defined(C_GCC)
 #define CONSTRUCTOR	__attribute__ ((constructor))
 #define DESTRUCTOR	__attribute__ ((destructor))
 #else
@@ -167,7 +167,7 @@ void goto_set_num_threads(int num_threads) {};
 
 #else
 
-#ifdef OS_LINUX
+#if defined(OS_LINUX) || defined(OS_SUNOS)
 #ifndef NO_AFFINITY
 int get_num_procs(void);
 #else
