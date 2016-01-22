@@ -85,7 +85,7 @@ endif
 
 shared :
 ifndef NO_SHARED
-ifeq ($(OSNAME), Linux)
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS))
 	@$(MAKE) -C exports so
 	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
 	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
