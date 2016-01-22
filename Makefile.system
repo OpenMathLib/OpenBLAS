@@ -962,7 +962,7 @@ ifndef MD5SUM
 MD5SUM	= md5sum
 endif
 
-AWK	= awk
+AWK	= nawk
 
 REVISION = -r$(VERSION)
 MAJOR_VERSION = $(word 1,$(subst ., ,$(VERSION)))
