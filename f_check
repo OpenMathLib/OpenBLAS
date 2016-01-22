@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+$hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
+
 #
 # 1. Not specified
 #   1.1 Automatically detect, then check compiler
@@ -272,8 +274,9 @@ if ($link ne "") {
 	}
 
 	if ($flags =~ /^\-Y/) {
+	    next if ($hostos eq 'SunOS');
 	    $linker_L .= "-Wl,". $flags . " ";
-	    }
+        }
 
 	if ($flags =~ /^\-rpath\@/) {
 	    $flags =~ s/\@/\,/g;
