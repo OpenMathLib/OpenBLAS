@@ -31,6 +31,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * 	 CTEST			: OK (no test for dsdot)
 * 	 TEST			: OK (no test for dsdot)
 *
+* 2016/01/23 Saar
+*	 Bugfix	for Refs #750 and #740
 **************************************************************************************/
 
 #define ASSEMBLER
@@ -240,16 +242,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
 
+	movs	r4, #0						// clear floating point register
+	vmov	s0, r4
+	vmov	s1, r4
 #if	defined(DSDOT)
-
-	vsub.f64                d0 , d0 , d0
-	vsub.f64                d1 , d1 , d1
-
-#else
-
-	vsub.f32                s0 , s0 , s0
-	vsub.f32                s1 , s1 , s1
-
+	vcvt.f64.f32    d0, s0
+	vcvt.f64.f32    d1, s1
 #endif
 
 	cmp	N, #0
