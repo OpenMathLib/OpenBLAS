@@ -72,8 +72,8 @@ DSCALKERNEL  = scal.c
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
 
-SGEMVNKERNEL = gemv_n_vfp.S
-DGEMVNKERNEL = gemv_n_vfp.S
+SGEMVNKERNEL = gemv_n_vfpv3.S
+DGEMVNKERNEL = gemv_n_vfpv3.S
 CGEMVNKERNEL = cgemv_n_vfp.S
 ZGEMVNKERNEL = zgemv_n_vfp.S
 
@@ -88,22 +88,14 @@ CTRMMKERNEL  =  ctrmm_kernel_2x2_vfpv3.S
 ZTRMMKERNEL  =  ztrmm_kernel_2x2_vfpv3.S
 
 SGEMMKERNEL    =  sgemm_kernel_4x4_vfpv3.S
-SGEMMINCOPY    =
-SGEMMITCOPY    =
 SGEMMONCOPY    =  sgemm_ncopy_4_vfp.S
 SGEMMOTCOPY    =  sgemm_tcopy_4_vfp.S
-SGEMMINCOPYOBJ =
-SGEMMITCOPYOBJ =
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
 DGEMMKERNEL    =  dgemm_kernel_4x4_vfpv3.S
-DGEMMINCOPY    =
-DGEMMITCOPY    =
 DGEMMONCOPY    =  dgemm_ncopy_4_vfp.S
 DGEMMOTCOPY    =  dgemm_tcopy_4_vfp.S
-DGEMMINCOPYOBJ =
-DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
