@@ -86,7 +86,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
-#ifdef linux
+#if defined(linux) || defined(__sun__)
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #endif
@@ -906,7 +906,7 @@ static int get_num_cores(void) {
   size_t len;
 #endif
 
-#ifdef linux
+#if defined(linux) || defined(__sun__)
   //returns the number of processors which are currently online
   return sysconf(_SC_NPROCESSORS_ONLN);
 

@@ -70,7 +70,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*********************************************************************/
 
 #include "common.h"
-#if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
+#if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID) || defined(OS_SUNOS)
 #include <dlfcn.h>
 #include <signal.h>
 #include <sys/resource.h>
@@ -576,10 +576,12 @@ int blas_thread_init(void){
 	struct rlimit rlim;
         const char *msg = strerror(ret);
         fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create: %s\n", msg);
+#ifdef RLIMIT_NPROC
         if(0 == getrlimit(RLIMIT_NPROC, &rlim)) {
           fprintf(STDERR, "OpenBLAS blas_thread_init: RLIMIT_NPROC "
                   "%ld current, %ld max\n", (long)(rlim.rlim_cur), (long)(rlim.rlim_max));
         }
+#endif
         if(0 != raise(SIGINT)) {
           fprintf(STDERR, "OpenBLAS blas_thread_init: calling exit(3)\n");
           exit(EXIT_FAILURE);

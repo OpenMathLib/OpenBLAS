@@ -114,7 +114,7 @@ endif
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<
 
-ifeq ($(OSNAME), Linux)
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS))
 
 so : ../$(LIBSONAME)
 
