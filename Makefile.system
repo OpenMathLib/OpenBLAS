@@ -957,17 +957,18 @@ ifeq ($(OSNAME), SunOS)
 TAR	= gtar
 PATCH	= gpatch
 GREP	= ggrep
+AWK	= nawk
 else
 TAR	= tar
 PATCH	= patch
 GREP	= grep
+AWK	= awk
 endif
 
 ifndef MD5SUM
 MD5SUM	= md5sum
 endif
 
-AWK	= nawk
 
 REVISION = -r$(VERSION)
 MAJOR_VERSION = $(word 1,$(subst ., ,$(VERSION)))
