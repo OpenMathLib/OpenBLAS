@@ -357,7 +357,9 @@ int openblas_get_num_threads(void) {
 #ifndef SMP
   return 1;
 #else
-  return blas_get_cpu_number();
+  // init blas_cpu_number if needed
+  blas_get_cpu_number();
+  return blas_cpu_number;
 #endif
 }
 
