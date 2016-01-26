@@ -94,6 +94,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       GEMV_N(m - j, j, 0, dm1,  a + j, lda, b, 1, b + j, 1, sb);
 
       jp = j + IAMAX_K(m - j, b + j, 1);
+      if (jp>m) jp = m;        //avoid out of boundary
       ipiv[j + offset] = jp + offset;
       jp--;
       temp1 = *(b + jp);
