@@ -1,8 +1,3 @@
-SGEMVNKERNEL = ../arm/gemv_n.c
-SGEMVTKERNEL = ../arm/gemv_t.c
-CGEMVNKERNEL = ../arm/zgemv_n.c
-CGEMVTKERNEL = ../arm/zgemv_t.c
-
 
 #################################################################################
 SAMAXKERNEL  = iamax_vfp.S
@@ -77,14 +72,14 @@ DSCALKERNEL  = scal.c
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
 
-# BAD SGEMVNKERNEL = gemv_n_vfp.S
-DGEMVNKERNEL = gemv_n_vfp.S
-#CGEMVNKERNEL = cgemv_n_vfp.S
+SGEMVNKERNEL = gemv_n_vfpv3.S
+DGEMVNKERNEL = gemv_n_vfpv3.S
+CGEMVNKERNEL = cgemv_n_vfp.S
 ZGEMVNKERNEL = zgemv_n_vfp.S
 
-# BAD SGEMVTKERNEL = gemv_t_vfp.S
+SGEMVTKERNEL = gemv_t_vfp.S
 DGEMVTKERNEL = gemv_t_vfp.S
-#CGEMVTKERNEL = cgemv_t_vfp.S
+CGEMVTKERNEL = cgemv_t_vfp.S
 ZGEMVTKERNEL = zgemv_t_vfp.S
 
 STRMMKERNEL  =  strmm_kernel_4x4_vfpv3.S
@@ -92,24 +87,15 @@ DTRMMKERNEL  =  dtrmm_kernel_4x4_vfpv3.S
 CTRMMKERNEL  =  ctrmm_kernel_2x2_vfpv3.S
 ZTRMMKERNEL  =  ztrmm_kernel_2x2_vfpv3.S
 
-#SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
 SGEMMKERNEL    =  sgemm_kernel_4x4_vfpv3.S
-SGEMMINCOPY    =
-SGEMMITCOPY    =
 SGEMMONCOPY    =  sgemm_ncopy_4_vfp.S
 SGEMMOTCOPY    =  sgemm_tcopy_4_vfp.S
-SGEMMINCOPYOBJ =
-SGEMMITCOPYOBJ =
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
 DGEMMKERNEL    =  dgemm_kernel_4x4_vfpv3.S
-DGEMMINCOPY    =
-DGEMMITCOPY    =
 DGEMMONCOPY    =  dgemm_ncopy_4_vfp.S
 DGEMMOTCOPY    =  dgemm_tcopy_4_vfp.S
-DGEMMINCOPYOBJ =
-DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 

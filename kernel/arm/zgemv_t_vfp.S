@@ -59,6 +59,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define I	r12
 
+#define FP_ZERO [fp, #-228]
+#define FP_ZERO_0 [fp, #-228]
+#define FP_ZERO_1 [fp, #-224]
+
 #define N	[fp, #-252 ]
 #define A	[fp, #-256 ]
 
@@ -117,10 +121,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F2
 
-	vsub.f64	d12, d12, d12
-	vsub.f64	d13, d13, d13
-	vsub.f64	d14, d14, d14
-	vsub.f64	d15, d15, d15
+	fldd		d12, FP_ZERO
+	vmov.f64	d13, d12
+	vmov.f64	d14, d12
+	vmov.f64	d15, d12
 
 .endm
 
@@ -173,8 +177,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vsub.f64	d12, d12, d12
-	vsub.f64	d13, d13, d13
+	fldd		d12, FP_ZERO
+	vmov.f64	d13, d12
 
 .endm
 
@@ -216,10 +220,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S2
 
-	vsub.f64	d12, d12, d12
-	vsub.f64	d13, d13, d13
-	vsub.f64	d14, d14, d14
-	vsub.f64	d15, d15, d15
+	fldd		d12, FP_ZERO
+	vmov.f64	d13, d12
+	vmov.f64	d14, d12
+	vmov.f64	d15, d12
 
 .endm
 
@@ -282,8 +286,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vsub.f64	d12, d12, d12
-	vsub.f64	d13, d13, d13
+	fldd		d12, FP_ZERO
+	vmov.f64	d13, d12
 
 .endm
 
@@ -345,6 +349,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         vstm    r12, { s8 - s15 }                                 // store floating point registers
 #endif
+
+        movs    r12, #0
+        str     r12, FP_ZERO
+        str     r12, FP_ZERO_1
 
 	cmp	M, #0
 	ble	zgemvt_kernel_L999

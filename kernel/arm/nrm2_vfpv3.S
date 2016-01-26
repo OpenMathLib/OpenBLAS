@@ -405,12 +405,15 @@ KERNEL_S1_END_\@:
 	.align 5
 
 #if defined(DOUBLE)
-	vsub.f64                d0 , d0 , d0		// scale=0.0
+	movs			r12 , #0
+	vmov.f32		s0 , r12		// scale=0.0
+	vcvt.f64.f32    d0, s0
 	vmov.f64		d1 , #1.0		// ssq=1.0
 	vmov.f64		d7 , d1			// value 1.0
 	vmov.f64		d6 , d0			// value 0.0
 #else
-	vsub.f32                s0 , s0 , s0		// scale=0.0
+	movs			r12 , #0
+	vmov.f32		s0 , r12		// scale=0.0
 	vmov.f32		s1 , #1.0		// ssq=1.0
 	vmov.f32		s7 , s1			// value 1.0
 	vmov.f32		s6 , s0			// value 0.0
