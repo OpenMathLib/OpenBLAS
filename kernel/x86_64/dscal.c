@@ -87,7 +87,7 @@ static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_
 static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)
 {
 
-	FLOAT *x1;
+	FLOAT *x1=NULL;
 	BLASLONG inc_x3;
 
 	inc_x <<= 3;
