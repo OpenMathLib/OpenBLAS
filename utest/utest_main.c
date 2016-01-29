@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2014, The OpenBLAS Project
+Copyright (c) 2011-2016, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,40 +31,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#ifndef COMMON_UTEST_H_
-#define COMMON_UTEST_H_
-#include <CUnit/CUnit.h>
+#include <stdio.h>
 
-#include <common.h>
+#define CTEST_MAIN
+#define CTEST_SEGFAULT
 
-#define CHECK_EPS 0.00002
+#include "openblas_utest.h"
 
-//Testcase list
-void test_drot_inc_0(void);
-void test_srot_inc_0(void);
-void test_zdrot_inc_0(void);
-void test_csrot_inc_0(void);
+int main(int argc, const char ** argv){
 
-void test_dswap_inc_0(void);
-void test_zswap_inc_0(void);
-void test_sswap_inc_0(void);
-void test_cswap_inc_0(void);
+  int num_fail=0;
 
-void test_daxpy_inc_0(void);
-void test_zaxpy_inc_0(void);
-void test_saxpy_inc_0(void);
-void test_caxpy_inc_0(void);
+  num_fail=ctest_main(argc, argv);
 
-void test_zdotu_n_1(void);
-void test_zdotu_offset_1(void);
-
-void test_drotmg(void);
-void test_drotmg_D1eqD2_X1eqX2();
-
-void test_dsdot_n_1(void);
-
-void test_samax(void);
-
-void test_fork_safety(void);
-
-#endif
+  return num_fail;
+}

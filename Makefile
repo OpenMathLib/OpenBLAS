@@ -7,10 +7,6 @@ ifneq ($(DYNAMIC_ARCH), 1)
 BLASDIRS += kernel
 endif
 
-ifdef UTEST_CHECK
-SANITY_CHECK = 1
-endif
-
 ifdef SANITY_CHECK
 BLASDIRS += reference
 endif

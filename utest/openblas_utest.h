@@ -31,15 +31,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include "openblas_utest.h"
+#ifndef _OPENBLAS_UTEST_H_
+#define _OPENBLAS_UTEST_H_
 
-CTEST(amax, samax){
-  int N=3, inc=1;
-  float te_max=0.0, tr_max=0.0;
-  float x[]={-1.1, 2.2, -3.3};
+#include <stdlib.h>
+#include "ctest.h"
 
-  te_max=BLASFUNC(samax)(&N, x, &inc);
-  tr_max=3.3;
-  
-  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
-}
+#include <common.h>
+
+#define SINGLE_EPS 1e-04
+#define DOUBLE_EPS 1e-13
+#endif
