@@ -34,7 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "openblas_utest.h"
 
 CTEST(amax, samax){
-  int N=3, inc=1;
+  blasint N=3, inc=1;
   float te_max=0.0, tr_max=0.0;
   float x[]={-1.1, 2.2, -3.3};
 
