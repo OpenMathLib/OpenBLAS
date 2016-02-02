@@ -986,11 +986,7 @@ COMMON_OPT = -O2
 endif
 
 ifndef FCOMMON_OPT
-ifeq ($(OSNAME), WINNT)
-FCOMMON_OPT = -O0 
-else
 FCOMMON_OPT = -O2 -frecursive
-endif
 endif
 
 
