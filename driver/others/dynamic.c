@@ -261,6 +261,11 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	//Intel Avoton
+	if (model == 13) { 
+	  openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK); 
+	  return &gotoblas_NEHALEM;
+	}	
 	return NULL;
       case 5:
 	//Intel Broadwell

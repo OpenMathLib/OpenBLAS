@@ -1678,6 +1678,9 @@ int get_coretype(void){
 #endif
           else
 	    return CORE_NEHALEM;
+	case 13:
+	  // Avoton
+	    return CORE_NEHALEM;
         }
         break;
       case 5:
