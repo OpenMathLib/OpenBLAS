@@ -2058,10 +2058,10 @@ endif ()
 # add lapack-netlib folder to the sources
 set(LAPACKE_SOURCES "")
 foreach (LAE_FILE ${LAPACKE_REL_SRC})
-  list(APPEND LAPACKE_SOURCES "${NETLIB_LAPACK_DIR}/lapacke/src/${LAE_FILE}")
+  list(APPEND LAPACKE_SOURCES "${NETLIB_LAPACK_DIR}/LAPACKE/src/${LAE_FILE}")
 endforeach ()
 
-set(lapacke_include_dir "${NETLIB_LAPACK_DIR}/lapacke/include")
+set(lapacke_include_dir "${NETLIB_LAPACK_DIR}/LAPACKE/include")
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy "${lapacke_include_dir}/lapacke_mangling_with_flags.h" "${lapacke_include_dir}/lapacke_mangling.h")
 include_directories(${lapacke_include_dir})
 set_source_files_properties(${LAPACKE_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_CFLAGS}")
