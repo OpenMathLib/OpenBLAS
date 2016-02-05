@@ -296,8 +296,10 @@ endif
 ifneq ($(OSNAME), WINNT)
 ifneq ($(OSNAME), CYGWIN_NT)
 ifneq ($(OSNAME), Interix)
+ifneq ($(OSNAME), Android)
 ifdef SMP
 EXTRALIB   += -lpthread
+endif
 endif
 endif
 endif
@@ -379,7 +381,7 @@ FCOMMON_OPT	+= -m128bit-long-double
 endif
 ifeq ($(C_COMPILER), CLANG)
 EXPRECISION	= 1
-CCOMMON_OPT	+= -DEXPRECISION 
+CCOMMON_OPT	+= -DEXPRECISION
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -393,7 +395,7 @@ endif
 
 ifeq ($(USE_OPENMP), 1)
 
-#check 
+#check
 ifeq ($(USE_THREAD), 0)
 $(error OpenBLAS: Cannot set both USE_OPENMP=1 and USE_THREAD=0. The USE_THREAD=0 is only for building single thread version.)
 endif
@@ -1185,4 +1187,3 @@ SUNPATH		= /opt/sunstudio12.1
 else
 SUNPATH		= /opt/SUNWspro
 endif
-
