@@ -124,7 +124,13 @@ In chronological order:
 * Jerome Robert <jeromerobert@gmx.com>
   * [2015-01-01] Speed-up small `ger` and `gemv` using stack allocation (bug #478)
   * [2015-12-23] `stack_check` in `gemv.c` (bug #722)
+  * [2015-12-28] Allow to force the number of parallel make job
+  * [2015-12-28] Fix detection of AMD E2-3200 detection
+  * [2015-12-31] Let `make MAX_STACK_ALLOC=0` do what expected
   * [2016-01-19] Disable multi-threading in `ger` and `swap` for small matrices (bug #731)
+  * [2016-01-24] Use `GEMM_MULTITHREAD_THRESHOLD` as a number of ops (bug #742)
+  * [2016-01-26] Let `openblas_get_num_threads` return the number of active threads (bug #760)
+  * [2016-01-30] Speed-up small `zger`, `zgemv`, `ztrmv` using stack allocation (bug #727)
 
 * Dan Kortschak
   * [2015-01-07] Added test for drotmg bug #484.
