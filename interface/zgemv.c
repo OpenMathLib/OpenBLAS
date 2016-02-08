@@ -239,7 +239,7 @@ void CNAME(enum CBLAS_ORDER order,
   buffer_size = (buffer_size + 3) & ~3;
   STACK_ALLOC(buffer_size, FLOAT, buffer);
 
-#ifdef ARCH_X86_64
+#if defined(ARCH_X86_64) && defined(MAX_STACK_ALLOC) && MAX_STACK_ALLOC > 0
   // cgemv_t.S return NaN if there are NaN or Inf in the buffer (see bug #746)
   if(trans && stack_alloc_size)
     memset(buffer, 0, MIN(BUFFER_SIZE, sizeof(FLOAT) * buffer_size));
