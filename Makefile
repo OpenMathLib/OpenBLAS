@@ -260,6 +260,9 @@ else
 	-@echo "TIMER       = NONE" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
+ifeq ($(BUILD_LAPACK_DEPRECATED), 1)
+	-@echo "BUILD_DEPRECATED      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 

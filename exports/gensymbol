@@ -590,6 +590,13 @@
                 dlagsy, dsysvxx, sporfsx, slatms, zlatms, zherfsx, csysvxx,
                 );
 
+@lapack_deprecated_objs = (
+    cgegs,   cggsvd,  ctzrqf,  dgeqpf,  dlatzm,  sgelsx,  slahrd,  zgegv,   zggsvp,
+    cgegv,   cggsvp,  dgegs,   dggsvd,  dtzrqf,  sgeqpf,  slatzm,  zgelsx,  zlahrd,
+    cgelsx,  clahrd,  dgegv,   dggsvp,  sgegs,   sggsvd,  stzrqf,  zgeqpf,  zlatzm,
+    cgeqpf,  clatzm,  dgelsx,  dlahrd,  sgegv,   sggsvp,  zgegs,   zggsvd,  ztzrqf,
+    );
+
 @lapackeobjs = (
 		# LAPACK C interface routines.
 		#
@@ -2983,6 +2990,11 @@ if ($ARGV[8] == 1) {
 	@underscore_objs = (@blasobjs, @lapackobjs, @lapackobjs2, @misc_underscore_objs);
 	@need_2underscore_objs = (@lapack_embeded_underscore_objs);
     };
+
+    if ($ARGV[11] == 1){
+	#BUILD_LAPACK_DEPRECATED=1
+	@underscore_objs =(@underscore_objs, @lapack_deprecated_objs);
+    }
 
 } else {
     @underscore_objs = (@blasobjs, @lapackobjs, @misc_underscore_objs);
