@@ -54,10 +54,6 @@ if (NOT DYNAMIC_ARCH)
   list(APPEND BLASDIRS kernel)
 endif ()
 
-if (DEFINED UTEST_CHECK)
-  set(SANITY_CHECK 1)
-endif ()
-
 if (DEFINED SANITY_CHECK)
   list(APPEND BLASDIRS reference)
 endif ()
@@ -140,6 +136,9 @@ add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET
 include("${CMAKE_SOURCE_DIR}/cmake/export.cmake")
 
 
+enable_testing()
+add_subdirectory(utest)
+
 if(NOT MSVC)
 #only build shared library for MSVC
 add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
@@ -152,7 +151,6 @@ target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
 endif()
 
 #build test and ctest
-enable_testing()
 add_subdirectory(test)
 if(NOT NO_CBLAS)
 add_subdirectory(ctest)
