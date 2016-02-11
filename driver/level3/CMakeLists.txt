@@ -99,6 +99,17 @@ foreach (float_type ${FLOAT_TYPES})
 	endif()
       endif ()
     endforeach ()
+    
+    # for gemm3m
+    if(USE_GEMM3M)
+      foreach (GEMM_DEFINE ${GEMM_DEFINES})
+	string(TOLOWER ${GEMM_DEFINE} GEMM_DEFINE_LC)
+	GenerateNamedObjects("gemm3m.c" "${GEMM_DEFINE}" "gemm3m_${GEMM_DEFINE_LC}" false "" "" false ${float_type})
+	if (SMP AND NOT USE_SIMPLE_THREADED_LEVEL3)
+	  GenerateNamedObjects("gemm3m.c" "${GEMM_DEFINE};THREADED_LEVEL3" "gemm3m_thread_${GEMM_DEFINE_LC}" false "" "" false ${float_type})
+	endif ()
+      endforeach ()
+    endif()
   endif ()
 endforeach ()
 
