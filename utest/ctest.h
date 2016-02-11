@@ -33,6 +33,7 @@
 
 typedef void (*SetupFunc)(void*);
 typedef void (*TearDownFunc)(void*);
+typedef void (*RunWithDataFunc)(void*);
 
 struct ctest {
     const char* ssname;  // suite name
@@ -44,21 +45,70 @@ struct ctest {
     SetupFunc setup;
     TearDownFunc teardown;
 
+    struct ctest *next;
+
     unsigned int magic;
 };
 
 #define __FNAME(sname, tname) __ctest_##sname##_##tname##_run
 #define __TNAME(sname, tname) __ctest_##sname##_##tname
+#define __PNAME(sname, tname) __ctest_##sname##_##tname##_pointer
+
+#ifdef __APPLE__
+#define __CTEST_APPLE
+#endif
+
+#if defined(_WIN32) && defined(_MSC_VER)
+#define __CTEST_MSVC
+#endif
+
+//config for MSVC compiler
+#ifdef __CTEST_MSVC
+
+#define __CTEST_NO_TIME
+#define CTEST_NO_COLORS
+
+#ifndef CTEST_ADD_TESTS_MANUALLY
+#pragma section(".ctest$a")
+#pragma section(".ctest$u")
+#pragma section(".ctest$z")
+#endif
+
+//clear this flag for msvc
+#ifdef CTEST_SEGFAULT
+#undef CTEST_SEGFAULT
+#endif
+
+#if _MSC_VER < 1900
+#define snprintf _snprintf_s
+#endif
+
+#ifndef __cplusplus
+#define inline __inline
+#endif
+#endif
+
+#ifdef CTEST_NO_JMP
+#define __CTEST_NO_JMP
+#endif
 
 #define __CTEST_MAGIC (0xdeadbeef)
-#ifdef __APPLE__
+
+#ifdef CTEST_ADD_TESTS_MANUALLY
+# define __Test_Section
+#else
+#ifdef __CTEST_APPLE
 #define __Test_Section __attribute__ ((used, section ("__DATA, .ctest")))
+#elif defined (__CTEST_MSVC)
+#define __Test_Section __declspec( allocate(".ctest$u"))
 #else
 #define __Test_Section __attribute__ ((used, section (".ctest")))
 #endif
+#endif
 
+#ifndef __CTEST_MSVC
 #define __CTEST_STRUCT(sname, tname, _skip, __data, __setup, __teardown) \
-    static struct ctest __TNAME(sname, tname) __Test_Section = { \
+    static struct ctest __TNAME(sname, tname)  = { \
         .ssname=#sname, \
         .ttname=#tname, \
         .run = __FNAME(sname, tname), \
@@ -66,7 +116,24 @@ struct ctest {
         .data = __data, \
         .setup = (SetupFunc)__setup,					\
         .teardown = (TearDownFunc)__teardown,				\
-        .magic = __CTEST_MAGIC };
+        .next =  NULL, \
+        .magic = __CTEST_MAGIC}; \
+    static void * __PNAME(sname, tname)[2] __Test_Section = {(void*)& __TNAME(sname,tname), (void*)__CTEST_MAGIC};
+#else
+//for msvc
+#define __CTEST_STRUCT(sname, tname, _skip, __data, __setup, __teardown) \
+    static struct ctest __TNAME(sname, tname) = { \
+         #sname, \
+	 #tname, \
+	 __FNAME(sname, tname), \
+	 _skip, \
+	 __data, \
+	 (SetupFunc)__setup, \
+         (TearDownFunc)__teardown, \
+	 NULL, \
+         __CTEST_MAGIC}; \
+    __Test_Section static void * __PNAME(sname, tname)[2]= {(void*)& __TNAME(sname,tname), (void *)__CTEST_MAGIC}; 
+#endif
 
 #define CTEST_DATA(sname) struct sname##_data
 
@@ -81,7 +148,7 @@ struct ctest {
     __CTEST_STRUCT(sname, tname, _skip, NULL, NULL, NULL) \
     void __FNAME(sname, tname)()
 
-#ifdef __APPLE__
+#ifdef __CTEST_APPLE
 #define SETUP_FNAME(sname) NULL
 #define TEARDOWN_FNAME(sname) NULL
 #else
@@ -107,6 +174,22 @@ void CTEST_ERR(const char* fmt, ...);  // doesn't return
 #define CTEST2(sname, tname) __CTEST2_INTERNAL(sname, tname, 0)
 #define CTEST2_SKIP(sname, tname) __CTEST2_INTERNAL(sname, tname, 1)
 
+
+#ifdef CTEST_ADD_TESTS_MANUALLY
+
+void __ctest_addTest(struct ctest *);
+
+#define CTEST_ADD(sname, tname) do { \
+    extern struct ctest __TNAME(sname, tname); \
+    __ctest_addTest(&__TNAME(sname, tname)); \
+} while (0)
+
+#define CTEST_ADD2(sname, tname) do { \
+    extern struct ctest __TNAME(sname, tname); \
+    __ctest_addTest(&__TNAME(sname, tname)); \
+} while (0)
+
+#endif // CTEST_ADD_TESTS_MANUALLY
 
 void assert_str(const char* exp, const char* real, const char* caller, int line);
 #define ASSERT_STR(exp, real) assert_str(exp, real, __FILE__, __LINE__)
@@ -144,6 +227,29 @@ void assert_false(int real, const char* caller, int line);
 void assert_fail(const char* caller, int line);
 #define ASSERT_FAIL() assert_fail(__FILE__, __LINE__)
 
+/* If longjmp() is not available, integer flag will be used instead of jmp_buf.
+ *
+ * __CTEST_SETJMP() will clear the flag and return zero, and __CTEST_LONGJMP()
+ * will set the flag to its argument. __CTEST_ERROR_CODE() will return that flag.
+ *
+ * If longjmp() is available, jmp_buf will be used as usual and __CTEST_ERROR_CODE()
+ * will always return zero.
+ *
+ * You can check both __CTEST_SETJMP() and __CTEST_ERROR_CODE() return value
+ * to detect error in a portable way.
+ */
+#ifdef __CTEST_NO_JMP
+# define __CTEST_JMPBUF                 int
+# define __CTEST_ERROR_CODE(_var)       (_var)
+# define __CTEST_SETJMP(_var)           (_var = 0)
+# define __CTEST_LONGJMP(_var, _err)    (_var = _err)
+#else // !__CTEST_NO_JMP
+# define __CTEST_JMPBUF                 jmp_buf
+# define __CTEST_ERROR_CODE(_var)       (0)
+# define __CTEST_SETJMP(_var)           setjmp(_var)
+# define __CTEST_LONGJMP(_var, _err)    longjmp(_var, _err)
+#endif // __CTEST_NO_JMP
+
 void assert_dbl_near(double exp, double real, double tol, const char* caller, int line);
 #define ASSERT_DBL_NEAR(exp, real) assert_dbl_near(exp, real, 1e-4, __FILE__, __LINE__)
 #define ASSERT_DBL_NEAR_TOL(exp, real, tol) assert_dbl_near(exp, real, tol, __FILE__, __LINE__)
@@ -154,16 +260,28 @@ void assert_dbl_far(double exp, double real, double tol, const char* caller, int
 
 #ifdef CTEST_MAIN
 
+#ifndef __CTEST_NO_JMP
 #include <setjmp.h>
+#endif
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifndef __CTEST_NO_TIME
 #include <sys/time.h>
-#include <unistd.h>
+#endif
 #include <stdint.h>
+
+#ifdef __CTEST_MSVC
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <stdlib.h>
 
-#ifdef __APPLE__
+#ifdef __CTEST_APPLE
 #include <dlfcn.h>
 #endif
 
@@ -171,9 +289,10 @@ static size_t ctest_errorsize;
 static char* ctest_errormsg;
 #define MSG_SIZE 4096
 static char ctest_errorbuffer[MSG_SIZE];
-static jmp_buf ctest_err;
+static __CTEST_JMPBUF ctest_err;
 static int color_output = 1;
 static const char* suite_name;
+static const char* test_name;
 
 typedef int (*filter_func)(struct ctest*);
 
@@ -195,7 +314,95 @@ typedef int (*filter_func)(struct ctest*);
 #define ANSI_WHITE    "\033[01;37m"
 #define ANSI_NORMAL   "\033[0m"
 
+#ifdef __CTEST_MSVC
+#ifndef CTEST_ADD_TESTS_MANUALLY
+__declspec(allocate(".ctest$a")) struct ctest * ctest_win_begin;
+__declspec(allocate(".ctest$z")) struct ctest * ctest_win_end;
+#endif
+#endif
+
 static CTEST(suite, test) { }
+
+#define __CTEST_POINTER_NEXT(_test) (struct ctest **)((struct ctest **)(_test) + 2)
+#define __CTEST_POINTER_PREV(_test) (struct ctest **)((struct ctest **)(_test) - 2)
+
+/* First element of test list.
+ */
+static struct ctest * * __ctest_head_p = (struct ctest **)__PNAME(suite, test);
+
+#ifdef CTEST_ADD_TESTS_MANUALLY
+
+/* Last element of test list.
+ */
+static struct ctest *__ctest_tail = &__TNAME(suite, test);
+
+/* Add test to linked list manually.
+ */
+void __ctest_addTest(struct ctest *test)
+{
+    __ctest_tail->next = test;
+    __ctest_tail = test;
+}
+#else // !CTEST_ADD_TESTS_MANUALLY
+
+#ifndef __CTEST_MSVC
+/* Add all tests to linked list automatically.
+ */
+static void __ctest_linkTests()
+{
+    struct ctest ** test;
+    struct ctest ** ctest_begin = (struct ctest **)__PNAME(suite, test);
+    struct ctest ** ctest_end = (struct ctest **)__PNAME(suite, test);
+
+    // find begin and end of section by comparing magics
+    while (1) {
+        struct ctest** t = __CTEST_POINTER_PREV(ctest_begin);
+	if (t[0] == NULL) break;
+        if (t[1] != (struct ctest*)__CTEST_MAGIC) break;
+        ctest_begin = t;
+    }
+    while (1) {
+        struct ctest** t = __CTEST_POINTER_NEXT(ctest_end);
+       	if (t[0] == NULL) break;
+        if (t[1] != (struct ctest*)__CTEST_MAGIC) break;
+        ctest_end = t;
+    }
+    ctest_end = __CTEST_POINTER_NEXT(ctest_end); // end after last one
+
+    for (test = ctest_begin; test != ctest_end; test = __CTEST_POINTER_NEXT(test)) {
+        struct ctest ** next_p = __CTEST_POINTER_NEXT(test);
+	struct ctest * next;
+        if (next_p == ctest_end)
+            next = NULL;
+	else
+	    next = next_p[0];
+
+        (*test)->next = next;
+    }
+
+    __ctest_head_p = ctest_begin;
+}
+#else //for msvc
+static void __ctest_linkTests()
+{
+    struct ctest ** ctest_start = __ctest_head_p;
+    struct ctest ** test;
+    struct ctest * cur=ctest_start[0];
+
+    for(test=&ctest_win_begin; test!=&ctest_win_end; test++){
+      //check
+      if(test[1] == (struct ctest*)__CTEST_MAGIC){
+	//skip the start
+	if((test[0]) == ctest_start[0]) continue;
+	
+	cur->next = test[0];
+	cur=cur->next;
+	cur->next=NULL;
+      }
+    }
+}
+#endif
+#endif
 
 inline static void vprint_errormsg(const char* const fmt, va_list ap) {
 	// (v)snprintf returns the number that would have been written
@@ -254,7 +461,7 @@ void CTEST_ERR(const char* fmt, ...)
     va_end(argp);
 
     msg_end();
-    longjmp(ctest_err, 1);
+    __CTEST_LONGJMP(ctest_err, 1);
 }
 
 void assert_str(const char* exp, const char*  real, const char* caller, int line) {
@@ -366,6 +573,15 @@ static int suite_filter(struct ctest* t) {
     return strncmp(suite_name, t->ssname, strlen(suite_name)) == 0;
 }
 
+static int suite_test_filter(struct ctest* t) {
+  int suit_match, test_match;
+  suit_match=(strncmp(suite_name, t->ssname, strlen(suite_name)) == 0);
+  test_match=(strncmp(test_name, t->ttname, strlen(test_name)) == 0);
+  return (suit_match & test_match);
+}
+
+
+#ifndef __CTEST_NO_TIME
 static uint64_t getCurrentTime() {
     struct timeval now;
     gettimeofday(&now, NULL);
@@ -374,6 +590,7 @@ static uint64_t getCurrentTime() {
     now64 += ((uint64_t) now.tv_usec);
     return now64;
 }
+#endif
 
 static void color_print(const char* color, const char* text) {
     if (color_output)
@@ -382,7 +599,7 @@ static void color_print(const char* color, const char* text) {
         printf("%s\n", text);
 }
 
-#ifdef __APPLE__
+#ifdef __CTEST_APPLE
 static void *find_symbol(struct ctest *test, const char *fname)
 {
     size_t len = strlen(test->ssname) + 1 + strlen(fname);
@@ -427,6 +644,10 @@ int ctest_main(int argc, const char *argv[])
     static int index = 1;
     static filter_func filter = suite_all;
 
+    const char* color = (num_fail) ? ANSI_BRED : ANSI_GREEN;
+    char results[80];
+    static struct ctest* test;
+
 #ifdef CTEST_SEGFAULT
     signal(SIGSEGV, sighandler);
 #endif
@@ -434,37 +655,34 @@ int ctest_main(int argc, const char *argv[])
     if (argc == 2) {
         suite_name = argv[1];
         filter = suite_filter;
+    }else if (argc == 3) {
+        suite_name = argv[1];
+	test_name = argv[2];
+        filter = suite_test_filter;
     }
+
 #ifdef CTEST_NO_COLORS
     color_output = 0;
 #else
     color_output = isatty(1);
 #endif
+
+#ifndef __CTEST_NO_TIME
     uint64_t t1 = getCurrentTime();
+#endif
 
-    struct ctest* ctest_begin = &__TNAME(suite, test);
-    struct ctest* ctest_end = &__TNAME(suite, test);
-    // find begin and end of section by comparing magics
-    while (1) {
-        struct ctest* t = ctest_begin-1;
-        if (t->magic != __CTEST_MAGIC) break;
-        ctest_begin--;
-    }
-    while (1) {
-        struct ctest* t = ctest_end+1;
-        if (t->magic != __CTEST_MAGIC) break;
-        ctest_end++;
-    }
-    ctest_end++;    // end after last one
+#ifndef CTEST_ADD_TESTS_MANUALLY
+    __ctest_linkTests();
+#endif
 
-    static struct ctest* test;
-    for (test = ctest_begin; test != ctest_end; test++) {
-        if (test == &__TNAME(suite, test)) continue;
+
+    for (test = *(__ctest_head_p); test != NULL; test=test->next) {
+        if (test == &__ctest_suite_test) continue;
         if (filter(test)) total++;
     }
 
-    for (test = ctest_begin; test != ctest_end; test++) {
-        if (test == &__TNAME(suite, test)) continue;
+    for (test = *(__ctest_head_p); test != NULL; test=test->next) {
+        if (test == &__ctest_suite_test) continue;
         if (filter(test)) {
             ctest_errorbuffer[0] = 0;
             ctest_errorsize = MSG_SIZE-1;
@@ -475,9 +693,9 @@ int ctest_main(int argc, const char *argv[])
                 color_print(ANSI_BYELLOW, "[SKIPPED]");
                 num_skip++;
             } else {
-                int result = setjmp(ctest_err);
+                int result = __CTEST_SETJMP(ctest_err);
                 if (result == 0) {
-#ifdef __APPLE__
+#ifdef __CTEST_APPLE
                     if (!test->setup) {
                         test->setup = (SetupFunc) find_symbol(test, "setup");
                     }
@@ -488,7 +706,7 @@ int ctest_main(int argc, const char *argv[])
 
                     if (test->setup) test->setup(test->data);
                     if (test->data)
-                        test->run(test->data);
+                      ((RunWithDataFunc)test->run)(test->data);
                     else
                         test->run();
                     if (test->teardown) test->teardown(test->data);
@@ -508,11 +726,15 @@ int ctest_main(int argc, const char *argv[])
             index++;
         }
     }
+#ifndef __CTEST_NO_TIME
     uint64_t t2 = getCurrentTime();
+#endif
 
-    const char* color = (num_fail) ? ANSI_BRED : ANSI_GREEN;
-    char results[80];
-    sprintf(results, "RESULTS: %d tests (%d ok, %d failed, %d skipped) ran in %" PRIu64 " ms", total, num_ok, num_fail, num_skip, (t2 - t1)/1000);
+#ifndef __CTEST_NO_TIME
+    sprintf(results, "RESULTS: %d tests (%d ok, %d failed, %d skipped) ran in %"PRIu64" ms", total, num_ok, num_fail, num_skip, (t2 - t1)/1000);
+#else
+    sprintf(results, "RESULTS: %d tests (%d ok, %d failed, %d skipped)", total, num_ok, num_fail, num_skip);
+#endif
     color_print(color, results);
     return num_fail;
 }
