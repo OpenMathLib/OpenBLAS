@@ -113,9 +113,7 @@ ifndef CROSS
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
-ifdef UTEST_CHECK
 	$(MAKE) -C utest all
-endif
 endif
 ifndef NO_CBLAS
 	$(MAKE) -C ctest all

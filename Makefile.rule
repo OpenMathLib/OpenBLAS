@@ -145,10 +145,6 @@ NO_AFFINITY = 1
 # slow (Not implemented yet).
 # SANITY_CHECK = 1
 
-# Run testcases in utest/ . When you enable UTEST_CHECK, it would enable
-# SANITY_CHECK to compare the result with reference BLAS.
-# UTEST_CHECK = 1
-
 # The installation directory.
 # PREFIX = /opt/OpenBLAS
 
