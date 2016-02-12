@@ -39,4 +39,6 @@ before_build:
   - cmake -G "Visual Studio 12 Win64" .
 
 test_script:
-  - echo Build OK!
+  - echo Running Test
+  - cd c:\projects\OpenBLAS\utest
+  - openblas_utest

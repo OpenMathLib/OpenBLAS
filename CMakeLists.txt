@@ -106,6 +106,10 @@ if (${NO_STATIC} AND ${NO_SHARED})
   message(FATAL_ERROR "Neither static nor shared are enabled.")
 endif ()
 
+#Set default output directory
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
+
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
 foreach (SUBDIR ${SUBDIRS})
@@ -135,6 +139,14 @@ add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET
 
 include("${CMAKE_SOURCE_DIR}/cmake/export.cmake")
 
+# Set output for libopenblas
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+  string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+endforeach()
 
 enable_testing()
 add_subdirectory(utest)
