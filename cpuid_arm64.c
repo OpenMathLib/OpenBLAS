@@ -191,6 +191,8 @@ void get_cpuconfig(void)
 			printf("#define L2_SIZE 2097152\n");
 			printf("#define L2_LINESIZE 64\n");
 			printf("#define L2_ASSOCIATIVE 16\n");
+    			printf("#define DTB_DEFAULT_ENTRIES 64\n");
+    			printf("#define DTB_SIZE 4096\n");
 			break;
 	}
 }
