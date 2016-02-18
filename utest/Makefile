@@ -1,10 +1,10 @@
 UTEST_CHECK = 1
 TOPDIR	= ..
 
-TARGET=openblas_utest
+UTESTBIN=openblas_utest
 
 .PHONY : all
-.NOTPARALLEL : all run_test $(TARGET)
+.NOTPARALLEL : all run_test $(UTESTBIN)
 
 include $(TOPDIR)/Makefile.system
 
@@ -13,14 +13,14 @@ OBJS=utest_main.o test_amax.o
 
 all : run_test
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB)
+$(UTESTBIN): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ ../$(LIBNAME) $(FEXTRALIB)
 
-run_test: $(TARGET)
-	./$(TARGET)
+run_test: $(UTESTBIN)
+	./$(UTESTBIN)
 
 clean:
-	-rm -f *.o $(TARGET)
+	-rm -f *.o $(UTESTBIN)
 
 libs:
 
