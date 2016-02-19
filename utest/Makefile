@@ -14,7 +14,7 @@ OBJS=utest_main.o test_amax.o
 all : run_test
 
 $(UTESTBIN): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ ../$(LIBNAME) $(FEXTRALIB)
+	$(CC) $(CFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
 
 run_test: $(UTESTBIN)
 	./$(UTESTBIN)
