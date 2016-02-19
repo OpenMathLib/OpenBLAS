@@ -51,7 +51,7 @@ static void cgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"cmpq		$0 , %1				\n\t"
 	"je		2f			        \n\t"
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"prefetcht0      320(%4,%0,4)			\n\t"
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
@@ -202,7 +202,7 @@ static void cgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"cmpq		$0 , %1				\n\t"
 	"je		2f			        \n\t"
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"prefetcht0      320(%4,%0,4)			\n\t"
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
@@ -322,7 +322,7 @@ static void cgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"cmpq		$0 , %1				\n\t"
 	"je		2f			        \n\t"
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"prefetcht0      320(%4,%0,4)			\n\t"
 	"vmovups	(%4,%0,4), %%ymm8	        \n\t" // 4 complex values form a0
@@ -454,7 +454,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 	"cmpq		$0 , %1				\n\t"
 	"je		2f			        \n\t"
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"vmovups	(%2,%0,4), %%ymm8	        \n\t" // 4 complex values from src
 	"vmovups      32(%2,%0,4), %%ymm9	        \n\t" 

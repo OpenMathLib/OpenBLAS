@@ -75,7 +75,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "je             4f                      \n\t"
 
 
-	".align 16				 \n\t"
+	//	".align 16				 \n\t"
 	"1:				 \n\t"
 	"prefetcht0	 384(%2,%0,4)		 \n\t"
 	"vmovups	(%2,%0,4), %%ymm12       \n\t"	// 8 * x
