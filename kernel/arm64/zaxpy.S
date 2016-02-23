@@ -147,12 +147,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v4.4s, v3.4s, v17.4s
 #endif
 
-#if !defined(CONJ)
+
 	fmla	v5.4s, v2.4s, v17.4s
-#else
-	fmls	v5.4s, v2.4s, v17.4s
-#endif
+#if !defined(CONJ)
 	fmla	v5.4s, v3.4s, v16.4s
+#else
+	fmls	v5.4s, v3.4s, v16.4s
+#endif
 
 	st2	{v4.4s, v5.4s}, [Y], #32
 #else // DOUBLE
@@ -165,12 +166,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	fmla	v4.2d, v3.2d, v17.2d
 #endif
-#if !defined(CONJ)
+
 	fmla	v5.2d, v2.2d, v17.2d
-#else
-	fmls	v5.2d, v2.2d, v17.2d
-#endif
+#if !defined(CONJ)
 	fmla	v5.2d, v3.2d, v16.2d
+#else
+	fmls	v5.2d, v3.2d, v16.2d
+#endif
 
 	st2	{v4.2d, v5.2d}, [Y], #32
 
@@ -183,13 +185,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 	fmla	v20.2d, v19.2d, v17.2d
 #endif
-#if !defined(CONJ)
-	fmla	v21.2d, v18.2d, v17.2d
-#else
-	fmls	v21.2d, v18.2d, v17.2d
-#endif
-	fmla	v21.2d, v19.2d, v16.2d
 
+	fmla	v21.2d, v18.2d, v17.2d
+#if !defined(CONJ)
+	fmla	v21.2d, v19.2d, v16.2d
+#else
+	fmls	v21.2d, v19.2d, v16.2d
+#endif
 	st2	{v20.2d, v21.2d}, [Y], #32
 #endif
 	PRFM	PLDL1KEEP, [X, #512]
