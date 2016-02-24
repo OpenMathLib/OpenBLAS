@@ -1,5 +1,41 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.16.rc1
+23-Feb-2016
+common:
+	* Upgrade LAPACK to 3.6.0 version.
+	  Add BUILD_LAPACK_DEPRECATED option in Makefile.rule to build
+	  LAPACK deprecated functions.
+	* Add MAKE_NB_JOBS option in Makefile.
+	  Force number of make jobs.This is particularly
+	  useful when using distcc. (#735. Thanks, Jerome Robert.)
+	* Redesign unit test. Run unit/regression test at every build (Travis-CI and Appveyor).
+	* Disable multi-threading for small size swap and ger. (#744. Thanks, Jerome Robert)
+	* Improve small zger, zgemv, ztrmv using stack alloction (#727. Thanks, Jerome Robert)
+	* Let openblas_get_num_threads return the number of active threads. 
+	  (#760. Thanks, Jerome Robert)
+	* Support illumos(OmniOS). (#749. Thanks, Lauri Tirkkonen)
+	* Fix LAPACK Dormbr, Dormlq bug. (#711, #713. Thanks, Brendan Tracey)
+	* Update scipy benchmark script. (#745. Thanks, John Kirkham)
+
+x86/x86_64:
+	* Optimize trsm kernels for AMD Bulldozer, Piledriver, Steamroller.
+	* Detect Intel Avoton.
+	* Detect AMD Trinity, Richland, E2-3200.
+	* Fix gemv performance bug on Mac OSX Intel Haswell.
+	* Fix some bugs with CMake and Visual Studio
+
+ARM:
+	* Support and optimize Cortex-A57 AArch64.
+	  (#686. Thanks, Ashwin Sekhar TK)
+	* Fix Android build on ARMV7 (#778. Thanks, Paul Mustiere)
+	* Update ARMV6 kernels.
+
+POWER:
+	* Fix detection of POWER architecture
+	  (#684. Thanks, Sebastien Villemot)
+
+====================================================================
 Version 0.2.15
 27-Oct-2015
 common:
