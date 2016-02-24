@@ -1365,7 +1365,8 @@ void CONSTRUCTOR gotoblas_init(void) {
    gotoblas_memory_init();
 #endif
 
-#if defined(OS_LINUX)
+//#if defined(OS_LINUX)
+#if 0
    struct rlimit curlimit;
    if ( getrlimit(RLIMIT_STACK, &curlimit ) == 0 )
    {
