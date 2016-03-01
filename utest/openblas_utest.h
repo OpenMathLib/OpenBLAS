@@ -38,6 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ctest.h"
 
 #include <common.h>
+#include <math.h>
 
 #define SINGLE_EPS 1e-04
 #define DOUBLE_EPS 1e-13
