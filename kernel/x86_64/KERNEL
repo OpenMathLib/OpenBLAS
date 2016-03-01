@@ -393,7 +393,7 @@ CGEMVNKERNEL = cgemv_n.S
 endif
 
 ifndef CGEMVTKERNEL
-CGEMVTKERNEL = cgemv_t.S
+CGEMVTKERNEL = ../arm/zgemv_t.c
 endif
 
 ifndef ZGEMVNKERNEL
