@@ -236,7 +236,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define HAVE_PREFETCH
 #endif
 
-#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL)
+#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8)
 #define DCBT_ARG	0
 #else
 #define DCBT_ARG	8
@@ -258,6 +258,13 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define L1_PREFETCH	dcbtst
 #endif
 
+#if defined(POWER8)
+#define L1_DUALFETCH
+#define L1_PREFETCHSIZE (16 + 128 * 100)
+#define L1_PREFETCH	dcbtst
+#endif
+
+#
 #ifndef L1_PREFETCH
 #define L1_PREFETCH	dcbt
 #endif

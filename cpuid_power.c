@@ -66,7 +66,7 @@ char *cpuname[] = {
   "POWER6",
   "CELL",
   "PPCG4",
-  "POWER8",
+  "POWER8"
 };
 
 char *lowercpuname[] = {
@@ -78,7 +78,7 @@ char *lowercpuname[] = {
   "power6",
   "cell",
   "ppcg4",
-  "power8",
+  "power8"
 };
 
 char *corename[] = {
@@ -90,7 +90,7 @@ char *corename[] = {
   "POWER6",
   "CELL",
   "PPCG4",
-  "POWER8",
+  "POWER8"
 };
 
 int detect(void){
