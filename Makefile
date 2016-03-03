@@ -83,20 +83,20 @@ shared :
 ifndef NO_SHARED
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS))
 	@$(MAKE) -C exports so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), FreeBSD)
 	@$(MAKE) -C exports so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), NetBSD)
 	@$(MAKE) -C exports so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), Darwin)
 	@$(MAKE) -C exports dyn
-	@-ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
+	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
 endif
 ifeq ($(OSNAME), WINNT)
 	@$(MAKE) -C exports dll
