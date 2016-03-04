@@ -1,7 +1,7 @@
-SGEMM_BETA = ../generic/gemm_beta.c
-DGEMM_BETA = ../generic/gemm_beta.c
-CGEMM_BETA = ../generic/zgemm_beta.c
-ZGEMM_BETA = ../generic/zgemm_beta.c
+#SGEMM_BETA = ../generic/gemm_beta.c
+#DGEMM_BETA = ../generic/gemm_beta.c
+#CGEMM_BETA = ../generic/zgemm_beta.c
+#ZGEMM_BETA = ../generic/zgemm_beta.c
 
 STRMMKERNEL	= ../generic/trmmkernel_2x2.c
 DTRMMKERNEL	= dtrmm_kernel_16x4_power8.S
@@ -65,78 +65,78 @@ CGEMM3MKERNEL    =  zgemm3m_kernel_8x4_sse3.S
 ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_sse3.S
 
 #Pure C for other kernels
-SAMAXKERNEL  = ../arm/amax.c
-DAMAXKERNEL  = ../arm/amax.c
-CAMAXKERNEL  = ../arm/zamax.c
-ZAMAXKERNEL  = ../arm/zamax.c
-
-SAMINKERNEL  = ../arm/amin.c
-DAMINKERNEL  = ../arm/amin.c
-CAMINKERNEL  = ../arm/zamin.c
-ZAMINKERNEL  = ../arm/zamin.c
-
-SMAXKERNEL   = ../arm/max.c
-DMAXKERNEL   = ../arm/max.c
-
-SMINKERNEL   = ../arm/min.c
-DMINKERNEL   = ../arm/min.c
-
-ISAMAXKERNEL = ../arm/iamax.c
-IDAMAXKERNEL = ../arm/iamax.c
-ICAMAXKERNEL = ../arm/izamax.c
-IZAMAXKERNEL = ../arm/izamax.c
-
-ISAMINKERNEL = ../arm/iamin.c
-IDAMINKERNEL = ../arm/iamin.c
-ICAMINKERNEL = ../arm/izamin.c
-IZAMINKERNEL = ../arm/izamin.c
-
-ISMAXKERNEL  = ../arm/imax.c
-IDMAXKERNEL  = ../arm/imax.c
-
-ISMINKERNEL  = ../arm/imin.c
-IDMINKERNEL  = ../arm/imin.c
-
-SASUMKERNEL  = ../arm/asum.c
-DASUMKERNEL  = ../arm/asum.c
-CASUMKERNEL  = ../arm/zasum.c
-ZASUMKERNEL  = ../arm/zasum.c
-
-SAXPYKERNEL  = ../arm/axpy.c
-DAXPYKERNEL  = ../arm/axpy.c
-CAXPYKERNEL  = ../arm/zaxpy.c
-ZAXPYKERNEL  = ../arm/zaxpy.c
-
-SCOPYKERNEL  = ../arm/copy.c
-DCOPYKERNEL  = ../arm/copy.c
-CCOPYKERNEL  = ../arm/zcopy.c
-ZCOPYKERNEL  = ../arm/zcopy.c
-
-SDOTKERNEL   = ../arm/dot.c
-DDOTKERNEL   = ../arm/dot.c
-CDOTKERNEL   = ../arm/zdot.c
-ZDOTKERNEL   = ../arm/zdot.c
-
-SNRM2KERNEL  = ../arm/nrm2.c
-DNRM2KERNEL  = ../arm/nrm2.c
-CNRM2KERNEL  = ../arm/znrm2.c
-ZNRM2KERNEL  = ../arm/znrm2.c
-
-SROTKERNEL   = ../arm/rot.c
-DROTKERNEL   = ../arm/rot.c
-CROTKERNEL   = ../arm/zrot.c
-ZROTKERNEL   = ../arm/zrot.c
-
-SSCALKERNEL  = ../arm/scal.c
-DSCALKERNEL  = ../arm/scal.c
-CSCALKERNEL  = ../arm/zscal.c
-ZSCALKERNEL  = ../arm/zscal.c
-
-SSWAPKERNEL  = ../arm/swap.c
-DSWAPKERNEL  = ../arm/swap.c
-CSWAPKERNEL  = ../arm/zswap.c
-ZSWAPKERNEL  = ../arm/zswap.c
-
+#SAMAXKERNEL  = ../arm/amax.c
+#DAMAXKERNEL  = ../arm/amax.c
+#CAMAXKERNEL  = ../arm/zamax.c
+#ZAMAXKERNEL  = ../arm/zamax.c
+#
+#SAMINKERNEL  = ../arm/amin.c
+#DAMINKERNEL  = ../arm/amin.c
+#CAMINKERNEL  = ../arm/zamin.c
+#ZAMINKERNEL  = ../arm/zamin.c
+#
+#SMAXKERNEL   = ../arm/max.c
+#DMAXKERNEL   = ../arm/max.c
+#
+#SMINKERNEL   = ../arm/min.c
+#DMINKERNEL   = ../arm/min.c
+#
+#ISAMAXKERNEL = ../arm/iamax.c
+#IDAMAXKERNEL = ../arm/iamax.c
+#ICAMAXKERNEL = ../arm/izamax.c
+#IZAMAXKERNEL = ../arm/izamax.c
+#
+#ISAMINKERNEL = ../arm/iamin.c
+#IDAMINKERNEL = ../arm/iamin.c
+#ICAMINKERNEL = ../arm/izamin.c
+#IZAMINKERNEL = ../arm/izamin.c
+#
+#ISMAXKERNEL  = ../arm/imax.c
+#IDMAXKERNEL  = ../arm/imax.c
+#
+#ISMINKERNEL  = ../arm/imin.c
+#IDMINKERNEL  = ../arm/imin.c
+#
+#SASUMKERNEL  = ../arm/asum.c
+#DASUMKERNEL  = ../arm/asum.c
+#CASUMKERNEL  = ../arm/zasum.c
+#ZASUMKERNEL  = ../arm/zasum.c
+#
+#SAXPYKERNEL  = ../arm/axpy.c
+#DAXPYKERNEL  = ../arm/axpy.c
+#CAXPYKERNEL  = ../arm/zaxpy.c
+#ZAXPYKERNEL  = ../arm/zaxpy.c
+#
+#SCOPYKERNEL  = ../arm/copy.c
+#DCOPYKERNEL  = ../arm/copy.c
+#CCOPYKERNEL  = ../arm/zcopy.c
+#ZCOPYKERNEL  = ../arm/zcopy.c
+#
+#SDOTKERNEL   = ../arm/dot.c
+#DDOTKERNEL   = ../arm/dot.c
+#CDOTKERNEL   = ../arm/zdot.c
+#ZDOTKERNEL   = ../arm/zdot.c
+#
+#SNRM2KERNEL  = ../arm/nrm2.c
+#DNRM2KERNEL  = ../arm/nrm2.c
+#CNRM2KERNEL  = ../arm/znrm2.c
+#ZNRM2KERNEL  = ../arm/znrm2.c
+#
+#SROTKERNEL   = ../arm/rot.c
+#DROTKERNEL   = ../arm/rot.c
+#CROTKERNEL   = ../arm/zrot.c
+#ZROTKERNEL   = ../arm/zrot.c
+#
+#SSCALKERNEL  = ../arm/scal.c
+#DSCALKERNEL  = ../arm/scal.c
+#CSCALKERNEL  = ../arm/zscal.c
+#ZSCALKERNEL  = ../arm/zscal.c
+#
+#SSWAPKERNEL  = ../arm/swap.c
+#DSWAPKERNEL  = ../arm/swap.c
+#CSWAPKERNEL  = ../arm/zswap.c
+#ZSWAPKERNEL  = ../arm/zswap.c
+#
 SGEMVNKERNEL = ../arm/gemv_n.c
 DGEMVNKERNEL = ../arm/gemv_n.c
 CGEMVNKERNEL = ../arm/zgemv_n.c

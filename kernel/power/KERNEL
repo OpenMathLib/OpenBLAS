@@ -30,3 +30,19 @@ ifndef CTRSMKERNEL_RT
 CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 endif
 
+ifndef SGEMM_BETA
+SGEMM_BETA = ../generic/gemm_beta.c
+endif
+
+ifndef DGEMM_BETA
+DGEMM_BETA = ../generic/gemm_beta.c
+endif
+
+ifndef CGEMM_BETA
+CGEMM_BETA = ../generic/zgemm_beta.c
+endif
+
+ifndef ZGEMM_BETA
+ZGEMM_BETA = ../generic/zgemm_beta.c
+endif
+
