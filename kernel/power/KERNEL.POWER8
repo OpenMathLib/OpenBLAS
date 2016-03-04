@@ -61,8 +61,8 @@ ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 
 #Todo: CGEMM3MKERNEL should be 4x4 blocksizes.
-CGEMM3MKERNEL    =  zgemm3m_kernel_8x4_sse3.S
-ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_sse3.S
+#CGEMM3MKERNEL    =  zgemm3m_kernel_8x4_sse3.S
+#ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_sse3.S
 
 #Pure C for other kernels
 #SAMAXKERNEL  = ../arm/amax.c
@@ -162,8 +162,8 @@ ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_sse3.S
 #XSYMV_U_KERNEL =  ../generic/zsymv_k.c
 #XSYMV_L_KERNEL =  ../generic/zsymv_k.c
 
-ZHEMV_U_KERNEL =  ../generic/zhemv_k.c
-ZHEMV_L_KERNEL =  ../generic/zhemv_k.c
+#ZHEMV_U_KERNEL =  ../generic/zhemv_k.c
+#ZHEMV_L_KERNEL =  ../generic/zhemv_k.c
 
 LSAME_KERNEL = ../generic/lsame.c
 SCABS_KERNEL	= ../generic/cabs.c
