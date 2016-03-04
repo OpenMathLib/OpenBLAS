@@ -148,18 +148,19 @@ ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_sse3.S
 #CGEMVTKERNEL = ../arm/zgemv_t.c
 #ZGEMVTKERNEL = ../arm/zgemv_t.c
 
-SSYMV_U_KERNEL =  ../generic/symv_k.c
-SSYMV_L_KERNEL =  ../generic/symv_k.c
-DSYMV_U_KERNEL =  ../generic/symv_k.c
-DSYMV_L_KERNEL =  ../generic/symv_k.c
-QSYMV_U_KERNEL =  ../generic/symv_k.c
-QSYMV_L_KERNEL =  ../generic/symv_k.c
-CSYMV_U_KERNEL =  ../generic/zsymv_k.c
-CSYMV_L_KERNEL =  ../generic/zsymv_k.c
-ZSYMV_U_KERNEL =  ../generic/zsymv_k.c
-ZSYMV_L_KERNEL =  ../generic/zsymv_k.c
-XSYMV_U_KERNEL =  ../generic/zsymv_k.c
-XSYMV_L_KERNEL =  ../generic/zsymv_k.c
+
+#SSYMV_U_KERNEL =  ../generic/symv_k.c
+#SSYMV_L_KERNEL =  ../generic/symv_k.c
+#DSYMV_U_KERNEL =  ../generic/symv_k.c
+#DSYMV_L_KERNEL =  ../generic/symv_k.c
+#QSYMV_U_KERNEL =  ../generic/symv_k.c
+#QSYMV_L_KERNEL =  ../generic/symv_k.c
+#CSYMV_U_KERNEL =  ../generic/zsymv_k.c
+#CSYMV_L_KERNEL =  ../generic/zsymv_k.c
+#ZSYMV_U_KERNEL =  ../generic/zsymv_k.c
+#ZSYMV_L_KERNEL =  ../generic/zsymv_k.c
+#XSYMV_U_KERNEL =  ../generic/zsymv_k.c
+#XSYMV_L_KERNEL =  ../generic/zsymv_k.c
 
 ZHEMV_U_KERNEL =  ../generic/zhemv_k.c
 ZHEMV_L_KERNEL =  ../generic/zhemv_k.c
