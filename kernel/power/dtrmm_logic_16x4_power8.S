@@ -1,7 +1,44 @@
-	srawi.		J,	N,	2
-	ble		DTRMM_L4_END
+/***************************************************************************
+Copyright (c) 2013-2016, The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
 
-DTRMM_L4_BEGIN:
+/**************************************************************************************
+* 2016/03/05 Werner Saar (wernsaar@googlemail.com)
+* 	 BLASTEST 		: OK
+* 	 CTEST			: OK
+* 	 TEST			: OK
+*	 LAPACK-TEST		: OK
+**************************************************************************************/
+
+
+
+	srawi.		J,	N,	2
+	ble		.LDTRMM_L4_END
+
+.LDTRMM_L4_BEGIN:
 
 	mr		CO,	C
 	mr		AO,	A
@@ -13,9 +50,9 @@ DTRMM_L4_BEGIN:
 #endif
 
 	srawi.		I,	M,	4
-	ble		DTRMM_L4x16_END
+	ble		.LDTRMM_L4x16_END
 
-DTRMM_L4x16_BEGIN:
+.LDTRMM_L4x16_BEGIN:
 
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -42,11 +79,11 @@ DTRMM_L4x16_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L4x16_SUB0
+	ble		.LDTRMM_L4x16_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L4x16_SUB4
+	ble		.LDTRMM_L4x16_SUB4
 
-DTRMM_L4x16_LOOP_START:
+.LDTRMM_L4x16_LOOP_START:
 
 	dcbt		AO,	PRE
 	LOAD4x16_1
@@ -69,11 +106,11 @@ DTRMM_L4x16_LOOP_START:
 	KERNEL4x16_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L4x16_LOOP_END
+	ble		.LDTRMM_L4x16_LOOP_END
 
 	.align 5
 
-DTRMM_L4x16_LOOP:
+.LDTRMM_L4x16_LOOP:
 
 	dcbt		AO,	PRE
 	KERNEL4x16_1
@@ -94,9 +131,9 @@ DTRMM_L4x16_LOOP:
 	KERNEL4x16_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x16_LOOP
+	bgt		.LDTRMM_L4x16_LOOP
 
-DTRMM_L4x16_LOOP_END:
+.LDTRMM_L4x16_LOOP_END:
 
 	dcbt		AO,	PRE
 	KERNEL4x16_1
@@ -115,9 +152,9 @@ DTRMM_L4x16_LOOP_END:
 	KERNEL4x16_1
 	KERNEL4x16_E2
 
-	b		DTRMM_L4x16_SUB1
+	b		.LDTRMM_L4x16_SUB1
 
-DTRMM_L4x16_SUB4:
+.LDTRMM_L4x16_SUB4:
 
 	dcbt		AO,	PRE
 	KERNEL4x16_SUBI1
@@ -133,31 +170,31 @@ DTRMM_L4x16_SUB4:
 	KERNEL4x16_SUB1
 	KERNEL4x16_SUB1
 
-	b		DTRMM_L4x16_SUB1
+	b		.LDTRMM_L4x16_SUB1
 
-DTRMM_L4x16_SUB0:
+.LDTRMM_L4x16_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL4x16_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L4x16_SAVE
-	b		DTRMM_L4x16_SUB2
+	ble		.LDTRMM_L4x16_SAVE
+	b		.LDTRMM_L4x16_SUB2
 
-DTRMM_L4x16_SUB1:
+.LDTRMM_L4x16_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L4x16_SAVE
+	ble		.LDTRMM_L4x16_SAVE
 
-DTRMM_L4x16_SUB2:
+.LDTRMM_L4x16_SUB2:
 
 	KERNEL4x16_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x16_SUB2
+	bgt		.LDTRMM_L4x16_SUB2
 
-DTRMM_L4x16_SAVE:
+.LDTRMM_L4x16_SAVE:
 
 	SAVE4x16
 
@@ -175,16 +212,16 @@ DTRMM_L4x16_SAVE:
 
 
 	addic.		I,	I,	-1
-	bgt		DTRMM_L4x16_BEGIN
+	bgt		.LDTRMM_L4x16_BEGIN
 
-DTRMM_L4x16_END:
+.LDTRMM_L4x16_END:
 
-DTRMM_L4x8_BEGIN:
+.LDTRMM_L4x8_BEGIN:
 	andi.		T2,	M,	15
-	ble		DTRMM_L4x1_END
+	ble		.LDTRMM_L4x1_END
 
 	andi.		T1,	M,	8
-	ble		DTRMM_L4x8_END
+	ble		.LDTRMM_L4x8_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -210,11 +247,11 @@ DTRMM_L4x8_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L4x8_SUB0
+	ble		.LDTRMM_L4x8_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L4x8_SUB4
+	ble		.LDTRMM_L4x8_SUB4
 
-DTRMM_L4x8_LOOP_START:
+.LDTRMM_L4x8_LOOP_START:
 
 	LOAD4x8_1
 	KERNEL4x8_I1
@@ -228,11 +265,11 @@ DTRMM_L4x8_LOOP_START:
 	KERNEL4x8_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L4x8_LOOP_END
+	ble		.LDTRMM_L4x8_LOOP_END
 
 	.align 5
 
-DTRMM_L4x8_LOOP:
+.LDTRMM_L4x8_LOOP:
 
 	KERNEL4x8_1
 	KERNEL4x8_2
@@ -245,9 +282,9 @@ DTRMM_L4x8_LOOP:
 	KERNEL4x8_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x8_LOOP
+	bgt		.LDTRMM_L4x8_LOOP
 
-DTRMM_L4x8_LOOP_END:
+.LDTRMM_L4x8_LOOP_END:
 
 	KERNEL4x8_1
 	KERNEL4x8_2
@@ -259,9 +296,9 @@ DTRMM_L4x8_LOOP_END:
 	KERNEL4x8_1
 	KERNEL4x8_E2
 
-	b		DTRMM_L4x8_SUB1
+	b		.LDTRMM_L4x8_SUB1
 
-DTRMM_L4x8_SUB4:
+.LDTRMM_L4x8_SUB4:
 
 	KERNEL4x8_SUBI1
 	KERNEL4x8_SUB1
@@ -273,31 +310,31 @@ DTRMM_L4x8_SUB4:
 	KERNEL4x8_SUB1
 	KERNEL4x8_SUB1
 
-	b		DTRMM_L4x8_SUB1
+	b		.LDTRMM_L4x8_SUB1
 
-DTRMM_L4x8_SUB0:
+.LDTRMM_L4x8_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL4x8_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L4x8_SAVE
-	b		DTRMM_L4x8_SUB2
+	ble		.LDTRMM_L4x8_SAVE
+	b		.LDTRMM_L4x8_SUB2
 
-DTRMM_L4x8_SUB1:
+.LDTRMM_L4x8_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L4x8_SAVE
+	ble		.LDTRMM_L4x8_SAVE
 
-DTRMM_L4x8_SUB2:
+.LDTRMM_L4x8_SUB2:
 
 	KERNEL4x8_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x8_SUB2
+	bgt		.LDTRMM_L4x8_SUB2
 
-DTRMM_L4x8_SAVE:
+.LDTRMM_L4x8_SAVE:
 
 	SAVE4x8
 
@@ -314,12 +351,12 @@ DTRMM_L4x8_SAVE:
 #endif
 
 
-DTRMM_L4x8_END:
+.LDTRMM_L4x8_END:
 
-DTRMM_L4x4_BEGIN:
+.LDTRMM_L4x4_BEGIN:
 
 	andi.		T1,	M,	4
-	ble		DTRMM_L4x4_END
+	ble		.LDTRMM_L4x4_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -345,11 +382,11 @@ DTRMM_L4x4_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L4x4_SUB0
+	ble		.LDTRMM_L4x4_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L4x4_SUB4
+	ble		.LDTRMM_L4x4_SUB4
 
-DTRMM_L4x4_LOOP_START:
+.LDTRMM_L4x4_LOOP_START:
 
 	LOAD4x4_1
 	KERNEL4x4_I1
@@ -363,11 +400,11 @@ DTRMM_L4x4_LOOP_START:
 	KERNEL4x4_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L4x4_LOOP_END
+	ble		.LDTRMM_L4x4_LOOP_END
 
 	.align 5
 
-DTRMM_L4x4_LOOP:
+.LDTRMM_L4x4_LOOP:
 
 	KERNEL4x4_1
 	KERNEL4x4_2
@@ -380,9 +417,9 @@ DTRMM_L4x4_LOOP:
 	KERNEL4x4_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x4_LOOP
+	bgt		.LDTRMM_L4x4_LOOP
 
-DTRMM_L4x4_LOOP_END:
+.LDTRMM_L4x4_LOOP_END:
 
 	KERNEL4x4_1
 	KERNEL4x4_2
@@ -394,9 +431,9 @@ DTRMM_L4x4_LOOP_END:
 	KERNEL4x4_1
 	KERNEL4x4_E2
 
-	b		DTRMM_L4x4_SUB1
+	b		.LDTRMM_L4x4_SUB1
 
-DTRMM_L4x4_SUB4:
+.LDTRMM_L4x4_SUB4:
 
 	KERNEL4x4_SUBI1
 	KERNEL4x4_SUB1
@@ -408,31 +445,31 @@ DTRMM_L4x4_SUB4:
 	KERNEL4x4_SUB1
 	KERNEL4x4_SUB1
 
-	b		DTRMM_L4x4_SUB1
+	b		.LDTRMM_L4x4_SUB1
 
-DTRMM_L4x4_SUB0:
+.LDTRMM_L4x4_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL4x4_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L4x4_SAVE
-	b		DTRMM_L4x4_SUB2
+	ble		.LDTRMM_L4x4_SAVE
+	b		.LDTRMM_L4x4_SUB2
 
-DTRMM_L4x4_SUB1:
+.LDTRMM_L4x4_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L4x4_SAVE
+	ble		.LDTRMM_L4x4_SAVE
 
-DTRMM_L4x4_SUB2:
+.LDTRMM_L4x4_SUB2:
 
 	KERNEL4x4_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x4_SUB2
+	bgt		.LDTRMM_L4x4_SUB2
 
-DTRMM_L4x4_SAVE:
+.LDTRMM_L4x4_SAVE:
 
 	SAVE4x4
 
@@ -449,12 +486,12 @@ DTRMM_L4x4_SAVE:
 #endif
 
 
-DTRMM_L4x4_END:
+.LDTRMM_L4x4_END:
 
-DTRMM_L4x2_BEGIN:
+.LDTRMM_L4x2_BEGIN:
 
 	andi.		T1,	M,	2
-	ble		DTRMM_L4x2_END
+	ble		.LDTRMM_L4x2_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -480,11 +517,11 @@ DTRMM_L4x2_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L4x2_SUB0
+	ble		.LDTRMM_L4x2_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L4x2_SUB4
+	ble		.LDTRMM_L4x2_SUB4
 
-DTRMM_L4x2_LOOP_START:
+.LDTRMM_L4x2_LOOP_START:
 
 	LOAD4x2_1
 	KERNEL4x2_I1
@@ -498,11 +535,11 @@ DTRMM_L4x2_LOOP_START:
 	KERNEL4x2_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L4x2_LOOP_END
+	ble		.LDTRMM_L4x2_LOOP_END
 
 	.align 5
 
-DTRMM_L4x2_LOOP:
+.LDTRMM_L4x2_LOOP:
 
 	KERNEL4x2_1
 	KERNEL4x2_2
@@ -515,9 +552,9 @@ DTRMM_L4x2_LOOP:
 	KERNEL4x2_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x2_LOOP
+	bgt		.LDTRMM_L4x2_LOOP
 
-DTRMM_L4x2_LOOP_END:
+.LDTRMM_L4x2_LOOP_END:
 
 	KERNEL4x2_1
 	KERNEL4x2_2
@@ -529,9 +566,9 @@ DTRMM_L4x2_LOOP_END:
 	KERNEL4x2_1
 	KERNEL4x2_E2
 
-	b		DTRMM_L4x2_SUB1
+	b		.LDTRMM_L4x2_SUB1
 
-DTRMM_L4x2_SUB4:
+.LDTRMM_L4x2_SUB4:
 
 	KERNEL4x2_SUBI1
 	KERNEL4x2_SUB1
@@ -543,31 +580,31 @@ DTRMM_L4x2_SUB4:
 	KERNEL4x2_SUB1
 	KERNEL4x2_SUB1
 
-	b		DTRMM_L4x2_SUB1
+	b		.LDTRMM_L4x2_SUB1
 
-DTRMM_L4x2_SUB0:
+.LDTRMM_L4x2_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL4x2_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L4x2_SAVE
-	b		DTRMM_L4x2_SUB2
+	ble		.LDTRMM_L4x2_SAVE
+	b		.LDTRMM_L4x2_SUB2
 
-DTRMM_L4x2_SUB1:
+.LDTRMM_L4x2_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L4x2_SAVE
+	ble		.LDTRMM_L4x2_SAVE
 
-DTRMM_L4x2_SUB2:
+.LDTRMM_L4x2_SUB2:
 
 	KERNEL4x2_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x2_SUB2
+	bgt		.LDTRMM_L4x2_SUB2
 
-DTRMM_L4x2_SAVE:
+.LDTRMM_L4x2_SAVE:
 
 	SAVE4x2
 
@@ -584,12 +621,12 @@ DTRMM_L4x2_SAVE:
 #endif
 
 
-DTRMM_L4x2_END:
+.LDTRMM_L4x2_END:
 
-DTRMM_L4x1_BEGIN:
+.LDTRMM_L4x1_BEGIN:
 
 	andi.		T1,	M,	1
-	ble		DTRMM_L4x1_END
+	ble		.LDTRMM_L4x1_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -615,11 +652,11 @@ DTRMM_L4x1_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L4x1_SUB0
+	ble		.LDTRMM_L4x1_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L4x1_SUB4
+	ble		.LDTRMM_L4x1_SUB4
 
-DTRMM_L4x1_LOOP_START:
+.LDTRMM_L4x1_LOOP_START:
 
 	LOAD4x1_1
 	KERNEL4x1_I1
@@ -633,11 +670,11 @@ DTRMM_L4x1_LOOP_START:
 	KERNEL4x1_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L4x1_LOOP_END
+	ble		.LDTRMM_L4x1_LOOP_END
 
 	.align 5
 
-DTRMM_L4x1_LOOP:
+.LDTRMM_L4x1_LOOP:
 
 	KERNEL4x1_1
 	KERNEL4x1_2
@@ -650,9 +687,9 @@ DTRMM_L4x1_LOOP:
 	KERNEL4x1_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x1_LOOP
+	bgt		.LDTRMM_L4x1_LOOP
 
-DTRMM_L4x1_LOOP_END:
+.LDTRMM_L4x1_LOOP_END:
 
 	KERNEL4x1_1
 	KERNEL4x1_2
@@ -664,9 +701,9 @@ DTRMM_L4x1_LOOP_END:
 	KERNEL4x1_1
 	KERNEL4x1_E2
 
-	b		DTRMM_L4x1_SUB1
+	b		.LDTRMM_L4x1_SUB1
 
-DTRMM_L4x1_SUB4:
+.LDTRMM_L4x1_SUB4:
 
 	KERNEL4x1_SUBI1
 	KERNEL4x1_SUB1
@@ -678,31 +715,31 @@ DTRMM_L4x1_SUB4:
 	KERNEL4x1_SUB1
 	KERNEL4x1_SUB1
 
-	b		DTRMM_L4x1_SUB1
+	b		.LDTRMM_L4x1_SUB1
 
-DTRMM_L4x1_SUB0:
+.LDTRMM_L4x1_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL4x1_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L4x1_SAVE
-	b		DTRMM_L4x1_SUB2
+	ble		.LDTRMM_L4x1_SAVE
+	b		.LDTRMM_L4x1_SUB2
 
-DTRMM_L4x1_SUB1:
+.LDTRMM_L4x1_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L4x1_SAVE
+	ble		.LDTRMM_L4x1_SAVE
 
-DTRMM_L4x1_SUB2:
+.LDTRMM_L4x1_SUB2:
 
 	KERNEL4x1_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L4x1_SUB2
+	bgt		.LDTRMM_L4x1_SUB2
 
-DTRMM_L4x1_SAVE:
+.LDTRMM_L4x1_SAVE:
 
 	SAVE4x1
 
@@ -719,7 +756,7 @@ DTRMM_L4x1_SAVE:
 #endif
 
 
-DTRMM_L4x1_END:
+.LDTRMM_L4x1_END:
 
 	slwi		T1,	K,	5
 	add		B,	B,	T1
@@ -730,23 +767,23 @@ DTRMM_L4x1_END:
 
 
 	addic.		J,	J,	-1
-	bgt		DTRMM_L4_BEGIN
+	bgt		.LDTRMM_L4_BEGIN
 
 	andi.		T2,	N,	3
-	ble		L999
+	ble		.L999
 
-DTRMM_L4_END:
+.LDTRMM_L4_END:
 
-	b		DTRMM_L2_BEGIN
+	b		.LDTRMM_L2_BEGIN
 
-L999_H1:
+.L999_H1:
 
-	b		L999
+	b		.L999
 
-DTRMM_L2_BEGIN:
+.LDTRMM_L2_BEGIN:
 
 	andi.		T1,	N,	2
-	ble		DTRMM_L2_END
+	ble		.LDTRMM_L2_END
 	mr		CO,	C
 	mr		AO,	A
 	slwi		T1,	LDC	,	1
@@ -757,9 +794,9 @@ DTRMM_L2_BEGIN:
 #endif
 
 	srawi.		I,	M,	4
-	ble		DTRMM_L2x16_END
+	ble		.LDTRMM_L2x16_END
 
-DTRMM_L2x16_BEGIN:
+.LDTRMM_L2x16_BEGIN:
 
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -786,11 +823,11 @@ DTRMM_L2x16_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L2x16_SUB0
+	ble		.LDTRMM_L2x16_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L2x16_SUB4
+	ble		.LDTRMM_L2x16_SUB4
 
-DTRMM_L2x16_LOOP_START:
+.LDTRMM_L2x16_LOOP_START:
 
 	dcbt		AO,	PRE
 	LOAD2x16_1
@@ -813,11 +850,11 @@ DTRMM_L2x16_LOOP_START:
 	KERNEL2x16_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L2x16_LOOP_END
+	ble		.LDTRMM_L2x16_LOOP_END
 
 	.align 5
 
-DTRMM_L2x16_LOOP:
+.LDTRMM_L2x16_LOOP:
 
 	dcbt		AO,	PRE
 	KERNEL2x16_1
@@ -838,9 +875,9 @@ DTRMM_L2x16_LOOP:
 	KERNEL2x16_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x16_LOOP
+	bgt		.LDTRMM_L2x16_LOOP
 
-DTRMM_L2x16_LOOP_END:
+.LDTRMM_L2x16_LOOP_END:
 
 	dcbt		AO,	PRE
 	KERNEL2x16_1
@@ -859,9 +896,9 @@ DTRMM_L2x16_LOOP_END:
 	KERNEL2x16_1
 	KERNEL2x16_E2
 
-	b		DTRMM_L2x16_SUB1
+	b		.LDTRMM_L2x16_SUB1
 
-DTRMM_L2x16_SUB4:
+.LDTRMM_L2x16_SUB4:
 
 	dcbt		AO,	PRE
 	KERNEL2x16_SUBI1
@@ -877,31 +914,31 @@ DTRMM_L2x16_SUB4:
 	KERNEL2x16_SUB1
 	KERNEL2x16_SUB1
 
-	b		DTRMM_L2x16_SUB1
+	b		.LDTRMM_L2x16_SUB1
 
-DTRMM_L2x16_SUB0:
+.LDTRMM_L2x16_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL2x16_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L2x16_SAVE
-	b		DTRMM_L2x16_SUB2
+	ble		.LDTRMM_L2x16_SAVE
+	b		.LDTRMM_L2x16_SUB2
 
-DTRMM_L2x16_SUB1:
+.LDTRMM_L2x16_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L2x16_SAVE
+	ble		.LDTRMM_L2x16_SAVE
 
-DTRMM_L2x16_SUB2:
+.LDTRMM_L2x16_SUB2:
 
 	KERNEL2x16_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x16_SUB2
+	bgt		.LDTRMM_L2x16_SUB2
 
-DTRMM_L2x16_SAVE:
+.LDTRMM_L2x16_SAVE:
 
 	SAVE2x16
 
@@ -919,16 +956,16 @@ DTRMM_L2x16_SAVE:
 
 
 	addic.		I,	I,	-1
-	bgt		DTRMM_L2x16_BEGIN
+	bgt		.LDTRMM_L2x16_BEGIN
 
-DTRMM_L2x16_END:
+.LDTRMM_L2x16_END:
 
-DTRMM_L2x8_BEGIN:
+.LDTRMM_L2x8_BEGIN:
 	andi.		T2,	M,	15
-	ble		DTRMM_L2x1_END
+	ble		.LDTRMM_L2x1_END
 
 	andi.		T1,	M,	8
-	ble		DTRMM_L2x8_END
+	ble		.LDTRMM_L2x8_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -954,11 +991,11 @@ DTRMM_L2x8_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L2x8_SUB0
+	ble		.LDTRMM_L2x8_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L2x8_SUB4
+	ble		.LDTRMM_L2x8_SUB4
 
-DTRMM_L2x8_LOOP_START:
+.LDTRMM_L2x8_LOOP_START:
 
 	LOAD2x8_1
 	KERNEL2x8_I1
@@ -972,11 +1009,11 @@ DTRMM_L2x8_LOOP_START:
 	KERNEL2x8_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L2x8_LOOP_END
+	ble		.LDTRMM_L2x8_LOOP_END
 
 	.align 5
 
-DTRMM_L2x8_LOOP:
+.LDTRMM_L2x8_LOOP:
 
 	KERNEL2x8_1
 	KERNEL2x8_2
@@ -989,9 +1026,9 @@ DTRMM_L2x8_LOOP:
 	KERNEL2x8_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x8_LOOP
+	bgt		.LDTRMM_L2x8_LOOP
 
-DTRMM_L2x8_LOOP_END:
+.LDTRMM_L2x8_LOOP_END:
 
 	KERNEL2x8_1
 	KERNEL2x8_2
@@ -1003,9 +1040,9 @@ DTRMM_L2x8_LOOP_END:
 	KERNEL2x8_1
 	KERNEL2x8_E2
 
-	b		DTRMM_L2x8_SUB1
+	b		.LDTRMM_L2x8_SUB1
 
-DTRMM_L2x8_SUB4:
+.LDTRMM_L2x8_SUB4:
 
 	KERNEL2x8_SUBI1
 	KERNEL2x8_SUB1
@@ -1017,31 +1054,31 @@ DTRMM_L2x8_SUB4:
 	KERNEL2x8_SUB1
 	KERNEL2x8_SUB1
 
-	b		DTRMM_L2x8_SUB1
+	b		.LDTRMM_L2x8_SUB1
 
-DTRMM_L2x8_SUB0:
+.LDTRMM_L2x8_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL2x8_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L2x8_SAVE
-	b		DTRMM_L2x8_SUB2
+	ble		.LDTRMM_L2x8_SAVE
+	b		.LDTRMM_L2x8_SUB2
 
-DTRMM_L2x8_SUB1:
+.LDTRMM_L2x8_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L2x8_SAVE
+	ble		.LDTRMM_L2x8_SAVE
 
-DTRMM_L2x8_SUB2:
+.LDTRMM_L2x8_SUB2:
 
 	KERNEL2x8_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x8_SUB2
+	bgt		.LDTRMM_L2x8_SUB2
 
-DTRMM_L2x8_SAVE:
+.LDTRMM_L2x8_SAVE:
 
 	SAVE2x8
 
@@ -1058,12 +1095,12 @@ DTRMM_L2x8_SAVE:
 #endif
 
 
-DTRMM_L2x8_END:
+.LDTRMM_L2x8_END:
 
-DTRMM_L2x4_BEGIN:
+.LDTRMM_L2x4_BEGIN:
 
 	andi.		T1,	M,	4
-	ble		DTRMM_L2x4_END
+	ble		.LDTRMM_L2x4_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -1089,11 +1126,11 @@ DTRMM_L2x4_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L2x4_SUB0
+	ble		.LDTRMM_L2x4_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L2x4_SUB4
+	ble		.LDTRMM_L2x4_SUB4
 
-DTRMM_L2x4_LOOP_START:
+.LDTRMM_L2x4_LOOP_START:
 
 	LOAD2x4_1
 	KERNEL2x4_I1
@@ -1107,11 +1144,11 @@ DTRMM_L2x4_LOOP_START:
 	KERNEL2x4_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L2x4_LOOP_END
+	ble		.LDTRMM_L2x4_LOOP_END
 
 	.align 5
 
-DTRMM_L2x4_LOOP:
+.LDTRMM_L2x4_LOOP:
 
 	KERNEL2x4_1
 	KERNEL2x4_2
@@ -1124,9 +1161,9 @@ DTRMM_L2x4_LOOP:
 	KERNEL2x4_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x4_LOOP
+	bgt		.LDTRMM_L2x4_LOOP
 
-DTRMM_L2x4_LOOP_END:
+.LDTRMM_L2x4_LOOP_END:
 
 	KERNEL2x4_1
 	KERNEL2x4_2
@@ -1138,9 +1175,9 @@ DTRMM_L2x4_LOOP_END:
 	KERNEL2x4_1
 	KERNEL2x4_E2
 
-	b		DTRMM_L2x4_SUB1
+	b		.LDTRMM_L2x4_SUB1
 
-DTRMM_L2x4_SUB4:
+.LDTRMM_L2x4_SUB4:
 
 	KERNEL2x4_SUBI1
 	KERNEL2x4_SUB1
@@ -1152,31 +1189,31 @@ DTRMM_L2x4_SUB4:
 	KERNEL2x4_SUB1
 	KERNEL2x4_SUB1
 
-	b		DTRMM_L2x4_SUB1
+	b		.LDTRMM_L2x4_SUB1
 
-DTRMM_L2x4_SUB0:
+.LDTRMM_L2x4_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL2x4_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L2x4_SAVE
-	b		DTRMM_L2x4_SUB2
+	ble		.LDTRMM_L2x4_SAVE
+	b		.LDTRMM_L2x4_SUB2
 
-DTRMM_L2x4_SUB1:
+.LDTRMM_L2x4_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L2x4_SAVE
+	ble		.LDTRMM_L2x4_SAVE
 
-DTRMM_L2x4_SUB2:
+.LDTRMM_L2x4_SUB2:
 
 	KERNEL2x4_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x4_SUB2
+	bgt		.LDTRMM_L2x4_SUB2
 
-DTRMM_L2x4_SAVE:
+.LDTRMM_L2x4_SAVE:
 
 	SAVE2x4
 
@@ -1193,12 +1230,12 @@ DTRMM_L2x4_SAVE:
 #endif
 
 
-DTRMM_L2x4_END:
+.LDTRMM_L2x4_END:
 
-DTRMM_L2x2_BEGIN:
+.LDTRMM_L2x2_BEGIN:
 
 	andi.		T1,	M,	2
-	ble		DTRMM_L2x2_END
+	ble		.LDTRMM_L2x2_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -1224,11 +1261,11 @@ DTRMM_L2x2_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L2x2_SUB0
+	ble		.LDTRMM_L2x2_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L2x2_SUB4
+	ble		.LDTRMM_L2x2_SUB4
 
-DTRMM_L2x2_LOOP_START:
+.LDTRMM_L2x2_LOOP_START:
 
 	LOAD2x2_1
 	KERNEL2x2_I1
@@ -1242,11 +1279,11 @@ DTRMM_L2x2_LOOP_START:
 	KERNEL2x2_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L2x2_LOOP_END
+	ble		.LDTRMM_L2x2_LOOP_END
 
 	.align 5
 
-DTRMM_L2x2_LOOP:
+.LDTRMM_L2x2_LOOP:
 
 	KERNEL2x2_1
 	KERNEL2x2_2
@@ -1259,9 +1296,9 @@ DTRMM_L2x2_LOOP:
 	KERNEL2x2_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x2_LOOP
+	bgt		.LDTRMM_L2x2_LOOP
 
-DTRMM_L2x2_LOOP_END:
+.LDTRMM_L2x2_LOOP_END:
 
 	KERNEL2x2_1
 	KERNEL2x2_2
@@ -1273,9 +1310,9 @@ DTRMM_L2x2_LOOP_END:
 	KERNEL2x2_1
 	KERNEL2x2_E2
 
-	b		DTRMM_L2x2_SUB1
+	b		.LDTRMM_L2x2_SUB1
 
-DTRMM_L2x2_SUB4:
+.LDTRMM_L2x2_SUB4:
 
 	KERNEL2x2_SUBI1
 	KERNEL2x2_SUB1
@@ -1287,31 +1324,31 @@ DTRMM_L2x2_SUB4:
 	KERNEL2x2_SUB1
 	KERNEL2x2_SUB1
 
-	b		DTRMM_L2x2_SUB1
+	b		.LDTRMM_L2x2_SUB1
 
-DTRMM_L2x2_SUB0:
+.LDTRMM_L2x2_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL2x2_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L2x2_SAVE
-	b		DTRMM_L2x2_SUB2
+	ble		.LDTRMM_L2x2_SAVE
+	b		.LDTRMM_L2x2_SUB2
 
-DTRMM_L2x2_SUB1:
+.LDTRMM_L2x2_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L2x2_SAVE
+	ble		.LDTRMM_L2x2_SAVE
 
-DTRMM_L2x2_SUB2:
+.LDTRMM_L2x2_SUB2:
 
 	KERNEL2x2_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x2_SUB2
+	bgt		.LDTRMM_L2x2_SUB2
 
-DTRMM_L2x2_SAVE:
+.LDTRMM_L2x2_SAVE:
 
 	SAVE2x2
 
@@ -1328,12 +1365,12 @@ DTRMM_L2x2_SAVE:
 #endif
 
 
-DTRMM_L2x2_END:
+.LDTRMM_L2x2_END:
 
-DTRMM_L2x1_BEGIN:
+.LDTRMM_L2x1_BEGIN:
 
 	andi.		T1,	M,	1
-	ble		DTRMM_L2x1_END
+	ble		.LDTRMM_L2x1_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -1359,11 +1396,11 @@ DTRMM_L2x1_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L2x1_SUB0
+	ble		.LDTRMM_L2x1_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L2x1_SUB4
+	ble		.LDTRMM_L2x1_SUB4
 
-DTRMM_L2x1_LOOP_START:
+.LDTRMM_L2x1_LOOP_START:
 
 	LOAD2x1_1
 	KERNEL2x1_I1
@@ -1377,11 +1414,11 @@ DTRMM_L2x1_LOOP_START:
 	KERNEL2x1_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L2x1_LOOP_END
+	ble		.LDTRMM_L2x1_LOOP_END
 
 	.align 5
 
-DTRMM_L2x1_LOOP:
+.LDTRMM_L2x1_LOOP:
 
 	KERNEL2x1_1
 	KERNEL2x1_2
@@ -1394,9 +1431,9 @@ DTRMM_L2x1_LOOP:
 	KERNEL2x1_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x1_LOOP
+	bgt		.LDTRMM_L2x1_LOOP
 
-DTRMM_L2x1_LOOP_END:
+.LDTRMM_L2x1_LOOP_END:
 
 	KERNEL2x1_1
 	KERNEL2x1_2
@@ -1408,9 +1445,9 @@ DTRMM_L2x1_LOOP_END:
 	KERNEL2x1_1
 	KERNEL2x1_E2
 
-	b		DTRMM_L2x1_SUB1
+	b		.LDTRMM_L2x1_SUB1
 
-DTRMM_L2x1_SUB4:
+.LDTRMM_L2x1_SUB4:
 
 	KERNEL2x1_SUBI1
 	KERNEL2x1_SUB1
@@ -1422,31 +1459,31 @@ DTRMM_L2x1_SUB4:
 	KERNEL2x1_SUB1
 	KERNEL2x1_SUB1
 
-	b		DTRMM_L2x1_SUB1
+	b		.LDTRMM_L2x1_SUB1
 
-DTRMM_L2x1_SUB0:
+.LDTRMM_L2x1_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL2x1_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L2x1_SAVE
-	b		DTRMM_L2x1_SUB2
+	ble		.LDTRMM_L2x1_SAVE
+	b		.LDTRMM_L2x1_SUB2
 
-DTRMM_L2x1_SUB1:
+.LDTRMM_L2x1_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L2x1_SAVE
+	ble		.LDTRMM_L2x1_SAVE
 
-DTRMM_L2x1_SUB2:
+.LDTRMM_L2x1_SUB2:
 
 	KERNEL2x1_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L2x1_SUB2
+	bgt		.LDTRMM_L2x1_SUB2
 
-DTRMM_L2x1_SAVE:
+.LDTRMM_L2x1_SAVE:
 
 	SAVE2x1
 
@@ -1463,7 +1500,7 @@ DTRMM_L2x1_SAVE:
 #endif
 
 
-DTRMM_L2x1_END:
+.LDTRMM_L2x1_END:
 
 	slwi		T1,	K,	4
 	add		B,	B,	T1
@@ -1473,11 +1510,11 @@ DTRMM_L2x1_END:
 #endif
 
 
-DTRMM_L2_END:
-DTRMM_L1_BEGIN:
+.LDTRMM_L2_END:
+.LDTRMM_L1_BEGIN:
 
 	andi.		T1,	N,	1
-	ble		DTRMM_L1_END
+	ble		.LDTRMM_L1_END
 	mr		CO,	C
 	mr		AO,	A
 
@@ -1486,9 +1523,9 @@ DTRMM_L1_BEGIN:
 #endif
 
 	srawi.		I,	M,	4
-	ble		DTRMM_L1x16_END
+	ble		.LDTRMM_L1x16_END
 
-DTRMM_L1x16_BEGIN:
+.LDTRMM_L1x16_BEGIN:
 
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1515,11 +1552,11 @@ DTRMM_L1x16_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L1x16_SUB0
+	ble		.LDTRMM_L1x16_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L1x16_SUB4
+	ble		.LDTRMM_L1x16_SUB4
 
-DTRMM_L1x16_LOOP_START:
+.LDTRMM_L1x16_LOOP_START:
 
 	dcbt		AO,	PRE
 	LOAD1x16_1
@@ -1542,11 +1579,11 @@ DTRMM_L1x16_LOOP_START:
 	KERNEL1x16_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L1x16_LOOP_END
+	ble		.LDTRMM_L1x16_LOOP_END
 
 	.align 5
 
-DTRMM_L1x16_LOOP:
+.LDTRMM_L1x16_LOOP:
 
 	dcbt		AO,	PRE
 	KERNEL1x16_1
@@ -1567,9 +1604,9 @@ DTRMM_L1x16_LOOP:
 	KERNEL1x16_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x16_LOOP
+	bgt		.LDTRMM_L1x16_LOOP
 
-DTRMM_L1x16_LOOP_END:
+.LDTRMM_L1x16_LOOP_END:
 
 	dcbt		AO,	PRE
 	KERNEL1x16_1
@@ -1588,9 +1625,9 @@ DTRMM_L1x16_LOOP_END:
 	KERNEL1x16_1
 	KERNEL1x16_E2
 
-	b		DTRMM_L1x16_SUB1
+	b		.LDTRMM_L1x16_SUB1
 
-DTRMM_L1x16_SUB4:
+.LDTRMM_L1x16_SUB4:
 
 	dcbt		AO,	PRE
 	KERNEL1x16_SUBI1
@@ -1606,31 +1643,31 @@ DTRMM_L1x16_SUB4:
 	KERNEL1x16_SUB1
 	KERNEL1x16_SUB1
 
-	b		DTRMM_L1x16_SUB1
+	b		.LDTRMM_L1x16_SUB1
 
-DTRMM_L1x16_SUB0:
+.LDTRMM_L1x16_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL1x16_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L1x16_SAVE
-	b		DTRMM_L1x16_SUB2
+	ble		.LDTRMM_L1x16_SAVE
+	b		.LDTRMM_L1x16_SUB2
 
-DTRMM_L1x16_SUB1:
+.LDTRMM_L1x16_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L1x16_SAVE
+	ble		.LDTRMM_L1x16_SAVE
 
-DTRMM_L1x16_SUB2:
+.LDTRMM_L1x16_SUB2:
 
 	KERNEL1x16_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x16_SUB2
+	bgt		.LDTRMM_L1x16_SUB2
 
-DTRMM_L1x16_SAVE:
+.LDTRMM_L1x16_SAVE:
 
 	SAVE1x16
 
@@ -1648,16 +1685,16 @@ DTRMM_L1x16_SAVE:
 
 
 	addic.		I,	I,	-1
-	bgt		DTRMM_L1x16_BEGIN
+	bgt		.LDTRMM_L1x16_BEGIN
 
-DTRMM_L1x16_END:
+.LDTRMM_L1x16_END:
 
-DTRMM_L1x8_BEGIN:
+.LDTRMM_L1x8_BEGIN:
 	andi.		T2,	M,	15
-	ble		DTRMM_L1x1_END
+	ble		.LDTRMM_L1x1_END
 
 	andi.		T1,	M,	8
-	ble		DTRMM_L1x8_END
+	ble		.LDTRMM_L1x8_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -1683,11 +1720,11 @@ DTRMM_L1x8_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L1x8_SUB0
+	ble		.LDTRMM_L1x8_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L1x8_SUB4
+	ble		.LDTRMM_L1x8_SUB4
 
-DTRMM_L1x8_LOOP_START:
+.LDTRMM_L1x8_LOOP_START:
 
 	LOAD1x8_1
 	KERNEL1x8_I1
@@ -1701,11 +1738,11 @@ DTRMM_L1x8_LOOP_START:
 	KERNEL1x8_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L1x8_LOOP_END
+	ble		.LDTRMM_L1x8_LOOP_END
 
 	.align 5
 
-DTRMM_L1x8_LOOP:
+.LDTRMM_L1x8_LOOP:
 
 	KERNEL1x8_1
 	KERNEL1x8_2
@@ -1718,9 +1755,9 @@ DTRMM_L1x8_LOOP:
 	KERNEL1x8_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x8_LOOP
+	bgt		.LDTRMM_L1x8_LOOP
 
-DTRMM_L1x8_LOOP_END:
+.LDTRMM_L1x8_LOOP_END:
 
 	KERNEL1x8_1
 	KERNEL1x8_2
@@ -1732,9 +1769,9 @@ DTRMM_L1x8_LOOP_END:
 	KERNEL1x8_1
 	KERNEL1x8_E2
 
-	b		DTRMM_L1x8_SUB1
+	b		.LDTRMM_L1x8_SUB1
 
-DTRMM_L1x8_SUB4:
+.LDTRMM_L1x8_SUB4:
 
 	KERNEL1x8_SUBI1
 	KERNEL1x8_SUB1
@@ -1746,31 +1783,31 @@ DTRMM_L1x8_SUB4:
 	KERNEL1x8_SUB1
 	KERNEL1x8_SUB1
 
-	b		DTRMM_L1x8_SUB1
+	b		.LDTRMM_L1x8_SUB1
 
-DTRMM_L1x8_SUB0:
+.LDTRMM_L1x8_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL1x8_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L1x8_SAVE
-	b		DTRMM_L1x8_SUB2
+	ble		.LDTRMM_L1x8_SAVE
+	b		.LDTRMM_L1x8_SUB2
 
-DTRMM_L1x8_SUB1:
+.LDTRMM_L1x8_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L1x8_SAVE
+	ble		.LDTRMM_L1x8_SAVE
 
-DTRMM_L1x8_SUB2:
+.LDTRMM_L1x8_SUB2:
 
 	KERNEL1x8_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x8_SUB2
+	bgt		.LDTRMM_L1x8_SUB2
 
-DTRMM_L1x8_SAVE:
+.LDTRMM_L1x8_SAVE:
 
 	SAVE1x8
 
@@ -1787,12 +1824,12 @@ DTRMM_L1x8_SAVE:
 #endif
 
 
-DTRMM_L1x8_END:
+.LDTRMM_L1x8_END:
 
-DTRMM_L1x4_BEGIN:
+.LDTRMM_L1x4_BEGIN:
 
 	andi.		T1,	M,	4
-	ble		DTRMM_L1x4_END
+	ble		.LDTRMM_L1x4_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -1818,11 +1855,11 @@ DTRMM_L1x4_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L1x4_SUB0
+	ble		.LDTRMM_L1x4_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L1x4_SUB4
+	ble		.LDTRMM_L1x4_SUB4
 
-DTRMM_L1x4_LOOP_START:
+.LDTRMM_L1x4_LOOP_START:
 
 	LOAD1x4_1
 	KERNEL1x4_I1
@@ -1836,11 +1873,11 @@ DTRMM_L1x4_LOOP_START:
 	KERNEL1x4_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L1x4_LOOP_END
+	ble		.LDTRMM_L1x4_LOOP_END
 
 	.align 5
 
-DTRMM_L1x4_LOOP:
+.LDTRMM_L1x4_LOOP:
 
 	KERNEL1x4_1
 	KERNEL1x4_2
@@ -1853,9 +1890,9 @@ DTRMM_L1x4_LOOP:
 	KERNEL1x4_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x4_LOOP
+	bgt		.LDTRMM_L1x4_LOOP
 
-DTRMM_L1x4_LOOP_END:
+.LDTRMM_L1x4_LOOP_END:
 
 	KERNEL1x4_1
 	KERNEL1x4_2
@@ -1867,9 +1904,9 @@ DTRMM_L1x4_LOOP_END:
 	KERNEL1x4_1
 	KERNEL1x4_E2
 
-	b		DTRMM_L1x4_SUB1
+	b		.LDTRMM_L1x4_SUB1
 
-DTRMM_L1x4_SUB4:
+.LDTRMM_L1x4_SUB4:
 
 	KERNEL1x4_SUBI1
 	KERNEL1x4_SUB1
@@ -1881,31 +1918,31 @@ DTRMM_L1x4_SUB4:
 	KERNEL1x4_SUB1
 	KERNEL1x4_SUB1
 
-	b		DTRMM_L1x4_SUB1
+	b		.LDTRMM_L1x4_SUB1
 
-DTRMM_L1x4_SUB0:
+.LDTRMM_L1x4_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL1x4_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L1x4_SAVE
-	b		DTRMM_L1x4_SUB2
+	ble		.LDTRMM_L1x4_SAVE
+	b		.LDTRMM_L1x4_SUB2
 
-DTRMM_L1x4_SUB1:
+.LDTRMM_L1x4_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L1x4_SAVE
+	ble		.LDTRMM_L1x4_SAVE
 
-DTRMM_L1x4_SUB2:
+.LDTRMM_L1x4_SUB2:
 
 	KERNEL1x4_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x4_SUB2
+	bgt		.LDTRMM_L1x4_SUB2
 
-DTRMM_L1x4_SAVE:
+.LDTRMM_L1x4_SAVE:
 
 	SAVE1x4
 
@@ -1922,12 +1959,12 @@ DTRMM_L1x4_SAVE:
 #endif
 
 
-DTRMM_L1x4_END:
+.LDTRMM_L1x4_END:
 
-DTRMM_L1x2_BEGIN:
+.LDTRMM_L1x2_BEGIN:
 
 	andi.		T1,	M,	2
-	ble		DTRMM_L1x2_END
+	ble		.LDTRMM_L1x2_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -1953,11 +1990,11 @@ DTRMM_L1x2_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L1x2_SUB0
+	ble		.LDTRMM_L1x2_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L1x2_SUB4
+	ble		.LDTRMM_L1x2_SUB4
 
-DTRMM_L1x2_LOOP_START:
+.LDTRMM_L1x2_LOOP_START:
 
 	LOAD1x2_1
 	KERNEL1x2_I1
@@ -1971,11 +2008,11 @@ DTRMM_L1x2_LOOP_START:
 	KERNEL1x2_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L1x2_LOOP_END
+	ble		.LDTRMM_L1x2_LOOP_END
 
 	.align 5
 
-DTRMM_L1x2_LOOP:
+.LDTRMM_L1x2_LOOP:
 
 	KERNEL1x2_1
 	KERNEL1x2_2
@@ -1988,9 +2025,9 @@ DTRMM_L1x2_LOOP:
 	KERNEL1x2_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x2_LOOP
+	bgt		.LDTRMM_L1x2_LOOP
 
-DTRMM_L1x2_LOOP_END:
+.LDTRMM_L1x2_LOOP_END:
 
 	KERNEL1x2_1
 	KERNEL1x2_2
@@ -2002,9 +2039,9 @@ DTRMM_L1x2_LOOP_END:
 	KERNEL1x2_1
 	KERNEL1x2_E2
 
-	b		DTRMM_L1x2_SUB1
+	b		.LDTRMM_L1x2_SUB1
 
-DTRMM_L1x2_SUB4:
+.LDTRMM_L1x2_SUB4:
 
 	KERNEL1x2_SUBI1
 	KERNEL1x2_SUB1
@@ -2016,31 +2053,31 @@ DTRMM_L1x2_SUB4:
 	KERNEL1x2_SUB1
 	KERNEL1x2_SUB1
 
-	b		DTRMM_L1x2_SUB1
+	b		.LDTRMM_L1x2_SUB1
 
-DTRMM_L1x2_SUB0:
+.LDTRMM_L1x2_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL1x2_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L1x2_SAVE
-	b		DTRMM_L1x2_SUB2
+	ble		.LDTRMM_L1x2_SAVE
+	b		.LDTRMM_L1x2_SUB2
 
-DTRMM_L1x2_SUB1:
+.LDTRMM_L1x2_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L1x2_SAVE
+	ble		.LDTRMM_L1x2_SAVE
 
-DTRMM_L1x2_SUB2:
+.LDTRMM_L1x2_SUB2:
 
 	KERNEL1x2_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x2_SUB2
+	bgt		.LDTRMM_L1x2_SUB2
 
-DTRMM_L1x2_SAVE:
+.LDTRMM_L1x2_SAVE:
 
 	SAVE1x2
 
@@ -2057,12 +2094,12 @@ DTRMM_L1x2_SAVE:
 #endif
 
 
-DTRMM_L1x2_END:
+.LDTRMM_L1x2_END:
 
-DTRMM_L1x1_BEGIN:
+.LDTRMM_L1x1_BEGIN:
 
 	andi.		T1,	M,	1
-	ble		DTRMM_L1x1_END
+	ble		.LDTRMM_L1x1_END
 
 #if  (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mr		BO,	B					// B -> BO
@@ -2088,11 +2125,11 @@ DTRMM_L1x1_BEGIN:
 	mr		KKK,	T1
 	mr		K1,	T1
 	srawi.		L,	K1,	3				// KTEMP / 8 -> L
-	ble		DTRMM_L1x1_SUB0
+	ble		.LDTRMM_L1x1_SUB0
 	cmpwi		cr0,	L,	1
-	ble		DTRMM_L1x1_SUB4
+	ble		.LDTRMM_L1x1_SUB4
 
-DTRMM_L1x1_LOOP_START:
+.LDTRMM_L1x1_LOOP_START:
 
 	LOAD1x1_1
 	KERNEL1x1_I1
@@ -2106,11 +2143,11 @@ DTRMM_L1x1_LOOP_START:
 	KERNEL1x1_2
 
 	addic.		L,	L,	-2
-	ble		DTRMM_L1x1_LOOP_END
+	ble		.LDTRMM_L1x1_LOOP_END
 
 	.align 5
 
-DTRMM_L1x1_LOOP:
+.LDTRMM_L1x1_LOOP:
 
 	KERNEL1x1_1
 	KERNEL1x1_2
@@ -2123,9 +2160,9 @@ DTRMM_L1x1_LOOP:
 	KERNEL1x1_2
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x1_LOOP
+	bgt		.LDTRMM_L1x1_LOOP
 
-DTRMM_L1x1_LOOP_END:
+.LDTRMM_L1x1_LOOP_END:
 
 	KERNEL1x1_1
 	KERNEL1x1_2
@@ -2137,9 +2174,9 @@ DTRMM_L1x1_LOOP_END:
 	KERNEL1x1_1
 	KERNEL1x1_E2
 
-	b		DTRMM_L1x1_SUB1
+	b		.LDTRMM_L1x1_SUB1
 
-DTRMM_L1x1_SUB4:
+.LDTRMM_L1x1_SUB4:
 
 	KERNEL1x1_SUBI1
 	KERNEL1x1_SUB1
@@ -2151,31 +2188,31 @@ DTRMM_L1x1_SUB4:
 	KERNEL1x1_SUB1
 	KERNEL1x1_SUB1
 
-	b		DTRMM_L1x1_SUB1
+	b		.LDTRMM_L1x1_SUB1
 
-DTRMM_L1x1_SUB0:
+.LDTRMM_L1x1_SUB0:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
 
 	KERNEL1x1_SUBI1
 
 	addic.		L,	L,	-1
-	ble		DTRMM_L1x1_SAVE
-	b		DTRMM_L1x1_SUB2
+	ble		.LDTRMM_L1x1_SAVE
+	b		.LDTRMM_L1x1_SUB2
 
-DTRMM_L1x1_SUB1:
+.LDTRMM_L1x1_SUB1:
 
 	andi.		L,	K1,	7						// K1 & 7 -> L
-	ble		DTRMM_L1x1_SAVE
+	ble		.LDTRMM_L1x1_SAVE
 
-DTRMM_L1x1_SUB2:
+.LDTRMM_L1x1_SUB2:
 
 	KERNEL1x1_SUB1
 
 	addic.		L,	L,	-1
-	bgt		DTRMM_L1x1_SUB2
+	bgt		.LDTRMM_L1x1_SUB2
 
-DTRMM_L1x1_SAVE:
+.LDTRMM_L1x1_SAVE:
 
 	SAVE1x1
 
@@ -2192,11 +2229,11 @@ DTRMM_L1x1_SAVE:
 #endif
 
 
-DTRMM_L1x1_END:
+.LDTRMM_L1x1_END:
 
 #if !defined(LEFT)
 	addi		KK,	KK,	1					// KK += Number of values in B
 #endif
 
 
-DTRMM_L1_END:
+.LDTRMM_L1_END:
