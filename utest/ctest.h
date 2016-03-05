@@ -58,6 +58,10 @@ struct ctest {
 #define __CTEST_APPLE
 #endif
 
+#ifdef __MINGW32__
+#undef CTEST_SEGFAULT
+#endif
+
 #if defined(_WIN32) && defined(_MSC_VER)
 #define __CTEST_MSVC
 #endif
