@@ -1,57 +1,3 @@
-SGEMM_BETA = gemm_beta.S
-DGEMM_BETA = gemm_beta.S
-CGEMM_BETA = zgemm_beta.S
-ZGEMM_BETA = zgemm_beta.S
-
-
-ifndef SSYMV_U_KERNEL
-SSYMV_U_KERNEL =  symv_U.S
-endif
-
-ifndef SSYMV_L_KERNEL
-SSYMV_L_KERNEL =  symv_L.S
-endif
-
-ifndef DSYMV_U_KERNEL
-DSYMV_U_KERNEL =  symv_U.S
-endif
-
-ifndef DSYMV_L_KERNEL
-DSYMV_L_KERNEL =  symv_L.S
-endif
-
-ifndef CSYMV_U_KERNEL
-CSYMV_U_KERNEL =  zsymv_U.S
-endif
-
-ifndef CSYMV_L_KERNEL
-CSYMV_L_KERNEL =  zsymv_L.S
-endif
-
-ifndef ZSYMV_U_KERNEL
-ZSYMV_U_KERNEL =  zsymv_U.S
-endif
-
-ifndef ZSYMV_L_KERNEL
-ZSYMV_L_KERNEL =  zsymv_L.S
-endif
-
-ifndef CHEMV_U_KERNEL
-CHEMV_U_KERNEL =  zsymv_U.S
-endif
-
-ifndef CHEMV_L_KERNEL
-CHEMV_L_KERNEL =  zsymv_L.S
-endif
-
-ifndef ZHEMV_U_KERNEL
-ZHEMV_U_KERNEL =  zsymv_U.S
-endif
-
-ifndef ZHEMV_L_KERNEL
-ZHEMV_L_KERNEL =  zsymv_L.S
-endif
-
 ifndef STRSMKERNEL_LN
 STRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 endif
@@ -82,5 +28,21 @@ endif
 
 ifndef CTRSMKERNEL_RT
 CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+endif
+
+ifndef SGEMM_BETA
+SGEMM_BETA = gemm_beta.S
+endif
+
+ifndef DGEMM_BETA
+DGEMM_BETA = gemm_beta.S
+endif
+
+ifndef CGEMM_BETA
+CGEMM_BETA = zgemm_beta.S
+endif
+
+ifndef ZGEMM_BETA
+ZGEMM_BETA = zgemm_beta.S
 endif
 
