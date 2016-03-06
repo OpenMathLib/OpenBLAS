@@ -46,3 +46,7 @@ ifndef ZGEMM_BETA
 ZGEMM_BETA = zgemm_beta.S
 endif
 
+ifndef DSDOTKERNEL
+DSDOTKERNEL = ../generic/dot.c
+endif
+
