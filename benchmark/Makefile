@@ -166,8 +166,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
        spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
-       ssymm.goto dsymm.goto csymm.goto zsymm.goto \
-       smallscaling
+       ssymm.goto dsymm.goto csymm.goto zsymm.goto 
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
