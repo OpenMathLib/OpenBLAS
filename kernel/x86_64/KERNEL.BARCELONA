@@ -1,3 +1,6 @@
+ZGEMVNKERNEL = zgemv_n_dup.S
+ZGEMVTKERNEL = zgemv_t.S
+
 SGEMMKERNEL    =  gemm_kernel_8x4_barcelona.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_8.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_8.c
