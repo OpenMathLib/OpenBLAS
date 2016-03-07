@@ -51,8 +51,7 @@ float LAPACKE_slantr( int matrix_layout, char norm, char uplo, char diag,
     }
 #endif
     /* Allocate memory for working array(s) */
-    if( LAPACKE_lsame( norm, 'i' ) || LAPACKE_lsame( norm, '1' ) ||
-        LAPACKE_lsame( norm, 'O' ) ) {
+    if( LAPACKE_lsame( norm, 'i' ) ) {
         work = (float*)LAPACKE_malloc( sizeof(float) * MAX(1,MAX(m,n)) );
         if( work == NULL ) {
             info = LAPACK_WORK_MEMORY_ERROR;
@@ -63,8 +62,7 @@ float LAPACKE_slantr( int matrix_layout, char norm, char uplo, char diag,
     res = LAPACKE_slantr_work( matrix_layout, norm, uplo, diag, m, n, a, lda,
                                 work );
     /* Release memory and exit */
-    if( LAPACKE_lsame( norm, 'i' ) || LAPACKE_lsame( norm, '1' ) ||
-        LAPACKE_lsame( norm, 'O' ) ) {
+    if( LAPACKE_lsame( norm, 'i' ) ) {
         LAPACKE_free( work );
     }
 exit_level_0:
