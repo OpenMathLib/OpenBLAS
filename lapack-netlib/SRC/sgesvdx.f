@@ -169,7 +169,7 @@
 *>          vectors, stored columnwise) as specified by RANGE; if 
 *>          JOBU = 'N', U is not referenced.
 *>          Note: The user must ensure that UCOL >= NS; if RANGE = 'V', 
-*>          the exact value of NS is not known in advance and an upper
+*>          the exact value of NS is not known ILQFin advance and an upper 
 *>          bound must be used.
 *> \endverbatim
 *>
@@ -357,14 +357,8 @@
          IF( INFO.EQ.0 ) THEN
             IF( WANTU .AND. LDU.LT.M ) THEN
                INFO = -15
-            ELSE IF( WANTVT ) THEN
-               IF( INDS ) THEN
-                   IF( LDVT.LT.IU-IL+1 ) THEN
-                       INFO = -17
-                   END IF
-               ELSE IF( LDVT.LT.MINMN ) THEN
-                   INFO = -17
-               END IF
+            ELSE IF( WANTVT .AND. LDVT.LT.MINMN ) THEN
+               INFO = -16
             END IF
          END IF
       END IF
@@ -386,34 +380,18 @@
 *
 *                 Path 1 (M much larger than N)
 *
-                  MAXWRK = N + 
+                  MAXWRK = N*(N*2+16) + 
      $                     N*ILAENV( 1, 'SGEQRF', ' ', M, N, -1, -1 )
-                  MAXWRK = MAX( MAXWRK, N*(N+5) + 2*N*
+                  MAXWRK = MAX( MAXWRK, N*(N*2+20) + 2*N*
      $                     ILAENV( 1, 'SGEBRD', ' ', N, N, -1, -1 ) )
-                  IF (WANTU) THEN
-                      MAXWRK = MAX(MAXWRK,N*(N*3+6)+N*
-     $                     ILAENV( 1, 'SORMQR', ' ', N, N, -1, -1 ) )
-                  END IF
-                  IF (WANTVT) THEN
-                      MAXWRK = MAX(MAXWRK,N*(N*3+6)+N*
-     $                     ILAENV( 1, 'SORMLQ', ' ', N, N, -1, -1 ) )
-                  END IF
-                  MINWRK = N*(N*3+20)
+                  MINWRK = N*(N*2+21)
                ELSE
 *
 *                 Path 2 (M at least N, but not much larger)
 *
-                  MAXWRK = 4*N + ( M+N )*
+                  MAXWRK = N*(N*2+19) + ( M+N )*
      $                     ILAENV( 1, 'SGEBRD', ' ', M, N, -1, -1 )
-                  IF (WANTU) THEN
-                      MAXWRK = MAX(MAXWRK,N*(N*2+5)+N*
-     $                     ILAENV( 1, 'SORMQR', ' ', N, N, -1, -1 ) )
-                  END IF
-                  IF (WANTVT) THEN
-                      MAXWRK = MAX(MAXWRK,N*(N*2+5)+N*
-     $                     ILAENV( 1, 'SORMLQ', ' ', N, N, -1, -1 ) )
-                  END IF
-                  MINWRK = MAX(N*(N*2+19),4*N+M)
+                  MINWRK = N*(N*2+20) + M
                END IF
             ELSE
                MNTHR = ILAENV( 6, 'SGESVD', JOBU // JOBVT, M, N, 0, 0 )
@@ -421,34 +399,18 @@
 *
 *                 Path 1t (N much larger than M)
 *
-                  MAXWRK = M + 
+                  MAXWRK = M*(M*2+16) + 
      $                     M*ILAENV( 1, 'SGELQF', ' ', M, N, -1, -1 )
-                  MAXWRK = MAX( MAXWRK, M*(M+5) + 2*M*
+                  MAXWRK = MAX( MAXWRK, M*(M*2+20) + 2*M*
      $                     ILAENV( 1, 'SGEBRD', ' ', M, M, -1, -1 ) )
-                  IF (WANTU) THEN
-                      MAXWRK = MAX(MAXWRK,M*(M*3+6)+M*
-     $                     ILAENV( 1, 'SORMQR', ' ', M, M, -1, -1 ) )
-                  END IF
-                  IF (WANTVT) THEN
-                      MAXWRK = MAX(MAXWRK,M*(M*3+6)+M*
-     $                     ILAENV( 1, 'SORMLQ', ' ', M, M, -1, -1 ) )
-                  END IF
-                  MINWRK = M*(M*3+20)
+                  MINWRK = M*(M*2+21)
                ELSE
 *
-*                 Path 2t (N at least M, but not much larger)
+*                 Path 2t (N greater than M, but not much larger)
 *
-                  MAXWRK = 4*M + ( M+N )*
+                  MAXWRK = M*(M*2+19) + ( M+N )*
      $                     ILAENV( 1, 'SGEBRD', ' ', M, N, -1, -1 )
-                  IF (WANTU) THEN
-                      MAXWRK = MAX(MAXWRK,M*(M*2+5)+M*
-     $                     ILAENV( 1, 'SORMQR', ' ', M, M, -1, -1 ) )
-                  END IF
-                  IF (WANTVT) THEN
-                      MAXWRK = MAX(MAXWRK,M*(M*2+5)+M*
-     $                     ILAENV( 1, 'SORMLQ', ' ', M, M, -1, -1 ) )
-                  END IF
-                  MINWRK = MAX(M*(M*2+19),4*M+N)
+                  MINWRK = M*(M*2+20) + N
                END IF
             END IF
          END IF
@@ -560,7 +522,7 @@
                   CALL SCOPY( N, WORK( J ), 1, U( 1,I ), 1 )
                   J = J + N*2
                END DO
-               CALL SLASET( 'A', M-N, NS, ZERO, ZERO, U( N+1,1 ), LDU )
+               CALL SLASET( 'A', M-N, N, ZERO, ZERO, U( N+1,1 ), LDU )
 *
 *              Call SORMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
@@ -629,7 +591,7 @@
                   CALL SCOPY( N, WORK( J ), 1, U( 1,I ), 1 )
                   J = J + N*2
                END DO
-               CALL SLASET( 'A', M-N, NS, ZERO, ZERO, U( N+1,1 ), LDU )
+               CALL SLASET( 'A', M-N, N, ZERO, ZERO, U( N+1,1 ), LDU )
 *
 *              Call SORMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
@@ -725,7 +687,7 @@
                   CALL SCOPY( M, WORK( J ), 1, VT( I,1 ), LDVT )
                   J = J + M*2
                END DO
-               CALL SLASET( 'A', NS, N-M, ZERO, ZERO, VT( 1,M+1 ), LDVT)
+               CALL SLASET( 'A', M, N-M, ZERO, ZERO, VT( 1,M+1 ), LDVT )
 *
 *              Call SORMBR to compute (VB**T)*(PB**T)
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
@@ -794,7 +756,7 @@
                   CALL SCOPY( M, WORK( J ), 1, VT( I,1 ), LDVT )
                   J = J + M*2
                END DO
-               CALL SLASET( 'A', NS, N-M, ZERO, ZERO, VT( 1,M+1 ), LDVT)
+               CALL SLASET( 'A', M, N-M, ZERO, ZERO, VT( 1,M+1 ), LDVT )
 *
 *              Call SORMBR to compute VB**T * PB**T
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
