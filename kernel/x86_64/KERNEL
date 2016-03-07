@@ -389,7 +389,7 @@ DGEMVTKERNEL = dgemv_t.S
 endif
 
 ifndef CGEMVNKERNEL
-CGEMVNKERNEL = cgemv_n.S
+CGEMVNKERNEL = cgemv_n_4.c
 endif
 
 ifndef CGEMVTKERNEL
@@ -397,11 +397,11 @@ CGEMVTKERNEL = cgemv_t_4.c
 endif
 
 ifndef ZGEMVNKERNEL
-ZGEMVNKERNEL = zgemv_n.S
+ZGEMVNKERNEL = zgemv_n_4.c
 endif
 
 ifndef ZGEMVTKERNEL
-ZGEMVTKERNEL = zgemv_t.S
+ZGEMVTKERNEL = zgemv_t_4.c
 endif
 
 ifndef QGEMVNKERNEL

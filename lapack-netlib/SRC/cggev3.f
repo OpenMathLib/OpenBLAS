@@ -339,16 +339,16 @@
      $                   LDVL, VR, LDVR, WORK, -1, IERR )
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
             CALL CHGEQZ( 'S', JOBVL, JOBVR, N, 1, N, A, LDA, B, LDB,
-     $                   ALPHA, BETA, VL, LDVL, VR, LDVR, WORK,
-     $                   -1, WORK, IERR )
+     $                   ALPHA, BETA, VL, LDVL, VR, LDVR, WORK, -1,
+     $                   RWORK, IERR )
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
          ELSE
             CALL CGGHD3( 'N', 'N', N, 1, N, A, LDA, B, LDB, VL, LDVL,
      $                   VR, LDVR, WORK, -1, IERR )
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
             CALL CHGEQZ( 'E', JOBVL, JOBVR, N, 1, N, A, LDA, B, LDB,
-     $                   ALPHA, BETA, VL, LDVL, VR, LDVR, WORK,
-     $                   -1, WORK, IERR )
+     $                   ALPHA, BETA, VL, LDVL, VR, LDVR, WORK, -1,
+     $                   RWORK, IERR )
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
          END IF
          WORK( 1 ) = CMPLX( LWKOPT )

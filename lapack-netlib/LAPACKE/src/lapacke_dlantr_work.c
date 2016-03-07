@@ -38,10 +38,10 @@ double LAPACKE_dlantr_work( int matrix_layout, char norm, char uplo,
                                 const double* a, lapack_int lda, double* work )
 {
     lapack_int info = 0;
-	double res = 0.;
+    double res = 0.;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
-        LAPACK_dlantr( &norm, &uplo, &diag, &m, &n, a, &lda, work );
+        res = LAPACK_dlantr( &norm, &uplo, &diag, &m, &n, a, &lda, work );
         if( info < 0 ) {
             info = info - 1;
         }

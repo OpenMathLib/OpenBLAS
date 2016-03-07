@@ -340,7 +340,7 @@
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
             CALL ZHGEQZ( 'S', JOBVL, JOBVR, N, 1, N, A, LDA, B, LDB,
      $                   ALPHA, BETA, VL, LDVL, VR, LDVR, WORK, -1,
-     $                   WORK, IERR )
+     $                   RWORK, IERR )
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
          ELSE
             CALL ZGGHD3( JOBVL, JOBVR, N, 1, N, A, LDA, B, LDB, VL,
@@ -348,7 +348,7 @@
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
             CALL ZHGEQZ( 'E', JOBVL, JOBVR, N, 1, N, A, LDA, B, LDB,
      $                   ALPHA, BETA, VL, LDVL, VR, LDVR, WORK, -1,
-     $                   WORK, IERR )
+     $                   RWORK, IERR )
             LWKOPT = MAX( LWKOPT, N+INT( WORK( 1 ) ) )
          END IF
          WORK( 1 ) = DCMPLX( LWKOPT )
