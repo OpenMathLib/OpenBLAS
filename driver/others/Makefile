@@ -118,6 +118,9 @@ openblas_get_parallel.$(SUFFIX) : openblas_get_parallel.c
 openblas_error_handle.$(SUFFIX) : openblas_error_handle.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
+openblas_env.$(SUFFIX) : openblas_env.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+
 blasL1thread.$(SUFFIX) : blas_l1_thread.c ../../common.h ../../common_thread.h
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
