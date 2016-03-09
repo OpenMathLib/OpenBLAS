@@ -11,7 +11,7 @@ ZAXPYKERNEL = zaxpy.c
 SGEMVNKERNEL = sgemv_n_4.c
 SGEMVTKERNEL = sgemv_t_4.c
 
-ZGEMVNKERNEL = zgemv_n_dup.S
+ZGEMVNKERNEL = zgemv_n_4.c
 ZGEMVTKERNEL = zgemv_t_4.c
 
 DGEMVNKERNEL = dgemv_n_bulldozer.S
