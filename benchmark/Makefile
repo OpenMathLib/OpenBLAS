@@ -166,7 +166,8 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
        spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
-       ssymm.goto dsymm.goto csymm.goto zsymm.goto 
+       ssymm.goto dsymm.goto csymm.goto zsymm.goto \
+       smallscaling
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
@@ -2133,7 +2134,7 @@ zgemm3m.$(SUFFIX) : gemm3m.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 smallscaling: smallscaling.c ../$(LIBNAME)
-	$(CC) $(CFLAGS) -lpthread -fopenmp -lm -o $(@F) $^
+	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm
 
 clean ::
 	@rm -f *.goto *.mkl *.acml *.atlas *.veclib
