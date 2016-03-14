@@ -150,7 +150,7 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SGEMVTKERNEL = ../arm/gemv_t.c
 #DGEMVTKERNEL = ../arm/gemv_t.c
 #CGEMVTKERNEL = ../arm/zgemv_t.c
-ZGEMVTKERNEL = zgemv_t_4.c
+#ZGEMVTKERNEL = zgemv_t_4.c
 
 
 #SSYMV_U_KERNEL =  ../generic/symv_k.c
