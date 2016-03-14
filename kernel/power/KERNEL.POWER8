@@ -3,14 +3,18 @@
 #CGEMM_BETA = ../generic/zgemm_beta.c
 #ZGEMM_BETA = ../generic/zgemm_beta.c
 
-STRMMKERNEL	= gemm_kernel_power6.S
+STRMMKERNEL	= strmm_kernel_16x8_power8.S
 DTRMMKERNEL	= dtrmm_kernel_16x4_power8.S
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL	= ztrmm_kernel_8x2_power8.S
 
-SGEMMKERNEL    =  gemm_kernel_power6.S
-SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
+SGEMMKERNEL    =  sgemm_kernel_16x8_power8.S
+SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
+SGEMMITCOPY    = ../generic/gemm_tcopy_16.c
+SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
+SGEMMOTCOPY    =  ../generic/gemm_tcopy_8.c
+SGEMMINCOPYOBJ =  sgemm_incopy.o
+SGEMMITCOPYOBJ =  sgemm_itcopy.o
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
@@ -146,7 +150,7 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SGEMVTKERNEL = ../arm/gemv_t.c
 #DGEMVTKERNEL = ../arm/gemv_t.c
 #CGEMVTKERNEL = ../arm/zgemv_t.c
-#ZGEMVTKERNEL = ../arm/zgemv_t.c
+ZGEMVTKERNEL = zgemv_t_4.c
 
 
 #SSYMV_U_KERNEL =  ../generic/symv_k.c
