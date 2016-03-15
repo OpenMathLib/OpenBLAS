@@ -1,5 +1,22 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.16
+15-Mar-2016
+common:
+	* Avoid potential getenv segfault. (#716)
+	* Import LAPACK svn bugfix #142-#147,#150-#155
+
+x86/x86_64:
+	* Optimize c/zgemv for AMD Bulldozer, Piledriver, Steamroller
+	* Fix bug with scipy linalg test.
+
+ARM:
+	* Improve DGEMM for ARM Cortex-A57. (Thanks, Ashwin Sekhar T K)
+
+POWER:
+	* Optimize D and Z BLAS3 functions for Power8.
+
+====================================================================
 Version 0.2.16.rc1
 23-Feb-2016
 common:
