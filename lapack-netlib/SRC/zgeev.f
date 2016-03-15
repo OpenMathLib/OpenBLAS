@@ -404,9 +404,9 @@
      $                WORK( IWRK ), LWORK-IWRK+1, INFO )
       END IF
 *
-*     If INFO > 0 from ZHSEQR, then quit
+*     If INFO .NE. 0 from ZHSEQR, then quit
 *
-      IF( INFO.GT.0 )
+      IF( INFO.NE.0 )
      $   GO TO 50
 *
       IF( WANTVL .OR. WANTVR ) THEN

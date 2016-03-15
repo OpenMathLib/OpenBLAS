@@ -33,13 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-int openblas_verbose() {
-  int ret=0;
-  env_var_t p;
-  if (readenv(p,"OPENBLAS_VERBOSE")) ret = atoi(p);
-  if(ret<0) ret=0;
-  return ret;
-}
+extern int openblas_verbose();
 
 void openblas_warning(int verbose, const char * msg) {
   int current_verbose;

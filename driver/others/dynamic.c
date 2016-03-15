@@ -391,7 +391,7 @@ static char *corename[] = {
     "Nehalem",
     "Athlon",
     "Opteron",
-    "Opteron(SSE3)",
+    "Opteron_SSE3",
     "Barcelona",
     "Nano",
     "Sandybridge",

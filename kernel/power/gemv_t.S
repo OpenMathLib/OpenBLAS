@@ -139,6 +139,11 @@
 #define PREFETCHSIZE_C   8
 #endif
 
+#ifdef POWER8
+#define PREFETCHSIZE_A  96
+#define PREFETCHSIZE_C   8
+#endif
+
 #define y01 f0
 #define y02 f1
 #define y03 f2

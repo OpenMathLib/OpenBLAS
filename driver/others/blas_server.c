@@ -92,6 +92,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+extern unsigned int openblas_thread_timeout();
+
 #ifdef SMP_SERVER
 
 #undef MONITOR
@@ -524,6 +526,7 @@ static int blas_monitor(void *arg){
 int blas_thread_init(void){
   BLASLONG i;
   int ret;
+  int thread_timeout_env;
 #ifdef NEED_STACKATTR
   pthread_attr_t attr;
 #endif
@@ -540,22 +543,12 @@ int blas_thread_init(void){
 
   if (!blas_server_avail){
 
-    env_var_t p;
-
-    if (readenv(p,"THREAD_TIMEOUT")) {
-      thread_timeout = atoi(p);
-      if (thread_timeout <  4) thread_timeout =  4;
-      if (thread_timeout > 30) thread_timeout = 30;
-      thread_timeout = (1 << thread_timeout);
-    }else{
-		if (readenv(p,"GOTO_THREAD_TIMEOUT")) {
-			thread_timeout = atoi(p);
-			if (thread_timeout <  4) thread_timeout =  4;
-			if (thread_timeout > 30) thread_timeout = 30;
-			thread_timeout = (1 << thread_timeout);
-		}
-	}
-
+    thread_timeout_env=openblas_thread_timeout();
+    if (thread_timeout_env>0) {
+      if (thread_timeout_env <  4) thread_timeout_env =  4;
+      if (thread_timeout_env > 30) thread_timeout_env = 30;
+      thread_timeout = (1 << thread_timeout_env);
+    }
 
     for(i = 0; i < blas_num_threads - 1; i++){
 

@@ -5,6 +5,13 @@ set(OpenBLAS_utest_src
   test_amax.c
   )
 
+if (NOT NO_LAPACK)
+set(OpenBLAS_utest_src
+  ${OpenBLAS_utest_src}
+  test_potrs.c
+  )
+endif()
+
 set(OpenBLAS_utest_bin openblas_utest)
 add_executable(${OpenBLAS_utest_bin} ${OpenBLAS_utest_src})
 

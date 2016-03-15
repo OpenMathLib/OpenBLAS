@@ -23,28 +23,32 @@ typedef struct {
 
 void * s_create_matrix(int size) {
     float * r = malloc(size * sizeof(double));
-    for(int i = 0; i < size; i++)
+    int i;
+    for(i = 0; i < size; i++)
         r[i] = 1e3 * i / size;
     return r;
 }
 
 void * c_create_matrix(int size) {
     float * r = malloc(size * 2 * sizeof(double));
-    for(int i = 0; i < 2 * size; i++)
+    int i;
+    for(i = 0; i < 2 * size; i++)
         r[i] = 1e3 * i / size;
     return r;
 }
 
 void * z_create_matrix(int size) {
     double * r = malloc(size * 2 * sizeof(double));
-    for(int i = 0; i < 2 * size; i++)
+    int i;
+    for(i = 0; i < 2 * size; i++)
         r[i] = 1e3 * i / size;
     return r;
 }
 
 void * d_create_matrix(int size) {
     double * r = malloc(size * sizeof(double));
-    for(int i = 0; i < size; i++)
+    int i;
+    for(i = 0; i < size; i++)
         r[i] = 1e3 * i / size;
     return r;
 }
@@ -188,4 +192,5 @@ int main(int argc, char * argv[]) {
             size *= inc_factor;
         }
     }
+    return(0);
 }

@@ -34,8 +34,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "zgemv_n_microk_haswell-4.c"
 #elif defined(SANDYBRIDGE)
 #include "zgemv_n_microk_sandy-4.c"
+#elif defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#include "zgemv_n_microk_bulldozer-4.c"
 #endif
-
 
 #define NBMAX 1024
 

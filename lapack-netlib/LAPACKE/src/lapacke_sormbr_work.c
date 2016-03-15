@@ -73,8 +73,11 @@ lapack_int LAPACKE_sormbr_work( int matrix_layout, char vect, char side,
             return (info < 0) ? (info - 1) : info;
         }
         /* Allocate memory for temporary array(s) */
-        a_t = (float*)
-            LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,MIN(nq,k)) );
+        if( LAPACKE_lsame( vect, 'q' ) ) {
+          a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,k) );
+        } else {
+          a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,nq) );
+        }
         if( a_t == NULL ) {
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;

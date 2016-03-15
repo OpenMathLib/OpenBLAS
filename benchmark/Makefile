@@ -2134,7 +2134,7 @@ zgemm3m.$(SUFFIX) : gemm3m.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 smallscaling: smallscaling.c ../$(LIBNAME)
-	$(CC) $(CFLAGS) -lpthread -fopenmp -lm -o $(@F) $^
+	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm
 
 clean ::
 	@rm -f *.goto *.mkl *.acml *.atlas *.veclib

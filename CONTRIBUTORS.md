@@ -141,5 +141,11 @@ In chronological order:
 * Martin Koehler <https://github.com/grisuthedragon/>
   * [2015-09-07] Improved imatcopy
 
+* Ashwin Sekhar T K <https://github.com/ashwinyes/>
+  * [2015-11-09] Assembly kernels for Cortex-A57 (ARMv8)
+  * [2015-11-20] lapack-test fixes for Cortex-A57
+  * [2016-03-14] Additional functional Assembly Kernels for Cortex-A57
+  * [2016-03-14] Optimize Dgemm 4x4 for Cortex-A57
+
 * [Your name or handle] <[email or website]>
   * [Date] [Brief summary of your changes]

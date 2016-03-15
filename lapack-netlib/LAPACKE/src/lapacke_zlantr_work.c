@@ -39,7 +39,7 @@ double LAPACKE_zlantr_work( int matrix_layout, char norm, char uplo,
                                 double* work )
 {
     lapack_int info = 0;
-	double res = 0.;
+    double res = 0.;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         res = LAPACK_zlantr( &norm, &uplo, &diag, &m, &n, a, &lda, work );

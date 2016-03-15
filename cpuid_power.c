@@ -55,6 +55,7 @@
 #define CPUTYPE_POWER6     5
 #define CPUTYPE_CELL       6
 #define CPUTYPE_PPCG4	   7
+#define CPUTYPE_POWER8     8
 
 char *cpuname[] = {
   "UNKNOWN",
@@ -65,6 +66,7 @@ char *cpuname[] = {
   "POWER6",
   "CELL",
   "PPCG4",
+  "POWER8"
 };
 
 char *lowercpuname[] = {
@@ -76,6 +78,7 @@ char *lowercpuname[] = {
   "power6",
   "cell",
   "ppcg4",
+  "power8"
 };
 
 char *corename[] = {
@@ -87,6 +90,7 @@ char *corename[] = {
   "POWER6",
   "CELL",
   "PPCG4",
+  "POWER8"
 };
 
 int detect(void){
@@ -115,7 +119,7 @@ int detect(void){
   if (!strncasecmp(p, "POWER5", 6)) return CPUTYPE_POWER5;
   if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
-  if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER6;
+  if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
   if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
   if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
 

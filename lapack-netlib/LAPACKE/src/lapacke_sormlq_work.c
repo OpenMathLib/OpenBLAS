@@ -72,7 +72,11 @@ lapack_int LAPACKE_sormlq_work( int matrix_layout, char side, char trans,
             return (info < 0) ? (info - 1) : info;
         }
         /* Allocate memory for temporary array(s) */
-        a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,m) );
+        if( LAPACKE_lsame( side, 'l' ) ) {
+            a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,m) );
+        } else {
+            a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,n) );
+        }
         if( a_t == NULL ) {
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;

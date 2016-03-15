@@ -146,13 +146,31 @@
 *     ..
 *     .. Executable Statements ..
 *
+      INFO = 0
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
 *     Set constants to control overflow
 *
-      INFO = 0
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' ) / EPS
       BIGNUM = ONE / SMLNUM
       CALL SLABAD( SMLNUM, BIGNUM )
+*
+*     Handle the case N=1 by itself
+*
+      IF( N.EQ.1 ) THEN
+         IPIV( 1 ) = 1
+         JPIV( 1 ) = 1
+         IF( ABS( A( 1, 1 ) ).LT.SMLNUM ) THEN
+            INFO = 1
+            A( 1, 1 ) = SMLNUM
+         END IF
+         RETURN
+      END IF
 *
 *     Factorize A using complete pivoting.
 *     Set pivots less than SMIN to SMIN.

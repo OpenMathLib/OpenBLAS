@@ -1,4 +1,4 @@
-/* Copyright 2011-2015 Bas van den Berg
+/* Copyright 2011-2016 Bas van den Berg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,10 @@ struct ctest {
 
 #ifdef __APPLE__
 #define __CTEST_APPLE
+#endif
+
+#ifdef __MINGW32__
+#undef CTEST_SEGFAULT
 #endif
 
 #if defined(_WIN32) && defined(_MSC_VER)
@@ -211,6 +215,9 @@ void assert_not_equal(intmax_t exp, intmax_t real, const char* caller, int line)
 
 void assert_not_equal_u(uintmax_t exp, uintmax_t real, const char* caller, int line);
 #define ASSERT_NOT_EQUAL_U(exp, real) assert_not_equal_u(exp, real, __FILE__, __LINE__)
+
+void assert_interval(intmax_t exp1, intmax_t exp2, intmax_t real, const char* caller, int line);
+#define ASSERT_INTERVAL(exp1, exp2, real) assert_interval(exp1, exp2, real, __FILE__, __LINE__)
 
 void assert_null(void* real, const char* caller, int line);
 #define ASSERT_NULL(real) assert_null((void*)real, __FILE__, __LINE__)
@@ -508,6 +515,12 @@ void assert_not_equal(intmax_t exp, intmax_t real, const char* caller, int line)
 void assert_not_equal_u(uintmax_t exp, uintmax_t real, const char* caller, int line) {
     if ((exp) == (real)) {
         CTEST_ERR("%s:%d  should not be %" PRIuMAX, caller, line, real);
+    }
+}
+
+void assert_interval(intmax_t exp1, intmax_t exp2, intmax_t real, const char* caller, int line) {
+    if (real < exp1 || real > exp2) {
+        CTEST_ERR("%s:%d  expected %" PRIdMAX "-%" PRIdMAX ", got %" PRIdMAX, caller, line, exp1, exp2, real);
     }
 }
 

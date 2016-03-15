@@ -30,6 +30,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(HASWELL)
 #include "cgemv_t_microk_haswell-4.c"
+#elif defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#include "cgemv_t_microk_bulldozer-4.c"
 #endif
 
 #define NBMAX 2048

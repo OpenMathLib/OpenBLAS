@@ -294,8 +294,11 @@ void openblas_fork_handler()
 #endif
 }
 
+extern int openblas_num_threads_env();
+extern int openblas_goto_num_threads_env();
+extern int openblas_omp_num_threads_env();
+
 int blas_get_cpu_number(void){
-  env_var_t p;
 #if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   int max_num;
 #endif
@@ -310,18 +313,18 @@ int blas_get_cpu_number(void){
 
   blas_goto_num = 0;
 #ifndef USE_OPENMP
-  if (readenv(p,"OPENBLAS_NUM_THREADS")) blas_goto_num = atoi(p);
+  blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
 
   if (blas_goto_num == 0) {
-		if (readenv(p,"GOTO_NUM_THREADS")) blas_goto_num = atoi(p);
-		if (blas_goto_num < 0) blas_goto_num = 0;
+    blas_goto_num=openblas_goto_num_threads_env();
+    if (blas_goto_num < 0) blas_goto_num = 0;
   }
 
 #endif
 
   blas_omp_num = 0;
-  if (readenv(p,"OMP_NUM_THREADS")) blas_omp_num = atoi(p);
+  blas_omp_num=openblas_omp_num_threads_env();
   if (blas_omp_num < 0) blas_omp_num = 0;
 
   if (blas_goto_num > 0) blas_num_threads = blas_goto_num;
@@ -1340,6 +1343,7 @@ static void gotoblas_memory_init(void) {
 /* Initialization for all function; this function should be called before main */
 
 static int gotoblas_initialized = 0;
+extern void openblas_read_env();
 
 void CONSTRUCTOR gotoblas_init(void) {
 
@@ -1348,6 +1352,8 @@ void CONSTRUCTOR gotoblas_init(void) {
 #ifdef SMP
   openblas_fork_handler();
 #endif
+
+  openblas_read_env();
 
 #ifdef PROFILE
    moncontrol (0);
