@@ -77,7 +77,7 @@
 *>          The constant to which the diagonal elements are to be set.
 *> \endverbatim
 *>
-*> \param[in,out] A
+*> \param[out] A
 *> \verbatim
 *>          A is REAL array, dimension (LDA,N)
 *>          On exit, the leading m-by-n submatrix of A is set as follows:
@@ -103,17 +103,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup auxOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE SLASET( UPLO, M, N, ALPHA, BETA, A, LDA )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

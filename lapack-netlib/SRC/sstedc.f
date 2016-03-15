@@ -1,4 +1,4 @@
-*> \brief \b SSTEBZ
+*> \brief \b SSTEDC
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -173,7 +173,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -188,10 +188,10 @@
       SUBROUTINE SSTEDC( COMPZ, N, D, E, Z, LDZ, WORK, LWORK, IWORK,
      $                   LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPZ
@@ -442,38 +442,32 @@
 *
 *        endwhile
 *
-*        If the problem split any number of times, then the eigenvalues
-*        will not be properly ordered.  Here we permute the eigenvalues
-*        (and the associated eigenvectors) into ascending order.
+         IF( ICOMPZ.EQ.0 ) THEN
 *
-         IF( M.NE.N ) THEN
-            IF( ICOMPZ.EQ.0 ) THEN
+*          Use Quick Sort
 *
-*              Use Quick Sort
+           CALL SLASRT( 'I', N, D, INFO )
 *
-               CALL SLASRT( 'I', N, D, INFO )
+         ELSE
 *
-            ELSE
+*          Use Selection Sort to minimize swaps of eigenvectors
 *
-*              Use Selection Sort to minimize swaps of eigenvectors
-*
-               DO 40 II = 2, N
-                  I = II - 1
-                  K = I
-                  P = D( I )
-                  DO 30 J = II, N
-                     IF( D( J ).LT.P ) THEN
-                        K = J
-                        P = D( J )
-                     END IF
-   30             CONTINUE
-                  IF( K.NE.I ) THEN
-                     D( K ) = D( I )
-                     D( I ) = P
-                     CALL SSWAP( N, Z( 1, I ), 1, Z( 1, K ), 1 )
-                  END IF
-   40          CONTINUE
-            END IF
+           DO 40 II = 2, N
+              I = II - 1
+              K = I
+              P = D( I )
+              DO 30 J = II, N
+                 IF( D( J ).LT.P ) THEN
+                    K = J
+                    P = D( J )
+                 END IF
+   30         CONTINUE
+              IF( K.NE.I ) THEN
+                 D( K ) = D( I )
+                 D( I ) = P
+                 CALL SSWAP( N, Z( 1, I ), 1, Z( 1, K ), 1 )
+              END IF
+   40      CONTINUE
          END IF
       END IF
 *

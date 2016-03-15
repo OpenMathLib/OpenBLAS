@@ -261,6 +261,11 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	//Intel Avoton
+	if (model == 13) { 
+	  openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK); 
+	  return &gotoblas_NEHALEM;
+	}	
 	return NULL;
       case 5:
 	//Intel Broadwell
@@ -318,7 +323,7 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
-	}else if(model == 2){
+	}else if(model == 2 || model == 3){
 	  //AMD Bulldozer Opteron 6300 / Opteron 4300 / Opteron 3300
 	  if(support_avx())
 	    return &gotoblas_PILEDRIVER;
@@ -327,7 +332,15 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}else if(model == 0){
-	  if (exmodel == 3) {
+	  if (exmodel == 1) {
+	    //AMD Trinity
+	    if(support_avx())
+	      return &gotoblas_PILEDRIVER;
+	    else{
+	      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	    }
+	   }else if (exmodel == 3) {
 	    //AMD STEAMROLLER
 	    if(support_avx())
 	      return &gotoblas_STEAMROLLER;
@@ -378,7 +391,7 @@ static char *corename[] = {
     "Nehalem",
     "Athlon",
     "Opteron",
-    "Opteron(SSE3)",
+    "Opteron_SSE3",
     "Barcelona",
     "Nano",
     "Sandybridge",

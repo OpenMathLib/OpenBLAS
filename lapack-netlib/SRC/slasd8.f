@@ -152,7 +152,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -166,10 +166,10 @@
       SUBROUTINE SLASD8( ICOMPQ, K, D, Z, VF, VL, DIFL, DIFR, LDDIFR,
      $                   DSIGMA, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            ICOMPQ, INFO, K, LDDIFR
@@ -276,10 +276,9 @@
          CALL SLASD4( K, J, DSIGMA, Z, WORK( IWK1 ), RHO, D( J ),
      $                WORK( IWK2 ), INFO )
 *
-*        If the root finder fails, the computation is terminated.
+*        If the root finder fails, report the convergence failure.
 *
          IF( INFO.NE.0 ) THEN
-            CALL XERBLA( 'SLASD4', -INFO )
             RETURN
          END IF
          WORK( IWK3I+J ) = WORK( IWK3I+J )*WORK( J )*WORK( IWK2I+J )

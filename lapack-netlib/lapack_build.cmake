@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.7)
 ###################################################################
 # The values in this section must always be provided
 ###################################################################
@@ -161,7 +161,7 @@ set(CTEST_NOTES_FILES  "${CTEST_NOTES_FILES}"
   )
 
 # check for parallel
-if(parallel GREATER 1)
+if(parallel GREATER 10)
   if(NOT CTEST_BUILD_COMMAND)
     set(CTEST_BUILD_COMMAND "make -j${parallel} -i")
   endif(NOT CTEST_BUILD_COMMAND)
@@ -169,7 +169,7 @@ if(parallel GREATER 1)
   message("Use parallel build")
   message("CTEST_BUILD_COMMAND: ${CTEST_BUILD_COMMAND}")
   message("CTEST_CONFIGURE_COMMAND: ${CTEST_CONFIGURE_COMMAND}")
-endif(parallel GREATER 1)
+endif(parallel GREATER 10)
 
 ###################################################################
 # Values for the cmake build
@@ -216,6 +216,7 @@ message("  Build")
 ctest_build(BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
 message("  Test")
 ctest_test(BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
+#ctest_test(BUILD "${CTEST_BINARY_DIRECTORY}" INCLUDE "Summary")
 message("  Submit")
 ctest_submit(RETURN_VALUE res)
 message("  All done")

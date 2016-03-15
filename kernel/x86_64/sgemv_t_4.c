@@ -105,7 +105,7 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
 	"cmpq	$0, %1				\n\t"
 	"je	3f			\n\t"
 
-        ".align 16                              \n\t"
+	//        ".align 16                              \n\t"
         "1:                            \n\t"
 
 	"movups  (%5,%0,4) , %%xmm14		\n\t" // x
@@ -183,7 +183,7 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"cmpq	$0, %1				\n\t"
 	"je	3f			\n\t"
 
-        ".align 16                              \n\t"
+	//        ".align 16                              \n\t"
         "1:                            \n\t"
 
 	"movups    (%3,%0,4) , %%xmm12		\n\t"
@@ -258,7 +258,7 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
 	"movss	 (%2) , %%xmm10                 \n\t"
 	"shufps  $0 , %%xmm10 , %%xmm10		\n\t"
 
-        ".align 16                              \n\t"
+	//        ".align 16                              \n\t"
         "1:                            \n\t"
 
 	"movups  (%3,%0,4) , %%xmm12		\n\t"

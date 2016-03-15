@@ -130,7 +130,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -163,10 +163,10 @@
 *  =====================================================================
       SUBROUTINE ZLARFT( DIRECT, STOREV, N, K, V, LDV, TAU, T, LDT )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIRECT, STOREV
@@ -187,7 +187,7 @@
       INTEGER            I, J, PREVLASTV, LASTV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZGEMV, ZLACGV, ZTRMV
+      EXTERNAL           ZGEMV, ZLACGV, ZTRMV, ZGEMM
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME

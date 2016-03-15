@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(OpenBLAS)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 2)
-set(OpenBLAS_PATCH_VERSION 14)
+set(OpenBLAS_PATCH_VERSION 16)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 enable_language(ASM)
@@ -52,10 +52,6 @@ set(BLASDIRS interface driver/level2 driver/level3 driver/others)
 
 if (NOT DYNAMIC_ARCH)
   list(APPEND BLASDIRS kernel)
-endif ()
-
-if (DEFINED UTEST_CHECK)
-  set(SANITY_CHECK 1)
 endif ()
 
 if (DEFINED SANITY_CHECK)
@@ -110,6 +106,10 @@ if (${NO_STATIC} AND ${NO_SHARED})
   message(FATAL_ERROR "Neither static nor shared are enabled.")
 endif ()
 
+#Set default output directory
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
+
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
 foreach (SUBDIR ${SUBDIRS})
@@ -139,6 +139,17 @@ add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET
 
 include("${CMAKE_SOURCE_DIR}/cmake/export.cmake")
 
+# Set output for libopenblas
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+  string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+endforeach()
+
+enable_testing()
+add_subdirectory(utest)
 
 if(NOT MSVC)
 #only build shared library for MSVC
@@ -152,7 +163,6 @@ target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
 endif()
 
 #build test and ctest
-enable_testing()
 add_subdirectory(test)
 if(NOT NO_CBLAS)
 add_subdirectory(ctest)

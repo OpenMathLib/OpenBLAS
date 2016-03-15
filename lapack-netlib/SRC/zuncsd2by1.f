@@ -55,12 +55,11 @@
 *>                                [  0  S  0 ]
 *>                                [  0  0  I ]
 *> 
-*> X11 is P-by-Q. The unitary matrices U1, U2, V1, and V2 are P-by-P,
-*> (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
-*> R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
-*> which R = MIN(P,M-P,Q,M-Q).
-*>
-*>\endverbatim
+*> X11 is P-by-Q. The unitary matrices U1, U2, and V1 are P-by-P,
+*> (M-P)-by-(M-P), and Q-by-Q, respectively. C and S are R-by-R
+*> nonnegative diagonal matrices satisfying C^2 + S^2 = I, in which
+*> R = MIN(P,M-P,Q,M-Q).
+*> \endverbatim
 *
 *  Arguments:
 *  ==========
@@ -68,172 +67,165 @@
 *> \param[in] JOBU1
 *> \verbatim
 *>          JOBU1 is CHARACTER
-*>           = 'Y':      U1 is computed;
-*>           otherwise:  U1 is not computed.
+*>          = 'Y':      U1 is computed;
+*>          otherwise:  U1 is not computed.
 *> \endverbatim
 *>
 *> \param[in] JOBU2
 *> \verbatim
 *>          JOBU2 is CHARACTER
-*>           = 'Y':      U2 is computed;
-*>           otherwise:  U2 is not computed.
+*>          = 'Y':      U2 is computed;
+*>          otherwise:  U2 is not computed.
 *> \endverbatim
 *>
 *> \param[in] JOBV1T
 *> \verbatim
 *>          JOBV1T is CHARACTER
-*>           = 'Y':      V1T is computed;
-*>           otherwise:  V1T is not computed.
+*>          = 'Y':      V1T is computed;
+*>          otherwise:  V1T is not computed.
 *> \endverbatim
 *>
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>           The number of rows and columns in X.
+*>          The number of rows in X.
 *> \endverbatim
 *>
 *> \param[in] P
 *> \verbatim
 *>          P is INTEGER
-*>           The number of rows in X11 and X12. 0 <= P <= M.
+*>          The number of rows in X11. 0 <= P <= M.
 *> \endverbatim
 *>
 *> \param[in] Q
 *> \verbatim
 *>          Q is INTEGER
-*>           The number of columns in X11 and X21. 0 <= Q <= M.
+*>          The number of columns in X11 and X21. 0 <= Q <= M.
 *> \endverbatim
 *>
 *> \param[in,out] X11
 *> \verbatim
 *>          X11 is COMPLEX*16 array, dimension (LDX11,Q)
-*>           On entry, part of the unitary matrix whose CSD is
-*>           desired.
+*>          On entry, part of the unitary matrix whose CSD is desired.
 *> \endverbatim
 *>
 *> \param[in] LDX11
 *> \verbatim
 *>          LDX11 is INTEGER
-*>           The leading dimension of X11. LDX11 >= MAX(1,P).
+*>          The leading dimension of X11. LDX11 >= MAX(1,P).
 *> \endverbatim
 *>
 *> \param[in,out] X21
 *> \verbatim
 *>          X21 is COMPLEX*16 array, dimension (LDX21,Q)
-*>           On entry, part of the unitary matrix whose CSD is
-*>           desired.
+*>          On entry, part of the unitary matrix whose CSD is desired.
 *> \endverbatim
 *>
 *> \param[in] LDX21
 *> \verbatim
 *>          LDX21 is INTEGER
-*>           The leading dimension of X21. LDX21 >= MAX(1,M-P).
+*>          The leading dimension of X21. LDX21 >= MAX(1,M-P).
 *> \endverbatim
 *>
 *> \param[out] THETA
 *> \verbatim
-*>          THETA is COMPLEX*16 array, dimension (R), in which R =
-*>           MIN(P,M-P,Q,M-Q).
-*>           C = DIAG( COS(THETA(1)), ... , COS(THETA(R)) ) and
-*>           S = DIAG( SIN(THETA(1)), ... , SIN(THETA(R)) ).
+*>          THETA is DOUBLE PRECISION array, dimension (R), in which R =
+*>          MIN(P,M-P,Q,M-Q).
+*>          C = DIAG( COS(THETA(1)), ... , COS(THETA(R)) ) and
+*>          S = DIAG( SIN(THETA(1)), ... , SIN(THETA(R)) ).
 *> \endverbatim
 *>
 *> \param[out] U1
 *> \verbatim
 *>          U1 is COMPLEX*16 array, dimension (P)
-*>           If JOBU1 = 'Y', U1 contains the P-by-P unitary matrix U1.
+*>          If JOBU1 = 'Y', U1 contains the P-by-P unitary matrix U1.
 *> \endverbatim
 *>
 *> \param[in] LDU1
 *> \verbatim
 *>          LDU1 is INTEGER
-*>           The leading dimension of U1. If JOBU1 = 'Y', LDU1 >=
-*>           MAX(1,P).
+*>          The leading dimension of U1. If JOBU1 = 'Y', LDU1 >=
+*>          MAX(1,P).
 *> \endverbatim
 *>
 *> \param[out] U2
 *> \verbatim
 *>          U2 is COMPLEX*16 array, dimension (M-P)
-*>           If JOBU2 = 'Y', U2 contains the (M-P)-by-(M-P) unitary
-*>           matrix U2.
+*>          If JOBU2 = 'Y', U2 contains the (M-P)-by-(M-P) unitary
+*>          matrix U2.
 *> \endverbatim
 *>
 *> \param[in] LDU2
 *> \verbatim
 *>          LDU2 is INTEGER
-*>           The leading dimension of U2. If JOBU2 = 'Y', LDU2 >=
-*>           MAX(1,M-P).
+*>          The leading dimension of U2. If JOBU2 = 'Y', LDU2 >=
+*>          MAX(1,M-P).
 *> \endverbatim
 *>
 *> \param[out] V1T
 *> \verbatim
 *>          V1T is COMPLEX*16 array, dimension (Q)
-*>           If JOBV1T = 'Y', V1T contains the Q-by-Q matrix unitary
-*>           matrix V1**T.
+*>          If JOBV1T = 'Y', V1T contains the Q-by-Q matrix unitary
+*>          matrix V1**T.
 *> \endverbatim
 *>
 *> \param[in] LDV1T
 *> \verbatim
 *>          LDV1T is INTEGER
-*>           The leading dimension of V1T. If JOBV1T = 'Y', LDV1T >=
-*>           MAX(1,Q).
+*>          The leading dimension of V1T. If JOBV1T = 'Y', LDV1T >=
+*>          MAX(1,Q).
 *> \endverbatim
 *>
 *> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX*16 array, dimension (MAX(1,LWORK))
-*>           On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
-*>           If INFO > 0 on exit, WORK(2:R) contains the values PHI(1),
-*>           ..., PHI(R-1) that, together with THETA(1), ..., THETA(R),
-*>           define the matrix in intermediate bidiagonal-block form
-*>           remaining after nonconvergence. INFO specifies the number
-*>           of nonzero PHI's.
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>           The dimension of the array WORK.
-*> \endverbatim
-*> \verbatim
-*>           If LWORK = -1, then a workspace query is assumed; the routine
-*>           only calculates the optimal size of the WORK array, returns
-*>           this value as the first entry of the work array, and no error
-*>           message related to LWORK is issued by XERBLA.
+*>          The dimension of the array WORK.
+*>
+*>          If LWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the optimal size of the WORK array, returns
+*>          this value as the first entry of the work array, and no error
+*>          message related to LWORK is issued by XERBLA.
 *> \endverbatim
 *>
 *> \param[out] RWORK
 *> \verbatim
 *>          RWORK is DOUBLE PRECISION array, dimension (MAX(1,LRWORK))
-*>           On exit, if INFO = 0, RWORK(1) returns the optimal LRWORK.
-*>           If INFO > 0 on exit, RWORK(2:R) contains the values PHI(1),
-*>           ..., PHI(R-1) that, together with THETA(1), ..., THETA(R),
-*>           define the matrix in intermediate bidiagonal-block form
-*>           remaining after nonconvergence. INFO specifies the number
-*>           of nonzero PHI's.
+*>          On exit, if INFO = 0, RWORK(1) returns the optimal LRWORK.
+*>          If INFO > 0 on exit, RWORK(2:R) contains the values PHI(1),
+*>          ..., PHI(R-1) that, together with THETA(1), ..., THETA(R),
+*>          define the matrix in intermediate bidiagonal-block form
+*>          remaining after nonconvergence. INFO specifies the number
+*>          of nonzero PHI's.
 *> \endverbatim
 *>
 *> \param[in] LRWORK
 *> \verbatim
 *>          LRWORK is INTEGER
-*>           The dimension of the array RWORK.
+*>          The dimension of the array RWORK.
 *> 
-*>           If LRWORK = -1, then a workspace query is assumed; the routine
-*>           only calculates the optimal size of the RWORK array, returns
-*>           this value as the first entry of the work array, and no error
-*>           message related to LRWORK is issued by XERBLA.
+*>          If LRWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the optimal size of the RWORK array, returns
+*>          this value as the first entry of the work array, and no error
+*>          message related to LRWORK is issued by XERBLA.
+*> \endverbatim
+*
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (M-MIN(P,M-P,Q,M-Q))
-*> \endverbatim
 *> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>           = 0:  successful exit.
-*>           < 0:  if INFO = -i, the i-th argument had an illegal value.
-*>           > 0:  ZBBCSD did not converge. See the description of WORK
+*>          = 0:  successful exit.
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*>          > 0:  ZBBCSD did not converge. See the description of WORK
 *>                above for details.
 *> \endverbatim
 *
@@ -261,7 +253,7 @@
      $                       LDV1T, WORK, LWORK, RWORK, LRWORK, IWORK,
      $                       INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2012

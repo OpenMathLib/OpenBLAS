@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2014, The OpenBLAS Project
+Copyright (c) 2011-2016, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,17 +31,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include "common_utest.h"
+#include "openblas_utest.h"
 
-void test_samax()
-{
-  int N=3, inc=1;
+CTEST(amax, samax){
+  blasint N=3, inc=1;
   float te_max=0.0, tr_max=0.0;
   float x[]={-1.1, 2.2, -3.3};
 
   te_max=BLASFUNC(samax)(&N, x, &inc);
-
-  tr_max=BLASFUNC_REF(samax)(&N, x, &inc);
-
-  CU_ASSERT_DOUBLE_EQUAL(te_max, tr_max, CHECK_EPS);
+  tr_max=3.3;
+  
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
 }

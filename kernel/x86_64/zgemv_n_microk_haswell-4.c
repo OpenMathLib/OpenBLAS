@@ -47,7 +47,7 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vbroadcastsd	56(%2), %%ymm7                  \n\t"  // imag part x3
 
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"prefetcht0      192(%4,%0,8)			\n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
@@ -152,7 +152,7 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vbroadcastsd	24(%2), %%ymm3                  \n\t"  // imag part x1
 
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"prefetcht0      192(%4,%0,8)			\n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
@@ -236,7 +236,7 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"vbroadcastsd	  (%2), %%ymm0                  \n\t"  // real part x0
 	"vbroadcastsd	 8(%2), %%ymm1                  \n\t"  // imag part x0
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"prefetcht0      192(%4,%0,8)			\n\t"
 	"vmovups	(%4,%0,8), %%ymm8	        \n\t" // 2 complex values form a0
@@ -338,7 +338,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 	"vbroadcastsd	  (%4), %%ymm0                  \n\t"  // alpha_r
 	"vbroadcastsd	  (%5), %%ymm1                  \n\t"  // alpha_i
 
-	".align 16				        \n\t"
+	//	".align 16				        \n\t"
 	"1:				        \n\t"
 	"prefetcht0      192(%2,%0,8)			\n\t"
 	"vmovups	(%2,%0,8), %%ymm8	        \n\t" // 2 complex values from src

@@ -51,6 +51,9 @@
 *> the right singular vectors of [A], respectively. The matrices [U] and [V]
 *> are computed and stored in the arrays U and V, respectively. The diagonal
 *> of [SIGMA] is computed and stored in the array SVA.
+*> SGEJSV can sometimes compute tiny singular values and their singular vectors much
+*> more accurately than other SVD routines, see below under Further Details.
+
 *> \endverbatim
 *
 *  Arguments:
@@ -389,7 +392,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup realGEsing
 *
@@ -474,10 +477,10 @@
      $                   M, N, A, LDA, SVA, U, LDU, V, LDV,
      $                   WORK, LWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       IMPLICIT    NONE
@@ -506,8 +509,7 @@
      $        NOSCAL, ROWPIV, RSVEC,  TRANSP
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC ABS,  ALOG, AMAX1, AMIN1, FLOAT,
-     $          MAX0, MIN0, NINT,  SIGN,  SQRT
+      INTRINSIC ABS, ALOG, MAX, MIN, FLOAT, NINT, SIGN, SQRT
 *     ..
 *     .. External Functions ..
       REAL      SLAMCH, SNRM2
@@ -563,17 +565,17 @@
       ELSE IF ( RSVEC .AND. ( LDV .LT. N ) ) THEN
          INFO = - 14
       ELSE IF ( (.NOT.(LSVEC .OR. RSVEC .OR. ERREST).AND.
-     $                           (LWORK .LT. MAX0(7,4*N+1,2*M+N))) .OR.
+     $                           (LWORK .LT. MAX(7,4*N+1,2*M+N))) .OR.
      $ (.NOT.(LSVEC .OR. RSVEC) .AND. ERREST .AND.
-     $                         (LWORK .LT. MAX0(7,4*N+N*N,2*M+N))) .OR.
-     $ (LSVEC .AND. (.NOT.RSVEC) .AND. (LWORK .LT. MAX0(7,2*M+N,4*N+1)))
+     $                         (LWORK .LT. MAX(7,4*N+N*N,2*M+N))) .OR.
+     $ (LSVEC .AND. (.NOT.RSVEC) .AND. (LWORK .LT. MAX(7,2*M+N,4*N+1)))
      $ .OR.
-     $ (RSVEC .AND. (.NOT.LSVEC) .AND. (LWORK .LT. MAX0(7,2*M+N,4*N+1)))
+     $ (RSVEC .AND. (.NOT.LSVEC) .AND. (LWORK .LT. MAX(7,2*M+N,4*N+1)))
      $ .OR.
      $ (LSVEC .AND. RSVEC .AND. (.NOT.JRACC) .AND. 
-     $                          (LWORK.LT.MAX0(2*M+N,6*N+2*N*N)))
+     $                          (LWORK.LT.MAX(2*M+N,6*N+2*N*N)))
      $ .OR. (LSVEC .AND. RSVEC .AND. JRACC .AND.
-     $                          LWORK.LT.MAX0(2*M+N,4*N+N*N,2*N+N*N+6)))
+     $                          LWORK.LT.MAX(2*M+N,4*N+N*N,2*N+N*N+6)))
      $   THEN
          INFO = - 17
       ELSE
@@ -644,8 +646,8 @@
       AAPP = ZERO
       AAQQ = BIG
       DO 4781 p = 1, N
-         AAPP = AMAX1( AAPP, SVA(p) )
-         IF ( SVA(p) .NE. ZERO ) AAQQ = AMIN1( AAQQ, SVA(p) )
+         AAPP = MAX( AAPP, SVA(p) )
+         IF ( SVA(p) .NE. ZERO ) AAQQ = MIN( AAQQ, SVA(p) )
  4781 CONTINUE
 *
 *     Quick return for zero M x N matrix
@@ -749,14 +751,14 @@
 *              in one pass through the vector
                WORK(M+N+p)  = XSC * SCALEM
                WORK(N+p)    = XSC * (SCALEM*SQRT(TEMP1))
-               AATMAX = AMAX1( AATMAX, WORK(N+p) )
-               IF (WORK(N+p) .NE. ZERO) AATMIN = AMIN1(AATMIN,WORK(N+p))
+               AATMAX = MAX( AATMAX, WORK(N+p) )
+               IF (WORK(N+p) .NE. ZERO) AATMIN = MIN(AATMIN,WORK(N+p))
  1950       CONTINUE
          ELSE
             DO 1904 p = 1, M
                WORK(M+N+p) = SCALEM*ABS( A(p,ISAMAX(N,A(p,1),LDA)) )
-               AATMAX = AMAX1( AATMAX, WORK(M+N+p) )
-               AATMIN = AMIN1( AATMIN, WORK(M+N+p) )
+               AATMAX = MAX( AATMAX, WORK(M+N+p) )
+               AATMIN = MIN( AATMIN, WORK(M+N+p) )
  1904       CONTINUE
          END IF
 *
@@ -994,7 +996,7 @@
          MAXPRJ = ONE
          DO 3051 p = 2, N
             TEMP1  = ABS(A(p,p)) / SVA(IWORK(p))
-            MAXPRJ = AMIN1( MAXPRJ, TEMP1 )
+            MAXPRJ = MIN( MAXPRJ, TEMP1 )
  3051    CONTINUE
          IF ( MAXPRJ**2 .GE. ONE - FLOAT(N)*EPSLN ) ALMORT = .TRUE.
       END IF
@@ -1052,7 +1054,7 @@
 *         Singular Values only
 *
 *         .. transpose A(1:NR,1:N)
-         DO 1946 p = 1, MIN0( N-1, NR )
+         DO 1946 p = 1, MIN( N-1, NR )
             CALL SCOPY( N-p, A(p,p+1), LDA, A(p+1,p), 1 )
  1946    CONTINUE
 *
@@ -1308,7 +1310,7 @@
                   XSC = SQRT(SMALL)/EPSLN
                   DO 3959 p = 2, NR
                      DO 3958 q = 1, p - 1
-                        TEMP1 = XSC * AMIN1(ABS(V(p,p)),ABS(V(q,q)))
+                        TEMP1 = XSC * MIN(ABS(V(p,p)),ABS(V(q,q)))
                         IF ( ABS(V(q,p)) .LE. TEMP1 )
      $                     V(q,p) = SIGN( TEMP1, V(q,p) )
  3958                CONTINUE
@@ -1347,7 +1349,7 @@
                   XSC = SQRT(SMALL)
                   DO 3969 p = 2, NR
                      DO 3968 q = 1, p - 1
-                        TEMP1 = XSC * AMIN1(ABS(V(p,p)),ABS(V(q,q)))
+                        TEMP1 = XSC * MIN(ABS(V(p,p)),ABS(V(q,q)))
                         IF ( ABS(V(q,p)) .LE. TEMP1 )
      $                     V(q,p) = SIGN( TEMP1, V(q,p) )
  3968                CONTINUE
@@ -1360,7 +1362,7 @@
                   XSC = SQRT(SMALL)
                   DO 8970 p = 2, NR
                      DO 8971 q = 1, p - 1
-                        TEMP1 = XSC * AMIN1(ABS(V(p,p)),ABS(V(q,q)))
+                        TEMP1 = XSC * MIN(ABS(V(p,p)),ABS(V(q,q)))
                         V(p,q) = - SIGN( TEMP1, V(q,p) )
  8971                CONTINUE
  8970             CONTINUE
@@ -1671,7 +1673,7 @@
             XSC = SQRT(SMALL/EPSLN)
             DO 9970 q = 2, NR
                DO 9971 p = 1, q - 1
-                  TEMP1 = XSC * AMIN1(ABS(U(p,p)),ABS(U(q,q)))
+                  TEMP1 = XSC * MIN(ABS(U(p,p)),ABS(U(q,q)))
                   U(p,q) = - SIGN( TEMP1, U(q,p) )
  9971          CONTINUE
  9970       CONTINUE

@@ -341,11 +341,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	.align 5
 	push    {r4}
 
-#if defined(DOUBLE)
-	vsub.f64                d0 , d0 , d0
-#else
-	vsub.f32                s0 , s0 , s0
+        movs    r12, #0                                          // clear floating point register
+        vmov    s0, r12
+#if     defined(DOUBLE)
+        vcvt.f64.f32    d0, s0
 #endif
+
 	mov	INDEX, #0
 
 	cmp	N, #0

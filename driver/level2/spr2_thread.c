@@ -43,7 +43,7 @@
 static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *dummy1, FLOAT *buffer, BLASLONG pos){
 
   FLOAT *a, *x, *y;
-  BLASLONG lda, incx, incy;
+  BLASLONG incx, incy;
   BLASLONG i, m_from, m_to;
   FLOAT alpha_r;
 #ifdef COMPLEX
@@ -56,7 +56,6 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
 
   incx = args -> lda;
   incy = args -> ldb;
-  lda  = args -> ldc;
 
   alpha_r = *((FLOAT *)args -> alpha + 0);
 #ifdef COMPLEX

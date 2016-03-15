@@ -1,4 +1,4 @@
-*> \brief \b ICMAX1 finds the index of the vector element whose real part has maximum absolute value.
+*> \brief \b ICMAX1 finds the index of the first vector element of maximum absolute value.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -33,8 +33,7 @@
 *>
 *> \verbatim
 *>
-*> ICMAX1 finds the index of the element whose real part has maximum
-*> absolute value.
+*> ICMAX1 finds the index of the first vector element of maximum absolute value.
 *>
 *> Based on ICAMAX from Level 1 BLAS.
 *> The change is to use the 'genuine' absolute value.
@@ -52,7 +51,8 @@
 *> \param[in] CX
 *> \verbatim
 *>          CX is COMPLEX array, dimension (N)
-*>          The vector whose elements will be summed.
+*>          The vector CX. The ICMAX1 function returns the index of its first
+*>          element of maximum absolute value.
 *> \endverbatim
 *>
 *> \param[in] INCX
@@ -69,7 +69,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date February 2014
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -79,74 +79,61 @@
 *> Nick Higham for use with CLACON.
 *
 *  =====================================================================
-      INTEGER          FUNCTION ICMAX1( N, CX, INCX )
+      INTEGER FUNCTION ICMAX1( N, CX, INCX )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     February 2014
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
 *     ..
 *     .. Array Arguments ..
-      COMPLEX            CX( * )
+      COMPLEX            CX(*)
 *     ..
 *
-* =====================================================================
+*  =====================================================================
 *
 *     .. Local Scalars ..
-      INTEGER            I, IX
       REAL               SMAX
-      COMPLEX            ZDUM
+      INTEGER            I, IX
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS
 *     ..
-*     .. Statement Functions ..
-      REAL               CABS1
-*     ..
-*     .. Statement Function definitions ..
-*
-*     NEXT LINE IS THE ONLY MODIFICATION.
-      CABS1( ZDUM ) = ABS( ZDUM )
-*     ..
 *     .. Executable Statements ..
 *
       ICMAX1 = 0
-      IF( N.LT.1 )
-     $   RETURN
+      IF (N.LT.1 .OR. INCX.LE.0) RETURN
       ICMAX1 = 1
-      IF( N.EQ.1 )
-     $   RETURN
-      IF( INCX.EQ.1 )
-     $   GO TO 30
+      IF (N.EQ.1) RETURN
+      IF (INCX.EQ.1) THEN
 *
-*     CODE FOR INCREMENT NOT EQUAL TO 1
+*        code for increment equal to 1
 *
-      IX = 1
-      SMAX = CABS1( CX( 1 ) )
-      IX = IX + INCX
-      DO 20 I = 2, N
-         IF( CABS1( CX( IX ) ).LE.SMAX )
-     $      GO TO 10
-         ICMAX1 = I
-         SMAX = CABS1( CX( IX ) )
-   10    CONTINUE
+         SMAX = ABS(CX(1))
+         DO I = 2,N
+            IF (ABS(CX(I)).GT.SMAX) THEN
+               ICMAX1 = I
+               SMAX = ABS(CX(I))
+            END IF
+         END DO
+      ELSE
+*
+*        code for increment not equal to 1
+*
+         IX = 1
+         SMAX = ABS(CX(1))
          IX = IX + INCX
-   20 CONTINUE
-      RETURN
-*
-*     CODE FOR INCREMENT EQUAL TO 1
-*
-   30 CONTINUE
-      SMAX = CABS1( CX( 1 ) )
-      DO 40 I = 2, N
-         IF( CABS1( CX( I ) ).LE.SMAX )
-     $      GO TO 40
-         ICMAX1 = I
-         SMAX = CABS1( CX( I ) )
-   40 CONTINUE
+         DO I = 2,N
+            IF (ABS(CX(IX)).GT.SMAX) THEN
+               ICMAX1 = I
+               SMAX = ABS(CX(IX))
+            END IF
+            IX = IX + INCX
+         END DO
+      END IF
       RETURN
 *
 *     End of ICMAX1

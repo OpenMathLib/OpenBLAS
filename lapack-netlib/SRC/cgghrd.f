@@ -79,11 +79,11 @@
 *> \param[in] COMPZ
 *> \verbatim
 *>          COMPZ is CHARACTER*1
-*>          = 'N': do not compute Q;
-*>          = 'I': Q is initialized to the unit matrix, and the
-*>                 unitary matrix Q is returned;
-*>          = 'V': Q must contain a unitary matrix Q1 on entry,
-*>                 and the product Q1*Q is returned.
+*>          = 'N': do not compute Z;
+*>          = 'I': Z is initialized to the unit matrix, and the
+*>                 unitary matrix Z is returned;
+*>          = 'V': Z must contain a unitary matrix Z1 on entry,
+*>                 and the product Z1*Z is returned.
 *> \endverbatim
 *>
 *> \param[in] N
@@ -186,7 +186,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -204,10 +204,10 @@
       SUBROUTINE CGGHRD( COMPQ, COMPZ, N, ILO, IHI, A, LDA, B, LDB, Q,
      $                   LDQ, Z, LDZ, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ

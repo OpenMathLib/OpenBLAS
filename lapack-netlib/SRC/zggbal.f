@@ -160,7 +160,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex16GBcomputational
 *
@@ -177,10 +177,10 @@
       SUBROUTINE ZGGBAL( JOB, N, A, LDA, B, LDB, ILO, IHI, LSCALE,
      $                   RSCALE, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -538,7 +538,7 @@
          IRAB = IZAMAX( N-ILO+1, B( I, ILO ), LDB )
          RAB = MAX( RAB, ABS( B( I, IRAB+ILO-1 ) ) )
          LRAB = INT( LOG10( RAB+SFMIN ) / BASL+ONE )
-         IR = LSCALE( I ) + SIGN( HALF, LSCALE( I ) )
+         IR = INT(LSCALE( I ) + SIGN( HALF, LSCALE( I ) ))
          IR = MIN( MAX( IR, LSFMIN ), LSFMAX, LSFMAX-LRAB )
          LSCALE( I ) = SCLFAC**IR
          ICAB = IZAMAX( IHI, A( 1, I ), 1 )
@@ -546,7 +546,7 @@
          ICAB = IZAMAX( IHI, B( 1, I ), 1 )
          CAB = MAX( CAB, ABS( B( ICAB, I ) ) )
          LCAB = INT( LOG10( CAB+SFMIN ) / BASL+ONE )
-         JC = RSCALE( I ) + SIGN( HALF, RSCALE( I ) )
+         JC = INT(RSCALE( I ) + SIGN( HALF, RSCALE( I ) ))
          JC = MIN( MAX( JC, LSFMIN ), LSFMAX, LSFMAX-LCAB )
          RSCALE( I ) = SCLFAC**JC
   360 CONTINUE

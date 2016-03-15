@@ -61,7 +61,7 @@
 *> \verbatim
 *>          AF is REAL array, dimension (LDA,N)
 *>          Details of the QR factorization of an m-by-n matrix, as
-*>          returnedby SGEQRF. See SGEQRF for further details.
+*>          returned by SGEQRF. See SGEQRF for further details.
 *> \endverbatim
 *>
 *> \param[out] C
@@ -128,7 +128,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_lin
 *
@@ -136,10 +136,10 @@
       SUBROUTINE SQRT03( M, N, K, AF, C, CC, Q, LDA, TAU, WORK, LWORK,
      $                   RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            K, LDA, LWORK, M, N

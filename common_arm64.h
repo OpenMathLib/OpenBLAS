@@ -43,26 +43,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSEMBLER
 
+
 static void __inline blas_lock(volatile BLASULONG *address){
 
-  long register ret;
+  BLASULONG ret;
 
   do {
     while (*address) {YIELDING;};
 
     __asm__ __volatile__(
-                         "ldaxr %0, [%1]      \n\t"
-                         "stlxr w2, %2, [%1]  \n\t"
-                         "orr   %0, %0, x2    \n\t"
-                         : "=r"(ret)
-                         : "r"(address), "r"(1l)
-                         : "memory", "x2"
+			 "mov	x4, #1							\n\t"
+                         "1:                                                            \n\t"
+                         "ldaxr x2, [%1]                                                \n\t"
+                         "cbnz  x2, 1b                                                  \n\t"
+			 "2:								\n\t"
+                         "stxr  w3, x4, [%1]                                            \n\t"
+                         "cbnz  w3, 1b                                                  \n\t"
+                         "mov   %0, #0                                                  \n\t"
+                         : "=r"(ret), "=r"(address)
+                         : "1"(address)
+                         : "memory", "x2" , "x3", "x4"
+
+
     );
 
+
   } while (ret);
-  MB;
+
 }
+
 #define BLAS_LOCK_DEFINED
+
 
 
 static inline int blas_quickdivide(blasint x, blasint y){
@@ -89,8 +100,10 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
 #define PROLOGUE \
+	.text ;\
+	.align	4 ;\
 	.global	REALNAME ;\
-	.func	REALNAME  ;\
+	.type	REALNAME, %function ;\
 REALNAME:
 
 #define EPILOGUE
@@ -107,7 +120,11 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
+#if defined(CORTEXA57)
+#define BUFFER_SIZE     (20 << 20)
+#else
 #define BUFFER_SIZE     (16 << 20)
+#endif
 
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)

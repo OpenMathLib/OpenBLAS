@@ -43,7 +43,7 @@
 *>
 *> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
 *> or a ratio  alpha/beta = w, such that A - w*B is singular.  It is
-*> usually represented as the pair (alpha,beta), as there is reasonalbe
+*> usually represented as the pair (alpha,beta), as there is reasonable
 *> interpretation for beta=0, and even for both being zero.
 *>
 *> A right generalized eigenvector corresponding to a generalized
@@ -398,7 +398,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup double_eig
 *
@@ -408,10 +408,10 @@
      $                   ALPHAR, ALPHAI, BETA, ALPHR1, ALPHI1, BETA1,
      $                   WORK, LWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LDQE, LWORK, NOUNIT, NSIZES,

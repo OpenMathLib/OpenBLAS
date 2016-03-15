@@ -100,17 +100,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup realPOcomputational
 *
 *  =====================================================================
       SUBROUTINE SPOTRF( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -136,7 +136,7 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEMM, SPOTF2, SSYRK, STRSM, XERBLA
+      EXTERNAL           SGEMM, SPOTRF2, SSYRK, STRSM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -171,7 +171,7 @@
 *
 *        Use unblocked code.
 *
-         CALL SPOTF2( UPLO, N, A, LDA, INFO )
+         CALL SPOTRF2( UPLO, N, A, LDA, INFO )
       ELSE
 *
 *        Use blocked code.
@@ -188,7 +188,7 @@
                JB = MIN( NB, N-J+1 )
                CALL SSYRK( 'Upper', 'Transpose', JB, J-1, -ONE,
      $                     A( 1, J ), LDA, ONE, A( J, J ), LDA )
-               CALL SPOTF2( 'Upper', JB, A( J, J ), LDA, INFO )
+               CALL SPOTRF2( 'Upper', JB, A( J, J ), LDA, INFO )
                IF( INFO.NE.0 )
      $            GO TO 30
                IF( J+JB.LE.N ) THEN
@@ -216,7 +216,7 @@
                JB = MIN( NB, N-J+1 )
                CALL SSYRK( 'Lower', 'No transpose', JB, J-1, -ONE,
      $                     A( J, 1 ), LDA, ONE, A( J, J ), LDA )
-               CALL SPOTF2( 'Lower', JB, A( J, J ), LDA, INFO )
+               CALL SPOTRF2( 'Lower', JB, A( J, J ), LDA, INFO )
                IF( INFO.NE.0 )
      $            GO TO 30
                IF( J+JB.LE.N ) THEN

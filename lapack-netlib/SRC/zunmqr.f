@@ -136,9 +136,7 @@
 *>          The dimension of the array WORK.
 *>          If SIDE = 'L', LWORK >= max(1,N);
 *>          if SIDE = 'R', LWORK >= max(1,M).
-*>          For optimum performance LWORK >= N*NB if SIDE = 'L', and
-*>          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
-*>          blocksize.
+*>          For good performance, LWORK should generally be larger.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -161,7 +159,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -169,10 +167,10 @@
       SUBROUTINE ZUNMQR( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS
@@ -185,16 +183,14 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            NBMAX, LDT
-      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
+      INTEGER            NBMAX, LDT, TSIZE
+      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1,
+     $                     TSIZE = LDT*NBMAX )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, LQUERY, NOTRAN
-      INTEGER            I, I1, I2, I3, IB, IC, IINFO, IWS, JC, LDWORK,
+      INTEGER            I, I1, I2, I3, IB, IC, IINFO, IWT, JC, LDWORK,
      $                   LWKOPT, MI, NB, NBMIN, NI, NQ, NW
-*     ..
-*     .. Local Arrays ..
-      COMPLEX*16         T( LDT, NBMAX )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -245,12 +241,11 @@
 *
       IF( INFO.EQ.0 ) THEN
 *
-*        Determine the block size.  NB may be at most NBMAX, where NBMAX
-*        is used to define the local array T.
+*        Compute the workspace requirements
 *
          NB = MIN( NBMAX, ILAENV( 1, 'ZUNMQR', SIDE // TRANS, M, N, K,
      $        -1 ) )
-         LWKOPT = MAX( 1, NW )*NB
+         LWKOPT = MAX( 1, NW )*NB + TSIZE
          WORK( 1 ) = LWKOPT
       END IF
 *
@@ -271,14 +266,11 @@
       NBMIN = 2
       LDWORK = NW
       IF( NB.GT.1 .AND. NB.LT.K ) THEN
-         IWS = NW*NB
-         IF( LWORK.LT.IWS ) THEN
-            NB = LWORK / LDWORK
+         IF( LWORK.LT.NW*NB+TSIZE ) THEN
+            NB = (LWORK-TSIZE) / LDWORK
             NBMIN = MAX( 2, ILAENV( 2, 'ZUNMQR', SIDE // TRANS, M, N, K,
      $              -1 ) )
          END IF
-      ELSE
-         IWS = NW
       END IF
 *
       IF( NB.LT.NBMIN .OR. NB.GE.K ) THEN
@@ -291,6 +283,7 @@
 *
 *        Use blocked code
 *
+         IWT = 1 + NW*NB
          IF( ( LEFT .AND. .NOT.NOTRAN ) .OR.
      $       ( .NOT.LEFT .AND. NOTRAN ) ) THEN
             I1 = 1
@@ -317,7 +310,7 @@
 *           H = H(i) H(i+1) . . . H(i+ib-1)
 *
             CALL ZLARFT( 'Forward', 'Columnwise', NQ-I+1, IB, A( I, I ),
-     $                   LDA, TAU( I ), T, LDT )
+     $                   LDA, TAU( I ), WORK( IWT ), LDT )
             IF( LEFT ) THEN
 *
 *              H or H**H is applied to C(i:m,1:n)
@@ -335,8 +328,8 @@
 *           Apply H or H**H
 *
             CALL ZLARFB( SIDE, TRANS, 'Forward', 'Columnwise', MI, NI,
-     $                   IB, A( I, I ), LDA, T, LDT, C( IC, JC ), LDC,
-     $                   WORK, LDWORK )
+     $                   IB, A( I, I ), LDA, WORK( IWT ), LDT,
+     $                   C( IC, JC ), LDC, WORK, LDWORK )
    10    CONTINUE
       END IF
       WORK( 1 ) = LWKOPT

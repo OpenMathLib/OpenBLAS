@@ -104,6 +104,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <linux/unistd.h>
 #include <sys/syscall.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #endif
 
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
@@ -142,7 +144,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(_MSC_VER) && !defined(__clang__)
 #define CONSTRUCTOR __cdecl
 #define DESTRUCTOR __cdecl
-#elif defined(OS_DARWIN) && defined(C_GCC)
+#elif (defined(OS_DARWIN) || defined(OS_SUNOS)) && defined(C_GCC)
 #define CONSTRUCTOR	__attribute__ ((constructor))
 #define DESTRUCTOR	__attribute__ ((destructor))
 #else
@@ -167,7 +169,7 @@ void goto_set_num_threads(int num_threads) {};
 
 #else
 
-#ifdef OS_LINUX
+#if defined(OS_LINUX) || defined(OS_SUNOS)
 #ifndef NO_AFFINITY
 int get_num_procs(void);
 #else
@@ -292,8 +294,11 @@ void openblas_fork_handler()
 #endif
 }
 
+extern int openblas_num_threads_env();
+extern int openblas_goto_num_threads_env();
+extern int openblas_omp_num_threads_env();
+
 int blas_get_cpu_number(void){
-  env_var_t p;
 #if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   int max_num;
 #endif
@@ -308,18 +313,18 @@ int blas_get_cpu_number(void){
 
   blas_goto_num = 0;
 #ifndef USE_OPENMP
-  if (readenv(p,"OPENBLAS_NUM_THREADS")) blas_goto_num = atoi(p);
+  blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
 
   if (blas_goto_num == 0) {
-		if (readenv(p,"GOTO_NUM_THREADS")) blas_goto_num = atoi(p);
-		if (blas_goto_num < 0) blas_goto_num = 0;
+    blas_goto_num=openblas_goto_num_threads_env();
+    if (blas_goto_num < 0) blas_goto_num = 0;
   }
 
 #endif
 
   blas_omp_num = 0;
-  if (readenv(p,"OMP_NUM_THREADS")) blas_omp_num = atoi(p);
+  blas_omp_num=openblas_omp_num_threads_env();
   if (blas_omp_num < 0) blas_omp_num = 0;
 
   if (blas_goto_num > 0) blas_num_threads = blas_goto_num;
@@ -355,7 +360,9 @@ int openblas_get_num_threads(void) {
 #ifndef SMP
   return 1;
 #else
-  return blas_get_cpu_number();
+  // init blas_cpu_number if needed
+  blas_get_cpu_number();
+  return blas_cpu_number;
 #endif
 }
 
@@ -914,7 +921,6 @@ static volatile struct {
 } memory[NUM_BUFFERS];
 
 static int memory_initialized = 0;
-static void gotoblas_memory_init(void);
 
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
@@ -1337,6 +1343,7 @@ static void gotoblas_memory_init(void) {
 /* Initialization for all function; this function should be called before main */
 
 static int gotoblas_initialized = 0;
+extern void openblas_read_env();
 
 void CONSTRUCTOR gotoblas_init(void) {
 
@@ -1345,6 +1352,8 @@ void CONSTRUCTOR gotoblas_init(void) {
 #ifdef SMP
   openblas_fork_handler();
 #endif
+
+  openblas_read_env();
 
 #ifdef PROFILE
    moncontrol (0);
@@ -1360,6 +1369,19 @@ void CONSTRUCTOR gotoblas_init(void) {
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
    gotoblas_memory_init();
+#endif
+
+//#if defined(OS_LINUX)
+#if 0
+   struct rlimit curlimit;
+   if ( getrlimit(RLIMIT_STACK, &curlimit ) == 0 )
+   {
+	if ( curlimit.rlim_cur != curlimit.rlim_max )
+	{
+		curlimit.rlim_cur = curlimit.rlim_max;
+		setrlimit(RLIMIT_STACK, &curlimit);
+	}
+   }
 #endif
 
 #ifdef SMP

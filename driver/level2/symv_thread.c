@@ -55,7 +55,7 @@
 static int symv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *dummy1, FLOAT *buffer, BLASLONG pos){
 
   FLOAT *a, *x, *y;
-  BLASLONG lda, incx, incy;
+  BLASLONG lda, incx;
   BLASLONG m_from, m_to;
 
   a = (FLOAT *)args -> a;
@@ -64,7 +64,6 @@ static int symv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 
   lda  = args -> lda;
   incx = args -> ldb;
-  incy = args -> ldc;
 
   m_from = 0;
   m_to   = args -> m;

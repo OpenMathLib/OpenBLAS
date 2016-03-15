@@ -172,7 +172,7 @@ int main(int argc, char *argv[]){
   srandom(getpid());
 #endif
  
-	for(j = 0; j < m; j++){
+	for(j = 0; j < to; j++){
       		for(i = 0; i < to * COMPSIZE; i++){
 			a[i + j * to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
 			b[i + j * to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;

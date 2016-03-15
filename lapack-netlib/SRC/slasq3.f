@@ -58,7 +58,7 @@
 *>         Last index.
 *> \endverbatim
 *>
-*> \param[in] Z
+*> \param[in,out] Z
 *> \verbatim
 *>          Z is REAL array, dimension ( 4*N )
 *>         Z holds the qd array.
@@ -97,22 +97,22 @@
 *>         Maximum value of q.
 *> \endverbatim
 *>
-*> \param[out] NFAIL
+*> \param[in,out] NFAIL
 *> \verbatim
 *>          NFAIL is INTEGER
-*>         Number of times shift was too big.
+*>         Increment NFAIL by 1 each time the shift was too big.
 *> \endverbatim
 *>
-*> \param[out] ITER
+*> \param[in,out] ITER
 *> \verbatim
 *>          ITER is INTEGER
-*>         Number of iterations.
+*>         Increment ITER by 1 for each iteration.
 *> \endverbatim
 *>
-*> \param[out] NDIV
+*> \param[in,out] NDIV
 *> \verbatim
 *>          NDIV is INTEGER
-*>         Number of divisions.
+*>         Increment NDIV by 1 for each division.
 *> \endverbatim
 *>
 *> \param[in] IEEE
@@ -173,7 +173,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -182,10 +182,10 @@
      $                   ITER, NDIV, IEEE, TTYPE, DMIN1, DMIN2, DN, DN1,
      $                   DN2, G, TAU )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE

@@ -1,4 +1,4 @@
-*> \brief \b IZMAX1 finds the index of the vector element whose real part has maximum absolute value.
+*> \brief \b IZMAX1 finds the index of the first vector element of maximum absolute value.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -18,13 +18,13 @@
 *  Definition:
 *  ===========
 *
-*       INTEGER          FUNCTION IZMAX1( N, CX, INCX )
+*       INTEGER          FUNCTION IZMAX1( N, ZX, INCX )
 * 
 *       .. Scalar Arguments ..
 *       INTEGER            INCX, N
 *       ..
 *       .. Array Arguments ..
-*       COMPLEX*16         CX( * )
+*       COMPLEX*16         ZX( * )
 *       ..
 *  
 *
@@ -33,8 +33,7 @@
 *>
 *> \verbatim
 *>
-*> IZMAX1 finds the index of the element whose real part has maximum
-*> absolute value.
+*> IZMAX1 finds the index of the first vector element of maximum absolute value.
 *>
 *> Based on IZAMAX from Level 1 BLAS.
 *> The change is to use the 'genuine' absolute value.
@@ -46,19 +45,20 @@
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>          The number of elements in the vector CX.
+*>          The number of elements in the vector ZX.
 *> \endverbatim
 *>
-*> \param[in] CX
+*> \param[in] ZX
 *> \verbatim
-*>          CX is COMPLEX*16 array, dimension (N)
-*>          The vector whose elements will be summed.
+*>          ZX is COMPLEX*16 array, dimension (N)
+*>          The vector ZX. The IZMAX1 function returns the index of its first
+*>          element of maximum absolute value.
 *> \endverbatim
 *>
 *> \param[in] INCX
 *> \verbatim
 *>          INCX is INTEGER
-*>          The spacing between successive values of CX.  INCX >= 1.
+*>          The spacing between successive values of ZX.  INCX >= 1.
 *> \endverbatim
 *
 *  Authors:
@@ -69,9 +69,9 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date February 2014
 *
-*> \ingroup complex16OTHERauxiliary
+*> \ingroup complexOTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -79,74 +79,61 @@
 *> Nick Higham for use with ZLACON.
 *
 *  =====================================================================
-      INTEGER          FUNCTION IZMAX1( N, CX, INCX )
+      INTEGER FUNCTION IZMAX1( N, ZX, INCX )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     February 2014
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
 *     ..
 *     .. Array Arguments ..
-      COMPLEX*16         CX( * )
+      COMPLEX*16         ZX(*)
 *     ..
 *
-* =====================================================================
+*  =====================================================================
 *
 *     .. Local Scalars ..
+      DOUBLE PRECISION   DMAX
       INTEGER            I, IX
-      DOUBLE PRECISION   SMAX
-      COMPLEX*16         ZDUM
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS
 *     ..
-*     .. Statement Functions ..
-      DOUBLE PRECISION   CABS1
-*     ..
-*     .. Statement Function definitions ..
-*
-*     NEXT LINE IS THE ONLY MODIFICATION.
-      CABS1( ZDUM ) = ABS( ZDUM )
-*     ..
 *     .. Executable Statements ..
 *
       IZMAX1 = 0
-      IF( N.LT.1 )
-     $   RETURN
+      IF (N.LT.1 .OR. INCX.LE.0) RETURN
       IZMAX1 = 1
-      IF( N.EQ.1 )
-     $   RETURN
-      IF( INCX.EQ.1 )
-     $   GO TO 30
+      IF (N.EQ.1) RETURN
+      IF (INCX.EQ.1) THEN
 *
-*     CODE FOR INCREMENT NOT EQUAL TO 1
+*        code for increment equal to 1
 *
-      IX = 1
-      SMAX = CABS1( CX( 1 ) )
-      IX = IX + INCX
-      DO 20 I = 2, N
-         IF( CABS1( CX( IX ) ).LE.SMAX )
-     $      GO TO 10
-         IZMAX1 = I
-         SMAX = CABS1( CX( IX ) )
-   10    CONTINUE
+         DMAX = ABS(ZX(1))
+         DO I = 2,N
+            IF (ABS(ZX(I)).GT.DMAX) THEN
+               IZMAX1 = I
+               DMAX = ABS(ZX(I))
+            END IF
+         END DO
+      ELSE
+*
+*        code for increment not equal to 1
+*
+         IX = 1
+         DMAX = ABS(ZX(1))
          IX = IX + INCX
-   20 CONTINUE
-      RETURN
-*
-*     CODE FOR INCREMENT EQUAL TO 1
-*
-   30 CONTINUE
-      SMAX = CABS1( CX( 1 ) )
-      DO 40 I = 2, N
-         IF( CABS1( CX( I ) ).LE.SMAX )
-     $      GO TO 40
-         IZMAX1 = I
-         SMAX = CABS1( CX( I ) )
-   40 CONTINUE
+         DO I = 2,N
+            IF (ABS(ZX(IX)).GT.DMAX) THEN
+               IZMAX1 = I
+               DMAX = ABS(ZX(IX))
+            END IF
+            IX = IX + INCX
+         END DO
+      END IF
       RETURN
 *
 *     End of IZMAX1

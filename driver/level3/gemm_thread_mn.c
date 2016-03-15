@@ -65,7 +65,7 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
   blas_queue_t queue[MAX_CPU_NUMBER];
 
   BLASLONG range_M[MAX_CPU_NUMBER + 1], range_N[MAX_CPU_NUMBER + 1];
-  BLASLONG procs, total_procs, num_cpu_m, num_cpu_n;
+  BLASLONG procs, num_cpu_m, num_cpu_n;
 
   BLASLONG width, i, j;
   BLASLONG divM, divN;

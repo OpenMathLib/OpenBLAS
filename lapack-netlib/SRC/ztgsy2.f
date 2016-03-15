@@ -244,7 +244,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup complex16SYauxiliary
 *
@@ -259,10 +259,10 @@
      $                   LDD, E, LDE, F, LDF, SCALE, RDSUM, RDSCAL,
      $                   INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -321,7 +321,7 @@
          ELSE IF( N.LE.0 ) THEN
             INFO = -4
          ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
-            INFO = -5
+            INFO = -6
          ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
             INFO = -8
          ELSE IF( LDC.LT.MAX( 1, M ) ) THEN

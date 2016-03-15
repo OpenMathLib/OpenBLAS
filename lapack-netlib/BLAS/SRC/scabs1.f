@@ -20,7 +20,7 @@
 *>
 *> \verbatim
 *>
-*> SCABS1 computes absolute value of a complex number
+*> SCABS1 computes |Re(.)| + |Im(.)| of a complex number
 *> \endverbatim
 *
 *  Authors:
@@ -31,17 +31,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_blas_level1
 *
 *  =====================================================================
       REAL FUNCTION SCABS1(Z)
 *
-*  -- Reference BLAS level1 routine (version 3.4.0) --
+*  -- Reference BLAS level1 routine (version 3.6.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       COMPLEX Z

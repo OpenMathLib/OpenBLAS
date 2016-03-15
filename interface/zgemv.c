@@ -77,11 +77,9 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   blasint incy = *INCY;
 
   FLOAT *buffer;
+  int buffer_size;
 #ifdef SMP
   int nthreads;
-  int nthreads_max;
-  int nthreads_avail;
-  double MNK;
 #endif
 
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASLONG,
@@ -144,13 +142,10 @@ void CNAME(enum CBLAS_ORDER order,
 
   FLOAT *buffer;
   blasint    lenx, leny;
-  int trans;
+  int trans, buffer_size;
   blasint info, t;
 #ifdef SMP
   int nthreads;
-  int nthreads_max;
-  int nthreads_avail;
-  double MNK;
 #endif
 
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASLONG,
@@ -236,22 +231,26 @@ void CNAME(enum CBLAS_ORDER order,
   if (incx < 0) x -= (lenx - 1) * incx * 2;
   if (incy < 0) y -= (leny - 1) * incy * 2;
 
-  buffer = (FLOAT *)blas_memory_alloc(1);
+  buffer_size = 2 * (m + n) + 128 / sizeof(FLOAT);
+#ifdef WINDOWS_ABI
+  buffer_size += 160 / sizeof(FLOAT) ;
+#endif
+  // for alignment
+  buffer_size = (buffer_size + 3) & ~3;
+  STACK_ALLOC(buffer_size, FLOAT, buffer);
+
+#if defined(ARCH_X86_64) && defined(MAX_STACK_ALLOC) && MAX_STACK_ALLOC > 0
+  // cgemv_t.S return NaN if there are NaN or Inf in the buffer (see bug #746)
+  if(trans && stack_alloc_size)
+    memset(buffer, 0, MIN(BUFFER_SIZE, sizeof(FLOAT) * buffer_size));
+#endif
 
 #ifdef SMP
 
-  nthreads_max = num_cpu_avail(2);
-  nthreads_avail = nthreads_max;
-
-  MNK = (double) m * (double) n;
-  if ( MNK <= ( 256.0  * (double) (GEMM_MULTITHREAD_THRESHOLD * GEMM_MULTITHREAD_THRESHOLD)  ))
-        nthreads_max = 1;
-
-  if ( nthreads_max > nthreads_avail )
-        nthreads = nthreads_avail;
+  if ( 1L * m * n < 1024L * GEMM_MULTITHREAD_THRESHOLD )
+    nthreads = 1;
   else
-        nthreads = nthreads_max;
-
+    nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
 #endif
@@ -267,7 +266,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 #endif
 
-  blas_memory_free(buffer);
+  STACK_FREE(buffer);
 
   FUNCTION_PROFILE_END(4, m * n + m + n,  2 * m * n);
 

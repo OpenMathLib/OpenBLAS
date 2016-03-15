@@ -40,6 +40,7 @@
 #include <string.h>
 #include "common.h"
 
+extern int openblas_block_factor();
 int get_L2_size(void);
 
 #define DEFAULT_GEMM_P 128
@@ -249,7 +250,6 @@ int get_L2_size(void){
 
 void blas_set_parameter(void){
 
-  env_var_t p;
   int factor;
 #if defined(BULLDOZER) || defined(PILEDRIVER) || defined(SANDYBRIDGE) || defined(NEHALEM) || defined(HASWELL) || defined(STEAMROLLER)
   int size = 16;
@@ -468,9 +468,8 @@ void blas_set_parameter(void){
 #endif
 #endif
 
-
-  if (readenv(p,"GOTO_BLOCK_FACTOR")) {
-    factor = atoi(p);
+  factor=openblas_block_factor();
+  if (factor>0) {
     if (factor <  10) factor =  10;
     if (factor > 200) factor = 200;
 

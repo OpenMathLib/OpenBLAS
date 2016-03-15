@@ -166,7 +166,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_blas_level3
 *
@@ -187,10 +187,10 @@
 *  =====================================================================
       SUBROUTINE SGEMM(TRANSA,TRANSB,M,N,K,ALPHA,A,LDA,B,LDB,BETA,C,LDC)
 *
-*  -- Reference BLAS level3 routine (version 3.4.0) --
+*  -- Reference BLAS level3 routine (version 3.6.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       REAL ALPHA,BETA
@@ -311,12 +311,10 @@
    60                 CONTINUE
                   END IF
                   DO 80 L = 1,K
-                      IF (B(L,J).NE.ZERO) THEN
-                          TEMP = ALPHA*B(L,J)
-                          DO 70 I = 1,M
-                              C(I,J) = C(I,J) + TEMP*A(I,L)
-   70                     CONTINUE
-                      END IF
+                      TEMP = ALPHA*B(L,J)
+                      DO 70 I = 1,M
+                          C(I,J) = C(I,J) + TEMP*A(I,L)
+   70                 CONTINUE
    80             CONTINUE
    90         CONTINUE
           ELSE
@@ -353,12 +351,10 @@
   140                 CONTINUE
                   END IF
                   DO 160 L = 1,K
-                      IF (B(J,L).NE.ZERO) THEN
-                          TEMP = ALPHA*B(J,L)
-                          DO 150 I = 1,M
-                              C(I,J) = C(I,J) + TEMP*A(I,L)
-  150                     CONTINUE
-                      END IF
+                      TEMP = ALPHA*B(J,L)
+                      DO 150 I = 1,M
+                          C(I,J) = C(I,J) + TEMP*A(I,L)
+  150                 CONTINUE
   160             CONTINUE
   170         CONTINUE
           ELSE

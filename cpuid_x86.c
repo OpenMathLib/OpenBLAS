@@ -1172,6 +1172,9 @@ int get_cpuname(void){
 #endif
           else
 	    return CPUTYPE_NEHALEM;
+	case 13:
+	  // Avoton
+	    return CPUTYPE_NEHALEM;
         }
         break;
       case 5:
@@ -1229,6 +1232,7 @@ int get_cpuname(void){
       case  2:
 	return CPUTYPE_OPTERON;
       case  1:
+      case  3:
       case 10:
 	return CPUTYPE_BARCELONA;
       case  6:
@@ -1239,13 +1243,19 @@ int get_cpuname(void){
 	    return CPUTYPE_BULLDOZER;
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
-	case 2:
+	case 2: //AMD Piledriver
+	case 3: //AMD Richland
 	  if(support_avx())
 	    return CPUTYPE_PILEDRIVER;
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
 	case 0:
 	  switch(exmodel){
+	  case 1: //AMD Trinity
+	    if(support_avx())
+	      return CPUTYPE_PILEDRIVER;
+	    else
+	      return CPUTYPE_BARCELONA; //OS don't support AVX.
 	  case 3:
 	    if(support_avx())
 	      return CPUTYPE_STEAMROLLER;
@@ -1668,6 +1678,9 @@ int get_coretype(void){
 #endif
           else
 	    return CORE_NEHALEM;
+	case 13:
+	  // Avoton
+	    return CORE_NEHALEM;
         }
         break;
       case 5:
@@ -1718,7 +1731,8 @@ int get_coretype(void){
 	    return CORE_BULLDOZER;
 	  else
 	    return CORE_BARCELONA; //OS don't support AVX.
-	case 2:
+	case 2: //AMD Piledriver
+	case 3: //AMD Richland
 	  if(support_avx())
 	    return CORE_PILEDRIVER;
 	  else
@@ -1726,6 +1740,12 @@ int get_coretype(void){
 	
 	case 0:
 	  switch(exmodel){
+	  case 1: //AMD Trinity
+	    if(support_avx())
+	      return CORE_PILEDRIVER;
+	    else
+	      return CORE_BARCELONA; //OS don't support AVX.
+
 	  case 3:
 	    if(support_avx())
 	      return CORE_STEAMROLLER;

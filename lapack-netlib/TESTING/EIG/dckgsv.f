@@ -189,7 +189,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup double_eig
 *
@@ -198,10 +198,10 @@
      $                   NMAX, A, AF, B, BF, U, V, Q, ALPHA, BETA, R,
      $                   IWORK, WORK, RWORK, NIN, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, NIN, NM, NMATS, NMAX, NOUT
@@ -219,7 +219,7 @@
 *
 *     .. Parameters ..
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 7 )
+      PARAMETER          ( NTESTS = 12 )
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 8 )
 *     ..
@@ -237,7 +237,7 @@
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAHDG, ALAREQ, ALASUM, DGSVTS, DLATB9, DLATMS
+      EXTERNAL           ALAHDG, ALAREQ, ALASUM, DGSVTS3, DLATB9, DLATMS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS
@@ -303,9 +303,9 @@
 *
             NT = 6
 *
-            CALL DGSVTS( M, P, N, A, AF, LDA, B, BF, LDB, U, LDU, V,
-     $                   LDV, Q, LDQ, ALPHA, BETA, R, LDR, IWORK, WORK,
-     $                   LWORK, RWORK, RESULT )
+            CALL DGSVTS3( M, P, N, A, AF, LDA, B, BF, LDB, U, LDU, V,
+     $                    LDV, Q, LDQ, ALPHA, BETA, R, LDR, IWORK, WORK,
+     $                    LWORK, RWORK, RESULT )
 *
 *           Print information about the tests that did not
 *           pass the threshold.

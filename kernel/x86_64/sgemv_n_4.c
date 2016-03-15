@@ -131,7 +131,7 @@ static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"shufps $0,  %%xmm12, %%xmm12    \n\t"	
 	"shufps $0,  %%xmm13, %%xmm13    \n\t"	
 
-	".align 16				       \n\t"
+	//	".align 16				       \n\t"
 	"1:				       \n\t"
 	"movups	       (%3,%0,4), %%xmm4	       \n\t"	// 4 * y
 
@@ -189,7 +189,7 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         "cmpq           $0, %1                   \n\t"
         "je             2f                \n\t"
 
-        ".align 16                               \n\t"
+	//        ".align 16                               \n\t"
         "1:                             \n\t"
         "movups       (%3,%0,4), %%xmm4          \n\t"  // 4 * y
         "movups     16(%3,%0,4), %%xmm5          \n\t"  // 4 * y
@@ -264,7 +264,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
         __asm__  __volatile__
         (
 
-        ".align 16                              \n\t"
+	 //        ".align 16                              \n\t"
         "1:                            \n\t"
 
         "movups  (%2,%0,4) , %%xmm12            \n\t"

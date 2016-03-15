@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> SERRLS tests the error exits for the REAL least squares
-*> driver routines (SGELS, SGELSS, SGELSX, SGELSY, SGELSD).
+*> driver routines (SGELS, SGELSS, SGELSY, SGELSD).
 *> \endverbatim
 *
 *  Arguments:
@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRLS( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -86,8 +86,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, SGELS, SGELSD, SGELSS, SGELSX,
-     $                   SGELSY
+      EXTERNAL           ALAESM, CHKXER, SGELS, SGELSD, SGELSS, SGELSY
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -156,25 +155,6 @@
          INFOT = 7
          CALL SGELSS( 2, 0, 0, A, 2, B, 1, S, RCOND, IRNK, W, 2, INFO )
          CALL CHKXER( 'SGELSS', INFOT, NOUT, LERR, OK )
-*
-*        SGELSX
-*
-         SRNAMT = 'SGELSX'
-         INFOT = 1
-         CALL SGELSX( -1, 0, 0, A, 1, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'SGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL SGELSX( 0, -1, 0, A, 1, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'SGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 3
-         CALL SGELSX( 0, 0, -1, A, 1, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'SGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 5
-         CALL SGELSX( 2, 0, 0, A, 1, B, 2, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'SGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 7
-         CALL SGELSX( 2, 0, 0, A, 2, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'SGELSX', INFOT, NOUT, LERR, OK )
 *
 *        SGELSY
 *

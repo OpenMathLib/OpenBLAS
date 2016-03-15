@@ -130,7 +130,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup doubleGBcomputational
 *
@@ -147,10 +147,10 @@
       SUBROUTINE DGGBAK( JOB, SIDE, N, ILO, IHI, LSCALE, RSCALE, M, V,
      $                   LDV, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB, SIDE
@@ -174,7 +174,7 @@
       EXTERNAL           DSCAL, DSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX
+      INTRINSIC          MAX, INT
 *     ..
 *     .. Executable Statements ..
 *
@@ -255,7 +255,7 @@
      $         GO TO 50
 *
             DO 40 I = ILO - 1, 1, -1
-               K = RSCALE( I )
+               K = INT(RSCALE( I ))
                IF( K.EQ.I )
      $            GO TO 40
                CALL DSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -265,7 +265,7 @@
             IF( IHI.EQ.N )
      $         GO TO 70
             DO 60 I = IHI + 1, N
-               K = RSCALE( I )
+               K = INT(RSCALE( I ))
                IF( K.EQ.I )
      $            GO TO 60
                CALL DSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -279,7 +279,7 @@
             IF( ILO.EQ.1 )
      $         GO TO 90
             DO 80 I = ILO - 1, 1, -1
-               K = LSCALE( I )
+               K = INT(LSCALE( I ))
                IF( K.EQ.I )
      $            GO TO 80
                CALL DSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -289,7 +289,7 @@
             IF( IHI.EQ.N )
      $         GO TO 110
             DO 100 I = IHI + 1, N
-               K = LSCALE( I )
+               K = INT(LSCALE( I ))
                IF( K.EQ.I )
      $            GO TO 100
                CALL DSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )

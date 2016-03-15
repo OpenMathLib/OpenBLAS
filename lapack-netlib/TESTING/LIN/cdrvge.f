@@ -155,7 +155,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_lin
 *
@@ -164,10 +164,10 @@
      $                   A, AFAC, ASAV, B, BSAV, X, XACT, S, WORK,
      $                   RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -649,7 +649,7 @@
                               NFAIL = NFAIL + 1
                            END IF
    40                   CONTINUE
-                        NRUN = NRUN + 7 - K1
+                        NRUN = NRUN + NTESTS - K1 + 1
                      ELSE
                         IF( RESULT( 1 ).GE.THRESH .AND. .NOT.PREFAC )
      $                       THEN

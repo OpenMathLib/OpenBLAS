@@ -190,7 +190,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date November 2015
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -204,10 +204,10 @@
       SUBROUTINE SLASD1( NL, NR, SQRE, D, ALPHA, BETA, U, LDU, VT, LDVT,
      $                   IDXQ, IWORK, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDU, LDVT, NL, NR, SQRE
@@ -302,6 +302,9 @@
      $             U, LDU, WORK( IU2 ), LDU2, VT, LDVT, WORK( IVT2 ),
      $             LDVT2, IWORK( IDXC ), IWORK( COLTYP ), WORK( IZ ),
      $             INFO )
+*
+*     Report the possible convergence failure.
+*
       IF( INFO.NE.0 ) THEN
          RETURN
       END IF

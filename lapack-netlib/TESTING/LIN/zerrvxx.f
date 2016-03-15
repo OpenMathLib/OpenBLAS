@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -70,6 +70,8 @@
 *     .. Parameters ..
       INTEGER            NMAX
       PARAMETER          ( NMAX = 4 )
+      REAL               ONE
+      PARAMETER          ( ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
       CHARACTER          EQ
@@ -1092,18 +1094,35 @@
      $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, RW, INFO )
          CALL CHKXER( 'ZSYSVXX', INFOT, NOUT, LERR, OK )
-         INFOT = 12
+         INFOT = 10
+         CALL ZSYSVXX( 'F', 'U', 2, 0, A, 2, AF, 2, IP, 'A', R, B, 2, X,
+     $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
+     $        ERR_BNDS_C, NPARAMS, PARAMS, W, RW, INFO )
+         CALL CHKXER( 'ZSYSVXX', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         EQ='Y'
+         CALL ZSYSVXX( 'F', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 2, X,
+     $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
+     $        ERR_BNDS_C, NPARAMS, PARAMS, W, RW, INFO )
+         CALL CHKXER( 'ZSYSVXX', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         EQ='Y'
+         R(1) = -ONE
+         CALL ZSYSVXX( 'F', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 2, X,
+     $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
+     $        ERR_BNDS_C, NPARAMS, PARAMS, W, RW, INFO )
+         CALL CHKXER( 'ZSYSVXX', INFOT, NOUT, LERR, OK )
+	     INFOT = 13
          EQ = 'N'
          CALL ZSYSVXX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 1, X,
      $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, RW, INFO )
          CALL CHKXER( 'ZSYSVXX', INFOT, NOUT, LERR, OK )
-         INFOT = 14
+         INFOT = 15
          CALL ZSYSVXX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 2, X,
      $        1, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, RW, INFO )
          CALL CHKXER( 'ZSYSVXX', INFOT, NOUT, LERR, OK )
-         CALL CHKXER( 'ZSYSVX', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
 *

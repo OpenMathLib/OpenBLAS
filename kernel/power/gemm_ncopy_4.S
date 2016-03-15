@@ -109,6 +109,11 @@
 #define PREFETCHWSIZE  72
 #endif
 
+#ifdef POWER8
+#define PREFETCHSIZE   16
+#define PREFETCHWSIZE  72
+#endif
+
 	PROLOGUE
 	PROFCODE
 
@@ -193,7 +198,7 @@ LL(12):
 	STFD	c12,  14 * SIZE(B)
 	STFD	c16,  15 * SIZE(B)
 
-#ifdef POWER6
+#if defined(POWER6) || defined(POWER8)
 	dcbtst	PREA, AO1
 	dcbtst	PREA, AO2
 	dcbtst	PREA, AO3

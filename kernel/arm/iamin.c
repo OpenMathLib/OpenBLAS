@@ -55,9 +55,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	FLOAT minf=0.0;
 	BLASLONG min=0;
 
-	if (n < 0 || inc_x < 1 ) return(min);
+	if (n <= 0 || inc_x <= 0) return(min);
 
 	minf=ABS(x[0]);
+	ix += inc_x;
+	i++;
 
 	while(i < n)
 	{

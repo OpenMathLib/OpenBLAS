@@ -86,13 +86,14 @@ extern "C" {
 #if !defined(_MSC_VER)
 #include <unistd.h>
 #endif
+#include <time.h>
 
 #ifdef OS_LINUX
 #include <malloc.h>
 #include <sched.h>
 #endif
 
-#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD)
+#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_ANDROID)
 #include <sched.h>
 #endif
 
@@ -331,12 +332,13 @@ typedef int blasint;
 #endif
 #endif
 
-
+/*
 #ifdef PILEDRIVER
 #ifndef YIELDING
 #define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
 #endif
 #endif
+*/
 
 /*
 #ifdef STEAMROLLER
@@ -410,7 +412,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #ifndef ASSEMBLER
 #ifdef OS_WINDOWS
 typedef char env_var_t[MAX_PATH];
-#define readenv(p, n) GetEnvironmentVariable((n), (p), sizeof(p))
+#define readenv(p, n) GetEnvironmentVariable((LPCTSTR)(n), (LPTSTR)(p), sizeof(p))
 #else
 typedef char* env_var_t;
 #define readenv(p, n) ((p)=getenv(n))
@@ -726,6 +728,7 @@ typedef struct {
 #endif
 
 #ifndef ASSEMBLER
+#include "common_stackalloc.h"
 #if 0
 #include "symcopy.h"
 #endif

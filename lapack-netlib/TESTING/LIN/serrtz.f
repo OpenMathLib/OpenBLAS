@@ -21,7 +21,7 @@
 *>
 *> \verbatim
 *>
-*> SERRTZ tests the error exits for STZRQF and STZRZF.
+*> SERRTZ tests the error exits for STZRZF.
 *> \endverbatim
 *
 *  Arguments:
@@ -47,17 +47,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRTZ( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -82,7 +82,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, STZRQF, STZRZF
+      EXTERNAL           ALAESM, CHKXER, STZRZF
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -109,19 +109,6 @@
       IF( LSAMEN( 2, C2, 'TZ' ) ) THEN
 *
 *        Test error exits for the trapezoidal routines.
-*
-*        STZRQF
-*
-         SRNAMT = 'STZRQF'
-         INFOT = 1
-         CALL STZRQF( -1, 0, A, 1, TAU, INFO )
-         CALL CHKXER( 'STZRQF', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL STZRQF( 1, 0, A, 1, TAU, INFO )
-         CALL CHKXER( 'STZRQF', INFOT, NOUT, LERR, OK )
-         INFOT = 4
-         CALL STZRQF( 2, 2, A, 1, TAU, INFO )
-         CALL CHKXER( 'STZRQF', INFOT, NOUT, LERR, OK )
 *
 *        STZRZF
 *

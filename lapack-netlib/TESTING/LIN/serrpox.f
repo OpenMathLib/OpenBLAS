@@ -51,17 +51,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRPO( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -238,7 +238,7 @@
      $        PARAMS, W, IW, INFO )
          CALL CHKXER( 'SPORFSX', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL SPORFSX( 'U', EQ, -1, 0, A, 1, AF, 1, S, B, 1, X, 1,
+         CALL SPORFSX( 'U', "/", -1, 0, A, 1, AF, 1, S, B, 1, X, 1,
      $        RCOND, BERR, N_ERR_BNDS, ERR_BNDS_N, ERR_BNDS_C, NPARAMS,
      $        PARAMS, W, IW, INFO )
          CALL CHKXER( 'SPORFSX', INFOT, NOUT, LERR, OK )

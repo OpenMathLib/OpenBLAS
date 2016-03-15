@@ -86,7 +86,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
-#ifdef linux
+#if defined(linux) || defined(__sun__)
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #endif
@@ -552,7 +552,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "POWER5"
 #endif
 
-#if defined(FORCE_POWER6) || defined(FORCE_POWER7) || defined(FORCE_POWER8)
+#if defined(FORCE_POWER6) || defined(FORCE_POWER7)
 #define FORCE
 #define ARCHITECTURE    "POWER"
 #define SUBARCHITECTURE "POWER6"
@@ -564,6 +564,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LIBNAME   "power6"
 #define CORENAME  "POWER6"
 #endif
+
+#if defined(FORCE_POWER8) 
+#define FORCE
+#define ARCHITECTURE    "POWER"
+#define SUBARCHITECTURE "POWER8"
+#define SUBDIRNAME      "power"
+#define ARCHCONFIG   "-DPOWER8 " \
+		     "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=128 " \
+		     "-DL2_SIZE=4194304 -DL2_LINESIZE=128 " \
+		     "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "power8"
+#define CORENAME  "POWER8"
+#endif
+
 
 #ifdef FORCE_PPCG4
 #define FORCE
@@ -819,10 +833,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
        "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " 
 #define LIBNAME   "armv8"
-#define CORENAME  "XGENE1"
-#else
+#define CORENAME  "ARMV8"
 #endif
 
+#ifdef FORCE_CORTEXA57
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "ARMV8"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DCORTEXA57 " \
+       "-DL1_CODE_SIZE=49152 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=3 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=2 " \
+       "-DL2_SIZE=2097152 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=16 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON"
+#define LIBNAME   "cortexa57"
+#define CORENAME  "CORTEXA57"
+#else
+#endif
 
 #ifndef FORCE
 
@@ -892,7 +920,7 @@ static int get_num_cores(void) {
   size_t len;
 #endif
 
-#ifdef linux
+#if defined(linux) || defined(__sun__)
   //returns the number of processors which are currently online
   return sysconf(_SC_NPROCESSORS_ONLN);
 
@@ -984,7 +1012,9 @@ int main(int argc, char *argv[]){
 #endif
 #endif
 
-#if NO_PARALLEL_MAKE==1
+#ifdef MAKE_NB_JOBS
+    printf("MAKE += -j %d\n", MAKE_NB_JOBS);
+#elif NO_PARALLEL_MAKE==1
     printf("MAKE += -j 1\n");
 #else
 #ifndef OS_WINDOWS

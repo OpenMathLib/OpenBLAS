@@ -240,8 +240,8 @@
 *> \param[out] B21D
 *> \verbatim
 *>          B21D is DOUBLE PRECISION array, dimension (Q)
-*>          When CBBCSD converges, B21D contains the negative sines of
-*>          THETA(1), ..., THETA(Q). If CBBCSD fails to converge, then
+*>          When ZBBCSD converges, B21D contains the negative sines of
+*>          THETA(1), ..., THETA(Q). If ZBBCSD fails to converge, then
 *>          B21D contains the diagonal of the partially reduced bottom-left
 *>          block.
 *> \endverbatim
@@ -249,7 +249,7 @@
 *> \param[out] B21E
 *> \verbatim
 *>          B21E is DOUBLE PRECISION array, dimension (Q-1)
-*>          When CBBCSD converges, B21E contains zeros. If CBBCSD fails
+*>          When ZBBCSD converges, B21E contains zeros. If ZBBCSD fails
 *>          to converge, then B21E contains the subdiagonal of the
 *>          partially reduced bottom-left block.
 *> \endverbatim
@@ -257,8 +257,8 @@
 *> \param[out] B22D
 *> \verbatim
 *>          B22D is DOUBLE PRECISION array, dimension (Q)
-*>          When CBBCSD converges, B22D contains the negative sines of
-*>          THETA(1), ..., THETA(Q). If CBBCSD fails to converge, then
+*>          When ZBBCSD converges, B22D contains the negative sines of
+*>          THETA(1), ..., THETA(Q). If ZBBCSD fails to converge, then
 *>          B22D contains the diagonal of the partially reduced bottom-right
 *>          block.
 *> \endverbatim
@@ -266,7 +266,7 @@
 *> \param[out] B22E
 *> \verbatim
 *>          B22E is DOUBLE PRECISION array, dimension (Q-1)
-*>          When CBBCSD converges, B22E contains zeros. If CBBCSD fails
+*>          When ZBBCSD converges, B22E contains zeros. If ZBBCSD fails
 *>          to converge, then B22E contains the subdiagonal of the
 *>          partially reduced bottom-right block.
 *> \endverbatim
@@ -322,7 +322,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -332,10 +332,10 @@
      $                   V2T, LDV2T, B11D, B11E, B12D, B12E, B21D, B21E,
      $                   B22D, B22E, RWORK, LRWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS

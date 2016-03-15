@@ -117,7 +117,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
   FLOAT beta_i	= BETA[1];
 
   FLOAT *buffer;
-  int trans, uplo;
+  int uplo;
   blasint info;
 #ifdef SMP
   int nthreads;
@@ -135,7 +135,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT *ALPHA
 
   PRINT_DEBUG_CNAME;
 
-  trans = -1;
   uplo  = -1;
   info  =  0;
 

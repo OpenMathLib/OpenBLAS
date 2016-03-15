@@ -797,7 +797,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
                   res1 = res1-load0*load3;
 #endif
 #if   defined(RN) || defined(RT) || defined(CN) || defined(CT)
-				  load0 = ptrba[2*0+0];
+                  load0 = ptrba[2*0+0];
                   load1 = ptrbb[2*0+0];
                   res0 = res0+load0*load1;
                   load2 = ptrba[2*0+1];

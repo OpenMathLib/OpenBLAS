@@ -255,7 +255,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date November 2015
 *
 *> \ingroup realOTHERcomputational
 *
@@ -287,10 +287,10 @@
      $                   X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
      $                   TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     November 2015
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIGNS, TRANS
@@ -512,7 +512,7 @@
             END IF
             X12(I,I) = ONE
 *
-            IF ( P. GT. I ) THEN
+            IF ( P .GT. I ) THEN
                CALL SLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
      $                     X12(I+1,I), LDX12, WORK )
             END IF

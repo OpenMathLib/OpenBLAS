@@ -46,7 +46,7 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
   BLASLONG incx;
   BLASLONG i, m_from, m_to;
   FLOAT alpha_r;
-#if defined(COMPLEX) && !defined(HER) && !defined(HERREV)
+#if defined(COMPLEX) && !defined(HEMV) && !defined(HEMVREV)
   FLOAT alpha_i;
 #endif
 
@@ -56,7 +56,7 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
   incx = args -> lda;
 
   alpha_r = *((FLOAT *)args -> alpha + 0);
-#if defined(COMPLEX) && !defined(HER) && !defined(HERREV)
+#if defined(COMPLEX) && !defined(HEMV) && !defined(HEMVREV)
   alpha_i = *((FLOAT *)args -> alpha + 1);
 #endif
 

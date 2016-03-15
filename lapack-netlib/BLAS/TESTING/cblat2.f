@@ -120,7 +120,7 @@
       REAL               RZERO
       PARAMETER          ( RZERO = 0.0 )
       INTEGER            NMAX, INCMAX
-      PARAMETER          ( NMAX = 128, INCMAX = 2 )
+      PARAMETER          ( NMAX = 65, INCMAX = 2 )
       INTEGER            NINMAX, NIDMAX, NKBMAX, NALMAX, NBEMAX
       PARAMETER          ( NINMAX = 7, NIDMAX = 9, NKBMAX = 7,
      $                   NALMAX = 7, NBEMAX = 7 )

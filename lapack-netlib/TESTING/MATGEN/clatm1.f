@@ -74,7 +74,7 @@
 *>
 *> \param[in] IDIST
 *> \verbatim
-*>          IDIST is CHARACTER*1
+*>          IDIST is INTEGER
 *>           On entry, IDIST specifies the type of distribution to be
 *>           used to generate a random matrix .
 *>           1 => real and imaginary parts each UNIFORM( 0, 1 )
@@ -99,7 +99,7 @@
 *>
 *> \param[in,out] D
 *> \verbatim
-*>          D is COMPLEX array, dimension ( MIN( M , N ) )
+*>          D is COMPLEX array, dimension ( N )
 *>           Array to be computed according to MODE, COND and IRSIGN.
 *>           May be changed on exit if MODE is nonzero.
 *> \endverbatim
@@ -130,17 +130,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup complex_matgen
 *
 *  =====================================================================
       SUBROUTINE CLATM1( MODE, COND, IRSIGN, IDIST, ISEED, D, N, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            IDIST, INFO, IRSIGN, MODE, N

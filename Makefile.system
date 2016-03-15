@@ -139,6 +139,10 @@ NO_PARALLEL_MAKE=0
 endif
 GETARCH_FLAGS	+= -DNO_PARALLEL_MAKE=$(NO_PARALLEL_MAKE)
 
+ifdef MAKE_NB_JOBS
+GETARCH_FLAGS += -DMAKE_NB_JOBS=$(MAKE_NB_JOBS)
+endif
+
 ifeq ($(HOSTCC), loongcc)
 GETARCH_FLAGS  += -static
 endif
@@ -292,8 +296,10 @@ endif
 ifneq ($(OSNAME), WINNT)
 ifneq ($(OSNAME), CYGWIN_NT)
 ifneq ($(OSNAME), Interix)
+ifneq ($(OSNAME), Android)
 ifdef SMP
 EXTRALIB   += -lpthread
+endif
 endif
 endif
 endif
@@ -324,7 +330,8 @@ ifdef SANITY_CHECK
 CCOMMON_OPT	+= -DSANITY_CHECK -DREFNAME=$(*F)f$(BU)
 endif
 
-ifdef MAX_STACK_ALLOC
+MAX_STACK_ALLOC ?= 2048
+ifneq ($(MAX_STACK_ALLOC), 0)
 CCOMMON_OPT	+= -DMAX_STACK_ALLOC=$(MAX_STACK_ALLOC)
 endif
 
@@ -374,7 +381,7 @@ FCOMMON_OPT	+= -m128bit-long-double
 endif
 ifeq ($(C_COMPILER), CLANG)
 EXPRECISION	= 1
-CCOMMON_OPT	+= -DEXPRECISION 
+CCOMMON_OPT	+= -DEXPRECISION
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -388,7 +395,7 @@ endif
 
 ifeq ($(USE_OPENMP), 1)
 
-#check 
+#check
 ifeq ($(USE_THREAD), 0)
 $(error OpenBLAS: Cannot set both USE_OPENMP=1 and USE_THREAD=0. The USE_THREAD=0 is only for building single thread version.)
 endif
@@ -952,17 +959,18 @@ ifeq ($(OSNAME), SunOS)
 TAR	= gtar
 PATCH	= gpatch
 GREP	= ggrep
+AWK	= nawk
 else
 TAR	= tar
 PATCH	= patch
 GREP	= grep
+AWK	= awk
 endif
 
 ifndef MD5SUM
 MD5SUM	= md5sum
 endif
 
-AWK	= awk
 
 REVISION = -r$(VERSION)
 MAJOR_VERSION = $(word 1,$(subst ., ,$(VERSION)))
@@ -971,16 +979,25 @@ ifeq ($(DEBUG), 1)
 COMMON_OPT += -g
 endif
 
+ifeq ($(DEBUG), 1)
+FCOMMON_OPT += -g
+endif
+
 ifndef COMMON_OPT
 COMMON_OPT = -O2
 endif
+
+ifndef FCOMMON_OPT
+FCOMMON_OPT = -O2 -frecursive
+endif
+
 
 
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
 
-override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
-override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
+override FFLAGS     += $(FCOMMON_OPT)
+override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
 #For LAPACK Fortran codes.
@@ -1170,4 +1187,3 @@ SUNPATH		= /opt/sunstudio12.1
 else
 SUNPATH		= /opt/SUNWspro
 endif
-

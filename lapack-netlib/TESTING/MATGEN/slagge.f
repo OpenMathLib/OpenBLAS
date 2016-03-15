@@ -106,17 +106,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup real_matgen
 *
 *  =====================================================================
       SUBROUTINE SLAGGE( M, N, KL, KU, D, A, LDA, ISEED, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, KL, KU, LDA, M, N
@@ -177,6 +177,10 @@
       DO 30 I = 1, MIN( M, N )
          A( I, I ) = D( I )
    30 CONTINUE
+*
+*     Quick exit if the user wants a diagonal matrix
+*
+      IF(( KL .EQ. 0 ).AND.( KU .EQ. 0)) RETURN
 *
 *     pre- and post-multiply A by random orthogonal matrices
 *
@@ -342,13 +346,17 @@
             END IF
          END IF
 *
-         DO 50 J = KL + I + 1, M
-            A( J, I ) = ZERO
-   50    CONTINUE
+         IF (I .LE. N) THEN
+            DO 50 J = KL + I + 1, M
+               A( J, I ) = ZERO
+   50       CONTINUE
+         END IF
 *
-         DO 60 J = KU + I + 1, N
-            A( I, J ) = ZERO
-   60    CONTINUE
+         IF (I .LE. M) THEN
+            DO 60 J = KU + I + 1, N
+               A( I, J ) = ZERO
+   60       CONTINUE
+         END IF
    70 CONTINUE
       RETURN
 *

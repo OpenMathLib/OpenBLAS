@@ -63,6 +63,25 @@
 *>    2) Same as 1), but the singular values are stored in S2 and the
 *>        singular vectors are not computed.
 *>
+*>  DBDSVDX computes the singular value decomposition of the bidiagonal
+*>  matrix B as B = U S V' using bisection and inverse iteration. It is 
+*>  called six times to compute
+*>     1) B = U S1 V', RANGE='A', where S1 is the diagonal matrix of singular
+*>         values and the columns of the matrices U and V are the left
+*>         and right singular vectors, respectively, of B.
+*>     2) Same as 1), but the singular values are stored in S2 and the
+*>         singular vectors are not computed.
+*>     3) B = U S1 V', RANGE='I', with where S1 is the diagonal matrix of singular
+*>         values and the columns of the matrices U and V are the left
+*>         and right singular vectors, respectively, of B
+*>     4) Same as 3), but the singular values are stored in S2 and the
+*>         singular vectors are not computed.
+*>     5) B = U S1 V', RANGE='V', with where S1 is the diagonal matrix of singular
+*>         values and the columns of the matrices U and V are the left
+*>         and right singular vectors, respectively, of B
+*>     6) Same as 5), but the singular values are stored in S2 and the
+*>         singular vectors are not computed.
+*>
 *> For each pair of matrix dimensions (M,N) and each selected matrix
 *> type, an M by N matrix A and an M by NRHS matrix X are generated.
 *> The problem dimensions are as follows
@@ -127,6 +146,44 @@
 *>
 *> (19)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                   computing U and V.
+*>  Test DBDSVDX on bidiagonal matrix B
+*> 
+*>  (20)  | B - U S1 VT | / ( |B| min(M,N) ulp ), VT = V'
+*> 
+*>  (21)  | I - U' U | / ( min(M,N) ulp )
+*> 
+*>  (22)  | I - VT VT' | / ( min(M,N) ulp )
+*> 
+*>  (23)  S1 contains min(M,N) nonnegative values in decreasing order.
+*>        (Return 0 if true, 1/ULP if false.)
+*> 
+*>  (24)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
+*>                                    computing U and V.
+*> 
+*>  (25)  | S1 - U' B VT' | / ( |S| n ulp )    DBDSVDX('V', 'I')
+*> 
+*>  (26)  | I - U' U | / ( min(M,N) ulp )
+*> 
+*>  (27)  | I - VT VT' | / ( min(M,N) ulp )
+*>
+*>  (28)  S1 contains min(M,N) nonnegative values in decreasing order.
+*>        (Return 0 if true, 1/ULP if false.)
+*> 
+*>  (29)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
+*>                                    computing U and V.
+*> 
+*>  (30)  | S1 - U' B VT' | / ( |S1| n ulp )   DBDSVDX('V', 'V')
+*> 
+*>  (31)  | I - U' U | / ( min(M,N) ulp )
+*> 
+*>  (32)  | I - VT VT' | / ( min(M,N) ulp )
+*>
+*>  (33)  S1 contains min(M,N) nonnegative values in decreasing order.
+*>        (Return 0 if true, 1/ULP if false.)
+*> 
+*>  (34)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
+*>                                    computing U and V.
+*> 
 *> The possible matrix types are
 *>
 *> (1)  The zero matrix.
@@ -426,7 +483,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date November 2015
 *
 *> \ingroup double_eig
 *
@@ -436,10 +493,10 @@
      $                   Y, Z, Q, LDQ, PT, LDPT, U, VT, WORK, LWORK,
      $                   IWORK, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     November 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDPT, LDQ, LDX, LWORK, NOUT, NRHS,
@@ -468,25 +525,30 @@
       LOGICAL            BADMM, BADNN, BIDIAG
       CHARACTER          UPLO
       CHARACTER*3        PATH
-      INTEGER            I, IINFO, IMODE, ITYPE, J, JCOL, JSIZE, JTYPE,
-     $                   LOG2UI, M, MINWRK, MMAX, MNMAX, MNMIN, MQ,
-     $                   MTYPES, N, NFAIL, NMAX, NTEST
-      DOUBLE PRECISION   AMNINV, ANORM, COND, OVFL, RTOVFL, RTUNFL,
-     $                   TEMP1, TEMP2, ULP, ULPINV, UNFL
+      INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, IWBD, 
+     $                   IWBE, IWBS, IWBZ, IWWORK, J, JCOL, JSIZE,
+     $                   JTYPE, LOG2UI, M, MINWRK, MMAX, MNMAX, MNMIN, 
+     $                   MNMIN2, MQ, MTYPES, N, NFAIL, NMAX, 
+     $                   NS1, NS2, NTEST
+      DOUBLE PRECISION   ABSTOL, AMNINV, ANORM, COND, OVFL, RTOVFL, 
+     $                   RTUNFL, TEMP1, TEMP2, TEMP3, ULP, ULPINV, 
+     $                   UNFL, VL, VU                   
 *     ..
 *     .. Local Arrays ..
-      INTEGER            IDUM( 1 ), IOLDSD( 4 ), KMAGN( MAXTYP ),
-     $                   KMODE( MAXTYP ), KTYPE( MAXTYP )
-      DOUBLE PRECISION   DUM( 1 ), DUMMA( 1 ), RESULT( 19 )
+      INTEGER            IDUM( 1 ), IOLDSD( 4 ), ISEED2( 4 ), 
+     $                   KMAGN( MAXTYP ), KMODE( MAXTYP ), 
+     $                   KTYPE( MAXTYP )
+      DOUBLE PRECISION   DUM( 1 ), DUMMA( 1 ), RESULT( 40 )
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH, DLARND
-      EXTERNAL           DLAMCH, DLARND
+      DOUBLE PRECISION   DLAMCH, DLARND, DSXT1
+      EXTERNAL           DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASUM, DBDSDC, DBDSQR, DBDT01, DBDT02, DBDT03,
-     $                   DCOPY, DGEBRD, DGEMM, DLABAD, DLACPY, DLAHD2,
-     $                   DLASET, DLATMR, DLATMS, DORGBR, DORT01, XERBLA
+      EXTERNAL           ALASUM, DBDSDC, DBDSQR, DBDSVDX, DBDT01, DBDT02, 
+     $                   DBDT03, DBDT04, DCOPY, DGEBRD, DGEMM, DLABAD, 
+     $                   DLACPY, DLAHD2, DLASET, DLATMR, DLATMS,
+     $                   DORGBR, DORT01, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, EXP, INT, LOG, MAX, MIN, SQRT
@@ -575,10 +637,11 @@
       RTUNFL = SQRT( UNFL )
       RTOVFL = SQRT( OVFL )
       INFOT = 0
+      ABSTOL = 2*UNFL
 *
 *     Loop over sizes, types
 *
-      DO 200 JSIZE = 1, NSIZES
+      DO 300 JSIZE = 1, NSIZES
          M = MVAL( JSIZE )
          N = NVAL( JSIZE )
          MNMIN = MIN( M, N )
@@ -590,15 +653,15 @@
             MTYPES = MIN( MAXTYP+1, NTYPES )
          END IF
 *
-         DO 190 JTYPE = 1, MTYPES
+         DO 290 JTYPE = 1, MTYPES
             IF( .NOT.DOTYPE( JTYPE ) )
-     $         GO TO 190
+     $         GO TO 290
 *
             DO 20 J = 1, 4
                IOLDSD( J ) = ISEED( J )
    20       CONTINUE
 *
-            DO 30 J = 1, 14
+            DO 30 J = 1, 34
                RESULT( J ) = -ONE
    30       CONTINUE
 *
@@ -864,7 +927,7 @@
                   RETURN
                ELSE
                   RESULT( 4 ) = ULPINV
-                  GO TO 170
+                  GO TO 270
                END IF
             END IF
 *
@@ -888,7 +951,7 @@
                   RETURN
                ELSE
                   RESULT( 9 ) = ULPINV
-                  GO TO 170
+                  GO TO 270
                END IF
             END IF
 *
@@ -997,7 +1060,7 @@
                   RETURN
                ELSE
                   RESULT( 15 ) = ULPINV
-                  GO TO 170
+                  GO TO 270
                END IF
             END IF
 *
@@ -1021,7 +1084,7 @@
                   RETURN
                ELSE
                   RESULT( 18 ) = ULPINV
-                  GO TO 170
+                  GO TO 270
                END IF
             END IF
 *
@@ -1064,10 +1127,376 @@
 *
             RESULT( 19 ) = TEMP2
 *
+*
+*           Use DBDSVDX to compute the SVD of the bidiagonal matrix B:
+*           B := U * S1 * VT
+*
+            IF( JTYPE.EQ.10 .OR. JTYPE.EQ.16 ) THEN
+*              =================================
+*              Matrix types temporarily disabled
+*              =================================
+               RESULT( 20:34 ) = ZERO
+               GO TO 270
+            END IF
+*
+            IWBS = 1
+            IWBD = IWBS + MNMIN
+            IWBE = IWBD + MNMIN
+            IWBZ = IWBE + MNMIN
+            IWWORK = IWBZ + MNMIN*(MNMIN*2+1)
+            MNMIN2 = MAX( 1,MNMIN*2 )
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDX( UPLO, 'V', 'A', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS1, S1, 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    IWORK, IINFO)
+*  
+*           Check error code from DBDSVDX.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(vects,A)', IINFO, M, N,
+     $            JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 20 ) = ULPINV
+                  GO TO 270
+               END IF
+            END IF
+*
+            J = IWBZ
+            DO 170 I = 1, NS1
+               CALL DCOPY( MNMIN, WORK( J ), 1, U( 1,I ), 1 )
+               J = J + MNMIN
+               CALL DCOPY( MNMIN, WORK( J ), 1, VT( I,1 ), LDPT )
+               J = J + MNMIN
+  170       CONTINUE
+*
+*           Use DBDSVDX to compute only the singular values of the
+*           bidiagonal matrix B;  U and VT should not be modified.
+*
+            IF( JTYPE.EQ.9 ) THEN
+*              =================================
+*              Matrix types temporarily disabled
+*              =================================
+               RESULT( 24 ) = ZERO
+               GO TO 270
+            END IF
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 ) 
+*     
+            CALL DBDSVDX( UPLO, 'N', 'A', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS2, S2,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    IWORK, IINFO )
+*
+*           Check error code from DBDSVDX.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(values,A)', IINFO, 
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 24 ) = ULPINV
+                  GO TO 270
+               END IF
+            END IF
+*
+*           Save S1 for tests 30-34.
+*
+            CALL DCOPY( MNMIN, S1, 1, WORK( IWBS ), 1 )
+*
+*           Test 20:  Check the decomposition B := U * S1 * VT
+*                21:  Check the orthogonality of U
+*                22:  Check the orthogonality of VT
+*                23:  Check that the singular values are sorted in
+*                     non-increasing order and are non-negative
+*                24:  Compare DBDSVDX with and without singular vectors
+*
+            CALL DBDT03( UPLO, MNMIN, 1, BD, BE, U, LDPT, S1, VT,
+     $                   LDPT, WORK( IWBS+MNMIN ), RESULT( 20 ) )
+            CALL DORT01( 'Columns', MNMIN, MNMIN, U, LDPT, 
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+     $                   RESULT( 21 ) )
+            CALL DORT01( 'Rows', MNMIN, MNMIN, VT, LDPT, 
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+     $                   RESULT( 22) )
+*
+            RESULT( 23 ) = ZERO
+            DO 180 I = 1, MNMIN - 1
+               IF( S1( I ).LT.S1( I+1 ) )
+     $            RESULT( 23 ) = ULPINV
+               IF( S1( I ).LT.ZERO )
+     $            RESULT( 23 ) = ULPINV
+  180       CONTINUE
+            IF( MNMIN.GE.1 ) THEN
+               IF( S1( MNMIN ).LT.ZERO )
+     $            RESULT( 23 ) = ULPINV
+            END IF
+*
+            TEMP2 = ZERO
+            DO 190 J = 1, MNMIN
+               TEMP1 = ABS( S1( J )-S2( J ) ) /
+     $                 MAX( SQRT( UNFL )*MAX( S1( 1 ), ONE ),
+     $                 ULP*MAX( ABS( S1( 1 ) ), ABS( S2( 1 ) ) ) )
+               TEMP2 = MAX( TEMP1, TEMP2 )
+  190       CONTINUE
+            RESULT( 24 ) = TEMP2
+            ANORM = S1( 1 )
+*
+*           Use DBDSVDX with RANGE='I': choose random values for IL and
+*           IU, and ask for the IL-th through IU-th singular values
+*           and corresponding vectors.
+*
+            DO 200 I = 1, 4
+               ISEED2( I ) = ISEED( I )
+  200       CONTINUE
+            IF( MNMIN.LE.1 ) THEN
+               IL = 1
+               IU = MNMIN
+            ELSE
+               IL = 1 + INT( ( MNMIN-1 )*DLARND( 1, ISEED2 ) )
+               IU = 1 + INT( ( MNMIN-1 )*DLARND( 1, ISEED2 ) )
+               IF( IU.LT.IL ) THEN
+                  ITEMP = IU
+                  IU = IL
+                  IL = ITEMP
+               END IF
+            END IF
+*       
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDX( UPLO, 'V', 'I', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS1, S1, 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    IWORK, IINFO)
+*
+*           Check error code from DBDSVDX.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(vects,I)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 25 ) = ULPINV
+                  GO TO 270
+               END IF
+            END IF
+*
+            J = IWBZ
+            DO 210 I = 1, NS1
+               CALL DCOPY( MNMIN, WORK( J ), 1, U( 1,I ), 1 )
+               J = J + MNMIN
+               CALL DCOPY( MNMIN, WORK( J ), 1, VT( I,1 ), LDPT )
+               J = J + MNMIN
+  210       CONTINUE
+*
+*           Use DBDSVDX to compute only the singular values of the
+*           bidiagonal matrix B;  U and VT should not be modified.
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDX( UPLO, 'N', 'I', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS2, S2,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    IWORK, IINFO )
+*
+*           Check error code from DBDSVDX.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(values,I)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 29 ) = ULPINV
+                  GO TO 270
+               END IF
+            END IF
+*
+*           Test 25:  Check S1 - U' * B * VT'
+*                26:  Check the orthogonality of U
+*                27:  Check the orthogonality of VT
+*                28:  Check that the singular values are sorted in
+*                     non-increasing order and are non-negative
+*                29:  Compare DBDSVDX with and without singular vectors
+*
+            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U, 
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ), 
+     $                   RESULT( 25 ) )
+            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT, 
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+     $                   RESULT( 26 ) )
+            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT, 
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 27 ) )
+*
+            RESULT( 28 ) = ZERO
+            DO 220 I = 1, NS1 - 1
+               IF( S1( I ).LT.S1( I+1 ) )
+     $            RESULT( 28 ) = ULPINV
+               IF( S1( I ).LT.ZERO )
+     $            RESULT( 28 ) = ULPINV
+  220       CONTINUE
+            IF( NS1.GE.1 ) THEN
+               IF( S1( NS1 ).LT.ZERO )
+     $            RESULT( 28 ) = ULPINV
+            END IF
+*
+            TEMP2 = ZERO
+            DO 230 J = 1, NS1
+               TEMP1 = ABS( S1( J )-S2( J ) ) /
+     $                 MAX( SQRT( UNFL )*MAX( S1( 1 ), ONE ),
+     $                 ULP*MAX( ABS( S1( 1 ) ), ABS( S2( 1 ) ) ) )
+               TEMP2 = MAX( TEMP1, TEMP2 )
+  230       CONTINUE
+            RESULT( 29 ) = TEMP2
+*
+*           Use DBDSVDX with RANGE='V': determine the values VL and VU 
+*           of the IL-th and IU-th singular values and ask for all 
+*           singular values in this range.
+*
+            CALL DCOPY( MNMIN, WORK( IWBS ), 1, S1, 1 )
+*
+            IF( MNMIN.GT.0 ) THEN
+               IF( IL.NE.1 ) THEN
+                  VU = S1( IL ) + MAX( HALF*ABS( S1( IL )-S1( IL-1 ) ),
+     $                 ULP*ANORM, TWO*RTUNFL )
+               ELSE
+                  VU = S1( 1 ) + MAX( HALF*ABS( S1( MNMIN )-S1( 1 ) ),
+     $                 ULP*ANORM, TWO*RTUNFL )
+               END IF
+               IF( IU.NE.NS1 ) THEN
+                  VL = S1( IU ) - MAX( ULP*ANORM, TWO*RTUNFL,
+     $                 HALF*ABS( S1( IU+1 )-S1( IU ) ) )
+               ELSE
+                  VL = S1( NS1 ) - MAX( ULP*ANORM, TWO*RTUNFL,
+     $                 HALF*ABS( S1( MNMIN )-S1( 1 ) ) )
+               END IF
+               VL = MAX( VL,ZERO )
+               VU = MAX( VU,ZERO )
+               IF( VL.GE.VU ) VU = MAX( VU*2, VU+VL+HALF )
+            ELSE
+               VL = ZERO
+               VU = ONE
+            END IF 
+* 
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDX( UPLO, 'V', 'V', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), VL, VU, 0, 0, NS1, S1, 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    IWORK, IINFO )
+*
+*           Check error code from DBDSVDX.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(vects,V)', IINFO, 
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 30 ) = ULPINV
+                  GO TO 270
+               END IF
+            END IF
+*
+            J = IWBZ
+            DO 240 I = 1, NS1
+               CALL DCOPY( MNMIN, WORK( J ), 1, U( 1,I ), 1 )
+               J = J + MNMIN
+               CALL DCOPY( MNMIN, WORK( J ), 1, VT( I,1 ), LDPT )
+               J = J + MNMIN
+  240       CONTINUE
+*
+*           Use DBDSVDX to compute only the singular values of the
+*           bidiagonal matrix B;  U and VT should not be modified.
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDX( UPLO, 'N', 'V', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), VL, VU, 0, 0, NS2, S2,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    IWORK, IINFO )
+*
+*           Check error code from DBDSVDX.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(values,V)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 34 ) = ULPINV
+                  GO TO 270
+               END IF
+            END IF
+*
+*           Test 30:  Check S1 - U' * B * VT'
+*                31:  Check the orthogonality of U
+*                32:  Check the orthogonality of VT
+*                33:  Check that the singular values are sorted in
+*                     non-increasing order and are non-negative
+*                34:  Compare DBDSVDX with and without singular vectors
+*
+            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U, 
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ), 
+     $                   RESULT( 30 ) )
+            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT, 
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 31 ) )
+            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT, 
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 32 ) )
+*
+            RESULT( 33 ) = ZERO
+            DO 250 I = 1, NS1 - 1
+               IF( S1( I ).LT.S1( I+1 ) )
+     $            RESULT( 28 ) = ULPINV
+               IF( S1( I ).LT.ZERO )
+     $            RESULT( 28 ) = ULPINV
+  250       CONTINUE
+            IF( NS1.GE.1 ) THEN
+               IF( S1( NS1 ).LT.ZERO )
+     $            RESULT( 28 ) = ULPINV
+            END IF
+*
+            TEMP2 = ZERO
+            DO 260 J = 1, NS1
+               TEMP1 = ABS( S1( J )-S2( J ) ) /
+     $                 MAX( SQRT( UNFL )*MAX( S1( 1 ), ONE ),
+     $                 ULP*MAX( ABS( S1( 1 ) ), ABS( S2( 1 ) ) ) )
+               TEMP2 = MAX( TEMP1, TEMP2 )
+  260       CONTINUE
+            RESULT( 34 ) = TEMP2
+*
 *           End of Loop -- Check for RESULT(j) > THRESH
 *
-  170       CONTINUE
-            DO 180 J = 1, 19
+  270       CONTINUE
+*
+            DO 280 J = 1, 34
                IF( RESULT( J ).GE.THRESH ) THEN
                   IF( NFAIL.EQ.0 )
      $               CALL DLAHD2( NOUT, PATH )
@@ -1075,15 +1504,15 @@
      $               RESULT( J )
                   NFAIL = NFAIL + 1
                END IF
-  180       CONTINUE
+  280       CONTINUE
             IF( .NOT.BIDIAG ) THEN
-               NTEST = NTEST + 19
+               NTEST = NTEST + 34
             ELSE
-               NTEST = NTEST + 5
+               NTEST = NTEST + 30
             END IF
 *
-  190    CONTINUE
-  200 CONTINUE
+  290    CONTINUE
+  300 CONTINUE
 *
 *     Summary
 *
