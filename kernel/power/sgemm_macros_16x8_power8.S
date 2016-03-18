@@ -26,10 +26,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/03/14 Werner Saar (wernsaar@googlemail.com)
+* 2016/03/18 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
+*	 LAPACK-TEST		: OK
 **************************************************************************************/
 
 /**********************************************************************************************
@@ -38,49 +39,65 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro LOAD8x16_1
 
-	lxvw4x		vs28,	o0,	BO
-	lxvw4x		vs29,	o16,	BO
-
 	lxvw4x		vs0,	o0,	AO
 	lxvw4x		vs1,	o16,	AO
 	lxvw4x		vs2,	o32,	AO
 	lxvw4x		vs3,	o48,	AO
+
+	addi		AO,	AO,	64
+
+	lxvw4x		vs28,	o0,	BO
 
 	xxspltw		vs8,	vs28,	0
 	xxspltw		vs9,	vs28,	1
 	xxspltw		vs10,	vs28,	2
 	xxspltw		vs11,	vs28,	3
 
+	lxvw4x		vs29,	o16,	BO
+
 	xxspltw		vs12,	vs29,	0
 	xxspltw		vs13,	vs29,	1
-	addi		AO,	AO,	64
-	addi		BO,	BO,	32
 	xxspltw		vs14,	vs29,	2
 	xxspltw		vs15,	vs29,	3
 
+	addi		BO,	BO,	32
 
 .endm
 
 .macro KERNEL8x16_I1
 
-	xvmulsp		vs32,	vs0,	vs8
-	xvmulsp		vs33,	vs1,	vs8
 
 	lxvw4x		vs4,	o0,	AO
 	lxvw4x		vs5,	o16,	AO
-
-	xvmulsp		vs34,	vs2,	vs8
-	xvmulsp		vs35,	vs3,	vs8
-
-	lxvw4x		vs28,	o0,	BO
-	lxvw4x		vs29,	o16,	BO
-
-	xvmulsp		vs36,	vs0,	vs9
-	xvmulsp		vs37,	vs1,	vs9
-
 	lxvw4x		vs6,	o32,	AO
 	lxvw4x		vs7,	o48,	AO
 
+	addi		AO,	AO,	64
+
+	lxvw4x		vs28,	o0,	BO
+
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
+
+	lxvw4x		vs29,	o16,	BO
+
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
+
+	addi		BO,	BO,	32
+
+
+	xvmulsp		vs32,	vs0,	vs8
+	xvmulsp		vs33,	vs1,	vs8
+	xvmulsp		vs34,	vs2,	vs8
+	xvmulsp		vs35,	vs3,	vs8
+
+	xvmulsp		vs36,	vs0,	vs9
+	xvmulsp		vs37,	vs1,	vs9
 	xvmulsp		vs38,	vs2,	vs9
 	xvmulsp		vs39,	vs3,	vs9
 
@@ -104,27 +121,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmulsp		vs54,	vs2,	vs13
 	xvmulsp		vs55,	vs3,	vs13
 
-	xxspltw		vs16,	vs28,	0
-	xxspltw		vs17,	vs28,	1
-	xxspltw		vs18,	vs28,	2
-	xxspltw		vs19,	vs28,	3
-
 	xvmulsp		vs56,	vs0,	vs14
 	xvmulsp		vs57,	vs1,	vs14
 	xvmulsp		vs58,	vs2,	vs14
 	xvmulsp		vs59,	vs3,	vs14
 
-	xxspltw		vs20,	vs29,	0
-	xxspltw		vs21,	vs29,	1
-	xxspltw		vs22,	vs29,	2
-	xxspltw		vs23,	vs29,	3
-
 	xvmulsp		vs60,	vs0,	vs15
 	xvmulsp		vs61,	vs1,	vs15
-
-	addi		AO,	AO,	64
-	addi		BO,	BO,	32
-
 	xvmulsp		vs62,	vs2,	vs15
 	xvmulsp		vs63,	vs3,	vs15
 
@@ -135,35 +138,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddasp	vs32,	vs0,	vs8
 	xvmaddasp	vs33,	vs1,	vs8
-
+	lxvw4x		vs28,	o0,	BO
 	lxvw4x		vs4,	o0,	AO
-	lxvw4x		vs5,	o16,	AO
-
 	xvmaddasp	vs34,	vs2,	vs8
 	xvmaddasp	vs35,	vs3,	vs8
 
 	xvmaddasp	vs36,	vs0,	vs9
 	xvmaddasp	vs37,	vs1,	vs9
-	lxvw4x		vs28,	o0,	BO
+	lxvw4x		vs29,	o16,	BO
+	lxvw4x		vs5,	o16,	AO
 	xvmaddasp	vs38,	vs2,	vs9
 	xvmaddasp	vs39,	vs3,	vs9
 
 	xvmaddasp	vs40,	vs0,	vs10
 	xvmaddasp	vs41,	vs1,	vs10
-
 	lxvw4x		vs6,	o32,	AO
 	lxvw4x		vs7,	o48,	AO
-
 	xvmaddasp	vs42,	vs2,	vs10
 	xvmaddasp	vs43,	vs3,	vs10
 
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
+
 	xvmaddasp	vs44,	vs0,	vs11
 	xvmaddasp	vs45,	vs1,	vs11
-
-	lxvw4x		vs29,	o16,	BO
-
 	xvmaddasp	vs46,	vs2,	vs11
 	xvmaddasp	vs47,	vs3,	vs11
+
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
 
 	xvmaddasp	vs48,	vs0,	vs12
 	xvmaddasp	vs49,	vs1,	vs12
@@ -172,36 +179,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddasp	vs52,	vs0,	vs13
 	xvmaddasp	vs53,	vs1,	vs13
-
-	xxspltw		vs16,	vs28,	0
-	xxspltw		vs17,	vs28,	1
-
 	xvmaddasp	vs54,	vs2,	vs13
 	xvmaddasp	vs55,	vs3,	vs13
 
 	xvmaddasp	vs56,	vs0,	vs14
 	xvmaddasp	vs57,	vs1,	vs14
-
-	xxspltw		vs18,	vs28,	2
-	xxspltw		vs19,	vs28,	3
-
+	addi		AO,	AO,	64
+	addi		BO,	BO,	32
 	xvmaddasp	vs58,	vs2,	vs14
 	xvmaddasp	vs59,	vs3,	vs14
 
-	xxspltw		vs20,	vs29,	0
-	xxspltw		vs21,	vs29,	1
-
 	xvmaddasp	vs60,	vs0,	vs15
 	xvmaddasp	vs61,	vs1,	vs15
-
-	addi		AO,	AO,	64
-	addi		BO,	BO,	32
-
 	xvmaddasp	vs62,	vs2,	vs15
 	xvmaddasp	vs63,	vs3,	vs15
 
-	xxspltw		vs22,	vs29,	2
-	xxspltw		vs23,	vs29,	3
 
 .endm
 
@@ -210,8 +202,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddasp	vs32,	vs4,	vs16
 	xvmaddasp	vs33,	vs5,	vs16
 
+	lxvw4x		vs28,	o0,	BO
 	lxvw4x		vs0,	o0,	AO
-	lxvw4x		vs1,	o16,	AO
 
 	xvmaddasp	vs34,	vs6,	vs16
 	xvmaddasp	vs35,	vs7,	vs16
@@ -219,27 +211,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddasp	vs36,	vs4,	vs17
 	xvmaddasp	vs37,	vs5,	vs17
 
-	lxvw4x		vs28,	o0,	BO
+	lxvw4x		vs29,	o16,	BO
+	lxvw4x		vs1,	o16,	AO
 
 	xvmaddasp	vs38,	vs6,	vs17
 	xvmaddasp	vs39,	vs7,	vs17
 
-	xvmaddasp	vs40,	vs4,	vs18
-	xvmaddasp	vs41,	vs5,	vs18
-
 	lxvw4x		vs2,	o32,	AO
 	lxvw4x		vs3,	o48,	AO
 
+	xvmaddasp	vs40,	vs4,	vs18
+	xvmaddasp	vs41,	vs5,	vs18
 	xvmaddasp	vs42,	vs6,	vs18
 	xvmaddasp	vs43,	vs7,	vs18
 
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
+
 	xvmaddasp	vs44,	vs4,	vs19
 	xvmaddasp	vs45,	vs5,	vs19
-
-	lxvw4x		vs29,	o16,	BO
-
 	xvmaddasp	vs46,	vs6,	vs19
 	xvmaddasp	vs47,	vs7,	vs19
+
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
 	xvmaddasp	vs48,	vs4,	vs20
 	xvmaddasp	vs49,	vs5,	vs20
@@ -248,32 +247,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddasp	vs52,	vs4,	vs21
 	xvmaddasp	vs53,	vs5,	vs21
-
-	xxspltw		vs8,	vs28,	0
-	xxspltw		vs9,	vs28,	1
-	xxspltw		vs10,	vs28,	2
-	xxspltw		vs11,	vs28,	3
-
 	xvmaddasp	vs54,	vs6,	vs21
 	xvmaddasp	vs55,	vs7,	vs21
 
 	xvmaddasp	vs56,	vs4,	vs22
 	xvmaddasp	vs57,	vs5,	vs22
-
-	xxspltw		vs12,	vs29,	0
-	xxspltw		vs13,	vs29,	1
-	xxspltw		vs14,	vs29,	2
-	xxspltw		vs15,	vs29,	3
-
 	xvmaddasp	vs58,	vs6,	vs22
 	xvmaddasp	vs59,	vs7,	vs22
 
 	xvmaddasp	vs60,	vs4,	vs23
 	xvmaddasp	vs61,	vs5,	vs23
-
 	addi		AO,	AO,	64
 	addi		BO,	BO,	32
-
 	xvmaddasp	vs62,	vs6,	vs23
 	xvmaddasp	vs63,	vs7,	vs23
 
@@ -479,21 +464,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-	xvmulsp		vs2,	vs34,	alpha_vr
-	xvmulsp		vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-	xvmaddasp	vs2,	vs34,	alpha_vr
-	xvmaddasp	vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -512,21 +581,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs36,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs36,	alpha_vr
-	xvmulsp		vs1,	vs37,	alpha_vr
-	xvmulsp		vs2,	vs38,	alpha_vr
-	xvmulsp		vs3,	vs39,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs36,	alpha_vr
-	xvmaddasp	vs1,	vs37,	alpha_vr
-	xvmaddasp	vs2,	vs38,	alpha_vr
-	xvmaddasp	vs3,	vs39,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs37,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs38,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs39,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -545,21 +698,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs40,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs40,	alpha_vr
-	xvmulsp		vs1,	vs41,	alpha_vr
-	xvmulsp		vs2,	vs42,	alpha_vr
-	xvmulsp		vs3,	vs43,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs40,	alpha_vr
-	xvmaddasp	vs1,	vs41,	alpha_vr
-	xvmaddasp	vs2,	vs42,	alpha_vr
-	xvmaddasp	vs3,	vs43,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs41,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs42,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs43,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -578,21 +815,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs44,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs44,	alpha_vr
-	xvmulsp		vs1,	vs45,	alpha_vr
-	xvmulsp		vs2,	vs46,	alpha_vr
-	xvmulsp		vs3,	vs47,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs44,	alpha_vr
-	xvmaddasp	vs1,	vs45,	alpha_vr
-	xvmaddasp	vs2,	vs46,	alpha_vr
-	xvmaddasp	vs3,	vs47,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs45,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs46,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs47,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -611,21 +932,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs48,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs48,	alpha_vr
-	xvmulsp		vs1,	vs49,	alpha_vr
-	xvmulsp		vs2,	vs50,	alpha_vr
-	xvmulsp		vs3,	vs51,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs48,	alpha_vr
-	xvmaddasp	vs1,	vs49,	alpha_vr
-	xvmaddasp	vs2,	vs50,	alpha_vr
-	xvmaddasp	vs3,	vs51,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs49,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs50,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs51,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -644,21 +1049,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs52,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs52,	alpha_vr
-	xvmulsp		vs1,	vs53,	alpha_vr
-	xvmulsp		vs2,	vs54,	alpha_vr
-	xvmulsp		vs3,	vs55,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs52,	alpha_vr
-	xvmaddasp	vs1,	vs53,	alpha_vr
-	xvmaddasp	vs2,	vs54,	alpha_vr
-	xvmaddasp	vs3,	vs55,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs53,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs54,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs55,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -677,21 +1166,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs56,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs56,	alpha_vr
-	xvmulsp		vs1,	vs57,	alpha_vr
-	xvmulsp		vs2,	vs58,	alpha_vr
-	xvmulsp		vs3,	vs59,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs56,	alpha_vr
-	xvmaddasp	vs1,	vs57,	alpha_vr
-	xvmaddasp	vs2,	vs58,	alpha_vr
-	xvmaddasp	vs3,	vs59,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs57,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs58,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs59,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -710,21 +1283,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs60,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs60,	alpha_vr
-	xvmulsp		vs1,	vs61,	alpha_vr
-	xvmulsp		vs2,	vs62,	alpha_vr
-	xvmulsp		vs3,	vs63,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs60,	alpha_vr
-	xvmaddasp	vs1,	vs61,	alpha_vr
-	xvmaddasp	vs2,	vs62,	alpha_vr
-	xvmaddasp	vs3,	vs63,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs61,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs62,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs63,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1068,17 +1725,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1093,17 +1790,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs34,	alpha_vr
-	xvmulsp		vs1,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs34,	alpha_vr
-	xvmaddasp	vs1,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1118,17 +1855,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs36,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs36,	alpha_vr
-	xvmulsp		vs1,	vs37,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs36,	alpha_vr
-	xvmaddasp	vs1,	vs37,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs37,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1143,17 +1920,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs38,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs38,	alpha_vr
-	xvmulsp		vs1,	vs39,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs38,	alpha_vr
-	xvmaddasp	vs1,	vs39,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs39,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1168,17 +1985,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs40,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs40,	alpha_vr
-	xvmulsp		vs1,	vs41,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs40,	alpha_vr
-	xvmaddasp	vs1,	vs41,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs41,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1193,17 +2050,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs42,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs42,	alpha_vr
-	xvmulsp		vs1,	vs43,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs42,	alpha_vr
-	xvmaddasp	vs1,	vs43,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs43,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1218,17 +2115,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs44,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs44,	alpha_vr
-	xvmulsp		vs1,	vs45,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs44,	alpha_vr
-	xvmaddasp	vs1,	vs45,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs45,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1243,17 +2180,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs46,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs46,	alpha_vr
-	xvmulsp		vs1,	vs47,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs46,	alpha_vr
-	xvmaddasp	vs1,	vs47,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs47,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -1540,15 +2517,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -1561,15 +2556,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs33,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs33,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -1582,15 +2595,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs34,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs34,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -1603,15 +2634,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -1624,15 +2673,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs36,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs36,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs36,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -1645,15 +2712,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs37,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs37,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs37,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -1666,15 +2751,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs38,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs38,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs38,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -1687,15 +2790,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs39,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs39,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs39,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -2043,8 +3164,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
-	xsmaddasp	vs1,	vs33,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs33,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2068,8 +3191,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs34,	alpha_r
-	xsmaddasp	vs1,	vs35,	alpha_r
+	xsmulsp		vs28,	vs34,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs35,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2093,8 +3218,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs36,	alpha_r
-	xsmaddasp	vs1,	vs37,	alpha_r
+	xsmulsp		vs28,	vs36,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs37,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2118,8 +3245,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs38,	alpha_r
-	xsmaddasp	vs1,	vs39,	alpha_r
+	xsmulsp		vs28,	vs38,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs39,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2143,8 +3272,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs40,	alpha_r
-	xsmaddasp	vs1,	vs41,	alpha_r
+	xsmulsp		vs28,	vs40,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs41,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2168,8 +3299,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs42,	alpha_r
-	xsmaddasp	vs1,	vs43,	alpha_r
+	xsmulsp		vs28,	vs42,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs43,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2193,8 +3326,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs44,	alpha_r
-	xsmaddasp	vs1,	vs45,	alpha_r
+	xsmulsp		vs28,	vs44,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs45,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2218,8 +3353,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs46,	alpha_r
-	xsmaddasp	vs1,	vs47,	alpha_r
+	xsmulsp		vs28,	vs46,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs47,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -2514,7 +3651,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2535,7 +3673,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs33,	alpha_r
+	xsmulsp		vs28,	vs33,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2556,7 +3695,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs34,	alpha_r
+	xsmulsp		vs28,	vs34,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2577,7 +3717,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs35,	alpha_r
+	xsmulsp		vs28,	vs35,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2598,7 +3739,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs36,	alpha_r
+	xsmulsp		vs28,	vs36,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2619,7 +3761,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs37,	alpha_r
+	xsmulsp		vs28,	vs37,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2640,7 +3783,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs38,	alpha_r
+	xsmulsp		vs28,	vs38,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2661,7 +3805,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs39,	alpha_r
+	xsmulsp		vs28,	vs39,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -2952,21 +4097,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-	xvmulsp		vs2,	vs34,	alpha_vr
-	xvmulsp		vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-	xvmaddasp	vs2,	vs34,	alpha_vr
-	xvmaddasp	vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -2985,21 +4214,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs36,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs36,	alpha_vr
-	xvmulsp		vs1,	vs37,	alpha_vr
-	xvmulsp		vs2,	vs38,	alpha_vr
-	xvmulsp		vs3,	vs39,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs36,	alpha_vr
-	xvmaddasp	vs1,	vs37,	alpha_vr
-	xvmaddasp	vs2,	vs38,	alpha_vr
-	xvmaddasp	vs3,	vs39,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs37,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs38,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs39,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -3018,21 +4331,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs40,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs40,	alpha_vr
-	xvmulsp		vs1,	vs41,	alpha_vr
-	xvmulsp		vs2,	vs42,	alpha_vr
-	xvmulsp		vs3,	vs43,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs40,	alpha_vr
-	xvmaddasp	vs1,	vs41,	alpha_vr
-	xvmaddasp	vs2,	vs42,	alpha_vr
-	xvmaddasp	vs3,	vs43,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs41,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs42,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs43,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -3051,21 +4448,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs44,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs44,	alpha_vr
-	xvmulsp		vs1,	vs45,	alpha_vr
-	xvmulsp		vs2,	vs46,	alpha_vr
-	xvmulsp		vs3,	vs47,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs44,	alpha_vr
-	xvmaddasp	vs1,	vs45,	alpha_vr
-	xvmaddasp	vs2,	vs46,	alpha_vr
-	xvmaddasp	vs3,	vs47,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs45,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs46,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs47,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -3295,17 +4776,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -3320,17 +4841,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs34,	alpha_vr
-	xvmulsp		vs1,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs34,	alpha_vr
-	xvmaddasp	vs1,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -3345,17 +4906,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs36,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs36,	alpha_vr
-	xvmulsp		vs1,	vs37,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs36,	alpha_vr
-	xvmaddasp	vs1,	vs37,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs37,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -3370,17 +4971,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs38,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs38,	alpha_vr
-	xvmulsp		vs1,	vs39,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs38,	alpha_vr
-	xvmaddasp	vs1,	vs39,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs39,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -3577,15 +5218,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -3598,15 +5257,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs33,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs33,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -3619,15 +5296,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs34,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs34,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -3640,15 +5335,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -3882,8 +5595,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
-	xsmaddasp	vs1,	vs33,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs33,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -3907,8 +5622,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs34,	alpha_r
-	xsmaddasp	vs1,	vs35,	alpha_r
+	xsmulsp		vs28,	vs34,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs35,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -3932,8 +5649,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs36,	alpha_r
-	xsmaddasp	vs1,	vs37,	alpha_r
+	xsmulsp		vs28,	vs36,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs37,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -3957,8 +5676,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs38,	alpha_r
-	xsmaddasp	vs1,	vs39,	alpha_r
+	xsmulsp		vs28,	vs38,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs39,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -4163,7 +5884,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -4184,7 +5906,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs33,	alpha_r
+	xsmulsp		vs28,	vs33,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -4205,7 +5928,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs34,	alpha_r
+	xsmulsp		vs28,	vs34,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -4226,7 +5950,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs35,	alpha_r
+	xsmulsp		vs28,	vs35,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -4445,21 +6170,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-	xvmulsp		vs2,	vs34,	alpha_vr
-	xvmulsp		vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-	xvmaddasp	vs2,	vs34,	alpha_vr
-	xvmaddasp	vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -4478,21 +6287,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs36,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs36,	alpha_vr
-	xvmulsp		vs1,	vs37,	alpha_vr
-	xvmulsp		vs2,	vs38,	alpha_vr
-	xvmulsp		vs3,	vs39,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs36,	alpha_vr
-	xvmaddasp	vs1,	vs37,	alpha_vr
-	xvmaddasp	vs2,	vs38,	alpha_vr
-	xvmaddasp	vs3,	vs39,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs37,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs38,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs39,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -4674,17 +6567,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -4699,17 +6632,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs34,	alpha_vr
-	xvmulsp		vs1,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs34,	alpha_vr
-	xvmaddasp	vs1,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -4870,15 +6843,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -4891,15 +6882,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs33,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs33,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -5085,8 +7094,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
-	xsmaddasp	vs1,	vs33,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs33,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -5110,8 +7121,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs34,	alpha_r
-	xsmaddasp	vs1,	vs35,	alpha_r
+	xsmulsp		vs28,	vs34,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs35,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -5280,7 +7293,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -5301,7 +7315,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs33,	alpha_r
+	xsmulsp		vs28,	vs33,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 
@@ -5484,21 +7499,105 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-	xvmulsp		vs2,	vs34,	alpha_vr
-	xvmulsp		vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-	xvmaddasp	vs2,	vs34,	alpha_vr
-	xvmaddasp	vs3,	vs35,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+	stxvw4x		vs34,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs2,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs2,	vs2,	vs28
+#endif
+
+	stxvw4x		vs35,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs3,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs3,	vs3,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -5656,17 +7755,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-	xvmulsp		vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-	xvmaddasp	vs1,	vs33,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+	stxvw4x		vs33,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
+#ifdef TRMMKERNEL
+	lxvw4x		vs1,	o0,	TBUFFER
+#else
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs1,	vs1,	vs28
+#endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 	stxvw4x		vs1,	o16,	T1
@@ -5809,15 +7948,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+
+	stxvw4x		vs32,	o0,	TBUFFER
+
+	lxsspx		vs4,	o0,	TBUFFER
+	lxsspx		vs5,	o4,	TBUFFER
+	lxsspx		vs6,	o8,	TBUFFER
+	lxsspx		vs7,	o12,	TBUFFER
+
+	xsmulsp		vs4,	vs4,	alpha_r
+	xsmulsp		vs5,	vs5,	alpha_r
+	xsmulsp		vs6,	vs6,	alpha_r
+	xsmulsp		vs7,	vs7,	alpha_r
+
+	stxsspx		vs4,	o0,	TBUFFER
+	stxsspx		vs5,	o4,	TBUFFER
+	stxsspx		vs6,	o8,	TBUFFER
+	stxsspx		vs7,	o12,	TBUFFER
+
 #ifdef TRMMKERNEL
-
-	xvmulsp		vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs0,	o0,	TBUFFER
 #else
-
-	xvmaddasp	vs0,	vs32,	alpha_vr
-
+	lxvw4x		vs28,	o0,	TBUFFER
+	xvaddsp		vs0,	vs0,	vs28
 #endif
+
+
+
 
 	stxvw4x		vs0,	o0,	T1
 
@@ -5979,8 +8136,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
-	xsmaddasp	vs1,	vs33,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
+	xsmulsp		vs28,	vs33,	alpha_r
+	xsaddsp		vs1,	vs1,	vs28
 
 #endif
 
@@ -6131,7 +8290,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-	xsmaddasp	vs0,	vs32,	alpha_r
+	xsmulsp		vs28,	vs32,	alpha_r
+	xsaddsp		vs0,	vs0,	vs28
 
 #endif
 

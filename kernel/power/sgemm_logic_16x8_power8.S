@@ -26,12 +26,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/03/14 Werner Saar (wernsaar@googlemail.com)
+* 2016/03/18 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
+*	 LAPACK-TEST		: OK
 **************************************************************************************/
-
 
 	srawi.		J,	N,	3
 	ble		.LSGEMM_L8_END

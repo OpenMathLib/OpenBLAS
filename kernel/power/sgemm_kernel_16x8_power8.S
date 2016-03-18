@@ -26,10 +26,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/03/14 Werner Saar (wernsaar@googlemail.com)
+* 2016/03/18 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
+*	 LAPACK-TEST		: OK
 **************************************************************************************/
 
 /*********************************************************************/
@@ -81,7 +82,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 320
+#define STACKSIZE 340
 #define ALPHA_SP   296(SP)
 #define FZERO	304(SP)
 #else
@@ -127,10 +128,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define alpha_r vs30
-#define alpha_vr vs31
 
 #define o0	0
 
+#define TBUFFER r14
 #define o4	r15
 #define o12	r16
 #define o8	r17
@@ -202,6 +203,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r17,  256(SP)
 	std	r16,  264(SP)
 	std	r15,  272(SP)
+	std	r14,  280(SP)
 #else
 	stw	r31,  144(SP)
 	stw	r30,  148(SP)
@@ -220,6 +222,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stw	r17,  200(SP)
 	stw	r16,  204(SP)
 	stw	r15,  208(SP)
+	stw	r14,  212(SP)
 #endif
 
 	// stfd	f1,  ALPHA_SP
@@ -259,24 +262,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cmpwi	cr0, K, 0
 	ble	.L999_H1
 
-	li	PRE, 384 
+	li	PRE, 256 
 	li	o4 , 4
 	li	o8 , 8
 	li	o12, 12
 	li	o16, 16
 	li	o32, 32
 	li	o48, 48
+	addi	TBUFFER, SP, 320
 
         addi    T1, SP, 300
         stfs    f1, 0(T1)
-        stfs    f1, 4(T1)
-        stfs    f1, 8(T1)
-        stfs    f1,12(T1)
 
-        lxsspx  vs28, 0, T1
-
-        xxspltw alpha_r, vs28 , 0 
-        lxvw4x  alpha_vr, 0, T1
+        lxsspx  alpha_r, 0, T1
 
 
 
@@ -326,6 +324,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld	r17,  256(SP)
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
+	ld	r14,  280(SP)
 #else
 	lwz	r31,  144(SP)
 	lwz	r30,  148(SP)
@@ -344,6 +343,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lwz	r17,  200(SP)
 	lwz	r16,  204(SP)
 	lwz	r15,  208(SP)
+	lwz	r14,  212(SP)
 #endif
 
 	addi	SP, SP, STACKSIZE
