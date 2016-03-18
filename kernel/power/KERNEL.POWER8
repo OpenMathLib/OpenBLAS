@@ -5,7 +5,7 @@
 
 STRMMKERNEL	= strmm_kernel_16x8_power8.S
 DTRMMKERNEL	= dtrmm_kernel_16x4_power8.S
-CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+CTRMMKERNEL	= ctrmm_kernel_8x4_power8.S
 ZTRMMKERNEL	= ztrmm_kernel_8x2_power8.S
 
 SGEMMKERNEL    =  sgemm_kernel_16x8_power8.S
@@ -28,11 +28,15 @@ DGEMMITCOPYOBJ = dgemm_itcopy.o
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
-CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
-CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
-CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+CGEMMKERNEL    = cgemm_kernel_8x4_power8.S
+CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
+CGEMMITCOPY    = ../generic/zgemm_tcopy_8.c
+CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
+CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
 CGEMMONCOPYOBJ =  cgemm_oncopy.o
 CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+CGEMMINCOPYOBJ =  cgemm_incopy.o
+CGEMMITCOPYOBJ =  cgemm_itcopy.o
 
 ZGEMMKERNEL    = zgemm_kernel_8x2_power8.S
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
