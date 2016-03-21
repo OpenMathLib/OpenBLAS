@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(OpenBLAS)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 2)
-set(OpenBLAS_PATCH_VERSION 17.dev)
+set(OpenBLAS_PATCH_VERSION 18.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 enable_language(ASM)
