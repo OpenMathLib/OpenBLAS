@@ -1,6 +1,12 @@
 OpenBLAS ChangeLog
 ====================================================================
 Version 0.2.16
+20-Mar-2016
+common:
+	* Enable BUILD_LAPACK_DEPRECATED=1 by default.
+
+====================================================================
+Version 0.2.16
 15-Mar-2016
 common:
 	* Avoid potential getenv segfault. (#716)
