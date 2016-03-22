@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.17.dev
+VERSION = 0.2.18.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -80,7 +80,7 @@ VERSION = 0.2.17.dev
 # NO_LAPACKE = 1
 
 # Build LAPACK Deprecated functions since LAPACK 3.6.0
-# BUILD_LAPACK_DEPRECATED = 1
+BUILD_LAPACK_DEPRECATED = 1
 
 # If you want to use legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1

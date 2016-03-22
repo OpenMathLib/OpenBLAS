@@ -120,10 +120,10 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #CCOPYKERNEL  = ../arm/zcopy.c
 #ZCOPYKERNEL  = ../arm/zcopy.c
 #
-#SDOTKERNEL   = ../arm/dot.c
-#DDOTKERNEL   = ../arm/dot.c
+SDOTKERNEL   =  sdot.c
+DDOTKERNEL   =  ddot.c
 #CDOTKERNEL   = ../arm/zdot.c
-#ZDOTKERNEL   = ../arm/zdot.c
+ZDOTKERNEL   =  zdot.c
 #
 #SNRM2KERNEL  = ../arm/nrm2.c
 #DNRM2KERNEL  = ../arm/nrm2.c
