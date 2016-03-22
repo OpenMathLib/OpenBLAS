@@ -147,5 +147,6 @@ In chronological order:
   * [2016-03-14] Additional functional Assembly Kernels for Cortex-A57
   * [2016-03-14] Optimize Dgemm 4x4 for Cortex-A57
 
-* [Your name or handle] <[email or website]>
-  * [Date] [Brief summary of your changes]
+* theoractice <https://github.com/theoractice/>
+  * [2016-03-20] Fix compiler error in VisualStudio with CMake
+  * [2016-03-22] Fix access violation on Windows while static linking

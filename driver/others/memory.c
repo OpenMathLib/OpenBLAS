@@ -1452,6 +1452,31 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
   }
   return TRUE;
 }
+
+/*
+  This is to allow static linking.
+  Code adapted from Google performance tools:
+  https://gperftools.googlecode.com/git-history/perftools-1.0/src/windows/port.cc
+  Reference:
+  https://sourceware.org/ml/pthreads-win32/2008/msg00028.html
+  http://ci.boost.org/svn-trac/browser/trunk/libs/thread/src/win32/tss_pe.cpp
+*/
+static int on_process_term(void)
+{
+	gotoblas_quit();
+	return 0;
+}
+#ifdef _WIN64
+#pragma comment(linker, "/INCLUDE:_tls_used")
+#else
+#pragma comment(linker, "/INCLUDE:__tls_used")
+#endif
+#pragma data_seg(push, old_seg)
+#pragma data_seg(".CRT$XLB")
+static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
+#pragma data_seg(".CRT$XTU")
+static int(*p_process_term)(void) = on_process_term;
+#pragma data_seg(pop, old_seg)
 #endif
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))
