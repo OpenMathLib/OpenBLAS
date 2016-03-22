@@ -1459,13 +1459,18 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
   https://gperftools.googlecode.com/git-history/perftools-1.0/src/windows/port.cc
   Reference:
   https://sourceware.org/ml/pthreads-win32/2008/msg00028.html
+  http://ci.boost.org/svn-trac/browser/trunk/libs/thread/src/win32/tss_pe.cpp
 */
 static int on_process_term(void)
 {
 	gotoblas_quit();
 	return 0;
 }
+#ifdef _WIN64
+#pragma comment(linker, "/INCLUDE:_tls_used")
+#else
 #pragma comment(linker, "/INCLUDE:__tls_used")
+#endif
 #pragma data_seg(push, old_seg)
 #pragma data_seg(".CRT$XLB")
 static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
