@@ -555,24 +555,24 @@ static inline int is_dead(int id) {
 }
 
 static void open_shmem(void) {
+  int shm_size = 4096;
+
+#if defined(BIGNUMA)
+  // raised to 32768, enough for 128 nodes and 1024 cups
+  shm_size = 32*1024;
+#endif
+
+  // needs to be at least one page
+  shm_size = MAX(getpagesize(), shm_size);
 
   int try = 0;
 
   do {
 
-#if defined(BIGNUMA)
-    // raised to 32768, enough for 128 nodes and 1024 cups
-    shmid = shmget(SH_MAGIC, 32768, 0666);
-#else
-    shmid = shmget(SH_MAGIC, 4096, 0666);
-#endif
+    shmid = shmget(SH_MAGIC, shm_size, 0666);
 
     if (shmid == -1) {
-#if defined(BIGNUMA)
-      shmid = shmget(SH_MAGIC, 32768, IPC_CREAT | 0666);
-#else
-      shmid = shmget(SH_MAGIC, 4096, IPC_CREAT | 0666);
-#endif
+      shmid = shmget(SH_MAGIC, shm_size, IPC_CREAT | 0666);
     }
 
     try ++;
