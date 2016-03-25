@@ -117,7 +117,7 @@ ZAXPYKERNEL  = zaxpy.c
 #
 SCOPYKERNEL  = scopy.c
 DCOPYKERNEL  = dcopy.c
-#CCOPYKERNEL  = ../arm/zcopy.c
+CCOPYKERNEL  = ccopy.c
 ZCOPYKERNEL  = zcopy.c
 #
 SDOTKERNEL   =  sdot.c
