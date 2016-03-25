@@ -141,7 +141,7 @@ DSCALKERNEL  = dscal.c
 #ZSCALKERNEL  = zscal.c
 #
 #SSWAPKERNEL  = ../arm/swap.c
-#DSWAPKERNEL  = ../arm/swap.c
+DSWAPKERNEL  = dswap.c
 #CSWAPKERNEL  = ../arm/zswap.c
 #ZSWAPKERNEL  = ../arm/zswap.c
 #
