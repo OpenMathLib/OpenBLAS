@@ -115,7 +115,7 @@ DAXPYKERNEL  = daxpy.c
 #CAXPYKERNEL  = ../arm/zaxpy.c
 ZAXPYKERNEL  = zaxpy.c
 #
-#SCOPYKERNEL  = ../arm/copy.c
+SCOPYKERNEL  = scopy.c
 DCOPYKERNEL  = dcopy.c
 #CCOPYKERNEL  = ../arm/zcopy.c
 ZCOPYKERNEL  = zcopy.c
