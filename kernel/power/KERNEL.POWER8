@@ -136,9 +136,9 @@ ZDOTKERNEL   =  zdot.c
 #ZROTKERNEL   = ../arm/zrot.c
 #
 #SSCALKERNEL  = ../arm/scal.c
-#DSCALKERNEL  = ../arm/scal.c
+DSCALKERNEL  = dscal.c
 #CSCALKERNEL  = ../arm/zscal.c
-#ZSCALKERNEL  = ../arm/zscal.c
+#ZSCALKERNEL  = zscal.c
 #
 #SSWAPKERNEL  = ../arm/swap.c
 #DSWAPKERNEL  = ../arm/swap.c
