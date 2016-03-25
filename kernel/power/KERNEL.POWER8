@@ -115,10 +115,10 @@ DAXPYKERNEL  = daxpy.c
 #CAXPYKERNEL  = ../arm/zaxpy.c
 ZAXPYKERNEL  = zaxpy.c
 #
-#SCOPYKERNEL  = ../arm/copy.c
-#DCOPYKERNEL  = ../arm/copy.c
-#CCOPYKERNEL  = ../arm/zcopy.c
-#ZCOPYKERNEL  = ../arm/zcopy.c
+SCOPYKERNEL  = scopy.c
+DCOPYKERNEL  = dcopy.c
+CCOPYKERNEL  = ccopy.c
+ZCOPYKERNEL  = zcopy.c
 #
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
@@ -140,8 +140,8 @@ DSCALKERNEL  = dscal.c
 #CSCALKERNEL  = ../arm/zscal.c
 #ZSCALKERNEL  = zscal.c
 #
-#SSWAPKERNEL  = ../arm/swap.c
-#DSWAPKERNEL  = ../arm/swap.c
+SSWAPKERNEL  = sswap.c
+DSWAPKERNEL  = dswap.c
 #CSWAPKERNEL  = ../arm/zswap.c
 #ZSWAPKERNEL  = ../arm/zswap.c
 #
