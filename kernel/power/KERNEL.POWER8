@@ -135,15 +135,15 @@ DROTKERNEL   = drot.c
 #CROTKERNEL   = ../arm/zrot.c
 #ZROTKERNEL   = ../arm/zrot.c
 #
-#SSCALKERNEL  = ../arm/scal.c
+SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
 #CSCALKERNEL  = ../arm/zscal.c
-#ZSCALKERNEL  = zscal.c
+ZSCALKERNEL  = zscal.c
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c
-#CSWAPKERNEL  = ../arm/zswap.c
-#ZSWAPKERNEL  = ../arm/zswap.c
+CSWAPKERNEL  = cswap.c
+ZSWAPKERNEL  = zswap.c
 #
 
 #SGEMVNKERNEL = ../arm/gemv_n.c
