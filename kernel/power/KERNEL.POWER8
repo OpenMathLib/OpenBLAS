@@ -130,8 +130,8 @@ ZDOTKERNEL   =  zdot.c
 #CNRM2KERNEL  = ../arm/znrm2.c
 #ZNRM2KERNEL  = ../arm/znrm2.c
 #
-#SROTKERNEL   = ../arm/rot.c
-#DROTKERNEL   = ../arm/rot.c
+SROTKERNEL   = srot.c
+DROTKERNEL   = drot.c
 #CROTKERNEL   = ../arm/zrot.c
 #ZROTKERNEL   = ../arm/zrot.c
 #
