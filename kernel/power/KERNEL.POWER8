@@ -138,7 +138,7 @@ DROTKERNEL   = drot.c
 SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
 #CSCALKERNEL  = ../arm/zscal.c
-#ZSCALKERNEL  = zscal.c
+ZSCALKERNEL  = zscal.c
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c
