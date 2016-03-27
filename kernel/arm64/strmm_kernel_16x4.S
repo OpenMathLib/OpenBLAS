@@ -161,25 +161,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v3.4s}, [pA]
 	add	pA, pA, #16
 
-	fmul	v16.4s, v0.4s, v8.2s[0]
-	fmul	v17.4s, v1.4s, v8.2s[0]
-	fmul	v18.4s, v2.4s, v8.2s[0]
-	fmul	v19.4s, v3.4s, v8.2s[0]
+	fmul	v16.4s, v0.4s, v8.s[0]
+	fmul	v17.4s, v1.4s, v8.s[0]
+	fmul	v18.4s, v2.4s, v8.s[0]
+	fmul	v19.4s, v3.4s, v8.s[0]
 
-	fmul	v20.4s, v0.4s, v8.2s[1]
-	fmul	v21.4s, v1.4s, v8.2s[1]
-	fmul	v22.4s, v2.4s, v8.2s[1]
-	fmul	v23.4s, v3.4s, v8.2s[1]
+	fmul	v20.4s, v0.4s, v8.s[1]
+	fmul	v21.4s, v1.4s, v8.s[1]
+	fmul	v22.4s, v2.4s, v8.s[1]
+	fmul	v23.4s, v3.4s, v8.s[1]
 
-	fmul	v24.4s, v0.4s, v9.2s[0]
-	fmul	v25.4s, v1.4s, v9.2s[0]
-	fmul	v26.4s, v2.4s, v9.2s[0]
-	fmul	v27.4s, v3.4s, v9.2s[0]
+	fmul	v24.4s, v0.4s, v9.s[0]
+	fmul	v25.4s, v1.4s, v9.s[0]
+	fmul	v26.4s, v2.4s, v9.s[0]
+	fmul	v27.4s, v3.4s, v9.s[0]
 
-	fmul	v28.4s, v0.4s, v9.2s[1]
-	fmul	v29.4s, v1.4s, v9.2s[1]
-	fmul	v30.4s, v2.4s, v9.2s[1]
-	fmul	v31.4s, v3.4s, v9.2s[1]
+	fmul	v28.4s, v0.4s, v9.s[1]
+	fmul	v29.4s, v1.4s, v9.s[1]
+	fmul	v30.4s, v2.4s, v9.s[1]
+	fmul	v31.4s, v3.4s, v9.s[1]
 
 	ld1	{v12.2s, v13.2s}, [pB]
 	add	pB, pB, #16
@@ -194,25 +194,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL16x4_M1
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
-	fmla	v18.4s, v2.4s, v8.2s[0]
-	fmla	v19.4s, v3.4s, v8.2s[0]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v18.4s, v2.4s, v8.s[0]
+	fmla	v19.4s, v3.4s, v8.s[0]
 
-	fmla	v20.4s, v0.4s, v8.2s[1]
-	fmla	v21.4s, v1.4s, v8.2s[1]
-	fmla	v22.4s, v2.4s, v8.2s[1]
-	fmla	v23.4s, v3.4s, v8.2s[1]
+	fmla	v20.4s, v0.4s, v8.s[1]
+	fmla	v21.4s, v1.4s, v8.s[1]
+	fmla	v22.4s, v2.4s, v8.s[1]
+	fmla	v23.4s, v3.4s, v8.s[1]
 
-	fmla	v24.4s, v0.4s, v9.2s[0]
-	fmla	v25.4s, v1.4s, v9.2s[0]
-	fmla	v26.4s, v2.4s, v9.2s[0]
-	fmla	v27.4s, v3.4s, v9.2s[0]
+	fmla	v24.4s, v0.4s, v9.s[0]
+	fmla	v25.4s, v1.4s, v9.s[0]
+	fmla	v26.4s, v2.4s, v9.s[0]
+	fmla	v27.4s, v3.4s, v9.s[0]
 
-	fmla	v28.4s, v0.4s, v9.2s[1]
-	fmla	v29.4s, v1.4s, v9.2s[1]
-	fmla	v30.4s, v2.4s, v9.2s[1]
-	fmla	v31.4s, v3.4s, v9.2s[1]
+	fmla	v28.4s, v0.4s, v9.s[1]
+	fmla	v29.4s, v1.4s, v9.s[1]
+	fmla	v30.4s, v2.4s, v9.s[1]
+	fmla	v31.4s, v3.4s, v9.s[1]
 
 	ld1	{v12.2s, v13.2s}, [pB]
 	add	pB, pB, #16
@@ -227,25 +227,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL16x4_M2
-	fmla	v16.4s, v4.4s, v12.2s[0]
-	fmla	v17.4s, v5.4s, v12.2s[0]
-	fmla	v18.4s, v6.4s, v12.2s[0]
-	fmla	v19.4s, v7.4s, v12.2s[0]
+	fmla	v16.4s, v4.4s, v12.s[0]
+	fmla	v17.4s, v5.4s, v12.s[0]
+	fmla	v18.4s, v6.4s, v12.s[0]
+	fmla	v19.4s, v7.4s, v12.s[0]
 
-	fmla	v20.4s, v4.4s, v12.2s[1]
-	fmla	v21.4s, v5.4s, v12.2s[1]
-	fmla	v22.4s, v6.4s, v12.2s[1]
-	fmla	v23.4s, v7.4s, v12.2s[1]
+	fmla	v20.4s, v4.4s, v12.s[1]
+	fmla	v21.4s, v5.4s, v12.s[1]
+	fmla	v22.4s, v6.4s, v12.s[1]
+	fmla	v23.4s, v7.4s, v12.s[1]
 
-	fmla	v24.4s, v4.4s, v13.2s[0]
-	fmla	v25.4s, v5.4s, v13.2s[0]
-	fmla	v26.4s, v6.4s, v13.2s[0]
-	fmla	v27.4s, v7.4s, v13.2s[0]
+	fmla	v24.4s, v4.4s, v13.s[0]
+	fmla	v25.4s, v5.4s, v13.s[0]
+	fmla	v26.4s, v6.4s, v13.s[0]
+	fmla	v27.4s, v7.4s, v13.s[0]
 
-	fmla	v28.4s, v4.4s, v13.2s[1]
-	fmla	v29.4s, v5.4s, v13.2s[1]
-	fmla	v30.4s, v6.4s, v13.2s[1]
-	fmla	v31.4s, v7.4s, v13.2s[1]
+	fmla	v28.4s, v4.4s, v13.s[1]
+	fmla	v29.4s, v5.4s, v13.s[1]
+	fmla	v30.4s, v6.4s, v13.s[1]
+	fmla	v31.4s, v7.4s, v13.s[1]
 
 	ld1	{v8.2s, v9.2s}, [pB]
 	add	pB, pB, #16
@@ -260,25 +260,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL16x4_E
-	fmla	v16.4s, v4.4s, v12.2s[0]
-	fmla	v17.4s, v5.4s, v12.2s[0]
-	fmla	v18.4s, v6.4s, v12.2s[0]
-	fmla	v19.4s, v7.4s, v12.2s[0]
+	fmla	v16.4s, v4.4s, v12.s[0]
+	fmla	v17.4s, v5.4s, v12.s[0]
+	fmla	v18.4s, v6.4s, v12.s[0]
+	fmla	v19.4s, v7.4s, v12.s[0]
 
-	fmla	v20.4s, v4.4s, v12.2s[1]
-	fmla	v21.4s, v5.4s, v12.2s[1]
-	fmla	v22.4s, v6.4s, v12.2s[1]
-	fmla	v23.4s, v7.4s, v12.2s[1]
+	fmla	v20.4s, v4.4s, v12.s[1]
+	fmla	v21.4s, v5.4s, v12.s[1]
+	fmla	v22.4s, v6.4s, v12.s[1]
+	fmla	v23.4s, v7.4s, v12.s[1]
 
-	fmla	v24.4s, v4.4s, v13.2s[0]
-	fmla	v25.4s, v5.4s, v13.2s[0]
-	fmla	v26.4s, v6.4s, v13.2s[0]
-	fmla	v27.4s, v7.4s, v13.2s[0]
+	fmla	v24.4s, v4.4s, v13.s[0]
+	fmla	v25.4s, v5.4s, v13.s[0]
+	fmla	v26.4s, v6.4s, v13.s[0]
+	fmla	v27.4s, v7.4s, v13.s[0]
 
-	fmla	v28.4s, v4.4s, v13.2s[1]
-	fmla	v29.4s, v5.4s, v13.2s[1]
-	fmla	v30.4s, v6.4s, v13.2s[1]
-	fmla	v31.4s, v7.4s, v13.2s[1]
+	fmla	v28.4s, v4.4s, v13.s[1]
+	fmla	v29.4s, v5.4s, v13.s[1]
+	fmla	v30.4s, v6.4s, v13.s[1]
+	fmla	v31.4s, v7.4s, v13.s[1]
 .endm
 
 .macro KERNEL16x4_SUB
@@ -293,25 +293,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v3.4s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
-	fmla	v18.4s, v2.4s, v8.2s[0]
-	fmla	v19.4s, v3.4s, v8.2s[0]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v18.4s, v2.4s, v8.s[0]
+	fmla	v19.4s, v3.4s, v8.s[0]
 
-	fmla	v20.4s, v0.4s, v8.2s[1]
-	fmla	v21.4s, v1.4s, v8.2s[1]
-	fmla	v22.4s, v2.4s, v8.2s[1]
-	fmla	v23.4s, v3.4s, v8.2s[1]
+	fmla	v20.4s, v0.4s, v8.s[1]
+	fmla	v21.4s, v1.4s, v8.s[1]
+	fmla	v22.4s, v2.4s, v8.s[1]
+	fmla	v23.4s, v3.4s, v8.s[1]
 
-	fmla	v24.4s, v0.4s, v9.2s[0]
-	fmla	v25.4s, v1.4s, v9.2s[0]
-	fmla	v26.4s, v2.4s, v9.2s[0]
-	fmla	v27.4s, v3.4s, v9.2s[0]
+	fmla	v24.4s, v0.4s, v9.s[0]
+	fmla	v25.4s, v1.4s, v9.s[0]
+	fmla	v26.4s, v2.4s, v9.s[0]
+	fmla	v27.4s, v3.4s, v9.s[0]
 
-	fmla	v28.4s, v0.4s, v9.2s[1]
-	fmla	v29.4s, v1.4s, v9.2s[1]
-	fmla	v30.4s, v2.4s, v9.2s[1]
-	fmla	v31.4s, v3.4s, v9.2s[1]
+	fmla	v28.4s, v0.4s, v9.s[1]
+	fmla	v29.4s, v1.4s, v9.s[1]
+	fmla	v30.4s, v2.4s, v9.s[1]
+	fmla	v31.4s, v3.4s, v9.s[1]
 .endm
 
 .macro SAVE16x4
@@ -369,14 +369,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v1.4s}, [pA]
 	add	pA, pA, #16
 
-	fmul	v16.4s, v0.4s, v8.2s[0]
-	fmul	v17.4s, v1.4s, v8.2s[0]
-	fmul	v20.4s, v0.4s, v8.2s[1]
-	fmul	v21.4s, v1.4s, v8.2s[1]
-	fmul	v24.4s, v0.4s, v9.2s[0]
-	fmul	v25.4s, v1.4s, v9.2s[0]
-	fmul	v28.4s, v0.4s, v9.2s[1]
-	fmul	v29.4s, v1.4s, v9.2s[1]
+	fmul	v16.4s, v0.4s, v8.s[0]
+	fmul	v17.4s, v1.4s, v8.s[0]
+	fmul	v20.4s, v0.4s, v8.s[1]
+	fmul	v21.4s, v1.4s, v8.s[1]
+	fmul	v24.4s, v0.4s, v9.s[0]
+	fmul	v25.4s, v1.4s, v9.s[0]
+	fmul	v28.4s, v0.4s, v9.s[1]
+	fmul	v29.4s, v1.4s, v9.s[1]
 
 	ld1	{v12.2s, v13.2s}, [pB]
 	add	pB, pB, #16
@@ -387,14 +387,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_M1
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
-	fmla	v20.4s, v0.4s, v8.2s[1]
-	fmla	v21.4s, v1.4s, v8.2s[1]
-	fmla	v24.4s, v0.4s, v9.2s[0]
-	fmla	v25.4s, v1.4s, v9.2s[0]
-	fmla	v28.4s, v0.4s, v9.2s[1]
-	fmla	v29.4s, v1.4s, v9.2s[1]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v20.4s, v0.4s, v8.s[1]
+	fmla	v21.4s, v1.4s, v8.s[1]
+	fmla	v24.4s, v0.4s, v9.s[0]
+	fmla	v25.4s, v1.4s, v9.s[0]
+	fmla	v28.4s, v0.4s, v9.s[1]
+	fmla	v29.4s, v1.4s, v9.s[1]
 
 	ld1	{v12.2s, v13.2s}, [pB]
 	add	pB, pB, #16
@@ -405,14 +405,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_M2
-	fmla	v16.4s, v4.4s, v12.2s[0]
-	fmla	v17.4s, v5.4s, v12.2s[0]
-	fmla	v20.4s, v4.4s, v12.2s[1]
-	fmla	v21.4s, v5.4s, v12.2s[1]
-	fmla	v24.4s, v4.4s, v13.2s[0]
-	fmla	v25.4s, v5.4s, v13.2s[0]
-	fmla	v28.4s, v4.4s, v13.2s[1]
-	fmla	v29.4s, v5.4s, v13.2s[1]
+	fmla	v16.4s, v4.4s, v12.s[0]
+	fmla	v17.4s, v5.4s, v12.s[0]
+	fmla	v20.4s, v4.4s, v12.s[1]
+	fmla	v21.4s, v5.4s, v12.s[1]
+	fmla	v24.4s, v4.4s, v13.s[0]
+	fmla	v25.4s, v5.4s, v13.s[0]
+	fmla	v28.4s, v4.4s, v13.s[1]
+	fmla	v29.4s, v5.4s, v13.s[1]
 
 	ld1	{v8.2s, v9.2s}, [pB]
 	add	pB, pB, #16
@@ -423,14 +423,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_E
-	fmla	v16.4s, v4.4s, v12.2s[0]
-	fmla	v17.4s, v5.4s, v12.2s[0]
-	fmla	v20.4s, v4.4s, v12.2s[1]
-	fmla	v21.4s, v5.4s, v12.2s[1]
-	fmla	v24.4s, v4.4s, v13.2s[0]
-	fmla	v25.4s, v5.4s, v13.2s[0]
-	fmla	v28.4s, v4.4s, v13.2s[1]
-	fmla	v29.4s, v5.4s, v13.2s[1]
+	fmla	v16.4s, v4.4s, v12.s[0]
+	fmla	v17.4s, v5.4s, v12.s[0]
+	fmla	v20.4s, v4.4s, v12.s[1]
+	fmla	v21.4s, v5.4s, v12.s[1]
+	fmla	v24.4s, v4.4s, v13.s[0]
+	fmla	v25.4s, v5.4s, v13.s[0]
+	fmla	v28.4s, v4.4s, v13.s[1]
+	fmla	v29.4s, v5.4s, v13.s[1]
 .endm
 
 .macro KERNEL8x4_SUB
@@ -441,14 +441,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v1.4s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
-	fmla	v20.4s, v0.4s, v8.2s[1]
-	fmla	v21.4s, v1.4s, v8.2s[1]
-	fmla	v24.4s, v0.4s, v9.2s[0]
-	fmla	v25.4s, v1.4s, v9.2s[0]
-	fmla	v28.4s, v0.4s, v9.2s[1]
-	fmla	v29.4s, v1.4s, v9.2s[1]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v20.4s, v0.4s, v8.s[1]
+	fmla	v21.4s, v1.4s, v8.s[1]
+	fmla	v24.4s, v0.4s, v9.s[0]
+	fmla	v25.4s, v1.4s, v9.s[0]
+	fmla	v28.4s, v0.4s, v9.s[1]
+	fmla	v29.4s, v1.4s, v9.s[1]
 .endm
 
 .macro SAVE8x4
@@ -496,17 +496,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v0.2s, v1.2s}, [pA]
 	add	pA, pA, #16
 
-	fmul	v16.2s, v0.2s, v8.2s[0]
-	fmul	v29.2s, v1.2s, v9.2s[1]
+	fmul	v16.2s, v0.2s, v8.s[0]
+	fmul	v29.2s, v1.2s, v9.s[1]
 
-	fmul	v20.2s, v0.2s, v8.2s[1]
-	fmul	v25.2s, v1.2s, v9.2s[0]
+	fmul	v20.2s, v0.2s, v8.s[1]
+	fmul	v25.2s, v1.2s, v9.s[0]
 
-	fmul	v24.2s, v0.2s, v9.2s[0]
-	fmul	v21.2s, v1.2s, v8.2s[1]
+	fmul	v24.2s, v0.2s, v9.s[0]
+	fmul	v21.2s, v1.2s, v8.s[1]
 
-	fmul	v28.2s, v0.2s, v9.2s[1]
-	fmul	v17.2s, v1.2s, v8.2s[0]
+	fmul	v28.2s, v0.2s, v9.s[1]
+	fmul	v17.2s, v1.2s, v8.s[0]
 
 	ld1	{v12.2s, v13.2s}, [pB]
 	add	pB, pB, #16
@@ -515,61 +515,61 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x4_M1
-	fmla	v16.2s, v0.2s, v8.2s[0]
-	fmla	v29.2s, v1.2s, v9.2s[1]
+	fmla	v16.2s, v0.2s, v8.s[0]
+	fmla	v29.2s, v1.2s, v9.s[1]
 
 	ld1	{v12.2s, v13.2s}, [pB]		// For next round
 	add	pB, pB, #16
 
-	fmla	v20.2s, v0.2s, v8.2s[1]
-	fmla	v25.2s, v1.2s, v9.2s[0]
+	fmla	v20.2s, v0.2s, v8.s[1]
+	fmla	v25.2s, v1.2s, v9.s[0]
 
 	ld1	{v4.2s, v5.2s}, [pA]		// For next round
 	add	pA, pA, #16
 
-	fmla	v24.2s, v0.2s, v9.2s[0]
-	fmla	v21.2s, v1.2s, v8.2s[1]
+	fmla	v24.2s, v0.2s, v9.s[0]
+	fmla	v21.2s, v1.2s, v8.s[1]
 
 	prfm	PLDL1KEEP, [pB, #512]
 
-	fmla	v28.2s, v0.2s, v9.2s[1]
-	fmla	v17.2s, v1.2s, v8.2s[0]
+	fmla	v28.2s, v0.2s, v9.s[1]
+	fmla	v17.2s, v1.2s, v8.s[0]
 .endm
 
 .macro KERNEL4x4_M2
-	fmla	v16.2s, v4.2s, v12.2s[0]
-	fmla	v29.2s, v5.2s, v13.2s[1]
+	fmla	v16.2s, v4.2s, v12.s[0]
+	fmla	v29.2s, v5.2s, v13.s[1]
 
 	ld1	{v8.2s, v9.2s}, [pB]		// For next round
 	add	pB, pB, #16
 
-	fmla	v20.2s, v4.2s, v12.2s[1]
-	fmla	v25.2s, v5.2s, v13.2s[0]
+	fmla	v20.2s, v4.2s, v12.s[1]
+	fmla	v25.2s, v5.2s, v13.s[0]
 
 	ld1	{v0.2s, v1.2s}, [pA]		// For next round
 	add	pA, pA, #16
 
-	fmla	v24.2s, v4.2s, v13.2s[0]
-	fmla	v21.2s, v5.2s, v12.2s[1]
+	fmla	v24.2s, v4.2s, v13.s[0]
+	fmla	v21.2s, v5.2s, v12.s[1]
 
 	prfm	PLDL1KEEP, [pA, #512]
 
-	fmla	v28.2s, v4.2s, v13.2s[1]
-	fmla	v17.2s, v5.2s, v12.2s[0]
+	fmla	v28.2s, v4.2s, v13.s[1]
+	fmla	v17.2s, v5.2s, v12.s[0]
 .endm
 
 .macro KERNEL4x4_E
-	fmla	v16.2s, v4.2s, v12.2s[0]
-	fmla	v29.2s, v5.2s, v13.2s[1]
+	fmla	v16.2s, v4.2s, v12.s[0]
+	fmla	v29.2s, v5.2s, v13.s[1]
 
-	fmla	v20.2s, v4.2s, v12.2s[1]
-	fmla	v25.2s, v5.2s, v13.2s[0]
+	fmla	v20.2s, v4.2s, v12.s[1]
+	fmla	v25.2s, v5.2s, v13.s[0]
 
-	fmla	v24.2s, v4.2s, v13.2s[0]
-	fmla	v21.2s, v5.2s, v12.2s[1]
+	fmla	v24.2s, v4.2s, v13.s[0]
+	fmla	v21.2s, v5.2s, v12.s[1]
 
-	fmla	v28.2s, v4.2s, v13.2s[1]
-	fmla	v17.2s, v5.2s, v12.2s[0]
+	fmla	v28.2s, v4.2s, v13.s[1]
+	fmla	v17.2s, v5.2s, v12.s[0]
 .endm
 
 .macro KERNEL4x4_SUB
@@ -578,17 +578,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v0.2s, v1.2s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.2s, v0.2s, v8.2s[0]
-	fmla	v29.2s, v1.2s, v9.2s[1]
+	fmla	v16.2s, v0.2s, v8.s[0]
+	fmla	v29.2s, v1.2s, v9.s[1]
 
-	fmla	v20.2s, v0.2s, v8.2s[1]
-	fmla	v25.2s, v1.2s, v9.2s[0]
+	fmla	v20.2s, v0.2s, v8.s[1]
+	fmla	v25.2s, v1.2s, v9.s[0]
 
-	fmla	v24.2s, v0.2s, v9.2s[0]
-	fmla	v21.2s, v1.2s, v8.2s[1]
+	fmla	v24.2s, v0.2s, v9.s[0]
+	fmla	v21.2s, v1.2s, v8.s[1]
 
-	fmla	v28.2s, v0.2s, v9.2s[1]
-	fmla	v17.2s, v1.2s, v8.2s[0]
+	fmla	v28.2s, v0.2s, v9.s[1]
+	fmla	v17.2s, v1.2s, v8.s[0]
 .endm
 
 .macro SAVE4x4
@@ -633,10 +633,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v0.2s}, [pA]
 	add	pA, pA, #8
 
-	fmla	v16.2s, v0.2s, v8.2s[0]
-	fmla	v20.2s, v0.2s, v8.2s[1]
-	fmla	v24.2s, v0.2s, v9.2s[0]
-	fmla	v28.2s, v0.2s, v9.2s[1]
+	fmla	v16.2s, v0.2s, v8.s[0]
+	fmla	v20.2s, v0.2s, v8.s[1]
+	fmla	v24.2s, v0.2s, v9.s[0]
+	fmla	v28.2s, v0.2s, v9.s[1]
 .endm
 
 .macro SAVE2x4
@@ -718,15 +718,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v3.4s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
-	fmla	v18.4s, v2.4s, v8.2s[0]
-	fmla	v19.4s, v3.4s, v8.2s[0]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v18.4s, v2.4s, v8.s[0]
+	fmla	v19.4s, v3.4s, v8.s[0]
 
-	fmla	v20.4s, v0.4s, v8.2s[1]
-	fmla	v21.4s, v1.4s, v8.2s[1]
-	fmla	v22.4s, v2.4s, v8.2s[1]
-	fmla	v23.4s, v3.4s, v8.2s[1]
+	fmla	v20.4s, v0.4s, v8.s[1]
+	fmla	v21.4s, v1.4s, v8.s[1]
+	fmla	v22.4s, v2.4s, v8.s[1]
+	fmla	v23.4s, v3.4s, v8.s[1]
 .endm
 
 .macro SAVE16x2
@@ -764,11 +764,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v1.4s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
 
-	fmla	v20.4s, v0.4s, v8.2s[1]
-	fmla	v21.4s, v1.4s, v8.2s[1]
+	fmla	v20.4s, v0.4s, v8.s[1]
+	fmla	v21.4s, v1.4s, v8.s[1]
 .endm
 
 .macro SAVE8x2
@@ -802,10 +802,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v0.2s, v1.2s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.2s, v0.2s, v8.2s[0]
-	fmla	v17.2s, v1.2s, v8.2s[0]
-	fmla	v20.2s, v0.2s, v8.2s[1]
-	fmla	v21.2s, v1.2s, v8.2s[1]
+	fmla	v16.2s, v0.2s, v8.s[0]
+	fmla	v17.2s, v1.2s, v8.s[0]
+	fmla	v20.2s, v0.2s, v8.s[1]
+	fmla	v21.2s, v1.2s, v8.s[1]
 .endm
 
 .macro SAVE4x2
@@ -837,8 +837,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v0.2s}, [pA]
 	add	pA, pA, #8
 
-	fmla	v16.2s, v0.2s, v8.2s[0]
-	fmla	v20.2s, v0.2s, v8.2s[1]
+	fmla	v16.2s, v0.2s, v8.s[0]
+	fmla	v20.2s, v0.2s, v8.s[1]
 .endm
 
 .macro SAVE2x2
@@ -866,7 +866,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldr	s0 , [pA]
 	add	pA, pA, #4
 
-	fmla	v16.2s, v8.2s, v0.2s[0]
+	fmla	v16.2s, v8.2s, v0.s[0]
 .endm
 
 .macro SAVE1x2
@@ -901,10 +901,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v3.4s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
-	fmla	v18.4s, v2.4s, v8.2s[0]
-	fmla	v19.4s, v3.4s, v8.2s[0]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v18.4s, v2.4s, v8.s[0]
+	fmla	v19.4s, v3.4s, v8.s[0]
 .endm
 
 .macro SAVE16x1
@@ -934,8 +934,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v1.4s}, [pA]
 	add	pA, pA, #16
 
-	fmla	v16.4s, v0.4s, v8.2s[0]
-	fmla	v17.4s, v1.4s, v8.2s[0]
+	fmla	v16.4s, v0.4s, v8.s[0]
+	fmla	v17.4s, v1.4s, v8.s[0]
 .endm
 
 .macro SAVE8x1
@@ -961,8 +961,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v0.2s, v1.2s}, [pA]
 	add	pA , pA, #16
 
-	fmla	v16.2s, v0.2s, v8.2s[0]
-	fmla	v17.2s, v1.2s, v8.2s[0]
+	fmla	v16.2s, v0.2s, v8.s[0]
+	fmla	v17.2s, v1.2s, v8.s[0]
 .endm
 
 .macro SAVE4x1
@@ -987,7 +987,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v0.2s}, [pA]
 	add	pA , pA, #8
 
-	fmla	v16.2s, v0.2s, v8.2s[0]
+	fmla	v16.2s, v0.2s, v8.s[0]
 .endm
 
 .macro SAVE2x1
