@@ -44,6 +44,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto \
+       srot.goto drot.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
        sswap.goto dswap.goto cswap.goto zswap.goto \
@@ -151,6 +152,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto cdot.goto zdot.goto \
+       srot.goto drot.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
        sswap.goto dswap.goto cswap.goto zswap.goto \
@@ -1413,6 +1415,39 @@ zdot.mkl : zdot-intel.$(SUFFIX)
 zdot.veclib : zdot-intel.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Srot ####################################################
+srot.goto : srot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+srot.acml : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srot.atlas : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srot.mkl : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srot.veclib : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Drot ####################################################
+drot.goto : drot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+drot.acml : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drot.atlas : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drot.mkl : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drot.veclib : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 ##################################### Saxpy ####################################################
 saxpy.goto : saxpy.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -2123,6 +2158,13 @@ cgesv.$(SUFFIX) : gesv.c
 
 zgesv.$(SUFFIX) : gesv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+srot.$(SUFFIX) : rot.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+drot.$(SUFFIX) : rot.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 
 
