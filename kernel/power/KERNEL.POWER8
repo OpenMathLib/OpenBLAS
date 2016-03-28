@@ -108,7 +108,7 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 SASUMKERNEL  = sasum.c
 DASUMKERNEL  = dasum.c
 #CASUMKERNEL  = ../arm/zasum.c
-#ZASUMKERNEL  = ../arm/zasum.c
+ZASUMKERNEL  = zasum.c
 #
 #SAXPYKERNEL  = ../arm/axpy.c
 DAXPYKERNEL  = daxpy.c
