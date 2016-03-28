@@ -106,7 +106,7 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #IDMINKERNEL  = ../arm/imin.c
 #
 #SASUMKERNEL  = ../arm/asum.c
-#DASUMKERNEL  = ../arm/asum.c
+DASUMKERNEL  = dasum.c
 #CASUMKERNEL  = ../arm/zasum.c
 #ZASUMKERNEL  = ../arm/zasum.c
 #
