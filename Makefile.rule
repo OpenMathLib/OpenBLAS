@@ -114,7 +114,7 @@ NO_AFFINITY = 1
 # Force number of make jobs. The default is the number of logical CPU of the host.
 # This is particularly useful when using distcc.
 # A negative value will disable adding a -j flag to make, allowing to use a parent
-# make -j value. This is usefull to call OpenBLAS make from an other project
+# make -j value. This is useful to call OpenBLAS make from an other project
 # makefile
 # MAKE_NB_JOBS = 2
 
