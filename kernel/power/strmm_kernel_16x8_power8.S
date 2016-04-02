@@ -26,11 +26,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/03/18 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/02 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
-*	 LAPACK-TEST		: OK
+* 	 LAPACK-TEST		: OK
 **************************************************************************************/
 
 /*********************************************************************/
@@ -128,6 +128,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define alpha_r vs30
+#define alpha_vr vs31
 
 #define o0	0
 
@@ -152,7 +153,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PRE	r30
 #define T2	r31
 
-#include "sgemm_macros_16x8_power8.S"
+#include "strmm_macros_16x8_power8.S"
 
 
 #ifndef NEEDPARAM
@@ -264,11 +265,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	cmpwi	cr0, M, 0
-	ble	.L999_H1
+	ble	L999_H1
 	cmpwi	cr0, N, 0
-	ble	.L999_H1
+	ble	L999_H1
 	cmpwi	cr0, K, 0
-	ble	.L999_H1
+	ble	L999_H1
 
 	li	PRE, 256 
 	li	o4 , 4
@@ -280,16 +281,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi	TBUFFER, SP, 320
 
         addi    T1, SP, 300
-        stfs    f1, 0(T1)
+        stxsspx    f1, o0 , T1
+        stxsspx    f1, o4 , T1
+        stxsspx    f1, o8 , T1
+        stxsspx    f1, o12 , T1
 
-        lxsspx  alpha_r, 0, T1
-
+	lxsspx	   alpha_r, o0,  T1
+        lxvw4x     alpha_vr, o0, T1
 
 
 
 #include "strmm_logic_16x8_power8.S"
 
-.L999:
+L999:
 	addi	r3, 0, 0
 
 	lfd	f14,    0(SP)
