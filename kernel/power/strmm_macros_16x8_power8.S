@@ -47,21 +47,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 .endm
 
@@ -75,21 +75,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs20,	o0,	T1
-	lxvw4x		vs21,	o16,	T1
-	lxvw4x		vs22,	o32,	T1
-	lxvw4x		vs23,	o48,	T1
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -145,21 +145,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs20,	o0,	T1
-	lxvw4x		vs21,	o16,	T1
-	lxvw4x		vs22,	o32,	T1
-	lxvw4x		vs23,	o48,	T1
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -215,21 +215,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -331,21 +331,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -401,21 +401,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -712,21 +712,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 .endm
 
@@ -738,21 +738,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs20,	o0,	T1
-	lxvw4x		vs21,	o16,	T1
-	lxvw4x		vs22,	o32,	T1
-	lxvw4x		vs23,	o48,	T1
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -790,21 +790,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs20,	o0,	T1
-	lxvw4x		vs21,	o16,	T1
-	lxvw4x		vs22,	o32,	T1
-	lxvw4x		vs23,	o48,	T1
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -842,21 +842,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -924,21 +924,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -976,21 +976,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -1206,21 +1206,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 .endm
 
@@ -1231,21 +1231,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs20,	o0,	T1
-	lxvw4x		vs21,	o16,	T1
-	lxvw4x		vs22,	o32,	T1
-	lxvw4x		vs23,	o48,	T1
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -1274,21 +1274,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs20,	o0,	T1
-	lxvw4x		vs21,	o16,	T1
-	lxvw4x		vs22,	o32,	T1
-	lxvw4x		vs23,	o48,	T1
+	xxspltw		vs20,	vs29,	0
+	xxspltw		vs21,	vs29,	1
+	xxspltw		vs22,	vs29,	2
+	xxspltw		vs23,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -1317,21 +1317,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -1382,21 +1382,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -1425,21 +1425,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		T1,	T1,	64
+	lxvw4x		vs29,	o16,	BO
 
-	lxvw4x		vs12,	o0,	T1
-	lxvw4x		vs13,	o16,	T1
-	lxvw4x		vs14,	o32,	T1
-	lxvw4x		vs15,	o48,	T1
+	xxspltw		vs12,	vs29,	0
+	xxspltw		vs13,	vs29,	1
+	xxspltw		vs14,	vs29,	2
+	xxspltw		vs15,	vs29,	3
 
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -1619,19 +1619,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 .endm
 
@@ -1646,19 +1645,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs20,	o0,	T1
-	lxsspx		vs21,	o16,	T1
-	lxsspx		vs22,	o32,	T1
-	lxsspx		vs23,	o48,	T1
+	lxsspx		vs21,	o4,	T1
+	lxsspx		vs22,	o8,	T1
+	lxsspx		vs23,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -1699,19 +1697,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs20,	o0,	T1
-	lxsspx		vs21,	o16,	T1
-	lxsspx		vs22,	o32,	T1
-	lxsspx		vs23,	o48,	T1
+	lxsspx		vs21,	o4,	T1
+	lxsspx		vs22,	o8,	T1
+	lxsspx		vs23,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -1752,19 +1749,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -1835,19 +1831,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -1888,19 +1883,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -2119,19 +2113,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 .endm
 
@@ -2145,19 +2138,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs20,	o0,	T1
-	lxsspx		vs21,	o16,	T1
-	lxsspx		vs22,	o32,	T1
-	lxsspx		vs23,	o48,	T1
+	lxsspx		vs21,	o4,	T1
+	lxsspx		vs22,	o8,	T1
+	lxsspx		vs23,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -2189,19 +2181,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs20,	o0,	T1
-	lxsspx		vs21,	o16,	T1
-	lxsspx		vs22,	o32,	T1
-	lxsspx		vs23,	o48,	T1
+	lxsspx		vs21,	o4,	T1
+	lxsspx		vs22,	o8,	T1
+	lxsspx		vs23,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -2233,19 +2224,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -2299,19 +2289,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -2343,19 +2332,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-	addi		T1,	T1,	64
+	addi		T1,	T1,	16
 
 	lxsspx		vs12,	o0,	T1
-	lxsspx		vs13,	o16,	T1
-	lxsspx		vs14,	o32,	T1
-	lxsspx		vs15,	o48,	T1
+	lxsspx		vs13,	o4,	T1
+	lxsspx		vs14,	o8,	T1
+	lxsspx		vs15,	o12,	T1
 
-
-	addi		BO,	BO,	128
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -2534,14 +2522,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 .endm
 
@@ -2555,14 +2543,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -2598,14 +2586,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -2641,14 +2629,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -2710,14 +2698,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -2753,14 +2741,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -2921,14 +2909,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 .endm
 
@@ -2940,14 +2928,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -2973,14 +2961,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -3006,14 +2994,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -3057,14 +3045,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -3090,14 +3078,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -3217,14 +3205,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 .endm
 
@@ -3235,14 +3223,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -3263,14 +3251,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
-	lxvw4x		vs18,	o32,	T1
-	lxvw4x		vs19,	o48,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
+	xxspltw		vs18,	vs28,	2
+	xxspltw		vs19,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -3291,14 +3279,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -3333,14 +3321,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -3361,14 +3349,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
-	lxvw4x		vs10,	o32,	T1
-	lxvw4x		vs11,	o48,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
+	xxspltw		vs10,	vs28,	2
+	xxspltw		vs11,	vs28,	3
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -3472,12 +3460,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 .endm
 
@@ -3492,12 +3479,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -3526,12 +3512,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -3560,12 +3545,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -3612,12 +3596,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -3646,12 +3629,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -3774,12 +3756,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 .endm
 
@@ -3793,12 +3774,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -3822,12 +3802,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
-	lxsspx		vs18,	o32,	T1
-	lxsspx		vs19,	o48,	T1
+	lxsspx		vs17,	o4,	T1
+	lxsspx		vs18,	o8,	T1
+	lxsspx		vs19,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -3851,12 +3830,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -3894,12 +3872,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -3923,12 +3900,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
-	lxsspx		vs10,	o32,	T1
-	lxsspx		vs11,	o48,	T1
+	lxsspx		vs9,	o4,	T1
+	lxsspx		vs10,	o8,	T1
+	lxsspx		vs11,	o12,	T1
 
-
-	addi		BO,	BO,	64
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -4031,12 +4007,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 .endm
 
@@ -4050,12 +4026,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -4081,12 +4057,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -4112,12 +4088,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -4159,12 +4135,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -4190,12 +4166,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -4288,12 +4264,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 .endm
 
@@ -4305,12 +4281,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -4330,12 +4306,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -4355,12 +4331,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -4392,12 +4368,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -4417,12 +4393,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -4494,12 +4470,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 .endm
 
@@ -4510,12 +4486,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -4532,12 +4508,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
-	lxvw4x		vs17,	o16,	T1
+	xxspltw		vs16,	vs28,	0
+	xxspltw		vs17,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -4554,12 +4530,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -4586,12 +4562,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -4608,12 +4584,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
-	lxvw4x		vs9,	o16,	T1
+	xxspltw		vs8,	vs28,	0
+	xxspltw		vs9,	vs28,	1
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -4679,10 +4655,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 .endm
 
@@ -4697,10 +4672,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
+	lxsspx		vs17,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -4723,10 +4697,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
+	lxsspx		vs17,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -4749,10 +4722,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -4787,10 +4759,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -4813,10 +4784,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -4891,10 +4861,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 .endm
 
@@ -4908,10 +4877,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
+	lxsspx		vs17,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -4931,10 +4899,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs16,	o0,	T1
-	lxsspx		vs17,	o16,	T1
+	lxsspx		vs17,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -4954,10 +4921,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -4987,10 +4953,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -5010,10 +4975,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mr		T1,	BO
 
 	lxsspx		vs8,	o0,	T1
-	lxsspx		vs9,	o16,	T1
+	lxsspx		vs9,	o4,	T1
 
-
-	addi		BO,	BO,	32
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -5078,11 +5042,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 .endm
 
@@ -5096,11 +5060,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
+	xxspltw		vs16,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -5121,11 +5085,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
+	xxspltw		vs16,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -5146,11 +5110,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -5182,11 +5146,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -5207,11 +5171,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	64
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -5270,11 +5234,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 .endm
 
@@ -5286,11 +5250,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
+	xxspltw		vs16,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -5307,11 +5271,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
+	xxspltw		vs16,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -5328,11 +5292,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -5358,11 +5322,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -5379,11 +5343,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	32
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -5431,11 +5395,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 .endm
 
@@ -5446,11 +5410,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
+	xxspltw		vs16,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -5465,11 +5429,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs16,	o0,	T1
+	xxspltw		vs16,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -5484,11 +5448,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs4,	vs16
@@ -5511,11 +5475,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmulsp		vs32,	vs0,	vs8
@@ -5530,11 +5494,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	16
 
-	mr		T1,	BO
+	lxvw4x		vs28,	o0,	BO
 
-	lxvw4x		vs8,	o0,	T1
+	xxspltw		vs8,	vs28,	0
 
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xvmaddasp	vs32,	vs0,	vs8
@@ -5582,8 +5546,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 .endm
 
@@ -5599,8 +5562,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs16,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -5621,8 +5583,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs16,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -5643,8 +5604,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -5674,8 +5634,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -5696,8 +5655,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -5749,8 +5707,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 .endm
 
@@ -5765,8 +5722,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs16,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -5785,8 +5741,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs16,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmaddadp	vs32,	vs0,	vs8
@@ -5805,8 +5760,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmaddadp	vs32,	vs4,	vs16
@@ -5833,8 +5787,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmuldp		vs32,	vs0,	vs8
@@ -5853,8 +5806,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxsspx		vs8,	o0,	T1
 
-
-	addi		BO,	BO,	16
+	addi		BO,	BO,	4
 
 
 	xsmaddadp	vs32,	vs0,	vs8
