@@ -26,11 +26,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/03/18 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/03 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
-*	 LAPACK-TEST		: OK
+* 	 LAPACK-TEST		: OK
 **************************************************************************************/
 
 /*********************************************************************/
@@ -130,10 +130,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define o0	0
-#define alpha_r vs30
-#define alpha_i vs31
 
-#define TBUFFER	r14
+#define alpha_dr vs28
+#define alpha_di vs29
+#define alpha_sr vs30
+#define alpha_si vs31
+
+
+#define NOTUSED	r14
 #define L	r15
 #define o12	r16
 #define o4	r17
@@ -271,21 +275,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cgemm_macros_8x4_power8.S"
 
 	cmpwi	cr0, M, 0
-	ble	.L999_H1
+	ble	L999_H1
 	cmpwi	cr0, N, 0
-	ble	.L999_H1
+	ble	L999_H1
 	cmpwi	cr0, K, 0
-	ble	.L999_H1
+	ble	L999_H1
 
 	slwi	LDC, LDC, ZBASE_SHIFT
-	li	PRE, 256 
+	li	PRE, 384 
 	li	o4  , 4
 	li	o8  , 8
 	li	o12 , 12
 	li	o16 , 16
 	li	o32 , 32
 	li	o48 , 48
-	addi	TBUFFER, SP, 360
 	
 
 #ifdef __64BIT__
@@ -294,14 +297,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi	T1 , SP, 224
 #endif
 
-	lxsspx	alpha_r, 0, T1
-	lxsspx	alpha_i, o8, T1
+	stxsspx vs1,  0, T1
+        lxsspx  alpha_dr, 0, T1
+	stxsspx vs2,  o8  , T1
+        lxsspx  alpha_di, o8, T1
+        addi    T1, SP, 360
+        li      T2, 0
+
+        stw             T2, 0(T1)
+        stw             T2, 4(T1)
+        stw             T2, 8(T1)
+        stxsspx         alpha_dr, o12, T1
+        lxvw4x          alpha_sr, o0 , T1
+        addi            T1, T1, 16
+
+        stw             T2, 0(T1)
+        stw             T2, 4(T1)
+        stw             T2, 8(T1)
+        stxsspx         alpha_di, o12, T1
+        lxvw4x          alpha_si, o0 , T1
 
 	.align 5
 
 #include "cgemm_logic_8x4_power8.S"
 
-.L999:
+L999:
 	addi	r3, 0, 0
 
 	lfd	f14,    0(SP)
