@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/04/03 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/04 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -275,7 +275,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
-#include "cgemm_macros_8x4_power8.S"
+#include "ctrmm_macros_8x4_power8.S"
 
 	cmpwi	cr0, M, 0
 	ble	L999_H1

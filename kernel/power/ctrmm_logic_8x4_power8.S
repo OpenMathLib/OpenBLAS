@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/04/03 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/04 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -83,15 +83,22 @@ CTRMM_L4x8_BEGIN:
 
 CTRMM_L4x8_LOOP_START:
 
+	dcbt		AO, PRE
+	dcbt		BO, PRE
 	LOAD4x8_1
 	KERNEL4x8_I1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 	KERNEL4x8_1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 
 	KERNEL4x8_1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 	KERNEL4x8_1
+	dcbt		AO, PRE
+	dcbt		BO, PRE
 	KERNEL4x8_2
 
 	addic.		L,	L,	-2
@@ -102,13 +109,18 @@ CTRMM_L4x8_LOOP_START:
 CTRMM_L4x8_LOOP:
 
 	KERNEL4x8_1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 	KERNEL4x8_1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 
 	KERNEL4x8_1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 	KERNEL4x8_1
+	dcbt		AO, PRE
+	dcbt		BO, PRE
 	KERNEL4x8_2
 
 	addic.		L,	L,	-1
@@ -117,8 +129,10 @@ CTRMM_L4x8_LOOP:
 CTRMM_L4x8_LOOP_END:
 
 	KERNEL4x8_1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 	KERNEL4x8_1
+	dcbt		AO, PRE
 	KERNEL4x8_2
 
 	KERNEL4x8_1
