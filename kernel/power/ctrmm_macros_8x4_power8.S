@@ -86,26 +86,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro LOAD4x8_1
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 .endm
 
@@ -113,26 +119,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs6,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs7,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
-	lxvw4x		vs20,	o0,	BO		//  load b2_r
-	lxvw4x		vs21,	o16,	BO		//  load b2_i
-	lxvw4x		vs22,	o32,	BO		//  load b3_r
-	lxvw4x		vs23,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs20,	vs25,	0
+	xxspltw		vs21,	vs25,	1
+	xxspltw		vs22,	vs25,	2
+	xxspltw		vs23,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -178,26 +190,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs6,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs7,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
-	lxvw4x		vs20,	o0,	BO		//  load b2_r
-	lxvw4x		vs21,	o16,	BO		//  load b2_i
-	lxvw4x		vs22,	o32,	BO		//  load b3_r
-	lxvw4x		vs23,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs20,	vs25,	0
+	xxspltw		vs21,	vs25,	1
+	xxspltw		vs22,	vs25,	2
+	xxspltw		vs23,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -243,26 +261,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -350,26 +374,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -415,26 +445,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -479,7 +515,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE4x8
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -536,6 +571,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -601,6 +637,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -666,6 +703,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -731,6 +769,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -802,6 +841,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -867,6 +907,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -932,6 +973,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -997,6 +1039,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1068,6 +1111,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1133,6 +1177,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1198,6 +1243,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1263,6 +1309,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1334,6 +1381,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1399,6 +1447,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1464,6 +1513,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1529,6 +1579,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1556,24 +1607,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro LOAD4x4_1
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 .endm
 
@@ -1581,24 +1636,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
-	lxvw4x		vs20,	o0,	BO		//  load b2_r
-	lxvw4x		vs21,	o16,	BO		//  load b2_i
-	lxvw4x		vs22,	o32,	BO		//  load b3_r
-	lxvw4x		vs23,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs20,	vs25,	0
+	xxspltw		vs21,	vs25,	1
+	xxspltw		vs22,	vs25,	2
+	xxspltw		vs23,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -1628,24 +1687,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
-	lxvw4x		vs20,	o0,	BO		//  load b2_r
-	lxvw4x		vs21,	o16,	BO		//  load b2_i
-	lxvw4x		vs22,	o32,	BO		//  load b3_r
-	lxvw4x		vs23,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs20,	vs25,	0
+	xxspltw		vs21,	vs25,	1
+	xxspltw		vs22,	vs25,	2
+	xxspltw		vs23,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -1675,24 +1738,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -1748,24 +1815,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -1795,24 +1866,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -1841,7 +1916,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE4x4
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -1898,6 +1972,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -1963,6 +2038,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2034,6 +2110,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2099,6 +2176,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2170,6 +2248,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2235,6 +2314,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2306,6 +2386,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2371,6 +2452,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2399,22 +2481,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 .endm
 
@@ -2423,22 +2508,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
-	lxvw4x		vs20,	o0,	BO		//  load b2_r
-	lxvw4x		vs21,	o16,	BO		//  load b2_i
-	lxvw4x		vs22,	o32,	BO		//  load b3_r
-	lxvw4x		vs23,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs20,	vs25,	0
+	xxspltw		vs21,	vs25,	1
+	xxspltw		vs22,	vs25,	2
+	xxspltw		vs23,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -2461,22 +2549,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
-	lxvw4x		vs20,	o0,	BO		//  load b2_r
-	lxvw4x		vs21,	o16,	BO		//  load b2_i
-	lxvw4x		vs22,	o32,	BO		//  load b3_r
-	lxvw4x		vs23,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs20,	vs25,	0
+	xxspltw		vs21,	vs25,	1
+	xxspltw		vs22,	vs25,	2
+	xxspltw		vs23,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -2499,22 +2590,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -2555,22 +2649,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -2593,22 +2690,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
-	lxvw4x		vs12,	o0,	BO		//  load b2_r
-	lxvw4x		vs13,	o16,	BO		//  load b2_i
-	lxvw4x		vs14,	o32,	BO		//  load b3_r
-	lxvw4x		vs15,	o48,	BO		//  load b3_i
+	lxvw4x		vs25,	o16,	BO		//  load b2, b3
 
-	addi		BO,	BO,	64
+	xxspltw		vs12,	vs25,	0
+	xxspltw		vs13,	vs25,	1
+	xxspltw		vs14,	vs25,	2
+	xxspltw		vs15,	vs25,	3
 
+
+	addi		BO,	BO,	32
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -2629,7 +2729,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE4x2
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -2686,6 +2785,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2757,6 +2857,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2828,6 +2929,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2899,6 +3001,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -2930,20 +3033,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
-	lxsspx		vs12,	o0,	BO		//  load b2_r
-	lxsspx		vs13,	o16,	BO		//  load b2_i
-	lxsspx		vs14,	o32,	BO		//  load b3_r
-	lxsspx		vs15,	o48,	BO		//  load b3_i
+	addi		T1,	T1,8
 
-	addi		BO,	BO,	64
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs12,	o0,	T1		//  load b2_r
+	lxsspx		vs13,	o4,	T1		//  load b2_i
+
+	addi		T1,	T1,8
+
+	lxsspx		vs14,	o0,	T1		//  load b3_r
+	lxsspx		vs15,	o4,	T1		//  load b3_i
+
+	addi		BO,	BO,	32
 
 .endm
 
@@ -2955,20 +3065,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs16,	o0,	BO		//  load b0_r
-	lxsspx		vs17,	o16,	BO		//  load b0_i
-	lxsspx		vs18,	o32,	BO		//  load b1_r
-	lxsspx		vs19,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs16,	o0,	T1		//  load b0_r
+	lxsspx		vs17,	o4,	T1		//  load b0_i
 
-	lxsspx		vs20,	o0,	BO		//  load b2_r
-	lxsspx		vs21,	o16,	BO		//  load b2_i
-	lxsspx		vs22,	o32,	BO		//  load b3_r
-	lxsspx		vs23,	o48,	BO		//  load b3_i
+	addi		T1,	T1,8
 
-	addi		BO,	BO,	64
+	lxsspx		vs18,	o0,	T1		//  load b1_r
+	lxsspx		vs19,	o4,	T1		//  load b1_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs20,	o0,	T1		//  load b2_r
+	lxsspx		vs21,	o4,	T1		//  load b2_i
+
+	addi		T1,	T1,8
+
+	lxsspx		vs22,	o0,	T1		//  load b3_r
+	lxsspx		vs23,	o4,	T1		//  load b3_i
+
+	addi		BO,	BO,	32
 
 
 	xsmuldp		vs32,	vs0,	vs8		// a0_r*b0_r
@@ -3002,20 +3119,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs16,	o0,	BO		//  load b0_r
-	lxsspx		vs17,	o16,	BO		//  load b0_i
-	lxsspx		vs18,	o32,	BO		//  load b1_r
-	lxsspx		vs19,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs16,	o0,	T1		//  load b0_r
+	lxsspx		vs17,	o4,	T1		//  load b0_i
 
-	lxsspx		vs20,	o0,	BO		//  load b2_r
-	lxsspx		vs21,	o16,	BO		//  load b2_i
-	lxsspx		vs22,	o32,	BO		//  load b3_r
-	lxsspx		vs23,	o48,	BO		//  load b3_i
+	addi		T1,	T1,8
 
-	addi		BO,	BO,	64
+	lxsspx		vs18,	o0,	T1		//  load b1_r
+	lxsspx		vs19,	o4,	T1		//  load b1_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs20,	o0,	T1		//  load b2_r
+	lxsspx		vs21,	o4,	T1		//  load b2_i
+
+	addi		T1,	T1,8
+
+	lxsspx		vs22,	o0,	T1		//  load b3_r
+	lxsspx		vs23,	o4,	T1		//  load b3_i
+
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs0,	vs8		// a0_r*b0_r
@@ -3049,20 +3173,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
-	lxsspx		vs12,	o0,	BO		//  load b2_r
-	lxsspx		vs13,	o16,	BO		//  load b2_i
-	lxsspx		vs14,	o32,	BO		//  load b3_r
-	lxsspx		vs15,	o48,	BO		//  load b3_i
+	addi		T1,	T1,8
 
-	addi		BO,	BO,	64
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs12,	o0,	T1		//  load b2_r
+	lxsspx		vs13,	o4,	T1		//  load b2_i
+
+	addi		T1,	T1,8
+
+	lxsspx		vs14,	o0,	T1		//  load b3_r
+	lxsspx		vs15,	o4,	T1		//  load b3_i
+
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs4,	vs16		// a4_r*b0_r
@@ -3122,20 +3253,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
-	lxsspx		vs12,	o0,	BO		//  load b2_r
-	lxsspx		vs13,	o16,	BO		//  load b2_i
-	lxsspx		vs14,	o32,	BO		//  load b3_r
-	lxsspx		vs15,	o48,	BO		//  load b3_i
+	addi		T1,	T1,8
 
-	addi		BO,	BO,	64
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs12,	o0,	T1		//  load b2_r
+	lxsspx		vs13,	o4,	T1		//  load b2_i
+
+	addi		T1,	T1,8
+
+	lxsspx		vs14,	o0,	T1		//  load b3_r
+	lxsspx		vs15,	o4,	T1		//  load b3_i
+
+	addi		BO,	BO,	32
 
 
 	xsmuldp		vs32,	vs0,	vs8		// a0_r*b0_r
@@ -3169,20 +3307,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
-	lxsspx		vs12,	o0,	BO		//  load b2_r
-	lxsspx		vs13,	o16,	BO		//  load b2_i
-	lxsspx		vs14,	o32,	BO		//  load b3_r
-	lxsspx		vs15,	o48,	BO		//  load b3_i
+	addi		T1,	T1,8
 
-	addi		BO,	BO,	64
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs12,	o0,	T1		//  load b2_r
+	lxsspx		vs13,	o4,	T1		//  load b2_i
+
+	addi		T1,	T1,8
+
+	lxsspx		vs14,	o0,	T1		//  load b3_r
+	lxsspx		vs15,	o4,	T1		//  load b3_i
+
+	addi		BO,	BO,	32
 
 
 	xsmaddadp	vs32,	vs0,	vs8		// a0_r*b0_r
@@ -3211,7 +3356,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE4x1
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -3392,19 +3536,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro LOAD2x8_1
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 .endm
 
@@ -3412,19 +3562,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs6,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs7,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -3452,19 +3608,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs6,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs7,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -3492,19 +3654,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -3556,19 +3724,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -3596,19 +3770,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -3635,7 +3815,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE2x8
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -3692,6 +3871,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -3757,6 +3937,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -3822,6 +4003,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -3887,6 +4069,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -3958,6 +4141,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4023,6 +4207,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4088,6 +4273,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4153,6 +4339,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4180,17 +4367,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro LOAD2x4_1
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 .endm
 
@@ -4198,17 +4389,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4228,17 +4423,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4258,17 +4457,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4304,17 +4507,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4334,17 +4541,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4363,7 +4574,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE2x4
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -4420,6 +4630,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4485,6 +4696,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4556,6 +4768,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4621,6 +4834,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4649,15 +4863,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 .endm
 
@@ -4666,15 +4883,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4691,15 +4911,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
-	lxvw4x		vs18,	o32,	BO		//  load b1_r
-	lxvw4x		vs19,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4716,15 +4939,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4753,15 +4979,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4778,15 +5007,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
-	lxvw4x		vs10,	o32,	BO		//  load b1_r
-	lxvw4x		vs11,	o48,	BO		//  load b1_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	64
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
 
+
+	addi		BO,	BO,	16
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -4801,7 +5033,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE2x2
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -4858,6 +5089,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4929,6 +5161,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -4960,13 +5193,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
+
+	addi		BO,	BO,	16
 
 .endm
 
@@ -4978,13 +5215,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs16,	o0,	BO		//  load b0_r
-	lxsspx		vs17,	o16,	BO		//  load b0_i
-	lxsspx		vs18,	o32,	BO		//  load b1_r
-	lxsspx		vs19,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs16,	o0,	T1		//  load b0_r
+	lxsspx		vs17,	o4,	T1		//  load b0_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs18,	o0,	T1		//  load b1_r
+	lxsspx		vs19,	o4,	T1		//  load b1_i
+
+	addi		BO,	BO,	16
 
 
 	xsmuldp		vs32,	vs0,	vs8		// a0_r*b0_r
@@ -5008,13 +5249,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs16,	o0,	BO		//  load b0_r
-	lxsspx		vs17,	o16,	BO		//  load b0_i
-	lxsspx		vs18,	o32,	BO		//  load b1_r
-	lxsspx		vs19,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs16,	o0,	T1		//  load b0_r
+	lxsspx		vs17,	o4,	T1		//  load b0_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs18,	o0,	T1		//  load b1_r
+	lxsspx		vs19,	o4,	T1		//  load b1_i
+
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs0,	vs8		// a0_r*b0_r
@@ -5038,13 +5283,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
+
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs4,	vs16		// a4_r*b0_r
@@ -5084,13 +5333,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
+
+	addi		BO,	BO,	16
 
 
 	xsmuldp		vs32,	vs0,	vs8		// a0_r*b0_r
@@ -5114,13 +5367,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
-	lxsspx		vs10,	o32,	BO		//  load b1_r
-	lxsspx		vs11,	o48,	BO		//  load b1_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	64
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
 
+	addi		T1,	T1,8
+
+	lxsspx		vs10,	o0,	T1		//  load b1_r
+	lxsspx		vs11,	o4,	T1		//  load b1_i
+
+	addi		BO,	BO,	16
 
 
 	xsmaddadp	vs32,	vs0,	vs8		// a0_r*b0_r
@@ -5139,7 +5396,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE2x1
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -5236,16 +5492,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro LOAD1x8_1
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 .endm
 
@@ -5253,16 +5520,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs6,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs7,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5281,16 +5559,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs6,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs7,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5309,16 +5598,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5352,16 +5652,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5380,16 +5691,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 	lxvw4x		vs2,	o32,	AO		// load a4, a5
+
 	lxvw4x		vs3,	o48,	AO		// load a6, a7
+
 
 	addi		AO,	AO,	64
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5407,7 +5729,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE1x8
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -5464,6 +5785,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -5529,6 +5851,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -5594,6 +5917,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -5659,6 +5983,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -5686,14 +6011,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro LOAD1x4_1
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 .endm
 
@@ -5701,14 +6035,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5723,14 +6066,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs5,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5745,14 +6097,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5778,14 +6139,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5800,14 +6170,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
+
 	lxvw4x		vs1,	o16,	AO		// load a2, a3
+
 
 	addi		AO,	AO,	32
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -5821,7 +6200,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE1x4
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -5878,6 +6256,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -5943,6 +6322,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -5971,12 +6351,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 .endm
 
@@ -5985,12 +6373,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -6004,12 +6400,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs4,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs16,	o0,	BO		//  load b0_r
-	lxvw4x		vs17,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs16,	vs24,	0
+	xxspltw		vs17,	vs24,	1
+	xxspltw		vs18,	vs24,	2
+	xxspltw		vs19,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -6023,12 +6427,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs4,	vs16		// a4_r*b0_r, a4_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -6051,12 +6463,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmulsp		vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -6070,12 +6490,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxvw4x		vs0,	o0,	AO		// load a0, a1
 
+
 	addi		AO,	AO,	16
 
-	lxvw4x		vs8,	o0,	BO		//  load b0_r
-	lxvw4x		vs9,	o16,	BO		//  load b0_i
+	lxvw4x		vs24,	o0,	BO		//  load b0, b1
 
-	addi		BO,	BO,	32
+
+
+	xxspltw		vs8,	vs24,	0
+	xxspltw		vs9,	vs24,	1
+	xxspltw		vs10,	vs24,	2
+	xxspltw		vs11,	vs24,	3
+
+
+	addi		BO,	BO,	8
 
 
 	xvmaddasp	vs32,	vs0,	vs8		// a0_r*b0_r, a0_i*b0_r, a1_r*b0_r, a1_i*b0_r
@@ -6087,7 +6515,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE1x2
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 
@@ -6144,6 +6571,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvsubsp		vs22,	vs16,	vs17		// r1_r * alpha_r - r1_i * alpha_i
 	xvaddsp		vs23,	vs18,	vs19		// r1_r * alpha_i + r1_i * alpha_r
 
+	xxlxor		vs24,	vs24,	vs24
 	xxsldwi		vs20,	vs20,	vs24,	3		// r0_r
 	xxsldwi		vs21,	vs21,	vs24,	2		// r0_i
 	xxsldwi		vs22,	vs22,	vs24,	1		// r1_r
@@ -6175,10 +6603,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	32
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
+
+	addi		BO,	BO,	8
 
 .endm
 
@@ -6190,10 +6620,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs16,	o0,	BO		//  load b0_r
-	lxsspx		vs17,	o16,	BO		//  load b0_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	32
+	lxsspx		vs16,	o0,	T1		//  load b0_r
+	lxsspx		vs17,	o4,	T1		//  load b0_i
+
+	addi		BO,	BO,	8
 
 
 	xsmuldp		vs32,	vs0,	vs8		// a0_r*b0_r
@@ -6212,10 +6644,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs16,	o0,	BO		//  load b0_r
-	lxsspx		vs17,	o16,	BO		//  load b0_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	32
+	lxsspx		vs16,	o0,	T1		//  load b0_r
+	lxsspx		vs17,	o4,	T1		//  load b0_i
+
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs0,	vs8		// a0_r*b0_r
@@ -6234,10 +6668,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	32
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
+
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs4,	vs16		// a4_r*b0_r
@@ -6267,10 +6703,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	32
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
+
+	addi		BO,	BO,	8
 
 
 	xsmuldp		vs32,	vs0,	vs8		// a0_r*b0_r
@@ -6289,10 +6727,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO,	AO,	8
 
-	lxsspx		vs8,	o0,	BO		//  load b0_r
-	lxsspx		vs9,	o16,	BO		//  load b0_i
+	mr		T1,	BO
 
-	addi		BO,	BO,	32
+	lxsspx		vs8,	o0,	T1		//  load b0_r
+	lxsspx		vs9,	o4,	T1		//  load b0_i
+
+	addi		BO,	BO,	8
 
 
 	xsmaddadp	vs32,	vs0,	vs8		// a0_r*b0_r
@@ -6306,7 +6746,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE1x1
 
 	mr		T1,	CO
-	xxlxor		vs24,	vs24,	vs24
 
 // N=0
 

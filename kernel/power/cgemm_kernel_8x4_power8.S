@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/04/03 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/04 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -137,12 +137,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha_si vs31
 
 
-#define NOTUSED	r14
+#define BBUFFER	r14
 #define L	r15
 #define o12	r16
 #define o4	r17
 #define T2	r19
-#define KK	r20
+#define BBO	r20
 #define	o8	r21
 #define	I	r22
 #define J	r23
@@ -290,6 +290,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	li	o32 , 32
 	li	o48 , 48
 	
+        li      T1, 256
+        slwi    T1, T1, 9               // 131072
+        sub     BBUFFER, A, T1          // temp buffer for B unrolled
+
 
 #ifdef __64BIT__
 	addi	T1 , SP, 296

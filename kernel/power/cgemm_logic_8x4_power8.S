@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/04/03 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/04 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -38,6 +38,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CGEMM_L4_BEGIN:
 
+	mr		BO,	B
+	mr		BBO,	BBUFFER
+	slwi		T1,	K,	3
+
+CGEMM_L4_COPYB:
+	dcbtst		BBO,	PRE
+
+	lxvw4x		vs3,	o0,	BO
+	lxvw4x		vs11,	o16,	BO
+	xxspltw		vs4,	vs3,	0
+	xxspltw		vs5,	vs3,	1
+	xxspltw		vs6,	vs3,	2
+	xxspltw		vs7,	vs3,	3
+	xxspltw		vs12,	vs11,	0
+	xxspltw		vs13,	vs11,	1
+	xxspltw		vs14,	vs11,	2
+	xxspltw		vs15,	vs11,	3
+	stxvw4x		vs4,	o0,	BBO
+	stxvw4x		vs5,	o16,	BBO
+	stxvw4x		vs6,	o32,	BBO
+	stxvw4x		vs7,	o48,	BBO
+	addi		BO,	BO,	32
+	addi		BBO,	BBO,	64
+	stxvw4x		vs12,	o0,	BBO
+	stxvw4x		vs13,	o16,	BBO
+	stxvw4x		vs14,	o32,	BBO
+	stxvw4x		vs15,	o48,	BBO
+	addic.		T1,	T1,	-8
+	addi		BBO,	BBO,	64
+
+	bge		CGEMM_L4_COPYB
+
+
 	mr		CO,	C
 	mr		AO,	A
 	slwi		T1,	LDC	,	2
@@ -48,7 +81,7 @@ CGEMM_L4_BEGIN:
 CGEMM_L4x8_BEGIN:
 
 
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L4x8_SUB0
 	cmpwi		cr0,	L,	1
@@ -59,18 +92,25 @@ CGEMM_L4x8_LOOP_START:
 	dcbt		AO,	PRE
 	dcbt		BO,	PRE
 	LOAD4x8_1
+	dcbt		BO,	PRE
 	KERNEL4x8_I1
+	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL4x8_2
+	dcbt		BO,	PRE
 	KERNEL4x8_1
+	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL4x8_2
 
-	KERNEL4x8_1
-	dcbt		AO,	PRE
 	dcbt		BO,	PRE
-	KERNEL4x8_2
 	KERNEL4x8_1
+	dcbt		BO,	PRE
+	dcbt		AO,	PRE
+	KERNEL4x8_2
+	dcbt		BO,	PRE
+	KERNEL4x8_1
+	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL4x8_2
 
@@ -81,18 +121,25 @@ CGEMM_L4x8_LOOP_START:
 
 CGEMM_L4x8_LOOP:
 
+	dcbt		BO,	PRE
 	KERNEL4x8_1
+	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL4x8_2
+	dcbt		BO,	PRE
 	KERNEL4x8_1
+	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL4x8_2
 
-	KERNEL4x8_1
-	dcbt		AO,	PRE
 	dcbt		BO,	PRE
-	KERNEL4x8_2
 	KERNEL4x8_1
+	dcbt		BO,	PRE
+	dcbt		AO,	PRE
+	KERNEL4x8_2
+	dcbt		BO,	PRE
+	KERNEL4x8_1
+	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL4x8_2
 
@@ -101,7 +148,9 @@ CGEMM_L4x8_LOOP:
 
 CGEMM_L4x8_LOOP_END:
 
+	dcbt		BO,	PRE
 	KERNEL4x8_1
+	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL4x8_2
 	KERNEL4x8_1
@@ -168,7 +217,7 @@ CGEMM_L4x4_BEGIN:
 
 	andi.		T1,	M,	4
 	ble		CGEMM_L4x4_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L4x4_SUB0
 	cmpwi		cr0,	L,	1
@@ -268,7 +317,7 @@ CGEMM_L4x2_BEGIN:
 
 	andi.		T1,	M,	2
 	ble		CGEMM_L4x2_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L4x2_SUB0
 	cmpwi		cr0,	L,	1
@@ -368,7 +417,7 @@ CGEMM_L4x1_BEGIN:
 
 	andi.		T1,	M,	1
 	ble		CGEMM_L4x1_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L4x1_SUB0
 	cmpwi		cr0,	L,	1
@@ -482,6 +531,39 @@ L999_H1:
 
 CGEMM_L2_BEGIN:
 
+	mr		BO,	B
+	mr		BBO,	BBUFFER
+	slwi		T1,	K,	2
+
+CGEMM_L2_COPYB:
+	dcbtst		BBO,	PRE
+
+	lxvw4x		vs3,	o0,	BO
+	lxvw4x		vs11,	o16,	BO
+	xxspltw		vs4,	vs3,	0
+	xxspltw		vs5,	vs3,	1
+	xxspltw		vs6,	vs3,	2
+	xxspltw		vs7,	vs3,	3
+	xxspltw		vs12,	vs11,	0
+	xxspltw		vs13,	vs11,	1
+	xxspltw		vs14,	vs11,	2
+	xxspltw		vs15,	vs11,	3
+	stxvw4x		vs4,	o0,	BBO
+	stxvw4x		vs5,	o16,	BBO
+	stxvw4x		vs6,	o32,	BBO
+	stxvw4x		vs7,	o48,	BBO
+	addi		BO,	BO,	32
+	addi		BBO,	BBO,	64
+	stxvw4x		vs12,	o0,	BBO
+	stxvw4x		vs13,	o16,	BBO
+	stxvw4x		vs14,	o32,	BBO
+	stxvw4x		vs15,	o48,	BBO
+	addic.		T1,	T1,	-8
+	addi		BBO,	BBO,	64
+
+	bge		CGEMM_L2_COPYB
+
+
 	andi.		T1,	N,	2
 	ble		CGEMM_L2_END
 	mr		CO,	C
@@ -494,7 +576,7 @@ CGEMM_L2_BEGIN:
 CGEMM_L2x8_BEGIN:
 
 
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L2x8_SUB0
 	cmpwi		cr0,	L,	1
@@ -611,7 +693,7 @@ CGEMM_L2x4_BEGIN:
 
 	andi.		T1,	M,	4
 	ble		CGEMM_L2x4_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L2x4_SUB0
 	cmpwi		cr0,	L,	1
@@ -711,7 +793,7 @@ CGEMM_L2x2_BEGIN:
 
 	andi.		T1,	M,	2
 	ble		CGEMM_L2x2_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L2x2_SUB0
 	cmpwi		cr0,	L,	1
@@ -811,7 +893,7 @@ CGEMM_L2x1_BEGIN:
 
 	andi.		T1,	M,	1
 	ble		CGEMM_L2x1_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L2x1_SUB0
 	cmpwi		cr0,	L,	1
@@ -919,6 +1001,39 @@ L999_H2:
 
 CGEMM_L1_BEGIN:
 
+	mr		BO,	B
+	mr		BBO,	BBUFFER
+	slwi		T1,	K,	1
+
+CGEMM_L1_COPYB:
+	dcbtst		BBO,	PRE
+
+	lxvw4x		vs3,	o0,	BO
+	lxvw4x		vs11,	o16,	BO
+	xxspltw		vs4,	vs3,	0
+	xxspltw		vs5,	vs3,	1
+	xxspltw		vs6,	vs3,	2
+	xxspltw		vs7,	vs3,	3
+	xxspltw		vs12,	vs11,	0
+	xxspltw		vs13,	vs11,	1
+	xxspltw		vs14,	vs11,	2
+	xxspltw		vs15,	vs11,	3
+	stxvw4x		vs4,	o0,	BBO
+	stxvw4x		vs5,	o16,	BBO
+	stxvw4x		vs6,	o32,	BBO
+	stxvw4x		vs7,	o48,	BBO
+	addi		BO,	BO,	32
+	addi		BBO,	BBO,	64
+	stxvw4x		vs12,	o0,	BBO
+	stxvw4x		vs13,	o16,	BBO
+	stxvw4x		vs14,	o32,	BBO
+	stxvw4x		vs15,	o48,	BBO
+	addic.		T1,	T1,	-8
+	addi		BBO,	BBO,	64
+
+	bge		CGEMM_L1_COPYB
+
+
 	andi.		T1,	N,	1
 	ble		CGEMM_L1_END
 	mr		CO,	C
@@ -929,7 +1044,7 @@ CGEMM_L1_BEGIN:
 CGEMM_L1x8_BEGIN:
 
 
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L1x8_SUB0
 	cmpwi		cr0,	L,	1
@@ -1046,7 +1161,7 @@ CGEMM_L1x4_BEGIN:
 
 	andi.		T1,	M,	4
 	ble		CGEMM_L1x4_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L1x4_SUB0
 	cmpwi		cr0,	L,	1
@@ -1146,7 +1261,7 @@ CGEMM_L1x2_BEGIN:
 
 	andi.		T1,	M,	2
 	ble		CGEMM_L1x2_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L1x2_SUB0
 	cmpwi		cr0,	L,	1
@@ -1246,7 +1361,7 @@ CGEMM_L1x1_BEGIN:
 
 	andi.		T1,	M,	1
 	ble		CGEMM_L1x1_END
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
 	ble		CGEMM_L1x1_SUB0
 	cmpwi		cr0,	L,	1
