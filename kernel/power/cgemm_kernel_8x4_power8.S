@@ -82,7 +82,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 400
+#define STACKSIZE 512
 #define ALPHA_R_SP 296(SP)
 #define ALPHA_I_SP 304(SP)
 #define FZERO	312(SP)
@@ -290,9 +290,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	li	o32 , 32
 	li	o48 , 48
 	
-        li      T1, 256
-        slwi    T1, T1, 9               // 131072
-        sub     BBUFFER, A, T1          // temp buffer for B unrolled
+        li      T1, 512
+        slwi    T1, T1, 16             
+	add	BBUFFER, A, T1
 
 
 #ifdef __64BIT__
