@@ -82,7 +82,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 512
+#define STACKSIZE 32000
 #define ALPHA_R_SP 296(SP)
 #define ALPHA_I_SP 304(SP)
 #define FZERO	312(SP)
@@ -136,6 +136,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha_sr vs30
 #define alpha_si vs31
 
+#define FRAMEPOINTER r12
 
 #define BBUFFER	r14
 #define L	r15
@@ -161,6 +162,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 	PROFCODE
 
+	mr      FRAMEPOINTER, SP
+	addi	SP, SP, -STACKSIZE
+	addi	SP, SP, -STACKSIZE
+	addi	SP, SP, -STACKSIZE
 	addi	SP, SP, -STACKSIZE
 	li	r0, 0
 
@@ -233,37 +238,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef linux
 #ifdef __64BIT__
-	ld	LDC, FRAMESLOT(0) + STACKSIZE(SP)
+	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	LDC, FRAMESLOT(0) + STACKSIZE(SP)
+	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #else
 #ifdef DOUBLE
-	lwz	B,   FRAMESLOT(0) + STACKSIZE(SP)
-	lwz	C,   FRAMESLOT(1) + STACKSIZE(SP)
-	lwz	LDC, FRAMESLOT(2) + STACKSIZE(SP)
+	lwz	B,   FRAMESLOT(0) + 0(FRAMEPOINTER)
+	lwz	C,   FRAMESLOT(1) + 0(FRAMEPOINTER)
+	lwz	LDC, FRAMESLOT(2) + 0(FRAMEPOINTER)
 #else
-	lwz	LDC, FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 #endif
 #endif
 
 #ifdef TRMMKERNEL
 #if defined(linux) && defined(__64BIT__)
-	ld	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #else
 #ifdef DOUBLE
-	lwz	OFFSET,  FRAMESLOT(3) + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(3) + 0(FRAMEPOINTER)
 #else
-	lwz	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #endif
 #endif
 #endif
@@ -290,9 +295,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	li	o32 , 32
 	li	o48 , 48
 	
-        li      T1, 512
-        slwi    T1, T1, 16             
-	add	BBUFFER, A, T1
+	addi    BBUFFER, SP, 512+4096
+        li      T1, -4096
+        and     BBUFFER, BBUFFER, T1
 
 
 #ifdef __64BIT__
@@ -391,6 +396,9 @@ L999:
 	lwz	r14,  212(SP)
 #endif
 
+	addi	SP, SP, STACKSIZE
+	addi	SP, SP, STACKSIZE
+	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
 
 	blr
