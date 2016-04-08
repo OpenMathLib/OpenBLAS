@@ -1,3 +1,39 @@
+/***************************************************************************
+Copyright (c) 2013-2016, The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+
+/**************************************************************************************
+* 2016/03/05 Werner Saar (wernsaar@googlemail.com)
+* 	 BLASTEST 		: OK
+* 	 CTEST			: OK
+* 	 TEST			: OK
+*	 LAPACK-TEST		: OK
+**************************************************************************************/
+
+
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
 	#define	XSFADD_R1	xsadddp
@@ -34,12 +70,12 @@
 
 .macro LOAD2x8_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -74,12 +110,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -120,41 +156,36 @@
 
 .macro KERNEL2x8_1
 
-	lxvd2x		vs8,	o0,	AO		// load real,imag from A
-	lxvd2x		vs9,	o16,	AO		// load real,imag from A
-	lxvd2x		vs10,	o32,	AO		// load real,imag from A
-	lxvd2x		vs11,	o48,	AO		// load real,imag from A
-
-	addi		AO,	AO,	64
-
-	lxvd2x		vs12,	o0,	AO		// load real,imag from A
-	lxvd2x		vs13,	o16,	AO		// load real,imag from A
-	lxvd2x		vs14,	o32,	AO		// load real,imag from A
-	lxvd2x		vs15,	o48,	AO		// load real,imag from A
-
-	addi		AO,	AO,	64
-
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
-
-	addi		BO,	BO,	64
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
 	xvmaddadp	vs34,	vs1,	vs16		// real*real, imag*real
 	xvmaddadp	vs35,	vs1,	vs17		// real*imag, imag*imag
+
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
+
 	xvmaddadp	vs36,	vs2,	vs16		// real*real, imag*real
 	xvmaddadp	vs37,	vs2,	vs17		// real*imag, imag*imag
 	xvmaddadp	vs38,	vs3,	vs16		// real*real, imag*real
 	xvmaddadp	vs39,	vs3,	vs17		// real*imag, imag*imag
+
+	lxvd2x		vs8,	o0,	AO		// load real,imag from A
+	lxvd2x		vs9,	o16,	AO		// load real,imag from A
+
 	xvmaddadp	vs40,	vs4,	vs16		// real*real, imag*real
 	xvmaddadp	vs41,	vs4,	vs17		// real*imag, imag*imag
 	xvmaddadp	vs42,	vs5,	vs16		// real*real, imag*real
 	xvmaddadp	vs43,	vs5,	vs17		// real*imag, imag*imag
+
+	lxvd2x		vs10,	o32,	AO		// load real,imag from A
+	lxvd2x		vs11,	o48,	AO		// load real,imag from A
+
 	xvmaddadp	vs44,	vs6,	vs16		// real*real, imag*real
 	xvmaddadp	vs45,	vs6,	vs17		// real*imag, imag*imag
+
+	addi		AO,	AO,	64
+
 	xvmaddadp	vs46,	vs7,	vs16		// real*real, imag*real
 	xvmaddadp	vs47,	vs7,	vs17		// real*imag, imag*imag
 
@@ -162,79 +193,101 @@
 	xvmaddadp	vs49,	vs0,	vs19		// real*imag, imag*imag
 	xvmaddadp	vs50,	vs1,	vs18		// real*real, imag*real
 	xvmaddadp	vs51,	vs1,	vs19		// real*imag, imag*imag
+
+	lxvd2x		vs12,	o0,	AO		// load real,imag from A
+	lxvd2x		vs13,	o16,	AO		// load real,imag from A
+
 	xvmaddadp	vs52,	vs2,	vs18		// real*real, imag*real
 	xvmaddadp	vs53,	vs2,	vs19		// real*imag, imag*imag
 	xvmaddadp	vs54,	vs3,	vs18		// real*real, imag*real
 	xvmaddadp	vs55,	vs3,	vs19		// real*imag, imag*imag
+
+	lxvd2x		vs14,	o32,	AO		// load real,imag from A
+	lxvd2x		vs15,	o48,	AO		// load real,imag from A
+
 	xvmaddadp	vs56,	vs4,	vs18		// real*real, imag*real
 	xvmaddadp	vs57,	vs4,	vs19		// real*imag, imag*imag
 	xvmaddadp	vs58,	vs5,	vs18		// real*real, imag*real
 	xvmaddadp	vs59,	vs5,	vs19		// real*imag, imag*imag
+
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+
 	xvmaddadp	vs60,	vs6,	vs18		// real*real, imag*real
 	xvmaddadp	vs61,	vs6,	vs19		// real*imag, imag*imag
 	xvmaddadp	vs62,	vs7,	vs18		// real*real, imag*real
 	xvmaddadp	vs63,	vs7,	vs19		// real*imag, imag*imag
 
+	addi		AO,	AO,	64
+	addi		BO,	BO,	32
 
 .endm
 
 .macro KERNEL2x8_2
 
-	lxvd2x		vs0,	o0,	AO		// load real,imag from A
-	lxvd2x		vs1,	o16,	AO		// load real,imag from A
-	lxvd2x		vs2,	o32,	AO		// load real,imag from A
-	lxvd2x		vs3,	o48,	AO		// load real,imag from A
-
-	addi		AO,	AO,	64
-
-	lxvd2x		vs4,	o0,	AO		// load real,imag from A
-	lxvd2x		vs5,	o16,	AO		// load real,imag from A
-	lxvd2x		vs6,	o32,	AO		// load real,imag from A
-	lxvd2x		vs7,	o48,	AO		// load real,imag from A
-
-	addi		AO,	AO,	64
-
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
-
-	addi		BO,	BO,	64
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
 	xvmaddadp	vs34,	vs9,	vs20		// real*real, imag*real
 	xvmaddadp	vs35,	vs9,	vs21		// real*imag, imag*imag
+
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+
 	xvmaddadp	vs36,	vs10,	vs20		// real*real, imag*real
 	xvmaddadp	vs37,	vs10,	vs21		// real*imag, imag*imag
 	xvmaddadp	vs38,	vs11,	vs20		// real*real, imag*real
 	xvmaddadp	vs39,	vs11,	vs21		// real*imag, imag*imag
+
+	lxvd2x		vs0,	o0,	AO		// load real,imag from A
+	lxvd2x		vs1,	o16,	AO		// load real,imag from A
+
 	xvmaddadp	vs40,	vs12,	vs20		// real*real, imag*real
 	xvmaddadp	vs41,	vs12,	vs21		// real*imag, imag*imag
 	xvmaddadp	vs42,	vs13,	vs20		// real*real, imag*real
 	xvmaddadp	vs43,	vs13,	vs21		// real*imag, imag*imag
+
+	lxvd2x		vs2,	o32,	AO		// load real,imag from A
+	lxvd2x		vs3,	o48,	AO		// load real,imag from A
+
 	xvmaddadp	vs44,	vs14,	vs20		// real*real, imag*real
 	xvmaddadp	vs45,	vs14,	vs21		// real*imag, imag*imag
 	xvmaddadp	vs46,	vs15,	vs20		// real*real, imag*real
 	xvmaddadp	vs47,	vs15,	vs21		// real*imag, imag*imag
 
+	addi		AO,	AO,	64
+
 	xvmaddadp	vs48,	vs8,	vs22		// real*real, imag*real
 	xvmaddadp	vs49,	vs8,	vs23		// real*imag, imag*imag
 	xvmaddadp	vs50,	vs9,	vs22		// real*real, imag*real
 	xvmaddadp	vs51,	vs9,	vs23		// real*imag, imag*imag
+
+	lxvd2x		vs4,	o0,	AO		// load real,imag from A
+	lxvd2x		vs5,	o16,	AO		// load real,imag from A
+
 	xvmaddadp	vs52,	vs10,	vs22		// real*real, imag*real
 	xvmaddadp	vs53,	vs10,	vs23		// real*imag, imag*imag
 	xvmaddadp	vs54,	vs11,	vs22		// real*real, imag*real
 	xvmaddadp	vs55,	vs11,	vs23		// real*imag, imag*imag
+
+	lxvd2x		vs6,	o32,	AO		// load real,imag from A
+	lxvd2x		vs7,	o48,	AO		// load real,imag from A
+
 	xvmaddadp	vs56,	vs12,	vs22		// real*real, imag*real
 	xvmaddadp	vs57,	vs12,	vs23		// real*imag, imag*imag
 	xvmaddadp	vs58,	vs13,	vs22		// real*real, imag*real
 	xvmaddadp	vs59,	vs13,	vs23		// real*imag, imag*imag
+
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
+
 	xvmaddadp	vs60,	vs14,	vs22		// real*real, imag*real
 	xvmaddadp	vs61,	vs14,	vs23		// real*imag, imag*imag
 	xvmaddadp	vs62,	vs15,	vs22		// real*real, imag*real
 	xvmaddadp	vs63,	vs15,	vs23		// real*imag, imag*imag
 
+	addi		AO,	AO,	64
+	addi		BO,	BO,	32
 
 .endm
 
@@ -294,12 +347,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -354,12 +407,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -874,12 +927,12 @@
 
 .macro LOAD2x4_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -900,12 +953,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -937,12 +990,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -974,12 +1027,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
@@ -1035,12 +1088,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1072,12 +1125,12 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1357,12 +1410,12 @@
 
 .macro LOAD2x2_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1379,12 +1432,12 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1406,12 +1459,12 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1433,12 +1486,12 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
@@ -1476,12 +1529,12 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1503,12 +1556,12 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1672,12 +1725,12 @@
 
 .macro LOAD2x1_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -1692,12 +1745,12 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1714,12 +1767,12 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
-	lxvd2x		vs22,	o32,	BO		// load real part from B
-	lxvd2x		vs23,	o48,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
+	lxvdsx		vs22,	o16,	BO		// load real part from B
+	lxvdsx		vs23,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1736,12 +1789,12 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
@@ -1770,12 +1823,12 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1792,12 +1845,12 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
-	lxvd2x		vs18,	o32,	BO		// load real part from B
-	lxvd2x		vs19,	o48,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
+	lxvdsx		vs18,	o16,	BO		// load real part from B
+	lxvdsx		vs19,	o24,	BO		// load imag part from B
 
-	addi		BO,	BO,	64
+	addi		BO,	BO,	32
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1903,10 +1956,10 @@
 
 .macro LOAD1x8_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1941,10 +1994,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -1982,10 +2035,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2023,10 +2076,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
@@ -2087,10 +2140,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2128,10 +2181,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2399,10 +2452,10 @@
 
 .macro LOAD1x4_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2423,10 +2476,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2449,10 +2502,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2475,10 +2528,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
@@ -2516,10 +2569,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2542,10 +2595,10 @@
 
 	addi		AO,	AO,	64
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2695,10 +2748,10 @@
 
 .macro LOAD1x2_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2715,10 +2768,10 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2735,10 +2788,10 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2755,10 +2808,10 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
@@ -2786,10 +2839,10 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2806,10 +2859,10 @@
 
 	addi		AO,	AO,	32
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2901,10 +2954,10 @@
 
 .macro LOAD1x1_1
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -2919,10 +2972,10 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2936,10 +2989,10 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs20,	o0,	BO		// load real part from B
-	lxvd2x		vs21,	o16,	BO		// load imag part from B
+	lxvdsx		vs20,	o0,	BO		// load real part from B
+	lxvdsx		vs21,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2953,10 +3006,10 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
@@ -2979,10 +3032,10 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmuldp		vs32,	vs0,	vs16		// real*real, imag*real
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
@@ -2996,10 +3049,10 @@
 
 	addi		AO,	AO,	16
 
-	lxvd2x		vs16,	o0,	BO		// load real part from B
-	lxvd2x		vs17,	o16,	BO		// load imag part from B
+	lxvdsx		vs16,	o0,	BO		// load real part from B
+	lxvdsx		vs17,	o8,	BO		// load imag part from B
 
-	addi		BO,	BO,	32
+	addi		BO,	BO,	16
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
