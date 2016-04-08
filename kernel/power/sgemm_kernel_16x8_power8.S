@@ -82,7 +82,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 340
+#define STACKSIZE 32752
 #define ALPHA_SP   296(SP)
 #define FZERO	304(SP)
 #else
@@ -132,6 +132,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define o0	0
 
+#define FRAMEPOINTER r12
+
 #define BBUFFER r14
 #define o4	r15
 #define o12	r16
@@ -160,6 +162,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 	PROFCODE
 
+	mr	FRAMEPOINTER, SP
+	addi	SP, SP, -STACKSIZE
+	addi	SP, SP, -STACKSIZE
+	addi	SP, SP, -STACKSIZE
 	addi	SP, SP, -STACKSIZE
 	li	r0, 0
 
@@ -231,7 +237,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(_AIX) || defined(__APPLE__)
 #if !defined(__64BIT__) && defined(DOUBLE)
-	lwz	LDC, FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 #endif
 
@@ -239,17 +245,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(TRMMKERNEL)
 #if defined(linux) && defined(__64BIT__)
-	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(0) + 0(FRAMEPOINTER)
 #else
 #ifdef DOUBLE
-	lwz	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #else
-	lwz	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 #endif
 #endif
@@ -271,9 +277,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	li	o32, 32
 	li	o48, 48
 
-	li	T1, 256
-	slwi	T1, T1, 9		// 131072
-	sub	BBUFFER, A, T1		// temp buffer for B unrolled
+        addi    BBUFFER, SP, 512+4096
+	li	T1, -4096
+	and	BBUFFER, BBUFFER, T1
 
         addi    T1, SP, 300
         stxsspx    f1, o0 , T1
@@ -354,6 +360,9 @@ L999:
 	lwz	r14,  212(SP)
 #endif
 
+	addi	SP, SP, STACKSIZE
+	addi	SP, SP, STACKSIZE
+	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
 
 	blr

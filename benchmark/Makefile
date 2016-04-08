@@ -34,7 +34,8 @@ LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread 
 LIBVECLIB = -framework Accelerate
 
 ESSL=/opt/ibm/lib
-LIBESSL = -lessl $(ESSL)/libxlomp_ser.so.1 $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.2/lib/libxl.a
+#LIBESSL = -lesslsmp $(ESSL)/libxlomp_ser.so.1 $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
+LIBESSL = -lesslsmp  $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 
 ifeq ($(OSNAME), WINNT)
 
@@ -259,7 +260,8 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
 endif
 
 essl :: sgemm.essl strmm.essl dgemm.essl dtrmm.essl  \
-	cgemm.essl ctrmm.essl zgemm.essl ztrmm.essl
+	cgemm.essl ctrmm.essl zgemm.essl ztrmm.essl  \
+	slinpack.essl clinpack.essl dlinpack.essl zlinpack.essl
 
 veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        scholesky.veclib dcholesky.veclib ccholesky.veclib zcholesky.veclib \
@@ -312,6 +314,9 @@ slinpack.mkl : slinpack.$(SUFFIX)
 slinpack.veclib : slinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+slinpack.essl : slinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Dlinpack ####################################################
 dlinpack.goto : dlinpack.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -327,6 +332,9 @@ dlinpack.mkl : dlinpack.$(SUFFIX)
 
 dlinpack.veclib : dlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dlinpack.essl : dlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Clinpack ####################################################
 
@@ -345,6 +353,9 @@ clinpack.mkl : clinpack.$(SUFFIX)
 clinpack.veclib : clinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+clinpack.essl : clinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Zlinpack ####################################################
 
 zlinpack.goto : zlinpack.$(SUFFIX) ../$(LIBNAME)
@@ -361,6 +372,9 @@ zlinpack.mkl : zlinpack.$(SUFFIX)
 
 zlinpack.veclib : zlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zlinpack.essl : zlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Scholesky ###################################################
 

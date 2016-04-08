@@ -1,38 +1,3 @@
-/***************************************************************************
-Copyright (c) 2013-2016, The OpenBLAS Project
-All rights reserved.
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-1. Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-notice, this list of conditions and the following disclaimer in
-the documentation and/or other materials provided with the
-distribution.
-3. Neither the name of the OpenBLAS project nor the names of
-its contributors may be used to endorse or promote products
-derived from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*****************************************************************************/
-
-/**************************************************************************************
-* 2016/03/05 Werner Saar (wernsaar@googlemail.com)
-* 	 BLASTEST 		: OK
-* 	 CTEST			: OK
-* 	 TEST			: OK
-*	 LAPACK-TEST		: OK
-**************************************************************************************/
-
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
@@ -82,7 +47,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 320
+#define STACKSIZE 32000
 #define ALPHA_R_SP 296(SP)
 #define ALPHA_I_SP 304(SP)
 #define FZERO	312(SP)
@@ -133,11 +98,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha_r vs30
 #define alpha_i vs31
 
+
+#define FRAMEPOINTER r12
+
+#define BBUFFER r14
+
 #define L	r15
 #define ALPHA	r16
 #define o24	r17
 #define T2	r19
-#define KK	r20
+#define BBO	r20
 #define	o8	r21
 #define	I	r22
 #define J	r23
@@ -156,8 +126,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 	PROFCODE
 
-	addi	SP, SP, -STACKSIZE
-	li	r0, 0
+	mr      FRAMEPOINTER, SP
+        addi    SP, SP, -STACKSIZE
+        addi    SP, SP, -STACKSIZE
+        addi    SP, SP, -STACKSIZE
+        addi    SP, SP, -STACKSIZE
+        li      r0, 0
 
 	stfd	f14,    0(SP)
 	stfd	f15,    8(SP)
@@ -200,6 +174,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r17,  256(SP)
 	std	r16,  264(SP)
 	std	r15,  272(SP)
+	std	r14,  280(SP)
 #else
 	stw	r31,  144(SP)
 	stw	r30,  148(SP)
@@ -226,37 +201,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef linux
 #ifdef __64BIT__
-	ld	LDC, FRAMESLOT(0) + STACKSIZE(SP)
+	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	LDC, FRAMESLOT(0) + STACKSIZE(SP)
+	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #else
 #ifdef DOUBLE
-	lwz	B,   FRAMESLOT(0) + STACKSIZE(SP)
-	lwz	C,   FRAMESLOT(1) + STACKSIZE(SP)
-	lwz	LDC, FRAMESLOT(2) + STACKSIZE(SP)
+	lwz	B,   FRAMESLOT(0) + 0(FRAMEPOINTER)
+	lwz	C,   FRAMESLOT(1) + 0(FRAMEPOINTER)
+	lwz	LDC, FRAMESLOT(2) + 0(FRAMEPOINTER)
 #else
-	lwz	LDC, FRAMESLOT(0) + STACKSIZE(SP)
+	lwz	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 #endif
 #endif
 
 #ifdef TRMMKERNEL
 #if defined(linux) && defined(__64BIT__)
-	ld	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #endif
 
 #if defined(_AIX) || defined(__APPLE__)
 #ifdef __64BIT__
-	ld	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
+	ld	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #else
 #ifdef DOUBLE
-	lwz	OFFSET,  FRAMESLOT(3) + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(3) + 0(FRAMEPOINTER)
 #else
-	lwz	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
+	lwz	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #endif
 #endif
 #endif
@@ -268,19 +243,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "zgemm_macros_8x2_power8.S"
 
 	cmpwi	cr0, M, 0
-	ble	.L999
+	ble	L999
 	cmpwi	cr0, N, 0
-	ble	.L999
+	ble	L999
 	cmpwi	cr0, K, 0
-	ble	.L999
+	ble	L999
 
 	slwi	LDC, LDC, ZBASE_SHIFT
-	li	PRE, 256 
+	li	PRE, 384 
 	li	o8  , 8
 	li	o16 , 16
 	li	o24 , 24
 	li	o32 , 32
 	li	o48 , 48
+
+        addi    BBUFFER, SP, 512+4096
+        li      T1, -4096
+        and     BBUFFER, BBUFFER, T1
 
 #ifdef __64BIT__
 	addi	ALPHA, SP, 296
@@ -288,14 +267,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi	ALPHA, SP, 224
 #endif
 
-	lxvdsx	alpha_r, 0, ALPHA
-	lxvdsx	alpha_i, o8, ALPHA
+	lxsdx	alpha_r, 0, ALPHA
+	lxsdx	alpha_i, o8, ALPHA
 
-	.align 5
+	.align 4
 
 #include "zgemm_logic_8x2_power8.S"
 
-.L999:
+L999:
 	addi	r3, 0, 0
 
 	lfd	f14,    0(SP)
@@ -339,6 +318,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld	r17,  256(SP)
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
+	ld	r14,  280(SP)
 #else
 	lwz	r31,  144(SP)
 	lwz	r30,  148(SP)
@@ -359,6 +339,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lwz	r15,  208(SP)
 #endif
 
+	addi	SP, SP, STACKSIZE
+	addi	SP, SP, STACKSIZE
+	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
 
 	blr

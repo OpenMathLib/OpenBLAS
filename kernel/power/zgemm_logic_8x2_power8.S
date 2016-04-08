@@ -1,83 +1,111 @@
 	srawi.		J,	N,	1
-	ble		.LZGEMM_L2_END
+	ble		ZGEMM_L2_END
 
-.LZGEMM_L2_BEGIN:
+ZGEMM_L2_BEGIN:
+
+	mr		BO,	B
+	mr		BBO,	BBUFFER
+	slwi		T1,	K,	1
+
+ZGEMM_L2_COPYB:
+
+	lxvdsx		vs4,	o0,	BO              // b0_r
+	lxvdsx		vs5,	o8,	BO              // b0_i
+	addi		BO,	BO,	16
+	stxvd2x		vs4,	o0,	BBO
+	stxvd2x		vs5,	o16,	BBO
+	addic.		T1,	T1,	-1
+	addi		BBO,	BBO,	32
+
+	bge		ZGEMM_L2_COPYB
+
 
 	mr		CO,	C
 	mr		AO,	A
 	slwi		T1,	LDC	,	1
 	add		C,	C,	T1
 	srawi.		I,	M,	3
-	ble		.LZGEMM_L2x8_END
+	ble		ZGEMM_L2x8_END
 
-.LZGEMM_L2x8_BEGIN:
+ZGEMM_L2x8_BEGIN:
 
 
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L2x8_SUB0
+	ble		ZGEMM_L2x8_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L2x8_SUB4
+	ble		ZGEMM_L2x8_SUB4
 
-.LZGEMM_L2x8_LOOP_START:
+ZGEMM_L2x8_LOOP_START:
 
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	LOAD2x8_1
 	dcbt		AO,	PRE
 	KERNEL2x8_I1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L2x8_LOOP_END
+	ble		ZGEMM_L2x8_LOOP_END
 
 	.align 5
 
-.LZGEMM_L2x8_LOOP:
+ZGEMM_L2x8_LOOP:
 
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x8_LOOP
+	bgt		ZGEMM_L2x8_LOOP
 
-.LZGEMM_L2x8_LOOP_END:
+ZGEMM_L2x8_LOOP_END:
 
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 	dcbt		AO,	PRE
 	KERNEL2x8_1
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL2x8_2
 
 	dcbt		AO,	PRE
@@ -88,9 +116,9 @@
 	KERNEL2x8_1
 	KERNEL2x8_E2
 
-	b		.LZGEMM_L2x8_SUB1
+	b		ZGEMM_L2x8_SUB1
 
-.LZGEMM_L2x8_SUB4:
+ZGEMM_L2x8_SUB4:
 
 	dcbt		AO,	PRE
 	KERNEL2x8_SUBI1
@@ -106,53 +134,53 @@
 	KERNEL2x8_SUB1
 	KERNEL2x8_SUB1
 
-	b		.LZGEMM_L2x8_SUB1
+	b		ZGEMM_L2x8_SUB1
 
-.LZGEMM_L2x8_SUB0:
+ZGEMM_L2x8_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL2x8_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L2x8_SAVE
-	b		.LZGEMM_L2x8_SUB2
+	ble		ZGEMM_L2x8_SAVE
+	b		ZGEMM_L2x8_SUB2
 
-.LZGEMM_L2x8_SUB1:
+ZGEMM_L2x8_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L2x8_SAVE
+	ble		ZGEMM_L2x8_SAVE
 
-.LZGEMM_L2x8_SUB2:
+ZGEMM_L2x8_SUB2:
 
 	KERNEL2x8_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x8_SUB2
+	bgt		ZGEMM_L2x8_SUB2
 
-.LZGEMM_L2x8_SAVE:
+ZGEMM_L2x8_SAVE:
 
 	SAVE2x8
 
 	addic.		I,	I,	-1
-	bgt		.LZGEMM_L2x8_BEGIN
+	bgt		ZGEMM_L2x8_BEGIN
 
-.LZGEMM_L2x8_END:
+ZGEMM_L2x8_END:
 
-.LZGEMM_L2x4_BEGIN:
+ZGEMM_L2x4_BEGIN:
 
 	andi.		T2,	M,	7
-	ble		.LZGEMM_L2x1_END
+	ble		ZGEMM_L2x1_END
 
 	andi.		T1,	M,	4
-	ble		.LZGEMM_L2x4_END
-	mr		BO,	B
+	ble		ZGEMM_L2x4_END
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L2x4_SUB0
+	ble		ZGEMM_L2x4_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L2x4_SUB4
+	ble		ZGEMM_L2x4_SUB4
 
-.LZGEMM_L2x4_LOOP_START:
+ZGEMM_L2x4_LOOP_START:
 
 	LOAD2x4_1
 	KERNEL2x4_I1
@@ -166,11 +194,11 @@
 	KERNEL2x4_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L2x4_LOOP_END
+	ble		ZGEMM_L2x4_LOOP_END
 
 	.align 5
 
-.LZGEMM_L2x4_LOOP:
+ZGEMM_L2x4_LOOP:
 
 	KERNEL2x4_1
 	KERNEL2x4_2
@@ -183,9 +211,9 @@
 	KERNEL2x4_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x4_LOOP
+	bgt		ZGEMM_L2x4_LOOP
 
-.LZGEMM_L2x4_LOOP_END:
+ZGEMM_L2x4_LOOP_END:
 
 	KERNEL2x4_1
 	KERNEL2x4_2
@@ -197,9 +225,9 @@
 	KERNEL2x4_1
 	KERNEL2x4_E2
 
-	b		.LZGEMM_L2x4_SUB1
+	b		ZGEMM_L2x4_SUB1
 
-.LZGEMM_L2x4_SUB4:
+ZGEMM_L2x4_SUB4:
 
 	KERNEL2x4_SUBI1
 	KERNEL2x4_SUB1
@@ -211,48 +239,48 @@
 	KERNEL2x4_SUB1
 	KERNEL2x4_SUB1
 
-	b		.LZGEMM_L2x4_SUB1
+	b		ZGEMM_L2x4_SUB1
 
-.LZGEMM_L2x4_SUB0:
+ZGEMM_L2x4_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL2x4_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L2x4_SAVE
-	b		.LZGEMM_L2x4_SUB2
+	ble		ZGEMM_L2x4_SAVE
+	b		ZGEMM_L2x4_SUB2
 
-.LZGEMM_L2x4_SUB1:
+ZGEMM_L2x4_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L2x4_SAVE
+	ble		ZGEMM_L2x4_SAVE
 
-.LZGEMM_L2x4_SUB2:
+ZGEMM_L2x4_SUB2:
 
 	KERNEL2x4_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x4_SUB2
+	bgt		ZGEMM_L2x4_SUB2
 
-.LZGEMM_L2x4_SAVE:
+ZGEMM_L2x4_SAVE:
 
 	SAVE2x4
 
-.LZGEMM_L2x4_END:
+ZGEMM_L2x4_END:
 
-.LZGEMM_L2x2_BEGIN:
+ZGEMM_L2x2_BEGIN:
 
 
 	andi.		T1,	M,	2
-	ble		.LZGEMM_L2x2_END
-	mr		BO,	B
+	ble		ZGEMM_L2x2_END
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L2x2_SUB0
+	ble		ZGEMM_L2x2_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L2x2_SUB4
+	ble		ZGEMM_L2x2_SUB4
 
-.LZGEMM_L2x2_LOOP_START:
+ZGEMM_L2x2_LOOP_START:
 
 	LOAD2x2_1
 	KERNEL2x2_I1
@@ -266,11 +294,11 @@
 	KERNEL2x2_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L2x2_LOOP_END
+	ble		ZGEMM_L2x2_LOOP_END
 
 	.align 5
 
-.LZGEMM_L2x2_LOOP:
+ZGEMM_L2x2_LOOP:
 
 	KERNEL2x2_1
 	KERNEL2x2_2
@@ -283,9 +311,9 @@
 	KERNEL2x2_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x2_LOOP
+	bgt		ZGEMM_L2x2_LOOP
 
-.LZGEMM_L2x2_LOOP_END:
+ZGEMM_L2x2_LOOP_END:
 
 	KERNEL2x2_1
 	KERNEL2x2_2
@@ -297,9 +325,9 @@
 	KERNEL2x2_1
 	KERNEL2x2_E2
 
-	b		.LZGEMM_L2x2_SUB1
+	b		ZGEMM_L2x2_SUB1
 
-.LZGEMM_L2x2_SUB4:
+ZGEMM_L2x2_SUB4:
 
 	KERNEL2x2_SUBI1
 	KERNEL2x2_SUB1
@@ -311,48 +339,48 @@
 	KERNEL2x2_SUB1
 	KERNEL2x2_SUB1
 
-	b		.LZGEMM_L2x2_SUB1
+	b		ZGEMM_L2x2_SUB1
 
-.LZGEMM_L2x2_SUB0:
+ZGEMM_L2x2_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL2x2_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L2x2_SAVE
-	b		.LZGEMM_L2x2_SUB2
+	ble		ZGEMM_L2x2_SAVE
+	b		ZGEMM_L2x2_SUB2
 
-.LZGEMM_L2x2_SUB1:
+ZGEMM_L2x2_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L2x2_SAVE
+	ble		ZGEMM_L2x2_SAVE
 
-.LZGEMM_L2x2_SUB2:
+ZGEMM_L2x2_SUB2:
 
 	KERNEL2x2_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x2_SUB2
+	bgt		ZGEMM_L2x2_SUB2
 
-.LZGEMM_L2x2_SAVE:
+ZGEMM_L2x2_SAVE:
 
 	SAVE2x2
 
-.LZGEMM_L2x2_END:
+ZGEMM_L2x2_END:
 
-.LZGEMM_L2x1_BEGIN:
+ZGEMM_L2x1_BEGIN:
 
 
 	andi.		T1,	M,	1
-	ble		.LZGEMM_L2x1_END
-	mr		BO,	B
+	ble		ZGEMM_L2x1_END
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L2x1_SUB0
+	ble		ZGEMM_L2x1_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L2x1_SUB4
+	ble		ZGEMM_L2x1_SUB4
 
-.LZGEMM_L2x1_LOOP_START:
+ZGEMM_L2x1_LOOP_START:
 
 	LOAD2x1_1
 	KERNEL2x1_I1
@@ -366,11 +394,11 @@
 	KERNEL2x1_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L2x1_LOOP_END
+	ble		ZGEMM_L2x1_LOOP_END
 
 	.align 5
 
-.LZGEMM_L2x1_LOOP:
+ZGEMM_L2x1_LOOP:
 
 	KERNEL2x1_1
 	KERNEL2x1_2
@@ -383,9 +411,9 @@
 	KERNEL2x1_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x1_LOOP
+	bgt		ZGEMM_L2x1_LOOP
 
-.LZGEMM_L2x1_LOOP_END:
+ZGEMM_L2x1_LOOP_END:
 
 	KERNEL2x1_1
 	KERNEL2x1_2
@@ -397,9 +425,9 @@
 	KERNEL2x1_1
 	KERNEL2x1_E2
 
-	b		.LZGEMM_L2x1_SUB1
+	b		ZGEMM_L2x1_SUB1
 
-.LZGEMM_L2x1_SUB4:
+ZGEMM_L2x1_SUB4:
 
 	KERNEL2x1_SUBI1
 	KERNEL2x1_SUB1
@@ -411,72 +439,89 @@
 	KERNEL2x1_SUB1
 	KERNEL2x1_SUB1
 
-	b		.LZGEMM_L2x1_SUB1
+	b		ZGEMM_L2x1_SUB1
 
-.LZGEMM_L2x1_SUB0:
+ZGEMM_L2x1_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL2x1_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L2x1_SAVE
-	b		.LZGEMM_L2x1_SUB2
+	ble		ZGEMM_L2x1_SAVE
+	b		ZGEMM_L2x1_SUB2
 
-.LZGEMM_L2x1_SUB1:
+ZGEMM_L2x1_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L2x1_SAVE
+	ble		ZGEMM_L2x1_SAVE
 
-.LZGEMM_L2x1_SUB2:
+ZGEMM_L2x1_SUB2:
 
 	KERNEL2x1_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L2x1_SUB2
+	bgt		ZGEMM_L2x1_SUB2
 
-.LZGEMM_L2x1_SAVE:
+ZGEMM_L2x1_SAVE:
 
 	SAVE2x1
 
-.LZGEMM_L2x1_END:
+ZGEMM_L2x1_END:
 
 	slwi		T1,	K,	5
 	add		B,	B,	T1
 
 	addic.		J,	J,	-1
-	bgt		.LZGEMM_L2_BEGIN
+	bgt		ZGEMM_L2_BEGIN
 
 	andi.		T2,	N,	1
-	ble		.L999
+	ble		L999
 
-.LZGEMM_L2_END:
+ZGEMM_L2_END:
 
-	b		.LZGEMM_L1_BEGIN
+	b		ZGEMM_L1_BEGIN
 
-.L999_H1:
+L999_H1:
 
-	b		.L999
+	b		L999
 
-.LZGEMM_L1_BEGIN:
+ZGEMM_L1_BEGIN:
+
+	mr		BO,	B
+	mr		BBO,	BBUFFER
+	slwi		T1,	K,	0
+
+ZGEMM_L1_COPYB:
+
+	lxvdsx		vs4,	o0,	BO              // b0_r
+	lxvdsx		vs5,	o8,	BO              // b0_i
+	addi		BO,	BO,	16
+	stxvd2x		vs4,	o0,	BBO
+	stxvd2x		vs5,	o16,	BBO
+	addic.		T1,	T1,	-1
+	addi		BBO,	BBO,	32
+
+	bge		ZGEMM_L1_COPYB
+
 
 	andi.		T1,	N,	1
-	ble		.LZGEMM_L1_END
+	ble		ZGEMM_L1_END
 	mr		CO,	C
 	mr		AO,	A
 	srawi.		I,	M,	3
-	ble		.LZGEMM_L1x8_END
+	ble		ZGEMM_L1x8_END
 
-.LZGEMM_L1x8_BEGIN:
+ZGEMM_L1x8_BEGIN:
 
 
-	mr		BO,	B
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L1x8_SUB0
+	ble		ZGEMM_L1x8_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L1x8_SUB4
+	ble		ZGEMM_L1x8_SUB4
 
-.LZGEMM_L1x8_LOOP_START:
+ZGEMM_L1x8_LOOP_START:
 
 	dcbt		AO,	PRE
 	LOAD1x8_1
@@ -499,11 +544,11 @@
 	KERNEL1x8_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L1x8_LOOP_END
+	ble		ZGEMM_L1x8_LOOP_END
 
 	.align 5
 
-.LZGEMM_L1x8_LOOP:
+ZGEMM_L1x8_LOOP:
 
 	dcbt		AO,	PRE
 	KERNEL1x8_1
@@ -524,9 +569,9 @@
 	KERNEL1x8_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x8_LOOP
+	bgt		ZGEMM_L1x8_LOOP
 
-.LZGEMM_L1x8_LOOP_END:
+ZGEMM_L1x8_LOOP_END:
 
 	dcbt		AO,	PRE
 	KERNEL1x8_1
@@ -545,9 +590,9 @@
 	KERNEL1x8_1
 	KERNEL1x8_E2
 
-	b		.LZGEMM_L1x8_SUB1
+	b		ZGEMM_L1x8_SUB1
 
-.LZGEMM_L1x8_SUB4:
+ZGEMM_L1x8_SUB4:
 
 	dcbt		AO,	PRE
 	KERNEL1x8_SUBI1
@@ -563,53 +608,53 @@
 	KERNEL1x8_SUB1
 	KERNEL1x8_SUB1
 
-	b		.LZGEMM_L1x8_SUB1
+	b		ZGEMM_L1x8_SUB1
 
-.LZGEMM_L1x8_SUB0:
+ZGEMM_L1x8_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL1x8_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L1x8_SAVE
-	b		.LZGEMM_L1x8_SUB2
+	ble		ZGEMM_L1x8_SAVE
+	b		ZGEMM_L1x8_SUB2
 
-.LZGEMM_L1x8_SUB1:
+ZGEMM_L1x8_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L1x8_SAVE
+	ble		ZGEMM_L1x8_SAVE
 
-.LZGEMM_L1x8_SUB2:
+ZGEMM_L1x8_SUB2:
 
 	KERNEL1x8_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x8_SUB2
+	bgt		ZGEMM_L1x8_SUB2
 
-.LZGEMM_L1x8_SAVE:
+ZGEMM_L1x8_SAVE:
 
 	SAVE1x8
 
 	addic.		I,	I,	-1
-	bgt		.LZGEMM_L1x8_BEGIN
+	bgt		ZGEMM_L1x8_BEGIN
 
-.LZGEMM_L1x8_END:
+ZGEMM_L1x8_END:
 
-.LZGEMM_L1x4_BEGIN:
+ZGEMM_L1x4_BEGIN:
 
 	andi.		T2,	M,	7
-	ble		.LZGEMM_L1x1_END
+	ble		ZGEMM_L1x1_END
 
 	andi.		T1,	M,	4
-	ble		.LZGEMM_L1x4_END
-	mr		BO,	B
+	ble		ZGEMM_L1x4_END
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L1x4_SUB0
+	ble		ZGEMM_L1x4_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L1x4_SUB4
+	ble		ZGEMM_L1x4_SUB4
 
-.LZGEMM_L1x4_LOOP_START:
+ZGEMM_L1x4_LOOP_START:
 
 	LOAD1x4_1
 	KERNEL1x4_I1
@@ -623,11 +668,11 @@
 	KERNEL1x4_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L1x4_LOOP_END
+	ble		ZGEMM_L1x4_LOOP_END
 
 	.align 5
 
-.LZGEMM_L1x4_LOOP:
+ZGEMM_L1x4_LOOP:
 
 	KERNEL1x4_1
 	KERNEL1x4_2
@@ -640,9 +685,9 @@
 	KERNEL1x4_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x4_LOOP
+	bgt		ZGEMM_L1x4_LOOP
 
-.LZGEMM_L1x4_LOOP_END:
+ZGEMM_L1x4_LOOP_END:
 
 	KERNEL1x4_1
 	KERNEL1x4_2
@@ -654,9 +699,9 @@
 	KERNEL1x4_1
 	KERNEL1x4_E2
 
-	b		.LZGEMM_L1x4_SUB1
+	b		ZGEMM_L1x4_SUB1
 
-.LZGEMM_L1x4_SUB4:
+ZGEMM_L1x4_SUB4:
 
 	KERNEL1x4_SUBI1
 	KERNEL1x4_SUB1
@@ -668,48 +713,48 @@
 	KERNEL1x4_SUB1
 	KERNEL1x4_SUB1
 
-	b		.LZGEMM_L1x4_SUB1
+	b		ZGEMM_L1x4_SUB1
 
-.LZGEMM_L1x4_SUB0:
+ZGEMM_L1x4_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL1x4_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L1x4_SAVE
-	b		.LZGEMM_L1x4_SUB2
+	ble		ZGEMM_L1x4_SAVE
+	b		ZGEMM_L1x4_SUB2
 
-.LZGEMM_L1x4_SUB1:
+ZGEMM_L1x4_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L1x4_SAVE
+	ble		ZGEMM_L1x4_SAVE
 
-.LZGEMM_L1x4_SUB2:
+ZGEMM_L1x4_SUB2:
 
 	KERNEL1x4_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x4_SUB2
+	bgt		ZGEMM_L1x4_SUB2
 
-.LZGEMM_L1x4_SAVE:
+ZGEMM_L1x4_SAVE:
 
 	SAVE1x4
 
-.LZGEMM_L1x4_END:
+ZGEMM_L1x4_END:
 
-.LZGEMM_L1x2_BEGIN:
+ZGEMM_L1x2_BEGIN:
 
 
 	andi.		T1,	M,	2
-	ble		.LZGEMM_L1x2_END
-	mr		BO,	B
+	ble		ZGEMM_L1x2_END
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L1x2_SUB0
+	ble		ZGEMM_L1x2_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L1x2_SUB4
+	ble		ZGEMM_L1x2_SUB4
 
-.LZGEMM_L1x2_LOOP_START:
+ZGEMM_L1x2_LOOP_START:
 
 	LOAD1x2_1
 	KERNEL1x2_I1
@@ -723,11 +768,11 @@
 	KERNEL1x2_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L1x2_LOOP_END
+	ble		ZGEMM_L1x2_LOOP_END
 
 	.align 5
 
-.LZGEMM_L1x2_LOOP:
+ZGEMM_L1x2_LOOP:
 
 	KERNEL1x2_1
 	KERNEL1x2_2
@@ -740,9 +785,9 @@
 	KERNEL1x2_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x2_LOOP
+	bgt		ZGEMM_L1x2_LOOP
 
-.LZGEMM_L1x2_LOOP_END:
+ZGEMM_L1x2_LOOP_END:
 
 	KERNEL1x2_1
 	KERNEL1x2_2
@@ -754,9 +799,9 @@
 	KERNEL1x2_1
 	KERNEL1x2_E2
 
-	b		.LZGEMM_L1x2_SUB1
+	b		ZGEMM_L1x2_SUB1
 
-.LZGEMM_L1x2_SUB4:
+ZGEMM_L1x2_SUB4:
 
 	KERNEL1x2_SUBI1
 	KERNEL1x2_SUB1
@@ -768,48 +813,48 @@
 	KERNEL1x2_SUB1
 	KERNEL1x2_SUB1
 
-	b		.LZGEMM_L1x2_SUB1
+	b		ZGEMM_L1x2_SUB1
 
-.LZGEMM_L1x2_SUB0:
+ZGEMM_L1x2_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL1x2_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L1x2_SAVE
-	b		.LZGEMM_L1x2_SUB2
+	ble		ZGEMM_L1x2_SAVE
+	b		ZGEMM_L1x2_SUB2
 
-.LZGEMM_L1x2_SUB1:
+ZGEMM_L1x2_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L1x2_SAVE
+	ble		ZGEMM_L1x2_SAVE
 
-.LZGEMM_L1x2_SUB2:
+ZGEMM_L1x2_SUB2:
 
 	KERNEL1x2_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x2_SUB2
+	bgt		ZGEMM_L1x2_SUB2
 
-.LZGEMM_L1x2_SAVE:
+ZGEMM_L1x2_SAVE:
 
 	SAVE1x2
 
-.LZGEMM_L1x2_END:
+ZGEMM_L1x2_END:
 
-.LZGEMM_L1x1_BEGIN:
+ZGEMM_L1x1_BEGIN:
 
 
 	andi.		T1,	M,	1
-	ble		.LZGEMM_L1x1_END
-	mr		BO,	B
+	ble		ZGEMM_L1x1_END
+	mr		BO,	BBUFFER
 	srawi.		L,	K,	3
-	ble		.LZGEMM_L1x1_SUB0
+	ble		ZGEMM_L1x1_SUB0
 	cmpwi		cr0,	L,	1
-	ble		.LZGEMM_L1x1_SUB4
+	ble		ZGEMM_L1x1_SUB4
 
-.LZGEMM_L1x1_LOOP_START:
+ZGEMM_L1x1_LOOP_START:
 
 	LOAD1x1_1
 	KERNEL1x1_I1
@@ -823,11 +868,11 @@
 	KERNEL1x1_2
 
 	addic.		L,	L,	-2
-	ble		.LZGEMM_L1x1_LOOP_END
+	ble		ZGEMM_L1x1_LOOP_END
 
 	.align 5
 
-.LZGEMM_L1x1_LOOP:
+ZGEMM_L1x1_LOOP:
 
 	KERNEL1x1_1
 	KERNEL1x1_2
@@ -840,9 +885,9 @@
 	KERNEL1x1_2
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x1_LOOP
+	bgt		ZGEMM_L1x1_LOOP
 
-.LZGEMM_L1x1_LOOP_END:
+ZGEMM_L1x1_LOOP_END:
 
 	KERNEL1x1_1
 	KERNEL1x1_2
@@ -854,9 +899,9 @@
 	KERNEL1x1_1
 	KERNEL1x1_E2
 
-	b		.LZGEMM_L1x1_SUB1
+	b		ZGEMM_L1x1_SUB1
 
-.LZGEMM_L1x1_SUB4:
+ZGEMM_L1x1_SUB4:
 
 	KERNEL1x1_SUBI1
 	KERNEL1x1_SUB1
@@ -868,34 +913,34 @@
 	KERNEL1x1_SUB1
 	KERNEL1x1_SUB1
 
-	b		.LZGEMM_L1x1_SUB1
+	b		ZGEMM_L1x1_SUB1
 
-.LZGEMM_L1x1_SUB0:
+ZGEMM_L1x1_SUB0:
 
 	andi.		L,	K,	7
 
 	KERNEL1x1_SUBI1
 
 	addic.		L,	L,	-1
-	ble		.LZGEMM_L1x1_SAVE
-	b		.LZGEMM_L1x1_SUB2
+	ble		ZGEMM_L1x1_SAVE
+	b		ZGEMM_L1x1_SUB2
 
-.LZGEMM_L1x1_SUB1:
+ZGEMM_L1x1_SUB1:
 
 	andi.		L,	K,	7
-	ble		.LZGEMM_L1x1_SAVE
+	ble		ZGEMM_L1x1_SAVE
 
-.LZGEMM_L1x1_SUB2:
+ZGEMM_L1x1_SUB2:
 
 	KERNEL1x1_SUB1
 
 	addic.		L,	L,	-1
-	bgt		.LZGEMM_L1x1_SUB2
+	bgt		ZGEMM_L1x1_SUB2
 
-.LZGEMM_L1x1_SAVE:
+ZGEMM_L1x1_SAVE:
 
 	SAVE1x1
 
-.LZGEMM_L1x1_END:
+ZGEMM_L1x1_END:
 
-.LZGEMM_L1_END:
+ZGEMM_L1_END:
