@@ -261,7 +261,8 @@ endif
 
 essl :: sgemm.essl strmm.essl dgemm.essl dtrmm.essl  \
 	cgemm.essl ctrmm.essl zgemm.essl ztrmm.essl  \
-	slinpack.essl clinpack.essl dlinpack.essl zlinpack.essl
+	slinpack.essl clinpack.essl dlinpack.essl zlinpack.essl \
+	scholesky.essl ccholesky.essl dcholesky.essl zcholesky.essl
 
 veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        scholesky.veclib dcholesky.veclib ccholesky.veclib zcholesky.veclib \
@@ -393,6 +394,9 @@ scholesky.mkl : scholesky.$(SUFFIX)
 scholesky.veclib : scholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+scholesky.essl : scholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Dcholesky ###################################################
 
 dcholesky.goto : dcholesky.$(SUFFIX) ../$(LIBNAME)
@@ -409,6 +413,9 @@ dcholesky.mkl : dcholesky.$(SUFFIX)
 
 dcholesky.veclib : dcholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dcholesky.essl : dcholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ccholesky ###################################################
 
@@ -427,6 +434,9 @@ ccholesky.mkl : ccholesky.$(SUFFIX)
 ccholesky.veclib : ccholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+ccholesky.essl : ccholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 
 ##################################### Zcholesky ###################################################
 
@@ -444,6 +454,9 @@ zcholesky.mkl : zcholesky.$(SUFFIX)
 
 zcholesky.veclib : zcholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zcholesky.essl : zcholesky.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sgemm ####################################################
 sgemm.goto : sgemm.$(SUFFIX) ../$(LIBNAME)
