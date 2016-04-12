@@ -62,7 +62,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 #if defined(_MSC_VER) && !defined(__clang__)
 	// use intrinsic instead of inline assembly
-	ret = _InterlockedExchange(address, 1);
+	ret = _InterlockedExchange((volatile LONG *)address, 1);
 	// inline assembly
 	/*__asm {
 		mov eax, address

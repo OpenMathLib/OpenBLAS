@@ -33,6 +33,10 @@ LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread 
 # Apple vecLib
 LIBVECLIB = -framework Accelerate
 
+ESSL=/opt/ibm/lib
+#LIBESSL = -lesslsmp $(ESSL)/libxlomp_ser.so.1 $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
+LIBESSL = -lesslsmp  $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
+
 ifeq ($(OSNAME), WINNT)
 
 goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
@@ -44,6 +48,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto \
+       srot.goto drot.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
        sswap.goto dswap.goto cswap.goto zswap.goto \
@@ -151,6 +156,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto cdot.goto zdot.goto \
+       srot.goto drot.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
        sswap.goto dswap.goto cswap.goto zswap.goto \
@@ -253,7 +259,9 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
 
 endif
 
-
+essl :: sgemm.essl strmm.essl dgemm.essl dtrmm.essl  \
+	cgemm.essl ctrmm.essl zgemm.essl ztrmm.essl  \
+	slinpack.essl clinpack.essl dlinpack.essl zlinpack.essl
 
 veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        scholesky.veclib dcholesky.veclib ccholesky.veclib zcholesky.veclib \
@@ -306,6 +314,9 @@ slinpack.mkl : slinpack.$(SUFFIX)
 slinpack.veclib : slinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+slinpack.essl : slinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Dlinpack ####################################################
 dlinpack.goto : dlinpack.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -321,6 +332,9 @@ dlinpack.mkl : dlinpack.$(SUFFIX)
 
 dlinpack.veclib : dlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dlinpack.essl : dlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Clinpack ####################################################
 
@@ -339,6 +353,9 @@ clinpack.mkl : clinpack.$(SUFFIX)
 clinpack.veclib : clinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+clinpack.essl : clinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Zlinpack ####################################################
 
 zlinpack.goto : zlinpack.$(SUFFIX) ../$(LIBNAME)
@@ -355,6 +372,9 @@ zlinpack.mkl : zlinpack.$(SUFFIX)
 
 zlinpack.veclib : zlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zlinpack.essl : zlinpack.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Scholesky ###################################################
 
@@ -441,6 +461,9 @@ sgemm.mkl : sgemm.$(SUFFIX)
 sgemm.veclib : sgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+sgemm.essl : sgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Dgemm ####################################################
 dgemm.goto : dgemm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -456,6 +479,9 @@ dgemm.mkl : dgemm.$(SUFFIX)
 
 dgemm.veclib : dgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgemm.essl : dgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Cgemm ####################################################
 
@@ -474,6 +500,9 @@ cgemm.mkl : cgemm.$(SUFFIX)
 cgemm.veclib : cgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+cgemm.essl : cgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Zgemm ####################################################
 
 zgemm.goto : zgemm.$(SUFFIX) ../$(LIBNAME)
@@ -490,6 +519,9 @@ zgemm.mkl : zgemm.$(SUFFIX)
 
 zgemm.veclib : zgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgemm.essl : zgemm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ssymm ####################################################
 ssymm.goto : ssymm.$(SUFFIX) ../$(LIBNAME)
@@ -573,6 +605,9 @@ strmm.mkl : strmm.$(SUFFIX)
 strmm.veclib : strmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+strmm.essl : strmm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Dtrmm ####################################################
 dtrmm.goto : dtrmm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -588,6 +623,9 @@ dtrmm.mkl : dtrmm.$(SUFFIX)
 
 dtrmm.veclib : dtrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrmm.essl : dtrmm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ctrmm ####################################################
 
@@ -606,6 +644,9 @@ ctrmm.mkl : ctrmm.$(SUFFIX)
 ctrmm.veclib : ctrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+ctrmm.essl : ctrmm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Ztrmm ####################################################
 
 ztrmm.goto : ztrmm.$(SUFFIX) ../$(LIBNAME)
@@ -622,6 +663,9 @@ ztrmm.mkl : ztrmm.$(SUFFIX)
 
 ztrmm.veclib : ztrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrmm.essl : ztrmm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strsm ####################################################
 strsm.goto : strsm.$(SUFFIX) ../$(LIBNAME)
@@ -1413,6 +1457,39 @@ zdot.mkl : zdot-intel.$(SUFFIX)
 zdot.veclib : zdot-intel.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Srot ####################################################
+srot.goto : srot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+srot.acml : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srot.atlas : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srot.mkl : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srot.veclib : srot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Drot ####################################################
+drot.goto : drot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+drot.acml : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drot.atlas : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drot.mkl : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drot.veclib : drot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 ##################################### Saxpy ####################################################
 saxpy.goto : saxpy.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -2124,6 +2201,13 @@ cgesv.$(SUFFIX) : gesv.c
 zgesv.$(SUFFIX) : gesv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
+srot.$(SUFFIX) : rot.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+drot.$(SUFFIX) : rot.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+
 
 
 
@@ -2137,7 +2221,7 @@ smallscaling: smallscaling.c ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm
 
 clean ::
-	@rm -f *.goto *.mkl *.acml *.atlas *.veclib
+	@rm -f *.goto *.mkl *.acml *.atlas *.veclib *.essl
 
 include $(TOPDIR)/Makefile.tail
 

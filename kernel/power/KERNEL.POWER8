@@ -3,14 +3,18 @@
 #CGEMM_BETA = ../generic/zgemm_beta.c
 #ZGEMM_BETA = ../generic/zgemm_beta.c
 
-STRMMKERNEL	= gemm_kernel_power6.S
+STRMMKERNEL	= strmm_kernel_16x8_power8.S
 DTRMMKERNEL	= dtrmm_kernel_16x4_power8.S
-CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+CTRMMKERNEL	= ctrmm_kernel_8x4_power8.S
 ZTRMMKERNEL	= ztrmm_kernel_8x2_power8.S
 
-SGEMMKERNEL    =  gemm_kernel_power6.S
-SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
+SGEMMKERNEL    =  sgemm_kernel_16x8_power8.S
+SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
+SGEMMITCOPY    = ../generic/gemm_tcopy_16.c
+SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
+SGEMMOTCOPY    =  ../generic/gemm_tcopy_8.c
+SGEMMINCOPYOBJ =  sgemm_incopy.o
+SGEMMITCOPYOBJ =  sgemm_itcopy.o
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
@@ -24,11 +28,15 @@ DGEMMITCOPYOBJ = dgemm_itcopy.o
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
-CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
-CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
-CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+CGEMMKERNEL    = cgemm_kernel_8x4_power8.S
+CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
+CGEMMITCOPY    = ../generic/zgemm_tcopy_8.c
+CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
+CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
 CGEMMONCOPYOBJ =  cgemm_oncopy.o
 CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+CGEMMINCOPYOBJ =  cgemm_incopy.o
+CGEMMITCOPYOBJ =  cgemm_itcopy.o
 
 ZGEMMKERNEL    = zgemm_kernel_8x2_power8.S
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
@@ -97,56 +105,56 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #ISMINKERNEL  = ../arm/imin.c
 #IDMINKERNEL  = ../arm/imin.c
 #
-#SASUMKERNEL  = ../arm/asum.c
-#DASUMKERNEL  = ../arm/asum.c
-#CASUMKERNEL  = ../arm/zasum.c
-#ZASUMKERNEL  = ../arm/zasum.c
+SASUMKERNEL  = sasum.c
+DASUMKERNEL  = dasum.c
+CASUMKERNEL  = casum.c
+ZASUMKERNEL  = zasum.c
 #
 #SAXPYKERNEL  = ../arm/axpy.c
-#DAXPYKERNEL  = ../arm/axpy.c
+DAXPYKERNEL  = daxpy.c
 #CAXPYKERNEL  = ../arm/zaxpy.c
-#ZAXPYKERNEL  = ../arm/zaxpy.c
+ZAXPYKERNEL  = zaxpy.c
 #
-#SCOPYKERNEL  = ../arm/copy.c
-#DCOPYKERNEL  = ../arm/copy.c
-#CCOPYKERNEL  = ../arm/zcopy.c
-#ZCOPYKERNEL  = ../arm/zcopy.c
+SCOPYKERNEL  = scopy.c
+DCOPYKERNEL  = dcopy.c
+CCOPYKERNEL  = ccopy.c
+ZCOPYKERNEL  = zcopy.c
 #
-#SDOTKERNEL   = ../arm/dot.c
-#DDOTKERNEL   = ../arm/dot.c
+SDOTKERNEL   =  sdot.c
+DDOTKERNEL   =  ddot.c
 #CDOTKERNEL   = ../arm/zdot.c
-#ZDOTKERNEL   = ../arm/zdot.c
+ZDOTKERNEL   =  zdot.c
 #
 #SNRM2KERNEL  = ../arm/nrm2.c
 #DNRM2KERNEL  = ../arm/nrm2.c
 #CNRM2KERNEL  = ../arm/znrm2.c
 #ZNRM2KERNEL  = ../arm/znrm2.c
 #
-#SROTKERNEL   = ../arm/rot.c
-#DROTKERNEL   = ../arm/rot.c
+SROTKERNEL   = srot.c
+DROTKERNEL   = drot.c
 #CROTKERNEL   = ../arm/zrot.c
 #ZROTKERNEL   = ../arm/zrot.c
 #
-#SSCALKERNEL  = ../arm/scal.c
-#DSCALKERNEL  = ../arm/scal.c
+SSCALKERNEL  = sscal.c
+DSCALKERNEL  = dscal.c
 #CSCALKERNEL  = ../arm/zscal.c
-#ZSCALKERNEL  = ../arm/zscal.c
+ZSCALKERNEL  = zscal.c
 #
-#SSWAPKERNEL  = ../arm/swap.c
-#DSWAPKERNEL  = ../arm/swap.c
-#CSWAPKERNEL  = ../arm/zswap.c
-#ZSWAPKERNEL  = ../arm/zswap.c
+SSWAPKERNEL  = sswap.c
+DSWAPKERNEL  = dswap.c
+CSWAPKERNEL  = cswap.c
+ZSWAPKERNEL  = zswap.c
 #
 
 #SGEMVNKERNEL = ../arm/gemv_n.c
-#DGEMVNKERNEL = ../arm/gemv_n.c
+DGEMVNKERNEL = dgemv_n.c
 #CGEMVNKERNEL = ../arm/zgemv_n.c
 #ZGEMVNKERNEL = ../arm/zgemv_n.c
 #
 #SGEMVTKERNEL = ../arm/gemv_t.c
 #DGEMVTKERNEL = ../arm/gemv_t.c
 #CGEMVTKERNEL = ../arm/zgemv_t.c
-#ZGEMVTKERNEL = ../arm/zgemv_t.c
+#ZGEMVTKERNEL = zgemv_t_4.c
 
 
 #SSYMV_U_KERNEL =  ../generic/symv_k.c

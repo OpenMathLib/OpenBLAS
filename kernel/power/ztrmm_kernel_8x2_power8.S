@@ -271,7 +271,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
-#include "zgemm_macros_8x2_power8.S"
+#include "ztrmm_macros_8x2_power8.S"
 
 	cmpwi	cr0, M, 0
 	ble	.L999

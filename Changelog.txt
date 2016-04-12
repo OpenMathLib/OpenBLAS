@@ -1,5 +1,23 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.18
+12-Apr-2016
+common:
+	* If you set MAKE_NB_JOBS flag less or equal than zero,
+	  make will be without -j.
+
+x86/x86_64:
+	* Support building Visual Studio static library. (#813, Thanks, theoractice)
+	* Fix bugs to pass buidbot CI tests (http://build.openblas.net)
+
+ARM:
+	* Provide DGEMM 8x4 kernel for Cortex-A57 (Thanks, Ashwin Sekhar T K)
+
+POWER:
+	* Optimize S and C BLAS3 on Power8
+	* Optimize BLAS2/1 on Power8
+
+====================================================================
 Version 0.2.17
 20-Mar-2016
 common:

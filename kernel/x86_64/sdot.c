@@ -72,18 +72,20 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
+	double dot = 0.0 ;
 
-	FLOAT  dot = 0.0 ;
+	FLOAT mydot=0.0;
+	BLASLONG n1;
 
 	if ( n <= 0 )  return(dot);
 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		BLASLONG n1 = n & -32;
+	        n1 = n & (BLASLONG)(-32);
 
 		if ( n1 )
-			sdot_kernel_16(n1, x, y , &dot );
+			sdot_kernel_16(n1, x, y , &mydot );
 
 
 		i = n1;
@@ -94,12 +96,13 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 			i++ ;
 
 		}
+		dot+=mydot;
 		return(dot);
 
 
 	}
 
-	BLASLONG n1 = n & -2;
+	n1 = n & (BLASLONG)(-2);
 
 	while(i < n1)
 	{
@@ -123,5 +126,4 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	return(dot);
 
 }
-
 
