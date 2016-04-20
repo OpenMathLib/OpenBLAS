@@ -1,38 +1,3 @@
-/***************************************************************************
-Copyright (c) 2013-2016, The OpenBLAS Project
-All rights reserved.
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-1. Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-notice, this list of conditions and the following disclaimer in
-the documentation and/or other materials provided with the
-distribution.
-3. Neither the name of the OpenBLAS project nor the names of
-its contributors may be used to endorse or promote products
-derived from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*****************************************************************************/
-
-/**************************************************************************************
-* 2016/04/02 Werner Saar (wernsaar@googlemail.com)
-* 	 BLASTEST 		: OK
-* 	 CTEST			: OK
-* 	 TEST			: OK
-* 	 LAPACK-TEST		: OK
-**************************************************************************************/
-
 	srawi.		J,	N,	3
 	ble		SGEMM_L8_END
 
@@ -40,35 +5,48 @@ SGEMM_L8_BEGIN:
 
 	mr		BO,	B
 	mr		BBO,	BBUFFER
-	slwi		T1,	K,	3
+	srawi.		T1,	K,	2
+	ble		SGEMM_L8_COPYB1
 
-SGEMM_L8_COPYB:
+
+SGEMM_L8_COPYB4:
+
+	dcbt		BO,	PRE
 	dcbtst		BBO,	PRE
+	COPYB_4x8
+	addic.		T1,	T1,	-1
+	ble		SGEMM_L8_COPYB1
 
-	lxvw4x		vs3,	o0,	BO
-	lxvw4x		vs11,	o16,	BO
-	xxspltw		vs4,	vs3,	0
-	xxspltw		vs5,	vs3,	1
-	xxspltw		vs6,	vs3,	2
-	xxspltw		vs7,	vs3,	3
-	xxspltw		vs12,	vs11,	0
-	xxspltw		vs13,	vs11,	1
-	xxspltw		vs14,	vs11,	2
-	xxspltw		vs15,	vs11,	3
-	stxvw4x		vs4,	o0,	BBO
-	stxvw4x		vs5,	o16,	BBO
-	stxvw4x		vs6,	o32,	BBO
-	stxvw4x		vs7,	o48,	BBO
-	addi		BO,	BO,	32
-	addi		BBO,	BBO,	64
-	stxvw4x		vs12,	o0,	BBO
-	stxvw4x		vs13,	o16,	BBO
-	stxvw4x		vs14,	o32,	BBO
-	stxvw4x		vs15,	o48,	BBO
-	addic.		T1,	T1,	-8
-	addi		BBO,	BBO,	64
+	dcbtst		BBO,	PRE
+	COPYB_4x8
+	addic.		T1,	T1,	-1
+	ble		SGEMM_L8_COPYB1
 
-	bge		SGEMM_L8_COPYB
+	dcbtst		BBO,	PRE
+	COPYB_4x8
+	addic.		T1,	T1,	-1
+	ble		SGEMM_L8_COPYB1
+
+	dcbtst		BBO,	PRE
+	COPYB_4x8
+	addic.		T1,	T1,	-1
+
+	bgt		SGEMM_L8_COPYB4
+
+SGEMM_L8_COPYB1:
+
+	andi.		T1,	K,	3
+	ble		SGEMM_L8_COPYB_END	
+
+SGEMM_L8_COPYB1_LOOP:
+
+
+	COPYB_1x8
+	addic.		T1,	T1,	-1
+
+	bgt		SGEMM_L8_COPYB1_LOOP
+
+SGEMM_L8_COPYB_END:
 
 	mr		CO,	C
 	mr		AO,	A
@@ -93,24 +71,24 @@ SGEMM_L8x16_LOOP_START:
 	LOAD8x16_1
 	dcbt		BO,	PRE
 	KERNEL8x16_I1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 
 	addic.		L,	L,	-2
@@ -122,24 +100,24 @@ SGEMM_L8x16_LOOP:
 
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 
 	addic.		L,	L,	-1
@@ -149,18 +127,15 @@ SGEMM_L8x16_LOOP_END:
 
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL8x16_2
 	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL8x16_2
 
-	dcbt		BO,	PRE
 	KERNEL8x16_1
-	dcbt		BO,	PRE
 	dcbt		AO,	PRE
 	KERNEL8x16_2
 	KERNEL8x16_1

@@ -1,4 +1,3 @@
-# CCOMMON_OPT	+= -DALLOC_SHM
 
 FLAMEPATH	= $(HOME)/flame/lib
 
