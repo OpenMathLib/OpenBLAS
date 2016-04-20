@@ -136,7 +136,7 @@
 	add	B1, B1, B
 
 	li	PREA,  384
-	li	PREB,  384
+	addi	PREB,  M16, 128
 
 	li	o4,	4
 	li	o16,	16

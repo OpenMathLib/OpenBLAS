@@ -19,6 +19,26 @@ SCOPYT_L4_BEGIN:
 
 SCOPYT_L4x16_LOOP:
 
+	dcbtst		BO,	M16
+	dcbtst		BO,	PREB
+	dcbt		A0,	PREA
+	dcbt		A1,	PREA
+	dcbt		A2,	PREA
+	dcbt		A3,	PREA
+	COPY_4x16
+
+	addi		A0,	A0,	16*SIZE
+	addi		A1,	A1,	16*SIZE
+	addi		A2,	A2,	16*SIZE
+	addi		A3,	A3,	16*SIZE
+	add		BO,	BO,	M16
+
+	addic.		J,	J,	-1
+	ble		SCOPYT_L4x8_BEGIN
+
+
+	dcbtst		BO,	M16
+	dcbtst		BO,	PREB
 	COPY_4x16
 
 	addi		A0,	A0,	16*SIZE
