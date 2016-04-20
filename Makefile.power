@@ -1,3 +1,7 @@
+ifeq ($(CORE), POWER8)
+COMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx -malign-power -DALLOC_SHM -fno-fast-math
+FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -fno-fast-math
+endif
 
 FLAMEPATH	= $(HOME)/flame/lib
 
