@@ -52,6 +52,7 @@ VERSION = 0.2.19.dev
 # USE_THREAD = 0
 
 # If you're going to use this library with OpenMP, please comment it in.
+# always use this flag for POWER8 
 # USE_OPENMP = 1
 
 # You can define maximum number of threads. Basically it should be
@@ -153,10 +154,12 @@ NO_AFFINITY = 1
 
 # Common Optimization Flag;
 # The default -O2 is enough.
+# Flags for POWER8 are defined in Makefile.power. Don't modify COMMON_OPT
 # COMMON_OPT = -O2
 
 # gfortran option for LAPACK
 # enable this flag only on 64bit Linux and if you need a thread safe lapack library
+# Flags for POWER8 are defined in Makefile.power. Don't modify FCOMMON_OPT
 # FCOMMON_OPT = -frecursive
 
 # Profiling flags
