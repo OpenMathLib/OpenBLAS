@@ -35,10 +35,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	srawi.		I,	M,	2
-	ble		SCOPYT_L2_BEGIN
+	ble		DCOPYT_L2_BEGIN
 
 
-SCOPYT_L4_BEGIN:
+DCOPYT_L4_BEGIN:
 
 	mr		A0,	A
 	add		A1,	A0,	LDA
@@ -49,118 +49,90 @@ SCOPYT_L4_BEGIN:
 	addi		B,	B,	64*SIZE
 
 	sradi.		J,	N,	4
-	ble		SCOPYT_L4x8_BEGIN
+	ble		DCOPYT_L4x8_BEGIN
 
 	mr		BO,	B16
 
-SCOPYT_L4x16_LOOP:
+	.align 5
 
-	dcbtst		BO,	M16
-	dcbtst		BO,	PREB
-	dcbt		A0,	PREA
-	dcbt		A1,	PREA
-	dcbt		A2,	PREA
-	dcbt		A3,	PREA
+DCOPYT_L4x16_LOOP:
+
+	addi	T1,	PREB,	128
+	addi	T2,	PREB,	256
+	dcbt	A0,	PREA
+	dcbt	A1,	PREA
+	dcbt	A2,	PREA
+	dcbt	A3,	PREA
+	dcbtst  BO,	M16
+	dcbtst  BO,	PREB
+	dcbtst  BO,	T1
+	dcbtst  BO,	T2
 	COPY_4x16
 
-	addi		A0,	A0,	16*SIZE
-	addi		A1,	A1,	16*SIZE
-	addi		A2,	A2,	16*SIZE
-	addi		A3,	A3,	16*SIZE
 	add		BO,	BO,	M16
 
 	addic.		J,	J,	-1
-	ble		SCOPYT_L4x8_BEGIN
+	bgt		DCOPYT_L4x16_LOOP
 
-
-	dcbtst		BO,	M16
-	dcbtst		BO,	PREB
-	COPY_4x16
-
-	addi		A0,	A0,	16*SIZE
-	addi		A1,	A1,	16*SIZE
-	addi		A2,	A2,	16*SIZE
-	addi		A3,	A3,	16*SIZE
-	add		BO,	BO,	M16
-
-	addic.		J,	J,	-1
-	bgt		SCOPYT_L4x16_LOOP
-
-SCOPYT_L4x8_BEGIN:
+DCOPYT_L4x8_BEGIN:
 
 	andi.		T1,	N,	8
-	ble		SCOPYT_L4x4_BEGIN
+	ble		DCOPYT_L4x4_BEGIN
 
 	mr		BO,	B8
 
 	COPY_4x8
 
-	addi		A0,	A0,	8*SIZE
-	addi		A1,	A1,	8*SIZE
-	addi		A2,	A2,	8*SIZE
-	addi		A3,	A3,	8*SIZE
 
 	addi		B8,	B8,	32*SIZE
 
-SCOPYT_L4x4_BEGIN:
+DCOPYT_L4x4_BEGIN:
 
 	andi.		T1,	N,	4
-	ble		SCOPYT_L4x2_BEGIN
+	ble		DCOPYT_L4x2_BEGIN
 
 	mr		BO,	B4
 
 	COPY_4x4
 
-	addi		A0,	A0,	4*SIZE
-	addi		A1,	A1,	4*SIZE
-	addi		A2,	A2,	4*SIZE
-	addi		A3,	A3,	4*SIZE
 
 	addi		B4,	B4,	16*SIZE
 
-SCOPYT_L4x2_BEGIN:
+DCOPYT_L4x2_BEGIN:
 
 	andi.		T1,	N,	2
-	ble		SCOPYT_L4x1_BEGIN
+	ble		DCOPYT_L4x1_BEGIN
 
 	mr		BO,	B2
 
 	COPY_4x2
 
-	addi		A0,	A0,	2*SIZE
-	addi		A1,	A1,	2*SIZE
-	addi		A2,	A2,	2*SIZE
-	addi		A3,	A3,	2*SIZE
 
 	addi		B2,	B2,	8*SIZE
 
-SCOPYT_L4x1_BEGIN:
+DCOPYT_L4x1_BEGIN:
 
 	andi.		T1,	N,	1
-	ble		SCOPYT_L4_END
+	ble		DCOPYT_L4_END
 
 	mr		BO,	B1
 
 	COPY_4x1
 
-	addi		A0,	A0,	1*SIZE
-	addi		A1,	A1,	1*SIZE
-	addi		A2,	A2,	1*SIZE
-	addi		A3,	A3,	1*SIZE
 
 	addi		B1,	B1,	4*SIZE
 
-SCOPYT_L4_END:
+DCOPYT_L4_END:
 
 	addic.		I,	I,	-1
-	bgt		SCOPYT_L4_BEGIN
+	bgt		DCOPYT_L4_BEGIN
 
 
 
-SCOPYT_L2_BEGIN:
+DCOPYT_L2_BEGIN:
 
 	andi.		T1,	M,	2
-	ble		SCOPYT_L1_BEGIN
+	ble		DCOPYT_L1_BEGIN
 
 	mr		A0,	A
 	add		A1,	A0,	LDA
@@ -169,81 +141,71 @@ SCOPYT_L2_BEGIN:
 	addi		B,	B,	32*SIZE
 
 	sradi.		J,	N,	4
-	ble		SCOPYT_L2x8_BEGIN
+	ble		DCOPYT_L2x8_BEGIN
 
 	mr		BO,	B16
 
-SCOPYT_L2x16_LOOP:
+DCOPYT_L2x16_LOOP:
 
 	COPY_2x16
 
-	addi		A0,	A0,	16*SIZE
-	addi		A1,	A1,	16*SIZE
 	add		BO,	BO,	M16
 
 	addic.		J,	J,	-1
-	bgt		SCOPYT_L2x16_LOOP
+	bgt		DCOPYT_L2x16_LOOP
 
-SCOPYT_L2x8_BEGIN:
+DCOPYT_L2x8_BEGIN:
 
 	andi.		T1,	N,	8
-	ble		SCOPYT_L2x4_BEGIN
+	ble		DCOPYT_L2x4_BEGIN
 
 	mr		BO,	B8
 
 	COPY_2x8
 
-	addi		A0,	A0,	8*SIZE
-	addi		A1,	A1,	8*SIZE
 
 	addi		B8,	B8,	16*SIZE
 
-SCOPYT_L2x4_BEGIN:
+DCOPYT_L2x4_BEGIN:
 
 	andi.		T1,	N,	4
-	ble		SCOPYT_L2x2_BEGIN
+	ble		DCOPYT_L2x2_BEGIN
 
 	mr		BO,	B4
 
 	COPY_2x4
 
-	addi		A0,	A0,	4*SIZE
-	addi		A1,	A1,	4*SIZE
 
 	addi		B4,	B4,	8*SIZE
 
-SCOPYT_L2x2_BEGIN:
+DCOPYT_L2x2_BEGIN:
 
 	andi.		T1,	N,	2
-	ble		SCOPYT_L2x1_BEGIN
+	ble		DCOPYT_L2x1_BEGIN
 
 	mr		BO,	B2
 
 	COPY_2x2
 
-	addi		A0,	A0,	2*SIZE
-	addi		A1,	A1,	2*SIZE
 
 	addi		B2,	B2,	4*SIZE
 
-SCOPYT_L2x1_BEGIN:
+DCOPYT_L2x1_BEGIN:
 
 	andi.		T1,	N,	1
-	ble		SCOPYT_L2_END
+	ble		DCOPYT_L2_END
 
 	mr		BO,	B1
 
 	COPY_2x1
 
-	addi		A0,	A0,	1*SIZE
-	addi		A1,	A1,	1*SIZE
 
 	addi		B1,	B1,	2*SIZE
 
-SCOPYT_L2_END:
+DCOPYT_L2_END:
 
 
-SCOPYT_L1_BEGIN:
+DCOPYT_L1_BEGIN:
 
 	andi.		T1,	M,	1
 	ble		L999
@@ -254,71 +216,66 @@ SCOPYT_L1_BEGIN:
 	addi		B,	B,	16*SIZE
 
 	sradi.		J,	N,	4
-	ble		SCOPYT_L1x8_BEGIN
+	ble		DCOPYT_L1x8_BEGIN
 
 	mr		BO,	B16
 
-SCOPYT_L1x16_LOOP:
+DCOPYT_L1x16_LOOP:
 
 	COPY_1x16
 
-	addi		A0,	A0,	16*SIZE
 	add		BO,	BO,	M16
 
 	addic.		J,	J,	-1
-	bgt		SCOPYT_L1x16_LOOP
+	bgt		DCOPYT_L1x16_LOOP
 
-SCOPYT_L1x8_BEGIN:
+DCOPYT_L1x8_BEGIN:
 
 	andi.		T1,	N,	8
-	ble		SCOPYT_L1x4_BEGIN
+	ble		DCOPYT_L1x4_BEGIN
 
 	mr		BO,	B8
 
 	COPY_1x8
 
-	addi		A0,	A0,	8*SIZE
 
 	addi		B8,	B8,	8*SIZE
 
-SCOPYT_L1x4_BEGIN:
+DCOPYT_L1x4_BEGIN:
 
 	andi.		T1,	N,	4
-	ble		SCOPYT_L1x2_BEGIN
+	ble		DCOPYT_L1x2_BEGIN
 
 	mr		BO,	B4
 
 	COPY_1x4
 
-	addi		A0,	A0,	4*SIZE
 
 	addi		B4,	B4,	4*SIZE
 
-SCOPYT_L1x2_BEGIN:
+DCOPYT_L1x2_BEGIN:
 
 	andi.		T1,	N,	2
-	ble		SCOPYT_L1x1_BEGIN
+	ble		DCOPYT_L1x1_BEGIN
 
 	mr		BO,	B2
 
 	COPY_1x2
 
-	addi		A0,	A0,	2*SIZE
 
 	addi		B2,	B2,	2*SIZE
 
-SCOPYT_L1x1_BEGIN:
+DCOPYT_L1x1_BEGIN:
 
 	andi.		T1,	N,	1
-	ble		SCOPYT_L1_END
+	ble		DCOPYT_L1_END
 
 	mr		BO,	B1
 
 	COPY_1x1
 
-	addi		A0,	A0,	1*SIZE
 
 	addi		B1,	B1,	1*SIZE
 
-SCOPYT_L1_END:
+DCOPYT_L1_END:
 

@@ -2231,10 +2231,10 @@ zgemm3m.$(SUFFIX) : gemm3m.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 smallscaling: smallscaling.c ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm
+	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm -lpthread
 
 clean ::
-	@rm -f *.goto *.mkl *.acml *.atlas *.veclib *.essl
+	@rm -f *.goto *.mkl *.acml *.atlas *.veclib *.essl smallscaling
 
 include $(TOPDIR)/Makefile.tail
 

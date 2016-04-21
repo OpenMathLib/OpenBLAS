@@ -20,7 +20,7 @@ SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
 DGEMMKERNEL    =  dgemm_kernel_16x4_power8.S
 DGEMMINCOPY    = ../generic/gemm_ncopy_16.c
-DGEMMITCOPY    = ../generic/gemm_tcopy_16.c
+DGEMMITCOPY    =  dgemm_tcopy_16_power8.S
 DGEMMONCOPY    =  gemm_ncopy_4.S
 DGEMMOTCOPY    =  gemm_tcopy_4.S
 DGEMMINCOPYOBJ = dgemm_incopy.o

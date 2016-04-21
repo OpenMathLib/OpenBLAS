@@ -5,6 +5,7 @@
 #include <time.h>
 #include <cblas.h>
 #include <omp.h>
+#include <pthread.h>
 #define MIN_SIZE 5
 #define MAX_SIZE 60
 #define NB_SIZE 10
