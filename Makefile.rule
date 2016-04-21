@@ -52,7 +52,7 @@ VERSION = 0.2.19.dev
 # USE_THREAD = 0
 
 # If you're going to use this library with OpenMP, please comment it in.
-# always use this flag for POWER8 
+# This flag is always set for POWER8. Don't modify the flag 
 # USE_OPENMP = 1
 
 # You can define maximum number of threads. Basically it should be
