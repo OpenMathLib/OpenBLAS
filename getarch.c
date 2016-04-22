@@ -131,6 +131,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_SICORTEX	*/
 /* #define FORCE_LOONGSON3A	*/
 /* #define FORCE_LOONGSON3B	*/
+/* #define FORCE_I6400		*/
+/* #define FORCE_P5600		*/
 /* #define FORCE_ITANIUM2	*/
 /* #define FORCE_SPARC		*/
 /* #define FORCE_SPARCV7	*/
@@ -699,6 +701,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_I6400
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "I6400"
+#define SUBDIRNAME      "mips64"
+#define ARCHCONFIG   "-DI6400 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "i6400"
+#define CORENAME  "I6400"
+#else
+#endif
+
+#ifdef FORCE_P5600
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "P5600"
+#define SUBDIRNAME      "mips"
+#define ARCHCONFIG   "-DP5600 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "p5600"
+#define CORENAME  "P5600"
+#else
+#endif
+
 #ifdef FORCE_ITANIUM2
 #define FORCE
 #define ARCHITECTURE    "IA64"
@@ -888,7 +918,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __mips__
+#ifdef __mips64
+#include "cpuid_mips64.c"
+#else
 #include "cpuid_mips.c"
+#endif
 #define OPENBLAS_SUPPORTED
 #endif
 

@@ -63,7 +63,7 @@ $os = Android         if ($data =~ /OS_ANDROID/);
 $architecture = x86    if ($data =~ /ARCH_X86/);
 $architecture = x86_64 if ($data =~ /ARCH_X86_64/);
 $architecture = power  if ($data =~ /ARCH_POWER/);
-$architecture = mips32 if ($data =~ /ARCH_MIPS32/);
+$architecture = mips   if ($data =~ /ARCH_MIPS/);
 $architecture = mips64 if ($data =~ /ARCH_MIPS64/);
 $architecture = alpha  if ($data =~ /ARCH_ALPHA/);
 $architecture = sparc  if ($data =~ /ARCH_SPARC/);
@@ -79,8 +79,8 @@ if ($os eq "AIX") {
     $defined = 1;
 }
 
-if (($architecture eq "mips32") || ($architecture eq "mips64")) {
-    $compiler_name .= " -mabi=n32" if ($binary eq "32");
+if (($architecture eq "mips") || ($architecture eq "mips64")) {
+    $compiler_name .= " -mabi=32" if ($binary eq "32");
     $compiler_name .= " -mabi=64" if ($binary eq "64");
     $defined = 1;
 }
@@ -155,7 +155,7 @@ if ($?) {
 $architecture = x86    if ($data =~ /ARCH_X86/);
 $architecture = x86_64 if ($data =~ /ARCH_X86_64/);
 $architecture = power  if ($data =~ /ARCH_POWER/);
-$architecture = mips32 if ($data =~ /ARCH_MIPS32/);
+$architecture = mips   if ($data =~ /ARCH_MIPS/);
 $architecture = mips64 if ($data =~ /ARCH_MIPS64/);
 $architecture = alpha  if ($data =~ /ARCH_ALPHA/);
 $architecture = sparc  if ($data =~ /ARCH_SPARC/);

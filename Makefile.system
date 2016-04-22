@@ -462,7 +462,7 @@ endif
 endif
 endif
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 NO_BINARY_MODE	= 1
 endif
 
@@ -502,11 +502,11 @@ endif
 
 ifdef NO_BINARY_MODE
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifdef BINARY64
 CCOMMON_OPT += -mabi=64
 else
-CCOMMON_OPT += -mabi=n32
+CCOMMON_OPT += -mabi=32
 endif
 BINARY_DEFINED = 1
 endif
@@ -589,11 +589,11 @@ ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
 endif
 ifdef NO_BINARY_MODE
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifdef BINARY64
 FCOMMON_OPT += -mabi=64
 else
-FCOMMON_OPT += -mabi=n32
+FCOMMON_OPT += -mabi=32
 endif
 endif
 else
@@ -678,7 +678,7 @@ endif
 endif
 endif
 
-ifneq ($(ARCH), mips64)
+ifeq ($(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 FCOMMON_OPT += -m32
 else
@@ -688,7 +688,7 @@ else
 ifdef BINARY64
 FCOMMON_OPT += -mabi=64
 else
-FCOMMON_OPT += -mabi=n32
+FCOMMON_OPT += -mabi=32
 endif
 endif
 
@@ -707,7 +707,7 @@ endif
 endif
 endif
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 FCOMMON_OPT += -n32
 else
@@ -737,7 +737,7 @@ endif
 
 ifeq ($(C_COMPILER), OPEN64)
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 CCOMMON_OPT += -n32
 else

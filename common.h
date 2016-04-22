@@ -397,6 +397,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_sparc.h"
 #endif
 
+#ifdef ARCH_MIPS
+#include "common_mips.h"
+#endif
+
 #ifdef ARCH_MIPS64
 #include "common_mips64.h"
 #endif
