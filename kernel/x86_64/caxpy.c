@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(PILEDRIVER) || defined(STEAMROLLER)
+#if defined(PILEDRIVER) || defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "caxpy_microk_steamroller-2.c"
 #elif defined(BULLDOZER)
 #include "caxpy_microk_bulldozer-2.c"

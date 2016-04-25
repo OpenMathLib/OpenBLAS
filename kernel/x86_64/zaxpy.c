@@ -31,7 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER)
 #include "zaxpy_microk_bulldozer-2.c"
-#elif defined(PILEDRIVER) || defined(STEAMROLLER)
+#elif defined(PILEDRIVER) || defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "zaxpy_microk_steamroller-2.c"
 #elif defined(HASWELL)
 #include "zaxpy_microk_haswell-2.c"

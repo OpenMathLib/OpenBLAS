@@ -933,6 +933,23 @@ static void init_parameter(void) {
 #endif
 #endif
 
+#ifdef EXCAVATOR
+
+#ifdef DEBUG
+  fprintf(stderr, "Excavator\n");
+#endif
+
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+#endif
+#endif
+
+
 #ifdef PILEDRIVER
 
 #ifdef DEBUG
