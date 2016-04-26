@@ -21,7 +21,9 @@ $(UTESTBIN): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
 
 run_test: $(UTESTBIN)
+ifndef CROSS
 	./$(UTESTBIN)
+endif
 
 clean:
 	-rm -f *.o $(UTESTBIN)
