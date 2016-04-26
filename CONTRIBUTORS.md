@@ -150,3 +150,7 @@ In chronological order:
 * theoractice <https://github.com/theoractice/>
   * [2016-03-20] Fix compiler error in VisualStudio with CMake
   * [2016-03-22] Fix access violation on Windows while static linking
+
+* Paul Mustière <https://github.com/buffer51/>
+  * [2016-02-04] Fix Android build on ARMV7
+  * [2016-04-26] Android build with LAPACK for ARMV7 & ARMV8
