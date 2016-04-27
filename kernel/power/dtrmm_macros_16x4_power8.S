@@ -431,8 +431,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mr		T1,	CO
 	addi		T2,	T1,	64
-	add		T3,	T1,	LDC
-	addi		T4,	T3,	64
 
 #ifndef TRMMKERNEL
 	lxvd2x		vs0,	0,	T1
@@ -444,16 +442,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs5,	o16,	T2
 	lxvd2x		vs6,	o32,	T2
 	lxvd2x		vs7,	o48,	T2
-
-	lxvd2x		vs8,	0,	T3
-	lxvd2x		vs9,	o16,	T3
-	lxvd2x		vs10,	o32,	T3
-	lxvd2x		vs11,	o48,	T3
-
-	lxvd2x		vs12,	0,	T4
-	lxvd2x		vs13,	o16,	T4
-	lxvd2x		vs14,	o32,	T4
-	lxvd2x		vs15,	o48,	T4
 #endif
 
 #ifndef TRMMKERNEL
@@ -465,14 +453,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs5,	vs37,	alpha_r
 	xvmaddadp	vs6,	vs38,	alpha_r
 	xvmaddadp	vs7,	vs39,	alpha_r
-	xvmaddadp	vs8,	vs40,	alpha_r
-	xvmaddadp	vs9,	vs41,	alpha_r
-	xvmaddadp	vs10,	vs42,	alpha_r
-	xvmaddadp	vs11,	vs43,	alpha_r
-	xvmaddadp	vs12,	vs44,	alpha_r
-	xvmaddadp	vs13,	vs45,	alpha_r
-	xvmaddadp	vs14,	vs46,	alpha_r
-	xvmaddadp	vs15,	vs47,	alpha_r
 #else
 	xvmuldp		vs0,	vs32,	alpha_r
 	xvmuldp		vs1,	vs33,	alpha_r
@@ -482,6 +462,44 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs5,	vs37,	alpha_r
 	xvmuldp		vs6,	vs38,	alpha_r
 	xvmuldp		vs7,	vs39,	alpha_r
+#endif
+
+	stxvd2x		vs0,	0,	T1
+	stxvd2x		vs1,	o16,	T1
+	stxvd2x		vs2,	o32,	T1
+	stxvd2x		vs3,	o48,	T1
+
+
+	stxvd2x		vs4,	0,	T2
+	stxvd2x		vs5,	o16,	T2
+	stxvd2x		vs6,	o32,	T2
+	stxvd2x		vs7,	o48,	T2
+
+	add		T1,	T1,	LDC
+	add		T2,	T2,	LDC
+
+#ifndef TRMMKERNEL
+	lxvd2x		vs8,	0,	T1
+	lxvd2x		vs9,	o16,	T1
+	lxvd2x		vs10,	o32,	T1
+	lxvd2x		vs11,	o48,	T1
+
+	lxvd2x		vs12,	0,	T2
+	lxvd2x		vs13,	o16,	T2
+	lxvd2x		vs14,	o32,	T2
+	lxvd2x		vs15,	o48,	T2
+#endif
+
+#ifndef TRMMKERNEL
+	xvmaddadp	vs8,	vs40,	alpha_r
+	xvmaddadp	vs9,	vs41,	alpha_r
+	xvmaddadp	vs10,	vs42,	alpha_r
+	xvmaddadp	vs11,	vs43,	alpha_r
+	xvmaddadp	vs12,	vs44,	alpha_r
+	xvmaddadp	vs13,	vs45,	alpha_r
+	xvmaddadp	vs14,	vs46,	alpha_r
+	xvmaddadp	vs15,	vs47,	alpha_r
+#else
 	xvmuldp		vs8,	vs40,	alpha_r
 	xvmuldp		vs9,	vs41,	alpha_r
 	xvmuldp		vs10,	vs42,	alpha_r
@@ -492,31 +510,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs15,	vs47,	alpha_r
 #endif
 
-	stxvd2x		vs0,	0,	T1
-	stxvd2x		vs1,	o16,	T1
-	stxvd2x		vs2,	o32,	T1
-	stxvd2x		vs3,	o48,	T1
+	stxvd2x		vs8,	0,	T1
+	stxvd2x		vs9,	o16,	T1
+	stxvd2x		vs10,	o32,	T1
+	stxvd2x		vs11,	o48,	T1
 
-	stxvd2x		vs4,	0,	T2
-	stxvd2x		vs5,	o16,	T2
-	stxvd2x		vs6,	o32,	T2
-	stxvd2x		vs7,	o48,	T2
 
-	stxvd2x		vs8,	0,	T3
-	stxvd2x		vs9,	o16,	T3
-	stxvd2x		vs10,	o32,	T3
-	stxvd2x		vs11,	o48,	T3
+	stxvd2x		vs12,	0,	T2
+	stxvd2x		vs13,	o16,	T2
+	stxvd2x		vs14,	o32,	T2
+	stxvd2x		vs15,	o48,	T2
 
-	stxvd2x		vs12,	0,	T4
-	stxvd2x		vs13,	o16,	T4
-	stxvd2x		vs14,	o32,	T4
-	stxvd2x		vs15,	o48,	T4
-
-	slwi		T4,	LDC,	1
-	add		T1,	T1,	T4
-	add		T3,	T3,	T4
-	addi		T2,	T1,	64
-	addi		T4,	T3,	64
+	add		T1,	T1,	LDC
+	add		T2,	T2,	LDC
 
 #ifndef TRMMKERNEL
 	lxvd2x		vs0,	0,	T1
@@ -528,16 +534,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs5,	o16,	T2
 	lxvd2x		vs6,	o32,	T2
 	lxvd2x		vs7,	o48,	T2
-
-	lxvd2x		vs8,	0,	T3
-	lxvd2x		vs9,	o16,	T3
-	lxvd2x		vs10,	o32,	T3
-	lxvd2x		vs11,	o48,	T3
-
-	lxvd2x		vs12,	0,	T4
-	lxvd2x		vs13,	o16,	T4
-	lxvd2x		vs14,	o32,	T4
-	lxvd2x		vs15,	o48,	T4
 #endif
 
 #ifndef TRMMKERNEL
@@ -549,14 +545,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs5,	vs53,	alpha_r
 	xvmaddadp	vs6,	vs54,	alpha_r
 	xvmaddadp	vs7,	vs55,	alpha_r
-	xvmaddadp	vs8,	vs56,	alpha_r
-	xvmaddadp	vs9,	vs57,	alpha_r
-	xvmaddadp	vs10,	vs58,	alpha_r
-	xvmaddadp	vs11,	vs59,	alpha_r
-	xvmaddadp	vs12,	vs60,	alpha_r
-	xvmaddadp	vs13,	vs61,	alpha_r
-	xvmaddadp	vs14,	vs62,	alpha_r
-	xvmaddadp	vs15,	vs63,	alpha_r
 #else
 	xvmuldp		vs0,	vs48,	alpha_r
 	xvmuldp		vs1,	vs49,	alpha_r
@@ -566,6 +554,44 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs5,	vs53,	alpha_r
 	xvmuldp		vs6,	vs54,	alpha_r
 	xvmuldp		vs7,	vs55,	alpha_r
+#endif
+
+	stxvd2x		vs0,	0,	T1
+	stxvd2x		vs1,	o16,	T1
+	stxvd2x		vs2,	o32,	T1
+	stxvd2x		vs3,	o48,	T1
+
+
+	stxvd2x		vs4,	0,	T2
+	stxvd2x		vs5,	o16,	T2
+	stxvd2x		vs6,	o32,	T2
+	stxvd2x		vs7,	o48,	T2
+
+	add		T1,	T1,	LDC
+	add		T2,	T2,	LDC
+
+#ifndef TRMMKERNEL
+	lxvd2x		vs8,	0,	T1
+	lxvd2x		vs9,	o16,	T1
+	lxvd2x		vs10,	o32,	T1
+	lxvd2x		vs11,	o48,	T1
+
+	lxvd2x		vs12,	0,	T2
+	lxvd2x		vs13,	o16,	T2
+	lxvd2x		vs14,	o32,	T2
+	lxvd2x		vs15,	o48,	T2
+#endif
+
+#ifndef TRMMKERNEL
+	xvmaddadp	vs8,	vs56,	alpha_r
+	xvmaddadp	vs9,	vs57,	alpha_r
+	xvmaddadp	vs10,	vs58,	alpha_r
+	xvmaddadp	vs11,	vs59,	alpha_r
+	xvmaddadp	vs12,	vs60,	alpha_r
+	xvmaddadp	vs13,	vs61,	alpha_r
+	xvmaddadp	vs14,	vs62,	alpha_r
+	xvmaddadp	vs15,	vs63,	alpha_r
+#else
 	xvmuldp		vs8,	vs56,	alpha_r
 	xvmuldp		vs9,	vs57,	alpha_r
 	xvmuldp		vs10,	vs58,	alpha_r
@@ -576,25 +602,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs15,	vs63,	alpha_r
 #endif
 
-	stxvd2x		vs0,	0,	T1
-	stxvd2x		vs1,	o16,	T1
-	stxvd2x		vs2,	o32,	T1
-	stxvd2x		vs3,	o48,	T1
+	stxvd2x		vs8,	0,	T1
+	stxvd2x		vs9,	o16,	T1
+	stxvd2x		vs10,	o32,	T1
+	stxvd2x		vs11,	o48,	T1
 
-	stxvd2x		vs4,	0,	T2
-	stxvd2x		vs5,	o16,	T2
-	stxvd2x		vs6,	o32,	T2
-	stxvd2x		vs7,	o48,	T2
 
-	stxvd2x		vs8,	0,	T3
-	stxvd2x		vs9,	o16,	T3
-	stxvd2x		vs10,	o32,	T3
-	stxvd2x		vs11,	o48,	T3
-
-	stxvd2x		vs12,	0,	T4
-	stxvd2x		vs13,	o16,	T4
-	stxvd2x		vs14,	o32,	T4
-	stxvd2x		vs15,	o48,	T4
+	stxvd2x		vs12,	0,	T2
+	stxvd2x		vs13,	o16,	T2
+	stxvd2x		vs14,	o32,	T2
+	stxvd2x		vs15,	o48,	T2
 
 	addi		CO,	CO,	128
 

@@ -152,7 +152,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PRE	r30
 #define T2	r31
 
-#include "dgemm_macros_16x4_power8.S"
+#include "dtrmm_macros_16x4_power8.S"
 
 
 #ifndef NEEDPARAM
