@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use File::Basename;
+
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
@@ -26,14 +28,12 @@ if ($?) {
 
 $cross_suffix = "";
 
-if ($ARGV[0] =~ /(.*)(-[.\d]+)/) {
-    if ($1 =~ /(.*-)(.*)/) {
-	$cross_suffix = $1;
-    }
-} else {
-    if ($ARGV[0] =~ /([^\/]*-)([^\/]*$)/) {
-	$cross_suffix = $1;
-    }
+if (dirname($compiler_name) ne ".") {
+    $cross_suffix .= dirname($compiler_name) . "/";
+}
+
+if (basename($compiler_name) =~ /(.*-)(.*)/) {
+    $cross_suffix .= $1;
 }
 
 $compiler = "";
