@@ -131,6 +131,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define o0	0
 
+#define T4	r12
+#define T3	r11
+
 #define o8	r15
 #define o24	r16
 #define ALPHA	r17
@@ -265,7 +268,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi	ALPHA, SP, 224
 #endif
 
-	li	PRE, 256 
+	li	PRE, 384 
 	li	o8 , 8
 	li	o16, 16
 	li	o24, 24
