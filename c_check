@@ -243,7 +243,7 @@ print MAKEFILE "BINARY64=\n" if $binformat ne bin64;
 print MAKEFILE "BINARY32=1\n" if $binformat eq bin32;
 print MAKEFILE "BINARY64=1\n" if $binformat eq bin64;
 print MAKEFILE "FU=$need_fu\n" if $need_fu ne "";
-print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross_suffix ne "";
+print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross != 0 && $cross_suffix ne "";
 print MAKEFILE "CROSS=1\n" if $cross != 0;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 
