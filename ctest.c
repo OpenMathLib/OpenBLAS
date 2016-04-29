@@ -110,7 +110,7 @@ ARCH_MIPS64
 #endif
 
 #if defined(__mips32) || defined(__mips)
-ARCH_MIPS32
+ARCH_MIPS
 #endif
 
 #ifdef __alpha

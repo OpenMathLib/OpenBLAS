@@ -102,7 +102,7 @@ static void INLINE blas_lock(volatile unsigned long *address){
 
 static inline unsigned int rpcc(void){
   unsigned long ret;
-#if defined(LOONGSON3A) || defined(LOONGSON3B)
+
   //  unsigned long long tmp;
   //__asm__ __volatile__("dmfc0 %0, $25, 1": "=r"(tmp):: "memory");
   //ret=tmp;
@@ -111,17 +111,10 @@ static inline unsigned int rpcc(void){
                        "rdhwr %0, $2\n"
                        ".set pop": "=r"(ret):: "memory");
 
-#else
-  __asm__ __volatile__(".set   push    \n"
-          ".set   mips32r2\n"
-          "rdhwr %0, $30  \n"
-          ".set pop" : "=r"(ret) : : "memory");
-#endif
   return ret;
 }
 #define RPCC_DEFINED
 
-#if defined(LOONGSON3A) || defined(LOONGSON3B)
 #ifndef NO_AFFINITY
 #define WHEREAMI
 static inline int WhereAmI(void){
@@ -133,7 +126,6 @@ static inline int WhereAmI(void){
   return ret;
 
 }
-#endif
 #endif
 
 static inline int blas_quickdivide(blasint x, blasint y){
