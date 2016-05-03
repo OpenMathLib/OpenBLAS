@@ -91,9 +91,13 @@ SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
 SGEMMONCOPYOBJ =  sgemm_oncopy.o
 SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
-DGEMMKERNEL    = ../generic/gemmkernel_2x2.c
-DGEMMONCOPY    = ../generic/gemm_ncopy_2.c
-DGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+DGEMMKERNEL    = ../mips/dgemm_kernel_8x4_msa.c
+DGEMMINCOPY    = ../mips/dgemm_ncopy_8_msa.c
+DGEMMITCOPY    = ../mips/dgemm_tcopy_8_msa.c
+DGEMMONCOPY    = ../mips/dgemm_ncopy_4_msa.c
+DGEMMOTCOPY    = ../mips/dgemm_tcopy_4_msa.c
+DGEMMINCOPYOBJ = dgemm_incopy.o
+DGEMMITCOPYOBJ = dgemm_itcopy.o
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 

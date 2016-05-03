@@ -150,3 +150,6 @@ In chronological order:
 * theoractice <https://github.com/theoractice/>
   * [2016-03-20] Fix compiler error in VisualStudio with CMake
   * [2016-03-22] Fix access violation on Windows while static linking
+
+* Shivraj Patil <https://github.com/sva-img/>
+  * [2016-05-03] DGEMM optimization for MIPS P5600 and I6400 using MSA
