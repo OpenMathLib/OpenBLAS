@@ -31,7 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BULLDOZER) 
 #include "ddot_microk_bulldozer-2.c"
-#elif defined(STEAMROLLER)
+#elif defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "ddot_microk_steamroller-2.c"
 #elif defined(PILEDRIVER)
 #include "ddot_microk_piledriver-2.c"

@@ -47,87 +47,87 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvdsx	vs24,	0,	BO
 	lxvdsx	vs25,	o8,	BO
 
-	lxvd2x	vs4,	o64,	AO
-	lxvd2x	vs5,	o80,	AO
-	lxvd2x	vs6,	o96,	AO
-	lxvd2x	vs7,	o112,	AO
+	addi		AO, AO, 64
+
+	lxvd2x	vs4,	0,	AO
+	lxvd2x	vs5,	o16,	AO
+	lxvd2x	vs6,	o32,	AO
+	lxvd2x	vs7,	o48,	AO
 
 	lxvdsx	vs26,	o16,	BO
 	lxvdsx	vs27,	o24,	BO
 
-	addi		AO, AO, 128
+	addi		AO, AO, 64
 	addi		BO, BO, 32
 
 .endm
 
-
 .macro KERNEL4x16_I1
 
-	xvmuldp		vs32,	vs0,	vs24
-	xvmuldp		vs33,	vs1,	vs24
-	xvmuldp		vs34,	vs2,	vs24
-	xvmuldp		vs35,	vs3,	vs24
+	xvmuldp			vs32,	vs0,	vs24
+	xvmuldp			vs33,	vs1,	vs24
+	xvmuldp			vs34,	vs2,	vs24
+	xvmuldp			vs35,	vs3,	vs24
 
-	lxvd2x	vs8,	o0,	AO
+	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
-	lxvd2x	vs10,	o32,	AO
-	lxvd2x	vs11,	o48,	AO
 
-	xvmuldp		vs36,	vs4,	vs24
-	xvmuldp		vs37,	vs5,	vs24
-	xvmuldp		vs38,	vs6,	vs24
-	xvmuldp		vs39,	vs7,	vs24
+	xvmuldp			vs36,	vs4,	vs24
+	xvmuldp			vs37,	vs5,	vs24
+	xvmuldp			vs38,	vs6,	vs24
+	xvmuldp			vs39,	vs7,	vs24
 
 	lxvdsx	vs28,	0,	BO
 	lxvdsx	vs29,	o8,	BO
 
-	xvmuldp		vs40,	vs0,	vs25
-	xvmuldp		vs41,	vs1,	vs25
-	xvmuldp		vs42,	vs2,	vs25
-	xvmuldp		vs43,	vs3,	vs25
+	xvmuldp			vs40,	vs0,	vs25
+	xvmuldp			vs41,	vs1,	vs25
+	xvmuldp			vs42,	vs2,	vs25
+	xvmuldp			vs43,	vs3,	vs25
 
+	lxvd2x	vs10,	o32,	AO
+	lxvd2x	vs11,	o48,	AO
 
-	xvmuldp		vs44,	vs4,	vs25
-	xvmuldp		vs45,	vs5,	vs25
-	xvmuldp		vs46,	vs6,	vs25
-	xvmuldp		vs47,	vs7,	vs25
+	xvmuldp			vs44,	vs4,	vs25
+	xvmuldp			vs45,	vs5,	vs25
+	xvmuldp			vs46,	vs6,	vs25
+	xvmuldp			vs47,	vs7,	vs25
 
+	addi		AO, AO, 64
 
-	xvmuldp		vs48,	vs0,	vs26
-	xvmuldp		vs49,	vs1,	vs26
-	xvmuldp		vs50,	vs2,	vs26
-	xvmuldp		vs51,	vs3,	vs26
+	xvmuldp			vs48,	vs0,	vs26
+	xvmuldp			vs49,	vs1,	vs26
+	xvmuldp			vs50,	vs2,	vs26
+	xvmuldp			vs51,	vs3,	vs26
 
-	lxvd2x	vs12,	o64,	AO
-	lxvd2x	vs13,	o80,	AO
+	lxvd2x	vs12,	0,	AO
+	lxvd2x	vs13,	o16,	AO
 
-	xvmuldp		vs52,	vs4,	vs26
-	xvmuldp		vs53,	vs5,	vs26
-	xvmuldp		vs54,	vs6,	vs26
-	xvmuldp		vs55,	vs7,	vs26
+	xvmuldp			vs52,	vs4,	vs26
+	xvmuldp			vs53,	vs5,	vs26
+	xvmuldp			vs54,	vs6,	vs26
+	xvmuldp			vs55,	vs7,	vs26
 
-	lxvd2x	vs14,	o96,	AO
-	lxvd2x	vs15,	o112,	AO
+	lxvd2x	vs14,	o32,	AO
+	lxvd2x	vs15,	o48,	AO
 
-	xvmuldp		vs56,	vs0,	vs27
-	xvmuldp		vs57,	vs1,	vs27
-	xvmuldp		vs58,	vs2,	vs27
-	xvmuldp		vs59,	vs3,	vs27
-
+	xvmuldp			vs56,	vs0,	vs27
+	xvmuldp			vs57,	vs1,	vs27
+	xvmuldp			vs58,	vs2,	vs27
+	xvmuldp			vs59,	vs3,	vs27
 
 	lxvdsx	vs30,	o16,	BO
 	lxvdsx	vs31,	o24,	BO
 
-	xvmuldp		vs60,	vs4,	vs27
-	xvmuldp		vs61,	vs5,	vs27
-	xvmuldp		vs62,	vs6,	vs27
-	xvmuldp		vs63,	vs7,	vs27
+	xvmuldp			vs60,	vs4,	vs27
+	xvmuldp			vs61,	vs5,	vs27
+	xvmuldp			vs62,	vs6,	vs27
+	xvmuldp			vs63,	vs7,	vs27
 
-	addi		AO, AO, 128
+	addi		AO, AO, 64
+	addi		BO, BO, 32
 
 .endm
-
-
 
 .macro KERNEL4x16_1
 
@@ -136,10 +136,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs34,	vs2,	vs24
 	xvmaddadp		vs35,	vs3,	vs24
 
-	lxvd2x	vs8,	o0,	AO
+	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
-	lxvd2x	vs10,	o32,	AO
-	lxvd2x	vs11,	o48,	AO
 
 	xvmaddadp		vs36,	vs4,	vs24
 	xvmaddadp		vs37,	vs5,	vs24
@@ -154,28 +152,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs42,	vs2,	vs25
 	xvmaddadp		vs43,	vs3,	vs25
 
+	lxvd2x	vs10,	o32,	AO
+	lxvd2x	vs11,	o48,	AO
 
 	xvmaddadp		vs44,	vs4,	vs25
 	xvmaddadp		vs45,	vs5,	vs25
 	xvmaddadp		vs46,	vs6,	vs25
 	xvmaddadp		vs47,	vs7,	vs25
 
+	addi		AO, AO, 64
 
 	xvmaddadp		vs48,	vs0,	vs26
 	xvmaddadp		vs49,	vs1,	vs26
 	xvmaddadp		vs50,	vs2,	vs26
 	xvmaddadp		vs51,	vs3,	vs26
 
-	lxvd2x	vs12,	o64,	AO
-	lxvd2x	vs13,	o80,	AO
+	lxvd2x	vs12,	0,	AO
+	lxvd2x	vs13,	o16,	AO
 
 	xvmaddadp		vs52,	vs4,	vs26
 	xvmaddadp		vs53,	vs5,	vs26
 	xvmaddadp		vs54,	vs6,	vs26
 	xvmaddadp		vs55,	vs7,	vs26
 
-	lxvd2x	vs14,	o96,	AO
-	lxvd2x	vs15,	o112,	AO
+	lxvd2x	vs14,	o32,	AO
+	lxvd2x	vs15,	o48,	AO
 
 	xvmaddadp		vs56,	vs0,	vs27
 	xvmaddadp		vs57,	vs1,	vs27
@@ -191,7 +192,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs62,	vs6,	vs27
 	xvmaddadp		vs63,	vs7,	vs27
 
-	addi		AO, AO, 128
+	addi		AO, AO, 64
 	addi		BO, BO, 32
 
 .endm
@@ -227,22 +228,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs46,	vs14,	vs29
 	xvmaddadp		vs47,	vs15,	vs29
 
+	addi		AO, AO, 64
 
 	xvmaddadp		vs48,	vs8,	vs30
 	xvmaddadp		vs49,	vs9,	vs30
 	xvmaddadp		vs50,	vs10,	vs30
 	xvmaddadp		vs51,	vs11,	vs30
 
-	lxvd2x	vs4,	o64,	AO
-	lxvd2x	vs5,	o80,	AO
+	lxvd2x	vs4,	0,	AO
+	lxvd2x	vs5,	o16,	AO
 
 	xvmaddadp		vs52,	vs12,	vs30
 	xvmaddadp		vs53,	vs13,	vs30
 	xvmaddadp		vs54,	vs14,	vs30
 	xvmaddadp		vs55,	vs15,	vs30
 
-	lxvd2x	vs6,	o96,	AO
-	lxvd2x	vs7,	o112,	AO
+	lxvd2x	vs6,	o32,	AO
+	lxvd2x	vs7,	o48,	AO
 
 	xvmaddadp		vs56,	vs8,	vs31
 	xvmaddadp		vs57,	vs9,	vs31
@@ -257,143 +259,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs62,	vs14,	vs31
 	xvmaddadp		vs63,	vs15,	vs31
 
-	addi		AO, AO, 128
+	addi		AO, AO, 64
 	addi		BO, BO, 32
 
 .endm
-
-.macro KERNEL4x16_L1
-
-	xvmaddadp		vs32,	vs0,	vs24
-	xvmaddadp		vs33,	vs1,	vs24
-	xvmaddadp		vs34,	vs2,	vs24
-	xvmaddadp		vs35,	vs3,	vs24
-
-	lxvd2x	vs8,	o0,	AO
-	lxvd2x	vs9,	o16,	AO
-	lxvd2x	vs10,	o32,	AO
-	lxvd2x	vs11,	o48,	AO
-
-	xvmaddadp		vs36,	vs4,	vs24
-	xvmaddadp		vs37,	vs5,	vs24
-	xvmaddadp		vs38,	vs6,	vs24
-	xvmaddadp		vs39,	vs7,	vs24
-
-	lxvdsx	vs28,	0,	BO
-	lxvdsx	vs29,	o8,	BO
-
-	xvmaddadp		vs40,	vs0,	vs25
-	xvmaddadp		vs41,	vs1,	vs25
-	xvmaddadp		vs42,	vs2,	vs25
-	xvmaddadp		vs43,	vs3,	vs25
-
-
-	xvmaddadp		vs44,	vs4,	vs25
-	xvmaddadp		vs45,	vs5,	vs25
-	xvmaddadp		vs46,	vs6,	vs25
-	xvmaddadp		vs47,	vs7,	vs25
-
-
-	xvmaddadp		vs48,	vs0,	vs26
-	xvmaddadp		vs49,	vs1,	vs26
-	xvmaddadp		vs50,	vs2,	vs26
-	xvmaddadp		vs51,	vs3,	vs26
-
-	lxvd2x	vs12,	o64,	AO
-	lxvd2x	vs13,	o80,	AO
-
-	xvmaddadp		vs52,	vs4,	vs26
-	xvmaddadp		vs53,	vs5,	vs26
-	xvmaddadp		vs54,	vs6,	vs26
-	xvmaddadp		vs55,	vs7,	vs26
-
-	lxvd2x	vs14,	o96,	AO
-	lxvd2x	vs15,	o112,	AO
-
-	xvmaddadp		vs56,	vs0,	vs27
-	xvmaddadp		vs57,	vs1,	vs27
-	xvmaddadp		vs58,	vs2,	vs27
-	xvmaddadp		vs59,	vs3,	vs27
-
-
-	lxvdsx	vs30,	o16,	BO
-	lxvdsx	vs31,	o24,	BO
-
-	xvmaddadp		vs60,	vs4,	vs27
-	xvmaddadp		vs61,	vs5,	vs27
-	xvmaddadp		vs62,	vs6,	vs27
-	xvmaddadp		vs63,	vs7,	vs27
-
-	addi		AO, AO, 128
-
-.endm
-
-.macro KERNEL4x16_L2
-
-	xvmaddadp		vs32,	vs8,	vs28
-	xvmaddadp		vs33,	vs9,	vs28
-	xvmaddadp		vs34,	vs10,	vs28
-	xvmaddadp		vs35,	vs11,	vs28
-
-	lxvd2x	vs0,	0,	AO
-	lxvd2x	vs1,	o16,	AO
-
-	xvmaddadp		vs36,	vs12,	vs28
-	xvmaddadp		vs37,	vs13,	vs28
-	xvmaddadp		vs38,	vs14,	vs28
-	xvmaddadp		vs39,	vs15,	vs28
-
-	lxvdsx	vs24,	o32,	BO
-	lxvdsx	vs25,	o40,	BO
-
-	xvmaddadp		vs40,	vs8,	vs29
-	xvmaddadp		vs41,	vs9,	vs29
-	xvmaddadp		vs42,	vs10,	vs29
-	xvmaddadp		vs43,	vs11,	vs29
-
-	lxvd2x	vs2,	o32,	AO
-	lxvd2x	vs3,	o48,	AO
-
-	xvmaddadp		vs44,	vs12,	vs29
-	xvmaddadp		vs45,	vs13,	vs29
-	xvmaddadp		vs46,	vs14,	vs29
-	xvmaddadp		vs47,	vs15,	vs29
-
-
-	xvmaddadp		vs48,	vs8,	vs30
-	xvmaddadp		vs49,	vs9,	vs30
-	xvmaddadp		vs50,	vs10,	vs30
-	xvmaddadp		vs51,	vs11,	vs30
-
-	lxvd2x	vs4,	o64,	AO
-	lxvd2x	vs5,	o80,	AO
-
-	xvmaddadp		vs52,	vs12,	vs30
-	xvmaddadp		vs53,	vs13,	vs30
-	xvmaddadp		vs54,	vs14,	vs30
-	xvmaddadp		vs55,	vs15,	vs30
-
-	lxvd2x	vs6,	o96,	AO
-	lxvd2x	vs7,	o112,	AO
-
-	xvmaddadp		vs56,	vs8,	vs31
-	xvmaddadp		vs57,	vs9,	vs31
-	xvmaddadp		vs58,	vs10,	vs31
-	xvmaddadp		vs59,	vs11,	vs31
-
-	lxvdsx	vs26,	o48,	BO
-	lxvdsx	vs27,	o56,	BO
-
-	xvmaddadp		vs60,	vs12,	vs31
-	addi		AO, AO, 128
-	xvmaddadp		vs61,	vs13,	vs31
-	xvmaddadp		vs62,	vs14,	vs31
-	addi		BO, BO, 64
-	xvmaddadp		vs63,	vs15,	vs31
-
-
-.endm
-
 
 .macro KERNEL4x16_E2
 
@@ -509,12 +378,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvdsx	vs26,	o16,	BO
 	lxvdsx	vs27,	o24,	BO
 
+	addi		AO, AO, 64
+	addi		BO, BO, 32
 
-	lxvd2x	vs4,	o64,	AO
-	lxvd2x	vs5,	o80,	AO
-	lxvd2x	vs6,	o96,	AO
-	lxvd2x	vs7,	o112,	AO
+	lxvd2x	vs4,	0,	AO
+	lxvd2x	vs5,	o16,	AO
+	lxvd2x	vs6,	o32,	AO
+	lxvd2x	vs7,	o48,	AO
 
+	addi		AO, AO, 64
 
 
 	xvmaddadp		vs32,	vs0,	vs24
@@ -530,7 +402,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs41,	vs1,	vs25
 	xvmaddadp		vs42,	vs2,	vs25
 	xvmaddadp		vs43,	vs3,	vs25
-	addi		BO, BO, 32
 	xvmaddadp		vs44,	vs4,	vs25
 	xvmaddadp		vs45,	vs5,	vs25
 	xvmaddadp		vs46,	vs6,	vs25
@@ -540,7 +411,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs49,	vs1,	vs26
 	xvmaddadp		vs50,	vs2,	vs26
 	xvmaddadp		vs51,	vs3,	vs26
-	addi		AO, AO, 128
 	xvmaddadp		vs52,	vs4,	vs26
 	xvmaddadp		vs53,	vs5,	vs26
 	xvmaddadp		vs54,	vs6,	vs26
@@ -560,37 +430,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE4x16
 
 	mr		T1,	CO
-	add		T2,	T1,	LDC
-	add		T3,	T2,	LDC
-	add		T4,	T3,	LDC
+	addi		T2,	T1,	64
 
-	lxvd2x		vs0,	0,	CO
-	lxvd2x		vs1,	o16,	CO
-	lxvd2x		vs2,	o32,	CO
-	lxvd2x		vs3,	o48,	CO
-	lxvd2x		vs4,	o64,	CO
-	lxvd2x		vs5,	o80,	CO
-	lxvd2x		vs6,	o96,	CO
-	lxvd2x		vs7,	o112,	CO
+#ifndef TRMMKERNEL
+	lxvd2x		vs0,	0,	T1
+	lxvd2x		vs1,	o16,	T1
+	lxvd2x		vs2,	o32,	T1
+	lxvd2x		vs3,	o48,	T1
 
-	lxvd2x		vs8,	0,	T2
-	lxvd2x		vs9,	o16,	T2
-	lxvd2x		vs10,	o32,	T2
-	lxvd2x		vs11,	o48,	T2
-	lxvd2x		vs12,	o64,	T2
-	lxvd2x		vs13,	o80,	T2
-	lxvd2x		vs14,	o96,	T2
-	lxvd2x		vs15,	o112,	T2
+	lxvd2x		vs4,	0,	T2
+	lxvd2x		vs5,	o16,	T2
+	lxvd2x		vs6,	o32,	T2
+	lxvd2x		vs7,	o48,	T2
+#endif
 
-	lxvd2x		vs24,	0,	T3
-	lxvd2x		vs25,	o16,	T3
-	lxvd2x		vs26,	o32,	T3
-	lxvd2x		vs27,	o48,	T3
-	lxvd2x		vs28,	o64,	T3
-	lxvd2x		vs29,	o80,	T3
-	lxvd2x		vs30,	o96,	T3
-	lxvd2x		vs31,	o112,	T3
-
+#ifndef TRMMKERNEL
 	xvmaddadp	vs0,	vs32,	alpha_r
 	xvmaddadp	vs1,	vs33,	alpha_r
 	xvmaddadp	vs2,	vs34,	alpha_r
@@ -599,88 +453,167 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs5,	vs37,	alpha_r
 	xvmaddadp	vs6,	vs38,	alpha_r
 	xvmaddadp	vs7,	vs39,	alpha_r
-
-	lxvd2x		vs32,	0,	T4
-	lxvd2x		vs33,	o16,	T4
-	lxvd2x		vs34,	o32,	T4
-	lxvd2x		vs35,	o48,	T4
-	lxvd2x		vs36,	o64,	T4
-	lxvd2x		vs37,	o80,	T4
-	lxvd2x		vs38,	o96,	T4
-	lxvd2x		vs39,	o112,	T4
-
-	xvmaddadp	vs8,	vs40,	alpha_r
-	xvmaddadp	vs9,	vs41,	alpha_r
-	xvmaddadp	vs10,	vs42,	alpha_r
-	xvmaddadp	vs11,	vs43,	alpha_r
+#else
+	xvmuldp		vs0,	vs32,	alpha_r
+	xvmuldp		vs1,	vs33,	alpha_r
+	xvmuldp		vs2,	vs34,	alpha_r
+	xvmuldp		vs3,	vs35,	alpha_r
+	xvmuldp		vs4,	vs36,	alpha_r
+	xvmuldp		vs5,	vs37,	alpha_r
+	xvmuldp		vs6,	vs38,	alpha_r
+	xvmuldp		vs7,	vs39,	alpha_r
+#endif
 
 	stxvd2x		vs0,	0,	T1
 	stxvd2x		vs1,	o16,	T1
 	stxvd2x		vs2,	o32,	T1
 	stxvd2x		vs3,	o48,	T1
 
+
+	stxvd2x		vs4,	0,	T2
+	stxvd2x		vs5,	o16,	T2
+	stxvd2x		vs6,	o32,	T2
+	stxvd2x		vs7,	o48,	T2
+
+	add		T1,	T1,	LDC
+	add		T2,	T2,	LDC
+
+#ifndef TRMMKERNEL
+	lxvd2x		vs8,	0,	T1
+	lxvd2x		vs9,	o16,	T1
+	lxvd2x		vs10,	o32,	T1
+	lxvd2x		vs11,	o48,	T1
+
+	lxvd2x		vs12,	0,	T2
+	lxvd2x		vs13,	o16,	T2
+	lxvd2x		vs14,	o32,	T2
+	lxvd2x		vs15,	o48,	T2
+#endif
+
+#ifndef TRMMKERNEL
+	xvmaddadp	vs8,	vs40,	alpha_r
+	xvmaddadp	vs9,	vs41,	alpha_r
+	xvmaddadp	vs10,	vs42,	alpha_r
+	xvmaddadp	vs11,	vs43,	alpha_r
 	xvmaddadp	vs12,	vs44,	alpha_r
 	xvmaddadp	vs13,	vs45,	alpha_r
 	xvmaddadp	vs14,	vs46,	alpha_r
 	xvmaddadp	vs15,	vs47,	alpha_r
+#else
+	xvmuldp		vs8,	vs40,	alpha_r
+	xvmuldp		vs9,	vs41,	alpha_r
+	xvmuldp		vs10,	vs42,	alpha_r
+	xvmuldp		vs11,	vs43,	alpha_r
+	xvmuldp		vs12,	vs44,	alpha_r
+	xvmuldp		vs13,	vs45,	alpha_r
+	xvmuldp		vs14,	vs46,	alpha_r
+	xvmuldp		vs15,	vs47,	alpha_r
+#endif
 
-	stxvd2x		vs4,	o64,	T1
-	stxvd2x		vs5,	o80,	T1
-	stxvd2x		vs6,	o96,	T1
-	stxvd2x		vs7,	o112,	T1
+	stxvd2x		vs8,	0,	T1
+	stxvd2x		vs9,	o16,	T1
+	stxvd2x		vs10,	o32,	T1
+	stxvd2x		vs11,	o48,	T1
 
-	xvmaddadp	vs24,	vs48,	alpha_r
-	xvmaddadp	vs25,	vs49,	alpha_r
-	xvmaddadp	vs26,	vs50,	alpha_r
-	xvmaddadp	vs27,	vs51,	alpha_r
 
-	stxvd2x		vs8,	o0,	T2
-	stxvd2x		vs9,	o16,	T2
-	stxvd2x		vs10,	o32,	T2
-	stxvd2x		vs11,	o48,	T2
+	stxvd2x		vs12,	0,	T2
+	stxvd2x		vs13,	o16,	T2
+	stxvd2x		vs14,	o32,	T2
+	stxvd2x		vs15,	o48,	T2
 
-	xvmaddadp	vs28,	vs52,	alpha_r
-	xvmaddadp	vs29,	vs53,	alpha_r
-	xvmaddadp	vs30,	vs54,	alpha_r
-	xvmaddadp	vs31,	vs55,	alpha_r
+	add		T1,	T1,	LDC
+	add		T2,	T2,	LDC
 
-	stxvd2x		vs12,	o64,	T2
-	stxvd2x		vs13,	o80,	T2
-	stxvd2x		vs14,	o96,	T2
-	stxvd2x		vs15,	o112,	T2
+#ifndef TRMMKERNEL
+	lxvd2x		vs0,	0,	T1
+	lxvd2x		vs1,	o16,	T1
+	lxvd2x		vs2,	o32,	T1
+	lxvd2x		vs3,	o48,	T1
 
-	xvmaddadp	vs32,	vs56,	alpha_r
-	xvmaddadp	vs33,	vs57,	alpha_r
-	xvmaddadp	vs34,	vs58,	alpha_r
-	xvmaddadp	vs35,	vs59,	alpha_r
+	lxvd2x		vs4,	0,	T2
+	lxvd2x		vs5,	o16,	T2
+	lxvd2x		vs6,	o32,	T2
+	lxvd2x		vs7,	o48,	T2
+#endif
 
-	stxvd2x		vs24,	0,	T3
-	stxvd2x		vs25,	o16,	T3
-	stxvd2x		vs26,	o32,	T3
-	stxvd2x		vs27,	o48,	T3
+#ifndef TRMMKERNEL
+	xvmaddadp	vs0,	vs48,	alpha_r
+	xvmaddadp	vs1,	vs49,	alpha_r
+	xvmaddadp	vs2,	vs50,	alpha_r
+	xvmaddadp	vs3,	vs51,	alpha_r
+	xvmaddadp	vs4,	vs52,	alpha_r
+	xvmaddadp	vs5,	vs53,	alpha_r
+	xvmaddadp	vs6,	vs54,	alpha_r
+	xvmaddadp	vs7,	vs55,	alpha_r
+#else
+	xvmuldp		vs0,	vs48,	alpha_r
+	xvmuldp		vs1,	vs49,	alpha_r
+	xvmuldp		vs2,	vs50,	alpha_r
+	xvmuldp		vs3,	vs51,	alpha_r
+	xvmuldp		vs4,	vs52,	alpha_r
+	xvmuldp		vs5,	vs53,	alpha_r
+	xvmuldp		vs6,	vs54,	alpha_r
+	xvmuldp		vs7,	vs55,	alpha_r
+#endif
 
-	xvmaddadp	vs36,	vs60,	alpha_r
-	xvmaddadp	vs37,	vs61,	alpha_r
-	xvmaddadp	vs38,	vs62,	alpha_r
-	xvmaddadp	vs39,	vs63,	alpha_r
+	stxvd2x		vs0,	0,	T1
+	stxvd2x		vs1,	o16,	T1
+	stxvd2x		vs2,	o32,	T1
+	stxvd2x		vs3,	o48,	T1
 
-	stxvd2x		vs28,	o64,	T3
-	stxvd2x		vs29,	o80,	T3
-	stxvd2x		vs30,	o96,	T3
-	stxvd2x		vs31,	o112,	T3
 
-	stxvd2x		vs32,	o0,	T4
-	stxvd2x		vs33,	o16,	T4
-	stxvd2x		vs34,	o32,	T4
-	stxvd2x		vs35,	o48,	T4
+	stxvd2x		vs4,	0,	T2
+	stxvd2x		vs5,	o16,	T2
+	stxvd2x		vs6,	o32,	T2
+	stxvd2x		vs7,	o48,	T2
+
+	add		T1,	T1,	LDC
+	add		T2,	T2,	LDC
+
+#ifndef TRMMKERNEL
+	lxvd2x		vs8,	0,	T1
+	lxvd2x		vs9,	o16,	T1
+	lxvd2x		vs10,	o32,	T1
+	lxvd2x		vs11,	o48,	T1
+
+	lxvd2x		vs12,	0,	T2
+	lxvd2x		vs13,	o16,	T2
+	lxvd2x		vs14,	o32,	T2
+	lxvd2x		vs15,	o48,	T2
+#endif
+
+#ifndef TRMMKERNEL
+	xvmaddadp	vs8,	vs56,	alpha_r
+	xvmaddadp	vs9,	vs57,	alpha_r
+	xvmaddadp	vs10,	vs58,	alpha_r
+	xvmaddadp	vs11,	vs59,	alpha_r
+	xvmaddadp	vs12,	vs60,	alpha_r
+	xvmaddadp	vs13,	vs61,	alpha_r
+	xvmaddadp	vs14,	vs62,	alpha_r
+	xvmaddadp	vs15,	vs63,	alpha_r
+#else
+	xvmuldp		vs8,	vs56,	alpha_r
+	xvmuldp		vs9,	vs57,	alpha_r
+	xvmuldp		vs10,	vs58,	alpha_r
+	xvmuldp		vs11,	vs59,	alpha_r
+	xvmuldp		vs12,	vs60,	alpha_r
+	xvmuldp		vs13,	vs61,	alpha_r
+	xvmuldp		vs14,	vs62,	alpha_r
+	xvmuldp		vs15,	vs63,	alpha_r
+#endif
+
+	stxvd2x		vs8,	0,	T1
+	stxvd2x		vs9,	o16,	T1
+	stxvd2x		vs10,	o32,	T1
+	stxvd2x		vs11,	o48,	T1
+
+
+	stxvd2x		vs12,	0,	T2
+	stxvd2x		vs13,	o16,	T2
+	stxvd2x		vs14,	o32,	T2
+	stxvd2x		vs15,	o48,	T2
 
 	addi		CO,	CO,	128
-
-	stxvd2x		vs36,	o64,	T4
-	stxvd2x		vs37,	o80,	T4
-	stxvd2x		vs38,	o96,	T4
-	stxvd2x		vs39,	o112,	T4
-
 
 .endm
 

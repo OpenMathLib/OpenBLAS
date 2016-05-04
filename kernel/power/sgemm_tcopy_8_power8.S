@@ -26,12 +26,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/04/21 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/23 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
 *	 LAPACK-TEST		: OK
 **************************************************************************************/
+
 
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
@@ -75,92 +76,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "def_vsx.h"
 
-#ifndef __64BIT__
-#define LOAD	lwz
-#else
-#define LOAD	ld
-#endif
-
-#ifdef __64BIT__
-#define STACKSIZE 320
-#define ALPHA_SP   296(SP)
-#define FZERO	304(SP)
-#else
-#define STACKSIZE 240
-#define ALPHA_SP   224(SP)
-#define FZERO	232(SP)
-#endif
-
 #define	M	r3
 #define	N	r4
-#define	K	r5
+#define	A	r5
+#define	LDA	r6
+#define B	r7
 
-#ifdef linux
-#ifndef __64BIT__
-#define A	r6
-#define	B	r7
-#define	C	r8
-#define	LDC	r9
-#define OFFSET	r10
-#else
-#define A	r7
-#define	B	r8
-#define	C	r9
-#define	LDC	r10
-#define OFFSET	r6
-#endif
-#endif
+#define A0	r8
+#define A1	r9
+#define A2	r10
+#define A3	r11
 
-#if defined(_AIX) || defined(__APPLE__)
-#if !defined(__64BIT__) && defined(DOUBLE)
-#define A	r8
-#define	B	r9
-#define	C	r10
-#define	LDC	r7
-#define OFFSET	r6
-#else
-#define A	r7
-#define	B	r8
-#define	C	r9
-#define	LDC	r10
-#define OFFSET	r6
-#endif
-#endif
+#define J	r12
 
-#define alpha_r vs18
+#define PREA	r14
+#define PREB 	r15
+#define BO	r16
+#define B8	r17
+#define B4	r18
+#define B2	r19
+#define B1	r20
+#define o4	r21
+#define T2	r22
+#define I	r23
+#define o16	r24
+#define o32	r25
+#define o48	r26
+#define NOTU1	r29
+#define M8	r30
+#define T1	r31
 
 #define o0	0
 
-#define T4	r12
-#define T3	r11
+#include "sgemm_tcopy_macros_8_power8.S"
 
-#define o40	r12
-#define o56	r11
+#define STACKSIZE 384
 
-#define o112	r14
-#define o8	r15
-#define o24	r16
-#define o64	r17
-#define L	r18
-#define T1	r19
-#define o80	r20
-#define o96	r21
-#define	I	r22
-#define J	r23
-#define AO	r24
-#define	BO	r25
-#define	CO 	r26
-#define o16	r27
-#define	o32	r28
-#define	o48	r29
-
-#define PRE	r30
-#define T2	r31
-
-#include "dgemm_macros_16x4_power8.S"
-
-
-#ifndef NEEDPARAM
 
 	PROLOGUE
 	PROFCODE
@@ -168,196 +119,89 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi	SP, SP, -STACKSIZE
 	li	r0, 0
 
-	stfd	f14,    0(SP)
-	stfd	f15,    8(SP)
-	stfd	f16,   16(SP)
-	stfd	f17,   24(SP)
-
-	stfd	f18,   32(SP)
-	stfd	f19,   40(SP)
-	stfd	f20,   48(SP)
-	stfd	f21,   56(SP)
-
-	stfd	f22,   64(SP)
-	stfd	f23,   72(SP)
-	stfd	f24,   80(SP)
-	stfd	f25,   88(SP)
-
-	stfd	f26,   96(SP)
-	stfd	f27,  104(SP)
-	stfd	f28,  112(SP)
-	stfd	f29,  120(SP)
-
-	stfd	f30,  128(SP)
-	stfd	f31,  136(SP)
-
-#ifdef __64BIT__
-	std	r31,  144(SP)
-	std	r30,  152(SP)
-	std	r29,  160(SP)
-	std	r28,  168(SP)
-	std	r27,  176(SP)
-	std	r26,  184(SP)
-	std	r25,  192(SP)
-	std	r24,  200(SP)
-	std	r23,  208(SP)
-	std	r22,  216(SP)
-	std	r21,  224(SP)
-	std	r20,  232(SP)
-	std	r19,  240(SP)
-	std	r18,  248(SP)
-	std	r17,  256(SP)
-	std	r16,  264(SP)
-	std	r15,  272(SP)
-	std	r14,  280(SP)
-#else
-	stw	r31,  144(SP)
-	stw	r30,  148(SP)
-	stw	r29,  152(SP)
-	stw	r28,  156(SP)
-	stw	r27,  160(SP)
-	stw	r26,  164(SP)
-	stw	r25,  168(SP)
-	stw	r24,  172(SP)
-	stw	r23,  176(SP)
-	stw	r22,  180(SP)
-	stw	r21,  184(SP)
-	stw	r20,  188(SP)
-	stw	r19,  192(SP)
-	stw	r18,  196(SP)
-	stw	r17,  200(SP)
-	stw	r16,  204(SP)
-	stw	r15,  208(SP)
-	stw	r14,  212(SP)
-#endif
-
-	stfd	f1,  ALPHA_SP
-	stw	r0,  FZERO
-
-#if defined(_AIX) || defined(__APPLE__)
-#if !defined(__64BIT__) && defined(DOUBLE)
-	lwz	LDC, FRAMESLOT(0) + STACKSIZE(SP)
-#endif
-#endif
-
-	slwi	LDC, LDC, BASE_SHIFT
-
-#if defined(TRMMKERNEL)
-#if defined(linux) && defined(__64BIT__)
-	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
-#endif
-
-#if defined(_AIX) || defined(__APPLE__)
-#ifdef __64BIT__
-	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
-#else
-#ifdef DOUBLE
-	lwz	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
-#else
-	lwz	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
-#endif
-#endif
-#endif
-#endif
-
+        std     r31,  144(SP)
+        std     r30,  152(SP)
+        std     r29,  160(SP)
+        std     r28,  168(SP)
+        std     r27,  176(SP)
+        std     r26,  184(SP)
+        std     r25,  192(SP)
+        std     r24,  200(SP)
+        std     r23,  208(SP)
+        std     r22,  216(SP)
+        std     r21,  224(SP)
+        std     r20,  232(SP)
+        std     r19,  240(SP)
+        std     r18,  248(SP)
+        std     r17,  256(SP)
+        std     r16,  264(SP)
+        std     r15,  272(SP)
+        std     r14,  280(SP)
 
 	cmpwi	cr0, M, 0
-	ble	.L999_H1
+	ble-	L999
 	cmpwi	cr0, N, 0
-	ble	.L999_H1
-	cmpwi	cr0, K, 0
-	ble	.L999_H1
+	ble-	L999
 
-#ifdef __64BIT__
-	addi	T1, SP, 296
-#else
-	addi	T1, SP, 224
-#endif
+	slwi	LDA, LDA, BASE_SHIFT
+	slwi	M8, M, 3 + BASE_SHIFT
 
-	li	PRE, 384 
-	li	o8 , 8
-	li	o16, 16
-	li	o24, 24
-	li	o32, 32
-	li	o48, 48
-	li	o64, 64
-	li	o80, 80
-	li	o96, 96
-	li	o112, 112
+	li	T2,	-8
+	li	PREA,	-4
+	li	PREB,	-2
 
-	lxvdsx	alpha_r, 0, T1
+	and	B4, N, T2
+	and	B2, N, PREA
+	and	B1, N, PREB
+	
+	mullw	B4, B4, M
+	mullw	B2, B2, M
+	mullw	B1, B1, M
 
-#include "dgemm_logic_16x4_power8.S"
+	slwi	B4, B4, BASE_SHIFT
+	slwi	B2, B2, BASE_SHIFT
+	slwi	B1, B1, BASE_SHIFT
 
-.L999:
-	addi	r3, 0, 0
+	add	B4, B4, B
+	add	B2, B2, B
+	add	B1, B1, B
 
-	lfd	f14,    0(SP)
-	lfd	f15,    8(SP)
-	lfd	f16,   16(SP)
-	lfd	f17,   24(SP)
+	li	PREA,  384
+	addi	PREB,  M8, 128
 
-	lfd	f18,   32(SP)
-	lfd	f19,   40(SP)
-	lfd	f20,   48(SP)
-	lfd	f21,   56(SP)
+	li	o4,	4
+	li	o16,	16
+	li	o32,	32
+	li	o48,	48
 
-	lfd	f22,   64(SP)
-	lfd	f23,   72(SP)
-	lfd	f24,   80(SP)
-	lfd	f25,   88(SP)
+#include "sgemm_tcopy_logic_8_power8.S"
 
-	lfd	f26,   96(SP)
-	lfd	f27,  104(SP)
-	lfd	f28,  112(SP)
-	lfd	f29,  120(SP)
+L999:
 
-	lfd	f30,  128(SP)
-	lfd	f31,  136(SP)
+	li	r3, 0
 
-#ifdef __64BIT__
-	ld	r31,  144(SP)
-	ld	r30,  152(SP)
-	ld	r29,  160(SP)
-	ld	r28,  168(SP)
-	ld	r27,  176(SP)
-	ld	r26,  184(SP)
-	ld	r25,  192(SP)
-	ld	r24,  200(SP)
-	ld	r23,  208(SP)
-	ld	r22,  216(SP)
-	ld	r21,  224(SP)
-	ld	r20,  232(SP)
-	ld	r19,  240(SP)
-	ld	r18,  248(SP)
-	ld	r17,  256(SP)
-	ld	r16,  264(SP)
-	ld	r15,  272(SP)
-	ld	r14,  280(SP)
-#else
-	lwz	r31,  144(SP)
-	lwz	r30,  148(SP)
-	lwz	r29,  152(SP)
-	lwz	r28,  156(SP)
-	lwz	r27,  160(SP)
-	lwz	r26,  164(SP)
-	lwz	r25,  168(SP)
-	lwz	r24,  172(SP)
-	lwz	r23,  176(SP)
-	lwz	r22,  180(SP)
-	lwz	r21,  184(SP)
-	lwz	r20,  188(SP)
-	lwz	r19,  192(SP)
-	lwz	r18,  196(SP)
-	lwz	r17,  200(SP)
-	lwz	r16,  204(SP)
-	lwz	r15,  208(SP)
-	lwz	r14,  212(SP)
-#endif
+        ld      r31,  144(SP)
+        ld      r30,  152(SP)
+        ld      r29,  160(SP)
+        ld      r28,  168(SP)
+        ld      r27,  176(SP)
+        ld      r26,  184(SP)
+        ld      r25,  192(SP)
+        ld      r24,  200(SP)
+        ld      r23,  208(SP)
+        ld      r22,  216(SP)
+        ld      r21,  224(SP)
+        ld      r20,  232(SP)
+        ld      r19,  240(SP)
+        ld      r18,  248(SP)
+        ld      r17,  256(SP)
+        ld      r16,  264(SP)
+        ld      r15,  272(SP)
+        ld      r14,  280(SP)
 
 	addi	SP, SP, STACKSIZE
 
 	blr
-
 	EPILOGUE
-#endif
+
+

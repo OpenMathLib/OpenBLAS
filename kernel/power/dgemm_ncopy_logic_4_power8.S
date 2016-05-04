@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/04/21 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/28 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -34,252 +34,204 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **************************************************************************************/
 
 
-	srawi.		I,	M,	2
-	ble		DCOPYT_L2_BEGIN
+	mr		BO,	B
+	srawi.		I,	N,	2
+	ble		DCOPYN_L2_BEGIN
 
 
-DCOPYT_L4_BEGIN:
+DCOPYN_L4_BEGIN:
+
+
+DCOPYN_L4_LOOP:
 
 	mr		A0,	A
 	add		A1,	A0,	LDA
 	add		A2,	A1,	LDA
 	add		A3,	A2,	LDA
 	add		A,	A3,	LDA
-	mr		B16,	B
-	addi		B,	B,	64*SIZE
 
-	sradi.		J,	N,	4
-	ble		DCOPYT_L4x8_BEGIN
+DCOPYN_L4x16_BEGIN:
 
-	mr		BO,	B16
+	srawi.		J,	M,	4
+	ble		DCOPYN_L4x16_END
 
-	.align 5
+DCOPYN_L4x16_LOOP:
 
-DCOPYT_L4x16_LOOP:
-
-/*
-	addi	T1,	PREB,	128
-	addi	T2,	PREB,	256
-*/
-	dcbt	A0,	PREA
-	dcbt	A1,	PREA
-	dcbt	A2,	PREA
-	dcbt	A3,	PREA
-/*
-	dcbtst  BO,	M16
-	dcbtst  BO,	PREB
-	dcbtst  BO,	T1
-	dcbtst  BO,	T2
-*/
+	dcbt		A0,	PREA
+	dcbt		A1,	PREA
+	dcbt		A2,	PREA
+	dcbt		A3,	PREA
 	COPY_4x16
-
-	add		BO,	BO,	M16
-
 	addic.		J,	J,	-1
-	bgt		DCOPYT_L4x16_LOOP
+	bgt		DCOPYN_L4x16_LOOP
 
-DCOPYT_L4x8_BEGIN:
+DCOPYN_L4x16_END:
 
-	andi.		T1,	N,	8
-	ble		DCOPYT_L4x4_BEGIN
 
-	mr		BO,	B8
+DCOPYN_L4x8_BEGIN:
 
+	andi.		J,	M,	8
+	ble		DCOPYN_L4x8_END
 	COPY_4x8
 
+DCOPYN_L4x8_END:
 
-	addi		B8,	B8,	32*SIZE
 
-DCOPYT_L4x4_BEGIN:
+DCOPYN_L4x4_BEGIN:
 
-	andi.		T1,	N,	4
-	ble		DCOPYT_L4x2_BEGIN
-
-	mr		BO,	B4
-
+	andi.		J,	M,	4
+	ble		DCOPYN_L4x4_END
 	COPY_4x4
 
+DCOPYN_L4x4_END:
 
-	addi		B4,	B4,	16*SIZE
 
-DCOPYT_L4x2_BEGIN:
+DCOPYN_L4x2_BEGIN:
 
-	andi.		T1,	N,	2
-	ble		DCOPYT_L4x1_BEGIN
-
-	mr		BO,	B2
-
+	andi.		J,	M,	2
+	ble		DCOPYN_L4x2_END
 	COPY_4x2
 
+DCOPYN_L4x2_END:
 
-	addi		B2,	B2,	8*SIZE
 
-DCOPYT_L4x1_BEGIN:
+DCOPYN_L4x1_BEGIN:
 
-	andi.		T1,	N,	1
-	ble		DCOPYT_L4_END
-
-	mr		BO,	B1
-
+	andi.		J,	M,	1
+	ble		DCOPYN_L4x1_END
 	COPY_4x1
 
+DCOPYN_L4x1_END:
 
-	addi		B1,	B1,	4*SIZE
 
-DCOPYT_L4_END:
+DCOPYN_L4_END:
 
 	addic.		I,	I,	-1
-	bgt		DCOPYT_L4_BEGIN
+	bgt		DCOPYN_L4_LOOP
 
+DCOPYN_L2_BEGIN:
 
+	andi.		T1,	4,	2
+	ble		DCOPYN_L2_END
 
-DCOPYT_L2_BEGIN:
-
-	andi.		T1,	M,	2
-	ble		DCOPYT_L1_BEGIN
+DCOPYN_L2_LOOP:
 
 	mr		A0,	A
 	add		A1,	A0,	LDA
 	add		A,	A1,	LDA
-	mr		B16,	B
-	addi		B,	B,	32*SIZE
 
-	sradi.		J,	N,	4
-	ble		DCOPYT_L2x8_BEGIN
+DCOPYN_L2x16_BEGIN:
 
-	mr		BO,	B16
+	srawi.		J,	M,	4
+	ble		DCOPYN_L2x16_END
 
-DCOPYT_L2x16_LOOP:
+DCOPYN_L2x16_LOOP:
 
 	COPY_2x16
-
-	add		BO,	BO,	M16
-
 	addic.		J,	J,	-1
-	bgt		DCOPYT_L2x16_LOOP
+	bgt		DCOPYN_L2x16_LOOP
 
-DCOPYT_L2x8_BEGIN:
+DCOPYN_L2x16_END:
 
-	andi.		T1,	N,	8
-	ble		DCOPYT_L2x4_BEGIN
 
-	mr		BO,	B8
+DCOPYN_L2x8_BEGIN:
 
+	andi.		J,	M,	8
+	ble		DCOPYN_L2x8_END
 	COPY_2x8
 
+DCOPYN_L2x8_END:
 
-	addi		B8,	B8,	16*SIZE
 
-DCOPYT_L2x4_BEGIN:
+DCOPYN_L2x4_BEGIN:
 
-	andi.		T1,	N,	4
-	ble		DCOPYT_L2x2_BEGIN
-
-	mr		BO,	B4
-
+	andi.		J,	M,	4
+	ble		DCOPYN_L2x4_END
 	COPY_2x4
 
+DCOPYN_L2x4_END:
 
-	addi		B4,	B4,	8*SIZE
 
-DCOPYT_L2x2_BEGIN:
+DCOPYN_L2x2_BEGIN:
 
-	andi.		T1,	N,	2
-	ble		DCOPYT_L2x1_BEGIN
-
-	mr		BO,	B2
-
+	andi.		J,	M,	2
+	ble		DCOPYN_L2x2_END
 	COPY_2x2
 
+DCOPYN_L2x2_END:
 
-	addi		B2,	B2,	4*SIZE
 
-DCOPYT_L2x1_BEGIN:
+DCOPYN_L2x1_BEGIN:
 
-	andi.		T1,	N,	1
-	ble		DCOPYT_L2_END
-
-	mr		BO,	B1
-
+	andi.		J,	M,	1
+	ble		DCOPYN_L2x1_END
 	COPY_2x1
 
-
-	addi		B1,	B1,	2*SIZE
-
-DCOPYT_L2_END:
+DCOPYN_L2x1_END:
 
 
-DCOPYT_L1_BEGIN:
+DCOPYN_L2_END:
 
-	andi.		T1,	M,	1
-	ble		L999
+
+DCOPYN_L1_BEGIN:
+
+	andi.		T1,	4,	1
+	ble		DCOPYN_L1_END
+
+DCOPYN_L1_LOOP:
 
 	mr		A0,	A
 	add		A,	A0,	LDA
-	mr		B16,	B
-	addi		B,	B,	16*SIZE
 
-	sradi.		J,	N,	4
-	ble		DCOPYT_L1x8_BEGIN
+DCOPYN_L1x16_BEGIN:
 
-	mr		BO,	B16
+	srawi.		J,	M,	4
+	ble		DCOPYN_L1x16_END
 
-DCOPYT_L1x16_LOOP:
+DCOPYN_L1x16_LOOP:
 
 	COPY_1x16
-
-	add		BO,	BO,	M16
-
 	addic.		J,	J,	-1
-	bgt		DCOPYT_L1x16_LOOP
+	bgt		DCOPYN_L1x16_LOOP
 
-DCOPYT_L1x8_BEGIN:
+DCOPYN_L1x16_END:
 
-	andi.		T1,	N,	8
-	ble		DCOPYT_L1x4_BEGIN
 
-	mr		BO,	B8
+DCOPYN_L1x8_BEGIN:
 
+	andi.		J,	M,	8
+	ble		DCOPYN_L1x8_END
 	COPY_1x8
 
+DCOPYN_L1x8_END:
 
-	addi		B8,	B8,	8*SIZE
 
-DCOPYT_L1x4_BEGIN:
+DCOPYN_L1x4_BEGIN:
 
-	andi.		T1,	N,	4
-	ble		DCOPYT_L1x2_BEGIN
-
-	mr		BO,	B4
-
+	andi.		J,	M,	4
+	ble		DCOPYN_L1x4_END
 	COPY_1x4
 
+DCOPYN_L1x4_END:
 
-	addi		B4,	B4,	4*SIZE
 
-DCOPYT_L1x2_BEGIN:
+DCOPYN_L1x2_BEGIN:
 
-	andi.		T1,	N,	2
-	ble		DCOPYT_L1x1_BEGIN
-
-	mr		BO,	B2
-
+	andi.		J,	M,	2
+	ble		DCOPYN_L1x2_END
 	COPY_1x2
 
+DCOPYN_L1x2_END:
 
-	addi		B2,	B2,	2*SIZE
 
-DCOPYT_L1x1_BEGIN:
+DCOPYN_L1x1_BEGIN:
 
-	andi.		T1,	N,	1
-	ble		DCOPYT_L1_END
-
-	mr		BO,	B1
-
+	andi.		J,	M,	1
+	ble		DCOPYN_L1x1_END
 	COPY_1x1
 
+DCOPYN_L1x1_END:
 
-	addi		B1,	B1,	1*SIZE
 
-DCOPYT_L1_END:
+DCOPYN_L1_END:
 

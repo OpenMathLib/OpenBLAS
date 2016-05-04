@@ -151,5 +151,9 @@ In chronological order:
   * [2016-03-20] Fix compiler error in VisualStudio with CMake
   * [2016-03-22] Fix access violation on Windows while static linking
 
+* Paul Mustière <https://github.com/buffer51/>
+  * [2016-02-04] Fix Android build on ARMV7
+  * [2016-04-26] Android build with LAPACK for ARMV7 & ARMV8
+
 * Shivraj Patil <https://github.com/sva-img/>
   * [2016-05-03] DGEMM optimization for MIPS P5600 and I6400 using MSA

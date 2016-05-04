@@ -1,3 +1,39 @@
+/***************************************************************************
+Copyright (c) 2013-2016, The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+
+/**************************************************************************************
+* 2016/04/22 Werner Saar (wernsaar@googlemail.com)
+* 	 BLASTEST 		: OK
+* 	 CTEST			: OK
+* 	 TEST			: OK
+*	 LAPACK-TEST		: OK
+**************************************************************************************/
+
+
 	srawi.		J,	N,	1
 	ble		ZGEMM_L2_END
 
@@ -5,20 +41,34 @@ ZGEMM_L2_BEGIN:
 
 	mr		BO,	B
 	mr		BBO,	BBUFFER
-	slwi		T1,	K,	1
+	srawi.		T1,	K,	2
+	ble		ZGEMM_L2_COPYB1
 
-ZGEMM_L2_COPYB:
+ZGEMM_L2_COPYB8:
 
-	lxvdsx		vs4,	o0,	BO              // b0_r
-	lxvdsx		vs5,	o8,	BO              // b0_i
-	addi		BO,	BO,	16
-	stxvd2x		vs4,	o0,	BBO
-	stxvd2x		vs5,	o16,	BBO
+	addi		T2,	PRE, 128
+	dcbt		BO,	PRE
+	dcbtst		BBO,	PRE
+	dcbtst		BBO,	T2
+	ZCOPYB_8x1
 	addic.		T1,	T1,	-1
-	addi		BBO,	BBO,	32
 
-	bge		ZGEMM_L2_COPYB
+	bgt		ZGEMM_L2_COPYB8
 
+ZGEMM_L2_COPYB1:
+
+	andi.		T1,	K,	3
+	ble		ZGEMM_L2_COPYB_END
+
+ZGEMM_L2_COPYB_LOOP:
+
+	ZCOPYB_1x1
+	ZCOPYB_1x1
+	addic.          T1,     T1,     -1
+
+	bgt             ZGEMM_L2_COPYB_LOOP
+
+ZGEMM_L2_COPYB_END:
 
 	mr		CO,	C
 	mr		AO,	A
@@ -493,6 +543,7 @@ ZGEMM_L1_BEGIN:
 	slwi		T1,	K,	0
 
 ZGEMM_L1_COPYB:
+	dcbtst		BBO,	PRE
 
 	lxvdsx		vs4,	o0,	BO              // b0_r
 	lxvdsx		vs5,	o8,	BO              // b0_i

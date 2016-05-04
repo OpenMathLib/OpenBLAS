@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use File::Basename;
+
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
@@ -26,14 +28,12 @@ if ($?) {
 
 $cross_suffix = "";
 
-if ($ARGV[0] =~ /(.*)(-[.\d]+)/) {
-    if ($1 =~ /(.*-)(.*)/) {
-	$cross_suffix = $1;
-    }
-} else {
-    if ($ARGV[0] =~ /([^\/]*-)([^\/]*$)/) {
-	$cross_suffix = $1;
-    }
+if (dirname($compiler_name) ne ".") {
+    $cross_suffix .= dirname($compiler_name) . "/";
+}
+
+if (basename($compiler_name) =~ /(.*-)(.*)/) {
+    $cross_suffix .= $1;
 }
 
 $compiler = "";
@@ -243,7 +243,7 @@ print MAKEFILE "BINARY64=\n" if $binformat ne bin64;
 print MAKEFILE "BINARY32=1\n" if $binformat eq bin32;
 print MAKEFILE "BINARY64=1\n" if $binformat eq bin64;
 print MAKEFILE "FU=$need_fu\n" if $need_fu ne "";
-print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross_suffix ne "";
+print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross != 0 && $cross_suffix ne "";
 print MAKEFILE "CROSS=1\n" if $cross != 0;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 

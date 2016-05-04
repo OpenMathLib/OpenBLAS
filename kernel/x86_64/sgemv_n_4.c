@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "sgemv_n_microk_bulldozer-4.c"
 #elif defined(NEHALEM)
 #include "sgemv_n_microk_nehalem-4.c"
@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_n_microk_haswell-4.c"
 #endif
 
-#if defined(STEAMROLLER)
+#if defined(STEAMROLLER)  || defined(EXCAVATOR)
 #define NBMAX 2048
 #else
 #define NBMAX 4096
