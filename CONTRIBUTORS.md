@@ -157,3 +157,6 @@ In chronological order:
 
 * Shivraj Patil <https://github.com/sva-img/>
   * [2016-05-03] DGEMM optimization for MIPS P5600 and I6400 using MSA
+
+* Kaustubh Raste <https://github.com/ksraste/>
+  * [2016-05-09] DTRSM optimization for MIPS P5600 and I6400 using MSA
