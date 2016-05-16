@@ -559,10 +559,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro SAVE4x16
 
-	mr		T1,	CO
-	add		T2,	T1,	LDC
-	add		T3,	T2,	LDC
-	add		T4,	T3,	LDC
+	add		T2,	CO,	LDC
 
 	lxvd2x		vs0,	0,	CO
 	lxvd2x		vs1,	o16,	CO
@@ -570,6 +567,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs3,	o48,	CO
 	lxvd2x		vs4,	o64,	CO
 	lxvd2x		vs5,	o80,	CO
+	add		T3,	T2,	LDC
 	lxvd2x		vs6,	o96,	CO
 	lxvd2x		vs7,	o112,	CO
 
@@ -579,6 +577,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs11,	o48,	T2
 	lxvd2x		vs12,	o64,	T2
 	lxvd2x		vs13,	o80,	T2
+	add		T4,	T3,	LDC
 	lxvd2x		vs14,	o96,	T2
 	lxvd2x		vs15,	o112,	T2
 
@@ -592,21 +591,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs31,	o112,	T3
 
 	xvmaddadp	vs0,	vs32,	alpha_r
-	xvmaddadp	vs1,	vs33,	alpha_r
-	xvmaddadp	vs2,	vs34,	alpha_r
-	xvmaddadp	vs3,	vs35,	alpha_r
-	xvmaddadp	vs4,	vs36,	alpha_r
-	xvmaddadp	vs5,	vs37,	alpha_r
-	xvmaddadp	vs6,	vs38,	alpha_r
-	xvmaddadp	vs7,	vs39,	alpha_r
-
 	lxvd2x		vs32,	0,	T4
+	xvmaddadp	vs1,	vs33,	alpha_r
 	lxvd2x		vs33,	o16,	T4
+	xvmaddadp	vs2,	vs34,	alpha_r
 	lxvd2x		vs34,	o32,	T4
+	xvmaddadp	vs3,	vs35,	alpha_r
 	lxvd2x		vs35,	o48,	T4
+	xvmaddadp	vs4,	vs36,	alpha_r
 	lxvd2x		vs36,	o64,	T4
+	xvmaddadp	vs5,	vs37,	alpha_r
 	lxvd2x		vs37,	o80,	T4
+	xvmaddadp	vs6,	vs38,	alpha_r
 	lxvd2x		vs38,	o96,	T4
+	xvmaddadp	vs7,	vs39,	alpha_r
 	lxvd2x		vs39,	o112,	T4
 
 	xvmaddadp	vs8,	vs40,	alpha_r
@@ -614,58 +612,60 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs10,	vs42,	alpha_r
 	xvmaddadp	vs11,	vs43,	alpha_r
 
-	stxvd2x		vs0,	0,	T1
-	stxvd2x		vs1,	o16,	T1
-	stxvd2x		vs2,	o32,	T1
-	stxvd2x		vs3,	o48,	T1
-
 	xvmaddadp	vs12,	vs44,	alpha_r
 	xvmaddadp	vs13,	vs45,	alpha_r
 	xvmaddadp	vs14,	vs46,	alpha_r
 	xvmaddadp	vs15,	vs47,	alpha_r
-
-	stxvd2x		vs4,	o64,	T1
-	stxvd2x		vs5,	o80,	T1
-	stxvd2x		vs6,	o96,	T1
-	stxvd2x		vs7,	o112,	T1
 
 	xvmaddadp	vs24,	vs48,	alpha_r
 	xvmaddadp	vs25,	vs49,	alpha_r
 	xvmaddadp	vs26,	vs50,	alpha_r
 	xvmaddadp	vs27,	vs51,	alpha_r
 
-	stxvd2x		vs8,	o0,	T2
-	stxvd2x		vs9,	o16,	T2
-	stxvd2x		vs10,	o32,	T2
-	stxvd2x		vs11,	o48,	T2
-
 	xvmaddadp	vs28,	vs52,	alpha_r
 	xvmaddadp	vs29,	vs53,	alpha_r
 	xvmaddadp	vs30,	vs54,	alpha_r
 	xvmaddadp	vs31,	vs55,	alpha_r
 
-	stxvd2x		vs12,	o64,	T2
-	stxvd2x		vs13,	o80,	T2
-	stxvd2x		vs14,	o96,	T2
-	stxvd2x		vs15,	o112,	T2
+	stxvd2x		vs0,	0,	CO
+	stxvd2x		vs1,	o16,	CO
+	stxvd2x		vs2,	o32,	CO
+	stxvd2x		vs3,	o48,	CO
+
+	stxvd2x		vs4,	o64,	CO
+	stxvd2x		vs5,	o80,	CO
+	stxvd2x		vs6,	o96,	CO
+	stxvd2x		vs7,	o112,	CO
 
 	xvmaddadp	vs32,	vs56,	alpha_r
 	xvmaddadp	vs33,	vs57,	alpha_r
 	xvmaddadp	vs34,	vs58,	alpha_r
 	xvmaddadp	vs35,	vs59,	alpha_r
 
-	stxvd2x		vs24,	0,	T3
-	stxvd2x		vs25,	o16,	T3
-	stxvd2x		vs26,	o32,	T3
-	stxvd2x		vs27,	o48,	T3
-
 	xvmaddadp	vs36,	vs60,	alpha_r
 	xvmaddadp	vs37,	vs61,	alpha_r
 	xvmaddadp	vs38,	vs62,	alpha_r
 	xvmaddadp	vs39,	vs63,	alpha_r
 
+	addi		CO,	CO,	128
+
+	stxvd2x		vs8,	o0,	T2
+	stxvd2x		vs9,	o16,	T2
+	stxvd2x		vs10,	o32,	T2
+	stxvd2x		vs11,	o48,	T2
+
+	stxvd2x		vs12,	o64,	T2
+	stxvd2x		vs13,	o80,	T2
+	stxvd2x		vs14,	o96,	T2
+	stxvd2x		vs15,	o112,	T2
+
+	stxvd2x		vs24,	0,	T3
+	stxvd2x		vs25,	o16,	T3
 	stxvd2x		vs28,	o64,	T3
 	stxvd2x		vs29,	o80,	T3
+
+	stxvd2x		vs26,	o32,	T3
+	stxvd2x		vs27,	o48,	T3
 	stxvd2x		vs30,	o96,	T3
 	stxvd2x		vs31,	o112,	T3
 
@@ -673,8 +673,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs33,	o16,	T4
 	stxvd2x		vs34,	o32,	T4
 	stxvd2x		vs35,	o48,	T4
-
-	addi		CO,	CO,	128
 
 	stxvd2x		vs36,	o64,	T4
 	stxvd2x		vs37,	o80,	T4
