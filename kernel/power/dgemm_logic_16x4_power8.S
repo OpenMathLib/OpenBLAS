@@ -39,12 +39,151 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 LDGEMM_L4_BEGIN:
 
-	mr		CO,	C
+	li		T1,	128
+	li		T2,	256
 	mr		AO,	A
-	slwi		T1,	LDC	,	2
-	add		C,	C,	T1
+
+	mr		CO,	C
+	slwi		T3,	LDC	,	2
+	add		C,	C,	T3
+
+	dcbt		A,	T1
+	dcbt		A,	T2
+
 	srawi.		I,	M,	4
 	ble		LDGEMM_L4x16_END
+
+	.align 4
+LDGEMM_L4x16_BEGIN_FIRST:
+
+	li		L,	-128
+
+	mr		T1,	CO
+	add		T2,	T1,	LDC
+	add		T3,	T2,	LDC
+	add		T4,	T3,	LDC
+
+	and		T1,	T1,	L
+	and		T2,	T2,	L
+	and		T3,	T3,	L
+	and		T4,	T4,	L
+
+	dcbt		T1,	r0
+	dcbt		T2,	r0
+	dcbt		T3,	r0
+	dcbt		T4,	r0
+
+	mr		BO,	B
+	srawi.		L,	K,	2
+
+	addi		T1, T1, 128
+	addi		T2, T2, 128
+	addi		T3, T3, 128
+	addi		T4, T4, 128
+
+	dcbt		T1,	r0
+	dcbt		T2,	r0
+	dcbt		T3,	r0
+	dcbt		T4,	r0
+	
+	ble		LDGEMM_L4x16_SUB0_FIRST
+	cmpwi		cr0,	L,	1
+	ble		LDGEMM_L4x16_SUB4_FIRST
+
+	.align 4
+LDGEMM_L4x16_LOOP_START_FIRST:
+
+	li	T2,	512
+	li	o40,	40
+	li	o56,	56
+
+	dcbt	AO,	PRE
+	dcbt	BO,	T2
+	LOAD4x16_1
+	dcbt	AO,	PRE
+	KERNEL4x16_I1
+	dcbt	AO,	PRE
+	addic.		L,	L,	-2
+	KERNEL4x16_L2
+
+	dcbt	AO,	PRE
+	KERNEL4x16_L1
+	dcbt	AO,	PRE
+	dcbt	BO,	T2
+	KERNEL4x16_L2
+
+	ble		LDGEMM_L4x16_LOOP_END_FIRST
+	mtctr		L
+
+	.align 4
+
+LDGEMM_L4x16_LOOP_FIRST:
+
+	dcbt	AO,	PRE
+	KERNEL4x16_L1
+	dcbt	AO,	PRE
+	KERNEL4x16_L2
+
+	dcbt	AO,	PRE
+	KERNEL4x16_L1
+	dcbt	AO,	PRE
+	dcbt	BO,	T2
+	KERNEL4x16_L2
+
+	bdnz		LDGEMM_L4x16_LOOP_FIRST
+
+	.align 4
+
+LDGEMM_L4x16_LOOP_END_FIRST:
+
+	KERNEL4x16_L1
+	KERNEL4x16_L2
+
+	KERNEL4x16_1
+	KERNEL4x16_E2
+
+	b		LDGEMM_L4x16_SUB1_FIRST
+
+LDGEMM_L4x16_SUB4_FIRST:
+
+	KERNEL4x16_SUBI1
+	KERNEL4x16_SUB1
+	KERNEL4x16_SUB1
+	KERNEL4x16_SUB1
+
+	b		LDGEMM_L4x16_SUB1_FIRST
+
+LDGEMM_L4x16_SUB0_FIRST:
+
+	andi.		L,	K,	3
+
+	KERNEL4x16_SUBI1
+
+	addic.		L,	L,	-1
+	ble		LDGEMM_L4x16_SAVE_FIRST
+	b		LDGEMM_L4x16_SUB2_FIRST
+
+LDGEMM_L4x16_SUB1_FIRST:
+
+	andi.		L,	K,	3
+	ble		LDGEMM_L4x16_SAVE_FIRST
+
+LDGEMM_L4x16_SUB2_FIRST:
+
+	KERNEL4x16_SUB1
+
+	addic.		L,	L,	-1
+	bgt		LDGEMM_L4x16_SUB2_FIRST
+
+	.align 4
+LDGEMM_L4x16_SAVE_FIRST:
+
+	SAVE4x16
+
+	addic.		I,	I,	-1
+	ble		LDGEMM_L4x16_END
+
+LDGEMM_L4x16_END_FIRST:
 
 	.align 4
 LDGEMM_L4x16_BEGIN:
@@ -79,9 +218,9 @@ LDGEMM_L4x16_BEGIN:
 	dcbt		T3,	r0
 	dcbt		T4,	r0
 	
-	ble		LDGEMM_L4x16_SUB0
+	ble-		LDGEMM_L4x16_SUB0
 	cmpwi		cr0,	L,	1
-	ble		LDGEMM_L4x16_SUB4
+	ble-		LDGEMM_L4x16_SUB4
 
 	.align 4
 LDGEMM_L4x16_LOOP_START:
@@ -97,7 +236,8 @@ LDGEMM_L4x16_LOOP_START:
 	addic.		L,	L,	-2
 	KERNEL4x16_L2
 
-	ble		LDGEMM_L4x16_LOOP_END
+	ble-		LDGEMM_L4x16_LOOP_END
+	mtctr		L
 
 	.align 4
 
@@ -107,10 +247,10 @@ LDGEMM_L4x16_LOOP:
 	dcbt	AO,	PRE
 	KERNEL4x16_L1
 	dcbt	AO,	PRE
-	addic.		L,	L,	-1
+	// addic.		L,	L,	-1
 	KERNEL4x16_L2
 
-	bgt		LDGEMM_L4x16_LOOP
+	bdnz+		LDGEMM_L4x16_LOOP
 
 	.align 4
 
@@ -156,7 +296,7 @@ LDGEMM_L4x16_SAVE:
 	SAVE4x16
 
 	addic.		I,	I,	-1
-	bgt		LDGEMM_L4x16_BEGIN
+	bgt+		LDGEMM_L4x16_BEGIN
 
 LDGEMM_L4x16_END:
 
