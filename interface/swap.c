@@ -42,6 +42,10 @@
 #include "functable.h"
 #endif
 
+// Disable multi-threading as it does not show any performance
+// benefits. Keep the multi-threading code for the record.
+#undef SMP
+
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
