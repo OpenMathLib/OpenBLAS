@@ -76,4 +76,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     ST_DP4(in4, in5, in6, in7, (pdst) + 4 * stride, stride);          \
 }
 
+/* Description : Interleave both left and right half of input vectors
+   Arguments   : Inputs  - in0, in1
+                 Outputs - out0, out1
+                 Return Type - as per RTYPE
+   Details     : Right half of byte elements from 'in0' and 'in1' are
+                 interleaved and written to 'out0'
+*/
+#define ILVRL_D2(RTYPE, in0, in1, out0, out1)               \
+{                                                           \
+    out0 = (RTYPE) __msa_ilvr_d((v2i64) in0, (v2i64) in1);  \
+    out1 = (RTYPE) __msa_ilvl_d((v2i64) in0, (v2i64) in1);  \
+}
+#define ILVRL_D2_DP(...) ILVRL_D2(v2f64, __VA_ARGS__)
+
 #endif  /* __MACROS_MSA_H__ */
