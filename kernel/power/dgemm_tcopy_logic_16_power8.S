@@ -52,31 +52,31 @@ DCOPYT_L4_BEGIN:
 	ble		DCOPYT_L4x8_BEGIN
 
 	mr		BO,	B16
+	addi		T2,	M16,	384
+	mtctr		J
 
 	.align 5
 
 DCOPYT_L4x16_LOOP:
 
-/*
-	addi	T1,	PREB,	128
-	addi	T2,	PREB,	256
-*/
+	addi		T1,	M16,	256
+
 	dcbt	A0,	PREA
 	dcbt	A1,	PREA
 	dcbt	A2,	PREA
 	dcbt	A3,	PREA
-/*
-	dcbtst  BO,	M16
-	dcbtst  BO,	PREB
-	dcbtst  BO,	T1
-	dcbtst  BO,	T2
-*/
+
+	dcbt  BO,	M16
+	dcbt  BO,	PREB
+	dcbt  BO,	T1
+	dcbt  BO,	T2
+
 	COPY_4x16
 
 	add		BO,	BO,	M16
 
-	addic.		J,	J,	-1
-	bgt		DCOPYT_L4x16_LOOP
+	// addic.		J,	J,	-1
+	bdnz+		DCOPYT_L4x16_LOOP
 
 DCOPYT_L4x8_BEGIN:
 

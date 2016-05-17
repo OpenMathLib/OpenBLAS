@@ -46,25 +46,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs35,	o48,	A0
 	addi		A0,	A0,	64
 
-	lxvd2x		vs36,	o0,	A0
-	lxvd2x		vs37,	o16,	A0
-	lxvd2x		vs38,	o32,	A0
-	lxvd2x		vs39,	o48,	A0
-	addi		A0,	A0,	64
-
-
 	lxvd2x		vs40,	o0,	A1
 	lxvd2x		vs41,	o16,	A1
 	lxvd2x		vs42,	o32,	A1
 	lxvd2x		vs43,	o48,	A1
 	addi		A1,	A1,	64
-
-	lxvd2x		vs44,	o0,	A1
-	lxvd2x		vs45,	o16,	A1
-	lxvd2x		vs46,	o32,	A1
-	lxvd2x		vs47,	o48,	A1
-	addi		A1,	A1,	64
-
 
 	lxvd2x		vs48,	o0,	A2
 	lxvd2x		vs49,	o16,	A2
@@ -72,25 +58,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs51,	o48,	A2
 	addi		A2,	A2,	64
 
-	lxvd2x		vs52,	o0,	A2
-	lxvd2x		vs53,	o16,	A2
-	lxvd2x		vs54,	o32,	A2
-	lxvd2x		vs55,	o48,	A2
-	addi		A2,	A2,	64
-
-
 	lxvd2x		vs56,	o0,	A3
 	lxvd2x		vs57,	o16,	A3
 	lxvd2x		vs58,	o32,	A3
 	lxvd2x		vs59,	o48,	A3
 	addi		A3,	A3,	64
 
+	lxvd2x		vs36,	o0,	A0
+	lxvd2x		vs37,	o16,	A0
+	lxvd2x		vs38,	o32,	A0
+	lxvd2x		vs39,	o48,	A0
+	addi		A0,	A0,	64
+
+	lxvd2x		vs44,	o0,	A1
+	lxvd2x		vs45,	o16,	A1
+	lxvd2x		vs46,	o32,	A1
+	lxvd2x		vs47,	o48,	A1
+	addi		A1,	A1,	64
+
+	lxvd2x		vs52,	o0,	A2
+	lxvd2x		vs53,	o16,	A2
+	lxvd2x		vs54,	o32,	A2
+	lxvd2x		vs55,	o48,	A2
+	addi		A2,	A2,	64
+
 	lxvd2x		vs60,	o0,	A3
 	lxvd2x		vs61,	o16,	A3
 	lxvd2x		vs62,	o32,	A3
 	lxvd2x		vs63,	o48,	A3
 	addi		A3,	A3,	64
-
 
 	mr		T1,	BO
 

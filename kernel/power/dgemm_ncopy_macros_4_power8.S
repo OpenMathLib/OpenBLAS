@@ -127,6 +127,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxpermdi	vs62,	vs7,	vs15,	3
 	xxpermdi	vs63,	vs23,	vs31,	3
 
+	dcbt		BO,	PREB
 
 	stxvd2x		vs32,	o0,	BO
 	stxvd2x		vs33,	o16,	BO
@@ -138,6 +139,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs39,	o112,	BO
 	addi		BO,	BO,	128
 
+	dcbt		BO,	PREB
+
 	stxvd2x		vs40,	o0,	BO
 	stxvd2x		vs41,	o16,	BO
 	stxvd2x		vs42,	o32,	BO
@@ -148,6 +151,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs47,	o112,	BO
 	addi		BO,	BO,	128
 
+	dcbt		BO,	PREB
+
 	stxvd2x		vs48,	o0,	BO
 	stxvd2x		vs49,	o16,	BO
 	stxvd2x		vs50,	o32,	BO
@@ -157,6 +162,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs54,	o96,	BO
 	stxvd2x		vs55,	o112,	BO
 	addi		BO,	BO,	128
+
+	dcbt		BO,	PREB
 
 	stxvd2x		vs56,	o0,	BO
 	stxvd2x		vs57,	o16,	BO
