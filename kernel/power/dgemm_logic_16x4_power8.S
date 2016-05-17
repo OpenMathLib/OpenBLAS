@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *	 LAPACK-TEST		: OK
 **************************************************************************************/
 
+#define MY_ALIGN .align 3
 
 	srawi.		J,	N,	2
 	ble		LDGEMM_L4_END
@@ -53,7 +54,7 @@ LDGEMM_L4_BEGIN:
 	srawi.		I,	M,	4
 	ble		LDGEMM_L4x16_END
 
-	.align 4
+	MY_ALIGN
 LDGEMM_L4x16_BEGIN_FIRST:
 
 	li		L,	-128
@@ -90,7 +91,7 @@ LDGEMM_L4x16_BEGIN_FIRST:
 	cmpwi		cr0,	L,	1
 	ble		LDGEMM_L4x16_SUB4_FIRST
 
-	.align 4
+	MY_ALIGN
 LDGEMM_L4x16_LOOP_START_FIRST:
 
 	li	T2,	512
@@ -115,7 +116,7 @@ LDGEMM_L4x16_LOOP_START_FIRST:
 	ble		LDGEMM_L4x16_LOOP_END_FIRST
 	mtctr		L
 
-	.align 4
+	MY_ALIGN
 
 LDGEMM_L4x16_LOOP_FIRST:
 
@@ -132,7 +133,7 @@ LDGEMM_L4x16_LOOP_FIRST:
 
 	bdnz		LDGEMM_L4x16_LOOP_FIRST
 
-	.align 4
+	MY_ALIGN
 
 LDGEMM_L4x16_LOOP_END_FIRST:
 
@@ -175,7 +176,7 @@ LDGEMM_L4x16_SUB2_FIRST:
 	addic.		L,	L,	-1
 	bgt		LDGEMM_L4x16_SUB2_FIRST
 
-	.align 4
+	MY_ALIGN
 LDGEMM_L4x16_SAVE_FIRST:
 
 	SAVE4x16
@@ -185,7 +186,8 @@ LDGEMM_L4x16_SAVE_FIRST:
 
 LDGEMM_L4x16_END_FIRST:
 
-	.align 4
+	MY_ALIGN
+
 LDGEMM_L4x16_BEGIN:
 
 	li		L,	-128
@@ -222,7 +224,8 @@ LDGEMM_L4x16_BEGIN:
 	cmpwi		cr0,	L,	1
 	ble-		LDGEMM_L4x16_SUB4
 
-	.align 4
+	MY_ALIGN
+
 LDGEMM_L4x16_LOOP_START:
 
 	li	o40,	40
@@ -239,20 +242,19 @@ LDGEMM_L4x16_LOOP_START:
 	ble-		LDGEMM_L4x16_LOOP_END
 	mtctr		L
 
-	.align 4
+	MY_ALIGN
 
 LDGEMM_L4x16_LOOP:
-
 
 	dcbt	AO,	PRE
 	KERNEL4x16_L1
 	dcbt	AO,	PRE
-	// addic.		L,	L,	-1
 	KERNEL4x16_L2
 
 	bdnz+		LDGEMM_L4x16_LOOP
 
-	.align 4
+
+	MY_ALIGN
 
 LDGEMM_L4x16_LOOP_END:
 
@@ -261,12 +263,16 @@ LDGEMM_L4x16_LOOP_END:
 
 	b		LDGEMM_L4x16_SUB1
 
+	MY_ALIGN
+
 LDGEMM_L4x16_SUB4:
 
 	KERNEL4x16_SUBI1
 	KERNEL4x16_SUB1
 
 	b		LDGEMM_L4x16_SUB1
+
+	MY_ALIGN
 
 LDGEMM_L4x16_SUB0:
 
@@ -278,10 +284,14 @@ LDGEMM_L4x16_SUB0:
 	ble		LDGEMM_L4x16_SAVE
 	b		LDGEMM_L4x16_SUB2
 
+	MY_ALIGN
+
 LDGEMM_L4x16_SUB1:
 
 	andi.		L,	K,	1
 	ble		LDGEMM_L4x16_SAVE
+
+	MY_ALIGN
 
 LDGEMM_L4x16_SUB2:
 
@@ -290,7 +300,8 @@ LDGEMM_L4x16_SUB2:
 	addic.		L,	L,	-1
 	bgt		LDGEMM_L4x16_SUB2
 
-	.align 4
+	MY_ALIGN
+
 LDGEMM_L4x16_SAVE:
 
 	SAVE4x16
@@ -334,7 +345,7 @@ LDGEMM_L4x8_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L4x8_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L4x8_LOOP:
 
@@ -441,7 +452,7 @@ LDGEMM_L4x4_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L4x4_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L4x4_LOOP:
 
@@ -543,7 +554,7 @@ LDGEMM_L4x2_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L4x2_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L4x2_LOOP:
 
@@ -643,7 +654,7 @@ LDGEMM_L4x1_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L4x1_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L4x1_LOOP:
 
@@ -778,7 +789,7 @@ LDGEMM_L2x16_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L2x16_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L2x16_LOOP:
 
@@ -907,7 +918,7 @@ LDGEMM_L2x8_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L2x8_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L2x8_LOOP:
 
@@ -1011,7 +1022,7 @@ LDGEMM_L2x4_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L2x4_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L2x4_LOOP:
 
@@ -1111,7 +1122,7 @@ LDGEMM_L2x2_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L2x2_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L2x2_LOOP:
 
@@ -1211,7 +1222,7 @@ LDGEMM_L2x1_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L2x1_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L2x1_LOOP:
 
@@ -1331,7 +1342,7 @@ LDGEMM_L1x16_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L1x16_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L1x16_LOOP:
 
@@ -1460,7 +1471,7 @@ LDGEMM_L1x8_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L1x8_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L1x8_LOOP:
 
@@ -1564,7 +1575,7 @@ LDGEMM_L1x4_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L1x4_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L1x4_LOOP:
 
@@ -1664,7 +1675,7 @@ LDGEMM_L1x2_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L1x2_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L1x2_LOOP:
 
@@ -1764,7 +1775,7 @@ LDGEMM_L1x1_LOOP_START:
 	addic.		L,	L,	-2
 	ble		LDGEMM_L1x1_LOOP_END
 
-	.align 5
+	MY_ALIGN
 
 LDGEMM_L1x1_LOOP:
 
