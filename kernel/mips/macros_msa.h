@@ -30,11 +30,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <msa.h>
 
+#define LD_W(RTYPE, psrc) *((RTYPE *)(psrc))
+#define LD_SP(...) LD_W(v4f32, __VA_ARGS__)
+
 #define LD_D(RTYPE, psrc) *((RTYPE *)(psrc))
 #define LD_DP(...) LD_D(v2f64, __VA_ARGS__)
 
+#define ST_W(RTYPE, in, pdst) *((RTYPE *)(pdst)) = (in)
+#define ST_SP(...) ST_W(v4f32, __VA_ARGS__)
+
 #define ST_D(RTYPE, in, pdst) *((RTYPE *)(pdst)) = (in)
 #define ST_DP(...) ST_D(v2f64, __VA_ARGS__)
+
+/* Description : Load 2 vectors of single precision floating point elements with stride
+   Arguments   : Inputs  - psrc, stride
+                 Outputs - out0, out1
+                 Return Type - single precision floating point
+*/
+#define LD_SP2(psrc, stride, out0, out1)  \
+{                                         \
+    out0 = LD_SP((psrc));                 \
+    out1 = LD_SP((psrc) + stride);        \
+}
 
 /* Description : Load 2 vectors of double precision floating point elements with stride
    Arguments   : Inputs  - psrc, stride
@@ -51,6 +68,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 {                                                     \
     LD_DP2(psrc, stride, out0, out1)                  \
     LD_DP2(psrc + 2 * stride, stride, out2, out3)     \
+}
+
+/* Description : Store vectors of single precision floating point elements with stride
+   Arguments   : Inputs - in0, in1, pdst, stride
+   Details     : Store 4 single precision floating point elements from 'in0' to (pdst)
+                 Store 4 single precision floating point elements from 'in1' to (pdst + stride)
+*/
+#define ST_SP2(in0, in1, pdst, stride)  \
+{                                       \
+    ST_SP(in0, (pdst));                 \
+    ST_SP(in1, (pdst) + stride);        \
+}
+
+#define ST_SP4(in0, in1, in2, in3, pdst, stride)    \
+{                                                   \
+    ST_SP2(in0, in1, (pdst), stride);               \
+    ST_SP2(in2, in3, (pdst + 2 * stride), stride);  \
+}
+
+#define ST_SP8(in0, in1, in2, in3, in4, in5, in6, in7, pdst, stride)  \
+{                                                                     \
+    ST_SP4(in0, in1, in2, in3, (pdst), stride);                       \
+    ST_SP4(in4, in5, in6, in7, (pdst + 4 * stride), stride);          \
 }
 
 /* Description : Store vectors of double precision floating point elements with stride
@@ -83,11 +123,38 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    Details     : Right half of byte elements from 'in0' and 'in1' are
                  interleaved and written to 'out0'
 */
+#define ILVRL_W2(RTYPE, in0, in1, out0, out1)               \
+{                                                           \
+    out0 = (RTYPE) __msa_ilvr_w((v4i32) in0, (v4i32) in1);  \
+    out1 = (RTYPE) __msa_ilvl_w((v4i32) in0, (v4i32) in1);  \
+}
+#define ILVRL_W2_SW(...) ILVRL_W2(v4i32, __VA_ARGS__)
+
 #define ILVRL_D2(RTYPE, in0, in1, out0, out1)               \
 {                                                           \
     out0 = (RTYPE) __msa_ilvr_d((v2i64) in0, (v2i64) in1);  \
     out1 = (RTYPE) __msa_ilvl_d((v2i64) in0, (v2i64) in1);  \
 }
 #define ILVRL_D2_DP(...) ILVRL_D2(v2f64, __VA_ARGS__)
+
+/* Description : Transpose 4x4 block with word elements in vectors
+   Arguments   : Inputs  - in0, in1, in2, in3
+                 Outputs - out0, out1, out2, out3
+                 Return Type - as per RTYPE
+*/
+#define TRANSPOSE4x4_W(RTYPE, in0, in1, in2, in3, out0, out1, out2, out3)  \
+{                                                                   \
+    v4i32 s0_m, s1_m, s2_m, s3_m;                                   \
+                                                                    \
+    ILVRL_W2_SW(in1, in0, s0_m, s1_m);                              \
+    ILVRL_W2_SW(in3, in2, s2_m, s3_m);                              \
+                                                                    \
+    out0 = (RTYPE) __msa_ilvr_d((v2i64) s2_m, (v2i64) s0_m);        \
+    out1 = (RTYPE) __msa_ilvl_d((v2i64) s2_m, (v2i64) s0_m);        \
+    out2 = (RTYPE) __msa_ilvr_d((v2i64) s3_m, (v2i64) s1_m);        \
+    out3 = (RTYPE) __msa_ilvl_d((v2i64) s3_m, (v2i64) s1_m);        \
+}
+
+#define TRANSPOSE4x4_SP_SP(...) TRANSPOSE4x4_W(v4f32, __VA_ARGS__)
 
 #endif  /* __MACROS_MSA_H__ */

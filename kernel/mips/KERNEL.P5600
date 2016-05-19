@@ -85,11 +85,11 @@ DTRMMKERNEL  = ../generic/trmmkernel_2x2.c
 CTRMMKERNEL  = ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL  = ../generic/ztrmmkernel_2x2.c
 
-SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
-SGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
-SGEMMONCOPYOBJ =  sgemm_oncopy.o
-SGEMMOTCOPYOBJ =  sgemm_otcopy.o
+SGEMMKERNEL    = ../mips/sgemm_kernel_8x8_msa.c
+SGEMMONCOPY    = ../mips/sgemm_ncopy_8_msa.c
+SGEMMOTCOPY    = ../mips/sgemm_tcopy_8_msa.c
+SGEMMONCOPYOBJ = sgemm_oncopy.o
+SGEMMOTCOPYOBJ = sgemm_otcopy.o
 
 DGEMMKERNEL    = ../mips/dgemm_kernel_8x4_msa.c
 DGEMMINCOPY    = ../mips/dgemm_ncopy_8_msa.c

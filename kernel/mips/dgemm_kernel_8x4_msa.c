@@ -90,7 +90,70 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 8;
             pb0 += 4;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
+                LD_DP2(pb0, 2, src_b0, src_b1);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+                res2 += src_a2 * src_b;
+                res3 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res4 += src_a0 * src_b;
+                res5 += src_a1 * src_b;
+                res6 += src_a2 * src_b;
+                res7 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+                res8  += src_a0 * src_b;
+                res9  += src_a1 * src_b;
+                res10 += src_a2 * src_b;
+                res11 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+                res12 += src_a0 * src_b;
+                res13 += src_a1 * src_b;
+                res14 += src_a2 * src_b;
+                res15 += src_a3 * src_b;
+
+                pa0 += 8;
+                pb0 += 4;
+
+                LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
+                LD_DP2(pb0, 2, src_b0, src_b1);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+                res2 += src_a2 * src_b;
+                res3 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res4 += src_a0 * src_b;
+                res5 += src_a1 * src_b;
+                res6 += src_a2 * src_b;
+                res7 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+                res8  += src_a0 * src_b;
+                res9  += src_a1 * src_b;
+                res10 += src_a2 * src_b;
+                res11 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+                res12 += src_a0 * src_b;
+                res13 += src_a1 * src_b;
+                res14 += src_a2 * src_b;
+                res15 += src_a3 * src_b;
+
+                pa0 += 8;
+                pb0 += 4;
+            }
+
+            if ((k - 1) & 1)
             {
                 LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
                 LD_DP2(pb0, 2, src_b0, src_b1);
@@ -185,7 +248,54 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 4;
             pb0 += 4;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                LD_DP2(pa0, 2, src_a0, src_a1);
+                LD_DP2(pb0, 2, src_b0, src_b1);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res2 += src_a0 * src_b;
+                res3 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+                res4 += src_a0 * src_b;
+                res5 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+                res6 += src_a0 * src_b;
+                res7 += src_a1 * src_b;
+
+                pa0 += 4;
+                pb0 += 4;
+
+                LD_DP2(pa0, 2, src_a0, src_a1);
+                LD_DP2(pb0, 2, src_b0, src_b1);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res2 += src_a0 * src_b;
+                res3 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+                res4 += src_a0 * src_b;
+                res5 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+                res6 += src_a0 * src_b;
+                res7 += src_a1 * src_b;
+
+                pa0 += 4;
+                pb0 += 4;
+            }
+
+            if ((k - 1) & 1)
             {
                 LD_DP2(pa0, 2, src_a0, src_a1);
                 LD_DP2(pb0, 2, src_b0, src_b1);
@@ -257,7 +367,46 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 2;
             pb0 += 4;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                src_a0 = LD_DP(pa0);
+                LD_DP2(pb0, 2, src_b0, src_b1);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res1 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+                res2 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+                res3 += src_a0 * src_b;
+
+                pa0 += 2;
+                pb0 += 4;
+
+                src_a0 = LD_DP(pa0);
+                LD_DP2(pb0, 2, src_b0, src_b1);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res1 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+                res2 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+                res3 += src_a0 * src_b;
+
+                pa0 += 2;
+                pb0 += 4;
+            }
+
+            if ((k - 1) & 1)
             {
                 src_a0 = LD_DP(pa0);
                 LD_DP2(pb0, 2, src_b0, src_b1);
@@ -319,7 +468,42 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 1;
             pb0 += 4;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                a0 = pa0[0];
+                b0 = pb0[0];
+                tmp0 += a0 * b0;
+
+                b1 = pb0[1];
+                tmp1 += a0 * b1;
+
+                b2 = pb0[2];
+                tmp2 += a0 * b2;
+
+                b3 = pb0[3];
+                tmp3 += a0 * b3;
+
+                pa0 += 1;
+                pb0 += 4;
+
+                a0 = pa0[0];
+                b0 = pb0[0];
+                tmp0 += a0 * b0;
+
+                b1 = pb0[1];
+                tmp1 += a0 * b1;
+
+                b2 = pb0[2];
+                tmp2 += a0 * b2;
+
+                b3 = pb0[3];
+                tmp3 += a0 * b3;
+
+                pa0 += 1;
+                pb0 += 4;
+            }
+
+            if ((k - 1) & 1)
             {
                 a0 = pa0[0];
                 b0 = pb0[0];
@@ -389,7 +573,46 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 8;
             pb0 += 2;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
+                src_b0 = LD_DP(pb0);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+                res2 += src_a2 * src_b;
+                res3 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res4 += src_a0 * src_b;
+                res5 += src_a1 * src_b;
+                res6 += src_a2 * src_b;
+                res7 += src_a3 * src_b;
+
+                pa0 += 8;
+                pb0 += 2;
+
+                LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
+                src_b0 = LD_DP(pb0);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+                res2 += src_a2 * src_b;
+                res3 += src_a3 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res4 += src_a0 * src_b;
+                res5 += src_a1 * src_b;
+                res6 += src_a2 * src_b;
+                res7 += src_a3 * src_b;
+
+                pa0 += 8;
+                pb0 += 2;
+            }
+
+            if ((k - 1) & 1)
             {
                 LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
                 src_b0 = LD_DP(pb0);
@@ -447,7 +670,38 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 4;
             pb0 += 2;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                LD_DP2(pa0, 2, src_a0, src_a1);
+                src_b0 = LD_DP(pb0);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res2 += src_a0 * src_b;
+                res3 += src_a1 * src_b;
+
+                pa0 += 4;
+                pb0 += 2;
+
+                LD_DP2(pa0, 2, src_a0, src_a1);
+                src_b0 = LD_DP(pb0);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res2 += src_a0 * src_b;
+                res3 += src_a1 * src_b;
+
+                pa0 += 4;
+                pb0 += 2;
+            }
+
+            if ((k - 1) & 1)
             {
                 LD_DP2(pa0, 2, src_a0, src_a1);
                 src_b0 = LD_DP(pb0);
@@ -495,7 +749,34 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 2;
             pb0 += 2;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                src_a0 = LD_DP(pa0);
+                src_b0 = LD_DP(pb0);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res1 += src_a0 * src_b;
+
+                pa0 += 2;
+                pb0 += 2;
+
+                src_a0 = LD_DP(pa0);
+                src_b0 = LD_DP(pb0);
+
+                src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+                res0 += src_a0 * src_b;
+
+                src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+                res1 += src_a0 * src_b;
+
+                pa0 += 2;
+                pb0 += 2;
+            }
+
+            if ((k - 1) & 1)
             {
                 src_a0 = LD_DP(pa0);
                 src_b0 = LD_DP(pb0);
@@ -537,7 +818,30 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 1;
             pb0 += 2;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                a0 = pa0[0];
+                b0 = pb0[0];
+                tmp0 += a0 * b0;
+
+                b1 = pb0[1];
+                tmp1 += a0 * b1;
+
+                pa0 += 1;
+                pb0 += 2;
+
+                a0 = pa0[0];
+                b0 = pb0[0];
+                tmp0 += a0 * b0;
+
+                b1 = pb0[1];
+                tmp1 += a0 * b1;
+
+                pa0 += 1;
+                pb0 += 2;
+            }
+
+            if ((k - 1) & 1)
             {
                 a0 = pa0[0];
                 b0 = pb0[0];
@@ -587,7 +891,34 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 8;
             pb0 += 1;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
+                src_b[0] = pb0[0];
+                src_b[1] = pb0[0];
+
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+                res2 += src_a2 * src_b;
+                res3 += src_a3 * src_b;
+
+                pa0 += 8;
+                pb0 += 1;
+
+                LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
+                src_b[0] = pb0[0];
+                src_b[1] = pb0[0];
+
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+                res2 += src_a2 * src_b;
+                res3 += src_a3 * src_b;
+
+                pa0 += 8;
+                pb0 += 1;
+            }
+
+            if ((k - 1) & 1)
             {
                 LD_DP4(pa0, 2, src_a0, src_a1, src_a2, src_a3);
                 src_b[0] = pb0[0];
@@ -628,7 +959,30 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 4;
             pb0 += 1;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                LD_DP2(pa0, 2, src_a0, src_a1);
+                src_b[0] = pb0[0];
+                src_b[1] = pb0[0];
+
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+
+                pa0 += 4;
+                pb0 += 1;
+
+                LD_DP2(pa0, 2, src_a0, src_a1);
+                src_b[0] = pb0[0];
+                src_b[1] = pb0[0];
+
+                res0 += src_a0 * src_b;
+                res1 += src_a1 * src_b;
+
+                pa0 += 4;
+                pb0 += 1;
+            }
+
+            if ((k - 1) & 1)
             {
                 LD_DP2(pa0, 2, src_a0, src_a1);
                 src_b[0] = pb0[0];
@@ -664,7 +1018,28 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 2;
             pb0 += 1;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                src_a0 = LD_DP(pa0);
+                src_b[0] = pb0[0];
+                src_b[1] = pb0[0];
+
+                res0 += src_a0 * src_b;
+
+                pa0 += 2;
+                pb0 += 1;
+
+                src_a0 = LD_DP(pa0);
+                src_b[0] = pb0[0];
+                src_b[1] = pb0[0];
+
+                res0 += src_a0 * src_b;
+
+                pa0 += 2;
+                pb0 += 1;
+            }
+
+            if ((k - 1) & 1)
             {
                 src_a0 = LD_DP(pa0);
                 src_b[0] = pb0[0];
@@ -696,7 +1071,24 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pa0 += 1;
             pb0 += 1;
 
-            for (l = (k - 1); l--;)
+            for (l = ((k - 1) / 2); l--;)
+            {
+                a0 = pa0[0];
+                b0 = pb0[0];
+                tmp0 += a0 * b0;
+
+                pa0 += 1;
+                pb0 += 1;
+
+                a0 = pa0[0];
+                b0 = pb0[0];
+                tmp0 += a0 * b0;
+
+                pa0 += 1;
+                pb0 += 1;
+            }
+
+            if ((k - 1) & 1)
             {
                 a0 = pa0[0];
                 b0 = pb0[0];
