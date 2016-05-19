@@ -521,6 +521,16 @@ CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
 endif
 
+ifeq ($(CORE), P5600)
+CCOMMON_OPT += -mmsa
+FCOMMON_OPT += -mmsa
+endif
+
+ifeq ($(CORE), I6400)
+CCOMMON_OPT += -mmsa
+FCOMMON_OPT += -mmsa
+endif
+
 ifeq ($(OSNAME), AIX)
 BINARY_DEFINED = 1
 endif
