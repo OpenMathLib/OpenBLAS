@@ -137,6 +137,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 #define ILVRL_D2_DP(...) ILVRL_D2(v2f64, __VA_ARGS__)
 
+/* Description : Indexed word element values are replicated to all
+                 elements in output vector
+   Arguments   : Inputs  - in, stidx
+                 Outputs - out0, out1
+                 Return Type - as per RTYPE
+   Details     : 'stidx' element value from 'in' vector is replicated to all
+                 elements in 'out0' vector
+                 'stidx + 1' element value from 'in' vector is replicated to all
+                 elements in 'out1' vector
+                 Valid index range for word operation is 0-3
+*/
+#define SPLATI_W2(RTYPE, in, stidx, out0, out1)            \
+{                                                          \
+    out0 = (RTYPE) __msa_splati_w((v4i32) in, stidx);      \
+    out1 = (RTYPE) __msa_splati_w((v4i32) in, (stidx+1));  \
+}
+
+#define SPLATI_W4(RTYPE, in, out0, out1, out2, out3)  \
+{                                                     \
+    SPLATI_W2(RTYPE, in, 0, out0, out1);              \
+    SPLATI_W2(RTYPE, in, 2, out2, out3);              \
+}
+#define SPLATI_W4_SP(...) SPLATI_W4(v4f32, __VA_ARGS__)
+
 /* Description : Transpose 4x4 block with word elements in vectors
    Arguments   : Inputs  - in0, in1, in2, in3
                  Outputs - out0, out1, out2, out3

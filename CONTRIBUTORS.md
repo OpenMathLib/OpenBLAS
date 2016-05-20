@@ -160,3 +160,4 @@ In chronological order:
 
 * Kaustubh Raste <https://github.com/ksraste/>
   * [2016-05-09] DTRSM optimization for MIPS P5600 and I6400 using MSA
+  * [2016-05-20] STRSM optimization for MIPS P5600 and I6400 using MSA

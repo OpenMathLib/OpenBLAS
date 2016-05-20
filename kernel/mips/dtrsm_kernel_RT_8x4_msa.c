@@ -865,7 +865,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1, FLOAT *a, FLOAT *b,
     BLASLONG i, j, kk;
     FLOAT *aa, *cc, *bb;
 
-    kk = n;
+    kk = n - offset;
     c += n * ldc;
     b += n * k;
 

@@ -809,7 +809,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1, FLOAT *a, FLOAT *b,
     BLASLONG i, j, kk;
     FLOAT *aa, *cc;
 
-    kk = 0;
+    kk = -offset;
 
     for (j = (n >> 2); j--;)
     {
