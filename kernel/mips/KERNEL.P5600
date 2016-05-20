@@ -113,10 +113,10 @@ ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMONCOPYOBJ = zgemm_oncopy.o
 ZGEMMOTCOPYOBJ = zgemm_otcopy.o
 
-STRSMKERNEL_LN = ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT = ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN = ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT = ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN = ../mips/strsm_kernel_LN_8x8_msa.c
+STRSMKERNEL_LT = ../mips/strsm_kernel_LT_8x8_msa.c
+STRSMKERNEL_RN = ../mips/strsm_kernel_RN_8x8_msa.c
+STRSMKERNEL_RT = ../mips/strsm_kernel_RT_8x8_msa.c
 
 DTRSMKERNEL_LN = ../mips/dtrsm_kernel_LN_8x4_msa.c
 DTRSMKERNEL_LT = ../mips/dtrsm_kernel_LT_8x4_msa.c

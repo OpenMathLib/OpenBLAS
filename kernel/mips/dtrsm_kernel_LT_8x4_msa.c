@@ -1182,7 +1182,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1, FLOAT *a, FLOAT *b,
 
     for (j = (n >> 2); j--;)
     {
-        kk = 0;
+        kk = offset;
         aa = a;
         cc = c;
 
@@ -1233,7 +1233,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1, FLOAT *a, FLOAT *b,
     {
         if (n & 2)
         {
-            kk = 0;
+            kk = offset;
             aa = a;
             cc = c;
 
@@ -1282,7 +1282,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1, FLOAT *a, FLOAT *b,
 
         if (n & 1)
         {
-            kk = 0;
+            kk = offset;
             aa = a;
             cc = c;
 
