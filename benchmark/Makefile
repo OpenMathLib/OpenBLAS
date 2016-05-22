@@ -262,7 +262,8 @@ endif
 essl :: sgemm.essl strmm.essl dgemm.essl dtrmm.essl  \
 	cgemm.essl ctrmm.essl zgemm.essl ztrmm.essl  \
 	slinpack.essl clinpack.essl dlinpack.essl zlinpack.essl \
-	scholesky.essl ccholesky.essl dcholesky.essl zcholesky.essl
+	scholesky.essl ccholesky.essl dcholesky.essl zcholesky.essl \
+	strsm.essl dtrsm.essl ctrsm.essl ztrsm.essl
 
 veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        scholesky.veclib dcholesky.veclib ccholesky.veclib zcholesky.veclib \
@@ -696,6 +697,9 @@ strsm.mkl : strsm.$(SUFFIX)
 strsm.veclib : strsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+strsm.essl : strsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Dtrsm ####################################################
 dtrsm.goto : dtrsm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -711,6 +715,9 @@ dtrsm.mkl : dtrsm.$(SUFFIX)
 
 dtrsm.veclib : dtrsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrsm.essl : dtrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ctrsm ####################################################
 
@@ -729,6 +736,9 @@ ctrsm.mkl : ctrsm.$(SUFFIX)
 ctrsm.veclib : ctrsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+ctrsm.essl : ctrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
 ##################################### Ztrsm ####################################################
 
 ztrsm.goto : ztrsm.$(SUFFIX) ../$(LIBNAME)
@@ -745,6 +755,9 @@ ztrsm.mkl : ztrsm.$(SUFFIX)
 
 ztrsm.veclib : ztrsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrsm.essl : ztrsm.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ssyrk ####################################################
 ssyrk.goto : ssyrk.$(SUFFIX) ../$(LIBNAME)
