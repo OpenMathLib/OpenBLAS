@@ -219,6 +219,7 @@
 	li	o24,	24
 	li	o32,	32
 	li	o48,	48
+	li	PRE,	384
 
 	mr	KK,	OFFSET
 

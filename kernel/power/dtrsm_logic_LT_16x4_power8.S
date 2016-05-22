@@ -18,6 +18,33 @@ DSTRM_LT_L4x16_BEGIN:
 
 	mr		BO,	B
 
+	li              L,      -128
+	
+ 	mr              T1,     CO
+        add             T2,     T1,     LDC
+        add             T3,     T2,     LDC
+        add             T4,     T3,     LDC
+
+        and             T1,     T1,     L
+        and             T2,     T2,     L
+        and             T3,     T3,     L
+        and             T4,     T4,     L
+
+        dcbt            T1,     r0
+        dcbt            T2,     r0
+        dcbt            T3,     r0
+        dcbt            T4,     r0
+
+        addi            T1, T1, 128
+        addi            T2, T2, 128
+        addi            T3, T3, 128
+        addi            T4, T4, 128
+
+        dcbt            T1,     r0
+        dcbt            T2,     r0
+        dcbt            T3,     r0
+        dcbt            T4,     r0
+
 
 DSTRM_LT_L4x16_LOOP_START:
 
@@ -26,15 +53,30 @@ DSTRM_LT_L4x16_LOOP_START:
 
 
 	addic.		L,	KK,	0
-	ble		DSTRM_LT_L4x16_SAVE
+	ble-		DSTRM_LT_L4x16_SAVE
 
 DSTRM_LT_L4x16_LOOP:
 
-
+	dcbt		AO,	PRE
+	dcbt		BO,	PRE
 	KERNEL_16x4
-
 	addic.		L,	L,	-1
-	bgt		DSTRM_LT_L4x16_LOOP
+	ble-		DSTRM_LT_L4x16_SAVE
+
+	dcbt		AO,	PRE
+	KERNEL_16x4
+	addic.		L,	L,	-1
+	ble-		DSTRM_LT_L4x16_SAVE
+
+	dcbt		AO,	PRE
+	KERNEL_16x4
+	addic.		L,	L,	-1
+	ble-		DSTRM_LT_L4x16_SAVE
+
+	dcbt		AO,	PRE
+	KERNEL_16x4
+	addic.		L,	L,	-1
+	bgt+		DSTRM_LT_L4x16_LOOP
 
 
 DSTRM_LT_L4x16_SAVE:
