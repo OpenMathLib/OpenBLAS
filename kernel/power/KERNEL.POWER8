@@ -54,7 +54,7 @@ STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
 STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
 
 DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+DTRSMKERNEL_LT	= dtrsm_kernel_LT_16x4_power8.S
 DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 
