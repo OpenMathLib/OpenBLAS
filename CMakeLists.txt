@@ -45,8 +45,8 @@ endif()
 
 message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only x86 support is currently available.")
 
-include("${CMAKE_SOURCE_DIR}/cmake/utils.cmake")
-include("${CMAKE_SOURCE_DIR}/cmake/system.cmake")
+include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
+include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
 
 set(BLASDIRS interface driver/level2 driver/level3 driver/others)
 
@@ -123,9 +123,9 @@ endforeach ()
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
 if (NOT NOFORTRAN AND NOT NO_LAPACK)
-  include("${CMAKE_SOURCE_DIR}/cmake/lapack.cmake")
+  include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
 if (NOT NO_LAPACKE)
-  include("${CMAKE_SOURCE_DIR}/cmake/lapacke.cmake")
+  include("${PROJECT_SOURCE_DIR}/cmake/lapacke.cmake")
 endif ()
 endif ()
 
@@ -137,7 +137,7 @@ endif()
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
-include("${CMAKE_SOURCE_DIR}/cmake/export.cmake")
+include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
 
 # Set output for libopenblas
 set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
