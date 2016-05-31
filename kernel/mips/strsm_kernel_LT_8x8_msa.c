@@ -601,14 +601,14 @@ static void ssolve_8x1_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 
     for (k = 0; k < bk; k++)
     {
-        a0 += a[0] * b[0];
-        a1 += a[1] * b[0];
-        a2 += a[2] * b[0];
-        a3 += a[3] * b[0];
-        a4 += a[4] * b[0];
-        a5 += a[5] * b[0];
-        a6 += a[6] * b[0];
-        a7 += a[7] * b[0];
+        c0 -= a[0] * b[0];
+        c1 -= a[1] * b[0];
+        c2 -= a[2] * b[0];
+        c3 -= a[3] * b[0];
+        c4 -= a[4] * b[0];
+        c5 -= a[5] * b[0];
+        c6 -= a[6] * b[0];
+        c7 -= a[7] * b[0];
 
         a += 8;
         b += 1;
