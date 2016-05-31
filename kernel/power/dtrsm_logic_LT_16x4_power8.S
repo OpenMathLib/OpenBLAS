@@ -54,29 +54,26 @@ DSTRM_LT_L4x16_LOOP_START:
 
 	addic.		L,	KK,	0
 	ble-		DSTRM_LT_L4x16_SAVE
+	mtctr		L
 
 DSTRM_LT_L4x16_LOOP:
 
 	dcbt		AO,	PRE
 	dcbt		BO,	PRE
 	KERNEL_16x4
-	addic.		L,	L,	-1
-	ble-		DSTRM_LT_L4x16_SAVE
+	bdz-		DSTRM_LT_L4x16_SAVE
 
 	dcbt		AO,	PRE
 	KERNEL_16x4
-	addic.		L,	L,	-1
-	ble-		DSTRM_LT_L4x16_SAVE
+	bdz-		DSTRM_LT_L4x16_SAVE
 
 	dcbt		AO,	PRE
 	KERNEL_16x4
-	addic.		L,	L,	-1
-	ble-		DSTRM_LT_L4x16_SAVE
+	bdz-		DSTRM_LT_L4x16_SAVE
 
 	dcbt		AO,	PRE
 	KERNEL_16x4
-	addic.		L,	L,	-1
-	bgt+		DSTRM_LT_L4x16_LOOP
+	bdnz+		DSTRM_LT_L4x16_LOOP
 
 
 DSTRM_LT_L4x16_SAVE:
