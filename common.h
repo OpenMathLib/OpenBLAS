@@ -626,8 +626,13 @@ void gotoblas_profile_init(void);
 void gotoblas_profile_quit(void);
 
 #ifdef USE_OPENMP
+#ifndef C_MSVC
 int omp_in_parallel(void);
 int omp_get_num_procs(void);
+#else
+__declspec(dllimport) int __cdecl omp_in_parallel(void);
+__declspec(dllimport) int __cdecl omp_get_num_procs(void);
+#endif
 #else
 #ifdef __ELF__
 int omp_in_parallel  (void) __attribute__ ((weak));
