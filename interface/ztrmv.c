@@ -243,6 +243,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 #endif
   {
     buffer_size = ((n - 1) / DTB_ENTRIES) * 2 * DTB_ENTRIES + 32 / sizeof(FLOAT);
+    // It seems to be required for some K8 or Barcelona CPU
+    buffer_size += 8;
     if(incx != 1)
       buffer_size += n * 2;
   }
