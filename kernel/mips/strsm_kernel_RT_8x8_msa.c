@@ -30,6 +30,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void ssolve_8x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
+    v4f32 src_a0, src_a1, src_b1, src_b2, src_b3;
     v4f32 src_c0, src_c1, src_c2, src_c3, src_c4, src_c5, src_c6, src_c7;
     v4f32 src_c8, src_c9, src_c10, src_c11, src_c12, src_c13, src_c14, src_c15;
     v4f32 src_b, src_b0, src_b8, src_b9, src_b16, src_b17, src_b18, src_b24;
@@ -45,104 +48,43 @@ static void ssolve_8x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     FLOAT *c_nxt6line = c + 6 * ldc;
     FLOAT *c_nxt7line = c + 7 * ldc;
 
-    if (bk > 0)
-    {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        v4f32 src_a0, src_a1, src_b1, src_b2, src_b3;
-        v4f32 res0, res1, res2, res3, res4, res5, res6, res7;
-        v4f32 res8, res9, res10, res11, res12, res13, res14, res15;
+    LD_SP2(c, 4, src_c0, src_c1);
+    LD_SP2(c_nxt1line, 4, src_c2, src_c3);
+    LD_SP2(c_nxt2line, 4, src_c4, src_c5);
+    LD_SP2(c_nxt3line, 4, src_c6, src_c7);
+    LD_SP2(c_nxt4line, 4, src_c8, src_c9);
+    LD_SP2(c_nxt5line, 4, src_c10, src_c11);
+    LD_SP2(c_nxt6line, 4, src_c12, src_c13);
+    LD_SP2(c_nxt7line, 4, src_c14, src_c15);
 
+    for (k = 0; k < bk; k++)
+    {
         LD_SP2(aa, 4, src_a0, src_a1);
 
         src_b = LD_SP(bb + 0);
         SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        res0 = src_a0 * src_b0;
-        res1 = src_a1 * src_b0;
-        res2 = src_a0 * src_b1;
-        res3 = src_a1 * src_b1;
-        res4 = src_a0 * src_b2;
-        res5 = src_a1 * src_b2;
-        res6 = src_a0 * src_b3;
-        res7 = src_a1 * src_b3;
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+        src_c2 -= src_a0 * src_b1;
+        src_c3 -= src_a1 * src_b1;
+        src_c4 -= src_a0 * src_b2;
+        src_c5 -= src_a1 * src_b2;
+        src_c6 -= src_a0 * src_b3;
+        src_c7 -= src_a1 * src_b3;
 
         src_b = LD_SP(bb + 4);
         SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        res8 = src_a0 * src_b0;
-        res9 = src_a1 * src_b0;
-        res10 = src_a0 * src_b1;
-        res11 = src_a1 * src_b1;
-        res12 = src_a0 * src_b2;
-        res13 = src_a1 * src_b2;
-        res14 = src_a0 * src_b3;
-        res15 = src_a1 * src_b3;
+        src_c8 -= src_a0 * src_b0;
+        src_c9 -= src_a1 * src_b0;
+        src_c10 -= src_a0 * src_b1;
+        src_c11 -= src_a1 * src_b1;
+        src_c12 -= src_a0 * src_b2;
+        src_c13 -= src_a1 * src_b2;
+        src_c14 -= src_a0 * src_b3;
+        src_c15 -= src_a1 * src_b3;
 
-        for (k = (bk - 1); k--;)
-        {
-            aa += 8;
-            bb += 8;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b = LD_SP(bb + 0);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-            res2 += src_a0 * src_b1;
-            res3 += src_a1 * src_b1;
-            res4 += src_a0 * src_b2;
-            res5 += src_a1 * src_b2;
-            res6 += src_a0 * src_b3;
-            res7 += src_a1 * src_b3;
-
-            src_b = LD_SP(bb + 4);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-            res8 += src_a0 * src_b0;
-            res9 += src_a1 * src_b0;
-            res10 += src_a0 * src_b1;
-            res11 += src_a1 * src_b1;
-            res12 += src_a0 * src_b2;
-            res13 += src_a1 * src_b2;
-            res14 += src_a0 * src_b3;
-            res15 += src_a1 * src_b3;
-        }
-
-        LD_SP2(c, 4, src_c0, src_c1);
-        LD_SP2(c_nxt1line, 4, src_c2, src_c3);
-        LD_SP2(c_nxt2line, 4, src_c4, src_c5);
-        LD_SP2(c_nxt3line, 4, src_c6, src_c7);
-        LD_SP2(c_nxt4line, 4, src_c8, src_c9);
-        LD_SP2(c_nxt5line, 4, src_c10, src_c11);
-        LD_SP2(c_nxt6line, 4, src_c12, src_c13);
-        LD_SP2(c_nxt7line, 4, src_c14, src_c15);
-
-        src_c0 -= res0;
-        src_c1 -= res1;
-        src_c2 -= res2;
-        src_c3 -= res3;
-        src_c4 -= res4;
-        src_c5 -= res5;
-        src_c6 -= res6;
-        src_c7 -= res7;
-        src_c8 -= res8;
-        src_c9 -= res9;
-        src_c10 -= res10;
-        src_c11 -= res11;
-        src_c12 -= res12;
-        src_c13 -= res13;
-        src_c14 -= res14;
-        src_c15 -= res15;
-    }
-    else
-    {
-        LD_SP2(c, 4, src_c0, src_c1);
-        LD_SP2(c_nxt1line, 4, src_c2, src_c3);
-        LD_SP2(c_nxt2line, 4, src_c4, src_c5);
-        LD_SP2(c_nxt3line, 4, src_c6, src_c7);
-        LD_SP2(c_nxt4line, 4, src_c8, src_c9);
-        LD_SP2(c_nxt5line, 4, src_c10, src_c11);
-        LD_SP2(c_nxt6line, 4, src_c12, src_c13);
-        LD_SP2(c_nxt7line, 4, src_c14, src_c15);
+        aa += 8;
+        bb += 8;
     }
 
     b -= 64;
@@ -216,8 +158,7 @@ static void ssolve_8x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
     src_b = LD_SP(b + 32);
     SPLATI_W4_SP(src_b, src_b32, src_b33, src_b34, src_b35);
-    src_b36 = __msa_cast_to_vector_float(*(b + 36));
-    src_b36 = (v4f32) __msa_splati_w((v4i32) src_b36, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 36), src_b36);
 
     src_c8 *= src_b36;
     src_c9 *= src_b36;
@@ -262,12 +203,9 @@ static void ssolve_8x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     ST_SP2(src_c4, src_c5, c_nxt2line, 4);
     ST_SP2(src_c6, src_c7, c_nxt3line, 4);
 
-    src_b9 = __msa_cast_to_vector_float(*(b + 9));
-    src_b9 = (v4f32) __msa_splati_w((v4i32) src_b9, 0);
-    src_b8 = __msa_cast_to_vector_float(*(b + 8));
-    src_b8 = (v4f32) __msa_splati_w((v4i32) src_b8, 0);
-    src_b0 = __msa_cast_to_vector_float(*(b + 0));
-    src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 9), src_b9);
+    COPY_FLOAT_TO_VECTOR(*(b + 8), src_b8);
+    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
 
     src_c2 *= src_b9;
     src_c3 *= src_b9;
@@ -285,6 +223,9 @@ static void ssolve_8x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_8x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
+    v4f32 src_a0, src_a1, src_b1, src_b2, src_b3;
     v4f32 src_c0, src_c1, src_c2, src_c3, src_c4, src_c5, src_c6, src_c7;
     v4f32 src_b, src_b0, src_b4, src_b5, src_b8, src_b9, src_b10, src_b12;
     v4f32 src_b13, src_b14, src_b15;
@@ -292,103 +233,60 @@ static void ssolve_8x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     FLOAT *c_nxt2line = c + 2 * ldc;
     FLOAT *c_nxt3line = c + 3 * ldc;
 
-    if (bk > 0)
+    LD_SP2(c, 4, src_c0, src_c1);
+    LD_SP2(c_nxt1line, 4, src_c2, src_c3);
+    LD_SP2(c_nxt2line, 4, src_c4, src_c5);
+    LD_SP2(c_nxt3line, 4, src_c6, src_c7);
+
+    for (k = 0; k < (bk >> 1); k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        v4f32 src_a0, src_a1, src_b1, src_b2, src_b3;
-        v4f32 res0, res1, res2, res3, res4, res5, res6, res7;
+        LD_SP2(aa, 4, src_a0, src_a1);
+
+        src_b = LD_SP(bb + 0);
+        SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+        src_c2 -= src_a0 * src_b1;
+        src_c3 -= src_a1 * src_b1;
+        src_c4 -= src_a0 * src_b2;
+        src_c5 -= src_a1 * src_b2;
+        src_c6 -= src_a0 * src_b3;
+        src_c7 -= src_a1 * src_b3;
+
+        aa += 8;
+        bb += 4;
 
         LD_SP2(aa, 4, src_a0, src_a1);
 
         src_b = LD_SP(bb + 0);
         SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        res0 = src_a0 * src_b0;
-        res1 = src_a1 * src_b0;
-        res2 = src_a0 * src_b1;
-        res3 = src_a1 * src_b1;
-        res4 = src_a0 * src_b2;
-        res5 = src_a1 * src_b2;
-        res6 = src_a0 * src_b3;
-        res7 = src_a1 * src_b3;
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+        src_c2 -= src_a0 * src_b1;
+        src_c3 -= src_a1 * src_b1;
+        src_c4 -= src_a0 * src_b2;
+        src_c5 -= src_a1 * src_b2;
+        src_c6 -= src_a0 * src_b3;
+        src_c7 -= src_a1 * src_b3;
 
-        for (k = (bk - 1) / 2; k--;)
-        {
-            aa += 8;
-            bb += 4;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b = LD_SP(bb + 0);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-            res2 += src_a0 * src_b1;
-            res3 += src_a1 * src_b1;
-            res4 += src_a0 * src_b2;
-            res5 += src_a1 * src_b2;
-            res6 += src_a0 * src_b3;
-            res7 += src_a1 * src_b3;
-
-            aa += 8;
-            bb += 4;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b = LD_SP(bb + 0);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-            res2 += src_a0 * src_b1;
-            res3 += src_a1 * src_b1;
-            res4 += src_a0 * src_b2;
-            res5 += src_a1 * src_b2;
-            res6 += src_a0 * src_b3;
-            res7 += src_a1 * src_b3;
-        }
-
-        if ((bk - 1) & 1)
-        {
-            aa += 8;
-            bb += 4;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b = LD_SP(bb + 0);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-            res2 += src_a0 * src_b1;
-            res3 += src_a1 * src_b1;
-            res4 += src_a0 * src_b2;
-            res5 += src_a1 * src_b2;
-            res6 += src_a0 * src_b3;
-            res7 += src_a1 * src_b3;
-
-        }
-
-        LD_SP2(c, 4, src_c0, src_c1);
-        LD_SP2(c_nxt1line, 4, src_c2, src_c3);
-        LD_SP2(c_nxt2line, 4, src_c4, src_c5);
-        LD_SP2(c_nxt3line, 4, src_c6, src_c7);
-
-        src_c0 -= res0;
-        src_c1 -= res1;
-        src_c2 -= res2;
-        src_c3 -= res3;
-        src_c4 -= res4;
-        src_c5 -= res5;
-        src_c6 -= res6;
-        src_c7 -= res7;
+        aa += 8;
+        bb += 4;
     }
-    else
+
+    if (bk & 1)
     {
-        LD_SP2(c, 4, src_c0, src_c1);
-        LD_SP2(c_nxt1line, 4, src_c2, src_c3);
-        LD_SP2(c_nxt2line, 4, src_c4, src_c5);
-        LD_SP2(c_nxt3line, 4, src_c6, src_c7);
+        LD_SP2(aa, 4, src_a0, src_a1);
+
+        src_b = LD_SP(bb + 0);
+        SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+        src_c2 -= src_a0 * src_b1;
+        src_c3 -= src_a1 * src_b1;
+        src_c4 -= src_a0 * src_b2;
+        src_c5 -= src_a1 * src_b2;
+        src_c6 -= src_a0 * src_b3;
+        src_c7 -= src_a1 * src_b3;
     }
 
     a -= 32;
@@ -400,12 +298,9 @@ static void ssolve_8x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b10 = (v4f32) __msa_splati_w((v4i32) src_b8, 2);
     src_b9 = (v4f32) __msa_splati_w((v4i32) src_b8, 1);
     src_b8 = (v4f32) __msa_splati_w((v4i32) src_b8, 0);
-    src_b5 = __msa_cast_to_vector_float(*(b + 5));
-    src_b5 = (v4f32) __msa_splati_w((v4i32) src_b5, 0);
-    src_b4 = __msa_cast_to_vector_float(*(b + 4));
-    src_b4 = (v4f32) __msa_splati_w((v4i32) src_b4, 0);
-    src_b0 = __msa_cast_to_vector_float(*(b + 0));
-    src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 5), src_b5);
+    COPY_FLOAT_TO_VECTOR(*(b + 4), src_b4);
+    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
 
     src_c7 *= src_b15;
     src_c6 *= src_b15;
@@ -442,101 +337,63 @@ static void ssolve_8x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_8x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
+    v4f32 src_a0, src_a1, src_b1;
     v4f32 src_c0, src_c1, src_c2, src_c3, src_b0, src_b2, src_b3;
     FLOAT *c_nxt1line = c + ldc;
 
-    if (bk > 0)
+    LD_SP2(c, 4, src_c0, src_c1);
+    LD_SP2(c_nxt1line, 4, src_c2, src_c3);
+
+    for (k = 0; k < (bk >> 1); k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        v4f32 src_a0, src_a1, src_b1, res0, res1, res2, res3;
+        LD_SP2(aa, 4, src_a0, src_a1);
+
+        COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
+        COPY_FLOAT_TO_VECTOR(*(bb + 1), src_b1);
+
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+        src_c2 -= src_a0 * src_b1;
+        src_c3 -= src_a1 * src_b1;
+
+        aa += 8;
+        bb += 2;
 
         LD_SP2(aa, 4, src_a0, src_a1);
 
-        src_b0 = __msa_cast_to_vector_float(*bb);
-        src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-        src_b1 = __msa_cast_to_vector_float(*(bb + 1));
-        src_b1 = (v4f32) __msa_splati_w((v4i32) src_b1, 0);
+        COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
+        COPY_FLOAT_TO_VECTOR(*(bb + 1), src_b1);
 
-        res0 = src_a0 * src_b0;
-        res1 = src_a1 * src_b0;
-        res2 = src_a0 * src_b1;
-        res3 = src_a1 * src_b1;
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+        src_c2 -= src_a0 * src_b1;
+        src_c3 -= src_a1 * src_b1;
 
-        for (k = (bk - 1) >> 1; k--;)
-        {
-            aa += 8;
-            bb += 2;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b0 = __msa_cast_to_vector_float(*bb);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-            src_b1 = __msa_cast_to_vector_float(*(bb + 1));
-            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b1, 0);
-
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-            res2 += src_a0 * src_b1;
-            res3 += src_a1 * src_b1;
-
-            aa += 8;
-            bb += 2;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b0 = __msa_cast_to_vector_float(*bb);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-            src_b1 = __msa_cast_to_vector_float(*(bb + 1));
-            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b1, 0);
-
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-            res2 += src_a0 * src_b1;
-            res3 += src_a1 * src_b1;
-        }
-
-        if ((bk - 1) & 1)
-        {
-            aa += 8;
-            bb += 2;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b0 = __msa_cast_to_vector_float(*bb);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-            src_b1 = __msa_cast_to_vector_float(*(bb + 1));
-            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b1, 0);
-
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-            res2 += src_a0 * src_b1;
-            res3 += src_a1 * src_b1;
-        }
-
-        LD_SP2(c, 4, src_c0, src_c1);
-        LD_SP2(c_nxt1line, 4, src_c2, src_c3);
-
-        src_c0 -= res0;
-        src_c1 -= res1;
-        src_c2 -= res2;
-        src_c3 -= res3;
+        aa += 8;
+        bb += 2;
     }
-    else
+
+    if (bk & 1)
     {
-        LD_SP2(c, 4, src_c0, src_c1);
-        LD_SP2(c_nxt1line, 4, src_c2, src_c3);
+        LD_SP2(aa, 4, src_a0, src_a1);
+
+        COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
+        COPY_FLOAT_TO_VECTOR(*(bb + 1), src_b1);
+
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+        src_c2 -= src_a0 * src_b1;
+        src_c3 -= src_a1 * src_b1;
     }
 
     a -= 16;
     b -= 4;
 
-    src_b0 = __msa_cast_to_vector_float(*(b + 0));
-    src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-    src_b2 = __msa_cast_to_vector_float(*(b + 2));
-    src_b2 = (v4f32) __msa_splati_w((v4i32) src_b2, 0);
-    src_b3 = __msa_cast_to_vector_float(*(b + 3));
-    src_b3 = (v4f32) __msa_splati_w((v4i32) src_b3, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+    COPY_FLOAT_TO_VECTOR(*(b + 2), src_b2);
+    COPY_FLOAT_TO_VECTOR(*(b + 3), src_b3);
 
     src_c2 *= src_b3;
     src_c3 *= src_b3;
@@ -552,126 +409,95 @@ static void ssolve_8x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_8x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 {
-    v4f32 src_c0, src_c1, src_b0;
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
+    v4f32 src_a0, src_a1, src_c0, src_c1, src_b0;
 
-    if (bk > 0)
+    LD_SP2(c, 4, src_c0, src_c1);
+
+    for (k = 0; k < (bk >> 2); k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        v4f32 src_a0, src_a1, res0, res1;
+        LD_SP2(aa, 4, src_a0, src_a1);
+
+        COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
+
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
+
+        aa += 8;
+        bb += 1;
 
         LD_SP2(aa, 4, src_a0, src_a1);
 
-        src_b0 = __msa_cast_to_vector_float(*bb);
-        src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+        COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
 
-        res0 = src_a0 * src_b0;
-        res1 = src_a1 * src_b0;
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
 
-        for (k = (bk - 1) >> 2; k--;)
-        {
-            aa += 8;
-            bb += 1;
+        aa += 8;
+        bb += 1;
 
-            LD_SP2(aa, 4, src_a0, src_a1);
+        LD_SP2(aa, 4, src_a0, src_a1);
 
-            src_b0 = __msa_cast_to_vector_float(*bb);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+        COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
 
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
 
-            aa += 8;
-            bb += 1;
+        aa += 8;
+        bb += 1;
 
-            LD_SP2(aa, 4, src_a0, src_a1);
+        LD_SP2(aa, 4, src_a0, src_a1);
 
-            src_b0 = __msa_cast_to_vector_float(*bb);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+        COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
 
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a1 * src_b0;
 
-            aa += 8;
-            bb += 1;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b0 = __msa_cast_to_vector_float(*bb);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-
-            aa += 8;
-            bb += 1;
-
-            LD_SP2(aa, 4, src_a0, src_a1);
-
-            src_b0 = __msa_cast_to_vector_float(*bb);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-
-            res0 += src_a0 * src_b0;
-            res1 += src_a1 * src_b0;
-        }
-
-        if ((bk - 1) & 3)
-        {
-            if ((bk - 1) & 2)
-            {
-                aa += 8;
-                bb += 1;
-
-                LD_SP2(aa, 4, src_a0, src_a1);
-
-                src_b0 = __msa_cast_to_vector_float(*bb);
-                src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-
-                res0 += src_a0 * src_b0;
-                res1 += src_a1 * src_b0;
-
-                aa += 8;
-                bb += 1;
-
-                LD_SP2(aa, 4, src_a0, src_a1);
-
-                src_b0 = __msa_cast_to_vector_float(*bb);
-                src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-
-                res0 += src_a0 * src_b0;
-                res1 += src_a1 * src_b0;
-            }
-
-            if ((bk - 1) & 1)
-            {
-                aa += 8;
-                bb += 1;
-
-                LD_SP2(aa, 4, src_a0, src_a1);
-
-                src_b0 = __msa_cast_to_vector_float(*bb);
-                src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-
-                res0 += src_a0 * src_b0;
-                res1 += src_a1 * src_b0;
-            }
-        }
-
-        LD_SP2(c, 4, src_c0, src_c1);
-
-        src_c0 -= res0;
-        src_c1 -= res1;
+        aa += 8;
+        bb += 1;
     }
-    else
+
+    if (bk & 3)
     {
-        LD_SP2(c, 4, src_c0, src_c1);
+        if (bk & 2)
+        {
+            LD_SP2(aa, 4, src_a0, src_a1);
+
+            COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
+
+            src_c0 -= src_a0 * src_b0;
+            src_c1 -= src_a1 * src_b0;
+
+            aa += 8;
+            bb += 1;
+
+            LD_SP2(aa, 4, src_a0, src_a1);
+
+            COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
+
+            src_c0 -= src_a0 * src_b0;
+            src_c1 -= src_a1 * src_b0;
+
+            aa += 8;
+            bb += 1;
+        }
+
+        if (bk & 1)
+        {
+            LD_SP2(aa, 4, src_a0, src_a1);
+
+            COPY_FLOAT_TO_VECTOR(*(bb + 0), src_b0);
+
+            src_c0 -= src_a0 * src_b0;
+            src_c1 -= src_a1 * src_b0;
+        }
     }
 
     a -= 8;
     b -= 1;
 
-    src_b0 = __msa_cast_to_vector_float(*(b + 0));
-    src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
 
     src_c0 *= src_b0;
     src_c1 *= src_b0;
@@ -682,6 +508,9 @@ static void ssolve_8x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 
 static void ssolve_4x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
+    v4f32 src_a0, src_b1, src_b2, src_b3;
     v4f32 src_c0, src_c1, src_c2, src_c3, src_c4, src_c5, src_c6, src_c7;
     v4f32 src_b, src_b0, src_b8, src_b9, src_b16, src_b17, src_b18, src_b24;
     v4f32 src_b25, src_b26, src_b27, src_b32, src_b33, src_b34, src_b35;
@@ -696,79 +525,35 @@ static void ssolve_4x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     FLOAT *c_nxt6line = c + 6 * ldc;
     FLOAT *c_nxt7line = c + 7 * ldc;
 
-    if (bk > 0)
-    {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        v4f32 src_a0, src_b1, src_b2, src_b3;
-        v4f32 res0, res1, res2, res3, res4, res5, res6, res7;
+    src_c0 = LD_SP(c);
+    src_c1 = LD_SP(c_nxt1line);
+    src_c2 = LD_SP(c_nxt2line);
+    src_c3 = LD_SP(c_nxt3line);
+    src_c4 = LD_SP(c_nxt4line);
+    src_c5 = LD_SP(c_nxt5line);
+    src_c6 = LD_SP(c_nxt6line);
+    src_c7 = LD_SP(c_nxt7line);
 
+    for (k = 0; k < bk; k++)
+    {
         src_a0 = LD_SP(aa);
 
         src_b = LD_SP(bb + 0);
         SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        res0 = src_a0 * src_b0;
-        res1 = src_a0 * src_b1;
-        res2 = src_a0 * src_b2;
-        res3 = src_a0 * src_b3;
+        src_c0 -= src_a0 * src_b0;
+        src_c1 -= src_a0 * src_b1;
+        src_c2 -= src_a0 * src_b2;
+        src_c3 -= src_a0 * src_b3;
 
         src_b = LD_SP(bb + 4);
         SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        res4 = src_a0 * src_b0;
-        res5 = src_a0 * src_b1;
-        res6 = src_a0 * src_b2;
-        res7 = src_a0 * src_b3;
+        src_c4 -= src_a0 * src_b0;
+        src_c5 -= src_a0 * src_b1;
+        src_c6 -= src_a0 * src_b2;
+        src_c7 -= src_a0 * src_b3;
 
-        for (k = (bk - 1); k--;)
-        {
-            aa += 4;
-            bb += 8;
-
-            src_a0 = LD_SP(aa);
-
-            src_b = LD_SP(bb + 0);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-            res0 += src_a0 * src_b0;
-            res1 += src_a0 * src_b1;
-            res2 += src_a0 * src_b2;
-            res3 += src_a0 * src_b3;
-
-            src_b = LD_SP(bb + 4);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-            res4 += src_a0 * src_b0;
-            res5 += src_a0 * src_b1;
-            res6 += src_a0 * src_b2;
-            res7 += src_a0 * src_b3;
-        }
-
-        src_c0 = LD_SP(c);
-        src_c1 = LD_SP(c_nxt1line);
-        src_c2 = LD_SP(c_nxt2line);
-        src_c3 = LD_SP(c_nxt3line);
-        src_c4 = LD_SP(c_nxt4line);
-        src_c5 = LD_SP(c_nxt5line);
-        src_c6 = LD_SP(c_nxt6line);
-        src_c7 = LD_SP(c_nxt7line);
-
-        src_c0 -= res0;
-        src_c1 -= res1;
-        src_c2 -= res2;
-        src_c3 -= res3;
-        src_c4 -= res4;
-        src_c5 -= res5;
-        src_c6 -= res6;
-        src_c7 -= res7;
-    }
-    else
-    {
-        src_c0 = LD_SP(c);
-        src_c1 = LD_SP(c_nxt1line);
-        src_c2 = LD_SP(c_nxt2line);
-        src_c3 = LD_SP(c_nxt3line);
-        src_c4 = LD_SP(c_nxt4line);
-        src_c5 = LD_SP(c_nxt5line);
-        src_c6 = LD_SP(c_nxt6line);
-        src_c7 = LD_SP(c_nxt7line);
+        aa += 4;
+        bb += 8;
     }
 
     a -= 32;
@@ -794,8 +579,7 @@ static void ssolve_4x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
     src_b = LD_SP(b + 32);
     SPLATI_W4_SP(src_b, src_b32, src_b33, src_b34, src_b35);
-    src_b36 = __msa_cast_to_vector_float(*(b + 36));
-    src_b36 = (v4f32) __msa_splati_w((v4i32) src_b36, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 36), src_b36);
 
     src_b = LD_SP(b + 24);
     SPLATI_W4_SP(src_b, src_b24, src_b25, src_b26, src_b27);
@@ -805,12 +589,9 @@ static void ssolve_4x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b17 = (v4f32) __msa_splati_w((v4i32) src_b16, 1);
     src_b16 = (v4f32) __msa_splati_w((v4i32) src_b16, 0);
 
-    src_b9 = __msa_cast_to_vector_float(*(b + 9));
-    src_b9 = (v4f32) __msa_splati_w((v4i32) src_b9, 0);
-    src_b8 = __msa_cast_to_vector_float(*(b + 8));
-    src_b8 = (v4f32) __msa_splati_w((v4i32) src_b8, 0);
-    src_b0 = __msa_cast_to_vector_float(*(b + 0));
-    src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 9), src_b9);
+    COPY_FLOAT_TO_VECTOR(*(b + 8), src_b8);
+    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
 
     src_c7 *= src_b63;
     src_c6 -= src_c7 * src_b62;
@@ -871,89 +652,60 @@ static void ssolve_4x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_4x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     v4f32 src_c0, src_c1, src_c2, src_c3, src_b;
     v4f32 src_b0, src_b4, src_b5, src_b8, src_b9, src_b10, src_b12, src_b13;
-    v4f32 src_b14, src_b15;
+    v4f32 src_b14, src_b15, src_a, src_b1, src_b2, src_b3;
     FLOAT *c_nxt1line = c + ldc;
     FLOAT *c_nxt2line = c + 2 * ldc;
     FLOAT *c_nxt3line = c + 3 * ldc;
 
-    if (bk > 0)
+    src_c0 = LD_SP(c);
+    src_c1 = LD_SP(c_nxt1line);
+    src_c2 = LD_SP(c_nxt2line);
+    src_c3 = LD_SP(c_nxt3line);
+
+    for (k = 0; k < (bk >> 1); k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        v4f32 src_a, src_b1, src_b2, src_b3, res0, res1, res2, res3;
+        src_a = LD_SP(aa);
+
+        src_b = LD_SP(bb);
+        SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
+
+        src_c0 -= src_a * src_b0;
+        src_c1 -= src_a * src_b1;
+        src_c2 -= src_a * src_b2;
+        src_c3 -= src_a * src_b3;
+
+        aa += 4;
+        bb += 4;
 
         src_a = LD_SP(aa);
 
         src_b = LD_SP(bb);
         SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        res0 = src_a * src_b0;
-        res1 = src_a * src_b1;
-        res2 = src_a * src_b2;
-        res3 = src_a * src_b3;
 
-        for (k = ((bk - 1) >> 1); k--;)
-        {
-            aa += 4;
-            bb += 4;
+        src_c0 -= src_a * src_b0;
+        src_c1 -= src_a * src_b1;
+        src_c2 -= src_a * src_b2;
+        src_c3 -= src_a * src_b3;
 
-            src_a = LD_SP(aa);
-
-            src_b = LD_SP(bb);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-
-            res0 += src_a * src_b0;
-            res1 += src_a * src_b1;
-            res2 += src_a * src_b2;
-            res3 += src_a * src_b3;
-
-            aa += 4;
-            bb += 4;
-
-            src_a = LD_SP(aa);
-
-            src_b = LD_SP(bb);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-
-            res0 += src_a * src_b0;
-            res1 += src_a * src_b1;
-            res2 += src_a * src_b2;
-            res3 += src_a * src_b3;
-        }
-
-        if ((bk - 1) & 1)
-        {
-            aa += 4;
-            bb += 4;
-
-            src_a = LD_SP(aa);
-
-            src_b = LD_SP(bb);
-            SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-
-            res0 += src_a * src_b0;
-            res1 += src_a * src_b1;
-            res2 += src_a * src_b2;
-            res3 += src_a * src_b3;
-        }
-
-        src_c0 = LD_SP(c);
-        src_c1 = LD_SP(c_nxt1line);
-        src_c2 = LD_SP(c_nxt2line);
-        src_c3 = LD_SP(c_nxt3line);
-
-        src_c0 -= res0;
-        src_c1 -= res1;
-        src_c2 -= res2;
-        src_c3 -= res3;
+        aa += 4;
+        bb += 4;
     }
-    else
+
+    if (bk & 1)
     {
-        src_c0 = LD_SP(c);
-        src_c1 = LD_SP(c_nxt1line);
-        src_c2 = LD_SP(c_nxt2line);
-        src_c3 = LD_SP(c_nxt3line);
+        src_a = LD_SP(aa);
+
+        src_b = LD_SP(bb);
+        SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
+
+        src_c0 -= src_a * src_b0;
+        src_c1 -= src_a * src_b1;
+        src_c2 -= src_a * src_b2;
+        src_c3 -= src_a * src_b3;
     }
 
     a -= 16;
@@ -965,12 +717,9 @@ static void ssolve_4x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b10 = (v4f32) __msa_splati_w((v4i32) src_b8, 2);
     src_b9 = (v4f32) __msa_splati_w((v4i32) src_b8, 1);
     src_b8 = (v4f32) __msa_splati_w((v4i32) src_b8, 0);
-    src_b5 = __msa_cast_to_vector_float(*(b + 5));
-    src_b5 = (v4f32) __msa_splati_w((v4i32) src_b5, 0);
-    src_b4 = __msa_cast_to_vector_float(*(b + 4));
-    src_b4 = (v4f32) __msa_splati_w((v4i32) src_b4, 0);
-    src_b0 = __msa_cast_to_vector_float(*(b + 0));
-    src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 5), src_b5);
+    COPY_FLOAT_TO_VECTOR(*(b + 4), src_b4);
+    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
 
     src_c3 *= src_b15;
     src_c2 -= src_c3 * src_b14;
@@ -996,83 +745,106 @@ static void ssolve_4x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_4x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
-    v4f32 src_c0, src_c1, src_b0, src_b2, src_b3;
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
+    v4f32 src_a, src_b1, src_c0, src_c1, src_b0, src_b2, src_b3;
     FLOAT *c_nxt1line = c + ldc;
 
-    if (bk > 0)
+    src_c0 = LD_SP(c);
+    src_c1 = LD_SP(c_nxt1line);
+
+    for (k = 0; k < (bk >> 2); k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        v4f32 src_a, src_b1, res0, res1;
+        src_a = LD_SP(aa);
+        src_b0 = LD_SP(bb);
+        src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
+        src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+
+        src_c0 -= src_a * src_b0;
+        src_c1 -= src_a * src_b1;
+
+        aa += 4;
+        bb += 2;
 
         src_a = LD_SP(aa);
         src_b0 = LD_SP(bb);
         src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
         src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
 
-        res0 = src_a * src_b0;
-        res1 = src_a * src_b1;
+        src_c0 -= src_a * src_b0;
+        src_c1 -= src_a * src_b1;
 
-        for (k = ((bk - 1) >> 1); k--;)
-        {
-            aa += 4;
-            bb += 2;
+        aa += 4;
+        bb += 2;
 
-            src_a = LD_SP(aa);
-            src_b0 = LD_SP(bb);
-            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+        src_a = LD_SP(aa);
+        src_b0 = LD_SP(bb);
+        src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
+        src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
 
-            res0 += src_a * src_b0;
-            res1 += src_a * src_b1;
+        src_c0 -= src_a * src_b0;
+        src_c1 -= src_a * src_b1;
 
-            aa += 4;
-            bb += 2;
+        aa += 4;
+        bb += 2;
 
-            src_a = LD_SP(aa);
-            src_b0 = LD_SP(bb);
-            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+        src_a = LD_SP(aa);
+        src_b0 = LD_SP(bb);
+        src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
+        src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
 
-            res0 += src_a * src_b0;
-            res1 += src_a * src_b1;
-        }
+        src_c0 -= src_a * src_b0;
+        src_c1 -= src_a * src_b1;
 
-        if ((bk - 1) & 1)
-        {
-            aa += 4;
-            bb += 2;
-
-            src_a = LD_SP(aa);
-            src_b0 = LD_SP(bb);
-            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
-            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
-
-            res0 += src_a * src_b0;
-            res1 += src_a * src_b1;
-        }
-
-        src_c0 = LD_SP(c);
-        src_c1 = LD_SP(c_nxt1line);
-
-        src_c0 -= res0;
-        src_c1 -= res1;
+        aa += 4;
+        bb += 2;
     }
-    else
+
+    if (bk & 3)
     {
-        src_c0 = LD_SP(c);
-        src_c1 = LD_SP(c_nxt1line);
+        if (bk & 2)
+        {
+            src_a = LD_SP(aa);
+            src_b0 = LD_SP(bb);
+            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
+            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+
+            src_c0 -= src_a * src_b0;
+            src_c1 -= src_a * src_b1;
+
+            aa += 4;
+            bb += 2;
+
+            src_a = LD_SP(aa);
+            src_b0 = LD_SP(bb);
+            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
+            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+
+            src_c0 -= src_a * src_b0;
+            src_c1 -= src_a * src_b1;
+
+            aa += 4;
+            bb += 2;
+        }
+
+        if (bk & 1)
+        {
+            src_a = LD_SP(aa);
+            src_b0 = LD_SP(bb);
+            src_b1 = (v4f32) __msa_splati_w((v4i32) src_b0, 1);
+            src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+
+            src_c0 -= src_a * src_b0;
+            src_c1 -= src_a * src_b1;
+        }
     }
 
     a -= 8;
     b -= 4;
 
-    src_b3 = __msa_cast_to_vector_float(*(b + 3));
-    src_b3 = (v4f32) __msa_splati_w((v4i32) src_b3, 0);
-    src_b2 = __msa_cast_to_vector_float(*(b + 2));
-    src_b2 = (v4f32) __msa_splati_w((v4i32) src_b2, 0);
-    src_b0 = __msa_cast_to_vector_float(*(b + 0));
-    src_b0 = (v4f32) __msa_splati_w((v4i32) src_b0, 0);
+    COPY_FLOAT_TO_VECTOR(*(b + 3), src_b3);
+    COPY_FLOAT_TO_VECTOR(*(b + 2), src_b2);
+    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
 
     src_c1 *= src_b3;
     src_c0 -= src_c1 * src_b2;
@@ -1086,6 +858,8 @@ static void ssolve_4x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_4x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, c0, c1, c2, c3;
 
     c0 = *(c + 0);
@@ -1093,32 +867,15 @@ static void ssolve_4x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
     c2 = *(c + 2);
     c3 = *(c + 3);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT t0, t1, t2, t3;
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[1] * bb[0];
+        c2 -= aa[2] * bb[0];
+        c3 -= aa[3] * bb[0];
 
-        t0 = aa[0] * bb[0];
-        t1 = aa[1] * bb[0];
-        t2 = aa[2] * bb[0];
-        t3 = aa[3] * bb[0];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 4;
-            bb += 1;
-
-            t0 += aa[0] * bb[0];
-            t1 += aa[1] * bb[0];
-            t2 += aa[2] * bb[0];
-            t3 += aa[3] * bb[0];
-        }
-
-        c0 -= t0;
-        c1 -= t1;
-        c2 -= t2;
-        c3 -= t3;
+        aa += 4;
+        bb += 1;
     }
 
     a -= 4;
@@ -1144,6 +901,8 @@ static void ssolve_4x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 
 static void ssolve_2x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, b8, b9, b16, b17, b18, b24, b25, b26, b27, b32, b33, b34, b35;
     FLOAT b36, b40, b41, b42, b43, b44, b45, b48, b49, b50, b51, b52, b53, b54;
     FLOAT b56, b57, b58, b59, b60, b61, b62, b63, c0_nxt7, c1_nxt7;
@@ -1167,68 +926,27 @@ static void ssolve_2x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     c0_nxt7 = *(c + 0 + 7 * ldc);
     c1_nxt7 = *(c + 1 + 7 * ldc);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT res[16];
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[1] * bb[0];
+        c0_nxt1 -= aa[0] * bb[1];
+        c1_nxt1 -= aa[1] * bb[1];
+        c0_nxt2 -= aa[0] * bb[2];
+        c1_nxt2 -= aa[1] * bb[2];
+        c0_nxt3 -= aa[0] * bb[3];
+        c1_nxt3 -= aa[1] * bb[3];
+        c0_nxt4 -= aa[0] * bb[4];
+        c1_nxt4 -= aa[1] * bb[4];
+        c0_nxt5 -= aa[0] * bb[5];
+        c1_nxt5 -= aa[1] * bb[5];
+        c0_nxt6 -= aa[0] * bb[6];
+        c1_nxt6 -= aa[1] * bb[6];
+        c0_nxt7 -= aa[0] * bb[7];
+        c1_nxt7 -= aa[1] * bb[7];
 
-        res[0] = aa[0] * bb[0];
-        res[1] = aa[1] * bb[0];
-        res[2] = aa[0] * bb[1];
-        res[3] = aa[1] * bb[1];
-        res[4] = aa[0] * bb[2];
-        res[5] = aa[1] * bb[2];
-        res[6] = aa[0] * bb[3];
-        res[7] = aa[1] * bb[3];
-        res[8] = aa[0] * bb[4];
-        res[9] = aa[1] * bb[4];
-        res[10] = aa[0] * bb[5];
-        res[11] = aa[1] * bb[5];
-        res[12] = aa[0] * bb[6];
-        res[13] = aa[1] * bb[6];
-        res[14] = aa[0] * bb[7];
-        res[15] = aa[1] * bb[7];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 2;
-            bb += 8;
-
-            res[0] += aa[0] * bb[0];
-            res[1] += aa[1] * bb[0];
-            res[2] += aa[0] * bb[1];
-            res[3] += aa[1] * bb[1];
-            res[4] += aa[0] * bb[2];
-            res[5] += aa[1] * bb[2];
-            res[6] += aa[0] * bb[3];
-            res[7] += aa[1] * bb[3];
-            res[8] += aa[0] * bb[4];
-            res[9] += aa[1] * bb[4];
-            res[10] += aa[0] * bb[5];
-            res[11] += aa[1] * bb[5];
-            res[12] += aa[0] * bb[6];
-            res[13] += aa[1] * bb[6];
-            res[14] += aa[0] * bb[7];
-            res[15] += aa[1] * bb[7];
-        }
-
-        c0 -= res[0];
-        c1 -= res[1];
-        c0_nxt1 -= res[2];
-        c1_nxt1 -= res[3];
-        c0_nxt2 -= res[4];
-        c1_nxt2 -= res[5];
-        c0_nxt3 -= res[6];
-        c1_nxt3 -= res[7];
-        c0_nxt4 -= res[8];
-        c1_nxt4 -= res[9];
-        c0_nxt5 -= res[10];
-        c1_nxt5 -= res[11];
-        c0_nxt6 -= res[12];
-        c1_nxt6 -= res[13];
-        c0_nxt7 -= res[14];
-        c1_nxt7 -= res[15];
+        aa += 2;
+        bb += 8;
     }
 
     a -= 16;
@@ -1416,6 +1134,8 @@ static void ssolve_2x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_2x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, b4, b5, b8, b9, b10, b12, b13, b14, b15;
     FLOAT c0, c1, c0_nxt1, c1_nxt1, c0_nxt2, c1_nxt2, c0_nxt3, c1_nxt3;
 
@@ -1428,44 +1148,19 @@ static void ssolve_2x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     c0_nxt3 = *(c + 0 + 3 * ldc);
     c1_nxt3 = *(c + 1 + 3 * ldc);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT res[8];
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[1] * bb[0];
+        c0_nxt1 -= aa[0] * bb[1];
+        c1_nxt1 -= aa[1] * bb[1];
+        c0_nxt2 -= aa[0] * bb[2];
+        c1_nxt2 -= aa[1] * bb[2];
+        c0_nxt3 -= aa[0] * bb[3];
+        c1_nxt3 -= aa[1] * bb[3];
 
-        res[0] = aa[0] * bb[0];
-        res[1] = aa[1] * bb[0];
-        res[2] = aa[0] * bb[1];
-        res[3] = aa[1] * bb[1];
-        res[4] = aa[0] * bb[2];
-        res[5] = aa[1] * bb[2];
-        res[6] = aa[0] * bb[3];
-        res[7] = aa[1] * bb[3];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 2;
-            bb += 4;
-
-            res[0] += aa[0] * bb[0];
-            res[1] += aa[1] * bb[0];
-            res[2] += aa[0] * bb[1];
-            res[3] += aa[1] * bb[1];
-            res[4] += aa[0] * bb[2];
-            res[5] += aa[1] * bb[2];
-            res[6] += aa[0] * bb[3];
-            res[7] += aa[1] * bb[3];
-        }
-
-        c0 -= res[0];
-        c1 -= res[1];
-        c0_nxt1 -= res[2];
-        c1_nxt1 -= res[3];
-        c0_nxt2 -= res[4];
-        c1_nxt2 -= res[5];
-        c0_nxt3 -= res[6];
-        c1_nxt3 -= res[7];
+        aa += 2;
+        bb += 4;
     }
 
     a -= 8;
@@ -1515,6 +1210,8 @@ static void ssolve_2x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_2x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, b2, b3, c0, c1, c0_nxt, c1_nxt;
 
     c0 = *(c + 0);
@@ -1522,32 +1219,15 @@ static void ssolve_2x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     c0_nxt = *(c + 0 + ldc);
     c1_nxt = *(c + 1 + ldc);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT res[4];
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[1] * bb[0];
+        c0_nxt -= aa[0] * bb[1];
+        c1_nxt -= aa[1] * bb[1];
 
-        res[0] = aa[0] * bb[0];
-        res[1] = aa[1] * bb[0];
-        res[2] = aa[0] * bb[1];
-        res[3] = aa[1] * bb[1];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 2;
-            bb += 2;
-
-            res[0] += aa[0] * bb[0];
-            res[1] += aa[1] * bb[0];
-            res[2] += aa[0] * bb[1];
-            res[3] += aa[1] * bb[1];
-        }
-
-        c0 -= res[0];
-        c1 -= res[1];
-        c0_nxt -= res[2];
-        c1_nxt -= res[3];
+        aa += 2;
+        bb += 2;
     }
 
     a -= 4;
@@ -1579,31 +1259,20 @@ static void ssolve_2x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_2x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, c0, c1;
 
     c0 = *(c + 0);
     c1 = *(c + 1);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT res0, res1;
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[1] * bb[0];
 
-        res0 = aa[0] * bb[0];
-        res1 = aa[1] * bb[0];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 2;
-            bb += 1;
-
-            res0 += aa[0] * bb[0];
-            res1 += aa[1] * bb[0];
-        }
-
-        c0 -= res0;
-        c1 -= res1;
+        aa += 2;
+        bb += 1;
     }
 
     a -= 2;
@@ -1623,6 +1292,8 @@ static void ssolve_2x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 
 static void ssolve_1x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, b8, b9, b16, b17, b18, b24, b25, b26, b27, b32, b33, b34, b35;
     FLOAT b36, b40, b41, b42, b43, b44, b45, b48, b49, b50, b51, b52, b53, b54;
     FLOAT b56, b57, b58, b59, b60, b61, b62, b63;
@@ -1637,44 +1308,19 @@ static void ssolve_1x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     c6 = *(c + 6 * ldc);
     c7 = *(c + 7 * ldc);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT t0, t1, t2, t3, t4, t5, t6, t7;
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[0] * bb[1];
+        c2 -= aa[0] * bb[2];
+        c3 -= aa[0] * bb[3];
+        c4 -= aa[0] * bb[4];
+        c5 -= aa[0] * bb[5];
+        c6 -= aa[0] * bb[6];
+        c7 -= aa[0] * bb[7];
 
-        t0 = aa[0] * bb[0];
-        t1 = aa[0] * bb[1];
-        t2 = aa[0] * bb[2];
-        t3 = aa[0] * bb[3];
-        t4 = aa[0] * bb[4];
-        t5 = aa[0] * bb[5];
-        t6 = aa[0] * bb[6];
-        t7 = aa[0] * bb[7];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 1;
-            bb += 8;
-
-            t0 += aa[0] * bb[0];
-            t1 += aa[0] * bb[1];
-            t2 += aa[0] * bb[2];
-            t3 += aa[0] * bb[3];
-            t4 += aa[0] * bb[4];
-            t5 += aa[0] * bb[5];
-            t6 += aa[0] * bb[6];
-            t7 += aa[0] * bb[7];
-        }
-
-        c0 -= t0;
-        c1 -= t1;
-        c2 -= t2;
-        c3 -= t3;
-        c4 -= t4;
-        c5 -= t5;
-        c6 -= t6;
-        c7 -= t7;
+        aa += 1;
+        bb += 8;
     }
 
     a -= 8;
@@ -1782,6 +1428,8 @@ static void ssolve_1x8_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_1x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, b4, b5, b8, b9, b10, b12, b13, b14, b15;
     FLOAT c0, c1, c2, c3;
 
@@ -1790,32 +1438,15 @@ static void ssolve_1x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     c2 = *(c + 2 * ldc);
     c3 = *(c + 3 * ldc);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT res0, res1, res2, res3;
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[0] * bb[1];
+        c2 -= aa[0] * bb[2];
+        c3 -= aa[0] * bb[3];
 
-        res0 = aa[0] * bb[0];
-        res1 = aa[0] * bb[1];
-        res2 = aa[0] * bb[2];
-        res3 = aa[0] * bb[3];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 1;
-            bb += 4;
-
-            res0 += aa[0] * bb[0];
-            res1 += aa[0] * bb[1];
-            res2 += aa[0] * bb[2];
-            res3 += aa[0] * bb[3];
-        }
-
-        c0 -= res0;
-        c1 -= res1;
-        c2 -= res2;
-        c3 -= res3;
+        aa += 1;
+        bb += 4;
     }
 
     a -= 4;
@@ -1850,31 +1481,20 @@ static void ssolve_1x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_1x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
+    BLASLONG k;
+    FLOAT *aa = a, *bb = b;
     FLOAT b0, b2, b3, c0, c1;
 
     c0 = *(c + 0);
     c1 = *(c + ldc);
 
-    if (bk > 0)
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT res0, res1;
+        c0 -= aa[0] * bb[0];
+        c1 -= aa[0] * bb[1];
 
-        res0 = aa[0] * bb[0];
-        res1 = aa[0] * bb[1];
-
-        for (k = (bk - 1); k--;)
-        {
-            aa += 1;
-            bb += 2;
-
-            res0 += aa[0] * bb[0];
-            res1 += aa[0] * bb[1];
-        }
-
-        c0 -= res0;
-        c1 -= res1;
+        aa += 1;
+        bb += 2;
     }
 
     a -= 2;
@@ -1898,23 +1518,11 @@ static void ssolve_1x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
 static void ssolve_1x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
 {
-    if (bk > 0)
+    BLASLONG k;
+
+    for (k = 0; k < bk; k++)
     {
-        BLASLONG k;
-        FLOAT *aa = a, *bb = b;
-        FLOAT res;
-
-        res = *aa * *bb;
-
-        for (k = (bk - 1); k--;)
-        {
-            aa++;
-            bb++;
-
-            res += *aa * *bb;
-        }
-
-        *c -= res;
+        *c -= a[k] * b[k];
     }
 
     *c *= *(a - 1);

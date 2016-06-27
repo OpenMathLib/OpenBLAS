@@ -42,6 +42,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ST_D(RTYPE, in, pdst) *((RTYPE *)(pdst)) = (in)
 #define ST_DP(...) ST_D(v2f64, __VA_ARGS__)
 
+#define COPY_FLOAT_TO_VECTOR(a, b)            \
+    b = __msa_cast_to_vector_float(a);        \
+    b = (v4f32) __msa_splati_w((v4i32) b, 0);
+
+
 /* Description : Load 2 vectors of single precision floating point elements with stride
    Arguments   : Inputs  - psrc, stride
                  Outputs - out0, out1
@@ -178,7 +183,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     out2 = (RTYPE) __msa_ilvr_d((v2i64) s3_m, (v2i64) s1_m);        \
     out3 = (RTYPE) __msa_ilvl_d((v2i64) s3_m, (v2i64) s1_m);        \
 }
-
 #define TRANSPOSE4x4_SP_SP(...) TRANSPOSE4x4_W(v4f32, __VA_ARGS__)
 
 #endif  /* __MACROS_MSA_H__ */
