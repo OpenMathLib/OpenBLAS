@@ -32,9 +32,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
           FLOAT *  __restrict dst)
 {
     BLASLONG i, j;
-    FLOAT *psrc0, *psrc1, *psrc2, *psrc3, *psrc4;
-    FLOAT *psrc5, *psrc6, *psrc7, *psrc8;
-    FLOAT *pdst;
+    FLOAT *psrc0, *psrc1, *psrc2, *psrc3, *psrc4, *psrc5, *psrc6, *psrc7;
+    FLOAT *psrc8, *pdst;
     v2f64 src0, src1, src2, src3, src4, src5, src6, src7;
     v2f64 src8, src9, src10, src11, src12, src13, src14, src15;
     v2f64 dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7;
@@ -56,80 +55,51 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
         for (i = (m >> 3); i--;)
         {
-            LD_DP2(psrc1, 2, src0, src1);
-            LD_DP2(psrc2, 2, src2, src3);
-            LD_DP2(psrc3, 2, src4, src5);
-            LD_DP2(psrc4, 2, src6, src7);
-            LD_DP2(psrc5, 2, src8, src9);
-            LD_DP2(psrc6, 2, src10, src11);
-            LD_DP2(psrc7, 2, src12, src13);
-            LD_DP2(psrc8, 2, src14, src15);
+            LD_DP2_INC(psrc1, 2, src0, src1);
+            LD_DP2_INC(psrc2, 2, src2, src3);
+            LD_DP2_INC(psrc3, 2, src4, src5);
+            LD_DP2_INC(psrc4, 2, src6, src7);
+            LD_DP2_INC(psrc5, 2, src8, src9);
+            LD_DP2_INC(psrc6, 2, src10, src11);
+            LD_DP2_INC(psrc7, 2, src12, src13);
+            LD_DP2_INC(psrc8, 2, src14, src15);
 
-            dst0 = (v2f64) __msa_ilvr_d((v2i64) src2, (v2i64) src0);
-            dst1 = (v2f64) __msa_ilvr_d((v2i64) src6, (v2i64) src4);
-            dst2 = (v2f64) __msa_ilvr_d((v2i64) src10, (v2i64) src8);
-            dst3 = (v2f64) __msa_ilvr_d((v2i64) src14, (v2i64) src12);
-            dst4 = (v2f64) __msa_ilvl_d((v2i64) src2, (v2i64) src0);
-            dst5 = (v2f64) __msa_ilvl_d((v2i64) src6, (v2i64) src4);
-            dst6 = (v2f64) __msa_ilvl_d((v2i64) src10, (v2i64) src8);
-            dst7 = (v2f64) __msa_ilvl_d((v2i64) src14, (v2i64) src12);
+            ILVRL_D2_DP(src2, src0, dst0, dst4);
+            ILVRL_D2_DP(src6, src4, dst1, dst5);
+            ILVRL_D2_DP(src10, src8, dst2, dst6);
+            ILVRL_D2_DP(src14, src12, dst3, dst7);
 
-            ST_DP8(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst, 2);
+            ST_DP8_INC(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst, 2);
 
-            dst0 = (v2f64) __msa_ilvr_d((v2i64) src3, (v2i64) src1);
-            dst1 = (v2f64) __msa_ilvr_d((v2i64) src7, (v2i64) src5);
-            dst2 = (v2f64) __msa_ilvr_d((v2i64) src11, (v2i64) src9);
-            dst3 = (v2f64) __msa_ilvr_d((v2i64) src15, (v2i64) src13);
-            dst4 = (v2f64) __msa_ilvl_d((v2i64) src3, (v2i64) src1);
-            dst5 = (v2f64) __msa_ilvl_d((v2i64) src7, (v2i64) src5);
-            dst6 = (v2f64) __msa_ilvl_d((v2i64) src11, (v2i64) src9);
-            dst7 = (v2f64) __msa_ilvl_d((v2i64) src15, (v2i64) src13);
+            ILVRL_D2_DP(src3, src1, dst0, dst4);
+            ILVRL_D2_DP(src7, src5, dst1, dst5);
+            ILVRL_D2_DP(src11, src9, dst2, dst6);
+            ILVRL_D2_DP(src15, src13, dst3, dst7);
 
-            ST_DP8(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst + 16,
-                   2);
+            ST_DP8_INC(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst, 2);
 
-            LD_DP2(psrc1 + 4, 2, src0, src1);
-            LD_DP2(psrc2 + 4, 2, src2, src3);
-            LD_DP2(psrc3 + 4, 2, src4, src5);
-            LD_DP2(psrc4 + 4, 2, src6, src7);
-            LD_DP2(psrc5 + 4, 2, src8, src9);
-            LD_DP2(psrc6 + 4, 2, src10, src11);
-            LD_DP2(psrc7 + 4, 2, src12, src13);
-            LD_DP2(psrc8 + 4, 2, src14, src15);
+            LD_DP2_INC(psrc1, 2, src0, src1);
+            LD_DP2_INC(psrc2, 2, src2, src3);
+            LD_DP2_INC(psrc3, 2, src4, src5);
+            LD_DP2_INC(psrc4, 2, src6, src7);
+            LD_DP2_INC(psrc5, 2, src8, src9);
+            LD_DP2_INC(psrc6, 2, src10, src11);
+            LD_DP2_INC(psrc7, 2, src12, src13);
+            LD_DP2_INC(psrc8, 2, src14, src15);
 
-            dst0 = (v2f64) __msa_ilvr_d((v2i64) src2, (v2i64) src0);
-            dst1 = (v2f64) __msa_ilvr_d((v2i64) src6, (v2i64) src4);
-            dst2 = (v2f64) __msa_ilvr_d((v2i64) src10, (v2i64) src8);
-            dst3 = (v2f64) __msa_ilvr_d((v2i64) src14, (v2i64) src12);
-            dst4 = (v2f64) __msa_ilvl_d((v2i64) src2, (v2i64) src0);
-            dst5 = (v2f64) __msa_ilvl_d((v2i64) src6, (v2i64) src4);
-            dst6 = (v2f64) __msa_ilvl_d((v2i64) src10, (v2i64) src8);
-            dst7 = (v2f64) __msa_ilvl_d((v2i64) src14, (v2i64) src12);
+            ILVRL_D2_DP(src2, src0, dst0, dst4);
+            ILVRL_D2_DP(src6, src4, dst1, dst5);
+            ILVRL_D2_DP(src10, src8, dst2, dst6);
+            ILVRL_D2_DP(src14, src12, dst3, dst7);
 
-            ST_DP8(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst + 32,
-                   2);
+            ST_DP8_INC(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst, 2);
 
-            dst0 = (v2f64) __msa_ilvr_d((v2i64) src3, (v2i64) src1);
-            dst1 = (v2f64) __msa_ilvr_d((v2i64) src7, (v2i64) src5);
-            dst2 = (v2f64) __msa_ilvr_d((v2i64) src11, (v2i64) src9);
-            dst3 = (v2f64) __msa_ilvr_d((v2i64) src15, (v2i64) src13);
-            dst4 = (v2f64) __msa_ilvl_d((v2i64) src3, (v2i64) src1);
-            dst5 = (v2f64) __msa_ilvl_d((v2i64) src7, (v2i64) src5);
-            dst6 = (v2f64) __msa_ilvl_d((v2i64) src11, (v2i64) src9);
-            dst7 = (v2f64) __msa_ilvl_d((v2i64) src15, (v2i64) src13);
+            ILVRL_D2_DP(src3, src1, dst0, dst4);
+            ILVRL_D2_DP(src7, src5, dst1, dst5);
+            ILVRL_D2_DP(src11, src9, dst2, dst6);
+            ILVRL_D2_DP(src15, src13, dst3, dst7);
 
-            ST_DP8(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst + 48,
-                   2);
-
-            psrc1 += 8;
-            psrc2 += 8;
-            psrc3 += 8;
-            psrc4 += 8;
-            psrc5 += 8;
-            psrc6 += 8;
-            psrc7 += 8;
-            psrc8 += 8;
-            pdst += 64;
+            ST_DP8_INC(dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7, pdst, 2);
         }
 
         for (i = (m & 7); i--;)
@@ -155,27 +125,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
         for (i = (m >> 2); i--;)
         {
-            LD_DP2(psrc1, 2, src0, src1);
-            LD_DP2(psrc2, 2, src2, src3);
-            LD_DP2(psrc3, 2, src4, src5);
-            LD_DP2(psrc4, 2, src6, src7);
-            psrc1 += 4;
-            psrc2 += 4;
-            psrc3 += 4;
-            psrc4 += 4;
+            LD_DP2_INC(psrc1, 2, src0, src1);
+            LD_DP2_INC(psrc2, 2, src2, src3);
+            LD_DP2_INC(psrc3, 2, src4, src5);
+            LD_DP2_INC(psrc4, 2, src6, src7);
 
-            dst0 = (v2f64) __msa_ilvr_d((v2i64) src2, (v2i64) src0);
-            dst1 = (v2f64) __msa_ilvr_d((v2i64) src6, (v2i64) src4);
-            dst2 = (v2f64) __msa_ilvr_d((v2i64) src3, (v2i64) src1);
-            dst3 = (v2f64) __msa_ilvr_d((v2i64) src7, (v2i64) src5);
+            ILVRL_D2_DP(src2, src0, dst0, dst4);
+            ILVRL_D2_DP(src6, src4, dst1, dst5);
+            ILVRL_D2_DP(src3, src1, dst2, dst6);
+            ILVRL_D2_DP(src7, src5, dst3, dst7);
 
-            dst4 = (v2f64) __msa_ilvl_d((v2i64) src2, (v2i64) src0);
-            dst5 = (v2f64) __msa_ilvl_d((v2i64) src6, (v2i64) src4);
-            dst6 = (v2f64) __msa_ilvl_d((v2i64) src3, (v2i64) src1);
-            dst7 = (v2f64) __msa_ilvl_d((v2i64) src7, (v2i64) src5);
-
-            ST_DP8(dst0, dst1, dst4, dst5, dst2, dst3, dst6, dst7, pdst, 2);
-            pdst += 16;
+            ST_DP8_INC(dst0, dst1, dst4, dst5, dst2, dst3, dst6, dst7, pdst, 2);
         }
 
         for (i = (m & 3); i--;)
@@ -200,11 +160,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
             psrc1 += 2;
             psrc2 += 2;
 
-            dst0 = (v2f64) __msa_ilvr_d((v2i64) src1, (v2i64) src0);
-            dst1 = (v2f64) __msa_ilvl_d((v2i64) src1, (v2i64) src0);
+            ILVRL_D2_DP(src1, src0, dst0, dst1);
 
-            ST_DP2(dst0, dst1, pdst, 2);
-            pdst += 4;
+            ST_DP2_INC(dst0, dst1, pdst, 2);
         }
 
         if (m & 1)

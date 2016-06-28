@@ -28,89 +28,96 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "macros_msa.h"
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
-          FLOAT * __restrict dst)
+int CNAME(BLASLONG m, BLASLONG n, FLOAT *src, BLASLONG lda, FLOAT *dst)
 {
     BLASLONG i, j;
-    FLOAT *psrc0, *psrc1, *psrc2, *psrc3, *psrc4, *pdst;
-    v2f64 src0, src1, src2, src3, src4, src5, src6, src7;
-    v2f64 dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7;
+    FLOAT *psrc0;
+    FLOAT *psrc1, *psrc2;
+    FLOAT *pdst0;
+    FLOAT ctemp01, ctemp02, ctemp03, ctemp04;
+    v4f32 src0, src1, src2, src3;
 
     psrc0 = src;
-    pdst = dst;
+    pdst0 = dst;
+    lda *= 2;
 
     for (j = (n >> 2); j--;)
     {
         psrc1 = psrc0;
-        psrc2 = psrc1 + lda;
-        psrc3 = psrc2 + lda;
-        psrc4 = psrc3 + lda;
-        psrc0 += 4 * lda;
+        psrc2 = psrc0 + lda;
+        psrc0 += 8;
 
-        for (i = (m >> 2); i--;)
+        for (i = (m >> 1); i--;)
         {
-            LD_DP2_INC(psrc1, 2, src0, src1);
-            LD_DP2_INC(psrc2, 2, src2, src3);
-            LD_DP2_INC(psrc3, 2, src4, src5);
-            LD_DP2_INC(psrc4, 2, src6, src7);
-
-            ILVRL_D2_DP(src2, src0, dst0, dst4);
-            ILVRL_D2_DP(src6, src4, dst1, dst5);
-            ILVRL_D2_DP(src3, src1, dst2, dst6);
-            ILVRL_D2_DP(src7, src5, dst3, dst7);
-
-            ST_DP8_INC(dst0, dst1, dst4, dst5, dst2, dst3, dst6, dst7, pdst, 2);
+            LD_SP2(psrc1, 4, src0, src1);
+            LD_SP2(psrc2, 4, src2, src3);
+            ST_SP4_INC(src0, src1, src2, src3, pdst0, 4);
+            psrc1 += 2 * lda;
+            psrc2 += 2 * lda;
         }
 
-        for (i = (m & 3); i--;)
+        if (m & 1)
         {
-            *pdst++ = *psrc1++;
-            *pdst++ = *psrc2++;
-            *pdst++ = *psrc3++;
-            *pdst++ = *psrc4++;
+            LD_SP2(psrc1, 4, src0, src1);
+            ST_SP2_INC(src0, src1, pdst0, 4);
         }
     }
 
     if (n & 2)
     {
         psrc1 = psrc0;
-        psrc2 = psrc1 + lda;
-        psrc0 += 2 * lda;
+        psrc2 = psrc0 + lda;
+        psrc0 += 4;
 
-        for (i = (m >> 2); i--;)
+        for (i = (m >> 1); i--;)
         {
-            LD_DP2_INC(psrc1, 2, src0, src1);
-            LD_DP2_INC(psrc2, 2, src2, src3);
+            src0 = LD_SP(psrc1);
+            src1 = LD_SP(psrc2);
+            ST_SP2_INC(src0, src1, pdst0, 4);
 
-            ILVRL_D2_DP(src2, src0, dst0, dst4);
-            ILVRL_D2_DP(src3, src1, dst1, dst5);
-
-            ST_DP4_INC(dst0, dst4, dst1, dst5, pdst, 2);
+            psrc1 += 2 * lda;
+            psrc2 += 2 * lda;
         }
 
-        for (i = (m & 3); i--;)
+        if (m & 1)
         {
-            *pdst++ = *psrc1++;
-            *pdst++ = *psrc2++;
+            src0 = LD_SP(psrc1);
+            ST_SP(src0, pdst0);
+            pdst0 += 4;
         }
     }
 
     if (n & 1)
     {
         psrc1 = psrc0;
+        psrc2 = psrc0 + lda;
+        psrc0 += 2;
 
-        for (i = (m >> 2); i--;)
+        for (i = (m >> 1); i--;)
         {
-            LD_DP2(psrc1, 2, src0, src1);
-            psrc1 += 4;
+            ctemp01 = *(psrc1 + 0);
+            ctemp02 = *(psrc1 + 1);
+            ctemp03 = *(psrc2 + 0);
+            ctemp04 = *(psrc2 + 1);
 
-            ST_DP2(src0, src1, pdst, 2);
-            pdst += 4;
+            *(pdst0 + 0) = ctemp01;
+            *(pdst0 + 1) = ctemp02;
+            *(pdst0 + 2) = ctemp03;
+            *(pdst0 + 3) = ctemp04;
+
+            psrc1 += 2 * lda;
+            psrc2 += 2 * lda;
+            pdst0 += 4;
         }
 
-        for (i = (m & 3); i--;)
+        if (m & 1)
         {
-            *pdst++ = *psrc1++;
+            ctemp01 = *(psrc1 + 0);
+            ctemp02 = *(psrc1 + 1);
+
+            *(pdst0 + 0) = ctemp01;
+            *(pdst0 + 1) = ctemp02;
+            pdst0 += 2;
         }
     }
 

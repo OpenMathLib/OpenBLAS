@@ -144,7 +144,7 @@ static void ssolve_8x8_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
     src_b = LD_SP(b + 27);
     SPLATI_W4_SP(src_b, src_b27, src_b28, src_b29, src_b30);
-    COPY_FLOAT_TO_VECTOR(*(b + 31), src_b31);
+    src_b31 = COPY_FLOAT_TO_VECTOR(*(b + 31));
 
     src_c4 *= src_b18;
     src_c5 *= src_b18;
@@ -184,9 +184,9 @@ static void ssolve_8x8_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b46 = (v4f32) __msa_splati_w((v4i32) src_b45, 1);
     src_b45 = (v4f32) __msa_splati_w((v4i32) src_b45, 0);
 
-    COPY_FLOAT_TO_VECTOR(*(b + 54), src_b54);
-    COPY_FLOAT_TO_VECTOR(*(b + 55), src_b55);
-    COPY_FLOAT_TO_VECTOR(*(b + 63), src_b63);
+    src_b54 = COPY_FLOAT_TO_VECTOR(*(b + 54));
+    src_b55 = COPY_FLOAT_TO_VECTOR(*(b + 55));
+    src_b63 = COPY_FLOAT_TO_VECTOR(*(b + 63));
 
     src_c8 *= src_b36;
     src_c9 *= src_b36;
@@ -275,7 +275,7 @@ static void ssolve_8x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         b += 4;
     }
 
-    if (bk & 1)
+    if ((bk & 1) && (bk > 0))
     {
         LD_SP2(a, 4, src_a0, src_a1);
 
@@ -300,9 +300,9 @@ static void ssolve_8x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b7 = (v4f32) __msa_splati_w((v4i32) src_b5, 2);
     src_b6 = (v4f32) __msa_splati_w((v4i32) src_b5, 1);
     src_b5 = (v4f32) __msa_splati_w((v4i32) src_b5, 0);
-    COPY_FLOAT_TO_VECTOR(*(b + 10), src_b10);
-    COPY_FLOAT_TO_VECTOR(*(b + 11), src_b11);
-    COPY_FLOAT_TO_VECTOR(*(b + 15), src_b15);
+    src_b10 = COPY_FLOAT_TO_VECTOR(*(b + 10));
+    src_b11 = COPY_FLOAT_TO_VECTOR(*(b + 11));
+    src_b15 = COPY_FLOAT_TO_VECTOR(*(b + 15));
 
     src_c0 *= src_b0;
     src_c1 *= src_b0;
@@ -351,8 +351,8 @@ static void ssolve_8x2_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     {
         LD_SP2(a, 4, src_a0, src_a1);
 
-        COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
-        COPY_FLOAT_TO_VECTOR(*(b + 1), src_b1);
+        src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
+        src_b1 = COPY_FLOAT_TO_VECTOR(*(b + 1));
 
         src_c0 -= src_a0 * src_b0;
         src_c1 -= src_a1 * src_b0;
@@ -364,8 +364,8 @@ static void ssolve_8x2_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
         LD_SP2(a, 4, src_a0, src_a1);
 
-        COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
-        COPY_FLOAT_TO_VECTOR(*(b + 1), src_b1);
+        src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
+        src_b1 = COPY_FLOAT_TO_VECTOR(*(b + 1));
 
         src_c0 -= src_a0 * src_b0;
         src_c1 -= src_a1 * src_b0;
@@ -376,12 +376,12 @@ static void ssolve_8x2_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         b += 2;
     }
 
-    if (bk & 1)
+    if ((bk & 1) && (bk > 0))
     {
         LD_SP2(a, 4, src_a0, src_a1);
 
-        COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
-        COPY_FLOAT_TO_VECTOR(*(b + 1), src_b1);
+        src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
+        src_b1 = COPY_FLOAT_TO_VECTOR(*(b + 1));
 
         src_c0 -= src_a0 * src_b0;
         src_c1 -= src_a1 * src_b0;
@@ -392,9 +392,9 @@ static void ssolve_8x2_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         b += 2;
     }
 
-    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
-    COPY_FLOAT_TO_VECTOR(*(b + 1), src_b1);
-    COPY_FLOAT_TO_VECTOR(*(b + 3), src_b3);
+    src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
+    src_b1 = COPY_FLOAT_TO_VECTOR(*(b + 1));
+    src_b3 = COPY_FLOAT_TO_VECTOR(*(b + 3));
 
     src_c0 *= src_b0;
     src_c1 *= src_b0;
@@ -419,7 +419,7 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     {
         LD_SP2(a, 4, src_a0, src_a1);
 
-        COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+        src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
         src_c0 -= src_a0 * src_b0;
         src_c1 -= src_a1 * src_b0;
@@ -429,7 +429,7 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
         LD_SP2(a, 4, src_a0, src_a1);
 
-        COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+        src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
         src_c0 -= src_a0 * src_b0;
         src_c1 -= src_a1 * src_b0;
@@ -439,7 +439,7 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
         LD_SP2(a, 4, src_a0, src_a1);
 
-        COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+        src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
         src_c0 -= src_a0 * src_b0;
         src_c1 -= src_a1 * src_b0;
@@ -449,7 +449,7 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
         LD_SP2(a, 4, src_a0, src_a1);
 
-        COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+        src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
         src_c0 -= src_a0 * src_b0;
         src_c1 -= src_a1 * src_b0;
@@ -458,13 +458,13 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         b += 1;
     }
 
-    if (bk & 3)
+    if ((bk & 3) && (bk > 0))
     {
         if (bk & 2)
         {
             LD_SP2(a, 4, src_a0, src_a1);
 
-            COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+            src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
             src_c0 -= src_a0 * src_b0;
             src_c1 -= src_a1 * src_b0;
@@ -474,7 +474,7 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
             LD_SP2(a, 4, src_a0, src_a1);
 
-            COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+            src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
             src_c0 -= src_a0 * src_b0;
             src_c1 -= src_a1 * src_b0;
@@ -487,7 +487,7 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         {
             LD_SP2(a, 4, src_a0, src_a1);
 
-            COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+            src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
             src_c0 -= src_a0 * src_b0;
             src_c1 -= src_a1 * src_b0;
@@ -497,7 +497,7 @@ static void ssolve_8x1_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         }
     }
 
-    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
+    src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
 
     src_c0 *= src_b0;
     src_c1 *= src_b0;
@@ -574,7 +574,7 @@ static void ssolve_4x8_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
     src_b = LD_SP(b + 27);
     SPLATI_W4_SP(src_b, src_b27, src_b28, src_b29, src_b30);
-    COPY_FLOAT_TO_VECTOR(*(b + 31), src_b31);
+    src_b31 = COPY_FLOAT_TO_VECTOR(*(b + 31));
 
     src_b = LD_SP(b + 36);
     SPLATI_W4_SP(src_b, src_b36, src_b37, src_b38, src_b39);
@@ -584,9 +584,9 @@ static void ssolve_4x8_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b46 = (v4f32) __msa_splati_w((v4i32) src_b45, 1);
     src_b45 = (v4f32) __msa_splati_w((v4i32) src_b45, 0);
 
-    COPY_FLOAT_TO_VECTOR(*(b + 54), src_b54);
-    COPY_FLOAT_TO_VECTOR(*(b + 55), src_b55);
-    COPY_FLOAT_TO_VECTOR(*(b + 63), src_b63);
+    src_b54 = COPY_FLOAT_TO_VECTOR(*(b + 54));
+    src_b55 = COPY_FLOAT_TO_VECTOR(*(b + 55));
+    src_b63 = COPY_FLOAT_TO_VECTOR(*(b + 63));
 
     src_c0 *= src_b0;
     src_c1 -= src_c0 * src_b1;
@@ -686,7 +686,7 @@ static void ssolve_4x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         b += 4;
     }
 
-    if (bk & 1)
+    if ((bk & 1) && (bk > 0))
     {
         src_a0 = LD_SP(a);
 
@@ -707,9 +707,9 @@ static void ssolve_4x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b7 = (v4f32) __msa_splati_w((v4i32) src_b5, 2);
     src_b6 = (v4f32) __msa_splati_w((v4i32) src_b5, 1);
     src_b5 = (v4f32) __msa_splati_w((v4i32) src_b5, 0);
-    COPY_FLOAT_TO_VECTOR(*(b + 10), src_b10);
-    COPY_FLOAT_TO_VECTOR(*(b + 11), src_b11);
-    COPY_FLOAT_TO_VECTOR(*(b + 15), src_b15);
+    src_b10 = COPY_FLOAT_TO_VECTOR(*(b + 10));
+    src_b11 = COPY_FLOAT_TO_VECTOR(*(b + 11));
+    src_b15 = COPY_FLOAT_TO_VECTOR(*(b + 15));
 
     src_c0 *= src_b0;
     src_c1 -= src_c0 * src_b1;
@@ -789,7 +789,7 @@ static void ssolve_4x2_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         b += 2;
     }
 
-    if (bk & 3)
+    if ((bk & 3) && (bk > 0))
     {
         if (bk & 2)
         {
@@ -831,9 +831,9 @@ static void ssolve_4x2_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
         }
     }
 
-    COPY_FLOAT_TO_VECTOR(*(b + 0), src_b0);
-    COPY_FLOAT_TO_VECTOR(*(b + 1), src_b1);
-    COPY_FLOAT_TO_VECTOR(*(b + 3), src_b3);
+    src_b0 = COPY_FLOAT_TO_VECTOR(*(b + 0));
+    src_b1 = COPY_FLOAT_TO_VECTOR(*(b + 1));
+    src_b3 = COPY_FLOAT_TO_VECTOR(*(b + 3));
 
     src_c0 *= src_b0;
     src_c1 -= src_c0 * src_b1;
