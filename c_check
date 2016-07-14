@@ -79,8 +79,13 @@ if ($os eq "AIX") {
     $defined = 1;
 }
 
-if (($architecture eq "mips") || ($architecture eq "mips64")) {
-    $compiler_name .= " -mabi=32" if ($binary eq "32");
+if ($architecture eq "mips") {
+    $compiler_name .= " -mabi=32";
+    $defined = 1;
+}
+
+if ($architecture eq "mips64") {
+    $compiler_name .= " -mabi=n32" if ($binary eq "32");
     $compiler_name .= " -mabi=64" if ($binary eq "64");
     $defined = 1;
 }
