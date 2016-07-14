@@ -28,124 +28,115 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "macros_msa.h"
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
-          FLOAT * __restrict dst)
+int CNAME(BLASLONG m, BLASLONG n, FLOAT *src, BLASLONG lda, FLOAT *dst)
 {
     BLASLONG i, j;
-    FLOAT *psrc0, *psrc1, *psrc2, *psrc3, *psrc4;
-    FLOAT *pdst0, *pdst1, *pdst2, *pdst3;
+    FLOAT *psrc0, *psrc1, *psrc2, *psrc3, *psrc4, *pdst;
     v2f64 src0, src1, src2, src3, src4, src5, src6, src7;
+    v2f64 src8, src9, src10, src11, src12, src13, src14, src15;
 
     psrc0 = src;
-    pdst0 = dst;
+    pdst = dst;
+    lda *= 2;
 
-    pdst2 = dst + m * (n & ~3);
-    pdst3 = dst + m * (n & ~1);
-
-    for (j = (m >> 2); j--;)
+    for (j = (n >> 2); j--;)
     {
-        psrc1 = psrc0;
-        psrc2 = psrc1 + lda;
-        psrc3 = psrc2 + lda;
-        psrc4 = psrc3 + lda;
+        psrc1  = psrc0;
+        psrc2  = psrc1 + lda;
+        psrc3  = psrc2 + lda;
+        psrc4  = psrc3 + lda;
         psrc0 += 4 * lda;
 
-        pdst1 = pdst0;
-        pdst0 += 16;
-
-        for (i = (n >> 2); i--;)
+        for (i = (m >> 2); i--;)
         {
-            LD_DP2_INC(psrc1, 2, src0, src1);
-            LD_DP2_INC(psrc2, 2, src2, src3);
-            LD_DP2_INC(psrc3, 2, src4, src5);
-            LD_DP2_INC(psrc4, 2, src6, src7);
+            LD_DP4_INC(psrc1, 2, src0, src1, src2, src3);
+            LD_DP4_INC(psrc2, 2, src4, src5, src6, src7);
+            LD_DP4_INC(psrc3, 2, src8, src9, src10, src11);
+            LD_DP4_INC(psrc4, 2, src12, src13, src14, src15);
 
-            ST_DP8(src0, src1, src2, src3, src4, src5, src6, src7, pdst1, 2);
-            pdst1 += m * 4;
+            ST_DP8_INC(src0, src4, src8, src12, src1, src5, src9, src13, pdst, 2);
+            ST_DP8_INC(src2, src6, src10, src14, src3, src7, src11, src15,
+                       pdst, 2);
         }
 
-        if (n & 2)
+        if (m & 2)
+        {
+            LD_DP2_INC(psrc1, 2, src0, src1);
+            LD_DP2_INC(psrc2, 2, src4, src5);
+            LD_DP2_INC(psrc3, 2, src8, src9);
+            LD_DP2_INC(psrc4, 2, src12, src13);
+
+            ST_DP8_INC(src0, src4, src8, src12, src1, src5, src9, src13, pdst, 2);
+        }
+
+        if (m & 1)
         {
             src0 = LD_DP(psrc1);
-            src1 = LD_DP(psrc2);
-            src2 = LD_DP(psrc3);
-            src3 = LD_DP(psrc4);
+            src4 = LD_DP(psrc2);
+            src8 = LD_DP(psrc3);
+            src12 = LD_DP(psrc4);
             psrc1 += 2;
             psrc2 += 2;
             psrc3 += 2;
             psrc4 += 2;
 
-            ST_DP4_INC(src0, src1, src2, src3, pdst2, 2);
-        }
-
-        if (n & 1)
-        {
-            *pdst3++ = *psrc1++;
-            *pdst3++ = *psrc2++;
-            *pdst3++ = *psrc3++;
-            *pdst3++ = *psrc4++;
+            ST_DP4_INC(src0, src4, src8, src12, pdst, 2);
         }
     }
 
-    if (m & 2)
+    if (n & 2)
     {
-        psrc1 = psrc0;
-        psrc2 = psrc1 + lda;
+        psrc1  = psrc0;
+        psrc2  = psrc1 + lda;
         psrc0 += 2 * lda;
 
-        pdst1 = pdst0;
-        pdst0 += 8;
-
-        for (i = (n >> 2); i--;)
+        for (i = (m >> 2); i--;)
         {
-            LD_DP2_INC(psrc1, 2, src0, src1);
-            LD_DP2_INC(psrc2, 2, src2, src3);
+            LD_DP4_INC(psrc1, 2, src0, src1, src2, src3);
+            LD_DP4_INC(psrc2, 2, src4, src5, src6, src7);
 
-            ST_DP4(src0, src1, src2, src3, pdst1, 2);
-            pdst1 += m * 4;
+            ST_DP8_INC(src0, src4, src1, src5, src2, src6, src3, src7, pdst, 2);
         }
 
-        if (n & 2)
+        if (m & 2)
+        {
+            LD_DP2_INC(psrc1, 2, src0, src1);
+            LD_DP2_INC(psrc2, 2, src4, src5);
+
+            ST_DP4_INC(src0, src4, src1, src5, pdst, 2);
+        }
+
+        if (m & 1)
         {
             src0 = LD_DP(psrc1);
-            src1 = LD_DP(psrc2);
+            src4 = LD_DP(psrc2);
             psrc1 += 2;
             psrc2 += 2;
 
-            ST_DP2_INC(src0, src1, pdst2, 2);
-        }
-
-        if (n & 1)
-        {
-            *pdst3++ = *psrc1++;
-            *pdst3++ = *psrc2++;
+            ST_DP2_INC(src0, src4, pdst, 2);
         }
     }
 
-    if (m & 1)
+    if (n & 1)
     {
-        psrc1 = psrc0;
-        pdst1 = pdst0;
+        psrc1  = psrc0;
 
-        for (i = (n >> 2); i--;)
+        for (i = (m >> 2); i--;)
+        {
+            LD_DP4_INC(psrc1, 2, src0, src1, src2, src3);
+            ST_DP4_INC(src0, src1, src2, src3, pdst, 2);
+        }
+
+        if (m & 2)
         {
             LD_DP2_INC(psrc1, 2, src0, src1);
-
-            ST_DP2(src0, src1, pdst1, 2);
-            pdst1 += 4 * m;
+            ST_DP2_INC(src0, src1, pdst, 2);
         }
 
-        if (n & 2)
+        if (m & 1)
         {
             src0 = LD_DP(psrc1);
-            psrc1 += 2;
-
-            ST_DP(src0, pdst2);
-        }
-
-        if (n & 1)
-        {
-            *pdst3 = *psrc1;
+            ST_DP(src0, pdst);
         }
     }
 

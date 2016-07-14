@@ -28,14 +28,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "macros_msa.h"
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
-          FLOAT * __restrict dst)
+int CNAME(BLASLONG m, BLASLONG n, FLOAT *src, BLASLONG lda, FLOAT *dst)
 {
     BLASLONG i, j;
-    FLOAT *psrc0;
-    FLOAT *psrc1, *psrc2, *psrc3, *psrc4;
-    FLOAT *psrc5, *psrc6, *psrc7, *psrc8;
-    FLOAT *pdst;
+    FLOAT *psrc0, *psrc1, *psrc2, *psrc3, *psrc4, *psrc5, *psrc6, *psrc7;
+    FLOAT *psrc8, *pdst;
     v4f32 src0, src1, src2, src3, src4, src5, src6, src7;
     v4f32 src8, src9, src10, src11, src12, src13, src14, src15;
     v4f32 dst0, dst1, dst2, dst3, dst4, dst5, dst6, dst7;
@@ -58,22 +55,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
         for (i = (m >> 3); i--;)
         {
-            LD_SP2(psrc1, 4, src0, src1);
-            LD_SP2(psrc2, 4, src2, src3);
-            LD_SP2(psrc3, 4, src4, src5);
-            LD_SP2(psrc4, 4, src6, src7);
-            LD_SP2(psrc5, 4, src8, src9);
-            LD_SP2(psrc6, 4, src10, src11);
-            LD_SP2(psrc7, 4, src12, src13);
-            LD_SP2(psrc8, 4, src14, src15);
-            psrc1 += 8;
-            psrc2 += 8;
-            psrc3 += 8;
-            psrc4 += 8;
-            psrc5 += 8;
-            psrc6 += 8;
-            psrc7 += 8;
-            psrc8 += 8;
+            LD_SP2_INC(psrc1, 4, src0, src1);
+            LD_SP2_INC(psrc2, 4, src2, src3);
+            LD_SP2_INC(psrc3, 4, src4, src5);
+            LD_SP2_INC(psrc4, 4, src6, src7);
+            LD_SP2_INC(psrc5, 4, src8, src9);
+            LD_SP2_INC(psrc6, 4, src10, src11);
+            LD_SP2_INC(psrc7, 4, src12, src13);
+            LD_SP2_INC(psrc8, 4, src14, src15);
 
             TRANSPOSE4x4_SP_SP(src0, src2, src4, src6, dst0, dst2, dst4, dst6);
             TRANSPOSE4x4_SP_SP(src8, src10, src12, src14, dst1, dst3, dst5,
@@ -83,15 +72,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
             TRANSPOSE4x4_SP_SP(src9, src11, src13, src15, dst9, dst11, dst13,
                                dst15);
 
-            ST_SP2(dst0, dst1, pdst, 4);
-            ST_SP2(dst2, dst3, pdst + 8, 4);
-            ST_SP2(dst4, dst5, pdst + 16, 4);
-            ST_SP2(dst6, dst7, pdst + 24, 4);
-            ST_SP2(dst8, dst9, pdst + 32, 4);
-            ST_SP2(dst10, dst11, pdst + 40, 4);
-            ST_SP2(dst12, dst13, pdst + 48, 4);
-            ST_SP2(dst14, dst15, pdst + 56, 4);
-            pdst += 64;
+            ST_SP2_INC(dst0, dst1, pdst, 4);
+            ST_SP2_INC(dst2, dst3, pdst, 4);
+            ST_SP2_INC(dst4, dst5, pdst, 4);
+            ST_SP2_INC(dst6, dst7, pdst, 4);
+            ST_SP2_INC(dst8, dst9, pdst, 4);
+            ST_SP2_INC(dst10, dst11, pdst, 4);
+            ST_SP2_INC(dst12, dst13, pdst, 4);
+            ST_SP2_INC(dst14, dst15, pdst, 4);
         }
 
         for (i = (m & 7); i--;)
@@ -128,9 +116,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
             TRANSPOSE4x4_SP_SP(src0, src1, src2, src3, dst0, dst1, dst2, dst3);
 
-            ST_SP2(dst0, dst1, pdst, 4);
-            ST_SP2(dst2, dst3, pdst + 8, 4);
-            pdst += 16;
+            ST_SP2_INC(dst0, dst1, pdst, 4);
+            ST_SP2_INC(dst2, dst3, pdst, 4);
         }
 
         for (i = (m & 3); i--;)

@@ -28,14 +28,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "macros_msa.h"
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
-          FLOAT * __restrict dst)
+int CNAME(BLASLONG m, BLASLONG n, FLOAT *src, BLASLONG lda, FLOAT *dst)
 {
     BLASLONG i, j;
-    FLOAT *psrc0;
-    FLOAT *psrc1, *psrc2, *psrc3, *psrc4;
-    FLOAT *psrc5, *psrc6, *psrc7, *psrc8;
-    FLOAT *pdst0,  *pdst1, *pdst2, *pdst3, *pdst4;
+    FLOAT *psrc0, *psrc1, *psrc2, *psrc3, *psrc4, *psrc5, *psrc6, *psrc7;
+    FLOAT *psrc8, *pdst0,  *pdst1, *pdst2, *pdst3, *pdst4;
     v4f32 src0, src1, src2, src3, src4, src5, src6, src7;
     v4f32 src8, src9, src10, src11, src12, src13, src14, src15;
 
@@ -63,22 +60,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
         for (i = (n >> 3); i--;)
         {
-            LD_SP2(psrc1, 4, src0, src1);
-            LD_SP2(psrc2, 4, src2, src3);
-            LD_SP2(psrc3, 4, src4, src5);
-            LD_SP2(psrc4, 4, src6, src7);
-            LD_SP2(psrc5, 4, src8, src9);
-            LD_SP2(psrc6, 4, src10, src11);
-            LD_SP2(psrc7, 4, src12, src13);
-            LD_SP2(psrc8, 4, src14, src15);
-            psrc1 += 8;
-            psrc2 += 8;
-            psrc3 += 8;
-            psrc4 += 8;
-            psrc5 += 8;
-            psrc6 += 8;
-            psrc7 += 8;
-            psrc8 += 8;
+            LD_SP2_INC(psrc1, 4, src0, src1);
+            LD_SP2_INC(psrc2, 4, src2, src3);
+            LD_SP2_INC(psrc3, 4, src4, src5);
+            LD_SP2_INC(psrc4, 4, src6, src7);
+            LD_SP2_INC(psrc5, 4, src8, src9);
+            LD_SP2_INC(psrc6, 4, src10, src11);
+            LD_SP2_INC(psrc7, 4, src12, src13);
+            LD_SP2_INC(psrc8, 4, src14, src15);
 
             ST_SP8(src0, src1, src2, src3, src4, src5, src6, src7, pdst1, 4);
             ST_SP8(src8, src9, src10, src11, src12, src13, src14, src15,
@@ -105,8 +94,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
             psrc7 += 4;
             psrc8 += 4;
 
-            ST_SP8(src0, src1, src2, src3, src4, src5, src6, src7, pdst2, 4);
-            pdst2 += 32;
+            ST_SP8_INC(src0, src1, src2, src3, src4, src5, src6, src7, pdst2, 4);
         }
 
         if (n & 2)
@@ -155,14 +143,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
         for (i = (n >> 3); i--;)
         {
-            LD_SP2(psrc1, 4, src0, src1);
-            LD_SP2(psrc2, 4, src2, src3);
-            LD_SP2(psrc3, 4, src4, src5);
-            LD_SP2(psrc4, 4, src6, src7);
-            psrc1 += 8;
-            psrc2 += 8;
-            psrc3 += 8;
-            psrc4 += 8;
+            LD_SP2_INC(psrc1, 4, src0, src1);
+            LD_SP2_INC(psrc2, 4, src2, src3);
+            LD_SP2_INC(psrc3, 4, src4, src5);
+            LD_SP2_INC(psrc4, 4, src6, src7);
 
             ST_SP8(src0, src1, src2, src3, src4, src5, src6, src7, pdst1, 4);
             pdst1 += 8 * m;
@@ -179,8 +163,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
             psrc3 += 4;
             psrc4 += 4;
 
-            ST_SP4(src0, src1, src2, src3, pdst2, 4);
-            pdst2 += 16;
+            ST_SP4_INC(src0, src1, src2, src3, pdst2, 4);
         }
 
         if (n & 2)
@@ -215,10 +198,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
         for (i = (n >> 3); i--;)
         {
-            LD_SP2(psrc1, 4, src0, src1);
-            LD_SP2(psrc2, 4, src2, src3);
-            psrc1 += 8;
-            psrc2 += 8;
+            LD_SP2_INC(psrc1, 4, src0, src1);
+            LD_SP2_INC(psrc2, 4, src2, src3);
 
             ST_SP4(src0, src1, src2, src3, pdst1, 4);
             pdst1 += 8 * m;
@@ -231,8 +212,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
             psrc1 += 4;
             psrc2 += 4;
 
-            ST_SP2(src0, src1, pdst2, 4);
-            pdst2 += 8;
+            ST_SP2_INC(src0, src1, pdst2, 4);
         }
 
         if (n & 2)
@@ -260,8 +240,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
 
         for (i = (n >> 3); i--;)
         {
-            LD_SP2(psrc1, 4, src0, src1);
-            psrc1 += 8;
+            LD_SP2_INC(psrc1, 4, src0, src1);
 
             ST_SP2(src0, src1, pdst1, 4);
             pdst1 += 8 * m;
@@ -288,5 +267,5 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict src, BLASLONG lda,
         }
     }
 
-  return 0;
+    return 0;
 }
