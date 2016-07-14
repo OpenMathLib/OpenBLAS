@@ -191,8 +191,8 @@ int main(int argc, char *argv[]){
     gettimeofday( &start, (struct timezone *)0);
 
     fprintf(stderr,
-	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 1. * (double)m * (double)m * (double)m / time1 * 1.e-6);
+	    " %10.2f MFlops  %10.6f sec\n",
+	    COMPSIZE * COMPSIZE * 1. * (double)m * (double)m * (double)m / time1 * 1.e-6, time1);
 
   }
 

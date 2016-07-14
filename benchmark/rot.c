@@ -186,8 +186,8 @@ int main(int argc, char *argv[]){
     timeg /= loops;
 
     fprintf(stderr,
-	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 6. * (double)m / timeg * 1.e-6);
+	    " %10.2f MFlops %10.6f sec\n",
+	    COMPSIZE * COMPSIZE * 6. * (double)m / timeg * 1.e-6, timeg);
 
   }
 

@@ -1,19 +1,19 @@
 /***************************************************************************
-Copyright (c) 2014, The OpenBLAS Project
+Copyright (c) 2016, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
-1. Redistributions of source code must retain the above swapright
+1. Redistributions of source code must retain the above copyright
 notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above swapright
+2. Redistributions in binary form must reproduce the above copyright
 notice, this list of conditions and the following disclaimer in
 the documentation and/or other materials provided with the
 distribution.
 3. Neither the name of the OpenBLAS project nor the names of
 its contributors may be used to endorse or promote products
 derived from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED BY THE SWAPRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
@@ -33,19 +33,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#undef SWAP
+#undef NRM2
 
 #ifdef COMPLEX
 #ifdef DOUBLE
-#define SWAP   BLASFUNC(zswap)
+#define NRM2   BLASFUNC(dznrm2)
 #else
-#define SWAP   BLASFUNC(cswap)
+#define NRM2   BLASFUNC(scnrm2)
 #endif
 #else
 #ifdef DOUBLE
-#define SWAP   BLASFUNC(dswap)
+#define NRM2   BLASFUNC(dnrm2)
 #else
-#define SWAP   BLASFUNC(sswap)
+#define NRM2   BLASFUNC(snrm2)
 #endif
 #endif
 
@@ -116,10 +116,9 @@ static void *huge_malloc(BLASLONG size){
 
 int main(int argc, char *argv[]){
 
-  FLOAT *x, *y;
-  FLOAT alpha[2] = { 2.0, 2.0 };
+  FLOAT *x;
   blasint m, i;
-  blasint inc_x=1,inc_y=1;
+  blasint inc_x=1;
   int loops = 1;
   int l;
   char *p;
@@ -139,15 +138,10 @@ int main(int argc, char *argv[]){
 
   if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
   if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
-  if ((p = getenv("OPENBLAS_INCY")))   inc_y = atoi(p);
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,inc_x,inc_y,loops);
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Inc_x = %d Loops = %d\n", from, to, step,inc_x,loops);
 
   if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
-    fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
-
-  if (( y = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_y) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
@@ -155,7 +149,7 @@ int main(int argc, char *argv[]){
   srandom(getpid());
 #endif
 
-  fprintf(stderr, "   SIZE       Flops\n");
+  fprintf(stderr, "   SIZE       Time\n");
 
   for(m = from; m <= to; m += step)
   {
@@ -172,12 +166,9 @@ int main(int argc, char *argv[]){
 			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    	}
 
-   	for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
-			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
     	gettimeofday( &start, (struct timezone *)0);
 
-    	SWAP (&m, x, &inc_x, y, &inc_y );
+    	NRM2 (&m, x, &inc_x);
 
     	gettimeofday( &stop, (struct timezone *)0);
 
@@ -189,9 +180,7 @@ int main(int argc, char *argv[]){
 
     timeg /= loops;
 
-    fprintf(stderr,
-	    " %10.2f MBytes %10.6f sec\n",
-	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg * 1.e-6, timeg);
+    fprintf(stderr, " %10.6f secs\n", timeg);
 
   }
 

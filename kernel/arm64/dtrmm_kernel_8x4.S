@@ -46,19 +46,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define pCRow0		x12
 #define pCRow1		x13
 #define pCRow2		x14
-#define pA		x15
-#define temp		x16
-#define tempOffset	x17
-#define tempK		x18
+#define pCRow3		x15
+#define pA		x16
+#define alpha		x17
+#define temp		x18
+#define tempOffset	x19
+#define tempK		x20
 
 #define alpha0		d10
 #define alphaV0		v10.d[0]
-#define alpha1		d11
-#define alphaV1		v11.d[0]
-#define alpha2		d14
-#define alphaV2		v14.d[0]
-#define alpha3		d15
-#define alphaV3		v15.d[0]
+
+#define A_PRE_SIZE	2560
+#define B_PRE_SIZE	448
+#define C_PRE_SIZE	128
 
 // 00 origM
 // 01 origN
@@ -101,14 +101,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //v05 pA1_2, pA1_3
 //v06 pA1_4, pA1_5
 //v07 pA1_6, pA1_7
-//v08 must save pB0_0, pB0_1
-//v09 must save pB0_2, pB0_3
-//v10 must save ALPHA0
-//v11 must save ALPHA1
-//v12 must save pB1_0, pB1_1
-//v13 must save pB1_2, pB1_3
-//v14 must save ALPHA2
-//v15 must save ALPHA3
+//v08 must save pB0_0
+//v09 must save pB0_1
+//v10 must save pB0_2 --> ALPHA0
+//v11 must save pB0_3
+//v12 must save pB1_0
+//v13 must save pB1_1
+//v14 must save pB1_2
+//v15 must save pB1_3
 //v16 must save C00, C01
 //v17 must save C02, C03
 //v18 C04, C05
@@ -150,186 +150,249 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_I
-	ld1	{v0.2d, v1.2d}, [pA]
-	add	pA, pA, #32
-	ld1	{v8.2d, v9.2d}, [pB]
-	add	pB, pB, #32
-	ld1	{v2.2d, v3.2d}, [pA]
-	add	pA, pA, #32
+	ldp	q0, q1, [pA], #32
+
+	ldp	d8, d9, [pB], #16
 
 	fmul	v16.2d, v0.2d, v8.d[0]
+	fmul	v20.2d, v0.2d, v9.d[0]
+
+	ldp	d10, d11, [pB], #16
+
 	fmul	v17.2d, v1.2d, v8.d[0]
+	fmul	v21.2d, v1.2d, v9.d[0]
+
+	ldp	q2, q3, [pA], #32
+
+	fmul	v24.2d, v0.2d, v10.d[0]
+	fmul	v28.2d, v0.2d, v11.d[0]
+
+	ldp	q4, q5, [pA], #32
+
+	fmul	v25.2d, v1.2d, v10.d[0]
+	fmul	v29.2d, v1.2d, v11.d[0]
+
+	ldp	d12, d13, [pB], #16
+
 	fmul	v18.2d, v2.2d, v8.d[0]
+	fmul	v22.2d, v2.2d, v9.d[0]
+
+	ldp	d14, d15, [pB], #16
+
+	fmul	v26.2d, v2.2d, v10.d[0]
+	fmul	v30.2d, v2.2d, v11.d[0]
+
+	ldp	q6, q7, [pA], #32
+
 	fmul	v19.2d, v3.2d, v8.d[0]
+	fmul	v27.2d, v3.2d, v10.d[0]
 
-	fmul	v20.2d, v0.2d, v8.d[1]
-	fmul	v21.2d, v1.2d, v8.d[1]
-	fmul	v22.2d, v2.2d, v8.d[1]
-	fmul	v23.2d, v3.2d, v8.d[1]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 
-	fmul	v24.2d, v0.2d, v9.d[0]
-	fmul	v25.2d, v1.2d, v9.d[0]
-	fmul	v26.2d, v2.2d, v9.d[0]
-	fmul	v27.2d, v3.2d, v9.d[0]
+	fmul	v31.2d, v3.2d, v11.d[0]
+	fmul	v23.2d, v3.2d, v9.d[0]
 
-	fmul	v28.2d, v0.2d, v9.d[1]
-	fmul	v29.2d, v1.2d, v9.d[1]
-	fmul	v30.2d, v2.2d, v9.d[1]
-	fmul	v31.2d, v3.2d, v9.d[1]
-
-	ld1	{v4.2d, v5.2d}, [pA]
-	add	pA, pA, #32
-	ld1	{v12.2d, v13.2d}, [pB]
-	add	pB, pB, #32
-	ld1	{v6.2d, v7.2d}, [pA]
-	add	pA, pA, #32
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 .endm
 
 .macro KERNEL8x4_M1
 	fmla	v16.2d, v0.2d, v8.d[0]
+	fmla	v20.2d, v0.2d, v9.d[0]
+
+	ldp	q4, q5, [pA], #32
+
+	fmla	v24.2d, v0.2d, v10.d[0]
+	fmla	v28.2d, v0.2d, v11.d[0]
+
+	ldp	d12, d13, [pB], #16
+
 	fmla	v17.2d, v1.2d, v8.d[0]
+	fmla	v25.2d, v1.2d, v10.d[0]
+
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
+
+	fmla	v21.2d, v1.2d, v9.d[0]
+	fmla	v29.2d, v1.2d, v11.d[0]
+
+	ldp	d14, d15, [pB], #16
+
 	fmla	v18.2d, v2.2d, v8.d[0]
+	fmla	v22.2d, v2.2d, v9.d[0]
+
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+
+	fmla	v26.2d, v2.2d, v10.d[0]
+	fmla	v30.2d, v2.2d, v11.d[0]
 	fmla	v19.2d, v3.2d, v8.d[0]
+	fmla	v23.2d, v3.2d, v9.d[0]
 
-	fmla	v20.2d, v0.2d, v8.d[1]
-	fmla	v21.2d, v1.2d, v8.d[1]
-	fmla	v22.2d, v2.2d, v8.d[1]
-	fmla	v23.2d, v3.2d, v8.d[1]
+	ldp	q6, q7, [pA], #32
 
-	fmla	v24.2d, v0.2d, v9.d[0]
-	fmla	v25.2d, v1.2d, v9.d[0]
-	fmla	v26.2d, v2.2d, v9.d[0]
-	fmla	v27.2d, v3.2d, v9.d[0]
-
-	fmla	v28.2d, v0.2d, v9.d[1]
-	fmla	v29.2d, v1.2d, v9.d[1]
-	fmla	v30.2d, v2.2d, v9.d[1]
-	fmla	v31.2d, v3.2d, v9.d[1]
-
-	ld1	{v4.2d, v5.2d}, [pA]
-	add	pA, pA, #32
-	ld1	{v12.2d, v13.2d}, [pB]
-	add	pB, pB, #32
-	ld1	{v6.2d, v7.2d}, [pA]
-	add	pA, pA, #32
-
-	prfm	PLDL1KEEP, [pA, #512]
+	fmla	v27.2d, v3.2d, v10.d[0]
+	fmla	v31.2d, v3.2d, v11.d[0]
 .endm
 
 .macro KERNEL8x4_M2
 	fmla	v16.2d, v4.2d, v12.d[0]
+	fmla	v20.2d, v4.2d, v13.d[0]
+	fmla	v24.2d, v4.2d, v14.d[0]
+	fmla	v28.2d, v4.2d, v15.d[0]
+
+	ldp	q0, q1, [pA], #32
+
 	fmla	v17.2d, v5.2d, v12.d[0]
+	fmla	v25.2d, v5.2d, v14.d[0]
+
+	ldp	d8, d9, [pB], #16
+
+	fmla	v21.2d, v5.2d, v13.d[0]
+	fmla	v29.2d, v5.2d, v15.d[0]
+
+	ldp	d10, d11, [pB], #16
+
 	fmla	v18.2d, v6.2d, v12.d[0]
+	fmla	v22.2d, v6.2d, v13.d[0]
+
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
+
+	fmla	v26.2d, v6.2d, v14.d[0]
+	fmla	v30.2d, v6.2d, v15.d[0]
+
 	fmla	v19.2d, v7.2d, v12.d[0]
+	fmla	v23.2d, v7.2d, v13.d[0]
 
-	fmla	v20.2d, v4.2d, v12.d[1]
-	fmla	v21.2d, v5.2d, v12.d[1]
-	fmla	v22.2d, v6.2d, v12.d[1]
-	fmla	v23.2d, v7.2d, v12.d[1]
+	ldp	q2, q3, [pA], #32
 
-	fmla	v24.2d, v4.2d, v13.d[0]
-	fmla	v25.2d, v5.2d, v13.d[0]
-	fmla	v26.2d, v6.2d, v13.d[0]
-	fmla	v27.2d, v7.2d, v13.d[0]
-
-	fmla	v28.2d, v4.2d, v13.d[1]
-	fmla	v29.2d, v5.2d, v13.d[1]
-	fmla	v30.2d, v6.2d, v13.d[1]
-	fmla	v31.2d, v7.2d, v13.d[1]
-
-	ld1	{v0.2d, v1.2d}, [pA]
-	add	pA, pA, #32
-	ld1	{v8.2d, v9.2d}, [pB]
-	add	pB, pB, #32
-	ld1	{v2.2d, v3.2d}, [pA]
-	add	pA, pA, #32
-
-	prfm	PLDL1KEEP, [pB, #512]
+	fmla	v27.2d, v7.2d, v14.d[0]
+	fmla	v31.2d, v7.2d, v15.d[0]
 .endm
 
 .macro KERNEL8x4_E
 	fmla	v16.2d, v4.2d, v12.d[0]
+	fmla	v20.2d, v4.2d, v13.d[0]
+	fmla	v24.2d, v4.2d, v14.d[0]
+	fmla	v28.2d, v4.2d, v15.d[0]
+
 	fmla	v17.2d, v5.2d, v12.d[0]
+	fmla	v25.2d, v5.2d, v14.d[0]
+	fmla	v21.2d, v5.2d, v13.d[0]
+	fmla	v29.2d, v5.2d, v15.d[0]
+
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
+
 	fmla	v18.2d, v6.2d, v12.d[0]
+	fmla	v22.2d, v6.2d, v13.d[0]
+	fmla	v26.2d, v6.2d, v14.d[0]
+	fmla	v30.2d, v6.2d, v15.d[0]
+
 	fmla	v19.2d, v7.2d, v12.d[0]
-
-	fmla	v20.2d, v4.2d, v12.d[1]
-	fmla	v21.2d, v5.2d, v12.d[1]
-	fmla	v22.2d, v6.2d, v12.d[1]
-	fmla	v23.2d, v7.2d, v12.d[1]
-
-	fmla	v24.2d, v4.2d, v13.d[0]
-	fmla	v25.2d, v5.2d, v13.d[0]
-	fmla	v26.2d, v6.2d, v13.d[0]
-	fmla	v27.2d, v7.2d, v13.d[0]
-
-	fmla	v28.2d, v4.2d, v13.d[1]
-	fmla	v29.2d, v5.2d, v13.d[1]
-	fmla	v30.2d, v6.2d, v13.d[1]
-	fmla	v31.2d, v7.2d, v13.d[1]
+	fmla	v23.2d, v7.2d, v13.d[0]
+	fmla	v27.2d, v7.2d, v14.d[0]
+	fmla	v31.2d, v7.2d, v15.d[0]
 .endm
 
 .macro KERNEL8x4_SUB
-	ld1	{v0.2d, v1.2d}, [pA]
-	add	pA, pA, #32
-	ld1	{v8.2d, v9.2d}, [pB]
-	add	pB, pB, #32
-	ld1	{v2.2d, v3.2d}, [pA]
-	add	pA, pA, #32
+	ldp	q0, q1, [pA], #32
+
+	ldp	d8, d9, [pB], #16
 
 	fmla	v16.2d, v0.2d, v8.d[0]
+	fmla	v20.2d, v0.2d, v9.d[0]
+
+	ldp	d10, d11, [pB], #16
+
 	fmla	v17.2d, v1.2d, v8.d[0]
+	fmla	v21.2d, v1.2d, v9.d[0]
+
+	ldp	q2, q3, [pA], #32
+
+	fmla	v24.2d, v0.2d, v10.d[0]
+	fmla	v28.2d, v0.2d, v11.d[0]
+
+	fmla	v25.2d, v1.2d, v10.d[0]
+	fmla	v29.2d, v1.2d, v11.d[0]
+
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+
 	fmla	v18.2d, v2.2d, v8.d[0]
+	fmla	v22.2d, v2.2d, v9.d[0]
+
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
+
+	fmla	v26.2d, v2.2d, v10.d[0]
+	fmla	v30.2d, v2.2d, v11.d[0]
+
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
+
 	fmla	v19.2d, v3.2d, v8.d[0]
+	fmla	v27.2d, v3.2d, v10.d[0]
 
-	fmla	v20.2d, v0.2d, v8.d[1]
-	fmla	v21.2d, v1.2d, v8.d[1]
-	fmla	v22.2d, v2.2d, v8.d[1]
-	fmla	v23.2d, v3.2d, v8.d[1]
-
-	fmla	v24.2d, v0.2d, v9.d[0]
-	fmla	v25.2d, v1.2d, v9.d[0]
-	fmla	v26.2d, v2.2d, v9.d[0]
-	fmla	v27.2d, v3.2d, v9.d[0]
-
-	fmla	v28.2d, v0.2d, v9.d[1]
-	fmla	v29.2d, v1.2d, v9.d[1]
-	fmla	v30.2d, v2.2d, v9.d[1]
-	fmla	v31.2d, v3.2d, v9.d[1]
+	fmla	v31.2d, v3.2d, v11.d[0]
+	fmla	v23.2d, v3.2d, v9.d[0]
 .endm
 
 .macro SAVE8x4
-	add	pCRow1, pCRow0, LDC
+	fmov	alpha0, alpha
+
+	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	fmul	v0.2d, v16.2d, alphaV0
-	fmul	v1.2d, v17.2d, alphaV1
-	fmul	v2.2d, v18.2d, alphaV2
-	fmul	v3.2d, v19.2d, alphaV3
-	st1 	{v0.2d, v1.2d, v2.2d, v3.2d}, [pCRow0]
+	fmul	v1.2d, v17.2d, alphaV0
+	stp 	q0, q1, [pCRow0]
 
-	add	pCRow2, pCRow1, LDC
+	add	pCRow0, pCRow0, #32
+	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
+
+	fmul	v2.2d, v18.2d, alphaV0
+	fmul	v3.2d, v19.2d, alphaV0
+	stp 	q2, q3, [pCRow0]
+
+	add	pCRow0, pCRow0, #32
+
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	fmul	v4.2d, v20.2d, alphaV0
-	fmul	v5.2d, v21.2d, alphaV1
-	fmul	v6.2d, v22.2d, alphaV2
-	fmul	v7.2d, v23.2d, alphaV3
-	st1 	{v4.2d, v5.2d, v6.2d, v7.2d}, [pCRow1]
+	fmul	v5.2d, v21.2d, alphaV0
+	stp 	q4, q5, [pCRow1]
 
-	add	pCRow1, pCRow2, LDC
+	add	pCRow1, pCRow1, #32
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
+
+	fmul	v6.2d, v22.2d, alphaV0
+	fmul	v7.2d, v23.2d, alphaV0
+	stp 	q6, q7, [pCRow1]
+
+	add	pCRow1, pCRow1, #32
+
+	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	fmul	v0.2d, v24.2d, alphaV0
-	fmul	v1.2d, v25.2d, alphaV1
-	fmul	v2.2d, v26.2d, alphaV2
-	fmul	v3.2d, v27.2d, alphaV3
-	st1 	{v0.2d, v1.2d, v2.2d, v3.2d}, [pCRow2]
+	fmul	v1.2d, v25.2d, alphaV0
+	stp 	q0, q1, [pCRow2]
+
+	add	pCRow2, pCRow2, #32
+	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
+
+	fmul	v2.2d, v26.2d, alphaV0
+	fmul	v3.2d, v27.2d, alphaV0
+	stp 	q2, q3, [pCRow2]
+
+	add	pCRow2, pCRow2, #32
+
+	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
 
 	fmul	v4.2d, v28.2d, alphaV0
-	fmul	v5.2d, v29.2d, alphaV1
-	fmul	v6.2d, v30.2d, alphaV2
-	fmul	v7.2d, v31.2d, alphaV3
-	st1 	{v4.2d, v5.2d, v6.2d, v7.2d}, [pCRow1]
+	fmul	v5.2d, v29.2d, alphaV0
+	stp 	q4, q5, [pCRow3]
 
-	add	pCRow0, pCRow0, #64
+	add	pCRow3, pCRow3, #32
+	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
+
+	fmul	v6.2d, v30.2d, alphaV0
+	fmul	v7.2d, v31.2d, alphaV0
+	stp 	q6, q7, [pCRow3]
+
+	add	pCRow3, pCRow3, #32
 .endm
 
 /******************************************************************************/
@@ -365,26 +428,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE4x4
+	fmov	alpha0, alpha
 	fmul	v8.2d, v16.2d, alphaV0
-	fmul	v9.2d, v17.2d, alphaV1
+	fmul	v9.2d, v17.2d, alphaV0
 	st1 	{v8.2d, v9.2d}, [pCRow0]
 
 	add	pCRow1, pCRow0, LDC
 
-	fmul	v12.2d, v20.2d, alphaV2
-	fmul	v13.2d, v21.2d, alphaV3
+	fmul	v12.2d, v20.2d, alphaV0
+	fmul	v13.2d, v21.2d, alphaV0
 	st1 	{v12.2d, v13.2d}, [pCRow1]
 
 	add	pCRow2, pCRow1, LDC
 
 	fmul	v8.2d, v24.2d, alphaV0
-	fmul	v9.2d, v25.2d, alphaV1
+	fmul	v9.2d, v25.2d, alphaV0
 	st1 	{v8.2d, v9.2d}, [pCRow2]
 
 	add	pCRow1, pCRow2, LDC
 
-	fmul	v12.2d, v28.2d, alphaV2
-	fmul	v13.2d, v29.2d, alphaV3
+	fmul	v12.2d, v28.2d, alphaV0
+	fmul	v13.2d, v29.2d, alphaV0
 	st1 	{v12.2d, v13.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
@@ -413,22 +477,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE2x4
+	fmov	alpha0, alpha
 	fmul	v8.2d, v16.2d, alphaV0
 	st1	{v8.2d}, [pCRow0]
 
 	add	pCRow1, pCRow0, LDC
 
-	fmul	v12.2d, v20.2d, alphaV1
+	fmul	v12.2d, v20.2d, alphaV0
 	st1	{v12.2d}, [pCRow1]
 
 	add	pCRow2, pCRow1, LDC
 
-	fmul	v8.2d, v24.2d, alphaV2
+	fmul	v8.2d, v24.2d, alphaV0
 	st1	{v8.2d}, [pCRow2]
 
 	add	pCRow1, pCRow2, LDC
 
-	fmul	v12.2d, v28.2d, alphaV3
+	fmul	v12.2d, v28.2d, alphaV0
 	st1	{v12.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #16
@@ -453,6 +518,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE1x4
+	fmov	alpha0, alpha
+
 	add	pCRow1, pCRow0, LDC
 
 	fmul	v8.2d, v16.2d, alphaV0
@@ -462,7 +529,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	pCRow2, pCRow1, LDC
 	add	pCRow1, pCRow2, LDC
 
-	fmul	v12.2d, v20.2d, alphaV1
+	fmul	v12.2d, v20.2d, alphaV0
 	st1	{v12.d}[0], [pCRow2]
 	st1	{v12.d}[1], [pCRow1]
 
@@ -502,18 +569,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE8x2
+	fmov	alpha0, alpha
 	add	pCRow1, pCRow0, LDC
 
 	fmul	v0.2d, v16.2d, alphaV0
-	fmul	v1.2d, v17.2d, alphaV1
-	fmul	v2.2d, v18.2d, alphaV2
-	fmul	v3.2d, v19.2d, alphaV3
+	fmul	v1.2d, v17.2d, alphaV0
+	fmul	v2.2d, v18.2d, alphaV0
+	fmul	v3.2d, v19.2d, alphaV0
 	st1 	{v0.2d, v1.2d, v2.2d, v3.2d}, [pCRow0]
 
 	fmul	v4.2d, v20.2d, alphaV0
-	fmul	v5.2d, v21.2d, alphaV1
-	fmul	v6.2d, v22.2d, alphaV2
-	fmul	v7.2d, v23.2d, alphaV3
+	fmul	v5.2d, v21.2d, alphaV0
+	fmul	v6.2d, v22.2d, alphaV0
+	fmul	v7.2d, v23.2d, alphaV0
 	st1 	{v4.2d, v5.2d, v6.2d, v7.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #64
@@ -541,14 +609,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE4x2
+	fmov	alpha0, alpha
 	fmul	v8.2d, v16.2d, alphaV0
-	fmul	v9.2d, v17.2d, alphaV1
+	fmul	v9.2d, v17.2d, alphaV0
 	st1	{v8.2d, v9.2d}, [pCRow0]
 
 	add	pCRow1, pCRow0, LDC
 
-	fmul	v12.2d, v20.2d, alphaV2
-	fmul	v13.2d, v21.2d, alphaV3
+	fmul	v12.2d, v20.2d, alphaV0
+	fmul	v13.2d, v21.2d, alphaV0
 	st1	{v12.2d, v13.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
@@ -573,12 +642,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE2x2
+	fmov	alpha0, alpha
 	fmul	v8.2d, v16.2d, alphaV0
 	st1	{v8.2d}, [pCRow0]
 
 	add	pCRow1 , pCRow0, LDC
 
-	fmul	v12.2d, v20.2d, alphaV1
+	fmul	v12.2d, v20.2d, alphaV0
 	st1	{v12.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #16
@@ -601,6 +671,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE1x2
+	fmov	alpha0, alpha
 	add	pCRow1 , pCRow0, LDC
 
 	fmul	v8.2d, v16.2d, alphaV0
@@ -636,10 +707,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE8x1
+	fmov	alpha0, alpha
 	fmul	v0.2d, v16.2d, alphaV0
-	fmul	v1.2d, v17.2d, alphaV1
-	fmul	v2.2d, v18.2d, alphaV2
-	fmul	v3.2d, v19.2d, alphaV3
+	fmul	v1.2d, v17.2d, alphaV0
+	fmul	v2.2d, v18.2d, alphaV0
+	fmul	v3.2d, v19.2d, alphaV0
 	st1 	{v0.2d, v1.2d, v2.2d, v3.2d}, [pCRow0]
 
 	add	pCRow0, pCRow0, #64
@@ -665,8 +737,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE4x1
+	fmov	alpha0, alpha
 	fmul	v8.2d, v16.2d, alphaV0
-	fmul	v9.2d, v17.2d, alphaV1
+	fmul	v9.2d, v17.2d, alphaV0
 	st1	{v8.2d, v9.2d}, [pCRow0]
 
 	add	pCRow0, pCRow0, #32
@@ -690,6 +763,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE2x1
+	fmov	alpha0, alpha
 	fmul	v8.2d, v16.2d, alphaV0
 	st1	{v8.2d}, [pCRow0]
 
@@ -713,6 +787,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE1x1
+	fmov	alpha0, alpha
 	fmul	d8, d16, alpha0
 	str 	d8, [pCRow0]
 
@@ -739,10 +814,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stp	x26, x27, [sp, #(9 * 16)]
 	str	x28, [sp, #(10 * 16)]
 
-	fmov	alpha0, d0
-	fmov	alpha1, d0
-	fmov	alpha2, d0
-	fmov	alpha3, d0
+	prfm	PLDL1KEEP, [origPB]
+	prfm	PLDL1KEEP, [origPA]
+
+	fmov	alpha, d0
 
 	lsl	LDC, LDC, #3			// ldc = ldc * 8
 
@@ -759,8 +834,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /******************************************************************************/
 
 dtrmm_kernel_L4_BEGIN:
-	mov	pCRow0, pC			// pCRow0 = C
-	add	pC, pC, LDC, lsl #2
+	mov	pCRow0, pC
+	add	pCRow1, pCRow0, LDC
+	add	pCRow2, pCRow1, LDC
+	add	pCRow3, pCRow2, LDC
+
+	add	pC, pCRow3, LDC
+
 
 #if defined(LEFT)
 	mov	tempOffset, offset
@@ -774,6 +854,7 @@ dtrmm_kernel_L4_M8_BEGIN:
 	cmp 	counterI, #0
 	ble	dtrmm_kernel_L4_M4_BEGIN
 
+	.align 5
 dtrmm_kernel_L4_M8_20:
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -794,40 +875,64 @@ dtrmm_kernel_L4_M8_20:
 	add	tempK, tempOffset, #4
 #endif
 
-	asr 	counterL , tempK, #1		// L = K / 2
+	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 4 to do?
 	blt	dtrmm_kernel_L4_M8_32
 
 	KERNEL8x4_I				// do one in the K
 	KERNEL8x4_M2				// do another in the K
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
 
 	subs	counterL, counterL, #2		// subtract 2
 	ble	dtrmm_kernel_L4_M8_22a
-	.align 5
 
+	.align 5
 dtrmm_kernel_L4_M8_22:
 
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
 	KERNEL8x4_M1
 	KERNEL8x4_M2
 
 	subs	counterL, counterL, #1
 	bgt	dtrmm_kernel_L4_M8_22
 
-
+	.align 5
 dtrmm_kernel_L4_M8_22a:
 
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
 	KERNEL8x4_M1
 	KERNEL8x4_E
 
 	b	 dtrmm_kernel_L4_M8_44
 
+	.align 5
 dtrmm_kernel_L4_M8_32:
 
 	tst	counterL, #1
 	ble	dtrmm_kernel_L4_M8_40
 
 	KERNEL8x4_I
-
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
+	KERNEL8x4_M2
+	KERNEL8x4_M1
 	KERNEL8x4_E
 
 	b	dtrmm_kernel_L4_M8_44
@@ -838,12 +943,16 @@ dtrmm_kernel_L4_M8_40:
 
 dtrmm_kernel_L4_M8_44:
 
-	ands	counterL , tempK, #1
+	ands	counterL , tempK, #7
 	ble	dtrmm_kernel_L4_M8_100
 
+	.align 5
 dtrmm_kernel_L4_M8_46:
 
 	KERNEL8x4_SUB
+
+	subs	counterL, counterL, #1
+	bne	dtrmm_kernel_L4_M8_46
 
 dtrmm_kernel_L4_M8_100:
 
@@ -864,6 +973,9 @@ dtrmm_kernel_L4_M8_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #8
 #endif
+	prfm	PLDL1KEEP, [pA]
+	prfm	PLDL1KEEP, [pA, #64]
+	prfm	PLDL1KEEP, [origPB]
 
 dtrmm_kernel_L4_M8_END:
 	subs	counterI, counterI, #1
