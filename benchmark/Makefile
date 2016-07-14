@@ -173,7 +173,9 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
        spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
-       smallscaling
+       smallscaling \
+       isamax.goto idamax.goto icamax.goto izamax.goto \
+       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
@@ -226,7 +228,9 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
-       ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
+       ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
+       isamax.atlas idamax.atlas icamax.atlas izamax.atlas \
+       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
@@ -1937,6 +1941,63 @@ zgemm3m.mkl : zgemm3m.$(SUFFIX)
 zgemm3m.veclib : zgemm3m.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+############################################## ISAMAX ##############################################
+isamax.goto : isamax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+isamax.atlas : isamax.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+############################################## IDAMAX ##############################################
+idamax.goto : idamax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+idamax.atlas : idamax.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+############################################## ICAMAX ##############################################
+icamax.goto : icamax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+icamax.atlas : icamax.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+############################################## IZAMAX ##############################################
+izamax.goto : izamax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+izamax.atlas : izamax.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+############################################## SNRM2 ##############################################
+snrm2.goto : snrm2.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+snrm2.atlas : snrm2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+############################################## DNRM2 ##############################################
+dnrm2.goto : dnrm2.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+dnrm2.atlas : dnrm2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+############################################## Sscnrm2 ##############################################
+scnrm2.goto : scnrm2.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+scnrm2.atlas : scnrm2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+############################################## Ddznrm2 ##############################################
+dznrm2.goto : dznrm2.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+dznrm2.atlas : dznrm2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+
 ###################################################################################################
 
 slinpack.$(SUFFIX) : linpack.c
@@ -2242,6 +2303,33 @@ cgemm3m.$(SUFFIX) : gemm3m.c
 
 zgemm3m.$(SUFFIX) : gemm3m.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+isamax.$(SUFFIX) : iamax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+idamax.$(SUFFIX) : iamax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+icamax.$(SUFFIX) : iamax.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+izamax.$(SUFFIX) : iamax.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+snrm2.$(SUFFIX) : nrm2.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dnrm2.$(SUFFIX) : nrm2.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+scnrm2.$(SUFFIX) : nrm2.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+dznrm2.$(SUFFIX) : nrm2.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 
 smallscaling: smallscaling.c ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm -lpthread
