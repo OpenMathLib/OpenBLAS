@@ -41,6 +41,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define J	x11	/* loop variable */
 #define I	x12	/* loop variable */
 
+#define A_PRE_SIZE	768
+#define X_PRE_SIZE	768
+
 /*******************************************************************************
 * Macro definitions
 *******************************************************************************/
@@ -139,6 +142,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ld2	{v11.4s, v12.4s}, [X_PTR], #32
 	ld2	{v13.4s, v14.4s}, [A_PTR], #32
+	prfm    PLDL1STRM, [X_PTR, #X_PRE_SIZE]
+	prfm    PLDL1STRM, [A_PTR, #A_PRE_SIZE]
 
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	fmla	v9.4s,  v11.4s, v13.4s		// [+ R(X) * A_R]
@@ -155,7 +160,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else // DOUBLE
 	ld2	{v11.2d, v12.2d}, [X_PTR], #32
 	ld2	{v13.2d, v14.2d}, [A_PTR], #32
-	prfm    PLDL1STRM, [X_PTR, #512]
+	prfm    PLDL1STRM, [X_PTR, #X_PRE_SIZE]
 
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	fmla	v9.2d,  v11.2d, v13.2d		// [+ R(X) * A_R]
@@ -171,7 +176,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ld2	{v17.2d, v18.2d}, [X_PTR], #32
 	ld2	{v19.2d, v20.2d}, [A_PTR], #32
-	prfm    PLDL1STRM, [A_PTR, #512]
+	prfm    PLDL1STRM, [A_PTR, #A_PRE_SIZE]
 
 #if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
 	fmla	v15.2d, v17.2d, v19.2d		// [+ R(X) * A_R]
