@@ -1172,6 +1172,8 @@ int get_cpuname(void){
 #endif
           else
 	    return CPUTYPE_NEHALEM;
+	case 12:
+	  // Braswell
 	case 13:
 	  // Avoton
 	    return CPUTYPE_NEHALEM;
