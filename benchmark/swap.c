@@ -190,8 +190,8 @@ int main(int argc, char *argv[]){
     timeg /= loops;
 
     fprintf(stderr,
-	    " %10.2f MBytes\n",
-	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg * 1.e-6);
+	    " %10.2f MBytes %10.6f sec\n",
+	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg * 1.e-6, timeg);
 
   }
 

@@ -183,9 +183,9 @@ int main(int argc, char *argv[]){
     timeg /= loops;
 
 #ifdef COMPLEX
-    fprintf(stderr, " %10.2f MFlops\n", 4. * (double)m / timeg * 1.e-6);
+    fprintf(stderr, " %10.2f MFlops %10.6f sec\n", 4. * (double)m / timeg * 1.e-6, timeg);
 #else
-    fprintf(stderr, " %10.2f MFlops\n", 2. * (double)m / timeg * 1.e-6);
+    fprintf(stderr, " %10.2f MFlops %10.6f sec\n", 2. * (double)m / timeg * 1.e-6, timeg);
 #endif
 
   }
