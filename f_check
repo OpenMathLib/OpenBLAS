@@ -114,7 +114,7 @@ if ($compiler eq "") {
 	    $openmp = "-mp";
 	}
 
-	if ($data =~ /IBM/) {
+	if ($data =~ /IBM XL/) {
 	    $vendor = IBM;
 	    $openmp = "-openmp";
 	}
