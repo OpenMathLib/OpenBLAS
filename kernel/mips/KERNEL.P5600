@@ -30,10 +30,10 @@ IDMAXKERNEL  = ../mips/imax.c
 ISMINKERNEL  = ../mips/imin.c
 IDMINKERNEL  = ../mips/imin.c
 
-SASUMKERNEL  = ../mips/asum.c
-DASUMKERNEL  = ../mips/asum.c
-CASUMKERNEL  = ../mips/zasum.c
-ZASUMKERNEL  = ../mips/zasum.c
+SASUMKERNEL  = ../mips/sasum_msa.c
+DASUMKERNEL  = ../mips/dasum_msa.c
+CASUMKERNEL  = ../mips/casum_msa.c
+ZASUMKERNEL  = ../mips/zasum_msa.c
 
 SAXPYKERNEL  = ../mips/axpy.c
 DAXPYKERNEL  = ../mips/axpy.c
@@ -45,10 +45,10 @@ DCOPYKERNEL  = ../mips/copy.c
 CCOPYKERNEL  = ../mips/zcopy.c
 ZCOPYKERNEL  = ../mips/zcopy.c
 
-SDOTKERNEL   = ../mips/dot.c
-DDOTKERNEL   = ../mips/dot.c
-CDOTKERNEL   = ../mips/zdot.c
-ZDOTKERNEL   = ../mips/zdot.c
+SDOTKERNEL   = ../mips/sdot_msa.c
+DDOTKERNEL   = ../mips/ddot_msa.c
+CDOTKERNEL   = ../mips/cdot_msa.c
+ZDOTKERNEL   = ../mips/zdot_msa.c
 
 SNRM2KERNEL  = ../mips/nrm2.c
 DNRM2KERNEL  = ../mips/nrm2.c
@@ -70,15 +70,15 @@ DSWAPKERNEL  = ../mips/swap.c
 CSWAPKERNEL  = ../mips/zswap.c
 ZSWAPKERNEL  = ../mips/zswap.c
 
-SGEMVNKERNEL = ../mips/gemv_n.c
-DGEMVNKERNEL = ../mips/gemv_n.c
-CGEMVNKERNEL = ../mips/zgemv_n.c
-ZGEMVNKERNEL = ../mips/zgemv_n.c
+SGEMVNKERNEL = ../mips/sgemv_n_msa.c
+DGEMVNKERNEL = ../mips/dgemv_n_msa.c
+CGEMVNKERNEL = ../mips/cgemv_n_msa.c
+ZGEMVNKERNEL = ../mips/zgemv_n_msa.c
 
-SGEMVTKERNEL = ../mips/gemv_t.c
-DGEMVTKERNEL = ../mips/gemv_t.c
-CGEMVTKERNEL = ../mips/zgemv_t.c
-ZGEMVTKERNEL = ../mips/zgemv_t.c
+SGEMVTKERNEL = ../mips/sgemv_t_msa.c
+DGEMVTKERNEL = ../mips/dgemv_t_msa.c
+CGEMVTKERNEL = ../mips/cgemv_t_msa.c
+ZGEMVTKERNEL = ../mips/zgemv_t_msa.c
 
 SGEMMKERNEL    = ../mips/sgemm_kernel_8x8_msa.c
 SGEMMONCOPY    = ../mips/sgemm_ncopy_8_msa.c

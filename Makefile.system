@@ -529,7 +529,7 @@ CCOMMON_OPT += -mmsa
 FCOMMON_OPT += -mmsa
 endif
 
-ifeq ($(CORE), I6400)
+ifneq ($(filter $(CORE), I6400 P6600),)
 CCOMMON_OPT += -mmsa
 FCOMMON_OPT += -mmsa
 endif
