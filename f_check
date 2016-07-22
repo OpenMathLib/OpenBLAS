@@ -223,12 +223,7 @@ if (!$?) {
 	}
        #For gfortran MIPS
 	if ($?) {
-            $mips_data = `$compiler_bin -E -dM - < /dev/null`;
-            if ($mips_data =~ /_MIPS_ISA_MIPS64/) {
-	        $link = `$compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
-	    } else {
-	        $link = `$compiler $openmp -mabi=32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
-	    }
+      $link = `$compiler $openmp -mabi=32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	}
 	$binary = "" if ($?);
     }
