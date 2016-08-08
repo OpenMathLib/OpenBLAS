@@ -53,9 +53,9 @@ CFLAGS = -O3 -qnosave
 #  The archiver and the flag(s) to use when building archive (library)
 #  If you system has no ranlib, set RANLIB = echo.
 #
-ARCH     = ar
-ARCHFLAGS= cr
-RANLIB   = ranlib
+AR      = ar
+ARFLAGS = cr
+RANLIB  = ranlib
 #
 #  Location of the extended-precision BLAS (XBLAS) Fortran library
 #  used for building and testing extended-precision routines.  The
