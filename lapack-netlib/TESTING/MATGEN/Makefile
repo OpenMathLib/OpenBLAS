@@ -59,23 +59,23 @@ ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN)	\
 	$(DZATGEN)
 
 ../../$(TMGLIB): $(ALLOBJ)
-	$(AR) $(ARFLAGS) $@ $(ALLOBJ)
+	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
 	$(RANLIB) $@
 
 single: $(SMATGEN) $(SCATGEN)
-	$(AR) $(ARFLAGS) ../../$(TMGLIB) $(SMATGEN) $(SCATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(SMATGEN) $(SCATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 complex: $(CMATGEN) $(SCATGEN)
-	$(AR) $(ARFLAGS) ../../$(TMGLIB) $(CMATGEN) $(SCATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(CMATGEN) $(SCATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 double: $(DMATGEN) $(DZATGEN)
-	$(AR) $(ARFLAGS) ../../$(TMGLIB) $(DMATGEN) $(DZATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(DMATGEN) $(DZATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 complex16: $(ZMATGEN) $(DZATGEN)
-	$(AR) $(ARFLAGS) ../../$(TMGLIB) $(ZMATGEN) $(DZATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(ZMATGEN) $(DZATGEN)
 	$(RANLIB) ../../$(TMGLIB)
 
 $(SCATGEN): $(FRC)

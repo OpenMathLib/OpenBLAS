@@ -4,7 +4,6 @@ endif
 
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
-include $(TOPDIR)/Makefile.conf
 
 ifdef TARGET_CORE
 override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)

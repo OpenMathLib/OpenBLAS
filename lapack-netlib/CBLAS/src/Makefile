@@ -73,27 +73,27 @@ alev1 = $(slev1) $(dlev1) $(clev1) $(zlev1) $(sclev1)
 
 # Single real precision
 slib1: $(slev1) $(sclev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(slev1) $(sclev1)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(slev1) $(sclev1)
 	$(RANLIB) $(CBLASLIB)
 
 # Double real precision
 dlib1: $(dlev1) 
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(dlev1)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(dlev1)
 	$(RANLIB) $(CBLASLIB)
 
 # Single complex precision
 clib1: $(clev1) $(sclev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(clev1) $(sclev1)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(clev1) $(sclev1)
 	$(RANLIB) $(CBLASLIB)
 
 # Double complex precision
 zlib1: $(zlev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(zlev1)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(zlev1)
 	$(RANLIB) $(CBLASLIB)
 
 # All precisions
 all1:  $(alev1)
-	$(AR) $(ARFLAGS)  $(CBLASLIB) $(alev1)
+	$(ARCH) $(ARCHFLAGS)  $(CBLASLIB) $(alev1)
 	$(RANLIB) $(CBLASLIB)
 
 #
@@ -146,27 +146,27 @@ alev2 = $(slev2) $(dlev2) $(clev2) $(zlev2)
 
 # Single real precision
 slib2: $(slev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(slev2) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(slev2) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # Double real  precision
 dlib2: $(dlev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(dlev2) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(dlev2) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # Single complex precision
 clib2: $(clev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(clev2) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(clev2) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # Double complex precision
 zlib2: $(zlev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(zlev2) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(zlev2) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # All precisions
 all2:  $(alev2) $(errhand)
-	$(AR) $(ARFLAGS)  $(CBLASLIB) $(alev2) $(errhand)
+	$(ARCH) $(ARCHFLAGS)  $(CBLASLIB) $(alev2) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 #
 #
@@ -211,32 +211,32 @@ alev3 = $(slev3) $(dlev3) $(clev3) $(zlev3)
 
 # Single real precision
 slib3: $(slev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(slev3) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(slev3) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # Double real precision
 dlib3: $(dlev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(dlev3) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(dlev3) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # Single complex precision
 clib3: $(clev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(clev3) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(clev3) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # Single complex precision
 zlib3: $(zlev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(zlev3) $(errhand)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(zlev3) $(errhand)
 	$(RANLIB) $(CBLASLIB)
 
 # All precisions
 all3:  $(alev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $(alev3)
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $(alev3) 
 	$(RANLIB) $(CBLASLIB)
 
 # All levels and precisions
 cblaslib: $(alev)  
-	$(AR) $(ARFLAGS)  $(CBLASLIB) $(alev)
+	$(ARCH) $(ARCHFLAGS)  $(CBLASLIB) $(alev) 
 	$(RANLIB) $(CBLASLIB)
 
 FRC:

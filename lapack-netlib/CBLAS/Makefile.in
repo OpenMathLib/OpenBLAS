@@ -44,6 +44,6 @@ FFLAGS = -O3
 # Archive programs and flags
 #-----------------------------------------------------------------------------
 
-AR = ar
-ARFLAGS = cr
+ARCH = ar
+ARCHFLAGS = cr
 RANLIB = ranlib

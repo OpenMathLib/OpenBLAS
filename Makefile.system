@@ -525,18 +525,18 @@ FCOMMON_OPT += -march=mips64
 endif
 
 ifeq ($(CORE), P5600)
-CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MIPS_SIMD_FLAGS)
-FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MIPS_SIMD_FLAGS)
+CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
 endif
 
 ifeq ($(CORE), I6400)
-CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MIPS_SIMD_FLAGS)
-FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MIPS_SIMD_FLAGS)
+CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
+FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
 endif
 
 ifeq ($(CORE), P6600)
-CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MIPS_SIMD_FLAGS)
-FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MIPS_SIMD_FLAGS)
+CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
+FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
 endif
 
 ifeq ($(OSNAME), AIX)
@@ -1132,6 +1132,8 @@ export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4
 export HAVE_NEON
+export HAVE_MSA
+export MSA_FLAGS
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
