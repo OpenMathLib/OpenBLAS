@@ -38,6 +38,16 @@ else
 endif
 endif
 
+#Either uncomment below line or run make with `USE_MASS=1` to enable support of MASS library
+#USE_MASS = 1
+
+ifeq ($(USE_MASS), 1)
+# Path to MASS libs, change it if the libs are installed at any other location
+MASSPATH        = /opt/ibm/xlmass/8.1.3/lib
+COMMON_OPT     += -mveclibabi=mass -ftree-vectorize -funsafe-math-optimizations -DUSE_MASS
+EXTRALIB       += -L$(MASSPATH) -lmass -lmassvp8 -lmass_simdp8
+endif
+
 ifdef BINARY64
 
 
