@@ -39,7 +39,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma GCC optimize "O1"
 
 #if defined(POWER8)
+#if defined(DOUBLE)
 #include "zscal_microk_power8.c"
+#endif
 #endif
 
 
@@ -122,6 +124,21 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
 
 	if ( inc_x <= 0 )
 		return(0);
+
+	if (da_r == ZERO && da_i == ZERO) {
+	  //clear the vector and return
+	  if (inc_x == 1) {
+	    memset(x, 0, n*COMPSIZE*SIZE);
+	  }else{
+	    inc_x2 = 2 * inc_x;
+	    for(i=0; i<n; i++){
+	      x[ip]=ZERO; 
+	      x[ip+1]=ZERO;
+	      ip += inc_x2;
+	    }
+	  }
+	  return 0;
+	}
 
 	if ( inc_x == 1 )
 	{
