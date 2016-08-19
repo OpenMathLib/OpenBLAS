@@ -125,10 +125,10 @@ DDOTKERNEL   =  ddot.c
 #CDOTKERNEL   = ../arm/zdot.c
 ZDOTKERNEL   =  zdot.c
 #
-#SNRM2KERNEL  = ../arm/nrm2.c
-#DNRM2KERNEL  = ../arm/nrm2.c
-#CNRM2KERNEL  = ../arm/znrm2.c
-#ZNRM2KERNEL  = ../arm/znrm2.c
+SNRM2KERNEL  = ../arm/nrm2.c
+DNRM2KERNEL  = ../arm/nrm2.c
+CNRM2KERNEL  = ../arm/znrm2.c
+ZNRM2KERNEL  = ../arm/znrm2.c
 #
 SROTKERNEL   = srot.c
 DROTKERNEL   = drot.c
