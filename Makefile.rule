@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.18
+VERSION = 0.2.19
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -52,6 +52,7 @@ VERSION = 0.2.18
 # USE_THREAD = 0
 
 # If you're going to use this library with OpenMP, please comment it in.
+# This flag is always set for POWER8. Don't modify the flag 
 # USE_OPENMP = 1
 
 # You can define maximum number of threads. Basically it should be
@@ -153,10 +154,12 @@ NO_AFFINITY = 1
 
 # Common Optimization Flag;
 # The default -O2 is enough.
+# Flags for POWER8 are defined in Makefile.power. Don't modify COMMON_OPT
 # COMMON_OPT = -O2
 
 # gfortran option for LAPACK
 # enable this flag only on 64bit Linux and if you need a thread safe lapack library
+# Flags for POWER8 are defined in Makefile.power. Don't modify FCOMMON_OPT
 # FCOMMON_OPT = -frecursive
 
 # Profiling flags

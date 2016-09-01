@@ -1,5 +1,5 @@
 
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
 
 # sources that need to be compiled twice, once with no flags and once with LOWER
 set(UL_SOURCES

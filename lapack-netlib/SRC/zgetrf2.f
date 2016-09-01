@@ -144,7 +144,7 @@
       EXTERNAL           DLAMCH, IZAMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZGEMM, ZSCAL, ZLASWP, ZTRSM, ZERBLA
+      EXTERNAL           ZGEMM, ZSCAL, ZLASWP, ZTRSM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN

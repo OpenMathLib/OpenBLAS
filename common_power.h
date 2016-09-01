@@ -39,8 +39,13 @@
 #ifndef COMMON_POWER
 #define COMMON_POWER
 
+#if defined(POWER8)
+#define MB		__asm__ __volatile__ ("eieio":::"memory")
+#define WMB		__asm__ __volatile__ ("eieio":::"memory")
+#else
 #define MB		__asm__ __volatile__ ("sync")
 #define WMB		__asm__ __volatile__ ("sync")
+#endif
 
 #define INLINE inline
 
@@ -798,7 +803,7 @@ Lmcount$lazy_ptr:
 #elif defined(PPC440FP2)
 #define BUFFER_SIZE     ( 16 << 20)
 #elif defined(POWER8)
-#define BUFFER_SIZE     ( 32 << 20)
+#define BUFFER_SIZE     ( 64 << 20)
 #else
 #define BUFFER_SIZE     ( 16 << 20)
 #endif

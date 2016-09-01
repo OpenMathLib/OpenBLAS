@@ -1,5 +1,23 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.19
+1-Sep-2016
+common:
+	* Improved cross compiling.
+	* Fix the bug on musl libc.
+
+POWER:
+	* Optimize BLAS on Power8
+	* Fixed Julia+OpenBLAS bugs on Power8
+
+MIPS:
+	* Optimize BLAS on MIPS P5600 and I6400 (Thanks, Shivraj Patil, Kaustubh Raste)
+
+ARM:
+	* Improved on ARM Cortex-A57. (Thanks, Ashwin Sekhar T K)
+
+
+====================================================================
 Version 0.2.18
 12-Apr-2016
 common:

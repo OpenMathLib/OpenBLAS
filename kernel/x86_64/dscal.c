@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)
+#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "dscal_microk_bulldozer-2.c"
 #elif defined(SANDYBRIDGE)
 #include "dscal_microk_sandy-2.c"

@@ -261,8 +261,8 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-	//Intel Avoton
-	if (model == 13) { 
+	//Intel Braswell / Avoton
+	if (model == 12 || model == 13) { 
 	  openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK); 
 	  return &gotoblas_NEHALEM;
 	}	
@@ -439,7 +439,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	//char mname[20];
 
-	for ( i=1 ; i <= 21; i++)
+	for ( i=1 ; i <= 22; i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{

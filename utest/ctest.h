@@ -637,7 +637,7 @@ static void *find_symbol(struct ctest *test, const char *fname)
 static void sighandler(int signum)
 {
     char msg[128];
-    sprintf(msg, "[SIGNAL %d: %s]", signum, sys_siglist[signum]);
+    snprintf(msg, sizeof(msg), "[SIGNAL %d: %s]", signum, strsignal(signum));
     color_print(ANSI_BRED, msg);
     fflush(stdout);
 

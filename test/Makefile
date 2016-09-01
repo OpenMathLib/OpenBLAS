@@ -4,6 +4,7 @@ include ../Makefile.system
 all :: level1 level2 level3
 
 level1 : sblat1 dblat1 cblat1 zblat1
+ifndef CROSS
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat1
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./dblat1
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat1
@@ -21,8 +22,10 @@ else
 	OPENBLAS_NUM_THREADS=2 ./zblat1
 endif
 endif
+endif
 
 level2 : sblat2 dblat2 cblat2 zblat2
+ifndef CROSS
 	rm -f ?BLAT2.SUMM
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat2 < ./sblat2.dat
 	@$(GREP) -q FATAL SBLAT2.SUMM && cat SBLAT2.SUMM || exit 0
@@ -54,8 +57,10 @@ else
 	@$(GREP) -q FATAL ZBLAT2.SUMM && cat ZBLAT2.SUMM || exit 0
 endif
 endif
+endif
 
 level3 : sblat3 dblat3 cblat3 zblat3
+ifndef CROSS
 	rm -f ?BLAT3.SUMM
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat3 < ./sblat3.dat
 	@$(GREP) -q FATAL SBLAT3.SUMM && cat SBLAT3.SUMM || exit 0
@@ -87,9 +92,11 @@ else
 	@$(GREP) -q FATAL ZBLAT3.SUMM && cat ZBLAT3.SUMM || exit 0
 endif
 endif
+endif
 
 
 level3_3m : zblat3_3m cblat3_3m
+ifndef CROSS
 	rm -f ?BLAT3_3M.SUMM
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat3_3m < ./cblat3_3m.dat
 	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
@@ -107,6 +114,7 @@ else
 	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
 	OPENBLAS_NUM_THREADS=2 ./zblat3_3m < ./zblat3_3m.dat
 	@$(GREP) -q FATAL ZBLAT3_3M.SUMM && cat ZBLAT3_3M.SUMM || exit 0
+endif
 endif
 endif
 

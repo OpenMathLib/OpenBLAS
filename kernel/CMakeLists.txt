@@ -1,6 +1,6 @@
 
-include_directories(${CMAKE_SOURCE_DIR})
-include("${CMAKE_SOURCE_DIR}/cmake/kernel.cmake")
+include_directories(${PROJECT_SOURCE_DIR})
+include("${PROJECT_SOURCE_DIR}/cmake/kernel.cmake")
 
 # Makefile
 

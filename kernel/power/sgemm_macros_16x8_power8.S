@@ -26,11 +26,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/04/02 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/21 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
-* 	 LAPACK-TEST		: OK
+*	 LAPACK-TEST		: OK
 **************************************************************************************/
 
 
@@ -5884,5 +5884,147 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	4
 
+.endm
+
+
+
+
+
+.macro COPYB_4x8
+
+
+	lxvw4x		vs5,	o0,	BO
+	xxspltw		vs6,	vs5,	0
+	xxspltw		vs7,	vs5,	1
+	xxspltw		vs8,	vs5,	2
+	xxspltw		vs9,	vs5,	3
+
+	lxvw4x		vs10,	o16,	BO
+	xxspltw		vs11,	vs10,	0
+	xxspltw		vs12,	vs10,	1
+	xxspltw		vs13,	vs10,	2
+	xxspltw		vs14,	vs10,	3
+
+	lxvw4x		vs15,	o32,	BO
+	xxspltw		vs16,	vs15,	0
+	xxspltw		vs17,	vs15,	1
+	xxspltw		vs18,	vs15,	2
+	xxspltw		vs19,	vs15,	3
+
+	lxvw4x		vs20,	o48,	BO
+	xxspltw		vs21,	vs20,	0
+	xxspltw		vs22,	vs20,	1
+	xxspltw		vs23,	vs20,	2
+	xxspltw		vs24,	vs20,	3
+
+	addi		BO,	BO,	64
+	lxvw4x		vs35,	o0,	BO
+	xxspltw		vs36,	vs35,	0
+	xxspltw		vs37,	vs35,	1
+	xxspltw		vs38,	vs35,	2
+	xxspltw		vs39,	vs35,	3
+
+	lxvw4x		vs40,	o16,	BO
+	xxspltw		vs41,	vs40,	0
+	xxspltw		vs42,	vs40,	1
+	xxspltw		vs43,	vs40,	2
+	xxspltw		vs44,	vs40,	3
+
+	lxvw4x		vs45,	o32,	BO
+	xxspltw		vs46,	vs45,	0
+	xxspltw		vs47,	vs45,	1
+	xxspltw		vs48,	vs45,	2
+	xxspltw		vs49,	vs45,	3
+
+	lxvw4x		vs50,	o48,	BO
+	xxspltw		vs51,	vs50,	0
+	xxspltw		vs52,	vs50,	1
+	xxspltw		vs53,	vs50,	2
+	xxspltw		vs54,	vs50,	3
+
+	addi		BO,	BO,	64
+
+
+	stxvw4x		vs6,	o0,	BBO
+	stxvw4x		vs7,	o16,	BBO
+	stxvw4x		vs8,	o32,	BBO
+	stxvw4x		vs9,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs11,	o0,	BBO
+	stxvw4x		vs12,	o16,	BBO
+	stxvw4x		vs13,	o32,	BBO
+	stxvw4x		vs14,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs16,	o0,	BBO
+	stxvw4x		vs17,	o16,	BBO
+	stxvw4x		vs18,	o32,	BBO
+	stxvw4x		vs19,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs21,	o0,	BBO
+	stxvw4x		vs22,	o16,	BBO
+	stxvw4x		vs23,	o32,	BBO
+	stxvw4x		vs24,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs36,	o0,	BBO
+	stxvw4x		vs37,	o16,	BBO
+	stxvw4x		vs38,	o32,	BBO
+	stxvw4x		vs39,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs41,	o0,	BBO
+	stxvw4x		vs42,	o16,	BBO
+	stxvw4x		vs43,	o32,	BBO
+	stxvw4x		vs44,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs46,	o0,	BBO
+	stxvw4x		vs47,	o16,	BBO
+	stxvw4x		vs48,	o32,	BBO
+	stxvw4x		vs49,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs51,	o0,	BBO
+	stxvw4x		vs52,	o16,	BBO
+	stxvw4x		vs53,	o32,	BBO
+	stxvw4x		vs54,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+.endm
+
+
+.macro COPYB_1x8
+
+
+	lxvw4x		vs5,	o0,	BO
+	xxspltw		vs6,	vs5,	0
+	xxspltw		vs7,	vs5,	1
+	xxspltw		vs8,	vs5,	2
+	xxspltw		vs9,	vs5,	3
+
+	lxvw4x		vs10,	o16,	BO
+	xxspltw		vs11,	vs10,	0
+	xxspltw		vs12,	vs10,	1
+	xxspltw		vs13,	vs10,	2
+	xxspltw		vs14,	vs10,	3
+
+
+	addi		BO,	BO,	32
+
+	stxvw4x		vs6,	o0,	BBO
+	stxvw4x		vs7,	o16,	BBO
+	stxvw4x		vs8,	o32,	BBO
+	stxvw4x		vs9,	o48,	BBO
+
+	addi		BBO,	BBO,	64
+	stxvw4x		vs11,	o0,	BBO
+	stxvw4x		vs12,	o16,	BBO
+	stxvw4x		vs13,	o32,	BBO
+	stxvw4x		vs14,	o48,	BBO
+
+	addi		BBO,	BBO,	64
 .endm
 

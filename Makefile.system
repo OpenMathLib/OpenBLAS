@@ -159,7 +159,7 @@ ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
@@ -462,7 +462,7 @@ endif
 endif
 endif
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 NO_BINARY_MODE	= 1
 endif
 
@@ -502,12 +502,15 @@ endif
 
 ifdef NO_BINARY_MODE
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64))
 ifdef BINARY64
 CCOMMON_OPT += -mabi=64
 else
 CCOMMON_OPT += -mabi=n32
 endif
+BINARY_DEFINED = 1
+else ifeq ($(ARCH), $(filter $(ARCH),mips))
+CCOMMON_OPT += -mabi=32
 BINARY_DEFINED = 1
 endif
 
@@ -519,6 +522,21 @@ endif
 ifeq ($(CORE), LOONGSON3B)
 CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
+endif
+
+ifeq ($(CORE), P5600)
+CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
+endif
+
+ifeq ($(CORE), I6400)
+CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
+FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
+endif
+
+ifeq ($(CORE), P6600)
+CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
+FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
 endif
 
 ifeq ($(OSNAME), AIX)
@@ -589,12 +607,14 @@ ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
 endif
 ifdef NO_BINARY_MODE
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64))
 ifdef BINARY64
 FCOMMON_OPT += -mabi=64
 else
 FCOMMON_OPT += -mabi=n32
 endif
+else ifeq ($(ARCH), $(filter $(ARCH),mips))
+FCOMMON_OPT += -mabi=32
 endif
 else
 ifdef BINARY64
@@ -677,21 +697,7 @@ FCOMMON_OPT += -i8
 endif
 endif
 endif
-
-ifneq ($(ARCH), mips64)
-ifndef BINARY64
-FCOMMON_OPT += -m32
-else
-FCOMMON_OPT += -m64
-endif
-else
-ifdef BINARY64
-FCOMMON_OPT += -mabi=64
-else
-FCOMMON_OPT += -mabi=n32
-endif
-endif
-
+ 
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
@@ -707,7 +713,7 @@ endif
 endif
 endif
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 FCOMMON_OPT += -n32
 else
@@ -737,7 +743,7 @@ endif
 
 ifeq ($(C_COMPILER), OPEN64)
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 CCOMMON_OPT += -n32
 else
@@ -1126,6 +1132,8 @@ export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4
 export HAVE_NEON
+export HAVE_MSA
+export MSA_FLAGS
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE

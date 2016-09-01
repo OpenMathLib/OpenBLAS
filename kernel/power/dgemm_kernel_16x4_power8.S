@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2016/03/05 Werner Saar (wernsaar@googlemail.com)
+* 2016/04/21 Werner Saar (wernsaar@googlemail.com)
 * 	 BLASTEST 		: OK
 * 	 CTEST			: OK
 * 	 TEST			: OK
@@ -131,13 +131,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define o0	0
 
+#define T4	r12
+#define T3	r11
+
+#define o40	r12
+#define o56	r11
+
+#define o112	r14
 #define o8	r15
 #define o24	r16
-#define ALPHA	r17
+#define o64	r17
 #define L	r18
 #define T1	r19
-#define KK	r20
-#define BB	r21
+#define o80	r20
+#define o96	r21
 #define	I	r22
 #define J	r23
 #define AO	r24
@@ -202,6 +209,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r17,  256(SP)
 	std	r16,  264(SP)
 	std	r15,  272(SP)
+	std	r14,  280(SP)
 #else
 	stw	r31,  144(SP)
 	stw	r30,  148(SP)
@@ -220,6 +228,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stw	r17,  200(SP)
 	stw	r16,  204(SP)
 	stw	r15,  208(SP)
+	stw	r14,  212(SP)
 #endif
 
 	stfd	f1,  ALPHA_SP
@@ -260,19 +269,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ble	.L999_H1
 
 #ifdef __64BIT__
-	addi	ALPHA, SP, 296
+	addi	T1, SP, 296
 #else
-	addi	ALPHA, SP, 224
+	addi	T1, SP, 224
 #endif
 
-	li	PRE, 256 
+	li	PRE, 384 
 	li	o8 , 8
 	li	o16, 16
 	li	o24, 24
 	li	o32, 32
 	li	o48, 48
+	li	o64, 64
+	li	o80, 80
+	li	o96, 96
+	li	o112, 112
 
-	lxvdsx	alpha_r, 0, ALPHA
+	lxvdsx	alpha_r, 0, T1
 
 #include "dgemm_logic_16x4_power8.S"
 
@@ -320,6 +333,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld	r17,  256(SP)
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
+	ld	r14,  280(SP)
 #else
 	lwz	r31,  144(SP)
 	lwz	r30,  148(SP)
@@ -338,6 +352,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lwz	r17,  200(SP)
 	lwz	r16,  204(SP)
 	lwz	r15,  208(SP)
+	lwz	r14,  212(SP)
 #endif
 
 	addi	SP, SP, STACKSIZE

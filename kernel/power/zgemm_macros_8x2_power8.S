@@ -1,3 +1,38 @@
+/***************************************************************************
+Copyright (c) 2013-2016, The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+
+/**************************************************************************************
+* 2016/04/22 Werner Saar (wernsaar@googlemail.com)
+* 	 BLASTEST 		: OK
+* 	 CTEST			: OK
+* 	 TEST			: OK
+*	 LAPACK-TEST		: OK
+**************************************************************************************/
+
 #if   defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
 	#define	XSFADD_R1	xsadddp
@@ -3054,4 +3089,77 @@
 	addi		CO,	CO,	16
 
 .endm
+
+
+
+.macro ZCOPYB_1x1
+
+        lxvdsx          vs4,    o0,     BO              // b0_r
+        lxvdsx          vs5,    o8,     BO              // b0_i
+        addi            BO,     BO,     16
+        stxvd2x         vs4,    o0,     BBO
+        stxvd2x         vs5,    o16,    BBO
+        addi            BBO,    BBO,    32
+
+.endm
+
+
+.macro ZCOPYB_8x1
+
+        lxvd2x          vs32,   o0,     BO
+        lxvd2x          vs33,  o16,     BO
+        lxvd2x          vs34,  o32,     BO
+        lxvd2x          vs35,  o48,     BO
+        addi            BO,     BO,     64
+
+        lxvd2x          vs36,   o0,     BO
+        lxvd2x          vs37,  o16,     BO
+        lxvd2x          vs38,  o32,     BO
+        lxvd2x          vs39,  o48,     BO
+        addi            BO,     BO,     64
+
+	xxspltd		vs40, vs32, 0
+	xxspltd		vs41, vs32, 1
+	xxspltd		vs42, vs33, 0
+	xxspltd		vs43, vs33, 1
+	xxspltd		vs44, vs34, 0
+	xxspltd		vs45, vs34, 1
+	xxspltd		vs46, vs35, 0
+	xxspltd		vs47, vs35, 1
+
+	xxspltd		vs48, vs36, 0
+	xxspltd		vs49, vs36, 1
+	xxspltd		vs50, vs37, 0
+	xxspltd		vs51, vs37, 1
+	xxspltd		vs52, vs38, 0
+	xxspltd		vs53, vs38, 1
+	xxspltd		vs54, vs39, 0
+	xxspltd		vs55, vs39, 1
+
+        stxvd2x         vs40,    o0,     BBO
+        stxvd2x         vs41,   o16,     BBO
+        stxvd2x         vs42,   o32,     BBO
+        stxvd2x         vs43,   o48,     BBO
+        addi            BBO,    BBO,    64
+
+        stxvd2x         vs44,    o0,     BBO
+        stxvd2x         vs45,   o16,     BBO
+        stxvd2x         vs46,   o32,     BBO
+        stxvd2x         vs47,   o48,     BBO
+        addi            BBO,    BBO,    64
+
+        stxvd2x         vs48,    o0,     BBO
+        stxvd2x         vs49,   o16,     BBO
+        stxvd2x         vs50,   o32,     BBO
+        stxvd2x         vs51,   o48,     BBO
+        addi            BBO,    BBO,    64
+
+        stxvd2x         vs52,    o0,     BBO
+        stxvd2x         vs53,   o16,     BBO
+        stxvd2x         vs54,   o32,     BBO
+        stxvd2x         vs55,   o48,     BBO
+        addi            BBO,    BBO,    64
+
+.endm
+
 

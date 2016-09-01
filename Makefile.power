@@ -1,4 +1,26 @@
-# CCOMMON_OPT	+= -DALLOC_SHM
+
+ifdef USE_THREAD
+ifeq ($(USE_THREAD), 0)
+USE_OPENMP = 0
+else
+USE_OPENMP = 1
+endif
+else
+USE_OPENMP = 1
+endif
+
+
+
+ifeq ($(CORE), POWER8)
+ifeq ($(USE_OPENMP), 1)
+COMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+else
+COMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx -malign-power -fno-fast-math
+FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -fno-fast-math
+endif
+endif
+
 
 FLAMEPATH	= $(HOME)/flame/lib
 
@@ -14,6 +36,16 @@ ifdef BINARY64
 else
 # COMPILER_PREFIX = powerpc-linux-
 endif
+endif
+
+#Either uncomment below line or run make with `USE_MASS=1` to enable support of MASS library
+#USE_MASS = 1
+
+ifeq ($(USE_MASS), 1)
+# Path to MASS libs, change it if the libs are installed at any other location
+MASSPATH        = /opt/ibm/xlmass/8.1.3/lib
+COMMON_OPT     += -mveclibabi=mass -ftree-vectorize -funsafe-math-optimizations -DUSE_MASS
+EXTRALIB       += -L$(MASSPATH) -lmass -lmassvp8 -lmass_simdp8
 endif
 
 ifdef BINARY64

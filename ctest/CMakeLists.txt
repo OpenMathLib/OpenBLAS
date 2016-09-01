@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
 
 enable_language(Fortran)
 
