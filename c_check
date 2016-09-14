@@ -34,7 +34,7 @@ if (dirname($compiler_name) ne ".") {
     $cross_suffix .= dirname($compiler_name) . "/";
 }
 
-if (basename($compiler_name) =~ /(.*-)(.*)/) {
+if (basename($compiler_name) =~ /([^\s]*-)(.*)/) {
     $cross_suffix .= $1;
 }
 
