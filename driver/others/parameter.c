@@ -727,3 +727,16 @@ void blas_set_parameter(void){
 
 }
 #endif
+
+#if defined(ARCH_ARM64)
+
+void blas_set_parameter(void)
+{
+#if defined(VULCAN)
+  dgemm_p = 160;
+  dgemm_q = 128;
+  dgemm_r = 4096;
+#endif
+}
+
+#endif

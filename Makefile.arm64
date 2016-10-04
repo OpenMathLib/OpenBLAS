@@ -9,3 +9,8 @@ CCOMMON_OPT += -march=armv8-a+crc+crypto+fp+simd -mtune=cortex-a57
 FCOMMON_OPT += -march=armv8-a+crc+crypto+fp+simd -mtune=cortex-a57
 endif
 
+ifeq ($(CORE), VULCAN)
+CCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
+FCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
+endif
+

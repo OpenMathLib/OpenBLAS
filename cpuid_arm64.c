@@ -30,17 +30,20 @@
 #define CPU_UNKNOWN     	0
 #define CPU_ARMV8       	1
 #define CPU_CORTEXA57       	2
+#define CPU_VULCAN       	3
 
 static char *cpuname[] = {
   "UNKNOWN",
   "ARMV8" ,
   "CORTEXA57"
+  "VULCAN"
 };
 
 static char *cpuname_lower[] = {
   "unknown",
   "armv8" ,
   "cortexa57"
+  "vulcan"
 };
 
 int get_feature(char *search)
@@ -85,25 +88,27 @@ int detect(void)
 #ifdef linux
 
 	FILE *infile;
-  	char buffer[512], *p;
+	char buffer[512], *p, *cpu_part, *cpu_implementer;
   	p = (char *) NULL ;
 
   	infile = fopen("/proc/cpuinfo", "r");
-	while (fgets(buffer, sizeof(buffer), infile))
-	{
+	while (fgets(buffer, sizeof(buffer), infile)) {
 
-		if (!strncmp("CPU part", buffer, 8))
-		{
-			p = strchr(buffer, ':') + 2;
+		if (!strncmp("CPU part", buffer, 8)) {
+			cpu_part = strchr(buffer, ':') + 2;
+			break;
+		} else if (!strncmp("CPU implementer", buffer, 15)) {
+			cpu_implementer = strchr(buffer, ':') + 2;
 			break;
 		}
 	}
 
 	fclose(infile);
-	if(p != NULL) {
-	  if (strstr(p, "0xd07")) {
-	    return CPU_CORTEXA57;
-	  }
+	if(cpu_part != NULL && cpu_implementer != NULL) {
+		if (strstr(cpu_part, "0xd07") && strstr(cpu_implementer, "0x41"))
+			return CPU_CORTEXA57;
+		else if (strstr(cpu_part, "0x516") && strstr(cpu_implementer, "0x42"))
+			return CPU_VULCAN;
 	}
 
 	p = (char *) NULL ;
@@ -176,6 +181,28 @@ void get_cpuconfig(void)
     			printf("#define L2_ASSOCIATIVE 4\n");
 			break;
 
+		case CPU_VULCAN:
+			printf("#define VULCAN                        \n");
+			printf("#define HAVE_VFP                      \n");
+			printf("#define HAVE_VFPV3                    \n");
+			printf("#define HAVE_NEON                     \n");
+			printf("#define HAVE_VFPV4                    \n");
+			printf("#define L1_CODE_SIZE         32768    \n");
+			printf("#define L1_CODE_LINESIZE     64       \n");
+			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
+			printf("#define L1_DATA_SIZE         32768    \n");
+			printf("#define L1_DATA_LINESIZE     64       \n");
+			printf("#define L1_DATA_ASSOCIATIVE  8        \n");
+			printf("#define L2_SIZE              262144   \n");
+			printf("#define L2_LINESIZE          64       \n");
+			printf("#define L2_ASSOCIATIVE       8        \n");
+			printf("#define L3_SIZE              33554432 \n");
+			printf("#define L3_LINESIZE          64       \n");
+			printf("#define L3_ASSOCIATIVE       32       \n");
+			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+			printf("#define DTB_SIZE             4096     \n");
+			break;
+
 		case CPU_CORTEXA57:
 			printf("#define CORTEXA57\n");
 			printf("#define HAVE_VFP\n");
@@ -191,8 +218,8 @@ void get_cpuconfig(void)
 			printf("#define L2_SIZE 2097152\n");
 			printf("#define L2_LINESIZE 64\n");
 			printf("#define L2_ASSOCIATIVE 16\n");
-    			printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    			printf("#define DTB_SIZE 4096\n");
+			printf("#define DTB_DEFAULT_ENTRIES 64\n");
+			printf("#define DTB_SIZE 4096\n");
 			break;
 	}
 }
