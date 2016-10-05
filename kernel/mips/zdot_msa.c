@@ -95,11 +95,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* return double, x,y double */
 /* zdotc -  CONJ */
 /* zdotu - !CONJ */
-#ifndef _MSC_VER
-FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
-#else
+
 OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
-#endif
 {
     BLASLONG i = 0;
     FLOAT dot[2];
