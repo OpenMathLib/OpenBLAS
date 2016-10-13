@@ -169,7 +169,7 @@ void goto_set_num_threads(int num_threads) {};
 
 #else
 
-#if defined(OS_LINUX) || defined(OS_SUNOS)
+#if defined(OS_LINUX) || defined(OS_SUNOS) || defined(OS_NETBSD)
 #ifndef NO_AFFINITY
 int get_num_procs(void);
 #else
