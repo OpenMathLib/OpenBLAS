@@ -814,7 +814,7 @@ void gotoblas_affinity_init(void) {
 #endif
 
     //returns the number of processors which are currently online
-    common -> num_procs = sysconf(_SC_NPROCESSORS_ONLN);;
+    common -> num_procs = sysconf(_SC_NPROCESSORS_CONF);;
 
     if(common -> num_procs > MAX_CPUS) {
       fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(%d). Terminated.\n", common->num_procs, MAX_CPUS);
@@ -923,7 +923,7 @@ void gotoblas_set_affinity2(int threads) {};
 
 void gotoblas_affinity_reschedule(void) {};
 
-int get_num_procs(void) { return sysconf(_SC_NPROCESSORS_ONLN); }
+int get_num_procs(void) { return sysconf(_SC_NPROCESSORS_CONF); }
 
 int get_num_nodes(void) { return 1; }
 

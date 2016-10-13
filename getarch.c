@@ -971,7 +971,7 @@ static int get_num_cores(void) {
 
 #if defined(linux) || defined(__sun__)
   //returns the number of processors which are currently online
-  return sysconf(_SC_NPROCESSORS_ONLN);
+  return sysconf(_SC_NPROCESSORS_CONF);
 
 #elif defined(OS_WINDOWS)
 

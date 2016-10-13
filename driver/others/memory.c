@@ -175,7 +175,7 @@ int get_num_procs(void);
 #else
 int get_num_procs(void) {
   static int nums = 0;
-  if (!nums) nums = sysconf(_SC_NPROCESSORS_ONLN);
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
   return nums;
 }
 #endif
@@ -184,7 +184,7 @@ int get_num_procs(void) {
 #ifdef OS_ANDROID
 int get_num_procs(void) {
   static int nums = 0;
-  if (!nums) nums = sysconf(_SC_NPROCESSORS_ONLN);
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
   return nums;
 }
 #endif
