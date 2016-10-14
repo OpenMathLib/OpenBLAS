@@ -30,8 +30,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void ssolve_8x8_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
-    BLASLONG k;
-    v4f32 src_b, src_b0, src_b1, src_b2, src_b3;
     v4f32 src_c0, src_c1, src_c2, src_c3, src_c4, src_c5, src_c6, src_c7;
     v4f32 src_c8, src_c9, src_c10, src_c11, src_c12, src_c13, src_c14, src_c15;
     v4f32 res_c0, res_c1, res_c2, res_c3, res_c4, res_c5, res_c6, res_c7;
@@ -58,34 +56,95 @@ static void ssolve_8x8_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     LD_SP2(c_nxt6line, 4, src_c12, src_c13);
     LD_SP2(c_nxt7line, 4, src_c14, src_c15);
 
-    for (k = 0; k < bk; k++)
+    if (bk > 0)
     {
-        LD_SP2(a, 4, src_a0, src_a1);
+        BLASLONG k;
+        v4f32 src_b, src_b0, src_b1, src_b2, src_b3, src_bb0, src_bb1;
 
-        src_b = LD_SP(b + 0);
-        SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        src_c0 -= src_a0 * src_b0;
-        src_c1 -= src_a1 * src_b0;
-        src_c2 -= src_a0 * src_b1;
-        src_c3 -= src_a1 * src_b1;
-        src_c4 -= src_a0 * src_b2;
-        src_c5 -= src_a1 * src_b2;
-        src_c6 -= src_a0 * src_b3;
-        src_c7 -= src_a1 * src_b3;
+        for (k = 0; k < (bk >> 1); k++)
+        {
+#ifdef ENABLE_PREFETCH
+            __asm__ __volatile__(
+                "pref   0,  64(%[a])   \n\t"
+                "pref   0,  96(%[a])   \n\t"
 
-        src_b = LD_SP(b + 4);
-        SPLATI_W4_SP(src_b, src_b0, src_b1, src_b2, src_b3);
-        src_c8 -= src_a0 * src_b0;
-        src_c9 -= src_a1 * src_b0;
-        src_c10 -= src_a0 * src_b1;
-        src_c11 -= src_a1 * src_b1;
-        src_c12 -= src_a0 * src_b2;
-        src_c13 -= src_a1 * src_b2;
-        src_c14 -= src_a0 * src_b3;
-        src_c15 -= src_a1 * src_b3;
+                :
+                : [a] "r" (a)
+            );
+#endif
 
-        a += 8;
-        b += 8;
+            LD_SP2_INC(a, 4, src_a0, src_a1);
+            LD_SP2_INC(b, 4, src_bb0, src_bb1);
+
+            SPLATI_W4_SP(src_bb0, src_b0, src_b1, src_b2, src_b3);
+            src_c0 -= src_a0 * src_b0;
+            src_c1 -= src_a1 * src_b0;
+            src_c2 -= src_a0 * src_b1;
+            src_c3 -= src_a1 * src_b1;
+            src_c4 -= src_a0 * src_b2;
+            src_c5 -= src_a1 * src_b2;
+            src_c6 -= src_a0 * src_b3;
+            src_c7 -= src_a1 * src_b3;
+
+            SPLATI_W4_SP(src_bb1, src_b0, src_b1, src_b2, src_b3);
+            src_c8 -= src_a0 * src_b0;
+            src_c9 -= src_a1 * src_b0;
+            src_c10 -= src_a0 * src_b1;
+            src_c11 -= src_a1 * src_b1;
+            src_c12 -= src_a0 * src_b2;
+            src_c13 -= src_a1 * src_b2;
+            src_c14 -= src_a0 * src_b3;
+            src_c15 -= src_a1 * src_b3;
+
+            LD_SP2_INC(a, 4, src_a0, src_a1);
+            LD_SP2_INC(b, 4, src_bb0, src_bb1);
+
+            SPLATI_W4_SP(src_bb0, src_b0, src_b1, src_b2, src_b3);
+            src_c0 -= src_a0 * src_b0;
+            src_c1 -= src_a1 * src_b0;
+            src_c2 -= src_a0 * src_b1;
+            src_c3 -= src_a1 * src_b1;
+            src_c4 -= src_a0 * src_b2;
+            src_c5 -= src_a1 * src_b2;
+            src_c6 -= src_a0 * src_b3;
+            src_c7 -= src_a1 * src_b3;
+
+            SPLATI_W4_SP(src_bb1, src_b0, src_b1, src_b2, src_b3);
+            src_c8 -= src_a0 * src_b0;
+            src_c9 -= src_a1 * src_b0;
+            src_c10 -= src_a0 * src_b1;
+            src_c11 -= src_a1 * src_b1;
+            src_c12 -= src_a0 * src_b2;
+            src_c13 -= src_a1 * src_b2;
+            src_c14 -= src_a0 * src_b3;
+            src_c15 -= src_a1 * src_b3;
+        }
+
+        if (bk & 1)
+        {
+            LD_SP2_INC(a, 4, src_a0, src_a1);
+            LD_SP2_INC(b, 4, src_bb0, src_bb1);
+
+            SPLATI_W4_SP(src_bb0, src_b0, src_b1, src_b2, src_b3);
+            src_c0 -= src_a0 * src_b0;
+            src_c1 -= src_a1 * src_b0;
+            src_c2 -= src_a0 * src_b1;
+            src_c3 -= src_a1 * src_b1;
+            src_c4 -= src_a0 * src_b2;
+            src_c5 -= src_a1 * src_b2;
+            src_c6 -= src_a0 * src_b3;
+            src_c7 -= src_a1 * src_b3;
+
+            SPLATI_W4_SP(src_bb1, src_b0, src_b1, src_b2, src_b3);
+            src_c8 -= src_a0 * src_b0;
+            src_c9 -= src_a1 * src_b0;
+            src_c10 -= src_a0 * src_b1;
+            src_c11 -= src_a1 * src_b1;
+            src_c12 -= src_a0 * src_b2;
+            src_c13 -= src_a1 * src_b2;
+            src_c14 -= src_a0 * src_b3;
+            src_c15 -= src_a1 * src_b3;
+        }
     }
 
     TRANSPOSE4x4_SP_SP(src_c0, src_c2, src_c4, src_c6,
