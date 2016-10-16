@@ -1110,6 +1110,9 @@ int get_cpuname(void){
 	break;
       case 3:
 	switch (model) {
+	case  7:
+	    // Bay Trail	
+	    return CPUTYPE_ATOM;	
 	case 10:
         case 14:
 	  // Ivy Bridge
