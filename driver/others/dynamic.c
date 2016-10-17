@@ -232,6 +232,7 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	if (model == 7) return &gotoblas_ATOM; //Bay Trail	
 	return NULL;
       case 4:
 		//Intel Haswell
