@@ -30,6 +30,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <msa.h>
 
+#define ENABLE_PREFETCH
+
 #define LD_W(RTYPE, psrc) *((RTYPE *)(psrc))
 #define LD_SP(...) LD_W(v4f32, __VA_ARGS__)
 
