@@ -1082,7 +1082,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
-          FLOAT* A, FLOAT* B, FLOAT* C, BLASLONG ldc
+          FLOAT *A, FLOAT *B, FLOAT *C, BLASLONG ldc
 #ifdef TRMMKERNEL
          , BLASLONG offset
 #endif
@@ -1092,18 +1092,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 #if defined(TRMMKERNEL)
     BLASLONG off;
 #endif
-    FLOAT *pc0, *pc1, *pc2, *pc3;
-    FLOAT *pa0, *pb0;
+    FLOAT *pc0, *pc1, *pc2, *pc3, *pa0, *pb0;
     FLOAT res0, res1, res2, res3, res4, res5, res6, res7;
     FLOAT res8, res9, res10, res11, res12, res13, res14, res15;
-    FLOAT a0_r, a1_r;
-    FLOAT a0_i, a1_i;
+    FLOAT a0_r, a1_r, a0_i, a1_i, b0_i, b1_i, b2_i, b3_i;
     FLOAT b0_r, b1_r, b2_r, b3_r;
-    FLOAT b0_i, b1_i, b2_i, b3_i;
     v4f32 src_a0, src_a1, src_a2, src_a3, src_b0, src_b1;
     v4f32 src_a0r, src_a0i, src_a1r, src_a1i, src_br, src_bi;
-    v4f32 dst0, dst1, dst2, dst3;
-    v4f32 alpha_r, alpha_i;
+    v4f32 dst0, dst1, dst2, dst3, alpha_r, alpha_i;
     v4f32 res0_r, res0_i, res1_r, res1_i, res2_r, res2_i, res3_r, res3_i;
     v4f32 res4_r, res4_i, res5_r, res5_i, res6_r, res6_i, res7_r, res7_i;
     v4f32 dst0_r, dst0_i, dst1_r, dst1_i;
@@ -1122,11 +1118,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
         pc2 = pc1 + 2 * ldc;
         pc3 = pc2 + 2 * ldc;
 
-        pa0 = A;
-
 #if defined(TRMMKERNEL) && defined(LEFT)
         off = offset;
 #endif
+
+        pa0 = A;
 
         for (i = (m >> 3); i--;)
         {
@@ -1150,6 +1146,17 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
             temp = k;
 #endif
 
+#ifdef ENABLE_PREFETCH
+            __asm__ __volatile__(
+                "pref   0,   64(%[pa0])   \n\t"
+                "pref   0,   96(%[pa0])   \n\t"
+                "pref   0,   32(%[pb0])   \n\t"
+
+                :
+                : [pa0] "r" (pa0), [pb0] "r" (pb0)
+            );
+#endif
+
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT)
             CGEMM_KERNEL_8X4_MSA(, -, , +, +);
 #endif
@@ -1165,6 +1172,17 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 
             for (l = (temp - 1); l--;)
             {
+#ifdef ENABLE_PREFETCH
+                __asm__ __volatile__(
+                    "pref   0,   64(%[pa0])   \n\t"
+                    "pref   0,   96(%[pa0])   \n\t"
+                    "pref   0,   32(%[pb0])   \n\t"
+
+                    :
+                    : [pa0] "r" (pa0), [pb0] "r" (pb0)
+                );
+#endif
+
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT)
                 CGEMM_KERNEL_8X4_MSA(+, -, +, +,);
 #endif
@@ -1340,6 +1358,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 #else
             CGEMM_SCALE_2X4
 #endif
+            pc0 += 4;
+            pc1 += 4;
+            pc2 += 4;
+            pc3 += 4;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1357,11 +1379,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
             off += 2; // number of values in A
 #endif
 #endif
-
-            pc0 += 4;
-            pc1 += 4;
-            pc2 += 4;
-            pc3 += 4;
         }
 
         if (m & 1)
@@ -1426,6 +1443,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 #else
             CGEMM_SCALE_1X4
 #endif
+            pc0 += 2;
+            pc1 += 2;
+            pc2 += 2;
+            pc3 += 2;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1443,21 +1464,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
             off += 1; // number of values in A
 #endif
 #endif
-
-            pc0 += 2;
-            pc1 += 2;
-            pc2 += 2;
-            pc3 += 2;
         }
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
         off += 4; // number of values in A
 #endif
 
-        l = k << 3;
-        B = B + l;
-        i = ldc << 3;
-        C = C + i;
+        B += (k << 3);
+        C += (ldc << 3);
     }
 
     if (n & 2)
@@ -1465,11 +1479,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
         pc0 = C;
         pc1 = pc0 + 2 * ldc;
 
-        pa0 = A;
-
 #if defined(TRMMKERNEL) && defined(LEFT)
         off = offset;
 #endif
+
+        pa0 = A;
 
         for (i = (m >> 3); i--;)
         {
@@ -1691,6 +1705,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 #else
             CGEMM_SCALE_2X2
 #endif
+            pc0 += 4;
+            pc1 += 4;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1708,9 +1724,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
             off += 2; // number of values in A
 #endif
 #endif
-
-            pc0 += 4;
-            pc1 += 4;
         }
 
         if (m & 1)
@@ -1775,6 +1788,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 #else
             CGEMM_SCALE_1X2
 #endif
+            pc0 += 2;
+            pc1 += 2;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1792,29 +1807,25 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
             off += 1; // number of values in A
 #endif
 #endif
-
-            pc0 += 2;
-            pc1 += 2;
         }
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
         off += 2; // number of values in A
 #endif
 
-        l = k << 2;
-        B = B + l;
-        i = ldc << 2;
-        C = C + i;
+        B += (k << 2);
+        C += (ldc << 2);
     }
 
     if (n & 1)
     {
         pc0 = C;
-        pa0 = A;
 
 #if defined(TRMMKERNEL) && defined(LEFT)
         off = offset;
 #endif
+
+        pa0 = A;
 
         for (i = (m >> 3); i--;)
         {
@@ -2036,6 +2047,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 #else
             CGEMM_SCALE_2X1
 #endif
+            pc0 += 4;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -2053,8 +2065,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
             off += 2; // number of values in A
 #endif
 #endif
-
-            pc0 += 4;
         }
 
         if (m & 1)
@@ -2119,6 +2129,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
 #else
             CGEMM_SCALE_1X1
 #endif
+            pc0 += 2;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -2136,18 +2147,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alphar, FLOAT alphai,
             off += 1; // number of values in A
 #endif
 #endif
-
-            pc0 += 2;
         }
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
         off += 1; // number of values in A
 #endif
 
-        l = k << 1;
-        B = B + l;
-        i = ldc << 1;
-        C = C + i;
+        B += (k << 1);
+        C += (ldc << 1);
     }
 
     return 0;

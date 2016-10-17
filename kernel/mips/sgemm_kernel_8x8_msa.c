@@ -91,6 +91,15 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pb0 = B;
             temp = k;
 #endif
+#ifdef ENABLE_PREFETCH
+            __asm__ __volatile__(
+                "pref   0,   32(%[pa0])   \n\t"
+                "pref   0,   32(%[pb0])   \n\t"
+
+                :
+                : [pa0] "r" (pa0), [pb0] "r" (pb0)
+            );
+#endif
 
             LD_SP2_INC(pa0, 4, src_a0, src_a1);
             LD_SP2_INC(pb0, 4, src_b0, src_b1);
@@ -129,6 +138,18 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
 
             for (l = ((temp - 1) >> 1); l--;)
             {
+#ifdef ENABLE_PREFETCH
+            __asm__ __volatile__(
+                "pref   0,   64(%[pa0])   \n\t"
+                "pref   0,   96(%[pa0])   \n\t"
+                "pref   0,   64(%[pb0])   \n\t"
+                "pref   0,   96(%[pb0])   \n\t"
+
+                :
+                : [pa0] "r" (pa0), [pb0] "r" (pb0)
+            );
+#endif
+
                 LD_SP2_INC(pa0, 4, src_a0, src_a1);
                 LD_SP2_INC(pb0, 4, src_b0, src_b1);
 
@@ -500,6 +521,15 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             ST_SP(dst2, pc6);
             ST_SP(dst3, pc7);
 
+            pc0 += 4;
+            pc1 += 4;
+            pc2 += 4;
+            pc3 += 4;
+            pc4 += 4;
+            pc5 += 4;
+            pc6 += 4;
+            pc7 += 4;
+
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
             temp = k - off;
@@ -516,15 +546,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 4; // number of values in A
 #endif
 #endif
-
-            pc0 += 4;
-            pc1 += 4;
-            pc2 += 4;
-            pc3 += 4;
-            pc4 += 4;
-            pc5 += 4;
-            pc6 += 4;
-            pc7 += 4;
         }
 
         if (m & 2)
@@ -763,6 +784,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pc6[1] += tmp13;
             pc7[1] += tmp15;
 #endif
+            pc0 += 2;
+            pc1 += 2;
+            pc2 += 2;
+            pc3 += 2;
+            pc4 += 2;
+            pc5 += 2;
+            pc6 += 2;
+            pc7 += 2;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -780,15 +809,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 2; // number of values in A
 #endif
 #endif
-
-            pc0 += 2;
-            pc1 += 2;
-            pc2 += 2;
-            pc3 += 2;
-            pc4 += 2;
-            pc5 += 2;
-            pc6 += 2;
-            pc7 += 2;
         }
 
         if (m & 1)
@@ -959,6 +979,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pc6[0] += tmp6;
             pc7[0] += tmp7;
 #endif
+            pc0 += 1;
+            pc1 += 1;
+            pc2 += 1;
+            pc3 += 1;
+            pc4 += 1;
+            pc5 += 1;
+            pc6 += 1;
+            pc7 += 1;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -976,24 +1004,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 1; // number of values in A
 #endif
 #endif
-            pc0 += 1;
-            pc1 += 1;
-            pc2 += 1;
-            pc3 += 1;
-            pc4 += 1;
-            pc5 += 1;
-            pc6 += 1;
-            pc7 += 1;
         }
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
         off += 8; // number of values in A
 #endif
 
-        l = (k << 3);
-        B = B + l;
-        i = (ldc << 3);
-        C = C + i;
+        B += (k << 3);
+        C += (ldc << 3);
     }
 
     if (n & 4)
@@ -1003,11 +1021,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
         pc2 = pc1 + ldc;
         pc3 = pc2 + ldc;
 
-        pa0 = A;
-
 #if defined(TRMMKERNEL) && defined(LEFT)
         off = offset;
 #endif
+
+        pa0 = A;
 
         for (i = (m >> 3); i--;)
         {
@@ -1145,7 +1163,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             dst6 += res6 * v_alpha;
             dst7 += res7 * v_alpha;
 #endif
-
             ST_SP2_INC(dst0, dst1, pc0, 4);
             ST_SP2_INC(dst2, dst3, pc1, 4);
             ST_SP2_INC(dst4, dst5, pc2, 4);
@@ -1268,6 +1285,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
                 pa0 += 4;
                 pb0 += 4;
             }
+
 #if defined(TRMMKERNEL)
             dst0 = res0 * v_alpha;
             dst1 = res1 * v_alpha;
@@ -1289,6 +1307,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             ST_SP(dst2, pc2);
             ST_SP(dst3, pc3);
 
+            pc0 += 4;
+            pc1 += 4;
+            pc2 += 4;
+            pc3 += 4;
+
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
             temp = k - off;
@@ -1305,10 +1328,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 4; // number of values in A
 #endif
 #endif
-            pc0 += 4;
-            pc1 += 4;
-            pc2 += 4;
-            pc3 += 4;
         }
 
         if (m & 2)
@@ -1459,6 +1478,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pc2[1] += tmp5;
             pc3[1] += tmp7;
 #endif
+            pc0 += 2;
+            pc1 += 2;
+            pc2 += 2;
+            pc3 += 2;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1476,11 +1499,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 2; // number of values in A
 #endif
 #endif
-
-            pc0 += 2;
-            pc1 += 2;
-            pc2 += 2;
-            pc3 += 2;
         }
 
         if (m & 1)
@@ -1591,6 +1609,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pc2[0] += tmp2;
             pc3[0] += tmp3;
 #endif
+            pc0 += 1;
+            pc1 += 1;
+            pc2 += 1;
+            pc3 += 1;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1608,20 +1630,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 1; // number of values in A
 #endif
 #endif
-            pc0 += 1;
-            pc1 += 1;
-            pc2 += 1;
-            pc3 += 1;
         }
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
         off += 4; // number of values in A
 #endif
 
-        l = (k << 2);
-        B = B + l;
-        i = (ldc << 2);
-        C = C + i;
+        B += (k << 2);
+        C += (ldc << 2);
     }
 
     if (n & 2)
@@ -1629,11 +1645,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
         pc0 = C;
         pc1 = pc0 + ldc;
 
-        pa0 = A;
-
 #if defined(TRMMKERNEL) && defined(LEFT)
         off = offset;
 #endif
+
+        pa0 = A;
 
         for (i = (m >> 3); i--;)
         {
@@ -1847,6 +1863,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             ST_SP(dst0, pc0);
             ST_SP(dst1, pc1);
 
+            pc0 += 4;
+            pc1 += 4;
+
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
             temp = k - off;
@@ -1863,8 +1882,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 4; // number of values in A
 #endif
 #endif
-            pc0 += 4;
-            pc1 += 4;
         }
 
         if (m & 2)
@@ -1967,6 +1984,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pc0[1] += tmp1;
             pc1[1] += tmp3;
 #endif
+            pc0 += 2;
+            pc1 += 2;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1984,9 +2003,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 2; // number of values in A
 #endif
 #endif
-
-            pc0 += 2;
-            pc1 += 2;
         }
 
         if (m & 1)
@@ -2067,6 +2083,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pc0[0] += tmp0;
             pc1[0] += tmp1;
 #endif
+            pc0 += 1;
+            pc1 += 1;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -2084,27 +2102,25 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 1; // number of values in A
 #endif
 #endif
-            pc0 += 1;
-            pc1 += 1;
         }
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
         off += 2; // number of values in A
 #endif
-        l = (k << 1);
-        B = B + l;
-        i = (ldc << 1);
-        C = C + i;
+
+        B += (k << 1);
+        C += (ldc << 1);
     }
 
     if (n & 1)
     {
         pc0 = C;
-        pa0 = A;
 
 #if defined(TRMMKERNEL) && defined(LEFT)
         off = offset;
 #endif
+
+        pa0 = A;
 
         for (i = (m >> 3); i--;)
         {
@@ -2272,6 +2288,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
 #endif
             ST_SP(dst0, pc0);
 
+            pc0 += 4;
+
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
             temp = k - off;
@@ -2288,7 +2306,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 4; // number of values in A
 #endif
 #endif
-            pc0 += 4;
         }
 
         if (m & 2)
@@ -2359,6 +2376,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
                 pb0 += 1;
             }
 
+            tmp0 = alpha * tmp0;
+            tmp1 = alpha * tmp1;
+
 #if defined(TRMMKERNEL)
             pc0[0] = tmp0;
             pc0[1] = tmp1;
@@ -2366,6 +2386,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             pc0[0] += tmp0;
             pc0[1] += tmp1;
 #endif
+            pc0 += 2;
 
 #if defined(TRMMKERNEL)
 #if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -2383,8 +2404,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
             off += 2; // number of values in A
 #endif
 #endif
-
-            pc0 += 2;
         }
 
         if (m & 1)
@@ -2448,34 +2467,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT *A, FLOAT *B,
 #else
             pc0[0] += alpha * tmp0;
 #endif
-
-#if defined(TRMMKERNEL)
-#if (defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
-            temp = k - off;
-#ifdef LEFT
-            temp -= 1; // number of values in A
-#else
-            temp -= 1; // number of values in B
-#endif
-            pa0 += temp * 1;
-            pb0 += temp * 1;
-#endif
-
-#ifdef LEFT
-            off += 1; // number of values in A
-#endif
-#endif
-
-            pc0 += 1;
         }
-
-#if defined(TRMMKERNEL) && !defined(LEFT)
-        off += 1; // number of values in A
-#endif
-        l = (k << 0);
-        B = B + l;
-        i = (ldc << 0);
-        C = C + i;
     }
 
     return 0;
