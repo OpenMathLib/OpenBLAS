@@ -16,7 +16,6 @@ macro(add_cblas_test output input target)
       -DINTDIR=${CMAKE_CFG_INTDIR}
       -P "${LAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
     else()
-      string(REPLACE "." "_" input_name ${input})
       add_test(NAME CBLAS-${testName} COMMAND "${CMAKE_COMMAND}" 
         -DTEST=$<TARGET_FILE:${target}>
         -DOUTPUT=${TEST_OUTPUT} 
