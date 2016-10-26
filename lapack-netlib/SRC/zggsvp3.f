@@ -278,7 +278,7 @@
      $                    TOLA, TOLB, K, L, U, LDU, V, LDV, Q, LDQ,
      $                    IWORK, RWORK, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     August 2015
@@ -308,7 +308,6 @@
 *     .. Local Scalars ..
       LOGICAL            FORWRD, WANTQ, WANTU, WANTV, LQUERY
       INTEGER            I, J, LWKOPT
-      COMPLEX*16         T
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME

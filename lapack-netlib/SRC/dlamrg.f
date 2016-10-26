@@ -50,7 +50,7 @@
 *> \param[in] N2
 *> \verbatim
 *>          N2 is INTEGER
-*>         These arguements contain the respective lengths of the two
+*>         These arguments contain the respective lengths of the two
 *>         sorted lists to be merged.
 *> \endverbatim
 *>
@@ -92,17 +92,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup auxOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE DLAMRG( N1, N2, A, DTRD1, DTRD2, INDEX )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            DTRD1, DTRD2, N1, N2

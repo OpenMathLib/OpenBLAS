@@ -69,7 +69,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX array, dimension ( N*(N+1)/2 );
+*>          A is COMPLEX*16 array, dimension ( N*(N+1)/2 );
 *>          On entry, the Hermitian matrix A in RFP format. RFP format is
 *>          described by TRANSR, UPLO, and N as follows: If TRANSR = 'N'
 *>          then RFP A is (0:N,0:k-1) when N is even; k=N/2. RFP A is
@@ -204,17 +204,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE ZPFTRF( TRANSR, UPLO, N, A, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANSR, UPLO

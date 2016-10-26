@@ -88,7 +88,7 @@
 *>
 *> \param[in] WORK
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension (2*N)
+*>          WORK is DOUBLE PRECISION array, dimension (2*N)
 *> \endverbatim
 *
 *  Authors:
@@ -99,7 +99,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complex16POcomputational
 *
@@ -107,10 +107,10 @@
       DOUBLE PRECISION FUNCTION ZLA_PORPVGRW( UPLO, NCOLS, A, LDA, AF, 
      $                                        LDAF, WORK )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*1        UPLO

@@ -75,7 +75,7 @@
 *>
 *> \param[in] AB
 *> \verbatim
-*>          AB is DOUBLE PRECISION array, dimension (LDAB,N)
+*>          AB is COMPLEX*16 array, dimension (LDAB,N)
 *>          The upper or lower triangle of the Hermitian band matrix A,
 *>          stored in the first KD+1 rows of the array.  The j-th column
 *>          of A is stored in the j-th column of the array AB as follows:
@@ -181,7 +181,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -189,10 +189,10 @@
       SUBROUTINE ZPBRFS( UPLO, N, KD, NRHS, AB, LDAB, AFB, LDAFB, B,
      $                   LDB, X, LDX, FERR, BERR, WORK, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

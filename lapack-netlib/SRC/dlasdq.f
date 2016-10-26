@@ -59,7 +59,7 @@
 *> \verbatim
 *>          UPLO is CHARACTER*1
 *>        On entry, UPLO specifies whether the input bidiagonal matrix
-*>        is upper or lower bidiagonal, and wether it is square are
+*>        is upper or lower bidiagonal, and whether it is square are
 *>        not.
 *>           UPLO = 'U' or 'u'   B is upper bidiagonal.
 *>           UPLO = 'L' or 'l'   B is lower bidiagonal.
@@ -197,7 +197,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -211,10 +211,10 @@
       SUBROUTINE DLASDQ( UPLO, SQRE, N, NCVT, NRU, NCC, D, E, VT, LDVT,
      $                   U, LDU, C, LDC, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

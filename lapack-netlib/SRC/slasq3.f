@@ -60,7 +60,7 @@
 *>
 *> \param[in,out] Z
 *> \verbatim
-*>          Z is REAL array, dimension ( 4*N )
+*>          Z is REAL array, dimension ( 4*N0 )
 *>         Z holds the qd array.
 *> \endverbatim
 *>
@@ -173,7 +173,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -182,10 +182,10 @@
      $                   ITER, NDIV, IEEE, TTYPE, DMIN1, DMIN2, DN, DN1,
      $                   DN2, G, TAU )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE

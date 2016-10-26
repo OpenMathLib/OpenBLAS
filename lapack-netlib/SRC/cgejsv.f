@@ -39,18 +39,19 @@
 *>
 *> \verbatim
 *>
-*> CGEJSV computes the singular value decomposition (SVD) of a real M-by-N
+*> CGEJSV computes the singular value decomposition (SVD) of a complex M-by-N
 *> matrix [A], where M >= N. The SVD of [A] is written as
 *>
 *>              [A] = [U] * [SIGMA] * [V]^*,
 *>
 *> where [SIGMA] is an N-by-N (M-by-N) matrix which is zero except for its N
-*> diagonal elements, [U] is an M-by-N (or M-by-M) orthonormal matrix, and
-*> [V] is an N-by-N orthogonal matrix. The diagonal elements of [SIGMA] are
+*> diagonal elements, [U] is an M-by-N (or M-by-M) unitary matrix, and
+*> [V] is an N-by-N unitary matrix. The diagonal elements of [SIGMA] are
 *> the singular values of [A]. The columns of [U] and [V] are the left and
 *> the right singular vectors of [A], respectively. The matrices [U] and [V]
 *> are computed and stored in the arrays U and V, respectively. The diagonal
 *> of [SIGMA] is computed and stored in the array SVA.
+*> \endverbatim
 *>
 *>  Arguments:
 *>  ==========
@@ -221,7 +222,7 @@
 *>
 *> \param[out] U
 *> \verbatim
-*>          U is COMPLEX array, dimension ( LDU, N )
+*>          U is COMPLEX array, dimension ( LDU, N ) or ( LDU, M )
 *>          If JOBU = 'U', then U contains on exit the M-by-N matrix of
 *>                         the left singular vectors.
 *>          If JOBU = 'F', then U contains on exit the M-by-M matrix of
@@ -234,7 +235,7 @@
 *>                         copied back to the V array. This 'W' option is just
 *>                         a reminder to the caller that in this case U is
 *>                         reserved as workspace of length N*N.
-*>          If JOBU = 'N'  U is not referenced.
+*>          If JOBU = 'N'  U is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDU
@@ -256,7 +257,7 @@
 *>                         copied back to the U array. This 'W' option is just
 *>                         a reminder to the caller that in this case V is
 *>                         reserved as workspace of length N*N.
-*>          If JOBV = 'N'  V is not referenced.
+*>          If JOBV = 'N'  V is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -278,7 +279,7 @@
 *>          LWORK depends on the job:
 *>
 *>          1. If only SIGMA is needed ( JOBU.EQ.'N', JOBV.EQ.'N' ) and
-*>            1.1 .. no scaled condition estimate required (JOBE.EQ.'N'):
+*>            1.1 .. no scaled condition estimate required (JOBA.NE.'E'.AND.JOBA.NE.'G'):
 *>               LWORK >= 2*N+1. This is the minimal requirement.
 *>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= N + (N+1)*NB. Here NB is the optimal
@@ -298,7 +299,7 @@
 *>             (JOBU.EQ.'N')
 *>            -> the minimal requirement is LWORK >= 3*N.
 *>            -> For optimal performance, LWORK >= max(N+(N+1)*NB, 3*N,2*N+N*NB),
-*>               where NB is the optimal block size for CGEQP3, CGEQRF, CGELQ,
+*>               where NB is the optimal block size for CGEQP3, CGEQRF, CGELQF,
 *>               CUNMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(CGEQP3), N+LWORK(CPOCON), N+LWORK(CGESVJ),
 *>                       N+LWORK(CGELQF), 2*N+LWORK(CGEQRF), N+LWORK(CUNMLQ)).
@@ -317,8 +318,8 @@
 *>               the minimal requirement is LWORK >= 5*N+2*N*N. 
 *>            4.2. if JOBV.EQ.'J' the minimal requirement is 
 *>               LWORK >= 4*N+N*N.
-*>            In both cases, the allocated CWORK can accomodate blocked runs
-*>            of CGEQP3, CGEQRF, CGELQF, SUNMQR, CUNMLQ.
+*>            In both cases, the allocated CWORK can accommodate blocked runs
+*>            of CGEQP3, CGEQRF, CGELQF, CUNMQR, CUNMLQ.
 *> \endverbatim
 *>
 *> \param[out] RWORK
@@ -432,7 +433,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complexGEsing
 *
@@ -498,7 +499,7 @@
 *>     LAPACK Working note 170.
 *> [3] Z. Drmac and Z. Bujanovic: On the failure of rank-revealing QR
 *>     factorization software - a case study.
-*>     ACM Trans. math. Softw. Vol. 35, No 2 (2008), pp. 1-28.
+*>     ACM Trans. Math. Softw. Vol. 35, No 2 (2008), pp. 1-28.
 *>     LAPACK Working note 176.
 *> [4] Z. Drmac: SIGMA - mathematical software library for accurate SVD, PSV,
 *>     QSVD, (H,K)-SVD computations.
@@ -516,10 +517,10 @@
      $                   M, N, A, LDA, SVA, U, LDU, V, LDV,
      $                   CWORK, LWORK, RWORK, LRWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       IMPLICIT    NONE
@@ -556,13 +557,13 @@
 *     ..
 *     .. External Functions ..
       REAL      SLAMCH, SCNRM2
-      INTEGER   ISAMAX
+      INTEGER   ISAMAX, ICAMAX
       LOGICAL   LSAME
-      EXTERNAL  ISAMAX, LSAME, SLAMCH, SCNRM2
+      EXTERNAL  ISAMAX, ICAMAX, LSAME, SLAMCH, SCNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL  CCOPY,  CGELQF, CGEQP3, CGEQRF, CLACPY, CLASCL,
-     $          CLASET, CLASSQ, CLASWP, CUNGQR, CUNMLQ,
+     $          SLASCL, CLASET, CLASSQ, SLASSQ, CLASWP, CUNGQR, CUNMLQ,
      $          CUNMQR, CPOCON, SSCAL, CSSCAL, CSWAP,  CTRSM,  XERBLA
 *
       EXTERNAL  CGESVJ
@@ -636,7 +637,11 @@
 *
 *     Quick return for void matrix (Y3K safe)
 * #:)
-      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) RETURN
+      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) THEN
+         IWORK(1:3) = 0
+         RWORK(1:7) = 0
+         RETURN
+      ENDIF
 *
 *     Determine whether the matrix U should be M x N or M x M
 *
@@ -803,7 +808,7 @@
  1950       CONTINUE
          ELSE
             DO 1904 p = 1, M
-               RWORK(M+N+p) = SCALEM*ABS( A(p,ISAMAX(N,A(p,1),LDA)) )
+               RWORK(M+N+p) = SCALEM*ABS( A(p,ICAMAX(N,A(p,1),LDA)) )
                AATMAX = AMAX1( AATMAX, RWORK(M+N+p) )
                AATMIN = AMIN1( AATMIN, RWORK(M+N+p) )
  1904       CONTINUE
@@ -824,7 +829,7 @@
 *
          XSC   = ZERO
          TEMP1 = ONE
-         CALL CLASSQ( N, SVA, 1, XSC, TEMP1 )
+         CALL SLASSQ( N, SVA, 1, XSC, TEMP1 )
          TEMP1 = ONE / TEMP1
 *
          ENTRA = ZERO
@@ -903,7 +908,7 @@
       BIG1   = SQRT( BIG )
       TEMP1  = SQRT( BIG / FLOAT(N) )
 *
-      CALL CLASCL( 'G', 0, 0, AAPP, TEMP1, N, 1, SVA, N, IERR )
+      CALL SLASCL( 'G', 0, 0, AAPP, TEMP1, N, 1, SVA, N, IERR )
       IF ( AAQQ .GT. (AAPP * SFMIN) ) THEN
           AAQQ = ( AAQQ / AAPP ) * TEMP1
       ELSE
@@ -1221,7 +1226,7 @@
                CALL CCOPY( NR-p+1, V(p,p), LDV, V(p,p), 1 )
                CALL CLACGV( NR-p+1, V(p,p), 1 ) 
  8998       CONTINUE
-            CALL CLASET( 'Upper', NR-1, NR-1, ZERO, ZERO, V(1,2), LDV )
+            CALL CLASET('Upper', NR-1, NR-1, CZERO, CZERO, V(1,2), LDV)
 *
             CALL CGESVJ( 'Lower', 'U','N', NR, NR, V,LDV, SVA, NR, U,
      $                  LDU, CWORK(N+1), LWORK-N, RWORK, LRWORK, INFO )
@@ -1517,9 +1522,9 @@
                   CALL CTRSM('L','U','C','N',NR,NR,CONE,CWORK(2*N+1),
      $                 N,V,LDV)
                   IF ( NR .LT. N ) THEN
-                   CALL CLASET('A',N-NR,NR,ZERO,CZERO,V(NR+1,1),LDV)
-                   CALL CLASET('A',NR,N-NR,ZERO,CZERO,V(1,NR+1),LDV)
-                   CALL CLASET('A',N-NR,N-NR,ZERO,CONE,V(NR+1,NR+1),LDV)
+                  CALL CLASET('A',N-NR,NR,CZERO,CZERO,V(NR+1,1),LDV)
+                  CALL CLASET('A',NR,N-NR,CZERO,CZERO,V(1,NR+1),LDV)
+                  CALL CLASET('A',N-NR,N-NR,CZERO,CONE,V(NR+1,NR+1),LDV)
                   END IF
                   CALL CUNMQR('L','N',N,N,NR,CWORK(2*N+1),N,CWORK(N+1),
      $                V,LDV,CWORK(2*N+N*NR+NR+1),LWORK-2*N-N*NR-NR,IERR)
@@ -1775,9 +1780,9 @@
          NUMRANK = NINT(RWORK(2))
 
          IF ( NR .LT. N ) THEN
-            CALL CLASET( 'A',N-NR,NR,ZERO,ZERO,V(NR+1,1),LDV )
-            CALL CLASET( 'A',NR,N-NR,ZERO,ZERO,V(1,NR+1),LDV )
-            CALL CLASET( 'A',N-NR,N-NR,ZERO,ONE,V(NR+1,NR+1),LDV )
+            CALL CLASET( 'A',N-NR,NR,CZERO,CZERO,V(NR+1,1),LDV )
+            CALL CLASET( 'A',NR,N-NR,CZERO,CZERO,V(1,NR+1),LDV )
+            CALL CLASET( 'A',N-NR,N-NR,CZERO,CONE,V(NR+1,NR+1),LDV )
          END IF
 
          CALL CUNMQR( 'L','N',N,N,NR,CWORK(2*N+1),N,CWORK(N+1),
@@ -1832,7 +1837,7 @@
 *     Undo scaling, if necessary (and possible)
 *
       IF ( USCAL2 .LE. (BIG/SVA(1))*USCAL1 ) THEN
-         CALL CLASCL( 'G', 0, 0, USCAL1, USCAL2, NR, 1, SVA, N, IERR )
+         CALL SLASCL( 'G', 0, 0, USCAL1, USCAL2, NR, 1, SVA, N, IERR )
          USCAL1 = ONE
          USCAL2 = ONE
       END IF

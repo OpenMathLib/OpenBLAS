@@ -238,7 +238,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complexOTHEReigen
 *
@@ -252,10 +252,10 @@
      $                   Z, LDZ, WORK, LWORK, RWORK, LRWORK, IWORK,
      $                   LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -372,7 +372,7 @@
       LLWK2 = LWORK - INDWK2 + 2
       LLRWK = LRWORK - INDWRK + 2
       CALL CHBGST( JOBZ, UPLO, N, KA, KB, AB, LDAB, BB, LDBB, Z, LDZ,
-     $             WORK, RWORK( INDWRK ), IINFO )
+     $             WORK, RWORK, IINFO )
 *
 *     Reduce Hermitian band matrix to tridiagonal form.
 *

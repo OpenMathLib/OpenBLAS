@@ -25,12 +25,12 @@
 *       .. Scalar Arguments ..
 *       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
 *       INTEGER            IHI, ILO, INFO, LDA, LDVL, LDVR, LWORK, N
-*       REAL               ABNRM
+*       REAL   ABNRM
 *       ..
 *       .. Array Arguments ..
-*       REAL               RCONDE( * ), RCONDV( * ), RWORK( * ),
+*       REAL   RCONDE( * ), RCONDV( * ), RWORK( * ),
 *      $                   SCALE( * )
-*       COMPLEX            A( LDA, * ), VL( LDVL, * ), VR( LDVR, * ),
+*       COMPLEX         A( LDA, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   W( * ), WORK( * )
 *       ..
 *  
@@ -134,7 +134,7 @@
 *>          A is COMPLEX array, dimension (LDA,N)
 *>          On entry, the N-by-N matrix A.
 *>          On exit, A has been overwritten.  If JOBVL = 'V' or
-*>          JOBVR = 'V', A contains the Schur form of the balanced 
+*>          JOBVR = 'V', A contains the Schur form of the balanced
 *>          version of the matrix A.
 *> \endverbatim
 *>
@@ -276,7 +276,9 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
+*
+*  @generated from zgeevx.f, fortran z -> c, Tue Apr 19 01:47:44 2016
 *
 *> \ingroup complexGEeigen
 *
@@ -284,56 +286,57 @@
       SUBROUTINE CGEEVX( BALANC, JOBVL, JOBVR, SENSE, N, A, LDA, W, VL,
      $                   LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM, RCONDE,
      $                   RCONDV, WORK, LWORK, RWORK, INFO )
+      implicit none
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
       INTEGER            IHI, ILO, INFO, LDA, LDVL, LDVR, LWORK, N
-      REAL               ABNRM
+      REAL   ABNRM
 *     ..
 *     .. Array Arguments ..
-      REAL               RCONDE( * ), RCONDV( * ), RWORK( * ),
+      REAL   RCONDE( * ), RCONDV( * ), RWORK( * ),
      $                   SCALE( * )
-      COMPLEX            A( LDA, * ), VL( LDVL, * ), VR( LDVR, * ),
+      COMPLEX         A( LDA, * ), VL( LDVL, * ), VR( LDVR, * ),
      $                   W( * ), WORK( * )
 *     ..
 *
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL               ZERO, ONE
+      REAL   ZERO, ONE
       PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR, WNTSNB, WNTSNE,
      $                   WNTSNN, WNTSNV
       CHARACTER          JOB, SIDE
-      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K, MAXWRK,
-     $                   MINWRK, NOUT
-      REAL               ANRM, BIGNUM, CSCALE, EPS, SCL, SMLNUM
-      COMPLEX            TMP
+      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K,
+     $                   LWORK_TREVC, MAXWRK, MINWRK, NOUT
+      REAL   ANRM, BIGNUM, CSCALE, EPS, SCL, SMLNUM
+      COMPLEX         TMP
 *     ..
 *     .. Local Arrays ..
       LOGICAL            SELECT( 1 )
-      REAL               DUM( 1 )
+      REAL   DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGEBAK, CGEBAL, CGEHRD, CHSEQR, CLACPY, CLASCL,
-     $                   CSCAL, CSSCAL, CTREVC, CTRSNA, CUNGHR, SLABAD,
-     $                   SLASCL, XERBLA
+      EXTERNAL           SLABAD, SLASCL, XERBLA, CSSCAL, CGEBAK, CGEBAL,
+     $                   CGEHRD, CHSEQR, CLACPY, CLASCL, CSCAL, CTREVC3,
+     $                   CTRSNA, CUNGHR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV, ISAMAX
-      REAL               CLANGE, SCNRM2, SLAMCH
-      EXTERNAL           LSAME, ILAENV, ISAMAX, CLANGE, SCNRM2, SLAMCH
+      INTEGER            ISAMAX, ILAENV
+      REAL   SLAMCH, SCNRM2, CLANGE
+      EXTERNAL           LSAME, ISAMAX, ILAENV, SLAMCH, SCNRM2, CLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          AIMAG, CMPLX, CONJG, MAX, REAL, SQRT
+      INTRINSIC          REAL, CMPLX, CONJG, AIMAG, MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -387,9 +390,19 @@
             MAXWRK = N + N*ILAENV( 1, 'CGEHRD', ' ', N, 1, N, 0 )
 *
             IF( WANTVL ) THEN
+               CALL CTREVC3( 'L', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, RWORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, LWORK_TREVC )
                CALL CHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VL, LDVL,
      $                WORK, -1, INFO )
             ELSE IF( WANTVR ) THEN
+               CALL CTREVC3( 'R', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, RWORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, LWORK_TREVC )
                CALL CHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VR, LDVR,
      $                WORK, -1, INFO )
             ELSE
@@ -401,7 +414,7 @@
      $                WORK, -1, INFO )
                END IF
             END IF
-            HSWORK = WORK( 1 )
+            HSWORK = INT( WORK(1) )
 *
             IF( ( .NOT.WANTVL ) .AND. ( .NOT.WANTVR ) ) THEN
                MINWRK = 2*N
@@ -559,19 +572,20 @@
      $                WORK( IWRK ), LWORK-IWRK+1, INFO )
       END IF
 *
-*     If INFO > 0 from CHSEQR, then quit
+*     If INFO .NE. 0 from CHSEQR, then quit
 *
-      IF( INFO.GT.0 )
+      IF( INFO.NE.0 )
      $   GO TO 50
 *
       IF( WANTVL .OR. WANTVR ) THEN
 *
 *        Compute left and/or right eigenvectors
-*        (CWorkspace: need 2*N)
+*        (CWorkspace: need 2*N, prefer N + 2*N*NB)
 *        (RWorkspace: need N)
 *
-         CALL CTREVC( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
-     $                N, NOUT, WORK( IWRK ), RWORK, IERR )
+         CALL CTREVC3( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
+     $                 N, NOUT, WORK( IWRK ), LWORK-IWRK+1,
+     $                 RWORK, N, IERR )
       END IF
 *
 *     Compute condition numbers if desired

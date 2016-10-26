@@ -90,7 +90,7 @@
 *>
 *> \param[in] SELECT
 *> \verbatim
-*>          SELECT is procedure) LOGICAL FUNCTION of two DOUBLE PRECISION arguments
+*>          SELECT is a LOGICAL FUNCTION of two DOUBLE PRECISION arguments
 *>          SELECT must be declared EXTERNAL in the calling subroutine.
 *>          If SORT = 'S', SELECT is used to select eigenvalues to sort
 *>          to the top left of the Schur form.
@@ -272,7 +272,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup doubleGEeigen
 *
@@ -281,10 +281,10 @@
      $                   WR, WI, VS, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                   IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SENSE, SORT

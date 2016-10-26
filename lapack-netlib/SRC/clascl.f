@@ -114,7 +114,11 @@
 *> \param[in] LDA
 *> \verbatim
 *>          LDA is INTEGER
-*>          The leading dimension of the array A.  LDA >= max(1,M).
+*>          The leading dimension of the array A.
+*>          If TYPE = 'G', 'L', 'U', 'H', LDA >= max(1,M);
+*>             TYPE = 'B', LDA >= KL+1;
+*>             TYPE = 'Q', LDA >= KU+1;
+*>             TYPE = 'Z', LDA >= 2*KL+KU+1.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -132,17 +136,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complexOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE CLASCL( TYPE, KL, KU, CFROM, CTO, M, N, A, LDA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TYPE

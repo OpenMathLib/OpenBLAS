@@ -87,7 +87,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is REAL array, dimension (LDB,NRHS)
+*>          B is COMPLEX array, dimension (LDB,NRHS)
 *>          On entry, the right hand side vectors B for the system of
 *>          linear equations.
 *>          On exit, the solution vectors, X.
@@ -114,17 +114,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complexPTcomputational
 *
 *  =====================================================================
       SUBROUTINE CPTTRS( UPLO, N, NRHS, D, E, B, LDB, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

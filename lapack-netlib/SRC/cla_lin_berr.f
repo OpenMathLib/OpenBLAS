@@ -67,7 +67,7 @@
 *>
 *> \param[in] RES
 *> \verbatim
-*>          RES is REAL array, dimension (N,NRHS)
+*>          RES is COMPLEX array, dimension (N,NRHS)
 *>     The residual matrix, i.e., the matrix R in the relative backward
 *>     error formula above.
 *> \endverbatim
@@ -82,7 +82,7 @@
 *>     
 *> \param[out] BERR
 *> \verbatim
-*>          BERR is COMPLEX array, dimension (NRHS)
+*>          BERR is REAL array, dimension (NRHS)
 *>     The componentwise relative backward error from the formula above.
 *> \endverbatim
 *
@@ -94,17 +94,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date June 2016
 *
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE CLA_LIN_BERR ( N, NZ, NRHS, RES, AYB, BERR )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            N, NZ, NRHS

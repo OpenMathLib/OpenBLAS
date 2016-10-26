@@ -58,7 +58,7 @@
 *>              Zx = +-e - f with the sign giving the greater value of
 *>              2-norm(x).  About 5 times as expensive as Default.
 *>          IJOB .ne. 2: Local look ahead strategy where
-*>              all entries of the r.h.s. b is choosen as either +1 or
+*>              all entries of the r.h.s. b is chosen as either +1 or
 *>              -1.  Default.
 *> \endverbatim
 *>
@@ -70,7 +70,7 @@
 *>
 *> \param[in] Z
 *> \verbatim
-*>          Z is DOUBLE PRECISION array, dimension (LDZ, N)
+*>          Z is COMPLEX*16 array, dimension (LDZ, N)
 *>          On entry, the LU part of the factorization of the n-by-n
 *>          matrix Z computed by ZGETC2:  Z = P * L * U * Q
 *> \endverbatim
@@ -83,7 +83,7 @@
 *>
 *> \param[in,out] RHS
 *> \verbatim
-*>          RHS is DOUBLE PRECISION array, dimension (N).
+*>          RHS is COMPLEX*16 array, dimension (N).
 *>          On entry, RHS contains contributions from other subsystems.
 *>          On exit, RHS contains the solution of the subsystem with
 *>          entries according to the value of IJOB (see above).
@@ -134,7 +134,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -169,10 +169,10 @@
       SUBROUTINE ZLATDF( IJOB, N, Z, LDZ, RHS, RDSUM, RDSCAL, IPIV,
      $                   JPIV )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IJOB, LDZ, N

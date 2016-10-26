@@ -211,12 +211,12 @@
 *> \param[in,out] Q
 *> \verbatim
 *>          Q is REAL array, dimension (LDQ, N)
-*>          On entry, if COMPZ = 'V', the orthogonal matrix Q1 used in
+*>          On entry, if COMPQ = 'V', the orthogonal matrix Q1 used in
 *>          the reduction of (A,B) to generalized Hessenberg form.
-*>          On exit, if COMPZ = 'I', the orthogonal matrix of left Schur
-*>          vectors of (H,T), and if COMPZ = 'V', the orthogonal matrix
+*>          On exit, if COMPQ = 'I', the orthogonal matrix of left Schur
+*>          vectors of (H,T), and if COMPQ = 'V', the orthogonal matrix
 *>          of left Schur vectors of (A,B).
-*>          Not referenced if COMPZ = 'N'.
+*>          Not referenced if COMPQ = 'N'.
 *> \endverbatim
 *>
 *> \param[in] LDQ
@@ -282,7 +282,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2013
+*> \date June 2016
 *
 *> \ingroup realGEcomputational
 *
@@ -304,10 +304,10 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, WORK,
      $                   LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ, JOB

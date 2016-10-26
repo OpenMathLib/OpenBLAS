@@ -53,7 +53,6 @@
 *> of [SIGMA] is computed and stored in the array SVA.
 *> SGEJSV can sometimes compute tiny singular values and their singular vectors much
 *> more accurately than other SVD routines, see below under Further Details.
-
 *> \endverbatim
 *
 *  Arguments:
@@ -238,7 +237,7 @@
 *>                         copied back to the V array. This 'W' option is just
 *>                         a reminder to the caller that in this case U is
 *>                         reserved as workspace of length N*N.
-*>          If JOBU = 'N'  U is not referenced.
+*>          If JOBU = 'N'  U is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDU
@@ -260,7 +259,7 @@
 *>                         copied back to the U array. This 'W' option is just
 *>                         a reminder to the caller that in this case V is
 *>                         reserved as workspace of length N*N.
-*>          If JOBV = 'N'  V is not referenced.
+*>          If JOBV = 'N'  V is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -392,7 +391,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup realGEsing
 *
@@ -459,7 +458,7 @@
 *>     LAPACK Working note 170.
 *> [3] Z. Drmac and Z. Bujanovic: On the failure of rank-revealing QR
 *>     factorization software - a case study.
-*>     ACM Trans. math. Softw. Vol. 35, No 2 (2008), pp. 1-28.
+*>     ACM Trans. Math. Softw. Vol. 35, No 2 (2008), pp. 1-28.
 *>     LAPACK Working note 176.
 *> [4] Z. Drmac: SIGMA - mathematical software library for accurate SVD, PSV,
 *>     QSVD, (H,K)-SVD computations.
@@ -477,10 +476,10 @@
      $                   M, N, A, LDA, SVA, U, LDU, V, LDV,
      $                   WORK, LWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       IMPLICIT    NONE
@@ -591,7 +590,11 @@
 *
 *     Quick return for void matrix (Y3K safe)
 * #:)
-      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) RETURN
+      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) THEN
+         IWORK(1:3) = 0
+         WORK(1:7) = 0
+         RETURN
+      ENDIF
 *
 *     Determine whether the matrix U should be M x N or M x M
 *
@@ -717,6 +720,7 @@
             IWORK(1) = 0
             IWORK(2) = 0
          END IF
+         IWORK(3) = 0
          IF ( ERREST ) WORK(3) = ONE
          IF ( LSVEC .AND. RSVEC ) THEN
             WORK(4) = ONE

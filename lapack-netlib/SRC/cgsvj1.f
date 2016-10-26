@@ -1,4 +1,4 @@
-*> \brief \b CGSVJ1 pre-processor for the routine sgesvj, applies Jacobi rotations targeting only particular pivots.
+*> \brief \b CGSVJ1 pre-processor for the routine cgesvj, applies Jacobi rotations targeting only particular pivots.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -105,7 +105,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is REAL array, dimension (LDA,N)
+*>          A is COMPLEX array, dimension (LDA,N)
 *>          On entry, M-by-N matrix A, such that A*diag(D) represents
 *>          the input matrix.
 *>          On exit,
@@ -124,7 +124,7 @@
 *>
 *> \param[in,out] D
 *> \verbatim
-*>          D is REAL array, dimension (N)
+*>          D is COMPLEX array, dimension (N)
 *>          The array D accumulates the scaling factors from the fast scaled
 *>          Jacobi rotations.
 *>          On entry, A*diag(D) represents the input matrix.
@@ -154,7 +154,7 @@
 *>
 *> \param[in,out] V
 *> \verbatim
-*>          V is REAL array, dimension (LDV,N)
+*>          V is COMPLEX array, dimension (LDV,N)
 *>          If JOBV .EQ. 'V' then N rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV .EQ. 'A' then MV rows of V are post-multipled by a
@@ -223,7 +223,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -236,10 +236,10 @@
       SUBROUTINE CGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
      $                   EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       REAL               EPS, SFMIN, TOL

@@ -84,7 +84,7 @@
 *>
 *> \param[in] AB
 *> \verbatim
-*>          AB is DOUBLE PRECISION array, dimension (LDAB,N)
+*>          AB is COMPLEX array, dimension (LDAB,N)
 *>          On entry, the matrix A in band storage, in rows 1 to KL+KU+1.
 *>          The j-th column of A is stored in the j-th column of the
 *>          array AB as follows:
@@ -153,7 +153,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complexGBcomputational
 *
@@ -161,10 +161,10 @@
       SUBROUTINE CGBEQUB( M, N, KL, KU, AB, LDAB, R, C, ROWCND, COLCND,
      $                    AMAX, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, KL, KU, LDAB, M, N

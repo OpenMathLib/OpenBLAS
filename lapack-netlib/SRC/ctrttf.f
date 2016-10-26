@@ -81,7 +81,7 @@
 *>
 *> \param[out] ARF
 *> \verbatim
-*>          ARF is COMPLEX*16 array, dimension ( N*(N+1)/2 ),
+*>          ARF is COMPLEX array, dimension ( N*(N+1)/2 ),
 *>          On exit, the upper or lower triangular matrix A stored in
 *>          RFP format. For a further discussion see Notes below.
 *> \endverbatim
@@ -101,7 +101,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -216,10 +216,10 @@
 *  =====================================================================
       SUBROUTINE CTRTTF( TRANSR, UPLO, N, A, LDA, ARF, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANSR, UPLO
