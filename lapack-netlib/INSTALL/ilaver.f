@@ -41,7 +41,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -51,7 +51,7 @@
 *  -- LAPACK computational routine (version 3.6.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *  =====================================================================
 *
@@ -59,7 +59,7 @@
 *  =====================================================================
       VERS_MAJOR = 3
       VERS_MINOR = 6
-      VERS_PATCH = 0
+      VERS_PATCH = 1
 *  =====================================================================
 *
       RETURN
