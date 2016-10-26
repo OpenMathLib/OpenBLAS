@@ -52,7 +52,7 @@
 *> number of matrix "TYPES" are specified.  For each size ("N")
 *> and each TYPE of matrix, a pair of matrices (A, B) will be generated
 *> and used for testing. For each matrix pair, the following 13 tests
-*> will be performed and compared with the threshhold THRESH except
+*> will be performed and compared with the threshold THRESH except
 *> the tests (5), (11) and (13).
 *>
 *>
@@ -393,7 +393,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup single_eig
 *
@@ -403,10 +403,10 @@
      $                   ALPHAI, BETA, WORK, LWORK, RESULT, BWORK,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LWORK, NOUNIT, NSIZES, NTYPES

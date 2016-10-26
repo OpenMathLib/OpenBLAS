@@ -346,7 +346,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup single_eig
 *
@@ -355,10 +355,10 @@
      $                   A, LDA, U, LDU, VT, LDVT, ASAV, USAV, VTSAV, S,
      $                   SSAV, E, WORK, LWORK, IWORK, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUT, NSIZES,
@@ -404,8 +404,8 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, SBDT01, SGEJSV, SGESDD, SGESVD, 
-     $                   SGESVDX, SGESVJ, SLABAD, SLACPY, SLASET, SLATMS,
-     $                   SORT01, SORT03, XERBLA
+     $                   SGESVDX, SGESVJ, SLABAD, SLACPY, SLASET,
+     $                   SLATMS, SORT01, SORT03, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, INT, MAX, MIN

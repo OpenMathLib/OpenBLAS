@@ -369,7 +369,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -378,10 +378,10 @@
      $                   NOUNIT, A, LDA, H, HT, W, WT, VS, LDVS, RESULT,
      $                   WORK, NWORK, RWORK, IWORK, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDVS, NOUNIT, NSIZES, NTYPES, NWORK
@@ -901,7 +901,7 @@
      $      '  1/ulp otherwise', /
      $      ' 12 = 0 if W same no matter if VS computed (sort),',
      $      '  1/ulp otherwise', /
-     $      ' 13 = 0 if sorting succesful, 1/ulp otherwise', / )
+     $      ' 13 = 0 if sorting successful, 1/ulp otherwise', / )
  9993 FORMAT( ' N=', I5, ', IWK=', I2, ', seed=', 4( I4, ',' ),
      $      ' type ', I2, ', test(', I2, ')=', G10.3 )
  9992 FORMAT( ' CDRVES: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',

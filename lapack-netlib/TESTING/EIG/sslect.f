@@ -22,8 +22,8 @@
 *>
 *> SSLECT returns .TRUE. if the eigenvalue ZR+sqrt(-1)*ZI is to be
 *> selected, and otherwise it returns .FALSE.
-*> It is used by SCHK41 to test if SGEES succesfully sorts eigenvalues,
-*> and by SCHK43 to test if SGEESX succesfully sorts eigenvalues.
+*> It is used by SCHK41 to test if SGEES successfully sorts eigenvalues,
+*> and by SCHK43 to test if SGEESX successfully sorts eigenvalues.
 *>
 *> The common block /SSLCT/ controls how eigenvalues are selected.
 *> If SELOPT = 0, then SSLECT return .TRUE. when ZR is less than zero,
@@ -55,17 +55,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup single_eig
 *
 *  =====================================================================
       LOGICAL          FUNCTION SSLECT( ZR, ZI )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       REAL               ZI, ZR

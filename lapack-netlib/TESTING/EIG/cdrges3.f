@@ -50,7 +50,7 @@
 *> number of matrix "TYPES" are specified.  For each size ("N")
 *> and each TYPE of matrix, a pair of matrices (A, B) will be generated
 *> and used for testing. For each matrix pair, the following 13 tests
-*> will be performed and compared with the threshhold THRESH except
+*> will be performed and compared with the threshold THRESH except
 *> the tests (5), (11) and (13).
 *>
 *>
@@ -382,7 +382,7 @@
      $                    BETA, WORK, LWORK, RWORK, RESULT, BWORK,
      $                    INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     February 2015

@@ -50,7 +50,7 @@
 *> ``exactly'' (see DLATM6).
 *>
 *> For each matrix pair, the following tests will be performed and
-*> compared with the threshhold THRESH.
+*> compared with the threshold THRESH.
 *>
 *> (1) max over all left eigenvalue/-vector pairs (beta/alpha,l) of
 *>
@@ -300,7 +300,7 @@
      $                   RSCALE, S, DTRU, DIF, DIFTRU, WORK, LWORK,
      $                   IWORK, LIWORK, RESULT, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012

@@ -22,8 +22,8 @@
 *>
 *> CSLECT returns .TRUE. if the eigenvalue Z is to be selected,
 *> otherwise it returns .FALSE.
-*> It is used by CCHK41 to test if CGEES succesfully sorts eigenvalues,
-*> and by CCHK43 to test if CGEESX succesfully sorts eigenvalues.
+*> It is used by CCHK41 to test if CGEES successfully sorts eigenvalues,
+*> and by CCHK43 to test if CGEESX successfully sorts eigenvalues.
 *>
 *> The common block /SSLCT/ controls how eigenvalues are selected.
 *> If SELOPT = 0, then CSLECT return .TRUE. when real(Z) is less than
@@ -49,17 +49,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
 *  =====================================================================
       LOGICAL          FUNCTION CSLECT( Z )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       COMPLEX            Z

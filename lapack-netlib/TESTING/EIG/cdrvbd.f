@@ -379,7 +379,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -389,10 +389,10 @@
      $                   SSAV, E, WORK, LWORK, RWORK, IWORK, NOUNIT,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUNIT, NSIZES,
@@ -423,11 +423,11 @@
 *     .. Local Scalars ..
       LOGICAL            BADMM, BADNN
       CHARACTER          JOBQ, JOBU, JOBVT, RANGE
-      INTEGER            I, IINFO, IJQ, IJU, IJVT, IL, IU, ITEMP, IWSPC,
-     $                   IWTMP, J, JSIZE, JTYPE, LSWORK, M, MINWRK,
-     $                   MMAX, MNMAX, MNMIN, MTYPES, N, NERRS, NFAIL,
-     $                   NMAX, NS, NSI, NSV, NTEST, NTESTF, NTESTT,
-     $                   LRWORK
+      INTEGER            I, IINFO, IJQ, IJU, IJVT, IL, IU, ITEMP,
+     $                   IWSPC, IWTMP, J, JSIZE, JTYPE, LSWORK, M,
+     $                   MINWRK, MMAX, MNMAX, MNMIN, MTYPES, N,
+     $                   NERRS, NFAIL, NMAX, NS, NSI, NSV, NTEST,
+     $                   NTESTF, NTESTT, LRWORK
       REAL               ANORM, DIF, DIV, OVFL, RTUNFL, ULP, ULPINV, 
      $                   UNFL, VL, VU
 *     ..
@@ -441,9 +441,9 @@
       EXTERNAL           SLAMCH, SLARND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASVM, XERBLA, CBDT01, CBDT05, CGESDD, CGESVD,
-     $                   CGESVJ, CGEJSV, CGESVDX, CLACPY, CLASET, CLATMS, 
-     $                   CUNT01, CUNT03
+      EXTERNAL           ALASVM, XERBLA, CBDT01, CBDT05, CGESDD,
+     $                   CGESVD, CGESVJ, CGEJSV, CGESVDX, CLACPY,
+     $                   CLASET, CLATMS, CUNT01, CUNT03
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, MAX, MIN

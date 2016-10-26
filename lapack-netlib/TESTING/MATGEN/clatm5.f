@@ -48,7 +48,7 @@
 *> \param[in] PRTYPE
 *> \verbatim
 *>          PRTYPE is INTEGER
-*>          "Points" to a certian type of the matrices to generate
+*>          "Points" to a certain type of the matrices to generate
 *>          (see futher details).
 *> \endverbatim
 *>
@@ -192,7 +192,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_matgen
 *
@@ -268,10 +268,10 @@
      $                   E, LDE, F, LDF, R, LDR, L, LDL, ALPHA, QBLCKA,
      $                   QBLCKB )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDB, LDC, LDD, LDE, LDF, LDL, LDR, M, N,

@@ -72,7 +72,7 @@
 *> and each type of matrix, one matrix will be generated and used
 *> to test the nonsymmetric eigenroutines.  For each matrix, 15
 *> tests will be performed.  The first twelve "test ratios" should be
-*> small -- O(1).  They will be compared with the threshhold THRESH:
+*> small -- O(1).  They will be compared with the threshold THRESH:
 *>
 *>                  T
 *> (1)   | A - U H V  | / ( |A| n ulp )
@@ -132,7 +132,7 @@
 *>            |beta(Q,Z computed) - beta(Q,Z not computed)|/|P| ) / ulp
 *>
 *> In addition, the normalization of L and R are checked, and compared
-*> with the threshhold THRSHN.
+*> with the threshold THRSHN.
 *>
 *> Test Matrices
 *> ---- --------
@@ -298,7 +298,7 @@
 *> \param[in] THRSHN
 *> \verbatim
 *>          THRSHN is DOUBLE PRECISION
-*>          Threshhold for reporting eigenvector normalization error.
+*>          Threshold for reporting eigenvector normalization error.
 *>          If the normalization of any eigenvector differs from 1 by
 *>          more than THRSHN*ulp, then a special error message will be
 *>          printed.  (This is handled separately from the other tests,
@@ -500,7 +500,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup double_eig
 *
@@ -511,10 +511,10 @@
      $                   BETA1, ALPHR3, ALPHI3, BETA3, EVECTL, EVECTR,
      $                   WORK, LWORK, LLWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTDIF
