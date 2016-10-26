@@ -75,7 +75,7 @@ lapack_int LAPACKE_zgghd3( int matrix_layout, char compq, char compz,
     if( info != 0 ) {
         goto exit_level_0;
     }
-    lwork = LAPACK_C2INT( work_query );
+    lwork = LAPACK_Z2INT( work_query );
     /* Allocate memory for work arrays */
     work = (lapack_complex_double*)
         LAPACKE_malloc( sizeof(lapack_complex_double) * lwork );

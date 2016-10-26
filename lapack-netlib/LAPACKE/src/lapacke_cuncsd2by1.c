@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function cuncsd2by1
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -37,7 +37,7 @@ lapack_int LAPACKE_cuncsd2by1( int matrix_layout, char jobu1, char jobu2,
                            char jobv1t, lapack_int m, lapack_int p, lapack_int q,
                            lapack_complex_float* x11, lapack_int ldx11,
                            lapack_complex_float* x21, lapack_int ldx21,
-                           lapack_complex_float* theta, lapack_complex_float* u1,
+                           float* theta, lapack_complex_float* u1,
                            lapack_int ldu1, lapack_complex_float* u2,
                            lapack_int ldu2, lapack_complex_float* v1t, lapack_int ldv1t )
 {

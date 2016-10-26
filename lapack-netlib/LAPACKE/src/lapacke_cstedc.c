@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function cstedc
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -58,7 +58,7 @@ lapack_int LAPACKE_cstedc( int matrix_layout, char compz, lapack_int n, float* d
     if( LAPACKE_s_nancheck( n-1, e, 1 ) ) {
         return -5;
     }
-    if( LAPACKE_lsame( compz, 'i' ) || LAPACKE_lsame( compz, 'v' ) ) {
+    if( LAPACKE_lsame( compz, 'v' ) ) {
         if( LAPACKE_cge_nancheck( matrix_layout, n, n, z, ldz ) ) {
             return -6;
         }

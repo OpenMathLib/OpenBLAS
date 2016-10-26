@@ -28,7 +28,7 @@
 ******************************************************************************
 * Contents: Native high-level C interface to LAPACK function stpmqrt
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -39,6 +39,8 @@ lapack_int LAPACKE_stpmqrt( int matrix_layout, char side, char trans,
                             lapack_int ldv, const float* t, lapack_int ldt,
                             float* a, lapack_int lda, float* b, lapack_int ldb )
 {
+    lapack_int ncols_a, nrows_a;
+    lapack_int nrows_v;
     lapack_int info = 0;
     float* work = NULL;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
@@ -47,16 +49,22 @@ lapack_int LAPACKE_stpmqrt( int matrix_layout, char side, char trans,
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
     /* Optionally check input matrices for NaNs */
-    if( LAPACKE_sge_nancheck( matrix_layout, k, m, a, lda ) ) {
+    ncols_a = LAPACKE_lsame( side, 'L' ) ? n :
+                         ( LAPACKE_lsame( side, 'R' ) ? k : 0 );
+    nrows_a = LAPACKE_lsame( side, 'L' ) ? k :
+                         ( LAPACKE_lsame( side, 'R' ) ? m : 0 );
+    nrows_v = LAPACKE_lsame( side, 'L' ) ? m :
+                         ( LAPACKE_lsame( side, 'R' ) ? n : 0 );
+    if( LAPACKE_sge_nancheck( matrix_layout, nrows_a, ncols_a, a, lda ) ) {
         return -13;
     }
     if( LAPACKE_sge_nancheck( matrix_layout, m, n, b, ldb ) ) {
         return -15;
     }
-    if( LAPACKE_sge_nancheck( matrix_layout, ldt, nb, t, ldt ) ) {
+    if( LAPACKE_sge_nancheck( matrix_layout, nb, k, t, ldt ) ) {
         return -11;
     }
-    if( LAPACKE_sge_nancheck( matrix_layout, ldv, k, v, ldv ) ) {
+    if( LAPACKE_sge_nancheck( matrix_layout, nrows_v, k, v, ldv ) ) {
         return -9;
     }
 #endif

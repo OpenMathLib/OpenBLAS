@@ -28,19 +28,19 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function dsyconv
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_dsyconv_work( int matrix_layout, char uplo, char way,
                                  lapack_int n, double* a, lapack_int lda,
-                                 const lapack_int* ipiv, double* work )
+                                 const lapack_int* ipiv, double* e )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
-        LAPACK_dsyconv( &uplo, &way, &n, a, &lda, ipiv, work, &info );
+        LAPACK_dsyconv( &uplo, &way, &n, a, &lda, ipiv, e, &info );
         if( info < 0 ) {
             info = info - 1;
         }
@@ -62,7 +62,7 @@ lapack_int LAPACKE_dsyconv_work( int matrix_layout, char uplo, char way,
         /* Transpose input matrices */
         LAPACKE_dge_trans( matrix_layout, lda, n, a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
-        LAPACK_dsyconv( &uplo, &way, &n, a_t, &lda_t, ipiv, work, &info );
+        LAPACK_dsyconv( &uplo, &way, &n, a_t, &lda_t, ipiv, e, &info );
         if( info < 0 ) {
             info = info - 1;
         }

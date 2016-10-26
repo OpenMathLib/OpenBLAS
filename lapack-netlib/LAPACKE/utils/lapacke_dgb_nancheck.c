@@ -46,14 +46,14 @@ lapack_logical LAPACKE_dgb_nancheck( int matrix_layout, lapack_int m,
 
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         for( j = 0; j < n; j++ ) {
-            for( i = MAX( ku-j, 0 ); i < MIN3( ldab, m+ku-j, kl+ku+1 );
+            for( i = MAX( ku-j, 0 ); i < MIN( m+ku-j, kl+ku+1 );
                  i++ ) {
                 if( LAPACK_DISNAN( ab[i+(size_t)j*ldab] ) )
                      return (lapack_logical) 1;
             }
         }
     } else if ( matrix_layout == LAPACK_ROW_MAJOR ) {
-        for( j = 0; j < MIN( n, ldab ); j++ ) {
+        for( j = 0; j < n; j++ ) {
             for( i = MAX( ku-j, 0 ); i < MIN( m+ku-j, kl+ku+1 ); i++ ) {
                 if( LAPACK_DISNAN( ab[(size_t)i*ldab+j] ) )
                      return (lapack_logical) 1;

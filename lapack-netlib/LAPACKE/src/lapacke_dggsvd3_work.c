@@ -91,9 +91,9 @@ lapack_int LAPACKE_dggsvd3_work( int matrix_layout, char jobu, char jobv,
         }
         /* Query optimal working array(s) size if requested */
         if( lwork == -1 ) {
-          LAPACK_dggsvd3( &jobu, &jobv, &jobq, &m, &n, &p, k, l, a_t, &lda_t,
-                          b_t, &ldb_t, alpha, beta, u_t, &ldu_t, v_t, &ldv_t,
-                          q_t, &ldq_t, work, &lwork, iwork, &info );
+          LAPACK_dggsvd3( &jobu, &jobv, &jobq, &m, &n, &p, k, l, a, &lda_t,
+                          b, &ldb_t, alpha, beta, u, &ldu_t, v, &ldv_t,
+                          q, &ldq_t, work, &lwork, iwork, &info );
           return (info < 0) ? (info - 1) : info;
         }
         /* Allocate memory for temporary array(s) */

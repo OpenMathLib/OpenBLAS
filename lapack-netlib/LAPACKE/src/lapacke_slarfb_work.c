@@ -118,7 +118,7 @@ lapack_int LAPACKE_slarfb_work( int matrix_layout, char side, char trans,
             LAPACKE_sge_trans( matrix_layout, nrows_v, ncols_v-k, &v[k], ldv,
                                &v_t[k*ldv_t], ldv_t );
         } else if( LAPACKE_lsame( storev, 'r' ) &&
-                   LAPACKE_lsame( direct, 'b' ) ) {
+                   LAPACKE_lsame( direct, 'f' ) ) {
             if( k > ncols_v ) {
                 LAPACKE_xerbla( "LAPACKE_slarfb_work", -8 );
                 return -8;

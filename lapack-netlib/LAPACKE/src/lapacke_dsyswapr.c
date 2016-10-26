@@ -28,13 +28,13 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dsyswapr
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_dsyswapr( int matrix_layout, char uplo, lapack_int n,
-                             double* a, lapack_int i1, lapack_int i2 )
+                             double* a, lapack_int lda, lapack_int i1, lapack_int i2 )
 {
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_dsyswapr", -1 );
@@ -42,9 +42,9 @@ lapack_int LAPACKE_dsyswapr( int matrix_layout, char uplo, lapack_int n,
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
     /* Optionally check input matrices for NaNs */
-    if( LAPACKE_dsy_nancheck( matrix_layout, uplo, n, a, n ) ) {
+    if( LAPACKE_dsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
         return -4;
     }
 #endif
-    return LAPACKE_dsyswapr_work( matrix_layout, uplo, n, a, i1, i2 );
+    return LAPACKE_dsyswapr_work( matrix_layout, uplo, n, a, lda, i1, i2 );
 }
