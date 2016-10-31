@@ -798,7 +798,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 	*(b +  1) = data02;
 	*(b +  2) = data03;
 	*(b +  3) = data04;
-	*(b +  4) = data05;
+	// *(b +  4) = data05;
       }
 
       if (ii < jj) {
