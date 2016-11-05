@@ -36,10 +36,10 @@ if(CMAKE_CONFIGURATION_TYPES) # multiconfig generator?
 	        Debug Debug
 		Release Release
 	)
-	set(OpenBLAS_LIBNAME
-    		Debug "${OpenBLAS_LIBNAME}_d"
-    		Release "${OpenBLAS_LIBNAME}"
-    	)
+#	set(OpenBLAS_LIBNAME
+#   		Debug "${OpenBLAS_LIBNAME}_d"
+#    		Release "${OpenBLAS_LIBNAME}"
+#    	)
 else()
 	if( NOT CMAKE_BUILD_TYPE )
 		if(BUILD_DEBUG)
