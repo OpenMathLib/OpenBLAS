@@ -32,6 +32,10 @@ endif()
 
 if(CMAKE_CONFIGURATION_TYPES) # multiconfig generator?
         set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
+        set(CMAKE_BUILD_TYPE
+	        Debug Debug
+		Release Release
+	)
 	set(OpenBLAS_LIBNAME
     		Debug "${OpenBLAS_LIBNAME}_d"
     		Release "${OpenBLAS_LIBNAME}"
