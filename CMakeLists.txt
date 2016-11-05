@@ -30,15 +30,23 @@ set(NO_LAPACK 1)
 set(NO_LAPACKE 1)
 endif()
 
-if( NOT CMAKE_BUILD_TYPE )
-	if(BUILD_DEBUG)
-		set(CMAKE_BUILD_TYPE Debug)
-	else()
-		set(CMAKE_BUILD_TYPE Release)
+if(CMAKE_CONFIGURATION_TYPES) # multiconfig generator?
+        set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
+	set(OpenBLAS_LIBNAME
+    		$<$<CONFIG:Debug>:"${OpenBLAS_LIBNAME}_d">
+    		$<$<CONFIG:Release>:"${OpenBLAS_LIBNAME}"> 
+    	)
+else()
+	if( NOT CMAKE_BUILD_TYPE )
+		if(BUILD_DEBUG)
+			set(CMAKE_BUILD_TYPE Debug)
+		else()
+			set(CMAKE_BUILD_TYPE Release)
+		endif()
 	endif()
 endif()
 
-if (CMAKE_BUILD_TYPE = Debug)
+if (CMAKE_BUILD_TYPE STREQUAL Debug)
 	set(OpenBLAS_LIBNAME "${OpenBLAS_LIBNAME}_d")
 endif()
 
