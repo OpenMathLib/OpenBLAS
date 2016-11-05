@@ -30,12 +30,18 @@ set(NO_LAPACK 1)
 set(NO_LAPACKE 1)
 endif()
 
-if(BUILD_DEBUG)
-	set(CMAKE_BUILD_TYPE Debug)
-	set(OpenBLAS_LIBNAME "${OpenBLAS_LIBNAME}_d")
-else()
-	set(CMAKE_BUILD_TYPE Release)
+if( NOT CMAKE_BUILD_TYPE )
+	if(BUILD_DEBUG)
+		set(CMAKE_BUILD_TYPE Debug)
+	else()
+		set(CMAKE_BUILD_TYPE Release)
+	endif()
 endif()
+
+if (CMAKE_BUILD_TYPE = Debug)
+	set(OpenBLAS_LIBNAME "${OpenBLAS_LIBNAME}_d")
+endif()
+
 
 if(BUILD_WITHOUT_CBLAS)
 set(NO_CBLAS 1)
@@ -155,18 +161,14 @@ add_subdirectory(utest)
 
 if(NOT MSVC)
 	#only build shared library for MSVC
-	set(DEBUG_POSTFIX "")
-	if(BUILD_DEBUG)
-		set(DEBUG_POSTFIX "_d")
-	endif()
 
-	add_library(${OpenBLAS_LIBNAME}_static${DEBUG_POSTFIX} STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
-	set_target_properties(${OpenBLAS_LIBNAME}_static${DEBUG_POSTFIX} PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
-	set_target_properties(${OpenBLAS_LIBNAME}_static${DEBUG_POSTFIX} PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+	add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
+	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
+	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
 	if(SMP)
 	target_link_libraries(${OpenBLAS_LIBNAME} pthread)
-	target_link_libraries(${OpenBLAS_LIBNAME}_static${DEBUG_POSTFIX} pthread)
+	target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
 endif()
 
 #build test and ctest
@@ -218,9 +220,5 @@ FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 install (FILES ${INCLUDE_FILES} DESTINATION include)
  
 if(NOT MSVC)
-	set(DEBUG_POSTFIX "")
-	if(BUILD_DEBUG)
-		set(DEBUG_POSTFIX "_d")
-	endif()
-	install (TARGETS ${OpenBLAS_LIBNAME}_static${DEBUG_POSTFIX} DESTINATION lib)
+	install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION lib)
 endif()
