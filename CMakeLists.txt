@@ -36,10 +36,6 @@ if(CMAKE_CONFIGURATION_TYPES) # multiconfig generator?
 	        Debug Debug
 		Release Release
 	)
-#	set(OpenBLAS_LIBNAME
-#   		Debug "${OpenBLAS_LIBNAME}_d"
-#    		Release "${OpenBLAS_LIBNAME}"
-#    	)
 else()
 	if( NOT CMAKE_BUILD_TYPE )
 		if(BUILD_DEBUG)
@@ -50,10 +46,7 @@ else()
 	endif()
 endif()
 
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-	set(OpenBLAS_LIBNAME "${OpenBLAS_LIBNAME}_d")
-endif()
-
+set_target_properties (${OpenBLAS_LIBNAME} PROPERTIES OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
 
 if(BUILD_WITHOUT_CBLAS)
 set(NO_CBLAS 1)
