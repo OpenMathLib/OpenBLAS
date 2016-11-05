@@ -46,8 +46,6 @@ else()
 	endif()
 endif()
 
-set_target_properties (OpenBLAS PROPERTIES OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
-
 if(BUILD_WITHOUT_CBLAS)
 set(NO_CBLAS 1)
 endif()
@@ -153,6 +151,8 @@ include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
 
 # Set output for libopenblas
 set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
+
 foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
   
