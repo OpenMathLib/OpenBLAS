@@ -46,7 +46,7 @@ else()
 	endif()
 endif()
 
-set_target_properties (${OpenBLAS_LIBNAME} PROPERTIES OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
+set_target_properties (OpenBLAS PROPERTIES OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
 
 if(BUILD_WITHOUT_CBLAS)
 set(NO_CBLAS 1)
