@@ -1098,6 +1098,7 @@ int main(int argc, char *argv[]){
 	      p ++;
 	    }
 	  } else {
+	    if (*p != '\n')
 	    printf("%c", *p);
 	    p ++;
 	  }
