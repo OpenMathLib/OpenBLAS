@@ -264,7 +264,6 @@ static gotoblas_t *get_coretype(void){
 	}
 	//Intel Braswell / Avoton
 	if (model == 12 || model == 13) { 
-	  openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK); 
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
@@ -280,6 +279,29 @@ static gotoblas_t *get_coretype(void){
 	}
 	//Intel Skylake
 	if (model == 14 || model == 5) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Phi Knights Landing
+	if (model == 7) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Apollo Lake
+	if (model == 14) { 
+	  return &gotoblas_NEHALEM;
+	}	
+	return NULL;
+      case 8:
+	if (model == 14 ) { // Kaby Lake
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
