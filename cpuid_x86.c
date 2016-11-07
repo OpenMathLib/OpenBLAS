@@ -1205,8 +1205,34 @@ int get_cpuname(void){
 #endif
           else
 	    return CPUTYPE_NEHALEM;
+	case 7:
+	    // Xeon Phi Knights Landing
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	case 12:
+	    // Apollo Lake
+	    return CPUTYPE_NEHALEM;
 	}
 	break;
+      case 8: 
+        switch (model) {
+	case 14: // Kaby Lake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	}
+	break;    
       }
       break;
     case 0x7:
@@ -1713,8 +1739,24 @@ int get_coretype(void){
 #endif
           else
 	    return CORE_NEHALEM;
-	}
+	case 7:
+	  // Phi Knights Landing
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
+	case 12:
+	  // Apollo Lake
+	    return CORE_NEHALEM;
+        }
 	break;
+      case 8:
+        if (model == 14) // Kaby Lake 
+          return CORE_HASWELL;
       }
       break;
 
