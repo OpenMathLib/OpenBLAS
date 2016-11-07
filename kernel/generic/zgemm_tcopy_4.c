@@ -293,8 +293,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
 
 	aoffset1 += 8;
 	aoffset2 += 8;
-	aoffset3 += 8;
-	aoffset4 += 8;
+	// aoffset3 += 8;
+	// aoffset4 += 8;
 
 	boffset1 += m * 8;
 	i --;
