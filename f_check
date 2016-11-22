@@ -283,6 +283,12 @@ if ($link ne "") {
 	    $linker_L .= "-Wl,". $flags . " ";
         }
 
+	if ($flags =~ /^\--exclude-libs/) {
+	    $linker_L .= "-Wl,". $flags . " ";
+	    $flags="";
+	}
+
+
 	if ($flags =~ /^\-rpath\@/) {
 	    $flags =~ s/\@/\,/g;
 	    if ($vendor eq "PGI") {
