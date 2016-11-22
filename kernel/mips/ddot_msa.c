@@ -28,105 +28,75 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "macros_msa.h"
 
-/* return float, x,y float */
-#if defined(DSDOT)
-double CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
-#else
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
-#endif
 {
     BLASLONG i = 0;
-    double dot = 0.0;
+    FLOAT dot = 0.0;
     FLOAT x0, x1, x2, x3, y0, y1, y2, y3;
     v2f64 vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7;
     v2f64 vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7;
     v2f64 dot0 = {0, 0};
+    v2f64 dot1 = {0, 0};
+    v2f64 dot2 = {0, 0};
+    v2f64 dot3 = {0, 0};
 
-    if (n < 0) return (dot);
+    if (n < 1) return (dot);
 
     if ((1 == inc_x) && (1 == inc_y))
     {
         for (i = (n >> 4); i--;)
         {
-			LD_DP8_INC(x, 2, vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7);
-			LD_DP8_INC(y, 2, vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7);
+            LD_DP8_INC(x, 2, vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7);
+            LD_DP8_INC(y, 2, vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7);
+
+#ifdef ENABLE_PREFETCH
+            __asm__ __volatile__(
+                "pref   0,  256(%[x])\n\t"
+                "pref   0,  288(%[x])\n\t"
+                "pref   0,  320(%[x])\n\t"
+                "pref   0,  352(%[x])\n\t"
+                "pref   0,  256(%[y])\n\t"
+                "pref   0,  288(%[y])\n\t"
+                "pref   0,  320(%[y])\n\t"
+                "pref   0,  352(%[y])\n\t"
+
+                : : [x] "r" (x), [y] "r" (y)
+            );
+#endif
 
             dot0 += (vy0 * vx0);
-            dot0 += (vy1 * vx1);
-            dot0 += (vy2 * vx2);
-            dot0 += (vy3 * vx3);
+            dot1 += (vy1 * vx1);
+            dot2 += (vy2 * vx2);
+            dot3 += (vy3 * vx3);
             dot0 += (vy4 * vx4);
-            dot0 += (vy5 * vx5);
-            dot0 += (vy6 * vx6);
-            dot0 += (vy7 * vx7);
+            dot1 += (vy5 * vx5);
+            dot2 += (vy6 * vx6);
+            dot3 += (vy7 * vx7);
         }
 
         if (n & 15)
         {
-            if ((n & 8) && (n & 4) && (n & 2))
-			{
-				LD_DP7_INC(x, 2, vx0, vx1, vx2, vx3, vx4, vx5, vx6);
-				LD_DP7_INC(y, 2, vy0, vy1, vy2, vy3, vy4, vy5, vy6);
-
-                dot0 += (vy0 * vx0);
-                dot0 += (vy1 * vx1);
-                dot0 += (vy2 * vx2);
-                dot0 += (vy3 * vx3);
-                dot0 += (vy4 * vx4);
-                dot0 += (vy5 * vx5);
-                dot0 += (vy6 * vx6);
-			}
-            else if ((n & 8) && (n & 4))
-			{
-				LD_DP6_INC(x, 2, vx0, vx1, vx2, vx3, vx4, vx5);
-				LD_DP6_INC(y, 2, vy0, vy1, vy2, vy3, vy4, vy5);
-
-                dot0 += (vy0 * vx0);
-                dot0 += (vy1 * vx1);
-                dot0 += (vy2 * vx2);
-                dot0 += (vy3 * vx3);
-                dot0 += (vy4 * vx4);
-                dot0 += (vy5 * vx5);
-			}
-            else if ((n & 8) && (n & 2))
-			{
-				LD_DP5_INC(x, 2, vx0, vx1, vx2, vx3, vx4);
-				LD_DP5_INC(y, 2, vy0, vy1, vy2, vy3, vy4);
-
-                dot0 += (vy0 * vx0);
-                dot0 += (vy1 * vx1);
-                dot0 += (vy2 * vx2);
-                dot0 += (vy3 * vx3);
-                dot0 += (vy4 * vx4);
-			}
-            else if ((n & 4) && (n & 2))
-			{
-				LD_DP3_INC(x, 2, vx0, vx1, vx2);
-				LD_DP3_INC(y, 2, vy0, vy1, vy2);
-
-                dot0 += (vy0 * vx0);
-                dot0 += (vy1 * vx1);
-                dot0 += (vy2 * vx2);
-			}
-            else if (n & 8)
+            if (n & 8)
             {
-				LD_DP4_INC(x, 2, vx0, vx1, vx2, vx3);
-				LD_DP4_INC(y, 2, vy0, vy1, vy2, vy3);
+                LD_DP4_INC(x, 2, vx0, vx1, vx2, vx3);
+                LD_DP4_INC(y, 2, vy0, vy1, vy2, vy3);
 
                 dot0 += (vy0 * vx0);
-                dot0 += (vy1 * vx1);
-                dot0 += (vy2 * vx2);
-                dot0 += (vy3 * vx3);
+                dot1 += (vy1 * vx1);
+                dot2 += (vy2 * vx2);
+                dot3 += (vy3 * vx3);
             }
-            else if (n & 4)
+
+            if (n & 4)
             {
-				LD_DP2_INC(x, 2, vx0, vx1);
-				LD_DP2_INC(y, 2, vy0, vy1);
+                LD_DP2_INC(x, 2, vx0, vx1);
+                LD_DP2_INC(y, 2, vy0, vy1);
 
                 dot0 += (vy0 * vx0);
-                dot0 += (vy1 * vx1);
+                dot1 += (vy1 * vx1);
             }
-            else if (n & 2)
+
+            if (n & 2)
             {
                 vx0 = LD_DP(x); x += 2;
                 vy0 = LD_DP(y); y += 2;
@@ -142,6 +112,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
                 dot += (y0 * x0);
             }
         }
+
+        dot0 += dot1 + dot2 + dot3;
 
         dot += dot0[0];
         dot += dot0[1];
@@ -159,16 +131,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
             dot += (y3 * x3);
         }
 
-        if ((n & 2) && (n & 1))
-        {
-            LD_GP3_INC(x, inc_x, x0, x1, x2);
-            LD_GP3_INC(y, inc_y, y0, y1, y2);
-
-            dot += (y0 * x0);
-            dot += (y1 * x1);
-            dot += (y2 * x2);
-        }
-        else if (n & 2)
+        if (n & 2)
         {
             LD_GP2_INC(x, inc_x, x0, x1);
             LD_GP2_INC(y, inc_y, y0, y1);
@@ -176,7 +139,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
             dot += (y0 * x0);
             dot += (y1 * x1);
         }
-        else if (n & 1)
+
+        if (n & 1)
         {
             x0 = *x;
             y0 = *y;
