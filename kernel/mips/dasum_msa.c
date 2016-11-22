@@ -36,40 +36,51 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
     BLASLONG i;
     FLOAT sumf = 0.0;
     v2f64 src0, src1, src2, src3, src4, src5, src6, src7;
-    v2f64 sum_abs0, sum_abs1, sum_abs2, sum_abs3;
-    v2f64 zero_v = {0};
+    v2f64 src8, src9, src10, src11, src12, src13, src14, src15;
+    v2f64 sum_abs0 = {0, 0};
+    v2f64 sum_abs1 = {0, 0};
+    v2f64 sum_abs2 = {0, 0};
+    v2f64 sum_abs3 = {0, 0};
     v2i64 and_vec = {0x7FFFFFFFFFFFFFFF, 0x7FFFFFFFFFFFFFFF};
 
     if (n <= 0 || inc_x <= 0) return (sumf);
 
     if (1 == inc_x)
     {
-        if (n > 15)
+#ifdef ENABLE_PREFETCH
+        FLOAT *x_pref;
+        BLASLONG pref_offset;
+
+        pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
+        if (pref_offset > 0)
         {
-            n -= 16;
+            pref_offset = L1_DATA_LINESIZE - pref_offset;
+        }
+        pref_offset = pref_offset / sizeof(FLOAT);
+        x_pref = x + pref_offset + 64;
+#endif
+
+        for (i = (n >> 5); i--;)
+        {
+#ifdef ENABLE_PREFETCH
+            __asm__ __volatile__(
+                "pref   0,     0(%[x_pref])\n\t"
+                "pref   0,    32(%[x_pref])\n\t"
+                "pref   0,    64(%[x_pref])\n\t"
+                "pref   0,    96(%[x_pref])\n\t"
+                "pref   0,   128(%[x_pref])\n\t"
+                "pref   0,   160(%[x_pref])\n\t"
+                "pref   0,   192(%[x_pref])\n\t"
+                "pref   0,   224(%[x_pref])\n\t"
+
+                : : [x_pref] "r" (x_pref)
+            );
+
+            x_pref += 32;
+#endif
 
             LD_DP8_INC(x, 2, src0, src1, src2, src3, src4, src5, src6, src7);
-
-            sum_abs0 = AND_VEC_D(src0);
-            sum_abs1 = AND_VEC_D(src1);
-            sum_abs2 = AND_VEC_D(src2);
-            sum_abs3 = AND_VEC_D(src3);
-            sum_abs0 += AND_VEC_D(src4);
-            sum_abs1 += AND_VEC_D(src5);
-            sum_abs2 += AND_VEC_D(src6);
-            sum_abs3 += AND_VEC_D(src7);
-        }
-        else
-        {
-            sum_abs0 = zero_v;
-            sum_abs1 = zero_v;
-            sum_abs2 = zero_v;
-            sum_abs3 = zero_v;
-        }
-
-        for (i = (n >> 4); i--;)
-        {
-            LD_DP8_INC(x, 2, src0, src1, src2, src3, src4, src5, src6, src7);
+            LD_DP8_INC(x, 2, src8, src9, src10, src11, src12, src13, src14, src15);
 
             sum_abs0 += AND_VEC_D(src0);
             sum_abs1 += AND_VEC_D(src1);
@@ -79,13 +90,21 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             sum_abs1 += AND_VEC_D(src5);
             sum_abs2 += AND_VEC_D(src6);
             sum_abs3 += AND_VEC_D(src7);
+            sum_abs0 += AND_VEC_D(src8);
+            sum_abs1 += AND_VEC_D(src9);
+            sum_abs2 += AND_VEC_D(src10);
+            sum_abs3 += AND_VEC_D(src11);
+            sum_abs0 += AND_VEC_D(src12);
+            sum_abs1 += AND_VEC_D(src13);
+            sum_abs2 += AND_VEC_D(src14);
+            sum_abs3 += AND_VEC_D(src15);
         }
 
-        if (n & 15)
+        if (n & 31)
         {
-            if ((n & 8) && (n & 4) && (n & 2))
+            if (n & 16)
             {
-                LD_DP7_INC(x, 2, src0, src1, src2, src3, src4, src5, src6);
+                LD_DP8_INC(x, 2, src0, src1, src2, src3, src4, src5, src6, src7);
 
                 sum_abs0 += AND_VEC_D(src0);
                 sum_abs1 += AND_VEC_D(src1);
@@ -94,37 +113,10 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 sum_abs0 += AND_VEC_D(src4);
                 sum_abs1 += AND_VEC_D(src5);
                 sum_abs2 += AND_VEC_D(src6);
+                sum_abs3 += AND_VEC_D(src7);
             }
-            else if ((n & 8) && (n & 4))
-            {
-                LD_DP6_INC(x, 2, src0, src1, src2, src3, src4, src5);
 
-                sum_abs0 += AND_VEC_D(src0);
-                sum_abs1 += AND_VEC_D(src1);
-                sum_abs2 += AND_VEC_D(src2);
-                sum_abs3 += AND_VEC_D(src3);
-                sum_abs0 += AND_VEC_D(src4);
-                sum_abs1 += AND_VEC_D(src5);
-            }
-            else if ((n & 8) && (n & 2))
-            {
-                LD_DP5_INC(x, 2, src0, src1, src2, src3, src4);
-
-                sum_abs0 += AND_VEC_D(src0);
-                sum_abs1 += AND_VEC_D(src1);
-                sum_abs2 += AND_VEC_D(src2);
-                sum_abs3 += AND_VEC_D(src3);
-                sum_abs0 += AND_VEC_D(src4);
-            }
-            else if ((n & 4) && (n & 2))
-            {
-                LD_DP3_INC(x, 2, src0, src1, src2);
-
-                sum_abs0 += AND_VEC_D(src0);
-                sum_abs1 += AND_VEC_D(src1);
-                sum_abs2 += AND_VEC_D(src2);
-            }
-            else if (n & 8)
+            if (n & 8)
             {
                 LD_DP4_INC(x, 2, src0, src1, src2, src3);
 
@@ -133,64 +125,38 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 sum_abs2 += AND_VEC_D(src2);
                 sum_abs3 += AND_VEC_D(src3);
             }
-            else if (n & 4)
+
+            if (n & 4)
             {
                 LD_DP2_INC(x, 2, src0, src1);
 
                 sum_abs0 += AND_VEC_D(src0);
                 sum_abs1 += AND_VEC_D(src1);
             }
-            else if (n & 2)
+
+            if (n & 2)
             {
                 src0 = LD_DP(x); x += 2;
 
                 sum_abs0 += AND_VEC_D(src0);
             }
 
-            sum_abs0 = sum_abs0 + sum_abs1 + sum_abs2 + sum_abs3;
-
-            sumf = sum_abs0[0] + sum_abs0[1];
-
             if (n & 1)
             {
                 sumf += fabs(*x);
             }
         }
-        else
-        {
-            sum_abs0 = sum_abs0 + sum_abs1 + sum_abs2 + sum_abs3;
 
-            sumf = sum_abs0[0] + sum_abs0[1];
-        }
+        sum_abs0 += sum_abs1 + sum_abs2 + sum_abs3;
+
+        sumf += sum_abs0[0] + sum_abs0[1];
     }
     else
     {
-        if (n > 8)
-        {
-            n -= 8;
-
-            LD_DP8_INC(x, inc_x, src0, src1, src2, src3, src4, src5, src6, src7);
-
-            sum_abs0 = AND_VEC_D(src0);
-            sum_abs1 = AND_VEC_D(src1);
-            sum_abs2 = AND_VEC_D(src2);
-            sum_abs3 = AND_VEC_D(src3);
-            sum_abs0 += AND_VEC_D(src4);
-            sum_abs1 += AND_VEC_D(src5);
-            sum_abs2 += AND_VEC_D(src6);
-            sum_abs3 += AND_VEC_D(src7);
-        }
-        else
-        {
-            sum_abs0 = zero_v;
-            sum_abs1 = zero_v;
-            sum_abs2 = zero_v;
-            sum_abs3 = zero_v;
-        }
-
-        for (i = (n >> 3); i--;)
+        for (i = (n >> 4); i--;)
         {
             LD_DP8_INC(x, inc_x, src0, src1, src2, src3, src4, src5, src6, src7);
+            LD_DP8_INC(x, inc_x, src8, src9, src10, src11, src12, src13, src14, src15);
 
             sum_abs0 += AND_VEC_D(src0);
             sum_abs1 += AND_VEC_D(src1);
@@ -200,13 +166,21 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             sum_abs1 += AND_VEC_D(src5);
             sum_abs2 += AND_VEC_D(src6);
             sum_abs3 += AND_VEC_D(src7);
+            sum_abs0 += AND_VEC_D(src8);
+            sum_abs1 += AND_VEC_D(src9);
+            sum_abs2 += AND_VEC_D(src10);
+            sum_abs3 += AND_VEC_D(src11);
+            sum_abs0 += AND_VEC_D(src12);
+            sum_abs1 += AND_VEC_D(src13);
+            sum_abs2 += AND_VEC_D(src14);
+            sum_abs3 += AND_VEC_D(src15);
         }
 
-        if (n & 7)
+        if (n & 15)
         {
-            if ((n & 4) && (n & 2) && (n & 1))
+            if (n & 8)
             {
-                LD_DP7_INC(x, inc_x, src0, src1, src2, src3, src4, src5, src6);
+                LD_DP8_INC(x, inc_x, src0, src1, src2, src3, src4, src5, src6, src7);
 
                 sum_abs0 += AND_VEC_D(src0);
                 sum_abs1 += AND_VEC_D(src1);
@@ -215,37 +189,10 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 sum_abs0 += AND_VEC_D(src4);
                 sum_abs1 += AND_VEC_D(src5);
                 sum_abs2 += AND_VEC_D(src6);
+                sum_abs3 += AND_VEC_D(src7);
             }
-            else if ((n & 4) && (n & 2))
-            {
-                LD_DP6_INC(x, inc_x, src0, src1, src2, src3, src4, src5);
 
-                sum_abs0 += AND_VEC_D(src0);
-                sum_abs1 += AND_VEC_D(src1);
-                sum_abs2 += AND_VEC_D(src2);
-                sum_abs3 += AND_VEC_D(src3);
-                sum_abs0 += AND_VEC_D(src4);
-                sum_abs1 += AND_VEC_D(src5);
-            }
-            else if ((n & 4) && (n & 1))
-            {
-                LD_DP5_INC(x, inc_x, src0, src1, src2, src3, src4);
-
-                sum_abs0 += AND_VEC_D(src0);
-                sum_abs1 += AND_VEC_D(src1);
-                sum_abs2 += AND_VEC_D(src2);
-                sum_abs3 += AND_VEC_D(src3);
-                sum_abs0 += AND_VEC_D(src4);
-            }
-            else if ((n & 2) && (n & 1))
-            {
-                LD_DP3_INC(x, inc_x, src0, src1, src2);
-
-                sum_abs0 += AND_VEC_D(src0);
-                sum_abs1 += AND_VEC_D(src1);
-                sum_abs2 += AND_VEC_D(src2);
-            }
-            else if (n & 4)
+            if (n & 4)
             {
                 LD_DP4_INC(x, inc_x, src0, src1, src2, src3);
 
@@ -254,14 +201,16 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 sum_abs2 += AND_VEC_D(src2);
                 sum_abs3 += AND_VEC_D(src3);
             }
-            else if (n & 2)
+
+            if (n & 2)
             {
                 LD_DP2_INC(x, inc_x, src0, src1);
 
                 sum_abs0 += AND_VEC_D(src0);
                 sum_abs1 += AND_VEC_D(src1);
             }
-            else if (n & 1)
+
+            if (n & 1)
             {
                 src0 = LD_DP(x);
 
@@ -269,7 +218,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             }
         }
 
-        sum_abs0 = sum_abs0 + sum_abs1 + sum_abs2 + sum_abs3;
+        sum_abs0 += sum_abs1 + sum_abs2 + sum_abs3;
 
         sumf = sum_abs0[0];
     }
