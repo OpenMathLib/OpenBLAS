@@ -28,7 +28,7 @@
 ******************************************************************************
 * Contents: Native middle-level C interface to LAPACK function dtprfb
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -39,7 +39,7 @@ lapack_int LAPACKE_dtprfb_work( int matrix_layout, char side, char trans,
                                 const double* v, lapack_int ldv,
                                 const double* t, lapack_int ldt, double* a,
                                 lapack_int lda, double* b, lapack_int ldb,
-                                const double* work, lapack_int ldwork )
+                                double* work, lapack_int ldwork )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {

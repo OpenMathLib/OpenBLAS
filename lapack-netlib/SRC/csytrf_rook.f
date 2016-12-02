@@ -146,7 +146,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complexSYcomputational
 *
@@ -195,7 +195,7 @@
 *>
 *> \verbatim
 *>
-*>   November 2015, Igor Kozachenko,
+*>   June 2016, Igor Kozachenko,
 *>                  Computer Science Division,
 *>                  University of California, Berkeley
 *>
@@ -208,10 +208,10 @@
 *  =====================================================================
       SUBROUTINE CSYTRF_ROOK( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -261,7 +261,7 @@
 *        Determine the block size
 *
          NB = ILAENV( 1, 'CSYTRF_ROOK', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
+         LWKOPT = MAX( 1, N*NB )
          WORK( 1 ) = LWKOPT
       END IF
 *

@@ -170,7 +170,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16GEsolve
 *
@@ -178,10 +178,10 @@
       SUBROUTINE ZGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -285,8 +285,8 @@
 *              Path 1 - overdetermined or exactly determined
 *
 *              Compute space needed for ZGEBRD
-               CALL ZGEBRD( MM, N, A, LDA, S, DUM(1), DUM(1),
-     $                      DUM(1), DUM(1), -1, INFO )
+               CALL ZGEBRD( MM, N, A, LDA, S, S, DUM(1), DUM(1), DUM(1),
+     $                      -1, INFO )
                LWORK_ZGEBRD=DUM(1)
 *              Compute space needed for ZUNMBR
                CALL ZUNMBR( 'Q', 'L', 'C', MM, NRHS, N, A, LDA, DUM(1),
@@ -315,8 +315,8 @@
      $                -1, INFO )
                   LWORK_ZGELQF=DUM(1)
 *                 Compute space needed for ZGEBRD
-                  CALL ZGEBRD( M, M, A, LDA, S, DUM(1), DUM(1),
-     $                      DUM(1), DUM(1), -1, INFO )
+                  CALL ZGEBRD( M, M, A, LDA, S, S, DUM(1), DUM(1),
+     $                         DUM(1), -1, INFO )
                   LWORK_ZGEBRD=DUM(1)
 *                 Compute space needed for ZUNMBR
                   CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, N, A, LDA, 
@@ -346,8 +346,8 @@
 *                 Path 2 - underdetermined
 *
 *                 Compute space needed for ZGEBRD
-                  CALL ZGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
-     $                      DUM(1), DUM(1), -1, INFO )
+                  CALL ZGEBRD( M, N, A, LDA, S, S, DUM(1), DUM(1),
+     $                         DUM(1), -1, INFO )
                   LWORK_ZGEBRD=DUM(1)
 *                 Compute space needed for ZUNMBR
                   CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, M, A, LDA, 

@@ -60,7 +60,7 @@
 *>
 *>    The first stage consists of deflating the size of the problem
 *>    when there are multiple singular values or when there are zeros in
-*>    the Z vector.  For each such occurence the dimension of the
+*>    the Z vector.  For each such occurrence the dimension of the
 *>    secular equation problem is reduced by one.  This stage is
 *>    performed by the routine DLASD2.
 *>
@@ -156,7 +156,7 @@
 *>         The leading dimension of the array VT.  LDVT >= max( 1, M ).
 *> \endverbatim
 *>
-*> \param[out] IDXQ
+*> \param[in,out] IDXQ
 *> \verbatim
 *>          IDXQ is INTEGER array, dimension(N)
 *>         This contains the permutation which will reintegrate the
@@ -190,7 +190,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup auxOTHERauxiliary
 *
@@ -204,10 +204,10 @@
       SUBROUTINE DLASD1( NL, NR, SQRE, D, ALPHA, BETA, U, LDU, VT, LDVT,
      $                   IDXQ, IWORK, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.6.0) --
+*  -- LAPACK auxiliary routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDU, LDVT, NL, NR, SQRE

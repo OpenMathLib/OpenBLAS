@@ -170,7 +170,7 @@
 *>               -3 : failure of CGETRF
 *>               -31: stop the iterative refinement after the 30th
 *>                    iterations
-*>          > 0: iterative refinement has been sucessfully used.
+*>          > 0: iterative refinement has been successfully used.
 *>               Returns the number of iterations
 *> \endverbatim
 *>
@@ -193,7 +193,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16GEsolve
 *
@@ -201,10 +201,10 @@
       SUBROUTINE ZCGESV( N, NRHS, A, LDA, IPIV, B, LDB, X, LDX, WORK,
      $                   SWORK, RWORK, ITER, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, ITER, LDA, LDB, LDX, N, NRHS

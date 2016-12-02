@@ -81,7 +81,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/lapacke-config-install.cmake.in
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/lapacke-config.cmake
   ${LAPACK_BINARY_DIR}/lapacke-config-version.cmake
-  DESTINATION lib/cmake/lapacke-${LAPACK_VERSION}
+  DESTINATION ${LIBRARY_DIR}/cmake/lapacke-${LAPACK_VERSION}
   )
 
 install(EXPORT lapacke-targets

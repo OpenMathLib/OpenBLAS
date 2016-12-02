@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dgejsv
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -70,7 +70,7 @@ lapack_int LAPACKE_dgejsv( int matrix_layout, char joba, char jobu, char jobv,
                        ( LAPACKE_lsame( jobv, 'v' ) ||
                        LAPACKE_lsame( jobv, 'j' ) ) &&
                        LAPACKE_lsame( jobv, 'j' ) ? MAX(7,m+3*n+n*n) :
-                       1) ) ) ) ) );
+                       7) ) ) ) ) );
     lapack_int* iwork = NULL;
     double* work = NULL;
     lapack_int i;
@@ -86,24 +86,24 @@ lapack_int LAPACKE_dgejsv( int matrix_layout, char joba, char jobu, char jobv,
     if( LAPACKE_dge_nancheck( matrix_layout, m, n, a, lda ) ) {
         return -10;
     }
-    if( LAPACKE_lsame( jobu, 'f' ) || LAPACKE_lsame( jobu, 'u' ) ||
-        LAPACKE_lsame( jobu, 'w' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, nu, n, u, ldu ) ) {
-            return -13;
-        }
-    }
-    if( LAPACKE_lsame( jobv, 'j' ) || LAPACKE_lsame( jobv, 'v' ) ||
-        LAPACKE_lsame( jobv, 'w' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, nv, n, v, ldv ) ) {
-            return -15;
-        }
-    }
 #endif
     /* Allocate memory for working array(s) */
-    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * MAX(1,m+3*n) );
+    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * MAX(3,m+3*n) );
     if( iwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
+    }
+    lwork = MAX3( lwork, 7, 2*m+n );
+    { /* FIXUP LWORK */
+        int want_u = LAPACKE_lsame( jobu, 'u' ) || LAPACKE_lsame( jobu, 'f' );
+        int want_v = LAPACKE_lsame( jobv, 'v' ) || LAPACKE_lsame( jobv, 'j' );
+        int want_sce = LAPACKE_lsame( joba, 'e' ) || LAPACKE_lsame( joba, 'g' );
+        if( !want_u && !want_v && !want_sce )  lwork = MAX( lwork, 4*n+1 ); // 1.1
+        if( !want_u && !want_v && want_sce )   lwork = MAX( lwork, n*n+4*n ); // 1.2
+        if( !want_u && want_v ) lwork = MAX( lwork, 4*n+1 ); // 2
+        if( want_u && !want_v ) lwork = MAX( lwork, 4*n+1 ); // 3
+        if( want_u && LAPACKE_lsame( jobv, 'v' ) ) lwork = MAX( lwork, 6*n+2*n*n ); // 4.1
+        if( want_u && LAPACKE_lsame( jobv, 'j' ) ) lwork = MAX3( lwork, 4*n+n*n, 2*n+n*n+6 ); // 4.2
     }
     work = (double*)LAPACKE_malloc( sizeof(double) * lwork );
     if( work == NULL ) {

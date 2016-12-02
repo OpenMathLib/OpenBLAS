@@ -203,7 +203,7 @@
       SUBROUTINE DORBDB1( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2012
@@ -304,9 +304,8 @@
      $                  X11(I+1,I+1), LDX11, WORK(ILARF) )
             CALL DLARF( 'R', M-P-I, Q-I, X21(I,I+1), LDX21, TAUQ1(I),
      $                  X21(I+1,I+1), LDX21, WORK(ILARF) )
-            C = SQRT( DNRM2( P-I, X11(I+1,I+1), 1, X11(I+1,I+1),
-     $          1 )**2 + DNRM2( M-P-I, X21(I+1,I+1), 1, X21(I+1,I+1),
-     $          1 )**2 )
+            C = SQRT( DNRM2( P-I, X11(I+1,I+1), 1 )**2
+     $          + DNRM2( M-P-I, X21(I+1,I+1), 1 )**2 )
             PHI(I) = ATAN2( S, C )
             CALL DORBDB5( P-I, M-P-I, Q-I-1, X11(I+1,I+1), 1,
      $                    X21(I+1,I+1), 1, X11(I+1,I+2), LDX11,

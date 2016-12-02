@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function ssbtrd
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -48,7 +48,7 @@ lapack_int LAPACKE_ssbtrd( int matrix_layout, char vect, char uplo, lapack_int n
     if( LAPACKE_ssb_nancheck( matrix_layout, uplo, n, kd, ab, ldab ) ) {
         return -6;
     }
-    if( LAPACKE_lsame( vect, 'u' ) || LAPACKE_lsame( vect, 'v' ) ) {
+    if( LAPACKE_lsame( vect, 'u' ) ) {
         if( LAPACKE_sge_nancheck( matrix_layout, n, n, q, ldq ) ) {
             return -10;
         }

@@ -405,7 +405,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -415,10 +415,10 @@
      $                   Y, Z, Q, LDQ, PT, LDPT, U, VT, WORK, LWORK,
      $                   RWORK, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDPT, LDQ, LDX, LWORK, NOUT, NRHS,
@@ -466,9 +466,10 @@
       EXTERNAL           SLAMCH, SLARND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASUM, CBDSQR, CBDT01, CBDT02, CBDT03, CGEBRD,
-     $                   CGEMM, CLACPY, CLASET, CLATMR, CLATMS, CUNGBR,
-     $                   CUNT01, SCOPY, SLABAD, SLAHD2, SSVDCH, XERBLA
+      EXTERNAL           ALASUM, CBDSQR, CBDT01, CBDT02, CBDT03,
+     $                   CGEBRD, CGEMM, CLACPY, CLASET, CLATMR, 
+     $                   CLATMS, CUNGBR, CUNT01, SCOPY, SLABAD,
+     $                   SLAHD2, SSVDCH, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, EXP, INT, LOG, MAX, MIN, SQRT
@@ -483,9 +484,9 @@
       COMMON             / SRNAMC / SRNAMT
 *     ..
 *     .. Data statements ..
-      DATA               KTYPE / 1, 2, 5*4, 5*6, 3*9, 10 /
-      DATA               KMAGN / 2*1, 3*1, 2, 3, 3*1, 2, 3, 1, 2, 3, 0 /
-      DATA               KMODE / 2*0, 4, 3, 1, 4, 4, 4, 3, 1, 4, 4, 0,
+      DATA            KTYPE / 1, 2, 5*4, 5*6, 3*9, 10 /
+      DATA            KMAGN / 2*1, 3*1, 2, 3, 3*1, 2, 3, 1, 2, 3, 0 /
+      DATA            KMODE / 2*0, 4, 3, 1, 4, 4, 4, 3, 1, 4, 4, 0,
      $                   0, 0, 0 /
 *     ..
 *     .. Executable Statements ..

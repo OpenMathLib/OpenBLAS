@@ -276,7 +276,9 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
+*
+*  @precisions fortran z -> c
 *
 *> \ingroup complex16GEeigen
 *
@@ -284,11 +286,12 @@
       SUBROUTINE ZGEEVX( BALANC, JOBVL, JOBVR, SENSE, N, A, LDA, W, VL,
      $                   LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM, RCONDE,
      $                   RCONDV, WORK, LWORK, RWORK, INFO )
+      implicit none
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
@@ -312,8 +315,8 @@
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR, WNTSNB, WNTSNE,
      $                   WNTSNN, WNTSNV
       CHARACTER          JOB, SIDE
-      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K, MAXWRK,
-     $                   MINWRK, NOUT
+      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K,
+     $                   LWORK_TREVC, MAXWRK, MINWRK, NOUT
       DOUBLE PRECISION   ANRM, BIGNUM, CSCALE, EPS, SCL, SMLNUM
       COMPLEX*16         TMP
 *     ..
@@ -323,7 +326,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLABAD, DLASCL, XERBLA, ZDSCAL, ZGEBAK, ZGEBAL,
-     $                   ZGEHRD, ZHSEQR, ZLACPY, ZLASCL, ZSCAL, ZTREVC,
+     $                   ZGEHRD, ZHSEQR, ZLACPY, ZLASCL, ZSCAL, ZTREVC3,
      $                   ZTRSNA, ZUNGHR
 *     ..
 *     .. External Functions ..
@@ -333,7 +336,7 @@
       EXTERNAL           LSAME, IDAMAX, ILAENV, DLAMCH, DZNRM2, ZLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DCMPLX, DCONJG, DIMAG, MAX, SQRT
+      INTRINSIC          DBLE, DCMPLX, CONJG, AIMAG, MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -387,9 +390,19 @@
             MAXWRK = N + N*ILAENV( 1, 'ZGEHRD', ' ', N, 1, N, 0 )
 *
             IF( WANTVL ) THEN
+               CALL ZTREVC3( 'L', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, RWORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, LWORK_TREVC )
                CALL ZHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VL, LDVL,
      $                WORK, -1, INFO )
             ELSE IF( WANTVR ) THEN
+               CALL ZTREVC3( 'R', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, RWORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, LWORK_TREVC )
                CALL ZHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VR, LDVR,
      $                WORK, -1, INFO )
             ELSE
@@ -401,7 +414,7 @@
      $                WORK, -1, INFO )
                END IF
             END IF
-            HSWORK = WORK( 1 )
+            HSWORK = INT( WORK(1) )
 *
             IF( ( .NOT.WANTVL ) .AND. ( .NOT.WANTVR ) ) THEN
                MINWRK = 2*N
@@ -559,19 +572,20 @@
      $                WORK( IWRK ), LWORK-IWRK+1, INFO )
       END IF
 *
-*     If INFO > 0 from ZHSEQR, then quit
+*     If INFO .NE. 0 from ZHSEQR, then quit
 *
-      IF( INFO.GT.0 )
+      IF( INFO.NE.0 )
      $   GO TO 50
 *
       IF( WANTVL .OR. WANTVR ) THEN
 *
 *        Compute left and/or right eigenvectors
-*        (CWorkspace: need 2*N)
+*        (CWorkspace: need 2*N, prefer N + 2*N*NB)
 *        (RWorkspace: need N)
 *
-         CALL ZTREVC( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
-     $                N, NOUT, WORK( IWRK ), RWORK, IERR )
+         CALL ZTREVC3( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
+     $                 N, NOUT, WORK( IWRK ), LWORK-IWRK+1,
+     $                 RWORK, N, IERR )
       END IF
 *
 *     Compute condition numbers if desired
@@ -598,10 +612,10 @@
             CALL ZDSCAL( N, SCL, VL( 1, I ), 1 )
             DO 10 K = 1, N
                RWORK( K ) = DBLE( VL( K, I ) )**2 +
-     $                      DIMAG( VL( K, I ) )**2
+     $                      AIMAG( VL( K, I ) )**2
    10       CONTINUE
             K = IDAMAX( N, RWORK, 1 )
-            TMP = DCONJG( VL( K, I ) ) / SQRT( RWORK( K ) )
+            TMP = CONJG( VL( K, I ) ) / SQRT( RWORK( K ) )
             CALL ZSCAL( N, TMP, VL( 1, I ), 1 )
             VL( K, I ) = DCMPLX( DBLE( VL( K, I ) ), ZERO )
    20    CONTINUE
@@ -621,10 +635,10 @@
             CALL ZDSCAL( N, SCL, VR( 1, I ), 1 )
             DO 30 K = 1, N
                RWORK( K ) = DBLE( VR( K, I ) )**2 +
-     $                      DIMAG( VR( K, I ) )**2
+     $                      AIMAG( VR( K, I ) )**2
    30       CONTINUE
             K = IDAMAX( N, RWORK, 1 )
-            TMP = DCONJG( VR( K, I ) ) / SQRT( RWORK( K ) )
+            TMP = CONJG( VR( K, I ) ) / SQRT( RWORK( K ) )
             CALL ZSCAL( N, TMP, VR( 1, I ), 1 )
             VR( K, I ) = DCMPLX( DBLE( VR( K, I ) ), ZERO )
    40    CONTINUE

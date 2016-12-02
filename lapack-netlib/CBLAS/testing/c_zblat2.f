@@ -1350,7 +1350,7 @@
 *
 *                       Call the subroutine.
 *
-                        IF( SNAME( 4: 5 ).EQ.'mv' )THEN
+                        IF( SNAME( 10: 11 ).EQ.'mv' )THEN
                            IF( FULL )THEN
                               IF( TRACE )
      $                           WRITE( NTRA, FMT = 9993 )NC, SNAME,
@@ -1376,7 +1376,7 @@
                               CALL CZTPMV( IORDER, UPLO, TRANS, DIAG,
      $                                    N, AA, XX, INCX )
                            END IF
-                        ELSE IF( SNAME( 4: 5 ).EQ.'sv' )THEN
+                        ELSE IF( SNAME( 10: 11 ).EQ.'sv' )THEN
                            IF( FULL )THEN
                               IF( TRACE )
      $                           WRITE( NTRA, FMT = 9993 )NC, SNAME,
@@ -1465,7 +1465,7 @@
                         END IF
 *
                         IF( .NOT.NULL )THEN
-                           IF( SNAME( 4: 5 ).EQ.'mv' )THEN
+                           IF( SNAME( 10: 11 ).EQ.'mv' )THEN
 *
 *                             Check the result.
 *
@@ -1473,7 +1473,7 @@
      $                                    INCX, ZERO, Z, INCX, XT, G,
      $                                    XX, EPS, ERR, FATAL, NOUT,
      $                                    .TRUE. )
-                           ELSE IF( SNAME( 4: 5 ).EQ.'sv' )THEN
+                           ELSE IF( SNAME( 10: 11 ).EQ.'sv' )THEN
 *
 *                             Compute approximation to original vector.
 *
@@ -1611,7 +1611,7 @@
 *     .. Common blocks ..
       COMMON             /INFOC/INFOT, NOUTC, OK
 *     .. Executable Statements ..
-      CONJ = SNAME( 5: 5 ).EQ.'c'
+      CONJ = SNAME( 11: 11 ).EQ.'c'
 *     Define the number of arguments.
       NARGS = 9
 *

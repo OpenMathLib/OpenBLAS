@@ -55,7 +55,7 @@
 *> number of matrix "types" are specified.  For each size ("n")
 *> and each type of matrix, a pair of matrices (A, B) will be generated
 *> and used for testing.  For each matrix pair, the following tests
-*> will be performed and compared with the threshhold THRESH.
+*> will be performed and compared with the threshold THRESH.
 *>
 *> Results from CGGEV:
 *>
@@ -389,7 +389,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -399,10 +399,10 @@
      $                   ALPHA, BETA, ALPHA1, BETA1, WORK, LWORK, RWORK,
      $                   RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LDQE, LWORK, NOUNIT, NSIZES,

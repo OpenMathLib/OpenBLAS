@@ -191,7 +191,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -205,10 +205,10 @@
       SUBROUTINE SBDSDC( UPLO, COMPQ, N, D, E, U, LDU, VT, LDVT, Q, IQ,
      $                   WORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, UPLO
@@ -311,7 +311,7 @@
       WSTART = 1
       QSTART = 3
       IF( ICOMPQ.EQ.1 ) THEN
-         CALL SCOPY( N, D, 1, Q( 1 ), 1 )
+         CALL SCOPY( N,   D, 1, Q( 1   ), 1 )
          CALL SCOPY( N-1, E, 1, Q( N+1 ), 1 )
       END IF
       IF( IUPLO.EQ.2 ) THEN
@@ -335,8 +335,11 @@
 *     If ICOMPQ = 0, use SLASDQ to compute the singular values.
 *
       IF( ICOMPQ.EQ.0 ) THEN
+*        Ignore WSTART, instead using WORK( 1 ), since the two vectors
+*        for CS and -SN above are added only if ICOMPQ == 2,
+*        and adding them exceeds documented WORK size of 4*n.
          CALL SLASDQ( 'U', 0, N, 0, 0, 0, D, E, VT, LDVT, U, LDU, U,
-     $                LDU, WORK( WSTART ), INFO )
+     $                LDU, WORK( 1 ), INFO )
          GO TO 40
       END IF
 *

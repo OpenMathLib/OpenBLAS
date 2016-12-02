@@ -28,15 +28,15 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function cgesvdx
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char range,
                            		lapack_int m, lapack_int n, lapack_complex_float* a,
-                          		lapack_int lda, lapack_int vl, lapack_int vu,
-                           		lapack_int il, lapack_int iu, lapack_int ns,
+                          		lapack_int lda, float vl, float vu,
+                           		lapack_int il, lapack_int iu, lapack_int* ns,
                            		float* s, lapack_complex_float* u, lapack_int ldu,
                            		lapack_complex_float* vt, lapack_int ldvt,	
                                 lapack_complex_float* work, lapack_int lwork,
@@ -46,21 +46,23 @@ lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_cgesvdx( &jobu, &jobvt, &range, &m, &n, a, &lda, &vl, &vu,
-            			&il, &iu, &ns, s, u, &ldu, vt, &ldvt,
+            			&il, &iu, ns, s, u, &ldu, vt, &ldvt,
                         work, &lwork, rwork, iwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int nrows_u = ( LAPACKE_lsame( jobu, 'a' ) ||
-                             LAPACKE_lsame( jobu, 's' ) ) ? m : 1;
-        lapack_int ncols_u = LAPACKE_lsame( jobu, 'a' ) ? m :
-                             ( LAPACKE_lsame( jobu, 's' ) ? MIN(m,n) : 1);
-        lapack_int nrows_vt = LAPACKE_lsame( jobvt, 'a' ) ? n :
-                              ( LAPACKE_lsame( jobvt, 's' ) ? MIN(m,n) : 1);
+        lapack_int nrows_u = LAPACKE_lsame( jobu, 'v' ) ? m : 0;
+        lapack_int ncols_u = LAPACKE_lsame( jobu, 'v' ) ?
+                             ( LAPACKE_lsame( range, 'i' ) ? MAX(iu - il + 1, 0) : MIN(m,n)) : 0;
+        lapack_int nrows_vt = LAPACKE_lsame( jobvt, 'v' ) ?
+                             ( LAPACKE_lsame( range, 'i' ) ? MAX(iu - il + 1, 0) : MIN(m,n)) : 0;
+        lapack_int ncols_vt = LAPACKE_lsame( jobvt, 'v' ) ? n : 0;
+
         lapack_int lda_t = MAX(1,m);
         lapack_int ldu_t = MAX(1,nrows_u);
         lapack_int ldvt_t = MAX(1,nrows_vt);
+
         lapack_complex_float* a_t = NULL;
         lapack_complex_float* u_t = NULL;
         lapack_complex_float* vt_t = NULL;
@@ -75,7 +77,7 @@ lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
             LAPACKE_xerbla( "LAPACKE_cgesvdx_work", info );
             return info;
         }
-        if( ldvt < n ) {
+        if( ldvt < ncols_vt ) {
             info = -18;
             LAPACKE_xerbla( "LAPACKE_cgesvdx_work", info );
             return info;
@@ -83,7 +85,7 @@ lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
         /* Query optimal working array(s) size if requested */
         if( lwork == -1 ) {
             LAPACK_cgesvdx( &jobu, &jobvt, &range, &m, &n, a, &lda_t, &vl, &vu,
-            				&il, &iu, &ns, s, u, &ldu_t, vt,
+            				&il, &iu, ns, s, u, &ldu_t, vt,
                             &ldvt_t, work, &lwork, rwork, iwork, &info );
             return (info < 0) ? (info - 1) : info;
         }
@@ -94,7 +96,7 @@ lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;
         }
-        if( LAPACKE_lsame( jobu, 'a' ) || LAPACKE_lsame( jobu, 's' ) ) {
+        if( LAPACKE_lsame( jobu, 'v' ) ) {
             u_t = (lapack_complex_float*)
                 LAPACKE_malloc( sizeof(lapack_complex_float) * ldu_t * MAX(1,ncols_u) );
             if( u_t == NULL ) {
@@ -102,7 +104,7 @@ lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
                 goto exit_level_1;
             }
         }
-        if( LAPACKE_lsame( jobvt, 'a' ) || LAPACKE_lsame( jobvt, 's' ) ) {
+        if( LAPACKE_lsame( jobvt, 'v' ) ) {
             vt_t = (lapack_complex_float*)
                 LAPACKE_malloc( sizeof(lapack_complex_float) * ldvt_t * MAX(1,n) );
             if( vt_t == NULL ) {
@@ -113,28 +115,28 @@ lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
         /* Transpose input matrices */
         LAPACKE_cge_trans( matrix_layout, m, n, a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
-        LAPACK_cgesvdx( &jobu, &jobvt, &range, &m, &n, a, &lda_t, &vl, &vu,
-            				&il, &iu, &ns, s, u, &ldu_t, vt,
+        LAPACK_cgesvdx( &jobu, &jobvt, &range, &m, &n, a_t, &lda_t, &vl, &vu,
+            				&il, &iu, ns, s, u_t, &ldu_t, vt_t,
                             &ldvt_t, work, &lwork, rwork, iwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }
         /* Transpose output matrices */
         LAPACKE_cge_trans( LAPACK_COL_MAJOR, m, n, a_t, lda_t, a, lda );
-        if( LAPACKE_lsame( jobu, 'a' ) || LAPACKE_lsame( jobu, 's' ) ) {
+        if( LAPACKE_lsame( jobu, 'v' ) ) {
             LAPACKE_cge_trans( LAPACK_COL_MAJOR, nrows_u, ncols_u, u_t, ldu_t,
                                u, ldu );
         }
-        if( LAPACKE_lsame( jobvt, 'a' ) || LAPACKE_lsame( jobvt, 's' ) ) {
+        if( LAPACKE_lsame( jobvt, 'v' ) ) {
             LAPACKE_cge_trans( LAPACK_COL_MAJOR, nrows_vt, n, vt_t, ldvt_t, vt,
                                ldvt );
         }
         /* Release memory and exit */
-        if( LAPACKE_lsame( jobvt, 'a' ) || LAPACKE_lsame( jobvt, 's' ) ) {
+        if( LAPACKE_lsame( jobvt, 'v' ) ) {
             LAPACKE_free( vt_t );
         }
 exit_level_2:
-        if( LAPACKE_lsame( jobu, 'a' ) || LAPACKE_lsame( jobu, 's' ) ) {
+        if( LAPACKE_lsame( jobu, 'v' ) ) {
             LAPACKE_free( u_t );
         }
 exit_level_1:

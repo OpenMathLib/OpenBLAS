@@ -294,7 +294,9 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
+*
+*  @precisions fortran d -> s
 *
 *> \ingroup doubleGEeigen
 *
@@ -302,11 +304,12 @@
       SUBROUTINE DGEEVX( BALANC, JOBVL, JOBVR, SENSE, N, A, LDA, WR, WI,
      $                   VL, LDVL, VR, LDVR, ILO, IHI, SCALE, ABNRM,
      $                   RCONDE, RCONDV, WORK, LWORK, IWORK, INFO )
+      implicit none
 *
-*  -- LAPACK driver routine (version 3.4.2) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
@@ -330,8 +333,8 @@
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR, WNTSNB, WNTSNE,
      $                   WNTSNN, WNTSNV
       CHARACTER          JOB, SIDE
-      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K, MAXWRK,
-     $                   MINWRK, NOUT
+      INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K,
+     $                   LWORK_TREVC, MAXWRK, MINWRK, NOUT
       DOUBLE PRECISION   ANRM, BIGNUM, CS, CSCALE, EPS, R, SCL, SMLNUM,
      $                   SN
 *     ..
@@ -341,7 +344,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLABAD, DLACPY,
-     $                   DLARTG, DLASCL, DORGHR, DROT, DSCAL, DTREVC,
+     $                   DLARTG, DLASCL, DORGHR, DROT, DSCAL, DTREVC3,
      $                   DTRSNA, XERBLA
 *     ..
 *     .. External Functions ..
@@ -366,8 +369,8 @@
       WNTSNE = LSAME( SENSE, 'E' )
       WNTSNV = LSAME( SENSE, 'V' )
       WNTSNB = LSAME( SENSE, 'B' )
-      IF( .NOT.( LSAME( BALANC, 'N' ) .OR. LSAME( BALANC,
-     $    'S' ) .OR. LSAME( BALANC, 'P' ) .OR. LSAME( BALANC, 'B' ) ) )
+      IF( .NOT.( LSAME( BALANC, 'N' ) .OR. LSAME( BALANC, 'S' )
+     $      .OR. LSAME( BALANC, 'P' ) .OR. LSAME( BALANC, 'B' ) ) )
      $     THEN
          INFO = -1
       ELSE IF( ( .NOT.WANTVL ) .AND. ( .NOT.LSAME( JOBVL, 'N' ) ) ) THEN
@@ -406,9 +409,19 @@
             MAXWRK = N + N*ILAENV( 1, 'DGEHRD', ' ', N, 1, N, 0 )
 *
             IF( WANTVL ) THEN
+               CALL DTREVC3( 'L', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, N + LWORK_TREVC )
                CALL DHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VL, LDVL,
      $                WORK, -1, INFO )
             ELSE IF( WANTVR ) THEN
+               CALL DTREVC3( 'R', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, N + LWORK_TREVC )
                CALL DHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VR, LDVR,
      $                WORK, -1, INFO )
             ELSE
@@ -420,7 +433,7 @@
      $                LDVR, WORK, -1, INFO )
                END IF
             END IF
-            HSWORK = WORK( 1 )
+            HSWORK = INT( WORK(1) )
 *
             IF( ( .NOT.WANTVL ) .AND. ( .NOT.WANTVR ) ) THEN
                MINWRK = 2*N
@@ -572,18 +585,18 @@
      $                WORK( IWRK ), LWORK-IWRK+1, INFO )
       END IF
 *
-*     If INFO > 0 from DHSEQR, then quit
+*     If INFO .NE. 0 from DHSEQR, then quit
 *
-      IF( INFO.GT.0 )
+      IF( INFO.NE.0 )
      $   GO TO 50
 *
       IF( WANTVL .OR. WANTVR ) THEN
 *
 *        Compute left and/or right eigenvectors
-*        (Workspace: need 3*N)
+*        (Workspace: need 3*N, prefer N + 2*N*NB)
 *
-         CALL DTREVC( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
-     $                N, NOUT, WORK( IWRK ), IERR )
+         CALL DTREVC3( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
+     $                 N, NOUT, WORK( IWRK ), LWORK-IWRK+1, IERR )
       END IF
 *
 *     Compute condition numbers if desired

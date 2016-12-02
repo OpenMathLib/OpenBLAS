@@ -50,7 +50,7 @@
 *> corresponding the first and last eigenvalues are also know
 *> ``exactly'' (see CLATM6).
 *> For each matrix pair, the following tests will be performed and
-*> compared with the threshhold THRESH.
+*> compared with the threshold THRESH.
 *>
 *> (1) max over all left eigenvalue/-vector pairs (beta/alpha,l) of
 *>
@@ -288,7 +288,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -298,10 +298,10 @@
      $                   S, STRU, DIF, DIFTRU, WORK, LWORK, RWORK,
      $                   IWORK, LIWORK, RESULT, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, INFO, LDA, LIWORK, LWORK, NIN, NOUT,

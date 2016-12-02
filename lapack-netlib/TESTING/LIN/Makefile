@@ -339,3 +339,5 @@ zchkaa.o: zchkaa.f
  
 .f.o: 
 	$(FORTRAN) $(OPTS) -c $< -o $@
+
+.NOTPARALLEL:

@@ -38,7 +38,7 @@
 *> \verbatim
 *>
 *>    CLA_PORCOND_C Computes the infinity norm condition number of
-*>    op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector
+*>    op(A) * inv(diag(C)) where C is a REAL vector
 *> \endverbatim
 *
 *  Arguments:
@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complexPOcomputational
 *
@@ -130,10 +130,10 @@
       REAL FUNCTION CLA_PORCOND_C( UPLO, N, A, LDA, AF, LDAF, C, CAPPLY,
      $                             INFO, WORK, RWORK )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

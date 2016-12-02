@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function dsytri2
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -36,7 +36,7 @@
 lapack_int LAPACKE_dsytri2_work( int matrix_layout, char uplo, lapack_int n,
                                  double* a, lapack_int lda,
                                  const lapack_int* ipiv,
-                                 lapack_complex_double* work, lapack_int lwork )
+                                 double* work, lapack_int lwork )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {

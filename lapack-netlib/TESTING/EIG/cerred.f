@@ -61,17 +61,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
 *  =====================================================================
       SUBROUTINE CERRED( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -100,7 +100,7 @@
      $                   VT( NMAX, NMAX ), W( 10*NMAX ), X( NMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, CGEES, CGEESX, CGEEV, CGEEVX, CGEJSV
+      EXTERNAL           CHKXER, CGEES, CGEESX, CGEEV, CGEEVX, CGEJSV,
      $                   CGESDD, CGESVD
 *     ..
 *     .. External Functions ..
@@ -484,7 +484,7 @@
          CALL CGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO, 
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
-         INFOT = 16
+         INFOT = 17
          CALL CGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO, 
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )

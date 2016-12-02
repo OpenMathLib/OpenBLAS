@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function sorcsd2by1
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -97,8 +97,8 @@ lapack_int LAPACKE_sorcsd2by1_work( int matrix_layout, char jobu1, char jobu2,
         /* Query optimal working array(s) size if requested */
         if( lwork == -1 ) {
             LAPACK_sorcsd2by1( &jobu1, &jobu2, &jobv1t, &m, &p,
-                       &q, x11, &ldx11, x21, &ldx21, 
-                       theta, u1, &ldu1, u2, &ldu2, v1t, &ldv1t, 
+                       &q, x11, &ldx11_t, x21, &ldx21_t,
+                       theta, u1, &ldu1_t, u2, &ldu2_t, v1t, &ldv1t_t,
                        work, &lwork, iwork, &info );
             return (info < 0) ? (info - 1) : info;
         }
@@ -144,8 +144,8 @@ lapack_int LAPACKE_sorcsd2by1_work( int matrix_layout, char jobu1, char jobu2,
                            ldx21_t );
         /* Call LAPACK function and adjust info */
         LAPACK_sorcsd2by1( &jobu1, &jobu2, &jobv1t, &m, &p,
-                       &q, x11, &ldx11, x21, &ldx21, 
-                       theta, u1, &ldu1, u2, &ldu2, v1t, &ldv1t, 
+                       &q, x11_t, &ldx11_t, x21_t, &ldx21_t,
+                       theta, u1_t, &ldu1_t, u2_t, &ldu2_t, v1t_t, &ldv1t_t,
                        work, &lwork, iwork, &info );
         if( info < 0 ) {
             info = info - 1;

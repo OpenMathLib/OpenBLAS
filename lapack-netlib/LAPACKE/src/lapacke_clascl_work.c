@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function slaswp
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -46,7 +46,10 @@ lapack_int LAPACKE_clascl_work( int matrix_layout, char type, lapack_int kl,
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int lda_t = MAX(1,lda);
+        lapack_int nrows_a = LAPACKE_lsame(type, 'b') ? kl + 1 :
+                             LAPACKE_lsame(type, 'q') ? ku + 1 :
+                             LAPACKE_lsame(type, 'z') ? 2 * kl + ku + 1 : m;
+        lapack_int lda_t = MAX(1,nrows_a);
         lapack_complex_float* a_t = NULL;
         /* Check leading dimension(s) */
         if( lda < n ) {
@@ -62,12 +65,14 @@ lapack_int LAPACKE_clascl_work( int matrix_layout, char type, lapack_int kl,
             goto exit_level_0;
         }
         /* Transpose input matrices */
-        LAPACKE_cge_trans( matrix_layout, lda, n, a, lda, a_t, lda_t );
+        LAPACKE_cge_trans( matrix_layout, nrows_a, n, a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
         LAPACK_clascl( &type, &kl, &ku, &cfrom, &cto, &m, &n, a_t, &lda_t, &info);
-        info = 0;  /* LAPACK call is ok! */
+        if( info < 0 ) {
+            info = info - 1;
+        }
         /* Transpose output matrices */
-        LAPACKE_cge_trans( LAPACK_COL_MAJOR, lda, n, a_t, lda_t, a, lda );
+        LAPACKE_cge_trans( LAPACK_COL_MAJOR, nrows_a, n, a_t, lda_t, a, lda );
         /* Release memory and exit */
         LAPACKE_free( a_t );
 exit_level_0:

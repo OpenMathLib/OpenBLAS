@@ -56,7 +56,7 @@
 *>
 *> \param[in] Z
 *> \verbatim
-*>          Z is REAL array, dimension ( 4*N )
+*>          Z is REAL array, dimension ( 4*N0 )
 *>        Z holds the qd array.
 *> \endverbatim
 *>
@@ -135,7 +135,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -151,10 +151,10 @@
       SUBROUTINE SLASQ4( I0, N0, Z, PP, N0IN, DMIN, DMIN1, DMIN2, DN,
      $                   DN1, DN2, TAU, TTYPE, G )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            I0, N0, N0IN, PP, TTYPE

@@ -59,7 +59,7 @@
 *> (need more details on what kind of read-in data are needed).
 *>
 *> For each matrix pair, the following tests will be performed and
-*> compared with the threshhold THRESH except for the tests (7) and (9):
+*> compared with the threshold THRESH except for the tests (7) and (9):
 *>
 *> (1)   | A - Q S Z' | / ( |A| n ulp )
 *>
@@ -340,7 +340,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -349,10 +349,10 @@
      $                   AI, BI, Z, Q, ALPHA, BETA, C, LDC, S, WORK,
      $                   LWORK, RWORK, IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDC, LIWORK, LWORK, NCMAX, NIN,

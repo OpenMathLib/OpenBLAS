@@ -205,6 +205,7 @@
 *> \endverbatim
 *>
 *> \param[in,out] CWORK
+*> \verbatim
 *>          CWORK is COMPLEX array, dimension M+N.
 *>          Used as work space.
 *> \endverbatim
@@ -213,8 +214,10 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          Length of CWORK, LWORK >= M+N.
+*> \endverbatim
 *>
 *> \param[in,out] RWORK
+*> \verbatim
 *>          RWORK is REAL array, dimension max(6,M+N).
 *>          On entry,
 *>          If JOBU .EQ. 'C' :
@@ -244,6 +247,7 @@
 *> \endverbatim
 *>
 *> \param[in] LRWORK
+*> \verbatim
 *>          LRWORK is INTEGER
 *>         Length of RWORK, LRWORK >= MAX(6,N).
 *> \endverbatim
@@ -266,7 +270,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complexGEcomputational
 *
@@ -326,10 +330,10 @@
       SUBROUTINE CGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V, 
      $                   LDV, CWORK, LWORK, RWORK, LRWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
       IMPLICIT NONE 
 *     .. Scalar Arguments ..
@@ -387,7 +391,7 @@
 *     from BLAS
       EXTERNAL           CCOPY, CROT, CSSCAL, CSWAP
 *     from LAPACK
-      EXTERNAL           CLASCL, CLASET, CLASSQ, XERBLA
+      EXTERNAL           CLASCL, CLASET, CLASSQ, SLASCL, XERBLA
       EXTERNAL           CGSVJ0, CGSVJ1
 *     ..
 *     .. Executable Statements ..
@@ -889,7 +893,6 @@
                               END IF
                            END IF
 *
-                           OMPQ = AAPQ / ABS(AAPQ) 
 *                           AAPQ = AAPQ * CONJG( CWORK(p) ) * CWORK(q) 
                            AAPQ1  = -ABS(AAPQ) 
                            MXAAPQ = AMAX1( MXAAPQ, -AAPQ1 )
@@ -909,6 +912,7 @@
 *
                               IF( ROTOK ) THEN
 *
+                                 OMPQ = AAPQ / ABS(AAPQ) 
                                  AQOAP = AAQQ / AAPP
                                  APOAQ = AAPP / AAQQ
                                  THETA = -HALF*ABS( AQOAP-APOAQ )/AAPQ1
@@ -1110,7 +1114,6 @@
                               END IF
                            END IF
 *
-                           OMPQ = AAPQ / ABS(AAPQ) 
 *                           AAPQ = AAPQ * CONJG(CWORK(p))*CWORK(q)   
                            AAPQ1  = -ABS(AAPQ)
                            MXAAPQ = AMAX1( MXAAPQ, -AAPQ1 )
@@ -1125,6 +1128,7 @@
 *
                               IF( ROTOK ) THEN
 *
+                                 OMPQ = AAPQ / ABS(AAPQ) 
                                  AQOAP = AAQQ / AAPP
                                  APOAQ = AAPP / AAQQ
                                  THETA = -HALF*ABS( AQOAP-APOAQ )/ AAPQ1

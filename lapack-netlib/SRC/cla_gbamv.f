@@ -107,7 +107,7 @@
 *>
 *> \param[in] AB
 *> \verbatim
-*>          AB is REAL array, dimension (LDAB,n)
+*>          AB is COMPLEX array, dimension (LDAB,n)
 *>           Before entry, the leading m by n part of the array AB must
 *>           contain the matrix of coefficients.
 *>           Unchanged on exit.
@@ -124,7 +124,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is REAL array, dimension
+*>          X is COMPLEX array, dimension
 *>           ( 1 + ( n - 1 )*abs( INCX ) ) when TRANS = 'N' or 'n'
 *>           and at least
 *>           ( 1 + ( m - 1 )*abs( INCX ) ) otherwise.
@@ -178,7 +178,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complexGBcomputational
 *
@@ -186,10 +186,10 @@
       SUBROUTINE CLA_GBAMV( TRANS, M, N, KL, KU, ALPHA, AB, LDAB, X,
      $                      INCX, BETA, Y, INCY )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       REAL               ALPHA, BETA

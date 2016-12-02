@@ -74,7 +74,7 @@
       SUBROUTINE ZQRT04(M,N,NB,RESULT)
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -89,8 +89,9 @@
 *     ..
 *     .. Local allocatable arrays 
       COMPLEX*16, ALLOCATABLE :: AF(:,:), Q(:,:),
-     $  R(:,:), RWORK(:), WORK( : ), T(:,:), 
+     $  R(:,:), WORK( : ), T(:,:), 
      $  CF(:,:), DF(:,:), A(:,:), C(:,:), D(:,:)
+      DOUBLE PRECISION, ALLOCATABLE :: RWORK(:)
 *
 *     .. Parameters ..
       DOUBLE PRECISION ZERO

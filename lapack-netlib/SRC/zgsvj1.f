@@ -1,4 +1,4 @@
-*> \brief \b ZGSVJ1 pre-processor for the routine sgesvj, applies Jacobi rotations targeting only particular pivots.
+*> \brief \b ZGSVJ1 pre-processor for the routine zgesvj, applies Jacobi rotations targeting only particular pivots.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -105,7 +105,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is DOUBLE PRECISION array, dimension (LDA,N)
+*>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          On entry, M-by-N matrix A, such that A*diag(D) represents
 *>          the input matrix.
 *>          On exit,
@@ -124,7 +124,7 @@
 *>
 *> \param[in,out] D
 *> \verbatim
-*>          D is DOUBLE PRECISION array, dimension (N)
+*>          D is COMPLEX*16 array, dimension (N)
 *>          The array D accumulates the scaling factors from the fast scaled
 *>          Jacobi rotations.
 *>          On entry, A*diag(D) represents the input matrix.
@@ -154,7 +154,7 @@
 *>
 *> \param[in,out] V
 *> \verbatim
-*>          V is DOUBLE PRECISION array, dimension (LDV,N)
+*>          V is COMPLEX*16 array, dimension (LDV,N)
 *>          If JOBV .EQ. 'V' then N rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV .EQ. 'A' then MV rows of V are post-multipled by a
@@ -199,7 +199,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array, dimension (LWORK)
+*>          WORK is COMPLEX*16 array, dimension (LWORK)
 *> \endverbatim
 *>
 *> \param[in] LWORK
@@ -223,7 +223,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -236,10 +236,10 @@
       SUBROUTINE ZGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
      $                   EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
       IMPLICIT NONE 
 *     .. Scalar Arguments ..
@@ -271,7 +271,7 @@
 *     ..
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DCONJG, DMAX1, DFLOAT, MIN0, DSIGN, DSQRT
+      INTRINSIC          ABS, DCONJG, DMAX1, DBLE, MIN0, DSIGN, DSQRT
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DZNRM2
@@ -335,7 +335,7 @@
       SMALL = SFMIN / EPS
       BIG = ONE / SFMIN
       ROOTBIG = ONE / ROOTSFMIN
-      LARGE = BIG / DSQRT( DFLOAT( M*N ) )
+      LARGE = BIG / DSQRT( DBLE( M*N ) )
       BIGTHETA = ONE / ROOTEPS
       ROOTTOL = DSQRT( TOL )
 *
@@ -660,8 +660,8 @@
          IF( ( i.LT.SWBAND ) .AND. ( ( MXAAPQ.LE.ROOTTOL ) .OR.
      $       ( ISWROT.LE.N ) ) )SWBAND = i
 *
-         IF( ( i.GT.SWBAND+1 ) .AND. ( MXAAPQ.LT.DSQRT( DFLOAT( N ) )*
-     $       TOL ) .AND. ( DFLOAT( N )*MXAAPQ*MXSINJ.LT.TOL ) ) THEN
+         IF( ( i.GT.SWBAND+1 ) .AND. ( MXAAPQ.LT.DSQRT( DBLE( N ) )*
+     $       TOL ) .AND. ( DBLE( N )*MXAAPQ*MXSINJ.LT.TOL ) ) THEN
             GO TO 1994
          END IF
 *

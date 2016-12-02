@@ -86,7 +86,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is DOUBLE PRECISION array, dimension (LDB,NRHS)
+*>          B is COMPLEX*16 array, dimension (LDB,NRHS)
 *>          On entry, the right hand side vectors B for the system of
 *>          linear equations.
 *>          On exit, the solution vectors, X.
@@ -106,17 +106,17 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complex16PTcomputational
 *
 *  =====================================================================
       SUBROUTINE ZPTTS2( IUPLO, N, NRHS, D, E, B, LDB )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IUPLO, LDB, N, NRHS

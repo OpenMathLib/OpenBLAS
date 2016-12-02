@@ -14,13 +14,16 @@ lib: lapacklib tmglib
 clean: cleanlib cleantesting cleanblas_testing cleancblas_testing
 
 lapack_install:
-	( cd INSTALL; $(MAKE); )
+	( cd INSTALL; $(MAKE) ) 
+#       MingW build fails if they are executed. 
+#	; ./testlsame; ./testslamch; ./testdlamch; \
+#	./testsecond; ./testdsecnd; ./testieee; ./testversion )
 
 blaslib:
 	( cd BLAS/SRC; $(MAKE) )
 
 cblaslib:
-	( cd CBLAS/src; $(MAKE) )
+	( cd CBLAS; $(MAKE) )
 
 lapacklib:	lapack_install
 	( cd SRC; $(MAKE) )
@@ -116,7 +119,7 @@ cleanblas_testing:
 	( cd BLAS; rm -f xblat* )
 
 cleancblas_testing:
-	( cd CBLAS; $(MAKE) cleanexe )
+	( cd CBLAS/testing; $(MAKE) clean )
 
 cleantesting:
 	( cd TESTING/LIN; $(MAKE) clean )

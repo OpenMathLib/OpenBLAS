@@ -346,7 +346,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup double_eig
 *
@@ -355,10 +355,10 @@
      $                   A, LDA, U, LDU, VT, LDVT, ASAV, USAV, VTSAV, S,
      $                   SSAV, E, WORK, LWORK, IWORK, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUT, NSIZES,
@@ -404,8 +404,8 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, DBDT01, DGEJSV, DGESDD, DGESVD, 
-     $                   DGESVDX, DGESVJ, DLABAD, DLACPY, DLASET, DLATMS,
-     $                   DORT01, DORT03, XERBLA
+     $                   DGESVDX, DGESVJ, DLABAD, DLACPY, DLASET,
+     $                   DLATMS, DORT01, DORT03, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, INT, MAX, MIN
@@ -1141,7 +1141,7 @@
      $      / '21 = | S - Spartial | / ( min(M,N) ulp |S| )', 
      $      / '22 = 0 if S contains min(M,N) nonnegative values in',
      $      ' decreasing order, else 1/ulp',
-     $      / '23 = | A - U diag(S) VT | / ( |A| max(M,N) ulp ),'
+     $      / '23 = | A - U diag(S) VT | / ( |A| max(M,N) ulp ),',
      $      ' DGESVDX(V,V,A) ',
      $      / '24 = | I - U**T U | / ( M ulp ) ',
      $      / '25 = | I - VT VT**T | / ( N ulp ) ',

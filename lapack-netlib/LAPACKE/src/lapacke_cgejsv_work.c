@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function cgejsv
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -46,7 +46,7 @@ lapack_int LAPACKE_cgejsv_work( int matrix_layout, char joba, char jobu,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_cgejsv( &joba, &jobu, &jobv, &jobr, &jobt, &jobp, &m, &n, a,
-                       &lda, sva, u, &ldu, v, &ldv, cwork, &lwork, rwork, &lwork, 
+                       &lda, sva, u, &ldu, v, &ldv, cwork, &lwork, rwork, &lrwork,
                        iwork, &info );
         if( info < 0 ) {
             info = info - 1;
@@ -54,6 +54,8 @@ lapack_int LAPACKE_cgejsv_work( int matrix_layout, char joba, char jobu,
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
         lapack_int nu = LAPACKE_lsame( jobu, 'n' ) ? 1 : m;
         lapack_int nv = LAPACKE_lsame( jobv, 'n' ) ? 1 : n;
+        lapack_int ncols_u = LAPACKE_lsame( jobu, 'n' ) ? 1 :
+            LAPACKE_lsame( jobu, 'f' ) ? m : n;
         lapack_int lda_t = MAX(1,m);
         lapack_int ldu_t = MAX(1,nu);
         lapack_int ldv_t = MAX(1,nv);
@@ -66,7 +68,7 @@ lapack_int LAPACKE_cgejsv_work( int matrix_layout, char joba, char jobu,
             LAPACKE_xerbla( "LAPACKE_cgejsv_work", info );
             return info;
         }
-        if( ldu < n ) {
+        if( ldu < ncols_u ) {
             info = -14;
             LAPACKE_xerbla( "LAPACKE_cgejsv_work", info );
             return info;
@@ -86,7 +88,7 @@ lapack_int LAPACKE_cgejsv_work( int matrix_layout, char joba, char jobu,
         if( LAPACKE_lsame( jobu, 'f' ) || LAPACKE_lsame( jobu, 'u' ) ||
             LAPACKE_lsame( jobu, 'w' ) ) {
             u_t = (lapack_complex_float*)
-               LAPACKE_malloc( sizeof(lapack_complex_float) * ldu_t * MAX(1,n) );
+               LAPACKE_malloc( sizeof(lapack_complex_float) * ldu_t * MAX(1,ncols_u) );
             if( u_t == NULL ) {
                 info = LAPACK_TRANSPOSE_MEMORY_ERROR;
                 goto exit_level_1;
@@ -103,14 +105,6 @@ lapack_int LAPACKE_cgejsv_work( int matrix_layout, char joba, char jobu,
         }
         /* Transpose input matrices */
         LAPACKE_cge_trans( matrix_layout, m, n, a, lda, a_t, lda_t );
-        if( LAPACKE_lsame( jobu, 'f' ) || LAPACKE_lsame( jobu, 'u' ) ||
-            LAPACKE_lsame( jobu, 'w' ) ) {
-            LAPACKE_cge_trans( matrix_layout, nu, n, u, ldu, u_t, ldu_t );
-        }
-        if( LAPACKE_lsame( jobv, 'j' ) || LAPACKE_lsame( jobv, 'v' ) ||
-            LAPACKE_lsame( jobv, 'w' ) ) {
-            LAPACKE_cge_trans( matrix_layout, nv, n, v, ldv, v_t, ldv_t );
-        }
         /* Call LAPACK function and adjust info */
         LAPACK_cgejsv( &joba, &jobu, &jobv, &jobr, &jobt, &jobp, &m, &n, a_t,
                        &lda_t, sva, u_t, &ldu_t, v_t, &ldv_t, cwork, &lwork,
@@ -121,7 +115,7 @@ lapack_int LAPACKE_cgejsv_work( int matrix_layout, char joba, char jobu,
         /* Transpose output matrices */
         if( LAPACKE_lsame( jobu, 'f' ) || LAPACKE_lsame( jobu, 'u' ) ||
             LAPACKE_lsame( jobu, 'w' ) ) {
-            LAPACKE_cge_trans( LAPACK_COL_MAJOR, nu, n, u_t, ldu_t, u, ldu );
+            LAPACKE_cge_trans( LAPACK_COL_MAJOR, nu, ncols_u, u_t, ldu_t, u, ldu );
         }
         if( LAPACKE_lsame( jobv, 'j' ) || LAPACKE_lsame( jobv, 'v' ) ||
             LAPACKE_lsame( jobv, 'w' ) ) {

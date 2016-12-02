@@ -52,7 +52,8 @@
 *> are computed and stored in the arrays U and V, respectively. The diagonal
 *> of [SIGMA] is computed and stored in the array SVA.
 *> DGEJSV can sometimes compute tiny singular values and their singular vectors much
-*> more accurately than other SVD routines, see below under Further Details.*> \endverbatim
+*> more accurately than other SVD routines, see below under Further Details.
+*> \endverbatim
 *
 *  Arguments:
 *  ==========
@@ -236,7 +237,7 @@
 *>                         copied back to the V array. This 'W' option is just
 *>                         a reminder to the caller that in this case U is
 *>                         reserved as workspace of length N*N.
-*>          If JOBU = 'N'  U is not referenced.
+*>          If JOBU = 'N'  U is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDU
@@ -258,7 +259,7 @@
 *>                         copied back to the U array. This 'W' option is just
 *>                         a reminder to the caller that in this case V is
 *>                         reserved as workspace of length N*N.
-*>          If JOBV = 'N'  V is not referenced.
+*>          If JOBV = 'N'  V is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -332,10 +333,10 @@
 *>          If SIGMA and the right singular vectors are needed (JOBV.EQ.'V'),
 *>            -> the minimal requirement is LWORK >= max(2*M+N,4*N+1,7).
 *>            -> For optimal performance, LWORK >= max(2*M+N,3*N+(N+1)*NB,7),
-*>               where NB is the optimal block size for DGEQP3, DGEQRF, DGELQ,
+*>               where NB is the optimal block size for DGEQP3, DGEQRF, DGELQF,
 *>               DORMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(2*M+N,N+LWORK(DGEQP3), N+LWORK(DPOCON), 
-*>                       N+LWORK(DGELQ), 2*N+LWORK(DGEQRF), N+LWORK(DORMLQ)).
+*>                       N+LWORK(DGELQF), 2*N+LWORK(DGEQRF), N+LWORK(DORMLQ)).
 *>
 *>          If SIGMA and the left singular vectors are needed
 *>            -> the minimal requirement is LWORK >= max(2*M+N,4*N+1,7).
@@ -390,7 +391,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup doubleGEsing
 *
@@ -475,10 +476,10 @@
      $                   M, N, A, LDA, SVA, U, LDU, V, LDV,
      $                   WORK, LWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       IMPLICIT    NONE
@@ -589,7 +590,11 @@
 *
 *     Quick return for void matrix (Y3K safe)
 * #:)
-      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) RETURN
+      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) THEN
+         IWORK(1:3) = 0
+         WORK(1:7) = 0
+         RETURN
+      ENDIF
 *
 *     Determine whether the matrix U should be M x N or M x M
 *
@@ -715,6 +720,7 @@
             IWORK(1) = 0
             IWORK(2) = 0
          END IF
+         IWORK(3) = 0
          IF ( ERREST ) WORK(3) = ONE
          IF ( LSVEC .AND. RSVEC ) THEN
             WORK(4) = ONE

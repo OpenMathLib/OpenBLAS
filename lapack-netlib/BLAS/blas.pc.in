@@ -1,9 +1,9 @@
-prefix=@prefix@
-libdir=@libdir@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@
 
 Name: blas
 Description: Basic Linear Algebra Subprograms F77 reference implementations
 Version: @LAPACK_VERSION@
 URL: http://www.netlib.org/blas/
-Libs: -L${libdir} -lblas
+Libs: -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lblas
 Libs.private: -lm

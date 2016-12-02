@@ -201,7 +201,7 @@
       SUBROUTINE ZUNBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2012
@@ -295,8 +295,8 @@
          CALL ZLARF( 'R', M-P-I, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
      $               X21(I+1,I), LDX21, WORK(ILARF) )
          CALL ZLACGV( Q-I+1, X21(I,I), LDX21 )
-         C = SQRT( DZNRM2( P-I+1, X11(I,I), 1, X11(I,I),
-     $       1 )**2 + DZNRM2( M-P-I, X21(I+1,I), 1, X21(I+1,I), 1 )**2 )
+         C = SQRT( DZNRM2( P-I+1, X11(I,I), 1 )**2
+     $           + DZNRM2( M-P-I, X21(I+1,I), 1 )**2 )
          THETA(I) = ATAN2( S, C )
 *
          CALL ZUNBDB5( P-I+1, M-P-I, Q-I, X11(I,I), 1, X21(I+1,I), 1,

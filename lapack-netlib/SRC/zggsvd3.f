@@ -353,7 +353,7 @@
      $                    LDB, ALPHA, BETA, U, LDU, V, LDV, Q, LDQ,
      $                    WORK, LWORK, RWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     August 2015
@@ -383,7 +383,7 @@
       EXTERNAL           LSAME, DLAMCH, ZLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, XERBLA, ZGGSVP, ZTGSJA
+      EXTERNAL           DCOPY, XERBLA, ZGGSVP3, ZTGSJA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN

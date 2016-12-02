@@ -214,7 +214,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup realOTHEReigen
 *
@@ -227,10 +227,10 @@
       SUBROUTINE SSBGVD( JOBZ, UPLO, N, KA, KB, AB, LDAB, BB, LDBB, W,
      $                   Z, LDZ, WORK, LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -338,7 +338,7 @@
       INDWK2 = INDWRK + N*N
       LLWRK2 = LWORK - INDWK2 + 1
       CALL SSBGST( JOBZ, UPLO, N, KA, KB, AB, LDAB, BB, LDBB, Z, LDZ,
-     $             WORK( INDWRK ), IINFO )
+     $             WORK, IINFO )
 *
 *     Reduce to tridiagonal form.
 *

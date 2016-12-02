@@ -87,16 +87,16 @@ lapack_int LAPACKE_cggsvp3_work( int matrix_layout, char jobu, char jobv,
             LAPACKE_xerbla( "LAPACKE_cggsvp3_work", info );
             return info;
         }
-        if( ldv < m ) {
+        if( ldv < p ) {
             info = -19;
             LAPACKE_xerbla( "LAPACKE_cggsvp3_work", info );
             return info;
         }
         /* Query optimal working array(s) size if requested */
         if( lwork == -1 ) {
-          LAPACK_cggsvp3( &jobu, &jobv, &jobq, &m, &p, &n, a_t, &lda_t, b_t,
-                          &ldb_t, &tola, &tolb, k, l, u_t, &ldu_t, v_t, &ldv_t,
-                          q_t, &ldq_t, iwork, rwork, tau, work, &lwork, &info );
+          LAPACK_cggsvp3( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda_t, b,
+                          &ldb_t, &tola, &tolb, k, l, u, &ldu_t, v, &ldv_t,
+                          q, &ldq_t, iwork, rwork, tau, work, &lwork, &info );
           return (info < 0) ? (info - 1) : info;
         }
         /* Allocate memory for temporary array(s) */
@@ -124,7 +124,7 @@ lapack_int LAPACKE_cggsvp3_work( int matrix_layout, char jobu, char jobv,
         if( LAPACKE_lsame( jobv, 'v' ) ) {
             v_t = (lapack_complex_float*)
                 LAPACKE_malloc( sizeof(lapack_complex_float) *
-                                ldv_t * MAX(1,m) );
+                                ldv_t * MAX(1,p) );
             if( v_t == NULL ) {
                 info = LAPACK_TRANSPOSE_MEMORY_ERROR;
                 goto exit_level_3;
@@ -156,7 +156,7 @@ lapack_int LAPACKE_cggsvp3_work( int matrix_layout, char jobu, char jobv,
             LAPACKE_cge_trans( LAPACK_COL_MAJOR, m, m, u_t, ldu_t, u, ldu );
         }
         if( LAPACKE_lsame( jobv, 'v' ) ) {
-            LAPACKE_cge_trans( LAPACK_COL_MAJOR, p, m, v_t, ldv_t, v, ldv );
+            LAPACKE_cge_trans( LAPACK_COL_MAJOR, p, p, v_t, ldv_t, v, ldv );
         }
         if( LAPACKE_lsame( jobq, 'q' ) ) {
             LAPACKE_cge_trans( LAPACK_COL_MAJOR, n, n, q_t, ldq_t, q, ldq );

@@ -55,7 +55,7 @@
 *> number of matrix "types" are specified.  For each size ("n")
 *> and each type of matrix, a pair of matrices (A, B) will be generated
 *> and used for testing.  For each matrix pair, the following tests
-*> will be performed and compared with the threshhold THRESH.
+*> will be performed and compared with the threshold THRESH.
 *>
 *> Results from CGGEV3:
 *>
@@ -399,7 +399,7 @@
      $                    ALPHA, BETA, ALPHA1, BETA1, WORK, LWORK,
      $                    RWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     January 2015

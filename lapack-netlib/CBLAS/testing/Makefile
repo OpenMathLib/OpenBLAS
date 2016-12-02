@@ -41,7 +41,7 @@ all2: stest2 dtest2 ctest2 ztest2
 all3: stest3 dtest3 ctest3 ztest3
 
 clean:
-	rm -f core *.o a.out x*
+	rm -f core *.o *.out x*
 cleanobj:
 	rm -f core *.o a.out 
 cleanexe:
