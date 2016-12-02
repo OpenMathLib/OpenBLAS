@@ -74,7 +74,7 @@ int get_feature(char *search)
   	fclose(infile);
 
 
-	if( p == NULL ) return;
+	if( p == NULL ) return 0;
 
 	t = strtok(p," ");
 	while( t = strtok(NULL," "))
