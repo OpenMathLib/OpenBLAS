@@ -234,6 +234,11 @@ $linker_a = "";
 	    $linker_L .= "-Wl,". $flags . " "
 	    }
 
+	if ($flags =~ /^\--exclude-libs/) {
+	    $linker_L .= "-Wl,". $flags . " ";
+	    $flags="";
+	   }
+
 	if (
 	    ($flags =~ /^\-l/)
 	    && ($flags !~ /gfortranbegin/)
