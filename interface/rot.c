@@ -42,6 +42,16 @@
 #include "functable.h"
 #endif
 
+#ifdef SMP 
+static int rot_threads (BLASLONG m, BLASLONG n, BLASLONG k, float alpha,
+	       float* x, BLASLONG incx, float* y, BLASLONG incy, float* z, BLASLONG incz)
+{
+    ROT_K(m, x, incx, y, incy, n, k);
+    return 0;
+}
+
+#endif
+
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *C, FLOAT *S){
@@ -62,6 +72,11 @@ void CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy, FLOAT c, F
 
 #endif
 
+#ifdef SMP
+  int mode, nthreads;
+  FLOAT dummyalpha[2] = {ZERO, ZERO};
+#endif
+
   if (n <= 0) return;
 
   IDEBUG_START;
@@ -71,7 +86,33 @@ void CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy, FLOAT c, F
   if (incx < 0) x -= (n - 1) * incx;
   if (incy < 0) y -= (n - 1) * incy;
 
+#ifdef SMP
+  nthreads = num_cpu_avail(1);
+
+  //Temporarily work-around the low performance issue with small imput size &
+  //multithreads.
+  if (n <= 100000)
+	  nthreads = 1;
+
+  if (nthreads == 1) {
+#endif
+
   ROT_K(n, x, incx, y, incy, c, s);
+
+#ifdef SMP
+  } else {
+
+#ifndef DOUBLE 
+    mode  =  BLAS_SINGLE | BLAS_REAL;
+#else
+    mode  =  BLAS_DOUBLE | BLAS_REAL;
+#endif
+
+    blas_level1_thread(mode, n, c, s, dummyalpha,
+		       x, incx, y, incy, NULL, 0, (void *)rot_threads, nthreads);
+
+  }
+#endif
 
   FUNCTION_PROFILE_END(1, n, n);
 

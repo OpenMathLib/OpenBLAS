@@ -42,6 +42,24 @@
 #include "functable.h"
 #endif
 
+#ifdef SMP
+static int asum_threads (BLASLONG m, BLASLONG n, BLASLONG k, float alpha,
+	       float* x, BLASLONG incx, float* y, BLASLONG incy, float* z, BLASLONG incz)
+{
+#ifndef CBLAS
+  FLOATRET ret;
+  ret = (FLOATRET)ASUM_K(m, x, incx);
+  *((double *)z) = (double)ret;
+#else
+  FLOAT ret;
+  ret = ASUM_K(m, x, incx);
+  *((double *)z) = (double)ret;
+#endif
+
+  return 0;
+}
+#endif
+
 #ifndef CBLAS
 
 FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
@@ -52,13 +70,61 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
 
   PRINT_DEBUG_NAME;
 
+#ifdef SMP
+  int i;
+  int mode, nthreads;
+  double mid_result= 0.0;
+  FLOAT dummyalpha[2] = {ZERO, ZERO};
+  double *buffer = (double*)blas_memory_alloc(0);
+#endif
+
   if (n <= 0) return 0;
 
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
 
+#ifdef SMP
+  nthreads = num_cpu_avail(1);
+
+  //Temporarily work-around the low performance issue with small imput size &
+  //multithreads.
+  if (n <= 100000)
+	  nthreads = 1;
+
+  if (nthreads == 1) {
+#endif
+
   ret = (FLOATRET)ASUM_K(n, x, incx);
+
+#ifdef SMP
+  } else {
+
+#ifndef DOUBLE 
+#ifndef COMPLEX
+    mode  =  BLAS_SINGLE | BLAS_REAL;
+#else
+    mode  =  BLAS_SINGLE | BLAS_COMPLEX;
+#endif
+#else
+#ifndef COMPLEX
+    mode  =  BLAS_DOUBLE | BLAS_REAL;
+#else
+    mode  =  BLAS_DOUBLE | BLAS_COMPLEX;
+#endif
+#endif
+
+    blas_level1_thread_with_return_value(mode, n, 0, 0, dummyalpha,
+		       x, incx, NULL, 0, buffer, 0, (void *)asum_threads, nthreads);
+
+    for(i = 0; i < nthreads; i++)
+        mid_result += buffer[2*i];
+    
+    ret = (FLOATRET)mid_result;
+  }
+
+ blas_memory_free(buffer);
+#endif
 
   FUNCTION_PROFILE_END(COMPSIZE, n, n);
 
@@ -75,17 +141,67 @@ FLOAT CNAME(blasint n, FLOAT *x, blasint incx){
 
   PRINT_DEBUG_CNAME;
 
+#ifdef SMP
+  int i;
+  int mode, nthreads;
+  double mid_result= 0.0;
+  FLOAT dummyalpha[2] = {ZERO, ZERO};
+
+  double *buffer = (double*)blas_memory_alloc(0);
+#endif
+
   if (n <= 0) return 0;
 
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
 
+#ifdef SMP
+  nthreads = num_cpu_avail(1);
+
+  //Temporarily work-around the low performance issue with small imput size &
+  //multithreads.
+  if (n <= 100000)
+	  nthreads = 1;
+
+  if (nthreads == 1) {
+#endif
+
   ret = ASUM_K(n, x, incx);
+
+#ifdef SMP
+  } else {
+
+#ifndef DOUBLE 
+#ifndef COMPLEX
+    mode  =  BLAS_SINGLE | BLAS_REAL;
+#else
+    mode  =  BLAS_SINGLE | BLAS_COMPLEX;
+#endif
+#else
+#ifndef COMPLEX
+    mode  =  BLAS_DOUBLE | BLAS_REAL;
+#else
+    mode  =  BLAS_DOUBLE | BLAS_COMPLEX;
+#endif
+#endif
+
+    blas_level1_thread_with_return_value(mode, n, 0, 0, dummyalpha,
+		       x, incx, NULL, 0, buffer, 0, (void *)asum_threads, nthreads);
+
+    for(i = 0; i < nthreads; i++)
+        mid_result += buffer[2*i];
+    
+    ret = (FLOAT)mid_result;
+  }
+
+ blas_memory_free(buffer);
+#endif
 
   FUNCTION_PROFILE_END(COMPSIZE, n, n);
 
   IDEBUG_END;
+
 
   return ret;
 }

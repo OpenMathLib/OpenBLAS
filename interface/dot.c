@@ -42,6 +42,24 @@
 #include "functable.h"
 #endif
 
+#ifdef SMP
+static int dot_threads (BLASLONG m, BLASLONG n, BLASLONG k, float alpha,
+	       float* x, BLASLONG incx, float* y, BLASLONG incy, float* z, BLASLONG incz)
+{
+#ifndef CBLAS
+  FLOATRET ret;
+  ret = (FLOATRET)DOTU_K(m, x, incx, y, incy);
+  *((double *)z) = (double)ret;
+#else
+  FLOAT ret;
+  ret = DOTU_K(n, x, incx, y, incy);
+  *((double *)z) = (double)ret;
+#endif
+
+  return 0;
+}
+#endif
+
 #ifndef CBLAS
 
 FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
@@ -53,6 +71,14 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
 
   PRINT_DEBUG_NAME;
 
+#ifdef SMP
+  int i;
+  int mode, nthreads;
+  double mid_result= 0.0;
+  FLOAT dummyalpha[2] = {ZERO, ZERO};
+  double *buffer = (double*)blas_memory_alloc(0);
+#endif
+
   if (n <= 0) return 0.;
 
   IDEBUG_START;
@@ -62,7 +88,39 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
   if (incx < 0) x -= (n - 1) * incx;
   if (incy < 0) y -= (n - 1) * incy;
 
+#ifdef SMP
+  nthreads = num_cpu_avail(1);
+
+  //Temporarily work-around the low performance issue with small imput size &
+  //multithreads.
+  if (n <= 100000)
+	  nthreads = 1;
+
+  if (nthreads == 1) {
+#endif
+
   ret = (FLOATRET)DOTU_K(n, x, incx, y, incy);
+
+#ifdef SMP
+  } else {
+
+#ifndef DOUBLE 
+    mode  =  BLAS_SINGLE | BLAS_REAL;
+#else
+    mode  =  BLAS_DOUBLE | BLAS_REAL;
+#endif
+
+    blas_level1_thread_with_return_value(mode, n, 0, 0, dummyalpha,
+		       x, incx, y, incy, buffer, 0, (void *)dot_threads, nthreads);
+
+    for(i = 0; i < nthreads; i++)
+        mid_result += buffer[2*i];
+    
+    ret = (FLOATRET)mid_result;
+  }
+
+ blas_memory_free(buffer);
+#endif
 
   FUNCTION_PROFILE_END(1, 2 * n, 2 * n);
 
@@ -79,6 +137,14 @@ FLOAT CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
 
   PRINT_DEBUG_CNAME;
 
+#ifdef SMP
+  int i;
+  int mode, nthreads;
+  double mid_result= 0.0;
+  FLOAT dummyalpha[2] = {ZERO, ZERO};
+
+  double *buffer = (double*)blas_memory_alloc(0);
+#endif
   if (n <= 0) return 0.;
 
   IDEBUG_START;
@@ -88,7 +154,38 @@ FLOAT CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
   if (incx < 0) x -= (n - 1) * incx;
   if (incy < 0) y -= (n - 1) * incy;
 
+#ifdef SMP
+  nthreads = num_cpu_avail(1);
+
+  //Temporarily work-around the low performance issue with small imput size &
+  //multithreads.
+  if (n <= 100000)
+	  nthreads = 1;
+
+  if (nthreads == 1) {
+#endif
   ret = DOTU_K(n, x, incx, y, incy);
+
+#ifdef SMP
+  } else {
+
+#ifndef DOUBLE 
+    mode  =  BLAS_SINGLE | BLAS_REAL;
+#else
+    mode  =  BLAS_DOUBLE | BLAS_REAL;
+#endif
+
+    blas_level1_thread_with_return_value(mode, n, 0, 0, dummyalpha,
+		       x, incx, y, incy, buffer, 0, (void *)dot_threads, nthreads);
+
+    for(i = 0; i < nthreads; i++)
+        mid_result += buffer[2*i];
+    
+    ret = (FLOAT)mid_result;
+  }
+
+ blas_memory_free(buffer);
+#endif
 
   FUNCTION_PROFILE_END(1, 2 * n, 2 * n);
 
