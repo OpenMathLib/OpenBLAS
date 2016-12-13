@@ -44,25 +44,40 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
     if ((1 == inc_x) && (1 == inc_y))
     {
+        FLOAT *x_pref, *y_pref;
+        BLASLONG pref_offset;
+
+        pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
+        if (pref_offset > 0)
+        {
+            pref_offset = L1_DATA_LINESIZE - pref_offset;
+            pref_offset = pref_offset / sizeof(FLOAT);
+        }
+        x_pref = x + pref_offset + 32;
+
+        pref_offset = (BLASLONG)y & (L1_DATA_LINESIZE - 1);
+        if (pref_offset > 0)
+        {
+            pref_offset = L1_DATA_LINESIZE - pref_offset;
+            pref_offset = pref_offset / sizeof(FLOAT);
+        }
+        y_pref = y + pref_offset + 32;
+
         for (i = (n >> 4); i--;)
         {
             LD_DP8_INC(x, 2, vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7);
             LD_DP8_INC(y, 2, vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7);
 
-#ifdef ENABLE_PREFETCH
-            __asm__ __volatile__(
-                "pref   0,  256(%[x])\n\t"
-                "pref   0,  288(%[x])\n\t"
-                "pref   0,  320(%[x])\n\t"
-                "pref   0,  352(%[x])\n\t"
-                "pref   0,  256(%[y])\n\t"
-                "pref   0,  288(%[y])\n\t"
-                "pref   0,  320(%[y])\n\t"
-                "pref   0,  352(%[y])\n\t"
-
-                : : [x] "r" (x), [y] "r" (y)
-            );
-#endif
+            PREF_OFFSET(x_pref, 0);
+            PREF_OFFSET(x_pref, 32);
+            PREF_OFFSET(x_pref, 64);
+            PREF_OFFSET(x_pref, 96);
+            PREF_OFFSET(y_pref, 0);
+            PREF_OFFSET(y_pref, 32);
+            PREF_OFFSET(y_pref, 64);
+            PREF_OFFSET(y_pref, 96);
+            x_pref += 16;
+            y_pref += 16;
 
             dot0 += (vy0 * vx0);
             dot1 += (vy1 * vx1);

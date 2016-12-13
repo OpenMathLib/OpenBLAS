@@ -45,10 +45,9 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
     BLASLONG i = 0;
     FLOAT dot[2];
     BLASLONG inc_x2, inc_y2;
-    FLOAT x0, x1, x2, x3, x4, x5, x6, x7;
-    FLOAT y0, y1, y2, y3, y4, y5, y6, y7;
-    v4f32 vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7;
-    v4f32 vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7;
+    FLOAT x0, x1, x2, x3, x4, x5, x6, x7, y0, y1, y2, y3, y4, y5, y6, y7;
+    v4f32 vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7, vx8, vx9, vx10, vx11;
+    v4f32 vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7, vy8, vy9, vy10, vy11;
     v4f32 vx0r, vx0i, vx1r, vx1i, vx2r, vx2i, vx3r, vx3i;
     v4f32 vy0r, vy0i, vy1r, vy1i, vy2r, vy2i, vy3r, vy3i;
     v4f32 dot0 = {0, 0, 0, 0};
@@ -71,78 +70,135 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
     if ((1 == inc_x) && (1 == inc_y))
     {
-#ifdef ENABLE_PREFETCH
-        FLOAT *x_pref, *y_pref;
-        BLASLONG pref_offset;
-
-        pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
-        if (pref_offset > 0)
+        if (n > 15)
         {
-            pref_offset = L1_DATA_LINESIZE - pref_offset;
-        }
-        pref_offset = pref_offset / sizeof(FLOAT);
-        x_pref = x + pref_offset + 64;
+            FLOAT *x_pref, *y_pref;
+            BLASLONG pref_offset;
 
-        pref_offset = (BLASLONG)y & (L1_DATA_LINESIZE - 1);
-        if (pref_offset > 0)
-        {
-            pref_offset = L1_DATA_LINESIZE - pref_offset;
-        }
-        pref_offset = pref_offset / sizeof(FLOAT);
-        y_pref = y + pref_offset + 64;
-#endif
+            pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
+            if (pref_offset > 0)
+            {
+                pref_offset = L1_DATA_LINESIZE - pref_offset;
+                pref_offset = pref_offset / sizeof(FLOAT);
+            }
+            x_pref = x + pref_offset + 64 + 16;
 
-        for (i = (n >> 4); i--;)
-        {
-#ifdef ENABLE_PREFETCH
-            __asm__ __volatile__(
-                "pref   0,   0(%[x_pref])\n\t"
-                "pref   0,  32(%[x_pref])\n\t"
-                "pref   0,  64(%[x_pref])\n\t"
-                "pref   0,  96(%[x_pref])\n\t"
-                "pref   0,   0(%[y_pref])\n\t"
-                "pref   0,  32(%[y_pref])\n\t"
-                "pref   0,  64(%[y_pref])\n\t"
-                "pref   0,  96(%[y_pref])\n\t"
+            pref_offset = (BLASLONG)y & (L1_DATA_LINESIZE - 1);
+            if (pref_offset > 0)
+            {
+                pref_offset = L1_DATA_LINESIZE - pref_offset;
+                pref_offset = pref_offset / sizeof(FLOAT);
+            }
+            y_pref = y + pref_offset + 64 + 16;
 
-                : : [x_pref] "r" (x_pref), [y_pref] "r" (y_pref)
-            );
-
-            x_pref += 32;
-            y_pref += 32;
-#endif
-
-            LD_SP8_INC(x, 4, vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7);
-            LD_SP8_INC(y, 4, vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7);
+            LD_SP4_INC(x, 4, vx0, vx1, vx2, vx3);
+            LD_SP4_INC(y, 4, vy0, vy1, vy2, vy3);
 
             PCKEVOD_W2_SP(vx1, vx0, vx0r, vx0i);
-            PCKEVOD_W2_SP(vx3, vx2, vx1r, vx1i);
-            PCKEVOD_W2_SP(vx5, vx4, vx2r, vx2i);
-            PCKEVOD_W2_SP(vx7, vx6, vx3r, vx3i);
-
             PCKEVOD_W2_SP(vy1, vy0, vy0r, vy0i);
-            PCKEVOD_W2_SP(vy3, vy2, vy1r, vy1i);
-            PCKEVOD_W2_SP(vy5, vy4, vy2r, vy2i);
-            PCKEVOD_W2_SP(vy7, vy6, vy3r, vy3i);
 
+            for (i = (n >> 4) - 1; i--;)
+            {
+                PREF_OFFSET(x_pref, 0);
+                PREF_OFFSET(x_pref, 32);
+                PREF_OFFSET(x_pref, 64);
+                PREF_OFFSET(x_pref, 96);
+                PREF_OFFSET(y_pref, 0);
+                PREF_OFFSET(y_pref, 32);
+                PREF_OFFSET(y_pref, 64);
+                PREF_OFFSET(y_pref, 96);
+                x_pref += 32;
+                y_pref += 32;
+
+                vx4 = LD_SP(x); x += 4;
+                vx1r = (v4f32) __msa_pckev_w((v4i32) vx3, (v4i32) vx2);
+                dot0 += (vx0r * vy0r);
+                vx5 = LD_SP(x); x += 4;
+                vx1i = (v4f32) __msa_pckod_w((v4i32) vx3, (v4i32) vx2);
+                dot1 += (vx0i * vy0r);
+                vy4 = LD_SP(y); y += 4;
+                vy1r = (v4f32) __msa_pckev_w((v4i32) vy3, (v4i32) vy2);
+                dot2 += (vx1r * vy1r);
+                vy5 = LD_SP(y); y += 4;
+                vy1i = (v4f32) __msa_pckod_w((v4i32) vy3, (v4i32) vy2);
+                dot3 += (vx1i * vy1r);
+                vx6 = LD_SP(x); x += 4;
+                vx7 = LD_SP(x); x += 4;
+                vy6 = LD_SP(y); y += 4;
+                vy7 = LD_SP(y); y += 4;
+                vx8 = LD_SP(x); x += 4;
+                dot0 -= (vx0i * vy0i);
+                vx9 = LD_SP(x); x += 4;
+                vx2r = (v4f32) __msa_pckev_w((v4i32) vx5, (v4i32) vx4);
+                dot1 += (vx0r * vy0i);
+                vy8 = LD_SP(y); y += 4;
+                vx2i = (v4f32) __msa_pckod_w((v4i32) vx5, (v4i32) vx4);
+                dot2 -= (vx1i * vy1i);
+                vy9 = LD_SP(y); y += 4;
+                vy2r = (v4f32) __msa_pckev_w((v4i32) vy5, (v4i32) vy4);
+                dot3 += (vx1r * vy1i);
+                vx10 = LD_SP(x); x += 4;
+                vy2i = (v4f32) __msa_pckod_w((v4i32) vy5, (v4i32) vy4);
+                vx11 = LD_SP(x); x += 4;
+                vx3r = (v4f32) __msa_pckev_w((v4i32) vx7, (v4i32) vx6);
+                dot4 += (vx2r * vy2r);
+                vy10 = LD_SP(y); y += 4;
+                vx3i = (v4f32) __msa_pckod_w((v4i32) vx7, (v4i32) vx6);
+                dot5 += (vx2i * vy2r);
+                vy11 = LD_SP(y); y += 4;
+                vy3r = (v4f32) __msa_pckev_w((v4i32) vy7, (v4i32) vy6);
+                vy3i = (v4f32) __msa_pckod_w((v4i32) vy7, (v4i32) vy6);
+                dot6 += (vx3r * vy3r);
+                vx0r = (v4f32) __msa_pckev_w((v4i32) vx9, (v4i32) vx8);
+                dot7 += (vx3i * vy3r);
+                vx0i = (v4f32) __msa_pckod_w((v4i32) vx9, (v4i32) vx8);
+                vy0r = (v4f32) __msa_pckev_w((v4i32) vy9, (v4i32) vy8);
+                vx2 = vx10;
+                vy0i = (v4f32) __msa_pckod_w((v4i32) vy9, (v4i32) vy8);
+                vx3 = vx11;
+                dot4 -= (vx2i * vy2i);
+                vy2 = vy10;
+                dot5 += (vx2r * vy2i);
+                vy3 = vy11;
+                dot6 -= (vx3i * vy3i);
+                dot7 += (vx3r * vy3i);
+            }
+
+            vx4 = LD_SP(x); x += 4;
+            vx1r = (v4f32) __msa_pckev_w((v4i32) vx3, (v4i32) vx2);
             dot0 += (vx0r * vy0r);
-            dot0 OP1 (vx0i * vy0i);
-            dot1 OP2 (vx0i * vy0r);
-            dot1 += (vx0r * vy0i);
-
+            vx5 = LD_SP(x); x += 4;
+            vx1i = (v4f32) __msa_pckod_w((v4i32) vx3, (v4i32) vx2);
+            dot1 += (vx0i * vy0r);
+            vy4 = LD_SP(y); y += 4;
+            vy1r = (v4f32) __msa_pckev_w((v4i32) vy3, (v4i32) vy2);
             dot2 += (vx1r * vy1r);
-            dot2 OP1 (vx1i * vy1i);
-            dot3 OP2 (vx1i * vy1r);
+            vy5 = LD_SP(y); y += 4;
+            vy1i = (v4f32) __msa_pckod_w((v4i32) vy3, (v4i32) vy2);
+            dot3 += (vx1i * vy1r);
+            vx6 = LD_SP(x); x += 4;
+            vx7 = LD_SP(x); x += 4;
+            vy6 = LD_SP(y); y += 4;
+            vy7 = LD_SP(y); y += 4;
+            dot0 -= (vx0i * vy0i);
+            vx2r = (v4f32) __msa_pckev_w((v4i32) vx5, (v4i32) vx4);
+            dot1 += (vx0r * vy0i);
+            vx2i = (v4f32) __msa_pckod_w((v4i32) vx5, (v4i32) vx4);
+            dot2 -= (vx1i * vy1i);
+            vy2r = (v4f32) __msa_pckev_w((v4i32) vy5, (v4i32) vy4);
             dot3 += (vx1r * vy1i);
-
+            vy2i = (v4f32) __msa_pckod_w((v4i32) vy5, (v4i32) vy4);
+            vx3r = (v4f32) __msa_pckev_w((v4i32) vx7, (v4i32) vx6);
             dot4 += (vx2r * vy2r);
-            dot4 OP1 (vx2i * vy2i);
-            dot5 OP2 (vx2i * vy2r);
-            dot5 += (vx2r * vy2i);
-
+            vx3i = (v4f32) __msa_pckod_w((v4i32) vx7, (v4i32) vx6);
+            dot5 += (vx2i * vy2r);
+            vy3r = (v4f32) __msa_pckev_w((v4i32) vy7, (v4i32) vy6);
+            vy3i = (v4f32) __msa_pckod_w((v4i32) vy7, (v4i32) vy6);
             dot6 += (vx3r * vy3r);
-            dot6 OP1 (vx3i * vy3i);
-            dot7 OP2 (vx3i * vy3r);
+            dot7 += (vx3i * vy3r);
+            dot4 -= (vx2i * vy2i);
+            dot5 += (vx2r * vy2i);
+            dot6 -= (vx3i * vy3i);
             dot7 += (vx3r * vy3i);
         }
 

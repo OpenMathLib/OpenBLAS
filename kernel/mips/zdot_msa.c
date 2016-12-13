@@ -45,8 +45,8 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
     BLASLONG i = 0;
     FLOAT dot[2];
     BLASLONG inc_x2, inc_y2;
-    v2f64 vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7;
-    v2f64 vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7;
+    v2f64 vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7, vx8, vx9, vx10, vx11;
+    v2f64 vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7, vy8, vy9, vy10, vy11;
     v2f64 vx0r, vx0i, vx1r, vx1i, vx2r, vx2i, vx3r, vx3i;
     v2f64 vy0r, vy0i, vy1r, vy1i, vy2r, vy2i, vy3r, vy3i;
     v2f64 dot0 = {0, 0};
@@ -71,116 +71,239 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
     inc_x2 = 2 * inc_x;
     inc_y2 = 2 * inc_y;
 
-
-#ifdef ENABLE_PREFETCH
     if ((1 == inc_x) && (1 == inc_y))
     {
-        double *x_pref, *y_pref;
-        BLASLONG pref_offset;
-
-        pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
-        if (pref_offset > 0)
+        if (n > 7)
         {
-            pref_offset = L1_DATA_LINESIZE - pref_offset;
-        }
-        pref_offset = pref_offset / sizeof(double);
-        x_pref = x + pref_offset + 32;
+            FLOAT *x_pref, *y_pref;
+            BLASLONG pref_offset;
 
-        pref_offset = (BLASLONG)y & (L1_DATA_LINESIZE - 1);
-        if (pref_offset > 0)
-        {
-            pref_offset = L1_DATA_LINESIZE - pref_offset;
-        }
-        pref_offset = pref_offset / sizeof(double);
-        y_pref = y + pref_offset + 32;
+            pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
+            if (pref_offset > 0)
+            {
+                pref_offset = L1_DATA_LINESIZE - pref_offset;
+                pref_offset = pref_offset / sizeof(FLOAT);
+            }
+            x_pref = x + pref_offset + 32 + 8;
 
-        for (i = (n >> 3); i--;)
-        {
-            __asm__ __volatile__(
-                "pref   0,   0(%[x_pref])\n\t"
-                "pref   0,  32(%[x_pref])\n\t"
-                "pref   0,  64(%[x_pref])\n\t"
-                "pref   0,  96(%[x_pref])\n\t"
-                "pref   0,   0(%[y_pref])\n\t"
-                "pref   0,  32(%[y_pref])\n\t"
-                "pref   0,  64(%[y_pref])\n\t"
-                "pref   0,  96(%[y_pref])\n\t"
+            pref_offset = (BLASLONG)y & (L1_DATA_LINESIZE - 1);
+            if (pref_offset > 0)
+            {
+                pref_offset = L1_DATA_LINESIZE - pref_offset;
+                pref_offset = pref_offset / sizeof(FLOAT);
+            }
+            y_pref = y + pref_offset + 32 + 8;
 
-                : : [x_pref] "r" (x_pref), [y_pref] "r" (y_pref)
-            );
-
-            x_pref += 16;
-            y_pref += 16;
-
-            LD_DP8_INC(x, 2, vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7);
-            LD_DP8_INC(y, 2, vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7);
+            LD_DP4_INC(x, 2, vx0, vx1, vx2, vx3);
+            LD_DP4_INC(y, 2, vy0, vy1, vy2, vy3);
 
             PCKEVOD_D2_DP(vx1, vx0, vx0r, vx0i);
-            PCKEVOD_D2_DP(vx3, vx2, vx1r, vx1i);
-            PCKEVOD_D2_DP(vx5, vx4, vx2r, vx2i);
-            PCKEVOD_D2_DP(vx7, vx6, vx3r, vx3i);
-
             PCKEVOD_D2_DP(vy1, vy0, vy0r, vy0i);
-            PCKEVOD_D2_DP(vy3, vy2, vy1r, vy1i);
-            PCKEVOD_D2_DP(vy5, vy4, vy2r, vy2i);
-            PCKEVOD_D2_DP(vy7, vy6, vy3r, vy3i);
 
+            for (i = (n >> 3) - 1; i--;)
+            {
+                PREF_OFFSET(x_pref, 0);
+                PREF_OFFSET(x_pref, 32);
+                PREF_OFFSET(x_pref, 64);
+                PREF_OFFSET(x_pref, 96);
+                PREF_OFFSET(y_pref, 0);
+                PREF_OFFSET(y_pref, 32);
+                PREF_OFFSET(y_pref, 64);
+                PREF_OFFSET(y_pref, 96);
+                x_pref += 16;
+                y_pref += 16;
+
+                vx4 = LD_DP(x); x += 2;
+                vx1r = (v2f64) __msa_pckev_d((v2i64) vx3, (v2i64) vx2);
+                dot0 += (vx0r * vy0r);
+                vx5 = LD_DP(x); x += 2;
+                vx1i = (v2f64) __msa_pckod_d((v2i64) vx3, (v2i64) vx2);
+                dot1 += (vx0i * vy0r);
+                vy4 = LD_DP(y); y += 2;
+                vy1r = (v2f64) __msa_pckev_d((v2i64) vy3, (v2i64) vy2);
+                dot2 += (vx1r * vy1r);
+                vy5 = LD_DP(y); y += 2;
+                vy1i = (v2f64) __msa_pckod_d((v2i64) vy3, (v2i64) vy2);
+                dot3 += (vx1i * vy1r);
+                vx6 = LD_DP(x); x += 2;
+                vx7 = LD_DP(x); x += 2;
+                vy6 = LD_DP(y); y += 2;
+                vy7 = LD_DP(y); y += 2;
+                vx8 = LD_DP(x); x += 2;
+                dot0 -= (vx0i * vy0i);
+                vx9 = LD_DP(x); x += 2;
+                vx2r = (v2f64) __msa_pckev_d((v2i64) vx5, (v2i64) vx4);
+                dot1 += (vx0r * vy0i);
+                vy8 = LD_DP(y); y += 2;
+                vx2i = (v2f64) __msa_pckod_d((v2i64) vx5, (v2i64) vx4);
+                dot2 -= (vx1i * vy1i);
+                vy9 = LD_DP(y); y += 2;
+                vy2r = (v2f64) __msa_pckev_d((v2i64) vy5, (v2i64) vy4);
+                dot3 += (vx1r * vy1i);
+                vx10 = LD_DP(x); x += 2;
+                vy2i = (v2f64) __msa_pckod_d((v2i64) vy5, (v2i64) vy4);
+                vx11 = LD_DP(x); x += 2;
+                vx3r = (v2f64) __msa_pckev_d((v2i64) vx7, (v2i64) vx6);
+                dot4 += (vx2r * vy2r);
+                vy10 = LD_DP(y); y += 2;
+                vx3i = (v2f64) __msa_pckod_d((v2i64) vx7, (v2i64) vx6);
+                dot5 += (vx2i * vy2r);
+                vy11 = LD_DP(y); y += 2;
+                vy3r = (v2f64) __msa_pckev_d((v2i64) vy7, (v2i64) vy6);
+                vy3i = (v2f64) __msa_pckod_d((v2i64) vy7, (v2i64) vy6);
+                dot6 += (vx3r * vy3r);
+                vx0r = (v2f64) __msa_pckev_d((v2i64) vx9, (v2i64) vx8);
+                dot7 += (vx3i * vy3r);
+                vx0i = (v2f64) __msa_pckod_d((v2i64) vx9, (v2i64) vx8);
+                vy0r = (v2f64) __msa_pckev_d((v2i64) vy9, (v2i64) vy8);
+                vx2 = vx10;
+                vy0i = (v2f64) __msa_pckod_d((v2i64) vy9, (v2i64) vy8);
+                vx3 = vx11;
+                dot4 -= (vx2i * vy2i);
+                vy2 = vy10;
+                dot5 += (vx2r * vy2i);
+                vy3 = vy11;
+                dot6 -= (vx3i * vy3i);
+                dot7 += (vx3r * vy3i);
+            }
+
+            vx4 = LD_DP(x); x += 2;
+            vx1r = (v2f64) __msa_pckev_d((v2i64) vx3, (v2i64) vx2);
             dot0 += (vx0r * vy0r);
-            dot0 OP1 (vx0i * vy0i);
-            dot1 OP2 (vx0i * vy0r);
-            dot1 += (vx0r * vy0i);
-
+            vx5 = LD_DP(x); x += 2;
+            vx1i = (v2f64) __msa_pckod_d((v2i64) vx3, (v2i64) vx2);
+            dot1 += (vx0i * vy0r);
+            vy4 = LD_DP(y); y += 2;
+            vy1r = (v2f64) __msa_pckev_d((v2i64) vy3, (v2i64) vy2);
             dot2 += (vx1r * vy1r);
-            dot2 OP1 (vx1i * vy1i);
-            dot3 OP2 (vx1i * vy1r);
+            vy5 = LD_DP(y); y += 2;
+            vy1i = (v2f64) __msa_pckod_d((v2i64) vy3, (v2i64) vy2);
+            dot3 += (vx1i * vy1r);
+            vx6 = LD_DP(x); x += 2;
+            vx7 = LD_DP(x); x += 2;
+            vy6 = LD_DP(y); y += 2;
+            vy7 = LD_DP(y); y += 2;
+            dot0 -= (vx0i * vy0i);
+            vx2r = (v2f64) __msa_pckev_d((v2i64) vx5, (v2i64) vx4);
+            dot1 += (vx0r * vy0i);
+            vx2i = (v2f64) __msa_pckod_d((v2i64) vx5, (v2i64) vx4);
+            dot2 -= (vx1i * vy1i);
+            vy2r = (v2f64) __msa_pckev_d((v2i64) vy5, (v2i64) vy4);
             dot3 += (vx1r * vy1i);
-
+            vy2i = (v2f64) __msa_pckod_d((v2i64) vy5, (v2i64) vy4);
+            vx3r = (v2f64) __msa_pckev_d((v2i64) vx7, (v2i64) vx6);
             dot4 += (vx2r * vy2r);
-            dot4 OP1 (vx2i * vy2i);
-            dot5 OP2 (vx2i * vy2r);
-            dot5 += (vx2r * vy2i);
-
+            vx3i = (v2f64) __msa_pckod_d((v2i64) vx7, (v2i64) vx6);
+            dot5 += (vx2i * vy2r);
+            vy3r = (v2f64) __msa_pckev_d((v2i64) vy7, (v2i64) vy6);
+            vy3i = (v2f64) __msa_pckod_d((v2i64) vy7, (v2i64) vy6);
             dot6 += (vx3r * vy3r);
-            dot6 OP1 (vx3i * vy3i);
-            dot7 OP2 (vx3i * vy3r);
+            dot7 += (vx3i * vy3r);
+            dot4 -= (vx2i * vy2i);
+            dot5 += (vx2r * vy2i);
+            dot6 -= (vx3i * vy3i);
             dot7 += (vx3r * vy3i);
         }
     }
-    else
-#endif
-    for (i = (n >> 3); i--;)
+    else if (n > 7)
     {
-        LD_DP8_INC(x, inc_x2, vx0, vx1, vx2, vx3, vx4, vx5, vx6, vx7);
-        LD_DP8_INC(y, inc_y2, vy0, vy1, vy2, vy3, vy4, vy5, vy6, vy7);
+        LD_DP4_INC(x, inc_x2, vx0, vx1, vx2, vx3);
+        LD_DP4_INC(y, inc_y2, vy0, vy1, vy2, vy3);
 
         PCKEVOD_D2_DP(vx1, vx0, vx0r, vx0i);
-        PCKEVOD_D2_DP(vx3, vx2, vx1r, vx1i);
-        PCKEVOD_D2_DP(vx5, vx4, vx2r, vx2i);
-        PCKEVOD_D2_DP(vx7, vx6, vx3r, vx3i);
-
         PCKEVOD_D2_DP(vy1, vy0, vy0r, vy0i);
-        PCKEVOD_D2_DP(vy3, vy2, vy1r, vy1i);
-        PCKEVOD_D2_DP(vy5, vy4, vy2r, vy2i);
-        PCKEVOD_D2_DP(vy7, vy6, vy3r, vy3i);
 
+        for (i = (n >> 3) - 1; i--;)
+        {
+            vx4 = LD_DP(x); x += inc_x2;
+            vx1r = (v2f64) __msa_pckev_d((v2i64) vx3, (v2i64) vx2);
+            dot0 += (vx0r * vy0r);
+            vx5 = LD_DP(x); x += inc_x2;
+            vx1i = (v2f64) __msa_pckod_d((v2i64) vx3, (v2i64) vx2);
+            dot1 += (vx0i * vy0r);
+            vy4 = LD_DP(y); y += inc_y2;
+            vy1r = (v2f64) __msa_pckev_d((v2i64) vy3, (v2i64) vy2);
+            dot2 += (vx1r * vy1r);
+            vy5 = LD_DP(y); y += inc_y2;
+            vy1i = (v2f64) __msa_pckod_d((v2i64) vy3, (v2i64) vy2);
+            dot3 += (vx1i * vy1r);
+            vx6 = LD_DP(x); x += inc_x2;
+            vx7 = LD_DP(x); x += inc_x2;
+            vy6 = LD_DP(y); y += inc_y2;
+            vy7 = LD_DP(y); y += inc_y2;
+            vx8 = LD_DP(x); x += inc_x2;
+            dot0 -= (vx0i * vy0i);
+            vx9 = LD_DP(x); x += inc_x2;
+            vx2r = (v2f64) __msa_pckev_d((v2i64) vx5, (v2i64) vx4);
+            dot1 += (vx0r * vy0i);
+            vy8 = LD_DP(y); y += inc_y2;
+            vx2i = (v2f64) __msa_pckod_d((v2i64) vx5, (v2i64) vx4);
+            dot2 -= (vx1i * vy1i);
+            vy9 = LD_DP(y); y += inc_y2;
+            vy2r = (v2f64) __msa_pckev_d((v2i64) vy5, (v2i64) vy4);
+            dot3 += (vx1r * vy1i);
+            vx10 = LD_DP(x); x += inc_x2;
+            vy2i = (v2f64) __msa_pckod_d((v2i64) vy5, (v2i64) vy4);
+            vx11 = LD_DP(x); x += inc_x2;
+            vx3r = (v2f64) __msa_pckev_d((v2i64) vx7, (v2i64) vx6);
+            dot4 += (vx2r * vy2r);
+            vy10 = LD_DP(y); y += inc_y2;
+            vx3i = (v2f64) __msa_pckod_d((v2i64) vx7, (v2i64) vx6);
+            dot5 += (vx2i * vy2r);
+            vy11 = LD_DP(y); y += inc_y2;
+            vy3r = (v2f64) __msa_pckev_d((v2i64) vy7, (v2i64) vy6);
+            vy3i = (v2f64) __msa_pckod_d((v2i64) vy7, (v2i64) vy6);
+            dot6 += (vx3r * vy3r);
+            vx0r = (v2f64) __msa_pckev_d((v2i64) vx9, (v2i64) vx8);
+            dot7 += (vx3i * vy3r);
+            vx0i = (v2f64) __msa_pckod_d((v2i64) vx9, (v2i64) vx8);
+            vy0r = (v2f64) __msa_pckev_d((v2i64) vy9, (v2i64) vy8);
+            vx2 = vx10;
+            vy0i = (v2f64) __msa_pckod_d((v2i64) vy9, (v2i64) vy8);
+            vx3 = vx11;
+            dot4 -= (vx2i * vy2i);
+            vy2 = vy10;
+            dot5 += (vx2r * vy2i);
+            vy3 = vy11;
+            dot6 -= (vx3i * vy3i);
+            dot7 += (vx3r * vy3i);
+        }
+
+        vx4 = LD_DP(x); x += inc_x2;
+        vx1r = (v2f64) __msa_pckev_d((v2i64) vx3, (v2i64) vx2);
         dot0 += (vx0r * vy0r);
-        dot0 OP1 (vx0i * vy0i);
-        dot1 OP2 (vx0i * vy0r);
-        dot1 += (vx0r * vy0i);
-
+        vx5 = LD_DP(x); x += inc_x2;
+        vx1i = (v2f64) __msa_pckod_d((v2i64) vx3, (v2i64) vx2);
+        dot1 += (vx0i * vy0r);
+        vy4 = LD_DP(y); y += inc_y2;
+        vy1r = (v2f64) __msa_pckev_d((v2i64) vy3, (v2i64) vy2);
         dot2 += (vx1r * vy1r);
-        dot2 OP1 (vx1i * vy1i);
-        dot3 OP2 (vx1i * vy1r);
+        vy5 = LD_DP(y); y += inc_y2;
+        vy1i = (v2f64) __msa_pckod_d((v2i64) vy3, (v2i64) vy2);
+        dot3 += (vx1i * vy1r);
+        vx6 = LD_DP(x); x += inc_x2;
+        vx7 = LD_DP(x); x += inc_x2;
+        vy6 = LD_DP(y); y += inc_y2;
+        vy7 = LD_DP(y); y += inc_y2;
+        dot0 -= (vx0i * vy0i);
+        vx2r = (v2f64) __msa_pckev_d((v2i64) vx5, (v2i64) vx4);
+        dot1 += (vx0r * vy0i);
+        vx2i = (v2f64) __msa_pckod_d((v2i64) vx5, (v2i64) vx4);
+        dot2 -= (vx1i * vy1i);
+        vy2r = (v2f64) __msa_pckev_d((v2i64) vy5, (v2i64) vy4);
         dot3 += (vx1r * vy1i);
-
+        vy2i = (v2f64) __msa_pckod_d((v2i64) vy5, (v2i64) vy4);
+        vx3r = (v2f64) __msa_pckev_d((v2i64) vx7, (v2i64) vx6);
         dot4 += (vx2r * vy2r);
-        dot4 OP1 (vx2i * vy2i);
-        dot5 OP2 (vx2i * vy2r);
-        dot5 += (vx2r * vy2i);
-
+        vx3i = (v2f64) __msa_pckod_d((v2i64) vx7, (v2i64) vx6);
+        dot5 += (vx2i * vy2r);
+        vy3r = (v2f64) __msa_pckev_d((v2i64) vy7, (v2i64) vy6);
+        vy3i = (v2f64) __msa_pckod_d((v2i64) vy7, (v2i64) vy6);
         dot6 += (vx3r * vy3r);
-        dot6 OP1 (vx3i * vy3i);
-        dot7 OP2 (vx3i * vy3r);
+        dot7 += (vx3i * vy3r);
+        dot4 -= (vx2i * vy2i);
+        dot5 += (vx2r * vy2i);
+        dot6 -= (vx3i * vy3i);
         dot7 += (vx3r * vy3i);
     }
 

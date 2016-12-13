@@ -58,20 +58,24 @@ static void ssolve_8x8_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
     if (bk > 0)
     {
-        BLASLONG k;
-        v4f32 src_b, src_b0, src_b1, src_b2, src_b3, src_bb0, src_bb1;
+        BLASLONG k, pref_offset;
+        FLOAT *pa0_pref;
+        v4f32 src_b0, src_b1, src_b2, src_b3, src_bb0, src_bb1;
+
+        pref_offset = (uintptr_t)a & (L1_DATA_LINESIZE - 1);
+
+        if (pref_offset)
+        {
+            pref_offset = L1_DATA_LINESIZE - pref_offset;
+            pref_offset = pref_offset / sizeof(FLOAT);
+        }
+
+        pa0_pref = a + pref_offset;
 
         for (k = 0; k < (bk >> 1); k++)
         {
-#ifdef ENABLE_PREFETCH
-            __asm__ __volatile__(
-                "pref   0,  64(%[a])   \n\t"
-                "pref   0,  96(%[a])   \n\t"
-
-                :
-                : [a] "r" (a)
-            );
-#endif
+            PREF_OFFSET(pa0_pref, 64);
+            PREF_OFFSET(pa0_pref, 96);
 
             LD_SP2_INC(a, 4, src_a0, src_a1);
             LD_SP2_INC(b, 4, src_bb0, src_bb1);
@@ -118,6 +122,8 @@ static void ssolve_8x8_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
             src_c13 -= src_a1 * src_b2;
             src_c14 -= src_a0 * src_b3;
             src_c15 -= src_a1 * src_b3;
+
+            pa0_pref += 16;
         }
 
         if (bk & 1)
