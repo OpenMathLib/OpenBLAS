@@ -28,6 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __MACROS_MSA_H__
 #define __MACROS_MSA_H__
 
+#include <stdint.h>
 #include <msa.h>
 
 #define ENABLE_PREFETCH
