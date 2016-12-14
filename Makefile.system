@@ -217,7 +217,9 @@ endif
 #
 
 ifeq ($(OSNAME), Darwin)
+ifndef MACOSX_DEPLOYMENT_TARGET
 export MACOSX_DEPLOYMENT_TARGET=10.6
+endif
 MD5SUM = md5 -r
 endif
 
