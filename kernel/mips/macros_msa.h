@@ -28,9 +28,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __MACROS_MSA_H__
 #define __MACROS_MSA_H__
 
+#include <stdint.h>
 #include <msa.h>
 
 #define ENABLE_PREFETCH
+
+#ifdef ENABLE_PREFETCH
+inline static void prefetch_load_lf(unsigned char *src)
+{
+    __asm__ __volatile__("pref   0,  0(%[src])   \n\t" : : [src] "r" (src));
+}
+
+#define PREFETCH(PTR)   prefetch_load_lf((unsigned char *)(PTR));
+
+#define STRNG(X) #X
+#define PREF_OFFSET(src_ptr, offset)		      \
+    __asm__ __volatile__("pref 0, " STRNG(offset) "(%[src]) \n\t" : : [src] "r" (src_ptr));
+
+#else
+#define PREFETCH(PTR)
+#define PREF_OFFSET(src_ptr, offset)
+#endif
 
 #define LD_W(RTYPE, psrc) *((RTYPE *)(psrc))
 #define LD_SP(...) LD_W(v4f32, __VA_ARGS__)

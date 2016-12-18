@@ -44,27 +44,20 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
     FLOAT *c_nxt2line = c + 2 * ldc;
     FLOAT *c_nxt3line = c + 3 * ldc;
 
-#ifdef ENABLE_PREFETCH
     a += bk * 8;
-    __asm__ __volatile__(
-        "pref   0,     (%[a])   \n\t"
-        "pref   0,   32(%[a])   \n\t"
-        "pref   0,   72(%[a])   \n\t"
-        "pref   0,  104(%[a])   \n\t"
-        "pref   0,  144(%[a])   \n\t"
-        "pref   0,  176(%[a])   \n\t"
-        "pref   0,  216(%[a])   \n\t"
-        "pref   0,  248(%[a])   \n\t"
-        "pref   0,  288(%[a])   \n\t"
-        "pref   0,  360(%[a])   \n\t"
-        "pref   0,  504(%[a])   \n\t"
-        "pref   0,  432(%[a])   \n\t"
-
-        :
-        : [a] "r"(a)
-    );
+    PREF_OFFSET(a,   0);
+    PREF_OFFSET(a,  32);
+    PREF_OFFSET(a,  72);
+    PREF_OFFSET(a, 104);
+    PREF_OFFSET(a, 144);
+    PREF_OFFSET(a, 176);
+    PREF_OFFSET(a, 216);
+    PREF_OFFSET(a, 248);
+    PREF_OFFSET(a, 288);
+    PREF_OFFSET(a, 360);
+    PREF_OFFSET(a, 504);
+    PREF_OFFSET(a, 432);
     a -= bk * 8;
-#endif
 
     LD_DP4(c, 2, src_c0, src_c1, src_c2, src_c3);
     LD_DP4(c_nxt1line, 2, src_c4, src_c5, src_c6, src_c7);
@@ -73,28 +66,29 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 
     if (bk)
     {
-        BLASLONG i;
-        v2f64 src_b, src_b0, src_b1, src_b2, src_b3;
+        BLASLONG i, pref_offset;
+        FLOAT *pa0_pref;
+        v2f64 src_b, src_b0, src_b1;
 
-        LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
-        LD_DP2_INC(b, 2, src_b0, src_b1);
+        pref_offset = (uintptr_t)a & (L1_DATA_LINESIZE - 1);
 
-        for (i = ((bk - 1) >> 1); i--;)
+        if (pref_offset)
         {
-#ifdef ENABLE_PREFETCH
-            __asm__ __volatile__(
-                "pref   0,  128(%[a])   \n\t"
-                "pref   0,  160(%[a])   \n\t"
-                "pref   0,  192(%[a])   \n\t"
-                "pref   0,  224(%[a])   \n\t"
+            pref_offset = L1_DATA_LINESIZE - pref_offset;
+            pref_offset = pref_offset / sizeof(FLOAT);
+        }
 
-                :
-                : [a] "r"(a)
-            );
-#endif
+        pa0_pref = a + pref_offset;
 
-            LD_DP4_INC(a, 2, src_a4, src_a5, src_a6, src_a7);
-            LD_DP2_INC(b, 2, src_b2, src_b3);
+        for (i = (bk >> 1); i--;)
+        {
+            PREF_OFFSET(pa0_pref, 128);
+            PREF_OFFSET(pa0_pref, 160);
+            PREF_OFFSET(pa0_pref, 192);
+            PREF_OFFSET(pa0_pref, 224);
+
+            LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
+            LD_DP2_INC(b, 2, src_b0, src_b1);
 
             src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
             src_c0 -= src_a0 * src_b;
@@ -123,33 +117,6 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
             LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
             LD_DP2_INC(b, 2, src_b0, src_b1);
 
-            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b2, (v2i64) src_b2);
-            src_c0 -= src_a4 * src_b;
-            src_c1 -= src_a5 * src_b;
-            src_c2 -= src_a6 * src_b;
-            src_c3 -= src_a7 * src_b;
-
-            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b2, (v2i64) src_b2);
-            src_c4 -= src_a4 * src_b;
-            src_c5 -= src_a5 * src_b;
-            src_c6 -= src_a6 * src_b;
-            src_c7 -= src_a7 * src_b;
-
-            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b3, (v2i64) src_b3);
-            src_c8  -= src_a4 * src_b;
-            src_c9  -= src_a5 * src_b;
-            src_c10 -= src_a6 * src_b;
-            src_c11 -= src_a7 * src_b;
-
-            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b3, (v2i64) src_b3);
-            src_c12 -= src_a4 * src_b;
-            src_c13 -= src_a5 * src_b;
-            src_c14 -= src_a6 * src_b;
-            src_c15 -= src_a7 * src_b;
-        }
-
-        if ((bk - 1) & 1)
-        {
             src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
             src_c0 -= src_a0 * src_b;
             src_c1 -= src_a1 * src_b;
@@ -174,33 +141,38 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
             src_c14 -= src_a2 * src_b;
             src_c15 -= src_a3 * src_b;
 
-            LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
-            LD_DP2_INC(b, 2, src_b0, src_b1);
+            pa0_pref += 16;
         }
 
-        src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
-        src_c0 -= src_a0 * src_b;
-        src_c1 -= src_a1 * src_b;
-        src_c2 -= src_a2 * src_b;
-        src_c3 -= src_a3 * src_b;
+        if (bk & 1)
+        {
+            LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
+            LD_DP2_INC(b, 2, src_b0, src_b1);
 
-        src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
-        src_c4 -= src_a0 * src_b;
-        src_c5 -= src_a1 * src_b;
-        src_c6 -= src_a2 * src_b;
-        src_c7 -= src_a3 * src_b;
+            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+            src_c0 -= src_a0 * src_b;
+            src_c1 -= src_a1 * src_b;
+            src_c2 -= src_a2 * src_b;
+            src_c3 -= src_a3 * src_b;
 
-        src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
-        src_c8  -= src_a0 * src_b;
-        src_c9  -= src_a1 * src_b;
-        src_c10 -= src_a2 * src_b;
-        src_c11 -= src_a3 * src_b;
+            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+            src_c4 -= src_a0 * src_b;
+            src_c5 -= src_a1 * src_b;
+            src_c6 -= src_a2 * src_b;
+            src_c7 -= src_a3 * src_b;
 
-        src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
-        src_c12 -= src_a0 * src_b;
-        src_c13 -= src_a1 * src_b;
-        src_c14 -= src_a2 * src_b;
-        src_c15 -= src_a3 * src_b;
+            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+            src_c8  -= src_a0 * src_b;
+            src_c9  -= src_a1 * src_b;
+            src_c10 -= src_a2 * src_b;
+            src_c11 -= src_a3 * src_b;
+
+            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+            src_c12 -= src_a0 * src_b;
+            src_c13 -= src_a1 * src_b;
+            src_c14 -= src_a2 * src_b;
+            src_c15 -= src_a3 * src_b;
+        }
     }
 
     ILVRL_D2_DP(src_c4, src_c0, res_c0, res_c1);

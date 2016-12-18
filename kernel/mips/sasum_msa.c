@@ -48,39 +48,55 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
     if (1 == inc_x)
     {
-#ifdef ENABLE_PREFETCH
-        FLOAT *x_pref;
-        BLASLONG pref_offset;
-
-        pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
-        if (pref_offset > 0)
+        if (n > 63)
         {
-            pref_offset = L1_DATA_LINESIZE - pref_offset;
-        }
-        pref_offset = pref_offset / sizeof(FLOAT);
-        x_pref = x + pref_offset + 128;
-#endif
+            FLOAT *x_pref;
+            BLASLONG pref_offset;
 
-        for (i = 0; i < (n >> 6); i++)
-        {
-#ifdef ENABLE_PREFETCH
-            __asm__ __volatile__(
-                "pref   0,     0(%[x_pref])\n\t"
-                "pref   0,    32(%[x_pref])\n\t"
-                "pref   0,    64(%[x_pref])\n\t"
-                "pref   0,    96(%[x_pref])\n\t"
-                "pref   0,   128(%[x_pref])\n\t"
-                "pref   0,   160(%[x_pref])\n\t"
-                "pref   0,   192(%[x_pref])\n\t"
-                "pref   0,   224(%[x_pref])\n\t"
-
-                : : [x_pref] "r" (x_pref)
-            );
-
-            x_pref += 64;
-#endif
+            pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
+            if (pref_offset > 0)
+            {
+                pref_offset = L1_DATA_LINESIZE - pref_offset;
+                pref_offset = pref_offset / sizeof(FLOAT);
+            }
+            x_pref = x + pref_offset + 128 + 32;
 
             LD_SP8_INC(x, 4, src0, src1, src2, src3, src4, src5, src6, src7);
+            for (i = 0; i < (n >> 6) - 1; i++)
+            {
+                PREF_OFFSET(x_pref, 0);
+                PREF_OFFSET(x_pref, 32);
+                PREF_OFFSET(x_pref, 64);
+                PREF_OFFSET(x_pref, 96);
+                PREF_OFFSET(x_pref, 128);
+                PREF_OFFSET(x_pref, 160);
+                PREF_OFFSET(x_pref, 192);
+                PREF_OFFSET(x_pref, 224);
+                x_pref += 64;
+
+                LD_SP8_INC(x, 4, src8, src9, src10, src11, src12, src13, src14, src15);
+
+                sum_abs0 += AND_VEC_W(src0);
+                sum_abs1 += AND_VEC_W(src1);
+                sum_abs2 += AND_VEC_W(src2);
+                sum_abs3 += AND_VEC_W(src3);
+                sum_abs0 += AND_VEC_W(src4);
+                sum_abs1 += AND_VEC_W(src5);
+                sum_abs2 += AND_VEC_W(src6);
+                sum_abs3 += AND_VEC_W(src7);
+
+                LD_SP8_INC(x, 4, src0, src1, src2, src3, src4, src5, src6, src7);
+
+                sum_abs0 += AND_VEC_W(src8);
+                sum_abs1 += AND_VEC_W(src9);
+                sum_abs2 += AND_VEC_W(src10);
+                sum_abs3 += AND_VEC_W(src11);
+                sum_abs0 += AND_VEC_W(src12);
+                sum_abs1 += AND_VEC_W(src13);
+                sum_abs2 += AND_VEC_W(src14);
+                sum_abs3 += AND_VEC_W(src15);
+            }
+
             LD_SP8_INC(x, 4, src8, src9, src10, src11, src12, src13, src14, src15);
 
             sum_abs0 += AND_VEC_W(src0);

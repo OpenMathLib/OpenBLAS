@@ -47,39 +47,55 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
     if (1 == inc_x)
     {
-#ifdef ENABLE_PREFETCH
-        FLOAT *x_pref;
-        BLASLONG pref_offset;
-
-        pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
-        if (pref_offset > 0)
+        if (n > 16)
         {
-            pref_offset = L1_DATA_LINESIZE - pref_offset;
-        }
-        pref_offset = pref_offset / sizeof(FLOAT);
-        x_pref = x + pref_offset + 64;
-#endif
+            FLOAT *x_pref;
+            BLASLONG pref_offset;
 
-        for (i = (n >> 4); i--;)
-        {
-#ifdef ENABLE_PREFETCH
-            __asm__ __volatile__(
-                "pref   0,     0(%[x_pref])\n\t"
-                "pref   0,    32(%[x_pref])\n\t"
-                "pref   0,    64(%[x_pref])\n\t"
-                "pref   0,    96(%[x_pref])\n\t"
-                "pref   0,   128(%[x_pref])\n\t"
-                "pref   0,   160(%[x_pref])\n\t"
-                "pref   0,   192(%[x_pref])\n\t"
-                "pref   0,   224(%[x_pref])\n\t"
-
-                : : [x_pref] "r" (x_pref)
-            );
-
-            x_pref += 32;
-#endif
+            pref_offset = (BLASLONG)x & (L1_DATA_LINESIZE - 1);
+            if (pref_offset > 0)
+            {
+                pref_offset = L1_DATA_LINESIZE - pref_offset;
+                pref_offset = pref_offset / sizeof(FLOAT);
+            }
+            x_pref = x + pref_offset + 64 + 16;
 
             LD_DP8_INC(x, 2, src0, src1, src2, src3, src4, src5, src6, src7);
+            for (i = (n >> 4) - 1; i--;)
+            {
+                PREF_OFFSET(x_pref, 0);
+                PREF_OFFSET(x_pref, 32);
+                PREF_OFFSET(x_pref, 64);
+                PREF_OFFSET(x_pref, 96);
+                PREF_OFFSET(x_pref, 128);
+                PREF_OFFSET(x_pref, 160);
+                PREF_OFFSET(x_pref, 192);
+                PREF_OFFSET(x_pref, 224);
+                x_pref += 32;
+
+                LD_DP8_INC(x, 2, src8, src9, src10, src11, src12, src13, src14, src15);
+
+                sum_abs0 += AND_VEC_D(src0);
+                sum_abs1 += AND_VEC_D(src1);
+                sum_abs2 += AND_VEC_D(src2);
+                sum_abs3 += AND_VEC_D(src3);
+                sum_abs0 += AND_VEC_D(src4);
+                sum_abs1 += AND_VEC_D(src5);
+                sum_abs2 += AND_VEC_D(src6);
+                sum_abs3 += AND_VEC_D(src7);
+
+                LD_DP8_INC(x, 2, src0, src1, src2, src3, src4, src5, src6, src7);
+
+                sum_abs0 += AND_VEC_D(src8);
+                sum_abs1 += AND_VEC_D(src9);
+                sum_abs2 += AND_VEC_D(src10);
+                sum_abs3 += AND_VEC_D(src11);
+                sum_abs0 += AND_VEC_D(src12);
+                sum_abs1 += AND_VEC_D(src13);
+                sum_abs2 += AND_VEC_D(src14);
+                sum_abs3 += AND_VEC_D(src15);
+            }
+
             LD_DP8_INC(x, 2, src8, src9, src10, src11, src12, src13, src14, src15);
 
             sum_abs0 += AND_VEC_D(src0);
@@ -149,9 +165,34 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
     {
         inc_x *= 2;
 
-        for (i = (n >> 4); i--;)
+        if (n > 16)
         {
             LD_DP8_INC(x, inc_x, src0, src1, src2, src3, src4, src5, src6, src7);
+            for (i = (n >> 4) - 1; i--;)
+            {
+                LD_DP8_INC(x, inc_x, src8, src9, src10, src11, src12, src13, src14, src15);
+
+                sum_abs0 += AND_VEC_D(src0);
+                sum_abs1 += AND_VEC_D(src1);
+                sum_abs2 += AND_VEC_D(src2);
+                sum_abs3 += AND_VEC_D(src3);
+                sum_abs0 += AND_VEC_D(src4);
+                sum_abs1 += AND_VEC_D(src5);
+                sum_abs2 += AND_VEC_D(src6);
+                sum_abs3 += AND_VEC_D(src7);
+
+                LD_DP8_INC(x, inc_x, src0, src1, src2, src3, src4, src5, src6, src7);
+
+                sum_abs0 += AND_VEC_D(src8);
+                sum_abs1 += AND_VEC_D(src9);
+                sum_abs2 += AND_VEC_D(src10);
+                sum_abs3 += AND_VEC_D(src11);
+                sum_abs0 += AND_VEC_D(src12);
+                sum_abs1 += AND_VEC_D(src13);
+                sum_abs2 += AND_VEC_D(src14);
+                sum_abs3 += AND_VEC_D(src15);
+            }
+
             LD_DP8_INC(x, inc_x, src8, src9, src10, src11, src12, src13, src14, src15);
 
             sum_abs0 += AND_VEC_D(src0);
