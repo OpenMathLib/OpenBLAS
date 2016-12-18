@@ -24,4 +24,4 @@ runtst:
 	cd testing && $(MAKE) run
 	
 example: all
-	cd examples && make all
+	cd examples && $(MAKE) all
