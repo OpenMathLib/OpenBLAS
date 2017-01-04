@@ -77,6 +77,11 @@ Please read GotoBLAS_01Readme.txt
 - **ARMV8**: Experimental
 - **ARM Cortex-A57**: Experimental
 
+#### IBM zEnterprise System:
+- **Z13**: Double precision real number
+    git checkout z13
+    make USE_TRMM=1
+
 ### Support OS:
 - **GNU/Linux**
 - **MingWin or Visual Studio(CMake)/Windows**: Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-in-Microsoft-Visual-Studio>.

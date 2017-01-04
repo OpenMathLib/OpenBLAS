@@ -150,3 +150,7 @@ In chronological order:
 * theoractice <https://github.com/theoractice/>
   * [2016-03-20] Fix compiler error in VisualStudio with CMake
   * [2016-03-22] Fix access violation on Windows while static linking
+
+* Abdelrauf  <https://github.com/quickwritereader>
+  * [2017-01-01] dgemm and dtrmm kernels for IBM z13
+
