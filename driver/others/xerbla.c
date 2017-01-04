@@ -47,9 +47,9 @@
 #endif
 
 #ifdef INTERFACE64
-#define MSGFMT " ** On entry to %6s parameter number %2d had an illegal value\n" 
+#define MSGFMT " ** On entry to %6s parameter number %2ld had an illegal value\n" 
 #else
-#define MSGFMT " ** On entry to %6s parameter number %2ld had an illegal value\n"
+#define MSGFMT " ** On entry to %6s parameter number %2d had an illegal value\n"
 #endif
 
 #ifdef __ELF__
