@@ -103,10 +103,11 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #define PROLOGUE \
 	.text ;\
-	.align	4 ;\
+	.align	256 ;\
 	.global	REALNAME ;\
 	.type	REALNAME, %function ;\
 REALNAME:
+ 
 
 #define EPILOGUE
 
