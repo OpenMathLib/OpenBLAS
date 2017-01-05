@@ -42,7 +42,9 @@ static char *cpuname_lower[] = {
 
 int detect(void)
 {
-  return CPU_GENERIC;
+   // return CPU_GENERIC;
+ return CPU_Z13; 
+    
 }
 
 void get_libname(void)
