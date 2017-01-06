@@ -96,7 +96,7 @@ DZLAUX = \
    dlartgp.o dlartgs.o \
    ../INSTALL/dlamch.o ../INSTALL/dsecnd_$(TIMER).o
 
-SLASRC = \
+SLASRC_O = \
    sbdsvdx.o spotrf2.o sgetrf2.o \
    sgbbrd.o sgbcon.o sgbequ.o sgbrfs.o sgbsv.o \
    sgbsvx.o sgbtf2.o sgbtrf.o sgbtrs.o sgebak.o sgebal.o sgebd2.o \
@@ -172,7 +172,7 @@ SLASRC = \
    ssyevd_2stage.o ssyev_2stage.o ssyevx_2stage.o ssyevr_2stage.o \
    ssbev_2stage.o ssbevx_2stage.o ssbevd_2stage.o ssygv_2stage.o
 
-DSLASRC = spotrs.o sgetrs.o spotrf.o sgetrf.o
+DSLASRC_O = spotrs.o sgetrs.o spotrf.o sgetrf.o
 
 ifdef USEXBLAS
 SXLASRC = sgesvxx.o sgerfsx.o sla_gerfsx_extended.o sla_geamv.o \
@@ -184,7 +184,7 @@ SXLASRC = sgesvxx.o sgerfsx.o sla_gerfsx_extended.o sla_geamv.o \
    slascl2.o sla_wwaddw.o
 endif
 
-CLASRC = \
+CLASRC_O = \
    cpotrf2.o cgetrf2.o \
    cbdsqr.o cgbbrd.o cgbcon.o cgbequ.o cgbrfs.o cgbsv.o  cgbsvx.o \
    cgbtf2.o cgbtrf.o cgbtrs.o cgebak.o cgebal.o cgebd2.o cgebrd.o \
@@ -285,9 +285,9 @@ CXLASRC = cgesvxx.o cgerfsx.o cla_gerfsx_extended.o cla_geamv.o \
    cla_lin_berr.o clarscl2.o clascl2.o cla_wwaddw.o
 endif
 
-ZCLASRC = cpotrs.o cgetrs.o cpotrf.o cgetrf.o
+ZCLASRC_O = cpotrs.o cgetrs.o cpotrf.o cgetrf.o
 
-DLASRC = \
+DLASRC_O = \
    dpotrf2.o dgetrf2.o \
    dbdsvdx.o \
    dgbbrd.o dgbcon.o dgbequ.o dgbrfs.o dgbsv.o \
@@ -376,7 +376,7 @@ DXLASRC = dgesvxx.o dgerfsx.o dla_gerfsx_extended.o dla_geamv.o \
    dlascl2.o dla_wwaddw.o
 endif
 
-ZLASRC = \
+ZLASRC_O = \
    zpotrf2.o zgetrf2.o \
    zbdsqr.o zgbbrd.o zgbcon.o zgbequ.o zgbrfs.o zgbsv.o  zgbsvx.o \
    zgbtf2.o zgbtrf.o zgbtrs.o zgebak.o zgebal.o zgebd2.o zgebrd.o \
@@ -492,6 +492,38 @@ DEPRECSRC = DEPRECATED/cgegs.o DEPRECATED/cgegv.o DEPRECATED/cgelsx.o \
    DEPRECATED/zgegs.o  DEPRECATED/zgegv.o  DEPRECATED/zgelsx.o \
    DEPRECATED/zgeqpf.o DEPRECATED/zggsvd.o DEPRECATED/zggsvp.o \
    DEPRECATED/zlahrd.o DEPRECATED/zlatzm.o DEPRECATED/ztzrqf.o
+
+# filter out optimized codes from OpenBLAS
+SLAPACKOBJS     = \
+        sgetrf.o sgetrs.o spotrf.o sgetf2.o \
+        spotf2.o slaswp.o sgesv.o slauu2.o  \
+        slauum.o strti2.o strtri.o
+
+DLAPACKOBJS     = \
+        dgetrf.o dgetrs.o dpotrf.o dgetf2.o \
+        dpotf2.o dlaswp.o dgesv.o dlauu2.o  \
+        dlauum.o dtrti2.o dtrtri.o
+
+CLAPACKOBJS     = \
+        cgetrf.o cgetrs.o cpotrf.o cgetf2.o \
+        cpotf2.o claswp.o cgesv.o clauu2.o \
+        clauum.o ctrti2.o ctrtri.o
+
+ZLAPACKOBJS     = \
+        zgetrf.o zgetrs.o zpotrf.o zgetf2.o \
+        zpotf2.o zlaswp.o zgesv.o  zlauu2.o \
+        zlauum.o ztrti2.o ztrtri.o
+
+
+SLASRC = $(filter-out $(SLAPACKOBJS),$(SLASRC_O))
+DLASRC = $(filter-out $(DLAPACKOBJS),$(DLASRC_O))
+CLASRC = $(filter-out $(CLAPACKOBJS),$(CLASRC_O))
+ZLASRC = $(filter-out $(ZLAPACKOBJS),$(ZLASRC_O))
+DSLASRC = $(filter-out $(SLAPACKOBJS),$(DSLASRC_O))
+ZCLASRC = $(filter-out $(CLAPACKOBJS),$(ZCLASRC_O))
+
+#end filter out
+
 
 ALLOBJ = $(SLASRC) $(DLASRC) $(DSLASRC) $(CLASRC) $(ZLASRC) $(ZCLASRC) \
    $(SCLAUX) $(DZLAUX) $(ALLAUX)
