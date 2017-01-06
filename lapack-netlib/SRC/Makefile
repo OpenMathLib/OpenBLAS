@@ -56,7 +56,7 @@ include ../make.inc
 #
 #######################################################################
 
-ALLAUX = ilaenv.o ieeeck.o lsamen.o xerbla.o xerbla_array.o iparmq.o iparam2stage.o\
+ALLAUX_O = ilaenv.o ieeeck.o lsamen.o xerbla.o xerbla_array.o iparmq.o iparam2stage.o\
    ilaprec.o ilatrans.o ilauplo.o iladiag.o chla_transtype.o \
    ../INSTALL/ilaver.o ../INSTALL/lsame.o ../INSTALL/slamch.o
 
@@ -494,6 +494,8 @@ DEPRECSRC = DEPRECATED/cgegs.o DEPRECATED/cgegv.o DEPRECATED/cgelsx.o \
    DEPRECATED/zlahrd.o DEPRECATED/zlatzm.o DEPRECATED/ztzrqf.o
 
 # filter out optimized codes from OpenBLAS
+ALL_AUX_OBJS = xerbla.o ../INSTALL/lsame.o
+
 SLAPACKOBJS     = \
         sgetrf.o sgetrs.o spotrf.o sgetf2.o \
         spotf2.o slaswp.o sgesv.o slauu2.o  \
@@ -515,6 +517,7 @@ ZLAPACKOBJS     = \
         zlauum.o ztrti2.o ztrtri.o
 
 
+ALLAUX = $(filter-out $(ALL_AUX_OBJS),$(ALLAUX_O))
 SLASRC = $(filter-out $(SLAPACKOBJS),$(SLASRC_O))
 DLASRC = $(filter-out $(DLAPACKOBJS),$(DLASRC_O))
 CLASRC = $(filter-out $(CLAPACKOBJS),$(CLASRC_O))
