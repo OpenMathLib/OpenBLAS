@@ -525,6 +525,7 @@ ZLASRC = $(filter-out $(ZLAPACKOBJS),$(ZLASRC_O))
 DSLASRC = $(filter-out $(SLAPACKOBJS),$(DSLASRC_O))
 ZCLASRC = $(filter-out $(CLAPACKOBJS),$(ZCLASRC_O))
 
+OPTS1 = $(filter-out -fopenmp, $(OPTS))
 #end filter out
 
 
@@ -588,10 +589,10 @@ clean:
 	rm -f *.o DEPRECATED/*.o
 
 .f.o:
-	$(FORTRAN) $(OPTS) -c -o $@ $<
+	$(FORTRAN) $(OPTS1) -c -o $@ $<
 
 .F.o:
-	$(FORTRAN) $(OPTS) -c $< -o $@
+	$(FORTRAN) $(OPTS1) -c $< -o $@
 	
 slaruv.o: slaruv.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
 dlaruv.o: dlaruv.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
