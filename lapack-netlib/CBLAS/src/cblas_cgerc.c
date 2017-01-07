@@ -1,7 +1,7 @@
 /*
  * cblas_cgerc.c
  * The program is a C interface to cgerc.
- * 
+ *
  * Keita Teranishi  5/20/98
  *
  */
@@ -20,7 +20,7 @@ void cblas_cgerc(const CBLAS_LAYOUT layout, const int M, const int N,
    #define F77_N N
    #define F77_incX incX
    #define F77_incY incy
-   #define F77_lda lda   
+   #define F77_lda lda
 #endif
 
    int n, i, tincy, incy=incY;
@@ -33,9 +33,9 @@ void cblas_cgerc(const CBLAS_LAYOUT layout, const int M, const int N,
    CBLAS_CallFromC = 1;
    if (layout == CblasColMajor)
    {
-      F77_cgerc( &F77_M, &F77_N, alpha, X, &F77_incX, Y, &F77_incY, A, 
+      F77_cgerc( &F77_M, &F77_N, alpha, X, &F77_incX, Y, &F77_incY, A,
                       &F77_lda);
-   }  else if (layout == CblasRowMajor)   
+   }  else if (layout == CblasRowMajor)
    {
       RowMajorStrg = 1;
       if (N > 0)
@@ -48,11 +48,11 @@ void cblas_cgerc(const CBLAS_LAYOUT layout, const int M, const int N,
             i = incY << 1;
             tincy = 2;
             st= y+n;
-         } else { 
+         } else {
             i = incY *(-2);
             tincy = -2;
-            st = y-2; 
-            y +=(n-2); 
+            st = y-2;
+            y +=(n-2);
          }
          do
          {
@@ -72,7 +72,7 @@ void cblas_cgerc(const CBLAS_LAYOUT layout, const int M, const int N,
       }
       else y = (float *) Y;
 
-      F77_cgeru( &F77_N, &F77_M, alpha, y, &F77_incY, X, &F77_incX, A, 
+      F77_cgeru( &F77_N, &F77_M, alpha, y, &F77_incY, X, &F77_incX, A,
                       &F77_lda);
       if(Y!=y)
          free(y);

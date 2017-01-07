@@ -2,20 +2,20 @@ C> \brief \b DLAHILB
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER N, NRHS, LDA, LDX, LDB, INFO
 *       .. Array Arguments ..
 *       DOUBLE PRECISION A(LDA, N), X(LDX, NRHS), B(LDB, NRHS), WORK(N)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -26,8 +26,8 @@ C> \brief \b DLAHILB
 *> NRHS right-hand sides in B and solutions in X such that A*X=B.
 *>
 *> The Hilbert matrix is scaled by M = LCM(1, 2, ..., 2*N-1) so that all
-*> entries are integers.  The right-hand sides are the first NRHS 
-*> columns of M * the identity matrix, and the solutions are the 
+*> entries are integers.  The right-hand sides are the first NRHS
+*> columns of M * the identity matrix, and the solutions are the
 *> first NRHS columns of the inverse Hilbert matrix.
 *>
 *> The condition number of the Hilbert matrix grows exponentially with
@@ -36,7 +36,7 @@ C> \brief \b DLAHILB
 *> generated exactly without extra precision.  Precision is exhausted
 *> when the largest entry in the inverse Hilbert matrix is greater than
 *> 2 to the power of the number of bits in the fraction of the data type
-*> used plus one, which is 24 for single precision.  
+*> used plus one, which is 24 for single precision.
 *>
 *> In single, the generated solution is exact for N <= 6 and has
 *> small componentwise error for 7 <= N <= 11.
@@ -50,7 +50,7 @@ C> \brief \b DLAHILB
 *>          N is INTEGER
 *>          The dimension of the matrix A.
 *> \endverbatim
-*>      
+*>
 *> \param[in] NRHS
 *> \verbatim
 *>          NRHS is INTEGER
@@ -112,22 +112,22 @@ C> \brief \b DLAHILB
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup double_matgen
 *
 *  =====================================================================
       SUBROUTINE DLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -212,7 +212,7 @@ C> \brief \b DLAHILB
          WORK(J) = (  ( (WORK(J-1)/(J-1)) * (J-1 - N) ) /(J-1)  )
      $        * (N +J -1)
       END DO
-      
+
       DO J = 1, NRHS
          DO I = 1, N
             X(I, J) = (WORK(I)*WORK(J)) / (I + J - 1)

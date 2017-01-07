@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CERRSY( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -46,22 +46,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRSY( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -86,7 +86,7 @@
      $                   S( NMAX ), ERR_BNDS_N( NMAX, 3 ),
      $                   ERR_BNDS_C( NMAX, 3 ), PARAMS( 1 )
       COMPLEX            A( NMAX, NMAX ), AF( NMAX, NMAX ), B( NMAX ),
-     $                   W( 2*NMAX ), X( NMAX )
+     $                   E( NMAX), W( 2*NMAX ), X( NMAX )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
@@ -124,22 +124,22 @@
             A( I, J ) = CMPLX( 1. / REAL( I+J ), -1. / REAL( I+J ) )
             AF( I, J ) = CMPLX( 1. / REAL( I+J ), -1. / REAL( I+J ) )
    10    CONTINUE
-         B( J ) = 0.
-         R1( J ) = 0.
-         R2( J ) = 0.
-         W( J ) = 0.
-         X( J ) = 0.
-         S( J ) = 0.
+         B( J ) = 0.E0
+         E( J ) = 0.E0
+         R1( J ) = 0.E0
+         R2( J ) = 0.E0
+         W( J ) = 0.E0
+         X( J ) = 0.E0
          IP( J ) = J
    20 CONTINUE
       ANRM = 1.0
       OK = .TRUE.
-*
-*     Test error exits of the routines that use factorization
-*     of a symmetric indefinite matrix with patrial
-*     (Bunch-Kaufman) diagonal pivoting method.
-*
+
       IF( LSAMEN( 2, C2, 'SY' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with patrial
+*        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        CSYTRF
 *
@@ -152,6 +152,12 @@
          CALL CHKXER( 'CSYTRF', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL CSYTRF( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'CSYTRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CSYTRF( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'CSYTRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CSYTRF( 'U', 0, A, 1, IP, W, -2, INFO )
          CALL CHKXER( 'CSYTRF', INFOT, NOUT, LERR, OK )
 *
 *        CSYTF2
@@ -192,6 +198,19 @@
          INFOT = 4
          CALL CSYTRI2( 'U', 2, A, 1, IP, W, 1, INFO )
          CALL CHKXER( 'CSYTRI2', INFOT, NOUT, LERR, OK )
+*
+*        CSYTRI2X
+*
+         SRNAMT = 'CSYTRI2X'
+         INFOT = 1
+         CALL CSYTRI2X( '/', 0, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRI2X( 'U', -1, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTRI2X( 'U', 2, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI2X', INFOT, NOUT, LERR, OK )
 *
 *        CSYTRS
 *
@@ -250,7 +269,7 @@
          NPARAMS = 0
          SRNAMT = 'CSYRFSX'
          INFOT = 1
-         CALL CSYRFSX( '/', EQ, 0, 0, A, 1, AF, 1, IP, S, B, 1, X, 1, 
+         CALL CSYRFSX( '/', EQ, 0, 0, A, 1, AF, 1, IP, S, B, 1, X, 1,
      $        RCOND, BERR, N_ERR_BNDS, ERR_BNDS_N, ERR_BNDS_C, NPARAMS,
      $        PARAMS, W, R, INFO )
          CALL CHKXER( 'CSYRFSX', INFOT, NOUT, LERR, OK )
@@ -266,27 +285,27 @@
      $        PARAMS, W, R, INFO )
          CALL CHKXER( 'CSYRFSX', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL CSYRFSX( 'U', EQ, 0, -1, A, 1, AF, 1, IP, S, B, 1, X, 1, 
+         CALL CSYRFSX( 'U', EQ, 0, -1, A, 1, AF, 1, IP, S, B, 1, X, 1,
      $        RCOND, BERR, N_ERR_BNDS, ERR_BNDS_N, ERR_BNDS_C, NPARAMS,
      $        PARAMS, W, R, INFO )
          CALL CHKXER( 'CSYRFSX', INFOT, NOUT, LERR, OK )
          INFOT = 6
-         CALL CSYRFSX( 'U', EQ, 2, 1, A, 1, AF, 2, IP, S, B, 2, X, 2, 
+         CALL CSYRFSX( 'U', EQ, 2, 1, A, 1, AF, 2, IP, S, B, 2, X, 2,
      $        RCOND, BERR, N_ERR_BNDS, ERR_BNDS_N, ERR_BNDS_C, NPARAMS,
      $        PARAMS, W, R, INFO )
          CALL CHKXER( 'CSYRFSX', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL CSYRFSX( 'U', EQ, 2, 1, A, 2, AF, 1, IP, S, B, 2, X, 2, 
+         CALL CSYRFSX( 'U', EQ, 2, 1, A, 2, AF, 1, IP, S, B, 2, X, 2,
      $        RCOND, BERR, N_ERR_BNDS, ERR_BNDS_N, ERR_BNDS_C, NPARAMS,
      $        PARAMS, W, R, INFO )
          CALL CHKXER( 'CSYRFSX', INFOT, NOUT, LERR, OK )
          INFOT = 12
-         CALL CSYRFSX( 'U', EQ, 2, 1, A, 2, AF, 2, IP, S, B, 1, X, 2, 
+         CALL CSYRFSX( 'U', EQ, 2, 1, A, 2, AF, 2, IP, S, B, 1, X, 2,
      $        RCOND, BERR, N_ERR_BNDS, ERR_BNDS_N, ERR_BNDS_C, NPARAMS,
      $        PARAMS, W, R, INFO )
          CALL CHKXER( 'CSYRFSX', INFOT, NOUT, LERR, OK )
          INFOT = 14
-         CALL CSYRFSX( 'U', EQ, 2, 1, A, 2, AF, 2, IP, S, B, 2, X, 1, 
+         CALL CSYRFSX( 'U', EQ, 2, 1, A, 2, AF, 2, IP, S, B, 2, X, 1,
      $        RCOND, BERR, N_ERR_BNDS, ERR_BNDS_N, ERR_BNDS_C, NPARAMS,
      $        PARAMS, W, R, INFO )
          CALL CHKXER( 'CSYRFSX', INFOT, NOUT, LERR, OK )
@@ -307,11 +326,11 @@
          CALL CSYCON( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'CSYCON', INFOT, NOUT, LERR, OK )
 *
-*     Test error exits of the routines that use factorization
-*     of a symmetric indefinite matrix with "rook"
-*     (bounded Bunch-Kaufman) diagonal pivoting method.
-*
       ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with rook
+*        (bounded Bunch-Kaufman) diagonal pivoting method.
 *
 *        CSYTRF_ROOK
 *
@@ -324,6 +343,12 @@
          CALL CHKXER( 'CSYTRF_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL CSYTRF_ROOK( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'CSYTRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CSYTRF_ROOK( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'CSYTRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CSYTRF_ROOK( 'U', 0, A, 1, IP, W, -2, INFO )
          CALL CHKXER( 'CSYTRF_ROOK', INFOT, NOUT, LERR, OK )
 *
 *        CSYTF2_ROOK
@@ -387,11 +412,120 @@
          CALL CSYCON_ROOK( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'CSYCON_ROOK', INFOT, NOUT, LERR, OK )
 *
-*     Test error exits of the routines that use factorization
-*     of a symmetric indefinite packed matrix with patrial
-*     (Bunch-Kaufman) diagonal pivoting method.
+      ELSE IF( LSAMEN( 2, C2, 'SK' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with rook
+*        (bounded Bunch-Kaufman) pivoting with the new storage
+*        format for factors L ( or U) and D.
+*
+*        L (or U) is stored in A, diagonal of D is stored on the
+*        diagonal of A, subdiagonal of D is stored in a separate array E.
+*
+*        CSYTRF_RK
+*
+         SRNAMT = 'CSYTRF_RK'
+         INFOT = 1
+         CALL CSYTRF_RK( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRF_RK( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTRF_RK( 'U', 2, A, 1, E, IP, W, 4, INFO )
+         CALL CHKXER( 'CSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CSYTRF_RK( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'CSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CSYTRF_RK( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'CSYTRF_RK', INFOT, NOUT, LERR, OK )
+*
+*        CSYTF2_RK
+*
+         SRNAMT = 'CSYTF2_RK'
+         INFOT = 1
+         CALL CSYTF2_RK( '/', 0, A, 1, E, IP, INFO )
+         CALL CHKXER( 'CSYTF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTF2_RK( 'U', -1, A, 1, E, IP, INFO )
+         CALL CHKXER( 'CSYTF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTF2_RK( 'U', 2, A, 1, E, IP, INFO )
+         CALL CHKXER( 'CSYTF2_RK', INFOT, NOUT, LERR, OK )
+*
+*        CSYTRI_3
+*
+         SRNAMT = 'CSYTRI_3'
+         INFOT = 1
+         CALL CSYTRI_3( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRI_3( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTRI_3( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CSYTRI_3( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'CSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CSYTRI_3( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'CSYTRI_3', INFOT, NOUT, LERR, OK )
+*
+*        CSYTRI_3X
+*
+         SRNAMT = 'CSYTRI_3X'
+         INFOT = 1
+         CALL CSYTRI_3X( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRI_3X( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYTRI_3X( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CSYTRI_3X', INFOT, NOUT, LERR, OK )
+*
+*        CSYTRS_3
+*
+         SRNAMT = 'CSYTRS_3'
+         INFOT = 1
+         CALL CSYTRS_3( '/', 0, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYTRS_3( 'U', -1, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CSYTRS_3( 'U', 0, -1, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CSYTRS_3( 'U', 2, 1, A, 1, E, IP, B, 2, INFO )
+         CALL CHKXER( 'CSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL CSYTRS_3( 'U', 2, 1, A, 2, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CSYTRS_3', INFOT, NOUT, LERR, OK )
+*
+*        CSYCON_3
+*
+         SRNAMT = 'CSYCON_3'
+         INFOT = 1
+         CALL CSYCON_3( '/', 0, A, 1,  E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CSYCON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYCON_3( 'U', -1, A, 1, E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CSYCON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CSYCON_3( 'U', 2, A, 1, E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CSYCON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CSYCON_3( 'U', 1, A, 1, E, IP, -1.0E0, RCOND, W, INFO)
+         CALL CHKXER( 'CSYCON_3', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite packed matrix with patrial
+*        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        CSPTRF
 *

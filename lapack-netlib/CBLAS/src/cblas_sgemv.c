@@ -4,7 +4,7 @@
  * This program is a C interface to sgemv.
  * Written by Keita Teranishi
  * 4/6/1998
- * 
+ *
  */
 #include "cblas.h"
 #include "cblas_f77.h"
@@ -18,7 +18,7 @@ void cblas_sgemv(const CBLAS_LAYOUT layout,
 #ifdef F77_CHAR
    F77_CHAR F77_TA;
 #else
-   #define F77_TA &TA   
+   #define F77_TA &TA
 #endif
 #ifdef F77_INT
    F77_INT F77_M=M, F77_N=N, F77_lda=lda, F77_incX=incX, F77_incY=incY;
@@ -40,7 +40,7 @@ void cblas_sgemv(const CBLAS_LAYOUT layout,
       if (TransA == CblasNoTrans) TA = 'N';
       else if (TransA == CblasTrans) TA = 'T';
       else if (TransA == CblasConjTrans) TA = 'C';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_sgemv","Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -49,7 +49,7 @@ void cblas_sgemv(const CBLAS_LAYOUT layout,
       #ifdef F77_CHAR
          F77_TA = C2F_CHAR(&TA);
       #endif
-      F77_sgemv(F77_TA, &F77_M, &F77_N, &alpha, A, &F77_lda, X, &F77_incX, 
+      F77_sgemv(F77_TA, &F77_M, &F77_N, &alpha, A, &F77_lda, X, &F77_incX,
                 &beta, Y, &F77_incY);
    }
    else if (layout == CblasRowMajor)
@@ -58,7 +58,7 @@ void cblas_sgemv(const CBLAS_LAYOUT layout,
       if (TransA == CblasNoTrans) TA = 'T';
       else if (TransA == CblasTrans) TA = 'N';
       else if (TransA == CblasConjTrans) TA = 'N';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_sgemv", "Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;

@@ -1,7 +1,7 @@
 /*
  * cblas_cgeru.c
  * The program is a C interface to cgeru.
- * 
+ *
  * Keita Teranishi  5/20/98
  *
  */
@@ -35,7 +35,7 @@ void cblas_cgeru(const CBLAS_LAYOUT layout, const int M, const int N,
    else if (layout == CblasRowMajor)
    {
       RowMajorStrg = 1;
-      F77_cgeru( &F77_N, &F77_M, alpha, Y, &F77_incY, X, &F77_incX, A, 
+      F77_cgeru( &F77_N, &F77_M, alpha, Y, &F77_incY, X, &F77_incX, A,
                       &F77_lda);
    }
    else cblas_xerbla(1, "cblas_cgeru","Illegal layout setting, %d\n", layout);

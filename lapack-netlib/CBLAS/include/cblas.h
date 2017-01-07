@@ -88,39 +88,39 @@ CBLAS_INDEX cblas_izamax(const int N, const void   *X, const int incX);
  * ===========================================================================
  */
 
-/* 
+/*
  * Routines with standard 4 prefixes (s, d, c, z)
  */
-void cblas_sswap(const int N, float *X, const int incX, 
+void cblas_sswap(const int N, float *X, const int incX,
                  float *Y, const int incY);
-void cblas_scopy(const int N, const float *X, const int incX, 
+void cblas_scopy(const int N, const float *X, const int incX,
                  float *Y, const int incY);
 void cblas_saxpy(const int N, const float alpha, const float *X,
                  const int incX, float *Y, const int incY);
 
-void cblas_dswap(const int N, double *X, const int incX, 
+void cblas_dswap(const int N, double *X, const int incX,
                  double *Y, const int incY);
-void cblas_dcopy(const int N, const double *X, const int incX, 
+void cblas_dcopy(const int N, const double *X, const int incX,
                  double *Y, const int incY);
 void cblas_daxpy(const int N, const double alpha, const double *X,
                  const int incX, double *Y, const int incY);
 
-void cblas_cswap(const int N, void *X, const int incX, 
+void cblas_cswap(const int N, void *X, const int incX,
                  void *Y, const int incY);
-void cblas_ccopy(const int N, const void *X, const int incX, 
+void cblas_ccopy(const int N, const void *X, const int incX,
                  void *Y, const int incY);
 void cblas_caxpy(const int N, const void *alpha, const void *X,
                  const int incX, void *Y, const int incY);
 
-void cblas_zswap(const int N, void *X, const int incX, 
+void cblas_zswap(const int N, void *X, const int incX,
                  void *Y, const int incY);
-void cblas_zcopy(const int N, const void *X, const int incX, 
+void cblas_zcopy(const int N, const void *X, const int incX,
                  void *Y, const int incY);
 void cblas_zaxpy(const int N, const void *alpha, const void *X,
                  const int incX, void *Y, const int incY);
 
 
-/* 
+/*
  * Routines with S and D prefix only
  */
 void cblas_srotg(float *a, float *b, float *c, float *s);
@@ -138,7 +138,7 @@ void cblas_drotm(const int N, double *X, const int incX,
                 double *Y, const int incY, const double *P);
 
 
-/* 
+/*
  * Routines with S D C Z CS and ZD prefixes
  */
 void cblas_sscal(const int N, const float alpha, float *X, const int incX);
@@ -154,7 +154,7 @@ void cblas_zdscal(const int N, const double alpha, void *X, const int incX);
  * ===========================================================================
  */
 
-/* 
+/*
  * Routines with standard 4 prefixes (S, D, C, Z)
  */
 void cblas_sgemv(const CBLAS_LAYOUT layout,
@@ -169,11 +169,11 @@ void cblas_sgbmv(CBLAS_LAYOUT layout,
                  const int incX, const float beta, float *Y, const int incY);
 void cblas_strmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const float *A, const int lda, 
+                 const int N, const float *A, const int lda,
                  float *X, const int incX);
 void cblas_stbmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const int K, const float *A, const int lda, 
+                 const int N, const int K, const float *A, const int lda,
                  float *X, const int incX);
 void cblas_stpmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
@@ -202,11 +202,11 @@ void cblas_dgbmv(CBLAS_LAYOUT layout,
                  const int incX, const double beta, double *Y, const int incY);
 void cblas_dtrmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const double *A, const int lda, 
+                 const int N, const double *A, const int lda,
                  double *X, const int incX);
 void cblas_dtbmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const int K, const double *A, const int lda, 
+                 const int N, const int K, const double *A, const int lda,
                  double *X, const int incX);
 void cblas_dtpmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
@@ -235,11 +235,11 @@ void cblas_cgbmv(CBLAS_LAYOUT layout,
                  const int incX, const void *beta, void *Y, const int incY);
 void cblas_ctrmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const void *A, const int lda, 
+                 const int N, const void *A, const int lda,
                  void *X, const int incX);
 void cblas_ctbmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const int K, const void *A, const int lda, 
+                 const int N, const int K, const void *A, const int lda,
                  void *X, const int incX);
 void cblas_ctpmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
@@ -268,11 +268,11 @@ void cblas_zgbmv(CBLAS_LAYOUT layout,
                  const int incX, const void *beta, void *Y, const int incY);
 void cblas_ztrmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const void *A, const int lda, 
+                 const int N, const void *A, const int lda,
                  void *X, const int incX);
 void cblas_ztbmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                 const int N, const int K, const void *A, const int lda, 
+                 const int N, const int K, const void *A, const int lda,
                  void *X, const int incX);
 void cblas_ztpmv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
@@ -290,7 +290,7 @@ void cblas_ztpsv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                  const int N, const void *Ap, void *X, const int incX);
 
 
-/* 
+/*
  * Routines with S and D prefixes only
  */
 void cblas_ssymv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
@@ -352,7 +352,7 @@ void cblas_dspr2(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
                 const int incX, const double *Y, const int incY, double *A);
 
 
-/* 
+/*
  * Routines with C and Z prefixes only
  */
 void cblas_chemv(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo,
@@ -423,7 +423,7 @@ void cblas_zhpr2(CBLAS_LAYOUT layout, CBLAS_UPLO Uplo, const int N,
  * ===========================================================================
  */
 
-/* 
+/*
  * Routines with standard 4 prefixes (S, D, C, Z)
  */
 void cblas_sgemm(CBLAS_LAYOUT layout, CBLAS_TRANSPOSE TransA,
@@ -547,7 +547,7 @@ void cblas_ztrsm(CBLAS_LAYOUT layout, CBLAS_SIDE Side,
                  void *B, const int ldb);
 
 
-/* 
+/*
  * Routines with prefixes C and Z only
  */
 void cblas_chemm(CBLAS_LAYOUT layout, CBLAS_SIDE Side,

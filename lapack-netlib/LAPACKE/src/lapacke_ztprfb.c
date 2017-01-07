@@ -84,11 +84,11 @@ lapack_int LAPACKE_ztprfb( int matrix_layout, char side, char trans, char direct
     else {
        ldwork = m;
        work_size = MAX(1,ldwork) * MAX(1,k);
-       }    
-    
+       }
+
     /* Allocate memory for working array(s) */
     work = (lapack_complex_double*)
-    LAPACKE_malloc( sizeof(lapack_complex_double) * work_size ); 
+    LAPACKE_malloc( sizeof(lapack_complex_double) * work_size );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;

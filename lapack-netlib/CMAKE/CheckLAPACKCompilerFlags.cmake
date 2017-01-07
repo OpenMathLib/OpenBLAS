@@ -1,10 +1,10 @@
 # This module checks against various known compilers and thier respective
 # flags to determine any specific flags needing to be set.
-# 
+#
 #  1.  If FPE traps are enabled either abort or disable them
 #  2.  Specify fixed form if needed
 #  3.  Ensure that Release builds use O2 instead of O3
-# 
+#
 #=============================================================================
 # Author: Chuck Atkins
 # Copyright 2011
@@ -16,7 +16,7 @@ set( FPE_EXIT FALSE )
 
 # GNU Fortran
 if( CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" )
-  if( "${CMAKE_Fortran_FLAGS}" MATCHES "-ffpe-trap=[izoupd]") 
+  if( "${CMAKE_Fortran_FLAGS}" MATCHES "-ffpe-trap=[izoupd]")
     set( FPE_EXIT TRUE )
   endif()
 
@@ -55,12 +55,12 @@ elseif( CMAKE_Fortran_COMPILER_ID STREQUAL "HP" )
   if( "${CMAKE_Fortran_FLAGS}" MATCHES "\\+fp_exception" )
     set( FPE_EXIT TRUE )
   endif()
-  
+
   if( NOT ("${CMAKE_Fortran_FLAGS}" MATCHES "\\+fltconst_strict") )
     message( STATUS "Enabling strict float conversion with +fltconst_strict" )
     set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} +fltconst_strict"
          CACHE STRING "Flags for Fortran compiler." FORCE )
-  endif() 
+  endif()
 
   # Most versions of cmake don't have good default options for the HP compiler
   set( CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -g"
@@ -76,7 +76,7 @@ endif()
 
 if( "${CMAKE_Fortran_FLAGS_RELEASE}" MATCHES "O[3-9]" )
   message( STATUS "Reducing RELEASE optimization level to O2" )
-  string( REGEX REPLACE "O[3-9]" "O2" CMAKE_Fortran_FLAGS_RELEASE 
+  string( REGEX REPLACE "O[3-9]" "O2" CMAKE_Fortran_FLAGS_RELEASE
           "${CMAKE_Fortran_FLAGS_RELEASE}" )
   set( CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE}"
        CACHE STRING "Flags used by the compiler during release builds" FORCE )

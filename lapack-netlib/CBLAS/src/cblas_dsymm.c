@@ -15,12 +15,12 @@ void cblas_dsymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
                  const double  *B, const int ldb, const double beta,
                  double  *C, const int ldc)
 {
-   char SD, UL;   
+   char SD, UL;
 #ifdef F77_CHAR
    F77_CHAR F77_SD, F77_UL;
 #else
-   #define F77_SD &SD  
-   #define F77_UL &UL  
+   #define F77_SD &SD
+   #define F77_UL &UL
 #endif
 
 #ifdef F77_INT
@@ -43,7 +43,7 @@ void cblas_dsymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
    {
       if( Side == CblasRight) SD='R';
       else if ( Side == CblasLeft ) SD='L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_dsymm","Illegal Side setting, %d\n", Side);
          CBLAS_CallFromC = 0;
@@ -53,7 +53,7 @@ void cblas_dsymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Uplo == CblasUpper) UL='U';
       else if ( Uplo == CblasLower ) UL='L';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_dsymm","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -73,7 +73,7 @@ void cblas_dsymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
       RowMajorStrg = 1;
       if( Side == CblasRight) SD='L';
       else if ( Side == CblasLeft ) SD='R';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_dsymm","Illegal Side setting, %d\n", Side);
          CBLAS_CallFromC = 0;
@@ -83,7 +83,7 @@ void cblas_dsymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Uplo == CblasUpper) UL='L';
       else if ( Uplo == CblasLower ) UL='U';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_dsymm","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -98,9 +98,9 @@ void cblas_dsymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       F77_dsymm(F77_SD, F77_UL, &F77_N, &F77_M, &alpha, A, &F77_lda, B,
                  &F77_ldb, &beta, C, &F77_ldc);
-   } 
-   else cblas_xerbla(1, "cblas_dsymm","Illegal layout setting, %d\n", layout); 
+   }
+   else cblas_xerbla(1, "cblas_dsymm","Illegal layout setting, %d\n", layout);
    CBLAS_CallFromC = 0;
    RowMajorStrg = 0;
    return;
-} 
+}

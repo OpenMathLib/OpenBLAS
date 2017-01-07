@@ -36,7 +36,7 @@ void cblas_sger(const CBLAS_LAYOUT layout, const int M, const int N,
    else if (layout == CblasRowMajor)
    {
       RowMajorStrg = 1;
-      F77_sger( &F77_N, &F77_M, &alpha, Y, &F77_incY, X, &F77_incX, A, 
+      F77_sger( &F77_N, &F77_M, &alpha, Y, &F77_incY, X, &F77_incX, A,
         &F77_lda);
    }
    else cblas_xerbla(1, "cblas_sger", "Illegal layout setting, %d\n", layout);

@@ -34,8 +34,8 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_slascl_work( int matrix_layout, char type, lapack_int kl,
-                           lapack_int ku, float cfrom, float cto, 
-                           lapack_int m, lapack_int n, float* a, 
+                           lapack_int ku, float cfrom, float cto,
+                           lapack_int m, lapack_int n, float* a,
                            lapack_int lda )
 {
     lapack_int info = 0;

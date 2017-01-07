@@ -30,13 +30,13 @@ void cblas_dger(const CBLAS_LAYOUT layout, const int M, const int N,
    CBLAS_CallFromC = 1;
    if (layout == CblasColMajor)
    {
-      F77_dger( &F77_M, &F77_N, &alpha, X, &F77_incX, Y, &F77_incY, A, 
+      F77_dger( &F77_M, &F77_N, &alpha, X, &F77_incX, Y, &F77_incY, A,
                       &F77_lda);
    }
    else if (layout == CblasRowMajor)
    {
       RowMajorStrg = 1;
-      F77_dger( &F77_N, &F77_M ,&alpha, Y, &F77_incY, X, &F77_incX, A, 
+      F77_dger( &F77_N, &F77_M ,&alpha, Y, &F77_incY, X, &F77_incX, A,
                       &F77_lda);
 
    }

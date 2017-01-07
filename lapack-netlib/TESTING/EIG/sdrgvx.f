@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          ALPHAR, ALPHAI, BETA, VL, VR, ILO, IHI, LSCALE,
 *                          RSCALE, S, STRU, DIF, DIFTRU, WORK, LWORK,
 *                          IWORK, LIWORK, RESULT, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IHI, ILO, INFO, LDA, LIWORK, LWORK, NIN, NOUT,
 *      $                   NSIZE
@@ -28,7 +28,7 @@
 *      $                   STRU( * ), VL( LDA, * ), VR( LDA, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -213,32 +213,32 @@
 *>  		IHI is INTEGER
 *> \endverbatim
 *>
-*> \param[out] LSCALE	
+*> \param[out] LSCALE
 *> \verbatim
 *>  		LSCALE is REAL array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] RSCALE	
+*> \param[out] RSCALE
 *> \verbatim
 *>  		RSCALE is REAL array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] S	
+*> \param[out] S
 *> \verbatim
 *>  		S is REAL array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] STRU	
+*> \param[out] STRU
 *> \verbatim
 *>  		STRU is REAL array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] DIF		
+*> \param[out] DIF
 *> \verbatim
 *>  		DIF is REAL array, dimension (N)
 *> \endverbatim
 *>
-*> \param[out] DIFTRU		
+*> \param[out] DIFTRU
 *> \verbatim
 *>  		DIFTRU is REAL array, dimension (N)
 *> \endverbatim
@@ -286,10 +286,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -301,7 +301,7 @@
      $                   RSCALE, S, STRU, DIF, DIFTRU, WORK, LWORK,
      $                   IWORK, LIWORK, RESULT, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

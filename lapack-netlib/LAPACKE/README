@@ -6,25 +6,25 @@ Introduction
 -------------------------------------------------------------------------------
 
 This library is a part of reference implementation for the C interface to
-LAPACK project according to the specifications described at the forum for 
+LAPACK project according to the specifications described at the forum for
 the Intel(R) Math Kernel Library (Intel(R) MKL):
 http://software.intel.com/en-us/forums/showthread.php?t=61234
 
 This implementation provides a native C interface to LAPACK routines available
-at www.netlib.org/lapack to facilitate usage of LAPACK functionality 
+at www.netlib.org/lapack to facilitate usage of LAPACK functionality
 for C programmers.
 This implementation introduces:
-- row-major and column-major matrix layout controlled by the first function 
+- row-major and column-major matrix layout controlled by the first function
   parameter;
-- an implementation with working arrays (middle-level interface) as well as 
+- an implementation with working arrays (middle-level interface) as well as
   without working arrays (high-level interface);
 - input scalars passed by value;
 - error code as a return value instead of the INFO parameter.
 
-This implementation supports both the ILP64 and LP64 programming models, 
+This implementation supports both the ILP64 and LP64 programming models,
 and different complex type styles: structure, C99.
 
-This implementation includes interfaces for the LAPACK-3.2.1 Driver and 
+This implementation includes interfaces for the LAPACK-3.2.1 Driver and
 Computational routines only.
 
 -------------------------------------------------------------------------------
@@ -42,12 +42,12 @@ Installation
 -------------------------------------------------------------------------------
 
 The reference code for the C interface to LAPACK is built similarly to the
-Basic Linear Algebra Subprograms (BLAS) and LAPACK. The build system produces 
+Basic Linear Algebra Subprograms (BLAS) and LAPACK. The build system produces
 a static binary lapacke.a.
 
 You need to provide a make.inc file in the top directory that defines the
 compiler, compiler flags, names for binaries to be created/linked to. You may
-choose the appropriate LP64/ILP64 model, convenient complex type style, 
+choose the appropriate LP64/ILP64 model, convenient complex type style,
 LAPACKE name pattern, and/or redefine system malloc/free in make.inc. Several
 examples of make.inc are provided.
 
@@ -75,7 +75,7 @@ typedef struct { double real, imag; } _lapack_complex_double;
 #define lapack_complex_float  _lapack_complex_float
 #define lapack_complex_double _lapack_complex_double
 
-3) C++ complex types (set by enabling in the configuration file): 
+3) C++ complex types (set by enabling in the configuration file):
 -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_CPP
 
 #define lapack_complex_float std::complex<float>
@@ -87,9 +87,9 @@ You have to compile the interface with C++ compiler with C++ types.
 -DLAPACK_COMPLEX_CUSTOM
 
 To use custom complex types, you need to:
-- Define lapack_complex_float/lapack_complex_double types on your own. 
+- Define lapack_complex_float/lapack_complex_double types on your own.
 - Optionally define lapack_make_complex_float/lapack_make_complex_double_real
-  functions if you want to build the testing suite supplied. Use these 
+  functions if you want to build the testing suite supplied. Use these
   functions for the testing system. Their purpose is to make a complex value of
   a real part re, imaginary part im. The prototypes are as follows:
 
@@ -99,7 +99,7 @@ To use custom complex types, you need to:
 -------------------------------------------------------------------------------
 Choosing ILP64 Data Model
 -------------------------------------------------------------------------------
-To choose ILP64 data model (set by enabling in the configuration file), use the 
+To choose ILP64 data model (set by enabling in the configuration file), use the
 following options:
 
 -DHAVE_LAPACK_CONFIG_H  -DLAPACK_ILP64
@@ -108,7 +108,7 @@ following options:
 Using Predicate Functions
 -------------------------------------------------------------------------------
 
-The functions 
+The functions
 
 lapacke_?gees/lapacke_?gees_work
 lapacke_?geesx/lapacke_?geesx_work
@@ -139,8 +139,8 @@ The row-major matrices are transposed on entry to and on exit from the LAPACK
 routine, if needed. Top-level interfaces additionally allocate/deallocate
 working space on entry to and on exit from the LAPACK routine.
 
-Because of possible additional transpositions, a routine called with 
-this interface may require more memory space and run slower than the 
+Because of possible additional transpositions, a routine called with
+this interface may require more memory space and run slower than the
 corresponding LAPACK routine.
 
 -------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ numbers differentiate features within each processor family, not
 across different processor families. See
 http://www.intel.com/products/processor_number for details.
 
-This document contains information on products in the design phase of 
+This document contains information on products in the design phase of
 development.
 
 BunnyPeople, Celeron, Celeron Inside, Centrino, Centrino Atom,

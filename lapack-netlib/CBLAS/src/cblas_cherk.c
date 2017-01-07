@@ -14,12 +14,12 @@ void cblas_cherk(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
                  const float alpha, const void *A, const int lda,
                  const float beta, void *C, const int ldc)
 {
-   char UL, TR;   
+   char UL, TR;
 #ifdef F77_CHAR
    F77_CHAR F77_TR, F77_UL;
 #else
-   #define F77_TR &TR  
-   #define F77_UL &UL  
+   #define F77_TR &TR
+   #define F77_UL &UL
 #endif
 
 #ifdef F77_INT
@@ -41,7 +41,7 @@ void cblas_cherk(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    {
       if( Uplo == CblasUpper) UL='U';
       else if ( Uplo == CblasLower ) UL='L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_cherk", "Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -52,7 +52,7 @@ void cblas_cherk(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       if( Trans == CblasTrans) TR ='T';
       else if ( Trans == CblasConjTrans ) TR='C';
       else if ( Trans == CblasNoTrans )   TR='N';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_cherk", "Illegal Trans setting, %d\n", Trans);
          CBLAS_CallFromC = 0;
@@ -72,7 +72,7 @@ void cblas_cherk(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       RowMajorStrg = 1;
       if( Uplo == CblasUpper) UL='L';
       else if ( Uplo == CblasLower ) UL='U';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_cherk", "Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -82,7 +82,7 @@ void cblas_cherk(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       if( Trans == CblasTrans) TR ='N';
       else if ( Trans == CblasConjTrans ) TR='N';
       else if ( Trans == CblasNoTrans )   TR='C';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_cherk", "Illegal Trans setting, %d\n", Trans);
          CBLAS_CallFromC = 0;
@@ -97,7 +97,7 @@ void cblas_cherk(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
 
       F77_cherk(F77_UL, F77_TR, &F77_N, &F77_K, &alpha, A, &F77_lda,
                 &beta, C, &F77_ldc);
-   } 
+   }
    else  cblas_xerbla(1, "cblas_cherk", "Illegal layout setting, %d\n", layout);
    CBLAS_CallFromC = 0;
    RowMajorStrg = 0;

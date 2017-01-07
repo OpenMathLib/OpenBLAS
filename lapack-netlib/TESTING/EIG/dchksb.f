@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE DCHKSB( NSIZES, NN, NWDTHS, KK, NTYPES, DOTYPE, ISEED,
 *                          THRESH, NOUNIT, A, LDA, SD, SE, U, LDU, WORK,
 *                          LWORK, RESULT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDU, LWORK, NOUNIT, NSIZES, NTYPES,
 *      $                   NWDTHS
@@ -23,7 +23,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), RESULT( * ), SD( * ), SE( * ),
 *      $                   U( LDU, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -279,12 +279,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_eig
 *
@@ -293,10 +293,10 @@
      $                   THRESH, NOUNIT, A, LDA, SD, SE, U, LDU, WORK,
      $                   LWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LWORK, NOUNIT, NSIZES, NTYPES,

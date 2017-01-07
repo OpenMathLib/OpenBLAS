@@ -6,25 +6,25 @@ INSTALLATION
       BLASLIB  is your Legacy BLAS library (by default the Reference BLAS shipped within LAPACK)
 
    Then type:
-      
+
       prompt> make
-      
+
    which will create the CBLAS library.
 
 CREATING THE TESTERS
 
     type:
-      
+
       prompt> make cblas_testing
-      
+
    This will create the BLAS library if necessary, then compile the CBLAS testings.
 
 EXECUTING THE TESTERS
 
     type:
-      
+
       prompt> make runtst
-      
+
  _______________________________________________________________________________
 
    This package contains C interface to Legacy BLAS.
@@ -34,7 +34,7 @@ _______________________________________________________________________________
 
    This release updates an inconsistency between the BLAST document and
    the interface. According to the document, the enumerated types for
-   the C interface to the BLAS are not typedef'ed. 
+   the C interface to the BLAS are not typedef'ed.
 
    It also updates the Level 2 and 3 testers which check for correct
    exiting of routines when called with bad arguments. This is done by
@@ -56,4 +56,4 @@ _______________________________________________________________________________
 Updated by Julie Langou (08/22/2014):
 
 Integrate CBLAS package into LAPACK
-Improve headers for mangling 
+Improve headers for mangling

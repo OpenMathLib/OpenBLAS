@@ -57,7 +57,7 @@
 *  =====================================================================
       SUBROUTINE ZERRGG( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -214,7 +214,7 @@
      $                INFO )
          CALL CHKXER( 'ZGGHD3', INFOT, NOUT, LERR, OK )
          NT = NT + 9
-*     
+*
 *        ZHGEQZ
 *
          SRNAMT = 'ZHGEQZ'

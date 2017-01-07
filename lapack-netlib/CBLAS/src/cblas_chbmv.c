@@ -1,7 +1,7 @@
 /*
  * cblas_chbmv.c
  * The program is a C interface to chbmv
- * 
+ *
  * Keita Teranishi  5/18/98
  *
  */
@@ -19,7 +19,7 @@ void cblas_chbmv(const CBLAS_LAYOUT layout,
 #ifdef F77_CHAR
    F77_CHAR F77_UL;
 #else
-   #define F77_UL &UL   
+   #define F77_UL &UL
 #endif
 #ifdef F77_INT
    F77_INT F77_N=N, F77_K=K, F77_lda=lda, F77_incX=incX, F77_incY=incY;
@@ -44,7 +44,7 @@ void cblas_chbmv(const CBLAS_LAYOUT layout,
    {
       if (Uplo == CblasLower) UL = 'L';
       else if (Uplo == CblasUpper) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_chbmv","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -54,7 +54,7 @@ void cblas_chbmv(const CBLAS_LAYOUT layout,
       #ifdef F77_CHAR
          F77_UL = C2F_CHAR(&UL);
       #endif
-      F77_chbmv(F77_UL, &F77_N, &F77_K, alpha, A, &F77_lda, X,  
+      F77_chbmv(F77_UL, &F77_N, &F77_K, alpha, A, &F77_lda, X,
                      &F77_incX, beta, Y, &F77_incY);
    }
    else if (layout == CblasRowMajor)
@@ -69,7 +69,7 @@ void cblas_chbmv(const CBLAS_LAYOUT layout,
       {
          n = N << 1;
          x = malloc(n*sizeof(float));
- 
+
          tx = x;
          if( incX > 0 ) {
            i = incX << 1 ;
@@ -98,7 +98,7 @@ void cblas_chbmv(const CBLAS_LAYOUT layout,
          #else
             incx = 1;
          #endif
- 
+
          if(incY > 0)
            tincY = incY;
          else
@@ -114,11 +114,11 @@ void cblas_chbmv(const CBLAS_LAYOUT layout,
          } while(y != st);
          y -= n;
       }  else
-         x = (float *) X; 
+         x = (float *) X;
 
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_chbmv","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -128,10 +128,10 @@ void cblas_chbmv(const CBLAS_LAYOUT layout,
       #ifdef F77_CHAR
          F77_UL = C2F_CHAR(&UL);
       #endif
-      F77_chbmv(F77_UL, &F77_N, &F77_K, ALPHA, 
+      F77_chbmv(F77_UL, &F77_N, &F77_K, ALPHA,
                      A ,&F77_lda, x,&F77_incX, BETA, Y, &F77_incY);
    }
-   else 
+   else
    {
       cblas_xerbla(1, "cblas_chbmv","Illegal layout setting, %d\n", layout);
       CBLAS_CallFromC = 0;

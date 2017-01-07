@@ -39,7 +39,7 @@ int main ( )
    a[m+3] = 1;
    /* The elements of the third column */
    a[m*2] = 3;
-   a[m*2+1] = 4;  
+   a[m*2+1] = 4;
    a[m*2+2] = 5;
    a[m*2+3] = 6;
    /* The elements of the fourth column */
@@ -47,7 +47,7 @@ int main ( )
    a[m*3+1] = 6;
    a[m*3+2] = 7;
    a[m*3+3] = 8;
-   /* The elemetns of x and y */ 
+   /* The elemetns of x and y */
    x[0] = 1;
    x[1] = 2;
    x[2] = 1;
@@ -56,11 +56,11 @@ int main ( )
    y[1] = 0;
    y[2] = 0;
    y[3] = 0;
-   
+
    cblas_dgemv( Layout, transa, m, n, alpha, a, lda, x, incx, beta,
                 y, incy );
    /* Print y */
-   for( i = 0; i < n; i++ ) 
+   for( i = 0; i < n; i++ )
       printf(" y%d = %f\n", i, y[i]);
    free(a);
    free(x);

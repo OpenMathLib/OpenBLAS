@@ -9,12 +9,12 @@
  */
 #include "cblas.h"
 #include "cblas_f77.h"
-double cblas_dnrm2( const int N, const double *X, const int incX) 
+double cblas_dnrm2( const int N, const double *X, const int incX)
 {
    double nrm2;
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX;
-#else 
+#else
    #define F77_N N
    #define F77_incX incX
 #endif

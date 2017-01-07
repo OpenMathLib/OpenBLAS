@@ -34,8 +34,8 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_clascl( int matrix_layout, char type, lapack_int kl,
-                           lapack_int ku, float cfrom, float cto, 
-                           lapack_int m, lapack_int n, lapack_complex_float* a, 
+                           lapack_int ku, float cfrom, float cto,
+                           lapack_int m, lapack_int n, lapack_complex_float* a,
                            lapack_int lda )
 {
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {

@@ -190,7 +190,7 @@ lib: $(OBJ)
 	$(RANLIB) ../../$(LAPACKELIB)
 
 .c.o:
-	$(CC) -c $(CFLAGS) -I ../include -o $@ $<
+	$(CC) $(CFLAGS) -I../include -c -o $@ $<
 
 clean:
 	rm -f *.o

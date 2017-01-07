@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DERRGG( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -45,10 +45,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -57,7 +57,7 @@
 *  =====================================================================
       SUBROUTINE DERRGG( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -547,56 +547,56 @@
      $                 -1, 0, 0, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, IW, INFO )      
+     $                 1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL DORCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, -1, 0, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, IW, INFO )      
+     $                 1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          INFOT = 9
          CALL DORCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, -1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, IW, INFO )      
+     $                 1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          INFOT = 11
          CALL DORCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, -1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 1, W, LW, IW, INFO )      
+     $                 1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL DORCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, -1, A, 1, A, 1, A,
-     $                 1, W, LW, IW, INFO )      
+     $                 1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL DORCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, -1, A, 1, A,
-     $                 1, W, LW, IW, INFO )      
+     $                 1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          INFOT = 24
          CALL DORCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, -1, A,
-     $                 1, W, LW, IW, INFO )      
+     $                 1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          INFOT = 26
          CALL DORCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
      $                 1, A, 1, A, 1, A,
      $                 A, 1, A, 1, A, 1, A,
-     $                 -1, W, LW, IW, INFO )      
+     $                 -1, W, LW, IW, INFO )
          CALL CHKXER( 'DORCSD', INFOT, NOUT, LERR, OK )
          NT = NT + 8
 *
@@ -869,7 +869,7 @@
      $               1, INFO )
          CALL CHKXER( 'DGGEV ', INFOT, NOUT, LERR, OK )
          NT = NT + 10
-*     
+*
 *        DGGEV3
 *
          SRNAMT = 'DGGEV3 '

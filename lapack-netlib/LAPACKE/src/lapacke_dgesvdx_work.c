@@ -38,7 +38,7 @@ lapack_int LAPACKE_dgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
                           		lapack_int lda, double vl, double vu,
                            		lapack_int il, lapack_int iu, lapack_int* ns,
                            		double* s, double* u, lapack_int ldu,
-                           		double* vt, lapack_int ldvt,	
+                           		double* vt, lapack_int ldvt,
                                 double* work, lapack_int lwork, lapack_int* iwork )
 {
     lapack_int info = 0;

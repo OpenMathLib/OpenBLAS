@@ -7,8 +7,8 @@ if(NOT TARGET lapacke)
   include("@LAPACK_BINARY_DIR@/lapack-targets.cmake")
 endif()
 
-# Report lapacke header search locations.
-set(CBLAS_INCLUDE_DIRS "@LAPACK_SOURCE_DIR@/cblas/include")
+# Report cblas header search locations from build tree.
+set(CBLAS_INCLUDE_DIRS "@LAPACK_BINARY_DIR@/include")
 
-# Report lapacke libraries.
+# Report cblas libraries.
 set(CBLAS_LIBRARIES cblas)

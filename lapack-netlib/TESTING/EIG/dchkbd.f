@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          ISEED, THRESH, A, LDA, BD, BE, S1, S2, X, LDX,
 *                          Y, Z, Q, LDQ, PT, LDPT, U, VT, WORK, LWORK,
 *                          IWORK, NOUT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDPT, LDQ, LDX, LWORK, NOUT, NRHS,
 *      $                   NSIZES, NTYPES
@@ -26,7 +26,7 @@
 *      $                   VT( LDPT, * ), WORK( * ), X( LDX, * ),
 *      $                   Y( LDX, * ), Z( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -64,7 +64,7 @@
 *>        singular vectors are not computed.
 *>
 *>  DBDSVDX computes the singular value decomposition of the bidiagonal
-*>  matrix B as B = U S V' using bisection and inverse iteration. It is 
+*>  matrix B as B = U S V' using bisection and inverse iteration. It is
 *>  called six times to compute
 *>     1) B = U S1 V', RANGE='A', where S1 is the diagonal matrix of singular
 *>         values and the columns of the matrices U and V are the left
@@ -147,43 +147,43 @@
 *> (19)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                   computing U and V.
 *>  Test DBDSVDX on bidiagonal matrix B
-*> 
+*>
 *>  (20)  | B - U S1 VT | / ( |B| min(M,N) ulp ), VT = V'
-*> 
+*>
 *>  (21)  | I - U' U | / ( min(M,N) ulp )
-*> 
+*>
 *>  (22)  | I - VT VT' | / ( min(M,N) ulp )
-*> 
+*>
 *>  (23)  S1 contains min(M,N) nonnegative values in decreasing order.
 *>        (Return 0 if true, 1/ULP if false.)
-*> 
+*>
 *>  (24)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                    computing U and V.
-*> 
+*>
 *>  (25)  | S1 - U' B VT' | / ( |S| n ulp )    DBDSVDX('V', 'I')
-*> 
+*>
 *>  (26)  | I - U' U | / ( min(M,N) ulp )
-*> 
+*>
 *>  (27)  | I - VT VT' | / ( min(M,N) ulp )
 *>
 *>  (28)  S1 contains min(M,N) nonnegative values in decreasing order.
 *>        (Return 0 if true, 1/ULP if false.)
-*> 
+*>
 *>  (29)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                    computing U and V.
-*> 
+*>
 *>  (30)  | S1 - U' B VT' | / ( |S1| n ulp )   DBDSVDX('V', 'V')
-*> 
+*>
 *>  (31)  | I - U' U | / ( min(M,N) ulp )
-*> 
+*>
 *>  (32)  | I - VT VT' | / ( min(M,N) ulp )
 *>
 *>  (33)  S1 contains min(M,N) nonnegative values in decreasing order.
 *>        (Return 0 if true, 1/ULP if false.)
-*> 
+*>
 *>  (34)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                    computing U and V.
-*> 
+*>
 *> The possible matrix types are
 *>
 *> (1)  The zero matrix.
@@ -478,10 +478,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -493,7 +493,7 @@
      $                   Y, Z, Q, LDQ, PT, LDPT, U, VT, WORK, LWORK,
      $                   IWORK, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -525,18 +525,18 @@
       LOGICAL            BADMM, BADNN, BIDIAG
       CHARACTER          UPLO
       CHARACTER*3        PATH
-      INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, IWBD, 
+      INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, IWBD,
      $                   IWBE, IWBS, IWBZ, IWWORK, J, JCOL, JSIZE,
-     $                   JTYPE, LOG2UI, M, MINWRK, MMAX, MNMAX, MNMIN, 
-     $                   MNMIN2, MQ, MTYPES, N, NFAIL, NMAX, 
+     $                   JTYPE, LOG2UI, M, MINWRK, MMAX, MNMAX, MNMIN,
+     $                   MNMIN2, MQ, MTYPES, N, NFAIL, NMAX,
      $                   NS1, NS2, NTEST
-      DOUBLE PRECISION   ABSTOL, AMNINV, ANORM, COND, OVFL, RTOVFL, 
-     $                   RTUNFL, TEMP1, TEMP2, TEMP3, ULP, ULPINV, 
-     $                   UNFL, VL, VU                   
+      DOUBLE PRECISION   ABSTOL, AMNINV, ANORM, COND, OVFL, RTOVFL,
+     $                   RTUNFL, TEMP1, TEMP2, ULP, ULPINV, UNFL,
+     $                   VL, VU
 *     ..
 *     .. Local Arrays ..
-      INTEGER            IDUM( 1 ), IOLDSD( 4 ), ISEED2( 4 ), 
-     $                   KMAGN( MAXTYP ), KMODE( MAXTYP ), 
+      INTEGER            IDUM( 1 ), IOLDSD( 4 ), ISEED2( 4 ),
+     $                   KMAGN( MAXTYP ), KMODE( MAXTYP ),
      $                   KTYPE( MAXTYP )
       DOUBLE PRECISION   DUM( 1 ), DUMMA( 1 ), RESULT( 40 )
 *     ..
@@ -545,9 +545,9 @@
       EXTERNAL           DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASUM, DBDSDC, DBDSQR, DBDSVDX, DBDT01,  
+      EXTERNAL           ALASUM, DBDSDC, DBDSQR, DBDSVDX, DBDT01,
      $                   DBDT02, DBDT03, DBDT04, DCOPY, DGEBRD,
-     $                   DGEMM, DLABAD, DLACPY, DLAHD2, DLASET, 
+     $                   DGEMM, DLABAD, DLACPY, DLAHD2, DLASET,
      $                   DLATMR, DLATMS, DORGBR, DORT01, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -1151,10 +1151,10 @@
      $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
 *
             CALL DBDSVDX( UPLO, 'V', 'A', MNMIN, WORK( IWBD ),
-     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS1, S1, 
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO)
-*  
+*
 *           Check error code from DBDSVDX.
 *
             IF( IINFO.NE.0 ) THEN
@@ -1190,17 +1190,17 @@
 *
             CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
             IF( MNMIN.GT.0 )
-     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 ) 
-*     
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
             CALL DBDSVDX( UPLO, 'N', 'A', MNMIN, WORK( IWBD ),
      $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS2, S2,
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from DBDSVDX.
 *
             IF( IINFO.NE.0 ) THEN
-               WRITE( NOUT, FMT = 9998 )'DBDSVDX(values,A)', IINFO, 
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(values,A)', IINFO,
      $            M, N, JTYPE, IOLDSD
                INFO = ABS( IINFO )
                IF( IINFO.LT.0 ) THEN
@@ -1224,11 +1224,11 @@
 *
             CALL DBDT03( UPLO, MNMIN, 1, BD, BE, U, LDPT, S1, VT,
      $                   LDPT, WORK( IWBS+MNMIN ), RESULT( 20 ) )
-            CALL DORT01( 'Columns', MNMIN, MNMIN, U, LDPT, 
-     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+            CALL DORT01( 'Columns', MNMIN, MNMIN, U, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 21 ) )
-            CALL DORT01( 'Rows', MNMIN, MNMIN, VT, LDPT, 
-     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+            CALL DORT01( 'Rows', MNMIN, MNMIN, VT, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 22) )
 *
             RESULT( 23 ) = ZERO
@@ -1272,14 +1272,14 @@
                   IL = ITEMP
                END IF
             END IF
-*       
+*
             CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
             IF( MNMIN.GT.0 )
      $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
 *
             CALL DBDSVDX( UPLO, 'V', 'I', MNMIN, WORK( IWBD ),
-     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS1, S1, 
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO)
 *
 *           Check error code from DBDSVDX.
@@ -1313,7 +1313,7 @@
 *
             CALL DBDSVDX( UPLO, 'N', 'I', MNMIN, WORK( IWBD ),
      $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS2, S2,
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from DBDSVDX.
@@ -1337,13 +1337,13 @@
 *                     non-increasing order and are non-negative
 *                29:  Compare DBDSVDX with and without singular vectors
 *
-            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U, 
-     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ), 
+            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U,
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ),
      $                   RESULT( 25 ) )
-            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT, 
-     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 26 ) )
-            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT, 
+            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT,
      $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 27 ) )
 *
@@ -1368,8 +1368,8 @@
   230       CONTINUE
             RESULT( 29 ) = TEMP2
 *
-*           Use DBDSVDX with RANGE='V': determine the values VL and VU 
-*           of the IL-th and IU-th singular values and ask for all 
+*           Use DBDSVDX with RANGE='V': determine the values VL and VU
+*           of the IL-th and IU-th singular values and ask for all
 *           singular values in this range.
 *
             CALL DCOPY( MNMIN, WORK( IWBS ), 1, S1, 1 )
@@ -1395,21 +1395,21 @@
             ELSE
                VL = ZERO
                VU = ONE
-            END IF 
-* 
+            END IF
+*
             CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
             IF( MNMIN.GT.0 )
      $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
 *
             CALL DBDSVDX( UPLO, 'V', 'V', MNMIN, WORK( IWBD ),
-     $                    WORK( IWBE ), VL, VU, 0, 0, NS1, S1, 
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBE ), VL, VU, 0, 0, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from DBDSVDX.
 *
             IF( IINFO.NE.0 ) THEN
-               WRITE( NOUT, FMT = 9998 )'DBDSVDX(vects,V)', IINFO, 
+               WRITE( NOUT, FMT = 9998 )'DBDSVDX(vects,V)', IINFO,
      $            M, N, JTYPE, IOLDSD
                INFO = ABS( IINFO )
                IF( IINFO.LT.0 ) THEN
@@ -1437,7 +1437,7 @@
 *
             CALL DBDSVDX( UPLO, 'N', 'V', MNMIN, WORK( IWBD ),
      $                    WORK( IWBE ), VL, VU, 0, 0, NS2, S2,
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from DBDSVDX.
@@ -1461,13 +1461,13 @@
 *                     non-increasing order and are non-negative
 *                34:  Compare DBDSVDX with and without singular vectors
 *
-            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U, 
-     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ), 
+            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U,
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ),
      $                   RESULT( 30 ) )
-            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT, 
+            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT,
      $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 31 ) )
-            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT, 
+            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT,
      $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 32 ) )
 *

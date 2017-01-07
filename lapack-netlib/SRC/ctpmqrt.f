@@ -2,41 +2,41 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CTPMQRT + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctpmqrt.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctpmqrt.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctpmqrt.f"> 
+*> Download CTPMQRT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctpmqrt.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctpmqrt.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctpmqrt.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CTPMQRT( SIDE, TRANS, M, N, K, L, NB, V, LDV, T, LDT,
 *                           A, LDA, B, LDB, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER SIDE, TRANS
 *       INTEGER   INFO, K, LDV, LDA, LDB, M, N, L, NB, LDT
 *       ..
 *       .. Array Arguments ..
-*       COMPLEX   V( LDV, * ), A( LDA, * ), B( LDB, * ), T( LDT, * ), 
+*       COMPLEX   V( LDV, * ), A( LDA, * ), B( LDB, * ), T( LDT, * ),
 *      $          WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> CTPMQRT applies a complex orthogonal matrix Q obtained from a 
+*> CTPMQRT applies a complex orthogonal matrix Q obtained from a
 *> "triangular-pentagonal" complex block reflector H to a general
 *> complex matrix C, which consists of two blocks A and B.
 *> \endverbatim
@@ -69,7 +69,7 @@
 *>          N is INTEGER
 *>          The number of columns of the matrix B. N >= 0.
 *> \endverbatim
-*> 
+*>
 *> \param[in] K
 *> \verbatim
 *>          K is INTEGER
@@ -80,7 +80,7 @@
 *> \param[in] L
 *> \verbatim
 *>          L is INTEGER
-*>          The order of the trapezoidal part of V.  
+*>          The order of the trapezoidal part of V.
 *>          K >= L >= 0.  See Further Details.
 *> \endverbatim
 *>
@@ -124,19 +124,19 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is COMPLEX array, dimension
-*>          (LDA,N) if SIDE = 'L' or 
+*>          (LDA,N) if SIDE = 'L' or
 *>          (LDA,K) if SIDE = 'R'
 *>          On entry, the K-by-N or M-by-K matrix A.
-*>          On exit, A is overwritten by the corresponding block of 
+*>          On exit, A is overwritten by the corresponding block of
 *>          Q*C or Q**H*C or C*Q or C*Q**H.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDA
 *> \verbatim
 *>          LDA is INTEGER
-*>          The leading dimension of the array A. 
+*>          The leading dimension of the array A.
 *>          If SIDE = 'L', LDC >= max(1,K);
-*>          If SIDE = 'R', LDC >= max(1,M). 
+*>          If SIDE = 'R', LDC >= max(1,M).
 *> \endverbatim
 *>
 *> \param[in,out] B
@@ -150,7 +150,7 @@
 *> \param[in] LDB
 *> \verbatim
 *>          LDB is INTEGER
-*>          The leading dimension of the array B. 
+*>          The leading dimension of the array B.
 *>          LDB >= max(1,M).
 *> \endverbatim
 *>
@@ -170,12 +170,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -185,20 +185,20 @@
 *> \verbatim
 *>
 *>  The columns of the pentagonal matrix V contain the elementary reflectors
-*>  H(1), H(2), ..., H(K); V is composed of a rectangular block V1 and a 
+*>  H(1), H(2), ..., H(K); V is composed of a rectangular block V1 and a
 *>  trapezoidal block V2:
 *>
 *>        V = [V1]
 *>            [V2].
 *>
-*>  The size of the trapezoidal block V2 is determined by the parameter L, 
+*>  The size of the trapezoidal block V2 is determined by the parameter L,
 *>  where 0 <= L <= K; V2 is upper trapezoidal, consisting of the first L
 *>  rows of a K-by-K upper triangular matrix.  If L=K, V2 is upper triangular;
 *>  if L=0, there is no trapezoidal block, hence V = V1 is rectangular.
 *>
-*>  If SIDE = 'L':  C = [A]  where A is K-by-N,  B is M-by-N and V is M-by-K. 
-*>                      [B]   
-*>  
+*>  If SIDE = 'L':  C = [A]  where A is K-by-N,  B is M-by-N and V is M-by-K.
+*>                      [B]
+*>
 *>  If SIDE = 'R':  C = [A B]  where A is M-by-K, B is M-by-N and V is N-by-K.
 *>
 *>  The complex orthogonal matrix Q is formed from V and T.
@@ -216,17 +216,17 @@
       SUBROUTINE CTPMQRT( SIDE, TRANS, M, N, K, L, NB, V, LDV, T, LDT,
      $                    A, LDA, B, LDB, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS
       INTEGER   INFO, K, LDV, LDA, LDB, M, N, L, NB, LDT
 *     ..
 *     .. Array Arguments ..
-      COMPLEX   V( LDV, * ), A( LDA, * ), B( LDB, * ), T( LDT, * ), 
+      COMPLEX   V( LDV, * ), A( LDA, * ), B( LDB, * ), T( LDT, * ),
      $          WORK( * )
 *     ..
 *
@@ -242,7 +242,7 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, CLARFB
+      EXTERNAL           XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -256,7 +256,7 @@
       RIGHT  = LSAME( SIDE,  'R' )
       TRAN   = LSAME( TRANS, 'C' )
       NOTRAN = LSAME( TRANS, 'N' )
-*      
+*
       IF ( LEFT ) THEN
          LDVQ = MAX( 1, M )
          LDAQ = MAX( 1, K )
@@ -275,7 +275,7 @@
       ELSE IF( K.LT.0 ) THEN
          INFO = -5
       ELSE IF( L.LT.0 .OR. L.GT.K ) THEN
-         INFO = -6         
+         INFO = -6
       ELSE IF( NB.LT.1 .OR. (NB.GT.K .AND. K.GT.0) ) THEN
          INFO = -7
       ELSE IF( LDV.LT.LDVQ ) THEN
@@ -307,11 +307,11 @@
             ELSE
                LB = MB-M+L-I+1
             END IF
-            CALL CTPRFB( 'L', 'C', 'F', 'C', MB, N, IB, LB, 
-     $                   V( 1, I ), LDV, T( 1, I ), LDT, 
+            CALL CTPRFB( 'L', 'C', 'F', 'C', MB, N, IB, LB,
+     $                   V( 1, I ), LDV, T( 1, I ), LDT,
      $                   A( I, 1 ), LDA, B, LDB, WORK, IB )
          END DO
-*         
+*
       ELSE IF( RIGHT .AND. NOTRAN ) THEN
 *
          DO I = 1, K, NB
@@ -322,8 +322,8 @@
             ELSE
                LB = MB-N+L-I+1
             END IF
-            CALL CTPRFB( 'R', 'N', 'F', 'C', M, MB, IB, LB, 
-     $                   V( 1, I ), LDV, T( 1, I ), LDT, 
+            CALL CTPRFB( 'R', 'N', 'F', 'C', M, MB, IB, LB,
+     $                   V( 1, I ), LDV, T( 1, I ), LDT,
      $                   A( 1, I ), LDA, B, LDB, WORK, M )
          END DO
 *
@@ -331,15 +331,15 @@
 *
          KF = ((K-1)/NB)*NB+1
          DO I = KF, 1, -NB
-            IB = MIN( NB, K-I+1 )  
+            IB = MIN( NB, K-I+1 )
             MB = MIN( M-L+I+IB-1, M )
             IF( I.GE.L ) THEN
                LB = 0
             ELSE
                LB = MB-M+L-I+1
-            END IF                   
+            END IF
             CALL CTPRFB( 'L', 'N', 'F', 'C', MB, N, IB, LB,
-     $                   V( 1, I ), LDV, T( 1, I ), LDT, 
+     $                   V( 1, I ), LDV, T( 1, I ), LDT,
      $                   A( I, 1 ), LDA, B, LDB, WORK, IB )
          END DO
 *
@@ -347,7 +347,7 @@
 *
          KF = ((K-1)/NB)*NB+1
          DO I = KF, 1, -NB
-            IB = MIN( NB, K-I+1 )         
+            IB = MIN( NB, K-I+1 )
             MB = MIN( N-L+I+IB-1, N )
             IF( I.GE.L ) THEN
                LB = 0
@@ -355,7 +355,7 @@
                LB = MB-N+L-I+1
             END IF
             CALL CTPRFB( 'R', 'C', 'F', 'C', M, MB, IB, LB,
-     $                   V( 1, I ), LDV, T( 1, I ), LDT, 
+     $                   V( 1, I ), LDV, T( 1, I ), LDT,
      $                   A( 1, I ), LDA, B, LDB, WORK, M )
          END DO
 *

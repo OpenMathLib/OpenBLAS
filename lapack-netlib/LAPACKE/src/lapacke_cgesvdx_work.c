@@ -38,7 +38,7 @@ lapack_int LAPACKE_cgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
                           		lapack_int lda, float vl, float vu,
                            		lapack_int il, lapack_int iu, lapack_int* ns,
                            		float* s, lapack_complex_float* u, lapack_int ldu,
-                           		lapack_complex_float* vt, lapack_int ldvt,	
+                           		lapack_complex_float* vt, lapack_int ldvt,
                                 lapack_complex_float* work, lapack_int lwork,
                                 float* rwork, lapack_int* iwork )
 {

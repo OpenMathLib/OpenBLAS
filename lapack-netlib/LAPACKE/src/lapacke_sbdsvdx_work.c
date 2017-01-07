@@ -37,7 +37,7 @@ lapack_int LAPACKE_sbdsvdx_work( int matrix_layout, char uplo, char jobz, char r
                            		lapack_int n, float* d, float* e,
                            		float vl, float vu,
                            		lapack_int il, lapack_int iu, lapack_int* ns,
-                           		float* s, float* z, lapack_int ldz,	
+                           		float* s, float* z, lapack_int ldz,
                                 float* work, lapack_int* iwork )
 {
     lapack_int info = 0;

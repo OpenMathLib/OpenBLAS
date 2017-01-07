@@ -8,9 +8,9 @@
 #include "cblas.h"
 #include "cblas_test.h"
 
-void F77_cgemv(int *layout, char *transp, int *m, int *n, 
+void F77_cgemv(int *layout, char *transp, int *m, int *n,
           const void *alpha,
-          CBLAS_TEST_COMPLEX *a, int *lda, const void *x, int *incx, 
+          CBLAS_TEST_COMPLEX *a, int *lda, const void *x, int *incx,
           const void *beta, void *y, int *incy) {
 
   CBLAS_TEST_COMPLEX *A;
@@ -38,9 +38,9 @@ void F77_cgemv(int *layout, char *transp, int *m, int *n,
                   *m, *n, alpha, a, *lda, x, *incx, beta, y, *incy );
 }
 
-void F77_cgbmv(int *layout, char *transp, int *m, int *n, int *kl, int *ku, 
-	      CBLAS_TEST_COMPLEX *alpha, CBLAS_TEST_COMPLEX *a, int *lda, 
-	      CBLAS_TEST_COMPLEX *x, int *incx, 
+void F77_cgbmv(int *layout, char *transp, int *m, int *n, int *kl, int *ku,
+	      CBLAS_TEST_COMPLEX *alpha, CBLAS_TEST_COMPLEX *a, int *lda,
+	      CBLAS_TEST_COMPLEX *x, int *incx,
 	      CBLAS_TEST_COMPLEX *beta, CBLAS_TEST_COMPLEX *y, int *incy) {
 
   CBLAS_TEST_COMPLEX *A;
@@ -85,8 +85,8 @@ void F77_cgbmv(int *layout, char *transp, int *m, int *n, int *kl, int *ku,
 		  *incx, beta, y, *incy );
 }
 
-void F77_cgeru(int *layout, int *m, int *n, CBLAS_TEST_COMPLEX *alpha, 
-	 CBLAS_TEST_COMPLEX *x, int *incx, CBLAS_TEST_COMPLEX *y, int *incy, 
+void F77_cgeru(int *layout, int *m, int *n, CBLAS_TEST_COMPLEX *alpha,
+	 CBLAS_TEST_COMPLEX *x, int *incx, CBLAS_TEST_COMPLEX *y, int *incy,
          CBLAS_TEST_COMPLEX *a, int *lda){
 
   CBLAS_TEST_COMPLEX *A;
@@ -114,8 +114,8 @@ void F77_cgeru(int *layout, int *m, int *n, CBLAS_TEST_COMPLEX *alpha,
      cblas_cgeru( UNDEFINED, *m, *n, alpha, x, *incx, y, *incy, a, *lda );
 }
 
-void F77_cgerc(int *layout, int *m, int *n, CBLAS_TEST_COMPLEX *alpha, 
-	 CBLAS_TEST_COMPLEX *x, int *incx, CBLAS_TEST_COMPLEX *y, int *incy, 
+void F77_cgerc(int *layout, int *m, int *n, CBLAS_TEST_COMPLEX *alpha,
+	 CBLAS_TEST_COMPLEX *x, int *incx, CBLAS_TEST_COMPLEX *y, int *incy,
          CBLAS_TEST_COMPLEX *a, int *lda) {
   CBLAS_TEST_COMPLEX *A;
   int i,j,LDA;
@@ -165,7 +165,7 @@ void F77_chemv(int *layout, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
      free(A);
   }
   else if (*layout == TEST_COL_MJR)
-     cblas_chemv( CblasColMajor, uplo, *n, alpha, a, *lda, x, *incx, 
+     cblas_chemv( CblasColMajor, uplo, *n, alpha, a, *lda, x, *incx,
 	   beta, y, *incy );
   else
      cblas_chemv( UNDEFINED, uplo, *n, alpha, a, *lda, x, *incx,
@@ -173,7 +173,7 @@ void F77_chemv(int *layout, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
 }
 
 void F77_chbmv(int *layout, char *uplow, int *n, int *k,
-     CBLAS_TEST_COMPLEX *alpha, CBLAS_TEST_COMPLEX *a, int *lda, 
+     CBLAS_TEST_COMPLEX *alpha, CBLAS_TEST_COMPLEX *a, int *lda,
      CBLAS_TEST_COMPLEX *x, int *incx, CBLAS_TEST_COMPLEX *beta,
      CBLAS_TEST_COMPLEX *y, int *incy){
 
@@ -186,7 +186,7 @@ int i,irow,j,jcol,LDA;
 
   if (*layout == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_chbmv(CblasRowMajor, UNDEFINED, *n, *k, alpha, a, *lda, x, 
+        cblas_chbmv(CblasRowMajor, UNDEFINED, *n, *k, alpha, a, *lda, x,
 		 *incx, beta, y, *incy );
      else {
         LDA = *k+2;
@@ -237,7 +237,7 @@ int i,irow,j,jcol,LDA;
 }
 
 void F77_chpmv(int *layout, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
-     CBLAS_TEST_COMPLEX *ap, CBLAS_TEST_COMPLEX *x, int *incx, 
+     CBLAS_TEST_COMPLEX *ap, CBLAS_TEST_COMPLEX *x, int *incx,
      CBLAS_TEST_COMPLEX *beta, CBLAS_TEST_COMPLEX *y, int *incy){
 
   CBLAS_TEST_COMPLEX *A, *AP;
@@ -247,7 +247,7 @@ void F77_chpmv(int *layout, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
   get_uplo_type(uplow,&uplo);
   if (*layout == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_chpmv(CblasRowMajor, UNDEFINED, *n, alpha, ap, x, *incx, 
+        cblas_chpmv(CblasRowMajor, UNDEFINED, *n, alpha, ap, x, *incx,
 	         beta, y, *incy);
      else {
         LDA = *n;
@@ -344,7 +344,7 @@ void F77_ctbmv(int *layout, char *uplow, char *transp, char *diagn,
              }
           }
         }
-        cblas_ctbmv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA, x, 
+        cblas_ctbmv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA, x,
 		    *incx);
         free(A);
      }
@@ -371,7 +371,7 @@ void F77_ctbsv(int *layout, char *uplow, char *transp, char *diagn,
 
   if (*layout == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_ctbsv(CblasRowMajor, UNDEFINED, trans, diag, *n, *k, a, *lda, x, 
+        cblas_ctbsv(CblasRowMajor, UNDEFINED, trans, diag, *n, *k, a, *lda, x,
 	         *incx);
      else {
         LDA = *k+2;
@@ -408,7 +408,7 @@ void F77_ctbsv(int *layout, char *uplow, char *transp, char *diagn,
               }
            }
         }
-        cblas_ctbsv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA, 
+        cblas_ctbsv(CblasRowMajor, uplo, trans, diag, *n, *k, A, LDA,
 		    x, *incx);
         free(A);
      }
@@ -674,7 +674,7 @@ void F77_chpr2(int *layout, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
 
   if (*layout == TEST_ROW_MJR) {
      if (uplo != CblasUpper && uplo != CblasLower )
-        cblas_chpr2( CblasRowMajor, UNDEFINED, *n, alpha, x, *incx, y, 
+        cblas_chpr2( CblasRowMajor, UNDEFINED, *n, alpha, x, *incx, y,
 		     *incy, ap );
      else {
         LDA = *n;
@@ -752,7 +752,7 @@ void F77_cher(int *layout, char *uplow, int *n, float *alpha,
      LDA = *n+1;
      A=(CBLAS_TEST_COMPLEX*)malloc((*n)*LDA*sizeof( CBLAS_TEST_COMPLEX ));
 
-     for( i=0; i<*n; i++ ) 
+     for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
 	  A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
           A[ LDA*i+j ].imag=a[ (*lda)*j+i ].imag;
@@ -786,7 +786,7 @@ void F77_cher2(int *layout, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
      LDA = *n+1;
      A= ( CBLAS_TEST_COMPLEX* )malloc((*n)*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
 
-     for( i=0; i<*n; i++ ) 
+     for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
 	  A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
           A[ LDA*i+j ].imag=a[ (*lda)*j+i ].imag;

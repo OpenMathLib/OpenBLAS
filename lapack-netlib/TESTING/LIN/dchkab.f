@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM DCHKAB
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -32,7 +32,7 @@
 *> 2                      Values of NRHS (number of right hand sides)
 *> 20.0                   Threshold value of test ratio
 *> T                      Put T to test the LAPACK routines
-*> T                      Put T to test the error exits 
+*> T                      Put T to test the error exits
 *> DGE    11              List types on next line if 0 < NTYPES < 11
 *> DPO    9               List types on next line if 0 < NTYPES <  9
 *> \endverbatim
@@ -61,10 +61,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -73,7 +73,7 @@
 *  =====================================================================
       PROGRAM DCHKAB
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -101,7 +101,7 @@
       CHARACTER*3        PATH
       CHARACTER*10       INTSTR
       CHARACTER*72       ALINE
-      INTEGER            I, IC, K, LDA, NM, NMATS, 
+      INTEGER            I, IC, K, LDA, NM, NMATS,
      $                   NNS, NRHS, NTYPES,
      $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
       DOUBLE PRECISION   EPS, S1, S2, THRESH
@@ -307,7 +307,7 @@
          ELSE
             WRITE( NOUT, FMT = 9989 )'DSGESV'
          END IF
-*     
+*
       ELSE IF( LSAMEN( 2, C2, 'PO' ) ) THEN
 *
 *        PO:  positive definite matrices
@@ -323,7 +323,7 @@
          IF( TSTDRV ) THEN
             CALL DDRVAC( DOTYPE, NM, MVAL, NNS, NSVAL,
      $                   THRESH, LDA, A( 1, 1 ), A( 1, 2 ),
-     $                   B( 1, 1 ), B( 1, 2 ), 
+     $                   B( 1, 1 ), B( 1, 2 ),
      $                   WORK, RWORK, SWORK, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
@@ -351,7 +351,7 @@
      $      I6 )
  9995 FORMAT( ' Invalid input value: ', A4, '=', I6, '; must be <=',
      $      I6 )
- 9994 FORMAT( ' Tests of the DOUBLE PRECISION LAPACK DSGESV/DSPOSV', 
+ 9994 FORMAT( ' Tests of the DOUBLE PRECISION LAPACK DSGESV/DSPOSV',
      $  ' routines ',
      $      / ' LAPACK VERSION ', I1, '.', I1, '.', I1,
      $      / / ' The following parameter values will be used:' )

@@ -2,14 +2,14 @@ C> \brief \b SPOTRF VARIANT: right looking block version of the algorithm, calli
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOTRF ( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -17,7 +17,7 @@ C> \brief \b SPOTRF VARIANT: right looking block version of the algorithm, calli
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -88,12 +88,12 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
-C> \date November 2011
+C> \date December 2016
 *
 C> \ingroup variantsPOcomputational
 *
@@ -103,7 +103,7 @@ C> \ingroup variantsPOcomputational
 *  -- LAPACK computational routine (version 3.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -193,7 +193,7 @@ C> \ingroup variantsPOcomputational
      $                        JB, N-J-JB+1, ONE, A( J, J ), LDA,
      $                        A( J, J+JB ), LDA )
                   CALL SSYRK( 'Upper', 'Transpose', N-J-JB+1, JB, -ONE,
-     $                        A( J, J+JB ), LDA, 
+     $                        A( J, J+JB ), LDA,
      $                        ONE, A( J+JB, J+JB ), LDA )
                END IF
    10       CONTINUE
@@ -222,8 +222,8 @@ C> \ingroup variantsPOcomputational
      $                       N-J-JB+1, JB, ONE, A( J, J ), LDA,
      $                       A( J+JB, J ), LDA )
 
-                 CALL SSYRK( 'Lower', 'No Transpose', N-J-JB+1, JB, 
-     $                       -ONE, A( J+JB, J ), LDA, 
+                 CALL SSYRK( 'Lower', 'No Transpose', N-J-JB+1, JB,
+     $                       -ONE, A( J+JB, J ), LDA,
      $                       ONE, A( J+JB, J+JB ), LDA )
                END IF
    20       CONTINUE

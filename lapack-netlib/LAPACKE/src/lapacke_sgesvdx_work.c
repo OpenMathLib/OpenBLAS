@@ -38,7 +38,7 @@ lapack_int LAPACKE_sgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
                           		lapack_int lda, float vl, float vu,
                            		lapack_int il, lapack_int iu, lapack_int* ns,
                            		float* s, float* u, lapack_int ldu,
-                           		float* vt, lapack_int ldvt,	
+                           		float* vt, lapack_int ldvt,
                                 float* work, lapack_int lwork, lapack_int* iwork )
 {
     lapack_int info = 0;
@@ -94,7 +94,7 @@ lapack_int LAPACKE_sgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;
         }
-        if( LAPACKE_lsame( jobu, 'v' ) ) { 
+        if( LAPACKE_lsame( jobu, 'v' ) ) {
             u_t = (float*)
                 LAPACKE_malloc( sizeof(float) * ldu_t * MAX(1,ncols_u) );
             if( u_t == NULL ) {
@@ -102,7 +102,7 @@ lapack_int LAPACKE_sgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
                 goto exit_level_1;
             }
         }
-        if( LAPACKE_lsame( jobvt, 'v' ) ) { 
+        if( LAPACKE_lsame( jobvt, 'v' ) ) {
             vt_t = (float*)
                 LAPACKE_malloc( sizeof(float) * ldvt_t * MAX(1,n) );
             if( vt_t == NULL ) {
@@ -125,12 +125,12 @@ lapack_int LAPACKE_sgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
             LAPACKE_sge_trans( LAPACK_COL_MAJOR, nrows_u, ncols_u, u_t, ldu_t,
                                u, ldu );
         }
-        if( LAPACKE_lsame( jobvt, 'v' ) ) { 
+        if( LAPACKE_lsame( jobvt, 'v' ) ) {
             LAPACKE_sge_trans( LAPACK_COL_MAJOR, nrows_vt, n, vt_t, ldvt_t, vt,
                                ldvt );
         }
         /* Release memory and exit */
-        if( LAPACKE_lsame( jobvt, 'v' ) ) { 
+        if( LAPACKE_lsame( jobvt, 'v' ) ) {
             LAPACKE_free( vt_t );
         }
 exit_level_2:

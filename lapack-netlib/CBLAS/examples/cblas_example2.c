@@ -10,16 +10,16 @@
 int main (int argc, char **argv )
 {
    int rout=-1,info=0,m,n,k,lda,ldb,ldc;
-   double A[2] = {0.0,0.0}, 
-          B[2] = {0.0,0.0}, 
-          C[2] = {0.0,0.0}, 
+   double A[2] = {0.0,0.0},
+          B[2] = {0.0,0.0},
+          C[2] = {0.0,0.0},
           ALPHA=0.0, BETA=0.0;
-          
+
    if (argc > 2){
       rout = atoi(argv[1]);
       info = atoi(argv[2]);
    }
-   
+
    if (rout == 1) {
       if (info==0) {
          printf("Checking if cblas_dgemm fails on parameter 4\n");
@@ -67,6 +67,6 @@ int main (int argc, char **argv )
                    &ALPHA, A, &lda, B, &ldb, &BETA, C, &ldc );
       }
    }
-          
+
    return 0;
 }

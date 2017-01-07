@@ -36,7 +36,6 @@
 lapack_int LAPACKE_dsyconv( int matrix_layout, char uplo, char way, lapack_int n,
                             double* a, lapack_int lda, const lapack_int* ipiv, double* e )
 {
-    lapack_int info = 0;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_dsyconv", -1 );
         return -1;
@@ -47,13 +46,6 @@ lapack_int LAPACKE_dsyconv( int matrix_layout, char uplo, char way, lapack_int n
         return -5;
     }
 #endif
-  
     /* Call middle-level interface */
-    info = LAPACKE_dsyconv_work( matrix_layout, uplo, way, n, a, lda, ipiv,
-                                 e );
-exit_level_0:
-    if( info == LAPACK_WORK_MEMORY_ERROR ) {
-        LAPACKE_xerbla( "LAPACKE_dsyconv", info );
-    }
-    return info;
+    return LAPACKE_dsyconv_work( matrix_layout, uplo, way, n, a, lda, ipiv, e );
 }

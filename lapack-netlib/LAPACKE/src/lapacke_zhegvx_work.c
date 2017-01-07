@@ -110,7 +110,7 @@ lapack_int LAPACKE_zhegvx_work( int matrix_layout, lapack_int itype, char jobz,
         }
         /* Transpose input matrices */
         LAPACKE_zhe_trans( matrix_layout, uplo, n, a, lda, a_t, lda_t );
-        LAPACKE_zge_trans( matrix_layout, n, n, b, ldb, b_t, ldb_t );
+        LAPACKE_zhe_trans( matrix_layout, uplo, n, b, ldb, b_t, ldb_t );
         /* Call LAPACK function and adjust info */
         LAPACK_zhegvx( &itype, &jobz, &range, &uplo, &n, a_t, &lda_t, b_t,
                        &ldb_t, &vl, &vu, &il, &iu, &abstol, m, w, z_t, &ldz_t,
@@ -120,7 +120,7 @@ lapack_int LAPACKE_zhegvx_work( int matrix_layout, lapack_int itype, char jobz,
         }
         /* Transpose output matrices */
         LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
-        LAPACKE_zge_trans( LAPACK_COL_MAJOR, n, n, b_t, ldb_t, b, ldb );
+        LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, b_t, ldb_t, b, ldb );
         if( LAPACKE_lsame( jobz, 'v' ) ) {
             LAPACKE_zge_trans( LAPACK_COL_MAJOR, n, ncols_z, z_t, ldz_t, z,
                                ldz );

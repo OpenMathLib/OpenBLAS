@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM SCHKRFP
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -47,10 +47,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -59,7 +59,7 @@
 *  =====================================================================
       PROGRAM SCHKRFP
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -251,7 +251,7 @@
       CALL SDRVRF1( NOUT, NN, NVAL, THRESH, WORKA, NMAX, WORKARF,
      +              S_WORK_SLANSY )
 *
-*     Test the convertion routines:
+*     Test the conversion routines:
 *       stfttp, stpttf, stfttr, strttf, strttp and stpttr.
 *
       CALL SDRVRF2( NOUT, NN, NVAL, WORKA, NMAX, WORKARF,

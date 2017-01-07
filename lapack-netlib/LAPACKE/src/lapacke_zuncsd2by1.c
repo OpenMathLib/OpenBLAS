@@ -74,7 +74,7 @@ lapack_int LAPACKE_zuncsd2by1( int matrix_layout, char jobu1, char jobu2,
         goto exit_level_0;
     }
     /* Query optimal working array(s) size */
-    info = LAPACKE_zuncsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q, 
+    info = LAPACKE_zuncsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q,
                                 x11, ldx11, x21, ldx21, theta, u1, ldu1, u2,
                                 ldu2, v1t, ldv1t, &work_query,
                                 lwork, &rwork_query, lrwork, iwork );
@@ -95,7 +95,7 @@ lapack_int LAPACKE_zuncsd2by1( int matrix_layout, char jobu1, char jobu2,
         goto exit_level_2;
     }
     /* Call middle-level interface */
-    info = LAPACKE_zuncsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q, 
+    info = LAPACKE_zuncsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q,
                                 x11, ldx11, x21, ldx21, theta, u1, ldu1, u2,
                                 ldu2, v1t, ldv1t, work, lwork, rwork, lrwork, iwork );
     /* Release memory and exit */

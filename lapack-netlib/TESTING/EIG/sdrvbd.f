@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE SDRVBD( NSIZES, MM, NN, NTYPES, DOTYPE, ISEED, THRESH,
 *                          A, LDA, U, LDU, VT, LDVT, ASAV, USAV, VTSAV, S,
 *                          SSAV, E, WORK, LWORK, IWORK, NOUT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUT, NSIZES,
 *      $                   NTYPES
@@ -24,7 +24,7 @@
 *      $                   SSAV( * ), U( LDU, * ), USAV( LDU, * ),
 *      $                   VT( LDVT, * ), VTSAV( LDVT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -131,7 +131,7 @@
 *>
 *> (29)   | S - Spartial | / ( MNMIN ulp |S| ) where Spartial is the
 *>        vector of singular values from the partial SVD
-*>      
+*>
 *> Test for SGESVDX( 'V', 'V', 'I' )
 *>
 *> (30)   | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
@@ -139,7 +139,7 @@
 *> (31)   | I - U'U | / ( M ulp )
 *>
 *> (32)   | I - VT VT' | / ( N ulp )
-*>      
+*>
 *> Test for SGESVDX( 'V', 'V', 'V' )
 *>
 *> (33)   | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
@@ -341,10 +341,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -355,7 +355,7 @@
      $                   A, LDA, U, LDU, VT, LDVT, ASAV, USAV, VTSAV, S,
      $                   SSAV, E, WORK, LWORK, IWORK, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -386,16 +386,16 @@
       LOGICAL            BADMM, BADNN
       CHARACTER          JOBQ, JOBU, JOBVT, RANGE
       CHARACTER*3        PATH
-      INTEGER            I, IINFO, IJQ, IJU, IJVT, IL,IU, IWS, IWTMP, 
-     $                   ITEMP, J, JSIZE, JTYPE, LSWORK, M, MINWRK, 
-     $                   MMAX, MNMAX, MNMIN, MTYPES, N, NFAIL, 
+      INTEGER            I, IINFO, IJQ, IJU, IJVT, IL,IU, IWS, IWTMP,
+     $                   ITEMP, J, JSIZE, JTYPE, LSWORK, M, MINWRK,
+     $                   MMAX, MNMAX, MNMIN, MTYPES, N, NFAIL,
      $                   NMAX, NS, NSI, NSV, NTEST
-      REAL               ANORM, DIF, DIV, OVFL, RTUNFL, ULP, 
+      REAL               ANORM, DIF, DIV, OVFL, RTUNFL, ULP,
      $                    ULPINV, UNFL, VL, VU
 *     ..
 *     .. Local Arrays ..
       CHARACTER          CJOB( 4 ), CJOBR( 3 ), CJOBV( 2 )
-      INTEGER            IOLDSD( 4 ), ISEED2( 4 ) 
+      INTEGER            IOLDSD( 4 ), ISEED2( 4 )
       REAL               RESULT( 40 )
 *     ..
 *     .. External Functions ..
@@ -403,7 +403,7 @@
       EXTERNAL           SLAMCH, SLARND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASVM, SBDT01, SGEJSV, SGESDD, SGESVD, 
+      EXTERNAL           ALASVM, SBDT01, SGEJSV, SGESDD, SGESVD,
      $                   SGESVDX, SGESVJ, SLABAD, SLACPY, SLASET,
      $                   SLATMS, SORT01, SORT03, XERBLA
 *     ..
@@ -904,12 +904,12 @@
 *              Test SGESVDX
 *
                CALL SLACPY( 'F', M, N, ASAV, LDA, A, LDA )
-               CALL SGESVDX( 'V', 'V', 'A', M, N, A, LDA, 
-     $                       VL, VU, IL, IU, NS, SSAV, USAV, LDU, 
-     $                       VTSAV, LDVT, WORK, LWORK, IWORK, 
+               CALL SGESVDX( 'V', 'V', 'A', M, N, A, LDA,
+     $                       VL, VU, IL, IU, NS, SSAV, USAV, LDU,
+     $                       VTSAV, LDVT, WORK, LWORK, IWORK,
      $                       IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUT, FMT = 9995 )'GESVDX', IINFO, M, N, 
+                  WRITE( NOUT, FMT = 9995 )'GESVDX', IINFO, M, N,
      $               JTYPE, LSWORK, IOLDSD
                   INFO = ABS( IINFO )
                   RETURN
@@ -953,11 +953,11 @@
                      JOBVT = CJOBV( IJVT+1 )
                      RANGE = CJOBR( 1 )
                      CALL SLACPY( 'F', M, N, ASAV, LDA, A, LDA )
-                     CALL SGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, 
-     $                             VL, VU, IL, IU, NS, S, U, LDU, 
-     $                             VT, LDVT, WORK, LWORK, IWORK, 
+                     CALL SGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA,
+     $                             VL, VU, IL, IU, NS, S, U, LDU,
+     $                             VT, LDVT, WORK, LWORK, IWORK,
      $                             IINFO )
-*   
+*
 *                    Compare U
 *
                      DIF = ZERO
@@ -976,7 +976,7 @@
                      IF( M.GT.0 .AND. N.GT.0 ) THEN
                         IF( IJVT.EQ.1 ) THEN
                            CALL SORT03( 'R', N, MNMIN, N, MNMIN, VTSAV,
-     $                                  LDVT, VT, LDVT, WORK, LWORK, 
+     $                                  LDVT, VT, LDVT, WORK, LWORK,
      $                                  DIF, IINFO )
                         END IF
                      END IF
@@ -1013,14 +1013,14 @@
                      IU = IL
                      IL = ITEMP
                   END IF
-               END IF  
+               END IF
                CALL SLACPY( 'F', M, N, ASAV, LDA, A, LDA )
-               CALL SGESVDX( 'V', 'V', 'I', M, N, A, LDA, 
-     $                       VL, VU, IL, IU, NSI, S, U, LDU, 
-     $                       VT, LDVT, WORK, LWORK, IWORK, 
+               CALL SGESVDX( 'V', 'V', 'I', M, N, A, LDA,
+     $                       VL, VU, IL, IU, NSI, S, U, LDU,
+     $                       VT, LDVT, WORK, LWORK, IWORK,
      $                       IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUT, FMT = 9995 )'GESVDX', IINFO, M, N, 
+                  WRITE( NOUT, FMT = 9995 )'GESVDX', IINFO, M, N,
      $               JTYPE, LSWORK, IOLDSD
                   INFO = ABS( IINFO )
                   RETURN
@@ -1040,11 +1040,11 @@
 *
                IF( MNMIN.GT.0 .AND. NSI.GT.1 ) THEN
                   IF( IL.NE.1 ) THEN
-                     VU = SSAV( IL ) + 
+                     VU = SSAV( IL ) +
      $                    MAX( HALF*ABS( SSAV( IL )-SSAV( IL-1 ) ),
      $                    ULP*ANORM, TWO*RTUNFL )
                   ELSE
-                     VU = SSAV( 1 ) + 
+                     VU = SSAV( 1 ) +
      $                    MAX( HALF*ABS( SSAV( NS )-SSAV( 1 ) ),
      $                    ULP*ANORM, TWO*RTUNFL )
                   END IF
@@ -1061,14 +1061,14 @@
                ELSE
                   VL = ZERO
                   VU = ONE
-               END IF 
+               END IF
                CALL SLACPY( 'F', M, N, ASAV, LDA, A, LDA )
-               CALL SGESVDX( 'V', 'V', 'V', M, N, A, LDA, 
-     $                       VL, VU, IL, IU, NSV, S, U, LDU, 
-     $                       VT, LDVT, WORK, LWORK, IWORK, 
+               CALL SGESVDX( 'V', 'V', 'V', M, N, A, LDA,
+     $                       VL, VU, IL, IU, NSV, S, U, LDU,
+     $                       VT, LDVT, WORK, LWORK, IWORK,
      $                       IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUT, FMT = 9995 )'GESVDX', IINFO, M, N, 
+                  WRITE( NOUT, FMT = 9995 )'GESVDX', IINFO, M, N,
      $               JTYPE, LSWORK, IOLDSD
                   INFO = ABS( IINFO )
                   RETURN
@@ -1087,7 +1087,7 @@
 *              End of Loop -- Check for RESULT(j) > THRESH
 *
                DO 210 J = 1, 35
-                  IF( RESULT( J ).GE.THRESH ) THEN        
+                  IF( RESULT( J ).GE.THRESH ) THEN
                      IF( NFAIL.EQ.0 ) THEN
                         WRITE( NOUT, FMT = 9999 )
                         WRITE( NOUT, FMT = 9998 )
@@ -1138,7 +1138,7 @@
      $      ' decreasing order, else 1/ulp',
      $      / '19 = | U - Upartial | / ( M ulp )',
      $      / '20 = | VT - VTpartial | / ( N ulp )',
-     $      / '21 = | S - Spartial | / ( min(M,N) ulp |S| )', 
+     $      / '21 = | S - Spartial | / ( min(M,N) ulp |S| )',
      $      / '22 = 0 if S contains min(M,N) nonnegative values in',
      $      ' decreasing order, else 1/ulp',
      $      ' SGESVDX(V,V,A) ',
@@ -1157,7 +1157,7 @@
      $      / '33 = | U**T A VT**T - diag(S) | / ( |A| max(M,N) ulp ),',
      $      ' SGESVDX(V,V,V) ',
      $      / '34 = | I - U**T U | / ( M ulp ) ',
-     $      / '35 = | I - VT VT**T | / ( N ulp ) ',  
+     $      / '35 = | I - VT VT**T | / ( N ulp ) ',
      $      / / )
  9997 FORMAT( ' M=', I5, ', N=', I5, ', type ', I1, ', IWS=', I1,
      $      ', seed=', 4( I4, ',' ), ' test(', I2, ')=', G11.4 )

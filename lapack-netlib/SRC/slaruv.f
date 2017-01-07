@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLARUV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaruv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaruv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaruv.f"> 
+*> Download SLARUV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaruv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaruv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaruv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLARUV( ISEED, N, X )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            N
 *       ..
@@ -27,7 +27,7 @@
 *       INTEGER            ISEED( 4 )
 *       REAL               X( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -67,14 +67,14 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
 *  =====================
@@ -95,10 +95,10 @@
 *  =====================================================================
       SUBROUTINE SLARUV( ISEED, N, X )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            N
@@ -414,7 +414,7 @@
 *
          X( I ) = R*( REAL( IT1 )+R*( REAL( IT2 )+R*( REAL( IT3 )+R*
      $            REAL( IT4 ) ) ) )
-*         
+*
          IF (X( I ).EQ.1.0) THEN
 *           If a real number has n bits of precision, and the first
 *           n bits of the 48-bit integer above happen to be all 1 (which
@@ -424,7 +424,7 @@
 *           Since X( I ) is not supposed to return exactly 0.0 or 1.0,
 *           the statistically correct thing to do in this situation is
 *           simply to iterate again.
-*           N.B. the case X( I ) = 0.0 should not be possible.	
+*           N.B. the case X( I ) = 0.0 should not be possible.
             I1 = I1 + 2
             I2 = I2 + 2
             I3 = I3 + 2

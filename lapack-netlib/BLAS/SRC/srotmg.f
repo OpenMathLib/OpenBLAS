@@ -2,21 +2,21 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SROTMG(SD1,SD2,SX1,SY1,SPARAM)
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL SD1,SD2,SX1,SY1
 *       ..
 *       .. Array Arguments ..
 *       REAL SPARAM(5)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -78,22 +78,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup single_blas_level1
 *
 *  =====================================================================
       SUBROUTINE SROTMG(SD1,SD2,SX1,SY1,SPARAM)
 *
-*  -- Reference BLAS level1 routine (version 3.4.0) --
+*  -- Reference BLAS level1 routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       REAL SD1,SD2,SX1,SY1
@@ -135,7 +135,7 @@
             SFLAG = -TWO
             SPARAM(1) = SFLAG
             RETURN
-         END IF 
+         END IF
 *        REGULAR-CASE..
          SP1 = SD1*SX1
          SQ2 = SP2*SY1
@@ -203,7 +203,7 @@
                END IF
             ENDDO
          END IF
-  
+
          IF (SD2.NE.ZERO) THEN
             DO WHILE ( (ABS(SD2).LE.RGAMSQ) .OR. (ABS(SD2).GE.GAMSQ) )
                IF (SFLAG.EQ.ZERO) THEN
@@ -223,10 +223,10 @@
                   SD2 = SD2/GAM**2
                   SH21 = SH21*GAM
                   SH22 = SH22*GAM
-               END IF      
+               END IF
             END DO
          END IF
-     
+
       END IF
 
       IF (SFLAG.LT.ZERO) THEN
@@ -236,7 +236,7 @@
          SPARAM(5) = SH22
       ELSE IF (SFLAG.EQ.ZERO) THEN
          SPARAM(3) = SH21
-         SPARAM(4) = SH12 
+         SPARAM(4) = SH12
       ELSE
          SPARAM(2) = SH11
          SPARAM(5) = SH22
@@ -245,7 +245,7 @@
       SPARAM(1) = SFLAG
       RETURN
       END
-      
-     
-     
-     
+
+
+
+

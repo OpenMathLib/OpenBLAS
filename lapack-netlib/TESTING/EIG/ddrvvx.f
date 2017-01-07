@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -13,7 +13,7 @@
 *                          VL, LDVL, VR, LDVR, LRE, LDLRE, RCONDV, RCNDV1,
 *                          RCDVIN, RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1,
 *                          RESULT, WORK, NWORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDLRE, LDVL, LDVR, NIUNIT, NOUNIT,
 *      $                   NSIZES, NTYPES, NWORK
@@ -29,7 +29,7 @@
 *      $                   VL( LDVL, * ), VR( LDVR, * ), WI( * ),
 *      $                   WI1( * ), WORK( * ), WR( * ), WR1( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -505,10 +505,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -521,7 +521,7 @@
      $                   RCDVIN, RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1,
      $                   RESULT, WORK, NWORK, IWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

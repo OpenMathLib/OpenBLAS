@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGELSS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgelss.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgelss.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgelss.f"> 
+*> Download ZGELSS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgelss.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgelss.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgelss.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
 *                          WORK, LWORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
 *       DOUBLE PRECISION   RCOND
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   RWORK( * ), S( * )
 *       COMPLEX*16         A( LDA, * ), B( LDB, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -165,10 +165,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -178,7 +178,7 @@
       SUBROUTINE ZGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.1) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -296,7 +296,7 @@
                CALL ZUNGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
                LWORK_ZUNGBR=DUM(1)
-*              Compute total workspace needed 
+*              Compute total workspace needed
                MAXWRK = MAX( MAXWRK, 2*N + LWORK_ZGEBRD )
                MAXWRK = MAX( MAXWRK, 2*N + LWORK_ZUNMBR )
                MAXWRK = MAX( MAXWRK, 2*N + LWORK_ZUNGBR )
@@ -319,7 +319,7 @@
      $                         DUM(1), -1, INFO )
                   LWORK_ZGEBRD=DUM(1)
 *                 Compute space needed for ZUNMBR
-                  CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, N, A, LDA, 
+                  CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, N, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
                   LWORK_ZUNMBR=DUM(1)
 *                 Compute space needed for ZUNGBR
@@ -330,7 +330,7 @@
                   CALL ZUNMLQ( 'L', 'C', N, NRHS, M, A, LDA, DUM(1),
      $                 B, LDB, DUM(1), -1, INFO )
                   LWORK_ZUNMLQ=DUM(1)
-*                 Compute total workspace needed 
+*                 Compute total workspace needed
                   MAXWRK = M + LWORK_ZGELQF
                   MAXWRK = MAX( MAXWRK, 3*M + M*M + LWORK_ZGEBRD )
                   MAXWRK = MAX( MAXWRK, 3*M + M*M + LWORK_ZUNMBR )
@@ -350,7 +350,7 @@
      $                         DUM(1), -1, INFO )
                   LWORK_ZGEBRD=DUM(1)
 *                 Compute space needed for ZUNMBR
-                  CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, M, A, LDA, 
+                  CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, M, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
                   LWORK_ZUNMBR=DUM(1)
 *                 Compute space needed for ZUNGBR

@@ -1,5 +1,5 @@
-add_executable(xexample1_CBLAS cblas_example1.c )
-add_executable(xexample2_CBLAS cblas_example2.c )
+add_executable(xexample1_CBLAS cblas_example1.c)
+add_executable(xexample2_CBLAS cblas_example2.c)
 
 target_link_libraries(xexample1_CBLAS cblas ${BLAS_LIBRARIES})
 target_link_libraries(xexample2_CBLAS cblas ${BLAS_LIBRARIES})

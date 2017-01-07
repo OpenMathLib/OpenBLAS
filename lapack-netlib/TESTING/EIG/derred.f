@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DERRED( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -56,10 +56,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -68,7 +68,7 @@
 *  =====================================================================
       SUBROUTINE DERRED( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -415,7 +415,7 @@
      $                 2, 2, A, 2, S, U, 1, VT, 2,
      $                 W, 1, IW, INFO)
          CALL CHKXER( 'DGEJSV', INFOT, NOUT, LERR, OK )
-         INFOT = 14
+         INFOT = 15
          CALL DGEJSV( 'G', 'U', 'V', 'R', 'N', 'N',
      $                 2, 2, A, 2, S, U, 2, VT, 1,
      $                 W, 1, IW, INFO)
@@ -432,51 +432,51 @@
 *
          SRNAMT = 'DGESVDX'
          INFOT = 1
-         CALL DGESVDX( 'X', 'N', 'A', 0, 0, A, 1, ZERO, ZERO, 
+         CALL DGESVDX( 'X', 'N', 'A', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL DGESVDX( 'N', 'X', 'A', 0, 0, A, 1, ZERO, ZERO, 
+         CALL DGESVDX( 'N', 'X', 'A', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 3
-         CALL DGESVDX( 'N', 'N', 'X', 0, 0, A, 1, ZERO, ZERO, 
+         CALL DGESVDX( 'N', 'N', 'X', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL DGESVDX( 'N', 'N', 'A', -1, 0, A, 1, ZERO, ZERO, 
+         CALL DGESVDX( 'N', 'N', 'A', -1, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 5
-         CALL DGESVDX( 'N', 'N', 'A', 0, -1, A, 1, ZERO, ZERO, 
+         CALL DGESVDX( 'N', 'N', 'A', 0, -1, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 7
-         CALL DGESVDX( 'N', 'N', 'A', 2, 1, A, 1, ZERO, ZERO, 
+         CALL DGESVDX( 'N', 'N', 'A', 2, 1, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL DGESVDX( 'N', 'N', 'V', 2, 1, A, 2, -ONE, ZERO, 
+         CALL DGESVDX( 'N', 'N', 'V', 2, 1, A, 2, -ONE, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 9
-         CALL DGESVDX( 'N', 'N', 'V', 2, 1, A, 2, ONE, ZERO, 
+         CALL DGESVDX( 'N', 'N', 'V', 2, 1, A, 2, ONE, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL DGESVDX( 'N', 'N', 'I', 2, 2, A, 2, ZERO, ZERO, 
+         CALL DGESVDX( 'N', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 1, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 11
-         CALL DGESVDX( 'V', 'N', 'I', 2, 2, A, 2, ZERO, ZERO, 
+         CALL DGESVDX( 'V', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
      $                 1, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 15
-         CALL DGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO, 
+         CALL DGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 17
-         CALL DGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO, 
+         CALL DGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'DGESVDX', INFOT, NOUT, LERR, OK )
          NT = 12

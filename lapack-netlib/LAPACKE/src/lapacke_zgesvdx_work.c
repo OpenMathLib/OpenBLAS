@@ -38,8 +38,8 @@ lapack_int LAPACKE_zgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
                           		lapack_int lda, double vl, double vu,
                            		lapack_int il, lapack_int iu, lapack_int* ns,
                            		double* s, lapack_complex_double* u, lapack_int ldu,
-                           		lapack_complex_double* vt, lapack_int ldvt,	
-                                lapack_complex_double* work, lapack_int lwork, 
+                           		lapack_complex_double* vt, lapack_int ldvt,
+                                lapack_complex_double* work, lapack_int lwork,
                                 double* rwork, lapack_int* iwork )
 {
     lapack_int info = 0;

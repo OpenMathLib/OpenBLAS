@@ -38,9 +38,9 @@ lapack_int LAPACKE_cuncsd2by1_work( int matrix_layout, char jobu1, char jobu2,
                                 lapack_int q, lapack_complex_float* x11, lapack_int ldx11,
                                 lapack_complex_float* x21, lapack_int ldx21,
                                 float* theta, lapack_complex_float* u1,
-                                lapack_int ldu1, lapack_complex_float* u2, 
+                                lapack_int ldu1, lapack_complex_float* u2,
                                 lapack_int ldu2, lapack_complex_float* v1t,
-                                lapack_int ldv1t, lapack_complex_float* work, 
+                                lapack_int ldv1t, lapack_complex_float* work,
                                 lapack_int lwork, float* rwork, lapack_int lrwork,
                                 lapack_int* iwork )
 {
@@ -48,8 +48,8 @@ lapack_int LAPACKE_cuncsd2by1_work( int matrix_layout, char jobu1, char jobu2,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_cuncsd2by1( &jobu1, &jobu2, &jobv1t, &m, &p,
-                       &q, x11, &ldx11, x21, &ldx21, 
-                       theta, u1, &ldu1, u2, &ldu2, v1t, &ldv1t, 
+                       &q, x11, &ldx11, x21, &ldx21,
+                       theta, u1, &ldu1, u2, &ldu2, v1t, &ldv1t,
                        work, &lwork, rwork, &lrwork, iwork, &info );
         if( info < 0 ) {
             info = info - 1;

@@ -19,7 +19,7 @@ void cblas_dsymv(const CBLAS_LAYOUT layout,
 #ifdef F77_CHAR
    F77_CHAR F77_UL;
 #else
-   #define F77_UL &UL   
+   #define F77_UL &UL
 #endif
 #ifdef F77_INT
    F77_INT F77_N=N, F77_lda=lda, F77_incX=incX, F77_incY=incY;
@@ -38,7 +38,7 @@ void cblas_dsymv(const CBLAS_LAYOUT layout,
    {
       if (Uplo == CblasUpper) UL = 'U';
       else if (Uplo == CblasLower) UL = 'L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_dsymv","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -48,7 +48,7 @@ void cblas_dsymv(const CBLAS_LAYOUT layout,
       #ifdef F77_CHAR
          F77_UL = C2F_CHAR(&UL);
       #endif
-      F77_dsymv(F77_UL, &F77_N, &alpha, A, &F77_lda, X,  
+      F77_dsymv(F77_UL, &F77_N, &alpha, A, &F77_lda, X,
                      &F77_incX, &beta, Y, &F77_incY);
    }
    else if (layout == CblasRowMajor)
@@ -56,7 +56,7 @@ void cblas_dsymv(const CBLAS_LAYOUT layout,
       RowMajorStrg = 1;
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_dsymv","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -66,7 +66,7 @@ void cblas_dsymv(const CBLAS_LAYOUT layout,
       #ifdef F77_CHAR
          F77_UL = C2F_CHAR(&UL);
       #endif
-      F77_dsymv(F77_UL, &F77_N, &alpha, 
+      F77_dsymv(F77_UL, &F77_N, &alpha,
                      A ,&F77_lda, X,&F77_incX, &beta, Y, &F77_incY);
    }
    else cblas_xerbla(1, "cblas_dsymv", "Illegal layout setting, %d\n", layout);

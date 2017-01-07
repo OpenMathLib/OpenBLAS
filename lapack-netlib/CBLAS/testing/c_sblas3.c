@@ -9,7 +9,7 @@
 #include "cblas.h"
 #include "cblas_test.h"
 
-void F77_sgemm(int *layout, char *transpa, char *transpb, int *m, int *n, 
+void F77_sgemm(int *layout, char *transpa, char *transpb, int *m, int *n,
               int *k, float *alpha, float *a, int *lda, float *b, int *ldb,
               float *beta, float *c, int *ldc ) {
 
@@ -107,7 +107,7 @@ void F77_ssymm(int *layout, char *rtlf, char *uplow, int *m, int *n,
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
-     cblas_ssymm( CblasRowMajor, side, uplo, *m, *n, *alpha, A, LDA, B, LDB, 
+     cblas_ssymm( CblasRowMajor, side, uplo, *m, *n, *alpha, A, LDA, B, LDB,
                   *beta, C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
@@ -117,15 +117,15 @@ void F77_ssymm(int *layout, char *rtlf, char *uplow, int *m, int *n,
      free(C);
   }
   else if (*layout == TEST_COL_MJR)
-     cblas_ssymm( CblasColMajor, side, uplo, *m, *n, *alpha, a, *lda, b, *ldb, 
+     cblas_ssymm( CblasColMajor, side, uplo, *m, *n, *alpha, a, *lda, b, *ldb,
                   *beta, c, *ldc );
   else
-     cblas_ssymm( UNDEFINED, side, uplo, *m, *n, *alpha, a, *lda, b, *ldb, 
+     cblas_ssymm( UNDEFINED, side, uplo, *m, *n, *alpha, a, *lda, b, *ldb,
                   *beta, c, *ldc );
 }
 
 void F77_ssyrk(int *layout, char *uplow, char *transp, int *n, int *k,
-              float *alpha, float *a, int *lda, 
+              float *alpha, float *a, int *lda,
               float *beta, float *c, int *ldc ) {
 
   int i,j,LDA,LDC;
@@ -156,7 +156,7 @@ void F77_ssyrk(int *layout, char *uplow, char *transp, int *n, int *k,
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
-     cblas_ssyrk(CblasRowMajor, uplo, trans, *n, *k, *alpha, A, LDA, *beta, 
+     cblas_ssyrk(CblasRowMajor, uplo, trans, *n, *k, *alpha, A, LDA, *beta,
 	         C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*n; i++ )
@@ -165,10 +165,10 @@ void F77_ssyrk(int *layout, char *uplow, char *transp, int *n, int *k,
      free(C);
   }
   else if (*layout == TEST_COL_MJR)
-     cblas_ssyrk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta, 
+     cblas_ssyrk(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, *beta,
 	         c, *ldc );
   else
-     cblas_ssyrk(UNDEFINED, uplo, trans, *n, *k, *alpha, a, *lda, *beta, 
+     cblas_ssyrk(UNDEFINED, uplo, trans, *n, *k, *alpha, a, *lda, *beta,
 	         c, *ldc );
 }
 
@@ -211,7 +211,7 @@ void F77_ssyr2k(int *layout, char *uplow, char *transp, int *n, int *k,
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
-     cblas_ssyr2k(CblasRowMajor, uplo, trans, *n, *k, *alpha, A, LDA, 
+     cblas_ssyr2k(CblasRowMajor, uplo, trans, *n, *k, *alpha, A, LDA,
 		  B, LDB, *beta, C, LDC );
      for( j=0; j<*n; j++ )
         for( i=0; i<*n; i++ )
@@ -221,14 +221,14 @@ void F77_ssyr2k(int *layout, char *uplow, char *transp, int *n, int *k,
      free(C);
   }
   else if (*layout == TEST_COL_MJR)
-     cblas_ssyr2k(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda, 
+     cblas_ssyr2k(CblasColMajor, uplo, trans, *n, *k, *alpha, a, *lda,
 		   b, *ldb, *beta, c, *ldc );
   else
-     cblas_ssyr2k(UNDEFINED, uplo, trans, *n, *k, *alpha, a, *lda, 
+     cblas_ssyr2k(UNDEFINED, uplo, trans, *n, *k, *alpha, a, *lda,
 		   b, *ldb, *beta, c, *ldc );
 }
 void F77_strmm(int *layout, char *rtlf, char *uplow, char *transp, char *diagn,
-              int *m, int *n, float *alpha, float *a, int *lda, float *b, 
+              int *m, int *n, float *alpha, float *a, int *lda, float *b,
               int *ldb) {
   int i,j,LDA,LDB;
   float *A, *B;
@@ -262,7 +262,7 @@ void F77_strmm(int *layout, char *rtlf, char *uplow, char *transp, char *diagn,
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ )
            B[i*LDB+j]=b[j*(*ldb)+i];
-     cblas_strmm(CblasRowMajor, side, uplo, trans, diag, *m, *n, *alpha, 
+     cblas_strmm(CblasRowMajor, side, uplo, trans, diag, *m, *n, *alpha,
 		 A, LDA, B, LDB );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
@@ -271,10 +271,10 @@ void F77_strmm(int *layout, char *rtlf, char *uplow, char *transp, char *diagn,
      free(B);
   }
   else if (*layout == TEST_COL_MJR)
-     cblas_strmm(CblasColMajor, side, uplo, trans, diag, *m, *n, *alpha, 
+     cblas_strmm(CblasColMajor, side, uplo, trans, diag, *m, *n, *alpha,
 		   a, *lda, b, *ldb);
   else
-     cblas_strmm(UNDEFINED, side, uplo, trans, diag, *m, *n, *alpha, 
+     cblas_strmm(UNDEFINED, side, uplo, trans, diag, *m, *n, *alpha,
 		   a, *lda, b, *ldb);
 }
 
@@ -313,7 +313,7 @@ void F77_strsm(int *layout, char *rtlf, char *uplow, char *transp, char *diagn,
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ )
            B[i*LDB+j]=b[j*(*ldb)+i];
-     cblas_strsm(CblasRowMajor, side, uplo, trans, diag, *m, *n, *alpha, 
+     cblas_strsm(CblasRowMajor, side, uplo, trans, diag, *m, *n, *alpha,
 		 A, LDA, B, LDB );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
@@ -322,9 +322,9 @@ void F77_strsm(int *layout, char *rtlf, char *uplow, char *transp, char *diagn,
      free(B);
   }
   else if (*layout == TEST_COL_MJR)
-     cblas_strsm(CblasColMajor, side, uplo, trans, diag, *m, *n, *alpha, 
+     cblas_strsm(CblasColMajor, side, uplo, trans, diag, *m, *n, *alpha,
 		   a, *lda, b, *ldb);
   else
-     cblas_strsm(UNDEFINED, side, uplo, trans, diag, *m, *n, *alpha, 
+     cblas_strsm(UNDEFINED, side, uplo, trans, diag, *m, *n, *alpha,
 		   a, *lda, b, *ldb);
 }

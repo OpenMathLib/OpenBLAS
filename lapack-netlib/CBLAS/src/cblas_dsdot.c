@@ -15,11 +15,11 @@ double  cblas_dsdot( const int N, const float *X,
    double dot;
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX, F77_incY=incY;
-#else 
+#else
    #define F77_N N
    #define F77_incX incX
    #define F77_incY incY
 #endif
    F77_dsdot_sub( &F77_N, X, &F77_incX, Y, &F77_incY, &dot);
    return dot;
-}   
+}

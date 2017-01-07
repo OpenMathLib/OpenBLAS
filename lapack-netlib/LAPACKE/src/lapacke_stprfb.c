@@ -82,7 +82,7 @@ lapack_int LAPACKE_stprfb( int matrix_layout, char side, char trans, char direct
     else {
        ldwork = m;
        work_size = MAX(1,ldwork) * MAX(1,k);
-       }    
+       }
         /* Allocate memory for working array(s) */
     work = (float*)
         LAPACKE_malloc( sizeof(float) * work_size );

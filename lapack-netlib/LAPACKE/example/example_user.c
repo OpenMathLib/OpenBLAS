@@ -1,17 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "lapacke.h"
- 
+
 /* Auxiliary routines prototypes */
 extern void print_matrix( char* desc, lapack_int m, lapack_int n, double* a, lapack_int lda );
 extern void print_int_vector( char* desc, lapack_int n, lapack_int* a );
- 
+
 /* Parameters */
 #define N 5
 #define NRHS 3
 #define LDA N
 #define LDB NRHS
- 
+
 /* Main program */
 int main() {
         /* Locals */
@@ -32,14 +32,14 @@ int main() {
            -7.57,  1.75, -8.61,
            -3.03,  2.86, 8.99
         };
- 
+
        double aNorm;
        double rcond;
        char ONE_NORM = '1';
        lapack_int NROWS = n;
        lapack_int NCOLS = n;
        lapack_int LEADING_DIMENSION_A = n;
- 
+
               /* Print Entry Matrix */
         print_matrix( "Entry Matrix A", n, n, a, lda );
         /* Print Right Rand Side */
@@ -69,13 +69,13 @@ int main() {
             printf( "Unrecognized value of INFO = %d\n", info );
             exit( 1 );
               }
- 
+
         /* Print solution */
        printf("LAPACKE_dlange / One-norm of A = %lf\n", aNorm);
         printf("LAPACKE_dgecon / RCOND of A    = %f\n", rcond);
         exit( 0 );
 } /* End of LAPACKE_dgesv Example */
- 
+
 /* Auxiliary routine: printing a matrix */
 void print_matrix( char* desc, lapack_int m, lapack_int n, double* a, lapack_int lda ) {
         lapack_int i, j;
@@ -85,7 +85,7 @@ void print_matrix( char* desc, lapack_int m, lapack_int n, double* a, lapack_int
                 printf( "\n" );
         }
 }
- 
+
 /* Auxiliary routine: printing a vector of integers */
 void print_int_vector( char* desc, lapack_int n, lapack_int* a ) {
         lapack_int j;
@@ -93,5 +93,5 @@ void print_int_vector( char* desc, lapack_int n, lapack_int* a ) {
         for( j = 0; j < n; j++ ) printf( " %6i", a[j] );
         printf( "\n" );
 }
- 
- 
+
+

@@ -34,8 +34,8 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_zlascl( int matrix_layout, char type, lapack_int kl,
-                           lapack_int ku, double cfrom, double cto, 
-                           lapack_int m, lapack_int n, lapack_complex_double* a, 
+                           lapack_int ku, double cfrom, double cto,
+                           lapack_int m, lapack_int n, lapack_complex_double* a,
                            lapack_int lda )
 {
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {

@@ -1,22 +1,22 @@
 ####################################################################
 #  LAPACK make include file.                                       #
-#  LAPACK, Version 3.6.1                                           #
-#  June 2016                                                       #
+#  LAPACK, Version 3.7.0                                           #
+#  December 2016                                                   #
 ####################################################################
 #
 SHELL = /bin/sh
-#  
+#
 #  Modify the FORTRAN and OPTS definitions to refer to the
 #  compiler and desired compiler options for your machine.  NOOPT
 #  refers to the compiler options desired when NO OPTIMIZATION is
-#  selected.  Define LOADER and LOADOPTS to refer to the loader and 
+#  selected.  Define LOADER and LOADOPTS to refer to the loader and
 #  desired load options for your machine.
 #
 #  Note: During a regular execution, LAPACK might create NaN and Inf
-#  and handle these quantities appropriately. As a consequence, one 
+#  and handle these quantities appropriately. As a consequence, one
 #  should not compile LAPACK with flags such as -ffpe-trap=overflow.
 #
-FORTRAN  = gfortran 
+FORTRAN  = gfortran
 OPTS     = -O2 -frecursive
 DRVOPTS  = $(OPTS)
 NOOPT    = -O0 -frecursive
@@ -26,7 +26,7 @@ LOADOPTS =
 #  Comment out the following line to include deprecated routines to the
 #  LAPACK library.
 #
-#MAKEDEPRECATED = Yes
+#BUILD_DEPRECATED = Yes
 #
 # Timer for the SECOND and DSECND routines
 #
@@ -70,7 +70,7 @@ RANLIB   = ranlib
 XBLASLIB     =
 # XBLASLIB    = -lxblas
 #
-#  The location of the libraries to which you will link.  (The 
+#  The location of the libraries to which you will link.  (The
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
 #

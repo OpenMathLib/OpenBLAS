@@ -2,26 +2,26 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGESVDX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvdx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvdx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvdx.f"> 
+*> Download CGESVDX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvdx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvdx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvdx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*     SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU, 
-*    $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK, 
+*     SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
+*    $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
 *    $                    LWORK, RWORK, IWORK, INFO )
-*      
+*
 *
 *     .. Scalar Arguments ..
 *      CHARACTER          JOBU, JOBVT, RANGE
@@ -31,10 +31,10 @@
 *     .. Array Arguments ..
 *     INTEGER            IWORK( * )
 *     REAL               S( * ), RWORK( * )
-*     COMPLEX            A( LDA, * ), U( LDU, * ), VT( LDVT, * ), 
+*     COMPLEX            A( LDA, * ), U( LDU, * ), VT( LDVT, * ),
 *    $                   WORK( * )
 *     ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -44,23 +44,23 @@
 *>  CGESVDX computes the singular value decomposition (SVD) of a complex
 *>  M-by-N matrix A, optionally computing the left and/or right singular
 *>  vectors. The SVD is written
-*> 
+*>
 *>      A = U * SIGMA * transpose(V)
-*> 
+*>
 *>  where SIGMA is an M-by-N matrix which is zero except for its
 *>  min(m,n) diagonal elements, U is an M-by-M unitary matrix, and
 *>  V is an N-by-N unitary matrix.  The diagonal elements of SIGMA
 *>  are the singular values of A; they are real and non-negative, and
 *>  are returned in descending order.  The first min(m,n) columns of
 *>  U and V are the left and right singular vectors of A.
-*> 
-*>  CGESVDX uses an eigenvalue problem for obtaining the SVD, which 
-*>  allows for the computation of a subset of singular values and 
+*>
+*>  CGESVDX uses an eigenvalue problem for obtaining the SVD, which
+*>  allows for the computation of a subset of singular values and
 *>  vectors. See SBDSVDX for details.
-*> 
+*>
 *>  Note that the routine returns V**T, not V.
 *> \endverbatim
-*   
+*
 *  Arguments:
 *  ==========
 *
@@ -69,7 +69,7 @@
 *>          JOBU is CHARACTER*1
 *>          Specifies options for computing all or part of the matrix U:
 *>          = 'V':  the first min(m,n) columns of U (the left singular
-*>                  vectors) or as specified by RANGE are returned in 
+*>                  vectors) or as specified by RANGE are returned in
 *>                  the array U;
 *>          = 'N':  no columns of U (no left singular vectors) are
 *>                  computed.
@@ -81,7 +81,7 @@
 *>           Specifies options for computing all or part of the matrix
 *>           V**T:
 *>           = 'V':  the first min(m,n) rows of V**T (the right singular
-*>                   vectors) or as specified by RANGE are returned in 
+*>                   vectors) or as specified by RANGE are returned in
 *>                   the array VT;
 *>           = 'N':  no rows of V**T (no right singular vectors) are
 *>                   computed.
@@ -93,7 +93,7 @@
 *>          = 'A': all singular values will be found.
 *>          = 'V': all singular values in the half-open interval (VL,VU]
 *>                 will be found.
-*>          = 'I': the IL-th through IU-th singular values will be found. 
+*>          = 'I': the IL-th through IU-th singular values will be found.
 *> \endverbatim
 *>
 *> \param[in] M
@@ -158,7 +158,7 @@
 *> \param[out] NS
 *> \verbatim
 *>          NS is INTEGER
-*>          The total number of singular values found,  
+*>          The total number of singular values found,
 *>          0 <= NS <= min(M,N).
 *>          If RANGE = 'A', NS = min(M,N); if RANGE = 'I', NS = IU-IL+1.
 *> \endverbatim
@@ -172,10 +172,10 @@
 *> \param[out] U
 *> \verbatim
 *>          U is COMPLEX array, dimension (LDU,UCOL)
-*>          If JOBU = 'V', U contains columns of U (the left singular 
-*>          vectors, stored columnwise) as specified by RANGE; if 
+*>          If JOBU = 'V', U contains columns of U (the left singular
+*>          vectors, stored columnwise) as specified by RANGE; if
 *>          JOBU = 'N', U is not referenced.
-*>          Note: The user must ensure that UCOL >= NS; if RANGE = 'V', 
+*>          Note: The user must ensure that UCOL >= NS; if RANGE = 'V',
 *>          the exact value of NS is not known in advance and an upper
 *>          bound must be used.
 *> \endverbatim
@@ -190,11 +190,11 @@
 *> \param[out] VT
 *> \verbatim
 *>          VT is COMPLEX array, dimension (LDVT,N)
-*>          If JOBVT = 'V', VT contains the rows of V**T (the right singular 
-*>          vectors, stored rowwise) as specified by RANGE; if JOBVT = 'N', 
+*>          If JOBVT = 'V', VT contains the rows of V**T (the right singular
+*>          vectors, stored rowwise) as specified by RANGE; if JOBVT = 'N',
 *>          VT is not referenced.
-*>          Note: The user must ensure that LDVT >= NS; if RANGE = 'V', 
-*>          the exact value of NS is not known in advance and an upper 
+*>          Note: The user must ensure that LDVT >= NS; if RANGE = 'V',
+*>          the exact value of NS is not known in advance and an upper
 *>          bound must be used.
 *> \endverbatim
 *>
@@ -215,9 +215,9 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*>          LWORK >= MAX(1,MIN(M,N)*(MIN(M,N)+4)) for the paths (see 
+*>          LWORK >= MAX(1,MIN(M,N)*(MIN(M,N)+4)) for the paths (see
 *>          comments inside the code):
-*>             - PATH 1  (M much larger than N) 
+*>             - PATH 1  (M much larger than N)
 *>             - PATH 1t (N much larger than M)
 *>          LWORK >= MAX(1,MIN(M,N)*2+MAX(M,N)) for the other paths.
 *>          For good performance, LWORK should generally be larger.
@@ -237,8 +237,8 @@
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (12*MIN(M,N))
-*>          If INFO = 0, the first NS elements of IWORK are zero. If INFO > 0, 
-*>          then IWORK contains the indices of the eigenvectors that failed 
+*>          If INFO = 0, the first NS elements of IWORK are zero. If INFO > 0,
+*>          then IWORK contains the indices of the eigenvectors that failed
 *>          to converge in SBDSVDX/SSTEVX.
 *> \endverbatim
 *>
@@ -256,21 +256,21 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
 *> \ingroup complexGEsing
 *
 *  =====================================================================
-      SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU, 
-     $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK, 
+      SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
+     $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
      $                    LWORK, RWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.1) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -283,7 +283,7 @@
 *     .. Array Arguments ..
       INTEGER            IWORK( * )
       REAL               S( * ), RWORK( * )
-      COMPLEX            A( LDA, * ), U( LDU, * ), VT( LDVT, * ), 
+      COMPLEX            A( LDA, * ), U( LDU, * ), VT( LDVT, * ),
      $                   WORK( * )
 *     ..
 *
@@ -300,7 +300,7 @@
       CHARACTER          JOBZ, RNGTGK
       LOGICAL            ALLS, INDS, LQUERY, VALS, WANTU, WANTVT
       INTEGER            I, ID, IE, IERR, ILQF, ILTGK, IQRF, ISCL,
-     $                   ITAU, ITAUP, ITAUQ, ITEMP, ITEMPR, ITGKZ, 
+     $                   ITAU, ITAUP, ITAUQ, ITEMP, ITEMPR, ITGKZ,
      $                   IUTGK, J, K, MAXWRK, MINMN, MINWRK, MNTHR
       REAL               ABSTOL, ANRM, BIGNUM, EPS, SMLNUM
 *     ..
@@ -480,7 +480,7 @@
          RNGTGK = 'I'
          ILTGK = IL
          IUTGK = IU
-      ELSE      
+      ELSE
          RNGTGK = 'V'
          ILTGK = 0
          IUTGK = 0
@@ -524,28 +524,28 @@
             ITEMP = ITAU + N
             CALL CGEQRF( M, N, A, LDA, WORK( ITAU ), WORK( ITEMP ),
      $                   LWORK-ITEMP+1, INFO )
-*  
+*
 *           Copy R into WORK and bidiagonalize it:
 *           (Workspace: need N*N+3*N, prefer N*N+N+2*N*NB)
-*   
+*
             IQRF = ITEMP
             ITAUQ = ITEMP + N*N
             ITAUP = ITAUQ + N
             ITEMP = ITAUP + N
-            ID = 1   
+            ID = 1
             IE = ID + N
             ITGKZ = IE + N
             CALL CLACPY( 'U', N, N, A, LDA, WORK( IQRF ), N )
             CALL CLASET( 'L', N-1, N-1, CZERO, CZERO,
      $                   WORK( IQRF+1 ), N )
-            CALL CGEBRD( N, N, WORK( IQRF ), N, RWORK( ID ), 
+            CALL CGEBRD( N, N, WORK( IQRF ), N, RWORK( ID ),
      $                   RWORK( IE ), WORK( ITAUQ ), WORK( ITAUP ),
      $                   WORK( ITEMP ), LWORK-ITEMP+1, INFO )
             ITEMPR = ITGKZ + N*(N*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*N*N+14*N)          
-*                   
+*           (Workspace: need 2*N*N+14*N)
+*
             CALL SBDSVDX( 'U', JOBZ, RNGTGK, N, RWORK( ID ),
      $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
      $                    RWORK( ITGKZ ), N*2, RWORK( ITEMPR ),
@@ -567,18 +567,18 @@
 *              Call CUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL CUNMBR( 'Q', 'L', 'N', N, NS, N, WORK( IQRF ), N, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+               CALL CUNMBR( 'Q', 'L', 'N', N, NS, N, WORK( IQRF ), N,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
 *
 *              Call CUNMQR to compute Q*(QB*UB).
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL CUNMQR( 'L', 'N', M, NS, N, A, LDA, 
+               CALL CUNMQR( 'L', 'N', M, NS, N, A, LDA,
      $                      WORK( ITAU ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -594,7 +594,7 @@
 *              Call CUNMBR to compute VB**T * PB**T
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL CUNMBR( 'P', 'R', 'C', NS, N, N, WORK( IQRF ), N, 
+               CALL CUNMBR( 'P', 'R', 'C', NS, N, N, WORK( IQRF ), N,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
             END IF
@@ -610,21 +610,21 @@
 *
             ITAUQ = 1
             ITAUP = ITAUQ + N
-            ITEMP = ITAUP + N          
+            ITEMP = ITAUP + N
             ID = 1
             IE = ID + N
             ITGKZ = IE + N
-            CALL CGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ), 
+            CALL CGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ),
      $                   WORK( ITAUQ ), WORK( ITAUP ), WORK( ITEMP ),
      $                   LWORK-ITEMP+1, INFO )
             ITEMPR = ITGKZ + N*(N*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*N*N+14*N)          
-*                     
+*           (Workspace: need 2*N*N+14*N)
+*
             CALL SBDSVDX( 'U', JOBZ, RNGTGK, N, RWORK( ID ),
-     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S, 
-     $                    RWORK( ITGKZ ), N*2, RWORK( ITEMPR ), 
+     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
+     $                    RWORK( ITGKZ ), N*2, RWORK( ITEMPR ),
      $                    IWORK, INFO)
 *
 *           If needed, compute left singular vectors.
@@ -632,7 +632,7 @@
             IF( WANTU ) THEN
                K = ITGKZ
                DO I = 1, NS
-                  DO J = 1, N              
+                  DO J = 1, N
                      U( J, I ) = CMPLX( RWORK( K ), ZERO )
                      K = K + 1
                   END DO
@@ -642,12 +642,12 @@
 *
 *              Call CUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
-*   
-               CALL CUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+*
+               CALL CUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, IERR )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -663,11 +663,11 @@
 *              Call CUNMBR to compute VB**T * PB**T
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL CUNMBR( 'P', 'R', 'C', NS, N, N, A, LDA, 
+               CALL CUNMBR( 'P', 'R', 'C', NS, N, N, A, LDA,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, IERR )
             END IF
-         END IF                             
+         END IF
       ELSE
 *
 *        A has more columns than rows. If A has sufficiently more
@@ -676,7 +676,7 @@
          IF( N.GE.MNTHR ) THEN
 *
 *           Path 1t (N much larger than M):
-*           A = L * Q = ( QB * B * PB**T ) * Q 
+*           A = L * Q = ( QB * B * PB**T ) * Q
 *                     = ( QB * ( UB * S * VB**T ) * PB**T ) * Q
 *           U = QB * UB ; V**T = VB**T * PB**T * Q
 *
@@ -691,7 +691,7 @@
 *           Copy L into WORK and bidiagonalize it:
 *           (Workspace in WORK( ITEMP ): need M*M+3*M, prefer M*M+M+2*M*NB)
 *
-            ILQF = ITEMP       
+            ILQF = ITEMP
             ITAUQ = ILQF + M*M
             ITAUP = ITAUQ + M
             ITEMP = ITAUP + M
@@ -699,19 +699,19 @@
             IE = ID + M
             ITGKZ = IE + M
             CALL CLACPY( 'L', M, M, A, LDA, WORK( ILQF ), M )
-            CALL CLASET( 'U', M-1, M-1, CZERO, CZERO, 
+            CALL CLASET( 'U', M-1, M-1, CZERO, CZERO,
      $                   WORK( ILQF+M ), M )
             CALL CGEBRD( M, M, WORK( ILQF ), M, RWORK( ID ),
-     $                   RWORK( IE ), WORK( ITAUQ ), WORK( ITAUP ), 
+     $                   RWORK( IE ), WORK( ITAUQ ), WORK( ITAUP ),
      $                   WORK( ITEMP ), LWORK-ITEMP+1, INFO )
             ITEMPR = ITGKZ + M*(M*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*M*M+14*M)          
+*           (Workspace: need 2*M*M+14*M)
 *
             CALL SBDSVDX( 'U', JOBZ, RNGTGK, M, RWORK( ID ),
-     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S, 
-     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMPR ), 
+     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
+     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMPR ),
      $                    IWORK, INFO)
 *
 *           If needed, compute left singular vectors.
@@ -729,11 +729,11 @@
 *              Call CUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL CUNMBR( 'Q', 'L', 'N', M, NS, M, WORK( ILQF ), M, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+               CALL CUNMBR( 'Q', 'L', 'N', M, NS, M, WORK( ILQF ), M,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -751,46 +751,46 @@
 *              Call CUNMBR to compute (VB**T)*(PB**T)
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL CUNMBR( 'P', 'R', 'C', NS, M, M, WORK( ILQF ), M, 
+               CALL CUNMBR( 'P', 'R', 'C', NS, M, M, WORK( ILQF ), M,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
 *
 *              Call CUNMLQ to compute ((VB**T)*(PB**T))*Q.
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL CUNMLQ( 'R', 'N', NS, N, M, A, LDA, 
+               CALL CUNMLQ( 'R', 'N', NS, N, M, A, LDA,
      $                      WORK( ITAU ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
+            END IF
          ELSE
 *
 *           Path 2t (N greater than M, but not much larger)
 *           Reduce to bidiagonal form without LQ decomposition
 *           A = QB * B * PB**T = QB * ( UB * S * VB**T ) * PB**T
-*           U = QB * UB; V**T = VB**T * PB**T           
+*           U = QB * UB; V**T = VB**T * PB**T
 *
 *           Bidiagonalize A
 *           (Workspace: need 2*M+N, prefer 2*M+(M+N)*NB)
-*            
+*
             ITAUQ = 1
             ITAUP = ITAUQ + M
             ITEMP = ITAUP + M
             ID = 1
             IE = ID + M
             ITGKZ = IE + M
-            CALL CGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ), 
+            CALL CGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ),
      $                   WORK( ITAUQ ), WORK( ITAUP ), WORK( ITEMP ),
      $                   LWORK-ITEMP+1, INFO )
             ITEMPR = ITGKZ + M*(M*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*M*M+14*M)          
-*          
-            CALL SBDSVDX( 'L', JOBZ, RNGTGK, M, RWORK( ID ), 
-     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S, 
-     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMPR ), 
+*           (Workspace: need 2*M*M+14*M)
+*
+            CALL SBDSVDX( 'L', JOBZ, RNGTGK, M, RWORK( ID ),
+     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
+     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMPR ),
      $                    IWORK, INFO)
-* 
+*
 *           If needed, compute left singular vectors.
 *
             IF( WANTU ) THEN
@@ -806,11 +806,11 @@
 *              Call CUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL CUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+               CALL CUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -828,10 +828,10 @@
 *              Call CUNMBR to compute VB**T * PB**T
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL CUNMBR( 'P', 'R', 'C', NS, N, M, A, LDA, 
+               CALL CUNMBR( 'P', 'R', 'C', NS, N, M, A, LDA,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF 
+            END IF
          END IF
       END IF
 *

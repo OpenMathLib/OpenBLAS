@@ -41,10 +41,10 @@ lapack_int LAPACKE_zgejsv( int matrix_layout, char joba, char jobu, char jobv,
 {
     lapack_int info = 0;
     lapack_int lwork = (
-    			// 1.1	   
+    			// 1.1
     	(	     LAPACKE_lsame( jobu, 'n' ) &&  LAPACKE_lsame( jobv, 'n' ) &&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) )) ? 2*n+1 :
-                       
+
                 //1.2
      (   (        LAPACKE_lsame( jobu, 'n' ) &&  LAPACKE_lsame( jobv, 'n' ) &&
               !( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) )) ? n*n+3*n :
@@ -53,38 +53,38 @@ lapack_int LAPACKE_zgejsv( int matrix_layout, char joba, char jobu, char jobv,
     (	(	   ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) )  &&
               (!( LAPACKE_lsame( jobu, 'u') ||  LAPACKE_lsame( jobu, 'f' ) )&&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? 3*n :
-    
-    
+
+
                 //2.2
     (	(	   ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) )  &&
               !( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' ) ) &&
               !( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? 3*n :
-        
-               //3.1              
+
+               //3.1
      (   (      ( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' )) &&
               !( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' )) &&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))?  3*n :
-                       
-               //3.2             
+
+               //3.2
      (   (      ( LAPACKE_lsame( jobu, 'u' ) || LAPACKE_lsame( jobu, 'f' )) &&
               !(LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' )) &&
               !(LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))?  3*n  :
-           
+
               //4.1
      (  (       ( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' ) ) &&
                ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) ) &&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? 5*n+2*n*n :
-               
+
               //4.2
      (  (       ( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' ) ) &&
                ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) ) &&
-               ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? 4*n*n: 
-                       1) ) ) ) ) ) ) ) );  
+               ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? 4*n*n:
+                       1) ) ) ) ) ) ) ) );
     lapack_int lrwork = (
-    			// 1.1	   
+    			// 1.1
     	(	     LAPACKE_lsame( jobu, 'n' ) &&  LAPACKE_lsame( jobv, 'n' ) &&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) )) ? MAX(7,n+2*m) :
-                       
+
                 //1.2
      (   (        LAPACKE_lsame( jobu, 'n' ) &&  LAPACKE_lsame( jobv, 'n' ) &&
               !( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) )) ? MAX(7,2*n) :
@@ -93,28 +93,28 @@ lapack_int LAPACKE_zgejsv( int matrix_layout, char joba, char jobu, char jobv,
     (	(	   ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) )  &&
               (!( LAPACKE_lsame( jobu, 'u') ||  LAPACKE_lsame( jobu, 'f' ) ) &&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? MAX( 7, n+ 2*m ) :
-    
-    
+
+
                 //2.2
     (	(	   ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) )  &&
               !( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' ) ) &&
               !( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? MAX(7,2*n) :
-        
-               //3.1              
+
+               //3.1
      (   (      ( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' )) &&
               !( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' )) &&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))?  MAX( 7, n+ 2*m ) :
-                       
-               //3.2             
+
+               //3.2
      (   (      ( LAPACKE_lsame( jobu, 'u' ) || LAPACKE_lsame( jobu, 'f' )) &&
               !(LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' )) &&
               !(LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))?  MAX(7,2*n)  :
-           
+
               //4.1
      (  (       ( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' ) ) &&
                ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) ) &&
                ( LAPACKE_lsame( jobt, 't' ) ||  LAPACKE_lsame( joba, 'f' ) || LAPACKE_lsame( joba, 'g' ) ))? MAX( 7, n+ 2*m ) :
-               
+
               //4.2
      (  (       ( LAPACKE_lsame( jobu, 'u' ) ||  LAPACKE_lsame( jobu, 'f' ) ) &&
                ( LAPACKE_lsame( jobv, 'v' ) ||  LAPACKE_lsame( jobv, 'j' ) ) &&

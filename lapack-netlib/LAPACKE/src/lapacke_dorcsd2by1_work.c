@@ -46,8 +46,8 @@ lapack_int LAPACKE_dorcsd2by1_work( int matrix_layout, char jobu1, char jobu2,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_dorcsd2by1( &jobu1, &jobu2, &jobv1t, &m, &p,
-                       &q, x11, &ldx11, x21, &ldx21, 
-                       theta, u1, &ldu1, u2, &ldu2, v1t, &ldv1t, 
+                       &q, x11, &ldx11, x21, &ldx21,
+                       theta, u1, &ldu1, u2, &ldu2, v1t, &ldv1t,
                        work, &lwork, iwork, &info );
         if( info < 0 ) {
             info = info - 1;

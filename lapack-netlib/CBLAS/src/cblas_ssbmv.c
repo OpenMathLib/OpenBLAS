@@ -17,7 +17,7 @@ void cblas_ssbmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
 #ifdef F77_CHAR
    F77_CHAR F77_UL;
 #else
-   #define F77_UL &UL   
+   #define F77_UL &UL
 #endif
 
 #ifdef F77_INT
@@ -36,10 +36,10 @@ void cblas_ssbmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    CBLAS_CallFromC = 1;
    if (layout == CblasColMajor)
    {
-   
+
       if (Uplo == CblasUpper) UL = 'U';
       else if (Uplo == CblasLower) UL = 'L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_ssbmv","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -56,7 +56,7 @@ void cblas_ssbmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       RowMajorStrg = 1;
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_ssbmv","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;

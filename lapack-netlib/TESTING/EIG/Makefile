@@ -49,13 +49,13 @@ SCIGTST = slafts.o slahd2.o slasum.o slatb9.o sstech.o sstect.o \
    ssvdch.o ssvdct.o ssxt1.o
 
 SEIGTST = schkee.o \
-   sbdt01.o sbdt02.o sbdt03.o sbdt04.o sbdt05.o\
+   sbdt01.o sbdt02.o sbdt03.o sbdt04.o sbdt05.o \
    schkbb.o schkbd.o schkbk.o schkbl.o schkec.o \
-   schkgg.o schkgk.o schkgl.o schkhs.o schksb.o schkst.o \
+   schkgg.o schkgk.o schkgl.o schkhs.o schksb.o schkst.o schkst2stg.o schksb2stg.o \
    sckcsd.o sckglm.o sckgqr.o sckgsv.o scklse.o scsdts.o \
    sdrges.o sdrgev.o sdrges3.o sdrgev3.o sdrgsx.o sdrgvx.o \
-   sdrvbd.o sdrves.o sdrvev.o sdrvsg.o \
-   sdrvst.o sdrvsx.o sdrvvx.o \
+   sdrvbd.o sdrves.o sdrvev.o sdrvsg.o sdrvsg2stg.o \
+   sdrvst.o sdrvst2stg.o sdrvsx.o sdrvvx.o \
    serrbd.o serrec.o serred.o serrgg.o serrhs.o serrst.o \
    sget02.o sget10.o sget22.o sget23.o sget24.o sget31.o \
    sget32.o sget33.o sget34.o sget35.o sget36.o \
@@ -66,13 +66,13 @@ SEIGTST = schkee.o \
    sstt22.o ssyt21.o ssyt22.o
 
 CEIGTST = cchkee.o \
-   cbdt01.o cbdt02.o cbdt03.o cbdt05.o\
+   cbdt01.o cbdt02.o cbdt03.o cbdt05.o \
    cchkbb.o cchkbd.o cchkbk.o cchkbl.o cchkec.o \
-   cchkgg.o cchkgk.o cchkgl.o cchkhb.o cchkhs.o cchkst.o \
+   cchkgg.o cchkgk.o cchkgl.o cchkhb.o cchkhs.o cchkst.o cchkst2stg.o cchkhb2stg.o \
    cckcsd.o cckglm.o cckgqr.o cckgsv.o ccklse.o ccsdts.o \
    cdrges.o cdrgev.o cdrges3.o cdrgev3.o cdrgsx.o cdrgvx.o \
-   cdrvbd.o cdrves.o cdrvev.o cdrvsg.o \
-   cdrvst.o cdrvsx.o cdrvvx.o \
+   cdrvbd.o cdrves.o cdrvev.o cdrvsg.o cdrvsg2stg.o \
+   cdrvst.o cdrvst2stg.o cdrvsx.o cdrvvx.o \
    cerrbd.o cerrec.o cerred.o cerrgg.o cerrhs.o cerrst.o \
    cget02.o cget10.o cget22.o cget23.o cget24.o \
    cget35.o cget36.o cget37.o cget38.o cget51.o cget52.o \
@@ -86,13 +86,13 @@ DZIGTST = dlafts.o dlahd2.o dlasum.o dlatb9.o dstech.o dstect.o \
    dsvdch.o dsvdct.o dsxt1.o
 
 DEIGTST = dchkee.o \
-   dbdt01.o dbdt02.o dbdt03.o dbdt04.o dbdt05.o\
+   dbdt01.o dbdt02.o dbdt03.o dbdt04.o dbdt05.o \
    dchkbb.o dchkbd.o dchkbk.o dchkbl.o dchkec.o \
-   dchkgg.o dchkgk.o dchkgl.o dchkhs.o dchksb.o dchkst.o \
+   dchkgg.o dchkgk.o dchkgl.o dchkhs.o dchksb.o dchkst.o dchkst2stg.o dchksb2stg.o \
    dckcsd.o dckglm.o dckgqr.o dckgsv.o dcklse.o dcsdts.o \
    ddrges.o ddrgev.o ddrges3.o ddrgev3.o ddrgsx.o ddrgvx.o \
-   ddrvbd.o ddrves.o ddrvev.o ddrvsg.o \
-   ddrvst.o ddrvsx.o ddrvvx.o \
+   ddrvbd.o ddrves.o ddrvev.o ddrvsg.o ddrvsg2stg.o \
+   ddrvst.o ddrvst2stg.o ddrvsx.o ddrvvx.o \
    derrbd.o derrec.o derred.o derrgg.o derrhs.o derrst.o \
    dget02.o dget10.o dget22.o dget23.o dget24.o dget31.o \
    dget32.o dget33.o dget34.o dget35.o dget36.o \
@@ -103,13 +103,13 @@ DEIGTST = dchkee.o \
    dstt22.o dsyt21.o dsyt22.o
 
 ZEIGTST = zchkee.o \
-   zbdt01.o zbdt02.o zbdt03.o zbdt05.o\
+   zbdt01.o zbdt02.o zbdt03.o zbdt05.o \
    zchkbb.o zchkbd.o zchkbk.o zchkbl.o zchkec.o \
-   zchkgg.o zchkgk.o zchkgl.o zchkhb.o zchkhs.o zchkst.o \
+   zchkgg.o zchkgk.o zchkgl.o zchkhb.o zchkhs.o zchkst.o zchkst2stg.o zchkhb2stg.o \
    zckcsd.o zckglm.o zckgqr.o zckgsv.o zcklse.o zcsdts.o \
    zdrges.o zdrgev.o zdrges3.o zdrgev3.o zdrgsx.o zdrgvx.o \
-   zdrvbd.o zdrves.o zdrvev.o zdrvsg.o \
-   zdrvst.o zdrvsx.o zdrvvx.o \
+   zdrvbd.o zdrves.o zdrvev.o zdrvsg.o zdrvsg2stg.o \
+   zdrvst.o zdrvst2stg.o zdrvsx.o zdrvvx.o \
    zerrbd.o zerrec.o zerred.o zerrgg.o zerrhs.o zerrst.o \
    zget02.o zget10.o zget22.o zget23.o zget24.o \
    zget35.o zget36.o zget37.o zget38.o zget51.o zget52.o \
@@ -126,25 +126,25 @@ complex: ../xeigtstc
 double: ../xeigtstd
 complex16: ../xeigtstz
 
-../xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) ../../$(LAPACKLIB); \
-          $(LOADER) $(LOADOPTS) -o xeigtsts \
-          $(SEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) \
-	  ../../$(LAPACKLIB) $(BLASLIB) && mv xeigtsts $@
+../xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) ../../$(LAPACKLIB)
+	$(LOADER) $(LOADOPTS) -o $@ \
+	$(SEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) \
+	../../$(LAPACKLIB) $(BLASLIB)
 
-../xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) ../../$(LAPACKLIB); \
-          $(LOADER) $(LOADOPTS) -o xeigtstc \
-          $(CEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) \
-	  ../../$(LAPACKLIB) $(BLASLIB) && mv xeigtstc $@
+../xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) ../../$(LAPACKLIB)
+	$(LOADER) $(LOADOPTS) -o $@ \
+	$(CEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) \
+	../../$(LAPACKLIB) $(BLASLIB)
 
-../xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) ../../$(LAPACKLIB); \
-          $(LOADER) $(LOADOPTS) -o xeigtstd \
-          $(DEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) \
-	  ../../$(LAPACKLIB) $(BLASLIB) && mv xeigtstd $@
+../xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) ../../$(LAPACKLIB)
+	$(LOADER) $(LOADOPTS) -o $@ \
+	$(DEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) \
+	../../$(LAPACKLIB) $(BLASLIB)
 
-../xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) ../../$(LAPACKLIB); \
-          $(LOADER) $(LOADOPTS) -o xeigtstz \
-          $(ZEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) \
-	  ../../$(LAPACKLIB) $(BLASLIB) && mv xeigtstz $@
+../xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) ../../$(LAPACKLIB)
+	$(LOADER) $(LOADOPTS) -o $@ \
+	$(ZEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) \
+	../../$(LAPACKLIB) $(BLASLIB)
 
 $(AEIGTST): $(FRC)
 $(SCIGTST): $(FRC)
@@ -161,12 +161,13 @@ clean:
 	rm -f *.o
 
 schkee.o: schkee.f
-	$(FORTRAN) $(DRVOPTS) -c $< -o $@
+	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
 dchkee.o: dchkee.f
-	$(FORTRAN) $(DRVOPTS) -c $< -o $@
+	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
 cchkee.o: cchkee.f
-	$(FORTRAN) $(DRVOPTS) -c $< -o $@
+	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
 zchkee.o: zchkee.f
-	$(FORTRAN) $(DRVOPTS) -c $< -o $@
+	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
 
-.f.o : ; $(FORTRAN) $(OPTS) -c $< -o $@
+.f.o:
+	$(FORTRAN) $(OPTS) -c -o $@ $<

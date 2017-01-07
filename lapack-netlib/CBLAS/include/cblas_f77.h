@@ -89,8 +89,8 @@
 /*
  * Level 2 BLAS
  */
-#define F77_ssymv 		F77_GLOBAL(ssymv,SSYMY)
-#define F77_ssbmv 		F77_GLOBAL(ssbmv,SSMBV)
+#define F77_ssymv 		F77_GLOBAL(ssymv,SSYMV)
+#define F77_ssbmv 		F77_GLOBAL(ssbmv,SSBMV)
 #define F77_sspmv 		F77_GLOBAL(sspmv,SSPMV)
 #define F77_sger 		F77_GLOBAL(sger,SGER)
 #define F77_ssyr 		F77_GLOBAL(ssyr,SSYR)
@@ -135,7 +135,7 @@
 #define F77_dgbmv 		F77_GLOBAL(dgbmv,DGBMV)
 #define F77_dtrmv 		F77_GLOBAL(dtrmv,DTRMV)
 #define F77_dtbmv 		F77_GLOBAL(dtbmv,DTBMV)
-#define F77_dtpmv 		F77_GLOBAL(dtpmv,DTRMV)
+#define F77_dtpmv 		F77_GLOBAL(dtpmv,DTPMV)
 #define F77_dtrsv 		F77_GLOBAL(dtrsv,DTRSV)
 #define F77_dtbsv 		F77_GLOBAL(dtbsv,DTBSV)
 #define F77_dtpsv 		F77_GLOBAL(dtpsv,DTPSV)
@@ -201,7 +201,7 @@ void F77_xerbla(FCHAR, void *);
 /* Single Precision */
 
    void F77_srot(FINT, float *, FINT, float *, FINT, const float *, const float *);
-   void F77_srotg(float *,float *,float *,float *);    
+   void F77_srotg(float *,float *,float *,float *);
    void F77_srotm( FINT, float *, FINT, float *, FINT, const float *);
    void F77_srotmg(float *,float *,float *,const float *, float *);
    void F77_sswap( FINT, float *, FINT, float *, FINT);
@@ -217,7 +217,7 @@ void F77_xerbla(FCHAR, void *);
 /* Double Precision */
 
    void F77_drot(FINT, double *, FINT, double *, FINT, const double *, const double *);
-   void F77_drotg(double *,double *,double *,double *);    
+   void F77_drotg(double *,double *,double *,double *);
    void F77_drotm( FINT, double *, FINT, double *, FINT, const double *);
    void F77_drotmg(double *,double *,double *,const double *, double *);
    void F77_dswap( FINT, double *, FINT, double *, FINT);
@@ -278,8 +278,8 @@ void F77_xerbla(FCHAR, void *);
    void F77_stpsv( FCHAR, FCHAR, FCHAR, FINT, const float *, float *, FINT);
    void F77_sger( FINT, FINT, const float *, const float *, FINT, const float *, FINT, float *, FINT);
    void F77_ssyr(FCHAR, FINT, const float *, const float *, FINT, float *, FINT);
-   void F77_sspr(FCHAR, FINT, const float *, const float *, FINT, float *); 
-   void F77_sspr2(FCHAR, FINT, const float *, const float *, FINT, const float *, FINT,  float *); 
+   void F77_sspr(FCHAR, FINT, const float *, const float *, FINT, float *);
+   void F77_sspr2(FCHAR, FINT, const float *, const float *, FINT, const float *, FINT,  float *);
    void F77_ssyr2(FCHAR, FINT, const float *, const float *, FINT, const float *, FINT,  float *, FINT);
 
 /* Double Precision */
@@ -297,8 +297,8 @@ void F77_xerbla(FCHAR, void *);
    void F77_dtpsv( FCHAR, FCHAR, FCHAR, FINT, const double *, double *, FINT);
    void F77_dger( FINT, FINT, const double *, const double *, FINT, const double *, FINT, double *, FINT);
    void F77_dsyr(FCHAR, FINT, const double *, const double *, FINT, double *, FINT);
-   void F77_dspr(FCHAR, FINT, const double *, const double *, FINT, double *); 
-   void F77_dspr2(FCHAR, FINT, const double *, const double *, FINT, const double *, FINT,  double *); 
+   void F77_dspr(FCHAR, FINT, const double *, const double *, FINT, double *);
+   void F77_dspr2(FCHAR, FINT, const double *, const double *, FINT, const double *, FINT,  double *);
    void F77_dsyr2(FCHAR, FINT, const double *, const double *, FINT, const double *, FINT,  double *, FINT);
 
 /* Single Complex Precision */

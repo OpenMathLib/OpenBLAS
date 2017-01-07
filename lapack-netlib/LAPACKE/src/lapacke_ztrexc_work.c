@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function ztrexc
 * Author: Intel Corporation
-* Generated November 2015
+* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -51,7 +51,7 @@ lapack_int LAPACKE_ztrexc_work( int matrix_layout, char compq, lapack_int n,
         lapack_complex_double* t_t = NULL;
         lapack_complex_double* q_t = NULL;
         /* Check leading dimension(s) */
-        if( ldq < n ) {
+        if( ldq < n && LAPACKE_lsame( compq, 'v' ) ) {
             info = -7;
             LAPACKE_xerbla( "LAPACKE_ztrexc_work", info );
             return info;

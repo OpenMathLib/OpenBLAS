@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLASQ6 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq6.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasq6.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq6.f"> 
+*> Download DLASQ6 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq6.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasq6.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq6.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLASQ6( I0, N0, Z, PP, DMIN, DMIN1, DMIN2, DN,
 *                          DNM1, DNM2 )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            I0, N0, PP
 *       DOUBLE PRECISION   DMIN, DMIN1, DMIN2, DN, DNM1, DNM2
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -106,12 +106,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -119,10 +119,10 @@
       SUBROUTINE DLASQ6( I0, N0, Z, PP, DMIN, DMIN1, DMIN2, DN,
      $                   DNM1, DNM2 )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            I0, N0, PP
@@ -156,13 +156,13 @@
 *
       SAFMIN = DLAMCH( 'Safe minimum' )
       J4 = 4*I0 + PP - 3
-      EMIN = Z( J4+4 ) 
+      EMIN = Z( J4+4 )
       D = Z( J4 )
       DMIN = D
 *
       IF( PP.EQ.0 ) THEN
          DO 10 J4 = 4*I0, 4*( N0-3 ), 4
-            Z( J4-2 ) = D + Z( J4-1 ) 
+            Z( J4-2 ) = D + Z( J4-1 )
             IF( Z( J4-2 ).EQ.ZERO ) THEN
                Z( J4 ) = ZERO
                D = Z( J4+1 )
@@ -173,7 +173,7 @@
                TEMP = Z( J4+1 ) / Z( J4-2 )
                Z( J4 ) = Z( J4-1 )*TEMP
                D = D*TEMP
-            ELSE 
+            ELSE
                Z( J4 ) = Z( J4+1 )*( Z( J4-1 ) / Z( J4-2 ) )
                D = Z( J4+1 )*( D / Z( J4-2 ) )
             END IF
@@ -182,7 +182,7 @@
    10    CONTINUE
       ELSE
          DO 20 J4 = 4*I0, 4*( N0-3 ), 4
-            Z( J4-3 ) = D + Z( J4 ) 
+            Z( J4-3 ) = D + Z( J4 )
             IF( Z( J4-3 ).EQ.ZERO ) THEN
                Z( J4-1 ) = ZERO
                D = Z( J4+2 )
@@ -193,7 +193,7 @@
                TEMP = Z( J4+2 ) / Z( J4-3 )
                Z( J4-1 ) = Z( J4 )*TEMP
                D = D*TEMP
-            ELSE 
+            ELSE
                Z( J4-1 ) = Z( J4+2 )*( Z( J4 ) / Z( J4-3 ) )
                D = Z( J4+2 )*( D / Z( J4-3 ) )
             END IF
@@ -202,7 +202,7 @@
    20    CONTINUE
       END IF
 *
-*     Unroll last two steps. 
+*     Unroll last two steps.
 *
       DNM2 = D
       DMIN2 = DMIN

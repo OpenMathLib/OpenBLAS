@@ -2,27 +2,27 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       COMPLEX*16   FUNCTION ZLATM2( M, N, I, J, KL, KU, IDIST,
 *                        ISEED, D, IGRADE, DL, DR, IPVTNG, IWORK, SPARSE )
-* 
+*
 *       .. Scalar Arguments ..
-*  
+*
 *       INTEGER            I, IDIST, IGRADE, IPVTNG, J, KL, KU, M, N
 *       DOUBLE PRECISION   SPARSE
 *       ..
-*  
+*
 *       .. Array Arguments ..
-*  
+*
 *       INTEGER            ISEED( 4 ), IWORK( * )
 *       COMPLEX*16         D( * ), DL( * ), DR( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -198,10 +198,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -211,7 +211,7 @@
       COMPLEX*16   FUNCTION ZLATM2( M, N, I, J, KL, KU, IDIST,
      $                 ISEED, D, IGRADE, DL, DR, IPVTNG, IWORK, SPARSE )
 *
-*  -- LAPACK auxiliary routine (version 3.6.1) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

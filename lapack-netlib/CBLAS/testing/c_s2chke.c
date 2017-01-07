@@ -26,9 +26,9 @@ void chkxer(void) {
 
 void F77_s2chke(char *rout) {
    char *sf = ( rout ) ;
-   float  A[2] = {0.0,0.0}, 
-          X[2] = {0.0,0.0}, 
-          Y[2] = {0.0,0.0}, 
+   float  A[2] = {0.0,0.0},
+          X[2] = {0.0,0.0},
+          Y[2] = {0.0,0.0},
           ALPHA=0.0, BETA=0.0;
    extern int cblas_info, cblas_lerr, cblas_ok;
    extern int RowMajorStrg;
@@ -46,588 +46,588 @@ void F77_s2chke(char *rout) {
    if (strncmp( sf,"cblas_sgemv",11)==0) {
       cblas_rout = "cblas_sgemv";
       cblas_info = 1;
-      cblas_sgemv(INVALID, CblasNoTrans, 0, 0, 
+      cblas_sgemv(INVALID, CblasNoTrans, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_sgemv(CblasColMajor, INVALID, 0, 0, 
+      cblas_sgemv(CblasColMajor, INVALID, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_sgemv(CblasColMajor, CblasNoTrans, INVALID, 0, 
+      cblas_sgemv(CblasColMajor, CblasNoTrans, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_sgemv(CblasColMajor, CblasNoTrans, 0, INVALID, 
+      cblas_sgemv(CblasColMajor, CblasNoTrans, 0, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = FALSE;
-      cblas_sgemv(CblasColMajor, CblasNoTrans, 2, 0, 
+      cblas_sgemv(CblasColMajor, CblasNoTrans, 2, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = FALSE;
-      cblas_sgemv(CblasColMajor, CblasNoTrans, 0, 0, 
+      cblas_sgemv(CblasColMajor, CblasNoTrans, 0, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 12; RowMajorStrg = FALSE;
-      cblas_sgemv(CblasColMajor, CblasNoTrans, 0, 0, 
+      cblas_sgemv(CblasColMajor, CblasNoTrans, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
 
       cblas_info = 2; RowMajorStrg = TRUE; RowMajorStrg = TRUE;
-      cblas_sgemv(CblasRowMajor, INVALID, 0, 0, 
+      cblas_sgemv(CblasRowMajor, INVALID, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_sgemv(CblasRowMajor, CblasNoTrans, INVALID, 0, 
+      cblas_sgemv(CblasRowMajor, CblasNoTrans, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, INVALID, 
+      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = TRUE;
-      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, 2, 
+      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, 2,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = TRUE;
-      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, 0, 
+      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 12; RowMajorStrg = TRUE;
-      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, 0, 
+      cblas_sgemv(CblasRowMajor, CblasNoTrans, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_sgbmv",11)==0) {
       cblas_rout = "cblas_sgbmv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_sgbmv(INVALID, CblasNoTrans, 0, 0, 0, 0, 
+      cblas_sgbmv(INVALID, CblasNoTrans, 0, 0, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, INVALID, 0, 0, 0, 0, 
+      cblas_sgbmv(CblasColMajor, INVALID, 0, 0, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, CblasNoTrans, INVALID, 0, 0, 0, 
+      cblas_sgbmv(CblasColMajor, CblasNoTrans, INVALID, 0, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, INVALID, 0, 0, 
+      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, INVALID, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, INVALID, 0, 
+      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, CblasNoTrans, 2, 0, 0, INVALID, 
+      cblas_sgbmv(CblasColMajor, CblasNoTrans, 2, 0, 0, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, 1, 0, 
+      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, 1, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 11; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, 0, 0, 
+      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, 0, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 14; RowMajorStrg = FALSE;
-      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, 0, 0, 
+      cblas_sgbmv(CblasColMajor, CblasNoTrans, 0, 0, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, INVALID, 0, 0, 0, 0, 
+      cblas_sgbmv(CblasRowMajor, INVALID, 0, 0, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, CblasNoTrans, INVALID, 0, 0, 0, 
+      cblas_sgbmv(CblasRowMajor, CblasNoTrans, INVALID, 0, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, INVALID, 0, 0, 
+      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, INVALID, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, INVALID, 0, 
+      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 2, 0, 0, INVALID, 
+      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 2, 0, 0, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, 1, 0, 
+      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, 1, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 11; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, 0, 0, 
+      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, 0, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 14; RowMajorStrg = TRUE;
-      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, 0, 0, 
+      cblas_sgbmv(CblasRowMajor, CblasNoTrans, 0, 0, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_ssymv",11)==0) {
       cblas_rout = "cblas_ssymv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_ssymv(INVALID, CblasUpper, 0, 
+      cblas_ssymv(INVALID, CblasUpper, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_ssymv(CblasColMajor, INVALID, 0, 
+      cblas_ssymv(CblasColMajor, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_ssymv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_ssymv(CblasColMajor, CblasUpper, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = FALSE;
-      cblas_ssymv(CblasColMajor, CblasUpper, 2, 
+      cblas_ssymv(CblasColMajor, CblasUpper, 2,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = FALSE;
-      cblas_ssymv(CblasColMajor, CblasUpper, 0, 
+      cblas_ssymv(CblasColMajor, CblasUpper, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 11; RowMajorStrg = FALSE;
-      cblas_ssymv(CblasColMajor, CblasUpper, 0, 
+      cblas_ssymv(CblasColMajor, CblasUpper, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_ssymv(CblasRowMajor, INVALID, 0, 
+      cblas_ssymv(CblasRowMajor, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_ssymv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_ssymv(CblasRowMajor, CblasUpper, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = TRUE;
-      cblas_ssymv(CblasRowMajor, CblasUpper, 2, 
+      cblas_ssymv(CblasRowMajor, CblasUpper, 2,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = TRUE;
-      cblas_ssymv(CblasRowMajor, CblasUpper, 0, 
+      cblas_ssymv(CblasRowMajor, CblasUpper, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 11; RowMajorStrg = TRUE;
-      cblas_ssymv(CblasRowMajor, CblasUpper, 0, 
+      cblas_ssymv(CblasRowMajor, CblasUpper, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_ssbmv",11)==0) {
       cblas_rout = "cblas_ssbmv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_ssbmv(INVALID, CblasUpper, 0, 0, 
+      cblas_ssbmv(INVALID, CblasUpper, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_ssbmv(CblasColMajor, INVALID, 0, 0, 
+      cblas_ssbmv(CblasColMajor, INVALID, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_ssbmv(CblasColMajor, CblasUpper, INVALID, 0, 
+      cblas_ssbmv(CblasColMajor, CblasUpper, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_ssbmv(CblasColMajor, CblasUpper, 0, INVALID, 
+      cblas_ssbmv(CblasColMajor, CblasUpper, 0, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = FALSE;
-      cblas_ssbmv(CblasColMajor, CblasUpper, 0, 1, 
+      cblas_ssbmv(CblasColMajor, CblasUpper, 0, 1,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = FALSE;
-      cblas_ssbmv(CblasColMajor, CblasUpper, 0, 0, 
+      cblas_ssbmv(CblasColMajor, CblasUpper, 0, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 12; RowMajorStrg = FALSE;
-      cblas_ssbmv(CblasColMajor, CblasUpper, 0, 0, 
+      cblas_ssbmv(CblasColMajor, CblasUpper, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_ssbmv(CblasRowMajor, INVALID, 0, 0, 
+      cblas_ssbmv(CblasRowMajor, INVALID, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_ssbmv(CblasRowMajor, CblasUpper, INVALID, 0, 
+      cblas_ssbmv(CblasRowMajor, CblasUpper, INVALID, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, INVALID, 
+      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, INVALID,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = TRUE;
-      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, 1, 
+      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, 1,
                   ALPHA, A, 1, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = TRUE;
-      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, 0, 
+      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, 0,
                   ALPHA, A, 1, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 12; RowMajorStrg = TRUE;
-      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, 0, 
+      cblas_ssbmv(CblasRowMajor, CblasUpper, 0, 0,
                   ALPHA, A, 1, X, 1, BETA, Y, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_sspmv",11)==0) {
       cblas_rout = "cblas_sspmv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_sspmv(INVALID, CblasUpper, 0, 
+      cblas_sspmv(INVALID, CblasUpper, 0,
                   ALPHA, A, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_sspmv(CblasColMajor, INVALID, 0, 
+      cblas_sspmv(CblasColMajor, INVALID, 0,
                   ALPHA, A, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_sspmv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_sspmv(CblasColMajor, CblasUpper, INVALID,
                   ALPHA, A, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = FALSE;
-      cblas_sspmv(CblasColMajor, CblasUpper, 0, 
+      cblas_sspmv(CblasColMajor, CblasUpper, 0,
                   ALPHA, A, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 10; RowMajorStrg = FALSE;
-      cblas_sspmv(CblasColMajor, CblasUpper, 0, 
+      cblas_sspmv(CblasColMajor, CblasUpper, 0,
                   ALPHA, A, X, 1, BETA, Y, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_sspmv(CblasRowMajor, INVALID, 0, 
+      cblas_sspmv(CblasRowMajor, INVALID, 0,
                   ALPHA, A, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_sspmv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_sspmv(CblasRowMajor, CblasUpper, INVALID,
                   ALPHA, A, X, 1, BETA, Y, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = TRUE;
-      cblas_sspmv(CblasRowMajor, CblasUpper, 0, 
+      cblas_sspmv(CblasRowMajor, CblasUpper, 0,
                   ALPHA, A, X, 0, BETA, Y, 1 );
       chkxer();
       cblas_info = 10; RowMajorStrg = TRUE;
-      cblas_sspmv(CblasRowMajor, CblasUpper, 0, 
+      cblas_sspmv(CblasRowMajor, CblasUpper, 0,
                   ALPHA, A, X, 1, BETA, Y, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_strmv",11)==0) {
       cblas_rout = "cblas_strmv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_strmv(INVALID, CblasUpper, CblasNoTrans, 
+      cblas_strmv(INVALID, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_strmv(CblasColMajor, INVALID, CblasNoTrans, 
+      cblas_strmv(CblasColMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_strmv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_strmv(CblasColMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = FALSE;
-      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = FALSE;
-      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 2, A, 1, X, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = FALSE;
-      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_strmv(CblasRowMajor, INVALID, CblasNoTrans, 
+      cblas_strmv(CblasRowMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_strmv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_strmv(CblasRowMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = TRUE;
-      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = TRUE;
-      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 2, A, 1, X, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = TRUE;
-      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_stbmv",11)==0) {
       cblas_rout = "cblas_stbmv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_stbmv(INVALID, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(INVALID, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_stbmv(CblasColMajor, INVALID, CblasNoTrans, 
+      cblas_stbmv(CblasColMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_stbmv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_stbmv(CblasColMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = FALSE;
-      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = FALSE;
-      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = FALSE;
-      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 1, A, 1, X, 1 );
       chkxer();
       cblas_info = 10; RowMajorStrg = FALSE;
-      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_stbmv(CblasRowMajor, INVALID, CblasNoTrans, 
+      cblas_stbmv(CblasRowMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_stbmv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_stbmv(CblasRowMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = TRUE;
-      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = TRUE;
-      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = TRUE;
-      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 1, A, 1, X, 1 );
       chkxer();
       cblas_info = 10; RowMajorStrg = TRUE;
-      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_stpmv",11)==0) {
       cblas_rout = "cblas_stpmv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_stpmv(INVALID, CblasUpper, CblasNoTrans, 
+      cblas_stpmv(INVALID, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_stpmv(CblasColMajor, INVALID, CblasNoTrans, 
+      cblas_stpmv(CblasColMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_stpmv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_stpmv(CblasColMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_stpmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = FALSE;
-      cblas_stpmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = FALSE;
-      cblas_stpmv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpmv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_stpmv(CblasRowMajor, INVALID, CblasNoTrans, 
+      cblas_stpmv(CblasRowMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_stpmv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_stpmv(CblasRowMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_stpmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = TRUE;
-      cblas_stpmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = TRUE;
-      cblas_stpmv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpmv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_strsv",11)==0) {
       cblas_rout = "cblas_strsv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_strsv(INVALID, CblasUpper, CblasNoTrans, 
+      cblas_strsv(INVALID, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_strsv(CblasColMajor, INVALID, CblasNoTrans, 
+      cblas_strsv(CblasColMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_strsv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_strsv(CblasColMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = FALSE;
-      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = FALSE;
-      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 2, A, 1, X, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = FALSE;
-      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_strsv(CblasRowMajor, INVALID, CblasNoTrans, 
+      cblas_strsv(CblasRowMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_strsv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_strsv(CblasRowMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = TRUE;
-      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 7; RowMajorStrg = TRUE;
-      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 2, A, 1, X, 1 );
       chkxer();
       cblas_info = 9; RowMajorStrg = TRUE;
-      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_strsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, 1, X, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_stbsv",11)==0) {
       cblas_rout = "cblas_stbsv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_stbsv(INVALID, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(INVALID, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_stbsv(CblasColMajor, INVALID, CblasNoTrans, 
+      cblas_stbsv(CblasColMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_stbsv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_stbsv(CblasColMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = FALSE;
-      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = FALSE;
-      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = FALSE;
-      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 1, A, 1, X, 1 );
       chkxer();
       cblas_info = 10; RowMajorStrg = FALSE;
-      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_stbsv(CblasRowMajor, INVALID, CblasNoTrans, 
+      cblas_stbsv(CblasRowMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_stbsv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_stbsv(CblasRowMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = TRUE;
-      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, 0, A, 1, X, 1 );
       chkxer();
       cblas_info = 6; RowMajorStrg = TRUE;
-      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, INVALID, A, 1, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = TRUE;
-      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 1, A, 1, X, 1 );
       chkxer();
       cblas_info = 10; RowMajorStrg = TRUE;
-      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stbsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, 0, A, 1, X, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_stpsv",11)==0) {
       cblas_rout = "cblas_stpsv";
       cblas_info = 1; RowMajorStrg = FALSE;
-      cblas_stpsv(INVALID, CblasUpper, CblasNoTrans, 
+      cblas_stpsv(INVALID, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 2; RowMajorStrg = FALSE;
-      cblas_stpsv(CblasColMajor, INVALID, CblasNoTrans, 
+      cblas_stpsv(CblasColMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = FALSE;
-      cblas_stpsv(CblasColMajor, CblasUpper, INVALID, 
+      cblas_stpsv(CblasColMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = FALSE;
-      cblas_stpsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = FALSE;
-      cblas_stpsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = FALSE;
-      cblas_stpsv(CblasColMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpsv(CblasColMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 0 );
       chkxer();
       cblas_info = 2; RowMajorStrg = TRUE;
-      cblas_stpsv(CblasRowMajor, INVALID, CblasNoTrans, 
+      cblas_stpsv(CblasRowMajor, INVALID, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 3; RowMajorStrg = TRUE;
-      cblas_stpsv(CblasRowMajor, CblasUpper, INVALID, 
+      cblas_stpsv(CblasRowMajor, CblasUpper, INVALID,
                   CblasNonUnit, 0, A, X, 1 );
       chkxer();
       cblas_info = 4; RowMajorStrg = TRUE;
-      cblas_stpsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   INVALID, 0, A, X, 1 );
       chkxer();
       cblas_info = 5; RowMajorStrg = TRUE;
-      cblas_stpsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, INVALID, A, X, 1 );
       chkxer();
       cblas_info = 8; RowMajorStrg = TRUE;
-      cblas_stpsv(CblasRowMajor, CblasUpper, CblasNoTrans, 
+      cblas_stpsv(CblasRowMajor, CblasUpper, CblasNoTrans,
                   CblasNonUnit, 0, A, X, 0 );
       chkxer();
    } else if (strncmp( sf,"cblas_sger",10)==0) {
@@ -781,7 +781,7 @@ void F77_s2chke(char *rout) {
       cblas_info = 6; RowMajorStrg = FALSE;
       cblas_sspr(CblasColMajor, CblasUpper, 0, ALPHA, X, 0, A );
       chkxer();
-   } 
+   }
    if (cblas_ok == TRUE)
        printf(" %-12s PASSED THE TESTS OF ERROR-EXITS\n", cblas_rout);
    else

@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       RECURSIVE SUBROUTINE ZGETRF2( M, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -17,7 +17,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX*16         A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -35,11 +35,11 @@
 *>
 *> This is the recursive version of the algorithm. It divides
 *> the matrix into four submatrices:
-*>            
+*>
 *>        [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
 *>    A = [ -----|----- ]  with n1 = min(m,n)/2
 *>        [  A21 | A22  ]       n2 = n-n1
-*>            
+*>
 *>                                       [ A11 ]
 *> The subroutine calls itself to factor [ --- ],
 *>                                       [ A12 ]
@@ -101,10 +101,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -113,7 +113,7 @@
 *  =====================================================================
       RECURSIVE SUBROUTINE ZGETRF2( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.1) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -241,12 +241,12 @@
 *
 *        Solve A12
 *
-         CALL ZTRSM( 'L', 'L', 'N', 'U', N1, N2, ONE, A, LDA, 
+         CALL ZTRSM( 'L', 'L', 'N', 'U', N1, N2, ONE, A, LDA,
      $               A( 1, N1+1 ), LDA )
 *
 *        Update A22
 *
-         CALL ZGEMM( 'N', 'N', M-N1, N2, N1, -ONE, A( N1+1, 1 ), LDA, 
+         CALL ZGEMM( 'N', 'N', M-N1, N2, N1, -ONE, A( N1+1, 1 ), LDA,
      $               A( 1, N1+1 ), LDA, ONE, A( N1+1, N1+1 ), LDA )
 *
 *        Factor A22

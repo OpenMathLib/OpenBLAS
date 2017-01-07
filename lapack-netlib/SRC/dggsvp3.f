@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGGSVP3 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dggsvp3.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dggsvp3.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dggsvp3.f"> 
+*> Download DGGSVP3 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dggsvp3.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dggsvp3.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dggsvp3.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DGGSVP3( JOBU, JOBV, JOBQ, M, P, N, A, LDA, B, LDB,
 *                           TOLA, TOLB, K, L, U, LDU, V, LDV, Q, LDQ,
 *                           IWORK, TAU, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBQ, JOBU, JOBV
 *       INTEGER            INFO, K, L, LDA, LDB, LDQ, LDU, LDV, M, N, P, LWORK
@@ -32,7 +32,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), Q( LDQ, * ),
 *      $                   TAU( * ), U( LDU, * ), V( LDV, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -57,7 +57,7 @@
 *> where the K-by-K matrix A12 and L-by-L matrix B13 are nonsingular
 *> upper triangular; A23 is L-by-L upper triangular if M-K-L >= 0,
 *> otherwise A23 is (M-K)-by-L upper trapezoidal.  K+L = the effective
-*> numerical rank of the (M+P)-by-N matrix (A**T,B**T)**T. 
+*> numerical rank of the (M+P)-by-N matrix (A**T,B**T)**T.
 *>
 *> This decomposition is the preprocessing step for computing the
 *> Generalized Singular Value Decomposition (GSVD), see subroutine
@@ -245,10 +245,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date August 2015
 *
@@ -272,7 +272,7 @@
      $                    TOLA, TOLB, K, L, U, LDU, V, LDV, Q, LDQ,
      $                    IWORK, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     August 2015

@@ -32,7 +32,7 @@ include ../../make.inc
 #       make single FRC=FRC
 #
 #######################################################################
- 
+
 SCATGEN = slatm1.o slaran.o slarnd.o
 
 SMATGEN = slatms.o slatme.o slatmr.o slatmt.o \
@@ -53,9 +53,9 @@ ZMATGEN = zlatms.o zlatme.o zlatmr.o zlatmt.o \
    zlagge.o zlaghe.o zlagsy.o zlakf2.o zlarge.o zlaror.o zlarot.o \
    zlatm1.o zlarnd.o zlatm2.o zlatm3.o zlatm5.o zlatm6.o zlahilb.o
 
-all:	../../$(TMGLIB)
+all: ../../$(TMGLIB)
 
-ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN)	\
+ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN) \
 	$(DZATGEN)
 
 ../../$(TMGLIB): $(ALLOBJ)
@@ -84,7 +84,7 @@ $(CMATGEN): $(FRC)
 $(DZATGEN): $(FRC)
 $(DMATGEN): $(FRC)
 $(ZMATGEN): $(FRC)
- 
+
 FRC:
 	@FRC=$(FRC)
 
@@ -92,7 +92,7 @@ clean:
 	rm -f *.o
 
 .f.o:
-	$(FORTRAN) $(OPTS) -c $< -o $@
+	$(FORTRAN) $(OPTS) -c -o $@ $<
 
-slaran.o: slaran.f ; $(FORTRAN) $(NOOPT) -c $<
-dlaran.o: dlaran.f ; $(FORTRAN) $(NOOPT) -c $<
+slaran.o: slaran.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+dlaran.o: dlaran.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<

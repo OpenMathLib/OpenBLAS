@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZERRED( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -56,10 +56,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -68,7 +68,7 @@
 *  =====================================================================
       SUBROUTINE ZERRED( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -100,7 +100,7 @@
      $                   VT( NMAX, NMAX ), W( 10*NMAX ), X( NMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, ZGEES, ZGEESX, ZGEEV, ZGEEVX, ZGESVJ, 
+      EXTERNAL           CHKXER, ZGEES, ZGEESX, ZGEEV, ZGEEVX, ZGESVJ,
      $                   ZGESDD, ZGESVD
 *     ..
 *     .. External Functions ..
@@ -441,51 +441,51 @@
 *
          SRNAMT = 'ZGESVDX'
          INFOT = 1
-         CALL ZGESVDX( 'X', 'N', 'A', 0, 0, A, 1, ZERO, ZERO, 
+         CALL ZGESVDX( 'X', 'N', 'A', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL ZGESVDX( 'N', 'X', 'A', 0, 0, A, 1, ZERO, ZERO, 
+         CALL ZGESVDX( 'N', 'X', 'A', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 3
-         CALL ZGESVDX( 'N', 'N', 'X', 0, 0, A, 1, ZERO, ZERO, 
+         CALL ZGESVDX( 'N', 'N', 'X', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL ZGESVDX( 'N', 'N', 'A', -1, 0, A, 1, ZERO, ZERO, 
+         CALL ZGESVDX( 'N', 'N', 'A', -1, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 5
-         CALL ZGESVDX( 'N', 'N', 'A', 0, -1, A, 1, ZERO, ZERO, 
+         CALL ZGESVDX( 'N', 'N', 'A', 0, -1, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 7
-         CALL ZGESVDX( 'N', 'N', 'A', 2, 1, A, 1, ZERO, ZERO, 
+         CALL ZGESVDX( 'N', 'N', 'A', 2, 1, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL ZGESVDX( 'N', 'N', 'V', 2, 1, A, 2, -ONE, ZERO, 
+         CALL ZGESVDX( 'N', 'N', 'V', 2, 1, A, 2, -ONE, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 9
-         CALL ZGESVDX( 'N', 'N', 'V', 2, 1, A, 2, ONE, ZERO, 
+         CALL ZGESVDX( 'N', 'N', 'V', 2, 1, A, 2, ONE, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL ZGESVDX( 'N', 'N', 'I', 2, 2, A, 2, ZERO, ZERO, 
+         CALL ZGESVDX( 'N', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 1, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 11
-         CALL ZGESVDX( 'V', 'N', 'I', 2, 2, A, 2, ZERO, ZERO, 
+         CALL ZGESVDX( 'V', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
      $                 1, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 15
-         CALL ZGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO, 
+         CALL ZGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 17
-         CALL ZGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO, 
+         CALL ZGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'ZGESVDX', INFOT, NOUT, LERR, OK )
          NT = 12

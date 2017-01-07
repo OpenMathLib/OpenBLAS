@@ -131,7 +131,7 @@ typedef struct { double real; double imag; } CBLAS_TEST_ZOMPLEX;
 #define F77_cgemv 		F77_GLOBAL(ccgemv,CCGEMV)
 #define F77_cgbmv 		F77_GLOBAL(ccgbmv,CCGBMV)
 #define F77_ctrmv 		F77_GLOBAL(cctrmv,CCTRMV)
-#define F77_ctbmv 		F77_GLOBAL(cctbmv,CCTPMV)
+#define F77_ctbmv 		F77_GLOBAL(cctbmv,CCTBMV)
 #define F77_ctpmv 		F77_GLOBAL(cctpmv,CCTPMV)
 #define F77_ctrsv 		F77_GLOBAL(cctrsv,CCTRSV)
 #define F77_ctbsv 		F77_GLOBAL(cctbsv,CCTBSV)

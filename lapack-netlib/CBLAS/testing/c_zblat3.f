@@ -51,7 +51,7 @@
       INTEGER            NSUBS
       PARAMETER          ( NSUBS = 9 )
       COMPLEX*16         ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ), 
+      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                   ONE = ( 1.0D0, 0.0D0 ) )
       DOUBLE PRECISION   RZERO, RHALF, RONE
       PARAMETER          ( RZERO = 0.0D0, RHALF = 0.5D0, RONE = 1.0D0 )
@@ -425,7 +425,7 @@
       END
       SUBROUTINE ZCHK1( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
-     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G, 
+     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G,
      $                  IORDER )
 *
 *  Tests ZGEMM.
@@ -601,7 +601,7 @@
                            IF( REWI )
      $                        REWIND NTRA
                            CALL CZGEMM( IORDER, TRANSA, TRANSB, M, N,
-     $                                 K, ALPHA, AA, LDA, BB, LDB, 
+     $                                 K, ALPHA, AA, LDA, BB, LDB,
      $                                 BETA, CC, LDC )
 *
 *                          Check if error-exit was taken incorrectly.
@@ -689,7 +689,7 @@
 *
   120 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
-      CALL ZPRCN1(NOUT, NC, SNAME, IORDER, TRANSA, TRANSB, 
+      CALL ZPRCN1(NOUT, NC, SNAME, IORDER, TRANSA, TRANSB,
      $           M, N, K, ALPHA, LDA, LDB, BETA, LDC)
 *
   130 CONTINUE
@@ -725,24 +725,24 @@
       CHARACTER*1      TRANSA, TRANSB
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CTA,CTB
-      
+
       IF (TRANSA.EQ.'N')THEN
          CTA = '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CTA = '    CblasTrans'
-      ELSE 
+      ELSE
          CTA = 'CblasConjTrans'
       END IF
       IF (TRANSB.EQ.'N')THEN
          CTB = '  CblasNoTrans'
       ELSE IF (TRANSB.EQ.'T')THEN
          CTB = '    CblasTrans'
-      ELSE 
+      ELSE
          CTB = 'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CTA,CTB
@@ -755,7 +755,7 @@
 *
       SUBROUTINE ZCHK2( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
-     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G, 
+     $                  A, AA, AS, B, BB, BS, C, CC, CS, CT, G,
      $                  IORDER )
 *
 *  Tests ZHEMM and ZSYMM.
@@ -911,9 +911,9 @@
 *                       Call the subroutine.
 *
                         IF( TRACE )
-     $                      CALL ZPRCN2(NTRA, NC, SNAME, IORDER, 
-     $                      SIDE, UPLO, M, N, ALPHA, LDA, LDB, 
-     $                      BETA, LDC) 
+     $                      CALL ZPRCN2(NTRA, NC, SNAME, IORDER,
+     $                      SIDE, UPLO, M, N, ALPHA, LDA, LDB,
+     $                      BETA, LDC)
                         IF( REWI )
      $                     REWIND NTRA
                         IF( CONJ )THEN
@@ -1016,7 +1016,7 @@
   110 CONTINUE
       WRITE( NOUT, FMT = 9996 )SNAME
       CALL ZPRCN2(NOUT, NC, SNAME, IORDER, SIDE, UPLO, M, N, ALPHA, LDA,
-     $           LDB, BETA, LDC) 
+     $           LDB, BETA, LDC)
 *
   120 CONTINUE
       RETURN
@@ -1051,20 +1051,20 @@
       CHARACTER*1      SIDE, UPLO
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CS,CU
-      
+
       IF (SIDE.EQ.'L')THEN
          CS =  '     CblasLeft'
-      ELSE 
+      ELSE
          CS =  '    CblasRight'
       END IF
       IF (UPLO.EQ.'U')THEN
          CU =  '    CblasUpper'
-      ELSE 
+      ELSE
          CU =  '    CblasLower'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CS,CU
@@ -1403,22 +1403,22 @@
       CHARACTER*1      SIDE, UPLO, TRANSA, DIAG
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CS, CU, CA, CD
-      
+
       IF (SIDE.EQ.'L')THEN
          CS =  '     CblasLeft'
-      ELSE 
+      ELSE
          CS =  '    CblasRight'
       END IF
       IF (UPLO.EQ.'U')THEN
          CU =  '    CblasUpper'
-      ELSE 
+      ELSE
          CU =  '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA =  '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA =  '    CblasTrans'
-      ELSE 
+      ELSE
          CA =  'CblasConjTrans'
       END IF
       IF (DIAG.EQ.'N')THEN
@@ -1428,7 +1428,7 @@
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC,SNAME,CRC, CS,CU
@@ -1789,22 +1789,22 @@
       CHARACTER*1      UPLO, TRANSA
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CU, CA
-      
+
       IF (UPLO.EQ.'U')THEN
          CU =  '    CblasUpper'
-      ELSE 
+      ELSE
          CU =  '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA =  '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA =  '    CblasTrans'
-      ELSE 
+      ELSE
          CA =  'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
@@ -1823,29 +1823,29 @@
       CHARACTER*1      UPLO, TRANSA
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CU, CA
-      
+
       IF (UPLO.EQ.'U')THEN
          CU =  '    CblasUpper'
-      ELSE 
+      ELSE
          CU =  '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA =  '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA =  '    CblasTrans'
-      ELSE 
+      ELSE
          CA =  'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
       WRITE(NOUT, FMT = 9994)N, K, ALPHA, LDA, BETA, LDC
 
  9995 FORMAT( 1X, I6, ': ', A12,'(', 3( A14, ',') )
- 9994 FORMAT( 10X, 2( I3, ',' ), 
+ 9994 FORMAT( 10X, 2( I3, ',' ),
      $      F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ').' )
       END
 *
@@ -2042,7 +2042,7 @@
                            IF( REWI )
      $                        REWIND NTRA
                            CALL CZSYR2K( IORDER, UPLO, TRANS, N, K,
-     $                                  ALPHA, AA, LDA, BB, LDB, BETA, 
+     $                                  ALPHA, AA, LDA, BB, LDB, BETA,
      $                                  CC, LDC )
                         END IF
 *
@@ -2242,22 +2242,22 @@
       CHARACTER*1      UPLO, TRANSA
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CU, CA
-      
+
       IF (UPLO.EQ.'U')THEN
          CU =  '    CblasUpper'
-      ELSE 
+      ELSE
          CU =  '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA =  '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA =  '    CblasTrans'
-      ELSE 
+      ELSE
          CA =  'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA
@@ -2277,22 +2277,22 @@
       CHARACTER*1      UPLO, TRANSA
       CHARACTER*12     SNAME
       CHARACTER*14     CRC, CU, CA
-      
+
       IF (UPLO.EQ.'U')THEN
          CU =  '    CblasUpper'
-      ELSE 
+      ELSE
          CU =  '    CblasLower'
       END IF
       IF (TRANSA.EQ.'N')THEN
          CA =  '  CblasNoTrans'
       ELSE IF (TRANSA.EQ.'T')THEN
          CA =  '    CblasTrans'
-      ELSE 
+      ELSE
          CA =  'CblasConjTrans'
       END IF
       IF (IORDER.EQ.1)THEN
          CRC = ' CblasRowMajor'
-      ELSE 
+      ELSE
          CRC = ' CblasColMajor'
       END IF
       WRITE(NOUT, FMT = 9995)NC, SNAME, CRC, CU, CA

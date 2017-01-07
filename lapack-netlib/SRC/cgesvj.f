@@ -1,26 +1,26 @@
-*> \brief \b CGESVJ
+*> \brief <b> CGESVJ </b>
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGESVJ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvj.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvj.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvj.f"> 
+*> Download CGESVJ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgesvj.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgesvj.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgesvj.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
 *                          LDV, CWORK, LWORK, RWORK, LRWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDV, LWORK, LRWORK, M, MV, N
 *       CHARACTER*1        JOBA, JOBU, JOBV
@@ -29,22 +29,22 @@
 *       COMPLEX            A( LDA, * ),  V( LDV, * ), CWORK( LWORK )
 *       REAL               RWORK( LRWORK ),  SVA( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-* CGESVJ computes the singular value decomposition (SVD) of a complex
-* M-by-N matrix A, where M >= N. The SVD of A is written as
-*                                    [++]   [xx]   [x0]   [xx]
-*              A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
-*                                    [++]   [xx]
-* where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
-* matrix, and V is an N-by-N unitary matrix. The diagonal elements
-* of SIGMA are the singular values of A. The columns of U and V are the
-* left and the right singular vectors of A, respectively.
+*> CGESVJ computes the singular value decomposition (SVD) of a complex
+*> M-by-N matrix A, where M >= N. The SVD of A is written as
+*>                                    [++]   [xx]   [x0]   [xx]
+*>              A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
+*>                                    [++]   [xx]
+*> where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
+*> matrix, and V is an N-by-N unitary matrix. The diagonal elements
+*> of SIGMA are the singular values of A. The columns of U and V are the
+*> left and the right singular vectors of A, respectively.
 *> \endverbatim
 *
 *  Arguments:
@@ -64,7 +64,7 @@
 *>          JOBU is CHARACTER*1
 *>          Specifies whether to compute the left singular vectors
 *>          (columns of U):
-*>          = 'U': The left singular vectors corresponding to the nonzero
+*>          = 'U' or 'F': The left singular vectors corresponding to the nonzero
 *>                 singular values are computed and returned in the leading
 *>                 columns of A. See more details in the description of A.
 *>                 The default numerical orthogonality threshold is set to
@@ -88,7 +88,7 @@
 *>          JOBV is CHARACTER*1
 *>          Specifies whether to compute the right singular vectors, that
 *>          is, the matrix V:
-*>          = 'V' : the matrix V is computed and returned in the array V
+*>          = 'V' or 'J': the matrix V is computed and returned in the array V
 *>          = 'A' : the Jacobi rotations are applied to the MV-by-N
 *>                  array V. In other words, the right singular vector
 *>                  matrix V is not computed explicitly; instead it is
@@ -206,19 +206,22 @@
 *>
 *> \param[in,out] CWORK
 *> \verbatim
-*>          CWORK is COMPLEX array, dimension M+N.
-*>          Used as work space.
+*>          CWORK is COMPLEX array, dimension max(1,LWORK).
+*>          Used as workspace.
+*>          If on entry LWORK .EQ. -1, then a workspace query is assumed and
+*>          no computation is done; CWORK(1) is set to the minial (and optimal)
+*>          length of CWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
-*>          LWORK is INTEGER
+*>          LWORK is INTEGER.
 *>          Length of CWORK, LWORK >= M+N.
 *> \endverbatim
 *>
 *> \param[in,out] RWORK
 *> \verbatim
-*>          RWORK is REAL array, dimension max(6,M+N).
+*>          RWORK is REAL array, dimension max(6,LRWORK).
 *>          On entry,
 *>          If JOBU .EQ. 'C' :
 *>          RWORK(1) = CTOL, where CTOL defines the threshold for convergence.
@@ -244,11 +247,14 @@
 *>          RWORK(6) = the largest absolute value over all sines of the
 *>                    Jacobi rotation angles in the last sweep. It can be
 *>                    useful for a post festum analysis.
+*>         If on entry LRWORK .EQ. -1, then a workspace query is assumed and
+*>         no computation is done; RWORK(1) is set to the minial (and optimal)
+*>         length of RWORK.
 *> \endverbatim
 *>
 *> \param[in] LRWORK
 *> \verbatim
-*>          LRWORK is INTEGER
+*>         LRWORK is INTEGER
 *>         Length of RWORK, LRWORK >= MAX(6,N).
 *> \endverbatim
 *>
@@ -257,18 +263,18 @@
 *>          INFO is INTEGER
 *>          = 0 : successful exit.
 *>          < 0 : if INFO = -i, then the i-th argument had an illegal value
-*>          > 0 : CGESVJ did not converge in the maximal allowed number 
-*>                (NSWEEP=30) of sweeps. The output may still be useful. 
+*>          > 0 : CGESVJ did not converge in the maximal allowed number
+*>                (NSWEEP=30) of sweeps. The output may still be useful.
 *>                See the description of RWORK.
 *> \endverbatim
-*
+*>
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -276,6 +282,8 @@
 *
 *> \par Further Details:
 *  =====================
+*>
+*> \verbatim
 *>
 *> The orthogonal N-by-N matrix V is obtained as a product of Jacobi plane
 *> rotations. In the case of underflow of the tangent of the Jacobi angle, a
@@ -289,23 +297,30 @@
 *> procedure is achieved if used in an  accelerated version of Drmac and
 *> Veselic [4,5], and it is the kernel routine in the SIGMA library [6].
 *> Some tunning parameters (marked with [TP]) are available for the
-*> implementer. 
+*> implementer.
 *> The computational range for the nonzero singular values is the  machine
 *> number interval ( UNDERFLOW , OVERFLOW ). In extreme cases, even
 *> denormalized singular values can be computed with the corresponding
 *> gradual loss of accurate digits.
-*>
-*> \par Contributors:
+*> \endverbatim
+*
+*> \par Contributor:
 *  ==================
 *>
-*> Zlatko Drmac (Zagreb, Croatia) and Kresimir Veselic (Hagen, Germany)
+*> \verbatim
 *>
+*>  ============
+*>
+*>  Zlatko Drmac (Zagreb, Croatia)
+*>
+*> \endverbatim
+*
 *> \par References:
 *  ================
 *>
 *> [1] P. P. M. De Rijk: A one-sided Jacobi algorithm for computing the
-*>    singular value decomposition on a vector computer. 
-*>    SIAM J. Sci. Stat. Comp., Vol. 10 (1998), pp. 359-371. 
+*>    singular value decomposition on a vector computer.
+*>    SIAM J. Sci. Stat. Comp., Vol. 10 (1998), pp. 359-371.
 *> [2] J. Demmel and K. Veselic: Jacobi method is more accurate than QR.
 *> [3] Z. Drmac: Implementation of Jacobi rotations for accurate singular
 *>    value computation in floating point arithmetic.
@@ -319,23 +334,27 @@
 *> [6] Z. Drmac: SIGMA - mathematical software library for accurate SVD, PSV,
 *>    QSVD, (H,K)-SVD computations.
 *>    Department of Mathematics, University of Zagreb, 2008, 2015.
-*>
-*> \par Bugs, Examples and Comments:
+*> \endverbatim
+*
+*> \par Bugs, examples and comments:
 *  =================================
 *>
-*> Please report all bugs and send interesting test examples and comments to
-*> drmac@math.hr. Thank you.
-*
+*> \verbatim
+*>  ===========================
+*>  Please report all bugs and send interesting test examples and comments to
+*>  drmac@math.hr. Thank you.
+*> \endverbatim
+*>
 *  =====================================================================
-      SUBROUTINE CGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V, 
+      SUBROUTINE CGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
      $                   LDV, CWORK, LWORK, RWORK, LRWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.1) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
 *
-      IMPLICIT NONE 
+      IMPLICIT NONE
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, LRWORK, M, MV, N
       CHARACTER*1        JOBA, JOBU, JOBV
@@ -357,25 +376,24 @@
 *     ..
 *     .. Local Scalars ..
       COMPLEX AAPQ, OMPQ
-      REAL    AAPP, AAPP0, AAPQ1, AAQQ, APOAQ, AQOAP, BIG, 
-     $        BIGTHETA, CS, CTOL, EPSLN, LARGE, MXAAPQ, 
-     $        MXSINJ, ROOTBIG, ROOTEPS, ROOTSFMIN, ROOTTOL, 
+      REAL    AAPP, AAPP0, AAPQ1, AAQQ, APOAQ, AQOAP, BIG,
+     $        BIGTHETA, CS, CTOL, EPSLN, MXAAPQ,
+     $        MXSINJ, ROOTBIG, ROOTEPS, ROOTSFMIN, ROOTTOL,
      $        SKL, SFMIN, SMALL, SN, T, TEMP1, THETA, THSIGN, TOL
       INTEGER BLSKIP, EMPTSW, i, ibr, IERR, igl, IJBLSK, ir1,
-     $        ISWROT, jbc, jgl, KBL, LKAHEAD, MVL, N2, N34, 
+     $        ISWROT, jbc, jgl, KBL, LKAHEAD, MVL, N2, N34,
      $        N4, NBL, NOTROT, p, PSKIPPED, q, ROWSKIP, SWBAND
-      LOGICAL APPLV, GOSCALE, LOWER, LSVEC, NOSCALE, ROTOK, 
+      LOGICAL APPLV, GOSCALE, LOWER, LQUERY, LSVEC, NOSCALE, ROTOK,
      $        RSVEC, UCTOL, UPPER
 *     ..
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC ABS, AMAX1, AMIN1, CONJG, FLOAT, MIN0, MAX0, 
-     $          SIGN, SQRT
+      INTRINSIC ABS, MAX, MIN, CONJG, REAL, SIGN, SQRT
 *     ..
 *     .. External Functions ..
 *     ..
 *     from BLAS
-      REAL                      SCNRM2
+      REAL               SCNRM2
       COMPLEX            CDOTC
       EXTERNAL           CDOTC, SCNRM2
       INTEGER            ISAMAX
@@ -398,13 +416,14 @@
 *
 *     Test the input arguments
 *
-      LSVEC = LSAME( JOBU, 'U' )
+      LSVEC = LSAME( JOBU, 'U' ) .OR. LSAME( JOBU, 'F' )
       UCTOL = LSAME( JOBU, 'C' )
-      RSVEC = LSAME( JOBV, 'V' )
+      RSVEC = LSAME( JOBV, 'V' ) .OR. LSAME( JOBV, 'J' )
       APPLV = LSAME( JOBV, 'A' )
       UPPER = LSAME( JOBA, 'U' )
       LOWER = LSAME( JOBA, 'L' )
 *
+      LQUERY = ( LWORK .EQ. -1 ) .OR. ( LRWORK .EQ. -1 )
       IF( .NOT.( UPPER .OR. LOWER .OR. LSAME( JOBA, 'G' ) ) ) THEN
          INFO = -1
       ELSE IF( .NOT.( LSVEC .OR. UCTOL .OR. LSAME( JOBU, 'N' ) ) ) THEN
@@ -424,10 +443,10 @@
          INFO = -11
       ELSE IF( UCTOL .AND. ( RWORK( 1 ).LE.ONE ) ) THEN
          INFO = -12
-      ELSE IF( LWORK.LT.( M+N ) ) THEN
+      ELSE IF( LWORK.LT.( M+N ) .AND. ( .NOT.LQUERY ) ) THEN
          INFO = -13
-      ELSE IF( LRWORK.LT.MAX0( N, 6 ) ) THEN
-         INFO = -15   
+      ELSE IF( LRWORK.LT.MAX( N, 6 ) .AND. ( .NOT.LQUERY ) ) THEN
+         INFO = -15
       ELSE
          INFO = 0
       END IF
@@ -435,6 +454,10 @@
 *     #:(
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'CGESVJ', -INFO )
+         RETURN
+      ELSE IF ( LQUERY ) THEN
+         CWORK(1) = M + N
+         RWORK(1) = MAX( N, 6 )
          RETURN
       END IF
 *
@@ -455,9 +478,9 @@
       ELSE
 *        ... default
          IF( LSVEC .OR. RSVEC .OR. APPLV ) THEN
-            CTOL = SQRT( FLOAT( M ) )
+            CTOL = SQRT( REAL( M ) )
          ELSE
-            CTOL = FLOAT( M )
+            CTOL = REAL( M )
          END IF
       END IF
 *     ... and the machine dependent parameters are
@@ -468,16 +491,16 @@
       SFMIN = SLAMCH( 'SafeMinimum' )
       ROOTSFMIN = SQRT( SFMIN )
       SMALL = SFMIN / EPSLN
-      BIG = SLAMCH( 'Overflow' )
-*     BIG         = ONE    / SFMIN
+*      BIG = SLAMCH( 'Overflow' )
+      BIG     = ONE  / SFMIN
       ROOTBIG = ONE / ROOTSFMIN
-      LARGE = BIG / SQRT( FLOAT( M*N ) )
+*     LARGE = BIG / SQRT( REAL( M*N ) )
       BIGTHETA = ONE / ROOTEPS
 *
       TOL = CTOL*EPSLN
       ROOTTOL = SQRT( TOL )
 *
-      IF( FLOAT( M )*EPSLN.GE.ONE ) THEN
+      IF( REAL( M )*EPSLN.GE.ONE ) THEN
          INFO = -4
          CALL XERBLA( 'CGESVJ', -INFO )
          RETURN
@@ -502,7 +525,7 @@
 *     SQRT(N)*max_i SVA(i) does not overflow. If INFinite entries
 *     in A are detected, the procedure returns with INFO=-6.
 *
-      SKL = ONE / SQRT( FLOAT( M )*FLOAT( N ) )
+      SKL = ONE / SQRT( REAL( M )*REAL( N ) )
       NOSCALE = .TRUE.
       GOSCALE = .TRUE.
 *
@@ -592,8 +615,8 @@
       AAPP = ZERO
       AAQQ = BIG
       DO 4781 p = 1, N
-         IF( SVA( p ).NE.ZERO )AAQQ = AMIN1( AAQQ, SVA( p ) )
-         AAPP = AMAX1( AAPP, SVA( p ) )
+         IF( SVA( p ).NE.ZERO )AAQQ = MIN( AAQQ, SVA( p ) )
+         AAPP = MAX( AAPP, SVA( p ) )
  4781 CONTINUE
 *
 * #:) Quick return for zero matrix
@@ -631,22 +654,22 @@
 *     avoid underflows/overflows in computing Jacobi rotations.
 *
       SN = SQRT( SFMIN / EPSLN )
-      TEMP1 = SQRT( BIG / FLOAT( N ) )
-      IF( ( AAPP.LE.SN ) .OR. ( AAQQ.GE.TEMP1 ) .OR.    
+      TEMP1 = SQRT( BIG / REAL( N ) )
+      IF( ( AAPP.LE.SN ) .OR. ( AAQQ.GE.TEMP1 ) .OR.
      $    ( ( SN.LE.AAQQ ) .AND. ( AAPP.LE.TEMP1 ) ) ) THEN
-         TEMP1 = AMIN1( BIG, TEMP1 / AAPP )
+         TEMP1 = MIN( BIG, TEMP1 / AAPP )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.LE.SN ) .AND. ( AAPP.LE.TEMP1 ) ) THEN
-         TEMP1 = AMIN1( SN / AAQQ, BIG / ( AAPP*SQRT( FLOAT( N ) ) ) )
+         TEMP1 = MIN( SN / AAQQ, BIG / ( AAPP*SQRT( REAL( N ) ) ) )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.GE.SN ) .AND. ( AAPP.GE.TEMP1 ) ) THEN
-         TEMP1 = AMAX1( SN / AAQQ, TEMP1 / AAPP )
+         TEMP1 = MAX( SN / AAQQ, TEMP1 / AAPP )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.LE.SN ) .AND. ( AAPP.GE.TEMP1 ) ) THEN
-         TEMP1 = AMIN1( SN / AAQQ, BIG / ( SQRT( FLOAT( N ) )*AAPP ) )
+         TEMP1 = MIN( SN / AAQQ, BIG / ( SQRT( REAL( N ) )*AAPP ) )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE
@@ -668,10 +691,10 @@
 *
       EMPTSW = ( N*( N-1 ) ) / 2
       NOTROT = 0
-       
+
       DO 1868 q = 1, N
          CWORK( q ) = CONE
- 1868 CONTINUE     
+ 1868 CONTINUE
 *
 *
 *
@@ -683,7 +706,7 @@
 *     The boundaries are determined dynamically, based on the number of
 *     pivots above a threshold.
 *
-      KBL = MIN0( 8, N )
+      KBL = MIN( 8, N )
 *[TP] KBL is a tuning parameter that defines the tile size in the
 *     tiling of the p-q loops of pivot pairs. In general, an optimal
 *     value of KBL depends on the matrix dimensions and on the
@@ -695,7 +718,7 @@
       BLSKIP = KBL**2
 *[TP] BLKSKIP is a tuning parameter that depends on SWBAND and KBL.
 *
-      ROWSKIP = MIN0( 5, KBL )
+      ROWSKIP = MIN( 5, KBL )
 *[TP] ROWSKIP is a tuning parameter.
 *
       LKAHEAD = 1
@@ -706,7 +729,7 @@
 *     invokes cubic convergence. Big part of this cycle is done inside
 *     canonical subspaces of dimensions less than M.
 *
-      IF( ( LOWER .OR. UPPER ) .AND. ( N.GT.MAX0( 64, 4*KBL ) ) ) THEN
+      IF( ( LOWER .OR. UPPER ) .AND. ( N.GT.MAX( 64, 4*KBL ) ) ) THEN
 *[TP] The number of partition levels and the actual partition are
 *     tuning parameters.
          N4 = N / 4
@@ -804,18 +827,18 @@
 *
             igl = ( ibr-1 )*KBL + 1
 *
-            DO 1002 ir1 = 0, MIN0( LKAHEAD, NBL-ibr )
+            DO 1002 ir1 = 0, MIN( LKAHEAD, NBL-ibr )
 *
                igl = igl + ir1*KBL
 *
-               DO 2001 p = igl, MIN0( igl+KBL-1, N-1 )
+               DO 2001 p = igl, MIN( igl+KBL-1, N-1 )
 *
 *     .. de Rijk's pivoting
 *
                   q = ISAMAX( N-p+1, SVA( p ), 1 ) + p - 1
                   IF( p.NE.q ) THEN
                      CALL CSWAP( M, A( 1, p ), 1, A( 1, q ), 1 )
-                     IF( RSVEC )CALL CSWAP( MVL, V( 1, p ), 1,  
+                     IF( RSVEC )CALL CSWAP( MVL, V( 1, p ), 1,
      $                                           V( 1, q ), 1 )
                      TEMP1 = SVA( p )
                      SVA( p ) = SVA( q )
@@ -839,7 +862,7 @@
 *        If properly implemented SCNRM2 is available, the IF-THEN-ELSE-END IF
 *        below should be replaced with "AAPP = SCNRM2( M, A(1,p), 1 )".
 *
-                     IF( ( SVA( p ).LT.ROOTBIG ) .AND.     
+                     IF( ( SVA( p ).LT.ROOTBIG ) .AND.
      $                    ( SVA( p ).GT.ROOTSFMIN ) ) THEN
                         SVA( p ) = SCNRM2( M, A( 1, p ), 1 )
                      ELSE
@@ -857,7 +880,7 @@
 *
                      PSKIPPED = 0
 *
-                     DO 2002 q = p + 1, MIN0( igl+KBL-1, N )
+                     DO 2002 q = p + 1, MIN( igl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 *
@@ -867,12 +890,12 @@
                            IF( AAQQ.GE.ONE ) THEN
                               ROTOK = ( SMALL*AAPP ).LE.AAQQ
                               IF( AAPP.LT.( BIG / AAQQ ) ) THEN
-                                 AAPQ = ( CDOTC( M, A( 1, p ), 1, 
+                                 AAPQ = ( CDOTC( M, A( 1, p ), 1,
      $                                   A( 1, q ), 1 ) / AAQQ ) / AAPP
                               ELSE
-                                 CALL CCOPY( M, A( 1, p ), 1,   
+                                 CALL CCOPY( M, A( 1, p ), 1,
      $                                        CWORK(N+1), 1 )
-                                 CALL CLASCL( 'G', 0, 0, AAPP, ONE, 
+                                 CALL CLASCL( 'G', 0, 0, AAPP, ONE,
      $                                M, 1, CWORK(N+1), LDA, IERR )
                                  AAPQ = CDOTC( M, CWORK(N+1), 1,
      $                                   A( 1, q ), 1 ) / AAQQ
@@ -880,10 +903,10 @@
                            ELSE
                               ROTOK = AAPP.LE.( AAQQ / SMALL )
                               IF( AAPP.GT.( SMALL / AAQQ ) ) THEN
-                                 AAPQ = ( CDOTC( M, A( 1, p ), 1, 
-     $                                    A( 1, q ), 1 ) / AAQQ ) / AAPP
+                                 AAPQ = ( CDOTC( M, A( 1, p ), 1,
+     $                                    A( 1, q ), 1 ) / AAPP ) / AAQQ
                               ELSE
-                                 CALL CCOPY( M, A( 1, q ), 1,   
+                                 CALL CCOPY( M, A( 1, q ), 1,
      $                                        CWORK(N+1), 1 )
                                  CALL CLASCL( 'G', 0, 0, AAQQ,
      $                                         ONE, M, 1,
@@ -893,13 +916,14 @@
                               END IF
                            END IF
 *
-*                           AAPQ = AAPQ * CONJG( CWORK(p) ) * CWORK(q) 
-                           AAPQ1  = -ABS(AAPQ) 
-                           MXAAPQ = AMAX1( MXAAPQ, -AAPQ1 )
+*                           AAPQ = AAPQ * CONJG( CWORK(p) ) * CWORK(q)
+                           AAPQ1  = -ABS(AAPQ)
+                           MXAAPQ = MAX( MXAAPQ, -AAPQ1 )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
                            IF( ABS( AAPQ1 ).GT.TOL ) THEN
+                               OMPQ = AAPQ / ABS(AAPQ)
 *
 *           .. rotate
 *[RTD]      ROTATED = ROTATED + ONE
@@ -912,53 +936,52 @@
 *
                               IF( ROTOK ) THEN
 *
-                                 OMPQ = AAPQ / ABS(AAPQ) 
                                  AQOAP = AAQQ / AAPP
                                  APOAQ = AAPP / AAQQ
                                  THETA = -HALF*ABS( AQOAP-APOAQ )/AAPQ1
 *
                                  IF( ABS( THETA ).GT.BIGTHETA ) THEN
-* 
+*
                                     T  = HALF / THETA
                                     CS = ONE
 
                                     CALL CROT( M, A(1,p), 1, A(1,q), 1,
      $                                          CS, CONJG(OMPQ)*T )
                                     IF ( RSVEC ) THEN
-                                        CALL CROT( MVL, V(1,p), 1, 
+                                        CALL CROT( MVL, V(1,p), 1,
      $                                  V(1,q), 1, CS, CONJG(OMPQ)*T )
                                     END IF
-                                    
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,  
+
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                          ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                          ONE-T*AQOAP*AAPQ1 ) )
-                                    MXSINJ = AMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
 *
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
 *
                                     THSIGN = -SIGN( ONE, AAPQ1 )
-                                    T = ONE / ( THETA+THSIGN*       
+                                    T = ONE / ( THETA+THSIGN*
      $                                   SQRT( ONE+THETA*THETA ) )
                                     CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
 *
-                                    MXSINJ = AMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                          ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,  
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                      ONE-T*AQOAP*AAPQ1 ) )
 *
                                     CALL CROT( M, A(1,p), 1, A(1,q), 1,
      $                                          CS, CONJG(OMPQ)*SN )
                                     IF ( RSVEC ) THEN
-                                        CALL CROT( MVL, V(1,p), 1, 
+                                        CALL CROT( MVL, V(1,p), 1,
      $                                  V(1,q), 1, CS, CONJG(OMPQ)*SN )
-                                    END IF 
-                                 END IF 
-                                 CWORK(p) = -CWORK(q) * OMPQ 
+                                    END IF
+                                 END IF
+                                 CWORK(p) = -CWORK(q) * OMPQ
 *
                                  ELSE
 *              .. have to use modified Gram-Schmidt like transformation
@@ -973,9 +996,9 @@
      $                                       A( 1, q ), 1 )
                                  CALL CLASCL( 'G', 0, 0, ONE, AAQQ, M,
      $                                        1, A( 1, q ), LDA, IERR )
-                                 SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                 SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                      ONE-AAPQ1*AAPQ1 ) )
-                                 MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                 MXSINJ = MAX( MXSINJ, SFMIN )
                               END IF
 *           END IF ROTOK THEN ... ELSE
 *
@@ -1039,7 +1062,7 @@
                   ELSE
                      SVA( p ) = AAPP
                      IF( ( ir1.EQ.0 ) .AND. ( AAPP.EQ.ZERO ) )
-     $                   NOTROT = NOTROT + MIN0( igl+KBL-1, N ) - p
+     $                   NOTROT = NOTROT + MIN( igl+KBL-1, N ) - p
                   END IF
 *
  2001          CONTINUE
@@ -1059,14 +1082,14 @@
 *        doing the block at ( ibr, jbc )
 *
                IJBLSK = 0
-               DO 2100 p = igl, MIN0( igl+KBL-1, N )
+               DO 2100 p = igl, MIN( igl+KBL-1, N )
 *
                   AAPP = SVA( p )
                   IF( AAPP.GT.ZERO ) THEN
 *
                      PSKIPPED = 0
 *
-                     DO 2200 q = jgl, MIN0( jgl+KBL-1, N )
+                     DO 2200 q = jgl, MIN( jgl+KBL-1, N )
 *
                         AAQQ = SVA( q )
                         IF( AAQQ.GT.ZERO ) THEN
@@ -1083,7 +1106,7 @@
                                  ROTOK = ( SMALL*AAQQ ).LE.AAPP
                               END IF
                               IF( AAPP.LT.( BIG / AAQQ ) ) THEN
-                                 AAPQ = ( CDOTC( M, A( 1, p ), 1, 
+                                 AAPQ = ( CDOTC( M, A( 1, p ), 1,
      $                                  A( 1, q ), 1 ) / AAQQ ) / AAPP
                               ELSE
                                  CALL CCOPY( M, A( 1, p ), 1,
@@ -1101,8 +1124,9 @@
                                  ROTOK = AAQQ.LE.( AAPP / SMALL )
                               END IF
                               IF( AAPP.GT.( SMALL / AAQQ ) ) THEN
-                                 AAPQ = ( CDOTC( M, A( 1, p ), 1, 
-     $                                   A( 1, q ), 1 ) / AAQQ ) / AAPP
+                                 AAPQ = ( CDOTC( M, A( 1, p ), 1,
+     $                                 A( 1, q ), 1 ) / MAX(AAQQ,AAPP) )
+     $                                                / MIN(AAQQ,AAPP)
                               ELSE
                                  CALL CCOPY( M, A( 1, q ), 1,
      $                                       CWORK(N+1), 1 )
@@ -1114,13 +1138,14 @@
                               END IF
                            END IF
 *
-*                           AAPQ = AAPQ * CONJG(CWORK(p))*CWORK(q)   
+*                           AAPQ = AAPQ * CONJG(CWORK(p))*CWORK(q)
                            AAPQ1  = -ABS(AAPQ)
-                           MXAAPQ = AMAX1( MXAAPQ, -AAPQ1 )
+                           MXAAPQ = MAX( MXAAPQ, -AAPQ1 )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
                            IF( ABS( AAPQ1 ).GT.TOL ) THEN
+                              OMPQ = AAPQ / ABS(AAPQ)
                               NOTROT = 0
 *[RTD]      ROTATED  = ROTATED + 1
                               PSKIPPED = 0
@@ -1128,7 +1153,6 @@
 *
                               IF( ROTOK ) THEN
 *
-                                 OMPQ = AAPQ / ABS(AAPQ) 
                                  AQOAP = AAQQ / AAPP
                                  APOAQ = AAPP / AAQQ
                                  THETA = -HALF*ABS( AQOAP-APOAQ )/ AAPQ1
@@ -1136,18 +1160,18 @@
 *
                                  IF( ABS( THETA ).GT.BIGTHETA ) THEN
                                     T  = HALF / THETA
-                                    CS = ONE 
+                                    CS = ONE
                                     CALL CROT( M, A(1,p), 1, A(1,q), 1,
      $                                          CS, CONJG(OMPQ)*T )
                                     IF( RSVEC ) THEN
-                                        CALL CROT( MVL, V(1,p), 1, 
+                                        CALL CROT( MVL, V(1,p), 1,
      $                                  V(1,q), 1, CS, CONJG(OMPQ)*T )
                                     END IF
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ1 ) )
-                                    MXSINJ = AMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
@@ -1158,20 +1182,20 @@
      $                                  SQRT( ONE+THETA*THETA ) )
                                     CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
-                                    MXSINJ = AMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,  
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-T*AQOAP*AAPQ1 ) )
 *
                                     CALL CROT( M, A(1,p), 1, A(1,q), 1,
-     $                                          CS, CONJG(OMPQ)*SN ) 
+     $                                          CS, CONJG(OMPQ)*SN )
                                     IF( RSVEC ) THEN
-                                        CALL CROT( MVL, V(1,p), 1, 
+                                        CALL CROT( MVL, V(1,p), 1,
      $                                  V(1,q), 1, CS, CONJG(OMPQ)*SN )
                                     END IF
                                  END IF
-                                 CWORK(p) = -CWORK(q) * OMPQ 
+                                 CWORK(p) = -CWORK(q) * OMPQ
 *
                               ELSE
 *              .. have to use modified Gram-Schmidt like transformation
@@ -1189,9 +1213,9 @@
                                     CALL CLASCL( 'G', 0, 0, ONE, AAQQ,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ1*AAPQ1 ) )
-                                    MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                ELSE
                                    CALL CCOPY( M, A( 1, q ), 1,
      $                                          CWORK(N+1), 1 )
@@ -1201,14 +1225,14 @@
                                     CALL CLASCL( 'G', 0, 0, AAPP, ONE,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    CALL CAXPY( M, -CONJG(AAPQ), 
+                                    CALL CAXPY( M, -CONJG(AAPQ),
      $                                   CWORK(N+1), 1, A( 1, p ), 1 )
                                     CALL CLASCL( 'G', 0, 0, ONE, AAPP,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    SVA( p ) = AAPP*SQRT( AMAX1( ZERO,
+                                    SVA( p ) = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ1*AAPQ1 ) )
-                                    MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                END IF
                               END IF
 *           END IF ROTOK THEN ... ELSE
@@ -1276,7 +1300,7 @@
                   ELSE
 *
                      IF( AAPP.EQ.ZERO )NOTROT = NOTROT +
-     $                   MIN0( jgl+KBL-1, N ) - jgl + 1
+     $                   MIN( jgl+KBL-1, N ) - jgl + 1
                      IF( AAPP.LT.ZERO )NOTROT = 0
 *
                   END IF
@@ -1287,7 +1311,7 @@
 *     end of the jbc-loop
  2011       CONTINUE
 *2011 bailed out of the jbc-loop
-            DO 2012 p = igl, MIN0( igl+KBL-1, N )
+            DO 2012 p = igl, MIN( igl+KBL-1, N )
                SVA( p ) = ABS( SVA( p ) )
  2012       CONTINUE
 ***
@@ -1310,8 +1334,8 @@
          IF( ( i.LT.SWBAND ) .AND. ( ( MXAAPQ.LE.ROOTTOL ) .OR.
      $       ( ISWROT.LE.N ) ) )SWBAND = i
 *
-         IF( ( i.GT.SWBAND+1 ) .AND. ( MXAAPQ.LT.SQRT( FLOAT( N ) )*
-     $       TOL ) .AND. ( FLOAT( N )*MXAAPQ*MXSINJ.LT.TOL ) ) THEN
+         IF( ( i.GT.SWBAND+1 ) .AND. ( MXAAPQ.LT.SQRT( REAL( N ) )*
+     $       TOL ) .AND. ( REAL( N )*MXAAPQ*MXSINJ.LT.TOL ) ) THEN
             GO TO 1994
          END IF
 *
@@ -1359,8 +1383,9 @@
 *     Normalize the left singular vectors.
 *
       IF( LSVEC .OR. UCTOL ) THEN
-         DO 1998 p = 1, N2
-            CALL CSSCAL( M, ONE / SVA( p ), A( 1, p ), 1 )
+         DO 1998 p = 1, N4
+*           CALL CSSCAL( M, ONE / SVA( p ), A( 1, p ), 1 )
+            CALL CLASCL( 'G',0,0, SVA(p), ONE, M, 1, A(1,p), M, IERR )
  1998    CONTINUE
       END IF
 *
@@ -1374,7 +1399,7 @@
       END IF
 *
 *     Undo scaling, if necessary (and possible).
-      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) ) 
+      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) )
      $    .OR. ( ( SKL.LT.ONE ) .AND. ( SVA( MAX( N2, 1 ) ) .GT.
      $    ( SFMIN / SKL ) ) ) ) THEN
          DO 2400 p = 1, N
@@ -1388,15 +1413,15 @@
 *     then some of the singular values may overflow or underflow and
 *     the spectrum is given in this factored representation.
 *
-      RWORK( 2 ) = FLOAT( N4 )
+      RWORK( 2 ) = REAL( N4 )
 *     N4 is the number of computed nonzero singular values of A.
 *
-      RWORK( 3 ) = FLOAT( N2 )
+      RWORK( 3 ) = REAL( N2 )
 *     N2 is the number of singular values of A greater than SFMIN.
 *     If N2<N, SVA(N2:N) contains ZEROS and/or denormalized numbers
 *     that may carry some information.
 *
-      RWORK( 4 ) = FLOAT( i )
+      RWORK( 4 ) = REAL( i )
 *     i is the index of the last sweep before declaring convergence.
 *
       RWORK( 5 ) = MXAAPQ
@@ -1412,3 +1437,4 @@
 *     .. END OF CGESVJ
 *     ..
       END
+*

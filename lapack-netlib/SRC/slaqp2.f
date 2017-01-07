@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAQP2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaqp2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaqp2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaqp2.f"> 
+*> Download SLAQP2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaqp2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaqp2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaqp2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAQP2( M, N, OFFSET, A, LDA, JPVT, TAU, VN1, VN2,
 *                          WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, M, N, OFFSET
 *       ..
@@ -29,7 +29,7 @@
 *       REAL               A( LDA, * ), TAU( * ), VN1( * ), VN2( * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -67,9 +67,9 @@
 *> \verbatim
 *>          A is REAL array, dimension (LDA,N)
 *>          On entry, the M-by-N matrix A.
-*>          On exit, the upper triangle of block A(OFFSET+1:M,1:N) is 
-*>          the triangular factor obtained; the elements in block 
-*>          A(OFFSET+1:M,1:N) below the diagonal, together with the 
+*>          On exit, the upper triangle of block A(OFFSET+1:M,1:N) is
+*>          the triangular factor obtained; the elements in block
+*>          A(OFFSET+1:M,1:N) below the diagonal, together with the
 *>          array TAU, represent the orthogonal matrix Q as a product of
 *>          elementary reflectors. Block A(1:OFFSET,1:N) has been
 *>          accordingly pivoted, but no factorized.
@@ -117,12 +117,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup realOTHERauxiliary
 *
@@ -142,17 +142,17 @@
 *> LAPACK Working Note 176
 *
 *> \htmlonly
-*> <a href="http://www.netlib.org/lapack/lawnspdf/lawn176.pdf">[PDF]</a> 
-*> \endhtmlonly 
+*> <a href="http://www.netlib.org/lapack/lawnspdf/lawn176.pdf">[PDF]</a>
+*> \endhtmlonly
 *
 *  =====================================================================
       SUBROUTINE SLAQP2( M, N, OFFSET, A, LDA, JPVT, TAU, VN1, VN2,
      $                   WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, M, N, OFFSET

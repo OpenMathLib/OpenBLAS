@@ -6,7 +6,7 @@
  * 4/6/1998
  *
  */
- 
+
 #include "cblas.h"
 #include "cblas_f77.h"
 void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
@@ -23,7 +23,7 @@ void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
 #else
    #define F77_TA &TA
    #define F77_UL &UL
-   #define F77_DI &DI   
+   #define F77_DI &DI
 #endif
 #ifdef F77_INT
    F77_INT F77_N=N, F77_lda=lda, F77_incX=incX;
@@ -41,7 +41,7 @@ void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    {
       if (Uplo == CblasUpper) UL = 'U';
       else if (Uplo == CblasLower) UL = 'L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_dtrmv","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -51,7 +51,7 @@ void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       if (TransA == CblasNoTrans) TA = 'N';
       else if (TransA == CblasTrans) TA = 'T';
       else if (TransA == CblasConjTrans) TA = 'C';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_dtrmv","Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -60,7 +60,7 @@ void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       }
       if (Diag == CblasUnit) DI = 'U';
       else if (Diag == CblasNonUnit) DI = 'N';
-      else 
+      else
       {
          cblas_xerbla(4, "cblas_dtrmv","Illegal Diag setting, %d\n", Diag);
          CBLAS_CallFromC = 0;
@@ -80,7 +80,7 @@ void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       RowMajorStrg = 1;
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_dtrmv","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -91,7 +91,7 @@ void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       if (TransA == CblasNoTrans) TA = 'T';
       else if (TransA == CblasTrans) TA = 'N';
       else if (TransA == CblasConjTrans) TA = 'N';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_dtrmv","Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -101,7 +101,7 @@ void cblas_dtrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
 
       if (Diag == CblasUnit) DI = 'U';
       else if (Diag == CblasNonUnit) DI = 'N';
-      else 
+      else
       {
          cblas_xerbla(4, "cblas_dtrmv","Illegal Diag setting, %d\n", Diag);
          CBLAS_CallFromC = 0;

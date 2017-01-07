@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CTREXC + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctrexc.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctrexc.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctrexc.f"> 
+*> Download CTREXC + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ctrexc.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ctrexc.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ctrexc.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CTREXC( COMPQ, N, T, LDT, Q, LDQ, IFST, ILST, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          COMPQ
 *       INTEGER            IFST, ILST, INFO, LDQ, LDT, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       COMPLEX            Q( LDQ, * ), T( LDT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -57,6 +57,7 @@
 *> \verbatim
 *>          N is INTEGER
 *>          The order of the matrix T. N >= 0.
+*>          If N == 0 arguments ILST and IFST may be any value.
 *> \endverbatim
 *>
 *> \param[in,out] T
@@ -84,7 +85,8 @@
 *> \param[in] LDQ
 *> \verbatim
 *>          LDQ is INTEGER
-*>          The leading dimension of the array Q.  LDQ >= max(1,N).
+*>          The leading dimension of the array Q.  LDQ >= 1, and if
+*>          COMPQ = 'V', LDQ >= max(1,N).
 *> \endverbatim
 *>
 *> \param[in] IFST
@@ -112,22 +114,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE CTREXC( COMPQ, N, T, LDT, Q, LDQ, IFST, ILST, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ
@@ -169,9 +171,9 @@
          INFO = -4
       ELSE IF( LDQ.LT.1 .OR. ( WANTQ .AND. LDQ.LT.MAX( 1, N ) ) ) THEN
          INFO = -6
-      ELSE IF( IFST.LT.1 .OR. IFST.GT.N ) THEN
+      ELSE IF(( IFST.LT.1 .OR. IFST.GT.N ).AND.( N.GT.0 )) THEN
          INFO = -7
-      ELSE IF( ILST.LT.1 .OR. ILST.GT.N ) THEN
+      ELSE IF(( ILST.LT.1 .OR. ILST.GT.N ).AND.( N.GT.0 )) THEN
          INFO = -8
       END IF
       IF( INFO.NE.0 ) THEN
@@ -181,7 +183,7 @@
 *
 *     Quick return if possible
 *
-      IF( N.EQ.1 .OR. IFST.EQ.ILST )
+      IF( N.LE.1 .OR. IFST.EQ.ILST )
      $   RETURN
 *
       IF( IFST.LT.ILST ) THEN

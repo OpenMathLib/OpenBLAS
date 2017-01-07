@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function sorcsd2by1
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -69,7 +69,7 @@ lapack_int LAPACKE_sorcsd2by1( int matrix_layout, char jobu1, char jobu2,
         goto exit_level_0;
     }
     /* Query optimal working array(s) size */
-    info = LAPACKE_sorcsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q, 
+    info = LAPACKE_sorcsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q,
                                 x11, ldx11, x21, ldx21, theta, u1, ldu1, u2,
                                 ldu2, v1t, ldv1t, &work_query,
                                 lwork, iwork );
@@ -84,7 +84,7 @@ lapack_int LAPACKE_sorcsd2by1( int matrix_layout, char jobu1, char jobu2,
         goto exit_level_1;
     }
     /* Call middle-level interface */
-    info = LAPACKE_sorcsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q, 
+    info = LAPACKE_sorcsd2by1_work( matrix_layout, jobu1, jobu2, jobv1t, m, p, q,
                                 x11, ldx11, x21, ldx21, theta, u1, ldu1, u2,
                                 ldu2, v1t, ldv1t, work, lwork, iwork );
     /* Release memory and exit */

@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function slarfb
 * Author: Intel Corporation
-* Generated November 2015
+* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -43,7 +43,7 @@ lapack_int LAPACKE_slarfb_work( int matrix_layout, char side, char trans,
     lapack_int info = 0;
     lapack_int nrows_v, ncols_v;
     lapack_int ldc_t, ldt_t, ldv_t;
-    float *v_t = NULL, *t_t = NULL, *c_t = NULL; 
+    float *v_t = NULL, *t_t = NULL, *c_t = NULL;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_slarfb( &side, &trans, &direct, &storev, &m, &n, &k, v, &ldv, t,

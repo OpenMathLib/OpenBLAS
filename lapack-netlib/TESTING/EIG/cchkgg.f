@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -13,7 +13,7 @@
 *                          S2, P1, P2, U, LDU, V, Q, Z, ALPHA1, BETA1,
 *                          ALPHA3, BETA3, EVECTL, EVECTR, WORK, LWORK,
 *                          RWORK, LLWORK, RESULT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTDIF
 *       INTEGER            INFO, LDA, LDU, LWORK, NOUNIT, NSIZES, NTYPES
@@ -31,7 +31,7 @@
 *      $                   T( LDA, * ), U( LDU, * ), V( LDU, * ),
 *      $                   WORK( * ), Z( LDU, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -487,10 +487,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date June 2016
 *
@@ -503,7 +503,7 @@
      $                   ALPHA3, BETA3, EVECTL, EVECTR, WORK, LWORK,
      $                   RWORK, LLWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

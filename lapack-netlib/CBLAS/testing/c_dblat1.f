@@ -211,11 +211,11 @@
             IF (ICASE.EQ.7) THEN
 *              .. DNRM2TEST ..
                STEMP(1) = DTRUE1(NP1)
-               CALL STEST1(DNRM2TEST(N,SX,INCX),STEMP,STEMP,SFAC)
+               CALL STEST1(DNRM2TEST(N,SX,INCX),STEMP(1),STEMP,SFAC)
             ELSE IF (ICASE.EQ.8) THEN
 *              .. DASUMTEST ..
                STEMP(1) = DTRUE3(NP1)
-               CALL STEST1(DASUMTEST(N,SX,INCX),STEMP,STEMP,SFAC)
+               CALL STEST1(DASUMTEST(N,SX,INCX),STEMP(1),STEMP,SFAC)
             ELSE IF (ICASE.EQ.9) THEN
 *              .. DSCALTEST ..
                CALL DSCALTEST(N,SA((INCX-1)*5+NP1),SX,INCX)
@@ -506,7 +506,7 @@
    80 CONTINUE
       MWPS(1) = 0.0
       DO 100 I = 2, 6
-         MWPS(I) = 1.0 
+         MWPS(I) = 1.0
   100 CONTINUE
       DO 120 I = 7, 11
          MWPS(I) = -1.0
@@ -589,7 +589,7 @@
             MWPSTX(K) = MWPTX(I,K)
             MWPSTY(K) = MWPTY(I,K)
   180    CONTINUE
-         CALL DROTTEST(MWPN(I),COPYX,INCX,COPYY,INCY,MWPC(I),MWPS(I)) 
+         CALL DROTTEST(MWPN(I),COPYX,INCX,COPYY,INCY,MWPC(I),MWPS(I))
          CALL STEST(5,COPYX,MWPSTX,MWPSTX,SFAC)
          CALL STEST(5,COPYY,MWPSTY,MWPSTY,SFAC)
   200 CONTINUE

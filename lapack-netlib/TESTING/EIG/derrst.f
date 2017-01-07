@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DERRST( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -25,6 +25,10 @@
 *> DOPGTR, DOPMTR, DSTEQR, SSTERF, SSTEBZ, SSTEIN, DPTEQR, DSBTRD,
 *> DSYEV, SSYEVX, SSYEVD, DSBEV, SSBEVX, SSBEVD,
 *> DSPEV, SSPEVX, SSPEVD, DSTEV, SSTEVX, SSTEVD, and SSTEDC.
+*> DSYEVD_2STAGE, DSYEVR_2STAGE, DSYEVX_2STAGE,
+*> DSYEV_2STAGE, DSBEV_2STAGE, DSBEVD_2STAGE,
+*> DSBEVX_2STAGE, DSYTRD_2STAGE, DSYTRD_SY2SB,
+*> DSYTRD_SB2ST
 *> \endverbatim
 *
 *  Arguments:
@@ -45,22 +49,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DERRST( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -94,7 +98,11 @@
      $                   DSBEV, DSBEVD, DSBEVX, DSBTRD, DSPEV, DSPEVD,
      $                   DSPEVX, DSPTRD, DSTEBZ, DSTEDC, DSTEIN, DSTEQR,
      $                   DSTERF, DSTEV, DSTEVD, DSTEVR, DSTEVX, DSYEV,
-     $                   DSYEVD, DSYEVR, DSYEVX, DSYTRD
+     $                   DSYEVD, DSYEVR, DSYEVX, DSYTRD,
+     $                   DSYEVD_2STAGE, DSYEVR_2STAGE, DSYEVX_2STAGE,
+     $                   DSYEV_2STAGE, DSBEV_2STAGE, DSBEVD_2STAGE,
+     $                   DSBEVX_2STAGE, DSYTRD_2STAGE, DSYTRD_SY2SB,
+     $                   DSYTRD_SB2ST
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -151,6 +159,103 @@
          CALL DSYTRD( 'U', 0, A, 1, D, E, TAU, W, 0, INFO )
          CALL CHKXER( 'DSYTRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        DSYTRD_2STAGE
+*
+         SRNAMT = 'DSYTRD_2STAGE'
+         INFOT = 1
+         CALL DSYTRD_2STAGE( '/', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSYTRD_2STAGE( 'H', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRD_2STAGE( 'N', '/', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYTRD_2STAGE( 'N', 'U', -1, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYTRD_2STAGE( 'N', 'U', 2, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYTRD_2STAGE( 'N', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 0, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+         CALL DSYTRD_2STAGE( 'N', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 0, INFO )
+         CALL CHKXER( 'DSYTRD_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 7
+*
+*        DSYTRD_SY2SB
+*
+         SRNAMT = 'DSYTRD_SY2SB'
+         INFOT = 1
+         CALL DSYTRD_SY2SB( '/', 0, 0, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SY2SB', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRD_SY2SB( 'U', -1, 0, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SY2SB', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYTRD_SY2SB( 'U', 0, -1, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SY2SB', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYTRD_SY2SB( 'U', 2, 0, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SY2SB', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYTRD_SY2SB( 'U', 0, 2, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SY2SB', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYTRD_SY2SB( 'U', 0, 0, A, 1, C, 1, TAU, W, 0, INFO )
+         CALL CHKXER( 'DSYTRD_SY2SB', INFOT, NOUT, LERR, OK )
+         NT = NT + 6
+*
+*        DSYTRD_SB2ST
+*
+         SRNAMT = 'DSYTRD_SB2ST'
+         INFOT = 1
+         CALL DSYTRD_SB2ST( '/', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRD_SB2ST( 'Y', '/', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRD_SB2ST( 'Y', 'H', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYTRD_SB2ST( 'Y', 'N', '/', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTRD_SB2ST( 'Y', 'N', 'U', -1, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYTRD_SB2ST( 'Y', 'N', 'U', 0, -1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYTRD_SB2ST( 'Y', 'N', 'U', 0, 1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL DSYTRD_SB2ST( 'Y', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 0, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL DSYTRD_SB2ST( 'Y', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 0, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         NT = NT + 9
 *
 *        DORGTR
 *
@@ -536,6 +641,44 @@
          CALL CHKXER( 'DSYEVD', INFOT, NOUT, LERR, OK )
          NT = NT + 10
 *
+*        DSYEVD_2STAGE
+*
+         SRNAMT = 'DSYEVD_2STAGE'
+         INFOT = 1
+         CALL DSYEVD_2STAGE( '/', 'U', 0, A, 1, X, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSYEVD_2STAGE( 'V', 'U', 0, A, 1, X, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYEVD_2STAGE( 'N', '/', 0, A, 1, X, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYEVD_2STAGE( 'N', 'U', -1, A, 1, X, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYEVD_2STAGE( 'N', 'U', 2, A, 1, X, W, 3, IW, 1, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYEVD_2STAGE( 'N', 'U', 1, A, 1, X, W, 0, IW, 1, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYEVD_2STAGE( 'N', 'U', 2, A, 2, X, W, 4, IW, 1, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 8
+*         CALL DSYEVD_2STAGE( 'V', 'U', 2, A, 2, X, W, 20, IW, 12, INFO )
+*         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYEVD_2STAGE( 'N', 'U', 1, A, 1, X, W, 1, IW, 0, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYEVD_2STAGE( 'N', 'U', 2, A, 2, X, W, 25, IW, 0, INFO )
+         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 10
+*         CALL DSYEVD_2STAGE( 'V', 'U', 2, A, 2, X, W, 27, IW, 11, INFO )
+*         CALL CHKXER( 'DSYEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 9
+*
 *        DSYEVR
 *
          SRNAMT = 'DSYEVR'
@@ -591,6 +734,74 @@
          CALL CHKXER( 'DSYEVR', INFOT, NOUT, LERR, OK )
          NT = NT + 11
 *
+*        DSYEVR_2STAGE
+*
+         SRNAMT = 'DSYEVR_2STAGE'
+         N = 1
+         INFOT = 1
+         CALL DSYEVR_2STAGE( '/', 'A', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSYEVR_2STAGE( 'V', 'A', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYEVR_2STAGE( 'N', '/', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYEVR_2STAGE( 'N', 'A', '/', -1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYEVR_2STAGE( 'N', 'A', 'U', -1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL DSYEVR_2STAGE( 'N', 'A', 'U', 2, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYEVR_2STAGE( 'N', 'V', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL DSYEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 0, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYEVR_2STAGE( 'N', 'I', 'U', 2, A, 2,
+     $                0.0D0, 0.0D0, 2, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 15
+         CALL DSYEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 0, IW, Q, 26*N, IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 18
+         CALL DSYEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 0, IW( 2*N+1 ), 10*N,
+     $                INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 20
+         CALL DSYEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 0,
+     $                INFO )
+         CALL CHKXER( 'DSYEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 12
+*
 *        DSYEV
 *
          SRNAMT = 'DSYEV '
@@ -610,6 +821,29 @@
          CALL DSYEV( 'N', 'U', 1, A, 1, X, W, 1, INFO )
          CALL CHKXER( 'DSYEV ', INFOT, NOUT, LERR, OK )
          NT = NT + 5
+*
+*        DSYEV_2STAGE
+*
+         SRNAMT = 'DSYEV_2STAGE '
+         INFOT = 1
+         CALL DSYEV_2STAGE( '/', 'U', 0, A, 1, X, W, 1, INFO )
+         CALL CHKXER( 'DSYEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSYEV_2STAGE( 'V', 'U', 0, A, 1, X, W, 1, INFO )
+         CALL CHKXER( 'DSYEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYEV_2STAGE( 'N', '/', 0, A, 1, X, W, 1, INFO )
+         CALL CHKXER( 'DSYEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYEV_2STAGE( 'N', 'U', -1, A, 1, X, W, 1, INFO )
+         CALL CHKXER( 'DSYEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYEV_2STAGE( 'N', 'U', 2, A, 1, X, W, 3, INFO )
+         CALL CHKXER( 'DSYEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYEV_2STAGE( 'N', 'U', 1, A, 1, X, W, 1, INFO )
+         CALL CHKXER( 'DSYEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         NT = NT + 6
 *
 *        DSYEVX
 *
@@ -662,6 +896,75 @@
      $                M, X, Z, 1, W, 0, IW, I3, INFO )
          CALL CHKXER( 'DSYEVX', INFOT, NOUT, LERR, OK )
          NT = NT + 12
+*
+*        DSYEVX_2STAGE
+*
+         SRNAMT = 'DSYEVX_2STAGE'
+         INFOT = 1
+         CALL DSYEVX_2STAGE( '/', 'A', 'U', 0, A, 1,
+     $                 0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSYEVX_2STAGE( 'V', 'A', 'U', 0, A, 1,
+     $                 0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYEVX_2STAGE( 'N', '/', 'U', 0, A, 1,
+     $                0.0D0, 1.0D0, 1, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYEVX_2STAGE( 'N', 'A', '/', 0, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, IW, I3, INFO )
+         INFOT = 4
+         CALL DSYEVX_2STAGE( 'N', 'A', 'U', -1, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL DSYEVX_2STAGE( 'N', 'A', 'U', 2, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 16, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYEVX_2STAGE( 'N', 'V', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 8, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL DSYEVX_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 8, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL DSYEVX_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 2, 1, 0.0D0,
+     $                M, X, Z, 1, W, 8, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYEVX_2STAGE( 'N', 'I', 'U', 2, A, 2,
+     $                0.0D0, 0.0D0, 2, 1, 0.0D0,
+     $                M, X, Z, 1, W, 16, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYEVX_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 2, 0.0D0,
+     $                M, X, Z, 1, W, 8, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 15
+         CALL DSYEVX_2STAGE( 'N', 'A', 'U', 2, A, 2,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 0, W, 16, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 17
+         CALL DSYEVX_2STAGE( 'N', 'A', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSYEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 13
 *
 *        DSPEVD
 *
@@ -786,6 +1089,47 @@
          CALL CHKXER( 'DSBTRD', INFOT, NOUT, LERR, OK )
          NT = NT + 6
 *
+*        DSYTRD_SB2ST
+*
+         SRNAMT = 'DSYTRD_SB2ST'
+         INFOT = 1
+         CALL DSYTRD_SB2ST( '/', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRD_SB2ST( 'N', '/', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRD_SB2ST( 'N', 'H', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYTRD_SB2ST( 'N', 'N', '/', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTRD_SB2ST( 'N', 'N', 'U', -1, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYTRD_SB2ST( 'N', 'N', 'U', 0, -1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYTRD_SB2ST( 'N', 'N', 'U', 0, 1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL DSYTRD_SB2ST( 'N', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 0, W, 1, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL DSYTRD_SB2ST( 'N', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 0, INFO )
+         CALL CHKXER( 'DSYTRD_SB2ST', INFOT, NOUT, LERR, OK )
+         NT = NT + 9
+*
 *        DSBEVD
 *
          SRNAMT = 'DSBEVD'
@@ -829,6 +1173,60 @@
          CALL CHKXER( 'DSBEVD', INFOT, NOUT, LERR, OK )
          NT = NT + 11
 *
+*        DSBEVD_2STAGE
+*
+         SRNAMT = 'DSBEVD_2STAGE'
+         INFOT = 1
+         CALL DSBEVD_2STAGE( '/', 'U', 0, 0, A, 1, X, Z, 1, W,
+     $                                        1, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSBEVD_2STAGE( 'V', 'U', 0, 0, A, 1, X, Z, 1, W,
+     $                                        1, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSBEVD_2STAGE( 'N', '/', 0, 0, A, 1, X, Z, 1, W,
+     $                                        1, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSBEVD_2STAGE( 'N', 'U', -1, 0, A, 1, X, Z, 1, W,
+     $                                         1, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSBEVD_2STAGE( 'N', 'U', 0, -1, A, 1, X, Z, 1, W,
+     $                                         1, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL DSBEVD_2STAGE( 'N', 'U', 2, 1, A, 1, X, Z, 1, W,
+     $                                        4, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 9
+*         CALL DSBEVD_2STAGE( 'V', 'U', 2, 1, A, 2, X, Z, 1, W,
+*     $                                      25, IW, 12, INFO )
+*         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL DSBEVD_2STAGE( 'N', 'U', 1, 0, A, 1, X, Z, 1, W,
+     $                                        0, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL DSBEVD_2STAGE( 'N', 'U', 2, 0, A, 1, X, Z, 1, W,
+     $                                        3, IW, 1, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 11
+*         CALL DSBEVD_2STAGE( 'V', 'U', 2, 0, A, 1, X, Z, 2, W,
+*     $                                      18, IW, 12, INFO )
+*         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL DSBEVD_2STAGE( 'N', 'U', 1, 0, A, 1, X, Z, 1, W,
+     $                                        1, IW, 0, INFO )
+         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 13
+*         CALL DSBEVD_2STAGE( 'V', 'U', 2, 0, A, 1, X, Z, 2, W,
+*     $                                      25, IW, 11, INFO )
+*         CALL CHKXER( 'DSBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         NT = NT + 12
+         NT = NT + 9
+*
 *        DSBEV
 *
          SRNAMT = 'DSBEV '
@@ -852,6 +1250,35 @@
          CALL CHKXER( 'DSBEV ', INFOT, NOUT, LERR, OK )
          NT = NT + 6
 *
+*        DSBEV_2STAGE
+*
+         SRNAMT = 'DSBEV_2STAGE '
+         INFOT = 1
+         CALL DSBEV_2STAGE( '/', 'U', 0, 0, A, 1, X, Z, 1, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSBEV_2STAGE( 'V', 'U', 0, 0, A, 1, X, Z, 1, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSBEV_2STAGE( 'N', '/', 0, 0, A, 1, X, Z, 1, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSBEV_2STAGE( 'N', 'U', -1, 0, A, 1, X, Z, 1, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSBEV_2STAGE( 'N', 'U', 0, -1, A, 1, X, Z, 1, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL DSBEV_2STAGE( 'N', 'U', 2, 1, A, 1, X, Z, 1, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL DSBEV_2STAGE( 'N', 'U', 2, 0, A, 1, X, Z, 0, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL DSBEV_2STAGE( 'N', 'U', 0, 0, A, 1, X, Z, 1, W, 0, INFO )
+         CALL CHKXER( 'DSBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         NT = NT + 8
+*
 *        DSBEVX
 *
          SRNAMT = 'DSBEVX'
@@ -866,6 +1293,7 @@
          INFOT = 3
          CALL DSBEVX( 'N', 'A', '/', 0, 0, A, 1, Q, 1, 0.0D0, 0.0D0, 0,
      $                0, 0.0D0, M, X, Z, 1, W, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL DSBEVX( 'N', 'A', 'U', -1, 0, A, 1, Q, 1, 0.0D0, 0.0D0, 0,
      $                0, 0.0D0, M, X, Z, 1, W, IW, I3, INFO )
@@ -906,6 +1334,72 @@
          CALL DSBEVX( 'V', 'A', 'U', 2, 0, A, 1, Q, 2, 0.0D0, 0.0D0, 0,
      $                0, 0.0D0, M, X, Z, 1, W, IW, I3, INFO )
          CALL CHKXER( 'DSBEVX', INFOT, NOUT, LERR, OK )
+         NT = NT + 13
+*
+*        DSBEVX_2STAGE
+*
+         SRNAMT = 'DSBEVX_2STAGE'
+         INFOT = 1
+         CALL DSBEVX_2STAGE( '/', 'A', 'U', 0, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL DSBEVX_2STAGE( 'V', 'A', 'U', 0, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSBEVX_2STAGE( 'N', '/', 'U', 0, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSBEVX_2STAGE( 'N', 'A', '/', 0, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSBEVX_2STAGE( 'N', 'A', 'U', -1, 0, A, 1, Q, 1, 0.0D0,
+     $           0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSBEVX_2STAGE( 'N', 'A', 'U', 0, -1, A, 1, Q, 1, 0.0D0,
+     $           0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSBEVX_2STAGE( 'N', 'A', 'U', 2, 1, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 9
+*         CALL DSBEVX_2STAGE( 'V', 'A', 'U', 2, 0, A, 1, Q, 1, 0.0D0,
+*     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 2, W, 0, IW, I3, INFO )
+*         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL DSBEVX_2STAGE( 'N', 'V', 'U', 1, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+         CALL DSBEVX_2STAGE( 'N', 'I', 'U', 1, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+         CALL DSBEVX_2STAGE( 'N', 'I', 'U', 1, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 2, 1, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL DSBEVX_2STAGE( 'N', 'I', 'U', 2, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 2, 1, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL DSBEVX_2STAGE( 'N', 'I', 'U', 1, 0, A, 1, Q, 1, 0.0D0,
+     $          0.0D0, 1, 2, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 18
+*         CALL DSBEVX_2STAGE( 'V', 'A', 'U', 2, 0, A, 1, Q, 2, 0.0D0,
+*     $          0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+*         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 20
+         CALL DSBEVX_2STAGE( 'N', 'A', 'U', 0, 0, A, 1, Q, 1, 0.0D0,
+     $           0.0D0, 0, 0, 0.0D0, M, X, Z, 1, W, 0, IW, I3, INFO )
+         CALL CHKXER( 'DSBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+*         NT = NT + 15
          NT = NT + 13
       END IF
 *

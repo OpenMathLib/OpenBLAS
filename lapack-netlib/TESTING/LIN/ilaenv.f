@@ -2,20 +2,20 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3,
 *                        N4 )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*( * )    NAME, OPTS
 *       INTEGER            ISPEC, N1, N2, N3, N4
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -114,12 +114,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup aux_lin
 *
@@ -150,10 +150,10 @@
       INTEGER          FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3,
      $                 N4 )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    NAME, OPTS
@@ -184,7 +184,21 @@
 *
 *        Return a value from the common block.
 *
-         ILAENV = IPARMS( ISPEC )
+         IF ( NAME(2:6).EQ.'GEQR ' ) THEN
+            IF (N3.EQ.2) THEN
+               ILAENV = IPARMS ( 2 )
+            ELSE
+               ILAENV = IPARMS ( 1 )
+            END IF
+         ELSE IF ( NAME(2:6).EQ.'GELQ ' ) THEN
+            IF (N3.EQ.2) THEN
+               ILAENV = IPARMS ( 2 )
+            ELSE
+               ILAENV = IPARMS ( 1 )
+            END IF
+         ELSE
+            ILAENV = IPARMS( ISPEC )
+         END IF
 *
       ELSE IF( ISPEC.EQ.6 ) THEN
 *

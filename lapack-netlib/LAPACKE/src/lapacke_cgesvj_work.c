@@ -34,8 +34,8 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_cgesvj_work( int matrix_layout, char joba, char jobu,
-                                char jobv, lapack_int m, lapack_int n, 
-                                lapack_complex_float* a, lapack_int lda, 
+                                char jobv, lapack_int m, lapack_int n,
+                                lapack_complex_float* a, lapack_int lda,
                                 float* sva, lapack_int mv,
                                 lapack_complex_float* v, lapack_int ldv,
                                 lapack_complex_float* cwork, lapack_int lwork,
