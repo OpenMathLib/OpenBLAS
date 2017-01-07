@@ -4,7 +4,6 @@
 # 2017/07/01 Saar
 # removed zsymv and csymv from @blasobs, because these functions 
 # are now in lapack-3.7.0
-# added caxpyc and zaxpyc
 # added blas_thread_shutdown
 # added cblas_cgemm3m and cblas_zgemm3m
 # added somatcopy, simatcopy ...
@@ -34,7 +33,7 @@
 	       zhpr,zrotg,zscal,zswap,zsymm,zsyr2k,zsyrk,ztbmv,
 	       ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv,
 	       xerbla,
-	       saxpby,daxpby,caxpby,zaxpby,caxpyc,zaxpyc,
+	       saxpby,daxpby,caxpby,zaxpby,
 	       sgeadd,dgeadd,cgeadd,zgeadd, 
 		somatcopy,
 		simatcopy,
