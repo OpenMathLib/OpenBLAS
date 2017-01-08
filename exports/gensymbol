@@ -2,13 +2,16 @@
 
 # Changelog
 # 2017/07/01 Saar
-# removed zsymv and csymv from @blasobs, because these functions 
+# removed zsymv_ and csymv_ from @blasobs, because these functions 
 # are now in lapack-3.7.0
-# added blas_thread_shutdown
-# added cblas_cgemm3m and cblas_zgemm3m
-# added somatcopy, simatcopy ...
+# added blas_thread_shutdown_
+# added Cblas_cgemm3m and Cblas_zgemm3m
+# added somatcopy_, simatcopy_ ...
 # added new functions from lapack-3.7.0
 # added LAPACKE deprecated objs from lapack-3.7.0
+#
+# 2017/08/01 Saar
+# removed blas_thread_shutdown_
 #
 @blasobjs   = (
 	       caxpy,ccopy,cdotc,cdotu,cgbmv,cgemm,cgemv,cgerc,cgeru,
@@ -120,7 +123,6 @@
                            );
 
 @misc_underscore_objs = (
-		     blas_thread_shutdown,
                         );
 
 @lapackobjs = (
