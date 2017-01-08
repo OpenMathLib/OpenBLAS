@@ -4,6 +4,9 @@ while read OBJ; do
 	
 	if echo "$OBJ"|grep "_$" >/dev/null
 	then
+		[ "$OBJ" = "caxpyc_" ] && continue
+		[ "$OBJ" = "zaxpyc_" ] && continue
+		[ "$OBJ" = "blas_thread_shutdown_" ] && continue
 
 		O1=$(echo "$OBJ"|sed -e 's/_$//' )
 
@@ -13,6 +16,7 @@ while read OBJ; do
 		else
 			echo "$O1"
 		fi
+		continue
 	fi
 
 	if echo "$OBJ"|grep "^cblas" >/dev/null
@@ -24,6 +28,7 @@ while read OBJ; do
 		else
 			echo "$OBJ"
 		fi
+		continue
 	fi
 
 	if echo "$OBJ"|grep "^LAPACKE" >/dev/null
@@ -35,6 +40,7 @@ while read OBJ; do
 		else
 			echo "$OBJ"
 		fi
+		continue
 	fi
 
 	if echo "$OBJ"|grep "^lapack" >/dev/null
