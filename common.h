@@ -313,6 +313,10 @@ typedef int blasint;
 #if defined(OS_SUNOS)
 #define YIELDING	thr_yield()
 #endif
+	
+#if defined(OS_LINUX)
+#define YIELDING	usleep(1)
+#endif
 
 #if defined(OS_WINDOWS)
 #if defined(_MSC_VER) && !defined(__clang__)
