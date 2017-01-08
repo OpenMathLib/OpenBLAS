@@ -312,14 +312,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     SPLATI_D2_DP(tp4i, tp0i, tp1i);   \
 
 #define ZLOAD_X4_SCALE_GP()                                                               \
-    x0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(x + 0 * inc_x2)));      \
-    x0r = (v2f64) __msa_insert_d((v2i64) x0r,  1, *((long long *)(x + 1 * inc_x2)));      \
-    x1r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(x + 2 * inc_x2)));      \
-    x1r = (v2f64) __msa_insert_d((v2i64) x1r,  1, *((long long *)(x + 3 * inc_x2)));      \
-    x0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(x + 0 * inc_x2 + 1)));  \
-    x0i = (v2f64) __msa_insert_d((v2i64) x0i,  1, *((long long *)(x + 1 * inc_x2 + 1)));  \
-    x1i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(x + 2 * inc_x2 + 1)));  \
-    x1i = (v2f64) __msa_insert_d((v2i64) x1i,  1, *((long long *)(x + 3 * inc_x2 + 1)));  \
+    x0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(x + 0 * inc_x2)));       \
+    x0r = (v2f64) __msa_insert_d((v2i64) x0r,  1, *((BLASLONG *)(x + 1 * inc_x2)));       \
+    x1r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(x + 2 * inc_x2)));       \
+    x1r = (v2f64) __msa_insert_d((v2i64) x1r,  1, *((BLASLONG *)(x + 3 * inc_x2)));       \
+    x0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(x + 0 * inc_x2 + 1)));   \
+    x0i = (v2f64) __msa_insert_d((v2i64) x0i,  1, *((BLASLONG *)(x + 1 * inc_x2 + 1)));   \
+    x1i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(x + 2 * inc_x2 + 1)));   \
+    x1i = (v2f64) __msa_insert_d((v2i64) x1i,  1, *((BLASLONG *)(x + 3 * inc_x2 + 1)));   \
                                                                                           \
     tp4r   = alphar * x0r;                                                                \
     tp4r OP3 alphai * x0i;                                                                \
@@ -337,10 +337,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     SPLATI_D2_DP(tp5i, tp2i, tp3i);                                                       \
 
 #define ZLOAD_X2_SCALE_GP()                                                               \
-    x0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(x + 0 * inc_x2)));      \
-    x0r = (v2f64) __msa_insert_d((v2i64) x0r,  1, *((long long *)(x + 1 * inc_x2)));      \
-    x0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(x + 0 * inc_x2 + 1)));  \
-    x0i = (v2f64) __msa_insert_d((v2i64) x0i,  1, *((long long *)(x + 1 * inc_x2 + 1)));  \
+    x0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(x + 0 * inc_x2)));       \
+    x0r = (v2f64) __msa_insert_d((v2i64) x0r,  1, *((BLASLONG *)(x + 1 * inc_x2)));       \
+    x0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(x + 0 * inc_x2 + 1)));   \
+    x0i = (v2f64) __msa_insert_d((v2i64) x0i,  1, *((BLASLONG *)(x + 1 * inc_x2 + 1)));   \
                                                                                           \
     tp4r   = alphar * x0r;                                                                \
     tp4r OP3 alphai * x0i;                                                                \
@@ -377,182 +377,193 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     ILVRL_D2_DP(y0i, y0r, y0, y1);  \
     ST_DP2(y0, y1, y, 2);           \
 
-#define ZLOAD_Y4_GP()                                                                      \
-    y0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(y +  0 * inc_y2)));      \
-    y0r = (v2f64) __msa_insert_d((v2i64) y0r,  1, *((long long *)(y +  1 * inc_y2)));      \
-    y1r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(y +  2 * inc_y2)));      \
-    y1r = (v2f64) __msa_insert_d((v2i64) y1r,  1, *((long long *)(y +  3 * inc_y2)));      \
-    y0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(y +  0 * inc_y2 + 1)));  \
-    y0i = (v2f64) __msa_insert_d((v2i64) y0i,  1, *((long long *)(y +  1 * inc_y2 + 1)));  \
-    y1i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(y +  2 * inc_y2 + 1)));  \
-    y1i = (v2f64) __msa_insert_d((v2i64) y1i,  1, *((long long *)(y +  3 * inc_y2 + 1)));  \
+#define ZLOAD_Y4_GP()                                                                     \
+    y0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(y +  0 * inc_y2)));      \
+    y0r = (v2f64) __msa_insert_d((v2i64) y0r,  1, *((BLASLONG *)(y +  1 * inc_y2)));      \
+    y1r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(y +  2 * inc_y2)));      \
+    y1r = (v2f64) __msa_insert_d((v2i64) y1r,  1, *((BLASLONG *)(y +  3 * inc_y2)));      \
+    y0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(y +  0 * inc_y2 + 1)));  \
+    y0i = (v2f64) __msa_insert_d((v2i64) y0i,  1, *((BLASLONG *)(y +  1 * inc_y2 + 1)));  \
+    y1i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(y +  2 * inc_y2 + 1)));  \
+    y1i = (v2f64) __msa_insert_d((v2i64) y1i,  1, *((BLASLONG *)(y +  3 * inc_y2 + 1)));  \
 
-#define ZLOAD_Y2_GP()                                                                      \
-    y0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(y +  0 * inc_y2)));      \
-    y0r = (v2f64) __msa_insert_d((v2i64) y0r,  1, *((long long *)(y +  1 * inc_y2)));      \
-    y0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((long long *)(y +  0 * inc_y2 + 1)));  \
-    y0i = (v2f64) __msa_insert_d((v2i64) y0i,  1, *((long long *)(y +  1 * inc_y2 + 1)));  \
+#define ZLOAD_Y2_GP()                                                                     \
+    y0r = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(y +  0 * inc_y2)));      \
+    y0r = (v2f64) __msa_insert_d((v2i64) y0r,  1, *((BLASLONG *)(y +  1 * inc_y2)));      \
+    y0i = (v2f64) __msa_insert_d((v2i64) tp0r, 0, *((BLASLONG *)(y +  0 * inc_y2 + 1)));  \
+    y0i = (v2f64) __msa_insert_d((v2i64) y0i,  1, *((BLASLONG *)(y +  1 * inc_y2 + 1)));  \
 
-#define ZSTORE_Y4_GP()                                                      \
-    *((long long *)(y + 0 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 0);      \
-    *((long long *)(y + 1 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 1);      \
-    *((long long *)(y + 2 * inc_y2)) = __msa_copy_s_d((v2i64) y1r, 0);      \
-    *((long long *)(y + 3 * inc_y2)) = __msa_copy_s_d((v2i64) y1r, 1);      \
-    *((long long *)(y + 0 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 0);  \
-    *((long long *)(y + 1 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 1);  \
-    *((long long *)(y + 2 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y1i, 0);  \
-    *((long long *)(y + 3 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y1i, 1);  \
+#define ZSTORE_Y4_GP()                                                     \
+    *((BLASLONG *)(y + 0 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 0);      \
+    *((BLASLONG *)(y + 1 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 1);      \
+    *((BLASLONG *)(y + 2 * inc_y2)) = __msa_copy_s_d((v2i64) y1r, 0);      \
+    *((BLASLONG *)(y + 3 * inc_y2)) = __msa_copy_s_d((v2i64) y1r, 1);      \
+    *((BLASLONG *)(y + 0 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 0);  \
+    *((BLASLONG *)(y + 1 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 1);  \
+    *((BLASLONG *)(y + 2 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y1i, 0);  \
+    *((BLASLONG *)(y + 3 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y1i, 1);  \
 
-#define ZSTORE_Y2_GP()                                                      \
-    *((long long *)(y + 0 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 0);      \
-    *((long long *)(y + 1 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 1);      \
-    *((long long *)(y + 0 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 0);  \
-    *((long long *)(y + 1 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 1);  \
+#define ZSTORE_Y2_GP()                                                     \
+    *((BLASLONG *)(y + 0 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 0);      \
+    *((BLASLONG *)(y + 1 * inc_y2)) = __msa_copy_s_d((v2i64) y0r, 1);      \
+    *((BLASLONG *)(y + 0 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 0);  \
+    *((BLASLONG *)(y + 1 * inc_y2 + 1)) = __msa_copy_s_d((v2i64) y0i, 1);  \
 
-#define ZGEMV_N_MSA()             \
-    for (j = (n >> 2); j--;)      \
-    {                             \
-        ZLOAD_X4_SCALE()          \
-                                  \
-        k = 0;                    \
-        y = y_org;                \
-                                  \
-        for (i = (m >> 2); i--;)  \
-        {                         \
-            ZLOAD_Y4()            \
-            ZGEMV_N_4x4()         \
-            ZSTORE_Y4()           \
-                                  \
-            k += 2 * 4;           \
-            y += inc_y2 * 4;      \
-        }                         \
-                                  \
-        if (m & 2)                \
-        {                         \
-            ZLOAD_Y2()            \
-            ZGEMV_N_2x4()         \
-            ZSTORE_Y2()           \
-                                  \
-            k += 2 * 2;           \
-            y += inc_y2 * 2;      \
-        }                         \
-                                  \
-        if (m & 1)                \
-        {                         \
-            temp0_r = tp4r[0];    \
-            temp1_r = tp4r[1];    \
-            temp2_r = tp5r[0];    \
-            temp3_r = tp5r[1];    \
-                                  \
-            temp0_i = tp4i[0];    \
-            temp1_i = tp4i[1];    \
-            temp2_i = tp5i[0];    \
-            temp3_i = tp5i[1];    \
-                                  \
-            ZGEMV_N_1x4()         \
-            k += 2;               \
-            y += inc_y2;          \
-        }                         \
-                                  \
-        pa0 += 4 * lda2;          \
-        pa1 += 4 * lda2;          \
-        pa2 += 4 * lda2;          \
-        pa3 += 4 * lda2;          \
-                                  \
-        x += 4 * inc_x2;          \
-    }                             \
-                                  \
-    if (n & 2)                    \
-    {                             \
-        ZLOAD_X2_SCALE()          \
-                                  \
-        k = 0;                    \
-        y = y_org;                \
-                                  \
-        for (i = (m >> 2); i--;)  \
-        {                         \
-            ZLOAD_Y4()            \
-            ZGEMV_N_4x2()         \
-            ZSTORE_Y4()           \
-                                  \
-            k += 2 * 4;           \
-            y += inc_y2 * 4;      \
-        }                         \
-                                  \
-        if (m & 2)                \
-        {                         \
-            ZLOAD_Y2()            \
-            ZGEMV_N_2x2()         \
-            ZSTORE_Y2()           \
-                                  \
-            k += 2 * 2;           \
-            y += inc_y2 * 2;      \
-        }                         \
-                                  \
-        if (m & 1)                \
-        {                         \
-            temp0_r = tp4r[0];    \
-            temp1_r = tp4r[1];    \
-                                  \
-            temp0_i = tp4i[0];    \
-            temp1_i = tp4i[1];    \
-                                  \
-            ZGEMV_N_1x2()         \
-                                  \
-            k += 2;               \
-            y += inc_y2;          \
-        }                         \
-                                  \
-        pa0 += 2 * lda2;          \
-        pa1 += 2 * lda2;          \
-                                  \
-        x += 2 * inc_x2;          \
-    }                             \
-                                  \
-    if (n & 1)                    \
-    {                             \
-        ZLOAD_X1_SCALE()          \
-                                  \
-        k = 0;                    \
-        y = y_org;                \
-                                  \
-        for (i = (m >> 2); i--;)  \
-        {                         \
-            ZLOAD_Y4()            \
-            ZGEMV_N_4x1()         \
-            ZSTORE_Y4()           \
-                                  \
-            k += 2 * 4;           \
-            y += inc_y2 * 4;      \
-        }                         \
-                                  \
-        if (m & 2)                \
-        {                         \
-            ZLOAD_Y2()            \
-            ZGEMV_N_2x1()         \
-            ZSTORE_Y2()           \
-                                  \
-            k += 2 * 2;           \
-            y += inc_y2 * 2;      \
-        }                         \
-                                  \
-        if (m & 1)                \
-        {                         \
-            ZGEMV_N_1x1()         \
-                                  \
-            k += 2;               \
-            y += inc_y2;          \
-        }                         \
-                                  \
-        pa0 += lda2;              \
-        x += inc_x2;              \
-    }                             \
+#define ZGEMV_N_MSA()                        \
+    for (j = (n >> 2); j--;)                 \
+    {                                        \
+        ZLOAD_X4_SCALE()                     \
+                                             \
+        k = 0;                               \
+        k_pref = pref_offset;                \
+        y = y_org;                           \
+                                             \
+        for (i = (m >> 2); i--;)             \
+        {                                    \
+            PREFETCH(pa0 + k_pref + 8 + 0);  \
+            PREFETCH(pa0 + k_pref + 8 + 4);  \
+            PREFETCH(pa1 + k_pref + 8 + 0);  \
+            PREFETCH(pa1 + k_pref + 8 + 4);  \
+            PREFETCH(pa2 + k_pref + 8 + 0);  \
+            PREFETCH(pa2 + k_pref + 8 + 4);  \
+            PREFETCH(pa3 + k_pref + 8 + 0);  \
+            PREFETCH(pa3 + k_pref + 8 + 4);  \
+                                             \
+            ZLOAD_Y4()                       \
+            ZGEMV_N_4x4()                    \
+            ZSTORE_Y4()                      \
+                                             \
+            k += 2 * 4;                      \
+            k_pref += 2 * 4;                 \
+            y += inc_y2 * 4;                 \
+        }                                    \
+                                             \
+        if (m & 2)                           \
+        {                                    \
+            ZLOAD_Y2()                       \
+            ZGEMV_N_2x4()                    \
+            ZSTORE_Y2()                      \
+                                             \
+            k += 2 * 2;                      \
+            y += inc_y2 * 2;                 \
+        }                                    \
+                                             \
+        if (m & 1)                           \
+        {                                    \
+            temp0_r = tp4r[0];               \
+            temp1_r = tp4r[1];               \
+            temp2_r = tp5r[0];               \
+            temp3_r = tp5r[1];               \
+                                             \
+            temp0_i = tp4i[0];               \
+            temp1_i = tp4i[1];               \
+            temp2_i = tp5i[0];               \
+            temp3_i = tp5i[1];               \
+                                             \
+            ZGEMV_N_1x4()                    \
+            k += 2;                          \
+            y += inc_y2;                     \
+        }                                    \
+                                             \
+        pa0 += 4 * lda2;                     \
+        pa1 += 4 * lda2;                     \
+        pa2 += 4 * lda2;                     \
+        pa3 += 4 * lda2;                     \
+                                             \
+        x += 4 * inc_x2;                     \
+    }                                        \
+                                             \
+    if (n & 2)                               \
+    {                                        \
+        ZLOAD_X2_SCALE()                     \
+                                             \
+        k = 0;                               \
+        y = y_org;                           \
+                                             \
+        for (i = (m >> 2); i--;)             \
+        {                                    \
+            ZLOAD_Y4()                       \
+            ZGEMV_N_4x2()                    \
+            ZSTORE_Y4()                      \
+                                             \
+            k += 2 * 4;                      \
+            y += inc_y2 * 4;                 \
+        }                                    \
+                                             \
+        if (m & 2)                           \
+        {                                    \
+            ZLOAD_Y2()                       \
+            ZGEMV_N_2x2()                    \
+            ZSTORE_Y2()                      \
+                                             \
+            k += 2 * 2;                      \
+            y += inc_y2 * 2;                 \
+        }                                    \
+                                             \
+        if (m & 1)                           \
+        {                                    \
+            temp0_r = tp4r[0];               \
+            temp1_r = tp4r[1];               \
+                                             \
+            temp0_i = tp4i[0];               \
+            temp1_i = tp4i[1];               \
+                                             \
+            ZGEMV_N_1x2()                    \
+                                             \
+            k += 2;                          \
+            y += inc_y2;                     \
+        }                                    \
+                                             \
+        pa0 += 2 * lda2;                     \
+        pa1 += 2 * lda2;                     \
+                                             \
+        x += 2 * inc_x2;                     \
+    }                                        \
+                                             \
+    if (n & 1)                               \
+    {                                        \
+        ZLOAD_X1_SCALE()                     \
+                                             \
+        k = 0;                               \
+        y = y_org;                           \
+                                             \
+        for (i = (m >> 2); i--;)             \
+        {                                    \
+            ZLOAD_Y4()                       \
+            ZGEMV_N_4x1()                    \
+            ZSTORE_Y4()                      \
+                                             \
+            k += 2 * 4;                      \
+            y += inc_y2 * 4;                 \
+        }                                    \
+                                             \
+        if (m & 2)                           \
+        {                                    \
+            ZLOAD_Y2()                       \
+            ZGEMV_N_2x1()                    \
+            ZSTORE_Y2()                      \
+                                             \
+            k += 2 * 2;                      \
+            y += inc_y2 * 2;                 \
+        }                                    \
+                                             \
+        if (m & 1)                           \
+        {                                    \
+            ZGEMV_N_1x1()                    \
+                                             \
+            k += 2;                          \
+            y += inc_y2;                     \
+        }                                    \
+                                             \
+        pa0 += lda2;                         \
+        x += inc_x2;                         \
+    }                                        \
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
           FLOAT *A, BLASLONG lda2, FLOAT *x, BLASLONG inc_x2, FLOAT *y,
           BLASLONG inc_y2, FLOAT *buffer)
 {
-    BLASLONG i, j, k;
+    BLASLONG i, j, k, k_pref, pref_offset;
     FLOAT *y_org = y;
     FLOAT *pa0, *pa1, *pa2, *pa3;
     FLOAT temp0_r, temp1_r, temp2_r, temp3_r, temp0_i, temp1_i, temp2_i;
@@ -568,6 +579,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     lda2   = 2 * lda2;
     inc_x2 = 2 * inc_x2;
     inc_y2 = 2 * inc_y2;
+
+    pref_offset = (uintptr_t)A & (L1_DATA_LINESIZE - 1);
+    pref_offset = L1_DATA_LINESIZE - pref_offset;
+    pref_offset = pref_offset / sizeof(FLOAT);
 
     pa0 = A;
     pa1 = A + lda2;
