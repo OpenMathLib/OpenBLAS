@@ -276,6 +276,9 @@ static void* blas_thread_server(void *arg){
   unsigned int last_tick;
   void *buffer, *sa, *sb;
   blas_queue_t	*queue;
+
+blas_queue_t *tscq;
+
 #ifdef TIMING_DEBUG
   unsigned long start, stop;
 #endif
@@ -309,8 +312,11 @@ static void* blas_thread_server(void *arg){
 
       last_tick = (unsigned int)rpcc();
 
-      while (!thread_status[cpu].queue) {
+	pthread_mutex_lock  (&thread_status[cpu].lock);
+        tscq=thread_status[cpu].queue;
+	pthread_mutex_unlock  (&thread_status[cpu].lock);
 
+	while(!tscq) {
 	YIELDING;
 
 	if ((unsigned int)rpcc() - last_tick > thread_timeout) {
@@ -333,6 +339,9 @@ static void* blas_thread_server(void *arg){
 
 	  last_tick = (unsigned int)rpcc();
 	}
+	pthread_mutex_lock  (&thread_status[cpu].lock);
+        tscq=thread_status[cpu].queue;
+	pthread_mutex_unlock  (&thread_status[cpu].lock);
 
       }
 
@@ -351,7 +360,9 @@ static void* blas_thread_server(void *arg){
     if (queue) {
       int (*routine)(blas_arg_t *, void *, void *, void *, void *, BLASLONG) = queue -> routine;
 
+      pthread_mutex_lock  (&thread_status[cpu].lock);
       thread_status[cpu].queue = (blas_queue_t *)1;
+      pthread_mutex_unlock  (&thread_status[cpu].lock);
 
       sa = queue -> sa;
       sb = queue -> sb;
@@ -433,7 +444,10 @@ static void* blas_thread_server(void *arg){
       // thread is marked as done and other threads use them
       WMB;
 
+      pthread_mutex_lock  (&thread_status[cpu].lock);
       thread_status[cpu].queue = (blas_queue_t * volatile) ((long)thread_status[cpu].queue & 0);  /* Need a trick */
+      pthread_mutex_unlock  (&thread_status[cpu].lock);
+      
       WMB;
 
     }
@@ -613,6 +627,7 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 #endif
   BLASLONG i = 0;
   blas_queue_t *current = queue;
+  blas_queue_t *tsiq,*tspq;
 #if defined(OS_LINUX) && !defined(NO_AFFINITY) && !defined(PARAMTEST)
   int node  = get_node();
   int nodes = get_num_nodes();
@@ -660,15 +675,23 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 	}
       }
 #else
-      while(thread_status[i].queue) {
+      pthread_mutex_lock  (&thread_status[i].lock);
+      tsiq=thread_status[i].queue ;
+      pthread_mutex_unlock  (&thread_status[i].lock);
+      while(tsiq) {
 	i ++;
 	if (i >= blas_num_threads - 1) i = 0;
+        pthread_mutex_lock  (&thread_status[i].lock);
+        tsiq=thread_status[i].queue ;
+        pthread_mutex_unlock  (&thread_status[i].lock);
       }
 #endif
 
       queue -> assigned = i;
       WMB;
+      pthread_mutex_lock  (&thread_status[i].lock);
       thread_status[i].queue = queue;
+      pthread_mutex_unlock  (&thread_status[i].lock);
       WMB;
 
       queue = queue -> next;
@@ -689,11 +712,15 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 
       pos = current -> assigned;
 
-      if ((BLASULONG)thread_status[pos].queue > 1) {
+      pthread_mutex_lock  (&thread_status[pos].lock);
+      tspq=thread_status[pos].queue;
+      pthread_mutex_unlock  (&thread_status[pos].lock);
+
+      if ((BLASULONG)tspq > 1) {
+	pthread_mutex_lock  (&thread_status[pos].lock);
 
 	if (thread_status[pos].status == THREAD_STATUS_SLEEP) {
 
-	  pthread_mutex_lock  (&thread_status[pos].lock);
 
 #ifdef MONITOR
 	  num_suspend ++;
@@ -703,8 +730,9 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 	    thread_status[pos].status = THREAD_STATUS_WAKEUP;
 	    pthread_cond_signal(&thread_status[pos].wakeup);
 	  }
-	  pthread_mutex_unlock(&thread_status[pos].lock);
+
 	}
+	  pthread_mutex_unlock(&thread_status[pos].lock);
       }
 
       current = current -> next;
@@ -714,11 +742,22 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 }
 
 int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
+  blas_queue_t * tsqq;
 
     while ((num > 0) && queue) {
 
-      while(thread_status[queue -> assigned].queue) {
+      pthread_mutex_lock(&thread_status[queue->assigned].lock);
+      tsqq=thread_status[queue -> assigned].queue;
+      pthread_mutex_unlock(&thread_status[queue->assigned].lock);
+
+
+      while(tsqq) {
 	YIELDING;
+        pthread_mutex_lock(&thread_status[queue->assigned].lock);
+        tsqq=thread_status[queue -> assigned].queue;
+        pthread_mutex_unlock(&thread_status[queue->assigned].lock);
+
+
       };
 
       queue = queue -> next;

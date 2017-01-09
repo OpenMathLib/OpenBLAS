@@ -381,6 +381,16 @@ static int release_pos = 0;
 static int hot_alloc = 0;
 #endif
 
+/* Global lock for memory allocation */
+
+#if   defined(USE_PTHREAD_LOCK)
+static pthread_mutex_t    alloc_lock = PTHREAD_MUTEX_INITIALIZER;
+#elif defined(USE_PTHREAD_SPINLOCK)
+static pthread_spinlock_t alloc_lock = 0;
+#else
+static BLASULONG  alloc_lock = 0UL;
+#endif
+
 #ifdef ALLOC_MMAP
 
 static void alloc_mmap_free(struct release_t *release){
@@ -389,6 +399,8 @@ static void alloc_mmap_free(struct release_t *release){
     printf("OpenBLAS : munmap failed\n");
   }
 }
+
+
 
 #ifdef NO_WARMUP
 
@@ -406,9 +418,11 @@ static void *alloc_mmap(void *address){
   }
 
   if (map_address != (void *)-1) {
+    LOCK_COMMAND(&alloc_lock);
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
+    UNLOCK_COMMAND(&alloc_lock);
   }
 
 #ifdef OS_LINUX
@@ -550,12 +564,14 @@ static void *alloc_mmap(void *address){
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
   }
 #endif
+  LOCK_COMMAND(&alloc_lock);
 
   if (map_address != (void *)-1) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
   }
+  UNLOCK_COMMAND(&alloc_lock);
 
   return map_address;
 }
@@ -889,15 +905,6 @@ static void *alloc_hugetlbfile(void *address){
 }
 #endif
 
-/* Global lock for memory allocation */
-
-#if   defined(USE_PTHREAD_LOCK)
-static pthread_mutex_t    alloc_lock = PTHREAD_MUTEX_INITIALIZER;
-#elif defined(USE_PTHREAD_SPINLOCK)
-static pthread_spinlock_t alloc_lock = 0;
-#else
-static BLASULONG  alloc_lock = 0UL;
-#endif
 
 #ifdef SEEK_ADDRESS
 static BLASULONG base_address      = 0UL;
@@ -963,45 +970,41 @@ void *blas_memory_alloc(int procpos){
     NULL,
   };
   void *(**func)(void *address);
+  LOCK_COMMAND(&alloc_lock);
 
   if (!memory_initialized) {
 
-    LOCK_COMMAND(&alloc_lock);
-
-    if (!memory_initialized) {
-
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
-      for (position = 0; position < NUM_BUFFERS; position ++){
-	memory[position].addr   = (void *)0;
-	memory[position].pos    = -1;
-	memory[position].used   = 0;
-	memory[position].lock   = 0;
-      }
+    for (position = 0; position < NUM_BUFFERS; position ++){
+      memory[position].addr   = (void *)0;
+      memory[position].pos    = -1;
+      memory[position].used   = 0;
+      memory[position].lock   = 0;
+    }
 #endif
 
 #ifdef DYNAMIC_ARCH
-      gotoblas_dynamic_init();
+    gotoblas_dynamic_init();
 #endif
 
 #if defined(SMP) && defined(OS_LINUX) && !defined(NO_AFFINITY)
-      gotoblas_affinity_init();
+    gotoblas_affinity_init();
 #endif
 
 #ifdef SMP
-      if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
+    if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64)
 #ifndef DYNAMIC_ARCH
-      blas_set_parameter();
+    blas_set_parameter();
 #endif
 #endif
 
-      memory_initialized = 1;
-    }
+    memory_initialized = 1;
 
-    UNLOCK_COMMAND(&alloc_lock);
   }
+  UNLOCK_COMMAND(&alloc_lock);
 
 #ifdef DEBUG
   printf("Alloc Start ...\n");
@@ -1034,14 +1037,14 @@ void *blas_memory_alloc(int procpos){
   position = 0;
 
   do {
-    if (!memory[position].used) {
+/*    if (!memory[position].used) { */
 
       blas_lock(&memory[position].lock);
 
       if (!memory[position].used) goto allocation;
 
       blas_unlock(&memory[position].lock);
-    }
+/*    } */
 
     position ++;
 
@@ -1103,7 +1106,9 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
+    LOCK_COMMAND(&alloc_lock);
     memory[position].addr = map_address;
+    UNLOCK_COMMAND(&alloc_lock);
 
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)memory[position].addr, position);
@@ -1157,6 +1162,7 @@ void blas_memory_free(void *free_area){
 #endif
 
   position = 0;
+  LOCK_COMMAND(&alloc_lock);
 
   while ((memory[position].addr != free_area)
 	 && (position < NUM_BUFFERS)) position++;
@@ -1171,6 +1177,7 @@ void blas_memory_free(void *free_area){
   WMB;
 
   memory[position].used = 0;
+  UNLOCK_COMMAND(&alloc_lock);
 
 #ifdef DEBUG
   printf("Unmap Succeeded.\n\n");
@@ -1185,6 +1192,7 @@ void blas_memory_free(void *free_area){
   for (position = 0; position < NUM_BUFFERS; position++)
     printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
 #endif
+  UNLOCK_COMMAND(&alloc_lock);
 
   return;
 }
