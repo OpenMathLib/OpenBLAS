@@ -101,10 +101,10 @@ ZSCALKERNEL  = ../mips/zscal.c
 endif
 
 ifdef HAVE_MSA
-SSWAPKERNEL  = ../mips/sswap.c
-DSWAPKERNEL  = ../mips/dswap.c
-CSWAPKERNEL  = ../mips/cswap.c
-ZSWAPKERNEL  = ../mips/zswap.c
+SSWAPKERNEL  = ../mips/sswap_msa.c
+DSWAPKERNEL  = ../mips/dswap_msa.c
+CSWAPKERNEL  = ../mips/cswap_msa.c
+ZSWAPKERNEL  = ../mips/zswap_msa.c
 else
 SSWAPKERNEL  = ../mips/swap.c
 DSWAPKERNEL  = ../mips/swap.c
