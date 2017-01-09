@@ -381,15 +381,6 @@ static int release_pos = 0;
 static int hot_alloc = 0;
 #endif
 
-#ifdef ALLOC_MMAP
-
-static void alloc_mmap_free(struct release_t *release){
-
-  if (munmap(release -> address, BUFFER_SIZE)) {
-    printf("OpenBLAS : munmap failed\n");
-  }
-}
-
 /* Global lock for memory allocation */
 
 #if   defined(USE_PTHREAD_LOCK)
@@ -399,6 +390,17 @@ static pthread_spinlock_t alloc_lock = 0;
 #else
 static BLASULONG  alloc_lock = 0UL;
 #endif
+
+#ifdef ALLOC_MMAP
+
+static void alloc_mmap_free(struct release_t *release){
+
+  if (munmap(release -> address, BUFFER_SIZE)) {
+    printf("OpenBLAS : munmap failed\n");
+  }
+}
+
+
 
 #ifdef NO_WARMUP
 
