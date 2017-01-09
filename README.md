@@ -78,11 +78,7 @@ Please read GotoBLAS_01Readme.txt
 - **ARM Cortex-A57**: Experimental
 
 #### IBM zEnterprise System:
-- **Z13**: blas3 for double
-```
-     git checkout z13  
-     make USE_TRMM=1 
-```     
+- **Z13**: blas3 for double 
      
 
 ### Support OS:
