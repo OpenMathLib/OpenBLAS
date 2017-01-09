@@ -239,7 +239,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
 
   for (i = 1; i < DIVIDE_RATE; i++) {
-    buffer[i] = buffer[i - 1] + GEMM_Q * ((div_n + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1)) * COMPSIZE;
+    buffer[i] = buffer[i - 1] + GEMM_Q * (((div_n + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N - 1) * COMPSIZE;
   }
 
   for (xxx = n_from, bufferside = 0; xxx < n_to; xxx += div_n, bufferside ++) {
@@ -303,7 +303,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
       min_i = GEMM_P;
     } else
       if (min_i > GEMM_P) {
-	min_i = ((min_i + 1) / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
+	min_i = (((min_i + 1) / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
       }
 
       ICOPY_OPERATION(k, min_i, a, lda, 0, is, sa);
@@ -420,7 +420,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   mn = MIN(m, n);
 
-  init_bk = (mn / 2 + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+  init_bk = ((mn / 2 + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
   if (init_bk > GEMM_Q) init_bk = GEMM_Q;
 
   if (init_bk <= GEMM_UNROLL_N) {
@@ -459,11 +459,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   while (is < mn) {
 
-    width  = (FORMULA1(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+    width  = ((FORMULA1(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
     if (width > mn - is - bk) width = mn - is - bk;
 
     if (width < bk) {
-      next_bk = (FORMULA2(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N) & ~(GEMM_UNROLL_N - 1);
+      next_bk = ((FORMULA2(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
 
       if (next_bk > bk) next_bk = bk;
 
@@ -594,11 +594,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     bk = mn - is;
     if (bk > next_bk) bk = next_bk;
 
-    width  = (FORMULA1(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+    width  = ((FORMULA1(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
     if (width > mn - is - bk) width = mn - is - bk;
 
     if (width < bk) {
-      next_bk = (FORMULA2(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N) & ~(GEMM_UNROLL_N - 1);
+      next_bk = ((FORMULA2(m, n, is, bk, args -> nthreads) + GEMM_UNROLL_N)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
       if (next_bk > bk) next_bk = bk;
     }
 
@@ -676,7 +676,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   mn = MIN(m, n);
 
-  init_bk = (mn / 2 + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+  init_bk = ((mn / 2 + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
   if (init_bk > GEMM_Q) init_bk = GEMM_Q;
 
   if (init_bk <= GEMM_UNROLL_N) {
@@ -685,14 +685,14 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   }
 
   width = FORMULA1(m, n, 0, init_bk, args -> nthreads);
-  width = (width + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+  width = ((width + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
   if (width > n - init_bk) width = n - init_bk;
 
   if (width < init_bk) {
     BLASLONG temp;
 
     temp = FORMULA2(m, n, 0, init_bk, args -> nthreads);
-    temp = (temp + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+    temp = ((temp + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
 
     if (temp < GEMM_UNROLL_N) temp = GEMM_UNROLL_N;
     if (temp < init_bk) init_bk = temp;
@@ -717,12 +717,12 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   while (is < mn) {
 
     width  = FORMULA1(m, n, is, bk, args -> nthreads);
-    width = (width + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+    width = ((width + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
 
     if (width < bk) {
 
       next_bk = FORMULA2(m, n, is, bk, args -> nthreads);
-      next_bk = (next_bk + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+      next_bk = ((next_bk + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
 
       if (next_bk > bk) next_bk = bk;
 #if 0
@@ -852,11 +852,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     if (bk > next_bk) bk = next_bk;
 
     width  = FORMULA1(m, n, is, bk, args -> nthreads);
-    width = (width + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+    width = ((width + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
 
     if (width < bk) {
       next_bk = FORMULA2(m, n, is, bk, args -> nthreads);
-      next_bk = (next_bk + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+      next_bk = ((next_bk + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
 
       if (next_bk > bk) next_bk = bk;
 #if 0
