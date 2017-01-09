@@ -420,6 +420,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_arm64.h"
 #endif
 
+#ifdef ARCH_ZARCH
+#include "common_zarch.h"
+#endif
+
 #ifndef ASSEMBLER
 #ifdef OS_WINDOWS
 typedef char env_var_t[MAX_PATH];

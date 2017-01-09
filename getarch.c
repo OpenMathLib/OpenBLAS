@@ -907,6 +907,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OPENBLAS_SUPPORTED
 #endif
 
+#if defined(__zarch__) || defined(__s390x__)
+#define ZARCH
+#include "cpuid_zarch.c"
+#define OPENBLAS_SUPPORTED
+#endif
+
 #ifdef INTEL_AMD
 #include "cpuid_x86.c"
 #define OPENBLAS_SUPPORTED
@@ -1006,7 +1012,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -1114,7 +1120,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif

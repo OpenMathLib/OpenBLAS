@@ -36,6 +36,10 @@ ifeq ($(CORE), POWER8)
 USE_TRMM = 1
 endif
 
+ifeq ($(CORE), Z13)
+USE_TRMM = 1
+endif
+
 
 
 
