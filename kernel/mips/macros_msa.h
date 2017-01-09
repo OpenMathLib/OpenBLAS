@@ -722,6 +722,31 @@ inline static void prefetch_load_lf(unsigned char *src)
     MUL2(in4, in5, in6, in7, out2, out3);             \
 }
 
+/* Description : Multiplication of pairs of vectors and added in output
+   Arguments   : Inputs  - in0, in1, vec, out0, out1
+                 Outputs - out0, out1
+   Details     : Each element from 'in0' is multiplied with elements from 'vec'
+                 and the result is added to 'out0'
+*/
+#define FMADD2(in0, in1, vec, inout0, inout1)  \
+{                                              \
+    inout0 += in0 * vec;                       \
+    inout1 += in1 * vec;                       \
+}
+#define FMADD3(in0, in1, in2, vec,      \
+               inout0, inout1, inout2)  \
+{                                       \
+    inout0 += in0 * vec;                \
+    inout1 += in1 * vec;                \
+    inout2 += in2 * vec;                \
+}
+#define FMADD4(in0, in1, in2, in3, vec,         \
+               inout0, inout1, inout2, inout3)  \
+{                                               \
+    FMADD2(in0, in1, vec, inout0, inout1);      \
+    FMADD2(in2, in3, vec, inout2, inout3);      \
+}
+
 /* Description : Addition of 2 pairs of variables
    Arguments   : Inputs  - in0, in1, in2, in3
                  Outputs - out0, out1
