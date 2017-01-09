@@ -189,7 +189,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	min_i = GEMM_P;
       } else
 	if (min_i > GEMM_P) {
-	  min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	  min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	}
 
 #ifndef LOWER
@@ -230,7 +230,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	  min_i = GEMM_P;
 	} else
 	  if (min_i > GEMM_P) {
-	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	    min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	  }
 
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
@@ -245,7 +245,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	min_i = GEMM_P;
       } else
 	if (min_i > GEMM_P) {
-	  min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	  min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	}
 
       if (m_start >= js) {
@@ -284,7 +284,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	  min_i = GEMM_P;
 	} else
 	  if (min_i > GEMM_P) {
-	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	    min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	  }
 
 	ICOPY_OPERATION(min_l, min_i, b, ldb, ls, is, sa);
@@ -322,7 +322,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	  min_i = GEMM_P;
 	} else
 	  if (min_i > GEMM_P) {
-	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	    min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	  }
 
 	aa = sb + min_l * (is - js) * COMPSIZE;
@@ -353,7 +353,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	min_i = GEMM_P;
       } else
 	if (min_i > GEMM_P) {
-	  min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	  min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	}
 
       aa = sb + min_l * (m_start - js) * COMPSIZE;
@@ -383,7 +383,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	  min_i = GEMM_P;
 	} else
 	  if (min_i > GEMM_P) {
-	    min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	    min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	  }
 
 	aa = sb + min_l * (is - js) * COMPSIZE;
