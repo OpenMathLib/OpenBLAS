@@ -1,2 +1,4 @@
 include $(KERNELDIR)/KERNEL.CORTEXA57
 
+DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_vulcan.S
+
