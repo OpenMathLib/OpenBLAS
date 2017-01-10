@@ -32,13 +32,15 @@
 #define CPU_CORTEXA57       	2
 #define CPU_VULCAN       	3
 #define CPU_THUNDERX    	4
+#define CPU_THUNDERX2T99   	5
 
 static char *cpuname[] = {
   "UNKNOWN",
   "ARMV8" ,
   "CORTEXA57",
   "VULCAN",
-  "THUNDERX"
+  "THUNDERX",
+  "THUNDERX2T99"
 };
 
 static char *cpuname_lower[] = {
@@ -46,7 +48,8 @@ static char *cpuname_lower[] = {
   "armv8" ,
   "cortexa57",
   "vulcan",
-  "thunderx"
+  "thunderx",
+  "thunderx2t99"
 };
 
 int get_feature(char *search)
@@ -117,6 +120,8 @@ int detect(void)
 			return CPU_VULCAN;
 		else if (strstr(cpu_part, "0x0a1") && strstr(cpu_implementer, "0x43"))
 			return CPU_THUNDERX;
+		else if (strstr(cpu_part, "0xFFF") && strstr(cpu_implementer, "0x43")) /* TODO */
+			return CPU_THUNDERX2T99;
 	}
 
 	p = (char *) NULL ;
@@ -240,6 +245,28 @@ void get_cpuconfig(void)
 			printf("#define DTB_DEFAULT_ENTRIES 64\n");
 			printf("#define DTB_SIZE 4096\n");
 			printf("#define L2_ASSOCIATIVE 16\n");
+			break;
+
+		case CPU_THUNDERX2T99:
+			printf("#define VULCAN                        \n");
+			printf("#define HAVE_VFP                      \n");
+			printf("#define HAVE_VFPV3                    \n");
+			printf("#define HAVE_NEON                     \n");
+			printf("#define HAVE_VFPV4                    \n");
+			printf("#define L1_CODE_SIZE         32768    \n");
+			printf("#define L1_CODE_LINESIZE     64       \n");
+			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
+			printf("#define L1_DATA_SIZE         32768    \n");
+			printf("#define L1_DATA_LINESIZE     64       \n");
+			printf("#define L1_DATA_ASSOCIATIVE  8        \n");
+			printf("#define L2_SIZE              262144   \n");
+			printf("#define L2_LINESIZE          64       \n");
+			printf("#define L2_ASSOCIATIVE       8        \n");
+			printf("#define L3_SIZE              33554432 \n");
+			printf("#define L3_LINESIZE          64       \n");
+			printf("#define L3_ASSOCIATIVE       32       \n");
+			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+			printf("#define DTB_SIZE             4096     \n");
 			break;
 	}
 }

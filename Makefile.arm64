@@ -18,3 +18,8 @@ ifeq ($(CORE), THUNDERX)
 CCOMMON_OPT += -mtune=thunderx -mcpu=thunderx
 FCOMMON_OPT += -mtune=thunderx -mcpu=thunderx
 endif
+
+ifeq ($(CORE), THUNDERX2T99)
+CCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
+FCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
+endif
