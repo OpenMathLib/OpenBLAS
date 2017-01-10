@@ -239,7 +239,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
 
   for (i = 1; i < DIVIDE_RATE; i++) {
-    buffer[i] = buffer[i - 1] + GEMM_Q * (((div_n + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N - 1) * COMPSIZE;
+    buffer[i] = buffer[i - 1] + GEMM_Q * (((div_n + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N) * COMPSIZE;
   }
 
   for (xxx = n_from, bufferside = 0; xxx < n_to; xxx += div_n, bufferside ++) {
