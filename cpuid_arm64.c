@@ -31,19 +31,22 @@
 #define CPU_ARMV8       	1
 #define CPU_CORTEXA57       	2
 #define CPU_VULCAN       	3
+#define CPU_THUNDERX    	4
 
 static char *cpuname[] = {
   "UNKNOWN",
   "ARMV8" ,
-  "CORTEXA57"
-  "VULCAN"
+  "CORTEXA57",
+  "VULCAN",
+  "THUNDERX"
 };
 
 static char *cpuname_lower[] = {
   "unknown",
   "armv8" ,
-  "cortexa57"
-  "vulcan"
+  "cortexa57",
+  "vulcan",
+  "thunderx"
 };
 
 int get_feature(char *search)
@@ -89,9 +92,9 @@ int detect(void)
 
 	FILE *infile;
 	char buffer[512], *p, *cpu_part, *cpu_implementer;
-  	p = (char *) NULL ;
+	p = (char *) NULL ;
 
-  	infile = fopen("/proc/cpuinfo", "r");
+	infile = fopen("/proc/cpuinfo", "r");
 	while (fgets(buffer, sizeof(buffer), infile)) {
 
 		if (!strncmp("CPU part", buffer, 8)) {
@@ -109,6 +112,8 @@ int detect(void)
 			return CPU_CORTEXA57;
 		else if (strstr(cpu_part, "0x516") && strstr(cpu_implementer, "0x42"))
 			return CPU_VULCAN;
+		else if (strstr(cpu_part, "0x0a1") && strstr(cpu_implementer, "0x43"))
+			return CPU_THUNDERX;
 	}
 
 	p = (char *) NULL ;
@@ -220,6 +225,18 @@ void get_cpuconfig(void)
 			printf("#define L2_ASSOCIATIVE 16\n");
 			printf("#define DTB_DEFAULT_ENTRIES 64\n");
 			printf("#define DTB_SIZE 4096\n");
+			break;
+
+		case CPU_THUNDERX:
+			printf("#define ARMV8\n");
+			printf("#define THUNDERX\n");
+			printf("#define L1_DATA_SIZE 32768\n");
+			printf("#define L1_DATA_LINESIZE 128\n");
+			printf("#define L2_SIZE 16777216\n");
+			printf("#define L2_LINESIZE 128\n");
+			printf("#define DTB_DEFAULT_ENTRIES 64\n");
+			printf("#define DTB_SIZE 4096\n");
+			printf("#define L2_ASSOCIATIVE 16\n");
 			break;
 	}
 }
