@@ -91,18 +91,21 @@ int detect(void)
 #ifdef linux
 
 	FILE *infile;
-	char buffer[512], *p, *cpu_part, *cpu_implementer;
+	char buffer[512], *p, *cpu_part = NULL, *cpu_implementer = NULL;
 	p = (char *) NULL ;
 
 	infile = fopen("/proc/cpuinfo", "r");
 	while (fgets(buffer, sizeof(buffer), infile)) {
+		if ((cpu_part != NULL) && (cpu_implementer != NULL)) {
+			break;
+		}
 
-		if (!strncmp("CPU part", buffer, 8)) {
+		if ((cpu_part == NULL) && !strncmp("CPU part", buffer, 8)) {
 			cpu_part = strchr(buffer, ':') + 2;
-			break;
-		} else if (!strncmp("CPU implementer", buffer, 15)) {
+			cpu_part = strdup(cpu_part);
+		} else if ((cpu_implementer == NULL) && !strncmp("CPU implementer", buffer, 15)) {
 			cpu_implementer = strchr(buffer, ':') + 2;
-			break;
+			cpu_implementer = strdup(cpu_implementer);
 		}
 	}
 
