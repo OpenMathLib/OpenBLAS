@@ -42,15 +42,29 @@ CASUMKERNEL  = ../mips/asum.c
 ZASUMKERNEL  = ../mips/asum.c
 endif
 
+ifdef HAVE_MSA
+SAXPYKERNEL  = ../mips/saxpy_msa.c
+DAXPYKERNEL  = ../mips/daxpy_msa.c
+CAXPYKERNEL  = ../mips/caxpy_msa.c
+ZAXPYKERNEL  = ../mips/zaxpy_msa.c
+else
 SAXPYKERNEL  = ../mips/axpy.c
 DAXPYKERNEL  = ../mips/axpy.c
 CAXPYKERNEL  = ../mips/zaxpy.c
 ZAXPYKERNEL  = ../mips/zaxpy.c
+endif
 
+ifdef HAVE_MSA
+SCOPYKERNEL  = ../mips/scopy_msa.c
+DCOPYKERNEL  = ../mips/dcopy_msa.c
+CCOPYKERNEL  = ../mips/ccopy_msa.c
+ZCOPYKERNEL  = ../mips/zcopy_msa.c
+else
 SCOPYKERNEL  = ../mips/copy.c
 DCOPYKERNEL  = ../mips/copy.c
 CCOPYKERNEL  = ../mips/zcopy.c
 ZCOPYKERNEL  = ../mips/zcopy.c
+endif
 
 ifdef HAVE_MSA
 SDOTKERNEL   = ../mips/sdot_msa.c
@@ -74,15 +88,29 @@ DROTKERNEL   = ../mips/rot.c
 CROTKERNEL   = ../mips/zrot.c
 ZROTKERNEL   = ../mips/zrot.c
 
+ifdef HAVE_MSA
+SSCALKERNEL  = ../mips/sscal_msa.c
+DSCALKERNEL  = ../mips/dscal_msa.c
+CSCALKERNEL  = ../mips/cscal_msa.c
+ZSCALKERNEL  = ../mips/zscal_msa.c
+else
 SSCALKERNEL  = ../mips/scal.c
 DSCALKERNEL  = ../mips/scal.c
 CSCALKERNEL  = ../mips/zscal.c
 ZSCALKERNEL  = ../mips/zscal.c
+endif
 
+ifdef HAVE_MSA
+SSWAPKERNEL  = ../mips/sswap_msa.c
+DSWAPKERNEL  = ../mips/dswap_msa.c
+CSWAPKERNEL  = ../mips/cswap_msa.c
+ZSWAPKERNEL  = ../mips/zswap_msa.c
+else
 SSWAPKERNEL  = ../mips/swap.c
 DSWAPKERNEL  = ../mips/swap.c
 CSWAPKERNEL  = ../mips/zswap.c
 ZSWAPKERNEL  = ../mips/zswap.c
+endif
 
 ifdef HAVE_MSA
 SGEMVNKERNEL = ../mips/sgemv_n_msa.c
