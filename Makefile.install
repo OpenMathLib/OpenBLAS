@@ -44,8 +44,6 @@ install : 	lib.grd
 ifndef NO_CBLAS
 	@echo Generating cblas.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@sed 's/common/openblas_config/g' cblas.h > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas.h"
-	@-install -pm644 $(NETLIB_LAPACK_DIR)/CBLAS/include/cblas_mangling_with_flags.h.in "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas_mangling.h"
-
 endif
 
 ifndef NO_LAPACKE
