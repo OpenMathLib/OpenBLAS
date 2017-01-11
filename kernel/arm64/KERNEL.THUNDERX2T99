@@ -1,2 +1,8 @@
-include $(KERNELDIR)/KERNEL.VULCAN
+include $(KERNELDIR)/KERNEL.CORTEXA57
+
+ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
+DGEMMKERNEL    =  dgemm_kernel_8x4_thunderx2t99.S
+else
+DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
+endif
 
