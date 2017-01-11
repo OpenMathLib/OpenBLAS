@@ -315,7 +315,7 @@ typedef int blasint;
 #endif
 	
 #if defined(OS_LINUX)
-#define YIELDING	usleep(1)
+#define YIELDING	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
 #endif
 
 #if defined(OS_WINDOWS)
