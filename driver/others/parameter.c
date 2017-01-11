@@ -497,13 +497,13 @@ void blas_set_parameter(void){
   if (xgemm_p == 0) xgemm_p = 64;
 #endif
 
-  sgemm_p = (sgemm_p + SGEMM_UNROLL_M - 1) & ~(SGEMM_UNROLL_M - 1);
-  dgemm_p = (dgemm_p + DGEMM_UNROLL_M - 1) & ~(DGEMM_UNROLL_M - 1);
-  cgemm_p = (cgemm_p + CGEMM_UNROLL_M - 1) & ~(CGEMM_UNROLL_M - 1);
-  zgemm_p = (zgemm_p + ZGEMM_UNROLL_M - 1) & ~(ZGEMM_UNROLL_M - 1);
+  sgemm_p = ((sgemm_p + SGEMM_UNROLL_M - 1)/SGEMM_UNROLL_M) * SGEMM_UNROLL_M;
+  dgemm_p = ((dgemm_p + DGEMM_UNROLL_M - 1)/DGEMM_UNROLL_M) * DGEMM_UNROLL_M;
+  cgemm_p = ((cgemm_p + CGEMM_UNROLL_M - 1)/CGEMM_UNROLL_M) * CGEMM_UNROLL_M;
+  zgemm_p = ((zgemm_p + ZGEMM_UNROLL_M - 1)/ZGEMM_UNROLL_M) * ZGEMM_UNROLL_M;
 #ifdef QUAD_PRECISION
-  qgemm_p = (qgemm_p + QGEMM_UNROLL_M - 1) & ~(QGEMM_UNROLL_M - 1);
-  xgemm_p = (xgemm_p + XGEMM_UNROLL_M - 1) & ~(XGEMM_UNROLL_M - 1);
+  qgemm_p = ((qgemm_p + QGEMM_UNROLL_M - 1)/QGEMM_UNROLL_M) * QGEMM_UNROLL_M;
+  xgemm_p = ((xgemm_p + XGEMM_UNROLL_M - 1)/XGEMM_UNROLL_M) * XGEMM_UNROLL_M;
 #endif
 
   sgemm_r = (((BUFFER_SIZE - ((SGEMM_P * SGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SGEMM_Q *  4)) - 15) & ~15;
