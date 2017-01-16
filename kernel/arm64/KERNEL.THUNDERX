@@ -1,0 +1,6 @@
+include $(KERNELDIR)/KERNEL.ARMV8
+
+SDOTKERNEL=dot-thunderx.c
+DDOTKERNEL=ddot-thunderx.c
+DAXPYKERNEL=daxpy-thunderx.c
+

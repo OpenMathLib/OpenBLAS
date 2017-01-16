@@ -727,3 +727,26 @@ void blas_set_parameter(void){
 
 }
 #endif
+
+#if defined(ARCH_ARM64)
+
+#if defined(VULCAN) || defined(THUNDERX2T99)
+unsigned long dgemm_prefetch_size_a;
+unsigned long dgemm_prefetch_size_b;
+unsigned long dgemm_prefetch_size_c;
+#endif
+
+void blas_set_parameter(void)
+{
+#if defined(VULCAN) || defined(THUNDERX2T99)
+  dgemm_p = 160;
+  dgemm_q = 128;
+  dgemm_r = 4096;
+
+  dgemm_prefetch_size_a = 3584;
+  dgemm_prefetch_size_b = 512;
+  dgemm_prefetch_size_c = 128;
+#endif
+}
+
+#endif
