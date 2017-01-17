@@ -83,10 +83,17 @@ DNRM2KERNEL  = ../mips/nrm2.c
 CNRM2KERNEL  = ../mips/znrm2.c
 ZNRM2KERNEL  = ../mips/znrm2.c
 
+ifdef HAVE_MSA
+SROTKERNEL   = ../mips/srot_msa.c
+DROTKERNEL   = ../mips/drot_msa.c
+CROTKERNEL   = ../mips/crot_msa.c
+ZROTKERNEL   = ../mips/zrot_msa.c
+else
 SROTKERNEL   = ../mips/rot.c
 DROTKERNEL   = ../mips/rot.c
 CROTKERNEL   = ../mips/zrot.c
 ZROTKERNEL   = ../mips/zrot.c
+endif
 
 ifdef HAVE_MSA
 SSCALKERNEL  = ../mips/sscal_msa.c
