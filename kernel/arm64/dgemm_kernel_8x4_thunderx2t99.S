@@ -151,187 +151,164 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_I
-	ldur	q0, [pA]
-	ldur	q1, [pA, #16]
-
-	ldur	q8, [pB]
-	ldur	q9, [pB, #16]
+	ldp	q0, q1, [pA]
+	ldp	q8, q9, [pB]
+	ldp	q2, q3, [pA, #32]
+	ldp	q4, q5, [pA, #64]
+	ldp	q12, q13, [pB, #32]
+	ldp	q6, q7, [pA, #96]
 
 	fmul	v16.2d, v0.2d, v8.d[0]
 	fmul	v20.2d, v0.2d, v8.d[1]
-
 	fmul	v17.2d, v1.2d, v8.d[0]
 	fmul	v21.2d, v1.2d, v8.d[1]
 
-	ldp	q2, q3, [pA, #32]
-	fmul	v24.2d, v0.2d, v9.d[0]
-	ldp	q4, q5, [pA, #64]
-	fmul	v28.2d, v0.2d, v9.d[1]
+	add	pA, pA, #128
+	add	pB, pB, #64
 
+	fmul	v24.2d, v0.2d, v9.d[0]
+	fmul	v28.2d, v0.2d, v9.d[1]
 	fmul	v25.2d, v1.2d, v9.d[0]
 	fmul	v29.2d, v1.2d, v9.d[1]
 
-	ldur	q12, [pB, #32]
-	ldur	q13, [pB, #48]
+	prfm	PLDL1KEEP, [pA, A_PRE_SIZE]
+	prfm	PLDL1KEEP, [pA, A_PRE_SIZE_64]
 
 	fmul	v18.2d, v2.2d, v8.d[0]
 	fmul	v22.2d, v2.2d, v8.d[1]
-
-	ldur	q6, [pA, #96]
-	ldur	q7, [pA, #112]
-
-	add	pB, pB, #64
-	add	pA, pA, #128
-
 	fmul	v26.2d, v2.2d, v9.d[0]
 	fmul	v30.2d, v2.2d, v9.d[1]
 
 	fmul	v19.2d, v3.2d, v8.d[0]
 	fmul	v27.2d, v3.2d, v9.d[0]
-
-	prfm	PLDL1KEEP, [pA, A_PRE_SIZE]
-
 	fmul	v31.2d, v3.2d, v9.d[1]
 	fmul	v23.2d, v3.2d, v8.d[1]
-
-	prfm	PLDL1KEEP, [pA, A_PRE_SIZE_64]
 .endm
 
 .macro KERNEL8x4_M1_M2
+
+	ldp	q12, q13, [pB]
+	ldp	q4, q5, [pA]
+	ldp	q6, q7, [pA, #32]
+
 	fmla	v16.2d, v0.2d, v8.d[0]
 	fmla	v20.2d, v0.2d, v8.d[1]
-
-	ldp	q4, q5, [pA]
-
 	fmla	v24.2d, v0.2d, v9.d[0]
 	fmla	v28.2d, v0.2d, v9.d[1]
 
-	ldp	q12, q13, [pB]
+	prfm	PLDL1KEEP, [pA, A_PRE_SIZE]
 
 	fmla	v17.2d, v1.2d, v8.d[0]
 	fmla	v25.2d, v1.2d, v9.d[0]
-
-	prfm	PLDL1KEEP, [pA, A_PRE_SIZE_64]
-
 	fmla	v21.2d, v1.2d, v8.d[1]
 	fmla	v29.2d, v1.2d, v9.d[1]
 
+	prfm	PLDL1KEEP, [pA, A_PRE_SIZE_64]
+
 	fmla	v18.2d, v2.2d, v8.d[0]
 	fmla	v22.2d, v2.2d, v8.d[1]
-
-	prfm	PLDL1KEEP, [pA, A_PRE_SIZE]
-
 	fmla	v26.2d, v2.2d, v9.d[0]
 	fmla	v30.2d, v2.2d, v9.d[1]
+
+	prfm	PLDL1KEEP, [pA, #3840]
+
 	fmla	v19.2d, v3.2d, v8.d[0]
 	fmla	v23.2d, v3.2d, v8.d[1]
-
-	ldp	q6, q7, [pA, #32]
-
 	fmla	v27.2d, v3.2d, v9.d[0]
 	fmla	v31.2d, v3.2d, v9.d[1]
+
+
+	ldp	q8, q9, [pB, #32]
+	ldp	q0, q1, [pA, #64]
+	ldp	q2, q3, [pA, #96]
 
 	fmla	v16.2d, v4.2d, v12.d[0]
 	fmla	v20.2d, v4.2d, v12.d[1]
 	fmla	v24.2d, v4.2d, v13.d[0]
 	fmla	v28.2d, v4.2d, v13.d[1]
 
-	ldp	q0, q1, [pA, #64]
+	prfm	PLDL1KEEP, [pB, B_PRE_SIZE]
 
 	fmla	v17.2d, v5.2d, v12.d[0]
 	fmla	v25.2d, v5.2d, v13.d[0]
-
-	ldp	q8, q9, [pB, #32]
-	ldp	q2, q3, [pA, #96]
-
 	fmla	v21.2d, v5.2d, v12.d[1]
 	fmla	v29.2d, v5.2d, v13.d[1]
 
 	fmla	v18.2d, v6.2d, v12.d[0]
 	fmla	v22.2d, v6.2d, v12.d[1]
-
-	prfm	PLDL1KEEP, [pB, B_PRE_SIZE]
-
 	fmla	v26.2d, v6.2d, v13.d[0]
 	fmla	v30.2d, v6.2d, v13.d[1]
-
-	fmla	v19.2d, v7.2d, v12.d[0]
-	fmla	v23.2d, v7.2d, v12.d[1]
 
 	add	pB, pB, #64
 	add	pA, pA, #128
 
+	fmla	v19.2d, v7.2d, v12.d[0]
+	fmla	v23.2d, v7.2d, v12.d[1]
 	fmla	v27.2d, v7.2d, v13.d[0]
 	fmla	v31.2d, v7.2d, v13.d[1]
 .endm
 
 
 .macro KERNEL8x4_M1
+	ldp	q12, q13, [pB]
+	ldp	q4, q5, [pA]
+	ldp	q6, q7, [pA, #32]
+
 	fmla	v16.2d, v0.2d, v8.d[0]
 	fmla	v20.2d, v0.2d, v8.d[1]
-
-	ldp	q4, q5, [pA], #32
-
 	fmla	v24.2d, v0.2d, v9.d[0]
 	fmla	v28.2d, v0.2d, v9.d[1]
 
-	ldp	q12, q13, [pB]
-	add	pB, pB, #32
+	prfm	PLDL1KEEP, [pA, A_PRE_SIZE]
 
 	fmla	v17.2d, v1.2d, v8.d[0]
 	fmla	v25.2d, v1.2d, v9.d[0]
-
-	prfm	PLDL1KEEP, [pA, A_PRE_SIZE_64]
-
 	fmla	v21.2d, v1.2d, v8.d[1]
 	fmla	v29.2d, v1.2d, v9.d[1]
 
+	prfm	PLDL1KEEP, [pA, A_PRE_SIZE_64]
+
 	fmla	v18.2d, v2.2d, v8.d[0]
 	fmla	v22.2d, v2.2d, v8.d[1]
-
-	prfm	PLDL1KEEP, [pA, A_PRE_SIZE]
-
 	fmla	v26.2d, v2.2d, v9.d[0]
 	fmla	v30.2d, v2.2d, v9.d[1]
+
+	add	pB, pB, #32
+	add	pA, pA, #64
+
 	fmla	v19.2d, v3.2d, v8.d[0]
 	fmla	v23.2d, v3.2d, v8.d[1]
-
-	ldp	q6, q7, [pA], #32
-
 	fmla	v27.2d, v3.2d, v9.d[0]
 	fmla	v31.2d, v3.2d, v9.d[1]
 .endm
 
 .macro KERNEL8x4_M2
+	ldp	q8, q9, [pB]
+	ldp	q0, q1, [pA]
+	ldp	q2, q3, [pA, #32]
+
 	fmla	v16.2d, v4.2d, v12.d[0]
 	fmla	v20.2d, v4.2d, v12.d[1]
 	fmla	v24.2d, v4.2d, v13.d[0]
 	fmla	v28.2d, v4.2d, v13.d[1]
 
-	ldp	q0, q1, [pA], #32
+	prfm	PLDL1KEEP, [pB, B_PRE_SIZE]
 
 	fmla	v17.2d, v5.2d, v12.d[0]
 	fmla	v25.2d, v5.2d, v13.d[0]
-
-	ldp	q8, q9, [pB]
-	add	pB, pB, #32
-
 	fmla	v21.2d, v5.2d, v12.d[1]
 	fmla	v29.2d, v5.2d, v13.d[1]
 
 	fmla	v18.2d, v6.2d, v12.d[0]
 	fmla	v22.2d, v6.2d, v12.d[1]
-
-	prfm	PLDL1KEEP, [pB, B_PRE_SIZE]
-
 	fmla	v26.2d, v6.2d, v13.d[0]
 	fmla	v30.2d, v6.2d, v13.d[1]
 
+	add	pB, pB, #32
+	add	pA, pA, #64
+
 	fmla	v19.2d, v7.2d, v12.d[0]
 	fmla	v23.2d, v7.2d, v12.d[1]
-
-	ldp	q2, q3, [pA], #32
-
 	fmla	v27.2d, v7.2d, v13.d[0]
 	fmla	v31.2d, v7.2d, v13.d[1]
 .endm
@@ -342,12 +319,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v24.2d, v4.2d, v13.d[0]
 	fmla	v28.2d, v4.2d, v13.d[1]
 
+	prfm	PLDL1KEEP, [pB, B_PRE_SIZE]
+
 	fmla	v17.2d, v5.2d, v12.d[0]
 	fmla	v25.2d, v5.2d, v13.d[0]
 	fmla	v21.2d, v5.2d, v12.d[1]
 	fmla	v29.2d, v5.2d, v13.d[1]
-
-	prfm	PLDL1KEEP, [pB, B_PRE_SIZE]
 
 	fmla	v18.2d, v6.2d, v12.d[0]
 	fmla	v22.2d, v6.2d, v12.d[1]
@@ -361,42 +338,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_SUB
-	ldp	q0, q1, [pA], #32
-
-	ldur	q8, [pB]
-
-	fmla	v16.2d, v0.2d, v8.d[0]
-	fmla	v20.2d, v0.2d, v8.d[1]
-
-	ldur	q9, [pB, #16]
-	add	pB, pB, #32
-
-	fmla	v17.2d, v1.2d, v8.d[0]
-	fmla	v21.2d, v1.2d, v8.d[1]
-
-	ldp	q2, q3, [pA], #32
-
-	fmla	v24.2d, v0.2d, v9.d[0]
-	fmla	v28.2d, v0.2d, v9.d[1]
-
-	fmla	v25.2d, v1.2d, v9.d[0]
-	fmla	v29.2d, v1.2d, v9.d[1]
+	ldp	q0, q1, [pA]
+	ldp	q8, q9, [pB]
+	ldp	q2, q3, [pA, #32]
 
 	prfm	PLDL1KEEP, [pA, A_PRE_SIZE]
 
-	fmla	v18.2d, v2.2d, v8.d[0]
-	fmla	v22.2d, v2.2d, v8.d[1]
+	fmla	v16.2d, v0.2d, v8.d[0]
+	fmla	v20.2d, v0.2d, v8.d[1]
+	fmla	v17.2d, v1.2d, v8.d[0]
+	fmla	v21.2d, v1.2d, v8.d[1]
 
 	prfm	PLDL1KEEP, [pA, A_PRE_SIZE_64]
 
-	fmla	v26.2d, v2.2d, v9.d[0]
-	fmla	v30.2d, v2.2d, v9.d[1]
+	fmla	v24.2d, v0.2d, v9.d[0]
+	fmla	v28.2d, v0.2d, v9.d[1]
+	fmla	v25.2d, v1.2d, v9.d[0]
+	fmla	v29.2d, v1.2d, v9.d[1]
 
 	prfm	PLDL1KEEP, [pB, B_PRE_SIZE]
 
+	fmla	v18.2d, v2.2d, v8.d[0]
+	fmla	v22.2d, v2.2d, v8.d[1]
+	fmla	v26.2d, v2.2d, v9.d[0]
+	fmla	v30.2d, v2.2d, v9.d[1]
+
+	add	pB, pB, #32
+	add	pA, pA, #64
+
 	fmla	v19.2d, v3.2d, v8.d[0]
 	fmla	v27.2d, v3.2d, v9.d[0]
-
 	fmla	v31.2d, v3.2d, v9.d[1]
 	fmla	v23.2d, v3.2d, v8.d[1]
 .endm
