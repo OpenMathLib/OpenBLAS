@@ -15,6 +15,20 @@ lapack-netlib/make.inc
 lapack-netlib/lapacke/include/lapacke_mangling.h
 lapack-netlib/TESTING/testing_results.txt
 lapack-netlib/INSTALL/test*
+lapack-netlib/TESTING/xeigtstc
+lapack-netlib/TESTING/xeigtstd
+lapack-netlib/TESTING/xeigtsts
+lapack-netlib/TESTING/xeigtstz
+lapack-netlib/TESTING/xlintstc
+lapack-netlib/TESTING/xlintstd
+lapack-netlib/TESTING/xlintstds
+lapack-netlib/TESTING/xlintstrfc
+lapack-netlib/TESTING/xlintstrfd
+lapack-netlib/TESTING/xlintstrfs
+lapack-netlib/TESTING/xlintstrfz
+lapack-netlib/TESTING/xlintsts
+lapack-netlib/TESTING/xlintstz
+lapack-netlib/TESTING/xlintstzc
 *.so
 *.so.*
 *.a
@@ -70,3 +84,5 @@ test/zblat3
 build
 build.*
 *.swp
+benchmark/*.goto
+
