@@ -151,15 +151,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldur	q0, [pA]
 	ldur	q1, [pA, #16]
 
-	ldur	d8, [pB]
+	ldur	q8, [pB]
 
 	fmul	v16.4s, v0.4s, v8.s[0]
 	fmul	v20.4s, v0.4s, v8.s[1]
 
-	ldur	d10, [pB, #8]
-
-	fmul	v24.4s, v0.4s, v10.s[0]
-	fmul	v28.4s, v0.4s, v10.s[1]
+	fmul	v24.4s, v0.4s, v8.s[2]
+	fmul	v28.4s, v0.4s, v8.s[3]
 
 	ldur	q2, [pA, #32]
 	ldur	q3, [pA, #48]
@@ -170,31 +168,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldur	q4, [pA, #64]
 	ldur	q5, [pA, #80]
 
-	fmul	v25.4s, v1.4s, v10.s[0]
-	fmul	v29.4s, v1.4s, v10.s[1]
+	fmul	v25.4s, v1.4s, v8.s[2]
+	fmul	v29.4s, v1.4s, v8.s[3]
 
-	ldur	d12, [pB, #16]
+	ldur	q12, [pB, #16]
 
 	fmul	v18.4s, v2.4s, v8.s[0]
 	fmul	v22.4s, v2.4s, v8.s[1]
-
-	ldur	d14, [pB, #24]
-	add	pB, pB, #32
 
 	fmul	v19.4s, v3.4s, v8.s[0]
 	fmul	v23.4s, v3.4s, v8.s[1]
 
 	ldur	q6, [pA, #96]
 	ldur	q7, [pA, #112]
+
+	add	pB, pB, #32
 	add	pA, pA, #128
 
-	fmul	v26.4s, v2.4s, v10.s[0]
-	fmul	v30.4s, v2.4s, v10.s[1]
+	fmul	v26.4s, v2.4s, v8.s[2]
+	fmul	v30.4s, v2.4s, v8.s[3]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 
-	fmul	v27.4s, v3.4s, v10.s[0]
-	fmul	v31.4s, v3.4s, v10.s[1]
+	fmul	v27.4s, v3.4s, v8.s[2]
+	fmul	v31.4s, v3.4s, v8.s[3]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 .endm
@@ -212,33 +209,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v20.4s, v0.4s, v8.s[1]
 	fmla	v21.4s, v1.4s, v8.s[1]
 
-	ldur	d12, [pB]
+	ldur	q12, [pB]
 
 	fmla	v22.4s, v2.4s, v8.s[1]
 	fmla	v23.4s, v3.4s, v8.s[1]
 
-	ldur	d14, [pB, #8]
 	add	pB, pB, #16
 
-	fmla	v24.4s, v0.4s, v10.s[0]
-	fmla	v25.4s, v1.4s, v10.s[0]
+	fmla	v24.4s, v0.4s, v8.s[2]
+	fmla	v25.4s, v1.4s, v8.s[2]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 
-	fmla	v26.4s, v2.4s, v10.s[0]
-	fmla	v27.4s, v3.4s, v10.s[0]
+	fmla	v26.4s, v2.4s, v8.s[2]
+	fmla	v27.4s, v3.4s, v8.s[2]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 
-	fmla	v28.4s, v0.4s, v10.s[1]
-	fmla	v29.4s, v1.4s, v10.s[1]
+	fmla	v28.4s, v0.4s, v8.s[3]
+	fmla	v29.4s, v1.4s, v8.s[3]
 
 	ldur	q6, [pA, #32]
 	ldur	q7, [pA, #48]
 	add	pA, pA, #64
 
-	fmla	v30.4s, v2.4s, v10.s[1]
-	fmla	v31.4s, v3.4s, v10.s[1]
+	fmla	v30.4s, v2.4s, v8.s[3]
+	fmla	v31.4s, v3.4s, v8.s[3]
 .endm
 
 .macro KERNEL16x4_M2
@@ -254,70 +250,68 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v20.4s, v4.4s, v12.s[1]
 	fmla	v21.4s, v5.4s, v12.s[1]
 
-	ldur	d8, [pB]
+	ldur	q8, [pB]
 
 	fmla	v22.4s, v6.4s, v12.s[1]
 	fmla	v23.4s, v7.4s, v12.s[1]
 
-	ldur	d10, [pB, #8]
 	add	pB, pB, #16
 
-	fmla	v24.4s, v4.4s, v14.s[0]
-	fmla	v25.4s, v5.4s, v14.s[0]
+	fmla	v24.4s, v4.4s, v12.s[2]
+	fmla	v25.4s, v5.4s, v12.s[2]
 
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
-	fmla	v26.4s, v6.4s, v14.s[0]
-	fmla	v27.4s, v7.4s, v14.s[0]
+	fmla	v26.4s, v6.4s, v12.s[2]
+	fmla	v27.4s, v7.4s, v12.s[2]
 
 	ldur	q2, [pA, #32]
 	ldur	q3, [pA, #48]
 	add	pA, pA, #64
 
-	fmla	v28.4s, v4.4s, v14.s[1]
-	fmla	v29.4s, v5.4s, v14.s[1]
+	fmla	v28.4s, v4.4s, v12.s[3]
+	fmla	v29.4s, v5.4s, v12.s[3]
 
-	fmla	v30.4s, v6.4s, v14.s[1]
-	fmla	v31.4s, v7.4s, v14.s[1]
+	fmla	v30.4s, v6.4s, v12.s[3]
+	fmla	v31.4s, v7.4s, v12.s[3]
 .endm
 
 .macro KERNEL16x4_E
 	fmla	v16.4s, v4.4s, v12.s[0]
 	fmla	v20.4s, v4.4s, v12.s[1]
-	fmla	v24.4s, v4.4s, v14.s[0]
-	fmla	v28.4s, v4.4s, v14.s[1]
+	fmla	v24.4s, v4.4s, v12.s[2]
+	fmla	v28.4s, v4.4s, v12.s[3]
 
 	fmla	v17.4s, v5.4s, v12.s[0]
 	fmla	v21.4s, v5.4s, v12.s[1]
-	fmla	v25.4s, v5.4s, v14.s[0]
-	fmla	v29.4s, v5.4s, v14.s[1]
+	fmla	v25.4s, v5.4s, v12.s[2]
+	fmla	v29.4s, v5.4s, v12.s[3]
 
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
 	fmla	v18.4s, v6.4s, v12.s[0]
 	fmla	v22.4s, v6.4s, v12.s[1]
-	fmla	v26.4s, v6.4s, v14.s[0]
-	fmla	v30.4s, v6.4s, v14.s[1]
+	fmla	v26.4s, v6.4s, v12.s[2]
+	fmla	v30.4s, v6.4s, v12.s[3]
 
 	fmla	v19.4s, v7.4s, v12.s[0]
 	fmla	v23.4s, v7.4s, v12.s[1]
-	fmla	v27.4s, v7.4s, v14.s[0]
-	fmla	v31.4s, v7.4s, v14.s[1]
+	fmla	v27.4s, v7.4s, v12.s[2]
+	fmla	v31.4s, v7.4s, v12.s[3]
 .endm
 
 .macro KERNEL16x4_SUB
 	ldur	q0, [pA]
 	ldur	q1, [pA, #16]
-	ldur	d8, [pB]
+	ldur	q8, [pB]
 
 	fmla	v16.4s, v0.4s, v8.s[0]
 	fmla	v20.4s, v0.4s, v8.s[1]
 
-	ldur	d10, [pB, #8]
 	add	pB, pB, #16
 
-	fmla	v24.4s, v0.4s, v10.s[0]
-	fmla	v28.4s, v0.4s, v10.s[1]
+	fmla	v24.4s, v0.4s, v8.s[2]
+	fmla	v28.4s, v0.4s, v8.s[3]
 
 	ldur	q2, [pA, #32]
 	ldur	q3, [pA, #48]
@@ -326,8 +320,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v17.4s, v1.4s, v8.s[0]
 	fmla	v21.4s, v1.4s, v8.s[1]
 
-	fmla	v25.4s, v1.4s, v10.s[0]
-	fmla	v29.4s, v1.4s, v10.s[1]
+	fmla	v25.4s, v1.4s, v8.s[2]
+	fmla	v29.4s, v1.4s, v8.s[3]
 
 	fmla	v18.4s, v2.4s, v8.s[0]
 	fmla	v22.4s, v2.4s, v8.s[1]
@@ -337,13 +331,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v19.4s, v3.4s, v8.s[0]
 	fmla	v23.4s, v3.4s, v8.s[1]
 
-	fmla	v26.4s, v2.4s, v10.s[0]
-	fmla	v30.4s, v2.4s, v10.s[1]
+	fmla	v26.4s, v2.4s, v8.s[2]
+	fmla	v30.4s, v2.4s, v8.s[3]
 
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
-	fmla	v27.4s, v3.4s, v10.s[0]
-	fmla	v31.4s, v3.4s, v10.s[1]
+	fmla	v27.4s, v3.4s, v8.s[2]
+	fmla	v31.4s, v3.4s, v8.s[3]
 .endm
 
 .macro SAVE16x4
