@@ -2,6 +2,8 @@ include $(KERNELDIR)/KERNEL.CORTEXA57
 
 DAXPYKERNEL=daxpy_thunderx2t99.S
 
+DDOTKERNEL=ddot_thunderx2t99.S
+
 ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
 DGEMMKERNEL    =  dgemm_kernel_8x4_thunderx2t99.S
 else
