@@ -1,6 +1,10 @@
 include $(KERNELDIR)/KERNEL.CORTEXA57
 
+ifndef SMP
 SNRM2KERNEL    = snrm2_thunderx2t99.S
+else
+SNRM2KERNEL    = nrm2_thunderx2t99_threaded.c
+endif
 CNRM2KERNEL    = cnrm2_thunderx2t99.S
 
 DAXPYKERNEL    = daxpy_thunderx2t99.S
