@@ -743,6 +743,10 @@ void blas_set_parameter(void)
   dgemm_q = 128;
   dgemm_r = 4096;
 
+  sgemm_p = 128;
+  sgemm_q = 352;
+  sgemm_r = 4096;
+
   dgemm_prefetch_size_a = 3584;
   dgemm_prefetch_size_b = 512;
   dgemm_prefetch_size_c = 128;

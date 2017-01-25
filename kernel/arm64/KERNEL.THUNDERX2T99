@@ -1,2 +1,25 @@
-include $(KERNELDIR)/KERNEL.VULCAN
+include $(KERNELDIR)/KERNEL.CORTEXA57
+
+SNRM2KERNEL    = snrm2_thunderx2t99.S
+CNRM2KERNEL    = cnrm2_thunderx2t99.S
+
+DAXPYKERNEL    = daxpy_thunderx2t99.S
+
+ifndef SMP
+DDOTKERNEL     = ddot_thunderx2t99.S
+else
+DDOTKERNEL     = ddot_thunderx2t99.c
+endif
+
+ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
+DGEMMKERNEL    = dgemm_kernel_8x4_thunderx2t99.S
+else
+DGEMMKERNEL    = dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
+endif
+
+ifeq ($(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N), 16x4)
+SGEMMKERNEL    =  sgemm_kernel_16x4_thunderx2t99.S
+else
+SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
+endif
 
