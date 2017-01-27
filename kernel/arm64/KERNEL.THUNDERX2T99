@@ -1,5 +1,7 @@
 include $(KERNELDIR)/KERNEL.CORTEXA57
 
+CASUMKERNEL    = casum_thunderx2t99.c
+
 SNRM2KERNEL    = snrm2_thunderx2t99.c
 CNRM2KERNEL    = cnrm2_thunderx2t99.S
 
