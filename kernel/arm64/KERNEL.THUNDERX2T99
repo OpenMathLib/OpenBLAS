@@ -1,19 +1,11 @@
 include $(KERNELDIR)/KERNEL.CORTEXA57
 
-ifndef SMP
-SNRM2KERNEL    = snrm2_thunderx2t99.S
-else
-SNRM2KERNEL    = nrm2_thunderx2t99_threaded.c
-endif
+SNRM2KERNEL    = snrm2_thunderx2t99.c
 CNRM2KERNEL    = cnrm2_thunderx2t99.S
 
 DAXPYKERNEL    = daxpy_thunderx2t99.S
 
-ifndef SMP
-DDOTKERNEL     = ddot_thunderx2t99.S
-else
-DDOTKERNEL     = ddot_thunderx2t99_threaded.c
-endif
+DDOTKERNEL     = ddot_thunderx2t99.c
 
 ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
 DGEMMKERNEL    = dgemm_kernel_8x4_thunderx2t99.S

@@ -45,9 +45,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LD1VY	"{v24.d}[0]"
 #define SZ	"8"
 
+#if defined(SMP)
 extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
 	BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
 	void *c, BLASLONG ldc, int (*function)(), int nthreads);
+#endif
 
 
 static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
@@ -211,6 +213,7 @@ static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	return(dot);
 }
 
+#if defined(SMP)
 static int ddot_thread_function(BLASLONG n, BLASLONG dummy0,
 	BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
 	BLASLONG inc_y, FLOAT *result, BLASLONG dummy3)
@@ -219,13 +222,17 @@ static int ddot_thread_function(BLASLONG n, BLASLONG dummy0,
 
 	return 0;
 }
+#endif
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
+#if defined(SMP)
 	int nthreads;
-	FLOAT dot = 0.0;
 	FLOAT dummy_alpha;
+#endif
+	FLOAT dot = 0.0;
 
+#if defined(SMP)
 	nthreads = num_cpu_avail(1);
 
 	if (inc_x == 0 || inc_y == 0)
@@ -253,6 +260,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 			ptr = (FLOAT *)(((char *)ptr) + sizeof(double) * 2);
 		}
 	}
+#else
+	dot = ddot_compute(n, x, inc_x, y, inc_y);
+#endif
 
 	return dot;
 }

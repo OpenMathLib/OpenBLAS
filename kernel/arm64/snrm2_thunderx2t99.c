@@ -30,11 +30,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <arm_neon.h>
 
+#if defined(SMP)
 extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
 	BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
 	void *c, BLASLONG ldc, int (*function)(), int nthreads);
+#endif
 
-#if !defined(DOUBLE)
 #define	N	"x0"	/* vector length */
 #define	X	"x1"	/* X vector address */
 #define	INC_X	"x2"	/* X stride */
@@ -197,9 +198,8 @@ static double nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 	return ret;
 }
-#else	//!defined(DOUBLE)
-#endif
 
+#if defined(SMP)
 static int nrm2_thread_function(BLASLONG n, BLASLONG dummy0,
 	BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *dummy3,
 	BLASLONG dummy4, FLOAT *result, BLASLONG dummy5)
@@ -208,17 +208,21 @@ static int nrm2_thread_function(BLASLONG n, BLASLONG dummy0,
 
 	return 0;
 }
+#endif
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
+#if defined(SMP)
 	int nthreads;
+	FLOAT dummy_alpha;
+#endif
 	FLOAT nrm2 = 0.0;
 	double nrm2_double = 0.0;
-	FLOAT dummy_alpha;
 
 	if (n <= 0 || inc_x <= 0) return 0.0;
 	if (n == 1) return fabs(x[0]);
 
+#if defined(SMP)
 	nthreads = num_cpu_avail(1);
 
 	if (n <= 10000)
@@ -243,6 +247,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 			ptr = (double *)(((char *)ptr) + sizeof(double) * 2);
 		}
 	}
+#else
+	nrm2_double = nrm2_compute(n, x, inc_x);
+#endif
 	nrm2 = sqrt(nrm2_double);
 
 	return nrm2;
