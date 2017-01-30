@@ -64,7 +64,7 @@ static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	"	mov	"INC_X", %[INCX_]		\n"
 	"	mov	"Y", %[Y_]			\n"
 	"	mov	"INC_Y", %[INCY_]		\n"
-	"	fmov	"DOTF", "REG0"		\n"
+	"	fmov	"DOTF", "REG0"			\n"
 	"	fmov	d1, "REG0"			\n"
 	"	fmov	d2, "REG0"			\n"
 	"	fmov	d3, "REG0"			\n"
@@ -74,20 +74,20 @@ static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	"	fmov	d7, "REG0"			\n"
 
 	"	cmp	"N", xzr			\n"
-	"	ble	9f	//dot_kernel_L999	\n"
+	"	ble	.Ldot_kernel_L999		\n"
 
 	"	cmp	"INC_X", #1			\n"
-	"	bne	5f	//dot_kernel_S_BEGIN	\n"
+	"	bne	.Ldot_kernel_S_BEGIN		\n"
 	"	cmp	"INC_Y", #1			\n"
-	"	bne	5f	//dot_kernel_S_BEGIN	\n"
+	"	bne	.Ldot_kernel_S_BEGIN		\n"
 
-	"1:	//dot_kernel_F_BEGIN			\n"
+	".Ldot_kernel_F_BEGIN:				\n"
 	"	asr	"J", "N", #5			\n"
 	"	cmp	"J", xzr			\n"
-	"	beq	3f	//dot_kernel_F1		\n"
+	"	beq	.Ldot_kernel_F1			\n"
 
 	"	.align 5				\n"
-	"2:	//dot_kernel_F32			\n"
+	".Ldot_kernel_F32:				\n"
 	"	ldp	q16, q17, ["X"]			\n"
 	"	ldp	q24, q25, ["Y"]			\n"
 	"	ldp	q18, q19, ["X", #32]		\n"
@@ -135,7 +135,7 @@ static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	"	fmla	v7.2d, v23.2d, v31.2d		\n"
 
 	"	subs	"J", "J", #1			\n"
-	"	bne	2b	//dot_kernel_F32	\n"
+	"	bne	.Ldot_kernel_F32		\n"
 
 	"	fadd	v0.2d, v0.2d, v1.2d		\n"
 	"	fadd	v2.2d, v2.2d, v3.2d		\n"
@@ -146,11 +146,11 @@ static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	"	fadd	v0.2d, v0.2d, v4.2d		\n"
 	"	faddp	"DOTF", v0.2d			\n"
 
-	"3:	//dot_kernel_F1				\n"
+	".Ldot_kernel_F1:				\n"
 	"	ands	"J", "N", #31			\n"
-	"	ble	9f	//dot_kernel_L999	\n"
+	"	ble	.Ldot_kernel_L999		\n"
 
-	"4:	//dot_kernel_F10			\n"
+	".Ldot_kernel_F10:				\n"
 	"	ldr	"TMPX", ["X"]			\n"
 	"	ldr	"TMPY", ["Y"]			\n"
 	"	add	"X", "X", #"SZ"			\n"
@@ -158,18 +158,18 @@ static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	"	fmadd	"DOTF", "TMPX", "TMPY", "DOTF"	\n"
 
 	"	subs	"J", "J", #1			\n"
-	"	bne	4b	//dot_kernel_F10	\n"
+	"	bne	.Ldot_kernel_F10		\n"
 
-	"	b	9f	//dot_kernel_L999	\n"
+	"	b	.Ldot_kernel_L999		\n"
 
-	"5:	//dot_kernel_S_BEGIN			\n"
+	".Ldot_kernel_S_BEGIN:				\n"
 	"	lsl	"INC_X", "INC_X", #3		\n"
 	"	lsl	"INC_Y", "INC_Y", #3		\n"
 	"	asr	"J", "N", #2			\n"
 	"	cmp	"J", xzr			\n"
-	"	ble	7f	//dot_kernel_S1		\n"
+	"	ble	.Ldot_kernel_S1			\n"
 
-	"6:	//dot_kernel_S4:			\n"
+	".Ldot_kernel_S4:				\n"
 	"	ld1	"LD1VX", ["X"], "INC_X"		\n"
 	"	ld1	"LD1VY", ["Y"], "INC_Y"		\n"
 	"	fmadd	"DOTF", "TMPX", "TMPY", "DOTF"	\n"
@@ -183,21 +183,22 @@ static FLOAT ddot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	"	ld1	"LD1VY", ["Y"], "INC_Y"		\n"
 	"	fmadd	"DOTF", "TMPX", "TMPY", "DOTF"	\n"
 	"	subs	"J", "J", #1			\n"
-	"	bne	6b	//dot_kernel_S4		\n"
+	"	bne	.Ldot_kernel_S4			\n"
 
-	"7:	//dot_kernel_S1:			\n"
+	".Ldot_kernel_S1:				\n"
 	"	ands	"J", "N", #3			\n"
-	"	ble	9f	//dot_kernel_L999	\n"
+	"	ble	.Ldot_kernel_L999		\n"
 
-	"8:	//dot_kernel_S10			\n"
+	".Ldot_kernel_S10:				\n"
 	"	ld1	"LD1VX", ["X"], "INC_X"		\n"
 	"	ld1	"LD1VY", ["Y"], "INC_Y"		\n"
 	"	fmadd	"DOTF", "TMPX", "TMPY", "DOTF"	\n"
 	"	subs	"J", "J", #1			\n"
-	"	bne	8b	//dot_kernel_S10	\n"
+	"	bne	.Ldot_kernel_S10		\n"
 
-	"9:	//dot_kernel_L999			\n"
+	".Ldot_kernel_L999:				\n"
 	"	fmov	%[DOT_], "DOTF"			\n"
+
 	: [DOT_]  "=r" (dot)		//%0
 	: [N_]    "r"  (n),		//%1
 	  [X_]    "r"  (x),		//%2
