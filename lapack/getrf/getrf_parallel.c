@@ -284,6 +284,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
       }
     }
 
+    MB;
     for (i = 0; i < args -> nthreads; i++)
       job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
 
@@ -324,6 +325,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			   c, lda, is, xxx);
 
+	  MB;
 	  if (is + min_i >= m) {
 	    job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
 	  }
