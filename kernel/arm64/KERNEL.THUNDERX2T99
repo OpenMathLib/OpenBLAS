@@ -1,6 +1,9 @@
 include $(KERNELDIR)/KERNEL.CORTEXA57
 
+SASUMKERNEL    = sasum_thunderx2t99.c
+DASUMKERNEL    = dasum_thunderx2t99.c
 CASUMKERNEL    = casum_thunderx2t99.c
+ZASUMKERNEL    = zasum_thunderx2t99.c
 
 SNRM2KERNEL    = snrm2_thunderx2t99.c
 CNRM2KERNEL    = cnrm2_thunderx2t99.S
@@ -8,6 +11,7 @@ CNRM2KERNEL    = cnrm2_thunderx2t99.S
 DAXPYKERNEL    = daxpy_thunderx2t99.S
 
 DDOTKERNEL     = ddot_thunderx2t99.c
+
 
 ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
 DGEMMKERNEL    = dgemm_kernel_8x4_thunderx2t99.S
