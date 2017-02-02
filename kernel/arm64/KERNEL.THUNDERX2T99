@@ -5,6 +5,11 @@ DASUMKERNEL    = dasum_thunderx2t99.c
 CASUMKERNEL    = casum_thunderx2t99.c
 ZASUMKERNEL    = zasum_thunderx2t99.c
 
+SCOPYKERNEL    = copy_thunderx2t99.c
+DCOPYKERNEL    = copy_thunderx2t99.c
+CCOPYKERNEL    = copy_thunderx2t99.c
+ZCOPYKERNEL    = copy_thunderx2t99.c
+
 SNRM2KERNEL    = snrm2_thunderx2t99.c
 CNRM2KERNEL    = cnrm2_thunderx2t99.S
 
