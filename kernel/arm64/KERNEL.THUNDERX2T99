@@ -10,6 +10,11 @@ DCOPYKERNEL    = copy_thunderx2t99.c
 CCOPYKERNEL    = copy_thunderx2t99.c
 ZCOPYKERNEL    = copy_thunderx2t99.c
 
+SSWAPKERNEL    = swap_thunderx2t99.S
+DSWAPKERNEL    = swap_thunderx2t99.S
+CSWAPKERNEL    = swap_thunderx2t99.S
+ZSWAPKERNEL    = swap_thunderx2t99.S
+
 SNRM2KERNEL    = snrm2_thunderx2t99.c
 CNRM2KERNEL    = cnrm2_thunderx2t99.S
 
