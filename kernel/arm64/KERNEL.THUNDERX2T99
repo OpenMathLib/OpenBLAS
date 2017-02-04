@@ -1,25 +1,31 @@
 include $(KERNELDIR)/KERNEL.CORTEXA57
 
-SNRM2KERNEL    = snrm2_thunderx2t99.S
+SASUMKERNEL    = sasum_thunderx2t99.c
+DASUMKERNEL    = dasum_thunderx2t99.c
+CASUMKERNEL    = casum_thunderx2t99.c
+ZASUMKERNEL    = zasum_thunderx2t99.c
+
+SCOPYKERNEL    = copy_thunderx2t99.c
+DCOPYKERNEL    = copy_thunderx2t99.c
+CCOPYKERNEL    = copy_thunderx2t99.c
+ZCOPYKERNEL    = copy_thunderx2t99.c
+
+SNRM2KERNEL    = snrm2_thunderx2t99.c
 CNRM2KERNEL    = cnrm2_thunderx2t99.S
 
 DAXPYKERNEL    = daxpy_thunderx2t99.S
 
-ifndef SMP
-DDOTKERNEL     = ddot_thunderx2t99.S
-else
 DDOTKERNEL     = ddot_thunderx2t99.c
-endif
+
 
 ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
 DGEMMKERNEL    = dgemm_kernel_8x4_thunderx2t99.S
-else
-DGEMMKERNEL    = dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
 endif
 
 ifeq ($(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N), 16x4)
 SGEMMKERNEL    =  sgemm_kernel_16x4_thunderx2t99.S
-else
-SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
 endif
 
+ifeq ($(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N), 8x4)
+CGEMMKERNEL    =  cgemm_kernel_8x4_thunderx2t99.S
+endif

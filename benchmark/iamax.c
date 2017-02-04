@@ -149,7 +149,7 @@ int main(int argc, char *argv[]){
   srandom(getpid());
 #endif
 
-  fprintf(stderr, "   SIZE       Time\n");
+  fprintf(stderr, "   SIZE       Flops\n");
 
   for(m = from; m <= to; m += step)
   {
@@ -180,7 +180,9 @@ int main(int argc, char *argv[]){
 
     timeg /= loops;
 
-    fprintf(stderr, " %10.6f secs\n", timeg);
+    fprintf(stderr,
+	    " %10.2f MFlops %10.6f sec\n",
+	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg * 1.e-6, timeg);
 
   }
 
