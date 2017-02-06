@@ -12,6 +12,7 @@ OPENBLAS_BUILD_DIR := $(CURDIR)
 OPENBLAS_CMAKE_DIR := $(OPENBLAS_LIBRARY_DIR)/cmake/openblas
 OPENBLAS_CMAKE_CONFIG := OpenBLASConfig.cmake
 OPENBLAS_CMAKE_CONFIG_VERSION := OpenBLASConfigVersion.cmake
+OPENBLAS_PKGCONFIG_DIR := $(OPENBLAS_LIBRARY_DIR)/pkgconfig
 
 .PHONY : install
 .NOTPARALLEL : install
@@ -25,6 +26,7 @@ install : 	lib.grd
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_BINARY_DIR)"
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)"
+	@-mkdir -p "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
 	@echo Generating openblas_config.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 #for inc
 	@echo \#ifndef OPENBLAS_CONFIG_H > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/openblas_config.h"
@@ -94,6 +96,26 @@ ifeq ($(OSNAME), CYGWIN_NT)
 	@-cp $(LIBDLLNAME) "$(DESTDIR)$(OPENBLAS_BINARY_DIR)"
 endif
 endif
+
+
+#Generating blas.pc
+	@echo Generating blas.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
+	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
+	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
+	@echo 'version='$(VERSION) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
+	@echo 'extralib='$(EXTRALIB) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
+	@cat blas.pc.in >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
+
+ifndef NO_CBLAS
+	@echo Generating cblas.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
+	@cp $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/cblas.pc
+endif
+
+ifndef NO_LAPACKE
+	@echo Generating lapack.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
+	@cp $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/lapack.pc
+endif
+
 #Generating OpenBLASConfig.cmake
 	@echo Generating $(OPENBLAS_CMAKE_CONFIG) in $(DESTDIR)$(OPENBLAS_CMAKE_DIR)
 	@echo "SET(OpenBLAS_VERSION \"${VERSION}\")" > "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
