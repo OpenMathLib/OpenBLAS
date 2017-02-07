@@ -243,7 +243,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 		ptr = (double *)result;
 		for (i = 0; i < nthreads; i++) {
-			nrm2_double = nrm2_double + (*ptr) * (*ptr);
+			nrm2_double = nrm2_double + (*ptr);
 			ptr = (double *)(((char *)ptr) + sizeof(double) * 2);
 		}
 	}
