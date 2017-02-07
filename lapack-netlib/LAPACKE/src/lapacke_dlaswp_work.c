@@ -45,7 +45,11 @@ lapack_int LAPACKE_dlaswp_work( int matrix_layout, lapack_int n, double* a,
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int lda_t = MAX(1,lda);
+        lapack_int lda_t = MAX(1,k2);
+        lapack_int i;
+        for( i = k1; i <= k2; i++ ) {
+            lda_t = MAX( lda_t, ipiv[k1 + ( i - k1 ) * ABS( incx ) - 1] );
+        }
         double* a_t = NULL;
         /* Check leading dimension(s) */
         if( lda < n ) {
@@ -60,12 +64,12 @@ lapack_int LAPACKE_dlaswp_work( int matrix_layout, lapack_int n, double* a,
             goto exit_level_0;
         }
         /* Transpose input matrices */
-        LAPACKE_dge_trans( matrix_layout, lda, n, a, lda, a_t, lda_t );
+        LAPACKE_dge_trans( matrix_layout, lda_t, n, a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
         LAPACK_dlaswp( &n, a_t, &lda_t, &k1, &k2, ipiv, &incx );
         info = 0;  /* LAPACK call is ok! */
         /* Transpose output matrices */
-        LAPACKE_dge_trans( LAPACK_COL_MAJOR, lda, n, a_t, lda_t, a, lda );
+        LAPACKE_dge_trans( LAPACK_COL_MAJOR, lda_t, n, a_t, lda_t, a, lda );
         /* Release memory and exit */
         LAPACKE_free( a_t );
 exit_level_0:
