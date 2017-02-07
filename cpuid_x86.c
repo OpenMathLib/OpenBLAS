@@ -1250,64 +1250,70 @@ int get_cpuname(void){
   }
 
   if (vendor == VENDOR_AMD){
-    switch (family) {
-    case 0x4:
-      return CPUTYPE_AMD5X86;
-    case 0x5:
-      return CPUTYPE_AMDK6;
-    case 0x6:
-      return CPUTYPE_ATHLON;
-    case 0xf:
-      switch (exfamily) {
-      case  0:
-      case  2:
-	return CPUTYPE_OPTERON;
-      case  1:
-      case  3:
-      case 10:
-	return CPUTYPE_BARCELONA;
-      case  6:
-	switch (model) {
-	case 1:
-	  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
-	  if(support_avx())
-	    return CPUTYPE_BULLDOZER;
-	  else
-	    return CPUTYPE_BARCELONA; //OS don't support AVX.
-	case 2: //AMD Piledriver
-	case 3: //AMD Richland
-	  if(support_avx())
-	    return CPUTYPE_PILEDRIVER;
-	  else
-	    return CPUTYPE_BARCELONA; //OS don't support AVX.
-	case 0:
-	  switch(exmodel){
-	  case 1: //AMD Trinity
-	    if(support_avx())
-	      return CPUTYPE_PILEDRIVER;
-	    else
-	      return CPUTYPE_BARCELONA; //OS don't support AVX.
-	  case 3:
-	    if(support_avx())
-	      return CPUTYPE_STEAMROLLER;
-	    else
-	      return CPUTYPE_BARCELONA; //OS don't support AVX.
+      /* fprintf(stderr, "Family: %x exfamily: %x model: %x exmodel: %x\n", family, exfamily, model, exmodel ); */
+      switch (family) {
+          case 0x4:
+              return CPUTYPE_AMD5X86;
+          case 0x5:
+              return CPUTYPE_AMDK6;
+          case 0x6:
+              return CPUTYPE_ATHLON;
+          case 0xf:
+              switch (exfamily) {
+                  case  0:
+                  case  2:
+                      return CPUTYPE_OPTERON;
+                  case  1:
+                  case  3:
+                  case 10:
+                      return CPUTYPE_BARCELONA;
+                  case  6:
+                      switch (model) {
+                          case 1:
+                              //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+                              if(support_avx())
+                                  return CPUTYPE_BULLDOZER;
+                              else
+                                  return CPUTYPE_BARCELONA; //OS don't support AVX.
+                          case 2: //AMD Piledriver
+                          case 3: //AMD Richland
+                              if(support_avx())
+                                  return CPUTYPE_PILEDRIVER;
+                              else
+                                  return CPUTYPE_BARCELONA; //OS don't support AVX.
+                          case 5: // EXCAVATOR
+                              if(support_avx())
+                                  return CPUTYPE_EXCAVATOR;
+                              else
+                                  return CPUTYPE_BARCELONA; //OS don't support AVX.
+                          case 0:
+                              switch(exmodel){
+                                  case 1: //AMD Trinity
+                                      if(support_avx())
+                                          return CPUTYPE_PILEDRIVER;
+                                      else
+                                          return CPUTYPE_BARCELONA; //OS don't support AVX.
+                                  case 3:
+                                      if(support_avx())
+                                          return CPUTYPE_STEAMROLLER;
+                                      else
+                                          return CPUTYPE_BARCELONA; //OS don't support AVX.
 
-	  case 6:
-	    if(support_avx())
-	      return CPUTYPE_EXCAVATOR;
-	    else
-	      return CPUTYPE_BARCELONA; //OS don't support AVX.
-	  }
-	  break;
-	}
-	break;
-      case  5:
-	return CPUTYPE_BOBCAT;
+                                  case 6:
+                                      if(support_avx())
+                                          return CPUTYPE_EXCAVATOR;
+                                      else
+                                          return CPUTYPE_BARCELONA; //OS don't support AVX.
+                              }
+                              break;
+                      }
+                      break;
+                  case  5:
+                      return CPUTYPE_BOBCAT;
+              }
+              break;
       }
-      break;
-    }
-    return CPUTYPE_AMD_UNKNOWN;
+      return CPUTYPE_AMD_UNKNOWN;
   }
 
   if (vendor == VENDOR_CYRIX){
@@ -1767,52 +1773,57 @@ int get_coretype(void){
   }
 
   if (vendor == VENDOR_AMD){
-    if (family <= 0x5) return CORE_80486;
-    if (family <= 0xe) return CORE_ATHLON;
-    if (family == 0xf){
-      if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON;
-      else if (exfamily == 5) return CORE_BOBCAT;
-      else if (exfamily == 6) {
-	switch (model) {
-	case 1:
-	  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
-	  if(support_avx())
-	    return CORE_BULLDOZER;
-	  else
-	    return CORE_BARCELONA; //OS don't support AVX.
-	case 2: //AMD Piledriver
-	case 3: //AMD Richland
-	  if(support_avx())
-	    return CORE_PILEDRIVER;
-	  else
-	    return CORE_BARCELONA; //OS don't support AVX.
-	
-	case 0:
-	  switch(exmodel){
-	  case 1: //AMD Trinity
-	    if(support_avx())
-	      return CORE_PILEDRIVER;
-	    else
-	      return CORE_BARCELONA; //OS don't support AVX.
+      if (family <= 0x5) return CORE_80486;
+      if (family <= 0xe) return CORE_ATHLON;
+      if (family == 0xf){
+          if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON;
+          else if (exfamily == 5) return CORE_BOBCAT;
+          else if (exfamily == 6) {
+              switch (model) {
+                  case 1:
+                      //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+                      if(support_avx())
+                          return CORE_BULLDOZER;
+                      else
+                          return CORE_BARCELONA; //OS don't support AVX.
+                  case 2: //AMD Piledriver
+                  case 3: //AMD Richland
+                      if(support_avx())
+                          return CORE_PILEDRIVER;
+                      else
+                          return CORE_BARCELONA; //OS don't support AVX.
+                  case 5:
+                      if(support_avx())
+                          return CORE_EXCAVATOR;
+                      else
+                          return CORE_BARCELONA; //OS don't support AVX.
 
-	  case 3:
-	    if(support_avx())
-	      return CORE_STEAMROLLER;
-	    else
-	      return CORE_BARCELONA; //OS don't support AVX.
+                  case 0:
+                      switch(exmodel){
+                          case 1: //AMD Trinity
+                              if(support_avx())
+                                  return CORE_PILEDRIVER;
+                              else
+                                  return CORE_BARCELONA; //OS don't support AVX.
 
-	  case 6:
-	    if(support_avx())
-	      return CORE_EXCAVATOR;
-	    else
-	      return CORE_BARCELONA; //OS don't support AVX.
-	  }
-	  break;
-	}
+                          case 3:
+                              if(support_avx())
+                                  return CORE_STEAMROLLER;
+                              else
+                                  return CORE_BARCELONA; //OS don't support AVX.
+
+                          case 6:
+                              if(support_avx())
+                                  return CORE_EXCAVATOR;
+                              else
+                                  return CORE_BARCELONA; //OS don't support AVX.
+                      }
+                      break;
+              }
 
 
-      }else return CORE_BARCELONA;
-    }
+          }else return CORE_BARCELONA;
+      }
   }
 
   if (vendor == VENDOR_CENTAUR) {

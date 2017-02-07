@@ -318,75 +318,83 @@ static gotoblas_t *get_coretype(void){
   }
 
   if (vendor == VENDOR_AMD){
-    if (family <= 0xe) {
-        // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
-        cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
-        if ( (eax & 0xffff)  >= 0x01) {
-            cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
-            if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
-              return NULL;
+      if (family <= 0xe) {
+          // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
+          cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
+          if ( (eax & 0xffff)  >= 0x01) {
+              cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
+              if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
+                  return NULL;
           }
-        else
-          return NULL;
+          else
+              return NULL;
 
-        return &gotoblas_ATHLON;
+          return &gotoblas_ATHLON;
       }
-    if (family == 0xf){
-      if ((exfamily == 0) || (exfamily == 2)) {
-	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3;
-	else return &gotoblas_OPTERON;
-      }  else if (exfamily == 5) {
-	return &gotoblas_BOBCAT;
-      } else if (exfamily == 6) {
-	if(model == 1){
-	  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
-	  if(support_avx())
-	    return &gotoblas_BULLDOZER;
-	  else{
-	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
-	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-	  }
-	}else if(model == 2 || model == 3){
-	  //AMD Bulldozer Opteron 6300 / Opteron 4300 / Opteron 3300
-	  if(support_avx())
-	    return &gotoblas_PILEDRIVER;
-	  else{
-	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
-	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-	  }
-	}else if(model == 0){
-	  if (exmodel == 1) {
-	    //AMD Trinity
-	    if(support_avx())
-	      return &gotoblas_PILEDRIVER;
-	    else{
-	      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
-	      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-	    }
-	   }else if (exmodel == 3) {
-	    //AMD STEAMROLLER
-	    if(support_avx())
-	      return &gotoblas_STEAMROLLER;
-	    else{
-	      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
-	      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-	    }
-	  }else if (exmodel == 6) {
-	    if(support_avx())
-	      return &gotoblas_EXCAVATOR;
-	    else{
-	      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
-	      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-	    }
+      if (family == 0xf){
+          if ((exfamily == 0) || (exfamily == 2)) {
+              if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3;
+              else return &gotoblas_OPTERON;
+          }  else if (exfamily == 5) {
+              return &gotoblas_BOBCAT;
+          } else if (exfamily == 6) {
+              if(model == 1){
+                  //AMD Bulldozer Opteron 6200 / Opteron 4200 / AMD FX-Series
+                  if(support_avx())
+                      return &gotoblas_BULLDOZER;
+                  else{
+                      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+                      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+                  }
+              }else if(model == 2 || model == 3){
+                  //AMD Bulldozer Opteron 6300 / Opteron 4300 / Opteron 3300
+                  if(support_avx())
+                      return &gotoblas_PILEDRIVER;
+                  else{
+                      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+                      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+                  }
+              }else if(model == 5) { // EXCAVATOR 
+                  if(support_avx())
+                      return &gotoblas_EXCAVATOR;
+                  else{
+                      openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+                      return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+                  }
 
-	  }
-	}
+              }else if(model == 0){
+                  if (exmodel == 1) {
+                      //AMD Trinity
+                      if(support_avx())
+                          return &gotoblas_PILEDRIVER;
+                      else{
+                          openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+                          return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+                      }
+                  }else if (exmodel == 3) {
+                      //AMD STEAMROLLER
+                      if(support_avx())
+                          return &gotoblas_STEAMROLLER;
+                      else{
+                          openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+                          return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+                      }
+                  }else if (exmodel == 6) {
+                      if(support_avx())
+                          return &gotoblas_EXCAVATOR;
+                      else{
+                          openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+                          return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+                      }
+
+                  }
+              }
 
 
-      } else {
-	return &gotoblas_BARCELONA;
+          } else {
+              return &gotoblas_BARCELONA;
+          }
       }
-    }
   }
 
   if (vendor == VENDOR_CENTAUR) {
