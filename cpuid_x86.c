@@ -1280,6 +1280,11 @@ int get_cpuname(void){
 	    return CPUTYPE_PILEDRIVER;
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
+    case 5: // New EXCAVATOR CPUS
+      if(support_avx())
+	    return CPUTYPE_EXCAVATOR;
+	  else
+	    return CPUTYPE_BARCELONA; //OS don't support AVX.
 	case 0:
 	  switch(exmodel){
 	  case 1: //AMD Trinity
@@ -1786,7 +1791,11 @@ int get_coretype(void){
 	    return CORE_PILEDRIVER;
 	  else
 	    return CORE_BARCELONA; //OS don't support AVX.
-	
+    case 5: // New EXCAVATOR
+	  if(support_avx())
+	    return CORE_EXCAVATOR;
+	  else
+	    return CORE_BARCELONA; //OS don't support AVX.
 	case 0:
 	  switch(exmodel){
 	  case 1: //AMD Trinity
