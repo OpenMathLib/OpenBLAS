@@ -2,7 +2,7 @@
 
 set(ALLAUX
   ilaenv.f ieeeck.f lsamen.f xerbla_array.f iparmq.f
-  ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f
+  ilaprec.f ilatrans.f ilauplo.f iladiag.f iparam2stage.F chla_transtype.f
   ../INSTALL/ilaver.f ../INSTALL/slamch.f
 )
 
@@ -96,7 +96,7 @@ set(SLASRC
   stbrfs.f stbtrs.f stgevc.f stgex2.f stgexc.f stgsen.f
   stgsja.f stgsna.f stgsy2.f stgsyl.f stpcon.f stprfs.f stptri.f
   stptrs.f
-  strcon.f strevc.f strexc.f strrfs.f strsen.f strsna.f strsyl.f
+  strcon.f strevc.f strevc3.f strexc.f strrfs.f strsen.f strsna.f strsyl.f
   strtrs.f DEPRECATED/stzrqf.f stzrzf.f sstemr.f
   slansf.f spftrf.f spftri.f spftrs.f ssfrk.f stfsm.f stftri.f stfttp.f
   stfttr.f stpttf.f stpttr.f strttf.f strttp.f
@@ -165,7 +165,7 @@ set(CLASRC
   ctbcon.f ctbrfs.f ctbtrs.f ctgevc.f ctgex2.f
   ctgexc.f ctgsen.f ctgsja.f ctgsna.f ctgsy2.f ctgsyl.f ctpcon.f
   ctprfs.f ctptri.f
-  ctptrs.f ctrcon.f ctrevc.f ctrexc.f ctrrfs.f ctrsen.f ctrsna.f
+  ctptrs.f ctrcon.f ctrevc.f ctrevc3.f ctrexc.f ctrrfs.f ctrsen.f ctrsna.f
   ctrsyl.f ctrtrs.f DEPRECATED/ctzrqf.f ctzrzf.f cung2l.f cung2r.f
   cungbr.f cunghr.f cungl2.f cunglq.f cungql.f cungqr.f cungr2.f
   cungrq.f cungtr.f cunm2l.f cunm2r.f cunmbr.f cunmhr.f cunml2.f
@@ -234,7 +234,7 @@ set(DLASRC
   dtbcon.f dtbrfs.f dtbtrs.f dtgevc.f dtgex2.f dtgexc.f dtgsen.f
   dtgsja.f dtgsna.f dtgsy2.f dtgsyl.f dtpcon.f dtprfs.f dtptri.f
   dtptrs.f
-  dtrcon.f dtrevc.f dtrexc.f dtrrfs.f dtrsen.f dtrsna.f dtrsyl.f
+  dtrcon.f dtrevc.f dtrevc3.f dtrexc.f dtrrfs.f dtrsen.f dtrsna.f dtrsyl.f
   dtrtrs.f DEPRECATED/dtzrqf.f dtzrzf.f dstemr.f
   dsgesv.f dsposv.f dlag2s.f slag2d.f dlat2s.f
   dlansf.f dpftrf.f dpftri.f dpftrs.f dsfrk.f dtfsm.f dtftri.f dtfttp.f
@@ -305,7 +305,7 @@ set(ZLASRC
   ztbcon.f ztbrfs.f ztbtrs.f ztgevc.f ztgex2.f
   ztgexc.f ztgsen.f ztgsja.f ztgsna.f ztgsy2.f ztgsyl.f ztpcon.f
   ztprfs.f ztptri.f
-  ztptrs.f ztrcon.f ztrevc.f ztrexc.f ztrrfs.f ztrsen.f ztrsna.f
+  ztptrs.f ztrcon.f ztrevc.f ztrevc3.f ztrexc.f ztrrfs.f ztrsen.f ztrsna.f
   ztrsyl.f ztrtrs.f DEPRECATED/ztzrqf.f ztzrzf.f zung2l.f
   zung2r.f zungbr.f zunghr.f zungl2.f zunglq.f zungql.f zungqr.f zungr2.f
   zungrq.f zungtr.f zunm2l.f zunm2r.f zunmbr.f zunmhr.f zunml2.f
