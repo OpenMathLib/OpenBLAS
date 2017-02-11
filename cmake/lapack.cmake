@@ -42,6 +42,14 @@ set(DZLAUX
   dsteqr.f dsterf.f dlaisnan.f disnan.f
   dlartgp.f dlartgs.f
   ../INSTALL/dlamch.f ../INSTALL/dsecnd_${TIMER}.f
+  dgelq.f dgelqt.f dgelqt3.f dgemlq.f dgemlqt.f dgemqr.f dgeqr.f   
+  dgetsls.f dlamswlq.f dlamtsqr.f dlaswlq.f dlatsqr.f dtplqt.f  
+  dtplqt2.f dtpmlqt.f dsysv_aa.f dsytrf_aa.f dsytrs_aa.f dlasyf_aa.f  
+  dsytf2_rk.f dlasyf_rk.f dsytrf_rk.f dsytrs_3.f dsycon_3.f dsytri_3.f   
+  dsytri_3x.f dsysv_rk.f dsb2st_kernels.f dsbev_2stage.f dsbevd_2stage.f  
+  dsbevx_2stage.f dsyev_2stage.f dsyevd_2stage.f dsyevr_2stage.f  
+  dsyevx_2stage.f dsygv_2stage.f dsytrd_2stage.f dsytrd_sb2st.F 
+  dsytrd_sy2sb.f dlarfy.f         
 )
 
 set(SLASRC
@@ -106,6 +114,13 @@ set(SLASRC
   sorbdb5.f sorbdb6.f sorcsd.f sorcsd2by1.f
   sgeqrt.f sgeqrt2.f sgeqrt3.f sgemqrt.f
   stpqrt.f stpqrt2.f stpmqrt.f stprfb.f spotri.f
+  sgelq.f  sgelqt.f sgelqt3.f sgemlq.f sgemlqt.f sgemqr.f sgeqr.f sgetsls.f    
+  slamswlq.f slamtsqr.f slaswlq.f slatsqr.f stplqt.f stplqt2.f stpmlqt.f    
+  ssysv_aa.f ssytrf_aa.f ssytrs_aa.f slasyf_aa.f ssytf2_rk.f slasyf_rk.f       
+  ssytrf_rk.f ssytrs_3.f ssycon_3.f ssytri_3.f ssytri_3x.f ssysv_rk.f        
+  ssb2st_kernels.f ssbev_2stage.f ssbevd_2stage.f ssbevx_2stage.f  
+  ssyev_2stage.f ssyevd_2stage.f ssyevr_2stage.f ssyevx_2stage.f 
+  ssygv_2stage.f ssytrd_2stage.f ssytrd_sb2st.F ssytrd_sy2sb.f slarfy.f         
 )
 
 set(DSLASRC spotrs.f)
@@ -178,6 +193,14 @@ set(CLASRC
   cunbdb5.f cunbdb6.f cuncsd.f cuncsd2by1.f
   cgeqrt.f cgeqrt2.f cgeqrt3.f cgemqrt.f
   ctpqrt.f ctpqrt2.f ctpmqrt.f ctprfb.f cpotri.f
+  cgelq.f cgelqt.f cgelqt3.f cgemlq.f cgemlqt.f cgemqr.f cgeqr.f cgetsls.f
+  clamswlq.f clamtsqr.f claswlq.f clatsqr.f ctplqt.f ctplqt2.f ctpmlqt.f
+  chesv_aa.f chetrf_aa.f chetrs_aa.f clahef_aa.f csytf2_rk.f clasyf_rk.f
+  csytrf_rk.f csytrs_3.f csycon_3.f csytri_3.f csytri_3x.f csysv_rk.f
+  chetf2_rk.f clahef_rk.f chetrf_rk.f chetrs_3.f checon_3.f chetri_3.f
+  chetri_3x.f chesv_rk.f chb2st_kernels.f chbev_2stage.f chbevd_2stage.f
+  chbevx_2stage.f cheev_2stage.f cheevd_2stage.f cheevr_2stage.f cheevx_2stage.f
+  chegv_2stage.f chetrd_2stage.f chetrd_hb2st.F chetrd_he2hb.f clarfy.f
 )
 
 set(ZCLASRC cpotrs.f)
@@ -245,6 +268,13 @@ set(DLASRC
   dorbdb5.f dorbdb6.f dorcsd.f dorcsd2by1.f
   dgeqrt.f dgeqrt2.f dgeqrt3.f dgemqrt.f
   dtpqrt.f dtpqrt2.f dtpmqrt.f dtprfb.f dpotri.f
+  dgelq.f dgelqt.f dgelqt3.f dgemlq.f dgemlqt.f dgemqr.f dgeqr.f dgetsls.f 
+  dlamswlq.f dlamtsqr.f dlaswlq.f dlatsqr.f dtplqt.f dtplqt2.f dtpmlqt.f 
+  dsysv_aa.f dsytrf_aa.f dsytrs_aa.f dlasyf_aa.f dsytf2_rk.f dlasyf_rk.f  
+  dsytrf_rk.f dsytrs_3.f dsycon_3.f dsytri_3.f dsytri_3x.f dsysv_rk.f   
+  dsb2st_kernels.f dsbev_2stage.f dsbevd_2stage.f dsbevx_2stage.f  
+  dsyev_2stage.f dsyevd_2stage.f dsyevr_2stage.f dsyevx_2stage.f  
+  dsygv_2stage.f dsytrd_2stage.f dsytrd_sb2st.F dsytrd_sy2sb.f dlarfy.f         
 )
 
 set(ZLASRC
@@ -320,6 +350,15 @@ set(ZLASRC
   zunbdb5.f zunbdb6.f zuncsd.f zuncsd2by1.f
   zgeqrt.f zgeqrt2.f zgeqrt3.f zgemqrt.f
   ztpqrt.f ztpqrt2.f ztpmqrt.f ztprfb.f zpotri.f
+  zgelq.f zgelqt.f zgelqt3.f zgemlq.f zgemlqt.f zgemqr.f zgeqr.f zgetsls.f
+  zlamswlq.f zlamtsqr.f zlaswlq.f zlatsqr.f ztplqt.f ztplqt2.f ztpmlqt.f
+  zhesv_aa.f zhetrf_aa.f zhetrs_aa.f zlahef_aa.f zsytf2_rk.f zlasyf_rk.f
+  zsytrf_rk.f zsytrs_3.f zsycon_3.f zsytri_3.f zsytri_3x.f zsysv_rk.f
+  zhetf2_rk.f zlahef_rk.f zhetrf_rk.f zhetrs_3.f zhecon_3.f zhetri_3.f
+  zhetri_3x.f zhesv_rk.f zhb2st_kernels.f zhbev_2stage.f zhbevd_2stage.f
+  zhbevx_2stage.f zheev_2stage.f zheevd_2stage.f zheevr_2stage.f
+  zheevx_2stage.f zhegv_2stage.f zhetrd_2stage.f zhetrd_hb2st.F zhetrd_he2hb.f
+  zlarfy.f
 )
 
 set(LA_REL_SRC ${ALLAUX})
