@@ -98,23 +98,14 @@ endif
 endif
 
 
-#Generating blas.pc
-	@echo Generating blas.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
-	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
-	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
-	@echo 'version='$(VERSION) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
-	@echo 'extralib='$(EXTRALIB) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
-	@cat blas.pc.in >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc
+#Generating openblas.pc
+	@echo Generating openblas.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
+	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
+	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
+	@echo 'version='$(VERSION) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
+	@echo 'extralib='$(EXTRALIB) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
+	@cat openblas.pc.in >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
 
-ifndef NO_CBLAS
-	@echo Generating cblas.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
-	@cp $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/cblas.pc
-endif
-
-ifndef NO_LAPACKE
-	@echo Generating lapack.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
-	@cp $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/blas.pc $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/lapack.pc
-endif
 
 #Generating OpenBLASConfig.cmake
 	@echo Generating $(OPENBLAS_CMAKE_CONFIG) in $(DESTDIR)$(OPENBLAS_CMAKE_DIR)
