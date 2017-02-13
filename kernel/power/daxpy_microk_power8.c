@@ -35,167 +35,183 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define HAVE_KERNEL_8 1
-static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *alpha) __attribute__ ((noinline));
 
-static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void daxpy_kernel_8 (long n, double *x, double *y, double alpha)
 {
+  __vector double t0;
+  __vector double t1;
+  __vector double t2;
+  __vector double t3;
+  __vector double t4;
+  __vector double t5;
+  __vector double t6;
+  __vector double t7;
+  __vector double t8;
+  __vector double t9;
+  __vector double t10;
+  __vector double t11;
+  __vector double t12;
+  __vector double t13;
+  __vector double t14;
+  __vector double t15;
+  __vector double t16;
 
+  __asm__
+    (
+       "xxspltd		%x4, %x22, 0	\n\t"
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	FLOAT *x1=x;
-	FLOAT *y1=y;
-	FLOAT *y2=y+1;
-	BLASLONG pre = 384;
+       "dcbt		0, %2		\n\t"
+       "dcbt		0, %3		\n\t"
 
-	__asm__  __volatile__
-	(
+       "lxvd2x		%x5, 0, %2	\n\t"
+       "lxvd2x		%x6, %23, %2	\n\t"
+       "lxvd2x		%x7, %24, %2	\n\t"
+       "lxvd2x		%x8, %25, %2	\n\t"
 
-	"lxsdx		33, %5, %4			    \n\t"
-	"xxspltd	32, 33, 0			    \n\t"
-	"addi		%8, %8, -8			    \n\t"
+       "lxvd2x		%x13, 0, %3	\n\t"
+       "lxvd2x		%x14, %23, %3	\n\t"
+       "lxvd2x		%x15, %24, %3	\n\t"
+       "lxvd2x		%x16, %25, %3	\n\t"
 
-	"dcbt		%2, %9				    \n\t"
-	"dcbt		%3, %9				    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 64	\n\t"
 
-	"lxvd2x		40, 0, %2			    \n\t"
-	"lxvd2x		41, %5, %2			    \n\t"
-	"lxvd2x		42, %6, %2			    \n\t"
-	"lxvd2x		43, %7, %2			    \n\t"
+       "lxvd2x		%x9, 0, %2	\n\t"
+       "lxvd2x		%x10, %23, %2	\n\t"
+       "lxvd2x		%x11, %24, %2	\n\t"
+       "lxvd2x		%x12, %25, %2	\n\t"
 
-	"lxvd2x		48, 0, %3			    \n\t"
-	"lxvd2x		49, %5, %3			    \n\t"
-	"lxvd2x		50, %6, %3			    \n\t"
-	"lxvd2x		51, %7, %3			    \n\t"
+       "lxvd2x		%x17, 0, %3	\n\t"
+       "lxvd2x		%x18, %23, %3	\n\t"
+       "lxvd2x		%x19, %24, %3	\n\t"
+       "lxvd2x		%x20, %25, %3	\n\t"
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, -64	\n\t"
 
-	"lxvd2x		44, 0, %2			    \n\t"
-	"lxvd2x		45, %5, %2			    \n\t"
-	"lxvd2x		46, %6, %2			    \n\t"
-	"lxvd2x		47, %7, %2			    \n\t"
+       "addic.		%1, %1, -16	\n\t"
+       "ble		2f		\n\t"
 
-	"lxvd2x		52, 0, %3			    \n\t"
-	"lxvd2x		53, %5, %3			    \n\t"
-	"lxvd2x		54, %6, %3			    \n\t"
-	"lxvd2x		55, %7, %3			    \n\t"
+       ".align 5			\n"
+     "1:				\n\t"
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "xvmaddadp	%x13, %x5, %x4	\n\t"
+       "xvmaddadp	%x14, %x6, %x4	\n\t"
 
-	"addic.		%0 , %0	, -16  	 	             \n\t"
-	"ble		2f		             	     \n\t"
+       "lxvd2x		%x5, 0, %2	\n\t"
+       "lxvd2x		%x6, %23, %2	\n\t"
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
+       "stxvd2x		%x13, 0, %3	\n\t"
+       "stxvd2x		%x14, %23, %3	\n\t"
 
-	"dcbt		%2, %9				    \n\t"
-	"dcbt		%3, %9				    \n\t"
+       "xvmaddadp	%x15, %x7, %x4	\n\t"
+       "xvmaddadp	%x16, %x8, %x4	\n\t"
 
-	"xvmaddadp	48, 40, 32		    	    \n\t"
-	"xvmaddadp	49, 41, 32		    	    \n\t"
+       "lxvd2x		%x7, %24, %2	\n\t"
+       "lxvd2x		%x8, %25, %2	\n\t"
 
-	"lxvd2x		40, 0, %2			    \n\t"
-	"lxvd2x		41, %5, %2			    \n\t"
+       "stxvd2x		%x15, %24, %3	\n\t"
+       "stxvd2x		%x16, %25, %3	\n\t"
 
-	"stxvd2x	48,  0, %8			    \n\t"
-	"stxvd2x	49, %5, %8			    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 128	\n\t"
 
-	"xvmaddadp	50, 42, 32		    	    \n\t"
-	"xvmaddadp	51, 43, 32		    	    \n\t"
+       "lxvd2x		%x13, 0, %3	\n\t"
+       "lxvd2x		%x14, %23, %3	\n\t"
+       "lxvd2x		%x15, %24, %3	\n\t"
+       "lxvd2x		%x16, %25, %3	\n\t"
 
-	"lxvd2x		42, %6, %2			    \n\t"
-	"lxvd2x		43, %7, %2			    \n\t"
+       "addi		%3, %3, -64	\n\t"
 
-	"stxvd2x	50, %6, %8			    \n\t"
-	"stxvd2x	51, %7, %8			    \n\t"
+       "xvmaddadp	%x17, %x9, %x4	\n\t"
+       "xvmaddadp	%x18, %x10, %x4	\n\t"
 
-	"lxvd2x		48, 0, %3			    \n\t"
-	"lxvd2x		49, %5, %3			    \n\t"
-	"lxvd2x		50, %6, %3			    \n\t"
-	"lxvd2x		51, %7, %3			    \n\t"
+       "lxvd2x		%x9, 0, %2	\n\t"
+       "lxvd2x		%x10, %23, %2	\n\t"
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%8, %8, 64			    \n\t"
+       "stxvd2x		%x17, 0, %3	\n\t"
+       "stxvd2x		%x18, %23, %3	\n\t"
 
-	"xvmaddadp	52, 44, 32		    	    \n\t"
-	"addi		%3, %3, 64			    \n\t"
-	"xvmaddadp	53, 45, 32		    	    \n\t"
+       "xvmaddadp	%x19, %x11, %x4	\n\t"
+       "xvmaddadp	%x20, %x12, %x4	\n\t"
 
-	"lxvd2x		44, 0, %2			    \n\t"
-	"lxvd2x		45, %5, %2			    \n\t"
+       "lxvd2x		%x11, %24, %2	\n\t"
+       "lxvd2x		%x12, %25, %2	\n\t"
 
-	"stxvd2x	52,  0, %8			    \n\t"
-	"stxvd2x	53, %5, %8			    \n\t"
+       "stxvd2x		%x19, %24, %3	\n\t"
+       "stxvd2x		%x20, %25, %3	\n\t"
 
-	"xvmaddadp	54, 46, 32		    	    \n\t"
-	"xvmaddadp	55, 47, 32		    	    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 128	\n\t"
 
-	"lxvd2x		46, %6, %2			    \n\t"
-	"lxvd2x		47, %7, %2			    \n\t"
+       "lxvd2x		%x17, 0, %3	\n\t"
+       "lxvd2x		%x18, %23, %3	\n\t"
+       "lxvd2x		%x19, %24, %3	\n\t"
+       "lxvd2x		%x20, %25, %3	\n\t"
 
-	"stxvd2x	54, %6, %8			    \n\t"
-	"stxvd2x	55, %7, %8			    \n\t"
+       "addi		%3, %3, -64	\n\t"
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%8, %8, 64			    \n\t"
+       "addic.		%1, %1, -16	\n\t"
+       "bgt		1b		\n"
 
-	"lxvd2x		52, 0, %3			    \n\t"
-	"lxvd2x		53, %5, %3			    \n\t"
-	"lxvd2x		54, %6, %3			    \n\t"
-	"lxvd2x		55, %7, %3			    \n\t"
+     "2:				\n\t"
 
-	"addi		%3, %3, 64			    \n\t"
+       "xvmaddadp	%x13, %x5, %x4	\n\t"
+       "xvmaddadp	%x14, %x6, %x4	\n\t"
+       "xvmaddadp	%x15, %x7, %x4	\n\t"
+       "xvmaddadp	%x16, %x8, %x4	\n\t"
 
+       "xvmaddadp	%x17, %x9, %x4	\n\t"
+       "xvmaddadp	%x18, %x10, %x4	\n\t"
+       "xvmaddadp	%x19, %x11, %x4	\n\t"
+       "xvmaddadp	%x20, %x12, %x4	\n\t"
 
-	"addic.		%0 , %0	, -16  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
+       "stxvd2x		%x13, 0, %3	\n\t"
+       "stxvd2x		%x14, %23, %3	\n\t"
+       "stxvd2x		%x15, %24, %3	\n\t"
+       "stxvd2x		%x16, %25, %3	\n\t"
 
-	"2:						     \n\t"
+       "addi		%3, %3, 64	\n\t"
 
-	
-	"xvmaddadp	48, 40, 32		    	    \n\t"
-	"xvmaddadp	49, 41, 32		    	    \n\t"
-	"xvmaddadp	50, 42, 32		    	    \n\t"
-	"xvmaddadp	51, 43, 32		    	    \n\t"
+       "stxvd2x		%x17, 0, %3	\n\t"
+       "stxvd2x		%x18, %23, %3	\n\t"
+       "stxvd2x		%x19, %24, %3	\n\t"
+       "stxvd2x		%x20, %25, %3	\n"
 
-	"xvmaddadp	52, 44, 32		    	    \n\t"
-	"xvmaddadp	53, 45, 32		    	    \n\t"
-	"xvmaddadp	54, 46, 32		    	    \n\t"
-	"xvmaddadp	55, 47, 32		    	    \n\t"
+     "#n=%1 x=%21=%2 y=%0=%3 alpha=%22 o16=%23 o32=%24 o48=%25\n"
+     "#t0=%x4 t1=%x5 t2=%x6 t3=%x7 t4=%x8 t5=%x9 t6=%x10 t7=%x11 t8=%x12 t9=%x13 t10=%x14 t11=%x15 t12=%x16 t13=%x17 t14=%x18 t15=%x19 t16=%x20"
+     :
+       "+m" (*y),
+       "+r" (n),	// 1
+       "+b" (x),	// 2
+       "+b" (y),	// 3
+       "=wa" (t0),	// 4
+       "=wa" (t1),	// 5
+       "=wa" (t2),	// 6
+       "=wa" (t3),	// 7
+       "=wa" (t4),	// 8
+       "=wa" (t5),	// 9
+       "=wa" (t6),	// 10
+       "=wa" (t7),	// 11
+       "=wa" (t8),	// 12
+       "=wa" (t9),	// 13
+       "=wa" (t10),	// 14
+       "=wa" (t11),	// 15
+       "=wa" (t12),	// 16
+       "=wa" (t13),	// 17
+       "=wa" (t14),	// 18
+       "=wa" (t15),	// 19
+       "=wa" (t16)	// 20
+     :
+       "m" (*x),
+       "d" (alpha),	// 22
+       "b" (16),	// 23
+       "b" (32),	// 24
+       "b" (48)		// 25
+     :
+       "cr0"
+     );
 
-	"stxvd2x	48,  0, %8			    \n\t"
-	"stxvd2x	49, %5, %8			    \n\t"
-	"stxvd2x	50, %6, %8			    \n\t"
-	"stxvd2x	51, %7, %8			    \n\t"
-
-	"addi		%8, %8, 64			    \n\t"
-
-	"stxvd2x	52,  0, %8			    \n\t"
-	"stxvd2x	53, %5, %8			    \n\t"
-	"stxvd2x	54, %6, %8			    \n\t"
-	"stxvd2x	55, %7, %8			    \n\t"
-
-	"addi		%8, %8, 64			    \n\t"
-
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
-          "r" (x1),     // 2
-          "r" (y1),     // 3
-          "r" (alpha),    // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-	  "r" (y2),     // 8
-	  "r" (pre)	// 9
-	: "cr0", "%0", "%2" , "%3", "%8", "memory"
-	);
-
-} 
+}
 
 

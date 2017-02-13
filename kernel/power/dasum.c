@@ -42,7 +42,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #else
 
-#define ABS fabsf
+#error supports double only
 
 #endif
 
@@ -53,7 +53,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_16
 
-static void dasum_kernel_16(BLASLONG n, FLOAT *x1, FLOAT *svec)
+static FLOAT dasum_kernel_16(BLASLONG n, FLOAT *x1)
 {
 
 	BLASLONG i=0;
@@ -92,9 +92,7 @@ static void dasum_kernel_16(BLASLONG n, FLOAT *x1, FLOAT *svec)
 
 	}
 
-	svec[0] = sum0+sum1+sum2+sum3;
-	svec[1] = 0.0;
-
+	return sum0+sum1+sum2+sum3;
 }
 
 #endif
@@ -103,7 +101,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0;
 	FLOAT sumf = 0.0;
-	FLOAT svec[2] __attribute__ ((aligned (16)));;
 	BLASLONG n1;
 
 	if (n <= 0 || inc_x <= 0) return(sumf);
@@ -115,8 +112,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 		if ( n1 > 0 )
 		{
 
-			dasum_kernel_16(n1, x, svec);
-			sumf = svec[0] + svec[1];
+			sumf = dasum_kernel_16(n1, x);
 			i=n1;
 		}
 

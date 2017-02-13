@@ -41,11 +41,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(HAVE_KERNEL_8)
 
-static void dscal_kernel_8( BLASLONG n, FLOAT *da , FLOAT *x )
+static void dscal_kernel_8 (BLASLONG n, FLOAT *x, FLOAT alpha)
 {
 
         BLASLONG i;
-        FLOAT alpha = *da;
 
         for( i=0; i<n; i+=8 )
         {
@@ -62,7 +61,7 @@ static void dscal_kernel_8( BLASLONG n, FLOAT *da , FLOAT *x )
 
 }
 
-static void dscal_kernel_8_zero( BLASLONG n, FLOAT *da , FLOAT *x )
+static void dscal_kernel_8_zero (BLASLONG n, FLOAT *x)
 {
 
         BLASLONG i;
@@ -102,10 +101,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			BLASLONG n1 = n & -16;
 			if ( n1 > 0 )
 			{
-				FLOAT alpha[2];
-				alpha[0]=da;
-				alpha[1]=da;
-				dscal_kernel_8_zero(n1 , alpha , x);
+				dscal_kernel_8_zero(n1, x);
 				j=n1;
 			}
 
@@ -123,10 +119,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			BLASLONG n1 = n & -16;
 			if ( n1 > 0 )
 			{
-				FLOAT alpha[2];
-				alpha[0]=da;
-				alpha[1]=da;
-				dscal_kernel_8(n1 , alpha , x);
+				dscal_kernel_8(n1, x, da);
 				j=n1;
 			}
 			while(j < n)

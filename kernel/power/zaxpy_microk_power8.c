@@ -35,216 +35,225 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define HAVE_KERNEL_4 1
-static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *alpha) __attribute__ ((noinline));
-
-static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void zaxpy_kernel_4 (long n, double *x, double *y,
+			    double alpha_r, double alpha_i)
 {
+#if !defined(CONJ)
+  static const double mvec[2] = { -1.0, 1.0 };
+#else
+  static const double mvec[2] = { 1.0, -1.0 };
+#endif
+  const double *mvecp = mvec;
 
+  __vector double t0;
+  __vector double t1;
+  __vector double t2;
+  __vector double t3;
+  __vector double t4;
+  __vector double t5;
+  __vector double t6;
+  __vector double t7;
+  __vector double t8;
+  __vector double t9;
+  __vector double t10;
+  __vector double t11;
+  long ytmp;
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	FLOAT *x1=x;
-	FLOAT *y1=y;
-	FLOAT *y2=y+1;
-	BLASLONG pre = 384;
+  __asm__
+    (
+       "xxspltd		32, %x19, 0	\n\t"	// alpha_r
+       "xxspltd		33, %x20, 0	\n\t"	// alpha_i
+
+       "lxvd2x		36, 0, %21	\n\t"	// mvec
 
 #if !defined(CONJ)
-        FLOAT mvec[2] = { -1.0, 1.0 };
+       "xvmuldp		33, 33, 36	\n\t"	// alpha_i * mvec
 #else
-        FLOAT mvec[2] = { 1.0, -1.0 };
+       "xvmuldp		32, 32, 36	\n\t"	// alpha_r * mvec
 #endif
 
-
-	__asm__  __volatile__
-	(
-
-	"lxsdx		34, 0 , %4			    \n\t"	// alpha_r
-	"lxsdx		35, %5, %4			    \n\t"	// alpha_i
-	"xxspltd	32, 34, 0			    \n\t"
-	"xxspltd	33, 35, 0			    \n\t"
-
-	"lxvd2x		36, 0,	%9			    \n\t"	// mvec
-
-#if !defined(CONJ)
-        "xvmuldp         33, 33  , 36               	    \n\t"	// alpha_i * mvec
-#else
-        "xvmuldp         32, 32  , 36               	    \n\t"	// alpha_r * mvec
-#endif
-
-	"addi		%8, %8, -8			    \n\t"
-
-	"dcbt		%2, %10				    \n\t"
-	"dcbt		%3, %10				    \n\t"
+       "mr		%16, %3		\n\t"
+       "dcbt		0, %2		\n\t"
+       "dcbt		0, %3		\n\t"
 
 
-	"lxvd2x		40, 0, %2			    \n\t"       // x0
-	"lxvd2x		41, %5, %2			    \n\t"	// x1
-	"lxvd2x		42, %6, %2			    \n\t"	// x2
-	"lxvd2x		43, %7, %2			    \n\t"	// x3
+       "lxvd2x		40, 0, %2	\n\t"	// x0
+       "lxvd2x		41, %22, %2	\n\t"	// x1
+       "lxvd2x		42, %23, %2	\n\t"	// x2
+       "lxvd2x		43, %24, %2	\n\t"	// x3
 
-	"lxvd2x		48, 0, %3			    \n\t"	// y0
-	"lxvd2x		49, %5, %3			    \n\t"	// y1
-	"lxvd2x		50, %6, %3			    \n\t"	// y2
-	"lxvd2x		51, %7, %3			    \n\t"	// y3
+       "lxvd2x		48, 0, %3	\n\t"	// y0
+       "lxvd2x		49, %22, %3	\n\t"	// y1
+       "lxvd2x		50, %23, %3	\n\t"	// y2
+       "lxvd2x		51, %24, %3	\n\t"	// y3
 
-	"xxswapd	56, 40				    \n\t"	// exchange real and imag part
-	"xxswapd	57, 41				    \n\t"	// exchange real and imag part
-	"xxswapd	58, 42				    \n\t"	// exchange real and imag part
-	"xxswapd	59, 43				    \n\t"	// exchange real and imag part
+       "xxswapd		%x8, 40		\n\t"	// exchange real and imag part
+       "xxswapd		%x9, 41		\n\t"	// exchange real and imag part
+       "xxswapd		%x10, 42	\n\t"	// exchange real and imag part
+       "xxswapd		%x11, 43	\n\t"	// exchange real and imag part
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 64	\n\t"
 
-	"lxvd2x		44, 0, %2			    \n\t"	// x4
-	"lxvd2x		45, %5, %2			    \n\t"	// x5
-	"lxvd2x		46, %6, %2			    \n\t"	// x6
-	"lxvd2x		47, %7, %2			    \n\t"	// x7
+       "lxvd2x		44, 0, %2	\n\t"	// x4
+       "lxvd2x		45, %22, %2	\n\t"	// x5
+       "lxvd2x		46, %23, %2	\n\t"	// x6
+       "lxvd2x		47, %24, %2	\n\t"	// x7
 
-	"lxvd2x		52, 0, %3			    \n\t"	// y4
-	"lxvd2x		53, %5, %3			    \n\t"	// y5
-	"lxvd2x		54, %6, %3			    \n\t"	// y6
-	"lxvd2x		55, %7, %3			    \n\t"	// y7
+       "lxvd2x		%x4, 0, %3	\n\t"	// y4
+       "lxvd2x		%x5, %22, %3	\n\t"	// y5
+       "lxvd2x		%x6, %23, %3	\n\t"	// y6
+       "lxvd2x		%x7, %24, %3	\n\t"	// y7
 
-	"xxswapd	60, 44				    \n\t"	// exchange real and imag part
-	"xxswapd	61, 45				    \n\t"	// exchange real and imag part
-	"xxswapd	62, 46				    \n\t"	// exchange real and imag part
-	"xxswapd	63, 47				    \n\t"	// exchange real and imag part
+       "xxswapd		%x12, 44	\n\t"	// exchange real and imag part
+       "xxswapd		%x13, 45	\n\t"	// exchange real and imag part
+       "xxswapd		%x14, 46	\n\t"	// exchange real and imag part
+       "xxswapd		%x15, 47	\n\t"	// exchange real and imag part
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 64	\n\t"
 
-	"addic.		%0 , %0	, -8  	 	             \n\t"
-	"ble		2f		             	     \n\t"
+       "addic.		%1, %1, -8	\n\t"
+       "ble		2f		\n\t"
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
+       ".p2align	5		\n"
+       "1:				\n\t"
 
-	"dcbt		%2, %10				    \n\t"
-	"dcbt		%3, %10				    \n\t"
+       "xvmaddadp	48, 40, 32	\n\t"	// alpha_r * x0_r , alpha_r * x0_i
+       "xvmaddadp	49, 41, 32	\n\t"
+       "lxvd2x		40, 0, %2	\n\t"	// x0
+       "lxvd2x		41, %22, %2	\n\t"	// x1
+       "xvmaddadp	50, 42, 32	\n\t"
+       "xvmaddadp	51, 43, 32	\n\t"
+       "lxvd2x		42, %23, %2	\n\t"	// x2
+       "lxvd2x		43, %24, %2	\n\t"	// x3
 
-	"xvmaddadp	48, 40, 32		    	    \n\t"	// alpha_r * x0_r , alpha_r * x0_i
-	"xvmaddadp	49, 41, 32		    	    \n\t"
-	"lxvd2x		40, 0, %2			    \n\t"       // x0
-	"lxvd2x		41, %5, %2			    \n\t"	// x1
-	"xvmaddadp	50, 42, 32		    	    \n\t"
-	"xvmaddadp	51, 43, 32		    	    \n\t"
-	"lxvd2x		42, %6, %2			    \n\t"	// x2
-	"lxvd2x		43, %7, %2			    \n\t"	// x3
+       "xvmaddadp	%x4, 44, 32	\n\t"
+       "addi		%2, %2, 64	\n\t"
+       "xvmaddadp	%x5, 45, 32	\n\t"
+       "lxvd2x		44, 0, %2	\n\t"	// x4
+       "lxvd2x		45, %22, %2	\n\t"	// x5
+       "xvmaddadp	%x6, 46, 32	\n\t"
+       "xvmaddadp	%x7, 47, 32	\n\t"
+       "lxvd2x		46, %23, %2	\n\t"	// x6
+       "lxvd2x		47, %24, %2	\n\t"	// x7
 
-	"xvmaddadp	52, 44, 32		    	    \n\t"
-	"addi		%2, %2, 64			    \n\t"
-	"xvmaddadp	53, 45, 32		    	    \n\t"
-	"lxvd2x		44, 0, %2			    \n\t"	// x4
-	"lxvd2x		45, %5, %2			    \n\t"	// x5
-	"xvmaddadp	54, 46, 32		    	    \n\t"
-	"xvmaddadp	55, 47, 32		    	    \n\t"
-	"lxvd2x		46, %6, %2			    \n\t"	// x6
-	"lxvd2x		47, %7, %2			    \n\t"	// x7
+       "xvmaddadp	48, %x8, 33	\n\t"	// alpha_i * x0_i , alpha_i * x0_r
+       "addi		%2, %2, 64	\n\t"
+       "xvmaddadp	49, %x9, 33	\n\t"
+       "xvmaddadp	50, %x10, 33	\n\t"
+       "xvmaddadp	51, %x11, 33	\n\t"
 
-	"xvmaddadp	48, 56, 33		    	    \n\t"	// alpha_i * x0_i , alpha_i * x0_r
-	"addi		%2, %2, 64			    \n\t"
-	"xvmaddadp	49, 57, 33		    	    \n\t"
-	"xvmaddadp	50, 58, 33		    	    \n\t"
-	"xvmaddadp	51, 59, 33		    	    \n\t"
+       "xvmaddadp	%x4, %x12, 33	\n\t"
+       "xvmaddadp	%x5, %x13, 33	\n\t"
+       "xvmaddadp	%x6, %x14, 33	\n\t"
+       "xvmaddadp	%x7, %x15, 33	\n\t"
 
-	"xvmaddadp	52, 60, 33		    	    \n\t"
-	"xvmaddadp	53, 61, 33		    	    \n\t"
-	"xvmaddadp	54, 62, 33		    	    \n\t"
-	"xvmaddadp	55, 63, 33		    	    \n\t"
+       "stxvd2x		48, 0, %16	\n\t"
+       "stxvd2x		49, %22, %16	\n\t"
+       "stxvd2x		50, %23, %16	\n\t"
+       "stxvd2x		51, %24, %16	\n\t"
 
-	"stxvd2x	48,  0, %8			    \n\t"
-	"stxvd2x	49, %5, %8			    \n\t"
-	"stxvd2x	50, %6, %8			    \n\t"
-	"stxvd2x	51, %7, %8			    \n\t"
+       "addi		%16, %16, 64	\n\t"
 
-	"addi		%8, %8, 64			    \n\t"
+       "stxvd2x		%x4, 0, %16	\n\t"
+       "stxvd2x		%x5, %22, %16	\n\t"
+       "stxvd2x		%x6, %23, %16	\n\t"
+       "stxvd2x		%x7, %24, %16	\n\t"
 
-	"stxvd2x	52,  0, %8			    \n\t"
-	"stxvd2x	53, %5, %8			    \n\t"
-	"stxvd2x	54, %6, %8			    \n\t"
-	"stxvd2x	55, %7, %8			    \n\t"
+       "addi		%16, %16, 64	\n\t"
 
-	"addi		%8, %8, 64			    \n\t"
+       "xxswapd		%x8, 40		\n\t"	// exchange real and imag part
+       "xxswapd		%x9, 41		\n\t"	// exchange real and imag part
+       "lxvd2x		48, 0, %3	\n\t"	// y0
+       "lxvd2x		49, %22, %3	\n\t"	// y1
+       "xxswapd		%x10, 42	\n\t"	// exchange real and imag part
+       "xxswapd		%x11, 43	\n\t"	// exchange real and imag part
+       "lxvd2x		50, %23, %3	\n\t"	// y2
+       "lxvd2x		51, %24, %3	\n\t"	// y3
 
-	"xxswapd	56, 40				    \n\t"	// exchange real and imag part
-	"xxswapd	57, 41				    \n\t"	// exchange real and imag part
-	"lxvd2x		48, 0, %3			    \n\t"	// y0
-	"lxvd2x		49, %5, %3			    \n\t"	// y1
-	"xxswapd	58, 42				    \n\t"	// exchange real and imag part
-	"xxswapd	59, 43				    \n\t"	// exchange real and imag part
-	"lxvd2x		50, %6, %3			    \n\t"	// y2
-	"lxvd2x		51, %7, %3			    \n\t"	// y3
+       "xxswapd		%x12, 44	\n\t"	// exchange real and imag part
+       "addi		%3, %3, 64	\n\t"
+       "xxswapd		%x13, 45	\n\t"	// exchange real and imag part
+       "lxvd2x		%x4, 0, %3	\n\t"	// y4
+       "lxvd2x		%x5, %22, %3	\n\t"	// y5
+       "xxswapd		%x14, 46	\n\t"	// exchange real and imag part
+       "xxswapd		%x15, 47	\n\t"	// exchange real and imag part
+       "lxvd2x		%x6, %23, %3	\n\t"	// y6
+       "lxvd2x		%x7, %24, %3	\n\t"	// y7
 
-	"xxswapd	60, 44				    \n\t"	// exchange real and imag part
-	"addi		%3, %3, 64			    \n\t"
-	"xxswapd	61, 45				    \n\t"	// exchange real and imag part
-	"lxvd2x		52, 0, %3			    \n\t"	// y4
-	"lxvd2x		53, %5, %3			    \n\t"	// y5
-	"xxswapd	62, 46				    \n\t"	// exchange real and imag part
-	"xxswapd	63, 47				    \n\t"	// exchange real and imag part
-	"lxvd2x		54, %6, %3			    \n\t"	// y6
-	"lxvd2x		55, %7, %3			    \n\t"	// y7
+       "addi		%3, %3, 64	\n\t"
 
-	"addi		%3, %3, 64			    \n\t"
+       "addic.		%1, %1, -8	\n\t"
+       "bgt		1b		\n"
 
-	"addic.		%0 , %0	, -8  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
+       "2:				\n\t"
 
-	"2:						     \n\t"
+       "xvmaddadp	48, 40, 32	\n\t"	// alpha_r * x0_r , alpha_r * x0_i
+       "xvmaddadp	49, 41, 32	\n\t"
+       "xvmaddadp	50, 42, 32	\n\t"
+       "xvmaddadp	51, 43, 32	\n\t"
 
-	"xvmaddadp	48, 40, 32		    	    \n\t"	// alpha_r * x0_r , alpha_r * x0_i
-	"xvmaddadp	49, 41, 32		    	    \n\t"
-	"xvmaddadp	50, 42, 32		    	    \n\t"
-	"xvmaddadp	51, 43, 32		    	    \n\t"
+       "xvmaddadp	%x4, 44, 32	\n\t"
+       "xvmaddadp	%x5, 45, 32	\n\t"
+       "xvmaddadp	%x6, 46, 32	\n\t"
+       "xvmaddadp	%x7, 47, 32	\n\t"
 
-	"xvmaddadp	52, 44, 32		    	    \n\t"
-	"xvmaddadp	53, 45, 32		    	    \n\t"
-	"xvmaddadp	54, 46, 32		    	    \n\t"
-	"xvmaddadp	55, 47, 32		    	    \n\t"
+       "xvmaddadp	48, %x8, 33	\n\t"	// alpha_i * x0_i , alpha_i * x0_r
+       "xvmaddadp	49, %x9, 33	\n\t"
+       "xvmaddadp	50, %x10, 33	\n\t"
+       "xvmaddadp	51, %x11, 33	\n\t"
 
-	"xvmaddadp	48, 56, 33		    	    \n\t"	// alpha_i * x0_i , alpha_i * x0_r
-	"xvmaddadp	49, 57, 33		    	    \n\t"
-	"xvmaddadp	50, 58, 33		    	    \n\t"
-	"xvmaddadp	51, 59, 33		    	    \n\t"
+       "xvmaddadp	%x4, %x12, 33	\n\t"
+       "xvmaddadp	%x5, %x13, 33	\n\t"
+       "xvmaddadp	%x6, %x14, 33	\n\t"
+       "xvmaddadp	%x7, %x15, 33	\n\t"
 
-	"xvmaddadp	52, 60, 33		    	    \n\t"
-	"xvmaddadp	53, 61, 33		    	    \n\t"
-	"xvmaddadp	54, 62, 33		    	    \n\t"
-	"xvmaddadp	55, 63, 33		    	    \n\t"
+       "stxvd2x		48, 0, %16	\n\t"
+       "stxvd2x		49, %22, %16	\n\t"
+       "stxvd2x		50, %23, %16	\n\t"
+       "stxvd2x		51, %24, %16	\n\t"
 
+       "addi		%16, %16, 64	\n\t"
 
-	"stxvd2x	48,  0, %8			    \n\t"
-	"stxvd2x	49, %5, %8			    \n\t"
-	"stxvd2x	50, %6, %8			    \n\t"
-	"stxvd2x	51, %7, %8			    \n\t"
+       "stxvd2x		%x4, 0, %16	\n\t"
+       "stxvd2x		%x5, %22, %16	\n\t"
+       "stxvd2x		%x6, %23, %16	\n\t"
+       "stxvd2x		%x7, %24, %16	\n"
 
-	"addi		%8, %8, 64			    \n\t"
-
-	"stxvd2x	52,  0, %8			    \n\t"
-	"stxvd2x	53, %5, %8			    \n\t"
-	"stxvd2x	54, %6, %8			    \n\t"
-	"stxvd2x	55, %7, %8			    \n\t"
-
-	"addi		%8, %8, 64			    \n\t"
-
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
-          "r" (x1),     // 2
-          "r" (y1),     // 3
-          "r" (alpha),  // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-	  "r" (y2),     // 8
-	  "r" (mvec),   // 9
-	  "r" (pre)	// 10
-	: "cr0", "%0", "%2" , "%3", "%8", "memory"
-	);
-
-} 
-
-
+     "#n=%1 x=%17=%2 y=%0=%3 alpha=(%19,%20) mvecp=%18=%16 o16=%22 o32=%23 o48=%24 ytmp=%16\n"
+     "#t0=%x4 t1=%x5 t2=%x6 t3=%x7 t4=%x8 t5=%x9 t6=%x10 t7=%x11 t8=%x12 t9=%x13 t10=%x14 t11=%x15"
+     :
+       "+m" (*y),
+       "+r" (n),	// 1
+       "+b" (x),	// 2
+       "+b" (y),	// 3
+       "=wa" (t0),	// 4
+       "=wa" (t1),	// 5
+       "=wa" (t2),	// 6
+       "=wa" (t3),	// 7
+       "=wa" (t4),	// 8
+       "=wa" (t5),	// 9
+       "=wa" (t6),	// 10
+       "=wa" (t7),	// 11
+       "=wa" (t8),	// 12
+       "=wa" (t9),	// 13
+       "=wa" (t10),	// 14
+       "=wa" (t11),	// 15
+       "=b" (ytmp)	// 16
+     :
+       "m" (*x),
+       "m" (*mvecp),
+       "d" (alpha_r),	// 19
+       "d" (alpha_i),	// 20
+       "16" (mvecp),	// 21
+       "b" (16),	// 22
+       "b" (32),	// 23
+       "b" (48)		// 24
+     :
+       "cr0",
+       "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",
+       "vs40","vs41","vs42","vs43","vs44","vs45","vs46","vs47",
+       "vs48","vs49","vs50","vs51"
+     );
+}

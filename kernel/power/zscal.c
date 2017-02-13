@@ -47,15 +47,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_8
 
-static void zscal_kernel_8(BLASLONG n, FLOAT *x, FLOAT *alpha)
+static void zscal_kernel_8(BLASLONG n, FLOAT *x, FLOAT da_r, FLOAT da_i)
 {
 
 	BLASLONG i=0;
 	FLOAT *x1=x;
-	FLOAT  alpha_r1=alpha[0];
-	FLOAT  alpha_r2=alpha[1];
-	FLOAT  alpha_i1=alpha[2];
-	FLOAT  alpha_i2=alpha[3];
+	FLOAT  alpha_r1=da_r;
+	FLOAT  alpha_r2=da_r;
+	FLOAT  alpha_i1=-da_i;
+	FLOAT  alpha_i2=da_i;
 	FLOAT  temp00, temp01, temp10, temp11, temp20, temp21, temp30, temp31;
 	FLOAT  x0_r, x0_i, x1_r, x1_i, x2_r, x2_i, x3_r, x3_i;
 
@@ -116,7 +116,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
 	BLASLONG inc_x2;
 	BLASLONG ip = 0;
 	FLOAT temp;
-	FLOAT alpha[4] __attribute__ ((aligned (16)));;
 	BLASLONG n1;
 
 	if ( n <= 0 )
@@ -147,11 +146,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
 		n1 = n & -8;
 		if ( n1 > 0 )
 		{
-			alpha[0] = da_r;
-			alpha[1] = da_r;
-			alpha[2] = -da_i;
-			alpha[3] = da_i;
-			zscal_kernel_8(n1, x, alpha);
+			zscal_kernel_8(n1, x, da_r, da_i);
 			i=n1;
 			ip = n1 * 2;
 
