@@ -19,8 +19,8 @@ ISAMAXKERNEL   = iamax_thunderx2t99.c
 IDAMAXKERNEL   = iamax_thunderx2t99.c
 
 
-SNRM2KERNEL    = snrm2_thunderx2t99.c
-CNRM2KERNEL    = cnrm2_thunderx2t99.S
+SNRM2KERNEL    = scnrm2_thunderx2t99.c
+CNRM2KERNEL    = scnrm2_thunderx2t99.c
 
 DAXPYKERNEL    = daxpy_thunderx2t99.S
 
