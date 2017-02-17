@@ -300,6 +300,7 @@ static gotoblas_t *get_coretype(void){
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
+      case 9:
       case 8:
 	if (model == 14 ) { // Kaby Lake
 	  if(support_avx())
