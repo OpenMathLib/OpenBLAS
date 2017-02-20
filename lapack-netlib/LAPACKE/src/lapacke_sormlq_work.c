@@ -40,9 +40,6 @@ lapack_int LAPACKE_sormlq_work( int matrix_layout, char side, char trans,
                                 float* work, lapack_int lwork )
 {
     lapack_int info = 0;
-    lapack_int r;
-    lapack_int lda_t, ldc_t;
-    float *a_t = NULL, *c_t = NULL;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_sormlq( &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work,
@@ -51,9 +48,11 @@ lapack_int LAPACKE_sormlq_work( int matrix_layout, char side, char trans,
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        r = LAPACKE_lsame( side, 'l' ) ? m : n;
-        lda_t = MAX(1,k);
-        ldc_t = MAX(1,m);
+        lapack_int r = LAPACKE_lsame( side, 'l' ) ? m : n;
+        lapack_int lda_t = MAX(1,k);
+        lapack_int ldc_t = MAX(1,m);
+	float *a_t = NULL;
+	float *c_t = NULL;
         /* Check leading dimension(s) */
         if( lda < r ) {
             info = -8;
@@ -72,11 +71,7 @@ lapack_int LAPACKE_sormlq_work( int matrix_layout, char side, char trans,
             return (info < 0) ? (info - 1) : info;
         }
         /* Allocate memory for temporary array(s) */
-        if( LAPACKE_lsame( side, 'l' ) ) {
-            a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,m) );
-        } else {
-            a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,n) );
-        }
+        a_t = (float*)LAPACKE_malloc( sizeof(float) * lda_t * MAX(1,r) );
         if( a_t == NULL ) {
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;
@@ -87,7 +82,7 @@ lapack_int LAPACKE_sormlq_work( int matrix_layout, char side, char trans,
             goto exit_level_1;
         }
         /* Transpose input matrices */
-        LAPACKE_sge_trans( matrix_layout, k, m, a, lda, a_t, lda_t );
+        LAPACKE_sge_trans( matrix_layout, k, r, a, lda, a_t, lda_t );
         LAPACKE_sge_trans( matrix_layout, m, n, c, ldc, c_t, ldc_t );
         /* Call LAPACK function and adjust info */
         LAPACK_sormlq( &side, &trans, &m, &n, &k, a_t, &lda_t, tau, c_t, &ldc_t,
