@@ -296,7 +296,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
 	//Apollo Lake
-	if (model == 14) { 
+	if (model == 12) { 
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
@@ -401,7 +401,6 @@ static gotoblas_t *get_coretype(void){
     switch (family) {
     case 0x6:
       return &gotoblas_NANO;
-      break;
     }
   }
 
