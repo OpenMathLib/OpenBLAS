@@ -326,7 +326,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (inc_x == 0)
 		nthreads = 1;
 
-	if (n <= 1000)
+	if (n <= 10000)
 		nthreads = 1;
 
 	if (nthreads == 1) {

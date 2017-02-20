@@ -335,7 +335,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (inc_x == 0)
 		nthreads = 1;
 
-	if (n <= 1000)
+	if (n <= 10000)
 		nthreads = 1;
 
 	if (nthreads == 1) {
@@ -366,8 +366,8 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 			BLASLONG cur_max_index;
 
 			cur_max_index = *(BLASLONG *)&result[num_cpu * sizeof(double) * 2];
-			elem_r = x[((cur_index + cur_max_index - 1) * inc_x) + 0];
-			elem_i = x[((cur_index + cur_max_index - 1) * inc_x) + 1];
+			elem_r = x[((cur_index + cur_max_index - 1) * inc_x * 2) + 0];
+			elem_i = x[((cur_index + cur_max_index - 1) * inc_x * 2) + 1];
 			elem_r = fabs(elem_r) + fabs(elem_i);
 
 			if (elem_r >= max) {
