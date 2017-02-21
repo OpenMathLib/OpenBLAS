@@ -42,9 +42,6 @@ lapack_int LAPACKE_cunmlq_work( int matrix_layout, char side, char trans,
 {
     lapack_int info = 0;
     lapack_int r;
-    lapack_int lda_t, ldc_t;
-	lapack_complex_float* a_t = NULL;
-    lapack_complex_float* c_t = NULL;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_cunmlq( &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work,
@@ -54,8 +51,10 @@ lapack_int LAPACKE_cunmlq_work( int matrix_layout, char side, char trans,
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
         r = LAPACKE_lsame( side, 'l' ) ? m : n;
-        lda_t = MAX(1,k);
-        ldc_t = MAX(1,m);
+        lapack_int lda_t = MAX(1,k);
+        lapack_int ldc_t = MAX(1,m);
+        lapack_complex_float* a_t = NULL;
+        lapack_complex_float* c_t = NULL;
         /* Check leading dimension(s) */
         if( lda < r ) {
             info = -8;
