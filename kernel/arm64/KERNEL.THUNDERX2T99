@@ -27,7 +27,8 @@ DAXPYKERNEL    = daxpy_thunderx2t99.S
 
 DDOTKERNEL     = dot_thunderx2t99.c
 SDOTKERNEL     = dot_thunderx2t99.c
-
+CDOTKERNEL     = zdot_thunderx2t99.c
+ZDOTKERNEL     = zdot_thunderx2t99.c
 
 ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
 DGEMMKERNEL    = dgemm_kernel_8x4_thunderx2t99.S
