@@ -38,9 +38,6 @@ static void sasum_kernel_32( BLASLONG n, FLOAT *x, FLOAT *svec) __attribute__ ((
 
 static void sasum_kernel_32( BLASLONG n, FLOAT *x, FLOAT *svec)
 {
-
-
-	BLASLONG i = n;
 	BLASLONG o16 = 16;
 	BLASLONG o32 = 32;
 	BLASLONG o48 = 48;
@@ -48,130 +45,124 @@ static void sasum_kernel_32( BLASLONG n, FLOAT *x, FLOAT *svec)
 	BLASLONG o80 = 80;
 	BLASLONG o96 = 96;
 	BLASLONG o112 = 112;
-	FLOAT *x1=x;
 	BLASLONG pre = 384;
 
-	__asm__  __volatile__
+	__asm__
 	(
+	"dcbt		%1, %3			\n\t"
 
-	"dcbt		%2 , %4				    \n\t"
+	"xxlxor		32, 32,	32		\n\t"
+	"xxlxor		33, 33,	33		\n\t"
+	"xxlxor		34, 34,	34		\n\t"
+	"xxlxor		35, 35,	35		\n\t"
+	"xxlxor		36, 36,	36		\n\t"
+	"xxlxor		37, 37,	37		\n\t"
+	"xxlxor		38, 38,	38		\n\t"
+	"xxlxor		39, 39,	39		\n\t"
 
-	"xxlxor		32,32,32			    \n\t"
-	"xxlxor		33,33,33			    \n\t"
-	"xxlxor		34,34,34			    \n\t"
-	"xxlxor		35,35,35			    \n\t"
-	"xxlxor		36,36,36			    \n\t"
-	"xxlxor		37,37,37			    \n\t"
-	"xxlxor		38,38,38			    \n\t"
-	"xxlxor		39,39,39			    \n\t"
+	"lxvw4x		40, 0, %1		\n\t"
+	"lxvw4x		41, %4, %1		\n\t"
+	"lxvw4x		42, %5, %1		\n\t"
+	"lxvw4x		43, %6, %1		\n\t"
+	"lxvw4x		44, %7, %1		\n\t"
+	"lxvw4x		45, %8, %1		\n\t"
+	"lxvw4x		46, %9, %1		\n\t"
+	"lxvw4x		47, %10, %1		\n\t"
 
-	"lxvw4x		40, 0, %2			    \n\t"
-	"lxvw4x		41, %5, %2			    \n\t"
-	"lxvw4x		42, %6, %2			    \n\t"
-	"lxvw4x		43, %7, %2			    \n\t"
-	"lxvw4x		44, %8, %2			    \n\t"
-	"lxvw4x		45, %9, %2			    \n\t"
-	"lxvw4x		46, %10, %2			    \n\t"
-	"lxvw4x		47, %11, %2			    \n\t"
+	"addi		%1, %1, 128		\n\t"
+	"addic.		%2, %2, -32		\n\t"
+	"ble		2f			\n\t"
 
-	"addi		%2, %2, 128			    \n\t"
+	".p2align 5				\n\t"
+	"1:					\n\t"
+	"dcbt		%1, %3			\n\t"
 
-	"addic.		%0 , %0	, -32  	 	             \n\t"
-	"ble		2f		             	     \n\t"
+	"xvabssp	48, 40			\n\t"
+	"xvabssp	49, 41			\n\t"
+	"xvabssp	50, 42			\n\t"
+	"xvabssp	51, 43			\n\t"
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
+	"lxvw4x		40, 0, %1		\n\t"
+	"lxvw4x		41, %4, %1		\n\t"
 
-	"dcbt		%2 , %4				    \n\t"
+	"xvabssp	52, 44			\n\t"
+	"xvabssp	53, 45			\n\t"
 
-	"xvabssp	48, 40				    \n\t"
-	"xvabssp	49, 41				    \n\t"
-	"xvabssp	50, 42				    \n\t"
-	"xvabssp	51, 43				    \n\t"
+	"lxvw4x		42, %5, %1		\n\t"
+	"lxvw4x		43, %6, %1		\n\t"
 
-	"lxvw4x		40, 0, %2			    \n\t"
-	"lxvw4x		41, %5, %2			    \n\t"
+	"xvabssp	54, 46			\n\t"
+	"xvabssp	55, 47			\n\t"
 
-	"xvabssp	52, 44				    \n\t"
-	"xvabssp	53, 45				    \n\t"
+	"lxvw4x		44, %7, %1		\n\t"
+	"lxvw4x		45, %8, %1		\n\t"
 
-	"lxvw4x		42, %6, %2			    \n\t"
-	"lxvw4x		43, %7, %2			    \n\t"
+	"xvaddsp	32, 32, 48		\n\t"
+	"xvaddsp	33, 33, 49		\n\t"
 
-	"xvabssp	54, 46				    \n\t"
-	"xvabssp	55, 47				    \n\t"
+	"lxvw4x		46, %9, %1		\n\t"
+	"lxvw4x		47, %10, %1		\n\t"
 
-	"lxvw4x		44, %8, %2			    \n\t"
-	"lxvw4x		45, %9, %2			    \n\t"
+	"xvaddsp	34, 34, 50		\n\t"
+	"xvaddsp	35, 35, 51		\n\t"
+	"addi		%1, %1, 128		\n\t"
+	"xvaddsp	36, 36, 52		\n\t"
+	"xvaddsp	37, 37, 53		\n\t"
+	"addic.		%2, %2, -32		\n\t"
+	"xvaddsp	38, 38, 54		\n\t"
+	"xvaddsp	39, 39, 55		\n\t"
 
-	"xvaddsp	32, 32, 48		    \n\t"
-	"xvaddsp	33, 33, 49		    \n\t"
+	"bgt		1b			\n\t"
 
-	"lxvw4x		46, %10, %2			    \n\t"
-	"lxvw4x		47, %11, %2			    \n\t"
+	"2:					\n\t"
+	"xvabssp	48, 40			\n\t"
+	"xvabssp	49, 41			\n\t"
+	"xvabssp	50, 42			\n\t"
+	"xvabssp	51, 43			\n\t"
+	"xvabssp	52, 44			\n\t"
+	"xvabssp	53, 45			\n\t"
+	"xvabssp	54, 46			\n\t"
+	"xvabssp	55, 47			\n\t"
 
-	"xvaddsp	34, 34, 50		    \n\t"
-	"xvaddsp	35, 35, 51		    \n\t"
-	"addi		%2, %2, 128			    \n\t"
-	"xvaddsp	36, 36, 52		    \n\t"
-	"xvaddsp	37, 37, 53		    \n\t"
-	"addic.		%0 , %0	, -32  	 	             \n\t"
-	"xvaddsp	38, 38, 54		    \n\t"
-	"xvaddsp	39, 39, 55		    \n\t"
+	"xvaddsp	32, 32, 48		\n\t"
+	"xvaddsp	33, 33, 49		\n\t"
+	"xvaddsp	34, 34, 50		\n\t"
+	"xvaddsp	35, 35, 51		\n\t"
+	"xvaddsp	36, 36, 52		\n\t"
+	"xvaddsp	37, 37, 53		\n\t"
+	"xvaddsp	38, 38, 54		\n\t"
+	"xvaddsp	39, 39, 55		\n\t"
 
-	"bgt		1b		             	     \n\t"
+	"xvaddsp	32, 32, 33		\n\t"
+	"xvaddsp	34, 34, 35		\n\t"
+	"xvaddsp	36, 36, 37		\n\t"
+	"xvaddsp	38, 38, 39		\n\t"
 
-	"2:						     \n\t"
+	"xvaddsp	32, 32, 34		\n\t"
+	"xvaddsp	36, 36, 38		\n\t"
 
+	"xvaddsp	32, 32, 36		\n\t"
 
-	"xvabssp	48, 40				    \n\t"
-	"xvabssp	49, 41				    \n\t"
-	"xvabssp	50, 42				    \n\t"
-	"xvabssp	51, 43				    \n\t"
-	"xvabssp	52, 44				    \n\t"
-	"xvabssp	53, 45				    \n\t"
-	"xvabssp	54, 46				    \n\t"
-	"xvabssp	55, 47				    \n\t"
-
-	"xvaddsp	32, 32, 48		    \n\t"
-	"xvaddsp	33, 33, 49		    \n\t"
-	"xvaddsp	34, 34, 50		    \n\t"
-	"xvaddsp	35, 35, 51		    \n\t"
-	"xvaddsp	36, 36, 52		    \n\t"
-	"xvaddsp	37, 37, 53		    \n\t"
-	"xvaddsp	38, 38, 54		    \n\t"
-	"xvaddsp	39, 39, 55		    \n\t"
-
-	"xvaddsp	32, 32, 33		     \n\t"
-	"xvaddsp	34, 34, 35		     \n\t"
-	"xvaddsp	36, 36, 37		     \n\t"
-	"xvaddsp	38, 38, 39		     \n\t"
-
-	"xvaddsp	32, 32, 34		     \n\t"
-	"xvaddsp	36, 36, 38		     \n\t"
-
-	"xvaddsp	32, 32, 36		     \n\t"
-
-
-	"stxvw4x	32, 0, %3		     \n\t"
+	"stxvw4x	32, %y0			\n\t"
 
 	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
-          "r" (x1),     // 2
-          "r" (svec),   // 3
-          "r" (pre),    // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-          "r" (o64),    // 8
-          "r" (o80),    // 9
-          "r" (o96),    // 10
-          "r" (o112)   // 11
-	: "cr0", "%0", "%2",  "memory"
+	  "=m" (*svec),	// 0
+	  "+b" (x),	// 1
+	  "+r" (n)	// 2
+	:
+	  "r" (pre),	// 3
+	  "r" (o16),	// 4
+	  "r" (o32),	// 5
+	  "r" (o48),	// 6
+	  "r" (o64),	// 7
+	  "r" (o80),	// 8
+	  "r" (o96),	// 9
+	  "r" (o112)	// 10
+	:
+	  "cr0","32","33","34","35","36","37","38","39",
+	  "40","41","42","43","44","45","46","47",
+	  "48","49","50","51","52","53","54","55"
 	);
-
 } 
 
 
