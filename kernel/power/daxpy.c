@@ -43,21 +43,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_8
 
-static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha)
 {
 	BLASLONG register i = 0;
-	FLOAT a = *alpha;
 
 	while(i < n)
         {
-              y[i]   += a * x[i];
-              y[i+1] += a * x[i+1];
-              y[i+2] += a * x[i+2];
-              y[i+3] += a * x[i+3];
-              y[i+4] += a * x[i+4];
-              y[i+5] += a * x[i+5];
-              y[i+6] += a * x[i+6];
-              y[i+7] += a * x[i+7];
+              y[i]   += alpha * x[i];
+              y[i+1] += alpha * x[i+1];
+              y[i+2] += alpha * x[i+2];
+              y[i+3] += alpha * x[i+3];
+              y[i+4] += alpha * x[i+4];
+              y[i+5] += alpha * x[i+5];
+              y[i+6] += alpha * x[i+6];
+              y[i+7] += alpha * x[i+7];
               i+=8 ;
 
        }
@@ -70,11 +69,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
-	FLOAT a2[4];
-	a2[0]=da;
-	a2[1]=da;
-	a2[2]=da;
-	a2[3]=da;
 
 	if ( n <= 0 )  return(0);
 
@@ -84,7 +78,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 		BLASLONG n1 = n & -16;
 
 		if ( n1 )
-			daxpy_kernel_8(n1, x, y , a2 );
+			daxpy_kernel_8(n1, x, y, da);
 
 		i = n1;
 		while(i < n)

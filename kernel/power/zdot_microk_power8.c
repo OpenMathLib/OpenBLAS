@@ -34,186 +34,174 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **************************************************************************************/
 
 #define HAVE_KERNEL_8 1
-static void zdot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *dot) __attribute__ ((noinline));
 
-static void zdot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
+static void zdot_kernel_8 (long n, double *x, double *y, double *dot)
 {
+  __asm__
+    (
+       "dcbt		0, %2		\n\t"
+       "dcbt		0, %3		\n\t"
 
+       "xxlxor		32, 32,	32	\n\t"
+       "xxlxor		33, 33,	33	\n\t"
+       "xxlxor		34, 34,	34	\n\t"
+       "xxlxor		35, 35,	35	\n\t"
+       "xxlxor		36, 36,	36	\n\t"
+       "xxlxor		37, 37,	37	\n\t"
+       "xxlxor		38, 38,	38	\n\t"
+       "xxlxor		39, 39,	39	\n\t"
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	FLOAT *x1=x;
-	FLOAT *y1=y;
-	BLASLONG pre = 384;
+       "lxvd2x		40, 0, %2	\n\t"	// x0_r, x0_i
+       "lxvd2x		48, 0, %3	\n\t"	// y0_r, y0_i
+       "lxvd2x		41, %7, %2	\n\t"	// x1_r, x1_i
+       "lxvd2x		49, %7, %3	\n\t"	// y1_r, y1_i
+       "lxvd2x		42, %8, %2	\n\t"	// x2_r, x2_i
+       "lxvd2x		50, %8, %3	\n\t"	// y2_r, y2_i
+       "lxvd2x		43, %9, %2	\n\t"	// x3_r, x3_i
+       "lxvd2x		51, %9, %3	\n\t"	// y3_r, y3_i
 
-	__asm__  __volatile__
-	(
-	"xxlxor		32,32,32			    \n\t"
-	"xxlxor		33,33,33			    \n\t"
-	"xxlxor		34,34,34			    \n\t"
-	"xxlxor		35,35,35			    \n\t"
-	"xxlxor		36,36,36			    \n\t"
-	"xxlxor		37,37,37			    \n\t"
-	"xxlxor		38,38,38			    \n\t"
-	"xxlxor		39,39,39			    \n\t"
+       "xxswapd		0, 48		\n\t"	// y0_i, y0_r
+       "xxswapd		1, 49		\n\t"	// y1_i, y1_r
+       "xxswapd		2, 50		\n\t"	// y2_i, y2_r
+       "xxswapd		3, 51		\n\t"	// y3_i, y3_r
 
-	"dcbt		%2, %8				    \n\t"
-	"dcbt		%3, %8				    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 64	\n\t"
 
-	"lxvd2x		40, 0, %2			    \n\t"	// x0_r, x0_i
-	"lxvd2x		48, 0, %3			    \n\t"	// y0_r, y0_i
-	"lxvd2x		41, %5, %2			    \n\t"	// x1_r, x1_i
-	"lxvd2x		49, %5, %3			    \n\t"	// y1_r, y1_i
-	"lxvd2x		42, %6, %2			    \n\t"	// x2_r, x2_i
-	"lxvd2x		50, %6, %3			    \n\t"	// y2_r, y2_i
-	"lxvd2x		43, %7, %2			    \n\t"	// x3_r, x3_i
-	"lxvd2x		51, %7, %3			    \n\t"	// y3_r, y3_i
+       "lxvd2x		44, 0, %2	\n\t"	// x0_r, x0_i
+       "lxvd2x		4, 0, %3	\n\t"	// y0_r, y0_i
+       "lxvd2x		45, %7, %2	\n\t"	// x1_r, x1_i
+       "lxvd2x		5, %7, %3	\n\t"	// y1_r, y1_i
+       "lxvd2x		46, %8, %2	\n\t"	// x2_r, x2_i
+       "lxvd2x		6, %8, %3	\n\t"	// y2_r, y2_i
+       "lxvd2x		47, %9, %2	\n\t"	// x3_r, x3_i
+       "lxvd2x		7, %9, %3	\n\t"	// y3_r, y3_i
 
-	"xxswapd	52,48				    \n\t"	// y0_i, y0_r
-	"xxswapd	53,49				    \n\t"	// y1_i, y1_r
-	"xxswapd	54,50				    \n\t"	// y2_i, y2_r
-	"xxswapd	55,51				    \n\t"	// y3_i, y3_r
+       "xxswapd		8, 4		\n\t"	// y0_i, y0_r
+       "xxswapd		9, 5		\n\t"	// y1_i, y1_r
+       "xxswapd		10, 6		\n\t"	// y2_i, y2_r
+       "xxswapd		11, 7		\n\t"	// y3_i, y3_r
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 64	\n\t"
 
+       "addic.		%1, %1, -8	\n\t"
+       "ble		2f		\n\t"
 
-	"lxvd2x		44, 0, %2			    \n\t"	// x0_r, x0_i
-	"lxvd2x		56, 0, %3			    \n\t"	// y0_r, y0_i
-	"lxvd2x		45, %5, %2			    \n\t"	// x1_r, x1_i
-	"lxvd2x		57, %5, %3			    \n\t"	// y1_r, y1_i
-	"lxvd2x		46, %6, %2			    \n\t"	// x2_r, x2_i
-	"lxvd2x		58, %6, %3			    \n\t"	// y2_r, y2_i
-	"lxvd2x		47, %7, %2			    \n\t"	// x3_r, x3_i
-	"lxvd2x		59, %7, %3			    \n\t"	// y3_r, y3_i
+       ".p2align	5		\n"
+     "1:				\n\t"
 
-	"xxswapd	60,56				    \n\t"	// y0_i, y0_r
-	"xxswapd	61,57				    \n\t"	// y1_i, y1_r
-	"xxswapd	62,58				    \n\t"	// y2_i, y2_r
-	"xxswapd	63,59				    \n\t"	// y3_i, y3_r
+       "xvmaddadp	32, 40, 48	\n\t"	// x0_r * y0_r , x0_i * y0_i
+       "lxvd2x		48, 0, %3	\n\t"	// y0_r, y0_i
+       "xvmaddadp	34, 41, 49	\n\t"	// x1_r * y1_r , x1_i * y1_i
+       "lxvd2x		49, %7, %3	\n\t"	// y1_r, y1_i
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "xvmaddadp	36, 42, 50	\n\t"	// x2_r * y2_r , x2_i * y2_i
+       "lxvd2x		50, %8, %3	\n\t"	// y2_r, y2_i
+       "xvmaddadp	38, 43, 51	\n\t"	// x3_r * y3_r , x3_i * y3_i
+       "lxvd2x		51, %9, %3	\n\t"	// y3_r, y3_i
 
-	"addic.		%0 , %0	, -8  	 	             \n\t"
-	"ble		2f		             	     \n\t"
+       "xvmaddadp	33, 40, 0	\n\t"	// x0_r * y0_i , x0_i * y0_r
+       "lxvd2x		40, 0, %2	\n\t"	// x0_r, x0_i
+       "xvmaddadp	35, 41, 1	\n\t"	// x1_r * y1_i , x1_i * y1_r
+       "lxvd2x		41, %7, %2	\n\t"	// x1_r, x1_i
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
+       "xvmaddadp	37, 42, 2	\n\t"	// x2_r * y2_i , x2_i * y2_r
+       "lxvd2x		42, %8, %2	\n\t"	// x2_r, x2_i
+       "xvmaddadp	39, 43, 3	\n\t"	// x3_r * y3_i , x3_i * y3_r
+       "lxvd2x		43, %9, %2	\n\t"	// x3_r, x3_i
 
-	"dcbt		%2, %8				    \n\t"
-	"dcbt		%3, %8				    \n\t"
+       "xxswapd		0,48		\n\t"	// y0_i, y0_r
+       "xxswapd		1,49		\n\t"	// y1_i, y1_r
 
-	"xvmaddadp	32, 40, 48		    	    \n\t"	// x0_r * y0_r , x0_i * y0_i
-	"lxvd2x		48, 0, %3			    \n\t"	// y0_r, y0_i
-	"xvmaddadp	34, 41, 49		    	    \n\t"	// x1_r * y1_r , x1_i * y1_i
-	"lxvd2x		49, %5, %3			    \n\t"	// y1_r, y1_i
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 64	\n\t"
 
-	"xvmaddadp	36, 42, 50		    	    \n\t"	// x2_r * y2_r , x2_i * y2_i
-	"lxvd2x		50, %6, %3			    \n\t"	// y2_r, y2_i
-	"xvmaddadp	38, 43, 51		    	    \n\t"	// x3_r * y3_r , x3_i * y3_i
-	"lxvd2x		51, %7, %3			    \n\t"	// y3_r, y3_i
+       "xxswapd		2,50		\n\t"	// y2_i, y2_r
+       "xxswapd		3,51		\n\t"	// y3_i, y3_r
 
-	"xvmaddadp	33, 40, 52		    	    \n\t"	// x0_r * y0_i , x0_i * y0_r
-	"lxvd2x		40, 0, %2			    \n\t"	// x0_r, x0_i
-	"xvmaddadp	35, 41, 53		    	    \n\t"	// x1_r * y1_i , x1_i * y1_r
-	"lxvd2x		41, %5, %2			    \n\t"	// x1_r, x1_i
+       "xvmaddadp	32, 44, 4	\n\t"	// x0_r * y0_r , x0_i * y0_i
+       "lxvd2x		4, 0, %3	\n\t"	// y0_r, y0_i
+       "xvmaddadp	34, 45, 5	\n\t"	// x1_r * y1_r , x1_i * y1_i
+       "lxvd2x		5, %7, %3	\n\t"	// y1_r, y1_i
+       "xvmaddadp	36, 46, 6	\n\t"	// x2_r * y2_r , x2_i * y2_i
+       "lxvd2x		6, %8, %3	\n\t"	// y2_r, y2_i
+       "xvmaddadp	38, 47, 7	\n\t"	// x3_r * y3_r , x3_i * y3_i
+       "lxvd2x		7, %9, %3	\n\t"	// y3_r, y3_i
 
-	"xvmaddadp	37, 42, 54		    	    \n\t"	// x2_r * y2_i , x2_i * y2_r
-	"lxvd2x		42, %6, %2			    \n\t"	// x2_r, x2_i
-	"xvmaddadp	39, 43, 55		    	    \n\t"	// x3_r * y3_i , x3_i * y3_r
-	"lxvd2x		43, %7, %2			    \n\t"	// x3_r, x3_i
+       "xvmaddadp	33, 44, 8	\n\t"	// x0_r * y0_i , x0_i * y0_r
+       "lxvd2x		44, 0, %2	\n\t"	// x0_r, x0_i
+       "xvmaddadp	35, 45, 9	\n\t"	// x1_r * y1_i , x1_i * y1_r
+       "lxvd2x		45, %7, %2	\n\t"	// x1_r, x1_i
+       "xvmaddadp	37, 46, 10	\n\t"	// x2_r * y2_i , x2_i * y2_r
+       "lxvd2x		46, %8, %2	\n\t"	// x2_r, x2_i
+       "xvmaddadp	39, 47, 11	\n\t"	// x3_r * y3_i , x3_i * y3_r
+       "lxvd2x		47, %9, %2	\n\t"	// x3_r, x3_i
 
-	"xxswapd	52,48				    \n\t"	// y0_i, y0_r
-	"xxswapd	53,49				    \n\t"	// y1_i, y1_r
+       "xxswapd		8,4		\n\t"	// y0_i, y0_r
+       "xxswapd		9,5		\n\t"	// y1_i, y1_r
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "addi		%2, %2, 64	\n\t"
+       "addi		%3, %3, 64	\n\t"
 
-	"xxswapd	54,50				    \n\t"	// y2_i, y2_r
-	"xxswapd	55,51				    \n\t"	// y3_i, y3_r
+       "xxswapd		10,6		\n\t"	// y2_i, y2_r
+       "xxswapd		11,7		\n\t"	// y3_i, y3_r
 
-	"xvmaddadp	32, 44, 56		    	    \n\t"	// x0_r * y0_r , x0_i * y0_i
-	"lxvd2x		56, 0, %3			    \n\t"	// y0_r, y0_i
-	"xvmaddadp	34, 45, 57		    	    \n\t"	// x1_r * y1_r , x1_i * y1_i
-	"lxvd2x		57, %5, %3			    \n\t"	// y1_r, y1_i
-	"xvmaddadp	36, 46, 58		    	    \n\t"	// x2_r * y2_r , x2_i * y2_i
-	"lxvd2x		58, %6, %3			    \n\t"	// y2_r, y2_i
-	"xvmaddadp	38, 47, 59		    	    \n\t"	// x3_r * y3_r , x3_i * y3_i
-	"lxvd2x		59, %7, %3			    \n\t"	// y3_r, y3_i
+       "addic.		%1, %1, -8	\n\t"
+       "bgt		1b		\n"
 
-	"xvmaddadp	33, 44, 60		    	    \n\t"	// x0_r * y0_i , x0_i * y0_r
-	"lxvd2x		44, 0, %2			    \n\t"	// x0_r, x0_i
-	"xvmaddadp	35, 45, 61		    	    \n\t"	// x1_r * y1_i , x1_i * y1_r
-	"lxvd2x		45, %5, %2			    \n\t"	// x1_r, x1_i
-	"xvmaddadp	37, 46, 62		    	    \n\t"	// x2_r * y2_i , x2_i * y2_r
-	"lxvd2x		46, %6, %2			    \n\t"	// x2_r, x2_i
-	"xvmaddadp	39, 47, 63		    	    \n\t"	// x3_r * y3_i , x3_i * y3_r
-	"lxvd2x		47, %7, %2			    \n\t"	// x3_r, x3_i
+     "2:				\n\t"
 
-	"xxswapd	60,56				    \n\t"	// y0_i, y0_r
-	"xxswapd	61,57				    \n\t"	// y1_i, y1_r
+       "xvmaddadp	32, 40, 48	\n\t"	// x0_r * y0_r , x0_i * y0_i
+       "xvmaddadp	34, 41, 49	\n\t"	// x1_r * y1_r , x1_i * y1_i
+       "xvmaddadp	36, 42, 50	\n\t"	// x2_r * y2_r , x2_i * y2_i
+       "xvmaddadp	38, 43, 51	\n\t"	// x3_r * y3_r , x3_i * y3_i
 
-	"addi		%2, %2, 64			    \n\t"
-	"addi		%3, %3, 64			    \n\t"
+       "xvmaddadp	33, 40, 0	\n\t"	// x0_r * y0_i , x0_i * y0_r
+       "xvmaddadp	35, 41, 1	\n\t"	// x1_r * y1_i , x1_i * y1_r
+       "xvmaddadp	37, 42, 2	\n\t"	// x2_r * y2_i , x2_i * y2_r
+       "xvmaddadp	39, 43, 3	\n\t"	// x3_r * y3_i , x3_i * y3_r
 
-	"xxswapd	62,58				    \n\t"	// y2_i, y2_r
-	"xxswapd	63,59				    \n\t"	// y3_i, y3_r
+       "xvmaddadp	32, 44, 4	\n\t"	// x0_r * y0_r , x0_i * y0_i
+       "xvmaddadp	34, 45, 5	\n\t"	// x1_r * y1_r , x1_i * y1_i
+       "xvmaddadp	36, 46, 6	\n\t"	// x2_r * y2_r , x2_i * y2_i
+       "xvmaddadp	38, 47, 7	\n\t"	// x3_r * y3_r , x3_i * y3_i
 
-	"addic.		%0 , %0	, -8  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
+       "xvmaddadp	33, 44, 8	\n\t"	// x0_r * y0_i , x0_i * y0_r
+       "xvmaddadp	35, 45, 9	\n\t"	// x1_r * y1_i , x1_i * y1_r
+       "xvmaddadp	37, 46, 10	\n\t"	// x2_r * y2_i , x2_i * y2_r
+       "xvmaddadp	39, 47, 11	\n\t"	// x3_r * y3_i , x3_i * y3_r
 
-	"2:						     \n\t"
+       "xvadddp		32, 32, 34	\n\t"
+       "xvadddp		36, 36, 38	\n\t"
 
-	"xvmaddadp	32, 40, 48		    	    \n\t"	// x0_r * y0_r , x0_i * y0_i
-	"xvmaddadp	34, 41, 49		    	    \n\t"	// x1_r * y1_r , x1_i * y1_i
-	"xvmaddadp	36, 42, 50		    	    \n\t"	// x2_r * y2_r , x2_i * y2_i
-	"xvmaddadp	38, 43, 51		    	    \n\t"	// x3_r * y3_r , x3_i * y3_i
+       "xvadddp		33, 33, 35	\n\t"
+       "xvadddp		37, 37, 39	\n\t"
 
-	"xvmaddadp	33, 40, 52		    	    \n\t"	// x0_r * y0_i , x0_i * y0_r
-	"xvmaddadp	35, 41, 53		    	    \n\t"	// x1_r * y1_i , x1_i * y1_r
-	"xvmaddadp	37, 42, 54		    	    \n\t"	// x2_r * y2_i , x2_i * y2_r
-	"xvmaddadp	39, 43, 55		    	    \n\t"	// x3_r * y3_i , x3_i * y3_r
+       "xvadddp		32, 32, 36	\n\t"
+       "xvadddp		33, 33, 37	\n\t"
 
-	"xvmaddadp	32, 44, 56		    	    \n\t"	// x0_r * y0_r , x0_i * y0_i
-	"xvmaddadp	34, 45, 57		    	    \n\t"	// x1_r * y1_r , x1_i * y1_i
-	"xvmaddadp	36, 46, 58		    	    \n\t"	// x2_r * y2_r , x2_i * y2_i
-	"xvmaddadp	38, 47, 59		    	    \n\t"	// x3_r * y3_r , x3_i * y3_i
+       "stxvd2x		32, 0, %6	\n\t"
+       "stxvd2x		33, %7, %6	\n"
 
-	"xvmaddadp	33, 44, 60		    	    \n\t"	// x0_r * y0_i , x0_i * y0_r
-	"xvmaddadp	35, 45, 61		    	    \n\t"	// x1_r * y1_i , x1_i * y1_r
-	"xvmaddadp	37, 46, 62		    	    \n\t"	// x2_r * y2_i , x2_i * y2_r
-	"xvmaddadp	39, 47, 63		    	    \n\t"	// x3_r * y3_i , x3_i * y3_r
-
-
-	"xvadddp	32, 32, 34		     \n\t"
-	"xvadddp	36, 36, 38		     \n\t"
-
-	"xvadddp	33, 33, 35		     \n\t"
-	"xvadddp	37, 37, 39		     \n\t"
-
-	"xvadddp	32, 32, 36		     \n\t"
-	"xvadddp	33, 33, 37		     \n\t"
-
-	"stxvd2x	32, 0, %4		     \n\t"
-	"stxvd2x	33, %5, %4		     \n\t"
-
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
-          "r" (x1),     // 2
-          "r" (y1),     // 3
-          "r" (dot),    // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-	  "r" (pre)	// 8
-	: "cr0", "%0", "%2" , "%3", "memory"
-	);
-
-} 
-
-
+     "#n=%1 x=%4=%2 y=%5=%3 dot=%0=%6 o16=%7 o32=%8 o48=%9"
+     :
+       "=m" (*dot),
+       "+r" (n),	// 1
+       "+b" (x),	// 2
+       "+b" (y)		// 3
+     :
+       "m" (*x),
+       "m" (*y),
+       "b" (dot),	// 6
+       "b" (16),	// 7
+       "b" (32),	// 8
+       "b" (48)		// 9
+     :
+       "cr0",
+       "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",
+       "vs40","vs41","vs42","vs43","vs44","vs45","vs46","vs47",
+       "vs48","vs49","vs50","vs51","vs0","vs1","vs2","vs3",
+       "vs4","vs5","vs6","vs7","vs8","vs9","vs10","vs11"
+     );
+}

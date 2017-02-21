@@ -53,7 +53,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_16
 
-static void casum_kernel_16(BLASLONG n, FLOAT *x1, FLOAT *svec)
+static FLOAT casum_kernel_16(BLASLONG n, FLOAT *x1)
 {
 
 	BLASLONG i=0;
@@ -92,11 +92,7 @@ static void casum_kernel_16(BLASLONG n, FLOAT *x1, FLOAT *svec)
 
 	}
 
-	svec[0] = sum0+sum1+sum2+sum3;
-	svec[1] = 0.0;
-	svec[2] = 0.0;
-	svec[3] = 0.0;
-
+	return sum0+sum1+sum2+sum3;
 }
 
 #endif
@@ -106,7 +102,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	BLASLONG i=0;
 	BLASLONG ip=0;
 	FLOAT sumf = 0.0;
-	FLOAT svec[4] __attribute__ ((aligned (16)));;
 	BLASLONG n1;
 	BLASLONG inc_x2;
 
@@ -119,8 +114,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 		if ( n1 > 0 )
 		{
 
-			casum_kernel_16(n1, x, svec);
-			sumf = svec[0] + svec[1]+svec[2]+svec[3];
+			sumf = casum_kernel_16(n1, x);
 			i=n1;
 			ip = 2 * n1;
 		}

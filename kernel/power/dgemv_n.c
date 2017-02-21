@@ -47,18 +47,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_4x4
 
-static void dgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT *alpha)
+static void dgemv_kernel_4x4(BLASLONG n, FLOAT *a_ptr, BLASLONG lda, FLOAT *xo, FLOAT *y, FLOAT alpha)
 {
 	BLASLONG i;
-	FLOAT *a0,*a1,*a2,*a3;
 	FLOAT x[4]  __attribute__ ((aligned (16)));;
-	a0 = ap[0];
-	a1 = ap[1];
-	a2 = ap[2];
-	a3 = ap[3];
+	FLOAT *a0 = a_ptr;
+	FLOAT *a1 = a0 + lda;
+	FLOAT *a2 = a1 + lda;
+	FLOAT *a3 = a2 + lda;
+
 
 	for ( i=0; i<4; i++)
-		x[i] = xo[i] * *alpha;
+		x[i] = xo[i] * alpha;
 
 	for ( i=0; i< n; i+=4 )
 	{
@@ -73,16 +73,13 @@ static void dgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT 
 
 #ifndef HAVE_KERNEL_4x2
 
-static void dgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT *alpha)
+static void dgemv_kernel_4x2(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *xo, FLOAT *y, FLOAT alpha)
 {
 	BLASLONG i;
-	FLOAT *a0,*a1;
 	FLOAT x[4]  __attribute__ ((aligned (16)));;
-	a0 = ap[0];
-	a1 = ap[1];
 
 	for ( i=0; i<2; i++)
-		x[i] = xo[i] * *alpha;
+		x[i] = xo[i] * alpha;
 
 	for ( i=0; i< n; i+=4 )
 	{
@@ -98,15 +95,13 @@ static void dgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT 
 
 #ifndef HAVE_KERNEL_4x1
 
-static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *xo, FLOAT *y, FLOAT *alpha)
+static void dgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *xo, FLOAT *y, FLOAT alpha)
 {
 	BLASLONG i;
-	FLOAT *a0;
 	FLOAT x[4]  __attribute__ ((aligned (16)));;
-	a0 = ap;
 
 	for ( i=0; i<1; i++)
-		x[i] = xo[i] * *alpha;
+		x[i] = xo[i] * alpha;
 
 	for ( i=0; i< n; i+=4 )
 	{
@@ -141,7 +136,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 {
 
 	BLASLONG i;
-	BLASLONG j;
 	FLOAT *a_ptr;
 	FLOAT *x_ptr;
 	FLOAT *y_ptr;
@@ -151,12 +145,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	BLASLONG m3;
 	BLASLONG n2;
 	BLASLONG lda4 =  lda << 2;
-	FLOAT *ap[4] __attribute__ ((aligned (16)));;
 	FLOAT xbuffer[8] __attribute__ ((aligned (16)));;
-	FLOAT alpha_r[4] __attribute__ ((aligned (16)));;
 	FLOAT *ybuffer;
-
-	alpha_r[0] = alpha;
 
         if ( m < 1 ) return(0);
         if ( n < 1 ) return(0);
@@ -187,11 +177,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		a_ptr = a;
 		x_ptr = x;
 		
-		ap[0] = a_ptr;
-		ap[1] = a_ptr + lda;
-		ap[2] = ap[1] + lda;
-		ap[3] = ap[2] + lda;
-
 		if ( inc_y != 1 )
 			memset(ybuffer,0,NB*8);
 		else
@@ -203,18 +188,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			for( i = 0; i < n1 ; i++)
 			{
-				dgemv_kernel_4x4(NB,ap,x_ptr,ybuffer,alpha_r);
-				ap[0] += lda4; 
-				ap[1] += lda4; 
-				ap[2] += lda4; 
-				ap[3] += lda4; 
+				dgemv_kernel_4x4(NB,a_ptr,lda,x_ptr,ybuffer,alpha);
 				a_ptr += lda4;
 				x_ptr += 4;	
 			}
 
 			if ( n2 & 2 )
 			{
-				dgemv_kernel_4x2(NB,ap,x_ptr,ybuffer,alpha_r);
+				dgemv_kernel_4x2(NB,a_ptr,a_ptr+lda,x_ptr,ybuffer,alpha);
 				a_ptr += lda*2;
 				x_ptr += 2;	
 			}
@@ -222,7 +203,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			if ( n2 & 1 )
 			{
-				dgemv_kernel_4x1(NB,a_ptr,x_ptr,ybuffer,alpha_r);
+				dgemv_kernel_4x1(NB,a_ptr,x_ptr,ybuffer,alpha);
 				a_ptr += lda;
 				x_ptr += 1;	
 
@@ -243,11 +224,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 				x_ptr += inc_x;	
 				xbuffer[3] = x_ptr[0];
 				x_ptr += inc_x;	
-				dgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha_r);
-				ap[0] += lda4; 
-				ap[1] += lda4; 
-				ap[2] += lda4; 
-				ap[3] += lda4; 
+				dgemv_kernel_4x4(NB,a_ptr,lda,xbuffer,ybuffer,alpha);
 				a_ptr += lda4;
 			}
 
@@ -255,7 +232,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			{
 				xbuffer[0] = x_ptr[0];
 				x_ptr += inc_x;	
-				dgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha_r);
+				dgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha);
 				a_ptr += lda;
 
 			}

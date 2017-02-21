@@ -35,185 +35,149 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define HAVE_KERNEL_8 1
 
-static void dscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x) __attribute__ ((noinline));
-
-static void dscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
+static void dscal_kernel_8 (long n, double *x, double alpha)
 {
+  __asm__
+    (
+       "dcbt		0, %2		\n\t"
+
+       "xxspltd		%x3, %x3, 0	\n\t"
+
+       "lxvd2x		32, 0, %2	\n\t"
+       "lxvd2x		33, %4, %2	\n\t"
+       "lxvd2x		34, %5, %2	\n\t"
+       "lxvd2x		35, %6, %2	\n\t"
+       "lxvd2x		36, %7, %2	\n\t"
+       "lxvd2x		37, %8, %2	\n\t"
+       "lxvd2x		38, %9, %2	\n\t"
+       "lxvd2x		39, %10, %2	\n\t"
+
+       "addi		%2, %2, 128	\n\t"
+
+       "addic.		%1, %1, -16	\n\t"
+       "ble		2f		\n\t"
+
+       ".p2align	5		\n"
+     "1:				\n\t"
+
+       "xvmuldp		40, 32, %x3	\n\t"
+       "xvmuldp		41, 33, %x3	\n\t"
+       "lxvd2x		32, 0, %2	\n\t"
+       "lxvd2x		33, %4, %2	\n\t"
+       "xvmuldp		42, 34, %x3	\n\t"
+       "xvmuldp		43, 35, %x3	\n\t"
+       "lxvd2x		34, %5, %2	\n\t"
+       "lxvd2x		35, %6, %2	\n\t"
+       "xvmuldp		44, 36, %x3	\n\t"
+       "xvmuldp		45, 37, %x3	\n\t"
+       "lxvd2x		36, %7, %2	\n\t"
+       "lxvd2x		37, %8, %2	\n\t"
+       "xvmuldp		46, 38, %x3	\n\t"
+       "xvmuldp		47, 39, %x3	\n\t"
+       "lxvd2x		38, %9, %2	\n\t"
+       "lxvd2x		39, %10, %2	\n\t"
+
+       "addi		%2, %2, -128	\n\t"
+
+       "stxvd2x		40, 0, %2	\n\t"
+       "stxvd2x		41, %4, %2	\n\t"
+       "stxvd2x		42, %5, %2	\n\t"
+       "stxvd2x		43, %6, %2	\n\t"
+       "stxvd2x		44, %7, %2	\n\t"
+       "stxvd2x		45, %8, %2	\n\t"
+       "stxvd2x		46, %9, %2	\n\t"
+       "stxvd2x		47, %10, %2	\n\t"
+
+       "addi		%2, %2, 256	\n\t"
+
+       "addic.		%1, %1, -16	\n\t"
+       "bgt		1b		\n"
+
+     "2:				\n\t"
+
+       "xvmuldp		40, 32, %x3	\n\t"
+       "xvmuldp		41, 33, %x3	\n\t"
+       "xvmuldp		42, 34, %x3	\n\t"
+       "xvmuldp		43, 35, %x3	\n\t"
+
+       "addi		%2, %2, -128	\n\t"
+
+       "xvmuldp		44, 36, %x3	\n\t"
+       "xvmuldp		45, 37, %x3	\n\t"
+       "xvmuldp		46, 38, %x3	\n\t"
+       "xvmuldp		47, 39, %x3	\n\t"
+
+       "stxvd2x		40, 0, %2	\n\t"
+       "stxvd2x		41, %4, %2	\n\t"
+       "stxvd2x		42, %5, %2	\n\t"
+       "stxvd2x		43, %6, %2	\n\t"
+       "stxvd2x		44, %7, %2	\n\t"
+       "stxvd2x		45, %8, %2	\n\t"
+       "stxvd2x		46, %9, %2	\n\t"
+       "stxvd2x		47, %10, %2	\n"
+
+     "#n=%1 alpha=%3 x=%0=%2 o16=%4 o32=%5 o48=%6 o64=%7 o80=%8 o96=%9 o112=%10"
+     :
+       "+m" (*x),
+       "+r" (n),	// 1
+       "+b" (x)		// 2
+     :
+       "d" (alpha),	// 3
+       "b" (16),	// 4
+       "b" (32),	// 5
+       "b" (48),	// 6
+       "b" (64),	// 7
+       "b" (80),	// 8
+       "b" (96),	// 9
+       "b" (112)	// 10
+     :
+       "cr0",
+       "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",
+       "vs40","vs41","vs42","vs43","vs44","vs45","vs46","vs47"
+     );
+}
 
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	BLASLONG o64 = 64;
-	BLASLONG o80 = 80;
-	BLASLONG o96 = 96;
-	BLASLONG o112 = 112;
-	FLOAT *x1=x;
-	FLOAT *x2=x+1;
-	BLASLONG pre = 384;
-
-	__asm__  __volatile__
-	(
-
-        "lxsdx          33, 0, %3                           \n\t"
-        "xxspltd        32, 33, 0                           \n\t"
-        "addi           %1, %1, -8                          \n\t"
-
-	"dcbt		%2, %4				    \n\t"
-
-	"lxvd2x		40, 0, %2			    \n\t"
-	"lxvd2x		41, %5, %2			    \n\t"
-	"lxvd2x		42, %6, %2			    \n\t"
-	"lxvd2x		43, %7, %2			    \n\t"
-	"lxvd2x		44, %8, %2			    \n\t"
-	"lxvd2x		45, %9, %2			    \n\t"
-	"lxvd2x		46, %10, %2			    \n\t"
-	"lxvd2x		47, %11, %2			    \n\t"
-
-	"addi		%2, %2, 128			    \n\t"
-
-	"addic.		%0 , %0	, -16  	 	             \n\t"
-	"ble		2f		             	     \n\t"
-
-	".align 5				            \n\t"
-	"1:				                    \n\t"
-
-	"dcbt		%2, %4				    \n\t"
-
-	"xvmuldp	48, 40, 32		    	    \n\t"
-	"xvmuldp	49, 41, 32		    	    \n\t"
-	"lxvd2x		40, 0, %2			    \n\t"
-	"lxvd2x		41, %5, %2			    \n\t"
-	"xvmuldp	50, 42, 32		    	    \n\t"
-	"xvmuldp	51, 43, 32		    	    \n\t"
-	"lxvd2x		42, %6, %2			    \n\t"
-	"lxvd2x		43, %7, %2			    \n\t"
-	"xvmuldp	52, 44, 32		    	    \n\t"
-	"xvmuldp	53, 45, 32		    	    \n\t"
-	"lxvd2x		44, %8, %2			    \n\t"
-	"lxvd2x		45, %9, %2			    \n\t"
-	"xvmuldp	54, 46, 32		    	    \n\t"
-	"xvmuldp	55, 47, 32		    	    \n\t"
-	"lxvd2x		46, %10, %2			    \n\t"
-	"lxvd2x		47, %11, %2			    \n\t"
-
-	"stxvd2x	48, 0, %1			    \n\t"
-	"stxvd2x	49, %5, %1			    \n\t"
-	"stxvd2x	50, %6, %1			    \n\t"
-	"stxvd2x	51, %7, %1			    \n\t"
-	"stxvd2x	52, %8, %1			    \n\t"
-	"stxvd2x	53, %9, %1			    \n\t"
-	"stxvd2x	54, %10, %1			    \n\t"
-	"stxvd2x	55, %11, %1			    \n\t"
-
-	"addi		%1, %1, 128			    \n\t"
-	"addi		%2, %2, 128			    \n\t"
-
-	"addic.		%0 , %0	, -16  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
-
-	"2:						     \n\t"
-
-	"xvmuldp	48, 40, 32		    	    \n\t"
-	"xvmuldp	49, 41, 32		    	    \n\t"
-	"xvmuldp	50, 42, 32		    	    \n\t"
-	"xvmuldp	51, 43, 32		    	    \n\t"
-	"xvmuldp	52, 44, 32		    	    \n\t"
-	"xvmuldp	53, 45, 32		    	    \n\t"
-	"xvmuldp	54, 46, 32		    	    \n\t"
-	"xvmuldp	55, 47, 32		    	    \n\t"
-
-	"stxvd2x	48, 0, %1			    \n\t"
-	"stxvd2x	49, %5, %1			    \n\t"
-	"stxvd2x	50, %6, %1			    \n\t"
-	"stxvd2x	51, %7, %1			    \n\t"
-	"stxvd2x	52, %8, %1			    \n\t"
-	"stxvd2x	53, %9, %1			    \n\t"
-	"stxvd2x	54, %10, %1			    \n\t"
-	"stxvd2x	55, %11, %1			    \n\t"
-
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (x2),  	// 1
-          "r" (x1),     // 2
-          "r" (alpha),  // 3
-          "r" (pre),    // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-          "r" (o64),    // 8
-          "r" (o80),    // 9
-          "r" (o96),    // 10
-          "r" (o112)    // 11
-	: "cr0", "%0", "%2" , "%1", "memory"
-	);
-
-} 
-
-
-static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x) __attribute__ ((noinline));
-
-static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
+static void dscal_kernel_8_zero (long n, double *x)
 {
+  __vector double t0;
 
+  __asm__
+    (
+       "xxlxor		%x3, %x3, %x3	\n\t"
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	BLASLONG o64 = 64;
-	BLASLONG o80 = 80;
-	BLASLONG o96 = 96;
-	BLASLONG o112 = 112;
-	FLOAT *x1=x;
-	FLOAT *x2=x+1;
-	BLASLONG pre = 384;
+       ".p2align	5		\n"
+     "1:				\n\t"
 
-	__asm__  __volatile__
-	(
+       "stxvd2x		%x3, 0, %2	\n\t"
+       "stxvd2x		%x3, %4, %2	\n\t"
+       "stxvd2x		%x3, %5, %2	\n\t"
+       "stxvd2x		%x3, %6, %2	\n\t"
+       "stxvd2x		%x3, %7, %2	\n\t"
+       "stxvd2x		%x3, %8, %2	\n\t"
+       "stxvd2x		%x3, %9, %2	\n\t"
+       "stxvd2x		%x3, %10, %2	\n\t"
 
-	"xxlxor		32 , 32 , 32			    \n\t"
-        "addi           %1, %1, -8                          \n\t"
+       "addi		%2, %2, 128	\n\t"
 
+       "addic.		%1, %1, -16	\n\t"
+       "bgt		1b		\n"
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
-
-	"stxvd2x	32, 0, %1			    \n\t"
-	"stxvd2x	32, %5, %1			    \n\t"
-	"stxvd2x	32, %6, %1			    \n\t"
-	"stxvd2x	32, %7, %1			    \n\t"
-	"stxvd2x	32, %8, %1			    \n\t"
-	"stxvd2x	32, %9, %1			    \n\t"
-	"stxvd2x	32, %10, %1			    \n\t"
-	"stxvd2x	32, %11, %1			    \n\t"
-
-	"addi		%1, %1, 128			    \n\t"
-
-	"addic.		%0 , %0	, -16  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
-
-	"2:						     \n\t"
-
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (x2),  	// 1
-          "r" (x1),     // 2
-          "r" (alpha),  // 3
-          "r" (pre),    // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-          "r" (o64),    // 8
-          "r" (o80),    // 9
-          "r" (o96),    // 10
-          "r" (o112)    // 11
-	: "cr0", "%0", "%2" , "%1", "memory"
-	);
-
-} 
-
-
+     "#n=%1 x=%0=%2 t0=%x3 o16=%4 o32=%5 o48=%6 o64=%7 o80=%8 o96=%9 o112=%10"
+     :
+       "=m" (*x),
+       "+r" (n),	// 1
+       "+b" (x),	// 2
+       "=wa" (t0)	// 3
+     :
+       "b" (16),	// 4
+       "b" (32),	// 5
+       "b" (48),	// 6
+       "b" (64),	// 7
+       "b" (80),	// 8
+       "b" (96),	// 9
+       "b" (112)	// 10
+     :
+       "cr0"
+     );
+}
