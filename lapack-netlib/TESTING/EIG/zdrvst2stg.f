@@ -399,8 +399,7 @@
      $                   ZHET22, ZHPEV, ZHPEVD, ZHPEVX, ZLACPY, ZLASET,
      $                   ZHEEVD_2STAGE, ZHEEVR_2STAGE, ZHEEVX_2STAGE,
      $                   ZHEEV_2STAGE, ZHBEV_2STAGE, ZHBEVD_2STAGE,
-     $                   ZHBEVX_2STAGE, ZHETRD_2STAGE, ZHETRD_SY2SB, 
-     $                   ZHETRD_SB2ST, ZLATMR, ZLATMS
+     $                   ZHBEVX_2STAGE, ZHETRD_2STAGE, ZLATMR, ZLATMS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, INT, LOG, MAX, MIN, SQRT

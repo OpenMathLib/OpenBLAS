@@ -373,7 +373,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLASUM, XERBLA, ZHBT21, ZHBTRD, ZLACPY, ZLASET,
-     $                   ZLATMR, ZLATMS, ZHBTRD_HB2ST, ZSTEQR
+     $                   ZLATMR, ZLATMS, ZHETRD_HB2ST, ZSTEQR
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCONJG, MAX, MIN, SQRT
