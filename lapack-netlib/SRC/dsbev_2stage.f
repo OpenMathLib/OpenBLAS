@@ -239,7 +239,7 @@
       EXTERNAL           LSAME, DLAMCH, DLANSB, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLASCL, DSCAL, DSTEQR, DSTERF, XERBLA
+      EXTERNAL           DLASCL, DSCAL, DSTEQR, DSTERF, XERBLA,
      $                   DSYTRD_SB2ST 
 *     ..
 *     .. Intrinsic Functions ..
