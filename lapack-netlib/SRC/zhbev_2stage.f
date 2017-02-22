@@ -247,7 +247,7 @@
       EXTERNAL           LSAME, DLAMCH, ZLANHB, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DSCAL, DSTERF, XERBLA, ZLASCL, ZSTEQR
+      EXTERNAL           DSCAL, DSTERF, XERBLA, ZLASCL, ZSTEQR,
      $                   ZHETRD_2STAGE
 *     ..
 *     .. Intrinsic Functions ..
