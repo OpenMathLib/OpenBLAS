@@ -22,6 +22,10 @@ IZAMAXKERNEL   = izamax_thunderx2t99.c
 
 SNRM2KERNEL    = scnrm2_thunderx2t99.c
 CNRM2KERNEL    = scnrm2_thunderx2t99.c
+#DNRM2KERNEL    = dznrm2_thunderx2t99_fast.c
+#ZNRM2KERNEL    = dznrm2_thunderx2t99_fast.c
+DNRM2KERNEL    = dznrm2_thunderx2t99.c
+ZNRM2KERNEL    = dznrm2_thunderx2t99.c
 
 DAXPYKERNEL    = daxpy_thunderx2t99.S
 
