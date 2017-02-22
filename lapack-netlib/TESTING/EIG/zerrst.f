@@ -29,8 +29,7 @@
 *> ZHPEV, CHPEVX, CHPEVD, and ZSTEDC.
 *> ZHEEVD_2STAGE, ZHEEVR_2STAGE, ZHEEVX_2STAGE,
 *> ZHEEV_2STAGE, ZHBEV_2STAGE, ZHBEVD_2STAGE,
-*> ZHBEVX_2STAGE, ZHETRD_2STAGE, ZHETRD_SY2SB,
-*> ZHETRD_SB2ST
+*> ZHBEVX_2STAGE, ZHETRD_2STAGE
 *> \endverbatim
 *
 *  Arguments:
@@ -102,8 +101,7 @@
      $                   ZUNGTR, ZUNMTR, ZUPGTR, ZUPMTR,
      $                   ZHEEVD_2STAGE, ZHEEVR_2STAGE, ZHEEVX_2STAGE,
      $                   ZHEEV_2STAGE, ZHBEV_2STAGE, ZHBEVD_2STAGE,
-     $                   ZHBEVX_2STAGE, ZHETRD_2STAGE, ZHETRD_SY2SB,
-     $                   ZHETRD_SB2ST
+     $                   ZHBEVX_2STAGE, ZHETRD_2STAGE
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
