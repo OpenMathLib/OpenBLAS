@@ -287,7 +287,7 @@
       EXTERNAL           LSAME, ILAENV, IZAMAX, DLAMCH, DZASUM
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZCOPY, ZDSCAL, ZGEMV, ZLATRS
+      EXTERNAL           XERBLA, ZCOPY, ZDSCAL, ZGEMV, ZLATRS,
      $                   ZGEMM, DLABAD, ZLASET
 *     ..
 *     .. Intrinsic Functions ..

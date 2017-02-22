@@ -247,7 +247,7 @@
       EXTERNAL           LSAME, SLAMCH, CLANHB, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SSCAL, SSTERF, XERBLA, CLASCL, CSTEQR
+      EXTERNAL           SSCAL, SSTERF, XERBLA, CLASCL, CSTEQR,
      $                   CHETRD_2STAGE
 *     ..
 *     .. Intrinsic Functions ..
