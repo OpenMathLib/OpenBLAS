@@ -1455,71 +1455,19 @@
                    lay \TEMP_VAL,-\C_B(\TEMP_VAL)
     #endif
                     /*ptrba += temp*C_A;
-                    ptrbb += temp*C_B;*/
-	.if \C_B==4
+                    ptrbb += temp*C_B;*/ 
 		.if  \C_A==8 
-			sllg \TEMP_VAL, \TEMP_VAL,5 /*temp*4*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/ 
-			agr \PTR_A, \TEMP_VAL  /*ptrba+temp*C_A*/		
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
+			sllg \TEMP_VAL, \TEMP_VAL,6	
 		.elseif \C_A==4
-			sllg \TEMP_VAL, \TEMP_VAL,5 /*temp*4*/
-			agr \PTR_B, \TEMP_VAL  /*ptrbb+temp*C_B*/	    
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
+			sllg \TEMP_VAL, \TEMP_VAL,5 /*temp*4*/ 
 		.elseif \C_A==2
-			sllg \TEMP_VAL, \TEMP_VAL,4 /*temp*2*/
-			agr \PTR_B, \TEMP_VAL  /*ptrbb+temp*C_B*/	    
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
-			agr \PTR_B, \TEMP_VAL  /*ptrbb+temp*C_B*/   
+			sllg \TEMP_VAL, \TEMP_VAL,4 /*temp*2*/  
 		.elseif \C_A==1
-			sllg \TEMP_VAL, \TEMP_VAL,3 /*temp*1*/	  
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
-			sllg \TEMP_VAL, \TEMP_VAL,2 /*temp*2*2*/     
-			agr \PTR_B, \TEMP_VAL  /*ptrbb+temp*C_B*/  
-		 .endif
-	.elseif \C_B==2
-		.if  \C_A==8 
-			sllg \TEMP_VAL, \TEMP_VAL,4 /*temp*2*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/ 
-			sllg \TEMP_VAL, \TEMP_VAL,2   /*temp*2*4 */	   
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
-		  .elseif \C_A==4
-			sllg \TEMP_VAL, \TEMP_VAL,4 /*temp*2*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/ 
-			agr \TEMP_VAL, \TEMP_VAL	  
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/   
-		  .elseif \C_A==2
-			sllg \TEMP_VAL, \TEMP_VAL,4 /*temp*2*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/    
-			agr \PTR_A, \TEMP_VAL  /*ptrba+temp*C_A*/	
-		 .elseif \C_A==1
-			sllg \TEMP_VAL, \TEMP_VAL,3 /*temp*1*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/    
-			agr \PTR_A, \TEMP_VAL  /*ptrba+temp*C_A*/ 
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/  
-		  .endif
-	.elseif \C_B==1
-		.if  \C_A==8 
-			sllg \TEMP_VAL, \TEMP_VAL,3 /*temp*1*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/ 
-			sllg \TEMP_VAL, \TEMP_VAL,3   /*temp*1*8 */	   
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
-		 .elseif \C_A==4
-			sllg \TEMP_VAL, \TEMP_VAL,3 /*temp*1*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/ 
-			sllg \TEMP_VAL, \TEMP_VAL,2   /*temp*1*4 */	   
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
-		 .elseif \C_A==2
-			sllg \TEMP_VAL, \TEMP_VAL,3 /*temp*1*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/ 
-			agr \TEMP_VAL, \TEMP_VAL	
-			la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/    
-		.elseif \C_A==1
-			sllg \TEMP_VAL, \TEMP_VAL,3 /*temp*1*/
-			la \PTR_B,0(\PTR_B,\TEMP_VAL) /*ptrbb+temp*C_B*/ 
-			agr \PTR_A, \TEMP_VAL  /*ptrba+temp*C_A*/ 
-	   .endif			 
-	.endif
+			sllg \TEMP_VAL, \TEMP_VAL,3 /*temp*1*/  
+		.endif
+                la \PTR_A,0(\PTR_A,\TEMP_VAL) /*ptrba+temp*C_A*/ 
+                /*we do not need to refresh ptrbb. so lets ignore it*/
+
     #endif
 
     #ifdef LEFT
