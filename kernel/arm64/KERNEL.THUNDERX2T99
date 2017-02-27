@@ -45,3 +45,7 @@ endif
 ifeq ($(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N), 8x4)
 CGEMMKERNEL    =  cgemm_kernel_8x4_thunderx2t99.S
 endif
+
+ifeq ($(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N), 4x4)
+ZGEMMKERNEL    =  zgemm_kernel_4x4_thunderx2t99.S
+endif
