@@ -73,11 +73,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ASSEMBLER
 #include "common.h"
 
-/************** Notes ON IBM abi and IBM assembly**********************************************
-* General registers r0 and r1 should be used internally whenever possible
-* General registers r2 to r5 should be second choice
-* General registers r12 to r15 should only be used for their standard function.
-* r0 should not be used as address disp register
+/*
+
  
 BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* ba,FLOAT* bb,
     FLOAT* C,BLASLONG ldc, BLASLONG offset)
@@ -85,7 +82,7 @@ BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* ba,FLOAT* b
 offset=stack[176]    
 
 **********************************************************************************************/
- 
+/*Note: r0 can not be used as address disp register */ 
 
 #define BM           %r2
 #define BM_CUR       %r0
@@ -118,21 +115,21 @@ offset=stack[176]
 /***********************************ZGEMM**4x4*******************************************************/
 
 PROLOGUE
-#if defined(TRMMKERNEL)
+#if defined(TRMMKERNEL) 
+  std OFFSET   ,40(%r15)
   stmg %r6,%r13,48(%r15)  
 #else 
   stmg %r6,%r12,48(%r15)   
 #endif
-std %f11,8(%r15)
-std %f10,16(%r15)
-std %f9,24(%r15)
-std %f12,32(%r15)
+std %f9, 128(%r15)
+std %f10,136(%r15)
+std %f11,144(%r15)
+std %f12,152(%r15)
 
 lg CIJ, 160(%r15)
 lg LOCAL_VAR1, 168(%r15)
 #if defined(TRMMKERNEL)
   lg OFF,176(%r15)
-  std OFFSET,40(%r15)
   ldgr OFFSET ,OFF
 #endif
 srlg BN_CUR,BN,2  
@@ -709,16 +706,18 @@ la B,0(B,LOCAL_VAR2)      /*refresh B=B+Bk*1*sizeof(complex)  */
 ALIGN_2
 .L_FUNC_END:
 /*end*/
-ld %f11,8(%r15)
-ld %f10,16(%r15)
-ld %f9,24(%r15)
-ld %f12,32(%r15)
+
+
 #if defined(TRMMKERNEL)
 ld OFFSET,40(%r15)
 lmg %r6,%r13,48(%r15) 
 #else
 lmg %r6,%r12,48(%r15) 
 #endif
+ld %f9, 128(%r15)
+ld %f10,136(%r15)
+ld %f11,144(%r15)
+ld %f12,152(%r15)
 br %r14
 .end
 
