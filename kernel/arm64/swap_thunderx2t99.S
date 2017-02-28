@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (c) 2015, The OpenBLAS Project
+Copyright (c) 2017, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -29,60 +29,73 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #define	N	x0	/* vector length */
-#define	X	x1	/* X vector address */
-#define	INC_X	x2	/* X stride */
-#define I	x5	/* loop variable */
+#define	X	x3	/* X vector address */
+#define	INC_X	x4	/* X stride */
+#define	Y	x5	/* Y vector address */
+#define	INC_Y	x6	/* Y stride */
+#define I	x1	/* loop variable */
 
 /*******************************************************************************
 * Macro definitions
 *******************************************************************************/
 
-#define TMPF	s6
-#define SSQ	s0
-#define TMPVF	{v6.s}[0]
-#define SZ	4
-
-/******************************************************************************/
-
-.macro INIT_F1
-	ldr	TMPF, [X], #SZ
-	fmul	SSQ, TMPF, TMPF
-.endm
+#if !defined(COMPLEX)
+#if !defined(DOUBLE)
+#define TMPF0		s0
+#define TMPF1		s1
+#define INC_SHIFT	2
+#define N_DIV_SHIFT	2
+#define N_REM_MASK	3
+#else
+#define TMPF0		d0
+#define TMPF1		d1
+#define INC_SHIFT	3
+#define N_DIV_SHIFT	1
+#define N_REM_MASK	1
+#endif
+#else
+#if !defined(DOUBLE)
+#define TMPF0		d0
+#define TMPF1		d1
+#define INC_SHIFT	3
+#define N_DIV_SHIFT	1
+#define N_REM_MASK	1
+#else
+#define TMPF0		q0
+#define TMPF1		q1
+#define INC_SHIFT	4
+#define N_DIV_SHIFT	0
+#define N_REM_MASK	0
+#endif
+#endif
 
 .macro KERNEL_F1
-	ldr	TMPF, [X], #SZ
-	fmul	TMPF, TMPF, TMPF
-	fadd	SSQ, SSQ, TMPF
+	ldr	TMPF0, [X]
+	ldr	TMPF1, [Y]
+	str	TMPF0, [Y]
+	str	TMPF1, [X]
+	add	X, X, INC_X
+	add	Y, Y, INC_Y
 .endm
 
-.macro INIT_F4
-	ld1	{v1.4s}, [X], #16
-	fmul	v1.4s, v1.4s, v1.4s
-	ext	v2.16b, v1.16b, v1.16b, #8
-	fadd	v2.2s, v1.2s, v2.2s
-	faddp	SSQ, v2.2s
+.macro KERNEL_F
+	ldr	q0, [X]
+	ldr	q1, [Y]
+	add	X, X, #16
+	add	Y, Y, #16
+
+	prfm	PLDL1STRM, [X, #1024]
+	prfm	PLDL1STRM, [Y, #1024]
+
+	str	q0, [Y, #-16]
+	str	q1, [X, #-16]
 .endm
 
-.macro KERNEL_F4
-	ld1	{v1.4s}, [X], #16
-	fmul	v1.4s, v1.4s, v1.4s
-	ext	v2.16b, v1.16b, v1.16b, #8
-	fadd	v2.2s, v1.2s, v2.2s
-	faddp	TMPF, v2.2s
-	fadd	SSQ, SSQ, TMPF
+.macro INIT
+	lsl	INC_X, INC_X, #INC_SHIFT
+	lsl	INC_Y, INC_Y, #INC_SHIFT
 .endm
 
-.macro INIT_S
-	lsl	INC_X, INC_X, #2
-	ld1	TMPVF, [X], INC_X
-	fmul	SSQ, TMPF, TMPF
-.endm
-
-.macro KERNEL_S1
-	ld1	TMPVF, [X], INC_X
-	fmul	TMPF, TMPF, TMPF
-	fadd	SSQ, SSQ, TMPF
-.endm
 
 /*******************************************************************************
 * End of macro definitions
@@ -91,88 +104,80 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	nrm2_kernel_zero
-	cmp	INC_X, xzr
-	ble	nrm2_kernel_zero
+	ble	.Lswap_kernel_L999
+
 	cmp	INC_X, #1
-	bne	nrm2_kernel_S_BEGIN
+	bne	.Lswap_kernel_S_BEGIN
+	cmp	INC_Y, #1
+	bne	.Lswap_kernel_S_BEGIN
 
-nrm2_kernel_F_BEGIN:
+.Lswap_kernel_F_BEGIN:
+	INIT
 
-	asr	I, N, #2
+	asr	I, N, #N_DIV_SHIFT
 	cmp	I, xzr
-	beq	nrm2_kernel_F1_INIT
+	beq	.Lswap_kernel_F1
 
-	INIT_F4
-	subs	I, I, #1
-	beq	nrm2_kernel_F1
+	.align 5
+.Lswap_kernel_F:
 
-nrm2_kernel_F4:
-
-	KERNEL_F4
+	KERNEL_F
 
 	subs	I, I, #1
-	bne	nrm2_kernel_F4
+	bne	.Lswap_kernel_F
 
-nrm2_kernel_F1:
+.Lswap_kernel_F1:
 
-	ands	I, N, #3
-	ble	nrm2_kernel_L999
+#if defined(DOUBLE) && defined(COMPLEX)
+	b	.Lswap_kernel_L999
+#else
+	ands	I, N, #N_REM_MASK
+	ble	.Lswap_kernel_L999
+#endif
 
-nrm2_kernel_F10:
+.Lswap_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     nrm2_kernel_F10
+	bne     .Lswap_kernel_F10
 
-	b	nrm2_kernel_L999
+	b	.Lswap_kernel_L999
 
-nrm2_kernel_F1_INIT:
-	INIT_F1
-	subs	N, N, #1
-	b	nrm2_kernel_F1
 
-nrm2_kernel_S_BEGIN:
+.Lswap_kernel_S_BEGIN:
 
-	INIT_S
-
-	subs	N, N, #1
-	ble	nrm2_kernel_L999
+	INIT
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	nrm2_kernel_S1
+	ble	.Lswap_kernel_S1
 
-nrm2_kernel_S4:
+.Lswap_kernel_S4:
 
-	KERNEL_S1
-	KERNEL_S1
-	KERNEL_S1
-	KERNEL_S1
+	KERNEL_F1
+	KERNEL_F1
+	KERNEL_F1
+	KERNEL_F1
 
 	subs	I, I, #1
-	bne	nrm2_kernel_S4
+	bne	.Lswap_kernel_S4
 
-nrm2_kernel_S1:
+.Lswap_kernel_S1:
 
 	ands	I, N, #3
-	ble	nrm2_kernel_L999
+	ble	.Lswap_kernel_L999
 
-nrm2_kernel_S10:
+.Lswap_kernel_S10:
 
-	KERNEL_S1
+	KERNEL_F1
 
-	subs    I, I, #1
-	bne     nrm2_kernel_S10
+	subs	I, I, #1
+	bne	.Lswap_kernel_S10
 
-nrm2_kernel_L999:
-	fsqrt	SSQ, SSQ
-	ret
+.Lswap_kernel_L999:
 
-nrm2_kernel_zero:
-	fmov	SSQ, wzr
-
+	mov	w0, wzr
 	ret
 
 	EPILOGUE

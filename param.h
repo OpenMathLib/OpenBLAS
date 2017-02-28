@@ -2447,17 +2447,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SGEMM_DEFAULT_P	sgemm_p
 #define DGEMM_DEFAULT_P	dgemm_p
 #define CGEMM_DEFAULT_P cgemm_p
-#define ZGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P zgemm_p
 
 #define SGEMM_DEFAULT_Q sgemm_q
 #define DGEMM_DEFAULT_Q dgemm_q
 #define CGEMM_DEFAULT_Q cgemm_q
-#define ZGEMM_DEFAULT_Q 512
+#define ZGEMM_DEFAULT_Q zgemm_q
 
 #define SGEMM_DEFAULT_R sgemm_r
 #define DGEMM_DEFAULT_R dgemm_r
 #define CGEMM_DEFAULT_R cgemm_r
-#define ZGEMM_DEFAULT_R 2048
+#define ZGEMM_DEFAULT_R zgemm_r
 
 #define SYMV_P	16
 #endif
