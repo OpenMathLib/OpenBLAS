@@ -474,19 +474,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v2.2d, v3.2d}, [pA]
 	add	pA, pA, #32
 
-	OP_rr	v20.2d, v0.2d, v8.d[0]
-	OP_ii	v20.2d, v1.2d, v8.d[1]
-	OP_ri	v21.2d, v0.2d, v8.d[1]
-	OP_ir	v21.2d, v1.2d, v8.d[0]
+	OP_rr	v20.2d, v0.2d, v9.d[0]
+	OP_ii	v20.2d, v1.2d, v9.d[1]
+	OP_ri	v21.2d, v0.2d, v9.d[1]
+	OP_ir	v21.2d, v1.2d, v9.d[0]
 
 	ldr	q10, [pB]
 	ldr	q11, [pB, #16]
 	add	pB, pB, #32
 
-	OP_rr	v18.2d, v2.2d, v9.d[0]
-	OP_ii	v18.2d, v3.2d, v9.d[1]
-	OP_ri	v19.2d, v2.2d, v9.d[1]
-	OP_ir	v19.2d, v3.2d, v9.d[0]
+	OP_rr	v18.2d, v2.2d, v8.d[0]
+	OP_ii	v18.2d, v3.2d, v8.d[1]
+	OP_ri	v19.2d, v2.2d, v8.d[1]
+	OP_ir	v19.2d, v3.2d, v8.d[0]
 
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
