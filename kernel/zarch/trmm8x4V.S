@@ -73,17 +73,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ASSEMBLER
 #include "common.h"
 
-/************** Notes ON IBM abi and IBM assembly**********************************************
-* General registers r0 and r1 should be used internally whenever possible
-* General registers r2 to r5 should be second choice
-* General registers r12 to r15 should only be used for their standard function.
-* r0 should not be used as address disp register
+
+/* 
  
 #BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FLOAT* C,BLASLONG ldc
  ##bm=r2,bn=r3, bk=r4, alpha=f0,ba=r5,bb=r6,stack[160] ,ldc=stack[168]  
 offset=stack[176]
 **********************************************************************************************/
- 
+/*Note: r0 can not be used as address disp register */  
 
 #define BM           %r2
 #define BM_CUR       %r0
@@ -131,16 +128,16 @@ offset=stack[176]
 /***********************************DGEMM***********************************************************/
 
 PROLOGUE
-#if defined(TRMMKERNEL)
-stmg %r6,%r13,40(%r15)  
+#if defined(TRMMKERNEL) 
+    std OFFSET,40(%r15)
+    stmg %r6,%r13,48(%r15)  
 #else 
-stmg %r6,%r12,40(%r15)   
+    stmg %r6,%r12,48(%r15)   
 #endif
 lg CIJ, 160(%r15)
 lg LOCAL_VAR1, 168(%r15)
 #if defined(TRMMKERNEL)
 lg OFF,176(%r15)
-std OFFSET,32(%r15)
 ldgr OFFSET ,OFF
 #endif
 srlg BN_CUR,BN,2  
@@ -861,10 +858,10 @@ ALIGN_2
 .L_FUNC_END:
 /*end*/
 #if defined(TRMMKERNEL)
-ld %f8,32(%r15)
-lmg %r6,%r13,40(%r15) 
+    ld  OFFSET,40(%r15)
+    lmg %r6,%r13,48(%r15) 
 #else
-lmg %r6,%r12,40(%r15) 
+    lmg %r6,%r12,48(%r15) 
 #endif
 br %r14
 .end
