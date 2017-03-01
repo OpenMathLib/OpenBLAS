@@ -73,16 +73,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ASSEMBLER
 #include "common.h"
 
-/************** Notes ON IBM abi and IBM assembly**********************************************
-* General registers r0 and r1 should be used internally whenever possible
-* General registers r2 to r5 should be second choice
-* General registers r12 to r15 should only be used for their standard function.
-* r0 should not be used as address disp register
+/* 
  
 #BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FLOAT* C,BLASLONG ldc
  ##bm=r2,bn=r3, bk=r4, alpha=f0,ba=r5,bb=r6,stack[160] ,ldc=stack[168]  
 **********************************************************************************************/
- 
+/*Note: r0 can not be used as address disp register */  
 
 #define BM           %r2
 #define BM_CUR       %r0
@@ -109,7 +105,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PROLOGUE
  
-stmg %r6,%r12,40(%r15)   
+stmg %r6,%r12,48(%r15)   
 lg CIJ, 160(%r15)
 lg LOCAL_VAR1, 168(%r15)
 srlg BN_CUR,BN,2  
@@ -606,7 +602,7 @@ la B,0(B,LOCAL_VAR2)      /*refresh B=B+Bk*1*sizeof(double)  */
 ALIGN_2
 .L_FUNC_END:
 /*end*/
-lmg %r6,%r12,40(%r15) 
+lmg %r6,%r12,48(%r15) 
 br %r14
 .end
 
