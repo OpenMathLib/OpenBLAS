@@ -1777,7 +1777,14 @@ int get_coretype(void){
       case 9:
       case 8:
         if (model == 14) // Kaby Lake 
-          return CORE_HASWELL;
+	  if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+            return CORE_SANDYBRIDGE;
+#endif
+	  else
+            return CORE_NEHALEM;
       }
       break;
 
