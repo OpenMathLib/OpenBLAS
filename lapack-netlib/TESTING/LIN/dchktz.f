@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DCHKTZ( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR, A,
 *                          COPYA, S, TAU, WORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NOUT
@@ -22,14 +22,14 @@
 *       DOUBLE PRECISION   A( * ), COPYA( * ), S( * ),
 *      $                   TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> DCHKTZ tests DTZRQF and STZRZF.
+*> DCHKTZ tests DTZRZF.
 *> \endverbatim
 *
 *  Arguments:
@@ -119,12 +119,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_lin
 *
@@ -132,10 +132,10 @@
       SUBROUTINE DCHKTZ( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR, A,
      $                   COPYA, S, TAU, WORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -155,7 +155,7 @@
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 3 )
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 6 )
+      PARAMETER          ( NTESTS = 3 )
       DOUBLE PRECISION   ONE, ZERO
       PARAMETER          ( ONE = 1.0D0, ZERO = 0.0D0 )
 *     ..
@@ -170,12 +170,12 @@
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH, DQRT12, DRZT01, DRZT02, DTZT01, DTZT02
-      EXTERNAL           DLAMCH, DQRT12, DRZT01, DRZT02, DTZT01, DTZT02
+      DOUBLE PRECISION   DLAMCH, DQRT12, DRZT01, DRZT02
+      EXTERNAL           DLAMCH, DQRT12, DRZT01, DRZT02
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAHD, ALASUM, DERRTZ, DGEQR2, DLACPY, DLAORD,
-     $                   DLASET, DLATMS, DTZRQF, DTZRZF
+     $                   DLASET, DLATMS, DTZRZF
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -246,52 +246,6 @@
 *
                   IF( MODE.EQ.0 ) THEN
                      CALL DLASET( 'Full', M, N, ZERO, ZERO, A, LDA )
-                     DO 20 I = 1, MNMIN
-                        S( I ) = ZERO
-   20                CONTINUE
-                  ELSE
-                     CALL DLATMS( M, N, 'Uniform', ISEED,
-     $                            'Nonsymmetric', S, IMODE,
-     $                            ONE / EPS, ONE, M, N, 'No packing', A,
-     $                            LDA, WORK, INFO )
-                     CALL DGEQR2( M, N, A, LDA, WORK, WORK( MNMIN+1 ),
-     $                            INFO )
-                     CALL DLASET( 'Lower', M-1, N, ZERO, ZERO, A( 2 ),
-     $                            LDA )
-                     CALL DLAORD( 'Decreasing', MNMIN, S, 1 )
-                  END IF
-*
-*                 Save A and its singular values
-*
-                  CALL DLACPY( 'All', M, N, A, LDA, COPYA, LDA )
-*
-*                 Call DTZRQF to reduce the upper trapezoidal matrix to
-*                 upper triangular form.
-*
-                  SRNAMT = 'DTZRQF'
-                  CALL DTZRQF( M, N, A, LDA, TAU, INFO )
-*
-*                 Compute norm(svd(a) - svd(r))
-*
-                  RESULT( 1 ) = DQRT12( M, M, A, LDA, S, WORK,
-     $                          LWORK )
-*
-*                 Compute norm( A - R*Q )
-*
-                  RESULT( 2 ) = DTZT01( M, N, COPYA, A, LDA, TAU, WORK,
-     $                          LWORK )
-*
-*                 Compute norm(Q'*Q - I).
-*
-                  RESULT( 3 ) = DTZT02( M, N, A, LDA, TAU, WORK, LWORK )
-*
-*                 Test DTZRZF
-*
-*                 Generate test matrix of size m by n using
-*                 singular value distribution indicated by `mode'.
-*
-                  IF( MODE.EQ.0 ) THEN
-                     CALL DLASET( 'Full', M, N, ZERO, ZERO, A, LDA )
                      DO 30 I = 1, MNMIN
                         S( I ) = ZERO
    30                CONTINUE
@@ -319,22 +273,22 @@
 *
 *                 Compute norm(svd(a) - svd(r))
 *
-                  RESULT( 4 ) = DQRT12( M, M, A, LDA, S, WORK,
+                  RESULT( 1 ) = DQRT12( M, M, A, LDA, S, WORK,
      $                          LWORK )
 *
 *                 Compute norm( A - R*Q )
 *
-                  RESULT( 5 ) = DRZT01( M, N, COPYA, A, LDA, TAU, WORK,
+                  RESULT( 2 ) = DRZT01( M, N, COPYA, A, LDA, TAU, WORK,
      $                          LWORK )
 *
 *                 Compute norm(Q'*Q - I).
 *
-                  RESULT( 6 ) = DRZT02( M, N, A, LDA, TAU, WORK, LWORK )
+                  RESULT( 3 ) = DRZT02( M, N, A, LDA, TAU, WORK, LWORK )
 *
 *                 Print information about the tests that did not pass
 *                 the threshold.
 *
-                  DO 40 K = 1, 6
+                  DO 40 K = 1, NTESTS
                      IF( RESULT( K ).GE.THRESH ) THEN
                         IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                     CALL ALAHD( NOUT, PATH )
@@ -343,7 +297,7 @@
                         NFAIL = NFAIL + 1
                      END IF
    40             CONTINUE
-                  NRUN = NRUN + 6
+                  NRUN = NRUN + 3
    50          CONTINUE
             END IF
    60    CONTINUE

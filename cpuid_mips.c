@@ -71,15 +71,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*********************************************************************/
 
 #define CPU_UNKNOWN     0
-#define CPU_SICORTEX    1
-#define CPU_LOONGSON3A  2
-#define CPU_LOONGSON3B  3
+#define CPU_P5600       1
 
 static char *cpuname[] = {
   "UNKOWN",
-  "SICORTEX",
-  "LOONGSON3A",
-  "LOONGSON3B"
+  "P5600"
 };
 
 int detect(void){
@@ -120,7 +116,7 @@ int detect(void){
     if (strstr(p, "loongson3a"))
       return CPU_LOONGSON3A;
   }else{
-    return CPU_SICORTEX;
+    return CPU_UNKNOWN;
   }
   }
   //Check model name for Loongson3
@@ -149,64 +145,40 @@ char *get_corename(void){
 }
 
 void get_architecture(void){
-  printf("MIPS64");
+  printf("MIPS");
 }
 
 void get_subarchitecture(void){
-  if(detect()==CPU_LOONGSON3A) {
-    printf("LOONGSON3A");
-  }else if(detect()==CPU_LOONGSON3B){
-    printf("LOONGSON3B");
+  if(detect()==CPU_P5600){
+    printf("P5600");
   }else{
-    printf("SICORTEX");
+    printf("UNKNOWN");
   }
 }
 
 void get_subdirname(void){
-  printf("mips64");
+  printf("mips");
 }
 
 void get_cpuconfig(void){
-  if(detect()==CPU_LOONGSON3A) {
-    printf("#define LOONGSON3A\n");
+  if(detect()==CPU_P5600){
+    printf("#define P5600\n");
     printf("#define L1_DATA_SIZE 65536\n");
     printf("#define L1_DATA_LINESIZE 32\n");
-    printf("#define L2_SIZE 512488\n");
+    printf("#define L2_SIZE 1048576\n");
     printf("#define L2_LINESIZE 32\n");
     printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    printf("#define DTB_SIZE 4096\n");
-    printf("#define L2_ASSOCIATIVE 4\n");
-  }else if(detect()==CPU_LOONGSON3B){
-    printf("#define LOONGSON3B\n");
-    printf("#define L1_DATA_SIZE 65536\n");
-    printf("#define L1_DATA_LINESIZE 32\n");
-    printf("#define L2_SIZE 512488\n");
-    printf("#define L2_LINESIZE 32\n");
-    printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    printf("#define DTB_SIZE 4096\n");
-    printf("#define L2_ASSOCIATIVE 4\n");
-  }else{
-    printf("#define SICORTEX\n");
-    printf("#define L1_DATA_SIZE 32768\n");
-    printf("#define L1_DATA_LINESIZE 32\n");
-    printf("#define L2_SIZE 512488\n");
-    printf("#define L2_LINESIZE 32\n");
-    printf("#define DTB_DEFAULT_ENTRIES 32\n");
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
+  }else{
+    printf("#define UNKNOWN\n");
   }
 }
 
 void get_libname(void){
-  if(detect()==CPU_LOONGSON3A) {
-    printf("loongson3a\n");
-  }else if(detect()==CPU_LOONGSON3B) {
-    printf("loongson3b\n");
+  if(detect()==CPU_P5600) {
+    printf("p5600\n");
   }else{
-#ifdef __mips64
-  printf("mips64\n");
-#else
-  printf("mips32\n");
-#endif
+    printf("mips\n");
   }
 }

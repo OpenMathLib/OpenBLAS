@@ -107,7 +107,7 @@ void NAME(char *UPLO, char *TRANS, char *DIAG,
   blasint info;
   int uplo;
   int unit;
-  int trans;
+  int trans, buffer_size;
   FLOAT *buffer;
 #ifdef SMP
   int nthreads;
@@ -154,7 +154,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 	   enum CBLAS_TRANSPOSE TransA, enum CBLAS_DIAG Diag,
 	   blasint n, FLOAT  *a, blasint lda, FLOAT  *x, blasint incx) {
 
-  int trans, uplo, unit;
+  int trans, uplo, unit, buffer_size;
   blasint info;
   FLOAT *buffer;
 #ifdef SMP
@@ -227,11 +227,30 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
   if (incx < 0 ) x -= (n - 1) * incx * 2;
 
-  buffer = (FLOAT *)blas_memory_alloc(1);
+#ifdef SMP
+  // Calibrated on a Xeon E5-2630
+  if(1L * n * n > 36L * sizeof(FLOAT) * sizeof(FLOAT) * GEMM_MULTITHREAD_THRESHOLD) {
+    nthreads = num_cpu_avail(2);
+    if(nthreads > 2 && 1L * n * n < 64L * sizeof(FLOAT) * sizeof(FLOAT) * GEMM_MULTITHREAD_THRESHOLD)
+      nthreads = 2;
+  } else
+      nthreads = 1;
+
+  if(nthreads > 1) {
+    buffer_size = n > 16 ? 0 : n * 4 + 40;
+  }
+  else
+#endif
+  {
+    buffer_size = ((n - 1) / DTB_ENTRIES) * 2 * DTB_ENTRIES + 32 / sizeof(FLOAT);
+    // It seems to be required for some K8 or Barcelona CPU
+    buffer_size += 8;
+    if(incx != 1)
+      buffer_size += n * 2;
+  }
+  STACK_ALLOC(buffer_size, FLOAT, buffer);
 
 #ifdef SMP
-  nthreads = num_cpu_avail(2);
-
   if (nthreads == 1) {
 #endif
 
@@ -245,7 +264,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
   }
 #endif
 
-  blas_memory_free(buffer);
+  STACK_FREE(buffer);
 
   FUNCTION_PROFILE_END(4, n * n / 2 + n,  n * n);
 

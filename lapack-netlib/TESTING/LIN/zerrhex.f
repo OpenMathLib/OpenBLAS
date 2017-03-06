@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZERRHE( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -46,22 +46,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRHE( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -87,18 +87,19 @@
      $                   S( NMAX ), ERR_BNDS_N( NMAX, 3 ),
      $                   ERR_BNDS_C( NMAX, 3 ), PARAMS( 1 )
       COMPLEX*16         A( NMAX, NMAX ), AF( NMAX, NMAX ), B( NMAX ),
-     $                   W( 2*NMAX ), X( NMAX )
+     $                   E( NMAX ), W( 2*NMAX ), X( NMAX )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, ZHECON, ZHECON_ROOK, ZHERFS,
-     $                   ZHETF2, ZHETF2_ROOK, ZHETRF, ZHETRF_ROOK,
-     $                   ZHETRI, ZHETRI_ROOK, ZHETRI2, ZHETRS,
-     $                   ZHETRS_ROOK, ZHPCON, ZHPRFS, ZHPTRF, ZHPTRI,
-     $                   ZHPTRS, ZHERFSX
+      EXTERNAL           ALAESM, CHKXER, ZHECON, ZHECON_3, ZHECON_ROOK,
+     $                   ZHERFS, ZHETF2, ZHETF2_RK, ZHETF2_ROOK, ZHETRF,
+     $                   ZHETRF_RK, ZHETRF_ROOK, ZHETRI, ZHETRI_3,
+     $                   ZHETRI_3X, ZHETRI_ROOK, ZHETRI2, ZHETRI2X,
+     $                   ZHETRS, ZHETRS_3, ZHETRS_ROOK, ZHPCON,
+     $                   ZHPRFS, ZHPTRF, ZHPTRI, ZHPTRS, ZHERFSX
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -128,6 +129,7 @@
      $                   -1.D0 / DBLE( I+J ) )
    10    CONTINUE
          B( J ) = 0.D0
+         E( J ) = 0.D0
          R1( J ) = 0.D0
          R2( J ) = 0.D0
          W( J ) = 0.D0
@@ -155,6 +157,12 @@
          CALL CHKXER( 'ZHETRF', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL ZHETRF( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'ZHETRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRF( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'ZHETRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRF( 'U', 0, A, 1, IP, W, -2, INFO )
          CALL CHKXER( 'ZHETRF', INFOT, NOUT, LERR, OK )
 *
 *        ZHETF2
@@ -195,6 +203,19 @@
          INFOT = 4
          CALL ZHETRI2( 'U', 2, A, 1, IP, W, 1, INFO )
          CALL CHKXER( 'ZHETRI2', INFOT, NOUT, LERR, OK )
+*
+*        ZHETRI2X
+*
+         SRNAMT = 'ZHETRI2X'
+         INFOT = 1
+         CALL ZHETRI2X( '/', 0, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRI2X( 'U', -1, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETRI2X( 'U', 2, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI2X', INFOT, NOUT, LERR, OK )
 *
 *        ZHETRS
 *
@@ -310,11 +331,11 @@
          CALL ZHECON( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'ZHECON', INFOT, NOUT, LERR, OK )
 *
-*        Test error exits of the routines that use factorization
-*        of a Hermitian indefinite matrix with "rook"
-*        (bounded Bunch-Kaufman) diagonal pivoting method.
-*
       ELSE IF( LSAMEN( 2, C2, 'HR' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a Hermitian indefinite matrix with rook
+*        (bounded Bunch-Kaufman) diagonal pivoting method.
 *
 *        ZHETRF_ROOK
 *
@@ -327,6 +348,12 @@
          CALL CHKXER( 'ZHETRF_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL ZHETRF_ROOK( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'ZHETRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRF_ROOK( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'ZHETRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRF_ROOK( 'U', 0, A, 1, IP, W, -2, INFO )
          CALL CHKXER( 'ZHETRF_ROOK', INFOT, NOUT, LERR, OK )
 *
 *        ZHETF2_ROOK
@@ -390,11 +417,120 @@
          CALL ZHECON_ROOK( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'ZHECON_ROOK', INFOT, NOUT, LERR, OK )
 *
+      ELSE IF( LSAMEN( 2, C2, 'HK' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with rook
+*        (bounded Bunch-Kaufman) pivoting with the new storage
+*        format for factors L ( or U) and D.
+*
+*        L (or U) is stored in A, diagonal of D is stored on the
+*        diagonal of A, subdiagonal of D is stored in a separate array E.
+*
+*        ZHETRF_RK
+*
+         SRNAMT = 'ZHETRF_RK'
+         INFOT = 1
+         CALL ZHETRF_RK( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRF_RK( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETRF_RK( 'U', 2, A, 1, E, IP, W, 4, INFO )
+         CALL CHKXER( 'ZHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHETRF_RK( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'ZHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHETRF_RK( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'ZHETRF_RK', INFOT, NOUT, LERR, OK )
+*
+*        ZHETF2_RK
+*
+         SRNAMT = 'ZHETF2_RK'
+         INFOT = 1
+         CALL ZHETF2_RK( '/', 0, A, 1, E, IP, INFO )
+         CALL CHKXER( 'ZHETF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETF2_RK( 'U', -1, A, 1, E, IP, INFO )
+         CALL CHKXER( 'ZHETF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETF2_RK( 'U', 2, A, 1, E, IP, INFO )
+         CALL CHKXER( 'ZHETF2_RK', INFOT, NOUT, LERR, OK )
+*
+*        ZHETRI_3
+*
+         SRNAMT = 'ZHETRI_3'
+         INFOT = 1
+         CALL ZHETRI_3( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRI_3( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETRI_3( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHETRI_3( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'ZHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHETRI_3( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'ZHETRI_3', INFOT, NOUT, LERR, OK )
+*
+*        ZHETRI_3X
+*
+         SRNAMT = 'ZHETRI_3X'
+         INFOT = 1
+         CALL ZHETRI_3X( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRI_3X( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETRI_3X( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'ZHETRI_3X', INFOT, NOUT, LERR, OK )
+*
+*        ZHETRS_3
+*
+         SRNAMT = 'ZHETRS_3'
+         INFOT = 1
+         CALL ZHETRS_3( '/', 0, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRS_3( 'U', -1, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHETRS_3( 'U', 0, -1, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHETRS_3( 'U', 2, 1, A, 1, E, IP, B, 2, INFO )
+         CALL CHKXER( 'ZHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL ZHETRS_3( 'U', 2, 1, A, 2, E, IP, B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_3', INFOT, NOUT, LERR, OK )
+*
+*        ZHECON_3
+*
+         SRNAMT = 'ZHECON_3'
+         INFOT = 1
+         CALL ZHECON_3( '/', 0, A, 1,  E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'ZHECON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHECON_3( 'U', -1, A, 1, E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'ZHECON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHECON_3( 'U', 2, A, 1, E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'ZHECON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHECON_3( 'U', 1, A, 1, E, IP, -1.0D0, RCOND, W, INFO)
+         CALL CHKXER( 'ZHECON_3', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
+*
 *        Test error exits of the routines that use factorization
 *        of a Hermitian indefinite packed matrix with patrial
 *        (Bunch-Kaufman) diagonal pivoting method.
-*
-      ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *
 *        ZHPTRF
 *

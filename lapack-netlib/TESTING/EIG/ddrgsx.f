@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE DDRGSX( NSIZE, NCMAX, THRESH, NIN, NOUT, A, LDA, B, AI,
 *                          BI, Z, Q, ALPHAR, ALPHAI, BETA, C, LDC, S,
 *                          WORK, LWORK, IWORK, LIWORK, BWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDC, LIWORK, LWORK, NCMAX, NIN,
 *      $                   NOUT, NSIZE
@@ -25,7 +25,7 @@
 *      $                   BI( LDA, * ), C( LDC, * ), Q( LDA, * ), S( * ),
 *      $                   WORK( * ), Z( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -60,7 +60,7 @@
 *> to test DGGESX.
 *>
 *> For each matrix pair, the following tests will be performed and
-*> compared with the threshhold THRESH except for the tests (7) and (9):
+*> compared with the threshold THRESH except for the tests (7) and (9):
 *>
 *> (1)   | A - Q S Z' | / ( |A| n ulp )
 *>
@@ -345,12 +345,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup double_eig
 *
@@ -359,10 +359,10 @@
      $                   BI, Z, Q, ALPHAR, ALPHAI, BETA, C, LDC, S,
      $                   WORK, LWORK, IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDC, LIWORK, LWORK, NCMAX, NIN,

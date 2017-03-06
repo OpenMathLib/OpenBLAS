@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGESVJ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvj.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvj.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvj.f"> 
+*> Download SGESVJ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvj.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvj.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvj.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
 *                          LDV, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N
 *       CHARACTER*1        JOBA, JOBU, JOBV
@@ -29,7 +29,7 @@
 *       REAL               A( LDA, * ), SVA( N ), V( LDV, * ),
 *      $                   WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -45,6 +45,8 @@
 *> matrix, and V is an N-by-N orthogonal matrix. The diagonal elements
 *> of SIGMA are the singular values of A. The columns of U and V are the
 *> left and the right singular vectors of A, respectively.
+*> SGESVJ can sometimes compute tiny singular values and their singular vectors much
+*> more accurately than other SVD routines, see below under Further Details.
 *> \endverbatim
 *
 *  Arguments:
@@ -206,7 +208,7 @@
 *>
 *> \param[in,out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension max(4,M+N).
+*>          WORK is REAL array, dimension MAX(6,M+N).
 *>          On entry,
 *>          If JOBU .EQ. 'C' :
 *>          WORK(1) = CTOL, where CTOL defines the threshold for convergence.
@@ -253,12 +255,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup realGEcomputational
 *
@@ -321,10 +323,10 @@
       SUBROUTINE SGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
      $                   LDV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N
@@ -360,7 +362,7 @@
       REAL               FASTR( 5 )
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, AMAX1, AMIN1, FLOAT, MIN0, SIGN, SQRT
+      INTRINSIC          ABS, MAX, MIN, FLOAT, SIGN, SQRT
 *     ..
 *     .. External Functions ..
 *     ..
@@ -414,7 +416,7 @@
          INFO = -11
       ELSE IF( UCTOL .AND. ( WORK( 1 ).LE.ONE ) ) THEN
          INFO = -12
-      ELSE IF( LWORK.LT.MAX0( M+N, 6 ) ) THEN
+      ELSE IF( LWORK.LT.MAX( M+N, 6 ) ) THEN
          INFO = -13
       ELSE
          INFO = 0
@@ -580,8 +582,8 @@
       AAPP = ZERO
       AAQQ = BIG
       DO 4781 p = 1, N
-         IF( SVA( p ).NE.ZERO )AAQQ = AMIN1( AAQQ, SVA( p ) )
-         AAPP = AMAX1( AAPP, SVA( p ) )
+         IF( SVA( p ).NE.ZERO )AAQQ = MIN( AAQQ, SVA( p ) )
+         AAPP = MAX( AAPP, SVA( p ) )
  4781 CONTINUE
 *
 * #:) Quick return for zero matrix
@@ -622,19 +624,19 @@
       TEMP1 = SQRT( BIG / FLOAT( N ) )
       IF( ( AAPP.LE.SN ) .OR. ( AAQQ.GE.TEMP1 ) .OR.
      $    ( ( SN.LE.AAQQ ) .AND. ( AAPP.LE.TEMP1 ) ) ) THEN
-         TEMP1 = AMIN1( BIG, TEMP1 / AAPP )
+         TEMP1 = MIN( BIG, TEMP1 / AAPP )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.LE.SN ) .AND. ( AAPP.LE.TEMP1 ) ) THEN
-         TEMP1 = AMIN1( SN / AAQQ, BIG / ( AAPP*SQRT( FLOAT( N ) ) ) )
+         TEMP1 = MIN( SN / AAQQ, BIG / ( AAPP*SQRT( FLOAT( N ) ) ) )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.GE.SN ) .AND. ( AAPP.GE.TEMP1 ) ) THEN
-         TEMP1 = AMAX1( SN / AAQQ, TEMP1 / AAPP )
+         TEMP1 = MAX( SN / AAQQ, TEMP1 / AAPP )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.LE.SN ) .AND. ( AAPP.GE.TEMP1 ) ) THEN
-         TEMP1 = AMIN1( SN / AAQQ, BIG / ( SQRT( FLOAT( N ) )*AAPP ) )
+         TEMP1 = MIN( SN / AAQQ, BIG / ( SQRT( FLOAT( N ) )*AAPP ) )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE
@@ -675,7 +677,7 @@
 *     The boundaries are determined dynamically, based on the number of
 *     pivots above a threshold.
 *
-      KBL = MIN0( 8, N )
+      KBL = MIN( 8, N )
 *[TP] KBL is a tuning parameter that defines the tile size in the
 *     tiling of the p-q loops of pivot pairs. In general, an optimal
 *     value of KBL depends on the matrix dimensions and on the
@@ -687,7 +689,7 @@
       BLSKIP = KBL**2
 *[TP] BLKSKIP is a tuning parameter that depends on SWBAND and KBL.
 *
-      ROWSKIP = MIN0( 5, KBL )
+      ROWSKIP = MIN( 5, KBL )
 *[TP] ROWSKIP is a tuning parameter.
 *
       LKAHEAD = 1
@@ -698,7 +700,7 @@
 *     invokes cubic convergence. Big part of this cycle is done inside
 *     canonical subspaces of dimensions less than M.
 *
-      IF( ( LOWER .OR. UPPER ) .AND. ( N.GT.MAX0( 64, 4*KBL ) ) ) THEN
+      IF( ( LOWER .OR. UPPER ) .AND. ( N.GT.MAX( 64, 4*KBL ) ) ) THEN
 *[TP] The number of partition levels and the actual partition are
 *     tuning parameters.
          N4 = N / 4
@@ -796,11 +798,11 @@
 *
             igl = ( ibr-1 )*KBL + 1
 *
-            DO 1002 ir1 = 0, MIN0( LKAHEAD, NBL-ibr )
+            DO 1002 ir1 = 0, MIN( LKAHEAD, NBL-ibr )
 *
                igl = igl + ir1*KBL
 *
-               DO 2001 p = igl, MIN0( igl+KBL-1, N-1 )
+               DO 2001 p = igl, MIN( igl+KBL-1, N-1 )
 *
 *     .. de Rijk's pivoting
 *
@@ -849,7 +851,7 @@
 *
                      PSKIPPED = 0
 *
-                     DO 2002 q = p + 1, MIN0( igl+KBL-1, N )
+                     DO 2002 q = p + 1, MIN( igl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 *
@@ -888,7 +890,7 @@
                               END IF
                            END IF
 *
-                           MXAAPQ = AMAX1( MXAAPQ, ABS( AAPQ ) )
+                           MXAAPQ = MAX( MXAAPQ, ABS( AAPQ ) )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
@@ -921,11 +923,11 @@
      $                                              V( 1, p ), 1,
      $                                              V( 1, q ), 1,
      $                                              FASTR )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO, 
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-T*AQOAP*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
 *
                                  ELSE
 *
@@ -937,10 +939,10 @@
                                     CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
 *
-                                    MXSINJ = AMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = WORK( p ) / WORK( q )
@@ -1054,9 +1056,9 @@
      $                                       A( 1, q ), 1 )
                                  CALL SLASCL( 'G', 0, 0, ONE, AAQQ, M,
      $                                        1, A( 1, q ), LDA, IERR )
-                                 SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                 SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                      ONE-AAPQ*AAPQ ) )
-                                 MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                 MXSINJ = MAX( MXSINJ, SFMIN )
                               END IF
 *           END IF ROTOK THEN ... ELSE
 *
@@ -1122,7 +1124,7 @@
                   ELSE
                      SVA( p ) = AAPP
                      IF( ( ir1.EQ.0 ) .AND. ( AAPP.EQ.ZERO ) )
-     $                   NOTROT = NOTROT + MIN0( igl+KBL-1, N ) - p
+     $                   NOTROT = NOTROT + MIN( igl+KBL-1, N ) - p
                   END IF
 *
  2001          CONTINUE
@@ -1142,14 +1144,14 @@
 *        doing the block at ( ibr, jbc )
 *
                IJBLSK = 0
-               DO 2100 p = igl, MIN0( igl+KBL-1, N )
+               DO 2100 p = igl, MIN( igl+KBL-1, N )
 *
                   AAPP = SVA( p )
                   IF( AAPP.GT.ZERO ) THEN
 *
                      PSKIPPED = 0
 *
-                     DO 2200 q = jgl, MIN0( jgl+KBL-1, N )
+                     DO 2200 q = jgl, MIN( jgl+KBL-1, N )
 *
                         AAQQ = SVA( q )
                         IF( AAQQ.GT.ZERO ) THEN
@@ -1199,7 +1201,7 @@
                               END IF
                            END IF
 *
-                           MXAAPQ = AMAX1( MXAAPQ, ABS( AAPQ ) )
+                           MXAAPQ = MAX( MXAAPQ, ABS( AAPQ ) )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
@@ -1227,11 +1229,11 @@
      $                                              V( 1, p ), 1,
      $                                              V( 1, q ), 1,
      $                                              FASTR )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
@@ -1242,10 +1244,10 @@
      $                                  SQRT( ONE+THETA*THETA ) )
                                     CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
-                                    MXSINJ = AMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( AMAX1( ZERO,  
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = WORK( p ) / WORK( q )
@@ -1362,9 +1364,9 @@
                                     CALL SLASCL( 'G', 0, 0, ONE, AAQQ,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
-                                    SVA( q ) = AAQQ*SQRT( AMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  ELSE
                                     CALL SCOPY( M, A( 1, q ), 1,
      $                                          WORK( N+1 ), 1 )
@@ -1380,9 +1382,9 @@
                                     CALL SLASCL( 'G', 0, 0, ONE, AAPP,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    SVA( p ) = AAPP*SQRT( AMAX1( ZERO,
+                                    SVA( p ) = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ*AAPQ ) )
-                                    MXSINJ = AMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                  END IF
                               END IF
 *           END IF ROTOK THEN ... ELSE
@@ -1452,7 +1454,7 @@
                   ELSE
 *
                      IF( AAPP.EQ.ZERO )NOTROT = NOTROT +
-     $                   MIN0( jgl+KBL-1, N ) - jgl + 1
+     $                   MIN( jgl+KBL-1, N ) - jgl + 1
                      IF( AAPP.LT.ZERO )NOTROT = 0
 *
                   END IF
@@ -1463,7 +1465,7 @@
 *     end of the jbc-loop
  2011       CONTINUE
 *2011 bailed out of the jbc-loop
-            DO 2012 p = igl, MIN0( igl+KBL-1, N )
+            DO 2012 p = igl, MIN( igl+KBL-1, N )
                SVA( p ) = ABS( SVA( p ) )
  2012       CONTINUE
 ***
@@ -1559,7 +1561,7 @@
       END IF
 *
 *     Undo scaling, if necessary (and possible).
-      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) ) 
+      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) )
      $    .OR. ( ( SKL.LT.ONE ) .AND. ( SVA( MAX( N2, 1 ) ) .GT.
      $    ( SFMIN / SKL ) ) ) ) THEN
          DO 2400 p = 1, N

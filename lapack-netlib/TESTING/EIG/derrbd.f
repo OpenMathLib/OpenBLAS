@@ -2,27 +2,27 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DERRBD( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> DERRBD tests the error exits for DGEBRD, DORGBR, DORMBR, DBDSQR and
-*> DBDSDC.
+*> DERRBD tests the error exits for DGEBD2, DGEBRD, DORGBR, DORMBR,
+*> DBDSQR, DBDSDC and DBDSVDX.
 *> \endverbatim
 *
 *  Arguments:
@@ -43,22 +43,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DERRBD( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -70,24 +70,27 @@
 *     .. Parameters ..
       INTEGER            NMAX, LW
       PARAMETER          ( NMAX = 4, LW = NMAX )
+      DOUBLE PRECISION   ZERO, ONE
+      PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
 *     ..
 *     .. Local Scalars ..
       CHARACTER*2        C2
-      INTEGER            I, INFO, J, NT
+      INTEGER            I, INFO, J, NS, NT
 *     ..
 *     .. Local Arrays ..
       INTEGER            IQ( NMAX, NMAX ), IW( NMAX )
       DOUBLE PRECISION   A( NMAX, NMAX ), D( NMAX ), E( NMAX ),
-     $                   Q( NMAX, NMAX ), TP( NMAX ), TQ( NMAX ),
-     $                   U( NMAX, NMAX ), V( NMAX, NMAX ), W( LW )
+     $                   Q( NMAX, NMAX ), S( NMAX ), TP( NMAX ),
+     $                   TQ( NMAX ), U( NMAX, NMAX ),
+     $                   V( NMAX, NMAX ), W( LW )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, DBDSDC, DBDSQR, DGEBD2, DGEBRD, DORGBR,
-     $                   DORMBR
+      EXTERNAL           CHKXER, DBDSDC, DBDSQR, DBDSVDX, DGEBD2,
+     $                   DGEBRD, DORGBR, DORMBR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -301,6 +304,59 @@
      $                INFO )
          CALL CHKXER( 'DBDSDC', INFOT, NOUT, LERR, OK )
          NT = NT + 5
+*
+*        DBDSVDX
+*
+         SRNAMT = 'DBDSVDX'
+         INFOT = 1
+         CALL DBDSVDX( 'X', 'N', 'A', 1, D, E, ZERO, ONE, 0, 0,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DBDSVDX( 'U', 'X', 'A', 1, D, E, ZERO, ONE, 0, 0,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DBDSVDX( 'U', 'V', 'X', 1, D, E, ZERO, ONE, 0, 0,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DBDSVDX( 'U', 'V', 'A', -1, D, E, ZERO, ONE, 0, 0,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DBDSVDX( 'U', 'V', 'V', 2, D, E, -ONE, ZERO, 0, 0,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DBDSVDX( 'U', 'V', 'V', 2, D, E, ONE, ZERO, 0, 0,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL DBDSVDX( 'L', 'V', 'I', 2, D, E, ZERO, ZERO, 0, 2,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL DBDSVDX( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 5, 2,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DBDSVDX( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 3, 2,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DBDSVDX( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 3, 5,
+     $                    NS, S, Q, 1, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL DBDSVDX( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0,
+     $                    NS, S, Q, 0, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL DBDSVDX( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0,
+     $                    NS, S, Q, 2, W, IW, INFO)
+         CALL CHKXER( 'DBDSVDX', INFOT, NOUT, LERR, OK )
+         NT = NT + 12
       END IF
 *
 *     Print a summary line.

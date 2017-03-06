@@ -59,6 +59,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define K	[fp, #-264 ]
 #define A	[fp, #-268 ]
 
+#define FP_ZERO [fp, #-236]
+#define FP_ZERO_0 [fp, #-236]
+#define FP_ZERO_1 [fp, #-232]
+
+
 #define ALPHA	[fp, #-276 ]
 
 #define B	[fp, #4 ]
@@ -89,7 +94,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x4
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d17, d16
 	vmov.f64		d18, d16
 	vmov.f64		d19, d16
@@ -386,7 +391,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x4
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d17, d16
 	vmov.f64		d20, d16
 	vmov.f64		d21, d16
@@ -468,7 +473,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x4
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d20, d16
 	vmov.f64		d24, d16
 	vmov.f64		d28, d16
@@ -527,7 +532,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x2
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d17, d16
 	vmov.f64		d18, d16
 	vmov.f64		d19, d16
@@ -601,7 +606,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x2
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d17, d16
 	vmov.f64		d20, d16
 	vmov.f64		d21, d16
@@ -656,7 +661,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x2
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d20, d16
 
 .endm
@@ -699,7 +704,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x1
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d17, d16
 	vmov.f64		d18, d16
 	vmov.f64		d19, d16
@@ -753,7 +758,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x1
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 	vmov.f64		d17, d16
 
 .endm
@@ -794,7 +799,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x1
 
-	vsub.f64		d16 , d16 , d16
+	fldd			d16, FP_ZERO
 
 .endm
 
@@ -849,6 +854,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	sub	r3, fp, #128
 	vstm	r3, { d8 - d15} 				// store floating point registers
+
+        movs    r4, #0
+        str     r4, FP_ZERO
+        str     r4, FP_ZERO_1
 
 	ldr	r3, OLD_LDC
 	lsl	r3, r3, #3					// ldc = ldc * 8

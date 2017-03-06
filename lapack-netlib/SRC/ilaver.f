@@ -2,8 +2,8 @@
 **
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *     SUBROUTINE ILAVER( VERS_MAJOR, VERS_MINOR, VERS_PATCH )
 *
 *     INTEGER VERS_MAJOR, VERS_MINOR, VERS_PATCH
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -25,40 +25,46 @@
 *  ==========
 *
 *>  \param[out] VERS_MAJOR
+*>  \verbatim
 *>      return the lapack major version
+*>  \endverbatim
 *>
 *>  \param[out] VERS_MINOR
+*>  \verbatim
 *>      return the lapack minor version from the major version
+*>  \endverbatim
 *>
 *>  \param[out] VERS_PATCH
+*>  \verbatim
 *>      return the lapack patch version from the minor version
+*>  \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ILAVER( VERS_MAJOR, VERS_MINOR, VERS_PATCH )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     June 2016
 *
 *  =====================================================================
 *
       INTEGER VERS_MAJOR, VERS_MINOR, VERS_PATCH
 *  =====================================================================
       VERS_MAJOR = 3
-      VERS_MINOR = 5
+      VERS_MINOR = 7
       VERS_PATCH = 0
 *  =====================================================================
 *

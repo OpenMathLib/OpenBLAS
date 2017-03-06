@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(OpenBLAS)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 2)
-set(OpenBLAS_PATCH_VERSION 16.dev)
+set(OpenBLAS_PATCH_VERSION 20.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 enable_language(ASM)
@@ -30,10 +30,20 @@ set(NO_LAPACK 1)
 set(NO_LAPACKE 1)
 endif()
 
-if(BUILD_DEBUG)
-set(CMAKE_BUILD_TYPE Debug)
+if(CMAKE_CONFIGURATION_TYPES) # multiconfig generator?
+        set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
+        set(CMAKE_BUILD_TYPE
+	        Debug Debug
+		Release Release
+	)
 else()
-set(CMAKE_BUILD_TYPE Release)
+	if( NOT CMAKE_BUILD_TYPE )
+		if(BUILD_DEBUG)
+			set(CMAKE_BUILD_TYPE Debug)
+		else()
+			set(CMAKE_BUILD_TYPE Release)
+		endif()
+	endif()
 endif()
 
 if(BUILD_WITHOUT_CBLAS)
@@ -45,17 +55,13 @@ endif()
 
 message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only x86 support is currently available.")
 
-include("${CMAKE_SOURCE_DIR}/cmake/utils.cmake")
-include("${CMAKE_SOURCE_DIR}/cmake/system.cmake")
+include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
+include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
 
 set(BLASDIRS interface driver/level2 driver/level3 driver/others)
 
 if (NOT DYNAMIC_ARCH)
   list(APPEND BLASDIRS kernel)
-endif ()
-
-if (DEFINED UTEST_CHECK)
-  set(SANITY_CHECK 1)
 endif ()
 
 if (DEFINED SANITY_CHECK)
@@ -110,6 +116,10 @@ if (${NO_STATIC} AND ${NO_SHARED})
   message(FATAL_ERROR "Neither static nor shared are enabled.")
 endif ()
 
+#Set default output directory
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
+
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
 foreach (SUBDIR ${SUBDIRS})
@@ -123,9 +133,9 @@ endforeach ()
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
 if (NOT NOFORTRAN AND NOT NO_LAPACK)
-  include("${CMAKE_SOURCE_DIR}/cmake/lapack.cmake")
+  include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
 if (NOT NO_LAPACKE)
-  include("${CMAKE_SOURCE_DIR}/cmake/lapacke.cmake")
+  include("${PROJECT_SOURCE_DIR}/cmake/lapacke.cmake")
 endif ()
 endif ()
 
@@ -137,22 +147,36 @@ endif()
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
-include("${CMAKE_SOURCE_DIR}/cmake/export.cmake")
+include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
 
+# Set output for libopenblas
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
+
+foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+  string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+  
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+endforeach()
+
+enable_testing()
+add_subdirectory(utest)
 
 if(NOT MSVC)
-#only build shared library for MSVC
-add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
-set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
-set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+	#only build shared library for MSVC
 
-if(SMP)
-target_link_libraries(${OpenBLAS_LIBNAME} pthread)
-target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
+	add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
+	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
+	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
+	if(SMP)
+	target_link_libraries(${OpenBLAS_LIBNAME} pthread)
+	target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
 endif()
 
 #build test and ctest
-enable_testing()
 add_subdirectory(test)
 if(NOT NO_CBLAS)
 add_subdirectory(ctest)
@@ -188,3 +212,27 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 #endif
 #	@touch lib.grd
 
+# Install project
+
+# Install libraries
+install(TARGETS ${OpenBLAS_LIBNAME}
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION lib )
+
+# Install include files
+FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+install (FILES ${INCLUDE_FILES} DESTINATION include)
+ 
+if(NOT MSVC)
+	install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION lib)
+endif()
+
+include(FindPkgConfig QUIET)
+if(PKG_CONFIG_FOUND)
+	set(prefix ${CMAKE_INSTALL_PREFIX})
+	set(libdir ${CMAKE_INSTALL_PREFIX}/lib)
+	set(includedir ${CMAKE_INSTALL_PREFIX}/include)
+	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas.pc @ONLY)
+	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION lib/pkgconfig/)
+endif()

@@ -78,6 +78,179 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 .endm
 
+.macro KERNEL_F8
+#if !defined(DOUBLE)
+	ldp	q2, q3, [X], #32
+	ldp	q4, q5, [X], #32
+
+	fabs	v2.4s, v2.4s
+	fabs	v3.4s, v3.4s
+	fabs	v4.4s, v4.4s
+	fabs	v5.4s, v5.4s
+
+	faddp	v2.4s, v2.4s, v3.4s
+	faddp	v3.4s, v4.4s, v5.4s
+
+	fmax	v2.4s, v2.4s, v3.4s
+	fmaxv	TMPF, v2.4s
+	fcmp	MAXF, TMPF
+	fcsel	MAXF, MAXF, TMPF, COND
+	csel	INDEX, INDEX, Z, COND
+	add	Z, Z, #8
+#else
+	ldp	q2, q3, [X], #32
+	ldp	q4, q5, [X], #32
+	ldp	q16, q17, [X], #32
+	ldp	q18, q19, [X], #32
+
+	fabs	v2.2d, v2.2d
+	fabs	v3.2d, v3.2d
+	fabs	v4.2d, v4.2d
+	fabs	v5.2d, v5.2d
+	fabs	v16.2d, v16.2d
+	fabs	v17.2d, v17.2d
+	fabs	v18.2d, v18.2d
+	fabs	v19.2d, v19.2d
+
+	faddp	v2.2d, v2.2d, v3.2d
+	faddp	v3.2d, v4.2d, v5.2d
+	faddp	v4.2d, v16.2d, v17.2d
+	faddp	v5.2d, v18.2d, v19.2d
+
+	fmax	v2.2d, v2.2d, v3.2d
+	fmax	v4.2d, v4.2d, v5.2d
+	fmax	v2.2d, v2.2d, v4.2d
+	fmaxp	TMPF, v2.2d
+
+	fcmp	MAXF, TMPF
+	fcsel	MAXF, MAXF, TMPF, COND
+	csel	INDEX, INDEX, Z, COND
+	add	Z, Z, #8
+#endif
+	PRFM	PLDL1KEEP, [X, #1024]
+.endm
+
+.macro KERNEL_F8_FINALIZE
+	sub	x6, INDEX, #1
+#if !defined(DOUBLE)
+	lsl	x6, x6, #3
+	add	x7, x7, x6
+
+	ldp	q2, q3, [x7]
+	ldp	q4, q5, [x7, #32]
+
+	fabs	v2.4s, v2.4s
+	fabs	v3.4s, v3.4s
+	fabs	v4.4s, v4.4s
+	fabs	v5.4s, v5.4s
+
+	faddp	v2.4s, v2.4s, v3.4s
+	faddp	v3.4s, v4.4s, v5.4s
+
+	ins	v4.s[0], v3.s[3]
+	add	x6, INDEX, #7
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v4.s[0], v3.s[2]
+	sub	x6, x6, #1
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v4.s[0], v3.s[1]
+	sub	x6, x6, #1
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v4.s[0], v3.s[0]
+	sub	x6, x6, #1
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v4.s[0], v2.s[3]
+	sub	x6, x6, #1
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v4.s[0], v2.s[2]
+	sub	x6, x6, #1
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v4.s[0], v2.s[1]
+	sub	x6, x6, #1
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v4.s[0], v2.s[0]
+	sub	x6, x6, #1
+	fcmp	MAXF, s4
+	csel	INDEX, x6, INDEX, eq
+#else
+	lsl	x6, x6, #4
+	add	x7, x7, x6
+
+	ldp	q2, q3, [x7]
+	ldp	q4, q5, [x7, #32]
+	ldp	q16, q17, [x7, #64]
+	ldp	q18, q19, [x7, #96]
+
+	fabs	v2.2d, v2.2d
+	fabs	v3.2d, v3.2d
+	fabs	v4.2d, v4.2d
+	fabs	v5.2d, v5.2d
+	fabs	v16.2d, v16.2d
+	fabs	v17.2d, v17.2d
+	fabs	v18.2d, v18.2d
+	fabs	v19.2d, v19.2d
+
+	faddp	v2.2d, v2.2d, v3.2d
+	faddp	v3.2d, v4.2d, v5.2d
+	faddp	v4.2d, v16.2d, v17.2d
+	faddp	v5.2d, v18.2d, v19.2d
+
+	ins	v7.d[0], v5.d[1]
+	add	x6, INDEX, #7
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v7.d[0], v5.d[0]
+	sub	x6, x6, #1
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v7.d[0], v4.d[1]
+	sub	x6, x6, #1
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v7.d[0], v4.d[0]
+	sub	x6, x6, #1
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v7.d[0], v3.d[1]
+	sub	x6, x6, #1
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v7.d[0], v3.d[0]
+	sub	x6, x6, #1
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v7.d[0], v2.d[1]
+	sub	x6, x6, #1
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+
+	ins	v7.d[0], v2.d[0]
+	sub	x6, x6, #1
+	fcmp	MAXF, d7
+	csel	INDEX, x6, INDEX, eq
+#endif
+.endm
+
 .macro KERNEL_S1
 #if !defined(DOUBLE)
 	ld1	{v1.2s}, [X], INC_X
@@ -106,6 +279,50 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ble	iamax_kernel_zero
 	cmp	INC_X, xzr
 	ble	iamax_kernel_zero
+
+	cmp	INC_X, #1
+	bne	iamax_kernel_S_BEGIN
+	mov	x7, X
+
+
+iamax_kernel_F_BEGIN:
+
+	INIT_S
+
+	subs	N, N, #1
+	ble	iamax_kernel_L999
+
+	asr	I, N, #3
+	cmp	I, xzr
+	ble	iamax_kernel_F1
+
+	add	Z, Z, #1
+
+iamax_kernel_F8:
+
+	KERNEL_F8
+
+	subs	I, I, #1
+	bne	iamax_kernel_F8
+
+	KERNEL_F8_FINALIZE
+
+	sub	Z, Z, #1
+iamax_kernel_F1:
+
+	ands	I, N, #7
+	ble	iamax_kernel_L999
+
+iamax_kernel_F10:
+
+	KERNEL_S1
+
+	subs    I, I, #1
+        bne     iamax_kernel_F10
+
+	b	iamax_kernel_L999
+
+iamax_kernel_S_BEGIN:
 
 	INIT_S
 

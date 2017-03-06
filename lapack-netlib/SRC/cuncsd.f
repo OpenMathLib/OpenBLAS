@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CUNCSD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cuncsd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cuncsd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cuncsd.f"> 
+*> Download CUNCSD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cuncsd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cuncsd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cuncsd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -24,7 +24,7 @@
 *                                    U1, LDU1, U2, LDU2, V1T, LDV1T, V2T,
 *                                    LDV2T, WORK, LWORK, RWORK, LRWORK,
 *                                    IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS
 *       INTEGER            INFO, LDU1, LDU2, LDV1T, LDV2T, LDX11, LDX12,
@@ -39,7 +39,7 @@
 *      $                   X12( LDX12, * ), X21( LDX21, * ), X22( LDX22,
 *      $                   * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -303,12 +303,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date June 2016
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -320,10 +320,10 @@
      $                             LDV2T, WORK, LWORK, RWORK, LRWORK,
      $                             IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS
@@ -363,15 +363,15 @@
       LOGICAL            LRQUERY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, CBBCSD, CLACPY, CLAPMR, CLAPMT, CLASCL,
-     $                   CLASET, CUNBDB, CUNGLQ, CUNGQR
+      EXTERNAL           XERBLA, CBBCSD, CLACPY, CLAPMR, CLAPMT,
+     $                   CUNBDB, CUNGLQ, CUNGQR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. Intrinsic Functions
-      INTRINSIC          COS, INT, MAX, MIN, SIN
+      INTRINSIC          INT, MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
@@ -471,7 +471,7 @@
          IB22D = IB21E + MAX( 1, Q - 1 )
          IB22E = IB22D + MAX( 1, Q )
          IBBCSD = IB22E + MAX( 1, Q - 1 )
-         CALL CBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q, 
+         CALL CBBCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS, M, P, Q,
      $                THETA, THETA, U1, LDU1, U2, LDU2, V1T, LDV1T,
      $                V2T, LDV2T, THETA, THETA, THETA, THETA, THETA,
      $                THETA, THETA, THETA, RWORK, -1, CHILDINFO )
@@ -488,12 +488,12 @@
          ITAUQ1 = ITAUP2 + MAX( 1, M - P )
          ITAUQ2 = ITAUQ1 + MAX( 1, Q )
          IORGQR = ITAUQ2 + MAX( 1, M - Q )
-         CALL CUNGQR( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), U1, WORK, -1,
+         CALL CUNGQR( M-Q, M-Q, M-Q, U1, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGQRWORKOPT = INT( WORK(1) )
          LORGQRWORKMIN = MAX( 1, M - Q )
          IORGLQ = ITAUQ2 + MAX( 1, M - Q )
-         CALL CUNGLQ( M-Q, M-Q, M-Q, 0, MAX(1,M-Q), U1, WORK, -1,
+         CALL CUNGLQ( M-Q, M-Q, M-Q, U1, MAX(1,M-Q), U1, WORK, -1,
      $                CHILDINFO )
          LORGLQWORKOPT = INT( WORK(1) )
          LORGLQWORKMIN = MAX( 1, M - Q )
@@ -621,7 +621,7 @@
 *     Permute rows and columns to place identity submatrices in top-
 *     left corner of (1,1)-block and/or bottom-right corner of (1,2)-
 *     block and/or bottom-right corner of (2,1)-block and/or top-left
-*     corner of (2,2)-block 
+*     corner of (2,2)-block
 *
       IF( Q .GT. 0 .AND. WANTU2 ) THEN
          DO I = 1, Q

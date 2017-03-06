@@ -185,13 +185,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	sub	r4, fp, #128
 	vstm	r4, { s8 - s15} 				// store floating point registers
 
+        movs    r4, #0                                          // clear floating point register
+        vmov    s0, r4
+	vmov	s1, s0
+	vmov	s2, s0
+	vmov	s3, s0
+
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
-
-	vsub.f32                s0 , s0 , s0
-	vsub.f32                s1 , s1 , s1
-	vsub.f32                s2 , s2 , s2
-	vsub.f32                s3 , s3 , s3
 
 	cmp	N, #0
 	ble	cdot_kernel_L999

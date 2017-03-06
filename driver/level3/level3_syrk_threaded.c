@@ -210,8 +210,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   fprintf(stderr, "Thread[%ld]  m_from : %ld m_to : %ld n_from : %ld n_to : %ld\n",  mypos, m_from, m_to, n_from, n_to);
 #endif
 
-  div_n = ((m_to - m_from + DIVIDE_RATE - 1) / DIVIDE_RATE
-	                            + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+  div_n = (((m_to - m_from + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 
   buffer[0] = sb;
   for (i = 1; i < DIVIDE_RATE; i++) {
@@ -233,7 +232,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       min_i = GEMM_P;
     } else {
       if (min_i > GEMM_P) {
-	min_i = (min_i / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	min_i = ((min_i / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
       }
     }
 
@@ -253,8 +252,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
     STOP_RPCC(copy_A);
 
-    div_n = ((m_to - m_from + DIVIDE_RATE - 1) / DIVIDE_RATE
-	                              + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+    div_n = (((m_to - m_from + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 
     for (xxx = m_from, bufferside = 0; xxx < m_to; xxx += div_n, bufferside ++) {
 
@@ -353,9 +351,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     while (current >= 0) {
 #endif
 
-	div_n = ((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE
-		 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
-
+	div_n = (((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
+ 
 	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
 
 	  START_RPCC();
@@ -412,7 +409,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	min_i = GEMM_P;
       } else
 	if (min_i > GEMM_P) {
-	  min_i = ((min_i + 1) / 2 + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	  min_i = (((min_i + 1) / 2 + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 	}
 
       START_RPCC();
@@ -425,8 +422,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
       do {
 
-	div_n = ((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE
-		                                                     + GEMM_UNROLL_MN - 1) & ~(GEMM_UNROLL_MN - 1);
+	div_n = (((range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 
 	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
 
@@ -602,9 +598,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
       double di   = (double)i;
 
-      width = (((BLASLONG)(sqrt(di * di + dnum) - di) + mask) & ~mask);
+      width = (((BLASLONG)((sqrt(di * di + dnum) - di) + mask)/(mask+1)) * (mask+1) );
 
-      if (num_cpu == 0) width = n - ((n - width) & ~mask);
+      if (num_cpu == 0) width = n - (((n - width)/(mask+1)) * (mask+1) );
 
       if ((width > n - i) || (width < mask)) width = n - i;
 
@@ -644,7 +640,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
 	double di   = (double)i;
 
-	width = (((BLASLONG)(sqrt(di * di + dnum) - di) + mask) & ~mask);
+	width = (((BLASLONG)((sqrt(di * di + dnum) - di) + mask)/(mask+1)) * (mask+1));
 
       if ((width > n - i) || (width < mask)) width = n - i;
 

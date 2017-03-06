@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAHD2( IOUNIT, PATH )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            IOUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -53,22 +53,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup single_eig
 *
 *  =====================================================================
       SUBROUTINE SLAHD2( IOUNIT, PATH )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -457,26 +457,62 @@
 *
  9972 FORMAT( / ' Test ratios:  ',
      $      '(B: bidiagonal, S: diagonal, Q, P, U, and V: ', A10, / 16X,
-     $      'X: m x nrhs, Y = Q'' X, and Z = U'' Y)',
-     $      / '   1: norm( A - Q B P'' ) / ( norm(A) max(m,n) ulp )',
+     $      'X: m x nrhs, Y = Q'' X, and Z = U'' Y)' )
+ 9971 FORMAT( '   1: norm( A - Q B P'' ) / ( norm(A) max(m,n) ulp )',
      $      / '   2: norm( I - Q'' Q )   / ( m ulp )',
      $      / '   3: norm( I - P'' P )   / ( n ulp )',
-     $      / '   4: norm( B - U S V'' ) / ( norm(B) min(m,n) ulp )', /
-     $      '   5: norm( Y - U Z )    / ( norm(Z) max(min(m,n),k) ulp )'
-     $      , / '   6: norm( I - U'' U )   / ( min(m,n) ulp )',
-     $      / '   7: norm( I - V'' V )   / ( min(m,n) ulp )' )
- 9971 FORMAT( '   8: Test ordering of S  (0 if nondecreasing, 1/ulp ',
-     $      ' otherwise)', /
-     $      '   9: norm( S - S2 )     / ( norm(S) ulp ),',
-     $      ' where S2 is computed', / 44X,
-     $      'without computing U and V''',
+     $      / '   4: norm( B - U S V'' ) / ( norm(B) min(m,n) ulp )',
+     $      / '   5: norm( Y - U Z )    / ',
+     $        '( norm(Z) max(min(m,n),k) ulp )',
+     $      / '   6: norm( I - U'' U )   / ( min(m,n) ulp )',
+     $      / '   7: norm( I - V'' V )   / ( min(m,n) ulp )',
+     $      / '   8: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '   9: norm( S - S1 )     / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 43X,
+     $        ' without computing U and V''',
      $      / '  10: Sturm sequence test ',
-     $      '(0 if sing. vals of B within THRESH of S)',
+     $        '(0 if sing. vals of B within THRESH of S)',
      $      / '  11: norm( A - (QU) S (V'' P'') ) / ',
-     $      '( norm(A) max(m,n) ulp )', /
-     $      '  12: norm( X - (QU) Z )         / ( |X| max(M,k) ulp )',
+     $        '( norm(A) max(m,n) ulp )',
+     $      / '  12: norm( X - (QU) Z )         / ( |X| max(M,k) ulp )',
      $      / '  13: norm( I - (QU)''(QU) )      / ( M ulp )',
-     $      / '  14: norm( I - (V'' P'') (P V) )  / ( N ulp )' )
+     $      / '  14: norm( I - (V'' P'') (P V) )  / ( N ulp )',
+     $      / '  15: norm( B - U S V'' ) / ( norm(B) min(m,n) ulp )',
+     $      / '  16: norm( I - U'' U )   / ( min(m,n) ulp )',
+     $      / '  17: norm( I - V'' V )   / ( min(m,n) ulp )',
+     $      / '  18: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '  19: norm( S - S1 )     / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 43X,
+     $        ' without computing U and V''',
+     $      / '  20: norm( B - U S V'' )  / ( norm(B) min(m,n) ulp )',
+     $        '  SBDSVX(V,A)',
+     $      / '  21: norm( I - U'' U )    / ( min(m,n) ulp )',
+     $      / '  22: norm( I - V'' V )    / ( min(m,n) ulp )',
+     $      / '  23: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '  24: norm( S - S1 )      / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 44X,
+     $        ' without computing U and V''',
+     $      / '  25: norm( S - U'' B V ) / ( norm(B) n ulp )',
+     $        '  SBDSVX(V,I)',
+     $      / '  26: norm( I - U'' U )    / ( min(m,n) ulp )',
+     $      / '  27: norm( I - V'' V )    / ( min(m,n) ulp )',
+     $      / '  28: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '  29: norm( S - S1 )      / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 44X,
+     $        ' without computing U and V''',
+     $      / '  30: norm( S - U'' B V ) / ( norm(B) n ulp )',
+     $        '  SBDSVX(V,V)',
+     $      / '  31: norm( I - U'' U )    / ( min(m,n) ulp )',
+     $      / '  32: norm( I - V'' V )    / ( min(m,n) ulp )',
+     $      / '  33: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '  34: norm( S - S1 )      / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 44X,
+     $        ' without computing U and V''' )
 *
 *     Band reduction to bidiagonal form
 *

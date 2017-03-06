@@ -1,25 +1,25 @@
-*> \brief \b ZPSTRF
+*> \brief \b ZPSTRF computes the Cholesky factorization with complete pivoting of a complex Hermitian positive semidefinite matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZPSTRF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zpstrf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zpstrf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zpstrf.f"> 
+*> Download ZPSTRF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zpstrf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zpstrf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zpstrf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZPSTRF( UPLO, N, A, LDA, PIV, RANK, TOL, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   TOL
 *       INTEGER            INFO, LDA, N, RANK
@@ -30,7 +30,7 @@
 *       DOUBLE PRECISION   WORK( 2*N )
 *       INTEGER            PIV( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -122,29 +122,30 @@
 *>          < 0: If INFO = -K, the K-th argument had an illegal value,
 *>          = 0: algorithm completed successfully, and
 *>          > 0: the matrix A is either rank deficient with computed rank
-*>               as returned in RANK, or is indefinite.  See Section 7 of
-*>               LAPACK Working Note #161 for further information.
+*>               as returned in RANK, or is not positive semidefinite. See
+*>               Section 7 of LAPACK Working Note #161 for further
+*>               information.
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE ZPSTRF( UPLO, N, A, LDA, PIV, RANK, TOL, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   TOL
@@ -233,7 +234,7 @@
   110    CONTINUE
          PVT = MAXLOC( WORK( 1:N ), 1 )
          AJJ = DBLE( A( PVT, PVT ) )
-         IF( AJJ.EQ.ZERO.OR.DISNAN( AJJ ) ) THEN
+         IF( AJJ.LE.ZERO.OR.DISNAN( AJJ ) ) THEN
             RANK = 0
             INFO = 1
             GO TO 230

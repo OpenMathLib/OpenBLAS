@@ -7,7 +7,7 @@ SVD:  Data file for testing Singular Value Decomposition routines
 2 2  2  2  2                                  Values of NBMIN (minimum blocksize)
 1 0  5  9  1                                  Values of NX (crossover point)
 2 0  2  2  2                                  Values of NRHS
-54.0                                          Threshold value
+50.0                                          Threshold value
 T                                             Put T to test the LAPACK routines
 T                                             Put T to test the driver routines
 T                                             Put T to test the error exits

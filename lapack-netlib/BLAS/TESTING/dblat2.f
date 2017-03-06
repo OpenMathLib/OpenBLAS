@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM DBLAT2
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -90,10 +90,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -102,7 +102,7 @@
 *  =====================================================================
       PROGRAM DBLAT2
 *
-*  -- Reference BLAS test routine (version 3.4.1) --
+*  -- Reference BLAS test routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -117,7 +117,7 @@
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
       INTEGER            NMAX, INCMAX
-      PARAMETER          ( NMAX = 128, INCMAX = 2 )
+      PARAMETER          ( NMAX = 65, INCMAX = 2 )
       INTEGER            NINMAX, NIDMAX, NKBMAX, NALMAX, NBEMAX
       PARAMETER          ( NINMAX = 7, NIDMAX = 9, NKBMAX = 7,
      $                   NALMAX = 7, NBEMAX = 7 )

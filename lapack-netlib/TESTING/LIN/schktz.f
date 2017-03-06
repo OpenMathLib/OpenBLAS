@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SCHKTZ( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR, A,
 *                          COPYA, S, TAU, WORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NOUT
@@ -22,14 +22,14 @@
 *       REAL               A( * ), COPYA( * ), S( * ),
 *      $                   TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> SCHKTZ tests STZRQF and STZRZF.
+*> SCHKTZ tests STZRZF.
 *> \endverbatim
 *
 *  Arguments:
@@ -119,12 +119,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup single_lin
 *
@@ -132,10 +132,10 @@
       SUBROUTINE SCHKTZ( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR, A,
      $                   COPYA, S, TAU, WORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -155,7 +155,7 @@
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 3 )
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 6 )
+      PARAMETER          ( NTESTS = 3 )
       REAL               ONE, ZERO
       PARAMETER          ( ONE = 1.0E0, ZERO = 0.0E0 )
 *     ..
@@ -170,12 +170,12 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
-      REAL               SLAMCH, SQRT12, SRZT01, SRZT02, STZT01, STZT02
-      EXTERNAL           SLAMCH, SQRT12, SRZT01, SRZT02, STZT01, STZT02
+      REAL               SLAMCH, SQRT12, SRZT01, SRZT02
+      EXTERNAL           SLAMCH, SQRT12, SRZT01, SRZT02
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAHD, ALASUM, SERRTZ, SGEQR2, SLACPY, SLAORD,
-     $                   SLASET, SLATMS, STZRQF, STZRZF
+     $                   SLASET, SLATMS, STZRZF
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -246,52 +246,6 @@
 *
                   IF( MODE.EQ.0 ) THEN
                      CALL SLASET( 'Full', M, N, ZERO, ZERO, A, LDA )
-                     DO 20 I = 1, MNMIN
-                        S( I ) = ZERO
-   20                CONTINUE
-                  ELSE
-                     CALL SLATMS( M, N, 'Uniform', ISEED,
-     $                            'Nonsymmetric', S, IMODE,
-     $                            ONE / EPS, ONE, M, N, 'No packing', A,
-     $                            LDA, WORK, INFO )
-                     CALL SGEQR2( M, N, A, LDA, WORK, WORK( MNMIN+1 ),
-     $                            INFO )
-                     CALL SLASET( 'Lower', M-1, N, ZERO, ZERO, A( 2 ),
-     $                            LDA )
-                     CALL SLAORD( 'Decreasing', MNMIN, S, 1 )
-                  END IF
-*
-*                 Save A and its singular values
-*
-                  CALL SLACPY( 'All', M, N, A, LDA, COPYA, LDA )
-*
-*                 Call STZRQF to reduce the upper trapezoidal matrix to
-*                 upper triangular form.
-*
-                  SRNAMT = 'STZRQF'
-                  CALL STZRQF( M, N, A, LDA, TAU, INFO )
-*
-*                 Compute norm(svd(a) - svd(r))
-*
-                  RESULT( 1 ) = SQRT12( M, M, A, LDA, S, WORK,
-     $                          LWORK )
-*
-*                 Compute norm( A - R*Q )
-*
-                  RESULT( 2 ) = STZT01( M, N, COPYA, A, LDA, TAU, WORK,
-     $                          LWORK )
-*
-*                 Compute norm(Q'*Q - I).
-*
-                  RESULT( 3 ) = STZT02( M, N, A, LDA, TAU, WORK, LWORK )
-*
-*                 Test STZRZF
-*
-*                 Generate test matrix of size m by n using
-*                 singular value distribution indicated by `mode'.
-*
-                  IF( MODE.EQ.0 ) THEN
-                     CALL SLASET( 'Full', M, N, ZERO, ZERO, A, LDA )
                      DO 30 I = 1, MNMIN
                         S( I ) = ZERO
    30                CONTINUE
@@ -319,22 +273,22 @@
 *
 *                 Compute norm(svd(a) - svd(r))
 *
-                  RESULT( 4 ) = SQRT12( M, M, A, LDA, S, WORK,
+                  RESULT( 1 ) = SQRT12( M, M, A, LDA, S, WORK,
      $                          LWORK )
 *
 *                 Compute norm( A - R*Q )
 *
-                  RESULT( 5 ) = SRZT01( M, N, COPYA, A, LDA, TAU, WORK,
+                  RESULT( 2 ) = SRZT01( M, N, COPYA, A, LDA, TAU, WORK,
      $                          LWORK )
 *
 *                 Compute norm(Q'*Q - I).
 *
-                  RESULT( 6 ) = SRZT02( M, N, A, LDA, TAU, WORK, LWORK )
+                  RESULT( 3 ) = SRZT02( M, N, A, LDA, TAU, WORK, LWORK )
 *
 *                 Print information about the tests that did not pass
 *                 the threshold.
 *
-                  DO 40 K = 1, 6
+                  DO 40 K = 1, NTESTS
                      IF( RESULT( K ).GE.THRESH ) THEN
                         IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                     CALL ALAHD( NOUT, PATH )
@@ -343,7 +297,7 @@
                         NFAIL = NFAIL + 1
                      END IF
    40             CONTINUE
-                  NRUN = NRUN + 6
+                  NRUN = NRUN + 3
    50          CONTINUE
             END IF
    60    CONTINUE

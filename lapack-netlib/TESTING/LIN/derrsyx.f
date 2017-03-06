@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DERRSY( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -46,22 +46,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DERRSY( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -83,8 +83,8 @@
 *     .. Local Arrays ..
       INTEGER            IP( NMAX ), IW( NMAX )
       DOUBLE PRECISION   A( NMAX, NMAX ), AF( NMAX, NMAX ), B( NMAX ),
-     $                   R1( NMAX ), R2( NMAX ), W( 3*NMAX ), X( NMAX ),
-     $                   S( NMAX ), ERR_BNDS_N( NMAX, 3 ),
+     $                   E( NMAX ), R1( NMAX ), R2( NMAX ), W( 3*NMAX ),
+     $                   X( NMAX ), S( NMAX ), ERR_BNDS_N( NMAX, 3 ),
      $                   ERR_BNDS_C( NMAX, 3 ), PARAMS( 1 )
 *     ..
 *     .. External Functions ..
@@ -92,11 +92,12 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, DSPCON, DSYCON_ROOK, DSPRFS,
-     $                   DSPTRF, DSPTRI, DSPTRS, DSYCON, DSYRFS, DSYTF2,
-     $                   DSYTF2_ROOK, DSYTRF, DSYTRF_ROOK, DSYTRI,
-     $                   DSYTRI_ROOK, DSYTRI2, DSYTRS, DSYTRS_ROOK,
-     $                   DSYRFSX
+      EXTERNAL           ALAESM, CHKXER, DSPCON, DSPRFS, DSPTRF, DSPTRI,
+     $                   DSPTRS, DSYCON, DSYCON_3, DSYCON_ROOK, DSYRFS,
+     $                   DSYTF2, DSYTF2_RK, DSYTF2_ROOK, DSYTRF,
+     $                   DSYTRF_RK, DSYTRF_ROOK, DSYTRI, DSYTRI_3,
+     $                   DSYTRI_3X, DSYTRI_ROOK, DSYTRI2, DSYTRI2X,
+     $                   DSYTRS, DSYTRS_3, DSYTRS_ROOK, DSYRFSX
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -124,6 +125,7 @@
             AF( I, J ) = 1.D0 / DBLE( I+J )
    10    CONTINUE
          B( J ) = 0.D0
+         E( J ) = 0.D0
          R1( J ) = 0.D0
          R2( J ) = 0.D0
          W( J ) = 0.D0
@@ -153,6 +155,12 @@
          CALL CHKXER( 'DSYTRF', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL DSYTRF( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'DSYTRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYTRF( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'DSYTRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYTRF( 'U', 0, A, 1, IP, W, -2, INFO )
          CALL CHKXER( 'DSYTRF', INFOT, NOUT, LERR, OK )
 *
 *        DSYTF2
@@ -193,6 +201,19 @@
          INFOT = 4
          CALL DSYTRI2( 'U', 2, A, 1, IP, W, IW, INFO )
          CALL CHKXER( 'DSYTRI2', INFOT, NOUT, LERR, OK )
+*
+*        DSYTRI2X
+*
+         SRNAMT = 'DSYTRI2X'
+         INFOT = 1
+         CALL DSYTRI2X( '/', 0, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRI2X( 'U', -1, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTRI2X( 'U', 2, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI2X', INFOT, NOUT, LERR, OK )
 *
 *        DSYTRS
 *
@@ -326,6 +347,12 @@
          INFOT = 4
          CALL DSYTRF_ROOK( 'U', 2, A, 1, IP, W, 4, INFO )
          CALL CHKXER( 'DSYTRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYTRF_ROOK( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'DSYTRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYTRF_ROOK( 'U', 0, A, 1, IP, W, -2, INFO )
+         CALL CHKXER( 'DSYTRF_ROOK', INFOT, NOUT, LERR, OK )
 *
 *        DSYTF2_ROOK
 *
@@ -387,6 +414,119 @@
          INFOT = 6
          CALL DSYCON_ROOK( 'U', 1, A, 1, IP, -1.0D0, RCOND, W, IW, INFO)
          CALL CHKXER( 'DSYCON_ROOK', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SK' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with rook
+*        (bounded Bunch-Kaufman) pivoting with the new storage
+*        format for factors L ( or U) and D.
+*
+*        L (or U) is stored in A, diagonal of D is stored on the
+*        diagonal of A, subdiagonal of D is stored in a separate array E.
+*
+*        DSYTRF_RK
+*
+         SRNAMT = 'DSYTRF_RK'
+         INFOT = 1
+         CALL DSYTRF_RK( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRF_RK( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTRF_RK( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYTRF_RK( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'DSYTRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYTRF_RK( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'DSYTRF_RK', INFOT, NOUT, LERR, OK )
+*
+*        DSYTF2_RK
+*
+         SRNAMT = 'DSYTF2_RK'
+         INFOT = 1
+         CALL DSYTF2_RK( '/', 0, A, 1, E, IP, INFO )
+         CALL CHKXER( 'DSYTF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTF2_RK( 'U', -1, A, 1, E, IP, INFO )
+         CALL CHKXER( 'DSYTF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTF2_RK( 'U', 2, A, 1, E, IP, INFO )
+         CALL CHKXER( 'DSYTF2_RK', INFOT, NOUT, LERR, OK )
+*
+*        DSYTRI_3
+*
+         SRNAMT = 'DSYTRI_3'
+         INFOT = 1
+         CALL DSYTRI_3( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRI_3( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTRI_3( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYTRI_3( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'DSYTRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYTRI_3( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'DSYTRI_3', INFOT, NOUT, LERR, OK )
+*
+*        DSYTRI_3X
+*
+         SRNAMT = 'DSYTRI_3X'
+         INFOT = 1
+         CALL DSYTRI_3X( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRI_3X( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTRI_3X( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'DSYTRI_3X', INFOT, NOUT, LERR, OK )
+*
+*        DSYTRS_3
+*
+         SRNAMT = 'DSYTRS_3'
+         INFOT = 1
+         CALL DSYTRS_3( '/', 0, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'DSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTRS_3( 'U', -1, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'DSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYTRS_3( 'U', 0, -1, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'DSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYTRS_3( 'U', 2, 1, A, 1, E, IP, B, 2, INFO )
+         CALL CHKXER( 'DSYTRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL DSYTRS_3( 'U', 2, 1, A, 2, E, IP, B, 1, INFO )
+         CALL CHKXER( 'DSYTRS_3', INFOT, NOUT, LERR, OK )
+*
+*        DSYCON_3
+*
+         SRNAMT = 'DSYCON_3'
+         INFOT = 1
+         CALL DSYCON_3( '/', 0, A, 1,  E, IP, ANRM, RCOND, W, IW,
+     $                   INFO )
+         CALL CHKXER( 'DSYCON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYCON_3( 'U', -1, A, 1, E, IP, ANRM, RCOND, W, IW,
+     $                   INFO )
+         CALL CHKXER( 'DSYCON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYCON_3( 'U', 2, A, 1, E, IP, ANRM, RCOND, W, IW,
+     $                   INFO )
+         CALL CHKXER( 'DSYCON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYCON_3( 'U', 1, A, 1, E, IP, -1.0D0, RCOND, W, IW,
+     $                   INFO)
+         CALL CHKXER( 'DSYCON_3', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *

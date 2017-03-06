@@ -162,7 +162,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup double_lin
 *
@@ -171,10 +171,10 @@
      $                   THRESH, TSTERR, NMAX, A, AFAC, AINV, B, X,
      $                   XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -205,16 +205,15 @@
       CHARACTER          DIST, TYPE, UPLO, XTYPE
       CHARACTER*3        PATH, MATPATH
       INTEGER            I, I1, I2, IMAT, IN, INB, INFO, IOFF, IRHS,
-     $                   ITEMP, IUPLO, IZERO, J, K, KL, KU, LDA, LWORK,
-     $                   MODE, N, NB, NERRS, NFAIL, NIMAT, NRHS, NRUN,
-     $                   NT
-      DOUBLE PRECISION   ALPHA, ANORM, CNDNUM, CONST, DTEMP, LAM_MAX,
-     $                   LAM_MIN, RCOND, RCONDC
+     $                   IUPLO, IZERO, J, K, KL, KU, LDA, LWORK, MODE,
+     $                   N, NB, NERRS, NFAIL, NIMAT, NRHS, NRUN, NT
+      DOUBLE PRECISION   ALPHA, ANORM, CNDNUM, CONST, DTEMP, SING_MAX,
+     $                   SING_MIN, RCOND, RCONDC
 *     ..
 *     .. Local Arrays ..
       CHARACTER          UPLOS( 2 )
-      INTEGER            IDUMMY( 1 ), ISEED( 4 ), ISEEDY( 4 )
-      DOUBLE PRECISION   DDUMMY( 1 ), RESULT( NTESTS )
+      INTEGER            ISEED( 4 ), ISEEDY( 4 )
+      DOUBLE PRECISION   BLOCK( 2, 2 ), DDUMMY( 1 ), RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DGET06, DLANGE, DLANSY
@@ -222,12 +221,12 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASUM, DERRSY, DGET04, DLACPY,
-     $                   DLARHS, DLATB4, DLATMS, DPOT02, DPOT03, DSYEVX,
+     $                   DLARHS, DLATB4, DLATMS, DPOT02, DPOT03, DGESVD,
      $                   DSYCON_ROOK, DSYT01_ROOK, DSYTRF_ROOK,
      $                   DSYTRI_ROOK, DSYTRS_ROOK, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, SQRT
+      INTRINSIC          MAX, MIN, SQRT
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -599,7 +598,8 @@
 *
 *
 *+    TEST 4
-*                 Compute largest 2-Norm of 2-by-2 diag blocks
+*                 Compute largest 2-Norm (condition number)
+*                 of 2-by-2 diag blocks
 *
                   RESULT( 4 ) = ZERO
                   DTEMP = ZERO
@@ -618,25 +618,27 @@
 *
                      IF( IWORK( K ).LT.ZERO ) THEN
 *
-*                       Get the two eigenvalues of a 2-by-2 block,
+*                       Get the two singular values
+*                       (real and non-negative) of a 2-by-2 block,
 *                       store them in RWORK array
 *
-                        CALL DSYEVX( 'N', 'A', UPLO, 2,
-     $                              AINV( ( K-2 )*LDA+K-1 ), LDA, DTEMP,
-     $                              DTEMP, ITEMP, ITEMP, ZERO, ITEMP,
-     $                              RWORK, DDUMMY, 1, WORK, 16,
-     $                              IWORK( N+1 ), IDUMMY, INFO )
+                        BLOCK( 1, 1 ) = AFAC( ( K-2 )*LDA+K-1 )
+                        BLOCK( 1, 2 ) = AFAC( (K-1)*LDA+K-1 )
+                        BLOCK( 2, 1 ) = BLOCK( 1, 2 )
+                        BLOCK( 2, 2 ) = AFAC( (K-1)*LDA+K )
 *
-                        LAM_MAX = MAX( ABS( RWORK( 1 ) ),
-     $                            ABS( RWORK( 2 ) ) )
-                        LAM_MIN = MIN( ABS( RWORK( 1 ) ),
-     $                            ABS( RWORK( 2 ) ) )
+                        CALL DGESVD( 'N', 'N', 2, 2, BLOCK, 2, RWORK,
+     $                               DDUMMY, 1, DDUMMY, 1,
+     $                               WORK, 10, INFO )
 *
-                        DTEMP = LAM_MAX / LAM_MIN
+                        SING_MAX = RWORK( 1 )
+                        SING_MIN = RWORK( 2 )
+*
+                        DTEMP = SING_MAX / SING_MIN
 *
 *                       DTEMP should be bounded by CONST
 *
-                        DTEMP = ABS( DTEMP ) - CONST + THRESH
+                        DTEMP = DTEMP - CONST + THRESH
                         IF( DTEMP.GT.RESULT( 4 ) )
      $                     RESULT( 4 ) = DTEMP
                         K = K - 1
@@ -659,25 +661,28 @@
 *
                      IF( IWORK( K ).LT.ZERO ) THEN
 *
-*                       Get the two eigenvalues of a 2-by-2 block,
+*                       Get the two singular values
+*                       (real and non-negative) of a 2-by-2 block,
 *                       store them in RWORK array
 *
-                        CALL DSYEVX( 'N', 'A', UPLO, 2,
-     $                              AINV( ( K-1 )*LDA+K ), LDA, DTEMP,
-     $                              DTEMP, ITEMP, ITEMP, ZERO, ITEMP,
-     $                              RWORK, DDUMMY, 1, WORK, 16,
-     $                              IWORK( N+1 ), IDUMMY, INFO )
+                        BLOCK( 1, 1 ) = AFAC( ( K-1 )*LDA+K )
+                        BLOCK( 2, 1 ) = AFAC( ( K-1 )*LDA+K+1 )
+                        BLOCK( 1, 2 ) = BLOCK( 2, 1 )
+                        BLOCK( 2, 2 ) = AFAC( K*LDA+K+1 )
 *
-                        LAM_MAX = MAX( ABS( RWORK( 1 ) ),
-     $                            ABS( RWORK( 2 ) ) )
-                        LAM_MIN = MIN( ABS( RWORK( 1 ) ),
-     $                            ABS( RWORK( 2 ) ) )
+                        CALL DGESVD( 'N', 'N', 2, 2, BLOCK, 2, RWORK,
+     $                               DDUMMY, 1, DDUMMY, 1,
+     $                               WORK, 10, INFO )
 *
-                        DTEMP = LAM_MAX / LAM_MIN
+*
+                        SING_MAX = RWORK( 1 )
+                        SING_MIN = RWORK( 2 )
+*
+                        DTEMP = SING_MAX / SING_MIN
 *
 *                       DTEMP should be bounded by CONST
 *
-                        DTEMP = ABS( DTEMP ) - CONST + THRESH
+                        DTEMP = DTEMP - CONST + THRESH
                         IF( DTEMP.GT.RESULT( 4 ) )
      $                     RESULT( 4 ) = DTEMP
                         K = K + 1

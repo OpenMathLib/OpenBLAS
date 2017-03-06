@@ -2,14 +2,14 @@ C> \brief \b SPOTRF VARIANT: top-looking block version of the algorithm, calling
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOTRF ( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -17,7 +17,7 @@ C> \brief \b SPOTRF VARIANT: top-looking block version of the algorithm, calling
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -88,12 +88,12 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
-C> \date November 2011
+C> \date December 2016
 *
 C> \ingroup variantsPOcomputational
 *
@@ -103,7 +103,7 @@ C> \ingroup variantsPOcomputational
 *  -- LAPACK computational routine (version 3.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -184,7 +184,7 @@ C> \ingroup variantsPOcomputational
      $                      A( 1, J ), LDA )
 
                CALL SSYRK( 'Upper', 'Transpose', JB, J-1, -ONE,
-     $                      A( 1, J ), LDA, 
+     $                      A( 1, J ), LDA,
      $                      ONE, A( J, J ), LDA )
 *
 *              Update and factorize the current diagonal block and test
@@ -210,8 +210,8 @@ C> \ingroup variantsPOcomputational
      $                     JB, J-1, ONE, A( 1, 1 ), LDA,
      $                     A( J, 1 ), LDA )
 
-               CALL SSYRK( 'Lower', 'No Transpose', JB, J-1, 
-     $                     -ONE, A( J, 1 ), LDA, 
+               CALL SSYRK( 'Lower', 'No Transpose', JB, J-1,
+     $                     -ONE, A( J, 1 ), LDA,
      $                     ONE, A( J, J ), LDA )
 *
 *              Update and factorize the current diagonal block and test

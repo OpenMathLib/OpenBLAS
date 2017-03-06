@@ -41,6 +41,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define J	x11	/* loop variable */
 #define I	x12	/* loop variable */
 
+#define X_PREFETCH_SIZE	768
+#define A_PREFETCH_SIZE	768
+
 /*******************************************************************************
 * Macro definitions
 *******************************************************************************/
@@ -112,42 +115,54 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld1	{v5.4s, v6.4s, v7.4s, v8.4s}, [A_PTR], #64
 	ld1	{v9.4s, v10.4s, v11.4s, v12.4s}, [X_PTR], #64
 	fmla	v1.4s, v5.4s, v9.4s
+	prfm	PLDL1KEEP, [A_PTR, #A_PREFETCH_SIZE]
 	fmla	v2.4s, v6.4s, v10.4s
+	prfm	PLDL1KEEP, [X_PTR, #X_PREFETCH_SIZE]
 	fmla	v3.4s, v7.4s, v11.4s
+	ld1	{v13.4s, v14.4s, v15.4s, v16.4s}, [A_PTR], #64
 	fmla	v4.4s, v8.4s, v12.4s
 
-	ld1	{v13.4s, v14.4s, v15.4s, v16.4s}, [A_PTR], #64
 	ld1	{v17.4s, v18.4s, v19.4s, v20.4s}, [X_PTR], #64
 	fmla	v1.4s, v13.4s, v17.4s
+	prfm	PLDL1KEEP, [A_PTR, #A_PREFETCH_SIZE]
 	fmla	v2.4s, v14.4s, v18.4s
+	prfm	PLDL1KEEP, [X_PTR, #X_PREFETCH_SIZE]
 	fmla	v3.4s, v15.4s, v19.4s
 	fmla	v4.4s, v16.4s, v20.4s
 #else
 	ld1	{v5.2d, v6.2d, v7.2d, v8.2d}, [A_PTR], #64
 	ld1	{v9.2d, v10.2d, v11.2d, v12.2d}, [X_PTR], #64
 	fmla	v1.2d, v5.2d, v9.2d
+	prfm	PLDL1KEEP, [A_PTR, #A_PREFETCH_SIZE]
 	fmla	v2.2d, v6.2d, v10.2d
+	prfm	PLDL1KEEP, [X_PTR, #X_PREFETCH_SIZE]
 	fmla	v3.2d, v7.2d, v11.2d
 	fmla	v4.2d, v8.2d, v12.2d
 
 	ld1	{v13.2d, v14.2d, v15.2d, v16.2d}, [A_PTR], #64
 	ld1	{v17.2d, v18.2d, v19.2d, v20.2d}, [X_PTR], #64
 	fmla	v1.2d, v13.2d, v17.2d
+	prfm	PLDL1KEEP, [A_PTR, #A_PREFETCH_SIZE]
 	fmla	v2.2d, v14.2d, v18.2d
+	prfm	PLDL1KEEP, [X_PTR, #X_PREFETCH_SIZE]
 	fmla	v3.2d, v15.2d, v19.2d
 	fmla	v4.2d, v16.2d, v20.2d
 
 	ld1	{v5.2d, v6.2d, v7.2d, v8.2d}, [A_PTR], #64
 	ld1	{v9.2d, v10.2d, v11.2d, v12.2d}, [X_PTR], #64
 	fmla	v1.2d, v5.2d, v9.2d
+	prfm	PLDL1KEEP, [A_PTR, #A_PREFETCH_SIZE]
 	fmla	v2.2d, v6.2d, v10.2d
+	prfm	PLDL1KEEP, [X_PTR, #X_PREFETCH_SIZE]
 	fmla	v3.2d, v7.2d, v11.2d
 	fmla	v4.2d, v8.2d, v12.2d
 
 	ld1	{v13.2d, v14.2d, v15.2d, v16.2d}, [A_PTR], #64
 	ld1	{v17.2d, v18.2d, v19.2d, v20.2d}, [X_PTR], #64
 	fmla	v1.2d, v13.2d, v17.2d
+	prfm	PLDL1KEEP, [A_PTR, #A_PREFETCH_SIZE]
 	fmla	v2.2d, v14.2d, v18.2d
+	prfm	PLDL1KEEP, [X_PTR, #X_PREFETCH_SIZE]
 	fmla	v3.2d, v15.2d, v19.2d
 	fmla	v4.2d, v16.2d, v20.2d
 #endif

@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.2.16.dev
+VERSION = 0.2.20.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -52,6 +52,7 @@ VERSION = 0.2.16.dev
 # USE_THREAD = 0
 
 # If you're going to use this library with OpenMP, please comment it in.
+# This flag is always set for POWER8. Don't modify the flag 
 # USE_OPENMP = 1
 
 # You can define maximum number of threads. Basically it should be
@@ -78,6 +79,9 @@ VERSION = 0.2.16.dev
 
 # If you don't need LAPACKE (C Interface to LAPACK), please comment it in.
 # NO_LAPACKE = 1
+
+# Build LAPACK Deprecated functions since LAPACK 3.6.0
+BUILD_LAPACK_DEPRECATED = 1
 
 # If you want to use legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1
@@ -107,6 +111,13 @@ NO_AFFINITY = 1
 
 # Don't use parallel make.
 # NO_PARALLEL_MAKE = 1
+
+# Force number of make jobs. The default is the number of logical CPU of the host.
+# This is particularly useful when using distcc.
+# A negative value will disable adding a -j flag to make, allowing to use a parent
+# make -j value. This is useful to call OpenBLAS make from an other project
+# makefile
+# MAKE_NB_JOBS = 2
 
 # If you would like to know minute performance report of GotoBLAS.
 # FUNCTION_PROFILE = 1
@@ -138,19 +149,17 @@ NO_AFFINITY = 1
 # slow (Not implemented yet).
 # SANITY_CHECK = 1
 
-# Run testcases in utest/ . When you enable UTEST_CHECK, it would enable
-# SANITY_CHECK to compare the result with reference BLAS.
-# UTEST_CHECK = 1
-
 # The installation directory.
 # PREFIX = /opt/OpenBLAS
 
 # Common Optimization Flag;
 # The default -O2 is enough.
+# Flags for POWER8 are defined in Makefile.power. Don't modify COMMON_OPT
 # COMMON_OPT = -O2
 
 # gfortran option for LAPACK
 # enable this flag only on 64bit Linux and if you need a thread safe lapack library
+# Flags for POWER8 are defined in Makefile.power. Don't modify FCOMMON_OPT
 # FCOMMON_OPT = -frecursive
 
 # Profiling flags
@@ -159,10 +168,11 @@ COMMON_PROF = -pg
 # Build Debug version
 # DEBUG = 1
 
-# Improve GEMV and GER for small matrices by stack allocation.
-# For details, https://github.com/xianyi/OpenBLAS/pull/482
+# Set maximum stack allocation.
+# The default value is 2048. 0 disable stack allocation a may reduce GER and GEMV
+# performance. For details, https://github.com/xianyi/OpenBLAS/pull/482
 #
- MAX_STACK_ALLOC=2048
+# MAX_STACK_ALLOC = 0
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoid conflicts with other BLAS libraries, especially when using

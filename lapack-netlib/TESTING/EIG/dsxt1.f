@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION DSXT1( IJOB, D1, N1, D2, N2, ABSTOL,
 *                        ULP, UNFL )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IJOB, N1, N2
 *       DOUBLE PRECISION   ABSTOL, ULP, UNFL
@@ -18,7 +18,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   D1( * ), D2( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -93,12 +93,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_eig
 *
@@ -106,10 +106,10 @@
       DOUBLE PRECISION FUNCTION DSXT1( IJOB, D1, N1, D2, N2, ABSTOL,
      $                 ULP, UNFL )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IJOB, N1, N2

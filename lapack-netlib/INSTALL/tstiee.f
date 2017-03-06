@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup auxOTHERauxiliary
 *
 *  =====================================================================
       PROGRAM TSTIEE
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
 *     November 2006
 *
@@ -81,7 +81,7 @@
       INTEGER          FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3,
      $                 N4 )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
 *     November 2006
 *
@@ -569,7 +569,7 @@
       ILAENV = 2
       RETURN
 *
-  600 CONTINUE 
+  600 CONTINUE
 *
 *     ISPEC = 6:  crossover point for SVD (used by xGELSS and xGESVD)
 *
@@ -605,7 +605,7 @@
 *
       ILAENV = 1
       IF (ILAENV .EQ. 1) THEN
-         ILAENV = IEEECK( 0, 0.0, 1.0 ) 
+         ILAENV = IEEECK( 0, 0.0, 1.0 )
       ENDIF
       RETURN
 *
@@ -615,16 +615,16 @@
 *
       ILAENV = 1
       IF (ILAENV .EQ. 1) THEN
-         ILAENV = IEEECK( 1, 0.0, 1.0 ) 
+         ILAENV = IEEECK( 1, 0.0, 1.0 )
       ENDIF
       RETURN
 *
 *     End of ILAENV
 *
       END
-      INTEGER          FUNCTION IEEECK( ISPEC, ZERO, ONE ) 
+      INTEGER          FUNCTION IEEECK( ISPEC, ZERO, ONE )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
 *     November 2006
 *
@@ -636,7 +636,7 @@
 *  Purpose
 *  =======
 *
-*  IEEECK is called from the ILAENV to verify that Inifinity and 
+*  IEEECK is called from the ILAENV to verify that Inifinity and
 *  possibly NaN arithmetic is safe (i.e. will not trap).
 *
 *  Arguments:
@@ -650,12 +650,12 @@
 *
 *  ZERO    (input) REAL
 *          Must contain the value 0.0
-*          This is passed to prevent the compiler from optimizing 
+*          This is passed to prevent the compiler from optimizing
 *          away this code.
 *
 *  ONE     (input) REAL
 *          Must contain the value 1.0
-*          This is passed to prevent the compiler from optimizing 
+*          This is passed to prevent the compiler from optimizing
 *          away this code.
 *
 *  RETURN VALUE:  INTEGER
@@ -686,8 +686,8 @@
          IEEECK = 0
          RETURN
       ENDIF
-         
-      NEGINF = ONE / NEGZRO 
+
+      NEGINF = ONE / NEGZRO
       IF ( NEGINF .GE. ZERO ) THEN
          IEEECK = 0
          RETURN
@@ -698,20 +698,20 @@
          IEEECK = 0
          RETURN
       ENDIF
-         
+
       POSINF = ONE / NEWZRO
       IF ( POSINF .LE. ONE ) THEN
          IEEECK = 0
          RETURN
       ENDIF
 
-      NEGINF = NEGINF * POSINF 
+      NEGINF = NEGINF * POSINF
       IF ( NEGINF .GE. ZERO ) THEN
          IEEECK = 0
          RETURN
       ENDIF
 
-      POSINF = POSINF * POSINF 
+      POSINF = POSINF * POSINF
       IF ( POSINF .LE. ONE ) THEN
          IEEECK = 0
          RETURN
@@ -727,11 +727,11 @@
       NAN1 = POSINF + NEGINF
 
       NAN2 = POSINF / NEGINF
-      
+
       NAN3 = POSINF / POSINF
-      
+
       NAN4 = POSINF * ZERO
-      
+
       NAN5 = NEGINF * NEGZRO
 
       NAN6 = NAN5 * 0.0

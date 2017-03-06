@@ -170,41 +170,49 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.4s, v1.4s}, [pA]
 	add	pA, pA, #32
 
-	fmul	v16.4s, v0.4s, v8.4s[0]
-	OP_ii	v16.4s, v1.4s, v9.4s[0]
-	fmul	v17.4s, v0.4s, v9.4s[0]
+	fmul	v16.4s, v0.4s, v8.s[0]
+	OP_ii	v16.4s, v1.4s, v9.s[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v17.4s, v17.4s
+	eor	v17.16b, v17.16b, v17.16b
+	fmls	v17.4s, v0.4s, v9.s[0]
+#else
+	fmul	v17.4s, v0.4s, v9.s[0]
 #endif
-	OP_ir	v17.4s, v1.4s, v8.4s[0]
+	OP_ir	v17.4s, v1.4s, v8.s[0]
 
-	fmul	v20.4s, v0.4s, v8.4s[1]
-	OP_ii	v20.4s, v1.4s, v9.4s[1]
-	fmul	v21.4s, v0.4s, v9.4s[1]
+	fmul	v20.4s, v0.4s, v8.s[1]
+	OP_ii	v20.4s, v1.4s, v9.s[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v21.4s, v21.4s
+	eor	v21.16b, v21.16b, v21.16b
+	fmls	v21.4s, v0.4s, v9.s[1]
+#else
+	fmul	v21.4s, v0.4s, v9.s[1]
 #endif
-	OP_ir	v21.4s, v1.4s, v8.4s[1]
+	OP_ir	v21.4s, v1.4s, v8.s[1]
 
-	fmul	v24.4s, v0.4s, v8.4s[2]
-	OP_ii	v24.4s, v1.4s, v9.4s[2]
-	fmul	v25.4s, v0.4s, v9.4s[2]
+	fmul	v24.4s, v0.4s, v8.s[2]
+	OP_ii	v24.4s, v1.4s, v9.s[2]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v25.4s, v25.4s
+	eor	v25.16b, v25.16b, v25.16b
+	fmls	v25.4s, v0.4s, v9.s[2]
+#else
+	fmul	v25.4s, v0.4s, v9.s[2]
 #endif
-	OP_ir	v25.4s, v1.4s, v8.4s[2]
+	OP_ir	v25.4s, v1.4s, v8.s[2]
 
-	fmul	v28.4s, v0.4s, v8.4s[3]
-	OP_ii	v28.4s, v1.4s, v9.4s[3]
-	fmul	v29.4s, v0.4s, v9.4s[3]
+	fmul	v28.4s, v0.4s, v8.s[3]
+	OP_ii	v28.4s, v1.4s, v9.s[3]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v29.4s, v29.4s
+	eor	v29.16b, v29.16b, v29.16b
+	fmls	v29.4s, v0.4s, v9.s[3]
+#else
+	fmul	v29.4s, v0.4s, v9.s[3]
 #endif
-	OP_ir	v29.4s, v1.4s, v8.4s[3]
+	OP_ir	v29.4s, v1.4s, v8.s[3]
 
 	ld2	{v12.4s, v13.4s}, [pB]
 	add	pB, pB, #32
@@ -213,85 +221,85 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x4_M1
-	OP_rr	v16.4s, v0.4s, v8.4s[0]
-	OP_ii	v16.4s, v1.4s, v9.4s[0]
-	OP_ri	v17.4s, v0.4s, v9.4s[0]
-	OP_ir	v17.4s, v1.4s, v8.4s[0]
+	OP_rr	v16.4s, v0.4s, v8.s[0]
+	OP_ii	v16.4s, v1.4s, v9.s[0]
+	OP_ri	v17.4s, v0.4s, v9.s[0]
+	OP_ir	v17.4s, v1.4s, v8.s[0]
 
 	ld2	{v12.4s, v13.4s}, [pB]		// For next round
 	add	pB, pB, #32
 
-	OP_rr	v20.4s, v0.4s, v8.4s[1]
-	OP_ii	v20.4s, v1.4s, v9.4s[1]
-	OP_ri	v21.4s, v0.4s, v9.4s[1]
-	OP_ir	v21.4s, v1.4s, v8.4s[1]
+	OP_rr	v20.4s, v0.4s, v8.s[1]
+	OP_ii	v20.4s, v1.4s, v9.s[1]
+	OP_ri	v21.4s, v0.4s, v9.s[1]
+	OP_ir	v21.4s, v1.4s, v8.s[1]
 
 	ld2	{v4.4s, v5.4s}, [pA]		// For next round
 	add	pA, pA, #32
 
-	OP_rr	v24.4s, v0.4s, v8.4s[2]
-	OP_ii	v24.4s, v1.4s, v9.4s[2]
-	OP_ri	v25.4s, v0.4s, v9.4s[2]
-	OP_ir	v25.4s, v1.4s, v8.4s[2]
+	OP_rr	v24.4s, v0.4s, v8.s[2]
+	OP_ii	v24.4s, v1.4s, v9.s[2]
+	OP_ri	v25.4s, v0.4s, v9.s[2]
+	OP_ir	v25.4s, v1.4s, v8.s[2]
 
 	prfm	PLDL1KEEP, [pA, #512]
 
-	OP_rr	v28.4s, v0.4s, v8.4s[3]
-	OP_ii	v28.4s, v1.4s, v9.4s[3]
-	OP_ri	v29.4s, v0.4s, v9.4s[3]
-	OP_ir	v29.4s, v1.4s, v8.4s[3]
+	OP_rr	v28.4s, v0.4s, v8.s[3]
+	OP_ii	v28.4s, v1.4s, v9.s[3]
+	OP_ri	v29.4s, v0.4s, v9.s[3]
+	OP_ir	v29.4s, v1.4s, v8.s[3]
 .endm
 
 .macro KERNEL4x4_M2
-	OP_rr	v16.4s, v4.4s, v12.4s[0]
-	OP_ii	v16.4s, v5.4s, v13.4s[0]
-	OP_ri	v17.4s, v4.4s, v13.4s[0]
-	OP_ir	v17.4s, v5.4s, v12.4s[0]
+	OP_rr	v16.4s, v4.4s, v12.s[0]
+	OP_ii	v16.4s, v5.4s, v13.s[0]
+	OP_ri	v17.4s, v4.4s, v13.s[0]
+	OP_ir	v17.4s, v5.4s, v12.s[0]
 
 	ld2	{v8.4s, v9.4s}, [pB]		// For next round
 	add	pB, pB, #32
 
-	OP_rr	v20.4s, v4.4s, v12.4s[1]
-	OP_ii	v20.4s, v5.4s, v13.4s[1]
-	OP_ri	v21.4s, v4.4s, v13.4s[1]
-	OP_ir	v21.4s, v5.4s, v12.4s[1]
+	OP_rr	v20.4s, v4.4s, v12.s[1]
+	OP_ii	v20.4s, v5.4s, v13.s[1]
+	OP_ri	v21.4s, v4.4s, v13.s[1]
+	OP_ir	v21.4s, v5.4s, v12.s[1]
 
 	ld2	{v0.4s, v1.4s}, [pA]		// For next round
 	add	pA, pA, #32
 
-	OP_rr	v24.4s, v4.4s, v12.4s[2]
-	OP_ii	v24.4s, v5.4s, v13.4s[2]
-	OP_ri	v25.4s, v4.4s, v13.4s[2]
-	OP_ir	v25.4s, v5.4s, v12.4s[2]
+	OP_rr	v24.4s, v4.4s, v12.s[2]
+	OP_ii	v24.4s, v5.4s, v13.s[2]
+	OP_ri	v25.4s, v4.4s, v13.s[2]
+	OP_ir	v25.4s, v5.4s, v12.s[2]
 
 	prfm	PLDL1KEEP, [pB, #512]
 
-	OP_rr	v28.4s, v4.4s, v12.4s[3]
-	OP_ii	v28.4s, v5.4s, v13.4s[3]
-	OP_ri	v29.4s, v4.4s, v13.4s[3]
-	OP_ir	v29.4s, v5.4s, v12.4s[3]
+	OP_rr	v28.4s, v4.4s, v12.s[3]
+	OP_ii	v28.4s, v5.4s, v13.s[3]
+	OP_ri	v29.4s, v4.4s, v13.s[3]
+	OP_ir	v29.4s, v5.4s, v12.s[3]
 .endm
 
 .macro KERNEL4x4_E
-	OP_rr	v16.4s, v4.4s, v12.4s[0]
-	OP_ii	v16.4s, v5.4s, v13.4s[0]
-	OP_ri	v17.4s, v4.4s, v13.4s[0]
-	OP_ir	v17.4s, v5.4s, v12.4s[0]
+	OP_rr	v16.4s, v4.4s, v12.s[0]
+	OP_ii	v16.4s, v5.4s, v13.s[0]
+	OP_ri	v17.4s, v4.4s, v13.s[0]
+	OP_ir	v17.4s, v5.4s, v12.s[0]
 
-	OP_rr	v20.4s, v4.4s, v12.4s[1]
-	OP_ii	v20.4s, v5.4s, v13.4s[1]
-	OP_ri	v21.4s, v4.4s, v13.4s[1]
-	OP_ir	v21.4s, v5.4s, v12.4s[1]
+	OP_rr	v20.4s, v4.4s, v12.s[1]
+	OP_ii	v20.4s, v5.4s, v13.s[1]
+	OP_ri	v21.4s, v4.4s, v13.s[1]
+	OP_ir	v21.4s, v5.4s, v12.s[1]
 
-	OP_rr	v24.4s, v4.4s, v12.4s[2]
-	OP_ii	v24.4s, v5.4s, v13.4s[2]
-	OP_ri	v25.4s, v4.4s, v13.4s[2]
-	OP_ir	v25.4s, v5.4s, v12.4s[2]
+	OP_rr	v24.4s, v4.4s, v12.s[2]
+	OP_ii	v24.4s, v5.4s, v13.s[2]
+	OP_ri	v25.4s, v4.4s, v13.s[2]
+	OP_ir	v25.4s, v5.4s, v12.s[2]
 
-	OP_rr	v28.4s, v4.4s, v12.4s[3]
-	OP_ii	v28.4s, v5.4s, v13.4s[3]
-	OP_ri	v29.4s, v4.4s, v13.4s[3]
-	OP_ir	v29.4s, v5.4s, v12.4s[3]
+	OP_rr	v28.4s, v4.4s, v12.s[3]
+	OP_ii	v28.4s, v5.4s, v13.s[3]
+	OP_ri	v29.4s, v4.4s, v13.s[3]
+	OP_ir	v29.4s, v5.4s, v12.s[3]
 .endm
 
 .macro KERNEL4x4_SUB
@@ -300,25 +308,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.4s, v1.4s}, [pA]
 	add	pA, pA, #32
 
-	OP_rr	v16.4s, v0.4s, v8.4s[0]
-	OP_ii	v16.4s, v1.4s, v9.4s[0]
-	OP_ri	v17.4s, v0.4s, v9.4s[0]
-	OP_ir	v17.4s, v1.4s, v8.4s[0]
+	OP_rr	v16.4s, v0.4s, v8.s[0]
+	OP_ii	v16.4s, v1.4s, v9.s[0]
+	OP_ri	v17.4s, v0.4s, v9.s[0]
+	OP_ir	v17.4s, v1.4s, v8.s[0]
 
-	OP_rr	v20.4s, v0.4s, v8.4s[1]
-	OP_ii	v20.4s, v1.4s, v9.4s[1]
-	OP_ri	v21.4s, v0.4s, v9.4s[1]
-	OP_ir	v21.4s, v1.4s, v8.4s[1]
+	OP_rr	v20.4s, v0.4s, v8.s[1]
+	OP_ii	v20.4s, v1.4s, v9.s[1]
+	OP_ri	v21.4s, v0.4s, v9.s[1]
+	OP_ir	v21.4s, v1.4s, v8.s[1]
 
-	OP_rr	v24.4s, v0.4s, v8.4s[2]
-	OP_ii	v24.4s, v1.4s, v9.4s[2]
-	OP_ri	v25.4s, v0.4s, v9.4s[2]
-	OP_ir	v25.4s, v1.4s, v8.4s[2]
+	OP_rr	v24.4s, v0.4s, v8.s[2]
+	OP_ii	v24.4s, v1.4s, v9.s[2]
+	OP_ri	v25.4s, v0.4s, v9.s[2]
+	OP_ir	v25.4s, v1.4s, v8.s[2]
 
-	OP_rr	v28.4s, v0.4s, v8.4s[3]
-	OP_ii	v28.4s, v1.4s, v9.4s[3]
-	OP_ri	v29.4s, v0.4s, v9.4s[3]
-	OP_ir	v29.4s, v1.4s, v8.4s[3]
+	OP_rr	v28.4s, v0.4s, v8.s[3]
+	OP_ii	v28.4s, v1.4s, v9.s[3]
+	OP_ri	v29.4s, v0.4s, v9.s[3]
+	OP_ir	v29.4s, v1.4s, v8.s[3]
 .endm
 
 .macro SAVE4x4
@@ -376,25 +384,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.2s, v1.2s}, [pA]
 	add	pA, pA, #16
 
-	OP_rr	v16.2s, v0.2s, v8.4s[0]
-	OP_ii	v16.2s, v1.2s, v9.4s[0]
-	OP_ri	v17.2s, v0.2s, v9.4s[0]
-	OP_ir	v17.2s, v1.2s, v8.4s[0]
+	OP_rr	v16.2s, v0.2s, v8.s[0]
+	OP_ii	v16.2s, v1.2s, v9.s[0]
+	OP_ri	v17.2s, v0.2s, v9.s[0]
+	OP_ir	v17.2s, v1.2s, v8.s[0]
 
-	OP_rr	v20.2s, v0.2s, v8.4s[1]
-	OP_ii	v20.2s, v1.2s, v9.4s[1]
-	OP_ri	v21.2s, v0.2s, v9.4s[1]
-	OP_ir	v21.2s, v1.2s, v8.4s[1]
+	OP_rr	v20.2s, v0.2s, v8.s[1]
+	OP_ii	v20.2s, v1.2s, v9.s[1]
+	OP_ri	v21.2s, v0.2s, v9.s[1]
+	OP_ir	v21.2s, v1.2s, v8.s[1]
 
-	OP_rr	v24.2s, v0.2s, v8.4s[2]
-	OP_ii	v24.2s, v1.2s, v9.4s[2]
-	OP_ri	v25.2s, v0.2s, v9.4s[2]
-	OP_ir	v25.2s, v1.2s, v8.4s[2]
+	OP_rr	v24.2s, v0.2s, v8.s[2]
+	OP_ii	v24.2s, v1.2s, v9.s[2]
+	OP_ri	v25.2s, v0.2s, v9.s[2]
+	OP_ir	v25.2s, v1.2s, v8.s[2]
 
-	OP_rr	v28.2s, v0.2s, v8.4s[3]
-	OP_ii	v28.2s, v1.2s, v9.4s[3]
-	OP_ri	v29.2s, v0.2s, v9.4s[3]
-	OP_ir	v29.2s, v1.2s, v8.4s[3]
+	OP_rr	v28.2s, v0.2s, v8.s[3]
+	OP_ii	v28.2s, v1.2s, v9.s[3]
+	OP_ri	v29.2s, v0.2s, v9.s[3]
+	OP_ir	v29.2s, v1.2s, v8.s[3]
 .endm
 
 .macro SAVE2x4
@@ -452,25 +460,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.s, v1.s}[0], [pA]
 	add	pA, pA, #8
 
-	OP_rr	s16, s0, v8.4s[0]
-	OP_ii	s16, s1, v9.4s[0]
-	OP_ri	s17, s0, v9.4s[0]
-	OP_ir	s17, s1, v8.4s[0]
+	OP_rr	s16, s0, v8.s[0]
+	OP_ii	s16, s1, v9.s[0]
+	OP_ri	s17, s0, v9.s[0]
+	OP_ir	s17, s1, v8.s[0]
 
-	OP_rr	s20, s0, v8.4s[1]
-	OP_ii	s20, s1, v9.4s[1]
-	OP_ri	s21, s0, v9.4s[1]
-	OP_ir	s21, s1, v8.4s[1]
+	OP_rr	s20, s0, v8.s[1]
+	OP_ii	s20, s1, v9.s[1]
+	OP_ri	s21, s0, v9.s[1]
+	OP_ir	s21, s1, v8.s[1]
 
-	OP_rr	s24, s0, v8.4s[2]
-	OP_ii	s24, s1, v9.4s[2]
-	OP_ri	s25, s0, v9.4s[2]
-	OP_ir	s25, s1, v8.4s[2]
+	OP_rr	s24, s0, v8.s[2]
+	OP_ii	s24, s1, v9.s[2]
+	OP_ri	s25, s0, v9.s[2]
+	OP_ir	s25, s1, v8.s[2]
 
-	OP_rr	s28, s0, v8.4s[3]
-	OP_ii	s28, s1, v9.4s[3]
-	OP_ri	s29, s0, v9.4s[3]
-	OP_ir	s29, s1, v8.4s[3]
+	OP_rr	s28, s0, v8.s[3]
+	OP_ii	s28, s1, v9.s[3]
+	OP_ri	s29, s0, v9.s[3]
+	OP_ir	s29, s1, v8.s[3]
 .endm
 
 .macro SAVE1x4
@@ -524,15 +532,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.4s, v1.4s}, [pA]
 	add	pA, pA, #32
 
-	OP_rr	v16.4s, v0.4s, v8.2s[0]
-	OP_ii	v16.4s, v1.4s, v9.2s[0]
-	OP_ri	v17.4s, v0.4s, v9.2s[0]
-	OP_ir	v17.4s, v1.4s, v8.2s[0]
+	OP_rr	v16.4s, v0.4s, v8.s[0]
+	OP_ii	v16.4s, v1.4s, v9.s[0]
+	OP_ri	v17.4s, v0.4s, v9.s[0]
+	OP_ir	v17.4s, v1.4s, v8.s[0]
 
-	OP_rr	v20.4s, v0.4s, v8.2s[1]
-	OP_ii	v20.4s, v1.4s, v9.2s[1]
-	OP_ri	v21.4s, v0.4s, v9.2s[1]
-	OP_ir	v21.4s, v1.4s, v8.2s[1]
+	OP_rr	v20.4s, v0.4s, v8.s[1]
+	OP_ii	v20.4s, v1.4s, v9.s[1]
+	OP_ri	v21.4s, v0.4s, v9.s[1]
+	OP_ir	v21.4s, v1.4s, v8.s[1]
 .endm
 
 .macro SAVE4x2
@@ -570,15 +578,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.2s, v1.2s}, [pA]
 	add	pA, pA, #16
 
-	OP_rr	v16.2s, v0.2s, v8.2s[0]
-	OP_ii	v16.2s, v1.2s, v9.2s[0]
-	OP_ri	v17.2s, v0.2s, v9.2s[0]
-	OP_ir	v17.2s, v1.2s, v8.2s[0]
+	OP_rr	v16.2s, v0.2s, v8.s[0]
+	OP_ii	v16.2s, v1.2s, v9.s[0]
+	OP_ri	v17.2s, v0.2s, v9.s[0]
+	OP_ir	v17.2s, v1.2s, v8.s[0]
 
-	OP_rr	v20.2s, v0.2s, v8.2s[1]
-	OP_ii	v20.2s, v1.2s, v9.2s[1]
-	OP_ri	v21.2s, v0.2s, v9.2s[1]
-	OP_ir	v21.2s, v1.2s, v8.2s[1]
+	OP_rr	v20.2s, v0.2s, v8.s[1]
+	OP_ii	v20.2s, v1.2s, v9.s[1]
+	OP_ri	v21.2s, v0.2s, v9.s[1]
+	OP_ir	v21.2s, v1.2s, v8.s[1]
 .endm
 
 .macro SAVE2x2
@@ -616,15 +624,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.s, v1.s}[0], [pA]
 	add	pA, pA, #8
 
-	OP_rr	s16, s0, v8.2s[0]
-	OP_ii	s16, s1, v9.2s[0]
-	OP_ri	s17, s0, v9.2s[0]
-	OP_ir	s17, s1, v8.2s[0]
+	OP_rr	s16, s0, v8.s[0]
+	OP_ii	s16, s1, v9.s[0]
+	OP_ri	s17, s0, v9.s[0]
+	OP_ir	s17, s1, v8.s[0]
 
-	OP_rr	s20, s0, v8.2s[1]
-	OP_ii	s20, s1, v9.2s[1]
-	OP_ri	s21, s0, v9.2s[1]
-	OP_ir	s21, s1, v8.2s[1]
+	OP_rr	s20, s0, v8.s[1]
+	OP_ii	s20, s1, v9.s[1]
+	OP_ri	s21, s0, v9.s[1]
+	OP_ir	s21, s1, v8.s[1]
 .endm
 
 .macro SAVE1x2

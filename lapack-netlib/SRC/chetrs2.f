@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHETRS2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chetrs2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chetrs2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chetrs2.f"> 
+*> Download CHETRS2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chetrs2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chetrs2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chetrs2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE CHETRS2( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, 
+*       SUBROUTINE CHETRS2( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
 *                           WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, LDB, N, NRHS
@@ -29,7 +29,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * ), B( LDB, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -114,23 +114,23 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complexHEcomputational
 *
 *  =====================================================================
-      SUBROUTINE CHETRS2( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, 
+      SUBROUTINE CHETRS2( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
      $                    WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -158,7 +158,7 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CSCAL, CSYCONV, CSWAP, CTRSM, XERBLA
+      EXTERNAL           CSSCAL, CSYCONV, CSWAP, CTRSM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CONJG, MAX, REAL
@@ -196,7 +196,7 @@
 *
 *        Solve A*X = B, where A = U*D*U**H.
 *
-*       P**T * B  
+*       P**T * B
         K=N
         DO WHILE ( K .GE. 1 )
          IF( IPIV( K ).GT.0 ) THEN
@@ -221,7 +221,7 @@
         CALL CTRSM('L','U','N','U',N,NRHS,ONE,A,LDA,B,LDB)
 *
 *  Compute D \ B -> B   [ D \ (U \P**T * B) ]
-*       
+*
          I=N
          DO WHILE ( I .GE. 1 )
             IF( IPIV(I) .GT. 0 ) THEN
@@ -274,7 +274,7 @@
 *
 *        Solve A*X = B, where A = L*D*L**H.
 *
-*       P**T * B  
+*       P**T * B
         K=1
         DO WHILE ( K .LE. N )
          IF( IPIV( K ).GT.0 ) THEN
@@ -299,7 +299,7 @@
         CALL CTRSM('L','L','N','U',N,NRHS,ONE,A,LDA,B,LDB)
 *
 *  Compute D \ B -> B   [ D \ (L \P**T * B) ]
-*       
+*
          I=1
          DO WHILE ( I .LE. N )
             IF( IPIV(I) .GT. 0 ) THEN
@@ -322,7 +322,7 @@
          END DO
 *
 *  Compute (L**H \ B) -> B   [ L**H \ (D \ (L \P**T * B) ) ]
-* 
+*
         CALL CTRSM('L','L','C','U',N,NRHS,ONE,A,LDA,B,LDB)
 *
 *       P * B  [ P * (L**H \ (D \ (L \P**T * B) )) ]

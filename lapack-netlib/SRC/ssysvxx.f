@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYSVXX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssysvxx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssysvxx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssysvxx.f"> 
+*> Download SSYSVXX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssysvxx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssysvxx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssysvxx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                           EQUED, S, B, LDB, X, LDX, RCOND, RPVGRW, BERR,
 *                           N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
 *                           NPARAMS, PARAMS, WORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          EQUED, FACT, UPLO
 *       INTEGER            INFO, LDA, LDAF, LDB, LDX, N, NRHS, NPARAMS,
@@ -37,7 +37,7 @@
 *      $                   ERR_BNDS_NORM( NRHS, * ),
 *      $                   ERR_BNDS_COMP( NRHS, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -493,14 +493,14 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
-*> \ingroup realSYdriver
+*> \ingroup realSYsolve
 *
 *  =====================================================================
       SUBROUTINE SSYSVXX( FACT, UPLO, N, NRHS, A, LDA, AF, LDAF, IPIV,
@@ -508,10 +508,10 @@
      $                    N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
      $                    NPARAMS, PARAMS, WORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.2) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO
@@ -553,7 +553,7 @@
       REAL               SLAMCH, SLA_SYRPVGRW
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SSYCON, SSYEQUB, SSYTRF, SSYTRS,
+      EXTERNAL           SSYEQUB, SSYTRF, SSYTRS,
      $                   SLACPY, SLAQSY, XERBLA, SLASCL2, SSYRFSX
 *     ..
 *     .. Intrinsic Functions ..
@@ -597,7 +597,7 @@
          INFO = -8
       ELSE IF( LSAME( FACT, 'F' ) .AND. .NOT.
      $        ( RCEQU .OR. LSAME( EQUED, 'N' ) ) ) THEN
-         INFO = -9
+         INFO = -10
       ELSE
          IF ( RCEQU ) THEN
             SMIN = BIGNUM
@@ -607,7 +607,7 @@
                SMAX = MAX( SMAX, S( J ) )
  10         CONTINUE
             IF( SMIN.LE.ZERO ) THEN
-               INFO = -10
+               INFO = -11
             ELSE IF( N.GT.0 ) THEN
                SCOND = MAX( SMIN, SMLNUM ) / MIN( SMAX, BIGNUM )
             ELSE
@@ -616,9 +616,9 @@
          END IF
          IF( INFO.EQ.0 ) THEN
             IF( LDB.LT.MAX( 1, N ) ) THEN
-               INFO = -12
+               INFO = -13
             ELSE IF( LDX.LT.MAX( 1, N ) ) THEN
-               INFO = -14
+               INFO = -15
             END IF
          END IF
       END IF

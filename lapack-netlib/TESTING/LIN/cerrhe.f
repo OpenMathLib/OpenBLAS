@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRHE( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -81,17 +81,20 @@
       INTEGER            IP( NMAX )
       REAL               R( NMAX ), R1( NMAX ), R2( NMAX )
       COMPLEX            A( NMAX, NMAX ), AF( NMAX, NMAX ), B( NMAX ),
-     $                   W( 2*NMAX ), X( NMAX )
+     $                   E( NMAX ), W( 2*NMAX ), X( NMAX )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHECON, CHECON_ROOK, CHERFS, CHETF2,
-     $                   CHETF2_ROOK, CHETRF, CHETRF_ROOK, CHETRI,
-     $                   CHETRI_ROOK, CHETRI2, CHETRS, CHETRS_ROOK,
-     $                   CHKXER, CHPCON, CHPRFS, CHPTRF, CHPTRI, CHPTRS
+      EXTERNAL           ALAESM, CHECON, CSYCON_3, CHECON_ROOK, CHERFS,
+     $                   CHETF2, CHETF2_RK, CHETF2_ROOK, CHETRF_AA, 
+     $                   CHETRF, CHETRF_RK, CHETRF_ROOK, CHETRI,
+     $                   CHETRI_3, CHETRI_3X, CHETRI_ROOK, CHETRI2,
+     $                   CHETRI2X, CHETRS, CHETRS_3, CHETRS_ROOK,
+     $                   CHETRS_AA, CHKXER, CHPCON, CHPRFS, CHPTRF,
+     $                   CHPTRI, CHPTRS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -118,21 +121,22 @@
             A( I, J ) = CMPLX( 1. / REAL( I+J ), -1. / REAL( I+J ) )
             AF( I, J ) = CMPLX( 1. / REAL( I+J ), -1. / REAL( I+J ) )
    10    CONTINUE
-         B( J ) = 0.
-         R1( J ) = 0.
-         R2( J ) = 0.
-         W( J ) = 0.
-         X( J ) = 0.
+         B( J ) = 0.E+0
+         E( J ) = 0.E+0
+         R1( J ) = 0.E+0
+         R2( J ) = 0.E+0
+         W( J ) = 0.E+0
+         X( J ) = 0.E+0
          IP( J ) = J
    20 CONTINUE
       ANRM = 1.0
       OK = .TRUE.
 *
-*     Test error exits of the routines that use factorization
-*     of a Hermitian indefinite matrix with patrial
-*     (Bunch-Kaufman) diagonal pivoting method.
-*
       IF( LSAMEN( 2, C2, 'HE' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a Hermitian indefinite matrix with patrial
+*        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        CHETRF
 *
@@ -145,6 +149,12 @@
          CALL CHKXER( 'CHETRF', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL CHETRF( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'CHETRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHETRF( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'CHETRF', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHETRF( 'U', 0, A, 1, IP, W, -2, INFO )
          CALL CHKXER( 'CHETRF', INFOT, NOUT, LERR, OK )
 *
 *        CHETF2
@@ -185,6 +195,19 @@
          INFOT = 4
          CALL CHETRI2( 'U', 2, A, 1, IP, W, 1, INFO )
          CALL CHKXER( 'CHETRI2', INFOT, NOUT, LERR, OK )
+*
+*        CHETRI2X
+*
+         SRNAMT = 'CHETRI2X'
+         INFOT = 1
+         CALL CHETRI2X( '/', 0, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRI2X( 'U', -1, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI2X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRI2X( 'U', 2, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI2X', INFOT, NOUT, LERR, OK )
 *
 *        CHETRS
 *
@@ -253,11 +276,11 @@
          CALL CHECON( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'CHECON', INFOT, NOUT, LERR, OK )
 *
-*        Test error exits of the routines that use factorization
-*        of a Hermitian indefinite matrix with "rook"
-*        (bounded Bunch-Kaufman) diagonal pivoting method.
-*
       ELSE IF( LSAMEN( 2, C2, 'HR' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a Hermitian indefinite matrix with rook
+*        (bounded Bunch-Kaufman) diagonal pivoting method.
 *
 *        CHETRF_ROOK
 *
@@ -270,6 +293,12 @@
          CALL CHKXER( 'CHETRF_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL CHETRF_ROOK( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'CHETRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHETRF_ROOK( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'CHETRF_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHETRF_ROOK( 'U', 0, A, 1, IP, W, -2, INFO )
          CALL CHKXER( 'CHETRF_ROOK', INFOT, NOUT, LERR, OK )
 *
 *        CHETF2_ROOK
@@ -332,6 +361,164 @@
          INFOT = 6
          CALL CHECON_ROOK( 'U', 1, A, 1, IP, -ANRM, RCOND, W, INFO )
          CALL CHKXER( 'CHECON_ROOK', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'HK' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a Hermitian indefinite matrix with rook
+*        (bounded Bunch-Kaufman) pivoting with the new storage
+*        format for factors L ( or U) and D.
+*
+*        L (or U) is stored in A, diagonal of D is stored on the
+*        diagonal of A, subdiagonal of D is stored in a separate array E.
+*
+*        CHETRF_RK
+*
+         SRNAMT = 'CHETRF_RK'
+         INFOT = 1
+         CALL CHETRF_RK( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRF_RK( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRF_RK( 'U', 2, A, 1, E, IP, W, 4, INFO )
+         CALL CHKXER( 'CHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CHETRF_RK( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'CHETRF_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CHETRF_RK( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'CHETRF_RK', INFOT, NOUT, LERR, OK )
+*
+*        CHETF2_RK
+*
+         SRNAMT = 'CHETF2_RK'
+         INFOT = 1
+         CALL CHETF2_RK( '/', 0, A, 1, E, IP, INFO )
+         CALL CHKXER( 'CHETF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETF2_RK( 'U', -1, A, 1, E, IP, INFO )
+         CALL CHKXER( 'CHETF2_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETF2_RK( 'U', 2, A, 1, E, IP, INFO )
+         CALL CHKXER( 'CHETF2_RK', INFOT, NOUT, LERR, OK )
+*
+*        CHETRI_3
+*
+         SRNAMT = 'CHETRI_3'
+         INFOT = 1
+         CALL CHETRI_3( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRI_3( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRI_3( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CHETRI_3( 'U', 0, A, 1, E, IP, W, 0, INFO )
+         CALL CHKXER( 'CHETRI_3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CHETRI_3( 'U', 0, A, 1, E, IP, W, -2, INFO )
+         CALL CHKXER( 'CHETRI_3', INFOT, NOUT, LERR, OK )
+*
+*        CHETRI_3X
+*
+         SRNAMT = 'CHETRI_3X'
+         INFOT = 1
+         CALL CHETRI_3X( '/', 0, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRI_3X( 'U', -1, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI_3X', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRI_3X( 'U', 2, A, 1, E, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRI_3X', INFOT, NOUT, LERR, OK )
+*
+*        CHETRS_3
+*
+         SRNAMT = 'CHETRS_3'
+         INFOT = 1
+         CALL CHETRS_3( '/', 0, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRS_3( 'U', -1, 0, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CHETRS_3( 'U', 0, -1, A, 1, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CHETRS_3( 'U', 2, 1, A, 1, E, IP, B, 2, INFO )
+         CALL CHKXER( 'CHETRS_3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL CHETRS_3( 'U', 2, 1, A, 2, E, IP, B, 1, INFO )
+         CALL CHKXER( 'CHETRS_3', INFOT, NOUT, LERR, OK )
+*
+*        CHECON_3
+*
+         SRNAMT = 'CHECON_3'
+         INFOT = 1
+         CALL CHECON_3( '/', 0, A, 1,  E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CHECON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHECON_3( 'U', -1, A, 1, E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CHECON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHECON_3( 'U', 2, A, 1, E, IP, ANRM, RCOND, W, INFO )
+         CALL CHKXER( 'CHECON_3', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHECON_3( 'U', 1, A, 1, E, IP, -1.0E0, RCOND, W, INFO)
+         CALL CHKXER( 'CHECON_3', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a Hermitian indefinite matrix with Aasen's algorithm.
+*
+*        CHETRF_AA
+*
+         SRNAMT = 'CHETRF_AA'
+         INFOT = 1
+         CALL CHETRF_AA( '/', 0, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRF_AA( 'U', -1, A, 1, IP, W, 1, INFO )
+         CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRF_AA( 'U', 2, A, 1, IP, W, 4, INFO )
+         CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHETRF_AA( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHETRF_AA( 'U', 0, A, 1, IP, W, -2, INFO )
+         CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
+*
+*        CHETRS_AA
+*
+         SRNAMT = 'CHETRS_AA'
+         INFOT = 1
+         CALL CHETRS_AA( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRS_AA( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CHETRS_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CHETRS_AA( 'U', 2, 1, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CHETRS_AA( 'U', 2, 1, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CHETRS_AA( 'U', 0, 1, A, 1, IP, B, 1, W, 0, INFO )
+         CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CHETRS_AA( 'U', 0, 1, A, 1, IP, B, 1, W, -2, INFO )
+         CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
 *
 *        Test error exits of the routines that use factorization
 *        of a Hermitian indefinite packed matrix with patrial

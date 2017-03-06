@@ -46,7 +46,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   BLASLONG n, lda;
   FLOAT *a;
 
-  FLOAT temp[2];
+  FLOAT temp;
   BLASLONG i;
 
   n      = args -> n;
@@ -64,12 +64,11 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	    a + i * COMPSIZE, lda, NULL, 0, NULL, 0);
 
     if (i < n - 1) {
-      temp[0] = DOTC_K(n - i - 1,
+      temp = CREAL(DOTC_K(n - i - 1,
 			a + (i + 1 + i * lda) * COMPSIZE, 1,
-			a + (i + 1 + i * lda) * COMPSIZE, 1);
-      GET_IMAGE(temp[1]);
+			a + (i + 1 + i * lda) * COMPSIZE, 1));
 
-      *(a + (i + i * lda) * COMPSIZE + 0) += temp[0];
+      *(a + (i + i * lda) * COMPSIZE + 0) += temp;
       *(a + (i + i * lda) * COMPSIZE + 1)  = ZERO;
 
       GEMV_U(n - i - 1, i, 0, dp1, ZERO,

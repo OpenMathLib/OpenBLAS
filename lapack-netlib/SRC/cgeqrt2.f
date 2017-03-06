@@ -2,39 +2,39 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGEQRT2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgeqrt2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgeqrt2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgeqrt2.f"> 
+*> Download CGEQRT2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgeqrt2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgeqrt2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgeqrt2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGEQRT2( M, N, A, LDA, T, LDT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER   INFO, LDA, LDT, M, N
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX   A( LDA, * ), T( LDT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> CGEQRT2 computes a QR factorization of a complex M-by-N matrix A, 
-*> using the compact WY representation of Q. 
+*> CGEQRT2 computes a QR factorization of a complex M-by-N matrix A,
+*> using the compact WY representation of Q.
 *> \endverbatim
 *
 *  Arguments:
@@ -92,12 +92,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup complexGEcomputational
 *
@@ -127,10 +127,10 @@
 *  =====================================================================
       SUBROUTINE CGEQRT2( M, N, A, LDA, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, LDA, LDT, M, N
@@ -170,7 +170,7 @@
          CALL XERBLA( 'CGEQRT2', -INFO )
          RETURN
       END IF
-*      
+*
       K = MIN( M, N )
 *
       DO I = 1, K
@@ -188,13 +188,13 @@
 *
 *           W(1:N-I) := A(I:M,I+1:N)**H * A(I:M,I) [W = T(:,N)]
 *
-            CALL CGEMV( 'C',M-I+1, N-I, ONE, A( I, I+1 ), LDA, 
+            CALL CGEMV( 'C',M-I+1, N-I, ONE, A( I, I+1 ), LDA,
      $                  A( I, I ), 1, ZERO, T( 1, N ), 1 )
 *
 *           A(I:M,I+1:N) = A(I:m,I+1:N) + alpha*A(I:M,I)*W(1:N-1)**H
 *
             ALPHA = -CONJG(T( I, 1 ))
-            CALL CGERC( M-I+1, N-I, ALPHA, A( I, I ), 1, 
+            CALL CGERC( M-I+1, N-I, ALPHA, A( I, I ), 1,
      $           T( 1, N ), 1, A( I, I+1 ), LDA )
             A( I, I ) = AII
          END IF
@@ -207,7 +207,7 @@
 *        T(1:I-1,I) := alpha * A(I:M,1:I-1)**H * A(I:M,I)
 *
          ALPHA = -T( I, 1 )
-         CALL CGEMV( 'C', M-I+1, I-1, ALPHA, A( I, 1 ), LDA, 
+         CALL CGEMV( 'C', M-I+1, I-1, ALPHA, A( I, 1 ), LDA,
      $               A( I, I ), 1, ZERO, T( 1, I ), 1 )
          A( I, I ) = AII
 *
@@ -220,7 +220,7 @@
             T( I, I ) = T( I, 1 )
             T( I, 1) = ZERO
       END DO
-   
+
 *
 *     End of CGEQRT2
 *

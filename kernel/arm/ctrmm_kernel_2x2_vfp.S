@@ -59,6 +59,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define N	[fp, #-260 ]
 #define K	[fp, #-264 ]
 
+#define FP_ZERO [fp, #-232]
+#define FP_ZERO_0 [fp, #-232]
+#define FP_ZERO_1 [fp, #-228]
+
+
 #define ALPHA_I	[fp, #-272]
 #define ALPHA_R	[fp, #-280]
 
@@ -136,7 +141,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x2
 
-	vsub.f32		s8 , s8 , s8
+	flds			s8 , FP_ZERO
 	vmov.f32		s9 , s8
 	vmov.f32		s10, s8
 	vmov.f32		s11, s8
@@ -301,10 +306,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	vsub.f32	s4, s4, s4
-	vsub.f32	s5, s5, s5
-	vsub.f32	s6, s6, s6
-	vsub.f32	s7, s7, s7
+	flds		s4, FP_ZERO
+	vmov.f32	s5, s4
+	vmov.f32	s6, s4
+	vmov.f32	s7, s4
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
@@ -318,10 +323,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fstmias CO1, { s4 - s7 }
 
-	vsub.f32	s4, s4, s4
-	vsub.f32	s5, s5, s5
-	vsub.f32	s6, s6, s6
-	vsub.f32	s7, s7, s7
+	flds		s4, FP_ZERO
+	vmov.f32	s5, s4
+	vmov.f32	s6, s4
+	vmov.f32	s7, s4
 
 	FMAC_R1 s4 , s0 , s12
 	FMAC_I1 s5 , s0 , s13
@@ -343,7 +348,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x2
 
-	vsub.f32		s8 , s8 , s8
+	flds			s8 , FP_ZERO
 	vmov.f32		s9 , s8
 	vmov.f32		s12, s8
 	vmov.f32		s13, s8
@@ -490,8 +495,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	vsub.f32	s4, s4, s4
-	vsub.f32	s5, s5, s5
+	flds		s4, FP_ZERO
+	vmov.f32	s5, s4
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
@@ -500,8 +505,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fstmias CO1, { s4 - s5 }
 
-	vsub.f32	s4, s4, s4
-	vsub.f32	s5, s5, s5
+	flds		s4, FP_ZERO
+	vmov.f32	s5, s4
 
 	FMAC_R1 s4 , s0 , s12
 	FMAC_I1 s5 , s0 , s13
@@ -519,7 +524,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x1
 
-	vsub.f32		s8 , s8 , s8
+	flds			s8 , FP_ZERO
 	vmov.f32		s9 , s8
 	vmov.f32		s10, s8
 	vmov.f32		s11, s8
@@ -663,10 +668,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	vsub.f32	s4, s4, s4
-	vsub.f32	s5, s5, s5
-	vsub.f32	s6, s6, s6
-	vsub.f32	s7, s7, s7
+	flds		s4, FP_ZERO
+	vmov.f32	s5, s4
+	vmov.f32	s6, s4
+	vmov.f32	s7, s4
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
@@ -689,7 +694,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT1x1
 
-	vsub.f32		s8 , s8 , s8
+	flds			s8 , FP_ZERO
 	vmov.f32		s9 , s8
 
 .endm
@@ -795,8 +800,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	vsub.f32	s4, s4, s4
-	vsub.f32	s5, s5, s5
+	flds		s4, FP_ZERO
+	vmov.f32	s5, s4
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
@@ -830,6 +835,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	sub	r3, fp, #128
 	vstm	r3, { s8 - s15} 				// store floating point registers
+
+        movs    r4, #0
+        str     r4, FP_ZERO
+        str     r4, FP_ZERO_1
 
 	ldr	r3, OLD_LDC
 	lsl	r3, r3, #3					// ldc = ldc * 4 * 2

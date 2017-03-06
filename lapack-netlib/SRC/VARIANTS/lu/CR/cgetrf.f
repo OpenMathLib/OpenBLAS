@@ -2,14 +2,14 @@ C> \brief \b CGETRF VARIANT: Crout Level 3 BLAS version of the algorithm.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGETRF ( M, N, A, LDA, IPIV, INFO)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -17,7 +17,7 @@ C> \brief \b CGETRF VARIANT: Crout Level 3 BLAS version of the algorithm.
 *       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -88,12 +88,12 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
-C> \date November 2011
+C> \date December 2016
 *
 C> \ingroup variantsGEcomputational
 *
@@ -103,7 +103,7 @@ C> \ingroup variantsGEcomputational
 *  -- LAPACK computational routine (version 3.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -171,11 +171,11 @@ C> \ingroup variantsGEcomputational
 *
 *           Update current block.
 *
-            CALL CGEMM( 'No transpose', 'No transpose', 
-     $                 M-J+1, JB, J-1, -ONE, 
+            CALL CGEMM( 'No transpose', 'No transpose',
+     $                 M-J+1, JB, J-1, -ONE,
      $                 A( J, 1 ), LDA, A( 1, J ), LDA, ONE,
      $                 A( J, J ), LDA )
-            
+
 *
 *           Factor diagonal and subdiagonal blocks and test for exact
 *           singularity.
@@ -189,27 +189,27 @@ C> \ingroup variantsGEcomputational
             DO 10 I = J, MIN( M, J+JB-1 )
                IPIV( I ) = J - 1 + IPIV( I )
    10       CONTINUE
-*            
-*           Apply interchanges to column 1:J-1            
+*
+*           Apply interchanges to column 1:J-1
 *
             CALL CLASWP( J-1, A, LDA, J, J+JB-1, IPIV, 1 )
 *
             IF ( J+JB.LE.N ) THEN
-*            
-*              Apply interchanges to column J+JB:N            
 *
-               CALL CLASWP( N-J-JB+1, A( 1, J+JB ), LDA, J, J+JB-1, 
+*              Apply interchanges to column J+JB:N
+*
+               CALL CLASWP( N-J-JB+1, A( 1, J+JB ), LDA, J, J+JB-1,
      $                     IPIV, 1 )
-*               
-               CALL CGEMM( 'No transpose', 'No transpose', 
-     $                    JB, N-J-JB+1, J-1, -ONE, 
+*
+               CALL CGEMM( 'No transpose', 'No transpose',
+     $                    JB, N-J-JB+1, J-1, -ONE,
      $                    A( J, 1 ), LDA, A( 1, J+JB ), LDA, ONE,
      $                    A( J, J+JB ), LDA )
 *
 *              Compute block row of U.
 *
                CALL CTRSM( 'Left', 'Lower', 'No transpose', 'Unit',
-     $                    JB, N-J-JB+1, ONE, A( J, J ), LDA, 
+     $                    JB, N-J-JB+1, ONE, A( J, J ), LDA,
      $                    A( J, J+JB ), LDA )
             END IF
 

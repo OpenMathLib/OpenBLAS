@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -13,7 +13,7 @@
 *                          VL, LDVL, VR, LDVR, LRE, LDLRE, RCONDV, RCNDV1,
 *                          RCDVIN, RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1,
 *                          RESULT, WORK, NWORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDLRE, LDVL, LDVR, NIUNIT, NOUNIT,
 *      $                   NSIZES, NTYPES, NWORK
@@ -29,7 +29,7 @@
 *      $                   VL( LDVL, * ), VR( LDVR, * ), WI( * ),
 *      $                   WI1( * ), WORK( * ), WR( * ), WR1( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -471,7 +471,7 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>          If 0,  then successful exit.
-*>          If <0, then input paramter -INFO is incorrect.
+*>          If <0, then input parameter -INFO is incorrect.
 *>          If >0, DLATMR, SLATMS, SLATME or DGET23 returned an error
 *>                 code, and INFO is its absolute value.
 *>
@@ -505,12 +505,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup double_eig
 *
@@ -521,10 +521,10 @@
      $                   RCDVIN, RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1,
      $                   RESULT, WORK, NWORK, IWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDLRE, LDVL, LDVR, NIUNIT, NOUNIT,

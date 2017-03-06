@@ -1,6 +1,6 @@
 
-include_directories(${CMAKE_SOURCE_DIR})
-include("${CMAKE_SOURCE_DIR}/cmake/kernel.cmake")
+include_directories(${PROJECT_SOURCE_DIR})
+include("${PROJECT_SOURCE_DIR}/cmake/kernel.cmake")
 
 # Makefile
 
@@ -226,6 +226,28 @@ foreach (float_type ${FLOAT_TYPES})
   GenerateNamedObjects("generic/ztrsm_ltcopy_${${float_char}GEMM_UNROLL_M}.c" "LOWER" "trsm_iltncopy" false "" "" false ${float_type})
   GenerateNamedObjects("generic/ztrsm_ltcopy_${${float_char}GEMM_UNROLL_N}.c" "OUTER;LOWER;UNIT" "trsm_oltucopy" false "" "" false ${float_type})
   GenerateNamedObjects("generic/ztrsm_ltcopy_${${float_char}GEMM_UNROLL_N}.c" "OUTER;LOWER" "trsm_oltncopy" false "" "" false ${float_type})
+
+  #gemm3m
+  if (USE_GEMM3M)
+    GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMM3MKERNEL}" "NN" "gemm3m_kernel" false "" "" false ${float_type})
+
+    GenerateNamedObjects("generic/zgemm3m_ncopy_${${float_char}GEMM3M_UNROLL_N}.c" "USE_ALPHA" "gemm3m_oncopyb" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_ncopy_${${float_char}GEMM3M_UNROLL_N}.c" "USE_ALPHA;REAL_ONLY" "gemm3m_oncopyr" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_ncopy_${${float_char}GEMM3M_UNROLL_N}.c" "USE_ALPHA;IMAGE_ONLY" "gemm3m_oncopyi" false "" "" false ${float_type})
+
+    GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_N}.c" "USE_ALPHA" "gemm3m_otcopyb" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_N}.c" "USE_ALPHA;REAL_ONLY" "gemm3m_otcopyr" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_N}.c" "USE_ALPHA;IMAGE_ONLY" "gemm3m_otcopyi" false "" "" false ${float_type})
+
+    GenerateNamedObjects("generic/zgemm3m_ncopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY" "gemm3m_incopyb" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_ncopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY;REAL_ONLY" "gemm3m_incopyr" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_ncopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY;IMAGE_ONLY" "gemm3m_incopyi" false "" "" false ${float_type})
+
+    GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY" "gemm3m_itcopyb" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY;REAL_ONLY" "gemm3m_itcopyr" false "" "" false ${float_type})
+    GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY;IMAGE_ONLY" "gemm3m_itcopyi" false "" "" false ${float_type})
+
+  endif()
 
   else ()  #For real
     GenerateCombinationObjects("${KERNELDIR}/${TRMM_KERNEL}" "LEFT;TRANSA" "R;N" "TRMMKERNEL" 2 "trmm_kernel" false ${float_type})

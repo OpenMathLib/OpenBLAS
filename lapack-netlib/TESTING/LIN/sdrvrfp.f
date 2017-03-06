@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -14,7 +14,7 @@
 *      +              S_WORK_SLATMS, S_WORK_SPOT01, S_TEMP_SPOT02,
 *      +              S_TEMP_SPOT03, S_WORK_SLANSY,
 *      +              S_WORK_SPOT02, S_WORK_SPOT03 )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            NN, NNS, NNT, NOUT
 *       REAL               THRESH
@@ -39,7 +39,7 @@
 *       REAL               S_WORK_SPOT02( * )
 *       REAL               S_WORK_SPOT03( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -52,11 +52,11 @@
 *> This testing routine follow the same tests as DDRVPO (test for the full
 *> format Symmetric Positive Definite solver).
 *>
-*> The tests are performed in Full Format, convertion back and forth from
+*> The tests are performed in Full Format, conversion back and forth from
 *> full format to RFP format are performed using the routines STRTTF and
 *> STFTTR.
 *>
-*> First, a specific matrix A of size N is created. There is nine types of 
+*> First, a specific matrix A of size N is created. There is nine types of
 *> different matrixes possible.
 *>  1. Diagonal                        6. Random, CNDNUM = sqrt(0.1/EPS)
 *>  2. Random, CNDNUM = 2              7. Random, CNDNUM = 0.1/EPS
@@ -226,12 +226,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup single_lin
 *
@@ -243,10 +243,10 @@
      +              S_TEMP_SPOT03, S_WORK_SLANSY,
      +              S_WORK_SPOT02, S_WORK_SPOT03 )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            NN, NNS, NNT, NOUT
@@ -514,7 +514,7 @@
 *
 *                    Form the inverse and compute the residual.
 *
-                     IF(MOD(N,2).EQ.0)THEN 
+                     IF(MOD(N,2).EQ.0)THEN
                         CALL SLACPY( 'A', N+1, N/2, ARF, N+1, ARFINV,
      +                               N+1 )
                      ELSE
@@ -549,7 +549,7 @@
      +                            RESULT( 3 ) )
 *
 *                    Check solution from generated exact solution.
- 
+
                      CALL SGET04( N, NRHS, X, LDA, XACT, LDA, RCONDC,
      +                         RESULT( 4 ) )
                      NT = 4

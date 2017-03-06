@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAED6 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed6.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed6.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed6.f"> 
+*> Download DLAED6 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed6.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed6.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed6.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLAED6( KNITER, ORGATI, RHO, D, Z, FINIT, TAU, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            ORGATI
 *       INTEGER            INFO, KNITER
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   D( 3 ), Z( 3 )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -110,12 +110,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -140,10 +140,10 @@
 *  =====================================================================
       SUBROUTINE DLAED6( KNITER, ORGATI, RHO, D, Z, FINIT, TAU, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            ORGATI
@@ -175,7 +175,7 @@
       INTEGER            I, ITER, NITER
       DOUBLE PRECISION   A, B, BASE, C, DDF, DF, EPS, ERRETM, ETA, F,
      $                   FC, SCLFAC, SCLINV, SMALL1, SMALL2, SMINV1,
-     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4, 
+     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4,
      $                   LBD, UBD
 *     ..
 *     .. Intrinsic Functions ..
@@ -195,7 +195,7 @@
       IF( FINIT .LT. ZERO )THEN
          LBD = ZERO
       ELSE
-         UBD = ZERO 
+         UBD = ZERO
       END IF
 *
       NITER = 1
@@ -363,7 +363,7 @@
 *
          TAU = TAU + ETA
          IF( TAU .LT. LBD .OR. TAU .GT. UBD )
-     $      TAU = ( LBD + UBD )/TWO 
+     $      TAU = ( LBD + UBD )/TWO
 *
          FC = ZERO
          ERRETM = ZERO
@@ -381,13 +381,14 @@
                DF = DF + TEMP2
                DDF = DDF + TEMP3
             ELSE
-              GO TO 60
+               GO TO 60
             END IF
    40    CONTINUE
          F = FINIT + TAU*FC
          ERRETM = EIGHT*( ABS( FINIT )+ABS( TAU )*ERRETM ) +
      $            ABS( TAU )*DF
-         IF( ABS( F ).LE.EPS*ERRETM )
+         IF( ( ABS( F ).LE.FOUR*EPS*ERRETM ) .OR.
+     $      ( (UBD-LBD).LE.FOUR*EPS*ABS(TAU) )  )
      $      GO TO 60
          IF( F .LE. ZERO )THEN
             LBD = TAU

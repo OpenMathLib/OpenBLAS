@@ -46,23 +46,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define pCRow0		x12
 #define pCRow1		x13
 #define pCRow2		x14
-#define pA		x15
-#define alpha_save_R	x16
-#define alpha_save_I	x17
-#define temp		x18
-#define tempOffset	x19
-#define tempK		x20
+#define pCRow3		x15
+#define pA		x16
+#define alphaR		x17
+#define alphaI		x18
+#define temp		x19
+#define tempOffset	x20
+#define tempK		x21
 
 #define alpha0_R	d10
 #define alphaV0_R	v10.d[0]
 #define alpha0_I	d11
 #define alphaV0_I	v11.d[0]
 
-#define alpha1_R	d14
-#define alphaV1_R	v14.d[0]
-#define alpha1_I	d15
-#define alphaV1_I	v15.d[0]
-
+#define A_PRE_SIZE	2560
+#define B_PRE_SIZE	448
+#define C_PRE_SIZE	128
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT)
 #define OP_rr		fmla
@@ -93,7 +92,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 04 origPB
 // 05 pC
 // 06 origLDC -> LDC
-// 07 offset
+// 07 offset -> temp
 // 08 counterL
 // 09 counterI
 // 10 counterJ
@@ -101,13 +100,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 12 pCRow0
 // 13 pCRow1
 // 14 pCRow2
-// 15 pA
-// 16 alpha_save_R
-// 17 alpha_save_I
-// 18 must save temp
-// 19 must save tempOffset
-// 20 must save tempK
-// 21 must save
+// 15 pCRow3
+// 16 pA
+// 17 alpha_save_R
+// 18 must save alpha_save_I
+// 19 must save temp
+// 20 must save tempOffset
+// 21 must save tempK
 // 22 must save
 // 23 must save
 // 24 must save
@@ -178,365 +177,412 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL4x4_I
 	ld2	{v8.2d, v9.2d}, [pB]
 	add	pB, pB, #32
-	ld2	{v10.2d, v11.2d}, [pB]
-	add	pB, pB, #32
 	ld2	{v0.2d, v1.2d}, [pA]
 	add	pA, pA, #32
+
+	fmul	v16.2d, v0.2d, v8.d[0]
+	OP_ii	v16.2d, v1.2d, v9.d[0]
+#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
+    defined(RR) || defined(RC) || defined(CR) || defined(CC)
+	eor	v17.16b, v17.16b, v17.16b
+	fmls	v17.2d, v0.2d, v9.d[0]
+#else
+	fmul	v17.2d, v0.2d, v9.d[0]
+#endif
+	OP_ir	v17.2d, v1.2d, v8.d[0]
+
 	ld2	{v2.2d, v3.2d}, [pA]
 	add	pA, pA, #32
 
-	fmul	v16.2d, v0.2d, v8.2d[0]
-	OP_ii	v16.2d, v1.2d, v9.2d[0]
-	fmul	v17.2d, v0.2d, v9.2d[0]
+	fmul	v20.2d, v0.2d, v8.d[1]
+	OP_ii	v20.2d, v1.2d, v9.d[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v17.2d, v17.2d
+	eor	v21.16b, v21.16b, v21.16b
+	fmls	v21.2d, v0.2d, v9.d[1]
+#else
+	fmul	v21.2d, v0.2d, v9.d[1]
 #endif
-	OP_ir	v17.2d, v1.2d, v8.2d[0]
+	OP_ir	v21.2d, v1.2d, v8.d[1]
 
-	fmul	v18.2d, v2.2d, v8.2d[0]
-	OP_ii	v18.2d, v3.2d, v9.2d[0]
-	fmul	v19.2d, v2.2d, v9.2d[0]
-#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-    defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v19.2d, v19.2d
-#endif
-	OP_ir	v19.2d, v3.2d, v8.2d[0]
+	ld2	{v10.2d, v11.2d}, [pB]
+	add	pB, pB, #32
 
-	fmul	v20.2d, v0.2d, v8.2d[1]
-	OP_ii	v20.2d, v1.2d, v9.2d[1]
-	fmul	v21.2d, v0.2d, v9.2d[1]
+	fmul	v22.2d, v2.2d, v8.d[1]
+	OP_ii	v22.2d, v3.2d, v9.d[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v21.2d, v21.2d
+	eor	v23.16b, v23.16b, v23.16b
+	fmls	v23.2d, v2.2d, v9.d[1]
+#else
+	fmul	v23.2d, v2.2d, v9.d[1]
 #endif
-	OP_ir	v21.2d, v1.2d, v8.2d[1]
-
-	fmul	v22.2d, v2.2d, v8.2d[1]
-	OP_ii	v22.2d, v3.2d, v9.2d[1]
-	fmul	v23.2d, v2.2d, v9.2d[1]
-#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-    defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v23.2d, v23.2d
-#endif
-	OP_ir	v23.2d, v3.2d, v8.2d[1]
-
-	fmul	v24.2d, v0.2d, v10.2d[0]
-	OP_ii	v24.2d, v1.2d, v11.2d[0]
-	fmul	v25.2d, v0.2d, v11.2d[0]
-#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-    defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v25.2d, v25.2d
-#endif
-	OP_ir	v25.2d, v1.2d, v10.2d[0]
-
-	fmul	v26.2d, v2.2d, v10.2d[0]
-	OP_ii	v26.2d, v3.2d, v11.2d[0]
-	fmul	v27.2d, v2.2d, v11.2d[0]
-#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-    defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v27.2d, v27.2d
-#endif
-	OP_ir	v27.2d, v3.2d, v10.2d[0]
-
-	fmul	v28.2d, v0.2d, v10.2d[1]
-	OP_ii	v28.2d, v1.2d, v11.2d[1]
-	fmul	v29.2d, v0.2d, v11.2d[1]
-#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-    defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v29.2d, v29.2d
-#endif
-	OP_ir	v29.2d, v1.2d, v10.2d[1]
-
-	fmul	v30.2d, v2.2d, v10.2d[1]
-	OP_ii	v30.2d, v3.2d, v11.2d[1]
-	fmul	v31.2d, v2.2d, v11.2d[1]
-#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
-    defined(RR) || defined(RC) || defined(CR) || defined(CC)
-	fneg	v31.2d, v31.2d
-#endif
-	OP_ir	v31.2d, v3.2d, v10.2d[1]
+	OP_ir	v23.2d, v3.2d, v8.d[1]
 
 	ld2	{v12.2d, v13.2d}, [pB]
 	add	pB, pB, #32
-	ld2	{v14.2d, v15.2d}, [pB]
-	add	pB, pB, #32
+
+	fmul	v18.2d, v2.2d, v8.d[0]
+	OP_ii	v18.2d, v3.2d, v9.d[0]
+#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
+    defined(RR) || defined(RC) || defined(CR) || defined(CC)
+	eor	v19.16b, v19.16b, v19.16b
+	fmls	v19.2d, v2.2d, v9.d[0]
+#else
+	fmul	v19.2d, v2.2d, v9.d[0]
+#endif
+	OP_ir	v19.2d, v3.2d, v8.d[0]
+
 	ld2	{v4.2d, v5.2d} , [pA]
 	add	pA, pA, #32
+
+	fmul	v24.2d, v0.2d, v10.d[0]
+	OP_ii	v24.2d, v1.2d, v11.d[0]
+#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
+    defined(RR) || defined(RC) || defined(CR) || defined(CC)
+	eor	v25.16b, v25.16b, v25.16b
+	fmls	v25.2d, v0.2d, v11.d[0]
+#else
+	fmul	v25.2d, v0.2d, v11.d[0]
+#endif
+	OP_ir	v25.2d, v1.2d, v10.d[0]
+
 	ld2	{v6.2d, v7.2d} , [pA]
 	add	pA, pA, #32
+
+	fmul	v26.2d, v2.2d, v10.d[0]
+	OP_ii	v26.2d, v3.2d, v11.d[0]
+#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
+    defined(RR) || defined(RC) || defined(CR) || defined(CC)
+	eor	v27.16b, v27.16b, v27.16b
+	fmls	v27.2d, v2.2d, v11.d[0]
+#else
+	fmul	v27.2d, v2.2d, v11.d[0]
+#endif
+	OP_ir	v27.2d, v3.2d, v10.d[0]
+
+	ld2	{v14.2d, v15.2d}, [pB]
+	add	pB, pB, #32
+
+	fmul	v28.2d, v0.2d, v10.d[1]
+	OP_ii	v28.2d, v1.2d, v11.d[1]
+#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
+    defined(RR) || defined(RC) || defined(CR) || defined(CC)
+	eor	v29.16b, v29.16b, v29.16b
+	fmls	v29.2d, v0.2d, v11.d[1]
+#else
+	fmul	v29.2d, v0.2d, v11.d[1]
+#endif
+	OP_ir	v29.2d, v1.2d, v10.d[1]
+
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+
+	fmul	v30.2d, v2.2d, v10.d[1]
+	OP_ii	v30.2d, v3.2d, v11.d[1]
+#if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
+    defined(RR) || defined(RC) || defined(CR) || defined(CC)
+	eor	v31.16b, v31.16b, v31.16b
+	fmls	v31.2d, v2.2d, v11.d[1]
+#else
+	fmul	v31.2d, v2.2d, v11.d[1]
+#endif
+	OP_ir	v31.2d, v3.2d, v10.d[1]
+
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 .endm
 
 .macro KERNEL4x4_M1
-	OP_rr	v16.2d, v0.2d, v8.2d[0]
-	OP_ii	v16.2d, v1.2d, v9.2d[0]
-	OP_ri	v17.2d, v0.2d, v9.2d[0]
-	OP_ir	v17.2d, v1.2d, v8.2d[0]
+	OP_rr	v16.2d, v0.2d, v8.d[0]
+	OP_ii	v16.2d, v1.2d, v9.d[0]
+	OP_ri	v17.2d, v0.2d, v9.d[0]
+	OP_ir	v17.2d, v1.2d, v8.d[0]
 
-	ld2	{v12.2d, v13.2d}, [pB]		// For next round
+	ld2	{v12.2d, v13.2d}, [pB]
 	add	pB, pB, #32
 
-	OP_rr	v18.2d, v2.2d, v8.2d[0]
-	OP_ii	v18.2d, v3.2d, v9.2d[0]
-	OP_ri	v19.2d, v2.2d, v9.2d[0]
-	OP_ir	v19.2d, v3.2d, v8.2d[0]
+	OP_rr	v18.2d, v2.2d, v8.d[0]
+	OP_ii	v18.2d, v3.2d, v9.d[0]
+	OP_ri	v19.2d, v2.2d, v9.d[0]
+	OP_ir	v19.2d, v3.2d, v8.d[0]
 
-	ld2	{v14.2d, v15.2d}, [pB]		// For next round
+	ld2	{v4.2d, v5.2d} , [pA]
+	add	pA, pA, #32
+
+	OP_rr	v20.2d, v0.2d, v8.d[1]
+	OP_ii	v20.2d, v1.2d, v9.d[1]
+	OP_ri	v21.2d, v0.2d, v9.d[1]
+	OP_ir	v21.2d, v1.2d, v8.d[1]
+
+	ld2	{v6.2d, v7.2d} , [pA]
+	add	pA, pA, #32
+
+	OP_rr	v22.2d, v2.2d, v8.d[1]
+	OP_ii	v22.2d, v3.2d, v9.d[1]
+	OP_ri	v23.2d, v2.2d, v9.d[1]
+	OP_ir	v23.2d, v3.2d, v8.d[1]
+
+	ld2	{v14.2d, v15.2d}, [pB]
 	add	pB, pB, #32
 
-	OP_rr	v20.2d, v0.2d, v8.2d[1]
-	OP_ii	v20.2d, v1.2d, v9.2d[1]
-	OP_ri	v21.2d, v0.2d, v9.2d[1]
-	OP_ir	v21.2d, v1.2d, v8.2d[1]
+	OP_rr	v24.2d, v0.2d, v10.d[0]
+	OP_ii	v24.2d, v1.2d, v11.d[0]
+	OP_ri	v25.2d, v0.2d, v11.d[0]
+	OP_ir	v25.2d, v1.2d, v10.d[0]
 
-	ld2	{v4.2d, v5.2d} , [pA]		// For next round
-	add	pA, pA, #32
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 
-	OP_rr	v22.2d, v2.2d, v8.2d[1]
-	OP_ii	v22.2d, v3.2d, v9.2d[1]
-	OP_ri	v23.2d, v2.2d, v9.2d[1]
-	OP_ir	v23.2d, v3.2d, v8.2d[1]
+	OP_rr	v26.2d, v2.2d, v10.d[0]
+	OP_ii	v26.2d, v3.2d, v11.d[0]
+	OP_ri	v27.2d, v2.2d, v11.d[0]
+	OP_ir	v27.2d, v3.2d, v10.d[0]
 
-	ld2	{v6.2d, v7.2d} , [pA]		// For next round
-	add	pA, pA, #32
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 
-	OP_rr	v24.2d, v0.2d, v10.2d[0]
-	OP_ii	v24.2d, v1.2d, v11.2d[0]
-	OP_ri	v25.2d, v0.2d, v11.2d[0]
-	OP_ir	v25.2d, v1.2d, v10.2d[0]
+	OP_rr	v28.2d, v0.2d, v10.d[1]
+	OP_ii	v28.2d, v1.2d, v11.d[1]
+	OP_ri	v29.2d, v0.2d, v11.d[1]
+	OP_ir	v29.2d, v1.2d, v10.d[1]
 
-	prfm	PLDL1KEEP, [pA, #512]
-
-	OP_rr	v26.2d, v2.2d, v10.2d[0]
-	OP_ii	v26.2d, v3.2d, v11.2d[0]
-	OP_ri	v27.2d, v2.2d, v11.2d[0]
-	OP_ir	v27.2d, v3.2d, v10.2d[0]
-
-	prfm	PLDL1KEEP, [pB, #512]
-
-	OP_rr	v28.2d, v0.2d, v10.2d[1]
-	OP_ii	v28.2d, v1.2d, v11.2d[1]
-	OP_ri	v29.2d, v0.2d, v11.2d[1]
-	OP_ir	v29.2d, v1.2d, v10.2d[1]
-
-	OP_rr	v30.2d, v2.2d, v10.2d[1]
-	OP_ii	v30.2d, v3.2d, v11.2d[1]
-	OP_ri	v31.2d, v2.2d, v11.2d[1]
-	OP_ir	v31.2d, v3.2d, v10.2d[1]
+	OP_rr	v30.2d, v2.2d, v10.d[1]
+	OP_ii	v30.2d, v3.2d, v11.d[1]
+	OP_ri	v31.2d, v2.2d, v11.d[1]
+	OP_ir	v31.2d, v3.2d, v10.d[1]
 .endm
 
 .macro KERNEL4x4_M2
-	OP_rr	v16.2d, v4.2d, v12.2d[0]
-	OP_ii	v16.2d, v5.2d, v13.2d[0]
-	OP_ri	v17.2d, v4.2d, v13.2d[0]
-	OP_ir	v17.2d, v5.2d, v12.2d[0]
+	OP_rr	v16.2d, v4.2d, v12.d[0]
+	OP_ii	v16.2d, v5.2d, v13.d[0]
+	OP_ri	v17.2d, v4.2d, v13.d[0]
+	OP_ir	v17.2d, v5.2d, v12.d[0]
 
-	ld2	{v8.2d, v9.2d}, [pB]		// For next round
+	ld2	{v8.2d, v9.2d}, [pB]
 	add	pB, pB, #32
 
-	OP_rr	v18.2d, v6.2d, v12.2d[0]
-	OP_ii	v18.2d, v7.2d, v13.2d[0]
-	OP_ri	v19.2d, v6.2d, v13.2d[0]
-	OP_ir	v19.2d, v7.2d, v12.2d[0]
+	OP_rr	v18.2d, v6.2d, v12.d[0]
+	OP_ii	v18.2d, v7.2d, v13.d[0]
+	OP_ri	v19.2d, v6.2d, v13.d[0]
+	OP_ir	v19.2d, v7.2d, v12.d[0]
 
-	ld2	{v10.2d, v11.2d}, [pB]		// For next round
+	ld2	{v0.2d, v1.2d}, [pA]
+	add	pA, pA, #32
+
+	OP_rr	v20.2d, v4.2d, v12.d[1]
+	OP_ii	v20.2d, v5.2d, v13.d[1]
+	OP_ri	v21.2d, v4.2d, v13.d[1]
+	OP_ir	v21.2d, v5.2d, v12.d[1]
+
+	ld2	{v2.2d, v3.2d}, [pA]
+	add	pA, pA, #32
+
+	OP_rr	v22.2d, v6.2d, v12.d[1]
+	OP_ii	v22.2d, v7.2d, v13.d[1]
+	OP_ri	v23.2d, v6.2d, v13.d[1]
+	OP_ir	v23.2d, v7.2d, v12.d[1]
+
+	ld2	{v10.2d, v11.2d}, [pB]
 	add	pB, pB, #32
 
-	OP_rr	v20.2d, v4.2d, v12.2d[1]
-	OP_ii	v20.2d, v5.2d, v13.2d[1]
-	OP_ri	v21.2d, v4.2d, v13.2d[1]
-	OP_ir	v21.2d, v5.2d, v12.2d[1]
+	OP_rr	v24.2d, v4.2d, v14.d[0]
+	OP_ii	v24.2d, v5.2d, v15.d[0]
+	OP_ri	v25.2d, v4.2d, v15.d[0]
+	OP_ir	v25.2d, v5.2d, v14.d[0]
 
-	ld2	{v0.2d, v1.2d}, [pA]		// For next round
-	add	pA, pA, #32
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
-	OP_rr	v22.2d, v6.2d, v12.2d[1]
-	OP_ii	v22.2d, v7.2d, v13.2d[1]
-	OP_ri	v23.2d, v6.2d, v13.2d[1]
-	OP_ir	v23.2d, v7.2d, v12.2d[1]
+	OP_rr	v26.2d, v6.2d, v14.d[0]
+	OP_ii	v26.2d, v7.2d, v15.d[0]
+	OP_ri	v27.2d, v6.2d, v15.d[0]
+	OP_ir	v27.2d, v7.2d, v14.d[0]
 
-	ld2	{v2.2d, v3.2d}, [pA]		// For next round
-	add	pA, pA, #32
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE+64]
 
-	OP_rr	v24.2d, v4.2d, v14.2d[0]
-	OP_ii	v24.2d, v5.2d, v15.2d[0]
-	OP_ri	v25.2d, v4.2d, v15.2d[0]
-	OP_ir	v25.2d, v5.2d, v14.2d[0]
+	OP_rr	v28.2d, v4.2d, v14.d[1]
+	OP_ii	v28.2d, v5.2d, v15.d[1]
+	OP_ri	v29.2d, v4.2d, v15.d[1]
+	OP_ir	v29.2d, v5.2d, v14.d[1]
 
-	prfm	PLDL1KEEP, [pA, #512]
-
-	OP_rr	v26.2d, v6.2d, v14.2d[0]
-	OP_ii	v26.2d, v7.2d, v15.2d[0]
-	OP_ri	v27.2d, v6.2d, v15.2d[0]
-	OP_ir	v27.2d, v7.2d, v14.2d[0]
-
-	prfm	PLDL1KEEP, [pB, #512]
-
-	OP_rr	v28.2d, v4.2d, v14.2d[1]
-	OP_ii	v28.2d, v5.2d, v15.2d[1]
-	OP_ri	v29.2d, v4.2d, v15.2d[1]
-	OP_ir	v29.2d, v5.2d, v14.2d[1]
-
-	OP_rr	v30.2d, v6.2d, v14.2d[1]
-	OP_ii	v30.2d, v7.2d, v15.2d[1]
-	OP_ri	v31.2d, v6.2d, v15.2d[1]
-	OP_ir	v31.2d, v7.2d, v14.2d[1]
+	OP_rr	v30.2d, v6.2d, v14.d[1]
+	OP_ii	v30.2d, v7.2d, v15.d[1]
+	OP_ri	v31.2d, v6.2d, v15.d[1]
+	OP_ir	v31.2d, v7.2d, v14.d[1]
 .endm
 
 .macro KERNEL4x4_E
-	OP_rr	v16.2d, v4.2d, v12.2d[0]
-	OP_ii	v16.2d, v5.2d, v13.2d[0]
-	OP_ri	v17.2d, v4.2d, v13.2d[0]
-	OP_ir	v17.2d, v5.2d, v12.2d[0]
+	OP_rr	v16.2d, v4.2d, v12.d[0]
+	OP_ii	v16.2d, v5.2d, v13.d[0]
+	OP_ri	v17.2d, v4.2d, v13.d[0]
+	OP_ir	v17.2d, v5.2d, v12.d[0]
 
-	OP_rr	v18.2d, v6.2d, v12.2d[0]
-	OP_ii	v18.2d, v7.2d, v13.2d[0]
-	OP_ri	v19.2d, v6.2d, v13.2d[0]
-	OP_ir	v19.2d, v7.2d, v12.2d[0]
+	OP_rr	v18.2d, v6.2d, v12.d[0]
+	OP_ii	v18.2d, v7.2d, v13.d[0]
+	OP_ri	v19.2d, v6.2d, v13.d[0]
+	OP_ir	v19.2d, v7.2d, v12.d[0]
 
-	OP_rr	v20.2d, v4.2d, v12.2d[1]
-	OP_ii	v20.2d, v5.2d, v13.2d[1]
-	OP_ri	v21.2d, v4.2d, v13.2d[1]
-	OP_ir	v21.2d, v5.2d, v12.2d[1]
+	OP_rr	v20.2d, v4.2d, v12.d[1]
+	OP_ii	v20.2d, v5.2d, v13.d[1]
+	OP_ri	v21.2d, v4.2d, v13.d[1]
+	OP_ir	v21.2d, v5.2d, v12.d[1]
 
-	OP_rr	v22.2d, v6.2d, v12.2d[1]
-	OP_ii	v22.2d, v7.2d, v13.2d[1]
-	OP_ri	v23.2d, v6.2d, v13.2d[1]
-	OP_ir	v23.2d, v7.2d, v12.2d[1]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
-	OP_rr	v24.2d, v4.2d, v14.2d[0]
-	OP_ii	v24.2d, v5.2d, v15.2d[0]
-	OP_ri	v25.2d, v4.2d, v15.2d[0]
-	OP_ir	v25.2d, v5.2d, v14.2d[0]
+	OP_rr	v22.2d, v6.2d, v12.d[1]
+	OP_ii	v22.2d, v7.2d, v13.d[1]
+	OP_ri	v23.2d, v6.2d, v13.d[1]
+	OP_ir	v23.2d, v7.2d, v12.d[1]
 
-	OP_rr	v26.2d, v6.2d, v14.2d[0]
-	OP_ii	v26.2d, v7.2d, v15.2d[0]
-	OP_ri	v27.2d, v6.2d, v15.2d[0]
-	OP_ir	v27.2d, v7.2d, v14.2d[0]
+	OP_rr	v24.2d, v4.2d, v14.d[0]
+	OP_ii	v24.2d, v5.2d, v15.d[0]
+	OP_ri	v25.2d, v4.2d, v15.d[0]
+	OP_ir	v25.2d, v5.2d, v14.d[0]
 
-	OP_rr	v28.2d, v4.2d, v14.2d[1]
-	OP_ii	v28.2d, v5.2d, v15.2d[1]
-	OP_ri	v29.2d, v4.2d, v15.2d[1]
-	OP_ir	v29.2d, v5.2d, v14.2d[1]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE+64]
 
-	OP_rr	v30.2d, v6.2d, v14.2d[1]
-	OP_ii	v30.2d, v7.2d, v15.2d[1]
-	OP_ri	v31.2d, v6.2d, v15.2d[1]
-	OP_ir	v31.2d, v7.2d, v14.2d[1]
+	OP_rr	v26.2d, v6.2d, v14.d[0]
+	OP_ii	v26.2d, v7.2d, v15.d[0]
+	OP_ri	v27.2d, v6.2d, v15.d[0]
+	OP_ir	v27.2d, v7.2d, v14.d[0]
+
+	OP_rr	v28.2d, v4.2d, v14.d[1]
+	OP_ii	v28.2d, v5.2d, v15.d[1]
+	OP_ri	v29.2d, v4.2d, v15.d[1]
+	OP_ir	v29.2d, v5.2d, v14.d[1]
+
+	OP_rr	v30.2d, v6.2d, v14.d[1]
+	OP_ii	v30.2d, v7.2d, v15.d[1]
+	OP_ri	v31.2d, v6.2d, v15.d[1]
+	OP_ir	v31.2d, v7.2d, v14.d[1]
 .endm
 
 .macro KERNEL4x4_SUB
 	ld2	{v8.2d, v9.2d}, [pB]
 	add	pB, pB, #32
-	ld2	{v10.2d, v11.2d}, [pB]
-	add	pB, pB, #32
+
 	ld2	{v0.2d, v1.2d}, [pA]
 	add	pA, pA, #32
+
+	OP_rr	v16.2d, v0.2d, v8.d[0]
+	OP_ii	v16.2d, v1.2d, v9.d[0]
+	OP_ri	v17.2d, v0.2d, v9.d[0]
+	OP_ir	v17.2d, v1.2d, v8.d[0]
+
 	ld2	{v2.2d, v3.2d}, [pA]
 	add	pA, pA, #32
 
-	OP_rr	v16.2d, v0.2d, v8.2d[0]
-	OP_ii	v16.2d, v1.2d, v9.2d[0]
-	OP_ri	v17.2d, v0.2d, v9.2d[0]
-	OP_ir	v17.2d, v1.2d, v8.2d[0]
+	OP_rr	v20.2d, v0.2d, v8.d[1]
+	OP_ii	v20.2d, v1.2d, v9.d[1]
+	OP_ri	v21.2d, v0.2d, v9.d[1]
+	OP_ir	v21.2d, v1.2d, v8.d[1]
 
-	OP_rr	v18.2d, v2.2d, v8.2d[0]
-	OP_ii	v18.2d, v3.2d, v9.2d[0]
-	OP_ri	v19.2d, v2.2d, v9.2d[0]
-	OP_ir	v19.2d, v3.2d, v8.2d[0]
+	ld2	{v10.2d, v11.2d}, [pB]
+	add	pB, pB, #32
 
-	OP_rr	v20.2d, v0.2d, v8.2d[1]
-	OP_ii	v20.2d, v1.2d, v9.2d[1]
-	OP_ri	v21.2d, v0.2d, v9.2d[1]
-	OP_ir	v21.2d, v1.2d, v8.2d[1]
+	OP_rr	v18.2d, v2.2d, v8.d[0]
+	OP_ii	v18.2d, v3.2d, v9.d[0]
+	OP_ri	v19.2d, v2.2d, v9.d[0]
+	OP_ir	v19.2d, v3.2d, v8.d[0]
 
-	OP_rr	v22.2d, v2.2d, v8.2d[1]
-	OP_ii	v22.2d, v3.2d, v9.2d[1]
-	OP_ri	v23.2d, v2.2d, v9.2d[1]
-	OP_ir	v23.2d, v3.2d, v8.2d[1]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
-	OP_rr	v24.2d, v0.2d, v10.2d[0]
-	OP_ii	v24.2d, v1.2d, v11.2d[0]
-	OP_ri	v25.2d, v0.2d, v11.2d[0]
-	OP_ir	v25.2d, v1.2d, v10.2d[0]
+	OP_rr	v22.2d, v2.2d, v8.d[1]
+	OP_ii	v22.2d, v3.2d, v9.d[1]
+	OP_ri	v23.2d, v2.2d, v9.d[1]
+	OP_ir	v23.2d, v3.2d, v8.d[1]
 
-	OP_rr	v26.2d, v2.2d, v10.2d[0]
-	OP_ii	v26.2d, v3.2d, v11.2d[0]
-	OP_ri	v27.2d, v2.2d, v11.2d[0]
-	OP_ir	v27.2d, v3.2d, v10.2d[0]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 
-	OP_rr	v28.2d, v0.2d, v10.2d[1]
-	OP_ii	v28.2d, v1.2d, v11.2d[1]
-	OP_ri	v29.2d, v0.2d, v11.2d[1]
-	OP_ir	v29.2d, v1.2d, v10.2d[1]
+	OP_rr	v24.2d, v0.2d, v10.d[0]
+	OP_ii	v24.2d, v1.2d, v11.d[0]
+	OP_ri	v25.2d, v0.2d, v11.d[0]
+	OP_ir	v25.2d, v1.2d, v10.d[0]
 
-	OP_rr	v30.2d, v2.2d, v10.2d[1]
-	OP_ii	v30.2d, v3.2d, v11.2d[1]
-	OP_ri	v31.2d, v2.2d, v11.2d[1]
-	OP_ir	v31.2d, v3.2d, v10.2d[1]
+	OP_rr	v26.2d, v2.2d, v10.d[0]
+	OP_ii	v26.2d, v3.2d, v11.d[0]
+	OP_ri	v27.2d, v2.2d, v11.d[0]
+	OP_ir	v27.2d, v3.2d, v10.d[0]
+
+	OP_rr	v28.2d, v0.2d, v10.d[1]
+	OP_ii	v28.2d, v1.2d, v11.d[1]
+	OP_ri	v29.2d, v0.2d, v11.d[1]
+	OP_ir	v29.2d, v1.2d, v10.d[1]
+
+	OP_rr	v30.2d, v2.2d, v10.d[1]
+	OP_ii	v30.2d, v3.2d, v11.d[1]
+	OP_ri	v31.2d, v2.2d, v11.d[1]
+	OP_ir	v31.2d, v3.2d, v10.d[1]
 .endm
 
 .macro SAVE4x4
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
-	mov	pCRow1, pCRow0
+	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	fmul	v0.2d, v16.2d, alphaV0_R
 	fmls	v0.2d, v17.2d, alphaV0_I
-	fmul	v1.2d, v16.2d, alphaV1_I
-	fmla	v1.2d, v17.2d, alphaV1_R
-	st2 	{v0.2d, v1.2d}, [pCRow1]
-	add	pCRow2, pCRow1, #32
+	fmul	v1.2d, v16.2d, alphaV0_I
+	fmla	v1.2d, v17.2d, alphaV0_R
+	st2 	{v0.2d, v1.2d}, [pCRow0]
+
+	add	pCRow0, pCRow0, #32
+
 	fmul	v2.2d, v18.2d, alphaV0_R
 	fmls	v2.2d, v19.2d, alphaV0_I
-	fmul	v3.2d, v18.2d, alphaV1_I
-	fmla	v3.2d, v19.2d, alphaV1_R
-	st2 	{v2.2d, v3.2d}, [pCRow2]
+	fmul	v3.2d, v18.2d, alphaV0_I
+	fmla	v3.2d, v19.2d, alphaV0_R
+	st2 	{v2.2d, v3.2d}, [pCRow0]
 
-	add	pCRow1, pCRow1, LDC
+	add	pCRow0, pCRow0, #32
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
+
 	fmul	v4.2d, v20.2d, alphaV0_R
 	fmls	v4.2d, v21.2d, alphaV0_I
-	fmul	v5.2d, v20.2d, alphaV1_I
-	fmla	v5.2d, v21.2d, alphaV1_R
+	fmul	v5.2d, v20.2d, alphaV0_I
+	fmla	v5.2d, v21.2d, alphaV0_R
 	st2 	{v4.2d, v5.2d}, [pCRow1]
-	add	pCRow2, pCRow1, #32
+
+	add	pCRow1, pCRow1, #32
+
 	fmul	v6.2d, v22.2d, alphaV0_R
 	fmls	v6.2d, v23.2d, alphaV0_I
-	fmul	v7.2d, v22.2d, alphaV1_I
-	fmla	v7.2d, v23.2d, alphaV1_R
-	st2 	{v6.2d, v7.2d}, [pCRow2]
+	fmul	v7.2d, v22.2d, alphaV0_I
+	fmla	v7.2d, v23.2d, alphaV0_R
+	st2 	{v6.2d, v7.2d}, [pCRow1]
 
-	add	pCRow1, pCRow1, LDC
+	add	pCRow1, pCRow1, #32
+	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
+
 	fmul	v0.2d, v24.2d, alphaV0_R
 	fmls	v0.2d, v25.2d, alphaV0_I
-	fmul	v1.2d, v24.2d, alphaV1_I
-	fmla	v1.2d, v25.2d, alphaV1_R
-	st2 	{v0.2d, v1.2d}, [pCRow1]
-	add	pCRow2, pCRow1, #32
+	fmul	v1.2d, v24.2d, alphaV0_I
+	fmla	v1.2d, v25.2d, alphaV0_R
+	st2 	{v0.2d, v1.2d}, [pCRow2]
+
+	add	pCRow2, pCRow2, #32
+
 	fmul	v2.2d, v26.2d, alphaV0_R
 	fmls	v2.2d, v27.2d, alphaV0_I
-	fmul	v3.2d, v26.2d, alphaV1_I
-	fmla	v3.2d, v27.2d, alphaV1_R
+	fmul	v3.2d, v26.2d, alphaV0_I
+	fmla	v3.2d, v27.2d, alphaV0_R
 	st2 	{v2.2d, v3.2d}, [pCRow2]
 
-	add	pCRow1, pCRow1, LDC
+	add	pCRow2, pCRow2, #32
+	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
 
 	fmul	v4.2d, v28.2d, alphaV0_R
 	fmls	v4.2d, v29.2d, alphaV0_I
-	fmul	v5.2d, v28.2d, alphaV1_I
-	fmla	v5.2d, v29.2d, alphaV1_R
-	st2 	{v4.2d, v5.2d}, [pCRow1]
-	add	pCRow2, pCRow1, #32
+	fmul	v5.2d, v28.2d, alphaV0_I
+	fmla	v5.2d, v29.2d, alphaV0_R
+	st2 	{v4.2d, v5.2d}, [pCRow3]
+
+	add	pCRow3, pCRow3, #32
+
 	fmul	v6.2d, v30.2d, alphaV0_R
 	fmls	v6.2d, v31.2d, alphaV0_I
-	fmul	v7.2d, v30.2d, alphaV1_I
-	fmla	v7.2d, v31.2d, alphaV1_R
-	st2 	{v6.2d, v7.2d}, [pCRow2]
+	fmul	v7.2d, v30.2d, alphaV0_I
+	fmla	v7.2d, v31.2d, alphaV0_R
+	st2 	{v6.2d, v7.2d}, [pCRow3]
 
-	add	pCRow0, pCRow0, #64
+	add	pCRow3, pCRow3, #32
 .endm
 
 /******************************************************************************/
@@ -561,63 +607,61 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.2d, v1.2d}, [pA]
 	add	pA, pA, #32
 
-	OP_rr	v16.2d, v0.2d, v8.2d[0]
-	OP_ii	v16.2d, v1.2d, v9.2d[0]
-	OP_ri	v17.2d, v0.2d, v9.2d[0]
-	OP_ir	v17.2d, v1.2d, v8.2d[0]
+	OP_rr	v16.2d, v0.2d, v8.d[0]
+	OP_ii	v16.2d, v1.2d, v9.d[0]
+	OP_ri	v17.2d, v0.2d, v9.d[0]
+	OP_ir	v17.2d, v1.2d, v8.d[0]
 
-	OP_rr	v20.2d, v0.2d, v8.2d[1]
-	OP_ii	v20.2d, v1.2d, v9.2d[1]
-	OP_ri	v21.2d, v0.2d, v9.2d[1]
-	OP_ir	v21.2d, v1.2d, v8.2d[1]
+	OP_rr	v20.2d, v0.2d, v8.d[1]
+	OP_ii	v20.2d, v1.2d, v9.d[1]
+	OP_ri	v21.2d, v0.2d, v9.d[1]
+	OP_ir	v21.2d, v1.2d, v8.d[1]
 
-	OP_rr	v24.2d, v0.2d, v10.2d[0]
-	OP_ii	v24.2d, v1.2d, v11.2d[0]
-	OP_ri	v25.2d, v0.2d, v11.2d[0]
-	OP_ir	v25.2d, v1.2d, v10.2d[0]
+	OP_rr	v24.2d, v0.2d, v10.d[0]
+	OP_ii	v24.2d, v1.2d, v11.d[0]
+	OP_ri	v25.2d, v0.2d, v11.d[0]
+	OP_ir	v25.2d, v1.2d, v10.d[0]
 
-	OP_rr	v28.2d, v0.2d, v10.2d[1]
-	OP_ii	v28.2d, v1.2d, v11.2d[1]
-	OP_ri	v29.2d, v0.2d, v11.2d[1]
-	OP_ir	v29.2d, v1.2d, v10.2d[1]
+	OP_rr	v28.2d, v0.2d, v10.d[1]
+	OP_ii	v28.2d, v1.2d, v11.d[1]
+	OP_ri	v29.2d, v0.2d, v11.d[1]
+	OP_ir	v29.2d, v1.2d, v10.d[1]
 .endm
 
 .macro SAVE2x4
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	v0.2d, v16.2d, alphaV0_R
 	fmls	v0.2d, v17.2d, alphaV0_I
-	fmul	v1.2d, v16.2d, alphaV1_I
-	fmla	v1.2d, v17.2d, alphaV1_R
+	fmul	v1.2d, v16.2d, alphaV0_I
+	fmla	v1.2d, v17.2d, alphaV0_R
 	st2 	{v0.2d, v1.2d}, [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	v4.2d, v20.2d, alphaV0_R
 	fmls	v4.2d, v21.2d, alphaV0_I
-	fmul	v5.2d, v20.2d, alphaV1_I
-	fmla	v5.2d, v21.2d, alphaV1_R
+	fmul	v5.2d, v20.2d, alphaV0_I
+	fmla	v5.2d, v21.2d, alphaV0_R
 	st2 	{v4.2d, v5.2d}, [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	v0.2d, v24.2d, alphaV0_R
 	fmls	v0.2d, v25.2d, alphaV0_I
-	fmul	v1.2d, v24.2d, alphaV1_I
-	fmla	v1.2d, v25.2d, alphaV1_R
+	fmul	v1.2d, v24.2d, alphaV0_I
+	fmla	v1.2d, v25.2d, alphaV0_R
 	st2 	{v0.2d, v1.2d}, [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	v4.2d, v28.2d, alphaV0_R
 	fmls	v4.2d, v29.2d, alphaV0_I
-	fmul	v5.2d, v28.2d, alphaV1_I
-	fmla	v5.2d, v29.2d, alphaV1_R
+	fmul	v5.2d, v28.2d, alphaV0_I
+	fmla	v5.2d, v29.2d, alphaV0_R
 	st2 	{v4.2d, v5.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
@@ -644,63 +688,61 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.d, v1.d}[0], [pA]
 	add	pA, pA, #16
 
-	OP_rr	d16, d0, v8.2d[0]
-	OP_ii	d16, d1, v9.2d[0]
-	OP_ri	d17, d0, v9.2d[0]
-	OP_ir	d17, d1, v8.2d[0]
+	OP_rr	d16, d0, v8.d[0]
+	OP_ii	d16, d1, v9.d[0]
+	OP_ri	d17, d0, v9.d[0]
+	OP_ir	d17, d1, v8.d[0]
 
-	OP_rr	d20, d0, v8.2d[1]
-	OP_ii	d20, d1, v9.2d[1]
-	OP_ri	d21, d0, v9.2d[1]
-	OP_ir	d21, d1, v8.2d[1]
+	OP_rr	d20, d0, v8.d[1]
+	OP_ii	d20, d1, v9.d[1]
+	OP_ri	d21, d0, v9.d[1]
+	OP_ir	d21, d1, v8.d[1]
 
-	OP_rr	d24, d0, v10.2d[0]
-	OP_ii	d24, d1, v11.2d[0]
-	OP_ri	d25, d0, v11.2d[0]
-	OP_ir	d25, d1, v10.2d[0]
+	OP_rr	d24, d0, v10.d[0]
+	OP_ii	d24, d1, v11.d[0]
+	OP_ri	d25, d0, v11.d[0]
+	OP_ir	d25, d1, v10.d[0]
 
-	OP_rr	d28, d0, v10.2d[1]
-	OP_ii	d28, d1, v11.2d[1]
-	OP_ri	d29, d0, v11.2d[1]
-	OP_ir	d29, d1, v10.2d[1]
+	OP_rr	d28, d0, v10.d[1]
+	OP_ii	d28, d1, v11.d[1]
+	OP_ri	d29, d0, v11.d[1]
+	OP_ir	d29, d1, v10.d[1]
 .endm
 
 .macro SAVE1x4
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	d0, d16, alphaV0_R
 	fmls	d0, d17, alphaV0_I
-	fmul	d1, d16, alphaV1_I
-	fmla	d1, d17, alphaV1_R
+	fmul	d1, d16, alphaV0_I
+	fmla	d1, d17, alphaV0_R
 	st2	{v0.d, v1.d}[0], [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	d4, d20, alphaV0_R
 	fmls	d4, d21, alphaV0_I
-	fmul	d5, d20, alphaV1_I
-	fmla	d5, d21, alphaV1_R
+	fmul	d5, d20, alphaV0_I
+	fmla	d5, d21, alphaV0_R
 	st2 	{v4.d, v5.d}[0], [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	d0, d24, alphaV0_R
 	fmls	d0, d25, alphaV0_I
-	fmul	d1, d24, alphaV1_I
-	fmla	d1, d25, alphaV1_R
+	fmul	d1, d24, alphaV0_I
+	fmla	d1, d25, alphaV0_R
 	st2	{v0.d, v1.d}[0], [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	d4, d28, alphaV0_R
 	fmls	d4, d29, alphaV0_I
-	fmul	d5, d28, alphaV1_I
-	fmla	d5, d29, alphaV1_R
+	fmul	d5, d28, alphaV0_I
+	fmla	d5, d29, alphaV0_R
 	st2	{v4.d, v5.d}[0], [pCRow1]
 
 	add	pCRow0, pCRow0, #16
@@ -727,59 +769,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v2.2d, v3.2d}, [pA]
 	add	pA, pA, #32
 
-	OP_rr	v16.2d, v0.2d, v8.2d[0]
-	OP_ii	v16.2d, v1.2d, v9.2d[0]
-	OP_ri	v17.2d, v0.2d, v9.2d[0]
-	OP_ir	v17.2d, v1.2d, v8.2d[0]
+	OP_rr	v16.2d, v0.2d, v8.d[0]
+	OP_ii	v16.2d, v1.2d, v9.d[0]
+	OP_ri	v17.2d, v0.2d, v9.d[0]
+	OP_ir	v17.2d, v1.2d, v8.d[0]
 
-	OP_rr	v18.2d, v2.2d, v8.2d[0]
-	OP_ii	v18.2d, v3.2d, v9.2d[0]
-	OP_ri	v19.2d, v2.2d, v9.2d[0]
-	OP_ir	v19.2d, v3.2d, v8.2d[0]
+	OP_rr	v18.2d, v2.2d, v8.d[0]
+	OP_ii	v18.2d, v3.2d, v9.d[0]
+	OP_ri	v19.2d, v2.2d, v9.d[0]
+	OP_ir	v19.2d, v3.2d, v8.d[0]
 
-	OP_rr	v20.2d, v0.2d, v8.2d[1]
-	OP_ii	v20.2d, v1.2d, v9.2d[1]
-	OP_ri	v21.2d, v0.2d, v9.2d[1]
-	OP_ir	v21.2d, v1.2d, v8.2d[1]
+	OP_rr	v20.2d, v0.2d, v8.d[1]
+	OP_ii	v20.2d, v1.2d, v9.d[1]
+	OP_ri	v21.2d, v0.2d, v9.d[1]
+	OP_ir	v21.2d, v1.2d, v8.d[1]
 
-	OP_rr	v22.2d, v2.2d, v8.2d[1]
-	OP_ii	v22.2d, v3.2d, v9.2d[1]
-	OP_ri	v23.2d, v2.2d, v9.2d[1]
-	OP_ir	v23.2d, v3.2d, v8.2d[1]
+	OP_rr	v22.2d, v2.2d, v8.d[1]
+	OP_ii	v22.2d, v3.2d, v9.d[1]
+	OP_ri	v23.2d, v2.2d, v9.d[1]
+	OP_ir	v23.2d, v3.2d, v8.d[1]
 .endm
 
 .macro SAVE4x2
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	v0.2d, v16.2d, alphaV0_R
 	fmls	v0.2d, v17.2d, alphaV0_I
-	fmul	v1.2d, v16.2d, alphaV1_I
-	fmla	v1.2d, v17.2d, alphaV1_R
+	fmul	v1.2d, v16.2d, alphaV0_I
+	fmla	v1.2d, v17.2d, alphaV0_R
 	st2 	{v0.2d, v1.2d}, [pCRow1]
 	add	pCRow2, pCRow1, #32
 	fmul	v2.2d, v18.2d, alphaV0_R
 	fmls	v2.2d, v19.2d, alphaV0_I
-	fmul	v3.2d, v18.2d, alphaV1_I
-	fmla	v3.2d, v19.2d, alphaV1_R
+	fmul	v3.2d, v18.2d, alphaV0_I
+	fmla	v3.2d, v19.2d, alphaV0_R
 	st2 	{v2.2d, v3.2d}, [pCRow2]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	v4.2d, v20.2d, alphaV0_R
 	fmls	v4.2d, v21.2d, alphaV0_I
-	fmul	v5.2d, v20.2d, alphaV1_I
-	fmla	v5.2d, v21.2d, alphaV1_R
+	fmul	v5.2d, v20.2d, alphaV0_I
+	fmla	v5.2d, v21.2d, alphaV0_R
 	st2 	{v4.2d, v5.2d}, [pCRow1]
 	add	pCRow2, pCRow1, #32
 	fmul	v6.2d, v22.2d, alphaV0_R
 	fmls	v6.2d, v23.2d, alphaV0_I
-	fmul	v7.2d, v22.2d, alphaV1_I
-	fmla	v7.2d, v23.2d, alphaV1_R
+	fmul	v7.2d, v22.2d, alphaV0_I
+	fmla	v7.2d, v23.2d, alphaV0_R
 	st2 	{v6.2d, v7.2d}, [pCRow2]
 
 	add	pCRow0, pCRow0, #64
@@ -800,37 +840,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.2d, v1.2d}, [pA]
 	add	pA, pA, #32
 
-	OP_rr	v16.2d, v0.2d, v8.2d[0]
-	OP_ii	v16.2d, v1.2d, v9.2d[0]
-	OP_ri	v17.2d, v0.2d, v9.2d[0]
-	OP_ir	v17.2d, v1.2d, v8.2d[0]
+	OP_rr	v16.2d, v0.2d, v8.d[0]
+	OP_ii	v16.2d, v1.2d, v9.d[0]
+	OP_ri	v17.2d, v0.2d, v9.d[0]
+	OP_ir	v17.2d, v1.2d, v8.d[0]
 
-	OP_rr	v20.2d, v0.2d, v8.2d[1]
-	OP_ii	v20.2d, v1.2d, v9.2d[1]
-	OP_ri	v21.2d, v0.2d, v9.2d[1]
-	OP_ir	v21.2d, v1.2d, v8.2d[1]
+	OP_rr	v20.2d, v0.2d, v8.d[1]
+	OP_ii	v20.2d, v1.2d, v9.d[1]
+	OP_ri	v21.2d, v0.2d, v9.d[1]
+	OP_ir	v21.2d, v1.2d, v8.d[1]
 .endm
 
 .macro SAVE2x2
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	v0.2d, v16.2d, alphaV0_R
 	fmls	v0.2d, v17.2d, alphaV0_I
-	fmul	v1.2d, v16.2d, alphaV1_I
-	fmla	v1.2d, v17.2d, alphaV1_R
+	fmul	v1.2d, v16.2d, alphaV0_I
+	fmla	v1.2d, v17.2d, alphaV0_R
 	st2 	{v0.2d, v1.2d}, [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	v4.2d, v20.2d, alphaV0_R
 	fmls	v4.2d, v21.2d, alphaV0_I
-	fmul	v5.2d, v20.2d, alphaV1_I
-	fmla	v5.2d, v21.2d, alphaV1_R
+	fmul	v5.2d, v20.2d, alphaV0_I
+	fmla	v5.2d, v21.2d, alphaV0_R
 	st2 	{v4.2d, v5.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
@@ -851,37 +889,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld2	{v0.d, v1.d}[0], [pA]
 	add	pA, pA, #16
 
-	OP_rr	d16, d0, v8.2d[0]
-	OP_ii	d16, d1, v9.2d[0]
-	OP_ri	d17, d0, v9.2d[0]
-	OP_ir	d17, d1, v8.2d[0]
+	OP_rr	d16, d0, v8.d[0]
+	OP_ii	d16, d1, v9.d[0]
+	OP_ri	d17, d0, v9.d[0]
+	OP_ir	d17, d1, v8.d[0]
 
-	OP_rr	d20, d0, v8.2d[1]
-	OP_ii	d20, d1, v9.2d[1]
-	OP_ri	d21, d0, v9.2d[1]
-	OP_ir	d21, d1, v8.2d[1]
+	OP_rr	d20, d0, v8.d[1]
+	OP_ii	d20, d1, v9.d[1]
+	OP_ri	d21, d0, v9.d[1]
+	OP_ir	d21, d1, v8.d[1]
 .endm
 
 .macro SAVE1x2
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	d0, d16, alphaV0_R
 	fmls	d0, d17, alphaV0_I
-	fmul	d1, d16, alphaV1_I
-	fmla	d1, d17, alphaV1_R
+	fmul	d1, d16, alphaV0_I
+	fmla	d1, d17, alphaV0_R
 	st2	{v0.d, v1.d}[0], [pCRow1]
 
 	add	pCRow1, pCRow1, LDC
 
 	fmul	d4, d20, alphaV0_R
 	fmls	d4, d21, alphaV0_I
-	fmul	d5, d20, alphaV1_I
-	fmla	d5, d21, alphaV1_R
+	fmul	d5, d20, alphaV0_I
+	fmla	d5, d21, alphaV0_R
 	st2 	{v4.d, v5.d}[0], [pCRow1]
 
 	add	pCRow0, pCRow0, #16
@@ -916,23 +952,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE4x1
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	v0.2d, v16.2d, alphaV0_R
 	fmls	v0.2d, v17.2d, alphaV0_I
-	fmul	v1.2d, v16.2d, alphaV1_I
-	fmla	v1.2d, v17.2d, alphaV1_R
+	fmul	v1.2d, v16.2d, alphaV0_I
+	fmla	v1.2d, v17.2d, alphaV0_R
 	st2 	{v0.2d, v1.2d}, [pCRow1]
 	add	pCRow2, pCRow1, #32
 	fmul	v2.2d, v18.2d, alphaV0_R
 	fmls	v2.2d, v19.2d, alphaV0_I
-	fmul	v3.2d, v18.2d, alphaV1_I
-	fmla	v3.2d, v19.2d, alphaV1_R
+	fmul	v3.2d, v18.2d, alphaV0_I
+	fmla	v3.2d, v19.2d, alphaV0_R
 	st2 	{v2.2d, v3.2d}, [pCRow2]
 
 	add	pCRow0, pCRow0, #64
@@ -958,17 +992,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE2x1
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	v0.2d, v16.2d, alphaV0_R
 	fmls	v0.2d, v17.2d, alphaV0_I
-	fmul	v1.2d, v16.2d, alphaV1_I
-	fmla	v1.2d, v17.2d, alphaV1_R
+	fmul	v1.2d, v16.2d, alphaV0_I
+	fmla	v1.2d, v17.2d, alphaV0_R
 	st2 	{v0.2d, v1.2d}, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
@@ -995,17 +1027,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE1x1
-	fmov	alpha0_R, alpha_save_R
-	fmov	alpha0_I, alpha_save_I
-	fmov	alpha1_R, alpha0_R
-	fmov	alpha1_I, alpha0_I
+	fmov	alpha0_R, alphaR
+	fmov	alpha0_I, alphaI
 
 	mov	pCRow1, pCRow0
 
 	fmul	d0, d16, alphaV0_R
 	fmls	d0, d17, alphaV0_I
-	fmul	d1, d16, alphaV1_I
-	fmla	d1, d17, alphaV1_R
+	fmul	d1, d16, alphaV0_I
+	fmla	d1, d17, alphaV0_R
 	st2	{v0.d, v1.d}[0], [pCRow1]
 
 	add	pCRow0, pCRow0, #16
@@ -1031,8 +1061,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stp	x26, x27, [sp, #(9 * 16)]
 	str	x28, [sp, #(10 * 16)]
 
-	fmov	alpha_save_R, d0
-	fmov	alpha_save_I, d1
+	prfm	PLDL1KEEP, [origPB]
+	prfm	PLDL1KEEP, [origPA]
+
+	fmov	alphaR, d0
+	fmov	alphaI, d1
 
 	lsl	LDC, LDC, #4			// ldc = ldc * 2 * 8
 
@@ -1048,8 +1081,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ble	ztrmm_kernel_L2_BEGIN
 
 ztrmm_kernel_L4_BEGIN:
-	mov	pCRow0, pC			// pCRow0 = C
-	add	pC, pC, LDC, lsl #2
+	mov	pCRow0, pC
+	add	pCRow1, pCRow0, LDC
+	add	pCRow2, pCRow1, LDC
+	add	pCRow3, pCRow2, LDC
+
+	add	pC, pCRow3, LDC
+
 
 #if defined(LEFT)
 	mov	tempOffset, offset
@@ -1063,6 +1101,7 @@ ztrmm_kernel_L4_M4_BEGIN:
 	cmp 	counterI, #0
 	ble	ztrmm_kernel_L4_M2_BEGIN
 
+	.align 5
 ztrmm_kernel_L4_M4_20:
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1082,39 +1121,64 @@ ztrmm_kernel_L4_M4_20:
 	add	tempK, tempOffset, #4
 #endif
 
-	asr 	counterL , tempK, #1		// L = K / 2
-	cmp	counterL , #2			// is there at least 4 to do?
+	asr 	counterL , tempK, #3
+	cmp	counterL , #2
 	blt	ztrmm_kernel_L4_M4_32
 
-	KERNEL4x4_I				// do one in the K
-	KERNEL4x4_M2				// do another in the K
+	KERNEL4x4_I
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
 
 	subs	counterL, counterL, #2
 	ble	ztrmm_kernel_L4_M4_22a
-	.align 5
 
+	.align 5
 ztrmm_kernel_L4_M4_22:
 
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 
 	subs	counterL, counterL, #1
 	bgt	ztrmm_kernel_L4_M4_22
 
-
+	.align 5
 ztrmm_kernel_L4_M4_22a:
 
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
 	b	 ztrmm_kernel_L4_M4_44
 
+	.align 5
 ztrmm_kernel_L4_M4_32:
 
 	tst	counterL, #1
 	ble	ztrmm_kernel_L4_M4_40
 
 	KERNEL4x4_I
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
+	KERNEL4x4_M2
+	KERNEL4x4_M1
 	KERNEL4x4_E
 
 	b	ztrmm_kernel_L4_M4_44
@@ -1126,11 +1190,15 @@ ztrmm_kernel_L4_M4_40:
 
 ztrmm_kernel_L4_M4_44:
 
-	ands	counterL , tempK, #1
+	ands	counterL , tempK, #7
 	ble	ztrmm_kernel_L4_M4_100
 
+	.align 5
 ztrmm_kernel_L4_M4_46:
 	KERNEL4x4_SUB
+
+	subs	counterL, counterL, #1
+	bne	ztrmm_kernel_L4_M4_46
 
 ztrmm_kernel_L4_M4_100:
 
@@ -1150,6 +1218,10 @@ ztrmm_kernel_L4_M4_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #4
 #endif
+
+	prfm	PLDL1KEEP, [pA]
+	prfm	PLDL1KEEP, [pA, #64]
+	prfm	PLDL1KEEP, [origPB]
 
 ztrmm_kernel_L4_M4_END:
 	subs	counterI, counterI, #1

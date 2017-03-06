@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGEJSV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgejsv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgejsv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgejsv.f"> 
+*> Download SGEJSV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgejsv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgejsv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgejsv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE SGEJSV( JOBA, JOBU, JOBV, JOBR, JOBT, JOBP,
 *                          M, N, A, LDA, SVA, U, LDU, V, LDV,
 *                          WORK, LWORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       IMPLICIT    NONE
 *       INTEGER     INFO, LDA, LDU, LDV, LWORK, M, N
@@ -32,7 +32,7 @@
 *       INTEGER     IWORK( * )
 *       CHARACTER*1 JOBA, JOBP, JOBR, JOBT, JOBU, JOBV
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -51,6 +51,8 @@
 *> the right singular vectors of [A], respectively. The matrices [U] and [V]
 *> are computed and stored in the arrays U and V, respectively. The diagonal
 *> of [SIGMA] is computed and stored in the array SVA.
+*> SGEJSV can sometimes compute tiny singular values and their singular vectors much
+*> more accurately than other SVD routines, see below under Further Details.
 *> \endverbatim
 *
 *  Arguments:
@@ -85,7 +87,7 @@
 *>              rows, then using this condition number gives too pessimistic
 *>              error bound.
 *>       = 'A': Small singular values are the noise and the matrix is treated
-*>              as numerically rank defficient. The error in the computed
+*>              as numerically rank deficient. The error in the computed
 *>              singular values is bounded by f(m,n)*epsilon*||A||.
 *>              The computed SVD A = U * S * V^t restores A up to
 *>              f(m,n)*epsilon*||A||.
@@ -97,7 +99,7 @@
 *>              numerical RANK is declared to be r. The SVD is computed with
 *>              absolute error bounds, but more accurately than with 'A'.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBU
 *> \verbatim
 *>          JOBU is CHARACTER*1
@@ -108,7 +110,7 @@
 *>              of U.
 *>       = 'N': U is not computed.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBV
 *> \verbatim
 *>          JOBV is CHARACTER*1
@@ -122,7 +124,7 @@
 *>              of V.
 *>       = 'N': V is not computed.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBR
 *> \verbatim
 *>          JOBR is CHARACTER*1
@@ -143,7 +145,7 @@
 *>         For computing the singular values in the FULL range [SFMIN,BIG]
 *>         use SGESVJ.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBT
 *> \verbatim
 *>          JOBT is CHARACTER*1
@@ -164,7 +166,7 @@
 *>         The implementer can easily remove this constraint and make the
 *>         code more complicated. See the descriptions of U and V.
 *> \endverbatim
-*> 
+*>
 *> \param[in] JOBP
 *> \verbatim
 *>          JOBP is CHARACTER*1
@@ -235,7 +237,7 @@
 *>                         copied back to the V array. This 'W' option is just
 *>                         a reminder to the caller that in this case U is
 *>                         reserved as workspace of length N*N.
-*>          If JOBU = 'N'  U is not referenced.
+*>          If JOBU = 'N'  U is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDU
@@ -257,7 +259,7 @@
 *>                         copied back to the U array. This 'W' option is just
 *>                         a reminder to the caller that in this case V is
 *>                         reserved as workspace of length N*N.
-*>          If JOBV = 'N'  V is not referenced.
+*>          If JOBV = 'N'  V is not referenced, unless JOBT='T'.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -317,15 +319,15 @@
 *>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB,7). Here NB is the optimal
 *>               block size for DGEQP3 and DGEQRF.
-*>               In general, optimal LWORK is computed as 
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 7).        
+*>               In general, optimal LWORK is computed as
+*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 7).
 *>            -> .. an estimate of the scaled condition number of A is
 *>               required (JOBA='E', 'G'). In this case, LWORK is the maximum
 *>               of the above and N*N+4*N, i.e. LWORK >= max(2*M+N,N*N+4*N,7).
-*>               ->> For optimal performance (blocked code) the optimal value 
+*>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB, N*N+4*N, 7).
 *>               In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 
+*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF),
 *>                                                     N+N*N+LWORK(DPOCON),7).
 *>
 *>          If SIGMA and the right singular vectors are needed (JOBV.EQ.'V'),
@@ -333,7 +335,7 @@
 *>            -> For optimal performance, LWORK >= max(2*M+N,3*N+(N+1)*NB,7),
 *>               where NB is the optimal block size for DGEQP3, DGEQRF, DGELQ,
 *>               DORMLQ. In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3), N+LWORK(DPOCON), 
+*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3), N+LWORK(DPOCON),
 *>                       N+LWORK(DGELQ), 2*N+LWORK(DGEQRF), N+LWORK(DORMLQ)).
 *>
 *>          If SIGMA and the left singular vectors are needed
@@ -344,14 +346,14 @@
 *>               where NB is the optimal block size for DGEQP3, DGEQRF, DORMQR.
 *>               In general, the optimal length LWORK is computed as
 *>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DPOCON),
-*>                        2*N+LWORK(DGEQRF), N+LWORK(DORMQR)). 
-*>               Here LWORK(DORMQR) equals N*NB (for JOBU.EQ.'U') or 
+*>                        2*N+LWORK(DGEQRF), N+LWORK(DORMQR)).
+*>               Here LWORK(DORMQR) equals N*NB (for JOBU.EQ.'U') or
 *>               M*NB (for JOBU.EQ.'F').
-*>               
-*>          If the full SVD is needed: (JOBU.EQ.'U' or JOBU.EQ.'F') and 
-*>            -> if JOBV.EQ.'V'  
-*>               the minimal requirement is LWORK >= max(2*M+N,6*N+2*N*N). 
-*>            -> if JOBV.EQ.'J' the minimal requirement is 
+*>
+*>          If the full SVD is needed: (JOBU.EQ.'U' or JOBU.EQ.'F') and
+*>            -> if JOBV.EQ.'V'
+*>               the minimal requirement is LWORK >= max(2*M+N,6*N+2*N*N).
+*>            -> if JOBV.EQ.'J' the minimal requirement is
 *>               LWORK >= max(2*M+N, 4*N+N*N,2*N+N*N+6).
 *>            -> For optimal performance, LWORK should be additionally
 *>               larger than N+M*NB, where NB is the optimal block size
@@ -376,7 +378,7 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>           < 0  : if INFO = -i, then the i-th argument had an illegal value.
-*>           = 0 :  successfull exit;
+*>           = 0 :  successful exit;
 *>           > 0 :  SGEJSV  did not converge in the maximal allowed number
 *>                  of sweeps. The computed values may be inaccurate.
 *> \endverbatim
@@ -384,12 +386,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup realGEsing
 *
@@ -426,8 +428,8 @@
 *>     The rank revealing QR factorization (in this code: SGEQP3) should be
 *>  implemented as in [3]. We have a new version of SGEQP3 under development
 *>  that is more robust than the current one in LAPACK, with a cleaner cut in
-*>  rank defficient cases. It will be available in the SIGMA library [4].
-*>  If M is much larger than N, it is obvious that the inital QRF with
+*>  rank deficient cases. It will be available in the SIGMA library [4].
+*>  If M is much larger than N, it is obvious that the initial QRF with
 *>  column pivoting can be preprocessed by the QRF without pivoting. That
 *>  well known trick is not used in SGEJSV because in some cases heavy row
 *>  weighting can be treated with complete pivoting. The overhead in cases
@@ -456,7 +458,7 @@
 *>     LAPACK Working note 170.
 *> [3] Z. Drmac and Z. Bujanovic: On the failure of rank-revealing QR
 *>     factorization software - a case study.
-*>     ACM Trans. math. Softw. Vol. 35, No 2 (2008), pp. 1-28.
+*>     ACM Trans. Math. Softw. Vol. 35, No 2 (2008), pp. 1-28.
 *>     LAPACK Working note 176.
 *> [4] Z. Drmac: SIGMA - mathematical software library for accurate SVD, PSV,
 *>     QSVD, (H,K)-SVD computations.
@@ -474,10 +476,10 @@
      $                   M, N, A, LDA, SVA, U, LDU, V, LDV,
      $                   WORK, LWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       IMPLICIT    NONE
@@ -506,8 +508,7 @@
      $        NOSCAL, ROWPIV, RSVEC,  TRANSP
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC ABS,  ALOG, AMAX1, AMIN1, FLOAT,
-     $          MAX0, MIN0, NINT,  SIGN,  SQRT
+      INTRINSIC ABS, ALOG, MAX, MIN, FLOAT, NINT, SIGN, SQRT
 *     ..
 *     .. External Functions ..
       REAL      SLAMCH, SNRM2
@@ -561,19 +562,19 @@
       ELSE IF ( LSVEC .AND. ( LDU .LT. M ) ) THEN
          INFO = - 13
       ELSE IF ( RSVEC .AND. ( LDV .LT. N ) ) THEN
-         INFO = - 14
+         INFO = - 15
       ELSE IF ( (.NOT.(LSVEC .OR. RSVEC .OR. ERREST).AND.
-     $                           (LWORK .LT. MAX0(7,4*N+1,2*M+N))) .OR.
+     $                           (LWORK .LT. MAX(7,4*N+1,2*M+N))) .OR.
      $ (.NOT.(LSVEC .OR. RSVEC) .AND. ERREST .AND.
-     $                         (LWORK .LT. MAX0(7,4*N+N*N,2*M+N))) .OR.
-     $ (LSVEC .AND. (.NOT.RSVEC) .AND. (LWORK .LT. MAX0(7,2*M+N,4*N+1)))
+     $                         (LWORK .LT. MAX(7,4*N+N*N,2*M+N))) .OR.
+     $ (LSVEC .AND. (.NOT.RSVEC) .AND. (LWORK .LT. MAX(7,2*M+N,4*N+1)))
      $ .OR.
-     $ (RSVEC .AND. (.NOT.LSVEC) .AND. (LWORK .LT. MAX0(7,2*M+N,4*N+1)))
+     $ (RSVEC .AND. (.NOT.LSVEC) .AND. (LWORK .LT. MAX(7,2*M+N,4*N+1)))
      $ .OR.
-     $ (LSVEC .AND. RSVEC .AND. (.NOT.JRACC) .AND. 
-     $                          (LWORK.LT.MAX0(2*M+N,6*N+2*N*N)))
+     $ (LSVEC .AND. RSVEC .AND. (.NOT.JRACC) .AND.
+     $                          (LWORK.LT.MAX(2*M+N,6*N+2*N*N)))
      $ .OR. (LSVEC .AND. RSVEC .AND. JRACC .AND.
-     $                          LWORK.LT.MAX0(2*M+N,4*N+N*N,2*N+N*N+6)))
+     $                          LWORK.LT.MAX(2*M+N,4*N+N*N,2*N+N*N+6)))
      $   THEN
          INFO = - 17
       ELSE
@@ -589,7 +590,11 @@
 *
 *     Quick return for void matrix (Y3K safe)
 * #:)
-      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) RETURN
+      IF ( ( M .EQ. 0 ) .OR. ( N .EQ. 0 ) ) THEN
+         IWORK(1:3) = 0
+         WORK(1:7) = 0
+         RETURN
+      ENDIF
 *
 *     Determine whether the matrix U should be M x N or M x M
 *
@@ -644,8 +649,8 @@
       AAPP = ZERO
       AAQQ = BIG
       DO 4781 p = 1, N
-         AAPP = AMAX1( AAPP, SVA(p) )
-         IF ( SVA(p) .NE. ZERO ) AAQQ = AMIN1( AAQQ, SVA(p) )
+         AAPP = MAX( AAPP, SVA(p) )
+         IF ( SVA(p) .NE. ZERO ) AAQQ = MIN( AAQQ, SVA(p) )
  4781 CONTINUE
 *
 *     Quick return for zero M x N matrix
@@ -715,6 +720,7 @@
             IWORK(1) = 0
             IWORK(2) = 0
          END IF
+         IWORK(3) = 0
          IF ( ERREST ) WORK(3) = ONE
          IF ( LSVEC .AND. RSVEC ) THEN
             WORK(4) = ONE
@@ -749,14 +755,14 @@
 *              in one pass through the vector
                WORK(M+N+p)  = XSC * SCALEM
                WORK(N+p)    = XSC * (SCALEM*SQRT(TEMP1))
-               AATMAX = AMAX1( AATMAX, WORK(N+p) )
-               IF (WORK(N+p) .NE. ZERO) AATMIN = AMIN1(AATMIN,WORK(N+p))
+               AATMAX = MAX( AATMAX, WORK(N+p) )
+               IF (WORK(N+p) .NE. ZERO) AATMIN = MIN(AATMIN,WORK(N+p))
  1950       CONTINUE
          ELSE
             DO 1904 p = 1, M
                WORK(M+N+p) = SCALEM*ABS( A(p,ISAMAX(N,A(p,1),LDA)) )
-               AATMAX = AMAX1( AATMAX, WORK(M+N+p) )
-               AATMIN = AMIN1( AATMIN, WORK(M+N+p) )
+               AATMAX = MAX( AATMAX, WORK(M+N+p) )
+               AATMIN = MIN( AATMIN, WORK(M+N+p) )
  1904       CONTINUE
          END IF
 *
@@ -828,7 +834,7 @@
             KILL   = LSVEC
             LSVEC  = RSVEC
             RSVEC  = KILL
-            IF ( LSVEC ) N1 = N 
+            IF ( LSVEC ) N1 = N
 *
             ROWPIV = .TRUE.
          END IF
@@ -961,7 +967,7 @@
       ELSE IF ( L2RANK ) THEN
 *        .. similarly as above, only slightly more gentle (less agressive).
 *        Sudden drop on the diagonal of R1 is used as the criterion for
-*        close-to-rank-defficient.
+*        close-to-rank-deficient.
          TEMP1 = SQRT(SFMIN)
          DO 3401 p = 2, N
             IF ( ( ABS(A(p,p)) .LT. (EPSLN*ABS(A(p-1,p-1))) ) .OR.
@@ -994,7 +1000,7 @@
          MAXPRJ = ONE
          DO 3051 p = 2, N
             TEMP1  = ABS(A(p,p)) / SVA(IWORK(p))
-            MAXPRJ = AMIN1( MAXPRJ, TEMP1 )
+            MAXPRJ = MIN( MAXPRJ, TEMP1 )
  3051    CONTINUE
          IF ( MAXPRJ**2 .GE. ONE - FLOAT(N)*EPSLN ) ALMORT = .TRUE.
       END IF
@@ -1052,7 +1058,7 @@
 *         Singular Values only
 *
 *         .. transpose A(1:NR,1:N)
-         DO 1946 p = 1, MIN0( N-1, NR )
+         DO 1946 p = 1, MIN( N-1, NR )
             CALL SCOPY( N-p, A(p,p+1), LDA, A(p+1,p), 1 )
  1946    CONTINUE
 *
@@ -1308,7 +1314,7 @@
                   XSC = SQRT(SMALL)/EPSLN
                   DO 3959 p = 2, NR
                      DO 3958 q = 1, p - 1
-                        TEMP1 = XSC * AMIN1(ABS(V(p,p)),ABS(V(q,q)))
+                        TEMP1 = XSC * MIN(ABS(V(p,p)),ABS(V(q,q)))
                         IF ( ABS(V(q,p)) .LE. TEMP1 )
      $                     V(q,p) = SIGN( TEMP1, V(q,p) )
  3958                CONTINUE
@@ -1347,7 +1353,7 @@
                   XSC = SQRT(SMALL)
                   DO 3969 p = 2, NR
                      DO 3968 q = 1, p - 1
-                        TEMP1 = XSC * AMIN1(ABS(V(p,p)),ABS(V(q,q)))
+                        TEMP1 = XSC * MIN(ABS(V(p,p)),ABS(V(q,q)))
                         IF ( ABS(V(q,p)) .LE. TEMP1 )
      $                     V(q,p) = SIGN( TEMP1, V(q,p) )
  3968                CONTINUE
@@ -1360,7 +1366,7 @@
                   XSC = SQRT(SMALL)
                   DO 8970 p = 2, NR
                      DO 8971 q = 1, p - 1
-                        TEMP1 = XSC * AMIN1(ABS(V(p,p)),ABS(V(q,q)))
+                        TEMP1 = XSC * MIN(ABS(V(p,p)),ABS(V(q,q)))
                         V(p,q) = - SIGN( TEMP1, V(q,p) )
  8971                CONTINUE
  8970             CONTINUE
@@ -1671,7 +1677,7 @@
             XSC = SQRT(SMALL/EPSLN)
             DO 9970 q = 2, NR
                DO 9971 p = 1, q - 1
-                  TEMP1 = XSC * AMIN1(ABS(U(p,p)),ABS(U(q,q)))
+                  TEMP1 = XSC * MIN(ABS(U(p,p)),ABS(U(q,q)))
                   U(p,q) = - SIGN( TEMP1, U(q,p) )
  9971          CONTINUE
  9970       CONTINUE

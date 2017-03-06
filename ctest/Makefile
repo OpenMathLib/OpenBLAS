@@ -42,6 +42,7 @@ ztestl3o_3m = c_zblas3_3m.o c_z3chke_3m.o auxiliary.o c_xerbla.o constant.o
 all :: all1 all2 all3
 
 all1: xscblat1 xdcblat1 xccblat1 xzcblat1
+ifndef CROSS
 ifeq ($(USE_OPENMP), 1)
 	OMP_NUM_THREADS=2 ./xscblat1
 	OMP_NUM_THREADS=2 ./xdcblat1
@@ -53,8 +54,10 @@ else
 	OPENBLAS_NUM_THREADS=2 ./xccblat1
 	OPENBLAS_NUM_THREADS=2 ./xzcblat1
 endif
+endif
 
 all2: xscblat2 xdcblat2 xccblat2 xzcblat2
+ifndef CROSS
 ifeq ($(USE_OPENMP), 1)
 	OMP_NUM_THREADS=2 ./xscblat2 < sin2
 	OMP_NUM_THREADS=2 ./xdcblat2 < din2
@@ -66,8 +69,10 @@ else
 	OPENBLAS_NUM_THREADS=2 ./xccblat2 < cin2
 	OPENBLAS_NUM_THREADS=2 ./xzcblat2 < zin2
 endif
+endif
 
 all3: xscblat3 xdcblat3 xccblat3 xzcblat3
+ifndef CROSS
 ifeq ($(USE_OPENMP), 1)
 	OMP_NUM_THREADS=2 ./xscblat3 < sin3
 	OMP_NUM_THREADS=2 ./xdcblat3 < din3
@@ -87,6 +92,7 @@ ifeq ($(USE_OPENMP), 1)
 else
 	OPENBLAS_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
 	OPENBLAS_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+endif
 endif
 
 

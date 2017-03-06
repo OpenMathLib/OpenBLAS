@@ -1,15 +1,15 @@
 ####################################################################
 #  LAPACK make include file.                                       #
-#  LAPACK, Version 3.5.0                                           #
-#  November 2013                                                   #
+#  LAPACK, Version 3.6.0                                           #
+#  November 2015                                                   #
 ####################################################################
 #
 SHELL = /bin/sh
-#  
+#
 #  Modify the FORTRAN and OPTS definitions to refer to the
 #  compiler and desired compiler options for your machine.  NOOPT
 #  refers to the compiler options desired when NO OPTIMIZATION is
-#  selected.  Define LOADER and LOADOPTS to refer to the loader and 
+#  selected.  Define LOADER and LOADOPTS to refer to the loader and
 #  desired load options for your machine.
 #
 FORTRAN  = f77
@@ -65,12 +65,13 @@ RANLIB   = ranlib
 XBLASLIB     =
 # XBLASLIB    = -lxblas
 #
-#  The location of the libraries to which you will link.  (The 
+#  The location of the libraries to which you will link.  (The
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
 #
 #BLASLIB      = ../../librefblas.a
 BLASLIB     = -ldxml
+CBLASLIB     = ../../libcblas.a
 LAPACKLIB    = liblapack.a
 TMGLIB       = libtmglib.a
 LAPACKELIB   = liblapacke.a

@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM DCHKAA
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -51,6 +51,8 @@
 *> DPT   12               List types on next line if 0 < NTYPES < 12
 *> DSY   10               List types on next line if 0 < NTYPES < 10
 *> DSR   10               List types on next line if 0 < NTYPES < 10
+*> DSK   10               List types on next line if 0 < NTYPES < 10
+*> DSA   10               List types on next line if 0 < NTYPES < 10
 *> DSP   10               List types on next line if 0 < NTYPES < 10
 *> DTR   18               List types on next line if 0 < NTYPES < 18
 *> DTP   18               List types on next line if 0 < NTYPES < 18
@@ -94,10 +96,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -106,7 +108,7 @@
 *  =====================================================================
       PROGRAM DCHKAA
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -146,8 +148,8 @@
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   RANKVAL( MAXIN ), PIV( NMAX )
       DOUBLE PRECISION   A( ( KDMAX+1 )*NMAX, 7 ), B( NMAX*MAXRHS, 4 ),
-     $                   RWORK( 5*NMAX+2*MAXRHS ), S( 2*NMAX ),
-     $                   WORK( NMAX, NMAX+MAXRHS+30 )
+     $                   E( NMAX ), RWORK( 5*NMAX+2*MAXRHS ),
+     $                   S( 2*NMAX ), WORK( NMAX, NMAX+MAXRHS+30 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, LSAMEN
@@ -157,11 +159,14 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, DCHKEQ, DCHKGB, DCHKGE, DCHKGT, DCHKLQ,
      $                   DCHKPB, DCHKPO, DCHKPS, DCHKPP, DCHKPT, DCHKQ3,
-     $                   DCHKQL, DCHKQP, DCHKQR, DCHKRQ, DCHKSP, DCHKSY,
-     $                   DCHKSY_ROOK, DCHKTB, DCHKTP, DCHKTR, DCHKTZ,
-     $                   DDRVGB, DDRVGE, DDRVGT, DDRVLS, DDRVPB, DDRVPO,
-     $                   DDRVPP, DDRVPT, DDRVSP, DDRVSY, DDRVSY_ROOK,
-     $                   ILAVER, DCHKQRT, DCHKQRTP
+     $                   DCHKQL, DCHKQR, DCHKRQ, DCHKSP, DCHKSY,
+     $                   DCHKSY_ROOK, DCHKSY_RK, DCHKSY_AA, DCHKTB,
+     $                   DCHKTP, DCHKTR, DCHKTZ, DDRVGB, DDRVGE,
+     $                   DDRVGT, DDRVLS, DDRVPB, DDRVPO, DDRVPP,
+     $                   DDRVPT, DDRVSP, DDRVSY, DDRVSY_ROOK, DDRVSY_RK,
+     $                   DDRVSY_AA, ILAVER, DCHKQRT,
+     $                   DCHKQRTP, DCHKLQTP, DCHKTSQR, DCHKLQT
+
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -640,8 +645,8 @@
 *
       ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
 *
-*        SR:  symmetric indefinite matrices with Rook pivoting,
-*             with rook (bounded Bunch-Kaufman) pivoting algorithm
+*        SR:  symmetric indefinite matrices,
+*             with bounded Bunch-Kaufman (rook) pivoting algorithm
 *
          NTYPES = 10
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -663,6 +668,61 @@
          ELSE
             WRITE( NOUT, FMT = 9988 )PATH
          END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'SK' ) ) THEN
+*
+*        SK:  symmetric indefinite matrices,
+*             with bounded Bunch-Kaufman (rook) pivoting algorithm,
+*             differnet matrix storage format than SR path version.
+*
+         NTYPES = 10
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKSY_RK( DOTYPE, NN, NVAL, NNB2, NBVAL2, NNS, NSVAL,
+     $                      THRESH, TSTERR, LDA, A( 1, 1 ), A( 1, 2 ),
+     $                      E, A( 1, 3 ), B( 1, 1 ), B( 1, 2 ),
+     $                      B( 1, 3 ), WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+         IF( TSTDRV ) THEN
+            CALL DDRVSY_RK( DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
+     $                      LDA, A( 1, 1 ), A( 1, 2 ), E, A( 1, 3 ),
+     $                      B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                      WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9988 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'SA' ) ) THEN
+*
+*        SA:  symmetric indefinite matrices,
+*             with partial (Aasen's) pivoting algorithm
+*
+         NTYPES = 10
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKSY_AA( DOTYPE, NN, NVAL, NNB2, NBVAL2, NNS,
+     $                         NSVAL, THRESH, TSTERR, LDA,
+     $                         A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                         B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                         WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+         IF( TSTDRV ) THEN
+            CALL DDRVSY_AA( DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
+     $                         LDA, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                         B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                         WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9988 )PATH
+         END IF
+*
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *
@@ -784,7 +844,7 @@
      $                   NRHS, THRESH, TSTERR, NMAX, A( 1, 1 ),
      $                   A( 1, 2 ), A( 1, 3 ), A( 1, 4 ), A( 1, 5 ),
      $                   B( 1, 1 ), B( 1, 2 ), B( 1, 3 ), B( 1, 4 ),
-     $                   WORK, RWORK, IWORK, NOUT )
+     $                   WORK, RWORK, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF
@@ -814,9 +874,6 @@
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
-            CALL DCHKQP( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR,
-     $                   A( 1, 1 ), A( 1, 2 ), B( 1, 1 ),
-     $                   B( 1, 3 ), WORK, IWORK, NOUT )
             CALL DCHKQ3( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
      $                   THRESH, A( 1, 1 ), A( 1, 2 ), B( 1, 1 ),
      $                   B( 1, 3 ), WORK, IWORK, NOUT )
@@ -850,7 +907,7 @@
             CALL DDRVLS( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL, NNB,
      $                   NBVAL, NXVAL, THRESH, TSTERR, A( 1, 1 ),
      $                   A( 1, 2 ), B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
-     $                   RWORK, RWORK( NMAX+1 ), WORK, IWORK, NOUT )
+     $                   RWORK, RWORK( NMAX+1 ), NOUT )
          ELSE
             WRITE( NOUT, FMT = 9988 )PATH
          END IF
@@ -865,13 +922,13 @@
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF
-*         
+*
       ELSE IF( LSAMEN( 2, C2, 'QT' ) ) THEN
 *
 *        QT:  QRT routines for general matrices
 *
          IF( TSTCHK ) THEN
-            CALL DCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+            CALL DCHKQRT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                    NBVAL, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
@@ -882,7 +939,40 @@
 *        QX:  QRT routines for triangular-pentagonal matrices
 *
          IF( TSTCHK ) THEN
-            CALL DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+            CALL DCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
+     $                     NBVAL, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'TQ' ) ) THEN
+*
+*        TQ:  LQT routines for general matrices
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKLQT( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
+     $                    NBVAL, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'XQ' ) ) THEN
+*
+*        XQ:  LQT routines for triangular-pentagonal matrices
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKLQTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
+     $                     NBVAL, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'TS' ) ) THEN
+*
+*        TS:  QR routines for tall-skinny matrices
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKTSQR( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                     NBVAL, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH

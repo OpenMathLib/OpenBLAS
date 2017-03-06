@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          NOUNIT, A, LDA, B, S, T, Q, LDQ, Z, QE, LDQE,
 *                          ALPHA, BETA, ALPHA1, BETA1, WORK, LWORK, RWORK,
 *                          RESULT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDQ, LDQE, LWORK, NOUNIT, NSIZES,
 *      $                   NTYPES
@@ -27,7 +27,7 @@
 *      $                   Q( LDQ, * ), QE( LDQE, * ), S( LDA, * ),
 *      $                   T( LDA, * ), WORK( * ), Z( LDQ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -43,7 +43,7 @@
 *>
 *> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
 *> or a ratio  alpha/beta = w, such that A - w*B is singular.  It is
-*> usually represented as the pair (alpha,beta), as there is reasonalbe
+*> usually represented as the pair (alpha,beta), as there is reasonable
 *> interpretation for beta=0, and even for both being zero.
 *>
 *> A right generalized eigenvector corresponding to a generalized
@@ -55,7 +55,7 @@
 *> number of matrix "types" are specified.  For each size ("n")
 *> and each type of matrix, a pair of matrices (A, B) will be generated
 *> and used for testing.  For each matrix pair, the following tests
-*> will be performed and compared with the threshhold THRESH.
+*> will be performed and compared with the threshold THRESH.
 *>
 *> Results from CGGEV:
 *>
@@ -384,12 +384,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -399,10 +399,10 @@
      $                   ALPHA, BETA, ALPHA1, BETA1, WORK, LWORK, RWORK,
      $                   RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LDQE, LWORK, NOUNIT, NSIZES,

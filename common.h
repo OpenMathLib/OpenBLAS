@@ -93,7 +93,7 @@ extern "C" {
 #include <sched.h>
 #endif
 
-#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD)
+#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_ANDROID)
 #include <sched.h>
 #endif
 
@@ -332,12 +332,20 @@ typedef int blasint;
 #endif
 #endif
 
+#ifdef POWER8
+#ifndef YIELDING
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
+#endif
 
+
+/*
 #ifdef PILEDRIVER
 #ifndef YIELDING
 #define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
 #endif
 #endif
+*/
 
 /*
 #ifdef STEAMROLLER
@@ -396,6 +404,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_sparc.h"
 #endif
 
+#ifdef ARCH_MIPS
+#include "common_mips.h"
+#endif
+
 #ifdef ARCH_MIPS64
 #include "common_mips64.h"
 #endif
@@ -408,10 +420,14 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_arm64.h"
 #endif
 
+#ifdef ARCH_ZARCH
+#include "common_zarch.h"
+#endif
+
 #ifndef ASSEMBLER
 #ifdef OS_WINDOWS
 typedef char env_var_t[MAX_PATH];
-#define readenv(p, n) GetEnvironmentVariable((n), (p), sizeof(p))
+#define readenv(p, n) GetEnvironmentVariable((LPCTSTR)(n), (LPTSTR)(p), sizeof(p))
 #else
 typedef char* env_var_t;
 #define readenv(p, n) ((p)=getenv(n))
@@ -614,8 +630,13 @@ void gotoblas_profile_init(void);
 void gotoblas_profile_quit(void);
 
 #ifdef USE_OPENMP
+#ifndef C_MSVC
 int omp_in_parallel(void);
 int omp_get_num_procs(void);
+#else
+__declspec(dllimport) int __cdecl omp_in_parallel(void);
+__declspec(dllimport) int __cdecl omp_get_num_procs(void);
+#endif
 #else
 #ifdef __ELF__
 int omp_in_parallel  (void) __attribute__ ((weak));
@@ -727,6 +748,7 @@ typedef struct {
 #endif
 
 #ifndef ASSEMBLER
+#include "common_stackalloc.h"
 #if 0
 #include "symcopy.h"
 #endif

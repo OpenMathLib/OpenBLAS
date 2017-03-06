@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SERRED( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -34,6 +34,8 @@
 *>       SGESDD   compute SVD of an M-by-N matrix A (by divide and
 *>                conquer)
 *>       SGEJSV   compute SVD of an M-by-N matrix A where M >= N
+*>       SGESVDX  compute SVD of an M-by-N matrix A(by bisection
+*>                and inverse iteration)
 *> \endverbatim
 *
 *  Arguments:
@@ -54,22 +56,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup single_eig
 *
 *  =====================================================================
       SUBROUTINE SERRED( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -85,7 +87,7 @@
 *     ..
 *     .. Local Scalars ..
       CHARACTER*2        C2
-      INTEGER            I, IHI, ILO, INFO, J, NT, SDIM
+      INTEGER            I, IHI, ILO, INFO, J, NS, NT, SDIM
       REAL               ABNRM
 *     ..
 *     .. Local Arrays ..
@@ -94,15 +96,15 @@
       REAL               A( NMAX, NMAX ), R1( NMAX ), R2( NMAX ),
      $                   S( NMAX ), U( NMAX, NMAX ), VL( NMAX, NMAX ),
      $                   VR( NMAX, NMAX ), VT( NMAX, NMAX ),
-     $                   W( 4*NMAX ), WI( NMAX ), WR( NMAX )
+     $                   W( 10*NMAX ), WI( NMAX ), WR( NMAX )
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHKXER, SGEES, SGEESX, SGEEV, SGEEVX, SGEJSV,
      $                   SGESDD, SGESVD
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAMEN, SSLECT
-      EXTERNAL           LSAMEN, SSLECT
+      LOGICAL            SSLECT, LSAMEN
+      EXTERNAL           SSLECT, LSAMEN
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          LEN_TRIM
@@ -413,12 +415,71 @@
      $                 2, 2, A, 2, S, U, 1, VT, 2,
      $                 W, 1, IW, INFO)
          CALL CHKXER( 'SGEJSV', INFOT, NOUT, LERR, OK )
-         INFOT = 14
+         INFOT = 15
          CALL SGEJSV( 'G', 'U', 'V', 'R', 'N', 'N',
      $                 2, 2, A, 2, S, U, 2, VT, 1,
      $                 W, 1, IW, INFO)
          CALL CHKXER( 'SGEJSV', INFOT, NOUT, LERR, OK )
          NT = 11
+         IF( OK ) THEN
+            WRITE( NOUT, FMT = 9999 )SRNAMT( 1:LEN_TRIM( SRNAMT ) ),
+     $           NT
+         ELSE
+            WRITE( NOUT, FMT = 9998 )
+         END IF
+*
+*        Test SGESVDX
+*
+         SRNAMT = 'SGESVDX'
+         INFOT = 1
+         CALL SGESVDX( 'X', 'N', 'A', 0, 0, A, 1, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SGESVDX( 'N', 'X', 'A', 0, 0, A, 1, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SGESVDX( 'N', 'N', 'X', 0, 0, A, 1, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SGESVDX( 'N', 'N', 'A', -1, 0, A, 1, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SGESVDX( 'N', 'N', 'A', 0, -1, A, 1, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL SGESVDX( 'N', 'N', 'A', 2, 1, A, 1, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SGESVDX( 'N', 'N', 'V', 2, 1, A, 2, -ONE, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL SGESVDX( 'N', 'N', 'V', 2, 1, A, 2, ONE, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SGESVDX( 'N', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
+     $                 0, 1, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL SGESVDX( 'V', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
+     $                 1, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 15
+         CALL SGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         INFOT = 17
+         CALL SGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO,
+     $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
+         CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
+         NT = 12
          IF( OK ) THEN
             WRITE( NOUT, FMT = 9999 )SRNAMT( 1:LEN_TRIM( SRNAMT ) ),
      $           NT

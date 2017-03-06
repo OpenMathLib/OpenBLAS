@@ -43,6 +43,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
 	BLASLONG ip = 0;
 	FLOAT temp;
 
+        if ( (n <= 0) || (inc_x <= 0))
+                return(0);
+
+
 	inc_x2 = 2 * inc_x;
 	for ( i=0; i<n; i++ )
 	{

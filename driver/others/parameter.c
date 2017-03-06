@@ -40,6 +40,7 @@
 #include <string.h>
 #include "common.h"
 
+extern int openblas_block_factor();
 int get_L2_size(void);
 
 #define DEFAULT_GEMM_P 128
@@ -166,7 +167,7 @@ int get_L2_size(void){
 #if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER) || \
     defined(CORE_PRESCOTT) || defined(CORE_CORE2) || defined(PENRYN) || defined(DUNNINGTON) || \
     defined(CORE_NEHALEM) || defined(CORE_SANDYBRIDGE) || defined(ATOM) || defined(GENERIC) || \
-    defined(PILEDRIVER) || defined(HASWELL) || defined(STEAMROLLER)
+    defined(PILEDRIVER) || defined(HASWELL) || defined(STEAMROLLER) || defined(EXCAVATOR)
 
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 
@@ -249,9 +250,8 @@ int get_L2_size(void){
 
 void blas_set_parameter(void){
 
-  env_var_t p;
   int factor;
-#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(SANDYBRIDGE) || defined(NEHALEM) || defined(HASWELL) || defined(STEAMROLLER)
+#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(SANDYBRIDGE) || defined(NEHALEM) || defined(HASWELL) || defined(STEAMROLLER) || defined(EXCAVATOR)
   int size = 16;
 #else
   int size = get_L2_size();
@@ -468,9 +468,8 @@ void blas_set_parameter(void){
 #endif
 #endif
 
-
-  if (readenv(p,"GOTO_BLOCK_FACTOR")) {
-    factor = atoi(p);
+  factor=openblas_block_factor();
+  if (factor>0) {
     if (factor <  10) factor =  10;
     if (factor > 200) factor = 200;
 
@@ -498,13 +497,13 @@ void blas_set_parameter(void){
   if (xgemm_p == 0) xgemm_p = 64;
 #endif
 
-  sgemm_p = (sgemm_p + SGEMM_UNROLL_M - 1) & ~(SGEMM_UNROLL_M - 1);
-  dgemm_p = (dgemm_p + DGEMM_UNROLL_M - 1) & ~(DGEMM_UNROLL_M - 1);
-  cgemm_p = (cgemm_p + CGEMM_UNROLL_M - 1) & ~(CGEMM_UNROLL_M - 1);
-  zgemm_p = (zgemm_p + ZGEMM_UNROLL_M - 1) & ~(ZGEMM_UNROLL_M - 1);
+  sgemm_p = ((sgemm_p + SGEMM_UNROLL_M - 1)/SGEMM_UNROLL_M) * SGEMM_UNROLL_M;
+  dgemm_p = ((dgemm_p + DGEMM_UNROLL_M - 1)/DGEMM_UNROLL_M) * DGEMM_UNROLL_M;
+  cgemm_p = ((cgemm_p + CGEMM_UNROLL_M - 1)/CGEMM_UNROLL_M) * CGEMM_UNROLL_M;
+  zgemm_p = ((zgemm_p + ZGEMM_UNROLL_M - 1)/ZGEMM_UNROLL_M) * ZGEMM_UNROLL_M;
 #ifdef QUAD_PRECISION
-  qgemm_p = (qgemm_p + QGEMM_UNROLL_M - 1) & ~(QGEMM_UNROLL_M - 1);
-  xgemm_p = (xgemm_p + XGEMM_UNROLL_M - 1) & ~(XGEMM_UNROLL_M - 1);
+  qgemm_p = ((qgemm_p + QGEMM_UNROLL_M - 1)/QGEMM_UNROLL_M) * QGEMM_UNROLL_M;
+  xgemm_p = ((xgemm_p + XGEMM_UNROLL_M - 1)/XGEMM_UNROLL_M) * XGEMM_UNROLL_M;
 #endif
 
   sgemm_r = (((BUFFER_SIZE - ((SGEMM_P * SGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SGEMM_Q *  4)) - 15) & ~15;
@@ -727,4 +726,39 @@ void blas_set_parameter(void){
 #endif
 
 }
+#endif
+
+#if defined(ARCH_ARM64)
+
+#if defined(VULCAN) || defined(THUNDERX2T99)
+unsigned long dgemm_prefetch_size_a;
+unsigned long dgemm_prefetch_size_b;
+unsigned long dgemm_prefetch_size_c;
+#endif
+
+void blas_set_parameter(void)
+{
+#if defined(VULCAN) || defined(THUNDERX2T99)
+  dgemm_p = 160;
+  dgemm_q = 128;
+  dgemm_r = 4096;
+
+  sgemm_p = 128;
+  sgemm_q = 352;
+  sgemm_r = 4096;
+
+  cgemm_p = 128;
+  cgemm_q = 224;
+  cgemm_r = 4096;
+
+  zgemm_p = 128;
+  zgemm_q = 112;
+  zgemm_r = 4096;
+
+  dgemm_prefetch_size_a = 3584;
+  dgemm_prefetch_size_b = 512;
+  dgemm_prefetch_size_c = 128;
+#endif
+}
+
 #endif

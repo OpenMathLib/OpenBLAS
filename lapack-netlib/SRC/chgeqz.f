@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHGEQZ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chgeqz.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chgeqz.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chgeqz.f"> 
+*> Download CHGEQZ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chgeqz.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chgeqz.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chgeqz.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CHGEQZ( JOB, COMPQ, COMPZ, N, ILO, IHI, H, LDH, T, LDT,
 *                          ALPHA, BETA, Q, LDQ, Z, LDZ, WORK, LWORK,
 *                          RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          COMPQ, COMPZ, JOB
 *       INTEGER            IHI, ILO, INFO, LDH, LDQ, LDT, LDZ, LWORK, N
@@ -32,7 +32,7 @@
 *      $                   Q( LDQ, * ), T( LDT, * ), WORK( * ),
 *      $                   Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -44,18 +44,18 @@
 *> using the single-shift QZ method.
 *> Matrix pairs of this type are produced by the reduction to
 *> generalized upper Hessenberg form of a complex matrix pair (A,B):
-*> 
+*>
 *>    A = Q1*H*Z1**H,  B = Q1*T*Z1**H,
-*> 
+*>
 *> as computed by CGGHRD.
-*> 
+*>
 *> If JOB='S', then the Hessenberg-triangular pair (H,T) is
 *> also reduced to generalized Schur form,
-*> 
+*>
 *>    H = Q*S*Z**H,  T = Q*P*Z**H,
-*> 
+*>
 *> where Q and Z are unitary matrices and S and P are upper triangular.
-*> 
+*>
 *> Optionally, the unitary matrix Q from the generalized Schur
 *> factorization may be postmultiplied into an input matrix Q1, and the
 *> unitary matrix Z may be postmultiplied into an input matrix Z1.
@@ -63,9 +63,9 @@
 *> the matrix pair (A,B) to generalized Hessenberg form, then the output
 *> matrices Q1*Q and Z1*Z are the unitary factors from the generalized
 *> Schur factorization of (A,B):
-*> 
+*>
 *>    A = (Q1*Q)*S*(Z1*Z)**H,  B = (Q1*Q)*P*(Z1*Z)**H.
-*> 
+*>
 *> To avoid overflow, eigenvalues of the matrix pair (H,T)
 *> (equivalently, of (A,B)) are computed as a pair of complex values
 *> (alpha,beta).  If beta is nonzero, lambda = alpha / beta is an
@@ -190,12 +190,12 @@
 *> \param[in,out] Q
 *> \verbatim
 *>          Q is COMPLEX array, dimension (LDQ, N)
-*>          On entry, if COMPZ = 'V', the unitary matrix Q1 used in the
+*>          On entry, if COMPQ = 'V', the unitary matrix Q1 used in the
 *>          reduction of (A,B) to generalized Hessenberg form.
-*>          On exit, if COMPZ = 'I', the unitary matrix of left Schur
-*>          vectors of (H,T), and if COMPZ = 'V', the unitary matrix of
+*>          On exit, if COMPQ = 'I', the unitary matrix of left Schur
+*>          vectors of (H,T), and if COMPQ = 'V', the unitary matrix of
 *>          left Schur vectors of (A,B).
-*>          Not referenced if COMPZ = 'N'.
+*>          Not referenced if COMPQ = 'N'.
 *> \endverbatim
 *>
 *> \param[in] LDQ
@@ -261,10 +261,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -284,7 +284,7 @@
      $                   ALPHA, BETA, Q, LDQ, Z, LDZ, WORK, LWORK,
      $                   RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.1) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -453,7 +453,7 @@
                CALL CSCAL( J-1, SIGNBC, T( 1, J ), 1 )
                CALL CSCAL( J, SIGNBC, H( 1, J ), 1 )
             ELSE
-               H( J, J ) = H( J, J )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( J, J ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, J ), 1 )
@@ -665,7 +665,7 @@
                CALL CSCAL( ILAST+1-IFRSTM, SIGNBC, H( IFRSTM, ILAST ),
      $                     1 )
             ELSE
-               H( ILAST, ILAST ) = H( ILAST, ILAST )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( ILAST, ILAST ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, ILAST ), 1 )
@@ -849,7 +849,7 @@
                CALL CSCAL( J-1, SIGNBC, T( 1, J ), 1 )
                CALL CSCAL( J, SIGNBC, H( 1, J ), 1 )
             ELSE
-               H( J, J ) = H( J, J )*SIGNBC
+               CALL CSCAL( 1, SIGNBC, H( J, J ), 1 )
             END IF
             IF( ILZ )
      $         CALL CSCAL( N, SIGNBC, Z( 1, J ), 1 )

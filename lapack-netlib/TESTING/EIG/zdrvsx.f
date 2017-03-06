@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          NIUNIT, NOUNIT, A, LDA, H, HT, W, WT, WTMP, VS,
 *                          LDVS, VS1, RESULT, WORK, LWORK, RWORK, BWORK,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDVS, LWORK, NIUNIT, NOUNIT, NSIZES,
 *      $                   NTYPES
@@ -26,7 +26,7 @@
 *      $                   VS( LDVS, * ), VS1( LDVS, * ), W( * ),
 *      $                   WORK( * ), WT( * ), WTMP( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -420,12 +420,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16_eig
 *
@@ -435,10 +435,10 @@
      $                   LDVS, VS1, RESULT, WORK, LWORK, RWORK, BWORK,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDVS, LWORK, NIUNIT, NOUNIT, NSIZES,
@@ -914,7 +914,7 @@
      $      '  1/ulp otherwise', /
      $      ' 12 = 0 if W same no matter what else computed ',
      $      '(sort), 1/ulp otherwise', /
-     $      ' 13 = 0 if sorting succesful, 1/ulp otherwise',
+     $      ' 13 = 0 if sorting successful, 1/ulp otherwise',
      $      / ' 14 = 0 if RCONDE same no matter what else computed,',
      $      ' 1/ulp otherwise', /
      $      ' 15 = 0 if RCONDv same no matter what else computed,',

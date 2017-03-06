@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
 
 # N.B. In the original makefile there was a BLOCKS define used in the compilation of these files but I don't see any evidence of it being set anywhere. -hpa
 
@@ -48,8 +48,7 @@ foreach (float_type ${FLOAT_TYPES})
     # TRANS needs to be set/unset when CONJ is set/unset, so can't use it as a combination
     GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK" 3 "herk_N" false ${float_type})
     GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;TRANS;CONJ" 3 "herk_C" false ${float_type})
-    GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;THREADED_LEVEL3" 3 "herk_thread_N" false ${float_type})
-    GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;THREADED_LEVEL3;TRANS;CONJ" 3 "herk_thread_C" false ${float_type})
+
     # Need to set CONJ for trmm and trsm
     GenerateCombinationObjects("trmm_L.c" "UPPER;UNIT" "L;N" "CONJ" 0 "trmm_LR" false ${float_type})
     GenerateCombinationObjects("trmm_L.c" "UPPER;UNIT" "L;N" "TRANSA;CONJ" 0 "trmm_LC" false ${float_type})
@@ -72,6 +71,10 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("zher2k_k.c" "HER2K;LOWER;TRANS;CONJ" "her2k_LC" false "" "" false ${float_type})
 
     if (SMP AND NOT USE_SIMPLE_THREADED_LEVEL3)
+      #herk
+      GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;THREADED_LEVEL3" 3 "herk_thread_N" false ${float_type})
+      GenerateCombinationObjects("zherk_k.c" "LOWER" "U" "HERK;THREADED_LEVEL3;TRANS;CONJ" 3 "herk_thread_C" false ${float_type})
+
       #hemm
       GenerateCombinationObjects("zhemm_k.c" "LOWER" "U" "NN;THREADED_LEVEL3" 0 "hemm_thread_L" false ${float_type})
       GenerateCombinationObjects("zhemm_k.c" "LOWER" "U" "NC;RSIDE;THREADED_LEVEL3" 0 "hemm_thread_R" false ${float_type})
@@ -96,6 +99,17 @@ foreach (float_type ${FLOAT_TYPES})
 	endif()
       endif ()
     endforeach ()
+    
+    # for gemm3m
+    if(USE_GEMM3M)
+      foreach (GEMM_DEFINE ${GEMM_DEFINES})
+	string(TOLOWER ${GEMM_DEFINE} GEMM_DEFINE_LC)
+	GenerateNamedObjects("gemm3m.c" "${GEMM_DEFINE}" "gemm3m_${GEMM_DEFINE_LC}" false "" "" false ${float_type})
+	if (SMP AND NOT USE_SIMPLE_THREADED_LEVEL3)
+	  GenerateNamedObjects("gemm3m.c" "${GEMM_DEFINE};THREADED_LEVEL3" "gemm3m_thread_${GEMM_DEFINE_LC}" false "" "" false ${float_type})
+	endif ()
+      endforeach ()
+    endif()
   endif ()
 endforeach ()
 

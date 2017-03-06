@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DERRLS( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> DERRLS tests the error exits for the DOUBLE PRECISION least squares
-*> driver routines (DGELS, SGELSS, SGELSX, SGELSY, SGELSD).
+*> driver routines (DGELS, SGELSS, SGELSY, SGELSD).
 *> \endverbatim
 *
 *  Arguments:
@@ -43,22 +43,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DERRLS( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -86,8 +86,7 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, DGELS, DGELSD, DGELSS, DGELSX,
-     $                   DGELSY
+      EXTERNAL           ALAESM, CHKXER, DGELS, DGELSD, DGELSS, DGELSY
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -156,25 +155,6 @@
          INFOT = 7
          CALL DGELSS( 2, 0, 0, A, 2, B, 1, S, RCOND, IRNK, W, 2, INFO )
          CALL CHKXER( 'DGELSS', INFOT, NOUT, LERR, OK )
-*
-*        DGELSX
-*
-         SRNAMT = 'DGELSX'
-         INFOT = 1
-         CALL DGELSX( -1, 0, 0, A, 1, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'DGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 2
-         CALL DGELSX( 0, -1, 0, A, 1, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'DGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 3
-         CALL DGELSX( 0, 0, -1, A, 1, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'DGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 5
-         CALL DGELSX( 2, 0, 0, A, 1, B, 2, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'DGELSX', INFOT, NOUT, LERR, OK )
-         INFOT = 7
-         CALL DGELSX( 2, 0, 0, A, 2, B, 1, IP, RCOND, IRNK, W, INFO )
-         CALL CHKXER( 'DGELSX', INFOT, NOUT, LERR, OK )
 *
 *        DGELSY
 *

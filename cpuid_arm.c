@@ -74,7 +74,7 @@ int get_feature(char *search)
   	fclose(infile);
 
 
-	if( p == NULL ) return;
+	if( p == NULL ) return 0;
 
 	t = strtok(p," ");
 	while( t = strtok(NULL," "))
@@ -114,6 +114,9 @@ int detect(void)
 	  }
 	  if (strstr(p, "0xc0f")) {
 	    return CPU_CORTEXA15;
+	  }
+	  if (strstr(p, "0xd07")) {
+	    return CPU_ARMV7;  //ARMV8 on 32-bit
 	  }
 
 	}
@@ -158,6 +161,27 @@ int detect(void)
 
 
 	}
+
+  	p = (char *) NULL ;
+  	infile = fopen("/proc/cpuinfo", "r");
+
+	while (fgets(buffer, sizeof(buffer), infile))
+	{
+
+		if ((!strncmp("CPU architecture", buffer, 16)))
+		{
+			p = strchr(buffer, ':') + 2;
+			break;
+      		}
+  	}
+  	fclose(infile);
+  	if(p != NULL) {
+	  if (strstr(p, "8")) {
+	    return CPU_ARMV7;  //ARMV8 on 32-bit
+	  }
+
+	}
+
 #endif
 
 	return CPU_UNKNOWN;

@@ -43,6 +43,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define	Y_OPTR	x13	/* loop Y vector address */
 #define	X_PTR	x14	/* loop X vector address */
 
+#define A_PRE_SIZE	768
+#define Y_PRE_SIZE	768
+
 /*******************************************************************************
 * Macro definitions
 *******************************************************************************/
@@ -50,14 +53,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define ALPHA_R		s0
 #define ALPHA_I		s1
-#define ALPHA_R_COPY	s7
-#define ALPHA_I_COPY	s8
 #define SHZ		3
 #else
 #define ALPHA_R		d0
 #define ALPHA_I		d1
-#define ALPHA_R_COPY	d7
-#define ALPHA_I_COPY	d8
 #define SHZ		4
 #endif
 
@@ -95,30 +94,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro INIT
-	/********** INIT FOR F4 LOOP **********/
-	fmov	ALPHA_R_COPY, ALPHA_R
-	fmov	ALPHA_I_COPY, ALPHA_I
 #if !defined(DOUBLE)
-	ins	v7.s[1], v7.s[0]		// R(ALPHA), R(ALPHA) 
-	ins	v8.s[1], v8.s[0]		// I(ALPHA), I(ALPHA) 
-	ins	v7.d[1], v7.d[0]
-	ins	v8.d[1], v8.d[0]
-#else
-	ins	v7.d[1], v7.d[0]		// R(ALPHA), R(ALPHA)
-	ins	v8.d[1], v8.d[0]		// I(ALPHA), I(ALPHA)
-#endif
-
-	/******* INIT FOR F1 AND S1 LOOP ******/
-#if !defined(DOUBLE)
-	ins	v0.s[1], v0.s[0]		// R(ALPHA), R(ALPHA) 
-	fneg	s2, ALPHA_I
+	ins	v0.s[1], v0.s[0]		// R(ALPHA), R(ALPHA)
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	s2, s2, ALPHA_I
 	ins	v1.s[1], v2.s[0]		// -I(ALPHA), I(ALPHA) 
 #if !defined(XCONJ)
 	ext	v1.8b, v1.8b, v1.8b, #4		// I(ALPHA), -I(ALPHA)
 #endif
 #else
-	ins	v0.d[1], v0.d[0]		// R(ALPHA), R(ALPHA) 
-	fneg	d2, ALPHA_I
+	ins	v0.d[1], v0.d[0]		// R(ALPHA), R(ALPHA)
+	eor	v2.16b, v2.16b, v2.16b
+	fsub	d2, d2, ALPHA_I
 	ins	v1.d[1], v2.d[0]		// -I(ALPHA), I(ALPHA) 
 #if !defined(XCONJ)
 	ext	v1.16b, v1.16b, v1.16b, #8	// I(ALPHA), -I(ALPHA)
@@ -127,131 +114,154 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro INIT_LOOP
-	/********** INIT_LOOP FOR F4 LOOP **********/
 #if !defined(DOUBLE)
-	ld1	{v9.2s}, [X_PTR]		// [I(X), R(X)]
-	ins	v10.s[0], v9.s[1]
-	ins	v9.s[1], v9.s[0]		// [R(X), R(X)]
-	ins	v10.s[1], v10.s[0]		// [I(X), I(X)]
-	ins	v9.d[1], v9.d[0]
-	ins	v10.d[1], v10.d[0]
-#if !defined(CONJ)
-#if !defined(XCONJ)
-	fmul	v11.4s, v9.4s, v7.4s		// [+ R(X) * R(ALPHA)]
-	fmls	v11.4s, v10.4s, v8.4s		// [- I(X) * I(ALPHA)]
-	fmul	v12.4s, v9.4s, v8.4s		// [+ R(X) * I(ALPHA)]
-	fmla	v12.4s, v10.4s, v7.4s		// [+ I(X) * R(ALPHA)]
-#else
-	fmul	v11.4s, v9.4s, v7.4s		// [+ R(X) * R(ALPHA)]
-	fmla	v11.4s, v10.4s, v8.4s		// [+ I(X) * I(ALPHA)]
-	fmul	v12.4s, v9.4s, v8.4s		// [+ R(X) * I(ALPHA)]
-	fmls	v12.4s, v10.4s, v7.4s		// [- I(X) * R(ALPHA)]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmul	v11.4s, v9.4s, v7.4s		// [+ R(X) * R(ALPHA)]
-	fmls	v11.4s, v10.4s, v8.4s		// [+ I(X) * I(ALPHA)]
-	fmul	v12.4s, v10.4s, v7.4s		// [+ I(X) * R(ALPHA)]
-	fmls	v12.4s, v9.4s, v8.4s		// [- R(X) * I(ALPHA)]
-#else
-	fmul	v11.4s, v9.4s, v7.4s		// [+ R(X) * R(ALPHA)]
-	fmls	v11.4s, v10.4s, v8.4s		// [- I(X) * I(ALPHA)]
-	fmul	v12.4s, v9.4s, v8.4s		// [R(X) * I(ALPHA)]
-	fneg	v12.4s, v12.4s			// [- R(X) * I(ALPHA)]
-	fmla	v12.4s, v10.4s, v7.4s		// [- I(X) * R(ALPHA)]
-#endif
-#endif // CONJ
-
-	/****** INIT_LOOP FOR F1 AND S1 LOOP ******/
 	ld1	{v2.2s}, [X_PTR]		// [I(X), R(X)]
 	ext	v3.8b, v2.8b, v2.8b, #4		// [R(X), I(X)]
 	fmul	v2.2s, v0.2s, v2.2s
 	fmla	v2.2s, v1.2s, v3.2s		// [I(TEMP), R(TEMP)]
 	ins	v3.s[0], v2.s[1]
+
+	/********** INIT_LOOP FOR F4 LOOP **********/
 #if !defined(CONJ)
 #if !defined(XCONJ)
-	fneg	s4, s3
+	dup	v21.4s, v2.s[0]			// R[TEMP]
+	dup	v22.4s, v2.s[0]			// R[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	s25, s25, s3
+	dup	v23.4s, v25.s[0]		// -I[TEMP]
+	dup	v24.4s, v3.s[0]			// I[TEMP]
+#else
+	dup	v21.4s, v2.s[0]			// R[TEMP]
+	dup	v22.4s, v2.s[0]			// R[TEMP]
+	dup	v23.4s, v3.s[0]			// I[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	s25, s25, s3
+	dup	v24.4s, v25.s[0]		// -I[TEMP]
+#endif
+#else // CONJ
+#if !defined(XCONJ)
+	dup	v21.4s, v2.s[0]			// R[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	s25, s25, s2
+	dup	v22.4s, v25.s[0]		// R[TEMP]
+	dup	v23.4s, v3.s[0]			// I[TEMP]
+	dup	v24.4s, v3.s[0]			// I[TEMP]
+#else
+	dup	v21.4s, v2.s[0]			// R[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	s25, s25, s2
+	dup	v22.4s, v25.s[0]		// R[TEMP]
+
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	s25, s25, s3
+	dup	v23.4s, v25.s[0]		// I[TEMP]
+	dup	v24.4s, v25.s[0]		// I[TEMP]
+#endif
+#endif // CONJ
+
+
+	/****** INIT_LOOP FOR F1 AND S1 LOOP ******/
+#if !defined(CONJ)
+#if !defined(XCONJ)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s3
 	ins	v3.s[1], v4.s[0]
 	ext	v3.8b, v3.8b, v3.8b, #4		// [I(TEMP), -I(TEMP)]
 	ins	v2.s[1], v2.s[0]		// [R(TEMP), R(TEMP)]
 #else
-	fneg	s4, s3
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s3
 	ins	v3.s[1], v4.s[0]		// [-I(TEMP), I(TEMP)]
 	ins	v2.s[1], v2.s[0]		// [R(TEMP), R(TEMP)]
 #endif
 #else // CONJ
 #if !defined(XCONJ)
 	ins	v3.s[1], v3.s[0]		// [I(TEMP), I(TEMP)]
-	fneg	s4, s2
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s2
 	ins	v2.s[1], v4.s[0]		// [-R(TEMP), R(TEMP)]
 #else
-	fneg	s3, s3
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s3, s4, s3
 	ins	v3.s[1], v3.s[0]		// [-I(TEMP), -I(TEMP)]
-	fneg	s4, s2
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	s4, s4, s2
 	ins	v2.s[1], v4.s[0]		// [-R(TEMP), R(TEMP)]
 #endif
 #endif // CONJ
 
 #else // DOUBLE
-
-	/********** INIT_LOOP FOR F4 LOOP **********/
-	ld1	{v9.2d}, [X_PTR]		// [I(X), R(X)]
-	ins	v10.d[0], v9.d[1]
-	ins	v9.d[1], v9.d[0]		// [R(X), R(X)]
-	ins	v10.d[1], v10.d[0]		// [I(X), I(X)]
-#if !defined(CONJ)
-#if !defined(XCONJ)
-	fmul	v11.2d, v9.2d, v7.2d		// [+ R(X) * R(ALPHA)]
-	fmls	v11.2d, v10.2d, v8.2d		// [- I(X) * I(ALPHA)]
-	fmul	v12.2d, v9.2d, v8.2d		// [+ R(X) * I(ALPHA)]
-	fmla	v12.2d, v10.2d, v7.2d		// [+ I(X) * R(ALPHA)]
-#else
-	fmul	v11.2d, v9.2d, v7.2d		// [+ R(X) * R(ALPHA)]
-	fmla	v11.2d, v10.2d, v8.2d		// [+ I(X) * I(ALPHA)]
-	fmul	v12.2d, v9.2d, v8.2d		// [+ R(X) * I(ALPHA)]
-	fmls	v12.2d, v10.2d, v7.2d		// [- I(X) * R(ALPHA)]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmul	v11.2d, v9.2d, v7.2d		// [+ R(X) * R(ALPHA)]
-	fmls	v11.2d, v10.2d, v8.2d		// [+ I(X) * I(ALPHA)]
-	fmul	v12.2d, v10.2d, v7.2d		// [+ I(X) * R(ALPHA)]
-	fmls	v12.2d, v9.2d, v8.2d		// [- R(X) * I(ALPHA)]
-#else
-	fmul	v11.2d, v9.2d, v7.2d		// [+ R(X) * R(ALPHA)]
-	fmls	v11.2d, v10.2d, v8.2d		// [- I(X) * I(ALPHA)]
-	fmul	v12.2d, v9.2d, v8.2d		// [R(X) * I(ALPHA)]
-	fneg	v12.2d, v12.2d			// [- R(X) * I(ALPHA)]
-	fmla	v12.2d, v10.2d, v7.2d		// [- I(X) * R(ALPHA)]
-#endif
-#endif // CONJ
-
-	/****** INIT_LOOP FOR F1 AND S1 LOOP ******/
 	ld1	{v2.2d}, [X_PTR]		// [I(X), R(X)]
 	ext	v3.16b, v2.16b, v2.16b, #8	// [R(X), I(X)]
 	fmul	v2.2d, v0.2d, v2.2d
 	fmla	v2.2d, v1.2d, v3.2d		// [I(TEMP), R(TEMP)]
 	ins	v3.d[0], v2.d[1]		// I(TEMP)
+
+	/****** INIT_LOOP FOR F4 LOOP ******/
 #if !defined(CONJ)
 #if !defined(XCONJ)
-	fneg	d4, d3				// -I(TEMP)
+	dup	v21.2d, v2.d[0]			// R[TEMP]
+	dup	v22.2d, v2.d[0]			// R[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	d25, d25, d3
+	dup	v23.2d, v25.d[0]		// -I[TEMP]
+	dup	v24.2d, v3.d[0]			// I[TEMP]
+#else
+	dup	v21.2d, v2.d[0]			// R[TEMP]
+	dup	v22.2d, v2.d[0]			// R[TEMP]
+	dup	v23.2d, v3.d[0]			// I[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	d25, d25, d3
+	dup	v24.2d, v25.d[0]		// -I[TEMP]
+#endif
+#else // CONJ
+#if !defined(XCONJ)
+	dup	v21.2d, v2.d[0]			// R[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	d25, d25, d2
+	dup	v22.2d, v25.d[0]		// R[TEMP]
+	dup	v23.2d, v3.d[0]			// I[TEMP]
+	dup	v24.2d, v3.d[0]			// I[TEMP]
+#else
+	dup	v21.2d, v2.d[0]			// R[TEMP]
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	d25, d25, d2
+	dup	v22.2d, v25.d[0]		// R[TEMP]
+
+	eor	v25.16b, v25.16b, v25.16b
+	fsub	d25, d25, d3
+	dup	v23.2d, v25.d[0]		// I[TEMP]
+	dup	v24.2d, v25.d[0]		// I[TEMP]
+#endif
+#endif // CONJ
+
+
+	/****** INIT_LOOP FOR F1 AND S1 LOOP ******/
+#if !defined(CONJ)
+#if !defined(XCONJ)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d3
 	ins	v3.d[1], v4.d[0]
 	ext	v3.16b, v3.16b, v3.16b, #8	// [I(TEMP), -I(TEMP)]
 	ins	v2.d[1], v2.d[0]		// [R(TEMP), R(TEMP)]
 #else
-	fneg	d4, d3				// -I(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d3
 	ins	v3.d[1], v4.d[0]		// [-I(TEMP), I(TEMP)]
 	ins	v2.d[1], v2.d[0]		// [R(TEMP), R(TEMP)]
 #endif
 #else // CONJ
 #if !defined(XCONJ)
 	ins	v3.d[1], v3.d[0]		// [I(TEMP), I(TEMP)]
-	fneg	d4, d2				// -R(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d2
 	ins	v2.d[1], v4.d[0]		// [-R(TEMP), R(TEMP)]
 #else
-	fneg	d3, d3				// -I(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d3, d4, d3
 	ins	v3.d[1], v3.d[0]		// [-I(TEMP), -I(TEMP)]
-	fneg	d4, d2				// -R(TEMP)
+	eor	v4.16b, v4.16b, v4.16b
+	fsub	d4, d4, d2
 	ins	v2.d[1], v4.d[0]		// [-R(TEMP), R(TEMP)]
 #endif
 #endif // CONJ
@@ -264,91 +274,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ld2	{v13.4s, v14.4s}, [A_PTR], #32
 	ld2	{v15.4s, v16.4s}, [Y_IPTR], #32
-#if !defined(CONJ)
-#if !defined(XCONJ)
-	fmla	v15.4s, v11.4s, v13.4s		// [+ R(ALPHA * X) * A_R]
-	fmls	v15.4s, v12.4s, v14.4s		// [- I(ALPHA * X) * A_I]
-	fmla	v16.4s, v11.4s, v14.4s		// [+ R(ALPHA * X) * A_I]
-	fmla	v16.4s, v12.4s, v13.4s		// [+ I(ALPHA * X) * A_R]
-#else
-	fmla	v15.4s, v11.4s, v13.4s		// [+ R(ALPHA * X) * A_R]
-	fmla	v15.4s, v12.4s, v14.4s		// [+ I(ALPHA * X) * A_I]
-	fmla	v16.4s, v11.4s, v14.4s		// [+ R(ALPHA * X) * A_I]
-	fmls	v16.4s, v12.4s, v13.4s		// [- I(ALPHA * X) * A_R]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmla	v15.4s, v11.4s, v13.4s		// [+ R(ALPHA * X) * A_R]
-	fmla	v15.4s, v12.4s, v14.4s		// [+ I(ALPHA * X) * A_I]
-	fmls	v16.4s, v11.4s, v14.4s		// [- R(ALPHA * X) * A_I]
-	fmla	v16.4s, v12.4s, v13.4s		// [+ I(ALPHA * X) * A_R]
-#else
-	fmla	v15.4s, v11.4s, v13.4s		// [+ R(ALPHA * X) * A_R]
-	fmls	v15.4s, v12.4s, v14.4s		// [- I(ALPHA * X) * A_I]
-	fmls	v16.4s, v11.4s, v14.4s		// [- R(ALPHA * X) * A_I]
-	fmls	v16.4s, v12.4s, v13.4s		// [- I(ALPHA * X) * A_R]
-#endif
-#endif // CONJ
+
+	prfm	PLDL1KEEP, [A_PTR, #A_PRE_SIZE]
+	prfm	PLDL1KEEP, [Y_IPTR, #Y_PRE_SIZE]
+
+	fmla	v15.4s, v21.4s, v13.4s
+	fmla	v15.4s, v23.4s, v14.4s
+	fmla	v16.4s, v22.4s, v14.4s
+	fmla	v16.4s, v24.4s, v13.4s
+
 	st2	{v15.4s, v16.4s}, [Y_OPTR], #32
 
 #else // DOUBLE
 
 	ld2	{v13.2d, v14.2d}, [A_PTR], #32
 	ld2	{v15.2d, v16.2d}, [Y_IPTR], #32
-#if !defined(CONJ)
-#if !defined(XCONJ)
-	fmla	v15.2d, v11.2d, v13.2d		// [+ R(ALPHA * X) * A_R]
-	fmls	v15.2d, v12.2d, v14.2d		// [- I(ALPHA * X) * A_I]
-	fmla	v16.2d, v11.2d, v14.2d		// [+ R(ALPHA * X) * A_I]
-	fmla	v16.2d, v12.2d, v13.2d		// [+ I(ALPHA * X) * A_R]
-#else
-	fmla	v15.2d, v11.2d, v13.2d		// [+ R(ALPHA * X) * A_R]
-	fmla	v15.2d, v12.2d, v14.2d		// [+ I(ALPHA * X) * A_I]
-	fmla	v16.2d, v11.2d, v14.2d		// [+ R(ALPHA * X) * A_I]
-	fmls	v16.2d, v12.2d, v13.2d		// [- I(ALPHA * X) * A_R]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmla	v15.2d, v11.2d, v13.2d		// [+ R(ALPHA * X) * A_R]
-	fmla	v15.2d, v12.2d, v14.2d		// [+ I(ALPHA * X) * A_I]
-	fmls	v16.2d, v11.2d, v14.2d		// [- R(ALPHA * X) * A_I]
-	fmla	v16.2d, v12.2d, v13.2d		// [+ I(ALPHA * X) * A_R]
-#else
-	fmla	v15.2d, v11.2d, v13.2d		// [+ R(ALPHA * X) * A_R]
-	fmls	v15.2d, v12.2d, v14.2d		// [- I(ALPHA * X) * A_I]
-	fmls	v16.2d, v11.2d, v14.2d		// [- R(ALPHA * X) * A_I]
-	fmls	v16.2d, v12.2d, v13.2d		// [- I(ALPHA * X) * A_R]
-#endif
-#endif // CONJ
+	prfm	PLDL1KEEP, [A_PTR, #A_PRE_SIZE]
+
+	fmla	v15.2d, v21.2d, v13.2d
+	fmla	v15.2d, v23.2d, v14.2d
+	fmla	v16.2d, v22.2d, v14.2d
+	fmla	v16.2d, v24.2d, v13.2d
+
 	st2	{v15.2d, v16.2d}, [Y_OPTR], #32
 
 	ld2	{v17.2d, v18.2d}, [A_PTR], #32
 	ld2	{v19.2d, v20.2d}, [Y_IPTR], #32
-#if !defined(CONJ)
-#if !defined(XCONJ)
-	fmla	v19.2d, v11.2d, v17.2d		// [+ R(ALPHA * X) * A_R]
-	fmls	v19.2d, v12.2d, v18.2d		// [- I(ALPHA * X) * A_I]
-	fmla	v20.2d, v11.2d, v18.2d		// [+ R(ALPHA * X) * A_I]
-	fmla	v20.2d, v12.2d, v17.2d		// [+ I(ALPHA * X) * A_R]
-#else
-	fmla	v19.2d, v11.2d, v17.2d		// [+ R(ALPHA * X) * A_R]
-	fmla	v19.2d, v12.2d, v18.2d		// [- I(ALPHA * X) * A_I]
-	fmla	v20.2d, v11.2d, v18.2d		// [+ R(ALPHA * X) * A_I]
-	fmls	v20.2d, v12.2d, v17.2d		// [+ I(ALPHA * X) * A_R]
-#endif
-#else // CONJ
-#if !defined(XCONJ)
-	fmla	v19.2d, v11.2d, v17.2d		// [+ R(ALPHA * X) * A_R]
-	fmla	v19.2d, v12.2d, v18.2d		// [- I(ALPHA * X) * A_I]
-	fmls	v20.2d, v11.2d, v18.2d		// [+ R(ALPHA * X) * A_I]
-	fmla	v20.2d, v12.2d, v17.2d		// [+ I(ALPHA * X) * A_R]
-#else
-	fmla	v19.2d, v11.2d, v17.2d		// [+ R(ALPHA * X) * A_R]
-	fmls	v19.2d, v12.2d, v18.2d		// [- I(ALPHA * X) * A_I]
-	fmls	v20.2d, v11.2d, v18.2d		// [+ R(ALPHA * X) * A_I]
-	fmls	v20.2d, v12.2d, v17.2d		// [+ I(ALPHA * X) * A_R]
-#endif
-#endif // CONJ
+	prfm	PLDL1KEEP, [Y_IPTR, #Y_PRE_SIZE]
+
+	fmla	v19.2d, v21.2d, v17.2d
+	fmla	v19.2d, v23.2d, v18.2d
+	fmla	v20.2d, v22.2d, v18.2d
+	fmla	v20.2d, v24.2d, v17.2d
+
 	st2	{v19.2d, v20.2d}, [Y_OPTR], #32
 
 #endif
@@ -433,10 +391,7 @@ zgemv_n_kernel_F_LOOP:
 
 zgemv_n_kernel_F4:
 
-	KERNEL_F1
-	KERNEL_F1
-	KERNEL_F1
-	KERNEL_F1
+	KERNEL_F4
 
 	subs	I, I, #1
 	bne	zgemv_n_kernel_F4

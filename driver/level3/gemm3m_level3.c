@@ -316,7 +316,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	if (min_l > GEMM3M_Q) {
 	  min_l = (min_l + 1) / 2;
 #ifdef UNROLL_X
-	  min_l = (min_l + UNROLL_X - 1) & ~(UNROLL_X - 1);
+	  min_l = ((min_l + UNROLL_X - 1)/UNROLL_X) * UNROLL_X;
 #endif
 	}
       }
@@ -326,7 +326,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_i = GEMM3M_P;
       } else {
 	if (min_i > GEMM3M_P) {
-	  min_i = (min_i / 2 + GEMM3M_UNROLL_M - 1) & ~(GEMM3M_UNROLL_M - 1);
+	  min_i = ((min_i / 2 + GEMM3M_UNROLL_M - 1)/GEMM3M_UNROLL_M) * GEMM3M_UNROLL_M;
 	}
       }
 
@@ -365,7 +365,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  min_i = GEMM3M_P;
 	} else
 	  if (min_i > GEMM3M_P) {
-	    min_i = (min_i / 2 + GEMM3M_UNROLL_M - 1) & ~(GEMM3M_UNROLL_M - 1);
+	    min_i = ((min_i / 2 + GEMM3M_UNROLL_M - 1)/GEMM3M_UNROLL_M) * GEMM3M_UNROLL_M;
 	  }
 
 	START_RPCC();
@@ -386,7 +386,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_i = GEMM3M_P;
       } else {
 	if (min_i > GEMM3M_P) {
-	  min_i = (min_i / 2 + GEMM3M_UNROLL_M - 1) & ~(GEMM3M_UNROLL_M - 1);
+	  min_i = ((min_i / 2 + GEMM3M_UNROLL_M - 1)/GEMM3M_UNROLL_M) * GEMM3M_UNROLL_M;
 	}
       }
 
@@ -429,7 +429,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  min_i = GEMM3M_P;
 	} else
 	  if (min_i > GEMM3M_P) {
-	    min_i = (min_i / 2 + GEMM3M_UNROLL_M - 1) & ~(GEMM3M_UNROLL_M - 1);
+	    min_i = ((min_i / 2 + GEMM3M_UNROLL_M - 1)/GEMM3M_UNROLL_M) * GEMM3M_UNROLL_M;
 	  }
 
 	START_RPCC();
@@ -451,7 +451,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_i = GEMM3M_P;
       } else {
 	if (min_i > GEMM3M_P) {
-	  min_i = (min_i / 2 + GEMM3M_UNROLL_M - 1) & ~(GEMM3M_UNROLL_M - 1);
+	  min_i = ((min_i / 2 + GEMM3M_UNROLL_M - 1)/GEMM3M_UNROLL_M) * GEMM3M_UNROLL_M;
 	}
       }
 
@@ -494,7 +494,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  min_i = GEMM3M_P;
 	} else
 	  if (min_i > GEMM3M_P) {
-	    min_i = (min_i / 2 + GEMM3M_UNROLL_M - 1) & ~(GEMM3M_UNROLL_M - 1);
+	    min_i = ((min_i / 2 + GEMM3M_UNROLL_M - 1)/GEMM3M_UNROLL_M) * GEMM3M_UNROLL_M;
 	  }
 
 	START_RPCC();

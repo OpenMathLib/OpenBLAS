@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "daxpy_microk_nehalem-2.c"
 #elif defined(BULLDOZER)
 #include "daxpy_microk_bulldozer-2.c"
-#elif defined(STEAMROLLER)
+#elif defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "daxpy_microk_steamroller-2.c"
 #elif defined(PILEDRIVER)
 #include "daxpy_microk_piledriver-2.c"

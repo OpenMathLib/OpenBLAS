@@ -2,27 +2,27 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       COMPLEX FUNCTION CLATM2( M, N, I, J, KL, KU, IDIST, ISEED, D,
 *                                IGRADE, DL, DR, IPVTNG, IWORK, SPARSE )
-* 
+*
 *       .. Scalar Arguments ..
-*  
+*
 *       INTEGER            I, IDIST, IGRADE, IPVTNG, J, KL, KU, M, N
 *       REAL               SPARSE
 *       ..
-*  
+*
 *       .. Array Arguments ..
-*  
+*
 *       INTEGER            ISEED( 4 ), IWORK( * )
 *       COMPLEX            D( * ), DL( * ), DR( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -30,7 +30,7 @@
 *> \verbatim
 *>
 *>    CLATM2 returns the (I,J) entry of a random matrix of dimension
-*>    (M, N) described by the other paramters. It is called by the
+*>    (M, N) described by the other parameters. It is called by the
 *>    CLATMR routine in order to build random test matrices. No error
 *>    checking on parameters is done, because this routine is called in
 *>    a tight loop by CLATMR which has already checked the parameters.
@@ -199,12 +199,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_matgen
 *
@@ -212,10 +212,10 @@
       COMPLEX FUNCTION CLATM2( M, N, I, J, KL, KU, IDIST, ISEED, D,
      $                         IGRADE, DL, DR, IPVTNG, IWORK, SPARSE )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
 *

@@ -232,6 +232,7 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	if (model == 7) return &gotoblas_ATOM; //Bay Trail	
 	return NULL;
       case 4:
 		//Intel Haswell
@@ -261,6 +262,10 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	//Intel Braswell / Avoton
+	if (model == 12 || model == 13) { 
+	  return &gotoblas_NEHALEM;
+	}	
 	return NULL;
       case 5:
 	//Intel Broadwell
@@ -274,6 +279,30 @@ static gotoblas_t *get_coretype(void){
 	}
 	//Intel Skylake
 	if (model == 14 || model == 5) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Intel Phi Knights Landing
+	if (model == 7) {
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	//Apollo Lake
+	if (model == 12) { 
+	  return &gotoblas_NEHALEM;
+	}	
+	return NULL;
+      case 9:
+      case 8:
+	if (model == 14 ) { // Kaby Lake
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
@@ -326,7 +355,14 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
-	}else if(model == 0){
+    }else if(model == 5){
+      if(support_avx())
+        return &gotoblas_EXCAVATOR;
+      else{
+        openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+        return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+      }
+    }else if(model == 0){
 	  if (exmodel == 1) {
 	    //AMD Trinity
 	    if(support_avx())
@@ -365,7 +401,6 @@ static gotoblas_t *get_coretype(void){
     switch (family) {
     case 0x6:
       return &gotoblas_NANO;
-      break;
     }
   }
 
@@ -386,7 +421,7 @@ static char *corename[] = {
     "Nehalem",
     "Athlon",
     "Opteron",
-    "Opteron(SSE3)",
+    "Opteron_SSE3",
     "Barcelona",
     "Nano",
     "Sandybridge",
@@ -434,7 +469,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	//char mname[20];
 
-	for ( i=1 ; i <= 21; i++)
+	for ( i=1 ; i <= 22; i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{

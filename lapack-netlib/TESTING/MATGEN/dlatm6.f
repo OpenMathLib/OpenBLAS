@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLATM6( TYPE, N, A, LDA, B, X, LDX, Y, LDY, ALPHA,
 *                          BETA, WX, WY, S, DIF )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDX, LDY, N, TYPE
 *       DOUBLE PRECISION   ALPHA, BETA, WX, WY
@@ -19,7 +19,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), B( LDA, * ), DIF( * ), S( * ),
 *      $                   X( LDX, * ), Y( LDY, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -73,7 +73,7 @@
 *> \param[in] TYPE
 *> \verbatim
 *>          TYPE is INTEGER
-*>          Specifies the problem type (see futher details).
+*>          Specifies the problem type (see further details).
 *> \endverbatim
 *>
 *> \param[in] N
@@ -163,12 +163,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_matgen
 *
@@ -176,10 +176,10 @@
       SUBROUTINE DLATM6( TYPE, N, A, LDA, B, X, LDX, Y, LDY, ALPHA,
      $                   BETA, WX, WY, S, DIF )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDX, LDY, N, TYPE

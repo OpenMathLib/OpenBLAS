@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(HASWELL) || defined(STEAMROLLER)
+#if defined(HASWELL) || defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "dgemv_t_microk_haswell-4.c"
 #endif
 
@@ -95,7 +95,7 @@ static void dgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
 	"cmpq	$0, %1				\n\t"
 	"je	3f			\n\t"
 
-        ".align 16                              \n\t"
+	//        ".align 16                              \n\t"
         "1:                            \n\t"
 
 	"movups  (%5,%0,8) , %%xmm14		\n\t" // x
@@ -171,7 +171,7 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"cmpq	$0, %1				\n\t"
 	"je	3f			\n\t"
 
-        ".align 16                              \n\t"
+	//        ".align 16                              \n\t"
         "1:                            \n\t"
 
 	"movups    (%3,%0,8) , %%xmm12		\n\t"
@@ -245,7 +245,7 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
 	"movsd	 (%2) , %%xmm10                 \n\t"
 	"shufpd  $0 , %%xmm10 , %%xmm10		\n\t"
 
-        ".align 16                              \n\t"
+	//        ".align 16                              \n\t"
         "1:                            \n\t"
 
 	"movups  (%3,%0,8) , %%xmm12		\n\t"

@@ -1,35 +1,35 @@
-*> \brief \b SLASQ5 computes one dqds transform in ping-pong form. Used by sbdsqr and sstegr.
+*> \brief <b> SLASQ5 computes one dqds transform in ping-pong form. Used by sbdsqr and sstegr. </b>
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASQ5 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasq5.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasq5.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasq5.f"> 
+*> Download SLASQ5 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasq5.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasq5.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasq5.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE SLASQ5( I0, N0, Z, PP, TAU, DMIN, DMIN1, DMIN2, DN,
-*                          DNM1, DNM2, IEEE )
-* 
+*       SUBROUTINE SLASQ5( I0, N0, Z, PP, TAU, SIGMA, DMIN, DMIN1, DMIN2, DN,
+*                          DNM1, DNM2, IEEE, EPS )
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            IEEE
 *       INTEGER            I0, N0, PP
-*       REAL               DMIN, DMIN1, DMIN2, DN, DNM1, DNM2, TAU
+*       REAL               EPS, DMIN, DMIN1, DMIN2, DN, DNM1, DNM2, SIGMA, TAU
 *       ..
 *       .. Array Arguments ..
 *       REAL               Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -74,6 +74,12 @@
 *>        This is the shift.
 *> \endverbatim
 *>
+*> \param[in] SIGMA
+*> \verbatim
+*>          SIGMA is REAL
+*>        This is the accumulated shift up to this step.
+*> \endverbatim
+*>
 *> \param[out] DMIN
 *> \verbatim
 *>          DMIN is REAL
@@ -115,16 +121,22 @@
 *>          IEEE is LOGICAL
 *>        Flag for IEEE or non IEEE arithmetic.
 *> \endverbatim
+*>
+*> \param[in] EPS
+*> \verbatim
+*>         EPS is REAL
+*>        This is the value of epsilon used.
+*> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -132,10 +144,10 @@
       SUBROUTINE SLASQ5( I0, N0, Z, PP, TAU, SIGMA, DMIN, DMIN1, DMIN2,
      $                   DN, DNM1, DNM2, IEEE, EPS )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE
@@ -173,11 +185,11 @@
          D = Z( J4 ) - TAU
          DMIN = D
          DMIN1 = -Z( J4 )
-*     
+*
          IF( IEEE ) THEN
-*     
+*
 *     Code for IEEE arithmetic.
-*     
+*
             IF( PP.EQ.0 ) THEN
                DO 10 J4 = 4*I0, 4*( N0-3 ), 4
                   Z( J4-2 ) = D + Z( J4-1 )
@@ -197,9 +209,9 @@
                   EMIN = MIN( Z( J4-1 ), EMIN )
  20            CONTINUE
             END IF
-*     
+*
 *     Unroll last two steps.
-*     
+*
             DNM2 = D
             DMIN2 = DMIN
             J4 = 4*( N0-2 ) - PP
@@ -208,7 +220,7 @@
             Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
             DNM1 = Z( J4P2+2 )*( DNM2 / Z( J4-2 ) ) - TAU
             DMIN = MIN( DMIN, DNM1 )
-*     
+*
             DMIN1 = DMIN
             J4 = J4 + 4
             J4P2 = J4 + 2*PP - 1
@@ -216,11 +228,11 @@
             Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
             DN = Z( J4P2+2 )*( DNM1 / Z( J4-2 ) ) - TAU
             DMIN = MIN( DMIN, DN )
-*     
+*
          ELSE
-*     
+*
 *     Code for non IEEE arithmetic.
-*     
+*
             IF( PP.EQ.0 ) THEN
                DO 30 J4 = 4*I0, 4*( N0-3 ), 4
                   Z( J4-2 ) = D + Z( J4-1 )
@@ -246,9 +258,9 @@
                   EMIN = MIN( EMIN, Z( J4-1 ) )
  40            CONTINUE
             END IF
-*     
+*
 *     Unroll last two steps.
-*     
+*
             DNM2 = D
             DMIN2 = DMIN
             J4 = 4*( N0-2 ) - PP
@@ -261,7 +273,7 @@
                DNM1 = Z( J4P2+2 )*( DNM2 / Z( J4-2 ) ) - TAU
             END IF
             DMIN = MIN( DMIN, DNM1 )
-*     
+*
             DMIN1 = DMIN
             J4 = J4 + 4
             J4P2 = J4 + 2*PP - 1
@@ -273,7 +285,7 @@
                DN = Z( J4P2+2 )*( DNM1 / Z( J4-2 ) ) - TAU
             END IF
             DMIN = MIN( DMIN, DN )
-*     
+*
          END IF
 *
       ELSE
@@ -284,9 +296,9 @@
          DMIN = D
          DMIN1 = -Z( J4 )
          IF( IEEE ) THEN
-*     
+*
 *     Code for IEEE arithmetic.
-*     
+*
             IF( PP.EQ.0 ) THEN
                DO 50 J4 = 4*I0, 4*( N0-3 ), 4
                   Z( J4-2 ) = D + Z( J4-1 )
@@ -308,9 +320,9 @@
                   EMIN = MIN( Z( J4-1 ), EMIN )
  60            CONTINUE
             END IF
-*     
+*
 *     Unroll last two steps.
-*     
+*
             DNM2 = D
             DMIN2 = DMIN
             J4 = 4*( N0-2 ) - PP
@@ -319,7 +331,7 @@
             Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
             DNM1 = Z( J4P2+2 )*( DNM2 / Z( J4-2 ) ) - TAU
             DMIN = MIN( DMIN, DNM1 )
-*     
+*
             DMIN1 = DMIN
             J4 = J4 + 4
             J4P2 = J4 + 2*PP - 1
@@ -327,11 +339,11 @@
             Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
             DN = Z( J4P2+2 )*( DNM1 / Z( J4-2 ) ) - TAU
             DMIN = MIN( DMIN, DN )
-*     
+*
          ELSE
-*     
+*
 *     Code for non IEEE arithmetic.
-*     
+*
             IF( PP.EQ.0 ) THEN
                DO 70 J4 = 4*I0, 4*( N0-3 ), 4
                   Z( J4-2 ) = D + Z( J4-1 )
@@ -359,9 +371,9 @@
                   EMIN = MIN( EMIN, Z( J4-1 ) )
  80            CONTINUE
             END IF
-*     
+*
 *     Unroll last two steps.
-*     
+*
             DNM2 = D
             DMIN2 = DMIN
             J4 = 4*( N0-2 ) - PP
@@ -374,7 +386,7 @@
                DNM1 = Z( J4P2+2 )*( DNM2 / Z( J4-2 ) ) - TAU
             END IF
             DMIN = MIN( DMIN, DNM1 )
-*     
+*
             DMIN1 = DMIN
             J4 = J4 + 4
             J4P2 = J4 + 2*PP - 1
@@ -386,9 +398,9 @@
                DN = Z( J4P2+2 )*( DNM1 / Z( J4-2 ) ) - TAU
             END IF
             DMIN = MIN( DMIN, DN )
-*     
+*
          END IF
-*     
+*
       END IF
       Z( J4+2 ) = DN
       Z( 4*N0-PP ) = EMIN

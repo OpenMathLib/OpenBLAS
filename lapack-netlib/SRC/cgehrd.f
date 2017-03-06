@@ -2,31 +2,31 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGEHRD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgehrd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgehrd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgehrd.f"> 
+*> Download CGEHRD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgehrd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgehrd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgehrd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGEHRD( N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IHI, ILO, INFO, LDA, LWORK, N
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX            A( LDA, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -97,8 +97,7 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The length of the array WORK.  LWORK >= max(1,N).
-*>          For optimum performance LWORK >= N*NB, where NB is the
-*>          optimal blocksize.
+*>          For good performance, LWORK should generally be larger.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -116,12 +115,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complexGEcomputational
 *
@@ -168,10 +167,10 @@
 *  =====================================================================
       SUBROUTINE CGEHRD( N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, INFO, LDA, LWORK, N
@@ -183,20 +182,18 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      INTEGER            NBMAX, LDT
-      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
+      INTEGER            NBMAX, LDT, TSIZE
+      PARAMETER          ( NBMAX = 64, LDT = NBMAX+1,
+     $                     TSIZE = LDT*NBMAX )
       COMPLEX            ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ), 
+      PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ),
      $                     ONE = ( 1.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY
-      INTEGER            I, IB, IINFO, IWS, J, LDWORK, LWKOPT, NB,
+      INTEGER            I, IB, IINFO, IWT, J, LDWORK, LWKOPT, NB,
      $                   NBMIN, NH, NX
       COMPLEX            EI
-*     ..
-*     .. Local Arrays ..
-      COMPLEX            T( LDT, NBMAX )
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CAXPY, CGEHD2, CGEMM, CLAHR2, CLARFB, CTRMM,
@@ -214,9 +211,6 @@
 *     Test the input parameters
 *
       INFO = 0
-      NB = MIN( NBMAX, ILAENV( 1, 'CGEHRD', ' ', N, ILO, IHI, -1 ) )
-      LWKOPT = N*NB
-      WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
          INFO = -1
@@ -229,6 +223,16 @@
       ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
          INFO = -8
       END IF
+*
+      IF( INFO.EQ.0 ) THEN
+*
+*        Compute the workspace requirements
+*
+         NB = MIN( NBMAX, ILAENV( 1, 'CGEHRD', ' ', N, ILO, IHI, -1 ) )
+         LWKOPT = N*NB + TSIZE
+         WORK( 1 ) = LWKOPT
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'CGEHRD', -INFO )
          RETURN
@@ -257,7 +261,6 @@
 *
       NB = MIN( NBMAX, ILAENV( 1, 'CGEHRD', ' ', N, ILO, IHI, -1 ) )
       NBMIN = 2
-      IWS = 1
       IF( NB.GT.1 .AND. NB.LT.NH ) THEN
 *
 *        Determine when to cross over from blocked to unblocked code
@@ -268,8 +271,7 @@
 *
 *           Determine if workspace is large enough for blocked code
 *
-            IWS = N*NB
-            IF( LWORK.LT.IWS ) THEN
+            IF( LWORK.LT.N*NB+TSIZE ) THEN
 *
 *              Not enough workspace to use optimal NB:  determine the
 *              minimum value of NB, and reduce NB or force use of
@@ -277,8 +279,8 @@
 *
                NBMIN = MAX( 2, ILAENV( 2, 'CGEHRD', ' ', N, ILO, IHI,
      $                 -1 ) )
-               IF( LWORK.GE.N*NBMIN ) THEN
-                  NB = LWORK / N
+               IF( LWORK.GE.(N*NBMIN+TSIZE) ) THEN
+                  NB = (LWORK-TSIZE) / N
                ELSE
                   NB = 1
                END IF
@@ -297,6 +299,7 @@
 *
 *        Use blocked code
 *
+         IWT = 1 + N*NB
          DO 40 I = ILO, IHI - 1 - NX, NB
             IB = MIN( NB, IHI-I )
 *
@@ -304,8 +307,8 @@
 *           matrices V and T of the block reflector H = I - V*T*V**H
 *           which performs the reduction, and also the matrix Y = A*V*T
 *
-            CALL CLAHR2( IHI, I, IB, A( 1, I ), LDA, TAU( I ), T, LDT,
-     $                   WORK, LDWORK )
+            CALL CLAHR2( IHI, I, IB, A( 1, I ), LDA, TAU( I ),
+     $                   WORK( IWT ), LDT, WORK, LDWORK )
 *
 *           Apply the block reflector H to A(1:ihi,i+ib:ihi) from the
 *           right, computing  A := A - Y * V**H. V(i+ib,ib-1) must be set
@@ -313,7 +316,7 @@
 *
             EI = A( I+IB, I+IB-1 )
             A( I+IB, I+IB-1 ) = ONE
-            CALL CGEMM( 'No transpose', 'Conjugate transpose', 
+            CALL CGEMM( 'No transpose', 'Conjugate transpose',
      $                  IHI, IHI-I-IB+1,
      $                  IB, -ONE, WORK, LDWORK, A( I+IB, I ), LDA, ONE,
      $                  A( 1, I+IB ), LDA )
@@ -335,15 +338,16 @@
 *
             CALL CLARFB( 'Left', 'Conjugate transpose', 'Forward',
      $                   'Columnwise',
-     $                   IHI-I, N-I-IB+1, IB, A( I+1, I ), LDA, T, LDT,
-     $                   A( I+1, I+IB ), LDA, WORK, LDWORK )
+     $                   IHI-I, N-I-IB+1, IB, A( I+1, I ), LDA,
+     $                   WORK( IWT ), LDT, A( I+1, I+IB ), LDA,
+     $                   WORK, LDWORK )
    40    CONTINUE
       END IF
 *
 *     Use unblocked code to reduce the rest of the matrix
 *
       CALL CGEHD2( N, I, IHI, A, LDA, TAU, WORK, IINFO )
-      WORK( 1 ) = IWS
+      WORK( 1 ) = LWKOPT
 *
       RETURN
 *

@@ -1,25 +1,25 @@
-*> \brief \b SPSTF2 computes the Cholesky factorization with complete pivoting of a real symmetric or complex Hermitian positive semi-definite matrix.
+*> \brief \b SPSTF2 computes the Cholesky factorization with complete pivoting of a real symmetric positive semidefinite matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPSTF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spstf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spstf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spstf2.f"> 
+*> Download SPSTF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spstf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spstf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spstf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPSTF2( UPLO, N, A, LDA, PIV, RANK, TOL, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               TOL
 *       INTEGER            INFO, LDA, N, RANK
@@ -29,7 +29,7 @@
 *       REAL               A( LDA, * ), WORK( 2*N )
 *       INTEGER            PIV( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -121,29 +121,30 @@
 *>          < 0: If INFO = -K, the K-th argument had an illegal value,
 *>          = 0: algorithm completed successfully, and
 *>          > 0: the matrix A is either rank deficient with computed rank
-*>               as returned in RANK, or is indefinite.  See Section 7 of
-*>               LAPACK Working Note #161 for further information.
+*>               as returned in RANK, or is not positive semidefinite. See
+*>               Section 7 of LAPACK Working Note #161 for further
+*>               information.
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup realOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE SPSTF2( UPLO, N, A, LDA, PIV, RANK, TOL, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       REAL               TOL
@@ -216,7 +217,7 @@
             AJJ = A( PVT, PVT )
          END IF
       END DO
-      IF( AJJ.EQ.ZERO.OR.SISNAN( AJJ ) ) THEN
+      IF( AJJ.LE.ZERO.OR.SISNAN( AJJ ) ) THEN
          RANK = 0
          INFO = 1
          GO TO 170

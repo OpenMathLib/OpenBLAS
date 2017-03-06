@@ -105,12 +105,16 @@ ARCH_X86_64
 ARCH_POWER
 #endif
 
+#if defined(__s390x__) || defined(__zarch__)
+ARCH_ZARCH
+#endif
+
 #ifdef __mips64
 ARCH_MIPS64
 #endif
 
 #if defined(__mips32) || defined(__mips)
-ARCH_MIPS32
+ARCH_MIPS
 #endif
 
 #ifdef __alpha

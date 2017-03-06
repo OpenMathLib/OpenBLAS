@@ -2,16 +2,16 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DCHKQL( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
 *                          NRHS, THRESH, TSTERR, NMAX, A, AF, AQ, AL, AC,
-*                          B, X, XACT, TAU, WORK, RWORK, IWORK, NOUT )
-* 
+*                          B, X, XACT, TAU, WORK, RWORK, NOUT )
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NMAX, NN, NNB, NOUT, NRHS
@@ -19,13 +19,13 @@
 *       ..
 *       .. Array Arguments ..
 *       LOGICAL            DOTYPE( * )
-*       INTEGER            IWORK( * ), MVAL( * ), NBVAL( * ), NVAL( * ),
+*       INTEGER            MVAL( * ), NBVAL( * ), NVAL( * ),
 *      $                   NXVAL( * )
 *       DOUBLE PRECISION   A( * ), AC( * ), AF( * ), AL( * ), AQ( * ),
 *      $                   B( * ), RWORK( * ), TAU( * ), WORK( * ),
 *      $                   X( * ), XACT( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -173,11 +173,6 @@
 *>          RWORK is DOUBLE PRECISION array, dimension (NMAX)
 *> \endverbatim
 *>
-*> \param[out] IWORK
-*> \verbatim
-*>          IWORK is INTEGER array, dimension (NMAX)
-*> \endverbatim
-*>
 *> \param[in] NOUT
 *> \verbatim
 *>          NOUT is INTEGER
@@ -187,24 +182,24 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DCHKQL( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
      $                   NRHS, THRESH, TSTERR, NMAX, A, AF, AQ, AL, AC,
-     $                   B, X, XACT, TAU, WORK, RWORK, IWORK, NOUT )
+     $                   B, X, XACT, TAU, WORK, RWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -213,7 +208,7 @@
 *     ..
 *     .. Array Arguments ..
       LOGICAL            DOTYPE( * )
-      INTEGER            IWORK( * ), MVAL( * ), NBVAL( * ), NVAL( * ),
+      INTEGER            MVAL( * ), NBVAL( * ), NVAL( * ),
      $                   NXVAL( * )
       DOUBLE PRECISION   A( * ), AC( * ), AF( * ), AL( * ), AQ( * ),
      $                   B( * ), RWORK( * ), TAU( * ), WORK( * ),

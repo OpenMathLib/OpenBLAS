@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SERRVX( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -43,22 +43,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -70,6 +70,8 @@
 *     .. Parameters ..
       INTEGER            NMAX
       PARAMETER          ( NMAX = 4 )
+      REAL               ONE
+      PARAMETER          ( ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
       CHARACTER          EQ
@@ -80,9 +82,10 @@
 *     .. Local Arrays ..
       INTEGER            IP( NMAX ), IW( NMAX )
       REAL               A( NMAX, NMAX ), AF( NMAX, NMAX ), B( NMAX ),
-     $                   C( NMAX ), R( NMAX ), R1( NMAX ), R2( NMAX ),
-     $                   W( 2*NMAX ), X( NMAX ), ERR_BNDS_N( NMAX, 3 ),
-     $                   ERR_BNDS_C( NMAX, 3 ), PARAMS( 1 )
+     $                   C( NMAX ), E( NMAX ), R( NMAX ), R1( NMAX ),
+     $                   R2( NMAX ), W( 2*NMAX ), X( NMAX ),
+     $                   ERR_BNDS_N( NMAX, 3 ), ERR_BNDS_C( NMAX, 3 ),
+     $                   PARAMS( 1 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
@@ -92,8 +95,8 @@
       EXTERNAL           CHKXER, SGBSV, SGBSVX, SGESV, SGESVX, SGTSV,
      $                   SGTSVX, SPBSV, SPBSVX, SPOSV, SPOSVX, SPPSV,
      $                   SPPSVX, SPTSV, SPTSVX, SSPSV, SSPSVX, SSYSV,
-     $                   SSYSV_ROOK, SSYSVX, SGESVXX, SSYSVXX, SPOSVXX,
-     $                   SGBSVXX
+     $                   SSYSV_RK, SSYSV_ROOK, SSYSVX, SGESVXX, SSYSVXX,
+     $                   SPOSVXX, SGBSVXX
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -120,13 +123,14 @@
             A( I, J ) = 1. / REAL( I+J )
             AF( I, J ) = 1. / REAL( I+J )
    10    CONTINUE
-         B( J ) = 0.
-         R1( J ) = 0.
-         R2( J ) = 0.
-         W( J ) = 0.
-         X( J ) = 0.
-         C( J ) = 0.
-         R( J ) = 0.
+         B( J ) = 0.E+0
+         E( J ) = 0.E+0
+         R1( J ) = 0.E+0
+         R2( J ) = 0.E+0
+         W( J ) = 0.E+0
+         X( J ) = 0.E+0
+         C( J ) = 0.E+0
+         R( J ) = 0.E+0
          IP( J ) = J
    20 CONTINUE
       EQ = ' '
@@ -797,6 +801,12 @@
          INFOT = 8
          CALL SSYSV( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV ', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SSYSV( 'U', 0, 0, A, 1, IP, B, 1, W, 0, INFO )
+         CALL CHKXER( 'SSYSV ', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SSYSV( 'U', 0, 0, A, 1, IP, B, 1, W, -2, INFO )
+         CALL CHKXER( 'SSYSV ', INFOT, NOUT, LERR, OK )
 *
 *        SSYSVX
 *
@@ -876,17 +886,37 @@
      $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, IW, INFO )
          CALL CHKXER( 'SSYSVXX', INFOT, NOUT, LERR, OK )
-         INFOT = 12
+         INFOT = 10
+         CALL SSYSVXX( 'F', 'U', 2, 0, A, 2, AF, 2, IP, 'A', R, B, 2, X,
+     $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
+     $        ERR_BNDS_C, NPARAMS, PARAMS, W, IW, INFO )
+         CALL CHKXER( 'SSYSVXX', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         EQ='Y'
+         CALL SSYSVXX( 'F', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 2, X,
+     $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
+     $        ERR_BNDS_C, NPARAMS, PARAMS, W, IW, INFO )
+         CALL CHKXER( 'SSYSVXX', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         EQ='Y'
+         R(1) = -ONE
+         CALL SSYSVXX( 'F', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 2, X,
+     $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
+     $        ERR_BNDS_C, NPARAMS, PARAMS, W, IW, INFO )
+         CALL CHKXER( 'SSYSVXX', INFOT, NOUT, LERR, OK )
+         INFOT = 13
          EQ = 'N'
          CALL SSYSVXX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 1, X,
      $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, IW, INFO )
          CALL CHKXER( 'SSYSVXX', INFOT, NOUT, LERR, OK )
-         INFOT = 14
+         INFOT = 15
          CALL SSYSVXX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 2, X,
      $        1, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, IW, INFO )
          CALL CHKXER( 'SSYSVXX', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SR' ) ) THEN
 *
 *        SSYSV_ROOK
 *
@@ -903,6 +933,47 @@
          INFOT = 8
          CALL SSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SSYSV_ROOK( 'U', 0, 0, A, 1, IP, B, 1, W, 0, INFO )
+         CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SSYSV_ROOK( 'U', 0, 0, A, 1, IP, B, 1, W, -2, INFO )
+         CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SK' ) ) THEN
+*
+*        SSYSV_RK
+*
+*        Test error exits of the driver that uses factorization
+*        of a symmetric indefinite matrix with rook
+*        (bounded Bunch-Kaufman) pivoting with the new storage
+*        format for factors L ( or U) and D.
+*
+*        L (or U) is stored in A, diagonal of D is stored on the
+*        diagonal of A, subdiagonal of D is stored in a separate array E.
+*
+         SRNAMT = 'SSYSV_RK'
+         INFOT = 1
+         CALL SSYSV_RK( '/', 0, 0, A, 1, E, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SSYSV_RK( 'U', -1, 0, A, 1, E, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SSYSV_RK( 'U', 0, -1, A, 1, E, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SSYSV_RK( 'U', 2, 0, A, 1, E, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL SSYSV_RK( 'U', 2, 0, A, 2, E, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL SSYSV_RK( 'U', 0, 0, A, 1, E, IP, B, 1, W, 0, INFO )
+         CALL CHKXER( 'SSYSV_RK', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL SSYSV_RK( 'U', 0, 0, A, 1, E, IP, B, 1, W, -2, INFO )
+         CALL CHKXER( 'SSYSV_RK', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *

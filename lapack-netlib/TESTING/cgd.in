@@ -1,6 +1,6 @@
 CGV               Data for the Complex Nonsymmetric Eigenvalue Driver
 6                 Number of matrix dimensions
-2 6 8 10 12 20    Matrix dimensions  
+2 6 8 10 12 20    Matrix dimensions
 1 1 1 2 1         Parameters NB, NBMIN, NXOVER, NS, NBCOL
 10                Threshold for test ratios
 .TRUE.            Put T to test the error exits
@@ -8,7 +8,7 @@ CGV               Data for the Complex Nonsymmetric Eigenvalue Driver
 CGV 26            Test all 26 matrix types
 CGS               Data for the Complex Nonsymmetric Schur Form Driver
 5                 Number of matrix dimensions
-2 6 10 12 20 30   Matrix dimensions  
+2 6 10 12 20 30   Matrix dimensions
 1 1 1 2 1         Parameters NB, NBMIN, NXOVER, NS, NBCOL
 10                Threshold for test ratios
 .TRUE.            Put T to test the error exits
@@ -32,11 +32,11 @@ CGX               Data for the Complex Nonsymmetric Schur Form Expert Driver
 10                Threshold for test ratios
 .TRUE.            Put T to test the error exits
 0                 Code to interpret the seed
-  4 
+  4
   2
 ( 2.0000E+00, 6.0000E+00)
 ( 2.0000E+00, 5.0000E+00)
-( 3.0000E+00,-1.0000E+01)  
+( 3.0000E+00,-1.0000E+01)
 ( 4.0000E+00, 7.0000E+00)
 ( 0.0000E+00, 0.0000E+00)
 ( 9.0000E+00, 2.0000E+00)
@@ -50,7 +50,7 @@ CGX               Data for the Complex Nonsymmetric Schur Form Expert Driver
 ( 0.0000E+00, 0.0000E+00)
 ( 0.0000E+00, 0.0000E+00)
 ( 1.0000E+01,-1.6000E+01)
-(-9.0000E+00, 1.0000E+00) 
+(-9.0000E+00, 1.0000E+00)
 (-1.0000E+00,-8.0000E+00)
 (-1.0000E+00, 1.0000E+01)
 ( 2.0000E+00,-6.0000E+00)
@@ -67,12 +67,12 @@ CGX               Data for the Complex Nonsymmetric Schur Form Expert Driver
 ( 0.0000E+00, 0.0000E+00)
 ( 8.0000E+00, 4.0000E+00)
   7.6883E-02  2.1007E-01      Condition #'s for cluster selected from lower 2x2
-  4 
+  4
   2
 ( 1.0000E+00, 8.0000E+00)
 ( 2.0000E+00, 4.0000E+00)
 ( 3.0000E+00,-1.3000E+01)
-( 4.0000E+00, 4.0000E+00) 
+( 4.0000E+00, 4.0000E+00)
 ( 0.0000E+00, 0.0000E+00)
 ( 5.0000E+00, 7.0000E+00)
 ( 6.0000E+00,-2.4000E+01)
@@ -112,7 +112,7 @@ CXV               Data for the Complex Nonsymmetric Eigenvalue Expert Driver
   4
 ( 2.0000E+00, 6.0000E+00)
 ( 2.0000E+00, 5.0000E+00)
-( 3.0000E+00,-1.0000E+01)  
+( 3.0000E+00,-1.0000E+01)
 ( 4.0000E+00, 7.0000E+00)
 ( 0.0000E+00, 0.0000E+00)
 ( 9.0000E+00, 2.0000E+00)
@@ -126,7 +126,7 @@ CXV               Data for the Complex Nonsymmetric Eigenvalue Expert Driver
 ( 0.0000E+00, 0.0000E+00)
 ( 0.0000E+00, 0.0000E+00)
 ( 1.0000E+01,-1.6000E+01)
-(-9.0000E+00, 1.0000E+00) 
+(-9.0000E+00, 1.0000E+00)
 (-1.0000E+00,-8.0000E+00)
 (-1.0000E+00, 1.0000E+01)
 ( 2.0000E+00,-6.0000E+00)
@@ -144,11 +144,11 @@ CXV               Data for the Complex Nonsymmetric Eigenvalue Expert Driver
 ( 8.0000E+00, 4.0000E+00)
   5.2612E+00  8.0058E-01  1.4032E+00  4.0073E+00  condition #'s for eigenvalues
   1.1787E+00  3.3139E+00  1.1835E+00  2.0777E+00  condition #'s for eigenvectors
-  4 
+  4
 ( 1.0000E+00, 8.0000E+00)
 ( 2.0000E+00, 4.0000E+00)
 ( 3.0000E+00,-1.3000E+01)
-( 4.0000E+00, 4.0000E+00) 
+( 4.0000E+00, 4.0000E+00)
 ( 0.0000E+00, 0.0000E+00)
 ( 5.0000E+00, 7.0000E+00)
 ( 6.0000E+00,-2.4000E+01)

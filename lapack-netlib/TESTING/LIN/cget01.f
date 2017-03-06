@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGET01( M, N, A, LDA, AFAC, LDAFAC, IPIV, RWORK,
 *                          RESID )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDAFAC, M, N
 *       REAL               RESID
@@ -20,7 +20,7 @@
 *       REAL               RWORK( * )
 *       COMPLEX            A( LDA, * ), AFAC( LDAFAC, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -95,12 +95,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
@@ -108,10 +108,10 @@
       SUBROUTINE CGET01( M, N, A, LDA, AFAC, LDAFAC, IPIV, RWORK,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDAFAC, M, N
@@ -177,7 +177,7 @@
             IF( K+1.LE.M ) THEN
                CALL CSCAL( M-K, T, AFAC( K+1, K ), 1 )
                CALL CGEMV( 'No transpose', M-K, K-1, CONE,
-     $                     AFAC( K+1, 1 ), LDAFAC, AFAC( 1, K ), 1, 
+     $                     AFAC( K+1, 1 ), LDAFAC, AFAC( 1, K ), 1,
      $                     CONE, AFAC( K+1, K ), 1 )
             END IF
 *

@@ -297,9 +297,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_l  = GEMM_Q;
       } else {
 	if (min_l > GEMM_Q) {
-	  min_l = (min_l / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
+	  min_l = ((min_l / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	}
-	gemm_p = ((l2size / min_l + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1));
+	gemm_p = ((l2size / min_l + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M;
       }
 
@@ -311,7 +311,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_i = GEMM_P;
       } else {
 	if (min_i > GEMM_P) {
-	  min_i = (min_i / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
+	  min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	} else {
 	  l1stride = 0;
 	}
@@ -335,7 +335,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
         if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
         else
-          if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+        	if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
+        	else
+          		if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
 
 
@@ -367,7 +369,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  min_i = GEMM_P;
 	} else
 	  if (min_i > GEMM_P) {
-	    min_i = (min_i / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
+	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
 
 	START_RPCC();

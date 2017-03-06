@@ -12,10 +12,6 @@ ifeq ($(ARCH), ia64)
 USE_GEMM3M = 1
 endif
 
-ifeq ($(ARCH), MIPS)
-USE_GEMM3M = 1
-endif
-
 ifeq ($(ARCH), arm)
 USE_TRMM = 1
 endif
@@ -35,6 +31,15 @@ endif
 ifeq ($(CORE), HASWELL)
 USE_TRMM = 1
 endif
+
+ifeq ($(CORE), POWER8)
+USE_TRMM = 1
+endif
+
+ifeq ($(CORE), Z13)
+USE_TRMM = 1
+endif
+
 
 
 

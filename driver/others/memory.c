@@ -104,6 +104,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <linux/unistd.h>
 #include <sys/syscall.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #endif
 
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
@@ -142,7 +144,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(_MSC_VER) && !defined(__clang__)
 #define CONSTRUCTOR __cdecl
 #define DESTRUCTOR __cdecl
-#elif defined(OS_DARWIN) && defined(C_GCC)
+#elif (defined(OS_DARWIN) || defined(OS_SUNOS)) && defined(C_GCC)
 #define CONSTRUCTOR	__attribute__ ((constructor))
 #define DESTRUCTOR	__attribute__ ((destructor))
 #else
@@ -167,13 +169,13 @@ void goto_set_num_threads(int num_threads) {};
 
 #else
 
-#ifdef OS_LINUX
+#if defined(OS_LINUX) || defined(OS_SUNOS) || defined(OS_NETBSD)
 #ifndef NO_AFFINITY
 int get_num_procs(void);
 #else
 int get_num_procs(void) {
   static int nums = 0;
-  if (!nums) nums = sysconf(_SC_NPROCESSORS_ONLN);
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
   return nums;
 }
 #endif
@@ -182,7 +184,7 @@ int get_num_procs(void) {
 #ifdef OS_ANDROID
 int get_num_procs(void) {
   static int nums = 0;
-  if (!nums) nums = sysconf(_SC_NPROCESSORS_ONLN);
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
   return nums;
 }
 #endif
@@ -292,8 +294,11 @@ void openblas_fork_handler()
 #endif
 }
 
+extern int openblas_num_threads_env();
+extern int openblas_goto_num_threads_env();
+extern int openblas_omp_num_threads_env();
+
 int blas_get_cpu_number(void){
-  env_var_t p;
 #if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_DARWIN) || defined(OS_ANDROID)
   int max_num;
 #endif
@@ -308,18 +313,18 @@ int blas_get_cpu_number(void){
 
   blas_goto_num = 0;
 #ifndef USE_OPENMP
-  if (readenv(p,"OPENBLAS_NUM_THREADS")) blas_goto_num = atoi(p);
+  blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
 
   if (blas_goto_num == 0) {
-		if (readenv(p,"GOTO_NUM_THREADS")) blas_goto_num = atoi(p);
-		if (blas_goto_num < 0) blas_goto_num = 0;
+    blas_goto_num=openblas_goto_num_threads_env();
+    if (blas_goto_num < 0) blas_goto_num = 0;
   }
 
 #endif
 
   blas_omp_num = 0;
-  if (readenv(p,"OMP_NUM_THREADS")) blas_omp_num = atoi(p);
+  blas_omp_num=openblas_omp_num_threads_env();
   if (blas_omp_num < 0) blas_omp_num = 0;
 
   if (blas_goto_num > 0) blas_num_threads = blas_goto_num;
@@ -355,7 +360,9 @@ int openblas_get_num_threads(void) {
 #ifndef SMP
   return 1;
 #else
-  return blas_get_cpu_number();
+  // init blas_cpu_number if needed
+  blas_get_cpu_number();
+  return blas_cpu_number;
 #endif
 }
 
@@ -374,6 +381,16 @@ static int release_pos = 0;
 static int hot_alloc = 0;
 #endif
 
+/* Global lock for memory allocation */
+
+#if   defined(USE_PTHREAD_LOCK)
+static pthread_mutex_t    alloc_lock = PTHREAD_MUTEX_INITIALIZER;
+#elif defined(USE_PTHREAD_SPINLOCK)
+static pthread_spinlock_t alloc_lock = 0;
+#else
+static BLASULONG  alloc_lock = 0UL;
+#endif
+
 #ifdef ALLOC_MMAP
 
 static void alloc_mmap_free(struct release_t *release){
@@ -382,6 +399,8 @@ static void alloc_mmap_free(struct release_t *release){
     printf("OpenBLAS : munmap failed\n");
   }
 }
+
+
 
 #ifdef NO_WARMUP
 
@@ -399,9 +418,11 @@ static void *alloc_mmap(void *address){
   }
 
   if (map_address != (void *)-1) {
+    LOCK_COMMAND(&alloc_lock);
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
+    UNLOCK_COMMAND(&alloc_lock);
   }
 
 #ifdef OS_LINUX
@@ -543,12 +564,14 @@ static void *alloc_mmap(void *address){
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
   }
 #endif
+  LOCK_COMMAND(&alloc_lock);
 
   if (map_address != (void *)-1) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
   }
+  UNLOCK_COMMAND(&alloc_lock);
 
   return map_address;
 }
@@ -882,15 +905,6 @@ static void *alloc_hugetlbfile(void *address){
 }
 #endif
 
-/* Global lock for memory allocation */
-
-#if   defined(USE_PTHREAD_LOCK)
-static pthread_mutex_t    alloc_lock = PTHREAD_MUTEX_INITIALIZER;
-#elif defined(USE_PTHREAD_SPINLOCK)
-static pthread_spinlock_t alloc_lock = 0;
-#else
-static BLASULONG  alloc_lock = 0UL;
-#endif
 
 #ifdef SEEK_ADDRESS
 static BLASULONG base_address      = 0UL;
@@ -956,45 +970,41 @@ void *blas_memory_alloc(int procpos){
     NULL,
   };
   void *(**func)(void *address);
+  LOCK_COMMAND(&alloc_lock);
 
   if (!memory_initialized) {
 
-    LOCK_COMMAND(&alloc_lock);
-
-    if (!memory_initialized) {
-
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
-      for (position = 0; position < NUM_BUFFERS; position ++){
-	memory[position].addr   = (void *)0;
-	memory[position].pos    = -1;
-	memory[position].used   = 0;
-	memory[position].lock   = 0;
-      }
+    for (position = 0; position < NUM_BUFFERS; position ++){
+      memory[position].addr   = (void *)0;
+      memory[position].pos    = -1;
+      memory[position].used   = 0;
+      memory[position].lock   = 0;
+    }
 #endif
 
 #ifdef DYNAMIC_ARCH
-      gotoblas_dynamic_init();
+    gotoblas_dynamic_init();
 #endif
 
 #if defined(SMP) && defined(OS_LINUX) && !defined(NO_AFFINITY)
-      gotoblas_affinity_init();
+    gotoblas_affinity_init();
 #endif
 
 #ifdef SMP
-      if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
+    if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
 #ifndef DYNAMIC_ARCH
-      blas_set_parameter();
+    blas_set_parameter();
 #endif
 #endif
 
-      memory_initialized = 1;
-    }
+    memory_initialized = 1;
 
-    UNLOCK_COMMAND(&alloc_lock);
   }
+  UNLOCK_COMMAND(&alloc_lock);
 
 #ifdef DEBUG
   printf("Alloc Start ...\n");
@@ -1027,14 +1037,14 @@ void *blas_memory_alloc(int procpos){
   position = 0;
 
   do {
-    if (!memory[position].used) {
+/*    if (!memory[position].used) { */
 
       blas_lock(&memory[position].lock);
 
       if (!memory[position].used) goto allocation;
 
       blas_unlock(&memory[position].lock);
-    }
+/*    } */
 
     position ++;
 
@@ -1096,7 +1106,9 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
+    LOCK_COMMAND(&alloc_lock);
     memory[position].addr = map_address;
+    UNLOCK_COMMAND(&alloc_lock);
 
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)memory[position].addr, position);
@@ -1150,6 +1162,7 @@ void blas_memory_free(void *free_area){
 #endif
 
   position = 0;
+  LOCK_COMMAND(&alloc_lock);
 
   while ((memory[position].addr != free_area)
 	 && (position < NUM_BUFFERS)) position++;
@@ -1164,6 +1177,7 @@ void blas_memory_free(void *free_area){
   WMB;
 
   memory[position].used = 0;
+  UNLOCK_COMMAND(&alloc_lock);
 
 #ifdef DEBUG
   printf("Unmap Succeeded.\n\n");
@@ -1178,6 +1192,7 @@ void blas_memory_free(void *free_area){
   for (position = 0; position < NUM_BUFFERS; position++)
     printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
 #endif
+  UNLOCK_COMMAND(&alloc_lock);
 
   return;
 }
@@ -1336,6 +1351,7 @@ static void gotoblas_memory_init(void) {
 /* Initialization for all function; this function should be called before main */
 
 static int gotoblas_initialized = 0;
+extern void openblas_read_env();
 
 void CONSTRUCTOR gotoblas_init(void) {
 
@@ -1344,6 +1360,8 @@ void CONSTRUCTOR gotoblas_init(void) {
 #ifdef SMP
   openblas_fork_handler();
 #endif
+
+  openblas_read_env();
 
 #ifdef PROFILE
    moncontrol (0);
@@ -1359,6 +1377,19 @@ void CONSTRUCTOR gotoblas_init(void) {
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
    gotoblas_memory_init();
+#endif
+
+//#if defined(OS_LINUX)
+#if 0
+   struct rlimit curlimit;
+   if ( getrlimit(RLIMIT_STACK, &curlimit ) == 0 )
+   {
+	if ( curlimit.rlim_cur != curlimit.rlim_max )
+	{
+		curlimit.rlim_cur = curlimit.rlim_max;
+		setrlimit(RLIMIT_STACK, &curlimit);
+	}
+   }
 #endif
 
 #ifdef SMP
@@ -1429,6 +1460,31 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
   }
   return TRUE;
 }
+
+/*
+  This is to allow static linking.
+  Code adapted from Google performance tools:
+  https://gperftools.googlecode.com/git-history/perftools-1.0/src/windows/port.cc
+  Reference:
+  https://sourceware.org/ml/pthreads-win32/2008/msg00028.html
+  http://ci.boost.org/svn-trac/browser/trunk/libs/thread/src/win32/tss_pe.cpp
+*/
+static int on_process_term(void)
+{
+	gotoblas_quit();
+	return 0;
+}
+#ifdef _WIN64
+#pragma comment(linker, "/INCLUDE:_tls_used")
+#else
+#pragma comment(linker, "/INCLUDE:__tls_used")
+#endif
+#pragma data_seg(push, old_seg)
+#pragma data_seg(".CRT$XLB")
+static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
+#pragma data_seg(".CRT$XTU")
+static int(*p_process_term)(void) = on_process_term;
+#pragma data_seg(pop, old_seg)
 #endif
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))

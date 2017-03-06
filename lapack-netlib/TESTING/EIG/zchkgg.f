@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -13,7 +13,7 @@
 *                          S2, P1, P2, U, LDU, V, Q, Z, ALPHA1, BETA1,
 *                          ALPHA3, BETA3, EVECTL, EVECTR, WORK, LWORK,
 *                          RWORK, LLWORK, RESULT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTDIF
 *       INTEGER            INFO, LDA, LDU, LWORK, NOUNIT, NSIZES, NTYPES
@@ -31,7 +31,7 @@
 *      $                   T( LDA, * ), U( LDU, * ), V( LDU, * ),
 *      $                   WORK( * ), Z( LDU, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -68,7 +68,7 @@
 *> and each type of matrix, one matrix will be generated and used
 *> to test the nonsymmetric eigenroutines.  For each matrix, 13
 *> tests will be performed.  The first twelve "test ratios" should be
-*> small -- O(1).  They will be compared with the threshhold THRESH:
+*> small -- O(1).  They will be compared with the threshold THRESH:
 *>
 *>                  H
 *> (1)   | A - U H V  | / ( |A| n ulp )
@@ -128,7 +128,7 @@
 *>            |beta(Q,Z computed) - beta(Q,Z not computed)|/|P| ) / ulp
 *>
 *> In addition, the normalization of L and R are checked, and compared
-*> with the threshhold THRSHN.
+*> with the threshold THRSHN.
 *>
 *> Test Matrices
 *> ---- --------
@@ -298,7 +298,7 @@
 *> \param[in] THRSHN
 *> \verbatim
 *>          THRSHN is DOUBLE PRECISION
-*>          Threshhold for reporting eigenvector normalization error.
+*>          Threshold for reporting eigenvector normalization error.
 *>          If the normalization of any eigenvector differs from 1 by
 *>          more than THRSHN*ulp, then a special error message will be
 *>          printed.  (This is handled separately from the other tests,
@@ -487,12 +487,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16_eig
 *
@@ -503,10 +503,10 @@
      $                   ALPHA3, BETA3, EVECTL, EVECTR, WORK, LWORK,
      $                   RWORK, LLWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTDIF

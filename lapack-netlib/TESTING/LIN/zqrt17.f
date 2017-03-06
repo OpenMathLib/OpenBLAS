@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZQRT17( TRANS, IRESID, M, N, NRHS, A,
 *                        LDA, X, LDX, B, LDB, C, WORK, LWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            IRESID, LDA, LDB, LDX, LWORK, M, N, NRHS
@@ -19,7 +19,7 @@
 *       COMPLEX*16         A( LDA, * ), B( LDB, * ), C( LDB, * ),
 *      $                   WORK( LWORK ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -137,12 +137,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex16_lin
 *
@@ -150,10 +150,10 @@
       DOUBLE PRECISION FUNCTION ZQRT17( TRANS, IRESID, M, N, NRHS, A,
      $                 LDA, X, LDX, B, LDB, C, WORK, LWORK )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -172,8 +172,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            INFO, ISCL, NCOLS, NROWS
-      DOUBLE PRECISION   BIGNUM, ERR, NORMA, NORMB, NORMRS, NORMX,
-     $                   SMLNUM
+      DOUBLE PRECISION   BIGNUM, ERR, NORMA, NORMB, NORMRS, SMLNUM
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   RWORK( 1 )
@@ -250,9 +249,8 @@
          IF( NORMB.NE.ZERO )
      $      ERR = ERR / NORMB
       ELSE
-         NORMX = ZLANGE( 'One-norm', NCOLS, NRHS, X, LDX, RWORK )
-         IF( NORMX.NE.ZERO )
-     $      ERR = ERR / NORMX
+         IF( NORMRS.NE.ZERO )
+     $      ERR = ERR / NORMRS
       END IF
 *
       ZQRT17 = ERR / ( DLAMCH( 'Epsilon' )*DBLE( MAX( M, N, NRHS ) ) )

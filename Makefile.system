@@ -139,6 +139,10 @@ NO_PARALLEL_MAKE=0
 endif
 GETARCH_FLAGS	+= -DNO_PARALLEL_MAKE=$(NO_PARALLEL_MAKE)
 
+ifdef MAKE_NB_JOBS
+GETARCH_FLAGS += -DMAKE_NB_JOBS=$(MAKE_NB_JOBS)
+endif
+
 ifeq ($(HOSTCC), loongcc)
 GETARCH_FLAGS  += -static
 endif
@@ -155,7 +159,7 @@ ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
@@ -213,7 +217,9 @@ endif
 #
 
 ifeq ($(OSNAME), Darwin)
+ifndef MACOSX_DEPLOYMENT_TARGET
 export MACOSX_DEPLOYMENT_TARGET=10.6
+endif
 MD5SUM = md5 -r
 endif
 
@@ -292,8 +298,10 @@ endif
 ifneq ($(OSNAME), WINNT)
 ifneq ($(OSNAME), CYGWIN_NT)
 ifneq ($(OSNAME), Interix)
+ifneq ($(OSNAME), Android)
 ifdef SMP
 EXTRALIB   += -lpthread
+endif
 endif
 endif
 endif
@@ -324,7 +332,8 @@ ifdef SANITY_CHECK
 CCOMMON_OPT	+= -DSANITY_CHECK -DREFNAME=$(*F)f$(BU)
 endif
 
-ifdef MAX_STACK_ALLOC
+MAX_STACK_ALLOC ?= 2048
+ifneq ($(MAX_STACK_ALLOC), 0)
 CCOMMON_OPT	+= -DMAX_STACK_ALLOC=$(MAX_STACK_ALLOC)
 endif
 
@@ -374,7 +383,7 @@ FCOMMON_OPT	+= -m128bit-long-double
 endif
 ifeq ($(C_COMPILER), CLANG)
 EXPRECISION	= 1
-CCOMMON_OPT	+= -DEXPRECISION 
+CCOMMON_OPT	+= -DEXPRECISION
 FCOMMON_OPT	+= -m128bit-long-double
 endif
 endif
@@ -388,7 +397,7 @@ endif
 
 ifeq ($(USE_OPENMP), 1)
 
-#check 
+#check
 ifeq ($(USE_THREAD), 0)
 $(error OpenBLAS: Cannot set both USE_OPENMP=1 and USE_THREAD=0. The USE_THREAD=0 is only for building single thread version.)
 endif
@@ -455,7 +464,7 @@ endif
 endif
 endif
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 NO_BINARY_MODE	= 1
 endif
 
@@ -506,12 +515,15 @@ endif
 
 ifdef NO_BINARY_MODE
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64))
 ifdef BINARY64
 CCOMMON_OPT += -mabi=64
 else
 CCOMMON_OPT += -mabi=n32
 endif
+BINARY_DEFINED = 1
+else ifeq ($(ARCH), $(filter $(ARCH),mips))
+CCOMMON_OPT += -mabi=32
 BINARY_DEFINED = 1
 endif
 
@@ -523,6 +535,21 @@ endif
 ifeq ($(CORE), LOONGSON3B)
 CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
+endif
+
+ifeq ($(CORE), P5600)
+CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
+endif
+
+ifeq ($(CORE), I6400)
+CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
+FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
+endif
+
+ifeq ($(CORE), P6600)
+CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
+FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
 endif
 
 ifeq ($(OSNAME), AIX)
@@ -593,12 +620,14 @@ ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
 endif
 ifdef NO_BINARY_MODE
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64))
 ifdef BINARY64
 FCOMMON_OPT += -mabi=64
 else
 FCOMMON_OPT += -mabi=n32
 endif
+else ifeq ($(ARCH), $(filter $(ARCH),mips))
+FCOMMON_OPT += -mabi=32
 endif
 else
 ifdef BINARY64
@@ -681,21 +710,7 @@ FCOMMON_OPT += -i8
 endif
 endif
 endif
-
-ifneq ($(ARCH), mips64)
-ifndef BINARY64
-FCOMMON_OPT += -m32
-else
-FCOMMON_OPT += -m64
-endif
-else
-ifdef BINARY64
-FCOMMON_OPT += -mabi=64
-else
-FCOMMON_OPT += -mabi=n32
-endif
-endif
-
+ 
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
@@ -711,7 +726,7 @@ endif
 endif
 endif
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 FCOMMON_OPT += -n32
 else
@@ -741,7 +756,7 @@ endif
 
 ifeq ($(C_COMPILER), OPEN64)
 
-ifeq ($(ARCH), mips64)
+ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 CCOMMON_OPT += -n32
 else
@@ -963,17 +978,18 @@ ifeq ($(OSNAME), SunOS)
 TAR	= gtar
 PATCH	= gpatch
 GREP	= ggrep
+AWK	= nawk
 else
 TAR	= tar
 PATCH	= patch
 GREP	= grep
+AWK	= awk
 endif
 
 ifndef MD5SUM
 MD5SUM	= md5sum
 endif
 
-AWK	= awk
 
 REVISION = -r$(VERSION)
 MAJOR_VERSION = $(word 1,$(subst ., ,$(VERSION)))
@@ -982,16 +998,25 @@ ifeq ($(DEBUG), 1)
 COMMON_OPT += -g
 endif
 
+ifeq ($(DEBUG), 1)
+FCOMMON_OPT += -g
+endif
+
 ifndef COMMON_OPT
 COMMON_OPT = -O2
 endif
+
+ifndef FCOMMON_OPT
+FCOMMON_OPT = -O2 -frecursive
+endif
+
 
 
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
 
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
-override FPFLAGS    += $(COMMON_OPT) $(FCOMMON_OPT) $(COMMON_PROF)
+override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
 #For LAPACK Fortran codes.
@@ -1120,6 +1145,8 @@ export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4
 export HAVE_NEON
+export HAVE_MSA
+export MSA_FLAGS
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
@@ -1181,4 +1208,3 @@ SUNPATH		= /opt/sunstudio12.1
 else
 SUNPATH		= /opt/SUNWspro
 endif
-

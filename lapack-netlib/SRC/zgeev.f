@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGEEV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgeev.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgeev.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgeev.f"> 
+*> Download ZGEEV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgeev.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgeev.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgeev.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGEEV( JOBVL, JOBVR, N, A, LDA, W, VL, LDVL, VR, LDVR,
 *                         WORK, LWORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBVL, JOBVR
 *       INTEGER            INFO, LDA, LDVL, LDVR, LWORK, N
@@ -30,7 +30,7 @@
 *       COMPLEX*16         A( LDA, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   W( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -164,23 +164,26 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
+*
+*  @precisions fortran z -> c
 *
 *> \ingroup complex16GEeigen
 *
 *  =====================================================================
       SUBROUTINE ZGEEV( JOBVL, JOBVR, N, A, LDA, W, VL, LDVL, VR, LDVR,
      $                  WORK, LWORK, RWORK, INFO )
+      implicit none
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR
@@ -202,7 +205,7 @@
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR
       CHARACTER          SIDE
       INTEGER            HSWORK, I, IBAL, IERR, IHI, ILO, IRWORK, ITAU,
-     $                   IWRK, K, MAXWRK, MINWRK, NOUT
+     $                   IWRK, K, LWORK_TREVC, MAXWRK, MINWRK, NOUT
       DOUBLE PRECISION   ANRM, BIGNUM, CSCALE, EPS, SCL, SMLNUM
       COMPLEX*16         TMP
 *     ..
@@ -212,7 +215,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLABAD, XERBLA, ZDSCAL, ZGEBAK, ZGEBAL, ZGEHRD,
-     $                   ZHSEQR, ZLACPY, ZLASCL, ZSCAL, ZTREVC, ZUNGHR
+     $                   ZHSEQR, ZLACPY, ZLASCL, ZSCAL, ZTREVC3, ZUNGHR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -221,7 +224,7 @@
       EXTERNAL           LSAME, IDAMAX, ILAENV, DLAMCH, DZNRM2, ZLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DCMPLX, DCONJG, DIMAG, MAX, SQRT
+      INTRINSIC          DBLE, DCMPLX, CONJG, AIMAG, MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -266,18 +269,28 @@
             IF( WANTVL ) THEN
                MAXWRK = MAX( MAXWRK, N + ( N - 1 )*ILAENV( 1, 'ZUNGHR',
      $                       ' ', N, 1, N, -1 ) )
+               CALL ZTREVC3( 'L', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, RWORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, N + LWORK_TREVC )
                CALL ZHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VL, LDVL,
-     $                WORK, -1, INFO )
+     $                      WORK, -1, INFO )
             ELSE IF( WANTVR ) THEN
                MAXWRK = MAX( MAXWRK, N + ( N - 1 )*ILAENV( 1, 'ZUNGHR',
      $                       ' ', N, 1, N, -1 ) )
+               CALL ZTREVC3( 'R', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR,
+     $                       N, NOUT, WORK, -1, RWORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, N + LWORK_TREVC )
                CALL ZHSEQR( 'S', 'V', N, 1, N, A, LDA, W, VR, LDVR,
-     $                WORK, -1, INFO )
+     $                      WORK, -1, INFO )
             ELSE
                CALL ZHSEQR( 'E', 'N', N, 1, N, A, LDA, W, VR, LDVR,
-     $                WORK, -1, INFO )
+     $                      WORK, -1, INFO )
             END IF
-            HSWORK = WORK( 1 )
+            HSWORK = INT( WORK(1) )
             MAXWRK = MAX( MAXWRK, HSWORK, MINWRK )
          END IF
          WORK( 1 ) = MAXWRK
@@ -404,20 +417,21 @@
      $                WORK( IWRK ), LWORK-IWRK+1, INFO )
       END IF
 *
-*     If INFO > 0 from ZHSEQR, then quit
+*     If INFO .NE. 0 from ZHSEQR, then quit
 *
-      IF( INFO.GT.0 )
+      IF( INFO.NE.0 )
      $   GO TO 50
 *
       IF( WANTVL .OR. WANTVR ) THEN
 *
 *        Compute left and/or right eigenvectors
-*        (CWorkspace: need 2*N)
+*        (CWorkspace: need 2*N, prefer N + 2*N*NB)
 *        (RWorkspace: need 2*N)
 *
          IRWORK = IBAL + N
-         CALL ZTREVC( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
-     $                N, NOUT, WORK( IWRK ), RWORK( IRWORK ), IERR )
+         CALL ZTREVC3( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
+     $                 N, NOUT, WORK( IWRK ), LWORK-IWRK+1,
+     $                 RWORK( IRWORK ), N, IERR )
       END IF
 *
       IF( WANTVL ) THEN
@@ -436,10 +450,10 @@
             CALL ZDSCAL( N, SCL, VL( 1, I ), 1 )
             DO 10 K = 1, N
                RWORK( IRWORK+K-1 ) = DBLE( VL( K, I ) )**2 +
-     $                               DIMAG( VL( K, I ) )**2
+     $                               AIMAG( VL( K, I ) )**2
    10       CONTINUE
             K = IDAMAX( N, RWORK( IRWORK ), 1 )
-            TMP = DCONJG( VL( K, I ) ) / SQRT( RWORK( IRWORK+K-1 ) )
+            TMP = CONJG( VL( K, I ) ) / SQRT( RWORK( IRWORK+K-1 ) )
             CALL ZSCAL( N, TMP, VL( 1, I ), 1 )
             VL( K, I ) = DCMPLX( DBLE( VL( K, I ) ), ZERO )
    20    CONTINUE
@@ -461,10 +475,10 @@
             CALL ZDSCAL( N, SCL, VR( 1, I ), 1 )
             DO 30 K = 1, N
                RWORK( IRWORK+K-1 ) = DBLE( VR( K, I ) )**2 +
-     $                               DIMAG( VR( K, I ) )**2
+     $                               AIMAG( VR( K, I ) )**2
    30       CONTINUE
             K = IDAMAX( N, RWORK( IRWORK ), 1 )
-            TMP = DCONJG( VR( K, I ) ) / SQRT( RWORK( IRWORK+K-1 ) )
+            TMP = CONJG( VR( K, I ) ) / SQRT( RWORK( IRWORK+K-1 ) )
             CALL ZSCAL( N, TMP, VR( 1, I ), 1 )
             VR( K, I ) = DCMPLX( DBLE( VR( K, I ) ), ZERO )
    40    CONTINUE

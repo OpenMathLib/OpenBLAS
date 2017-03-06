@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
 
 if (${CORE} STREQUAL "PPC440")
   set(MEMORY memory_qalloc.c)
@@ -33,6 +33,7 @@ set(COMMON_SOURCES
   xerbla.c
   openblas_set_num_threads.c
   openblas_error_handle.c
+  openblas_env.c
   openblas_get_num_procs.c
   openblas_get_num_threads.c
 )

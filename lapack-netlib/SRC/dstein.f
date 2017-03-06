@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DSTEIN + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstein.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dstein.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstein.f"> 
+*> Download DSTEIN + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstein.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dstein.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstein.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DSTEIN( N, D, E, M, W, IBLOCK, ISPLIT, Z, LDZ, WORK,
 *                          IWORK, IFAIL, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDZ, M, N
 *       ..
@@ -29,7 +29,7 @@
 *      $                   IWORK( * )
 *       DOUBLE PRECISION   D( * ), E( * ), W( * ), WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -161,12 +161,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -174,10 +174,10 @@
       SUBROUTINE DSTEIN( N, D, E, M, W, IBLOCK, ISPLIT, Z, LDZ, WORK,
      $                   IWORK, IFAIL, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDZ, M, N
@@ -209,8 +209,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            IDAMAX
-      DOUBLE PRECISION   DASUM, DDOT, DLAMCH, DNRM2
-      EXTERNAL           IDAMAX, DASUM, DDOT, DLAMCH, DNRM2
+      DOUBLE PRECISION   DDOT, DLAMCH, DNRM2
+      EXTERNAL           IDAMAX, DDOT, DLAMCH, DNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DAXPY, DCOPY, DLAGTF, DLAGTS, DLARNV, DSCAL,
@@ -297,7 +297,7 @@
          BLKSIZ = BN - B1 + 1
          IF( BLKSIZ.EQ.1 )
      $      GO TO 60
-         GPIND = B1
+         GPIND = J1
 *
 *        Compute reorthogonalization criterion and stopping criterion.
 *
@@ -370,9 +370,10 @@
 *
 *           Normalize and scale the righthand side vector Pb.
 *
+            JMAX = IDAMAX( BLKSIZ, WORK( INDRV1+1 ), 1 )
             SCL = BLKSIZ*ONENRM*MAX( EPS,
      $            ABS( WORK( INDRV4+BLKSIZ ) ) ) /
-     $            DASUM( BLKSIZ, WORK( INDRV1+1 ), 1 )
+     $            ABS( WORK( INDRV1+JMAX ) )
             CALL DSCAL( BLKSIZ, SCL, WORK( INDRV1+1 ), 1 )
 *
 *           Solve the system LU = Pb.

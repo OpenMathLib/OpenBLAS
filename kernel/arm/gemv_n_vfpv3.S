@@ -62,6 +62,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define M	[fp, #-252 ]
 #define A	[fp, #-256 ]
 
+#define FP_ZERO [fp, #-228]
+#define FP_ZERO_0 [fp, #-228]
+#define FP_ZERO_1 [fp, #-224]
+
 
 #define X_PRE	64
 #define Y_PRE	0
@@ -79,7 +83,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	pld     [ YO , #Y_PRE ]
 	pld     [ YO , #Y_PRE+32 ]
 
-	vsub.f64	d24 , d24 , d24
+	fldd		d24 , FP_ZERO
 	vmov.f64	d25 , d24
 	vmov.f64	d26 , d24
 	vmov.f64	d27 , d24
@@ -147,7 +151,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vsub.f64	d24 , d24 , d24
+	fldd		d24 , FP_ZERO
 
 .endm
 
@@ -175,7 +179,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S8
 
-	vsub.f64	d24 , d24 , d24
+	fldd		d24 , FP_ZERO
 	vmov.f64	d25 , d24
 	vmov.f64	d26 , d24
 	vmov.f64	d27 , d24
@@ -269,7 +273,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vsub.f64	d24 , d24 , d24
+	fldd		d24 , FP_ZERO
 
 .endm
 
@@ -302,7 +306,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	pld     [ YO , #Y_PRE ]
 
-	vsub.f32	s24 , s24 , s24
+	flds		s24 , FP_ZERO
 	vmov.f32	s25 , s24
 	vmov.f32	s26 , s24
 	vmov.f32	s27 , s24
@@ -368,7 +372,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_F1
 
-	vsub.f32	s24 , s24 , s24
+	flds		s24 , FP_ZERO
 
 .endm
 
@@ -396,7 +400,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S8
 
-	vsub.f32	s24 , s24 , s24
+	flds		s24 , FP_ZERO
 	vmov.f32	s25 , s24
 	vmov.f32	s26 , s24
 	vmov.f32	s27 , s24
@@ -489,7 +493,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT_S1
 
-	vsub.f32	s24 , s24 , s24
+	flds		s24 , FP_ZERO
 
 .endm
 
@@ -537,6 +541,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
         vstm    r12, { s8 - s31 }                                 // store floating point registers
 #endif
+
+        movs    r12, #0
+        str     r12, FP_ZERO
+        str     r12, FP_ZERO_1
 
 	cmp	OLD_M, #0
 	ble	gemvn_kernel_L999

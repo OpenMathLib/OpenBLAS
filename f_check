@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+$hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
+
 #
 # 1. Not specified
 #   1.1 Automatically detect, then check compiler
@@ -112,7 +114,7 @@ if ($compiler eq "") {
 	    $openmp = "-mp";
 	}
 
-	if ($data =~ /IBM/) {
+	if ($data =~ /IBM XL/) {
 	    $vendor = IBM;
 	    $openmp = "-openmp";
 	}
@@ -221,7 +223,12 @@ if (!$?) {
 	}
        #For gfortran MIPS
 	if ($?) {
-	    $link = `$compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
+    $mips_data = `$compiler_bin -E -dM - < /dev/null`;
+    if ($mips_data =~ /_MIPS_ISA_MIPS64/) {
+        $link = `$compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
+    } else {
+        $link = `$compiler $openmp -mabi=32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
+    }
 	}
 	$binary = "" if ($?);
     }
@@ -272,8 +279,15 @@ if ($link ne "") {
 	}
 
 	if ($flags =~ /^\-Y/) {
+	    next if ($hostos eq 'SunOS');
 	    $linker_L .= "-Wl,". $flags . " ";
-	    }
+        }
+
+	if ($flags =~ /^\--exclude-libs/) {
+	    $linker_L .= "-Wl,". $flags . " ";
+	    $flags="";
+	}
+
 
 	if ($flags =~ /^\-rpath\@/) {
 	    $flags =~ s/\@/\,/g;

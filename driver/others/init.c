@@ -361,6 +361,9 @@ static void numa_mapping(void) {
   unsigned long work, bit;
   int count = 0;
   int bitmask_idx = 0;
+  int current_cpu;
+  int current_node = 0;
+  int cpu_count = 0;
 
   for (node = 0; node < common -> num_nodes; node ++) {
     core = 0;
@@ -382,33 +385,84 @@ static void numa_mapping(void) {
     fprintf(stderr, "CPU (%2d) : %08lx\n", cpu, common -> cpu_info[cpu]);
 #endif
 
-  h = 1;
+  current_cpu = sched_getcpu();
+  for (cpu = 0; cpu < count; cpu++) {
+    if (READ_CPU(common -> cpu_info[cpu]) == current_cpu) {
+      current_node = READ_NODE(common -> cpu_info[cpu]);
+      break;
+    }
+  }
+  for (i = 0; i < MAX_BITMASK_LEN; i++)
+    cpu_count += popcount(common -> node_info[current_node][i] & common -> avail[i]);
 
-  while (h < count) h = 2 * h + 1;
+  /*
+   * If all the processes can be accommodated in the
+   * in the current node itself, then bind to cores
+   * from the current node only
+   */
+  if (numprocs <= cpu_count) {
+    /*
+     * First sort all the cores in order from the current node.
+     * Then take remaining nodes one by one in order,
+     * and sort their cores in order.
+     */
+    for (i = 0; i < count; i++) {
+      for (j = 0; j < count - 1; j++) {
+        int node_1, node_2;
+        int core_1, core_2;
+        int swap = 0;
 
-  while (h > 1) {
-    h /= 2;
-    for (i = h; i < count; i++) {
-      work = common -> cpu_info[i];
-      bit  = CPU_ISSET(i, &cpu_orig_mask[0]);
-      j = i - h;
-      while (work < common -> cpu_info[j]) {
-	common -> cpu_info[j + h] = common -> cpu_info[j];
-	if (CPU_ISSET(j, &cpu_orig_mask[0])) {
-	  CPU_SET(j + h, &cpu_orig_mask[0]);
-	} else {
-	  CPU_CLR(j + h, &cpu_orig_mask[0]);
-	}
-	j -= h;
-	if (j < 0) break;
+        node_1 = READ_NODE(common -> cpu_info[j]);
+        node_2 = READ_NODE(common -> cpu_info[j + 1]);
+        core_1 = READ_CORE(common -> cpu_info[j]);
+        core_2 = READ_CORE(common -> cpu_info[j + 1]);
+
+        if (node_1 == node_2) {
+          if (core_1 > core_2)
+            swap = 1;
+        } else {
+          if ((node_2 == current_node) ||
+              ((node_1 != current_node) && (node_1 > node_2)))
+            swap = 1;
+        }
+        if (swap) {
+          unsigned long temp;
+
+          temp = common->cpu_info[j];
+          common->cpu_info[j] = common->cpu_info[j + 1];
+          common->cpu_info[j + 1] = temp;
+        }
       }
-      common -> cpu_info[j + h] = work;
-      if (bit) {
-	CPU_SET(j + h, &cpu_orig_mask[0]);
-      } else {
-	CPU_CLR(j + h, &cpu_orig_mask[0]);
-      }
+    }
+  } else {
+    h = 1;
 
+    while (h < count) h = 2 * h + 1;
+
+    while (h > 1) {
+      h /= 2;
+      for (i = h; i < count; i++) {
+        work = common -> cpu_info[i];
+        bit  = CPU_ISSET(i, &cpu_orig_mask[0]);
+        j = i - h;
+        while (work < common -> cpu_info[j]) {
+          common -> cpu_info[j + h] = common -> cpu_info[j];
+          if (CPU_ISSET(j, &cpu_orig_mask[0])) {
+            CPU_SET(j + h, &cpu_orig_mask[0]);
+          } else {
+            CPU_CLR(j + h, &cpu_orig_mask[0]);
+          }
+          j -= h;
+          if (j < 0) break;
+        }
+        common -> cpu_info[j + h] = work;
+        if (bit) {
+          CPU_SET(j + h, &cpu_orig_mask[0]);
+        } else {
+          CPU_CLR(j + h, &cpu_orig_mask[0]);
+        }
+
+      }
     }
   }
 
@@ -416,7 +470,10 @@ static void numa_mapping(void) {
   fprintf(stderr, "\nSorting ...\n\n");
 
   for (cpu = 0; cpu < count; cpu++)
-    fprintf(stderr, "CPU (%2d) : %08lx\n", cpu, common -> cpu_info[cpu]);
+    fprintf(stderr, "CPUINFO (%2d) : %08lx (CPU=%3lu CORE=%3lu NODE=%3lu)\n", cpu, common -> cpu_info[cpu],
+      READ_CPU(common -> cpu_info[cpu]),
+      READ_CORE(common -> cpu_info[cpu]),
+      READ_NODE(common -> cpu_info[cpu]));
 #endif
 
 }
@@ -757,7 +814,7 @@ void gotoblas_affinity_init(void) {
 #endif
 
     //returns the number of processors which are currently online
-    common -> num_procs = sysconf(_SC_NPROCESSORS_ONLN);;
+    common -> num_procs = sysconf(_SC_NPROCESSORS_CONF);;
 
     if(common -> num_procs > MAX_CPUS) {
       fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(%d). Terminated.\n", common->num_procs, MAX_CPUS);
@@ -866,7 +923,7 @@ void gotoblas_set_affinity2(int threads) {};
 
 void gotoblas_affinity_reschedule(void) {};
 
-int get_num_procs(void) { return sysconf(_SC_NPROCESSORS_ONLN); }
+int get_num_procs(void) { return sysconf(_SC_NPROCESSORS_CONF); }
 
 int get_num_nodes(void) { return 1; }
 

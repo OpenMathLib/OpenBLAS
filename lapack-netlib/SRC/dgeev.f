@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGEEV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgeev.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgeev.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgeev.f"> 
+*> Download DGEEV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgeev.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgeev.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgeev.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGEEV( JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR,
 *                         LDVR, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBVL, JOBVR
 *       INTEGER            INFO, LDA, LDVL, LDVR, LWORK, N
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WI( * ), WORK( * ), WR( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -176,23 +176,26 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
+*
+*  @precisions fortran d -> s
 *
 *> \ingroup doubleGEeigen
 *
 *  =====================================================================
       SUBROUTINE DGEEV( JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR,
      $                  LDVR, WORK, LWORK, INFO )
+      implicit none
 *
-*  -- LAPACK driver routine (version 3.4.2) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR
@@ -213,7 +216,7 @@
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR
       CHARACTER          SIDE
       INTEGER            HSWORK, I, IBAL, IERR, IHI, ILO, ITAU, IWRK, K,
-     $                   MAXWRK, MINWRK, NOUT
+     $                   LWORK_TREVC, MAXWRK, MINWRK, NOUT
       DOUBLE PRECISION   ANRM, BIGNUM, CS, CSCALE, EPS, R, SCL, SMLNUM,
      $                   SN
 *     ..
@@ -223,7 +226,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLABAD, DLACPY,
-     $                   DLARTG, DLASCL, DORGHR, DROT, DSCAL, DTREVC,
+     $                   DLARTG, DLASCL, DORGHR, DROT, DSCAL, DTREVC3,
      $                   XERBLA
 *     ..
 *     .. External Functions ..
@@ -279,24 +282,34 @@
                MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
      $                       'DORGHR', ' ', N, 1, N, -1 ) )
                CALL DHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VL, LDVL,
-     $                WORK, -1, INFO )
-               HSWORK = WORK( 1 )
+     $                      WORK, -1, INFO )
+               HSWORK = INT( WORK(1) )
                MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
+               CALL DTREVC3( 'L', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR, N, NOUT,
+     $                       WORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, N + LWORK_TREVC )
                MAXWRK = MAX( MAXWRK, 4*N )
             ELSE IF( WANTVR ) THEN
                MINWRK = 4*N
                MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
      $                       'DORGHR', ' ', N, 1, N, -1 ) )
                CALL DHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VR, LDVR,
-     $                WORK, -1, INFO )
-               HSWORK = WORK( 1 )
+     $                      WORK, -1, INFO )
+               HSWORK = INT( WORK(1) )
                MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
+               CALL DTREVC3( 'R', 'B', SELECT, N, A, LDA,
+     $                       VL, LDVL, VR, LDVR, N, NOUT,
+     $                       WORK, -1, IERR )
+               LWORK_TREVC = INT( WORK(1) )
+               MAXWRK = MAX( MAXWRK, N + LWORK_TREVC )
                MAXWRK = MAX( MAXWRK, 4*N )
-            ELSE 
+            ELSE
                MINWRK = 3*N
                CALL DHSEQR( 'E', 'N', N, 1, N, A, LDA, WR, WI, VR, LDVR,
-     $                WORK, -1, INFO )
-               HSWORK = WORK( 1 )
+     $                      WORK, -1, INFO )
+               HSWORK = INT( WORK(1) )
                MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
             END IF
             MAXWRK = MAX( MAXWRK, MINWRK )
@@ -418,18 +431,18 @@
      $                WORK( IWRK ), LWORK-IWRK+1, INFO )
       END IF
 *
-*     If INFO > 0 from DHSEQR, then quit
+*     If INFO .NE. 0 from DHSEQR, then quit
 *
-      IF( INFO.GT.0 )
+      IF( INFO.NE.0 )
      $   GO TO 50
 *
       IF( WANTVL .OR. WANTVR ) THEN
 *
 *        Compute left and/or right eigenvectors
-*        (Workspace: need 4*N)
+*        (Workspace: need 4*N, prefer N + N + 2*N*NB)
 *
-         CALL DTREVC( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
-     $                N, NOUT, WORK( IWRK ), IERR )
+         CALL DTREVC3( SIDE, 'B', SELECT, N, A, LDA, VL, LDVL, VR, LDVR,
+     $                 N, NOUT, WORK( IWRK ), LWORK-IWRK+1, IERR )
       END IF
 *
       IF( WANTVL ) THEN

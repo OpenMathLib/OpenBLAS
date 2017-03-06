@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLARRC + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slarrc.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slarrc.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slarrc.f"> 
+*> Download SLARRC + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slarrc.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slarrc.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slarrc.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLARRC( JOBT, N, VL, VU, D, E, PIVMIN,
 *                                   EIGCNT, LCNT, RCNT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBT
 *       INTEGER            EIGCNT, INFO, LCNT, N, RCNT
@@ -29,7 +29,7 @@
 *       .. Array Arguments ..
 *       REAL               D( * ), E( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -59,25 +59,26 @@
 *>
 *> \param[in] VL
 *> \verbatim
-*>          VL is DOUBLE PRECISION
+*>          VL is REAL
+*>          The lower bound for the eigenvalues.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
-*>          VU is DOUBLE PRECISION
-*>          The lower and upper bounds for the eigenvalues.
+*>          VU is REAL
+*>          The upper bound for the eigenvalues.
 *> \endverbatim
 *>
 *> \param[in] D
 *> \verbatim
-*>          D is DOUBLE PRECISION array, dimension (N)
+*>          D is REAL array, dimension (N)
 *>          JOBT = 'T': The N diagonal elements of the tridiagonal matrix T.
 *>          JOBT = 'L': The N diagonal elements of the diagonal matrix D.
 *> \endverbatim
 *>
 *> \param[in] E
 *> \verbatim
-*>          E is DOUBLE PRECISION array, dimension (N)
+*>          E is REAL array, dimension (N)
 *>          JOBT = 'T': The N-1 offdiagonal elements of the matrix T.
 *>          JOBT = 'L': The N-1 offdiagonal elements of the matrix L.
 *> \endverbatim
@@ -114,14 +115,14 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -136,10 +137,10 @@
       SUBROUTINE SLARRC( JOBT, N, VL, VU, D, E, PIVMIN,
      $                            EIGCNT, LCNT, RCNT, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBT

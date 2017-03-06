@@ -1,4 +1,4 @@
-# ifeq logical or
+ifeq logical or
 ifeq ($(CORE), $(filter $(CORE),CORTEXA9 CORTEXA15))
 ifeq ($(OSNAME), Android)
 CCOMMON_OPT += -mfpu=neon  -march=armv7-a
@@ -11,8 +11,13 @@ endif
 
 ifeq ($(CORE), ARMV7)
 ifeq ($(OSNAME), Android)
+ifeq ($(ARM_SOFTFP), 1)
 CCOMMON_OPT += -mfpu=neon -march=armv7-a
 FCOMMON_OPT += -mfpu=neon -march=armv7-a
+else
+CCOMMON_OPT += -marm -mfpu=neon  -mfloat-abi=hard -march=armv7-a -Wl,--no-warn-mismatch
+FCOMMON_OPT += -marm -mfpu=neon  -mfloat-abi=hard -march=armv7-a -Wl,--no-warn-mismatch
+endif
 else
 CCOMMON_OPT += -mfpu=vfpv3 -march=armv7-a
 FCOMMON_OPT += -mfpu=vfpv3 -march=armv7-a
@@ -29,5 +34,3 @@ ifeq ($(CORE), ARMV5)
 CCOMMON_OPT += -marm -march=armv5
 FCOMMON_OPT += -marm -march=armv5
 endif
-
-

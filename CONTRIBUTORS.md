@@ -121,6 +121,17 @@ In chronological order:
   * [2014-10-10] trmm and sgemm kernels (optimized for APM's X-Gene 1).
                  ARMv8 support.
 
+* Jerome Robert <jeromerobert@gmx.com>
+  * [2015-01-01] Speed-up small `ger` and `gemv` using stack allocation (bug #478)
+  * [2015-12-23] `stack_check` in `gemv.c` (bug #722)
+  * [2015-12-28] Allow to force the number of parallel make job
+  * [2015-12-28] Fix detection of AMD E2-3200 detection
+  * [2015-12-31] Let `make MAX_STACK_ALLOC=0` do what expected
+  * [2016-01-19] Disable multi-threading in `ger` and `swap` for small matrices (bug #731)
+  * [2016-01-24] Use `GEMM_MULTITHREAD_THRESHOLD` as a number of ops (bug #742)
+  * [2016-01-26] Let `openblas_get_num_threads` return the number of active threads (bug #760)
+  * [2016-01-30] Speed-up small `zger`, `zgemv`, `ztrmv` using stack allocation (bug #727)
+
 * Dan Kortschak
   * [2015-01-07] Added test for drotmg bug #484.
 
@@ -130,5 +141,29 @@ In chronological order:
 * Martin Koehler <https://github.com/grisuthedragon/>
   * [2015-09-07] Improved imatcopy
 
-* [Your name or handle] <[email or website]>
-  * [Date] [Brief summary of your changes]
+* Ashwin Sekhar T K <https://github.com/ashwinyes/>
+  * [2015-11-09] Assembly kernels for Cortex-A57 (ARMv8)
+  * [2015-11-20] lapack-test fixes for Cortex-A57
+  * [2016-03-14] Additional functional Assembly Kernels for Cortex-A57
+  * [2016-03-14] Optimize Dgemm 4x4 for Cortex-A57
+
+* theoractice <https://github.com/theoractice/>
+  * [2016-03-20] Fix compiler error in VisualStudio with CMake
+  * [2016-03-22] Fix access violation on Windows while static linking
+
+* Paul Mustière <https://github.com/buffer51/>
+  * [2016-02-04] Fix Android build on ARMV7
+  * [2016-04-26] Android build with LAPACK for ARMV7 & ARMV8
+
+* Shivraj Patil <https://github.com/sva-img/>
+  * [2016-05-03] DGEMM optimization for MIPS P5600 and I6400 using MSA
+
+* Kaustubh Raste <https://github.com/ksraste/>
+  * [2016-05-09] DTRSM optimization for MIPS P5600 and I6400 using MSA
+  * [2016-05-20] STRSM optimization for MIPS P5600 and I6400 using MSA
+
+* Abdelrauf  <https://github.com/quickwritereader>
+  * [2017-01-01] dgemm and dtrmm kernels for IBM z13
+  * [2017-02-26] ztrmm kernel for IBM z13
+
+

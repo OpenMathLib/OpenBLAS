@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DCHKHS( NSIZES, NN, NTYPES, DOTYPE, ISEED, THRESH,
 *                          NOUNIT, A, LDA, H, T1, T2, U, LDU, Z, UZ, WR1,
-*                          WI1, WR3, WI3, EVECTL, EVECTR, EVECTY, EVECTX,
-*                          UU, TAU, WORK, NWORK, IWORK, SELECT, RESULT,
-*                          INFO )
-* 
+*                          WI1, WR2, WI2, WR3, WI3, EVECTL, EVECTR, EVECTY,
+*                          EVECTX, UU, TAU, WORK, NWORK, IWORK, SELECT,
+*                          RESULT, INFO )
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDU, NOUNIT, NSIZES, NTYPES, NWORK
 *       DOUBLE PRECISION   THRESH
@@ -26,10 +26,10 @@
 *      $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 14 ),
 *      $                   T1( LDA, * ), T2( LDA, * ), TAU( * ),
 *      $                   U( LDU, * ), UU( LDU, * ), UZ( LDU, * ),
-*      $                   WI1( * ), WI3( * ), WORK( * ), WR1( * ),
-*      $                   WR3( * ), Z( LDU, * )
+*      $                   WI1( * ), WI2( * ), WI3( * ), WORK( * ),
+*      $                   WR1( * ), WR2( * ), WR3( * ), Z( LDU, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -268,6 +268,13 @@
 *>           On exit, WR1 + WI1*i are the eigenvalues of the matrix in A.
 *>           Modified.
 *>
+*>  WR2    - DOUBLE PRECISION array, dimension (max(NN))
+*>  WI2    - DOUBLE PRECISION array, dimension (max(NN))
+*>           The real and imaginary parts of the eigenvalues of A,
+*>           as computed when T is computed but not Z.
+*>           On exit, WR2 + WI2*i are the eigenvalues of the matrix in A.
+*>           Modified.
+*>
 *>  WR3    - DOUBLE PRECISION array, dimension (max(NN))
 *>  WI3    - DOUBLE PRECISION array, dimension (max(NN))
 *>           Like WR1, WI1, these arrays contain the eigenvalues of A,
@@ -389,26 +396,26 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DCHKHS( NSIZES, NN, NTYPES, DOTYPE, ISEED, THRESH,
      $                   NOUNIT, A, LDA, H, T1, T2, U, LDU, Z, UZ, WR1,
-     $                   WI1, WR3, WI3, EVECTL, EVECTR, EVECTY, EVECTX,
-     $                   UU, TAU, WORK, NWORK, IWORK, SELECT, RESULT,
-     $                   INFO )
+     $                   WI1, WR2, WI2, WR3, WI3, EVECTL, EVECTR,
+     $                   EVECTY, EVECTX, UU, TAU, WORK, NWORK, IWORK,
+     $                   SELECT, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, NOUNIT, NSIZES, NTYPES, NWORK
@@ -422,8 +429,8 @@
      $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 14 ),
      $                   T1( LDA, * ), T2( LDA, * ), TAU( * ),
      $                   U( LDU, * ), UU( LDU, * ), UZ( LDU, * ),
-     $                   WI1( * ), WI3( * ), WORK( * ), WR1( * ),
-     $                   WR3( * ), Z( LDU, * )
+     $                   WI1( * ), WI2( * ), WI3( * ), WORK( * ),
+     $                   WR1( * ), WR2( * ), WR3( * ), Z( LDU, * )
 *     ..
 *
 *  =====================================================================
@@ -770,11 +777,11 @@
                END IF
             END IF
 *
-*           Eigenvalues (WR1,WI1) and Full Schur Form (T2)
+*           Eigenvalues (WR2,WI2) and Full Schur Form (T2)
 *
             CALL DLACPY( ' ', N, N, H, LDA, T2, LDA )
 *
-            CALL DHSEQR( 'S', 'N', N, ILO, IHI, T2, LDA, WR1, WI1, UZ,
+            CALL DHSEQR( 'S', 'N', N, ILO, IHI, T2, LDA, WR2, WI2, UZ,
      $                   LDU, WORK, NWORK, IINFO )
             IF( IINFO.NE.0 .AND. IINFO.LE.N+2 ) THEN
                WRITE( NOUNIT, FMT = 9999 )'DHSEQR(S)', IINFO, N, JTYPE,
@@ -787,7 +794,7 @@
 *           (UZ)
 *
             CALL DLACPY( ' ', N, N, H, LDA, T1, LDA )
-            CALL DLACPY( ' ', N, N, U, LDU, UZ, LDA )
+            CALL DLACPY( ' ', N, N, U, LDU, UZ, LDU )
 *
             CALL DHSEQR( 'S', 'V', N, ILO, IHI, T1, LDA, WR1, WI1, UZ,
      $                   LDU, WORK, NWORK, IINFO )
@@ -820,15 +827,15 @@
 *
             CALL DGET10( N, N, T2, LDA, T1, LDA, WORK, RESULT( 7 ) )
 *
-*           Do Test 8: | W3 - W1 | / ( max(|W1|,|W3|) ulp )
+*           Do Test 8: | W2 - W1 | / ( max(|W1|,|W2|) ulp )
 *
             TEMP1 = ZERO
             TEMP2 = ZERO
             DO 130 J = 1, N
                TEMP1 = MAX( TEMP1, ABS( WR1( J ) )+ABS( WI1( J ) ),
-     $                 ABS( WR3( J ) )+ABS( WI3( J ) ) )
-               TEMP2 = MAX( TEMP2, ABS( WR1( J )-WR3( J ) )+
-     $                 ABS( WR1( J )-WR3( J ) ) )
+     $                 ABS( WR2( J ) )+ABS( WI2( J ) ) )
+               TEMP2 = MAX( TEMP2, ABS( WR1( J )-WR2( J ) )+
+     &                 ABS( WI1( J )-WI2( J ) ) )
   130       CONTINUE
 *
             RESULT( 8 ) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )

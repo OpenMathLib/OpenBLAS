@@ -7,10 +7,6 @@ ifneq ($(DYNAMIC_ARCH), 1)
 BLASDIRS += kernel
 endif
 
-ifdef UTEST_CHECK
-SANITY_CHECK = 1
-endif
-
 ifdef SANITY_CHECK
 BLASDIRS += reference
 endif
@@ -85,22 +81,22 @@ endif
 
 shared :
 ifndef NO_SHARED
-ifeq ($(OSNAME), Linux)
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS))
 	@$(MAKE) -C exports so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), FreeBSD)
 	@$(MAKE) -C exports so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), NetBSD)
 	@$(MAKE) -C exports so
-	@-ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), Darwin)
 	@$(MAKE) -C exports dyn
-	@-ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
+	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
 endif
 ifeq ($(OSNAME), WINNT)
 	@$(MAKE) -C exports dll
@@ -112,19 +108,13 @@ endif
 
 tests :
 ifndef NOFORTRAN
-ifndef TARGET
-ifndef CROSS
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
-ifdef UTEST_CHECK
 	$(MAKE) -C utest all
-endif
 endif
 ifndef NO_CBLAS
 	$(MAKE) -C ctest all
-endif
-endif
 endif
 endif
 
@@ -249,16 +239,23 @@ ifndef NOFORTRAN
 	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CEXTRALIB   = $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
-ifeq ($(FC), gfortran)
+ifeq ($(F_COMPILER), GFORTRAN)
 	-@echo "TIMER       = INT_ETIME" >> $(NETLIB_LAPACK_DIR)/make.inc
 ifdef SMP
+ifeq ($(OSNAME), WINNT)
+	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
 	-@echo "LOADER      = $(FC) -pthread" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 else
 	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 else
 	-@echo "TIMER       = NONE" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_LAPACK_DEPRECATED), 1)
+	-@echo "BUILD_DEPRECATED      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
@@ -281,18 +278,28 @@ lapack-timing : large.tgz timing.tgz
 ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
-	make -C $(NETLIB_LAPACK_DIR)/TIMING
+	$(MAKE) -C $(NETLIB_LAPACK_DIR)/TIMING
 endif
 
 
 lapack-test :
 	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
-	make -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+ifneq ($(CROSS), 1)
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
+        ./testsecond; ./testdsecnd; ./testieee; ./testversion )
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+endif
+
+lapack-runtest:
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
+        ./testsecond; ./testdsecnd; ./testieee; ./testversion )
+	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+
 
 blas-test:
 	(cd $(NETLIB_LAPACK_DIR)/BLAS && rm -f x* *.out)
-	make -j 1 -C $(NETLIB_LAPACK_DIR) blas_testing
+	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR) blas_testing
 	(cd $(NETLIB_LAPACK_DIR)/BLAS && cat *.out)
 
 

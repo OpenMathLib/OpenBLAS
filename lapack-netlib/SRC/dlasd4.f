@@ -140,9 +140,9 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -153,10 +153,10 @@
 *  =====================================================================
       SUBROUTINE DLASD4( N, I, D, Z, DELTA, RHO, SIGMA, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.5.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            I, INFO, N
@@ -331,7 +331,7 @@
          TEMP = Z( N ) / ( DELTA( N )*WORK( N ) )
          PHI = Z( N )*TEMP
          DPHI = TEMP*TEMP
-         ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV  
+         ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV
 *    $          + ABS( TAU2 )*( DPSI+DPHI )
 *
          W = RHOINV + PHI + PSI
@@ -400,7 +400,7 @@
          TEMP = Z( N ) / TAU2
          PHI = Z( N )*TEMP
          DPHI = TEMP*TEMP
-         ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV  
+         ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV
 *    $          + ABS( TAU2 )*( DPSI+DPHI )
 *
          W = RHOINV + PHI + PSI
@@ -470,7 +470,7 @@
             TEMP = Z( N ) / TAU2
             PHI = Z( N )*TEMP
             DPHI = TEMP*TEMP
-            ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV  
+            ERRETM = EIGHT*( -PHI-PSI ) + ERRETM - PHI + RHOINV
 *    $             + ABS( TAU2 )*( DPSI+DPHI )
 *
             W = RHOINV + PHI + PSI
@@ -622,8 +622,8 @@
          DW = DPSI + DPHI + TEMP*TEMP
          TEMP = Z( II )*TEMP
          W = W + TEMP
-         ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV 
-     $          + THREE*ABS( TEMP ) 
+         ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV
+     $          + THREE*ABS( TEMP )
 *    $          + ABS( TAU2 )*DW
 *
 *        Test for convergence
@@ -703,7 +703,7 @@
 *
             IF( INFO.NE.0 ) THEN
 *
-*              If INFO is not 0, i.e., DLAED6 failed, switch back 
+*              If INFO is not 0, i.e., DLAED6 failed, switch back
 *              to 2 pole interpolation.
 *
                SWTCH3 = .FALSE.
@@ -803,8 +803,8 @@
          DW = DPSI + DPHI + TEMP*TEMP
          TEMP = Z( II )*TEMP
          W = RHOINV + PHI + PSI + TEMP
-         ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV 
-     $          + THREE*ABS( TEMP ) 
+         ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV
+     $          + THREE*ABS( TEMP )
 *    $          + ABS( TAU2 )*DW
 *
          SWTCH = .FALSE.
@@ -922,7 +922,7 @@
 *
                IF( INFO.NE.0 ) THEN
 *
-*                 If INFO is not 0, i.e., DLAED6 failed, switch 
+*                 If INFO is not 0, i.e., DLAED6 failed, switch
 *                 back to two pole interpolation
 *
                   SWTCH3 = .FALSE.
@@ -1038,8 +1038,8 @@
             DW = DPSI + DPHI + TEMP*TEMP
             TEMP = Z( II )*TEMP
             W = RHOINV + PHI + PSI + TEMP
-            ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV 
-     $             + THREE*ABS( TEMP ) 
+            ERRETM = EIGHT*( PHI-PSI ) + ERRETM + TWO*RHOINV
+     $             + THREE*ABS( TEMP )
 *    $             + ABS( TAU2 )*DW
 *
             IF( W*PREW.GT.ZERO .AND. ABS( W ).GT.ABS( PREW ) / TEN )

@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTGEVC + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtgevc.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtgevc.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtgevc.f"> 
+*> Download DTGEVC + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtgevc.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtgevc.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtgevc.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DTGEVC( SIDE, HOWMNY, SELECT, N, S, LDS, P, LDP, VL,
 *                          LDVL, VR, LDVR, MM, M, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          HOWMNY, SIDE
 *       INTEGER            INFO, LDP, LDS, LDVL, LDVR, M, MM, N
@@ -30,8 +30,8 @@
 *       DOUBLE PRECISION   P( LDP, * ), S( LDS, * ), VL( LDVL, * ),
 *      $                   VR( LDVR, * ), WORK( * )
 *       ..
-*  
-*  
+*
+*
 *
 *> \par Purpose:
 *  =============
@@ -49,20 +49,20 @@
 *>
 *> The right eigenvector x and the left eigenvector y of (S,P)
 *> corresponding to an eigenvalue w are defined by:
-*> 
+*>
 *>    S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
-*> 
+*>
 *> where y**H denotes the conjugate tranpose of y.
 *> The eigenvalues are not input to this routine, but are computed
 *> directly from the diagonal blocks of S and P.
-*> 
+*>
 *> This routine returns the matrices X and/or Y of right and left
 *> eigenvectors of (S,P), or the products Z*X and/or Q*Y,
 *> where Z and Q are input matrices.
 *> If Q and Z are the orthogonal factors from the generalized Schur
 *> factorization of a matrix pair (A,B), then Z*X and Q*Y
 *> are the matrices of right and left eigenvectors of (A,B).
-*> 
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -179,7 +179,7 @@
 *>          A complex eigenvector corresponding to a complex eigenvalue
 *>          is stored in two consecutive columns, the first holding the
 *>          real part and the second the imaginary part.
-*>          
+*>
 *>          Not referenced if SIDE = 'L'.
 *> \endverbatim
 *>
@@ -223,12 +223,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup doubleGEcomputational
 *
@@ -295,10 +295,10 @@
       SUBROUTINE DTGEVC( SIDE, HOWMNY, SELECT, N, S, LDS, P, LDP, VL,
      $                   LDVL, VR, LDVR, MM, M, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE

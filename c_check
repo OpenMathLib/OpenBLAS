@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+use File::Basename;
+use File::Temp qw(tempfile);
+
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
@@ -7,7 +10,9 @@ $hostarch = "x86_64" if ($hostarch eq "amd64");
 $hostarch = "arm" if ($hostarch =~ /^arm.*/);
 $hostarch = "arm64" if ($hostarch eq "aarch64");
 $hostarch = "power" if ($hostarch =~ /^(powerpc|ppc).*/);
+$hostarch = "zarch" if ($hostarch eq "s390x");
 
+$tmpf = new File::Temp( UNLINK => 1 );
 $binary = $ENV{"BINARY"};
 
 $makefile = shift(@ARGV);
@@ -26,14 +31,12 @@ if ($?) {
 
 $cross_suffix = "";
 
-if ($ARGV[0] =~ /(.*)(-[.\d]+)/) {
-    if ($1 =~ /(.*-)(.*)/) {
-	$cross_suffix = $1;
-    }
-} else {
-    if ($ARGV[0] =~ /([^\/]*-)([^\/]*$)/) {
-	$cross_suffix = $1;
-    }
+if (dirname($compiler_name) ne ".") {
+    $cross_suffix .= dirname($compiler_name) . "/";
+}
+
+if (basename($compiler_name) =~ /([^\s]*-)(.*)/) {
+    $cross_suffix .= $1;
 }
 
 $compiler = "";
@@ -63,13 +66,14 @@ $os = Android         if ($data =~ /OS_ANDROID/);
 $architecture = x86    if ($data =~ /ARCH_X86/);
 $architecture = x86_64 if ($data =~ /ARCH_X86_64/);
 $architecture = power  if ($data =~ /ARCH_POWER/);
-$architecture = mips32 if ($data =~ /ARCH_MIPS32/);
+$architecture = mips   if ($data =~ /ARCH_MIPS/);
 $architecture = mips64 if ($data =~ /ARCH_MIPS64/);
 $architecture = alpha  if ($data =~ /ARCH_ALPHA/);
 $architecture = sparc  if ($data =~ /ARCH_SPARC/);
 $architecture = ia64   if ($data =~ /ARCH_IA64/);
 $architecture = arm    if ($data =~ /ARCH_ARM/);
 $architecture = arm64  if ($data =~ /ARCH_ARM64/);
+$architecture = zarch  if ($data =~ /ARCH_ZARCH/);
 
 $defined = 0;
 
@@ -79,7 +83,12 @@ if ($os eq "AIX") {
     $defined = 1;
 }
 
-if (($architecture eq "mips32") || ($architecture eq "mips64")) {
+if ($architecture eq "mips") {
+    $compiler_name .= " -mabi=32";
+    $defined = 1;
+}
+
+if ($architecture eq "mips64") {
     $compiler_name .= " -mabi=n32" if ($binary eq "32");
     $compiler_name .= " -mabi=64" if ($binary eq "64");
     $defined = 1;
@@ -87,6 +96,11 @@ if (($architecture eq "mips32") || ($architecture eq "mips64")) {
 
 if (($architecture eq "arm") || ($architecture eq "arm64")) {
     $defined = 1;
+}
+
+if ($architecture eq "zarch") {
+    $defined = 1;
+    $binary = 64;
 }
 
 if ($architecture eq "alpha") {
@@ -152,16 +166,35 @@ if ($?) {
     die 1;
 }
 
+$have_msa = 0;
+if (($architecture eq "mips") || ($architecture eq "mips64")) {
+    $code = '"addvi.b $w0, $w1, 1"';
+    $msa_flags = "-mmsa -mfp64 -msched-weight -mload-store-pairs";
+    print $tmpf "#include <msa.h>\n\n";
+    print $tmpf "void main(void){ __asm__ volatile($code); }\n";
+
+    $args = "$msa_flags -o $tmpf.o -x c $tmpf";
+    my @cmd = ("$compiler_name $args");
+    system(@cmd) == 0;
+    if ($? != 0) {
+        $have_msa = 0;
+    } else {
+        $have_msa = 1;
+    }
+    unlink("$tmpf.o");
+}
+
 $architecture = x86    if ($data =~ /ARCH_X86/);
 $architecture = x86_64 if ($data =~ /ARCH_X86_64/);
 $architecture = power  if ($data =~ /ARCH_POWER/);
-$architecture = mips32 if ($data =~ /ARCH_MIPS32/);
+$architecture = mips   if ($data =~ /ARCH_MIPS/);
 $architecture = mips64 if ($data =~ /ARCH_MIPS64/);
 $architecture = alpha  if ($data =~ /ARCH_ALPHA/);
 $architecture = sparc  if ($data =~ /ARCH_SPARC/);
 $architecture = ia64   if ($data =~ /ARCH_IA64/);
 $architecture = arm    if ($data =~ /ARCH_ARM/);
 $architecture = arm64  if ($data =~ /ARCH_ARM64/);
+$architecture = zarch  if ($data =~ /ARCH_ZARCH/);
 
 $binformat    = bin32;
 $binformat    = bin64  if ($data =~ /BINARY_64/);
@@ -209,6 +242,11 @@ $linker_a = "";
 	    $linker_L .= "-Wl,". $flags . " "
 	    }
 
+	if ($flags =~ /^\--exclude-libs/) {
+	    $linker_L .= "-Wl,". $flags . " ";
+	    $flags="";
+	   }
+
 	if (
 	    ($flags =~ /^\-l/)
 	    && ($flags !~ /gfortranbegin/)
@@ -243,9 +281,11 @@ print MAKEFILE "BINARY64=\n" if $binformat ne bin64;
 print MAKEFILE "BINARY32=1\n" if $binformat eq bin32;
 print MAKEFILE "BINARY64=1\n" if $binformat eq bin64;
 print MAKEFILE "FU=$need_fu\n" if $need_fu ne "";
-print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross_suffix ne "";
+print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross != 0 && $cross_suffix ne "";
 print MAKEFILE "CROSS=1\n" if $cross != 0;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
+print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
+print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;
@@ -257,6 +297,7 @@ print CONFFILE "#define C_$compiler\t1\n";
 print CONFFILE "#define __32BIT__\t1\n"  if $binformat eq bin32;
 print CONFFILE "#define __64BIT__\t1\n"  if $binformat eq bin64;
 print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
+print CONFFILE "#define HAVE_MSA\t1\n"  if $have_msa eq 1;
 
 if ($os eq "LINUX") {
 
