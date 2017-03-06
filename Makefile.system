@@ -480,9 +480,9 @@ BINARY_DEFINED  = 1
 CCOMMON_OPT += -marm
 FCOMMON_OPT += -marm
 
-ifeq ($(ARM_SOFT_FLOAT_ABI), 1)
-CCOMMON_OPT += -mfloat-abi=softfp
-FCOMMON_OPT += -mfloat-abi=softfp
+ifeq ($(ARM_SOFTFP_ABI), 1)
+CCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
+FCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
 else
 CCOMMON_OPT += -mfloat-abi=hard
 FCOMMON_OPT += -mfloat-abi=hard
