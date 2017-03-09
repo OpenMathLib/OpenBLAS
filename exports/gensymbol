@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 
 # Changelog
+# 2017/09/03 staticfloat
+# Added zsymv and csymv into @lapackobjs2 so they are properly renamed
+#
 # 2017/07/01 Saar
-# removed zsymv_ and csymv_ from @blasobs, because these functions 
+# removed zsymv_ and csymv_ from @blasobs, because these functions
 # are now in lapack-3.7.0
 # added blas_thread_shutdown_
 # added Cblas_cgemm3m and Cblas_zgemm3m
@@ -37,7 +40,7 @@
 	       ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv,
 	       xerbla,
 	       saxpby,daxpby,caxpby,zaxpby,
-	       sgeadd,dgeadd,cgeadd,zgeadd, 
+	       sgeadd,dgeadd,cgeadd,zgeadd,
 		somatcopy,
 		simatcopy,
 		domatcopy,
@@ -75,9 +78,9 @@
 	       cblas_ztbmv, cblas_ztbsv, cblas_ztpmv, cblas_ztpsv, cblas_ztrmm, cblas_ztrmv, cblas_ztrsm,
 	       cblas_ztrsv, cblas_cdotc_sub, cblas_cdotu_sub, cblas_zdotc_sub, cblas_zdotu_sub,
                cblas_saxpby,cblas_daxpby,cblas_caxpby,cblas_zaxpby,
-	       cblas_somatcopy, cblas_domatcopy, cblas_comatcopy, cblas_zomatcopy, 
+	       cblas_somatcopy, cblas_domatcopy, cblas_comatcopy, cblas_zomatcopy,
 	       cblas_simatcopy, cblas_dimatcopy, cblas_cimatcopy, cblas_zimatcopy,
-	       cblas_sgeadd, cblas_dgeadd,cblas_cgeadd, cblas_zgeadd 
+	       cblas_sgeadd, cblas_dgeadd,cblas_cgeadd, cblas_zgeadd
                );
 
 @exblasobjs = (
@@ -266,7 +269,7 @@
 		spotrs,
 
 		# CLASRC  -- Single precision complex LAPACK routines
-		# already provided by @blasobjs: csymv
+		# already provided by @blasobjs:
 		# already provided by @lapackobjs:
 		#     cgesv, cgetf2, claswp, clauu2, clauum, cpotf2, cpotri, ctrti2, ctrtri
 		cbdsqr, cgbbrd, cgbcon, cgbequ, cgbrfs, cgbsv,  cgbsvx,
@@ -312,7 +315,8 @@
 		crot,   cspcon, cspmv,  cspr,   csprfs, cspsv,
 		cspsvx, csptrf, csptri, csptrs, csrscl, cstedc,
 		cstegr, cstein, csteqr,
-		csycon,
+        csycon,
+        csymv,
 		csyr, csyrfs, csysv,  csysvx, csytf2, csytrf, csytri, csytri2, csytri2x,
 		csyswapr, csytrs, csytrs2, csyconv,
 		ctbcon, ctbrfs, ctbtrs, ctgevc, ctgex2,
@@ -406,7 +410,7 @@
 		dtpqrt, dtpqrt2, dtpmqrt, dtprfb,
 
 		# ZLASRC  -- Double precision complex LAPACK routines
-		# already provided by @blasobjs: zsymv
+		# already provided by @blasobjs:
 		# already provided by @lapackobjs:
 		#     zgesv, zgetrs, zgetf2, zlaswp, zlauu2, zlauum, zpotf2, zpotrf, zpotri,
 		#     ztrti2, ztrtri
@@ -447,7 +451,7 @@
 		zlarfx, zlargv, zlarnv, zlarrv, zlartg, zlartv,
 		zlarz,  zlarzb, zlarzt, zlascl, zlaset, zlasr,
 		zlassq, zlasyf,
-		zlatbs, zlatdf, zlatps, zlatrd, zlatrs, zlatrz, 
+		zlatbs, zlatdf, zlatps, zlatrd, zlatrs, zlatrz,
 		zpbcon, zpbequ, zpbrfs, zpbstf, zpbsv,
 		zpbsvx, zpbtf2, zpbtrf, zpbtrs, zpocon, zpoequ, zporfs,
 		zposv,  zposvx, zpotrs, zpstrf, zpstf2,
@@ -457,6 +461,7 @@
 		zspsvx, zsptrf, zsptri, zsptrs, zdrscl, zstedc,
 		zstegr, zstein, zsteqr,
 		zsycon,
+        zsymv,
 		zsyr, zsyrfs, zsysv,  zsysvx, zsytf2, zsytrf, zsytri, zsytri2, zsytri2x,
 		zsyswapr, zsytrs, zsytrs2, zsyconv,
 		ztbcon, ztbrfs, ztbtrs, ztgevc, ztgex2,
@@ -3694,4 +3699,3 @@ if ($ARGV[0] eq "linktest"){
     print "return 0;}\n";
     exit(0);
 }
-
