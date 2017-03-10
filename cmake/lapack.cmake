@@ -318,7 +318,7 @@ set(ZLASRC
   zlarfg.f zlarft.f zlarfgp.f
   zlarfx.f zlargv.f zlarnv.f zlarrv.f zlartg.f zlartv.f
   zlarz.f  zlarzb.f zlarzt.f zlascl.f zlaset.f zlasr.f
-  zlassq.f zlasyf.f zlasyf_rook.f zlasy_aa.f
+  zlassq.f zlasyf.f zlasyf_rook.f zlasyf_aa.f
   zlatbs.f zlatdf.f zlatps.f zlatrd.f zlatrs.f zlatrz.f DEPRECATED/zlatzm.f
   zpbcon.f zpbequ.f zpbrfs.f zpbstf.f zpbsv.f
   zpbsvx.f zpbtf2.f zpbtrf.f zpbtrs.f zpocon.f zpoequ.f zporfs.f
