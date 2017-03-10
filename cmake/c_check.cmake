@@ -73,6 +73,10 @@ if (${ARCH} STREQUAL "X86")
   set(ARCH x86)
 endif ()
 
+if (${ARCH} MATCHES "ppc")
+  set(ARCH power)
+endif ()
+
 set(COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
 if (${COMPILER_ID} STREQUAL "GNU")
   set(COMPILER_ID "GCC")
