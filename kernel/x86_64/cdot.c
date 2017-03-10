@@ -100,8 +100,8 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 
 	if ( n <= 0 ) 
 	{
-	        __real__ result = 0.0 ;
-        	__imag__ result = 0.0 ;
+	        CREAL(result) = 0.0 ;
+        	CIMAG(result) = 0.0 ;
 		return(result);
 
 	}
@@ -161,11 +161,11 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 	}
 
 #if !defined(CONJ)
-	__real__ result = dot[0] - dot[1];
-	__imag__ result = dot[4] + dot[5];
+	CREAL(result) = dot[0] - dot[1];
+	CIMAG(result) = dot[4] + dot[5];
 #else
-	__real__ result = dot[0] + dot[1];
-	__imag__ result = dot[4] - dot[5];
+	CREAL(result) = dot[0] + dot[1];
+	CIMAG(result) = dot[4] - dot[5];
 
 #endif
 
