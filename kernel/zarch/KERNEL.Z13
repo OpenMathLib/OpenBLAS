@@ -82,7 +82,7 @@ ZGEMVTKERNEL = ../arm/zgemv_t.c
 
 STRMMKERNEL	= strmm8x4V.S
 DTRMMKERNEL	= trmm8x4V.S
-CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+CTRMMKERNEL	= ctrmm4x4V.S
 ZTRMMKERNEL	= ztrmm4x4V.S
 
 SGEMMKERNEL    =  strmm8x4V.S
@@ -107,9 +107,9 @@ DGEMMITCOPYOBJ = dgemm_itcopy.o
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
-CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
-CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
-CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+CGEMMKERNEL    = ctrmm4x4V.S
+CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
+CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
 CGEMMONCOPYOBJ =  cgemm_oncopy.o
 CGEMMOTCOPYOBJ =  cgemm_otcopy.o
 

@@ -165,5 +165,6 @@ In chronological order:
 * Abdelrauf  <https://github.com/quickwritereader>
   * [2017-01-01] dgemm and dtrmm kernels for IBM z13
   * [2017-02-26] ztrmm kernel for IBM z13
+  * [2017-03-13] strmm and ctrmm kernel for IBM z13
 
 

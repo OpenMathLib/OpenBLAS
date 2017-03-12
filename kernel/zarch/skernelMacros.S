@@ -120,11 +120,11 @@
         vmrlf  %v4,%v1,%v1
         vmrlf  %v6,%v2,%v2 
         vldeb  %v3, %v3
-        vldeb  %v4, %v4
+        vldeb  %v4, %v4    
         vldeb  %v5, %v5   
         vlrepf %v7, DISP4(\Index ,0)(\PTR_B_REG)  
         vlrepf %v1, DISP4(\Index ,4)(\PTR_B_REG) 
-        vldeb  %v6, %v6
+        vldeb  %v6, %v6 
         vldeb  %v7, %v7
         vldeb  %v1, %v1    
  

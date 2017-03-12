@@ -107,7 +107,7 @@ Please read GotoBLAS_01Readme.txt
 - **ARM Cortex-A57**: Experimental
 
 #### IBM zEnterprise System:
-- **Z13**: blas3 for double 
+- **Z13**: Optimized Level-3 BLAS 
      
 
 ### Support OS:

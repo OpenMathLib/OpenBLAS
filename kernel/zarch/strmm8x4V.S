@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /**************************************************************************************
-* 2017/03/06 AbdelRauf (quickwritereader@gmail.com)
+* 2017/03/01 AbdelRauf (quickwritereader@gmail.com)
 *    BLASTEST       :  passed
 *    CTEST          :  passed
 *    TEST           :  passed
@@ -138,10 +138,8 @@ cijle BN_CUR,0,.LX2
 ALIGN_4
 .LX4_BN:
 #if defined(PREFETCH_INS)
-        pfd 1, 0(A)
-        pfd 1, 256(A)   
-        pfd 1, 0(B) 
-        pfd 1, 256(B)  
+        pfd 1, 0(A)   
+        pfd 1, 0(B)   
 #endif
 #if defined(TRMMKERNEL) && defined(LEFT)
     /*off = offset;*/
@@ -178,7 +176,7 @@ ALIGN_4
 #endif
       CALC_8x4_4 LOCAL_VAR3,LOCAL_VAR2  
 #if defined(PREFETCH_INS)
-        pfd 1, 256(LOCAL_VAR2)  
+        pfd 1, 128(LOCAL_VAR2)  
 #endif 
 brctg LOCAL_VAR1,.L8x4_4_BK
 
@@ -414,8 +412,7 @@ cijle LOCAL_VAR1,0,.L8x2_mod
 ALIGN_4
 .L8x2_4_BK: /*BK_CUR LOOP */
 #if defined(PREFETCH_INS)
-        pfd 1, 256(LOCAL_VAR3)  
-        pfd 1,64(LOCAL_VAR2) 
+        pfd 1, 256(LOCAL_VAR3)   
 #endif
       CALC_8x2_4 LOCAL_VAR3,LOCAL_VAR2   
 brctg LOCAL_VAR1,.L8x2_4_BK
