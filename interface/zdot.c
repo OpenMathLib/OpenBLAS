@@ -160,9 +160,10 @@ OPENBLAS_COMPLEX_FLOAT CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasin
 
   if (n <= 0) {
 #ifdef FORCE_USE_STACK
-    //*result = OPENBLAS_MAKE_COMPLEX_FLOAT(0.0, 0.0);
-	CREAL(*result) = 0.0;
-	CIMAG(*result) = 0.0;
+    OPENBLAS_COMPLEX_FLOAT zero=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0, 0.0);
+    *result = zero;
+//	CREAL(*result) = 0.0;
+//	CIMAG(*result) = 0.0;
     return;
 #else
     return zero;

@@ -556,8 +556,13 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #endif
 
 #if defined(C_PGI) || defined(C_SUN)
-#define CREAL(X)	(*((FLOAT *)&X + 0))
-#define CIMAG(X)	(*((FLOAT *)&X + 1))
+  #if defined(__STDC_IEC_559_COMPLEX__)
+     #define CREAL(X)   creal(X)
+     #define CIMAG(X)   cimag(X)
+  #else
+     #define CREAL(X)	(*((FLOAT *)&X + 0))
+     #define CIMAG(X)	(*((FLOAT *)&X + 1))
+  #endif
 #else
 #ifdef OPENBLAS_COMPLEX_STRUCT
 #define CREAL(Z)	((Z).real)
