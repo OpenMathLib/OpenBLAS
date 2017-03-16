@@ -251,7 +251,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 		}
 
 	}
-	free(b)
+	free(b);
 	return;
 
 }
