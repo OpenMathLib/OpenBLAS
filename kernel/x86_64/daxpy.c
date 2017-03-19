@@ -37,7 +37,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "daxpy_microk_steamroller-2.c"
 #elif defined(PILEDRIVER)
 #include "daxpy_microk_piledriver-2.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(ZEN)
 #include "daxpy_microk_haswell-2.c"
 #elif defined(SANDYBRIDGE)
 #include "daxpy_microk_sandy-2.c"

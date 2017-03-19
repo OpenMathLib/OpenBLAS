@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(HASWELL) || defined(STEAMROLLER)  || defined(EXCAVATOR)
+#if defined(HASWELL) || defined(ZEN) || defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "dgemv_t_microk_haswell-4.c"
 #endif
 
