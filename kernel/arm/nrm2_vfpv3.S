@@ -503,6 +503,9 @@ nrm2_kernel_L999:
 #else
 	vsqrt.f32	s1, s1
 	vmul.f32	s0, s0, s1
+#ifdef ARM_SOFTFP_ABI
+	vmov		r0, s0
+#endif
 #endif
 
 	bx	lr

@@ -38,11 +38,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define STACKSIZE 256
 
+#ifndef ARM_SOFTFP_ABI
+//hard	
 #define	OLD_INC_X	[fp, #0 ]
 #define	OLD_Y		[fp, #4 ]
 #define	OLD_INC_Y	[fp, #8 ]
-
-
+#else
+#define	OLD_X		[fp, #0 ]
+#define	OLD_INC_X	[fp, #4 ]
+#define	OLD_Y		[fp, #8 ]
+#define	OLD_INC_Y	[fp, #12 ]
+#endif
+	
 #define	N	r0
 #define Y	r1
 #define	INC_X	r2
@@ -363,6 +370,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         add     fp, sp, #8
 	sub     sp, sp, #STACKSIZE                              // reserve stack
 
+#ifdef ARM_SOFTFP_ABI
+#ifndef DOUBLE
+	vmov	s0, r3     //move alpha to s0
+	ldr	X, OLD_X
+#endif
+#endif
+	
 	ldr    INC_X , OLD_INC_X
 	ldr         Y, OLD_Y
 	ldr    INC_Y , OLD_INC_Y
