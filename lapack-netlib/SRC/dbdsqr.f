@@ -410,12 +410,12 @@
    40    CONTINUE
    50    CONTINUE
          SMINOA = SMINOA / SQRT( DBLE( N ) )
-         THRESH = MAX( TOL*SMINOA, MAXITR*N*N*UNFL )
+         THRESH = MAX( TOL*SMINOA, MAXITR*(N*(N*UNFL)) )
       ELSE
 *
 *        Absolute accuracy desired
 *
-         THRESH = MAX( ABS( TOL )*SMAX, MAXITR*N*N*UNFL )
+         THRESH = MAX( ABS( TOL )*SMAX, MAXITR*(N*(N*UNFL)) )
       END IF
 *
 *     Prepare for main iteration loop for the singular values
@@ -446,7 +446,7 @@
          ITERDIVN = ITERDIVN + 1
          IF (ITERDIVN.GE.MAXITDIVN )
      $   GO TO 200
-      ENDIF
+      END IF
 *
 *     Find diagonal block of matrix to work on
 *
