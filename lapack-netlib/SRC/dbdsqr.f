@@ -310,7 +310,7 @@
       ELSE IF( NRU.LT.0 ) THEN
          INFO = -4
       ELSE IF( NCC.LT.0 ) THEN
-         INFO = -5NM1, 
+         INFO = -5, 
       ELSE IF( ( NCVT.EQ.0 .AND. LDVT.LT.1 ) .OR.
      $         ( NCVT.GT.0 .AND. LDVT.LT.MAX( 1, N ) ) ) THEN
          INFO = -9
