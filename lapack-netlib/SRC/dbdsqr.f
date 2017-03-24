@@ -214,6 +214,16 @@
 *>          through the inner loop exceeds MAXITR*N**2.
 *> \endverbatim
 *
+*> \par Note:
+*  ===========
+*>
+*> \verbatim
+*>  Bug report from Cezary Dendek.
+*>  On March 23rd 2017, the INTEGER variable MAXIT = MAXITR*N**2 is
+*>  removed since it can overflow pretty easily (for N larger or equal
+*>  than 18,919). We instead use MAXITDIVN = MAXITR*N.
+*> \endverbatim
+*
 *  Authors:
 *  ========
 *
@@ -266,8 +276,8 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LOWER, ROTATE
-      INTEGER            I, IDIR, ISUB, ITER, J, LL, LLL, M, MAXIT, NM1,
-     $                   NM12, NM13, OLDLL, OLDM
+      INTEGER            I, IDIR, ISUB, ITER, ITERDIVN, J, LL, LLL, M,
+     $                   MAXITDIVN, NM1, NM12, NM13, OLDLL, OLDM
       DOUBLE PRECISION   ABSE, ABSS, COSL, COSR, CS, EPS, F, G, H, MU,
      $                   OLDCS, OLDSN, R, SHIFT, SIGMN, SIGMX, SINL,
      $                   SINR, SLL, SMAX, SMIN, SMINL, SMINOA,
@@ -300,7 +310,7 @@
       ELSE IF( NRU.LT.0 ) THEN
          INFO = -4
       ELSE IF( NCC.LT.0 ) THEN
-         INFO = -5
+         INFO = -5 
       ELSE IF( ( NCVT.EQ.0 .AND. LDVT.LT.1 ) .OR.
      $         ( NCVT.GT.0 .AND. LDVT.LT.MAX( 1, N ) ) ) THEN
          INFO = -9
@@ -400,20 +410,21 @@
    40    CONTINUE
    50    CONTINUE
          SMINOA = SMINOA / SQRT( DBLE( N ) )
-         THRESH = MAX( TOL*SMINOA, MAXITR*N*N*UNFL )
+         THRESH = MAX( TOL*SMINOA, MAXITR*(N*(N*UNFL)) )
       ELSE
 *
 *        Absolute accuracy desired
 *
-         THRESH = MAX( ABS( TOL )*SMAX, MAXITR*N*N*UNFL )
+         THRESH = MAX( ABS( TOL )*SMAX, MAXITR*(N*(N*UNFL)) )
       END IF
 *
 *     Prepare for main iteration loop for the singular values
 *     (MAXIT is the maximum number of passes through the inner
 *     loop permitted before nonconvergence signalled.)
 *
-      MAXIT = MAXITR*N*N
-      ITER = 0
+      MAXITDIVN = MAXITR*N
+      ITERDIVN = 0
+      ITER = -1
       OLDLL = -1
       OLDM = -1
 *
@@ -429,8 +440,13 @@
 *
       IF( M.LE.1 )
      $   GO TO 160
-      IF( ITER.GT.MAXIT )
+*     
+      IF( ITER.GE.N ) THEN
+         ITER = ITER - N
+         ITERDIVN = ITERDIVN + 1
+         IF (ITERDIVN.GE.MAXITDIVN )
      $   GO TO 200
+      END IF
 *
 *     Find diagonal block of matrix to work on
 *
