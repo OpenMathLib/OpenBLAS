@@ -70,8 +70,10 @@ extern gotoblas_t  gotoblas_STEAMROLLER;
 extern gotoblas_t  gotoblas_EXCAVATOR;
 #ifdef NO_AVX2
 #define gotoblas_HASWELL gotoblas_SANDYBRIDGE
+#define gotoblas_ZEN gotoblas_SANDYBRIDGE
 #else
 extern gotoblas_t  gotoblas_HASWELL;
+extern gotoblas_t  gotoblas_ZEN;
 #endif
 #else
 //Use NEHALEM kernels for sandy bridge
@@ -81,6 +83,7 @@ extern gotoblas_t  gotoblas_HASWELL;
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #define gotoblas_STEAMROLLER gotoblas_BARCELONA
 #define gotoblas_EXCAVATOR gotoblas_BARCELONA
+#define gotoblas_ZEN gotoblas_BARCELONA
 #endif
 
 
@@ -355,14 +358,14 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
-    }else if(model == 5){
-      if(support_avx())
-        return &gotoblas_EXCAVATOR;
-      else{
-        openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
-        return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-      }
-    }else if(model == 0){
+	}else if(model == 5){
+	  if(support_avx())
+	    return &gotoblas_EXCAVATOR;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	  }
+	}else if(model == 0){
 	  if (exmodel == 1) {
 	    //AMD Trinity
 	    if(support_avx())
@@ -389,9 +392,16 @@ static gotoblas_t *get_coretype(void){
 
 	  }
 	}
-
-
-      } else {
+      } else if (family == 8) {
+	if (model == 1) {
+	  if(support_avx())
+	    return &gotoblas_ZEN;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+      }else {
 	return &gotoblas_BARCELONA;
       }
     }
@@ -431,6 +441,7 @@ static char *corename[] = {
     "Haswell",
     "Steamroller",
     "Excavator",
+    "Zen"
 };
 
 char *gotoblas_corename(void) {
@@ -457,6 +468,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_HASWELL)      return corename[20];
   if (gotoblas == &gotoblas_STEAMROLLER)  return corename[21];
   if (gotoblas == &gotoblas_EXCAVATOR)    return corename[22];
+  if (gotoblas == &gotoblas_ZEN)          return corename[23];
 
   return corename[0];
 }
@@ -487,6 +499,7 @@ static gotoblas_t *force_coretype(char *coretype){
 
 	switch (found)
 	{
+		case 23: return (&gotoblas_ZEN);
 		case 22: return (&gotoblas_EXCAVATOR);
 		case 21: return (&gotoblas_STEAMROLLER);
 		case 20: return (&gotoblas_HASWELL);

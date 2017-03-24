@@ -114,6 +114,7 @@
 #define CORE_HASWELL     24
 #define CORE_STEAMROLLER 25
 #define CORE_EXCAVATOR   26
+#define CORE_ZEN         27
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -209,5 +210,6 @@ typedef struct {
 #define CPUTYPE_HASWELL 		48
 #define CPUTYPE_STEAMROLLER 		49
 #define CPUTYPE_EXCAVATOR 		50
+#define CPUTYPE_ZEN 			51
 
 #endif

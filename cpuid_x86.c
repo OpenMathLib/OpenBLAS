@@ -1281,6 +1281,8 @@ int get_cpuname(void){
       case  3:
       case 10:
 	return CPUTYPE_BARCELONA;
+      case  5:
+	return CPUTYPE_BOBCAT;
       case  6:
 	switch (model) {
 	case 1:
@@ -1295,8 +1297,8 @@ int get_cpuname(void){
 	    return CPUTYPE_PILEDRIVER;
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
-    case 5: // New EXCAVATOR CPUS
-      if(support_avx())
+	case 5: // New EXCAVATOR CPUS
+	  if(support_avx())
 	    return CPUTYPE_EXCAVATOR;
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
@@ -1322,8 +1324,19 @@ int get_cpuname(void){
 	  break;
 	}
 	break;
-      case  5:
-	return CPUTYPE_BOBCAT;
+      case 8:
+	switch (model) {
+	case 1:
+	  // AMD Ryzen
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CPUTYPE_ZEN;
+#else
+	    return CPUTYPE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CPUTYPE_BARCELONA;
+        }
       }
       break;
     }
@@ -1450,6 +1463,7 @@ static char *cpuname[] = {
   "HASWELL",
   "STEAMROLLER",
   "EXCAVATOR",
+  "ZEN",
 };
 
 static char *lowercpuname[] = {
@@ -1503,6 +1517,7 @@ static char *lowercpuname[] = {
   "haswell",
   "steamroller",
   "excavator",
+  "zen",
 };
 
 static char *corename[] = {
@@ -1533,6 +1548,7 @@ static char *corename[] = {
   "HASWELL",
   "STEAMROLLER",
   "EXCAVATOR",
+  "ZEN",
 };
 
 static char *corename_lower[] = {
@@ -1563,6 +1579,7 @@ static char *corename_lower[] = {
   "haswell",
   "steamroller",
   "excavator",
+  "zen",
 };
 
 
@@ -1776,15 +1793,16 @@ int get_coretype(void){
 	break;
       case 9:
       case 8:
-        if (model == 14) // Kaby Lake 
+        if (model == 14) { // Kaby Lake 
 	  if(support_avx())
 #ifndef NO_AVX2
-            return CORE_HASWELL;
+	    return CORE_HASWELL;
 #else
-            return CORE_SANDYBRIDGE;
+	    return CORE_SANDYBRIDGE;
 #endif
 	  else
             return CORE_NEHALEM;
+	}
       }
       break;
 
@@ -1841,9 +1859,22 @@ int get_coretype(void){
 	  }
 	  break;
 	}
-
-
-      }else return CORE_BARCELONA;
+      } else if (exfamily == 8) {
+	switch (model) {
+	case 1:
+	  // AMD Ryzen
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_ZEN;
+#else
+	    return CORE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CORE_BARCELONA;
+	}
+      } else {
+	return CORE_BARCELONA;
+      }
     }
   }
 

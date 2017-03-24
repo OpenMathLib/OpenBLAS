@@ -34,7 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cdot_microk_bulldozer-2.c"
 #elif defined(STEAMROLLER) || defined(PILEDRIVER)  || defined(EXCAVATOR)
 #include "cdot_microk_steamroller-2.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(ZEN)
 #include "cdot_microk_haswell-2.c"
 #elif defined(SANDYBRIDGE)
 #include "cdot_microk_sandy-2.c"
