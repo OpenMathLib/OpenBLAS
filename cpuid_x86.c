@@ -1279,6 +1279,7 @@ int get_cpuname(void){
 	return CPUTYPE_OPTERON;
       case  1:
       case  3:
+      case  7:
       case 10:
 	return CPUTYPE_BARCELONA;
       case  5:
