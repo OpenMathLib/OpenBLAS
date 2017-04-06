@@ -146,7 +146,7 @@ static float sasum_kernel_32 (long n, float *x)
        "xxsldwi		33, 32, 32, 1	\n\t"
        "xvaddsp		32, 32, 33	\n\t"
 
-       "xscvspdp	%0, 32		\n"
+       "xscvspdp	%x0, 32		\n"
 
      "#n=%1 x=%3=%2 sum=%0 o16=%8 o32=%9 o48=%10 o64=%11 o80=%12 o96=%13 o112=%14\n"
      "#t0=%x3 t1=%x4 t2=%x5 t3=%x6"

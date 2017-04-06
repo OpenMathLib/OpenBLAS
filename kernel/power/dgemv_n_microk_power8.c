@@ -44,16 +44,16 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
 
   __asm__
     (
-       "lxvd2x		34, 0, %9	\n\t"	// x0, x1
-       "lxvd2x		35, %10, %9	\n\t"	// x2, x3
-       "xxspltd		32, %x8, 0	\n\t"	// alpha, alpha
+       "lxvd2x		34, 0, %10	\n\t"	// x0, x1
+       "lxvd2x		35, %11, %10	\n\t"	// x2, x3
+       "xxspltd		32, %x9, 0	\n\t"	// alpha, alpha
 
-       "sldi		%6, %4, 3	\n\t"	// lda * sizeof (double)
+       "sldi		%6, %13, 3	\n\t"	// lda * sizeof (double)
 
        "xvmuldp		34, 34, 32	\n\t"	// x0 * alpha, x1 * alpha
        "xvmuldp		35, 35, 32	\n\t"	// x2 * alpha, x3 * alpha
 
-       "add		%4, %3, %6	\n\t"	// a1 = a0 + lda
+       "add		%4, %3, %6	\n\t"	// a0 = ap, a1 = a0 + lda
        "add		%6, %6, %6	\n\t"	// 2 * lda
 
        "xxspltd		32, 34, 0	\n\t"	// x0 * alpha, x0 * alpha
@@ -70,16 +70,16 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
        "dcbt		0, %6		\n\t"
 
        "lxvd2x		40, 0, %3	\n\t"	// a0[0], a0[1]
-       "lxvd2x		41, %10, %3	\n\t"	// a0[2], a0[3]
+       "lxvd2x		41, %11, %3	\n\t"	// a0[2], a0[3]
 
        "lxvd2x		42, 0, %4	\n\t"	// a1[0], a1[1]
-       "lxvd2x		43, %10, %4	\n\t"	// a1[2], a1[3]
+       "lxvd2x		43, %11, %4	\n\t"	// a1[2], a1[3]
 
        "lxvd2x		44, 0, %5	\n\t"	// a2[0], a2[1]
-       "lxvd2x		45, %10, %5	\n\t"	// a2[2], a2[3]
+       "lxvd2x		45, %11, %5	\n\t"	// a2[2], a2[3]
 
        "lxvd2x		46, 0, %6	\n\t"	// a3[0], a3[1]
-       "lxvd2x		47, %10, %6	\n\t"	// a3[2], a3[3]
+       "lxvd2x		47, %11, %6	\n\t"	// a3[2], a3[3]
 
        "dcbt		0, %2		\n\t"
 
@@ -95,37 +95,37 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
      "1:				\n\t"
 
        "lxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "lxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "lxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "xvmaddadp 	36, 40, 32	\n\t"
        "xvmaddadp 	37, 41, 32	\n\t"
 
        "lxvd2x		40, 0, %3	\n\t"	// a0[0], a0[1]
-       "lxvd2x		41, %10, %3	\n\t"	// a0[2], a0[3]
+       "lxvd2x		41, %11, %3	\n\t"	// a0[2], a0[3]
 
        "xvmaddadp 	36, 42, 33	\n\t"
        "addi		%3, %3, 32	\n\t"
        "xvmaddadp 	37, 43, 33	\n\t"
 
        "lxvd2x		42, 0, %4	\n\t"	// a1[0], a1[1]
-       "lxvd2x		43, %10, %4	\n\t"	// a1[2], a1[3]
+       "lxvd2x		43, %11, %4	\n\t"	// a1[2], a1[3]
 
        "xvmaddadp 	36, 44, 34	\n\t"
        "addi		%4, %4, 32	\n\t"
        "xvmaddadp 	37, 45, 34	\n\t"
 
        "lxvd2x		44, 0, %5	\n\t"	// a2[0], a2[1]
-       "lxvd2x		45, %10, %5	\n\t"	// a2[2], a2[3]
+       "lxvd2x		45, %11, %5	\n\t"	// a2[2], a2[3]
 
        "xvmaddadp 	36, 46, 35	\n\t"
        "addi		%5, %5, 32	\n\t"
        "xvmaddadp 	37, 47, 35	\n\t"
 
        "stxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "stxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "stxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "lxvd2x		46, 0, %6	\n\t"	// a3[0], a3[1]
-       "lxvd2x		47, %10, %6	\n\t"	// a3[2], a3[3]
+       "lxvd2x		47, %11, %6	\n\t"	// a3[2], a3[3]
 
        "addi		%6, %6, 32	\n\t"
        "addi		%2, %2, 32	\n\t"
@@ -135,37 +135,37 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
 
 
        "lxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "lxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "lxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "xvmaddadp 	36, 40, 32	\n\t"
        "xvmaddadp 	37, 41, 32	\n\t"
 
        "lxvd2x		40, 0, %3	\n\t"	// a0[0], a0[1]
-       "lxvd2x		41, %10, %3	\n\t"	// a0[2], a0[3]
+       "lxvd2x		41, %11, %3	\n\t"	// a0[2], a0[3]
 
        "xvmaddadp 	36, 42, 33	\n\t"
        "addi		%3, %3, 32	\n\t"
        "xvmaddadp 	37, 43, 33	\n\t"
 
        "lxvd2x		42, 0, %4	\n\t"	// a1[0], a1[1]
-       "lxvd2x		43, %10, %4	\n\t"	// a1[2], a1[3]
+       "lxvd2x		43, %11, %4	\n\t"	// a1[2], a1[3]
 
        "xvmaddadp 	36, 44, 34	\n\t"
        "addi		%4, %4, 32	\n\t"
        "xvmaddadp 	37, 45, 34	\n\t"
 
        "lxvd2x		44, 0, %5	\n\t"	// a2[0], a2[1]
-       "lxvd2x		45, %10, %5	\n\t"	// a2[2], a2[3]
+       "lxvd2x		45, %11, %5	\n\t"	// a2[2], a2[3]
 
        "xvmaddadp 	36, 46, 35	\n\t"
        "addi		%5, %5, 32	\n\t"
        "xvmaddadp 	37, 47, 35	\n\t"
 
        "stxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "stxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "stxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "lxvd2x		46, 0, %6	\n\t"	// a3[0], a3[1]
-       "lxvd2x		47, %10, %6	\n\t"	// a3[2], a3[3]
+       "lxvd2x		47, %11, %6	\n\t"	// a3[2], a3[3]
 
        "addi		%6, %6, 32	\n\t"
        "addi		%2, %2, 32	\n\t"
@@ -175,37 +175,37 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
 
 
        "lxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "lxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "lxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "xvmaddadp 	36, 40, 32	\n\t"
        "xvmaddadp 	37, 41, 32	\n\t"
 
        "lxvd2x		40, 0, %3	\n\t"	// a0[0], a0[1]
-       "lxvd2x		41, %10, %3	\n\t"	// a0[2], a0[3]
+       "lxvd2x		41, %11, %3	\n\t"	// a0[2], a0[3]
 
        "xvmaddadp 	36, 42, 33	\n\t"
        "addi		%3, %3, 32	\n\t"
        "xvmaddadp 	37, 43, 33	\n\t"
 
        "lxvd2x		42, 0, %4	\n\t"	// a1[0], a1[1]
-       "lxvd2x		43, %10, %4	\n\t"	// a1[2], a1[3]
+       "lxvd2x		43, %11, %4	\n\t"	// a1[2], a1[3]
 
        "xvmaddadp 	36, 44, 34	\n\t"
        "addi		%4, %4, 32	\n\t"
        "xvmaddadp 	37, 45, 34	\n\t"
 
        "lxvd2x		44, 0, %5	\n\t"	// a2[0], a2[1]
-       "lxvd2x		45, %10, %5	\n\t"	// a2[2], a2[3]
+       "lxvd2x		45, %11, %5	\n\t"	// a2[2], a2[3]
 
        "xvmaddadp 	36, 46, 35	\n\t"
        "addi		%5, %5, 32	\n\t"
        "xvmaddadp 	37, 47, 35	\n\t"
 
        "stxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "stxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "stxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "lxvd2x		46, 0, %6	\n\t"	// a3[0], a3[1]
-       "lxvd2x		47, %10, %6	\n\t"	// a3[2], a3[3]
+       "lxvd2x		47, %11, %6	\n\t"	// a3[2], a3[3]
 
        "addi		%6, %6, 32	\n\t"
        "addi		%2, %2, 32	\n\t"
@@ -215,37 +215,37 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
 
 
        "lxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "lxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "lxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "xvmaddadp 	36, 40, 32	\n\t"
        "xvmaddadp 	37, 41, 32	\n\t"
 
        "lxvd2x		40, 0, %3	\n\t"	// a0[0], a0[1]
-       "lxvd2x		41, %10, %3	\n\t"	// a0[2], a0[3]
+       "lxvd2x		41, %11, %3	\n\t"	// a0[2], a0[3]
 
        "xvmaddadp 	36, 42, 33	\n\t"
        "addi		%3, %3, 32	\n\t"
        "xvmaddadp 	37, 43, 33	\n\t"
 
        "lxvd2x		42, 0, %4	\n\t"	// a1[0], a1[1]
-       "lxvd2x		43, %10, %4	\n\t"	// a1[2], a1[3]
+       "lxvd2x		43, %11, %4	\n\t"	// a1[2], a1[3]
 
        "xvmaddadp 	36, 44, 34	\n\t"
        "addi		%4, %4, 32	\n\t"
        "xvmaddadp 	37, 45, 34	\n\t"
 
        "lxvd2x		44, 0, %5	\n\t"	// a2[0], a2[1]
-       "lxvd2x		45, %10, %5	\n\t"	// a2[2], a2[3]
+       "lxvd2x		45, %11, %5	\n\t"	// a2[2], a2[3]
 
        "xvmaddadp 	36, 46, 35	\n\t"
        "addi		%5, %5, 32	\n\t"
        "xvmaddadp 	37, 47, 35	\n\t"
 
        "stxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "stxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "stxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "lxvd2x		46, 0, %6	\n\t"	// a3[0], a3[1]
-       "lxvd2x		47, %10, %6	\n\t"	// a3[2], a3[3]
+       "lxvd2x		47, %11, %6	\n\t"	// a3[2], a3[3]
 
        "addi		%6, %6, 32	\n\t"
        "addi		%2, %2, 32	\n\t"
@@ -256,7 +256,7 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
      "2:				\n\t"
 
        "lxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "lxvd2x		37, %10, %2	\n\t"	// y2, y3
+       "lxvd2x		37, %11, %2	\n\t"	// y2, y3
 
        "xvmaddadp 	36, 40, 32	\n\t"
        "xvmaddadp 	37, 41, 32	\n\t"
@@ -271,12 +271,12 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
        "xvmaddadp 	37, 47, 35	\n\t"
 
        "stxvd2x		36, 0, %2	\n\t"	// y0, y1
-       "stxvd2x		37, %10, %2	\n"	// y2, y3
+       "stxvd2x		37, %11, %2	\n"	// y2, y3
 
-     "#n=%1 ap=%11 lda=%12 x=%7=%9 y=%0=%2 alpha=%8 o16=%10\n"
+     "#n=%1 ap=%8=%12 lda=%13 x=%7=%10 y=%0=%2 alpha=%9 o16=%11\n"
      "#a0=%3 a1=%4 a2=%5 a3=%6"
      :
-       "=m" (*y),
+       "+m" (*y),
        "+r" (n),	// 1
        "+b" (y),	// 2
        "=b" (a0),	// 3
@@ -285,11 +285,12 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
        "=&b" (a3)	// 6
      :
        "m" (*x),
-       "d" (alpha),	// 8
-       "r" (x),		// 9
-       "b" (16),	// 10
-       "3" (ap),	// 11
-       "4" (lda)	// 12
+       "m" (*ap),
+       "d" (alpha),	// 9
+       "r" (x),		// 10
+       "b" (16),	// 11
+       "3" (ap),	// 12
+       "4" (lda)	// 13
      :
        "cr0",
        "vs32","vs33","vs34","vs35","vs36","vs37",
