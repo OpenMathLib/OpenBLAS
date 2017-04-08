@@ -40,8 +40,12 @@
 #include "common.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
+#endif 
+#if  defined(Z13)
+#define MULTI_THREAD_MINIMAL  200000
+#else
+#define MULTI_THREAD_MINIMAL  10000        
 #endif
-
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
@@ -88,7 +92,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
 
   //Temporarily work-around the low performance issue with small imput size &
   //multithreads.
-  if (n <= 10000)
+  if (n <= MULTI_THREAD_MINIMAL)
 	  nthreads = 1;
 
   if (nthreads == 1) {
