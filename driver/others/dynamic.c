@@ -392,7 +392,7 @@ static gotoblas_t *get_coretype(void){
 
 	  }
 	}
-      } else if (family == 8) {
+      } else if (exfamily == 8) {
 	if (model == 1) {
 	  if(support_avx())
 	    return &gotoblas_ZEN;
