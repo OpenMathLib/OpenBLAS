@@ -392,7 +392,7 @@ static gotoblas_t *get_coretype(void){
 
 	  }
 	}
-      } else if (family == 8) {
+      } else if (exfamily == 8) {
 	if (model == 1) {
 	  if(support_avx())
 	    return &gotoblas_ZEN;
@@ -481,7 +481,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	//char mname[20];
 
-	for ( i=1 ; i <= 22; i++)
+	for ( i=1 ; i <= 23; i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{
