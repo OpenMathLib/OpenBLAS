@@ -2,7 +2,7 @@
 ## Author: Hank Anderson <hank@statease.com>
 ##
 
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 2)
@@ -11,6 +11,9 @@ set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${Open
 
 enable_language(ASM)
 enable_language(C)
+
+# Adhere to GNU filesystem layout conventions
+include(GNUInstallDirs)
 
 if(MSVC)
 set(OpenBLAS_LIBNAME libopenblas)
@@ -216,23 +219,20 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 
 # Install libraries
 install(TARGETS ${OpenBLAS_LIBNAME}
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION lib
-	LIBRARY DESTINATION lib )
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 # Install include files
 FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-install (FILES ${INCLUDE_FILES} DESTINATION include)
+install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
  
 if(NOT MSVC)
-	install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION lib)
+	install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 include(FindPkgConfig QUIET)
 if(PKG_CONFIG_FOUND)
-	set(prefix ${CMAKE_INSTALL_PREFIX})
-	set(libdir ${CMAKE_INSTALL_PREFIX}/lib)
-	set(includedir ${CMAKE_INSTALL_PREFIX}/include)
 	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas.pc @ONLY)
-	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION lib/pkgconfig/)
+	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
 endif()
