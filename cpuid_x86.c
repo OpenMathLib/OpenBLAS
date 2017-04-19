@@ -1304,6 +1304,7 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
 	case 0:
+        case 8:
 	  switch(exmodel){
 	  case 1: //AMD Trinity
 	    if(support_avx())
@@ -1839,6 +1840,7 @@ int get_coretype(void){
 	  else
 	    return CORE_BARCELONA; //OS don't support AVX.
 	case 0:
+        case 8:
 	  switch(exmodel){
 	  case 1: //AMD Trinity
 	    if(support_avx())
