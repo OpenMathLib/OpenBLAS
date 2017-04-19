@@ -365,7 +365,7 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
-	}else if(model == 0){
+	}else if(model == 0 || model == 8){
 	  if (exmodel == 1) {
 	    //AMD Trinity
 	    if(support_avx())
