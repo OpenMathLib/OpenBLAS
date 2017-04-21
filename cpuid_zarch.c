@@ -42,9 +42,27 @@ static char *cpuname_lower[] = {
 
 int detect(void)
 {
-   // return CPU_GENERIC;
- return CPU_Z13; 
-    
+  FILE *infile;
+  char buffer[512], *p;
+
+  p = (char *)NULL;
+  infile = fopen("/proc/sysinfo", "r");
+  while (fgets(buffer, sizeof(buffer), infile)){
+    if (!strncmp("Type", buffer, 4)){
+        p = strchr(buffer, ':') + 2;
+#if 0
+        fprintf(stderr, "%s\n", p);
+#endif
+        break;
+      }
+  }
+
+  fclose(infile);
+
+  if (strstr(p, "2964")) return CPU_Z13;
+  if (strstr(p, "2965")) return CPU_Z13;
+
+  return CPU_GENERIC;
 }
 
 void get_libname(void)
