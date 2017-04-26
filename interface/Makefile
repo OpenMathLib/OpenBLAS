@@ -315,7 +315,7 @@ CCBLAS3OBJS   = \
 	cblas_csyrk.$(SUFFIX) cblas_csyr2k.$(SUFFIX) \
 	cblas_chemm.$(SUFFIX) cblas_cherk.$(SUFFIX) cblas_cher2k.$(SUFFIX) \
 	cblas_comatcopy.$(SUFFIX) cblas_cimatcopy.$(SUFFIX)\
-	cblas_cgeadd.$(SUFFIX)
+	cblas_cgeadd.$(SUFFIX) cblas_xerbla.$(SUFFIX)
 
 
 
@@ -2137,3 +2137,5 @@ cblas_cgeadd.$(SUFFIX) cblas_cgeadd.$(PSUFFIX) : zgeadd.c
 cblas_zgeadd.$(SUFFIX) cblas_zgeadd.$(PSUFFIX) : zgeadd.c
 	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 
+cblas_xerbla.$(SUFFIX) cblas_xerbla.$(PSUFFIX) : xerbla.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
