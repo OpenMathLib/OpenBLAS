@@ -42,11 +42,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSEMBLER
 
-static void INLINE blas_lock(volatile unsigned long *address){
-
-}
-#define BLAS_LOCK_DEFINED
-
 static inline unsigned int rpcc(void){
   unsigned long ret;
 
