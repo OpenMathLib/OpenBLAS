@@ -71,8 +71,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef COMMON_MIPS64
 #define COMMON_MIPS64
 
-#define MB
-#define WMB
+#define MB  __sync_synchronize()
+#define WMB __sync_synchronize()
 
 #define INLINE inline
 
