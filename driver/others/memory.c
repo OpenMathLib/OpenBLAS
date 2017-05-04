@@ -1164,8 +1164,8 @@ void blas_memory_free(void *free_area){
   position = 0;
   LOCK_COMMAND(&alloc_lock);
 
-  while ((memory[position].addr != free_area)
-	 && (position < NUM_BUFFERS)) position++;
+  while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
+    position++;
 
   if (memory[position].addr != free_area) goto error;
 
