@@ -453,8 +453,9 @@ DYNAMIC_CORE += HASWELL ZEN
 endif
 endif
 
+# If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
 ifndef DYNAMIC_CORE
-DYNAMIC_ARCH =
+override DYNAMIC_ARCH=
 endif
 endif
 
