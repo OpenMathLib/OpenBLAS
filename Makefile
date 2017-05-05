@@ -329,3 +329,8 @@ endif
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out testing_results.txt)
 	@echo Done.
+
+# Makefile debugging trick:
+# call print-VARIABLE to see the runtime value of any variable
+print-%:
+	@echo '$*=$($*)'
