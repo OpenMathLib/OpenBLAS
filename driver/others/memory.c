@@ -1015,7 +1015,7 @@ void *blas_memory_alloc(int procpos){
   mypos = WhereAmI();
 
   position = mypos;
-  while (position > NUM_BUFFERS) position >>= 1;
+  while (position >= NUM_BUFFERS) position >>= 1;
 
   do {
     if (!memory[position].used && (memory[position].pos == mypos)) {
