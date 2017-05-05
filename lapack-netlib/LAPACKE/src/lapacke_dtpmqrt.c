@@ -42,6 +42,7 @@ lapack_int LAPACKE_dtpmqrt( int matrix_layout, char side, char trans,
 {
     lapack_int ncols_a, nrows_a;
     lapack_int nrows_v;
+    lapack_int lwork;
     lapack_int info = 0;
     double* work = NULL;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
@@ -70,7 +71,9 @@ lapack_int LAPACKE_dtpmqrt( int matrix_layout, char side, char trans,
     }
 #endif
     /* Allocate memory for working array(s) */
-    work = (double*)LAPACKE_malloc( sizeof(double) * MAX(1,m) * MAX(1,nb) );
+    lwork = LAPACKE_lsame( side, 'L' ) ? MAX(1,nb) * MAX(1,n) :
+                       ( LAPACKE_lsame( side, 'R' ) ? MAX(1,m) * MAX(1,nb) : 0 );
+    work = (double*)LAPACKE_malloc( sizeof(double) * lwork );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
