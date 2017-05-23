@@ -224,8 +224,44 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 # Install include files
-FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	message (STATUS "Generating openblas_config.h in ${CMAKE_BINARY_DIR}")
+	ADD_CUSTOM_TARGET(genconfig
+	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_CONFIG_H\" \; print \"\#define OPENBLAS_CONFIG_H\"};  ARGIND==1&&NF {print $$1,"OPENBLAS_"$$2, $$3 \; next}\; ARGIND==2 {print} ; END{print \"\#define OPENBLAS_VERSION \\"${OpenBLAS_VERSION}\\"\" \; print \"\#endif /* OPENBLAS_CONFIG_H */\"}' ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h > "${CMAKE_BINARY_DIR}/openblas_config.h"
+	)
+	add_dependencies( ${OpenBLAS_LIBNAME} genconfig genf77blas)
+	install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
+	ADD_CUSTOM_TARGET(genf77blas
+	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_F77BLAS_H\" \; print \"\#define OPENBLAS_F77BLAS_H\" \; print \"\#include \\"openblas_config.h\\" \"}; NF {print}; END{print \"\#endif\"}' ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
+
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
+	)
+	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+if(NOT NO_CBLAS)
+	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
+	ADD_CUSTOM_TARGET(gencblas
+	COMMAND sed 's/common/openblas_config/g' ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.h"
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h
+	)
+	add_dependencies( ${OpenBLAS_LIBNAME} gencblas)
+	install (FILES ${CMAKE_BINARY_DIR}/cblas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
+
+if(NOT NO_LAPACKE)
+	message (STATUS "Copying LAPACKE header files to ${CMAKE_INSTALL_INCLUDEDIR}")
+	add_dependencies( ${OpenBLAS_LIBNAME} genlapacke)
+	FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/*.h")
+	install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ 
+ 
+	ADD_CUSTOM_TARGET(genlapacke
+	COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
+	)
+	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
+
  
 if(NOT MSVC)
 	install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
