@@ -43,7 +43,7 @@ endif
 
 ifeq ($(USE_MASS), 1)
 # Path to MASS libs, change it if the libs are installed at any other location
-MASSPATH        = /opt/ibm/xlmass/8.1.3/lib
+MASSPATH        = /opt/ibm/xlmass/8.1.5/lib
 COMMON_OPT     += -mveclibabi=mass -ftree-vectorize -funsafe-math-optimizations -DUSE_MASS
 EXTRALIB       += -L$(MASSPATH) -lmass -lmassvp8 -lmass_simdp8
 endif
