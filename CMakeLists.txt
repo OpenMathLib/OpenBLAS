@@ -226,14 +226,14 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 # Install include files
 	message (STATUS "Generating openblas_config.h in ${CMAKE_BINARY_DIR}")
 	ADD_CUSTOM_TARGET(genconfig
-	COMMAND ${AWK} "BEGIN{print \"\#ifndef OPENBLAS_CONFIG_H\" \; print \"\#define OPENBLAS_CONFIG_H\"}  (ARGIND==1)&&(NF>0){print $$1,"OPENBLAS_"$$2, $$3 \; next} \; ARGIND==2{  print}  END{print \"\#define OPENBLAS_VERSION \\"${OpenBLAS_VERSION}\\"\" \; print \"\#endif /* OPENBLAS_CONFIG_H */\"}" ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h > "${CMAKE_BINARY_DIR}/openblas_config.h"
+	COMMAND ${AWK} "BEGIN{print \"\#ifndef OPENBLAS_CONFIG_H\" \; print \"\#define OPENBLAS_CONFIG_H\"}  (ARGIND==1)&&(NF>0){ print $$1,"OPENBLAS_"$$2, $$3 \; next} \; ARGIND==2{  print}\;  END{print \"\#define OPENBLAS_VERSION \\"${OpenBLAS_VERSION}\\"\" \; print \"\#endif /* OPENBLAS_CONFIG_H */\"}" ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h > "${CMAKE_BINARY_DIR}/openblas_config.h"
 	)
 	add_dependencies( ${OpenBLAS_LIBNAME} genconfig genf77blas)
 	install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 	ADD_CUSTOM_TARGET(genf77blas
-	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_F77BLAS_H\" \; print \"\#define OPENBLAS_F77BLAS_H\" \; print \"\#include \\"openblas_config.h\\" \"} \; NF { print}\; END{print \"\#endif\"}' ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
+	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_F77BLAS_H\" \; print \"\#define OPENBLAS_F77BLAS_H\" \; print \"\#include \\"openblas_config.h\\" \"} \; NF {print}\; END{print \"\#endif\"}' ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
 
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
 	)
