@@ -33,6 +33,7 @@ if ($compiler eq "") {
               "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
 	      "pathf90", "pathf95",
 	      "pgf95", "pgf90", "pgf77",
+	      "flang",
               "ifort");
 
 OUTER:
@@ -78,8 +79,13 @@ if ($compiler eq "") {
 		$vendor = GFORTRAN;
 		$openmp = "-fopenmp";
 	    } else {
-		$vendor = G77;
-		$openmp = "";
+		if ($compiler =~ /flang/) {
+		    $vendor = FLANG;
+		    $openmp = "-fopenmp";
+		} else {
+		    $vendor = G77;
+		    $openmp = "";
+		}
 	    }
 
 	}
@@ -195,6 +201,12 @@ if ($compiler eq "") {
 	if ($compiler =~ /open64/) {
 	    $vendor = OPEN64;
 	    $openmp = "-mp";
+	}
+
+	if ($compiler =~ /flang/) {
+	    $vendor = FLANG;
+	    $bu     = "_";
+	    $openmp = "-fopenmp";
 	}
 
 	if ($vendor eq "") {
@@ -329,6 +341,10 @@ if ($link ne "") {
 
 if ($vendor eq "INTEL"){
     $linker_a .= "-lgfortran"
+}
+
+if ($vendor eq "FLANG"){
+    $linker_a .= "-lflang"
 }
 
 open(MAKEFILE, ">> $makefile") || die "Can't append $makefile";
