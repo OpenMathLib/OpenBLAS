@@ -227,10 +227,11 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	add_executable(gen_config_h gen_config_h.c)
 	target_compile_definitions(gen_config_h PRIVATE VERSION=\"${OpenBLAS_VERSION}\")
 	message (STATUS "Generating openblas_config.h in ${CMAKE_BINARY_DIR}")
+	GET_TARGET_PROPERTY(GENCONFIG_BIN gen_config_h LOCATION)
 	ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/openblas_config.h
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
-	COMMAND ${CMAKE_BINARY_DIR}/gen_config_h ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h > ${CMAKE_BINARY_DIR}/openblas_config.h
+	COMMAND ${GENCONFIG_BIN} ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h > ${CMAKE_BINARY_DIR}/openblas_config.h
 	)
 	ADD_CUSTOM_TARGET(genconfig DEPENDS openblas_config.h)	
 	add_dependencies( ${OpenBLAS_LIBNAME}  genconfig genf77blas)
