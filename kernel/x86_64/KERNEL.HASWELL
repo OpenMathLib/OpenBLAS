@@ -2,6 +2,8 @@ DSCALKERNEL = dscal.c
 CSCALKERNEL = cscal.c
 ZSCALKERNEL = zscal.c
 
+DCOPYKERNEL =  ../arm/copy.c
+
 SGEMVNKERNEL = sgemv_n_4.c
 SGEMVTKERNEL = sgemv_t_4.c
 
