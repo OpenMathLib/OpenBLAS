@@ -313,6 +313,10 @@ typedef int blasint;
 #if defined(OS_SUNOS)
 #define YIELDING	thr_yield()
 #endif
+	
+#if defined(OS_LINUX)
+#define YIELDING	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
 
 #if defined(OS_WINDOWS)
 #if defined(_MSC_VER) && !defined(__clang__)
