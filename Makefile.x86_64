@@ -20,9 +20,9 @@ LIBMKL		= -L$(MKLPATH)/em64t -Wl,-rpath,$(MKLPATH)/em64t -lmkl_intel_lp64 -lmkl_
 endif
 else
 ifndef SMP
-LIBMKL		= -L$(MKLPATH)/em64t -Wl,-rpath,$(MKLPATH)/em64t -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -Wl,--end-group -lguide -lpthread -lm
+LIBMKL		= -L$(MKLPATH)/em64t -Wl,-rpath,$(MKLPATH)/em64t -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -Wl,--end-group -lguide -pthread -lm
 else
-LIBMKL		= -L$(MKLPATH)/em64t -Wl,-rpath,$(MKLPATH)/em64t -Wl,--start-group -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -Wl,--end-group -lguide -lpthread -lm
+LIBMKL		= -L$(MKLPATH)/em64t -Wl,-rpath,$(MKLPATH)/em64t -Wl,--start-group -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -Wl,--end-group -lguide -pthread -lm
 endif
 endif
 
@@ -30,10 +30,10 @@ endif
 ifndef SMP
 LIBATLAS	= -L$(ATLASPATH)64 -llapack -lcblas -lf77blas -latlas -lm
 else
-LIBATLAS	= -L$(ATLASPATH)64 -llapack -lptcblas -lptf77blas -latlas -lpthread -lm
+LIBATLAS	= -L$(ATLASPATH)64 -llapack -lptcblas -lptf77blas -latlas -pthread -lm
 endif
 
-LIBFLAME	= -L$(FLAMEPATH) -llapack2flame -lflame $(TOPDIR)/$(LIBNAME) -lgfortran -lpthread -lm
+LIBFLAME	= -L$(FLAMEPATH) -llapack2flame -lflame $(TOPDIR)/$(LIBNAME) -lgfortran -pthread -lm
 
 
 ifeq ($(F_COMPILER), g77)
@@ -50,9 +50,9 @@ endif
 
 ifeq ($(F_COMPILER), INTEL)
 ifndef SMP
-LIBACML		= -L$(ACMLPATH)/ifort64/lib -Wl,-rpath,$(ACMLPATH)/ifort64/lib -lacml -lacml_mv -lifcoremt_pic -lirc -lm -lpthread -ldl
+LIBACML		= -L$(ACMLPATH)/ifort64/lib -Wl,-rpath,$(ACMLPATH)/ifort64/lib -lacml -lacml_mv -lifcoremt_pic -lirc -lm -pthread -ldl
 else
-LIBACML		= -L$(ACMLPATH)/ifort64_mp/lib -Wl,-rpath,$(ACMLPATH)/ifort64_mp/lib -lacml_mp -lacml_mv -lifcoremt_pic -liomp5 -lirc -lm -lpthread -ldl
+LIBACML		= -L$(ACMLPATH)/ifort64_mp/lib -Wl,-rpath,$(ACMLPATH)/ifort64_mp/lib -lacml_mp -lacml_mv -lifcoremt_pic -liomp5 -lirc -lm -pthread -ldl
 endif
 endif
 

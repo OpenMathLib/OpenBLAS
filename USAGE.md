@@ -52,7 +52,7 @@ in `Makefile.rule`.
 
 `gcc -o test test.c -I /your_path/OpenBLAS/include/ -L/your_path/OpenBLAS/lib -lopenblas`
 
-If the library is multithreaded, please add `-lpthread`. If the library
+If the library is multithreaded, please add `-pthread`. If the library
 contains LAPACK functions, please add `-lgfortran` or other Fortran libs.
 
 * Link with static library
@@ -66,10 +66,10 @@ default), custom programs statically linked against `libopenblas.a` should also
 link with the pthread library e.g.:
 
 ```
-gcc -static -I/opt/OpenBLAS/include -L/opt/OpenBLAS/lib -o my_program my_program.c -lopenblas -lpthread
+gcc -static -I/opt/OpenBLAS/include -L/opt/OpenBLAS/lib -o my_program my_program.c -lopenblas -pthread
 ```
 
-Failing to add the `-lpthread` flag will cause errors such as:
+Failing to add the `-pthread` flag will cause errors such as:
 
 ```
 /opt/OpenBLAS/libopenblas.a(memory.o): In function `_touch_memory':
@@ -99,7 +99,7 @@ void main()
   printf("\n");
 }
 ```
-`gcc -o test_cblas_open test_cblas_dgemm.c -I /your_path/OpenBLAS/include/ -L/your_path/OpenBLAS/lib -lopenblas -lpthread -lgfortran`
+`gcc -o test_cblas_open test_cblas_dgemm.c -I /your_path/OpenBLAS/include/ -L/your_path/OpenBLAS/lib -lopenblas -pthread -lgfortran`
 
 #### Call BLAS Fortran interface
 
