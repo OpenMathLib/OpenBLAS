@@ -1479,12 +1479,30 @@ static int on_process_term(void)
 #else
 #pragma comment(linker, "/INCLUDE:__tls_used")
 #endif
-#pragma data_seg(push, old_seg)
+
+#ifdef _WIN64
+#pragma const_seg(".CRT$XLB")
+#else
 #pragma data_seg(".CRT$XLB")
+#endif
 static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
+#ifdef _WIN64
+#pragma const_seg()
+#else
+#pragma data_seg()
+#endif
+
+#ifdef _WIN64
+#pragma const_seg(".CRT$XTU")
+#else
 #pragma data_seg(".CRT$XTU")
+#endif
 static int(*p_process_term)(void) = on_process_term;
-#pragma data_seg(pop, old_seg)
+#ifdef _WIN64
+#pragma const_seg()
+#else
+#pragma data_seg()
+#endif
 #endif
 
 #if (defined(C_PGI) || (!defined(C_SUN) && defined(F_INTERFACE_SUN))) && (defined(ARCH_X86) || defined(ARCH_X86_64))

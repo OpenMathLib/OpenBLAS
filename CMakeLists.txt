@@ -120,9 +120,12 @@ if (${NO_STATIC} AND ${NO_SHARED})
 endif ()
 
 #Set default output directory
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib )
-
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+if(MSVC)
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PROJECT_BINARY_DIR}/lib/Debug)
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BINARY_DIR}/lib/Release)
+endif ()
 # get obj vars into format that add_library likes: $<TARGET_OBJS:objlib> (see http://www.cmake.org/cmake/help/v3.0/command/add_library.html)
 set(TARGET_OBJS "")
 foreach (SUBDIR ${SUBDIRS})
@@ -142,9 +145,12 @@ if (NOT NO_LAPACKE)
 endif ()
 endif ()
 
-#Only generate .def for dll on MSVC
+# Only generate .def for dll on MSVC and always produce pdb files for debug and release
 if(MSVC)
 set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
+set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
 endif()
 
 # add objects to the openblas lib
@@ -159,15 +165,15 @@ set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG 
 foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
   
-  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
-  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
-  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib)
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
 endforeach()
 
 enable_testing()
 add_subdirectory(utest)
 
-if(NOT MSVC)
+if (NOT MSVC)
 	#only build shared library for MSVC
 
 	add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
@@ -224,10 +230,7 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 # Install include files
-	add_executable(gen_config_h gen_config_h.c)
-	target_compile_definitions(gen_config_h PRIVATE VERSION=\"${OpenBLAS_VERSION}\")
-	message (STATUS "Generating openblas_config.h in ${CMAKE_BINARY_DIR}")
-	GET_TARGET_PROPERTY(GENCONFIG_BIN gen_config_h LOCATION)
+	set (GENCONFIG_BIN ${CMAKE_BINARY_DIR}/gen_config_h${CMAKE_EXECUTABLE_SUFFIX})
 	ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/openblas_config.h
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
@@ -238,19 +241,32 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
+if (NOT MSVC)
 	ADD_CUSTOM_TARGET(genf77blas
 	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_F77BLAS_H\" \; print \"\#define OPENBLAS_F77BLAS_H\" \; print \"\#include \\"openblas_config.h\\" \"}; NF {print}; END{print \"\#endif\"}' ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
-
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
 	)
+else ()
+	ADD_CUSTOM_TARGET(genf77blas
+	COMMAND ${AWK} \"BEGIN{print \\\"\#ifndef OPENBLAS_F77BLAS_H\\\" \; print \\\"\#define OPENBLAS_F77BLAS_H\\\" \; print \\\"\#include \\\\\\"openblas_config.h\\\\\\" \\\"}; NF {print}; END{print \\\"\#endif\\\"}\" ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
+	)
+endif ()
 	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
+  if(NOT MSVC)
 	ADD_CUSTOM_TARGET(gencblas
-	COMMAND sed 's/common/openblas_config/g' ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.h"
+	COMMAND ${SED} 's/common/openblas_config/g' ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.h"
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h
 	)
+  else ()
+	ADD_CUSTOM_TARGET(gencblas
+	COMMAND ${SED} "s/common/openblas_config/g" ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.h"
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h
+	)
+  endif ()
 	add_dependencies( ${OpenBLAS_LIBNAME} gencblas)
 	install (FILES ${CMAKE_BINARY_DIR}/cblas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
@@ -277,3 +293,15 @@ if(PKG_CONFIG_FOUND)
 	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas.pc @ONLY)
 	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
 endif()
+
+# build dependencies graph
+# add_dependencies(genconfig gen_config_h genf77blas gencblas)
+add_dependencies(genconfig genf77blas gencblas)
+add_dependencies(interface genconfig)
+add_dependencies(kernel genconfig)
+add_dependencies(driver_level2 genconfig)
+add_dependencies(driver_level3 genconfig)
+add_dependencies(driver_others genconfig)
+add_dependencies(${OpenBLAS_LIBNAME} kernel driver_level2 driver_level3 driver_others interface)
+add_dependencies(openblas_utest ${OpenBLAS_LIBNAME})
+

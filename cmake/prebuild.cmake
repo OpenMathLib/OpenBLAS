@@ -4,7 +4,8 @@
 ##              This is triggered by system.cmake and runs before any of the code is built.
 ##              Creates config.h and Makefile.conf by first running the c_check perl script (which creates those files).
 ##              Next it runs f_check and appends some fortran information to the files.
-##              Finally it runs getarch and getarch_2nd for even more environment information.
+##              Then it runs getarch and getarch_2nd for even more environment information.
+##              Finally it builds gen_config_h for use at build time to generate config.h.
 
 # CMake vars set by this file:
 # CORE
@@ -81,6 +82,10 @@ try_compile(GETARCH_RESULT ${GETARCH_DIR}
   COPY_FILE ${PROJECT_BINARY_DIR}/${GETARCH_BIN}
 )
 
+if (NOT ${GETARCH_RESULT})
+  MESSAGE(FATAL_ERROR "Compiling getarch failed ${GETARCH_LOG}")
+endif ()
+
 message(STATUS "Running getarch")
 
 # use the cmake binary w/ the -E param to run a shell command in a cross-platform way
@@ -103,6 +108,10 @@ try_compile(GETARCH2_RESULT ${GETARCH2_DIR}
   COPY_FILE ${PROJECT_BINARY_DIR}/${GETARCH2_BIN}
 )
 
+if (NOT ${GETARCH2_RESULT})
+  MESSAGE(FATAL_ERROR "Compiling getarch_2nd failed ${GETARCH2_LOG}")
+endif ()
+
 # use the cmake binary w/ the -E param to run a shell command in a cross-platform way
 execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH2_BIN} 0 OUTPUT_VARIABLE GETARCH2_MAKE_OUT)
 execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH2_BIN} 1 OUTPUT_VARIABLE GETARCH2_CONF_OUT)
@@ -111,3 +120,19 @@ execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH2_BIN} 1 OUTPUT_VARIABLE 
 file(APPEND ${TARGET_CONF} ${GETARCH2_CONF_OUT})
 ParseGetArchVars(${GETARCH2_MAKE_OUT})
 
+# compile get_config_h
+set(GEN_CONFIG_H_DIR "${PROJECT_BINARY_DIR}/genconfig_h_build")
+set(GEN_CONFIG_H_BIN "gen_config_h${CMAKE_EXECUTABLE_SUFFIX}")
+set(GEN_CONFIG_H_FLAGS "-DVERSION=\"${OpenBLAS_VERSION}\"")
+file(MAKE_DIRECTORY ${GEN_CONFIG_H_DIR})
+
+try_compile(GEN_CONFIG_H_RESULT ${GEN_CONFIG_H_DIR}
+  SOURCES ${PROJECT_SOURCE_DIR}/gen_config_h.c
+  COMPILE_DEFINITIONS ${EXFLAGS} ${GETARCH_FLAGS} ${GEN_CONFIG_H_FLAGS} -I${PROJECT_SOURCE_DIR}
+  OUTPUT_VARIABLE GEN_CONFIG_H_LOG
+  COPY_FILE ${PROJECT_BINARY_DIR}/${GEN_CONFIG_H_BIN}
+)
+
+if (NOT ${GEN_CONFIG_H_RESULT})
+  MESSAGE(FATAL_ERROR "Compiling gen_config_h failed ${GEN_CONFIG_H_LOG}")
+endif ()
