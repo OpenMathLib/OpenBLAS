@@ -425,12 +425,17 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #endif
 
 #ifndef ASSEMBLER
+#ifdef OS_WINDOWSSTORE
+typedef char env_var_t[MAX_PATH];
+#define readenv(p, n) 0
+#else
 #ifdef OS_WINDOWS
 typedef char env_var_t[MAX_PATH];
 #define readenv(p, n) GetEnvironmentVariable((LPCTSTR)(n), (LPTSTR)(p), sizeof(p))
 #else
 typedef char* env_var_t;
 #define readenv(p, n) ((p)=getenv(n))
+#endif
 #endif
 
 #if !defined(RPCC_DEFINED) && !defined(OS_WINDOWS)
@@ -654,7 +659,11 @@ static __inline void blas_unlock(volatile BLASULONG *address){
   *address = 0;
 }
 
-
+#ifdef OS_WINDOWSSTORE
+static __inline int readenv_atoi(char *env) {
+	return 0;
+}
+#else
 #ifdef OS_WINDOWS
 static __inline int readenv_atoi(char *env) {
   env_var_t p;
@@ -669,7 +678,7 @@ static __inline int readenv_atoi(char *env) {
 	return(0);
 }
 #endif
-
+#endif
 
 #if !defined(XDOUBLE) || !defined(QUAD_PRECISION)
 
