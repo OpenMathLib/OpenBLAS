@@ -237,7 +237,8 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	COMMAND ${GENCONFIG_BIN} ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h > ${CMAKE_BINARY_DIR}/openblas_config.h
 	)
 	ADD_CUSTOM_TARGET(genconfig DEPENDS openblas_config.h)	
-	add_dependencies( ${OpenBLAS_LIBNAME}  genconfig genf77blas)
+	add_dependencies(genconfig ${OpenBLAS_LIBNAME})
+
 	install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
@@ -246,6 +247,8 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_F77BLAS_H\" \; print \"\#define OPENBLAS_F77BLAS_H\" \; print \"\#include \\"openblas_config.h\\" \"}; NF {print}; END{print \"\#endif\"}' ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
 	)
+	add_dependencies(genf77blas ${OpenBLAS_LIBNAME})
+
 	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(NOT NO_CBLAS)
@@ -256,7 +259,9 @@ if(NOT NO_CBLAS)
 	COMMAND cp "${CMAKE_BINARY_DIR}/cblas.tmp" "${CMAKE_BINARY_DIR}/cblas.h"
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h
 	)
-	add_dependencies( ${OpenBLAS_LIBNAME} gencblas)
+
+	add_dependencies(gencblas ${OpenBLAS_LIBNAME})
+
 	install (FILES ${CMAKE_BINARY_DIR}/cblas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
@@ -265,7 +270,6 @@ if(NOT NO_LAPACKE)
 	add_dependencies( ${OpenBLAS_LIBNAME} genlapacke)
 	FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/*.h")
 	install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
- 
  
 	ADD_CUSTOM_TARGET(genlapacke
 	COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
@@ -282,15 +286,3 @@ if(PKG_CONFIG_FOUND)
 	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas.pc @ONLY)
 	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
 endif()
-
-# build dependencies graph
-# add_dependencies(genconfig gen_config_h genf77blas gencblas)
-add_dependencies(genconfig genf77blas gencblas)
-add_dependencies(interface genconfig)
-add_dependencies(kernel genconfig)
-add_dependencies(driver_level2 genconfig)
-add_dependencies(driver_level3 genconfig)
-add_dependencies(driver_others genconfig)
-add_dependencies(${OpenBLAS_LIBNAME} kernel driver_level2 driver_level3 driver_others interface)
-add_dependencies(openblas_utest ${OpenBLAS_LIBNAME})
-
