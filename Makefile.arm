@@ -1,27 +1,32 @@
-# ifeq logical or
+#ifeq logical or
 ifeq ($(CORE), $(filter $(CORE),CORTEXA9 CORTEXA15))
 ifeq ($(OSNAME), Android)
-CCOMMON_OPT += -marm -mfpu=neon  -mfloat-abi=hard -march=armv7-a
-FCOMMON_OPT += -marm -mfpu=neon  -mfloat-abi=hard -march=armv7-a
+CCOMMON_OPT += -mfpu=neon  -march=armv7-a
+FCOMMON_OPT += -mfpu=neon  -march=armv7-a
 else
-CCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
-FCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
+CCOMMON_OPT += -mfpu=vfpv3 -march=armv7-a
+FCOMMON_OPT += -mfpu=vfpv3 -march=armv7-a
 endif
 endif
 
 ifeq ($(CORE), ARMV7)
 ifeq ($(OSNAME), Android)
-CCOMMON_OPT += -marm -mfpu=neon  -mfloat-abi=hard -march=armv7-a -Wl,--no-warn-mismatch
-FCOMMON_OPT += -marm -mfpu=neon  -mfloat-abi=hard -march=armv7-a -Wl,--no-warn-mismatch
+ifeq ($(ARM_SOFTFP_ABI), 1)
+CCOMMON_OPT += -mfpu=neon -march=armv7-a
+FCOMMON_OPT += -mfpu=neon -march=armv7-a
 else
-CCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
-FCOMMON_OPT += -marm -mfpu=vfpv3  -mfloat-abi=hard -march=armv7-a
+CCOMMON_OPT += -mfpu=neon -march=armv7-a -Wl,--no-warn-mismatch
+FCOMMON_OPT += -mfpu=neon -march=armv7-a -Wl,--no-warn-mismatch
+endif
+else
+CCOMMON_OPT += -mfpu=vfpv3 -march=armv7-a
+FCOMMON_OPT += -mfpu=vfpv3 -march=armv7-a
 endif
 endif
 
 ifeq ($(CORE), ARMV6)
-CCOMMON_OPT += -marm -mfpu=vfp -mfloat-abi=hard  -march=armv6
-FCOMMON_OPT += -marm -mfpu=vfp -mfloat-abi=hard  -march=armv6
+CCOMMON_OPT += -mfpu=vfp -march=armv6
+FCOMMON_OPT += -mfpu=vfp -march=armv6
 endif
 
 

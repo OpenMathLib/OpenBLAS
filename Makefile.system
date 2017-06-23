@@ -482,6 +482,17 @@ endif
 ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
+
+CCOMMON_OPT += -marm
+FCOMMON_OPT += -marm
+
+ifeq ($(ARM_SOFTFP_ABI), 1)
+CCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
+FCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
+else
+CCOMMON_OPT += -mfloat-abi=hard
+FCOMMON_OPT += -mfloat-abi=hard
+endif
 endif
 
 ifeq ($(ARCH), arm64)
