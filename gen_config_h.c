@@ -16,7 +16,7 @@ s=fgets(line,80,fp);
 if (s== NULL) break;
 memset(line2,0,80);
 i=sscanf(line,"#define %70c",line2);
-if (i>0) {
+if (i!=0) {
 	fprintf(stdout,"#define OPENBLAS_%s",line2);
 } else {
 	fprintf(stdout,"\n");

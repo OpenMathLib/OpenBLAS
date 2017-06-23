@@ -312,6 +312,8 @@ endif ()
 
 set(AWK awk)
 
+set(SED sed)
+
 set(REVISION "-r${OpenBLAS_VERSION}")
 set(MAJOR_VERSION ${OpenBLAS_MAJOR_VERSION})
 
