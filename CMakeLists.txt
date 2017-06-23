@@ -252,7 +252,8 @@ if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
 	ADD_CUSTOM_TARGET(gencblas
-	COMMAND ${SED} 's/common/openblas_config/g' ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.h"
+	COMMAND ${SED} 's/common/openblas_config/g' ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.tmp"
+	COMMAND cp "${CMAKE_BINARY_DIR}/cblas.tmp" "${CMAKE_BINARY_DIR}/cblas.h"
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h
 	)
 	add_dependencies( ${OpenBLAS_LIBNAME} gencblas)
