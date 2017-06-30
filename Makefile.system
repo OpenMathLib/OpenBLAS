@@ -242,6 +242,10 @@ EXTRALIB	+= -lm
 NO_EXPRECISION = 1
 endif
 
+ifeq ($(OSNAME), Android)
+EXTRALIB	+= -lm
+endif
+
 ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
 endif
@@ -483,16 +487,20 @@ ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
 
-CCOMMON_OPT += -marm
-FCOMMON_OPT += -marm
-
-ifeq ($(ARM_SOFTFP_ABI), 1)
-CCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
-FCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
+# If ABI is specified on command line use it. Else use the automatically detected ABI.
+ifeq ($(ARM_SOFTFP_ABI),1)
+ARM_ABI = softfp
 else
-CCOMMON_OPT += -mfloat-abi=hard
-FCOMMON_OPT += -mfloat-abi=hard
+ifeq ($(ARM_HARD_ABI),1)
+ARM_ABI = hard
+else
+ARM_ABI=$(ARM_ABI_AUTO)
 endif
+endif
+export ARM_ABI_AUTO
+CCOMMON_OPT += -marm -mfloat-abi=$(ARM_ABI)
+FCOMMON_OPT += -marm -mfloat-abi=$(ARM_ABI)
+
 endif
 
 ifeq ($(ARCH), arm64)
