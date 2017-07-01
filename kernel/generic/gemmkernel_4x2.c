@@ -154,11 +154,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		res1_0 *= alpha;
 		res1_1 *= alpha;
 
-		C0[0] = res0_0;
-		C0[1] = res0_1;
+		C0[0] += res0_0;
+		C0[1] += res0_1;
 
-		C1[0] = res1_0;
-		C1[1] = res1_1;
+		C1[0] += res1_0;
+		C1[1] += res1_1;
 
 		C0 = C0+2;
 		C1 = C1+2;
@@ -190,12 +190,12 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 		res1_0 *= alpha;
 
-		C0[0] = res0_0;
+		C0[0] += res0_0;
 
-		C1[0] = res1_0;
+		C1[0] += res1_0;
 
-		C0 = C0+1;
-		C1 = C1+1;
+		C0 += C0+1;
+		C1 += C1+1;
 
 	}
 
@@ -245,10 +245,10 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		res0_2 *= alpha;
 		res0_3 *= alpha;
 
-		C0[0] = res0_0;
-		C0[1] = res0_1;
-		C0[2] = res0_2;
-		C0[3] = res0_3;
+		C0[0] += res0_0;
+		C0[1] += res0_1;
+		C0[2] += res0_2;
+		C0[3] += res0_3;
 
 		C0 = C0+4;
 
@@ -278,8 +278,8 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		res0_0 *= alpha;
 		res0_1 *= alpha;
 
-		C0[0] = res0_0;
-		C0[1] = res0_1;
+		C0[0] += res0_0;
+		C0[1] += res0_1;
 
 		C0 = C0+2;
 
@@ -306,7 +306,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
 		C0[0] = res0_0;
 
-		C0 = C0+1;
+		C0 += C0+1;
 
 	}
         k = (bk<<0);
