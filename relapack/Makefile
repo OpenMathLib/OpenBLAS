@@ -29,7 +29,7 @@ LINK_TEST = -L$(TOPDIR) -lopenblas -lgfortran -lm
 
 libs:	$(OBJS)
 	@echo "Building ReLAPACK library $(LIBNAME)"
-	$(AR) -r  $(TOPDIR)/$(LIBNAME) $(OBJS)
+	$(AR) -rv  $(TOPDIR)/$(LIBNAME) $(OBJS)
 	$(RANLIB) $(TOPDIR)/$(LIBNAME)
 
 %.o: %.c config.h
