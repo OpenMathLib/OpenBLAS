@@ -8,10 +8,6 @@ ZNRM2KERNEL  = nrm2_vfpv3.S
 SGEMVNKERNEL = gemv_n_vfpv3.S
 DGEMVNKERNEL = gemv_n_vfpv3.S
 
-STRMMKERNEL  =  strmm_kernel_4x4_vfpv3.S
-DTRMMKERNEL  =  dtrmm_kernel_4x4_vfpv3.S
-CTRMMKERNEL  =  ctrmm_kernel_2x2_vfpv3.S
-
 SGEMMKERNEL    =  sgemm_kernel_4x4_vfpv3.S
 SGEMMONCOPY    =  sgemm_ncopy_4_vfp.S
 SGEMMOTCOPY    =  sgemm_tcopy_4_vfp.S
@@ -25,11 +21,10 @@ DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
 CGEMMKERNEL    = cgemm_kernel_2x2_vfpv3.S
-
-ifeq ($(ARM_ABI),hard)
-
-ZTRMMKERNEL  =  ztrmm_kernel_2x2_vfpv3.S
-
 ZGEMMKERNEL    = zgemm_kernel_2x2_vfpv3.S
 
-endif
+STRMMKERNEL  =  strmm_kernel_4x4_vfpv3.S
+DTRMMKERNEL  =  dtrmm_kernel_4x4_vfpv3.S
+CTRMMKERNEL  =  ctrmm_kernel_2x2_vfpv3.S
+ZTRMMKERNEL  =  ztrmm_kernel_2x2_vfpv3.S
+
