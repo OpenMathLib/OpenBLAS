@@ -487,19 +487,14 @@ ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
 
-# If ABI is specified on command line use it. Else use the automatically detected ABI.
-ifeq ($(ARM_SOFTFP_ABI),1)
-ARM_ABI = softfp
-else
-ifeq ($(ARM_HARD_ABI),1)
-ARM_ABI = hard
-else
-ARM_ABI=$(ARM_ABI_AUTO)
+CCOMMON_OPT += -marm
+FCOMMON_OPT += -marm
+
+# If softfp abi is mentioned on the command line, force it.
+ifeq ($(ARM_SOFTFP_ABI), 1)
+CCOMMON_OPT += -mfloat-abi=softfp
+FCOMMON_OPT += -mfloat-abi=softfp
 endif
-endif
-export ARM_ABI_AUTO
-CCOMMON_OPT += -marm -mfloat-abi=$(ARM_ABI)
-FCOMMON_OPT += -marm -mfloat-abi=$(ARM_ABI)
 
 endif
 

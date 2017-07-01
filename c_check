@@ -94,17 +94,7 @@ if ($architecture eq "mips64") {
     $defined = 1;
 }
 
-if ($architecture eq "arm") {
-    $defined = 1;
-    $data = `$compiler_name -dM -E ctest2.c | grep -w __ARM_PCS_VFP`;
-    if ($data ne "") {
-	$abi = "hard";
-    } else {
-	$abi = "softfp";
-    }
-}
-
-if ($architecture eq "arm64") {
+if (($architecture eq "arm") || ($architecture eq "arm64")) {
     $defined = 1;
 }
 
@@ -296,10 +286,6 @@ print MAKEFILE "CROSS=1\n" if $cross != 0;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
-
-if ($architecture eq "arm") {
-	print MAKEFILE "ARM_ABI_AUTO=$abi\n";
-}
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;
