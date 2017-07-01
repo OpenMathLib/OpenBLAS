@@ -65,10 +65,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define ALPHA	[fp, #-276 ]
 
+#if !defined(__ARM_PCS_VFP)
+#define OLD_ALPHA_SOFTFP	r3
+#define OLD_A_SOFTFP	[fp, #4 ]
+#define B	[fp, #8 ]
+#define OLD_C	[fp, #12 ]
+#define OLD_LDC	[fp, #16 ]
+#define OFFSET  [fp, #20 ]
+#else
 #define B	[fp, #4 ]
 #define OLD_C	[fp, #8 ]
 #define OLD_LDC	[fp, #12 ]
 #define OFFSET  [fp, #16 ]
+#endif
 
 #define I	r0
 #define J	r1
@@ -395,6 +404,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	fp, sp, #24
 	sub	sp, sp, #STACKSIZE				// reserve stack
 
+#if !defined(__ARM_PCS_VFP)
+	vmov	OLD_ALPHA, OLD_ALPHA_SOFTFP
+	ldr	OLD_A, OLD_A_SOFTFP
+#endif
 	str	OLD_M, M
 	str	OLD_N, N
 	str	OLD_K, K
