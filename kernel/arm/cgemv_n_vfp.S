@@ -38,11 +38,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define STACKSIZE 256
 
-#define	OLD_LDA		[fp, #0 ]
-#define	X		[fp, #4 ]
-#define	OLD_INC_X	[fp, #8 ]
-#define	Y		[fp, #12 ]
-#define	OLD_INC_Y	[fp, #16 ]
+#if !defined(__ARM_PCS_VFP)
+#define OLD_ALPHAR	r3
+#define OLD_ALPHAI	[fp, #0 ]
+#define OLD_A_SOFTFP	[fp, #4 ]
+#define OLD_LDA		[fp, #8 ]
+#define X		[fp, #12 ]
+#define OLD_INC_X	[fp, #16 ]
+#define Y		[fp, #20 ]
+#define OLD_INC_Y	[fp, #24 ]
+#else
+#define OLD_LDA		[fp, #0 ]
+#define X		[fp, #4 ]
+#define OLD_INC_X	[fp, #8 ]
+#define Y		[fp, #12 ]
+#define OLD_INC_Y	[fp, #16 ]
+#endif
+
 #define OLD_A		r3
 #define	OLD_M		r0
 
@@ -461,6 +473,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	cmp	N, #0
 	ble	cgemvn_kernel_L999
+
+#if !defined(__ARM_PCS_VFP)
+	vmov	s0, OLD_ALPHAR
+	vldr	s1, OLD_ALPHAI
+	ldr	OLD_A, OLD_A_SOFTFP
+#endif
 
 	str	OLD_A, A
 	str	OLD_M, M
