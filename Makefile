@@ -25,8 +25,8 @@ LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
-.PHONY : all libs netlib test ctest shared install
-.NOTPARALLEL : all libs prof lapack-test install blas-test
+.PHONY : all libs netlib $(RELA) test ctest shared install
+.NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
 
 all :: libs netlib $(RELA) tests shared
 	@echo
@@ -339,6 +339,7 @@ endif
 	@touch $(NETLIB_LAPACK_DIR)/make.inc
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
 	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
+	@$(MAKE) -C relapack clean
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out testing_results.txt)
 	@echo Done.
