@@ -72,7 +72,6 @@ DGEMVTKERNEL = gemv_t_vfp.S
 CGEMVTKERNEL = cgemv_t_vfp.S
 ZGEMVTKERNEL = zgemv_t_vfp.S
 
-SGEMMKERNEL    = ../generic/gemmkernel_4x2.c
 SGEMMKERNEL    = sgemm_kernel_4x2_vfp.S
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
 SGEMMINCOPY    = sgemm_ncopy_4_vfp.S
@@ -85,7 +84,7 @@ SGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
 SGEMMONCOPYOBJ = sgemm_oncopy.o
 SGEMMOTCOPYOBJ = sgemm_otcopy.o
 
-DGEMMKERNEL    = ../generic/gemmkernel_4x2.c
+DGEMMKERNEL    = dgemm_kernel_4x2_vfp.S
 ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
 DGEMMINCOPY    = dgemm_ncopy_4_vfp.S
 DGEMMITCOPY    = dgemm_tcopy_4_vfp.S
@@ -97,9 +96,8 @@ DGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
 DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
-STRMMKERNEL    = ../generic/trmmkernel_4x2.c
 STRMMKERNEL    = strmm_kernel_4x2_vfp.S
-DTRMMKERNEL    = ../generic/trmmkernel_4x2.c
+DTRMMKERNEL    = dtrmm_kernel_4x2_vfp.S
 
 CGEMMONCOPY    = cgemm_ncopy_2_vfp.S
 CGEMMOTCOPY    = cgemm_tcopy_2_vfp.S
@@ -113,11 +111,9 @@ ZGEMMOTCOPYOBJ = zgemm_otcopy.o
 
 ifeq ($(ARM_ABI),hard)
 
-DTRMMKERNEL    = dtrmm_kernel_4x2_vfp.S
 CTRMMKERNEL    = ctrmm_kernel_2x2_vfp.S
 ZTRMMKERNEL    = ztrmm_kernel_2x2_vfp.S
 
-DGEMMKERNEL    = dgemm_kernel_4x2_vfp.S
 CGEMMKERNEL    = cgemm_kernel_2x2_vfp.S
 ZGEMMKERNEL    = zgemm_kernel_2x2_vfp.S
 
