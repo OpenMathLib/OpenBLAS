@@ -1,5 +1,10 @@
 include $(KERNELDIR)/KERNEL.ARMV6
 
+SNRM2KERNEL  = nrm2_vfpv3.S
+DNRM2KERNEL  = nrm2_vfpv3.S
+CNRM2KERNEL  = nrm2_vfpv3.S
+ZNRM2KERNEL  = nrm2_vfpv3.S
+
 STRMMKERNEL    = ../generic/trmmkernel_4x4.c
 DTRMMKERNEL    = ../generic/trmmkernel_4x4.c
 
@@ -16,11 +21,6 @@ DGEMMONCOPYOBJ = dgemm_oncopy.o
 DGEMMOTCOPYOBJ = dgemm_otcopy.o
 
 ifeq ($(ARM_ABI),hard)
-
-SNRM2KERNEL  = nrm2_vfpv3.S
-DNRM2KERNEL  = nrm2_vfpv3.S
-CNRM2KERNEL  = nrm2_vfpv3.S
-ZNRM2KERNEL  = nrm2_vfpv3.S
 
 SGEMVNKERNEL = gemv_n_vfpv3.S
 DGEMVNKERNEL = gemv_n_vfpv3.S

@@ -52,6 +52,11 @@ DDOTKERNEL   = ddot_vfp.S
 CDOTKERNEL   = cdot_vfp.S
 ZDOTKERNEL   = zdot_vfp.S
 
+SNRM2KERNEL  = nrm2_vfp.S
+DNRM2KERNEL  = nrm2_vfp.S
+CNRM2KERNEL  = nrm2_vfp.S
+ZNRM2KERNEL  = nrm2_vfp.S
+
 SGEMMKERNEL    = ../generic/gemmkernel_4x2.c
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
 SGEMMINCOPY    = sgemm_ncopy_4_vfp.S
@@ -90,11 +95,6 @@ ZGEMMONCOPYOBJ = zgemm_oncopy.o
 ZGEMMOTCOPYOBJ = zgemm_otcopy.o
 
 ifeq ($(ARM_ABI),hard)
-
-SNRM2KERNEL  = nrm2_vfp.S
-DNRM2KERNEL  = nrm2_vfp.S
-CNRM2KERNEL  = nrm2_vfp.S
-ZNRM2KERNEL  = nrm2_vfp.S
 
 SSWAPKERNEL  = swap_vfp.S
 DSWAPKERNEL  = swap_vfp.S
