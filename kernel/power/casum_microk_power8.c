@@ -56,14 +56,14 @@ static float casum_kernel_16 (long n, float *x)
        "xxlxor		38, 38,	38	\n\t"
        "xxlxor		39, 39,	39	\n\t"
 
-       "lxvw4x		40, 0, %2	\n\t"
-       "lxvw4x		41, %8, %2	\n\t"
-       "lxvw4x		42, %9, %2	\n\t"
-       "lxvw4x		43, %10, %2	\n\t"
-       "lxvw4x		44, %11, %2	\n\t"
-       "lxvw4x		45, %12, %2	\n\t"
-       "lxvw4x		46, %13, %2	\n\t"
-       "lxvw4x		47, %14, %2	\n\t"
+       "lxvd2x		40, 0, %2	\n\t"
+       "lxvd2x		41, %8, %2	\n\t"
+       "lxvd2x		42, %9, %2	\n\t"
+       "lxvd2x		43, %10, %2	\n\t"
+       "lxvd2x		44, %11, %2	\n\t"
+       "lxvd2x		45, %12, %2	\n\t"
+       "lxvd2x		46, %13, %2	\n\t"
+       "lxvd2x		47, %14, %2	\n\t"
 
        "addi		%2, %2, 128	\n\t"
 
@@ -78,26 +78,26 @@ static float casum_kernel_16 (long n, float *x)
        "xvabssp		50, 42		\n\t"
        "xvabssp		51, 43		\n\t"
 
-       "lxvw4x		40, 0, %2	\n\t"
-       "lxvw4x		41, %8, %2	\n\t"
+       "lxvd2x		40, 0, %2	\n\t"
+       "lxvd2x		41, %8, %2	\n\t"
 
        "xvabssp		%x3, 44		\n\t"
        "xvabssp		%x4, 45		\n\t"
 
-       "lxvw4x		42, %9, %2	\n\t"
-       "lxvw4x		43, %10, %2	\n\t"
+       "lxvd2x		42, %9, %2	\n\t"
+       "lxvd2x		43, %10, %2	\n\t"
 
        "xvabssp		%x5, 46		\n\t"
        "xvabssp		%x6, 47		\n\t"
 
-       "lxvw4x		44, %11, %2	\n\t"
-       "lxvw4x		45, %12, %2	\n\t"
+       "lxvd2x		44, %11, %2	\n\t"
+       "lxvd2x		45, %12, %2	\n\t"
 
        "xvaddsp		32, 32, 48	\n\t"
        "xvaddsp		33, 33, 49	\n\t"
 
-       "lxvw4x		46, %13, %2	\n\t"
-       "lxvw4x		47, %14, %2	\n\t"
+       "lxvd2x		46, %13, %2	\n\t"
+       "lxvd2x		47, %14, %2	\n\t"
 
        "xvaddsp		34, 34, 50	\n\t"
        "xvaddsp		35, 35, 51	\n\t"
