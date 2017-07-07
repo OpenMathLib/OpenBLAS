@@ -6,9 +6,9 @@ ARFLAGS		= -m x86
 endif
 
 ifndef SMP
-LIBMKL		= -L$(MKLPATH)/32 -Wl,-rpath,$(MKLPATH)/32 -lmkl_intel -lmkl_sequential -lmkl_core -lguide -lpthread -lm
+LIBMKL		= -L$(MKLPATH)/32 -Wl,-rpath,$(MKLPATH)/32 -lmkl_intel -lmkl_sequential -lmkl_core -lguide -pthread -lm
 else
-LIBMKL		= -L$(MKLPATH)/32 -Wl,-rpath,$(MKLPATH)/32 -lmkl_intel -lmkl_intel_thread -lmkl_core -lguide -lpthread -lm
+LIBMKL		= -L$(MKLPATH)/32 -Wl,-rpath,$(MKLPATH)/32 -lmkl_intel -lmkl_intel_thread -lmkl_core -lguide -pthread -lm
 endif
 
 # LIBMKL		= -L$(MKLPATH)/32 -lmkl_lapack -lmkl_ia32 -lguide -lpthread -lm
@@ -16,7 +16,7 @@ endif
 ifndef SMP
 LIBATLAS	= -L$(ATLAS) -lf77blas -latlas -lg2c -lm
 else
-LIBATLAS	= -L$(ATLAS) -lptf77blas -latlas -lpthread -lg2c -lm
+LIBATLAS	= -L$(ATLAS) -lptf77blas -latlas -pthread -lg2c -lm
 endif
 
 ifeq ($(COMPILER_F77), g77)
@@ -52,5 +52,5 @@ LIBVECLIB	= /System/Library/Frameworks/vecLib.framework/Versions/Current/vecLib
 ifndef SMP
 LIBATLAS	= -L$(ATLASPATH)/32 -lcblas -lf77blas -latlas -lm
 else
-LIBATLAS	= -L$(ATLASPATH)/32 -lptf77blas -lptatlas -lpthread -lm
+LIBATLAS	= -L$(ATLASPATH)/32 -lptf77blas -lptatlas -pthread -lm
 endif

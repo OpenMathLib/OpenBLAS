@@ -79,7 +79,7 @@ endif ()
 
 if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Interix")
   if (SMP)
-    set(EXTRALIB "${EXTRALIB} -lpthread")
+    set(EXTRALIB "${EXTRALIB} -pthread")
   endif ()
 endif ()
 

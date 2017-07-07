@@ -306,7 +306,7 @@ ifneq ($(OSNAME), CYGWIN_NT)
 ifneq ($(OSNAME), Interix)
 ifneq ($(OSNAME), Android)
 ifdef SMP
-EXTRALIB   += -lpthread
+EXTRALIB   += -pthread
 endif
 endif
 endif
