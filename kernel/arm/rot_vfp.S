@@ -73,7 +73,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d5
 	vmul.f64    d3 , d0, d5
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -82,7 +82,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d5
 	vmul.f64    d3 , d0, d5
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -91,7 +91,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d5
 	vmul.f64    d3 , d0, d5
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -100,7 +100,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d5
 	vmul.f64    d3 , d0, d5
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -114,7 +114,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d5
 	vmul.f64    d3 , d0, d5
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -127,7 +127,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d5
 	vmul.f64    d3 , d0, d5
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X, { d2 }
 	fstmiad	Y, { d3 }
 
@@ -145,7 +145,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s5
 	vmul.f32    s3 , s0, s5
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -154,7 +154,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s5
 	vmul.f32    s3 , s0, s5
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -163,7 +163,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s5
 	vmul.f32    s3 , s0, s5
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -172,7 +172,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s5
 	vmul.f32    s3 , s0, s5
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -186,7 +186,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s5
 	vmul.f32    s3 , s0, s5
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -199,7 +199,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s5
 	vmul.f32    s3 , s0, s5
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X, { s2 }
 	fstmias	Y, { s3 }
 
@@ -226,13 +226,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d6
 	vmul.f64    d3 , d0, d6
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 	vmul.f64    d2 , d0, d5
 	fmacd       d2 , d1, d7
 	vmul.f64    d3 , d0, d7
-	fnmacd      d3 , d1, d5
+	vmls.f64    d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -241,13 +241,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d6
 	vmul.f64    d3 , d0, d6
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 	vmul.f64    d2 , d0, d5
 	fmacd       d2 , d1, d7
 	vmul.f64    d3 , d0, d7
-	fnmacd      d3 , d1, d5
+	vmls.f64    d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -259,13 +259,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d6
 	vmul.f64    d3 , d0, d6
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 	vmul.f64    d2 , d0, d5
 	fmacd       d2 , d1, d7
 	vmul.f64    d3 , d0, d7
-	fnmacd      d3 , d1, d5
+	vmls.f64    d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -274,13 +274,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d6
 	vmul.f64    d3 , d0, d6
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 	vmul.f64    d2 , d0, d5
 	fmacd       d2 , d1, d7
 	vmul.f64    d3 , d0, d7
-	fnmacd      d3 , d1, d5
+	vmls.f64    d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -294,13 +294,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d6
 	vmul.f64    d3 , d0, d6
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 	vmul.f64    d2 , d0, d5
 	fmacd       d2 , d1, d7
 	vmul.f64    d3 , d0, d7
-	fnmacd      d3 , d1, d5
+	vmls.f64    d3 , d1, d5
 	fstmiad	X!, { d2 }
 	fstmiad	Y!, { d3 }
 
@@ -314,13 +314,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f64    d2 , d0, d4
 	fmacd       d2 , d1, d6
 	vmul.f64    d3 , d0, d6
-	fnmacd      d3 , d1, d4
+	vmls.f64    d3 , d1, d4
 	vstr	    d2 , [ X, #0 ]
 	vstr	    d3 , [ Y, #0 ]
 	vmul.f64    d2 , d0, d5
 	fmacd       d2 , d1, d7
 	vmul.f64    d3 , d0, d7
-	fnmacd      d3 , d1, d5
+	vmls.f64    d3 , d1, d5
 	vstr	    d2 , [ X, #8 ]
 	vstr	    d3 , [ Y, #8 ]
 
@@ -343,13 +343,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s6
 	vmul.f32    s3 , s0, s6
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 	vmul.f32    s2 , s0, s5
 	fmacs       s2 , s1, s7
 	vmul.f32    s3 , s0, s7
-	fnmacs      s3 , s1, s5
+	vmls.f32    s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -358,13 +358,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s6
 	vmul.f32    s3 , s0, s6
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 	vmul.f32    s2 , s0, s5
 	fmacs       s2 , s1, s7
 	vmul.f32    s3 , s0, s7
-	fnmacs      s3 , s1, s5
+	vmls.f32    s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -376,13 +376,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s6
 	vmul.f32    s3 , s0, s6
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 	vmul.f32    s2 , s0, s5
 	fmacs       s2 , s1, s7
 	vmul.f32    s3 , s0, s7
-	fnmacs      s3 , s1, s5
+	vmls.f32    s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -391,13 +391,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s6
 	vmul.f32    s3 , s0, s6
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 	vmul.f32    s2 , s0, s5
 	fmacs       s2 , s1, s7
 	vmul.f32    s3 , s0, s7
-	fnmacs      s3 , s1, s5
+	vmls.f32    s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -411,13 +411,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s6
 	vmul.f32    s3 , s0, s6
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 	vmul.f32    s2 , s0, s5
 	fmacs       s2 , s1, s7
 	vmul.f32    s3 , s0, s7
-	fnmacs      s3 , s1, s5
+	vmls.f32    s3 , s1, s5
 	fstmias	X!, { s2 }
 	fstmias	Y!, { s3 }
 
@@ -431,13 +431,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmul.f32    s2 , s0, s4
 	fmacs       s2 , s1, s6
 	vmul.f32    s3 , s0, s6
-	fnmacs      s3 , s1, s4
+	vmls.f32    s3 , s1, s4
 	vstr	    s2 , [ X, #0 ]
 	vstr	    s3 , [ Y, #0 ]
 	vmul.f32    s2 , s0, s5
 	fmacs       s2 , s1, s7
 	vmul.f32    s3 , s0, s7
-	fnmacs      s3 , s1, s5
+	vmls.f32    s3 , s1, s5
 	vstr	    s2 , [ X, #4 ]
 	vstr	    s3 , [ Y, #4 ]
 
