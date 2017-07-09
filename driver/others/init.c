@@ -354,6 +354,24 @@ static int numa_check(void) {
   return common -> num_nodes;
 }
 
+#if defined(__GLIBC_PREREQ)
+#if !__GLIBC_PREREQ(2, 6)
+int sched_getcpu(void)
+{
+int cpu;
+FILE *fp = NULL;
+if ( (fp = fopen("/proc/self/stat", "r")) == NULL)
+   return -1;
+if ( fscanf( fp, "%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%d", &cpu) != 1) {
+  fclose (fp);
+  return -1;
+  }
+  fclose (fp);
+  return(cpu);
+}
+#endif
+#endif
+
 static void numa_mapping(void) {
 
   int node, cpu, core;
@@ -808,7 +826,6 @@ void gotoblas_affinity_init(void) {
   common -> shmid = pshmid;
 
   if (common -> magic != SH_MAGIC) {
-
 #ifdef DEBUG
     fprintf(stderr, "Shared Memory Initialization.\n");
 #endif
@@ -830,7 +847,7 @@ void gotoblas_affinity_init(void) {
     if (common -> num_nodes > 1) numa_mapping();
 
     common -> final_num_procs = 0;
-    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number.
+    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number. 
 
     for (cpu = 0; cpu < common -> final_num_procs; cpu ++) common -> cpu_use[cpu] =  0;
 
