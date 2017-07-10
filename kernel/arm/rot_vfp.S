@@ -40,6 +40,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define	OLD_INC_Y	[fp, #0 ]
 
+#if !defined(__ARM_PCS_VFP)
+#if !defined(DOUBLE)
+#define	OLD_C		[fp, #4]
+#define	OLD_S		[fp, #8]
+#else
+#define	OLD_C		[fp, #8]
+#define	OLD_S		[fp, #16]
+#endif
+#endif
 
 #define	N	r0
 #define X	r1
@@ -462,7 +471,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         add     fp, sp, #8
 
 	ldr    INC_Y , OLD_INC_Y
-
+#if !defined(__ARM_PCS_VFP)
+#if !defined(DOUBLE)
+	vldr	s0, OLD_C
+	vldr	s1, OLD_S
+#else
+	vldr	d0, OLD_C
+	vldr	d1, OLD_S
+#endif
+#endif
 
 	cmp	N, #0
 	ble	rot_kernel_L999

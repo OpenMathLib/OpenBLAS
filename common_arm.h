@@ -111,11 +111,6 @@ REALNAME:
 
 #define PROFCODE
 
-#ifdef __ARM_PCS
-//-mfloat-abi=softfp
-#define SOFT_FLOAT_ABI
-#endif
-
 #endif
 
 

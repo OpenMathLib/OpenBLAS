@@ -38,9 +38,43 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define STACKSIZE 256
 
+#if !defined(__ARM_PCS_VFP)
+
+#if !defined(COMPLEX)
+
+#if !defined(DOUBLE)
+#define OLD_X		[fp, #0 ]
+#define	OLD_INC_X	[fp, #4 ]
+#define	OLD_Y		[fp, #8 ]
+#define	OLD_INC_Y	[fp, #12 ]
+#else
+#define OLD_X		[fp, #8 ]
+#define	OLD_INC_X	[fp, #12]
+#define	OLD_Y		[fp, #16]
+#define	OLD_INC_Y	[fp, #20]
+#endif
+
+#else //COMPLEX
+
+#if !defined(DOUBLE)
+#define OLD_X		[fp, #4 ]
+#define	OLD_INC_X	[fp, #8 ]
+#define	OLD_Y		[fp, #12 ]
+#define	OLD_INC_Y	[fp, #16 ]
+#else
+#define OLD_X		[fp, #16]
+#define	OLD_INC_X	[fp, #20]
+#define	OLD_Y		[fp, #24]
+#define	OLD_INC_Y	[fp, #28]
+#endif
+
+#endif // !defined(__ARM_PCS_VFP)
+
+#else
 #define	OLD_INC_X	[fp, #0 ]
 #define	OLD_Y		[fp, #4 ]
 #define	OLD_INC_Y	[fp, #8 ]
+#endif
 
 
 #define	N	r0
@@ -229,6 +263,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	push    {r4 , fp}
         add     fp, sp, #8
 
+#if !defined(__ARM_PCS_VFP)
+	ldr	X, OLD_X
+#endif
 	ldr    INC_X , OLD_INC_X
 	ldr         Y, OLD_Y
 	ldr    INC_Y , OLD_INC_Y

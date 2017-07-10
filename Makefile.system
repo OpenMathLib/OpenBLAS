@@ -242,6 +242,10 @@ EXTRALIB	+= -lm
 NO_EXPRECISION = 1
 endif
 
+ifeq ($(OSNAME), Android)
+EXTRALIB	+= -lm
+endif
+
 ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
 endif
@@ -486,12 +490,10 @@ BINARY_DEFINED  = 1
 CCOMMON_OPT += -marm
 FCOMMON_OPT += -marm
 
+# If softfp abi is mentioned on the command line, force it.
 ifeq ($(ARM_SOFTFP_ABI), 1)
-CCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
-FCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
-else
-CCOMMON_OPT += -mfloat-abi=hard
-FCOMMON_OPT += -mfloat-abi=hard
+CCOMMON_OPT += -mfloat-abi=softfp
+FCOMMON_OPT += -mfloat-abi=softfp
 endif
 
 ifeq ($(OSNAME), Android)
