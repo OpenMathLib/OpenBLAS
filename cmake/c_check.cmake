@@ -91,3 +91,8 @@ file(WRITE ${TARGET_CONF}
   "#define __${BINARY}BIT__\t1\n"
   "#define FUNDERSCORE\t${FU}\n")
 
+if (${HOST_OS} STREQUAL "WINDOWSSTORE")
+  file(APPEND ${TARGET_CONF}
+    "#define OS_WINNT\t1\n")
+endif ()
+

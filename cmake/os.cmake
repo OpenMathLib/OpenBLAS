@@ -77,7 +77,7 @@ if (CYGWIN)
   set(NO_EXPRECISION 1)
 endif ()
 
-if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Interix")
+if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Interix" AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Android")
   if (SMP)
     set(EXTRALIB "${EXTRALIB} -lpthread")
   endif ()

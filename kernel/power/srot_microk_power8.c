@@ -57,15 +57,15 @@ static void srot_kernel_16 (long n, float *x, float *y, float c, float s)
        "xscvdpspn	37, %x14	\n\t"	// load s to all words
        "xxspltw		37, 37, 0	\n\t"
 
-       "lxvw4x		32, 0, %3	\n\t"	// load x
-       "lxvw4x		33, %15, %3	\n\t"
-       "lxvw4x		34, %16, %3	\n\t"
-       "lxvw4x		35, %17, %3	\n\t"
+       "lxvd2x		32, 0, %3	\n\t"	// load x
+       "lxvd2x		33, %15, %3	\n\t"
+       "lxvd2x		34, %16, %3	\n\t"
+       "lxvd2x		35, %17, %3	\n\t"
 
-       "lxvw4x		48, 0, %4	\n\t"	// load y
-       "lxvw4x		49, %15, %4	\n\t"
-       "lxvw4x		50, %16, %4	\n\t"
-       "lxvw4x		51, %17, %4	\n\t"
+       "lxvd2x		48, 0, %4	\n\t"	// load y
+       "lxvd2x		49, %15, %4	\n\t"
+       "lxvd2x		50, %16, %4	\n\t"
+       "lxvd2x		51, %17, %4	\n\t"
 
        "addi		%3, %3, 64	\n\t"
        "addi		%4, %4, 64	\n\t"
@@ -89,26 +89,26 @@ static void srot_kernel_16 (long n, float *x, float *y, float c, float s)
        "xvmulsp		44, 32, 37	\n\t"	// s * x
        "xvmulsp		45, 33, 37	\n\t"
 
-       "lxvw4x		32, 0, %3	\n\t"	// load x
-       "lxvw4x		33, %15, %3	\n\t"
+       "lxvd2x		32, 0, %3	\n\t"	// load x
+       "lxvd2x		33, %15, %3	\n\t"
 
        "xvmulsp		46, 34, 37	\n\t"
        "xvmulsp		47, 35, 37	\n\t"
 
-       "lxvw4x		34, %16, %3	\n\t"
-       "lxvw4x		35, %17, %3	\n\t"
+       "lxvd2x		34, %16, %3	\n\t"
+       "lxvd2x		35, %17, %3	\n\t"
 
        "xvmulsp		%x9, 48, 37	\n\t"	// s * y
        "xvmulsp		%x10, 49, 37	\n\t"
 
-       "lxvw4x		48, 0, %4	\n\t"	// load y
-       "lxvw4x		49, %15, %4	\n\t"
+       "lxvd2x		48, 0, %4	\n\t"	// load y
+       "lxvd2x		49, %15, %4	\n\t"
 
        "xvmulsp		%x11, 50, 37	\n\t"
        "xvmulsp		%x12, 51, 37	\n\t"
 
-       "lxvw4x		50, %16, %4	\n\t"
-       "lxvw4x		51, %17, %4	\n\t"
+       "lxvd2x		50, %16, %4	\n\t"
+       "lxvd2x		51, %17, %4	\n\t"
 
        "xvaddsp		40, 40, %x9	\n\t"	// c * x + s * y
        "xvaddsp		41, 41, %x10	\n\t"	// c * x + s * y
@@ -124,15 +124,15 @@ static void srot_kernel_16 (long n, float *x, float *y, float c, float s)
        "xvsubsp		%x7, %x7, 46	\n\t"	// c * y - s * x
        "xvsubsp		%x8, %x8, 47	\n\t"	// c * y - s * x
 
-       "stxvw4x		40, 0, %3	\n\t"	// store x
-       "stxvw4x		41, %15, %3	\n\t"
-       "stxvw4x		42, %16, %3	\n\t"
-       "stxvw4x		43, %17, %3	\n\t"
+       "stxvd2x		40, 0, %3	\n\t"	// store x
+       "stxvd2x		41, %15, %3	\n\t"
+       "stxvd2x		42, %16, %3	\n\t"
+       "stxvd2x		43, %17, %3	\n\t"
 
-       "stxvw4x		%x5, 0, %4	\n\t"	// store y
-       "stxvw4x		%x6, %15, %4	\n\t"
-       "stxvw4x		%x7, %16, %4	\n\t"
-       "stxvw4x		%x8, %17, %4	\n\t"
+       "stxvd2x		%x5, 0, %4	\n\t"	// store y
+       "stxvd2x		%x6, %15, %4	\n\t"
+       "stxvd2x		%x7, %16, %4	\n\t"
+       "stxvd2x		%x8, %17, %4	\n\t"
 
        "addi		%3, %3, 128	\n\t"
        "addi		%4, %4, 128	\n\t"
@@ -175,15 +175,15 @@ static void srot_kernel_16 (long n, float *x, float *y, float c, float s)
        "xvsubsp		%x7, %x7, 46	\n\t"	// c * y - s * x
        "xvsubsp		%x8, %x8, 47	\n\t"	// c * y - s * x
 
-       "stxvw4x		40, 0, %3	\n\t"	// store x
-       "stxvw4x		41, %15, %3	\n\t"
-       "stxvw4x		42, %16, %3	\n\t"
-       "stxvw4x		43, %17, %3	\n\t"
+       "stxvd2x		40, 0, %3	\n\t"	// store x
+       "stxvd2x		41, %15, %3	\n\t"
+       "stxvd2x		42, %16, %3	\n\t"
+       "stxvd2x		43, %17, %3	\n\t"
 
-       "stxvw4x		%x5, 0, %4	\n\t"	// store y
-       "stxvw4x		%x6, %15, %4	\n\t"
-       "stxvw4x		%x7, %16, %4	\n\t"
-       "stxvw4x		%x8, %17, %4	\n"
+       "stxvd2x		%x5, 0, %4	\n\t"	// store y
+       "stxvd2x		%x6, %15, %4	\n\t"
+       "stxvd2x		%x7, %16, %4	\n\t"
+       "stxvd2x		%x8, %17, %4	\n"
 
      "#n=%2 x=%0=%3 y=%1=%4 c=%13 s=%14 o16=%15 o32=%16 o48=%17\n"
      "#t0=%x5 t1=%x6 t2=%x7 t3=%x8 t4=%x9 t5=%x10 t6=%x11 t7=%x12"

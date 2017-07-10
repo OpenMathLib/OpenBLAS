@@ -496,6 +496,13 @@ CCOMMON_OPT += -mfloat-abi=softfp
 FCOMMON_OPT += -mfloat-abi=softfp
 endif
 
+ifeq ($(OSNAME), Android)
+ifeq ($(ARM_SOFTFP_ABI), 1)
+EXTRALIB	+= -lm
+else
+EXTRALIB	+= -Wl,-lm_hard
+endif
+endif
 endif
 
 ifeq ($(ARCH), arm64)
