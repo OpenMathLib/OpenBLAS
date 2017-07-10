@@ -90,42 +90,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(CONJ) && !defined(XCONJ)
 
-        #define KMAC_R  fnmacs
+        #define KMAC_R  vmls.f32
         #define KMAC_I  fmacs
 
         #define FMAC_R1 fmacs
-        #define FMAC_R2 fnmacs
+        #define FMAC_R2 vmls.f32
         #define FMAC_I1 fmacs
         #define FMAC_I2 fmacs
 
 #elif defined(CONJ) && !defined(XCONJ)
 
         #define KMAC_R  fmacs
-        #define KMAC_I  fnmacs
+        #define KMAC_I  vmls.f32
 
         #define FMAC_R1 fmacs
-        #define FMAC_R2 fnmacs
+        #define FMAC_R2 vmls.f32
         #define FMAC_I1 fmacs
         #define FMAC_I2 fmacs
 
 #elif !defined(CONJ) && defined(XCONJ)
 
         #define KMAC_R  fmacs
-        #define KMAC_I  fnmacs
+        #define KMAC_I  vmls.f32
 
         #define FMAC_R1 fmacs
         #define FMAC_R2 fmacs
-        #define FMAC_I1 fnmacs
+        #define FMAC_I1 vmls.f32
         #define FMAC_I2 fmacs
 
 #else
 
-        #define KMAC_R  fnmacs
+        #define KMAC_R  vmls.f32
         #define KMAC_I  fmacs
 
         #define FMAC_R1 fmacs
         #define FMAC_R2 fmacs
-        #define FMAC_I1 fnmacs
+        #define FMAC_I1 vmls.f32
         #define FMAC_I2 fmacs
 
 #endif

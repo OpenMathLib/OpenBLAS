@@ -105,14 +105,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(DOUBLE)
 
 #define	FMAC_R1	fmacd
-#define FMAC_R2 fnmacd
+#define FMAC_R2 vmls.f64
 #define	FMAC_I1	fmacd
 #define FMAC_I2 fmacd
 
 #else
 
 #define	FMAC_R1	fmacs
-#define FMAC_R2 fnmacs
+#define FMAC_R2 vmls.f32
 #define	FMAC_I1	fmacs
 #define FMAC_I2 fmacs
 
@@ -124,14 +124,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define	FMAC_R1	fmacd
 #define FMAC_R2 fmacd
-#define	FMAC_I1	fnmacd
+#define	FMAC_I1	vmls.f64
 #define FMAC_I2 fmacd
 
 #else
 
 #define	FMAC_R1	fmacs
 #define FMAC_R2 fmacs
-#define	FMAC_I1	fnmacs
+#define	FMAC_I1	vmls.f32
 #define FMAC_I2 fmacs
 
 #endif

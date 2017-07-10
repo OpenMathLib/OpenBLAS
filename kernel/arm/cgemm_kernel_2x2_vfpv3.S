@@ -115,10 +115,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#define	FADD_R	fsubs
 	#define	FADD_I	fadds
 
-	#define	FMAC_R1	fnmacs
-	#define	FMAC_R2	fnmacs
+	#define	FMAC_R1	vmls.f32
+	#define	FMAC_R2	vmls.f32
 	#define	FMAC_I1	fmacs
-	#define	FMAC_I2	fnmacs
+	#define	FMAC_I2	vmls.f32
 
 #elif defined(CN) || defined(CT)
 
@@ -127,7 +127,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	#define	FMAC_R1	fmacs
 	#define	FMAC_R2	fmacs
-	#define	FMAC_I1	fnmacs
+	#define	FMAC_I1	vmls.f32
 	#define	FMAC_I2	fmacs
 
 #elif defined(NC) || defined(TC)
@@ -136,7 +136,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#define	FADD_I	fsubs
 
 	#define	FMAC_R1	fmacs
-	#define	FMAC_R2	fnmacs
+	#define	FMAC_R2	vmls.f32
 	#define	FMAC_I1	fmacs
 	#define	FMAC_I2	fmacs
 
@@ -145,10 +145,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#define	FADD_R  fsubs
 	#define	FADD_I	fadds
 
-	#define	FMAC_R1	fnmacs
+	#define	FMAC_R1	vmls.f32
 	#define	FMAC_R2	fmacs
-	#define	FMAC_I1	fnmacs
-	#define	FMAC_I2	fnmacs
+	#define	FMAC_I1	vmls.f32
+	#define	FMAC_I2	vmls.f32
 
 #endif
 
