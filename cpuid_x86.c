@@ -637,13 +637,12 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
 	LD1.linesize    = 64;
 	break;
       case 0x63 :
-  	DTB.size        = 2048;
-  	DTB.associative = 4;
-  	DTB.linesize    = 32;
-  	LDTB.size       = 4096;
-  	LDTB.associative= 4;
-  	LDTB.linesize   = 32;
-	break;
+  DTB.size        = 2048;
+  DTB.associative = 4;
+  DTB.linesize    = 32;
+  LDTB.size       = 4096;
+  LDTB.associative= 4;
+  LDTB.linesize   = 32;
       case 0x66 :
 	LD1.size        = 8;
 	LD1.associative = 4;
@@ -676,13 +675,12 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
 	LC1.associative = 8;
 	break;
       case 0x76 :
-  	ITB.size        = 2048;
-  	ITB.associative = 0;
-  	ITB.linesize    = 8;
-  	LITB.size       = 4096;
-  	LITB.associative= 0;
-  	LITB.linesize   = 8;
-	break;
+  ITB.size        = 2048;
+  ITB.associative = 0;
+  ITB.linesize    = 8;
+  LITB.size       = 4096;
+  LITB.associative= 0;
+  LITB.linesize   = 8;
       case 0x77 :
 	LC1.size        = 16;
 	LC1.associative = 4;
