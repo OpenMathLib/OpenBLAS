@@ -157,6 +157,10 @@ void cpuid(unsigned int op, unsigned int *eax, unsigned int *ebx, unsigned int *
   *edx = idlist[current].d;
 }
 
+void cpuid_count (unsigned int op, unsigned int count, unsigned int *eax, unsigned int *ebx, unsigned int *ecx, unsigned int *edx) {
+  return cpuid (op, eax, ebx, ecx, edx);
+}
+
 #endif
 
 #endif // _MSC_VER
@@ -977,7 +981,6 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
         }
       }
     }
-
     cpuid(0x80000000, &cpuid_level, &ebx, &ecx, &edx);
     if (cpuid_level >= 0x80000006) {
       if(L2.size<=0){
