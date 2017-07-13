@@ -100,7 +100,7 @@ BUILD_LAPACK_DEPRECATED = 1
 NO_WARMUP = 1
 
 # If you want to disable CPU/Memory affinity on Linux.
-NO_AFFINITY = 1
+#NO_AFFINITY = 1
 
 # if you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
 # BIGNUMA = 1
