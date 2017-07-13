@@ -84,7 +84,7 @@ VERSION = 0.2.20.dev
 BUILD_LAPACK_DEPRECATED = 1
 
 # Build RecursiveLAPACK on top of LAPACK
-BUILD_RELAPACK = 1
+# BUILD_RELAPACK = 1
 
 # If you want to use legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1
@@ -100,7 +100,7 @@ BUILD_RELAPACK = 1
 NO_WARMUP = 1
 
 # If you want to disable CPU/Memory affinity on Linux.
-#NO_AFFINITY = 1
+NO_AFFINITY = 1
 
 # if you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
 # BIGNUMA = 1

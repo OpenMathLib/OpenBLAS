@@ -17,7 +17,7 @@ SUBDIRS	+= lapack
 endif
 
 RELA =
-ifneq ($(BUILD_RELAPACK), 0)
+ifeq ($(BUILD_RELAPACK), 1)
 RELA = re_lapack
 endif
 

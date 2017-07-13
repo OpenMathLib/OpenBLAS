@@ -414,6 +414,7 @@ CCOMMON_OPT    += -fopenmp
 endif
 
 ifeq ($(C_COMPILER), CLANG)
+$(error OpenBLAS: Clang didn't support OpenMP yet.)
 CCOMMON_OPT    += -fopenmp
 endif
 
@@ -452,9 +453,8 @@ DYNAMIC_CORE += HASWELL ZEN
 endif
 endif
 
-# If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
 ifndef DYNAMIC_CORE
-override DYNAMIC_ARCH=
+DYNAMIC_ARCH =
 endif
 endif
 
@@ -482,17 +482,6 @@ endif
 ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
-
-CCOMMON_OPT += -marm
-FCOMMON_OPT += -marm
-
-ifeq ($(ARM_SOFTFP_ABI), 1)
-CCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
-FCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
-else
-CCOMMON_OPT += -mfloat-abi=hard
-FCOMMON_OPT += -mfloat-abi=hard
-endif
 endif
 
 ifeq ($(ARCH), arm64)
@@ -593,23 +582,6 @@ endif
 #
 #  Fortran Compiler dependent settings
 #
-
-ifeq ($(F_COMPILER), FLANG)
-CCOMMON_OPT += -DF_INTERFACE_FLANG
-ifdef BINARY64
-ifdef INTERFACE64
-ifneq ($(INTERFACE64), 0)
-FCOMMON_OPT += -i8
-endif
-endif
-FCOMMON_OPT += -Wall
-else
-FCOMMON_OPT += -Wall
-endif
-ifeq ($(USE_OPENMP), 1)
-FCOMMON_OPT += -fopenmp
-endif
-endif
 
 ifeq ($(F_COMPILER), G77)
 CCOMMON_OPT += -DF_INTERFACE_G77
@@ -1118,6 +1090,9 @@ ifneq ($(NO_LAPACK), 1)
 LIB_COMPONENTS += LAPACK
 ifneq ($(NO_LAPACKE), 1)
 LIB_COMPONENTS += LAPACKE
+endif
+ifeq (${BUILD_RELAPACK}, 1)
+LIB_COMPONENTS += ReLAPACK
 endif
 endif
 
