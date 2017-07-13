@@ -16,14 +16,19 @@ ifneq ($(NO_LAPACK), 1)
 SUBDIRS	+= lapack
 endif
 
+RELA =
+ifneq ($(BUILD_RELAPACK), 0)
+RELA = re_lapack
+endif
+
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
-.PHONY : all libs netlib test ctest shared install
-.NOTPARALLEL : all libs prof lapack-test install blas-test
+.PHONY : all libs netlib $(RELA) test ctest shared install
+.NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
 
-all :: libs netlib tests shared
+all :: libs netlib $(RELA) tests shared
 	@echo
 	@echo " OpenBLAS build complete. ($(LIB_COMPONENTS))"
 	@echo
@@ -215,6 +220,14 @@ ifndef NO_LAPACKE
 endif
 endif
 
+ifeq ($(NO_LAPACK), 1)
+re_lapack :
+
+else
+re_lapack :
+	@$(MAKE) -C relapack
+endif
+
 prof_lapack : lapack_prebuild
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
@@ -326,11 +339,7 @@ endif
 	@touch $(NETLIB_LAPACK_DIR)/make.inc
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
 	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h
+	@$(MAKE) -C relapack clean
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out testing_results.txt)
 	@echo Done.
-
-# Makefile debugging trick:
-# call print-VARIABLE to see the runtime value of any variable
-print-%:
-	@echo '$*=$($*)'
