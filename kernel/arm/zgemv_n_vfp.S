@@ -38,11 +38,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define STACKSIZE 256
 
-#define	OLD_LDA		[fp, #0 ]
-#define	X		[fp, #4 ]
-#define	OLD_INC_X	[fp, #8 ]
-#define	Y		[fp, #12 ]
-#define	OLD_INC_Y	[fp, #16 ]
+#if !defined(__ARM_PCS_VFP)
+#define OLD_ALPHAR	[fp, #0 ]
+#define OLD_ALPHAI	[fp, #8 ]
+#define OLD_A_SOFTFP	[fp, #16]
+#define OLD_LDA		[fp, #20]
+#define X		[fp, #24]
+#define OLD_INC_X	[fp, #28]
+#define Y		[fp, #32]
+#define OLD_INC_Y	[fp, #36]
+#else
+#define OLD_LDA		[fp, #0 ]
+#define X		[fp, #4 ]
+#define OLD_INC_X	[fp, #8 ]
+#define Y		[fp, #12 ]
+#define OLD_INC_Y	[fp, #16 ]
+#endif
+
 #define OLD_A		r3
 #define	OLD_M		r0
 
@@ -79,42 +91,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(CONJ) && !defined(XCONJ)
 
-        #define KMAC_R  fnmacd
+        #define KMAC_R  vmls.f64
         #define KMAC_I  fmacd
 
         #define FMAC_R1 fmacd
-        #define FMAC_R2 fnmacd
+        #define FMAC_R2 vmls.f64
         #define FMAC_I1 fmacd
         #define FMAC_I2 fmacd
 
 #elif defined(CONJ) && !defined(XCONJ)
 
         #define KMAC_R  fmacd
-        #define KMAC_I  fnmacd
+        #define KMAC_I  vmls.f64
 
         #define FMAC_R1 fmacd
-        #define FMAC_R2 fnmacd
+        #define FMAC_R2 vmls.f64
         #define FMAC_I1 fmacd
         #define FMAC_I2 fmacd
 
 #elif !defined(CONJ) && defined(XCONJ)
 
         #define KMAC_R  fmacd
-        #define KMAC_I  fnmacd
+        #define KMAC_I  vmls.f64
 
         #define FMAC_R1 fmacd
         #define FMAC_R2 fmacd
-        #define FMAC_I1 fnmacd
+        #define FMAC_I1 vmls.f64
         #define FMAC_I2 fmacd
 
 #else
 
-        #define KMAC_R  fnmacd
+        #define KMAC_R  vmls.f64
         #define KMAC_I  fmacd
 
         #define FMAC_R1 fmacd
         #define FMAC_R2 fmacd
-        #define FMAC_I1 fnmacd
+        #define FMAC_I1 vmls.f64
         #define FMAC_I2 fmacd
 
 #endif
@@ -464,6 +476,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	cmp	N, #0
 	ble	zgemvn_kernel_L999
+
+#if !defined(__ARM_PCS_VFP)
+	vldr	d0, OLD_ALPHAR
+	vldr	d1, OLD_ALPHAI
+	ldr	OLD_A, OLD_A_SOFTFP
+#endif
 
 	str	OLD_A, A
 	str	OLD_M, M

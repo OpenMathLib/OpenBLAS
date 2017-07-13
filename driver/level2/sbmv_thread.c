@@ -177,7 +177,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
 #endif
 
   blas_arg_t args;
-  blas_queue_t queue[MAX_CPU_NUMBER];
+  blas_queue_t queue[MAX_CPU_NUMBER + 1];
   BLASLONG range_m[MAX_CPU_NUMBER + 1];
   BLASLONG range_n[MAX_CPU_NUMBER];
 

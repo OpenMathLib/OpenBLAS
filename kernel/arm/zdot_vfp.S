@@ -41,8 +41,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define	N	r0
 #define	X	r1
 #define	INC_X	r2
-#define	OLD_Y	r3
-
 
 /******************************************************
 * [fp, #-128] - [fp, #-64] is reserved
@@ -50,7 +48,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * registers
 *******************************************************/
 
-#define OLD_INC_Y	[fp, #4 ]
+#if !defined(__ARM_PCS_VFP)
+#define	OLD_RETURN_ADDR	r0
+#define	OLD_N		r1
+#define	OLD_X		r2
+#define	OLD_INC_X	r3
+#define	OLD_Y		[fp, #0 ]
+#define	OLD_INC_Y	[fp, #4 ]
+#define	RETURN_ADDR	r8
+#else
+#define	OLD_Y		r3
+#define	OLD_INC_Y	[fp, #0 ]
+#endif
 
 #define I	r5
 #define Y	r6
@@ -181,7 +190,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	.align 5
 
 	push	{r4 - r9, fp}
-	add	fp, sp, #24
+	add	fp, sp, #28
 	sub	sp, sp, #STACKSIZE				// reserve stack
 
 	sub	r4, fp, #128
@@ -194,9 +203,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         vcvt.f64.f32    d2, s0
         vcvt.f64.f32    d3, s0
 
+#if !defined(__ARM_PCS_VFP)
+	mov	RETURN_ADDR, OLD_RETURN_ADDR
+	mov	N, OLD_N
+	mov	X, OLD_X
+	mov	INC_X, OLD_INC_X
+	ldr	Y, OLD_Y
+	ldr	INC_Y, OLD_INC_Y
+#else
 	mov	Y, OLD_Y
 	ldr	INC_Y, OLD_INC_Y
-
+#endif
 
 	cmp	N, #0
 	ble	zdot_kernel_L999
@@ -280,8 +297,11 @@ zdot_kernel_L999:
 	vadd.f64	d0 , d0, d2
 	vsub.f64	d1 , d1, d3
 #endif
+#if !defined(__ARM_PCS_VFP)
+	vstm	RETURN_ADDR, {d0 - d1}
+#endif
 
-	sub	sp, fp, #24
+	sub	sp, fp, #28
 	pop	{r4 - r9, fp}
 	bx	lr
 

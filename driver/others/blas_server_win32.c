@@ -443,8 +443,11 @@ int BLASFUNC(blas_thread_shutdown)(void){
     SetEvent(pool.killed);
 
     for(i = 0; i < blas_num_threads - 1; i++){
-     WaitForSingleObject(blas_threads[i], 5);  //INFINITE);
-	 TerminateThread(blas_threads[i],0);
+      WaitForSingleObject(blas_threads[i], 5);  //INFINITE);
+#ifndef OS_WINDOWSSTORE
+// TerminateThread is only available with WINAPI_DESKTOP and WINAPI_SYSTEM not WINAPI_APP in UWP
+      TerminateThread(blas_threads[i],0);
+#endif
     }
 
     blas_server_avail = 0;
