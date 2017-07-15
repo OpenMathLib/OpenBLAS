@@ -778,11 +778,8 @@ static int initialized = 0;
 void gotoblas_affinity_init(void) {
 
   int cpu, num_avail;
-#ifndef USE_OPENMP
   cpu_set_t cpu_mask;
-#endif
-  int i;
-
+ 
   if (initialized) return;
 
   initialized = 1;
@@ -825,16 +822,18 @@ void gotoblas_affinity_init(void) {
 
   common -> shmid = pshmid;
 
-  if (common -> magic != SH_MAGIC) 
+  if (common -> magic != SH_MAGIC) {
     cpu_set_t *cpusetp;
     int nums;
     int ret;
+    int i;
 
 #ifdef DEBUG
     fprintf(stderr, "Shared Memory Initialization.\n");
 #endif
 
     //returns the number of processors which are currently online
+
     nums = sysconf(_SC_NPROCESSORS_CONF);
      
 #if !defined(__GLIBC_PREREQ) || !__GLIBC_PREREQ(2, 3)
@@ -855,7 +854,7 @@ void gotoblas_affinity_init(void) {
     CPU_FREE(cpusetp);
 #else
     ret = sched_getaffinity(0,sizeof(cpu_set_t), cpusetp);
-    if (ret!=0) { 
+    if (ret!=0) {
         common->num_procs = nums;
     } else {
 #if !__GLIBC_PREREQ(2, 6)  
@@ -863,7 +862,8 @@ void gotoblas_affinity_init(void) {
     int n = 0;
     for (i=0;i<nums;i++)
         if (CPU_ISSET(i,cpusetp)) n++;
-    common->num_procs = n;   
+    common->num_procs = n;
+    }
 #else
     common->num_procs = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
 #endif
@@ -884,7 +884,7 @@ void gotoblas_affinity_init(void) {
     if (common -> num_nodes > 1) numa_mapping();
 
     common -> final_num_procs = 0;
-    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number. 
+    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number.
 
     for (cpu = 0; cpu < common -> final_num_procs; cpu ++) common -> cpu_use[cpu] =  0;
 
