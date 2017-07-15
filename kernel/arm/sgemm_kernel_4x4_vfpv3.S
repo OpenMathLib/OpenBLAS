@@ -58,14 +58,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define	OLD_M	r0
 #define	OLD_N	r1
 #define	OLD_K	r2
-
-#ifdef ARM_SOFTFP_ABI
-#define OLD_ALPHA r3
-//#define OLD_A	
-#else //hard
 #define	OLD_A	r3
 #define OLD_ALPHA s0
-#endif
 
 /******************************************************
 * [fp, #-128] - [fp, #-64] is reserved
@@ -77,10 +71,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define M	[fp, #-256 ]
 #define N	[fp, #-260 ]
 #define K	[fp, #-264 ]
-
-#ifndef ARM_SOFTFP_ABI
 #define A	[fp, #-268 ]
-#endif
 
 #define FP_ZERO [fp, #-240]
 #define FP_ZERO_0 [fp, #-240]
@@ -88,17 +79,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define ALPHA   [fp, #-280]
 
-#ifdef ARM_SOFTFP_ABI
-#define A	[fp, #4 ]
+#if !defined(__ARM_PCS_VFP)
+#define OLD_ALPHA_SOFTFP	r3
+#define OLD_A_SOFTFP	[fp, #4 ]
 #define B	[fp, #8 ]
 #define C	[fp, #12 ]
 #define OLD_LDC	[fp, #16 ]
-#else //hard
+#else
 #define B	[fp, #4 ]
 #define C	[fp, #8 ]
 #define OLD_LDC	[fp, #12 ]
 #endif
-	
+
 #define I	r0
 #define J	r1
 #define L	r2
@@ -867,16 +859,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	fp, sp, #24
 	sub	sp, sp, #STACKSIZE				// reserve stack
 
+#if !defined(__ARM_PCS_VFP)
+	vmov	OLD_ALPHA, OLD_ALPHA_SOFTFP
+	ldr	OLD_A, OLD_A_SOFTFP
+#endif
+
 	str	OLD_M, M
 	str	OLD_N, N
 	str	OLD_K, K
-	
-#ifdef ARM_SOFTFP_ABI
-	str	OLD_ALPHA, ALPHA
-#else //hard
 	str	OLD_A, A
 	vstr	OLD_ALPHA, ALPHA
-#endif
+
 	sub	r3, fp, #128
 	vstm	r3, { s8 - s31} 				// store floating point registers
 

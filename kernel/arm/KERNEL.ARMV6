@@ -1,7 +1,5 @@
+include $(KERNELDIR)/KERNEL.ARMV5
 
-
-
-###############################################################################
 SAMAXKERNEL  = iamax_vfp.S
 DAMAXKERNEL  = iamax_vfp.S
 CAMAXKERNEL  = iamax_vfp.S
@@ -44,10 +42,10 @@ DAXPYKERNEL  = axpy_vfp.S
 CAXPYKERNEL  = axpy_vfp.S
 ZAXPYKERNEL  = axpy_vfp.S
 
-SCOPYKERNEL  = copy.c
-DCOPYKERNEL  = copy.c
-CCOPYKERNEL  = zcopy.c
-ZCOPYKERNEL  = zcopy.c
+SROTKERNEL   = rot_vfp.S
+DROTKERNEL   = rot_vfp.S
+CROTKERNEL   = rot_vfp.S
+ZROTKERNEL   = rot_vfp.S
 
 SDOTKERNEL   = sdot_vfp.S
 DDOTKERNEL   = ddot_vfp.S
@@ -58,16 +56,6 @@ SNRM2KERNEL  = nrm2_vfp.S
 DNRM2KERNEL  = nrm2_vfp.S
 CNRM2KERNEL  = nrm2_vfp.S
 ZNRM2KERNEL  = nrm2_vfp.S
-
-SROTKERNEL   = rot_vfp.S
-DROTKERNEL   = rot_vfp.S
-CROTKERNEL   = rot_vfp.S
-ZROTKERNEL   = rot_vfp.S
-
-SSCALKERNEL  = scal.c
-DSCALKERNEL  = scal.c
-CSCALKERNEL  = zscal.c
-ZSCALKERNEL  = zscal.c
 
 SSWAPKERNEL  = swap_vfp.S
 DSWAPKERNEL  = swap_vfp.S
@@ -84,26 +72,25 @@ DGEMVTKERNEL = gemv_t_vfp.S
 CGEMVTKERNEL = cgemv_t_vfp.S
 ZGEMVTKERNEL = zgemv_t_vfp.S
 
-STRMMKERNEL	= strmm_kernel_4x2_vfp.S
-DTRMMKERNEL	= dtrmm_kernel_4x2_vfp.S
-CTRMMKERNEL	= ctrmm_kernel_2x2_vfp.S
-ZTRMMKERNEL	= ztrmm_kernel_2x2_vfp.S
-
 SGEMMKERNEL    = sgemm_kernel_4x2_vfp.S
+ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
 SGEMMINCOPY    = sgemm_ncopy_4_vfp.S
 SGEMMITCOPY    = sgemm_tcopy_4_vfp.S
 SGEMMINCOPYOBJ = sgemm_incopy.o
 SGEMMITCOPYOBJ = sgemm_itcopy.o
+endif
 SGEMMONCOPY    = sgemm_ncopy_2_vfp.S
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
-SGEMMONCOPYOBJ =  sgemm_oncopy.o
-SGEMMOTCOPYOBJ =  sgemm_otcopy.o
+SGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+SGEMMONCOPYOBJ = sgemm_oncopy.o
+SGEMMOTCOPYOBJ = sgemm_otcopy.o
 
 DGEMMKERNEL    = dgemm_kernel_4x2_vfp.S
+ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
 DGEMMINCOPY    = dgemm_ncopy_4_vfp.S
 DGEMMITCOPY    = dgemm_tcopy_4_vfp.S
 DGEMMINCOPYOBJ = dgemm_incopy.o
 DGEMMITCOPYOBJ = dgemm_itcopy.o
+endif
 DGEMMONCOPY    = dgemm_ncopy_2_vfp.S
 DGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
 DGEMMONCOPYOBJ = dgemm_oncopy.o
@@ -121,26 +108,8 @@ ZGEMMOTCOPY    = zgemm_tcopy_2_vfp.S
 ZGEMMONCOPYOBJ = zgemm_oncopy.o
 ZGEMMOTCOPYOBJ = zgemm_otcopy.o
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
-
-DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
-
-CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-CTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
-
-ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
-
-
-
+STRMMKERNEL    = strmm_kernel_4x2_vfp.S
+DTRMMKERNEL    = dtrmm_kernel_4x2_vfp.S
+CTRMMKERNEL    = ctrmm_kernel_2x2_vfp.S
+ZTRMMKERNEL    = ztrmm_kernel_2x2_vfp.S
 

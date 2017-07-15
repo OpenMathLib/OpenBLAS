@@ -246,6 +246,9 @@ ddot_kernel_L999:
 	vldm	r3, { d8 - d15}					// restore floating point registers
 
 	vadd.f64	d0 , d0, d1				// set return value
+#if !defined(__ARM_PCS_VFP)
+	vmov	r0, r1, d0
+#endif
 	sub	sp, fp, #24
 	pop	{r4 - r9, fp}
 	bx	lr

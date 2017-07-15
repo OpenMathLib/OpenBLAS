@@ -503,8 +503,13 @@ nrm2_kernel_L999:
 #else
 	vsqrt.f32	s1, s1
 	vmul.f32	s0, s0, s1
-#ifdef ARM_SOFTFP_ABI
-	vmov		r0, s0
+#endif
+
+#if !defined(__ARM_PCS_VFP)
+#if defined(DOUBLE)
+	vmov	r0, r1, d0
+#else
+	vmov	r0, s0
 #endif
 #endif
 

@@ -242,6 +242,10 @@ EXTRALIB	+= -lm
 NO_EXPRECISION = 1
 endif
 
+ifeq ($(OSNAME), Android)
+EXTRALIB	+= -lm
+endif
+
 ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
 endif
@@ -486,12 +490,18 @@ BINARY_DEFINED  = 1
 CCOMMON_OPT += -marm
 FCOMMON_OPT += -marm
 
+# If softfp abi is mentioned on the command line, force it.
 ifeq ($(ARM_SOFTFP_ABI), 1)
-CCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
-FCOMMON_OPT += -mfloat-abi=softfp -DARM_SOFTFP_ABI
+CCOMMON_OPT += -mfloat-abi=softfp
+FCOMMON_OPT += -mfloat-abi=softfp
+endif
+
+ifeq ($(OSNAME), Android)
+ifeq ($(ARM_SOFTFP_ABI), 1)
+EXTRALIB	+= -lm
 else
-CCOMMON_OPT += -mfloat-abi=hard
-FCOMMON_OPT += -mfloat-abi=hard
+EXTRALIB	+= -Wl,-lm_hard
+endif
 endif
 endif
 
@@ -1118,6 +1128,9 @@ ifneq ($(NO_LAPACK), 1)
 LIB_COMPONENTS += LAPACK
 ifneq ($(NO_LAPACKE), 1)
 LIB_COMPONENTS += LAPACKE
+endif
+ifeq ($(BUILD_RELAPACK), 1)
+LIB_COMPONENTS += ReLAPACK
 endif
 endif
 

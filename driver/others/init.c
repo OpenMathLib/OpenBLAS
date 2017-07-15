@@ -825,10 +825,11 @@ void gotoblas_affinity_init(void) {
 
   common -> shmid = pshmid;
 
-  if (common -> magic != SH_MAGIC) {
+  if (common -> magic != SH_MAGIC) 
     cpu_set_t *cpusetp;
     int nums;
     int ret;
+
 #ifdef DEBUG
     fprintf(stderr, "Shared Memory Initialization.\n");
 #endif
@@ -883,7 +884,7 @@ void gotoblas_affinity_init(void) {
     if (common -> num_nodes > 1) numa_mapping();
 
     common -> final_num_procs = 0;
-    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number.
+    for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number. 
 
     for (cpu = 0; cpu < common -> final_num_procs; cpu ++) common -> cpu_use[cpu] =  0;
 
