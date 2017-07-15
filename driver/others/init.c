@@ -778,8 +778,11 @@ static int initialized = 0;
 void gotoblas_affinity_init(void) {
 
   int cpu, num_avail;
+#ifndef USE_OPENMP	
   cpu_set_t cpu_mask;
- 
+#endif
+  int i;
+	
   if (initialized) return;
 
   initialized = 1;
@@ -826,7 +829,6 @@ void gotoblas_affinity_init(void) {
     cpu_set_t *cpusetp;
     int nums;
     int ret;
-    int i;
 
 #ifdef DEBUG
     fprintf(stderr, "Shared Memory Initialization.\n");
