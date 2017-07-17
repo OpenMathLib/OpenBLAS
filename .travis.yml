@@ -24,6 +24,7 @@ before_install:
  - sudo apt-get install -qq gfortran
  - if [[ "$TARGET_BOX" == "WIN64" ]]; then sudo apt-get install -qq binutils-mingw-w64-x86-64 gcc-mingw-w64-x86-64 gfortran-mingw-w64-x86-64; fi
  - if [[ "$TARGET_BOX" == "LINUX32" ]]; then sudo apt-get install -qq  gcc-multilib gfortran-multilib; fi
+ - curl -L -o nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 
 script: 
  - set -e
@@ -31,6 +32,9 @@ script:
  - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C test DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
  - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C ctest DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
  - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C utest DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
+ - mono nuget.exe pack ./<Project Name>/<Project Name>.nuspec -Version $MAJOR_VERSION_NUMBER.$MINOR_VERSION_NUMBER.$TRAVIS_BUILD_NUMBER
+ - mono nuget.exe setApiKey $NUGET_API_KEY -Source https://www.nuget.org -Verbosity quiet
+ - mono nuget.exe push <Project Name>.$MAJOR_VERSION_NUMBER.$MINOR_VERSION_NUMBER.$TRAVIS_BUILD_NUMBER.nupkg -Source https://www.nuget.org/api/v2/package  
 
 # whitelist
 branches:
