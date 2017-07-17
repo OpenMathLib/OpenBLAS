@@ -17,6 +17,7 @@ env:
   - TARGET_BOX=LINUX64 BTYPE="BINARY=64 INTERFACE64=1"
   - TARGET_BOX=LINUX32 BTYPE="BINARY=32"
   - TARGET_BOX=WIN64 BTYPE="BINARY=64 HOSTCC=gcc CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran"
+  - TARGET_BOX=WIN32 BTYPE="BINARY=32 HOSTCC=gcc CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran"
 
 before_install:
  - sudo apt-get update -qq
