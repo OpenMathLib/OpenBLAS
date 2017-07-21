@@ -126,8 +126,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
     		return;
   	}
 #ifdef NEW_IMATCOPY
-    if (*lda == *ldb) {
-fprintf(stderr," lda=ldb, new_imatcopy in place\n");
+    if (*lda == *ldb && *cols == *rows) {
         if ( order == BlasColMajor )
         {
 
@@ -141,7 +140,7 @@ fprintf(stderr," lda=ldb, new_imatcopy in place\n");
             }
             if ( trans == BlasTrans )
             {
-                IMATCOPY_K_CT(*cols, *rows, alpha[0], alpha[1], a, *lda );
+                IMATCOPY_K_CT(*rows, *cols, alpha[0], alpha[1], a, *lda );
             }
             if ( trans == BlasTransConj )
             {
@@ -161,7 +160,6 @@ fprintf(stderr," lda=ldb, new_imatcopy in place\n");
             }
             if ( trans == BlasTrans )
             {
-fprintf(stderr,"rows trans inplace\n");
                 IMATCOPY_K_RT(*rows, *cols, alpha[0], alpha[1], a, *lda );
             }
             if ( trans == BlasTransConj )
@@ -172,7 +170,7 @@ fprintf(stderr,"rows trans inplace\n");
         return; 
     }
 #endif
-fprintf(stderr,"lda: %d ldb:%d\n",*lda,*ldb);
+
 	if ( *lda >  *ldb )
                 msize = (*lda) * (*ldb)  * sizeof(FLOAT) * 2;
         else
@@ -181,7 +179,7 @@ fprintf(stderr,"lda: %d ldb:%d\n",*lda,*ldb);
         b = malloc(msize);
         if ( b == NULL )
         {
-                printf("Memory alloc failed\n");
+                printf("Memory alloc failed in zimatcopy\n");
                 exit(1);
         }
 
