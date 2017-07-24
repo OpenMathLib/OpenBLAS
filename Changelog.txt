@@ -1,5 +1,46 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.2.20
+24-Jul-2017
+
+common:
+        * Improved CMake support
+        * Fixed several thread race and locking bugs
+        * Fixed default LAPACK optimization level
+        * Updated LAPACK to 3.7.0
+        * Added ReLAPACK (https://github.com/HPAC/ReLAPACK, make BUILD_RELAPACK=1)
+
+POWER:
+        * Optimizations for Power9
+        * Fixed several Power8 assembly bugs
+
+ARM:
+        * New optimized Vulcan and ThunderX2T99 targets
+        * Support for ARMV7 SOFT_FP ABI (make ARM_SOFTFP_ABI=1)
+        * Detect all cpu cores including offline ones
+        * Fix compilation with CLANG
+        * Support building a shared library for Android
+
+MIPS:
+        * Fixed several threading issues
+        * Fix compilation with CLANG
+
+x86_64:
+        * Detect Intel Bay Trail and Apollo Lake
+        * Detect Intel Sky Lake and Kaby Lake
+        * Detect Intel Knights Landing
+        * Detect AMD A8, A10, A12 and Ryzen
+        * Support 64bit builds with Visual Studio
+        * Fix building with Intel and PGI compilers
+        * Fix building with MINGW and TDM-GCC
+        * Fix cmake builds for Haswell and related cpus
+        * Fix building for Sandybridge with CLANG 3.9
+	* Add support for the FLANG compiler
+
+IBM Z:
+        * New target z13 with BLAS3 optimizations
+
+====================================================================
 Version 0.2.19
 1-Sep-2016
 common:
