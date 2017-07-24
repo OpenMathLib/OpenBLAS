@@ -1,6 +1,6 @@
 #include "cblas.h"
 #include "cblas_f77.h"
-void cblas_drotm( const int N, double *X, const int incX, double *Y, 
+void cblas_drotm( const int N, double *X, const int incX, double *Y,
                        const int incY, const double *P)
 {
 #ifdef F77_INT
@@ -11,4 +11,4 @@ void cblas_drotm( const int N, double *X, const int incX, double *Y,
    #define F77_incY incY
 #endif
    F77_drotm( &F77_N, X, &F77_incX, Y, &F77_incY, P);
-}   
+}

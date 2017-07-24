@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       REAL FUNCTION SDSDOT(N,SB,SX,INCX,SY,INCY)
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL SB
 *       INTEGER INCX,INCY,N
@@ -17,59 +17,59 @@
 *       .. Array Arguments ..
 *       REAL SX(*),SY(*)
 *       ..
-*  
+*
 *    PURPOSE
 *    =======
-*  
+*
 *    Compute the inner product of two vectors with extended
 *    precision accumulation.
-*  
+*
 *    Returns S.P. result with dot product accumulated in D.P.
 *    SDSDOT = SB + sum for I = 0 to N-1 of SX(LX+I*INCX)*SY(LY+I*INCY),
 *    where LX = 1 if INCX .GE. 0, else LX = 1+(1-N)*INCX, and LY is
 *    defined in a similar way using INCY.
-*  
+*
 *    AUTHOR
 *    ======
 *    Lawson, C. L., (JPL), Hanson, R. J., (SNLA),
 *    Kincaid, D. R., (U. of Texas), Krogh, F. T., (JPL)
-*  
-*    ARGUMENTS 
+*
+*    ARGUMENTS
 *    =========
-*  
+*
 *    N      (input) INTEGER
 *           number of elements in input vector(s)
-*  
+*
 *    SB     (input) REAL
 *           single precision scalar to be added to inner product
-*  
+*
 *    SX     (input) REAL array, dimension (N)
 *           single precision vector with N elements
-*  
+*
 *    INCX   (input) INTEGER
 *           storage spacing between elements of SX
-*  
+*
 *    SY     (input) REAL array, dimension (N)
 *           single precision vector with N elements
-*  
+*
 *    INCY   (input) INTEGER
 *           storage spacing between elements of SY
-*  
+*
 *    SDSDOT (output) REAL
 *           single precision dot product (SB if N .LE. 0)
-*  
+*
 *    Further Details
 *    ===============
-*  
+*
 *    REFERENCES
-*  
+*
 *    C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T.
 *    Krogh, Basic linear algebra subprograms for Fortran
 *    usage, Algorithm No. 539, Transactions on Mathematical
 *    Software 5, 3 (September 1979), pp. 308-323.
-*  
+*
 *    REVISION HISTORY  (YYMMDD)
-*        
+*
 *    791001  DATE WRITTEN
 *    890531  Changed all specific intrinsics to generic.  (WRB)
 *    890831  Modified array declarations.  (WRB)
@@ -78,9 +78,9 @@
 *    920310  Corrected definition of LX in DESCRIPTION.  (WRB)
 *    920501  Reformatted the REFERENCES section.  (WRB)
 *    070118  Reformat to LAPACK coding style
-*  
+*
 *    =====================================================================
-*  
+*
 *       .. Local Scalars ..
 *       DOUBLE PRECISION DSDOT
 *       INTEGER I,KX,KY,NS
@@ -92,19 +92,19 @@
 *       IF (N.LE.0) THEN
 *          SDSDOT = DSDOT
 *          RETURN
-*       END IF   
+*       END IF
 *       IF (INCX.EQ.INCY .AND. INCX.GT.0) THEN
-*  
+*
 *       Code for equal and positive increments.
-*  
+*
 *          NS = N*INCX
 *          DO I = 1,NS,INCX
 *             DSDOT = DSDOT + DBLE(SX(I))*DBLE(SY(I))
 *          END DO
 *       ELSE
-*  
+*
 *       Code for unequal or nonpositive increments.
-*  
+*
 *          KX = 1
 *          KY = 1
 *          IF (INCX.LT.0) KX = 1 + (1-N)*INCX
@@ -128,22 +128,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup single_blas_level1
 *
 *  =====================================================================
       REAL FUNCTION SDSDOT(N,SB,SX,INCX,SY,INCY)
 *
-*  -- Reference BLAS level1 routine (version 3.4.0) --
+*  -- Reference BLAS level1 routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       REAL SB
@@ -169,7 +169,7 @@
 *  Lawson, C. L., (JPL), Hanson, R. J., (SNLA),
 *  Kincaid, D. R., (U. of Texas), Krogh, F. T., (JPL)
 *
-*  ARGUMENTS 
+*  ARGUMENTS
 *  =========
 *
 *  N      (input) INTEGER
@@ -204,7 +204,7 @@
 *  Software 5, 3 (September 1979), pp. 308-323.
 *
 *  REVISION HISTORY  (YYMMDD)
-*      
+*
 *  791001  DATE WRITTEN
 *  890531  Changed all specific intrinsics to generic.  (WRB)
 *  890831  Modified array declarations.  (WRB)
@@ -227,7 +227,7 @@
       IF (N.LE.0) THEN
          SDSDOT = DSDOT
          RETURN
-      END IF   
+      END IF
       IF (INCX.EQ.INCY .AND. INCX.GT.0) THEN
 *
 *     Code for equal and positive increments.

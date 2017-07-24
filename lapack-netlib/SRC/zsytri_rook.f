@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZSYTRI_ROOK + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsytri_rook.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zsytri_rook.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsytri_rook.f"> 
+*> Download ZSYTRI_ROOK + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsytri_rook.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zsytri_rook.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsytri_rook.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZSYTRI_ROOK( UPLO, N, A, LDA, IPIV, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -28,7 +28,7 @@
 *       INTEGER            IPIV( * )
 *       COMPLEX*16         A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -102,12 +102,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex16SYcomputational
 *
@@ -116,7 +116,7 @@
 *>
 *> \verbatim
 *>
-*>   November 2015, Igor Kozachenko,
+*>   December 2016, Igor Kozachenko,
 *>                  Computer Science Division,
 *>                  University of California, Berkeley
 *>
@@ -129,10 +129,10 @@
 *  =====================================================================
       SUBROUTINE ZSYTRI_ROOK( UPLO, N, A, LDA, IPIV, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -301,7 +301,7 @@
                IF( KP.GT.1 )
      $            CALL ZSWAP( KP-1, A( 1, K ), 1, A( 1, KP ), 1 )
                CALL ZSWAP( K-KP-1, A( KP+1, K ), 1, A( KP, KP+1 ), LDA )
-*               
+*
                TEMP = A( K, K )
                A( K, K ) = A( KP, KP )
                A( KP, KP ) = TEMP
@@ -392,7 +392,7 @@
      $                         ZDOTU( N-K, WORK, 1, A( K+1, K-1 ), 1 )
             END IF
             KSTEP = 2
-         END IF  
+         END IF
 *
          IF( KSTEP.EQ.1 ) THEN
 *

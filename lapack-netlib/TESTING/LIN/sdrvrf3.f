@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
 *      +                    S_WORK_SLANGE, S_WORK_SGEQRF, TAU )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, NN, NOUT
 *       REAL               THRESH
@@ -21,7 +21,7 @@
 *      +                   B2( LDA, * ), S_WORK_SGEQRF( * ),
 *      +                   S_WORK_SLANGE( * ), TAU( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -105,12 +105,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup single_lin
 *
@@ -118,10 +118,10 @@
       SUBROUTINE SDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
      +                    S_WORK_SLANGE, S_WORK_SGEQRF, TAU )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, NN, NOUT
@@ -253,12 +253,12 @@
                               END IF
 *
 *                             Generate A our NA--by--NA triangular
-*                             matrix. 
+*                             matrix.
 *                             Our test is based on forward error so we
 *                             do want A to be well conditionned! To get
 *                             a well-conditionned triangular matrix, we
 *                             take the R factor of the QR/LQ factorization
-*                             of a random matrix. 
+*                             of a random matrix.
 *
                               DO J = 1, NA
                                  DO I = 1, NA
@@ -336,7 +336,7 @@
                                     WRITE( NOUT, * )
                                     WRITE( NOUT, FMT = 9999 )
                                  END IF
-                                 WRITE( NOUT, FMT = 9997 ) 'STFSM', 
+                                 WRITE( NOUT, FMT = 9997 ) 'STFSM',
      +                              CFORM, SIDE, UPLO, TRANS, DIAG, M,
      +                              N, RESULT(1)
                                  NFAIL = NFAIL + 1
@@ -359,7 +359,7 @@
          WRITE( NOUT, FMT = 9995 ) 'STFSM', NFAIL, NRUN
       END IF
 *
- 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing STFSM 
+ 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing STFSM
      +         ***')
  9997 FORMAT( 1X, '     Failure in ',A5,', CFORM=''',A1,''',',
      + ' SIDE=''',A1,''',',' UPLO=''',A1,''',',' TRANS=''',A1,''',',

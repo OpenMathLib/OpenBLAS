@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZPSTF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zpstf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zpstf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zpstf2.f"> 
+*> Download ZPSTF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zpstf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zpstf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zpstf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZPSTF2( UPLO, N, A, LDA, PIV, RANK, TOL, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   TOL
 *       INTEGER            INFO, LDA, N, RANK
@@ -30,7 +30,7 @@
 *       DOUBLE PRECISION   WORK( 2*N )
 *       INTEGER            PIV( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -130,22 +130,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE ZPSTF2( UPLO, N, A, LDA, PIV, RANK, TOL, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   TOL
@@ -252,7 +252,7 @@
             DO 130 I = J, N
 *
                IF( J.GT.1 ) THEN
-                  WORK( I ) = WORK( I ) + 
+                  WORK( I ) = WORK( I ) +
      $                        DBLE( DCONJG( A( J-1, I ) )*
      $                              A( J-1, I ) )
                END IF
@@ -324,7 +324,7 @@
             DO 160 I = J, N
 *
                IF( J.GT.1 ) THEN
-                  WORK( I ) = WORK( I ) + 
+                  WORK( I ) = WORK( I ) +
      $                        DBLE( DCONJG( A( I, J-1 ) )*
      $                              A( I, J-1 ) )
                END IF

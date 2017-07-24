@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zsyconv
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -36,26 +36,18 @@
 lapack_int LAPACKE_zsyconv( int matrix_layout, char uplo, char way, lapack_int n,
                             lapack_complex_double* a, lapack_int lda,
                             const lapack_int* ipiv,
-                            lapack_complex_double* work )
+                            lapack_complex_double* e )
 {
-    lapack_int info = 0;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_zsyconv", -1 );
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
     /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zge_nancheck( matrix_layout, lda, n, a, lda ) ) {
+    if( LAPACKE_zge_nancheck( matrix_layout, n, n, a, lda ) ) {
         return -5;
     }
 #endif
     /* Call middle-level interface */
-    info = LAPACKE_zsyconv_work( matrix_layout, uplo, way, n, a, lda, ipiv,
-                                 work );
-
-exit_level_0:
-    if( info == LAPACK_WORK_MEMORY_ERROR ) {
-        LAPACKE_xerbla( "LAPACKE_zsyconv", info );
-    }
-    return info;
+    return LAPACKE_zsyconv_work( matrix_layout, uplo, way, n, a, lda, ipiv, e );
 }

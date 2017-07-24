@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download STGSY2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stgsy2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stgsy2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/stgsy2.f"> 
+*> Download STGSY2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stgsy2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stgsy2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/stgsy2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE STGSY2( TRANS, IJOB, M, N, A, LDA, B, LDB, C, LDC, D,
 *                          LDD, E, LDE, F, LDF, SCALE, RDSUM, RDSCAL,
 *                          IWORK, PQ, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            IJOB, INFO, LDA, LDB, LDC, LDD, LDE, LDF, M, N,
@@ -33,7 +33,7 @@
 *       REAL               A( LDA, * ), B( LDB, * ), C( LDC, * ),
 *      $                   D( LDD, * ), E( LDE, * ), F( LDF, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -254,12 +254,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup realSYauxiliary
 *
@@ -274,10 +274,10 @@
      $                   LDD, E, LDE, F, LDF, SCALE, RDSUM, RDSCAL,
      $                   IWORK, PQ, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.6.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS

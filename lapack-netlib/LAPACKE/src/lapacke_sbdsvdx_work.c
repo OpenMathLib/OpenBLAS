@@ -28,41 +28,43 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function sbdsvdx
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_sbdsvdx_work( int matrix_layout, char uplo, char jobz, char range,
                            		lapack_int n, float* d, float* e,
-                           		lapack_int vl, lapack_int vu,
-                           		lapack_int il, lapack_int iu, lapack_int ns,
-                           		float* s, float* z, lapack_int ldz,	
+                           		float vl, float vu,
+                           		lapack_int il, lapack_int iu, lapack_int* ns,
+                           		float* s, float* z, lapack_int ldz,
                                 float* work, lapack_int* iwork )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_sbdsvdx( &uplo, &jobz,  &range, &n, d, e, &vl, &vu,
-            			&il, &iu, &ns, s, z, &ldz,
+            			&il, &iu, ns, s, z, &ldz,
                         work, iwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int nrows_z = ( LAPACKE_lsame( jobz, 'v' ) ) ? MAX(2, 2*n) : 1;
+        lapack_int nrows_z = ( LAPACKE_lsame( jobz, 'v' ) ) ? 2*n : 0;
+        lapack_int ncols_z = ( LAPACKE_lsame( jobz, 'v' ) ) ?
+            ( LAPACKE_lsame( range, 'i' ) ? MAX(0,iu - il + 1) : n + 1 ) : 0;
         lapack_int ldz_t = MAX(1,nrows_z);
         float* z_t = NULL;
         /* Check leading dimension(s) */
-        if( ldz < nrows_z ) {
+        if( ldz < ncols_z ) {
             info = -3;
             LAPACKE_xerbla( "LAPACKE_sbdsvdx_work", info );
             return info;
         }
         /* Allocate memory for temporary array(s) */
-        if( LAPACKE_lsame( jobz, 'n' ) ) {
+        if( LAPACKE_lsame( jobz, 'v' ) ) {
            z_t = (float*)
-              LAPACKE_malloc( sizeof(float) * ldz_t * 2*n );
+               LAPACKE_malloc( sizeof(float) * ldz_t * MAX(2*n,1) );
            if( z_t == NULL ) {
               info = LAPACK_TRANSPOSE_MEMORY_ERROR;
               goto exit_level_0;
@@ -70,17 +72,17 @@ lapack_int LAPACKE_sbdsvdx_work( int matrix_layout, char uplo, char jobz, char r
         }
         /* Call LAPACK function and adjust info */
         LAPACK_sbdsvdx( &uplo, &jobz, &range, &n, d, e, &vl, &vu,
-            			&il, &iu, &ns, s, z_t, &ldz_t, work, 
+            			&il, &iu, ns, s, z_t, &ldz_t, work,
             			iwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }
         /* Transpose output matrices */
-        if( LAPACKE_lsame( jobz, 'n' ) ) {
-            LAPACKE_sge_trans( LAPACK_COL_MAJOR, nrows_z, nrows_z, z_t, ldz_t, z, ldz);
+        if( LAPACKE_lsame( jobz, 'v' ) ) {
+            LAPACKE_sge_trans( LAPACK_COL_MAJOR, nrows_z, ncols_z, z_t, ldz_t, z, ldz);
         }
         /* Release memory and exit */
-        if( LAPACKE_lsame( jobz, 'n' ) ) {
+        if( LAPACKE_lsame( jobz, 'v' ) ) {
             LAPACKE_free( z_t );
         }
 exit_level_0:

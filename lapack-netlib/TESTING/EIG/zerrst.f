@@ -1,20 +1,22 @@
 *> \brief \b ZERRST
 *
+*  @precisions fortran z -> c
+*
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZERRST( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -25,6 +27,9 @@
 *> ZUNGTR, ZUPMTR, ZSTEQR, CSTEIN, ZPTEQR, ZHBTRD,
 *> ZHEEV, CHEEVX, CHEEVD, ZHBEV, CHBEVX, CHBEVD,
 *> ZHPEV, CHPEVX, CHPEVD, and ZSTEDC.
+*> ZHEEVD_2STAGE, ZHEEVR_2STAGE, ZHEEVX_2STAGE,
+*> ZHEEV_2STAGE, ZHBEV_2STAGE, ZHBEVD_2STAGE,
+*> ZHBEVX_2STAGE, ZHETRD_2STAGE
 *> \endverbatim
 *
 *  Arguments:
@@ -45,22 +50,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex16_eig
 *
 *  =====================================================================
       SUBROUTINE ZERRST( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -93,7 +98,10 @@
       EXTERNAL           CHKXER, ZHBEV, ZHBEVD, ZHBEVX, ZHBTRD, ZHEEV,
      $                   ZHEEVD, ZHEEVR, ZHEEVX, ZHETRD, ZHPEV, ZHPEVD,
      $                   ZHPEVX, ZHPTRD, ZPTEQR, ZSTEDC, ZSTEIN, ZSTEQR,
-     $                   ZUNGTR, ZUNMTR, ZUPGTR, ZUPMTR
+     $                   ZUNGTR, ZUNMTR, ZUPGTR, ZUPMTR,
+     $                   ZHEEVD_2STAGE, ZHEEVR_2STAGE, ZHEEVX_2STAGE,
+     $                   ZHEEV_2STAGE, ZHBEV_2STAGE, ZHBEVD_2STAGE,
+     $                   ZHBEVX_2STAGE, ZHETRD_2STAGE
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -150,6 +158,103 @@
          CALL ZHETRD( 'U', 0, A, 1, D, E, TAU, W, 0, INFO )
          CALL CHKXER( 'ZHETRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        ZHETRD_2STAGE
+*
+         SRNAMT = 'ZHETRD_2STAGE'
+         INFOT = 1
+         CALL ZHETRD_2STAGE( '/', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL ZHETRD_2STAGE( 'H', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRD_2STAGE( 'N', '/', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHETRD_2STAGE( 'N', 'U', -1, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHETRD_2STAGE( 'N', 'U', 2, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHETRD_2STAGE( 'N', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 0, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+         CALL ZHETRD_2STAGE( 'N', 'U', 0, A, 1, D, E, TAU, 
+     $                                  C, 1, W, 0, INFO )
+         CALL CHKXER( 'ZHETRD_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 7
+*
+*        ZHETRD_HE2HB
+*
+         SRNAMT = 'ZHETRD_HE2HB'
+         INFOT = 1
+         CALL ZHETRD_HE2HB( '/', 0, 0, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HE2HB', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRD_HE2HB( 'U', -1, 0, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HE2HB', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHETRD_HE2HB( 'U', 0, -1, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HE2HB', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHETRD_HE2HB( 'U', 2, 0, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HE2HB', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRD_HE2HB( 'U', 0, 2, A, 1, C, 1, TAU, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HE2HB', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHETRD_HE2HB( 'U', 0, 0, A, 1, C, 1, TAU, W, 0, INFO )
+         CALL CHKXER( 'ZHETRD_HE2HB', INFOT, NOUT, LERR, OK )
+         NT = NT + 6
+*
+*        ZHETRD_HB2ST
+*
+         SRNAMT = 'ZHETRD_HB2ST'
+         INFOT = 1
+         CALL ZHETRD_HB2ST( '/', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRD_HB2ST( 'Y', '/', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRD_HB2ST( 'Y', 'H', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHETRD_HB2ST( 'Y', 'N', '/', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETRD_HB2ST( 'Y', 'N', 'U', -1, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHETRD_HB2ST( 'Y', 'N', 'U', 0, -1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRD_HB2ST( 'Y', 'N', 'U', 0, 1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHETRD_HB2ST( 'Y', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 0, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL ZHETRD_HB2ST( 'Y', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 0, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         NT = NT + 9
 *
 *        ZUNGTR
 *
@@ -377,6 +482,63 @@
          CALL CHKXER( 'ZHEEVD', INFOT, NOUT, LERR, OK )
          NT = NT + 12
 *
+*        ZHEEVD_2STAGE
+*
+         SRNAMT = 'ZHEEVD_2STAGE'
+         INFOT = 1
+         CALL ZHEEVD_2STAGE( '/', 'U', 0, A, 1, X, W, 1,
+     $                              RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL ZHEEVD_2STAGE( 'V', 'U', 0, A, 1, X, W, 1,
+     $                              RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHEEVD_2STAGE( 'N', '/', 0, A, 1, X, W, 1,
+     $                              RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHEEVD_2STAGE( 'N', 'U', -1, A, 1, X, W, 1,
+     $                               RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHEEVD_2STAGE( 'N', 'U', 2, A, 1, X, W, 3,
+     $                              RW, 2, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHEEVD_2STAGE( 'N', 'U', 1, A, 1, X, W, 0,
+     $                              RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHEEVD_2STAGE( 'N', 'U', 2, A, 2, X, W, 2,
+     $                              RW, 2, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 8
+*         CALL ZHEEVD_2STAGE( 'V', 'U', 2, A, 2, X, W, 3,
+*     $                            RW, 25, IW, 12, INFO )
+*         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHEEVD_2STAGE( 'N', 'U', 1, A, 1, X, W, 1,
+     $                              RW, 0, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHEEVD_2STAGE( 'N', 'U', 2, A, 2, X, W, 25,
+     $                              RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 10
+*         CALL ZHEEVD_2STAGE( 'V', 'U', 2, A, 2, X, W, 8,
+*     $                            RW, 18, IW, 12, INFO )
+*         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+         CALL ZHEEVD_2STAGE( 'N', 'U', 1, A, 1, X, W, 1,
+     $                              RW, 1, IW, 0, INFO )
+         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+*         CALL ZHEEVD_2STAGE( 'V', 'U', 2, A, 2, X, W, 8,
+*     $                            RW, 25, IW, 11, INFO )
+*         CALL CHKXER( 'ZHEEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 10
+*
 *        ZHEEV
 *
          SRNAMT = 'ZHEEV '
@@ -396,6 +558,29 @@
          CALL ZHEEV( 'N', 'U', 2, A, 2, X, W, 2, RW, INFO )
          CALL CHKXER( 'ZHEEV ', INFOT, NOUT, LERR, OK )
          NT = NT + 5
+*
+*        ZHEEV_2STAGE
+*
+         SRNAMT = 'ZHEEV_2STAGE '
+         INFOT = 1
+         CALL ZHEEV_2STAGE( '/', 'U', 0, A, 1, X, W, 1, RW, INFO )
+         CALL CHKXER( 'ZHEEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL ZHEEV_2STAGE( 'V', 'U', 0, A, 1, X, W, 1, RW, INFO )
+         CALL CHKXER( 'ZHEEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHEEV_2STAGE( 'N', '/', 0, A, 1, X, W, 1, RW, INFO )
+         CALL CHKXER( 'ZHEEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHEEV_2STAGE( 'N', 'U', -1, A, 1, X, W, 1, RW, INFO )
+         CALL CHKXER( 'ZHEEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHEEV_2STAGE( 'N', 'U', 2, A, 1, X, W, 3, RW, INFO )
+         CALL CHKXER( 'ZHEEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHEEV_2STAGE( 'N', 'U', 2, A, 2, X, W, 2, RW, INFO )
+         CALL CHKXER( 'ZHEEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         NT = NT + 6
 *
 *        ZHEEVX
 *
@@ -440,6 +625,65 @@
      $                M, X, Z, 2, W, 2, RW, IW, I1, INFO )
          CALL CHKXER( 'ZHEEVX', INFOT, NOUT, LERR, OK )
          NT = NT + 10
+*
+*        ZHEEVX_2STAGE
+*
+         SRNAMT = 'ZHEEVX_2STAGE'
+         INFOT = 1
+         CALL ZHEEVX_2STAGE( '/', 'A', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL ZHEEVX_2STAGE( 'V', 'A', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHEEVX_2STAGE( 'N', '/', 'U', 0, A, 1,
+     $                0.0D0, 1.0D0, 1, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHEEVX_2STAGE( 'N', 'A', '/', 0, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
+         INFOT = 4
+         CALL ZHEEVX_2STAGE( 'N', 'A', 'U', -1, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZHEEVX_2STAGE( 'N', 'A', 'U', 2, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 2, W, 3, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHEEVX_2STAGE( 'N', 'V', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL ZHEEVX_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHEEVX_2STAGE( 'N', 'I', 'U', 2, A, 2,
+     $                0.0D0, 0.0D0, 2, 1, 0.0D0,
+     $                M, X, Z, 2, W, 3, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 15
+         CALL ZHEEVX_2STAGE( 'N', 'A', 'U', 2, A, 2,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 0, W, 3, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 17
+         CALL ZHEEVX_2STAGE( 'N', 'A', 'U', 2, A, 2,
+     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                M, X, Z, 2, W, 0, RW, IW, I1, INFO )
+         CALL CHKXER( 'ZHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 11
 *
 *        ZHEEVR
 *
@@ -507,6 +751,90 @@
      $                INFO )
          CALL CHKXER( 'ZHEEVR', INFOT, NOUT, LERR, OK )
          NT = NT + 12
+*
+*        ZHEEVR_2STAGE
+*
+         SRNAMT = 'ZHEEVR_2STAGE'
+         N = 1
+         INFOT = 1
+         CALL ZHEEVR_2STAGE( '/', 'A', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL ZHEEVR_2STAGE( 'V', 'A', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHEEVR_2STAGE( 'N', '/', 'U', 0, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHEEVR_2STAGE( 'N', 'A', '/', -1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N,
+     $                IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHEEVR_2STAGE( 'N', 'A', 'U', -1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N,
+     $                IW( 2*N+1 ), 10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZHEEVR_2STAGE( 'N', 'A', 'U', 2, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHEEVR_2STAGE( 'N', 'V', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 0, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 2, A, 2,
+     $                0.0D0, 0.0D0, 2, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 15
+         CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 0, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 18
+         CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 2*N-1, RW, 24*N, IW( 2*N+1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 20
+         CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N-1, IW( 2*N-1 ),
+     $                10*N, INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 22
+         CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
+     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N, IW, 10*N-1,
+     $                INFO )
+         CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 13
 *
 *        ZHPEVD
 *
@@ -646,6 +974,47 @@
          CALL CHKXER( 'ZHBTRD', INFOT, NOUT, LERR, OK )
          NT = NT + 6
 *
+*        ZHETRD_HB2ST
+*
+         SRNAMT = 'ZHETRD_HB2ST'
+         INFOT = 1
+         CALL ZHETRD_HB2ST( '/', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRD_HB2ST( 'N', '/', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRD_HB2ST( 'N', 'H', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHETRD_HB2ST( 'N', 'N', '/', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETRD_HB2ST( 'N', 'N', 'U', -1, 0, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHETRD_HB2ST( 'N', 'N', 'U', 0, -1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRD_HB2ST( 'N', 'N', 'U', 0, 1, A, 1, D, E, 
+     $                                    C, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHETRD_HB2ST( 'N', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 0, W, 1, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL ZHETRD_HB2ST( 'N', 'N', 'U', 0, 0, A, 1, D, E, 
+     $                                    C, 1, W, 0, INFO )
+         CALL CHKXER( 'ZHETRD_HB2ST', INFOT, NOUT, LERR, OK )
+         NT = NT + 9
+*
 *        ZHBEVD
 *
          SRNAMT = 'ZHBEVD'
@@ -711,6 +1080,75 @@
          CALL CHKXER( 'ZHBEVD', INFOT, NOUT, LERR, OK )
          NT = NT + 15
 *
+*        ZHBEVD_2STAGE
+*
+         SRNAMT = 'ZHBEVD_2STAGE'
+         INFOT = 1
+         CALL ZHBEVD_2STAGE( '/', 'U', 0, 0, A, 1, X, Z, 1, 
+     $                           W, 1, RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL ZHBEVD_2STAGE( 'V', 'U', 0, 0, A, 1, X, Z, 1, 
+     $                           W, 1, RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHBEVD_2STAGE( 'N', '/', 0, 0, A, 1, X, Z, 1,
+     $                           W, 1, RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHBEVD_2STAGE( 'N', 'U', -1, 0, A, 1, X, Z, 1,
+     $                            W, 1, RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHBEVD_2STAGE( 'N', 'U', 0, -1, A, 1, X, Z, 1,
+     $                            W, 1, RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZHBEVD_2STAGE( 'N', 'U', 2, 1, A, 1, X, Z, 1,
+     $                           W, 2, RW, 2, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL ZHBEVD_2STAGE( 'N', 'U', 2, 1, A, 2, X, Z, 0,
+     $                         W, 8, RW, 25, IW, 12, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHBEVD_2STAGE( 'N', 'U', 1, 0, A, 1, X, Z, 1,
+     $                           W, 0, RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHBEVD_2STAGE( 'N', 'U', 2, 1, A, 2, X, Z, 2,
+     $                           W, 1, RW, 2, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 11
+*         CALL ZHBEVD_2STAGE( 'V', 'U', 2, 1, A, 2, X, Z, 2,
+*     $                         W, 2, RW, 25, IW, 12, INFO )
+*         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL ZHBEVD_2STAGE( 'N', 'U', 1, 0, A, 1, X, Z, 1,
+     $                           W, 1, RW, 0, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL ZHBEVD_2STAGE( 'N', 'U', 2, 1, A, 2, X, Z, 2,
+     $                           W, 25, RW, 1, IW, 1, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 13
+*         CALL ZHBEVD_2STAGE( 'V', 'U', 2, 1, A, 2, X, Z, 2,
+*     $                          W, 25, RW, 2, IW, 12, INFO )
+*         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 15
+         CALL ZHBEVD_2STAGE( 'N', 'U', 1, 0, A, 1, X, Z, 1,
+     $                           W, 1, RW, 1, IW, 0, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 15
+         CALL ZHBEVD_2STAGE( 'N', 'U', 2, 1, A, 2, X, Z, 2,
+     $                           W, 25, RW, 2, IW, 0, INFO )
+         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 15
+*         CALL ZHBEVD_2STAGE( 'V', 'U', 2, 1, A, 2, X, Z, 2,
+*     $                          W, 25, RW, 25, IW, 2, INFO )
+*         CALL CHKXER( 'ZHBEVD_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 13
+*
 *        ZHBEV
 *
          SRNAMT = 'ZHBEV '
@@ -733,6 +1171,43 @@
          CALL ZHBEV( 'V', 'U', 2, 0, A, 1, X, Z, 1, W, RW, INFO )
          CALL CHKXER( 'ZHBEV ', INFOT, NOUT, LERR, OK )
          NT = NT + 6
+*
+*        ZHBEV_2STAGE
+*
+         SRNAMT = 'ZHBEV_2STAGE '
+         INFOT = 1
+         CALL ZHBEV_2STAGE( '/', 'U', 0, 0, A, 1, X,
+     $                        Z, 1, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 1
+         CALL ZHBEV_2STAGE( 'V', 'U', 0, 0, A, 1, X,
+     $                        Z, 1, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHBEV_2STAGE( 'N', '/', 0, 0, A, 1, X,
+     $                        Z, 1, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHBEV_2STAGE( 'N', 'U', -1, 0, A, 1, X,
+     $                         Z, 1, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHBEV_2STAGE( 'N', 'U', 0, -1, A, 1, X,
+     $                         Z, 1, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZHBEV_2STAGE( 'N', 'U', 2, 1, A, 1, X,
+     $                        Z, 1, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL ZHBEV_2STAGE( 'N', 'U', 2, 0, A, 1, X,
+     $                        Z, 0, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHBEV_2STAGE( 'N', 'U', 2, 0, A, 1, X,
+     $                        Z, 1, W, 0, RW, INFO )
+         CALL CHKXER( 'ZHBEV_2STAGE ', INFOT, NOUT, LERR, OK )
+         NT = NT + 8
 *
 *        ZHBEVX
 *
@@ -781,6 +1256,74 @@
      $                0, 0.0D0, M, X, Z, 1, W, RW, IW, I3, INFO )
          CALL CHKXER( 'ZHBEVX', INFOT, NOUT, LERR, OK )
          NT = NT + 11
+*
+*        ZHBEVX_2STAGE
+*
+         SRNAMT = 'ZHBEVX_2STAGE'
+         INFOT = 1
+         CALL ZHBEVX_2STAGE( '/', 'A', 'U', 0, 0, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         INFOT = 1
+         CALL ZHBEVX_2STAGE( 'V', 'A', 'U', 0, 0, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHBEVX_2STAGE( 'N', '/', 'U', 0, 0, A, 1, Q, 1,
+     $                       0.0D0, 1.0D0, 1, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHBEVX_2STAGE( 'N', 'A', '/', 0, 0, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         INFOT = 4
+         CALL ZHBEVX_2STAGE( 'N', 'A', 'U', -1, 0, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHBEVX_2STAGE( 'N', 'A', 'U', 0, -1, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHBEVX_2STAGE( 'N', 'A', 'U', 2, 1, A, 1, Q, 2,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 2, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+*         INFOT = 9
+*         CALL ZHBEVX_2STAGE( 'V', 'A', 'U', 2, 0, A, 1, Q, 1,
+*     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+*     $                       M, X, Z, 2, W, 0, RW, IW, I3, INFO )
+*         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHBEVX_2STAGE( 'N', 'V', 'U', 1, 0, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+         CALL ZHBEVX_2STAGE( 'N', 'I', 'U', 1, 0, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL ZHBEVX_2STAGE( 'N', 'I', 'U', 1, 0, A, 1, Q, 1,
+     $                       0.0D0, 0.0D0, 1, 2, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 18
+         CALL ZHBEVX_2STAGE( 'N', 'A', 'U', 2, 0, A, 1, Q, 2,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 0, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 20
+         CALL ZHBEVX_2STAGE( 'N', 'A', 'U', 2, 0, A, 1, Q, 2,
+     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
+         CALL CHKXER( 'ZHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
+         NT = NT + 12
       END IF
 *
 *     Print a summary line.

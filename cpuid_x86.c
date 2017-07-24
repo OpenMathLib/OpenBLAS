@@ -636,6 +636,13 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
 	LD1.associative = 8;
 	LD1.linesize    = 64;
 	break;
+      case 0x63 :
+  DTB.size        = 2048;
+  DTB.associative = 4;
+  DTB.linesize    = 32;
+  LDTB.size       = 4096;
+  LDTB.associative= 4;
+  LDTB.linesize   = 32;
       case 0x66 :
 	LD1.size        = 8;
 	LD1.associative = 4;
@@ -667,6 +674,13 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
 	LC1.size        = 64;
 	LC1.associative = 8;
 	break;
+      case 0x76 :
+  ITB.size        = 2048;
+  ITB.associative = 0;
+  ITB.linesize    = 8;
+  LITB.size       = 4096;
+  LITB.associative= 0;
+  LITB.linesize   = 8;
       case 0x77 :
 	LC1.size        = 16;
 	LC1.associative = 4;
@@ -1110,6 +1124,9 @@ int get_cpuname(void){
 	break;
       case 3:
 	switch (model) {
+	case  7:
+	    // Bay Trail	
+	    return CPUTYPE_ATOM;	
 	case 10:
         case 14:
 	  // Ivy Bridge
@@ -1202,8 +1219,35 @@ int get_cpuname(void){
 #endif
           else
 	    return CPUTYPE_NEHALEM;
+	case 7:
+	    // Xeon Phi Knights Landing
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	case 12:
+	    // Apollo Lake
+	    return CPUTYPE_NEHALEM;
 	}
 	break;
+      case 9:
+      case 8: 
+        switch (model) {
+	case 14: // Kaby Lake
+          if(support_avx())
+#ifndef NO_AVX2
+            return CPUTYPE_HASWELL;
+#else
+	    return CPUTYPE_SANDYBRIDGE;
+#endif
+          else
+	    return CPUTYPE_NEHALEM;
+	}
+	break;    
       }
       break;
     case 0x7:
@@ -1235,8 +1279,11 @@ int get_cpuname(void){
 	return CPUTYPE_OPTERON;
       case  1:
       case  3:
+      case  7:
       case 10:
 	return CPUTYPE_BARCELONA;
+      case  5:
+	return CPUTYPE_BOBCAT;
       case  6:
 	switch (model) {
 	case 1:
@@ -1251,7 +1298,13 @@ int get_cpuname(void){
 	    return CPUTYPE_PILEDRIVER;
 	  else
 	    return CPUTYPE_BARCELONA; //OS don't support AVX.
+	case 5: // New EXCAVATOR CPUS
+	  if(support_avx())
+	    return CPUTYPE_EXCAVATOR;
+	  else
+	    return CPUTYPE_BARCELONA; //OS don't support AVX.
 	case 0:
+        case 8:
 	  switch(exmodel){
 	  case 1: //AMD Trinity
 	    if(support_avx())
@@ -1273,8 +1326,19 @@ int get_cpuname(void){
 	  break;
 	}
 	break;
-      case  5:
-	return CPUTYPE_BOBCAT;
+      case 8:
+	switch (model) {
+	case 1:
+	  // AMD Ryzen
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CPUTYPE_ZEN;
+#else
+	    return CPUTYPE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CPUTYPE_BARCELONA;
+        }
       }
       break;
     }
@@ -1401,6 +1465,7 @@ static char *cpuname[] = {
   "HASWELL",
   "STEAMROLLER",
   "EXCAVATOR",
+  "ZEN",
 };
 
 static char *lowercpuname[] = {
@@ -1454,6 +1519,7 @@ static char *lowercpuname[] = {
   "haswell",
   "steamroller",
   "excavator",
+  "zen",
 };
 
 static char *corename[] = {
@@ -1484,6 +1550,7 @@ static char *corename[] = {
   "HASWELL",
   "STEAMROLLER",
   "EXCAVATOR",
+  "ZEN",
 };
 
 static char *corename_lower[] = {
@@ -1514,6 +1581,7 @@ static char *corename_lower[] = {
   "haswell",
   "steamroller",
   "excavator",
+  "zen",
 };
 
 
@@ -1710,8 +1778,33 @@ int get_coretype(void){
 #endif
           else
 	    return CORE_NEHALEM;
-	}
+	case 7:
+	  // Phi Knights Landing
+          if(support_avx())
+#ifndef NO_AVX2
+            return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+          else
+	    return CORE_NEHALEM;
+	case 12:
+	  // Apollo Lake
+	    return CORE_NEHALEM;
+        }
 	break;
+      case 9:
+      case 8:
+        if (model == 14) { // Kaby Lake 
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+	  else
+            return CORE_NEHALEM;
+	}
       }
       break;
 
@@ -1741,8 +1834,13 @@ int get_coretype(void){
 	    return CORE_PILEDRIVER;
 	  else
 	    return CORE_BARCELONA; //OS don't support AVX.
-	
+    case 5: // New EXCAVATOR
+	  if(support_avx())
+	    return CORE_EXCAVATOR;
+	  else
+	    return CORE_BARCELONA; //OS don't support AVX.
 	case 0:
+        case 8:
 	  switch(exmodel){
 	  case 1: //AMD Trinity
 	    if(support_avx())
@@ -1764,9 +1862,22 @@ int get_coretype(void){
 	  }
 	  break;
 	}
-
-
-      }else return CORE_BARCELONA;
+      } else if (exfamily == 8) {
+	switch (model) {
+	case 1:
+	  // AMD Ryzen
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_ZEN;
+#else
+	    return CORE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CORE_BARCELONA;
+	}
+      } else {
+	return CORE_BARCELONA;
+      }
     }
   }
 

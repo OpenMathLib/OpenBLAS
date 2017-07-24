@@ -2,23 +2,23 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SBDSVDX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sbdsvdx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sbdsvdx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sbdsvdx.f"> 
+*> Download SBDSVDX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sbdsvdx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sbdsvdx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sbdsvdx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*     SUBROUTINE SBDSVDX( UPLO, JOBZ, RANGE, N, D, E, VL, VU, IL, IU, 
+*     SUBROUTINE SBDSVDX( UPLO, JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
 *    $                    NS, S, Z, LDZ, WORK, IWORK, INFO )
 *
 *     .. Scalar Arguments ..
@@ -28,45 +28,45 @@
 *     ..
 *     .. Array Arguments ..
 *      INTEGER            IWORK( * )
-*      REAL               D( * ), E( * ), S( * ), WORK( * ), 
+*      REAL               D( * ), E( * ), S( * ), WORK( * ),
 *                         Z( LDZ, * )
 *       ..
-*  
+*
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
 *>  SBDSVDX computes the singular value decomposition (SVD) of a real
-*>  N-by-N (upper or lower) bidiagonal matrix B, B = U * S * VT, 
-*>  where S is a diagonal matrix with non-negative diagonal elements 
-*>  (the singular values of B), and U and VT are orthogonal matrices 
+*>  N-by-N (upper or lower) bidiagonal matrix B, B = U * S * VT,
+*>  where S is a diagonal matrix with non-negative diagonal elements
+*>  (the singular values of B), and U and VT are orthogonal matrices
 *>  of left and right singular vectors, respectively.
 *>
-*>  Given an upper bidiagonal B with diagonal D = [ d_1 d_2 ... d_N ] 
-*>  and superdiagonal E = [ e_1 e_2 ... e_N-1 ], SBDSVDX computes the 
-*>  singular value decompositon of B through the eigenvalues and 
+*>  Given an upper bidiagonal B with diagonal D = [ d_1 d_2 ... d_N ]
+*>  and superdiagonal E = [ e_1 e_2 ... e_N-1 ], SBDSVDX computes the
+*>  singular value decompositon of B through the eigenvalues and
 *>  eigenvectors of the N*2-by-N*2 tridiagonal matrix
-*>             
-*>        |  0  d_1                |      
-*>        | d_1  0  e_1            |         
-*>  TGK = |     e_1  0  d_2        | 
-*>        |         d_2  .   .     |      
+*>
+*>        |  0  d_1                |
+*>        | d_1  0  e_1            |
+*>  TGK = |     e_1  0  d_2        |
+*>        |         d_2  .   .     |
 *>        |              .   .   . |
 *>
-*>  If (s,u,v) is a singular triplet of B with ||u|| = ||v|| = 1, then 
-*>  (+/-s,q), ||q|| = 1, are eigenpairs of TGK, with q = P * ( u' +/-v' ) / 
-*>  sqrt(2) = ( v_1 u_1 v_2 u_2 ... v_n u_n ) / sqrt(2), and 
-*>  P = [ e_{n+1} e_{1} e_{n+2} e_{2} ... ]. 
+*>  If (s,u,v) is a singular triplet of B with ||u|| = ||v|| = 1, then
+*>  (+/-s,q), ||q|| = 1, are eigenpairs of TGK, with q = P * ( u' +/-v' ) /
+*>  sqrt(2) = ( v_1 u_1 v_2 u_2 ... v_n u_n ) / sqrt(2), and
+*>  P = [ e_{n+1} e_{1} e_{n+2} e_{2} ... ].
 *>
-*>  Given a TGK matrix, one can either a) compute -s,-v and change signs 
-*>  so that the singular values (and corresponding vectors) are already in 
-*>  descending order (as in SGESVD/SGESDD) or b) compute s,v and reorder 
-*>  the values (and corresponding vectors). SBDSVDX implements a) by 
-*>  calling SSTEVX (bisection plus inverse iteration, to be replaced 
-*>  with a version of the Multiple Relative Robust Representation 
-*>  algorithm. (See P. Willems and B. Lang, A framework for the MR^3 
-*>  algorithm: theory and implementation, SIAM J. Sci. Comput., 
+*>  Given a TGK matrix, one can either a) compute -s,-v and change signs
+*>  so that the singular values (and corresponding vectors) are already in
+*>  descending order (as in SGESVD/SGESDD) or b) compute s,v and reorder
+*>  the values (and corresponding vectors). SBDSVDX implements a) by
+*>  calling SSTEVX (bisection plus inverse iteration, to be replaced
+*>  with a version of the Multiple Relative Robust Representation
+*>  algorithm. (See P. Willems and B. Lang, A framework for the MR^3
+*>  algorithm: theory and implementation, SIAM J. Sci. Comput.,
 *>  35:740-766, 2013.)
 *> \endverbatim
 *
@@ -80,7 +80,7 @@
 *>          = 'L':  B is lower bidiagonal.
 *> \endverbatim
 *>
-*> \param[in] JOBXZ
+*> \param[in] JOBZ
 *> \verbatim
 *>          JOBZ is CHARACTER*1
 *>          = 'N':  Compute singular values only;
@@ -101,13 +101,13 @@
 *>          N is INTEGER
 *>          The order of the bidiagonal matrix.  N >= 0.
 *> \endverbatim
-*> 
+*>
 *> \param[in] D
 *> \verbatim
 *>          D is REAL array, dimension (N)
 *>          The n diagonal elements of the bidiagonal matrix B.
 *> \endverbatim
-*> 
+*>
 *> \param[in] E
 *> \verbatim
 *>          E is REAL array, dimension (max(1,N-1))
@@ -117,14 +117,16 @@
 *>
 *> \param[in] VL
 *> \verbatim
-*>          VL is REAL
-*>          VL >=0.
+*>         VL is REAL
+*>          If RANGE='V', the lower bound of the interval to
+*>          be searched for singular values. VU > VL.
+*>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
 *>         VU is REAL
-*>          If RANGE='V', the lower and upper bounds of the interval to
+*>          If RANGE='V', the upper bound of the interval to
 *>          be searched for singular values. VU > VL.
 *>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
@@ -132,13 +134,17 @@
 *> \param[in] IL
 *> \verbatim
 *>          IL is INTEGER
+*>          If RANGE='I', the index of the
+*>          smallest singular value to be returned.
+*>          1 <= IL <= IU <= min(M,N), if min(M,N) > 0.
+*>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
 *>
 *> \param[in] IU
 *> \verbatim
 *>          IU is INTEGER
-*>          If RANGE='I', the indices (in ascending order) of the
-*>          smallest and largest singular values to be returned.
+*>          If RANGE='I', the index of the
+*>          largest singular value to be returned.
 *>          1 <= IL <= IU <= min(M,N), if min(M,N) > 0.
 *>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
@@ -161,14 +167,14 @@
 *> \verbatim
 *>          Z is REAL array, dimension (2*N,K) )
 *>          If JOBZ = 'V', then if INFO = 0 the first NS columns of Z
-*>          contain the singular vectors of the matrix B corresponding to 
+*>          contain the singular vectors of the matrix B corresponding to
 *>          the selected singular values, with U in rows 1 to N and V
 *>          in rows N+1 to N*2, i.e.
-*>          Z = [ U ] 
+*>          Z = [ U ]
 *>              [ V ]
-*>          If JOBZ = 'N', then Z is not referenced.    
-*>          Note: The user must ensure that at least K = NS+1 columns are 
-*>          supplied in the array Z; if RANGE = 'V', the exact value of 
+*>          If JOBZ = 'N', then Z is not referenced.
+*>          Note: The user must ensure that at least K = NS+1 columns are
+*>          supplied in the array Z; if RANGE = 'V', the exact value of
 *>          NS is not known in advance and an upper bound must be used.
 *> \endverbatim
 *>
@@ -188,9 +194,12 @@
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (12*N)
 *>          If JOBZ = 'V', then if INFO = 0, the first NS elements of
-*>          IWORK are zero. If INFO > 0, then IWORK contains the indices 
+*>          IWORK are zero. If INFO > 0, then IWORK contains the indices
 *>          of the eigenvectors that failed to converge in DSTEVX.
+*> \endverbatim
 *>
+*> \param[out] INFO
+*> \verbatim
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
@@ -204,24 +213,24 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup realOTHEReigen
 *
-*  =====================================================================   
-      SUBROUTINE SBDSVDX( UPLO, JOBZ, RANGE, N, D, E, VL, VU, IL, IU, 
+*  =====================================================================
+      SUBROUTINE SBDSVDX( UPLO, JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
      $                    NS, S, Z, LDZ, WORK, IWORK, INFO)
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2016
-*  
+*     December 2016
+*
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
       INTEGER            IL, INFO, IU, LDZ, N, NS
@@ -229,28 +238,28 @@
 *     ..
 *     .. Array Arguments ..
       INTEGER            IWORK( * )
-      REAL               D( * ), E( * ), S( * ), WORK( * ), 
+      REAL               D( * ), E( * ), S( * ), WORK( * ),
      $                   Z( LDZ, * )
 *     ..
 *
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL               ZERO, ONE, TEN, HNDRD, MEIGTH 
-      PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0, TEN = 10.0E0, 
+      REAL               ZERO, ONE, TEN, HNDRD, MEIGTH
+      PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0, TEN = 10.0E0,
      $                     HNDRD = 100.0E0, MEIGTH = -0.1250E0 )
       REAL               FUDGE
       PARAMETER          ( FUDGE = 2.0E0 )
 *     ..
-*     .. Local Scalars .. 
+*     .. Local Scalars ..
       CHARACTER          RNGVX
-      LOGICAL            ALLSV, INDSV, LOWER, SPLIT, SVEQ0, VALSV, WANTZ 
-      INTEGER            I, ICOLZ, IDBEG, IDEND, IDTGK, IDPTR, IEPTR, 
-     $                   IETGK, IIFAIL, IIWORK, ILTGK, IROWU, IROWV, 
-     $                   IROWZ, ISBEG, ISPLT, ITEMP, IUTGK, J, K, 
+      LOGICAL            ALLSV, INDSV, LOWER, SPLIT, SVEQ0, VALSV, WANTZ
+      INTEGER            I, ICOLZ, IDBEG, IDEND, IDTGK, IDPTR, IEPTR,
+     $                   IETGK, IIFAIL, IIWORK, ILTGK, IROWU, IROWV,
+     $                   IROWZ, ISBEG, ISPLT, ITEMP, IUTGK, J, K,
      $                   NTGK, NRU, NRV, NSL
       REAL               ABSTOL, EPS, EMIN, MU, NRMU, NRMV, ORTOL, SMAX,
-     $                   SMIN, SQRT2, THRESH, TOL, ULP, 
+     $                   SMIN, SQRT2, THRESH, TOL, ULP,
      $                   VLTGK, VUTGK, ZJTJI
 *     ..
 *     .. External Functions ..
@@ -265,7 +274,7 @@
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, SIGN, SQRT
 *     ..
-*     .. Executable Statements ..      
+*     .. Executable Statements ..
 *
 *     Test the input parameters.
 *
@@ -312,7 +321,7 @@
 *
       NS = 0
       IF( N.EQ.0 ) RETURN
-*     
+*
       IF( N.EQ.1 ) THEN
          IF( ALLSV .OR. INDSV ) THEN
             NS = 1
@@ -330,17 +339,17 @@
          RETURN
       END IF
 *
-      ABSTOL = 2*SLAMCH( 'Safe Minimum' ) 
+      ABSTOL = 2*SLAMCH( 'Safe Minimum' )
       ULP = SLAMCH( 'Precision' )
       EPS = SLAMCH( 'Epsilon' )
       SQRT2 = SQRT( 2.0E0 )
       ORTOL = SQRT( ULP )
-*   
+*
 *     Criterion for splitting is taken from SBDSQR when singular
-*     values are computed to relative accuracy TOL. (See J. Demmel and 
-*     W. Kahan, Accurate singular values of bidiagonal matrices, SIAM 
+*     values are computed to relative accuracy TOL. (See J. Demmel and
+*     W. Kahan, Accurate singular values of bidiagonal matrices, SIAM
 *     J. Sci. and Stat. Comput., 11:873–912, 1990.)
-* 
+*
       TOL = MAX( TEN, MIN( HNDRD, EPS**MEIGTH ) )*EPS
 *
 *     Compute approximate maximum, minimum singular values.
@@ -371,7 +380,6 @@
          IF( ABS( E( I ) ).LE.THRESH ) E( I ) = ZERO
       END DO
       IF( ABS( D( N ) ).LE.THRESH ) D( N ) = ZERO
-      E( N ) = ZERO
 *
 *     Pointers for arrays used by SSTEVX.
 *
@@ -382,23 +390,23 @@
       IIWORK = IIFAIL + N*2
 *
 *     Set RNGVX, which corresponds to RANGE for SSTEVX in TGK mode.
-*     VL,VU or IL,IU are redefined to conform to implementation a) 
+*     VL,VU or IL,IU are redefined to conform to implementation a)
 *     described in the leading comments.
 *
       ILTGK = 0
-      IUTGK = 0 
+      IUTGK = 0
       VLTGK = ZERO
       VUTGK = ZERO
 *
       IF( ALLSV ) THEN
 *
-*        All singular values will be found. We aim at -s (see 
+*        All singular values will be found. We aim at -s (see
 *        leading comments) with RNGVX = 'I'. IL and IU are set
-*        later (as ILTGK and IUTGK) according to the dimension 
+*        later (as ILTGK and IUTGK) according to the dimension
 *        of the active submatrix.
 *
          RNGVX = 'I'
-         CALL SLASET( 'F', N*2, N+1, ZERO, ZERO, Z, LDZ )
+         IF( WANTZ ) CALL SLASET( 'F', N*2, N+1, ZERO, ZERO, Z, LDZ )
       ELSE IF( VALSV ) THEN
 *
 *        Find singular values in a half-open interval. We aim
@@ -411,31 +419,31 @@
          WORK( IDTGK:IDTGK+2*N-1 ) = ZERO
          CALL SCOPY( N, D, 1, WORK( IETGK ), 2 )
          CALL SCOPY( N-1, E, 1, WORK( IETGK+1 ), 2 )
-         CALL SSTEVX( 'N', 'V', N*2, WORK( IDTGK ), WORK( IETGK ), 
+         CALL SSTEVX( 'N', 'V', N*2, WORK( IDTGK ), WORK( IETGK ),
      $                VLTGK, VUTGK, ILTGK, ILTGK, ABSTOL, NS, S,
      $                Z, LDZ, WORK( ITEMP ), IWORK( IIWORK ),
      $                IWORK( IIFAIL ), INFO )
          IF( NS.EQ.0 ) THEN
             RETURN
          ELSE
-            CALL SLASET( 'F', N*2, NS, ZERO, ZERO, Z, LDZ )
+            IF( WANTZ ) CALL SLASET( 'F', N*2, NS, ZERO, ZERO, Z, LDZ )
          END IF
       ELSE IF( INDSV ) THEN
 *
-*        Find the IL-th through the IU-th singular values. We aim 
-*        at -s (see leading comments) and indices are mapped into 
+*        Find the IL-th through the IU-th singular values. We aim
+*        at -s (see leading comments) and indices are mapped into
 *        values, therefore mimicking SSTEBZ, where
 *
 *        GL = GL - FUDGE*TNORM*ULP*N - FUDGE*TWO*PIVMIN
 *        GU = GU + FUDGE*TNORM*ULP*N + FUDGE*PIVMIN
 *
          ILTGK = IL
-         IUTGK = IU 
+         IUTGK = IU
          RNGVX = 'V'
          WORK( IDTGK:IDTGK+2*N-1 ) = ZERO
          CALL SCOPY( N, D, 1, WORK( IETGK ), 2 )
          CALL SCOPY( N-1, E, 1, WORK( IETGK+1 ), 2 )
-         CALL SSTEVX( 'N', 'I', N*2, WORK( IDTGK ), WORK( IETGK ), 
+         CALL SSTEVX( 'N', 'I', N*2, WORK( IDTGK ), WORK( IETGK ),
      $                VLTGK, VLTGK, ILTGK, ILTGK, ABSTOL, NS, S,
      $                Z, LDZ, WORK( ITEMP ), IWORK( IIWORK ),
      $                IWORK( IIFAIL ), INFO )
@@ -443,7 +451,7 @@
          WORK( IDTGK:IDTGK+2*N-1 ) = ZERO
          CALL SCOPY( N, D, 1, WORK( IETGK ), 2 )
          CALL SCOPY( N-1, E, 1, WORK( IETGK+1 ), 2 )
-         CALL SSTEVX( 'N', 'I', N*2, WORK( IDTGK ), WORK( IETGK ), 
+         CALL SSTEVX( 'N', 'I', N*2, WORK( IDTGK ), WORK( IETGK ),
      $                VUTGK, VUTGK, IUTGK, IUTGK, ABSTOL, NS, S,
      $                Z, LDZ, WORK( ITEMP ), IWORK( IIWORK ),
      $                IWORK( IIFAIL ), INFO )
@@ -451,12 +459,12 @@
          VUTGK = MIN( VUTGK, ZERO )
 *
 *        If VLTGK=VUTGK, SSTEVX returns an error message,
-*        so if needed we change VUTGK slightly.    
+*        so if needed we change VUTGK slightly.
 *
          IF( VLTGK.EQ.VUTGK ) VLTGK = VLTGK - TOL
 *
-         CALL SLASET( 'F', N*2, IU-IL+1, ZERO, ZERO, Z, LDZ )
-      END IF             
+         IF( WANTZ ) CALL SLASET( 'F', N*2, IU-IL+1, ZERO, ZERO, Z, LDZ)
+      END IF
 *
 *     Initialize variables and pointers for S, Z, and WORK.
 *
@@ -475,7 +483,7 @@
       IROWU = 2
       IROWV = 1
       SPLIT = .FALSE.
-      SVEQ0 = .FALSE.    
+      SVEQ0 = .FALSE.
 *
 *     Form the tridiagonal TGK matrix.
 *
@@ -486,15 +494,15 @@
       CALL SCOPY( N-1, E, 1, WORK( IETGK+1 ), 2 )
 *
 *
-*     Check for splits in two levels, outer level 
+*     Check for splits in two levels, outer level
 *     in E and inner level in D.
 *
-      DO IEPTR = 2, N*2, 2 
-         IF( WORK( IETGK+IEPTR-1 ).EQ.ZERO ) THEN       
+      DO IEPTR = 2, N*2, 2
+         IF( WORK( IETGK+IEPTR-1 ).EQ.ZERO ) THEN
 *
 *           Split in E (this piece of B is square) or bottom
 *           of the (input bidiagonal) matrix.
-*          
+*
             ISPLT = IDBEG
             IDEND = IEPTR - 1
             DO IDPTR = IDBEG, IDEND, 2
@@ -511,22 +519,22 @@
                      IF( IDBEG.EQ.IDEND) THEN
                         NRU = 1
                         NRV = 1
-                     END IF    
+                     END IF
                   ELSE IF( IDPTR.EQ.IDEND ) THEN
 *
 *                    D=0 at the bottom.
 *
                      SVEQ0 = .TRUE.
-                     NRU = (IDEND-ISPLT)/2 + 1 
-                     NRV = NRU  
+                     NRU = (IDEND-ISPLT)/2 + 1
+                     NRV = NRU
                      IF( ISPLT.NE.IDBEG ) THEN
                         NRU = NRU + 1
-                     END IF    
+                     END IF
                   ELSE
                      IF( ISPLT.EQ.IDBEG ) THEN
 *
 *                       Split: top rectangular submatrix.
-* 
+*
                         NRU = (IDPTR-IDBEG)/2
                         NRV = NRU + 1
                      ELSE
@@ -534,7 +542,7 @@
 *                       Split: middle square submatrix.
 *
                         NRU = (IDPTR-ISPLT)/2 + 1
-                        NRV = NRU                   
+                        NRV = NRU
                      END IF
                   END IF
                ELSE IF( IDPTR.EQ.IDEND ) THEN
@@ -552,7 +560,7 @@
 *                    Split: bottom rectangular submatrix.
 *
                      NRV = (IDEND-ISPLT)/2 + 1
-                     NRU = NRV + 1                  
+                     NRU = NRV + 1
                   END IF
                END IF
 *
@@ -560,32 +568,32 @@
 *
                IF( NTGK.GT.0 ) THEN
 *
-*                 Compute eigenvalues/vectors of the active 
-*                 submatrix according to RANGE: 
+*                 Compute eigenvalues/vectors of the active
+*                 submatrix according to RANGE:
 *                 if RANGE='A' (ALLSV) then RNGVX = 'I'
 *                 if RANGE='V' (VALSV) then RNGVX = 'V'
 *                 if RANGE='I' (INDSV) then RNGVX = 'V'
 *
                   ILTGK = 1
-                  IUTGK = NTGK / 2 
+                  IUTGK = NTGK / 2
                   IF( ALLSV .OR. VUTGK.EQ.ZERO ) THEN
-                     IF( SVEQ0 .OR. 
-     $                   SMIN.LT.EPS .OR. 
+                     IF( SVEQ0 .OR.
+     $                   SMIN.LT.EPS .OR.
      $                   MOD(NTGK,2).GT.0 ) THEN
 *                        Special case: eigenvalue equal to zero or very
 *                        small, additional eigenvector is needed.
                          IUTGK = IUTGK + 1
-                     END IF    
+                     END IF
                   END IF
 *
-*                 Workspace needed by SSTEVX:   
-*                 WORK( ITEMP: ): 2*5*NTGK 
+*                 Workspace needed by SSTEVX:
+*                 WORK( ITEMP: ): 2*5*NTGK
 *                 IWORK( 1: ): 2*6*NTGK
 *
-                  CALL SSTEVX( JOBZ, RNGVX, NTGK, WORK( IDTGK+ISPLT-1 ), 
-     $                         WORK( IETGK+ISPLT-1 ), VLTGK, VUTGK, 
-     $                         ILTGK, IUTGK, ABSTOL, NSL, S( ISBEG ), 
-     $                         Z( IROWZ,ICOLZ ), LDZ, WORK( ITEMP ), 
+                  CALL SSTEVX( JOBZ, RNGVX, NTGK, WORK( IDTGK+ISPLT-1 ),
+     $                         WORK( IETGK+ISPLT-1 ), VLTGK, VUTGK,
+     $                         ILTGK, IUTGK, ABSTOL, NSL, S( ISBEG ),
+     $                         Z( IROWZ,ICOLZ ), LDZ, WORK( ITEMP ),
      $                         IWORK( IIWORK ), IWORK( IIFAIL ),
      $                         INFO )
                   IF( INFO.NE.0 ) THEN
@@ -593,7 +601,7 @@
                      RETURN
                   END IF
                   EMIN = ABS( MAXVAL( S( ISBEG:ISBEG+NSL-1 ) ) )
-*   
+*
                   IF( NSL.GT.0 .AND. WANTZ ) THEN
 *
 *                    Normalize u=Z([2,4,...],:) and v=Z([1,3,...],:),
@@ -607,22 +615,22 @@
                      IF( NSL.GT.1 .AND.
      $                   VUTGK.EQ.ZERO .AND.
      $                   MOD(NTGK,2).EQ.0 .AND.
-     $                   EMIN.EQ.0 .AND. .NOT.SPLIT ) THEN 
+     $                   EMIN.EQ.0 .AND. .NOT.SPLIT ) THEN
 *
 *                       D=0 at the top or bottom of the active submatrix:
-*                       one eigenvalue is equal to zero; concatenate the 
-*                       eigenvectors corresponding to the two smallest 
+*                       one eigenvalue is equal to zero; concatenate the
+*                       eigenvectors corresponding to the two smallest
 *                       eigenvalues.
 *
                         Z( IROWZ:IROWZ+NTGK-1,ICOLZ+NSL-2 ) =
      $                  Z( IROWZ:IROWZ+NTGK-1,ICOLZ+NSL-2 ) +
      $                  Z( IROWZ:IROWZ+NTGK-1,ICOLZ+NSL-1 )
-                        Z( IROWZ:IROWZ+NTGK-1,ICOLZ+NSL-1 ) = 
-     $                  ZERO 
+                        Z( IROWZ:IROWZ+NTGK-1,ICOLZ+NSL-1 ) =
+     $                  ZERO
 *                       IF( IUTGK*2.GT.NTGK ) THEN
 *                          Eigenvalue equal to zero or very small.
 *                          NSL = NSL - 1
-*                       END IF  
+*                       END IF
                      END IF
 *
                      DO I = 0, MIN( NSL-1, NRU-1 )
@@ -631,20 +639,20 @@
                            INFO = N*2 + 1
                            RETURN
                         END IF
-                        CALL SSCAL( NRU, ONE/NRMU, 
+                        CALL SSCAL( NRU, ONE/NRMU,
      $                              Z( IROWU,ICOLZ+I ), 2 )
                         IF( NRMU.NE.ONE .AND.
      $                      ABS( NRMU-ORTOL )*SQRT2.GT.ONE )
      $                      THEN
                            DO J = 0, I-1
-                              ZJTJI = -SDOT( NRU, Z( IROWU, ICOLZ+J ), 
+                              ZJTJI = -SDOT( NRU, Z( IROWU, ICOLZ+J ),
      $                                       2, Z( IROWU, ICOLZ+I ), 2 )
-                              CALL SAXPY( NRU, ZJTJI, 
+                              CALL SAXPY( NRU, ZJTJI,
      $                                    Z( IROWU, ICOLZ+J ), 2,
      $                                    Z( IROWU, ICOLZ+I ), 2 )
                            END DO
                            NRMU = SNRM2( NRU, Z( IROWU, ICOLZ+I ), 2 )
-                           CALL SSCAL( NRU, ONE/NRMU, 
+                           CALL SSCAL( NRU, ONE/NRMU,
      $                                 Z( IROWU,ICOLZ+I ), 2 )
                         END IF
                      END DO
@@ -654,7 +662,7 @@
                            INFO = N*2 + 1
                            RETURN
                         END IF
-                        CALL SSCAL( NRV, -ONE/NRMV, 
+                        CALL SSCAL( NRV, -ONE/NRMV,
      $                              Z( IROWV,ICOLZ+I ), 2 )
                         IF( NRMV.NE.ONE .AND.
      $                      ABS( NRMV-ORTOL )*SQRT2.GT.ONE )
@@ -662,12 +670,12 @@
                            DO J = 0, I-1
                               ZJTJI = -SDOT( NRV, Z( IROWV, ICOLZ+J ),
      $                                       2, Z( IROWV, ICOLZ+I ), 2 )
-                              CALL SAXPY( NRU, ZJTJI, 
+                              CALL SAXPY( NRU, ZJTJI,
      $                                    Z( IROWV, ICOLZ+J ), 2,
      $                                    Z( IROWV, ICOLZ+I ), 2 )
                            END DO
                            NRMV = SNRM2( NRV, Z( IROWV, ICOLZ+I ), 2 )
-                           CALL SSCAL( NRV, ONE/NRMV, 
+                           CALL SSCAL( NRV, ONE/NRMV,
      $                                 Z( IROWV,ICOLZ+I ), 2 )
                         END IF
                      END DO
@@ -676,18 +684,18 @@
      $                   MOD(NTGK,2).GT.0 ) THEN
 *
 *                       D=0 in the middle of the active submatrix (one
-*                       eigenvalue is equal to zero): save the corresponding 
+*                       eigenvalue is equal to zero): save the corresponding
 *                       eigenvector for later use (when bottom of the
 *                       active submatrix is reached).
 *
                         SPLIT = .TRUE.
-                        Z( IROWZ:IROWZ+NTGK-1,N+1 ) = 
+                        Z( IROWZ:IROWZ+NTGK-1,N+1 ) =
      $                     Z( IROWZ:IROWZ+NTGK-1,NS+NSL )
-                        Z( IROWZ:IROWZ+NTGK-1,NS+NSL ) = 
-     $                     ZERO 
-                     END IF                     
+                        Z( IROWZ:IROWZ+NTGK-1,NS+NSL ) =
+     $                     ZERO
+                     END IF
                   END IF !** WANTZ **!
-*              
+*
                   NSL = MIN( NSL, NRU )
                   SVEQ0 = .FALSE.
 *
@@ -698,25 +706,27 @@
                   END DO
 *
 *                 Update pointers for TGK, S and Z.
-*               
+*
                   ISBEG = ISBEG + NSL
                   IROWZ = IROWZ + NTGK
                   ICOLZ = ICOLZ + NSL
                   IROWU = IROWZ
-                  IROWV = IROWZ + 1                
+                  IROWV = IROWZ + 1
                   ISPLT = IDPTR + 1
                   NS = NS + NSL
                   NRU = 0
-                  NRV = 0       
-               END IF !** NTGK.GT.0 **! 
-               IF( IROWZ.LT.N*2 )  Z( 1:IROWZ-1, ICOLZ ) = ZERO           
+                  NRV = 0
+               END IF !** NTGK.GT.0 **!
+               IF( IROWZ.LT.N*2 .AND. WANTZ ) THEN
+                  Z( 1:IROWZ-1, ICOLZ ) = ZERO
+               END IF
             END DO !** IDPTR loop **!
-            IF( SPLIT ) THEN
+            IF( SPLIT .AND. WANTZ ) THEN
 *
 *              Bring back eigenvector corresponding
 *              to eigenvalue equal to zero.
 *
-               Z( IDBEG:IDEND-NTGK+1,ISBEG-1 ) = 
+               Z( IDBEG:IDEND-NTGK+1,ISBEG-1 ) =
      $         Z( IDBEG:IDEND-NTGK+1,ISBEG-1 ) +
      $         Z( IDBEG:IDEND-NTGK+1,N+1 )
                Z( IDBEG:IDEND-NTGK+1,N+1 ) = 0
@@ -725,7 +735,7 @@
             IROWU = IROWU + 1
             IDBEG = IEPTR + 1
             SVEQ0 = .FALSE.
-            SPLIT = .FALSE.        
+            SPLIT = .FALSE.
          END IF !** Check for split in E **!
       END DO !** IEPTR loop **!
 *
@@ -744,24 +754,25 @@
          IF( K.NE.NS+1-I ) THEN
             S( K ) = S( NS+1-I )
             S( NS+1-I ) = SMIN
-            CALL SSWAP( N*2, Z( 1,K ), 1, Z( 1,NS+1-I ), 1 )
+            IF( WANTZ ) CALL SSWAP( N*2, Z( 1,K ), 1, Z( 1,NS+1-I ), 1 )
          END IF
       END DO
-*   
+*
 *     If RANGE=I, check for singular values/vectors to be discarded.
 *
       IF( INDSV ) THEN
          K = IU - IL + 1
          IF( K.LT.NS ) THEN
             S( K+1:NS ) = ZERO
-            Z( 1:N*2,K+1:NS ) = ZERO
+            IF( WANTZ ) Z( 1:N*2,K+1:NS ) = ZERO
             NS = K
          END IF
-      END IF 
+      END IF
 *
 *     Reorder Z: U = Z( 1:N,1:NS ), V = Z( N+1:N*2,1:NS ).
 *     If B is a lower diagonal, swap U and V.
 *
+      IF( WANTZ ) THEN
       DO I = 1, NS
          CALL SCOPY( N*2, Z( 1,I ), 1, WORK, 1 )
          IF( LOWER ) THEN
@@ -772,6 +783,7 @@
             CALL SCOPY( N, WORK( 1 ), 2, Z( N+1,I ), 1 )
          END IF
       END DO
+      END IF
 *
       RETURN
 *

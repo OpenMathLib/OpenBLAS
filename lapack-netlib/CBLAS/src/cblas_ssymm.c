@@ -15,12 +15,12 @@ void cblas_ssymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
                  const float  *B, const int ldb, const float beta,
                  float  *C, const int ldc)
 {
-   char SD, UL;   
+   char SD, UL;
 #ifdef F77_CHAR
    F77_CHAR F77_SD, F77_UL;
 #else
-   #define F77_SD &SD  
-   #define F77_UL &UL  
+   #define F77_SD &SD
+   #define F77_UL &UL
 #endif
 
 #ifdef F77_INT
@@ -43,9 +43,9 @@ void cblas_ssymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
    {
       if( Side == CblasRight) SD='R';
       else if ( Side == CblasLeft ) SD='L';
-      else 
+      else
       {
-         cblas_xerbla(2, "cblas_ssymm", 
+         cblas_xerbla(2, "cblas_ssymm",
                        "Illegal Side setting, %d\n", Side);
          CBLAS_CallFromC = 0;
          RowMajorStrg = 0;
@@ -54,9 +54,9 @@ void cblas_ssymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Uplo == CblasUpper) UL='U';
       else if ( Uplo == CblasLower ) UL='L';
-      else 
+      else
       {
-         cblas_xerbla(3, "cblas_ssymm", 
+         cblas_xerbla(3, "cblas_ssymm",
                        "Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
          RowMajorStrg = 0;
@@ -74,9 +74,9 @@ void cblas_ssymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
       RowMajorStrg = 1;
       if( Side == CblasRight) SD='L';
       else if ( Side == CblasLeft ) SD='R';
-      else 
+      else
       {
-         cblas_xerbla(2, "cblas_ssymm", 
+         cblas_xerbla(2, "cblas_ssymm",
                        "Illegal Side setting, %d\n", Side);
          CBLAS_CallFromC = 0;
          RowMajorStrg = 0;
@@ -85,9 +85,9 @@ void cblas_ssymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Uplo == CblasUpper) UL='L';
       else if ( Uplo == CblasLower ) UL='U';
-      else 
+      else
       {
-         cblas_xerbla(3, "cblas_ssymm", 
+         cblas_xerbla(3, "cblas_ssymm",
                        "Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
          RowMajorStrg = 0;
@@ -105,4 +105,4 @@ void cblas_ssymm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
    CBLAS_CallFromC = 0;
    RowMajorStrg = 0;
    return;
-} 
+}

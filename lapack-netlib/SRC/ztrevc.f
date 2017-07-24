@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZTREVC + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ztrevc.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ztrevc.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ztrevc.f"> 
+*> Download ZTREVC + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ztrevc.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ztrevc.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ztrevc.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
 *                          LDVR, MM, M, WORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          HOWMNY, SIDE
 *       INTEGER            INFO, LDT, LDVL, LDVR, M, MM, N
@@ -31,7 +31,7 @@
 *       COMPLEX*16         T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -42,16 +42,16 @@
 *> a complex upper triangular matrix T.
 *> Matrices of this type are produced by the Schur factorization of
 *> a complex general matrix:  A = Q*T*Q**H, as computed by ZHSEQR.
-*> 
+*>
 *> The right eigenvector x and the left eigenvector y of T corresponding
 *> to an eigenvalue w are defined by:
-*> 
+*>
 *>              T*x = w*x,     (y**H)*T = w*(y**H)
-*> 
+*>
 *> where y**H denotes the conjugate transpose of the vector y.
 *> The eigenvalues are not input to this routine, but are read directly
 *> from the diagonal of T.
-*> 
+*>
 *> This routine returns the matrices X and/or Y of right and left
 *> eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
 *> input matrix.  If Q is the unitary factor that reduces a matrix A to
@@ -191,12 +191,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -218,10 +218,10 @@
       SUBROUTINE ZTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
      $                   LDVR, MM, M, WORK, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE

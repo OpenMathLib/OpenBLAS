@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CERRED( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -56,22 +56,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
 *  =====================================================================
       SUBROUTINE CERRED( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -100,7 +100,7 @@
      $                   VT( NMAX, NMAX ), W( 10*NMAX ), X( NMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, CGEES, CGEESX, CGEEV, CGEEVX, CGEJSV
+      EXTERNAL           CHKXER, CGEES, CGEESX, CGEEV, CGEEVX, CGEJSV,
      $                   CGESDD, CGESVD
 *     ..
 *     .. External Functions ..
@@ -441,51 +441,51 @@
 *
          SRNAMT = 'CGESVDX'
          INFOT = 1
-         CALL CGESVDX( 'X', 'N', 'A', 0, 0, A, 1, ZERO, ZERO, 
+         CALL CGESVDX( 'X', 'N', 'A', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL CGESVDX( 'N', 'X', 'A', 0, 0, A, 1, ZERO, ZERO, 
+         CALL CGESVDX( 'N', 'X', 'A', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 3
-         CALL CGESVDX( 'N', 'N', 'X', 0, 0, A, 1, ZERO, ZERO, 
+         CALL CGESVDX( 'N', 'N', 'X', 0, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL CGESVDX( 'N', 'N', 'A', -1, 0, A, 1, ZERO, ZERO, 
+         CALL CGESVDX( 'N', 'N', 'A', -1, 0, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 5
-         CALL CGESVDX( 'N', 'N', 'A', 0, -1, A, 1, ZERO, ZERO, 
+         CALL CGESVDX( 'N', 'N', 'A', 0, -1, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 7
-         CALL CGESVDX( 'N', 'N', 'A', 2, 1, A, 1, ZERO, ZERO, 
+         CALL CGESVDX( 'N', 'N', 'A', 2, 1, A, 1, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL CGESVDX( 'N', 'N', 'V', 2, 1, A, 2, -ONE, ZERO, 
+         CALL CGESVDX( 'N', 'N', 'V', 2, 1, A, 2, -ONE, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 9
-         CALL CGESVDX( 'N', 'N', 'V', 2, 1, A, 2, ONE, ZERO, 
+         CALL CGESVDX( 'N', 'N', 'V', 2, 1, A, 2, ONE, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL CGESVDX( 'N', 'N', 'I', 2, 2, A, 2, ZERO, ZERO, 
+         CALL CGESVDX( 'N', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 1, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 11
-         CALL CGESVDX( 'V', 'N', 'I', 2, 2, A, 2, ZERO, ZERO, 
+         CALL CGESVDX( 'V', 'N', 'I', 2, 2, A, 2, ZERO, ZERO,
      $                 1, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          INFOT = 15
-         CALL CGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO, 
+         CALL CGESVDX( 'V', 'N', 'A', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
-         INFOT = 16
-         CALL CGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO, 
+         INFOT = 17
+         CALL CGESVDX( 'N', 'V', 'A', 2, 2, A, 2, ZERO, ZERO,
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, RW, IW, INFO )
          CALL CHKXER( 'CGESVDX', INFOT, NOUT, LERR, OK )
          NT = 12

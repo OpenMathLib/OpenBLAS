@@ -78,7 +78,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
-	FLOAT da[4];
 
 	if ( n <= 0 )  return(0);
 
@@ -89,11 +88,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 		if ( n1 )
 		{
-			da[0] = da_r;
-			da[1] = da_r;
-			da[2] = da_i;
-			da[3] = da_i;
-			zaxpy_kernel_4(n1, x, y , da );
+			zaxpy_kernel_4 (n1, x, y, da_r, da_i);
 			ix = 2 * n1;
 		}
 		i = n1;

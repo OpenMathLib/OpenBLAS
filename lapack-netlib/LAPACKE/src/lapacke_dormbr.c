@@ -42,7 +42,7 @@ lapack_int LAPACKE_dormbr( int matrix_layout, char vect, char side, char trans,
     lapack_int lwork = -1;
     double* work = NULL;
     double work_query;
-    lapack_int nq, r;
+    lapack_int nq, ar, ac;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_dormbr", -1 );
         return -1;
@@ -50,8 +50,9 @@ lapack_int LAPACKE_dormbr( int matrix_layout, char vect, char side, char trans,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     /* Optionally check input matrices for NaNs */
     nq = LAPACKE_lsame( side, 'l' ) ? m : n;
-    r = LAPACKE_lsame( vect, 'q' ) ? nq : MIN(nq,k);
-    if( LAPACKE_dge_nancheck( matrix_layout, r, MIN(nq,k), a, lda ) ) {
+    ar = LAPACKE_lsame( vect, 'q' ) ? nq : MIN(nq,k);
+    ac = LAPACKE_lsame( vect, 'q' ) ? MIN(nq,k) : nq;
+    if( LAPACKE_dge_nancheck( matrix_layout, ar, ac, a, lda ) ) {
         return -8;
     }
     if( LAPACKE_dge_nancheck( matrix_layout, m, n, c, ldc ) ) {

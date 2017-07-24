@@ -33,19 +33,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef COMMON_MIPS
 #define COMMON_MIPS
 
-#define MB
-#define WMB
+#define MB  __sync_synchronize()
+#define WMB __sync_synchronize()
 
 #define INLINE inline
 
 #define RETURN_BY_COMPLEX
 
 #ifndef ASSEMBLER
-
-static void INLINE blas_lock(volatile unsigned long *address){
-
-}
-#define BLAS_LOCK_DEFINED
 
 static inline unsigned int rpcc(void){
   unsigned long ret;
@@ -80,7 +75,6 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define PROLOGUE \
 	.arm		 ;\
 	.global	REALNAME ;\
-	.func	REALNAME  ;\
 REALNAME:
 
 #define EPILOGUE

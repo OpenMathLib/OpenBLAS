@@ -1,14 +1,15 @@
+*> \brief \b DBDT04
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DBDT04( UPLO, N, D, E, S, NS, U, LDU, VT, LDVT, 
+*       SUBROUTINE DBDT04( UPLO, N, D, E, S, NS, U, LDU, VT, LDVT,
 *                          WORK, RESID )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            LDU, LDVT, N, NS
@@ -18,7 +19,7 @@
 *       DOUBLE PRECISION   D( * ), E( * ), S( * ), U( LDU, * ),
 *      $                   VT( LDVT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -68,14 +69,14 @@
 *> \param[in] S
 *> \verbatim
 *>          S is DOUBLE PRECISION array, dimension (NS)
-*>          The singular values from the (partial) SVD of B, sorted in 
+*>          The singular values from the (partial) SVD of B, sorted in
 *>          decreasing order.
 *> \endverbatim
 *>
 *> \param[in] NS
 *> \verbatim
 *>          NS is INTEGER
-*>          The number of singular values/vectors from the (partial) 
+*>          The number of singular values/vectors from the (partial)
 *>          SVD of B.
 *> \endverbatim
 *>
@@ -117,12 +118,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_eig
 *
@@ -130,10 +131,10 @@
       SUBROUTINE DBDT04( UPLO, N, D, E, S, NS, U, LDU, VT, LDVT, WORK,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

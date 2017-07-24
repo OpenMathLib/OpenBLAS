@@ -2,14 +2,14 @@ C> \brief \b DGETRF VARIANT: left-looking Level 3 BLAS version of the algorithm.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGETRF ( M, N, A, LDA, IPIV, INFO)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -17,7 +17,7 @@ C> \brief \b DGETRF VARIANT: left-looking Level 3 BLAS version of the algorithm.
 *       INTEGER            IPIV( * )
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -88,12 +88,12 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
-C> \date November 2011
+C> \date December 2016
 *
 C> \ingroup variantsGEcomputational
 *
@@ -103,7 +103,7 @@ C> \ingroup variantsGEcomputational
 *  -- LAPACK computational routine (version 3.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -173,21 +173,21 @@ C> \ingroup variantsGEcomputational
 *           Update before factoring the current panel
 *
             DO 30 K = 1, J-NB, NB
-*            
+*
 *              Apply interchanges to rows K:K+NB-1.
-* 
+*
                CALL DLASWP( JB, A(1, J), LDA, K, K+NB-1, IPIV, 1 )
 *
 *              Compute block row of U.
 *
                CALL DTRSM( 'Left', 'Lower', 'No transpose', 'Unit',
-     $                    NB, JB, ONE, A( K, K ), LDA, 
+     $                    NB, JB, ONE, A( K, K ), LDA,
      $                    A( K, J ), LDA )
 *
 *              Update trailing submatrix.
 *
-               CALL DGEMM( 'No transpose', 'No transpose', 
-     $                    M-K-NB+1, JB, NB, -ONE, 
+               CALL DGEMM( 'No transpose', 'No transpose',
+     $                    M-K-NB+1, JB, NB, -ONE,
      $                    A( K+NB, K ), LDA, A( K, J ), LDA, ONE,
      $                    A( K+NB, J ), LDA )
    30       CONTINUE
@@ -211,9 +211,9 @@ C> \ingroup variantsGEcomputational
 *        Apply interchanges to the left-overs
 *
          DO 40 K = 1, MIN( M, N ), NB
-            CALL DLASWP( K-1, A( 1, 1 ), LDA, K, 
+            CALL DLASWP( K-1, A( 1, 1 ), LDA, K,
      $                  MIN (K+NB-1, MIN ( M, N )), IPIV, 1 )
-   40    CONTINUE 
+   40    CONTINUE
 *
 *        Apply update to the M+1:N columns when N > M
 *
@@ -226,17 +226,17 @@ C> \ingroup variantsGEcomputational
                JB = MIN( M-K+1, NB )
 *
                CALL DTRSM( 'Left', 'Lower', 'No transpose', 'Unit',
-     $                    JB, N-M, ONE, A( K, K ), LDA, 
+     $                    JB, N-M, ONE, A( K, K ), LDA,
      $                    A( K, M+1 ), LDA )
 
-*     
+*
                IF ( K+NB.LE.M ) THEN
-                    CALL DGEMM( 'No transpose', 'No transpose', 
-     $                         M-K-NB+1, N-M, NB, -ONE, 
+                    CALL DGEMM( 'No transpose', 'No transpose',
+     $                         M-K-NB+1, N-M, NB, -ONE,
      $                         A( K+NB, K ), LDA, A( K, M+1 ), LDA, ONE,
      $                        A( K+NB, M+1 ), LDA )
                END IF
-   50       CONTINUE  
+   50       CONTINUE
          END IF
 *
       END IF

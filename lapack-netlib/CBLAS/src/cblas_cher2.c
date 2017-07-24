@@ -1,7 +1,7 @@
 /*
  * cblas_cher2.c
  * The program is a C interface to cher2.
- * 
+ *
  * Keita Teranishi  3/23/98
  *
  */
@@ -29,19 +29,19 @@ void cblas_cher2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    #define F77_incY incy
 #endif
    int n, i, j, tincx, tincy, incx=incX, incy=incY;
-   float *x=(float *)X, *xx=(float *)X, *y=(float *)Y, 
+   float *x=(float *)X, *xx=(float *)X, *y=(float *)Y,
          *yy=(float *)Y, *tx, *ty, *stx, *sty;
 
    extern int CBLAS_CallFromC;
    extern int RowMajorStrg;
    RowMajorStrg = 0;
- 
+
    CBLAS_CallFromC = 1;
    if (layout == CblasColMajor)
    {
       if (Uplo == CblasLower) UL = 'L';
       else if (Uplo == CblasUpper) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_cher2","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -52,7 +52,7 @@ void cblas_cher2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
          F77_UL = C2F_CHAR(&UL);
       #endif
 
-      F77_cher2(F77_UL, &F77_N, alpha, X, &F77_incX, 
+      F77_cher2(F77_UL, &F77_N, alpha, X, &F77_incX,
                                             Y, &F77_incY, A, &F77_lda);
 
    }  else if (layout == CblasRowMajor)
@@ -60,7 +60,7 @@ void cblas_cher2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       RowMajorStrg = 1;
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_cher2","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -74,29 +74,29 @@ void cblas_cher2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       {
          n = N << 1;
          x = malloc(n*sizeof(float));
-         y = malloc(n*sizeof(float));         
+         y = malloc(n*sizeof(float));
          tx = x;
          ty = y;
          if( incX > 0 ) {
             i = incX << 1 ;
             tincx = 2;
             stx= x+n;
-         } else { 
+         } else {
             i = incX *(-2);
             tincx = -2;
-            stx = x-2; 
-            x +=(n-2); 
+            stx = x-2;
+            x +=(n-2);
          }
-         
+
          if( incY > 0 ) {
             j = incY << 1;
             tincy = 2;
             sty= y+n;
-         } else { 
+         } else {
             j = incY *(-2);
             tincy = -2;
-            sty = y-2; 
-            y +=(n-2); 
+            sty = y-2;
+            y +=(n-2);
          }
 
          do
@@ -127,14 +127,14 @@ void cblas_cher2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
             incx = 1;
             incy = 1;
          #endif
-      }  else 
+      }  else
       {
          x = (float *) X;
          y = (float *) Y;
       }
-      F77_cher2(F77_UL, &F77_N, alpha, y, &F77_incY, x, 
+      F77_cher2(F77_UL, &F77_N, alpha, y, &F77_incY, x,
                                       &F77_incX, A, &F77_lda);
-   } else 
+   } else
    {
       cblas_xerbla(1, "cblas_cher2","Illegal layout setting, %d\n", layout);
       CBLAS_CallFromC = 0;

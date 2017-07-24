@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE SCHKGE( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NNS,
 *                          NSVAL, THRESH, TSTERR, NMAX, A, AFAC, AINV, B,
 *                          X, XACT, WORK, RWORK, IWORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NMAX, NN, NNB, NNS, NOUT
@@ -24,7 +24,7 @@
 *       REAL               A( * ), AFAC( * ), AINV( * ), B( * ),
 *      $                   RWORK( * ), WORK( * ), X( * ), XACT( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -171,10 +171,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -185,7 +185,7 @@
      $                   NSVAL, THRESH, TSTERR, NMAX, A, AFAC, AINV, B,
      $                   X, XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.1) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012

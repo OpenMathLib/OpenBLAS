@@ -2,17 +2,16 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CDRVLS( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL, NNB,
 *                          NBVAL, NXVAL, THRESH, TSTERR, A, COPYA, B,
-*                          COPYB, C, S, COPYS, WORK, RWORK, IWORK,
-*                          NOUT )
-* 
+*                          COPYB, C, S, COPYS, NOUT )
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NNB, NNS, NOUT
@@ -20,20 +19,19 @@
 *       ..
 *       .. Array Arguments ..
 *       LOGICAL            DOTYPE( * )
-*       INTEGER            IWORK( * ), MVAL( * ), NBVAL( * ), NSVAL( * ),
+*       INTEGER            MVAL( * ), NBVAL( * ), NSVAL( * ),
 *      $                   NVAL( * ), NXVAL( * )
-*       REAL               COPYS( * ), RWORK( * ), S( * )
-*       COMPLEX            A( * ), B( * ), C( * ), COPYA( * ), COPYB( * ),
-*      $                   WORK( * )
+*       REAL               COPYS( * ), S( * )
+*       COMPLEX            A( * ), B( * ), C( * ), COPYA( * ), COPYB( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> CDRVLS tests the least squares driver routines CGELS, CGELSS, CGELSY
+*> CDRVLS tests the least squares driver routines CGELS, CGETSLS, CGELSS, CGELSY
 *> and CGELSD.
 *> \endverbatim
 *
@@ -171,22 +169,6 @@
 *>                      (min(MMAX,NMAX))
 *> \endverbatim
 *>
-*> \param[out] WORK
-*> \verbatim
-*>          WORK is COMPLEX array, dimension
-*>                      (MMAX*NMAX + 4*NMAX + MMAX).
-*> \endverbatim
-*>
-*> \param[out] RWORK
-*> \verbatim
-*>          RWORK is REAL array, dimension (5*NMAX-1)
-*> \endverbatim
-*>
-*> \param[out] IWORK
-*> \verbatim
-*>          IWORK is INTEGER array, dimension (15*NMAX)
-*> \endverbatim
-*>
 *> \param[in] NOUT
 *> \verbatim
 *>          NOUT is INTEGER
@@ -196,25 +178,24 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CDRVLS( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL, NNB,
      $                   NBVAL, NXVAL, THRESH, TSTERR, A, COPYA, B,
-     $                   COPYB, C, S, COPYS, WORK, RWORK, IWORK,
-     $                   NOUT )
+     $                   COPYB, C, S, COPYS, NOUT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -223,18 +204,17 @@
 *     ..
 *     .. Array Arguments ..
       LOGICAL            DOTYPE( * )
-      INTEGER            IWORK( * ), MVAL( * ), NBVAL( * ), NSVAL( * ),
+      INTEGER            MVAL( * ), NBVAL( * ), NSVAL( * ),
      $                   NVAL( * ), NXVAL( * )
-      REAL               COPYS( * ), RWORK( * ), S( * )
-      COMPLEX            A( * ), B( * ), C( * ), COPYA( * ), COPYB( * ),
-     $                   WORK( * )
+      REAL               COPYS( * ), S( * )
+      COMPLEX            A( * ), B( * ), C( * ), COPYA( * ), COPYB( * )
 *     ..
 *
 *  =====================================================================
 *
 *     .. Parameters ..
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 14 )
+      PARAMETER          ( NTESTS = 16 )
       INTEGER            SMLSIZ
       PARAMETER          ( SMLSIZ = 25 )
       REAL               ONE, ZERO
@@ -246,15 +226,25 @@
 *     .. Local Scalars ..
       CHARACTER          TRANS
       CHARACTER*3        PATH
-      INTEGER            CRANK, I, IM, IN, INB, INFO, INS, IRANK,
+      INTEGER            CRANK, I, IM, IMB, IN, INB, INFO, INS, IRANK,
      $                   ISCALE, ITRAN, ITYPE, J, K, LDA, LDB, LDWORK,
      $                   LWLSY, LWORK, M, MNMIN, N, NB, NCOLS, NERRS,
-     $                   NFAIL, NRHS, NROWS, NRUN, RANK
+     $                   NFAIL, NRHS, NROWS, NRUN, RANK, MB,
+     $                   MMAX, NMAX, NSMAX, LIWORK, LRWORK,
+     $                   LWORK_CGELS, LWORK_CGETSLS, LWORK_CGELSS,
+     $                   LWORK_CGELSY, LWORK_CGELSD,
+     $                   LRWORK_CGELSY, LRWORK_CGELSS, LRWORK_CGELSD
       REAL               EPS, NORMA, NORMB, RCOND
 *     ..
 *     .. Local Arrays ..
-      INTEGER            ISEED( 4 ), ISEEDY( 4 )
-      REAL               RESULT( NTESTS )
+      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWORKQUERY
+      REAL               RESULT( NTESTS ), RWORKQUERY
+      COMPLEX            WORKQUERY
+*     ..
+*     .. Allocatable Arrays ..
+      COMPLEX, ALLOCATABLE :: WORK (:)
+      REAL, ALLOCATABLE :: RWORK (:)
+      INTEGER, ALLOCATABLE :: IWORK (:)
 *     ..
 *     .. External Functions ..
       REAL               CQRT12, CQRT14, CQRT17, SASUM, SLAMCH
@@ -262,12 +252,12 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASVM, CERRLS, CGELS, CGELSD,
-     $                   CGELSS, CGELSY, CGEMM, CLACPY, CLARNV,
-     $                   CQRT13, CQRT15, CQRT16, CSSCAL, SAXPY, 
-     $                   XLAENV
+     $                   CGELSS, CGELSY, CGEMM, CGETSLS, CLACPY,
+     $                   CLARNV, CQRT13, CQRT15, CQRT16, CSSCAL,
+     $                   SAXPY, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, REAL, SQRT
+      INTRINSIC          MAX, MIN, INT, REAL, SQRT
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -311,19 +301,89 @@
      $   CALL ALAHD( NOUT, PATH )
       INFOT = 0
 *
+*     Compute maximal workspace needed for all routines
+*
+      NMAX = 0
+      MMAX = 0
+      NSMAX = 0
+      DO I = 1, NM
+         IF ( MVAL( I ).GT.MMAX ) THEN
+            MMAX = MVAL( I )
+         END IF
+      ENDDO
+      DO I = 1, NN
+         IF ( NVAL( I ).GT.NMAX ) THEN
+            NMAX = NVAL( I )
+         END IF
+      ENDDO
+      DO I = 1, NNS
+         IF ( NSVAL( I ).GT.NSMAX ) THEN
+            NSMAX = NSVAL( I )
+         END IF
+      ENDDO
+      M = MMAX
+      N = NMAX
+      NRHS = NSMAX
+      LDA = MAX( 1, M )
+      LDB = MAX( 1, M, N )
+      MNMIN = MAX( MIN( M, N ), 1 )
+*
+*     Compute workspace needed for routines
+*     CQRT14, CQRT17 (two side cases), CQRT15 and CQRT12
+*
+      LWORK = MAX( ( M+N )*NRHS,
+     $      ( N+NRHS )*( M+2 ), ( M+NRHS )*( N+2 ),
+     $      MAX( M+MNMIN, NRHS*MNMIN,2*N+M ),
+     $      MAX( M*N+4*MNMIN+MAX(M,N), M*N+2*MNMIN+4*N ) )
+*
+*     Compute workspace needed for CGELS
+      CALL CGELS( 'N', M, N, NRHS, A, LDA, B, LDB,
+     $            WORKQUERY, -1, INFO )
+      LWORK_CGELS = INT( WORKQUERY )
+*     Compute workspace needed for CGETSLS
+      CALL CGETSLS( 'N', M, N, NRHS, A, LDA, B, LDB,
+     $              WORKQUERY, -1, INFO )
+      LWORK_CGETSLS = INT( WORKQUERY )
+*     Compute workspace needed for CGELSY
+      CALL CGELSY( M, N, NRHS, A, LDA, B, LDB, IWORKQUERY,
+     $             RCOND, CRANK, WORKQUERY, -1, RWORK, INFO )
+      LWORK_CGELSY = INT( WORKQUERY )
+      LRWORK_CGELSY = 2*N
+*     Compute workspace needed for CGELSS
+      CALL CGELSS( M, N, NRHS, A, LDA, B, LDB, S,
+     $             RCOND, CRANK, WORKQUERY, -1, RWORK, INFO )
+      LWORK_CGELSS = INT( WORKQUERY )
+      LRWORK_CGELSS = 5*MNMIN
+*     Compute workspace needed for CGELSD
+      CALL CGELSD( M, N, NRHS, A, LDA, B, LDB, S, RCOND, CRANK,
+     $             WORKQUERY, -1, RWORKQUERY, IWORKQUERY, INFO )
+      LWORK_CGELSD = INT( WORKQUERY )
+      LRWORK_CGELSD = INT( RWORKQUERY )
+*     Compute LIWORK workspace needed for CGELSY and CGELSD
+      LIWORK = MAX( 1, N, IWORKQUERY )
+*     Compute LRWORK workspace needed for CGELSY, CGELSS and CGELSD
+      LRWORK = MAX( 1, LRWORK_CGELSY, LRWORK_CGELSS, LRWORK_CGELSD )
+*     Compute LWORK workspace needed for all functions
+      LWORK = MAX( 1, LWORK, LWORK_CGELS, LWORK_CGETSLS, LWORK_CGELSY,
+     $             LWORK_CGELSS, LWORK_CGELSD )
+      LWLSY = LWORK
+*
+      ALLOCATE( WORK( LWORK ) )
+      ALLOCATE( IWORK( LIWORK ) )
+      ALLOCATE( RWORK( LRWORK ) )
+*
       DO 140 IM = 1, NM
          M = MVAL( IM )
          LDA = MAX( 1, M )
 *
          DO 130 IN = 1, NN
             N = NVAL( IN )
-            MNMIN = MIN( M, N )
+            MNMIN = MAX(MIN( M, N ),1)
             LDB = MAX( 1, M, N )
+            MB = (MNMIN+1)
 *
             DO 120 INS = 1, NNS
                NRHS = NSVAL( INS )
-               LWORK = MAX( 1, ( M+NRHS )*( N+2 ), ( N+NRHS )*( M+2 ),
-     $                 M*N+4*MNMIN+MAX( M, N ), 2*N+M )
 *
                DO 110 IRANK = 1, 2
                   DO 100 ISCALE = 1, 3
@@ -433,6 +493,110 @@
                               NRUN = NRUN + 2
    30                      CONTINUE
    40                   CONTINUE
+*
+*
+*                       Test CGETSLS
+*
+*                       Generate a matrix of scaling type ISCALE
+*
+                        CALL CQRT13( ISCALE, M, N, COPYA, LDA, NORMA,
+     $                               ISEED )
+                        DO 65 INB = 1, NNB
+                             MB = NBVAL( INB )
+                             CALL XLAENV( 1, MB )
+                             DO 62 IMB = 1, NNB
+                              NB = NBVAL( IMB )
+                              CALL XLAENV( 2, NB )
+*
+                           DO 60 ITRAN = 1, 2
+                              IF( ITRAN.EQ.1 ) THEN
+                                 TRANS = 'N'
+                                 NROWS = M
+                                 NCOLS = N
+                              ELSE
+                                 TRANS = 'C'
+                                 NROWS = N
+                                 NCOLS = M
+                              END IF
+                              LDWORK = MAX( 1, NCOLS )
+*
+*                             Set up a consistent rhs
+*
+                              IF( NCOLS.GT.0 ) THEN
+                                 CALL CLARNV( 2, ISEED, NCOLS*NRHS,
+     $                                        WORK )
+                                 CALL CSCAL( NCOLS*NRHS,
+     $                                       ONE / REAL( NCOLS ), WORK,
+     $                                       1 )
+                              END IF
+                              CALL CGEMM( TRANS, 'No transpose', NROWS,
+     $                                    NRHS, NCOLS, CONE, COPYA, LDA,
+     $                                    WORK, LDWORK, CZERO, B, LDB )
+                              CALL CLACPY( 'Full', NROWS, NRHS, B, LDB,
+     $                                     COPYB, LDB )
+*
+*                             Solve LS or overdetermined system
+*
+                              IF( M.GT.0 .AND. N.GT.0 ) THEN
+                                 CALL CLACPY( 'Full', M, N, COPYA, LDA,
+     $                                        A, LDA )
+                                 CALL CLACPY( 'Full', NROWS, NRHS,
+     $                                        COPYB, LDB, B, LDB )
+                              END IF
+                              SRNAMT = 'CGETSLS '
+                              CALL CGETSLS( TRANS, M, N, NRHS, A,
+     $                                 LDA, B, LDB, WORK, LWORK, INFO )
+                              IF( INFO.NE.0 )
+     $                           CALL ALAERH( PATH, 'CGETSLS ', INFO, 0,
+     $                                        TRANS, M, N, NRHS, -1, NB,
+     $                                        ITYPE, NFAIL, NERRS,
+     $                                        NOUT )
+*
+*                             Check correctness of results
+*
+                              LDWORK = MAX( 1, NROWS )
+                              IF( NROWS.GT.0 .AND. NRHS.GT.0 )
+     $                           CALL CLACPY( 'Full', NROWS, NRHS,
+     $                                        COPYB, LDB, C, LDB )
+                              CALL CQRT16( TRANS, M, N, NRHS, COPYA,
+     $                                     LDA, B, LDB, C, LDB, WORK,
+     $                                     RESULT( 15 ) )
+*
+                              IF( ( ITRAN.EQ.1 .AND. M.GE.N ) .OR.
+     $                            ( ITRAN.EQ.2 .AND. M.LT.N ) ) THEN
+*
+*                                Solving LS system
+*
+                                 RESULT( 16 ) = CQRT17( TRANS, 1, M, N,
+     $                                         NRHS, COPYA, LDA, B, LDB,
+     $                                         COPYB, LDB, C, WORK,
+     $                                         LWORK )
+                              ELSE
+*
+*                                Solving overdetermined system
+*
+                                 RESULT( 16 ) = CQRT14( TRANS, M, N,
+     $                                         NRHS, COPYA, LDA, B, LDB,
+     $                                         WORK, LWORK )
+                              END IF
+*
+*                             Print information about the tests that
+*                             did not pass the threshold.
+*
+                              DO 50 K = 15, 16
+                                 IF( RESULT( K ).GE.THRESH ) THEN
+                                    IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                                 CALL ALAHD( NOUT, PATH )
+                                    WRITE( NOUT, FMT = 9997 )TRANS, M,
+     $                                 N, NRHS, MB, NB, ITYPE, K,
+     $                                 RESULT( K )
+                                    NFAIL = NFAIL + 1
+                                 END IF
+   50                         CONTINUE
+                              NRUN = NRUN + 2
+   60                      CONTINUE
+   62                      CONTINUE
+   65                   CONTINUE
                      END IF
 *
 *                    Generate a matrix of scaling type ISCALE and rank
@@ -469,12 +633,6 @@
                         DO 70 J = 1, N
                            IWORK( J ) = 0
    70                   CONTINUE
-*
-*                       Set LWLSY to the adequate value.
-*
-                        LWLSY = MNMIN + MAX( 2*MNMIN, NB*( N+1 ),
-     $                          MNMIN+NB*NRHS )
-                        LWLSY = MAX( 1, LWLSY )
 *
                         SRNAMT = 'CGELSY'
                         CALL CGELSY( M, N, NRHS, A, LDA, B, LDB, IWORK,
@@ -637,7 +795,7 @@
 *                       Print information about the tests that did not
 *                       pass the threshold.
 *
-                        DO 80 K = 3, NTESTS
+                        DO 80 K = 3, 14
                            IF( RESULT( K ).GE.THRESH ) THEN
                               IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                           CALL ALAHD( NOUT, PATH )
@@ -663,6 +821,13 @@
      $      ', NB=', I4, ', type', I2, ', test(', I2, ')=', G12.5 )
  9998 FORMAT( ' M=', I5, ', N=', I5, ', NRHS=', I4, ', NB=', I4,
      $      ', type', I2, ', test(', I2, ')=', G12.5 )
+ 9997 FORMAT( ' TRANS=''', A1,' M=', I5, ', N=', I5, ', NRHS=', I4,
+     $      ', MB=', I4,', NB=', I4,', type', I2,
+     $      ', test(', I2, ')=', G12.5 )
+*
+      DEALLOCATE( WORK )
+      DEALLOCATE( RWORK )
+      DEALLOCATE( IWORK )
       RETURN
 *
 *     End of CDRVLS

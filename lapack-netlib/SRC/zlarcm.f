@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLARCM + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlarcm.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlarcm.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlarcm.f"> 
+*> Download ZLARCM + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlarcm.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlarcm.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlarcm.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZLARCM( M, N, A, LDA, B, LDB, C, LDC, RWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDB, LDC, M, N
 *       ..
@@ -27,7 +27,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), RWORK( * )
 *       COMPLEX*16         B( LDB, * ), C( LDC, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -61,7 +61,7 @@
 *> \param[in] A
 *> \verbatim
 *>          A is DOUBLE PRECISION array, dimension (LDA, M)
-*>          A contains the M by M matrix A.
+*>          On entry, A contains the M by M matrix A.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -72,8 +72,8 @@
 *>
 *> \param[in] B
 *> \verbatim
-*>          B is DOUBLE PRECISION array, dimension (LDB, N)
-*>          B contains the M by N matrix B.
+*>          B is COMPLEX*16 array, dimension (LDB, N)
+*>          On entry, B contains the M by N matrix B.
 *> \endverbatim
 *>
 *> \param[in] LDB
@@ -82,10 +82,10 @@
 *>          The leading dimension of the array B. LDB >=max(1,M).
 *> \endverbatim
 *>
-*> \param[in] C
+*> \param[out] C
 *> \verbatim
 *>          C is COMPLEX*16 array, dimension (LDC, N)
-*>          C contains the M by N matrix C.
+*>          On exit, C contains the M by N matrix C.
 *> \endverbatim
 *>
 *> \param[in] LDC
@@ -102,22 +102,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZLARCM( M, N, A, LDA, B, LDB, C, LDC, RWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDB, LDC, M, N

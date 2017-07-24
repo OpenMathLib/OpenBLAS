@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLASCL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlascl.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlascl.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlascl.f"> 
+*> Download DLASCL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlascl.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlascl.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlascl.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLASCL( TYPE, KL, KU, CFROM, CTO, M, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TYPE
 *       INTEGER            INFO, KL, KU, LDA, M, N
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -114,7 +114,11 @@
 *> \param[in] LDA
 *> \verbatim
 *>          LDA is INTEGER
-*>          The leading dimension of the array A.  LDA >= max(1,M).
+*>          The leading dimension of the array A.
+*>          If TYPE = 'G', 'L', 'U', 'H', LDA >= max(1,M);
+*>             TYPE = 'B', LDA >= KL+1;
+*>             TYPE = 'Q', LDA >= KU+1;
+*>             TYPE = 'Z', LDA >= 2*KL+KU+1.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -127,22 +131,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE DLASCL( TYPE, KL, KU, CFROM, CTO, M, N, A, LDA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TYPE

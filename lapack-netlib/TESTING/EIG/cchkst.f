@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -13,7 +13,7 @@
 *                          WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
 *                          LWORK, RWORK, LRWORK, IWORK, LIWORK, RESULT,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDU, LIWORK, LRWORK, LWORK, NOUNIT,
 *      $                   NSIZES, NTYPES
@@ -28,7 +28,7 @@
 *       COMPLEX            A( LDA, * ), AP( * ), TAU( * ), U( LDU, * ),
 *      $                   V( LDU, * ), VP( * ), WORK( * ), Z( LDU, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -519,7 +519,7 @@
 *> \verbatim
 *>          LIWORK is INTEGER
 *>          The number of entries in IWORK.  This must be at least
-*>                  6 + 6*Nmax + 5 * Nmax * lg Nmax 
+*>                  6 + 6*Nmax + 5 * Nmax * lg Nmax
 *>          where Nmax = max( NN(j), 2 ) and lg = log base 2.
 *> \endverbatim
 *>
@@ -588,12 +588,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex_eig
 *
@@ -604,10 +604,10 @@
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, RESULT,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LRWORK, LWORK, NOUNIT,

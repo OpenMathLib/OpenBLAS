@@ -35,102 +35,74 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define HAVE_KERNEL_32 1
 
-static void sswap_kernel_32( BLASLONG n, FLOAT *x, FLOAT *y) __attribute__ ((noinline));
-
-static void sswap_kernel_32( BLASLONG n, FLOAT *x, FLOAT *y)
+static void sswap_kernel_32 (long n, float *x, float *y)
 {
+  __asm__
+    (
+       ".p2align	5		\n"
+     "1:				\n\t"
 
+       "lxvd2x		32, 0, %4	\n\t"
+       "lxvd2x		33, %5, %4	\n\t"
+       "lxvd2x		34, %6, %4	\n\t"
+       "lxvd2x		35, %7, %4	\n\t"
+       "lxvd2x		36, %8, %4	\n\t"
+       "lxvd2x		37, %9, %4	\n\t"
+       "lxvd2x		38, %10, %4	\n\t"
+       "lxvd2x		39, %11, %4	\n\t"
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	BLASLONG o64 = 64;
-	BLASLONG o80 = 80;
-	BLASLONG o96 = 96;
-	BLASLONG o112 = 112;
-	FLOAT *x1=x;
-	FLOAT *y1=y;
-	FLOAT *x2=x+1;
-	FLOAT *y2=y+1;
-	BLASLONG pre = 384;
-	BLASLONG alpha=0;
+       "lxvd2x		40, 0, %3	\n\t"
+       "lxvd2x		41, %5, %3	\n\t"
+       "lxvd2x		42, %6, %3	\n\t"
+       "lxvd2x		43, %7, %3	\n\t"
+       "lxvd2x		44, %8, %3	\n\t"
+       "lxvd2x		45, %9, %3	\n\t"
+       "lxvd2x		46, %10, %3	\n\t"
+       "lxvd2x		47, %11, %3	\n\t"
 
-	__asm__  __volatile__
-	(
+       "stxvd2x		32, 0, %3	\n\t"
+       "stxvd2x		33, %5, %3	\n\t"
+       "stxvd2x		34, %6, %3	\n\t"
+       "stxvd2x		35, %7, %3	\n\t"
+       "stxvd2x		36, %8, %3	\n\t"
+       "stxvd2x		37, %9, %3	\n\t"
+       "stxvd2x		38, %10, %3	\n\t"
+       "stxvd2x		39, %11, %3	\n\t"
 
-	"addi		%3, %3, -4			    \n\t"	
-	"addi		%4, %4, -4			    \n\t"	
+       "addi		%3, %3, 128	\n\t"
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
+       "stxvd2x		40, 0, %4	\n\t"
+       "stxvd2x		41, %5, %4	\n\t"
+       "stxvd2x		42, %6, %4	\n\t"
+       "stxvd2x		43, %7, %4	\n\t"
+       "stxvd2x		44, %8, %4	\n\t"
+       "stxvd2x		45, %9, %4	\n\t"
+       "stxvd2x		46, %10, %4	\n\t"
+       "stxvd2x		47, %11, %4	\n\t"
 
-	"lxvw4x		32, 0, %2			    \n\t"
-	"lxvw4x		33, %5, %2			    \n\t"
-	"lxvw4x		34, %6, %2			    \n\t"
-	"lxvw4x		35, %7, %2			    \n\t"
-	"lxvw4x		36, %8, %2			    \n\t"
-	"lxvw4x		37, %9, %2			    \n\t"
-	"lxvw4x		38, %10, %2			    \n\t"
-	"lxvw4x		39, %11, %2			    \n\t"
+       "addi		%4, %4, 128	\n\t"
 
-	"addi		%2, %2, 128			    \n\t"
+       "addic.		%2, %2, -32	\n\t"
+       "bgt		1b		\n"
 
-	"lxvw4x		48, 0, %1			    \n\t"
-	"lxvw4x		49, %5, %1			    \n\t"
-	"lxvw4x		50, %6, %1			    \n\t"
-	"lxvw4x		51, %7, %1			    \n\t"
-	"lxvw4x		52, %8, %1			    \n\t"
-	"lxvw4x		53, %9, %1			    \n\t"
-	"lxvw4x		54, %10, %1			    \n\t"
-	"lxvw4x		55, %11, %1			    \n\t"
-
-	"addi		%1, %1, 128			    \n\t"
-
-	"stxvw4x		32, 0, %3			    \n\t"
-	"stxvw4x		33, %5, %3			    \n\t"
-	"stxvw4x		34, %6, %3			    \n\t"
-	"stxvw4x		35, %7, %3			    \n\t"
-	"stxvw4x		36, %8, %3			    \n\t"
-	"stxvw4x		37, %9, %3			    \n\t"
-	"stxvw4x		38, %10, %3			    \n\t"
-	"stxvw4x		39, %11, %3			    \n\t"
-
-	"addi		%3, %3, 128			    \n\t"
-
-	"stxvw4x		48, 0, %4			    \n\t"
-	"stxvw4x		49, %5, %4			    \n\t"
-	"stxvw4x		50, %6, %4			    \n\t"
-	"stxvw4x		51, %7, %4			    \n\t"
-	"stxvw4x		52, %8, %4			    \n\t"
-	"stxvw4x		53, %9, %4			    \n\t"
-	"stxvw4x		54, %10, %4			    \n\t"
-	"stxvw4x		55, %11, %4			    \n\t"
-
-	"addi		%4, %4, 128			    \n\t"
-
-	"addic.		%0 , %0	, -32  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
-
-	"2:						     \n\t"
-
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (y1),  	// 1
-          "r" (x1),     // 2
-          "r" (y2),     // 3
-          "r" (x2),     // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-          "r" (o64),    // 8
-          "r" (o80),    // 9
-          "r" (o96),    // 10
-          "r" (o112)    // 11
-	: "cr0", "%0", "%2" , "%1", "%3", "%4", "memory"
-	);
-
-} 
-
-
+     "#n=%2 x=%0=%3 y=%1=%4 o16=%5 o32=%6 o48=%7 o64=%8 o80=%9 o96=%10 o112=%11"
+     :
+       "+m" (*x),
+       "+m" (*y),
+       "+r" (n),	// 2
+       "+b" (x),	// 3
+       "+b" (y)		// 4
+     :
+       "b" (16),	// 5
+       "b" (32),	// 6
+       "b" (48),	// 7
+       "b" (64),	// 8
+       "b" (80),	// 9
+       "b" (96),	// 10
+       "b" (112)	// 11
+     :
+       "cr0",
+       "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",
+       "vs40","vs41","vs42","vs43","vs44","vs45","vs46","vs47"
+     );
+}

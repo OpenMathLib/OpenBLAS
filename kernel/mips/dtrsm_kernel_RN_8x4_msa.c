@@ -28,7 +28,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "macros_msa.h"
 
-static void dsolve_8x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
+static __attribute__ ((noinline))
+void dsolve_8x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
 {
     v2f64 src_c0, src_c1, src_c2, src_c3, src_c4, src_c5, src_c6, src_c7;
     v2f64 src_c8, src_c9, src_c10, src_c11, src_c12, src_c13, src_c14, src_c15;
@@ -45,20 +46,29 @@ static void dsolve_8x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
 
     if (bk)
     {
-        BLASLONG i;
-        v2f64 src_a0, src_a1, src_a2, src_a3, src_a4, src_a5, src_a6, src_a7;
-        v2f64 src_b;
+        BLASLONG i, pref_offset;
+        FLOAT *pa0_pref;
+        v2f64 src_a0, src_a1, src_a2, src_a3, src_b;
 
-        LD_DP4(a, 2, src_a0, src_a1, src_a2, src_a3);
-        LD_DP2(b, 2, src_b0, src_b1);
+        pref_offset = (uintptr_t)a & (L1_DATA_LINESIZE - 1);
 
-        for (i = (bk - 1); i--;)
+        if (pref_offset)
         {
-            a += 8;
-            b += 4;
+            pref_offset = L1_DATA_LINESIZE - pref_offset;
+            pref_offset = pref_offset / sizeof(FLOAT);
+        }
 
-            LD_DP4(a, 2, src_a4, src_a5, src_a6, src_a7);
-            LD_DP2(b, 2, src_b2, src_b3);
+        pa0_pref = a + pref_offset;
+
+        for (i = (bk >> 1); i--;)
+        {
+            PREF_OFFSET(pa0_pref, 128);
+            PREF_OFFSET(pa0_pref, 160);
+            PREF_OFFSET(pa0_pref, 192);
+            PREF_OFFSET(pa0_pref, 224);
+
+            LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
+            LD_DP2_INC(b, 2, src_b0, src_b1);
 
             src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
             src_c0 -= src_a0 * src_b;
@@ -84,40 +94,65 @@ static void dsolve_8x4_rn_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
             src_c14 -= src_a2 * src_b;
             src_c15 -= src_a3 * src_b;
 
-            src_a0 = src_a4;
-            src_a1 = src_a5;
-            src_a2 = src_a6;
-            src_a3 = src_a7;
-            src_b0 = src_b2;
-            src_b1 = src_b3;
+            LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
+            LD_DP2_INC(b, 2, src_b0, src_b1);
+
+            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+            src_c0 -= src_a0 * src_b;
+            src_c1 -= src_a1 * src_b;
+            src_c2 -= src_a2 * src_b;
+            src_c3 -= src_a3 * src_b;
+
+            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+            src_c4 -= src_a0 * src_b;
+            src_c5 -= src_a1 * src_b;
+            src_c6 -= src_a2 * src_b;
+            src_c7 -= src_a3 * src_b;
+
+            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+            src_c8  -= src_a0 * src_b;
+            src_c9  -= src_a1 * src_b;
+            src_c10 -= src_a2 * src_b;
+            src_c11 -= src_a3 * src_b;
+
+            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+            src_c12 -= src_a0 * src_b;
+            src_c13 -= src_a1 * src_b;
+            src_c14 -= src_a2 * src_b;
+            src_c15 -= src_a3 * src_b;
+
+            pa0_pref += 16;
         }
 
-        src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
-        src_c0 -= src_a0 * src_b;
-        src_c1 -= src_a1 * src_b;
-        src_c2 -= src_a2 * src_b;
-        src_c3 -= src_a3 * src_b;
+        if (bk & 1)
+        {
+            LD_DP4_INC(a, 2, src_a0, src_a1, src_a2, src_a3);
+            LD_DP2_INC(b, 2, src_b0, src_b1);
 
-        src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
-        src_c4 -= src_a0 * src_b;
-        src_c5 -= src_a1 * src_b;
-        src_c6 -= src_a2 * src_b;
-        src_c7 -= src_a3 * src_b;
+            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b0, (v2i64) src_b0);
+            src_c0 -= src_a0 * src_b;
+            src_c1 -= src_a1 * src_b;
+            src_c2 -= src_a2 * src_b;
+            src_c3 -= src_a3 * src_b;
 
-        src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
-        src_c8  -= src_a0 * src_b;
-        src_c9  -= src_a1 * src_b;
-        src_c10 -= src_a2 * src_b;
-        src_c11 -= src_a3 * src_b;
+            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b0, (v2i64) src_b0);
+            src_c4 -= src_a0 * src_b;
+            src_c5 -= src_a1 * src_b;
+            src_c6 -= src_a2 * src_b;
+            src_c7 -= src_a3 * src_b;
 
-        src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
-        src_c12 -= src_a0 * src_b;
-        src_c13 -= src_a1 * src_b;
-        src_c14 -= src_a2 * src_b;
-        src_c15 -= src_a3 * src_b;
+            src_b = (v2f64) __msa_ilvr_d((v2i64) src_b1, (v2i64) src_b1);
+            src_c8  -= src_a0 * src_b;
+            src_c9  -= src_a1 * src_b;
+            src_c10 -= src_a2 * src_b;
+            src_c11 -= src_a3 * src_b;
 
-        a += 8;
-        b += 4;
+            src_b = (v2f64) __msa_ilvl_d((v2i64) src_b1, (v2i64) src_b1);
+            src_c12 -= src_a0 * src_b;
+            src_c13 -= src_a1 * src_b;
+            src_c14 -= src_a2 * src_b;
+            src_c15 -= src_a3 * src_b;
+        }
     }
 
     src_b0 = LD_DP(b + 0);

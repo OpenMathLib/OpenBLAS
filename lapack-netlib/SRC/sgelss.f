@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGELSS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgelss.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgelss.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgelss.f"> 
+*> Download SGELSS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgelss.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgelss.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgelss.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
 *       REAL               RCOND
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), B( LDB, * ), S( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -159,12 +159,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup realGEsolve
 *
@@ -172,10 +172,10 @@
       SUBROUTINE SGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -197,7 +197,7 @@
      $                   ITAU, ITAUP, ITAUQ, IWORK, LDWORK, MAXMN,
      $                   MAXWRK, MINMN, MINWRK, MM, MNTHR
       INTEGER            LWORK_SGEQRF, LWORK_SORMQR, LWORK_SGEBRD,
-     $                   LWORK_SORMBR, LWORK_SORGBR, LWORK_SORMLQ 
+     $                   LWORK_SORMBR, LWORK_SORGBR, LWORK_SORMLQ
       REAL               ANRM, BIGNUM, BNRM, EPS, SFMIN, SMLNUM, THR
 *     ..
 *     .. Local Arrays ..
@@ -284,7 +284,7 @@
                CALL SORGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
                LWORK_SORGBR=DUM(1)
-*              Compute total workspace needed 
+*              Compute total workspace needed
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_SGEBRD )
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_SORMBR )
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_SORGBR )
@@ -309,7 +309,7 @@
      $                      DUM(1), DUM(1), -1, INFO )
                   LWORK_SGEBRD=DUM(1)
 *                 Compute space needed for SORMBR
-                  CALL SORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA, 
+                  CALL SORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
                   LWORK_SORMBR=DUM(1)
 *                 Compute space needed for SORGBR
@@ -320,7 +320,7 @@
                   CALL SORMLQ( 'L', 'T', N, NRHS, M, A, LDA, DUM(1),
      $                 B, LDB, DUM(1), -1, INFO )
                   LWORK_SORMLQ=DUM(1)
-*                 Compute total workspace needed 
+*                 Compute total workspace needed
                   MAXWRK = M + M*ILAENV( 1, 'SGELQF', ' ', M, N, -1,
      $                                  -1 )
                   MAXWRK = MAX( MAXWRK, M*M + 4*M + LWORK_SGEBRD )
@@ -342,7 +342,7 @@
      $                      DUM(1), DUM(1), -1, INFO )
                   LWORK_SGEBRD=DUM(1)
 *                 Compute space needed for SORMBR
-                  CALL SORMBR( 'Q', 'L', 'T', M, NRHS, M, A, LDA, 
+                  CALL SORMBR( 'Q', 'L', 'T', M, NRHS, M, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
                   LWORK_SORMBR=DUM(1)
 *                 Compute space needed for SORGBR

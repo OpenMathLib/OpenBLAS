@@ -28,15 +28,15 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function cgesvdx
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_cgesvdx( int matrix_layout, char jobu, char jobvt, char range,
                            lapack_int m, lapack_int n, lapack_complex_float* a,
-                           lapack_int lda, lapack_int vl, lapack_int vu,
-                           lapack_int il, lapack_int iu, lapack_int ns,
+                           lapack_int lda, float vl, float vu,
+                           lapack_int il, lapack_int iu, lapack_int* ns,
                            float* s, lapack_complex_float* u, lapack_int ldu,
                            lapack_complex_float* vt, lapack_int ldvt,
                            lapack_int* superb )
@@ -44,9 +44,9 @@ lapack_int LAPACKE_cgesvdx( int matrix_layout, char jobu, char jobvt, char range
     lapack_int info = 0;
     lapack_int lwork = -1;
     lapack_complex_float* work = NULL;
-    lapack_complex_float work_query;    
+    lapack_complex_float work_query;
     float* rwork = NULL;
-    lapack_int lrwork = MIN(m,n)*(MIN(m,n)*2+15*MIN(m,n));
+    lapack_int lrwork = MAX(1, MIN(m,n)*(MIN(m,n)*2+15*MIN(m,n)));
     lapack_int* iwork = NULL;
     lapack_int i;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
@@ -68,18 +68,18 @@ lapack_int LAPACKE_cgesvdx( int matrix_layout, char jobu, char jobvt, char range
     }
     lwork = LAPACK_C2INT (work_query);
     /* Allocate memory for work arrays */
-    rwork = (float*)LAPACKE_malloc( sizeof(float) * lwork );
-    if( work == NULL ) {
-        info = LAPACK_WORK_MEMORY_ERROR;
-        goto exit_level_0;
-    }
     work = (lapack_complex_float*)
-    	LAPACKE_malloc( sizeof(lapack_complex_float) * lrwork );
+    	LAPACKE_malloc( sizeof(lapack_complex_float) * lwork );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_1;
     }
-    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * (12*MIN(m,n)) );
+    rwork = (float*)LAPACKE_malloc( sizeof(float) * lrwork );
+    if( rwork == NULL ) {
+        info = LAPACK_WORK_MEMORY_ERROR;
+        goto exit_level_0;
+    }
+    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * MAX(1,(12*MIN(m,n))) );
     if( iwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_2;

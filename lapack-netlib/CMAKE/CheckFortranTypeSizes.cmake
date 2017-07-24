@@ -3,12 +3,12 @@
 #
 # After execution, the following variables are set.  If they are un set then
 # size detection was not possible
-# 
+#
 # SIZEOF_INTEGER   - Number of bytes used to store the default INTEGER type
 # SIZEOF_REAL      - Number of bytes used to store the default REAL type
 # SIZEOF_LOGICAL   - Number of bytes used to store the default LOGICAL type
 # SIZEOF_CHARACTER - Number of bytes used to store the default CHARACTER type
-#  
+#
 #=============================================================================
 # Author: Chuck Atkins
 # Copyright 2011
@@ -18,8 +18,8 @@
 macro( _CHECK_FORTRAN_TYPE_SIZE _TYPE_NAME _TEST_SIZES )
 
   foreach( __TEST_SIZE ${_TEST_SIZES} )
-    set( __TEST_FILE ${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortran${_TYPE_NAME}Size${__TEST_SIZE}.f90 )
-    file( WRITE ${__TEST_FILE} 
+    set( __TEST_FILE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortran${_TYPE_NAME}Size${__TEST_SIZE}.f90 )
+    file( WRITE ${__TEST_FILE}
 "
        PROGRAM check_size
          ${_TYPE_NAME}*${__TEST_SIZE}, TARGET :: a
@@ -27,7 +27,7 @@ macro( _CHECK_FORTRAN_TYPE_SIZE _TYPE_NAME _TEST_SIZES )
          pa => a
        END PROGRAM
 ")
-    try_compile( SIZEOF_${_TYPE_NAME} ${PROJECT_BINARY_DIR} ${__TEST_FILE} )
+    try_compile( SIZEOF_${_TYPE_NAME} ${CMAKE_BINARY_DIR} ${__TEST_FILE} )
     if( SIZEOF_${_TYPE_NAME} )
       message( STATUS "Testing default ${_TYPE_NAME}*${__TEST_SIZE} - found" )
       set( SIZEOF_${_TYPE_NAME} ${__TEST_SIZE} CACHE INTERNAL "Size of the default ${_TYPE_NAME} type" FORCE )

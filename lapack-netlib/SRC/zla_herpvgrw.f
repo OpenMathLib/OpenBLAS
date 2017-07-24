@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZLA_HERPVGRW + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_herpvgrw.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_herpvgrw.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_herpvgrw.f"> 
+*> Download ZLA_HERPVGRW + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zla_herpvgrw.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zla_herpvgrw.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zla_herpvgrw.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       DOUBLE PRECISION FUNCTION ZLA_HERPVGRW( UPLO, N, INFO, A, LDA, AF,
 *                                               LDAF, IPIV, WORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*1        UPLO
 *       INTEGER            N, INFO, LDA, LDAF
@@ -30,14 +30,14 @@
 *       COMPLEX*16         A( LDA, * ), AF( LDAF, * )
 *       DOUBLE PRECISION   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> 
+*>
 *> ZLA_HERPVGRW computes the reciprocal pivot growth factor
 *> norm(A)/norm(U). The "max absolute element" norm is used. If this is
 *> much less than 1, the stability of the LU factorization of the
@@ -104,18 +104,18 @@
 *>
 *> \param[in] WORK
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension (2*N)
+*>          WORK is DOUBLE PRECISION array, dimension (2*N)
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16HEcomputational
 *
@@ -123,10 +123,10 @@
       DOUBLE PRECISION FUNCTION ZLA_HERPVGRW( UPLO, N, INFO, A, LDA, AF,
      $                                        LDAF, IPIV, WORK )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*1        UPLO
@@ -147,7 +147,7 @@
       COMPLEX*16         ZDUM
 *     ..
 *     .. External Functions ..
-      EXTERNAL           LSAME, ZLASET
+      EXTERNAL           LSAME
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, DIMAG, MAX, MIN

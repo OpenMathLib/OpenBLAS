@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CBBCSD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cbbcsd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cbbcsd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cbbcsd.f"> 
+*> Download CBBCSD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cbbcsd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cbbcsd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cbbcsd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          THETA, PHI, U1, LDU1, U2, LDU2, V1T, LDV1T,
 *                          V2T, LDV2T, B11D, B11E, B12D, B12E, B21D, B21E,
 *                          B22D, B22E, RWORK, LRWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS
 *       INTEGER            INFO, LDU1, LDU2, LDV1T, LDV2T, LRWORK, M, P, Q
@@ -34,7 +34,7 @@
 *       COMPLEX            U1( LDU1, * ), U2( LDU2, * ), V1T( LDV1T, * ),
 *      $                   V2T( LDV2T, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -149,7 +149,7 @@
 *> \param[in,out] U1
 *> \verbatim
 *>          U1 is COMPLEX array, dimension (LDU1,P)
-*>          On entry, an LDU1-by-P matrix. On exit, U1 is postmultiplied
+*>          On entry, a P-by-P matrix. On exit, U1 is postmultiplied
 *>          by the left singular vector matrix common to [ B11 ; 0 ] and
 *>          [ B12 0 0 ; 0 -I 0 0 ].
 *> \endverbatim
@@ -157,13 +157,13 @@
 *> \param[in] LDU1
 *> \verbatim
 *>          LDU1 is INTEGER
-*>          The leading dimension of the array U1.
+*>          The leading dimension of the array U1, LDU1 >= MAX(1,P).
 *> \endverbatim
 *>
 *> \param[in,out] U2
 *> \verbatim
 *>          U2 is COMPLEX array, dimension (LDU2,M-P)
-*>          On entry, an LDU2-by-(M-P) matrix. On exit, U2 is
+*>          On entry, an (M-P)-by-(M-P) matrix. On exit, U2 is
 *>          postmultiplied by the left singular vector matrix common to
 *>          [ B21 ; 0 ] and [ B22 0 0 ; 0 0 I ].
 *> \endverbatim
@@ -171,13 +171,13 @@
 *> \param[in] LDU2
 *> \verbatim
 *>          LDU2 is INTEGER
-*>          The leading dimension of the array U2.
+*>          The leading dimension of the array U2, LDU2 >= MAX(1,M-P).
 *> \endverbatim
 *>
 *> \param[in,out] V1T
 *> \verbatim
 *>          V1T is COMPLEX array, dimension (LDV1T,Q)
-*>          On entry, a LDV1T-by-Q matrix. On exit, V1T is premultiplied
+*>          On entry, a Q-by-Q matrix. On exit, V1T is premultiplied
 *>          by the conjugate transpose of the right singular vector
 *>          matrix common to [ B11 ; 0 ] and [ B21 ; 0 ].
 *> \endverbatim
@@ -185,13 +185,13 @@
 *> \param[in] LDV1T
 *> \verbatim
 *>          LDV1T is INTEGER
-*>          The leading dimension of the array V1T.
+*>          The leading dimension of the array V1T, LDV1T >= MAX(1,Q).
 *> \endverbatim
 *>
 *> \param[in,out] V2T
 *> \verbatim
 *>          V2T is COMPLEX array, dimenison (LDV2T,M-Q)
-*>          On entry, a LDV2T-by-(M-Q) matrix. On exit, V2T is
+*>          On entry, an (M-Q)-by-(M-Q) matrix. On exit, V2T is
 *>          premultiplied by the conjugate transpose of the right
 *>          singular vector matrix common to [ B12 0 0 ; 0 -I 0 ] and
 *>          [ B22 0 0 ; 0 0 I ].
@@ -200,7 +200,7 @@
 *> \param[in] LDV2T
 *> \verbatim
 *>          LDV2T is INTEGER
-*>          The leading dimension of the array V2T.
+*>          The leading dimension of the array V2T, LDV2T >= MAX(1,M-Q).
 *> \endverbatim
 *>
 *> \param[out] B11D
@@ -273,8 +273,8 @@
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is REAL array, dimension (MAX(1,LWORK))
-*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*>          RWORK is REAL array, dimension (MAX(1,LRWORK))
+*>          On exit, if INFO = 0, RWORK(1) returns the optimal LRWORK.
 *> \endverbatim
 *>
 *> \param[in] LRWORK
@@ -317,12 +317,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date June 2016
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -332,10 +332,10 @@
      $                   V2T, LDV2T, B11D, B11E, B12D, B12E, B21D, B21E,
      $                   B22D, B22E, RWORK, LRWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS

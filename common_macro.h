@@ -2193,7 +2193,7 @@
 #endif
 
 #ifndef ASSEMBLER
-#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
 extern BLASLONG gemm_offset_a;
 extern BLASLONG gemm_offset_b;
 extern BLASLONG sgemm_p;

@@ -1,5 +1,5 @@
 include ../../make.inc
- 
+
 #######################################################################
 #  This makefile creates the test programs for the BLAS 1 routines.
 #  The test files are grouped as follows:
@@ -28,15 +28,12 @@ include ../../make.inc
 #
 #######################################################################
 
-SBLAT1 = sblat1.o 
-
-CBLAT1 = cblat1.o 
-
-DBLAT1 = dblat1.o 
-
+SBLAT1 = sblat1.o
+CBLAT1 = cblat1.o
+DBLAT1 = dblat1.o
 ZBLAT1 = zblat1.o
 
-all:  single double complex complex16
+all: single double complex complex16
 
 single: ../xblat1s
 double: ../xblat1d
@@ -44,31 +41,27 @@ complex: ../xblat1c
 complex16: ../xblat1z
 
 ../xblat1s: $(SBLAT1)
-	$(LOADER) $(LOADOPTS) $(SBLAT1) \
-        $(BLASLIB)  -o ../xblat1s
+	$(LOADER) $(LOADOPTS) -o $@ $(SBLAT1) $(BLASLIB)
 
-../xblat1c: $(CBLAT1) 
-	$(LOADER) $(LOADOPTS) $(CBLAT1) \
-        $(BLASLIB)  -o ../xblat1c
- 
-../xblat1d: $(DBLAT1) 
-	$(LOADER) $(LOADOPTS) $(DBLAT1) \
-        $(BLASLIB)  -o ../xblat1d
- 
-../xblat1z: $(ZBLAT1) 
-	$(LOADER) $(LOADOPTS) $(ZBLAT1) \
-        $(BLASLIB)  -o ../xblat1z
- 
+../xblat1c: $(CBLAT1)
+	$(LOADER) $(LOADOPTS) -o $@ $(CBLAT1) $(BLASLIB)
+
+../xblat1d: $(DBLAT1)
+	$(LOADER) $(LOADOPTS) -o $@ $(DBLAT1) $(BLASLIB)
+
+../xblat1z: $(ZBLAT1)
+	$(LOADER) $(LOADOPTS) -o $@ $(ZBLAT1) $(BLASLIB)
+
 $(SBLAT1): $(FRC)
 $(CBLAT1): $(FRC)
 $(DBLAT1): $(FRC)
 $(ZBLAT1): $(FRC)
- 
+
 FRC:
 	@FRC=$(FRC)
- 
+
 clean:
 	rm -f *.o
- 
-.f.o: 
-	$(FORTRAN) $(OPTS) -c $< -o $@
+
+.f.o:
+	$(FORTRAN) $(OPTS) -c -o $@ $<

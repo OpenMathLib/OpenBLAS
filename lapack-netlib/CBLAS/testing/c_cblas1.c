@@ -15,21 +15,21 @@ void F77_caxpy(const int *N, const void *alpha, void *X,
    return;
 }
 
-void F77_ccopy(const int *N, void *X, const int *incX, 
+void F77_ccopy(const int *N, void *X, const int *incX,
                     void *Y, const int *incY)
 {
    cblas_ccopy(*N, X, *incX, Y, *incY);
    return;
 }
 
-void F77_cdotc(const int *N, void *X, const int *incX, 
+void F77_cdotc(const int *N, void *X, const int *incX,
                         void *Y, const int *incY, void *dotc)
 {
    cblas_cdotc_sub(*N, X, *incX, Y, *incY, dotc);
    return;
 }
 
-void F77_cdotu(const int *N, void *X, const int *incX, 
+void F77_cdotu(const int *N, void *X, const int *incX,
                         void *Y, const int *incY,void *dotu)
 {
    cblas_cdotu_sub(*N, X, *incX, Y, *incY, dotu);

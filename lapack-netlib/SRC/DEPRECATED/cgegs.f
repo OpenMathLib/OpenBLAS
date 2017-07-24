@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CGEGS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgegs.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgegs.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgegs.f"> 
+*> Download CGEGS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgegs.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/cgegs.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgegs.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE CGEGS( JOBVSL, JOBVSR, N, A, LDA, B, LDB, ALPHA, BETA,
 *                         VSL, LDVSL, VSR, LDVSR, WORK, LWORK, RWORK,
 *                         INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBVSL, JOBVSR
 *       INTEGER            INFO, LDA, LDB, LDVSL, LDVSR, LWORK, N
@@ -32,7 +32,7 @@
 *      $                   BETA( * ), VSL( LDVSL, * ), VSR( LDVSR, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -45,13 +45,13 @@
 *> left and or/right Schur vectors of a complex matrix pair (A,B).
 *> Given two square matrices A and B, the generalized Schur
 *> factorization has the form
-*> 
+*>
 *>    A = Q*S*Z**H,  B = Q*T*Z**H
-*> 
+*>
 *> where Q and Z are unitary matrices and S and T are upper triangular.
 *> The columns of Q are the left Schur vectors
 *> and the columns of Z are the right Schur vectors.
-*> 
+*>
 *> If only the eigenvalues of (A,B) are needed, the driver routine
 *> CGEGV should be used instead.  See CGEGV for a description of the
 *> eigenvalues of the generalized nonsymmetric eigenvalue problem
@@ -211,12 +211,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complexGEeigen
 *
@@ -225,10 +225,10 @@
      $                  VSL, LDVSL, VSR, LDVSR, WORK, LWORK, RWORK,
      $                  INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVSL, JOBVSR

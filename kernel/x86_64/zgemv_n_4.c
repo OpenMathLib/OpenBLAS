@@ -30,7 +30,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(HASWELL)
+#if defined(HASWELL) || defined(ZEN)
 #include "zgemv_n_microk_haswell-4.c"
 #elif defined(SANDYBRIDGE)
 #include "zgemv_n_microk_sandy-4.c"

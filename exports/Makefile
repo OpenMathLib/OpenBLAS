@@ -118,9 +118,15 @@ endif
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<
 
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android))
 
 so : ../$(LIBSONAME)
+
+ifeq ($(OSNAME), Android)
+INTERNALNAME = $(LIBPREFIX).so
+else
+INTERNALNAME = $(LIBPREFIX).so.$(MAJOR_VERSION)
+endif
 
 ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
 ../$(LIBSONAME) : ../$(LIBNAME) linktest.c
@@ -132,13 +138,13 @@ endif
 ifneq ($(C_COMPILER), LSB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive $< -Wl,--no-whole-archive \
-	-Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
+	-Wl,-soname,$(INTERNALNAME) $(EXTRALIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 else
 #for LSB
 	env LSBCC_SHAREDLIBS=gfortran $(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive $< -Wl,--no-whole-archive \
-	-Wl,-soname,$(LIBPREFIX).so.$(MAJOR_VERSION) $(EXTRALIB)
+	-Wl,-soname,$(INTERNALNAME) $(EXTRALIB)
 	$(FC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
 endif
 	rm -f linktest

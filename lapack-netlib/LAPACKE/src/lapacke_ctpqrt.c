@@ -28,14 +28,14 @@
 ******************************************************************************
 * Contents: Native high-level C interface to LAPACK function ctpqrt
 * Author: Intel Corporation
-* Generated November 2015
+* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_ctpqrt( int matrix_layout, lapack_int m, lapack_int n,
-                           lapack_int l, lapack_int nb, 
-                           lapack_complex_float* a, lapack_int lda, 
+                           lapack_int l, lapack_int nb,
+                           lapack_complex_float* a, lapack_int lda,
                            lapack_complex_float* b, lapack_int ldb,
                            lapack_complex_float* t, lapack_int ldt )
 {

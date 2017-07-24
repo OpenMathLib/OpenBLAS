@@ -12,6 +12,8 @@ if (SMP)
     set(BLAS_SERVER blas_server_omp.c)
   elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(BLAS_SERVER blas_server_win32.c)
+  elseif (${CMAKE_SYSTEM_NAME} STREQUAL "WindowsStore")
+    set(BLAS_SERVER blas_server_win32.c)
   endif ()
 
   if (NOT DEFINED BLAS_SERVER)

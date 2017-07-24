@@ -364,14 +364,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         tp0i = tp1i = tp2i = tp3i = zero;            \
                                                      \
         k = 0;                                       \
+        k_pref = pref_offset;                        \
         x = srcx_org;                                \
                                                      \
         for (i = (m >> 3); i--;)                     \
         {                                            \
+            PREFETCH(pa0 + k_pref + 16 + 0);         \
+            PREFETCH(pa0 + k_pref + 16 + 8);         \
+            PREFETCH(pa1 + k_pref + 16 + 0);         \
+            PREFETCH(pa1 + k_pref + 16 + 8);         \
+            PREFETCH(pa2 + k_pref + 16 + 0);         \
+            PREFETCH(pa2 + k_pref + 16 + 8);         \
+            PREFETCH(pa3 + k_pref + 16 + 0);         \
+            PREFETCH(pa3 + k_pref + 16 + 8);         \
+                                                     \
             CLOAD_X8()                               \
             CGEMV_T_8x4();                           \
                                                      \
             k += 2 * 8;                              \
+            k_pref += 2 * 8;                         \
             x += inc_x2 * 8;                         \
         }                                            \
                                                      \
@@ -531,7 +542,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alphar, FLOAT alphai,
           FLOAT *A, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y,
           BLASLONG inc_y, FLOAT *buffer)
 {
-    BLASLONG i, j, k;
+    BLASLONG i, j, k, k_pref, pref_offset;
     FLOAT *pa0, *pa1, *pa2, *pa3;
     FLOAT *srcx_org = x;
     FLOAT temp0r, temp0i, temp2r, temp2i, temp1r, temp1i, temp3r, temp3i;
@@ -545,6 +556,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alphar, FLOAT alphai,
     v4f32 tp0r, tp1r, tp2r, tp3r, tp0i, tp1i, tp2i, tp3i;
 
     lda2 = 2 * lda;
+
+    pref_offset = (uintptr_t)A & (L1_DATA_LINESIZE - 1);
+    pref_offset = L1_DATA_LINESIZE - pref_offset;
+    pref_offset = pref_offset / sizeof(FLOAT);
 
     pa0 = A;
     pa1 = A + lda2;

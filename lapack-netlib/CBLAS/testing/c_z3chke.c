@@ -30,7 +30,7 @@ void  F77_z3chke(char *  rout) {
            B[4]     = {0.0,0.0,0.0,0.0},
            C[4]     = {0.0,0.0,0.0,0.0},
            ALPHA[2] = {0.0,0.0},
-           BETA[2]  = {0.0,0.0}, 
+           BETA[2]  = {0.0,0.0},
            RALPHA   = 0.0, RBETA = 0.0;
    extern int cblas_info, cblas_lerr, cblas_ok;
    extern int RowMajorStrg;
@@ -49,15 +49,15 @@ void  F77_z3chke(char *  rout) {
       cblas_rout = "cblas_zgemm"   ;
 
       cblas_info = 1;
-      cblas_zgemm( INVALID,  CblasNoTrans, CblasNoTrans, 0, 0, 0, 
+      cblas_zgemm( INVALID,  CblasNoTrans, CblasNoTrans, 0, 0, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
       cblas_info = 1;
-      cblas_zgemm( INVALID,  CblasNoTrans, CblasTrans, 0, 0, 0, 
+      cblas_zgemm( INVALID,  CblasNoTrans, CblasTrans, 0, 0, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
       cblas_info = 1;
-      cblas_zgemm( INVALID,  CblasTrans, CblasNoTrans, 0, 0, 0, 
+      cblas_zgemm( INVALID,  CblasTrans, CblasNoTrans, 0, 0, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
       cblas_info = 1;
@@ -272,7 +272,7 @@ void  F77_z3chke(char *  rout) {
       cblas_zgemm( CblasRowMajor,  CblasTrans, CblasTrans, 0, 2, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
-              
+
    } else if (strncmp( sf,"cblas_zhemm"   ,11)==0) {
             cblas_rout = "cblas_zhemm"   ;
 
@@ -1696,7 +1696,7 @@ void  F77_z3chke(char *  rout) {
       cblas_zsyr2k(CblasColMajor,  CblasLower, CblasTrans, 2, 0,
                    ALPHA, A, 1, B, 1, BETA, C, 1 );
       chkxer();
- 
+
    }
 
    if (cblas_ok == 1 )

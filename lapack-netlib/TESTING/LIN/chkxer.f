@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            LERR, OK
 *       CHARACTER*(*)      SRNAMT
@@ -26,12 +26,12 @@
 *       END IF
 *       LERR = .FALSE.
 *       RETURN
-*  
+*
 *  9999 FORMAT( ' *** Illegal value of parameter number ', I2,
 *      $      ' not detected by ', A6, ' ***' )
-*  
+*
 *       End of CHKXER.
-*  
+*
 *       END
 *
 *> \par Purpose:
@@ -47,12 +47,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
@@ -62,7 +62,7 @@
 *  -- LAPACK test routine (input) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            LERR, OK

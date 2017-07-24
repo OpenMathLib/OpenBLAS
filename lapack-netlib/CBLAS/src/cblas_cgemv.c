@@ -1,7 +1,7 @@
 /*
  * cblas_cgemv.c
  * The program is a C interface of cgemv
- * 
+ *
  * Keita Teranishi  5/20/98
  *
  */
@@ -19,7 +19,7 @@ void cblas_cgemv(const CBLAS_LAYOUT layout,
 #ifdef F77_CHAR
    F77_CHAR F77_TA;
 #else
-   #define F77_TA &TA   
+   #define F77_TA &TA
 #endif
 #ifdef F77_INT
    F77_INT F77_M=M, F77_N=N, F77_lda=lda, F77_incX=incX, F77_incY=incY;
@@ -48,7 +48,7 @@ void cblas_cgemv(const CBLAS_LAYOUT layout,
       if (TransA == CblasNoTrans) TA = 'N';
       else if (TransA == CblasTrans) TA = 'T';
       else if (TransA == CblasConjTrans) TA = 'C';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_cgemv","Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -58,13 +58,13 @@ void cblas_cgemv(const CBLAS_LAYOUT layout,
       #ifdef F77_CHAR
          F77_TA = C2F_CHAR(&TA);
       #endif
-      F77_cgemv(F77_TA, &F77_M, &F77_N, alpha, A, &F77_lda, X, &F77_incX, 
+      F77_cgemv(F77_TA, &F77_M, &F77_N, alpha, A, &F77_lda, X, &F77_incX,
                 beta, Y, &F77_incY);
    }
    else if (layout == CblasRowMajor)
    {
       RowMajorStrg = 1;
-         
+
       if (TransA == CblasNoTrans) TA = 'T';
       else if (TransA == CblasTrans) TA = 'N';
       else if (TransA == CblasConjTrans)
@@ -83,11 +83,11 @@ void cblas_cgemv(const CBLAS_LAYOUT layout,
                i = incX << 1 ;
                tincx = 2;
                st= x+n;
-            } else { 
+            } else {
                i = incX *(-2);
                tincx = -2;
-               st = x-2; 
-               x +=(n-2); 
+               st = x-2;
+               x +=(n-2);
             }
 
             do
@@ -103,9 +103,9 @@ void cblas_cgemv(const CBLAS_LAYOUT layout,
             F77_incX = 1;
 
             if(incY > 0)
-               tincY = incY; 
+               tincY = incY;
             else
-               tincY = -incY; 
+               tincY = -incY;
 
             y++;
 
@@ -117,14 +117,14 @@ void cblas_cgemv(const CBLAS_LAYOUT layout,
                do {
                   *y = -(*y);
                   y += i;
-               } while(y != st); 
+               } while(y != st);
                y -= n;
             }
             stx = x;
          }
          else stx = (const float *)X;
       }
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_cgemv","Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;

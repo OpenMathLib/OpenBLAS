@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGSVJ0 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgsvj0.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgsvj0.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgsvj0.f"> 
+*> Download DGSVJ0 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgsvj0.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgsvj0.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgsvj0.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
 *                          SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, NSWEEP
 *       DOUBLE PRECISION   EPS, SFMIN, TOL
@@ -30,7 +30,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), SVA( N ), D( N ), V( LDV, * ),
 *      $                   WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -188,12 +188,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -218,10 +218,10 @@
       SUBROUTINE DGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
      $                   SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, NSWEEP
@@ -280,7 +280,7 @@
          INFO = -5
       ELSE IF( ( RSVEC.OR.APPLV ) .AND. ( MV.LT.0 ) ) THEN
          INFO = -8
-      ELSE IF( ( RSVEC.AND.( LDV.LT.N ) ).OR. 
+      ELSE IF( ( RSVEC.AND.( LDV.LT.N ) ).OR.
      $         ( APPLV.AND.( LDV.LT.MV ) ) ) THEN
          INFO = -10
       ELSE IF( TOL.LE.EPS ) THEN
@@ -485,7 +485,7 @@
      $                                              FASTR )
                                     SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( MAX( ZERO, 
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
                                     MXSINJ = MAX( MXSINJ, DABS( T ) )
 *
@@ -800,7 +800,7 @@
                                     MXSINJ = MAX( MXSINJ, DABS( SN ) )
                                     SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( MAX( ZERO, 
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = D( p ) / D( q )

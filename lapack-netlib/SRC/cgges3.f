@@ -269,7 +269,7 @@
      $                   LDB, SDIM, ALPHA, BETA, VSL, LDVSL, VSR, LDVSR,
      $                   WORK, LWORK, RWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.6.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     January 2015
@@ -394,7 +394,7 @@
          LWKOPT = MAX( LWKOPT, N + INT ( WORK( 1 ) ) )
          CALL CHGEQZ( 'S', JOBVSL, JOBVSR, N, 1, N, A, LDA, B, LDB,
      $                ALPHA, BETA, VSL, LDVSL, VSR, LDVSR, WORK, -1,
-     $                WORK, IERR )
+     $                RWORK, IERR )
          LWKOPT = MAX( LWKOPT, INT ( WORK( 1 ) ) )
          IF( WANTST ) THEN
             CALL CTGSEN( 0, ILVSL, ILVSR, BWORK, N, A, LDA, B, LDB,

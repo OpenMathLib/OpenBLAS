@@ -7,4 +7,3 @@ add_executable(secondtst_INT_ETIME second_INT_ETIME.f secondtst.f)
 add_executable(secondtst_INT_CPU_TIME second_INT_CPU_TIME.f secondtst.f)
 add_executable(testieee tstiee.f)
 add_executable(testversion ilaver.f LAPACK_version.f)
-

@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGESVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgesvd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgesvd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgesvd.f"> 
+*> Download ZGESVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgesvd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgesvd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgesvd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT,
 *                          WORK, LWORK, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU, JOBVT
 *       INTEGER            INFO, LDA, LDU, LDVT, LWORK, M, N
@@ -30,7 +30,7 @@
 *       COMPLEX*16         A( LDA, * ), U( LDU, * ), VT( LDVT, * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -201,20 +201,20 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
 *> \ingroup complex16GEsing
 *
 *  =====================================================================
-      SUBROUTINE ZGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, 
+      SUBROUTINE ZGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU,
      $                   VT, LDVT, WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -322,23 +322,23 @@
             MNTHR = ILAENV( 6, 'ZGESVD', JOBU // JOBVT, M, N, 0, 0 )
 *           Compute space needed for ZGEQRF
             CALL ZGEQRF( M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
-            LWORK_ZGEQRF=CDUM(1)
+            LWORK_ZGEQRF = INT( CDUM(1) )
 *           Compute space needed for ZUNGQR
             CALL ZUNGQR( M, N, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
-            LWORK_ZUNGQR_N=CDUM(1)
+            LWORK_ZUNGQR_N = INT( CDUM(1) )
             CALL ZUNGQR( M, M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
-            LWORK_ZUNGQR_M=CDUM(1)
+            LWORK_ZUNGQR_M = INT( CDUM(1) )
 *           Compute space needed for ZGEBRD
             CALL ZGEBRD( N, N, A, LDA, S, DUM(1), CDUM(1),
      $                   CDUM(1), CDUM(1), -1, IERR )
-            LWORK_ZGEBRD=CDUM(1)
+            LWORK_ZGEBRD = INT( CDUM(1) )
 *           Compute space needed for ZUNGBR
             CALL ZUNGBR( 'P', N, N, N, A, LDA, CDUM(1),
      $                   CDUM(1), -1, IERR )
-            LWORK_ZUNGBR_P=CDUM(1)
+            LWORK_ZUNGBR_P = INT( CDUM(1) )
             CALL ZUNGBR( 'Q', N, N, N, A, LDA, CDUM(1),
      $                   CDUM(1), -1, IERR )
-            LWORK_ZUNGBR_Q=CDUM(1)
+            LWORK_ZUNGBR_Q = INT( CDUM(1) )
 *
             IF( M.GE.MNTHR ) THEN
                IF( WNTUN ) THEN
@@ -445,24 +445,24 @@
 *
                CALL ZGEBRD( M, N, A, LDA, S, DUM(1), CDUM(1),
      $                   CDUM(1), CDUM(1), -1, IERR )
-               LWORK_ZGEBRD=CDUM(1)
+               LWORK_ZGEBRD = INT( CDUM(1) )
                MAXWRK = 2*N + LWORK_ZGEBRD
                IF( WNTUS .OR. WNTUO ) THEN
                   CALL ZUNGBR( 'Q', M, N, N, A, LDA, CDUM(1),
      $                   CDUM(1), -1, IERR )
-                  LWORK_ZUNGBR_Q=CDUM(1)
+                  LWORK_ZUNGBR_Q = INT( CDUM(1) )
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_ZUNGBR_Q )
                END IF
                IF( WNTUA ) THEN
                   CALL ZUNGBR( 'Q', M, M, N, A, LDA, CDUM(1),
      $                   CDUM(1), -1, IERR )
-                  LWORK_ZUNGBR_Q=CDUM(1)
+                  LWORK_ZUNGBR_Q = INT( CDUM(1) )
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_ZUNGBR_Q )
                END IF
                IF( .NOT.WNTVN ) THEN
                   MAXWRK = MAX( MAXWRK, 2*N+LWORK_ZUNGBR_P )
-               MINWRK = 2*N + M
                END IF
+               MINWRK = 2*N + M
             END IF
          ELSE IF( MINMN.GT.0 ) THEN
 *
@@ -471,25 +471,25 @@
             MNTHR = ILAENV( 6, 'ZGESVD', JOBU // JOBVT, M, N, 0, 0 )
 *           Compute space needed for ZGELQF
             CALL ZGELQF( M, N, A, LDA, CDUM(1), CDUM(1), -1, IERR )
-            LWORK_ZGELQF=CDUM(1)
+            LWORK_ZGELQF = INT( CDUM(1) )
 *           Compute space needed for ZUNGLQ
             CALL ZUNGLQ( N, N, M, CDUM(1), N, CDUM(1), CDUM(1), -1,
      $                   IERR )
-            LWORK_ZUNGLQ_N=CDUM(1)
+            LWORK_ZUNGLQ_N = INT( CDUM(1) )
             CALL ZUNGLQ( M, N, M, A, LDA, CDUM(1), CDUM(1), -1, IERR )
-            LWORK_ZUNGLQ_M=CDUM(1)
+            LWORK_ZUNGLQ_M = INT( CDUM(1) )
 *           Compute space needed for ZGEBRD
             CALL ZGEBRD( M, M, A, LDA, S, DUM(1), CDUM(1),
      $                   CDUM(1), CDUM(1), -1, IERR )
-            LWORK_ZGEBRD=CDUM(1)
+            LWORK_ZGEBRD = INT( CDUM(1) )
 *            Compute space needed for ZUNGBR P
             CALL ZUNGBR( 'P', M, M, M, A, N, CDUM(1),
      $                   CDUM(1), -1, IERR )
-            LWORK_ZUNGBR_P=CDUM(1)
+            LWORK_ZUNGBR_P = INT( CDUM(1) )
 *           Compute space needed for ZUNGBR Q
             CALL ZUNGBR( 'Q', M, M, M, A, N, CDUM(1),
      $                   CDUM(1), -1, IERR )
-            LWORK_ZUNGBR_Q=CDUM(1)
+            LWORK_ZUNGBR_Q = INT( CDUM(1) )
             IF( N.GE.MNTHR ) THEN
                IF( WNTVN ) THEN
 *
@@ -595,25 +595,25 @@
 *
                CALL ZGEBRD( M, N, A, LDA, S, DUM(1), CDUM(1),
      $                   CDUM(1), CDUM(1), -1, IERR )
-               LWORK_ZGEBRD=CDUM(1)
+               LWORK_ZGEBRD = INT( CDUM(1) )
                MAXWRK = 2*M + LWORK_ZGEBRD
                IF( WNTVS .OR. WNTVO ) THEN
 *                Compute space needed for ZUNGBR P
                  CALL ZUNGBR( 'P', M, N, M, A, N, CDUM(1),
      $                   CDUM(1), -1, IERR )
-                 LWORK_ZUNGBR_P=CDUM(1)
+                 LWORK_ZUNGBR_P = INT( CDUM(1) )
                  MAXWRK = MAX( MAXWRK, 2*M+LWORK_ZUNGBR_P )
                END IF
                IF( WNTVA ) THEN
                  CALL ZUNGBR( 'P', N,  N, M, A, N, CDUM(1),
      $                   CDUM(1), -1, IERR )
-                 LWORK_ZUNGBR_P=CDUM(1)
+                 LWORK_ZUNGBR_P = INT( CDUM(1) )
                  MAXWRK = MAX( MAXWRK, 2*M+LWORK_ZUNGBR_P )
                END IF
                IF( .NOT.WNTUN ) THEN
                   MAXWRK = MAX( MAXWRK, 2*M+LWORK_ZUNGBR_Q )
-               MINWRK = 2*M + N
                END IF
+               MINWRK = 2*M + N
             END IF
          END IF
          MAXWRK = MAX( MAXWRK, MINWRK )
@@ -680,8 +680,10 @@
 *
 *              Zero out below R
 *
-               CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO, A( 2, 1 ),
-     $                      LDA )
+               IF( N .GT. 1 ) THEN
+                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO, A( 2, 1 ),
+     $                         LDA )
+               END IF
                IE = 1
                ITAUQ = 1
                ITAUP = ITAUQ + N
@@ -1144,8 +1146,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)
@@ -1321,8 +1325,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)
@@ -1649,8 +1655,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)
@@ -1830,8 +1838,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            A( 2, 1 ), LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (CWorkspace: need 3*N, prefer 2*N+2*N*NB)

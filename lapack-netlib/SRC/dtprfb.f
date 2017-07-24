@@ -2,44 +2,44 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTPRFB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtprfb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtprfb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtprfb.f"> 
+*> Download DTPRFB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtprfb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtprfb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtprfb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DTPRFB( SIDE, TRANS, DIRECT, STOREV, M, N, K, L, 
+*       SUBROUTINE DTPRFB( SIDE, TRANS, DIRECT, STOREV, M, N, K, L,
 *                          V, LDV, T, LDT, A, LDA, B, LDB, WORK, LDWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER DIRECT, SIDE, STOREV, TRANS
 *       INTEGER   K, L, LDA, LDB, LDT, LDV, LDWORK, M, N
 *       ..
 *       .. Array Arguments ..
-*       DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), T( LDT, * ), 
+*       DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), T( LDT, * ),
 *      $          V( LDV, * ), WORK( LDWORK, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> DTPRFB applies a real "triangular-pentagonal" block reflector H or its 
-*> transpose H**T to a real matrix C, which is composed of two 
+*> DTPRFB applies a real "triangular-pentagonal" block reflector H or its
+*> transpose H**T to a real matrix C, which is composed of two
 *> blocks A and B, either from the left or right.
-*> 
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -80,14 +80,14 @@
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>          The number of rows of the matrix B.  
+*>          The number of rows of the matrix B.
 *>          M >= 0.
 *> \endverbatim
 *>
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>          The number of columns of the matrix B.  
+*>          The number of columns of the matrix B.
 *>          N >= 0.
 *> \endverbatim
 *>
@@ -95,14 +95,14 @@
 *> \verbatim
 *>          K is INTEGER
 *>          The order of the matrix T, i.e. the number of elementary
-*>          reflectors whose product defines the block reflector.  
+*>          reflectors whose product defines the block reflector.
 *>          K >= 0.
 *> \endverbatim
 *>
 *> \param[in] L
 *> \verbatim
 *>          L is INTEGER
-*>          The order of the trapezoidal part of V.  
+*>          The order of the trapezoidal part of V.
 *>          K >= L >= 0.  See Further Details.
 *> \endverbatim
 *>
@@ -129,13 +129,13 @@
 *> \verbatim
 *>          T is DOUBLE PRECISION array, dimension (LDT,K)
 *>          The triangular K-by-K matrix T in the representation of the
-*>          block reflector.  
+*>          block reflector.
 *> \endverbatim
 *>
 *> \param[in] LDT
 *> \verbatim
 *>          LDT is INTEGER
-*>          The leading dimension of the array T. 
+*>          The leading dimension of the array T.
 *>          LDT >= K.
 *> \endverbatim
 *>
@@ -144,16 +144,16 @@
 *>          A is DOUBLE PRECISION array, dimension
 *>          (LDA,N) if SIDE = 'L' or (LDA,K) if SIDE = 'R'
 *>          On entry, the K-by-N or M-by-K matrix A.
-*>          On exit, A is overwritten by the corresponding block of 
-*>          H*C or H**T*C or C*H or C*H**T.  See Futher Details.
+*>          On exit, A is overwritten by the corresponding block of
+*>          H*C or H**T*C or C*H or C*H**T.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDA
 *> \verbatim
 *>          LDA is INTEGER
-*>          The leading dimension of the array A. 
+*>          The leading dimension of the array A.
 *>          If SIDE = 'L', LDC >= max(1,K);
-*>          If SIDE = 'R', LDC >= max(1,M). 
+*>          If SIDE = 'R', LDC >= max(1,M).
 *> \endverbatim
 *>
 *> \param[in,out] B
@@ -167,7 +167,7 @@
 *> \param[in] LDB
 *> \verbatim
 *>          LDB is INTEGER
-*>          The leading dimension of the array B. 
+*>          The leading dimension of the array B.
 *>          LDB >= max(1,M).
 *> \endverbatim
 *>
@@ -182,19 +182,19 @@
 *> \verbatim
 *>          LDWORK is INTEGER
 *>          The leading dimension of the array WORK.
-*>          If SIDE = 'L', LDWORK >= K; 
+*>          If SIDE = 'L', LDWORK >= K;
 *>          if SIDE = 'R', LDWORK >= M.
 *> \endverbatim
 *
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup doubleOTHERauxiliary
 *
@@ -204,21 +204,21 @@
 *> \verbatim
 *>
 *>  The matrix C is a composite matrix formed from blocks A and B.
-*>  The block B is of size M-by-N; if SIDE = 'R', A is of size M-by-K, 
+*>  The block B is of size M-by-N; if SIDE = 'R', A is of size M-by-K,
 *>  and if SIDE = 'L', A is of size K-by-N.
 *>
 *>  If SIDE = 'R' and DIRECT = 'F', C = [A B].
 *>
-*>  If SIDE = 'L' and DIRECT = 'F', C = [A] 
+*>  If SIDE = 'L' and DIRECT = 'F', C = [A]
 *>                                      [B].
 *>
 *>  If SIDE = 'R' and DIRECT = 'B', C = [B A].
 *>
 *>  If SIDE = 'L' and DIRECT = 'B', C = [B]
-*>                                      [A]. 
+*>                                      [A].
 *>
-*>  The pentagonal matrix V is composed of a rectangular block V1 and a 
-*>  trapezoidal block V2.  The size of the trapezoidal block is determined by 
+*>  The pentagonal matrix V is composed of a rectangular block V1 and a
+*>  trapezoidal block V2.  The size of the trapezoidal block is determined by
 *>  the parameter L, where 0<=L<=K.  If L=K, the V2 block of V is triangular;
 *>  if L=0, there is no trapezoidal block, thus V = V1 is rectangular.
 *>
@@ -235,7 +235,7 @@
 *>     - V2 is lower trapezoidal (last L rows of K-by-K lower triangular)
 *>
 *>  If DIRECT = 'B' and STOREV = 'R':  V = [V2 V1]
-*>    
+*>
 *>     - V2 is upper trapezoidal (last L columns of K-by-K upper triangular)
 *>
 *>  If STOREV = 'C' and SIDE = 'L', V is M-by-K with V2 L-by-K.
@@ -248,20 +248,20 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE DTPRFB( SIDE, TRANS, DIRECT, STOREV, M, N, K, L, 
+      SUBROUTINE DTPRFB( SIDE, TRANS, DIRECT, STOREV, M, N, K, L,
      $                   V, LDV, T, LDT, A, LDA, B, LDB, WORK, LDWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER DIRECT, SIDE, STOREV, TRANS
       INTEGER   K, L, LDA, LDB, LDT, LDV, LDWORK, M, N
 *     ..
 *     .. Array Arguments ..
-      DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), T( LDT, * ), 
+      DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), T( LDT, * ),
      $          V( LDV, * ), WORK( LDWORK, * )
 *     ..
 *
@@ -322,7 +322,7 @@
       END IF
 *
 * ---------------------------------------------------------------------------
-*      
+*
       IF( COLUMN .AND. FORWARD .AND. LEFT  ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -336,34 +336,34 @@
 *        H = I - W T W**T          or  H**T = I - W T**T W**T
 *
 *        A = A -   T (A + V**T B)  or  A = A -   T**T (A + V**T B)
-*        B = B - V T (A + V**T B)  or  B = B - V T**T (A + V**T B) 
+*        B = B - V T (A + V**T B)  or  B = B - V T**T (A + V**T B)
 *
 * ---------------------------------------------------------------------------
 *
          MP = MIN( M-L+1, M )
          KP = MIN( L+1, K )
-*         
+*
          DO J = 1, N
             DO I = 1, L
                WORK( I, J ) = B( M-L+I, J )
             END DO
          END DO
          CALL DTRMM( 'L', 'U', 'T', 'N', L, N, ONE, V( MP, 1 ), LDV,
-     $               WORK, LDWORK )         
-         CALL DGEMM( 'T', 'N', L, N, M-L, ONE, V, LDV, B, LDB, 
+     $               WORK, LDWORK )
+         CALL DGEMM( 'T', 'N', L, N, M-L, ONE, V, LDV, B, LDB,
      $               ONE, WORK, LDWORK )
-         CALL DGEMM( 'T', 'N', K-L, N, M, ONE, V( 1, KP ), LDV, 
+         CALL DGEMM( 'T', 'N', K-L, N, M, ONE, V( 1, KP ), LDV,
      $               B, LDB, ZERO, WORK( KP, 1 ), LDWORK )
-*     
+*
          DO J = 1, N
             DO I = 1, K
                WORK( I, J ) = WORK( I, J ) + A( I, J )
             END DO
          END DO
 *
-         CALL DTRMM( 'L', 'U', TRANS, 'N', K, N, ONE, T, LDT, 
+         CALL DTRMM( 'L', 'U', TRANS, 'N', K, N, ONE, T, LDT,
      $               WORK, LDWORK )
-*     
+*
          DO J = 1, N
             DO I = 1, K
                A( I, J ) = A( I, J ) - WORK( I, J )
@@ -373,7 +373,7 @@
          CALL DGEMM( 'N', 'N', M-L, N, K, -ONE, V, LDV, WORK, LDWORK,
      $               ONE, B, LDB )
          CALL DGEMM( 'N', 'N', L, N, K-L, -ONE, V( MP, KP ), LDV,
-     $               WORK( KP, 1 ), LDWORK, ONE, B( MP, 1 ),  LDB )    
+     $               WORK( KP, 1 ), LDWORK, ONE, B( MP, 1 ),  LDB )
          CALL DTRMM( 'L', 'U', 'N', 'N', L, N, ONE, V( MP, 1 ), LDV,
      $               WORK, LDWORK )
          DO J = 1, N
@@ -383,7 +383,7 @@
          END DO
 *
 * ---------------------------------------------------------------------------
-*      
+*
       ELSE IF( COLUMN .AND. FORWARD .AND. RIGHT ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -402,7 +402,7 @@
 *
          NP = MIN( N-L+1, N )
          KP = MIN( L+1, K )
-*         
+*
          DO J = 1, L
             DO I = 1, M
                WORK( I, J ) = B( I, N-L+J )
@@ -410,20 +410,20 @@
          END DO
          CALL DTRMM( 'R', 'U', 'N', 'N', M, L, ONE, V( NP, 1 ), LDV,
      $               WORK, LDWORK )
-         CALL DGEMM( 'N', 'N', M, L, N-L, ONE, B, LDB, 
+         CALL DGEMM( 'N', 'N', M, L, N-L, ONE, B, LDB,
      $               V, LDV, ONE, WORK, LDWORK )
-         CALL DGEMM( 'N', 'N', M, K-L, N, ONE, B, LDB, 
+         CALL DGEMM( 'N', 'N', M, K-L, N, ONE, B, LDB,
      $               V( 1, KP ), LDV, ZERO, WORK( 1, KP ), LDWORK )
-*     
+*
          DO J = 1, K
             DO I = 1, M
                WORK( I, J ) = WORK( I, J ) + A( I, J )
             END DO
          END DO
 *
-         CALL DTRMM( 'R', 'U', TRANS, 'N', M, K, ONE, T, LDT, 
+         CALL DTRMM( 'R', 'U', TRANS, 'N', M, K, ONE, T, LDT,
      $               WORK, LDWORK )
-*     
+*
          DO J = 1, K
             DO I = 1, M
                A( I, J ) = A( I, J ) - WORK( I, J )
@@ -443,7 +443,7 @@
          END DO
 *
 * ---------------------------------------------------------------------------
-*      
+*
       ELSE IF( COLUMN .AND. BACKWARD .AND. LEFT ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -457,7 +457,7 @@
 *        H = I - W T W**T          or  H**T = I - W T**T W**T
 *
 *        A = A -   T (A + V**T B)  or  A = A -   T**T (A + V**T B)
-*        B = B - V T (A + V**T B)  or  B = B - V T**T (A + V**T B) 
+*        B = B - V T (A + V**T B)  or  B = B - V T**T (A + V**T B)
 *
 * ---------------------------------------------------------------------------
 *
@@ -472,10 +472,10 @@
 *
          CALL DTRMM( 'L', 'L', 'T', 'N', L, N, ONE, V( 1, KP ), LDV,
      $               WORK( KP, 1 ), LDWORK )
-         CALL DGEMM( 'T', 'N', L, N, M-L, ONE, V( MP, KP ), LDV, 
+         CALL DGEMM( 'T', 'N', L, N, M-L, ONE, V( MP, KP ), LDV,
      $               B( MP, 1 ), LDB, ONE, WORK( KP, 1 ), LDWORK )
          CALL DGEMM( 'T', 'N', K-L, N, M, ONE, V, LDV,
-     $               B, LDB, ZERO, WORK, LDWORK )         
+     $               B, LDB, ZERO, WORK, LDWORK )
 *
          DO J = 1, N
             DO I = 1, K
@@ -483,16 +483,16 @@
             END DO
          END DO
 *
-         CALL DTRMM( 'L', 'L', TRANS, 'N', K, N, ONE, T, LDT, 
+         CALL DTRMM( 'L', 'L', TRANS, 'N', K, N, ONE, T, LDT,
      $               WORK, LDWORK )
-*     
+*
          DO J = 1, N
             DO I = 1, K
                A( I, J ) = A( I, J ) - WORK( I, J )
             END DO
          END DO
 *
-         CALL DGEMM( 'N', 'N', M-L, N, K, -ONE, V( MP, 1 ), LDV, 
+         CALL DGEMM( 'N', 'N', M-L, N, K, -ONE, V( MP, 1 ), LDV,
      $               WORK, LDWORK, ONE, B( MP, 1 ), LDB )
          CALL DGEMM( 'N', 'N', L, N, K-L, -ONE, V, LDV,
      $               WORK, LDWORK, ONE, B,  LDB )
@@ -505,7 +505,7 @@
          END DO
 *
 * ---------------------------------------------------------------------------
-*      
+*
       ELSE IF( COLUMN .AND. BACKWARD .AND. RIGHT ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -524,7 +524,7 @@
 *
          NP = MIN( L+1, N )
          KP = MIN( K-L+1, K )
-*         
+*
          DO J = 1, L
             DO I = 1, M
                WORK( I, K-L+J ) = B( I, J )
@@ -532,20 +532,20 @@
          END DO
          CALL DTRMM( 'R', 'L', 'N', 'N', M, L, ONE, V( 1, KP ), LDV,
      $               WORK( 1, KP ), LDWORK )
-         CALL DGEMM( 'N', 'N', M, L, N-L, ONE, B( 1, NP ), LDB, 
+         CALL DGEMM( 'N', 'N', M, L, N-L, ONE, B( 1, NP ), LDB,
      $               V( NP, KP ), LDV, ONE, WORK( 1, KP ), LDWORK )
-         CALL DGEMM( 'N', 'N', M, K-L, N, ONE, B, LDB, 
+         CALL DGEMM( 'N', 'N', M, K-L, N, ONE, B, LDB,
      $               V, LDV, ZERO, WORK, LDWORK )
-*     
+*
          DO J = 1, K
             DO I = 1, M
                WORK( I, J ) = WORK( I, J ) + A( I, J )
             END DO
          END DO
 *
-         CALL DTRMM( 'R', 'L', TRANS, 'N', M, K, ONE, T, LDT, 
+         CALL DTRMM( 'R', 'L', TRANS, 'N', M, K, ONE, T, LDT,
      $               WORK, LDWORK )
-*     
+*
          DO J = 1, K
             DO I = 1, M
                A( I, J ) = A( I, J ) - WORK( I, J )
@@ -565,7 +565,7 @@
          END DO
 *
 * ---------------------------------------------------------------------------
-*      
+*
       ELSE IF( ROW .AND. FORWARD .AND. LEFT ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -578,7 +578,7 @@
 *        H = I - W**T T W          or  H**T = I - W**T T**T W
 *
 *        A = A -     T (A + V B)  or  A = A -     T**T (A + V B)
-*        B = B - V**T T (A + V B)  or  B = B - V**T T**T (A + V B) 
+*        B = B - V**T T (A + V B)  or  B = B - V**T T**T (A + V B)
 *
 * ---------------------------------------------------------------------------
 *
@@ -589,12 +589,12 @@
             DO I = 1, L
                WORK( I, J ) = B( M-L+I, J )
             END DO
-         END DO 
+         END DO
          CALL DTRMM( 'L', 'L', 'N', 'N', L, N, ONE, V( 1, MP ), LDV,
      $               WORK, LDB )
-         CALL DGEMM( 'N', 'N', L, N, M-L, ONE, V, LDV,B, LDB, 
+         CALL DGEMM( 'N', 'N', L, N, M-L, ONE, V, LDV,B, LDB,
      $               ONE, WORK, LDWORK )
-         CALL DGEMM( 'N', 'N', K-L, N, M, ONE, V( KP, 1 ), LDV, 
+         CALL DGEMM( 'N', 'N', K-L, N, M, ONE, V( KP, 1 ), LDV,
      $               B, LDB, ZERO, WORK( KP, 1 ), LDWORK )
 *
          DO J = 1, N
@@ -603,7 +603,7 @@
             END DO
          END DO
 *
-         CALL DTRMM( 'L', 'U', TRANS, 'N', K, N, ONE, T, LDT, 
+         CALL DTRMM( 'L', 'U', TRANS, 'N', K, N, ONE, T, LDT,
      $               WORK, LDWORK )
 *
          DO J = 1, N
@@ -614,7 +614,7 @@
 *
          CALL DGEMM( 'T', 'N', M-L, N, K, -ONE, V, LDV, WORK, LDWORK,
      $               ONE, B, LDB )
-         CALL DGEMM( 'T', 'N', L, N, K-L, -ONE, V( KP, MP ), LDV, 
+         CALL DGEMM( 'T', 'N', L, N, K-L, -ONE, V( KP, MP ), LDV,
      $               WORK( KP, 1 ), LDWORK, ONE, B( MP, 1 ), LDB )
          CALL DTRMM( 'L', 'L', 'T', 'N', L, N, ONE, V( 1, MP ), LDV,
      $               WORK, LDWORK )
@@ -625,7 +625,7 @@
          END DO
 *
 * ---------------------------------------------------------------------------
-*      
+*
       ELSE IF( ROW .AND. FORWARD .AND. RIGHT ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -653,7 +653,7 @@
      $               WORK, LDWORK )
          CALL DGEMM( 'N', 'T', M, L, N-L, ONE, B, LDB, V, LDV,
      $               ONE, WORK, LDWORK )
-         CALL DGEMM( 'N', 'T', M, K-L, N, ONE, B, LDB, 
+         CALL DGEMM( 'N', 'T', M, K-L, N, ONE, B, LDB,
      $               V( KP, 1 ), LDV, ZERO, WORK( 1, KP ), LDWORK )
 *
          DO J = 1, K
@@ -662,7 +662,7 @@
             END DO
          END DO
 *
-         CALL DTRMM( 'R', 'U', TRANS, 'N', M, K, ONE, T, LDT, 
+         CALL DTRMM( 'R', 'U', TRANS, 'N', M, K, ONE, T, LDT,
      $               WORK, LDWORK )
 *
          DO J = 1, K
@@ -671,10 +671,10 @@
             END DO
          END DO
 *
-         CALL DGEMM( 'N', 'N', M, N-L, K, -ONE, WORK, LDWORK, 
+         CALL DGEMM( 'N', 'N', M, N-L, K, -ONE, WORK, LDWORK,
      $               V, LDV, ONE, B, LDB )
          CALL DGEMM( 'N', 'N', M, L, K-L, -ONE, WORK( 1, KP ), LDWORK,
-     $               V( KP, NP ), LDV, ONE, B( 1, NP ), LDB )   
+     $               V( KP, NP ), LDV, ONE, B( 1, NP ), LDB )
          CALL DTRMM( 'R', 'L', 'N', 'N', M, L, ONE, V( 1, NP ), LDV,
      $               WORK, LDWORK )
          DO J = 1, L
@@ -684,7 +684,7 @@
          END DO
 *
 * ---------------------------------------------------------------------------
-*      
+*
       ELSE IF( ROW .AND. BACKWARD .AND. LEFT ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -697,7 +697,7 @@
 *        H = I - W**T T W          or  H**T = I - W**T T**T W
 *
 *        A = A -     T (A + V B)  or  A = A -     T**T (A + V B)
-*        B = B - V**T T (A + V B)  or  B = B - V**T T**T (A + V B) 
+*        B = B - V**T T (A + V B)  or  B = B - V**T T**T (A + V B)
 *
 * ---------------------------------------------------------------------------
 *
@@ -733,10 +733,10 @@
 *
          CALL DGEMM( 'T', 'N', M-L, N, K, -ONE, V( 1, MP ), LDV,
      $               WORK, LDWORK, ONE, B( MP, 1 ), LDB )
-         CALL DGEMM( 'T', 'N', L, N, K-L, -ONE, V, LDV, 
+         CALL DGEMM( 'T', 'N', L, N, K-L, -ONE, V, LDV,
      $               WORK, LDWORK, ONE, B, LDB )
          CALL DTRMM( 'L', 'U', 'T', 'N', L, N, ONE, V( KP, 1 ), LDV,
-     $               WORK( KP, 1 ), LDWORK )     
+     $               WORK( KP, 1 ), LDWORK )
          DO J = 1, N
             DO I = 1, L
                B( I, J ) = B( I, J ) - WORK( K-L+I, J )
@@ -744,7 +744,7 @@
          END DO
 *
 * ---------------------------------------------------------------------------
-*      
+*
       ELSE IF( ROW .AND. BACKWARD .AND. RIGHT ) THEN
 *
 * ---------------------------------------------------------------------------
@@ -773,7 +773,7 @@
          CALL DGEMM( 'N', 'T', M, L, N-L, ONE, B( 1, NP ), LDB,
      $               V( KP, NP ), LDV, ONE, WORK( 1, KP ), LDWORK )
          CALL DGEMM( 'N', 'T', M, K-L, N, ONE, B, LDB, V, LDV,
-     $               ZERO, WORK, LDWORK )                     
+     $               ZERO, WORK, LDWORK )
 *
          DO J = 1, K
             DO I = 1, M
@@ -781,7 +781,7 @@
             END DO
          END DO
 *
-         CALL DTRMM( 'R', 'L', TRANS, 'N', M, K, ONE, T, LDT,         
+         CALL DTRMM( 'R', 'L', TRANS, 'N', M, K, ONE, T, LDT,
      $               WORK, LDWORK )
 *
          DO J = 1, K
@@ -790,9 +790,9 @@
             END DO
          END DO
 *
-         CALL DGEMM( 'N', 'N', M, N-L, K, -ONE, WORK, LDWORK, 
+         CALL DGEMM( 'N', 'N', M, N-L, K, -ONE, WORK, LDWORK,
      $               V( 1, NP ), LDV, ONE, B( 1, NP ), LDB )
-         CALL DGEMM( 'N', 'N', M, L, K-L , -ONE, WORK, LDWORK,    
+         CALL DGEMM( 'N', 'N', M, L, K-L , -ONE, WORK, LDWORK,
      $               V, LDV, ONE, B, LDB )
          CALL DTRMM( 'R', 'U', 'N', 'N', M, L, ONE, V( KP, 1 ), LDV,
      $               WORK( 1, KP ), LDWORK )

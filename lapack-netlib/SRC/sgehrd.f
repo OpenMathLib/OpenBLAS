@@ -2,31 +2,31 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGEHRD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgehrd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgehrd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgehrd.f"> 
+*> Download SGEHRD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgehrd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgehrd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgehrd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGEHRD( N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IHI, ILO, INFO, LDA, LWORK, N
 *       ..
 *       .. Array Arguments ..
 *       REAL              A( LDA, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -115,12 +115,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup realGEcomputational
 *
@@ -167,10 +167,10 @@
 *  =====================================================================
       SUBROUTINE SGEHRD( N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, INFO, LDA, LWORK, N
@@ -186,7 +186,7 @@
       PARAMETER          ( NBMAX = 64, LDT = NBMAX+1,
      $                     TSIZE = LDT*NBMAX )
       REAL              ZERO, ONE
-      PARAMETER          ( ZERO = 0.0E+0, 
+      PARAMETER          ( ZERO = 0.0E+0,
      $                     ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
@@ -225,14 +225,14 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-*     
+*
 *       Compute the workspace requirements
-*     
+*
          NB = MIN( NBMAX, ILAENV( 1, 'SGEHRD', ' ', N, ILO, IHI, -1 ) )
          LWKOPT = N*NB + TSIZE
          WORK( 1 ) = LWKOPT
       END IF
-*     
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SGEHRD', -INFO )
          RETURN
@@ -316,7 +316,7 @@
 *
             EI = A( I+IB, I+IB-1 )
             A( I+IB, I+IB-1 ) = ONE
-            CALL SGEMM( 'No transpose', 'Transpose', 
+            CALL SGEMM( 'No transpose', 'Transpose',
      $                  IHI, IHI-I-IB+1,
      $                  IB, -ONE, WORK, LDWORK, A( I+IB, I ), LDA, ONE,
      $                  A( 1, I+IB ), LDA )

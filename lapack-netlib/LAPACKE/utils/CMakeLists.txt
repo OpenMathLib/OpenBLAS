@@ -1,4 +1,4 @@
-set (UTILS_OBJ 
+set(UTILS_OBJ
 lapacke_c_nancheck.c            lapacke_ctr_trans.c             lapacke_make_complex_float.c    lapacke_zgb_nancheck.c
 lapacke_cgb_nancheck.c          lapacke_d_nancheck.c            lapacke_s_nancheck.c            lapacke_zgb_trans.c
 lapacke_cgb_trans.c             lapacke_dgb_nancheck.c          lapacke_sgb_nancheck.c          lapacke_zge_nancheck.c
@@ -30,7 +30,7 @@ lapacke_cst_nancheck.c          lapacke_dtb_nancheck.c          lapacke_stb_nanc
 lapacke_csy_nancheck.c          lapacke_dtb_trans.c             lapacke_stb_trans.c             lapacke_zsy_trans.c
 lapacke_csy_trans.c             lapacke_dtf_nancheck.c          lapacke_stf_nancheck.c          lapacke_ztb_nancheck.c
 lapacke_ctb_nancheck.c          lapacke_dtf_trans.c             lapacke_stf_trans.c             lapacke_ztb_trans.c
-lapacke_ctb_trans.c	            lapacke_dtp_nancheck.c          lapacke_stp_nancheck.c          lapacke_ztf_nancheck.c
+lapacke_ctb_trans.c             lapacke_dtp_nancheck.c          lapacke_stp_nancheck.c          lapacke_ztf_nancheck.c
 lapacke_ctf_nancheck.c          lapacke_dtp_trans.c             lapacke_stp_trans.c             lapacke_ztf_trans.c
 lapacke_ctf_trans.c             lapacke_dtr_nancheck.c          lapacke_str_nancheck.c          lapacke_ztp_nancheck.c
 lapacke_ctp_nancheck.c          lapacke_dtr_trans.c             lapacke_str_trans.c             lapacke_ztp_trans.c

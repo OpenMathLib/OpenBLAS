@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+*       SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
 *                            NBVAL, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NNB, NOUT
@@ -89,24 +89,24 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
-      SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB, 
+      SUBROUTINE CCHKQRTP( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
      $                     NBVAL, NOUT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -172,7 +172,7 @@
 *
             MINMN = MIN( M, N )
             DO L = 0, MINMN, MAX( MINMN, 1 )
-*     
+*
 *              Do for each possible value of NB
 *
 
@@ -180,7 +180,7 @@
                   NB = NBVAL( K )
 *
 *                 Test CTPQRT and CTPMQRT
-*     
+*
                   IF( (NB.LE.N).AND.(NB.GT.0) ) THEN
                      CALL CQRT05( M, N, L, NB, RESULT )
 *

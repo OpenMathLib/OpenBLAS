@@ -125,9 +125,8 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
     		BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     		return;
   	}
-
 #ifdef NEW_IMATCOPY
-    if (*lda == *ldb) {
+    if (*lda == *ldb && *cols == *rows) {
         if ( order == BlasColMajor )
         {
 
@@ -180,7 +179,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
         b = malloc(msize);
         if ( b == NULL )
         {
-                printf("Memory alloc failed\n");
+                printf("Memory alloc failed in zimatcopy\n");
                 exit(1);
         }
 
@@ -205,14 +204,14 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 		if ( trans == BlasTrans )
 		{
 			OMATCOPY_K_CT(*rows, *cols, alpha[0], alpha[1], a, *lda, b, *ldb );
-	  		OMATCOPY_K_CN(*rows, *cols, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
+	  		OMATCOPY_K_CN(*cols, *rows, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
 			free(b);
 			return;
 		}
 		if ( trans == BlasTransConj )
 		{
 			OMATCOPY_K_CTC(*rows, *cols, alpha[0], alpha[1], a, *lda, b, *ldb );
-	  		OMATCOPY_K_CN(*rows, *cols, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
+	  		OMATCOPY_K_CN(*cols, *rows, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
 			free(b);
 			return;
 		}
@@ -238,20 +237,20 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 		if ( trans == BlasTrans )
 		{
 			OMATCOPY_K_RT(*rows, *cols, alpha[0], alpha[1], a, *lda, b, *ldb );
-	  		OMATCOPY_K_RN(*rows, *cols, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
+	  		OMATCOPY_K_RN(*cols, *rows, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
 			free(b);
 			return;
 		}
 		if ( trans == BlasTransConj )
 		{
 			OMATCOPY_K_RTC(*rows, *cols, alpha[0], alpha[1], a, *lda, b, *ldb );
-	  		OMATCOPY_K_RN(*rows, *cols, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
+	  		OMATCOPY_K_RN(*cols, *rows, (FLOAT) 1.0, (FLOAT) 0.0 , b, *ldb, a, *ldb );
 			free(b);
 			return;
 		}
 
 	}
-
+	free(b);
 	return;
 
 }

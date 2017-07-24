@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CLATDF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clatdf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clatdf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clatdf.f"> 
+*> Download CLATDF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clatdf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/clatdf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clatdf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CLATDF( IJOB, N, Z, LDZ, RHS, RDSUM, RDSCAL, IPIV,
 *                          JPIV )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IJOB, LDZ, N
 *       REAL               RDSCAL, RDSUM
@@ -29,7 +29,7 @@
 *       INTEGER            IPIV( * ), JPIV( * )
 *       COMPLEX            RHS( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -58,7 +58,7 @@
 *>              Zx = +-e - f with the sign giving the greater value of
 *>              2-norm(x).  About 5 times as expensive as Default.
 *>          IJOB .ne. 2: Local look ahead strategy where
-*>              all entries of the r.h.s. b is choosen as either +1 or
+*>              all entries of the r.h.s. b is chosen as either +1 or
 *>              -1.  Default.
 *> \endverbatim
 *>
@@ -70,7 +70,7 @@
 *>
 *> \param[in] Z
 *> \verbatim
-*>          Z is REAL array, dimension (LDZ, N)
+*>          Z is COMPLEX array, dimension (LDZ, N)
 *>          On entry, the LU part of the factorization of the n-by-n
 *>          matrix Z computed by CGETC2:  Z = P * L * U * Q
 *> \endverbatim
@@ -83,7 +83,7 @@
 *>
 *> \param[in,out] RHS
 *> \verbatim
-*>          RHS is REAL array, dimension (N).
+*>          RHS is COMPLEX array, dimension (N).
 *>          On entry, RHS contains contributions from other subsystems.
 *>          On exit, RHS contains the solution of the subsystem with
 *>          entries according to the value of IJOB (see above).
@@ -129,12 +129,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -169,10 +169,10 @@
       SUBROUTINE CLATDF( IJOB, N, Z, LDZ, RHS, RDSUM, RDSCAL, IPIV,
      $                   JPIV )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IJOB, LDZ, N

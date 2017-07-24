@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CDRVRF2( NOUT, NN, NVAL, A, LDA, ARF, AP, ASAV  )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, NN, NOUT
 *       ..
@@ -17,14 +17,14 @@
 *       INTEGER            NVAL( NN )
 *       COMPLEX            A( LDA, * ), ARF( * ), AP(*), ASAV( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> CDRVRF2 tests the LAPACK RFP convertion routines.
+*> CDRVRF2 tests the LAPACK RFP conversion routines.
 *> \endverbatim
 *
 *  Arguments:
@@ -77,22 +77,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CDRVRF2( NOUT, NN, NVAL, A, LDA, ARF, AP, ASAV  )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, NN, NOUT
@@ -248,14 +248,14 @@
          WRITE( NOUT, FMT = 9996 ) NERRS, NRUN
       END IF
 *
- 9999 FORMAT( 1X, ' *** Error(s) while testing the RFP convertion',
+ 9999 FORMAT( 1X, ' *** Error(s) while testing the RFP conversion',
      +         ' routines ***')
- 9998 FORMAT( 1X, '     Error in RFP,convertion routines N=',I5,
+ 9998 FORMAT( 1X, '     Error in RFP,conversion routines N=',I5,
      +        ' UPLO=''', A1, ''', FORM =''',A1,'''')
- 9997 FORMAT( 1X, 'All tests for the RFP convertion routines passed ( ', 
+ 9997 FORMAT( 1X, 'All tests for the RFP conversion routines passed ( ',
      +        I5,' tests run)')
- 9996 FORMAT( 1X, 'RFP convertion routines: ',I5,' out of ',I5,
-     +        ' error message recorded') 
+ 9996 FORMAT( 1X, 'RFP conversion routines: ',I5,' out of ',I5,
+     +        ' error message recorded')
 *
       RETURN
 *

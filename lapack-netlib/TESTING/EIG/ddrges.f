@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          NOUNIT, A, LDA, B, S, T, Q, LDQ, Z, ALPHAR,
 *                          ALPHAI, BETA, WORK, LWORK, RESULT, BWORK,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDQ, LWORK, NOUNIT, NSIZES, NTYPES
 *       DOUBLE PRECISION   THRESH
@@ -25,7 +25,7 @@
 *      $                   RESULT( 13 ), S( LDA, * ), T( LDA, * ),
 *      $                   WORK( * ), Z( LDQ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -52,7 +52,7 @@
 *> number of matrix "TYPES" are specified.  For each size ("N")
 *> and each TYPE of matrix, a pair of matrices (A, B) will be generated
 *> and used for testing. For each matrix pair, the following 13 tests
-*> will be performed and compared with the threshhold THRESH except
+*> will be performed and compared with the threshold THRESH except
 *> the tests (5), (11) and (13).
 *>
 *>
@@ -388,12 +388,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup double_eig
 *
@@ -403,10 +403,10 @@
      $                   ALPHAI, BETA, WORK, LWORK, RESULT, BWORK,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LWORK, NOUNIT, NSIZES, NTYPES

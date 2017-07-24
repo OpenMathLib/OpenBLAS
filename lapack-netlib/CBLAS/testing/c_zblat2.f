@@ -69,7 +69,7 @@
       INTEGER            NSUBS
       PARAMETER          ( NSUBS = 17 )
       COMPLEX*16         ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ), 
+      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                    ONE = ( 1.0D0, 0.0D0 ) )
       DOUBLE PRECISION   RZERO, RHALF, RONE
       PARAMETER          ( RZERO = 0.0D0, RHALF = 0.5D0, RONE = 1.0D0 )
@@ -348,13 +348,13 @@
   160      IF (CORDER) THEN
            CALL ZCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
-     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z, 
+     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
      $			0 )
            END IF
            IF (RORDER) THEN
            CALL ZCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
-     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z, 
+     $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
      $			1 )
            END IF
             GO TO 200
@@ -474,7 +474,7 @@
 *
 *     .. Parameters ..
       COMPLEX*16        ZERO, HALF
-      PARAMETER         ( ZERO = ( 0.0D0, 0.0D0 ), 
+      PARAMETER         ( ZERO = ( 0.0D0, 0.0D0 ),
      $                  HALF = ( 0.5D0, 0.0D0 ) )
       DOUBLE PRECISION  RZERO
       PARAMETER         ( RZERO = 0.0D0 )
@@ -582,7 +582,7 @@
                      CTRANS = '  CblasNoTrans'
                   ELSE IF (TRANS.EQ.'T')THEN
                      CTRANS = '    CblasTrans'
-                  ELSE 
+                  ELSE
                      CTRANS = 'CblasConjTrans'
                   END IF
                   TRAN = TRANS.EQ.'T'.OR.TRANS.EQ.'C'
@@ -685,7 +685,7 @@
 *
 *                             See what data changed inside subroutines.
 *
-*        IF(TRANS .NE. 'C' .OR. (INCX .GT. 0 .AND. INCY .GT. 0)) THEN 
+*        IF(TRANS .NE. 'C' .OR. (INCX .GT. 0 .AND. INCY .GT. 0)) THEN
                               ISAME( 1 ) = TRANS.EQ.TRANSS
                               ISAME( 2 ) = MS.EQ.M
                               ISAME( 3 ) = NS.EQ.N
@@ -927,7 +927,7 @@
                UPLO = ICH( IC: IC )
                IF (UPLO.EQ.'U')THEN
                   CUPLO = '    CblasUpper'
-               ELSE 
+               ELSE
                   CUPLO = '    CblasLower'
                END IF
 *
@@ -1287,7 +1287,7 @@
                UPLO = ICHU( ICU: ICU )
                IF (UPLO.EQ.'U')THEN
                   CUPLO = '    CblasUpper'
-               ELSE 
+               ELSE
                   CUPLO = '    CblasLower'
                END IF
 *
@@ -1297,7 +1297,7 @@
                      CTRANS = '  CblasNoTrans'
                   ELSE IF (TRANS.EQ.'T')THEN
                      CTRANS = '    CblasTrans'
-                  ELSE 
+                  ELSE
                      CTRANS = 'CblasConjTrans'
                   END IF
 *
@@ -1350,7 +1350,7 @@
 *
 *                       Call the subroutine.
 *
-                        IF( SNAME( 4: 5 ).EQ.'mv' )THEN
+                        IF( SNAME( 10: 11 ).EQ.'mv' )THEN
                            IF( FULL )THEN
                               IF( TRACE )
      $                           WRITE( NTRA, FMT = 9993 )NC, SNAME,
@@ -1376,7 +1376,7 @@
                               CALL CZTPMV( IORDER, UPLO, TRANS, DIAG,
      $                                    N, AA, XX, INCX )
                            END IF
-                        ELSE IF( SNAME( 4: 5 ).EQ.'sv' )THEN
+                        ELSE IF( SNAME( 10: 11 ).EQ.'sv' )THEN
                            IF( FULL )THEN
                               IF( TRACE )
      $                           WRITE( NTRA, FMT = 9993 )NC, SNAME,
@@ -1465,7 +1465,7 @@
                         END IF
 *
                         IF( .NOT.NULL )THEN
-                           IF( SNAME( 4: 5 ).EQ.'mv' )THEN
+                           IF( SNAME( 10: 11 ).EQ.'mv' )THEN
 *
 *                             Check the result.
 *
@@ -1473,7 +1473,7 @@
      $                                    INCX, ZERO, Z, INCX, XT, G,
      $                                    XX, EPS, ERR, FATAL, NOUT,
      $                                    .TRUE. )
-                           ELSE IF( SNAME( 4: 5 ).EQ.'sv' )THEN
+                           ELSE IF( SNAME( 10: 11 ).EQ.'sv' )THEN
 *
 *                             Compute approximation to original vector.
 *
@@ -1569,7 +1569,7 @@
 *
 *     .. Parameters ..
       COMPLEX*16         ZERO, HALF, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ), 
+      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                   HALF = ( 0.5D0, 0.0D0 ),
      $                   ONE = ( 1.0D0, 0.0D0 ) )
       DOUBLE PRECISION   RZERO
@@ -1611,7 +1611,7 @@
 *     .. Common blocks ..
       COMMON             /INFOC/INFOT, NOUTC, OK
 *     .. Executable Statements ..
-      CONJ = SNAME( 5: 5 ).EQ.'c'
+      CONJ = SNAME( 11: 11 ).EQ.'c'
 *     Define the number of arguments.
       NARGS = 9
 *
@@ -1847,7 +1847,7 @@
 *
 *     .. Parameters ..
       COMPLEX*16         ZERO, HALF, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ), 
+      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                   HALF = ( 0.5D0, 0.0D0 ),
      $                   ONE = ( 1.0D0, 0.0D0 ) )
       DOUBLE PRECISION   RZERO
@@ -2141,7 +2141,7 @@
 *
 *     .. Parameters ..
       COMPLEX*16         ZERO, HALF, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ), 
+      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                   HALF = ( 0.5D0, 0.0D0 ),
      $                   ONE = ( 1.0D0, 0.0D0 ) )
       DOUBLE PRECISION   RZERO
@@ -2762,7 +2762,7 @@
 *
 *     .. Parameters ..
       COMPLEX*16         ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ), 
+      PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                   ONE = ( 1.0D0, 0.0D0 ) )
       COMPLEX*16         ROGUE
       PARAMETER          ( ROGUE = ( -1.0D10, 1.0D10 ) )

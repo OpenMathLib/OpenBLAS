@@ -34,7 +34,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **************************************************************************************/
 
 #include "common.h"
-#include <complex.h>
 
 
 #if defined(POWER8) 
@@ -43,8 +42,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #ifndef HAVE_KERNEL_8
-
-static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) __attribute__ ((noinline));
 
 static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 {

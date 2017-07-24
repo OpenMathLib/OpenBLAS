@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYEVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyevd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssyevd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyevd.f"> 
+*> Download SSYEVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyevd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssyevd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyevd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
 *                          LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, LDA, LIWORK, LWORK, N
@@ -29,7 +29,7 @@
 *       INTEGER            IWORK( * )
 *       REAL               A( LDA, * ), W( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -114,7 +114,7 @@
 *>          The dimension of the array WORK.
 *>          If N <= 1,               LWORK must be at least 1.
 *>          If JOBZ = 'N' and N > 1, LWORK must be at least 2*N+1.
-*>          If JOBZ = 'V' and N > 1, LWORK must be at least 
+*>          If JOBZ = 'V' and N > 1, LWORK must be at least
 *>                                                1 + 6*N + 2*N**2.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
@@ -162,12 +162,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup realSYeigen
 *
@@ -183,10 +183,10 @@
       SUBROUTINE SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
      $                   LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -275,7 +275,7 @@
          CALL XERBLA( 'SSYEVD', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         RETURN 
+         RETURN
       END IF
 *
 *     Quick return if possible
@@ -287,7 +287,7 @@
          W( 1 ) = A( 1, 1 )
          IF( WANTZ )
      $      A( 1, 1 ) = ONE
-         RETURN 
+         RETURN
       END IF
 *
 *     Get machine constants.

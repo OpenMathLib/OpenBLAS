@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASD1 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasd1.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasd1.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasd1.f"> 
+*> Download SLASD1 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasd1.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasd1.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasd1.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLASD1( NL, NR, SQRE, D, ALPHA, BETA, U, LDU, VT, LDVT,
 *                          IDXQ, IWORK, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDU, LDVT, NL, NR, SQRE
 *       REAL               ALPHA, BETA
@@ -29,7 +29,7 @@
 *       INTEGER            IDXQ( * ), IWORK( * )
 *       REAL               D( * ), U( LDU, * ), VT( LDVT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -60,7 +60,7 @@
 *>
 *>    The first stage consists of deflating the size of the problem
 *>    when there are multiple singular values or when there are zeros in
-*>    the Z vector.  For each such occurence the dimension of the
+*>    the Z vector.  For each such occurrence the dimension of the
 *>    secular equation problem is reduced by one.  This stage is
 *>    performed by the routine SLASD2.
 *>
@@ -156,7 +156,7 @@
 *>         The leading dimension of the array VT.  LDVT >= max( 1, M ).
 *> \endverbatim
 *>
-*> \param[out] IDXQ
+*> \param[in,out] IDXQ
 *> \verbatim
 *>          IDXQ is INTEGER array, dimension (N)
 *>         This contains the permutation which will reintegrate the
@@ -185,14 +185,14 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -204,10 +204,10 @@
       SUBROUTINE SLASD1( NL, NR, SQRE, D, ALPHA, BETA, U, LDU, VT, LDVT,
      $                   IDXQ, IWORK, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.6.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDU, LDVT, NL, NR, SQRE

@@ -43,7 +43,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_8
 
-static void ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
+static FLOAT ddot_kernel_8 (BLASLONG n, FLOAT *x, FLOAT *y)
 {
 	BLASLONG register i = 0;
 	FLOAT dot = 0.0;
@@ -62,8 +62,7 @@ static void ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
               i+=8 ;
 
        }
-       *d += dot;
-
+       return dot;
 }
 
 #endif
@@ -83,7 +82,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 		BLASLONG n1 = n & -16;
 
 		if ( n1 )
-			ddot_kernel_8(n1, x, y , &dot );
+			dot = ddot_kernel_8(n1, x, y);
 
 		i = n1;
 		while(i < n)

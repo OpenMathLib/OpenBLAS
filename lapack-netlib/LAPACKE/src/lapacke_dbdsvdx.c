@@ -28,20 +28,20 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dbdsvdx
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_dbdsvdx( int matrix_layout, char uplo, char jobz, char range,
                            lapack_int n, double* d, double* e,
-                           lapack_int vl, lapack_int vu,
-                           lapack_int il, lapack_int iu, lapack_int ns,
+                           double vl, double vu,
+                           lapack_int il, lapack_int iu, lapack_int* ns,
                            double* s, double* z, lapack_int ldz,
                            lapack_int* superb )
 {
     lapack_int info = 0;
-    lapack_int lwork = 14*n;
+    lapack_int lwork = MAX(14*n,1);
     double* work = NULL;
     lapack_int* iwork = NULL;
     lapack_int i;
@@ -54,7 +54,7 @@ lapack_int LAPACKE_dbdsvdx( int matrix_layout, char uplo, char jobz, char range,
     if( LAPACKE_d_nancheck( n, d, 1 ) ) {
         return -6;
     }
-    if( LAPACKE_d_nancheck( n, e, 1 ) ) {
+    if( LAPACKE_d_nancheck( n - 1, e, 1 ) ) {
         return -7;
     }
 #endif
@@ -64,14 +64,14 @@ lapack_int LAPACKE_dbdsvdx( int matrix_layout, char uplo, char jobz, char range,
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
     }
-    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * (12*n) );
+    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * MAX(12*n,1) );
     if( iwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_1;
     }
     /* Call middle-level interface */
     info = LAPACKE_dbdsvdx_work( matrix_layout, uplo, jobz,  range,
-    							 n, d, e, vl, vu, il, iu, ns, s, z,
+    				n, d, e, vl, vu, il, iu, ns, s, z,
                                 ldz, work, iwork);
     /* Backup significant data from working array(s) */
     for( i=0; i<12*n-1; i++ ) {

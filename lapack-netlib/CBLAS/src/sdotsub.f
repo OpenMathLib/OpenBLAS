@@ -12,4 +12,4 @@ c
 c
       dot=sdot(n,x,incx,y,incy)
       return
-      end      
+      end

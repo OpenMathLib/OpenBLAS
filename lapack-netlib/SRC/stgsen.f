@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download STGSEN + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stgsen.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stgsen.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/stgsen.f"> 
+*> Download STGSEN + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stgsen.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stgsen.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/stgsen.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE STGSEN( IJOB, WANTQ, WANTZ, SELECT, N, A, LDA, B, LDB,
 *                          ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, M, PL,
 *                          PR, DIF, WORK, LWORK, IWORK, LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            WANTQ, WANTZ
 *       INTEGER            IJOB, INFO, LDA, LDB, LDQ, LDZ, LIWORK, LWORK,
@@ -35,7 +35,7 @@
 *      $                   B( LDB, * ), BETA( * ), DIF( * ), Q( LDQ, * ),
 *      $                   WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -299,12 +299,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup realOTHERcomputational
 *
@@ -451,10 +451,10 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, M, PL,
      $                   PR, DIF, WORK, LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ
@@ -541,6 +541,7 @@
 *
       M = 0
       PAIR = .FALSE.
+      IF( .NOT.LQUERY .OR. IJOB.NE.0 ) THEN
       DO 10 K = 1, N
          IF( PAIR ) THEN
             PAIR = .FALSE.
@@ -560,6 +561,7 @@
             END IF
          END IF
    10 CONTINUE
+      END IF
 *
       IF( IJOB.EQ.1 .OR. IJOB.EQ.2 .OR. IJOB.EQ.4 ) THEN
          LWMIN = MAX( 1, 4*N+16, 2*M*(N-M) )
@@ -800,7 +802,7 @@
 *
    60 CONTINUE
 *
-*     Compute generalized eigenvalues of reordered pair (A, B) and 
+*     Compute generalized eigenvalues of reordered pair (A, B) and
 *     normalize the generalized Schur form.
 *
       PAIR = .FALSE.

@@ -475,6 +475,14 @@ asum_kernel_L999:
 	vadd.f32	s0 , s0, s1				// set return value
 #endif
 
+#if !defined(__ARM_PCS_VFP)
+#if !defined(DOUBLE)
+	vmov	r0, s0
+#else
+	vmov	r0, r1, d0
+#endif
+#endif
+
 	bx	lr
 
 	EPILOGUE

@@ -2,21 +2,21 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       INTEGER FUNCTION ISAMAX(N,SX,INCX)
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER INCX,N
 *       ..
 *       .. Array Arguments ..
 *       REAL SX(*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -29,12 +29,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup aux_blas
 *
@@ -51,10 +51,10 @@
 *  =====================================================================
       INTEGER FUNCTION ISAMAX(N,SX,INCX)
 *
-*  -- Reference BLAS level1 routine (version 3.6.0) --
+*  -- Reference BLAS level1 routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER INCX,N

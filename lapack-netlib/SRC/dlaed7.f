@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAED7 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed7.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed7.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed7.f"> 
+*> Download DLAED7 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed7.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaed7.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed7.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          LDQ, INDXQ, RHO, CUTPNT, QSTORE, QPTR, PRMPTR,
 *                          PERM, GIVPTR, GIVCOL, GIVNUM, WORK, IWORK,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            CURLVL, CURPBM, CUTPNT, ICOMPQ, INFO, LDQ, N,
 *      $                   QSIZ, TLVLS
@@ -34,7 +34,7 @@
 *       DOUBLE PRECISION   D( * ), GIVNUM( 2, * ), Q( LDQ, * ),
 *      $                   QSTORE( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -59,7 +59,7 @@
 *>
 *>       The first stage consists of deflating the size of the problem
 *>       when there are multiple eigenvalues or if there is a zero in
-*>       the Z vector.  For each such occurence the dimension of the
+*>       the Z vector.  For each such occurrence the dimension of the
 *>       secular equation problem is reduced by one.  This stage is
 *>       performed by the routine DLAED8.
 *>
@@ -239,12 +239,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -260,10 +260,10 @@
      $                   PERM, GIVPTR, GIVCOL, GIVNUM, WORK, IWORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            CURLVL, CURPBM, CUTPNT, ICOMPQ, INFO, LDQ, N,

@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
 *> Download ZUNCSD2BY1 + dependencies
@@ -22,7 +22,7 @@
 *                              X21, LDX21, THETA, U1, LDU1, U2, LDU2, V1T,
 *                              LDV1T, WORK, LWORK, RWORK, LRWORK, IWORK,
 *                              INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU1, JOBU2, JOBV1T
 *       INTEGER            INFO, LDU1, LDU2, LDV1T, LWORK, LDX11, LDX21,
@@ -36,8 +36,8 @@
 *      $                   X11(LDX11,*), X21(LDX21,*)
 *       INTEGER            IWORK(*)
 *       ..
-*    
-* 
+*
+*
 *> \par Purpose:
 *> =============
 *>
@@ -47,18 +47,19 @@
 *> orthonormal columns that has been partitioned into a 2-by-1 block
 *> structure:
 *>
-*>                                [  I  0  0 ]
+*>                                [  I1 0  0 ]
 *>                                [  0  C  0 ]
 *>          [ X11 ]   [ U1 |    ] [  0  0  0 ]
 *>      X = [-----] = [---------] [----------] V1**T .
 *>          [ X21 ]   [    | U2 ] [  0  0  0 ]
 *>                                [  0  S  0 ]
-*>                                [  0  0  I ]
-*> 
+*>                                [  0  0  I2]
+*>
 *> X11 is P-by-Q. The unitary matrices U1, U2, and V1 are P-by-P,
 *> (M-P)-by-(M-P), and Q-by-Q, respectively. C and S are R-by-R
 *> nonnegative diagonal matrices satisfying C^2 + S^2 = I, in which
-*> R = MIN(P,M-P,Q,M-Q).
+*> R = MIN(P,M-P,Q,M-Q). I1 is a K1-by-K1 identity matrix and I2 is a
+*> K2-by-K2 identity matrix, where K1 = MAX(Q+P-M,0), K2 = MAX(Q-P,0).
 *> \endverbatim
 *
 *  Arguments:
@@ -208,7 +209,7 @@
 *> \verbatim
 *>          LRWORK is INTEGER
 *>          The dimension of the array RWORK.
-*> 
+*>
 *>          If LRWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the RWORK array, returns
 *>          this value as the first entry of the work array, and no error
@@ -238,10 +239,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date July 2012
 *
@@ -253,7 +254,7 @@
      $                       LDV1T, WORK, LWORK, RWORK, LRWORK, IWORK,
      $                       INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2012
@@ -271,7 +272,7 @@
      $                   X11(LDX11,*), X21(LDX21,*)
       INTEGER            IWORK(*)
 *     ..
-*  
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -286,6 +287,10 @@
      $                   LORGLQOPT, LORGQR, LORGQRMIN, LORGQROPT,
      $                   LWORKMIN, LWORKOPT, R
       LOGICAL            LQUERY, WANTU1, WANTU2, WANTV1T
+*     ..
+*     .. Local Arrays ..
+      DOUBLE PRECISION   DUM( 1 )
+      COMPLEX*16         CDUM( 1, 1 )
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZBBCSD, ZCOPY, ZLACPY, ZLAPMR, ZLAPMT, ZUNBDB1,
@@ -319,11 +324,11 @@
          INFO = -8
       ELSE IF( LDX21 .LT. MAX( 1, M-P ) ) THEN
          INFO = -10
-      ELSE IF( WANTU1 .AND. LDU1 .LT. P ) THEN
+      ELSE IF( WANTU1 .AND. LDU1 .LT. MAX( 1, P ) ) THEN
          INFO = -13
-      ELSE IF( WANTU2 .AND. LDU2 .LT. M - P ) THEN
+      ELSE IF( WANTU2 .AND. LDU2 .LT. MAX( 1, M - P ) ) THEN
          INFO = -15
-      ELSE IF( WANTV1T .AND. LDV1T .LT. Q ) THEN
+      ELSE IF( WANTV1T .AND. LDV1T .LT. MAX( 1, Q ) ) THEN
          INFO = -17
       END IF
 *
@@ -379,99 +384,118 @@
          IORBDB = ITAUQ1 + MAX( 1, Q )
          IORGQR = ITAUQ1 + MAX( 1, Q )
          IORGLQ = ITAUQ1 + MAX( 1, Q )
+         LORGQRMIN = 1
+         LORGQROPT = 1
+         LORGLQMIN = 1
+         LORGLQOPT = 1
          IF( R .EQ. Q ) THEN
-            CALL ZUNBDB1( M, P, Q, X11, LDX11, X21, LDX21, THETA, 0, 0,
-     $                    0, 0, WORK, -1, CHILDINFO )
+            CALL ZUNBDB1( M, P, Q, X11, LDX11, X21, LDX21, THETA, DUM,
+     $                    CDUM, CDUM, CDUM, WORK, -1, CHILDINFO )
             LORBDB = INT( WORK(1) )
-            IF( P .GE. M-P ) THEN
-               CALL ZUNGQR( P, P, Q, U1, LDU1, 0, WORK(1), -1,
+            IF( WANTU1 .AND. P .GT. 0 ) THEN
+               CALL ZUNGQR( P, P, Q, U1, LDU1, CDUM, WORK(1), -1,
      $                      CHILDINFO )
-               LORGQRMIN = MAX( 1, P )
-               LORGQROPT = INT( WORK(1) )
-            ELSE
-               CALL ZUNGQR( M-P, M-P, Q, U2, LDU2, 0, WORK(1), -1,
+               LORGQRMIN = MAX( LORGQRMIN, P )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
+            ENDIF
+            IF( WANTU2 .AND. M-P .GT. 0 ) THEN
+               CALL ZUNGQR( M-P, M-P, Q, U2, LDU2, CDUM, WORK(1), -1,
      $                      CHILDINFO )
-               LORGQRMIN = MAX( 1, M-P )
-               LORGQROPT = INT( WORK(1) )
+               LORGQRMIN = MAX( LORGQRMIN, M-P )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
             END IF
-            CALL ZUNGLQ( MAX(0,Q-1), MAX(0,Q-1), MAX(0,Q-1), V1T, LDV1T,
-     $                   0, WORK(1), -1, CHILDINFO )
-            LORGLQMIN = MAX( 1, Q-1 )
-            LORGLQOPT = INT( WORK(1) )
+            IF( WANTV1T .AND. Q .GT. 0 ) THEN
+               CALL ZUNGLQ( Q-1, Q-1, Q-1, V1T, LDV1T,
+     $                      CDUM, WORK(1), -1, CHILDINFO )
+               LORGLQMIN = MAX( LORGLQMIN, Q-1 )
+               LORGLQOPT = MAX( LORGLQOPT, INT( WORK(1) ) )
+            END IF
             CALL ZBBCSD( JOBU1, JOBU2, JOBV1T, 'N', 'N', M, P, Q, THETA,
-     $                   0, U1, LDU1, U2, LDU2, V1T, LDV1T, 0, 1, 0, 0,
-     $                   0, 0, 0, 0, 0, 0, RWORK(1), -1, CHILDINFO )
+     $                   DUM, U1, LDU1, U2, LDU2, V1T, LDV1T, CDUM, 1,
+     $                   DUM, DUM, DUM, DUM, DUM, DUM, DUM, DUM,
+     $                   RWORK(1), -1, CHILDINFO )
             LBBCSD = INT( RWORK(1) )
          ELSE IF( R .EQ. P ) THEN
-            CALL ZUNBDB2( M, P, Q, X11, LDX11, X21, LDX21, THETA, 0, 0,
-     $                    0, 0, WORK(1), -1, CHILDINFO )
+            CALL ZUNBDB2( M, P, Q, X11, LDX11, X21, LDX21, THETA, DUM,
+     $                    CDUM, CDUM, CDUM, WORK(1), -1, CHILDINFO )
             LORBDB = INT( WORK(1) )
-            IF( P-1 .GE. M-P ) THEN
-               CALL ZUNGQR( P-1, P-1, P-1, U1(2,2), LDU1, 0, WORK(1),
+            IF( WANTU1 .AND. P .GT. 0 ) THEN
+               CALL ZUNGQR( P-1, P-1, P-1, U1(2,2), LDU1, CDUM, WORK(1),
      $                      -1, CHILDINFO )
-               LORGQRMIN = MAX( 1, P-1 )
-               LORGQROPT = INT( WORK(1) )
-            ELSE
-               CALL ZUNGQR( M-P, M-P, Q, U2, LDU2, 0, WORK(1), -1,
-     $                      CHILDINFO )
-               LORGQRMIN = MAX( 1, M-P )
-               LORGQROPT = INT( WORK(1) )
+               LORGQRMIN = MAX( LORGQRMIN, P-1 )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
             END IF
-            CALL ZUNGLQ( Q, Q, R, V1T, LDV1T, 0, WORK(1), -1,
-     $                   CHILDINFO )
-            LORGLQMIN = MAX( 1, Q )
-            LORGLQOPT = INT( WORK(1) )
+            IF( WANTU2 .AND. M-P .GT. 0 ) THEN
+               CALL ZUNGQR( M-P, M-P, Q, U2, LDU2, CDUM, WORK(1), -1,
+     $                      CHILDINFO )
+               LORGQRMIN = MAX( LORGQRMIN, M-P )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
+            END IF
+            IF( WANTV1T .AND. Q .GT. 0 ) THEN
+               CALL ZUNGLQ( Q, Q, R, V1T, LDV1T, CDUM, WORK(1), -1,
+     $                      CHILDINFO )
+               LORGLQMIN = MAX( LORGLQMIN, Q )
+               LORGLQOPT = MAX( LORGLQOPT, INT( WORK(1) ) )
+            END IF
             CALL ZBBCSD( JOBV1T, 'N', JOBU1, JOBU2, 'T', M, Q, P, THETA,
-     $                   0, V1T, LDV1T, 0, 1, U1, LDU1, U2, LDU2, 0, 0,
-     $                   0, 0, 0, 0, 0, 0, RWORK(1), -1, CHILDINFO )
+     $                   DUM, V1T, LDV1T, CDUM, 1, U1, LDU1, U2, LDU2,
+     $                   DUM, DUM, DUM, DUM, DUM, DUM, DUM, DUM,
+     $                   RWORK(1), -1, CHILDINFO )
             LBBCSD = INT( RWORK(1) )
          ELSE IF( R .EQ. M-P ) THEN
-            CALL ZUNBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA, 0, 0,
-     $                    0, 0, WORK(1), -1, CHILDINFO )
+            CALL ZUNBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA, DUM,
+     $                    CDUM, CDUM, CDUM, WORK(1), -1, CHILDINFO )
             LORBDB = INT( WORK(1) )
-            IF( P .GE. M-P-1 ) THEN
-               CALL ZUNGQR( P, P, Q, U1, LDU1, 0, WORK(1), -1,
+            IF( WANTU1 .AND. P .GT. 0 ) THEN
+               CALL ZUNGQR( P, P, Q, U1, LDU1, CDUM, WORK(1), -1,
      $                      CHILDINFO )
-               LORGQRMIN = MAX( 1, P )
-               LORGQROPT = INT( WORK(1) )
-            ELSE
-               CALL ZUNGQR( M-P-1, M-P-1, M-P-1, U2(2,2), LDU2, 0,
-     $                      WORK(1), -1, CHILDINFO )
-               LORGQRMIN = MAX( 1, M-P-1 )
-               LORGQROPT = INT( WORK(1) )
+               LORGQRMIN = MAX( LORGQRMIN, P )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
             END IF
-            CALL ZUNGLQ( Q, Q, R, V1T, LDV1T, 0, WORK(1), -1,
-     $                   CHILDINFO )
-            LORGLQMIN = MAX( 1, Q )
-            LORGLQOPT = INT( WORK(1) )
+            IF( WANTU2 .AND. M-P .GT. 0 ) THEN
+               CALL ZUNGQR( M-P-1, M-P-1, M-P-1, U2(2,2), LDU2, CDUM,
+     $                      WORK(1), -1, CHILDINFO )
+               LORGQRMIN = MAX( LORGQRMIN, M-P-1 )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
+            END IF
+            IF( WANTV1T .AND. Q .GT. 0 ) THEN
+               CALL ZUNGLQ( Q, Q, R, V1T, LDV1T, CDUM, WORK(1), -1,
+     $                      CHILDINFO )
+               LORGLQMIN = MAX( LORGLQMIN, Q )
+               LORGLQOPT = MAX( LORGLQOPT, INT( WORK(1) ) )
+            END IF
             CALL ZBBCSD( 'N', JOBV1T, JOBU2, JOBU1, 'T', M, M-Q, M-P,
-     $                   THETA, 0, 0, 1, V1T, LDV1T, U2, LDU2, U1, LDU1,
-     $                   0, 0, 0, 0, 0, 0, 0, 0, RWORK(1), -1,
-     $                   CHILDINFO )
+     $                   THETA, DUM, CDUM, 1, V1T, LDV1T, U2, LDU2, U1,
+     $                   LDU1, DUM, DUM, DUM, DUM, DUM, DUM, DUM, DUM,
+     $                   RWORK(1), -1, CHILDINFO )
             LBBCSD = INT( RWORK(1) )
          ELSE
-            CALL ZUNBDB4( M, P, Q, X11, LDX11, X21, LDX21, THETA, 0, 0,
-     $                    0, 0, 0, WORK(1), -1, CHILDINFO )
+            CALL ZUNBDB4( M, P, Q, X11, LDX11, X21, LDX21, THETA, DUM,
+     $                    CDUM, CDUM, CDUM, CDUM, WORK(1), -1, CHILDINFO
+     $                  )
             LORBDB = M + INT( WORK(1) )
-            IF( P .GE. M-P ) THEN
-               CALL ZUNGQR( P, P, M-Q, U1, LDU1, 0, WORK(1), -1,
+            IF( WANTU1 .AND. P .GT. 0 ) THEN
+               CALL ZUNGQR( P, P, M-Q, U1, LDU1, CDUM, WORK(1), -1,
      $                      CHILDINFO )
-               LORGQRMIN = MAX( 1, P )
-               LORGQROPT = INT( WORK(1) )
-            ELSE
-               CALL ZUNGQR( M-P, M-P, M-Q, U2, LDU2, 0, WORK(1), -1,
-     $                      CHILDINFO )
-               LORGQRMIN = MAX( 1, M-P )
-               LORGQROPT = INT( WORK(1) )
+               LORGQRMIN = MAX( LORGQRMIN, P )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
             END IF
-            CALL ZUNGLQ( Q, Q, Q, V1T, LDV1T, 0, WORK(1), -1,
-     $                   CHILDINFO )
-            LORGLQMIN = MAX( 1, Q )
-            LORGLQOPT = INT( WORK(1) )
+            IF( WANTU2 .AND. M-P .GT. 0 ) THEN
+               CALL ZUNGQR( M-P, M-P, M-Q, U2, LDU2, CDUM, WORK(1), -1,
+     $                      CHILDINFO )
+               LORGQRMIN = MAX( LORGQRMIN, M-P )
+               LORGQROPT = MAX( LORGQROPT, INT( WORK(1) ) )
+            END IF
+            IF( WANTV1T .AND. Q .GT. 0 ) THEN
+               CALL ZUNGLQ( Q, Q, Q, V1T, LDV1T, CDUM, WORK(1), -1,
+     $                      CHILDINFO )
+               LORGLQMIN = MAX( LORGLQMIN, Q )
+               LORGLQOPT = MAX( LORGLQOPT, INT( WORK(1) ) )
+            END IF
             CALL ZBBCSD( JOBU2, JOBU1, 'N', JOBV1T, 'N', M, M-P, M-Q,
-     $                   THETA, 0, U2, LDU2, U1, LDU1, 0, 1, V1T, LDV1T,
-     $                   0, 0, 0, 0, 0, 0, 0, 0, RWORK(1), -1,
-     $                   CHILDINFO )
+     $                   THETA, DUM, U2, LDU2, U1, LDU1, CDUM, 1, V1T,
+     $                   LDV1T, DUM, DUM, DUM, DUM, DUM, DUM, DUM, DUM,
+     $                   RWORK(1), -1, CHILDINFO )
             LBBCSD = INT( RWORK(1) )
          END IF
          LRWORKMIN = IBBCSD+LBBCSD-1
@@ -533,16 +557,16 @@
             CALL ZUNGLQ( Q-1, Q-1, Q-1, V1T(2,2), LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL ZBBCSD( JOBU1, JOBU2, JOBV1T, 'N', 'N', M, P, Q, THETA,
-     $                RWORK(IPHI), U1, LDU1, U2, LDU2, V1T, LDV1T, 0, 1,
-     $                RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
+     $                RWORK(IPHI), U1, LDU1, U2, LDU2, V1T, LDV1T, CDUM,
+     $                1, RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
      $                RWORK(IB12E), RWORK(IB21D), RWORK(IB21E),
      $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place zero submatrices in
 *        preferred positions
 *
@@ -587,16 +611,16 @@
             CALL ZUNGLQ( Q, Q, R, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL ZBBCSD( JOBV1T, 'N', JOBU1, JOBU2, 'T', M, Q, P, THETA,
-     $                RWORK(IPHI), V1T, LDV1T, 0, 1, U1, LDU1, U2, LDU2,
-     $                RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
+     $                RWORK(IPHI), V1T, LDV1T, CDUM, 1, U1, LDU1, U2,
+     $                LDU2, RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
      $                RWORK(IB12E), RWORK(IB21D), RWORK(IB21E),
      $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD), LBBCSD,
      $                CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *
@@ -642,16 +666,16 @@
             CALL ZUNGLQ( Q, Q, R, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL ZBBCSD( 'N', JOBV1T, JOBU2, JOBU1, 'T', M, M-Q, M-P,
-     $                THETA, RWORK(IPHI), 0, 1, V1T, LDV1T, U2, LDU2,
+     $                THETA, RWORK(IPHI), CDUM, 1, V1T, LDV1T, U2, LDU2,
      $                U1, LDU1, RWORK(IB11D), RWORK(IB11E),
      $                RWORK(IB12D), RWORK(IB12E), RWORK(IB21D),
      $                RWORK(IB21E), RWORK(IB22D), RWORK(IB22E),
      $                RWORK(IBBCSD), LBBCSD, CHILDINFO )
-*   
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *
@@ -711,16 +735,16 @@
             CALL ZUNGLQ( Q, Q, Q, V1T, LDV1T, WORK(ITAUQ1),
      $                   WORK(IORGLQ), LORGLQ, CHILDINFO )
          END IF
-*   
+*
 *        Simultaneously diagonalize X11 and X21.
-*   
+*
          CALL ZBBCSD( JOBU2, JOBU1, 'N', JOBV1T, 'N', M, M-P, M-Q,
-     $                THETA, RWORK(IPHI), U2, LDU2, U1, LDU1, 0, 1, V1T,
-     $                LDV1T, RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
-     $                RWORK(IB12E), RWORK(IB21D), RWORK(IB21E),
-     $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD), LBBCSD,
-     $                CHILDINFO )
-*   
+     $                THETA, RWORK(IPHI), U2, LDU2, U1, LDU1, CDUM, 1,
+     $                V1T, LDV1T, RWORK(IB11D), RWORK(IB11E),
+     $                RWORK(IB12D), RWORK(IB12E), RWORK(IB21D),
+     $                RWORK(IB21E), RWORK(IB22D), RWORK(IB22E),
+     $                RWORK(IBBCSD), LBBCSD, CHILDINFO )
+*
 *        Permute rows and columns to place identity submatrices in
 *        preferred positions
 *

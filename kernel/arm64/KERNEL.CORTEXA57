@@ -75,14 +75,29 @@ SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
 DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
 DTRMMKERNEL    =  dtrmm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
+
 ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
+
+ifeq ($(DGEMM_UNROLL_M), 8)
+DGEMMINCOPY    =  dgemm_ncopy_$(DGEMM_UNROLL_M).S
+DGEMMITCOPY    =  dgemm_tcopy_$(DGEMM_UNROLL_M).S
+else
 DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
 DGEMMITCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_M).c
+endif
+
 DGEMMINCOPYOBJ =  dgemm_incopy.o
 DGEMMITCOPYOBJ =  dgemm_itcopy.o
 endif
+
+ifeq ($(DGEMM_UNROLL_N), 4)
+DGEMMONCOPY    =  dgemm_ncopy_$(DGEMM_UNROLL_N).S
+DGEMMOTCOPY    =  dgemm_tcopy_$(DGEMM_UNROLL_N).S
+else
 DGEMMONCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
+endif
+
 DGEMMONCOPYOBJ =  dgemm_oncopy.o
 DGEMMOTCOPYOBJ =  dgemm_otcopy.o
 

@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> CERRGG tests the error exits for CGGES, CGGESX, CGGEV, CGGEVX,
-*> CGGES3, CGGEV3, CGGGLM, CGGHRD, CGGLSE, CGGQRF, CGGRQF, 
+*> CGGES3, CGGEV3, CGGGLM, CGGHRD, CGGLSE, CGGQRF, CGGRQF,
 *> CGGSVD3, CGGSVP3, CHGEQZ, CTGEVC, CTGEXC, CTGSEN, CTGSJA,
 *> CTGSNA, CTGSYL, and CUNCSD.
 *> \endverbatim
@@ -50,17 +50,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
 *  =====================================================================
       SUBROUTINE CERRGG( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -83,7 +83,7 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            BW( NMAX ), SEL( NMAX )
-      INTEGER            IW( LW )
+      INTEGER            IW( LW ), IDUM(NMAX)
       REAL               LS( NMAX ), R1( NMAX ), R2( NMAX ),
      $                   RCE( NMAX ), RCV( NMAX ), RS( NMAX ), RW( LW )
       COMPLEX            A( NMAX, NMAX ), ALPHA( NMAX ),
@@ -306,57 +306,57 @@
          SRNAMT = 'CGGSVD3'
          INFOT = 1
          CALL CGGSVD3( '/', 'N', 'N', 0, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 2
          CALL CGGSVD3( 'N', '/', 'N', 0, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL CGGSVD3( 'N', 'N', '/', 0, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL CGGSVD3( 'N', 'N', 'N', -1, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 5
          CALL CGGSVD3( 'N', 'N', 'N', 0, -1, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 6
          CALL CGGSVD3( 'N', 'N', 'N', 0, 0, -1, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL CGGSVD3( 'N', 'N', 'N', 2, 1, 1, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 12
          CALL CGGSVD3( 'N', 'N', 'N', 1, 1, 2, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 16
          CALL CGGSVD3( 'U', 'N', 'N', 2, 2, 2, DUMMYK, DUMMYL, A, 2, B,
-     $                 2, R1, R2, U, 1, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 2, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL CGGSVD3( 'N', 'V', 'N', 2, 2, 2, DUMMYK, DUMMYL, A, 2, B,
-     $                 2, R1, R2, U, 2, V, 1, Q, 1, W, RW, IW, LWORK,
+     $                 2, R1, R2, U, 2, V, 1, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL CGGSVD3( 'N', 'N', 'Q', 2, 2, 2, DUMMYK, DUMMYL, A, 2, B,
-     $                 2, R1, R2, U, 2, V, 2, Q, 1, W, RW, IW, LWORK,
+     $                 2, R1, R2, U, 2, V, 2, Q, 1, W, LWORK, RW, IDUM,
      $                 INFO )
          CALL CHKXER( 'CGGSVD3', INFOT, NOUT, LERR, OK )
          NT = NT + 11
@@ -573,56 +573,56 @@
          INFOT = 7
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 -1, 0, 0, A, 1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, 1, A, 1, A, 1, A,
      $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, -1, 0, A, 1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, 1, A, 1, A, 1, A,
      $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 9
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, -1, A, 1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, 1, A, 1, A, 1, A,
      $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 11
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, -1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, 1, A, 1, A, 1, A,
      $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, -1, A, 1, A, 1, A,
      $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, 1, A, -1, A, 1, A,
      $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 24
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, 1, A, 1, A, -1, A,
      $                 1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )
          INFOT = 26
          CALL CUNCSD( 'Y', 'Y', 'Y', 'Y', 'N', 'N',
      $                 1, 1, 1, A, 1, A,
-     $                 1, A, 1, A, 1, A,
+     $                 1, A, 1, A, 1, RS,
      $                 A, 1, A, 1, A, 1, A,
      $                 -1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'CUNCSD', INFOT, NOUT, LERR, OK )

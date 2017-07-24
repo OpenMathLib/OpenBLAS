@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       REAL             FUNCTION CQRT17( TRANS, IRESID, M, N, NRHS, A,
 *                        LDA, X, LDX, B, LDB, C, WORK, LWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            IRESID, LDA, LDB, LDX, LWORK, M, N, NRHS
@@ -19,7 +19,7 @@
 *       COMPLEX            A( LDA, * ), B( LDB, * ), C( LDB, * ),
 *      $                   WORK( LWORK ), X( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -137,12 +137,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
@@ -150,10 +150,10 @@
       REAL             FUNCTION CQRT17( TRANS, IRESID, M, N, NRHS, A,
      $                 LDA, X, LDX, B, LDB, C, WORK, LWORK )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -172,8 +172,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            INFO, ISCL, NCOLS, NROWS
-      REAL               BIGNUM, ERR, NORMA, NORMB, NORMRS, NORMX,
-     $                   SMLNUM
+      REAL               BIGNUM, ERR, NORMA, NORMB, NORMRS, SMLNUM
 *     ..
 *     .. Local Arrays ..
       REAL               RWORK( 1 )

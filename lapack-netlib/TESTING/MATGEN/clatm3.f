@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,20 +11,20 @@
 *       COMPLEX FUNCTION CLATM3( M, N, I, J, ISUB, JSUB, KL, KU, IDIST,
 *                                ISEED, D, IGRADE, DL, DR, IPVTNG, IWORK,
 *                                SPARSE )
-* 
+*
 *       .. Scalar Arguments ..
-*  
+*
 *       INTEGER            I, IDIST, IGRADE, IPVTNG, ISUB, J, JSUB, KL,
 *      $                   KU, M, N
 *       REAL               SPARSE
 *       ..
-*  
+*
 *       .. Array Arguments ..
-*  
+*
 *       INTEGER            ISEED( 4 ), IWORK( * )
 *       COMPLEX            D( * ), DL( * ), DR( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -32,7 +32,7 @@
 *> \verbatim
 *>
 *>    CLATM3 returns the (ISUB,JSUB) entry of a random matrix of
-*>    dimension (M, N) described by the other paramters. (ISUB,JSUB)
+*>    dimension (M, N) described by the other parameters. (ISUB,JSUB)
 *>    is the final position of the (I,J) entry after pivoting
 *>    according to IPVTNG and IWORK. CLATM3 is called by the
 *>    CLATMR routine in order to build random test matrices. No error
@@ -215,12 +215,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex_matgen
 *
@@ -229,10 +229,10 @@
      $                         ISEED, D, IGRADE, DL, DR, IPVTNG, IWORK,
      $                         SPARSE )
 *
-*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
 *

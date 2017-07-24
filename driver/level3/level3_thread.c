@@ -310,7 +310,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
   buffer[0] = sb;
   for (i = 1; i < DIVIDE_RATE; i++) {
-    buffer[i] = buffer[i - 1] + GEMM_Q * ((div_n + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1)) * COMPSIZE;
+    buffer[i] = buffer[i - 1] + GEMM_Q * ((div_n + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N * COMPSIZE;
   }
 
 
@@ -331,7 +331,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       min_i = GEMM_P;
     } else {
       if (min_i > GEMM_P) {
-	min_i = (min_i / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
+	min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
       } else {
 	if (args -> nthreads == 1) l1stride = 0;
       }
@@ -443,7 +443,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	min_i = GEMM_P;
       } else
 	if (min_i > GEMM_P) {
-	  min_i = ((min_i + 1) / 2 + GEMM_UNROLL_M - 1) & ~(GEMM_UNROLL_M - 1);
+	  min_i = (((min_i + 1) / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	}
 
       START_RPCC();

@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DDRVRF4( NOUT, NN, NVAL, THRESH, C1, C2, LDC, CRF, A,
 *      +                    LDA, D_WORK_DLANGE )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDA, LDC, NN, NOUT
 *       DOUBLE PRECISION   THRESH
@@ -20,7 +20,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), C1( LDC, * ), C2( LDC, *),
 *      +                   CRF( * ), D_WORK_DLANGE( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -105,12 +105,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_lin
 *
@@ -118,10 +118,10 @@
       SUBROUTINE DDRVRF4( NOUT, NN, NVAL, THRESH, C1, C2, LDC, CRF, A,
      +                    LDA, D_WORK_DLANGE )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDC, NN, NOUT
@@ -242,12 +242,12 @@
                            NORMA = DLANGE( 'I', N, K, A, LDA,
      +                                      D_WORK_DLANGE )
 *
- 
+
                         ELSE
 *
 *                          In this case we are TRANS, so A is K-by-N
 *
-                           DO J = 1,N 
+                           DO J = 1,N
                               DO I = 1, K
                                  A( I, J) = DLARND( 2, ISEED )
                               END DO
@@ -258,7 +258,7 @@
 *
                         END IF
 *
-*                       Generate C1 our N--by--N symmetric matrix. 
+*                       Generate C1 our N--by--N symmetric matrix.
 *                       Make sure C2 has the same upper/lower part,
 *                       (the one that we do not touch), so
 *                       copy the initial C1 in C2 in it.
@@ -313,7 +313,7 @@
 *
                         RESULT(1) = DLANGE( 'I', N, N, C1, LDC,
      +                                      D_WORK_DLANGE )
-                        RESULT(1) = RESULT(1) 
+                        RESULT(1) = RESULT(1)
      +                              / MAX( ABS( ALPHA ) * NORMA
      +                                   + ABS( BETA ) , ONE )
      +                              / MAX( N , 1 ) / EPS
@@ -323,7 +323,7 @@
                               WRITE( NOUT, * )
                               WRITE( NOUT, FMT = 9999 )
                            END IF
-                           WRITE( NOUT, FMT = 9997 ) 'DSFRK', 
+                           WRITE( NOUT, FMT = 9997 ) 'DSFRK',
      +                        CFORM, UPLO, TRANS, N, K, RESULT(1)
                            NFAIL = NFAIL + 1
                         END IF
@@ -343,7 +343,7 @@
          WRITE( NOUT, FMT = 9995 ) 'DSFRK', NFAIL, NRUN
       END IF
 *
- 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing DSFRK 
+ 9999 FORMAT( 1X, ' *** Error(s) or Failure(s) while testing DSFRK
      +         ***')
  9997 FORMAT( 1X, '     Failure in ',A5,', CFORM=''',A1,''',',
      + ' UPLO=''',A1,''',',' TRANS=''',A1,''',', ' N=',I3,', K =', I3,

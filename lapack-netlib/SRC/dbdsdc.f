@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DBDSDC + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dbdsdc.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dbdsdc.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dbdsdc.f"> 
+*> Download DBDSDC + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dbdsdc.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dbdsdc.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dbdsdc.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DBDSDC( UPLO, COMPQ, N, D, E, U, LDU, VT, LDVT, Q, IQ,
 *                          WORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          COMPQ, UPLO
 *       INTEGER            INFO, LDU, LDVT, N
@@ -30,7 +30,7 @@
 *       DOUBLE PRECISION   D( * ), E( * ), Q( * ), U( LDU, * ),
 *      $                   VT( LDVT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -186,12 +186,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -205,10 +205,10 @@
       SUBROUTINE DBDSDC( UPLO, COMPQ, N, D, E, U, LDU, VT, LDVT, Q, IQ,
      $                   WORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, UPLO
@@ -311,7 +311,7 @@
       WSTART = 1
       QSTART = 3
       IF( ICOMPQ.EQ.1 ) THEN
-         CALL DCOPY( N, D, 1, Q( 1 ), 1 )
+         CALL DCOPY( N,   D, 1, Q( 1 ),   1 )
          CALL DCOPY( N-1, E, 1, Q( N+1 ), 1 )
       END IF
       IF( IUPLO.EQ.2 ) THEN
@@ -335,8 +335,11 @@
 *     If ICOMPQ = 0, use DLASDQ to compute the singular values.
 *
       IF( ICOMPQ.EQ.0 ) THEN
+*        Ignore WSTART, instead using WORK( 1 ), since the two vectors
+*        for CS and -SN above are added only if ICOMPQ == 2,
+*        and adding them exceeds documented WORK size of 4*n.
          CALL DLASDQ( 'U', 0, N, 0, 0, 0, D, E, VT, LDVT, U, LDU, U,
-     $                LDU, WORK( WSTART ), INFO )
+     $                LDU, WORK( 1 ), INFO )
          GO TO 40
       END IF
 *
@@ -412,24 +415,24 @@
       DO 30 I = 1, NM1
          IF( ( ABS( E( I ) ).LT.EPS ) .OR. ( I.EQ.NM1 ) ) THEN
 *
-*        Subproblem found. First determine its size and then
-*        apply divide and conquer on it.
+*           Subproblem found. First determine its size and then
+*           apply divide and conquer on it.
 *
             IF( I.LT.NM1 ) THEN
 *
-*        A subproblem with E(I) small for I < NM1.
+*              A subproblem with E(I) small for I < NM1.
 *
                NSIZE = I - START + 1
             ELSE IF( ABS( E( I ) ).GE.EPS ) THEN
 *
-*        A subproblem with E(NM1) not too small but I = NM1.
+*              A subproblem with E(NM1) not too small but I = NM1.
 *
                NSIZE = N - START + 1
             ELSE
 *
-*        A subproblem with E(NM1) small. This implies an
-*        1-by-1 subproblem at D(N). Solve this 1-by-1 problem
-*        first.
+*              A subproblem with E(NM1) small. This implies an
+*              1-by-1 subproblem at D(N). Solve this 1-by-1 problem
+*              first.
 *
                NSIZE = I - START + 1
                IF( ICOMPQ.EQ.2 ) THEN

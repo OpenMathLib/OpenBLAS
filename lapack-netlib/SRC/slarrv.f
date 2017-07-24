@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLARRV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slarrv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slarrv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slarrv.f"> 
+*> Download SLARRV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slarrv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slarrv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slarrv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -23,7 +23,7 @@
 *                          RTOL1, RTOL2, W, WERR, WGAP,
 *                          IBLOCK, INDEXW, GERS, Z, LDZ, ISUPPZ,
 *                          WORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            DOL, DOU, INFO, LDZ, M, N
 *       REAL               MINRGP, PIVMIN, RTOL1, RTOL2, VL, VU
@@ -35,7 +35,7 @@
 *      $                   WGAP( * ), WORK( * )
 *       REAL              Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -59,12 +59,15 @@
 *> \param[in] VL
 *> \verbatim
 *>          VL is REAL
+*>          Lower bound of the interval that contains the desired
+*>          eigenvalues. VL < VU. Needed to compute gaps on the left or right
+*>          end of the extremal eigenvalues in the desired RANGE.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
 *>          VU is REAL
-*>          Lower and upper bounds of the interval that contains the desired
+*>          Upper bound of the interval that contains the desired
 *>          eigenvalues. VL < VU. Needed to compute gaps on the left or right
 *>          end of the extremal eigenvalues in the desired RANGE.
 *> \endverbatim
@@ -81,7 +84,7 @@
 *>          L is REAL array, dimension (N)
 *>          On entry, the (N-1) subdiagonal elements of the unit
 *>          bidiagonal matrix L are in elements 1 to N-1 of L
-*>          (if the matrix is not splitted.) At the end of each block
+*>          (if the matrix is not split.) At the end of each block
 *>          is stored the corresponding shift as given by SLARRE.
 *>          On exit, L is overwritten.
 *> \endverbatim
@@ -236,7 +239,7 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>
-*>          > 0:  A problem occured in SLARRV.
+*>          > 0:  A problem occurred in SLARRV.
 *>          < 0:  One of the called subroutines signaled an internal problem.
 *>                Needs inspection of the corresponding parameter IINFO
 *>                for further information.
@@ -258,12 +261,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup realOTHERauxiliary
 *
@@ -283,10 +286,10 @@
      $                   IBLOCK, INDEXW, GERS, Z, LDZ, ISUPPZ,
      $                   WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.6.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            DOL, DOU, INFO, LDZ, M, N

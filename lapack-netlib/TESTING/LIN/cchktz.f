@@ -2,15 +2,15 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CCHKTZ( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR, A,
 *                          COPYA, S, TAU, WORK, RWORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NM, NN, NOUT
@@ -22,7 +22,7 @@
 *       REAL               S( * ), RWORK( * )
 *       COMPLEX            A( * ), COPYA( * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -124,12 +124,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex_lin
 *
@@ -137,10 +137,10 @@
       SUBROUTINE CCHKTZ( DOTYPE, NM, MVAL, NN, NVAL, THRESH, TSTERR, A,
      $                   COPYA, S, TAU, WORK, RWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR

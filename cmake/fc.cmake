@@ -3,6 +3,21 @@
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets Fortran related variables.
 
+if (${F_COMPILER} STREQUAL "FLANG")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_FLANG")
+  if (BINARY64)
+    if (INTERFACE64)
+      set(FCOMMON_OPT "${FCOMMON_OPT} -i8")
+    endif ()
+    set(FCOMMON_OPT "${FCOMMON_OPT} -Wall")
+  else ()
+    set(FCOMMON_OPT "${FCOMMON_OPT} -Wall")
+  endif ()
+  if (USE_OPENMP)
+    set(FCOMMON_OPT "${FCOMMON_OPT} -fopenmp")
+  endif ()
+endif ()
+
 if (${F_COMPILER} STREQUAL "G77")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_G77")
   set(FCOMMON_OPT "${FCOMMON_OPT} -Wall")

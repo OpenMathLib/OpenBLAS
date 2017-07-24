@@ -14,7 +14,7 @@ CBLAS_INDEX cblas_idamax( const int N, const double *X, const int incX)
    CBLAS_INDEX iamax;
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX;
-#else 
+#else
    #define F77_N N
    #define F77_incX incX
 #endif

@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function slaset
 * Author: Intel Corporation
-* Generated November 2015
+* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -44,8 +44,8 @@ lapack_int LAPACKE_slaset( int matrix_layout, char uplo, lapack_int m,
     }
 
 /*****************************************************************************
-*  Note: we do not check NaNs in A since the goal of this subroutine is to 
-*  initialized A. It is OK if A has NaNs in input. 
+*  Note: we do not check NaNs in A since the goal of this subroutine is to
+*  initialized A. It is OK if A has NaNs in input.
 *****************************************************************************/
 
 #ifndef LAPACK_DISABLE_NAN_CHECK

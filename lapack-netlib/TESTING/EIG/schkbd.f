@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          ISEED, THRESH, A, LDA, BD, BE, S1, S2, X, LDX,
 *                          Y, Z, Q, LDQ, PT, LDPT, U, VT, WORK, LWORK,
 *                          IWORK, NOUT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDPT, LDQ, LDX, LWORK, NOUT, NRHS,
 *      $                   NSIZES, NTYPES
@@ -26,7 +26,7 @@
 *      $                   VT( LDPT, * ), WORK( * ), X( LDX, * ),
 *      $                   Y( LDX, * ), Z( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -64,7 +64,7 @@
 *>        singular vectors are not computed.
 *>
 *>  SBDSVDX computes the singular value decomposition of the bidiagonal
-*>  matrix B as B = U S V' using bisection and inverse iteration. It is 
+*>  matrix B as B = U S V' using bisection and inverse iteration. It is
 *>  called six times to compute
 *>     1) B = U S1 V', RANGE='A', where S1 is the diagonal matrix of singular
 *>         values and the columns of the matrices U and V are the left
@@ -147,43 +147,43 @@
 *> (19)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                   computing U and V.
 *>  Test SBDSVDX on bidiagonal matrix B
-*> 
+*>
 *>  (20)  | B - U S1 VT | / ( |B| min(M,N) ulp ), VT = V'
-*> 
+*>
 *>  (21)  | I - U' U | / ( min(M,N) ulp )
-*> 
+*>
 *>  (22)  | I - VT VT' | / ( min(M,N) ulp )
-*> 
+*>
 *>  (23)  S1 contains min(M,N) nonnegative values in decreasing order.
 *>        (Return 0 if true, 1/ULP if false.)
-*> 
+*>
 *>  (24)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                    computing U and V.
-*> 
+*>
 *>  (25)  | S1 - U' B VT' | / ( |S| n ulp )    SBDSVDX('V', 'I')
-*> 
+*>
 *>  (26)  | I - U' U | / ( min(M,N) ulp )
-*> 
+*>
 *>  (27)  | I - VT VT' | / ( min(M,N) ulp )
 *>
 *>  (28)  S1 contains min(M,N) nonnegative values in decreasing order.
 *>        (Return 0 if true, 1/ULP if false.)
-*> 
+*>
 *>  (29)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                    computing U and V.
-*> 
+*>
 *>  (30)  | S1 - U' B VT' | / ( |S1| n ulp )   SBDSVDX('V', 'V')
-*> 
+*>
 *>  (31)  | I - U' U | / ( min(M,N) ulp )
-*> 
+*>
 *>  (32)  | I - VT VT' | / ( min(M,N) ulp )
 *>
 *>  (33)  S1 contains min(M,N) nonnegative values in decreasing order.
 *>        (Return 0 if true, 1/ULP if false.)
-*> 
+*>
 *>  (34)  | S1 - S2 | / ( |S1| ulp ), where S2 is computed without
 *>                                    computing U and V.
-*> 
+*>
 *> The possible matrix types are
 *>
 *> (1)  The zero matrix.
@@ -478,12 +478,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup single_eig
 *
@@ -493,10 +493,10 @@
      $                   Y, Z, Q, LDQ, PT, LDPT, U, VT, WORK, LWORK,
      $                   IWORK, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDPT, LDQ, LDX, LWORK, NOUT, NRHS,
@@ -525,18 +525,18 @@
       LOGICAL            BADMM, BADNN, BIDIAG
       CHARACTER          UPLO
       CHARACTER*3        PATH
-      INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, IWBD, 
+      INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, IWBD,
      $                   IWBE, IWBS, IWBZ, IWWORK, J, JCOL, JSIZE,
-     $                   JTYPE, LOG2UI, M, MINWRK, MMAX, MNMAX, MNMIN, 
-     $                   MNMIN2, MQ, MTYPES, N, NFAIL, NMAX, 
+     $                   JTYPE, LOG2UI, M, MINWRK, MMAX, MNMAX, MNMIN,
+     $                   MNMIN2, MQ, MTYPES, N, NFAIL, NMAX,
      $                   NS1, NS2, NTEST
-      REAL               ABSTOL, AMNINV, ANORM, COND, OVFL, RTOVFL, 
-     $                   RTUNFL, TEMP1, TEMP2, TEMP3, ULP, ULPINV, 
-     $                   UNFL, VL, VU                   
+      REAL               ABSTOL, AMNINV, ANORM, COND, OVFL, RTOVFL,
+     $                   RTUNFL, TEMP1, TEMP2, ULP, ULPINV, UNFL,
+     $                   VL, VU
 *     ..
 *     .. Local Arrays ..
-      INTEGER            IDUM( 1 ), IOLDSD( 4 ), ISEED2( 4 ), 
-     $                   KMAGN( MAXTYP ), KMODE( MAXTYP ), 
+      INTEGER            IDUM( 1 ), IOLDSD( 4 ), ISEED2( 4 ),
+     $                   KMAGN( MAXTYP ), KMODE( MAXTYP ),
      $                   KTYPE( MAXTYP )
       REAL               DUM( 1 ), DUMMA( 1 ), RESULT( 40 )
 *     ..
@@ -545,10 +545,10 @@
       EXTERNAL           SLAMCH, SLARND, SSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASUM, SBDSDC, SBDSQR, SBDSVDX, SBDT01, SBDT02, 
-     $                   SBDT03, SBDT04, SCOPY, SGEBRD, SGEMM, SLABAD, 
-     $                   SLACPY, SLAHD2, SLASET, SLATMR, SLATMS,
-     $                   SORGBR, SORT01, XERBLA
+      EXTERNAL           ALASUM, SBDSDC, SBDSQR, SBDSVDX, SBDT01,
+     $                   SBDT02, SBDT03, SBDT04, SCOPY, SGEBRD,
+     $                   SGEMM, SLABAD, SLACPY, SLAHD2, SLASET,
+     $                   SLATMR, SLATMS, SORGBR, SORT01, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, EXP, INT, LOG, MAX, MIN, SQRT
@@ -563,9 +563,9 @@
       COMMON             / SRNAMC / SRNAMT
 *     ..
 *     .. Data statements ..
-      DATA               KTYPE / 1, 2, 5*4, 5*6, 3*9, 10 /
-      DATA               KMAGN / 2*1, 3*1, 2, 3, 3*1, 2, 3, 1, 2, 3, 0 /
-      DATA               KMODE / 2*0, 4, 3, 1, 4, 4, 4, 3, 1, 4, 4, 0,
+      DATA            KTYPE / 1, 2, 5*4, 5*6, 3*9, 10 /
+      DATA            KMAGN / 2*1, 3*1, 2, 3, 3*1, 2, 3, 1, 2, 3, 0 /
+      DATA            KMODE / 2*0, 4, 3, 1, 4, 4, 4, 3, 1, 4, 4, 0,
      $                   0, 0, 0 /
 *     ..
 *     .. Executable Statements ..
@@ -1143,7 +1143,7 @@
             IWBD = IWBS + MNMIN
             IWBE = IWBD + MNMIN
             IWBZ = IWBE + MNMIN
-            IWWORK = IWBZ + MNMIN*(MNMIN*2+1)
+            IWWORK = IWBZ + 2*MNMIN*(MNMIN+1)
             MNMIN2 = MAX( 1,MNMIN*2 )
 *
             CALL SCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
@@ -1151,10 +1151,10 @@
      $         CALL SCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
 *
             CALL SBDSVDX( UPLO, 'V', 'A', MNMIN, WORK( IWBD ),
-     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS1, S1, 
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO)
-*  
+*
 *           Check error code from SBDSVDX.
 *
             IF( IINFO.NE.0 ) THEN
@@ -1190,17 +1190,17 @@
 *
             CALL SCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
             IF( MNMIN.GT.0 )
-     $         CALL SCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 ) 
-*     
+     $         CALL SCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
             CALL SBDSVDX( UPLO, 'N', 'A', MNMIN, WORK( IWBD ),
      $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS2, S2,
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from SBDSVDX.
 *
             IF( IINFO.NE.0 ) THEN
-               WRITE( NOUT, FMT = 9998 )'SBDSVDX(values,A)', IINFO, 
+               WRITE( NOUT, FMT = 9998 )'SBDSVDX(values,A)', IINFO,
      $            M, N, JTYPE, IOLDSD
                INFO = ABS( IINFO )
                IF( IINFO.LT.0 ) THEN
@@ -1224,11 +1224,11 @@
 *
             CALL SBDT03( UPLO, MNMIN, 1, BD, BE, U, LDPT, S1, VT,
      $                   LDPT, WORK( IWBS+MNMIN ), RESULT( 20 ) )
-            CALL SORT01( 'Columns', MNMIN, MNMIN, U, LDPT, 
-     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+            CALL SORT01( 'Columns', MNMIN, MNMIN, U, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 21 ) )
-            CALL SORT01( 'Rows', MNMIN, MNMIN, VT, LDPT, 
-     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+            CALL SORT01( 'Rows', MNMIN, MNMIN, VT, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 22) )
 *
             RESULT( 23 ) = ZERO
@@ -1272,14 +1272,14 @@
                   IL = ITEMP
                END IF
             END IF
-*       
+*
             CALL SCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
             IF( MNMIN.GT.0 )
      $         CALL SCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
 *
             CALL SBDSVDX( UPLO, 'V', 'I', MNMIN, WORK( IWBD ),
-     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS1, S1, 
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO)
 *
 *           Check error code from SBDSVDX.
@@ -1313,7 +1313,7 @@
 *
             CALL SBDSVDX( UPLO, 'N', 'I', MNMIN, WORK( IWBD ),
      $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS2, S2,
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from SBDSVDX.
@@ -1337,13 +1337,13 @@
 *                     non-increasing order and are non-negative
 *                29:  Compare SBDSVDX with and without singular vectors
 *
-            CALL SBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U, 
-     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ), 
+            CALL SBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U,
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ),
      $                   RESULT( 25 ) )
-            CALL SORT01( 'Columns', MNMIN, NS1, U, LDPT, 
-     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN, 
+            CALL SORT01( 'Columns', MNMIN, NS1, U, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 26 ) )
-            CALL SORT01( 'Rows', NS1, MNMIN, VT, LDPT, 
+            CALL SORT01( 'Rows', NS1, MNMIN, VT, LDPT,
      $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 27 ) )
 *
@@ -1368,8 +1368,8 @@
   230       CONTINUE
             RESULT( 29 ) = TEMP2
 *
-*           Use SBDSVDX with RANGE='V': determine the values VL and VU 
-*           of the IL-th and IU-th singular values and ask for all 
+*           Use SBDSVDX with RANGE='V': determine the values VL and VU
+*           of the IL-th and IU-th singular values and ask for all
 *           singular values in this range.
 *
             CALL SCOPY( MNMIN, WORK( IWBS ), 1, S1, 1 )
@@ -1395,21 +1395,21 @@
             ELSE
                VL = ZERO
                VU = ONE
-            END IF 
-* 
+            END IF
+*
             CALL SCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
             IF( MNMIN.GT.0 )
      $         CALL SCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
 *
             CALL SBDSVDX( UPLO, 'V', 'V', MNMIN, WORK( IWBD ),
-     $                    WORK( IWBE ), VL, VU, 0, 0, NS1, S1, 
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBE ), VL, VU, 0, 0, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from SBDSVDX.
 *
             IF( IINFO.NE.0 ) THEN
-               WRITE( NOUT, FMT = 9998 )'SBDSVDX(vects,V)', IINFO, 
+               WRITE( NOUT, FMT = 9998 )'SBDSVDX(vects,V)', IINFO,
      $            M, N, JTYPE, IOLDSD
                INFO = ABS( IINFO )
                IF( IINFO.LT.0 ) THEN
@@ -1437,7 +1437,7 @@
 *
             CALL SBDSVDX( UPLO, 'N', 'V', MNMIN, WORK( IWBD ),
      $                    WORK( IWBE ), VL, VU, 0, 0, NS2, S2,
-     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ), 
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
      $                    IWORK, IINFO )
 *
 *           Check error code from SBDSVDX.
@@ -1461,13 +1461,13 @@
 *                     non-increasing order and are non-negative
 *                34:  Compare SBDSVDX with and without singular vectors
 *
-            CALL SBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U, 
-     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ), 
+            CALL SBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U,
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ),
      $                   RESULT( 30 ) )
-            CALL SORT01( 'Columns', MNMIN, NS1, U, LDPT, 
+            CALL SORT01( 'Columns', MNMIN, NS1, U, LDPT,
      $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 31 ) )
-            CALL SORT01( 'Rows', NS1, MNMIN, VT, LDPT, 
+            CALL SORT01( 'Rows', NS1, MNMIN, VT, LDPT,
      $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
      $                   RESULT( 32 ) )
 *

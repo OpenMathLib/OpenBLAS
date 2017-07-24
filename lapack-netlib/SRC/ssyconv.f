@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYCONV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyconv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssyconv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyconv.f"> 
+*> Download SSYCONV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyconv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssyconv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyconv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYCONV( UPLO, WAY, N, A, LDA, IPIV, E, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO, WAY
 *       INTEGER            INFO, LDA, N
@@ -28,7 +28,7 @@
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), E( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -36,7 +36,7 @@
 *> \verbatim
 *>
 *> SSYCONV convert A given by TRF into L and D and vice-versa.
-*> Get Non-diag elements of D (returned in workspace) and 
+*> Get Non-diag elements of D (returned in workspace) and
 *> apply or reverse permutation done in TRF.
 *> \endverbatim
 *
@@ -55,7 +55,7 @@
 *> \param[in] WAY
 *> \verbatim
 *>          WAY is CHARACTER*1
-*>          = 'C': Convert 
+*>          = 'C': Convert
 *>          = 'R': Revert
 *> \endverbatim
 *>
@@ -102,22 +102,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup realSYcomputational
 *
 *  =====================================================================
       SUBROUTINE SSYCONV( UPLO, WAY, N, A, LDA, IPIV, E, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, WAY
@@ -194,7 +194,7 @@
             END DO
 *
 *        Convert PERMUTATIONS
-*  
+*
          I=N
          DO WHILE ( I .GE. 1 )
             IF( IPIV(I) .GT. 0) THEN
@@ -226,7 +226,7 @@
 *
 *
 *        Revert PERMUTATIONS
-*  
+*
             I=1
             DO WHILE ( I .LE. N )
                IF( IPIV(I) .GT. 0 ) THEN

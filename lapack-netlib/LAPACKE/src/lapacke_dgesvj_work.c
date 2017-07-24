@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function dgesvj
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -48,8 +48,8 @@ lapack_int LAPACKE_dgesvj_work( int matrix_layout, char joba, char jobu,
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int nrows_v = LAPACKE_lsame( jobv, 'v' ) ? n :
-                             ( LAPACKE_lsame( jobv, 'a' ) ? mv : 1);
+        lapack_int nrows_v = LAPACKE_lsame( jobv, 'v' ) ? MAX(0,n) :
+                           ( LAPACKE_lsame( jobv, 'a' ) ? MAX(0,mv) : 0);
         lapack_int lda_t = MAX(1,m);
         lapack_int ldv_t = MAX(1,nrows_v);
         double* a_t = NULL;

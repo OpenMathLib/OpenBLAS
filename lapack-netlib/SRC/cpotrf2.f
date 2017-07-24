@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       RECURSIVE SUBROUTINE CPOTRF2( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -17,7 +17,7 @@
 *       .. Array Arguments ..
 *       COMPLEX            A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -41,7 +41,7 @@
 *>
 *> The subroutine calls itself to factor A11. Update and scale A21
 *> or A12, update A22 then calls itself to factor A22.
-*> 
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -62,7 +62,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is DOUBLE PRECISION array, dimension (LDA,N)
+*>          A is COMPLEX array, dimension (LDA,N)
 *>          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
 *>          N-by-N upper triangular part of A contains the upper
 *>          triangular part of the matrix A, and the strictly lower
@@ -94,22 +94,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complexPOcomputational
 *
 *  =====================================================================
       RECURSIVE SUBROUTINE CPOTRF2( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -128,7 +128,7 @@
       PARAMETER          ( CONE = (1.0E+0, 0.0E+0) )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            UPPER            
+      LOGICAL            UPPER
       INTEGER            N1, N2, IINFO
       REAL               AJJ
 *     ..
@@ -193,7 +193,7 @@
          IF ( IINFO.NE.0 ) THEN
             INFO = IINFO
             RETURN
-         END IF    
+         END IF
 *
 *        Compute the Cholesky factorization A = U**H*U
 *
@@ -205,7 +205,7 @@
      $                  A( 1, 1 ), LDA, A( 1, N1+1 ), LDA )
 *
 *           Update and factor A22
-*          
+*
             CALL CHERK( UPLO, 'C', N2, N1, -ONE, A( 1, N1+1 ), LDA,
      $                  ONE, A( N1+1, N1+1 ), LDA )
 *

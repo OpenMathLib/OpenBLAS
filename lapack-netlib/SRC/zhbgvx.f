@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZHBGVX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhbgvx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhbgvx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhbgvx.f"> 
+*> Download ZHBGVX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhbgvx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhbgvx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhbgvx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE ZHBGVX( JOBZ, RANGE, UPLO, N, KA, KB, AB, LDAB, BB,
 *                          LDBB, Q, LDQ, VL, VU, IL, IU, ABSTOL, M, W, Z,
 *                          LDZ, WORK, RWORK, IWORK, IFAIL, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, RANGE, UPLO
 *       INTEGER            IL, INFO, IU, KA, KB, LDAB, LDBB, LDQ, LDZ, M,
@@ -34,7 +34,7 @@
 *       COMPLEX*16         AB( LDAB, * ), BB( LDBB, * ), Q( LDQ, * ),
 *      $                   WORK( * ), Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -153,13 +153,17 @@
 *> \param[in] VL
 *> \verbatim
 *>          VL is DOUBLE PRECISION
+*>
+*>          If RANGE='V', the lower bound of the interval to
+*>          be searched for eigenvalues. VL < VU.
+*>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
 *>          VU is DOUBLE PRECISION
 *>
-*>          If RANGE='V', the lower and upper bounds of the interval to
+*>          If RANGE='V', the upper bound of the interval to
 *>          be searched for eigenvalues. VL < VU.
 *>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
@@ -167,14 +171,19 @@
 *> \param[in] IL
 *> \verbatim
 *>          IL is INTEGER
+*>
+*>          If RANGE='I', the index of the
+*>          smallest eigenvalue to be returned.
+*>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
+*>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
 *>
 *> \param[in] IU
 *> \verbatim
 *>          IU is INTEGER
 *>
-*>          If RANGE='I', the indices (in ascending order) of the
-*>          smallest and largest eigenvalues to be returned.
+*>          If RANGE='I', the index of the
+*>          largest eigenvalue to be returned.
 *>          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
 *>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
@@ -272,12 +281,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex16OTHEReigen
 *
@@ -291,10 +300,10 @@
      $                   LDBB, Q, LDQ, VL, VU, IL, IU, ABSTOL, M, W, Z,
      $                   LDZ, WORK, RWORK, IWORK, IFAIL, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO

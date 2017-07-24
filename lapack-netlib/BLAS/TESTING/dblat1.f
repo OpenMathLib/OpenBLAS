@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM DBLAT1
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -25,10 +25,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -37,7 +37,7 @@
 *  =====================================================================
       PROGRAM DBLAT1
 *
-*  -- Reference BLAS test routine (version 3.4.1) --
+*  -- Reference BLAS test routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -345,7 +345,7 @@
 *     .. Local Scalars ..
       DOUBLE PRECISION  SA
       INTEGER           I, J, KI, KN, KNI, KPAR, KSIZE, LENX, LENY,
-     $                  MX, MY 
+     $                  MX, MY
 *     .. Local Arrays ..
       DOUBLE PRECISION  DT10X(7,4,4), DT10Y(7,4,4), DT7(4,4),
      $                  DT8(7,4,4), DX1(7),
@@ -589,7 +589,7 @@
      M            .7D0,  -.9D0,  1.2D0,   .7D0, -1.5D0,   .2D0,  1.6D0,
      N           1.7D0,  -.9D0,   .5D0,   .7D0, -1.6D0,   .2D0,  2.4D0,
      O          -2.6D0,  -.9D0, -1.3D0,   .7D0,  2.9D0,   .2D0, -4.0D0 /
-*    
+*
 *     .. Executable Statements ..
 *
       DO 120 KI = 1, 4

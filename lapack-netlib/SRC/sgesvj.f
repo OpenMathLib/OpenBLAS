@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGESVJ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvj.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvj.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvj.f"> 
+*> Download SGESVJ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvj.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvj.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvj.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
 *                          LDV, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N
 *       CHARACTER*1        JOBA, JOBU, JOBV
@@ -29,7 +29,7 @@
 *       REAL               A( LDA, * ), SVA( N ), V( LDV, * ),
 *      $                   WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -208,7 +208,7 @@
 *>
 *> \param[in,out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension max(4,M+N).
+*>          WORK is REAL array, dimension MAX(6,M+N).
 *>          On entry,
 *>          If JOBU .EQ. 'C' :
 *>          WORK(1) = CTOL, where CTOL defines the threshold for convergence.
@@ -255,12 +255,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup realGEcomputational
 *
@@ -323,10 +323,10 @@
       SUBROUTINE SGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
      $                   LDV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N
@@ -925,7 +925,7 @@
      $                                              FASTR )
                                     SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( MAX( ZERO, 
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-T*AQOAP*AAPQ ) )
                                     MXSINJ = MAX( MXSINJ, ABS( T ) )
 *
@@ -1247,7 +1247,7 @@
                                     MXSINJ = MAX( MXSINJ, ABS( SN ) )
                                     SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*SQRT( MAX( ZERO,  
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-T*AQOAP*AAPQ ) )
 *
                                     APOAQ = WORK( p ) / WORK( q )
@@ -1561,7 +1561,7 @@
       END IF
 *
 *     Undo scaling, if necessary (and possible).
-      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) ) 
+      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) )
      $    .OR. ( ( SKL.LT.ONE ) .AND. ( SVA( MAX( N2, 1 ) ) .GT.
      $    ( SFMIN / SKL ) ) ) ) THEN
          DO 2400 p = 1, N

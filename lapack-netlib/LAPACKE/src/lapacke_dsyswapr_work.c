@@ -28,36 +28,38 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function dsyswapr
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_dsyswapr_work( int matrix_layout, char uplo, lapack_int n,
-                                  double* a, lapack_int i1, lapack_int i2 )
+                                  double* a, lapack_int lda,
+                                  lapack_int i1, lapack_int i2 )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
-        LAPACK_dsyswapr( &uplo, &n, a, &i1, &i2 );
+        LAPACK_dsyswapr( &uplo, &n, a, &lda, &i1, &i2 );
         if( info < 0 ) {
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
+        lapack_int lda_t = MAX(1,n);
         double* a_t = NULL;
         /* Allocate memory for temporary array(s) */
-        a_t = (double*)LAPACKE_malloc( sizeof(double) * n * MAX(1,n) );
+        a_t = (double*)LAPACKE_malloc( sizeof(double) * lda_t * MAX(1,n) );
         if( a_t == NULL ) {
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;
         }
         /* Transpose input matrices */
-        LAPACKE_dsy_trans( matrix_layout, uplo, n, a, n, a_t, n );
+        LAPACKE_dsy_trans( matrix_layout, uplo, n, a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
-        LAPACK_dsyswapr( &uplo, &n, a_t, &i1, &i2 );
+        LAPACK_dsyswapr( &uplo, &n, a_t, &lda_t, &i1, &i2 );
         info = 0;  /* LAPACK call is ok! */
         /* Transpose output matrices */
-        LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, n, a, n );
+        LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
         /* Release memory and exit */
         LAPACKE_free( a_t );
 exit_level_0:

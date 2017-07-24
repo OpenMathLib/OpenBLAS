@@ -37,6 +37,18 @@ ESSL=/opt/ibm/lib
 #LIBESSL = -lesslsmp $(ESSL)/libxlomp_ser.so.1 $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 LIBESSL = -lesslsmp  $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 
+ifneq ($(NO_LAPACK), 1)
+GOTO_LAPACK_TARGETS=slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
+		    scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
+		    sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
+		    sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
+		    csymv.goto zsymv.goto \
+		    sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
+		    spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto
+else
+GOTO_LAPACK_TARGETS=
+endif
+
 ifeq ($(OSNAME), WINNT)
 
 goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
@@ -147,9 +159,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
 
 else
 
-goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
-       scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
-       sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
+goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
        ssyrk.goto dsyrk.goto csyrk.goto zsyrk.goto \
@@ -162,20 +172,16 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sswap.goto dswap.goto cswap.goto zswap.goto \
        sscal.goto dscal.goto cscal.goto zscal.goto \
        sasum.goto dasum.goto casum.goto zasum.goto \
-       ssymv.goto dsymv.goto csymv.goto zsymv.goto \
+       ssymv.goto dsymv.goto \
        chemv.goto zhemv.goto \
        chemm.goto zhemm.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
-       sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
-       sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
-       sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
-       spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
        smallscaling \
        isamax.goto idamax.goto icamax.goto izamax.goto \
-       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto
+       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto $(GOTO_LAPACK_TARGETS)
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \

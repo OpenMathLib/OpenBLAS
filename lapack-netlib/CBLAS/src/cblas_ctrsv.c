@@ -1,7 +1,7 @@
 /*
  * cblas_ctrsv.c
  * The program is a C interface to ctrsv.
- * 
+ *
  * Keita Teranishi  3/23/98
  *
  */
@@ -20,7 +20,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
 #else
    #define F77_TA &TA
    #define F77_UL &UL
-   #define F77_DI &DI   
+   #define F77_DI &DI
 #endif
 #ifdef F77_INT
    F77_INT F77_N=N, F77_lda=lda, F77_incX=incX;
@@ -29,7 +29,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    #define F77_lda lda
    #define F77_incX incX
 #endif
-   int n, i=0, tincX; 
+   int n, i=0, tincX;
    float *st=0,*x=(float *)X;
    extern int CBLAS_CallFromC;
    extern int RowMajorStrg;
@@ -40,7 +40,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    {
       if (Uplo == CblasUpper) UL = 'U';
       else if (Uplo == CblasLower) UL = 'L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_ctrsv","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -50,7 +50,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       if (TransA == CblasNoTrans) TA = 'N';
       else if (TransA == CblasTrans) TA = 'T';
       else if (TransA == CblasConjTrans) TA = 'C';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_ctrsv","Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -59,7 +59,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       }
       if (Diag == CblasUnit) DI = 'U';
       else if (Diag == CblasNonUnit) DI = 'N';
-      else 
+      else
       {
          cblas_xerbla(4, "cblas_ctrsv","Illegal Diag setting, %d\n", Diag);
          CBLAS_CallFromC = 0;
@@ -79,7 +79,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       RowMajorStrg = 1;
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_ctrsv","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -98,10 +98,10 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
                tincX = incX;
             else
                tincX = -incX;
- 
+
             n = N*2*(tincX);
             x++;
-            st=x+n; 
+            st=x+n;
             i = tincX << 1;
             do
             {
@@ -112,7 +112,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
             x -= n;
          }
       }
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_ctrsv","Illegal TransA setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -122,7 +122,7 @@ void cblas_ctrsv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
 
       if (Diag == CblasUnit) DI = 'U';
       else if (Diag == CblasNonUnit) DI = 'N';
-      else 
+      else
       {
          cblas_xerbla(4, "cblas_ctrsv","Illegal Diag setting, %d\n", Diag);
          CBLAS_CallFromC = 0;

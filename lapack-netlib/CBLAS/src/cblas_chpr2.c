@@ -1,7 +1,7 @@
 /*
  * cblas_chpr2.c
  * The program is a C interface to chpr2.
- * 
+ *
  * Keita Teranishi  5/20/98
  *
  */
@@ -10,7 +10,7 @@
 #include "cblas.h"
 #include "cblas_f77.h"
 void cblas_chpr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
-                      const int N,const void *alpha, const void *X, 
+                      const int N,const void *alpha, const void *X,
                       const int incX,const void *Y, const int incY, void *Ap)
 
 {
@@ -35,13 +35,13 @@ void cblas_chpr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    extern int CBLAS_CallFromC;
    extern int RowMajorStrg;
    RowMajorStrg = 0;
- 
+
    CBLAS_CallFromC = 1;
    if (layout == CblasColMajor)
    {
       if (Uplo == CblasLower) UL = 'L';
       else if (Uplo == CblasUpper) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_chpr2","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -59,7 +59,7 @@ void cblas_chpr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       RowMajorStrg = 1;
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_chpr2","Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -86,7 +86,7 @@ void cblas_chpr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
             stx = x-2;
             x +=(n-2);
          }
- 
+
          if( incY > 0 ) {
             j = incY << 1;
             tincy = 2;
@@ -97,7 +97,7 @@ void cblas_chpr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
             sty = y-2;
             y +=(n-2);
          }
- 
+
          do
          {
             *x = *xx;
@@ -114,10 +114,10 @@ void cblas_chpr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
             yy += j;
          }
          while (y != sty);
- 
+
          x=tx;
          y=ty;
- 
+
          #ifdef F77_INT
             F77_incX = 1;
             F77_incY = 1;
@@ -126,13 +126,13 @@ void cblas_chpr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
             incy = 1;
          #endif
 
-      }  else 
+      }  else
       {
          x = (float *) X;
          y = (void  *) Y;
       }
       F77_chpr2(F77_UL, &F77_N, alpha, y, &F77_incY, x, &F77_incX, Ap);
-   } else 
+   } else
    {
       cblas_xerbla(1, "cblas_chpr2","Illegal layout setting, %d\n", layout);
       CBLAS_CallFromC = 0;

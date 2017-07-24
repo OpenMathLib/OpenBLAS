@@ -42,7 +42,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_16
 
-static void sdot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
+static FLOAT sdot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y)
 {
 	BLASLONG register i = 0;
 	FLOAT dot = 0.0;
@@ -61,8 +61,7 @@ static void sdot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
               i+=8 ;
 
        }
-       *d += dot;
-
+       return dot;
 }
 
 #endif
@@ -82,8 +81,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 		BLASLONG n1 = n & -32;
 
 		if ( n1 )
-			sdot_kernel_16(n1, x, y , &dot );
-
+			dot = sdot_kernel_16(n1, x, y);
 
 		i = n1;
 		while(i < n)

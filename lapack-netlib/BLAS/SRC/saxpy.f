@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SAXPY(N,SA,SX,INCX,SY,INCY)
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL SA
 *       INTEGER INCX,INCY,N
@@ -17,7 +17,7 @@
 *       .. Array Arguments ..
 *       REAL SX(*),SY(*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -31,12 +31,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup single_blas_level1
 *
@@ -52,10 +52,10 @@
 *  =====================================================================
       SUBROUTINE SAXPY(N,SA,SX,INCX,SY,INCY)
 *
-*  -- Reference BLAS level1 routine (version 3.4.0) --
+*  -- Reference BLAS level1 routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       REAL SA

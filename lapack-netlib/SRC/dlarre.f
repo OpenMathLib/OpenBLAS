@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLARRE + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarre.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarre.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarre.f"> 
+*> Download DLARRE + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarre.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarre.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarre.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                           RTOL1, RTOL2, SPLTOL, NSPLIT, ISPLIT, M,
 *                           W, WERR, WGAP, IBLOCK, INDEXW, GERS, PIVMIN,
 *                           WORK, IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          RANGE
 *       INTEGER            IL, INFO, IU, M, N, NSPLIT
@@ -34,7 +34,7 @@
 *       DOUBLE PRECISION   D( * ), E( * ), E2( * ), GERS( * ),
 *      $                   W( * ),WERR( * ), WGAP( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -78,12 +78,17 @@
 *> \param[in,out] VL
 *> \verbatim
 *>          VL is DOUBLE PRECISION
+*>          If RANGE='V', the lower bound for the eigenvalues.
+*>          Eigenvalues less than or equal to VL, or greater than VU,
+*>          will not be returned.  VL < VU.
+*>          If RANGE='I' or ='A', DLARRE computes bounds on the desired
+*>          part of the spectrum.
 *> \endverbatim
 *>
 *> \param[in,out] VU
 *> \verbatim
 *>          VU is DOUBLE PRECISION
-*>          If RANGE='V', the lower and upper bounds for the eigenvalues.
+*>          If RANGE='V', the upper bound for the eigenvalues.
 *>          Eigenvalues less than or equal to VL, or greater than VU,
 *>          will not be returned.  VL < VU.
 *>          If RANGE='I' or ='A', DLARRE computes bounds on the desired
@@ -93,13 +98,16 @@
 *> \param[in] IL
 *> \verbatim
 *>          IL is INTEGER
+*>          If RANGE='I', the index of the
+*>          smallest eigenvalue to be returned.
+*>          1 <= IL <= IU <= N.
 *> \endverbatim
 *>
 *> \param[in] IU
 *> \verbatim
 *>          IU is INTEGER
-*>          If RANGE='I', the indices (in ascending order) of the
-*>          smallest and largest eigenvalues to be returned.
+*>          If RANGE='I', the index of the
+*>          largest eigenvalue to be returned.
 *>          1 <= IL <= IU <= N.
 *> \endverbatim
 *>
@@ -244,7 +252,7 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>          = 0:  successful exit
-*>          > 0:  A problem occured in DLARRE.
+*>          > 0:  A problem occurred in DLARRE.
 *>          < 0:  One of the called subroutines signaled an internal problem.
 *>                Needs inspection of the corresponding parameter IINFO
 *>                for further information.
@@ -263,14 +271,14 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
 *  =====================
@@ -297,10 +305,10 @@
      $                    W, WERR, WGAP, IBLOCK, INDEXW, GERS, PIVMIN,
      $                    WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          RANGE

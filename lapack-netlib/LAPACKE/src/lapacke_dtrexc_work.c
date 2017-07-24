@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function dtrexc
 * Author: Intel Corporation
-* Generated November 2015
+* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -51,7 +51,7 @@ lapack_int LAPACKE_dtrexc_work( int matrix_layout, char compq, lapack_int n,
         double* t_t = NULL;
         double* q_t = NULL;
         /* Check leading dimension(s) */
-        if( ldq < n ) {
+        if( ldq < n && LAPACKE_lsame( compq, 'v' ) ) {
             info = -7;
             LAPACKE_xerbla( "LAPACKE_dtrexc_work", info );
             return info;

@@ -13,10 +13,10 @@ void cblas_zaxpy( const int N, const void *alpha, const void *X,
 {
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX, F77_incY=incY;
-#else 
+#else
    #define F77_N N
    #define F77_incX incX
    #define F77_incY incY
 #endif
    F77_zaxpy( &F77_N, alpha, X, &F77_incX, Y, &F77_incY);
-} 
+}

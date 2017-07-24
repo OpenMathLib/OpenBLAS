@@ -24,9 +24,12 @@ CPB    8               List types on next line if 0 < NTYPES <  8
 CPT   12               List types on next line if 0 < NTYPES < 12
 CHE   10               List types on next line if 0 < NTYPES < 10
 CHR   10               List types on next line if 0 < NTYPES < 10
+CHK   10               List types on next line if 0 < NTYPES < 10
+CHA   10               List types on next line if 0 < NTYPES < 10
 CHP   10               List types on next line if 0 < NTYPES < 10
 CSY   11               List types on next line if 0 < NTYPES < 11
 CSR   11               List types on next line if 0 < NTYPES < 11
+CSK   11               List types on next line if 0 < NTYPES < 11
 CSP   11               List types on next line if 0 < NTYPES < 11
 CTR   18               List types on next line if 0 < NTYPES < 18
 CTP   18               List types on next line if 0 < NTYPES < 18
@@ -41,3 +44,6 @@ CLS    6               List types on next line if 0 < NTYPES <  6
 CEQ
 CQT
 CQX
+CXQ
+CTQ
+CTS

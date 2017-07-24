@@ -28,7 +28,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __MACROS_MSA_H__
 #define __MACROS_MSA_H__
 
+#include <stdint.h>
 #include <msa.h>
+
+#define ENABLE_PREFETCH
+
+#ifdef ENABLE_PREFETCH
+inline static void prefetch_load_lf(unsigned char *src)
+{
+    __asm__ __volatile__("pref   0,  0(%[src])   \n\t" : : [src] "r" (src));
+}
+
+#define PREFETCH(PTR)   prefetch_load_lf((unsigned char *)(PTR));
+
+#define STRNG(X) #X
+#define PREF_OFFSET(src_ptr, offset)		      \
+    __asm__ __volatile__("pref 0, " STRNG(offset) "(%[src]) \n\t" : : [src] "r" (src_ptr));
+
+#else
+#define PREFETCH(PTR)
+#define PREF_OFFSET(src_ptr, offset)
+#endif
 
 #define LD_W(RTYPE, psrc) *((RTYPE *)(psrc))
 #define LD_SP(...) LD_W(v4f32, __VA_ARGS__)
@@ -700,6 +720,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 {                                                     \
     MUL2(in0, in1, in2, in3, out0, out1);             \
     MUL2(in4, in5, in6, in7, out2, out3);             \
+}
+
+/* Description : Multiplication of pairs of vectors and added in output
+   Arguments   : Inputs  - in0, in1, vec, out0, out1
+                 Outputs - out0, out1
+   Details     : Each element from 'in0' is multiplied with elements from 'vec'
+                 and the result is added to 'out0'
+*/
+#define FMADD2(in0, in1, vec, inout0, inout1)  \
+{                                              \
+    inout0 += in0 * vec;                       \
+    inout1 += in1 * vec;                       \
+}
+#define FMADD3(in0, in1, in2, vec,      \
+               inout0, inout1, inout2)  \
+{                                       \
+    inout0 += in0 * vec;                \
+    inout1 += in1 * vec;                \
+    inout2 += in2 * vec;                \
+}
+#define FMADD4(in0, in1, in2, in3, vec,         \
+               inout0, inout1, inout2, inout3)  \
+{                                               \
+    FMADD2(in0, in1, vec, inout0, inout1);      \
+    FMADD2(in2, in3, vec, inout2, inout3);      \
 }
 
 /* Description : Addition of 2 pairs of variables

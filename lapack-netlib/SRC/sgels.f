@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGELS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgels.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgels.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgels.f"> 
+*> Download SGELS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgels.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgels.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgels.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,
 *                         INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), B( LDB, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -39,7 +39,7 @@
 *> involving an M-by-N matrix A, or its transpose, using a QR or LQ
 *> factorization of A.  It is assumed that A has full rank.
 *>
-*> The following options are provided: 
+*> The following options are provided:
 *>
 *> 1. If TRANS = 'N' and m >= n:  find the least squares solution of
 *>    an overdetermined system, i.e., solve the least squares problem
@@ -49,15 +49,15 @@
 *>    an underdetermined system A * X = B.
 *>
 *> 3. If TRANS = 'T' and m >= n:  find the minimum norm solution of
-*>    an undetermined system A**T * X = B.
+*>    an underdetermined system A**T * X = B.
 *>
 *> 4. If TRANS = 'T' and m < n:  find the least squares solution of
 *>    an overdetermined system, i.e., solve the least squares problem
 *>                 minimize || B - A**T * X ||.
 *>
-*> Several right hand side vectors b and solution vectors x can be 
+*> Several right hand side vectors b and solution vectors x can be
 *> handled in a single call; they are stored as the columns of the
-*> M-by-NRHS right hand side matrix B and the N-by-NRHS solution 
+*> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
 *> matrix X.
 *> \endverbatim
 *
@@ -68,7 +68,7 @@
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          = 'N': the linear system involves A;
-*>          = 'T': the linear system involves A**T. 
+*>          = 'T': the linear system involves A**T.
 *> \endverbatim
 *>
 *> \param[in] M
@@ -112,7 +112,7 @@
 *>          B is REAL array, dimension (LDB,NRHS)
 *>          On entry, the matrix B of right hand side vectors, stored
 *>          columnwise; B is M-by-NRHS if TRANS = 'N', or N-by-NRHS
-*>          if TRANS = 'T'.  
+*>          if TRANS = 'T'.
 *>          On exit, if INFO = 0, B is overwritten by the solution
 *>          vectors, stored columnwise:
 *>          if TRANS = 'N' and m >= n, rows 1 to n of B contain the least
@@ -170,12 +170,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup realGEsolve
 *
@@ -183,10 +183,10 @@
       SUBROUTINE SGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,
      $                  INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -379,7 +379,7 @@
 *
          ELSE
 *
-*           Overdetermined system of equations A**T * X = B
+*           Underdetermined system of equations A**T * X = B
 *
 *           B(1:N,1:NRHS) := inv(R**T) * B(1:N,1:NRHS)
 *

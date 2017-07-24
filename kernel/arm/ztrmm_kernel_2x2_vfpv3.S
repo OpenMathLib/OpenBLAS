@@ -66,10 +66,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ALPHA_I	[fp, #-272]
 #define ALPHA_R	[fp, #-280]
 
+#if !defined(__ARM_PCS_VFP)
+#define OLD_ALPHAR_SOFTFP	[fp, #4]
+#define OLD_ALPHAI_SOFTFP	[fp, #12]
+#define OLD_A_SOFTFP	[fp, #20 ]
+#define B	[fp, #24 ]
+#define C	[fp, #28 ]
+#define OLD_LDC	[fp, #32 ]
+#define OFFSET  [fp, #36 ]
+#else
 #define B	[fp, #4 ]
 #define C	[fp, #8 ]
 #define OLD_LDC	[fp, #12 ]
 #define OFFSET  [fp, #16 ]
+#endif
 
 #define I	r0
 #define J	r1
@@ -93,10 +103,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#define	FADD_R	fsubd
 	#define	FADD_I	faddd
 
-	#define	FMAC_R1	fnmuld
-	#define	FMAC_R2	fnmacd
+	#define	FMAC_R1	vnmul.f64
+	#define	FMAC_R2	vmls.f64
 	#define	FMAC_I1	fmuld
-	#define	FMAC_I2	fnmacd
+	#define	FMAC_I2	vmls.f64
 
 #elif defined(CN) || defined(CT)
 
@@ -105,7 +115,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	#define	FMAC_R1	fmuld
 	#define	FMAC_R2	fmacd
-	#define	FMAC_I1	fnmuld
+	#define	FMAC_I1	vnmul.f64
 	#define	FMAC_I2	fmacd
 
 #elif defined(NC) || defined(TC)
@@ -114,7 +124,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#define	FADD_I	fsubd
 
 	#define	FMAC_R1	fmuld
-	#define	FMAC_R2	fnmacd
+	#define	FMAC_R2	vmls.f64
 	#define	FMAC_I1	fmuld
 	#define	FMAC_I2	fmacd
 
@@ -123,10 +133,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#define	FADD_R  fsubd
 	#define	FADD_I	faddd
 
-	#define	FMAC_R1	fnmuld
+	#define	FMAC_R1	vnmul.f64
 	#define	FMAC_R2	fmacd
-	#define	FMAC_I1	fnmuld
-	#define	FMAC_I2	fnmacd
+	#define	FMAC_I1	vnmul.f64
+	#define	FMAC_I2	vmls.f64
 
 #endif
 
@@ -883,6 +893,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	fp, sp, #24
 	sub	sp, sp, #STACKSIZE				// reserve stack
 
+#if !defined(__ARM_PCS_VFP)
+	vldr	OLD_ALPHA_R, OLD_ALPHAR_SOFTFP
+	vldr	OLD_ALPHA_I, OLD_ALPHAI_SOFTFP
+	ldr	OLD_A, OLD_A_SOFTFP
+#endif
 	str	OLD_M, M
 	str	OLD_N, N
 	str	OLD_K, K

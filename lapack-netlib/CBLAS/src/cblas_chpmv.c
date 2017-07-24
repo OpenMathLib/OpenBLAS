@@ -1,7 +1,7 @@
 /*
  * cblas_chpmv.c
  * The program is a C interface of chpmv
- * 
+ *
  * Keita Teranishi  5/18/98
  *
  */
@@ -19,7 +19,7 @@ void cblas_chpmv(const CBLAS_LAYOUT layout,
 #ifdef F77_CHAR
    F77_CHAR F77_UL;
 #else
-   #define F77_UL &UL   
+   #define F77_UL &UL
 #endif
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX, F77_incY=incY;
@@ -37,12 +37,12 @@ void cblas_chpmv(const CBLAS_LAYOUT layout,
    extern int RowMajorStrg;
    RowMajorStrg = 0;
 
-   CBLAS_CallFromC = 1; 
+   CBLAS_CallFromC = 1;
    if (layout == CblasColMajor)
-   { 
+   {
       if (Uplo == CblasLower) UL = 'L';
       else if (Uplo == CblasUpper) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_chpmv","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -52,7 +52,7 @@ void cblas_chpmv(const CBLAS_LAYOUT layout,
       #ifdef F77_CHAR
          F77_UL = C2F_CHAR(&UL);
       #endif
-      F77_chpmv(F77_UL, &F77_N, alpha, AP, X,  
+      F77_chpmv(F77_UL, &F77_N, alpha, AP, X,
                      &F77_incX, beta, Y, &F77_incY);
    }
    else if (layout == CblasRowMajor)
@@ -67,7 +67,7 @@ void cblas_chpmv(const CBLAS_LAYOUT layout,
       {
          n = N << 1;
          x = malloc(n*sizeof(float));
- 
+
          tx = x;
          if( incX > 0 ) {
            i = incX << 1;
@@ -96,7 +96,7 @@ void cblas_chpmv(const CBLAS_LAYOUT layout,
          #else
             incx = 1;
          #endif
- 
+
          if(incY > 0)
            tincY = incY;
          else
@@ -117,7 +117,7 @@ void cblas_chpmv(const CBLAS_LAYOUT layout,
 
       if (Uplo == CblasUpper) UL = 'L';
       else if (Uplo == CblasLower) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_chpmv","Illegal Uplo setting, %d\n", Uplo );
          CBLAS_CallFromC = 0;
@@ -128,17 +128,17 @@ void cblas_chpmv(const CBLAS_LAYOUT layout,
          F77_UL = C2F_CHAR(&UL);
       #endif
 
-      F77_chpmv(F77_UL, &F77_N, ALPHA, 
+      F77_chpmv(F77_UL, &F77_N, ALPHA,
                      AP, x, &F77_incX, BETA, Y, &F77_incY);
    }
-   else 
+   else
    {
       cblas_xerbla(1, "cblas_chpmv","Illegal layout setting, %d\n", layout);
       CBLAS_CallFromC = 0;
       RowMajorStrg = 0;
       return;
    }
-   if ( layout == CblasRowMajor ) 
+   if ( layout == CblasRowMajor )
    {
       RowMajorStrg = 1;
       if(X!=x)

@@ -36,7 +36,7 @@ void cblas_sspr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    {
       if (Uplo == CblasLower) UL = 'L';
       else if (Uplo == CblasUpper) UL = 'U';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_sspr2","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -49,12 +49,12 @@ void cblas_sspr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
 
       F77_sspr2(F77_UL, &F77_N, &alpha, X, &F77_incX, Y, &F77_incY, A);
 
-   }  else if (layout == CblasRowMajor) 
+   }  else if (layout == CblasRowMajor)
    {
       RowMajorStrg = 1;
       if (Uplo == CblasLower) UL = 'U';
       else if (Uplo == CblasUpper) UL = 'L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_sspr2","Illegal Uplo setting, %d\n",Uplo );
          CBLAS_CallFromC = 0;
@@ -63,8 +63,8 @@ void cblas_sspr2(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
       }
       #ifdef F77_CHAR
          F77_UL = C2F_CHAR(&UL);
-      #endif  
-      F77_sspr2(F77_UL, &F77_N, &alpha, X, &F77_incX, Y, &F77_incY,  A); 
+      #endif
+      F77_sspr2(F77_UL, &F77_N, &alpha, X, &F77_incX, Y, &F77_incY,  A);
    } else cblas_xerbla(1, "cblas_sspr2", "Illegal layout setting, %d\n", layout);
    CBLAS_CallFromC = 0;
    RowMajorStrg = 0;

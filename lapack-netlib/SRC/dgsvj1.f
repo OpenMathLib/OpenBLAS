@@ -1,26 +1,26 @@
-*> \brief \b DGSVJ1 pre-processor for the routine sgesvj, applies Jacobi rotations targeting only particular pivots.
+*> \brief \b DGSVJ1 pre-processor for the routine dgesvj, applies Jacobi rotations targeting only particular pivots.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGSVJ1 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgsvj1.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgsvj1.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgsvj1.f"> 
+*> Download DGSVJ1 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgsvj1.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgsvj1.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgsvj1.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
 *                          EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION   EPS, SFMIN, TOL
 *       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, N1, NSWEEP
@@ -30,7 +30,7 @@
 *       DOUBLE PRECISION   A( LDA, * ), D( N ), SVA( N ), V( LDV, * ),
 *      $                   WORK( LWORK )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -218,12 +218,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -236,10 +236,10 @@
       SUBROUTINE DGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
      $                   EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   EPS, SFMIN, TOL
@@ -300,7 +300,7 @@
          INFO = -6
       ELSE IF( ( RSVEC.OR.APPLV ) .AND. ( MV.LT.0 ) ) THEN
          INFO = -9
-      ELSE IF( ( RSVEC.AND.( LDV.LT.N ) ).OR. 
+      ELSE IF( ( RSVEC.AND.( LDV.LT.N ) ).OR.
      $         ( APPLV.AND.( LDV.LT.MV ) )  ) THEN
          INFO = -11
       ELSE IF( TOL.LE.EPS ) THEN
@@ -499,7 +499,7 @@
                                     MXSINJ = MAX( MXSINJ, DABS( SN ) )
                                     SVA( q ) = AAQQ*DSQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ ) )
-                                    AAPP = AAPP*DSQRT( MAX( ZERO, 
+                                    AAPP = AAPP*DSQRT( MAX( ZERO,
      $                                    ONE-T*AQOAP*AAPQ ) )
 
                                     APOAQ = D( p ) / D( q )

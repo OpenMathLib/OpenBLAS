@@ -71,34 +71,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef COMMON_MIPS64
 #define COMMON_MIPS64
 
-#define MB
-#define WMB
+#define MB  __sync_synchronize()
+#define WMB __sync_synchronize()
 
 #define INLINE inline
 
 #ifndef ASSEMBLER
-
-static void INLINE blas_lock(volatile unsigned long *address){
-
-  long int ret, val = 1;
-
-  do {
-    while (*address) {YIELDING;};
-
-    __asm__ __volatile__(
-			 "1:	ll	%0, %3\n"
-			 "	ori	%2, %0, 1\n"
-			 "	sc	%2, %1\n"
-			 "	beqz	%2, 1b\n"
-			 "	 andi	%2, %0, 1\n"
-			 "	sync\n"
-			 : "=&r" (val), "=m" (address), "=&r" (ret)
-			 : "m" (address)
-			 : "memory");
-
-  } while (ret);
-}
-#define BLAS_LOCK_DEFINED
 
 static inline unsigned int rpcc(void){
   unsigned long ret;

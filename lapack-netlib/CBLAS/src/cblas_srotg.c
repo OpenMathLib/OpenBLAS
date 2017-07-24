@@ -10,5 +10,5 @@
 #include "cblas_f77.h"
 void cblas_srotg(  float *a, float *b, float *c, float *s)
 {
-   F77_srotg(a,b,c,s);    
+   F77_srotg(a,b,c,s);
 }

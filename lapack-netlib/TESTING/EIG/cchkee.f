@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM CCHKEE
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -1022,22 +1022,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
 *  =====================================================================
       PROGRAM CCHKEE
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *  =====================================================================
 *
@@ -1071,7 +1071,7 @@
       CHARACTER*80       LINE
       INTEGER            I, I1, IC, INFO, ITMP, K, LENP, MAXTYP, NEWSD,
      $                   NK, NN, NPARMS, NRHS, NTYPES,
-     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH 
+     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
       REAL               EPS, S1, S2, THRESH, THRSHN
 *     ..
 *     .. Local Arrays ..
@@ -1102,7 +1102,8 @@
      $                   CDRGEV, CDRGSX, CDRGVX, CDRVBD, CDRVES, CDRVEV,
      $                   CDRVSG, CDRVST, CDRVSX, CDRVVX, CERRBD,
      $                   CERRED, CERRGG, CERRHS, CERRST, ILAVER, XLAENV,
-     $                   CDRGES3, CDRGEV3
+     $                   CDRGES3, CDRGEV3, 
+     $                   CCHKST2STG, CDRVST2STG, CCHKHB2STG
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          LEN, MIN
@@ -1149,7 +1150,7 @@
       PATH = LINE( 1: 3 )
       NEP = LSAMEN( 3, PATH, 'NEP' ) .OR. LSAMEN( 3, PATH, 'CHS' )
       SEP = LSAMEN( 3, PATH, 'SEP' ) .OR. LSAMEN( 3, PATH, 'CST' ) .OR.
-     $      LSAMEN( 3, PATH, 'CSG' )
+     $      LSAMEN( 3, PATH, 'CSG' ) .OR. LSAMEN( 3, PATH, 'SE2' )
       SVD = LSAMEN( 3, PATH, 'SVD' ) .OR. LSAMEN( 3, PATH, 'CBD' )
       CEV = LSAMEN( 3, PATH, 'CEV' )
       CES = LSAMEN( 3, PATH, 'CES' )
@@ -1252,7 +1253,7 @@
          WRITE( NOUT, FMT = 9992 )PATH
          GO TO 380
       END IF
-      CALL ILAVER( VERS_MAJOR, VERS_MINOR, VERS_PATCH ) 
+      CALL ILAVER( VERS_MAJOR, VERS_MINOR, VERS_PATCH )
       WRITE( NOUT, FMT = 9972 ) VERS_MAJOR, VERS_MINOR, VERS_PATCH
       WRITE( NOUT, FMT = 9984 )
 *
@@ -1829,7 +1830,8 @@
      $         WRITE( NOUT, FMT = 9980 )'CCHKHS', INFO
   270    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'CST' ) .OR. LSAMEN( 3, C3, 'SEP' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CST' ) .OR. LSAMEN( 3, C3, 'SEP' )
+     $                                .OR. LSAMEN( 3, C3, 'SE2' ) ) THEN
 *
 *        ----------------------------------
 *        SEP:  Symmetric Eigenvalue Problem
@@ -1859,6 +1861,17 @@
             WRITE( NOUT, FMT = 9997 )C3, NBVAL( I ), NBMIN( I ),
      $         NXVAL( I )
             IF( TSTCHK ) THEN
+               IF( LSAMEN( 3, C3, 'SE2' ) ) THEN
+               CALL CCHKST2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ),
+     $                      DR( 1, 1 ), DR( 1, 2 ), DR( 1, 3 ),
+     $                      DR( 1, 4 ), DR( 1, 5 ), DR( 1, 6 ),
+     $                      DR( 1, 7 ), DR( 1, 8 ), DR( 1, 9 ),
+     $                      DR( 1, 10 ), DR( 1, 11 ), A( 1, 3 ), NMAX,
+     $                      A( 1, 4 ), A( 1, 5 ), DC( 1, 1 ), A( 1, 6 ),
+     $                      WORK, LWORK, RWORK, LWORK, IWORK, LIWORK,
+     $                      RESULT, INFO )
+               ELSE
                CALL CCHKST( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
      $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ),
      $                      DR( 1, 1 ), DR( 1, 2 ), DR( 1, 3 ),
@@ -1866,18 +1879,28 @@
      $                      DR( 1, 7 ), DR( 1, 8 ), DR( 1, 9 ),
      $                      DR( 1, 10 ), DR( 1, 11 ), A( 1, 3 ), NMAX,
      $                      A( 1, 4 ), A( 1, 5 ), DC( 1, 1 ), A( 1, 6 ),
-     $                      WORK, LWORK, RWORK, LWORK, IWORK, LIWORK, 
+     $                      WORK, LWORK, RWORK, LWORK, IWORK, LIWORK,
      $                      RESULT, INFO )
+               ENDIF
                IF( INFO.NE.0 )
      $            WRITE( NOUT, FMT = 9980 )'CCHKST', INFO
             END IF
             IF( TSTDRV ) THEN
+               IF( LSAMEN( 3, C3, 'SE2' ) ) THEN
+               CALL CDRVST2STG( NN, NVAL, 18, DOTYPE, ISEED, THRESH,
+     $                    NOUT, A( 1, 1 ), NMAX, DR( 1, 3 ), DR( 1, 4 ),
+     $                    DR( 1, 5 ), DR( 1, 8 ), DR( 1, 9 ),
+     $                    DR( 1, 10 ), A( 1, 2 ), NMAX, A( 1, 3 ),
+     $                    DC( 1, 1 ), A( 1, 4 ), WORK, LWORK, RWORK,
+     $                    LWORK, IWORK, LIWORK, RESULT, INFO )
+               ELSE
                CALL CDRVST( NN, NVAL, 18, DOTYPE, ISEED, THRESH, NOUT,
-     $                      A( 1, 1 ), NMAX, DR( 1, 3 ), DR( 1, 4 ),
-     $                      DR( 1, 5 ), DR( 1, 8 ), DR( 1, 9 ),
-     $                      DR( 1, 10 ), A( 1, 2 ), NMAX, A( 1, 3 ),
-     $                      DC( 1, 1 ), A( 1, 4 ), WORK, LWORK, RWORK,
-     $                      LWORK, IWORK, LIWORK, RESULT, INFO )
+     $                    A( 1, 1 ), NMAX, DR( 1, 3 ), DR( 1, 4 ),
+     $                    DR( 1, 5 ), DR( 1, 8 ), DR( 1, 9 ),
+     $                    DR( 1, 10 ), A( 1, 2 ), NMAX, A( 1, 3 ),
+     $                    DC( 1, 1 ), A( 1, 4 ), WORK, LWORK, RWORK,
+     $                    LWORK, IWORK, LIWORK, RESULT, INFO )
+           ENDIF
                IF( INFO.NE.0 )
      $            WRITE( NOUT, FMT = 9980 )'CDRVST', INFO
             END IF
@@ -1910,12 +1933,18 @@
             WRITE( NOUT, FMT = 9997 )C3, NBVAL( I ), NBMIN( I ),
      $         NXVAL( I )
             IF( TSTCHK ) THEN
-               CALL CDRVSG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
-     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
-     $                      DR( 1, 3 ), A( 1, 3 ), NMAX, A( 1, 4 ),
-     $                      A( 1, 5 ), A( 1, 6 ), A( 1, 7 ), WORK,
-     $                      LWORK, RWORK, LWORK, IWORK, LIWORK, RESULT,
-     $                      INFO )
+*               CALL CDRVSG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+*     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
+*     $                      DR( 1, 3 ), A( 1, 3 ), NMAX, A( 1, 4 ),
+*     $                      A( 1, 5 ), A( 1, 6 ), A( 1, 7 ), WORK,
+*     $                      LWORK, RWORK, LWORK, IWORK, LIWORK, RESULT,
+*     $                      INFO )
+               CALL CDRVSG2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+     $                          NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
+     $                          DR( 1, 3 ), DR( 1, 4 ), A( 1, 3 ), NMAX,
+     $                          A( 1, 4 ), A( 1, 5 ), A( 1, 6 ),
+     $                          A( 1, 7 ), WORK, LWORK, RWORK, LWORK,
+     $                          IWORK, LIWORK, RESULT, INFO )
                IF( INFO.NE.0 )
      $            WRITE( NOUT, FMT = 9980 )'CDRVSG', INFO
             END IF
@@ -2098,6 +2127,7 @@
          MAXTYP = 26
          NTYPES = MIN( MAXTYP, NTYPES )
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
+         CALL XLAENV(1,1)
          IF( TSTCHK .AND. TSTERR )
      $      CALL CERRGG( C3, NOUT )
          DO 350 I = 1, NPARMS
@@ -2154,9 +2184,10 @@
 *
             IF( INFO.NE.0 )
      $         WRITE( NOUT, FMT = 9980 )'CDRGES', INFO
-*     
+*
 * Blocked version
-*            
+*
+            CALL XLAENV(16,2)
             CALL CDRGES3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                    A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                    A( 1, 4 ), A( 1, 7 ), NMAX, A( 1, 8 ),
@@ -2220,9 +2251,10 @@
      $                   RESULT, INFO )
             IF( INFO.NE.0 )
      $         WRITE( NOUT, FMT = 9980 )'CDRGEV', INFO
-*     
+*
 * Blocked version
-*            
+*
+            CALL XLAENV(16,2)
             CALL CDRGEV3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                    A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                    A( 1, 4 ), A( 1, 7 ), NMAX, A( 1, 8 ),
@@ -2275,10 +2307,15 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          IF( TSTERR )
      $      CALL CERRST( 'CHB', NOUT )
-         CALL CCHKHB( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED, THRESH,
-     $                NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ), DR( 1, 2 ),
-     $                A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT,
-     $                INFO )
+*         CALL CCHKHB( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+*     $                NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ), DR( 1, 2 ),
+*     $                A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT,
+*     $                INFO )
+         CALL CCHKHB2STG( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED,
+     $                 THRESH, NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ), 
+     $                 DR( 1, 2 ), DR( 1, 3 ), DR( 1, 4 ), DR( 1, 5 ),
+     $                 A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT, 
+     $                 INFO )
          IF( INFO.NE.0 )
      $      WRITE( NOUT, FMT = 9980 )'CCHKHB', INFO
 *
@@ -2348,6 +2385,7 @@
 *        GSV:  Generalized Singular Value Decomposition
 *        ----------------------------------------------
 *
+         CALL XLAENV(1,1)
          IF( TSTERR )
      $      CALL CERRGG( 'GSV', NOUT )
          CALL CCKGSV( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
@@ -2459,7 +2497,7 @@
  9962 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
      $      'Problem Expert Driver CGGEVX' )
  9961 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4,
-     $      ', INMIN=', I4, 
+     $      ', INMIN=', I4,
      $      ', INWIN =', I4, ', INIBL =', I4, ', ISHFTS =', I4,
      $      ', IACC22 =', I4)
  9960 FORMAT( / ' Tests of the CS Decomposition routines' )

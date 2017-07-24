@@ -74,7 +74,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   mn = MIN(m, n);
 
-  blocking = (mn / 2 + GEMM_UNROLL_N - 1) & ~(GEMM_UNROLL_N - 1);
+  blocking = ((mn / 2 + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N;
   if (blocking > GEMM_Q) blocking = GEMM_Q;
 
 #ifdef POWER8

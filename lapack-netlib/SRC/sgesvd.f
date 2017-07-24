@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGESVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvd.f"> 
+*> Download SGESVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgesvd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgesvd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgesvd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBU, JOBVT
 *       INTEGER            INFO, LDA, LDU, LDVT, LWORK, M, N
@@ -29,7 +29,7 @@
 *       REAL               A( LDA, * ), S( * ), U( LDU, * ),
 *      $                   VT( LDVT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -173,7 +173,7 @@
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
 *>          LWORK >= MAX(1,5*MIN(M,N)) for the paths (see comments inside code):
-*>             - PATH 1  (M much larger than N, JOBU='N') 
+*>             - PATH 1  (M much larger than N, JOBU='N')
 *>             - PATH 1t (N much larger than M, JOBVT='N')
 *>          LWORK >= MAX(1,3*MIN(M,N)+MAX(M,N),5*MIN(M,N)) for the other paths
 *>          For good performance, LWORK should generally be larger.
@@ -198,10 +198,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date April 2012
 *
@@ -211,7 +211,7 @@
       SUBROUTINE SGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.1) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -314,24 +314,24 @@
             BDSPAC = 5*N
 *           Compute space needed for SGEQRF
             CALL SGEQRF( M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_SGEQRF=DUM(1)
+            LWORK_SGEQRF = INT( DUM(1) )
 *           Compute space needed for SORGQR
             CALL SORGQR( M, N, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_SORGQR_N=DUM(1)
+            LWORK_SORGQR_N = INT( DUM(1) )
             CALL SORGQR( M, M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_SORGQR_M=DUM(1)
+            LWORK_SORGQR_M = INT( DUM(1) )
 *           Compute space needed for SGEBRD
             CALL SGEBRD( N, N, A, LDA, S, DUM(1), DUM(1),
      $                   DUM(1), DUM(1), -1, IERR )
-            LWORK_SGEBRD=DUM(1)
+            LWORK_SGEBRD = INT( DUM(1) )
 *           Compute space needed for SORGBR P
             CALL SORGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, IERR )
-            LWORK_SORGBR_P=DUM(1)
+            LWORK_SORGBR_P = INT( DUM(1) )
 *           Compute space needed for SORGBR Q
             CALL SORGBR( 'Q', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, IERR )
-            LWORK_SORGBR_Q=DUM(1)
+            LWORK_SORGBR_Q = INT( DUM(1) )
 *
             IF( M.GE.MNTHR ) THEN
                IF( WNTUN ) THEN
@@ -447,18 +447,18 @@
 *
                CALL SGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
      $                   DUM(1), DUM(1), -1, IERR )
-               LWORK_SGEBRD=DUM(1)
+               LWORK_SGEBRD = INT( DUM(1) )
                MAXWRK = 3*N + LWORK_SGEBRD
                IF( WNTUS .OR. WNTUO ) THEN
                   CALL SORGBR( 'Q', M, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, IERR )
-                  LWORK_SORGBR_Q=DUM(1)
+                  LWORK_SORGBR_Q = INT( DUM(1) )
                   MAXWRK = MAX( MAXWRK, 3*N+LWORK_SORGBR_Q )
                END IF
                IF( WNTUA ) THEN
                   CALL SORGBR( 'Q', M, M, N, A, LDA, DUM(1),
      $                   DUM(1), -1, IERR )
-                  LWORK_SORGBR_Q=DUM(1)
+                  LWORK_SORGBR_Q = INT( DUM(1) )
                   MAXWRK = MAX( MAXWRK, 3*N+LWORK_SORGBR_Q )
                END IF
                IF( .NOT.WNTVN ) THEN
@@ -475,24 +475,24 @@
             BDSPAC = 5*M
 *           Compute space needed for SGELQF
             CALL SGELQF( M, N, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_SGELQF=DUM(1)
+            LWORK_SGELQF = INT( DUM(1) )
 *           Compute space needed for SORGLQ
             CALL SORGLQ( N, N, M, DUM(1), N, DUM(1), DUM(1), -1, IERR )
-            LWORK_SORGLQ_N=DUM(1)
+            LWORK_SORGLQ_N = INT( DUM(1) )
             CALL SORGLQ( M, N, M, A, LDA, DUM(1), DUM(1), -1, IERR )
-            LWORK_SORGLQ_M=DUM(1)
+            LWORK_SORGLQ_M = INT( DUM(1) )
 *           Compute space needed for SGEBRD
             CALL SGEBRD( M, M, A, LDA, S, DUM(1), DUM(1),
      $                   DUM(1), DUM(1), -1, IERR )
-            LWORK_SGEBRD=DUM(1)
+            LWORK_SGEBRD = INT( DUM(1) )
 *            Compute space needed for SORGBR P
             CALL SORGBR( 'P', M, M, M, A, N, DUM(1),
      $                   DUM(1), -1, IERR )
-            LWORK_SORGBR_P=DUM(1)
+            LWORK_SORGBR_P = INT( DUM(1) )
 *           Compute space needed for SORGBR Q
             CALL SORGBR( 'Q', M, M, M, A, N, DUM(1),
      $                   DUM(1), -1, IERR )
-            LWORK_SORGBR_Q=DUM(1)
+            LWORK_SORGBR_Q = INT( DUM(1) )
             IF( N.GE.MNTHR ) THEN
                IF( WNTVN ) THEN
 *
@@ -608,19 +608,19 @@
 *
                CALL SGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
      $                   DUM(1), DUM(1), -1, IERR )
-               LWORK_SGEBRD=DUM(1)
+               LWORK_SGEBRD = INT( DUM(1) )
                MAXWRK = 3*M + LWORK_SGEBRD
                IF( WNTVS .OR. WNTVO ) THEN
 *                Compute space needed for SORGBR P
                  CALL SORGBR( 'P', M, N, M, A, N, DUM(1),
      $                   DUM(1), -1, IERR )
-                 LWORK_SORGBR_P=DUM(1)
+                 LWORK_SORGBR_P = INT( DUM(1) )
                  MAXWRK = MAX( MAXWRK, 3*M+LWORK_SORGBR_P )
                END IF
                IF( WNTVA ) THEN
                  CALL SORGBR( 'P', N, N, M, A, N, DUM(1),
      $                   DUM(1), -1, IERR )
-                 LWORK_SORGBR_P=DUM(1)
+                 LWORK_SORGBR_P = INT( DUM(1) )
                  MAXWRK = MAX( MAXWRK, 3*M+LWORK_SORGBR_P )
                END IF
                IF( .NOT.WNTUN ) THEN
@@ -693,7 +693,10 @@
 *
 *              Zero out below R
 *
-               CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ), LDA )
+               IF( N .GT. 1 ) THEN
+                  CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ),
+     $                         LDA )
+               END IF
                IE = 1
                ITAUQ = IE + N
                ITAUP = ITAUQ + N
@@ -1122,8 +1125,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ),
-     $                            LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (Workspace: need 4*N, prefer 3*N+2*N*NB)
@@ -1285,8 +1290,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ),
-     $                            LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (Workspace: need 4*N, prefer 3*N+2*N*NB)
@@ -1588,8 +1595,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ),
-     $                            LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (Workspace: need 4*N, prefer 3*N+2*N*NB)
@@ -1756,8 +1765,10 @@
 *
 *                    Zero out below R in A
 *
-                     CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ),
-     $                            LDA )
+                     IF( N .GT. 1 ) THEN
+                        CALL SLASET( 'L', N-1, N-1, ZERO, ZERO,
+     $                               A( 2, 1 ), LDA )
+                     END IF
 *
 *                    Bidiagonalize R in A
 *                    (Workspace: need 4*N, prefer 3*N+2*N*NB)

@@ -38,187 +38,202 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define HAVE_KERNEL_8 1
 
-static void zscal_kernel_8( BLASLONG n, FLOAT *x, FLOAT *alpha) __attribute__ ((noinline));
-
-static void zscal_kernel_8( BLASLONG n, FLOAT *x, FLOAT *alpha)
+static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
 {
+  __vector double t0;
+  __vector double t1;
+  __vector double t2;
+  __vector double t3;
+  __vector double t4;
+  __vector double t5;
+  __vector double t6;
+  __vector double t7;
+  __vector double t8;
+  __vector double t9;
+  __vector double t10;
+  __vector double t11;
 
+  __asm__
+    (
+       "dcbt		0, %2		\n\t"
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	BLASLONG o64 = 64;
-	BLASLONG o80 = 80;
-	BLASLONG o96 = 96;
-	BLASLONG o112 = 112;
-	FLOAT *x1=x;
-	FLOAT *x2=x+1;
-	BLASLONG pre = 384;
+       "xsnegdp		33, %x16	\n\t"	// -alpha_i
+       "xxspltd		32, %x15, 0	\n\t"	// alpha_r , alpha_r
+       "xxmrghd		33, 33, %x16	\n\t"	// -alpha_i , alpha_i
 
-	__asm__  __volatile__
-	(
+       "lxvd2x		40, 0, %2	\n\t"	// x0_r, x0_i
+       "lxvd2x		41, %17, %2	\n\t"
+       "lxvd2x		42, %18, %2	\n\t"
+       "lxvd2x		43, %19, %2	\n\t"
+       "lxvd2x		44, %20, %2	\n\t"
+       "lxvd2x		45, %21, %2	\n\t"
+       "lxvd2x		46, %22, %2	\n\t"
+       "lxvd2x		47, %23, %2	\n\t"
 
-        "lxvd2x         32, 0, %3                           \n\t"	// alpha_r , alpha_r
-        "lxvd2x         33, %5, %3                          \n\t"	// -alpha_i , alpha_i
-        "addi           %1, %1, -8                          \n\t"
+       "addi		%2, %2, 128	\n\t"
 
-	"dcbt		%2, %4				    \n\t"
+       "addic.		%1, %1, -8	\n\t"
+       "ble		2f		\n\t"
 
-	"lxvd2x		40, 0, %2			    \n\t"	// x0_r, x0_i
-	"lxvd2x		41, %5, %2			    \n\t"
-	"lxvd2x		42, %6, %2			    \n\t"
-	"lxvd2x		43, %7, %2			    \n\t"
-	"lxvd2x		44, %8, %2			    \n\t"
-	"lxvd2x		45, %9, %2			    \n\t"
-	"lxvd2x		46, %10, %2			    \n\t"
-	"lxvd2x		47, %11, %2			    \n\t"
+       ".p2align	5		\n"
+     "1:				\n\t"
 
-	"addi		%2, %2, 128			    \n\t"
+       "xvmuldp		48, 40, 32	\n\t"	// x0_r * alpha_r, x0_i * alpha_r
+       "xvmuldp		49, 41, 32	\n\t"
+       "xvmuldp		50, 42, 32	\n\t"
+       "xvmuldp		51, 43, 32	\n\t"
+       "xvmuldp		%x3, 44, 32	\n\t"
+       "xvmuldp		%x4, 45, 32	\n\t"
+       "xvmuldp		%x5, 46, 32	\n\t"
+       "xvmuldp		%x6, 47, 32	\n\t"
 
-	"addic.		%0 , %0	, -8  	 	             \n\t"
-	"ble		2f		             	     \n\t"
+       "xxswapd		%x7, 40		\n\t"
+       "xxswapd		%x8, 41		\n\t"
+       "xxswapd		%x9, 42		\n\t"
+       "xxswapd		%x10, 43		\n\t"
+       "xxswapd		%x11, 44		\n\t"
+       "xxswapd		%x12, 45	\n\t"
+       "xxswapd		%x13, 46	\n\t"
+       "xxswapd		%x14, 47	\n\t"
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
+       "xvmuldp		%x7, %x7, 33	\n\t"	// x0_i * -alpha_i, x0_r * alpha_i
+       "xvmuldp		%x8, %x8, 33	\n\t"
 
-	"dcbt		%2, %4				    \n\t"
+       "lxvd2x		40, 0, %2	\n\t"	// x0_r, x0_i
+       "lxvd2x		41, %17, %2	\n\t"
 
-	"xvmuldp	48, 40, 32		    	    \n\t"	// x0_r * alpha_r, x0_i * alpha_r
-	"xvmuldp	49, 41, 32		    	    \n\t"
-	"xvmuldp	50, 42, 32		    	    \n\t"
-	"xvmuldp	51, 43, 32		    	    \n\t"
-	"xvmuldp	52, 44, 32		    	    \n\t"
-	"xvmuldp	53, 45, 32		    	    \n\t"
-	"xvmuldp	54, 46, 32		    	    \n\t"
-	"xvmuldp	55, 47, 32		    	    \n\t"
+       "xvmuldp		%x9, %x9, 33	\n\t"
+       "xvmuldp		%x10, %x10, 33	\n\t"
 
-	"xxswapd	56, 40				    \n\t"
-	"xxswapd	57, 41				    \n\t"
-	"xxswapd	58, 42				    \n\t"
-	"xxswapd	59, 43				    \n\t"
-	"xxswapd	60, 44				    \n\t"
-	"xxswapd	61, 45				    \n\t"
-	"xxswapd	62, 46				    \n\t"
-	"xxswapd	63, 47				    \n\t"
+       "lxvd2x		42, %18, %2	\n\t"
+       "lxvd2x		43, %19, %2	\n\t"
 
-	"xvmuldp	56, 56, 33		    	    \n\t"	// x0_i * -alpha_i, x0_r * alpha_i
-	"xvmuldp	57, 57, 33		    	    \n\t"
+       "xvmuldp		%x11, %x11, 33	\n\t"
+       "xvmuldp		%x12, %x12, 33	\n\t"
 
-	"lxvd2x		40, 0, %2			    \n\t"	// x0_r, x0_i
-	"lxvd2x		41, %5, %2			    \n\t"
+       "lxvd2x		44, %20, %2	\n\t"
+       "lxvd2x		45, %21, %2	\n\t"
 
-	"xvmuldp	58, 58, 33		    	    \n\t"
-	"xvmuldp	59, 59, 33		    	    \n\t"
+       "xvmuldp		%x13, %x13, 33	\n\t"
+       "xvmuldp		%x14, %x14, 33	\n\t"
 
-	"lxvd2x		42, %6, %2			    \n\t"
-	"lxvd2x		43, %7, %2			    \n\t"
+       "lxvd2x		46, %22, %2	\n\t"
+       "lxvd2x		47, %23, %2	\n\t"
 
-	"xvmuldp	60, 60, 33		    	    \n\t"
-	"xvmuldp	61, 61, 33		    	    \n\t"
+       "addi		%2, %2, -128	\n\t"
 
-	"lxvd2x		44, %8, %2			    \n\t"
-	"lxvd2x		45, %9, %2			    \n\t"
+       "xvadddp		48, 48, %x7	\n\t"
+       "xvadddp		49, 49, %x8	\n\t"
+       "xvadddp		50, 50, %x9	\n\t"
+       "xvadddp		51, 51, %x10	\n\t"
 
-	"xvmuldp	62, 62, 33		    	    \n\t"
-	"xvmuldp	63, 63, 33		    	    \n\t"
+       "stxvd2x		48, 0, %2	\n\t"
+       "stxvd2x		49, %17, %2	\n\t"
 
-	"lxvd2x		46, %10, %2			    \n\t"
-	"lxvd2x		47, %11, %2			    \n\t"
+       "xvadddp		%x3, %x3, %x11	\n\t"
+       "xvadddp		%x4, %x4, %x12	\n\t"
 
-	"xvadddp	48, 48 , 56			    \n\t"
-	"xvadddp	49, 49 , 57			    \n\t"
-	"xvadddp	50, 50 , 58			    \n\t"
-	"xvadddp	51, 51 , 59			    \n\t"
+       "stxvd2x		50, %18, %2	\n\t"
+       "stxvd2x		51, %19, %2	\n\t"
 
-	"stxvd2x	48, 0, %1			    \n\t"
-	"stxvd2x	49, %5, %1			    \n\t"
+       "xvadddp		%x5, %x5, %x13	\n\t"
+       "xvadddp		%x6, %x6, %x14	\n\t"
 
-	"xvadddp	52, 52 , 60			    \n\t"
-	"xvadddp	53, 53 , 61			    \n\t"
+       "stxvd2x		%x3, %20, %2	\n\t"
+       "stxvd2x		%x4, %21, %2	\n\t"
+       "stxvd2x		%x5, %22, %2	\n\t"
+       "stxvd2x		%x6, %23, %2	\n\t"
 
-	"stxvd2x	50, %6, %1			    \n\t"
-	"stxvd2x	51, %7, %1			    \n\t"
+       "addi		%2, %2, 256	\n\t"
 
-	"xvadddp	54, 54 , 62			    \n\t"
-	"xvadddp	55, 55 , 63			    \n\t"
+       "addic.		%1, %1, -8	\n\t"
+       "bgt		1b		\n"
 
-	"stxvd2x	52, %8, %1			    \n\t"
-	"stxvd2x	53, %9, %1			    \n\t"
-	"stxvd2x	54, %10, %1			    \n\t"
-	"stxvd2x	55, %11, %1			    \n\t"
+     "2:				\n\t"
 
-	"addi		%1, %1, 128			    \n\t"
-	"addi		%2, %2, 128			    \n\t"
+       "xvmuldp		48, 40, 32	\n\t"	// x0_r * alpha_r, x0_i * alpha_r
+       "xvmuldp		49, 41, 32	\n\t"
+       "xvmuldp		50, 42, 32	\n\t"
+       "xvmuldp		51, 43, 32	\n\t"
+       "xvmuldp		%x3, 44, 32	\n\t"
+       "xvmuldp		%x4, 45, 32	\n\t"
+       "xvmuldp		%x5, 46, 32	\n\t"
+       "xvmuldp		%x6, 47, 32	\n\t"
 
-	"addic.		%0 , %0	, -8  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
+       "xxswapd		%x7, 40		\n\t"
+       "xxswapd		%x8, 41		\n\t"
+       "xxswapd		%x9, 42		\n\t"
+       "xxswapd		%x10, 43		\n\t"
+       "xxswapd		%x11, 44		\n\t"
+       "xxswapd		%x12, 45	\n\t"
+       "xxswapd		%x13, 46	\n\t"
+       "xxswapd		%x14, 47	\n\t"
 
-	"2:						     \n\t"
+       "addi		%2, %2, -128	\n\t"
 
-	"xvmuldp	48, 40, 32		    	    \n\t"	// x0_r * alpha_r, x0_i * alpha_r
-	"xvmuldp	49, 41, 32		    	    \n\t"
-	"xvmuldp	50, 42, 32		    	    \n\t"
-	"xvmuldp	51, 43, 32		    	    \n\t"
-	"xvmuldp	52, 44, 32		    	    \n\t"
-	"xvmuldp	53, 45, 32		    	    \n\t"
-	"xvmuldp	54, 46, 32		    	    \n\t"
-	"xvmuldp	55, 47, 32		    	    \n\t"
+       "xvmuldp		%x7, %x7, 33	\n\t"	// x0_i * -alpha_i, x0_r * alpha_i
+       "xvmuldp		%x8, %x8, 33	\n\t"
+       "xvmuldp		%x9, %x9, 33	\n\t"
+       "xvmuldp		%x10, %x10, 33	\n\t"
+       "xvmuldp		%x11, %x11, 33	\n\t"
+       "xvmuldp		%x12, %x12, 33	\n\t"
+       "xvmuldp		%x13, %x13, 33	\n\t"
+       "xvmuldp		%x14, %x14, 33	\n\t"
 
-	"xxswapd	56, 40				    \n\t"
-	"xxswapd	57, 41				    \n\t"
-	"xxswapd	58, 42				    \n\t"
-	"xxswapd	59, 43				    \n\t"
-	"xxswapd	60, 44				    \n\t"
-	"xxswapd	61, 45				    \n\t"
-	"xxswapd	62, 46				    \n\t"
-	"xxswapd	63, 47				    \n\t"
+       "xvadddp		48, 48, %x7	\n\t"
+       "xvadddp		49, 49, %x8	\n\t"
+       "xvadddp		50, 50, %x9	\n\t"
+       "xvadddp		51, 51, %x10	\n\t"
 
-	"xvmuldp	56, 56, 33		    	    \n\t"	// x0_i * -alpha_i, x0_r * alpha_i
-	"xvmuldp	57, 57, 33		    	    \n\t"
-	"xvmuldp	58, 58, 33		    	    \n\t"
-	"xvmuldp	59, 59, 33		    	    \n\t"
-	"xvmuldp	60, 60, 33		    	    \n\t"
-	"xvmuldp	61, 61, 33		    	    \n\t"
-	"xvmuldp	62, 62, 33		    	    \n\t"
-	"xvmuldp	63, 63, 33		    	    \n\t"
+       "stxvd2x		48, 0, %2	\n\t"
+       "stxvd2x		49, %17, %2	\n\t"
 
-	"xvadddp	48, 48 , 56			    \n\t"
-	"xvadddp	49, 49 , 57			    \n\t"
-	"xvadddp	50, 50 , 58			    \n\t"
-	"xvadddp	51, 51 , 59			    \n\t"
-	"xvadddp	52, 52 , 60			    \n\t"
-	"xvadddp	53, 53 , 61			    \n\t"
-	"xvadddp	54, 54 , 62			    \n\t"
-	"xvadddp	55, 55 , 63			    \n\t"
+       "xvadddp		%x3, %x3, %x11	\n\t"
+       "xvadddp		%x4, %x4, %x12	\n\t"
 
-	"stxvd2x	48, 0, %1			    \n\t"
-	"stxvd2x	49, %5, %1			    \n\t"
-	"stxvd2x	50, %6, %1			    \n\t"
-	"stxvd2x	51, %7, %1			    \n\t"
-	"stxvd2x	52, %8, %1			    \n\t"
-	"stxvd2x	53, %9, %1			    \n\t"
-	"stxvd2x	54, %10, %1			    \n\t"
-	"stxvd2x	55, %11, %1			    \n\t"
+       "stxvd2x		50, %18, %2	\n\t"
+       "stxvd2x		51, %19, %2	\n\t"
 
+       "xvadddp		%x5, %x5, %x13	\n\t"
+       "xvadddp		%x6, %x6, %x14	\n\t"
 
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (x2),  	// 1
-          "r" (x1),     // 2
-          "r" (alpha),  // 3
-          "r" (pre),    // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-          "r" (o64),    // 8
-          "r" (o80),    // 9
-          "r" (o96),    // 10
-          "r" (o112)    // 11
-	: "cr0", "%0", "%2" , "%1", "memory"
-	);
+       "stxvd2x		%x3, %20, %2	\n\t"
+       "stxvd2x		%x4, %21, %2	\n\t"
+       "stxvd2x		%x5, %22, %2	\n\t"
+       "stxvd2x		%x6, %23, %2	\n"
 
-} 
-
-
+     "#n=%1 x=%0=%2 alpha=(%15,%16) o16=%17 o32=%18 o48=%19 o64=%20 o80=%21 o96=%22 o112=%23\n"
+     "#t0=%x3 t1=%x4 t2=%x5 t3=%x6 t4=%x7 t5=%x8 t6=%x9 t7=%x10 t8=%x11 t9=%x12 t10=%x13 t11=%x14"
+     :
+       "+m" (*x),
+       "+r" (n),	// 1
+       "+b" (x),	// 2
+       "=wa" (t0),	// 3
+       "=wa" (t1),	// 4
+       "=wa" (t2),	// 5
+       "=wa" (t3),	// 6
+       "=wa" (t4),	// 7
+       "=wa" (t5),	// 8
+       "=wa" (t6),	// 9
+       "=wa" (t7),	// 10
+       "=wa" (t8),	// 11
+       "=wa" (t9),	// 12
+       "=wa" (t10),	// 13
+       "=wa" (t11)	// 14
+     :
+       "d" (alpha_r),	// 15
+       "d" (alpha_i),	// 16
+       "b" (16),	// 17
+       "b" (32),	// 18
+       "b" (48),	// 19
+       "b" (64),	// 20
+       "b" (80),	// 21
+       "b" (96),	// 22
+       "b" (112)	// 23
+     :
+       "cr0",
+       "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",
+       "vs40","vs41","vs42","vs43","vs44","vs45","vs46","vs47",
+       "vs48","vs49","vs50","vs51"
+     );
+}

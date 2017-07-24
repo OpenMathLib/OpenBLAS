@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       PROGRAM SCHKEE
-* 
+*
 *
 *> \par Purpose:
 *  =============
@@ -1028,22 +1028,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup single_eig
 *
 *  =====================================================================
       PROGRAM SCHKEE
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *  =====================================================================
 *
@@ -1106,7 +1106,8 @@
      $                   SDRGEV, SDRGSX, SDRGVX, SDRVBD, SDRVES, SDRVEV,
      $                   SDRVSG, SDRVST, SDRVSX, SDRVVX, SERRBD,
      $                   SERRED, SERRGG, SERRHS, SERRST, ILAVER, XLAENV,
-     $                   SDRGES3, SDRGEV3
+     $                   SDRGES3, SDRGEV3, 
+     $                   SCHKST2STG, SDRVST2STG, SCHKSB2STG, SDRVSG2STG
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          LEN, MIN
@@ -1153,7 +1154,8 @@
       PATH = LINE( 1: 3 )
       NEP = LSAMEN( 3, PATH, 'NEP' ) .OR. LSAMEN( 3, PATH, 'SHS' )
       SEP = LSAMEN( 3, PATH, 'SEP' ) .OR. LSAMEN( 3, PATH, 'SST' ) .OR.
-     $      LSAMEN( 3, PATH, 'SSG' )
+     $      LSAMEN( 3, PATH, 'SSG' ) .OR. LSAMEN( 3, PATH, 'SE2' )
+      SVD = LSAMEN( 3, PATH, 'SVD' ) .OR. LSAMEN( 3, PATH, 'DBD' )
       SVD = LSAMEN( 3, PATH, 'SVD' ) .OR. LSAMEN( 3, PATH, 'SBD' )
       SEV = LSAMEN( 3, PATH, 'SEV' )
       SES = LSAMEN( 3, PATH, 'SES' )
@@ -1839,7 +1841,8 @@
      $         WRITE( NOUT, FMT = 9980 )'SCHKHS', INFO
   270    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'SST' ) .OR. LSAMEN( 3, C3, 'SEP' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'SST' ) .OR. LSAMEN( 3, C3, 'SEP' )
+     $                                .OR. LSAMEN( 3, C3, 'SE2' ) ) THEN
 *
 *        ----------------------------------
 *        SEP:  Symmetric Eigenvalue Problem
@@ -1869,6 +1872,15 @@
             WRITE( NOUT, FMT = 9997 )C3, NBVAL( I ), NBMIN( I ),
      $         NXVAL( I )
             IF( TSTCHK ) THEN
+               IF( LSAMEN( 3, C3, 'SE2' ) ) THEN
+               CALL SCHKST2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), D( 1, 1 ),
+     $                      D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), D( 1, 5 ),
+     $                      D( 1, 6 ), D( 1, 7 ), D( 1, 8 ), D( 1, 9 ),
+     $                      D( 1, 10 ), D( 1, 11 ), A( 1, 3 ), NMAX,
+     $                      A( 1, 4 ), A( 1, 5 ), D( 1, 12 ), A( 1, 6 ),
+     $                      WORK, LWORK, IWORK, LIWORK, RESULT, INFO )
+               ELSE
                CALL SCHKST( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
      $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), D( 1, 1 ),
      $                      D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), D( 1, 5 ),
@@ -1876,16 +1888,26 @@
      $                      D( 1, 10 ), D( 1, 11 ), A( 1, 3 ), NMAX,
      $                      A( 1, 4 ), A( 1, 5 ), D( 1, 12 ), A( 1, 6 ),
      $                      WORK, LWORK, IWORK, LIWORK, RESULT, INFO )
+               ENDIF
                IF( INFO.NE.0 )
      $            WRITE( NOUT, FMT = 9980 )'SCHKST', INFO
             END IF
             IF( TSTDRV ) THEN
+               IF( LSAMEN( 3, C3, 'SE2' ) ) THEN
+               CALL SDRVST2STG( NN, NVAL, 18, DOTYPE, ISEED, THRESH,
+     $                      NOUT, A( 1, 1 ), NMAX, D( 1, 3 ), D( 1, 4 ),
+     $                      D( 1, 5 ), D( 1, 6 ), D( 1, 8 ), D( 1, 9 ),
+     $                      D( 1, 10 ), D( 1, 11), A( 1, 2 ), NMAX,
+     $                      A( 1, 3 ), D( 1, 12 ), A( 1, 4 ), WORK,
+     $                      LWORK, IWORK, LIWORK, RESULT, INFO )
+               ELSE
                CALL SDRVST( NN, NVAL, 18, DOTYPE, ISEED, THRESH,
      $                      NOUT, A( 1, 1 ), NMAX, D( 1, 3 ), D( 1, 4 ),
      $                      D( 1, 5 ), D( 1, 6 ), D( 1, 8 ), D( 1, 9 ),
-     $                      D( 1, 10 ), D( 1, 11), A( 1, 2 ), NMAX, 
-     $                      A( 1, 3 ), D( 1, 12 ), A( 1, 4 ), WORK, 
+     $                      D( 1, 10 ), D( 1, 11), A( 1, 2 ), NMAX,
+     $                      A( 1, 3 ), D( 1, 12 ), A( 1, 4 ), WORK,
      $                      LWORK, IWORK, LIWORK, RESULT, INFO )
+               ENDIF
                IF( INFO.NE.0 )
      $            WRITE( NOUT, FMT = 9980 )'SDRVST', INFO
             END IF
@@ -1918,11 +1940,17 @@
             WRITE( NOUT, FMT = 9997 )C3, NBVAL( I ), NBMIN( I ),
      $         NXVAL( I )
             IF( TSTCHK ) THEN
-               CALL SDRVSG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
-     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
-     $                      D( 1, 3 ), A( 1, 3 ), NMAX, A( 1, 4 ),
-     $                      A( 1, 5 ), A( 1, 6 ), A( 1, 7 ), WORK,
-     $                      LWORK, IWORK, LIWORK, RESULT, INFO )
+*               CALL SDRVSG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+*     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
+*     $                      D( 1, 3 ), A( 1, 3 ), NMAX, A( 1, 4 ),
+*     $                      A( 1, 5 ), A( 1, 6 ), A( 1, 7 ), WORK,
+*     $                      LWORK, IWORK, LIWORK, RESULT, INFO )
+               CALL SDRVSG2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+     $                          NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
+     $                          D( 1, 3 ), D( 1, 3 ), A( 1, 3 ), NMAX,
+     $                          A( 1, 4 ), A( 1, 5 ), A( 1, 6 ),
+     $                          A( 1, 7 ), WORK, LWORK, IWORK, LIWORK,
+     $                          RESULT, INFO )
                IF( INFO.NE.0 )
      $            WRITE( NOUT, FMT = 9980 )'SDRVSG', INFO
             END IF
@@ -2105,8 +2133,9 @@
          MAXTYP = 26
          NTYPES = MIN( MAXTYP, NTYPES )
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
+         CALL XLAENV(1,1)
          IF( TSTCHK .AND. TSTERR )
-     $      CALL SERRGG( C3, NOUT )
+     &      CALL SERRGG( C3, NOUT )
          DO 350 I = 1, NPARMS
             CALL XLAENV( 1, NBVAL( I ) )
             CALL XLAENV( 2, NBMIN( I ) )
@@ -2162,9 +2191,10 @@
 *
             IF( INFO.NE.0 )
      $         WRITE( NOUT, FMT = 9980 )'SDRGES', INFO
-*     
+*
 *     Blocked version
-*            
+*
+            CALL XLAENV(16,1)
             CALL SDRGES3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                    A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                    A( 1, 4 ), A( 1, 7 ), NMAX, A( 1, 8 ),
@@ -2227,7 +2257,7 @@
      $                   WORK, LWORK, RESULT, INFO )
             IF( INFO.NE.0 )
      $         WRITE( NOUT, FMT = 9980 )'SDRGEV', INFO
-*     
+*
 * Blocked version
 *
             CALL SDRGEV3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
@@ -2282,9 +2312,13 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          IF( TSTERR )
      $      CALL SERRST( 'SSB', NOUT )
-         CALL SCHKSB( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED, THRESH,
-     $                NOUT, A( 1, 1 ), NMAX, D( 1, 1 ), D( 1, 2 ),
-     $                A( 1, 2 ), NMAX, WORK, LWORK, RESULT, INFO )
+*         CALL SCHKSB( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+*     $                NOUT, A( 1, 1 ), NMAX, D( 1, 1 ), D( 1, 2 ),
+*     $                A( 1, 2 ), NMAX, WORK, LWORK, RESULT, INFO )
+         CALL SCHKSB2STG( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED,
+     $                 THRESH, NOUT, A( 1, 1 ), NMAX, D( 1, 1 ), 
+     $                 D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), D( 1, 5 ),
+     $                 A( 1, 2 ), NMAX, WORK, LWORK, RESULT, INFO )
          IF( INFO.NE.0 )
      $      WRITE( NOUT, FMT = 9980 )'SCHKSB', INFO
 *
@@ -2353,6 +2387,7 @@
 *        GSV:  Generalized Singular Value Decomposition
 *        ----------------------------------------------
 *
+         CALL XLAENV( 1, 1 )
          IF( TSTERR )
      $      CALL SERRGG( 'GSV', NOUT )
          CALL SCKGSV( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
@@ -2465,7 +2500,7 @@
  9962 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
      $      'Problem Expert Driver SGGEVX' )
  9961 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4,
-     $      ', INMIN=', I4, 
+     $      ', INMIN=', I4,
      $      ', INWIN =', I4, ', INIBL =', I4, ', ISHFTS =', I4,
      $      ', IACC22 =', I4)
  9960 FORMAT( / ' Tests of the CS Decomposition routines' )

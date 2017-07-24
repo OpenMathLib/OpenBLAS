@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLASR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasr.f"> 
+*> Download DLASR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLASR( SIDE, PIVOT, DIRECT, M, N, C, S, A, LDA )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIRECT, PIVOT, SIDE
 *       INTEGER            LDA, M, N
@@ -27,7 +27,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   A( LDA, * ), C( * ), S( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -36,35 +36,35 @@
 *>
 *> DLASR applies a sequence of plane rotations to a real matrix A,
 *> from either the left or the right.
-*> 
+*>
 *> When SIDE = 'L', the transformation takes the form
-*> 
+*>
 *>    A := P*A
-*> 
+*>
 *> and when SIDE = 'R', the transformation takes the form
-*> 
+*>
 *>    A := A*P**T
-*> 
+*>
 *> where P is an orthogonal matrix consisting of a sequence of z plane
 *> rotations, with z = M when SIDE = 'L' and z = N when SIDE = 'R',
 *> and P**T is the transpose of P.
-*> 
+*>
 *> When DIRECT = 'F' (Forward sequence), then
-*> 
+*>
 *>    P = P(z-1) * ... * P(2) * P(1)
-*> 
+*>
 *> and when DIRECT = 'B' (Backward sequence), then
-*> 
+*>
 *>    P = P(1) * P(2) * ... * P(z-1)
-*> 
+*>
 *> where P(k) is a plane rotation matrix defined by the 2-by-2 rotation
-*> 
+*>
 *>    R(k) = (  c(k)  s(k) )
 *>         = ( -s(k)  c(k) ).
-*> 
+*>
 *> When PIVOT = 'V' (Variable pivot), the rotation is performed
 *> for the plane (k,k+1), i.e., P(k) has the form
-*> 
+*>
 *>    P(k) = (  1                                            )
 *>           (       ...                                     )
 *>           (              1                                )
@@ -73,13 +73,13 @@
 *>           (                                1              )
 *>           (                                     ...       )
 *>           (                                            1  )
-*> 
+*>
 *> where R(k) appears as a rank-2 modification to the identity matrix in
 *> rows and columns k and k+1.
-*> 
+*>
 *> When PIVOT = 'T' (Top pivot), the rotation is performed for the
 *> plane (1,k+1), so P(k) has the form
-*> 
+*>
 *>    P(k) = (  c(k)                    s(k)                 )
 *>           (         1                                     )
 *>           (              ...                              )
@@ -88,12 +88,12 @@
 *>           (                                 1             )
 *>           (                                      ...      )
 *>           (                                             1 )
-*> 
+*>
 *> where R(k) appears in rows and columns 1 and k+1.
-*> 
+*>
 *> Similarly, when PIVOT = 'B' (Bottom pivot), the rotation is
 *> performed for the plane (k,z), giving P(k) the form
-*> 
+*>
 *>    P(k) = ( 1                                             )
 *>           (      ...                                      )
 *>           (             1                                 )
@@ -102,7 +102,7 @@
 *>           (                              ...              )
 *>           (                                     1         )
 *>           (                 -s(k)                    c(k) )
-*> 
+*>
 *> where R(k) appears in rows and columns k and z.  The rotations are
 *> performed without ever forming P(k) explicitly.
 *> \endverbatim
@@ -187,22 +187,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE DLASR( SIDE, PIVOT, DIRECT, M, N, C, S, A, LDA )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIRECT, PIVOT, SIDE

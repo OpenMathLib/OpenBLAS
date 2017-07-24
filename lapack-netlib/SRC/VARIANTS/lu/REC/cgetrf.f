@@ -2,14 +2,14 @@ C> \brief \b CGETRF VARIANT: iterative version of Sivan Toledo's recursive LU al
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE CGETRF( M, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -17,7 +17,7 @@ C> \brief \b CGETRF VARIANT: iterative version of Sivan Toledo's recursive LU al
 *       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * )
 *       ..
-*  
+*
 *  Purpose
 *  =======
 *
@@ -122,12 +122,12 @@ C>
 *  Authors:
 *  ========
 *
-C> \author Univ. of Tennessee 
-C> \author Univ. of California Berkeley 
-C> \author Univ. of Colorado Denver 
-C> \author NAG Ltd. 
+C> \author Univ. of Tennessee
+C> \author Univ. of California Berkeley
+C> \author Univ. of Colorado Denver
+C> \author NAG Ltd.
 *
-C> \date November 2011
+C> \date December 2016
 *
 C> \ingroup variantsGEcomputational
 *
@@ -137,7 +137,7 @@ C> \ingroup variantsGEcomputational
 *  -- LAPACK computational routine (version 3.X) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N

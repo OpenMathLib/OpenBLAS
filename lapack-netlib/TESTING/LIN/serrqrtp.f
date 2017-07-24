@@ -2,19 +2,19 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SERRQRTP( PATH, NUNIT )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*3        PATH
 *       INTEGER            NUNIT
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -43,12 +43,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup single_lin
 *
@@ -56,10 +56,10 @@
       SUBROUTINE SERRQRTP( PATH, NUNIT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -81,7 +81,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAESM, CHKXER, STPQRT2, STPQRT,
-     $                   STPMQRT 
+     $                   STPMQRT
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -171,50 +171,50 @@
 *
       SRNAMT = 'STPMQRT'
       INFOT = 1
-      CALL STPMQRT( '/', 'N', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( '/', 'N', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 2
-      CALL STPMQRT( 'L', '/', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'L', '/', 0, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 3
-      CALL STPMQRT( 'L', 'N', -1, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'L', 'N', -1, 0, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 4
-      CALL STPMQRT( 'L', 'N', 0, -1, 0, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'L', 'N', 0, -1, 0, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 5
-      CALL STPMQRT( 'L', 'N', 0, 0, -1, 0, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'L', 'N', 0, 0, -1, 0, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       INFOT = 6
-      CALL STPMQRT( 'L', 'N', 0, 0, 0, -1, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'L', 'N', 0, 0, 0, -1, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 7
-      CALL STPMQRT( 'L', 'N', 0, 0, 0, 0, 0, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'L', 'N', 0, 0, 0, 0, 0, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL STPMQRT( 'R', 'N', 1, 2, 1, 1, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'R', 'N', 1, 2, 1, 1, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL STPMQRT( 'L', 'N', 2, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 1, 
+      CALL STPMQRT( 'L', 'N', 2, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 11
-      CALL STPMQRT( 'R', 'N', 1, 1, 1, 1, 1, A, 1, T, 0, B, 1, C, 1, 
+      CALL STPMQRT( 'R', 'N', 1, 1, 1, 1, 1, A, 1, T, 0, B, 1, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 13
-      CALL STPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 0, C, 1, 
+      CALL STPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 0, C, 1,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
       INFOT = 15
-      CALL STPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 0, 
+      CALL STPMQRT( 'L', 'N', 1, 1, 1, 1, 1, A, 1, T, 1, B, 1, C, 0,
      $              W, INFO )
       CALL CHKXER( 'STPMQRT', INFOT, NOUT, LERR, OK )
 *

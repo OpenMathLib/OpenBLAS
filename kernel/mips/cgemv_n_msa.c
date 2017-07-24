@@ -376,128 +376,139 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     *((int *)(y + 2 * inc_y2 + 1)) = __msa_copy_s_w((v4i32) y0i, 2);  \
     *((int *)(y + 3 * inc_y2 + 1)) = __msa_copy_s_w((v4i32) y0i, 3);  \
 
-#define CGEMV_N_MSA()                \
-    for (j = (n >> 2); j--;)         \
-    {                                \
-        CLOAD_X4_SCALE();            \
-                                     \
-        k = 0;                       \
-        y = y_org;                   \
-                                     \
-        for (i = (m >> 3); i--;)     \
-        {                            \
-            CLOAD_Y8()               \
-            CGEMV_N_8x4();           \
-            CSTORE_Y8();             \
-                                     \
-            k += 2 * 8;              \
-            y += inc_y2 * 8;         \
-        }                            \
-                                     \
-        if (m & 4)                   \
-        {                            \
-            CLOAD_Y4();              \
-            CGEMV_N_4x4();           \
-            CSTORE_Y4();             \
-                                     \
-            k += 2 * 4;              \
-            y += inc_y2 * 4;         \
-        }                            \
-                                     \
-        if (m & 3)                   \
-        {                            \
-            temp0_r = tp4r[0];       \
-            temp1_r = tp4r[1];       \
-            temp2_r = tp4r[2];       \
-            temp3_r = tp4r[3];       \
-                                     \
-            temp0_i = tp4i[0];       \
-            temp1_i = tp4i[1];       \
-            temp2_i = tp4i[2];       \
-            temp3_i = tp4i[3];       \
-                                     \
-            for (i = (m & 3); i--;)  \
-            {                        \
-                CGEMV_N_1x4();       \
-                                     \
-                k += 2;              \
-                y += inc_y2;         \
-            }                        \
-        }                            \
-                                     \
-        pa0 += 4 * lda2;             \
-        pa1 += 4 * lda2;             \
-        pa2 += 4 * lda2;             \
-        pa3 += 4 * lda2;             \
-                                     \
-        x += 4 * inc_x2;             \
-    }                                \
-                                     \
-    if (n & 2)                       \
-    {                                \
-        CLOAD_X2_SCALE();            \
-                                     \
-        k = 0;                       \
-        y = y_org;                   \
-                                     \
-        for (i = (m >> 3); i--;)     \
-        {                            \
-            CLOAD_Y8();              \
-            CGEMV_N_8x2();           \
-            CSTORE_Y8();             \
-                                     \
-            k += 2 * 8;              \
-            y += inc_y2 * 8;         \
-        }                            \
-                                     \
-        if (m & 4)                   \
-        {                            \
-            CLOAD_Y4();              \
-            CGEMV_N_4x2();           \
-            CSTORE_Y4();             \
-                                     \
-            k += 2 * 4;              \
-            y += inc_y2 * 4;         \
-        }                            \
-                                     \
-        for (i = (m & 3); i--;)      \
-        {                            \
-             CGEMV_N_1x2();          \
-                                     \
-             k += 2;                 \
-             y += inc_y2;            \
-        }                            \
-                                     \
-        pa0 += 2 * lda2;             \
-        pa1 += 2 * lda2;             \
-                                     \
-        x += 2 * inc_x2;             \
-    }                                \
-                                     \
-    if (n & 1)                       \
-    {                                \
-        CLOAD_X1_SCALE();            \
-                                     \
-        k = 0;                       \
-        y = y_org;                   \
-                                     \
-        for (i = m; i--;)            \
-        {                            \
-            CGEMV_N_1x1();           \
-                                     \
-            k += 2;                  \
-            y += inc_y2;             \
-        }                            \
-                                     \
-        pa0 += lda2;                 \
-        x += inc_x2;                 \
-    }                                \
+#define CGEMV_N_MSA()                         \
+    for (j = (n >> 2); j--;)                  \
+    {                                         \
+        CLOAD_X4_SCALE();                     \
+                                              \
+        k = 0;                                \
+        k_pref = pref_offset;                 \
+        y = y_org;                            \
+                                              \
+        for (i = (m >> 3); i--;)              \
+        {                                     \
+            PREFETCH(pa0 + k_pref + 16 + 0);  \
+            PREFETCH(pa0 + k_pref + 16 + 8);  \
+            PREFETCH(pa1 + k_pref + 16 + 0);  \
+            PREFETCH(pa1 + k_pref + 16 + 8);  \
+            PREFETCH(pa2 + k_pref + 16 + 0);  \
+            PREFETCH(pa2 + k_pref + 16 + 8);  \
+            PREFETCH(pa3 + k_pref + 16 + 0);  \
+            PREFETCH(pa3 + k_pref + 16 + 8);  \
+                                              \
+            CLOAD_Y8()                        \
+            CGEMV_N_8x4();                    \
+            CSTORE_Y8();                      \
+                                              \
+            k += 2 * 8;                       \
+            k_pref += 2 * 8;                  \
+            y += inc_y2 * 8;                  \
+        }                                     \
+                                              \
+        if (m & 4)                            \
+        {                                     \
+            CLOAD_Y4();                       \
+            CGEMV_N_4x4();                    \
+            CSTORE_Y4();                      \
+                                              \
+            k += 2 * 4;                       \
+            y += inc_y2 * 4;                  \
+        }                                     \
+                                              \
+        if (m & 3)                            \
+        {                                     \
+            temp0_r = tp4r[0];                \
+            temp1_r = tp4r[1];                \
+            temp2_r = tp4r[2];                \
+            temp3_r = tp4r[3];                \
+                                              \
+            temp0_i = tp4i[0];                \
+            temp1_i = tp4i[1];                \
+            temp2_i = tp4i[2];                \
+            temp3_i = tp4i[3];                \
+                                              \
+            for (i = (m & 3); i--;)           \
+            {                                 \
+                CGEMV_N_1x4();                \
+                                              \
+                k += 2;                       \
+                y += inc_y2;                  \
+            }                                 \
+        }                                     \
+                                              \
+        pa0 += 4 * lda2;                      \
+        pa1 += 4 * lda2;                      \
+        pa2 += 4 * lda2;                      \
+        pa3 += 4 * lda2;                      \
+                                              \
+        x += 4 * inc_x2;                      \
+    }                                         \
+                                              \
+    if (n & 2)                                \
+    {                                         \
+        CLOAD_X2_SCALE();                     \
+                                              \
+        k = 0;                                \
+        y = y_org;                            \
+                                              \
+        for (i = (m >> 3); i--;)              \
+        {                                     \
+            CLOAD_Y8();                       \
+            CGEMV_N_8x2();                    \
+            CSTORE_Y8();                      \
+                                              \
+            k += 2 * 8;                       \
+            y += inc_y2 * 8;                  \
+        }                                     \
+                                              \
+        if (m & 4)                            \
+        {                                     \
+            CLOAD_Y4();                       \
+            CGEMV_N_4x2();                    \
+            CSTORE_Y4();                      \
+                                              \
+            k += 2 * 4;                       \
+            y += inc_y2 * 4;                  \
+        }                                     \
+                                              \
+        for (i = (m & 3); i--;)               \
+        {                                     \
+             CGEMV_N_1x2();                   \
+                                              \
+             k += 2;                          \
+             y += inc_y2;                     \
+        }                                     \
+                                              \
+        pa0 += 2 * lda2;                      \
+        pa1 += 2 * lda2;                      \
+                                              \
+        x += 2 * inc_x2;                      \
+    }                                         \
+                                              \
+    if (n & 1)                                \
+    {                                         \
+        CLOAD_X1_SCALE();                     \
+                                              \
+        k = 0;                                \
+        y = y_org;                            \
+                                              \
+        for (i = m; i--;)                     \
+        {                                     \
+            CGEMV_N_1x1();                    \
+                                              \
+            k += 2;                           \
+            y += inc_y2;                      \
+        }                                     \
+                                              \
+        pa0 += lda2;                          \
+        x += inc_x2;                          \
+    }                                         \
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
           FLOAT *A, BLASLONG lda2, FLOAT *x, BLASLONG inc_x2, FLOAT *y,
           BLASLONG inc_y2, FLOAT *buffer)
 {
-    BLASLONG i, j, k;
+    BLASLONG i, j, k, k_pref, pref_offset;
     FLOAT *y_org = y;
     FLOAT *pa0, *pa1, *pa2, *pa3;
     FLOAT temp_r, temp_i, res0, res1, temp0_r;
@@ -512,6 +523,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     lda2 = 2 * lda2;
     inc_x2 = 2 * inc_x2;
     inc_y2 = 2 * inc_y2;
+
+    pref_offset = (uintptr_t)A & (L1_DATA_LINESIZE - 1);
+    pref_offset = L1_DATA_LINESIZE - pref_offset;
+    pref_offset = pref_offset / sizeof(FLOAT);
 
     pa0 = A;
     pa1 = A + lda2;

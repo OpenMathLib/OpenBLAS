@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZBDSQR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zbdsqr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zbdsqr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zbdsqr.f"> 
+*> Download ZBDSQR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zbdsqr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zbdsqr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zbdsqr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZBDSQR( UPLO, N, NCVT, NRU, NCC, D, E, VT, LDVT, U,
 *                          LDU, C, LDC, RWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDC, LDU, LDVT, N, NCC, NCVT, NRU
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   D( * ), E( * ), RWORK( * )
 *       COMPLEX*16         C( LDC, * ), U( LDU, * ), VT( LDVT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -40,9 +40,9 @@
 *> left singular vectors from the singular value decomposition (SVD) of
 *> a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
 *> zero-shift QR algorithm.  The SVD of B has the form
-*> 
+*>
 *>    B = Q * S * P**H
-*> 
+*>
 *> where S is the diagonal matrix of singular values, Q is an orthogonal
 *> matrix of left singular vectors, and P is an orthogonal matrix of
 *> right singular vectors.  If left singular vectors are requested, this
@@ -51,9 +51,9 @@
 *> P**H, for given complex input matrices U and VT.  When U and VT are
 *> the unitary matrices that reduce a general matrix A to bidiagonal
 *> form: A = U*B*VT, as computed by ZGEBRD, then
-*> 
+*>
 *>    A = (U*Q) * S * (P**H*VT)
-*> 
+*>
 *> is the SVD of A.  Optionally, the subroutine may also compute Q**H*C
 *> for a given complex input matrix C.
 *>
@@ -209,12 +209,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -222,10 +222,10 @@
       SUBROUTINE ZBDSQR( UPLO, N, NCVT, NRU, NCC, D, E, VT, LDVT, U,
      $                   LDU, C, LDC, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -321,7 +321,7 @@
          CALL DLASQ1( N, D, E, RWORK, INFO )
 *
 *     If INFO equals 2, dqds didn't finish, try to finish
-*         
+*
          IF( INFO .NE. 2 ) RETURN
          INFO = 0
       END IF

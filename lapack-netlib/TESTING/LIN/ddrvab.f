@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE DDRVAB( DOTYPE, NM, MVAL, NNS,
 *                          NSVAL, THRESH, NMAX, A, AFAC, B,
 *                          X, WORK, RWORK, SWORK, IWORK, NOUT )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            NM, NMAX, NNS, NOUT
 *       DOUBLE PRECISION   THRESH
@@ -23,7 +23,7 @@
 *       DOUBLE PRECISION   A( * ), AFAC( * ), B( * ),
 *      $                   RWORK( * ), WORK( * ), X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -137,12 +137,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_lin
 *
@@ -151,10 +151,10 @@
      $                   NSVAL, THRESH, NMAX, A, AFAC, B,
      $                   X, WORK, RWORK, SWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            NM, NMAX, NNS, NOUT
@@ -211,7 +211,7 @@
       COMMON             / SRNAMC / SRNAMT
 *     ..
 *     .. Data statements ..
-      DATA               ISEEDY / 2006, 2007, 2008, 2009 / 
+      DATA               ISEEDY / 2006, 2007, 2008, 2009 /
 *     ..
 *     .. Executable Statements ..
 *
@@ -319,7 +319,7 @@
                    CALL DLACPY( 'Full', M, N, AFAC, LDA, A, LDA )
                ENDIF
 *
-*              Check error code from DSGESV. This should be the same as 
+*              Check error code from DSGESV. This should be the same as
 *              the one of DGETRF.
 *
                IF( INFO.NE.IZERO ) THEN
@@ -353,7 +353,7 @@
 *              Print information about the tests that did not
 *              pass the testing.
 *
-*              If iterative refinement has been used and claimed to 
+*              If iterative refinement has been used and claimed to
 *              be successful (ITER>0), we want
 *                NORMI(B - A*X)/(NORMI(A)*NORMI(X)*EPS*SRQT(N)) < 1
 *
@@ -423,7 +423,7 @@
      $      14X, '11. Scaled near overflow', / 4X,
      $      '6. Last column zero' )
  8960 FORMAT( 3X, I2, ': norm_1( B - A * X )  / ',
-     $      '( norm_1(A) * norm_1(X) * EPS * SQRT(N) ) > 1 if ITERREF', 
+     $      '( norm_1(A) * norm_1(X) * EPS * SQRT(N) ) > 1 if ITERREF',
      $      / 4x, 'or norm_1( B - A * X )  / ',
      $      '( norm_1(A) * norm_1(X) * EPS ) > THRES if DGETRF' )
       RETURN

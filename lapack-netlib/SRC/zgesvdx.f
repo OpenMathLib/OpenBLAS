@@ -2,26 +2,26 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGESVDX + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgesvdx.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgesvdx.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgesvdx.f"> 
+*> Download ZGESVDX + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgesvdx.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgesvdx.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgesvdx.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
-*     SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU, 
-*    $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK, 
+*     SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
+*    $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
 *    $                    LWORK, RWORK, IWORK, INFO )
-*      
+*
 *
 *     .. Scalar Arguments ..
 *      CHARACTER          JOBU, JOBVT, RANGE
@@ -31,33 +31,36 @@
 *     .. Array Arguments ..
 *      INTEGER            IWORK( * )
 *      DOUBLE PRECISION   S( * ), RWORK( * )
-*      COMPLEX*16         A( LDA, * ), U( LDU, * ), VT( LDVT, * ), 
+*      COMPLEX*16         A( LDA, * ), U( LDU, * ), VT( LDVT, * ),
 *     $                   WORK( * )
 *     ..
 *
 *
-*  Purpose
-*  =======
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*>  ZGESVDX computes the singular value decomposition (SVD) of a complex
+*>  M-by-N matrix A, optionally computing the left and/or right singular
+*>  vectors. The SVD is written
+*>
+*>      A = U * SIGMA * transpose(V)
+*>
+*>  where SIGMA is an M-by-N matrix which is zero except for its
+*>  min(m,n) diagonal elements, U is an M-by-M unitary matrix, and
+*>  V is an N-by-N unitary matrix.  The diagonal elements of SIGMA
+*>  are the singular values of A; they are real and non-negative, and
+*>  are returned in descending order.  The first min(m,n) columns of
+*>  U and V are the left and right singular vectors of A.
+*>
+*>  ZGESVDX uses an eigenvalue problem for obtaining the SVD, which
+*>  allows for the computation of a subset of singular values and
+*>  vectors. See DBDSVDX for details.
+*>
+*>  Note that the routine returns V**T, not V.
+*> \endverbatim
 *
-*  ZGESVDX computes the singular value decomposition (SVD) of a complex
-*  M-by-N matrix A, optionally computing the left and/or right singular
-*  vectors. The SVD is written
-* 
-*       A = U * SIGMA * transpose(V)
-* 
-*  where SIGMA is an M-by-N matrix which is zero except for its
-*  min(m,n) diagonal elements, U is an M-by-M unitary matrix, and
-*  V is an N-by-N unitary matrix.  The diagonal elements of SIGMA
-*  are the singular values of A; they are real and non-negative, and
-*  are returned in descending order.  The first min(m,n) columns of
-*  U and V are the left and right singular vectors of A.
-* 
-*  ZGESVDX uses an eigenvalue problem for obtaining the SVD, which 
-*  allows for the computation of a subset of singular values and 
-*  vectors. See DBDSVDX for details.
-* 
-*  Note that the routine returns V**T, not V.
-*   
 *  Arguments:
 *  ==========
 *
@@ -66,7 +69,7 @@
 *>          JOBU is CHARACTER*1
 *>          Specifies options for computing all or part of the matrix U:
 *>          = 'V':  the first min(m,n) columns of U (the left singular
-*>                  vectors) or as specified by RANGE are returned in 
+*>                  vectors) or as specified by RANGE are returned in
 *>                  the array U;
 *>          = 'N':  no columns of U (no left singular vectors) are
 *>                  computed.
@@ -78,7 +81,7 @@
 *>           Specifies options for computing all or part of the matrix
 *>           V**T:
 *>           = 'V':  the first min(m,n) rows of V**T (the right singular
-*>                   vectors) or as specified by RANGE are returned in 
+*>                   vectors) or as specified by RANGE are returned in
 *>                   the array VT;
 *>           = 'N':  no rows of V**T (no right singular vectors) are
 *>                   computed.
@@ -90,7 +93,7 @@
 *>          = 'A': all singular values will be found.
 *>          = 'V': all singular values in the half-open interval (VL,VU]
 *>                 will be found.
-*>          = 'I': the IL-th through IU-th singular values will be found. 
+*>          = 'I': the IL-th through IU-th singular values will be found.
 *> \endverbatim
 *>
 *> \param[in] M
@@ -107,7 +110,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX array, dimension (LDA,N)
+*>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          On entry, the M-by-N matrix A.
 *>          On exit, the contents of A are destroyed.
 *> \endverbatim
@@ -121,13 +124,15 @@
 *> \param[in] VL
 *> \verbatim
 *>          VL is DOUBLE PRECISION
-*>          VL >=0.
+*>          If RANGE='V', the lower bound of the interval to
+*>          be searched for singular values. VU > VL.
+*>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
 *>
 *> \param[in] VU
 *> \verbatim
 *>          VU is DOUBLE PRECISION
-*>          If RANGE='V', the lower and upper bounds of the interval to
+*>          If RANGE='V', the upper bound of the interval to
 *>          be searched for singular values. VU > VL.
 *>          Not referenced if RANGE = 'A' or 'I'.
 *> \endverbatim
@@ -135,13 +140,17 @@
 *> \param[in] IL
 *> \verbatim
 *>          IL is INTEGER
+*>          If RANGE='I', the index of the
+*>          smallest singular value to be returned.
+*>          1 <= IL <= IU <= min(M,N), if min(M,N) > 0.
+*>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
 *>
 *> \param[in] IU
 *> \verbatim
 *>          IU is INTEGER
-*>          If RANGE='I', the indices (in ascending order) of the
-*>          smallest and largest singular values to be returned.
+*>          If RANGE='I', the index of the
+*>          largest singular value to be returned.
 *>          1 <= IL <= IU <= min(M,N), if min(M,N) > 0.
 *>          Not referenced if RANGE = 'A' or 'V'.
 *> \endverbatim
@@ -149,7 +158,7 @@
 *> \param[out] NS
 *> \verbatim
 *>          NS is INTEGER
-*>          The total number of singular values found,  
+*>          The total number of singular values found,
 *>          0 <= NS <= min(M,N).
 *>          If RANGE = 'A', NS = min(M,N); if RANGE = 'I', NS = IU-IL+1.
 *> \endverbatim
@@ -163,11 +172,11 @@
 *> \param[out] U
 *> \verbatim
 *>          U is COMPLEX*16 array, dimension (LDU,UCOL)
-*>          If JOBU = 'V', U contains columns of U (the left singular 
-*>          vectors, stored columnwise) as specified by RANGE; if 
+*>          If JOBU = 'V', U contains columns of U (the left singular
+*>          vectors, stored columnwise) as specified by RANGE; if
 *>          JOBU = 'N', U is not referenced.
-*>          Note: The user must ensure that UCOL >= NS; if RANGE = 'V', 
-*>          the exact value of NS is not known ILQFin advance and an upper 
+*>          Note: The user must ensure that UCOL >= NS; if RANGE = 'V',
+*>          the exact value of NS is not known in advance and an upper
 *>          bound must be used.
 *> \endverbatim
 *>
@@ -181,11 +190,11 @@
 *> \param[out] VT
 *> \verbatim
 *>          VT is COMPLEX*16 array, dimension (LDVT,N)
-*>          If JOBVT = 'V', VT contains the rows of V**T (the right singular 
-*>          vectors, stored rowwise) as specified by RANGE; if JOBVT = 'N', 
+*>          If JOBVT = 'V', VT contains the rows of V**T (the right singular
+*>          vectors, stored rowwise) as specified by RANGE; if JOBVT = 'N',
 *>          VT is not referenced.
-*>          Note: The user must ensure that LDVT >= NS; if RANGE = 'V', 
-*>          the exact value of NS is not known in advance and an upper 
+*>          Note: The user must ensure that LDVT >= NS; if RANGE = 'V',
+*>          the exact value of NS is not known in advance and an upper
 *>          bound must be used.
 *> \endverbatim
 *>
@@ -206,9 +215,9 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*>          LWORK >= MAX(1,MIN(M,N)*(MIN(M,N)+4)) for the paths (see 
+*>          LWORK >= MAX(1,MIN(M,N)*(MIN(M,N)+4)) for the paths (see
 *>          comments inside the code):
-*>             - PATH 1  (M much larger than N) 
+*>             - PATH 1  (M much larger than N)
 *>             - PATH 1t (N much larger than M)
 *>          LWORK >= MAX(1,MIN(M,N)*2+MAX(M,N)) for the other paths.
 *>          For good performance, LWORK should generally be larger.
@@ -228,8 +237,8 @@
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (12*MIN(M,N))
-*>          If INFO = 0, the first NS elements of IWORK are zero. If INFO > 0, 
-*>          then IWORK contains the indices of the eigenvectors that failed 
+*>          If INFO = 0, the first NS elements of IWORK are zero. If INFO > 0,
+*>          then IWORK contains the indices of the eigenvectors that failed
 *>          to converge in DBDSVDX/DSTEVX.
 *> \endverbatim
 *>
@@ -247,24 +256,24 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex16GEsing
 *
 *  =====================================================================
-      SUBROUTINE ZGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU, 
-     $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK, 
+      SUBROUTINE ZGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
+     $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
      $                    LWORK, RWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.6.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT, RANGE
@@ -274,7 +283,7 @@
 *     .. Array Arguments ..
       INTEGER            IWORK( * )
       DOUBLE PRECISION   S( * ), RWORK( * )
-      COMPLEX*16         A( LDA, * ), U( LDU, * ), VT( LDVT, * ), 
+      COMPLEX*16         A( LDA, * ), U( LDU, * ), VT( LDVT, * ),
      $                   WORK( * )
 *     ..
 *
@@ -291,8 +300,8 @@
       CHARACTER          JOBZ, RNGTGK
       LOGICAL            ALLS, INDS, LQUERY, VALS, WANTU, WANTVT
       INTEGER            I, ID, IE, IERR, ILQF, ILTGK, IQRF, ISCL,
-     $                   ITAU, ITAUP, ITAUQ, ITEMP, ITGKZ, IUTGK,
-     $                   J, K, MAXWRK, MINMN, MINWRK, MNTHR
+     $                   ITAU, ITAUP, ITAUQ, ITEMP, ITEMPR, ITGKZ,
+     $                   IUTGK, J, K, MAXWRK, MINMN, MINWRK, MNTHR
       DOUBLE PRECISION   ABSTOL, ANRM, BIGNUM, EPS, SMLNUM
 *     ..
 *     .. Local Arrays ..
@@ -364,8 +373,14 @@
          IF( INFO.EQ.0 ) THEN
             IF( WANTU .AND. LDU.LT.M ) THEN
                INFO = -15
-            ELSE IF( WANTVT .AND. LDVT.LT.MINMN ) THEN
-               INFO = -16
+            ELSE IF( WANTVT ) THEN
+               IF( INDS ) THEN
+                   IF( LDVT.LT.IU-IL+1 ) THEN
+                       INFO = -17
+                   END IF
+               ELSE IF( LDVT.LT.MINMN ) THEN
+                   INFO = -17
+               END IF
             END IF
          END IF
       END IF
@@ -387,18 +402,24 @@
 *
 *                 Path 1 (M much larger than N)
 *
-                  MAXWRK = N + N*
-     $                     ILAENV( 1, 'DGEQRF', ' ', M, N, -1, -1 )
-                  MAXWRK = MAX( MAXWRK, N*N + N + 2*N*
-     $                     ILAENV( 1, 'DGEBRD', ' ', N, N, -1, -1 ) )
-                  MINWRK = N*(N+4)
+                  MINWRK = N*(N+5)
+                  MAXWRK = N + N*ILAENV(1,'ZGEQRF',' ',M,N,-1,-1)
+                  MAXWRK = MAX(MAXWRK,
+     $                     N*N+2*N+2*N*ILAENV(1,'ZGEBRD',' ',N,N,-1,-1))
+                  IF (WANTU .OR. WANTVT) THEN
+                     MAXWRK = MAX(MAXWRK,
+     $                       N*N+2*N+N*ILAENV(1,'ZUNMQR','LN',N,N,N,-1))
+                  END IF
                ELSE
 *
 *                 Path 2 (M at least N, but not much larger)
 *
-                  MAXWRK = 2*N + ( M+N )*
-     $                     ILAENV( 1, 'ZGEBRD', ' ', M, N, -1, -1 )
-                  MINWRK = 2*N + M
+                  MINWRK = 3*N + M
+                  MAXWRK = 2*N + (M+N)*ILAENV(1,'ZGEBRD',' ',M,N,-1,-1)
+                  IF (WANTU .OR. WANTVT) THEN
+                     MAXWRK = MAX(MAXWRK,
+     $                        2*N+N*ILAENV(1,'ZUNMQR','LN',N,N,N,-1))
+                  END IF
                END IF
             ELSE
                MNTHR = ILAENV( 6, 'ZGESVD', JOBU // JOBVT, M, N, 0, 0 )
@@ -406,18 +427,25 @@
 *
 *                 Path 1t (N much larger than M)
 *
-                  MAXWRK = M + M*
-     $                     ILAENV( 1, 'ZGELQF', ' ', M, N, -1, -1 )
-                  MAXWRK = MAX( MAXWRK, M*M + M + 2*M*
-     $                     ILAENV( 1, 'ZGEBRD', ' ', M, M, -1, -1 ) )
-                  MINWRK = M*(M+4)
+                  MINWRK = M*(M+5)
+                  MAXWRK = M + M*ILAENV(1,'ZGELQF',' ',M,N,-1,-1)
+                  MAXWRK = MAX(MAXWRK,
+     $                     M*M+2*M+2*M*ILAENV(1,'ZGEBRD',' ',M,M,-1,-1))
+                  IF (WANTU .OR. WANTVT) THEN
+                     MAXWRK = MAX(MAXWRK,
+     $                       M*M+2*M+M*ILAENV(1,'ZUNMQR','LN',M,M,M,-1))
+                  END IF
                ELSE
 *
 *                 Path 2t (N greater than M, but not much larger)
 *
-                  MAXWRK = M*(M*2+19) + ( M+N )*
-     $                     ILAENV( 1, 'ZGEBRD', ' ', M, N, -1, -1 )
-                  MINWRK = 2*M + N
+*
+                  MINWRK = 3*M + N
+                  MAXWRK = 2*M + (M+N)*ILAENV(1,'ZGEBRD',' ',M,N,-1,-1)
+                  IF (WANTU .OR. WANTVT) THEN
+                     MAXWRK = MAX(MAXWRK,
+     $                        2*M+M*ILAENV(1,'ZUNMQR','LN',M,M,M,-1))
+                  END IF
                END IF
             END IF
          END IF
@@ -444,8 +472,6 @@
 *
 *     Set singular values indices accord to RANGE='A'.
 *
-      ALLS = LSAME( RANGE, 'A' )
-      INDS = LSAME( RANGE, 'I' )
       IF( ALLS ) THEN
          RNGTGK = 'I'
          ILTGK = 1
@@ -454,7 +480,7 @@
          RNGTGK = 'I'
          ILTGK = IL
          IUTGK = IU
-      ELSE      
+      ELSE
          RNGTGK = 'V'
          ILTGK = 0
          IUTGK = 0
@@ -498,31 +524,31 @@
             ITEMP = ITAU + N
             CALL ZGEQRF( M, N, A, LDA, WORK( ITAU ), WORK( ITEMP ),
      $                   LWORK-ITEMP+1, INFO )
-*  
+*
 *           Copy R into WORK and bidiagonalize it:
 *           (Workspace: need N*N+3*N, prefer N*N+N+2*N*NB)
-*   
+*
             IQRF = ITEMP
             ITAUQ = ITEMP + N*N
             ITAUP = ITAUQ + N
             ITEMP = ITAUP + N
-            ID = 1   
+            ID = 1
             IE = ID + N
             ITGKZ = IE + N
             CALL ZLACPY( 'U', N, N, A, LDA, WORK( IQRF ), N )
             CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
      $                   WORK( IQRF+1 ), N )
-            CALL ZGEBRD( N, N, WORK( IQRF ), N, RWORK( ID ), 
+            CALL ZGEBRD( N, N, WORK( IQRF ), N, RWORK( ID ),
      $                   RWORK( IE ), WORK( ITAUQ ), WORK( ITAUP ),
      $                   WORK( ITEMP ), LWORK-ITEMP+1, INFO )
-            ITEMP = ITGKZ + N*(N*2+1)
+            ITEMPR = ITGKZ + N*(N*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*N*N+14*N)          
-*                   
+*           (Workspace: need 2*N*N+14*N)
+*
             CALL DBDSVDX( 'U', JOBZ, RNGTGK, N, RWORK( ID ),
      $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
-     $                    RWORK( ITGKZ ), N*2, RWORK( ITEMP ),
+     $                    RWORK( ITGKZ ), N*2, RWORK( ITEMPR ),
      $                    IWORK, INFO)
 *
 *           If needed, compute left singular vectors.
@@ -536,23 +562,23 @@
                   END DO
                   K = K + N
                END DO
-               CALL ZLASET( 'A', M-N, N, CZERO, CZERO, U( N+1,1 ), LDU )
+               CALL ZLASET( 'A', M-N, NS, CZERO, CZERO, U( N+1,1 ), LDU)
 *
 *              Call ZUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL ZUNMBR( 'Q', 'L', 'N', N, NS, N, WORK( IQRF ), N, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+               CALL ZUNMBR( 'Q', 'L', 'N', N, NS, N, WORK( IQRF ), N,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
 *
 *              Call ZUNMQR to compute Q*(QB*UB).
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL ZUNMQR( 'L', 'N', M, NS, N, A, LDA, 
+               CALL ZUNMQR( 'L', 'N', M, NS, N, A, LDA,
      $                      WORK( ITAU ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -568,7 +594,7 @@
 *              Call ZUNMBR to compute VB**T * PB**T
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL ZUNMBR( 'P', 'R', 'C', NS, N, N, WORK( IQRF ), N, 
+               CALL ZUNMBR( 'P', 'R', 'C', NS, N, N, WORK( IQRF ), N,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
             END IF
@@ -584,21 +610,21 @@
 *
             ITAUQ = 1
             ITAUP = ITAUQ + N
-            ITEMP = ITAUP + N          
+            ITEMP = ITAUP + N
             ID = 1
             IE = ID + N
             ITGKZ = IE + N
-            CALL ZGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ), 
+            CALL ZGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ),
      $                   WORK( ITAUQ ), WORK( ITAUP ), WORK( ITEMP ),
      $                   LWORK-ITEMP+1, INFO )
-            ITEMP = ITGKZ + N*(N*2+1)
+            ITEMPR = ITGKZ + N*(N*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*N*N+14*N)          
-*                     
+*           (Workspace: need 2*N*N+14*N)
+*
             CALL DBDSVDX( 'U', JOBZ, RNGTGK, N, RWORK( ID ),
-     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S, 
-     $                    RWORK( ITGKZ ), N*2, RWORK( ITEMP ), 
+     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
+     $                    RWORK( ITGKZ ), N*2, RWORK( ITEMPR ),
      $                    IWORK, INFO)
 *
 *           If needed, compute left singular vectors.
@@ -606,22 +632,22 @@
             IF( WANTU ) THEN
                K = ITGKZ
                DO I = 1, NS
-                  DO J = 1, N              
+                  DO J = 1, N
                      U( J, I ) = DCMPLX( RWORK( K ), ZERO )
                      K = K + 1
                   END DO
                   K = K + N
                END DO
-               CALL ZLASET( 'A', M-N, N, CZERO, CZERO, U( N+1,1 ), LDU )
+               CALL ZLASET( 'A', M-N, NS, CZERO, CZERO, U( N+1,1 ), LDU)
 *
 *              Call ZUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
-*   
-               CALL ZUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+*
+               CALL ZUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, IERR )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -637,11 +663,11 @@
 *              Call ZUNMBR to compute VB**T * PB**T
 *              (Workspace in WORK( ITEMP ): need N, prefer N*NB)
 *
-               CALL ZUNMBR( 'P', 'R', 'C', NS, N, N, A, LDA, 
+               CALL ZUNMBR( 'P', 'R', 'C', NS, N, N, A, LDA,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, IERR )
             END IF
-         END IF                             
+         END IF
       ELSE
 *
 *        A has more columns than rows. If A has sufficiently more
@@ -650,7 +676,7 @@
          IF( N.GE.MNTHR ) THEN
 *
 *           Path 1t (N much larger than M):
-*           A = L * Q = ( QB * B * PB**T ) * Q 
+*           A = L * Q = ( QB * B * PB**T ) * Q
 *                     = ( QB * ( UB * S * VB**T ) * PB**T ) * Q
 *           U = QB * UB ; V**T = VB**T * PB**T * Q
 *
@@ -665,7 +691,7 @@
 *           Copy L into WORK and bidiagonalize it:
 *           (Workspace in WORK( ITEMP ): need M*M+3*M, prefer M*M+M+2*M*NB)
 *
-            ILQF = ITEMP       
+            ILQF = ITEMP
             ITAUQ = ILQF + M*M
             ITAUP = ITAUQ + M
             ITEMP = ITAUP + M
@@ -673,19 +699,19 @@
             IE = ID + M
             ITGKZ = IE + M
             CALL ZLACPY( 'L', M, M, A, LDA, WORK( ILQF ), M )
-            CALL ZLASET( 'U', M-1, M-1, CZERO, CZERO, 
+            CALL ZLASET( 'U', M-1, M-1, CZERO, CZERO,
      $                   WORK( ILQF+M ), M )
             CALL ZGEBRD( M, M, WORK( ILQF ), M, RWORK( ID ),
-     $                   RWORK( IE ), WORK( ITAUQ ), WORK( ITAUP ), 
+     $                   RWORK( IE ), WORK( ITAUQ ), WORK( ITAUP ),
      $                   WORK( ITEMP ), LWORK-ITEMP+1, INFO )
-            ITEMP = ITGKZ + M*(M*2+1)
+            ITEMPR = ITGKZ + M*(M*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*M*M+14*M)          
+*           (Workspace: need 2*M*M+14*M)
 *
             CALL DBDSVDX( 'U', JOBZ, RNGTGK, M, RWORK( ID ),
-     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S, 
-     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMP ), 
+     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
+     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMPR ),
      $                    IWORK, INFO)
 *
 *           If needed, compute left singular vectors.
@@ -703,11 +729,11 @@
 *              Call ZUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL ZUNMBR( 'Q', 'L', 'N', M, NS, M, WORK( ILQF ), M, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+               CALL ZUNMBR( 'Q', 'L', 'N', M, NS, M, WORK( ILQF ), M,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -719,52 +745,52 @@
                   END DO
                   K = K + M
                END DO
-               CALL ZLASET( 'A', M, N-M, CZERO, CZERO, 
+               CALL ZLASET( 'A', NS, N-M, CZERO, CZERO,
      $                      VT( 1,M+1 ), LDVT )
 *
 *              Call ZUNMBR to compute (VB**T)*(PB**T)
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL ZUNMBR( 'P', 'R', 'C', NS, M, M, WORK( ILQF ), M, 
+               CALL ZUNMBR( 'P', 'R', 'C', NS, M, M, WORK( ILQF ), M,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
 *
 *              Call ZUNMLQ to compute ((VB**T)*(PB**T))*Q.
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL ZUNMLQ( 'R', 'N', NS, N, M, A, LDA, 
+               CALL ZUNMLQ( 'R', 'N', NS, N, M, A, LDA,
      $                      WORK( ITAU ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
+            END IF
          ELSE
 *
 *           Path 2t (N greater than M, but not much larger)
 *           Reduce to bidiagonal form without LQ decomposition
 *           A = QB * B * PB**T = QB * ( UB * S * VB**T ) * PB**T
-*           U = QB * UB; V**T = VB**T * PB**T           
+*           U = QB * UB; V**T = VB**T * PB**T
 *
 *           Bidiagonalize A
 *           (Workspace: need 2*M+N, prefer 2*M+(M+N)*NB)
-*            
+*
             ITAUQ = 1
             ITAUP = ITAUQ + M
             ITEMP = ITAUP + M
             ID = 1
             IE = ID + M
             ITGKZ = IE + M
-            CALL ZGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ), 
+            CALL ZGEBRD( M, N, A, LDA, RWORK( ID ), RWORK( IE ),
      $                   WORK( ITAUQ ), WORK( ITAUP ), WORK( ITEMP ),
      $                   LWORK-ITEMP+1, INFO )
-            ITEMP = ITGKZ + M*(M*2+1)
+            ITEMPR = ITGKZ + M*(M*2+1)
 *
 *           Solve eigenvalue problem TGK*Z=Z*S.
-*           (Workspace: need 2*M*M+14*M)          
-*          
-            CALL DBDSVDX( 'L', JOBZ, RNGTGK, M, RWORK( ID ), 
-     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S, 
-     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMP ), 
+*           (Workspace: need 2*M*M+14*M)
+*
+            CALL DBDSVDX( 'L', JOBZ, RNGTGK, M, RWORK( ID ),
+     $                    RWORK( IE ), VL, VU, ILTGK, IUTGK, NS, S,
+     $                    RWORK( ITGKZ ), M*2, RWORK( ITEMPR ),
      $                    IWORK, INFO)
-* 
+*
 *           If needed, compute left singular vectors.
 *
             IF( WANTU ) THEN
@@ -780,11 +806,11 @@
 *              Call ZUNMBR to compute QB*UB.
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL ZUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA, 
-     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ), 
+               CALL ZUNMBR( 'Q', 'L', 'N', M, NS, N, A, LDA,
+     $                      WORK( ITAUQ ), U, LDU, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF  
-*      
+            END IF
+*
 *           If needed, compute right singular vectors.
 *
             IF( WANTVT) THEN
@@ -796,16 +822,16 @@
                   END DO
                   K = K + M
                END DO
-               CALL ZLASET( 'A', M, N-M, CZERO, CZERO, 
+               CALL ZLASET( 'A', NS, N-M, CZERO, CZERO,
      $                      VT( 1,M+1 ), LDVT )
 *
 *              Call ZUNMBR to compute VB**T * PB**T
 *              (Workspace in WORK( ITEMP ): need M, prefer M*NB)
 *
-               CALL ZUNMBR( 'P', 'R', 'C', NS, N, M, A, LDA, 
+               CALL ZUNMBR( 'P', 'R', 'C', NS, N, M, A, LDA,
      $                      WORK( ITAUP ), VT, LDVT, WORK( ITEMP ),
      $                      LWORK-ITEMP+1, INFO )
-            END IF 
+            END IF
          END IF
       END IF
 *

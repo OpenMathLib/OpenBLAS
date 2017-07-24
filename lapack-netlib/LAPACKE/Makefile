@@ -42,16 +42,16 @@
 #
 include ../make.inc
 
-all: lapacke 
+all: lapacke
 
 lapacke:
-	cd include && cp lapacke_mangling_with_flags.h lapacke_mangling.h
+	cd include && cp lapacke_mangling_with_flags.h.in lapacke_mangling.h
 	cd src && $(MAKE)
 	cd utils && $(MAKE)
 
 lapacke_example:
 	cd example && $(MAKE)
-	
+
 clean: cleanlib
 
 cleanlib:
@@ -61,4 +61,3 @@ cleanlib:
 cleanall: clean
 	rm -f $(LAPACKE)
 	cd example && $(MAKE) clean
-

@@ -46,7 +46,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL_16
 
-static void drot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s)
+static void drot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
 {
 
 	BLASLONG i=0;
@@ -56,8 +56,6 @@ static void drot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s)
 	FLOAT y00, y01, y02, y03;
 	FLOAT *x1=x;
 	FLOAT *y1=y;
-	FLOAT c1=*c;
-	FLOAT s1=*s;
 
 	while ( i<n )
 	{
@@ -71,14 +69,14 @@ static void drot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s)
 		x03 = x1[3];
 		y03 = y1[3];
 
-		f0 = c1*x00 + s1*y00;
-		g0 = c1*y00 - s1*x00;
-		f1 = c1*x01 + s1*y01;
-		g1 = c1*y01 - s1*x01;
-		f2 = c1*x02 + s1*y02;
-		g2 = c1*y02 - s1*x02;
-		f3 = c1*x03 + s1*y03;
-		g3 = c1*y03 - s1*x03;
+		f0 = c*x00 + s*y00;
+		g0 = c*y00 - s*x00;
+		f1 = c*x01 + s*y01;
+		g1 = c*y01 - s*x01;
+		f2 = c*x02 + s*y02;
+		g2 = c*y02 - s*x02;
+		f3 = c*x03 + s*y03;
+		g3 = c*y03 - s*x03;
 
 		x1[0] = f0;
 		y1[0] = g0;
@@ -106,8 +104,6 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
-	FLOAT c1[4] __attribute__ ((aligned (16)));;
-	FLOAT s1[4] __attribute__ ((aligned (16)));;
 	FLOAT *x1=x;
 	FLOAT *y1=y;
 	FLOAT temp;
@@ -120,15 +116,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 		BLASLONG n1 = n & -16;
 		if ( n1 > 0 )
 		{
-			c1[0]=c;
-			c1[1]=c;
-			c1[2]=c;
-			c1[3]=c;
-			s1[0]=s;
-			s1[1]=s;
-			s1[2]=s;
-			s1[3]=s;
-			drot_kernel_16(n1, x1, y1, c1, s1);
+			drot_kernel_16(n1, x1, y1, c, s);
 			i=n1;
 		}
 

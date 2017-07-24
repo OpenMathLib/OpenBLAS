@@ -28,7 +28,7 @@
 ******************************************************************************
 * Contents: Native middle-level C interface to LAPACK function stprfb
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -38,7 +38,7 @@ lapack_int LAPACKE_stprfb_work( int matrix_layout, char side, char trans,
                                 lapack_int n, lapack_int k, lapack_int l,
                                 const float* v, lapack_int ldv, const float* t,
                                 lapack_int ldt, float* a, lapack_int lda,
-                                float* b, lapack_int ldb, const float* work,
+                                float* b, lapack_int ldb, float* work,
                                 lapack_int ldwork )
 {
     lapack_int info = 0;

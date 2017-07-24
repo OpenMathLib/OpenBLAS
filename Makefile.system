@@ -68,6 +68,9 @@ endif
 ifeq ($(TARGET), EXCAVATOR)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
+ifeq ($(TARGET), ZEN)
+GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
 endif
 
 
@@ -96,6 +99,9 @@ ifeq ($(TARGET_CORE), STEAMROLLER)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 ifeq ($(TARGET_CORE), EXCAVATOR)
+GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
+ifeq ($(TARGET_CORE), ZEN)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 endif
@@ -217,7 +223,9 @@ endif
 #
 
 ifeq ($(OSNAME), Darwin)
+ifndef MACOSX_DEPLOYMENT_TARGET
 export MACOSX_DEPLOYMENT_TARGET=10.6
+endif
 MD5SUM = md5 -r
 endif
 
@@ -232,6 +240,10 @@ endif
 ifeq ($(OSNAME), Linux)
 EXTRALIB	+= -lm
 NO_EXPRECISION = 1
+endif
+
+ifeq ($(OSNAME), Android)
+EXTRALIB	+= -lm
 endif
 
 ifeq ($(OSNAME), AIX)
@@ -406,7 +418,6 @@ CCOMMON_OPT    += -fopenmp
 endif
 
 ifeq ($(C_COMPILER), CLANG)
-$(error OpenBLAS: Clang didn't support OpenMP yet.)
 CCOMMON_OPT    += -fopenmp
 endif
 
@@ -441,12 +452,13 @@ ifneq ($(NO_AVX), 1)
 DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER STEAMROLLER EXCAVATOR
 endif
 ifneq ($(NO_AVX2), 1)
-DYNAMIC_CORE += HASWELL
+DYNAMIC_CORE += HASWELL ZEN
 endif
 endif
 
+# If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
 ifndef DYNAMIC_CORE
-DYNAMIC_ARCH =
+override DYNAMIC_ARCH=
 endif
 endif
 
@@ -474,6 +486,23 @@ endif
 ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
+
+CCOMMON_OPT += -marm
+FCOMMON_OPT += -marm
+
+# If softfp abi is mentioned on the command line, force it.
+ifeq ($(ARM_SOFTFP_ABI), 1)
+CCOMMON_OPT += -mfloat-abi=softfp
+FCOMMON_OPT += -mfloat-abi=softfp
+endif
+
+ifeq ($(OSNAME), Android)
+ifeq ($(ARM_SOFTFP_ABI), 1)
+EXTRALIB	+= -lm
+else
+EXTRALIB	+= -Wl,-lm_hard
+endif
+endif
 endif
 
 ifeq ($(ARCH), arm64)
@@ -574,6 +603,23 @@ endif
 #
 #  Fortran Compiler dependent settings
 #
+
+ifeq ($(F_COMPILER), FLANG)
+CCOMMON_OPT += -DF_INTERFACE_FLANG
+ifdef BINARY64
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+FCOMMON_OPT += -i8
+endif
+endif
+FCOMMON_OPT += -Wall
+else
+FCOMMON_OPT += -Wall
+endif
+ifeq ($(USE_OPENMP), 1)
+FCOMMON_OPT += -fopenmp
+endif
+endif
 
 ifeq ($(F_COMPILER), G77)
 CCOMMON_OPT += -DF_INTERFACE_G77
@@ -1002,7 +1048,7 @@ endif
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
 
-override FFLAGS     += $(FCOMMON_OPT)
+override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
@@ -1082,6 +1128,9 @@ ifneq ($(NO_LAPACK), 1)
 LIB_COMPONENTS += LAPACK
 ifneq ($(NO_LAPACKE), 1)
 LIB_COMPONENTS += LAPACKE
+endif
+ifeq ($(BUILD_RELAPACK), 1)
+LIB_COMPONENTS += ReLAPACK
 endif
 endif
 

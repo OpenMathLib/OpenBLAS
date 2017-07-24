@@ -50,17 +50,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup single_eig
 *
 *  =====================================================================
       SUBROUTINE SERRGG( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -83,7 +83,7 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            BW( NMAX ), SEL( NMAX )
-      INTEGER            IW( NMAX )
+      INTEGER            IW( NMAX ), IDUM(NMAX)
       REAL               A( NMAX, NMAX ), B( NMAX, NMAX ), LS( NMAX ),
      $                   Q( NMAX, NMAX ), R1( NMAX ), R2( NMAX ),
      $                   R3( NMAX ), RCE( 2 ), RCV( 2 ), RS( NMAX ),
@@ -305,47 +305,47 @@
          SRNAMT = 'SGGSVD3'
          INFOT = 1
          CALL SGGSVD3( '/', 'N', 'N', 0, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 2
          CALL SGGSVD3( 'N', '/', 'N', 0, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL SGGSVD3( 'N', 'N', '/', 0, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL SGGSVD3( 'N', 'N', 'N', -1, 0, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 5
          CALL SGGSVD3( 'N', 'N', 'N', 0, -1, 0, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 6
          CALL SGGSVD3( 'N', 'N', 'N', 0, 0, -1, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $        1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL SGGSVD3( 'N', 'N', 'N', 2, 1, 1, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $             1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 12
          CALL SGGSVD3( 'N', 'N', 'N', 1, 1, 2, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $            1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 16
          CALL SGGSVD3( 'U', 'N', 'N', 2, 2, 2, DUMMYK, DUMMYL, A, 2, B,
-     $                 2, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               2, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL SGGSVD3( 'N', 'V', 'N', 1, 1, 2, DUMMYK, DUMMYL, A, 1, B,
-     $                 2, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               2, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL SGGSVD3( 'N', 'N', 'Q', 1, 2, 1, DUMMYK, DUMMYL, A, 1, B,
-     $                 1, R1, R2, U, 1, V, 1, Q, 1, W, IW, LWORK, INFO )
+     $               1, R1, R2, U, 1, V, 1, Q, 1, W, LWORK, IDUM, INFO )
          CALL CHKXER( 'SGGSVD3', INFOT, NOUT, LERR, OK )
          NT = NT + 11
 *

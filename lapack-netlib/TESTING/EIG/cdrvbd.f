@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -12,7 +12,7 @@
 *                          A, LDA, U, LDU, VT, LDVT, ASAV, USAV, VTSAV, S,
 *                          SSAV, E, WORK, LWORK, RWORK, IWORK, NOUNIT,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUNIT, NSIZES,
 *      $                   NTYPES
@@ -26,7 +26,7 @@
 *      $                   USAV( LDU, * ), VT( LDVT, * ),
 *      $                   VTSAV( LDVT, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -132,7 +132,7 @@
 *>
 *> (7)   | S - Spartial | / ( MNMIN ulp |S| ) where Spartial is the
 *>       vector of singular values from the partial SVD
-*>      
+*>
 *> Test for CGESVDX( 'V', 'V', 'I' )
 *>
 *> (8)   | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
@@ -140,7 +140,7 @@
 *> (9)   | I - U'U | / ( M ulp )
 *>
 *> (10)  | I - VT VT' | / ( N ulp )
-*>      
+*>
 *> Test for CGESVDX( 'V', 'V', 'V' )
 *>
 *> (11)   | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
@@ -374,12 +374,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup complex_eig
 *
@@ -389,10 +389,10 @@
      $                   SSAV, E, WORK, LWORK, RWORK, IWORK, NOUNIT,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUNIT, NSIZES,
@@ -423,12 +423,12 @@
 *     .. Local Scalars ..
       LOGICAL            BADMM, BADNN
       CHARACTER          JOBQ, JOBU, JOBVT, RANGE
-      INTEGER            I, IINFO, IJQ, IJU, IJVT, IL, IU, ITEMP, IWSPC,
-     $                   IWTMP, J, JSIZE, JTYPE, LSWORK, M, MINWRK,
-     $                   MMAX, MNMAX, MNMIN, MTYPES, N, NERRS, NFAIL,
-     $                   NMAX, NS, NSI, NSV, NTEST, NTESTF, NTESTT,
-     $                   LRWORK
-      REAL               ANORM, DIF, DIV, OVFL, RTUNFL, ULP, ULPINV, 
+      INTEGER            I, IINFO, IJQ, IJU, IJVT, IL, IU, ITEMP,
+     $                   IWSPC, IWTMP, J, JSIZE, JTYPE, LSWORK, M,
+     $                   MINWRK, MMAX, MNMAX, MNMIN, MTYPES, N,
+     $                   NERRS, NFAIL, NMAX, NS, NSI, NSV, NTEST,
+     $                   NTESTF, NTESTT, LRWORK
+      REAL               ANORM, DIF, DIV, OVFL, RTUNFL, ULP, ULPINV,
      $                   UNFL, VL, VU
 *     ..
 *     .. Local Arrays ..
@@ -441,9 +441,9 @@
       EXTERNAL           SLAMCH, SLARND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASVM, XERBLA, CBDT01, CBDT05, CGESDD, CGESVD,
-     $                   CGESVJ, CGEJSV, CGESVDX, CLACPY, CLASET, CLATMS, 
-     $                   CUNT01, CUNT03
+      EXTERNAL           ALASVM, XERBLA, CBDT01, CBDT05, CGESDD,
+     $                   CGESVD, CGESVJ, CGEJSV, CGESVDX, CLACPY,
+     $                   CLASET, CLATMS, CUNT01, CUNT03
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, MAX, MIN
@@ -858,7 +858,7 @@
                   CALL CLACPY( 'F', M, N, ASAV, LDA, USAV, LDA )
                   SRNAMT = 'CGESVJ'
                   CALL CGESVJ( 'G', 'U', 'V', M, N, USAV, LDA, SSAV,
-     &                        0, A, LDVT, WORK, LWORK, RWORK, 
+     &                        0, A, LDVT, WORK, LWORK, RWORK,
      &                        LRWORK, IINFO )
 *
 *                 CGESVJ retuns V not VT, so we transpose to use the same
@@ -920,7 +920,7 @@
                   SRNAMT = 'CGEJSV'
                   CALL CGEJSV( 'G', 'U', 'V', 'R', 'N', 'N',
      &                   M, N, VTSAV, LDA, SSAV, USAV, LDU, A, LDVT,
-     &                   WORK, LWORK, RWORK, 
+     &                   WORK, LWORK, RWORK,
      &                   LRWORK, IWORK, IINFO )
 *
 *                 CGEJSV retuns V not VT, so we transpose to use the same
@@ -968,8 +968,8 @@
 *
                CALL CLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                SRNAMT = 'CGESVDX'
-               CALL CGESVDX( 'V', 'V', 'A', M, N, A, LDA, 
-     $                       VL, VU, IL, IU, NS, SSAV, USAV, LDU, 
+               CALL CGESVDX( 'V', 'V', 'A', M, N, A, LDA,
+     $                       VL, VU, IL, IU, NS, SSAV, USAV, LDU,
      $                       VTSAV, LDVT, WORK, LWORK, RWORK,
      $                       IWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
@@ -1018,8 +1018,8 @@
                      RANGE = CJOBR( 1 )
                      CALL CLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                      SRNAMT = 'CGESVDX'
-                     CALL CGESVDX( JOBU, JOBVT, 'A', M, N, A, LDA, 
-     $                            VL, VU, IL, IU, NS, SSAV, U, LDU, 
+                     CALL CGESVDX( JOBU, JOBVT, 'A', M, N, A, LDA,
+     $                            VL, VU, IL, IU, NS, SSAV, U, LDU,
      $                            VT, LDVT, WORK, LWORK, RWORK,
      $                            IWORK, IINFO )
 *
@@ -1079,15 +1079,15 @@
                      IU = IL
                      IL = ITEMP
                   END IF
-               END IF  
+               END IF
                CALL CLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                SRNAMT = 'CGESVDX'
-               CALL CGESVDX( 'V', 'V', 'I', M, N, A, LDA, 
-     $                       VL, VU, IL, IU, NSI, S, U, LDU, 
+               CALL CGESVDX( 'V', 'V', 'I', M, N, A, LDA,
+     $                       VL, VU, IL, IU, NSI, S, U, LDU,
      $                       VT, LDVT, WORK, LWORK, RWORK,
      $                       IWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUNIT, FMT = 9995 )'GESVDX', IINFO, M, N, 
+                  WRITE( NOUNIT, FMT = 9995 )'GESVDX', IINFO, M, N,
      $               JTYPE, LSWORK, IOLDSD
                   INFO = ABS( IINFO )
                   RETURN
@@ -1109,11 +1109,11 @@
 *
                IF( MNMIN.GT.0 .AND. NSI.GT.1 ) THEN
                   IF( IL.NE.1 ) THEN
-                     VU = SSAV( IL ) + 
+                     VU = SSAV( IL ) +
      $                    MAX( HALF*ABS( SSAV( IL )-SSAV( IL-1 ) ),
      $                    ULP*ANORM, TWO*RTUNFL )
                   ELSE
-                     VU = SSAV( 1 ) + 
+                     VU = SSAV( 1 ) +
      $                    MAX( HALF*ABS( SSAV( NS )-SSAV( 1 ) ),
      $                    ULP*ANORM, TWO*RTUNFL )
                   END IF
@@ -1130,15 +1130,15 @@
                ELSE
                   VL = ZERO
                   VU = ONE
-               END IF 
+               END IF
                CALL CLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                SRNAMT = 'CGESVDX'
-               CALL CGESVDX( 'V', 'V', 'V', M, N, A, LDA, 
-     $                       VL, VU, IL, IU, NSV, S, U, LDU, 
+               CALL CGESVDX( 'V', 'V', 'V', M, N, A, LDA,
+     $                       VL, VU, IL, IU, NSV, S, U, LDU,
      $                       VT, LDVT, WORK, LWORK, RWORK,
      $                       IWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
-                  WRITE( NOUNIT, FMT = 9995 )'GESVDX', IINFO, M, N, 
+                  WRITE( NOUNIT, FMT = 9995 )'GESVDX', IINFO, M, N,
      $               JTYPE, LSWORK, IOLDSD
                   INFO = ABS( IINFO )
                   RETURN
@@ -1221,7 +1221,7 @@
      $      ' decreasing order, else 1/ulp',
      $      / '12 = | U - Upartial | / ( M ulp )',
      $      / '13 = | VT - VTpartial | / ( N ulp )',
-     $      / '14 = | S - Spartial | / ( min(M,N) ulp |S| )', 
+     $      / '14 = | S - Spartial | / ( min(M,N) ulp |S| )',
      $      / ' CGESVJ: ', /
      $      / '15 = | A - U diag(S) VT | / ( |A| max(M,N) ulp ) ',
      $      / '16 = | I - U**T U | / ( M ulp ) ',
@@ -1231,7 +1231,7 @@
      $      / ' CGESJV: ', /
      $      / '19 = | A - U diag(S) VT | / ( |A| max(M,N) ulp )',
      $      / '20 = | I - U**T U | / ( M ulp ) ',
-     $      / '21 = | I - VT VT**T | / ( N ulp ) ', 
+     $      / '21 = | I - VT VT**T | / ( N ulp ) ',
      $      / '22 = 0 if S contains min(M,N) nonnegative values in',
      $      ' decreasing order, else 1/ulp',
      $      / ' CGESVDX(V,V,A): ', /
@@ -1250,7 +1250,7 @@
      $      / ' CGESVDX(V,V,V) ',
      $      / '33 = | U**T A VT**T - diag(S) | / ( |A| max(M,N) ulp )',
      $      / '34 = | I - U**T U | / ( M ulp ) ',
-     $      / '35 = | I - VT VT**T | / ( N ulp ) ',  
+     $      / '35 = | I - VT VT**T | / ( N ulp ) ',
      $      / / )
  9997 FORMAT( ' M=', I5, ', N=', I5, ', type ', I1, ', IWS=', I1,
      $      ', seed=', 4( I4, ',' ), ' test(', I2, ')=', G11.4 )

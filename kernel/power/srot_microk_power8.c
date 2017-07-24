@@ -38,171 +38,179 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define HAVE_KERNEL_16 1
 
-static void srot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s) __attribute__ ((noinline));
-
-static void srot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s)
+static void srot_kernel_16 (long n, float *x, float *y, float c, float s)
 {
+  __vector float t0;
+  __vector float t1;
+  __vector float t2;
+  __vector float t3;
+  __vector float t4;
+  __vector float t5;
+  __vector float t6;
+  __vector float t7;
 
+  __asm__
+    (
+       "xscvdpspn	36, %x13	\n\t"	// load c to all words
+       "xxspltw		36, 36, 0	\n\t"
 
-	BLASLONG i = n;
-	BLASLONG o16 = 16;
-	BLASLONG o32 = 32;
-	BLASLONG o48 = 48;
-	FLOAT *x1=x;
-	FLOAT *y1=y;
-	FLOAT *x2=x+1;
-	FLOAT *y2=y+1;
+       "xscvdpspn	37, %x14	\n\t"	// load s to all words
+       "xxspltw		37, 37, 0	\n\t"
 
-	__asm__  __volatile__
-	(
+       "lxvd2x		32, 0, %3	\n\t"	// load x
+       "lxvd2x		33, %15, %3	\n\t"
+       "lxvd2x		34, %16, %3	\n\t"
+       "lxvd2x		35, %17, %3	\n\t"
 
-        "lxvw4x         36 , 0, %3                          \n\t"	// load c
-        "lxvw4x         37 , 0, %4                          \n\t"	// load s
-	"addi		%8 , %8, -4			     \n\t"
-	"addi		%9 , %9, -4			     \n\t"
+       "lxvd2x		48, 0, %4	\n\t"	// load y
+       "lxvd2x		49, %15, %4	\n\t"
+       "lxvd2x		50, %16, %4	\n\t"
+       "lxvd2x		51, %17, %4	\n\t"
 
-	"lxvw4x		32, 0, %1			    \n\t"	// load x
-	"lxvw4x		33, %5, %1			    \n\t"
-	"lxvw4x		34, %6, %1			    \n\t"
-	"lxvw4x		35, %7, %1			    \n\t"
+       "addi		%3, %3, 64	\n\t"
+       "addi		%4, %4, 64	\n\t"
 
-	"lxvw4x		40, 0, %2			    \n\t"	// load y
-	"lxvw4x		41, %5, %2			    \n\t"
-	"lxvw4x		42, %6, %2			    \n\t"
-	"lxvw4x		43, %7, %2			    \n\t"
+       "addic.		%2, %2, -16	\n\t"
+       "ble		2f		\n\t"
 
-	"addi		%1, %1, 64			    \n\t"
-	"addi		%2, %2, 64			    \n\t"
+       ".p2align	5		\n"
+     "1:				\n\t"
 
-	"addic.		%0 , %0	, -16  	 	             \n\t"
-	"ble		2f		             	     \n\t"
+       "xvmulsp		40, 32, 36	\n\t"	// c * x
+       "xvmulsp		41, 33, 36	\n\t"
+       "xvmulsp		42, 34, 36	\n\t"
+       "xvmulsp		43, 35, 36	\n\t"
 
-	".align 5				            \n\t"
-	"1:				                    \n\t"
+       "xvmulsp		%x5, 48, 36	\n\t"	// c * y
+       "xvmulsp		%x6, 49, 36	\n\t"
+       "xvmulsp		%x7, 50, 36	\n\t"
+       "xvmulsp		%x8, 51, 36	\n\t"
 
-	"xvmulsp	48, 32, 36		    	    \n\t"	// c * x
-	"xvmulsp	49, 33, 36		    	    \n\t"
-	"xvmulsp	50, 34, 36		    	    \n\t"
-	"xvmulsp	51, 35, 36		    	    \n\t"
+       "xvmulsp		44, 32, 37	\n\t"	// s * x
+       "xvmulsp		45, 33, 37	\n\t"
 
-	"xvmulsp	56, 40, 36		    	    \n\t"	// c * y
-	"xvmulsp	57, 41, 36		    	    \n\t"
-	"xvmulsp	58, 42, 36		    	    \n\t"
-	"xvmulsp	59, 43, 36		    	    \n\t"
+       "lxvd2x		32, 0, %3	\n\t"	// load x
+       "lxvd2x		33, %15, %3	\n\t"
 
-	"xvmulsp	52, 32, 37		    	    \n\t"	// s * x
-	"xvmulsp	53, 33, 37		    	    \n\t"
+       "xvmulsp		46, 34, 37	\n\t"
+       "xvmulsp		47, 35, 37	\n\t"
 
-	"lxvw4x		32, 0, %1			    \n\t"	// load x
-	"lxvw4x		33, %5, %1			    \n\t"
+       "lxvd2x		34, %16, %3	\n\t"
+       "lxvd2x		35, %17, %3	\n\t"
 
-	"xvmulsp	54, 34, 37		    	    \n\t"
-	"xvmulsp	55, 35, 37		    	    \n\t"
+       "xvmulsp		%x9, 48, 37	\n\t"	// s * y
+       "xvmulsp		%x10, 49, 37	\n\t"
 
-	"lxvw4x		34, %6, %1			    \n\t"
-	"lxvw4x		35, %7, %1			    \n\t"
+       "lxvd2x		48, 0, %4	\n\t"	// load y
+       "lxvd2x		49, %15, %4	\n\t"
 
-	"xvmulsp	60, 40, 37		    	    \n\t"	// s * y
-	"xvmulsp	61, 41, 37		    	    \n\t"
+       "xvmulsp		%x11, 50, 37	\n\t"
+       "xvmulsp		%x12, 51, 37	\n\t"
 
-	"lxvw4x		40, 0, %2			    \n\t"	// load y
-	"lxvw4x		41, %5, %2			    \n\t"
+       "lxvd2x		50, %16, %4	\n\t"
+       "lxvd2x		51, %17, %4	\n\t"
 
-	"xvmulsp	62, 42, 37		    	    \n\t"
-	"xvmulsp	63, 43, 37		    	    \n\t"
+       "xvaddsp		40, 40, %x9	\n\t"	// c * x + s * y
+       "xvaddsp		41, 41, %x10	\n\t"	// c * x + s * y
 
-	"lxvw4x		42, %6, %2			    \n\t"
-	"lxvw4x		43, %7, %2			    \n\t"
+       "addi		%3, %3, -64	\n\t"
+       "addi		%4, %4, -64	\n\t"
 
-	"xvaddsp	48, 48 , 60			    \n\t"	// c * x + s * y 
-	"xvaddsp	49, 49 , 61			    \n\t"	// c * x + s * y 
+       "xvaddsp		42, 42, %x11	\n\t"	// c * x + s * y
+       "xvaddsp		43, 43, %x12	\n\t"	// c * x + s * y
 
-	"addi		%1, %1, 64			    \n\t"
-	"addi		%2, %2, 64			    \n\t"
+       "xvsubsp		%x5, %x5, 44	\n\t"	// c * y - s * x
+       "xvsubsp		%x6, %x6, 45	\n\t"	// c * y - s * x
+       "xvsubsp		%x7, %x7, 46	\n\t"	// c * y - s * x
+       "xvsubsp		%x8, %x8, 47	\n\t"	// c * y - s * x
 
-	"xvaddsp	50, 50 , 62			    \n\t"	// c * x + s * y 
-	"xvaddsp	51, 51 , 63			    \n\t"	// c * x + s * y 
+       "stxvd2x		40, 0, %3	\n\t"	// store x
+       "stxvd2x		41, %15, %3	\n\t"
+       "stxvd2x		42, %16, %3	\n\t"
+       "stxvd2x		43, %17, %3	\n\t"
 
-	"xvsubsp	56, 56 , 52			    \n\t"	// c * y - s * x
-	"xvsubsp	57, 57 , 53			    \n\t"	// c * y - s * x
-	"xvsubsp	58, 58 , 54			    \n\t"	// c * y - s * x
-	"xvsubsp	59, 59 , 55			    \n\t"	// c * y - s * x
+       "stxvd2x		%x5, 0, %4	\n\t"	// store y
+       "stxvd2x		%x6, %15, %4	\n\t"
+       "stxvd2x		%x7, %16, %4	\n\t"
+       "stxvd2x		%x8, %17, %4	\n\t"
 
-	"stxvw4x	48, 0, %8			    \n\t"	// store x
-	"stxvw4x	49, %5, %8			    \n\t"
-	"stxvw4x	50, %6, %8			    \n\t"
-	"stxvw4x	51, %7, %8			    \n\t"
+       "addi		%3, %3, 128	\n\t"
+       "addi		%4, %4, 128	\n\t"
 
-	"stxvw4x	56, 0, %9			    \n\t"	// store y
-	"stxvw4x	57, %5, %9			    \n\t"
-	"stxvw4x	58, %6, %9			    \n\t"
-	"stxvw4x	59, %7, %9			    \n\t"
+       "addic.		%2, %2, -16	\n\t"
+       "bgt		1b		\n"
 
-	"addi		%8, %8, 64			    \n\t"
-	"addi		%9, %9, 64			    \n\t"
+     "2:				\n\t"
 
-	"addic.		%0 , %0	, -16  	 	             \n\t"
-	"bgt		1b		             	     \n\t"
+       "xvmulsp		40, 32, 36	\n\t"	// c * x
+       "xvmulsp		41, 33, 36	\n\t"
+       "xvmulsp		42, 34, 36	\n\t"
+       "xvmulsp		43, 35, 36	\n\t"
 
-	"2:						     \n\t"
+       "xvmulsp		%x5, 48, 36	\n\t"	// c * y
+       "xvmulsp		%x6, 49, 36	\n\t"
+       "xvmulsp		%x7, 50, 36	\n\t"
+       "xvmulsp		%x8, 51, 36	\n\t"
 
-	"xvmulsp	48, 32, 36		    	    \n\t"	// c * x
-	"xvmulsp	49, 33, 36		    	    \n\t"
-	"xvmulsp	50, 34, 36		    	    \n\t"
-	"xvmulsp	51, 35, 36		    	    \n\t"
+       "xvmulsp		44, 32, 37	\n\t"	// s * x
+       "xvmulsp		45, 33, 37	\n\t"
+       "xvmulsp		46, 34, 37	\n\t"
+       "xvmulsp		47, 35, 37	\n\t"
 
-	"xvmulsp	56, 40, 36		    	    \n\t"	// c * y
-	"xvmulsp	57, 41, 36		    	    \n\t"
-	"xvmulsp	58, 42, 36		    	    \n\t"
-	"xvmulsp	59, 43, 36		    	    \n\t"
+       "xvmulsp		%x9, 48, 37	\n\t"	// s * y
+       "xvmulsp		%x10, 49, 37	\n\t"
+       "xvmulsp		%x11, 50, 37	\n\t"
+       "xvmulsp		%x12, 51, 37	\n\t"
 
-	"xvmulsp	52, 32, 37		    	    \n\t"	// s * x
-	"xvmulsp	53, 33, 37		    	    \n\t"
-	"xvmulsp	54, 34, 37		    	    \n\t"
-	"xvmulsp	55, 35, 37		    	    \n\t"
+       "addi		%3, %3, -64	\n\t"
+       "addi		%4, %4, -64	\n\t"
 
-	"xvmulsp	60, 40, 37		    	    \n\t"	// s * y
-	"xvmulsp	61, 41, 37		    	    \n\t"
-	"xvmulsp	62, 42, 37		    	    \n\t"
-	"xvmulsp	63, 43, 37		    	    \n\t"
+       "xvaddsp		40, 40, %x9	\n\t"	// c * x + s * y
+       "xvaddsp		41, 41, %x10	\n\t"	// c * x + s * y
+       "xvaddsp		42, 42, %x11	\n\t"	// c * x + s * y
+       "xvaddsp		43, 43, %x12	\n\t"	// c * x + s * y
 
-	"xvaddsp	48, 48 , 60			    \n\t"	// c * x + s * y 
-	"xvaddsp	49, 49 , 61			    \n\t"	// c * x + s * y 
-	"xvaddsp	50, 50 , 62			    \n\t"	// c * x + s * y 
-	"xvaddsp	51, 51 , 63			    \n\t"	// c * x + s * y 
+       "xvsubsp		%x5, %x5, 44	\n\t"	// c * y - s * x
+       "xvsubsp		%x6, %x6, 45	\n\t"	// c * y - s * x
+       "xvsubsp		%x7, %x7, 46	\n\t"	// c * y - s * x
+       "xvsubsp		%x8, %x8, 47	\n\t"	// c * y - s * x
 
-	"xvsubsp	56, 56 , 52			    \n\t"	// c * y - s * x
-	"xvsubsp	57, 57 , 53			    \n\t"	// c * y - s * x
-	"xvsubsp	58, 58 , 54			    \n\t"	// c * y - s * x
-	"xvsubsp	59, 59 , 55			    \n\t"	// c * y - s * x
+       "stxvd2x		40, 0, %3	\n\t"	// store x
+       "stxvd2x		41, %15, %3	\n\t"
+       "stxvd2x		42, %16, %3	\n\t"
+       "stxvd2x		43, %17, %3	\n\t"
 
-	"stxvw4x	48, 0, %8			    \n\t"	// store x
-	"stxvw4x	49, %5, %8			    \n\t"
-	"stxvw4x	50, %6, %8			    \n\t"
-	"stxvw4x	51, %7, %8			    \n\t"
+       "stxvd2x		%x5, 0, %4	\n\t"	// store y
+       "stxvd2x		%x6, %15, %4	\n\t"
+       "stxvd2x		%x7, %16, %4	\n\t"
+       "stxvd2x		%x8, %17, %4	\n"
 
-	"stxvw4x	56, 0, %9			    \n\t"	// store y
-	"stxvw4x	57, %5, %9			    \n\t"
-	"stxvw4x	58, %6, %9			    \n\t"
-	"stxvw4x	59, %7, %9			    \n\t"
-
-
-
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (x1),  	// 1
-          "r" (y1),     // 2
-          "r" (c),      // 3
-          "r" (s),      // 4
-	  "r" (o16),	// 5
-	  "r" (o32),	// 6
-	  "r" (o48),    // 7
-	  "r" (x2),     // 8
-	  "r" (y2)      // 9
-	: "cr0", "%0", "%1" , "%2", "%8", "%9", "memory"
-	);
-
-} 
-
-
+     "#n=%2 x=%0=%3 y=%1=%4 c=%13 s=%14 o16=%15 o32=%16 o48=%17\n"
+     "#t0=%x5 t1=%x6 t2=%x7 t3=%x8 t4=%x9 t5=%x10 t6=%x11 t7=%x12"
+     :
+       "+m" (*x),
+       "+m" (*y),
+       "+r" (n),	// 2
+       "+b" (x),	// 3
+       "+b" (y),	// 4
+       "=wa" (t0),	// 5
+       "=wa" (t1),	// 6
+       "=wa" (t2),	// 7
+       "=wa" (t3),	// 8
+       "=wa" (t4),	// 9
+       "=wa" (t5),	// 10
+       "=wa" (t6),	// 11
+       "=wa" (t7)	// 12
+     :
+       "f" (c),		// 13
+       "f" (s),		// 14
+       "b" (16),	// 15
+       "b" (32),	// 16
+       "b" (48)		// 17
+     :
+       "cr0",
+       "vs32","vs33","vs34","vs35","vs36","vs37",
+       "vs40","vs41","vs42","vs43","vs44","vs45","vs46","vs47",
+       "vs48","vs49","vs50","vs51"
+     );
+}

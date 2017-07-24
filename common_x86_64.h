@@ -245,6 +245,10 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define RETURN_BY_STACK
 #endif
 
+#ifdef F_INTERFACE_FLANG
+#define RETURN_BY_STACK
+#endif
+
 #ifdef F_INTERFACE_PGI
 #define RETURN_BY_STACK
 #endif

@@ -2,14 +2,14 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZTRSM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
-* 
+*
 *       .. Scalar Arguments ..
 *       COMPLEX*16 ALPHA
 *       INTEGER LDA,LDB,M,N
@@ -18,7 +18,7 @@
 *       .. Array Arguments ..
 *       COMPLEX*16 A(LDA,*),B(LDB,*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -112,7 +112,7 @@
 *> \param[in] A
 *> \verbatim
 *>          A is COMPLEX*16 array of DIMENSION ( LDA, k ),
-*>           where k is m when SIDE = 'L' or 'l'  
+*>           where k is m when SIDE = 'L' or 'l'
 *>             and k is n when SIDE = 'R' or 'r'.
 *>           Before entry  with  UPLO = 'U' or 'u',  the  leading  k by k
 *>           upper triangular part of the array  A must contain the upper
@@ -154,12 +154,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup complex16_blas_level3
 *
@@ -180,10 +180,10 @@
 *  =====================================================================
       SUBROUTINE ZTRSM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
 *
-*  -- Reference BLAS level3 routine (version 3.4.0) --
+*  -- Reference BLAS level3 routine (version 3.7.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       COMPLEX*16 ALPHA

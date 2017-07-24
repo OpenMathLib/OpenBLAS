@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,7 +11,7 @@
 *       SUBROUTINE CCSDTS( M, P, Q, X, XF, LDX, U1, LDU1, U2, LDU2, V1T,
 *                          LDV1T, V2T, LDV2T, THETA, IWORK, WORK, LWORK,
 *                          RWORK, RESULT )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            LDX, LDU1, LDU2, LDV1T, LDV2T, LWORK, M, P, Q
 *       ..
@@ -22,7 +22,7 @@
 *      $                   V2T( LDV2T, * ), WORK( LWORK ), X( LDX, * ),
 *      $                   XF( LDX, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -215,12 +215,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
 *> \ingroup complex_eig
 *
@@ -229,10 +229,10 @@
      $                   LDV1T, V2T, LDV2T, THETA, IWORK, WORK, LWORK,
      $                   RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.6.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDX, LDU1, LDU2, LDV1T, LDV2T, LWORK, M, P, Q
@@ -280,7 +280,7 @@
       CALL CHERK( 'Upper', 'Conjugate transpose', M, M, -REALONE,
      $            X, LDX, REALONE, WORK, LDX )
       IF (M.GT.0) THEN
-         EPS2 = MAX( ULP, 
+         EPS2 = MAX( ULP,
      $               CLANGE( '1', M, M, WORK, LDX, RWORK ) / REAL( M ) )
       ELSE
          EPS2 = ULP
@@ -446,7 +446,7 @@
       CALL CHERK( 'Upper', 'Conjugate transpose', Q, M, -REALONE,
      $            X, LDX, REALONE, WORK, LDX )
       IF (M.GT.0) THEN
-         EPS2 = MAX( ULP, 
+         EPS2 = MAX( ULP,
      $               CLANGE( '1', Q, Q, WORK, LDX, RWORK ) / REAL( M ) )
       ELSE
          EPS2 = ULP
@@ -553,7 +553,7 @@
       END DO
 *
       RETURN
-*      
+*
 *     End of CCSDTS
 *
       END

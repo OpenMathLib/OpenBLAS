@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZUNBDB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zunbdb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zunbdb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zunbdb.f"> 
+*> Download ZUNBDB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zunbdb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zunbdb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zunbdb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE ZUNBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
 *                          X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
 *                          TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIGNS, TRANS
 *       INTEGER            INFO, LDX11, LDX12, LDX21, LDX22, LWORK, M, P,
@@ -33,7 +33,7 @@
 *      $                   WORK( * ), X11( LDX11, * ), X12( LDX12, * ),
 *      $                   X21( LDX21, * ), X22( LDX22, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -250,12 +250,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2013
+*> \date December 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -287,10 +287,10 @@
      $                   X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
      $                   TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIGNS, TRANS
@@ -314,7 +314,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            COLMAJOR, LQUERY
-      INTEGER            I, LWORKMIN, LWORKOPT, PI1, QI1
+      INTEGER            I, LWORKMIN, LWORKOPT
       DOUBLE PRECISION   Z1, Z2, Z3, Z4
 *     ..
 *     .. External Subroutines ..
@@ -396,7 +396,7 @@
 *
       IF( COLMAJOR ) THEN
 *
-*        Reduce columns 1, ..., Q of X11, X12, X21, and X22 
+*        Reduce columns 1, ..., Q of X11, X12, X21, and X22
 *
          DO I = 1, Q
 *
@@ -427,7 +427,7 @@
             END IF
             X11(I,I) = ONE
             IF ( M-P .GT. I ) THEN
-               CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I+1,I), 1, 
+               CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I+1,I), 1,
      $                       TAUP2(I) )
             ELSE IF ( M-P .EQ. I ) THEN
                CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I), 1,
@@ -436,7 +436,7 @@
             X21(I,I) = ONE
 *
             IF ( Q .GT. I ) THEN
-               CALL ZLARF( 'L', P-I+1, Q-I, X11(I,I), 1, 
+               CALL ZLARF( 'L', P-I+1, Q-I, X11(I,I), 1,
      $                     DCONJG(TAUP1(I)), X11(I,I+1), LDX11, WORK )
                CALL ZLARF( 'L', M-P-I+1, Q-I, X21(I,I), 1,
      $                     DCONJG(TAUP2(I)), X21(I,I+1), LDX21, WORK )

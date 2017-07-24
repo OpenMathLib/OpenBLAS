@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGBEQUB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgbequb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgbequb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgbequb.f"> 
+*> Download ZGBEQUB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgbequb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgbequb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgbequb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGBEQUB( M, N, KL, KU, AB, LDAB, R, C, ROWCND, COLCND,
 *                           AMAX, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, KL, KU, LDAB, M, N
 *       DOUBLE PRECISION   AMAX, COLCND, ROWCND
@@ -29,7 +29,7 @@
 *       DOUBLE PRECISION   C( * ), R( * )
 *       COMPLEX*16         AB( LDAB, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -49,9 +49,9 @@
 *> number of A but works well in practice.
 *>
 *> This routine differs from ZGEEQU by restricting the scaling factors
-*> to a power of the radix.  Baring over- and underflow, scaling by
+*> to a power of the radix.  Barring over- and underflow, scaling by
 *> these factors introduces no additional rounding errors.  However, the
-*> scaled entries' magnitured are no longer approximately 1 but lie
+*> scaled entries' magnitudes are no longer approximately 1 but lie
 *> between sqrt(radix) and 1/sqrt(radix).
 *> \endverbatim
 *
@@ -84,7 +84,7 @@
 *>
 *> \param[in] AB
 *> \verbatim
-*>          AB is DOUBLE PRECISION array, dimension (LDAB,N)
+*>          AB is COMPLEX*16 array, dimension (LDAB,N)
 *>          On entry, the matrix A in band storage, in rows 1 to KL+KU+1.
 *>          The j-th column of A is stored in the j-th column of the
 *>          array AB as follows:
@@ -148,12 +148,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date June 2016
 *
 *> \ingroup complex16GBcomputational
 *
@@ -161,10 +161,10 @@
       SUBROUTINE ZGBEQUB( M, N, KL, KU, AB, LDAB, R, C, ROWCND, COLCND,
      $                    AMAX, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, KL, KU, LDAB, M, N

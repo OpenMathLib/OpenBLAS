@@ -10,6 +10,7 @@ $hostarch = "x86_64" if ($hostarch eq "amd64");
 $hostarch = "arm" if ($hostarch =~ /^arm.*/);
 $hostarch = "arm64" if ($hostarch eq "aarch64");
 $hostarch = "power" if ($hostarch =~ /^(powerpc|ppc).*/);
+$hostarch = "zarch" if ($hostarch eq "s390x");
 
 $tmpf = new File::Temp( UNLINK => 1 );
 $binary = $ENV{"BINARY"};
@@ -34,7 +35,7 @@ if (dirname($compiler_name) ne ".") {
     $cross_suffix .= dirname($compiler_name) . "/";
 }
 
-if (basename($compiler_name) =~ /(.*-)(.*)/) {
+if (basename($compiler_name) =~ /([^\s]*-)(.*)/) {
     $cross_suffix .= $1;
 }
 
@@ -72,6 +73,7 @@ $architecture = sparc  if ($data =~ /ARCH_SPARC/);
 $architecture = ia64   if ($data =~ /ARCH_IA64/);
 $architecture = arm    if ($data =~ /ARCH_ARM/);
 $architecture = arm64  if ($data =~ /ARCH_ARM64/);
+$architecture = zarch  if ($data =~ /ARCH_ZARCH/);
 
 $defined = 0;
 
@@ -94,6 +96,11 @@ if ($architecture eq "mips64") {
 
 if (($architecture eq "arm") || ($architecture eq "arm64")) {
     $defined = 1;
+}
+
+if ($architecture eq "zarch") {
+    $defined = 1;
+    $binary = 64;
 }
 
 if ($architecture eq "alpha") {
@@ -187,6 +194,7 @@ $architecture = sparc  if ($data =~ /ARCH_SPARC/);
 $architecture = ia64   if ($data =~ /ARCH_IA64/);
 $architecture = arm    if ($data =~ /ARCH_ARM/);
 $architecture = arm64  if ($data =~ /ARCH_ARM64/);
+$architecture = zarch  if ($data =~ /ARCH_ZARCH/);
 
 $binformat    = bin32;
 $binformat    = bin64  if ($data =~ /BINARY_64/);
@@ -233,6 +241,11 @@ $linker_a = "";
 	if ($flags =~ /^\-Y/) {
 	    $linker_L .= "-Wl,". $flags . " "
 	    }
+
+	if ($flags =~ /^\--exclude-libs/) {
+	    $linker_L .= "-Wl,". $flags . " ";
+	    $flags="";
+	   }
 
 	if (
 	    ($flags =~ /^\-l/)

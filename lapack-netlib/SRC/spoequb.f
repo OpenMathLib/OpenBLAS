@@ -2,24 +2,24 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPOEQUB + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spoequb.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spoequb.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spoequb.f"> 
+*> Download SPOEQUB + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spoequb.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spoequb.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spoequb.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOEQUB( N, A, LDA, S, SCOND, AMAX, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, N
 *       REAL               AMAX, SCOND
@@ -27,14 +27,14 @@
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), S( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> SPOEQU computes row and column scalings intended to equilibrate a
+*> SPOEQUB computes row and column scalings intended to equilibrate a
 *> symmetric positive definite matrix A and reduce its condition number
 *> (with respect to the two-norm).  S contains the scale factors,
 *> S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
@@ -42,6 +42,12 @@
 *> choice of S puts the condition number of B within a factor N of the
 *> smallest possible condition number over all possible diagonal
 *> scalings.
+*>
+*> This routine differs from SPOEQU by restricting the scaling factors
+*> to a power of the radix.  Barring over- and underflow, scaling by
+*> these factors introduces no additional rounding errors.  However, the
+*> scaled diagonal entries are no longer approximately 1 but lie
+*> between sqrt(radix) and 1/sqrt(radix).
 *> \endverbatim
 *
 *  Arguments:
@@ -100,22 +106,22 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup realPOcomputational
 *
 *  =====================================================================
       SUBROUTINE SPOEQUB( N, A, LDA, S, SCOND, AMAX, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, N

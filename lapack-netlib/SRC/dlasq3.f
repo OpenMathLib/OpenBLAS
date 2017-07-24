@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLASQ3 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq3.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasq3.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq3.f"> 
+*> Download DLASQ3 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq3.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlasq3.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq3.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DLASQ3( I0, N0, Z, PP, DMIN, SIGMA, DESIG, QMAX, NFAIL,
 *                          ITER, NDIV, IEEE, TTYPE, DMIN1, DMIN2, DN, DN1,
 *                          DN2, G, TAU )
-* 
+*
 *       .. Scalar Arguments ..
 *       LOGICAL            IEEE
 *       INTEGER            I0, ITER, N0, NDIV, NFAIL, PP
@@ -31,7 +31,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -60,7 +60,7 @@
 *>
 *> \param[in,out] Z
 *> \verbatim
-*>          Z is DOUBLE PRECISION array, dimension ( 4*N )
+*>          Z is DOUBLE PRECISION array, dimension ( 4*N0 )
 *>         Z holds the qd array.
 *> \endverbatim
 *>
@@ -68,8 +68,8 @@
 *> \verbatim
 *>          PP is INTEGER
 *>         PP=0 for ping, PP=1 for pong.
-*>         PP=2 indicates that flipping was applied to the Z array   
-*>         and that the initial tests for deflation should not be 
+*>         PP=2 indicates that flipping was applied to the Z array
+*>         and that the initial tests for deflation should not be
 *>         performed.
 *> \endverbatim
 *>
@@ -168,12 +168,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -182,10 +182,10 @@
      $                   ITER, NDIV, IEEE, TTYPE, DMIN1, DMIN2, DN, DN1,
      $                   DN2, G, TAU )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE
@@ -286,7 +286,7 @@
       GO TO 10
 *
    50 CONTINUE
-      IF( PP.EQ.2 ) 
+      IF( PP.EQ.2 )
      $   PP = 0
 *
 *     Reverse the qd-array, if warranted.
@@ -345,7 +345,7 @@
 *
          GO TO 90
 *
-      ELSE IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND. 
+      ELSE IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND.
      $         Z( 4*( N0-1 )-PP ).LT.TOL*( SIGMA+DN1 ) .AND.
      $         ABS( DN ).LT.TOL*SIGMA ) THEN
 *
@@ -389,7 +389,7 @@
             GO TO 70
          END IF
       ELSE
-*            
+*
 *        Possible underflow. Play it safe.
 *
          GO TO 80

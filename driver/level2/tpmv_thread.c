@@ -243,7 +243,7 @@ int CNAME(BLASLONG m, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *buffer, int nthr
   blas_arg_t args;
   blas_queue_t queue[MAX_CPU_NUMBER];
   BLASLONG range_m[MAX_CPU_NUMBER + 1];
-  BLASLONG range_n[MAX_CPU_NUMBER];
+  BLASLONG range_n[MAX_CPU_NUMBER + 1];
 
   BLASLONG width, i, num_cpu;
 

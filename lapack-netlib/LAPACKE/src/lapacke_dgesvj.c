@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dgesvj
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -49,8 +49,8 @@ lapack_int LAPACKE_dgesvj( int matrix_layout, char joba, char jobu, char jobv,
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
     /* Optionally check input matrices for NaNs */
-    nrows_v = LAPACKE_lsame( jobv, 'v' ) ? n :
-                         ( LAPACKE_lsame( jobv, 'a' ) ? mv : 1);
+    nrows_v = LAPACKE_lsame( jobv, 'v' ) ? MAX(0,n) :
+            ( LAPACKE_lsame( jobv, 'a' ) ? MAX(0,mv) : 0);
     if( LAPACKE_dge_nancheck( matrix_layout, m, n, a, lda ) ) {
         return -7;
     }

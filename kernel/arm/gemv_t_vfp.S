@@ -38,11 +38,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define STACKSIZE 256
 
-#define	OLD_LDA		[fp, #0 ]
-#define	X		[fp, #4 ]
-#define	OLD_INC_X	[fp, #8 ]
-#define	Y		[fp, #12 ]
-#define	OLD_INC_Y	[fp, #16 ]
+#if !defined(__ARM_PCS_VFP)
+
+#if !defined(DOUBLE)
+#define OLD_ALPHA	r3
+#define OLD_A_SOFTFP	[fp, #0 ]
+#define OLD_LDA		[fp, #4 ]
+#define X		[fp, #8 ]
+#define OLD_INC_X	[fp, #12 ]
+#define Y		[fp, #16 ]
+#define OLD_INC_Y	[fp, #20 ]
+#else
+#define OLD_ALPHA	[fp, #0 ]
+#define OLD_A_SOFTFP	[fp, #8 ]
+#define OLD_LDA		[fp, #12]
+#define X		[fp, #16]
+#define OLD_INC_X	[fp, #20]
+#define Y		[fp, #24]
+#define OLD_INC_Y	[fp, #28]
+#endif
+
+#else
+
+#define OLD_LDA		[fp, #0 ]
+#define X		[fp, #4 ]
+#define OLD_INC_X	[fp, #8 ]
+#define Y		[fp, #12 ]
+#define OLD_INC_Y	[fp, #16 ]
+
+#endif
+
 #define OLD_A		r3
 #define	OLD_N		r1
 
@@ -504,6 +529,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	cmp	OLD_N, #0
 	ble	gemvt_kernel_L999
+
+#if !defined(__ARM_PCS_VFP)
+#if !defined(DOUBLE)
+	vmov	s0, OLD_ALPHA
+#else
+	vldr	d0, OLD_ALPHA
+#endif
+	ldr	OLD_A, OLD_A_SOFTFP
+#endif
 
 	str	OLD_A, A
 	str	OLD_N, N

@@ -13,7 +13,7 @@ void cblas_cswap( const int N, void *X, const int incX, void *Y,
 {
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX, F77_incY=incY;
-#else 
+#else
    #define F77_N N
    #define F77_incX incX
    #define F77_incY incY

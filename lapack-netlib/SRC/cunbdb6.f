@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
 *> Download CUNBDB6 + dependencies
@@ -20,7 +20,7 @@
 *
 *       SUBROUTINE CUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
 *                           LDQ2, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INCX1, INCX2, INFO, LDQ1, LDQ2, LWORK, M1, M2,
 *      $                   N
@@ -28,8 +28,8 @@
 *       .. Array Arguments ..
 *       COMPLEX            Q1(LDQ1,*), Q2(LDQ2,*), WORK(*), X1(*), X2(*)
 *       ..
-*  
-* 
+*
+*
 *> \par Purpose:
 *> =============
 *>
@@ -141,10 +141,10 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date July 2012
 *
@@ -154,7 +154,7 @@
       SUBROUTINE CUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
      $                    LDQ2, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2012
@@ -261,7 +261,7 @@
       IF( NORMSQ2 .EQ. ZERO ) THEN
          RETURN
       END IF
-*      
+*
       NORMSQ1 = NORMSQ2
 *
       DO I = 1, N
@@ -306,7 +306,7 @@
       END IF
 *
       RETURN
-*      
+*
 *     End of CUNBDB6
 *
       END

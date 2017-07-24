@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLAQR5 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaqr5.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaqr5.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaqr5.f"> 
+*> Download DLAQR5 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaqr5.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaqr5.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaqr5.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -21,7 +21,7 @@
 *       SUBROUTINE DLAQR5( WANTT, WANTZ, KACC22, N, KTOP, KBOT, NSHFTS,
 *                          SR, SI, H, LDH, ILOZ, IHIZ, Z, LDZ, V, LDV, U,
 *                          LDU, NV, WV, LDWV, NH, WH, LDWH )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IHIZ, ILOZ, KACC22, KBOT, KTOP, LDH, LDU, LDV,
 *      $                   LDWH, LDWV, LDZ, N, NH, NSHFTS, NV
@@ -32,7 +32,7 @@
 *      $                   V( LDV, * ), WH( LDWH, * ), WV( LDWV, * ),
 *      $                   Z( LDZ, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -150,10 +150,10 @@
 *>
 *> \param[in,out] Z
 *> \verbatim
-*>          Z is DOUBLE PRECISION array of size (LDZ,IHI)
+*>          Z is DOUBLE PRECISION array of size (LDZ,IHIZ)
 *>             If WANTZ = .TRUE., then the QR Sweep orthogonal
 *>             similarity transformation is accumulated into
-*>             Z(ILOZ:IHIZ,ILO:IHI) from the right.
+*>             Z(ILOZ:IHIZ,ILOZ:IHIZ) from the right.
 *>             If WANTZ = .FALSE., then Z is unreferenced.
 *> \endverbatim
 *>
@@ -231,12 +231,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date June 2016
 *
 *> \ingroup doubleOTHERauxiliary
 *
@@ -259,10 +259,10 @@
      $                   SR, SI, H, LDH, ILOZ, IHIZ, Z, LDZ, V, LDV, U,
      $                   LDU, NV, WV, LDWV, NH, WH, LDWH )
 *
-*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHIZ, ILOZ, KACC22, KBOT, KTOP, LDH, LDU, LDV,

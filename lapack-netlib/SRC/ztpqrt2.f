@@ -2,31 +2,31 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZTPQRT2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ztpqrt2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ztpqrt2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ztpqrt2.f"> 
+*> Download ZTPQRT2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ztpqrt2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ztpqrt2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ztpqrt2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZTPQRT2( M, N, L, A, LDA, B, LDB, T, LDT, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER   INFO, LDA, LDB, LDT, N, M, L
 *       ..
 *       .. Array Arguments ..
 *       COMPLEX*16   A( LDA, * ), B( LDB, * ), T( LDT, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -34,7 +34,7 @@
 *> \verbatim
 *>
 *> ZTPQRT2 computes a QR factorization of a complex "triangular-pentagonal"
-*> matrix C, which is composed of a triangular block A and pentagonal block B, 
+*> matrix C, which is composed of a triangular block A and pentagonal block B,
 *> using the compact WY representation for Q.
 *> \endverbatim
 *
@@ -44,7 +44,7 @@
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>          The total number of rows of the matrix B.  
+*>          The total number of rows of the matrix B.
 *>          M >= 0.
 *> \endverbatim
 *>
@@ -59,7 +59,7 @@
 *> \param[in] L
 *> \verbatim
 *>          L is INTEGER
-*>          The number of rows of the upper trapezoidal part of B.  
+*>          The number of rows of the upper trapezoidal part of B.
 *>          MIN(M,N) >= L >= 0.  See Further Details.
 *> \endverbatim
 *>
@@ -80,7 +80,7 @@
 *> \param[in,out] B
 *> \verbatim
 *>          B is COMPLEX*16 array, dimension (LDB,N)
-*>          On entry, the pentagonal M-by-N matrix B.  The first M-L rows 
+*>          On entry, the pentagonal M-by-N matrix B.  The first M-L rows
 *>          are rectangular, and the last L rows are upper trapezoidal.
 *>          On exit, B contains the pentagonal matrix V.  See Further Details.
 *> \endverbatim
@@ -114,12 +114,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date September 2012
+*> \date December 2016
 *
 *> \ingroup complex16OTHERcomputational
 *
@@ -128,10 +128,10 @@
 *>
 *> \verbatim
 *>
-*>  The input matrix C is a (N+M)-by-N matrix  
+*>  The input matrix C is a (N+M)-by-N matrix
 *>
 *>               C = [ A ]
-*>                   [ B ]        
+*>                   [ B ]
 *>
 *>  where A is an upper triangular N-by-N matrix, and B is M-by-N pentagonal
 *>  matrix consisting of a (M-L)-by-N rectangular matrix B1 on top of a L-by-N
@@ -141,8 +141,8 @@
 *>                   [ B2 ]  <-     L-by-N upper trapezoidal.
 *>
 *>  The upper trapezoidal matrix B2 consists of the first L rows of a
-*>  N-by-N upper triangular matrix, where 0 <= L <= MIN(M,N).  If L=0, 
-*>  B is rectangular M-by-N; if M=L=N, B is upper triangular.  
+*>  N-by-N upper triangular matrix, where 0 <= L <= MIN(M,N).  If L=0,
+*>  B is rectangular M-by-N; if M=L=N, B is upper triangular.
 *>
 *>  The matrix W stores the elementary reflectors H(i) in the i-th column
 *>  below the diagonal (of A) in the (N+M)-by-N input matrix C
@@ -156,12 +156,12 @@
 *>                   [ V ]  <- M-by-N, same form as B.
 *>
 *>  Thus, all of information needed for W is contained on exit in B, which
-*>  we call V above.  Note that V has the same form as B; that is, 
+*>  we call V above.  Note that V has the same form as B; that is,
 *>
 *>               V = [ V1 ] <- (M-L)-by-N rectangular
 *>                   [ V2 ] <-     L-by-N upper trapezoidal.
 *>
-*>  The columns of V represent the vectors which define the H(i)'s.  
+*>  The columns of V represent the vectors which define the H(i)'s.
 *>  The (M+N)-by-(M+N) block reflector H is then given by
 *>
 *>               H = I - W * T * W**H
@@ -173,10 +173,10 @@
 *  =====================================================================
       SUBROUTINE ZTPQRT2( M, N, L, A, LDA, B, LDB, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.4.2) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     September 2012
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, LDA, LDB, LDT, N, M, L
@@ -227,7 +227,7 @@
 *     Quick return if possible
 *
       IF( N.EQ.0 .OR. M.EQ.0 ) RETURN
-*      
+*
       DO I = 1, N
 *
 *        Generate elementary reflector H(I) to annihilate B(:,I)
@@ -241,16 +241,16 @@
             DO J = 1, N-I
                T( J, N ) = CONJG(A( I, I+J ))
             END DO
-            CALL ZGEMV( 'C', P, N-I, ONE, B( 1, I+1 ), LDB, 
+            CALL ZGEMV( 'C', P, N-I, ONE, B( 1, I+1 ), LDB,
      $                  B( 1, I ), 1, ONE, T( 1, N ), 1 )
 *
 *           C(I:M,I+1:N) = C(I:m,I+1:N) + alpha*C(I:M,I)*W(1:N-1)**H
 *
-            ALPHA = -CONJG(T( I, 1 ))            
+            ALPHA = -CONJG(T( I, 1 ))
             DO J = 1, N-I
                A( I, I+J ) = A( I, I+J ) + ALPHA*CONJG(T( J, N ))
             END DO
-            CALL ZGERC( P, N-I, ALPHA, B( 1, I ), 1, 
+            CALL ZGERC( P, N-I, ALPHA, B( 1, I ), 1,
      $           T( 1, N ), 1, B( 1, I+1 ), LDB )
          END IF
       END DO
@@ -278,13 +278,13 @@
 *
 *        Rectangular part of B2
 *
-         CALL ZGEMV( 'C', L, I-1-P, ALPHA, B( MP, NP ), LDB, 
+         CALL ZGEMV( 'C', L, I-1-P, ALPHA, B( MP, NP ), LDB,
      $               B( MP, I ), 1, ZERO, T( NP, I ), 1 )
 *
 *        B1
 *
-         CALL ZGEMV( 'C', M-L, I-1, ALPHA, B, LDB, B( 1, I ), 1, 
-     $               ONE, T( 1, I ), 1 )         
+         CALL ZGEMV( 'C', M-L, I-1, ALPHA, B, LDB, B( 1, I ), 1,
+     $               ONE, T( 1, I ), 1 )
 *
 *        T(1:I-1,I) := T(1:I-1,1:I-1) * T(1:I-1,I)
 *
@@ -295,7 +295,7 @@
          T( I, I ) = T( I, 1 )
          T( I, 1 ) = ZERO
       END DO
-   
+
 *
 *     End of ZTPQRT2
 *

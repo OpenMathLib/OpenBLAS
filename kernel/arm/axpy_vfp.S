@@ -38,10 +38,51 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define STACKSIZE 256
 
+#if !defined(__ARM_PCS_VFP)
+
+#if !defined(COMPLEX)
+
+#if !defined(DOUBLE)
+#define	OLD_ALPHA	r3
+#define	OLD_X		[fp, #0 ]
+#define	OLD_INC_X	[fp, #4 ]
+#define	OLD_Y		[fp, #8 ]
+#define	OLD_INC_Y	[fp, #12 ]
+#else
+#define	OLD_ALPHA	[fp, #0]
+#define	OLD_X		[fp, #8 ]
+#define	OLD_INC_X	[fp, #12 ]
+#define	OLD_Y		[fp, #16 ]
+#define	OLD_INC_Y	[fp, #20 ]
+#endif
+
+#else //COMPLEX
+
+#if !defined(DOUBLE)
+#define	OLD_ALPHAR	r3
+#define	OLD_ALPHAI	[fp, #0 ]
+#define	OLD_X		[fp, #4 ]
+#define	OLD_INC_X	[fp, #8 ]
+#define	OLD_Y		[fp, #12 ]
+#define	OLD_INC_Y	[fp, #16 ]
+#else
+#define	OLD_ALPHAR	[fp, #0]
+#define	OLD_ALPHAI	[fp, #8]
+#define	OLD_X		[fp, #16 ]
+#define	OLD_INC_X	[fp, #20 ]
+#define	OLD_Y		[fp, #24 ]
+#define	OLD_INC_Y	[fp, #28 ]
+#endif
+
+#endif //!defined(COMPLEX)
+
+#else //__ARM_PCS_VFP
+
 #define	OLD_INC_X	[fp, #0 ]
 #define	OLD_Y		[fp, #4 ]
 #define	OLD_INC_Y	[fp, #8 ]
 
+#endif //!defined(__ARM_PCS_VFP)
 
 #define	N	r0
 #define Y	r1
@@ -64,14 +105,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(DOUBLE)
 
 #define	FMAC_R1	fmacd
-#define FMAC_R2 fnmacd
+#define FMAC_R2 vmls.f64
 #define	FMAC_I1	fmacd
 #define FMAC_I2 fmacd
 
 #else
 
 #define	FMAC_R1	fmacs
-#define FMAC_R2 fnmacs
+#define FMAC_R2 vmls.f32
 #define	FMAC_I1	fmacs
 #define FMAC_I2 fmacs
 
@@ -83,14 +124,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define	FMAC_R1	fmacd
 #define FMAC_R2 fmacd
-#define	FMAC_I1	fnmacd
+#define	FMAC_I1	vmls.f64
 #define FMAC_I2 fmacd
 
 #else
 
 #define	FMAC_R1	fmacs
 #define FMAC_R2 fmacs
-#define	FMAC_I1	fnmacs
+#define	FMAC_I1	vmls.f32
 #define FMAC_I2 fmacs
 
 #endif
@@ -362,6 +403,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	push    {r4 , fp}
         add     fp, sp, #8
 	sub     sp, sp, #STACKSIZE                              // reserve stack
+
+#if !defined(__ARM_PCS_VFP)
+#if !defined(COMPLEX)
+#if !defined(DOUBLE)
+	vmov	s0, OLD_ALPHA
+	ldr	X, OLD_X
+#else
+	vldr	d0, OLD_ALPHA
+	ldr	X, OLD_X
+#endif
+#else //COMPLEX
+#if !defined(DOUBLE)
+	vmov	s0, OLD_ALPHAR
+	vldr	s1, OLD_ALPHAI
+	ldr	X, OLD_X
+#else
+	vldr	d0, OLD_ALPHAR
+	vldr	d1, OLD_ALPHAI
+	ldr     X, OLD_X
+#endif
+#endif
+#endif
 
 	ldr    INC_X , OLD_INC_X
 	ldr         Y, OLD_Y

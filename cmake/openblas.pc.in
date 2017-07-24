@@ -1,0 +1,9 @@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+
+Name: OpenBLAS
+Description: OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version
+Version: @OPENBLAS_VERSION@
+URL: https://github.com/xianyi/OpenBLAS
+Libs: -L${libdir} -lopenblas
+Cflags: -I${includedir}

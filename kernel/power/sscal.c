@@ -42,11 +42,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(HAVE_KERNEL_16)
 
-static void sscal_kernel_16( BLASLONG n, FLOAT *da , FLOAT *x )
+static void sscal_kernel_16 (BLASLONG n, FLOAT *x, FLOAT alpha)
 {
 
         BLASLONG i;
-        FLOAT alpha = *da;
 
         for( i=0; i<n; i+=8 )
         {
@@ -63,7 +62,7 @@ static void sscal_kernel_16( BLASLONG n, FLOAT *da , FLOAT *x )
 
 }
 
-static void sscal_kernel_16_zero( BLASLONG n, FLOAT *da , FLOAT *x )
+static void sscal_kernel_16_zero( BLASLONG n, FLOAT *x )
 {
 
         BLASLONG i;
@@ -90,7 +89,6 @@ static void sscal_kernel_16_zero( BLASLONG n, FLOAT *da , FLOAT *x )
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
 	BLASLONG i=0,j=0;
-	FLOAT alpha[4] __attribute__ ((aligned (16)));;
 
 	if ( n <= 0 || inc_x <=0 )
 		return(0);
@@ -105,11 +103,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			BLASLONG n1 = n & -32;
 			if ( n1 > 0 )
 			{
-				alpha[0]=da;
-				alpha[1]=da;
-				alpha[2]=da;
-				alpha[3]=da;
-				sscal_kernel_16_zero(n1 , alpha , x);
+				sscal_kernel_16_zero(n1, x);
 				j=n1;
 			}
 
@@ -127,11 +121,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			BLASLONG n1 = n & -32;
 			if ( n1 > 0 )
 			{
-				alpha[0]=da;
-				alpha[1]=da;
-				alpha[2]=da;
-				alpha[3]=da;
-				sscal_kernel_16(n1 , alpha , x);
+				sscal_kernel_16(n1, x, da);
 				j=n1;
 			}
 			while(j < n)

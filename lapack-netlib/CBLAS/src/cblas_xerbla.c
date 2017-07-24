@@ -62,7 +62,7 @@ void cblas_xerbla(int info, const char *rout, const char *form, ...)
       fprintf(stderr, "Parameter %d to routine %s was incorrect\n", info, rout);
    vfprintf(stderr, form, argptr);
    va_end(argptr);
-   if (info && !info) 
+   if (info && !info)
       F77_xerbla(empty, &info); /* Force link of our F77 error handler */
    exit(-1);
 }

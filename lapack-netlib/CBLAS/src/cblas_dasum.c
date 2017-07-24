@@ -9,12 +9,12 @@
  */
 #include "cblas.h"
 #include "cblas_f77.h"
-double cblas_dasum( const int N, const double *X, const int incX) 
+double cblas_dasum( const int N, const double *X, const int incX)
 {
    double asum;
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX;
-#else 
+#else
    #define F77_N N
    #define F77_incX incX
 #endif

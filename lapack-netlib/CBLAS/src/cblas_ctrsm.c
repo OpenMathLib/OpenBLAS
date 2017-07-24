@@ -44,7 +44,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Side == CblasRight) SD='R';
       else if ( Side == CblasLeft ) SD='L';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_ctrsm", "Illegal Side setting, %d\n", Side);
          CBLAS_CallFromC = 0;
@@ -54,7 +54,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Uplo == CblasUpper) UL='U';
       else if ( Uplo == CblasLower ) UL='L';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_ctrsm", "Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -65,7 +65,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
       if( TransA == CblasTrans) TA ='T';
       else if ( TransA == CblasConjTrans ) TA='C';
       else if ( TransA == CblasNoTrans )   TA='N';
-      else 
+      else
       {
          cblas_xerbla(4, "cblas_ctrsm", "Illegal Trans setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -75,7 +75,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Diag == CblasUnit ) DI='U';
       else if ( Diag == CblasNonUnit ) DI='N';
-      else 
+      else
       {
          cblas_xerbla(5, "cblas_ctrsm", "Illegal Diag setting, %d\n", Diag);
          CBLAS_CallFromC = 0;
@@ -98,7 +98,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Side == CblasRight) SD='L';
       else if ( Side == CblasLeft ) SD='R';
-      else 
+      else
       {
          cblas_xerbla(2, "cblas_ctrsm", "Illegal Side setting, %d\n", Side);
          CBLAS_CallFromC = 0;
@@ -108,7 +108,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Uplo == CblasUpper) UL='L';
       else if ( Uplo == CblasLower ) UL='U';
-      else 
+      else
       {
          cblas_xerbla(3, "cblas_ctrsm", "Illegal Uplo setting, %d\n", Uplo);
          CBLAS_CallFromC = 0;
@@ -119,7 +119,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
       if( TransA == CblasTrans) TA ='T';
       else if ( TransA == CblasConjTrans ) TA='C';
       else if ( TransA == CblasNoTrans )   TA='N';
-      else 
+      else
       {
          cblas_xerbla(4, "cblas_ctrsm", "Illegal Trans setting, %d\n", TransA);
          CBLAS_CallFromC = 0;
@@ -129,7 +129,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       if( Diag == CblasUnit ) DI='U';
       else if ( Diag == CblasNonUnit ) DI='N';
-      else 
+      else
       {
          cblas_xerbla(5, "cblas_ctrsm", "Illegal Diag setting, %d\n", Diag);
          CBLAS_CallFromC = 0;
@@ -147,7 +147,7 @@ void cblas_ctrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
 
       F77_ctrsm(F77_SD, F77_UL, F77_TA, F77_DI, &F77_N, &F77_M, alpha, A,
                 &F77_lda, B, &F77_ldb);
-   } 
+   }
    else cblas_xerbla(1, "cblas_ctrsm", "Illegal layout setting, %d\n", layout);
    CBLAS_CallFromC = 0;
    RowMajorStrg = 0;

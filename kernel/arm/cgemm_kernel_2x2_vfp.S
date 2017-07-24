@@ -64,9 +64,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ALPHA_I	[fp, #-272]
 #define ALPHA_R	[fp, #-280]
 
+#if !defined(__ARM_PCS_VFP)
+#define OLD_ALPHAR_SOFTFP	r3
+#define OLD_ALPHAI_SOFTFP	[fp, #4]
+#define OLD_A_SOFTFP	[fp, #8 ]
+#define B	[fp, #12 ]
+#define C	[fp, #16 ]
+#define OLD_LDC	[fp, #20 ]
+#else
 #define B	[fp, #4 ]
 #define C	[fp, #8 ]
 #define OLD_LDC	[fp, #12 ]
+#endif
 
 #define I	r0
 #define J	r1
@@ -94,42 +103,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT)
 
-	#define	KMAC_R	fnmacs
+	#define	KMAC_R	vmls.f32
 	#define	KMAC_I	fmacs
 
 	#define	FMAC_R1	fmacs
-	#define	FMAC_R2	fnmacs
+	#define	FMAC_R2	vmls.f32
 	#define	FMAC_I1	fmacs
 	#define	FMAC_I2	fmacs
 
 #elif defined(CN) || defined(CT)
 
 	#define	KMAC_R	fmacs
-	#define	KMAC_I	fnmacs
+	#define	KMAC_I	vmls.f32
 
 	#define	FMAC_R1	fmacs
-	#define	FMAC_R2	fnmacs
+	#define	FMAC_R2	vmls.f32
 	#define	FMAC_I1	fmacs
 	#define	FMAC_I2	fmacs
 
 #elif defined(NC) || defined(TC)
 
 	#define	KMAC_R	fmacs
-	#define	KMAC_I	fnmacs
+	#define	KMAC_I	vmls.f32
 
 	#define	FMAC_R1	fmacs
 	#define	FMAC_R2	fmacs
-	#define	FMAC_I1	fnmacs
+	#define	FMAC_I1	vmls.f32
 	#define	FMAC_I2	fmacs
 
 #else
 
-	#define	KMAC_R  fnmacs
+	#define	KMAC_R  vmls.f32
 	#define	KMAC_I	fmacs
 
 	#define	FMAC_R1	fmacs
 	#define	FMAC_R2	fmacs
-	#define	FMAC_I1	fnmacs
+	#define	FMAC_I1	vmls.f32
 	#define	FMAC_I2	fmacs
 
 #endif
@@ -816,6 +825,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	fp, sp, #24
 	sub	sp, sp, #STACKSIZE				// reserve stack
 
+#if !defined(__ARM_PCS_VFP)
+	vmov	OLD_ALPHA_R, OLD_ALPHAR_SOFTFP
+	vldr	OLD_ALPHA_I, OLD_ALPHAI_SOFTFP
+	ldr	OLD_A, OLD_A_SOFTFP
+#endif
 	str	OLD_M, M
 	str	OLD_N, N
 	str	OLD_K, K

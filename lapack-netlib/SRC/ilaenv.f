@@ -2,29 +2,29 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ILAENV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ilaenv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ilaenv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ilaenv.f"> 
+*> Download ILAENV + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ilaenv.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ilaenv.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ilaenv.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER*( * )    NAME, OPTS
 *       INTEGER            ISPEC, N1, N2, N3, N4
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -127,14 +127,14 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date December 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
 *  =====================
@@ -162,10 +162,10 @@
 *  =====================================================================
       INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
 *
-*  -- LAPACK auxiliary routine (version 3.6.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    NAME, OPTS
@@ -183,13 +183,14 @@
       INTRINSIC          CHAR, ICHAR, INT, MIN, REAL
 *     ..
 *     .. External Functions ..
-      INTEGER            IEEECK, IPARMQ
-      EXTERNAL           IEEECK, IPARMQ
+      INTEGER            IEEECK, IPARMQ, IPARAM2STAGE
+      EXTERNAL           IEEECK, IPARMQ, IPARAM2STAGE
 *     ..
 *     .. Executable Statements ..
 *
       GO TO ( 10, 10, 10, 80, 90, 100, 110, 120,
-     $        130, 140, 150, 160, 160, 160, 160, 160 )ISPEC
+     $        130, 140, 150, 160, 160, 160, 160, 160,
+     $        170, 170, 170, 170, 170 )ISPEC
 *
 *     Invalid value for ISPEC
 *
@@ -282,6 +283,52 @@
                NB = 32
             ELSE
                NB = 32
+            END IF
+         ELSE IF( C3.EQ.'QR ') THEN
+            IF( N3 .EQ. 1) THEN
+               IF( SNAME ) THEN
+*     M*N
+                  IF ((N1*N2.LE.131072).OR.(N1.LE.8192)) THEN
+                     NB = N1
+                  ELSE
+                     NB = 32768/N2
+                  END IF
+               ELSE
+                  IF ((N1*N2.LE.131072).OR.(N1.LE.8192)) THEN
+                     NB = N1
+                  ELSE
+                     NB = 32768/N2
+                  END IF
+               END IF
+            ELSE
+               IF( SNAME ) THEN
+                  NB = 1
+               ELSE
+                  NB = 1
+               END IF
+            END IF
+         ELSE IF( C3.EQ.'LQ ') THEN
+            IF( N3 .EQ. 2) THEN
+               IF( SNAME ) THEN
+*     M*N
+                  IF ((N1*N2.LE.131072).OR.(N1.LE.8192)) THEN
+                     NB = N1
+                  ELSE
+                     NB = 32768/N2
+                  END IF
+               ELSE
+                  IF ((N1*N2.LE.131072).OR.(N1.LE.8192)) THEN
+                     NB = N1
+                  ELSE
+                     NB = 32768/N2
+                  END IF
+               END IF
+            ELSE
+               IF( SNAME ) THEN
+                  NB = 1
+               ELSE
+                  NB = 1
+               END IF
             END IF
          ELSE IF( C3.EQ.'HRD' ) THEN
             IF( SNAME ) THEN
@@ -392,6 +439,12 @@
          END IF
       ELSE IF( C2.EQ.'TR' ) THEN
          IF( C3.EQ.'TRI' ) THEN
+            IF( SNAME ) THEN
+               NB = 64
+            ELSE
+               NB = 64
+            END IF
+         ELSE IF ( C3.EQ.'EVC' ) THEN
             IF( SNAME ) THEN
                NB = 64
             ELSE
@@ -636,6 +689,13 @@
 *     12 <= ISPEC <= 16: xHSEQR or related subroutines.
 *
       ILAENV = IPARMQ( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
+      RETURN
+*
+  170 CONTINUE
+*
+*     17 <= ISPEC <= 21: 2stage eigenvalues and SVD or related subroutines.
+*
+      ILAENV = IPARAM2STAGE( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
       RETURN
 *
 *     End of ILAENV

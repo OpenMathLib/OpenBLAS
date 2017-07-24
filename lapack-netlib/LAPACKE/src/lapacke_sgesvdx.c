@@ -28,15 +28,15 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function sgesvdx
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_sgesvdx( int matrix_layout, char jobu, char jobvt, char range,
                            lapack_int m, lapack_int n, float* a,
-                           lapack_int lda, lapack_int vl, lapack_int vu,
-                           lapack_int il, lapack_int iu, lapack_int ns,
+                           lapack_int lda, float vl, float vu,
+                           lapack_int il, lapack_int iu, lapack_int* ns,
                            float* s, float* u, lapack_int ldu,
                            float* vt, lapack_int ldvt,
                            lapack_int* superb )
@@ -71,7 +71,7 @@ lapack_int LAPACKE_sgesvdx( int matrix_layout, char jobu, char jobvt, char range
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
     }
-    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * (12*MIN(m,n)) );
+    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * MAX(1,(12*MIN(m,n))) );
     if( iwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_1;

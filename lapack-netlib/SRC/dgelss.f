@@ -2,25 +2,25 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGELSS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgelss.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgelss.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgelss.f"> 
+*> Download DGELSS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgelss.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgelss.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgelss.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
 *       DOUBLE PRECISION   RCOND
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), S( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -159,12 +159,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup doubleGEsolve
 *
@@ -172,10 +172,10 @@
       SUBROUTINE DGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.4.0) --
+*  -- LAPACK driver routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -285,7 +285,7 @@
                CALL DORGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
                LWORK_DORGBR=DUM(1)
-*              Compute total workspace needed 
+*              Compute total workspace needed
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_DGEBRD )
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_DORMBR )
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_DORGBR )
@@ -314,7 +314,7 @@
      $                      DUM(1), DUM(1), -1, INFO )
                   LWORK_DGEBRD=DUM(1)
 *                 Compute space needed for DORMBR
-                  CALL DORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA, 
+                  CALL DORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
                   LWORK_DORMBR=DUM(1)
 *                 Compute space needed for DORGBR
@@ -325,7 +325,7 @@
                   CALL DORMLQ( 'L', 'T', N, NRHS, M, A, LDA, DUM(1),
      $                 B, LDB, DUM(1), -1, INFO )
                   LWORK_DORMLQ=DUM(1)
-*                 Compute total workspace needed 
+*                 Compute total workspace needed
                   MAXWRK = M + LWORK_DGELQF
                   MAXWRK = MAX( MAXWRK, M*M + 4*M + LWORK_DGEBRD )
                   MAXWRK = MAX( MAXWRK, M*M + 4*M + LWORK_DORMBR )
@@ -346,7 +346,7 @@
      $                      DUM(1), DUM(1), -1, INFO )
                   LWORK_DGEBRD=DUM(1)
 *                 Compute space needed for DORMBR
-                  CALL DORMBR( 'Q', 'L', 'T', M, NRHS, M, A, LDA, 
+                  CALL DORMBR( 'Q', 'L', 'T', M, NRHS, M, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
                   LWORK_DORMBR=DUM(1)
 *                 Compute space needed for DORGBR

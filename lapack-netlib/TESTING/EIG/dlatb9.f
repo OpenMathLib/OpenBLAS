@@ -2,8 +2,8 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
@@ -11,14 +11,14 @@
 *       SUBROUTINE DLATB9( PATH, IMAT, M, P, N, TYPE, KLA, KUA, KLB, KUB,
 *                          ANORM, BNORM, MODEA, MODEB, CNDNMA, CNDNMB,
 *                          DISTA, DISTB )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DISTA, DISTB, TYPE
 *       CHARACTER*3        PATH
 *       INTEGER            IMAT, KLA, KLB, KUA, KUB, M, MODEA, MODEB, N, P
 *       DOUBLE PRECISION   ANORM, BNORM, CNDNMA, CNDNMB
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -156,12 +156,12 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2011
+*> \date December 2016
 *
 *> \ingroup double_eig
 *
@@ -170,10 +170,10 @@
      $                   ANORM, BNORM, MODEA, MODEB, CNDNMA, CNDNMB,
      $                   DISTA, DISTB )
 *
-*  -- LAPACK test routine (version 3.4.0) --
+*  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
+*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          DISTA, DISTB, TYPE

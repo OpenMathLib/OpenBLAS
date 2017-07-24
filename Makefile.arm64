@@ -9,3 +9,17 @@ CCOMMON_OPT += -march=armv8-a+crc+crypto+fp+simd -mtune=cortex-a57
 FCOMMON_OPT += -march=armv8-a+crc+crypto+fp+simd -mtune=cortex-a57
 endif
 
+ifeq ($(CORE), VULCAN)
+CCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
+FCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
+endif
+
+ifeq ($(CORE), THUNDERX)
+CCOMMON_OPT += -mtune=thunderx -mcpu=thunderx
+FCOMMON_OPT += -mtune=thunderx -mcpu=thunderx
+endif
+
+ifeq ($(CORE), THUNDERX2T99)
+CCOMMON_OPT += -mtune=thunderx2t99 -mcpu=thunderx2t99
+FCOMMON_OPT += -mtune=thunderx2t99 -mcpu=thunderx2t99
+endif

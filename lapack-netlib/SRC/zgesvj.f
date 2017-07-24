@@ -1,26 +1,26 @@
-*> \brief \b ZGESVJ
+*> \brief <b> ZGESVJ </b>
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download ZGESVJ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgesvj.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgesvj.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgesvj.f"> 
+*> Download ZGESVJ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgesvj.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgesvj.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgesvj.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE ZGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
 *                          LDV, CWORK, LWORK, RWORK, LRWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDV, LWORK, LRWORK, M, MV, N
 *       CHARACTER*1        JOBA, JOBU, JOBV
@@ -29,7 +29,7 @@
 *       COMPLEX*16         A( LDA, * ),  V( LDV, * ), CWORK( LWORK )
 *       DOUBLE PRECISION   RWORK( LRWORK ),  SVA( N )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -64,11 +64,11 @@
 *>          JOBU is CHARACTER*1
 *>          Specifies whether to compute the left singular vectors
 *>          (columns of U):
-*>          = 'U': The left singular vectors corresponding to the nonzero
+*>          = 'U' or 'F': The left singular vectors corresponding to the nonzero
 *>                 singular values are computed and returned in the leading
 *>                 columns of A. See more details in the description of A.
 *>                 The default numerical orthogonality threshold is set to
-*>                 approximately TOL=CTOL*EPS, CTOL=DSQRT(M), EPS=DLAMCH('E').
+*>                 approximately TOL=CTOL*EPS, CTOL=SQRT(M), EPS=DLAMCH('E').
 *>          = 'C': Analogous to JOBU='U', except that user can control the
 *>                 level of numerical orthogonality of the computed left
 *>                 singular vectors. TOL can be set to TOL = CTOL*EPS, where
@@ -88,10 +88,10 @@
 *>          JOBV is CHARACTER*1
 *>          Specifies whether to compute the right singular vectors, that
 *>          is, the matrix V:
-*>          = 'V' : the matrix V is computed and returned in the array V
+*>          = 'V' or 'J': the matrix V is computed and returned in the array V
 *>          = 'A' : the Jacobi rotations are applied to the MV-by-N
 *>                  array V. In other words, the right singular vector
-*>                  matrix V is not computed explicitly, instead it is
+*>                  matrix V is not computed explicitly; instead it is
 *>                  applied to an MV-by-N matrix initially stored in the
 *>                  first MV rows of V.
 *>          = 'N' : the matrix V is not computed and the array V is not
@@ -101,7 +101,7 @@
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>          The number of rows of the input matrix A. 1/DLAMCH('E') > M >= 0.  
+*>          The number of rows of the input matrix A. 1/DLAMCH('E') > M >= 0.
 *> \endverbatim
 *>
 *> \param[in] N
@@ -206,8 +206,11 @@
 *>
 *> \param[in,out] CWORK
 *> \verbatim
-*>          CWORK is COMPLEX*16 array, dimension M+N.
-*>          Used as work space.
+*>          CWORK is COMPLEX*16 array, dimension max(1,LWORK).
+*>          Used as workspace.
+*>          If on entry LWORK .EQ. -1, then a workspace query is assumed and
+*>          no computation is done; CWORK(1) is set to the minial (and optimal)
+*>          length of CWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
@@ -218,7 +221,7 @@
 *>
 *> \param[in,out] RWORK
 *> \verbatim
-*>          RWORK is DOUBLE PRECISION array, dimension max(6,M+N).
+*>          RWORK is DOUBLE PRECISION array, dimension max(6,LRWORK).
 *>          On entry,
 *>          If JOBU .EQ. 'C' :
 *>          RWORK(1) = CTOL, where CTOL defines the threshold for convergence.
@@ -244,11 +247,14 @@
 *>          RWORK(6) = the largest absolute value over all sines of the
 *>                    Jacobi rotation angles in the last sweep. It can be
 *>                    useful for a post festum analysis.
+*>         If on entry LRWORK .EQ. -1, then a workspace query is assumed and
+*>         no computation is done; RWORK(1) is set to the minial (and optimal)
+*>         length of RWORK.
 *> \endverbatim
 *>
 *> \param[in] LRWORK
 *> \verbatim
-*>          LRWORK is INTEGER
+*>         LRWORK is INTEGER
 *>         Length of RWORK, LRWORK >= MAX(6,N).
 *> \endverbatim
 *>
@@ -257,22 +263,22 @@
 *>          INFO is INTEGER
 *>          = 0 : successful exit.
 *>          < 0 : if INFO = -i, then the i-th argument had an illegal value
-*>          > 0 : ZGESVJ did not converge in the maximal allowed number 
-*>                (NSWEEP=30) of sweeps. The output may still be useful. 
+*>          > 0 : ZGESVJ did not converge in the maximal allowed number
+*>                (NSWEEP=30) of sweeps. The output may still be useful.
 *>                See the description of RWORK.
 *> \endverbatim
 *>
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup complex16GEcomputational
 *
 *> \par Further Details:
 *  =====================
@@ -291,29 +297,30 @@
 *> procedure is achieved if used in an  accelerated version of Drmac and
 *> Veselic [4,5], and it is the kernel routine in the SIGMA library [6].
 *> Some tunning parameters (marked with [TP]) are available for the
-*> implementer. 
+*> implementer.
 *> The computational range for the nonzero singular values is the  machine
 *> number interval ( UNDERFLOW , OVERFLOW ). In extreme cases, even
 *> denormalized singular values can be computed with the corresponding
 *> gradual loss of accurate digits.
 *> \endverbatim
 *
-*> \par Contributors:
+*> \par Contributor:
 *  ==================
 *>
 *> \verbatim
 *>
 *>  ============
 *>
-*>  Zlatko Drmac (Zagreb, Croatia) and Kresimir Veselic (Hagen, Germany)
+*>  Zlatko Drmac (Zagreb, Croatia)
+*>
 *> \endverbatim
 *
 *> \par References:
 *  ================
 *>
 *> [1] P. P. M. De Rijk: A one-sided Jacobi algorithm for computing the
-*>    singular value decomposition on a vector computer. 
-*>    SIAM J. Sci. Stat. Comp., Vol. 10 (1998), pp. 359-371. 
+*>    singular value decomposition on a vector computer.
+*>    SIAM J. Sci. Stat. Comp., Vol. 10 (1998), pp. 359-371.
 *> [2] J. Demmel and K. Veselic: Jacobi method is more accurate than QR.
 *> [3] Z. Drmac: Implementation of Jacobi rotations for accurate singular
 *>    value computation in floating point arithmetic.
@@ -329,8 +336,8 @@
 *>    Department of Mathematics, University of Zagreb, 2008, 2015.
 *> \endverbatim
 *
-*>  \par Bugs, examples and comments:
-*   =================================
+*> \par Bugs, examples and comments:
+*  =================================
 *>
 *> \verbatim
 *>  ===========================
@@ -339,15 +346,15 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE ZGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V, 
+      SUBROUTINE ZGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
      $                   LDV, CWORK, LWORK, RWORK, LRWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.0) --
+*  -- LAPACK computational routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
-      IMPLICIT NONE 
+      IMPLICIT NONE
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, LRWORK, M, MV, N
       CHARACTER*1        JOBA, JOBU, JOBV
@@ -369,20 +376,19 @@
 *     ..
 *     .. Local Scalars ..
       COMPLEX*16 AAPQ, OMPQ
-      DOUBLE PRECISION    AAPP, AAPP0, AAPQ1, AAQQ, APOAQ, AQOAP, BIG, 
-     $        BIGTHETA, CS, CTOL, EPSLN, LARGE, MXAAPQ, 
-     $        MXSINJ, ROOTBIG, ROOTEPS, ROOTSFMIN, ROOTTOL, 
-     $        SKL, SFMIN, SMALL, SN, T, TEMP1, THETA, THSIGN, TOL
+      DOUBLE PRECISION AAPP, AAPP0, AAPQ1, AAQQ, APOAQ, AQOAP, BIG,
+     $       BIGTHETA, CS, CTOL, EPSLN, MXAAPQ,
+     $       MXSINJ, ROOTBIG, ROOTEPS, ROOTSFMIN, ROOTTOL,
+     $       SKL, SFMIN, SMALL, SN, T, TEMP1, THETA, THSIGN, TOL
       INTEGER BLSKIP, EMPTSW, i, ibr, IERR, igl, IJBLSK, ir1,
-     $        ISWROT, jbc, jgl, KBL, LKAHEAD, MVL, N2, N34, 
+     $        ISWROT, jbc, jgl, KBL, LKAHEAD, MVL, N2, N34,
      $        N4, NBL, NOTROT, p, PSKIPPED, q, ROWSKIP, SWBAND
-      LOGICAL APPLV, GOSCALE, LOWER, LSVEC, NOSCALE, ROTOK, 
+      LOGICAL APPLV, GOSCALE, LOWER, LQUERY, LSVEC, NOSCALE, ROTOK,
      $        RSVEC, UCTOL, UPPER
 *     ..
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC ABS, DMAX1, DMIN1, DCONJG, DFLOAT, MIN0, MAX0, 
-     $          DSIGN, DSQRT
+      INTRINSIC ABS, MAX, MIN, CONJG, DBLE, SIGN, SQRT
 *     ..
 *     .. External Functions ..
 *     ..
@@ -403,20 +409,21 @@
 *     from BLAS
       EXTERNAL           ZCOPY, ZROT, ZDSCAL, ZSWAP
 *     from LAPACK
-      EXTERNAL           ZLASCL, ZLASET, ZLASSQ, XERBLA
+      EXTERNAL           DLASCL, ZLASCL, ZLASET, ZLASSQ, XERBLA
       EXTERNAL           ZGSVJ0, ZGSVJ1
 *     ..
 *     .. Executable Statements ..
 *
 *     Test the input arguments
 *
-      LSVEC = LSAME( JOBU, 'U' )
+      LSVEC = LSAME( JOBU, 'U' ) .OR. LSAME( JOBU, 'F' )
       UCTOL = LSAME( JOBU, 'C' )
-      RSVEC = LSAME( JOBV, 'V' )
+      RSVEC = LSAME( JOBV, 'V' ) .OR. LSAME( JOBV, 'J' )
       APPLV = LSAME( JOBV, 'A' )
       UPPER = LSAME( JOBA, 'U' )
       LOWER = LSAME( JOBA, 'L' )
 *
+      LQUERY = ( LWORK .EQ. -1 ) .OR. ( LRWORK .EQ. -1 )
       IF( .NOT.( UPPER .OR. LOWER .OR. LSAME( JOBA, 'G' ) ) ) THEN
          INFO = -1
       ELSE IF( .NOT.( LSVEC .OR. UCTOL .OR. LSAME( JOBU, 'N' ) ) ) THEN
@@ -436,10 +443,10 @@
          INFO = -11
       ELSE IF( UCTOL .AND. ( RWORK( 1 ).LE.ONE ) ) THEN
          INFO = -12
-      ELSE IF( LWORK.LT.( M+N ) ) THEN
+      ELSE IF( ( LWORK.LT.( M+N ) ) .AND. ( .NOT.LQUERY ) ) THEN
          INFO = -13
-      ELSE IF( LRWORK.LT.MAX0( N, 6 ) ) THEN
-         INFO = -15   
+      ELSE IF( ( LRWORK.LT.MAX( N, 6 ) ) .AND. ( .NOT.LQUERY ) ) THEN
+         INFO = -15
       ELSE
          INFO = 0
       END IF
@@ -447,6 +454,10 @@
 *     #:(
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGESVJ', -INFO )
+         RETURN
+      ELSE IF ( LQUERY ) THEN
+         CWORK(1) = M + N
+         RWORK(1) = MAX( N, 6 )
          RETURN
       END IF
 *
@@ -467,29 +478,29 @@
       ELSE
 *        ... default
          IF( LSVEC .OR. RSVEC .OR. APPLV ) THEN
-            CTOL = DSQRT( DFLOAT( M ) )
+            CTOL = SQRT( DBLE( M ) )
          ELSE
-            CTOL = DFLOAT( M )
+            CTOL = DBLE( M )
          END IF
       END IF
 *     ... and the machine dependent parameters are
-*[!]  (Make sure that DLAMCH() works properly on the target machine.)
+*[!]  (Make sure that SLAMCH() works properly on the target machine.)
 *
       EPSLN = DLAMCH( 'Epsilon' )
-      ROOTEPS = DSQRT( EPSLN )
+      ROOTEPS = SQRT( EPSLN )
       SFMIN = DLAMCH( 'SafeMinimum' )
-      ROOTSFMIN = DSQRT( SFMIN )
+      ROOTSFMIN = SQRT( SFMIN )
       SMALL = SFMIN / EPSLN
       BIG = DLAMCH( 'Overflow' )
 *     BIG         = ONE    / SFMIN
       ROOTBIG = ONE / ROOTSFMIN
-      LARGE = BIG / DSQRT( DFLOAT( M*N ) )
+*      LARGE = BIG / SQRT( DBLE( M*N ) )
       BIGTHETA = ONE / ROOTEPS
 *
       TOL = CTOL*EPSLN
-      ROOTTOL = DSQRT( TOL )
+      ROOTTOL = SQRT( TOL )
 *
-      IF( DFLOAT( M )*EPSLN.GE.ONE ) THEN
+      IF( DBLE( M )*EPSLN.GE.ONE ) THEN
          INFO = -4
          CALL XERBLA( 'ZGESVJ', -INFO )
          RETURN
@@ -514,7 +525,7 @@
 *     SQRT(N)*max_i SVA(i) does not overflow. If INFinite entries
 *     in A are detected, the procedure returns with INFO=-6.
 *
-      SKL = ONE / DSQRT( DFLOAT( M )*DFLOAT( N ) )
+      SKL = ONE / SQRT( DBLE( M )*DBLE( N ) )
       NOSCALE = .TRUE.
       GOSCALE = .TRUE.
 *
@@ -529,7 +540,7 @@
                CALL XERBLA( 'ZGESVJ', -INFO )
                RETURN
             END IF
-            AAQQ = DSQRT( AAQQ )
+            AAQQ = SQRT( AAQQ )
             IF( ( AAPP.LT.( BIG / AAQQ ) ) .AND. NOSCALE ) THEN
                SVA( p ) = AAPP*AAQQ
             ELSE
@@ -554,7 +565,7 @@
                CALL XERBLA( 'ZGESVJ', -INFO )
                RETURN
             END IF
-            AAQQ = DSQRT( AAQQ )
+            AAQQ = SQRT( AAQQ )
             IF( ( AAPP.LT.( BIG / AAQQ ) ) .AND. NOSCALE ) THEN
                SVA( p ) = AAPP*AAQQ
             ELSE
@@ -579,7 +590,7 @@
                CALL XERBLA( 'ZGESVJ', -INFO )
                RETURN
             END IF
-            AAQQ = DSQRT( AAQQ )
+            AAQQ = SQRT( AAQQ )
             IF( ( AAPP.LT.( BIG / AAQQ ) ) .AND. NOSCALE ) THEN
                SVA( p ) = AAPP*AAQQ
             ELSE
@@ -604,8 +615,8 @@
       AAPP = ZERO
       AAQQ = BIG
       DO 4781 p = 1, N
-         IF( SVA( p ).NE.ZERO )AAQQ = DMIN1( AAQQ, SVA( p ) )
-         AAPP = DMAX1( AAPP, SVA( p ) )
+         IF( SVA( p ).NE.ZERO )AAQQ = MIN( AAQQ, SVA( p ) )
+         AAPP = MAX( AAPP, SVA( p ) )
  4781 CONTINUE
 *
 * #:) Quick return for zero matrix
@@ -642,23 +653,23 @@
 *     Protect small singular values from underflow, and try to
 *     avoid underflows/overflows in computing Jacobi rotations.
 *
-      SN = DSQRT( SFMIN / EPSLN )
-      TEMP1 = DSQRT( BIG / DFLOAT( N ) )
-      IF( ( AAPP.LE.SN ) .OR. ( AAQQ.GE.TEMP1 ) .OR.    
+      SN = SQRT( SFMIN / EPSLN )
+      TEMP1 = SQRT( BIG / DBLE( N ) )
+      IF( ( AAPP.LE.SN ) .OR. ( AAQQ.GE.TEMP1 ) .OR.
      $    ( ( SN.LE.AAQQ ) .AND. ( AAPP.LE.TEMP1 ) ) ) THEN
-         TEMP1 = DMIN1( BIG, TEMP1 / AAPP )
+         TEMP1 = MIN( BIG, TEMP1 / AAPP )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.LE.SN ) .AND. ( AAPP.LE.TEMP1 ) ) THEN
-         TEMP1 = DMIN1( SN / AAQQ, BIG / (AAPP*DSQRT( DFLOAT(N)) ) )
+         TEMP1 = MIN( SN / AAQQ, BIG / (AAPP*SQRT( DBLE(N)) ) )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.GE.SN ) .AND. ( AAPP.GE.TEMP1 ) ) THEN
-         TEMP1 = DMAX1( SN / AAQQ, TEMP1 / AAPP )
+         TEMP1 = MAX( SN / AAQQ, TEMP1 / AAPP )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE IF( ( AAQQ.LE.SN ) .AND. ( AAPP.GE.TEMP1 ) ) THEN
-         TEMP1 = DMIN1( SN / AAQQ, BIG / ( DSQRT( DFLOAT( N ) )*AAPP ) )
+         TEMP1 = MIN( SN / AAQQ, BIG / ( SQRT( DBLE( N ) )*AAPP ) )
 *         AAQQ  = AAQQ*TEMP1
 *         AAPP  = AAPP*TEMP1
       ELSE
@@ -668,7 +679,7 @@
 *     Scale, if necessary
 *
       IF( TEMP1.NE.ONE ) THEN
-         CALL ZLASCL( 'G', 0, 0, ONE, TEMP1, N, 1, SVA, N, IERR )
+         CALL DLASCL( 'G', 0, 0, ONE, TEMP1, N, 1, SVA, N, IERR )
       END IF
       SKL = TEMP1*SKL
       IF( SKL.NE.ONE ) THEN
@@ -680,10 +691,10 @@
 *
       EMPTSW = ( N*( N-1 ) ) / 2
       NOTROT = 0
-       
+
       DO 1868 q = 1, N
          CWORK( q ) = CONE
- 1868 CONTINUE     
+ 1868 CONTINUE
 *
 *
 *
@@ -695,7 +706,7 @@
 *     The boundaries are determined dynamically, based on the number of
 *     pivots above a threshold.
 *
-      KBL = MIN0( 8, N )
+      KBL = MIN( 8, N )
 *[TP] KBL is a tuning parameter that defines the tile size in the
 *     tiling of the p-q loops of pivot pairs. In general, an optimal
 *     value of KBL depends on the matrix dimensions and on the
@@ -707,7 +718,7 @@
       BLSKIP = KBL**2
 *[TP] BLKSKIP is a tuning parameter that depends on SWBAND and KBL.
 *
-      ROWSKIP = MIN0( 5, KBL )
+      ROWSKIP = MIN( 5, KBL )
 *[TP] ROWSKIP is a tuning parameter.
 *
       LKAHEAD = 1
@@ -718,7 +729,7 @@
 *     invokes cubic convergence. Big part of this cycle is done inside
 *     canonical subspaces of dimensions less than M.
 *
-      IF( ( LOWER .OR. UPPER ) .AND. ( N.GT.MAX0( 64, 4*KBL ) ) ) THEN
+      IF( ( LOWER .OR. UPPER ) .AND. ( N.GT.MAX( 64, 4*KBL ) ) ) THEN
 *[TP] The number of partition levels and the actual partition are
 *     tuning parameters.
          N4 = N / 4
@@ -816,18 +827,18 @@
 *
             igl = ( ibr-1 )*KBL + 1
 *
-            DO 1002 ir1 = 0, MIN0( LKAHEAD, NBL-ibr )
+            DO 1002 ir1 = 0, MIN( LKAHEAD, NBL-ibr )
 *
                igl = igl + ir1*KBL
 *
-               DO 2001 p = igl, MIN0( igl+KBL-1, N-1 )
+               DO 2001 p = igl, MIN( igl+KBL-1, N-1 )
 *
 *     .. de Rijk's pivoting
 *
                   q = IDAMAX( N-p+1, SVA( p ), 1 ) + p - 1
                   IF( p.NE.q ) THEN
                      CALL ZSWAP( M, A( 1, p ), 1, A( 1, q ), 1 )
-                     IF( RSVEC )CALL ZSWAP( MVL, V( 1, p ), 1,  
+                     IF( RSVEC )CALL ZSWAP( MVL, V( 1, p ), 1,
      $                                           V( 1, q ), 1 )
                      TEMP1 = SVA( p )
                      SVA( p ) = SVA( q )
@@ -851,14 +862,14 @@
 *        If properly implemented SCNRM2 is available, the IF-THEN-ELSE-END IF
 *        below should be replaced with "AAPP = DZNRM2( M, A(1,p), 1 )".
 *
-                     IF( ( SVA( p ).LT.ROOTBIG ) .AND.     
+                     IF( ( SVA( p ).LT.ROOTBIG ) .AND.
      $                    ( SVA( p ).GT.ROOTSFMIN ) ) THEN
                         SVA( p ) = DZNRM2( M, A( 1, p ), 1 )
                      ELSE
                         TEMP1 = ZERO
                         AAPP = ONE
                         CALL ZLASSQ( M, A( 1, p ), 1, TEMP1, AAPP )
-                        SVA( p ) = TEMP1*DSQRT( AAPP )
+                        SVA( p ) = TEMP1*SQRT( AAPP )
                      END IF
                      AAPP = SVA( p )
                   ELSE
@@ -869,7 +880,7 @@
 *
                      PSKIPPED = 0
 *
-                     DO 2002 q = p + 1, MIN0( igl+KBL-1, N )
+                     DO 2002 q = p + 1, MIN( igl+KBL-1, N )
 *
                         AAQQ = SVA( q )
 *
@@ -879,12 +890,12 @@
                            IF( AAQQ.GE.ONE ) THEN
                               ROTOK = ( SMALL*AAPP ).LE.AAQQ
                               IF( AAPP.LT.( BIG / AAQQ ) ) THEN
-                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1, 
+                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1,
      $                                   A( 1, q ), 1 ) / AAQQ ) / AAPP
                               ELSE
-                                 CALL ZCOPY( M, A( 1, p ), 1,   
+                                 CALL ZCOPY( M, A( 1, p ), 1,
      $                                        CWORK(N+1), 1 )
-                                 CALL ZLASCL( 'G', 0, 0, AAPP, ONE, 
+                                 CALL ZLASCL( 'G', 0, 0, AAPP, ONE,
      $                                M, 1, CWORK(N+1), LDA, IERR )
                                  AAPQ = ZDOTC( M, CWORK(N+1), 1,
      $                                   A( 1, q ), 1 ) / AAQQ
@@ -892,10 +903,10 @@
                            ELSE
                               ROTOK = AAPP.LE.( AAQQ / SMALL )
                               IF( AAPP.GT.( SMALL / AAQQ ) ) THEN
-                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1, 
-     $                                    A( 1, q ), 1 ) / AAQQ ) / AAPP
+                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1,
+     $                                    A( 1, q ), 1 ) / AAPP ) / AAQQ
                               ELSE
-                                 CALL ZCOPY( M, A( 1, q ), 1,   
+                                 CALL ZCOPY( M, A( 1, q ), 1,
      $                                        CWORK(N+1), 1 )
                                  CALL ZLASCL( 'G', 0, 0, AAQQ,
      $                                         ONE, M, 1,
@@ -905,14 +916,15 @@
                               END IF
                            END IF
 *
-                           OMPQ = AAPQ / ABS(AAPQ) 
-*                           AAPQ = AAPQ * DCONJG( CWORK(p) ) * CWORK(q) 
-                           AAPQ1  = -ABS(AAPQ) 
-                           MXAAPQ = DMAX1( MXAAPQ, -AAPQ1 )
+
+*                           AAPQ = AAPQ * CONJG( CWORK(p) ) * CWORK(q)
+                           AAPQ1  = -ABS(AAPQ)
+                           MXAAPQ = MAX( MXAAPQ, -AAPQ1 )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
                            IF( ABS( AAPQ1 ).GT.TOL ) THEN
+                           OMPQ = AAPQ / ABS(AAPQ)
 *
 *           .. rotate
 *[RTD]      ROTATED = ROTATED + ONE
@@ -930,47 +942,47 @@
                                  THETA = -HALF*ABS( AQOAP-APOAQ )/AAPQ1
 *
                                  IF( ABS( THETA ).GT.BIGTHETA ) THEN
-* 
+*
                                     T  = HALF / THETA
                                     CS = ONE
 
                                     CALL ZROT( M, A(1,p), 1, A(1,q), 1,
-     $                                          CS, DCONJG(OMPQ)*T )
+     $                                          CS, CONJG(OMPQ)*T )
                                     IF ( RSVEC ) THEN
-                                        CALL ZROT( MVL, V(1,p), 1, 
-     $                                  V(1,q), 1, CS, DCONJG(OMPQ)*T )
+                                        CALL ZROT( MVL, V(1,p), 1,
+     $                                  V(1,q), 1, CS, CONJG(OMPQ)*T )
                                     END IF
-                                    
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO, 
+
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                          ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                          ONE-T*AQOAP*AAPQ1 ) )
-                                    MXSINJ = DMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
 *
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
 *
-                                    THSIGN = -DSIGN( ONE, AAPQ1 )
-                                    T = ONE / ( THETA+THSIGN*       
-     $                                   DSQRT( ONE+THETA*THETA ) )
-                                    CS = DSQRT( ONE / ( ONE+T*T ) )
+                                    THSIGN = -SIGN( ONE, AAPQ1 )
+                                    T = ONE / ( THETA+THSIGN*
+     $                                   SQRT( ONE+THETA*THETA ) )
+                                    CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
 *
-                                    MXSINJ = DMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                          ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO,  
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                      ONE-T*AQOAP*AAPQ1 ) )
 *
                                     CALL ZROT( M, A(1,p), 1, A(1,q), 1,
-     $                                          CS, DCONJG(OMPQ)*SN )
+     $                                          CS, CONJG(OMPQ)*SN )
                                     IF ( RSVEC ) THEN
-                                        CALL ZROT( MVL, V(1,p), 1, 
-     $                                  V(1,q), 1, CS, DCONJG(OMPQ)*SN )
-                                    END IF 
-                                 END IF 
-                                 CWORK(p) = -CWORK(q) * OMPQ 
+                                        CALL ZROT( MVL, V(1,p), 1,
+     $                                  V(1,q), 1, CS, CONJG(OMPQ)*SN )
+                                    END IF
+                                 END IF
+                                 CWORK(p) = -CWORK(q) * OMPQ
 *
                                  ELSE
 *              .. have to use modified Gram-Schmidt like transformation
@@ -985,9 +997,9 @@
      $                                       A( 1, q ), 1 )
                                  CALL ZLASCL( 'G', 0, 0, ONE, AAQQ, M,
      $                                        1, A( 1, q ), LDA, IERR )
-                                 SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                 SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                      ONE-AAPQ1*AAPQ1 ) )
-                                 MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                 MXSINJ = MAX( MXSINJ, SFMIN )
                               END IF
 *           END IF ROTOK THEN ... ELSE
 *
@@ -1004,7 +1016,7 @@
                                     AAQQ = ONE
                                     CALL ZLASSQ( M, A( 1, q ), 1, T,
      $                                           AAQQ )
-                                    SVA( q ) = T*DSQRT( AAQQ )
+                                    SVA( q ) = T*SQRT( AAQQ )
                                  END IF
                               END IF
                               IF( ( AAPP / AAPP0 ).LE.ROOTEPS ) THEN
@@ -1016,7 +1028,7 @@
                                     AAPP = ONE
                                     CALL ZLASSQ( M, A( 1, p ), 1, T,
      $                                           AAPP )
-                                    AAPP = T*DSQRT( AAPP )
+                                    AAPP = T*SQRT( AAPP )
                                  END IF
                                  SVA( p ) = AAPP
                               END IF
@@ -1051,7 +1063,7 @@
                   ELSE
                      SVA( p ) = AAPP
                      IF( ( ir1.EQ.0 ) .AND. ( AAPP.EQ.ZERO ) )
-     $                   NOTROT = NOTROT + MIN0( igl+KBL-1, N ) - p
+     $                   NOTROT = NOTROT + MIN( igl+KBL-1, N ) - p
                   END IF
 *
  2001          CONTINUE
@@ -1071,14 +1083,14 @@
 *        doing the block at ( ibr, jbc )
 *
                IJBLSK = 0
-               DO 2100 p = igl, MIN0( igl+KBL-1, N )
+               DO 2100 p = igl, MIN( igl+KBL-1, N )
 *
                   AAPP = SVA( p )
                   IF( AAPP.GT.ZERO ) THEN
 *
                      PSKIPPED = 0
 *
-                     DO 2200 q = jgl, MIN0( jgl+KBL-1, N )
+                     DO 2200 q = jgl, MIN( jgl+KBL-1, N )
 *
                         AAQQ = SVA( q )
                         IF( AAQQ.GT.ZERO ) THEN
@@ -1095,7 +1107,7 @@
                                  ROTOK = ( SMALL*AAQQ ).LE.AAPP
                               END IF
                               IF( AAPP.LT.( BIG / AAQQ ) ) THEN
-                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1, 
+                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1,
      $                                  A( 1, q ), 1 ) / AAQQ ) / AAPP
                               ELSE
                                  CALL ZCOPY( M, A( 1, p ), 1,
@@ -1113,8 +1125,9 @@
                                  ROTOK = AAQQ.LE.( AAPP / SMALL )
                               END IF
                               IF( AAPP.GT.( SMALL / AAQQ ) ) THEN
-                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1, 
-     $                                   A( 1, q ), 1 ) / AAQQ ) / AAPP
+                                 AAPQ = ( ZDOTC( M, A( 1, p ), 1,
+     $                                 A( 1, q ), 1 ) / MAX(AAQQ,AAPP) )
+     $                                                / MIN(AAQQ,AAPP)
                               ELSE
                                  CALL ZCOPY( M, A( 1, q ), 1,
      $                                       CWORK(N+1), 1 )
@@ -1126,14 +1139,15 @@
                               END IF
                            END IF
 *
-                           OMPQ = AAPQ / ABS(AAPQ) 
-*                           AAPQ = AAPQ * DCONJG(CWORK(p))*CWORK(q)   
+
+*                           AAPQ = AAPQ * CONJG(CWORK(p))*CWORK(q)
                            AAPQ1  = -ABS(AAPQ)
-                           MXAAPQ = DMAX1( MXAAPQ, -AAPQ1 )
+                           MXAAPQ = MAX( MXAAPQ, -AAPQ1 )
 *
 *        TO rotate or NOT to rotate, THAT is the question ...
 *
                            IF( ABS( AAPQ1 ).GT.TOL ) THEN
+                              OMPQ = AAPQ / ABS(AAPQ)
                               NOTROT = 0
 *[RTD]      ROTATED  = ROTATED + 1
                               PSKIPPED = 0
@@ -1148,42 +1162,42 @@
 *
                                  IF( ABS( THETA ).GT.BIGTHETA ) THEN
                                     T  = HALF / THETA
-                                    CS = ONE 
+                                    CS = ONE
                                     CALL ZROT( M, A(1,p), 1, A(1,q), 1,
-     $                                          CS, DCONJG(OMPQ)*T )
+     $                                          CS, CONJG(OMPQ)*T )
                                     IF( RSVEC ) THEN
-                                        CALL ZROT( MVL, V(1,p), 1, 
-     $                                  V(1,q), 1, CS, DCONJG(OMPQ)*T )
+                                        CALL ZROT( MVL, V(1,p), 1,
+     $                                  V(1,q), 1, CS, CONJG(OMPQ)*T )
                                     END IF
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO,
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                     ONE-T*AQOAP*AAPQ1 ) )
-                                    MXSINJ = DMAX1( MXSINJ, ABS( T ) )
+                                    MXSINJ = MAX( MXSINJ, ABS( T ) )
                                  ELSE
 *
 *                 .. choose correct signum for THETA and rotate
 *
-                                    THSIGN = -DSIGN( ONE, AAPQ1 )
+                                    THSIGN = -SIGN( ONE, AAPQ1 )
                                     IF( AAQQ.GT.AAPP0 )THSIGN = -THSIGN
                                     T = ONE / ( THETA+THSIGN*
-     $                                  DSQRT( ONE+THETA*THETA ) )
-                                    CS = DSQRT( ONE / ( ONE+T*T ) )
+     $                                  SQRT( ONE+THETA*THETA ) )
+                                    CS = SQRT( ONE / ( ONE+T*T ) )
                                     SN = T*CS
-                                    MXSINJ = DMAX1( MXSINJ, ABS( SN ) )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    MXSINJ = MAX( MXSINJ, ABS( SN ) )
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE+T*APOAQ*AAPQ1 ) )
-                                    AAPP = AAPP*DSQRT( DMAX1( ZERO,  
+                                    AAPP = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-T*AQOAP*AAPQ1 ) )
 *
                                     CALL ZROT( M, A(1,p), 1, A(1,q), 1,
-     $                                          CS, DCONJG(OMPQ)*SN ) 
+     $                                          CS, CONJG(OMPQ)*SN )
                                     IF( RSVEC ) THEN
-                                        CALL ZROT( MVL, V(1,p), 1, 
-     $                                  V(1,q), 1, CS, DCONJG(OMPQ)*SN )
+                                        CALL ZROT( MVL, V(1,p), 1,
+     $                                  V(1,q), 1, CS, CONJG(OMPQ)*SN )
                                     END IF
                                  END IF
-                                 CWORK(p) = -CWORK(q) * OMPQ 
+                                 CWORK(p) = -CWORK(q) * OMPQ
 *
                               ELSE
 *              .. have to use modified Gram-Schmidt like transformation
@@ -1201,9 +1215,9 @@
                                     CALL ZLASCL( 'G', 0, 0, ONE, AAQQ,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
-                                    SVA( q ) = AAQQ*DSQRT( DMAX1( ZERO,
+                                    SVA( q ) = AAQQ*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ1*AAPQ1 ) )
-                                    MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                ELSE
                                    CALL ZCOPY( M, A( 1, q ), 1,
      $                                          CWORK(N+1), 1 )
@@ -1213,14 +1227,14 @@
                                     CALL ZLASCL( 'G', 0, 0, AAPP, ONE,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    CALL ZAXPY( M, -DCONJG(AAPQ), 
+                                    CALL ZAXPY( M, -CONJG(AAPQ),
      $                                   CWORK(N+1), 1, A( 1, p ), 1 )
                                     CALL ZLASCL( 'G', 0, 0, ONE, AAPP,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
-                                    SVA( p ) = AAPP*DSQRT( DMAX1( ZERO,
+                                    SVA( p ) = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-AAPQ1*AAPQ1 ) )
-                                    MXSINJ = DMAX1( MXSINJ, SFMIN )
+                                    MXSINJ = MAX( MXSINJ, SFMIN )
                                END IF
                               END IF
 *           END IF ROTOK THEN ... ELSE
@@ -1237,7 +1251,7 @@
                                     AAQQ = ONE
                                     CALL ZLASSQ( M, A( 1, q ), 1, T,
      $                                           AAQQ )
-                                    SVA( q ) = T*DSQRT( AAQQ )
+                                    SVA( q ) = T*SQRT( AAQQ )
                                  END IF
                               END IF
                               IF( ( AAPP / AAPP0 )**2.LE.ROOTEPS ) THEN
@@ -1249,7 +1263,7 @@
                                     AAPP = ONE
                                     CALL ZLASSQ( M, A( 1, p ), 1, T,
      $                                           AAPP )
-                                    AAPP = T*DSQRT( AAPP )
+                                    AAPP = T*SQRT( AAPP )
                                  END IF
                                  SVA( p ) = AAPP
                               END IF
@@ -1288,7 +1302,7 @@
                   ELSE
 *
                      IF( AAPP.EQ.ZERO )NOTROT = NOTROT +
-     $                   MIN0( jgl+KBL-1, N ) - jgl + 1
+     $                   MIN( jgl+KBL-1, N ) - jgl + 1
                      IF( AAPP.LT.ZERO )NOTROT = 0
 *
                   END IF
@@ -1299,7 +1313,7 @@
 *     end of the jbc-loop
  2011       CONTINUE
 *2011 bailed out of the jbc-loop
-            DO 2012 p = igl, MIN0( igl+KBL-1, N )
+            DO 2012 p = igl, MIN( igl+KBL-1, N )
                SVA( p ) = ABS( SVA( p ) )
  2012       CONTINUE
 ***
@@ -1314,7 +1328,7 @@
             T = ZERO
             AAPP = ONE
             CALL ZLASSQ( M, A( 1, N ), 1, T, AAPP )
-            SVA( N ) = T*DSQRT( AAPP )
+            SVA( N ) = T*SQRT( AAPP )
          END IF
 *
 *     Additional steering devices
@@ -1322,8 +1336,8 @@
          IF( ( i.LT.SWBAND ) .AND. ( ( MXAAPQ.LE.ROOTTOL ) .OR.
      $       ( ISWROT.LE.N ) ) )SWBAND = i
 *
-         IF( ( i.GT.SWBAND+1 ) .AND. ( MXAAPQ.LT.DSQRT( DFLOAT( N ) )*
-     $       TOL ) .AND. ( DFLOAT( N )*MXAAPQ*MXSINJ.LT.TOL ) ) THEN
+         IF( ( i.GT.SWBAND+1 ) .AND. ( MXAAPQ.LT.SQRT( DBLE( N ) )*
+     $       TOL ) .AND. ( DBLE( N )*MXAAPQ*MXSINJ.LT.TOL ) ) THEN
             GO TO 1994
          END IF
 *
@@ -1371,8 +1385,9 @@
 *     Normalize the left singular vectors.
 *
       IF( LSVEC .OR. UCTOL ) THEN
-         DO 1998 p = 1, N2
-            CALL ZDSCAL( M, ONE / SVA( p ), A( 1, p ), 1 )
+         DO 1998 p = 1, N4
+*            CALL ZDSCAL( M, ONE / SVA( p ), A( 1, p ), 1 )
+            CALL ZLASCL( 'G',0,0, SVA(p), ONE, M, 1, A(1,p), M, IERR )
  1998    CONTINUE
       END IF
 *
@@ -1386,11 +1401,11 @@
       END IF
 *
 *     Undo scaling, if necessary (and possible).
-      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) ) 
+      IF( ( ( SKL.GT.ONE ) .AND. ( SVA( 1 ).LT.( BIG / SKL ) ) )
      $    .OR. ( ( SKL.LT.ONE ) .AND. ( SVA( MAX( N2, 1 ) ) .GT.
      $    ( SFMIN / SKL ) ) ) ) THEN
          DO 2400 p = 1, N
-            SVA( P ) = SKL*SVA( P )
+            SVA( p ) = SKL*SVA( p )
  2400    CONTINUE
          SKL = ONE
       END IF
@@ -1400,15 +1415,15 @@
 *     then some of the singular values may overflow or underflow and
 *     the spectrum is given in this factored representation.
 *
-      RWORK( 2 ) = DFLOAT( N4 )
+      RWORK( 2 ) = DBLE( N4 )
 *     N4 is the number of computed nonzero singular values of A.
 *
-      RWORK( 3 ) = DFLOAT( N2 )
+      RWORK( 3 ) = DBLE( N2 )
 *     N2 is the number of singular values of A greater than SFMIN.
 *     If N2<N, SVA(N2:N) contains ZEROS and/or denormalized numbers
 *     that may carry some information.
 *
-      RWORK( 4 ) = DFLOAT( i )
+      RWORK( 4 ) = DBLE( i )
 *     i is the index of the last sweep before declaring convergence.
 *
       RWORK( 5 ) = MXAAPQ

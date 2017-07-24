@@ -28,14 +28,14 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function zgesvj
 * Author: Intel Corporation
-* Generated November, 2011
+* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_zgesvj_work( int matrix_layout, char joba, char jobu,
-                                char jobv, lapack_int m, lapack_int n, 
-                                lapack_complex_double* a, lapack_int lda, 
+                                char jobv, lapack_int m, lapack_int n,
+                                lapack_complex_double* a, lapack_int lda,
                                 double* sva, lapack_int mv,
                                 lapack_complex_double* v, lapack_int ldv,
                                 lapack_complex_double* cwork, lapack_int lwork,
@@ -50,8 +50,8 @@ lapack_int LAPACKE_zgesvj_work( int matrix_layout, char joba, char jobu,
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int nrows_v = LAPACKE_lsame( jobv, 'v' ) ? n :
-                             ( LAPACKE_lsame( jobv, 'a' ) ? mv : 1);
+        lapack_int nrows_v = LAPACKE_lsame( jobv, 'v' ) ? MAX(0,n) :
+                           ( LAPACKE_lsame( jobv, 'a' ) ? MAX(0,mv) : 0);
         lapack_int lda_t = MAX(1,m);
         lapack_int ldv_t = MAX(1,nrows_v);
         lapack_complex_double* a_t = NULL;

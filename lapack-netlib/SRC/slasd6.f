@@ -2,18 +2,18 @@
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASD6 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasd6.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasd6.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasd6.f"> 
+*> Download SLASD6 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasd6.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasd6.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasd6.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -22,7 +22,7 @@
 *                          IDXQ, PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM,
 *                          LDGNUM, POLES, DIFL, DIFR, Z, K, C, S, WORK,
 *                          IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDGCOL, LDGNUM, NL,
 *      $                   NR, SQRE
@@ -35,7 +35,7 @@
 *      $                   GIVNUM( LDGNUM, * ), POLES( LDGNUM, * ),
 *      $                   VF( * ), VL( * ), WORK( * ), Z( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -74,7 +74,7 @@
 *>
 *>       The first stage consists of deflating the size of the problem
 *>       when there are multiple singular values or if there is a zero
-*>       in the Z vector. For each such occurence the dimension of the
+*>       in the Z vector. For each such occurrence the dimension of the
 *>       secular equation problem is reduced by one. This stage is
 *>       performed by the routine SLASD7.
 *>
@@ -232,14 +232,13 @@
 *> \param[out] DIFR
 *> \verbatim
 *>          DIFR is REAL array,
-*>                  dimension ( LDGNUM, 2 ) if ICOMPQ = 1 and
-*>                  dimension ( N ) if ICOMPQ = 0.
-*>         On exit, DIFR(I, 1) is the distance between I-th updated
-*>         (undeflated) singular value and the I+1-th (undeflated) old
-*>         singular value.
+*>                   dimension ( LDDIFR, 2 ) if ICOMPQ = 1 and
+*>                   dimension ( K ) if ICOMPQ = 0.
+*>          On exit, DIFR(I,1) = D(I) - DSIGMA(I+1), DIFR(K,1) is not
+*>          defined and will not be referenced.
 *>
-*>         If ICOMPQ = 1, DIFR(1:K,2) is an array containing the
-*>         normalizing factors for the right singular vector matrix.
+*>          If ICOMPQ = 1, DIFR(1:K,2) is an array containing the
+*>          normalizing factors for the right singular vector matrix.
 *>
 *>         See SLASD8 for details on DIFL and DIFR.
 *> \endverbatim
@@ -293,14 +292,14 @@
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
-*> \date November 2015
+*> \date June 2016
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
 *  ==================
@@ -314,10 +313,10 @@
      $                   LDGNUM, POLES, DIFL, DIFR, Z, K, C, S, WORK,
      $                   IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.6.0) --
+*  -- LAPACK auxiliary routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
+*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDGCOL, LDGNUM, NL,
