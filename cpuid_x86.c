@@ -71,12 +71,23 @@ void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx)
   *edx = cpuInfo[3];
 }
 
+void cpuid_count(int op, int count, int *eax, int *ebx, int *ecx, int *edx)
+{
+  int cpuInfo[4] = {-1};
+  __cpuidex(cpuInfo, op, count);
+  *eax = cpuInfo[0];
+  *ebx = cpuInfo[1];
+  *ecx = cpuInfo[2];
+  *edx = cpuInfo[3];
+}
+
 #else
 
 #ifndef CPUIDEMU
 
 #if defined(__APPLE__) && defined(__i386__)
 void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx);
+void cpuid_count(int op, int count, int *eax, int *ebx, int *ecx, int *edx);
 #else
 static C_INLINE void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 #if defined(__i386__) && defined(__PIC__)
@@ -88,6 +99,19 @@ static C_INLINE void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 #else
   __asm__ __volatile__
     ("cpuid": "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx) : "a" (op) : "cc");
+#endif
+}
+
+static C_INLINE void cpuid_count(int op, int count ,int *eax, int *ebx, int *ecx, int *edx){
+#if defined(__i386__) && defined(__PIC__)
+  __asm__ __volatile__
+    ("mov %%ebx, %%edi;"
+     "cpuid;"
+     "xchgl %%ebx, %%edi;"
+     : "=a" (*eax), "=D" (*ebx), "=c" (*ecx), "=d" (*edx) : "0" (op), "2" (count) : "cc");
+#else
+  __asm__ __volatile__
+    ("cpuid": "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx) : "0" (op), "2" (count) : "cc");
 #endif
 }
 #endif
@@ -131,6 +155,10 @@ void cpuid(unsigned int op, unsigned int *eax, unsigned int *ebx, unsigned int *
   *ebx = idlist[current].b;
   *ecx = idlist[current].c;
   *edx = idlist[current].d;
+}
+
+void cpuid_count (unsigned int op, unsigned int count, unsigned int *eax, unsigned int *ebx, unsigned int *ecx, unsigned int *edx) {
+  return cpuid (op, eax, ebx, ecx, edx);
 }
 
 #endif
@@ -312,9 +340,9 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
   cpuid(0, &cpuid_level, &ebx, &ecx, &edx);
 
   if (cpuid_level > 1) {
-
+    int numcalls =0 ;
     cpuid(2, &eax, &ebx, &ecx, &edx);
-
+    numcalls = BITMASK(eax, 0, 0xff); //FIXME some systems may require repeated calls to read all entries
     info[ 0] = BITMASK(eax,  8, 0xff);
     info[ 1] = BITMASK(eax, 16, 0xff);
     info[ 2] = BITMASK(eax, 24, 0xff);
@@ -335,7 +363,6 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
     info[14] = BITMASK(edx, 24, 0xff);
 
     for (i = 0; i < 15; i++){
-
       switch (info[i]){
 
 	/* This table is from http://www.sandpile.org/ia32/cpuid.htm */
@@ -637,12 +664,13 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
 	LD1.linesize    = 64;
 	break;
       case 0x63 :
-  DTB.size        = 2048;
-  DTB.associative = 4;
-  DTB.linesize    = 32;
-  LDTB.size       = 4096;
-  LDTB.associative= 4;
-  LDTB.linesize   = 32;
+  	DTB.size        = 2048;
+  	DTB.associative = 4;
+  	DTB.linesize    = 32;
+  	LDTB.size       = 4096;
+  	LDTB.associative= 4;
+  	LDTB.linesize   = 32;
+	break;
       case 0x66 :
 	LD1.size        = 8;
 	LD1.associative = 4;
@@ -675,12 +703,13 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
 	LC1.associative = 8;
 	break;
       case 0x76 :
-  ITB.size        = 2048;
-  ITB.associative = 0;
-  ITB.linesize    = 8;
-  LITB.size       = 4096;
-  LITB.associative= 0;
-  LITB.linesize   = 8;
+  	ITB.size        = 2048;
+  	ITB.associative = 0;
+  	ITB.linesize    = 8;
+  	LITB.size       = 4096;
+  	LITB.associative= 0;
+  	LITB.linesize   = 8;
+	break;
       case 0x77 :
 	LC1.size        = 16;
 	LC1.associative = 4;
@@ -891,6 +920,67 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
   }
 
   if (get_vendor() == VENDOR_INTEL) {
+      if(LD1.size<=0 || LC1.size<=0){
+	//If we didn't detect L1 correctly before,
+	int count;
+	for (count=0;count <4;count++) {
+	cpuid_count(4, count, &eax, &ebx, &ecx, &edx);
+        switch (eax &0x1f) {
+        case 0:
+          continue;
+          case 1:
+          case 3:
+          {
+            switch ((eax >>5) &0x07)
+            {
+            case 1:
+            {
+//            fprintf(stderr,"L1 data cache...\n");
+            int sets = ecx+1;
+            int lines = (ebx & 0x0fff) +1;
+            ebx>>=12;
+            int part = (ebx&0x03ff)+1;
+            ebx >>=10;
+            int assoc = (ebx&0x03ff)+1;
+            LD1.size = (assoc*part*lines*sets)/1024;
+            LD1.associative = assoc;
+            LD1.linesize= lines;
+            break;
+            }
+            default: 
+              break;
+           }
+          break;
+          }
+         case 2:
+          {
+            switch ((eax >>5) &0x07)
+            {
+            case 1:
+            {
+//            fprintf(stderr,"L1 instruction cache...\n");
+            int sets = ecx+1;
+            int lines = (ebx & 0x0fff) +1;
+            ebx>>=12;
+            int part = (ebx&0x03ff)+1;
+            ebx >>=10;
+            int assoc = (ebx&0x03ff)+1;
+            LC1.size = (assoc*part*lines*sets)/1024;
+            LC1.associative = assoc;
+            LC1.linesize= lines;
+            break;
+            }
+            default: 
+              break;
+           }
+          break;
+          
+          }
+          default:
+          break;
+        }
+      }
+    }
     cpuid(0x80000000, &cpuid_level, &ebx, &ecx, &edx);
     if (cpuid_level >= 0x80000006) {
       if(L2.size<=0){
