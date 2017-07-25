@@ -175,7 +175,44 @@ int get_num_procs(void);
 #else
 int get_num_procs(void) {
   static int nums = 0;
+cpu_set_t *cpusetp;
+size_t size;
+int ret;
+int i,n;
+
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+#if !defined(OS_LINUX)
+     return nums;
+#endif
+
+#if !defined(__GLIBC_PREREQ)
+   return nums;
+#endif
+#if !__GLIBC_PREREQ(2, 3)
+   return nums;
+#endif
+
+#if !__GLIBC_PREREQ(2, 7)
+  ret = sched_getaffinity(0,sizeof(cpu_set_t), cpusetp);
+  if (ret!=0) return nums;
+  n=0;
+#if !__GLIBC_PREREQ(2, 6)
+  for (i=0;i<nums;i++)
+     if (CPU_ISSET(i,cpusetp)) n++;
+  nums=n;
+#else
+  nums = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
+#endif
+  return nums;
+#endif
+
+  cpusetp = CPU_ALLOC(nums);
+  if (cpusetp == NULL) return nums;
+  size = CPU_ALLOC_SIZE(nums);
+  ret = sched_getaffinity(0,size,cpusetp);
+  if (ret!=0) return nums;
+  nums = CPU_COUNT_S(size,cpusetp);
+  CPU_FREE(cpusetp);
   return nums;
 }
 #endif
