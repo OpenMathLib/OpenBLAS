@@ -826,15 +826,58 @@ void gotoblas_affinity_init(void) {
   common -> shmid = pshmid;
 
   if (common -> magic != SH_MAGIC) {
+    cpu_set_t *cpusetp;
+    int nums;
+    int ret;
+
 #ifdef DEBUG
     fprintf(stderr, "Shared Memory Initialization.\n");
 #endif
 
     //returns the number of processors which are currently online
-    common -> num_procs = sysconf(_SC_NPROCESSORS_CONF);;
 
+    nums = sysconf(_SC_NPROCESSORS_CONF);
+
+#if !defined(__GLIBC_PREREQ)
+    common->num_procs = nums;
+#else
+
+#if !__GLIBC_PREREQ(2, 3)
+    common->num_procs = nums;
+#elif __GLIBC_PREREQ(2, 7)
+    cpusetp = CPU_ALLOC(nums);
+    if (cpusetp == NULL) {
+        common->num_procs = nums;
+    } else {
+        size_t size;
+        size = CPU_ALLOC_SIZE(nums);
+        ret = sched_getaffinity(0,size,cpusetp);
+        if (ret!=0)
+            common->num_procs = nums;
+        else
+            common->num_procs = CPU_COUNT_S(size,cpusetp);
+    }
+    CPU_FREE(cpusetp);
+#else
+    ret = sched_getaffinity(0,sizeof(cpu_set_t), cpusetp);
+    if (ret!=0) {
+        common->num_procs = nums;
+    } else {
+#if !__GLIBC_PREREQ(2, 6)
+    int i;
+    int n = 0;
+    for (i=0;i<nums;i++)
+        if (CPU_ISSET(i,cpusetp)) n++;
+    common->num_procs = n;
+    }
+#else
+    common->num_procs = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
+#endif
+
+#endif
+#endif
     if(common -> num_procs > MAX_CPUS) {
-      fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(%d). Terminated.\n", common->num_procs, MAX_CPUS);
+      fprintf(stderr, "\nOpenBLAS Warning : The number of CPU/Cores(%d) is beyond the limit(%d). Terminated.\n", common->num_procs, MAX_CPUS);
       exit(1);
     }
 
