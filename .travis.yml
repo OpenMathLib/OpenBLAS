@@ -13,9 +13,10 @@ jobs:
         apt:
           packages:
             - gfortran
+      before_script: &common-before
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
         - set -e
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
         - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
@@ -51,11 +52,57 @@ jobs:
             - binutils-mingw-w64-x86-64
             - gcc-mingw-w64-x86-64
             - gfortran-mingw-w64-x86-64
+      before_script: *common-before
       script:
-        - make QUIET_MAKE=1 DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE
+        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
         - TARGET_BOX=WIN64
         - BTYPE="BINARY=64 HOSTCC=gcc CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran"
+
+    # Build & test on Alpine Linux inside chroot, i.e. on system with musl libc.
+    # These jobs needs sudo, so Travis runs them on VM-based infrastructure
+    # which is slower than container-based infrastructure used for jobs
+    # that don't require sudo.
+    - &test-alpine
+      stage: test
+      dist: trusty
+      sudo: true
+      language: minimal
+      before_install:
+        - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.6.0/alpine-chroot-install' \
+              && echo 'a827a4ba3d0817e7c88bae17fe34e50204983d1e  alpine-chroot-install' | sha1sum -c || exit 1"
+        - alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
+      install:
+        - sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers'
+      before_script: *common-before
+      script:
+        - set -e
+        - alpine make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - alpine make -C test $COMMON_FLAGS $BTYPE
+        - alpine make -C ctest $COMMON_FLAGS $BTYPE
+        - alpine make -C utest $COMMON_FLAGS $BTYPE
+      env:
+        - TARGET_BOX=LINUX64_MUSL
+        - BTYPE="BINARY=64"
+
+    - <<: *test-alpine
+      env:
+        - TARGET_BOX=LINUX64_MUSL
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+    - <<: *test-alpine
+      env:
+        - TARGET_BOX=LINUX64_MUSL
+        - BTYPE="BINARY=64 INTERFACE64=1"
+
+    # Build with the same flags as Alpine do in OpenBLAS package.
+    - <<: *test-alpine
+      env:
+        - TARGET_BOX=LINUX64_MUSL
+        - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=core2"
+
+  allow_failures:
+    - <<: *test-alpine-openmp
 
 # whitelist
 branches:
