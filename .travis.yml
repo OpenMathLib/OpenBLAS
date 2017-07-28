@@ -1,4 +1,67 @@
+# XXX: Precise is already deprecated, new default is Trusty.
+# https://blog.travis-ci.com/2017-07-11-trusty-as-default-linux-is-coming
+dist: precise
+sudo: false
 language: c
+compiler: gcc
+
+jobs:
+  include:
+    - &test-ubuntu
+      stage: test
+      addons:
+        apt:
+          packages:
+            - gfortran
+      script:
+        - set -e
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
+        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - make -C test $COMMON_FLAGS $BTYPE
+        - make -C ctest $COMMON_FLAGS $BTYPE
+        - make -C utest $COMMON_FLAGS $BTYPE
+      env:
+        - TARGET_BOX=LINUX64
+        - BTYPE="BINARY=64"
+
+    - <<: *test-ubuntu
+      env:
+        - TARGET_BOX=LINUX64
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+    - <<: *test-ubuntu
+      env:
+        - TARGET_BOX=LINUX64
+        - BTYPE="BINARY=64 INTERFACE64=1"
+
+    - <<: *test-ubuntu
+      addons:
+        apt:
+          packages:
+            - gcc-multilib
+            - gfortran-multilib
+      env:
+        - TARGET_BOX=LINUX32
+        - BTYPE="BINARY=32"
+
+    - stage: test
+      addons:
+        apt:
+          packages:
+            - binutils-mingw-w64-x86-64
+            - gcc-mingw-w64-x86-64
+            - gfortran-mingw-w64-x86-64
+      script:
+        - make QUIET_MAKE=1 DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE
+      env:
+        - TARGET_BOX=WIN64
+        - BTYPE="BINARY=64 HOSTCC=gcc CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran"
+
+# whitelist
+branches:
+  only:
+    - master
+    - develop
 
 notifications:
   webhooks:
@@ -7,32 +70,3 @@ notifications:
     on_success: change  # options: [always|never|change] default: always
     on_failure: always  # options: [always|never|change] default: always
     on_start: never     # options: [always|never|change] default: always
-
-compiler:
-  - gcc
-
-env:
-  - TARGET_BOX=LINUX64 BTYPE="BINARY=64"
-  - TARGET_BOX=LINUX64 BTYPE="BINARY=64 USE_OPENMP=1"
-  - TARGET_BOX=LINUX64 BTYPE="BINARY=64 INTERFACE64=1"
-  - TARGET_BOX=LINUX32 BTYPE="BINARY=32"
-  - TARGET_BOX=WIN64 BTYPE="BINARY=64 HOSTCC=gcc CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran"
-
-before_install:
- - sudo apt-get update -qq
- - sudo apt-get install -qq gfortran
- - if [[ "$TARGET_BOX" == "WIN64" ]]; then sudo apt-get install -qq binutils-mingw-w64-x86-64 gcc-mingw-w64-x86-64 gfortran-mingw-w64-x86-64; fi
- - if [[ "$TARGET_BOX" == "LINUX32" ]]; then sudo apt-get install -qq  gcc-multilib gfortran-multilib; fi
-
-script: 
- - set -e
- - make QUIET_MAKE=1 DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE
- - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C test DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
- - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C ctest DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
- - if [ "$TARGET_BOX" == "LINUX32" ] || [ "$TARGET_BOX" == "LINUX64" ]; then make -C utest DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32 $BTYPE; fi
-
-# whitelist
-branches:
-  only:
-    - master
-    - develop
