@@ -333,8 +333,8 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   float (*cnrm2_k) (BLASLONG, float *, BLASLONG);
   float (*casum_k) (BLASLONG, float *, BLASLONG);
   int    (*ccopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  float _Complex (*cdotu_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  float _Complex (*cdotc_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  openblas_complex_float (*cdotu_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  openblas_complex_float (*cdotc_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   int    (*csrot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
 
   int    (*caxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
@@ -496,8 +496,8 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   double (*znrm2_k) (BLASLONG, double *, BLASLONG);
   double (*zasum_k) (BLASLONG, double *, BLASLONG);
   int    (*zcopy_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
-  double _Complex (*zdotu_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
-  double _Complex (*zdotc_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+  openblas_complex_double (*zdotu_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+  openblas_complex_double (*zdotc_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
   int    (*zdrot_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG, double, double);
 
   int    (*zaxpy_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
@@ -661,8 +661,8 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   xdouble (*xnrm2_k) (BLASLONG, xdouble *, BLASLONG);
   xdouble (*xasum_k) (BLASLONG, xdouble *, BLASLONG);
   int    (*xcopy_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-  xdouble _Complex (*xdotu_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-  xdouble _Complex (*xdotc_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+  openblas_complex_xdouble (*xdotu_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+  openblas_complex_xdouble (*xdotc_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
   int    (*xqrot_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble);
 
   int    (*xaxpy_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);

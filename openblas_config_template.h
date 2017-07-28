@@ -59,7 +59,7 @@ typedef int blasint;
    extension since version 3.0.  If neither are available, use a compatible
    structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
 #if ((defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
-      (__GNUC__ >= 3 && !defined(__cplusplus))) && !(defined(FORCE_OPENBLAS_COMPLEX_STRUCT)))
+      (__GNUC__ >= 3 && !defined(__cplusplus))) && !(defined(FORCE_OPENBLAS_COMPLEX_STRUCT))) && !defined(_MSC_VER)
   #define OPENBLAS_COMPLEX_C99
 #ifndef __cplusplus
   #include <complex.h>
