@@ -22,7 +22,7 @@ ParseMakefileVars("${KERNELDIR}/KERNEL")
 ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
 
 if (${ARCH} STREQUAL "x86")
-if (NOT MSVC)
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
 else()
   GenerateNamedObjects("${KERNELDIR}/cpuid_win.c" "" "" false "" "" true)
