@@ -77,7 +77,9 @@ jobs:
       before_script: *common-before
       script:
         - set -e
+        # XXX: Disable some warnings for now to avoid exceeding Travis limit for log size.
         - alpine make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+              CFLAGS="-Wno-misleading-indentation -Wno-sign-conversion -Wno-incompatible-pointer-types"
         - alpine make -C test $COMMON_FLAGS $BTYPE
         - alpine make -C ctest $COMMON_FLAGS $BTYPE
         - alpine make -C utest $COMMON_FLAGS $BTYPE
