@@ -32,8 +32,8 @@ skip_commits:
 
 environment:
   matrix:
-    - COMPILER: cl
     - COMPILER: clang-cl
+    - COMPILER: cl
 
 install:
   - if [%COMPILER%]==[clang-cl] call C:\Miniconda36-x64\Scripts\activate.bat
