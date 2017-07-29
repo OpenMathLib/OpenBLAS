@@ -28,6 +28,8 @@
 set(FU "")
 if(APPLE)
 set(FU "_")
+elseif(MSVC AND ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
+set(FU "")
 elseif(MSVC)
 set(FU "_")
 elseif(UNIX)
