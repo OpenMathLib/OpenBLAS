@@ -44,7 +44,7 @@ before_build:
   - echo Running cmake...
   - cd c:\projects\OpenBLAS
   - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" .
-  - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER_ID=clang-cl -DCMAKE_C_COMPILER_ID=clang-cl .
+  - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl .
 
 build_script:
   - cmake --build .
