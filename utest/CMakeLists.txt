@@ -35,7 +35,7 @@ endforeach()
 if (MSVC)
 add_custom_command(TARGET ${OpenBLAS_utest_bin}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/lib/$<CONFIG>/${OpenBLAS_LIBNAME}.dll ${CMAKE_CURRENT_BINARY_DIR}/.
+          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/lib/${CMAKE_CFG_INTDIR}/${OpenBLAS_LIBNAME}.dll ${CMAKE_CURRENT_BINARY_DIR}/.
 )
 endif()
 
