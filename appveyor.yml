@@ -46,7 +46,7 @@ before_build:
   - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" .
   - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER_ID=clang-cl -DCMAKE_C_COMPILER_ID=clang-cl .
 
-build:
+build_script:
   - cmake --build .
 
 test_script:
