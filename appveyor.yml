@@ -38,7 +38,7 @@ environment:
 install:
   - if [%COMPILER%]==[clang-cl] call C:\Miniconda36-x64\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
-  - if [%COMPILER%]==[clang-cl] conda install clangdev ninja cmake
+  - if [%COMPILER%]==[clang-cl] conda install --yes clangdev ninja cmake
 
 before_build:
   - echo Running cmake...
