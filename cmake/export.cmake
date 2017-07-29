@@ -51,7 +51,8 @@ else()
 endif()
 
 add_custom_command(
-  TARGET ${OpenBLAS_LIBNAME} PRE_LINK 
+  OUTPUT ${PROJECT_BINARY_DIR}/openblas.def
+  #TARGET ${OpenBLAS_LIBNAME} PRE_LINK
   COMMAND perl 
   ARGS "${PROJECT_SOURCE_DIR}/exports/gensymbol" "win2k" "${ARCH_IN}" "dummy" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" "${SYMBOLPREFIX}" "${SYMBOLSUFFIX}" > "${PROJECT_BINARY_DIR}/openblas.def"
   COMMENT "Create openblas.def file"
