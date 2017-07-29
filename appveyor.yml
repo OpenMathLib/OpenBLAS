@@ -40,7 +40,6 @@ install:
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
   - if [%COMPILER%]==[clang-cl] conda install --yes clangdev ninja cmake
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-  - if [%COMPILER%]==[clang-cl] set "PATH=%PATH%;C:\Program Files (x86)\Windows Kits\10\bin\x64"
 
 before_build:
   - echo Running cmake...
