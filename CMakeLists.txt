@@ -244,12 +244,11 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 
 	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-	file(WRITE ${CMAKE_BINARY_DIR}/f77blas.tmp "")
-	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
+	file(WRITE ${CMAKE_BINARY_DIR}/f77blas.h "")
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
 	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
-	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "${COMMON_INTERFACE_H_CONTENTS}")
-	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "#endif")
-	configure_file(${CMAKE_BINARY_DIR}/f77blas.tmp ${CMAKE_BINARY_DIR}/f77blas.h COPYONLY)
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "${COMMON_INTERFACE_H_CONTENTS}")
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#endif")
 	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(NOT NO_CBLAS)
