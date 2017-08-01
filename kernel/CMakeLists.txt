@@ -1,6 +1,7 @@
 
 include_directories(${PROJECT_SOURCE_DIR})
 
+
 # Makefile
 function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     include("${PROJECT_SOURCE_DIR}/cmake/kernel.cmake")
@@ -12,6 +13,11 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     SetDefaultL3()
     ParseMakefileVars("${KERNELDIR}/KERNEL")
     ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
+
+    set(KERNEL_INTERFACE common_level1.h common_level2.h common_level3.h)
+    if(NOT ${NO_LAPACK})
+        set(KERNEL_INTERFACE ${KERNEL_INTERFACE} common_lapack.h)
+    endif ()
 
     if (${ARCH} STREQUAL "x86")
     if (NOT MSVC)
@@ -437,12 +443,23 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     endforeach ()
 
     if (${DYNAMIC_ARCH})
-        file(READ ${CMAKE_CURRENT_SOURCE_DIR}/setparam-ref.c SETPARAM_REF_CONTENTS)
-	    string(REPLACE "TS" "${TSUFFIX}" SETPARAM_REF_CONTENTS_NEW "${SETPARAM_REF_CONTENTS}")
         set(SETPARAM_TARGET_DIR ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY})
-	    file(WRITE ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.tmp "${SETPARAM_REF_CONTENTS_NEW}")
+        file(READ ${CMAKE_CURRENT_SOURCE_DIR}/setparam-ref.c SETPARAM_REF_CONTENTS)
+        string(REPLACE "TS" "${TSUFFIX}" SETPARAM_REF_CONTENTS_NEW "${SETPARAM_REF_CONTENTS}")
+        file(WRITE ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.tmp "${SETPARAM_REF_CONTENTS_NEW}")
         configure_file(${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.tmp ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.c COPYONLY)
         set(OPENBLAS_SRC ${OPENBLAS_SRC} ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.c)
+        file(REMOVE ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.tmp)
+
+        set(KERNEL_TSUFFIX_CONTENTS "")
+        foreach (KERNEL_INTERFACE_H ${KERNEL_INTERFACE})
+            file(READ ${PROJECT_SOURCE_DIR}/${KERNEL_INTERFACE_H} KERNEL_INTERFACE_H_CONTENTS)
+            string(REGEX REPLACE "[ ]*\\(" "${TSUFFIX}(" KERNEL_INTERFACE_H_CONTENTS_NEW "${KERNEL_INTERFACE_H_CONTENTS}")
+            set(KERNEL_TSUFFIX_CONTENTS "${KERNEL_TSUFFIX_CONTENTS}\n${KERNEL_INTERFACE_H_CONTENTS_NEW}")
+        endforeach()
+	    file(WRITE ${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.tmp "${KERNEL_TSUFFIX_CONTENTS}")
+        configure_file(${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.tmp ${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.h COPYONLY)
+        file(REMOVE ${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.tmp)
     endif ()
 
     # Makefile.LA
@@ -450,7 +467,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
 
     add_library(kernel${TSUFFIX} OBJECT ${OPENBLAS_SRC})
     set_target_properties(kernel${TSUFFIX} PROPERTIES COMPILE_FLAGS "${KERNEL_DEFINITIONS}")
-    get_target_properties(KERNEL_INCLUDE_DIRECTORIES kernel${TSUFFIX} COMPILE_FLAGS)
+    get_target_property(KERNEL_INCLUDE_DIRECTORIES kernel${TSUFFIX} INCLUDE_DIRECTORIES)
     set_target_properties(kernel${TSUFFIX} PROPERTIES INCLUDE_DIRECTORIES "${KERNEL_INCLUDE_DIRECTORIES};${TARGET_CONF_DIR}")
 endfunction ()
 
