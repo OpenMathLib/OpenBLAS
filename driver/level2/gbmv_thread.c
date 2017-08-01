@@ -233,7 +233,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT *alpha, FLOAT 
 #else
     range_m[num_cpu] = num_cpu * ((n + 15) & ~15);
 #endif
-    if (range_m[num_cpu] > n) range_m[num_cpu] = n;
 
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = gbmv_kernel;
