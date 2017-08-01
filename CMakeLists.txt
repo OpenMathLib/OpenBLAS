@@ -232,34 +232,33 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 # Install include files
 	set (GENCONFIG_BIN ${CMAKE_BINARY_DIR}/gen_config_h${CMAKE_EXECUTABLE_SUFFIX})
 
-    execute_process(COMMAND ${GENCONFIG_BIN}
-                            ${CMAKE_CURRENT_SOURCE_DIR}/config.h
-                            ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h
-                    OUTPUT_VARIABLE OPENBLAS_CONFIG_H_CONTENTS)
+	execute_process(COMMAND ${GENCONFIG_BIN}
+	                        ${CMAKE_CURRENT_SOURCE_DIR}/config.h
+	                        ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h
+	                OUTPUT_VARIABLE OPENBLAS_CONFIG_H_CONTENTS)
 
-    file(WRITE ${CMAKE_BINARY_DIR}/openblas_config.tmp "${OPENBLAS_CONFIG_H_CONTENTS}")
-    configure_file(${CMAKE_BINARY_DIR}/openblas_config.tmp ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
+	file(WRITE ${CMAKE_BINARY_DIR}/openblas_config.tmp "${OPENBLAS_CONFIG_H_CONTENTS}")
+	configure_file(${CMAKE_BINARY_DIR}/openblas_config.tmp ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
 
 	install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-    file(WRITE ${CMAKE_BINARY_DIR}/f77blas.tmp "")
-    file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
-    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
-    file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "${COMMON_INTERFACE_H_CONTENTS}")
-    file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "#endif")
-    configure_file(${CMAKE_BINARY_DIR}/f77blas.tmp ${CMAKE_BINARY_DIR}/f77blas.h COPYONLY)
+	file(WRITE ${CMAKE_BINARY_DIR}/f77blas.tmp "")
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
+	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "${COMMON_INTERFACE_H_CONTENTS}")
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.tmp "#endif")
+	configure_file(${CMAKE_BINARY_DIR}/f77blas.tmp ${CMAKE_BINARY_DIR}/f77blas.h COPYONLY)
 	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
-    string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
-    file(WRITE ${CMAKE_BINARY_DIR}/cblas.tmp "${CBLAS_H_CONTENTS_NEW}")
-    configure_file(${CMAKE_BINARY_DIR}/cblas.tmp ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h COPYONLY)
-	install (FILES ${CMAKE_BINARY_DIR}/cblas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
+	string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
+	file(WRITE ${CMAKE_BINARY_DIR}/cblas.tmp "${CBLAS_H_CONTENTS_NEW}")
+	install (FILES ${CMAKE_BINARY_DIR}/cblas.tmp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} RENAME cblas.h)
 endif()
 
 if(NOT NO_LAPACKE)
