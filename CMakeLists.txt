@@ -209,6 +209,7 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 #	@echo "#define EXPRECISION">> config_last.h
 #endif
 ###
+
 #ifeq ($(DYNAMIC_ARCH), 1)
 #	@$(MAKE) -C kernel commonlibs || exit 1
 #	@for d in $(DYNAMIC_CORE) ; \
@@ -216,6 +217,13 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 #	done
 #	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
 #endif
+if (${DYNAMIC_ARCH})
+  add_subdirectory(kernel)
+  foreach(TARGET_CORE ${DYNAMIC_CORE})
+    list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:kernel_${DYNAMIC_CORE}>")
+  endforeach()
+endif ()
+
 #ifdef USE_THREAD
 #	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
 #endif

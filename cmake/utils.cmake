@@ -225,7 +225,7 @@ function(GenerateNamedObjects sources_in)
 
       # create a copy of the source to avoid duplicate obj filename problem with ar.exe
       get_filename_component(source_extension ${source_file} EXT)
-      set(new_source_file "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${obj_name}${source_extension}")
+      set(new_source_file "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${obj_name}${TSUFFIX}${source_extension}")
       if (IS_ABSOLUTE ${source_file})
         set(old_source_file ${source_file})
       else ()

@@ -46,9 +46,11 @@ if (DEFINED TARGET_CORE)
   set(GETARCH2_FLAGS "-DBUILD_KERNEL")
   set(TARGET_MAKE "Makefile_kernel.conf")
   set(TARGET_CONF "config_kernel.h")
+  set(TARGET_CONF_DIR ${PROJECT_BINARY_DIR}/kernel_config/${TARGET_CORE})
 else()
   set(TARGET_MAKE "Makefile.conf")
   set(TARGET_CONF "config.h")
+  set(TARGET_CONF_DIR ${PROJECT_BINARY_DIR})
 endif ()
 
 set(TARGET_CONF_TEMP "${PROJECT_BINARY_DIR}/${TARGET_CONF}.tmp")
@@ -129,7 +131,13 @@ execute_process(COMMAND ${PROJECT_BINARY_DIR}/${GETARCH2_BIN} 1 OUTPUT_VARIABLE 
 
 # append config data from getarch_2nd to the TARGET file and read in CMake vars
 file(APPEND ${TARGET_CONF_TEMP} ${GETARCH2_CONF_OUT})
-configure_file(${TARGET_CONF_TEMP} ${PROJECT_BINARY_DIR}/${TARGET_CONF} COPYONLY)
+
+if (${BUILD_KERNEL})
+    configure_file(${TARGET_CONF_TEMP} ${PROJECT_BINARY_DIR}/kernel_config/${TARGET_CORE}/${TARGET_CONF} COPYONLY)
+else ()
+    configure_file(${TARGET_CONF_TEMP} ${PROJECT_BINARY_DIR}/${TARGET_CONF} COPYONLY)
+endif ()
+
 ParseGetArchVars(${GETARCH2_MAKE_OUT})
 
 # compile get_config_h
