@@ -1,5 +1,6 @@
 
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_BINARY_DIR})
 
 
 set(BLAS1_SOURCES
