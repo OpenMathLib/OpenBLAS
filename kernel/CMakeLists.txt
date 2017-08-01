@@ -436,6 +436,15 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
       GenerateNamedObjects("${KERNELDIR}/${${float_char}GEADD_KERNEL}" "" "geadd_k" false "" "" false ${float_type})
     endforeach ()
 
+    if (${DYNAMIC_ARCH})
+        file(READ ${CMAKE_CURRENT_SOURCE_DIR}/setparam-ref.c SETPARAM_REF_CONTENTS)
+	    string(REPLACE "TS" "${TSUFFIX}" SETPARAM_REF_CONTENTS_NEW "${SETPARAM_REF_CONTENTS}")
+        set(SETPARAM_TARGET_DIR ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY})
+	    file(WRITE ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.tmp "${SETPARAM_REF_CONTENTS_NEW}")
+        configure_file(${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.tmp ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.c COPYONLY)
+        set(OPENBLAS_SRC ${OPENBLAS_SRC} ${SETPARAM_TARGET_DIR}/setparam${TSUFFIX}.c)
+    endif ()
+
     # Makefile.LA
     #DBLASOBJS	+= dneg_tcopy$(TSUFFIX).$(SUFFIX) dlaswp_ncopy$(TSUFFIX).$(SUFFIX)
 
