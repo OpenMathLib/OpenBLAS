@@ -44,7 +44,7 @@ if (NOT ONLY_CBLAS)
   # TODO: set FEXTRALIB flags a la f_check?
 
   set(BU "_")
-  file(APPEND ${TARGET_CONF}
+  file(APPEND ${TARGET_CONF_TEMP}
     "#define BUNDERSCORE _\n"
     "#define NEEDBUNDERSCORE 1\n"
     "#define NEED2UNDERSCORES 0\n")
@@ -56,7 +56,7 @@ else ()
   set(NO_FBLAS 1)
   #set(F_COMPILER GFORTRAN) # CMake handles the fortran compiler
   set(BU "_")
-  file(APPEND ${TARGET_CONF}
+  file(APPEND ${TARGET_CONF_TEMP}
     "#define BUNDERSCORE _\n"
     "#define NEEDBUNDERSCORE 1\n")
 endif()

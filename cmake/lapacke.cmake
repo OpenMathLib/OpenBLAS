@@ -2391,6 +2391,6 @@ foreach (Utils_FILE ${Utils_SRC})
 endforeach ()
 
 set(lapacke_include_dir "${NETLIB_LAPACK_DIR}/LAPACKE/include")
-execute_process(COMMAND ${CMAKE_COMMAND} -E copy "${lapacke_include_dir}/lapacke_mangling_with_flags.h.in" "${lapacke_include_dir}/lapacke_mangling.h")
+configure_file("${lapacke_include_dir}/lapacke_mangling_with_flags.h.in" "${lapacke_include_dir}/lapacke_mangling.h" COPYONLY)
 include_directories(${lapacke_include_dir})
 set_source_files_properties(${LAPACKE_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_CFLAGS}")

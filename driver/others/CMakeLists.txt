@@ -1,4 +1,5 @@
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_BINARY_DIR})
 
 if (${CORE} STREQUAL "PPC440")
   set(MEMORY memory_qalloc.c)

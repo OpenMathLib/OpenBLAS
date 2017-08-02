@@ -231,43 +231,33 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 
 # Install include files
 	set (GENCONFIG_BIN ${CMAKE_BINARY_DIR}/gen_config_h${CMAKE_EXECUTABLE_SUFFIX})
-	ADD_CUSTOM_COMMAND(
-	OUTPUT ${CMAKE_BINARY_DIR}/openblas_config.h
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
-	COMMAND ${GENCONFIG_BIN} ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h > ${CMAKE_BINARY_DIR}/openblas_config.h
-	)
 
-	ADD_CUSTOM_TARGET(genconfig
-	ALL
-	DEPENDS openblas_config.h
-	)
-	add_dependencies(genconfig ${OpenBLAS_LIBNAME})
+	execute_process(COMMAND ${GENCONFIG_BIN}
+	                        ${CMAKE_CURRENT_SOURCE_DIR}/config.h
+	                        ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h
+	                OUTPUT_VARIABLE OPENBLAS_CONFIG_H_CONTENTS)
+
+	file(WRITE ${CMAKE_BINARY_DIR}/openblas_config.tmp "${OPENBLAS_CONFIG_H_CONTENTS}")
+	configure_file(${CMAKE_BINARY_DIR}/openblas_config.tmp ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
 
 	install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-	ADD_CUSTOM_TARGET(genf77blas
-	ALL
-	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_F77BLAS_H\" \; print \"\#define OPENBLAS_F77BLAS_H\" \; print \"\#include \\"openblas_config.h\\" \"}; NF {print}; END{print \"\#endif\"}' ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
-	)
-	add_dependencies(genf77blas ${OpenBLAS_LIBNAME})
-
+	file(WRITE ${CMAKE_BINARY_DIR}/f77blas.h "")
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
+	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "${COMMON_INTERFACE_H_CONTENTS}")
+	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#endif")
 	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-	ADD_CUSTOM_TARGET(gencblas
-	ALL
-	COMMAND ${SED} 's/common/openblas_config/g' ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.tmp"
-	COMMAND cp "${CMAKE_BINARY_DIR}/cblas.tmp" "${CMAKE_BINARY_DIR}/cblas.h"
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h
-	)
-	add_dependencies(gencblas ${OpenBLAS_LIBNAME})
-
-	install (FILES ${CMAKE_BINARY_DIR}/cblas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
+	string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
+	file(WRITE ${CMAKE_BINARY_DIR}/cblas.tmp "${CBLAS_H_CONTENTS_NEW}")
+	install (FILES ${CMAKE_BINARY_DIR}/cblas.tmp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} RENAME cblas.h)
 endif()
 
 if(NOT NO_LAPACKE)
@@ -277,7 +267,7 @@ if(NOT NO_LAPACKE)
 	install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
  
 	ADD_CUSTOM_TARGET(genlapacke
-	COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
+	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
 	)
 	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
