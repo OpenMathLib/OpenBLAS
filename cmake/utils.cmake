@@ -202,6 +202,8 @@ function(GenerateNamedObjects sources_in)
       if (use_cblas)
         set(obj_name "cblas_${obj_name}")
         list(APPEND obj_defines "CBLAS")
+      elseif (NOT "${obj_name}" MATCHES "${TSUFFIX}")
+        set(obj_name "${obj_name}${TSUFFIX}")
       endif ()
 
       list(APPEND obj_defines "ASMNAME=${FU}${obj_name};ASMFNAME=${FU}${obj_name}${BU};NAME=${obj_name}${BU};CNAME=${obj_name};CHAR_NAME=\"${obj_name}${BU}\";CHAR_CNAME=\"${obj_name}\"")
@@ -225,7 +227,7 @@ function(GenerateNamedObjects sources_in)
 
       # create a copy of the source to avoid duplicate obj filename problem with ar.exe
       get_filename_component(source_extension ${source_file} EXT)
-      set(new_source_file "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${obj_name}${TSUFFIX}${source_extension}")
+      set(new_source_file "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${obj_name}${source_extension}")
       if (IS_ABSOLUTE ${source_file})
         set(old_source_file ${source_file})
       else ()

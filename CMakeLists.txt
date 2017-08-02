@@ -153,6 +153,22 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
 endif()
 
+#ifeq ($(DYNAMIC_ARCH), 1)
+#	@$(MAKE) -C kernel commonlibs || exit 1
+#	@for d in $(DYNAMIC_CORE) ; \
+#	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
+#	done
+#	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
+#endif
+if (${DYNAMIC_ARCH})
+  add_subdirectory(kernel)
+  foreach(TARGET_CORE ${DYNAMIC_CORE})
+    message("${TARGET_CORE}")
+    list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:kernel_${TARGET_CORE}>")
+  endforeach()
+endif ()
+
+
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
@@ -209,20 +225,6 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 #	@echo "#define EXPRECISION">> config_last.h
 #endif
 ###
-
-#ifeq ($(DYNAMIC_ARCH), 1)
-#	@$(MAKE) -C kernel commonlibs || exit 1
-#	@for d in $(DYNAMIC_CORE) ; \
-#	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
-#	done
-#	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
-#endif
-if (${DYNAMIC_ARCH})
-  add_subdirectory(kernel)
-  foreach(TARGET_CORE ${DYNAMIC_CORE})
-    list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:kernel_${DYNAMIC_CORE}>")
-  endforeach()
-endif ()
 
 #ifdef USE_THREAD
 #	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
