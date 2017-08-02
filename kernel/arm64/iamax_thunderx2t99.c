@@ -208,7 +208,8 @@ extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n
 #endif
 
 
-static BLASLONG iamax_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
+static BLASLONG __attribute__((noinline)) iamax_compute(BLASLONG n, FLOAT *x,
+								BLASLONG inc_x)
 {
 	BLASLONG index = 0;
 
