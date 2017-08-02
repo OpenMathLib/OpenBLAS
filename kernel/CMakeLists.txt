@@ -246,6 +246,23 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
         GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY;REAL_ONLY" "gemm3m_itcopyr" false "" "" false ${float_type})
         GenerateNamedObjects("generic/zgemm3m_tcopy_${${float_char}GEMM3M_UNROLL_M}.c" "ICOPY;IMAGE_ONLY" "gemm3m_itcopyi" false "" "" false ${float_type})
 
+#hemm3m and symm3m
+        foreach(name symm3m hemm3m)
+          GenerateNamedObjects("generic/z${name}_ucopy_${${float_char}GEMM3M_UNROLL_M}.c" "USE_ALPHA" "${name}_oucopyb.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_ucopy_${${float_char}GEMM3M_UNROLL_M}.c" "USE_ALPHA;REAL_ONLY" "${name}_oucopyr.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_ucopy_${${float_char}GEMM3M_UNROLL_M}.c" "USE_ALPHA;IMAGE_ONLY" "${name}_oucopyi.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_lcopy_${${float_char}GEMM3M_UNROLL_M}.c" "USE_ALPHA" "${name}_olcopyb.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_lcopy_${${float_char}GEMM3M_UNROLL_M}.c" "USE_ALPHA;REAL_ONLY" "${name}_olcopyr.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_lcopy_${${float_char}GEMM3M_UNROLL_M}.c" "USE_ALPHA;IMAGE_ONLY" "${name}_olcopyi.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_ucopy_${${float_char}GEMM3M_UNROLL_M}.c" "" "${name}_iucopyb.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_ucopy_${${float_char}GEMM3M_UNROLL_M}.c" "REAL_ONLY" "${name}_iucopyr.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_ucopy_${${float_char}GEMM3M_UNROLL_M}.c" "IMAGE_ONLY" "${name}_iucopyi.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_lcopy_${${float_char}GEMM3M_UNROLL_M}.c" "" "${name}_ilcopyb.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_lcopy_${${float_char}GEMM3M_UNROLL_M}.c" "REAL_ONLY" "${name}_ilcopyr.c" false "" "" false ${float_type})
+          GenerateNamedObjects("generic/z${name}_lcopy_${${float_char}GEMM3M_UNROLL_M}.c" "IMAGE_ONLY" "${name}_ilcopyi.c" false "" "" false ${float_type})
+
+        endforeach ()
+
       endif()
 
       else ()  #For real
