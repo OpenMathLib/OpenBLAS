@@ -1,10 +1,14 @@
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
-set(OpenBLAS_utest_src
-  utest_main.c
-  test_amax.c
+if (MSVC AND "${CMAKE_C_COMPILER_ID}" MATCHES Clang)
+  set(OpenBLAS_utest_src utest_main2.c)
+else ()
+  set(OpenBLAS_utest_src
+    utest_main.c
+    test_amax.c
   )
+endif ()
 
 if (NOT NO_LAPACK)
 set(OpenBLAS_utest_src
