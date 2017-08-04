@@ -234,7 +234,9 @@ function(GenerateNamedObjects sources_in)
 
       string(REPLACE ";" "\n#define " define_source "${obj_defines}")
       string(REPLACE "=" " " define_source "${define_source}")
-      file(WRITE ${new_source_file} "#define ${define_source}\n#include \"${old_source_file}\"")
+      file(WRITE ${new_source_file}.tmp "#define ${define_source}\n#include \"${old_source_file}\"")
+      configure_file(${new_source_file}.tmp ${new_source_file} COPYONLY)
+      file(REMOVE ${new_source_file}.tmp)
       list(APPEND SRC_LIST_OUT ${new_source_file})
 
     endforeach ()

@@ -87,7 +87,7 @@ endif ()
 
 string(TOUPPER ${ARCH} UC_ARCH)
 
-file(WRITE ${TARGET_CONF}
+file(WRITE ${TARGET_CONF_TEMP}
   "#define OS_${HOST_OS}\t1\n"
   "#define ARCH_${UC_ARCH}\t1\n"
   "#define C_${COMPILER_ID}\t1\n"
@@ -95,7 +95,7 @@ file(WRITE ${TARGET_CONF}
   "#define FUNDERSCORE\t${FU}\n")
 
 if (${HOST_OS} STREQUAL "WINDOWSSTORE")
-  file(APPEND ${TARGET_CONF}
+  file(APPEND ${TARGET_CONF_TEMP}
     "#define OS_WINNT\t1\n")
 endif ()
 

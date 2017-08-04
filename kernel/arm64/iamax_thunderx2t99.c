@@ -208,7 +208,7 @@ extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n
 #endif
 
 
-static BLASLONG iamax_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
+static BLASLONG __attribute__((noinline)) iamax_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG index = 0;
 
@@ -220,72 +220,72 @@ static BLASLONG iamax_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	"	mov	"INC_X", %[INCX_]			\n"
 
 	"	cmp	"N", xzr				\n"
-	"	ble	.Liamax_kernel_zero			\n"
+	"	ble	10f //iamax_kernel_zero			\n"
 	"	cmp	"INC_X", xzr				\n"
-	"	ble	.Liamax_kernel_zero			\n"
+	"	ble	10f //iamax_kernel_zero			\n"
 	"	cmp	"INC_X", #1				\n"
-	"	bne	.Liamax_kernel_S_BEGIN			\n"
+	"	bne	5f //iamax_kernel_S_BEGIN		\n"
 	"	mov	x7, "X"					\n"
 
-	".Liamax_kernel_F_BEGIN:				\n"
+	"1: //iamax_kernel_F_BEGIN:				\n"
 	"	"INIT"						\n"
 	"	subs	"N", "N", #1				\n"
-	"	ble	.Liamax_kernel_L999			\n"
+	"	ble	9f //iamax_kernel_L999			\n"
 	"	asr	"J", "N", #"N_DIV_SHIFT"		\n"
 	"	cmp	"J", xzr				\n"
-	"	beq	.Liamax_kernel_F1			\n"
+	"	beq	3f //iamax_kernel_F1			\n"
 	"	add	"Z", "Z", #1				\n"
 
-	".Liamax_kernel_F:					\n"
+	"2: //iamax_kernel_F:					\n"
 	"	"KERNEL_F"					\n"
 	"	subs	"J", "J", #1				\n"
-	"	bne	.Liamax_kernel_F			\n"
+	"	bne	2b //iamax_kernel_F			\n"
 	"	"KERNEL_F_FINALIZE"				\n"
 	"	sub	"Z", "Z", #1				\n"
 
-	".Liamax_kernel_F1:					\n"
+	"3: //iamax_kernel_F1:					\n"
 	"	ands	"J", "N", #"N_REM_MASK"			\n"
-	"	ble	.Liamax_kernel_L999			\n"
+	"	ble	9f //iamax_kernel_L999			\n"
 
-	".Liamax_kernel_F10:					\n"
+	"4: //iamax_kernel_F10:					\n"
 	"	"KERNEL_S1"					\n"
 	"	subs	"J", "J", #1				\n"
-	"	bne	.Liamax_kernel_F10			\n"
-	"	b	.Liamax_kernel_L999			\n"
+	"	bne	4b //iamax_kernel_F10			\n"
+	"	b	9f //iamax_kernel_L999			\n"
 
-	".Liamax_kernel_S_BEGIN:				\n"
+	"5: //iamax_kernel_S_BEGIN:				\n"
 	"	"INIT"						\n"
 	"	subs	"N", "N", #1				\n"
-	"	ble	.Liamax_kernel_L999			\n"
+	"	ble	9f //iamax_kernel_L999			\n"
 	"	asr	"J", "N", #2				\n"
 	"	cmp	"J", xzr				\n"
-	"	ble	.Liamax_kernel_S1			\n"
+	"	ble	7f //iamax_kernel_S1			\n"
 
-	".Liamax_kernel_S4:					\n"
+	"6: //iamax_kernel_S4:					\n"
 	"	"KERNEL_S1"					\n"
 	"	"KERNEL_S1"					\n"
 	"	"KERNEL_S1"					\n"
 	"	"KERNEL_S1"					\n"
 	"	subs	"J", "J", #1				\n"
-	"	bne	.Liamax_kernel_S4			\n"
+	"	bne	6b //iamax_kernel_S4			\n"
 
-	".Liamax_kernel_S1:					\n"
+	"7: //iamax_kernel_S1:					\n"
 	"	ands	"J", "N", #3				\n"
-	"	ble	.Liamax_kernel_L999			\n"
+	"	ble	9f //iamax_kernel_L999			\n"
 
-	".Liamax_kernel_S10:					\n"
+	"8: //iamax_kernel_S10:					\n"
 	"	"KERNEL_S1"					\n"
 	"	subs	"J", "J", #1				\n"
-	"	bne	.Liamax_kernel_S10			\n"
+	"	bne	8b //iamax_kernel_S10			\n"
 
-	".Liamax_kernel_L999:					\n"
+	"9: //iamax_kernel_L999:				\n"
 	"	mov	x0, "INDEX"				\n"
-	"	b	.Liamax_kernel_DONE			\n"
+	"	b	11f //iamax_kernel_DONE			\n"
 
-	".Liamax_kernel_zero:					\n"
+	"10: //iamax_kernel_zero:				\n"
 	"	mov	x0, xzr					\n"
 
-	".Liamax_kernel_DONE:					\n"
+	"11: //iamax_kernel_DONE:				\n"
 	"	mov	%[INDEX_], "INDEX"			\n"
 
 	: [INDEX_] "=r" (index)		//%0

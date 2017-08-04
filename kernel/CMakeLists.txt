@@ -1,5 +1,6 @@
 
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_BINARY_DIR})
 include("${PROJECT_SOURCE_DIR}/cmake/kernel.cmake")
 
 # Makefile
