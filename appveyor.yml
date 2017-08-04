@@ -14,13 +14,6 @@ init:
 
 clone_depth: 5
 
-#branches to build
-branches:
-  only:
-    - master
-    - develop
-    - cmake
-
 skip_tags: true
 
 matrix:
