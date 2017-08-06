@@ -3,12 +3,12 @@
 dist: precise
 sudo: false
 language: c
-compiler: gcc
 
 jobs:
   include:
     - &test-ubuntu
       stage: test
+      compiler: gcc
       addons:
         apt:
           packages:
@@ -36,6 +36,18 @@ jobs:
         - BTYPE="BINARY=64 INTERFACE64=1"
 
     - <<: *test-ubuntu
+      compiler: clang
+      env:
+        - TARGET_BOX=LINUX64
+        - BTYPE="BINARY=64 CC=clang"
+
+    - <<: *test-ubuntu
+      compiler: clang
+      env:
+        - TARGET_BOX=LINUX64
+        - BTYPE="BINARY=64 INTERFACE64=1 CC=clang"
+
+    - <<: *test-ubuntu
       addons:
         apt:
           packages:
@@ -46,6 +58,7 @@ jobs:
         - BTYPE="BINARY=32"
 
     - stage: test
+      compiler: gcc
       addons:
         apt:
           packages:
