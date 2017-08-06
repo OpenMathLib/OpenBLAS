@@ -28,6 +28,8 @@
 set(FU "")
 if(APPLE)
 set(FU "_")
+elseif(MSVC AND ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
+set(FU "")
 elseif(MSVC)
 set(FU "_")
 elseif(UNIX)
@@ -59,7 +61,8 @@ endif ()
 # CMAKE_HOST_SYSTEM_PROCESSOR - The name of the CPU CMake is running on.
 #
 # TODO: CMAKE_SYSTEM_PROCESSOR doesn't seem to be correct - instead get it from the compiler a la c_check
-set(ARCH ${CMAKE_SYSTEM_PROCESSOR})
+set(ARCH ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target Architecture")
+
 if (${ARCH} STREQUAL "AMD64")
   set(ARCH "x86_64")
 endif ()

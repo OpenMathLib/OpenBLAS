@@ -91,16 +91,15 @@ static void cdot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 
 #endif
 
-FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
 	BLASLONG i;
 	BLASLONG ix,iy;
-	FLOAT _Complex result;
 	FLOAT  dot[8] = { 0.0, 0.0, 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0 } ; 
 
 	if ( n <= 0 ) 
 	{
-	        result = OPENBLAS_MAKE_COMPLEX_FLOAT (0.0, 0.0) ;
+	    OPENBLAS_COMPLEX_FLOAT result = OPENBLAS_MAKE_COMPLEX_FLOAT (0.0, 0.0) ;
 		return(result);
 
 	}
@@ -160,11 +159,11 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 	}
 
 #if !defined(CONJ)
-	        result = OPENBLAS_MAKE_COMPLEX_FLOAT (dot[0]-dot[1], dot[4]+dot[5]) ;
+	OPENBLAS_COMPLEX_FLOAT result = OPENBLAS_MAKE_COMPLEX_FLOAT (dot[0]-dot[1], dot[4]+dot[5]) ;
 //	CREAL(result) = dot[0] - dot[1];
 //	CIMAG(result) = dot[4] + dot[5];
 #else
-	        result = OPENBLAS_MAKE_COMPLEX_FLOAT (dot[0]+dot[1], dot[4]-dot[5]) ;
+	OPENBLAS_COMPLEX_FLOAT result = OPENBLAS_MAKE_COMPLEX_FLOAT (dot[0]+dot[1], dot[4]-dot[5]) ;
 //	CREAL(result) = dot[0] + dot[1];
 //	CIMAG(result) = dot[4] - dot[5];
 

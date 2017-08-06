@@ -12,31 +12,36 @@ clone_folder: c:\projects\OpenBLAS
 init:
   - git config --global core.autocrlf input
 
-build:
-  project: OpenBLAS.sln
-
 clone_depth: 5
-
-#branches to build
-branches:
-  only:
-    - master
-    - develop
-    - cmake
 
 skip_tags: true
 
 matrix:
-  fast_finish: true
+  fast_finish: false
 
 skip_commits:
 # Add [av skip] to commit messages
   message: /\[av skip\]/
 
+environment:
+  matrix:
+    - COMPILER: clang-cl
+    - COMPILER: cl
+
+install:
+  - if [%COMPILER%]==[clang-cl] call C:\Miniconda36-x64\Scripts\activate.bat
+  - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
+  - if [%COMPILER%]==[clang-cl] conda install --yes clangdev ninja cmake
+  - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+
 before_build:
   - echo Running cmake...
   - cd c:\projects\OpenBLAS
-  - cmake -G "Visual Studio 12 Win64" .
+  - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" .
+  - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl .
+
+build_script:
+  - cmake --build .
 
 test_script:
   - echo Running Test

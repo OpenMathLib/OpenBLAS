@@ -495,6 +495,33 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #define MMAP_POLICY (MAP_PRIVATE | MAP_ANONYMOUS)
 #endif
 
+#ifndef ASSEMBLER
+/* C99 supports complex floating numbers natively, which GCC also offers as an
+   extension since version 3.0.  If neither are available, use a compatible
+   structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
+#if ((defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
+      (__GNUC__ >= 3 && !defined(__cplusplus))) && !(defined(FORCE_OPENBLAS_COMPLEX_STRUCT))) && !defined(_MSC_VER)
+  #define OPENBLAS_COMPLEX_C99
+  #ifndef __cplusplus
+    #include <complex.h>
+  #endif
+  typedef float _Complex openblas_complex_float;
+  typedef double _Complex openblas_complex_double;
+  typedef xdouble _Complex openblas_complex_xdouble;
+  #define openblas_make_complex_float(real, imag)    ((real) + ((imag) * _Complex_I))
+  #define openblas_make_complex_double(real, imag)   ((real) + ((imag) * _Complex_I))
+  #define openblas_make_complex_xdouble(real, imag)  ((real) + ((imag) * _Complex_I))
+#else
+  #define OPENBLAS_COMPLEX_STRUCT
+  typedef struct { float real, imag; } openblas_complex_float;
+  typedef struct { double real, imag; } openblas_complex_double;
+  typedef struct { xdouble real, imag; } openblas_complex_xdouble;
+  #define openblas_make_complex_float(real, imag)    {(real), (imag)}
+  #define openblas_make_complex_double(real, imag)   {(real), (imag)}
+  #define openblas_make_complex_xdouble(real, imag)  {(real), (imag)}
+#endif
+#endif
+
 #include "param.h"
 #include "common_param.h"
 
@@ -523,31 +550,6 @@ static void __inline blas_lock(volatile BLASULONG *address){
    as a side effect of including either <features.h> or <stdc-predef.h>. */
 #include <stdio.h>
 #endif  // NOINCLUDE
-
-/* C99 supports complex floating numbers natively, which GCC also offers as an
-   extension since version 3.0.  If neither are available, use a compatible
-   structure as fallback (see Clause 6.2.5.13 of the C99 standard). */
-#if ((defined(__STDC_IEC_559_COMPLEX__) || __STDC_VERSION__ >= 199901L || \
-      (__GNUC__ >= 3 && !defined(__cplusplus))) && !(defined(FORCE_OPENBLAS_COMPLEX_STRUCT)))
-  #define OPENBLAS_COMPLEX_C99
-  #ifndef __cplusplus
-    #include <complex.h>
-  #endif
-  typedef float _Complex openblas_complex_float;
-  typedef double _Complex openblas_complex_double;
-  typedef xdouble _Complex openblas_complex_xdouble;
-  #define openblas_make_complex_float(real, imag)    ((real) + ((imag) * _Complex_I))
-  #define openblas_make_complex_double(real, imag)   ((real) + ((imag) * _Complex_I))
-  #define openblas_make_complex_xdouble(real, imag)  ((real) + ((imag) * _Complex_I))
-#else
-  #define OPENBLAS_COMPLEX_STRUCT
-  typedef struct { float real, imag; } openblas_complex_float;
-  typedef struct { double real, imag; } openblas_complex_double;
-  typedef struct { xdouble real, imag; } openblas_complex_xdouble;
-  #define openblas_make_complex_float(real, imag)    {(real), (imag)}
-  #define openblas_make_complex_double(real, imag)   {(real), (imag)}
-  #define openblas_make_complex_xdouble(real, imag)  {(real), (imag)}
-#endif
 
 #ifdef XDOUBLE
 #define OPENBLAS_COMPLEX_FLOAT openblas_complex_xdouble
