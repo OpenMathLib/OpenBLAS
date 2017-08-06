@@ -27,6 +27,7 @@ option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON
 endif()
 option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
 option(BUILD_DEBUG "Build Debug Version" OFF)
+option(DYNAMIC_ARCH "Build with DYNAMIC_ARCH" OFF)
 #######
 if(BUILD_WITHOUT_LAPACK)
 set(NO_LAPACK 1)

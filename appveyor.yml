@@ -26,6 +26,8 @@ skip_commits:
 environment:
   matrix:
     - COMPILER: clang-cl
+      DYNAMIC_ARCH: ON
+    - COMPILER: clang-cl
     - COMPILER: cl
 
 install:
@@ -39,6 +41,7 @@ before_build:
   - cd c:\projects\OpenBLAS
   - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" .
   - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl .
+  - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON .
 
 build_script:
   - cmake --build .
