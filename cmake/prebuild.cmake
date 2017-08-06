@@ -66,14 +66,13 @@ set(GETARCH_SRC
   ${CPUIDEMO}
 )
 
-if (NOT MSVC)
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+  #Use generic for MSVC now
+  message("MSVC")
+  set(GETARCH_FLAGS ${GETARCH_FLAGS} -DFORCE_GENERIC)
+else()
   list(APPEND GETARCH_SRC ${PROJECT_SOURCE_DIR}/cpuid.S)
 endif ()
-
-if (MSVC)
-#Use generic for MSVC now
-set(GETARCH_FLAGS ${GETARCH_FLAGS} -DFORCE_GENERIC)
-endif()
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
   # disable WindowsStore strict CRT checks

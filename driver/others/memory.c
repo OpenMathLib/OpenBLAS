@@ -155,7 +155,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef DYNAMIC_ARCH
 gotoblas_t *gotoblas = NULL;
 #endif
-
 extern void openblas_warning(int verbose, const char * msg);
 
 #ifndef SMP
@@ -187,25 +186,24 @@ int i,n;
 
 #if !defined(__GLIBC_PREREQ)
    return nums;
-#endif
-#if !__GLIBC_PREREQ(2, 3)
+#else
+ #if !__GLIBC_PREREQ(2, 3)
    return nums;
-#endif
+ #endif
 
-#if !__GLIBC_PREREQ(2, 7)
+ #if !__GLIBC_PREREQ(2, 7)
   ret = sched_getaffinity(0,sizeof(cpu_set_t), cpusetp);
   if (ret!=0) return nums;
   n=0;
-#if !__GLIBC_PREREQ(2, 6)
+  #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
      if (CPU_ISSET(i,cpusetp)) n++;
   nums=n;
-#else
+  #else
   nums = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
-#endif
+  #endif
   return nums;
-#endif
-
+ #else
   cpusetp = CPU_ALLOC(nums);
   if (cpusetp == NULL) return nums;
   size = CPU_ALLOC_SIZE(nums);
@@ -214,6 +212,8 @@ int i,n;
   nums = CPU_COUNT_S(size,cpusetp);
   CPU_FREE(cpusetp);
   return nums;
+ #endif
+#endif
 }
 #endif
 #endif

@@ -1,7 +1,6 @@
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-
 # Makefile
 function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     set (OPENBLAS_SRC "")
@@ -21,7 +20,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     endif ()
 
     if (${ARCH} STREQUAL "x86")
-    if (NOT MSVC)
+    if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
       GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
     else()
       GenerateNamedObjects("${KERNELDIR}/cpuid_win.c" "" "" false "" "" true)

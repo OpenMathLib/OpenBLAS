@@ -1,10 +1,14 @@
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
-set(OpenBLAS_utest_src
-  utest_main.c
-  test_amax.c
+if (MSVC AND "${CMAKE_C_COMPILER_ID}" MATCHES Clang)
+  set(OpenBLAS_utest_src utest_main2.c)
+else ()
+  set(OpenBLAS_utest_src
+    utest_main.c
+    test_amax.c
   )
+endif ()
 
 if (NOT NO_LAPACK)
 set(OpenBLAS_utest_src
@@ -36,7 +40,7 @@ endforeach()
 if (MSVC)
 add_custom_command(TARGET ${OpenBLAS_utest_bin}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/lib/$<CONFIG>/${OpenBLAS_LIBNAME}.dll ${CMAKE_CURRENT_BINARY_DIR}/.
+          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/lib/${CMAKE_CFG_INTDIR}/${OpenBLAS_LIBNAME}.dll ${CMAKE_CURRENT_BINARY_DIR}/.
 )
 endif()
 
