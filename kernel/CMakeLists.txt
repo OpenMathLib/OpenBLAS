@@ -4,6 +4,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 # Makefile
 function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     set (OPENBLAS_SRC "")
+    set (ARCH_SUFFIX "")
     include("${PROJECT_SOURCE_DIR}/cmake/kernel.cmake")
     if (${DYNAMIC_ARCH})
         include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
@@ -19,19 +20,23 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
         set(KERNEL_INTERFACE ${KERNEL_INTERFACE} common_lapack.h)
     endif ()
 
-    if (${ARCH} STREQUAL "x86")
-    if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-      GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
-    else()
-      GenerateNamedObjects("${KERNELDIR}/cpuid_win.c" "" "" false "" "" true)
-    endif()
+    if (${ADD_COMMONOBJS})
+        if (${ARCH} STREQUAL "x86")
+        if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+          GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
+        else()
+          GenerateNamedObjects("${KERNELDIR}/cpuid_win.c" "" "" false "" "" true)
+        endif()
+        endif ()
+
+        # don't use float type name mangling here
+        GenerateNamedObjects("${KERNELDIR}/${LSAME_KERNEL}" "F_INTERFACE" "lsame" false "" "" true "")
+        GenerateNamedObjects("${KERNELDIR}/${SCABS_KERNEL}" "COMPLEX;F_INTERFACE" "scabs1" false "" "" true "")
+        GenerateNamedObjects("${KERNELDIR}/${DCABS_KERNEL}" "DOUBLE;COMPLEX;F_INTERFACE" "dcabs1" false "" "" true "")
     endif ()
 
-    # don't use float type name mangling here
-    GenerateNamedObjects("${KERNELDIR}/${LSAME_KERNEL}" "F_INTERFACE" "lsame" false "" "" true)
-    GenerateNamedObjects("${KERNELDIR}/${SCABS_KERNEL}" "COMPLEX;F_INTERFACE" "scabs1" false "" "" true)
-    GenerateNamedObjects("${KERNELDIR}/${DCABS_KERNEL}" "DOUBLE;COMPLEX;F_INTERFACE" "dcabs1" false "" "" true)
-
+    # Run with no ARCH_SUFFIX for above
+    set (ARCH_SUFFIX "${TSUFFIX}")
     # Makefile.L1
     foreach (float_type ${FLOAT_TYPES})
       # a bit of metaprogramming here to pull out the appropriate KERNEL var
@@ -489,7 +494,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
 endfunction ()
 
 
-
+set(ADD_COMMONOBJS 1)
 if (${DYNAMIC_ARCH})
   foreach(TARGET_CORE ${DYNAMIC_CORE})
       set(BUILD_KERNEL 1)
@@ -497,6 +502,7 @@ if (${DYNAMIC_ARCH})
       set(TSUFFIX "_${TARGET_CORE}")
       set(KERNEL_DEFINITIONS "-DBUILD_KERNEL -DTABLE_NAME=gotoblas_${TARGET_CORE} -DTS=${TSUFFIX}")
       build_core("${TARGET_CORE}" "${KDIR}" "${TSUFFIX}" "${KERNEL_DEFINITIONS}")
+      set(ADD_COMMONOBJS 0)
   endforeach()
 else ()
   set(TARGET_CONF_DIR ${PROJECT_BINARY_DIR})
