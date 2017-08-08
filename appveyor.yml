@@ -20,7 +20,7 @@ matrix:
   fast_finish: false
 
 artifacts:
-  - lib\**
+  - path: lib\**
 
 skip_commits:
 # Add [av skip] to commit messages
