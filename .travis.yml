@@ -1,14 +1,14 @@
 # XXX: Precise is already deprecated, new default is Trusty.
 # https://blog.travis-ci.com/2017-07-11-trusty-as-default-linux-is-coming
 dist: precise
-sudo: false
+sudo: true
 language: c
-compiler: gcc
 
 jobs:
   include:
     - &test-ubuntu
       stage: test
+      compiler: gcc
       addons:
         apt:
           packages:
@@ -36,6 +36,18 @@ jobs:
         - BTYPE="BINARY=64 INTERFACE64=1"
 
     - <<: *test-ubuntu
+      compiler: clang
+      env:
+        - TARGET_BOX=LINUX64
+        - BTYPE="BINARY=64 CC=clang"
+
+    - <<: *test-ubuntu
+      compiler: clang
+      env:
+        - TARGET_BOX=LINUX64
+        - BTYPE="BINARY=64 INTERFACE64=1 CC=clang"
+
+    - <<: *test-ubuntu
       addons:
         apt:
           packages:
@@ -46,6 +58,7 @@ jobs:
         - BTYPE="BINARY=32"
 
     - stage: test
+      compiler: gcc
       addons:
         apt:
           packages:
@@ -88,12 +101,12 @@ jobs:
         - BTYPE="BINARY=64"
 
     # XXX: This job segfaults in TESTS OF THE COMPLEX LEVEL 3 BLAS,
-    # so it's "allowed to fail" for now (see allow_failures).
-    - &test-alpine-openmp
-      <<: *test-alpine
-      env:
-        - TARGET_BOX=LINUX64_MUSL
-        - BTYPE="BINARY=64 USE_OPENMP=1"
+    # but only on Travis CI, cannot reproduce it elsewhere.
+    #- &test-alpine-openmp
+    #  <<: *test-alpine
+    #  env:
+    #    - TARGET_BOX=LINUX64_MUSL
+    #    - BTYPE="BINARY=64 USE_OPENMP=1"
 
     - <<: *test-alpine
       env:
@@ -105,9 +118,6 @@ jobs:
       env:
         - TARGET_BOX=LINUX64_MUSL
         - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=core2"
-
-  allow_failures:
-    - <<: *test-alpine-openmp
 
 # whitelist
 branches:
