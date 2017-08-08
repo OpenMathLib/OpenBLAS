@@ -19,6 +19,9 @@ skip_tags: true
 matrix:
   fast_finish: false
 
+artifacts:
+  - lib\**
+
 skip_commits:
 # Add [av skip] to commit messages
   message: /\[av skip\]/
