@@ -3,7 +3,7 @@ version: 0.2.19.{build}
 #environment:
 
 platform: 
-  - x64
+  - x86
 
 configuration: Release
 
