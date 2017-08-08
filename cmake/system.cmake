@@ -2,7 +2,6 @@
 ## Author: Hank Anderson <hank@statease.com>
 ## Description: Ported from OpenBLAS/Makefile.system
 ##
-
 set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 
 # TODO: Makefile.system detects Darwin (mac) and switches to clang here -hpa
