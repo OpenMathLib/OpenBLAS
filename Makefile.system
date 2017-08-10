@@ -242,10 +242,6 @@ EXTRALIB	+= -lm
 NO_EXPRECISION = 1
 endif
 
-ifeq ($(OSNAME), Android)
-EXTRALIB	+= -lm
-endif
-
 ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
 endif
