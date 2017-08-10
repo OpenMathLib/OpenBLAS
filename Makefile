@@ -81,8 +81,9 @@ ifeq ($(OSNAME), Darwin)
 	@echo "install_name_tool -id /new/absolute/path/to/$(LIBDYNNAME) $(LIBDYNNAME)"
 endif
 	@echo
-	@echo "To install the library, you can run \"make PREFIX=/path/to/your/installation install\"."
-	@echo
+	@echo "To install the library, you can run"
+	@echo "  make <ARGS> PREFIX=/path/to/your/installation install"
+	@echo "where '<ARGS>' is the set of argument used for compilation."
 
 shared :
 ifndef NO_SHARED
