@@ -28,6 +28,9 @@ SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 .PHONY : all libs netlib $(RELA) test ctest shared install
 .NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
 
+# source: https://stackoverflow.com/questions/52674/simplest-way-to-reverse-the-order-of-strings-in-a-make-variable/14260762#14260762
+reverse = $(if $(wordlist 2,2,$(1)),$(call reverse,$(wordlist 2,$(words $(1)),$(1))) $(firstword $(1)),$(1))
+
 all :: libs netlib $(RELA) tests shared
 	@echo
 	@echo " OpenBLAS build complete. ($(LIB_COMPONENTS))"
@@ -81,8 +84,8 @@ ifeq ($(OSNAME), Darwin)
 	@echo "install_name_tool -id /new/absolute/path/to/$(LIBDYNNAME) $(LIBDYNNAME)"
 endif
 	@echo
-	@echo "To install the library, you can run \"make PREFIX=/path/to/your/installation install\"."
-	@echo
+	@echo "To install the library, you can run"
+	@echo "  make $(call reverse,$(MAKEFLAGS)) PREFIX=/path/to/your/installation install"
 
 shared :
 ifndef NO_SHARED
