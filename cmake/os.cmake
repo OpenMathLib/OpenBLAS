@@ -3,19 +3,6 @@
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Detects the OS and sets appropriate variables.
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-  set(ENV{MACOSX_DEPLOYMENT_TARGET} "10.2") # TODO: should be exported as an env var
-  set(MD5SUM "md5 -r")
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
-  set(MD5SUM "md5 -r")
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} STREQUAL "NetBSD")
-  set(MD5SUM "md5 -n")
-endif ()
-
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(EXTRALIB "${EXTRALIB} -lm")
   set(NO_EXPRECISION 1)

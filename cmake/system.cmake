@@ -53,7 +53,7 @@ if (NO_AVX2)
 endif ()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(GETARCH_FLAGS "${GETARCH_FLAGS} -g")
+  set(GETARCH_FLAGS "${GETARCH_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
 endif ()
 
 if (NOT DEFINED NO_PARALLEL_MAKE)
@@ -75,18 +75,25 @@ endif ()
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
 
 # N.B. this is NUM_THREAD in Makefile.system which is probably a bug -hpa
-if (NOT DEFINED NUM_THREADS)
-  set(NUM_THREADS ${NUM_CORES})
-endif ()
+if (NOT CMAKE_CROSSCOMPILING)
+  if (NOT DEFINED NUM_CORES)
+    include(ProcessorCount)
+    ProcessorCount(NUM_CORES)
+  endif()
 
-if (${NUM_THREADS} EQUAL 1)
+  if (NOT NUM_CORES EQUAL 0)
+    set(NUM_THREADS ${NUM_CORES})
+  endif ()
+endif()
+
+if (${NUM_THREADS} LESS 2)
   set(USE_THREAD 0)
 elseif(NOT DEFINED USE_THREAD)
   set(USE_THREAD 1)
 endif ()
 
 if (USE_THREAD)
-  message(STATUS "SMP enabled.")
+  message(STATUS "Multi-threading enabled with ${NUM_THREADS} threads.")
 endif ()
 
 if (NOT DEFINED NEED_PIC)
@@ -95,15 +102,6 @@ endif ()
 
 # TODO: I think CMake should be handling all this stuff -hpa
 unset(ARFLAGS)
-set(CPP "${COMPILER} -E")
-set(AR "${CROSS_SUFFIX}ar")
-set(AS "${CROSS_SUFFIX}as")
-set(LD "${CROSS_SUFFIX}ld")
-set(RANLIB "${CROSS_SUFFIX}ranlib")
-set(NM "${CROSS_SUFFIX}nm")
-set(DLLWRAP "${CROSS_SUFFIX}dllwrap")
-set(OBJCOPY "${CROSS_SUFFIX}objcopy")
-set(OBJCONV "${CROSS_SUFFIX}objconv")
 
 # OS dependent settings
 include("${PROJECT_SOURCE_DIR}/cmake/os.cmake")
@@ -132,11 +130,13 @@ if (NEED_PIC)
     set(CCOMMON_OPT "${CCOMMON_OPT} -fPIC")
   endif ()
 
-  if (${F_COMPILER} STREQUAL "SUN")
-    set(FCOMMON_OPT "${FCOMMON_OPT} -pic")
-  else ()
-    set(FCOMMON_OPT "${FCOMMON_OPT} -fPIC")
-  endif ()
+  if (NOT NOFORTRAN)
+    if (${F_COMPILER} STREQUAL "SUN")
+      set(FCOMMON_OPT "${FCOMMON_OPT} -pic")
+    else ()
+      set(FCOMMON_OPT "${FCOMMON_OPT} -fPIC")
+    endif ()
+  endif()
 endif ()
 
 if (DYNAMIC_ARCH)
@@ -278,52 +278,19 @@ if (MIXED_MEMORY_ALLOCATION)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DMIXED_MEMORY_ALLOCATION")
 endif ()
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
-  set(TAR	gtar)
-  set(PATCH	gpatch)
-  set(GREP ggrep)
-else ()
-  set(TAR tar)
-  set(PATCH patch)
-  set(GREP grep)
-endif ()
-
-if (NOT DEFINED MD5SUM)
-  set(MD5SUM md5sum)
-endif ()
-
-set(AWK awk)
-
-set(SED sed)
-
 set(REVISION "-r${OpenBLAS_VERSION}")
 set(MAJOR_VERSION ${OpenBLAS_MAJOR_VERSION})
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(COMMON_OPT "${COMMON_OPT} -g")
-endif ()
-
-if (NOT DEFINED COMMON_OPT)
-  set(COMMON_OPT "-O2")
-endif ()
-
-#For x86 32-bit
-if (DEFINED BINARY AND BINARY EQUAL 32)
-if (NOT MSVC)
-  set(COMMON_OPT "${COMMON_OPT} -m32")
-endif()
-endif()
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_OPT} ${CCOMMON_OPT}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CCOMMON_OPT}")
 if(NOT MSVC)
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${COMMON_OPT} ${CCOMMON_OPT}")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${CCOMMON_OPT}")
 endif()
 # TODO: not sure what PFLAGS is -hpa
-set(PFLAGS "${PFLAGS} ${COMMON_OPT} ${CCOMMON_OPT} -I${TOPDIR} -DPROFILE ${COMMON_PROF}")
+set(PFLAGS "${PFLAGS} ${CCOMMON_OPT} -I${TOPDIR} -DPROFILE ${COMMON_PROF}")
 
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${COMMON_OPT} ${FCOMMON_OPT}")
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${FCOMMON_OPT}")
 # TODO: not sure what FPFLAGS is -hpa
-set(FPFLAGS "${FPFLAGS} ${COMMON_OPT} ${FCOMMON_OPT} ${COMMON_PROF}")
+set(FPFLAGS "${FPFLAGS} ${FCOMMON_OPT} ${COMMON_PROF}")
 
 #For LAPACK Fortran codes.
 set(LAPACK_FFLAGS "${LAPACK_FFLAGS} ${CMAKE_Fortran_FLAGS}")

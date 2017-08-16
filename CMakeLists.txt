@@ -179,10 +179,10 @@ if (USE_THREAD)
   target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
-if (NOT MSVC)
+if (NOT MSVC AND NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
-  if(NOT NO_CBLAS)
+	if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
 endif()

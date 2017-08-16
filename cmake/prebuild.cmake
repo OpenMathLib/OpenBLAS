@@ -37,6 +37,9 @@
 
 # CPUIDEMU = ../../cpuid/table.o
 
+
+# Cannot run getarch on target if we are cross-compiling
+if(NOT CMAKE_CROSSCOMPILING)
 if (DEFINED CPUIDEMU)
   set(EXFLAGS "-DCPUIDEMU -DVENDOR=99")
 endif ()
@@ -157,3 +160,5 @@ if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     MESSAGE(FATAL_ERROR "Compiling gen_config_h failed ${GEN_CONFIG_H_LOG}")
   endif ()
 endif ()
+
+endif(NOT CMAKE_CROSSCOMPILING)

@@ -90,7 +90,7 @@ else()
   set(BINARY32 1)
 endif()
 
-set(COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
+set(COMPILER_ID ${CMAKE_C_COMPILER_ID})
 if (${COMPILER_ID} STREQUAL "GNU")
   set(COMPILER_ID "GCC")
 endif ()
