@@ -3,14 +3,13 @@
 ##
 
 cmake_minimum_required(VERSION 2.8.5)
-project(OpenBLAS)
+project(OpenBLAS C)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
 set(OpenBLAS_PATCH_VERSION 0.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 enable_language(ASM)
-enable_language(C)
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
@@ -99,10 +98,6 @@ if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
   message(FATAL_ERROR "Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for details.")
 endif ()
 
-if (${NO_STATIC} AND ${NO_SHARED})
-  message(FATAL_ERROR "Neither static nor shared are enabled.")
-endif ()
-
 #Set default output directory
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
@@ -152,9 +147,14 @@ if (${DYNAMIC_ARCH})
   endforeach()
 endif ()
 
+# Only build shared libs for MSVC
+if (MSVC)
+  set(BUILD_SHARED_LIBS ON)
+endif()
+
 
 # add objects to the openblas lib
-add_library(${OpenBLAS_LIBNAME} SHARED ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
+add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
 include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
 
@@ -173,23 +173,16 @@ endforeach()
 enable_testing()
 add_subdirectory(utest)
 
+# Add threading library to linker
+find_package(Threads)
+target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
+
 if (NOT MSVC)
-	#only build shared library for MSVC
-
-	add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
-	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
-	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-
-	if(SMP)
-	target_link_libraries(${OpenBLAS_LIBNAME} pthread)
-	target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
-endif()
-
-#build test and ctest
-add_subdirectory(test)
-if(NOT NO_CBLAS)
-add_subdirectory(ctest)
-endif()
+  # Build test and ctest
+  add_subdirectory(test)
+  if(NOT NO_CBLAS)
+    add_subdirectory(ctest)
+  endif()
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 
@@ -264,10 +257,6 @@ if(NOT NO_LAPACKE)
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
 	)
 	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-endif()
- 
-if(NOT MSVC)
-	install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 include(FindPkgConfig QUIET)
