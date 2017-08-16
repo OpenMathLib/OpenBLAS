@@ -26,28 +26,11 @@ if(MSVC)
 option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
 endif()
 option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
-option(BUILD_DEBUG "Build Debug Version" OFF)
 option(DYNAMIC_ARCH "Build with DYNAMIC_ARCH" OFF)
 #######
 if(BUILD_WITHOUT_LAPACK)
 set(NO_LAPACK 1)
 set(NO_LAPACKE 1)
-endif()
-
-if(CMAKE_CONFIGURATION_TYPES) # multiconfig generator?
-        set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
-        set(CMAKE_BUILD_TYPE
-	        Debug Debug
-		Release Release
-	)
-else()
-	if( NOT CMAKE_BUILD_TYPE )
-		if(BUILD_DEBUG)
-			set(CMAKE_BUILD_TYPE Debug)
-		else()
-			set(CMAKE_BUILD_TYPE Release)
-		endif()
-	endif()
 endif()
 
 if(BUILD_WITHOUT_CBLAS)

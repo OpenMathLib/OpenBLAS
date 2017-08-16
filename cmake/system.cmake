@@ -52,7 +52,7 @@ if (NO_AVX2)
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX2")
 endif ()
 
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -g")
 endif ()
 
@@ -316,7 +316,7 @@ set(SED sed)
 set(REVISION "-r${OpenBLAS_VERSION}")
 set(MAJOR_VERSION ${OpenBLAS_MAJOR_VERSION})
 
-if (DEBUG)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(COMMON_OPT "${COMMON_OPT} -g")
 endif ()
 
