@@ -173,9 +173,11 @@ endforeach()
 enable_testing()
 add_subdirectory(utest)
 
-# Add threading library to linker
-find_package(Threads)
-target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
+if (USE_THREAD)
+  # Add threading library to linker
+  find_package(Threads)
+  target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
+endif()
 
 if (NOT MSVC)
   # Build test and ctest

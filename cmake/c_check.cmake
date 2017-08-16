@@ -26,14 +26,8 @@
 
 # N.B. c_check (and ctest.c) is not cross-platform, so instead try to use CMake variables.
 set(FU "")
-if(APPLE)
-set(FU "_")
-elseif(MSVC AND ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
-set(FU "")
-elseif(MSVC)
-set(FU "_")
-elseif(UNIX)
-set(FU "")
+if (APPLE OR (MSVC AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "Clang"))
+  set(FU "_")
 endif()
 
 # Convert CMake vars into the format that OpenBLAS expects
@@ -42,43 +36,59 @@ if (${HOST_OS} STREQUAL "WINDOWS")
   set(HOST_OS WINNT)
 endif ()
 
-# added by hpa - check size of void ptr to detect 64-bit compile
-if (NOT DEFINED BINARY)
-  set(BINARY 32)
-  if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(BINARY 64)
-  endif ()
-endif ()
+if(CMAKE_COMPILER_IS_GNUCC AND WIN32)
+    execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpmachine
+              OUTPUT_VARIABLE OPENBLAS_GCC_TARGET_MACHINE
+              OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(OPENBLAS_GCC_TARGET_MACHINE MATCHES "amd64|x86_64|AMD64")
+      set(MINGW64 1)
+    endif()
+endif()
 
-if (BINARY EQUAL 64)
-  set(BINARY64 1)
-else ()
-  set(BINARY32 1)
-endif ()
+# Pretty thorough determination of arch. Add more if needed
+if(CMAKE_CL_64 OR MINGW64)
+  set(X86_64 1)
+elseif(MINGW OR (MSVC AND NOT CMAKE_CROSSCOMPILING))
+  set(X86 1)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc")
+  set(PPC 1)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "amd64.*|x86_64.*|AMD64.*")
+  set(X86_64 1)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "i686.*|i386.*|x86.*|amd64.*|AMD64.*")
+  set(X86 1)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm.*|ARM.*)")
+  set(ARM 1)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64.*|AARCH64.*)")
+  set(ARM64 1)
+endif()
 
-# CMake docs define these:
-# CMAKE_SYSTEM_PROCESSOR - The name of the CPU CMake is building for.
-# CMAKE_HOST_SYSTEM_PROCESSOR - The name of the CPU CMake is running on.
-#
-# TODO: CMAKE_SYSTEM_PROCESSOR doesn't seem to be correct - instead get it from the compiler a la c_check
-set(ARCH ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target Architecture")
-
-if (${ARCH} STREQUAL "AMD64")
+if (X86_64)
   set(ARCH "x86_64")
+elseif(X86)
+  set(ARCH "x86")
+elseif(PPC)
+  set(ARCH "power")
+elseif(ARM)
+  set(ARCH "arm")
+elseif(ARM64)
+  set(ARCH "arm64")
+else()
+  set(ARCH ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target Architecture")
 endif ()
 
-# If you are using a 32-bit compiler on a 64-bit system CMAKE_SYSTEM_PROCESSOR will be wrong
-if (${ARCH} STREQUAL "x86_64" AND BINARY EQUAL 32)
-  set(ARCH x86)
-endif ()
+if (NOT BINARY)
+  if (X86_64 OR ARM64 OR PPC OR ARCH STREQUAL "mips64")
+    set(BINARY 64)
+  else ()
+    set(BINARY 32)
+  endif ()
+endif()
 
-if (${ARCH} STREQUAL "X86")
-  set(ARCH x86)
-endif ()
-
-if (${ARCH} MATCHES "ppc")
-  set(ARCH power)
-endif ()
+if(BINARY EQUAL 64)
+  set(BINARY64 1)
+else()
+  set(BINARY32 1)
+endif()
 
 set(COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
 if (${COMPILER_ID} STREQUAL "GNU")

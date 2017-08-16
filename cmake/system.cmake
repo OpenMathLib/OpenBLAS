@@ -56,11 +56,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -g")
 endif ()
 
-# TODO: let CMake handle this? -hpa
-#if (${QUIET_MAKE})
-#  set(MAKE "${MAKE} -s")
-#endif()
-
 if (NOT DEFINED NO_PARALLEL_MAKE)
   set(NO_PARALLEL_MAKE 0)
 endif ()
@@ -79,30 +74,18 @@ endif ()
 
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
 
+# N.B. this is NUM_THREAD in Makefile.system which is probably a bug -hpa
 if (NOT DEFINED NUM_THREADS)
   set(NUM_THREADS ${NUM_CORES})
 endif ()
 
 if (${NUM_THREADS} EQUAL 1)
   set(USE_THREAD 0)
+elseif(NOT DEFINED USE_THREAD)
+  set(USE_THREAD 1)
 endif ()
 
-if (DEFINED USE_THREAD)
-  if (NOT ${USE_THREAD})
-    unset(SMP)
-  else ()
-    set(SMP 1)
-  endif ()
-else ()
-  # N.B. this is NUM_THREAD in Makefile.system which is probably a bug -hpa
-  if (${NUM_THREADS} EQUAL 1)
-    unset(SMP)
-  else ()
-    set(SMP 1)
-  endif ()
-endif ()
-
-if (${SMP})
+if (USE_THREAD)
   message(STATUS "SMP enabled.")
 endif ()
 
@@ -182,7 +165,7 @@ if (NO_AVX2)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX2")
 endif ()
 
-if (SMP)
+if (USE_THREAD)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DSMP_SERVER")
 
   if (${ARCH} STREQUAL "mips64")
@@ -386,7 +369,7 @@ if (NOT DEFINED LIBSUFFIX)
 endif ()
 
 if (DYNAMIC_ARCH)
-  if (DEFINED SMP)
+  if (USE_THREAD)
     set(LIBNAME "${LIBPREFIX}p${REVISION}.${LIBSUFFIX}")
     set(LIBNAME_P	"${LIBPREFIX}p${REVISION}_p.${LIBSUFFIX}")
   else ()
@@ -394,7 +377,7 @@ if (DYNAMIC_ARCH)
     set(LIBNAME_P	"${LIBPREFIX}${REVISION}_p.${LIBSUFFIX}")
   endif ()
 else ()
-  if (DEFINED SMP)
+  if (USE_THREAD)
     set(LIBNAME "${LIBPREFIX}_${LIBCORE}p${REVISION}.${LIBSUFFIX}")
     set(LIBNAME_P	"${LIBPREFIX}_${LIBCORE}p${REVISION}_p.${LIBSUFFIX}")
   else ()
