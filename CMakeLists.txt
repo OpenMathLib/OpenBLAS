@@ -3,13 +3,11 @@
 ##
 
 cmake_minimum_required(VERSION 2.8.5)
-project(OpenBLAS C)
+project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
 set(OpenBLAS_PATCH_VERSION 0.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
-
-enable_language(ASM)
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
@@ -176,6 +174,11 @@ add_subdirectory(utest)
 if (USE_THREAD)
   # Add threading library to linker
   find_package(Threads)
+  if (THREADS_HAVE_PTHREAD_ARG)
+    set_property(TARGET ${OpenBLAS_LIBNAME} PROPERTY COMPILE_OPTIONS "-pthread")
+    set_property(TARGET ${OpenBLAS_LIBNAME} PROPERTY INTERFACE_COMPILE_OPTIONS "-pthread")
+  endif()
+  message("PTHREAD: ${CMAKE_THREAD_LIBS_INIT}")
   target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
@@ -219,26 +222,28 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 # Install include files
-	set (GENCONFIG_BIN ${CMAKE_BINARY_DIR}/gen_config_h${CMAKE_EXECUTABLE_SUFFIX})
+set (GENCONFIG_BIN ${CMAKE_BINARY_DIR}/gen_config_h${CMAKE_EXECUTABLE_SUFFIX})
 
-	execute_process(COMMAND ${GENCONFIG_BIN}
-	                        ${CMAKE_CURRENT_SOURCE_DIR}/config.h
-	                        ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h
-	                OUTPUT_VARIABLE OPENBLAS_CONFIG_H_CONTENTS)
+execute_process(COMMAND ${GENCONFIG_BIN}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/config.h
+                        ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h
+                OUTPUT_VARIABLE OPENBLAS_CONFIG_H_CONTENTS)
 
-	file(WRITE ${CMAKE_BINARY_DIR}/openblas_config.tmp "${OPENBLAS_CONFIG_H_CONTENTS}")
-	configure_file(${CMAKE_BINARY_DIR}/openblas_config.tmp ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
+file(WRITE ${CMAKE_BINARY_DIR}/openblas_config.tmp "${OPENBLAS_CONFIG_H_CONTENTS}")
+configure_file(${CMAKE_BINARY_DIR}/openblas_config.tmp ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
 
-	install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
+if(NOT NOFORTRAN)
+  message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-	file(WRITE ${CMAKE_BINARY_DIR}/f77blas.h "")
-	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
-	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
-	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "${COMMON_INTERFACE_H_CONTENTS}")
-	file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#endif")
-	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  file(WRITE ${CMAKE_BINARY_DIR}/f77blas.h "")
+  file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
+  file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
+  file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "${COMMON_INTERFACE_H_CONTENTS}")
+  file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#endif")
+  install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
 
 if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")

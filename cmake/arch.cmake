@@ -33,32 +33,15 @@ if (${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
 endif ()
 
 if (USE_OPENMP)
-
-  if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LSB")
-    set(CCOMMON_OPT "${CCOMMON_OPT} -fopenmp")
-  endif ()
-
-  if (${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
-    message(WARNING "Clang doesn't support OpenMP yet.")
-    set(CCOMMON_OPT "${CCOMMON_OPT} -fopenmp")
-  endif ()
-
-  if (${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
-    set(CCOMMON_OPT "${CCOMMON_OPT} -openmp")
-  endif ()
-
-  if (${CMAKE_C_COMPILER_ID} STREQUAL "PGI")
-    set(CCOMMON_OPT "${CCOMMON_OPT} -mp")
-  endif ()
-
-  if (${CMAKE_C_COMPILER_ID} STREQUAL "OPEN64")
-    set(CCOMMON_OPT "${CCOMMON_OPT} -mp")
-    set(CEXTRALIB "${CEXTRALIB} -lstdc++")
-  endif ()
-
-  if (${CMAKE_C_COMPILER_ID} STREQUAL "PATHSCALE")
-    set(CCOMMON_OPT "${CCOMMON_OPT} -mp")
-  endif ()
+  # USE_SIMPLE_THREADED_LEVEL3 = 1
+  # NO_AFFINITY = 1
+  find_package(OpenMP)
+  if (OpenMP_FOUND)
+    set(CCOMMON_OPT "${CCOMMON_OPT} ${OpenMP_C_FLAGS} -DUSE_OPENMP")
+    set(FCOMMON_OPT "${FCOMMON_OPT} ${OpenMP_Fortran_FLAGS}")
+  elseif (UNIX)
+    set(USE_OPENMP 0)
+  endif()
 endif ()
 
 

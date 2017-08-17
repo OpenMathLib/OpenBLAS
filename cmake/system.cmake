@@ -27,7 +27,7 @@ if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
 endif ()
 
 if (DEFINED TARGET)
-  message(STATUS "Targetting the ${TARGET} architecture.")
+  message(STATUS "Targeting the ${TARGET} architecture.")
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
 endif ()
 
@@ -91,6 +91,12 @@ if (${NUM_THREADS} LESS 2)
 elseif(NOT DEFINED USE_THREAD)
   set(USE_THREAD 1)
 endif ()
+
+# TODO: Fix. Isn't working. Was never working in CMake.
+# Undefined reference to get_num_procs, blas_thread_shutdown, ...
+if (UNIX)
+  set(USE_THREAD 0)
+endif()
 
 if (USE_THREAD)
   message(STATUS "Multi-threading enabled with ${NUM_THREADS} threads.")
@@ -166,6 +172,8 @@ if (NO_AVX2)
 endif ()
 
 if (USE_THREAD)
+  # USE_SIMPLE_THREADED_LEVEL3 = 1
+  # NO_AFFINITY = 1
   set(CCOMMON_OPT "${CCOMMON_OPT} -DSMP_SERVER")
 
   if (${ARCH} STREQUAL "mips64")
@@ -174,16 +182,9 @@ if (USE_THREAD)
     endif ()
   endif ()
 
-  if (USE_OPENMP)
-    # USE_SIMPLE_THREADED_LEVEL3 = 1
-    # NO_AFFINITY = 1
-    set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_OPENMP")
-  endif ()
-
   if (BIGNUMA)
     set(CCOMMON_OPT "${CCOMMON_OPT} -DBIGNUMA")
   endif ()
-
 endif ()
 
 if (NO_WARMUP)
@@ -298,7 +299,7 @@ set(LAPACK_FPFLAGS "${LAPACK_FPFLAGS} ${FPFLAGS}")
 
 #Disable -fopenmp for LAPACK Fortran codes on Windows.
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  set(FILTER_FLAGS "-fopenmp;-mp;-openmp;-xopenmp=parralel")
+  set(FILTER_FLAGS "-fopenmp;-mp;-openmp;-xopenmp=parallel")
   foreach (FILTER_FLAG ${FILTER_FLAGS})
     string(REPLACE ${FILTER_FLAG} "" LAPACK_FFLAGS ${LAPACK_FFLAGS})
     string(REPLACE ${FILTER_FLAG} "" LAPACK_FPFLAGS ${LAPACK_FPFLAGS})
