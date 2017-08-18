@@ -142,7 +142,7 @@ int detect(void)
   	if(p != NULL)
 	{
 
-		if (strstr(p, "AArch64"))
+		if ((strstr(p, "AArch64")) || (strstr(p, "8")))
 		{
 			return CPU_ARMV8;
 
