@@ -119,6 +119,34 @@ jobs:
         - TARGET_BOX=LINUX64_MUSL
         - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=core2"
 
+    - &test-cmake
+      stage: test
+      compiler: clang
+      addons:
+        apt:
+          packages:
+            - gfortran
+            - cmake
+      dist: trusty
+      sudo: true
+      before_script:
+        - COMMON_ARGS="-DTARGET=NEHALEM -DNUM_THREADS=32"
+      script:
+        - set -e
+        - mkdir build
+        - CONFIG=Release
+        - cmake -Bbuild -H. $CMAKE_ARGS $COMMON_ARGS -DCMAKE_BUILD_TYPE=$CONFIG
+        - cmake --build build --config $CONFIG -- -j2
+      env:
+        - CMAKE=1
+    - <<: *test-cmake
+      env:
+        - CMAKE=1 CMAKE_ARGS="-DNOFORTRAN=1"
+    - <<: *test-cmake
+      compiler: gcc
+      env:
+        - CMAKE=1
+
 # whitelist
 branches:
   only:
