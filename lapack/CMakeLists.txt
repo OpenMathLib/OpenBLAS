@@ -46,7 +46,7 @@ GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" false "" "" false 3)
 GenerateNamedObjects("laswp/generic/laswp_k.c" "" "laswp_plus" false "" "" false 3)
 GenerateNamedObjects("laswp/generic/laswp_k.c" "MINUS" "laswp_minus" false "" "" false 3)
 
-if (SMP)
+if (USE_THREAD)
 
   if (USE_OPENMP)
     set(GETRF_SRC getrf/getrf_parallel_omp.c)
