@@ -117,9 +117,9 @@ endforeach ()
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
 if (NOT NOFORTRAN AND NOT NO_LAPACK)
   include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
-if (NOT NO_LAPACKE)
-  include("${PROJECT_SOURCE_DIR}/cmake/lapacke.cmake")
-endif ()
+  if (NOT NO_LAPACKE)
+    include("${PROJECT_SOURCE_DIR}/cmake/lapacke.cmake")
+  endif ()
 endif ()
 
 # Only generate .def for dll on MSVC and always produce pdb files for debug and release
@@ -169,7 +169,6 @@ foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 endforeach()
 
 enable_testing()
-add_subdirectory(utest)
 
 if (USE_THREAD)
   # Add threading library to linker
@@ -183,11 +182,14 @@ if (USE_THREAD)
 endif()
 
 if (NOT MSVC AND NOT NOFORTRAN)
+  add_subdirectory(utest)
   # Build test and ctest
   add_subdirectory(test)
-	if(NOT NO_CBLAS)
+  if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
+elseif(MSVC)
+  add_subdirectory(utest)
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 
