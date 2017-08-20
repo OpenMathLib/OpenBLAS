@@ -38,11 +38,18 @@
 # CPUIDEMU = ../../cpuid/table.o
 
 
-# Cannot run getarch on target if we are cross-compiling
-if(NOT CMAKE_CROSSCOMPILING)
 if (DEFINED CPUIDEMU)
   set(EXFLAGS "-DCPUIDEMU -DVENDOR=99")
 endif ()
+
+if(CMAKE_CROSSCOMPILING AND NOT DEFINED TARGET_CORE)
+  # Detect target without running getarch
+  if(AARCH64)
+    set(TARGET_CORE "ARMV8")
+  else()
+    message(FATAL_ERROR "When cross compiling, a TARGET_CORE is required.")
+  endif()
+endif()
 
 if (DEFINED TARGET_CORE)
   # set the C flags for just this file
@@ -63,6 +70,73 @@ if (NOT NOFORTRAN)
   include("${PROJECT_SOURCE_DIR}/cmake/f_check.cmake")
 endif ()
 
+# Cannot run getarch on target if we are cross-compiling
+if (CMAKE_CROSSCOMPILING)
+  # Write to config as getarch would
+
+  # TODO: Set up defines that getarch sets up based on every other target
+  # Perhaps this should be inside a different file as it grows larger
+  file(APPEND ${TARGET_CONF_TEMP}
+    "#define ${TARGET_CORE}\n"
+    "#define CHAR_CORENAME \"${TARGET_CORE}\"\n")
+  if ("${TARGET_CORE}" STREQUAL "ARMV8")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L2_SIZE\t262144\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define L2_ASSOCIATIVE\t32\n")
+    set(SGEMM_UNROLL_M 4)
+    set(SGEMM_UNROLL_N 4)
+  elseif ("${TARGET_CORE}" STREQUAL "CORTEXA57")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t49152\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t3\n"
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t2\n"
+      "#define L2_SIZE\t2097152\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t16\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n")
+    set(SGEMM_DEFAULT_UNROLL_M 16)
+    set(SGEMM_DEFAULT_UNROLL_N 4)
+    set(DGEMM_DEFAULT_UNROLL_M 8)
+    set(DGEMM_DEFAULT_UNROLL_N 4)
+    set(CGEMM_DEFAULT_UNROLL_M 8)
+    set(CGEMM_DEFAULT_UNROLL_N 4)
+    set(ZGEMM_DEFAULT_UNROLL_M 8)
+    set(ZGEMM_DEFAULT_UNROLL_N 4)
+  endif()
+
+  # Or should this actually be NUM_CORES?
+  if (${NUM_THREADS} GREATER 0)
+    file(APPEND ${TARGET_CONF_TEMP} "#define NUM_CORES\t${NUM_THREADS}\n")
+  endif()
+
+  # GetArch_2nd
+  foreach(float_char S;D;Q;C;Z;X)
+    if (NOT DEFINED ${float_char}GEMM_UNROLL_M)
+      set(${float_char}GEMM_UNROLL_M 2)
+    endif()
+    if (NOT DEFINED ${float_char}GEMM_UNROLL_N)
+      set(${float_char}GEMM_UNROLL_N 2)
+    endif()
+  endforeach()
+  file(APPEND ${TARGET_CONF_TEMP}
+    "#define GEMM_MULTITHREAD_THRESHOLD\t${GEMM_MULTITHREAD_THRESHOLD}\n")
+  # Move to where gen_config_h would place it
+  file(RENAME ${TARGET_CONF_TEMP} "${PROJECT_BINARY_DIR}/config.h")  
+
+else()
 # compile getarch
 set(GETARCH_SRC
   ${PROJECT_SOURCE_DIR}/getarch.c
@@ -161,4 +235,4 @@ if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
   endif ()
 endif ()
 
-endif(NOT CMAKE_CROSSCOMPILING)
+endif(CMAKE_CROSSCOMPILING)

@@ -12,6 +12,9 @@ set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 # TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
 if (DEFINED TARGET_CORE)
   set(TARGET ${TARGET_CORE})
+  if(NOT DEFINED CORE)
+    set(CORE ${TARGET_CORE})
+  endif()
 endif ()
 
 # Force fallbacks for 32bit
@@ -72,8 +75,6 @@ else ()
   set(ONLY_CBLAS 0)
 endif ()
 
-include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
-
 # N.B. this is NUM_THREAD in Makefile.system which is probably a bug -hpa
 if (NOT CMAKE_CROSSCOMPILING)
   if (NOT DEFINED NUM_CORES)
@@ -86,21 +87,21 @@ if (NOT CMAKE_CROSSCOMPILING)
   endif ()
 endif()
 
+if (NOT DEFINED NUM_THREADS)
+  set(NUM_THREADS 0)
+endif()
+
 if (${NUM_THREADS} LESS 2)
   set(USE_THREAD 0)
 elseif(NOT DEFINED USE_THREAD)
   set(USE_THREAD 1)
 endif ()
 
-# TODO: Fix. Isn't working. Was never working in CMake.
-# Undefined reference to get_num_procs, blas_thread_shutdown, ...
-if (UNIX)
-  set(USE_THREAD 0)
-endif()
-
 if (USE_THREAD)
   message(STATUS "Multi-threading enabled with ${NUM_THREADS} threads.")
 endif ()
+
+include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
 
 if (NOT DEFINED NEED_PIC)
   set(NEED_PIC 1)
