@@ -21,7 +21,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     endif ()
 
     if (${ADD_COMMONOBJS})
-        if (${ARCH} STREQUAL "x86")
+        if (X86)
         if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
           GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
         else()
@@ -121,7 +121,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     # Makefile.L3
     set(USE_TRMM false)
 
-    if (${ARCH} STREQUAL "arm" OR ${ARCH} STREQUAL "arm64" OR "${TARGET}" STREQUAL "LONGSOON3B" OR "${TARGET}" STREQUAL "GENERIC" OR "${CORE}" STREQUAL "generic" OR "${TARGET}" STREQUAL "HASWELL" OR "${CORE}" STREQUAL "haswell" OR "{CORE}" STREQUAL "zen")
+    if (ARM OR ARM64 OR "${TARGET}" STREQUAL "LONGSOON3B" OR "${TARGET}" STREQUAL "GENERIC" OR "${CORE}" STREQUAL "generic" OR "${TARGET}" STREQUAL "HASWELL" OR "${CORE}" STREQUAL "haswell" OR "{CORE}" STREQUAL "zen")
       set(USE_TRMM true)
     endif ()
 

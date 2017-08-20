@@ -53,21 +53,36 @@ else()
 endif ()
 
 set(TARGET_CONF_TEMP "${PROJECT_BINARY_DIR}/${TARGET_CONF}.tmp")
-include("${PROJECT_SOURCE_DIR}/cmake/c_check.cmake")
 
+# c_check
+set(FU "")
+if (APPLE OR (MSVC AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "Clang"))
+  set(FU "_")
+endif()
+
+set(COMPILER_ID ${CMAKE_C_COMPILER_ID})
+if (${COMPILER_ID} STREQUAL "GNU")
+  set(COMPILER_ID "GCC")
+endif ()
+
+string(TOUPPER ${ARCH} UC_ARCH)
+
+file(WRITE ${TARGET_CONF_TEMP}
+  "#define OS_${HOST_OS}\t1\n"
+  "#define ARCH_${UC_ARCH}\t1\n"
+  "#define C_${COMPILER_ID}\t1\n"
+  "#define __${BINARY}BIT__\t1\n"
+  "#define FUNDERSCORE\t${FU}\n")
+
+if (${HOST_OS} STREQUAL "WINDOWSSTORE")
+  file(APPEND ${TARGET_CONF_TEMP}
+    "#define OS_WINNT\t1\n")
+endif ()
+
+# f_check
 if (NOT NOFORTRAN)
   include("${PROJECT_SOURCE_DIR}/cmake/f_check.cmake")
 endif ()
-
-# This check requires c_check for arch but it should probably be done earlier
-if(CMAKE_CROSSCOMPILING AND NOT DEFINED CORE)
-  # Detect target without running getarch
-  if(ARM64)
-    set(CORE "ARMV8")
-  else()
-    message(FATAL_ERROR "When cross compiling, a CORE is required.")
-  endif()
-endif()
 
 # Cannot run getarch on target if we are cross-compiling
 if (DEFINED CORE AND CMAKE_CROSSCOMPILING)
@@ -78,7 +93,22 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING)
   file(APPEND ${TARGET_CONF_TEMP}
     "#define ${CORE}\n"
     "#define CHAR_CORENAME \"${CORE}\"\n")
-  if ("${CORE}" STREQUAL "ARMV8")
+  if ("${CORE}" STREQUAL "ARMV7")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE\t65536\n"
+      "#define L1_DATA_LINESIZE\t32\n"
+      "#define L2_SIZE\t512488\n"
+      "#define L2_LINESIZE\t32\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define L2_ASSOCIATIVE\t4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n")
+    set(SGEMM_UNROLL_M 4)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 4)
+    set(DGEMM_UNROLL_N 4)
+  elseif ("${CORE}" STREQUAL "ARMV8")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t32768\n"
       "#define L1_DATA_LINESIZE\t64\n"

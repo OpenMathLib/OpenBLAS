@@ -43,7 +43,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
   # Ensure the correct stack alignment on Win32
   # http://permalink.gmane.org/gmane.comp.lib.openblas.general/97
-  if (${ARCH} STREQUAL "x86")
+  if (X86)
     if (NOT MSVC AND NOT ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
       set(CCOMMON_OPT "${CCOMMON_OPT} -mincoming-stack-boundary=2")
     endif ()
@@ -75,7 +75,7 @@ if (QUAD_PRECISION)
   set(NO_EXPRECISION 1)
 endif ()
 
-if (${ARCH} STREQUAL "x86")
+if (X86)
   set(NO_EXPRECISION 1)
 endif ()
 

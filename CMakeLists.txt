@@ -87,11 +87,6 @@ if (BUILD_COMPLEX16)
   list(APPEND FLOAT_TYPES "ZCOMPLEX") # defines COMPLEX and DOUBLE
 endif ()
 
-set(SUBDIRS_ALL ${SUBDIRS} test ctest utest exports benchmark ../laswp ../bench)
-
-# all :: libs netlib tests shared
-
-# libs :
 if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
   message(FATAL_ERROR "Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for details.")
 endif ()
@@ -125,18 +120,10 @@ endif ()
 # Only generate .def for dll on MSVC and always produce pdb files for debug and release
 if(MSVC)
 set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
 endif()
 
-#ifeq ($(DYNAMIC_ARCH), 1)
-#	@$(MAKE) -C kernel commonlibs || exit 1
-#	@for d in $(DYNAMIC_CORE) ; \
-#	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
-#	done
-#	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
-#endif
 if (${DYNAMIC_ARCH})
   add_subdirectory(kernel)
   foreach(TARGET_CORE ${DYNAMIC_CORE})
@@ -196,24 +183,6 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
-
-
-# TODO: Why is the config saved here? Is this necessary with CMake?
-#Save the config files for installation
-#	@cp Makefile.conf Makefile.conf_last
-#	@cp config.h config_last.h
-#ifdef QUAD_PRECISION
-#	@echo "#define QUAD_PRECISION">> config_last.h
-#endif
-#ifeq ($(EXPRECISION), 1)
-#	@echo "#define EXPRECISION">> config_last.h
-#endif
-###
-
-#ifdef USE_THREAD
-#	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
-#endif
-#	@touch lib.grd
 
 # Install project
 

@@ -4,6 +4,26 @@
 ##
 set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 
+# System detection, via CMake.
+include("${PROJECT_SOURCE_DIR}/cmake/system_check.cmake")
+
+if(CMAKE_CROSSCOMPILING AND NOT DEFINED TARGET)
+  # Detect target without running getarch
+  if (ARM64)
+    set(TARGET "ARMV8")
+  elseif(ARM)
+    set(TARGET "ARMV7") # TODO: Ask compiler which arch this is
+  else()
+    message(FATAL_ERROR "When cross compiling, a TARGET is required.")
+  endif()
+endif()
+
+# Other files expect CORE, which is actually TARGET and will become TARGET_CORE for kernel build. Confused yet?
+# It seems we are meant to use TARGET as input and CORE internally as kernel.
+if(NOT DEFINED CORE AND DEFINED TARGET)
+  set(CORE ${TARGET})
+endif()
+
 # TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
 if (DEFINED TARGET_CORE)
   set(TARGET ${TARGET_CORE})
@@ -56,7 +76,7 @@ if (NOT DEFINED NO_PARALLEL_MAKE)
 endif ()
 set(GETARCH_FLAGS	"${GETARCH_FLAGS} -DNO_PARALLEL_MAKE=${NO_PARALLEL_MAKE}")
 
-if (CMAKE_CXX_COMPILER STREQUAL loongcc)
+if (CMAKE_C_COMPILER STREQUAL loongcc)
   set(GETARCH_FLAGS	"${GETARCH_FLAGS} -static")
 endif ()
 
@@ -75,6 +95,7 @@ if (NOT CMAKE_CROSSCOMPILING)
   endif()
 
   if (NOT NUM_CORES EQUAL 0)
+    # HT?
     set(NUM_THREADS ${NUM_CORES})
   endif ()
 endif()
@@ -153,7 +174,7 @@ if (NO_AVX)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX")
 endif ()
 
-if (${ARCH} STREQUAL "x86")
+if (X86)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX")
 endif ()
 
@@ -166,7 +187,7 @@ if (USE_THREAD)
   # NO_AFFINITY = 1
   set(CCOMMON_OPT "${CCOMMON_OPT} -DSMP_SERVER")
 
-  if (${ARCH} STREQUAL "mips64")
+  if (MIPS64)
     if (NOT ${CORE} STREQUAL "LOONGSON3B")
       set(USE_SIMPLE_THREADED_LEVEL3 1)
     endif ()
@@ -237,7 +258,7 @@ if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(NO_AFFINITY 1)
 endif ()
 
-if (NOT ${ARCH} STREQUAL "x86_64" AND NOT ${ARCH} STREQUAL "x86" AND NOT ${CORE} STREQUAL "LOONGSON3B")
+if (NOT X86_64 AND NOT X86 AND NOT ${CORE} STREQUAL "LOONGSON3B")
   set(NO_AFFINITY 1)
 endif ()
 
@@ -377,7 +398,7 @@ endif ()
 set(USE_GEMM3M 0)
 
 if (DEFINED ARCH)
-  if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64" OR ${ARCH} STREQUAL "ia64" OR ${ARCH} STREQUAL "MIPS")
+  if (X86 OR X86_64 OR ${ARCH} STREQUAL "ia64" OR MIPS64)
     set(USE_GEMM3M 1)
   endif ()
 
@@ -460,35 +481,3 @@ endif ()
 #  export CUFLAGS
 #  export CULIB
 #endif
-
-#.SUFFIXES: .$(PSUFFIX) .$(SUFFIX) .f
-#
-#.f.$(SUFFIX):
-#	$(FC) $(FFLAGS) -c $<  -o $(@F)
-#
-#.f.$(PSUFFIX):
-#	$(FC) $(FPFLAGS) -pg -c $<  -o $(@F)
-
-# these are not cross-platform
-#ifdef BINARY64
-#PATHSCALEPATH	= /opt/pathscale/lib/3.1
-#PGIPATH		= /opt/pgi/linux86-64/7.1-5/lib
-#else
-#PATHSCALEPATH	= /opt/pathscale/lib/3.1/32
-#PGIPATH		= /opt/pgi/linux86/7.1-5/lib
-#endif
-
-#ACMLPATH	= /opt/acml/4.3.0
-#ifneq ($(OSNAME), Darwin)
-#MKLPATH         = /opt/intel/mkl/10.2.2.025/lib
-#else
-#MKLPATH         = /Library/Frameworks/Intel_MKL.framework/Versions/10.0.1.014/lib
-#endif
-#ATLASPATH	= /opt/atlas/3.9.17/opteron
-#FLAMEPATH	= $(HOME)/flame/lib
-#ifneq ($(OSNAME), SunOS)
-#SUNPATH		= /opt/sunstudio12.1
-#else
-#SUNPATH		= /opt/SUNWspro
-#endif
-

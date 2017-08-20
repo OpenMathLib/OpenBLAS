@@ -3,9 +3,9 @@
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets various variables based on architecture.
 
-if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64")
+if (X86 OR X86_64)
 
-  if (${ARCH} STREQUAL "x86")
+  if (X86)
     if (NOT BINARY)
       set(NO_BINARY_MODE 1)
     endif ()
@@ -46,11 +46,11 @@ endif ()
 
 
 if (DYNAMIC_ARCH)
-  if (${ARCH} STREQUAL "x86")
+  if (X86)
     set(DYNAMIC_CORE KATMAI COPPERMINE NORTHWOOD PRESCOTT BANIAS CORE2 PENRYN DUNNINGTON NEHALEM ATHLON OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO)
   endif ()
 
-  if (${ARCH} STREQUAL "x86_64")
+  if (X86_64)
     set(DYNAMIC_CORE PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO)
     if (NOT NO_AVX)
       set(DYNAMIC_CORE ${DYNAMIC_CORE} SANDYBRIDGE BULLDOZER PILEDRIVER STEAMROLLER EXCAVATOR)
@@ -77,7 +77,7 @@ if (${ARCH} STREQUAL "ia64")
   endif ()
 endif ()
 
-if (${ARCH} STREQUAL "mips64")
+if (MIPS64)
   set(NO_BINARY_MODE 1)
 endif ()
 
@@ -86,12 +86,12 @@ if (${ARCH} STREQUAL "alpha")
   set(BINARY_DEFINED 1)
 endif ()
 
-if (${ARCH} STREQUAL "arm")
+if (ARM)
   set(NO_BINARY_MODE 1)
   set(BINARY_DEFINED 1)
 endif ()
 
-if (${ARCH} STREQUAL "arm64")
+if (ARM64)
   set(NO_BINARY_MODE 1)
   set(BINARY_DEFINED 1)
 endif ()

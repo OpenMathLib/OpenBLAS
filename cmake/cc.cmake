@@ -15,7 +15,7 @@ if (${CMAKE_C_COMPILER} STREQUAL "GNU" OR ${CMAKE_C_COMPILER} STREQUAL "LSB" OR 
 
   if (NO_BINARY_MODE)
 
-    if (${ARCH} STREQUAL "mips64")
+    if (MIPS64)
       if (BINARY64)
         set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=64")
       else ()
@@ -24,17 +24,12 @@ if (${CMAKE_C_COMPILER} STREQUAL "GNU" OR ${CMAKE_C_COMPILER} STREQUAL "LSB" OR 
       set(BINARY_DEFINED 1)
     endif ()
 
-    if (${CORE} STREQUAL "LOONGSON3A")
+    if (${CORE} STREQUAL "LOONGSON3A" OR ${CORE} STREQUAL "LOONGSON3B")
       set(CCOMMON_OPT "${CCOMMON_OPT} -march=mips64")
       set(FCOMMON_OPT "${FCOMMON_OPT} -march=mips64")
     endif ()
 
-    if (${CORE} STREQUAL "LOONGSON3B")
-      set(CCOMMON_OPT "${CCOMMON_OPT} -march=mips64")
-      set(FCOMMON_OPT "${FCOMMON_OPT} -march=mips64")
-    endif ()
-
-    if (${OSNAME} STREQUAL "AIX")
+    if (CMAKE_SYSTEM_NAME STREQUAL "AIX")
       set(BINARY_DEFINED 1)
     endif ()
   endif ()
@@ -66,7 +61,7 @@ endif ()
 
 if (${CMAKE_C_COMPILER} STREQUAL "OPEN64")
 
-  if (${ARCH} STREQUAL "mips64")
+  if (MIPS64)
 
     if (NOT BINARY64)
       set(CCOMMON_OPT "${CCOMMON_OPT} -n32")
@@ -94,10 +89,10 @@ endif ()
 
 if (${CMAKE_C_COMPILER} STREQUAL "SUN")
   set(CCOMMON_OPT "${CCOMMON_OPT} -w")
-  if (${ARCH} STREQUAL "x86")
+  if (X86)
     set(CCOMMON_OPT "${CCOMMON_OPT} -m32")
   else ()
-    set(FCOMMON_OPT "${FCOMMON_OPT} -m64")
+    set(CCOMMON_OPT "${CCOMMON_OPT} -m64")
   endif ()
 endif ()
 
