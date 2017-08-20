@@ -4,17 +4,9 @@
 ##
 set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 
-# TODO: Makefile.system detects Darwin (mac) and switches to clang here -hpa
-# http://stackoverflow.com/questions/714100/os-detecting-makefile
-
-# TODO: Makefile.system sets HOSTCC = $(CC) here if not already set -hpa
-
 # TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
 if (DEFINED TARGET_CORE)
   set(TARGET ${TARGET_CORE})
-  if(NOT DEFINED CORE)
-    set(CORE ${TARGET_CORE})
-  endif()
 endif ()
 
 # Force fallbacks for 32bit
@@ -106,9 +98,6 @@ include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
 if (NOT DEFINED NEED_PIC)
   set(NEED_PIC 1)
 endif ()
-
-# TODO: I think CMake should be handling all this stuff -hpa
-unset(ARFLAGS)
 
 # OS dependent settings
 include("${PROJECT_SOURCE_DIR}/cmake/os.cmake")

@@ -22,7 +22,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
 
     if (${ADD_COMMONOBJS})
         if (${ARCH} STREQUAL "x86")
-        if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
           GenerateNamedObjects("${KERNELDIR}/cpuid.S" "" "" false "" "" true)
         else()
           GenerateNamedObjects("${KERNELDIR}/cpuid_win.c" "" "" false "" "" true)
