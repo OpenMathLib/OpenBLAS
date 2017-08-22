@@ -119,9 +119,11 @@ endif ()
 
 # Only generate .def for dll on MSVC and always produce pdb files for debug and release
 if(MSVC)
-set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
-set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
+  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 3.4)
+    set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
+  endif()
+  set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
+  set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
 endif()
 
 if (${DYNAMIC_ARCH})
@@ -141,7 +143,15 @@ endif()
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
-include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
+# Handle MSVC exports
+if(MSVC AND BUILD_SHARED_LIBS)
+  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 3.4)
+    include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
+  else()
+    # Creates verbose .def file (51KB vs 18KB)
+    set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS true)
+  endif()
+endif()
 
 # Set output for libopenblas
 set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
@@ -164,7 +174,6 @@ if (USE_THREAD)
     set_property(TARGET ${OpenBLAS_LIBNAME} PROPERTY COMPILE_OPTIONS "-pthread")
     set_property(TARGET ${OpenBLAS_LIBNAME} PROPERTY INTERFACE_COMPILE_OPTIONS "-pthread")
   endif()
-  message("PTHREAD: ${CMAKE_THREAD_LIBS_INIT}")
   target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
