@@ -177,15 +177,17 @@ if (USE_THREAD)
   target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
-if (NOT MSVC AND NOT NOFORTRAN)
+if (MSVC OR NOT NOFORTRAN)
+  # Broken without fortran on unix
   add_subdirectory(utest)
+endif()
+
+if (NOT MSVC AND NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
   if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
-elseif(MSVC)
-  add_subdirectory(utest)
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 
@@ -201,31 +203,33 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
   
-set(OPENBLAS_TMP ${CMAKE_BINARY_DIR}/openblas_config.tmp)
-file(WRITE  ${OPENBLAS_TMP} "#ifndef OPENBLAS_CONFIG_H\n")
-file(APPEND ${OPENBLAS_TMP} "#define OPENBLAS_CONFIG_H\n")
+message(STATUS "Generating openblas_config.h in ${CMAKE_INSTALL_INCLUDEDIR}")
+
+set(OPENBLAS_CONFIG_H ${CMAKE_BINARY_DIR}/openblas_config.h)
+file(WRITE  ${OPENBLAS_CONFIG_H} "#ifndef OPENBLAS_CONFIG_H\n")
+file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_CONFIG_H\n")
 file(STRINGS ${PROJECT_BINARY_DIR}/config.h __lines)
 foreach(line ${__lines})
   string(REPLACE "#define " "" line ${line})
-  file(APPEND ${OPENBLAS_TMP} "#define OPENBLAS_${line}\n")
+  file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_${line}\n")
 endforeach()
-file(APPEND ${OPENBLAS_TMP} "#define OPENBLAS_VERSION \"OpenBLAS ${OpenBLAS_VERSION}\"\n")
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h __template)
-file(APPEND ${OPENBLAS_TMP} "${__template}")
-file(APPEND ${OPENBLAS_TMP} "#endif /* OPENBLAS_CONFIG_H */\n")
-configure_file(${OPENBLAS_TMP} ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
-
-install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_VERSION \"OpenBLAS ${OpenBLAS_VERSION}\"\n")
+file(READ   ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h OPENBLAS_CONFIG_TEMPLATE_H_CONTENTS)
+file(APPEND ${OPENBLAS_CONFIG_H} "${OPENBLAS_CONFIG_TEMPLATE_H_CONTENTS}\n")
+file(APPEND ${OPENBLAS_CONFIG_H} "#endif /* OPENBLAS_CONFIG_H */\n")
+install (FILES ${OPENBLAS_CONFIG_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(NOT NOFORTRAN)
   message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-  file(WRITE ${CMAKE_BINARY_DIR}/f77blas.h "")
-  file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#ifndef OPENBLAS_F77BLAS_H\n#define OPENBLAS_F77BLAS_H\n#include \"openblas_config.h\"\n")
+  set(F77BLAS_H ${CMAKE_BINARY_DIR}/f77blas.h)
+  file(WRITE  ${F77BLAS_H} "#ifndef OPENBLAS_F77BLAS_H\n")
+  file(APPEND ${F77BLAS_H} "#define OPENBLAS_F77BLAS_H\n")
+  file(APPEND ${F77BLAS_H} "#include \"openblas_config.h\"\n")
   file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
-  file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "${COMMON_INTERFACE_H_CONTENTS}")
-  file(APPEND ${CMAKE_BINARY_DIR}/f77blas.h "#endif")
-  install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  file(APPEND ${F77BLAS_H} "${COMMON_INTERFACE_H_CONTENTS}\n")
+  file(APPEND ${F77BLAS_H} "#endif")
+  install (FILES ${F77BLAS_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 if(NOT NO_CBLAS)
