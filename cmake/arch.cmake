@@ -35,12 +35,10 @@ endif ()
 if (USE_OPENMP)
   # USE_SIMPLE_THREADED_LEVEL3 = 1
   # NO_AFFINITY = 1
-  find_package(OpenMP)
+  find_package(OpenMP REQUIRED)
   if (OpenMP_FOUND)
     set(CCOMMON_OPT "${CCOMMON_OPT} ${OpenMP_C_FLAGS} -DUSE_OPENMP")
     set(FCOMMON_OPT "${FCOMMON_OPT} ${OpenMP_Fortran_FLAGS}")
-  elseif (UNIX)
-    set(USE_OPENMP 0)
   endif()
 endif ()
 

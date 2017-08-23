@@ -199,18 +199,21 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 install(TARGETS ${OpenBLAS_LIBNAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-
-# Install include files
-set (GENCONFIG_BIN ${CMAKE_BINARY_DIR}/gen_config_h${CMAKE_EXECUTABLE_SUFFIX})
-
-execute_process(COMMAND ${GENCONFIG_BIN}
-                        ${CMAKE_CURRENT_SOURCE_DIR}/config.h
-                        ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h
-                OUTPUT_VARIABLE OPENBLAS_CONFIG_H_CONTENTS)
-
-file(WRITE ${CMAKE_BINARY_DIR}/openblas_config.tmp "${OPENBLAS_CONFIG_H_CONTENTS}")
-configure_file(${CMAKE_BINARY_DIR}/openblas_config.tmp ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+  
+set(OPENBLAS_TMP ${CMAKE_BINARY_DIR}/openblas_config.tmp)
+file(WRITE  ${OPENBLAS_TMP} "#ifndef OPENBLAS_CONFIG_H\n")
+file(APPEND ${OPENBLAS_TMP} "#define OPENBLAS_CONFIG_H\n")
+file(STRINGS ${PROJECT_BINARY_DIR}/config.h __lines)
+foreach(line ${__lines})
+  string(REPLACE "#define " "" line ${line})
+  file(APPEND ${OPENBLAS_TMP} "#define OPENBLAS_${line}\n")
+endforeach()
+file(APPEND ${OPENBLAS_TMP} "#define OPENBLAS_VERSION \"OpenBLAS ${OpenBLAS_VERSION}\"\n")
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h __template)
+file(APPEND ${OPENBLAS_TMP} "${__template}")
+file(APPEND ${OPENBLAS_TMP} "#endif /* OPENBLAS_CONFIG_H */\n")
+configure_file(${OPENBLAS_TMP} ${CMAKE_BINARY_DIR}/openblas_config.h COPYONLY)
 
 install (FILES ${CMAKE_BINARY_DIR}/openblas_config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
