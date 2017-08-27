@@ -1777,6 +1777,8 @@ int get_coretype(void){
 	break;
       case 3:
 	switch (model) {
+	case 7:
+	  return CORE_ATOM;		
 	case 10:
 	case 14:
 	  if(support_avx())
