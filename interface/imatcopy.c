@@ -121,7 +121,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
     		return;
   	}
 #ifdef NEW_IMATCOPY
-    if ( *lda == *ldb ) {
+    if ( *lda == *ldb && *cols == *rows ) {
         if ( order == BlasColMajor )
         {
             if ( trans == BlasNoTrans )
