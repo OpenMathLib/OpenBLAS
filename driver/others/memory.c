@@ -1056,12 +1056,13 @@ void *blas_memory_alloc(int procpos){
 
   do {
     if (!memory[position].used && (memory[position].pos == mypos)) {
-
-      blas_lock(&memory[position].lock);
+      LOCK_COMMAND(&alloc_lock);
+/*      blas_lock(&memory[position].lock);*/
 
       if (!memory[position].used) goto allocation;
 
-      blas_unlock(&memory[position].lock);
+      UNLOCK_COMMAND(&alloc_lock);
+/*      blas_unlock(&memory[position].lock);*/
     }
 
     position ++;
@@ -1075,12 +1076,13 @@ void *blas_memory_alloc(int procpos){
 
   do {
 /*    if (!memory[position].used) { */
-
-      blas_lock(&memory[position].lock);
+      LOCK_COMMAND(&alloc_lock);
+/*      blas_lock(&memory[position].lock);*/
 
       if (!memory[position].used) goto allocation;
-
-      blas_unlock(&memory[position].lock);
+      
+      UNLOCK_COMMAND(&alloc_lock);
+/*      blas_unlock(&memory[position].lock);*/
 /*    } */
 
     position ++;
@@ -1097,7 +1099,8 @@ void *blas_memory_alloc(int procpos){
 
   memory[position].used = 1;
 
-  blas_unlock(&memory[position].lock);
+  UNLOCK_COMMAND(&alloc_lock);
+/*  blas_unlock(&memory[position].lock);*/
 
   if (!memory[position].addr) {
     do {
