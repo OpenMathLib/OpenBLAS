@@ -166,5 +166,5 @@ In chronological order:
   * [2017-01-01] dgemm and dtrmm kernels for IBM z13
   * [2017-02-26] ztrmm kernel for IBM z13
   * [2017-03-13] strmm and ctrmm kernel for IBM z13
-
+  * [2017-09-01] initial Blas Level-1,2 (double precision) for IBM z13
 
