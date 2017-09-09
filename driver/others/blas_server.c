@@ -669,9 +669,15 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 	} while (1);
 
       } else {
-	while(thread_status[i].queue) {
+	pthread_mutex_lock (&thread_status[i].lock);
+	tsiq = thread_status[i].queue;
+	pthread_mutex_unlock (&thread_status[i].lock);      
+	while(tsiq) {
 	  i ++;
 	  if (i >= blas_num_threads - 1) i = 0;
+	  pthread_mutex_lock (&thread_status[i].lock);
+	  tsiq = thread_status[i].queue;
+	  pthread_mutex_unlock (&thread_status[i].lock);
 	}
       }
 #else
@@ -960,13 +966,9 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
   for (i = 0; i < blas_num_threads - 1; i++) {
 
-    blas_lock(&exec_queue_lock);
+    pthread_mutex_lock (&thread_status[i].lock);
 
     thread_status[i].queue = (blas_queue_t *)-1;
-
-    blas_unlock(&exec_queue_lock);
-
-    pthread_mutex_lock  (&thread_status[i].lock);
 
     thread_status[i].status = THREAD_STATUS_WAKEUP;
 
