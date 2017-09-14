@@ -51,6 +51,10 @@ endif
 endif
 endif
 
+ifeq ($(NOFORTRAN), $(filter $(NOFORTRAN),1 2))
+FEXTRALIB =
+endif
+
 all::
 
 libs::
