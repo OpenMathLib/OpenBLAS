@@ -121,7 +121,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
     		return;
   	}
 #ifdef NEW_IMATCOPY
-    if ( *lda == *ldb && *cols == *rows ) {
+    if ( *lda == *ldb && *rows == *cols) {
         if ( order == BlasColMajor )
         {
             if ( trans == BlasNoTrans )
@@ -171,7 +171,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 		else
 		{
 			OMATCOPY_K_CT(*rows, *cols, *alpha, a, *lda, b, *ldb );
-			OMATCOPY_K_CN(*rows, *cols, (FLOAT) 1.0, b, *ldb, a, *ldb );
+			OMATCOPY_K_CN(*cols, *rows, (FLOAT) 1.0, b, *ldb, a, *ldb );
 		}
 	}
 	else
@@ -184,7 +184,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 		else
 		{
 			OMATCOPY_K_RT(*rows, *cols, *alpha, a, *lda, b, *ldb );
-			OMATCOPY_K_RN(*rows, *cols, (FLOAT) 1.0, b, *ldb, a, *ldb );
+			OMATCOPY_K_RN(*cols, *rows, (FLOAT) 1.0, b, *ldb, a, *ldb );
 		}
 	}
 
