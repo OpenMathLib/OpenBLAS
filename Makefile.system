@@ -242,6 +242,10 @@ EXTRALIB	+= -lm
 NO_EXPRECISION = 1
 endif
 
+ifeq ($(OSNAME), Android)
+EXTRALIB	+= -lm
+endif
+
 ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
 endif
@@ -571,10 +575,12 @@ endif
 endif
 
 ifndef BINARY_DEFINED
+ifneq ($(OSNAME), AIX)
 ifdef BINARY64
 CCOMMON_OPT += -m64
 else
 CCOMMON_OPT += -m32
+endif
 endif
 endif
 
@@ -621,10 +627,12 @@ ifeq ($(F_COMPILER), G77)
 CCOMMON_OPT += -DF_INTERFACE_G77
 FCOMMON_OPT += -Wall
 ifndef NO_BINARY_MODE
+ifneq ($(OSNAME), AIX)
 ifdef BINARY64
 FCOMMON_OPT += -m64
 else
 FCOMMON_OPT += -m32
+endif
 endif
 endif
 endif
@@ -632,11 +640,13 @@ endif
 ifeq ($(F_COMPILER), G95)
 CCOMMON_OPT += -DF_INTERFACE_G95
 FCOMMON_OPT += -Wall
+ifneq ($(OSNAME), AIX)
 ifndef NO_BINARY_MODE
 ifdef BINARY64
 FCOMMON_OPT += -m64
 else
 FCOMMON_OPT += -m32
+endif
 endif
 endif
 endif
@@ -660,14 +670,18 @@ FCOMMON_OPT += -mabi=32
 endif
 else
 ifdef BINARY64
+ifneq ($(OSNAME), AIX)
 FCOMMON_OPT += -m64
+endif
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT +=  -fdefault-integer-8
 endif
 endif
 else
+ifneq ($(OSNAME), AIX)
 FCOMMON_OPT += -m32
+endif
 endif
 endif
 ifeq ($(USE_OPENMP), 1)

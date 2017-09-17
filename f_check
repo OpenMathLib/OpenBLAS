@@ -71,7 +71,7 @@ if ($compiler eq "") {
 
 	if ($data =~ /GNU/) {
 
-	    $data =~ /(\d)\.(\d).(.)/;
+	    $data =~ /(\d)\.(\d).(\d)/;
 	    $major = $1;
 	    $minor = $2;
 
@@ -233,6 +233,10 @@ if (!$?) {
 	if ($?) {
 	    $link = `$compiler $openmp -q32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	}
+        # for AIX
+	if ($?) {
+	    $link = `$compiler $openmp -maix32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
+	}
        #For gfortran MIPS
 	if ($?) {
     $mips_data = `$compiler_bin -E -dM - < /dev/null`;
@@ -249,6 +253,10 @@ if (!$?) {
 	$link = `$compiler $openmp -m64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	if ($?) {
 	    $link = `$compiler $openmp -q64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
+	}
+        # for AIX
+	if ($?) {
+	    $link = `$compiler $openmp -maix64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	}
        #For gfortran MIPS
 	if ($?) {
