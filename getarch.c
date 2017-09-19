@@ -137,6 +137,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_ITANIUM2	*/
 /* #define FORCE_SPARC		*/
 /* #define FORCE_SPARCV7	*/
+/* #define FORCE_ZARCH_GENERIC	*/
+/* #define FORCE_Z13		*/
 /* #define FORCE_GENERIC	*/
 
 #ifdef FORCE_P2
@@ -962,6 +964,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LIBNAME   "thunderx2t99"
 #define CORENAME  "THUNDERX2T99"
 #else
+#endif
+
+#ifdef FORCE_ZARCH_GENERIC
+#define FORCE
+#define ARCHITECTURE    "ZARCH"
+#define SUBARCHITECTURE "ZARCH_GENERIC"
+#define ARCHCONFIG   "-DZARCH_GENERIC " \
+       "-DDTB_DEFAULT_ENTRIES=64"
+#define LIBNAME   "zarch_generic"
+#define CORENAME  "ZARCH_GENERIC"
+#endif
+
+#ifdef FORCE_Z13
+#define FORCE
+#define ARCHITECTURE    "ZARCH"
+#define SUBARCHITECTURE "Z13"
+#define ARCHCONFIG   "-DZ13 " \
+       "-DDTB_DEFAULT_ENTRIES=64"
+#define LIBNAME   "z13"
+#define CORENAME  "Z13"
 #endif
 
 #ifndef FORCE
