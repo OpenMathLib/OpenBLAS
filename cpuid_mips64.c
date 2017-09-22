@@ -76,6 +76,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CPU_LOONGSON3B  3
 #define CPU_I6400       4
 #define CPU_P6600       5
+#define CPU_I6500       6
 
 static char *cpuname[] = {
   "UNKOWN",
@@ -83,7 +84,8 @@ static char *cpuname[] = {
   "LOONGSON3A",
   "LOONGSON3B",
   "I6400",
-  "P6600"
+  "P6600",
+  "I6500"
 };
 
 int detect(void){
@@ -165,6 +167,8 @@ void get_subarchitecture(void){
     printf("I6400");
   }else if(detect()==CPU_P6600){
     printf("P6600");
+  }else if(detect()==CPU_I6500){
+    printf("I6500");
   }else{
     printf("SICORTEX");
   }
@@ -211,6 +215,15 @@ void get_cpuconfig(void){
     printf("#define DTB_DEFAULT_ENTRIES 64\n");
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
+  }else if(detect()==CPU_I6500){
+    printf("#define I6500\n");
+    printf("#define L1_DATA_SIZE 65536\n");
+    printf("#define L1_DATA_LINESIZE 32\n");
+    printf("#define L2_SIZE 1048576\n");
+    printf("#define L2_LINESIZE 32\n");
+    printf("#define DTB_DEFAULT_ENTRIES 64\n");
+    printf("#define DTB_SIZE 4096\n");
+    printf("#define L2_ASSOCIATIVE 8\n");
   }else{
     printf("#define SICORTEX\n");
     printf("#define L1_DATA_SIZE 32768\n");
@@ -232,6 +245,8 @@ void get_libname(void){
     printf("i6400\n");
   }else if(detect()==CPU_P6600) {
     printf("p6600\n");
+  }else if(detect()==CPU_I6500) {
+    printf("i6500\n");
   }else{
     printf("mips64\n");
   }
