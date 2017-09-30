@@ -828,11 +828,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  b[ 0] = ONE;
 	  b[ 1] = ZERO;
 #else
-	  b[ 0] = *(a01 +  0);
-	  b[ 1] = *(a01 +  1);
+// out-of-bounds memory accesses, see issue 601
+//	  b[ 0] = *(a01 +  0);
+//	  b[ 1] = *(a01 +  1);
+          b[0]=ZERO;
+          b[1]=ZERO;
 #endif
-	  b[ 2] = *(a02 +  0);
-	  b[ 3] = *(a02 +  1);
+// out-of-bounds memory accesses, see issue 601
+//	  b[ 2] = *(a02 +  0);
+//	  b[ 3] = *(a02 +  1);
+          b[2]=ZERO;
+          b[3]=ZERO;
 	  b += 4;
 	}
     posY += 2;
