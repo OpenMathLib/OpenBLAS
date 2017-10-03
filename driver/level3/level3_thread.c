@@ -219,12 +219,14 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   FLOAT *buffer[DIVIDE_RATE];
 
   BLASLONG k, lda, ldb, ldc;
-  BLASLONG m_from, m_to, n_from, n_to, N_from, N_to;
+  BLASLONG m_from, m_to, n_from, n_to;
 
   FLOAT *alpha, *beta;
   FLOAT *a, *b, *c;
   job_t *job = (job_t *)args -> common;
+  BLASLONG nthreads_m;
   BLASLONG xxx, bufferside;
+  BLASLONG mypos_m, mypos_n;
 
   BLASLONG ls, min_l, jjs, min_jj;
   BLASLONG is, min_i, div_n;
@@ -259,26 +261,28 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   alpha = (FLOAT *)args -> alpha;
   beta  = (FLOAT *)args -> beta;
 
+  nthreads_m = args -> nthreads;
+  if (range_m) {
+    nthreads_m = range_m[-1];
+  }
+
+  mypos_m = mypos % nthreads_m;
+  mypos_n = mypos / nthreads_m;
+
   m_from = 0;
   m_to   = M;
 
   if (range_m) {
-    m_from = range_m[0];
-    m_to   = range_m[1];
+    m_from = range_m[mypos_m + 0];
+    m_to   = range_m[mypos_m + 1];
   }
 
   n_from = 0;
   n_to   = N;
 
-  N_from = 0;
-  N_to   = N;
-
   if (range_n) {
     n_from = range_n[mypos + 0];
     n_to   = range_n[mypos + 1];
-
-    N_from = range_n[0];
-    N_to   = range_n[args -> nthreads];
   }
 
   if (beta) {
@@ -287,7 +291,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 #else
     if ((beta[0] != ONE) || (beta[1] != ZERO))
 #endif
-      BETA_OPERATION(m_from, m_to, N_from, N_to, beta, c, ldc);
+      BETA_OPERATION(m_from, m_to, range_n[mypos_n * nthreads_m], range_n[(mypos_n + 1) * nthreads_m], beta, c, ldc);
   }
 
   if ((k == 0) || (alpha == NULL)) return 0;
@@ -299,8 +303,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       ) return 0;
 
 #if 0
-  fprintf(stderr, "Thread[%ld]  m_from : %ld m_to : %ld n_from : %ld n_to : %ld N_from : %ld N_to : %ld\n",
-	  mypos, m_from, m_to, n_from, n_to, N_from, N_to);
+  fprintf(stderr, "Thread[%ld]  m_from : %ld m_to : %ld n_from : %ld n_to : %ld\n",
+	  mypos, m_from, m_to, n_from, n_to);
 
   fprintf(stderr, "GEMM: P = %4ld  Q = %4ld  R = %4ld\n", (BLASLONG)GEMM_P, (BLASLONG)GEMM_Q, (BLASLONG)GEMM_R);
 
@@ -394,7 +398,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       }
 #endif
 
-      for (i = 0; i < args -> nthreads; i++) job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
+      for (i = mypos_n * nthreads_m; i < (mypos_n + 1) * nthreads_m; i++)
+        job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
       WMB;
     }
 
@@ -402,13 +407,13 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
     do {
       current ++;
-      if (current >= args -> nthreads) current = 0;
+      if (current >= (mypos_n + 1) * nthreads_m) current = mypos_n * nthreads_m;
 
       div_n = (range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE;
 
       for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
 
-	if (current != mypos) {
+       if (current != mypos) {
 
 	  START_RPCC();
 
@@ -479,7 +484,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	}
 
 	current ++;
-	if (current >= args -> nthreads) current = 0;
+	if (current >= (mypos_n + 1) * nthreads_m) current = mypos_n * nthreads_m;
 
       } while (current != mypos);
 
@@ -525,7 +530,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 }
 
 static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
-		       *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos){
+		       *range_n, FLOAT *sa, FLOAT *sb,
+                       BLASLONG nthreads_m, BLASLONG nthreads_n) {
 
   blas_arg_t newarg;
 
@@ -537,8 +543,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 
   blas_queue_t queue[MAX_CPU_NUMBER];
 
-  BLASLONG range_M[MAX_CPU_NUMBER + 1];
-  BLASLONG range_N[MAX_CPU_NUMBER + 1];
+  BLASLONG range_M_buffer[MAX_CPU_NUMBER + 2];
+  BLASLONG range_N_buffer[MAX_CPU_NUMBER + 2];
+  BLASLONG *range_M = range_M_buffer + 1;
+  BLASLONG *range_N = range_N_buffer + 1;
 
   BLASLONG num_cpu_m, num_cpu_n;
 
@@ -595,6 +603,9 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   newarg.gemm_r  = args -> gemm_r;
 #endif
 
+  range_M[-1] = nthreads_m;
+  range_N[-1] = nthreads_n;
+
   if (!range_m) {
     range_M[0] = 0;
     m          = args -> m;
@@ -607,7 +618,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 
   while (m > 0){
 
-    width  = blas_quickdivide(m + nthreads - num_cpu_m - 1, nthreads - num_cpu_m);
+    width  = blas_quickdivide(m + nthreads_m - num_cpu_m - 1, nthreads_m - num_cpu_m);
 
     m -= width;
     if (m < 0) width = width + m;
@@ -617,12 +628,16 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     num_cpu_m ++;
   }
 
-  for (i = 0; i < num_cpu_m; i++) {
+  for (i = num_cpu_m; i < MAX_CPU_NUMBER; i++) {
+    range_M[i + 1] = range_M[num_cpu_m];
+  }
+
+  for (i = 0; i < nthreads; i++) {
     queue[i].mode    = mode;
     queue[i].routine = inner_thread;
     queue[i].args    = &newarg;
-    queue[i].range_m = &range_M[i];
-    queue[i].range_n = &range_N[0];
+    queue[i].range_m = range_M;
+    queue[i].range_n = range_N;
     queue[i].sa      = NULL;
     queue[i].sb      = NULL;
     queue[i].next    = &queue[i + 1];
@@ -659,17 +674,21 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
       num_cpu_n ++;
     }
 
-    for (j = 0; j < num_cpu_m; j++) {
-      for (i = 0; i < num_cpu_m; i++) {
+    for (j = num_cpu_n; j < MAX_CPU_NUMBER; j++) {
+      range_N[j + 1] = range_N[num_cpu_n];
+    }
+
+    for (j = 0; j < MAX_CPU_NUMBER; j++) {
+      for (i = 0; i < MAX_CPU_NUMBER; i++) {
 	for (k = 0; k < DIVIDE_RATE; k++) {
 	  job[j].working[i][CACHE_LINE_SIZE * k] = 0;
 	}
       }
     }
 
-    queue[num_cpu_m - 1].next = NULL;
+    queue[nthreads - 1].next = NULL;
 
-    exec_blas(num_cpu_m, queue);
+    exec_blas(nthreads, queue);
   }
 
 #ifdef USE_ALLOC_HEAP
@@ -684,6 +703,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   BLASLONG m = args -> m;
   BLASLONG n = args -> n;
   BLASLONG nthreads = args -> nthreads;
+  BLASLONG nthreads_m, nthreads_n;
 
   if (nthreads  == 1) {
     GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
@@ -704,21 +724,31 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     n = n_to - n_from;
   }
 
-  if ((m < 2 * SWITCH_RATIO) || (n < 2 * SWITCH_RATIO)) {
+  nthreads_m = nthreads;
+  while (m < nthreads_m * SWITCH_RATIO) {
+    nthreads_m = nthreads_m / 2;
+  }
+
+  if (nthreads_m < 1) {
     GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
     return 0;
   }
 
-  if (m < nthreads * SWITCH_RATIO) {
-    nthreads = blas_quickdivide(m, SWITCH_RATIO);
+  nthreads_n = nthreads / nthreads_m;
+  if (n < nthreads_m * (nthreads_n - 1)) {
+    nthreads_n = (n + nthreads_m - 1) / nthreads_m;
   }
-  if (n < nthreads * SWITCH_RATIO) {
-    nthreads = blas_quickdivide(n, SWITCH_RATIO);
+
+  nthreads = nthreads_m * nthreads_n;
+
+  if (nthreads <= 1) {
+    GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
+    return 0;
   }
 
   args -> nthreads = nthreads;
   
-  gemm_driver(args, range_m, range_n, sa, sb, 0);
+  gemm_driver(args, range_m, range_n, sa, sb, nthreads_m, nthreads_n);
 
   return 0;
 }
