@@ -34,11 +34,7 @@ else()
 endif()
 
 if (NOT ONLY_CBLAS)
-  # N.B. f_check is not cross-platform, so instead try to use CMake variables
   # run f_check (appends to TARGET files)
-#  message(STATUS "Running f_check...")
-#  execute_process(COMMAND perl f_check ${TARGET_MAKE} ${TARGET_CONF} ${CMAKE_Fortran_COMPILER}
-#    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   # TODO: detect whether underscore needed, set #defines and BU appropriately - use try_compile
   # TODO: set FEXTRALIB flags a la f_check?
