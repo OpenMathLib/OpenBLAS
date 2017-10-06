@@ -823,24 +823,22 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  b[  3] = *(a01 +  3);
 	  b += 4;
 	  }
-	} else {
+#if 1
+	} 
+#else
+	} else {	
 #ifdef UNIT
 	  b[ 0] = ONE;
 	  b[ 1] = ZERO;
 #else
-// out-of-bounds memory accesses, see issue 601
-//	  b[ 0] = *(a01 +  0);
-//	  b[ 1] = *(a01 +  1);
-          b[0]=ZERO;
-          b[1]=ZERO;
+	  b[ 0] = *(a01 +  0);
+	  b[ 1] = *(a01 +  1);
 #endif
-// out-of-bounds memory accesses, see issue 601
-//	  b[ 2] = *(a02 +  0);
-//	  b[ 3] = *(a02 +  1);
-          b[2]=ZERO;
-          b[3]=ZERO;
+	  b[ 2] = *(a02 +  0);
+	  b[ 3] = *(a02 +  1);
 	  b += 4;
 	}
+#endif	
     posY += 2;
   }
 
