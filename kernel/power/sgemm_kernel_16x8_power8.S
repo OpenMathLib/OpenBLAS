@@ -83,12 +83,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef __64BIT__
 #define STACKSIZE 32752
-#define ALPHA_SP   296(SP)
-#define FZERO	304(SP)
+#define ALPHA_SP   296+192(SP)
+#define FZERO	304+192(SP)
 #else
-#define STACKSIZE 240
-#define ALPHA_SP   224(SP)
-#define FZERO	232(SP)
+#define STACKSIZE 440
+#define ALPHA_SP   224+200(SP)
+#define FZERO	232+200(SP)
 #endif
 
 #define	M	r3
@@ -131,6 +131,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha_vr vs31
 
 #define o0	0
+
+#define VECSAVE r11
 
 #define FRAMEPOINTER r12
 
@@ -211,6 +213,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r16,  264(SP)
 	std	r15,  272(SP)
 	std	r14,  280(SP)
+        addi    r11, SP, 288
 #else
 	stw	r31,  144(SP)
 	stw	r30,  148(SP)
@@ -230,7 +233,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stw	r16,  204(SP)
 	stw	r15,  208(SP)
 	stw	r14,  212(SP)
+        addi    r11, SP, 224
 #endif
+        stvx    v20, r11, r0
+        addi    r11, r11, 16
+        stvx    v21, r11, r0
+        addi    r11, r11, 16
+        stvx    v22, r11, r0
+        addi    r11, r11, 16
+        stvx    v23, r11, r0
+        addi    r11, r11, 16
+        stvx    v24, r11, r0
+        addi    r11, r11, 16
+        stvx    v25, r11, r0
+        addi    r11, r11, 16
+        stvx    v26, r11, r0
+        addi    r11, r11, 16
+        stvx    v27, r11, r0
+        addi    r11, r11, 16
+        stvx    v28, r11, r0
+        addi    r11, r11, 16
+        stvx    v29, r11, r0
+        addi    r11, r11, 16
+        stvx    v30, r11, r0
+        addi    r11, r11, 16
+        stvx    v31, r11, r0
+        li r11,0
+
 
 	// stfd	f1,  ALPHA_SP
 	// stw	r0,  FZERO
@@ -281,7 +310,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	li	T1, -4096
 	and	BBUFFER, BBUFFER, T1
 
-        addi    T1, SP, 300
+        addi    T1, SP, 300+192
         stxsspx    f1, o0 , T1
         stxsspx    f1, o4 , T1
         stxsspx    f1, o8 , T1
@@ -339,6 +368,7 @@ L999:
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
 	ld	r14,  280(SP)
+        addi    r11, SP, 288
 #else
 	lwz	r31,  144(SP)
 	lwz	r30,  148(SP)
@@ -358,13 +388,38 @@ L999:
 	lwz	r16,  204(SP)
 	lwz	r15,  208(SP)
 	lwz	r14,  212(SP)
+        addi    r11, SP, 224
 #endif
+        lvx     v20, r11, r3
+        addi    r11, r11, 16
+        lvx     v21, r11, r3
+        addi    r11, r11, 16
+        lvx     v22, r11, r3
+        addi    r11, r11, 16
+        lvx     v23, r11, r3
+        addi    r11, r11, 16
+        lvx     v24, r11, r3
+        addi    r11, r11, 16
+        lvx     v25, r11, r3
+        addi    r11, r11, 16
+        lvx     v26, r11, r3
+        addi    r11, r11, 16
+        lvx     v27, r11, r3
+        addi    r11, r11, 16
+        lvx     v28, r11, r3
+        addi    r11, r11, 16
+        lvx     v29, r11, r3
+        addi    r11, r11, 16
+        lvx     v30, r11, r3
+        addi    r11, r11, 16
+        lvx     v31, r11, r3
+        li      r11, 0
+
 
 	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
-
 	blr
 
 	EPILOGUE

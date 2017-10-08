@@ -117,15 +117,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 32000
-#define ALPHA_R_SP 296(SP)
-#define ALPHA_I_SP 304(SP)
-#define FZERO	312(SP)
+#define STACKSIZE 32192
+#define ALPHA_R_SP 296+192(SP)
+#define ALPHA_I_SP 304+192(SP)
+#define FZERO	312+192(SP)
 #else
-#define STACKSIZE 256
-#define ALPHA_R_SP 224(SP)
-#define ALPHA_I_SP 232(SP)
-#define FZERO	240(SP)
+#define STACKSIZE 460
+#define ALPHA_R_SP 224+204(SP)
+#define ALPHA_I_SP 232+204(SP)
+#define FZERO	240+204(SP)
 #endif
 
 #define	M	r3
@@ -168,6 +168,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha_r vs30
 #define alpha_i vs31
 
+#define VECSAVE r11
 
 #define FRAMEPOINTER r12
 
@@ -245,6 +246,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r16,  264(SP)
 	std	r15,  272(SP)
 	std	r14,  280(SP)
+        addi    r11, SP, 288
 #else
 	stw	r31,  144(SP)
 	stw	r30,  148(SP)
@@ -263,7 +265,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stw	r17,  200(SP)
 	stw	r16,  204(SP)
 	stw	r15,  208(SP)
+        addi    r11, SP, 224
 #endif
+        stvx    v20, r11, r0
+        addi    r11, r11, 16
+        stvx    v21, r11, r0
+        addi    r11, r11, 16
+        stvx    v22, r11, r0
+        addi    r11, r11, 16
+        stvx    v23, r11, r0
+        addi    r11, r11, 16
+        stvx    v24, r11, r0
+        addi    r11, r11, 16
+        stvx    v25, r11, r0
+        addi    r11, r11, 16
+        stvx    v26, r11, r0
+        addi    r11, r11, 16
+        stvx    v27, r11, r0
+        addi    r11, r11, 16
+        stvx    v28, r11, r0
+        addi    r11, r11, 16
+        stvx    v29, r11, r0
+        addi    r11, r11, 16
+        stvx    v30, r11, r0
+        addi    r11, r11, 16
+        stvx    v31, r11, r0
+        li r11,0
 
 	stfd	f1,  ALPHA_R_SP
 	stfd	f2,  ALPHA_I_SP
@@ -332,9 +359,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         and     BBUFFER, BBUFFER, T1
 
 #ifdef __64BIT__
-	addi	ALPHA, SP, 296
+	addi	ALPHA, SP, 296+192
 #else
-	addi	ALPHA, SP, 224
+	addi	ALPHA, SP, 224+192+12
 #endif
 
 	lxsdx	alpha_r, 0, ALPHA
@@ -389,6 +416,7 @@ L999:
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
 	ld	r14,  280(SP)
+        addi    r11, SP, 288
 #else
 	lwz	r31,  144(SP)
 	lwz	r30,  148(SP)
@@ -407,13 +435,37 @@ L999:
 	lwz	r17,  200(SP)
 	lwz	r16,  204(SP)
 	lwz	r15,  208(SP)
+        addi    r11, SP, 224
 #endif
+        lvx     v20, r11, r3
+        addi    r11, r11, 16
+        lvx     v21, r11, r3
+        addi    r11, r11, 16
+        lvx     v22, r11, r3
+        addi    r11, r11, 16
+        lvx     v23, r11, r3
+        addi    r11, r11, 16
+        lvx     v24, r11, r3
+        addi    r11, r11, 16
+        lvx     v25, r11, r3
+        addi    r11, r11, 16
+        lvx     v26, r11, r3
+        addi    r11, r11, 16
+        lvx     v27, r11, r3
+        addi    r11, r11, 16
+        lvx     v28, r11, r3
+        addi    r11, r11, 16
+        lvx     v29, r11, r3
+        addi    r11, r11, 16
+        lvx     v30, r11, r3
+        addi    r11, r11, 16
+        lvx     v31, r11, r3
+        li      r11, 0
 
 	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
 	addi	SP, SP, STACKSIZE
-
 	blr
 
 	EPILOGUE

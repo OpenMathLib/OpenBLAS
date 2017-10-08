@@ -110,12 +110,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "dgemm_ncopy_macros_4_power8.S"
 
 #define STACKSIZE 384
-
+#define STACKSIZE 576
 
 	PROLOGUE
 	PROFCODE
 
 	addi	SP, SP, -STACKSIZE
+//addi SP, SP, -208
 	li	r0, 0
 
         stfd    f14,    0(SP)
@@ -157,6 +158,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         std     r15,  272(SP)
         std     r14,  280(SP)
 
+addi r11,SP,288
+        stvx    v20,  r11,r0
+addi r11,r11,16
+        stvx    v21,  r11,r0
+addi r11,r11,16
+        stvx    v22,  r11,r0
+addi r11,r11,16
+        stvx    v23,  r11,r0
+addi r11,r11,16
+        stvx    v24,  r11,r0
+addi r11,r11,16
+        stvx    v25,  r11,r0
+addi r11,r11,16
+        stvx    v26,  r11,r0
+addi r11,r11,16
+        stvx    v27,  r11,r0
+addi r11,r11,16
+        stvx    v28,  r11,r0
+addi r11,r11,16
+        stvx    v29,  r11,r0
+addi r11,r11,16
+        stvx    v30,  r11,r0
+addi r11,r11,16
+        stvx    v31,  r11,r0
+li r11,0
+
 	cmpwi	cr0, M, 0
 	ble-	L999
 	cmpwi	cr0, N, 0
@@ -164,8 +191,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	slwi	LDA, LDA, BASE_SHIFT
 
-	li	PREA,  384
-	li	PREB,  384
+	//li	PREA,  384
+	//li	PREB,  384
+	li	PREA,  576
+	li	PREB,  576
+
 
 	li	o8,	8
 	li	o16,	16
@@ -219,9 +249,34 @@ L999:
         ld      r16,  264(SP)
         ld      r15,  272(SP)
         ld      r14,  280(SP)
+addi r11,SP,288
+        lvx    v20,  r11,r3
+addi r11,r11,16
+        lvx    v21,  r11,r3
+addi r11,r11,16
+        lvx    v22,  r11,r3
+addi r11,r11,16
+        lvx    v23,  r11,r3
+addi r11,r11,16
+        lvx    v24,  r11,r3
+addi r11,r11,16
+        lvx    v25,  r11,r3
+addi r11,r11,16
+        lvx    v26,  r11,r3
+addi r11,r11,16
+        lvx    v27,  r11,r3
+addi r11,r11,16
+        lvx    v28,  r11,r3
+addi r11,r11,16
+        lvx    v29,  r11,r3
+addi r11,r11,16
+        lvx    v30,  r11,r3
+addi r11,r11,16
+        lvx    v31,  r11,r3
+li r11,0
 
 	addi	SP, SP, STACKSIZE
-
+//addi SP, SP, 208
 	blr
 	EPILOGUE
 
