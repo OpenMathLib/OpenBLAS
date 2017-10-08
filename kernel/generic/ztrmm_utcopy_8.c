@@ -823,7 +823,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  b[  3] = *(a01 +  3);
 	  b += 4;
 	  }
-	} else {
+#if 1
+	} 
+#else
+	} else {	
 #ifdef UNIT
 	  b[ 0] = ONE;
 	  b[ 1] = ZERO;
@@ -835,6 +838,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  b[ 3] = *(a02 +  1);
 	  b += 4;
 	}
+#endif	
     posY += 2;
   }
 
