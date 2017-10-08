@@ -42,11 +42,18 @@ set(UNIT_SOURCES2
 GenerateNamedObjects("${LAPACK_SOURCES}")
 GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" false "" "" false 3)
 
-# TODO: laswp needs arch specific code
-GenerateNamedObjects("laswp/generic/laswp_k.c" "" "laswp_plus" false "" "" false 3)
-GenerateNamedObjects("laswp/generic/laswp_k.c" "MINUS" "laswp_minus" false "" "" false 3)
+GenerateNamedObjects("laswp/generic/laswp_k_4.c" "" "laswp_plus" false "" ""  false 3)
+GenerateNamedObjects("laswp/generic/laswp_k_4.c" "MINUS" "laswp_minus" false "" ""  false 3)
 
-if (USE_THREAD)
+# dynamic_arch laswp needs arch specific code ?
+#foreach(TARGET_CORE ${DYNAMIC_CORE})
+#      set(TSUFFIX "_${TARGET_CORE}")
+#
+#GenerateNamedObjects("laswp/generic/laswp_k_4.c" "" "laswp_plus" false "" ${TSUFFIX}  false 3)
+#GenerateNamedObjects("laswp/generic/laswp_k_4.c" "MINUS" "laswp_minus" false "" ${TSUFFIX}  false 3)
+#endforeach ()
+
+if (SMP)
 
   if (USE_OPENMP)
     set(GETRF_SRC getrf/getrf_parallel_omp.c)
