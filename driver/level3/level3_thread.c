@@ -97,21 +97,21 @@ typedef struct {
 
 #ifndef BETA_OPERATION
 #ifndef COMPLEX
-#define BETA_OPERATION(M_FROM, M_TO, N_FROM, N_TO, BETA, C, LDC) \
-	GEMM_BETA((M_TO) - (M_FROM), (N_TO - N_FROM), 0, \
-		  BETA[0], NULL, 0, NULL, 0, \
-		  (FLOAT *)(C) + ((M_FROM) + (N_FROM) * (LDC)) * COMPSIZE, LDC)
+#define BETA_OPERATION(M_FROM, M_TO, N_FROM, N_TO, BETA, C, LDC)        \
+  GEMM_BETA((M_TO) - (M_FROM), (N_TO - N_FROM), 0,                      \
+            BETA[0], NULL, 0, NULL, 0,                                  \
+            (FLOAT *)(C) + ((M_FROM) + (N_FROM) * (LDC)) * COMPSIZE, LDC)
 #else
-#define BETA_OPERATION(M_FROM, M_TO, N_FROM, N_TO, BETA, C, LDC) \
-	GEMM_BETA((M_TO) - (M_FROM), (N_TO - N_FROM), 0, \
-		  BETA[0], BETA[1], NULL, 0, NULL, 0, \
-		  (FLOAT *)(C) + ((M_FROM) + (N_FROM) * (LDC)) * COMPSIZE, LDC)
+#define BETA_OPERATION(M_FROM, M_TO, N_FROM, N_TO, BETA, C, LDC)        \
+  GEMM_BETA((M_TO) - (M_FROM), (N_TO - N_FROM), 0,                      \
+            BETA[0], BETA[1], NULL, 0, NULL, 0,                         \
+            (FLOAT *)(C) + ((M_FROM) + (N_FROM) * (LDC)) * COMPSIZE, LDC)
 #endif
 #endif
 
 #ifndef ICOPY_OPERATION
 #if defined(NN) || defined(NT) || defined(NC) || defined(NR) || \
-    defined(RN) || defined(RT) || defined(RC) || defined(RR)
+  defined(RN) || defined(RT) || defined(RC) || defined(RR)
 #define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ITCOPY(M, N, (FLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #else
 #define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_INCOPY(M, N, (FLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
@@ -120,7 +120,7 @@ typedef struct {
 
 #ifndef OCOPY_OPERATION
 #if defined(NN) || defined(TN) || defined(CN) || defined(RN) || \
-    defined(NR) || defined(TR) || defined(CR) || defined(RR)
+  defined(NR) || defined(TR) || defined(CR) || defined(RR)
 #define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ONCOPY(M, N, (FLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #else
 #define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_OTCOPY(M, N, (FLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
@@ -144,36 +144,36 @@ typedef struct {
 
 #ifndef KERNEL_OPERATION
 #ifndef COMPLEX
-#define KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, C, LDC, X, Y) \
-	KERNEL_FUNC(M, N, K, ALPHA[0], SA, SB, (FLOAT *)(C) + ((X) + (Y) * LDC) * COMPSIZE, LDC)
+#define KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, C, LDC, X, Y)          \
+  KERNEL_FUNC(M, N, K, ALPHA[0], SA, SB, (FLOAT *)(C) + ((X) + (Y) * LDC) * COMPSIZE, LDC)
 #else
-#define KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, C, LDC, X, Y) \
-	KERNEL_FUNC(M, N, K, ALPHA[0], ALPHA[1], SA, SB, (FLOAT *)(C) + ((X) + (Y) * LDC) * COMPSIZE, LDC)
+#define KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, C, LDC, X, Y)          \
+  KERNEL_FUNC(M, N, K, ALPHA[0], ALPHA[1], SA, SB, (FLOAT *)(C) + ((X) + (Y) * LDC) * COMPSIZE, LDC)
 #endif
 #endif
 
 #ifndef FUSED_KERNEL_OPERATION
 #if defined(NN) || defined(TN) || defined(CN) || defined(RN) || \
-    defined(NR) || defined(TR) || defined(CR) || defined(RR)
+  defined(NR) || defined(TR) || defined(CR) || defined(RR)
 #ifndef COMPLEX
 #define FUSED_KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, B, LDB, C, LDC, I, J, L) \
-	FUSED_GEMM_KERNEL_N(M, N, K, ALPHA[0], SA, SB, \
-	(FLOAT *)(B) + ((L) + (J) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
+  FUSED_GEMM_KERNEL_N(M, N, K, ALPHA[0], SA, SB,                        \
+                      (FLOAT *)(B) + ((L) + (J) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
 #else
 #define FUSED_KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, B, LDB, C, LDC, I, J, L) \
-	FUSED_GEMM_KERNEL_N(M, N, K, ALPHA[0], ALPHA[1], SA, SB, \
-	(FLOAT *)(B) + ((L) + (J) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
+  FUSED_GEMM_KERNEL_N(M, N, K, ALPHA[0], ALPHA[1], SA, SB,              \
+                      (FLOAT *)(B) + ((L) + (J) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
 
 #endif
 #else
 #ifndef COMPLEX
 #define FUSED_KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, B, LDB, C, LDC, I, J, L) \
-	FUSED_GEMM_KERNEL_T(M, N, K, ALPHA[0], SA, SB, \
-	(FLOAT *)(B) + ((J) + (L) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
+  FUSED_GEMM_KERNEL_T(M, N, K, ALPHA[0], SA, SB,                        \
+                      (FLOAT *)(B) + ((J) + (L) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
 #else
 #define FUSED_KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, B, LDB, C, LDC, I, J, L) \
-	FUSED_GEMM_KERNEL_T(M, N, K, ALPHA[0], ALPHA[1], SA, SB, \
-	(FLOAT *)(B) + ((J) + (L) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
+  FUSED_GEMM_KERNEL_T(M, N, K, ALPHA[0], ALPHA[1], SA, SB,              \
+                      (FLOAT *)(B) + ((J) + (L) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
 #endif
 #endif
 #endif
@@ -219,15 +219,17 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   FLOAT *buffer[DIVIDE_RATE];
 
   BLASLONG k, lda, ldb, ldc;
-  BLASLONG m_from, m_to, n_from, n_to, N_from, N_to;
+  BLASLONG m_from, m_to, n_from, n_to;
 
   FLOAT *alpha, *beta;
   FLOAT *a, *b, *c;
   job_t *job = (job_t *)args -> common;
-  BLASLONG xxx, bufferside;
 
-  BLASLONG ls, min_l, jjs, min_jj;
-  BLASLONG is, min_i, div_n;
+  BLASLONG nthreads_m;
+  BLASLONG mypos_m, mypos_n;
+
+  BLASLONG is, js, ls, bufferside, jjs;
+  BLASLONG min_i, min_l, div_n, min_jj;
 
   BLASLONG i, current;
   BLASLONG l1stride;
@@ -259,74 +261,69 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   alpha = (FLOAT *)args -> alpha;
   beta  = (FLOAT *)args -> beta;
 
+  /* Initialize 2D CPU distribution */
+  nthreads_m = args -> nthreads;
+  if (range_m) {
+    nthreads_m = range_m[-1];
+  }
+  mypos_n = blas_quickdivide(mypos, nthreads_m);  /* mypos_n = mypos / nthreads_m */
+  mypos_m = mypos - mypos_n * nthreads_m;         /* mypos_m = mypos % nthreads_m */
+
+  /* Initialize m and n */
   m_from = 0;
   m_to   = M;
-
   if (range_m) {
-    m_from = range_m[0];
-    m_to   = range_m[1];
+    m_from = range_m[mypos_m + 0];
+    m_to   = range_m[mypos_m + 1];
   }
-
   n_from = 0;
   n_to   = N;
-
-  N_from = 0;
-  N_to   = N;
-
   if (range_n) {
     n_from = range_n[mypos + 0];
     n_to   = range_n[mypos + 1];
-
-    N_from = range_n[0];
-    N_to   = range_n[args -> nthreads];
   }
 
+  /* Multiply C by beta if needed */
   if (beta) {
 #ifndef COMPLEX
     if (beta[0] != ONE)
 #else
     if ((beta[0] != ONE) || (beta[1] != ZERO))
 #endif
-      BETA_OPERATION(m_from, m_to, N_from, N_to, beta, c, ldc);
+      BETA_OPERATION(m_from, m_to, range_n[mypos_n * nthreads_m], range_n[(mypos_n + 1) * nthreads_m], beta, c, ldc);
   }
 
+  /* Return early if no more computation is needed */
   if ((k == 0) || (alpha == NULL)) return 0;
-
   if ((alpha[0] == ZERO)
 #ifdef COMPLEX
       && (alpha[1] == ZERO)
 #endif
       ) return 0;
 
-#if 0
-  fprintf(stderr, "Thread[%ld]  m_from : %ld m_to : %ld n_from : %ld n_to : %ld N_from : %ld N_to : %ld\n",
-	  mypos, m_from, m_to, n_from, n_to, N_from, N_to);
-
-  fprintf(stderr, "GEMM: P = %4ld  Q = %4ld  R = %4ld\n", (BLASLONG)GEMM_P, (BLASLONG)GEMM_Q, (BLASLONG)GEMM_R);
-
-#endif
-
+  /* Initialize workspace for local region of B */
   div_n = (n_to - n_from + DIVIDE_RATE - 1) / DIVIDE_RATE;
-
   buffer[0] = sb;
   for (i = 1; i < DIVIDE_RATE; i++) {
     buffer[i] = buffer[i - 1] + GEMM_Q * ((div_n + GEMM_UNROLL_N - 1)/GEMM_UNROLL_N) * GEMM_UNROLL_N * COMPSIZE;
   }
 
-
+  /* Iterate through steps of k */
   for(ls = 0; ls < k; ls += min_l){
 
+    /* Determine step size in k */
     min_l = k - ls;
-
     if (min_l >= GEMM_Q * 2) {
       min_l  = GEMM_Q;
     } else {
       if (min_l > GEMM_Q) min_l = (min_l + 1) / 2;
     }
 
+    /* Determine step size in m
+     * Note: We are currently on the first step in m
+     */
     l1stride = 1;
     min_i = m_to - m_from;
-
     if (min_i >= GEMM_P * 2) {
       min_i = GEMM_P;
     } else {
@@ -337,108 +334,106 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       }
     }
 
+    /* Copy local region of A into workspace */
     START_RPCC();
-
     ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
-
     STOP_RPCC(copy_A);
 
+    /* Copy local region of B into workspace and apply kernel */
     div_n = (n_to - n_from + DIVIDE_RATE - 1) / DIVIDE_RATE;
+    for (js = n_from, bufferside = 0; js < n_to; js += div_n, bufferside ++) {
 
-    for (xxx = n_from, bufferside = 0; xxx < n_to; xxx += div_n, bufferside ++) {
-
+      /* Make sure if no one is using workspace */
       START_RPCC();
-
-      /* Make sure if no one is using buffer */
       for (i = 0; i < args -> nthreads; i++)
 	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;};
-
       STOP_RPCC(waiting1);
 
 #if defined(FUSED_GEMM) && !defined(TIMING)
 
-      FUSED_KERNEL_OPERATION(min_i, MIN(n_to, xxx + div_n) - xxx, min_l, alpha,
-			     sa, buffer[bufferside], b, ldb, c, ldc, m_from, xxx, ls);
+      /* Fused operation to copy region of B into workspace and apply kernel */
+      FUSED_KERNEL_OPERATION(min_i, MIN(n_to, js + div_n) - js, min_l, alpha,
+			     sa, buffer[bufferside], b, ldb, c, ldc, m_from, js, ls);
 
 #else
 
-      for(jjs = xxx; jjs < MIN(n_to, xxx + div_n); jjs += min_jj){
-	min_jj = MIN(n_to, xxx + div_n) - jjs;
-
+      /* Split local region of B into parts */
+      for(jjs = js; jjs < MIN(n_to, js + div_n); jjs += min_jj){
+	min_jj = MIN(n_to, js + div_n) - jjs;
 	if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
 	else
-		if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
-		else
-			if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+          if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
+          else
+            if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
-
+        /* Copy part of local region of B into workspace */
 	START_RPCC();
-
 	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
-			buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE * l1stride);
-
+			buffer[bufferside] + min_l * (jjs - js) * COMPSIZE * l1stride);
 	STOP_RPCC(copy_B);
 
+        /* Apply kernel with local region of A and part of local region of B */
 	START_RPCC();
-
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
-			 sa, buffer[bufferside] + min_l * (jjs - xxx) * COMPSIZE * l1stride,
+			 sa, buffer[bufferside] + min_l * (jjs - js) * COMPSIZE * l1stride,
 			 c, ldc, m_from, jjs);
-
 	STOP_RPCC(kernel);
 
 #ifdef TIMING
-	  ops += 2 * min_i * min_jj * min_l;
+        ops += 2 * min_i * min_jj * min_l;
 #endif
 
       }
 #endif
 
-      for (i = 0; i < args -> nthreads; i++) job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
+      /* Set flag so other threads can access local region of B */
+      for (i = mypos_n * nthreads_m; i < (mypos_n + 1) * nthreads_m; i++)
+        job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
       WMB;
     }
 
+    /* Get regions of B from other threads and apply kernel */
     current = mypos;
-
     do {
+
+      /* This thread accesses regions of B from threads in the range
+       * [ mypos_n * nthreads_m, (mypos_n+1) * nthreads_m ) */
       current ++;
-      if (current >= args -> nthreads) current = 0;
+      if (current >= (mypos_n + 1) * nthreads_m) current = mypos_n * nthreads_m;
 
+      /* Split other region of B into parts */
       div_n = (range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE;
+      for (js = range_n[current], bufferside = 0; js < range_n[current + 1]; js += div_n, bufferside ++) {
+        if (current != mypos) {
 
-      for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-
-	if (current != mypos) {
-
+	  /* Wait until other region of B is initialized */
 	  START_RPCC();
-
-	  /* thread has to wait */
 	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
-
 	  STOP_RPCC(waiting2);
 
+          /* Apply kernel with local region of A and part of other region of B */
 	  START_RPCC();
-
-	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1]  - xxx,  div_n), min_l, alpha,
+	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1]  - js,  div_n), min_l, alpha,
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
-			   c, ldc, m_from, xxx);
+			   c, ldc, m_from, js);
+          STOP_RPCC(kernel);
 
-	STOP_RPCC(kernel);
 #ifdef TIMING
-	  ops += 2 * min_i * MIN(range_n[current + 1]  - xxx,  div_n) * min_l;
+	  ops += 2 * min_i * MIN(range_n[current + 1]  - js,  div_n) * min_l;
 #endif
 	}
 
+        /* Clear synchronization flag if this thread is done with other region of B */
 	if (m_to - m_from == min_i) {
 	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	}
       }
     } while (current != mypos);
 
-
+    /* Iterate through steps of m 
+     * Note: First step has already been finished */
     for(is = m_from + min_i; is < m_to; is += min_i){
       min_i = m_to - is;
-
       if (min_i >= GEMM_P * 2) {
 	min_i = GEMM_P;
       } else
@@ -446,40 +441,41 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	  min_i = (((min_i + 1) / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	}
 
+      /* Copy local region of A into workspace */
       START_RPCC();
-
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-
       STOP_RPCC(copy_A);
 
+      /* Get regions of B and apply kernel */
       current = mypos;
       do {
 
+        /* Split region of B into parts and apply kernel */
 	div_n = (range_n[current + 1]  - range_n[current] + DIVIDE_RATE - 1) / DIVIDE_RATE;
+	for (js = range_n[current], bufferside = 0; js < range_n[current + 1]; js += div_n, bufferside ++) {
 
-	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
-
+          /* Apply kernel with local region of A and part of region of B */
 	  START_RPCC();
-
-	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), min_l, alpha,
+	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - js, div_n), min_l, alpha,
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
-			   c, ldc, is, xxx);
-
-	STOP_RPCC(kernel);
-
+			   c, ldc, is, js);
+          STOP_RPCC(kernel);
+          
 #ifdef TIMING
-	ops += 2 * min_i * MIN(range_n[current + 1]  - xxx, div_n) * min_l;
+          ops += 2 * min_i * MIN(range_n[current + 1]  - js, div_n) * min_l;
 #endif
-
-	if (is + min_i >= m_to) {
-	  /* Thread doesn't need this buffer any more */
-	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
-	  WMB;
+          
+          /* Clear synchronization flag if this thread is done with region of B */
+          if (is + min_i >= m_to) {
+            job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
+            WMB;
+          }
 	}
-	}
 
+        /* This thread accesses regions of B from threads in the range
+         * [ mypos_n * nthreads_m, (mypos_n+1) * nthreads_m ) */
 	current ++;
-	if (current >= args -> nthreads) current = 0;
+	if (current >= (mypos_n + 1) * nthreads_m) current = mypos_n * nthreads_m;
 
       } while (current != mypos);
 
@@ -487,14 +483,13 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
   }
 
+  /* Wait until all other threads are done with local region of B */
   START_RPCC();
-
   for (i = 0; i < args -> nthreads; i++) {
-    for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
-      while (job[mypos].working[i][CACHE_LINE_SIZE * xxx] ) {YIELDING;};
+    for (js = 0; js < DIVIDE_RATE; js++) {
+      while (job[mypos].working[i][CACHE_LINE_SIZE * js] ) {YIELDING;};
     }
   }
-
   STOP_RPCC(waiting3);
 
 #ifdef TIMING
@@ -507,17 +502,6 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 	  (double)waiting2 /(double)total * 100.,
 	  (double)waiting3 /(double)total * 100.,
 	  (double)ops/(double)kernel / 4. * 100.);
-
-#if 0
-  fprintf(stderr, "GEMM   [%2ld] Copy_A : %6.2ld  Copy_B : %6.2ld  Wait : %6.2ld\n",
-	  mypos, copy_A, copy_B, waiting);
-
-  fprintf(stderr, "Waiting[%2ld] %6.2f %6.2f %6.2f\n",
-	  mypos,
-	  (double)waiting1/(double)waiting * 100.,
-	  (double)waiting2/(double)waiting * 100.,
-	  (double)waiting3/(double)waiting * 100.);
-#endif
   fprintf(stderr, "\n");
 #endif
 
@@ -525,7 +509,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 }
 
 static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
-		       *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos){
+		       *range_n, FLOAT *sa, FLOAT *sb,
+                       BLASLONG nthreads_m, BLASLONG nthreads_n) {
 
   blas_arg_t newarg;
 
@@ -537,17 +522,18 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 
   blas_queue_t queue[MAX_CPU_NUMBER];
 
-  BLASLONG range_M[MAX_CPU_NUMBER + 1];
-  BLASLONG range_N[MAX_CPU_NUMBER + 1];
-
-  BLASLONG num_cpu_m, num_cpu_n;
+  BLASLONG range_M_buffer[MAX_CPU_NUMBER + 2];
+  BLASLONG range_N_buffer[MAX_CPU_NUMBER + 2];
+  BLASLONG *range_M, *range_N;
+  BLASLONG num_parts;
 
   BLASLONG nthreads = args -> nthreads;
 
   BLASLONG width, i, j, k, js;
   BLASLONG m, n, n_from, n_to;
-  int  mode;
+  int mode;
 
+  /* Get execution mode */
 #ifndef COMPLEX
 #ifdef XDOUBLE
   mode  =  BLAS_XDOUBLE | BLAS_REAL | BLAS_NODE;
@@ -566,6 +552,16 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 #endif
 #endif
 
+#ifdef USE_ALLOC_HEAP
+  /* Dynamically allocate workspace */
+  job = (job_t*)malloc(MAX_CPU_NUMBER * sizeof(job_t));
+  if(job==NULL){
+    fprintf(stderr, "OpenBLAS: malloc failed in %s\n", __func__);
+    exit(1);
+  }
+#endif
+
+  /* Initialize struct for arguments */
   newarg.m        = args -> m;
   newarg.n        = args -> n;
   newarg.k        = args -> k;
@@ -578,23 +574,19 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   newarg.alpha    = args -> alpha;
   newarg.beta     = args -> beta;
   newarg.nthreads = args -> nthreads;
-
-#ifdef USE_ALLOC_HEAP
-  job = (job_t*)malloc(MAX_CPU_NUMBER * sizeof(job_t));
-  if(job==NULL){
-    fprintf(stderr, "OpenBLAS: malloc failed in %s\n", __func__);
-    exit(1);
-  }
-#endif
-
   newarg.common   = (void *)job;
-
 #ifdef PARAMTEST
-  newarg.gemm_p  = args -> gemm_p;
-  newarg.gemm_q  = args -> gemm_q;
-  newarg.gemm_r  = args -> gemm_r;
+  newarg.gemm_p   = args -> gemm_p;
+  newarg.gemm_q   = args -> gemm_q;
+  newarg.gemm_r   = args -> gemm_r;
 #endif
 
+  /* Initialize partitions in m and n
+   * Note: The number of CPU partitions is stored in the -1 entry */
+  range_M = &range_M_buffer[1];
+  range_N = &range_N_buffer[1];
+  range_M[-1] = nthreads_m;
+  range_N[-1] = nthreads_n;
   if (!range_m) {
     range_M[0] = 0;
     m          = args -> m;
@@ -603,34 +595,35 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     m          = range_m[1] - range_m[0];
   }
 
-  num_cpu_m  = 0;
-
+  /* Partition m into nthreads_m regions */
+  num_parts = 0;
   while (m > 0){
-
-    width  = blas_quickdivide(m + nthreads - num_cpu_m - 1, nthreads - num_cpu_m);
-
+    width = blas_quickdivide(m + nthreads_m - num_parts - 1, nthreads_m - num_parts);
     m -= width;
     if (m < 0) width = width + m;
-
-    range_M[num_cpu_m + 1] = range_M[num_cpu_m] + width;
-
-    num_cpu_m ++;
+    range_M[num_parts + 1] = range_M[num_parts] + width;
+    num_parts ++;
+  }
+  for (i = num_parts; i < MAX_CPU_NUMBER; i++) {
+    range_M[i + 1] = range_M[num_parts];
   }
 
-  for (i = 0; i < num_cpu_m; i++) {
+  /* Initialize parameters for parallel execution */
+  for (i = 0; i < nthreads; i++) {
     queue[i].mode    = mode;
     queue[i].routine = inner_thread;
     queue[i].args    = &newarg;
-    queue[i].range_m = &range_M[i];
-    queue[i].range_n = &range_N[0];
+    queue[i].range_m = range_M;
+    queue[i].range_n = range_N;
     queue[i].sa      = NULL;
     queue[i].sb      = NULL;
     queue[i].next    = &queue[i + 1];
   }
-
   queue[0].sa = sa;
   queue[0].sb = sb;
+  queue[nthreads - 1].next = NULL;
 
+  /* Iterate through steps of n */
   if (!range_n) {
     n_from = 0;
     n_to   = args -> n;
@@ -638,38 +631,38 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     n_from = range_n[0];
     n_to   = range_n[1];
   }
-
   for(js = n_from; js < n_to; js += GEMM_R * nthreads){
     n = n_to - js;
     if (n > GEMM_R * nthreads) n = GEMM_R * nthreads;
 
+    /* Partition (a step of) n into nthreads regions */
     range_N[0] = js;
-
-    num_cpu_n  = 0;
-
+    num_parts  = 0;
     while (n > 0){
-
-      width  = blas_quickdivide(n + nthreads - num_cpu_n - 1, nthreads - num_cpu_n);
-
+      width = blas_quickdivide(n + nthreads - num_parts - 1, nthreads - num_parts);
+      if (width < SWITCH_RATIO) {
+        width = SWITCH_RATIO;
+      }
       n -= width;
       if (n < 0) width = width + n;
-
-      range_N[num_cpu_n + 1] = range_N[num_cpu_n] + width;
-
-      num_cpu_n ++;
+      range_N[num_parts + 1] = range_N[num_parts] + width;
+      num_parts ++;
+    }
+    for (j = num_parts; j < MAX_CPU_NUMBER; j++) {
+      range_N[j + 1] = range_N[num_parts];
     }
 
-    for (j = 0; j < num_cpu_m; j++) {
-      for (i = 0; i < num_cpu_m; i++) {
+    /* Clear synchronization flags */
+    for (i = 0; i < MAX_CPU_NUMBER; i++) {
+      for (j = 0; j < MAX_CPU_NUMBER; j++) {
 	for (k = 0; k < DIVIDE_RATE; k++) {
-	  job[j].working[i][CACHE_LINE_SIZE * k] = 0;
+	  job[i].working[j][CACHE_LINE_SIZE * k] = 0;
 	}
       }
     }
 
-    queue[num_cpu_m - 1].next = NULL;
-
-    exec_blas(num_cpu_m, queue);
+    /* Execute parallel computation */
+    exec_blas(nthreads, queue);
   }
 
 #ifdef USE_ALLOC_HEAP
@@ -683,42 +676,43 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
   BLASLONG m = args -> m;
   BLASLONG n = args -> n;
-  BLASLONG nthreads = args -> nthreads;
+  BLASLONG nthreads_m, nthreads_n;
 
-  if (nthreads  == 1) {
-    GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
-    return 0;
-  }
-
+  /* Get dimensions from index ranges if available */
   if (range_m) {
-    BLASLONG m_from = *(((BLASLONG *)range_m) + 0);
-    BLASLONG m_to   = *(((BLASLONG *)range_m) + 1);
-
-    m = m_to - m_from;
+    m = range_m[1] - range_m[0];
   }
-
   if (range_n) {
-    BLASLONG n_from = *(((BLASLONG *)range_n) + 0);
-    BLASLONG n_to   = *(((BLASLONG *)range_n) + 1);
-
-    n = n_to - n_from;
+    n = range_n[1] - range_n[0];
   }
 
-  if ((m < 2 * SWITCH_RATIO) || (n < 2 * SWITCH_RATIO)) {
+  /* Partitions in m should have at least SWITCH_RATIO rows */
+  if (m < 2 * SWITCH_RATIO) {
+    nthreads_m = 1;
+  } else {
+    nthreads_m = args -> nthreads;
+    while (m < nthreads_m * SWITCH_RATIO) {
+      nthreads_m = nthreads_m / 2;
+    }
+  }
+
+  /* Partitions in n should have at most SWITCH_RATIO * nthreads_m columns */
+  if (n < SWITCH_RATIO * nthreads_m) {
+    nthreads_n = 1;
+  } else {
+    nthreads_n = (n + SWITCH_RATIO * nthreads_m - 1) / (SWITCH_RATIO * nthreads_m);
+    if (nthreads_m * nthreads_n > args -> nthreads) {
+      nthreads_n = blas_quickdivide(args -> nthreads, nthreads_m);
+    }
+  }
+
+  /* Execute serial or parallel computation */
+  if (nthreads_m * nthreads_n <= 1) {
     GEMM_LOCAL(args, range_m, range_n, sa, sb, 0);
-    return 0;
+  } else {
+    args -> nthreads = nthreads_m * nthreads_n;
+    gemm_driver(args, range_m, range_n, sa, sb, nthreads_m, nthreads_n);
   }
-
-  if (m < nthreads * SWITCH_RATIO) {
-    nthreads = blas_quickdivide(m, SWITCH_RATIO);
-  }
-  if (n < nthreads * SWITCH_RATIO) {
-    nthreads = blas_quickdivide(n, SWITCH_RATIO);
-  }
-
-  args -> nthreads = nthreads;
-  
-  gemm_driver(args, range_m, range_n, sa, sb, 0);
 
   return 0;
 }
