@@ -16,7 +16,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     ParseMakefileVars("${KERNELDIR}/KERNEL.${TARGET_CORE}")
 
     set(KERNEL_INTERFACE common_level1.h common_level2.h common_level3.h)
-    if(NOT ${NO_LAPACK})
+    if(NOT NO_LAPACK)
         set(KERNEL_INTERFACE ${KERNEL_INTERFACE} common_lapack.h)
     endif ()
 
@@ -500,12 +500,21 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
         set(KERNEL_TSUFFIX_CONTENTS "")
         foreach (KERNEL_INTERFACE_H ${KERNEL_INTERFACE})
             file(READ ${PROJECT_SOURCE_DIR}/${KERNEL_INTERFACE_H} KERNEL_INTERFACE_H_CONTENTS)
-            string(REGEX REPLACE "[ ]*\\(" "${TSUFFIX}(" KERNEL_INTERFACE_H_CONTENTS_NEW "${KERNEL_INTERFACE_H_CONTENTS}")
+            string(REGEX REPLACE " *\\(" "${TSUFFIX}(" KERNEL_INTERFACE_H_CONTENTS_NEW "${KERNEL_INTERFACE_H_CONTENTS}")
             set(KERNEL_TSUFFIX_CONTENTS "${KERNEL_TSUFFIX_CONTENTS}\n${KERNEL_INTERFACE_H_CONTENTS_NEW}")
         endforeach()
 	    file(WRITE ${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.tmp "${KERNEL_TSUFFIX_CONTENTS}")
         configure_file(${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.tmp ${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.h COPYONLY)
         file(REMOVE ${SETPARAM_TARGET_DIR}/kernel${TSUFFIX}.tmp)
+
+    foreach (float_type ${FLOAT_TYPES})
+      # a bit of metaprogramming here to pull out the appropriate KERNEL var
+      string(SUBSTRING ${float_type} 0 1 float_char)
+      GenerateNamedObjects("generic/neg_tcopy_${${float_char}GEMM_UNROLL_M}.c" "" "neg_tcopy" false "" ${TSUFFIX}  false ${float_type})
+      GenerateNamedObjects("generic/laswp_ncopy_${${float_char}GEMM_UNROLL_N}.c" "" "laswp_ncopy" false "" ${TSUFFIX}  false ${float_type})
+    endforeach ()
+
+
     endif ()
 
     add_library(kernel${TSUFFIX} OBJECT ${OPENBLAS_SRC})
