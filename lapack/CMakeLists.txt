@@ -53,7 +53,7 @@ GenerateNamedObjects("laswp/generic/laswp_k_4.c" "MINUS" "laswp_minus" false "" 
 #GenerateNamedObjects("laswp/generic/laswp_k_4.c" "MINUS" "laswp_minus" false "" ${TSUFFIX}  false 3)
 #endforeach ()
 
-if (SMP)
+if (USE_THREAD)
 
   if (USE_OPENMP)
     set(GETRF_SRC getrf/getrf_parallel_omp.c)
