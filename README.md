@@ -106,6 +106,9 @@ Please read GotoBLAS_01Readme.txt
 - **ARMV8**: Experimental
 - **ARM Cortex-A57**: Experimental
 
+#### PPC/PPC64
+- **POWER8**: Optmized Level-3 BLAS and some Level-1, only with USE_OPENMP=1
+
 #### IBM zEnterprise System:
 - **Z13**: Optimized Level-3 BLAS and Level-1,2 (double precision)
      
