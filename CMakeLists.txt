@@ -24,6 +24,7 @@ option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON
 endif()
 option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
 option(DYNAMIC_ARCH "Build with DYNAMIC_ARCH" OFF)
+option(BUILD_RELAPACK "Build with ReLAPACK (recursive LAPACK" OFF)
 #######
 if(BUILD_WITHOUT_LAPACK)
 set(NO_LAPACK 1)
@@ -55,6 +56,9 @@ endif ()
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
+  if(BUILD_RELAPACK)
+    list(APPEND SUBDIRS relapack/src)
+  endif()
 endif ()
 
 # set which float types we want to build for
@@ -141,7 +145,7 @@ endif()
 
 
 # add objects to the openblas lib
-add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
+add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
 # Handle MSVC exports
 if(MSVC AND BUILD_SHARED_LIBS)
