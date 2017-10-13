@@ -27,30 +27,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "common.h"
+#if defined(Z13)
 
-static void __attribute__ ((noinline)) zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
+static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
 
     __asm__ volatile(
-            "pfd 1, 0(%1) \n\t"
             "pfd 1, 0(%2) \n\t"
+            "pfd 1, 0(%3) \n\t"
             "vzero %%v24  \n\t"
             "vzero %%v25  \n\t"
             "vzero %%v26  \n\t"
             "vzero %%v27  \n\t"
-            "srlg %%r0,%0,3      \n\t"
+            "srlg %1,%1,3      \n\t"
             "xgr %%r1,%%r1       \n\t"
             ".align 16 \n\t"
             "1: \n\t"
-            "pfd 1, 256(%%r1,%1)     \n\t"
             "pfd 1, 256(%%r1,%2)     \n\t"
-            "vl  %%v16,  0(%%r1,%1)  \n\t"
-            "vl  %%v17, 16(%%r1,%1)  \n\t"
-            "vl  %%v18, 32(%%r1,%1)  \n\t"
-            "vl  %%v19, 48(%%r1,%1)  \n\t"
-            "vl  %%v28,  0(%%r1,%2)  \n\t"
-            "vl  %%v29, 16(%%r1,%2)  \n\t"
-            "vl  %%v30, 32(%%r1,%2)  \n\t"
-            "vl  %%v31, 48(%%r1,%2)  \n\t"
+            "pfd 1, 256(%%r1,%3)     \n\t"
+            "vl  %%v16,  0(%%r1,%2)  \n\t"
+            "vl  %%v17, 16(%%r1,%2)  \n\t"
+            "vl  %%v18, 32(%%r1,%2)  \n\t"
+            "vl  %%v19, 48(%%r1,%2)  \n\t"
+            "vl  %%v28,  0(%%r1,%3)  \n\t"
+            "vl  %%v29, 16(%%r1,%3)  \n\t"
+            "vl  %%v30, 32(%%r1,%3)  \n\t"
+            "vl  %%v31, 48(%%r1,%3)  \n\t"
             "vpdi %%v20,%%v16,%%v16,4 \n\t"
             "vpdi %%v21,%%v17,%%v17,4 \n\t"
             "vpdi %%v22,%%v18,%%v18,4 \n\t"
@@ -68,14 +69,14 @@ static void __attribute__ ((noinline)) zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT
 
 
 
-            "vl  %%v16, 64(%%r1,%1) \n\t"
-            "vl  %%v17, 80(%%r1,%1) \n\t"
-            "vl  %%v18, 96(%%r1,%1) \n\t"
-            "vl  %%v19,112(%%r1,%1) \n\t"
-            "vl  %%v28, 64(%%r1,%2) \n\t"
-            "vl  %%v29, 80(%%r1,%2) \n\t"
-            "vl  %%v30, 96(%%r1,%2) \n\t"
-            "vl  %%v31,112(%%r1,%2) \n\t"
+            "vl  %%v16, 64(%%r1,%2) \n\t"
+            "vl  %%v17, 80(%%r1,%2) \n\t"
+            "vl  %%v18, 96(%%r1,%2) \n\t"
+            "vl  %%v19,112(%%r1,%2) \n\t"
+            "vl  %%v28, 64(%%r1,%3) \n\t"
+            "vl  %%v29, 80(%%r1,%3) \n\t"
+            "vl  %%v30, 96(%%r1,%3) \n\t"
+            "vl  %%v31,112(%%r1,%3) \n\t"
             "vpdi %%v20,%%v16,%%v16,4 \n\t"
             "vpdi %%v21,%%v17,%%v17,4 \n\t"
             "vpdi %%v22,%%v18,%%v18,4 \n\t"
@@ -91,22 +92,24 @@ static void __attribute__ ((noinline)) zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT
 
 
             "la %%r1,128(%%r1) \n\t"
-            "brctg %%r0,1b     \n\t"
+            "brctg %1,1b     \n\t"
             "vfadb %%v24,%%v26,%%v24 \n\t"
             "vfadb %%v25,%%v25,%%v27 \n\t"
-            "vsteg %%v24,0(%3),0     \n\t"
-            "vsteg %%v24,8(%3),1     \n\t"
-            "vsteg %%v25,16(%3),1    \n\t"
-            "vsteg %%v25,24(%3),0    \n\t"
-            :
-            : "r"(n), "a"(x), "a"(y), "a"(d)
-            : "cc", "memory","r0","r1","v16",
+            "vsteg %%v24,0(%4),0     \n\t"
+            "vsteg %%v24,8(%4),1     \n\t"
+            "vsteg %%v25,16(%4),1    \n\t"
+            "vsteg %%v25,24(%4),0    \n\t"
+            : "=m"(*d) ,"+&r"(n) 
+            :  "a"(x), "a"(y), "a"(d)
+            : "cc", "r1","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31" 
             );
 
 }
 
-static __attribute__ ((noinline)) void zdot_kernel_8n(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
+#else
+
+static  void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
     BLASLONG register i = 0;
     FLOAT dot[4] = {0.0, 0.0, 0.0, 0.0};
     BLASLONG j = 0;
@@ -143,6 +146,8 @@ static __attribute__ ((noinline)) void zdot_kernel_8n(BLASLONG n, FLOAT *x, FLOA
     d[3] = dot[3];
 
 }
+
+#endif
 
 OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y) {
     BLASLONG i;

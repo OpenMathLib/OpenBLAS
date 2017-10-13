@@ -186,9 +186,7 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *xo, FLOAT *y, FLOAT *
 
 #endif
 
-
  
-static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest) __attribute__ ((noinline));
 
 static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
 {

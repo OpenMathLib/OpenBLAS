@@ -30,75 +30,76 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #if  defined(Z13)
-static void __attribute__ ((noinline))   ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
+static  FLOAT  ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y)
 {
-   
-                 __asm__ volatile( 
-                    "pfd 1, 0(%1) \n\t"
-                    "pfd 1, 0(%2) \n\t"      
-                    "vzero %%v24  \n\t"
-                    "vzero %%v25  \n\t" 
-                    "vzero %%v26  \n\t"
-                    "vzero %%v27  \n\t"                  
-                    "srlg  %%r0,%0,4    \n\t" 
-                    "xgr   %%r1,%%r1    \n\t"
-                    ".align 16 \n\t"    
-                    "1: \n\t"
-                    "pfd 1, 256(%%r1,%1) \n\t"
-                    "pfd 1, 256(%%r1,%2) \n\t"                
-                    "vl  %%v16, 0(%%r1,%1)  \n\t"
-                    "vl  %%v17, 16(%%r1,%1) \n\t"
-                    "vl  %%v18, 32(%%r1,%1) \n\t"
-                    "vl  %%v19, 48(%%r1,%1) \n\t"
+    FLOAT dot;
+         __asm__ volatile( 
+            "pfd 1, 0(%2) \n\t"
+            "pfd 1, 0(%3) \n\t"      
+            "vzero %%v24  \n\t"
+            "vzero %%v25  \n\t" 
+            "vzero %%v26  \n\t"
+            "vzero %%v27  \n\t"                  
+            "srlg  %1,%1,4    \n\t" 
+            "xgr   %%r1,%%r1    \n\t"
+            ".align 16 \n\t"    
+            "1: \n\t"
+            "pfd 1, 256(%%r1,%2) \n\t"
+            "pfd 1, 256(%%r1,%3) \n\t"                
+            "vl  %%v16, 0(%%r1,%2)  \n\t"
+            "vl  %%v17, 16(%%r1,%2) \n\t"
+            "vl  %%v18, 32(%%r1,%2) \n\t"
+            "vl  %%v19, 48(%%r1,%2) \n\t"
 
-                    "vl  %%v28, 0(%%r1,%2) \n\t"
-                    "vfmadb    %%v24,%%v16,%%v28,%%v24  \n\t"  
-                    "vl  %%v29, 16(%%r1,%2) \n\t"
-                    "vfmadb    %%v25,%%v17,%%v29,%%v25  \n\t"   
+            "vl  %%v28, 0(%%r1,%3) \n\t"
+            "vfmadb    %%v24,%%v16,%%v28,%%v24  \n\t"  
+            "vl  %%v29, 16(%%r1,%3) \n\t"
+            "vfmadb    %%v25,%%v17,%%v29,%%v25  \n\t"   
+     
+            "vl  %%v30, 32(%%r1,%3) \n\t"
+            "vfmadb    %%v26,%%v18,%%v30,%%v26  \n\t"      
+            "vl  %%v31, 48(%%r1,%3) \n\t" 
+            "vfmadb    %%v27,%%v19,%%v31,%%v27  \n\t"   
+ 
+            "vl  %%v16, 64(%%r1,%2)  \n\t"
+            "vl  %%v17, 80(%%r1,%2)  \n\t"
+            "vl  %%v18, 96(%%r1,%2)  \n\t"
+            "vl  %%v19, 112(%%r1,%2) \n\t"
+
+            "vl  %%v28, 64(%%r1,%3) \n\t"
+            "vfmadb    %%v24,%%v16,%%v28,%%v24  \n\t"  
+            "vl  %%v29, 80(%%r1,%3) \n\t"
+            "vfmadb    %%v25,%%v17,%%v29,%%v25  \n\t"  
+          
+     
+            "vl  %%v30, 96(%%r1,%3)  \n\t"
+            "vfmadb    %%v26,%%v18,%%v30,%%v26  \n\t" 
+            "vl  %%v31, 112(%%r1,%3) \n\t" 
+            "vfmadb    %%v27,%%v19,%%v31,%%v27  \n\t"  
              
-                    "vl  %%v30, 32(%%r1,%2) \n\t"
-                    "vfmadb    %%v26,%%v18,%%v30,%%v26  \n\t"      
-                    "vl  %%v31, 48(%%r1,%2) \n\t" 
-                    "vfmadb    %%v27,%%v19,%%v31,%%v27  \n\t"   
-         
-                    "vl  %%v16, 64(%%r1,%1)  \n\t"
-                    "vl  %%v17, 80(%%r1,%1)  \n\t"
-                    "vl  %%v18, 96(%%r1,%1)  \n\t"
-                    "vl  %%v19, 112(%%r1,%1) \n\t"
+            
+            "la %%r1,128(%%r1) \n\t"
+            "brctg %1,1b \n\t"
+            "vfadb   %%v24,%%v25,%%v24    \n\t"
+            "vfadb   %%v24,%%v26,%%v24    \n\t"
+            "vfadb   %%v24,%%v27,%%v24    \n\t"                 
+            "vrepg   %%v1,%%v24,1         \n\t"
+            "vfadb   %%v1,%%v24,%%v1      \n\t"  
+            "ldr %0,  %%f1     \n\t"  
+            : "=f"(dot) ,"+&r"(n)
+            : "a"(x),"a"(y) 
+            :"cc" , "r1","v16", "v17","v18","v19","v20","v21","v22","v23",
+            "v24","v25","v26","v27","v28","v29","v30","v31"
 
-                    "vl  %%v28, 64(%%r1,%2) \n\t"
-                    "vfmadb    %%v24,%%v16,%%v28,%%v24  \n\t"  
-                    "vl  %%v29, 80(%%r1,%2) \n\t"
-                    "vfmadb    %%v25,%%v17,%%v29,%%v25  \n\t"  
-                  
-             
-                    "vl  %%v30, 96(%%r1,%2)  \n\t"
-                    "vfmadb    %%v26,%%v18,%%v30,%%v26  \n\t" 
-                    "vl  %%v31, 112(%%r1,%2) \n\t" 
-                    "vfmadb    %%v27,%%v19,%%v31,%%v27  \n\t"  
-                     
-                    
-                    "la %%r1,128(%%r1) \n\t"
-                    "brctg %%r0,1b \n\t"
-                    "vfadb   %%v24,%%v25,%%v24    \n\t"
-                    "vfadb   %%v24,%%v26,%%v24    \n\t"
-                    "vfadb   %%v24,%%v27,%%v24    \n\t"                 
-                    "vrepg   %%v1,%%v24,1         \n\t"
-                    "vfadb   %%v1,%%v24,%%v1      \n\t"  
-                    " std    %%f1,0(%3)           \n\t"  
-                    :
-                    :"r"(n),"a"(x),"a"(y),"a"(d)
-                    :"cc" , "memory" ,"r0","r1","v16", "v17","v18","v19","v20","v21","v22","v23",
-                    "v24","v25","v26","v27","v28","v29","v30","v31"
-
-                 );
+         );
+    return dot;        
 
 }
 
 
 #else
 
-static void ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
+static FLOAT ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y )
 {
     BLASLONG register i = 0;
     FLOAT dot = 0.0;
@@ -117,8 +118,8 @@ static void ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
               i+=8 ;
 
        }
-       *d += dot;
-
+    return dot;
+    
 }
 
 #endif
@@ -136,9 +137,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
     {
 
         BLASLONG n1 = n & -16;
-
+        
         if ( n1 )
-            ddot_kernel_8(n1, x, y , &dot );
+            dot = ddot_kernel_8(n1, x, y  );
 
         i = n1;
         while(i < n)
