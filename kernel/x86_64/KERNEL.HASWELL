@@ -24,6 +24,8 @@ DDOTKERNEL = ddot.c
 CDOTKERNEL = cdot.c
 ZDOTKERNEL = zdot.c
 
+DSDOTKERNEL = sdot.c
+
 SAXPYKERNEL = saxpy.c
 DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
