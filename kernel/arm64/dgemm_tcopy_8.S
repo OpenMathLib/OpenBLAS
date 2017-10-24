@@ -454,13 +454,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lsl	M8, M, #6					// M8 = M * 8 * SIZE
 
-dgemm_tcopy_L8_BEGIN:
+.Ldgemm_tcopy_L8_BEGIN:
 	asr 	J, M, #3					// J = M / 4
 	cmp 	J, #0
-	ble	dgemm_tcopy_L4_BEGIN
+	ble	.Ldgemm_tcopy_L4_BEGIN
 
 	.align	5
-dgemm_tcopy_L8_M8_BEGIN:
+.Ldgemm_tcopy_L8_M8_BEGIN:
 
 	mov	A01, A
 	add	A02, A01, LDA
@@ -477,53 +477,53 @@ dgemm_tcopy_L8_M8_BEGIN:
 
 	asr	I, N, #3					// I = N / 8
 	cmp 	I, #0
-	ble	dgemm_tcopy_L8_M8_40
+	ble	.Ldgemm_tcopy_L8_M8_40
 
 	.align	5
-dgemm_tcopy_L8_M8_20:
+.Ldgemm_tcopy_L8_M8_20:
 
 	COPY8x8
 
 	subs	I , I , #1
-	bne	dgemm_tcopy_L8_M8_20
+	bne	.Ldgemm_tcopy_L8_M8_20
 
-dgemm_tcopy_L8_M8_40:
+.Ldgemm_tcopy_L8_M8_40:
 	tst	N , #4
-	ble	dgemm_tcopy_L8_M8_60
+	ble	.Ldgemm_tcopy_L8_M8_60
 
 	COPY4x8
 
-dgemm_tcopy_L8_M8_60:
+.Ldgemm_tcopy_L8_M8_60:
 
 	tst	N , #2
-	ble	dgemm_tcopy_L8_M8_80
+	ble	.Ldgemm_tcopy_L8_M8_80
 
 	COPY2x8
 
 
-dgemm_tcopy_L8_M8_80:
+.Ldgemm_tcopy_L8_M8_80:
 
 	tst	N, #1
-	ble	dgemm_tcopy_L8_M8_END
+	ble	.Ldgemm_tcopy_L8_M8_END
 
 	COPY1x8
 
 
-dgemm_tcopy_L8_M8_END:
+.Ldgemm_tcopy_L8_M8_END:
 
 	subs	J , J, #1						// j--
-	bne	dgemm_tcopy_L8_M8_BEGIN
+	bne	.Ldgemm_tcopy_L8_M8_BEGIN
 
 /*********************************************************************************************/
 
-dgemm_tcopy_L4_BEGIN:
+.Ldgemm_tcopy_L4_BEGIN:
 	tst	M, #7
-	ble	dgemm_tcopy_L999
+	ble	.Ldgemm_tcopy_L999
 
 	tst	M, #4
-	ble	dgemm_tcopy_L2_BEGIN
+	ble	.Ldgemm_tcopy_L2_BEGIN
 
-dgemm_tcopy_L4_M8_BEGIN:
+.Ldgemm_tcopy_L4_M8_BEGIN:
 
 	mov	A01, A
 	add	A02, A01, LDA
@@ -536,51 +536,51 @@ dgemm_tcopy_L4_M8_BEGIN:
 
 	asr	I, N, #3					// I = N / 8
 	cmp 	I, #0
-	ble	dgemm_tcopy_L4_M8_40
+	ble	.Ldgemm_tcopy_L4_M8_40
 
 	.align	5
-dgemm_tcopy_L4_M8_20:
+.Ldgemm_tcopy_L4_M8_20:
 
 	COPY8x4
 
 	subs	I , I , #1
-	bne	dgemm_tcopy_L4_M8_20
+	bne	.Ldgemm_tcopy_L4_M8_20
 
-dgemm_tcopy_L4_M8_40:
+.Ldgemm_tcopy_L4_M8_40:
 	tst	N , #4
-	ble	dgemm_tcopy_L4_M8_60
+	ble	.Ldgemm_tcopy_L4_M8_60
 
 	COPY4x4
 
-dgemm_tcopy_L4_M8_60:
+.Ldgemm_tcopy_L4_M8_60:
 
 	tst	N , #2
-	ble	dgemm_tcopy_L4_M8_80
+	ble	.Ldgemm_tcopy_L4_M8_80
 
 	COPY2x4
 
 
-dgemm_tcopy_L4_M8_80:
+.Ldgemm_tcopy_L4_M8_80:
 
 	tst	N, #1
-	ble	dgemm_tcopy_L4_M8_END
+	ble	.Ldgemm_tcopy_L4_M8_END
 
 	COPY1x4
 
 
-dgemm_tcopy_L4_M8_END:
+.Ldgemm_tcopy_L4_M8_END:
 
 /*********************************************************************************************/
 
-dgemm_tcopy_L2_BEGIN:
+.Ldgemm_tcopy_L2_BEGIN:
 
 	tst	M, #3
-	ble	dgemm_tcopy_L999
+	ble	.Ldgemm_tcopy_L999
 
 	tst	M, #2
-	ble	dgemm_tcopy_L1_BEGIN
+	ble	.Ldgemm_tcopy_L1_BEGIN
 
-dgemm_tcopy_L2_M8_BEGIN:
+.Ldgemm_tcopy_L2_M8_BEGIN:
 	mov	A01, A
 	add	A02, A01, LDA
 	add	A, A02, LDA
@@ -590,90 +590,90 @@ dgemm_tcopy_L2_M8_BEGIN:
 
 	asr	I, N, #3					// I = N / 8
 	cmp 	I, #0
-	ble	dgemm_tcopy_L2_M8_40
+	ble	.Ldgemm_tcopy_L2_M8_40
 
 	.align	5
-dgemm_tcopy_L2_M8_20:
+.Ldgemm_tcopy_L2_M8_20:
 
 	COPY8x2
 
 	subs	I , I , #1
-	bne	dgemm_tcopy_L2_M8_20
+	bne	.Ldgemm_tcopy_L2_M8_20
 
-dgemm_tcopy_L2_M8_40:
+.Ldgemm_tcopy_L2_M8_40:
 	tst	N , #4
-	ble	dgemm_tcopy_L2_M8_60
+	ble	.Ldgemm_tcopy_L2_M8_60
 
 	COPY4x2
 
-dgemm_tcopy_L2_M8_60:
+.Ldgemm_tcopy_L2_M8_60:
 
 	tst	N , #2
-	ble	dgemm_tcopy_L2_M8_80
+	ble	.Ldgemm_tcopy_L2_M8_80
 
 	COPY2x2
 
-dgemm_tcopy_L2_M8_80:
+.Ldgemm_tcopy_L2_M8_80:
 
 	tst	N , #1
-	ble	dgemm_tcopy_L2_M8_END
+	ble	.Ldgemm_tcopy_L2_M8_END
 
 	COPY1x2
 
 
-dgemm_tcopy_L2_M8_END:
+.Ldgemm_tcopy_L2_M8_END:
 
 
 /*********************************************************************************************/
 
-dgemm_tcopy_L1_BEGIN:
+.Ldgemm_tcopy_L1_BEGIN:
 
 	tst	M, #1
-	ble	dgemm_tcopy_L999
+	ble	.Ldgemm_tcopy_L999
 
 
-dgemm_tcopy_L1_M8_BEGIN:
+.Ldgemm_tcopy_L1_M8_BEGIN:
 
 	mov	A01, A						// A01 = A
 	mov	B01, B
 
 	asr	I, N, #3					// I = M / 8
 	cmp 	I, #0
-	ble	dgemm_tcopy_L1_M8_40
+	ble	.Ldgemm_tcopy_L1_M8_40
 
 	.align	5
-dgemm_tcopy_L1_M8_20:
+.Ldgemm_tcopy_L1_M8_20:
 
 	COPY8x1
 
 	subs	I , I , #1
-	bne	dgemm_tcopy_L1_M8_20
+	bne	.Ldgemm_tcopy_L1_M8_20
 
-dgemm_tcopy_L1_M8_40:
+.Ldgemm_tcopy_L1_M8_40:
 	tst	N , #4
-	ble	dgemm_tcopy_L1_M8_60
+	ble	.Ldgemm_tcopy_L1_M8_60
 
 	COPY4x1
 
-dgemm_tcopy_L1_M8_60:
+.Ldgemm_tcopy_L1_M8_60:
 
 	tst	N , #2
-	ble	dgemm_tcopy_L1_M8_80
+	ble	.Ldgemm_tcopy_L1_M8_80
 
 	COPY2x1
 
-dgemm_tcopy_L1_M8_80:
+.Ldgemm_tcopy_L1_M8_80:
 
 	tst	N , #1
-	ble	dgemm_tcopy_L1_M8_END
+	ble	.Ldgemm_tcopy_L1_M8_END
 
 	COPY1x1
 
 
-dgemm_tcopy_L1_M8_END:
+.Ldgemm_tcopy_L1_M8_END:
 
 
-dgemm_tcopy_L999:
+.Ldgemm_tcopy_L999:
 	mov	x0, #0						// set return value
 	RESTORE_REGS
 	ret

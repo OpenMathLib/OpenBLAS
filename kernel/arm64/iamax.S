@@ -230,62 +230,62 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	iamax_kernel_zero
+	ble	.Liamax_kernel_zero
 	cmp	INC_X, xzr
-	ble	iamax_kernel_zero
+	ble	.Liamax_kernel_zero
 
 	cmp	INC_X, #1
-	bne	iamax_kernel_S_BEGIN
+	bne	.Liamax_kernel_S_BEGIN
 	mov	x7, X
 
-iamax_kernel_F_BEGIN:
+.Liamax_kernel_F_BEGIN:
 
 	INIT_S
 
 	subs	N, N, #1
-	ble	iamax_kernel_L999
+	ble	.Liamax_kernel_L999
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	iamax_kernel_F1
+	beq	.Liamax_kernel_F1
 
 	add	Z, Z, #1
-iamax_kernel_F8:
+.Liamax_kernel_F8:
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	iamax_kernel_F8
+	bne	.Liamax_kernel_F8
 
 	KERNEL_F8_FINALIZE
 
 	sub	Z, Z, #1
-iamax_kernel_F1:
+.Liamax_kernel_F1:
 
 	ands	I, N, #7
-	ble	iamax_kernel_L999
+	ble	.Liamax_kernel_L999
 
-iamax_kernel_F10:
+.Liamax_kernel_F10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     iamax_kernel_F10
+        bne     .Liamax_kernel_F10
 
-	b	iamax_kernel_L999
+	b	.Liamax_kernel_L999
 
-iamax_kernel_S_BEGIN:
+.Liamax_kernel_S_BEGIN:
 
 	INIT_S
 
 	subs	N, N, #1
-	ble	iamax_kernel_L999
+	ble	.Liamax_kernel_L999
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	iamax_kernel_S1
+	ble	.Liamax_kernel_S1
 
-iamax_kernel_S4:
+.Liamax_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -293,25 +293,25 @@ iamax_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	iamax_kernel_S4
+	bne	.Liamax_kernel_S4
 
-iamax_kernel_S1:
+.Liamax_kernel_S1:
 
 	ands	I, N, #3
-	ble	iamax_kernel_L999
+	ble	.Liamax_kernel_L999
 
-iamax_kernel_S10:
+.Liamax_kernel_S10:
 
 	KERNEL_S1
 	subs	I, I, #1
-	bne	iamax_kernel_S10
+	bne	.Liamax_kernel_S10
 
-iamax_kernel_L999:
+.Liamax_kernel_L999:
 
 	mov	x0, INDEX
 	ret
 
-iamax_kernel_zero:
+.Liamax_kernel_zero:
 
 	mov	x0, xzr
 	ret

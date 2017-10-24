@@ -1035,7 +1035,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	PROLOGUE
 
-strmm_kernel_begin:
+.Lstrmm_kernel_begin:
 
 	.align 5
 	add	sp, sp, #-(11 * 16)
@@ -1066,11 +1066,11 @@ strmm_kernel_begin:
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #2		// J = J / 4
 	cmp 	counterJ, #0
-	ble	strmm_kernel_L2_BEGIN
+	ble	.Lstrmm_kernel_L2_BEGIN
 
 /******************************************************************************/
 
-strmm_kernel_L4_BEGIN:
+.Lstrmm_kernel_L4_BEGIN:
 	mov	pCRow0, pC
 	add	pCRow1, pCRow0, LDC
 	add	pCRow2, pCRow1, LDC
@@ -1084,15 +1084,15 @@ strmm_kernel_L4_BEGIN:
 #endif
 	mov	pA, origPA			// pA = start of A array
 
-strmm_kernel_L4_M16_BEGIN:
+.Lstrmm_kernel_L4_M16_BEGIN:
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #4		// counterI = counterI / 16
 	cmp 	counterI, #0
-	ble	strmm_kernel_L4_M8_BEGIN
+	ble	.Lstrmm_kernel_L4_M8_BEGIN
 
 	.align 5
-strmm_kernel_L4_M16_20:
+.Lstrmm_kernel_L4_M16_20:
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -1114,7 +1114,7 @@ strmm_kernel_L4_M16_20:
 
 	asr 	counterL , tempK, #3
 	cmp	counterL , #2
-	blt	strmm_kernel_L4_M16_32
+	blt	.Lstrmm_kernel_L4_M16_32
 
 	KERNEL16x4_I
 	KERNEL16x4_M2
@@ -1126,10 +1126,10 @@ strmm_kernel_L4_M16_20:
 	KERNEL16x4_M2
 
 	subs	counterL, counterL, #2
-	ble	strmm_kernel_L4_M16_22a
+	ble	.Lstrmm_kernel_L4_M16_22a
 
 	.align 5
-strmm_kernel_L4_M16_22:
+.Lstrmm_kernel_L4_M16_22:
 
 	KERNEL16x4_M1
 	KERNEL16x4_M2
@@ -1141,10 +1141,10 @@ strmm_kernel_L4_M16_22:
 	KERNEL16x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L4_M16_22
+	bgt	.Lstrmm_kernel_L4_M16_22
 
 	.align 5
-strmm_kernel_L4_M16_22a:
+.Lstrmm_kernel_L4_M16_22a:
 
 	KERNEL16x4_M1
 	KERNEL16x4_M2
@@ -1155,13 +1155,13 @@ strmm_kernel_L4_M16_22a:
 	KERNEL16x4_M1
 	KERNEL16x4_E
 
-	b	 strmm_kernel_L4_M16_44
+	b	 .Lstrmm_kernel_L4_M16_44
 
 	.align 5
-strmm_kernel_L4_M16_32:
+.Lstrmm_kernel_L4_M16_32:
 
 	tst	counterL, #1
-	ble	strmm_kernel_L4_M16_40
+	ble	.Lstrmm_kernel_L4_M16_40
 
 	KERNEL16x4_I
 	KERNEL16x4_M2
@@ -1172,25 +1172,25 @@ strmm_kernel_L4_M16_32:
 	KERNEL16x4_M1
 	KERNEL16x4_E
 
-	b	strmm_kernel_L4_M16_44
+	b	.Lstrmm_kernel_L4_M16_44
 
-strmm_kernel_L4_M16_40:
+.Lstrmm_kernel_L4_M16_40:
 
 	INIT16x4
 
-strmm_kernel_L4_M16_44:
+.Lstrmm_kernel_L4_M16_44:
 
 	ands	counterL , tempK, #7
-	ble	strmm_kernel_L4_M16_100
+	ble	.Lstrmm_kernel_L4_M16_100
 
 	.align 5
-strmm_kernel_L4_M16_46:
+.Lstrmm_kernel_L4_M16_46:
 
 	KERNEL16x4_SUB
 	subs	counterL, counterL, #1
-	bne	strmm_kernel_L4_M16_46
+	bne	.Lstrmm_kernel_L4_M16_46
 
-strmm_kernel_L4_M16_100:
+.Lstrmm_kernel_L4_M16_100:
 
 	SAVE16x4
 
@@ -1213,22 +1213,22 @@ strmm_kernel_L4_M16_100:
 	prfm	PLDL1KEEP, [pA, #64]
 	prfm	PLDL1KEEP, [origPB]
 
-strmm_kernel_L4_M16_END:
+.Lstrmm_kernel_L4_M16_END:
 	subs	counterI, counterI, #1
-	bne	strmm_kernel_L4_M16_20
+	bne	.Lstrmm_kernel_L4_M16_20
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L4_M8_BEGIN:
+.Lstrmm_kernel_L4_M8_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #15
-	ble	strmm_kernel_L4_END
+	ble	.Lstrmm_kernel_L4_END
 
 	tst	counterI, #8
-	ble	strmm_kernel_L4_M4_BEGIN
+	ble	.Lstrmm_kernel_L4_M4_BEGIN
 
-strmm_kernel_L4_M8_20:
+.Lstrmm_kernel_L4_M8_20:
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -1250,54 +1250,54 @@ strmm_kernel_L4_M8_20:
 
 	asr 	counterL , tempK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	strmm_kernel_L4_M8_32
+	blt	.Lstrmm_kernel_L4_M8_32
 
 	KERNEL8x4_I				// do one in the K
 	KERNEL8x4_M2				// do another in the K
 
 	subs	counterL, counterL, #2
-	ble	strmm_kernel_L4_M8_22a
+	ble	.Lstrmm_kernel_L4_M8_22a
 	.align 5
 
-strmm_kernel_L4_M8_22:
+.Lstrmm_kernel_L4_M8_22:
 
 	KERNEL8x4_M1
 	KERNEL8x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L4_M8_22
+	bgt	.Lstrmm_kernel_L4_M8_22
 
-strmm_kernel_L4_M8_22a:
+.Lstrmm_kernel_L4_M8_22a:
 
 	KERNEL8x4_M1
 	KERNEL8x4_E
 
-	b	 strmm_kernel_L4_M8_44
+	b	 .Lstrmm_kernel_L4_M8_44
 
-strmm_kernel_L4_M8_32:
+.Lstrmm_kernel_L4_M8_32:
 
 	tst	counterL, #1
-	ble	strmm_kernel_L4_M8_40
+	ble	.Lstrmm_kernel_L4_M8_40
 
 	KERNEL8x4_I
 	KERNEL8x4_E
 
-	b	strmm_kernel_L4_M8_44
+	b	.Lstrmm_kernel_L4_M8_44
 
-strmm_kernel_L4_M8_40:
+.Lstrmm_kernel_L4_M8_40:
 
 	INIT8x4
 
-strmm_kernel_L4_M8_44:
+.Lstrmm_kernel_L4_M8_44:
 
 	ands	counterL , tempK, #1
-	ble	strmm_kernel_L4_M8_100
+	ble	.Lstrmm_kernel_L4_M8_100
 
-strmm_kernel_L4_M8_46:
+.Lstrmm_kernel_L4_M8_46:
 
 	KERNEL8x4_SUB
 
-strmm_kernel_L4_M8_100:
+.Lstrmm_kernel_L4_M8_100:
 
 	SAVE8x4
 
@@ -1317,20 +1317,20 @@ strmm_kernel_L4_M8_100:
 	add	tempOffset, tempOffset, #8
 #endif
 
-strmm_kernel_L4_M8_END:
+.Lstrmm_kernel_L4_M8_END:
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L4_M4_BEGIN:
+.Lstrmm_kernel_L4_M4_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	strmm_kernel_L4_END
+	ble	.Lstrmm_kernel_L4_END
 
 	tst	counterI, #4
-	ble	strmm_kernel_L4_M2_BEGIN
+	ble	.Lstrmm_kernel_L4_M2_BEGIN
 
-strmm_kernel_L4_M4_20:
+.Lstrmm_kernel_L4_M4_20:
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -1350,54 +1350,54 @@ strmm_kernel_L4_M4_20:
 #endif
 	asr 	counterL , tempK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	strmm_kernel_L4_M4_32
+	blt	.Lstrmm_kernel_L4_M4_32
 
 	KERNEL4x4_I				// do one in the K
 	KERNEL4x4_M2				// do another in the K
 
 	subs	counterL, counterL, #2
-	ble	strmm_kernel_L4_M4_22a
+	ble	.Lstrmm_kernel_L4_M4_22a
 	.align 5
 
-strmm_kernel_L4_M4_22:
+.Lstrmm_kernel_L4_M4_22:
 
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L4_M4_22
+	bgt	.Lstrmm_kernel_L4_M4_22
 
-strmm_kernel_L4_M4_22a:
+.Lstrmm_kernel_L4_M4_22a:
 
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
-	b	 strmm_kernel_L4_M4_44
+	b	 .Lstrmm_kernel_L4_M4_44
 
-strmm_kernel_L4_M4_32:
+.Lstrmm_kernel_L4_M4_32:
 
 	tst	counterL, #1
-	ble	strmm_kernel_L4_M4_40
+	ble	.Lstrmm_kernel_L4_M4_40
 
 	KERNEL4x4_I
 	KERNEL4x4_E
 
-	b	strmm_kernel_L4_M4_44
+	b	.Lstrmm_kernel_L4_M4_44
 
-strmm_kernel_L4_M4_40:
+.Lstrmm_kernel_L4_M4_40:
 
 	INIT4x4
 
-strmm_kernel_L4_M4_44:
+.Lstrmm_kernel_L4_M4_44:
 
 	ands	counterL , tempK, #1
-	ble	strmm_kernel_L4_M4_100
+	ble	.Lstrmm_kernel_L4_M4_100
 
-strmm_kernel_L4_M4_46:
+.Lstrmm_kernel_L4_M4_46:
 
 	KERNEL4x4_SUB
 
-strmm_kernel_L4_M4_100:
+.Lstrmm_kernel_L4_M4_100:
 
 	SAVE4x4
 
@@ -1415,20 +1415,20 @@ strmm_kernel_L4_M4_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #4
 #endif
-strmm_kernel_L4_M4_END:
+.Lstrmm_kernel_L4_M4_END:
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L4_M2_BEGIN:
+.Lstrmm_kernel_L4_M2_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	strmm_kernel_L4_END
+	ble	.Lstrmm_kernel_L4_END
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	strmm_kernel_L4_M1_BEGIN
+	ble	.Lstrmm_kernel_L4_M1_BEGIN
 
-strmm_kernel_L4_M2_20:
+.Lstrmm_kernel_L4_M2_20:
 
 	INIT2x4
 
@@ -1451,9 +1451,9 @@ strmm_kernel_L4_M2_20:
 #endif
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	strmm_kernel_L4_M2_40
+	ble	.Lstrmm_kernel_L4_M2_40
 
-strmm_kernel_L4_M2_22:
+.Lstrmm_kernel_L4_M2_22:
 
 	KERNEL2x4_SUB
 	KERNEL2x4_SUB
@@ -1466,22 +1466,22 @@ strmm_kernel_L4_M2_22:
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L4_M2_22
+	bgt	.Lstrmm_kernel_L4_M2_22
 
 
-strmm_kernel_L4_M2_40:
+.Lstrmm_kernel_L4_M2_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L4_M2_100
+	ble	.Lstrmm_kernel_L4_M2_100
 
-strmm_kernel_L4_M2_42:
+.Lstrmm_kernel_L4_M2_42:
 
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L4_M2_42
+	bgt	.Lstrmm_kernel_L4_M2_42
 
-strmm_kernel_L4_M2_100:
+.Lstrmm_kernel_L4_M2_100:
 
 	SAVE2x4
 
@@ -1500,15 +1500,15 @@ strmm_kernel_L4_M2_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #2
 #endif
-strmm_kernel_L4_M2_END:
+.Lstrmm_kernel_L4_M2_END:
 
 
-strmm_kernel_L4_M1_BEGIN:
+.Lstrmm_kernel_L4_M1_BEGIN:
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	strmm_kernel_L4_END
+	ble	.Lstrmm_kernel_L4_END
 
-strmm_kernel_L4_M1_20:
+.Lstrmm_kernel_L4_M1_20:
 
 	INIT1x4
 
@@ -1531,9 +1531,9 @@ strmm_kernel_L4_M1_20:
 #endif
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	strmm_kernel_L4_M1_40
+	ble	.Lstrmm_kernel_L4_M1_40
 
-strmm_kernel_L4_M1_22:
+.Lstrmm_kernel_L4_M1_22:
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
@@ -1545,22 +1545,22 @@ strmm_kernel_L4_M1_22:
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L4_M1_22
+	bgt	.Lstrmm_kernel_L4_M1_22
 
 
-strmm_kernel_L4_M1_40:
+.Lstrmm_kernel_L4_M1_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L4_M1_100
+	ble	.Lstrmm_kernel_L4_M1_100
 
-strmm_kernel_L4_M1_42:
+.Lstrmm_kernel_L4_M1_42:
 
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L4_M1_42
+	bgt	.Lstrmm_kernel_L4_M1_42
 
-strmm_kernel_L4_M1_100:
+.Lstrmm_kernel_L4_M1_100:
 
 	SAVE1x4
 
@@ -1579,26 +1579,26 @@ strmm_kernel_L4_M1_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #1
 #endif
-strmm_kernel_L4_END:
+.Lstrmm_kernel_L4_END:
 	add	origPB, origPB, origK, lsl #4	// B = B + K * 4 * 4
 #if !defined(LEFT)
 	add	tempOffset, tempOffset, #4
 #endif
 
 	subs	counterJ, counterJ , #1		// j--
-	bgt	strmm_kernel_L4_BEGIN
+	bgt	.Lstrmm_kernel_L4_BEGIN
 
 
 /******************************************************************************/
 
-strmm_kernel_L2_BEGIN:   // less than 2 left in N direction
+.Lstrmm_kernel_L2_BEGIN:   // less than 2 left in N direction
 
 	mov	counterJ , origN
 	tst	counterJ , #3
-	ble	strmm_kernel_L999
+	ble	.Lstrmm_kernel_L999
 
 	tst	counterJ , #2
-	ble	strmm_kernel_L1_BEGIN
+	ble	.Lstrmm_kernel_L1_BEGIN
 
 	mov	pCRow0, pC			// pCRow0 = pC
 
@@ -1609,14 +1609,14 @@ strmm_kernel_L2_BEGIN:   // less than 2 left in N direction
 #endif
 	mov	pA, origPA			// pA = A
 
-strmm_kernel_L2_M16_BEGIN:
+.Lstrmm_kernel_L2_M16_BEGIN:
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #4		// counterI = counterI / 16
 	cmp	counterI,#0
-	ble	strmm_kernel_L2_M8_BEGIN
+	ble	.Lstrmm_kernel_L2_M8_BEGIN
 
-strmm_kernel_L2_M16_20:
+.Lstrmm_kernel_L2_M16_20:
 
 	INIT16x2
 
@@ -1640,10 +1640,10 @@ strmm_kernel_L2_M16_20:
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	strmm_kernel_L2_M16_40
+	ble	.Lstrmm_kernel_L2_M16_40
 	.align 5
 
-strmm_kernel_L2_M16_22:
+.Lstrmm_kernel_L2_M16_22:
 	KERNEL16x2_SUB
 	KERNEL16x2_SUB
 	KERNEL16x2_SUB
@@ -1655,22 +1655,22 @@ strmm_kernel_L2_M16_22:
 	KERNEL16x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M16_22
+	bgt	.Lstrmm_kernel_L2_M16_22
 
 
-strmm_kernel_L2_M16_40:
+.Lstrmm_kernel_L2_M16_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L2_M16_100
+	ble	.Lstrmm_kernel_L2_M16_100
 
-strmm_kernel_L2_M16_42:
+.Lstrmm_kernel_L2_M16_42:
 
 	KERNEL16x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M16_42
+	bgt	.Lstrmm_kernel_L2_M16_42
 
-strmm_kernel_L2_M16_100:
+.Lstrmm_kernel_L2_M16_100:
 
 	SAVE16x2
 
@@ -1690,22 +1690,22 @@ strmm_kernel_L2_M16_100:
 	add	tempOffset, tempOffset, #16
 #endif
 
-strmm_kernel_L2_M16_END:
+.Lstrmm_kernel_L2_M16_END:
 
 	subs	counterI, counterI, #1
-	bgt	strmm_kernel_L2_M16_20
+	bgt	.Lstrmm_kernel_L2_M16_20
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L2_M8_BEGIN:
+.Lstrmm_kernel_L2_M8_BEGIN:
 	mov	counterI, origM
 	tst	counterI , #15
-	ble	strmm_kernel_L2_END
+	ble	.Lstrmm_kernel_L2_END
 
 	tst	counterI, #8
-	ble	strmm_kernel_L2_M4_BEGIN
+	ble	.Lstrmm_kernel_L2_M4_BEGIN
 
-strmm_kernel_L2_M8_20:
+.Lstrmm_kernel_L2_M8_20:
 
 	INIT8x2
 
@@ -1729,10 +1729,10 @@ strmm_kernel_L2_M8_20:
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	strmm_kernel_L2_M8_40
+	ble	.Lstrmm_kernel_L2_M8_40
 	.align 5
 
-strmm_kernel_L2_M8_22:
+.Lstrmm_kernel_L2_M8_22:
 	KERNEL8x2_SUB
 	KERNEL8x2_SUB
 	KERNEL8x2_SUB
@@ -1744,22 +1744,22 @@ strmm_kernel_L2_M8_22:
 	KERNEL8x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M8_22
+	bgt	.Lstrmm_kernel_L2_M8_22
 
 
-strmm_kernel_L2_M8_40:
+.Lstrmm_kernel_L2_M8_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L2_M8_100
+	ble	.Lstrmm_kernel_L2_M8_100
 
-strmm_kernel_L2_M8_42:
+.Lstrmm_kernel_L2_M8_42:
 
 	KERNEL8x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M8_42
+	bgt	.Lstrmm_kernel_L2_M8_42
 
-strmm_kernel_L2_M8_100:
+.Lstrmm_kernel_L2_M8_100:
 
 	SAVE8x2
 
@@ -1779,19 +1779,19 @@ strmm_kernel_L2_M8_100:
 	add	tempOffset, tempOffset, #8
 #endif
 
-strmm_kernel_L2_M8_END:
+.Lstrmm_kernel_L2_M8_END:
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L2_M4_BEGIN:
+.Lstrmm_kernel_L2_M4_BEGIN:
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	strmm_kernel_L2_END
+	ble	.Lstrmm_kernel_L2_END
 
 	tst	counterI, #4
-	ble	strmm_kernel_L2_M2_BEGIN
+	ble	.Lstrmm_kernel_L2_M2_BEGIN
 
-strmm_kernel_L2_M4_20:
+.Lstrmm_kernel_L2_M4_20:
 
 	INIT4x2
 
@@ -1814,10 +1814,10 @@ strmm_kernel_L2_M4_20:
 #endif
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	strmm_kernel_L2_M4_40
+	ble	.Lstrmm_kernel_L2_M4_40
 	.align 5
 
-strmm_kernel_L2_M4_22:
+.Lstrmm_kernel_L2_M4_22:
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
@@ -1829,22 +1829,22 @@ strmm_kernel_L2_M4_22:
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M4_22
+	bgt	.Lstrmm_kernel_L2_M4_22
 
 
-strmm_kernel_L2_M4_40:
+.Lstrmm_kernel_L2_M4_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L2_M4_100
+	ble	.Lstrmm_kernel_L2_M4_100
 
-strmm_kernel_L2_M4_42:
+.Lstrmm_kernel_L2_M4_42:
 
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M4_42
+	bgt	.Lstrmm_kernel_L2_M4_42
 
-strmm_kernel_L2_M4_100:
+.Lstrmm_kernel_L2_M4_100:
 
 	SAVE4x2
 
@@ -1863,21 +1863,21 @@ strmm_kernel_L2_M4_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #4
 #endif
-strmm_kernel_L2_M4_END:
+.Lstrmm_kernel_L2_M4_END:
 
 //------------------------------------------------------------------------------
 
 
-strmm_kernel_L2_M2_BEGIN:
+.Lstrmm_kernel_L2_M2_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	strmm_kernel_L2_END
+	ble	.Lstrmm_kernel_L2_END
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	strmm_kernel_L2_M1_BEGIN
+	ble	.Lstrmm_kernel_L2_M1_BEGIN
 
-strmm_kernel_L2_M2_20:
+.Lstrmm_kernel_L2_M2_20:
 
 	INIT2x2
 
@@ -1900,9 +1900,9 @@ strmm_kernel_L2_M2_20:
 #endif
 	asr	counterL , tempK, #3		// counterL = counterL / 8
         cmp	counterL,#0
-	ble	strmm_kernel_L2_M2_40
+	ble	.Lstrmm_kernel_L2_M2_40
 
-strmm_kernel_L2_M2_22:
+.Lstrmm_kernel_L2_M2_22:
 
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
@@ -1915,22 +1915,22 @@ strmm_kernel_L2_M2_22:
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M2_22
+	bgt	.Lstrmm_kernel_L2_M2_22
 
 
-strmm_kernel_L2_M2_40:
+.Lstrmm_kernel_L2_M2_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L2_M2_100
+	ble	.Lstrmm_kernel_L2_M2_100
 
-strmm_kernel_L2_M2_42:
+.Lstrmm_kernel_L2_M2_42:
 
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M2_42
+	bgt	.Lstrmm_kernel_L2_M2_42
 
-strmm_kernel_L2_M2_100:
+.Lstrmm_kernel_L2_M2_100:
 
 	SAVE2x2
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
@@ -1949,15 +1949,15 @@ strmm_kernel_L2_M2_100:
 	add	tempOffset, tempOffset, #2
 #endif
 
-strmm_kernel_L2_M2_END:
+.Lstrmm_kernel_L2_M2_END:
 
 
-strmm_kernel_L2_M1_BEGIN:
+.Lstrmm_kernel_L2_M1_BEGIN:
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	strmm_kernel_L2_END
+	ble	.Lstrmm_kernel_L2_END
 
-strmm_kernel_L2_M1_20:
+.Lstrmm_kernel_L2_M1_20:
 
 	INIT1x2
 
@@ -1980,9 +1980,9 @@ strmm_kernel_L2_M1_20:
 #endif
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
         cmp     counterL, #0
-	ble	strmm_kernel_L2_M1_40
+	ble	.Lstrmm_kernel_L2_M1_40
 
-strmm_kernel_L2_M1_22:
+.Lstrmm_kernel_L2_M1_22:
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
@@ -1994,22 +1994,22 @@ strmm_kernel_L2_M1_22:
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M1_22
+	bgt	.Lstrmm_kernel_L2_M1_22
 
 
-strmm_kernel_L2_M1_40:
+.Lstrmm_kernel_L2_M1_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L2_M1_100
+	ble	.Lstrmm_kernel_L2_M1_100
 
-strmm_kernel_L2_M1_42:
+.Lstrmm_kernel_L2_M1_42:
 
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L2_M1_42
+	bgt	.Lstrmm_kernel_L2_M1_42
 
-strmm_kernel_L2_M1_100:
+.Lstrmm_kernel_L2_M1_100:
 
 	SAVE1x2
 
@@ -2028,7 +2028,7 @@ strmm_kernel_L2_M1_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #1
 #endif
-strmm_kernel_L2_END:
+.Lstrmm_kernel_L2_END:
 #if !defined(LEFT)
 	add	tempOffset, tempOffset, #2
 #endif
@@ -2036,11 +2036,11 @@ strmm_kernel_L2_END:
 
 /******************************************************************************/
 
-strmm_kernel_L1_BEGIN:
+.Lstrmm_kernel_L1_BEGIN:
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	strmm_kernel_L999 // done
+	ble	.Lstrmm_kernel_L999 // done
 
 
 	mov	pCRow0, pC			// pCRow0 = C
@@ -2051,14 +2051,14 @@ strmm_kernel_L1_BEGIN:
 #endif
 	mov	pA, origPA			// pA = A
 
-strmm_kernel_L1_M16_BEGIN:
+.Lstrmm_kernel_L1_M16_BEGIN:
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #4		// counterI = counterI / 16
 	cmp	counterI, #0
-	ble	strmm_kernel_L1_M8_BEGIN
+	ble	.Lstrmm_kernel_L1_M8_BEGIN
 
-strmm_kernel_L1_M16_20:
+.Lstrmm_kernel_L1_M16_20:
 
 	INIT16x1
 
@@ -2082,10 +2082,10 @@ strmm_kernel_L1_M16_20:
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	strmm_kernel_L1_M16_40
+	ble	.Lstrmm_kernel_L1_M16_40
 	.align 5
 
-strmm_kernel_L1_M16_22:
+.Lstrmm_kernel_L1_M16_22:
 	KERNEL16x1_SUB
 	KERNEL16x1_SUB
 	KERNEL16x1_SUB
@@ -2097,22 +2097,22 @@ strmm_kernel_L1_M16_22:
 	KERNEL16x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M16_22
+	bgt	.Lstrmm_kernel_L1_M16_22
 
 
-strmm_kernel_L1_M16_40:
+.Lstrmm_kernel_L1_M16_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L1_M16_100
+	ble	.Lstrmm_kernel_L1_M16_100
 
-strmm_kernel_L1_M16_42:
+.Lstrmm_kernel_L1_M16_42:
 
 	KERNEL16x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M16_42
+	bgt	.Lstrmm_kernel_L1_M16_42
 
-strmm_kernel_L1_M16_100:
+.Lstrmm_kernel_L1_M16_100:
 
 	SAVE16x1
 
@@ -2132,23 +2132,23 @@ strmm_kernel_L1_M16_100:
 	add	tempOffset, tempOffset, #16
 #endif
 
-strmm_kernel_L1_M16_END:
+.Lstrmm_kernel_L1_M16_END:
 
 	subs	counterI, counterI, #1
-	bgt	strmm_kernel_L1_M16_20
+	bgt	.Lstrmm_kernel_L1_M16_20
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L1_M8_BEGIN:
+.Lstrmm_kernel_L1_M8_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #15
-	ble	strmm_kernel_L1_END
+	ble	.Lstrmm_kernel_L1_END
 
 	tst	counterI, #8
-	ble	strmm_kernel_L1_M4_BEGIN
+	ble	.Lstrmm_kernel_L1_M4_BEGIN
 
-strmm_kernel_L1_M8_20:
+.Lstrmm_kernel_L1_M8_20:
 
 	INIT8x1
 
@@ -2172,10 +2172,10 @@ strmm_kernel_L1_M8_20:
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	strmm_kernel_L1_M8_40
+	ble	.Lstrmm_kernel_L1_M8_40
 	.align 5
 
-strmm_kernel_L1_M8_22:
+.Lstrmm_kernel_L1_M8_22:
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
@@ -2187,22 +2187,22 @@ strmm_kernel_L1_M8_22:
 	KERNEL8x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M8_22
+	bgt	.Lstrmm_kernel_L1_M8_22
 
 
-strmm_kernel_L1_M8_40:
+.Lstrmm_kernel_L1_M8_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L1_M8_100
+	ble	.Lstrmm_kernel_L1_M8_100
 
-strmm_kernel_L1_M8_42:
+.Lstrmm_kernel_L1_M8_42:
 
 	KERNEL8x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M8_42
+	bgt	.Lstrmm_kernel_L1_M8_42
 
-strmm_kernel_L1_M8_100:
+.Lstrmm_kernel_L1_M8_100:
 
 	SAVE8x1
 
@@ -2222,19 +2222,19 @@ strmm_kernel_L1_M8_100:
 	add	tempOffset, tempOffset, #8
 #endif
 
-strmm_kernel_L1_M8_END:
+.Lstrmm_kernel_L1_M8_END:
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L1_M4_BEGIN:
+.Lstrmm_kernel_L1_M4_BEGIN:
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	strmm_kernel_L1_END
+	ble	.Lstrmm_kernel_L1_END
 
 	tst	counterI, #4
-	ble	strmm_kernel_L1_M2_BEGIN
+	ble	.Lstrmm_kernel_L1_M2_BEGIN
 
-strmm_kernel_L1_M4_20:
+.Lstrmm_kernel_L1_M4_20:
 
 	INIT4x1
 
@@ -2257,10 +2257,10 @@ strmm_kernel_L1_M4_20:
 #endif
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	strmm_kernel_L1_M4_40
+	ble	.Lstrmm_kernel_L1_M4_40
 	.align 5
 
-strmm_kernel_L1_M4_22:
+.Lstrmm_kernel_L1_M4_22:
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -2272,22 +2272,22 @@ strmm_kernel_L1_M4_22:
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M4_22
+	bgt	.Lstrmm_kernel_L1_M4_22
 
 
-strmm_kernel_L1_M4_40:
+.Lstrmm_kernel_L1_M4_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L1_M4_100
+	ble	.Lstrmm_kernel_L1_M4_100
 
-strmm_kernel_L1_M4_42:
+.Lstrmm_kernel_L1_M4_42:
 
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M4_42
+	bgt	.Lstrmm_kernel_L1_M4_42
 
-strmm_kernel_L1_M4_100:
+.Lstrmm_kernel_L1_M4_100:
 
 	SAVE4x1
 
@@ -2306,20 +2306,20 @@ strmm_kernel_L1_M4_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #4
 #endif
-strmm_kernel_L1_M4_END:
+.Lstrmm_kernel_L1_M4_END:
 
 //------------------------------------------------------------------------------
 
-strmm_kernel_L1_M2_BEGIN:
+.Lstrmm_kernel_L1_M2_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	strmm_kernel_L1_END
+	ble	.Lstrmm_kernel_L1_END
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	strmm_kernel_L1_M1_BEGIN
+	ble	.Lstrmm_kernel_L1_M1_BEGIN
 
-strmm_kernel_L1_M2_20:
+.Lstrmm_kernel_L1_M2_20:
 
 	INIT2x1
 
@@ -2342,9 +2342,9 @@ strmm_kernel_L1_M2_20:
 #endif
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	strmm_kernel_L1_M2_40
+	ble	.Lstrmm_kernel_L1_M2_40
 
-strmm_kernel_L1_M2_22:
+.Lstrmm_kernel_L1_M2_22:
 
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
@@ -2357,22 +2357,22 @@ strmm_kernel_L1_M2_22:
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M2_22
+	bgt	.Lstrmm_kernel_L1_M2_22
 
 
-strmm_kernel_L1_M2_40:
+.Lstrmm_kernel_L1_M2_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L1_M2_100
+	ble	.Lstrmm_kernel_L1_M2_100
 
-strmm_kernel_L1_M2_42:
+.Lstrmm_kernel_L1_M2_42:
 
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M2_42
+	bgt	.Lstrmm_kernel_L1_M2_42
 
-strmm_kernel_L1_M2_100:
+.Lstrmm_kernel_L1_M2_100:
 
 	SAVE2x1
 
@@ -2391,15 +2391,15 @@ strmm_kernel_L1_M2_100:
 #if defined(LEFT)
 	add	tempOffset, tempOffset, #2
 #endif
-strmm_kernel_L1_M2_END:
+.Lstrmm_kernel_L1_M2_END:
 
 
-strmm_kernel_L1_M1_BEGIN:
+.Lstrmm_kernel_L1_M1_BEGIN:
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	strmm_kernel_L1_END
+	ble	.Lstrmm_kernel_L1_END
 
-strmm_kernel_L1_M1_20:
+.Lstrmm_kernel_L1_M1_20:
 
 	INIT1x1
 
@@ -2422,9 +2422,9 @@ strmm_kernel_L1_M1_20:
 #endif
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	strmm_kernel_L1_M1_40
+	ble	.Lstrmm_kernel_L1_M1_40
 
-strmm_kernel_L1_M1_22:
+.Lstrmm_kernel_L1_M1_22:
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
@@ -2436,28 +2436,28 @@ strmm_kernel_L1_M1_22:
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M1_22
+	bgt	.Lstrmm_kernel_L1_M1_22
 
 
-strmm_kernel_L1_M1_40:
+.Lstrmm_kernel_L1_M1_40:
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	strmm_kernel_L1_M1_100
+	ble	.Lstrmm_kernel_L1_M1_100
 
-strmm_kernel_L1_M1_42:
+.Lstrmm_kernel_L1_M1_42:
 
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	strmm_kernel_L1_M1_42
+	bgt	.Lstrmm_kernel_L1_M1_42
 
-strmm_kernel_L1_M1_100:
+.Lstrmm_kernel_L1_M1_100:
 
 	SAVE1x1
 
-strmm_kernel_L1_END:
+.Lstrmm_kernel_L1_END:
 
-strmm_kernel_L999:
+.Lstrmm_kernel_L999:
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]

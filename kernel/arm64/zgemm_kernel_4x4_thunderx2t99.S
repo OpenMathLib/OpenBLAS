@@ -1109,9 +1109,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #2		// J = J / 4
 	cmp 	counterJ, #0
-	ble	zgemm_kernel_L2_BEGIN
+	ble	.Lzgemm_kernel_L2_BEGIN
 
-zgemm_kernel_L4_BEGIN:
+.Lzgemm_kernel_L4_BEGIN:
 	mov	pCRow0, pC
 	add	pCRow1, pCRow0, LDC
 	add	pCRow2, pCRow1, LDC
@@ -1121,20 +1121,20 @@ zgemm_kernel_L4_BEGIN:
 
 	mov	pA, origPA			// pA = start of A array
 
-zgemm_kernel_L4_M4_BEGIN:
+.Lzgemm_kernel_L4_M4_BEGIN:
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #2		// counterI = counterI / 4
 	cmp 	counterI, #0
-	ble	zgemm_kernel_L4_M2_BEGIN
+	ble	.Lzgemm_kernel_L4_M2_BEGIN
 
 	.align 5
-zgemm_kernel_L4_M4_20:
+.Lzgemm_kernel_L4_M4_20:
 
 	mov	pB, origPB
 	asr 	counterL , origK, #3
 	cmp	counterL , #2
-	blt	zgemm_kernel_L4_M4_32
+	blt	.Lzgemm_kernel_L4_M4_32
 
 	KERNEL4x4_I
 	KERNEL4x4_M2
@@ -1146,10 +1146,10 @@ zgemm_kernel_L4_M4_20:
 	KERNEL4x4_M2
 
 	subs	counterL, counterL, #2		// subtract 2
-	ble	zgemm_kernel_L4_M4_22a
+	ble	.Lzgemm_kernel_L4_M4_22a
 
 	.align 5
-zgemm_kernel_L4_M4_22:
+.Lzgemm_kernel_L4_M4_22:
 
 	KERNEL4x4_M1
 	KERNEL4x4_M2
@@ -1161,10 +1161,10 @@ zgemm_kernel_L4_M4_22:
 	KERNEL4x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L4_M4_22
+	bgt	.Lzgemm_kernel_L4_M4_22
 
 	.align 5
-zgemm_kernel_L4_M4_22a:
+.Lzgemm_kernel_L4_M4_22a:
 
 	KERNEL4x4_M1
 	KERNEL4x4_M2
@@ -1175,13 +1175,13 @@ zgemm_kernel_L4_M4_22a:
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
-	b	 zgemm_kernel_L4_M4_44
+	b	 .Lzgemm_kernel_L4_M4_44
 
 	.align 5
-zgemm_kernel_L4_M4_32:
+.Lzgemm_kernel_L4_M4_32:
 
 	tst	counterL, #1
-	ble	zgemm_kernel_L4_M4_40
+	ble	.Lzgemm_kernel_L4_M4_40
 
 	KERNEL4x4_I
 	KERNEL4x4_M2
@@ -1192,55 +1192,55 @@ zgemm_kernel_L4_M4_32:
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
-	b	zgemm_kernel_L4_M4_44
+	b	.Lzgemm_kernel_L4_M4_44
 
 
-zgemm_kernel_L4_M4_40:
+.Lzgemm_kernel_L4_M4_40:
 
 	INIT4x4
 
-zgemm_kernel_L4_M4_44:
+.Lzgemm_kernel_L4_M4_44:
 
 	ands	counterL , origK, #7
-	ble	zgemm_kernel_L4_M4_100
+	ble	.Lzgemm_kernel_L4_M4_100
 
 	.align 5
-zgemm_kernel_L4_M4_46:
+.Lzgemm_kernel_L4_M4_46:
 	KERNEL4x4_SUB
 
 	subs	counterL, counterL, #1
-	bne	zgemm_kernel_L4_M4_46
+	bne	.Lzgemm_kernel_L4_M4_46
 
-zgemm_kernel_L4_M4_100:
+.Lzgemm_kernel_L4_M4_100:
 	prfm	PLDL1KEEP, [pA]
 	prfm	PLDL1KEEP, [pA, #64]
 	prfm	PLDL1KEEP, [origPB]
 
 	SAVE4x4
 
-zgemm_kernel_L4_M4_END:
+.Lzgemm_kernel_L4_M4_END:
 	subs	counterI, counterI, #1
-	bne	zgemm_kernel_L4_M4_20
+	bne	.Lzgemm_kernel_L4_M4_20
 
-zgemm_kernel_L4_M2_BEGIN:
+.Lzgemm_kernel_L4_M2_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	zgemm_kernel_L4_END
+	ble	.Lzgemm_kernel_L4_END
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	zgemm_kernel_L4_M1_BEGIN
+	ble	.Lzgemm_kernel_L4_M1_BEGIN
 
-zgemm_kernel_L4_M2_20:
+.Lzgemm_kernel_L4_M2_20:
 
 	INIT2x4
 
 	mov	pB, origPB
 	asr 	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	zgemm_kernel_L4_M2_40
+	ble	.Lzgemm_kernel_L4_M2_40
 
-zgemm_kernel_L4_M2_22:
+.Lzgemm_kernel_L4_M2_22:
 
 	KERNEL2x4_SUB
 	KERNEL2x4_SUB
@@ -1253,43 +1253,43 @@ zgemm_kernel_L4_M2_22:
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L4_M2_22
+	bgt	.Lzgemm_kernel_L4_M2_22
 
 
-zgemm_kernel_L4_M2_40:
+.Lzgemm_kernel_L4_M2_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L4_M2_100
+	ble	.Lzgemm_kernel_L4_M2_100
 
-zgemm_kernel_L4_M2_42:
+.Lzgemm_kernel_L4_M2_42:
 
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L4_M2_42
+	bgt	.Lzgemm_kernel_L4_M2_42
 
-zgemm_kernel_L4_M2_100:
+.Lzgemm_kernel_L4_M2_100:
 
 	SAVE2x4
 
-zgemm_kernel_L4_M2_END:
+.Lzgemm_kernel_L4_M2_END:
 
 
-zgemm_kernel_L4_M1_BEGIN:
+.Lzgemm_kernel_L4_M1_BEGIN:
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	zgemm_kernel_L4_END
+	ble	.Lzgemm_kernel_L4_END
 
-zgemm_kernel_L4_M1_20:
+.Lzgemm_kernel_L4_M1_20:
 
 	INIT1x4
 
 	mov	pB, origPB
 	asr 	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	zgemm_kernel_L4_M1_40
+	ble	.Lzgemm_kernel_L4_M1_40
 
-zgemm_kernel_L4_M1_22:
+.Lzgemm_kernel_L4_M1_22:
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
@@ -1301,45 +1301,45 @@ zgemm_kernel_L4_M1_22:
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L4_M1_22
+	bgt	.Lzgemm_kernel_L4_M1_22
 
 
-zgemm_kernel_L4_M1_40:
+.Lzgemm_kernel_L4_M1_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L4_M1_100
+	ble	.Lzgemm_kernel_L4_M1_100
 
-zgemm_kernel_L4_M1_42:
+.Lzgemm_kernel_L4_M1_42:
 
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L4_M1_42
+	bgt	.Lzgemm_kernel_L4_M1_42
 
-zgemm_kernel_L4_M1_100:
+.Lzgemm_kernel_L4_M1_100:
 
 	SAVE1x4
 
 
-zgemm_kernel_L4_END:
+.Lzgemm_kernel_L4_END:
 
 	lsl	temp, origK, #6
 	add	origPB, origPB, temp		// B = B + K * 4 * 8 * 2
 
 	subs	counterJ, counterJ , #1		// j--
-	bgt	zgemm_kernel_L4_BEGIN
+	bgt	.Lzgemm_kernel_L4_BEGIN
 
 
 /******************************************************************************/
 
-zgemm_kernel_L2_BEGIN:   // less than 2 left in N direction
+.Lzgemm_kernel_L2_BEGIN:   // less than 2 left in N direction
 
 	mov	counterJ , origN
 	tst	counterJ , #3
-	ble	zgemm_kernel_L999
+	ble	.Lzgemm_kernel_L999
 
 	tst	counterJ , #2
-	ble	zgemm_kernel_L1_BEGIN
+	ble	.Lzgemm_kernel_L1_BEGIN
 
 	mov	pCRow0, pC			// pCRow0 = pC
 
@@ -1349,24 +1349,24 @@ zgemm_kernel_L2_BEGIN:   // less than 2 left in N direction
 
 
 
-zgemm_kernel_L2_M4_BEGIN:
+.Lzgemm_kernel_L2_M4_BEGIN:
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #2		// counterI = counterI / 4
 	cmp	counterI,#0
-	ble	zgemm_kernel_L2_M2_BEGIN
+	ble	.Lzgemm_kernel_L2_M2_BEGIN
 
-zgemm_kernel_L2_M4_20:
+.Lzgemm_kernel_L2_M4_20:
 
 	INIT4x2
 
 	mov	pB, origPB
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	zgemm_kernel_L2_M4_40
+	ble	.Lzgemm_kernel_L2_M4_40
 	.align 5
 
-zgemm_kernel_L2_M4_22:
+.Lzgemm_kernel_L2_M4_22:
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
@@ -1378,50 +1378,50 @@ zgemm_kernel_L2_M4_22:
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L2_M4_22
+	bgt	.Lzgemm_kernel_L2_M4_22
 
 
-zgemm_kernel_L2_M4_40:
+.Lzgemm_kernel_L2_M4_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L2_M4_100
+	ble	.Lzgemm_kernel_L2_M4_100
 
-zgemm_kernel_L2_M4_42:
+.Lzgemm_kernel_L2_M4_42:
 
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L2_M4_42
+	bgt	.Lzgemm_kernel_L2_M4_42
 
-zgemm_kernel_L2_M4_100:
+.Lzgemm_kernel_L2_M4_100:
 
 	SAVE4x2
 
-zgemm_kernel_L2_M4_END:
+.Lzgemm_kernel_L2_M4_END:
 
 	subs	counterI, counterI, #1
-	bgt	zgemm_kernel_L2_M4_20
+	bgt	.Lzgemm_kernel_L2_M4_20
 
 
-zgemm_kernel_L2_M2_BEGIN:
+.Lzgemm_kernel_L2_M2_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	zgemm_kernel_L2_END
+	ble	.Lzgemm_kernel_L2_END
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	zgemm_kernel_L2_M1_BEGIN
+	ble	.Lzgemm_kernel_L2_M1_BEGIN
 
-zgemm_kernel_L2_M2_20:
+.Lzgemm_kernel_L2_M2_20:
 
 	INIT2x2
 
 	mov	pB, origPB
 	asr	counterL , origK, #3		// counterL = counterL / 8
         cmp	counterL,#0
-	ble	zgemm_kernel_L2_M2_40
+	ble	.Lzgemm_kernel_L2_M2_40
 
-zgemm_kernel_L2_M2_22:
+.Lzgemm_kernel_L2_M2_22:
 
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
@@ -1434,43 +1434,43 @@ zgemm_kernel_L2_M2_22:
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L2_M2_22
+	bgt	.Lzgemm_kernel_L2_M2_22
 
 
-zgemm_kernel_L2_M2_40:
+.Lzgemm_kernel_L2_M2_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L2_M2_100
+	ble	.Lzgemm_kernel_L2_M2_100
 
-zgemm_kernel_L2_M2_42:
+.Lzgemm_kernel_L2_M2_42:
 
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L2_M2_42
+	bgt	.Lzgemm_kernel_L2_M2_42
 
-zgemm_kernel_L2_M2_100:
+.Lzgemm_kernel_L2_M2_100:
 
 	SAVE2x2
 
-zgemm_kernel_L2_M2_END:
+.Lzgemm_kernel_L2_M2_END:
 
 
-zgemm_kernel_L2_M1_BEGIN:
+.Lzgemm_kernel_L2_M1_BEGIN:
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	zgemm_kernel_L2_END
+	ble	.Lzgemm_kernel_L2_END
 
-zgemm_kernel_L2_M1_20:
+.Lzgemm_kernel_L2_M1_20:
 
 	INIT1x2
 
 	mov	pB, origPB
 	asr 	counterL , origK, #3		// counterL = counterL / 8
         cmp     counterL, #0
-	ble	zgemm_kernel_L2_M1_40
+	ble	.Lzgemm_kernel_L2_M1_40
 
-zgemm_kernel_L2_M1_22:
+.Lzgemm_kernel_L2_M1_22:
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
@@ -1482,37 +1482,37 @@ zgemm_kernel_L2_M1_22:
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L2_M1_22
+	bgt	.Lzgemm_kernel_L2_M1_22
 
 
-zgemm_kernel_L2_M1_40:
+.Lzgemm_kernel_L2_M1_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L2_M1_100
+	ble	.Lzgemm_kernel_L2_M1_100
 
-zgemm_kernel_L2_M1_42:
+.Lzgemm_kernel_L2_M1_42:
 
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L2_M1_42
+	bgt	.Lzgemm_kernel_L2_M1_42
 
-zgemm_kernel_L2_M1_100:
+.Lzgemm_kernel_L2_M1_100:
 
 	SAVE1x2
 
 
-zgemm_kernel_L2_END:
+.Lzgemm_kernel_L2_END:
 	lsl	temp, origK, #5
 	add	origPB, origPB, temp // B = B + K * 2 * 8 * 2
 
 /******************************************************************************/
 
-zgemm_kernel_L1_BEGIN:
+.Lzgemm_kernel_L1_BEGIN:
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	zgemm_kernel_L999 // done
+	ble	.Lzgemm_kernel_L999 // done
 
 
 	mov	pCRow0, pC			// pCRow0 = C
@@ -1522,24 +1522,24 @@ zgemm_kernel_L1_BEGIN:
 
 
 
-zgemm_kernel_L1_M4_BEGIN:
+.Lzgemm_kernel_L1_M4_BEGIN:
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #2		// counterI = counterI / 4
 	cmp	counterI, #0
-	ble	zgemm_kernel_L1_M2_BEGIN
+	ble	.Lzgemm_kernel_L1_M2_BEGIN
 
-zgemm_kernel_L1_M4_20:
+.Lzgemm_kernel_L1_M4_20:
 
 	INIT4x1
 
 	mov	pB, origPB
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	zgemm_kernel_L1_M4_40
+	ble	.Lzgemm_kernel_L1_M4_40
 	.align 5
 
-zgemm_kernel_L1_M4_22:
+.Lzgemm_kernel_L1_M4_22:
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -1551,50 +1551,50 @@ zgemm_kernel_L1_M4_22:
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L1_M4_22
+	bgt	.Lzgemm_kernel_L1_M4_22
 
 
-zgemm_kernel_L1_M4_40:
+.Lzgemm_kernel_L1_M4_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L1_M4_100
+	ble	.Lzgemm_kernel_L1_M4_100
 
-zgemm_kernel_L1_M4_42:
+.Lzgemm_kernel_L1_M4_42:
 
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L1_M4_42
+	bgt	.Lzgemm_kernel_L1_M4_42
 
-zgemm_kernel_L1_M4_100:
+.Lzgemm_kernel_L1_M4_100:
 
 	SAVE4x1
 
-zgemm_kernel_L1_M4_END:
+.Lzgemm_kernel_L1_M4_END:
 
 	subs	counterI, counterI, #1
-	bgt	zgemm_kernel_L1_M4_20
+	bgt	.Lzgemm_kernel_L1_M4_20
 
 
-zgemm_kernel_L1_M2_BEGIN:
+.Lzgemm_kernel_L1_M2_BEGIN:
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	zgemm_kernel_L1_END
+	ble	.Lzgemm_kernel_L1_END
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	zgemm_kernel_L1_M1_BEGIN
+	ble	.Lzgemm_kernel_L1_M1_BEGIN
 
-zgemm_kernel_L1_M2_20:
+.Lzgemm_kernel_L1_M2_20:
 
 	INIT2x1
 
 	mov	pB, origPB
 	asr 	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	zgemm_kernel_L1_M2_40
+	ble	.Lzgemm_kernel_L1_M2_40
 
-zgemm_kernel_L1_M2_22:
+.Lzgemm_kernel_L1_M2_22:
 
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
@@ -1607,43 +1607,43 @@ zgemm_kernel_L1_M2_22:
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L1_M2_22
+	bgt	.Lzgemm_kernel_L1_M2_22
 
 
-zgemm_kernel_L1_M2_40:
+.Lzgemm_kernel_L1_M2_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L1_M2_100
+	ble	.Lzgemm_kernel_L1_M2_100
 
-zgemm_kernel_L1_M2_42:
+.Lzgemm_kernel_L1_M2_42:
 
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L1_M2_42
+	bgt	.Lzgemm_kernel_L1_M2_42
 
-zgemm_kernel_L1_M2_100:
+.Lzgemm_kernel_L1_M2_100:
 
 	SAVE2x1
 
-zgemm_kernel_L1_M2_END:
+.Lzgemm_kernel_L1_M2_END:
 
 
-zgemm_kernel_L1_M1_BEGIN:
+.Lzgemm_kernel_L1_M1_BEGIN:
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	zgemm_kernel_L1_END
+	ble	.Lzgemm_kernel_L1_END
 
-zgemm_kernel_L1_M1_20:
+.Lzgemm_kernel_L1_M1_20:
 
 	INIT1x1
 
 	mov	pB, origPB
 	asr 	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	zgemm_kernel_L1_M1_40
+	ble	.Lzgemm_kernel_L1_M1_40
 
-zgemm_kernel_L1_M1_22:
+.Lzgemm_kernel_L1_M1_22:
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
@@ -1655,30 +1655,30 @@ zgemm_kernel_L1_M1_22:
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L1_M1_22
+	bgt	.Lzgemm_kernel_L1_M1_22
 
 
-zgemm_kernel_L1_M1_40:
+.Lzgemm_kernel_L1_M1_40:
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	zgemm_kernel_L1_M1_100
+	ble	.Lzgemm_kernel_L1_M1_100
 
-zgemm_kernel_L1_M1_42:
+.Lzgemm_kernel_L1_M1_42:
 
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	zgemm_kernel_L1_M1_42
+	bgt	.Lzgemm_kernel_L1_M1_42
 
-zgemm_kernel_L1_M1_100:
+.Lzgemm_kernel_L1_M1_100:
 
 	SAVE1x1
 
 
-zgemm_kernel_L1_END:
+.Lzgemm_kernel_L1_END:
 
 
-zgemm_kernel_L999:
+.Lzgemm_kernel_L999:
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]
