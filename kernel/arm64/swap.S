@@ -193,50 +193,50 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	swap_kernel_L999
+	ble	.Lswap_kernel_L999
 
 	cmp	INC_X, #1
-	bne	swap_kernel_S_BEGIN
+	bne	.Lswap_kernel_S_BEGIN
 	cmp	INC_Y, #1
-	bne	swap_kernel_S_BEGIN
+	bne	.Lswap_kernel_S_BEGIN
 
-swap_kernel_F_BEGIN:
+.Lswap_kernel_F_BEGIN:
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	swap_kernel_F1
+	beq	.Lswap_kernel_F1
 
-swap_kernel_F8:
+.Lswap_kernel_F8:
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	swap_kernel_F8
+	bne	.Lswap_kernel_F8
 
-swap_kernel_F1:
+.Lswap_kernel_F1:
 
 	ands	I, N, #7
-	ble	swap_kernel_L999
+	ble	.Lswap_kernel_L999
 
-swap_kernel_F10:
+.Lswap_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-	bne     swap_kernel_F10
+	bne     .Lswap_kernel_F10
 
-	b	swap_kernel_L999
+	b	.Lswap_kernel_L999
 
 
-swap_kernel_S_BEGIN:
+.Lswap_kernel_S_BEGIN:
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	swap_kernel_S1
+	ble	.Lswap_kernel_S1
 
-swap_kernel_S4:
+.Lswap_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -244,21 +244,21 @@ swap_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	swap_kernel_S4
+	bne	.Lswap_kernel_S4
 
-swap_kernel_S1:
+.Lswap_kernel_S1:
 
 	ands	I, N, #3
-	ble	swap_kernel_L999
+	ble	.Lswap_kernel_L999
 
-swap_kernel_S10:
+.Lswap_kernel_S10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     swap_kernel_S10
+        bne     .Lswap_kernel_S10
 
-swap_kernel_L999:
+.Lswap_kernel_L999:
 
 	mov	w0, wzr
 	ret

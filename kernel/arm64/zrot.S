@@ -181,54 +181,54 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	rot_kernel_L999
+	ble	.Lzrot_kernel_L999
 
 	INIT
 
 	cmp	INC_X, #1
-	bne	rot_kernel_S_BEGIN
+	bne	.Lzrot_kernel_S_BEGIN
 	cmp	INC_Y, #1
-	bne	rot_kernel_S_BEGIN
+	bne	.Lzrot_kernel_S_BEGIN
 
-rot_kernel_F_BEGIN:
+.Lzrot_kernel_F_BEGIN:
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	rot_kernel_F1
+	beq	.Lzrot_kernel_F1
 
 	KERNEL_INIT_F4
 
-rot_kernel_F4:
+.Lzrot_kernel_F4:
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	rot_kernel_F4
+	bne	.Lzrot_kernel_F4
 
-rot_kernel_F1:
+.Lzrot_kernel_F1:
 
 	ands	I, N, #3
-	ble	rot_kernel_L999
+	ble	.Lzrot_kernel_L999
 
-rot_kernel_F10:
+.Lzrot_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     rot_kernel_F10
+        bne     .Lzrot_kernel_F10
 
 	mov	w0, wzr
 	ret
 
-rot_kernel_S_BEGIN:
+.Lzrot_kernel_S_BEGIN:
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	rot_kernel_S1
+	ble	.Lzrot_kernel_S1
 
-rot_kernel_S4:
+.Lzrot_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -236,21 +236,21 @@ rot_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	rot_kernel_S4
+	bne	.Lzrot_kernel_S4
 
-rot_kernel_S1:
+.Lzrot_kernel_S1:
 
 	ands	I, N, #3
-	ble	rot_kernel_L999
+	ble	.Lzrot_kernel_L999
 
-rot_kernel_S10:
+.Lzrot_kernel_S10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     rot_kernel_S10
+        bne     .Lzrot_kernel_S10
 
-rot_kernel_L999:
+.Lzrot_kernel_L999:
 
 	mov	w0, wzr
 	ret

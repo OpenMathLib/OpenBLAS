@@ -233,18 +233,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	SAVE_REGS
 
 	cmp	N, xzr
-	ble	gemv_t_kernel_L999
+	ble	.Lgemv_t_kernel_L999
 	cmp	M, xzr
-	ble	gemv_t_kernel_L999
+	ble	.Lgemv_t_kernel_L999
 
 	lsl	LDA, LDA, #SHZ
 	lsl	INC_Y, INC_Y, #SHZ
 	mov	J, N
 
 	cmp	INC_X, #1
-	bne	gemv_t_kernel_S_BEGIN
+	bne	.Lgemv_t_kernel_S_BEGIN
 
-gemv_t_kernel_F_LOOP:
+.Lgemv_t_kernel_F_LOOP:
 
 	fmov	TEMP, REG0
 	fmov	TEMP1, REG0
@@ -254,64 +254,64 @@ gemv_t_kernel_F_LOOP:
 	mov	A_PTR, A
 	mov	X_PTR, X
 
-gemv_t_kernel_F32:
+.Lgemv_t_kernel_F32:
 
 	asr	I, M, #5
 	cmp	I, xzr
-	beq	gemv_t_kernel_F4
+	beq	.Lgemv_t_kernel_F4
 
-gemv_t_kernel_F320:
+.Lgemv_t_kernel_F320:
 
 	KERNEL_F32
 
 	subs	I, I, #1
-	bne	gemv_t_kernel_F320
+	bne	.Lgemv_t_kernel_F320
 
 	KERNEL_F32_FINALIZE
 
-gemv_t_kernel_F4:
+.Lgemv_t_kernel_F4:
 	ands	I, M, #31
 	asr	I, I, #2
 	cmp	I, xzr
-	beq	gemv_t_kernel_F1
+	beq	.Lgemv_t_kernel_F1
 
-gemv_t_kernel_F40:
+.Lgemv_t_kernel_F40:
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	gemv_t_kernel_F40
+	bne	.Lgemv_t_kernel_F40
 
-gemv_t_kernel_F1:
+.Lgemv_t_kernel_F1:
 
 	KERNEL_F4_FINALIZE
 
 	ands	I, M, #3
-	ble	gemv_t_kernel_F_END
+	ble	.Lgemv_t_kernel_F_END
 
-gemv_t_kernel_F10:
+.Lgemv_t_kernel_F10:
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	gemv_t_kernel_F10
+	bne	.Lgemv_t_kernel_F10
 
-gemv_t_kernel_F_END:
+.Lgemv_t_kernel_F_END:
 
 	ld1	TMPV1, [Y]
 	add	A, A, LDA
 	subs	J, J, #1
 	fmadd	TMP1, ALPHA, TEMP, TMP1
 	st1	TMPV1, [Y], INC_Y
-	bne	gemv_t_kernel_F_LOOP
+	bne	.Lgemv_t_kernel_F_LOOP
 
-	b	gemv_t_kernel_L999
+	b	.Lgemv_t_kernel_L999
 
-gemv_t_kernel_S_BEGIN:
+.Lgemv_t_kernel_S_BEGIN:
 
 	INIT_S
 
-gemv_t_kernel_S_LOOP:
+.Lgemv_t_kernel_S_LOOP:
 
 	fmov	TEMP, REG0
 	mov	A_PTR, A
@@ -319,9 +319,9 @@ gemv_t_kernel_S_LOOP:
 
 	asr	I, M, #2
 	cmp	I, xzr
-	ble	gemv_t_kernel_S1
+	ble	.Lgemv_t_kernel_S1
 
-gemv_t_kernel_S4:
+.Lgemv_t_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -329,30 +329,30 @@ gemv_t_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	gemv_t_kernel_S4
+	bne	.Lgemv_t_kernel_S4
 
-gemv_t_kernel_S1:
+.Lgemv_t_kernel_S1:
 
 	ands	I, M, #3
-	ble	gemv_t_kernel_S_END
+	ble	.Lgemv_t_kernel_S_END
 
-gemv_t_kernel_S10:
+.Lgemv_t_kernel_S10:
 
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	gemv_t_kernel_S10
+	bne	.Lgemv_t_kernel_S10
 
-gemv_t_kernel_S_END:
+.Lgemv_t_kernel_S_END:
 
 	ld1	TMPV1, [Y]
 	add	A, A, LDA
 	subs    J, J, #1
 	fmadd	TMP1, ALPHA, TEMP, TMP1
 	st1	TMPV1, [Y], INC_Y
-        bne     gemv_t_kernel_S_LOOP
+        bne     .Lgemv_t_kernel_S_LOOP
 
-gemv_t_kernel_L999:
+.Lgemv_t_kernel_L999:
 
 	RESTORE_REGS
 

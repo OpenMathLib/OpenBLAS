@@ -226,43 +226,43 @@ KERNEL_S1_END_\@:
 	INIT
 
 	cmp	N, #0
-	ble	nrm2_kernel_L999
+	ble	.Lznrm2_kernel_L999
 
 	cmp	INC_X, #0
-	beq	nrm2_kernel_L999
+	beq	.Lznrm2_kernel_L999
 
 	cmp	INC_X, #1
-	bne	nrm2_kernel_S_BEGIN
+	bne	.Lznrm2_kernel_S_BEGIN
 
-nrm2_kernel_F_BEGIN:
+.Lznrm2_kernel_F_BEGIN:
 
 	asr	I, N, #3				// I = N / 8
 	cmp	I, xzr
-	ble	nrm2_kernel_F1
+	ble	.Lznrm2_kernel_F1
 
-nrm2_kernel_F8:
+.Lznrm2_kernel_F8:
 
 	KERNEL_F8
 
 	subs    I, I, #1
-        bne     nrm2_kernel_F8
+        bne     .Lznrm2_kernel_F8
 
-nrm2_kernel_F1:
+.Lznrm2_kernel_F1:
 
 	ands	I, N, #7
-	ble	nrm2_kernel_L999
+	ble	.Lznrm2_kernel_L999
 
 
-nrm2_kernel_F10:
+.Lznrm2_kernel_F10:
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	nrm2_kernel_F10
+	bne	.Lznrm2_kernel_F10
 
-	b	nrm2_kernel_L999
+	b	.Lznrm2_kernel_L999
 
-nrm2_kernel_S_BEGIN:
+.Lznrm2_kernel_S_BEGIN:
 
 	INIT_S
 
@@ -270,15 +270,15 @@ nrm2_kernel_S_BEGIN:
 
 	.align 5
 
-nrm2_kernel_S10:
+.Lznrm2_kernel_S10:
 
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	nrm2_kernel_S10
+	bne	.Lznrm2_kernel_S10
 
 
-nrm2_kernel_L999:
+.Lznrm2_kernel_L999:
 	fsqrt	SSQ, SSQ
 	fmul	SSQ, SCALE, SSQ
 
