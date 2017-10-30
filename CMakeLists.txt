@@ -183,13 +183,15 @@ if (NOT MSVC)
 	if(SMP)
 	target_link_libraries(${OpenBLAS_LIBNAME} pthread)
 	target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
-endif()
+  endif()
 
-#build test and ctest
-add_subdirectory(test)
-if(NOT NO_CBLAS)
-add_subdirectory(ctest)
-endif()
+  if (NOT NOFORTRAN)
+    #build test and ctest
+    add_subdirectory(test)
+    if(NOT NO_CBLAS)
+      add_subdirectory(ctest)
+    endif()
+  endif()
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 
