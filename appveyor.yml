@@ -43,7 +43,7 @@ before_build:
   - echo Running cmake...
   - cd c:\projects\OpenBLAS
   - set CLCACHE_CL=%COMPILER%
-  - pip install -q git+https://github.com/xoviat/clcache.git@patch-1
+  - pip install -q git+https://github.com/xoviat/clcache.git@findCompiler
   - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" -DCMAKE_CXX_COMPILER=clcache -DCMAKE_C_COMPILER=clcache .
   - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clcache -DCMAKE_C_COMPILER=clcache .
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON .
