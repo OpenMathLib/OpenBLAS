@@ -23,7 +23,12 @@ skip_commits:
 # Add [av skip] to commit messages
   message: /\[av skip\]/
 
+cache:
+  - '%USERPROFILE%\clcache'
+
 environment:
+  global:
+    APPVEYOR_SAVE_CACHE_ON_ERROR: true
   matrix:
     - COMPILER: clang-cl
       DYNAMIC_ARCH: ON
@@ -35,12 +40,16 @@ install:
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
   - if [%COMPILER%]==[clang-cl] conda install --yes clangdev ninja cmake
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  - pip install -q git+https://github.com/xoviat/clcache.git@assembly
 
 before_build:
   - echo Running cmake...
   - cd c:\projects\OpenBLAS
-  - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" .
-  - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl .
+  - set CLCACHE_CL=%COMPILER%
+  - clcache -M 644245094
+  - clcache -c
+  - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" -DCMAKE_CXX_COMPILER=clcache -DCMAKE_C_COMPILER=clcache .
+  - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clcache -DCMAKE_C_COMPILER=clcache .
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON .
 
 build_script:
