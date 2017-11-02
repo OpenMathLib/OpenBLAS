@@ -38,7 +38,8 @@ install:
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   
   - if [%COMPILER%]==[flang] call C:\Miniconda36-x64\Scripts\activate.bat
-  - if [%COMPILER%]==[flang] conda config --add channels conda-forge isuruf/label/flang --force
+  - if [%COMPILER%]==[flang] conda config --add channels conda-forge --force
+  - if [%COMPILER%]==[flang] conda config --add channels isuruf/label/flang
   - if [%COMPILER%]==[flang] conda install --yes clangdev flangdev cmake
   - if [%COMPILER%]==[flang] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
 
