@@ -32,6 +32,8 @@ environment:
       DYNAMIC_ARCH: ON
 
 install:
+  - ps: Get-ChildItem -Path C:\ -Filter ws2_32.lib -Recurse -ErrorAction SilentlyContinue -Force
+
   - if [%COMPILER%]==[clang-cl] call C:\Miniconda36-x64\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
   - if [%COMPILER%]==[clang-cl] conda install --yes clangdev ninja cmake
