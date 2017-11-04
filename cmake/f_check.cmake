@@ -24,9 +24,6 @@ if (MSVC)
   # had to do this for MSVC, else CMake automatically assumes I have ifort... -hpa
   # include(CMakeForceCompiler)
   # CMAKE_FORCE_Fortran_COMPILER(gfortran GNU)
-  
-  link_directories("C:/Miniconda36-x64/Library")
-  link_directories("C:/Miniconda36-x64/Library/lib")
 endif ()
 
 if (NOT NO_LAPACK)
