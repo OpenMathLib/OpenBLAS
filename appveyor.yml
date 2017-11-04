@@ -32,12 +32,13 @@ environment:
       DYNAMIC_ARCH: ON
 
 install:
-  - ps: Get-ChildItem -Path C:\ -Filter ws2_32.lib -Recurse -ErrorAction SilentlyContinue -Force
-
   - if [%COMPILER%]==[clang-cl] call C:\Miniconda36-x64\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
   - if [%COMPILER%]==[clang-cl] conda install --yes clangdev ninja cmake
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  
+  - ps: cp C:\Miniconda36-x64\Library\lib\*.lib \C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10586.0\um\x64
+  - ps: cp C:\Miniconda36-x64\Library\lib\*.lib  C:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x64
   
   - if [%COMPILER%]==[flang] call C:\Miniconda36-x64\Scripts\activate.bat
   - if [%COMPILER%]==[flang] conda config --add channels conda-forge --force
