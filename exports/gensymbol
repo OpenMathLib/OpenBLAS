@@ -1018,7 +1018,7 @@
     lapack_make_complex_double,
 
     # @(SRC_OBJ) from `lapack-3.5.0/lapacke/src/Makefile`
-    LAPACKE_cbbcsd,
+    _LAPACKE_cbbcsd_,
     LAPACKE_cbbcsd_work,
     LAPACKE_cbdsqr,
     LAPACKE_cbdsqr_work,

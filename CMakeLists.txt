@@ -9,6 +9,9 @@ set(OpenBLAS_MINOR_VERSION 3)
 set(OpenBLAS_PATCH_VERSION 0.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
+link_directories("C:/Miniconda36-x64/Library")
+link_directories("C:/Miniconda36-x64/Library/lib")
+
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 

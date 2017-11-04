@@ -25,22 +25,33 @@ skip_commits:
 
 environment:
   matrix:
+    - COMPILER: flang
+    - COMPILER: cl
+    - COMPILER: clang-cl
     - COMPILER: clang-cl
       DYNAMIC_ARCH: ON
-    - COMPILER: clang-cl
-    - COMPILER: cl
 
 install:
   - if [%COMPILER%]==[clang-cl] call C:\Miniconda36-x64\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
   - if [%COMPILER%]==[clang-cl] conda install --yes clangdev ninja cmake
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  
+  - if [%COMPILER%]==[flang] call C:\Miniconda36-x64\Scripts\activate.bat
+  - if [%COMPILER%]==[flang] conda config --add channels conda-forge --force
+  - if [%COMPILER%]==[flang] conda config --add channels isuruf/label/flang
+  - if [%COMPILER%]==[flang] conda install --yes clangdev flangdev cmake
+  - if [%COMPILER%]==[flang] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  
+  - ps: cp C:\Miniconda36-x64\Library\lib\*.lib "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10586.0\um\x64"
+  - ps: cp C:\Miniconda36-x64\Library\lib\*.lib "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x64"
 
 before_build:
   - echo Running cmake...
   - cd c:\projects\OpenBLAS
   - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" .
   - if [%COMPILER%]==[clang-cl] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl .
+  - if [%COMPILER%]==[flang] cmake -G "NMake Makefiles" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=Off .
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON .
 
 build_script:
