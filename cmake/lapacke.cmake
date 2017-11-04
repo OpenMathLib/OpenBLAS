@@ -1,5 +1,5 @@
 
-set(C_SRC
+set(CSRC
   lapacke_cbbcsd.c
   lapacke_cbbcsd_work.c
   lapacke_cbdsqr.c
