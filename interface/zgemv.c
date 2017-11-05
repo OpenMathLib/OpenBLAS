@@ -134,12 +134,17 @@ void NAME(char *TRANS, blasint *M, blasint *N,
 void CNAME(enum CBLAS_ORDER order,
 	   enum CBLAS_TRANSPOSE TransA,
 	   blasint m, blasint n,
-	   FLOAT *ALPHA,
-	   FLOAT  *a, blasint lda,
-	   FLOAT  *x, blasint incx,
-	   FLOAT *BETA,
-	   FLOAT  *y, blasint incy){
+	   void *VALPHA,
+	   void  *va, blasint lda,
+	   void  *vx, blasint incx,
+	   void *VBETA,
+	   void  *vy, blasint incy){
 
+  FLOAT *ALPHA = (FLOAT*) VALPHA;
+  FLOAT *a = (FLOAT*) va;
+  FLOAT *x = (FLOAT*) vx;
+  FLOAT *BETA = (FLOAT*) VBETA;
+  FLOAT *y = (FLOAT*) vy;
   FLOAT *buffer;
   blasint    lenx, leny;
   int trans, buffer_size;

@@ -146,8 +146,12 @@ blasint NAME(blasint *N, FLOAT *x, blasint *INCX){
 }
 
 #else
-
+#ifdef COMPLEX
+CBLAS_INDEX CNAME(blasint n, void *vx, blasint incx){
+  FLOAT *x = (FLOAT*) vx;
+#else
 CBLAS_INDEX CNAME(blasint n, FLOAT *x, blasint incx){
+#endif
 
   CBLAS_INDEX ret;
 

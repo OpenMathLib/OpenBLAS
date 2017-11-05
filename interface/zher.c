@@ -113,7 +113,10 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
 #else
 
-void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *a, blasint lda) {
+void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha, void *vx, blasint incx, void *va, blasint lda) {
+
+  FLOAT* a = (FLOAT*) va;
+  FLOAT* x = (FLOAT*) vx;
 
   FLOAT *buffer;
   int uplo;

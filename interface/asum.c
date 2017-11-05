@@ -68,8 +68,12 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
 }
 
 #else
-
+#ifdef COMPLEX
+FLOAT CNAME(blasint n, void *vx, blasint incx){
+  FLOAT *x = (FLOAT*) vx;
+#else
 FLOAT CNAME(blasint n, FLOAT *x, blasint incx){
+#endif
 
   FLOAT ret;
 

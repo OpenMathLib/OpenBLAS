@@ -51,9 +51,14 @@ void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *y, blasint *
   blasint incy = *INCY;
 
 #else
-
+#ifdef COMPLEX
+void CNAME(blasint n, void *VALPHA, void *vx, blasint incx, void *vy, blasint incy){
+FLOAT *ALPHA = (FLOAT*) VALPHA;
+FLOAT *x = (FLOAT*) vx;
+FLOAT *y = (FLOAT*) vy;
+#else
 void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
-
+#endif
 #endif
 
   FLOAT alpha_r = *(ALPHA + 0);
