@@ -134,7 +134,7 @@ set(CLASRC
   DEPRECATED/cgeqpf.f cgeqr2.f cgeqr2p.f cgeqrf.f cgeqrfp.f cgerfs.f
   cgerq2.f cgerqf.f cgesc2.f cgesdd.f  cgesvd.f cgejsv.f cgesvdx.f cgesvj.f
   cgetrf2.f cgges3.f cggev3.f cgghd3.f cggsvd3.f cggsvp3.f cpotrf2.f csysv_aa.f
-  csytrs_aa.f cgsvj0.f cgsvj1.f cunm22.f csytrf_aa.f
+  csytrs_aa.f cgsvj0.f cgsvj1.f cunm22.f csytrf_aa.f clasyf_aa.f
   cgesvx.f cgetc2.f cgetri.f
   cggbak.f cggbal.f cgges.f  cggesx.f cggev.f  cggevx.f cggglm.f
   cgghrd.f cgglse.f cggqrf.f cggrqf.f
