@@ -4,6 +4,8 @@ dist: trusty
 sudo: false
 language: c
 
+cache: ccache
+
 jobs:
   include:
     - &test-ubuntu
