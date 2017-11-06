@@ -28,10 +28,10 @@ environment:
     CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
   matrix:
     - COMPILER: clang-cl
+      WITH_FORTRAN: yes
+    - COMPILER: clang-cl
       DYNAMIC_ARCH: ON
       WITH_FORTRAN: no
-    - COMPILER: clang-cl
-      WITH_FORTRAN: yes
     - COMPILER: cl
 
 install:
