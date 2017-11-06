@@ -2369,7 +2369,7 @@ lapacke_dpb_nancheck.c  lapacke_sst_nancheck.c
 lapacke_dpb_trans.c     lapacke_ssy_nancheck.c
 )
 
-set(LAPACKE_REL_SRC "")
+set(LAPACKE_REL_SRC "${MATGEN}")
 if (BUILD_SINGLE)
   list(APPEND LAPACKE_REL_SRC ${SSRC})
 endif ()
@@ -2387,7 +2387,7 @@ if (BUILD_COMPLEX16)
 endif ()
 
 # add lapack-netlib folder to the sources
-set(LAPACKE_SOURCES "${MATGEN}")
+set(LAPACKE_SOURCES "")
 foreach (LAE_FILE ${LAPACKE_REL_SRC})
   list(APPEND LAPACKE_SOURCES "${NETLIB_LAPACK_DIR}/LAPACKE/src/${LAE_FILE}")
 endforeach ()
