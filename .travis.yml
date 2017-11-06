@@ -59,6 +59,7 @@ jobs:
 
     - stage: test
       compiler: gcc
+      sudo: true
       addons:
         apt:
           packages:
