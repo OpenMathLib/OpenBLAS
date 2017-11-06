@@ -132,7 +132,9 @@ set(CLASRC
   DEPRECATED/cgegs.f  DEPRECATED/cgegv.f  cgehd2.f cgehrd.f cgelq2.f cgelqf.f
   cgels.f  cgelsd.f cgelss.f DEPRECATED/cgelsx.f cgelsy.f cgeql2.f cgeqlf.f cgeqp3.f
   DEPRECATED/cgeqpf.f cgeqr2.f cgeqr2p.f cgeqrf.f cgeqrfp.f cgerfs.f
-  cgerq2.f cgerqf.f cgesc2.f cgesdd.f  cgesvd.f
+  cgerq2.f cgerqf.f cgesc2.f cgesdd.f  cgesvd.f cgejsv.f cgesvdx.f cgesvj.f
+  cgetrf2.f cgges3.f cggev3.f cgghd3.f cggsvd3.f cggsvp3.f cpotrf2.f csysv_aa.f
+  csytrs_aa.f cgsvj0.f cgsvj1.f cunm22.f csytrf_aa.f clasyf_aa.f
   cgesvx.f cgetc2.f cgetri.f
   cggbak.f cggbal.f cgges.f  cggesx.f cggev.f  cggevx.f cggglm.f
   cgghrd.f cgglse.f cggqrf.f cggrqf.f
@@ -362,6 +364,26 @@ set(ZLASRC
   zlarfy.f
 )
 
+set(SCATGEN slatm1.f slaran.f slarnd.f)
+
+set(SMATGEN slatms.f slatme.f slatmr.f slatmt.f
+   slagge.f slagsy.f slakf2.f slarge.f slaror.f slarot.f slatm2.f
+   slatm3.f slatm5.f slatm6.f slatm7.f slahilb.f)
+
+set(CMATGEN clatms.f clatme.f clatmr.f clatmt.f
+   clagge.f claghe.f clagsy.f clakf2.f clarge.f claror.f clarot.f
+   clatm1.f clarnd.f clatm2.f clatm3.f clatm5.f clatm6.f clahilb.f slatm7.f)
+
+set(DZATGEN dlatm1.f dlaran.f dlarnd.f)
+
+set(DMATGEN dlatms.f dlatme.f dlatmr.f dlatmt.f
+   dlagge.f dlagsy.f dlakf2.f dlarge.f dlaror.f dlarot.f dlatm2.f
+   dlatm3.f dlatm5.f dlatm6.f dlatm7.f dlahilb.f)
+
+set(ZMATGEN zlatms.f zlatme.f zlatmr.f zlatmt.f
+  zlagge.f zlaghe.f zlagsy.f zlakf2.f zlarge.f zlaror.f zlarot.f
+  zlatm1.f zlarnd.f zlatm2.f zlatm3.f zlatm5.f zlatm6.f zlahilb.f dlatm7.f)
+
 set(LA_REL_SRC ${ALLAUX})
 if (BUILD_SINGLE)
   list(APPEND LA_REL_SRC ${SLASRC} ${DSLASRC} ${SCLAUX})
@@ -379,9 +401,27 @@ if (BUILD_COMPLEX16)
   list(APPEND LA_REL_SRC ${ZLASRC} ${ZCLASRC} ${DZLAUX})
 endif ()
 
+set(MATGEN_SRC "")
+if(BUILD_SINGLE)
+  list(APPEND MATGEN_SRC ${SMATGEN} ${SCATGEN})
+endif()
+if(BUILD_DOUBLE)
+  list(APPEND MATGEN_SRC ${ALLOBJ} ${DMATGEN} ${DZATGEN})
+endif()
+if(BUILD_COMPLEX)
+  list(APPEND MATGEN_SRC ${ALLOBJ} ${CMATGEN} ${SCATGEN})
+endif()
+if(BUILD_COMPLEX16)
+  list(APPEND MATGEN_SRC ${ALLOBJ} ${ZMATGEN} ${DZATGEN})
+endif()
+
+
 # add lapack-netlib folder to the sources
 set(LA_SOURCES "")
 foreach (LA_FILE ${LA_REL_SRC})
   list(APPEND LA_SOURCES "${NETLIB_LAPACK_DIR}/SRC/${LA_FILE}")
+endforeach ()
+foreach (LA_FILE ${MATGEN_SRC})
+  list(APPEND LA_SOURCES "${NETLIB_LAPACK_DIR}/TESTING/MATGEN/${LA_FILE}")
 endforeach ()
 set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")

@@ -1,5 +1,5 @@
 
-set(C_SRC
+set(CSRC
   lapacke_cbbcsd.c
   lapacke_cbbcsd_work.c
   lapacke_cbdsqr.c
@@ -1839,6 +1839,12 @@ set(ZSRC
   lapacke_zhbevd_work.c
   lapacke_zhbevx.c
   lapacke_zhbevx_work.c
+  lapacke_zhbev_2stage.c
+  lapacke_zhbev_2stage_work.c
+  lapacke_zhbevd_2stage.c
+  lapacke_zhbevd_2stage_work.c
+  lapacke_zhbevx_2stage.c
+  lapacke_zhbevx_2stage_work.c
   lapacke_zhbgst.c
   lapacke_zhbgst_work.c
   lapacke_zhbgv.c
@@ -2363,7 +2369,7 @@ lapacke_dpb_nancheck.c  lapacke_sst_nancheck.c
 lapacke_dpb_trans.c     lapacke_ssy_nancheck.c
 )
 
-set(LAPACKE_REL_SRC "")
+set(LAPACKE_REL_SRC "${MATGEN}")
 if (BUILD_SINGLE)
   list(APPEND LAPACKE_REL_SRC ${SSRC})
 endif ()
