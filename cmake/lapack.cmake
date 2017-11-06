@@ -364,21 +364,41 @@ set(ZLASRC
   zlarfy.f
 )
 
+set(SCATGEN slatm1.f slaran.f slarnd.f)
+
+set(SMATGEN slatms.f slatme.f slatmr.f slatmt.f
+   slagge.f slagsy.f slakf2.f slarge.f slaror.f slarot.f slatm2.f
+   slatm3.f slatm5.f slatm6.f slatm7.f slahilb.f)
+
+set(CMATGEN clatms.f clatme.f clatmr.f clatmt.f
+   clagge.f claghe.f clagsy.f clakf2.f clarge.f claror.f clarot.f
+   clatm1.f clarnd.f clatm2.f clatm3.f clatm5.f clatm6.f clahilb.f slatm7.f)
+
+set(DZATGEN dlatm1.f dlaran.f dlarnd.f)
+
+set(DMATGEN dlatms.f dlatme.f dlatmr.f dlatmt.f
+   dlagge.f dlagsy.f dlakf2.f dlarge.f dlaror.f dlarot.f dlatm2.f
+   dlatm3.f dlatm5.f dlatm6.f dlatm7.f dlahilb.f)
+
+set(ZMATGEN zlatms.f zlatme.f zlatmr.f zlatmt.f
+  zlagge.f zlaghe.f zlagsy.f zlakf2.f zlarge.f zlaror.f zlarot.f
+  zlatm1.f zlarnd.f zlatm2.f zlatm3.f zlatm5.f zlatm6.f zlahilb.f dlatm7.f)
+
 set(LA_REL_SRC ${ALLAUX})
 if (BUILD_SINGLE)
-  list(APPEND LA_REL_SRC ${SLASRC} ${DSLASRC} ${SCLAUX})
+  list(APPEND LA_REL_SRC ${SLASRC} ${DSLASRC} ${SCLAUX} ${SCATGEN} ${SMATGEN})
 endif ()
 
 if (BUILD_DOUBLE)
-  list(APPEND LA_REL_SRC ${DLASRC} ${DSLASRC} ${DZLAUX})
+  list(APPEND LA_REL_SRC ${DLASRC} ${DSLASRC} ${DZLAUX} ${DMATGEN} ${DZATGEN})
 endif ()
 
 if (BUILD_COMPLEX)
-  list(APPEND LA_REL_SRC ${CLASRC} ${ZCLASRC} ${SCLAUX})
+  list(APPEND LA_REL_SRC ${CLASRC} ${ZCLASRC} ${SCLAUX} ${CMATGEN} ${SCATGEN})
 endif ()
 
 if (BUILD_COMPLEX16)
-  list(APPEND LA_REL_SRC ${ZLASRC} ${ZCLASRC} ${DZLAUX})
+  list(APPEND LA_REL_SRC ${ZLASRC} ${ZCLASRC} ${DZLAUX} ${ZMATGEN} ${DZATGEN})
 endif ()
 
 # add lapack-netlib folder to the sources

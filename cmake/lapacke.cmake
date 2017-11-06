@@ -2387,7 +2387,7 @@ if (BUILD_COMPLEX16)
 endif ()
 
 # add lapack-netlib folder to the sources
-set(LAPACKE_SOURCES "")
+set(LAPACKE_SOURCES "${MATGEN}")
 foreach (LAE_FILE ${LAPACKE_REL_SRC})
   list(APPEND LAPACKE_SOURCES "${NETLIB_LAPACK_DIR}/LAPACKE/src/${LAE_FILE}")
 endforeach ()
