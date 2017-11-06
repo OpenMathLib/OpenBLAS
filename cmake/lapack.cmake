@@ -359,7 +359,7 @@ set(ZLASRC
   zhetri_3x.f zhesv_rk.f zhb2st_kernels.f zhbev_2stage.f zhbevd_2stage.f
   zhbevx_2stage.f zheev_2stage.f zheevd_2stage.f zheevr_2stage.f
   zheevx_2stage.f zhegv_2stage.f zhetrd_2stage.f zhetrd_hb2st.F zhetrd_he2hb.f
-  zlarfy.f zpotrs.f
+  zlarfy.f
 )
 
 set(LA_REL_SRC ${ALLAUX})
