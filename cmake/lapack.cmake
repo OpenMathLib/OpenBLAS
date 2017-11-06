@@ -386,24 +386,42 @@ set(ZMATGEN zlatms.f zlatme.f zlatmr.f zlatmt.f
 
 set(LA_REL_SRC ${ALLAUX})
 if (BUILD_SINGLE)
-  list(APPEND LA_REL_SRC ${SLASRC} ${DSLASRC} ${SCLAUX} ${SCATGEN} ${SMATGEN})
+  list(APPEND LA_REL_SRC ${SLASRC} ${DSLASRC} ${SCLAUX})
 endif ()
 
 if (BUILD_DOUBLE)
-  list(APPEND LA_REL_SRC ${DLASRC} ${DSLASRC} ${DZLAUX} ${DMATGEN} ${DZATGEN})
+  list(APPEND LA_REL_SRC ${DLASRC} ${DSLASRC} ${DZLAUX})
 endif ()
 
 if (BUILD_COMPLEX)
-  list(APPEND LA_REL_SRC ${CLASRC} ${ZCLASRC} ${SCLAUX} ${CMATGEN} ${SCATGEN})
+  list(APPEND LA_REL_SRC ${CLASRC} ${ZCLASRC} ${SCLAUX})
 endif ()
 
 if (BUILD_COMPLEX16)
-  list(APPEND LA_REL_SRC ${ZLASRC} ${ZCLASRC} ${DZLAUX} ${ZMATGEN} ${DZATGEN})
+  list(APPEND LA_REL_SRC ${ZLASRC} ${ZCLASRC} ${DZLAUX})
 endif ()
+
+set(MATGEN_SRC "")
+if(BUILD_SINGLE)
+  set(MATGEN_SRC ${SMATGEN} ${SCATGEN})
+endif()
+if(BUILD_DOUBLE)
+  set(MATGEN_SRC ${ALLOBJ} ${DMATGEN} ${DZATGEN})
+endif()
+if(BUILD_COMPLEX)
+  set(MATGEN_SRC ${ALLOBJ} ${CMATGEN} ${SCATGEN})
+endif()
+if(BUILD_COMPLEX16)
+  set(MATGEN_SRC ${ALLOBJ} ${ZMATGEN} ${DZATGEN})
+endif()
+
 
 # add lapack-netlib folder to the sources
 set(LA_SOURCES "")
 foreach (LA_FILE ${LA_REL_SRC})
   list(APPEND LA_SOURCES "${NETLIB_LAPACK_DIR}/SRC/${LA_FILE}")
+endforeach ()
+foreach (LA_FILE ${MATGEN_SRC})
+  list(APPEND LA_SOURCES "${NETLIB_LAPACK_DIR}/TESTING/MATGEN/${LA_FILE}")
 endforeach ()
 set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
