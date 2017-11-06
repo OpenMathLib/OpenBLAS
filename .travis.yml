@@ -1,5 +1,3 @@
-# XXX: Precise is already deprecated, new default is Trusty.
-# https://blog.travis-ci.com/2017-07-11-trusty-as-default-linux-is-coming
 dist: trusty
 sudo: false
 language: c
