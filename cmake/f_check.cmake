@@ -20,12 +20,6 @@
 # NEEDBUNDERSCORE
 # NEED2UNDERSCORES
 
-if (MSVC)
-  # had to do this for MSVC, else CMake automatically assumes I have ifort... -hpa
-  include(CMakeForceCompiler)
-  CMAKE_FORCE_Fortran_COMPILER(gfortran GNU)
-endif ()
-
 if (NOT NO_LAPACK)
   enable_language(Fortran)
 else()
