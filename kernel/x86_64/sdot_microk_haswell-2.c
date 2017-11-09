@@ -53,9 +53,11 @@ static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	"vfmadd231ps    64(%3,%0,4), %%ymm14, %%ymm6 \n\t"  // 2 * y
 	"vfmadd231ps    96(%3,%0,4), %%ymm15, %%ymm7 \n\t"  // 2 * y
 
+#ifndef DSDOT
 	"addq		$32 , %0	  	     \n\t"
 	"subq	        $32 , %1		     \n\t"		
 	"jnz		1b		             \n\t"
+#endif
 
 	"vextractf128	$1 , %%ymm4 , %%xmm12	     \n\t"
 	"vextractf128	$1 , %%ymm5 , %%xmm13	     \n\t"

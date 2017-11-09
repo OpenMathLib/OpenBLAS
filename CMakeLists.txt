@@ -24,6 +24,7 @@ option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON
 endif()
 option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
 option(DYNAMIC_ARCH "Build with DYNAMIC_ARCH" OFF)
+option(BUILD_RELAPACK "Build with ReLAPACK (recursive LAPACK" OFF)
 #######
 if(BUILD_WITHOUT_LAPACK)
 set(NO_LAPACK 1)
@@ -55,6 +56,9 @@ endif ()
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
+  if(BUILD_RELAPACK)
+    list(APPEND SUBDIRS relapack/src)
+  endif()
 endif ()
 
 # set which float types we want to build for
@@ -65,6 +69,10 @@ if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_
   set(BUILD_COMPLEX true)
   set(BUILD_COMPLEX16 true)
 endif ()
+
+if (NOT DEFINED BUILD_MATGEN)
+  set(BUILD_MATGEN true)
+endif()
 
 set(FLOAT_TYPES "")
 if (BUILD_SINGLE)
@@ -141,7 +149,7 @@ endif()
 
 
 # add objects to the openblas lib
-add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
+add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
 # Handle MSVC exports
 if(MSVC AND BUILD_SHARED_LIBS)
@@ -159,7 +167,7 @@ set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG 
 
 foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-  
+
   set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
   set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
   set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
@@ -190,7 +198,7 @@ if (NOT MSVC AND NOT NOFORTRAN)
   endif()
 endif()
 
-set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 
+set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
@@ -202,7 +210,7 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-  
+
 message(STATUS "Generating openblas_config.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
 set(OPENBLAS_CONFIG_H ${CMAKE_BINARY_DIR}/openblas_config.h)
@@ -246,7 +254,7 @@ if(NOT NO_LAPACKE)
 	add_dependencies( ${OpenBLAS_LIBNAME} genlapacke)
 	FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/*.h")
 	install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
- 
+
 	ADD_CUSTOM_TARGET(genlapacke
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
 	)

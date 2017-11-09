@@ -68,13 +68,22 @@ static void sdot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 
 #endif
 
+#if defined (DSDOT)
+double CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+#else
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+#endif
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
 	double dot = 0.0 ;
 
+#if defined (DSDOT)
+        double mydot = 0.0;
+        FLOAT asmdot = 0.0;
+#else
 	FLOAT mydot=0.0;
+#endif
 	BLASLONG n1;
 
 	if ( n <= 0 )  return(dot);
@@ -85,17 +94,35 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	        n1 = n & (BLASLONG)(-32);
 
 		if ( n1 )
+#if defined(DSDOT)
+			{
+			FLOAT *x1=x;
+			FLOAT *y1=y;
+			BLASLONG n2 = 32;
+			while (i<n1) {
+				sdot_kernel_16(n2, x1, y1 , &asmdot );
+				mydot += (double)asmdot;
+				asmdot=0.;
+				x1+=32;
+				y1+=32;
+				i+=32;
+			}
+		}
+#else		
 			sdot_kernel_16(n1, x, y , &mydot );
-
-
+#endif
 		i = n1;
 		while(i < n)
 		{
-
+#if defined(DSDOT)
+			dot += (double)y[i] * (double)x[i] ;
+#else
 			dot += y[i] * x[i] ;
+#endif
 			i++ ;
 
 		}
+
 		dot+=mydot;
 		return(dot);
 
@@ -106,8 +133,11 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 	while(i < n1)
 	{
-
+#if defined (DSDOT)
+		dot += (double)y[iy] * (double)x[ix] + (double)y[iy+inc_y] * (double)x[ix+inc_x];
+#else
 		dot += y[iy] * x[ix] + y[iy+inc_y] * x[ix+inc_x];
+#endif
 		ix  += inc_x*2 ;
 		iy  += inc_y*2 ;
 		i+=2 ;
@@ -116,8 +146,11 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 	while(i < n)
 	{
-
+#if defined (DSDOT)
+		dot += (double)y[iy] * (double)x[ix] ;
+#else
 		dot += y[iy] * x[ix] ;
+#endif
 		ix  += inc_x ;
 		iy  += inc_y ;
 		i++ ;

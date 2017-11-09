@@ -122,53 +122,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	axpy_kernel_L999
+	ble	.Ldaxpy_kernel_L999
 
 	fcmp	DA, #0.0
-	beq	axpy_kernel_L999
+	beq	.Ldaxpy_kernel_L999
 
 	cmp	INC_X, #1
-	bne	axpy_kernel_S_BEGIN
+	bne	.Ldaxpy_kernel_S_BEGIN
 	cmp	INC_Y, #1
-	bne	axpy_kernel_S_BEGIN
+	bne	.Ldaxpy_kernel_S_BEGIN
 
-axpy_kernel_F_BEGIN:
+.Ldaxpy_kernel_F_BEGIN:
 
 	asr	I, N, #5
 	cmp	I, xzr
-	beq	axpy_kernel_F1
+	beq	.Ldaxpy_kernel_F1
 
 	.align 5
-axpy_kernel_F32:
+.Ldaxpy_kernel_F32:
 
 	KERNEL_F32
 
 	subs	I, I, #1
-	bne	axpy_kernel_F32
+	bne	.Ldaxpy_kernel_F32
 
-axpy_kernel_F1:
+.Ldaxpy_kernel_F1:
 
 	ands	I, N, #31
-	ble	axpy_kernel_L999
+	ble	.Ldaxpy_kernel_L999
 
-axpy_kernel_F10:
+.Ldaxpy_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     axpy_kernel_F10
+        bne     .Ldaxpy_kernel_F10
 
-	b	axpy_kernel_L999
+	b	.Ldaxpy_kernel_L999
 
-axpy_kernel_S_BEGIN:
+.Ldaxpy_kernel_S_BEGIN:
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	axpy_kernel_S1
+	ble	.Ldaxpy_kernel_S1
 
-axpy_kernel_S4:
+.Ldaxpy_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -176,21 +176,21 @@ axpy_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	axpy_kernel_S4
+	bne	.Ldaxpy_kernel_S4
 
-axpy_kernel_S1:
+.Ldaxpy_kernel_S1:
 
 	ands	I, N, #3
-	ble	axpy_kernel_L999
+	ble	.Ldaxpy_kernel_L999
 
-axpy_kernel_S10:
+.Ldaxpy_kernel_S10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     axpy_kernel_S10
+        bne     .Ldaxpy_kernel_S10
 
-axpy_kernel_L999:
+.Ldaxpy_kernel_L999:
 
 	mov	w0, wzr
 	ret
