@@ -78,6 +78,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <sys/sysinfo.h>
 #include <sys/syscall.h>
+#include <sys/types.h>
+#include <errno.h>
 #include <sys/shm.h>
 #include <fcntl.h>
 #include <sched.h>
@@ -629,7 +631,7 @@ static inline int is_dead(int id) {
   return shmctl(id, IPC_STAT, &ds);
 }
 
-static void open_shmem(void) {
+static int open_shmem(void) {
 
   int try = 0;
 
@@ -655,29 +657,42 @@ static void open_shmem(void) {
   } while ((try < 10) && (shmid == -1));
 
   if (shmid == -1) {
-    fprintf(stderr, "GotoBLAS : Can't open shared memory. Terminated.\n");
-    exit(1);
+    perror ("Obtaining shared memory segment failed in open_shmem");
+    return (1);
   }
 
-  if (shmid != -1) common = (shm_t *)shmat(shmid, NULL, 0);
-
+  if (shmid != -1) {
+    if ( (common = shmat(shmid, NULL, 0)) == (void*)-1) {
+      perror ("Attaching shared memory segment failed in open_shmem");
+      return (1);
+    }
+  }
 #ifdef DEBUG
   fprintf(stderr, "Shared Memory id = %x  Address = %p\n", shmid, common);
 #endif
-
+  return (0);
 }
 
-static void create_pshmem(void) {
+static int create_pshmem(void) {
 
   pshmid = shmget(IPC_PRIVATE, 4096, IPC_CREAT | 0666);
 
-  paddr = shmat(pshmid, NULL, 0);
-
-  shmctl(pshmid, IPC_RMID, 0);
+  if (pshmid == -1) {
+    perror ("Obtaining shared memory segment failed in create_pshmem");
+    return(1);
+  }
+  
+  if ( (paddr = shmat(pshmid, NULL, 0)) == (void*)-1) {
+    perror ("Attaching shared memory segment failed in create_pshmem");
+    return (1);
+  }  
+  
+  if (shmctl(pshmid, IPC_RMID, 0) == -1) return (1);
 
 #ifdef DEBUG
   fprintf(stderr, "Private Shared Memory id = %x  Address = %p\n", pshmid, paddr);
 #endif
+  return(0);
 }
 
 static void local_cpu_map(void) {
@@ -805,17 +820,23 @@ void gotoblas_affinity_init(void) {
     return;
   }
 
-  create_pshmem();
-
-  open_shmem();
-
+  if (create_pshmem() != 0) {
+    disable_mapping = 1;
+    return;
+  }
+  
+  if (open_shmem() != 0) {
+    disable_mapping = 1;
+    return;
+  }
+  
   while ((common -> lock) && (common -> magic != SH_MAGIC)) {
     if (is_dead(common -> shmid)) {
       common -> lock = 0;
       common -> shmid = 0;
       common -> magic = 0;
     } else {
-      sched_yield();
+      YIELDING;
     }
   }
 
