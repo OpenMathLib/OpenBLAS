@@ -78,6 +78,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <sys/sysinfo.h>
 #include <sys/syscall.h>
+#include <sys/types.h>
+#include <errno.h>
 #include <sys/shm.h>
 #include <fcntl.h>
 #include <sched.h>
@@ -659,8 +661,9 @@ static void open_shmem(void) {
     exit(1);
   }
 
-  if (shmid != -1) common = (shm_t *)shmat(shmid, NULL, 0);
-
+  if (shmid != -1) {
+  if ( (common = shmat(shmid, NULL, 0)) == (void*)-1) perror ("Attaching shared memory segment");
+  }
 #ifdef DEBUG
   fprintf(stderr, "Shared Memory id = %x  Address = %p\n", shmid, common);
 #endif
