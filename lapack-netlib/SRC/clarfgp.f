@@ -197,7 +197,7 @@
             BETA = BETA*BIGNUM
             ALPHI = ALPHI*BIGNUM
             ALPHR = ALPHR*BIGNUM
-            IF( ABS( BETA ).LT.SMLNUM )
+            IF( ABS( BETA ).LT.SMLNUM .AND. KNT .LT. 1000 )
      $         GO TO 10
 *
 *           New BETA is at most 1, at least SMLNUM

@@ -181,7 +181,7 @@
             CALL SSCAL( N-1, BIGNUM, X, INCX )
             BETA = BETA*BIGNUM
             ALPHA = ALPHA*BIGNUM
-            IF( ABS( BETA ).LT.SMLNUM )
+            IF( ABS( BETA ).LT.SMLNUM .AND. KNT .LT. 1000 )
      $         GO TO 10
 *
 *           New BETA is at most 1, at least SMLNUM

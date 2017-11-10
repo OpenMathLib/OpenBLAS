@@ -175,7 +175,7 @@
             BETA = BETA*RSAFMN
             ALPHI = ALPHI*RSAFMN
             ALPHR = ALPHR*RSAFMN
-            IF( ABS( BETA ).LT.SAFMIN )
+            IF( ABS( BETA ).LT.SAFMIN .AND. KNT .LT. 1000)
      $         GO TO 10
 *
 *           New BETA is at most 1, at least SAFMIN
