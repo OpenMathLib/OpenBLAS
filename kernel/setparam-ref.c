@@ -684,6 +684,9 @@ static void init_parameter(void) {
 
   int l2 = get_l2_size();
 
+  (void) l2; /* dirty trick to suppress unused variable warning for targets */
+             /* where the GEMM unrolling parameters do not depend on l2 */
+  
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
