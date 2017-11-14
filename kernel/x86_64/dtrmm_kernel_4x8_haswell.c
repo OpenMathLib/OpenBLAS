@@ -167,24 +167,28 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
    FLOAT res4_0;
    FLOAT res4_1;
+/*
    FLOAT res4_2;
    FLOAT res4_3;
-
+*/
    FLOAT res5_0;
    FLOAT res5_1;
+/*
    FLOAT res5_2;
    FLOAT res5_3;
-
+*/
    FLOAT res6_0;
    FLOAT res6_1;
+/*
    FLOAT res6_2;
    FLOAT res6_3;
-
+*/
    FLOAT res7_0;
    FLOAT res7_1;
+/*
    FLOAT res7_2;
    FLOAT res7_3;
-
+*/
    FLOAT a0;
    FLOAT a1;
 
