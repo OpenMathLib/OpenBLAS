@@ -26,7 +26,7 @@ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIA
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
 SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+kOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
@@ -635,6 +635,8 @@ static int open_shmem(void) {
 
   int try = 0;
 
+  int err = 0;
+  
   do {
 
 #if defined(BIGNUMA)
@@ -652,18 +654,22 @@ static int open_shmem(void) {
 #endif
     }
 
+    if (shmid == -1) err = errno;
+    
     try ++;
 
   } while ((try < 10) && (shmid == -1));
 
   if (shmid == -1) {
-    perror ("Obtaining shared memory segment failed in open_shmem");
+    fprintf (stderr, "Obtaining shared memory segment failed in open_shmem: %s\n",strerror(err));
+    fprintf (stderr, "Setting CPU affinity not possible without shared memory access.\n");
     return (1);
   }
 
   if (shmid != -1) {
     if ( (common = shmat(shmid, NULL, 0)) == (void*)-1) {
       perror ("Attaching shared memory segment failed in open_shmem");
+      fprintf (stderr, "Setting CPU affinity not possible without shared memory access.\n");
       return (1);
     }
   }
@@ -679,11 +685,13 @@ static int create_pshmem(void) {
 
   if (pshmid == -1) {
     perror ("Obtaining shared memory segment failed in create_pshmem");
+    fprintf (stderr, "Setting CPU affinity not possible without shared memory access.\n");
     return(1);
   }
   
   if ( (paddr = shmat(pshmid, NULL, 0)) == (void*)-1) {
     perror ("Attaching shared memory segment failed in create_pshmem");
+    fprintf (stderr, "Setting CPU affinity not possible without shared memory access.\n");
     return (1);
   }  
   
