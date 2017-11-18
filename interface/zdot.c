@@ -148,8 +148,8 @@ OPENBLAS_COMPLEX_FLOAT NAME(                        blasint *N, FLOAT *x, blasin
 #else
 
 #ifdef FORCE_USE_STACK
-void           CNAME(blasint n, void *vx, blasint incx, void *vy, blasint incy, void *vresult){
-OPENBLAS_COMPLEX_FLOAT *result;
+void           CNAME(blasint n, void *vx, blasint incx, void *vy, blasint incy, void* vresult){
+OPENBLAS_COMPLEX_FLOAT *result= (OPENBLAS_COMPLEX_FLOAT*)vresult;
 #else
 OPENBLAS_COMPLEX_FLOAT CNAME(blasint n, void *vx, blasint incx, void *vy, blasint incy){
 
@@ -165,7 +165,6 @@ OPENBLAS_COMPLEX_FLOAT CNAME(blasint n, void *vx, blasint incx, void *vy, blasin
 #ifdef FORCE_USE_STACK
     OPENBLAS_COMPLEX_FLOAT zero=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0, 0.0);
     *result = zero;
-    vresult=(void*)result;
 //	CREAL(*result) = 0.0;
 //	CIMAG(*result) = 0.0;
     return;
@@ -185,10 +184,8 @@ OPENBLAS_COMPLEX_FLOAT CNAME(blasint n, void *vx, blasint incx, void *vy, blasin
 
 #ifndef CONJ
   *result = DOTU_K(n, x, incx, y, incy);
-  vresult=(void*)result;
 #else
   *result = DOTC_K(n, x, incx, y, incy);
-  vresult=(void*)result;
 #endif
 
   FUNCTION_PROFILE_END(4, 2 * n, 2 * n);
