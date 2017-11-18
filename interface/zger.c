@@ -141,10 +141,15 @@ void NAME(blasint *M, blasint *N, FLOAT *Alpha,
 
 void CNAME(enum CBLAS_ORDER order,
 	   blasint m, blasint n,
-	   FLOAT *Alpha,
-	   FLOAT  *x, blasint incx,
-	   FLOAT  *y, blasint incy,
-	   FLOAT  *a, blasint lda) {
+	   void *VAlpha,
+	   void  *vx, blasint incx,
+	   void  *vy, blasint incy,
+	   void  *va, blasint lda) {
+
+  FLOAT* Alpha = (FLOAT*) VAlpha;
+  FLOAT* a = (FLOAT*) va;
+  FLOAT* x = (FLOAT*) vx;
+  FLOAT* y = (FLOAT*) vy;
 
   FLOAT  alpha_r = Alpha[0];
   FLOAT  alpha_i = Alpha[1];

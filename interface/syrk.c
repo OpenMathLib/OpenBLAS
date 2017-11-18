@@ -188,15 +188,32 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #if !defined(COMPLEX) || defined(HEMM)
 	   FLOAT alpha,
 #else
-	   FLOAT *alpha,
+	   void *valpha,
 #endif
+#if !defined(COMPLEX)
 	   FLOAT *a, blasint lda,
+#else
+	   void *va, blasint lda,
+#endif
 #if !defined(COMPLEX) || defined(HEMM)
 	   FLOAT beta,
 #else
-	   FLOAT *beta,
+	   void *vbeta,
 #endif
+#if !defined(COMPLEX)
 	   FLOAT *c, blasint ldc) {
+#else
+	   void *vc, blasint ldc) {
+#endif
+
+#ifdef COMPLEX
+#if !defined(HEMM)
+  FLOAT* alpha = (FLOAT*) valpha;
+  FLOAT* beta = (FLOAT*) vbeta;
+#endif
+  FLOAT* a = (FLOAT*) va;
+  FLOAT* c = (FLOAT*) vc;
+#endif
 
   blas_arg_t args;
   int uplo, trans;

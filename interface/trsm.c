@@ -210,11 +210,16 @@ void CNAME(enum CBLAS_ORDER order,
 	   blasint m, blasint n,
 #ifndef COMPLEX
 	   FLOAT alpha,
-#else
-	   FLOAT *alpha,
-#endif
 	   FLOAT *a, blasint lda,
 	   FLOAT *b, blasint ldb) {
+#else
+	   void *valpha,
+	   void *va, blasint lda,
+	   void *vb, blasint ldb) {
+  FLOAT *alpha = (FLOAT*) valpha;
+  FLOAT *a = (FLOAT*) va;
+  FLOAT *b = (FLOAT*) vb;
+#endif
 
   blas_arg_t args;
   int side, uplo, trans, unit;

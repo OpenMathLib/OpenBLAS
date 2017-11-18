@@ -52,8 +52,9 @@ void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
 
 #else
 
-void CNAME(blasint n, FLOAT *x, blasint incx, FLOAT *y, blasint incy){
-
+void CNAME(blasint n, void *vx, blasint incx, void *vy, blasint incy){
+FLOAT *x = (FLOAT*)vx;
+FLOAT *y = (FLOAT*)vy;
 #endif
 
 #ifdef SMP
