@@ -37,12 +37,8 @@ environment:
 install:
   - if [%COMPILER%]==[clang-cl] call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
-  - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev
-
+  - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev ninja cmake
   - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet flang
-  - if [%WITH_FORTRAN%]==[yes] conda config --add channels isuruf/label/flang --force
-
-  - if [%COMPILER%]==[clang-cl] conda install --yes --quiet ninja cmake
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   - if [%COMPILER%]==[clang-cl] set "LIB=%CONDA_INSTALL_LOCN%\Library\lib;%LIB%"
   - if [%COMPILER%]==[clang-cl] set "CPATH=%CONDA_INSTALL_LOCN%\Library\include;%CPATH%"
