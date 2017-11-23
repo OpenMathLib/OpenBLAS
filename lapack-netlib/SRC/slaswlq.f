@@ -55,7 +55,7 @@
 *> \verbatim
 *>          A is REAL array, dimension (LDA,N)
 *>          On entry, the M-by-N matrix A.
-*>          On exit, the elements on and bleow the diagonal
+*>          On exit, the elements on and below the diagonal
 *>          of the array contain the N-by-N lower triangular matrix L;
 *>          the elements above the diagonal represent Q by the rows
 *>          of blocked V (see Further Details).
@@ -150,10 +150,10 @@
       SUBROUTINE SLASWLQ( M, N, MB, NB, A, LDA, T, LDT, WORK, LWORK,
      $                  INFO)
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd. --
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER           INFO, LDA, M, N, MB, NB, LWORK, LDT
@@ -173,7 +173,7 @@
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     .. EXTERNAL SUBROUTINES ..
-      EXTERNAL           SGEQRT, STPQRT, XERBLA
+      EXTERNAL           SGELQT, SGEQRT, STPLQT, STPQRT, XERBLA
 *     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MAX, MIN, MOD
 *     ..

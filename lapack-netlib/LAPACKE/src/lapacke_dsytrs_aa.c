@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dsytrs_aa
 * Author: Intel Corporation
-* Generated December 2016
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -46,12 +46,14 @@ lapack_int LAPACKE_dsytrs_aa( int matrix_layout, char uplo, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_dsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
-        return -5;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -8;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_dsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
+            return -5;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -8;
+        }
     }
 #endif
     /* Query optimal working array(s) size */
@@ -60,7 +62,7 @@ lapack_int LAPACKE_dsytrs_aa( int matrix_layout, char uplo, lapack_int n,
     if( info != 0 ) {
         goto exit_level_0;
     }
-	lwork = (lapack_int)work_query;
+    lwork = (lapack_int)work_query;
     /* Allocate memory for work arrays */
     work = (double*)
         LAPACKE_malloc( sizeof(double) * lwork );

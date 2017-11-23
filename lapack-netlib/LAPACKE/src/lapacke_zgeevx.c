@@ -52,9 +52,11 @@ lapack_int LAPACKE_zgeevx( int matrix_layout, char balanc, char jobvl,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zge_nancheck( matrix_layout, n, n, a, lda ) ) {
-        return -7;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_zge_nancheck( matrix_layout, n, n, a, lda ) ) {
+            return -7;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

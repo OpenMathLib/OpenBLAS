@@ -108,7 +108,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup realGEcomputational
 *
@@ -133,7 +133,7 @@
 *>  block is of order NB except for the last block, which is of order
 *>  IB = K - (B-1)*NB.  For each of the B blocks, a upper triangular block
 *>  reflector factor is computed: T1, T2, ..., TB.  The NB-by-NB (and IB-by-IB
-*>  for the last block) T's are stored in the NB-by-N matrix T as
+*>  for the last block) T's are stored in the NB-by-K matrix T as
 *>
 *>               T = (T1 T2 ... TB).
 *> \endverbatim
@@ -141,10 +141,10 @@
 *  =====================================================================
       SUBROUTINE SGEQRT( M, N, NB, A, LDA, T, LDT, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER INFO, LDA, LDT, M, N, NB

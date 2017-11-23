@@ -59,7 +59,7 @@
 *  =====================================================================
       PROGRAM SCHKRFP
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -210,11 +210,6 @@
 *     Read the flag that indicates whether to test the error exits.
 *
       READ( NIN, FMT = * )TSTERR
-*
-      IF( FATAL ) THEN
-         WRITE( NOUT, FMT = 9999 )
-         STOP
-      END IF
 *
       IF( FATAL ) THEN
          WRITE( NOUT, FMT = 9999 )

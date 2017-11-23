@@ -80,7 +80,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is COMPLEX*16 array of DIMENSION ( LDA, n ).
+*>          A is COMPLEX*16 array, dimension ( LDA, N ).
 *>           Before entry with  UPLO = 'U' or 'u', the leading n by n
 *>           upper triangular part of the array A must contain the upper
 *>           triangular matrix and the strictly lower triangular part of
@@ -101,9 +101,9 @@
 *>           max( 1, n ).
 *> \endverbatim
 *>
-*> \param[in] X
+*> \param[in,out] X
 *> \verbatim
-*>          X is (input/output) COMPLEX*16 array of dimension at least
+*>          X is COMPLEX*16 array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the n
 *>           element vector x. On exit, X is overwritten with the

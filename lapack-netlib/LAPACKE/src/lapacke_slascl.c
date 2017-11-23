@@ -43,68 +43,70 @@ lapack_int LAPACKE_slascl( int matrix_layout, char type, lapack_int kl,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    switch (type) {
-    case 'G':
-        if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
-            return -9;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        switch (type) {
+        case 'G':
+            if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
+                return -9;
+            }
+            break;
+        case 'L':
+            // TYPE = 'L' - lower triangle of general matrix
+            if( matrix_layout == LAPACK_COL_MAJOR &&
+                LAPACKE_sgb_nancheck( matrix_layout, m, n, m-1, 0, a, lda+1 ) ) {
+                return -9;
+            }
+            if( matrix_layout == LAPACK_ROW_MAJOR &&
+                LAPACKE_sgb_nancheck( LAPACK_COL_MAJOR, n, m, 0, m-1, a-m+1, lda+1 ) ) {
+                return -9;
+            }
+            break;
+        case 'U':
+            // TYPE = 'U' - upper triangle of general matrix
+            if( matrix_layout == LAPACK_COL_MAJOR &&
+                LAPACKE_sgb_nancheck( matrix_layout, m, n, 0, n-1, a-n+1, lda+1 ) ) {
+                return -9;
+            }
+            if( matrix_layout == LAPACK_ROW_MAJOR &&
+                LAPACKE_sgb_nancheck( LAPACK_COL_MAJOR, n, m, n-1, 0, a, lda+1 ) ) {
+                return -9;
+            }
+            break;
+        case 'H':
+            // TYPE = 'H' - part of upper Hessenberg matrix in general matrix
+            if( matrix_layout == LAPACK_COL_MAJOR &&
+                LAPACKE_sgb_nancheck( matrix_layout, m, n, 1, n-1, a-n+1, lda+1 ) ) {
+                return -9;
+            }
+            if( matrix_layout == LAPACK_ROW_MAJOR &&
+                LAPACKE_sgb_nancheck( LAPACK_COL_MAJOR, n, m, n-1, 1, a-1, lda+1 ) ) {
+                return -9;
+            }
+        case 'B':
+            // TYPE = 'B' - lower part of symmetric band matrix (assume m==n)
+            if( LAPACKE_ssb_nancheck( matrix_layout, 'L', n, kl, a, lda ) ) {
+                return -9;
+            }
+            break;
+        case 'Q':
+            // TYPE = 'Q' - upper part of symmetric band matrix (assume m==n)
+            if( LAPACKE_ssb_nancheck( matrix_layout, 'U', n, ku, a, lda ) ) {
+                return -9;
+            }
+            break;
+        case 'Z':
+            // TYPE = 'Z' -  band matrix laid out for ?GBTRF
+            if( matrix_layout == LAPACK_COL_MAJOR &&
+                LAPACKE_sgb_nancheck( matrix_layout, m, n, kl, ku, a+kl, lda ) ) {
+                return -9;
+            }
+            if( matrix_layout == LAPACK_ROW_MAJOR &&
+                LAPACKE_sgb_nancheck( matrix_layout, m, n, kl, ku, a+lda*kl, lda ) ) {
+                return -9;
+            }
+            break;
         }
-        break;
-    case 'L':
-        // TYPE = 'L' - lower triangle of general matrix
-        if( matrix_layout == LAPACK_COL_MAJOR &&
-            LAPACKE_sgb_nancheck( matrix_layout, m, n, m-1, 0, a, lda+1 ) ) {
-            return -9;
-        }
-        if( matrix_layout == LAPACK_ROW_MAJOR &&
-            LAPACKE_sgb_nancheck( LAPACK_COL_MAJOR, n, m, 0, m-1, a-m+1, lda+1 ) ) {
-            return -9;
-        }
-        break;
-    case 'U':
-        // TYPE = 'U' - upper triangle of general matrix
-        if( matrix_layout == LAPACK_COL_MAJOR &&
-            LAPACKE_sgb_nancheck( matrix_layout, m, n, 0, n-1, a-n+1, lda+1 ) ) {
-            return -9;
-        }
-        if( matrix_layout == LAPACK_ROW_MAJOR &&
-            LAPACKE_sgb_nancheck( LAPACK_COL_MAJOR, n, m, n-1, 0, a, lda+1 ) ) {
-            return -9;
-        }
-        break;
-    case 'H':
-        // TYPE = 'H' - part of upper Hessenberg matrix in general matrix
-        if( matrix_layout == LAPACK_COL_MAJOR &&
-            LAPACKE_sgb_nancheck( matrix_layout, m, n, 1, n-1, a-n+1, lda+1 ) ) {
-            return -9;
-        }
-        if( matrix_layout == LAPACK_ROW_MAJOR &&
-            LAPACKE_sgb_nancheck( LAPACK_COL_MAJOR, n, m, n-1, 1, a-1, lda+1 ) ) {
-            return -9;
-        }
-    case 'B':
-        // TYPE = 'B' - lower part of symmetric band matrix (assume m==n)
-        if( LAPACKE_ssb_nancheck( matrix_layout, 'L', n, kl, a, lda ) ) {
-            return -9;
-        }
-        break;
-    case 'Q':
-        // TYPE = 'Q' - upper part of symmetric band matrix (assume m==n)
-        if( LAPACKE_ssb_nancheck( matrix_layout, 'U', n, ku, a, lda ) ) {
-            return -9;
-        }
-        break;
-    case 'Z':
-        // TYPE = 'Z' -  band matrix laid out for ?GBTRF
-        if( matrix_layout == LAPACK_COL_MAJOR &&
-            LAPACKE_sgb_nancheck( matrix_layout, m, n, kl, ku, a+kl, lda ) ) {
-            return -9;
-        }
-        if( matrix_layout == LAPACK_ROW_MAJOR &&
-            LAPACKE_sgb_nancheck( matrix_layout, m, n, kl, ku, a+lda*kl, lda ) ) {
-            return -9;
-        }
-        break;
     }
 #endif
     return LAPACKE_slascl_work( matrix_layout, type, kl, ku, cfrom, cto, m,  n, a, lda );

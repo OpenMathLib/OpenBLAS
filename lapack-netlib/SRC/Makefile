@@ -3,10 +3,10 @@ include ../make.inc
 #######################################################################
 #  This is the makefile to create a library for LAPACK.
 #  The files are organized as follows:
-#       ALLAUX  -- Auxiliary routines called from all precisions
 #
-#       SCLAUX  -- Auxiliary routines called from both REAL and COMPLEX.
-#       DZLAUX  -- Auxiliary routines called from both DOUBLE and COMPLEX*16.
+#       ALLAUX  -- Auxiliary routines called from all precisions
+#       SCLAUX  -- Auxiliary routines called from single precision
+#       DZLAUX  -- Auxiliary routines called from double precision
 #
 #       DSLASRC -- Double-single mixed precision real routines called from
 #                  single, single-extra and double precision real LAPACK
@@ -56,7 +56,8 @@ include ../make.inc
 #
 #######################################################################
 
-ALLAUX_O = ilaenv.o ieeeck.o lsamen.o xerbla.o xerbla_array.o iparmq.o iparam2stage.o\
+ALLAUX_O = ilaenv.o ilaenv2stage.o ieeeck.o lsamen.o xerbla.o xerbla_array.o \
+   iparmq.o iparam2stage.o \
    ilaprec.o ilatrans.o ilauplo.o iladiag.o chla_transtype.o \
    ../INSTALL/ilaver.o ../INSTALL/lsame.o ../INSTALL/slamch.o
 
@@ -144,12 +145,14 @@ SLASRC_O = \
    ssycon.o ssyev.o  ssyevd.o ssyevr.o ssyevx.o ssygs2.o \
    ssygst.o ssygv.o  ssygvd.o ssygvx.o ssyrfs.o ssysv.o  ssysvx.o \
    ssytd2.o ssytf2.o ssytrd.o ssytrf.o ssytri.o ssytri2.o ssytri2x.o \
-   ssyswapr.o ssytrs.o ssytrs2.o ssyconv.o ssyconvf_rook.o \
+   ssyswapr.o ssytrs.o ssytrs2.o \
+   ssyconv.o ssyconvf.o ssyconvf_rook.o \
    ssytf2_rook.o ssytrf_rook.o ssytrs_rook.o \
    ssytri_rook.o ssycon_rook.o ssysv_rook.o \
    ssytf2_rk.o ssytrf_rk.o ssytrs_3.o \
    ssytri_3.o ssytri_3x.o ssycon_3.o ssysv_rk.o \
    slasyf_aa.o ssysv_aa.o ssytrf_aa.o ssytrs_aa.o \
+   ssysv_aa_2stage.o ssytrf_aa_2stage.o ssytrs_aa_2stage.o \
    stbcon.o \
    stbrfs.o stbtrs.o stgevc.o stgex2.o stgexc.o stgsen.o \
    stgsja.o stgsna.o stgsy2.o stgsyl.o stpcon.o stprfs.o stptri.o \
@@ -210,7 +213,8 @@ CLASRC_O = \
    chetrs_rook.o checon_rook.o chesv_rook.o \
    chetf2_rk.o chetrf_rk.o chetri_3.o chetri_3x.o \
    chetrs_3.o checon_3.o chesv_rk.o \
-   chesv_aa.o chetrf_aa.o chetrs_aa.o clahef_aa.o\
+   chesv_aa.o chetrf_aa.o chetrs_aa.o clahef_aa.o \
+   chesv_aa_2stage.o chetrf_aa_2stage.o chetrs_aa_2stage.o \
    chgeqz.o chpcon.o chpev.o  chpevd.o \
    chpevx.o chpgst.o chpgv.o  chpgvd.o chpgvx.o chprfs.o chpsv.o \
    chpsvx.o \
@@ -247,6 +251,7 @@ CLASRC_O = \
    csytri_rook.o csycon_rook.o csysv_rook.o \
    csytf2_rk.o csytrf_rk.o csytrf_aa.o csytrs_3.o csytrs_aa.o \
    csytri_3.o csytri_3x.o csycon_3.o csysv_rk.o csysv_aa.o \
+   csysv_aa_2stage.o csytrf_aa_2stage.o csytrs_aa_2stage.o \
    ctbcon.o ctbrfs.o ctbtrs.o ctgevc.o ctgex2.o \
    ctgexc.o ctgsen.o ctgsja.o ctgsna.o ctgsy2.o ctgsyl.o ctpcon.o \
    ctprfs.o ctptri.o \
@@ -344,6 +349,7 @@ DLASRC_O = \
    dsytf2_rk.o dsytrf_rk.o dsytrs_3.o \
    dsytri_3.o dsytri_3x.o dsycon_3.o dsysv_rk.o \
    dlasyf_aa.o dsysv_aa.o dsytrf_aa.o dsytrs_aa.o \
+   dsysv_aa_2stage.o dsytrf_aa_2stage.o dsytrs_aa_2stage.o \
    dtbcon.o dtbrfs.o dtbtrs.o dtgevc.o dtgex2.o dtgexc.o dtgsen.o \
    dtgsja.o dtgsna.o dtgsy2.o dtgsyl.o dtpcon.o dtprfs.o dtptri.o \
    dtptrs.o \
@@ -404,6 +410,7 @@ ZLASRC_O = \
    zhetf2_rk.o zhetrf_rk.o zhetri_3.o zhetri_3x.o \
    zhetrs_3.o zhecon_3.o zhesv_rk.o \
    zhesv_aa.o zhetrf_aa.o zhetrs_aa.o zlahef_aa.o \
+   zhesv_aa_2stage.o zhetrf_aa_2stage.o zhetrs_aa_2stage.o \
    zhgeqz.o zhpcon.o zhpev.o  zhpevd.o \
    zhpevx.o zhpgst.o zhpgv.o  zhpgvd.o zhpgvx.o zhprfs.o zhpsv.o \
    zhpsvx.o \
@@ -440,6 +447,7 @@ ZLASRC_O = \
    zsyconv.o zsyconvf.o zsyconvf_rook.o \
    zsytf2_rook.o zsytrf_rook.o zsytrs_rook.o zsytrs_aa.o \
    zsytri_rook.o zsycon_rook.o zsysv_rook.o \
+   zsysv_aa_2stage.o zsytrf_aa_2stage.o zsytrs_aa_2stage.o \
    zsytf2_rk.o zsytrf_rk.o zsytrf_aa.o zsytrs_3.o \
    zsytri_3.o zsytri_3x.o zsycon_3.o zsysv_rk.o zsysv_aa.o \
    ztbcon.o ztbrfs.o ztbtrs.o ztgevc.o ztgex2.o \

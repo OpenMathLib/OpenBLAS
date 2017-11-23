@@ -52,8 +52,7 @@
 *>
 *> \param[in,out] SX
 *> \verbatim
-*>          SX is REAL array, dimension N
-*>         double precision vector with N elements
+*>          SX is REAL array, dimension ( 1 + ( N - 1 )*abs( INCX ) )
 *> \endverbatim
 *>
 *> \param[in] INCX
@@ -64,8 +63,7 @@
 *>
 *> \param[in,out] SY
 *> \verbatim
-*>          SY is REAL array, dimension N
-*>         double precision vector with N elements
+*>          SY is REAL array, dimension ( 1 + ( N - 1 )*abs( INCY ) )
 *> \endverbatim
 *>
 *> \param[in] INCY
@@ -74,9 +72,9 @@
 *>         storage spacing between elements of SY
 *> \endverbatim
 *>
-*> \param[in,out] SPARAM
+*> \param[in] SPARAM
 *> \verbatim
-*>          SPARAM is REAL array, dimension 5
+*>          SPARAM is REAL array, dimension (5)
 *>     SPARAM(1)=SFLAG
 *>     SPARAM(2)=SH11
 *>     SPARAM(3)=SH21
@@ -92,17 +90,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup single_blas_level1
 *
 *  =====================================================================
       SUBROUTINE SROTM(N,SX,INCX,SY,INCY,SPARAM)
 *
-*  -- Reference BLAS level1 routine (version 3.7.0) --
+*  -- Reference BLAS level1 routine (version 3.8.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER INCX,INCY,N

@@ -161,7 +161,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *  @precisions fortran d -> z c
 *
@@ -172,10 +172,10 @@
      $                      THRESH, TSTERR, NMAX, A, AFAC, AINV, B,
      $                      X, XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
       IMPLICIT NONE
 *
@@ -215,15 +215,10 @@
       INTEGER            ISEED( 4 ), ISEEDY( 4 )
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
-*     .. External Functions ..
-      DOUBLE PRECISION   DGET06, DLANSY
-      EXTERNAL           DGET06, DLANSY
-*     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, DERRSY, DGET04, DLACPY,
-     $                   DLARHS, DLATB4, DLATMS, DPOT02, DPOT03, DPOT05,
-     $                   DSYCON, DSYRFS, DSYT01_AA, DSYTRF_AA,
-     $                   DSYTRI2, DSYTRS_AA, XLAENV
+      EXTERNAL           ALAERH, ALAHD, ALASUM, DERRSY, DLACPY, DLARHS,
+     $                   DLATB4, DLATMS, DPOT02, DSYT01_AA, DSYTRF_AA,
+     $                   DSYTRS_AA, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -437,22 +432,22 @@
 *                 Adjust the expected value of INFO to account for
 *                 pivoting.
 *
-                  IF( IZERO.GT.0 ) THEN
-                     J = 1
-                     K = IZERO
-  100                CONTINUE
-                     IF( J.EQ.K ) THEN
-                        K = IWORK( J )
-                     ELSE IF( IWORK( J ).EQ.K ) THEN
-                        K = J
-                     END IF
-                     IF( J.LT.K ) THEN
-                        J = J + 1
-                        GO TO 100
-                     END IF
-                  ELSE
+c                  IF( IZERO.GT.0 ) THEN
+c                     J = 1
+c                     K = IZERO
+c  100                CONTINUE
+c                     IF( J.EQ.K ) THEN
+c                        K = IWORK( J )
+c                     ELSE IF( IWORK( J ).EQ.K ) THEN
+c                        K = J
+c                     END IF
+c                     IF( J.LT.K ) THEN
+c                        J = J + 1
+c                        GO TO 100
+c                     END IF
+c                  ELSE
                      K = 0
-                  END IF
+c                  END IF
 *
 *                 Check error code from DSYTRF and handle error.
 *
@@ -516,31 +511,34 @@
 *                    Check error code from DSYTRS and handle error.
 *
                      IF( INFO.NE.0 ) THEN
-                        CALL ALAERH( PATH, 'DSYTRS_AA', INFO, 0,
-     $                               UPLO, N, N, -1, -1, NRHS, IMAT,
-     $                               NFAIL, NERRS, NOUT )
-                     END IF
-*
-                     CALL DLACPY( 'Full', N, NRHS, B, LDA, WORK, LDA )
-*
-*                    Compute the residual for the solution
-*
-                     CALL DPOT02( UPLO, N, NRHS, A, LDA, X, LDA, WORK,
-     $                            LDA, RWORK, RESULT( 2 ) )
-*
-*
-*                    Print information about the tests that did not pass
-*                    the threshold.
-*
-                     DO 120 K = 2, 2
-                        IF( RESULT( K ).GE.THRESH ) THEN
-                           IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
-     $                        CALL ALAHD( NOUT, PATH )
-                           WRITE( NOUT, FMT = 9998 )UPLO, N, NRHS,
-     $                        IMAT, K, RESULT( K )
-                           NFAIL = NFAIL + 1
+                        IF( IZERO.EQ.0 ) THEN
+                           CALL ALAERH( PATH, 'DSYTRS_AA', INFO, 0,
+     $                                  UPLO, N, N, -1, -1, NRHS, IMAT,
+     $                                  NFAIL, NERRS, NOUT )
                         END IF
-  120                CONTINUE
+                     ELSE
+                        CALL DLACPY( 'Full', N, NRHS, B, LDA, WORK, LDA
+     $                               )
+*
+*                       Compute the residual for the solution
+*
+                        CALL DPOT02( UPLO, N, NRHS, A, LDA, X, LDA,
+     $                               WORK, LDA, RWORK, RESULT( 2 ) )
+*
+*
+*                       Print information about the tests that did not pass
+*                       the threshold.
+*
+                        DO 120 K = 2, 2
+                           IF( RESULT( K ).GE.THRESH ) THEN
+                              IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                           CALL ALAHD( NOUT, PATH )
+                              WRITE( NOUT, FMT = 9998 )UPLO, N, NRHS,
+     $                           IMAT, K, RESULT( K )
+                              NFAIL = NFAIL + 1
+                           END IF
+  120                   CONTINUE
+                     END IF
                      NRUN = NRUN + 1
 *
 *                 End do for each value of NRHS in NSVAL.

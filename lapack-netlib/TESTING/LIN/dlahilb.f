@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
+*       SUBROUTINE DLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
 *
 *       .. Scalar Arguments ..
 *       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -53,7 +53,7 @@
 *>
 *> \param[in] NRHS
 *> \verbatim
-*>          NRHS is NRHS
+*>          NRHS is INTEGER
 *>          The requested number of right-hand sides.
 *> \endverbatim
 *>
@@ -117,17 +117,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup double_lin
 *
 *  =====================================================================
-      SUBROUTINE DLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
+      SUBROUTINE DLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -140,7 +140,6 @@
       INTEGER TM, TI, R
       INTEGER M
       INTEGER I, J
-      COMPLEX*16 TMP
 *     ..
 *     .. Parameters ..
 *     NMAX_EXACT   the largest dimension where the generated data is
@@ -203,9 +202,8 @@
 *
 *     Generate matrix B as simply the first NRHS columns of M * the
 *     identity.
-      TMP = DBLE(M)
-      CALL DLASET('Full', N, NRHS, 0.0D+0, TMP, B, LDB)
-*
+      CALL DLASET('Full', N, NRHS, 0.0D+0, DBLE(M), B, LDB)
+
 *     Generate the true solutions in X.  Because B = the first NRHS
 *     columns of M*I, the true solutions are just the first NRHS columns
 *     of the inverse Hilbert matrix.

@@ -507,7 +507,7 @@ LAPACK library, you would modify the \texttt{lapacklib} definition to be:
 
 \begin{verbatim}
 lapacklib:
-        ( cd SRC; $(MAKE) single )
+        $(MAKE) -C SRC single
 \end{verbatim}
 
 Likewise, you could specify \texttt{double, complex, or complex16} to
@@ -560,7 +560,7 @@ can be accomplished by the following:
 
 \begin{list}{}{}
 \item \texttt{cd LAPACK}
-\item \texttt{make clean}
+\item \texttt{make cleanobj}
 \end{list}
 
 \section{Further Details of the Installation Process}\label{furtherdetails}

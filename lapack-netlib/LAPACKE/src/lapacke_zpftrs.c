@@ -43,12 +43,14 @@ lapack_int LAPACKE_zpftrs( int matrix_layout, char transr, char uplo,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zpf_nancheck( n, a ) ) {
-        return -6;
-    }
-    if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -7;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_zpf_nancheck( n, a ) ) {
+            return -6;
+        }
+        if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -7;
+        }
     }
 #endif
     return LAPACKE_zpftrs_work( matrix_layout, transr, uplo, n, nrhs, a, b,

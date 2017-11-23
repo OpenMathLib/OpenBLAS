@@ -48,21 +48,23 @@ lapack_int LAPACKE_stgexc( int matrix_layout, lapack_logical wantq,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_sge_nancheck( matrix_layout, n, n, a, lda ) ) {
-        return -5;
-    }
-    if( LAPACKE_sge_nancheck( matrix_layout, n, n, b, ldb ) ) {
-        return -7;
-    }
-    if( wantq ) {
-        if( LAPACKE_sge_nancheck( matrix_layout, n, n, q, ldq ) ) {
-            return -9;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_sge_nancheck( matrix_layout, n, n, a, lda ) ) {
+            return -5;
         }
-    }
-    if( wantz ) {
-        if( LAPACKE_sge_nancheck( matrix_layout, n, n, z, ldz ) ) {
-            return -11;
+        if( LAPACKE_sge_nancheck( matrix_layout, n, n, b, ldb ) ) {
+            return -7;
+        }
+        if( wantq ) {
+            if( LAPACKE_sge_nancheck( matrix_layout, n, n, q, ldq ) ) {
+                return -9;
+            }
+        }
+        if( wantz ) {
+            if( LAPACKE_sge_nancheck( matrix_layout, n, n, z, ldz ) ) {
+                return -11;
+            }
         }
     }
 #endif

@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRHE( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -90,11 +90,12 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAESM, CHKXER, ZHECON, ZHECON_3, ZHECON_ROOK,
      $                   ZHERFS, ZHETF2, ZHETF2_RK, ZHETF2_ROOK, ZHETRF,
-     $                   ZHETRF_RK, ZHETRF_ROOK, ZHETRF_AA, ZHETRI,
+     $                   ZHETRF_RK, ZHETRF_ROOK, ZHETRF_AA, 
+     $                   ZHETRF_AA_2STAGE, ZHETRI,
      $                   ZHETRI_3, ZHETRI_3X, ZHETRI_ROOK, ZHETRI2,
      $                   ZHETRI2X, ZHETRS, ZHETRS_3, ZHETRS_ROOK,
-     $                   ZHETRS_AA, ZHPCON, ZHPRFS, ZHPTRF, ZHPTRI,
-     $                   ZHPTRS
+     $                   ZHETRS_AA, ZHETRS_AA_2STAGE, ZHPCON, ZHPRFS,
+     $                   ZHPTRF, ZHPTRI, ZHPTRS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -521,6 +522,63 @@
          INFOT = 10
          CALL ZHETRS_AA( 'U', 0, 1, A, 1, IP, B, 1, W, -2, INFO )
          CALL CHKXER( 'ZHETRS_AA', INFOT, NOUT, LERR, OK )
+*        
+      ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with Aasen's algorithm.
+*
+*        ZHETRF_AA_2STAGE
+*
+         SRNAMT = 'ZHETRF_AA_2STAGE'
+         INFOT = 1
+         CALL ZHETRF_AA_2STAGE( '/', 0, A, 1, A, 1, IP, IP, W, 1,
+     $                          INFO )
+         CALL CHKXER( 'ZHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRF_AA_2STAGE( 'U', -1, A, 1, A, 1, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'ZHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETRF_AA_2STAGE( 'U', 2, A, 1, A, 2, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'ZHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZHETRF_AA_2STAGE( 'U', 2, A, 2, A, 1, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'ZHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHETRF_AA_2STAGE( 'U', 2, A, 2, A, 8, IP, IP, W, 0,
+     $                           INFO )
+         CALL CHKXER( 'ZHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+*
+*        ZHETRS_AA_2STAGE
+*
+         SRNAMT = 'ZHETRS_AA_2STAGE'
+         INFOT = 1
+         CALL ZHETRS_AA_2STAGE( '/', 0, 0, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETRS_AA_2STAGE( 'U', -1, 0, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHETRS_AA_2STAGE( 'U', 0, -1, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHETRS_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZHETRS_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHETRS_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZHETRS_AA_STAGE', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *

@@ -232,12 +232,12 @@ for dtype in range_prec:
     letter+"bb","glm","gqr",
     "gsv","csd","lse",
     letter+"test", letter+dtypes[0][dtype-1]+"test",letter+"test_rfp"),
-    ("Nonsymmetric Eigenvalue Problem", "Symmetric Eigenvalue Problem", "Symmetric Eigenvalue Problem 2 stage", "Singular Value Decomposition",
-    "Eigen Condition","Nonsymmetric Eigenvalue","Nonsymmetric Generalized Eigenvalue Problem",
-    "Nonsymmetric Generalized Eigenvalue Problem driver", "Symmetric Eigenvalue Problem", "Symmetric Eigenvalue Generalized Problem",
-    "Banded Singular Value Decomposition routines", "Generalized Linear Regression Model routines", "Generalized QR and RQ factorization routines",
-    "Generalized Singular Value Decomposition routines", "CS Decomposition routines", "Constrained Linear Least Squares routines",
-    "Linear Equation routines", "Mixed Precision linear equation routines","RFP linear equation routines"),
+    ("Nonsymmetric-Eigenvalue-Problem", "Symmetric-Eigenvalue-Problem", "Symmetric-Eigenvalue-Problem-2-stage", "Singular-Value-Decomposition",
+    "Eigen-Condition","Nonsymmetric-Eigenvalue","Nonsymmetric-Generalized-Eigenvalue-Problem",
+    "Nonsymmetric-Generalized-Eigenvalue-Problem-driver", "Symmetric-Eigenvalue-Problem", "Symmetric-Eigenvalue-Generalized-Problem",
+    "Banded-Singular-Value-Decomposition-routines", "Generalized-Linear-Regression-Model-routines", "Generalized-QR-and-RQ-factorization-routines",
+    "Generalized-Singular-Value-Decomposition-routines", "CS-Decomposition-routines", "Constrained-Linear-Least-Squares-routines",
+    "Linear-Equation-routines", "Mixed-Precision-linear-equation-routines","RFP-linear-equation-routines"),
     (letter+"nep", letter+"sep", letter+"se2", letter+"svd",
     letter+"ec",letter+"ed",letter+"gg",
     letter+"gd",letter+"sb",letter+"sg",
@@ -268,7 +268,7 @@ for dtype in range_prec:
                 # EIG TESTS
                 cmdbase="xeigtst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
         if (not just_errors and not short_summary):
-            print("-->  Testing "+name+" "+dtests[1][dtest]+" [ "+cmdbase+" ]")
+            print("Testing "+name+" "+dtests[1][dtest]+"-"+cmdbase, end=' ')
         # Run the process: either to read the file or run the LAPACK testing
         nb_test = run_summary_test(f, cmdbase, short_summary)
         list_results[0][dtype]+=nb_test[0]
@@ -279,13 +279,13 @@ for dtype in range_prec:
 
         if (not short_summary):
             if (nb_test[0]>0 and just_errors==0):
-                print("-->  Tests passed: "+str(nb_test[0]))
+                print("passed: "+str(nb_test[0]))
             if (nb_test[1]>0):
-                print("-->  Tests failing to pass the threshold: "+str(nb_test[1]))
+                print("failing to pass the threshold: "+str(nb_test[1]))
             if (nb_test[2]>0):
-                print("-->  Illegal Error: "+str(nb_test[2]))
+                print("Illegal Error: "+str(nb_test[2]))
             if (nb_test[3]>0):
-                print("-->  Info Error: "+str(nb_test[3]))
+                print("Info Error: "+str(nb_test[3]))
             if (got_error>0 and just_errors==1):
                 print("ERROR IS LOCATED IN "+name+" "+dtests[1][dtest]+" [ "+cmdbase+" ]")
                 print("")

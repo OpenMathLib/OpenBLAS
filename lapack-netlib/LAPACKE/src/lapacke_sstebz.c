@@ -43,24 +43,26 @@ lapack_int LAPACKE_sstebz( char range, char order, lapack_int n, float vl,
     lapack_int* iwork = NULL;
     float* work = NULL;
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_s_nancheck( 1, &abstol, 1 ) ) {
-        return -8;
-    }
-    if( LAPACKE_s_nancheck( n, d, 1 ) ) {
-        return -9;
-    }
-    if( LAPACKE_s_nancheck( n-1, e, 1 ) ) {
-        return -10;
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_s_nancheck( 1, &vl, 1 ) ) {
-            return -4;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_s_nancheck( 1, &abstol, 1 ) ) {
+            return -8;
         }
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_s_nancheck( 1, &vu, 1 ) ) {
-            return -5;
+        if( LAPACKE_s_nancheck( n, d, 1 ) ) {
+            return -9;
+        }
+        if( LAPACKE_s_nancheck( n-1, e, 1 ) ) {
+            return -10;
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_s_nancheck( 1, &vl, 1 ) ) {
+                return -4;
+            }
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_s_nancheck( 1, &vu, 1 ) ) {
+                return -5;
+            }
         }
     }
 #endif

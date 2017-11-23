@@ -44,15 +44,17 @@ lapack_int LAPACKE_dtrsyl( int matrix_layout, char trana, char tranb,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_dge_nancheck( matrix_layout, m, m, a, lda ) ) {
-        return -7;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, n, n, b, ldb ) ) {
-        return -9;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, m, n, c, ldc ) ) {
-        return -11;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_dge_nancheck( matrix_layout, m, m, a, lda ) ) {
+            return -7;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, n, n, b, ldb ) ) {
+            return -9;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, m, n, c, ldc ) ) {
+            return -11;
+        }
     }
 #endif
     return LAPACKE_dtrsyl_work( matrix_layout, trana, tranb, isgn, m, n, a, lda,

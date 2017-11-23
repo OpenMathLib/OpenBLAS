@@ -212,6 +212,7 @@
 *>          algorithm through its inner loop. The algorithms stops
 *>          (and so fails to converge) if the number of passes
 *>          through the inner loop exceeds MAXITR*N**2.
+*>
 *> \endverbatim
 *
 *> \par Note:
@@ -232,7 +233,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -240,10 +241,10 @@
       SUBROUTINE DBDSQR( UPLO, N, NCVT, NRU, NCC, D, E, VT, LDVT, U,
      $                   LDU, C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -310,7 +311,7 @@
       ELSE IF( NRU.LT.0 ) THEN
          INFO = -4
       ELSE IF( NCC.LT.0 ) THEN
-         INFO = -5 
+         INFO = -5
       ELSE IF( ( NCVT.EQ.0 .AND. LDVT.LT.1 ) .OR.
      $         ( NCVT.GT.0 .AND. LDVT.LT.MAX( 1, N ) ) ) THEN
          INFO = -9
@@ -440,12 +441,12 @@
 *
       IF( M.LE.1 )
      $   GO TO 160
-*     
+*
       IF( ITER.GE.N ) THEN
          ITER = ITER - N
          ITERDIVN = ITERDIVN + 1
-         IF (ITERDIVN.GE.MAXITDIVN )
-     $   GO TO 200
+         IF( ITERDIVN.GE.MAXITDIVN )
+     $      GO TO 200
       END IF
 *
 *     Find diagonal block of matrix to work on

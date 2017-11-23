@@ -38,7 +38,9 @@
 *>      useful for xHETRD_2STAGE, xHETRD_H@2HB, xHETRD_HB2ST,
 *>      xGEBRD_2STAGE, xGEBRD_GE2GB, xGEBRD_GB2BD 
 *>      and related subroutines for eigenvalue problems. 
-*>      It is called whenever ILAENV is called with 17 <= ISPEC <= 21
+*>      It is called whenever ILAENV is called with 17 <= ISPEC <= 21.
+*>      It is called whenever ILAENV2STAGE is called with 1 <= ISPEC <= 5
+*>      with a direct conversion ISPEC + 16.
 *> \endverbatim
 *
 *  Arguments:
@@ -157,7 +159,7 @@
 #endif
       IMPLICIT NONE
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -172,7 +174,7 @@
       INTEGER            I, IC, IZ, KD, IB, LHOUS, LWORK, NTHREADS,
      $                   FACTOPTNB, QROPTNB, LQOPTNB
       LOGICAL            RPREC, CPREC
-      CHARACTER          PREC*1, ALGO*3, STAG*5, SUBNAM*12, VECT*3
+      CHARACTER          PREC*1, ALGO*3, STAG*5, SUBNAM*12, VECT*1
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CHAR, ICHAR, MAX

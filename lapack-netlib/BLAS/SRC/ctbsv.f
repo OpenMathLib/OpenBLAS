@@ -94,7 +94,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is COMPLEX array of DIMENSION ( LDA, n ).
+*>          A is COMPLEX array, dimension ( LDA, N )
 *>           Before entry with UPLO = 'U' or 'u', the leading ( k + 1 )
 *>           by n part of the array A must contain the upper triangular
 *>           band part of the matrix of coefficients, supplied column by
@@ -146,7 +146,7 @@
 *>
 *> \param[in,out] X
 *> \verbatim
-*>          X is COMPLEX array of dimension at least
+*>          X is COMPLEX array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the n
 *>           element right-hand side vector b. On exit, X is overwritten

@@ -36,26 +36,42 @@ macro(append_subdir_files variable dirname)
 endmacro()
 
 append_subdir_files(LAPACKE_INCLUDE "include")
-append_subdir_files(SRC_OBJ "src")
-append_subdir_files(SRCX_OBJ "src")
-append_subdir_files(MATGEN_OBJ "src")
-append_subdir_files(UTILS_OBJ "utils")
+append_subdir_files(SOURCES "src")
+append_subdir_files(DEPRECATED "src")
+append_subdir_files(EXTENDED "src")
+append_subdir_files(MATGEN "src")
+append_subdir_files(UTILS "utils")
 
-if(USE_XBLAS)
-  add_library(lapacke ${SRC_OBJ} ${SRCX_OBJ} ${UTILS_OBJ})
-  target_link_libraries(lapacke ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${XBLAS_LIBRARY})
-else()
-  if(LAPACKE_WITH_TMG)
-    add_library(lapacke ${SRC_OBJ} ${MATGEN_OBJ} ${UTILS_OBJ})
-    target_link_libraries(lapacke tmglib ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
-  else()
-    add_library(lapacke ${SRC_OBJ} ${UTILS_OBJ})
-    target_link_libraries(lapacke ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
-  endif()
+if(BUILD_DEPRECATED)
+  list(APPEND SOURCES ${DEPRECATED})
 endif()
+if(USE_XBLAS)
+  list(APPEND SOURCES ${EXTENDED})
+endif()
+if(LAPACKE_WITH_TMG)
+  list(APPEND SOURCES ${MATGEN})
+endif()
+list(APPEND SOURCES ${UTILS})
+
+add_library(lapacke ${SOURCES})
+set_target_properties(
+  lapacke PROPERTIES
+  LINKER_LANGUAGE C
+  VERSION ${LAPACK_VERSION}
+  SOVERSION ${LAPACK_MAJOR_VERSION}
+  )
+target_include_directories(lapacke PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+  $<INSTALL_INTERFACE:include>
+)
+
+if(LAPACKE_WITH_TMG)
+  target_link_libraries(lapacke PRIVATE tmglib)
+endif()
+target_link_libraries(lapacke PRIVATE ${LAPACK_LIBRARIES})
 
 lapack_install_library(lapacke)
-install(FILES ${LAPACKE_INCLUDE} ${LAPACK_BINARY_DIR}/include/lapacke_mangling.h DESTINATION include)
+install(FILES ${LAPACKE_INCLUDE} ${LAPACK_BINARY_DIR}/include/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(BUILD_TESTING)
   add_subdirectory(example)
@@ -78,8 +94,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/lapacke-config-install.cmake.in
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/lapacke-config.cmake
   ${LAPACK_BINARY_DIR}/lapacke-config-version.cmake
-  DESTINATION ${LIBRARY_DIR}/cmake/lapacke-${LAPACK_VERSION}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapacke-${LAPACK_VERSION}
   )
 
 install(EXPORT lapacke-targets
-  DESTINATION ${LIBRARY_DIR}/cmake/lapacke-${LAPACK_VERSION})
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapacke-${LAPACK_VERSION})

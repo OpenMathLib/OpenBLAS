@@ -52,33 +52,35 @@ lapack_int LAPACKE_dgbrfsx( int matrix_layout, char trans, char equed,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_dgb_nancheck( matrix_layout, n, n, kl, ku, ab, ldab ) ) {
-        return -8;
-    }
-    if( LAPACKE_dgb_nancheck( matrix_layout, n, n, kl, kl+ku, afb, ldafb ) ) {
-        return -10;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -15;
-    }
-    if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'c' ) ) {
-        if( LAPACKE_d_nancheck( n, c, 1 ) ) {
-            return -14;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_dgb_nancheck( matrix_layout, n, n, kl, ku, ab, ldab ) ) {
+            return -8;
         }
-    }
-    if( nparams>0 ) {
-        if( LAPACKE_d_nancheck( nparams, params, 1 ) ) {
-            return -25;
+        if( LAPACKE_dgb_nancheck( matrix_layout, n, n, kl, kl+ku, afb, ldafb ) ) {
+            return -10;
         }
-    }
-    if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'r' ) ) {
-        if( LAPACKE_d_nancheck( n, r, 1 ) ) {
-            return -13;
+        if( LAPACKE_dge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -15;
         }
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
-        return -17;
+        if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'c' ) ) {
+            if( LAPACKE_d_nancheck( n, c, 1 ) ) {
+                return -14;
+            }
+        }
+        if( nparams>0 ) {
+            if( LAPACKE_d_nancheck( nparams, params, 1 ) ) {
+                return -25;
+            }
+        }
+        if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'r' ) ) {
+            if( LAPACKE_d_nancheck( n, r, 1 ) ) {
+                return -13;
+            }
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
+            return -17;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

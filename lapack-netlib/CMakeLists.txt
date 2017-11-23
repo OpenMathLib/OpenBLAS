@@ -1,22 +1,36 @@
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(LAPACK Fortran C)
+
+set(LAPACK_MAJOR_VERSION 3)
+set(LAPACK_MINOR_VERSION 8)
+set(LAPACK_PATCH_VERSION 0)
+set(
+  LAPACK_VERSION
+  ${LAPACK_MAJOR_VERSION}.${LAPACK_MINOR_VERSION}.${LAPACK_PATCH_VERSION}
+  )
+
+# Add the CMake directory for custon CMake modules
+set(CMAKE_MODULE_PATH "${LAPACK_SOURCE_DIR}/CMAKE" ${CMAKE_MODULE_PATH})
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
   # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo" "Coverage")
 endif()
 
-project(LAPACK Fortran)
+string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_UPPER)
+if(${CMAKE_BUILD_TYPE_UPPER} STREQUAL "COVERAGE")
+  message(STATUS "Adding coverage")
+  find_package(codecov)
+endif()
 
-set(LAPACK_MAJOR_VERSION 3)
-set(LAPACK_MINOR_VERSION 7)
-set(LAPACK_PATCH_VERSION 0)
-set(
-  LAPACK_VERSION
-  ${LAPACK_MAJOR_VERSION}.${LAPACK_MINOR_VERSION}.${LAPACK_PATCH_VERSION}
-  )
+# By default static library
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+
+include(GNUInstallDirs)
 
 # Updated OSX RPATH settings
 # In response to CMake 3.0 generating warnings regarding policy CMP0042,
@@ -26,9 +40,9 @@ set(
 set(CMAKE_MACOSX_RPATH ON)
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}" isSystemDir)
+list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES ${CMAKE_INSTALL_FULL_LIBDIR} isSystemDir)
 if("${isSystemDir}" STREQUAL "-1")
-  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
+  set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 
@@ -40,8 +54,6 @@ configure_file(
   @ONLY
 )
 
-# Add the CMake directory for custon CMake modules
-set(CMAKE_MODULE_PATH "${LAPACK_SOURCE_DIR}/CMAKE" ${CMAKE_MODULE_PATH})
 include(PreventInSourceBuilds)
 include(PreventInBuildInstalls)
 
@@ -96,42 +108,26 @@ endif()
 
 set(LAPACK_INSTALL_EXPORT_NAME lapack-targets)
 
-if(UNIX)
-  include(GNUInstallDirs)
-  set(ARCHIVE_DIR ${CMAKE_INSTALL_LIBDIR})
-  set(LIBRARY_DIR ${CMAKE_INSTALL_LIBDIR})
-  set(RUNTIME_DIR ${CMAKE_INSTALL_BINDIR})
-else()
-  set(ARCHIVE_DIR lib${LIB_SUFFIX})
-  set(LIBRARY_DIR lib${LIB_SUFFIX})
-  set(RUNTIME_DIR bin)
-endif()
-
 macro(lapack_install_library lib)
   install(TARGETS ${lib}
     EXPORT ${LAPACK_INSTALL_EXPORT_NAME}
-    ARCHIVE DESTINATION ${ARCHIVE_DIR}
-    LIBRARY DESTINATION ${LIBRARY_DIR}
-    RUNTIME DESTINATION ${RUNTIME_DIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 endmacro()
 
-set(PKG_CONFIG_DIR ${LIBRARY_DIR}/pkgconfig)
-set(prefix ${CMAKE_INSTALL_PREFIX})
-if(NOT IS_ABSOLUTE ${LIBRARY_DIR})
-  set(libdir "\${prefix}/${LIBRARY_DIR}")
-else()
-  set(libdir "${LIBRARY_DIR}")
-endif()
+set(PKG_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # --------------------------------------------------
 # Testing
-
+option(BUILD_TESTING "Build tests" OFF)
 enable_testing()
 include(CTest)
 enable_testing()
-# --------------------------------------------------
+message(STATUS "Build tests: ${BUILD_TESTING}")
 
+# --------------------------------------------------
 # Organize output files.  On Windows this also keeps .dll files next
 # to the .exe files that need them, making tests easy to run.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LAPACK_BINARY_DIR}/bin)
@@ -158,21 +154,27 @@ message(STATUS "--> Will use second_${TIME_FUNC}.f and dsecnd_${TIME_FUNC}.f as 
 set(SECOND_SRC ${LAPACK_SOURCE_DIR}/INSTALL/second_${TIME_FUNC}.f)
 set(DSECOND_SRC ${LAPACK_SOURCE_DIR}/INSTALL/dsecnd_${TIME_FUNC}.f)
 
-# By default static library
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-
-option(BUILD_TESTING "Build tests" OFF)
-
-# deprecated LAPACK routines
+# deprecated LAPACK and LAPACKE routines
 option(BUILD_DEPRECATED "Build deprecated routines" OFF)
+message(STATUS "Build deprecated routines: ${BUILD_DEPRECATED}")
 
 # --------------------------------------------------
 # Precision to build
 # By default all precisions are generated
-option(BUILD_SINGLE "Build LAPACK Single Precision" ON)
-option(BUILD_DOUBLE "Build LAPACK Double Precision" ON)
-option(BUILD_COMPLEX "Build LAPACK Complex Precision" ON)
-option(BUILD_COMPLEX16 "Build LAPACK Double Complex Precision" ON)
+option(BUILD_SINGLE "Build single precision real" ON)
+option(BUILD_DOUBLE "Build double precision real" ON)
+option(BUILD_COMPLEX "Build single precision complex" ON)
+option(BUILD_COMPLEX16 "Build double precision complex" ON)
+message(STATUS "Build single precision real: ${BUILD_SINGLE}")
+message(STATUS "Build double precision real: ${BUILD_DOUBLE}")
+message(STATUS "Build single precision complex: ${BUILD_COMPLEX}")
+message(STATUS "Build double precision complex: ${BUILD_COMPLEX16}")
+
+if(NOT (BUILD_SINGLE OR BUILD_DOUBLE OR BUILD_COMPLEX OR BUILD_COMPLEX16))
+  message(FATAL_ERROR "Nothing to build, no precision selected.
+  Please enable at least one of these:
+  BUILD_SINGLE, BUILD_DOUBLE, BUILD_COMPLEX, BUILD_COMPLEX16.")
+endif()
 
 # --------------------------------------------------
 # Subdirectories that need to be processed
@@ -275,7 +277,6 @@ else()
     CACHE STRING "Linker flags for shared libs" FORCE)
 endif()
 
-message(STATUS "BUILD TESTING : ${BUILD_TESTING}")
 if(BUILD_TESTING)
   add_subdirectory(TESTING)
 endif()
@@ -346,7 +347,7 @@ endif()
 set(_lapack_config_install_guard_target "")
 if(ALL_TARGETS)
   install(EXPORT lapack-targets
-    DESTINATION ${LIBRARY_DIR}/cmake/lapack-${LAPACK_VERSION})
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapack-${LAPACK_VERSION})
 
   # Choose one of the lapack targets to use as a guard for
   # lapack-config.cmake to load targets from the install tree.
@@ -396,5 +397,5 @@ write_basic_package_version_file(
 install(FILES
   ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake
   ${LAPACK_BINARY_DIR}/lapack-config-version.cmake
-  DESTINATION ${LIBRARY_DIR}/cmake/lapack-${LAPACK_VERSION}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapack-${LAPACK_VERSION}
   )

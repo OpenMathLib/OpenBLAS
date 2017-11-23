@@ -111,7 +111,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex16_lin
 *
@@ -119,10 +119,10 @@
       SUBROUTINE ZDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
      +                    D_WORK_ZLANGE, Z_WORK_ZGEQRF, TAU )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, NN, NOUT
@@ -227,7 +227,7 @@
 *
                               IF ( IALPHA.EQ. 1) THEN
                                  ALPHA = ZERO
-                              ELSE IF ( IALPHA.EQ. 1) THEN
+                              ELSE IF ( IALPHA.EQ. 2) THEN
                                  ALPHA = ONE
                               ELSE
                                  ALPHA = ZLARND( 4, ISEED )

@@ -23,39 +23,10 @@
 #       DBLAS3 -- Double precision real BLAS3 routines
 #       ZBLAS3 -- Double precision complex BLAS3 routines
 #
-#  The library can be set up to include routines for any combination
-#  of the four precisions.  To create or add to the library, enter make
-#  followed by one or more of the precisions desired.  Some examples:
-#       make single
-#       make single complex
-#       make single double complex complex16
-#  Note that these commands are not safe for parallel builds.
-#
-#  Alternatively, the commands
-#       make all
-#  or
-#       make
-#  without any arguments creates a library of all four precisions.
-#  The name of the library is held in BLASLIB, which is set in the
-#  top-level make.inc
-#
-#  To remove the object files after the library is created, enter
-#       make clean
-#  To force the source files to be recompiled, enter, for example,
-#       make single FRC=FRC
-#
-#---------------------------------------------------------------------
-#
-#  Edward Anderson, University of Tennessee
-#  March 26, 1990
-#  Susan Ostrouchov, Last updated September 30, 1994
-#  ejr, May 2006.
-#
 #######################################################################
 
 #---------------------------------------------------------
-#  Comment out the next 6 definitions if you already have
-#  the Level 1 BLAS.
+#  Level 1 BLAS
 #---------------------------------------------------------
 set(SBLAS1 isamax.f sasum.f saxpy.f scopy.f sdot.f snrm2.f
 	srot.f srotg.f sscal.f sswap.f sdsdot.f srotmg.f srotm.f)
@@ -74,15 +45,12 @@ set(CB1AUX isamax.f sasum.f saxpy.f scopy.f snrm2.f sscal.f)
 set(ZB1AUX idamax.f dasum.f daxpy.f dcopy.f dnrm2.f dscal.f)
 
 #---------------------------------------------------------------------
-#  The following line defines auxiliary routines needed by both the
-#  Level 2 and Level 3 BLAS.  Comment it out only if you already have
-#  both the Level 2 and 3 BLAS.
+#  Auxiliary routines needed by both the Level 2 and Level 3 BLAS
 #---------------------------------------------------------------------
 set(ALLBLAS lsame.f xerbla.f xerbla_array.f)
 
 #---------------------------------------------------------
-#  Comment out the next 4 definitions if you already have
-#  the Level 2 BLAS.
+#  Level 2 BLAS
 #---------------------------------------------------------
 set(SBLAS2 sgemv.f sgbmv.f ssymv.f ssbmv.f sspmv.f
 	strmv.f stbmv.f stpmv.f strsv.f stbsv.f stpsv.f
@@ -101,8 +69,7 @@ set(ZBLAS2 zgemv.f zgbmv.f zhemv.f zhbmv.f zhpmv.f
 	zgerc.f zgeru.f zher.f zhpr.f zher2.f zhpr2.f)
 
 #---------------------------------------------------------
-#  Comment out the next 4 definitions if you already have
-#  the Level 3 BLAS.
+#  Level 3 BLAS
 #---------------------------------------------------------
 set(SBLAS3 sgemm.f ssymm.f ssyrk.f ssyr2k.f strmm.f strsm.f)
 
@@ -113,37 +80,27 @@ set(DBLAS3 dgemm.f dsymm.f dsyrk.f dsyr2k.f dtrmm.f dtrsm.f)
 
 set(ZBLAS3 zgemm.f zsymm.f zsyrk.f zsyr2k.f ztrmm.f ztrsm.f
 	zhemm.f zherk.f zher2k.f)
-# default build all of it
-set(ALLOBJ ${SBLAS1} ${SBLAS2} ${SBLAS3} ${DBLAS1} ${DBLAS2} ${DBLAS3}
-	${CBLAS1} ${CBLAS2} ${CBLAS3} ${ZBLAS1}
-	${ZBLAS2} ${ZBLAS3} ${ALLBLAS})
-
-if(BLAS_SINGLE)
-  set(ALLOBJ ${SBLAS1} ${ALLBLAS}
-	${SBLAS2} ${SBLAS3})
-endif()
-if(BLAS_DOUBLE)
-  set(ALLOBJ ${DBLAS1} ${ALLBLAS}
-	${DBLAS2} ${DBLAS3})
-endif()
-if(BLAS_COMPLEX)
-  set(ALLOBJ ${BLASLIB} ${CBLAS1} ${CB1AUX}
-	${ALLBLAS} ${CBLAS2})
-endif()
-if(BLAS_COMPLEX16)
-  set(ALLOBJ ${BLASLIB} ${ZBLAS1} ${ZB1AUX}
-	${ALLBLAS} ${ZBLAS2} ${ZBLAS3})
-endif()
 
 
-add_library(blas ${ALLOBJ})
-#if(UNIX)
-#  target_link_libraries(blas m)
-#endif()
+set(SOURCES)
+if(BUILD_SINGLE)
+  list(APPEND SOURCES ${SBLAS1} ${ALLBLAS} ${SBLAS2} ${SBLAS3})
+endif()
+if(BUILD_DOUBLE)
+  list(APPEND SOURCES ${DBLAS1} ${ALLBLAS} ${DBLAS2} ${DBLAS3})
+endif()
+if(BUILD_COMPLEX)
+  list(APPEND SOURCES ${CBLAS1} ${CB1AUX} ${ALLBLAS} ${CBLAS2} ${CBLAS3})
+endif()
+if(BUILD_COMPLEX16)
+  list(APPEND SOURCES ${ZBLAS1} ${ZB1AUX} ${ALLBLAS} ${ZBLAS2} ${ZBLAS3})
+endif()
+list(REMOVE_DUPLICATES SOURCES)
+
+add_library(blas ${SOURCES})
 set_target_properties(
   blas PROPERTIES
   VERSION ${LAPACK_VERSION}
   SOVERSION ${LAPACK_MAJOR_VERSION}
   )
-target_link_libraries(blas)
 lapack_install_library(blas)

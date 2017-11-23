@@ -23,7 +23,7 @@
 *>
 *>                    SIDE = 'L'     SIDE = 'R'
 *>    TRANS = 'N':      Q * C          C * Q
-*>    TRANS = 'T':      Q**T * C       C * Q**T
+*>    TRANS = 'C':      Q**H * C       C * Q**H
 *>    where Q is a real orthogonal matrix defined as the product of blocked
 *>    elementary reflectors computed by short wide LQ
 *>    factorization (ZLASWLQ)
@@ -35,21 +35,21 @@
 *> \param[in] SIDE
 *> \verbatim
 *>          SIDE is CHARACTER*1
-*>          = 'L': apply Q or Q**T from the Left;
-*>          = 'R': apply Q or Q**T from the Right.
+*>          = 'L': apply Q or Q**H from the Left;
+*>          = 'R': apply Q or Q**H from the Right.
 *> \endverbatim
 *>
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          = 'N':  No transpose, apply Q;
-*>          = 'T':  Transpose, apply Q**T.
+*>          = 'C':  Conjugate Transpose, apply Q**H.
 *> \endverbatim
 *>
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>          The number of rows of the matrix A.  M >=0.
+*>          The number of rows of the matrix C.  M >=0.
 *> \endverbatim
 *>
 *> \param[in] N
@@ -88,12 +88,14 @@
 *>
 *> \endverbatim
 *>
-*> \param[in,out] A
+*> \param[in] A
 *> \verbatim
-*>          A is COMPLEX*16 array, dimension (LDA,K)
+*>          A is COMPLEX*16 array, dimension
+*>                               (LDA,M) if SIDE = 'L',
+*>                               (LDA,N) if SIDE = 'R'
 *>          The i-th row must contain the vector which defines the blocked
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
-*>          DLASWLQ in the first k rows of its array argument A.
+*>          ZLASWLQ in the first k rows of its array argument A.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -123,7 +125,7 @@
 *> \verbatim
 *>          C is COMPLEX*16 array, dimension (LDC,N)
 *>          On entry, the M-by-N matrix C.
-*>          On exit, C is overwritten by Q*C or Q**T*C or C*Q**T or C*Q.
+*>          On exit, C is overwritten by Q*C or Q**H*C or C*Q**H or C*Q.
 *> \endverbatim
 *>
 *> \param[in] LDC
@@ -200,14 +202,14 @@
       SUBROUTINE ZLAMSWLQ( SIDE, TRANS, M, N, K, MB, NB, A, LDA, T,
      $    LDT, C, LDC, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER         SIDE, TRANS
-      INTEGER           INFO, LDA, M, N, K, MB, NB, LDT, LWORK, LDC, LW
+      INTEGER           INFO, LDA, M, N, K, MB, NB, LDT, LWORK, LDC
 *     ..
 *     .. Array Arguments ..
       COMPLEX*16        A( LDA, * ), WORK( * ), C(LDC, * ),
@@ -219,7 +221,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL    LEFT, RIGHT, TRAN, NOTRAN, LQUERY
-      INTEGER    I, II, KK, CTR
+      INTEGER    I, II, KK, LW, CTR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME

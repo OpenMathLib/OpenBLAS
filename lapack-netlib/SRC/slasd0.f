@@ -81,7 +81,7 @@
 *>
 *> \param[out] U
 *> \verbatim
-*>          U is REAL array, dimension at least (LDQ, N)
+*>          U is REAL array, dimension (LDU, N)
 *>         On exit, U contains the left singular vectors.
 *> \endverbatim
 *>
@@ -93,7 +93,7 @@
 *>
 *> \param[out] VT
 *> \verbatim
-*>          VT is REAL array, dimension at least (LDVT, M)
+*>          VT is REAL array, dimension (LDVT, M)
 *>         On exit, VT**T contains the right singular vectors.
 *> \endverbatim
 *>
@@ -136,7 +136,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup OTHERauxiliary
 *
@@ -150,10 +150,10 @@
       SUBROUTINE SLASD0( N, SQRE, D, E, U, LDU, VT, LDVT, SMLSIZ, IWORK,
      $                   WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDU, LDVT, N, SMLSIZ, SQRE

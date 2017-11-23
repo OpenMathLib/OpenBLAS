@@ -114,11 +114,7 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>          = 0:  successful exit
-*>          < 0:  if INFO = -i, the i-th argument had an illegal value
-*>          > 0:  if INFO = i, D(i,i) is exactly zero.  The factorization
-*>                has been completed, but the block diagonal matrix D is
-*>                exactly singular, and division by zero will occur if it
-*>                is used to solve a system of equations.
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *> \endverbatim
 *
 *  Authors:
@@ -129,17 +125,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complexSYcomputational
 *
 *  =====================================================================
       SUBROUTINE CSYTRF_AA( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO)
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
       IMPLICIT NONE
 *
@@ -159,7 +155,7 @@
 *
 *     .. Local Scalars ..
       LOGICAL            LQUERY, UPPER
-      INTEGER            J, LWKOPT, IINFO
+      INTEGER            J, LWKOPT
       INTEGER            NB, MJ, NJ, K1, K2, J1, J2, J3, JB
       COMPLEX            ALPHA
 *     ..
@@ -169,7 +165,8 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA
+      EXTERNAL           CLASYF_AA, CGEMM, CGEMV, CSCAL, CSWAP, CCOPY,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
@@ -178,7 +175,7 @@
 *
 *     Determine the block size
 *
-      NB = ILAENV( 1, 'CSYTRF', UPLO, N, -1, -1, -1 )
+      NB = ILAENV( 1, 'CSYTRF_AA', UPLO, N, -1, -1, -1 )
 *
 *     Test the input parameters.
 *
@@ -214,13 +211,10 @@
       ENDIF
       IPIV( 1 ) = 1
       IF ( N.EQ.1 ) THEN
-         IF ( A( 1, 1 ).EQ.ZERO ) THEN
-            INFO = 1
-         END IF
          RETURN
       END IF
 *
-*     Adjubst block size based on the workspace size
+*     Adjust block size based on the workspace size
 *
       IF( LWORK.LT.((1+NB)*N) ) THEN
          NB = ( LWORK-N ) / N
@@ -260,11 +254,7 @@
 *
          CALL CLASYF_AA( UPLO, 2-K1, N-J, JB,
      $                   A( MAX(1, J), J+1 ), LDA,
-     $                   IPIV( J+1 ), WORK, N, WORK( N*NB+1 ),
-     $                   IINFO )
-         IF( (IINFO.GT.0) .AND. (INFO.EQ.0) ) THEN
-             INFO = IINFO+J
-         ENDIF
+     $                   IPIV( J+1 ), WORK, N, WORK( N*NB+1 ) )
 *
 *        Ajust IPIV and apply it back (J-th step picks (J+1)-th pivot)
 *
@@ -383,10 +373,7 @@
 *
          CALL CLASYF_AA( UPLO, 2-K1, N-J, JB,
      $                   A( J+1, MAX(1, J) ), LDA,
-     $                   IPIV( J+1 ), WORK, N, WORK( N*NB+1 ), IINFO)
-         IF( (IINFO.GT.0) .AND. (INFO.EQ.0) ) THEN
-            INFO = IINFO+J
-         ENDIF
+     $                   IPIV( J+1 ), WORK, N, WORK( N*NB+1 ) )
 *
 *        Ajust IPIV and apply it back (J-th step picks (J+1)-th pivot)
 *

@@ -54,33 +54,35 @@ lapack_int LAPACKE_zgtrfs( int matrix_layout, char trans, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -13;
-    }
-    if( LAPACKE_z_nancheck( n, d, 1 ) ) {
-        return -6;
-    }
-    if( LAPACKE_z_nancheck( n, df, 1 ) ) {
-        return -9;
-    }
-    if( LAPACKE_z_nancheck( n-1, dl, 1 ) ) {
-        return -5;
-    }
-    if( LAPACKE_z_nancheck( n-1, dlf, 1 ) ) {
-        return -8;
-    }
-    if( LAPACKE_z_nancheck( n-1, du, 1 ) ) {
-        return -7;
-    }
-    if( LAPACKE_z_nancheck( n-2, du2, 1 ) ) {
-        return -11;
-    }
-    if( LAPACKE_z_nancheck( n-1, duf, 1 ) ) {
-        return -10;
-    }
-    if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
-        return -15;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -13;
+        }
+        if( LAPACKE_z_nancheck( n, d, 1 ) ) {
+            return -6;
+        }
+        if( LAPACKE_z_nancheck( n, df, 1 ) ) {
+            return -9;
+        }
+        if( LAPACKE_z_nancheck( n-1, dl, 1 ) ) {
+            return -5;
+        }
+        if( LAPACKE_z_nancheck( n-1, dlf, 1 ) ) {
+            return -8;
+        }
+        if( LAPACKE_z_nancheck( n-1, du, 1 ) ) {
+            return -7;
+        }
+        if( LAPACKE_z_nancheck( n-2, du2, 1 ) ) {
+            return -11;
+        }
+        if( LAPACKE_z_nancheck( n-1, duf, 1 ) ) {
+            return -10;
+        }
+        if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
+            return -15;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

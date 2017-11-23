@@ -57,7 +57,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is COMPLEX*16 array of dimension at least
+*>          X is COMPLEX*16 array, dimension at least
 *>           ( 1 + ( m - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the m
 *>           element vector x.
@@ -72,7 +72,7 @@
 *>
 *> \param[in] Y
 *> \verbatim
-*>          Y is COMPLEX*16 array of dimension at least
+*>          Y is COMPLEX*16 array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCY ) ).
 *>           Before entry, the incremented array Y must contain the n
 *>           element vector y.
@@ -87,7 +87,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX*16 array of DIMENSION ( LDA, n ).
+*>          A is COMPLEX*16 array, dimension ( LDA, N )
 *>           Before entry, the leading m by n part of the array A must
 *>           contain the matrix of coefficients. On exit, A is
 *>           overwritten by the updated matrix.

@@ -28,14 +28,14 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function sgelq
 * Author: Intel Corporation
-* Generated December 2016
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
-lapack_int LAPACKE_sgelq_work( int matrix_layout, lapack_int m, lapack_int n,
-                               float* a, lapack_int lda,
-                               float* t, lapack_int tsize )
+lapack_int LAPACKE_sgelq( int matrix_layout, lapack_int m, lapack_int n,
+                          float* a, lapack_int lda,
+                          float* t, lapack_int tsize )
 {
     lapack_int info = 0;
     lapack_int lwork = -1;
@@ -46,9 +46,11 @@ lapack_int LAPACKE_sgelq_work( int matrix_layout, lapack_int m, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
-        return -4;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
+            return -4;
+        }
     }
 #endif
     /* Query optimal working array(s) size */

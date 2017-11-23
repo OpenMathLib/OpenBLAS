@@ -232,7 +232,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup auxOTHERcomputational
 *
@@ -240,10 +240,10 @@
       SUBROUTINE SBDSQR( UPLO, N, NCVT, NRU, NCC, D, E, VT, LDVT, U,
      $                   LDU, C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -276,7 +276,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LOWER, ROTATE
-      INTEGER            I, IDIR, ISUB, ITER, ITERDIVN J, LL, LLL, M,
+      INTEGER            I, IDIR, ISUB, ITER, ITERDIVN, J, LL, LLL, M,
      $                   MAXITDIVN, NM1, NM12, NM13, OLDLL, OLDM
       REAL               ABSE, ABSS, COSL, COSR, CS, EPS, F, G, H, MU,
      $                   OLDCS, OLDSN, R, SHIFT, SIGMN, SIGMX, SINL,
@@ -440,12 +440,12 @@
 *
       IF( M.LE.1 )
      $   GO TO 160
-*     
+*
       IF( ITER.GE.N ) THEN
-         ITER = ITER - N 
+         ITER = ITER - N
          ITERDIVN = ITERDIVN + 1
          IF( ITERDIVN.GE.MAXITDIVN )
-     $   GO TO 200
+     $      GO TO 200
       END IF
 *
 *     Find diagonal block of matrix to work on

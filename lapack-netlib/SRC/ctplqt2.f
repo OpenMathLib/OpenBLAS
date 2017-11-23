@@ -48,7 +48,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX array, dimension (LDA,N)
+*>          A is COMPLEX array, dimension (LDA,M)
 *>          On entry, the lower triangular M-by-M matrix A.
 *>          On exit, the elements on and below the diagonal of the array
 *>          contain the lower triangular matrix L.
@@ -57,7 +57,7 @@
 *> \param[in] LDA
 *> \verbatim
 *>          LDA is INTEGER
-*>          The leading dimension of the array A.  LDA >= max(1,N).
+*>          The leading dimension of the array A.  LDA >= max(1,M).
 *> \endverbatim
 *>
 *> \param[in,out] B
@@ -102,7 +102,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -116,7 +116,7 @@
 *>               C = [ A ][ B ]
 *>
 *>
-*>  where A is an lower triangular N-by-N matrix, and B is M-by-N pentagonal
+*>  where A is an lower triangular M-by-M matrix, and B is M-by-N pentagonal
 *>  matrix consisting of a M-by-(N-L) rectangular matrix B1 left of a M-by-L
 *>  upper trapezoidal matrix B2:
 *>
@@ -132,13 +132,13 @@
 *>  above the diagonal (of A) in the M-by-(M+N) input matrix C
 *>
 *>               C = [ A ][ B ]
-*>                   [ A ]  <- lower triangular N-by-N
+*>                   [ A ]  <- lower triangular M-by-M
 *>                   [ B ]  <- M-by-N pentagonal
 *>
 *>  so that W can be represented as
 *>
 *>               W = [ I ][ V ]
-*>                   [ I ]  <- identity, N-by-N
+*>                   [ I ]  <- identity, M-by-M
 *>                   [ V ]  <- M-by-N, same form as B.
 *>
 *>  Thus, all of information needed for W is contained on exit in B, which
@@ -160,10 +160,10 @@
 *  =====================================================================
       SUBROUTINE CTPLQT2( M, N, L, A, LDA, B, LDB, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER        INFO, LDA, LDB, LDT, N, M, L

@@ -65,7 +65,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is DOUBLE PRECISION array of DIMENSION ( LDA, n ).
+*>          A is DOUBLE PRECISION array, dimension ( LDA, N )
 *>           Before entry with  UPLO = 'U' or 'u', the leading n by n
 *>           upper triangular part of the array A must contain the upper
 *>           triangular part of the symmetric matrix and the strictly
@@ -86,7 +86,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is DOUBLE PRECISION array of dimension at least
+*>          X is DOUBLE PRECISION array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the n
 *>           element vector x.
@@ -108,7 +108,7 @@
 *>
 *> \param[in,out] Y
 *> \verbatim
-*>          Y is DOUBLE PRECISION array of dimension at least
+*>          Y is DOUBLE PRECISION array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCY ) ).
 *>           Before entry, the incremented array Y must contain the n
 *>           element vector y. On exit, Y is overwritten by the updated

@@ -43,15 +43,17 @@ lapack_int LAPACKE_dggbak( int matrix_layout, char job, char side, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( n, lscale, 1 ) ) {
-        return -7;
-    }
-    if( LAPACKE_d_nancheck( n, rscale, 1 ) ) {
-        return -8;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, n, m, v, ldv ) ) {
-        return -10;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( n, lscale, 1 ) ) {
+            return -7;
+        }
+        if( LAPACKE_d_nancheck( n, rscale, 1 ) ) {
+            return -8;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, n, m, v, ldv ) ) {
+            return -10;
+        }
     }
 #endif
     return LAPACKE_dggbak_work( matrix_layout, job, side, n, ilo, ihi, lscale,

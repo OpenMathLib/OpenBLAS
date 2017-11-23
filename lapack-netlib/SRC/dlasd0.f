@@ -81,7 +81,7 @@
 *>
 *> \param[out] U
 *> \verbatim
-*>          U is DOUBLE PRECISION array, dimension at least (LDQ, N)
+*>          U is DOUBLE PRECISION array, dimension (LDU, N)
 *>         On exit, U contains the left singular vectors.
 *> \endverbatim
 *>
@@ -93,7 +93,7 @@
 *>
 *> \param[out] VT
 *> \verbatim
-*>          VT is DOUBLE PRECISION array, dimension at least (LDVT, M)
+*>          VT is DOUBLE PRECISION array, dimension (LDVT, M)
 *>         On exit, VT**T contains the right singular vectors.
 *> \endverbatim
 *>
@@ -112,14 +112,12 @@
 *>
 *> \param[out] IWORK
 *> \verbatim
-*>          IWORK is INTEGER work array.
-*>         Dimension must be at least (8 * N)
+*>          IWORK is INTEGER array, dimension (8*N)
 *> \endverbatim
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION work array.
-*>         Dimension must be at least (3 * M**2 + 2 * M)
+*>          WORK is DOUBLE PRECISION array, dimension (3*M**2+2*M)
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -138,7 +136,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup OTHERauxiliary
 *
@@ -152,10 +150,10 @@
       SUBROUTINE DLASD0( N, SQRE, D, E, U, LDU, VT, LDVT, SMLSIZ, IWORK,
      $                   WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDU, LDVT, N, SMLSIZ, SQRE

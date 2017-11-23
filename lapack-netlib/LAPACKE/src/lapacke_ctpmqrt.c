@@ -51,29 +51,31 @@ lapack_int LAPACKE_ctpmqrt( int matrix_layout, char side, char trans,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    ncols_a = LAPACKE_lsame( side, 'L' ) ? n :
-                         ( LAPACKE_lsame( side, 'R' ) ? k : 0 );
-    nrows_a = LAPACKE_lsame( side, 'L' ) ? k :
-                         ( LAPACKE_lsame( side, 'R' ) ? m : 0 );
-    nrows_v = LAPACKE_lsame( side, 'L' ) ? m :
-                         ( LAPACKE_lsame( side, 'R' ) ? n : 0 );
-    if( LAPACKE_cge_nancheck( matrix_layout, nrows_a, ncols_a, a, lda ) ) {
-        return -13;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, m, n, b, ldb ) ) {
-        return -15;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, nb, k, t, ldt ) ) {
-        return -11;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, nrows_v, k, v, ldv ) ) {
-        return -9;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        ncols_a = LAPACKE_lsame( side, 'L' ) ? n :
+                             ( LAPACKE_lsame( side, 'R' ) ? k : 0 );
+        nrows_a = LAPACKE_lsame( side, 'L' ) ? k :
+                             ( LAPACKE_lsame( side, 'R' ) ? m : 0 );
+        nrows_v = LAPACKE_lsame( side, 'L' ) ? m :
+                             ( LAPACKE_lsame( side, 'R' ) ? n : 0 );
+        if( LAPACKE_cge_nancheck( matrix_layout, nrows_a, ncols_a, a, lda ) ) {
+            return -13;
+        }
+        if( LAPACKE_cge_nancheck( matrix_layout, m, n, b, ldb ) ) {
+            return -15;
+        }
+        if( LAPACKE_cge_nancheck( matrix_layout, nb, k, t, ldt ) ) {
+            return -11;
+        }
+        if( LAPACKE_cge_nancheck( matrix_layout, nrows_v, k, v, ldv ) ) {
+            return -9;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */
     lwork = LAPACKE_lsame( side, 'L' ) ? MAX(1,nb) * MAX(1,n) :
-                       ( LAPACKE_lsame( side, 'R' ) ? MAX(1,m) * MAX(1,nb) : 0 ); 
+                       ( LAPACKE_lsame( side, 'R' ) ? MAX(1,m) * MAX(1,nb) : 0 );
     work = (lapack_complex_float*)
         LAPACKE_malloc( sizeof(lapack_complex_float) * lwork );
     if( work == NULL ) {

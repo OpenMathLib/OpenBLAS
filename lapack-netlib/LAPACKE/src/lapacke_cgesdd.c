@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function cgesdd
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -52,16 +52,18 @@ lapack_int LAPACKE_cgesdd( int matrix_layout, char jobz, lapack_int m,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_cge_nancheck( matrix_layout, m, n, a, lda ) ) {
-        return -5;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_cge_nancheck( matrix_layout, m, n, a, lda ) ) {
+            return -5;
+        }
     }
 #endif
     /* Additional scalars initializations for work arrays */
     if( LAPACKE_lsame( jobz, 'n' ) ) {
         lrwork = MAX(1,7*MIN(m,n));
     } else {
-        lrwork = (size_t)MIN(m,n)*MAX(5*MIN(m,n)+7,2*MAX(m,n)+2*MIN(m,n)+1);
+        lrwork = (size_t)MAX(1,MIN(m,n)*MAX(5*MIN(m,n)+7,2*MAX(m,n)+2*MIN(m,n)+1));
     }
     /* Allocate memory for working array(s) */
     iwork = (lapack_int*)

@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function chbev_2stage
 * Author: Intel Corporation
-* Generated December 2016
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -44,7 +44,7 @@ lapack_int LAPACKE_chbev_2stage_work( int matrix_layout, char jobz, char uplo,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_chbev_2stage( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work, &lwork,
-         			  rwork, &info );
+                             rwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }

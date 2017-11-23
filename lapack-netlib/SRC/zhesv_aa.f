@@ -129,8 +129,6 @@
 *>          The length of WORK.  LWORK >= MAX(1,2*N,3*N-2), and for best 
 *>          performance LWORK >= max(1,N*NB), where NB is the optimal
 *>          blocksize for ZHETRF.
-*>          for LWORK < N, TRS will be done with Level BLAS 2
-*>          for LWORK >= N, TRS will be done with Level BLAS 3
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -156,7 +154,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex16HEsolve
 *
@@ -164,10 +162,10 @@
       SUBROUTINE ZHESV_AA( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, WORK,
      $                     LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -190,7 +188,7 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZHETRF, ZHETRS, ZHETRS2
+      EXTERNAL           XERBLA, ZHETRF_AA, ZHETRS_AA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX

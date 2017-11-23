@@ -183,7 +183,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex_lin
 *
@@ -192,10 +192,10 @@
      $                   NBVAL, NXVAL, THRESH, TSTERR, A, COPYA, B,
      $                   COPYB, C, S, COPYS, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -237,9 +237,9 @@
       REAL               EPS, NORMA, NORMB, RCOND
 *     ..
 *     .. Local Arrays ..
-      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWORKQUERY
-      REAL               RESULT( NTESTS ), RWORKQUERY
-      COMPLEX            WORKQUERY
+      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWQ
+      REAL               RESULT( NTESTS ), RWQ
+      COMPLEX            WQ
 *     ..
 *     .. Allocatable Arrays ..
       COMPLEX, ALLOCATABLE :: WORK (:)
@@ -324,48 +324,85 @@
       M = MMAX
       N = NMAX
       NRHS = NSMAX
-      LDA = MAX( 1, M )
-      LDB = MAX( 1, M, N )
       MNMIN = MAX( MIN( M, N ), 1 )
 *
 *     Compute workspace needed for routines
 *     CQRT14, CQRT17 (two side cases), CQRT15 and CQRT12
 *
-      LWORK = MAX( ( M+N )*NRHS,
+      LWORK = MAX( 1, ( M+N )*NRHS,
      $      ( N+NRHS )*( M+2 ), ( M+NRHS )*( N+2 ),
      $      MAX( M+MNMIN, NRHS*MNMIN,2*N+M ),
      $      MAX( M*N+4*MNMIN+MAX(M,N), M*N+2*MNMIN+4*N ) )
+      LRWORK = 1
+      LIWORK = 1
 *
-*     Compute workspace needed for CGELS
-      CALL CGELS( 'N', M, N, NRHS, A, LDA, B, LDB,
-     $            WORKQUERY, -1, INFO )
-      LWORK_CGELS = INT( WORKQUERY )
-*     Compute workspace needed for CGETSLS
-      CALL CGETSLS( 'N', M, N, NRHS, A, LDA, B, LDB,
-     $              WORKQUERY, -1, INFO )
-      LWORK_CGETSLS = INT( WORKQUERY )
-*     Compute workspace needed for CGELSY
-      CALL CGELSY( M, N, NRHS, A, LDA, B, LDB, IWORKQUERY,
-     $             RCOND, CRANK, WORKQUERY, -1, RWORK, INFO )
-      LWORK_CGELSY = INT( WORKQUERY )
-      LRWORK_CGELSY = 2*N
-*     Compute workspace needed for CGELSS
-      CALL CGELSS( M, N, NRHS, A, LDA, B, LDB, S,
-     $             RCOND, CRANK, WORKQUERY, -1, RWORK, INFO )
-      LWORK_CGELSS = INT( WORKQUERY )
-      LRWORK_CGELSS = 5*MNMIN
-*     Compute workspace needed for CGELSD
-      CALL CGELSD( M, N, NRHS, A, LDA, B, LDB, S, RCOND, CRANK,
-     $             WORKQUERY, -1, RWORKQUERY, IWORKQUERY, INFO )
-      LWORK_CGELSD = INT( WORKQUERY )
-      LRWORK_CGELSD = INT( RWORKQUERY )
-*     Compute LIWORK workspace needed for CGELSY and CGELSD
-      LIWORK = MAX( 1, N, IWORKQUERY )
-*     Compute LRWORK workspace needed for CGELSY, CGELSS and CGELSD
-      LRWORK = MAX( 1, LRWORK_CGELSY, LRWORK_CGELSS, LRWORK_CGELSD )
-*     Compute LWORK workspace needed for all functions
-      LWORK = MAX( 1, LWORK, LWORK_CGELS, LWORK_CGETSLS, LWORK_CGELSY,
-     $             LWORK_CGELSS, LWORK_CGELSD )
+*     Iterate through all test cases and compute necessary workspace
+*     sizes for ?GELS, ?GETSLS, ?GELSY, ?GELSS and ?GELSD routines.
+*
+      DO IM = 1, NM
+         M = MVAL( IM )
+         LDA = MAX( 1, M )
+         DO IN = 1, NN
+            N = NVAL( IN )
+            MNMIN = MAX(MIN( M, N ),1)
+            LDB = MAX( 1, M, N )
+            DO INS = 1, NNS
+               NRHS = NSVAL( INS )
+               DO IRANK = 1, 2
+                  DO ISCALE = 1, 3
+                     ITYPE = ( IRANK-1 )*3 + ISCALE
+                     IF( DOTYPE( ITYPE ) ) THEN
+                        IF( IRANK.EQ.1 ) THEN
+                           DO ITRAN = 1, 2
+                              IF( ITRAN.EQ.1 ) THEN
+                                 TRANS = 'N'
+                              ELSE
+                                 TRANS = 'C'
+                              END IF
+*
+*                             Compute workspace needed for CGELS
+                              CALL CGELS( TRANS, M, N, NRHS, A, LDA,
+     $                                    B, LDB, WQ, -1, INFO )
+                              LWORK_CGELS = INT( WQ )
+*                             Compute workspace needed for CGETSLS
+                              CALL CGETSLS( TRANS, M, N, NRHS, A, LDA,
+     $                                      B, LDB, WQ, -1, INFO )
+                              LWORK_CGETSLS = INT( WQ )
+                           ENDDO
+                        END IF
+*                       Compute workspace needed for CGELSY
+                        CALL CGELSY( M, N, NRHS, A, LDA, B, LDB,
+     $                               IWQ, RCOND, CRANK, WQ, -1, RWORK,
+     $                               INFO )
+                        LWORK_CGELSY = INT( WQ )
+                        LRWORK_CGELSY = 2*N
+*                       Compute workspace needed for CGELSS
+                        CALL CGELSS( M, N, NRHS, A, LDA, B, LDB, S,
+     $                               RCOND, CRANK, WQ, -1, RWORK, INFO )
+                        LWORK_CGELSS = INT( WQ )
+                        LRWORK_CGELSS = 5*MNMIN
+*                       Compute workspace needed for CGELSD
+                        CALL CGELSD( M, N, NRHS, A, LDA, B, LDB, S,
+     $                               RCOND, CRANK, WQ, -1, RWQ, IWQ,
+     $                               INFO )
+                        LWORK_CGELSD = INT( WQ )
+                        LRWORK_CGELSD = INT( RWQ )
+*                       Compute LIWORK workspace needed for CGELSY and CGELSD
+                        LIWORK = MAX( LIWORK, N, IWQ )
+*                       Compute LRWORK workspace needed for CGELSY, CGELSS and CGELSD
+                        LRWORK = MAX( LRWORK, LRWORK_CGELSY,
+     $                                LRWORK_CGELSS, LRWORK_CGELSD )
+*                       Compute LWORK workspace needed for all functions
+                        LWORK = MAX( LWORK, LWORK_CGELS, LWORK_CGETSLS,
+     $                               LWORK_CGELSY, LWORK_CGELSS,
+     $                               LWORK_CGELSD )
+                     END IF
+                  ENDDO
+               ENDDO
+            ENDDO
+         ENDDO
+      ENDDO
+*
       LWLSY = LWORK
 *
       ALLOCATE( WORK( LWORK ) )

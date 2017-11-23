@@ -42,19 +42,21 @@ lapack_int LAPACKE_dlaswp( int matrix_layout, lapack_int n, double* a,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-/*****************************************************************************
-*      Disable the check as is below, the check below was checking for NaN
-*      from lda to n since there is no (obvious) way to knowing m. This is not
-*      a good idea. We could get a lower bound of m by scanning from ipiv. Or
-*      we could pass on the NaN check to LAPACKE_dlaswp_work. For now disable
-*      the buggy Nan check.
-*      See forum: http://icl.cs.utk.edu/lapack-forum/viewtopic.php?t=4827
-*****************************************************************************/
-/*  if( LAPACKE_dge_nancheck( matrix_layout, lda, n, a, lda ) ) {
-*       return -3;
-*   }
-*/
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+    /*****************************************************************************
+    *      Disable the check as is below, the check below was checking for NaN
+    *      from lda to n since there is no (obvious) way to knowing m. This is not
+    *      a good idea. We could get a lower bound of m by scanning from ipiv. Or
+    *      we could pass on the NaN check to LAPACKE_dlaswp_work. For now disable
+    *      the buggy Nan check.
+    *      See forum: http://icl.cs.utk.edu/lapack-forum/viewtopic.php?t=4827
+    *****************************************************************************/
+    /*  if( LAPACKE_dge_nancheck( matrix_layout, lda, n, a, lda ) ) {
+    *       return -3;
+    *   }
+    */
+    }
 #endif
     return LAPACKE_dlaswp_work( matrix_layout, n, a, lda, k1, k2, ipiv, incx );
 }

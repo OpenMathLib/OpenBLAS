@@ -28,7 +28,7 @@ endforeach()
 endmacro()
 
 append_subdir_files(CBLAS_INCLUDE "include")
-install(FILES ${CBLAS_INCLUDE} ${LAPACK_BINARY_DIR}/include/cblas_mangling.h DESTINATION include)
+install(FILES ${CBLAS_INCLUDE} ${LAPACK_BINARY_DIR}/include/cblas_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # --------------------------------------------------
 if(BUILD_TESTING)
@@ -45,7 +45,7 @@ endif()
 set(_cblas_config_install_guard_target "")
 if(ALL_TARGETS)
   install(EXPORT cblas-targets
-    DESTINATION ${LIBRARY_DIR}/cmake/cblas-${LAPACK_VERSION})
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cblas-${LAPACK_VERSION})
   # Choose one of the cblas targets to use as a guard for
   # cblas-config.cmake to load targets from the install tree.
   list(GET ALL_TARGETS 0 _cblas_config_install_guard_target)
@@ -78,8 +78,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cblas-config-install.cmake.in
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/cblas-config.cmake
   ${LAPACK_BINARY_DIR}/cblas-config-version.cmake
-  DESTINATION ${LIBRARY_DIR}/cmake/cblas-${LAPACK_VERSION}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cblas-${LAPACK_VERSION}
   )
 
 #install(EXPORT cblas-targets
-#  DESTINATION ${LIBRARY_DIR}/cmake/cblas-${LAPACK_VERSION})
+#  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cblas-${LAPACK_VERSION})

@@ -28,14 +28,14 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function zhetrf_rk
 * Author: Intel Corporation
-* Generated December 2016
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_zhetrf_rk_work( int matrix_layout, char uplo, lapack_int n,
                                 lapack_complex_double* a, lapack_int lda,
-                                lapack_complex_double* e, 
+                                lapack_complex_double* e,
                                 lapack_int* ipiv, lapack_complex_double* work,
                                 lapack_int lwork )
 {

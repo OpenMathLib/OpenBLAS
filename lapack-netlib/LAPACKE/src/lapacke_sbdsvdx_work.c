@@ -34,17 +34,17 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_sbdsvdx_work( int matrix_layout, char uplo, char jobz, char range,
-                           		lapack_int n, float* d, float* e,
-                           		float vl, float vu,
-                           		lapack_int il, lapack_int iu, lapack_int* ns,
-                           		float* s, float* z, lapack_int ldz,
-                                float* work, lapack_int* iwork )
+                                 lapack_int n, float* d, float* e,
+                                 float vl, float vu,
+                                 lapack_int il, lapack_int iu, lapack_int* ns,
+                                 float* s, float* z, lapack_int ldz,
+                                 float* work, lapack_int* iwork )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_sbdsvdx( &uplo, &jobz,  &range, &n, d, e, &vl, &vu,
-            			&il, &iu, ns, s, z, &ldz,
+                        &il, &iu, ns, s, z, &ldz,
                         work, iwork, &info );
         if( info < 0 ) {
             info = info - 1;
@@ -64,7 +64,7 @@ lapack_int LAPACKE_sbdsvdx_work( int matrix_layout, char uplo, char jobz, char r
         /* Allocate memory for temporary array(s) */
         if( LAPACKE_lsame( jobz, 'v' ) ) {
            z_t = (float*)
-               LAPACKE_malloc( sizeof(float) * ldz_t * MAX(2*n,1) );
+               LAPACKE_malloc( sizeof(float) * ldz_t * MAX(ncols_z,1) );
            if( z_t == NULL ) {
               info = LAPACK_TRANSPOSE_MEMORY_ERROR;
               goto exit_level_0;
@@ -72,8 +72,8 @@ lapack_int LAPACKE_sbdsvdx_work( int matrix_layout, char uplo, char jobz, char r
         }
         /* Call LAPACK function and adjust info */
         LAPACK_sbdsvdx( &uplo, &jobz, &range, &n, d, e, &vl, &vu,
-            			&il, &iu, ns, s, z_t, &ldz_t, work,
-            			iwork, &info );
+                        &il, &iu, ns, s, z_t, &ldz_t, work,
+                        iwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }

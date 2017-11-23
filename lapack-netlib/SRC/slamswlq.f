@@ -18,7 +18,7 @@
 *>
 *> \verbatim
 *>
-*>    DLAMQRTS overwrites the general real M-by-N matrix C with
+*>    SLAMSWLQ overwrites the general real M-by-N matrix C with
 *>
 *>
 *>                    SIDE = 'L'     SIDE = 'R'
@@ -26,7 +26,7 @@
 *>    TRANS = 'T':      Q**T * C       C * Q**T
 *>    where Q is a real orthogonal matrix defined as the product of blocked
 *>    elementary reflectors computed by short wide LQ
-*>    factorization (DLASWLQ)
+*>    factorization (SLASWLQ)
 *> \endverbatim
 *
 *  Arguments:
@@ -49,7 +49,7 @@
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>          The number of rows of the matrix A.  M >=0.
+*>          The number of rows of the matrix C.  M >=0.
 *> \endverbatim
 *>
 *> \param[in] N
@@ -88,12 +88,14 @@
 *>
 *> \endverbatim
 *>
-*> \param[in,out] A
+*> \param[in] A
 *> \verbatim
-*>          A is REAL array, dimension (LDA,K)
+*>          A is REAL array, dimension
+*>                               (LDA,M) if SIDE = 'L',
+*>                               (LDA,N) if SIDE = 'R'
 *>          The i-th row must contain the vector which defines the blocked
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
-*>          DLASWLQ in the first k rows of its array argument A.
+*>          SLASWLQ in the first k rows of its array argument A.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -200,10 +202,10 @@
       SUBROUTINE SLAMSWLQ( SIDE, TRANS, M, N, K, MB, NB, A, LDA, T,
      $    LDT, C, LDC, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER         SIDE, TRANS
@@ -279,7 +281,7 @@
       END IF
 *
       IF((NB.LE.K).OR.(NB.GE.MAX(M,N,K))) THEN
-        CALL DGEMLQT( SIDE, TRANS, M, N, K, MB, A, LDA,
+        CALL SGEMLQT( SIDE, TRANS, M, N, K, MB, A, LDA,
      $        T, LDT, C, LDC, WORK, INFO)
         RETURN
       END IF

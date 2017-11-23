@@ -154,9 +154,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*  @precisions fortran d -> z c
+*> \date November 2017
 *
 *> \ingroup doubleSYsolve
 *
@@ -164,10 +162,10 @@
       SUBROUTINE DSYSV_AA( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, WORK,
      $                     LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -190,7 +188,7 @@
       EXTERNAL           ILAENV, LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, DSYTRF, DSYTRS, DSYTRS2
+      EXTERNAL           XERBLA, DSYTRF_AA, DSYTRS_AA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX

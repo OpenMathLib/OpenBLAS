@@ -28,14 +28,14 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function chetrf_rk
 * Author: Intel Corporation
-* Generated December 2016
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_chetrf_rk_work( int matrix_layout, char uplo, lapack_int n,
                                 lapack_complex_float* a, lapack_int lda,
-                                lapack_complex_float* e, 
+                                lapack_complex_float* e,
                                 lapack_int* ipiv, lapack_complex_float* work,
                                 lapack_int lwork )
 {

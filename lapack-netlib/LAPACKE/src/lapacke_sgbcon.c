@@ -46,12 +46,14 @@ lapack_int LAPACKE_sgbcon( int matrix_layout, char norm, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_sgb_nancheck( matrix_layout, n, n, kl, kl+ku, ab, ldab ) ) {
-        return -6;
-    }
-    if( LAPACKE_s_nancheck( 1, &anorm, 1 ) ) {
-        return -9;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_sgb_nancheck( matrix_layout, n, n, kl, kl+ku, ab, ldab ) ) {
+            return -6;
+        }
+        if( LAPACKE_s_nancheck( 1, &anorm, 1 ) ) {
+            return -9;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE SLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
+*       SUBROUTINE SLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
 *
 *       .. Scalar Arguments ..
 *       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -53,7 +53,7 @@
 *>
 *> \param[in] NRHS
 *> \verbatim
-*>          NRHS is NRHS
+*>          NRHS is INTEGER
 *>          The requested number of right-hand sides.
 *> \endverbatim
 *>
@@ -117,17 +117,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
-      SUBROUTINE SLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
+      SUBROUTINE SLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER N, NRHS, LDA, LDX, LDB, INFO

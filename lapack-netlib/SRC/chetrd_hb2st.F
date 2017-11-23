@@ -188,7 +188,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complexOTHERcomputational
 *
@@ -237,10 +237,10 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          STAGE1, UPLO, VECT
@@ -273,7 +273,7 @@
       COMPLEX            TMP
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHB2ST_KERNELS, CLACPY, CLASET
+      EXTERNAL           CHB2ST_KERNELS, CLACPY, CLASET, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MIN, MAX, CEILING, REAL

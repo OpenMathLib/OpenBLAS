@@ -69,7 +69,7 @@ void LAPACKE_ctp_trans( int matrix_layout, char uplo, char diag,
      * and col_major lower and row_major upper are equals too -
      * using one code for equal cases. XOR( colmaj, upper )
      */
-    if( ( colmaj || upper ) && !( colmaj && upper ) ) {
+    if( !( colmaj || upper ) || ( colmaj && upper ) ) {
         for( j = st; j < n; j++ ) {
             for( i = 0; i < j+1-st; i++ ) {
                 out[ j-i + (i*(2*n-i+1))/2 ] = in[ ((j+1)*j)/2 + i ];
