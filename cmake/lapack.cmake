@@ -1,6 +1,6 @@
 # Sources for compiling lapack-netlib. Can't use CMakeLists.txt because lapack-netlib already has its own cmake files.
 
-set(ALLAUX ilaenv.f ieeeck.f lsamen.f iparmq.f iparam2stage.F
+set(ALLAUX ilaenv.f ilaenv2stage.f ieeeck.f lsamen.f iparmq.f iparam2stage.F
    ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f
    ../INSTALL/ilaver.f xerbla_array.f
    ../INSTALL/slamch.f)
@@ -89,7 +89,7 @@ set(SLASRC
    ssytd2.f ssytf2.f ssytrd.f ssytrf.f ssytri.f ssytri2.f ssytri2x.f
    ssyswapr.f ssytrs.f ssytrs2.f
    ssyconv.f ssyconvf.f ssyconvf_rook.f
-   ssysv_aa.f ssytrf_aa.f ssytrs_aa.f
+   ssysv_aa.f ssysv_aa_2stage.f ssytrf_aa.f ssytrf_aa_2stage.f ssytrs_aa.f ssytrs_aa_2stage.f
    ssytf2_rook.f ssytrf_rook.f ssytrs_rook.f
    ssytri_rook.f ssycon_rook.f ssysv_rook.f
    ssytf2_rk.f ssytrf_rk.f ssytrs_3.f
@@ -151,7 +151,7 @@ set(CLASRC
    chetrs_rook.f checon_rook.f chesv_rook.f
    chetf2_rk.f chetrf_rk.f chetri_3.f chetri_3x.f
    chetrs_3.f checon_3.f chesv_rk.f
-   chesv_aa.f chetrf_aa.f chetrs_aa.f
+   chesv_aa.f chesv_aa_2stage.f chetrf_aa.f chetrf_aa_2stage.f chetrs_aa.f chetrs_aa_2stage.f
    chgeqz.f chpcon.f chpev.f  chpevd.f
    chpevx.f chpgst.f chpgv.f  chpgvd.f chpgvx.f chprfs.f chpsv.f
    chpsvx.f
@@ -186,8 +186,8 @@ set(CLASRC
    csyconv.f csyconvf.f csyconvf_rook.f
    csytf2_rook.f csytrf_rook.f csytrs_rook.f
    csytri_rook.f csycon_rook.f csysv_rook.f
-   csytf2_rk.f csytrf_rk.f csytrf_aa.f csytrs_3.f csytrs_aa.f
-   csytri_3.f csytri_3x.f csycon_3.f csysv_rk.f csysv_aa.f
+   csytf2_rk.f csytrf_rk.f csytrf_aa.f csytrf_aa_2stage.f csytrs_3.f csytrs_aa.f csytrs_aa_2stage.f
+   csytri_3.f csytri_3x.f csycon_3.f csysv_rk.f csysv_aa.f csysv_aa_2stage.f
    ctbcon.f ctbrfs.f ctbtrs.f ctgevc.f ctgex2.f
    ctgexc.f ctgsen.f ctgsja.f ctgsna.f ctgsy2.f ctgsyl.f ctpcon.f
    ctprfs.f ctptri.f
@@ -277,7 +277,7 @@ set(DLASRC
    dsytri_rook.f dsycon_rook.f dsysv_rook.f
    dsytf2_rk.f dsytrf_rk.f dsytrs_3.f
    dsytri_3.f dsytri_3x.f dsycon_3.f dsysv_rk.f
-   dsysv_aa.f dsytrf_aa.f dsytrs_aa.f
+   dsysv_aa.f dsysv_aa_2stage.f dsytrf_aa.f dsytrf_aa_2stage.f dsytrs_aa.f dsytrs_aa_2stage.f
    dtbcon.f
    dtbrfs.f dtbtrs.f dtgevc.f dtgex2.f dtgexc.f dtgsen.f
    dtgsja.f dtgsna.f dtgsy2.f dtgsyl.f dtpcon.f dtprfs.f dtptri.f
@@ -335,7 +335,7 @@ set(ZLASRC
    zhetrs_rook.f zhecon_rook.f zhesv_rook.f
    zhetf2_rk.f zhetrf_rk.f zhetri_3.f zhetri_3x.f
    zhetrs_3.f zhecon_3.f zhesv_rk.f
-   zhesv_aa.f zhetrf_aa.f zhetrs_aa.f
+   zhesv_aa.f zhesv_aa_2stage.f zhetrf_aa.f zhetrf_aa_2stage.f zhetrs_aa.f zhetrs_aa_2stage.f
    zhgeqz.f zhpcon.f zhpev.f  zhpevd.f
    zhpevx.f zhpgst.f zhpgv.f  zhpgvd.f zhpgvx.f zhprfs.f zhpsv.f
    zhpsvx.f
@@ -370,9 +370,9 @@ set(ZLASRC
    zsytri2.f zsytri2x.f zsyswapr.f
    zsytrs.f zsytrs2.f
    zsyconv.f zsyconvf.f zsyconvf_rook.f
-   zsytf2_rook.f zsytrf_rook.f zsytrs_rook.f zsytrs_aa.f
+   zsytf2_rook.f zsytrf_rook.f zsytrs_rook.f zsytrs_aa.f zsytrs_aa_2stage.f
    zsytri_rook.f zsycon_rook.f zsysv_rook.f
-   zsytf2_rk.f zsytrf_rk.f zsytrf_aa.f zsytrs_3.f
+   zsytf2_rk.f zsytrf_rk.f zsytrf_aa.f zsytrf_aa_2stage.f zsytrs_3.f
    zsytri_3.f zsytri_3x.f zsycon_3.f zsysv_rk.f zsysv_aa.f
    ztbcon.f ztbrfs.f ztbtrs.f ztgevc.f ztgex2.f
    ztgexc.f ztgsen.f ztgsja.f ztgsna.f ztgsy2.f ztgsyl.f ztpcon.f
