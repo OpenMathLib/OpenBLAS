@@ -373,7 +373,7 @@ set(ZLASRC
    zsytf2_rook.f zsytrf_rook.f zsytrs_rook.f zsytrs_aa.f zsytrs_aa_2stage.f
    zsytri_rook.f zsycon_rook.f zsysv_rook.f
    zsytf2_rk.f zsytrf_rk.f zsytrf_aa.f zsytrf_aa_2stage.f zsytrs_3.f
-   zsytri_3.f zsytri_3x.f zsycon_3.f zsysv_rk.f zsysv_aa.f
+   zsytri_3.f zsytri_3x.f zsycon_3.f zsysv_rk.f zsysv_aa.f zsysv_aa_2stage.f
    ztbcon.f ztbrfs.f ztbtrs.f ztgevc.f ztgex2.f
    ztgexc.f ztgsen.f ztgsja.f ztgsna.f ztgsy2.f ztgsyl.f ztpcon.f
    ztprfs.f ztptri.f
