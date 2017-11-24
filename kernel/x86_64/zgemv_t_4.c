@@ -313,7 +313,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			for( i = 0; i < n1 ; i++)
 			{
-				memset(ybuffer,0,sizeoff(ybuffer));
+				memset(ybuffer,0,sizeof(ybuffer));
 				zgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha);
 				ap[0] += lda4;
 				ap[1] += lda4;
