@@ -10,6 +10,7 @@ SGEMVTKERNEL = sgemv_t_4.c
 ZGEMVNKERNEL = zgemv_n_4.c
 
 SDOTKERNEL = sdot.c
+DSDOTKERNEL = sdot.c
 DDOTKERNEL = ddot.c
 CDOTKERNEL = cdot.c
 ZDOTKERNEL = zdot.c
