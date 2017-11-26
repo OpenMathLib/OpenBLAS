@@ -320,14 +320,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
 	if (X < posY) {
 
-	    a01 += 2 * i;
+	    /* a01 += 2 * i;
 	    a02 += 2 * i;
 	    a03 += 2 * i;
 	    a04 += 2 * i;
 	    a05 += 2 * i;
 	    a06 += 2 * i;
 	    a07 += 2 * i;
-	    a08 += 2 * i;
+	    a08 += 2 * i; */
 	    b += 16 * i;
 	} else
 	  if (X > posY) {
@@ -664,10 +664,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     if (i) {
 
       if (X < posY) {
-	a01 += 2 * i;
+	/* a01 += 2 * i;
 	a02 += 2 * i;
 	a03 += 2 * i;
-	a04 += 2 * i;
+	a04 += 2 * i; */
 	b += 8 * i;
       } else
 	if (X > posY) {
