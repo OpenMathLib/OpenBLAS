@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -91,7 +91,8 @@
       EXTERNAL           CHKXER, SGBSV, SGBSVX, SGESV, SGESVX, SGTSV,
      $                   SGTSVX, SPBSV, SPBSVX, SPOSV, SPOSVX, SPPSV,
      $                   SPPSVX, SPTSV, SPTSVX, SSPSV, SSPSVX, SSYSV,
-     $                   SSYSV_AA, SSYSV_RK, SSYSV_ROOK, SSYSVX
+     $                   SSYSV_AA, SSYSV_RK, SSYSV_ROOK, SSYSVX,
+     $                   SSYSV_AA_2STAGE
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -711,6 +712,36 @@
          INFOT = 8
          CALL SSYSV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV_AA', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
+*
+*        DSYSV_AASEN_2STAGE
+*
+         SRNAMT = 'SSYSV_AA_2STAGE'
+         INFOT = 1
+         CALL SSYSV_AA_2STAGE( '/', 0, 0, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SSYSV_AA_2STAGE( 'U', -1, 0, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SSYSV_AA_2STAGE( 'U', 0, -1, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 2, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *

@@ -53,6 +53,9 @@
 *> ZHR   10               List types on next line if 0 < NTYPES < 10
 *> ZHK   10               List types on next line if 0 < NTYPES < 10
 *> ZHA   10               List types on next line if 0 < NTYPES < 10
+*> ZH2   10               List types on next line if 0 < NTYPES < 10
+*> ZSA   11               List types on next line if 0 < NTYPES < 10
+*> ZS2   11               List types on next line if 0 < NTYPES < 10
 *> ZHP   10               List types on next line if 0 < NTYPES < 10
 *> ZSY   11               List types on next line if 0 < NTYPES < 11
 *> ZSR   11               List types on next line if 0 < NTYPES < 11
@@ -105,17 +108,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       PROGRAM ZCHKAA
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *  =====================================================================
 *
@@ -168,10 +171,11 @@
      $                   ZCHKSY_ROOK, ZCHKSY_RK, ZCHKSY_AA, ZCHKTB,
      $                   ZCHKTP, ZCHKTR, ZCHKTZ, ZDRVGB, ZDRVGE, ZDRVGT,
      $                   ZDRVHE, ZDRVHE_ROOK, ZDRVHE_RK, ZDRVHE_AA,
-     $                   ZDRVHP, ZDRVLS, ZDRVPB, ZDRVPO, ZDRVPP, ZDRVPT,
-     $                   ZDRVSP, ZDRVSY, ZDRVSY_ROOK, ZDRVSY_RK,
-     $                   ZDRVSY_AA, ILAVER, ZCHKQRT, ZCHKQRTP, ZCHKLQT,
-     $                   ZCHKLQTP, ZCHKTSQR
+     $                   ZDRVHE_AA_2STAGE, ZDRVHP, ZDRVLS, ZDRVPB, 
+     $                   ZDRVPO, ZDRVPP, ZDRVPT, ZDRVSP, ZDRVSY,
+     $                   ZDRVSY_ROOK, ZDRVSY_RK, ZDRVSY_AA,
+     $                   ZDRVSY_AA_2STAGE, ILAVER, ZCHKQRT, ZCHKQRTP,
+     $                   ZCHKLQT, ZCHKLQTP, ZCHKTSQR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -700,8 +704,8 @@
 *
       ELSE IF( LSAMEN( 2, C2, 'HA' ) ) THEN
 *
-*        HA:  Hermitian indefinite matrices,
-*             with partial (Aasen's) pivoting algorithm
+*        HA:  Hermitian matrices,
+*             Aasen Algorithm
 *
          NTYPES = 10
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -724,6 +728,35 @@
          ELSE
             WRITE( NOUT, FMT = 9988 )PATH
          END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'H2' ) ) THEN
+*
+*        H2:  Hermitian matrices,
+*             with partial (Aasen's) pivoting algorithm
+*
+         NTYPES = 10
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL ZCHKHE_AA_2STAGE( DOTYPE, NN, NVAL, NNB2, NBVAL2,
+     $                         NNS, NSVAL, THRESH, TSTERR, LDA,
+     $                         A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                         B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                         WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+         IF( TSTDRV ) THEN
+            CALL ZDRVHE_AA_2STAGE(
+     $                         DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
+     $                         LDA, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                              B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                         WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9988 )PATH
+         END IF
+*
 *
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *
@@ -831,9 +864,7 @@
 *
       ELSE IF( LSAMEN( 2, C2, 'SA' ) ) THEN
 *
-*        SK:  symmetric indefinite matrices,
-*             with bounded Bunch-Kaufman (rook) pivoting algorithm,
-*             differnet matrix storage format than SR path version.
+*        SA:  symmetric indefinite matrices with Aasen's algorithm,
 *
          NTYPES = 11
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -849,6 +880,34 @@
 *
          IF( TSTDRV ) THEN
             CALL ZDRVSY_AA( DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
+     $                      LDA, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                      B( 1, 1 ), B( 1, 2 ), B( 1, 3 ), WORK,
+     $                      RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9988 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
+*
+*        S2:  symmetric indefinite matrices with Aasen's algorithm
+*             2 stage
+*
+         NTYPES = 11
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL ZCHKSY_AA_2STAGE( DOTYPE, NN, NVAL, NNB2, NBVAL2, NNS,
+     $                      NSVAL, THRESH, TSTERR, LDA,
+     $                      A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                      B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                      WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+         IF( TSTDRV ) THEN
+            CALL ZDRVSY_AA_2STAGE(
+     $                      DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
      $                      LDA, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
      $                      B( 1, 1 ), B( 1, 2 ), B( 1, 3 ), WORK,
      $                      RWORK, IWORK, NOUT )

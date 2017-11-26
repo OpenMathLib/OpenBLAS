@@ -1,4 +1,4 @@
-C> \brief \b DLAHILB
+*> \brief \b DLAHILB
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -117,17 +117,17 @@ C> \brief \b DLAHILB
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup double_matgen
 *
 *  =====================================================================
       SUBROUTINE DLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK, INFO)
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -140,7 +140,7 @@ C> \brief \b DLAHILB
       INTEGER TM, TI, R
       INTEGER M
       INTEGER I, J
-
+*     ..
 *     .. Parameters ..
 *     NMAX_EXACT   the largest dimension where the generated data is
 *                  exact.
@@ -148,7 +148,9 @@ C> \brief \b DLAHILB
 *                  a small componentwise relative error.
       INTEGER NMAX_EXACT, NMAX_APPROX
       PARAMETER (NMAX_EXACT = 6, NMAX_APPROX = 11)
-
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
 *     ..
 *     .. External Functions
       EXTERNAL DLASET
@@ -177,7 +179,7 @@ C> \brief \b DLAHILB
       IF (N .GT. NMAX_EXACT) THEN
          INFO = 1
       END IF
-
+*
 *     Compute M = the LCM of the integers [1, 2*N-1].  The largest
 *     reasonable N is small enough that integers suffice (up to N = 11).
       M = 1
@@ -192,14 +194,14 @@ C> \brief \b DLAHILB
          END DO
          M = (M / TI) * I
       END DO
-
+*
 *     Generate the scaled Hilbert matrix in A
       DO J = 1, N
          DO I = 1, N
             A(I, J) = DBLE(M) / (I + J - 1)
          END DO
       END DO
-
+*
 *     Generate matrix B as simply the first NRHS columns of M * the
 *     identity.
       CALL DLASET('Full', N, NRHS, 0.0D+0, DBLE(M), B, LDB)
@@ -212,12 +214,12 @@ C> \brief \b DLAHILB
          WORK(J) = (  ( (WORK(J-1)/(J-1)) * (J-1 - N) ) /(J-1)  )
      $        * (N +J -1)
       END DO
-
+*
       DO J = 1, NRHS
          DO I = 1, N
             X(I, J) = (WORK(I)*WORK(J)) / (I + J - 1)
          END DO
       END DO
-
+*
       END
 

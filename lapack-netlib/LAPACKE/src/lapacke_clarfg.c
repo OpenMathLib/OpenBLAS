@@ -38,12 +38,14 @@ lapack_int LAPACKE_clarfg( lapack_int n, lapack_complex_float* alpha,
                            lapack_complex_float* tau )
 {
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_c_nancheck( 1, alpha, 1 ) ) {
-        return -2;
-    }
-    if( LAPACKE_c_nancheck( 1+(n-2)*ABS(incx), x, incx ) ) {
-        return -3;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_c_nancheck( 1, alpha, 1 ) ) {
+            return -2;
+        }
+        if( LAPACKE_c_nancheck( 1+(n-2)*ABS(incx), x, incx ) ) {
+            return -3;
+        }
     }
 #endif
     return LAPACKE_clarfg_work( n, alpha, x, incx, tau );

@@ -56,17 +56,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION SLAPY2( X, Y )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       REAL               X, Y
@@ -82,20 +82,35 @@
 *     ..
 *     .. Local Scalars ..
       REAL               W, XABS, YABS, Z
+      LOGICAL            X_IS_NAN, Y_IS_NAN
+*     ..
+*     .. External Functions ..
+      LOGICAL            SISNAN
+      EXTERNAL           SISNAN
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
 *     ..
 *     .. Executable Statements ..
 *
-      XABS = ABS( X )
-      YABS = ABS( Y )
-      W = MAX( XABS, YABS )
-      Z = MIN( XABS, YABS )
-      IF( Z.EQ.ZERO ) THEN
-         SLAPY2 = W
-      ELSE
-         SLAPY2 = W*SQRT( ONE+( Z / W )**2 )
+*     ..
+*     .. Executable Statements ..
+*
+      X_IS_NAN = SISNAN( X )
+      Y_IS_NAN = SISNAN( Y )
+      IF ( X_IS_NAN ) SLAPY2 = X
+      IF ( Y_IS_NAN ) SLAPY2 = Y
+*
+      IF ( .NOT.( X_IS_NAN.OR.Y_IS_NAN ) ) THEN
+         XABS = ABS( X )
+         YABS = ABS( Y )
+         W = MAX( XABS, YABS )
+         Z = MIN( XABS, YABS )
+         IF( Z.EQ.ZERO ) THEN
+            SLAPY2 = W
+         ELSE
+            SLAPY2 = W*SQRT( ONE+( Z / W )**2 )
+         END IF
       END IF
       RETURN
 *

@@ -18,7 +18,7 @@
 *>
 *> \verbatim
 *>
-*> DGEMQRT overwrites the general real M-by-N matrix C with
+*> DGEMLQT overwrites the general real M-by-N matrix C with
 *>
 *>                 SIDE = 'L'     SIDE = 'R'
 *> TRANS = 'N':      Q C            C Q
@@ -82,7 +82,9 @@
 *>
 *> \param[in] V
 *> \verbatim
-*>          V is REAL array, dimension (LDV,K)
+*>          V is REAL array, dimension
+*>                               (LDV,M) if SIDE = 'L',
+*>                               (LDV,N) if SIDE = 'R'
 *>          The i-th row must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
 *>          DGELQT in the first K rows of its array argument A.
@@ -91,16 +93,14 @@
 *> \param[in] LDV
 *> \verbatim
 *>          LDV is INTEGER
-*>          The leading dimension of the array V.
-*>          If SIDE = 'L', LDA >= max(1,M);
-*>          if SIDE = 'R', LDA >= max(1,N).
+*>          The leading dimension of the array V. LDV >= max(1,K).
 *> \endverbatim
 *>
 *> \param[in] T
 *> \verbatim
 *>          T is REAL array, dimension (LDT,K)
 *>          The upper triangular factors of the block reflectors
-*>          as returned by DGELQT, stored as a MB-by-M matrix.
+*>          as returned by DGELQT, stored as a MB-by-K matrix.
 *> \endverbatim
 *>
 *> \param[in] LDT
@@ -143,7 +143,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup doubleGEcomputational
 *
@@ -151,10 +151,10 @@
       SUBROUTINE SGEMLQT( SIDE, TRANS, M, N, K, MB, V, LDV, T, LDT,
      $                   C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS
@@ -169,14 +169,14 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, RIGHT, TRAN, NOTRAN
-      INTEGER            I, IB, LDWORK, KF, Q
+      INTEGER            I, IB, LDWORK, KF
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, DLARFB
+      EXTERNAL           XERBLA, SLARFB
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN

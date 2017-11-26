@@ -53,6 +53,7 @@
 *> DSR   10               List types on next line if 0 < NTYPES < 10
 *> DSK   10               List types on next line if 0 < NTYPES < 10
 *> DSA   10               List types on next line if 0 < NTYPES < 10
+*> DS2   10               List types on next line if 0 < NTYPES < 10
 *> DSP   10               List types on next line if 0 < NTYPES < 10
 *> DTR   18               List types on next line if 0 < NTYPES < 18
 *> DTP   18               List types on next line if 0 < NTYPES < 18
@@ -108,7 +109,7 @@
 *  =====================================================================
       PROGRAM DCHKAA
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -149,7 +150,7 @@
      $                   RANKVAL( MAXIN ), PIV( NMAX )
       DOUBLE PRECISION   A( ( KDMAX+1 )*NMAX, 7 ), B( NMAX*MAXRHS, 4 ),
      $                   E( NMAX ), RWORK( 5*NMAX+2*MAXRHS ),
-     $                   S( 2*NMAX ), WORK( NMAX, NMAX+MAXRHS+30 )
+     $                   S( 2*NMAX ), WORK( NMAX, 3*NMAX+MAXRHS+30 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, LSAMEN
@@ -716,6 +717,35 @@
 *
          IF( TSTDRV ) THEN
             CALL DDRVSY_AA( DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
+     $                         LDA, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                         B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                         WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9988 )PATH
+         END IF
+*
+*
+      ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
+*
+*        SA:  symmetric indefinite matrices,
+*             with partial (Aasen's) pivoting algorithm
+*
+         NTYPES = 10
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKSY_AA_2STAGE( DOTYPE, NN, NVAL, NNB2, NBVAL2,
+     $                         NNS, NSVAL, THRESH, TSTERR, LDA,
+     $                         A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
+     $                         B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
+     $                         WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+         IF( TSTDRV ) THEN
+            CALL DDRVSY_AA_2STAGE(
+     $                         DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR,
      $                         LDA, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
      $                         B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
      $                         WORK, RWORK, IWORK, NOUT )

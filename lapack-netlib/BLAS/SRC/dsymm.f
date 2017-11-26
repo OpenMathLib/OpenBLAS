@@ -87,7 +87,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is DOUBLE PRECISION array of DIMENSION ( LDA, ka ), where ka is
+*>          A is DOUBLE PRECISION array, dimension ( LDA, ka ), where ka is
 *>           m  when  SIDE = 'L' or 'l'  and is  n otherwise.
 *>           Before entry  with  SIDE = 'L' or 'l',  the  m by m  part of
 *>           the array  A  must contain the  symmetric matrix,  such that
@@ -122,7 +122,7 @@
 *>
 *> \param[in] B
 *> \verbatim
-*>          B is DOUBLE PRECISION array of DIMENSION ( LDB, n ).
+*>          B is DOUBLE PRECISION array, dimension ( LDB, N )
 *>           Before entry, the leading  m by n part of the array  B  must
 *>           contain the matrix B.
 *> \endverbatim
@@ -144,7 +144,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is DOUBLE PRECISION array of DIMENSION ( LDC, n ).
+*>          C is DOUBLE PRECISION array, dimension ( LDC, N )
 *>           Before entry, the leading  m by n  part of the array  C must
 *>           contain the matrix  C,  except when  beta  is zero, in which
 *>           case C need not be set on entry.

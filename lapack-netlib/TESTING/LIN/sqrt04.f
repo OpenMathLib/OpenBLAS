@@ -74,7 +74,7 @@
       SUBROUTINE SQRT04(M,N,NB,RESULT)
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -102,6 +102,9 @@
 *     ..
 *     .. Local Arrays ..
       INTEGER            ISEED( 4 )
+*     ..
+*     .. External Subroutine ..
+      EXTERNAL SGEMM, SLACPY, SLARNV, SGEMQRT, SLASET, SGEQRT, SSYRK
 *     ..
 *     .. External Functions ..
       REAL SLAMCH

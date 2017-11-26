@@ -43,12 +43,14 @@ lapack_int LAPACKE_stbtrs( int matrix_layout, char uplo, char trans, char diag,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_stb_nancheck( matrix_layout, uplo, diag, n, kd, ab, ldab ) ) {
-        return -8;
-    }
-    if( LAPACKE_sge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -10;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_stb_nancheck( matrix_layout, uplo, diag, n, kd, ab, ldab ) ) {
+            return -8;
+        }
+        if( LAPACKE_sge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -10;
+        }
     }
 #endif
     return LAPACKE_stbtrs_work( matrix_layout, uplo, trans, diag, n, kd, nrhs,

@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRHE( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -94,6 +94,7 @@
      $                   CHETRI_3, CHETRI_3X, CHETRI_ROOK, CHETRI2,
      $                   CHETRI2X, CHETRS, CHETRS_3, CHETRS_ROOK,
      $                   CHETRS_AA, CHKXER, CHPCON, CHPRFS, CHPTRF,
+     $                   CHETRF_AA_2STAGE, CHETRS_AA_2STAGE,
      $                   CHPTRI, CHPTRS
 *     ..
 *     .. Scalars in Common ..
@@ -471,7 +472,7 @@
          CALL CHECON_3( 'U', 1, A, 1, E, IP, -1.0E0, RCOND, W, INFO)
          CALL CHKXER( 'CHECON_3', INFOT, NOUT, LERR, OK )
 *
-      ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
+      ELSE IF( LSAMEN( 2, C2, 'HA' ) ) THEN
 *
 *        Test error exits of the routines that use factorization
 *        of a Hermitian indefinite matrix with Aasen's algorithm.
@@ -489,10 +490,10 @@
          CALL CHETRF_AA( 'U', 2, A, 1, IP, W, 4, INFO )
          CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
          INFOT = 7
-         CALL CHETRF_AA( 'U', 0, A, 1, IP, W, 0, INFO )
+         CALL CHETRF_AA( 'U', 2, A, 2, IP, W, 0, INFO )
          CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
          INFOT = 7
-         CALL CHETRF_AA( 'U', 0, A, 1, IP, W, -2, INFO )
+         CALL CHETRF_AA( 'U', 2, A, 2, IP, W, -2, INFO )
          CALL CHKXER( 'CHETRF_AA', INFOT, NOUT, LERR, OK )
 *
 *        CHETRS_AA
@@ -514,11 +515,68 @@
          CALL CHETRS_AA( 'U', 2, 1, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL CHETRS_AA( 'U', 0, 1, A, 1, IP, B, 1, W, 0, INFO )
+         CALL CHETRS_AA( 'U', 2, 1, A, 2, IP, B, 2, W, 0, INFO )
          CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL CHETRS_AA( 'U', 0, 1, A, 1, IP, B, 1, W, -2, INFO )
+         CALL CHETRS_AA( 'U', 2, 1, A, 2, IP, B, 2, W, -2, INFO )
          CALL CHKXER( 'CHETRS_AA', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'H2' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with Aasen's algorithm.
+*
+*        CHETRF_AA_2STAGE
+*
+         SRNAMT = 'CHETRF_AA_2STAGE'
+         INFOT = 1
+         CALL CHETRF_AA_2STAGE( '/', 0, A, 1, A, 1, IP, IP, W, 1,
+     $                          INFO )
+         CALL CHKXER( 'CHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRF_AA_2STAGE( 'U', -1, A, 1, A, 1, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'CHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETRF_AA_2STAGE( 'U', 2, A, 1, A, 2, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'CHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL CHETRF_AA_2STAGE( 'U', 2, A, 2, A, 1, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'CHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CHETRF_AA_2STAGE( 'U', 2, A, 2, A, 8, IP, IP, W, 0,
+     $                           INFO )
+         CALL CHKXER( 'CHETRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+*
+*        CHETRS_AA_2STAGE
+*
+         SRNAMT = 'CHETRS_AA_2STAGE'
+         INFOT = 1
+         CALL CHETRS_AA_2STAGE( '/', 0, 0, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETRS_AA_2STAGE( 'U', -1, 0, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CHETRS_AA_2STAGE( 'U', 0, -1, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CHETRS_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL CHETRS_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL CHETRS_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'CHETRS_AA_STAGE', INFOT, NOUT, LERR, OK )
 *
 *        Test error exits of the routines that use factorization
 *        of a Hermitian indefinite packed matrix with patrial

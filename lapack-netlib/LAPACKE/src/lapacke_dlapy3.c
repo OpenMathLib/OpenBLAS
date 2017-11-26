@@ -36,15 +36,17 @@
 double LAPACKE_dlapy3( double x, double y, double z )
 {
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( 1, &x, 1 ) ) {
-        return -1;
-    }
-    if( LAPACKE_d_nancheck( 1, &y, 1 ) ) {
-        return -2;
-    }
-    if( LAPACKE_d_nancheck( 1, &z, 1 ) ) {
-        return -3;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( 1, &x, 1 ) ) {
+            return -1;
+        }
+        if( LAPACKE_d_nancheck( 1, &y, 1 ) ) {
+            return -2;
+        }
+        if( LAPACKE_d_nancheck( 1, &z, 1 ) ) {
+            return -3;
+        }
     }
 #endif
     return LAPACKE_dlapy3_work( x, y, z );

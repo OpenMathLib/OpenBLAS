@@ -205,7 +205,7 @@
       SUBROUTINE DBDSDC( UPLO, COMPQ, N, D, E, U, LDU, VT, LDVT, Q, IQ,
      $                   WORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -311,12 +311,12 @@
       WSTART = 1
       QSTART = 3
       IF( ICOMPQ.EQ.1 ) THEN
-         CALL DCOPY( N,   D, 1, Q( 1 ),   1 )
+         CALL DCOPY( N, D, 1, Q( 1 ), 1 )
          CALL DCOPY( N-1, E, 1, Q( N+1 ), 1 )
       END IF
       IF( IUPLO.EQ.2 ) THEN
          QSTART = 5
-         WSTART = 2*N - 1
+         IF( ICOMPQ .EQ. 2 ) WSTART = 2*N - 1
          DO 10 I = 1, N - 1
             CALL DLARTG( D( I ), E( I ), CS, SN, R )
             D( I ) = R

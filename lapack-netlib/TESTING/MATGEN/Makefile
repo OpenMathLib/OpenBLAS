@@ -4,9 +4,8 @@ include ../../make.inc
 #  This is the makefile to create a library of the test matrix
 #  generators used in LAPACK.  The files are organized as follows:
 #
-#     SCATGEN  -- Auxiliary routines called from both REAL and COMPLEX
-#     DZATGEN  -- Auxiliary routines called from both DOUBLE PRECISION
-#                 and COMPLEX*16
+#     SCATGEN  -- Auxiliary routines called from single precision
+#     DZATGEN  -- Auxiliary routines called from double precision
 #     SMATGEN  -- Single precision real matrix generation routines
 #     CMATGEN  -- Single precision complex matrix generation routines
 #     DMATGEN  -- Double precision real matrix generation routines
@@ -26,28 +25,28 @@ include ../../make.inc
 #  and is created at the LAPACK directory level.
 #
 #  To remove the object files after the library is created, enter
-#       make clean
+#       make cleanobj
 #  On some systems, you can force the source files to be recompiled by
 #  entering (for example)
 #       make single FRC=FRC
 #
 #######################################################################
 
-SCATGEN = slatm1.o slaran.o slarnd.o
+SCATGEN = slatm1.o slatm7.o slaran.o slarnd.o
 
 SMATGEN = slatms.o slatme.o slatmr.o slatmt.o \
    slagge.o slagsy.o slakf2.o slarge.o slaror.o slarot.o slatm2.o \
-   slatm3.o slatm5.o slatm6.o slatm7.o slahilb.o
+   slatm3.o slatm5.o slatm6.o slahilb.o
 
 CMATGEN = clatms.o clatme.o clatmr.o clatmt.o \
    clagge.o claghe.o clagsy.o clakf2.o clarge.o claror.o clarot.o \
    clatm1.o clarnd.o clatm2.o clatm3.o clatm5.o clatm6.o clahilb.o
 
-DZATGEN = dlatm1.o dlaran.o dlarnd.o
+DZATGEN = dlatm1.o dlatm7.o dlaran.o dlarnd.o
 
 DMATGEN = dlatms.o dlatme.o dlatmr.o dlatmt.o \
    dlagge.o dlagsy.o dlakf2.o dlarge.o dlaror.o dlarot.o dlatm2.o \
-   dlatm3.o dlatm5.o dlatm6.o dlatm7.o dlahilb.o
+   dlatm3.o dlatm5.o dlatm6.o dlahilb.o
 
 ZMATGEN = zlatms.o zlatme.o zlatmr.o zlatmt.o \
    zlagge.o zlaghe.o zlagsy.o zlakf2.o zlarge.o zlaror.o zlarot.o \
@@ -59,23 +58,23 @@ ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN) \
 	$(DZATGEN)
 
 ../../$(TMGLIB): $(ALLOBJ)
-	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+	$(ARCH) $(ARCHFLAGS) $@ $^
 	$(RANLIB) $@
 
 single: $(SMATGEN) $(SCATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(SMATGEN) $(SCATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
 	$(RANLIB) ../../$(TMGLIB)
 
 complex: $(CMATGEN) $(SCATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(CMATGEN) $(SCATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
 	$(RANLIB) ../../$(TMGLIB)
 
 double: $(DMATGEN) $(DZATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(DMATGEN) $(DZATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
 	$(RANLIB) ../../$(TMGLIB)
 
 complex16: $(ZMATGEN) $(DZATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $(ZMATGEN) $(DZATGEN)
+	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
 	$(RANLIB) ../../$(TMGLIB)
 
 $(SCATGEN): $(FRC)
@@ -88,8 +87,11 @@ $(ZMATGEN): $(FRC)
 FRC:
 	@FRC=$(FRC)
 
-clean:
+clean: cleanobj #cleanlib
+cleanobj:
 	rm -f *.o
+cleanlib:
+	rm -f ../../$(TMGLIB)
 
 .f.o:
 	$(FORTRAN) $(OPTS) -c -o $@ $<

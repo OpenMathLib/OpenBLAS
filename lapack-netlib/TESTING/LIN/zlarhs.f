@@ -190,7 +190,7 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>          = 0: successful exit
-*>          < 0: if INFO = -k, the k-th argument had an illegal value
+*>          < 0: if INFO = -i, the i-th argument had an illegal value
 *> \endverbatim
 *
 *  Authors:
@@ -201,7 +201,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex16_lin
 *
@@ -209,10 +209,10 @@
       SUBROUTINE ZLARHS( PATH, XTYPE, UPLO, TRANS, M, N, KL, KU, NRHS,
      $                   A, LDA, X, LDX, B, LDB, ISEED, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS, UPLO, XTYPE

@@ -324,7 +324,7 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -359,9 +359,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV
+      INTEGER            ILAENV2STAGE
       DOUBLE PRECISION   DLAMCH, DLANSB
-      EXTERNAL           LSAME, DLAMCH, DLANSB, ILAENV
+      EXTERNAL           LSAME, DLAMCH, DLANSB, ILAENV2STAGE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DCOPY, DGEMV, DLACPY, DLASCL, DSCAL,
@@ -419,9 +419,12 @@
             LWMIN = 1
             WORK( 1 ) = LWMIN
          ELSE
-            IB    = ILAENV( 18, 'DSYTRD_SB2ST', JOBZ, N, KD, -1, -1 )
-            LHTRD = ILAENV( 19, 'DSYTRD_SB2ST', JOBZ, N, KD, IB, -1 )
-            LWTRD = ILAENV( 20, 'DSYTRD_SB2ST', JOBZ, N, KD, IB, -1 )
+            IB    = ILAENV2STAGE( 2, 'DSYTRD_SB2ST', JOBZ,
+     $                            N, KD, -1, -1 )
+            LHTRD = ILAENV2STAGE( 3, 'DSYTRD_SB2ST', JOBZ,
+     $                            N, KD, IB, -1 )
+            LWTRD = ILAENV2STAGE( 4, 'DSYTRD_SB2ST', JOBZ,
+     $                            N, KD, IB, -1 )
             LWMIN = 2*N + LHTRD + LWTRD
             WORK( 1 )  = LWMIN
          ENDIF

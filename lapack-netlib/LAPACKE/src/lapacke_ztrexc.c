@@ -43,14 +43,16 @@ lapack_int LAPACKE_ztrexc( int matrix_layout, char compq, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_lsame( compq, 'v' ) ) {
-        if( LAPACKE_zge_nancheck( matrix_layout, n, n, q, ldq ) ) {
-            return -6;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_lsame( compq, 'v' ) ) {
+            if( LAPACKE_zge_nancheck( matrix_layout, n, n, q, ldq ) ) {
+                return -6;
+            }
         }
-    }
-    if( LAPACKE_zge_nancheck( matrix_layout, n, n, t, ldt ) ) {
-        return -4;
+        if( LAPACKE_zge_nancheck( matrix_layout, n, n, t, ldt ) ) {
+            return -4;
+        }
     }
 #endif
     return LAPACKE_ztrexc_work( matrix_layout, compq, n, t, ldt, q, ldq, ifst,

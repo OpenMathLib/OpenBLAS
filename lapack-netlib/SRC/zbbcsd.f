@@ -190,7 +190,7 @@
 *>
 *> \param[in,out] V2T
 *> \verbatim
-*>          V2T is COMPLEX*16 array, dimenison (LDV2T,M-Q)
+*>          V2T is COMPLEX*16 array, dimension (LDV2T,M-Q)
 *>          On entry, an (M-Q)-by-(M-Q) matrix. On exit, V2T is
 *>          premultiplied by the conjugate transpose of the right
 *>          singular vector matrix common to [ B12 0 0 ; 0 -I 0 ] and
@@ -332,7 +332,7 @@
      $                   V2T, LDV2T, B11D, B11E, B12D, B12E, B21D, B21E,
      $                   B22D, B22E, RWORK, LRWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

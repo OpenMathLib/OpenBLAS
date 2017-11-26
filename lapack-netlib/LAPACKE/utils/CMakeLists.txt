@@ -1,4 +1,4 @@
-set(UTILS_OBJ
+set(UTILS
 lapacke_c_nancheck.c            lapacke_ctr_trans.c             lapacke_make_complex_float.c    lapacke_zgb_nancheck.c
 lapacke_cgb_nancheck.c          lapacke_d_nancheck.c            lapacke_s_nancheck.c            lapacke_zgb_trans.c
 lapacke_cgb_trans.c             lapacke_dgb_nancheck.c          lapacke_sgb_nancheck.c          lapacke_zge_nancheck.c

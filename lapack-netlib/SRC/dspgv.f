@@ -77,8 +77,7 @@
 *>
 *> \param[in,out] AP
 *> \verbatim
-*>          AP is DOUBLE PRECISION array, dimension
-*>                            (N*(N+1)/2)
+*>          AP is DOUBLE PRECISION array, dimension (N*(N+1)/2)
 *>          On entry, the upper or lower triangle of the symmetric matrix
 *>          A, packed columnwise in a linear array.  The j-th column of A
 *>          is stored in the array AP as follows:
@@ -153,7 +152,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup doubleOTHEReigen
 *
@@ -161,10 +160,10 @@
       SUBROUTINE DSPGV( ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK,
      $                  INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO

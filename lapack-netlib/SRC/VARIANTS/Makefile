@@ -17,8 +17,6 @@ include ../../make.inc
 #  1065-1081. http://dx.doi.org/10.1137/S0895479896297744
 #######################################################################
 
-VARIANTSDIR = LIB
-
 CHOLRL = cholesky/RL/cpotrf.o cholesky/RL/dpotrf.o cholesky/RL/spotrf.o cholesky/RL/zpotrf.o
 
 CHOLTOP = cholesky/TOP/cpotrf.o cholesky/TOP/dpotrf.o cholesky/TOP/spotrf.o cholesky/TOP/zpotrf.o
@@ -32,36 +30,37 @@ LUREC = lu/REC/cgetrf.o lu/REC/dgetrf.o lu/REC/sgetrf.o lu/REC/zgetrf.o
 QRLL = qr/LL/cgeqrf.o qr/LL/dgeqrf.o qr/LL/sgeqrf.o qr/LL/zgeqrf.o qr/LL/sceil.o
 
 
-all: cholrl choltop lucr lull lurec qrll
+all: cholrl.a choltop.a lucr.a lull.a lurec.a qrll.a
 
-cholrl: $(CHOLRL)
-	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/cholrl.a $(CHOLRL)
-	$(RANLIB) $(VARIANTSDIR)/cholrl.a
+cholrl.a: $(CHOLRL)
+	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(RANLIB) $@
 
-choltop: $(CHOLTOP)
-	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/choltop.a $(CHOLTOP)
-	$(RANLIB) $(VARIANTSDIR)/choltop.a
+choltop.a: $(CHOLTOP)
+	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(RANLIB) $@
 
-lucr: $(LUCR)
-	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/lucr.a $(LUCR)
-	$(RANLIB) $(VARIANTSDIR)/lucr.a
+lucr.a: $(LUCR)
+	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(RANLIB) $@
 
-lull: $(LULL)
-	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/lull.a $(LULL)
-	$(RANLIB) $(VARIANTSDIR)/lull.a
+lull.a: $(LULL)
+	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(RANLIB) $@
 
-lurec: $(LUREC)
-	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/lurec.a $(LUREC)
-	$(RANLIB) $(VARIANTSDIR)/lurec.a
+lurec.a: $(LUREC)
+	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(RANLIB) $@
 
-qrll: $(QRLL)
-	$(ARCH) $(ARCHFLAGS) $(VARIANTSDIR)/qrll.a $(QRLL)
-	$(RANLIB) $(VARIANTSDIR)/qrll.a
+qrll.a: $(QRLL)
+	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(RANLIB) $@
 
+clean: cleanobj cleanlib
+cleanobj:
+	rm -f $(CHOLRL) $(CHOLTOP) $(LUCR) $(LULL) $(LUREC) $(QRLL)
+cleanlib:
+	rm -f *.a
 
 .f.o:
 	$(FORTRAN) $(OPTS) -c -o $@ $<
-
-clean:
-	rm -f $(CHOLRL) $(CHOLTOP) $(LUCR) $(LULL) $(LUREC) $(QRLL) \
-	      $(VARIANTSDIR)/*.a

@@ -123,7 +123,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX array, dimension LWORK.
+*>          WORK is COMPLEX array, dimension (LWORK)
 *>          On exit, if INFO = 0, or if LWORK=-1, 
 *>          WORK(1) returns the size of LWORK.
 *> \endverbatim
@@ -132,7 +132,7 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK which should be calculated
-*           by a workspace query. LWORK = MAX(1, LWORK_QUERY)
+*>          by a workspace query. LWORK = MAX(1, LWORK_QUERY)
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array, and no error
@@ -158,7 +158,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complexHEcomputational
 *
@@ -222,7 +222,7 @@
 *>
 *>  where tau is a complex scalar, and v is a complex vector with
 *>  v(kd+1:i) = 0 and v(i+kd+1) = 1; v(i+kd+2:n) is stored on exit in
-*   A(i+kd+2:n,i), and tau in TAU(i).
+*>  A(i+kd+2:n,i), and tau in TAU(i).
 *>
 *>  The contents of A on exit are illustrated by the following examples
 *>  with n = 5:
@@ -245,10 +245,10 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -277,7 +277,7 @@
      $                   TPOS, WPOS, S2POS, S1POS
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, CHER2K, CHEMM, CGEMM,
+      EXTERNAL           XERBLA, CHER2K, CHEMM, CGEMM, CCOPY,
      $                   CLARFT, CGELQF, CGEQRF, CLASET
 *     ..
 *     .. Intrinsic Functions ..

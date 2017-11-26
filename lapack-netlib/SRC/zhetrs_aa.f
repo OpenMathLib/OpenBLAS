@@ -67,7 +67,7 @@
 *>          of the matrix B.  NRHS >= 0.
 *> \endverbatim
 *>
-*> \param[in,out] A
+*> \param[in] A
 *> \verbatim
 *>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          Details of factors computed by ZHETRF_AA.
@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex16HEcomputational
 *
@@ -130,10 +130,10 @@
       SUBROUTINE ZHETRS_AA( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
      $                      WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
       IMPLICIT NONE
 *
@@ -160,7 +160,7 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZGTSV, ZSWAP, ZTRSM, XERBLA
+      EXTERNAL           ZGTSV, ZSWAP, ZTRSM, ZLACGV, ZLACPY, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX

@@ -42,7 +42,7 @@ include ../../make.inc
 #  top-level make.inc
 #
 #  To remove the object files after the library is created, enter
-#       make clean
+#       make cleanobj
 #  To force the source files to be recompiled, enter, for example,
 #       make single FRC=FRC
 #
@@ -138,34 +138,33 @@ ALLOBJ = $(SBLAS1) $(SBLAS2) $(SBLAS3) $(DBLAS1) $(DBLAS2) $(DBLAS3) \
 	$(ZBLAS2) $(ZBLAS3) $(ALLBLAS)
 
 $(BLASLIB): $(ALLOBJ)
-	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+	$(ARCH) $(ARCHFLAGS) $@ $^
 	$(RANLIB) $@
 
 single: $(SBLAS1) $(ALLBLAS) $(SBLAS2) $(SBLAS3)
-	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $(SBLAS1) $(ALLBLAS) \
-	$(SBLAS2) $(SBLAS3)
+	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $^
 	$(RANLIB) $(BLASLIB)
 
 double: $(DBLAS1) $(ALLBLAS) $(DBLAS2) $(DBLAS3)
-	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $(DBLAS1) $(ALLBLAS) \
-	$(DBLAS2) $(DBLAS3)
+	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $^
 	$(RANLIB) $(BLASLIB)
 
 complex: $(CBLAS1) $(CB1AUX) $(ALLBLAS) $(CBLAS2) $(CBLAS3)
-	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $(CBLAS1) $(CB1AUX) \
-	$(ALLBLAS) $(CBLAS2) $(CBLAS3)
+	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $^
 	$(RANLIB) $(BLASLIB)
 
 complex16: $(ZBLAS1) $(ZB1AUX) $(ALLBLAS) $(ZBLAS2) $(ZBLAS3)
-	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $(ZBLAS1) $(ZB1AUX) \
-	$(ALLBLAS) $(ZBLAS2) $(ZBLAS3)
+	$(ARCH) $(ARCHFLAGS) $(BLASLIB) $^
 	$(RANLIB) $(BLASLIB)
 
 FRC:
 	@FRC=$(FRC)
 
-clean:
+clean: cleanobj cleanlib
+cleanobj:
 	rm -f *.o
+cleanlib:
+	#rm -f $(BLASLIB)  # May point to a system lib, e.g. -lblas
 
 .f.o:
 	$(FORTRAN) $(OPTS) -c -o $@ $<

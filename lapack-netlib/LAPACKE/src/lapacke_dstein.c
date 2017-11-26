@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dstein
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -46,15 +46,17 @@ lapack_int LAPACKE_dstein( int matrix_layout, lapack_int n, const double* d,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( n, d, 1 ) ) {
-        return -3;
-    }
-    if( LAPACKE_d_nancheck( n, e, 1 ) ) {
-        return -4;
-    }
-    if( LAPACKE_d_nancheck( n, w, 1 ) ) {
-        return -6;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( n, d, 1 ) ) {
+            return -3;
+        }
+        if( LAPACKE_d_nancheck( n-1, e, 1 ) ) {
+            return -4;
+        }
+        if( LAPACKE_d_nancheck( n, w, 1 ) ) {
+            return -6;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

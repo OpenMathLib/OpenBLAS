@@ -49,18 +49,20 @@ lapack_int LAPACKE_ctrsna( int matrix_layout, char job, char howmny,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_cge_nancheck( matrix_layout, n, n, t, ldt ) ) {
-        return -6;
-    }
-    if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'e' ) ) {
-        if( LAPACKE_cge_nancheck( matrix_layout, n, mm, vl, ldvl ) ) {
-            return -8;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_cge_nancheck( matrix_layout, n, n, t, ldt ) ) {
+            return -6;
         }
-    }
-    if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'e' ) ) {
-        if( LAPACKE_cge_nancheck( matrix_layout, n, mm, vr, ldvr ) ) {
-            return -10;
+        if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'e' ) ) {
+            if( LAPACKE_cge_nancheck( matrix_layout, n, mm, vl, ldvl ) ) {
+                return -8;
+            }
+        }
+        if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'e' ) ) {
+            if( LAPACKE_cge_nancheck( matrix_layout, n, mm, vr, ldvr ) ) {
+                return -10;
+            }
         }
     }
 #endif

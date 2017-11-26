@@ -44,18 +44,20 @@ lapack_int LAPACKE_ztfsm( int matrix_layout, char transr, char side, char uplo,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( IS_Z_NONZERO(alpha) ) {
-        if( LAPACKE_ztf_nancheck( matrix_layout, transr, uplo, diag, n, a ) ) {
-            return -10;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( IS_Z_NONZERO(alpha) ) {
+            if( LAPACKE_ztf_nancheck( matrix_layout, transr, uplo, diag, n, a ) ) {
+                return -10;
+            }
         }
-    }
-    if( LAPACKE_z_nancheck( 1, &alpha, 1 ) ) {
-        return -9;
-    }
-    if( IS_Z_NONZERO(alpha) ) {
-        if( LAPACKE_zge_nancheck( matrix_layout, m, n, b, ldb ) ) {
-            return -11;
+        if( LAPACKE_z_nancheck( 1, &alpha, 1 ) ) {
+            return -9;
+        }
+        if( IS_Z_NONZERO(alpha) ) {
+            if( LAPACKE_zge_nancheck( matrix_layout, m, n, b, ldb ) ) {
+                return -11;
+            }
         }
     }
 #endif

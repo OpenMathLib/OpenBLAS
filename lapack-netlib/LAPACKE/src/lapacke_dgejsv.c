@@ -80,11 +80,13 @@ lapack_int LAPACKE_dgejsv( int matrix_layout, char joba, char jobu, char jobv,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    nu = LAPACKE_lsame( jobu, 'n' ) ? 1 : m;
-    nv = LAPACKE_lsame( jobv, 'n' ) ? 1 : n;
-    if( LAPACKE_dge_nancheck( matrix_layout, m, n, a, lda ) ) {
-        return -10;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        nu = LAPACKE_lsame( jobu, 'n' ) ? 1 : m;
+        nv = LAPACKE_lsame( jobv, 'n' ) ? 1 : n;
+        if( LAPACKE_dge_nancheck( matrix_layout, m, n, a, lda ) ) {
+            return -10;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

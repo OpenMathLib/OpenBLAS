@@ -49,21 +49,23 @@ lapack_int LAPACKE_zposvx( int matrix_layout, char fact, char uplo, lapack_int n
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zpo_nancheck( matrix_layout, uplo, n, a, lda ) ) {
-        return -6;
-    }
-    if( LAPACKE_lsame( fact, 'f' ) ) {
-        if( LAPACKE_zpo_nancheck( matrix_layout, uplo, n, af, ldaf ) ) {
-            return -8;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_zpo_nancheck( matrix_layout, uplo, n, a, lda ) ) {
+            return -6;
         }
-    }
-    if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -12;
-    }
-    if( LAPACKE_lsame( fact, 'f' ) && LAPACKE_lsame( *equed, 'y' ) ) {
-        if( LAPACKE_d_nancheck( n, s, 1 ) ) {
-            return -11;
+        if( LAPACKE_lsame( fact, 'f' ) ) {
+            if( LAPACKE_zpo_nancheck( matrix_layout, uplo, n, af, ldaf ) ) {
+                return -8;
+            }
+        }
+        if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -12;
+        }
+        if( LAPACKE_lsame( fact, 'f' ) && LAPACKE_lsame( *equed, 'y' ) ) {
+            if( LAPACKE_d_nancheck( n, s, 1 ) ) {
+                return -11;
+            }
         }
     }
 #endif

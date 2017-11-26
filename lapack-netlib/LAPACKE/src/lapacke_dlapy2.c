@@ -36,12 +36,14 @@
 double LAPACKE_dlapy2( double x, double y )
 {
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( 1, &x, 1 ) ) {
-        return -1;
-    }
-    if( LAPACKE_d_nancheck( 1, &y, 1 ) ) {
-        return -2;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( 1, &x, 1 ) ) {
+            return -1;
+        }
+        if( LAPACKE_d_nancheck( 1, &y, 1 ) ) {
+            return -2;
+        }
     }
 #endif
     return LAPACKE_dlapy2_work( x, y );

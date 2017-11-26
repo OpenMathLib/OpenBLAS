@@ -32,7 +32,7 @@
 *
 *
 *> \par Purpose:
-*> =============
+*  =============
 *>
 *>\verbatim
 *>
@@ -202,7 +202,7 @@
       SUBROUTINE CUNBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2012
@@ -229,7 +229,7 @@
       LOGICAL            LQUERY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, CLARFGP, CUNBDB5, CSROT, XERBLA
+      EXTERNAL           CLARF, CLARFGP, CUNBDB5, CSROT, CLACGV, XERBLA
 *     ..
 *     .. External Functions ..
       REAL               SCNRM2

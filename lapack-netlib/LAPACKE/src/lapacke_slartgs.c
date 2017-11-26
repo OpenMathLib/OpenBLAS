@@ -37,15 +37,17 @@ lapack_int LAPACKE_slartgs( float x, float y, float sigma, float* cs,
                             float* sn )
 {
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_s_nancheck( 1, &sigma, 1 ) ) {
-        return -3;
-    }
-    if( LAPACKE_s_nancheck( 1, &x, 1 ) ) {
-        return -1;
-    }
-    if( LAPACKE_s_nancheck( 1, &y, 1 ) ) {
-        return -2;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_s_nancheck( 1, &sigma, 1 ) ) {
+            return -3;
+        }
+        if( LAPACKE_s_nancheck( 1, &x, 1 ) ) {
+            return -1;
+        }
+        if( LAPACKE_s_nancheck( 1, &y, 1 ) ) {
+            return -2;
+        }
     }
 #endif
     return LAPACKE_slartgs_work( x, y, sigma, cs, sn );

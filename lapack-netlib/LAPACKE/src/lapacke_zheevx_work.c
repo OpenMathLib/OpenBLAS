@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function zheevx
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -53,8 +53,9 @@ lapack_int LAPACKE_zheevx_work( int matrix_layout, char jobz, char range,
             info = info - 1;
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int ncols_z = ( LAPACKE_lsame( range, 'a' ) ||
-                             LAPACKE_lsame( range, 'v' ) ) ? n :
+        lapack_int ncols_z = ( !LAPACKE_lsame( jobz, 'v' ) ) ? 1 :
+                             ( LAPACKE_lsame( range, 'a' ) ||
+                               LAPACKE_lsame( range, 'v' ) ) ? n :
                              ( LAPACKE_lsame( range, 'i' ) ? (iu-il+1) : 1);
         lapack_int lda_t = MAX(1,n);
         lapack_int ldz_t = MAX(1,n);

@@ -126,7 +126,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex_matgen
 *
@@ -134,10 +134,10 @@
       SUBROUTINE CLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
      $     INFO, PATH)
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -154,7 +154,7 @@
       INTEGER I, J
       COMPLEX TMP
       CHARACTER*2 C2
-
+*     ..
 *     .. Parameters ..
 *     NMAX_EXACT   the largest dimension where the generated data is
 *                  exact.
@@ -163,7 +163,7 @@
 *     ??? complex uses how many bits ???
       INTEGER NMAX_EXACT, NMAX_APPROX, SIZE_D
       PARAMETER (NMAX_EXACT = 6, NMAX_APPROX = 11, SIZE_D = 8)
-
+*
 *     d's are generated from random permuation of those eight elements.
       COMPLEX D1(8), D2(8), INVD1(8), INVD2(8)
       DATA D1 /(-1,0),(0,1),(-1,-1),(0,-1),(1,0),(-1,1),(1,1),(1,-1)/
@@ -173,7 +173,9 @@
      $     (-.5,-.5),(.5,-.5),(.5,.5)/
       DATA INVD2 /(-1,0),(0,1),(-.5,-.5),(0,-1),(1,0),
      $     (-.5,.5),(.5,.5),(.5,-.5)/
-
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
 *     ..
 *     .. External Functions
       EXTERNAL CLASET, LSAMEN
@@ -204,7 +206,7 @@
       IF (N .GT. NMAX_EXACT) THEN
          INFO = 1
       END IF
-
+*
 *     Compute M = the LCM of the integers [1, 2*N-1].  The largest
 *     reasonable N is small enough that integers suffice (up to N = 11).
       M = 1
@@ -219,7 +221,7 @@
          END DO
          M = (M / TI) * I
       END DO
-
+*
 *     Generate the scaled Hilbert matrix in A
 *     If we are testing SY routines, take
 *          D1_i = D2_i, else, D1_i = D2_i*
@@ -238,12 +240,12 @@
             END DO
          END DO
       END IF
-
+*
 *     Generate matrix B as simply the first NRHS columns of M * the
 *     identity.
       TMP = REAL(M)
       CALL CLASET('Full', N, NRHS, (0.0,0.0), TMP, B, LDB)
-
+*
 *     Generate the true solutions in X.  Because B = the first NRHS
 *     columns of M*I, the true solutions are just the first NRHS columns
 *     of the inverse Hilbert matrix.

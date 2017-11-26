@@ -48,18 +48,20 @@ lapack_int LAPACKE_zpprfs( int matrix_layout, char uplo, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zpp_nancheck( n, afp ) ) {
-        return -6;
-    }
-    if( LAPACKE_zpp_nancheck( n, ap ) ) {
-        return -5;
-    }
-    if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -7;
-    }
-    if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
-        return -9;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_zpp_nancheck( n, afp ) ) {
+            return -6;
+        }
+        if( LAPACKE_zpp_nancheck( n, ap ) ) {
+            return -5;
+        }
+        if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -7;
+        }
+        if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
+            return -9;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

@@ -85,7 +85,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is DOUBLE PRECISION array of DIMENSION ( LDA, n ).
+*>          A is DOUBLE PRECISION array, dimension ( LDA, N )
 *>           Before entry, the leading ( kl + ku + 1 ) by n part of the
 *>           array A must contain the matrix of coefficients, supplied
 *>           column by column, with the leading diagonal of the matrix in
@@ -116,7 +116,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is DOUBLE PRECISION array of DIMENSION at least
+*>          X is DOUBLE PRECISION array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ) when TRANS = 'N' or 'n'
 *>           and at least
 *>           ( 1 + ( m - 1 )*abs( INCX ) ) otherwise.
@@ -140,7 +140,7 @@
 *>
 *> \param[in,out] Y
 *> \verbatim
-*>          Y is DOUBLE PRECISION array of DIMENSION at least
+*>          Y is DOUBLE PRECISION array, dimension at least
 *>           ( 1 + ( m - 1 )*abs( INCY ) ) when TRANS = 'N' or 'n'
 *>           and at least
 *>           ( 1 + ( n - 1 )*abs( INCY ) ) otherwise.

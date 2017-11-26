@@ -116,7 +116,7 @@
 *>
 *> \param[in] LDH
 *> \verbatim
-*>          LDH is integer
+*>          LDH is INTEGER
 *>          Leading dimension of H just as declared in the calling
 *>          subroutine.  N .LE. LDH
 *> \endverbatim
@@ -144,14 +144,14 @@
 *>
 *> \param[in] LDZ
 *> \verbatim
-*>          LDZ is integer
+*>          LDZ is INTEGER
 *>          The leading dimension of Z just as declared in the
 *>          calling subroutine.  1 .LE. LDZ.
 *> \endverbatim
 *>
 *> \param[out] NS
 *> \verbatim
-*>          NS is integer
+*>          NS is INTEGER
 *>          The number of unconverged (ie approximate) eigenvalues
 *>          returned in SR and SI that may be used as shifts by the
 *>          calling subroutine.
@@ -159,14 +159,14 @@
 *>
 *> \param[out] ND
 *> \verbatim
-*>          ND is integer
+*>          ND is INTEGER
 *>          The number of converged eigenvalues uncovered by this
 *>          subroutine.
 *> \endverbatim
 *>
 *> \param[out] SH
 *> \verbatim
-*>          SH is COMPLEX*16 array, dimension KBOT
+*>          SH is COMPLEX*16 array, dimension (KBOT)
 *>          On output, approximate eigenvalues that may
 *>          be used for shifts are stored in SH(KBOT-ND-NS+1)
 *>          through SR(KBOT-ND).  Converged eigenvalues are
@@ -181,14 +181,14 @@
 *>
 *> \param[in] LDV
 *> \verbatim
-*>          LDV is integer scalar
+*>          LDV is INTEGER
 *>          The leading dimension of V just as declared in the
 *>          calling subroutine.  NW .LE. LDV
 *> \endverbatim
 *>
 *> \param[in] NH
 *> \verbatim
-*>          NH is integer scalar
+*>          NH is INTEGER
 *>          The number of columns of T.  NH.GE.NW.
 *> \endverbatim
 *>
@@ -199,14 +199,14 @@
 *>
 *> \param[in] LDT
 *> \verbatim
-*>          LDT is integer
+*>          LDT is INTEGER
 *>          The leading dimension of T just as declared in the
 *>          calling subroutine.  NW .LE. LDT
 *> \endverbatim
 *>
 *> \param[in] NV
 *> \verbatim
-*>          NV is integer
+*>          NV is INTEGER
 *>          The number of rows of work array WV available for
 *>          workspace.  NV.GE.NW.
 *> \endverbatim
@@ -218,21 +218,21 @@
 *>
 *> \param[in] LDWV
 *> \verbatim
-*>          LDWV is integer
+*>          LDWV is INTEGER
 *>          The leading dimension of W just as declared in the
 *>          calling subroutine.  NW .LE. LDV
 *> \endverbatim
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension LWORK.
+*>          WORK is COMPLEX*16 array, dimension (LWORK)
 *>          On exit, WORK(1) is set to an estimate of the optimal value
 *>          of LWORK for the given values of N, NW, KTOP and KBOT.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
-*>          LWORK is integer
+*>          LWORK is INTEGER
 *>          The dimension of the work array WORK.  LWORK = 2*NW
 *>          suffices, but greater efficiency may result from larger
 *>          values of LWORK.
@@ -267,7 +267,7 @@
      $                   IHIZ, Z, LDZ, NS, ND, SH, V, LDV, NH, T, LDT,
      $                   NV, WV, LDWV, WORK, LWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

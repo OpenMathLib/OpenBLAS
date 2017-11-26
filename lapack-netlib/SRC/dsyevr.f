@@ -88,7 +88,7 @@
 *>
 *> Note 1 : DSYEVR calls DSTEMR when the full spectrum is requested
 *> on machines which conform to the ieee-754 floating point standard.
-*> DSYEVR calls DSTEBZ and SSTEIN on non-ieee machines and
+*> DSYEVR calls DSTEBZ and DSTEIN on non-ieee machines and
 *> when partial spectrum requests are made.
 *>
 *> Normal execution of DSTEMR may create NaNs and infinities and
@@ -334,7 +334,7 @@
      $                   ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK,
      $                   IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

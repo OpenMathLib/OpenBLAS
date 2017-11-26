@@ -1,27 +1,31 @@
 include ../make.inc
 
-all:
-	cd include && cp cblas_mangling_with_flags.h.in cblas_mangling.h
-	cd src && $(MAKE) all
+all: cblas
 
+cblas: include/cblas_mangling.h
+	$(MAKE) -C src
 
-clean: cleanlib
+include/cblas_mangling.h: include/cblas_mangling_with_flags.h.in
+	cp $< $@
 
+cblas_testing: cblas
+	$(MAKE) -C testing run
+
+cblas_example: cblas
+	$(MAKE) -C examples
+
+clean:
+	$(MAKE) -C src clean
+	$(MAKE) -C testing clean
+	$(MAKE) -C examples clean
+cleanobj:
+	$(MAKE) -C src cleanobj
+	$(MAKE) -C testing cleanobj
+	$(MAKE) -C examples cleanobj
 cleanlib:
-	cd src && $(MAKE) clean
-
+	$(MAKE) -C src cleanlib
 cleanexe:
-	cd testing && $(MAKE) cleanexe
-
-cleanall: clean cleanexe
-	rm -f $(CBLASLIB)
-	cd examples && rm -f *.o cblas_ex1 cblas_ex2
-
-cblas_testing:
-	cd testing && $(MAKE) all
-
-runtst:
-	cd testing && $(MAKE) run
-
-example: all
-	cd examples && $(MAKE) all
+	$(MAKE) -C testing cleanexe
+	$(MAKE) -C examples cleanexe
+cleantest:
+	$(MAKE) -C testing cleantest

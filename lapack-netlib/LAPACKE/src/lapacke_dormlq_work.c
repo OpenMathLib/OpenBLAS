@@ -51,8 +51,8 @@ lapack_int LAPACKE_dormlq_work( int matrix_layout, char side, char trans,
         lapack_int r = LAPACKE_lsame( side, 'l' ) ? m : n;
         lapack_int lda_t = MAX(1,k);
         lapack_int ldc_t = MAX(1,m);
-	double *a_t = NULL;
-	double *c_t = NULL;
+        double *a_t = NULL;
+        double *c_t = NULL;
         /* Check leading dimension(s) */
         if( lda < r ) {
             info = -8;

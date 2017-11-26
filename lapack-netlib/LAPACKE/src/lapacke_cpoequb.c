@@ -42,9 +42,11 @@ lapack_int LAPACKE_cpoequb( int matrix_layout, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_cge_nancheck( matrix_layout, n, n, a, lda ) ) {
-        return -3;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_cge_nancheck( matrix_layout, n, n, a, lda ) ) {
+            return -3;
+        }
     }
 #endif
     return LAPACKE_cpoequb_work( matrix_layout, n, a, lda, s, scond, amax );

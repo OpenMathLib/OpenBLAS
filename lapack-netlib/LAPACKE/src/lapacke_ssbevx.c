@@ -48,21 +48,23 @@ lapack_int LAPACKE_ssbevx( int matrix_layout, char jobz, char range, char uplo,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_ssb_nancheck( matrix_layout, uplo, n, kd, ab, ldab ) ) {
-        return -7;
-    }
-    if( LAPACKE_s_nancheck( 1, &abstol, 1 ) ) {
-        return -15;
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_s_nancheck( 1, &vl, 1 ) ) {
-            return -11;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_ssb_nancheck( matrix_layout, uplo, n, kd, ab, ldab ) ) {
+            return -7;
         }
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_s_nancheck( 1, &vu, 1 ) ) {
-            return -12;
+        if( LAPACKE_s_nancheck( 1, &abstol, 1 ) ) {
+            return -15;
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_s_nancheck( 1, &vl, 1 ) ) {
+                return -11;
+            }
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_s_nancheck( 1, &vu, 1 ) ) {
+                return -12;
+            }
         }
     }
 #endif

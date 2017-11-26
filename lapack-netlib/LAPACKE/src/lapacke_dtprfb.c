@@ -49,30 +49,32 @@ lapack_int LAPACKE_dtprfb( int matrix_layout, char side, char trans, char direct
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_lsame( storev, 'C' ) ) {
-        ncols_v = k;
-        nrows_v = LAPACKE_lsame( side, 'L' ) ? m :
-                             ( LAPACKE_lsame( side, 'R' ) ? n : 0 );
-    } else if( LAPACKE_lsame( storev, 'R' ) ) {
-        ncols_v = LAPACKE_lsame( side, 'L' ) ? m :
-                             ( LAPACKE_lsame( side, 'R' ) ? n : 0 );
-        nrows_v = k;
-    } else {
-        ncols_v = 0;
-        nrows_v = 0;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, k, m, a, lda ) ) {
-        return -14;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, m, n, b, ldb ) ) {
-        return -16;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, k, k, t, ldt ) ) {
-        return -12;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, nrows_v, ncols_v, v, ldv ) ) {
-        return -10;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_lsame( storev, 'C' ) ) {
+            ncols_v = k;
+            nrows_v = LAPACKE_lsame( side, 'L' ) ? m :
+                                 ( LAPACKE_lsame( side, 'R' ) ? n : 0 );
+        } else if( LAPACKE_lsame( storev, 'R' ) ) {
+            ncols_v = LAPACKE_lsame( side, 'L' ) ? m :
+                                 ( LAPACKE_lsame( side, 'R' ) ? n : 0 );
+            nrows_v = k;
+        } else {
+            ncols_v = 0;
+            nrows_v = 0;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, k, m, a, lda ) ) {
+            return -14;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, m, n, b, ldb ) ) {
+            return -16;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, k, k, t, ldt ) ) {
+            return -12;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, nrows_v, ncols_v, v, ldv ) ) {
+            return -10;
+        }
     }
 #endif
     if (side=='l' ||  side=='L') {

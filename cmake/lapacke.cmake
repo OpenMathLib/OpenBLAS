@@ -46,6 +46,8 @@ set(CSRC
   lapacke_cgehrd_work.c
   lapacke_cgejsv.c
   lapacke_cgejsv_work.c
+  lapacke_cgelq.c
+  lapacke_cgelq_work.c
   lapacke_cgelq2.c
   lapacke_cgelq2_work.c
   lapacke_cgelqf.c
@@ -60,12 +62,16 @@ set(CSRC
   lapacke_cgelsy_work.c
   lapacke_cgemqr.c
   lapacke_cgemqr_work.c
+  lapacke_cgemlq.c
+  lapacke_cgemlq_work.c
   lapacke_cgemqrt.c
   lapacke_cgemqrt_work.c
   lapacke_cgeqlf.c
   lapacke_cgeqlf_work.c
   lapacke_cgeqp3.c
   lapacke_cgeqp3_work.c
+  lapacke_cgeqr.c
+  lapacke_cgeqr_work.c
   lapacke_cgeqr2.c
   lapacke_cgeqr2_work.c
   lapacke_cgeqrf.c
@@ -210,6 +216,8 @@ set(CSRC
   lapacke_chesv_work.c
   lapacke_chesv_aa.c
   lapacke_chesv_aa_work.c
+  lapacke_chesv_aa_2stage.c
+  lapacke_chesv_aa_2stage_work.c
   lapacke_chesv_rk.c
   lapacke_chesv_rk_work.c
   lapacke_chesvx.c
@@ -224,6 +232,8 @@ set(CSRC
   lapacke_chetrf_rook_work.c
   lapacke_chetrf_aa.c
   lapacke_chetrf_aa_work.c
+  lapacke_chetrf_aa_2stage.c
+  lapacke_chetrf_aa_2stage_work.c
   lapacke_chetrf_rk.c
   lapacke_chetrf_rk_work.c
   lapacke_chetri.c
@@ -242,6 +252,9 @@ set(CSRC
   lapacke_chetrs_rook_work.c
   lapacke_chetrs_aa.c
   lapacke_chetrs_aa_work.c
+  lapacke_chetrs_aa_2stage.c
+  lapacke_chetrs_aa_2stage_work.c
+  lapacke_chetrf_rk.c
   lapacke_chetrs_3.c
   lapacke_chetrs_3_work.c
   lapacke_chfrk.c
@@ -290,6 +303,11 @@ set(CSRC
   lapacke_clacp2_work.c
   lapacke_clacpy.c
   lapacke_clacpy_work.c
+  lapacke_clacrm.c
+  lapacke_clacrm_work.c
+  lapacke_clarcm.c
+  lapacke_clarcm_work.c
+  lapacke_clacn2.c
   lapacke_clag2z.c
   lapacke_clag2z_work.c
   lapacke_clange.c
@@ -318,6 +336,8 @@ set(CSRC
   lapacke_clascl_work.c
   lapacke_claset.c
   lapacke_claset_work.c
+  lapacke_classq.c
+  lapacke_classq_work.c
   lapacke_claswp.c
   lapacke_claswp_work.c
   lapacke_clauum.c
@@ -436,6 +456,8 @@ set(CSRC
   lapacke_csysv_work.c
   lapacke_csysv_aa.c
   lapacke_csysv_aa_work.c
+  lapacke_csysv_aa_2stage.c
+  lapacke_csysv_aa_2stage_work.c
   lapacke_csysv_rk.c
   lapacke_csysv_rk_work.c
   lapacke_csysvx.c
@@ -448,6 +470,8 @@ set(CSRC
   lapacke_csytrf_rook_work.c
   lapacke_csytrf_aa.c
   lapacke_csytrf_aa_work.c
+  lapacke_csytrf_aa_2stage.c
+  lapacke_csytrf_aa_2stage_work.c
   lapacke_csytrf_rk.c
   lapacke_csytrf_rk_work.c
   lapacke_csytri.c
@@ -466,6 +490,8 @@ set(CSRC
   lapacke_csytrs_rook_work.c
   lapacke_csytrs_aa.c
   lapacke_csytrs_aa_work.c
+  lapacke_csytrs_aa_2stage.c
+  lapacke_csytrs_aa_2stage_work.c
   lapacke_csytrs_3.c
   lapacke_csytrs_3_work.c
   lapacke_ctbcon.c
@@ -633,6 +659,8 @@ set(DSRC
   lapacke_dgehrd_work.c
   lapacke_dgejsv.c
   lapacke_dgejsv_work.c
+  lapacke_dgelq.c
+  lapacke_dgelq_work.c
   lapacke_dgelq2.c
   lapacke_dgelq2_work.c
   lapacke_dgelqf.c
@@ -645,6 +673,8 @@ set(DSRC
   lapacke_dgelss_work.c
   lapacke_dgelsy.c
   lapacke_dgelsy_work.c
+  lapacke_dgemlq.c
+  lapacke_dgemlq_work.c
   lapacke_dgemqr.c
   lapacke_dgemqr_work.c
   lapacke_dgemqrt.c
@@ -653,6 +683,8 @@ set(DSRC
   lapacke_dgeqlf_work.c
   lapacke_dgeqp3.c
   lapacke_dgeqp3_work.c
+  lapacke_dgeqr.c
+  lapacke_dgeqr_work.c
   lapacke_dgeqr2.c
   lapacke_dgeqr2_work.c
   lapacke_dgeqrf.c
@@ -785,6 +817,9 @@ set(DSRC
   lapacke_dlaset_work.c
   lapacke_dlasrt.c
   lapacke_dlasrt_work.c
+  lapacke_dlassq.c
+  lapacke_dlassq_work.c
+  lapacke_dlaswp.c
   lapacke_dlaswp.c
   lapacke_dlaswp_work.c
   lapacke_dlauum.c
@@ -1025,6 +1060,8 @@ set(DSRC
   lapacke_dsysv_work.c
   lapacke_dsysv_aa.c
   lapacke_dsysv_aa_work.c
+  lapacke_dsysv_aa_2stage.c
+  lapacke_dsysv_aa_2stage_work.c
   lapacke_dsysv_rk.c
   lapacke_dsysv_rk_work.c
   lapacke_dsysvx.c
@@ -1039,6 +1076,8 @@ set(DSRC
   lapacke_dsytrf_rook_work.c
   lapacke_dsytrf_aa.c
   lapacke_dsytrf_aa_work.c
+  lapacke_dsytrf_aa_2stage.c
+  lapacke_dsytrf_aa_2stage_work.c
   lapacke_dsytrf_rk.c
   lapacke_dsytrf_rk_work.c
   lapacke_dsytri.c
@@ -1055,6 +1094,8 @@ set(DSRC
   lapacke_dsytrs2_work.c
   lapacke_dsytrs_aa.c
   lapacke_dsytrs_aa_work.c
+  lapacke_dsytrs_aa_2stage.c
+  lapacke_dsytrs_aa_2stage_work.c
   lapacke_dsytrs_3.c
   lapacke_dsytrs_3_work.c
   lapacke_dsytrs_work.c
@@ -1184,6 +1225,8 @@ set(SSRC
   lapacke_sgehrd_work.c
   lapacke_sgejsv.c
   lapacke_sgejsv_work.c
+  lapacke_sgelq.c
+  lapacke_sgelq_work.c
   lapacke_sgelq2.c
   lapacke_sgelq2_work.c
   lapacke_sgelqf.c
@@ -1196,6 +1239,8 @@ set(SSRC
   lapacke_sgelss_work.c
   lapacke_sgelsy.c
   lapacke_sgelsy_work.c
+  lapacke_sgemlq.c
+  lapacke_sgemlq_work.c
   lapacke_sgemqr.c
   lapacke_sgemqr_work.c
   lapacke_sgemqrt.c
@@ -1204,6 +1249,8 @@ set(SSRC
   lapacke_sgeqlf_work.c
   lapacke_sgeqp3.c
   lapacke_sgeqp3_work.c
+  lapacke_sgeqr.c
+  lapacke_sgeqr_work.c
   lapacke_sgeqr2.c
   lapacke_sgeqr2_work.c
   lapacke_sgeqrf.c
@@ -1336,6 +1383,8 @@ set(SSRC
   lapacke_slaset_work.c
   lapacke_slasrt.c
   lapacke_slasrt_work.c
+  lapacke_slassq.c
+  lapacke_slassq_work.c
   lapacke_slaswp.c
   lapacke_slaswp_work.c
   lapacke_slauum.c
@@ -1572,6 +1621,8 @@ set(SSRC
   lapacke_ssysv_work.c
   lapacke_ssysv_aa.c
   lapacke_ssysv_aa_work.c
+  lapacke_ssysv_aa_2stage.c
+  lapacke_ssysv_aa_2stage_work.c
   lapacke_ssysv_rk.c
   lapacke_ssysv_rk_work.c
   lapacke_ssysvx.c
@@ -1586,6 +1637,9 @@ set(SSRC
   lapacke_ssytrf_rook_work.c
   lapacke_ssytrf_aa.c
   lapacke_ssytrf_aa_work.c
+  lapacke_ssytrf_aa_2stage.c
+  lapacke_ssytrf_aa_2stage_work.c
+  lapacke_ssytrf_rook.c
   lapacke_ssytrf_rk.c
   lapacke_ssytrf_rk_work.c
   lapacke_ssytri.c
@@ -1602,6 +1656,8 @@ set(SSRC
   lapacke_ssytrs2_work.c
   lapacke_ssytrs_aa.c
   lapacke_ssytrs_aa_work.c
+  lapacke_ssytrs_aa_2stage.c
+  lapacke_ssytrs_aa_2stage_work.c
   lapacke_ssytrs_3.c
   lapacke_ssytrs_3_work.c
   lapacke_ssytrs_work.c
@@ -1729,6 +1785,8 @@ set(ZSRC
   lapacke_zgehrd_work.c
   lapacke_zgejsv.c
   lapacke_zgejsv_work.c
+  lapacke_zgelq.c
+  lapacke_zgelq_work.c
   lapacke_zgelq2.c
   lapacke_zgelq2_work.c
   lapacke_zgelqf.c
@@ -1741,6 +1799,8 @@ set(ZSRC
   lapacke_zgelss_work.c
   lapacke_zgelsy.c
   lapacke_zgelsy_work.c
+  lapacke_zgemlq.c
+  lapacke_zgemlq_work.c
   lapacke_zgemqr.c
   lapacke_zgemqr_work.c
   lapacke_zgemqrt.c
@@ -1749,6 +1809,8 @@ set(ZSRC
   lapacke_zgeqlf_work.c
   lapacke_zgeqp3.c
   lapacke_zgeqp3_work.c
+  lapacke_zgeqr.c
+  lapacke_zgeqr_work.c
   lapacke_zgeqr2.c
   lapacke_zgeqr2_work.c
   lapacke_zgeqrf.c
@@ -1893,6 +1955,8 @@ set(ZSRC
   lapacke_zhesv_work.c
   lapacke_zhesv_aa.c
   lapacke_zhesv_aa_work.c
+  lapacke_zhesv_aa_2stage.c
+  lapacke_zhesv_aa_2stage_work.c
   lapacke_zhesv_rk.c
   lapacke_zhesv_rk_work.c
   lapacke_zhesvx.c
@@ -1907,6 +1971,8 @@ set(ZSRC
   lapacke_zhetrf_rook_work.c
   lapacke_zhetrf_aa.c
   lapacke_zhetrf_aa_work.c
+  lapacke_zhetrf_aa_2stage.c
+  lapacke_zhetrf_aa_2stage_work.c
   lapacke_zhetrf_rk.c
   lapacke_zhetrf_rk_work.c
   lapacke_zhetri.c
@@ -1924,6 +1990,8 @@ set(ZSRC
   lapacke_zhetrs_work.c
   lapacke_zhetrs_aa.c
   lapacke_zhetrs_aa_work.c
+  lapacke_zhetrs_aa_2stage.c
+  lapacke_zhetrs_aa_2stage_work.c
   lapacke_zhetrs_3.c
   lapacke_zhetrs_3_work.c
   lapacke_zhetrs_rook_work.c
@@ -1973,6 +2041,8 @@ set(ZSRC
   lapacke_zlacp2_work.c
   lapacke_zlacpy.c
   lapacke_zlacpy_work.c
+  lapacke_zlacrm.c
+  lapacke_zlacrm_work.c
   lapacke_zlag2c.c
   lapacke_zlag2c_work.c
   lapacke_zlange.c
@@ -1987,6 +2057,8 @@ set(ZSRC
   lapacke_zlapmr_work.c
   lapacke_zlapmt.c
   lapacke_zlapmt_work.c
+  lapacke_zlarcm.c
+  lapacke_zlarcm_work.c
   lapacke_zlarfb.c
   lapacke_zlarfb_work.c
   lapacke_zlarfg.c
@@ -2001,6 +2073,8 @@ set(ZSRC
   lapacke_zlascl_work.c
   lapacke_zlaset.c
   lapacke_zlaset_work.c
+  lapacke_zlassq.c
+  lapacke_zlassq_work.c
   lapacke_zlaswp.c
   lapacke_zlaswp_work.c
   lapacke_zlauum.c
@@ -2119,6 +2193,8 @@ set(ZSRC
   lapacke_zsysv_work.c
   lapacke_zsysv_aa.c
   lapacke_zsysv_aa_work.c
+  lapacke_zsysv_aa_2stage.c
+  lapacke_zsysv_aa_2stage_work.c
   lapacke_zsysv_rk.c
   lapacke_zsysv_rk_work.c
   lapacke_zsysvx.c
@@ -2131,6 +2207,8 @@ set(ZSRC
   lapacke_zsytrf_rook_work.c
   lapacke_zsytrf_aa.c
   lapacke_zsytrf_aa_work.c
+  lapacke_zsytrf_aa_2stage.c
+  lapacke_zsytrf_aa_2stage_work.c
   lapacke_zsytrf_rk.c
   lapacke_zsytrf_rk_work.c
   lapacke_zsytri.c
@@ -2149,6 +2227,8 @@ set(ZSRC
   lapacke_zsytrs_rook_work.c
   lapacke_zsytrs_aa.c
   lapacke_zsytrs_aa_work.c
+  lapacke_zsytrs_aa_2stage.c
+  lapacke_zsytrs_aa_2stage_work.c
   lapacke_zsytrs_3.c
   lapacke_zsytrs_3_work.c
   lapacke_ztbcon.c
@@ -2314,6 +2394,7 @@ set(MATGEN
   lapacke_slagsy_work.c
   lapacke_zlagsy.c
   lapacke_zlagsy_work.c
+  lapacke_nancheck.c
 )
 
 set(Utils_SRC

@@ -83,7 +83,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup doubleGEcomputational
 *
@@ -92,8 +92,8 @@
 *>
 *> \verbatim
 *>
-*>  The matrix V stores the elementary reflectors H(i) in the i-th column
-*>  below the diagonal. For example, if M=5 and N=3, the matrix V is
+*>  The matrix V stores the elementary reflectors H(i) in the i-th row
+*>  above the diagonal. For example, if M=5 and N=3, the matrix V is
 *>
 *>               V = (  1  v1 v1 v1 v1 )
 *>                   (     1  v2 v2 v2 )
@@ -114,10 +114,10 @@
 *  =====================================================================
       RECURSIVE SUBROUTINE SGELQT3( M, N, A, LDA, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, LDA, M, N, LDT
@@ -130,13 +130,13 @@
 *
 *     .. Parameters ..
       REAL   ONE
-      PARAMETER ( ONE = 1.0D+00 )
+      PARAMETER ( ONE = 1.0E+00 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER   I, I1, J, J1, M1, M2, N1, N2, IINFO
+      INTEGER   I, I1, J, J1, M1, M2, IINFO
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL  DLARFG, DTRMM, DGEMM, XERBLA
+      EXTERNAL  SLARFG, STRMM, SGEMM, XERBLA
 *     ..
 *     .. Executable Statements ..
 *

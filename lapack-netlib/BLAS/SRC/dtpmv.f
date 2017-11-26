@@ -80,7 +80,7 @@
 *>
 *> \param[in] AP
 *> \verbatim
-*>          AP is DOUBLE PRECISION array of DIMENSION at least
+*>          AP is DOUBLE PRECISION array, dimension at least
 *>           ( ( n*( n + 1 ) )/2 ).
 *>           Before entry with  UPLO = 'U' or 'u', the array AP must
 *>           contain the upper triangular matrix packed sequentially,
@@ -98,7 +98,7 @@
 *>
 *> \param[in,out] X
 *> \verbatim
-*>          X is DOUBLE PRECISION array of dimension at least
+*>          X is DOUBLE PRECISION array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the n
 *>           element vector x. On exit, X is overwritten with the

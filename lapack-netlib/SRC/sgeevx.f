@@ -25,11 +25,11 @@
 *       .. Scalar Arguments ..
 *       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
 *       INTEGER            IHI, ILO, INFO, LDA, LDVL, LDVR, LWORK, N
-*       REAL   ABNRM
+*       REAL               ABNRM
 *       ..
 *       .. Array Arguments ..
 *       INTEGER            IWORK( * )
-*       REAL   A( LDA, * ), RCONDE( * ), RCONDV( * ),
+*       REAL               A( LDA, * ), RCONDE( * ), RCONDV( * ),
 *      $                   SCALE( * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WI( * ), WORK( * ), WR( * )
 *       ..
@@ -306,7 +306,7 @@
      $                   RCONDE, RCONDV, WORK, LWORK, IWORK, INFO )
       implicit none
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -314,11 +314,11 @@
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
       INTEGER            IHI, ILO, INFO, LDA, LDVL, LDVR, LWORK, N
-      REAL   ABNRM
+      REAL               ABNRM
 *     ..
 *     .. Array Arguments ..
       INTEGER            IWORK( * )
-      REAL   A( LDA, * ), RCONDE( * ), RCONDV( * ),
+      REAL               A( LDA, * ), RCONDE( * ), RCONDV( * ),
      $                   SCALE( * ), VL( LDVL, * ), VR( LDVR, * ),
      $                   WI( * ), WORK( * ), WR( * )
 *     ..
@@ -335,12 +335,12 @@
       CHARACTER          JOB, SIDE
       INTEGER            HSWORK, I, ICOND, IERR, ITAU, IWRK, K,
      $                   LWORK_TREVC, MAXWRK, MINWRK, NOUT
-      REAL   ANRM, BIGNUM, CS, CSCALE, EPS, R, SCL, SMLNUM,
+      REAL               ANRM, BIGNUM, CS, CSCALE, EPS, R, SCL, SMLNUM,
      $                   SN
 *     ..
 *     .. Local Arrays ..
       LOGICAL            SELECT( 1 )
-      REAL   DUM( 1 )
+      REAL               DUM( 1 )
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEBAK, SGEBAL, SGEHRD, SHSEQR, SLABAD, SLACPY,
@@ -350,7 +350,7 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ISAMAX, ILAENV
-      REAL   SLAMCH, SLANGE, SLAPY2, SNRM2
+      REAL               SLAMCH, SLANGE, SLAPY2, SNRM2
       EXTERNAL           LSAME, ISAMAX, ILAENV, SLAMCH, SLANGE, SLAPY2,
      $                   SNRM2
 *     ..

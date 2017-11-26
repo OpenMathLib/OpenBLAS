@@ -45,9 +45,11 @@ lapack_int LAPACKE_chpev( int matrix_layout, char jobz, char uplo, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_chp_nancheck( n, ap ) ) {
-        return -5;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_chp_nancheck( n, ap ) ) {
+            return -5;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

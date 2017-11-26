@@ -65,9 +65,9 @@
 *>          SY1 is REAL
 *> \endverbatim
 *>
-*> \param[in,out] SPARAM
+*> \param[out] SPARAM
 *> \verbatim
-*>          SPARAM is REAL array, dimension 5
+*>          SPARAM is REAL array, dimension (5)
 *>     SPARAM(1)=SFLAG
 *>     SPARAM(2)=SH11
 *>     SPARAM(3)=SH21
@@ -83,17 +83,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup single_blas_level1
 *
 *  =====================================================================
       SUBROUTINE SROTMG(SD1,SD2,SX1,SY1,SPARAM)
 *
-*  -- Reference BLAS level1 routine (version 3.7.0) --
+*  -- Reference BLAS level1 routine (version 3.8.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       REAL SD1,SD2,SX1,SY1

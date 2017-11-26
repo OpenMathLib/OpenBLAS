@@ -3,33 +3,12 @@
 #  The test files are organized as follows:
 #
 #     AEIGTST -- Auxiliary test routines used in all precisions
-#     SCIGTST -- Auxiliary test routines used in REAL and COMPLEX
-#     DZIGTST -- Auxiliary test routines used in DOUBLE PRECISION and
-#                COMPLEX*16
+#     SCIGTST -- Auxiliary test routines used in single precision
+#     DZIGTST -- Auxiliary test routines used in double precision
 #     SEIGTST -- Single precision real test routines
 #     CEIGTST -- Single precision complex test routines
 #     DEIGTST -- Double precision real test routines
 #     ZEIGTST -- Double precision complex test routines
-#
-#  Test programs can be generated for all or some of the four different
-#  precisions.  Enter make followed by one or more of the data types
-#  desired.  Some examples:
-#       make single
-#       make single complex
-#       make single double complex complex16
-#  Alternatively, the command
-#       make
-#  without any arguments creates all four test programs.
-#  The executable files are called
-#       xeigtsts, xeigtstd, xeigtstc, and xeigtstz
-#  and are created in the next higher directory level.
-#
-#  To remove the object files after the executable files have been
-#  created, enter
-#       make clean
-#  On some systems, you can force the source files to be recompiled by
-#  entering (for example)
-#       make single FRC=FRC
 #
 ########################################################################
 
@@ -119,25 +98,21 @@ set(ZEIGTST zchkee.f
 
 macro(add_eig_executable name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} tmglib ${LAPACK_LIBRARIES})
+  target_link_libraries(${name} tmglib ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 
 if(BUILD_SINGLE)
-add_eig_executable(xeigtsts ${SEIGTST} ${SCIGTST} ${AEIGTST}
-  ${SECOND_SRC})
+add_eig_executable(xeigtsts ${SEIGTST} ${SCIGTST} ${AEIGTST})
 endif()
 
 if(BUILD_COMPLEX)
-add_eig_executable(xeigtstc ${CEIGTST} ${SCIGTST} ${AEIGTST}
-  ${SECOND_SRC})
+add_eig_executable(xeigtstc ${CEIGTST} ${SCIGTST} ${AEIGTST})
 endif()
 
 if(BUILD_DOUBLE)
-add_eig_executable(xeigtstd ${DEIGTST} ${DZIGTST} ${AEIGTST}
-  ${DSECOND_SRC})
+add_eig_executable(xeigtstd ${DEIGTST} ${DZIGTST} ${AEIGTST})
 endif()
 
 if(BUILD_COMPLEX16)
-add_eig_executable(xeigtstz ${ZEIGTST} ${DZIGTST} ${AEIGTST}
-  ${DSECOND_SRC})
+add_eig_executable(xeigtstz ${ZEIGTST} ${DZIGTST} ${AEIGTST})
 endif()

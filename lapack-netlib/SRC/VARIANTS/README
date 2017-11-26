@@ -1,5 +1,5 @@
-   		   ===============
- 		   = README File =
+		   ===============
+		   = README File =
 		   ===============
 
 This README File is for the LAPACK driver variants.
@@ -34,10 +34,10 @@ References:For a more detailed description please refer to
 =========
 
 These variants are compiled by default in the build process but they are not tested by default.
-The build process creates one new library per variants in the four arithmetics (singel/double/comple/double complex).
-The libraries are in the SRC/VARIANTS/LIB directory.
+The build process creates one new library per variants in the four arithmetics (single real/double real/single complex/double complex).
+The libraries are in the SRC/VARIANTS directory.
 
-Corresponding libraries created in SRC/VARIANTS/LIB:
+Corresponding libraries created in SRC/VARIANTS:
 	- LU Crout : lucr.a
 	- LU Left Looking : lull.a
 	- LU Sivan Toledo's recursive : lurec.a
@@ -73,7 +73,7 @@ Default using LU Right Looking version:
 
 Using LU Left Looking version:
  $(FORTRAN) -c myprog.f
- $(FORTRAN) -o myexe myprog.o $(PATH TO LAPACK/SRC/VARIANTS/LIB)/lull.a $(LAPACKLIB) $(BLASLIB)
+ $(FORTRAN) -o myexe myprog.o $(PATH TO LAPACK/SRC/VARIANTS)/lull.a $(LAPACKLIB) $(BLASLIB)
 
 ===========
 = SUPPORT =

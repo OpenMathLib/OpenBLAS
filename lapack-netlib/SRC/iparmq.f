@@ -41,7 +41,7 @@
 *
 *> \param[in] ISPEC
 *> \verbatim
-*>          ISPEC is integer scalar
+*>          ISPEC is INTEGER
 *>              ISPEC specifies which tunable parameter IPARMQ should
 *>              return.
 *>
@@ -117,7 +117,7 @@
 *>
 *> \param[in] N
 *> \verbatim
-*>          N is integer scalar
+*>          N is INTEGER
 *>               N is the order of the Hessenberg matrix H.
 *> \endverbatim
 *>
@@ -135,7 +135,7 @@
 *>
 *> \param[in] LWORK
 *> \verbatim
-*>          LWORK is integer scalar
+*>          LWORK is INTEGER
 *>               The amount of workspace available.
 *> \endverbatim
 *
@@ -147,7 +147,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup OTHERauxiliary
 *
@@ -222,10 +222,10 @@
 *  =====================================================================
       INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, ISPEC, LWORK, N

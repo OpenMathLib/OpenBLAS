@@ -231,7 +231,7 @@
       SUBROUTINE CGGHD3( COMPQ, COMPZ, N, ILO, IHI, A, LDA, B, LDB, Q,
      $                   LDQ, Z, LDZ, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.6.1) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     January 2015
@@ -271,7 +271,8 @@
       EXTERNAL           ILAENV, LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGGHRD, CLARTG, CLASET, CUNM22, CROT, XERBLA
+      EXTERNAL           CGGHRD, CLARTG, CLASET, CUNM22, CROT, CGEMM,
+     $                   CGEMV, CTRMV, CLACPY, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          REAL, CMPLX, CONJG, MAX

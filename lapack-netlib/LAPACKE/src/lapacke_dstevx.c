@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dstevx
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -47,24 +47,26 @@ lapack_int LAPACKE_dstevx( int matrix_layout, char jobz, char range,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( 1, &abstol, 1 ) ) {
-        return -11;
-    }
-    if( LAPACKE_d_nancheck( n, d, 1 ) ) {
-        return -5;
-    }
-    if( LAPACKE_d_nancheck( n, e, 1 ) ) {
-        return -6;
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_d_nancheck( 1, &vl, 1 ) ) {
-            return -7;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( 1, &abstol, 1 ) ) {
+            return -11;
         }
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_d_nancheck( 1, &vu, 1 ) ) {
-            return -8;
+        if( LAPACKE_d_nancheck( n, d, 1 ) ) {
+            return -5;
+        }
+        if( LAPACKE_d_nancheck( n-1, e, 1 ) ) {
+            return -6;
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_d_nancheck( 1, &vl, 1 ) ) {
+                return -7;
+            }
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_d_nancheck( 1, &vu, 1 ) ) {
+                return -8;
+            }
         }
     }
 #endif

@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zsycon_3
 * Author: Intel Corporation
-* Generated December 2016
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -40,20 +40,23 @@ lapack_int LAPACKE_zsycon_3( int matrix_layout, char uplo, lapack_int n,
 {
     lapack_int info = 0;
     lapack_complex_double* work = NULL;
+    lapack_int e_start = LAPACKE_lsame( uplo, 'U' ) ? 1 : 0;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_zsycon_3", -1 );
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
-        return -4;
-    }
-    if( LAPACKE_z_nancheck( n, e, 1 ) ) {
-        return -6;
-    }
-    if( LAPACKE_d_nancheck( 1, &anorm, 1 ) ) {
-        return -8;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_zsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
+            return -4;
+        }
+        if( LAPACKE_z_nancheck( n-1, e + e_start, 1 ) ) {
+            return -6;
+        }
+        if( LAPACKE_d_nancheck( 1, &anorm, 1 ) ) {
+            return -8;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

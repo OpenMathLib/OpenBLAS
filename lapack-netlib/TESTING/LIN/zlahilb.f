@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE ZLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
+*       SUBROUTINE ZLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
 *            INFO, PATH)
 *
 *       .. Scalar Arguments ..
@@ -56,7 +56,7 @@
 *>
 *> \param[in] NRHS
 *> \verbatim
-*>          NRHS is NRHS
+*>          NRHS is INTEGER
 *>          The requested number of right-hand sides.
 *> \endverbatim
 *>
@@ -126,18 +126,18 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
-      SUBROUTINE ZLAHILB(N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
+      SUBROUTINE ZLAHILB( N, NRHS, A, LDA, X, LDX, B, LDB, WORK,
      $     INFO, PATH)
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER N, NRHS, LDA, LDX, LDB, INFO
@@ -220,7 +220,8 @@
       END DO
 *
 *     Generate the scaled Hilbert matrix in A
-*     If we are testing SY routines, take D1_i = D2_i, else, D1_i = D2_i*
+*     If we are testing SY routines,
+*        take D1_i = D2_i, else, D1_i = D2_i*
       IF ( LSAMEN( 2, C2, 'SY' ) ) THEN
          DO J = 1, N
             DO I = 1, N
@@ -250,8 +251,9 @@
          WORK(J) = (  ( (WORK(J-1)/(J-1)) * (J-1 - N) ) /(J-1)  )
      $        * (N +J -1)
       END DO
-*
-*     If we are testing SY routines, take D1_i = D2_i, else, D1_i = D2_i*
+
+*     If we are testing SY routines,
+*           take D1_i = D2_i, else, D1_i = D2_i*
       IF ( LSAMEN( 2, C2, 'SY' ) ) THEN
          DO J = 1, NRHS
             DO I = 1, N

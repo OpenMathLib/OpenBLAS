@@ -41,9 +41,11 @@ lapack_int LAPACKE_strtri( int matrix_layout, char uplo, char diag, lapack_int n
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_str_nancheck( matrix_layout, uplo, diag, n, a, lda ) ) {
-        return -5;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_str_nancheck( matrix_layout, uplo, diag, n, a, lda ) ) {
+            return -5;
+        }
     }
 #endif
     return LAPACKE_strtri_work( matrix_layout, uplo, diag, n, a, lda );

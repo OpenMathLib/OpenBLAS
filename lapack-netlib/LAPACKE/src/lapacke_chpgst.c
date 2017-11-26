@@ -42,12 +42,14 @@ lapack_int LAPACKE_chpgst( int matrix_layout, lapack_int itype, char uplo,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_chp_nancheck( n, ap ) ) {
-        return -5;
-    }
-    if( LAPACKE_chp_nancheck( n, bp ) ) {
-        return -6;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_chp_nancheck( n, ap ) ) {
+            return -5;
+        }
+        if( LAPACKE_chp_nancheck( n, bp ) ) {
+            return -6;
+        }
     }
 #endif
     return LAPACKE_chpgst_work( matrix_layout, itype, uplo, n, ap, bp );

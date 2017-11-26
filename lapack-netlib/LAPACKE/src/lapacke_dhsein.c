@@ -48,25 +48,27 @@ lapack_int LAPACKE_dhsein( int matrix_layout, char job, char eigsrc, char initv,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_dge_nancheck( matrix_layout, n, n, h, ldh ) ) {
-        return -7;
-    }
-    if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'l' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, n, mm, vl, ldvl ) ) {
-            return -11;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_dge_nancheck( matrix_layout, n, n, h, ldh ) ) {
+            return -7;
         }
-    }
-    if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'r' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, n, mm, vr, ldvr ) ) {
-            return -13;
+        if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'l' ) ) {
+            if( LAPACKE_dge_nancheck( matrix_layout, n, mm, vl, ldvl ) ) {
+                return -11;
+            }
         }
-    }
-    if( LAPACKE_d_nancheck( n, wi, 1 ) ) {
-        return -10;
-    }
-    if( LAPACKE_d_nancheck( n, wr, 1 ) ) {
-        return -9;
+        if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'r' ) ) {
+            if( LAPACKE_dge_nancheck( matrix_layout, n, mm, vr, ldvr ) ) {
+                return -13;
+            }
+        }
+        if( LAPACKE_d_nancheck( n, wi, 1 ) ) {
+            return -10;
+        }
+        if( LAPACKE_d_nancheck( n, wr, 1 ) ) {
+            return -9;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

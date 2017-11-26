@@ -53,33 +53,35 @@ lapack_int LAPACKE_cgerfsx( int matrix_layout, char trans, char equed,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_cge_nancheck( matrix_layout, n, n, a, lda ) ) {
-        return -6;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, n, n, af, ldaf ) ) {
-        return -8;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -13;
-    }
-    if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'c' ) ) {
-        if( LAPACKE_s_nancheck( n, c, 1 ) ) {
-            return -12;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_cge_nancheck( matrix_layout, n, n, a, lda ) ) {
+            return -6;
         }
-    }
-    if( nparams>0 ) {
-        if( LAPACKE_s_nancheck( nparams, params, 1 ) ) {
-            return -23;
+        if( LAPACKE_cge_nancheck( matrix_layout, n, n, af, ldaf ) ) {
+            return -8;
         }
-    }
-    if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'r' ) ) {
-        if( LAPACKE_s_nancheck( n, r, 1 ) ) {
-            return -11;
+        if( LAPACKE_cge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -13;
         }
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
-        return -15;
+        if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'c' ) ) {
+            if( LAPACKE_s_nancheck( n, c, 1 ) ) {
+                return -12;
+            }
+        }
+        if( nparams>0 ) {
+            if( LAPACKE_s_nancheck( nparams, params, 1 ) ) {
+                return -23;
+            }
+        }
+        if( LAPACKE_lsame( equed, 'b' ) || LAPACKE_lsame( equed, 'r' ) ) {
+            if( LAPACKE_s_nancheck( n, r, 1 ) ) {
+                return -11;
+            }
+        }
+        if( LAPACKE_cge_nancheck( matrix_layout, n, nrhs, x, ldx ) ) {
+            return -15;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

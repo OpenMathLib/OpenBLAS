@@ -151,7 +151,7 @@
       SUBROUTINE SLASQ4( I0, N0, Z, PP, N0IN, DMIN, DMIN1, DMIN2, DN,
      $                   DN1, DN2, TAU, TTYPE, G )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -240,7 +240,6 @@
                   NP = NN - 9
                ELSE
                   NP = NN - 2*PP
-                  B2 = Z( NP-2 )
                   GAM = DN1
                   IF( Z( NP-4 ) .GT. Z( NP-2 ) )
      $               RETURN

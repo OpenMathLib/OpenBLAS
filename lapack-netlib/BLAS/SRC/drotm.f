@@ -51,8 +51,7 @@
 *>
 *> \param[in,out] DX
 *> \verbatim
-*>          DX is DOUBLE PRECISION array, dimension N
-*>         double precision vector with N elements
+*>          DX is DOUBLE PRECISION array, dimension ( 1 + ( N - 1 )*abs( INCX ) )
 *> \endverbatim
 *>
 *> \param[in] INCX
@@ -63,8 +62,7 @@
 *>
 *> \param[in,out] DY
 *> \verbatim
-*>          DY is DOUBLE PRECISION array, dimension N
-*>         double precision vector with N elements
+*>          DY is DOUBLE PRECISION array, dimension ( 1 + ( N - 1 )*abs( INCY ) )
 *> \endverbatim
 *>
 *> \param[in] INCY
@@ -73,9 +71,9 @@
 *>         storage spacing between elements of DY
 *> \endverbatim
 *>
-*> \param[in,out] DPARAM
+*> \param[in] DPARAM
 *> \verbatim
-*>          DPARAM is DOUBLE PRECISION array, dimension 5
+*>          DPARAM is DOUBLE PRECISION array, dimension (5)
 *>     DPARAM(1)=DFLAG
 *>     DPARAM(2)=DH11
 *>     DPARAM(3)=DH21
@@ -91,17 +89,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup double_blas_level1
 *
 *  =====================================================================
       SUBROUTINE DROTM(N,DX,INCX,DY,INCY,DPARAM)
 *
-*  -- Reference BLAS level1 routine (version 3.7.0) --
+*  -- Reference BLAS level1 routine (version 3.8.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER INCX,INCY,N

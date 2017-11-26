@@ -37,7 +37,7 @@
 *  =====================================================================
       PROGRAM DBLAT1
 *
-*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS test routine (version 3.8.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012
@@ -139,7 +139,7 @@
       DOUBLE PRECISION  DA1(8), DATRUE(8), DB1(8), DBTRUE(8), DC1(8),
      $                  DS1(8), DAB(4,9), DTEMP(9), DTRUE(9,9)
 *     .. External Subroutines ..
-      EXTERNAL          DROTG, DROTMG, STEST1
+      EXTERNAL          DROTG, DROTMG, STEST, STEST1
 *     .. Common blocks ..
       COMMON            /COMBLA/ICASE, N, INCX, INCY, PASS
 *     .. Data statements ..
@@ -360,7 +360,8 @@
       DOUBLE PRECISION  DDOT, DSDOT
       EXTERNAL          DDOT, DSDOT
 *     .. External Subroutines ..
-      EXTERNAL          DAXPY, DCOPY, DROTM, DSWAP, STEST, STEST1
+      EXTERNAL          DAXPY, DCOPY, DROTM, DSWAP, STEST, STEST1,
+     $                  TESTDSDOT
 *     .. Intrinsic Functions ..
       INTRINSIC         ABS, MIN
 *     .. Common blocks ..
