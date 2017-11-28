@@ -610,16 +610,16 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	} else
 	  if (X > posY) {
 	    if (m & 4) {
-	      ao1 += 4 * lda;
+	      /* ao1 += 4 * lda;
 	      ao2 += 4 * lda;
 	      ao3 += 4 * lda;
-	      ao4 += 4 * lda;
+	      ao4 += 4 * lda; */
 
 	      b += 32;
 	    }
 
 	    if (m & 2) {
-	      ao1 += 2 * lda;
+	      // ao1 += 2 * lda;
 	      b += 16;
 	    }
 
@@ -1019,7 +1019,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	} else
 	  if (X > posY) {
 	    if (m & 2) {
-	      ao1 += 2 * lda;
+	      // ao1 += 2 * lda;
 	      b += 8;
 	    }
 

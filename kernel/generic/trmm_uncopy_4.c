@@ -241,23 +241,23 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    b[ 2] = data05;
 	    b[ 3] = data07;
 
-	    ao1 += 1;
+	    /* ao1 += 1;
 	    ao2 += 1;
 	    ao3 += 1;
-	    ao4 += 1;
+	    ao4 += 1; */
 	    b += 4;
 	  }
 
 	} else
 	  if (X > posY) {
 	    if (m & 2) {
-	      ao1 += 2 * lda;
-	      ao2 += 2 * lda;
+	      /* ao1 += 2 * lda;
+	      ao2 += 2 * lda; */
 	      b   += 8;
 	    }
 
 	    if (m & 1) {
-	      ao1 += lda;
+	      // ao1 += lda;
 	      b += 4;
 	    }
 
@@ -418,13 +418,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
 	  b[ 0] = data01;
 	  b[ 1] = data05;
-	  ao1 += 1;
-	  ao2 += 1;
+	  /* ao1 += 1;
+	  ao2 += 1; */
 	  b += 2;
 	} else
 	  if (X > posY) {
-	    ao1 += lda;
-	    ao2 += lda;
+	    /* ao1 += lda;
+	    ao2 += lda; */
 	    b += 2;
 	  } else {
 #ifdef UNIT
@@ -438,8 +438,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    b[ 0] = data01;
 	    b[ 1] = data05;
 #endif
-	    ao1 += lda;
-	    ao2 += lda;
+	    /* ao1 += lda;
+	    ao2 += lda; */
 	    b += 2;
 	  }
       }

@@ -1044,7 +1044,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	*(b_offset2 +  3) = CMULT(a7,  a8);
 
 	a_offset1 += 8;
-	b_offset2 += 4;
+	// b_offset2 += 4;
       }
 
       if (n & 2){
@@ -1057,7 +1057,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	*(b_offset3 +  1) = CMULT(a3,  a4);
 
 	a_offset1 += 4;
-	b_offset3 += 2;
+	// b_offset3 += 2;
       }
 
       if (n & 1){

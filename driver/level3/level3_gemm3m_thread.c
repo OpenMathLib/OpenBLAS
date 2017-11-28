@@ -974,7 +974,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos){
 
   BLASLONG m = args -> m;
-  BLASLONG n = args -> n;
+  // BLASLONG n = args -> n;
   BLASLONG nthreads = args -> nthreads;
   BLASLONG divN, divT;
   int mode;
@@ -985,13 +985,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
     m = m_to - m_from;
   }
-
+/*
   if (range_n) {
     BLASLONG n_from = *(((BLASLONG *)range_n) + 0);
     BLASLONG n_to   = *(((BLASLONG *)range_n) + 1);
 
     n = n_to - n_from;
   }
+*/
 
   if ((args -> m < nthreads * SWITCH_RATIO) || (args -> n < nthreads * SWITCH_RATIO)) {
     GEMM3M_LOCAL(args, range_m, range_n, sa, sb, 0);

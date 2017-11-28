@@ -350,14 +350,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  }
 	} else
 	  if (X < posY) {
-	    ao1 += i * lda;
+	    /* ao1 += i * lda;
 	    ao2 += i * lda;
 	    ao3 += i * lda;
 	    ao4 += i * lda;
 	    ao5 += i * lda;
 	    ao6 += i * lda;
 	    ao7 += i * lda;
-	    ao8 += i * lda;
+	    ao8 += i * lda; */
 	    b += 16 * i;
 	  } else {
 #ifdef UNIT
@@ -675,10 +675,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  }
 	} else
 	  if (X < posY) {
-	    ao1 += i * lda;
+	    /* ao1 += i * lda;
 	    ao2 += i * lda;
 	    ao3 += i * lda;
-	    ao4 += i * lda;
+	    ao4 += i * lda; */
 	    b += 8 * i;
 	  } else {
 #ifdef UNIT
@@ -804,13 +804,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	  b[  1] = *(ao1 +  1);
 	  b[  2] = *(ao2 +  0);
 	  b[  3] = *(ao2 +  1);
-	  ao1 += 2;
-	  ao2 += 2;
+	  /* ao1 += 2;
+	  ao2 += 2; */
 	  b += 4;
 	} else
 	  if (X < posY) {
-	    ao1 += 2 * lda;
-	    ao2 += 2 * lda;
+	    /* ao1 += 2 * lda;
+	    ao2 += 2 * lda; */
 	    b += 4;
 	  } else {
 #ifdef UNIT
