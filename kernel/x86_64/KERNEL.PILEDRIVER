@@ -18,6 +18,7 @@ DGEMVNKERNEL = dgemv_n_bulldozer.S
 DGEMVTKERNEL = dgemv_t_bulldozer.S
 
 SDOTKERNEL   = sdot.c
+DSDOTKERNEL  = sdot.c
 DDOTKERNEL   = ddot.c
 CDOTKERNEL   = cdot.c
 ZDOTKERNEL   = zdot.c
