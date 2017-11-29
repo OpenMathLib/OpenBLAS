@@ -888,7 +888,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG); 
   int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG); 
   int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG); 
-  int    (*zgeadd_k) (BLASLONG, BLASLONG, float, double, double *, BLASLONG, double, double, double *, BLASLONG); 
+  int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG); 
 
 } gotoblas_t;
 
