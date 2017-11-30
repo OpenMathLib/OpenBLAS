@@ -24,7 +24,7 @@ skip_commits:
   message: /\[av skip\]/
 
 cache:
-  - %APPVEYOR_BUILD_FOLDER%\build
+  - '%APPVEYOR_BUILD_FOLDER%\build'
 
 environment:
   global:
