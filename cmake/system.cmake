@@ -94,14 +94,15 @@ if (NOT CMAKE_CROSSCOMPILING)
     ProcessorCount(NUM_CORES)
   endif()
 
-  if (NOT NUM_CORES EQUAL 0)
-    # HT?
-    set(NUM_THREADS ${NUM_CORES})
-  endif ()
 endif()
 
 if (NOT DEFINED NUM_THREADS)
-  set(NUM_THREADS 0)
+  if (NOT NUM_CORES EQUAL 0)
+    # HT?
+    set(NUM_THREADS ${NUM_CORES})
+  else ()
+    set(NUM_THREADS 0)
+  endif ()
 endif()
 
 if (${NUM_THREADS} LESS 2)
