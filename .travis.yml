@@ -67,7 +67,7 @@ jobs:
             - gfortran-mingw-w64-x86-64
       before_script: *common-before
       script:
-        - travis_wait make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - travis_wait 30 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
         - TARGET_BOX=WIN64
         - BTYPE="BINARY=64 HOSTCC=gcc CC=x86_64-w64-mingw32-gcc FC=x86_64-w64-mingw32-gfortran"
