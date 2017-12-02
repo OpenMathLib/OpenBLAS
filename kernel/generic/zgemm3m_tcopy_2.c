@@ -67,6 +67,19 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
   FLOAT *b_offset, *b_offset1, *b_offset2;
   FLOAT a1, a2, a3, a4, a5, a6, a7, a8;
 
+/* silence compiler warnings about unused-but-set variables:
+   depending on compile-time arguments either the odd or the
+   even-numbered variables will not be used */
+   
+  (void)a1;
+  (void)a2;
+  (void)a3;
+  (void)a4;
+  (void)a5;
+  (void)a6;
+  (void)a7;
+  (void)a8;
+
   a_offset   = a;
   b_offset   = b;
 
