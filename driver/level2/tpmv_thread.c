@@ -112,7 +112,7 @@ static int tpmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 #endif
 
     x = buffer;
-    buffer += ((COMPSIZE * args -> m + 1023) & ~1023);
+    // buffer += ((COMPSIZE * args -> m + 1023) & ~1023);
   }
 
 #ifndef TRANS
@@ -234,11 +234,7 @@ static int tpmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
   return 0;
 }
 
-#ifndef COMPLEX
 int CNAME(BLASLONG m, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *buffer, int nthreads){
-#else
-int CNAME(BLASLONG m, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *buffer, int nthreads){
-#endif
 
   blas_arg_t args;
   blas_queue_t queue[MAX_CPU_NUMBER];
