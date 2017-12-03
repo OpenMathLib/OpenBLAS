@@ -131,7 +131,7 @@ void F77_xerbla(char *srname, void *vinfo)
 int    BLASFUNC(xerbla)(char *name, blasint *info, blasint length) {
 
   F77_xerbla(name, info);
-
+  return 0;
 };
 
 

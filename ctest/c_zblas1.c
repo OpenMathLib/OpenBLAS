@@ -9,7 +9,7 @@
 #include "common.h"
 #include "cblas_test.h"
 
-void F77_zaxpy(const int *N, const void *alpha, void *X,
+void F77_zaxpy(const int *N, OPENBLAS_CONST void *alpha, void *X,
                     const int *incX, void *Y, const int *incY)
 {
    cblas_zaxpy(*N, alpha, X, *incX, Y, *incY);
@@ -23,8 +23,8 @@ void F77_zcopy(const int *N, void *X, const int *incX,
    return;
 }
 
-void F77_zdotc(const int *N, const void *X, const int *incX,
-                     const void *Y, const int *incY,void *dotc)
+void F77_zdotc(const int *N, OPENBLAS_CONST void *X, const int *incX,
+                     OPENBLAS_CONST void *Y, const int *incY,void *dotc)
 {
    cblas_zdotc_sub(*N, X, *incX, Y, *incY, dotc);
    return;
@@ -58,13 +58,13 @@ void F77_zswap( const int *N, void *X, const int *incX,
    return;
 }
 
-int F77_izamax(const int *N, const void *X, const int *incX)
+int F77_izamax(const int *N, OPENBLAS_CONST void *X, const int *incX)
 {
    if (*N < 1 || *incX < 1) return(0);
    return(cblas_izamax(*N, X, *incX)+1);
 }
 
-double F77_dznrm2(const int *N, const void *X, const int *incX)
+double F77_dznrm2(const int *N, OPENBLAS_CONST void *X, const int *incX)
 {
    return cblas_dznrm2(*N, X, *incX);
 }
