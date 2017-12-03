@@ -330,13 +330,13 @@
             CALL ZCHK3(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NMAX, AB,
      $                 AA, AS, AB( 1, NMAX + 1 ), BB, BS, CT, G, C,
-     $		       0 )
+     $                 0 )
             END IF
             IF (RORDER) THEN
             CALL ZCHK3(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NMAX, AB,
      $                 AA, AS, AB( 1, NMAX + 1 ), BB, BS, CT, G, C,
-     $		       1 )
+     $                 1 )
             END IF
             GO TO 190
 *           Test ZHERK, 06, ZSYRK, 07.
@@ -358,13 +358,13 @@
             CALL ZCHK5(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
      $                 NMAX, AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
-     $		       0 )
+     $                 0 )
             END IF
             IF (RORDER) THEN
             CALL ZCHK5(SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                 REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
      $                 NMAX, AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
-     $		       1 )
+     $                 1 )
             END IF
             GO TO 190
 *
@@ -708,9 +708,9 @@
  9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
- 9995 FORMAT( 1X, I6, ': ', A12,'(''', A1, ''',''', A1, ''',',
-     $     3( I3, ',' ), '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3,
-     $     ',(', F4.1, ',', F4.1, '), C,', I3, ').' )
+C 9995 FORMAT( 1X, I6, ': ', A12,'(''', A1, ''',''', A1, ''',',
+C     $     3( I3, ',' ), '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3,
+C     $     ',(', F4.1, ',', F4.1, '), C,', I3, ').' )
  9994 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -1034,9 +1034,9 @@
  9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
- 9995 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1,
-     $      ',', F4.1, '), C,', I3, ')    .' )
+C 9995 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1,
+C     $      ',', F4.1, '), C,', I3, ')    .' )
  9994 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -1386,9 +1386,9 @@
  9998 FORMAT(' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT(' ******* ', A12,' FAILED ON CALL NUMBER:' )
- 9995 FORMAT(1X, I6, ': ', A12,'(', 4( '''', A1, ''',' ), 2( I3, ',' ),
-     $     '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ')         ',
-     $      '      .' )
+C 9995 FORMAT(1X, I6, ': ', A12,'(', 4( '''', A1, ''',' ), 2( I3, ',' ),
+C     $     '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ')         ',
+C     $      '      .' )
  9994 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -1769,12 +1769,12 @@
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
- 9994 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $     F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ')               ',
-     $      '          .' )
- 9993 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      '(', F4.1, ',', F4.1, ') , A,', I3, ',(', F4.1, ',', F4.1,
-     $      '), C,', I3, ')          .' )
+C 9994 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $     F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ')               ',
+C     $      '          .' )
+C 9993 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      '(', F4.1, ',', F4.1, ') , A,', I3, ',(', F4.1, ',', F4.1,
+C     $      '), C,', I3, ')          .' )
  9992 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -2222,12 +2222,12 @@
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
- 9994 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',', F4.1,
-     $      ', C,', I3, ')           .' )
- 9993 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1,
-     $      ',', F4.1, '), C,', I3, ')    .' )
+C 9994 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',', F4.1,
+C     $      ', C,', I3, ')           .' )
+C 9993 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1,
+C     $      ',', F4.1, '), C,', I3, ')    .' )
  9992 FORMAT(' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -2706,7 +2706,7 @@
    50    CONTINUE
       END IF
 *
-   60 CONTINUE
+C   60 CONTINUE
       LZERES = .TRUE.
       GO TO 80
    70 CONTINUE

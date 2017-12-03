@@ -349,13 +349,13 @@
            CALL CCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
      $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
-     $			0 )
+     $                  0 )
            END IF
            IF (RORDER) THEN
            CALL CCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
      $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
-     $			1 )
+     $                  1 )
            END IF
             GO TO 200
 *           Test CGERC, 12, CGERU, 13.
@@ -2660,7 +2660,7 @@
    50    CONTINUE
       END IF
 *
-   60 CONTINUE
+C   60 CONTINUE
       LCERES = .TRUE.
       GO TO 80
    70 CONTINUE

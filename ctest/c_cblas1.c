@@ -9,7 +9,7 @@
 #include "common.h"
 #include "cblas_test.h"
 
-void F77_caxpy(const int *N, const void *alpha, void *X,
+void F77_caxpy(const int *N, OPENBLAS_CONST void *alpha, void *X,
                     const int *incX, void *Y, const int *incY)
 {
    cblas_caxpy(*N, alpha, X, *incX, Y, *incY);
@@ -58,13 +58,13 @@ void F77_cswap( const int *N, void *X, const int *incX,
    return;
 }
 
-int F77_icamax(const int *N, const void *X, const int *incX)
+int F77_icamax(const int *N, OPENBLAS_CONST void *X, const int *incX)
 {
    if (*N < 1 || *incX < 1) return(0);
    return (cblas_icamax(*N, X, *incX)+1);
 }
 
-float F77_scnrm2(const int *N, const void *X, const int *incX)
+float F77_scnrm2(const int *N, OPENBLAS_CONST void *X, const int *incX)
 {
    return cblas_scnrm2(*N, X, *incX);
 }
