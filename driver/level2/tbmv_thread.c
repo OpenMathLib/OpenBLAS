@@ -107,7 +107,7 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
     COPY_K(args -> n, x, incx, buffer, 1);
 
     x = buffer;
-    buffer += ((args -> n * COMPSIZE + 1023) & ~1023);
+    // buffer += ((args -> n * COMPSIZE + 1023) & ~1023);
   }
 
   if (range_n) y += *range_n * COMPSIZE;

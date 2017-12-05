@@ -302,8 +302,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			if ( n2 & 1 )
 			{
 				zgemv_kernel_4x1(NB,a_ptr,xbuffer,y_ptr,alpha);
-				a_ptr += lda;
-				y_ptr += 2;
+				/* a_ptr += lda;
+				y_ptr += 2; */
 
 			}
 

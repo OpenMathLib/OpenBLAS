@@ -91,7 +91,7 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
     COPY_K(n, x, incx, buffer, 1);
 
     x = buffer;
-    buffer += ((COMPSIZE * n  + 1023) & ~1023);
+    // buffer += ((COMPSIZE * n  + 1023) & ~1023);
   }
 
   SCAL_K(n, 0, 0, ZERO,

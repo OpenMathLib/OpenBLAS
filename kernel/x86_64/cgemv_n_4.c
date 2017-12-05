@@ -298,8 +298,8 @@ printf("%s %d %d %.16f %.16f %d %d %d\n","zgemv_n",m,n,alpha_r,alpha_i,lda,inc_x
 			if ( n2 & 1 )
 			{
 				cgemv_kernel_4x1(NB,a_ptr,x_ptr,ybuffer);
-				x_ptr += 2;	
-				a_ptr += lda;
+				/* x_ptr += 2;	
+				a_ptr += lda; */
 
 			}
 		}

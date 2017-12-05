@@ -96,7 +96,7 @@ static int gbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
     COPY_K(args -> m, x, incx, buffer, 1);
 
     x = buffer;
-    buffer += ((COMPSIZE * args -> m  + 1023) & ~1023);
+    // buffer += ((COMPSIZE * args -> m  + 1023) & ~1023);
   }
 #endif
 
