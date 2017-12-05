@@ -90,9 +90,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(BIGNUMA)
 // max number of nodes as defined in numa.h
-// max cpus as defined in sched.h
+// max cpus as defined in most sched.h
+// cannot use CPU_SETSIZE directly as some
+// Linux distributors set it to 4096 
 #define MAX_NODES	128
-#define MAX_CPUS	CPU_SETSIZE
+#define MAX_CPUS	1024
 #else
 #define MAX_NODES	16
 #define MAX_CPUS	256
