@@ -151,6 +151,11 @@ endif()
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
+# Android needs to explicitly link against libm
+if(ANDROID)
+  target_link_libraries(${OpenBLAS_LIBNAME} m)
+endif()
+
 # Handle MSVC exports
 if(MSVC AND BUILD_SHARED_LIBS)
   if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 3.4)
