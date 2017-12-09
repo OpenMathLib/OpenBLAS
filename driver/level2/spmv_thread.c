@@ -246,7 +246,7 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
 
     range_m[MAX_CPU_NUMBER - num_cpu - 1] = range_m[MAX_CPU_NUMBER - num_cpu] - width;
     range_n[num_cpu] = num_cpu * (((m + 15) & ~15) + 16);
-    if (range_n[num_cpu] > m) range_n[num_cpu] = m;
+    if (range_n[num_cpu] > m * num_cpu) range_n[num_cpu] = m * num_cpu;
 
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = spmv_kernel;
@@ -286,7 +286,7 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *y,
 
     range_m[num_cpu + 1] = range_m[num_cpu] + width;
     range_n[num_cpu] = num_cpu * (((m + 15) & ~15) + 16);
-    if (range_n[num_cpu] > m) range_n[num_cpu] = m;
+    if (range_n[num_cpu] > m * num_cpu) range_n[num_cpu] = m * num_cpu;
 
     queue[num_cpu].mode    = mode;
     queue[num_cpu].routine = spmv_kernel;
