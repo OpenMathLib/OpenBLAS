@@ -230,10 +230,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT *alpha, FLOAT 
 
 #ifndef TRANSA
     range_m[num_cpu] = num_cpu * ((m + 15) & ~15);
-    if (range_m[num_cpu] > m) range_m[num_cpu] = m;
+    if (range_m[num_cpu] > m * num_cpu) range_m[num_cpu] = m * num_cpu;
 #else
     range_m[num_cpu] = num_cpu * ((n + 15) & ~15);
-    if (range_m[num_cpu] > n) range_m[num_cpu] = n;
+    if (range_m[num_cpu] > n * num_cpu) range_m[num_cpu] = n * num_cpu;
 #endif
 
     queue[num_cpu].mode    = mode;
