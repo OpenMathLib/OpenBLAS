@@ -113,8 +113,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 #else
 	      data01 = *(ao1 + 0);
 	      data02 = *(ao1 + 1);
-	      data03 = *(ao1 + 2);
-	      data04 = *(ao1 + 3);
+	      /* data03 = *(ao1 + 2);
+	      data04 = *(ao1 + 3); */
 	      data05 = *(ao2 + 0);
 	      data06 = *(ao2 + 1);
 	      data07 = *(ao2 + 2);
