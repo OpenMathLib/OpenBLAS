@@ -348,7 +348,7 @@ int blas_get_cpu_number(void){
   max_num = get_num_procs();
 #endif
 
-  blas_goto_num = 0;
+  // blas_goto_num = 0;
 #ifndef USE_OPENMP
   blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
@@ -360,7 +360,7 @@ int blas_get_cpu_number(void){
 
 #endif
 
-  blas_omp_num = 0;
+  // blas_omp_num = 0;
   blas_omp_num=openblas_omp_num_threads_env();
   if (blas_omp_num < 0) blas_omp_num = 0;
 
