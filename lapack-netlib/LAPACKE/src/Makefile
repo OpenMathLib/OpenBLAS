@@ -2457,9 +2457,15 @@ all: ../../$(LAPACKELIB)
 ../../$(LAPACKELIB): $(OBJ_A) $(OBJ_B) $(DEPRECATED) $(EXTENDED) $(MATGEN)
 	$(ARCH) $(ARCHFLAGS) $@ $(OBJ_A)
 	$(ARCH) $(ARCHFLAGS) $@ $(OBJ_B)
+ifdef BUILD_DEPRECATED
 	$(ARCH) $(ARCHFLAGS) $@ $(DEPRECATED)
+endif
+ifdef (USEXBLAS)
 	$(ARCH) $(ARCHFLAGS) $@ $(EXTENDED)
+endif
+ifdef LAPACKE_WITH_TMG
 	$(ARCH) $(ARCHFLAGS) $@ $(MATGEN)
+endif
 	$(RANLIB) $@
 
 clean: cleanobj
