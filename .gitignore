@@ -1,4 +1,4 @@
-*.obj
+*.obj 
 *.lib
 *.dll
 *.dylib
