@@ -44,7 +44,7 @@ install:
   - if [%WITH_FORTRAN%]==[no] conda install --yes --quiet ninja
   - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet -c isuruf kitware-ninja
 
-  - if [%COMPILER%]==[clang-cl] "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+  - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - if [%COMPILER%]==[clang-cl] set "LIB=%CONDA_INSTALL_LOCN%\Library\lib;%LIB%"
   - if [%COMPILER%]==[clang-cl] set "CPATH=%CONDA_INSTALL_LOCN%\Library\include;%CPATH%"
 
