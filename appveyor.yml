@@ -5,6 +5,8 @@ version: 0.2.19.{build}
 platform: 
   - x64
 
+os: Visual Studio 2017
+
 configuration: Release
 
 clone_folder: c:\projects\OpenBLAS
@@ -23,9 +25,6 @@ skip_commits:
 # Add [av skip] to commit messages
   message: /\[av skip\]/
 
-cache:
-  - '%APPVEYOR_BUILD_FOLDER%\build'
-
 environment:
   global:
     CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
@@ -40,18 +39,22 @@ environment:
 install:
   - if [%COMPILER%]==[clang-cl] call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
-  - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev ninja cmake
+  - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev cmake
+
+  - if [%WITH_FORTRAN%]==[no] conda install --yes --quiet ninja
+  - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet -c isuruf kitware-ninja
   - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet flang
-  - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+
+  - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - if [%COMPILER%]==[clang-cl] set "LIB=%CONDA_INSTALL_LOCN%\Library\lib;%LIB%"
   - if [%COMPILER%]==[clang-cl] set "CPATH=%CONDA_INSTALL_LOCN%\Library\include;%CPATH%"
 
 before_build:
   - ps: if (-Not (Test-Path .\build)) { mkdir build }
   - cd build
-  - if [%COMPILER%]==[cl] cmake -G "Visual Studio 12 Win64" ..
+  - if [%COMPILER%]==[cl] cmake -G "Visual Studio 15 2017 Win64" ..
   - if [%WITH_FORTRAN%]==[no] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl ..
-  - if [%WITH_FORTRAN%]==[yes] cmake -G "NMake Makefiles" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 ..
+  - if [%WITH_FORTRAN%]==[yes] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 ..
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON ..
 
 build_script:
