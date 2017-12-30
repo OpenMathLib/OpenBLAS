@@ -293,7 +293,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
       min_l = k - ls;
 
       if (min_l >= GEMM_Q * 2) {
-	gemm_p = GEMM_P;
+	// gemm_p = GEMM_P;
 	min_l  = GEMM_Q;
       } else {
 	if (min_l > GEMM_Q) {
