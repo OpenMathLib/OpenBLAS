@@ -125,9 +125,9 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"2:					\n\t"
 
 	:
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap[0]),  // 4
@@ -231,9 +231,9 @@ static void zgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"2:					\n\t"
 
 	:
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap[0]),  // 4
@@ -321,9 +321,9 @@ static void zgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"vzeroupper			 \n\t"
 
 	:
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap[0]),  // 4
@@ -393,9 +393,9 @@ static void zgemv_kernel_4x1( BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"vzeroupper			 \n\t"
 
 	:
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap)      // 4
@@ -493,9 +493,9 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest,FLOAT a
 	"vzeroupper			 \n\t"
 
 	:
+          "+r" (i),	      // 0	
+	  "+r" (n)  	      // 1
         : 
-          "r" (i),	      // 0	
-	  "r" (n),  	      // 1
           "r" (src),          // 2
           "r" (dest),         // 3
           "r" (&alpha_r),     // 4

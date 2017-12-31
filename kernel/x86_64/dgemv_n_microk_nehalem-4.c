@@ -149,9 +149,9 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"movups         %%xmm5 ,  -16(%3,%0,8)	       \n\t"	// 2 * y
 
 	:
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap[0]),  // 4
