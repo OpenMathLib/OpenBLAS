@@ -237,7 +237,7 @@ static inline void get_cpumap(int node, unsigned long * node_info) {
     if(k!=0){
       name[k]='\0';
       affinity[count++] = strtoul(name, &dummy, 16);
-      k=0;
+      // k=0;
     }
     // 0-63bit -> node_info[0], 64-128bit -> node_info[1] ....
     // revert the sequence
@@ -293,7 +293,7 @@ static inline void get_share(int cpu, int level, unsigned long * share) {
     if(k!=0){
       name[k]='\0';
       affinity[count++] = strtoul(name, &dummy, 16);
-      k=0;
+      // k=0;
     }
     // 0-63bit -> node_info[0], 64-128bit -> node_info[1] ....
     // revert the sequence
