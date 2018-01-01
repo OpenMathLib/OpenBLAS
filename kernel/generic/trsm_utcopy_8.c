@@ -649,14 +649,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
     if (m & 2) {
       if (ii == jj) {
-#ifndef UNIT
+/* #ifndef UNIT
 	data01 = *(a1 + 0);
 #endif
 
 	data09 = *(a2 + 0);
 #ifndef UNIT
 	data10 = *(a2 + 1);
-#endif
+#endif */
       }
 
       if (ii > jj) {
