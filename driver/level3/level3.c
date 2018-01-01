@@ -251,11 +251,11 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   if ((k == 0) || (alpha == NULL)) return 0;
 
 #if !defined(XDOUBLE) || !defined(QUAD_PRECISION)
-  if ((alpha[0] == ZERO)
+  if ( alpha[0] == ZERO
 #ifdef COMPLEX
-      && (alpha[1] == ZERO)
+      && alpha[1] == ZERO
 #endif
-      ) return 0;
+	 ) return 0; 
 #else
   if (((alpha[0].x[0] | alpha[0].x[1]
 #ifdef COMPLEX
