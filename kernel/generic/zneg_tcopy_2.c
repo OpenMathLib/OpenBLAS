@@ -140,7 +140,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
 	*(b_offset1 + 6) = -ctemp11;
 	*(b_offset1 + 7) = -ctemp12;
 
-	b_offset1 += m * 4;
+	// b_offset1 += m * 4;
 	a_offset1 += 4;
 	a_offset2 += 4;
       }
@@ -204,7 +204,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
       *(b_offset + 2) = -ctemp3;
       *(b_offset + 3) = -ctemp4;
 
-      b_offset += m * 4;
+      // b_offset += m * 4;
       a_offset += 4;
     }
 

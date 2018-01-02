@@ -719,10 +719,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
 
   if (m & 1){
     aoffset1  = aoffset;
-    aoffset += lda;
+    // aoffset += lda;
 
     boffset1  = boffset;
-    boffset  += 8;
+    // boffset  += 8;
 
     i = (n >> 3);
     if (i > 0){
@@ -762,7 +762,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
        *(boffset2 +  1) = -ctemp02;
        *(boffset2 +  2) = -ctemp03;
        *(boffset2 +  3) = -ctemp04;
-       boffset2 += 4;
+       // boffset2 += 4;
      }
 
      if (n & 2){
@@ -772,7 +772,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
 
        *(boffset3 +  0) = -ctemp01;
        *(boffset3 +  1) = -ctemp02;
-       boffset3 += 2;
+       // boffset3 += 2;
      }
 
      if (n & 1){

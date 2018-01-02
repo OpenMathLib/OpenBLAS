@@ -288,7 +288,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
       i++;
     } while (i <= k2);
 
-    a += lda;
+    // a += lda;
   }
 
   return 0;
