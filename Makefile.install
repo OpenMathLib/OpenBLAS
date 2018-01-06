@@ -100,12 +100,12 @@ endif
 
 
 #Generating openblas.pc
-	@echo Generating openblas.pc in $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)
-	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
-	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
-	@echo 'version='$(VERSION) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
-	@echo 'extralib='$(EXTRALIB) >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
-	@cat openblas.pc.in >> $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc
+	@echo Generating openblas.pc in "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
+	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+	@echo 'version='$(VERSION) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+	@echo 'extralib='$(EXTRALIB) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+	@cat openblas.pc.in >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 
 
 #Generating OpenBLASConfig.cmake
