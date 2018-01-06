@@ -372,7 +372,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	*(b1 + 0) = A1;
 	*(b1 + 1) = A2;
       }
-      buffer += 2;
+      // buffer += 2;
     }
   }
 

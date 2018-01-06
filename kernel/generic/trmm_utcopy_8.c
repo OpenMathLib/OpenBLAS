@@ -685,7 +685,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    data33 = *(ao5 + 0);
 	    data41 = *(ao6 + 0);
 	    data49 = *(ao7 + 0);
-	    data57 = *(ao8 + 0);
+	    // data57 = *(ao8 + 0);
 
 	    if (i >= 2) {
 #ifndef UNIT
@@ -696,7 +696,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      data34 = *(ao5 + 1);
 	      data42 = *(ao6 + 1);
 	      data50 = *(ao7 + 1);
-	      data58 = *(ao8 + 1);
+	      // data58 = *(ao8 + 1);
 	    }
 
 	    if (i >= 3) {
@@ -707,7 +707,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      data35 = *(ao5 + 2);
 	      data43 = *(ao6 + 2);
 	      data51 = *(ao7 + 2);
-	      data59 = *(ao8 + 2);
+	      // data59 = *(ao8 + 2);
 	    }
 
 	    if (i >= 4) {
@@ -717,7 +717,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      data36 = *(ao5 + 3);
 	      data44 = *(ao6 + 3);
 	      data52 = *(ao7 + 3);
-	      data60 = *(ao8 + 3);
+	      // data60 = *(ao8 + 3);
 	    }
 
 	    if (i >= 5) {
@@ -726,7 +726,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 #endif
 	      data45 = *(ao6 + 4);
 	      data53 = *(ao7 + 4);
-	      data61 = *(ao8 + 4);
+	      // data61 = *(ao8 + 4);
 	    }
 
 	    if (i >= 6) {
@@ -734,14 +734,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      data46 = *(ao6 + 5);
 #endif
 	      data54 = *(ao7 + 5);
-	      data62 = *(ao8 + 5);
+	      // data62 = *(ao8 + 5);
 	    }
 
 	    if (i >= 7) {
 #ifndef UNIT
 	      data55 = *(ao7 + 6);
 #endif
-	      data63 = *(ao8 + 6);
+	      // data63 = *(ao8 + 6);
 	    }
 
 #ifdef UNIT
@@ -1074,27 +1074,27 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	    }
 	  } else {
 
-#ifndef UNIT
+/* #ifndef UNIT
 	    data01 = *(ao1 + 0);
-#endif
+#endif */
 	    data09 = *(ao2 + 0);
 	    data17 = *(ao3 + 0);
-	    data25 = *(ao4 + 0);
+	    // data25 = *(ao4 + 0);
 
 	    if (i >= 2) {
-#ifndef UNIT
+/* #ifndef UNIT
 	      data10 = *(ao2 + 1);
-#endif
+#endif */
 	      data18 = *(ao3 + 1);
-	      data26 = *(ao4 + 1);
+	      // data26 = *(ao4 + 1);
 	    }
 
-	    if (i >= 3) {
+/* 	    if (i >= 3) {
 #ifndef UNIT
 	      data19 = *(ao3 + 2);
 #endif
 	      data27 = *(ao4 + 2);
-	    }
+	    } */
 
 #ifndef UNIT
 	    b[ 0] = ONE;
