@@ -220,6 +220,12 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
             i = n1;
         }
+        else {
+            //assign minf
+             minf = CABS1(x,0);
+             ix += 2;
+             i++;
+         }
 
         while(i < n)
         {

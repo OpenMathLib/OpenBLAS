@@ -37,7 +37,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-static BLASLONG __attribute__((noinline)) diamin_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
+static BLASLONG __attribute__((noinline)) diamin_kernel_32(BLASLONG n, FLOAT *x, FLOAT *minf) {
 
     __asm__(
             "pfd 1, 0(%1) \n\t"
@@ -171,7 +171,7 @@ static BLASLONG __attribute__((noinline)) diamin_kernel_32(BLASLONG n, FLOAT *x,
             "std %%f0,0(%2)    \n\t"
 
             :
-            : "r"(n), "a"(x), "a"(maxf)
+            : "r"(n), "a"(x), "a"(minf)
             : "cc", "memory","r0","r1","r2","f0","v0","v1","v2","v3","v4","v5","v6","v7","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
 
@@ -183,18 +183,17 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG i = 0;
     BLASLONG j = 0;
     BLASLONG ix = 0;
-    FLOAT minf = 0.0;
     BLASLONG min = 0;
-
+    FLOAT minf = 0.0;
+    
     if (n <= 0 || inc_x <= 0) return (min);
-
+    minf = ABS(x[0]); //index's not incremented,though it will make first comparision redundant
     if (inc_x == 1) {
 
         BLASLONG n1 = n & -32;
         if (n1 > 0) {
 
             min = diamin_kernel_32(n1, x, &minf);
-
             i = n1;
         }
 
