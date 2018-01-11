@@ -37,29 +37,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-static BLASLONG __attribute__((noinline)) diamax_kernel_32_TUNED(BLASLONG n, FLOAT *x, FLOAT *maxf) {
-
-    __asm__(
-            "pfd 1, 0(%1) \n\t"
-            "sllg   %%r0,%0,3  \n\t"
-            "agr    %%r0,%1    \n\t"
-            "VLEIG  %%v20,0,0  \n\t"
-            "VLEIG  %%v20,1,1  \n\t"
-            "VLEIG  %%v21,2,0  \n\t"
-            "VLEIG  %%v21,3,1  \n\t"
-            "VLEIG  %%v22,4,0  \n\t"
-            "VLEIG  %%v22,5,1  \n\t"
-            "VLEIG  %%v23,6,0  \n\t"
-            "VLEIG  %%v23,7,1  \n\t"
-            "VREPIG %%v4,8     \n\t"
+ 
+/**
+ * Find  maximum index 
+ * Warning: requirements n>0  and n % 32 == 0
+ * @param n     
+ * @param x     pointer to the vector
+ * @param minf  (out) maximum absolute value .( only for output )
+ * @return  index 
+ */
+static BLASLONG diamax_kernel_32_TUNED(BLASLONG n, FLOAT *x, FLOAT *maxf) {
+    BLASLONG index;
+   __asm__(
+            "pfd 1, 0(%4) \n\t"
+            "sllg   %%r0,%3,3  \n\t"
+            "agr    %%r0,%4    \n\t"
+            "vleig  %%v20,0,0  \n\t"
+            "vleig  %%v20,1,1  \n\t"
+            "vleig  %%v21,2,0  \n\t"
+            "vleig  %%v21,3,1  \n\t"
+            "vleig  %%v22,4,0  \n\t"
+            "vleig  %%v22,5,1  \n\t"
+            "vleig  %%v23,6,0  \n\t"
+            "vleig  %%v23,7,1  \n\t"
+            "vrepig %%v4,8     \n\t"
             "vzero %%v5        \n\t"
             "vzero %%v18       \n\t"
             "vzero %%v19       \n\t"
             ".align 16 \n\t"
             "1: \n\t"
-            "pfd 1, 256(%1 ) \n\t"
-            "vlm  %%v24,%%v31, 0(%1 ) \n\t"
-
+            "pfd 1, 256(%2 ) \n\t"
+            "vlm  %%v24,%%v31, 0(%2 ) \n\t"
             "vflpdb  %%v24, %%v24 \n\t"
             "vflpdb  %%v25, %%v25 \n\t"
             "vflpdb  %%v26, %%v26 \n\t"
@@ -68,7 +76,6 @@ static BLASLONG __attribute__((noinline)) diamax_kernel_32_TUNED(BLASLONG n, FLO
             "vflpdb  %%v29, %%v29 \n\t"
             "vflpdb  %%v30, %%v30 \n\t"
             "vflpdb  %%v31, %%v31 \n\t"
-
             "vfchdb  %%v16,%%v25,%%v24  \n\t "
             "vfchdb  %%v17,%%v27,%%v26  \n\t "
             "vsel    %%v1,%%v21,%%v20,%%v16 \n\t"
@@ -81,7 +88,6 @@ static BLASLONG __attribute__((noinline)) diamax_kernel_32_TUNED(BLASLONG n, FLO
             "vsel    %%v25,%%v29,%%v28,%%v16 \n\t"
             "vsel    %%v26,%%v23,%%v22,%%v17 \n\t"
             "vsel    %%v27,%%v31,%%v30,%%v17 \n\t"
-
 
             "vfchdb  %%v28, %%v3,%%v0         \n\t"
             "vfchdb  %%v29,%%v27, %%v25       \n\t"
@@ -89,23 +95,18 @@ static BLASLONG __attribute__((noinline)) diamax_kernel_32_TUNED(BLASLONG n, FLO
             "vsel    %%v0,%%v3,%%v0,%%v28     \n\t"
             "vsel    %%v24,%%v26,%%v24,%%v29  \n\t"
             "vsel    %%v25,%%v27,%%v25,%%v29  \n\t"
-
-            "VAG %%v1,%%v1,%%v5    \n\t"
-            "VAG %%v24,%%v24,%%v5  \n\t"
-            "VAG %%v24,%%v24,%%v4  \n\t"
-
+            "vag %%v1,%%v1,%%v5    \n\t"
+            "vag %%v24,%%v24,%%v5  \n\t"
+            "vag %%v24,%%v24,%%v4  \n\t"
             "vfchdb %%v16,%%v25 , %%v0     \n\t"
-            "VAG    %%v5,%%v5,%%v4         \n\t"
+            "vag    %%v5,%%v5,%%v4         \n\t"
             "vsel   %%v29,%%v25,%%v0,%%v16 \n\t"
             "vsel   %%v28,%%v24,%%v1,%%v16 \n\t"
-
             "vfchdb %%v17, %%v29,%%v18   \n\t"
             "vsel  %%v19,%%v28,%%v19,%%v17 \n\t"
             "vsel    %%v18,%%v29,%%v18,%%v17 \n\t"
-
-            "VAG %%v5,%%v5,%%v4        \n\t"
-            "vlm  %%v24,%%v31,128(%1 ) \n\t"
-
+            "vag %%v5,%%v5,%%v4        \n\t"
+            "vlm  %%v24,%%v31,128(%2 ) \n\t"
             "vflpdb  %%v24, %%v24 \n\t"
             "vflpdb  %%v25, %%v25 \n\t"
             "vflpdb  %%v26, %%v26 \n\t"
@@ -114,7 +115,6 @@ static BLASLONG __attribute__((noinline)) diamax_kernel_32_TUNED(BLASLONG n, FLO
             "vflpdb  %%v29, %%v29 \n\t"
             "vflpdb  %%v30, %%v30 \n\t"
             "vflpdb  %%v31, %%v31 \n\t"
-
             "vfchdb  %%v16,%%v25,%%v24  \n\t "
             "vfchdb  %%v17,%%v27,%%v26  \n\t "
             "vsel    %%v1,%%v21,%%v20,%%v16 \n\t"
@@ -128,56 +128,53 @@ static BLASLONG __attribute__((noinline)) diamax_kernel_32_TUNED(BLASLONG n, FLO
             "vsel    %%v26,%%v23,%%v22,%%v17 \n\t"
             "vsel    %%v27,%%v31,%%v30,%%v17 \n\t"
 
-
             "vfchdb  %%v28, %%v3,%%v0     \n\t"
             "vfchdb  %%v29,%%v27, %%v25   \n\t"
             "vsel    %%v1,%%v2,%%v1,%%v28 \n\t"
             "vsel    %%v0,%%v3,%%v0,%%v28 \n\t"
             "vsel    %%v24,%%v26,%%v24,%%v29 \n\t"
             "vsel    %%v25,%%v27,%%v25,%%v29 \n\t"
-
-            "VAG %%v1,%%v1,%%v5     \n\t"
-            "VAG %%v24,%%v24,%%v5   \n\t"
-            "la %1,256(%1)          \n\t"
-            "VAG %%v24,%%v24,%%v4   \n\t"
-
+            "vag %%v1,%%v1,%%v5     \n\t"
+            "vag %%v24,%%v24,%%v5   \n\t"
+            "la %2,256(%2)          \n\t"
+            "vag %%v24,%%v24,%%v4   \n\t"
             "vfchdb  %%v16,%%v25 , %%v0  \n\t"
-            "VAG     %%v5,%%v5,%%v4      \n\t"
+            "vag     %%v5,%%v5,%%v4      \n\t"
             "vsel    %%v29,%%v25,%%v0,%%v16 \n\t"
             "vsel    %%v28,%%v24,%%v1,%%v16 \n\t"
-
             "vfchdb  %%v17, %%v29,%%v18      \n\t"
             "vsel    %%v19,%%v28,%%v19,%%v17 \n\t"
             "vsel    %%v18,%%v29,%%v18,%%v17 \n\t"
-
-            "VAG %%v5,%%v5,%%v4 \n\t"
-
-            "clgrjl %1,%%r0,1b  \n\t"
-
+            "vag %%v5,%%v5,%%v4 \n\t"
+            "clgrjl %2,%%r0,1b  \n\t"
 
             "vrepg %%v26,%%v18,1     \n\t"
             "vrepg %%v5,%%v19,1      \n\t"
             "wfcdb  %%v26,%%v18      \n\t"
             "jne 2f  \n\t"
-            "VSTEG   %%v18,0(%2),0   \n\t"
-            "VMNLG   %%v1,%%v5,%%v19 \n\t"
-            "VLGVG   %%r2,%%v1,0     \n\t"
-            "br %%r14  \n\t"
+            "vsteg   %%v18,%1,0   \n\t"
+            "vmnlg   %%v1,%%v5,%%v19 \n\t"
+            "vlgvg   %0,%%v1,0     \n\t"
+            "j 3f  \n\t"
             "2: \n\t"
             "wfchdb  %%v16,%%v26,%%v18      \n\t"
             "vsel    %%v1,%%v5,%%v19,%%v16  \n\t"
             "vsel    %%v0,%%v26,%%v18,%%v16 \n\t"
-            "VLGVG  %%r2,%%v1,0  \n\t"
-            "std %%f0,0(%2)    \n\t"
-
-            :
-            : "r"(n), "a"(x), "a"(maxf)
-            : "cc", "memory","r0","r1","r2","f0","v0","v1","v2","v3","v4","v5","v6","v7","v16",
+            "vlgvg  %0,%%v1,0  \n\t"
+            "std %%f0,%1    \n\t"
+            "3: "
+            : "=r"(index) ,"=m"(*maxf) , "+&a"(x)
+            : "r"(n), "2"(x) 
+            : "cc", "r0", "f0","v0","v1","v2","v3","v4","v5","v6","v7","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
-
             );
+    
+    return index;
 
 }
+
+
+ 
  
 BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG i = 0;

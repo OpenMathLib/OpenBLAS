@@ -33,58 +33,65 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CABS1(x,i)    ABS(x[i])+ABS(x[i+1])
 
  
-
-static BLASLONG __attribute__((noinline)) ziamin_kernel_8_TUNED(BLASLONG n, FLOAT *x, FLOAT *minf) { 
-
+/**
+ * Find  minimum index 
+ * Warning: requirements n>0  and n % 8 == 0
+ * @param n     
+ * @param x     pointer to the vector
+ * @param minf  (out) minimum absolute value .( only for output )
+ * @return minimum index 
+ */
+static BLASLONG ziamin_kernel_8_TUNED(BLASLONG n, FLOAT *x, FLOAT *minf) { 
+    BLASLONG index ;
     __asm__(
-            "pfd 1, 0(%1) \n\t" 
-            "VLEIG  %%v16,0,0  \n\t"
-            "VLEIG  %%v16,1,1  \n\t"
-            "VLEIG  %%v17,2,0  \n\t"
-            "VLEIG  %%v17,3,1  \n\t"
-            "VLEIG  %%v18,4,0  \n\t"
-            "VLEIG  %%v18,5,1  \n\t"
-            "VLEIG  %%v19,6,0  \n\t"
-            "VLEIG  %%v19,7,1  \n\t" 
-            "VLEIG  %%v20,8,0  \n\t"
-            "VLEIG  %%v20,9,1  \n\t"
-            "VLEIG  %%v21,10,0 \n\t"
-            "VLEIG  %%v21,11,1 \n\t"
-            "VLEIG  %%v22,12,0 \n\t"
-            "VLEIG  %%v22,13,1 \n\t"
-            "VLEIG  %%v23,14,0 \n\t"
-            "VLEIG  %%v23,15,1 \n\t" 
-            "ld %%f6,0(%1)     \n\t"
+            "pfd 1, 0(%4) \n\t" 
+            "vleig  %%v16,0,0  \n\t"
+            "vleig  %%v16,1,1  \n\t"
+            "vleig  %%v17,2,0  \n\t"
+            "vleig  %%v17,3,1  \n\t"
+            "vleig  %%v18,4,0  \n\t"
+            "vleig  %%v18,5,1  \n\t"
+            "vleig  %%v19,6,0  \n\t"
+            "vleig  %%v19,7,1  \n\t" 
+            "vleig  %%v20,8,0  \n\t"
+            "vleig  %%v20,9,1  \n\t"
+            "vleig  %%v21,10,0 \n\t"
+            "vleig  %%v21,11,1 \n\t"
+            "vleig  %%v22,12,0 \n\t"
+            "vleig  %%v22,13,1 \n\t"
+            "vleig  %%v23,14,0 \n\t"
+            "vleig  %%v23,15,1 \n\t" 
+            "ld %%f6,0(%4)     \n\t"
             "lpdbr %%f6,%%f6   \n\t" 
-            "ld %%f7,8(%1)     \n\t"
+            "ld %%f7,8(%4)     \n\t"
             "lpdbr %%f7,%%f7   \n\t"   
             "adbr %%f6,%%f7    \n\t"      
-            "sllg %%r0,%0,4    \n\t"
-            "agr %%r0,%1       \n\t" 
+            "sllg %%r0,%3,4    \n\t"
+            "agr %%r0,%4       \n\t" 
             "vrepg %%v6,%%v6,0 \n\t"
             "vzero %%v7        \n\t"
-            "VREPIG %%v4,16    \n\t"
+            "vrepig %%v4,16    \n\t"
             "vzero %%v5        \n\t"
             ".align 16 \n\t"
             "1: \n\t"
-            "pfd 1, 256(%1 ) \n\t"
+            "pfd 1, 256(%2 ) \n\t"
         
-            "vleg %%v24 ,  0( %1),0 \n\t" 
-            "vleg %%v25 ,  8( %1),0 \n\t"
-            "vleg %%v24 , 16( %1),1 \n\t" 
-            "vleg %%v25 , 24( %1),1 \n\t"
-            "vleg %%v26 , 32( %1),0 \n\t"  
-            "vleg %%v27 , 40( %1),0 \n\t"
-            "vleg %%v26 , 48( %1),1 \n\t" 
-            "vleg %%v27 , 56( %1),1 \n\t" 
-            "vleg %%v28 , 64( %1),0 \n\t" 
-            "vleg %%v29 , 72( %1),0 \n\t" 
-            "vleg %%v28 , 80( %1),1 \n\t"
-            "vleg %%v29 , 88( %1),1 \n\t" 
-            "vleg %%v30 , 96( %1),0 \n\t"  
-            "vleg %%v31 ,104( %1),0 \n\t"
-            "vleg %%v30 ,112( %1),1 \n\t"
-            "vleg %%v31 ,120( %1),1 \n\t"  
+            "vleg %%v24 ,  0( %2),0 \n\t" 
+            "vleg %%v25 ,  8( %2),0 \n\t"
+            "vleg %%v24 , 16( %2),1 \n\t" 
+            "vleg %%v25 , 24( %2),1 \n\t"
+            "vleg %%v26 , 32( %2),0 \n\t"  
+            "vleg %%v27 , 40( %2),0 \n\t"
+            "vleg %%v26 , 48( %2),1 \n\t" 
+            "vleg %%v27 , 56( %2),1 \n\t" 
+            "vleg %%v28 , 64( %2),0 \n\t" 
+            "vleg %%v29 , 72( %2),0 \n\t" 
+            "vleg %%v28 , 80( %2),1 \n\t"
+            "vleg %%v29 , 88( %2),1 \n\t" 
+            "vleg %%v30 , 96( %2),0 \n\t"  
+            "vleg %%v31 ,104( %2),0 \n\t"
+            "vleg %%v30 ,112( %2),1 \n\t"
+            "vleg %%v31 ,120( %2),1 \n\t"  
             "vflpdb  %%v24, %%v24   \n\t" 
             "vflpdb  %%v25, %%v25   \n\t" 
             "vflpdb  %%v26, %%v26   \n\t" 
@@ -100,22 +107,22 @@ static BLASLONG __attribute__((noinline)) ziamin_kernel_8_TUNED(BLASLONG n, FLOA
             "vfadb %%v3,%%v30,%%v31 \n\t"
      
     
-            "vleg %%v24 ,128( %1),0 \n\t" 
-            "vleg %%v25 ,136( %1),0 \n\t"
-            "vleg %%v24 ,144( %1),1 \n\t" 
-            "vleg %%v25 ,152( %1),1 \n\t"
-            "vleg %%v26 ,160( %1),0 \n\t"  
-            "vleg %%v27 ,168( %1),0 \n\t"
-            "vleg %%v26 ,176( %1),1 \n\t" 
-            "vleg %%v27 ,184( %1),1 \n\t" 
-            "vleg %%v28 ,192( %1),0 \n\t" 
-            "vleg %%v29 ,200( %1),0 \n\t" 
-            "vleg %%v28 ,208( %1),1 \n\t"
-            "vleg %%v29 ,216( %1),1 \n\t" 
-            "vleg %%v30 ,224( %1),0 \n\t"  
-            "vleg %%v31 ,232( %1),0 \n\t"
-            "vleg %%v30 ,240( %1),1 \n\t"
-            "vleg %%v31 ,248( %1),1 \n\t"  
+            "vleg %%v24 ,128( %2),0 \n\t" 
+            "vleg %%v25 ,136( %2),0 \n\t"
+            "vleg %%v24 ,144( %2),1 \n\t" 
+            "vleg %%v25 ,152( %2),1 \n\t"
+            "vleg %%v26 ,160( %2),0 \n\t"  
+            "vleg %%v27 ,168( %2),0 \n\t"
+            "vleg %%v26 ,176( %2),1 \n\t" 
+            "vleg %%v27 ,184( %2),1 \n\t" 
+            "vleg %%v28 ,192( %2),0 \n\t" 
+            "vleg %%v29 ,200( %2),0 \n\t" 
+            "vleg %%v28 ,208( %2),1 \n\t"
+            "vleg %%v29 ,216( %2),1 \n\t" 
+            "vleg %%v30 ,224( %2),0 \n\t"  
+            "vleg %%v31 ,232( %2),0 \n\t"
+            "vleg %%v30 ,240( %2),1 \n\t"
+            "vleg %%v31 ,248( %2),1 \n\t"  
             "vflpdb  %%v24, %%v24   \n\t" 
             "vflpdb  %%v25, %%v25   \n\t" 
             "vflpdb  %%v26, %%v26   \n\t" 
@@ -155,47 +162,51 @@ static BLASLONG __attribute__((noinline)) ziamin_kernel_8_TUNED(BLASLONG n, FLOA
             "vsel  %%v29,%%v25,%%v2,%%v30  \n\t" 
             "vsel  %%v31,%%v27,%%v3 ,%%v30 \n\t" 
     
-            "la %1,256(%1)      \n\t"  
+            "la %2,256(%2)      \n\t"  
            
             "vfchdb %%v0,%%v28, %%v31      \n\t" 
             "vsel  %%v25,%%v29,%%v26,%%v0  \n\t" 
             "vsel  %%v27,%%v31,%%v28,%%v0  \n\t"
     
-            "VAG %%v25,%%v25,%%v5 \n\t"
+            "vag %%v25,%%v25,%%v5 \n\t"
     
              //cmp with previous
             "vfchdb %%v30,%%v6 , %%v27     \n\t"
             "vsel  %%v7,%%v25,%%v7,%%v30   \n\t" 
             "vsel  %%v6,%%v27,%%v6,%%v30   \n\t"
     
-            "VAG %%v5,%%v5,%%v4 \n\t" 
+            "vag %%v5,%%v5,%%v4 \n\t" 
     
-            "clgrjl %1,%%r0,1b  \n\t"
+            "clgrjl %2,%%r0,1b  \n\t"
 
             //xtract index
             "vrepg %%v26,%%v6,1      \n\t"
             "vrepg %%v5,%%v7,1       \n\t"
             "wfcdb  %%v26,%%v6       \n\t"
             "jne 2f  \n\t"
-            "VSTEG   %%v6,0(%2),0    \n\t"
-            "VMNLG  %%v1,%%v5,%%v7   \n\t"
-            "VLGVG  %%r2,%%v1,0      \n\t"
-            "br %%r14  \n\t"
+            "vsteg   %%v6,%1,0    \n\t"
+            "vmnlg  %%v1,%%v5,%%v7   \n\t"
+            "vlgvg  %0,%%v1,0      \n\t"
+            "j 3f  \n\t"
             "2: \n\t"
             "wfchdb  %%v16,%%v6 ,%%v26     \n\t"
             "vsel    %%v1,%%v5,%%v7,%%v16  \n\t"
             "vsel    %%v0,%%v26,%%v6,%%v16 \n\t"
-            "VLGVG   %%r2,%%v1,0  \n\t"
-            "std %%f0,0(%2)       \n\t"
+            "vlgvg   %0,%%v1,0  \n\t"
+            "std %%f0,%1       \n\t"
+            "3: \n\t"
 
-            :
-            : "r"(n), "a"(x), "a"(minf)
-            : "cc", "memory","r0","r1","r2","f0","v0","v1","v2","v3","v4","v5","v6","v7","v16",
+            : "+r"(index) ,"=m"(*minf), "+&a"(x)
+            : "r"(n), "2"(x) 
+            : "cc","r0","f0","v0","v1","v2","v3","v4","v5","v6","v7","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
 
             );
 
+    return index;
 }
+
+ 
 
  
  
@@ -220,6 +231,12 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
             i = n1;
         }
+        else {
+            //assign minf
+             minf = CABS1(x,0);
+             ix += 2;
+             i++;
+         }
 
         while(i < n)
         {

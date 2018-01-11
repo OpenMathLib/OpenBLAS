@@ -36,12 +36,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-static FLOAT __attribute__ ((noinline)) dasum_kernel_32(BLASLONG n, FLOAT *x) {
+ 
 
-    __asm__ (
-            "pfd     1, 0(%1)   \n\t"
-            "sllg    %%r0,%0,3  \n\t"
-            "agr     %%r0,%1    \n\t"   
+static   FLOAT  dasum_kernel_32(BLASLONG n, FLOAT *x) {
+    FLOAT asum   ; 
+    __asm__  (
+            "pfd     1, 0(%3)   \n\t"
+            "sllg    %%r0,%2,3  \n\t"
+            "agr     %%r0,%3    \n\t"   
             "vzero   %%v0       \n\t"
             "vzero   %%v1       \n\t"
             "vzero   %%v2       \n\t"
@@ -95,12 +97,15 @@ static FLOAT __attribute__ ((noinline)) dasum_kernel_32(BLASLONG n, FLOAT *x) {
             "vfadb   %%v0,%%v25,%%v24   \n\t"
             "vrepg   %%v1,%%v0,1        \n\t"
             "adbr    %%f0,%%f1          \n\t"
-            :
-            : "r"(n), "a"(x)
-            : "cc", "memory","r0","f0","f1","v0","v1","v2","v3","v24","v25","v26","v27","v28","v29","v30","v31"
+            "ldr     %0,%%f0  \n\t" 
+            : "=f"(asum),"+&a"(x)
+            : "r"(n), "1"(x)
+            : "cc",   "r0" ,"f0","f1","v0","v1","v2","v3","v24","v25","v26","v27","v28","v29","v30","v31"
             );
+      return asum;
 
 }
+
 
 
 
