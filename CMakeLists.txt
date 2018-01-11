@@ -12,11 +12,7 @@ set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${Open
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 
-if(MSVC)
-set(OpenBLAS_LIBNAME libopenblas)
-else()
 set(OpenBLAS_LIBNAME openblas)
-endif()
 
 #######
 if(MSVC)
