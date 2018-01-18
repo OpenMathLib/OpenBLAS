@@ -28,78 +28,87 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if  defined(Z13)
-static void __attribute__ ((noinline))  dscal_kernel_8( BLASLONG n, FLOAT  da , FLOAT *x )
+
+static void   dscal_kernel_32( BLASLONG n, FLOAT  da , FLOAT *x )
 {
-   
-             __asm__ ("pfd 2, 0(%1) \n\t"      
-                    "vrepg %%v0 , %%v0,0   \n\t"
-                    "sllg  %%r0,%0,3       \n\t" 
-                    "xgr   %%r1,%%r1       \n\t"
-                    ".align 16 \n\t"    
-                    "1: \n\t" 
-                    "pfd 2, 256(%%r1,%1)   \n\t"     
-                    "vl  %%v24, 0(%%r1,%1) \n\t"
-                    "vfmdb    %%v24,%%v24,%%v0 \n\t"
-                    "vst  %%v24, 0(%%r1,%1)  \n\t" 
-                    "vl   %%v25, 16(%%r1,%1) \n\t"
-                    "vfmdb    %%v25,%%v25,%%v0  \n\t"  
-                    "vst  %%v25, 16(%%r1,%1) \n\t" 
-                    "vl   %%v26, 32(%%r1,%1) \n\t"
-                    "vfmdb    %%v26,%%v26,%%v0 \n\t"
-                    "vst  %%v26, 32(%%r1,%1) \n\t"  
-                    "vl   %%v27, 48(%%r1,%1) \n\t" 
-                    "vfmdb    %%v27,%%v27,%%v0  \n\t"  
-                    "vst  %%v27, 48(%%r1,%1) \n\t"  
-                    "vl   %%v24, 64(%%r1,%1) \n\t"
-                    "vfmdb    %%v24,%%v24,%%v0  \n\t"
-                    "vst  %%v24, 64(%%r1,%1) \n\t" 
-                    "vl   %%v25, 80(%%r1,%1) \n\t"
-                    "vfmdb    %%v25,%%v25,%%v0  \n\t"  
-                    "vst  %%v25, 80(%%r1,%1) \n\t" 
-                    "vl   %%v26, 96(%%r1,%1) \n\t"
-                    "vfmdb    %%v26,%%v26,%%v0  \n\t"
-                    "vst  %%v26, 96(%%r1,%1)  \n\t"  
-                    "vl   %%v27, 112(%%r1,%1) \n\t" 
-                    "vfmdb    %%v27,%%v27,%%v0  \n\t"  
-                    "vst  %%v27, 112(%%r1,%1) \n\t"   
-                    "la %%r1,128(%%r1) \n\t"
-                    "clgrjl %%r1,%%r0,1b \n\t"
-                    : 
-                    :"r"(n),"a"(x),"f"(da)
-                    :"cc" , "memory" ,"r0","r1","v0","v24","v25","v26","v27"
+
+             /* faster than sequence of triples(vl vfmd vst) (tested OPENBLAS_LOOPS=10000) */
+             __asm__ ("pfd    2, 0(%[x_ptr])   \n\t"      
+                      "lgdr   %%r0,%[alpha]    \n\t"
+                      "vlvgp  %%v0,%%r0,%%r0   \n\t"
+                      "vlr    %%v1,%%v0        \n\t"
+                      "sllg   %%r0,%[n],3      \n\t" 
+                      "agr    %%r0,%[x_ptr]    \n\t"
+                      ".align 16 \n\t"    
+                      "1:     \n\t" 
+                      "pfd    2,         256(%[x_ptr])     \n\t"    
+                      "vlm    %%v16,%%v23, 0(%[x_ptr])     \n\t"
+                      "vfmdb  %%v16,%%v16,%%v0 \n\t"
+                      "vfmdb  %%v17,%%v17,%%v1 \n\t"
+                      "vfmdb  %%v18,%%v18,%%v0 \n\t"
+                      "vfmdb  %%v19,%%v19,%%v1 \n\t"
+                      "vfmdb  %%v20,%%v20,%%v0 \n\t"
+                      "vfmdb  %%v21,%%v21,%%v1 \n\t"
+                      "vfmdb  %%v22,%%v22,%%v0 \n\t"
+                      "vfmdb  %%v23,%%v23,%%v1 \n\t" 
+                      "vstm   %%v16,%%v23, 0(%[x_ptr])      \n\t"  
+                      "vlm    %%v24,%%v31,128(%[x_ptr])     \n\t"                                              
+                      "vfmdb  %%v24,%%v24,%%v0 \n\t"       
+                      "vfmdb  %%v25,%%v25,%%v1 \n\t"
+                      "vfmdb  %%v26,%%v26,%%v0 \n\t"
+                      "vfmdb  %%v27,%%v27,%%v1 \n\t"
+                      "vfmdb  %%v28,%%v28,%%v0 \n\t"
+                      "vfmdb  %%v29,%%v29,%%v1 \n\t"
+                      "vfmdb  %%v30,%%v30,%%v0 \n\t"
+                      "vfmdb  %%v31,%%v31,%%v1 \n\t"                                     
+                      "vstm   %%v24,%%v31,128(%[x_ptr])    \n\t"  
+                      "la     %[x_ptr],  256(%[x_ptr])    \n\t"
+                      "clgrjl %[x_ptr],%%r0,1b \n\t"  
+                      : [mem] "+m" (*(double (*)[n])x) ,[x_ptr] "+&a"(x)
+                      : [n] "r"(n),[alpha] "f"(da)
+                      :"cc" ,  "r0","v0","v1","v16","v17","v18","v19","v20","v21",
+                      "v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
                  );
 
-}
+ }
 
-static void __attribute__ ((noinline))  dscal_kernel_8_zero( BLASLONG n, FLOAT da , FLOAT *x )
+static void   dscal_kernel_32_zero( BLASLONG n,  FLOAT *x )
 {
    
-             __asm__ ("pfd 2, 0(%1) \n\t"      
-                    "vzero %%v0     \n\t"
-                    "sllg %%r0,%0,3   \n\t" 
-                    "xgr %%r1,%%r1    \n\t"
-                    ".align 16 \n\t"    
-                    "1: \n\t" 
-                    "pfd 2, 256(%%r1,%1) \n\t"     
-                    "vst  %%v0, 0(%%r1,%1)   \n\t" 
-                    "vst  %%v0, 16(%%r1,%1)  \n\t" 
-                    "vst  %%v0, 32(%%r1,%1)  \n\t"   
-                    "vst  %%v0, 48(%%r1,%1)  \n\t"  
-                    "vst  %%v0, 64(%%r1,%1)  \n\t" 
-                    "vst  %%v0, 80(%%r1,%1)  \n\t" 
-                    "vst  %%v0, 96(%%r1,%1)  \n\t"  
-                    "vst  %%v0, 112(%%r1,%1) \n\t"   
-                    "la %%r1,128(%%r1) \n\t"
-                    "clgrjl %%r1,%%r0,1b \n\t"
-                    : 
-                    :"r"(n),"a"(x),"f"(da)
-                    :"cc" , "memory" ,"r0","r1","v0"
+             __asm__ ("pfd    2, 0(%[x_ptr])   \n\t"      
+                      "vzero  %%v24            \n\t"
+                      "sllg   %%r0,%[n],3      \n\t" 
+                      "vzero  %%v25            \n\t"
+                      "agr    %%r0,%[x_ptr]    \n\t"
+                      ".align 16 \n\t"    
+                      "1:        \n\t" 
+                      "pfd    2,      256(%[x_ptr])  \n\t"     
+                      "vst    %%v24,    0(%[x_ptr])  \n\t" 
+                      "vst    %%v25,    16(%[x_ptr]) \n\t" 
+                      "vst    %%v24,    32(%[x_ptr]) \n\t"   
+                      "vst    %%v25,    48(%[x_ptr]) \n\t"  
+                      "vst    %%v24,    64(%[x_ptr]) \n\t" 
+                      "vst    %%v25,    80(%[x_ptr]) \n\t" 
+                      "vst    %%v24,    96(%[x_ptr]) \n\t"  
+                      "vst    %%v25,   112(%[x_ptr]) \n\t"  
+                      "vst    %%v24,   128(%[x_ptr]) \n\t" 
+                      "vst    %%v25,   144(%[x_ptr]) \n\t" 
+                      "vst    %%v24,   160(%[x_ptr]) \n\t"   
+                      "vst    %%v25,   176(%[x_ptr]) \n\t"  
+                      "vst    %%v24,   192(%[x_ptr]) \n\t" 
+                      "vst    %%v25,   208(%[x_ptr]) \n\t" 
+                      "vst    %%v24,   224(%[x_ptr]) \n\t"  
+                      "vst    %%v25,   240(%[x_ptr]) \n\t"                        
+                      "la     %[x_ptr],256(%[x_ptr]) \n\t"
+                      "clgrjl %[x_ptr],%%r0,1b \n\t"
+                      : [mem] "=m" (*(double (*)[n])x) ,[x_ptr] "+&a"(x)
+                      : [n] "r"(n)
+                      :"cc" ,  "r0", "v24" ,"v25"
                  );
 }
  
 
-#endif
+
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
@@ -114,11 +123,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
         if ( da == 0.0 )
         {        
 
-            BLASLONG n1 = n & -16;
+            BLASLONG n1 = n & -32;
             if ( n1 > 0 )
             {
                 
-                dscal_kernel_8_zero(n1 , da , x);
+                dscal_kernel_32_zero(n1 ,  x);
                 j=n1;
             }
 
@@ -133,10 +142,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
         else
         {
 
-            BLASLONG n1 = n & -16;
+            BLASLONG n1 = n & -32;
             if ( n1 > 0 )
             { 
-                dscal_kernel_8(n1 , da , x);
+                dscal_kernel_32(n1 , da , x);
                 j=n1;
             }
             while(j < n)

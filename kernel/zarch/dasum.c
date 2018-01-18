@@ -39,19 +39,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
 
 static   FLOAT  dasum_kernel_32(BLASLONG n, FLOAT *x) {
-    FLOAT asum   ; 
+    FLOAT asum    ; 
     __asm__  (
-            "pfd     1, 0(%3)   \n\t"
-            "sllg    %%r0,%2,3  \n\t"
-            "agr     %%r0,%3    \n\t"   
+            "pfd     1, 0(%[ptr_x])   \n\t"
+            "sllg    %%r0,%[n],3  \n\t"
+            "agr     %%r0,%[ptr_x]    \n\t"   
             "vzero   %%v0       \n\t"
             "vzero   %%v1       \n\t"
             "vzero   %%v2       \n\t"
             "vzero   %%v3       \n\t"   
             ".align 16 \n\t"
-            "1: \n\t"
-            "pfd     1, 256(%1 ) \n\t"
-            "vlm     %%v24,%%v31, 0(%1 ) \n\t"  
+            "1:      \n\t"
+            "pfd     1, 256(%[ptr_temp] ) \n\t"
+            "vlm     %%v24,%%v31, 0(%[ptr_temp] ) \n\t"  
     
             "vflpdb  %%v24, %%v24 \n\t"
             "vflpdb  %%v25, %%v25 \n\t"
@@ -71,7 +71,7 @@ static   FLOAT  dasum_kernel_32(BLASLONG n, FLOAT *x) {
             "vfadb   %%v2,%%v2,%%v30    \n\t"
             "vfadb   %%v3,%%v3,%%v31    \n\t" 
     
-            "vlm     %%v24,%%v31, 128(%1) \n\t"  
+            "vlm     %%v24,%%v31, 128(%[ptr_temp]) \n\t"  
     
             "vflpdb  %%v24, %%v24       \n\t"
             "vflpdb  %%v25, %%v25       \n\t"
@@ -81,7 +81,7 @@ static   FLOAT  dasum_kernel_32(BLASLONG n, FLOAT *x) {
             "vflpdb  %%v29, %%v29       \n\t"
             "vflpdb  %%v30, %%v30       \n\t"
             "vflpdb  %%v31, %%v31       \n\t"
-            "la      %1,256(%1)         \n\t"  
+            "la      %[ptr_temp],256(%[ptr_temp])  \n\t"  
             "vfadb   %%v0,%%v0,%%v24    \n\t"
             "vfadb   %%v1,%%v1,%%v25    \n\t"
             "vfadb   %%v2,%%v2,%%v26    \n\t"
@@ -91,16 +91,16 @@ static   FLOAT  dasum_kernel_32(BLASLONG n, FLOAT *x) {
             "vfadb   %%v2,%%v2,%%v30    \n\t"
             "vfadb   %%v3,%%v3,%%v31    \n\t"  
             
-            "clgrjl  %1,%%r0,1b         \n\t"
+            "clgrjl  %[ptr_temp],%%r0,1b           \n\t"
             "vfadb   %%v24,%%v0,%%v1    \n\t"
             "vfadb   %%v25,%%v2,%%v3    \n\t"
             "vfadb   %%v0,%%v25,%%v24   \n\t"
             "vrepg   %%v1,%%v0,1        \n\t"
             "adbr    %%f0,%%f1          \n\t"
-            "ldr     %0,%%f0  \n\t" 
-            : "=f"(asum),"+&a"(x)
-            : "r"(n), "1"(x)
-            : "cc",   "r0" ,"f0","f1","v0","v1","v2","v3","v24","v25","v26","v27","v28","v29","v30","v31"
+            "ldr     %[asum],%%f0       \n\t"
+            : [asum] "=f"(asum),[ptr_temp] "+&a"(x)
+            : [mem] "m"( *(const double (*)[n])x ), [n] "r"(n), [ptr_x] "a"(x)
+            : "cc", "r0" ,"f0","f1","v0","v1","v2","v3","v24","v25","v26","v27","v28","v29","v30","v31"
             );
       return asum;
 

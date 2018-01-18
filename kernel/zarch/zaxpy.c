@@ -28,36 +28,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-static void __attribute__ ((noinline)) zaxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha) {
-    __asm__ ("pfd 1, 0(%1) \n\t"
-            "pfd 2, 0(%2) \n\t"
-            "vlrepg %%v28 , 0(%3) \n\t"
-            "vlrepg %%v29, 8(%3)  \n\t"
-            "srlg %3,%0,3         \n\t"
-            "xgr  %%r1,%%r1       \n\t"
+static void  zaxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT da_r,FLOAT da_i) {
+    __asm__ ("pfd   1, 0(%[x_tmp]) \n\t"
+            "pfd    2, 0(%[y_tmp]) \n\t"
+            "lgdr   %%r1,%[alpha_r]    \n\t"
+            "vlvgp  %%v28,%%r1,%%r1    \n\t"
+            "lgdr   %%r1,%[alpha_i]    \n\t"
+            "vlvgp  %%v29,%%r1,%%r1    \n\t"
+            "sllg   %[tmp],%[tmp],4    \n\t"
+            "xgr    %%r1,%%r1          \n\t"         
+
             ".align 16 \n\t"
-            "1: \n\t"
-            "pfd 1, 256(%%r1,%1) \n\t"
-            "pfd 2, 256(%%r1,%2) \n\t"
-            "vleg %%v16 ,  0(%%r1,%2),0  \n\t"
-            "vleg %%v17 ,  8(%%r1,%2),0  \n\t"
-            "vleg %%v16 , 16(%%r1,%2),1  \n\t"
-            "vleg %%v17 , 24(%%r1,%2),1  \n\t"
-
-            "vleg %%v18 , 32(%%r1,%2),0  \n\t"
-            "vleg %%v19 , 40(%%r1,%2),0  \n\t"
-            "vleg %%v18 , 48(%%r1,%2),1  \n\t"
-            "vleg %%v19 , 56(%%r1,%2),1  \n\t"
-
-            "vleg %%v24 ,  0(%%r1,%1),0  \n\t"
-            "vleg %%v25 ,  8(%%r1,%1),0  \n\t"
-            "vleg %%v24 , 16(%%r1,%1),1  \n\t"
-            "vleg %%v25 , 24(%%r1,%1),1  \n\t"
-
-            "vleg %%v26 , 32(%%r1,%1),0  \n\t"
-            "vleg %%v27 , 40(%%r1,%1),0  \n\t"
-            "vleg %%v26 , 48(%%r1,%1),1  \n\t"
-            "vleg %%v27 , 56(%%r1,%1),1  \n\t"
+            "1:     \n\t"
+            "pfd    1, 256(%%r1,%[x_tmp]) \n\t"
+            "pfd    2, 256(%%r1,%[y_tmp]) \n\t"
+            "vleg   %%v16 ,  0(%%r1,%[y_tmp]),0 \n\t"
+            "vleg   %%v17 ,  8(%%r1,%[y_tmp]),0 \n\t"
+            "vleg   %%v16 , 16(%%r1,%[y_tmp]),1 \n\t"
+            "vleg   %%v17 , 24(%%r1,%[y_tmp]),1 \n\t"
+            "vleg   %%v18 , 32(%%r1,%[y_tmp]),0 \n\t"
+            "vleg   %%v19 , 40(%%r1,%[y_tmp]),0 \n\t"
+            "vleg   %%v18 , 48(%%r1,%[y_tmp]),1 \n\t"
+            "vleg   %%v19 , 56(%%r1,%[y_tmp]),1 \n\t"
+            "vleg   %%v24 ,  0(%%r1,%[x_tmp]),0 \n\t"
+            "vleg   %%v25 ,  8(%%r1,%[x_tmp]),0 \n\t"
+            "vleg   %%v24 , 16(%%r1,%[x_tmp]),1 \n\t"
+            "vleg   %%v25 , 24(%%r1,%[x_tmp]),1 \n\t"
+            "vleg   %%v26 , 32(%%r1,%[x_tmp]),0 \n\t"
+            "vleg   %%v27 , 40(%%r1,%[x_tmp]),0 \n\t"
+            "vleg   %%v26 , 48(%%r1,%[x_tmp]),1 \n\t"
+            "vleg   %%v27 , 56(%%r1,%[x_tmp]),1 \n\t"
 #if !defined(CONJ)
             "vfmsdb %%v16,  %%v25, %%v29,%%v16  \n\t"
             "vfmadb %%v17,  %%v24, %%v29, %%v17 \n\t"
@@ -79,35 +79,35 @@ static void __attribute__ ((noinline)) zaxpy_kernel_8(BLASLONG n, FLOAT *x, FLOA
             "vfmsdb %%v19, %%v26, %%v29, %%v19  \n\t"
 
 #endif 
-            "vsteg %%v16 ,  0(%%r1,%2),0  \n\t"
-            "vsteg %%v17 ,  8(%%r1,%2),0  \n\t"
-            "vsteg %%v16 , 16(%%r1,%2),1  \n\t"
-            "vsteg %%v17 , 24(%%r1,%2),1  \n\t"
+            "vsteg %%v16 ,  0(%%r1,%[y_tmp]),0  \n\t"
+            "vsteg %%v17 ,  8(%%r1,%[y_tmp]),0  \n\t"
+            "vsteg %%v16 , 16(%%r1,%[y_tmp]),1  \n\t"
+            "vsteg %%v17 , 24(%%r1,%[y_tmp]),1  \n\t"
 
-            "vsteg %%v18 , 32(%%r1,%2),0  \n\t"
-            "vsteg %%v19 , 40(%%r1,%2),0  \n\t"
-            "vsteg %%v18 , 48(%%r1,%2),1  \n\t"
-            "vsteg %%v19 , 56(%%r1,%2),1  \n\t"
+            "vsteg %%v18 , 32(%%r1,%[y_tmp]),0  \n\t"
+            "vsteg %%v19 , 40(%%r1,%[y_tmp]),0  \n\t"
+            "vsteg %%v18 , 48(%%r1,%[y_tmp]),1  \n\t"
+            "vsteg %%v19 , 56(%%r1,%[y_tmp]),1  \n\t"
 
-            "vleg %%v20 , 64(%%r1,%2),0   \n\t"
-            "vleg %%v21 , 72(%%r1,%2),0   \n\t"
-            "vleg %%v20 , 80(%%r1,%2),1   \n\t"
-            "vleg %%v21 , 88(%%r1,%2),1   \n\t"
+            "vleg %%v20 , 64(%%r1,%[y_tmp]),0   \n\t"
+            "vleg %%v21 , 72(%%r1,%[y_tmp]),0   \n\t"
+            "vleg %%v20 , 80(%%r1,%[y_tmp]),1   \n\t"
+            "vleg %%v21 , 88(%%r1,%[y_tmp]),1   \n\t"
 
-            "vleg %%v22 ,  96(%%r1,%2),0  \n\t"
-            "vleg %%v23 , 104(%%r1,%2),0  \n\t"
-            "vleg %%v22 , 112(%%r1,%2),1  \n\t"
-            "vleg %%v23 , 120(%%r1,%2),1  \n\t"
+            "vleg %%v22 ,  96(%%r1,%[y_tmp]),0  \n\t"
+            "vleg %%v23 , 104(%%r1,%[y_tmp]),0  \n\t"
+            "vleg %%v22 , 112(%%r1,%[y_tmp]),1  \n\t"
+            "vleg %%v23 , 120(%%r1,%[y_tmp]),1  \n\t"
 
-            "vleg %%v24 , 64(%%r1,%1),0   \n\t"
-            "vleg %%v25 , 72(%%r1,%1),0   \n\t"
-            "vleg %%v24 , 80(%%r1,%1),1   \n\t"
-            "vleg %%v25 , 88(%%r1,%1),1   \n\t"
+            "vleg %%v24 , 64(%%r1,%[x_tmp]),0   \n\t"
+            "vleg %%v25 , 72(%%r1,%[x_tmp]),0   \n\t"
+            "vleg %%v24 , 80(%%r1,%[x_tmp]),1   \n\t"
+            "vleg %%v25 , 88(%%r1,%[x_tmp]),1   \n\t"
 
-            "vleg %%v26 ,  96(%%r1,%1),0  \n\t"
-            "vleg %%v27 , 104(%%r1,%1),0  \n\t"
-            "vleg %%v26 , 112(%%r1,%1),1  \n\t"
-            "vleg %%v27 , 120(%%r1,%1),1  \n\t"
+            "vleg %%v26 ,  96(%%r1,%[x_tmp]),0  \n\t"
+            "vleg %%v27 , 104(%%r1,%[x_tmp]),0  \n\t"
+            "vleg %%v26 , 112(%%r1,%[x_tmp]),1  \n\t"
+            "vleg %%v27 , 120(%%r1,%[x_tmp]),1  \n\t"
 #if !defined(CONJ)
             "vfmsdb %%v20,  %%v25, %%v29,%%v20   \n\t"
             "vfmadb %%v21,  %%v24, %%v29, %%v21  \n\t"
@@ -128,21 +128,21 @@ static void __attribute__ ((noinline)) zaxpy_kernel_8(BLASLONG n, FLOAT *x, FLOA
             "vfmadb %%v22, %%v26, %%v28, %%v22   \n\t"
             "vfmsdb %%v23, %%v26, %%v29, %%v23   \n\t"
 #endif 
-            "vsteg %%v20 , 64(%%r1,%2),0   \n\t"
-            "vsteg %%v21 , 72(%%r1,%2),0   \n\t"
-            "vsteg %%v20 , 80(%%r1,%2),1   \n\t"
-            "vsteg %%v21 , 88(%%r1,%2),1   \n\t"
+            "vsteg %%v20 , 64(%%r1,%[y_tmp]),0   \n\t"
+            "vsteg %%v21 , 72(%%r1,%[y_tmp]),0   \n\t"
+            "vsteg %%v20 , 80(%%r1,%[y_tmp]),1   \n\t"
+            "vsteg %%v21 , 88(%%r1,%[y_tmp]),1   \n\t"
 
-            "vsteg %%v22 ,  96(%%r1,%2),0  \n\t"
-            "vsteg %%v23 , 104(%%r1,%2),0  \n\t"
-            "vsteg %%v22 , 112(%%r1,%2),1  \n\t"
-            "vsteg %%v23 , 120(%%r1,%2),1  \n\t"
+            "vsteg %%v22 ,  96(%%r1,%[y_tmp]),0  \n\t"
+            "vsteg %%v23 , 104(%%r1,%[y_tmp]),0  \n\t"
+            "vsteg %%v22 , 112(%%r1,%[y_tmp]),1  \n\t"
+            "vsteg %%v23 , 120(%%r1,%[y_tmp]),1  \n\t"
 
-            "la %%r1,128(%%r1) \n\t"
-            "brctg %3,1b"
-            :
-            : "r"(n), "a"(x), "a"(y), "a"(alpha)
-            : "cc", "memory", "r1","v16",
+            "la     %%r1,128(%%r1) \n\t"
+            "clgrjl %%r1,%[tmp],1b        \n\t"   
+            : [mem_y] "+m" (*(double (*)[2*n])y),[tmp]"+&r"(n)
+            : [mem_x] "m" (*(const double (*)[2*n])x), [x_tmp] "a"(x), [y_tmp] "a"(y), [alpha_r] "f"(da_r),[alpha_i] "f"(da_i)
+            : "cc",  "r1","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29"
             );
 
@@ -151,7 +151,6 @@ static void __attribute__ ((noinline)) zaxpy_kernel_8(BLASLONG n, FLOAT *x, FLOA
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2) {
     BLASLONG i = 0;
     BLASLONG ix = 0, iy = 0;
-    FLOAT da[2];
 
     if (n <= 0) return (0);
 
@@ -159,10 +158,8 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
         BLASLONG n1 = n & -8;
 
-        if (n1) {
-            da[0] = da_r;
-            da[1] = da_i;
-            zaxpy_kernel_8(n1, x, y, da);
+        if (n1) { 
+            zaxpy_kernel_8(n1, x, y, da_r,da_i);
             ix = 2 * n1;
         }
         i = n1;
