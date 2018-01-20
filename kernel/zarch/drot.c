@@ -24,44 +24,41 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
- 
 
 #include "common.h"
 
-  
-
-
-static void __attribute__ ((noinline))  drot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s)
+static void drot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT cosA, FLOAT sinA)
 {
           __asm__  (
-            "pfd 2, 0(%1) \n\t"
-            "pfd 2, 0(%2) \n\t"
-             
-            "vlrepg %%v0,0(%3) \n\t"
-            "vlrepg %%v1,0(%4) \n\t"
-            "srlg   %%r0,%0,5  \n\t"
+            "pfd    2, 0(%[ptr_x]) \n\t"
+            "pfd    2, 0(%[ptr_y]) \n\t"
+            "lgdr   %%r1,%[cos]    \n\t"
+            "vlvgp  %%v0,%%r1,%%r1 \n\t"
+            "lgdr   %%r1,%[sin]    \n\t"
+            "vlvgp  %%v1,%%r1,%%r1 \n\t"
+            "srlg   %[n_tmp],%[n_tmp],5  \n\t"
             "xgr    %%r1,%%r1  \n\t"
             ".align 16 \n\t"
-            "1: \n\t"
-            "pfd 2, 256(%%r1,%1) \n\t"
-            "pfd 2, 256(%%r1,%2) \n\t"
-            "vl  %%v24, 0(%%r1,%1)  \n\t" 
-            "vl  %%v25, 16(%%r1,%1) \n\t" 
-            "vl  %%v26, 32(%%r1,%1) \n\t" 
-            "vl  %%v27, 48(%%r1,%1) \n\t" 
-            "vl  %%v16, 0(%%r1,%2)  \n\t" 
-            "vl  %%v17, 16(%%r1,%2) \n\t" 
-            "vl  %%v18, 32(%%r1,%2) \n\t" 
-            "vl  %%v19, 48(%%r1,%2) \n\t"  
+            "1:     \n\t"
+            "pfd    2, 256(%%r1,%[ptr_x]) \n\t"
+            "pfd    2, 256(%%r1,%[ptr_y]) \n\t"
+            "vl     %%v24, 0(%%r1,%[ptr_x])  \n\t" 
+            "vl     %%v25, 16(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v26, 32(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v27, 48(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v16, 0(%%r1,%[ptr_y])  \n\t" 
+            "vl     %%v17, 16(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v18, 32(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v19, 48(%%r1,%[ptr_y]) \n\t"  
            
-            "vfmdb %%v28,%%v24,%%v0 \n\t"
-            "vfmdb %%v29,%%v25,%%v0 \n\t"
-            "vfmdb %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v30,%%v26,%%v0 \n\t"
-            "vfmdb %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v31,%%v27,%%v0 \n\t"
-            "vfmdb %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v28,%%v24,%%v0 \n\t"
+            "vfmdb  %%v29,%%v25,%%v0 \n\t"
+            "vfmdb  %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v30,%%v26,%%v0 \n\t"
+            "vfmdb  %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v31,%%v27,%%v0 \n\t"
+            "vfmdb  %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
             /* 2nd parts*/
             "vfmadb %%v28,%%v16,%%v1,%%v28 \n\t"  
             "vfmsdb %%v20,%%v16,%%v0,%%v20 \n\t"  /* yn=y*c-yn */ 
@@ -71,35 +68,33 @@ static void __attribute__ ((noinline))  drot_kernel_32(BLASLONG n, FLOAT *x, FLO
             "vfmsdb %%v22,%%v18,%%v0,%%v22 \n\t"  /* yn=y*c-yn */ 
             "vfmadb %%v31,%%v19,%%v1,%%v31 \n\t" 
             "vfmsdb %%v23,%%v19,%%v0,%%v23 \n\t"  /* yn=y*c-yn */
+
+            "vst    %%v28, 0(%%r1,%[ptr_x])  \n\t" 
+            "vst    %%v29, 16(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v30, 32(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v31, 48(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v20, 0(%%r1,%[ptr_y])  \n\t" 
+            "vst    %%v21, 16(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v22, 32(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v23, 48(%%r1,%[ptr_y]) \n\t"  
            
+            "vl     %%v24, 64(%%r1,%[ptr_x])  \n\t" 
+            "vl     %%v25, 80(%%r1,%[ptr_x])  \n\t" 
+            "vl     %%v26, 96(%%r1,%[ptr_x])  \n\t" 
+            "vl     %%v27, 112(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v16, 64(%%r1,%[ptr_y])  \n\t" 
+            "vl     %%v17, 80(%%r1,%[ptr_y])  \n\t" 
+            "vl     %%v18, 96(%%r1,%[ptr_y])  \n\t" 
+            "vl     %%v19, 112(%%r1,%[ptr_y]) \n\t"  
            
-           
-            "vst  %%v28, 0(%%r1,%1)  \n\t" 
-            "vst  %%v29, 16(%%r1,%1) \n\t" 
-            "vst  %%v30, 32(%%r1,%1) \n\t" 
-            "vst  %%v31, 48(%%r1,%1) \n\t" 
-            "vst  %%v20, 0(%%r1,%2)  \n\t" 
-            "vst  %%v21, 16(%%r1,%2) \n\t" 
-            "vst  %%v22, 32(%%r1,%2) \n\t" 
-            "vst  %%v23, 48(%%r1,%2) \n\t"  
-           
-            "vl  %%v24, 64(%%r1,%1)  \n\t" 
-            "vl  %%v25, 80(%%r1,%1)  \n\t" 
-            "vl  %%v26, 96(%%r1,%1)  \n\t" 
-            "vl  %%v27, 112(%%r1,%1) \n\t" 
-            "vl  %%v16, 64(%%r1,%2)  \n\t" 
-            "vl  %%v17, 80(%%r1,%2)  \n\t" 
-            "vl  %%v18, 96(%%r1,%2)  \n\t" 
-            "vl  %%v19, 112(%%r1,%2) \n\t"  
-           
-            "vfmdb %%v28,%%v24,%%v0 \n\t"
-            "vfmdb %%v29,%%v25,%%v0 \n\t"
-            "vfmdb %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v30,%%v26,%%v0 \n\t"
-            "vfmdb %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v31,%%v27,%%v0 \n\t"
-            "vfmdb %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v28,%%v24,%%v0 \n\t"
+            "vfmdb  %%v29,%%v25,%%v0 \n\t"
+            "vfmdb  %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v30,%%v26,%%v0 \n\t"
+            "vfmdb  %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v31,%%v27,%%v0 \n\t"
+            "vfmdb  %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
             /* 2nd parts*/
             "vfmadb %%v28,%%v16,%%v1,%%v28 \n\t"  
             "vfmsdb %%v20,%%v16,%%v0,%%v20 \n\t"  /* yn=y*c-yn */ 
@@ -109,35 +104,33 @@ static void __attribute__ ((noinline))  drot_kernel_32(BLASLONG n, FLOAT *x, FLO
             "vfmsdb %%v22,%%v18,%%v0,%%v22 \n\t"  /* yn=y*c-yn */ 
             "vfmadb %%v31,%%v19,%%v1,%%v31 \n\t" 
             "vfmsdb %%v23,%%v19,%%v0,%%v23 \n\t"  /* yn=y*c-yn */
+
+            "vst    %%v28, 64(%%r1,%[ptr_x])  \n\t" 
+            "vst    %%v29, 80(%%r1,%[ptr_x])  \n\t" 
+            "vst    %%v30, 96(%%r1,%[ptr_x])  \n\t" 
+            "vst    %%v31, 112(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v20, 64(%%r1,%[ptr_y])  \n\t" 
+            "vst    %%v21, 80(%%r1,%[ptr_y])  \n\t" 
+            "vst    %%v22, 96(%%r1,%[ptr_y])  \n\t" 
+            "vst    %%v23, 112(%%r1,%[ptr_y]) \n\t"
            
+            "vl     %%v24, 128(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v25, 144(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v26, 160(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v27, 176(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v16, 128(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v17, 144(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v18, 160(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v19, 176(%%r1,%[ptr_y]) \n\t"  
            
-           
-            "vst  %%v28, 64(%%r1,%1)  \n\t" 
-            "vst  %%v29, 80(%%r1,%1)  \n\t" 
-            "vst  %%v30, 96(%%r1,%1)  \n\t" 
-            "vst  %%v31, 112(%%r1,%1) \n\t" 
-            "vst  %%v20, 64(%%r1,%2)  \n\t" 
-            "vst  %%v21, 80(%%r1,%2)  \n\t" 
-            "vst  %%v22, 96(%%r1,%2)  \n\t" 
-            "vst  %%v23, 112(%%r1,%2) \n\t"
-           
-            "vl  %%v24, 128(%%r1,%1) \n\t" 
-            "vl  %%v25, 144(%%r1,%1) \n\t" 
-            "vl  %%v26, 160(%%r1,%1) \n\t" 
-            "vl  %%v27, 176(%%r1,%1) \n\t" 
-            "vl  %%v16, 128(%%r1,%2) \n\t" 
-            "vl  %%v17, 144(%%r1,%2) \n\t" 
-            "vl  %%v18, 160(%%r1,%2) \n\t" 
-            "vl  %%v19, 176(%%r1,%2) \n\t"  
-           
-            "vfmdb %%v28,%%v24,%%v0 \n\t"
-            "vfmdb %%v29,%%v25,%%v0 \n\t"
-            "vfmdb %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v30,%%v26,%%v0 \n\t"
-            "vfmdb %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v31,%%v27,%%v0 \n\t"
-            "vfmdb %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v28,%%v24,%%v0 \n\t"
+            "vfmdb  %%v29,%%v25,%%v0 \n\t"
+            "vfmdb  %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v30,%%v26,%%v0 \n\t"
+            "vfmdb  %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v31,%%v27,%%v0 \n\t"
+            "vfmdb  %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
             /* 2nd parts*/
             "vfmadb %%v28,%%v16,%%v1,%%v28 \n\t"  
             "vfmsdb %%v20,%%v16,%%v0,%%v20 \n\t"  /* yn=y*c-yn */ 
@@ -147,35 +140,33 @@ static void __attribute__ ((noinline))  drot_kernel_32(BLASLONG n, FLOAT *x, FLO
             "vfmsdb %%v22,%%v18,%%v0,%%v22 \n\t"  /* yn=y*c-yn */ 
             "vfmadb %%v31,%%v19,%%v1,%%v31 \n\t" 
             "vfmsdb %%v23,%%v19,%%v0,%%v23 \n\t"  /* yn=y*c-yn */
+
+            "vst    %%v28, 128(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v29, 144(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v30, 160(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v31, 176(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v20, 128(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v21, 144(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v22, 160(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v23, 176(%%r1,%[ptr_y]) \n\t"  
            
+            "vl     %%v24, 192(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v25, 208(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v26, 224(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v27, 240(%%r1,%[ptr_x]) \n\t" 
+            "vl     %%v16, 192(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v17, 208(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v18, 224(%%r1,%[ptr_y]) \n\t" 
+            "vl     %%v19, 240(%%r1,%[ptr_y]) \n\t"  
            
-           
-            "vst  %%v28, 128(%%r1,%1) \n\t" 
-            "vst  %%v29, 144(%%r1,%1) \n\t" 
-            "vst  %%v30, 160(%%r1,%1) \n\t" 
-            "vst  %%v31, 176(%%r1,%1) \n\t" 
-            "vst  %%v20, 128(%%r1,%2) \n\t" 
-            "vst  %%v21, 144(%%r1,%2) \n\t" 
-            "vst  %%v22, 160(%%r1,%2) \n\t" 
-            "vst  %%v23, 176(%%r1,%2) \n\t"  
-           
-            "vl  %%v24, 192(%%r1,%1) \n\t" 
-            "vl  %%v25, 208(%%r1,%1) \n\t" 
-            "vl  %%v26, 224(%%r1,%1) \n\t" 
-            "vl  %%v27, 240(%%r1,%1) \n\t" 
-            "vl  %%v16, 192(%%r1,%2) \n\t" 
-            "vl  %%v17, 208(%%r1,%2) \n\t" 
-            "vl  %%v18, 224(%%r1,%2) \n\t" 
-            "vl  %%v19, 240(%%r1,%2) \n\t"  
-           
-            "vfmdb %%v28,%%v24,%%v0 \n\t"
-            "vfmdb %%v29,%%v25,%%v0 \n\t"
-            "vfmdb %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v30,%%v26,%%v0 \n\t"
-            "vfmdb %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
-            "vfmdb %%v31,%%v27,%%v0 \n\t"
-            "vfmdb %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v28,%%v24,%%v0 \n\t"
+            "vfmdb  %%v29,%%v25,%%v0 \n\t"
+            "vfmdb  %%v20,%%v24,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v21,%%v25,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v30,%%v26,%%v0 \n\t"
+            "vfmdb  %%v22,%%v26,%%v1 \n\t" /* yn=x*s  */
+            "vfmdb  %%v31,%%v27,%%v0 \n\t"
+            "vfmdb  %%v23,%%v27,%%v1 \n\t" /* yn=x*s  */
             /* 2nd parts*/
             "vfmadb %%v28,%%v16,%%v1,%%v28 \n\t"  
             "vfmsdb %%v20,%%v16,%%v0,%%v20 \n\t"  /* yn=y*c-yn */ 
@@ -185,33 +176,28 @@ static void __attribute__ ((noinline))  drot_kernel_32(BLASLONG n, FLOAT *x, FLO
             "vfmsdb %%v22,%%v18,%%v0,%%v22 \n\t"  /* yn=y*c-yn */ 
             "vfmadb %%v31,%%v19,%%v1,%%v31 \n\t" 
             "vfmsdb %%v23,%%v19,%%v0,%%v23 \n\t"  /* yn=y*c-yn */
-           
-           
-           
-            "vst  %%v28, 192(%%r1,%1) \n\t" 
-            "vst  %%v29, 208(%%r1,%1) \n\t" 
-            "vst  %%v30, 224(%%r1,%1) \n\t" 
-            "vst  %%v31, 240(%%r1,%1) \n\t" 
-            "vst  %%v20, 192(%%r1,%2) \n\t" 
-            "vst  %%v21, 208(%%r1,%2) \n\t" 
-            "vst  %%v22, 224(%%r1,%2) \n\t" 
-            "vst  %%v23, 240(%%r1,%2) \n\t"
-           
-           
-          
-            "la %%r1,256(%%r1) \n\t"
-            "brctg %%r0,1b"
-            :
-            : "r"(n), "a"(x), "a"(y),"a"(c),"a"(s)
-            : "cc", "memory","r0","r1" ,"v0","v1","v16",
+
+            "vst    %%v28, 192(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v29, 208(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v30, 224(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v31, 240(%%r1,%[ptr_x]) \n\t" 
+            "vst    %%v20, 192(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v21, 208(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v22, 224(%%r1,%[ptr_y]) \n\t" 
+            "vst    %%v23, 240(%%r1,%[ptr_y]) \n\t"
+
+            "la     %%r1,256(%%r1) \n\t"
+            "brctg  %[n_tmp],1b"
+            : [mem_x] "+m" (*(double (*)[n])x),
+              [mem_y] "+m" (*(double (*)[n])y),
+              [n_tmp] "+&r"(n)
+            : [ptr_x] "a"(x), [ptr_y]  "a"(y),[cos] "f"(cosA),[sin] "f"(sinA)
+            : "cc", "r1" ,"v0","v1","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
             );
       return;
 
 }
-
-
- 
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT c, FLOAT s)
 {
@@ -228,10 +214,8 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
         BLASLONG n1 = n & -32;
         if ( n1 > 0 )
         {
-            FLOAT cosa,sina;
-            cosa=c;
-            sina=s;
-            drot_kernel_32(n1, x, y, &cosa, &sina);
+            
+            drot_kernel_32(n1, x, y, c, s);
             i=n1;
         }
 
@@ -244,7 +228,6 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
             i++ ;
 
         }
-
 
     }
     else
@@ -266,5 +249,4 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
     return(0);
 
 }
-
 

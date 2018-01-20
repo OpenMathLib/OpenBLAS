@@ -30,83 +30,84 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(Z13mvc)
 
-static void __attribute__ ((noinline)) dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
+static void  dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
 
     __asm__ volatile(
-            "pfd 1, 0(%1)    \n\t"
-            "pfd 2, 0(%2)    \n\t"
-            "srlg %%r0,%0,5  \n\t"
+            "pfd   1, 0(%[ptr_x])    \n\t"
+            "pfd   2, 0(%[ptr_y])    \n\t"
+            "srlg  %[n_tmp],%[n_tmp],5  \n\t"
             ".align 16 \n\t"
             "1: \n\t"
-            "mvc 0(256,%2),0(%1) \n\t"
-            "la %1,256(%1)       \n\t"
-            "la %2,256(%2)       \n\t"
-            "brctg %%r0,1b"
-            :
-            : "r"(n), "a"(x), "a"(y)
-            : "cc", "memory","r0"
+            "mvc   0(256,%[ptr_y]),0(%[ptr_x]) \n\t"
+            "la    %[ptr_x],256(%[ptr_x])       \n\t"
+            "la    %[ptr_y],256(%[ptr_y])       \n\t"
+            "brctg %[n_tmp],1b"
+            : [mem_y] "=m" (*(double (*)[n])y), [n_tmp] "+&r"(n)
+            : [mem_x] "m" (*(const double (*)[n])x),
+              [ptr_x] "a"(x), [ptr_y] "a"(y)
+            : "cc" 
             );
     return;
 
 }
 #else
 
-static void __attribute__ ((noinline)) dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
+static void  dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
 
     __asm__ volatile(
-            "pfd 1, 0(%1) \n\t"
-            "pfd 2, 0(%2) \n\t"
-            "srlg %%r0,%0,5       \n\t"
-            "xgr %%r1,%%r1       \n\t"
+            "pfd   1, 0(%[ptr_x]) \n\t"
+            "pfd   2, 0(%[ptr_y]) \n\t"
+            "srlg  %[n_tmp],%[n_tmp],5      \n\t"
+            "xgr   %%r1,%%r1       \n\t"
             ".align 16 \n\t"
-            "1: \n\t"
-            "pfd 1, 256(%%r1,%1) \n\t"
-            "pfd 2, 256(%%r1,%2) \n\t"
+            "1:    \n\t"
+            "pfd   1, 256(%%r1,%[ptr_x]) \n\t"
+            "pfd   2, 256(%%r1,%[ptr_y]) \n\t"
 
-            "vl   %%v24, 0(%%r1,%1)   \n\t"
-            "vst  %%v24, 0(%%r1,%2)   \n\t"
-            "vl   %%v25, 16(%%r1,%1)  \n\t"
-            "vst  %%v25, 16(%%r1,%2)  \n\t"
-            "vl   %%v26, 32(%%r1,%1)  \n\t"
-            "vst  %%v26, 32(%%r1,%2)  \n\t"
-            "vl   %%v27, 48(%%r1,%1)  \n\t"
-            "vst  %%v27, 48(%%r1,%2)  \n\t"
+            "vl    %%v24, 0(%%r1,%[ptr_x])   \n\t"
+            "vst   %%v24, 0(%%r1,%[ptr_y])   \n\t"
+            "vl    %%v25, 16(%%r1,%[ptr_x])  \n\t"
+            "vst   %%v25, 16(%%r1,%[ptr_y])  \n\t"
+            "vl    %%v26, 32(%%r1,%[ptr_x])  \n\t"
+            "vst   %%v26, 32(%%r1,%[ptr_y])  \n\t"
+            "vl    %%v27, 48(%%r1,%[ptr_x])  \n\t"
+            "vst   %%v27, 48(%%r1,%[ptr_y])  \n\t"
 
-            "vl   %%v24, 64(%%r1,%1)  \n\t"
-            "vst  %%v24, 64(%%r1,%2)  \n\t"
-            "vl   %%v25, 80(%%r1,%1)  \n\t"
-            "vst  %%v25, 80(%%r1,%2)  \n\t"
-            "vl   %%v26, 96(%%r1,%1)  \n\t"
-            "vst  %%v26, 96(%%r1,%2)  \n\t"
-            "vl   %%v27, 112(%%r1,%1) \n\t"
-            "vst  %%v27, 112(%%r1,%2) \n\t"
+            "vl    %%v24, 64(%%r1,%[ptr_x])  \n\t"
+            "vst   %%v24, 64(%%r1,%[ptr_y])  \n\t"
+            "vl    %%v25, 80(%%r1,%[ptr_x])  \n\t"
+            "vst   %%v25, 80(%%r1,%[ptr_y])  \n\t"
+            "vl    %%v26, 96(%%r1,%[ptr_x])  \n\t"
+            "vst   %%v26, 96(%%r1,%[ptr_y])  \n\t"
+            "vl    %%v27, 112(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v27, 112(%%r1,%[ptr_y]) \n\t"
 
 
-            "vl   %%v24, 128(%%r1,%1) \n\t"
-            "vst  %%v24, 128(%%r1,%2) \n\t"
+            "vl    %%v24, 128(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v24, 128(%%r1,%[ptr_y]) \n\t"
 
-            "vl   %%v25, 144(%%r1,%1) \n\t"
-            "vst  %%v25, 144(%%r1,%2) \n\t"
+            "vl    %%v25, 144(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v25, 144(%%r1,%[ptr_y]) \n\t"
 
-            "vl   %%v26, 160(%%r1,%1) \n\t"
-            "vst  %%v26, 160(%%r1,%2) \n\t"
+            "vl    %%v26, 160(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v26, 160(%%r1,%[ptr_y]) \n\t"
 
-            "vl   %%v27, 176(%%r1,%1) \n\t"
-            "vst  %%v27, 176(%%r1,%2) \n\t"
+            "vl    %%v27, 176(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v27, 176(%%r1,%[ptr_y]) \n\t"
 
-            "vl   %%v24, 192(%%r1,%1) \n\t"
-            "vst  %%v24, 192(%%r1,%2) \n\t"
-            "vl   %%v25, 208(%%r1,%1) \n\t"
-            "vst  %%v25, 208(%%r1,%2) \n\t"
-            "vl   %%v26, 224(%%r1,%1) \n\t"
-            "vst  %%v26, 224(%%r1,%2) \n\t"
-            "vl   %%v27, 240(%%r1,%1) \n\t"
-            "vst  %%v27, 240(%%r1,%2) \n\t"
-            "la   %%r1,256(%%r1)      \n\t"
-            "brctg %%r0,1b"
-            :
-            : "r"(n), "a"(x), "a"(y)
-            : "cc", "memory","r0","r1", "v24","v25","v26","v27"
+            "vl    %%v24, 192(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v24, 192(%%r1,%[ptr_y]) \n\t"
+            "vl    %%v25, 208(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v25, 208(%%r1,%[ptr_y]) \n\t"
+            "vl    %%v26, 224(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v26, 224(%%r1,%[ptr_y]) \n\t"
+            "vl    %%v27, 240(%%r1,%[ptr_x]) \n\t"
+            "vst   %%v27, 240(%%r1,%[ptr_y]) \n\t"
+            "la    %%r1,256(%%r1)      \n\t"
+            "brctg %[n_tmp],1b"
+            : [mem_y] "=m" (*(double (*)[n])y), [n_tmp] "+&r"(n)
+            : [mem_x] "m" (*(const double (*)[n])x), [ptr_x] "a"(x), [ptr_y] "a"(y)
+            : "cc",  "r1", "v24","v25","v26","v27"
             );
     return;
 

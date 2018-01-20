@@ -32,75 +32,77 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
 
     __asm__ volatile(
-            "pfd 1, 0(%2) \n\t"
-            "pfd 1, 0(%3) \n\t"
+            "pfd   1, 0(%[ptr_x_tmp]) \n\t"
+            "pfd   1, 0(%[ptr_y_tmp]) \n\t"
             "vzero %%v24  \n\t"
             "vzero %%v25  \n\t"
             "vzero %%v26  \n\t"
             "vzero %%v27  \n\t"
-            "srlg %1,%1,3      \n\t"
-            "xgr %%r1,%%r1       \n\t"
+            "srlg  %[n_tmp],%[n_tmp],3      \n\t"
+            "xgr   %%r1,%%r1       \n\t"
             ".align 16 \n\t"
-            "1: \n\t"
-            "pfd 1, 256(%%r1,%2)     \n\t"
-            "pfd 1, 256(%%r1,%3)     \n\t"
-            "vl  %%v16,  0(%%r1,%2)  \n\t"
-            "vl  %%v17, 16(%%r1,%2)  \n\t"
-            "vl  %%v18, 32(%%r1,%2)  \n\t"
-            "vl  %%v19, 48(%%r1,%2)  \n\t"
-            "vl  %%v28,  0(%%r1,%3)  \n\t"
-            "vl  %%v29, 16(%%r1,%3)  \n\t"
-            "vl  %%v30, 32(%%r1,%3)  \n\t"
-            "vl  %%v31, 48(%%r1,%3)  \n\t"
-            "vpdi %%v20,%%v16,%%v16,4 \n\t"
-            "vpdi %%v21,%%v17,%%v17,4 \n\t"
-            "vpdi %%v22,%%v18,%%v18,4 \n\t"
-            "vpdi %%v23,%%v19,%%v19,4 \n\t"
+            "1:     \n\t"
+            "pfd    1,    256(%%r1,%[ptr_x_tmp])  \n\t"
+            "pfd    1,    256(%%r1,%[ptr_y_tmp])  \n\t"
+            "vl     %%v16,  0(%%r1,%[ptr_x_tmp])  \n\t"
+            "vl     %%v17, 16(%%r1,%[ptr_x_tmp])  \n\t"
+            "vl     %%v18, 32(%%r1,%[ptr_x_tmp])  \n\t"
+            "vl     %%v19, 48(%%r1,%[ptr_x_tmp])  \n\t"
+            "vl     %%v28,  0(%%r1,%[ptr_y_tmp])  \n\t"
+            "vl     %%v29, 16(%%r1,%[ptr_y_tmp])  \n\t"
+            "vl     %%v30, 32(%%r1,%[ptr_y_tmp])  \n\t"
+            "vl     %%v31, 48(%%r1,%[ptr_y_tmp])  \n\t"
+            "vpdi   %%v20,%%v16,%%v16,4 \n\t"
+            "vpdi   %%v21,%%v17,%%v17,4 \n\t"
+            "vpdi   %%v22,%%v18,%%v18,4 \n\t"
+            "vpdi   %%v23,%%v19,%%v19,4 \n\t"
 
 
-            "vfmadb    %%v24,%%v16,%%v28,%%v24  \n\t"
-            "vfmadb    %%v25,%%v20,%%v28,%%v25  \n\t"
-            "vfmadb    %%v26,%%v17,%%v29,%%v26  \n\t"
-            "vfmadb    %%v27,%%v21,%%v29,%%v27  \n\t"
-            "vfmadb    %%v24,%%v18,%%v30,%%v24  \n\t"
-            "vfmadb    %%v25,%%v22,%%v30,%%v25  \n\t"
-            "vfmadb    %%v26,%%v19,%%v31,%%v26  \n\t"
-            "vfmadb    %%v27,%%v23,%%v31,%%v27  \n\t"
+            "vfmadb %%v24,%%v16,%%v28,%%v24  \n\t"
+            "vfmadb %%v25,%%v20,%%v28,%%v25  \n\t"
+            "vfmadb %%v26,%%v17,%%v29,%%v26  \n\t"
+            "vfmadb %%v27,%%v21,%%v29,%%v27  \n\t"
+            "vfmadb %%v24,%%v18,%%v30,%%v24  \n\t"
+            "vfmadb %%v25,%%v22,%%v30,%%v25  \n\t"
+            "vfmadb %%v26,%%v19,%%v31,%%v26  \n\t"
+            "vfmadb %%v27,%%v23,%%v31,%%v27  \n\t"
 
 
 
-            "vl  %%v16, 64(%%r1,%2) \n\t"
-            "vl  %%v17, 80(%%r1,%2) \n\t"
-            "vl  %%v18, 96(%%r1,%2) \n\t"
-            "vl  %%v19,112(%%r1,%2) \n\t"
-            "vl  %%v28, 64(%%r1,%3) \n\t"
-            "vl  %%v29, 80(%%r1,%3) \n\t"
-            "vl  %%v30, 96(%%r1,%3) \n\t"
-            "vl  %%v31,112(%%r1,%3) \n\t"
-            "vpdi %%v20,%%v16,%%v16,4 \n\t"
-            "vpdi %%v21,%%v17,%%v17,4 \n\t"
-            "vpdi %%v22,%%v18,%%v18,4 \n\t"
-            "vpdi %%v23,%%v19,%%v19,4 \n\t"
-            "vfmadb    %%v24,%%v16,%%v28,%%v24  \n\t"
-            "vfmadb    %%v25,%%v20,%%v28,%%v25  \n\t"
-            "vfmadb    %%v26,%%v17,%%v29,%%v26  \n\t"
-            "vfmadb    %%v27,%%v21,%%v29,%%v27  \n\t"
-            "vfmadb    %%v24,%%v18,%%v30,%%v24  \n\t"
-            "vfmadb    %%v25,%%v22,%%v30,%%v25  \n\t"
-            "vfmadb    %%v26,%%v19,%%v31,%%v26  \n\t"
-            "vfmadb    %%v27,%%v23,%%v31,%%v27  \n\t"
+            "vl     %%v16, 64(%%r1,%[ptr_x_tmp]) \n\t"
+            "vl     %%v17, 80(%%r1,%[ptr_x_tmp]) \n\t"
+            "vl     %%v18, 96(%%r1,%[ptr_x_tmp]) \n\t"
+            "vl     %%v19,112(%%r1,%[ptr_x_tmp]) \n\t"
+            "vl     %%v28, 64(%%r1,%[ptr_y_tmp]) \n\t"
+            "vl     %%v29, 80(%%r1,%[ptr_y_tmp]) \n\t"
+            "vl     %%v30, 96(%%r1,%[ptr_y_tmp]) \n\t"
+            "vl     %%v31,112(%%r1,%[ptr_y_tmp]) \n\t"
+            "vpdi   %%v20,%%v16,%%v16,4 \n\t"
+            "vpdi   %%v21,%%v17,%%v17,4 \n\t"
+            "vpdi   %%v22,%%v18,%%v18,4 \n\t"
+            "vpdi   %%v23,%%v19,%%v19,4 \n\t"
+            "vfmadb %%v24,%%v16,%%v28,%%v24  \n\t"
+            "vfmadb %%v25,%%v20,%%v28,%%v25  \n\t"
+            "vfmadb %%v26,%%v17,%%v29,%%v26  \n\t"
+            "vfmadb %%v27,%%v21,%%v29,%%v27  \n\t"
+            "vfmadb %%v24,%%v18,%%v30,%%v24  \n\t"
+            "vfmadb %%v25,%%v22,%%v30,%%v25  \n\t"
+            "vfmadb %%v26,%%v19,%%v31,%%v26  \n\t"
+            "vfmadb %%v27,%%v23,%%v31,%%v27  \n\t"
 
 
-            "la %%r1,128(%%r1) \n\t"
-            "brctg %1,1b     \n\t"
-            "vfadb %%v24,%%v26,%%v24 \n\t"
-            "vfadb %%v25,%%v25,%%v27 \n\t"
-            "vsteg %%v24,0(%4),0     \n\t"
-            "vsteg %%v24,8(%4),1     \n\t"
-            "vsteg %%v25,16(%4),1    \n\t"
-            "vsteg %%v25,24(%4),0    \n\t"
-            : "=m"(*d) ,"+&r"(n) 
-            :  "a"(x), "a"(y), "a"(d)
+            "la     %%r1,128(%%r1)       \n\t"
+            "brctg  %[n_tmp],1b          \n\t"
+            "vfadb  %%v24,%%v26,%%v24    \n\t"
+            "vfadb  %%v25,%%v25,%%v27    \n\t"
+            "vsteg  %%v24, 0(%[ptr_d]),0    \n\t"
+            "vsteg  %%v24, 8(%[ptr_d]),1    \n\t"
+            "vsteg  %%v25,16(%[ptr_d]),1    \n\t"
+            "vsteg  %%v25,24(%[ptr_d]),0    \n\t"
+            : [mem_out] "=m"(*(double (*)[4])d ) ,[n_tmp] "+&r"(n) 
+            : [mem_x] "m"( *(const double (*)[2*n])x),
+              [mem_y] "m"( *(const double (*)[2*n])y),
+              [ptr_x_tmp] "a"(x), [ptr_y_tmp] "a"(y), [ptr_d] "a"(d)
             : "cc", "r1","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31" 
             );
@@ -150,8 +152,8 @@ static  void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
 #endif
 
 OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y) {
-    BLASLONG i;
-    BLASLONG ix, iy;
+    BLASLONG i = 0;
+    BLASLONG ix=0, iy=0;
     OPENBLAS_COMPLEX_FLOAT result;
     FLOAT dot[4] __attribute__ ((aligned(16))) = {0.0, 0.0, 0.0, 0.0};
 
@@ -164,13 +166,15 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
     if ((inc_x == 1) && (inc_y == 1)) {
 
-        BLASLONG n1 = n & -16;
+        BLASLONG n1 = n & -8;
+        BLASLONG j=0; 
 
-        if (n1)
+        if (n1){
             zdot_kernel_8(n1, x, y, dot);
-
-        i = n1;
-        BLASLONG j = i * 2;
+            i = n1;
+            j = n1 <<1;
+        }
+ 
 
         while (i < n) {
 

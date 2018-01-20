@@ -27,15 +27,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "common.h"
-#define Z13_D 1
+
 #define PREFETCH_INS 1
 #if defined(Z13_A)
 #include <vecintrin.h>
 
-static void daxpy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void daxpy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha)
 {
     BLASLONG  i = 0;
-    __vector double v_a = {*alpha,*alpha}; 
+    __vector double v_a = {alpha,alpha}; 
     __vector double * v_y=(__vector double *)y;
     __vector double * v_x=(__vector double *)x;
         
@@ -60,256 +60,53 @@ static void daxpy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
     }
 
 }
-#elif  defined(Z13_B)
-static void __attribute__ ((noinline))  daxpy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
-{ 
- 
-
-             __asm__ volatile( 
-#if defined(PREFETCH_INS)         
-            "pfd 1, 0(%1) \n\t"
-            "pfd 2, 0(%2) \n\t"
-#endif     
-            "vlrepg %%v0 , 0(%3) \n\t"
-            "srlg %3,%0,5        \n\t" 
-            "xgr %%r1,%%r1       \n\t"
-             "vlr %%v1,%%v0      \n\t"
-            ".align 16 \n\t"    
-            "1: \n\t"
-#if defined(PREFETCH_INS)         
-            "pfd 1, 256(%%r1,%1) \n\t"
-            "pfd 2, 256(%%r1,%2) \n\t" 
-#endif 
-
-            "vl  %%v24, 0(%%r1,%2) \n\t"
-            "vl  %%v16, 0(%%r1,%1) \n\t"
-            "vfmadb    %%v16,%%v0,%%v16,%%v24  \n\t" 
-            "vst  %%v16, 0(%%r1,%2)  \n\t" 
-            "vl  %%v25, 16(%%r1,%2)  \n\t"
-            "vl  %%v17, 16(%%r1,%1)  \n\t" 
-            "vfmadb    %%v17,%%v0,%%v17,%%v25  \n\t" 
-            "vst  %%v17, 16(%%r1,%2) \n\t"
-            "vl  %%v26, 32(%%r1,%2)  \n\t"
-            "vl  %%v18, 32(%%r1,%1)  \n\t" 
-            "vfmadb    %%v18,%%v0,%%v18,%%v26  \n\t" 
-            "vst  %%v18, 32(%%r1,%2) \n\t"
-            "vl  %%v27, 48(%%r1,%2)  \n\t"
-            "vl  %%v19, 48(%%r1,%1)  \n\t" 
-            "vfmadb    %%v19,%%v0,%%v19,%%v27  \n\t" 
-            "vst  %%v19, 48(%%r1,%2) \n\t"   
-
-            "vl  %%v24,( 0+64)(%%r1,%2) \n\t"
-            "vl  %%v16,( 0+64)(%%r1,%1) \n\t"
-            "vfmadb    %%v16,%%v0,%%v16,%%v24  \n\t" 
-            "vst  %%v16,( 0+64)(%%r1,%2) \n\t" 
-            "vl  %%v25, (16+64)(%%r1,%2) \n\t"
-            "vl  %%v17, (16+64)(%%r1,%1) \n\t" 
-            "vfmadb    %%v17,%%v0,%%v17,%%v25  \n\t" 
-            "vst  %%v17, (16+64)(%%r1,%2) \n\t"
-            "vl  %%v26, (32+64)(%%r1,%2) \n\t"
-            "vl  %%v18, (32+64)(%%r1,%1) \n\t" 
-            "vfmadb    %%v18,%%v0,%%v18,%%v26  \n\t" 
-            "vst  %%v18, (32+64)(%%r1,%2) \n\t"
-            "vl  %%v27, (48+64)(%%r1,%2) \n\t"
-            "vl  %%v19, (48+64)(%%r1,%1) \n\t" 
-            "vfmadb    %%v19,%%v0,%%v19,%%v27  \n\t" 
-            "vst  %%v19, (48+64)(%%r1,%2) \n\t"       
-            
-            "vl  %%v24,( 0+128)(%%r1,%2) \n\t"
-            "vl  %%v16,( 0+128)(%%r1,%1) \n\t"
-            "vfmadb    %%v16,%%v0,%%v16,%%v24  \n\t" 
-            "vst  %%v16,( 0+128)(%%r1,%2) \n\t" 
-            "vl  %%v25, (16+128)(%%r1,%2) \n\t"
-            "vl  %%v17, (16+128)(%%r1,%1) \n\t" 
-            "vfmadb    %%v17,%%v0,%%v17,%%v25  \n\t" 
-            "vst  %%v17, (16+128)(%%r1,%2) \n\t"
-            "vl  %%v26, (32+128)(%%r1,%2)  \n\t"
-            "vl  %%v18, (32+128)(%%r1,%1)  \n\t" 
-            "vfmadb    %%v18,%%v0,%%v18,%%v26  \n\t" 
-            "vst  %%v18, (32+128)(%%r1,%2) \n\t"
-            "vl  %%v27, (48+128)(%%r1,%2)  \n\t"
-            "vl  %%v19, (48+128)(%%r1,%1)  \n\t" 
-            "vfmadb    %%v19,%%v0,%%v19,%%v27  \n\t" 
-            "vst  %%v19, (48+128)(%%r1,%2) \n\t"         
-            
-            "vl  %%v24,( 0+192)(%%r1,%2) \n\t"
-            "vl  %%v16,( 0+192)(%%r1,%1) \n\t"
-            "vfmadb    %%v16,%%v0,%%v16,%%v24  \n\t" 
-            "vst  %%v16,( 0+192)(%%r1,%2) \n\t" 
-            "vl  %%v25, (16+192)(%%r1,%2) \n\t"
-            "vl  %%v17, (16+192)(%%r1,%1) \n\t" 
-            "vfmadb    %%v17,%%v0,%%v17,%%v25  \n\t" 
-            "vst  %%v17, (16+192)(%%r1,%2) \n\t"
-            "vl  %%v26, (32+192)(%%r1,%2)  \n\t"
-            "vl  %%v18, (32+192)(%%r1,%1)  \n\t" 
-            "vfmadb    %%v18,%%v0,%%v18,%%v26  \n\t" 
-            "vst  %%v18, (32+192)(%%r1,%2) \n\t"
-            "vl  %%v27, (48+192)(%%r1,%2) \n\t"
-            "vl  %%v19, (48+192)(%%r1,%1) \n\t" 
-            "vfmadb    %%v19,%%v0,%%v19,%%v27  \n\t" 
-            "vst  %%v19, (48+192)(%%r1,%2) \n\t"                                                              
- 
-              
-            "la %%r1,256(%%r1) \n\t"
-            "brctg %3,1b"
-            : 
-            :"r"(n),"a"(x),"a"(y),"a"(alpha)
-            :"cc", "memory", "r1" ,"v0" ,"v16","v17","v18","v19", "v24","v25","v26","v27" 
-            );
-}
- 
-#elif  defined(Z13_C)
-static void __attribute__ ((noinline))  daxpy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
-{ 
- 
-             __asm__ volatile( 
-#if defined(PREFETCH_INS)         
-            "pfd 1, 0(%1) \n\t"
-            "pfd 2, 0(%2) \n\t"
-#endif     
-            "vlrepg %%v0 , 0(%3)   \n\t"
-            "srlg %3,%0,5          \n\t" 
-            "xgr %%r1,%%r1         \n\t"
-             "vlr %%v1,%%v0        \n\t"
-            ".align 16 \n\t"    
-            "1: \n\t"
-#if defined(PREFETCH_INS)         
-            "pfd 1, 256(%%r1,%1)    \n\t"
-            "pfd 2, 256(%%r1,%2)    \n\t" 
-#endif 
-            "vl  %%v16, 0(%%r1,%1)  \n\t"
-            "vl  %%v17, 16(%%r1,%1) \n\t"
-            "vl  %%v18, 32(%%r1,%1) \n\t"
-            "vl  %%v19, 48(%%r1,%1) \n\t"
-
-            "vl  %%v24, 0(%%r1,%2)  \n\t"
-            "vl  %%v25, 16(%%r1,%2) \n\t"
-            "vl  %%v26, 32(%%r1,%2) \n\t"
-            "vl  %%v27, 48(%%r1,%2) \n\t" 
-            "vfmadb    %%v16,%%v0,%%v16,%%v24  \n\t" 
-            "vfmadb    %%v17,%%v1,%%v17,%%v25  \n\t" 
-            "vfmadb    %%v18,%%v0,%%v18,%%v26  \n\t"
-            "vfmadb    %%v19,%%v1,%%v19,%%v27  \n\t" 
-            "vst  %%v16, 0(%%r1,%2)  \n\t"  
-            "vst  %%v17, 16(%%r1,%2) \n\t" 
-            "vst  %%v18, 32(%%r1,%2) \n\t" 
-            "vst  %%v19, 48(%%r1,%2) \n\t" 
-             
-            "vl  %%v24, 64(%%r1,%1)  \n\t"
-            "vl  %%v25, 80(%%r1,%1)  \n\t"
-            "vl  %%v26, 96(%%r1,%1)  \n\t"
-            "vl  %%v27, 112(%%r1,%1) \n\t"
-             
-            "vl  %%v16, 64(%%r1,%2)  \n\t"
-            "vl  %%v17, 80(%%r1,%2)  \n\t"
-            "vl  %%v18, 96(%%r1,%2)  \n\t"
-            "vl  %%v19, 112(%%r1,%2) \n\t"             
-
-
-            "vfmadb   %%v24,%%v0,%%v24,%%v16   \n\t" 
-            "vfmadb    %%v25,%%v1,%%v25,%%v17  \n\t" 
-            "vfmadb    %%v26,%%v0,%%v26,%%v18  \n\t"
-            "vfmadb    %%v27,%%v1,%%v27,%%v19  \n\t" 
-
-            "vst  %%v24, 64(%%r1,%2)  \n\t"
-            "vst  %%v25, 80(%%r1,%2)  \n\t"
-            "vst  %%v26, 96(%%r1,%2)  \n\t"
-            "vst  %%v27, 112(%%r1,%2) \n\t" 
-
-            "vl  %%v16, (0+128)(%%r1,%1)  \n\t"
-            "vl  %%v17, (16+128)(%%r1,%1) \n\t"
-            "vl  %%v18, (32+128)(%%r1,%1) \n\t"
-            "vl  %%v19, (48+128)(%%r1,%1) \n\t"
-             
-            "vl  %%v24, (0+128)(%%r1,%2)  \n\t"
-            "vl  %%v25, (16+128)(%%r1,%2) \n\t"
-            "vl  %%v26, (32+128)(%%r1,%2) \n\t"
-            "vl  %%v27, (48+128)(%%r1,%2) \n\t" 
- 
-            "vfmadb    %%v16,%%v0,%%v16,%%v24  \n\t" 
-            "vfmadb    %%v17,%%v1,%%v17,%%v25  \n\t" 
-            "vfmadb    %%v18,%%v0,%%v18,%%v26  \n\t"
-            "vfmadb    %%v19,%%v1,%%v19,%%v27  \n\t" 
-            "vst  %%v16, (0+128)(%%r1,%2)  \n\t"  
-            "vst  %%v17, (16+128)(%%r1,%2) \n\t" 
-            "vst  %%v18, (32+128)(%%r1,%2) \n\t" 
-            "vst  %%v19, (48+128)(%%r1,%2) \n\t" 
-             
-            "vl  %%v24, (64+128)(%%r1,%1)  \n\t"
-            "vl  %%v25, (80+128)(%%r1,%1)  \n\t"
-            "vl  %%v26, (96+128)(%%r1,%1)  \n\t"
-            "vl  %%v27, (112+128)(%%r1,%1) \n\t"
-             
-            "vl  %%v16, (64+128)(%%r1,%2)  \n\t"
-            "vl  %%v17, (80+128)(%%r1,%2)  \n\t"
-            "vl  %%v18, (96+128)(%%r1,%2)  \n\t"
-            "vl  %%v19, (112+128)(%%r1,%2) \n\t"             
- 
-            "vfmadb   %%v24,%%v0,%%v24,%%v16   \n\t" 
-            "vfmadb    %%v25,%%v1,%%v25,%%v17  \n\t" 
-            "vfmadb    %%v26,%%v0,%%v26,%%v18  \n\t"
-            "vfmadb    %%v27,%%v1,%%v27,%%v19  \n\t" 
-
-            "vst  %%v24, (64+128)(%%r1,%2)  \n\t"
-            "vst  %%v25, (80+128)(%%r1,%2)  \n\t"
-            "vst  %%v26, (96+128)(%%r1,%2)  \n\t"
-            "vst  %%v27, (112+128)(%%r1,%2) \n\t"            
-                    
-            "la %%r1,256(%%r1) \n\t"
-            "brctg %3,1b"
-            : 
-            :"r"(n),"a"(x),"a"(y),"a"(alpha)
-            :"cc", "memory", "r1" ,"v0","v1","v16","v17","v18","v19", "v24","v25","v26","v27" 
-            );
-} 
- 
- 
-#elif defined(Z13_D)
-static void __attribute__ ((noinline))  daxpy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+#else
+static void   daxpy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha)
 { 
         
          __asm__ volatile( 
 #if defined(PREFETCH_INS)         
-                   "pfd 1, 0(%1) \n\t"
-                   "pfd 2, 0(%2) \n\t"
-#endif         
-                    "vlrepg %%v0 , 0(%3) \n\t"
-                    "srlg %3,%0,5       \n\t" 
-                    "vlr %%v1,%%v0  \n\t"
+                   "pfd      1, 0(%[x_tmp])   \n\t"
+                   "pfd      2, 0(%[y_tmp])   \n\t"
+#endif
+                    "lgdr    %%r0,%[alpha]    \n\t"
+                    "vlvgp   %%v0,%%r0,%%r0   \n\t"   
+                    "srlg    %%r0,%[n],5      \n\t" 
+                    "vlr     %%v1,%%v0        \n\t"
                     ".align 16 \n\t"    
                     "1: \n\t"
 #if defined(PREFETCH_INS)         
-                    "pfd 1, 256(%1) \n\t"
-                    "pfd 2, 256(%2) \n\t"
+                    "pfd      1, 256(%[x_tmp]) \n\t"
+                    "pfd      2, 256(%[y_tmp]) \n\t"
 #endif                  
-                    "vlm      %%v16,%%v23,  0(%1)     \n\t"
-                    "vlm      %%v24, %%v31, 0(%2)     \n\t"
-                    "vfmadb   %%v16,%%v0,%%v16,%%v24  \n\t"
-                    "vfmadb   %%v17,%%v1,%%v17,%%v25  \n\t"  
-                    "vfmadb   %%v18,%%v0,%%v18,%%v26  \n\t"
-                    "vfmadb   %%v19,%%v1,%%v19,%%v27  \n\t"
-                    "vfmadb   %%v20,%%v0,%%v20,%%v28  \n\t"
-                    "vfmadb   %%v21,%%v1,%%v21,%%v29  \n\t"  
-                    "vfmadb   %%v22,%%v0,%%v22,%%v30  \n\t"
-                    "vfmadb   %%v23,%%v1,%%v23,%%v31  \n\t"
-                    "vstm     %%v16,%%v23, 0(%2)      \n\t" 
-                    "vlm      %%v24,%%v31, 128(%1)    \n\t"
-                    "vlm      %%v16,%%v23,  128(%2)   \n\t"
-                    "vfmadb   %%v24,%%v0,%%v24,%%v16  \n\t"
-                    "vfmadb   %%v25,%%v1,%%v25,%%v17  \n\t"  
-                    "vfmadb   %%v26,%%v0,%%v26,%%v18  \n\t"
-                    "vfmadb   %%v27,%%v1,%%v27,%%v19  \n\t"
-                    "vfmadb   %%v28,%%v0,%%v28,%%v20  \n\t"
-                    "vfmadb   %%v29,%%v1,%%v29,%%v21  \n\t"  
-                    "vfmadb   %%v30,%%v0,%%v30,%%v22  \n\t"
-                    "vfmadb   %%v31,%%v1,%%v31,%%v23  \n\t"  
-                    "la %1,256(%1)                    \n\t"
-                    "vstm %%v24, %%v31, 128(%2)       \n\t"
-                    "la %2,256(%2)                    \n\t" 
-                    "brctg %3,1b"
-                    : 
-                    :"r"(n),"a"(x),"a"(y),"a"(alpha)
-                    :"cc", "memory",  "v0","v1","v16","v17","v18","v19","v20","v21",
+                    "vlm      %%v16,%%v23,  0(%[x_tmp])    \n\t"
+                    "vlm      %%v24, %%v31, 0(%[y_tmp])    \n\t"
+                    "vfmadb   %%v16,%%v0,%%v16,%%v24       \n\t"
+                    "vfmadb   %%v17,%%v1,%%v17,%%v25       \n\t"  
+                    "vfmadb   %%v18,%%v0,%%v18,%%v26       \n\t"
+                    "vfmadb   %%v19,%%v1,%%v19,%%v27       \n\t"
+                    "vfmadb   %%v20,%%v0,%%v20,%%v28       \n\t"
+                    "vfmadb   %%v21,%%v1,%%v21,%%v29       \n\t"  
+                    "vfmadb   %%v22,%%v0,%%v22,%%v30       \n\t"
+                    "vfmadb   %%v23,%%v1,%%v23,%%v31       \n\t"
+                    "vstm     %%v16,%%v23,   0(%[y_tmp])   \n\t" 
+                    "vlm      %%v24,%%v31, 128(%[x_tmp])   \n\t"
+                    "vlm      %%v16,%%v23, 128(%[y_tmp])   \n\t"
+                    "vfmadb   %%v24,%%v0,%%v24,%%v16       \n\t"
+                    "vfmadb   %%v25,%%v1,%%v25,%%v17       \n\t"  
+                    "vfmadb   %%v26,%%v0,%%v26,%%v18       \n\t"
+                    "vfmadb   %%v27,%%v1,%%v27,%%v19       \n\t"
+                    "vfmadb   %%v28,%%v0,%%v28,%%v20       \n\t"
+                    "vfmadb   %%v29,%%v1,%%v29,%%v21       \n\t"  
+                    "vfmadb   %%v30,%%v0,%%v30,%%v22       \n\t"
+                    "vfmadb   %%v31,%%v1,%%v31,%%v23       \n\t"  
+                    "la       %[x_tmp],256(%[x_tmp])       \n\t"
+                    "vstm     %%v24, %%v31, 128(%[y_tmp])  \n\t"
+                    "la       %[y_tmp],256(%[y_tmp])       \n\t" 
+                    "brctg    %%r0,1b"
+                    : [mem_y] "+m" (*(double (*)[n])y), [x_tmp] "+&a"(x), [y_tmp] "+&a"(y)
+                    : [mem_x] "m" (*(const double (*)[n])x), [n] "r"(n), [alpha] "f"(alpha)
+                    :"cc", "r0", "v0","v1","v16","v17","v18","v19","v20","v21",
                     "v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
                  );
  
@@ -334,7 +131,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
         BLASLONG n1 = n & -32;
 
         if ( n1 )
-            daxpy_kernel_32(n1, x, y , &da );
+            daxpy_kernel_32(n1, x, y , da );
 
         i = n1;
         while(i < n)

@@ -29,229 +29,218 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  
 
-static void  __attribute__ ((noinline))  zscal_kernel_8(BLASLONG n, FLOAT *alpha, FLOAT *x) {
+static void   zscal_kernel_8(BLASLONG n, FLOAT da_r,FLOAT da_i, FLOAT *x) {
     __asm__(
 
-            "pfd 1, 0(%1) \n\t"
-            "sllg %%r0,%0,4       \n\t"
-            "agr  %%r0,%2  \n\t"
-            "vlrepg %%v24,0(%1)  \n\t"
-            "vlrepg %%v25,8(%1)  \n\t"
+            "pfd    1, 0(%[x_ptr])     \n\t"
+            "lgdr   %%r0,%[alpha_r]    \n\t"
+            "vlvgp  %%v24,%%r0,%%r0    \n\t"
+            "lgdr   %%r0,%[alpha_i]    \n\t"
+            "vlvgp  %%v25,%%r0,%%r0    \n\t"                
+            "sllg   %%r0,%[n],4        \n\t"
+            "agr    %%r0,%[x_ptr]      \n\t"
             ".align 16 \n\t"
-            "1: \n\t"
-            "pfd 2, 256(%2 ) \n\t"
+            "1:     \n\t"
+            "pfd 2, 256(%[x_ptr] ) \n\t"
 
-            "vleg %%v20 ,  0(%2),0  \n\t" 
-            "vleg %%v21 ,  8(%2),0  \n\t"
-            "vleg %%v20 , 16(%2),1  \n\t"
-            "vleg %%v21 , 24(%2),1  \n\t"
-
-            "vleg %%v22 , 32(%2),0  \n\t" 
-            "vleg %%v23 , 40(%2),0  \n\t"
-            "vleg %%v22 , 48(%2),1  \n\t"
-            "vleg %%v23 , 56(%2),1  \n\t"
-
-            "vfmdb %%v16,  %%v21, %%v25  \n\t"
-            "vfmdb %%v17,  %%v20, %%v25  \n\t"
-            "vfmdb %%v18,  %%v23, %%v25  \n\t"
-            "vfmdb %%v19,  %%v22, %%v25  \n\t"
-
+            "vleg   %%v20 ,  0(%[x_ptr]),0  \n\t" 
+            "vleg   %%v21 ,  8(%[x_ptr]),0  \n\t"
+            "vleg   %%v20 , 16(%[x_ptr]),1  \n\t"
+            "vleg   %%v21 , 24(%[x_ptr]),1  \n\t"
+            "vleg   %%v22 , 32(%[x_ptr]),0  \n\t" 
+            "vleg   %%v23 , 40(%[x_ptr]),0  \n\t"
+            "vleg   %%v22 , 48(%[x_ptr]),1  \n\t"
+            "vleg   %%v23 , 56(%[x_ptr]),1  \n\t"
+            "vfmdb  %%v16,  %%v21, %%v25    \n\t"
+            "vfmdb  %%v17,  %%v20, %%v25    \n\t"
+            "vfmdb  %%v18,  %%v23, %%v25    \n\t"
+            "vfmdb  %%v19,  %%v22, %%v25    \n\t"
             "vfmsdb %%v16, %%v20, %%v24 ,%%v16  \n\t"
             "vfmadb %%v17, %%v21, %%v24, %%v17  \n\t"
             "vfmsdb %%v18, %%v22, %%v24, %%v18  \n\t"
             "vfmadb %%v19, %%v23, %%v24, %%v19  \n\t"
-
-            "vsteg %%v16 ,  0(%2),0  \n\t" 
-            "vsteg %%v17 ,  8(%2),0  \n\t"
-            "vsteg %%v16 , 16(%2),1  \n\t"
-            "vsteg %%v17 , 24(%2),1  \n\t"
-
-            "vsteg %%v18 , 32(%2),0  \n\t" 
-            "vsteg %%v19 , 40(%2),0  \n\t"
-            "vsteg %%v18 , 48(%2),1  \n\t"
-            "vsteg %%v19 , 56(%2),1  \n\t"
-            
-            "vleg %%v20 ,  64(%2),0  \n\t" 
-            "vleg %%v21 , 72(%2),0   \n\t"
-            "vleg %%v20 , 80(%2),1   \n\t"
-            "vleg %%v21 , 88(%2),1   \n\t"
-
-            "vleg %%v22 , 96(%2),0   \n\t" 
-            "vleg %%v23 , 104(%2),0  \n\t"
-            "vleg %%v22 , 112(%2),1  \n\t"
-            "vleg %%v23 , 120(%2),1  \n\t"
-
-            "vfmdb %%v16,  %%v21, %%v25  \n\t"
-            "vfmdb %%v17,  %%v20, %%v25  \n\t"
-            "vfmdb %%v18,  %%v23, %%v25  \n\t"
-            "vfmdb %%v19,  %%v22, %%v25  \n\t"
-
+            "vsteg  %%v16 ,  0(%[x_ptr]),0  \n\t" 
+            "vsteg  %%v17 ,  8(%[x_ptr]),0  \n\t"
+            "vsteg  %%v16 , 16(%[x_ptr]),1  \n\t"
+            "vsteg  %%v17 , 24(%[x_ptr]),1  \n\t"
+            "vsteg  %%v18 , 32(%[x_ptr]),0  \n\t" 
+            "vsteg  %%v19 , 40(%[x_ptr]),0  \n\t"
+            "vsteg  %%v18 , 48(%[x_ptr]),1  \n\t"
+            "vsteg  %%v19 , 56(%[x_ptr]),1  \n\t"
+            "vleg   %%v20 ,  64(%[x_ptr]),0 \n\t" 
+            "vleg   %%v21 , 72(%[x_ptr]),0  \n\t"
+            "vleg   %%v20 , 80(%[x_ptr]),1  \n\t"
+            "vleg   %%v21 , 88(%[x_ptr]),1  \n\t"
+            "vleg   %%v22 , 96(%[x_ptr]),0  \n\t" 
+            "vleg   %%v23 , 104(%[x_ptr]),0 \n\t"
+            "vleg   %%v22 , 112(%[x_ptr]),1 \n\t"
+            "vleg   %%v23 , 120(%[x_ptr]),1 \n\t"
+            "vfmdb  %%v16,  %%v21, %%v25    \n\t"
+            "vfmdb  %%v17,  %%v20, %%v25    \n\t"
+            "vfmdb  %%v18,  %%v23, %%v25    \n\t"
+            "vfmdb  %%v19,  %%v22, %%v25    \n\t"
             "vfmsdb %%v16, %%v20, %%v24 ,%%v16  \n\t"
             "vfmadb %%v17, %%v21, %%v24, %%v17  \n\t"
             "vfmsdb %%v18, %%v22, %%v24, %%v18  \n\t"
             "vfmadb %%v19, %%v23, %%v24, %%v19  \n\t"
-
-            "vsteg %%v16 , 64(%2),0  \n\t" 
-            "vsteg %%v17 , 72(%2),0  \n\t"
-            "vsteg %%v16 , 80(%2),1  \n\t"
-            "vsteg %%v17 , 88(%2),1  \n\t"
-
-            "vsteg %%v18 ,  96(%2),0 \n\t" 
-            "vsteg %%v19 , 104(%2),0 \n\t"
-            "vsteg %%v18 , 112(%2),1 \n\t"
-            "vsteg %%v19 , 120(%2),1 \n\t"
+            "vsteg  %%v16 , 64(%[x_ptr]),0  \n\t" 
+            "vsteg  %%v17 , 72(%[x_ptr]),0  \n\t"
+            "vsteg  %%v16 , 80(%[x_ptr]),1  \n\t"
+            "vsteg  %%v17 , 88(%[x_ptr]),1  \n\t"
+            "vsteg  %%v18 ,  96(%[x_ptr]),0 \n\t" 
+            "vsteg  %%v19 , 104(%[x_ptr]),0 \n\t"
+            "vsteg  %%v18 , 112(%[x_ptr]),1 \n\t"
+            "vsteg  %%v19 , 120(%[x_ptr]),1 \n\t"
    
-            "la %2,128(%2)     \n\t"
-            "clgrjl %2,%%r0,1b \n\t"
-            :
-            : "r"(n), "a"(alpha), "a"(x)
+            "la     %[x_ptr],128(%[x_ptr])      \n\t"
+            "clgrjl %[x_ptr],%%r0,1b        \n\t"
+            : [mem] "+m" (*(double (*)[2*n])x) ,[x_ptr] "+&a"(x)
+            : [n] "r"(n), [alpha_r] "f"(da_r),[alpha_i] "f"(da_i)
             : "cc", "memory","r0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25"
             );
 
 
 }
  
-static void   __attribute__ ((noinline))  zscal_kernel_8_zero_r(BLASLONG n, FLOAT *alpha, FLOAT *x) {
+static void   zscal_kernel_8_zero_r(BLASLONG n, FLOAT da_i, FLOAT *x) {
  
-        __asm__ (   "pfd 2, 0(%1)   \n\t" 
-                    "ld %%f0,8(%2)  \n\t"
-                    "lcdbr %%f1,%%f0     \n\t"
-                    "lgdr %%r0,%%f1      \n\t"
-                    "vlvgg %%v0,%%r0,1   \n\t"
-                    "vlr %%v16,%%v0      \n\t"
-                    "vlr %%v17 ,%%v0     \n\t"
-                    "vlr %%v1,%%v0       \n\t" 
-                    "sllg %%r0,%0,4      \n\t"  
-                    "agr %%r0,%1  \n\t"
+        __asm__ (   "pfd    2, 0(%1)          \n\t" 
+                    "lgdr   %%r0,%[alpha]     \n\t"
+                    "vlvgg  %%v16,%%r0,0      \n\t" 
+                    "lcdbr  %[alpha],%[alpha] \n\t"                                       
+                    "lgdr   %%r0,%[alpha]     \n\t"
+                    "vlvgg  %%v16,%%r0,1      \n\t"
+                    "vlr    %%v17 ,%%v16      \n\t" 
+                    "sllg   %%r0,%[n],4       \n\t"  
+                    "agr    %%r0,%[x_ptr]     \n\t"
                     ".align 16    \n\t"    
-                    "1: \n\t"  
-                    "vl     %%v24, 0(%1)      \n\t"
-                    "vfmdb  %%v24,%%v24,%%v0  \n\t"
-                    "vsteg  %%v24, 0(%1),1    \n\t" 
-                    "vsteg  %%v24, 8(%1),0    \n\t" 
-                    "vl     %%v25, 16(%1)     \n\t"
-                    "vfmdb  %%v25,%%v25,%%v1  \n\t"  
-                    "vsteg  %%v25, 16(%1),1   \n\t" 
-                    "vsteg  %%v25, 24(%1),0   \n\t" 
-                    "vl     %%v26, 32(%1)     \n\t"
-                    "vfmdb  %%v26,%%v26,%%v16 \n\t"
-                    "vsteg  %%v26, 32(%1),1   \n\t" 
-                    "vsteg  %%v26, 40(%1),0   \n\t"   
-                    "vl     %%v27, 48(%1)     \n\t" 
+                    "1:     \n\t"  
+                    "vl     %%v24, 0(%[x_ptr])      \n\t"
+                    "vfmdb  %%v24,%%v24,%%v16        \n\t"
+                    "vsteg  %%v24, 0(%[x_ptr]),1    \n\t" 
+                    "vsteg  %%v24, 8(%[x_ptr]),0    \n\t" 
+                    "vl     %%v25, 16(%[x_ptr])     \n\t"
+                    "vfmdb  %%v25,%%v25,%%v17        \n\t"  
+                    "vsteg  %%v25, 16(%[x_ptr]),1   \n\t" 
+                    "vsteg  %%v25, 24(%[x_ptr]),0   \n\t" 
+                    "vl     %%v26, 32(%[x_ptr])     \n\t"
+                    "vfmdb  %%v26,%%v26,%%v16       \n\t"
+                    "vsteg  %%v26, 32(%[x_ptr]),1   \n\t" 
+                    "vsteg  %%v26, 40(%[x_ptr]),0   \n\t"   
+                    "vl     %%v27, 48(%[x_ptr])     \n\t" 
                     "vfmdb  %%v27,%%v27,%%v17 \n\t"  
-                    "vsteg  %%v27, 40(%1),1   \n\t" 
-                    "vsteg  %%v27, 48(%1),0   \n\t" 
-                    "vl     %%v28, 64(%1)     \n\t"
-                    "vfmdb  %%v28,%%v28,%%v0  \n\t"
-                    "vsteg  %%v28, 64(%1),1   \n\t" 
-                    "vsteg  %%v28, 72(%1),0   \n\t" 
-                    "vl     %%v29, 80(%1)     \n\t"
-                    "vfmdb  %%v29,%%v29,%%v1  \n\t"  
-                    "vsteg  %%v29, 80(%1),1   \n\t" 
-                    "vsteg  %%v29, 88(%1),0   \n\t" 
-                    "vl     %%v30, 96(%1)     \n\t"
-                    "vfmdb  %%v30,%%v30,%%v16 \n\t"
-                    "vsteg  %%v27,  96(%1),1  \n\t" 
-                    "vsteg  %%v27, 104(%1),0  \n\t"  
-                    "vl     %%v31, 112(%1)    \n\t" 
+                    "vsteg  %%v27, 40(%[x_ptr]),1   \n\t" 
+                    "vsteg  %%v27, 48(%[x_ptr]),0   \n\t" 
+                    "vl     %%v28, 64(%[x_ptr])     \n\t"
+                    "vfmdb  %%v28,%%v28,%%v16        \n\t"
+                    "vsteg  %%v28, 64(%[x_ptr]),1   \n\t" 
+                    "vsteg  %%v28, 72(%[x_ptr]),0   \n\t" 
+                    "vl     %%v29, 80(%[x_ptr])     \n\t"
+                    "vfmdb  %%v29,%%v29,%%v17        \n\t"  
+                    "vsteg  %%v29, 80(%[x_ptr]),1   \n\t" 
+                    "vsteg  %%v29, 88(%[x_ptr]),0   \n\t" 
+                    "vl     %%v30, 96(%[x_ptr])     \n\t"
+                    "vfmdb  %%v30,%%v30,%%v16       \n\t"
+                    "vsteg  %%v27,  96(%[x_ptr]),1  \n\t" 
+                    "vsteg  %%v27, 104(%[x_ptr]),0  \n\t"  
+                    "vl     %%v31, 112(%[x_ptr])    \n\t" 
                     "vfmdb  %%v31,%%v31,%%v17 \n\t"  
-                    "vsteg  %%v31, 112(%1),1  \n\t" 
-                    "vsteg  %%v31, 120(%1),0  \n\t" 
-                    "la %1,128(%1) \n\t"
-                    "clgrjl %1,%%r0,1b \n\t"
-                    : 
-                    :"r"(n),"a"(x) ,"a"(alpha)
-                    :"cc", "memory","r0","f0", "f1","v0","v1","v18","v19","v24","v25","v26","v27","v28","v29","v30","v31" 
+                    "vsteg  %%v31, 112(%[x_ptr]),1  \n\t" 
+                    "vsteg  %%v31, 120(%[x_ptr]),0  \n\t" 
+                    "la     %[x_ptr],128(%[x_ptr])  \n\t"
+                    "clgrjl %[x_ptr],%%r0,1b \n\t"
+                    : [mem] "+m" (*(double (*)[2*n])x) ,[x_ptr] "+&a"(x)
+                    : [n] "r"(n),[alpha] "f"(da_i)
+                    :"cc", "r0","f0", "f1","v16","v17" ,"v24","v25","v26","v27","v28","v29","v30","v31" 
                  );
 
 
 }
 
-static void  __attribute__ ((noinline)) zscal_kernel_8_zero_i(BLASLONG n, FLOAT *alpha, FLOAT *x) {
-           __asm__ ("pfd 2, 0(%1) \n\t"      
-                    "vlrepg %%v18,0(%2) \n\t"
-                    "vlr %%v19,%%v18    \n\t"
-                    "vlr %%v16 ,%%v18   \n\t"
-                    "vlr %%v17,%%v18    \n\t" 
-                    "sllg %%r0,%0,4     \n\t"  
-                    "agr %%r0,%1  \n\t"
+static void   zscal_kernel_8_zero_i(BLASLONG n, FLOAT da_r, FLOAT *x) {
+           __asm__ ("pfd    2, 0(%[x_ptr])     \n\t"      
+                    "lgdr   %%r0,%[alpha]      \n\t"
+                    "vlvgp  %%v18,%%r0,%%r0    \n\t"
+                    "vlr    %%v19,%%v18        \n\t"
+                    "vlr    %%v16,%%v18        \n\t"
+                    "vlr    %%v17,%%v18        \n\t" 
+                    "sllg   %%r0,%[n],4        \n\t"  
+                    "agr    %%r0,%[x_ptr]      \n\t"
                     ".align 16 \n\t"    
-                    "1: \n\t"  
-                    "vl     %%v24, 0(%1)      \n\t"
-                    "vfmdb  %%v24,%%v24,%%v18 \n\t"
-                    "vst    %%v24, 0(%1)      \n\t" 
-                    "vl     %%v25, 16(%1)     \n\t"
-                    "vfmdb  %%v25,%%v25,%%v19 \n\t"  
-                    "vst    %%v25, 16(%1)     \n\t" 
-                    "vl     %%v26, 32(%1)     \n\t"
-                    "vfmdb  %%v26,%%v26,%%v16 \n\t"
-                    "vst    %%v26, 32(%1)     \n\t"  
-                    "vl     %%v27, 48(%1)     \n\t" 
-                    "vfmdb  %%v27,%%v27,%%v17 \n\t"  
-                    "vst    %%v27, 48(%1)     \n\t"  
-                    "vl     %%v28, 64(%1)     \n\t"
-                    "vfmdb  %%v28,%%v28,%%v18 \n\t"
-                    "vst    %%v28, 64(%1)     \n\t" 
-                    "vl     %%v29, 80(%1)     \n\t"
-                    "vfmdb  %%v29,%%v29,%%v19 \n\t"  
-                    "vst    %%v29, 80(%1)     \n\t" 
-                    "vl     %%v30, 96(%1)     \n\t"
-                    "vfmdb  %%v30,%%v30,%%v16 \n\t"
-                    "vst    %%v30, 96(%1)     \n\t"  
-                    "vl     %%v31, 112(%1)    \n\t" 
-                    "vfmdb  %%v31,%%v31,%%v17 \n\t"  
-                    "vst    %%v31, 112(%1)    \n\t"
-                    "la    %1,128(%1)         \n\t"
-                    "clgrjl %1,%%r0,1b        \n\t"
-                    : 
-                    :"r"(n),"a"(x) ,"a"(alpha)
-                    :"cc", "memory","r0","v16", "v17","v18","v19","v24","v25","v26","v27","v28","v29","v30","v31" 
+                    "1:    \n\t"  
+                    "vl     %%v24, 0(%[x_ptr])  \n\t"
+                    "vfmdb  %%v24,%%v24,%%v18   \n\t"
+                    "vst    %%v24, 0(%[x_ptr])  \n\t" 
+                    "vl     %%v25, 16(%[x_ptr]) \n\t"
+                    "vfmdb  %%v25,%%v25,%%v19   \n\t"  
+                    "vst    %%v25, 16(%[x_ptr]) \n\t" 
+                    "vl     %%v26, 32(%[x_ptr]) \n\t"
+                    "vfmdb  %%v26,%%v26,%%v16   \n\t"
+                    "vst    %%v26, 32(%[x_ptr]) \n\t"  
+                    "vl     %%v27, 48(%[x_ptr]) \n\t" 
+                    "vfmdb  %%v27,%%v27,%%v17   \n\t"  
+                    "vst    %%v27, 48(%[x_ptr]) \n\t"  
+                    "vl     %%v28, 64(%[x_ptr]) \n\t"
+                    "vfmdb  %%v28,%%v28,%%v18   \n\t"
+                    "vst    %%v28, 64(%[x_ptr]) \n\t" 
+                    "vl     %%v29, 80(%[x_ptr]) \n\t"
+                    "vfmdb  %%v29,%%v29,%%v19   \n\t"  
+                    "vst    %%v29, 80(%[x_ptr]) \n\t" 
+                    "vl     %%v30, 96(%[x_ptr]) \n\t"
+                    "vfmdb  %%v30,%%v30,%%v16   \n\t"
+                    "vst    %%v30, 96(%[x_ptr]) \n\t"  
+                    "vl     %%v31,112(%[x_ptr]) \n\t" 
+                    "vfmdb  %%v31,%%v31,%%v17   \n\t"  
+                    "vst    %%v31,112(%[x_ptr]) \n\t"
+                    "la     %[x_ptr],128(%[x_ptr])   \n\t"
+                    "clgrjl %[x_ptr],%%r0,1b    \n\t"
+                    : [mem] "+m" (*(double (*)[2*n])x) ,[x_ptr] "+&a"(x)
+                    : [n] "r"(n),[alpha] "f"(da_r)
+                    : "cc", "r0","v16", "v17","v18","v19","v24","v25","v26","v27","v28","v29","v30","v31" 
                  );
 
 }
 
-static void  __attribute__ ((noinline)) zscal_kernel_8_zero(BLASLONG n,  FLOAT *x) {
+static void  zscal_kernel_8_zero(BLASLONG n,  FLOAT *x) {
 
-     __asm__ (      "pfd 2, 0(%1)    \n\t"      
+     __asm__ (      "pfd 2, 0(%[x_ptr])    \n\t"      
                     "vzero %%v24     \n\t"
                     "vzero %%v25     \n\t"
                     "vzero %%v26     \n\t"
                     "vzero %%v27     \n\t" 
-                    "sllg  %%r0,%0,4 \n\t"  
-                    "agr   %%r0,%1   \n\t"
+                    "sllg  %%r0,%[n],4 \n\t"  
+                    "agr   %%r0,%[x_ptr]   \n\t"
                     ".align 16 \n\t"    
                     "1: \n\t" 
-                    "pfd 2, 256( %1)      \n\t"     
-                    "vst  %%v24,  0( %1)  \n\t" 
-                    "vst  %%v25, 16( %1)  \n\t" 
-                    "vst  %%v26, 32( %1)  \n\t"   
-                    "vst  %%v27, 48( %1)  \n\t"  
-                    "vst  %%v24, 64( %1)  \n\t" 
-                    "vst  %%v25, 80( %1)  \n\t" 
-                    "vst  %%v26, 96( %1)  \n\t"  
-                    "vst  %%v27,112( %1)  \n\t"  
+                    "pfd     2, 256( %[x_ptr])  \n\t"     
+                    "vst  %%v24,  0( %[x_ptr])  \n\t" 
+                    "vst  %%v25, 16( %[x_ptr])  \n\t" 
+                    "vst  %%v26, 32( %[x_ptr])  \n\t"   
+                    "vst  %%v27, 48( %[x_ptr])  \n\t"  
+                    "vst  %%v24, 64( %[x_ptr])  \n\t" 
+                    "vst  %%v25, 80( %[x_ptr])  \n\t" 
+                    "vst  %%v26, 96( %[x_ptr])  \n\t"  
+                    "vst  %%v27,112( %[x_ptr])  \n\t"  
               
-                    "la     %1,128(%1) \n\t"
-                    "clgrjl %1,%%r0,1b \n\t"
-                    : 
-                    :"r"(n),"a"(x) 
-                    :"cc" , "memory" ,"r0","v24","v25","v26","v27"
+                    "la     %[x_ptr],128(%[x_ptr]) \n\t"
+                    "clgrjl %[x_ptr],%%r0,1b \n\t"
+                    : [mem] "+m" (*(double (*)[2*n])x),[x_ptr] "+&a"(x) 
+                    : [n] "r"(n)
+                    :"cc" ,"r0","v24","v25","v26","v27"
                  );
 
 }
 
 
 
-static void zscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x) __attribute__ ((noinline));
 
-static void zscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x) {
+
+static void zscal_kernel_inc_8(BLASLONG n, FLOAT da_r,FLOAT da_i, FLOAT *x, BLASLONG inc_x) {
 
     BLASLONG i;
     BLASLONG inc_x2 = 2 * inc_x;
     BLASLONG inc_x3 = inc_x2 + inc_x;
-    FLOAT t0, t1, t2, t3;
-    FLOAT da_r = alpha[0];
-    FLOAT da_i = alpha[1];
+    FLOAT t0, t1, t2, t3; 
 
     for (i = 0; i < n; i += 4) {
         t0 = da_r * x[0] - da_i * x[1];
@@ -280,7 +269,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
     BLASLONG i = 0, j = 0;
     FLOAT temp0;
     FLOAT temp1;
-    FLOAT alpha[2];
+
 
     if (inc_x != 1) {
         inc_x <<= 1;
@@ -372,10 +361,8 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
             } else {
 
                 BLASLONG n1 = n & -8;
-                if (n1 > 0) {
-                    alpha[0] = da_r;
-                    alpha[1] = da_i;
-                    zscal_kernel_inc_8(n1, alpha, x, inc_x);
+                if (n1 > 0) { 
+                    zscal_kernel_inc_8(n1, da_r,da_i, x, inc_x);
                     j = n1;
                     i = n1 * inc_x;
                 }
@@ -401,19 +388,17 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
     BLASLONG n1 = n & -8;
     if (n1 > 0) {
 
-        alpha[0] = da_r;
-        alpha[1] = da_i;
 
         if (da_r == 0.0)
             if (da_i == 0)
                 zscal_kernel_8_zero(n1,  x);
             else
-                zscal_kernel_8_zero_r(n1, alpha, x);
+                zscal_kernel_8_zero_r(n1, da_i, x);
         else
             if (da_i == 0)
-            zscal_kernel_8_zero_i(n1, alpha, x);
+            zscal_kernel_8_zero_i(n1, da_r, x);
         else
-            zscal_kernel_8(n1, alpha, x);
+            zscal_kernel_8(n1, da_r,da_i, x);
 
         i = n1 << 1;
         j = n1;
