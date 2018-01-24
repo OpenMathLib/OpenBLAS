@@ -181,6 +181,7 @@ endif
 
 ifeq ($(NUM_THREADS), 1)
 override USE_THREAD = 0
+override USE_OPENMP = 0
 endif
 
 ifdef USE_THREAD
