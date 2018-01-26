@@ -60,7 +60,6 @@ before_build:
 build_script:
   - cmake --build .
 
+
 test_script:
-  - echo Running Test
-  - cd utest
-  - openblas_utest
+  - ctest -j2
