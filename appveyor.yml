@@ -61,4 +61,4 @@ build_script:
 
 
 test_script:
-  - ctest -j2
+  - ctest -VV
