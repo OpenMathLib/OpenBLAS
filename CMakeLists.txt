@@ -191,7 +191,7 @@ if (MSVC OR NOT NOFORTRAN)
   add_subdirectory(utest)
 endif()
 
-if (NOT NOFORTRAN)
+if ((NOT MSVC OR NOT BUILD_WITHOUT_LAPACK) AND NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
   if(NOT NO_CBLAS)
