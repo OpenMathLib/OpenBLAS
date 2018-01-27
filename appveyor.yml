@@ -30,10 +30,9 @@ environment:
     CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
   matrix:
     - COMPILER: clang-cl
-      WITH_FORTRAN: yes
+      FORTRAN: ON
     - COMPILER: clang-cl
       DYNAMIC_ARCH: ON
-      WITH_FORTRAN: no
     - COMPILER: cl
 
 install:
@@ -41,9 +40,9 @@ install:
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
   - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev cmake
 
-  - if [%WITH_FORTRAN%]==[no] conda install --yes --quiet ninja
-  - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet -c isuruf kitware-ninja
-  - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet flang
+  - if [%FORTRAN%]==[] conda install --yes --quiet ninja
+  - if [%FORTRAN%]==[ON] conda install --yes --quiet -c isuruf kitware-ninja
+  - if [%FORTRAN%]==[ON] conda install --yes --quiet flang
 
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - if [%COMPILER%]==[clang-cl] set "LIB=%CONDA_INSTALL_LOCN%\Library\lib;%LIB%"
@@ -53,8 +52,8 @@ before_build:
   - ps: if (-Not (Test-Path .\build)) { mkdir build }
   - cd build
   - if [%COMPILER%]==[cl] cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release ..
-  - if [%WITH_FORTRAN%]==[no] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release ..
-  - if [%WITH_FORTRAN%]==[yes] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DCMAKE_BUILD_TYPE=Release ..
+  - if [%FORTRAN%]==[] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release ..
+  - if [%FORTRAN%]==[ON] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=OFF -DCMAKE_BUILD_TYPE=Release ..
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON ..
 
 build_script:
