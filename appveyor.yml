@@ -52,9 +52,9 @@ install:
 before_build:
   - ps: if (-Not (Test-Path .\build)) { mkdir build }
   - cd build
-  - if [%COMPILER%]==[cl] cmake -G "Visual Studio 15 2017 Win64" ..
-  - if [%WITH_FORTRAN%]==[no] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl ..
-  - if [%WITH_FORTRAN%]==[yes] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 ..
+  - if [%COMPILER%]==[cl] cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release ..
+  - if [%WITH_FORTRAN%]==[no] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release ..
+  - if [%WITH_FORTRAN%]==[yes] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DCMAKE_BUILD_TYPE=Release ..
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON ..
 
 build_script:
