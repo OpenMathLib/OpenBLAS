@@ -14,7 +14,7 @@ foreach(float_type ${FLOAT_TYPES})
     c_${float_char}blas1.c)
   target_link_libraries(x${float_char}cblat1 ${OpenBLAS_LIBNAME})
   add_test(NAME "x${float_char}cblat1"
-    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/x${float_char}cblat1")
+    COMMAND "$<TARGET_FILE:x${float_char}cblat1>")
 
   #level2
   add_executable(x${float_char}cblat2
@@ -27,7 +27,7 @@ foreach(float_type ${FLOAT_TYPES})
   target_link_libraries(x${float_char}cblat2 ${OpenBLAS_LIBNAME})
   add_test(NAME "x${float_char}cblat2"
     COMMAND ${CMAKE_COMMAND}
-      "-DTEST_COMMAND=${CMAKE_CURRENT_BINARY_DIR}/x${float_char}cblat2"
+      "-DTEST_COMMAND=$<TARGET_FILE:x${float_char}cblat2>"
       "-DTEST_INPUT=${PROJECT_SOURCE_DIR}/ctest/${float_char}in2" 
       -P "${CMAKE_CURRENT_SOURCE_DIR}/test_cblas_helper.cmake"
   )
@@ -43,7 +43,7 @@ foreach(float_type ${FLOAT_TYPES})
   target_link_libraries(x${float_char}cblat3 ${OpenBLAS_LIBNAME})
   add_test(NAME "x${float_char}cblat3"
   COMMAND ${CMAKE_COMMAND}
-    "-DTEST_COMMAND=${CMAKE_CURRENT_BINARY_DIR}/x${float_char}cblat3"
+    "-DTEST_COMMAND=$<TARGET_FILE:x${float_char}cblat3>"
     "-DTEST_INPUT=${PROJECT_SOURCE_DIR}/ctest/${float_char}in3" 
     -P "${CMAKE_CURRENT_SOURCE_DIR}/test_cblas_helper.cmake"
   )

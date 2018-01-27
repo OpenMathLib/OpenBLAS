@@ -18,17 +18,17 @@ set(float_types s d c z)
 foreach(float_type ${float_types})
     string(TOUPPER ${float_type} float_type_upper)
     add_test(NAME "${float_type}blas1" 
-      COMMAND "${CMAKE_CURRENT_BINARY_DIR}/${float_type}blat1")
+      COMMAND "$<TARGET_FILE:${float_type}blat1>")
     add_test(NAME "${float_type}blas2" 
       COMMAND ${CMAKE_COMMAND}
-        "-DTEST_COMMAND=${CMAKE_CURRENT_BINARY_DIR}/${float_type}blat2"
+        "-DTEST_COMMAND=$<TARGET_FILE:${float_type}blat2>"
         "-DTEST_INPUT=${PROJECT_SOURCE_DIR}/test/${float_type}blat2.dat"
         "-DTEST_FILE=${float_type_upper}BLAT2.SUMM"
         -P "${CMAKE_CURRENT_SOURCE_DIR}/test_helper.cmake"
     )
     add_test(NAME "${float_type}blas3" 
       COMMAND ${CMAKE_COMMAND}
-        "-DTEST_COMMAND=${CMAKE_CURRENT_BINARY_DIR}/${float_type}blat3"
+        "-DTEST_COMMAND=$<TARGET_FILE:${float_type}blat3>"
         "-DTEST_INPUT=${PROJECT_SOURCE_DIR}/test/${float_type}blat3.dat"
         "-DTEST_FILE=${float_type_upper}BLAT3.SUMM"
         -P "${CMAKE_CURRENT_SOURCE_DIR}/test_helper.cmake"
