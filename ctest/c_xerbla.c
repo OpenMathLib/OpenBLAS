@@ -81,7 +81,7 @@ void cblas_xerbla(blasint info, char *rout, char *form, ...)
       printf("***** XERBLA WAS CALLED WITH INFO = %d INSTEAD OF %d in %s *******\n",info, cblas_info, rout);
       cblas_lerr = PASSED;
       cblas_ok = FALSE;
-   } else cblas_lerr = FAILED;
+   } else cblas_lerr = OPENBLAS_FAILED;
 }
 
 #ifdef F77_Char

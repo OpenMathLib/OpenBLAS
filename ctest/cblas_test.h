@@ -15,7 +15,9 @@
 #define  TEST_ROW_MJR	1
 
 #define  FALSE          0
-#define  FAILED         0
+
+/* Needed because failed is already defined on MSVC */
+#define OPENBLAS_FAILED 0
 #define  TEST_COL_MJR	0
 
 #define  INVALID       -1
