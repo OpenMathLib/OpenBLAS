@@ -2,7 +2,8 @@
 ## Author: Hank Anderson <hank@statease.com>
 ##
 
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.9) # CMP0069 NEW
+include(CheckIPOSupported)
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
@@ -146,6 +147,12 @@ endif()
 
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
+
+check_ipo_supported(RESULT IPO_SUPPORTED)
+if(IPO_SUPPORTED)
+  message(STATUS "Building with link-time code generation")
+  set_property(TARGET ${OpenBLAS_LIBNAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
 
 # Android needs to explicitly link against libm
 if(ANDROID)
