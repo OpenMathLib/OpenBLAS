@@ -3,7 +3,6 @@
 ##
 
 cmake_minimum_required(VERSION 2.8.5)
-
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
@@ -151,7 +150,7 @@ add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES}
 if(POLICY CMP0990)
   cmake_policy(SET CMP0990 NEW)
   include(CheckIPOSupported)
-  check_ipo_supported(RESULT IPO_SUPPORTED)
+  check_ipo_supported(RESULT IPO_SUPPORTED LANGUAGES C Fortran)
   if(IPO_SUPPORTED)
     message(STATUS "Building with link-time code generation")
     set_property(TARGET ${OpenBLAS_LIBNAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
