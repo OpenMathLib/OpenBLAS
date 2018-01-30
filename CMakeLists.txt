@@ -147,6 +147,16 @@ endif()
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 
+if(POLICY CMP0990)
+  cmake_policy(SET CMP0990 NEW)
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT IPO_SUPPORTED LANGUAGES C Fortran)
+  if(IPO_SUPPORTED)
+    message(STATUS "Building with interprocedural optimization")
+    set_property(TARGET ${OpenBLAS_LIBNAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+  endif()
+endif()
+
 # Android needs to explicitly link against libm
 if(ANDROID)
   target_link_libraries(${OpenBLAS_LIBNAME} m)
