@@ -44,7 +44,7 @@ static void  dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
             "brctg %[n_tmp],1b"
             : [mem_y] "=m" (*(double (*)[n])y), [n_tmp] "+&r"(n)
             : [mem_x] "m" (*(const double (*)[n])x),
-              [ptr_x] "+&a"(x), [ptr_y] "+&a"(y)
+              [ptr_x] "a"(x), [ptr_y] "a"(y)
             : "cc" 
             );
     return;

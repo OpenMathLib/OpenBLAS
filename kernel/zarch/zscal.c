@@ -96,7 +96,7 @@ static void   zscal_kernel_8(BLASLONG n, FLOAT da_r,FLOAT da_i, FLOAT *x) {
             "clgrjl %[x_ptr],%%r0,1b        \n\t"
             : [mem] "+m" (*(double (*)[2*n])x) ,[x_ptr] "+&a"(x)
             : [n] "r"(n), [alpha_r] "f"(da_r),[alpha_i] "f"(da_i)
-            : "cc", "r0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25"
+            : "cc", "memory","r0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25"
             );
 
 
@@ -106,9 +106,10 @@ static void   zscal_kernel_8_zero_r(BLASLONG n, FLOAT da_i, FLOAT *x) {
  
         __asm__ (   "pfd    2, 0(%1)          \n\t" 
                     "lgdr   %%r0,%[alpha]     \n\t"
-                    "vlvgp  %%v16,%%r0,%%r0   \n\t" //load both from disjoint
-                    "vflcdb %%v16,%%v16       \n\t" //complement both
-                    "vlvgg  %%v16,%%r0,0      \n\t" //restore 1st                   
+                    "vlvgg  %%v16,%%r0,0      \n\t" 
+                    "lcdbr  %[alpha],%[alpha] \n\t"                                       
+                    "lgdr   %%r0,%[alpha]     \n\t"
+                    "vlvgg  %%v16,%%r0,1      \n\t"
                     "vlr    %%v17 ,%%v16      \n\t" 
                     "sllg   %%r0,%[n],4       \n\t"  
                     "agr    %%r0,%[x_ptr]     \n\t"
@@ -128,8 +129,8 @@ static void   zscal_kernel_8_zero_r(BLASLONG n, FLOAT da_i, FLOAT *x) {
                     "vsteg  %%v26, 40(%[x_ptr]),0   \n\t"   
                     "vl     %%v27, 48(%[x_ptr])     \n\t" 
                     "vfmdb  %%v27,%%v27,%%v17 \n\t"  
-                    "vsteg  %%v27, 48(%[x_ptr]),1   \n\t" 
-                    "vsteg  %%v27, 56(%[x_ptr]),0   \n\t" 
+                    "vsteg  %%v27, 40(%[x_ptr]),1   \n\t" 
+                    "vsteg  %%v27, 48(%[x_ptr]),0   \n\t" 
                     "vl     %%v28, 64(%[x_ptr])     \n\t"
                     "vfmdb  %%v28,%%v28,%%v16        \n\t"
                     "vsteg  %%v28, 64(%[x_ptr]),1   \n\t" 
@@ -140,8 +141,8 @@ static void   zscal_kernel_8_zero_r(BLASLONG n, FLOAT da_i, FLOAT *x) {
                     "vsteg  %%v29, 88(%[x_ptr]),0   \n\t" 
                     "vl     %%v30, 96(%[x_ptr])     \n\t"
                     "vfmdb  %%v30,%%v30,%%v16       \n\t"
-                    "vsteg  %%v30,  96(%[x_ptr]),1  \n\t" 
-                    "vsteg  %%v30, 104(%[x_ptr]),0  \n\t"  
+                    "vsteg  %%v27,  96(%[x_ptr]),1  \n\t" 
+                    "vsteg  %%v27, 104(%[x_ptr]),0  \n\t"  
                     "vl     %%v31, 112(%[x_ptr])    \n\t" 
                     "vfmdb  %%v31,%%v31,%%v17 \n\t"  
                     "vsteg  %%v31, 112(%[x_ptr]),1  \n\t" 
