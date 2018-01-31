@@ -139,7 +139,7 @@ static void   dswap_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
 
 #else
 
-static void  __attribute__ ((noinline))  dswap_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
+static void   dswap_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
 {
          __asm__ volatile(
             "pfd 2, 0(%[ptr_x]) \n\t"
@@ -227,7 +227,7 @@ static void  __attribute__ ((noinline))  dswap_kernel_32(BLASLONG n, FLOAT *x, F
               [mem_y] "+m" (*(double (*)[n])y),
               [n_tmp] "+&r"(n)
             : [ptr_x] "a"(x), [ptr_y] "a"(y) 
-            : "cc", "memory","r1", "v0","v1","v2","v3","v4","v5","v6","v7","v16",
+            : "cc", "r1", "v0","v1","v2","v3","v4","v5","v6","v7","v16",
             "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31" 
             );
     return;
