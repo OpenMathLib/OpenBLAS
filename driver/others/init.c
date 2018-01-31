@@ -903,6 +903,7 @@ void gotoblas_affinity_init(void) {
     }
 #else
     common->num_procs = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
+    }
 #endif
 
 #endif

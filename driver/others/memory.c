@@ -177,7 +177,7 @@ int get_num_procs(void) {
 cpu_set_t *cpusetp;
 size_t size;
 int ret;
-int i,n;
+// int i,n;
 
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
 #if !defined(OS_LINUX)
