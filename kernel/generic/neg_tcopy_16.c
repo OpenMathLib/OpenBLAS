@@ -379,7 +379,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
     if (m & 1){
       ctemp01 = *(aoffset1 +  0);
       *(boffset +  0) = -ctemp01;
-      boffset   += 1;
+      // boffset   += 1;
     }
   }
 

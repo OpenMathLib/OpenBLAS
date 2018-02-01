@@ -40,15 +40,17 @@ lapack_int LAPACKE_zptcon( lapack_int n, const double* d,
     lapack_int info = 0;
     double* work = NULL;
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( 1, &anorm, 1 ) ) {
-        return -4;
-    }
-    if( LAPACKE_d_nancheck( n, d, 1 ) ) {
-        return -2;
-    }
-    if( LAPACKE_z_nancheck( n-1, e, 1 ) ) {
-        return -3;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( 1, &anorm, 1 ) ) {
+            return -4;
+        }
+        if( LAPACKE_d_nancheck( n, d, 1 ) ) {
+            return -2;
+        }
+        if( LAPACKE_z_nancheck( n-1, e, 1 ) ) {
+            return -3;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

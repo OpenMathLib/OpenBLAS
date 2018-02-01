@@ -222,7 +222,7 @@
 *> \verbatim
 *>          PL is DOUBLE PRECISION
 *> \endverbatim
-
+*>
 *> \param[out] PR
 *> \verbatim
 *>          PR is DOUBLE PRECISION
@@ -248,8 +248,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array,
-*>          dimension (MAX(1,LWORK))
+*>          WORK is DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
@@ -452,7 +451,7 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, M, PL,
      $                   PR, DIF, WORK, LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

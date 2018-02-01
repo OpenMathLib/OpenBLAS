@@ -78,7 +78,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup OTHERauxiliary
 *
@@ -94,10 +94,10 @@
 *  =====================================================================
       SUBROUTINE DLARRR( N, D, E, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            N, INFO
@@ -129,6 +129,13 @@
       INTRINSIC          ABS
 *     ..
 *     .. Executable Statements ..
+*
+*     Quick return if possible
+*
+      IF( N.LE.0 ) THEN
+         INFO = 0
+         RETURN
+      END IF
 *
 *     As a default, do NOT go for relative-accuracy preserving computations.
       INFO = 1

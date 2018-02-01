@@ -87,7 +87,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is COMPLEX array of DIMENSION ( LDA, ka ), where ka is
+*>          A is COMPLEX array, dimension ( LDA, ka ), where ka is
 *>           m  when  SIDE = 'L' or 'l'  and is n  otherwise.
 *>           Before entry  with  SIDE = 'L' or 'l',  the  m by m  part of
 *>           the array  A  must contain the  hermitian matrix,  such that
@@ -124,7 +124,7 @@
 *>
 *> \param[in] B
 *> \verbatim
-*>          B is COMPLEX array of DIMENSION ( LDB, n ).
+*>          B is COMPLEX array, dimension ( LDB, N )
 *>           Before entry, the leading  m by n part of the array  B  must
 *>           contain the matrix B.
 *> \endverbatim
@@ -146,7 +146,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is COMPLEX array of DIMENSION ( LDC, n ).
+*>          C is COMPLEX array, dimension ( LDC, N )
 *>           Before entry, the leading  m by n  part of the array  C must
 *>           contain the matrix  C,  except when  beta  is zero, in which
 *>           case C need not be set on entry.

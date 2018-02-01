@@ -24,6 +24,29 @@
 *> CROTG determines a complex Givens rotation.
 *> \endverbatim
 *
+*  Arguments:
+*  ==========
+*
+*> \param[in] CA
+*> \verbatim
+*>          CA is COMPLEX
+*> \endverbatim
+*>
+*> \param[in] CB
+*> \verbatim
+*>          CB is COMPLEX
+*> \endverbatim
+*>
+*> \param[out] C
+*> \verbatim
+*>          C is REAL
+*> \endverbatim
+*>
+*> \param[out] S
+*> \verbatim
+*>          S is COMPLEX
+*> \endverbatim
+*
 *  Authors:
 *  ========
 *
@@ -32,17 +55,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex_blas_level1
 *
 *  =====================================================================
       SUBROUTINE CROTG(CA,CB,C,S)
 *
-*  -- Reference BLAS level1 routine (version 3.7.0) --
+*  -- Reference BLAS level1 routine (version 3.8.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       COMPLEX CA,CB,S

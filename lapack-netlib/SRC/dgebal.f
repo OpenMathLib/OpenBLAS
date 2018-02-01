@@ -67,7 +67,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is DOUBLE array, dimension (LDA,N)
+*>          A is DOUBLE PRECISION array, dimension (LDA,N)
 *>          On entry, the input matrix A.
 *>          On exit,  A is overwritten by the balanced matrix.
 *>          If JOB = 'N', A is not referenced.
@@ -94,7 +94,7 @@
 *>
 *> \param[out] SCALE
 *> \verbatim
-*>          SCALE is DOUBLE array, dimension (N)
+*>          SCALE is DOUBLE PRECISION array, dimension (N)
 *>          Details of the permutations and scaling factors applied to
 *>          A.  If P(j) is the index of the row and column interchanged
 *>          with row and column j and D(j) is the scaling factor
@@ -121,7 +121,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup doubleGEcomputational
 *
@@ -160,10 +160,10 @@
 *  =====================================================================
       SUBROUTINE DGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB

@@ -51,15 +51,17 @@ lapack_int LAPACKE_cgesvj( int matrix_layout, char joba, char jobu, char jobv,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    nrows_v = LAPACKE_lsame( jobv, 'v' ) ? MAX(0,n) :
-            ( LAPACKE_lsame( jobv, 'a' ) ? MAX(0,mv) : 0);
-    if( LAPACKE_cge_nancheck( matrix_layout, m, n, a, lda ) ) {
-        return -7;
-    }
-    if( LAPACKE_lsame( jobv, 'a' ) || LAPACKE_lsame( jobv, 'v' ) ) {
-        if( LAPACKE_cge_nancheck( matrix_layout, nrows_v, n, v, ldv ) ) {
-            return -11;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        nrows_v = LAPACKE_lsame( jobv, 'v' ) ? MAX(0,n) :
+                ( LAPACKE_lsame( jobv, 'a' ) ? MAX(0,mv) : 0);
+        if( LAPACKE_cge_nancheck( matrix_layout, m, n, a, lda ) ) {
+            return -7;
+        }
+        if( LAPACKE_lsame( jobv, 'a' ) || LAPACKE_lsame( jobv, 'v' ) ) {
+            if( LAPACKE_cge_nancheck( matrix_layout, nrows_v, n, v, ldv ) ) {
+                return -11;
+            }
         }
     }
 #endif

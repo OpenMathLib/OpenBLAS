@@ -49,7 +49,7 @@
 *> \param[in] M
 *> \verbatim
 *>          M is INTEGER
-*>          The number of rows of the matrix A.  M >=0.
+*>          The number of rows of the matrix C.  M >=0.
 *> \endverbatim
 *>
 *> \param[in] N
@@ -88,9 +88,11 @@
 *>
 *> \endverbatim
 *>
-*> \param[in,out] A
+*> \param[in] A
 *> \verbatim
-*>          A is DOUBLE PRECISION array, dimension (LDA,K)
+*>          A is DOUBLE PRECISION array, dimension
+*>                               (LDA,M) if SIDE = 'L',
+*>                               (LDA,N) if SIDE = 'R'
 *>          The i-th row must contain the vector which defines the blocked
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
 *>          DLASWLQ in the first k rows of its array argument A.
@@ -200,10 +202,10 @@
       SUBROUTINE DLAMSWLQ( SIDE, TRANS, M, N, K, MB, NB, A, LDA, T,
      $    LDT, C, LDC, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER         SIDE, TRANS

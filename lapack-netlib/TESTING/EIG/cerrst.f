@@ -27,8 +27,8 @@
 *> CHPEV, CHPEVX, CHPEVD, and CSTEDC.
 *> CHEEVD_2STAGE, CHEEVR_2STAGE, CHEEVX_2STAGE,
 *> CHEEV_2STAGE, CHBEV_2STAGE, CHBEVD_2STAGE,
-*> CHBEVX_2STAGE, CHETRD_2STAGE, CHETRD_SY2SB,
-*> CHETRD_SB2ST
+*> CHBEVX_2STAGE, CHETRD_2STAGE, CHETRD_HE2HB,
+*> CHETRD_HB2ST
 *> \endverbatim
 *
 *  Arguments:
@@ -54,17 +54,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex_eig
 *
 *  =====================================================================
       SUBROUTINE CERRST( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -100,8 +100,8 @@
      $                   CUNGTR, CUNMTR, CUPGTR, CUPMTR,
      $                   CHEEVD_2STAGE, CHEEVR_2STAGE, CHEEVX_2STAGE,
      $                   CHEEV_2STAGE, CHBEV_2STAGE, CHBEVD_2STAGE,
-     $                   CHBEVX_2STAGE, CHETRD_2STAGE, CHETRD_SY2SB,
-     $                   CHETRD_SB2ST
+     $                   CHBEVX_2STAGE, CHETRD_2STAGE, CHETRD_HE2HB,
+     $                   CHETRD_HB2ST
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK

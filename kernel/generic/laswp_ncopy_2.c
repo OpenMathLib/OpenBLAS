@@ -116,7 +116,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	      *b2 = A2;
 	      *b4 = A4;
 	    }
-	} else
+	} else {
 	  if (b1 == a2) {
 	    if (b2 == a2) {
 	      *(buffer + 0) = A2;
@@ -139,7 +139,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	      *(buffer + 3) = A4;
 	      *b1 = A1;
 	      *b3 = A3;
-	    } else
+	    } else {
 	      if (b2 == b1) {
 		*(buffer + 0) = B1;
 		*(buffer + 1) = B3;
@@ -157,6 +157,8 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 		*b3 = A3;
 		*b4 = A4;
 	      }
+	    }
+	  }
 	  }
 
 	  buffer += 4;

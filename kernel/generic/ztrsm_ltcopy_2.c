@@ -43,8 +43,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
   BLASLONG i, ii, j, jj;
 
-  FLOAT data01, data02, data03, data04;
-  FLOAT data05, data06, data07, data08;
+  FLOAT data01 = 0.0, data02 = 0.0, data03, data04;
+  FLOAT data05, data06, data07 = 0.0, data08 = 0.0;
   FLOAT *a1, *a2;
 
   lda *= 2;

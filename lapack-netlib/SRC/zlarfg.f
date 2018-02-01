@@ -99,17 +99,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZLARFG( N, ALPHA, X, INCX, TAU )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
@@ -175,7 +175,7 @@
             BETA = BETA*RSAFMN
             ALPHI = ALPHI*RSAFMN
             ALPHR = ALPHR*RSAFMN
-            IF( ABS( BETA ).LT.SAFMIN )
+            IF( (ABS( BETA ).LT.SAFMIN) .AND. (KNT .LT. 20) )
      $         GO TO 10
 *
 *           New BETA is at most 1, at least SAFMIN

@@ -135,10 +135,17 @@ void NAME(char *UPLO, char *TRANS, char *DIAG,
   }
 
 #else
-
+#ifndef COMPLEX
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 	   enum CBLAS_TRANSPOSE TransA, enum CBLAS_DIAG Diag,
 	   blasint n, FLOAT  *a, FLOAT  *x, blasint incx) {
+#else
+void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
+	   enum CBLAS_TRANSPOSE TransA, enum CBLAS_DIAG Diag,
+	   blasint n, void  *va, void  *vx, blasint incx) {
+  FLOAT *a = (FLOAT*) va;
+  FLOAT *x = (FLOAT*) vx;
+#endif
 
   int trans, uplo, unit;
   blasint info;

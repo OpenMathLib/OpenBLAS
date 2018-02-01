@@ -270,7 +270,7 @@
      $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
      $                    LWORK, RWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -309,7 +309,8 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGEBRD, CGELQF, CGEQRF, CLASCL, CLASET,
-     $                   SLASCL, XERBLA
+     $                   CUNMBR, CUNMQR, CUNMLQ, CLACPY, 
+     $                   SBDSVDX, SLASCL, XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME

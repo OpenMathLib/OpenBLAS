@@ -195,8 +195,7 @@
 *>
 *> \param[in,out] ERRS_N
 *> \verbatim
-*>          ERRS_N is DOUBLE PRECISION array, dimension
-*>                    (NRHS, N_ERR_BNDS)
+*>          ERRS_N is DOUBLE PRECISION array, dimension (NRHS, N_ERR_BNDS)
 *>     For each right-hand side, this array contains information about
 *>     various error bounds and condition numbers corresponding to the
 *>     normwise relative error, which is defined as follows:
@@ -242,8 +241,7 @@
 *>
 *> \param[in,out] ERRS_C
 *> \verbatim
-*>          ERRS_C is DOUBLE PRECISION array, dimension
-*>                    (NRHS, N_ERR_BNDS)
+*>          ERRS_C is DOUBLE PRECISION array, dimension (NRHS, N_ERR_BNDS)
 *>     For each right-hand side, this array contains information about
 *>     various error bounds and condition numbers corresponding to the
 *>     componentwise relative error, which is defined as follows:
@@ -386,7 +384,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex16GEcomputational
 *
@@ -398,10 +396,10 @@
      $                                Y_TAIL, RCOND, ITHRESH, RTHRESH,
      $                                DZ_UB, IGNORE_CWISE, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDAF, LDB, LDY, N, NRHS, PREC_TYPE,

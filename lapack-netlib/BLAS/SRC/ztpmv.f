@@ -80,7 +80,7 @@
 *>
 *> \param[in] AP
 *> \verbatim
-*>          AP is COMPLEX*16 array of DIMENSION at least
+*>          AP is COMPLEX*16 array, dimension at least
 *>           ( ( n*( n + 1 ) )/2 ).
 *>           Before entry with  UPLO = 'U' or 'u', the array AP must
 *>           contain the upper triangular matrix packed sequentially,
@@ -96,9 +96,9 @@
 *>           A are not referenced, but are assumed to be unity.
 *> \endverbatim
 *>
-*> \param[in] X
+*> \param[in,out] X
 *> \verbatim
-*>          X is (input/output) COMPLEX*16 array of dimension at least
+*>          X is COMPLEX*16 array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the n
 *>           element vector x. On exit, X is overwritten with the

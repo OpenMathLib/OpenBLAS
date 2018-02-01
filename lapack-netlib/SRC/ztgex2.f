@@ -76,7 +76,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX*16 arrays, dimensions (LDA,N)
+*>          A is COMPLEX*16 array, dimensions (LDA,N)
 *>          On entry, the matrix A in the pair (A, B).
 *>          On exit, the updated matrix A.
 *> \endverbatim
@@ -89,7 +89,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is COMPLEX*16 arrays, dimensions (LDB,N)
+*>          B is COMPLEX*16 array, dimensions (LDB,N)
 *>          On entry, the matrix B in the pair (A, B).
 *>          On exit, the updated matrix B.
 *> \endverbatim
@@ -102,7 +102,7 @@
 *>
 *> \param[in,out] Q
 *> \verbatim
-*>          Q is COMPLEX*16 array, dimension (LDZ,N)
+*>          Q is COMPLEX*16 array, dimension (LDQ,N)
 *>          If WANTQ = .TRUE, on entry, the unitary matrix Q. On exit,
 *>          the updated matrix Q.
 *>          Not referenced if WANTQ = .FALSE..
@@ -153,7 +153,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex16GEauxiliary
 *
@@ -190,10 +190,10 @@
       SUBROUTINE ZTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
      $                   LDZ, J1, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ

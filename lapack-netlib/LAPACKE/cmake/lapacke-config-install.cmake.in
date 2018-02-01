@@ -5,7 +5,7 @@ get_filename_component(_LAPACKE_PREFIX "${_LAPACKE_PREFIX}" PATH)
 get_filename_component(_LAPACKE_PREFIX "${_LAPACKE_PREFIX}" PATH)
 
 # Load the LAPACK package with which we were built.
-set(LAPACK_DIR "${_LAPACKE_PREFIX}/@{LIBRARY_DIR@/cmake/lapack-@LAPACK_VERSION@")
+set(LAPACK_DIR "${_LAPACKE_PREFIX}/@CMAKE_INSTALL_LIBDIR@/cmake/lapack-@LAPACK_VERSION@")
 find_package(LAPACK NO_MODULE)
 
 # Load lapacke targets from the install tree.

@@ -270,6 +270,7 @@ endif
 ifeq ($(BUILD_LAPACK_DEPRECATED), 1)
 	-@echo "BUILD_DEPRECATED      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
+	-@echo "LAPACKE_WITH_TMG      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 

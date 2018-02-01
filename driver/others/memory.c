@@ -177,7 +177,7 @@ int get_num_procs(void) {
 cpu_set_t *cpusetp;
 size_t size;
 int ret;
-int i,n;
+// int i,n;
 
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
 #if !defined(OS_LINUX)
@@ -348,7 +348,7 @@ int blas_get_cpu_number(void){
   max_num = get_num_procs();
 #endif
 
-  blas_goto_num = 0;
+  // blas_goto_num = 0;
 #ifndef USE_OPENMP
   blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
@@ -360,7 +360,7 @@ int blas_get_cpu_number(void){
 
 #endif
 
-  blas_omp_num = 0;
+  // blas_omp_num = 0;
   blas_omp_num=openblas_omp_num_threads_env();
   if (blas_omp_num < 0) blas_omp_num = 0;
 

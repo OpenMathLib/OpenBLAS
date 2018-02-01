@@ -40,7 +40,7 @@
 #include <ctype.h>
 #include "common.h"
 
-const static FLOAT dp1 = 1.;
+// const static FLOAT dp1 = 1.;
 
 int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 

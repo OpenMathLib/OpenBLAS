@@ -47,45 +47,87 @@
 *  Arguments:
 *  ==========
 *
-*> @param[in] n
-*>          The order of the matrix A.
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*> \endverbatim
 *>
-*> @param[in] nb
-*>          The size of the band.
+*> \param[in] WANTZ
+*> \verbatim
+*>          WANTZ is LOGICAL which indicate if Eigenvalue are requested or both
+*>          Eigenvalue/Eigenvectors.
+*> \endverbatim
 *>
-*> @param[in, out] A
-*>          A pointer to the matrix A.
+*> \param[in] TTYPE
+*> \verbatim
+*>          TTYPE is INTEGER
+*> \endverbatim
 *>
-*> @param[in] lda
-*>          The leading dimension of the matrix A.
+*> \param[in] ST
+*> \verbatim
+*>          ST is INTEGER
+*>          internal parameter for indices.
+*> \endverbatim
 *>
-*> @param[out] V
-*>          COMPLEX array, dimension 2*n if eigenvalues only are
+*> \param[in] ED
+*> \verbatim
+*>          ED is INTEGER
+*>          internal parameter for indices.
+*> \endverbatim
+*>
+*> \param[in] SWEEP
+*> \verbatim
+*>          SWEEP is INTEGER
+*>          internal parameter for indices.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER. The order of the matrix A.
+*> \endverbatim
+*>
+*> \param[in] NB
+*> \verbatim
+*>          NB is INTEGER. The size of the band.
+*> \endverbatim
+*>
+*> \param[in] IB
+*> \verbatim
+*>          IB is INTEGER.
+*> \endverbatim
+*>
+*> \param[in, out] A
+*> \verbatim
+*>          A is COMPLEX array. A pointer to the matrix A.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER. The leading dimension of the matrix A.
+*> \endverbatim
+*>
+*> \param[out] V
+*> \verbatim
+*>          V is COMPLEX array, dimension 2*n if eigenvalues only are
 *>          requested or to be queried for vectors.
+*> \endverbatim
 *>
-*> @param[out] TAU
-*>          COMPLEX array, dimension (2*n).
+*> \param[out] TAU
+*> \verbatim
+*>          TAU is COMPLEX array, dimension (2*n).
 *>          The scalar factors of the Householder reflectors are stored
 *>          in this array.
+*> \endverbatim
 *>
-*> @param[in] st
-*>          internal parameter for indices.
+*> \param[in] LDVT
+*> \verbatim
+*>          LDVT is INTEGER.
+*> \endverbatim
 *>
-*> @param[in] ed
-*>          internal parameter for indices.
-*>
-*> @param[in] sweep
-*>          internal parameter for indices.
-*>
-*> @param[in] Vblksiz
-*>          internal parameter for indices.
-*>
-*> @param[in] wantz
-*>          logical which indicate if Eigenvalue are requested or both
-*>          Eigenvalue/Eigenvectors.
-*>
-*> @param[in] work
-*>          Workspace of size nb.
+*> \param[in] WORK
+*> \verbatim
+*>          WORK is COMPLEX array. Workspace of size nb.
+*> \endverbatim
 *>
 *> \par Further Details:
 *  =====================
@@ -128,10 +170,10 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

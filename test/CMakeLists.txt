@@ -11,7 +11,7 @@ set(OpenBLAS_Tests
 
 foreach(test_bin ${OpenBLAS_Tests})
 add_executable(${test_bin} ${test_bin}.f)
-target_link_libraries(${test_bin} ${OpenBLAS_LIBNAME}_static)
+target_link_libraries(${test_bin} ${OpenBLAS_LIBNAME})
 endforeach()
 
 # $1 exec, $2 input, $3 output_result

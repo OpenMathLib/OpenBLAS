@@ -97,7 +97,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is COMPLEX*16 array of DIMENSION ( LDA, ka ), where ka is
+*>          A is COMPLEX*16 array, dimension ( LDA, ka ), where ka is
 *>           k  when  TRANSA = 'N' or 'n',  and is  m  otherwise.
 *>           Before entry with  TRANSA = 'N' or 'n',  the leading  m by k
 *>           part of the array  A  must contain the matrix  A,  otherwise
@@ -116,7 +116,7 @@
 *>
 *> \param[in] B
 *> \verbatim
-*>          B is COMPLEX*16 array of DIMENSION ( LDB, kb ), where kb is
+*>          B is COMPLEX*16 array, dimension ( LDB, kb ), where kb is
 *>           n  when  TRANSB = 'N' or 'n',  and is  k  otherwise.
 *>           Before entry with  TRANSB = 'N' or 'n',  the leading  k by n
 *>           part of the array  B  must contain the matrix  B,  otherwise
@@ -142,7 +142,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is COMPLEX*16 array of DIMENSION ( LDC, n ).
+*>          C is COMPLEX*16 array, dimension ( LDC, N )
 *>           Before entry, the leading  m by n  part of the array  C must
 *>           contain the matrix  C,  except when  beta  is zero, in which
 *>           case C need not be set on entry.

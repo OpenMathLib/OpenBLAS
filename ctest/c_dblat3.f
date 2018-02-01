@@ -56,7 +56,7 @@
 *     .. Local Scalars ..
       DOUBLE PRECISION   EPS, ERR, THRESH
       INTEGER            I, ISNUM, J, N, NALF, NBET, NIDIM, NTRA,
-     $			          LAYOUT
+     $                            LAYOUT
       LOGICAL            FATAL, LTESTT, REWI, SAME, SFATAL, TRACE,
      $                   TSTERR, CORDER, RORDER
       CHARACTER*1        TRANSA, TRANSB
@@ -78,7 +78,7 @@
       EXTERNAL           DDIFF, LDE
 *     .. External Subroutines ..
       EXTERNAL           DCHK1, DCHK2, DCHK3, DCHK4, DCHK5, CD3CHKE,
-     $			 DMMCH
+     $                   DMMCH
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
 *     .. Scalars in Common ..
@@ -323,13 +323,13 @@
             CALL DCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NMAX, AB,
      $                  AA, AS, AB( 1, NMAX + 1 ), BB, BS, CT, G, C,
-     $			0 )
+     $                  0 )
             END IF
             IF (RORDER) THEN
             CALL DCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NMAX, AB,
      $                  AA, AS, AB( 1, NMAX + 1 ), BB, BS, CT, G, C,
-     $			1 )
+     $                  1 )
             END IF
             GO TO 190
 *           Test DSYRK, 05.
@@ -351,13 +351,13 @@
             CALL DCHK5( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
      $                  NMAX, AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
-     $			0 )
+     $                  0 )
             END IF
             IF (RORDER) THEN
             CALL DCHK5( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET,
      $                  NMAX, AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
-     $			1 )
+     $                  1 )
             END IF
             GO TO 190
 *
@@ -588,7 +588,7 @@
      $                        REWIND NTRA
                            CALL CDGEMM( IORDER, TRANSA, TRANSB, M, N,
      $                                   K, ALPHA, AA, LDA, BB, LDB,
-     $					 BETA, CC, LDC )
+     $                                   BETA, CC, LDC )
 *
 *                          Check if error-exit was taken incorrectly.
 *
@@ -694,9 +694,9 @@
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
- 9995 FORMAT( 1X, I6, ': ', A12,'(''', A1, ''',''', A1, ''',',
-     $      3( I3, ',' ), F4.1, ', A,', I3, ', B,', I3, ',', F4.1, ', ',
-     $      'C,', I3, ').' )
+C 9995 FORMAT( 1X, I6, ': ', A12,'(''', A1, ''',''', A1, ''',',
+C     $      3( I3, ',' ), F4.1, ', A,', I3, ', B,', I3, ',', F4.1, ', ',
+C     $      'C,', I3, ').' )
  9994 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -1007,9 +1007,9 @@
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
- 9995 FORMAT( 1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      F4.1, ', A,', I3, ', B,', I3, ',', F4.1, ', C,', I3, ')   ',
-     $      ' .' )
+C 9995 FORMAT( 1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      F4.1, ', A,', I3, ', B,', I3, ',', F4.1, ', C,', I3, ')   ',
+C     $      ' .' )
  9994 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -1201,7 +1201,7 @@
      $                           REWIND NTRA
                               CALL CDTRMM( IORDER, SIDE, UPLO, TRANSA,
      $                                    DIAG, M, N, ALPHA, AA, LDA,
-     $					  BB, LDB )
+     $                                    BB, LDB )
                            ELSE IF( SNAME( 10: 11 ).EQ.'sm' )THEN
                               IF( TRACE )
      $                           CALL DPRCN3( NTRA, NC, SNAME, IORDER,
@@ -1211,7 +1211,7 @@
      $                           REWIND NTRA
                               CALL CDTRSM( IORDER, SIDE, UPLO, TRANSA,
      $                                    DIAG, M, N, ALPHA, AA, LDA,
-     $					  BB, LDB )
+     $                                    BB, LDB )
                            END IF
 *
 *                          Check if error-exit was taken incorrectly.
@@ -1355,8 +1355,8 @@
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
- 9995 FORMAT( 1X, I6, ': ', A12,'(', 4( '''', A1, ''',' ), 2( I3, ',' ),
-     $      F4.1, ', A,', I3, ', B,', I3, ')        .' )
+C 9995 FORMAT( 1X, I6, ': ', A12,'(', 4( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      F4.1, ', A,', I3, ', B,', I3, ')        .' )
  9994 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -1681,8 +1681,8 @@
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
- 9994 FORMAT( 1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ')           .' )
+C 9994 FORMAT( 1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ')           .' )
  9993 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -1726,7 +1726,7 @@
       SUBROUTINE DCHK5( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
      $                  FATAL, NIDIM, IDIM, NALF, ALF, NBET, BET, NMAX,
      $                  AB, AA, AS, BB, BS, C, CC, CS, CT, G, W,
-     $			IORDER )
+     $                  IORDER )
 *
 *  Tests DSYR2K.
 *
@@ -1888,7 +1888,7 @@
      $                     REWIND NTRA
                         CALL CDSYR2K( IORDER, UPLO, TRANS, N, K,
      $                               ALPHA, AA, LDA, BB, LDB, BETA,
-     $				     CC, LDC )
+     $                               CC, LDC )
 *
 *                       Check if error-exit was taken incorrectly.
 *
@@ -2037,9 +2037,9 @@
      $      'ANGED INCORRECTLY *******' )
  9996 FORMAT( ' ******* ', A12,' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
- 9994 FORMAT( 1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
-     $      F4.1, ', A,', I3, ', B,', I3, ',', F4.1, ', C,', I3, ')   ',
-     $      ' .' )
+C 9994 FORMAT( 1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ),
+C     $      F4.1, ', A,', I3, ', B,', I3, ',', F4.1, ', C,', I3, ')   ',
+C     $      ' .' )
  9993 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
@@ -2399,7 +2399,7 @@
    50    CONTINUE
       END IF
 *
-   60 CONTINUE
+C   60 CONTINUE
       LDERES = .TRUE.
       GO TO 80
    70 CONTINUE

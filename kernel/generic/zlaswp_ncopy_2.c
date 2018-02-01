@@ -204,20 +204,20 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 		*(b4 + 0) = A7;
 		*(b4 + 1) = A8;
 	      }
-	  }
+	    }
 
-	  buffer += 8;
+	    buffer += 8;
 
-	  b1 = a + ip1;
-	  b2 = a + ip2;
+	    b1 = a + ip1;
+	    b2 = a + ip2;
 
-	  b3 = b1 + lda;
-	  b4 = b2 + lda;
+	    b3 = b1 + lda;
+	    b4 = b2 + lda;
 
-	  a1 += 4;
-	  a3 += 4;
+	    a1 += 4;
+	    a3 += 4;
 
-	  i --;
+	    i --;
 	} while (i > 0);
       }
 
@@ -372,7 +372,7 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT *a, BLASLONG lda, blasint 
 	*(b1 + 0) = A1;
 	*(b1 + 1) = A2;
       }
-      buffer += 2;
+      // buffer += 2;
     }
   }
 

@@ -87,7 +87,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX array, dimension (N+NNB+1,NNB+3)
+*>          WORK is COMPLEX array, dimension (N+NB+1,NB+3)
 *> \endverbatim
 *>
 *> \param[in] NB
@@ -113,17 +113,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complexSYcomputational
 *
 *  =====================================================================
       SUBROUTINE CSYTRI2X( UPLO, N, A, LDA, IPIV, WORK, NB, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

@@ -36,12 +36,14 @@
 lapack_int LAPACKE_zpttrf( lapack_int n, double* d, lapack_complex_double* e )
 {
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( n, d, 1 ) ) {
-        return -2;
-    }
-    if( LAPACKE_z_nancheck( n-1, e, 1 ) ) {
-        return -3;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( n, d, 1 ) ) {
+            return -2;
+        }
+        if( LAPACKE_z_nancheck( n-1, e, 1 ) ) {
+            return -3;
+        }
     }
 #endif
     return LAPACKE_zpttrf_work( n, d, e );

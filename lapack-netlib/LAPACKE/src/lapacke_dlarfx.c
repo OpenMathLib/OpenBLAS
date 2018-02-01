@@ -42,15 +42,17 @@ lapack_int LAPACKE_dlarfx( int matrix_layout, char side, lapack_int m,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_dge_nancheck( matrix_layout, m, n, c, ldc ) ) {
-        return -7;
-    }
-    if( LAPACKE_d_nancheck( 1, &tau, 1 ) ) {
-        return -6;
-    }
-    if( LAPACKE_d_nancheck( m, v, 1 ) ) {
-        return -5;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_dge_nancheck( matrix_layout, m, n, c, ldc ) ) {
+            return -7;
+        }
+        if( LAPACKE_d_nancheck( 1, &tau, 1 ) ) {
+            return -6;
+        }
+        if( LAPACKE_d_nancheck( m, v, 1 ) ) {
+            return -5;
+        }
     }
 #endif
     return LAPACKE_dlarfx_work( matrix_layout, side, m, n, v, tau, c, ldc,

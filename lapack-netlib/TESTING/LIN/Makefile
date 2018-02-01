@@ -7,10 +7,10 @@ include ../../make.inc
 #       ALINTST -- Auxiliary test routines
 #       SLINTST -- Single precision real test routines
 #       CLINTST -- Single precision complex test routines
-#       SCLNTST -- Single and Complex routines in common
+#       SCLNTST -- Single precision real and complex routines in common
 #       DLINTST -- Double precision real test routines
 #       ZLINTST -- Double precision complex test routines
-#       DZLNTST -- Double and Double Complex routines in common
+#       DZLNTST -- Double precision real and complex routines in common
 #
 #  Test programs can be generated for all or some of the four different
 #  precisions.  Enter make followed by one or more of the data types
@@ -22,12 +22,11 @@ include ../../make.inc
 #       make
 #  without any arguments creates all four test programs.
 #  The executable files are called
-#       xlintims, xlintimd, xlintimc, and xlintimz
-#  and are created in the next higher directory level.
+#       xlintsts, xlintstd, xlintstc, and xlintstz
 #
 #  To remove the object files after the executable files have been
 #  created, enter
-#       make clean
+#       make cleanobj
 #  On some systems, you can force the source files to be recompiled by
 #  entering (for example)
 #       make single FRC=FRC
@@ -51,10 +50,12 @@ SLINTST = schkaa.o \
    schkeq.o schkgb.o schkge.o schkgt.o \
    schklq.o schkpb.o schkpo.o schkps.o schkpp.o \
    schkpt.o schkq3.o schkql.o schkqr.o schkrq.o \
-   schksp.o schksy.o schksy_rook.o schksy_rk.o schksy_aa.o schktb.o schktp.o schktr.o \
+   schksp.o schksy.o schksy_rook.o schksy_rk.o  \
+   schksy_aa.o schksy_aa_2stage.o schktb.o schktp.o schktr.o \
    schktz.o \
    sdrvgt.o sdrvls.o sdrvpb.o \
-   sdrvpp.o sdrvpt.o sdrvsp.o sdrvsy_rook.o sdrvsy_rk.o  sdrvsy_aa.o \
+   sdrvpp.o sdrvpt.o sdrvsp.o sdrvsy_rook.o sdrvsy_rk.o \
+   sdrvsy_aa.o sdrvsy_aa_2stage.o \
    serrgt.o serrlq.o serrls.o \
    serrps.o serrql.o serrqp.o serrqr.o \
    serrrq.o serrtr.o serrtz.o \
@@ -79,30 +80,34 @@ SLINTST = schkaa.o \
    serrlqt.o serrlqtp.o serrtsqr.o stsqr01.o slqt04.o slqt05.o
 
 ifdef USEXBLAS
-SLINTST += serrvxx.o sdrvgex.o sdrvsyx.o serrgex.o sdrvgbx.o sdrvpox.o \
-           sebchvxx.o serrsyx.o serrpox.o
+SLINTST += sdrvgbx.o sdrvgex.o sdrvsyx.o sdrvpox.o \
+           serrvxx.o serrgex.o serrsyx.o serrpox.o \
+           sebchvxx.o
 else
-SLINTST += serrvx.o sdrvge.o sdrvsy.o serrge.o sdrvgb.o sdrvpo.o \
-           serrsy.o serrpo.o
+SLINTST += sdrvgb.o sdrvge.o sdrvsy.o sdrvpo.o \
+           serrvx.o serrge.o serrsy.o serrpo.o
 endif
 
 CLINTST = cchkaa.o \
    cchkeq.o cchkgb.o cchkge.o cchkgt.o \
-   cchkhe.o cchkhe_rook.o cchkhe_rk.o cchkhe_aa.o cchkhp.o cchklq.o cchkpb.o \
+   cchkhe.o cchkhe_rook.o cchkhe_rk.o  \
+   cchkhe_aa.o cchkhe_aa_2stage.o cchkhp.o cchklq.o cchkpb.o \
    cchkpo.o cchkps.o cchkpp.o cchkpt.o cchkq3.o cchkql.o \
-   cchkqr.o cchkrq.o cchksp.o cchksy.o cchksy_rook.o cchksy_rk.o cchksy_aa.o cchktb.o \
+   cchkqr.o cchkrq.o cchksp.o cchksy.o cchksy_rook.o cchksy_rk.o \
+   cchksy_aa.o cchksy_aa_2stage.o cchktb.o \
    cchktp.o cchktr.o cchktz.o \
    cdrvgt.o cdrvhe_rook.o cdrvhe_rk.o cdrvhe_aa.o cdrvhp.o \
+   cdrvhe_aa_2stage.o \
    cdrvls.o cdrvpb.o cdrvpp.o cdrvpt.o \
-   cdrvsp.o cdrvsy_rook.o cdrvsy_rk.o cdrvsy_aa.o \
+   cdrvsp.o cdrvsy_rook.o cdrvsy_rk.o cdrvsy_aa.o cdrvsy_aa_2stage.o \
    cerrgt.o cerrlq.o \
    cerrls.o cerrps.o cerrql.o cerrqp.o \
    cerrqr.o cerrrq.o cerrtr.o cerrtz.o \
    cgbt01.o cgbt02.o cgbt05.o cgelqs.o cgeqls.o cgeqrs.o \
    cgerqs.o cget01.o cget02.o \
    cget03.o cget04.o cget07.o cgtt01.o cgtt02.o \
-   cgtt05.o chet01.o chet01_rook.o chet01_3.o \
-   chet01_aa.o chpt01.o claipd.o claptm.o clarhs.o clatb4.o clatb5.o \
+   cgtt05.o chet01.o chet01_rook.o chet01_3.o chet01_aa.o \
+   chpt01.o claipd.o claptm.o clarhs.o clatb4.o clatb5.o \
    clatsp.o clatsy.o clattb.o clattp.o clattr.o \
    clavhe.o clavhe_rook.o clavhp.o clavsp.o clavsy.o clavsy_rook.o clqt01.o \
    clqt02.o clqt03.o cpbt01.o cpbt02.o cpbt05.o \
@@ -123,21 +128,24 @@ CLINTST = cchkaa.o \
    cerrlqt.o cerrlqtp.o cerrtsqr.o ctsqr01.o clqt04.o clqt05.o
 
 ifdef USEXBLAS
-CLINTST += cerrvxx.o cdrvgex.o cdrvsyx.o cdrvgbx.o cerrgex.o cdrvpox.o \
-           cdrvhex.o cerrpox.o cebchvxx.o cerrsyx.o cerrhex.o
+CLINTST += cdrvgbx.o cdrvgex.o cdrvhex.o cdrvsyx.o cdrvpox.o \
+           cerrvxx.o cerrgex.o cerrhex.o cerrsyx.o cerrpox.o \
+           cebchvxx.o
 else
-CLINTST += cerrvx.o cdrvge.o cdrvsy.o cdrvgb.o cerrge.o cdrvpo.o \
-           cdrvhe.o cerrpo.o cerrsy.o cerrhe.o
+CLINTST += cdrvgb.o cdrvge.o cdrvhe.o cdrvsy.o cdrvpo.o \
+           cerrvx.o cerrge.o cerrhe.o cerrsy.o cerrpo.o
 endif
 
 DLINTST = dchkaa.o \
    dchkeq.o dchkgb.o dchkge.o dchkgt.o \
    dchklq.o dchkpb.o dchkpo.o dchkps.o dchkpp.o \
    dchkpt.o dchkq3.o dchkql.o dchkqr.o dchkrq.o \
-   dchksp.o dchksy.o dchksy_rook.o dchksy_rk.o dchksy_aa.o dchktb.o dchktp.o dchktr.o \
+   dchksp.o dchksy.o dchksy_rook.o dchksy_rk.o  \
+   dchksy_aa.o dchksy_aa_2stage.o dchktb.o dchktp.o dchktr.o \
    dchktz.o \
    ddrvgt.o ddrvls.o ddrvpb.o \
-   ddrvpp.o ddrvpt.o ddrvsp.o ddrvsy_rook.o ddrvsy_rk.o ddrvsy_aa.o \
+   ddrvpp.o ddrvpt.o ddrvsp.o ddrvsy_rook.o ddrvsy_rk.o \
+   ddrvsy_aa.o ddrvsy_aa_2stage.o \
    derrgt.o derrlq.o derrls.o \
    derrps.o derrql.o derrqp.o derrqr.o \
    derrrq.o derrtr.o derrtz.o \
@@ -163,30 +171,33 @@ DLINTST = dchkaa.o \
    derrlqt.o derrlqtp.o derrtsqr.o dtsqr01.o dlqt04.o dlqt05.o
 
 ifdef USEXBLAS
-DLINTST += derrvxx.o ddrvgex.o ddrvsyx.o ddrvgbx.o derrgex.o ddrvpox.o derrpox.o \
-           debchvxx.o derrsyx.o
+DLINTST += ddrvgbx.o ddrvgex.o ddrvsyx.o ddrvpox.o \
+           derrvxx.o derrgex.o derrsyx.o derrpox.o \
+           debchvxx.o
 else
-DLINTST += derrvx.o ddrvge.o ddrvsy.o ddrvgb.o derrge.o ddrvpo.o derrpo.o \
-           derrsy.o
+DLINTST += ddrvgb.o ddrvge.o ddrvsy.o ddrvpo.o \
+           derrvx.o derrge.o derrsy.o derrpo.o
 endif
 
 ZLINTST = zchkaa.o \
    zchkeq.o zchkgb.o zchkge.o zchkgt.o \
-   zchkhe.o zchkhe_rook.o zchkhe_rk.o zchkhe_aa.o zchkhp.o zchklq.o zchkpb.o \
+   zchkhe.o zchkhe_rook.o zchkhe_rk.o zchkhe_aa.o zchkhe_aa_2stage.o \
+   zchkhp.o zchklq.o zchkpb.o \
    zchkpo.o zchkps.o zchkpp.o zchkpt.o zchkq3.o zchkql.o \
-   zchkqr.o zchkrq.o zchksp.o zchksy.o zchksy_rook.o zchksy_rk.o zchksy_aa.o zchktb.o \
+   zchkqr.o zchkrq.o zchksp.o zchksy.o zchksy_rook.o zchksy_rk.o \
+   zchksy_aa.o zchksy_aa_2stage.o zchktb.o \
    zchktp.o zchktr.o zchktz.o \
-   zdrvgt.o zdrvhe_rook.o zdrvhe_rk.o zdrvhe_aa.o zdrvhp.o \
+   zdrvgt.o zdrvhe_rook.o zdrvhe_rk.o zdrvhe_aa.o zdrvhe_aa_2stage.o zdrvhp.o \
    zdrvls.o zdrvpb.o zdrvpp.o zdrvpt.o \
-   zdrvsp.o zdrvsy_rook.o zdrvsy_rk.o zdrvsy_aa.o \
+   zdrvsp.o zdrvsy_rook.o zdrvsy_rk.o zdrvsy_aa.o zdrvsy_aa_2stage.o \
    zerrgt.o zerrlq.o \
    zerrls.o zerrps.o zerrql.o zerrqp.o \
    zerrqr.o zerrrq.o zerrtr.o zerrtz.o \
    zgbt01.o zgbt02.o zgbt05.o zgelqs.o zgeqls.o zgeqrs.o \
    zgerqs.o zget01.o zget02.o \
    zget03.o zget04.o zget07.o zgtt01.o zgtt02.o \
-   zgtt05.o zhet01.o zhet01_rook.o zhet01_3.o \
-   zhet01_aa.o zhpt01.o zlaipd.o zlaptm.o zlarhs.o zlatb4.o zlatb5.o \
+   zgtt05.o zhet01.o zhet01_rook.o zhet01_3.o zhet01_aa.o \
+   zhpt01.o zlaipd.o zlaptm.o zlarhs.o zlatb4.o zlatb5.o \
    zlatsp.o zlatsy.o zlattb.o zlattp.o zlattr.o \
    zlavhe.o zlavhe_rook.o zlavhp.o zlavsp.o zlavsy.o zlavsy_rook.o zlqt01.o \
    zlqt02.o zlqt03.o zpbt01.o zpbt02.o zpbt05.o \
@@ -207,11 +218,12 @@ ZLINTST = zchkaa.o \
    zerrlqt.o zerrlqtp.o zerrtsqr.o ztsqr01.o zlqt04.o zlqt05.o
 
 ifdef USEXBLAS
-ZLINTST += zerrvxx.o zdrvgex.o zdrvsyx.o zdrvgbx.o zerrgex.o zdrvpox.o zdrvhex.o \
-           zerrpox.o zebchvxx.o zerrsyx.o zerrhex.o
+ZLINTST += zdrvgbx.o zdrvgex.o zdrvhex.o zdrvsyx.o zdrvpox.o \
+           zerrvxx.o zerrgex.o zerrhex.o zerrsyx.o zerrpox.o \
+           zebchvxx.o
 else
-ZLINTST += zerrvx.o zdrvge.o zdrvsy.o zdrvgb.o zerrge.o zdrvpo.o \
-           zdrvhe.o zerrpo.o zerrsy.o zerrhe.o
+ZLINTST += zdrvgb.o zdrvge.o zdrvhe.o zdrvsy.o zdrvpo.o \
+           zerrvx.o zerrge.o zerrhe.o zerrsy.o zerrpo.o
 endif
 
 DSLINTST = dchkab.o \
@@ -244,55 +256,45 @@ ZLINTSTRFP = zchkrfp.o zdrvrfp.o zdrvrf1.o zdrvrf2.o zdrvrf3.o zdrvrf4.o zerrrfp
 
 all: single double complex complex16 proto-single proto-double proto-complex proto-complex16
 
-single: ../xlintsts
-double: ../xlintstd
-complex: ../xlintstc
-complex16: ../xlintstz
+single: xlintsts
+double: xlintstd
+complex: xlintstc
+complex16: xlintstz
 
-proto-single: ../xlintstrfs
-proto-double: ../xlintstds ../xlintstrfd
-proto-complex: ../xlintstrfc
-proto-complex16: ../xlintstzc ../xlintstrfz
+proto-single: xlintstrfs
+proto-double: xlintstds xlintstrfd
+proto-complex: xlintstrfc
+proto-complex16: xlintstzc xlintstrfz
 
-../xlintsts: $(ALINTST) $(SLINTST) $(SCLNTST) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(ALINTST) $(SCLNTST) $(SLINTST) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+xlintsts: $(ALINTST) $(SLINTST) $(SCLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstc: $(ALINTST) $(CLINTST) $(SCLNTST) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(ALINTST) $(SCLNTST) $(CLINTST) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+xlintstc: $(ALINTST) $(CLINTST) $(SCLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstd: $(ALINTST) $(DLINTST) $(DZLNTST) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^ \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+xlintstd: $(ALINTST) $(DLINTST) $(DZLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstz: $(ALINTST) $(ZLINTST) $(DZLNTST) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(ALINTST) $(DZLNTST) $(ZLINTST) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+xlintstz: $(ALINTST) $(ZLINTST) $(DZLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstds: $(DSLINTST) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(DSLINTST) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+xlintstds: $(DSLINTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstzc: $(ZCLINTST) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(ZCLINTST) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+xlintstzc: $(ZCLINTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstrfs: $(SLINTSTRFP) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(SLINTSTRFP) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+xlintstrfs: $(SLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstrfd: $(DLINTSTRFP) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(DLINTSTRFP) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+xlintstrfd: $(DLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstrfc: $(CLINTSTRFP) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(CLINTSTRFP) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+xlintstrfc: $(CLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-../xlintstrfz: $(ZLINTSTRFP) ../../$(LAPACKLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $(ZLINTSTRFP) \
-	../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+xlintstrfz: $(ZLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
 $(ALINTST): $(FRC)
 $(SCLNTST): $(FRC)
@@ -305,8 +307,11 @@ $(ZLINTST): $(FRC)
 FRC:
 	@FRC=$(FRC)
 
-clean:
+clean: cleanobj cleanexe
+cleanobj:
 	rm -f *.o
+cleanexe:
+	rm -f xlintst*
 
 schkaa.o: schkaa.f
 	$(FORTRAN) $(DRVOPTS) -c -o $@ $<

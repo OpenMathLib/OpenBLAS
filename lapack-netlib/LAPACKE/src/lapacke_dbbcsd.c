@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dbbcsd
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -47,41 +47,44 @@ lapack_int LAPACKE_dbbcsd( int matrix_layout, char jobu1, char jobu2,
     lapack_int lwork = -1;
     double* work = NULL;
     double work_query;
-    lapack_int nrows_u1, nrows_u2, nrows_v1t, nrows_v2t;
+    int lapack_layout;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_dbbcsd", -1 );
         return -1;
     }
+    if( LAPACKE_lsame( trans, 'n' ) && matrix_layout == LAPACK_COL_MAJOR ) {
+        lapack_layout = LAPACK_COL_MAJOR;
+    } else {
+        lapack_layout = LAPACK_ROW_MAJOR;
+    }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    nrows_u1 = ( LAPACKE_lsame( jobu1, 'y' ) ? p : 1);
-    nrows_u2 = ( LAPACKE_lsame( jobu2, 'y' ) ? m-p : 1);
-    nrows_v1t = ( LAPACKE_lsame( jobv1t, 'y' ) ? q : 1);
-    nrows_v2t = ( LAPACKE_lsame( jobv2t, 'y' ) ? m-q : 1);
-    if( LAPACKE_d_nancheck( q-1, phi, 1 ) ) {
-        return -11;
-    }
-    if( LAPACKE_d_nancheck( q, theta, 1 ) ) {
-        return -10;
-    }
-    if( LAPACKE_lsame( jobu1, 'y' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, nrows_u1, p, u1, ldu1 ) ) {
-            return -12;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( q-1, phi, 1 ) ) {
+            return -11;
         }
-    }
-    if( LAPACKE_lsame( jobu2, 'y' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, nrows_u2, m-p, u2, ldu2 ) ) {
-            return -14;
+        if( LAPACKE_d_nancheck( q, theta, 1 ) ) {
+            return -10;
         }
-    }
-    if( LAPACKE_lsame( jobv1t, 'y' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, nrows_v1t, q, v1t, ldv1t ) ) {
-            return -16;
+        if( LAPACKE_lsame( jobu1, 'y' ) ) {
+            if( LAPACKE_dge_nancheck( lapack_layout, p, p, u1, ldu1 ) ) {
+                return -12;
+            }
         }
-    }
-    if( LAPACKE_lsame( jobv2t, 'y' ) ) {
-        if( LAPACKE_dge_nancheck( matrix_layout, nrows_v2t, m-q, v2t, ldv2t ) ) {
-            return -18;
+        if( LAPACKE_lsame( jobu2, 'y' ) ) {
+            if( LAPACKE_dge_nancheck( lapack_layout, m-p, m-p, u2, ldu2 ) ) {
+                return -14;
+            }
+        }
+        if( LAPACKE_lsame( jobv1t, 'y' ) ) {
+            if( LAPACKE_dge_nancheck( lapack_layout, q, q, v1t, ldv1t ) ) {
+                return -16;
+            }
+        }
+        if( LAPACKE_lsame( jobv2t, 'y' ) ) {
+            if( LAPACKE_dge_nancheck( lapack_layout, m-q, m-q, v2t, ldv2t ) ) {
+                return -18;
+            }
         }
     }
 #endif

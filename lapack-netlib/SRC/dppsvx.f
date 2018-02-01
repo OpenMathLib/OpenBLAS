@@ -147,8 +147,7 @@
 *>
 *> \param[in,out] AFP
 *> \verbatim
-*>          AFP is DOUBLE PRECISION array, dimension
-*>                            (N*(N+1)/2)
+*>          AFP is DOUBLE PRECISION array, dimension (N*(N+1)/2)
 *>          If FACT = 'F', then AFP is an input argument and on entry
 *>          contains the triangular factor U or L from the Cholesky
 *>          factorization A = U**T*U or A = L*L**T, in the same storage
@@ -312,7 +311,7 @@
       SUBROUTINE DPPSVX( FACT, UPLO, N, NRHS, AP, AFP, EQUED, S, B, LDB,
      $                   X, LDX, RCOND, FERR, BERR, WORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     April 2012

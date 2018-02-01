@@ -44,16 +44,18 @@ lapack_int LAPACKE_slarft( int matrix_layout, char direct, char storev,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    ncols_v = LAPACKE_lsame( storev, 'c' ) ? k :
-                         ( LAPACKE_lsame( storev, 'r' ) ? n : 1);
-    nrows_v = LAPACKE_lsame( storev, 'c' ) ? n :
-                         ( LAPACKE_lsame( storev, 'r' ) ? k : 1);
-    if( LAPACKE_s_nancheck( k, tau, 1 ) ) {
-        return -8;
-    }
-    if( LAPACKE_sge_nancheck( matrix_layout, nrows_v, ncols_v, v, ldv ) ) {
-        return -6;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        ncols_v = LAPACKE_lsame( storev, 'c' ) ? k :
+                             ( LAPACKE_lsame( storev, 'r' ) ? n : 1);
+        nrows_v = LAPACKE_lsame( storev, 'c' ) ? n :
+                             ( LAPACKE_lsame( storev, 'r' ) ? k : 1);
+        if( LAPACKE_s_nancheck( k, tau, 1 ) ) {
+            return -8;
+        }
+        if( LAPACKE_sge_nancheck( matrix_layout, nrows_v, ncols_v, v, ldv ) ) {
+            return -6;
+        }
     }
 #endif
     return LAPACKE_slarft_work( matrix_layout, direct, storev, n, k, v, ldv, tau,

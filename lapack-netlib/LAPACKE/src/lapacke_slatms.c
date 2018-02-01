@@ -46,18 +46,20 @@ lapack_int LAPACKE_slatms( int matrix_layout, lapack_int m, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
-        return -14;
-    }
-    if( LAPACKE_s_nancheck( 1, &cond, 1 ) ) {
-        return -9;
-    }
-    if( LAPACKE_s_nancheck( MIN(n,m), d, 1 ) ) {
-        return -7;
-    }
-    if( LAPACKE_s_nancheck( 1, &dmax, 1 ) ) {
-        return -10;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
+            return -14;
+        }
+        if( LAPACKE_s_nancheck( 1, &cond, 1 ) ) {
+            return -9;
+        }
+        if( LAPACKE_s_nancheck( MIN(n,m), d, 1 ) ) {
+            return -7;
+        }
+        if( LAPACKE_s_nancheck( 1, &dmax, 1 ) ) {
+            return -10;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

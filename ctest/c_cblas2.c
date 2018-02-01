@@ -9,9 +9,9 @@
 #include "cblas_test.h"
 
 void F77_cgemv(int *order, char *transp, int *m, int *n,
-          const void *alpha,
-          CBLAS_TEST_COMPLEX *a, int *lda, const void *x, int *incx,
-          const void *beta, void *y, int *incy) {
+          OPENBLAS_CONST void *alpha,
+          CBLAS_TEST_COMPLEX *a, int *lda, OPENBLAS_CONST void *x, int *incx,
+          OPENBLAS_CONST void *beta, void *y, int *incy) {
 
   CBLAS_TEST_COMPLEX *A;
   int i,j,LDA;

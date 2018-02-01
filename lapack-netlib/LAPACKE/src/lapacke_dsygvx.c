@@ -50,24 +50,26 @@ lapack_int LAPACKE_dsygvx( int matrix_layout, lapack_int itype, char jobz,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_dsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
-        return -7;
-    }
-    if( LAPACKE_d_nancheck( 1, &abstol, 1 ) ) {
-        return -15;
-    }
-    if( LAPACKE_dge_nancheck( matrix_layout, n, n, b, ldb ) ) {
-        return -9;
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_d_nancheck( 1, &vl, 1 ) ) {
-            return -11;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_dsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
+            return -7;
         }
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_d_nancheck( 1, &vu, 1 ) ) {
-            return -12;
+        if( LAPACKE_d_nancheck( 1, &abstol, 1 ) ) {
+            return -15;
+        }
+        if( LAPACKE_dge_nancheck( matrix_layout, n, n, b, ldb ) ) {
+            return -9;
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_d_nancheck( 1, &vl, 1 ) ) {
+                return -11;
+            }
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_d_nancheck( 1, &vu, 1 ) ) {
+                return -12;
+            }
         }
     }
 #endif

@@ -37,15 +37,17 @@ lapack_int LAPACKE_dgttrf( lapack_int n, double* dl, double* d, double* du,
                            double* du2, lapack_int* ipiv )
 {
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( n, d, 1 ) ) {
-        return -3;
-    }
-    if( LAPACKE_d_nancheck( n-1, dl, 1 ) ) {
-        return -2;
-    }
-    if( LAPACKE_d_nancheck( n-1, du, 1 ) ) {
-        return -4;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( n, d, 1 ) ) {
+            return -3;
+        }
+        if( LAPACKE_d_nancheck( n-1, dl, 1 ) ) {
+            return -2;
+        }
+        if( LAPACKE_d_nancheck( n-1, du, 1 ) ) {
+            return -4;
+        }
     }
 #endif
     return LAPACKE_dgttrf_work( n, dl, d, du, du2, ipiv );

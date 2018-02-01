@@ -54,37 +54,39 @@ lapack_int LAPACKE_zgtsvx( int matrix_layout, char fact, char trans,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
-        return -14;
-    }
-    if( LAPACKE_z_nancheck( n, d, 1 ) ) {
-        return -7;
-    }
-    if( LAPACKE_lsame( fact, 'f' ) ) {
-        if( LAPACKE_z_nancheck( n, df, 1 ) ) {
-            return -10;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_zge_nancheck( matrix_layout, n, nrhs, b, ldb ) ) {
+            return -14;
         }
-    }
-    if( LAPACKE_z_nancheck( n-1, dl, 1 ) ) {
-        return -6;
-    }
-    if( LAPACKE_lsame( fact, 'f' ) ) {
-        if( LAPACKE_z_nancheck( n-1, dlf, 1 ) ) {
-            return -9;
+        if( LAPACKE_z_nancheck( n, d, 1 ) ) {
+            return -7;
         }
-    }
-    if( LAPACKE_z_nancheck( n-1, du, 1 ) ) {
-        return -8;
-    }
-    if( LAPACKE_lsame( fact, 'f' ) ) {
-        if( LAPACKE_z_nancheck( n-2, du2, 1 ) ) {
-            return -12;
+        if( LAPACKE_lsame( fact, 'f' ) ) {
+            if( LAPACKE_z_nancheck( n, df, 1 ) ) {
+                return -10;
+            }
         }
-    }
-    if( LAPACKE_lsame( fact, 'f' ) ) {
-        if( LAPACKE_z_nancheck( n-1, duf, 1 ) ) {
-            return -11;
+        if( LAPACKE_z_nancheck( n-1, dl, 1 ) ) {
+            return -6;
+        }
+        if( LAPACKE_lsame( fact, 'f' ) ) {
+            if( LAPACKE_z_nancheck( n-1, dlf, 1 ) ) {
+                return -9;
+            }
+        }
+        if( LAPACKE_z_nancheck( n-1, du, 1 ) ) {
+            return -8;
+        }
+        if( LAPACKE_lsame( fact, 'f' ) ) {
+            if( LAPACKE_z_nancheck( n-2, du2, 1 ) ) {
+                return -12;
+            }
+        }
+        if( LAPACKE_lsame( fact, 'f' ) ) {
+            if( LAPACKE_z_nancheck( n-1, duf, 1 ) ) {
+                return -11;
+            }
         }
     }
 #endif

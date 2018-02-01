@@ -53,6 +53,8 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha_r, FLOAT alpha_i,FLOAT
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	off = -offset;
+#else
+	off = 0;
 #endif
 
 	for (j=0; j<bn/4; j+=1) // do blocks of the Mx4 loops 

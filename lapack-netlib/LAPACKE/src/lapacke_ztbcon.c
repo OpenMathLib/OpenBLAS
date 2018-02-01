@@ -46,9 +46,11 @@ lapack_int LAPACKE_ztbcon( int matrix_layout, char norm, char uplo, char diag,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_ztb_nancheck( matrix_layout, uplo, diag, n, kd, ab, ldab ) ) {
-        return -7;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_ztb_nancheck( matrix_layout, uplo, diag, n, kd, ab, ldab ) ) {
+            return -7;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

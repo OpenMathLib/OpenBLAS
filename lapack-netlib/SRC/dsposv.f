@@ -199,7 +199,7 @@
       SUBROUTINE DSPOSV( UPLO, N, NRHS, A, LDA, B, LDB, X, LDX, WORK,
      $                   SWORK, ITER, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -235,7 +235,7 @@
 *
 *     .. External Subroutines ..
       EXTERNAL           DAXPY, DSYMM, DLACPY, DLAT2S, DLAG2S, SLAG2D,
-     $                   SPOTRF, SPOTRS, XERBLA
+     $                   SPOTRF, SPOTRS, DPOTRF, DPOTRS, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            IDAMAX

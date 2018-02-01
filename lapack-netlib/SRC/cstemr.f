@@ -239,7 +239,7 @@
 *>
 *> \param[out] ISUPPZ
 *> \verbatim
-*>          ISUPPZ is INTEGER ARRAY, dimension ( 2*max(1,M) )
+*>          ISUPPZ is INTEGER array, dimension ( 2*max(1,M) )
 *>          The support of the eigenvectors in Z, i.e., the indices
 *>          indicating the nonzero elements in Z. The i-th computed eigenvector
 *>          is nonzero only in elements ISUPPZ( 2*i-1 ) through
@@ -338,7 +338,7 @@
      $                   M, W, Z, LDZ, NZC, ISUPPZ, TRYRAC, WORK, LWORK,
      $                   IWORK, LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

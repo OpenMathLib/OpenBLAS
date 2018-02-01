@@ -19,9 +19,9 @@
 *>
 *> \verbatim
 *>
-*> CTPMQRT applies a complex orthogonal matrix Q obtained from a
-*> "triangular-pentagonal" real block reflector H to a general
-*> real matrix C, which consists of two blocks A and B.
+*> CTPMLQT applies a complex orthogonal matrix Q obtained from a
+*> "triangular-pentagonal" complex block reflector H to a general
+*> complex matrix C, which consists of two blocks A and B.
 *> \endverbatim
 *
 *  Arguments:
@@ -30,15 +30,15 @@
 *> \param[in] SIDE
 *> \verbatim
 *>          SIDE is CHARACTER*1
-*>          = 'L': apply Q or Q**C from the Left;
-*>          = 'R': apply Q or Q**C from the Right.
+*>          = 'L': apply Q or Q**H from the Left;
+*>          = 'R': apply Q or Q**H from the Right.
 *> \endverbatim
 *>
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          = 'N':  No transpose, apply Q;
-*>          = 'C':  Transpose, apply Q**C.
+*>          = 'C':  Transpose, apply Q**H.
 *> \endverbatim
 *>
 *> \param[in] M
@@ -111,7 +111,7 @@
 *>          (LDA,K) if SIDE = 'R'
 *>          On entry, the K-by-N or M-by-K matrix A.
 *>          On exit, A is overwritten by the corresponding block of
-*>          Q*C or Q**C*C or C*Q or C*Q**C.  See Further Details.
+*>          Q*C or Q**H*C or C*Q or C*Q**H.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -127,7 +127,7 @@
 *>          B is COMPLEX array, dimension (LDB,N)
 *>          On entry, the M-by-N matrix B.
 *>          On exit, B is overwritten by the corresponding block of
-*>          Q*C or Q**C*C or C*Q or C*Q**C.  See Further Details.
+*>          Q*C or Q**H*C or C*Q or C*Q**H.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDB
@@ -158,7 +158,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -188,21 +188,21 @@
 *>
 *>  If TRANS='N' and SIDE='L', C is on exit replaced with Q * C.
 *>
-*>  If TRANS='C' and SIDE='L', C is on exit replaced with Q**C * C.
+*>  If TRANS='C' and SIDE='L', C is on exit replaced with Q**H * C.
 *>
 *>  If TRANS='N' and SIDE='R', C is on exit replaced with C * Q.
 *>
-*>  If TRANS='C' and SIDE='R', C is on exit replaced with C * Q**C.
+*>  If TRANS='C' and SIDE='R', C is on exit replaced with C * Q**H.
 *> \endverbatim
 *>
 *  =====================================================================
       SUBROUTINE CTPMLQT( SIDE, TRANS, M, N, K, L, MB, V, LDV, T, LDT,
      $                    A, LDA, B, LDB, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS

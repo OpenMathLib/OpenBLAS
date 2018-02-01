@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function cunbdb
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -49,28 +49,31 @@ lapack_int LAPACKE_cunbdb( int matrix_layout, char trans, char signs,
     lapack_int lwork = -1;
     lapack_complex_float* work = NULL;
     lapack_complex_float work_query;
-    lapack_int nrows_x11, nrows_x12, nrows_x21, nrows_x22;
+    int lapack_layout;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_cunbdb", -1 );
         return -1;
     }
+    if( LAPACKE_lsame( trans, 'n' ) && matrix_layout == LAPACK_COL_MAJOR ) {
+        lapack_layout = LAPACK_COL_MAJOR;
+    } else {
+        lapack_layout = LAPACK_ROW_MAJOR;
+    }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    nrows_x11 = ( LAPACKE_lsame( trans, 'n' ) ? p : q);
-    nrows_x12 = ( LAPACKE_lsame( trans, 'n' ) ? p : m-q);
-    nrows_x21 = ( LAPACKE_lsame( trans, 'n' ) ? m-p : q);
-    nrows_x22 = ( LAPACKE_lsame( trans, 'n' ) ? m-p : m-q);
-    if( LAPACKE_cge_nancheck( matrix_layout, nrows_x11, q, x11, ldx11 ) ) {
-        return -7;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, nrows_x12, m-q, x12, ldx12 ) ) {
-        return -9;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, nrows_x21, q, x21, ldx21 ) ) {
-        return -11;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, nrows_x22, m-q, x22, ldx22 ) ) {
-        return -13;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_cge_nancheck( lapack_layout, p, q, x11, ldx11 ) ) {
+            return -7;
+        }
+        if( LAPACKE_cge_nancheck( lapack_layout, p, m-q, x12, ldx12 ) ) {
+            return -9;
+        }
+        if( LAPACKE_cge_nancheck( lapack_layout, m-p, q, x21, ldx21 ) ) {
+            return -11;
+        }
+        if( LAPACKE_cge_nancheck( lapack_layout, m-p, m-q, x22, ldx22 ) ) {
+            return -13;
+        }
     }
 #endif
     /* Query optimal working array(s) size */

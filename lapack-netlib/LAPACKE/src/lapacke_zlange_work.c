@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function zlange
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -38,38 +38,42 @@ double LAPACKE_zlange_work( int matrix_layout, char norm, lapack_int m,
                                 lapack_int lda, double* work )
 {
     lapack_int info = 0;
-	double res = 0.;
+    double res = 0.;
+    char norm_lapack;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
-        /* Call LAPACK function and adjust info */
+        /* Call LAPACK function */
         res = LAPACK_zlange( &norm, &m, &n, a, &lda, work );
-        if( info < 0 ) {
-            info = info - 1;
-        }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int lda_t = MAX(1,m);
-        lapack_complex_double* a_t = NULL;
+        double* work_lapack = NULL;
         /* Check leading dimension(s) */
         if( lda < n ) {
             info = -6;
             LAPACKE_xerbla( "LAPACKE_zlange_work", info );
             return info;
         }
-        /* Allocate memory for temporary array(s) */
-        a_t = (lapack_complex_double*)
-            LAPACKE_malloc( sizeof(lapack_complex_double) * lda_t * MAX(1,n) );
-        if( a_t == NULL ) {
-            info = LAPACK_TRANSPOSE_MEMORY_ERROR;
-            goto exit_level_0;
+        if( LAPACKE_lsame( norm, '1' ) || LAPACKE_lsame( norm, 'o' ) ) {
+            norm_lapack = 'i';
+        } else if( LAPACKE_lsame( norm, 'i' ) ) {
+            norm_lapack = '1';
+        } else {
+            norm_lapack = norm;
         }
-        /* Transpose input matrices */
-        LAPACKE_zge_trans( matrix_layout, m, n, a, lda, a_t, lda_t );
-        /* Call LAPACK function and adjust info */
-        res = LAPACK_zlange( &norm, &m, &n, a_t, &lda_t, work );
-        info = 0;  /* LAPACK call is ok! */
+        /* Allocate memory for work array(s) */
+        if( LAPACKE_lsame( norm_lapack, 'i' ) ) {
+            work_lapack = (double*)LAPACKE_malloc( sizeof(double) * MAX(1,n) );
+            if( work_lapack == NULL ) {
+                info = LAPACK_WORK_MEMORY_ERROR;
+                goto exit_level_0;
+            }
+        }
+        /* Call LAPACK function */
+        res = LAPACK_zlange( &norm_lapack, &n, &m, a, &lda, work_lapack );
         /* Release memory and exit */
-        LAPACKE_free( a_t );
+        if( work_lapack ) {
+            LAPACKE_free( work_lapack );
+        }
 exit_level_0:
-        if( info == LAPACK_TRANSPOSE_MEMORY_ERROR ) {
+        if( info == LAPACK_WORK_MEMORY_ERROR ) {
             LAPACKE_xerbla( "LAPACKE_zlange_work", info );
         }
     } else {

@@ -38,7 +38,7 @@
 *>
 *>        [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
 *>    A = [ -----|----- ]  with n1 = min(m,n)/2
-*         [  A21 | A22  ]       n2 = n-n1
+*>        [  A21 | A22  ]       n2 = n-n1
 *>
 *>                                       [ A11 ]
 *> The subroutine calls itself to factor [ --- ],
@@ -113,7 +113,7 @@
 *  =====================================================================
       RECURSIVE SUBROUTINE SGETRF2( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

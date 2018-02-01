@@ -19,11 +19,11 @@
 *  ===========
 *
 *       SUBROUTINE CLAHEF_AA( UPLO, J1, M, NB, A, LDA, IPIV,
-*                             H, LDH, WORK, INFO )
+*                             H, LDH, WORK )
 *
 *       .. Scalar Arguments ..
 *       CHARACTER    UPLO
-*       INTEGER      J1, M, NB, LDA, LDH, INFO
+*       INTEGER      J1, M, NB, LDA, LDH
 *       ..
 *       .. Array Arguments ..
 *       INTEGER      IPIV( * )
@@ -127,16 +127,6 @@
 *>          WORK is COMPLEX workspace, dimension (M).
 *> \endverbatim
 *>
-*> \param[out] INFO
-*> \verbatim
-*>          INFO is INTEGER
-*>          = 0:  successful exit
-*>          < 0:  if INFO = -i, the i-th argument had an illegal value
-*>          > 0:  if INFO = i, D(i,i) is exactly zero.  The factorization
-*>                has been completed, but the block diagonal matrix D is
-*>                exactly singular, and division by zero will occur if it
-*>                is used to solve a system of equations.
-*> \endverbatim
 *
 *  Authors:
 *  ========
@@ -146,24 +136,24 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complexSYcomputational
 *
 *  =====================================================================
       SUBROUTINE CLAHEF_AA( UPLO, J1, M, NB, A, LDA, IPIV,
-     $                      H, LDH, WORK, INFO )
+     $                      H, LDH, WORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
       IMPLICIT NONE
 *
 *     .. Scalar Arguments ..
       CHARACTER    UPLO
-      INTEGER      M, NB, J1, LDA, LDH, INFO
+      INTEGER      M, NB, J1, LDA, LDH
 *     ..
 *     .. Array Arguments ..
       INTEGER      IPIV( * )
@@ -176,7 +166,7 @@
       PARAMETER    ( ZERO = (0.0E+0, 0.0E+0), ONE = (1.0E+0, 0.0E+0) )
 *
 *     .. Local Scalars ..
-      INTEGER      J, K, K1, I1, I2
+      INTEGER      J, K, K1, I1, I2, MJ
       COMPLEX      PIV, ALPHA
 *     ..
 *     .. External Functions ..
@@ -185,14 +175,14 @@
       EXTERNAL     LSAME, ILAENV, ICAMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL     XERBLA
+      EXTERNAL     CLACGV, CGEMV, CSCAL, CAXPY, CCOPY, CSWAP, CLASET,
+     $             XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC    REAL, CONJG, MAX
 *     ..
 *     .. Executable Statements ..
 *
-      INFO = 0
       J = 1
 *
 *     K1 is the first column of the panel to be factorized
@@ -216,6 +206,14 @@
 *         > for the rest of the columns, J1 is 2, and J1+J-1 is J+1,
 *
          K = J1+J-1
+         IF( J.EQ.M ) THEN
+*
+*            Only need to compute T(J, J)
+*
+             MJ = 1
+         ELSE
+             MJ = M-J+1
+         END IF
 *
 *        H(J:N, J) := A(J, J:N) - H(J:N, 1:(J-1)) * L(J1:(J-1), J),
 *         where H(J:N, J) has been initialized to be A(J, J:N)
@@ -229,7 +227,7 @@
 *           first column
 *
             CALL CLACGV( J-K1, A( 1, J ), 1 )
-            CALL CGEMV( 'No transpose', M-J+1, J-K1,
+            CALL CGEMV( 'No transpose', MJ, J-K1,
      $                 -ONE, H( J, K1 ), LDH,
      $                       A( 1, J ), 1,
      $                  ONE, H( J, J ), 1 )
@@ -238,7 +236,7 @@
 *
 *        Copy H(i:n, i) into WORK
 *
-         CALL CCOPY( M-J+1, H( J, J ), 1, WORK( 1 ), 1 )
+         CALL CCOPY( MJ, H( J, J ), 1, WORK( 1 ), 1 )
 *
          IF( J.GT.K1 ) THEN
 *
@@ -246,7 +244,7 @@
 *            where A(J-1, J) stores T(J-1, J) and A(J-2, J:N) stores U(J-1, J:N)
 *
             ALPHA = -CONJG( A( K-1, J ) )
-            CALL CAXPY( M-J+1, ALPHA, A( K-2, J ), LDA, WORK( 1 ), 1 )
+            CALL CAXPY( MJ, ALPHA, A( K-2, J ), LDA, WORK( 1 ), 1 )
          END IF
 *
 *        Set A(J, J) = T(J, J)
@@ -319,12 +317,6 @@
 *           Set A(J, J+1) = T(J, J+1)
 *
             A( K, J+1 ) = WORK( 2 )
-            IF( (A( K, J ).EQ.ZERO ) .AND.
-     $        ( (J.EQ.M) .OR. (A( K, J+1 ).EQ.ZERO))) THEN
-                IF(INFO .EQ. 0) THEN
-                    INFO = J
-                END IF
-            END IF
 *
             IF( J.LT.NB ) THEN
 *
@@ -344,10 +336,6 @@
             ELSE
                CALL CLASET( 'Full', 1, M-J-1, ZERO, ZERO,
      $                      A( K, J+2 ), LDA)
-            END IF
-         ELSE
-            IF( (A( K, J ).EQ.ZERO) .AND. (INFO.EQ.0) ) THEN
-               INFO = J
             END IF
          END IF
          J = J + 1
@@ -370,6 +358,14 @@
 *         > for the rest of the columns, J1 is 2, and J1+J-1 is J+1,
 *
          K = J1+J-1
+         IF( J.EQ.M ) THEN
+*
+*            Only need to compute T(J, J)
+*
+             MJ = 1
+         ELSE
+             MJ = M-J+1
+         END IF
 *
 *        H(J:N, J) := A(J:N, J) - H(J:N, 1:(J-1)) * L(J, J1:(J-1))^T,
 *         where H(J:N, J) has been initialized to be A(J:N, J)
@@ -383,7 +379,7 @@
 *           first column
 *
             CALL CLACGV( J-K1, A( J, 1 ), LDA )
-            CALL CGEMV( 'No transpose', M-J+1, J-K1,
+            CALL CGEMV( 'No transpose', MJ, J-K1,
      $                 -ONE, H( J, K1 ), LDH,
      $                       A( J, 1 ), LDA,
      $                  ONE, H( J, J ), 1 )
@@ -392,7 +388,7 @@
 *
 *        Copy H(J:N, J) into WORK
 *
-         CALL CCOPY( M-J+1, H( J, J ), 1, WORK( 1 ), 1 )
+         CALL CCOPY( MJ, H( J, J ), 1, WORK( 1 ), 1 )
 *
          IF( J.GT.K1 ) THEN
 *
@@ -400,7 +396,7 @@
 *            where A(J-1, J) = T(J-1, J) and A(J, J-2) = L(J, J-1)
 *
             ALPHA = -CONJG( A( J, K-1 ) )
-            CALL CAXPY( M-J+1, ALPHA, A( J, K-2 ), 1, WORK( 1 ), 1 )
+            CALL CAXPY( MJ, ALPHA, A( J, K-2 ), 1, WORK( 1 ), 1 )
          END IF
 *
 *        Set A(J, J) = T(J, J)
@@ -473,11 +469,6 @@
 *           Set A(J+1, J) = T(J+1, J)
 *
             A( J+1, K ) = WORK( 2 )
-            IF( (A( J, K ).EQ.ZERO) .AND.
-     $        ( (J.EQ.M) .OR. (A( J+1, K ).EQ.ZERO)) ) THEN
-                IF (INFO .EQ. 0)
-     $              INFO = J
-            END IF
 *
             IF( J.LT.NB ) THEN
 *
@@ -498,9 +489,6 @@
                CALL CLASET( 'Full', M-J-1, 1, ZERO, ZERO,
      $                      A( J+2, K ), LDA )
             END IF
-         ELSE
-            IF( (A( J, K ).EQ.ZERO) .AND. (J.EQ.M)
-     $          .AND. (INFO.EQ.0) ) INFO = J
          END IF
          J = J + 1
          GO TO 30

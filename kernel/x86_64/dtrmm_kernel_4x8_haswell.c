@@ -167,24 +167,28 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 
    FLOAT res4_0;
    FLOAT res4_1;
+/*
    FLOAT res4_2;
    FLOAT res4_3;
-
+*/
    FLOAT res5_0;
    FLOAT res5_1;
+/*
    FLOAT res5_2;
    FLOAT res5_3;
-
+*/
    FLOAT res6_0;
    FLOAT res6_1;
+/*
    FLOAT res6_2;
    FLOAT res6_3;
-
+*/
    FLOAT res7_0;
    FLOAT res7_1;
+/*
    FLOAT res7_2;
    FLOAT res7_3;
-
+*/
    FLOAT a0;
    FLOAT a1;
 
@@ -773,9 +777,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		res3_2 = 0;
 		res3_3 = 0;
 
-                temp = backwards ? bk-off :
-                             left ? off + 4 : // number of values in A
-                                    off + 4;  // number of values in B
+                temp = backwards ? bk-off : off + 4;
+                            /* left ? off + 4 : // number of values in A
+                                    off + 4;  // number of values in B */
 
 		for (k=0; k<temp; k++)
                 {
@@ -853,9 +857,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		C3[3] = res3_3;
 
 		if (!backwards) {
-                    temp = bk-off;
-                    temp = left ? temp - 4 : // number of values in A
-                                  temp - 4;  // number of values in B
+                    temp = bk-off - 4;
+                    /* temp = left ? temp - 4 : // number of values in A
+                                  temp - 4;  // number of values in B */
 
                     ptrba += temp*4; // number of values in A
 		    ptrbb += temp*4; // number of values in B

@@ -241,12 +241,12 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (7N)
+*>          WORK is REAL array, dimension (7*N)
 *> \endverbatim
 *>
 *> \param[out] IWORK
 *> \verbatim
-*>          IWORK is INTEGER array, dimension (5N)
+*>          IWORK is INTEGER array, dimension (5*N)
 *> \endverbatim
 *>
 *> \param[out] IFAIL
@@ -294,7 +294,7 @@
      $                   LDBB, Q, LDQ, VL, VU, IL, IU, ABSTOL, M, W, Z,
      $                   LDZ, WORK, IWORK, IFAIL, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016

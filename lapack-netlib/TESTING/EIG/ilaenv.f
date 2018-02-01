@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup OTHERauxiliary
 *
@@ -153,10 +153,10 @@
       INTEGER          FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3,
      $                 N4 )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    NAME, OPTS
@@ -250,6 +250,53 @@ C        ILAENV = 0
 *
 *     End of ILAENV
 *
+      END
+      INTEGER FUNCTION ILAENV2STAGE( ISPEC, NAME, OPTS, N1, N2,
+     $                               N3, N4 )
+*     .. Scalar Arguments ..
+      CHARACTER*( * )    NAME, OPTS
+      INTEGER            ISPEC, N1, N2, N3, N4
+*     ..
+*
+*  =====================================================================
+*
+*     .. Local variables ..
+      INTEGER            IISPEC
+*     .. External Functions ..
+      INTEGER            IPARAM2STAGE
+      EXTERNAL           IPARAM2STAGE
+*     ..
+*     .. Arrays in Common ..
+      INTEGER            IPARMS( 100 )
+*     ..
+*     .. Common blocks ..
+      COMMON             / CLAENV / IPARMS
+*     ..
+*     .. Save statement ..
+      SAVE               / CLAENV /
+*     ..
+*     .. Executable Statements ..
+*
+      IF(( ISPEC.GE.1 ) .AND. (ISPEC.LE.5)) THEN
+*
+*     1 <= ISPEC <= 5: 2stage eigenvalues SVD routines. 
+*
+         IF( ISPEC.EQ.1 ) THEN
+             ILAENV2STAGE = IPARMS( 1 )
+         ELSE
+             IISPEC = 16 + ISPEC
+             ILAENV2STAGE = IPARAM2STAGE( IISPEC, NAME, OPTS,
+     $                                    N1, N2, N3, N4 ) 
+         ENDIF
+*
+      ELSE
+*
+*        Invalid value for ISPEC
+*
+         ILAENV2STAGE = -1
+      END IF
+*
+      RETURN
       END
       INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
 *

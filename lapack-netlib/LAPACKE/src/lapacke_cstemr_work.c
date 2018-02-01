@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function cstemr
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -56,7 +56,7 @@ lapack_int LAPACKE_cstemr_work( int matrix_layout, char jobz, char range,
         lapack_int ldz_t = MAX(1,n);
         lapack_complex_float* z_t = NULL;
         /* Check leading dimension(s) */
-        if( ldz < n ) {
+        if( ldz < 1 || ( LAPACKE_lsame( jobz, 'v' ) && ldz < n ) ) {
             info = -14;
             LAPACKE_xerbla( "LAPACKE_cstemr_work", info );
             return info;

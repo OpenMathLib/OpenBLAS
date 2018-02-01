@@ -48,15 +48,17 @@ lapack_int LAPACKE_cggglm( int matrix_layout, lapack_int n, lapack_int m,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_cge_nancheck( matrix_layout, n, m, a, lda ) ) {
-        return -5;
-    }
-    if( LAPACKE_cge_nancheck( matrix_layout, n, p, b, ldb ) ) {
-        return -7;
-    }
-    if( LAPACKE_c_nancheck( n, d, 1 ) ) {
-        return -9;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_cge_nancheck( matrix_layout, n, m, a, lda ) ) {
+            return -5;
+        }
+        if( LAPACKE_cge_nancheck( matrix_layout, n, p, b, ldb ) ) {
+            return -7;
+        }
+        if( LAPACKE_c_nancheck( n, d, 1 ) ) {
+            return -9;
+        }
     }
 #endif
     /* Query optimal working array(s) size */

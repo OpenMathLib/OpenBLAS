@@ -236,7 +236,7 @@
       SUBROUTINE DGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
      $                   EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -280,7 +280,8 @@
       EXTERNAL           IDAMAX, LSAME, DDOT, DNRM2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DCOPY, DLASCL, DLASSQ, DROTM, DSWAP
+      EXTERNAL           DAXPY, DCOPY, DLASCL, DLASSQ, DROTM, DSWAP,
+     $                   XERBLA
 *     ..
 *     .. Executable Statements ..
 *

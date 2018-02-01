@@ -44,20 +44,22 @@ lapack_int LAPACKE_zhfrk( int matrix_layout, char transr, char uplo, char trans,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    ka = LAPACKE_lsame( trans, 'n' ) ? k : n;
-    na = LAPACKE_lsame( trans, 'n' ) ? n : k;
-    if( LAPACKE_zge_nancheck( matrix_layout, na, ka, a, lda ) ) {
-        return -8;
-    }
-    if( LAPACKE_d_nancheck( 1, &alpha, 1 ) ) {
-        return -7;
-    }
-    if( LAPACKE_d_nancheck( 1, &beta, 1 ) ) {
-        return -10;
-    }
-    if( LAPACKE_zpf_nancheck( n, c ) ) {
-        return -11;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        ka = LAPACKE_lsame( trans, 'n' ) ? k : n;
+        na = LAPACKE_lsame( trans, 'n' ) ? n : k;
+        if( LAPACKE_zge_nancheck( matrix_layout, na, ka, a, lda ) ) {
+            return -8;
+        }
+        if( LAPACKE_d_nancheck( 1, &alpha, 1 ) ) {
+            return -7;
+        }
+        if( LAPACKE_d_nancheck( 1, &beta, 1 ) ) {
+            return -10;
+        }
+        if( LAPACKE_zpf_nancheck( n, c ) ) {
+            return -11;
+        }
     }
 #endif
     return LAPACKE_zhfrk_work( matrix_layout, transr, uplo, trans, n, k, alpha,

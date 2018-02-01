@@ -151,7 +151,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex16OTHERauxiliary
 *
@@ -231,10 +231,10 @@
       SUBROUTINE ZLATPS( UPLO, TRANS, DIAG, NORMIN, N, AP, X, SCALE,
      $                   CNORM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORMIN, TRANS, UPLO
@@ -269,7 +269,7 @@
      $                   ZDOTU, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTPSV
+      EXTERNAL           DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTPSV, DLABAD
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN

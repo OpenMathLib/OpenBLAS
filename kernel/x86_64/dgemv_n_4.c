@@ -204,7 +204,6 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
 {
 	BLASLONG i;
-	BLASLONG j;
 	FLOAT *a_ptr;
 	FLOAT *x_ptr;
 	FLOAT *y_ptr;
@@ -282,8 +281,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			if ( n2 & 1 )
 			{
 				dgemv_kernel_4x1(NB,a_ptr,x_ptr,ybuffer,&alpha);
-				a_ptr += lda;
-				x_ptr += 1;	
+				/* a_ptr += lda;
+				x_ptr += 1; */
 
 			}
 

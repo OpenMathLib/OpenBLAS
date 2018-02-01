@@ -49,21 +49,23 @@ lapack_int LAPACKE_zhpevx( int matrix_layout, char jobz, char range, char uplo,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( 1, &abstol, 1 ) ) {
-        return -11;
-    }
-    if( LAPACKE_zhp_nancheck( n, ap ) ) {
-        return -6;
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_d_nancheck( 1, &vl, 1 ) ) {
-            return -7;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( 1, &abstol, 1 ) ) {
+            return -11;
         }
-    }
-    if( LAPACKE_lsame( range, 'v' ) ) {
-        if( LAPACKE_d_nancheck( 1, &vu, 1 ) ) {
-            return -8;
+        if( LAPACKE_zhp_nancheck( n, ap ) ) {
+            return -6;
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_d_nancheck( 1, &vl, 1 ) ) {
+                return -7;
+            }
+        }
+        if( LAPACKE_lsame( range, 'v' ) ) {
+            if( LAPACKE_d_nancheck( 1, &vu, 1 ) ) {
+                return -8;
+            }
         }
     }
 #endif

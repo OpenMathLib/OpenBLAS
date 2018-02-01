@@ -53,7 +53,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is array, dimension (LDA,N)
+*>          A is COMPLEX array, dimension (LDA,N)
 *>          The m by n matrix A.
 *> \endverbatim
 *>
@@ -71,17 +71,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complexOTHERauxiliary
 *
 *  =====================================================================
       INTEGER FUNCTION ILACLR( M, N, A, LDA )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            M, N, LDA

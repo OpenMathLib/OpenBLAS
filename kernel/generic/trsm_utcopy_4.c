@@ -194,7 +194,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
       }
 
       a1 += 2 * lda;
-      a2 += 2 * lda;
+      // a2 += 2 * lda;
       b += 8;
 
       ii += 2;

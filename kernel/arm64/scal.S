@@ -166,86 +166,86 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	scal_kernel_L999
+	ble	.Lscal_kernel_L999
 
 	fcmp	DA, #0.0
-	beq	scal_kernel_zero
+	beq	.Lscal_kernel_zero
 
 	cmp	INC_X, #1
-	bne	scal_kernel_S_BEGIN
+	bne	.Lscal_kernel_S_BEGIN
 
-scal_kernel_F_BEGIN:
+.Lscal_kernel_F_BEGIN:
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	scal_kernel_F1
+	beq	.Lscal_kernel_F1
 
 	KERNEL_INIT_F8
 
-scal_kernel_F8:
+.Lscal_kernel_F8:
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	scal_kernel_F8
+	bne	.Lscal_kernel_F8
 
-scal_kernel_F1:
+.Lscal_kernel_F1:
 
 	ands	I, N, #7
-	ble	scal_kernel_L999
+	ble	.Lscal_kernel_L999
 
-scal_kernel_F10:
+.Lscal_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     scal_kernel_F10
+        bne     .Lscal_kernel_F10
 
 	mov	w0, wzr
 	ret
 
-scal_kernel_S_BEGIN:
+.Lscal_kernel_S_BEGIN:
 
 	INIT_S
 	mov	X_COPY, X
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	scal_kernel_S1
+	ble	.Lscal_kernel_S1
 
-scal_kernel_S4:
+.Lscal_kernel_S4:
 
 	KERNEL_S4
 
 	subs	I, I, #1
-	bne	scal_kernel_S4
+	bne	.Lscal_kernel_S4
 
-scal_kernel_S1:
+.Lscal_kernel_S1:
 
 	ands	I, N, #3
-	ble	scal_kernel_L999
+	ble	.Lscal_kernel_L999
 
-scal_kernel_S10:
+.Lscal_kernel_S10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     scal_kernel_S10
+        bne     .Lscal_kernel_S10
 
-scal_kernel_L999:
+.Lscal_kernel_L999:
 
 	mov	w0, wzr
 	ret
 
-scal_kernel_zero:
+.Lscal_kernel_zero:
 
 	INIT_S
 
-scal_kernel_Z1:
+.Lscal_kernel_Z1:
 
 	st1	DAV, [X], INC_X
 	subs    N, N, #1
-        bne     scal_kernel_Z1
+        bne     .Lscal_kernel_Z1
 
 	mov	w0, wzr
 	ret

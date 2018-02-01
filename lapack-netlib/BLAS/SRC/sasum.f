@@ -27,6 +27,26 @@
 *>    uses unrolled loops for increment equal to one.
 *> \endverbatim
 *
+*  Arguments:
+*  ==========
+*
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>         number of elements in input vector(s)
+*> \endverbatim
+*>
+*> \param[in] SX
+*> \verbatim
+*>          SX is REAL array, dimension ( 1 + ( N - 1 )*abs( INCX ) )
+*> \endverbatim
+*>
+*> \param[in] INCX
+*> \verbatim
+*>          INCX is INTEGER
+*>         storage spacing between elements of SX
+*> \endverbatim
+*
 *  Authors:
 *  ========
 *
@@ -35,7 +55,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup single_blas_level1
 *
@@ -52,10 +72,10 @@
 *  =====================================================================
       REAL FUNCTION SASUM(N,SX,INCX)
 *
-*  -- Reference BLAS level1 routine (version 3.7.0) --
+*  -- Reference BLAS level1 routine (version 3.8.0) --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER INCX,N

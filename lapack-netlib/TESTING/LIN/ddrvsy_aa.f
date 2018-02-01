@@ -143,7 +143,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *  @precisions fortran d -> z c
 *
@@ -154,10 +154,10 @@
      $                      NMAX, A, AFAC, AINV, B, X, XACT, WORK,
      $                      RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -201,7 +201,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALADHD, ALAERH, ALASVM, DERRVX, DGET04, DLACPY,
-     $                   DLARHS, DLASET, DLATB4, DLATMS, DPOT02, DPOT05,
+     $                   DLARHS, DLASET, DLATB4, DLATMS, DPOT02,
      $                   DSYSV_AA, DSYT01_AA, DSYTRF_AA, XLAENV
 *     ..
 *     .. Scalars in Common ..
@@ -240,7 +240,6 @@
       DO 10 I = 1, 4
          ISEED( I ) = ISEEDY( I )
    10 CONTINUE
-      LWORK = MAX( 2*NMAX, NMAX*NRHS )
 *
 *     Test the error exits
 *
@@ -259,6 +258,8 @@
 *
       DO 180 IN = 1, NN
          N = NVAL( IN )
+         LWORK = MAX( 3*N-2, N*(1+NB) )
+         LWORK = MAX( LWORK, 1 )
          LDA = MAX( N, 1 )
          XTYPE = 'N'
          NIMAT = NTYPES

@@ -68,8 +68,14 @@
 *> \verbatim
 *>          VU is DOUBLE PRECISION
 *>          Upper bound of the interval that contains the desired
-*>          eigenvalues. VL < VU. Needed to compute gaps on the left or right
-*>          end of the extremal eigenvalues in the desired RANGE.
+*>          eigenvalues. VL < VU. 
+*>          Note: VU is currently not used by this implementation of DLARRV, VU is
+*>          passed to DLARRV because it could be used compute gaps on the right end
+*>          of the extremal eigenvalues. However, with not much initial accuracy in
+*>          LAMBDA and VU, the formula can lead to an overestimation of the right gap
+*>          and thus to inadequately early RQI 'convergence'. This is currently
+*>          prevented this by forcing a small right gap. And so it turns out that VU
+*>          is currently not used by this implementation of DLARRV.
 *> \endverbatim
 *>
 *> \param[in,out] D
@@ -286,7 +292,7 @@
      $                   IBLOCK, INDEXW, GERS, Z, LDZ, ISUPPZ,
      $                   WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -344,6 +350,13 @@
 *     ..
 
       INFO = 0
+*
+*     Quick return if possible
+*
+      IF( N.LE.0 ) THEN
+         RETURN
+      END IF
+*
 *     The first N entries of WORK are reserved for the eigenvalues
       INDLD = N+1
       INDLLD= 2*N+1

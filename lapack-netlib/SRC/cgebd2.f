@@ -100,7 +100,7 @@
 *>
 *> \param[out] TAUQ
 *> \verbatim
-*>          TAUQ is COMPLEX array dimension (min(M,N))
+*>          TAUQ is COMPLEX array, dimension (min(M,N))
 *>          The scalar factors of the elementary reflectors which
 *>          represent the unitary matrix Q. See Further Details.
 *> \endverbatim
@@ -132,7 +132,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complexGEcomputational
 * @precisions normal c -> s d z
@@ -190,10 +190,10 @@
 *  =====================================================================
       SUBROUTINE CGEBD2( M, N, A, LDA, D, E, TAUQ, TAUP, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N

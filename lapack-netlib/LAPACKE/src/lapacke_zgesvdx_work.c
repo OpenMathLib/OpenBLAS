@@ -34,19 +34,19 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_zgesvdx_work( int matrix_layout, char jobu, char jobvt, char range,
-                           		lapack_int m, lapack_int n, lapack_complex_double* a,
-                          		lapack_int lda, double vl, double vu,
-                           		lapack_int il, lapack_int iu, lapack_int* ns,
-                           		double* s, lapack_complex_double* u, lapack_int ldu,
-                           		lapack_complex_double* vt, lapack_int ldvt,
-                                lapack_complex_double* work, lapack_int lwork,
-                                double* rwork, lapack_int* iwork )
+                                 lapack_int m, lapack_int n, lapack_complex_double* a,
+                                 lapack_int lda, double vl, double vu,
+                                 lapack_int il, lapack_int iu, lapack_int* ns,
+                                 double* s, lapack_complex_double* u, lapack_int ldu,
+                                 lapack_complex_double* vt, lapack_int ldvt,
+                                 lapack_complex_double* work, lapack_int lwork,
+                                 double* rwork, lapack_int* iwork )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_zgesvdx( &jobu, &jobvt,  &range, &m, &n, a, &lda, &vl, &vu,
-            			&il, &iu, ns, s, u, &ldu, vt, &ldvt,
+                        &il, &iu, ns, s, u, &ldu, vt, &ldvt,
                         work, &lwork, rwork, iwork, &info );
         if( info < 0 ) {
             info = info - 1;
@@ -85,7 +85,7 @@ lapack_int LAPACKE_zgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
         /* Query optimal working array(s) size if requested */
         if( lwork == -1 ) {
             LAPACK_zgesvdx( &jobu, &jobvt, &range, &m, &n, a, &lda_t, &vl, &vu,
-            				&il, &iu, ns, s, u, &ldu_t, vt,
+                            &il, &iu, ns, s, u, &ldu_t, vt,
                             &ldvt_t, work, &lwork, rwork, iwork, &info );
             return (info < 0) ? (info - 1) : info;
         }
@@ -116,7 +116,7 @@ lapack_int LAPACKE_zgesvdx_work( int matrix_layout, char jobu, char jobvt, char 
         LAPACKE_zge_trans( matrix_layout, m, n, a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
         LAPACK_zgesvdx( &jobu, &jobvt, &range, &m, &n, a_t, &lda_t, &vl, &vu,
-            				&il, &iu, ns, s, u_t, &ldu_t, vt_t,
+                            &il, &iu, ns, s, u_t, &ldu_t, vt_t,
                             &ldvt_t, work, &lwork, rwork, iwork, &info );
         if( info < 0 ) {
             info = info - 1;

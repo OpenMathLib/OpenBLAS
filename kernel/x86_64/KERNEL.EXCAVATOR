@@ -8,6 +8,7 @@ CAXPYKERNEL = caxpy.c
 ZAXPYKERNEL = zaxpy.c
 
 SDOTKERNEL     = sdot.c
+DSDOTKERNEL    = sdot.c
 DDOTKERNEL     = ddot.c
 CDOTKERNEL     = cdot.c
 ZDOTKERNEL     = zdot.c

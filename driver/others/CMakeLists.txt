@@ -7,7 +7,7 @@ else ()
   set(MEMORY memory.c)
 endif ()
 
-if (SMP)
+if (USE_THREAD)
 
   if (USE_OPENMP)
     set(BLAS_SERVER blas_server_omp.c)

@@ -101,6 +101,7 @@ void NAME(char *UPLO, char *TRANS,
   FLOAT *sa, *sb;
 
 #ifdef SMP
+#ifdef USE_SIMPLE_THREADED_LEVEL3
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -116,6 +117,7 @@ void NAME(char *UPLO, char *TRANS,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
+#endif
 #endif
 #endif
 #endif
@@ -188,15 +190,32 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #if !defined(COMPLEX) || defined(HEMM)
 	   FLOAT alpha,
 #else
-	   FLOAT *alpha,
+	   void *valpha,
 #endif
+#if !defined(COMPLEX)
 	   FLOAT *a, blasint lda,
+#else
+	   void *va, blasint lda,
+#endif
 #if !defined(COMPLEX) || defined(HEMM)
 	   FLOAT beta,
 #else
-	   FLOAT *beta,
+	   void *vbeta,
 #endif
+#if !defined(COMPLEX)
 	   FLOAT *c, blasint ldc) {
+#else
+	   void *vc, blasint ldc) {
+#endif
+
+#ifdef COMPLEX
+#if !defined(HEMM)
+  FLOAT* alpha = (FLOAT*) valpha;
+  FLOAT* beta = (FLOAT*) vbeta;
+#endif
+  FLOAT* a = (FLOAT*) va;
+  FLOAT* c = (FLOAT*) vc;
+#endif
 
   blas_arg_t args;
   int uplo, trans;
@@ -206,6 +225,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   FLOAT *sa, *sb;
 
 #ifdef SMP
+#ifdef USE_SIMPLE_THREADED_LEVEL3
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -221,6 +241,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
+#endif
 #endif
 #endif
 #endif
@@ -323,13 +344,14 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   sb = (FLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 
 #ifdef SMP
+#ifdef USE_SIMPLE_THREADED_LEVEL3
   if (!trans){
     mode |= (BLAS_TRANSA_N | BLAS_TRANSB_T);
   } else {
     mode |= (BLAS_TRANSA_T | BLAS_TRANSB_N);
   }
-
   mode |= (uplo  << BLAS_UPLO_SHIFT);
+#endif
 
   args.common = NULL;
   args.nthreads = num_cpu_avail(3);

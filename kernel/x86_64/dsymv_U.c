@@ -164,7 +164,6 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
 	FLOAT temp2;
 	FLOAT *xp, *yp;
 	FLOAT *a0,*a1,*a2,*a3;
-	FLOAT at0,at1,at2,at3;
 	FLOAT tmp1[4];
 	FLOAT tmp2[4];
 

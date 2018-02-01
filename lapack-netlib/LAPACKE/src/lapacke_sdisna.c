@@ -37,9 +37,11 @@ lapack_int LAPACKE_sdisna( char job, lapack_int m, lapack_int n, const float* d,
                            float* sep )
 {
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_s_nancheck( MIN(m,n), d, 1 ) ) {
-        return -4;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_s_nancheck( MIN(m,n), d, 1 ) ) {
+            return -4;
+        }
     }
 #endif
     return LAPACKE_sdisna_work( job, m, n, d, sep );

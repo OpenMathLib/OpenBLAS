@@ -169,7 +169,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension LWORK.
+*>          WORK is COMPLEX*16 array, dimension (LWORK)
 *> \endverbatim
 *>
 *> \param[in] LWORK
@@ -218,7 +218,7 @@
       SUBROUTINE ZGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
      $                   SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -268,7 +268,7 @@
 *     .. External Subroutines ..
 *     ..
 *     from BLAS
-      EXTERNAL           ZCOPY, ZROT, ZSWAP
+      EXTERNAL           ZCOPY, ZROT, ZSWAP, ZAXPY
 *     from LAPACK
       EXTERNAL           ZLASCL, ZLASSQ, XERBLA
 *     ..

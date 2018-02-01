@@ -122,6 +122,7 @@ ZCOPYKERNEL  = zcopy.c
 #
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
+DSDOTKERNEL  =  sdot.c
 #CDOTKERNEL   = ../arm/zdot.c
 ZDOTKERNEL   =  zdot.c
 #

@@ -48,17 +48,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRSY( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -91,7 +91,7 @@
      $                   ZSPTRS, ZSYCON, ZSYCON_3, ZSYCON_ROOK, ZSYRFS,
      $                   ZSYTF2, ZSYTF2_RK, ZSYTF2_ROOK, ZSYTRF,
      $                   ZSYTRF_RK, ZSYTRF_ROOK, ZSYTRI, ZSYTRI_3,
-     $                   ZSYTRI_3X, ZSYTRI_ROOK, ZSYTRI2, ZSYTRI2Z,
+     $                   ZSYTRI_3X, ZSYTRI_ROOK, ZSYTRI2, ZSYTRI2X,
      $                   ZSYTRS, ZSYTRS_3, ZSYTRS_ROOK
 *     ..
 *     .. Scalars in Common ..
@@ -592,6 +592,63 @@
          INFOT = 8
          CALL ZSYTRS_AA( 'U', 2, 1, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'ZSYTRS_AA', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
+*
+*        Test error exits of the routines that use factorization
+*        of a symmetric indefinite matrix with Aasen's algorithm.
+*
+*        ZSYTRF_AA_2STAGE
+*
+         SRNAMT = 'ZSYTRF_AA_2STAGE'
+         INFOT = 1
+         CALL ZSYTRF_AA_2STAGE( '/', 0, A, 1, A, 1, IP, IP, W, 1,
+     $                          INFO )
+         CALL CHKXER( 'ZSYTRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZSYTRF_AA_2STAGE( 'U', -1, A, 1, A, 1, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'ZSYTRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZSYTRF_AA_2STAGE( 'U', 2, A, 1, A, 2, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'ZSYTRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZSYTRF_AA_2STAGE( 'U', 2, A, 2, A, 1, IP, IP, W, 1,
+     $                           INFO )
+         CALL CHKXER( 'ZSYTRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZSYTRF_AA_2STAGE( 'U', 2, A, 2, A, 8, IP, IP, W, 0,
+     $                           INFO )
+         CALL CHKXER( 'ZSYTRF_AA_2STAGE', INFOT, NOUT, LERR, OK )
+*
+*        CHETRS_AA_2STAGE
+*
+         SRNAMT = 'ZSYTRS_AA_2STAGE'
+         INFOT = 1
+         CALL ZSYTRS_AA_2STAGE( '/', 0, 0, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZSYTRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZSYTRS_AA_2STAGE( 'U', -1, 0, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZSYTRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZSYTRS_AA_2STAGE( 'U', 0, -1, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZSYTRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZSYTRS_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZSYTRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZSYTRS_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZSYTRS_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZSYTRS_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP,
+     $                          B, 1, INFO )
+         CALL CHKXER( 'ZSYTRS_AA_STAGE', INFOT, NOUT, LERR, OK )
 *
       END IF
 *

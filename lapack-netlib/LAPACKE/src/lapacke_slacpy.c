@@ -42,9 +42,11 @@ lapack_int LAPACKE_slacpy( int matrix_layout, char uplo, lapack_int m,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
-        return -5;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_sge_nancheck( matrix_layout, m, n, a, lda ) ) {
+            return -5;
+        }
     }
 #endif
     return LAPACKE_slacpy_work( matrix_layout, uplo, m, n, a, lda, b, ldb );

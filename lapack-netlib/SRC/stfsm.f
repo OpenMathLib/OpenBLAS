@@ -159,7 +159,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is REAL array, DIMENSION (LDB,N)
+*>          B is REAL array, dimension (LDB,N)
 *>           Before entry,  the leading  m by n part of the array  B must
 *>           contain  the  right-hand  side  matrix  B,  and  on exit  is
 *>           overwritten by the solution matrix  X.
@@ -182,7 +182,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup realOTHERcomputational
 *
@@ -277,10 +277,10 @@
       SUBROUTINE STFSM( TRANSR, SIDE, UPLO, TRANS, DIAG, M, N, ALPHA, A,
      $                  B, LDB )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANSR, DIAG, SIDE, TRANS, UPLO

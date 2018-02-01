@@ -2,6 +2,7 @@ SAXPYKERNEL = saxpy.c
 DAXPYKERNEL = daxpy.c
 
 SDOTKERNEL     = sdot.c
+DSDOTKERNEL    = sdot.c
 DDOTKERNEL     = ddot.c
 
 DSYMV_U_KERNEL = dsymv_U.c

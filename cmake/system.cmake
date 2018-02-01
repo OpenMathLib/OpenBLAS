@@ -4,10 +4,25 @@
 ##
 set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 
-# TODO: Makefile.system detects Darwin (mac) and switches to clang here -hpa
-# http://stackoverflow.com/questions/714100/os-detecting-makefile
+# System detection, via CMake.
+include("${PROJECT_SOURCE_DIR}/cmake/system_check.cmake")
 
-# TODO: Makefile.system sets HOSTCC = $(CC) here if not already set -hpa
+if(CMAKE_CROSSCOMPILING AND NOT DEFINED TARGET)
+  # Detect target without running getarch
+  if (ARM64)
+    set(TARGET "ARMV8")
+  elseif(ARM)
+    set(TARGET "ARMV7") # TODO: Ask compiler which arch this is
+  else()
+    message(FATAL_ERROR "When cross compiling, a TARGET is required.")
+  endif()
+endif()
+
+# Other files expect CORE, which is actually TARGET and will become TARGET_CORE for kernel build. Confused yet?
+# It seems we are meant to use TARGET as input and CORE internally as kernel.
+if(NOT DEFINED CORE AND DEFINED TARGET)
+  set(CORE ${TARGET})
+endif()
 
 # TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
 if (DEFINED TARGET_CORE)
@@ -27,7 +42,7 @@ if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
 endif ()
 
 if (DEFINED TARGET)
-  message(STATUS "Targetting the ${TARGET} architecture.")
+  message(STATUS "Targeting the ${TARGET} architecture.")
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
 endif ()
 
@@ -52,21 +67,16 @@ if (NO_AVX2)
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX2")
 endif ()
 
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  set(GETARCH_FLAGS "${GETARCH_FLAGS} -g")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(GETARCH_FLAGS "${GETARCH_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
 endif ()
-
-# TODO: let CMake handle this? -hpa
-#if (${QUIET_MAKE})
-#  set(MAKE "${MAKE} -s")
-#endif()
 
 if (NOT DEFINED NO_PARALLEL_MAKE)
   set(NO_PARALLEL_MAKE 0)
 endif ()
 set(GETARCH_FLAGS	"${GETARCH_FLAGS} -DNO_PARALLEL_MAKE=${NO_PARALLEL_MAKE}")
 
-if (CMAKE_CXX_COMPILER STREQUAL loongcc)
+if (CMAKE_C_COMPILER STREQUAL loongcc)
   set(GETARCH_FLAGS	"${GETARCH_FLAGS} -static")
 endif ()
 
@@ -77,50 +87,39 @@ else ()
   set(ONLY_CBLAS 0)
 endif ()
 
-include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
+# N.B. this is NUM_THREAD in Makefile.system which is probably a bug -hpa
+if (NOT CMAKE_CROSSCOMPILING)
+  if (NOT DEFINED NUM_CORES)
+    include(ProcessorCount)
+    ProcessorCount(NUM_CORES)
+  endif()
+
+endif()
 
 if (NOT DEFINED NUM_THREADS)
-  set(NUM_THREADS ${NUM_CORES})
-endif ()
+  if (NOT NUM_CORES EQUAL 0)
+    # HT?
+    set(NUM_THREADS ${NUM_CORES})
+  else ()
+    set(NUM_THREADS 0)
+  endif ()
+endif()
 
-if (${NUM_THREADS} EQUAL 1)
+if (${NUM_THREADS} LESS 2)
   set(USE_THREAD 0)
+elseif(NOT DEFINED USE_THREAD)
+  set(USE_THREAD 1)
 endif ()
 
-if (DEFINED USE_THREAD)
-  if (NOT ${USE_THREAD})
-    unset(SMP)
-  else ()
-    set(SMP 1)
-  endif ()
-else ()
-  # N.B. this is NUM_THREAD in Makefile.system which is probably a bug -hpa
-  if (${NUM_THREADS} EQUAL 1)
-    unset(SMP)
-  else ()
-    set(SMP 1)
-  endif ()
+if (USE_THREAD)
+  message(STATUS "Multi-threading enabled with ${NUM_THREADS} threads.")
 endif ()
 
-if (${SMP})
-  message(STATUS "SMP enabled.")
-endif ()
+include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
 
 if (NOT DEFINED NEED_PIC)
   set(NEED_PIC 1)
 endif ()
-
-# TODO: I think CMake should be handling all this stuff -hpa
-unset(ARFLAGS)
-set(CPP "${COMPILER} -E")
-set(AR "${CROSS_SUFFIX}ar")
-set(AS "${CROSS_SUFFIX}as")
-set(LD "${CROSS_SUFFIX}ld")
-set(RANLIB "${CROSS_SUFFIX}ranlib")
-set(NM "${CROSS_SUFFIX}nm")
-set(DLLWRAP "${CROSS_SUFFIX}dllwrap")
-set(OBJCOPY "${CROSS_SUFFIX}objcopy")
-set(OBJCONV "${CROSS_SUFFIX}objconv")
 
 # OS dependent settings
 include("${PROJECT_SOURCE_DIR}/cmake/os.cmake")
@@ -149,11 +148,13 @@ if (NEED_PIC)
     set(CCOMMON_OPT "${CCOMMON_OPT} -fPIC")
   endif ()
 
-  if (${F_COMPILER} STREQUAL "SUN")
-    set(FCOMMON_OPT "${FCOMMON_OPT} -pic")
-  else ()
-    set(FCOMMON_OPT "${FCOMMON_OPT} -fPIC")
-  endif ()
+  if (NOT NOFORTRAN)
+    if (${F_COMPILER} STREQUAL "SUN")
+      set(FCOMMON_OPT "${FCOMMON_OPT} -pic")
+    else ()
+      set(FCOMMON_OPT "${FCOMMON_OPT} -fPIC")
+    endif ()
+  endif()
 endif ()
 
 if (DYNAMIC_ARCH)
@@ -174,7 +175,7 @@ if (NO_AVX)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX")
 endif ()
 
-if (${ARCH} STREQUAL "x86")
+if (X86)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX")
 endif ()
 
@@ -182,25 +183,20 @@ if (NO_AVX2)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX2")
 endif ()
 
-if (SMP)
+if (USE_THREAD)
+  # USE_SIMPLE_THREADED_LEVEL3 = 1
+  # NO_AFFINITY = 1
   set(CCOMMON_OPT "${CCOMMON_OPT} -DSMP_SERVER")
 
-  if (${ARCH} STREQUAL "mips64")
+  if (MIPS64)
     if (NOT ${CORE} STREQUAL "LOONGSON3B")
       set(USE_SIMPLE_THREADED_LEVEL3 1)
     endif ()
   endif ()
 
-  if (USE_OPENMP)
-    # USE_SIMPLE_THREADED_LEVEL3 = 1
-    # NO_AFFINITY = 1
-    set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_OPENMP")
-  endif ()
-
   if (BIGNUMA)
     set(CCOMMON_OPT "${CCOMMON_OPT} -DBIGNUMA")
   endif ()
-
 endif ()
 
 if (NO_WARMUP)
@@ -263,7 +259,7 @@ if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(NO_AFFINITY 1)
 endif ()
 
-if (NOT ${ARCH} STREQUAL "x86_64" AND NOT ${ARCH} STREQUAL "x86" AND NOT ${CORE} STREQUAL "LOONGSON3B")
+if (NOT X86_64 AND NOT X86 AND NOT ${CORE} STREQUAL "LOONGSON3B")
   set(NO_AFFINITY 1)
 endif ()
 
@@ -295,52 +291,19 @@ if (MIXED_MEMORY_ALLOCATION)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DMIXED_MEMORY_ALLOCATION")
 endif ()
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
-  set(TAR	gtar)
-  set(PATCH	gpatch)
-  set(GREP ggrep)
-else ()
-  set(TAR tar)
-  set(PATCH patch)
-  set(GREP grep)
-endif ()
-
-if (NOT DEFINED MD5SUM)
-  set(MD5SUM md5sum)
-endif ()
-
-set(AWK awk)
-
-set(SED sed)
-
 set(REVISION "-r${OpenBLAS_VERSION}")
 set(MAJOR_VERSION ${OpenBLAS_MAJOR_VERSION})
 
-if (DEBUG)
-  set(COMMON_OPT "${COMMON_OPT} -g")
-endif ()
-
-if (NOT DEFINED COMMON_OPT)
-  set(COMMON_OPT "-O2")
-endif ()
-
-#For x86 32-bit
-if (DEFINED BINARY AND BINARY EQUAL 32)
-if (NOT MSVC)
-  set(COMMON_OPT "${COMMON_OPT} -m32")
-endif()
-endif()
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_OPT} ${CCOMMON_OPT}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CCOMMON_OPT}")
 if(NOT MSVC)
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${COMMON_OPT} ${CCOMMON_OPT}")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${CCOMMON_OPT}")
 endif()
 # TODO: not sure what PFLAGS is -hpa
-set(PFLAGS "${PFLAGS} ${COMMON_OPT} ${CCOMMON_OPT} -I${TOPDIR} -DPROFILE ${COMMON_PROF}")
+set(PFLAGS "${PFLAGS} ${CCOMMON_OPT} -I${TOPDIR} -DPROFILE ${COMMON_PROF}")
 
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${COMMON_OPT} ${FCOMMON_OPT}")
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${FCOMMON_OPT}")
 # TODO: not sure what FPFLAGS is -hpa
-set(FPFLAGS "${FPFLAGS} ${COMMON_OPT} ${FCOMMON_OPT} ${COMMON_PROF}")
+set(FPFLAGS "${FPFLAGS} ${FCOMMON_OPT} ${COMMON_PROF}")
 
 #For LAPACK Fortran codes.
 set(LAPACK_FFLAGS "${LAPACK_FFLAGS} ${CMAKE_Fortran_FLAGS}")
@@ -348,7 +311,7 @@ set(LAPACK_FPFLAGS "${LAPACK_FPFLAGS} ${FPFLAGS}")
 
 #Disable -fopenmp for LAPACK Fortran codes on Windows.
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  set(FILTER_FLAGS "-fopenmp;-mp;-openmp;-xopenmp=parralel")
+  set(FILTER_FLAGS "-fopenmp;-mp;-openmp;-xopenmp=parallel")
   foreach (FILTER_FLAG ${FILTER_FLAGS})
     string(REPLACE ${FILTER_FLAG} "" LAPACK_FFLAGS ${LAPACK_FFLAGS})
     string(REPLACE ${FILTER_FLAG} "" LAPACK_FPFLAGS ${LAPACK_FPFLAGS})
@@ -386,7 +349,7 @@ if (NOT DEFINED LIBSUFFIX)
 endif ()
 
 if (DYNAMIC_ARCH)
-  if (DEFINED SMP)
+  if (USE_THREAD)
     set(LIBNAME "${LIBPREFIX}p${REVISION}.${LIBSUFFIX}")
     set(LIBNAME_P	"${LIBPREFIX}p${REVISION}_p.${LIBSUFFIX}")
   else ()
@@ -394,7 +357,7 @@ if (DYNAMIC_ARCH)
     set(LIBNAME_P	"${LIBPREFIX}${REVISION}_p.${LIBSUFFIX}")
   endif ()
 else ()
-  if (DEFINED SMP)
+  if (USE_THREAD)
     set(LIBNAME "${LIBPREFIX}_${LIBCORE}p${REVISION}.${LIBSUFFIX}")
     set(LIBNAME_P	"${LIBPREFIX}_${LIBCORE}p${REVISION}_p.${LIBSUFFIX}")
   else ()
@@ -425,6 +388,9 @@ if (NOT NO_LAPACK)
   if (NOT NO_LAPACKE)
     set(LIB_COMPONENTS "${LIB_COMPONENTS} LAPACKE")
   endif ()
+  if (BUILD_RELAPACK)
+    set(LIB_COMPONENTS "${LIB_COMPONENTS} ReLAPACK")
+  endif ()
 endif ()
 
 if (ONLY_CBLAS)
@@ -436,7 +402,7 @@ endif ()
 set(USE_GEMM3M 0)
 
 if (DEFINED ARCH)
-  if (${ARCH} STREQUAL "x86" OR ${ARCH} STREQUAL "x86_64" OR ${ARCH} STREQUAL "ia64" OR ${ARCH} STREQUAL "MIPS")
+  if (X86 OR X86_64 OR ${ARCH} STREQUAL "ia64" OR MIPS64)
     set(USE_GEMM3M 1)
   endif ()
 
@@ -519,35 +485,3 @@ endif ()
 #  export CUFLAGS
 #  export CULIB
 #endif
-
-#.SUFFIXES: .$(PSUFFIX) .$(SUFFIX) .f
-#
-#.f.$(SUFFIX):
-#	$(FC) $(FFLAGS) -c $<  -o $(@F)
-#
-#.f.$(PSUFFIX):
-#	$(FC) $(FPFLAGS) -pg -c $<  -o $(@F)
-
-# these are not cross-platform
-#ifdef BINARY64
-#PATHSCALEPATH	= /opt/pathscale/lib/3.1
-#PGIPATH		= /opt/pgi/linux86-64/7.1-5/lib
-#else
-#PATHSCALEPATH	= /opt/pathscale/lib/3.1/32
-#PGIPATH		= /opt/pgi/linux86/7.1-5/lib
-#endif
-
-#ACMLPATH	= /opt/acml/4.3.0
-#ifneq ($(OSNAME), Darwin)
-#MKLPATH         = /opt/intel/mkl/10.2.2.025/lib
-#else
-#MKLPATH         = /Library/Frameworks/Intel_MKL.framework/Versions/10.0.1.014/lib
-#endif
-#ATLASPATH	= /opt/atlas/3.9.17/opteron
-#FLAMEPATH	= $(HOME)/flame/lib
-#ifneq ($(OSNAME), SunOS)
-#SUNPATH		= /opt/sunstudio12.1
-#else
-#SUNPATH		= /opt/SUNWspro
-#endif
-

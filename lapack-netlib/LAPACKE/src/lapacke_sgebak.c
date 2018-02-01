@@ -42,12 +42,14 @@ lapack_int LAPACKE_sgebak( int matrix_layout, char job, char side, lapack_int n,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_s_nancheck( n, scale, 1 ) ) {
-        return -7;
-    }
-    if( LAPACKE_sge_nancheck( matrix_layout, n, m, v, ldv ) ) {
-        return -9;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_s_nancheck( n, scale, 1 ) ) {
+            return -7;
+        }
+        if( LAPACKE_sge_nancheck( matrix_layout, n, m, v, ldv ) ) {
+            return -9;
+        }
     }
 #endif
     return LAPACKE_sgebak_work( matrix_layout, job, side, n, ilo, ihi, scale, m,

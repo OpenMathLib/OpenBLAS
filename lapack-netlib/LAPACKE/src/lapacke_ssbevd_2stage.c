@@ -49,9 +49,11 @@ lapack_int LAPACKE_ssbevd_2stage( int matrix_layout, char jobz, char uplo, lapac
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_ssb_nancheck( matrix_layout, uplo, n, kd, ab, ldab ) ) {
-        return -6;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_ssb_nancheck( matrix_layout, uplo, n, kd, ab, ldab ) ) {
+            return -6;
+        }
     }
 #endif
     /* Query optimal working array(s) size */

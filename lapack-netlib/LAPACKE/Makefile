@@ -35,7 +35,7 @@
 # To generate lapacke library type 'make lapacke'
 # To make both just type 'make'
 #
-# To remove lapacke object files type 'make cleanlib'
+# To remove lapacke object files type 'make cleanobj'
 # To clean all above type 'make clean'
 # To clean everything including lapacke library type
 # 'make cleanall'
@@ -44,20 +44,26 @@ include ../make.inc
 
 all: lapacke
 
-lapacke:
-	cd include && cp lapacke_mangling_with_flags.h.in lapacke_mangling.h
-	cd src && $(MAKE)
-	cd utils && $(MAKE)
+lapacke: include/lapacke_mangling.h
+	$(MAKE) -C src
+	$(MAKE) -C utils
 
-lapacke_example:
-	cd example && $(MAKE)
+include/lapacke_mangling.h: include/lapacke_mangling_with_flags.h.in
+	cp $< $@
 
-clean: cleanlib
+lapacke_example: lapacke
+	$(MAKE) -C example
 
+#clean: cleanlib
+clean: cleanobj
+	$(MAKE) -C src clean
+	$(MAKE) -C utils clean
+	$(MAKE) -C example clean
+cleanobj:
+	$(MAKE) -C src cleanobj
+	$(MAKE) -C utils cleanobj
+	$(MAKE) -C example cleanobj
 cleanlib:
-	cd src && $(MAKE) clean
-	cd utils && $(MAKE) clean
-
-cleanall: clean
-	rm -f $(LAPACKE)
-	cd example && $(MAKE) clean
+	rm -f ../$(LAPACKELIB)
+cleanexe:
+	$(MAKE) -C example cleanexe

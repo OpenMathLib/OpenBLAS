@@ -192,14 +192,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lsl	LDA, LDA, #3					// LDA = LDA * SIZE
 
-dgemm_ncopy_L4_BEGIN:
+.Ldgemm_ncopy_L4_BEGIN:
 
 	asr	J, N, #2					// J = N / 4
 	cmp 	J, #0
-	ble	dgemm_ncopy_L2_BEGIN
+	ble	.Ldgemm_ncopy_L2_BEGIN
 
 	.align	5
-dgemm_ncopy_L4_M4_BEGIN:
+.Ldgemm_ncopy_L4_M4_BEGIN:
 
 	mov	A01, A00
 	add	A02, A01, LDA
@@ -209,128 +209,128 @@ dgemm_ncopy_L4_M4_BEGIN:
 
 	asr	I, M, #2					// I = M / 4
 	cmp	I, #0
-	ble	dgemm_ncopy_L4_M4_40
+	ble	.Ldgemm_ncopy_L4_M4_40
 
 	.align	5
-dgemm_ncopy_L4_M4_20:
+.Ldgemm_ncopy_L4_M4_20:
 
 	COPY4x4
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L4_M4_20
+	bne	.Ldgemm_ncopy_L4_M4_20
 
 
-dgemm_ncopy_L4_M4_40:
+.Ldgemm_ncopy_L4_M4_40:
 
 	and	I, M , #3
 	cmp	I, #0
-	ble	dgemm_ncopy_L4_M4_END
+	ble	.Ldgemm_ncopy_L4_M4_END
 
 	.align	5
-dgemm_ncopy_L4_M4_60:
+.Ldgemm_ncopy_L4_M4_60:
 
 	COPY1x4
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L4_M4_60
+	bne	.Ldgemm_ncopy_L4_M4_60
 
 
-dgemm_ncopy_L4_M4_END:
+.Ldgemm_ncopy_L4_M4_END:
 
 	subs	J , J, #1						// j--
-	bne	dgemm_ncopy_L4_M4_BEGIN
+	bne	.Ldgemm_ncopy_L4_M4_BEGIN
 
 
 
 /*********************************************************************************************/
 
-dgemm_ncopy_L2_BEGIN:
+.Ldgemm_ncopy_L2_BEGIN:
 
 	tst	N, #3
-	ble	dgemm_ncopy_L999
+	ble	.Ldgemm_ncopy_L999
 
 	tst	N, #2
-	ble	dgemm_ncopy_L1_BEGIN
+	ble	.Ldgemm_ncopy_L1_BEGIN
 
-dgemm_ncopy_L2_M4_BEGIN:
+.Ldgemm_ncopy_L2_M4_BEGIN:
 	mov	A01, A00
 	add	A02, A01, LDA
 	add	A00, A02, LDA
 
 	asr	I, M, #2					// I = M / 4
 	cmp 	I, #0
-	ble	dgemm_ncopy_L2_M4_40
+	ble	.Ldgemm_ncopy_L2_M4_40
 
 	.align	5
-dgemm_ncopy_L2_M4_20:
+.Ldgemm_ncopy_L2_M4_20:
 
 	COPY4x2
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L2_M4_20
+	bne	.Ldgemm_ncopy_L2_M4_20
 
 
-dgemm_ncopy_L2_M4_40:
+.Ldgemm_ncopy_L2_M4_40:
 
 	and	I, M , #3
 	cmp	I, #0
-	ble	dgemm_ncopy_L2_M4_END
+	ble	.Ldgemm_ncopy_L2_M4_END
 
 	.align	5
-dgemm_ncopy_L2_M4_60:
+.Ldgemm_ncopy_L2_M4_60:
 
 	COPY1x2
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L2_M4_60
+	bne	.Ldgemm_ncopy_L2_M4_60
 
 
-dgemm_ncopy_L2_M4_END:
+.Ldgemm_ncopy_L2_M4_END:
 
 
 /*********************************************************************************************/
 
-dgemm_ncopy_L1_BEGIN:
+.Ldgemm_ncopy_L1_BEGIN:
 
 	tst	N, #1
-	ble	dgemm_ncopy_L999
+	ble	.Ldgemm_ncopy_L999
 
 
-dgemm_ncopy_L1_M4_BEGIN:
+.Ldgemm_ncopy_L1_M4_BEGIN:
 
 	mov	A01, A00
 
 	asr	I, M, #2					// I = M / 4
 	cmp	I, #0
-	ble	dgemm_ncopy_L1_M4_40
+	ble	.Ldgemm_ncopy_L1_M4_40
 
 	.align	5
-dgemm_ncopy_L1_M4_20:
+.Ldgemm_ncopy_L1_M4_20:
 
 	COPY4x1
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L1_M4_20
+	bne	.Ldgemm_ncopy_L1_M4_20
 
 
-dgemm_ncopy_L1_M4_40:
+.Ldgemm_ncopy_L1_M4_40:
 
 	and	I, M , #3
 	cmp	I, #0
-	ble	dgemm_ncopy_L1_M4_END
+	ble	.Ldgemm_ncopy_L1_M4_END
 
 	.align	5
-dgemm_ncopy_L1_M4_60:
+.Ldgemm_ncopy_L1_M4_60:
 
 	COPY1x1
 
 	subs	I , I , #1
-	bne	dgemm_ncopy_L1_M4_60
+	bne	.Ldgemm_ncopy_L1_M4_60
 
 
-dgemm_ncopy_L1_M4_END:
+.Ldgemm_ncopy_L1_M4_END:
 
-dgemm_ncopy_L999:
+.Ldgemm_ncopy_L999:
 
 	mov	x0, #0
 	RESTORE_REGS

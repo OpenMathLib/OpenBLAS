@@ -135,53 +135,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	axpy_kernel_L999
+	ble	.Laxpy_kernel_L999
 
 	fcmp	DA, #0.0
-	beq	axpy_kernel_L999
+	beq	.Laxpy_kernel_L999
 
 	cmp	INC_X, #1
-	bne	axpy_kernel_S_BEGIN
+	bne	.Laxpy_kernel_S_BEGIN
 	cmp	INC_Y, #1
-	bne	axpy_kernel_S_BEGIN
+	bne	.Laxpy_kernel_S_BEGIN
 
-axpy_kernel_F_BEGIN:
+.Laxpy_kernel_F_BEGIN:
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	axpy_kernel_F1
+	beq	.Laxpy_kernel_F1
 
-axpy_kernel_F8:
+.Laxpy_kernel_F8:
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	axpy_kernel_F8
+	bne	.Laxpy_kernel_F8
 
-axpy_kernel_F1:
+.Laxpy_kernel_F1:
 
 	ands	I, N, #7
-	ble	axpy_kernel_L999
+	ble	.Laxpy_kernel_L999
 
-axpy_kernel_F10:
+.Laxpy_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     axpy_kernel_F10
+        bne     .Laxpy_kernel_F10
 
 	mov	w0, wzr
 	ret
 
-axpy_kernel_S_BEGIN:
+.Laxpy_kernel_S_BEGIN:
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	axpy_kernel_S1
+	ble	.Laxpy_kernel_S1
 
-axpy_kernel_S4:
+.Laxpy_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -189,21 +189,21 @@ axpy_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	axpy_kernel_S4
+	bne	.Laxpy_kernel_S4
 
-axpy_kernel_S1:
+.Laxpy_kernel_S1:
 
 	ands	I, N, #3
-	ble	axpy_kernel_L999
+	ble	.Laxpy_kernel_L999
 
-axpy_kernel_S10:
+.Laxpy_kernel_S10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     axpy_kernel_S10
+        bne     .Laxpy_kernel_S10
 
-axpy_kernel_L999:
+.Laxpy_kernel_L999:
 
 	mov	w0, wzr
 	ret

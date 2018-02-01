@@ -76,7 +76,7 @@ lapack_int LAPACKE_zgesvj_work( int matrix_layout, char joba, char jobu,
         }
         if( LAPACKE_lsame( jobv, 'a' ) || LAPACKE_lsame( jobv, 'v' ) ) {
             v_t = (lapack_complex_double*)
-            	LAPACKE_malloc( sizeof(lapack_complex_double) * ldv_t * MAX(1,n) );
+               LAPACKE_malloc( sizeof(lapack_complex_double) * ldv_t * MAX(1,n) );
             if( v_t == NULL ) {
                 info = LAPACK_TRANSPOSE_MEMORY_ERROR;
                 goto exit_level_1;

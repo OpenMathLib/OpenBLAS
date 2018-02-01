@@ -83,13 +83,13 @@ void CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT alpha_r, FLOA
   if (incy != 1) {
     Y = bufferY;
     bufferX    = (FLOAT *)(((BLASLONG)bufferY + M * sizeof(FLOAT) * 2 + 4095) & ~4095);
-    gemvbuffer = bufferX;
+    // gemvbuffer = bufferX;
     COPY_K(M, y, incy, Y, 1);
   }
 
   if (incx != 1) {
     X = bufferX;
-    gemvbuffer = (FLOAT *)(((BLASLONG)bufferX + N * sizeof(FLOAT) * 2 + 4095) & ~4095);
+    // gemvbuffer = (FLOAT *)(((BLASLONG)bufferX + N * sizeof(FLOAT) * 2 + 4095) & ~4095);
     COPY_K(N, x, incx, X, 1);
   }
 

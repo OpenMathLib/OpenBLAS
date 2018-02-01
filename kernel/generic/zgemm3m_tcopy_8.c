@@ -69,6 +69,27 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
   FLOAT a1, a2,  a3,  a4,  a5,  a6,  a7,  a8;
   FLOAT a9, a10, a11, a12, a13, a14, a15, a16;
 
+/* silence compiler warnings about unused-but-set variables:
+   depending on compile-time arguments either the odd or the
+   even-numbered variables will not be used */
+   
+  (void)a1;
+  (void)a2;
+  (void)a3;
+  (void)a4;
+  (void)a5;
+  (void)a6;
+  (void)a7;
+  (void)a8;
+  (void)a9;
+  (void)a10;
+  (void)a11;
+  (void)a12;
+  (void)a13;
+  (void)a14;
+  (void)a15;
+  (void)a16;
+
 #if 0
 #ifdef REAL_ONLY
   fprintf(stderr, "TNS Real  ");
@@ -1044,7 +1065,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	*(b_offset2 +  3) = CMULT(a7,  a8);
 
 	a_offset1 += 8;
-	b_offset2 += 4;
+	// b_offset2 += 4;
       }
 
       if (n & 2){
@@ -1057,7 +1078,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
 	*(b_offset3 +  1) = CMULT(a3,  a4);
 
 	a_offset1 += 4;
-	b_offset3 += 2;
+	// b_offset3 += 2;
       }
 
       if (n & 1){

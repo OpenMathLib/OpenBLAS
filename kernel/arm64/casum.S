@@ -98,52 +98,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmov	s1, SUMF
 
 	cmp	N, xzr
-	ble	asum_kernel_L999
+	ble	.Lcasum_kernel_L999
 	cmp	INC_X, xzr
-	ble	asum_kernel_L999
+	ble	.Lcasum_kernel_L999
 
 	cmp	INC_X, #1
-	bne	asum_kernel_S_BEGIN
+	bne	.Lcasum_kernel_S_BEGIN
 
-asum_kernel_F_BEGIN:
+.Lcasum_kernel_F_BEGIN:
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	asum_kernel_F1
+	beq	.Lcasum_kernel_F1
 
-asum_kernel_F8:
+.Lcasum_kernel_F8:
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	asum_kernel_F8
+	bne	.Lcasum_kernel_F8
 
 	KERNEL_F8_FINALIZE
 
-asum_kernel_F1:
+.Lcasum_kernel_F1:
 
 	ands	I, N, #7
-	ble	asum_kernel_L999
+	ble	.Lcasum_kernel_L999
 
-asum_kernel_F10:
+.Lcasum_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     asum_kernel_F10
+        bne     .Lcasum_kernel_F10
 
-asum_kernel_L999:
+.Lcasum_kernel_L999:
 	ret
 
-asum_kernel_S_BEGIN:
+.Lcasum_kernel_S_BEGIN:
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	asum_kernel_S1
+	ble	.Lcasum_kernel_S1
 
-asum_kernel_S4:
+.Lcasum_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -151,19 +151,19 @@ asum_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	asum_kernel_S4
+	bne	.Lcasum_kernel_S4
 
-asum_kernel_S1:
+.Lcasum_kernel_S1:
 
 	ands	I, N, #3
-	ble	asum_kernel_L999
+	ble	.Lcasum_kernel_L999
 
-asum_kernel_S10:
+.Lcasum_kernel_S10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     asum_kernel_S10
+        bne     .Lcasum_kernel_S10
 
 	ret
 

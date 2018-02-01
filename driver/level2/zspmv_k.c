@@ -55,13 +55,13 @@ int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i,
   if (incy != 1) {
     Y = bufferY;
     bufferX    = (FLOAT *)(((BLASLONG)bufferY + m * sizeof(FLOAT) * 2 + 4095) & ~4095);
-    gemvbuffer = bufferX;
+    // gemvbuffer = bufferX;
     COPY_K(m, y, incy, Y, 1);
   }
 
   if (incx != 1) {
     X = bufferX;
-    gemvbuffer = (FLOAT *)(((BLASLONG)bufferX + m * sizeof(FLOAT) * 2 + 4095) & ~4095);
+    // gemvbuffer = (FLOAT *)(((BLASLONG)bufferX + m * sizeof(FLOAT) * 2 + 4095) & ~4095);
     COPY_K(m, x, incx, X, 1);
   }
 

@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function ssygvx
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

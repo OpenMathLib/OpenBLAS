@@ -186,7 +186,7 @@
 *>
 *> \param[out] U1
 *> \verbatim
-*>          U1 is REAL array, dimension (P)
+*>          U1 is REAL array, dimension (LDU1,P)
 *>          If JOBU1 = 'Y', U1 contains the P-by-P orthogonal matrix U1.
 *> \endverbatim
 *>
@@ -199,7 +199,7 @@
 *>
 *> \param[out] U2
 *> \verbatim
-*>          U2 is REAL array, dimension (M-P)
+*>          U2 is REAL array, dimension (LDU2,M-P)
 *>          If JOBU2 = 'Y', U2 contains the (M-P)-by-(M-P) orthogonal
 *>          matrix U2.
 *> \endverbatim
@@ -213,7 +213,7 @@
 *>
 *> \param[out] V1T
 *> \verbatim
-*>          V1T is REAL array, dimension (Q)
+*>          V1T is REAL array, dimension (LDV1T,Q)
 *>          If JOBV1T = 'Y', V1T contains the Q-by-Q matrix orthogonal
 *>          matrix V1**T.
 *> \endverbatim
@@ -227,7 +227,7 @@
 *>
 *> \param[out] V2T
 *> \verbatim
-*>          V2T is REAL array, dimension (M-Q)
+*>          V2T is REAL array, dimension (LDV2T,M-Q)
 *>          If JOBV2T = 'Y', V2T contains the (M-Q)-by-(M-Q) orthogonal
 *>          matrix V2**T.
 *> \endverbatim
@@ -289,7 +289,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup realOTHERcomputational
 *
@@ -300,10 +300,10 @@
      $                             U1, LDU1, U2, LDU2, V1T, LDV1T, V2T,
      $                             LDV2T, WORK, LWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, SIGNS, TRANS

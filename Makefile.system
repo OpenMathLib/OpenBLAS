@@ -181,6 +181,7 @@ endif
 
 ifeq ($(NUM_THREADS), 1)
 override USE_THREAD = 0
+override USE_OPENMP = 0
 endif
 
 ifdef USE_THREAD
@@ -566,6 +567,11 @@ endif
 ifeq ($(CORE), P6600)
 CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
 FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=p6600 $(MSA_FLAGS)
+endif
+
+ifeq ($(CORE), I6500)
+CCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
+FCOMMON_OPT += -mips64r6 -mnan=2008 -mtune=i6400 $(MSA_FLAGS)
 endif
 
 ifeq ($(OSNAME), AIX)

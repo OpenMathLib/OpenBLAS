@@ -51,7 +51,7 @@ endif
 endif
 endif
 
-ifeq ($(NOFORTRAN), $(filter $(NOFORTRAN),1 2))
+ifneq (,$(filter 1 2,$(NOFORTRAN)))
 FEXTRALIB =
 endif
 
@@ -112,7 +112,7 @@ else
 	$(OBJCONV) @objconv.def ../$(LIBNAME) ../$(LIBNAME).osx.renamed
 $(LIBDYNNAME) : ../$(LIBNAME).osx.renamed osx.def
 endif
-ifeq ($(NOFORTRAN), $(filter $(NOFORTRAN),1 2))
+ifneq (,$(filter 1 2,$(NOFORTRAN)))
 #only build without Fortran
 	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 else

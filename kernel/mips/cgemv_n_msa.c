@@ -511,7 +511,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     BLASLONG i, j, k, k_pref, pref_offset;
     FLOAT *y_org = y;
     FLOAT *pa0, *pa1, *pa2, *pa3;
-    FLOAT temp_r, temp_i, res0, res1, temp0_r;
+    FLOAT temp_r = 0.0, temp_i = 0.0, res0, res1, temp0_r;
     FLOAT temp0_i, temp1_r, temp1_i, temp2_r, temp2_i, temp3_r, temp3_i;
     v4f32 alphar, alphai;
     v4f32 x0, x1, y0, y1, y2, y3, x0r, x0i, y0r, y1r, y0i, y1i;

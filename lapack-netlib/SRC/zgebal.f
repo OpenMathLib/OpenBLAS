@@ -83,10 +83,12 @@
 *>
 *> \param[out] ILO
 *> \verbatim
+*>          ILO is INTEGER
 *> \endverbatim
 *>
 *> \param[out] IHI
 *> \verbatim
+*>          IHI is INTEGER
 *>          ILO and IHI are set to INTEGER such that on exit
 *>          A(i,j) = 0 if i > j and j = 1,...,ILO-1 or I = IHI+1,...,N.
 *>          If JOB = 'N' or 'S', ILO = 1 and IHI = N.
@@ -121,7 +123,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex16GEcomputational
 *
@@ -160,10 +162,10 @@
 *  =====================================================================
       SUBROUTINE ZGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB

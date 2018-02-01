@@ -95,7 +95,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is REAL array of DIMENSION ( LDA, ka ), where ka is
+*>          A is REAL array, dimension ( LDA, ka ), where ka is
 *>           k  when  TRANS = 'N' or 'n',  and is  n  otherwise.
 *>           Before entry with  TRANS = 'N' or 'n',  the  leading  n by k
 *>           part of the array  A  must contain the matrix  A,  otherwise
@@ -114,7 +114,7 @@
 *>
 *> \param[in] B
 *> \verbatim
-*>          B is REAL array of DIMENSION ( LDB, kb ), where kb is
+*>          B is REAL array, dimension ( LDB, kb ), where kb is
 *>           k  when  TRANS = 'N' or 'n',  and is  n  otherwise.
 *>           Before entry with  TRANS = 'N' or 'n',  the  leading  n by k
 *>           part of the array  B  must contain the matrix  B,  otherwise
@@ -139,7 +139,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is REAL array of DIMENSION ( LDC, n ).
+*>          C is REAL array, dimension ( LDC, N )
 *>           Before entry  with  UPLO = 'U' or 'u',  the leading  n by n
 *>           upper triangular part of the array C must contain the upper
 *>           triangular part  of the  symmetric matrix  and the strictly

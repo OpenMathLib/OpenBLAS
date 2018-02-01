@@ -65,7 +65,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is COMPLEX*16 array of dimension at least
+*>          X is COMPLEX*16 array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the n
 *>           element vector x.
@@ -80,7 +80,7 @@
 *>
 *> \param[in] Y
 *> \verbatim
-*>          Y is COMPLEX*16 array of dimension at least
+*>          Y is COMPLEX*16 array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCY ) ).
 *>           Before entry, the incremented array Y must contain the n
 *>           element vector y.
@@ -95,7 +95,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX*16 array of DIMENSION ( LDA, n ).
+*>          A is COMPLEX*16 array, dimension ( LDA, N )
 *>           Before entry with  UPLO = 'U' or 'u', the leading n by n
 *>           upper triangular part of the array A must contain the upper
 *>           triangular part of the hermitian matrix and the strictly

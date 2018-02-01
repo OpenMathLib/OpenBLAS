@@ -194,7 +194,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date November 2017
 *
 *> \ingroup doubleOTHEReigen
 *
@@ -236,10 +236,10 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -266,9 +266,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV
+      INTEGER            ILAENV2STAGE
       DOUBLE PRECISION   DLAMCH, DLANSB
-      EXTERNAL           LSAME, DLAMCH, DLANSB, ILAENV
+      EXTERNAL           LSAME, DLAMCH, DLANSB, ILAENV2STAGE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DGEMM, DLACPY, DLASCL, DSCAL, DSTEDC,
@@ -290,9 +290,9 @@
          LIWMIN = 1
          LWMIN = 1
       ELSE
-         IB    = ILAENV( 18, 'DSYTRD_SB2ST', JOBZ, N, KD, -1, -1 )
-         LHTRD = ILAENV( 19, 'DSYTRD_SB2ST', JOBZ, N, KD, IB, -1 )
-         LWTRD = ILAENV( 20, 'DSYTRD_SB2ST', JOBZ, N, KD, IB, -1 )
+         IB    = ILAENV2STAGE( 2, 'DSYTRD_SB2ST', JOBZ, N, KD, -1, -1 )
+         LHTRD = ILAENV2STAGE( 3, 'DSYTRD_SB2ST', JOBZ, N, KD, IB, -1 )
+         LWTRD = ILAENV2STAGE( 4, 'DSYTRD_SB2ST', JOBZ, N, KD, IB, -1 )
          IF( WANTZ ) THEN
             LIWMIN = 3 + 5*N
             LWMIN = 1 + 5*N + 2*N**2

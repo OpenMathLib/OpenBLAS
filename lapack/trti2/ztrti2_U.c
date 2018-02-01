@@ -67,8 +67,6 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   for (j = 0; j < n; j++) {
 
-    ajj_r =  ONE;
-    ajj_i =  ZERO;
 
 #ifndef UNIT
     ajj_r = *(a + (j + j * lda) * COMPSIZE + 0);
@@ -89,6 +87,9 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   *(a + (j + j * lda) * COMPSIZE + 0) = ajj_r;
   *(a + (j + j * lda) * COMPSIZE + 1) = ajj_i;
+#else
+    ajj_r =  ONE;
+    ajj_i =  ZERO;
 #endif
 
   ZTRMV (j,

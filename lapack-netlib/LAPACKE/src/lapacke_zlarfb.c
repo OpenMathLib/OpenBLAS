@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zlarfb
 * Author: Intel Corporation
-* Generated November 2015
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -41,7 +41,7 @@ lapack_int LAPACKE_zlarfb( int matrix_layout, char side, char trans, char direct
                            lapack_int ldc )
 {
     lapack_int info = 0;
-    lapack_int ldwork = ( side=='l')?n:(( side=='r')?m:1);
+    lapack_int ldwork;
     lapack_complex_double* work = NULL;
     lapack_int ncols_v, nrows_v;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
@@ -49,57 +49,66 @@ lapack_int LAPACKE_zlarfb( int matrix_layout, char side, char trans, char direct
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    ncols_v = LAPACKE_lsame( storev, 'c' ) ? k :
-                         ( ( LAPACKE_lsame( storev, 'r' ) &&
-                         LAPACKE_lsame( side, 'l' ) ) ? m :
-                         ( ( LAPACKE_lsame( storev, 'r' ) &&
-                         LAPACKE_lsame( side, 'r' ) ) ? n : 1) );
-    nrows_v = ( LAPACKE_lsame( storev, 'c' ) &&
-                         LAPACKE_lsame( side, 'l' ) ) ? m :
-                         ( ( LAPACKE_lsame( storev, 'c' ) &&
-                         LAPACKE_lsame( side, 'r' ) ) ? n :
-                         ( LAPACKE_lsame( storev, 'r' ) ? k : 1) );
-    if( LAPACKE_zge_nancheck( matrix_layout, m, n, c, ldc ) ) {
-        return -13;
-    }
-    if( LAPACKE_zge_nancheck( matrix_layout, k, k, t, ldt ) ) {
-        return -11;
-    }
-    if( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( direct, 'f' ) ) {
-        if( LAPACKE_ztr_nancheck( matrix_layout, 'l', 'u', k, v, ldv ) )
-            return -9;
-        if( LAPACKE_zge_nancheck( matrix_layout, nrows_v-k, ncols_v, &v[k*ldv],
-            ldv ) )
-            return -9;
-    } else if( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( direct, 'b' ) ) {
-        if( k > nrows_v ) {
-            LAPACKE_xerbla( "LAPACKE_zlarfb", -8 );
-            return -8;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        ncols_v = LAPACKE_lsame( storev, 'c' ) ? k :
+                             ( ( LAPACKE_lsame( storev, 'r' ) &&
+                             LAPACKE_lsame( side, 'l' ) ) ? m :
+                             ( ( LAPACKE_lsame( storev, 'r' ) &&
+                             LAPACKE_lsame( side, 'r' ) ) ? n : 1) );
+        nrows_v = ( LAPACKE_lsame( storev, 'c' ) &&
+                             LAPACKE_lsame( side, 'l' ) ) ? m :
+                             ( ( LAPACKE_lsame( storev, 'c' ) &&
+                             LAPACKE_lsame( side, 'r' ) ) ? n :
+                             ( LAPACKE_lsame( storev, 'r' ) ? k : 1) );
+        if( LAPACKE_zge_nancheck( matrix_layout, m, n, c, ldc ) ) {
+            return -13;
         }
-        if( LAPACKE_ztr_nancheck( matrix_layout, 'u', 'u', k,
-            &v[(nrows_v-k)*ldv], ldv ) )
-            return -9;
-        if( LAPACKE_zge_nancheck( matrix_layout, nrows_v-k, ncols_v, v, ldv ) )
-            return -9;
-    } else if( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( direct, 'f' ) ) {
-        if( LAPACKE_ztr_nancheck( matrix_layout, 'u', 'u', k, v, ldv ) )
-            return -9;
-        if( LAPACKE_zge_nancheck( matrix_layout, nrows_v, ncols_v-k, &v[k],
-            ldv ) )
-            return -9;
-    } else if( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( direct, 'f' ) ) {
-        if( k > ncols_v ) {
-            LAPACKE_xerbla( "LAPACKE_zlarfb", -8 );
-            return -8;
+        if( LAPACKE_zge_nancheck( matrix_layout, k, k, t, ldt ) ) {
+            return -11;
         }
-        if( LAPACKE_ztr_nancheck( matrix_layout, 'l', 'u', k, &v[ncols_v-k],
-            ldv ) )
-            return -9;
-        if( LAPACKE_zge_nancheck( matrix_layout, nrows_v, ncols_v-k, v, ldv ) )
-            return -9;
+        if( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( direct, 'f' ) ) {
+            if( LAPACKE_ztr_nancheck( matrix_layout, 'l', 'u', k, v, ldv ) )
+                return -9;
+            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v-k, ncols_v, &v[k*ldv],
+                ldv ) )
+                return -9;
+        } else if( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( direct, 'b' ) ) {
+            if( k > nrows_v ) {
+                LAPACKE_xerbla( "LAPACKE_zlarfb", -8 );
+                return -8;
+            }
+            if( LAPACKE_ztr_nancheck( matrix_layout, 'u', 'u', k,
+                &v[(nrows_v-k)*ldv], ldv ) )
+                return -9;
+            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v-k, ncols_v, v, ldv ) )
+                return -9;
+        } else if( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( direct, 'f' ) ) {
+            if( LAPACKE_ztr_nancheck( matrix_layout, 'u', 'u', k, v, ldv ) )
+                return -9;
+            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v, ncols_v-k, &v[k],
+                ldv ) )
+                return -9;
+        } else if( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( direct, 'f' ) ) {
+            if( k > ncols_v ) {
+                LAPACKE_xerbla( "LAPACKE_zlarfb", -8 );
+                return -8;
+            }
+            if( LAPACKE_ztr_nancheck( matrix_layout, 'l', 'u', k, &v[ncols_v-k],
+                ldv ) )
+                return -9;
+            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v, ncols_v-k, v, ldv ) )
+                return -9;
+        }
     }
 #endif
+    if( LAPACKE_lsame( side, 'l' ) ) {
+        ldwork = n;
+    } else if( LAPACKE_lsame( side, 'r' ) ) {
+        ldwork = m;
+    } else {
+        ldwork = 1;
+    }
     /* Allocate memory for working array(s) */
     work = (lapack_complex_double*)
         LAPACKE_malloc( sizeof(lapack_complex_double) * ldwork * MAX(1,k) );

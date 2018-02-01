@@ -95,7 +95,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is COMPLEX*16 array of DIMENSION ( LDA, ka ), where ka is
+*>          A is COMPLEX*16 array, dimension ( LDA, ka ), where ka is
 *>           k  when  TRANS = 'N' or 'n',  and is  n  otherwise.
 *>           Before entry with  TRANS = 'N' or 'n',  the  leading  n by k
 *>           part of the array  A  must contain the matrix  A,  otherwise
@@ -114,7 +114,7 @@
 *>
 *> \param[in] B
 *> \verbatim
-*>          B is COMPLEX*16 array of DIMENSION ( LDB, kb ), where kb is
+*>          B is COMPLEX*16 array, dimension ( LDB, kb ), where kb is
 *>           k  when  TRANS = 'N' or 'n',  and is  n  otherwise.
 *>           Before entry with  TRANS = 'N' or 'n',  the  leading  n by k
 *>           part of the array  B  must contain the matrix  B,  otherwise
@@ -140,7 +140,7 @@
 *>
 *> \param[in,out] C
 *> \verbatim
-*>          C is COMPLEX*16 array of DIMENSION ( LDC, n ).
+*>          C is COMPLEX*16 array, dimension ( LDC, N )
 *>           Before entry  with  UPLO = 'U' or 'u',  the leading  n by n
 *>           upper triangular part of the array C must contain the upper
 *>           triangular part  of the  hermitian matrix  and the strictly

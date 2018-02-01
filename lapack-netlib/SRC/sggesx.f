@@ -111,7 +111,7 @@
 *>
 *> \param[in] SELCTG
 *> \verbatim
-*>          SELCTG is procedure) LOGICAL FUNCTION of three REAL arguments
+*>          SELCTG is a LOGICAL FUNCTION of three REAL arguments
 *>          SELCTG must be declared EXTERNAL in the calling subroutine.
 *>          If SORT = 'N', SELCTG is not referenced.
 *>          If SORT = 'S', SELCTG is used to select eigenvalues to sort
@@ -337,7 +337,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup realGEeigen
 *
@@ -365,10 +365,10 @@
      $                   VSR, LDVSR, RCONDE, RCONDV, WORK, LWORK, IWORK,
      $                   LIWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVSL, JOBVSR, SENSE, SORT

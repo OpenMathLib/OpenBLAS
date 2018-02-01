@@ -158,9 +158,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
   if ((k == 0) || (alpha == NULL)) return 0;
 
-  if ((alpha[0] == ZERO)
+  if (alpha[0] == ZERO
 #if defined(COMPLEX) && !defined(HERK)
-      && (alpha[1] == ZERO)
+      && alpha[1] == ZERO
 #endif
       ) return 0;
 

@@ -1,14 +1,17 @@
 include ../../make.inc
 
-all: example1 example2
+all: cblas_ex1 cblas_ex2
 
-example1:
-	$(CC) $(CFLAGS) -I../include -c cblas_example1.c
-	$(LOADER) $(LOADOPTS) -o cblas_ex1 cblas_example1.o $(CBLASLIB) $(BLASLIB)
+cblas_ex1: cblas_example1.o $(CBLASLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
+cblas_ex2: cblas_example2.o $(CBLASLIB) $(BLASLIB)
+	$(LOADER) $(LOADOPTS) -o $@ $^
 
-example2:
-	$(CC) $(CFLAGS) -I../include -c cblas_example2.c
-	$(LOADER) $(LOADOPTS) -o cblas_ex2 cblas_example2.o $(CBLASLIB) $(BLASLIB)
+clean: cleanobj cleanexe
+cleanobj:
+	rm -f *.o
+cleanexe:
+	rm -f cblas_ex1 cblas_ex2
 
-cleanall:
-	rm -f *.o cblas_ex1 cblas_ex2
+.c.o:
+	$(CC) $(CFLAGS) -I../include -c -o $@ $<

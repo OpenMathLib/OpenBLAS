@@ -65,7 +65,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is COMPLEX array of dimension at least
+*>          X is COMPLEX array, dimension at least
 *>           ( 1 + ( n - 1 )*abs( INCX ) ).
 *>           Before entry, the incremented array X must contain the n
 *>           element vector x.
@@ -80,7 +80,7 @@
 *>
 *> \param[in,out] AP
 *> \verbatim
-*>          AP is COMPLEX array of DIMENSION at least
+*>          AP is COMPLEX array, dimension at least
 *>           ( ( n*( n + 1 ) )/2 ).
 *>           Before entry with  UPLO = 'U' or 'u', the array AP must
 *>           contain the upper triangular part of the hermitian matrix

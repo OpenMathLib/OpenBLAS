@@ -28,7 +28,7 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function sorcsd2by1
 * Author: Intel Corporation
-* Generated December 2016
+* Generated November 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -50,17 +50,18 @@ lapack_int LAPACKE_sorcsd2by1( int matrix_layout, char jobu1, char jobu2,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    nrows_x11 =  p ;
-    nrows_x21 =  m-p ;
-    if( LAPACKE_sge_nancheck( matrix_layout, nrows_x11, q, x11, ldx11 ) ) {
-        return -8;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        nrows_x11 = p;
+        nrows_x21 = m-p;
+        if( LAPACKE_sge_nancheck( matrix_layout, nrows_x11, q, x11, ldx11 ) ) {
+            return -8;
+        }
+ 
+        if( LAPACKE_sge_nancheck( matrix_layout, nrows_x21, q, x21, ldx21 ) ) {
+            return -9;
+        }
     }
-
-    if( LAPACKE_sge_nancheck( matrix_layout, nrows_x21, q, x21, ldx21 ) ) {
-        return -9;
-    }
-
 #endif
     /* Allocate memory for working array(s) */
     iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * MAX(1,m-MIN(MIN(p,m-p),MIN(q,m-q))) );

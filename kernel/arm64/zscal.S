@@ -215,71 +215,71 @@ zscal_begin:
 	mov	X_COPY, X
 
 	cmp	N, xzr
-	ble	zscal_kernel_L999
+	ble	.Lzscal_kernel_L999
 
 	fcmp	DA_R, #0.0
-	bne	zscal_kernel_R_non_zero
+	bne	.Lzscal_kernel_R_non_zero
 
 	fcmp	DA_I, #0.0
-	beq	zscal_kernel_RI_zero
+	beq	.Lzscal_kernel_RI_zero
 
-	b	zscal_kernel_R_zero
+	b	.Lzscal_kernel_R_zero
 
-zscal_kernel_R_non_zero:
+.Lzscal_kernel_R_non_zero:
 
 	fcmp	DA_I, #0.0
-	beq	zscal_kernel_I_zero
+	beq	.Lzscal_kernel_I_zero
 
 /*******************************************************************************
 * A_R != 0 && A_I != 0
 *******************************************************************************/
 
-zscal_kernel_RI_non_zero:
+.Lzscal_kernel_RI_non_zero:
 
 	INIT
 
 	cmp	INC_X, #1
-	bne	zscal_kernel_S_BEGIN
+	bne	.Lzscal_kernel_S_BEGIN
 
-zscal_kernel_F_BEGIN:
+.Lzscal_kernel_F_BEGIN:
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	zscal_kernel_F1
+	beq	.Lzscal_kernel_F1
 
 	KERNEL_INIT_F4
 
-zscal_kernel_F4:
+.Lzscal_kernel_F4:
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	zscal_kernel_F4
+	bne	.Lzscal_kernel_F4
 
-zscal_kernel_F1:
+.Lzscal_kernel_F1:
 
 	ands	I, N, #3
-	ble	zscal_kernel_L999
+	ble	.Lzscal_kernel_L999
 
-zscal_kernel_F10:
+.Lzscal_kernel_F10:
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     zscal_kernel_F10
+        bne     .Lzscal_kernel_F10
 
 	mov	w0, wzr
 	ret
 
-zscal_kernel_S_BEGIN:
+.Lzscal_kernel_S_BEGIN:
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	zscal_kernel_S1
+	ble	.Lzscal_kernel_S1
 
-zscal_kernel_S4:
+.Lzscal_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -287,21 +287,21 @@ zscal_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	zscal_kernel_S4
+	bne	.Lzscal_kernel_S4
 
-zscal_kernel_S1:
+.Lzscal_kernel_S1:
 
 	ands	I, N, #3
-	ble	zscal_kernel_L999
+	ble	.Lzscal_kernel_L999
 
-zscal_kernel_S10:
+.Lzscal_kernel_S10:
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     zscal_kernel_S10
+        bne     .Lzscal_kernel_S10
 
-zscal_kernel_L999:
+.Lzscal_kernel_L999:
 
 	mov	w0, wzr
 	ret
@@ -310,7 +310,7 @@ zscal_kernel_L999:
 * A_R == 0 && A_I != 0
 *******************************************************************************/
 
-zscal_kernel_R_zero:
+.Lzscal_kernel_R_zero:
 	INIT_S
 
 #if !defined(DOUBLE)
@@ -323,7 +323,7 @@ zscal_kernel_R_zero:
 	ins	v1.d[1], v2.d[0]		// v1 = -DA_I, DA_I
 #endif
 
-zscal_kernel_R_zero_1:
+.Lzscal_kernel_R_zero_1:
 #if !defined(DOUBLE)
 	ld1	{v2.2s}, [X]			// X1, X0
 	fmul	v2.2s, v2.2s, v1.2s		// -DA_I*X1, DA_I*X0
@@ -337,7 +337,7 @@ zscal_kernel_R_zero_1:
 #endif
 	add	X, X, INC_X
 	subs	N, N, #1
-	bne	zscal_kernel_R_zero_1
+	bne	.Lzscal_kernel_R_zero_1
 
 	mov	w0, wzr
 	ret
@@ -346,7 +346,7 @@ zscal_kernel_R_zero_1:
 * A_R != 0 && A_I == 0
 *******************************************************************************/
 
-zscal_kernel_I_zero:
+.Lzscal_kernel_I_zero:
 	INIT_S
 #if !defined(DOUBLE)
 	ins	v0.s[1], v0.s[0]		// v0 = DA_R, DA_R
@@ -354,7 +354,7 @@ zscal_kernel_I_zero:
 	ins	v0.d[1], v0.d[0]		// v0 = DA_R, DA_R 
 #endif
 
-zscal_kernel_I_zero_1:
+.Lzscal_kernel_I_zero_1:
 #if !defined(DOUBLE)
 	ld1	{v2.2s}, [X]			// X1, X0
 	fmul	v2.2s, v2.2s, v0.2s		// DA_R*X1, DA_R*X0
@@ -366,7 +366,7 @@ zscal_kernel_I_zero_1:
 #endif
 	add	X, X, INC_X
 	subs	N, N, #1
-	bne	zscal_kernel_I_zero_1
+	bne	.Lzscal_kernel_I_zero_1
 
 	mov	w0, wzr
 	ret
@@ -375,16 +375,16 @@ zscal_kernel_I_zero_1:
 * A_R == 0 && A_I == 0
 *******************************************************************************/
 
-zscal_kernel_RI_zero:
+.Lzscal_kernel_RI_zero:
 
 	INIT_S
 
-zscal_kernel_RI_zero_1:
+.Lzscal_kernel_RI_zero_1:
 
 	stp	DA_R, DA_I, [X]
 	add	X, X, INC_X
 	subs	N, N, #1
-	bne	zscal_kernel_RI_zero_1
+	bne	.Lzscal_kernel_RI_zero_1
 
 	mov	w0, wzr
 	ret

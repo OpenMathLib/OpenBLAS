@@ -107,7 +107,7 @@ static int trmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
     COPY_K(args -> n, x, incx, buffer, 1);
 
     x = buffer;
-    buffer += ((args -> n * COMPSIZE + 1023) & ~1023);
+    // buffer += ((args -> n * COMPSIZE + 1023) & ~1023);
   }
 
   if (range_n) y += *range_n * COMPSIZE;
@@ -288,7 +288,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
 
       range_m[MAX_CPU_NUMBER - num_cpu - 1] = range_m[MAX_CPU_NUMBER - num_cpu] - width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      if (range_n[num_cpu] > n) range_n[num_cpu] = n;
+      if (range_n[num_cpu] > n * num_cpu) range_n[num_cpu] = n * num_cpu;
 
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = trmv_kernel;
@@ -328,7 +328,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
 
       range_m[num_cpu + 1] = range_m[num_cpu] + width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      if (range_n[num_cpu] > n) range_n[num_cpu] = n;
+      if (range_n[num_cpu] > n * num_cpu) range_n[num_cpu] = n * num_cpu;
 
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = trmv_kernel;
@@ -358,7 +358,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc
 
       range_m[num_cpu + 1] = range_m[num_cpu] + width;
       range_n[num_cpu] = num_cpu * (((n + 15) & ~15) + 16);
-      if (range_n[num_cpu] > n) range_n[num_cpu] = n;
+      if (range_n[num_cpu] > n * num_cpu) range_n[num_cpu] = n * num_cpu;
 
       queue[num_cpu].mode    = mode;
       queue[num_cpu].routine = trmv_kernel;

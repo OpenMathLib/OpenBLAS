@@ -195,7 +195,7 @@
       SUBROUTINE DSGESV( N, NRHS, A, LDA, IPIV, B, LDB, X, LDX, WORK,
      $                   SWORK, ITER, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
@@ -230,8 +230,8 @@
       DOUBLE PRECISION   ANRM, CTE, EPS, RNRM, XNRM
 *
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DGEMM, DLACPY, DLAG2S, SLAG2D, SGETRF,
-     $                   SGETRS, XERBLA
+      EXTERNAL           DAXPY, DGEMM, DLACPY, DLAG2S, DGETRF, DGETRS,
+     $                   SGETRF, SGETRS, SLAG2D, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            IDAMAX

@@ -203,18 +203,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	SAVE_REGS
 
 	cmp	N, xzr
-	ble	gemv_n_kernel_L999
+	ble	.Lgemv_n_kernel_L999
 	cmp	M, xzr
-	ble	gemv_n_kernel_L999
+	ble	.Lgemv_n_kernel_L999
 
 	lsl	LDA, LDA, #SHZ
 	lsl	INC_X, INC_X, #SHZ
 	mov	J, N
 
 	cmp	INC_Y, #1
-	bne	gemv_n_kernel_S_BEGIN
+	bne	.Lgemv_n_kernel_S_BEGIN
 
-gemv_n_kernel_F_LOOP:
+.Lgemv_n_kernel_F_LOOP:
 
 	ld1	TEMPV, [X], INC_X
 	fmul	TEMP, ALPHA, TEMP
@@ -229,57 +229,57 @@ gemv_n_kernel_F_LOOP:
 	mov	Y_IPTR, Y
 	mov	Y_OPTR, Y
 
-gemv_n_kernel_F32:
+.Lgemv_n_kernel_F32:
 
 	asr	I, M, #5
 	cmp	I, xzr
-	beq	gemv_n_kernel_F4
+	beq	.Lgemv_n_kernel_F4
 
-gemv_n_kernel_F320:
+.Lgemv_n_kernel_F320:
 
 	KERNEL_F16
 	KERNEL_F16
 
 	subs	I, I, #1
-	bne	gemv_n_kernel_F320
+	bne	.Lgemv_n_kernel_F320
 
-gemv_n_kernel_F4:
+.Lgemv_n_kernel_F4:
 	ands	I, M, #31
 	asr	I, I, #2
 	cmp	I, xzr
-	beq	gemv_n_kernel_F1
+	beq	.Lgemv_n_kernel_F1
 
-gemv_n_kernel_F40:
+.Lgemv_n_kernel_F40:
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	gemv_n_kernel_F40
+	bne	.Lgemv_n_kernel_F40
 
-gemv_n_kernel_F1:
+.Lgemv_n_kernel_F1:
 	ands	I, M, #3
-	ble	gemv_n_kernel_F_END
+	ble	.Lgemv_n_kernel_F_END
 
-gemv_n_kernel_F10:
+.Lgemv_n_kernel_F10:
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	gemv_n_kernel_F10
+	bne	.Lgemv_n_kernel_F10
 
-gemv_n_kernel_F_END:
+.Lgemv_n_kernel_F_END:
 
 	add	A, A, LDA
 	subs	J, J, #1
-	bne	gemv_n_kernel_F_LOOP
+	bne	.Lgemv_n_kernel_F_LOOP
 
-	b	gemv_n_kernel_L999
+	b	.Lgemv_n_kernel_L999
 
-gemv_n_kernel_S_BEGIN:
+.Lgemv_n_kernel_S_BEGIN:
 
 	INIT_S
 
-gemv_n_kernel_S_LOOP:
+.Lgemv_n_kernel_S_LOOP:
 
 	ld1	TEMPV, [X], INC_X
 	fmul	TEMP, ALPHA, TEMP
@@ -288,9 +288,9 @@ gemv_n_kernel_S_LOOP:
 
 	asr	I, M, #2
 	cmp	I, xzr
-	ble	gemv_n_kernel_S1
+	ble	.Lgemv_n_kernel_S1
 
-gemv_n_kernel_S4:
+.Lgemv_n_kernel_S4:
 
 	KERNEL_S1
 	KERNEL_S1
@@ -298,27 +298,27 @@ gemv_n_kernel_S4:
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	gemv_n_kernel_S4
+	bne	.Lgemv_n_kernel_S4
 
-gemv_n_kernel_S1:
+.Lgemv_n_kernel_S1:
 
 	ands	I, M, #3
-	ble	gemv_n_kernel_S_END
+	ble	.Lgemv_n_kernel_S_END
 
-gemv_n_kernel_S10:
+.Lgemv_n_kernel_S10:
 
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	gemv_n_kernel_S10
+	bne	.Lgemv_n_kernel_S10
 
-gemv_n_kernel_S_END:
+.Lgemv_n_kernel_S_END:
 
 	add	A, A, LDA
 	subs	J, J, #1
-	bne	gemv_n_kernel_S_LOOP
+	bne	.Lgemv_n_kernel_S_LOOP
 
-gemv_n_kernel_L999:
+.Lgemv_n_kernel_L999:
 
 	mov	w0, wzr
 

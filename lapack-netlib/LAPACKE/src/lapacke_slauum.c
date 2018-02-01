@@ -41,9 +41,11 @@ lapack_int LAPACKE_slauum( int matrix_layout, char uplo, lapack_int n, float* a,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_ssy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
-        return -4;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_ssy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
+            return -4;
+        }
     }
 #endif
     return LAPACKE_slauum_work( matrix_layout, uplo, n, a, lda );

@@ -54,7 +54,7 @@
 *
 *> \param[in] JOBA
 *> \verbatim
-*>          JOBA is CHARACTER* 1
+*>          JOBA is CHARACTER*1
 *>          Specifies the structure of A.
 *>          = 'L': The input matrix A is lower triangular;
 *>          = 'U': The input matrix A is upper triangular;
@@ -208,7 +208,7 @@
 *>
 *> \param[in,out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension MAX(6,M+N).
+*>          WORK is REAL array, dimension (LWORK)
 *>          On entry,
 *>          If JOBU .EQ. 'C' :
 *>          WORK(1) = CTOL, where CTOL defines the threshold for convergence.
@@ -260,7 +260,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup realGEcomputational
 *
@@ -323,10 +323,10 @@
       SUBROUTINE SGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
      $                   LDV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N

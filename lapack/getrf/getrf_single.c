@@ -51,7 +51,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   BLASLONG jjs, min_jj;
   blasint *ipiv, iinfo, info;
   BLASLONG jb, mn, blocking;
-  FLOAT *a, *offsetA, *offsetB;
+  FLOAT *a, *offsetA; //, *offsetB;
   BLASLONG range_N[2];
 
   FLOAT *sbb;
@@ -99,7 +99,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     if (jb > blocking) jb = blocking;
 
     offsetA = a +  j       * lda * COMPSIZE;
-    offsetB = a + (j + jb) * lda * COMPSIZE;
+    // offsetB = a + (j + jb) * lda * COMPSIZE;
 
     range_N[0] = offset + j;
     range_N[1] = offset + j + jb;

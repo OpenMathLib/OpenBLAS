@@ -125,7 +125,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex16_eig
 *
@@ -133,10 +133,10 @@
       SUBROUTINE ZGET02( TRANS, M, N, NRHS, A, LDA, X, LDX, B, LDB,
      $                   RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -154,7 +154,7 @@
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
       COMPLEX*16         CONE
-      PARAMETER          ( CONE = 1.0D+0 )
+      PARAMETER          ( CONE = ( 1.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
       INTEGER            J, N1, N2
@@ -191,7 +191,7 @@
 *     Exit with RESID = 1/EPS if ANORM = 0.
 *
       EPS = DLAMCH( 'Epsilon' )
-      ANORM = ZLANGE( '1', N1, N2, A, LDA, RWORK )
+      ANORM = ZLANGE( '1', M, N, A, LDA, RWORK )
       IF( ANORM.LE.ZERO ) THEN
          RESID = ONE / EPS
          RETURN

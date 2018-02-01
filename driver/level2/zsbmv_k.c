@@ -60,13 +60,13 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT alpha_r, FLOAT alpha_i,
   if (incy != 1) {
     Y = bufferY;
     bufferX    = (FLOAT *)(((BLASLONG)bufferY + n * sizeof(FLOAT) * COMPSIZE + 4095) & ~4095);
-    sbmvbuffer = bufferX;
+    // sbmvbuffer = bufferX;
     COPY_K(n, y, incy, Y, 1);
   }
 
   if (incx != 1) {
     X = bufferX;
-    sbmvbuffer = (FLOAT *)(((BLASLONG)bufferX + n * sizeof(FLOAT) * COMPSIZE + 4095) & ~4095);
+    // sbmvbuffer = (FLOAT *)(((BLASLONG)bufferX + n * sizeof(FLOAT) * COMPSIZE + 4095) & ~4095);
     COPY_K(n, x, incx, X, 1);
   }
 

@@ -14,25 +14,7 @@
 *       LOGICAL            LERR, OK
 *       CHARACTER*(*)      SRNAMT
 *       INTEGER            INFOT, NOUT
-*       ..
-*       .. Intrinsic Functions ..
-*       INTRINSIC          LEN_TRIM
-*       ..
-*       .. Executable Statements ..
-*       IF( .NOT.LERR ) THEN
-*          WRITE( NOUT, FMT = 9999 )INFOT,
-*      $        SRNAMT( 1:LEN_TRIM( SRNAMT ) )
-*          OK = .FALSE.
-*       END IF
-*       LERR = .FALSE.
-*       RETURN
 *
-*  9999 FORMAT( ' *** Illegal value of parameter number ', I2,
-*      $      ' not detected by ', A6, ' ***' )
-*
-*       End of CHKXER.
-*
-*       END
 *
 *> \par Purpose:
 *  =============
@@ -52,17 +34,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
+*> \date June 2017
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
 *
-*  -- LAPACK test routine (input) --
+*  -- LAPACK test routine (version 3.7.1) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     June 2017
 *
 *     .. Scalar Arguments ..
       LOGICAL            LERR, OK

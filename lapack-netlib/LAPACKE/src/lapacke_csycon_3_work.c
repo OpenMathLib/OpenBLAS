@@ -28,14 +28,14 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function csycon_3
 * Author: Intel Corporation
-* Generated December 2016
+* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_csycon_3_work( int matrix_layout, char uplo, lapack_int n,
                                 const lapack_complex_float* a, lapack_int lda,
-                                const lapack_complex_float* e, 
+                                const lapack_complex_float* e,
                                 const lapack_int* ipiv, float anorm,
                                 float* rcond, lapack_complex_float* work )
 {

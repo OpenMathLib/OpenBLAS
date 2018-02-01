@@ -345,13 +345,13 @@
             CALL SCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
      $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
-     $			0 )
+     $                  0 )
             END IF
             IF (RORDER) THEN
             CALL SCHK3( SNAMES( ISNUM ), EPS, THRESH, NOUT, NTRA, TRACE,
      $                  REWI, FATAL, NIDIM, IDIM, NKB, KB, NINC, INC,
      $                  NMAX, INCMAX, A, AA, AS, Y, YY, YS, YT, G, Z,
-     $			1 )
+     $                  1 )
             END IF
             GO TO 200
 *           Test SGER, 12.
@@ -797,9 +797,9 @@
      $ ' (', I6, ' CALL', 'S)' )
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
+C 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
+C     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
+C     $      ' - SUSPECT *******' )
  9996 FORMAT( ' ******* ',A12, ' FAILED ON CALL NUMBER:' )
  9995 FORMAT( 1X, I6, ': ',A12, '(', A14, ',', 4( I3, ',' ), F4.1,
      $      ', A,', I3, ',',/ 10x, 'X,', I2, ',', F4.1, ', Y,',
@@ -1004,7 +1004,7 @@
      $                           REWIND NTRA
                               CALL CSSBMV( IORDER, UPLO, N, K, ALPHA,
      $                                    AA, LDA, XX, INCX, BETA, YY,
-     $					  INCY )
+     $                                    INCY )
                            ELSE IF( PACKED )THEN
                               IF( TRACE )
      $                           WRITE( NTRA, FMT = 9995 )NC, SNAME,
@@ -1156,9 +1156,9 @@
      $ ' (', I6, ' CALL', 'S)' )
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
+C 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
+C     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
+C     $      ' - SUSPECT *******' )
  9996 FORMAT( ' ******* ',A12, ' FAILED ON CALL NUMBER:' )
  9995 FORMAT( 1X, I6, ': ',A12, '(', A14, ',', I3, ',', F4.1, ', AP',
      $      ', X,', I2, ',', F4.1, ', Y,', I2, ') .' )
@@ -1191,7 +1191,7 @@
 *     .. Scalar Arguments ..
       REAL               EPS, THRESH
       INTEGER            INCMAX, NIDIM, NINC, NKB, NMAX, NOUT, NTRA,
-     $			 IORDER
+     $                   IORDER
       LOGICAL            FATAL, REWI, TRACE
       CHARACTER*12       SNAME
 *     .. Array Arguments ..
@@ -1216,7 +1216,7 @@
       EXTERNAL           LSE, LSERES
 *     .. External Subroutines ..
       EXTERNAL           SMAKE, SMVCH, CSTBMV, CSTBSV, CSTPMV,
-     $			 CSTPSV, CSTRMV,  CSTRSV
+     $                   CSTPSV, CSTRMV,  CSTRSV
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX
 *     .. Scalars in Common ..
@@ -1544,9 +1544,9 @@
      $ ' (', I6, ' CALL', 'S)' )
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
+C 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
+C     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
+C     $      ' - SUSPECT *******' )
  9996 FORMAT( ' ******* ',A12, ' FAILED ON CALL NUMBER:' )
  9995 FORMAT( 1X, I6, ': ',A12, '(', 3( A14,',' ),/ 10x, I3, ', AP, ',
      $      'X,', I2, ') .' )
@@ -1579,7 +1579,7 @@
 *     .. Scalar Arguments ..
       REAL               EPS, THRESH
       INTEGER            INCMAX, NALF, NIDIM, NINC, NMAX, NOUT, NTRA,
-     $			 IORDER
+     $                   IORDER
       LOGICAL            FATAL, REWI, TRACE
       CHARACTER*12       SNAME
 *     .. Array Arguments ..
@@ -1819,9 +1819,9 @@
      $ ' (', I6, ' CALL', 'S)' )
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
+C 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
+C     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
+C     $      ' - SUSPECT *******' )
  9996 FORMAT( ' ******* ',A12, ' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
  9994 FORMAT( 1X, I6, ': ',A12, '(', 2( I3, ',' ), F4.1, ', X,', I2,
@@ -1851,7 +1851,7 @@
 *     .. Scalar Arguments ..
       REAL               EPS, THRESH
       INTEGER            INCMAX, NALF, NIDIM, NINC, NMAX, NOUT, NTRA,
-     $			 IORDER
+     $                   IORDER
       LOGICAL            FATAL, REWI, TRACE
       CHARACTER*12       SNAME
 *     .. Array Arguments ..
@@ -1973,7 +1973,7 @@
                      IF( REWI )
      $                  REWIND NTRA
                      CALL CSSYR( IORDER, UPLO, N, ALPHA, XX, INCX,
-     $				  AA, LDA )
+     $                            AA, LDA )
                   ELSE IF( PACKED )THEN
                      IF( TRACE )
      $                  WRITE( NTRA, FMT = 9994 )NC, SNAME, CUPLO, N,
@@ -2113,9 +2113,9 @@
      $ ' (', I6, ' CALL', 'S)' )
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
+C 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
+C     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
+C     $      ' - SUSPECT *******' )
  9996 FORMAT( ' ******* ',A12, ' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
  9994 FORMAT( 1X, I6, ': ',A12, '(', A14, ',', I3, ',', F4.1, ', X,',
@@ -2147,7 +2147,7 @@
 *     .. Scalar Arguments ..
       REAL               EPS, THRESH
       INTEGER            INCMAX, NALF, NIDIM, NINC, NMAX, NOUT, NTRA,
-     $			 IORDER
+     $                   IORDER
       LOGICAL            FATAL, REWI, TRACE
       CHARACTER*12       SNAME
 *     .. Array Arguments ..
@@ -2445,9 +2445,9 @@
      $ ' (', I6, ' CALL', 'S)' )
  9998 FORMAT( ' ******* FATAL ERROR - PARAMETER NUMBER ', I2, ' WAS CH',
      $      'ANGED INCORRECTLY *******' )
- 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
-     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
-     $      ' - SUSPECT *******' )
+C 9997 FORMAT( ' ',A12, ' COMPLETED THE COMPUTATIONAL TESTS (', I6, ' C',
+C     $      'ALLS)', /' ******* BUT WITH MAXIMUM TEST RATIO', F8.2,
+C     $      ' - SUSPECT *******' )
  9996 FORMAT( ' ******* ',A12, ' FAILED ON CALL NUMBER:' )
  9995 FORMAT( '      THESE ARE THE RESULTS FOR COLUMN ', I3 )
  9994 FORMAT( 1X, I6, ': ',A12, '(', A14, ',', I3, ',', F4.1, ', X,',
@@ -2833,7 +2833,7 @@
    50    CONTINUE
       END IF
 *
-   60 CONTINUE
+C   60 CONTINUE
       LSERES = .TRUE.
       GO TO 80
    70 CONTINUE

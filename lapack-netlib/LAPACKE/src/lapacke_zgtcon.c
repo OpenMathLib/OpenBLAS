@@ -43,21 +43,23 @@ lapack_int LAPACKE_zgtcon( char norm, lapack_int n,
     lapack_int info = 0;
     lapack_complex_double* work = NULL;
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_d_nancheck( 1, &anorm, 1 ) ) {
-        return -8;
-    }
-    if( LAPACKE_z_nancheck( n, d, 1 ) ) {
-        return -4;
-    }
-    if( LAPACKE_z_nancheck( n-1, dl, 1 ) ) {
-        return -3;
-    }
-    if( LAPACKE_z_nancheck( n-1, du, 1 ) ) {
-        return -5;
-    }
-    if( LAPACKE_z_nancheck( n-2, du2, 1 ) ) {
-        return -6;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_d_nancheck( 1, &anorm, 1 ) ) {
+            return -8;
+        }
+        if( LAPACKE_z_nancheck( n, d, 1 ) ) {
+            return -4;
+        }
+        if( LAPACKE_z_nancheck( n-1, dl, 1 ) ) {
+            return -3;
+        }
+        if( LAPACKE_z_nancheck( n-1, du, 1 ) ) {
+            return -5;
+        }
+        if( LAPACKE_z_nancheck( n-2, du2, 1 ) ) {
+            return -6;
+        }
     }
 #endif
     /* Allocate memory for working array(s) */

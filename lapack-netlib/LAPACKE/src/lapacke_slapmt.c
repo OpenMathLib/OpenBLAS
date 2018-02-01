@@ -42,9 +42,11 @@ lapack_int LAPACKE_slapmt( int matrix_layout, lapack_logical forwrd,
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_sge_nancheck( matrix_layout, m, n, x, ldx ) ) {
-        return -5;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_sge_nancheck( matrix_layout, m, n, x, ldx ) ) {
+            return -5;
+        }
     }
 #endif
     return LAPACKE_slapmt_work( matrix_layout, forwrd, m, n, x, ldx, k );

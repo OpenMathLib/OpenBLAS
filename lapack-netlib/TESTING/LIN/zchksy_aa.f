@@ -15,13 +15,14 @@
 *       .. Scalar Arguments ..
 *       LOGICAL            TSTERR
 *       INTEGER            NMAX, NN, NNB, NNS, NOUT
-*       COMPLEX*16         THRESH
+*       DOUBLE PRECISION   THRESH
 *       ..
 *       .. Array Arguments ..
 *       LOGICAL            DOTYPE( * )
 *       INTEGER            IWORK( * ), NBVAL( * ), NSVAL( * ), NVAL( * )
+*       DOUBLE PRECISION   RWORK( * )
 *       COMPLEX*16         A( * ), AFAC( * ), AINV( * ), B( * ),
-*      $                   RWORK( * ), WORK( * ), X( * ), XACT( * )
+*      $                   WORK( * ), X( * ), XACT( * )
 *       ..
 *
 *
@@ -82,7 +83,7 @@
 *>
 *> \param[in] THRESH
 *> \verbatim
-*>          THRESH is COMPLEX*16
+*>          THRESH is DOUBLE PRECISION
 *>          The threshold value for the test ratios.  A result is
 *>          included in the output file if RESULT >= THRESH.  To have
 *>          every test ratio printed, use THRESH = 0.
@@ -161,9 +162,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*  @generated from LIN/dchksy_aa.f, fortran d -> z, Wed Nov 16 21:34:18 2016
+*> \date November 2017
 *
 *> \ingroup complex16_lin
 *
@@ -172,10 +171,10 @@
      $                      THRESH, TSTERR, NMAX, A, AFAC, AINV, B,
      $                      X, XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine (version 3.8.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
+*     November 2017
 *
       IMPLICIT NONE
 *
@@ -198,7 +197,7 @@
       DOUBLE PRECISION   ZERO
       PARAMETER          ( ZERO = 0.0D+0 )
       COMPLEX*16         CZERO
-      PARAMETER          ( CZERO = 0.0E+0 )
+      PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ) )
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 10 )
       INTEGER            NTESTS
@@ -218,15 +217,10 @@
       INTEGER            ISEED( 4 ), ISEEDY( 4 )
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
-*     .. External Functions ..
-      DOUBLE PRECISION   DGET06, ZLANSY
-      EXTERNAL           DGET06, ZLANSY
-*     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, ZERRSY, ZGET04, ZLACPY,
-     $                   ZLARHS, ZLATB4, ZLATMS, ZSYT02, DSYT03, DSYT05,
-     $                   DSYCON, ZSYRFS, ZSYT01_AA, ZSYTRF_AA,
-     $                   DSYTRI2, ZSYTRS_AA, XLAENV
+      EXTERNAL           ALAERH, ALAHD, ALASUM, ZERRSY, ZLACPY, ZLARHS,
+     $                   ZLATB4, ZLATMS, ZSYT02, ZSYT01_AA, ZSYTRF_AA,
+     $                   ZSYTRS_AA, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -440,22 +434,22 @@
 *                 Adjust the expected value of INFO to account for
 *                 pivoting.
 *
-                  IF( IZERO.GT.0 ) THEN
-                     J = 1
-                     K = IZERO
-  100                CONTINUE
-                     IF( J.EQ.K ) THEN
-                        K = IWORK( J )
-                     ELSE IF( IWORK( J ).EQ.K ) THEN
-                        K = J
-                     END IF
-                     IF( J.LT.K ) THEN
-                        J = J + 1
-                        GO TO 100
-                     END IF
-                  ELSE
+c                  IF( IZERO.GT.0 ) THEN
+c                     J = 1
+c                     K = IZERO
+c  100                CONTINUE
+c                     IF( J.EQ.K ) THEN
+c                        K = IWORK( J )
+c                     ELSE IF( IWORK( J ).EQ.K ) THEN
+c                        K = J
+c                     END IF
+c                     IF( J.LT.K ) THEN
+c                        J = J + 1
+c                        GO TO 100
+c                     END IF
+c                  ELSE
                      K = 0
-                  END IF
+c                  END IF
 *
 *                 Check error code from ZSYTRF and handle error.
 *
@@ -519,31 +513,34 @@
 *                    Check error code from ZSYTRS and handle error.
 *
                      IF( INFO.NE.0 ) THEN
-                        CALL ALAERH( PATH, 'ZSYTRS_AA', INFO, 0,
-     $                               UPLO, N, N, -1, -1, NRHS, IMAT,
-     $                               NFAIL, NERRS, NOUT )
-                     END IF
-*
-                     CALL ZLACPY( 'Full', N, NRHS, B, LDA, WORK, LDA )
-*
-*                    Compute the residual for the solution
-*
-                     CALL ZSYT02( UPLO, N, NRHS, A, LDA, X, LDA, WORK,
-     $                            LDA, RWORK, RESULT( 2 ) )
-*
-*
-*                    Print information about the tests that did not pass
-*                    the threshold.
-*
-                     DO 120 K = 2, 2
-                        IF( RESULT( K ).GE.THRESH ) THEN
-                           IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
-     $                        CALL ALAHD( NOUT, PATH )
-                           WRITE( NOUT, FMT = 9998 )UPLO, N, NRHS,
-     $                        IMAT, K, RESULT( K )
-                           NFAIL = NFAIL + 1
+                        IF( IZERO.EQ.0 ) THEN
+                           CALL ALAERH( PATH, 'ZSYTRS_AA', INFO, 0,
+     $                                  UPLO, N, N, -1, -1, NRHS, IMAT,
+     $                                  NFAIL, NERRS, NOUT )
                         END IF
-  120                CONTINUE
+                     ELSE
+                        CALL ZLACPY( 'Full', N, NRHS, B, LDA, WORK, LDA
+     $                               )
+*
+*                       Compute the residual for the solution
+*
+                        CALL ZSYT02( UPLO, N, NRHS, A, LDA, X, LDA,
+     $                               WORK, LDA, RWORK, RESULT( 2 ) )
+*
+*
+*                       Print information about the tests that did not pass
+*                       the threshold.
+*
+                        DO 120 K = 2, 2
+                           IF( RESULT( K ).GE.THRESH ) THEN
+                              IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                           CALL ALAHD( NOUT, PATH )
+                              WRITE( NOUT, FMT = 9998 )UPLO, N, NRHS,
+     $                           IMAT, K, RESULT( K )
+                              NFAIL = NFAIL + 1
+                           END IF
+  120                   CONTINUE
+                     END IF
                      NRUN = NRUN + 1
 *
 *                 End do for each value of NRHS in NSVAL.

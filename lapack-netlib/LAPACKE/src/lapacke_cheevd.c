@@ -51,9 +51,11 @@ lapack_int LAPACKE_cheevd( int matrix_layout, char jobz, char uplo, lapack_int n
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
-    /* Optionally check input matrices for NaNs */
-    if( LAPACKE_cge_nancheck( matrix_layout, n, n, a, lda ) ) {
-        return -5;
+    if( LAPACKE_get_nancheck() ) {
+        /* Optionally check input matrices for NaNs */
+        if( LAPACKE_cge_nancheck( matrix_layout, n, n, a, lda ) ) {
+            return -5;
+        }
     }
 #endif
     /* Query optimal working array(s) size */
