@@ -1,4 +1,4 @@
-SGEMMKERNEL    =  gemm_kernel_2x4_3dnow.S
+# SGEMMKERNEL    =  gemm_kernel_2x4_3dnow.S
 SGEMMINCOPY    =  ../generic/gemm_ncopy_2.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_2.c
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
@@ -16,7 +16,7 @@ DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
-CGEMMKERNEL    =  zgemm_kernel_1x2_3dnow.S
+# CGEMMKERNEL    =  zgemm_kernel_1x2_3dnow.S
 CGEMMINCOPY    =  ../generic/zgemm_ncopy_1.c
 CGEMMITCOPY    =  ../generic/zgemm_tcopy_1.c
 CGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
