@@ -27,7 +27,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-
 #if defined(Z13mvc)
 
 static void  dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
@@ -42,9 +41,9 @@ static void  dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
             "la    %[ptr_x],256(%[ptr_x])       \n\t"
             "la    %[ptr_y],256(%[ptr_y])       \n\t"
             "brctg %[n_tmp],1b"
-            : [mem_y] "=m" (*(double (*)[n])y), [n_tmp] "+&r"(n)
-            : [mem_x] "m" (*(const double (*)[n])x),
+            : [mem_y] "=m" (*(double (*)[n])y), [n_tmp] "+&r"(n),
               [ptr_x] "+&a"(x), [ptr_y] "+&a"(y)
+            : [mem_x] "m" (*(const double (*)[n])x)
             : "cc" 
             );
     return;
