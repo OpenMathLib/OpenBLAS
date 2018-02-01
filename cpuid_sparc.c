@@ -58,7 +58,7 @@ void get_libname(void){
   printf("v9\n");
 }
 
-void get_corename(void){
-  printf("sparc\n");
+char *get_corename(void){
+  return "sparc";
 }
 
