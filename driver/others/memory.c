@@ -74,7 +74,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include <errno.h>
 
-#ifdef OS_WINDOWS
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
 #define ALLOC_WINDOWS
 #ifndef MEM_LARGE_PAGES
 #define MEM_LARGE_PAGES  0x20000000
@@ -88,7 +88,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <fcntl.h>
 
-#ifndef OS_WINDOWS
+#if !defined(OS_WINDOWS) || defined(OS_CYGWIN_NT)
 #include <sys/mman.h>
 #ifndef NO_SYSV_IPC
 #include <sys/shm.h>
