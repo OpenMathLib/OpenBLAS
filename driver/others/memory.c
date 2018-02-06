@@ -323,7 +323,7 @@ void openblas_fork_handler()
   //   http://gcc.gnu.org/bugzilla/show_bug.cgi?id=60035
   // In the mean time build with USE_OPENMP=0 or link against another
   // implementation of OpenMP.
-#if !(defined(OS_WINDOWS) || defined(OS_ANDROID)) && defined(SMP_SERVER)
+#if !((defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)) || defined(OS_ANDROID)) && defined(SMP_SERVER)
   int err;
   err = pthread_atfork ((void (*)(void)) BLASFUNC(blas_thread_shutdown), NULL, NULL);
   if(err != 0)
