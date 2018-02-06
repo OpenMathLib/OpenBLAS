@@ -12,7 +12,15 @@ OBJS=utest_main.o test_amax.o
 #test_rot.o test_swap.o test_axpy.o test_dotu.o test_rotmg.o test_dsdot.o test_fork.o
 
 ifneq ($(NO_LAPACK), 1)
-OBJS += test_potrs.o
+#OBJS += test_potrs.o
+endif
+
+ifndef OS_WINDOWS
+OBJS += test_fork.o
+else
+ifdef OS_CYGWIN_NT
+OBJS += test_fork.o
+endif
 endif
 
 all : run_test

@@ -31,8 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#ifndef OS_WINDOWS
-#include "common_utest.h"
+#include "openblas_utest.h"
 #include <sys/wait.h>
 #include <cblas.h>
 
@@ -54,11 +53,11 @@ void check_dgemm(double *a, double *b, double *result, double *expected, int n)
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, n, n,
         1.0, a, n, b, n, 0.0, result, n);
     for(i = 0; i < n * n; ++i) {
-        CU_ASSERT_DOUBLE_EQUAL(expected[i], result[i], CHECK_EPS);
+        ASSERT_DBL_NEAR_TOL(expected[i], result[i], DOUBLE_EPS);
     }
 }
 
-void test_fork_safety(void)
+CTEST(fork, safety)
 {
     int n = 1000;
     int i;
@@ -89,7 +88,7 @@ void test_fork_safety(void)
 
     fork_pid = fork();
     if (fork_pid == -1) {
-        CU_FAIL("Failed to fork process.");
+        CTEST_ERR("Failed to fork process.");
     } else if (fork_pid == 0) {
         // Compute a DGEMM product in the child process to check that the
         // thread pool as been properly been reinitialized after the fork.
@@ -99,7 +98,7 @@ void test_fork_safety(void)
         // recursively
         fork_pid_nested = fork();
         if (fork_pid_nested == -1) {
-            CU_FAIL("Failed to fork process.");
+            CTEST_ERR("Failed to fork process.");
             exit(1);
         } else if (fork_pid_nested == 0) {
             check_dgemm(a, b, d, c, n);
@@ -108,8 +107,8 @@ void test_fork_safety(void)
             check_dgemm(a, b, d, c, n);
             int child_status = 0;
             pid_t wait_pid = wait(&child_status);
-            CU_ASSERT(wait_pid == fork_pid_nested);
-            CU_ASSERT(WEXITSTATUS (child_status) == 0);
+            ASSERT_EQUAL(wait_pid, fork_pid_nested);
+            ASSERT_EQUAL(0, WEXITSTATUS (child_status));
             exit(0);
         }
     } else {
@@ -117,8 +116,7 @@ void test_fork_safety(void)
         // Wait for the child to finish and check the exit code.
         int child_status = 0;
         pid_t wait_pid = wait(&child_status);
-        CU_ASSERT(wait_pid == fork_pid);
-        CU_ASSERT(WEXITSTATUS (child_status) == 0);
+        ASSERT_EQUAL(wait_pid, fork_pid);
+        ASSERT_EQUAL(0, WEXITSTATUS (child_status));
     }
 }
-#endif
