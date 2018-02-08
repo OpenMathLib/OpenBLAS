@@ -191,7 +191,7 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, DCOPY, DLACGV, DLACPY,
+      EXTERNAL           XERBLA, DCOPY, DLACPY,
      $                   DLASET, DGBTRF, DGEMM,  DGETRF, 
      $                   DSYGST, DSWAP, DTRSM 
 *     ..
