@@ -304,6 +304,7 @@ endif
 ifeq ($(OSNAME), CYGWIN_NT)
 NEED_PIC = 0
 NO_EXPRECISION = 1
+OS_CYGWIN_NT = 1
 endif
 
 ifneq ($(OSNAME), WINNT)
