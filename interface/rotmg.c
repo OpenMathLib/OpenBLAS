@@ -138,40 +138,34 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 		{
 			if( (*dd1 <= RGAMSQ) || (*dd1 >= GAMSQ) )
 			{
-fprintf(stderr,"dd1 != 0, dflag %f\n",dflag);
 				if(dflag == ZERO)
 				{
-				fprintf(stderr,"dflag ist zero\n");
 					dh11  =  ONE;
 					dh22  =  ONE;
 					dflag = -ONE;
 				}
 				else
 				{
-			//		if(dflag == ONE)
-					{
-				fprintf(stderr,"dflag ist one\n");
 						dh21  = -ONE;
 						dh12  =  ONE;
 						dflag = -ONE;
-					}
 				}
 				if( *dd1 <= RGAMSQ )
 				{
 					while (ABS(*dd1) <= RGAMSQ) {
-					*dd1  = *dd1 * (GAM * GAM);
-					*dx1  = *dx1 / GAM;
-					dh11  = dh11 / GAM;
-					dh12  = dh12 / GAM;
+						*dd1  = *dd1 * (GAM * GAM);
+						*dx1  = *dx1 / GAM;
+						dh11  = dh11 / GAM;
+						dh12  = dh12 / GAM;
 					}
 				}
 				else
 				{
 					while (ABS(*dd1) <= GAMSQ) {
-					*dd1  = *dd1 / (GAM * GAM);
-					*dx1  = *dx1 * GAM;
-					dh11  = dh11 * GAM;
-					dh12  = dh12 * GAM;
+						*dd1  = *dd1 / (GAM * GAM);
+						*dx1  = *dx1 * GAM;
+						dh11  = dh11 * GAM;
+						dh12  = dh12 * GAM;
 					}
 				}
 			}
@@ -179,55 +173,43 @@ fprintf(stderr,"dd1 != 0, dflag %f\n",dflag);
 
 		if(*dd2 != ZERO)
 		{
-fprintf(stderr,"dd2 != 0\n");
 			if( (ABS(*dd2) <= RGAMSQ) || (ABS(*dd2) >= GAMSQ) )
 			{
-fprintf(stderr,"dd2 != 0, dflag %f\n",dflag);
 				if(dflag == ZERO)
 				{
-				fprintf(stderr,"dflag ist zero\n");
 					dh11  =  ONE;
 					dh22  =  ONE;
 					dflag = -ONE;
 				}
 				else
 				{
-//					if(dflag == ONE)
-					{
-				fprintf(stderr,"dflag ist one\n");
 						dh21  = -ONE;
 						dh12  =  ONE;
 						dflag = -ONE;
-					}
 				}
 				if( ABS(*dd2) <= RGAMSQ )
 				{
 					while (ABS(*dd2) <= RGAMSQ) {
-					*dd2  = *dd2 * (GAM * GAM);
-					dh21  = dh21 / GAM;
-					dh22  = dh22 / GAM;
+						*dd2  = *dd2 * (GAM * GAM);
+						dh21  = dh21 / GAM;
+						dh22  = dh22 / GAM;
 					}
 				}
 				else
 				{
 					while (ABS(*dd2) <= GAMSQ) {
-					*dd2  = *dd2 / (GAM * GAM);
-					dh21  = dh21 * GAM;
-					dh22  = dh22 * GAM;
+						*dd2  = *dd2 / (GAM * GAM);
+						dh21  = dh21 * GAM;
+						dh22  = dh22 * GAM;
 					}
 				}
 			}
 		}
 
 	}
-fprintf(stderr,"dh11: %f\n",dh11);
-fprintf(stderr,"dh12: %f\n",dh12);
-fprintf(stderr,"dh21: %f\n",dh21);
-fprintf(stderr,"dh22: %f\n",dh22);
 
 	if(dflag < ZERO)
 	{
-fprintf(stderr,"dflag < zero: %f\n",dflag);
 		dparam[1] = dh11;
 		dparam[2] = dh21;
 		dparam[3] = dh12;
@@ -237,13 +219,11 @@ fprintf(stderr,"dflag < zero: %f\n",dflag);
 	{
 		if(dflag == ZERO)
 		{
-fprintf(stderr,"dflag is zero: %f\n",dflag);
 			dparam[2] = dh21;
 			dparam[3] = dh12;
 		}
 		else
 		{
-fprintf(stderr,"dflag > zero: %f\n",dflag);
 			dparam[1] = dh11;
 			dparam[4] = dh22;
 		}
