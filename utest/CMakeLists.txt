@@ -7,6 +7,7 @@ else ()
   set(OpenBLAS_utest_src
     utest_main.c
     test_amax.c
+    test_rotmg.c
   )
 endif ()
 
