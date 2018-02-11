@@ -136,7 +136,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 
 		if(*dd1 != ZERO)
 		{
-			while( (*dd1 <= RGAMSQ) || (*dd1 >= GAMSQ) )
+			if( (*dd1 <= RGAMSQ) || (*dd1 >= GAMSQ) )
 			{
 				if(dflag == ZERO)
 				{
@@ -146,33 +146,34 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 				else
 				{
-					if(dflag == ONE)
-					{
 						dh21  = -ONE;
 						dh12  =  ONE;
 						dflag = -ONE;
-					}
 				}
 				if( *dd1 <= RGAMSQ )
 				{
-					*dd1  = *dd1 * (GAM * GAM);
-					*dx1  = *dx1 / GAM;
-					dh11  = dh11 / GAM;
-					dh12  = dh12 / GAM;
+					while (ABS(*dd1) <= RGAMSQ) {
+						*dd1  = *dd1 * (GAM * GAM);
+						*dx1  = *dx1 / GAM;
+						dh11  = dh11 / GAM;
+						dh12  = dh12 / GAM;
+					}
 				}
 				else
 				{
-					*dd1  = *dd1 / (GAM * GAM);
-					*dx1  = *dx1 * GAM;
-					dh11  = dh11 * GAM;
-					dh12  = dh12 * GAM;
+					while (ABS(*dd1) <= GAMSQ) {
+						*dd1  = *dd1 / (GAM * GAM);
+						*dx1  = *dx1 * GAM;
+						dh11  = dh11 * GAM;
+						dh12  = dh12 * GAM;
+					}
 				}
 			}
 		}
 
 		if(*dd2 != ZERO)
 		{
-			while( (ABS(*dd2) <= RGAMSQ) || (ABS(*dd2) >= GAMSQ) )
+			if( (ABS(*dd2) <= RGAMSQ) || (ABS(*dd2) >= GAMSQ) )
 			{
 				if(dflag == ZERO)
 				{
@@ -182,24 +183,25 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 				else
 				{
-					if(dflag == ONE)
-					{
 						dh21  = -ONE;
 						dh12  =  ONE;
 						dflag = -ONE;
-					}
 				}
 				if( ABS(*dd2) <= RGAMSQ )
 				{
-					*dd2  = *dd2 * (GAM * GAM);
-					dh21  = dh21 / GAM;
-					dh22  = dh22 / GAM;
+					while (ABS(*dd2) <= RGAMSQ) {
+						*dd2  = *dd2 * (GAM * GAM);
+						dh21  = dh21 / GAM;
+						dh22  = dh22 / GAM;
+					}
 				}
 				else
 				{
-					*dd2  = *dd2 / (GAM * GAM);
-					dh21  = dh21 * GAM;
-					dh22  = dh22 * GAM;
+					while (ABS(*dd2) <= GAMSQ) {
+						*dd2  = *dd2 / (GAM * GAM);
+						dh21  = dh21 * GAM;
+						dh22  = dh22 * GAM;
+					}
 				}
 			}
 		}
