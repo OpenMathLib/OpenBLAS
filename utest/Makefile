@@ -15,11 +15,13 @@ ifneq ($(NO_LAPACK), 1)
 #OBJS += test_potrs.o
 endif
 
+ifndef USE_OPENMP
 ifndef OS_WINDOWS
 OBJS += test_fork.o
 else
 ifdef OS_CYGWIN_NT
 OBJS += test_fork.o
+endif
 endif
 endif
 
