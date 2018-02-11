@@ -1,7 +1,7 @@
-SAMAXKERNEL  = ../arm/amax.c
-DAMAXKERNEL  = ../arm/amax.c
-CAMAXKERNEL  = ../arm/zamax.c
-ZAMAXKERNEL  = ../arm/zamax.c
+SAMAXKERNEL  = amax.S
+DAMAXKERNEL  = amax.S
+CAMAXKERNEL  = zamax.S
+ZAMAXKERNEL  = zamax.S
 
 SAMINKERNEL  = ../arm/amin.c
 DAMINKERNEL  = ../arm/amin.c
@@ -14,10 +14,10 @@ DMAXKERNEL   = ../arm/max.c
 SMINKERNEL   = ../arm/min.c
 DMINKERNEL   = ../arm/min.c
 
-ISAMAXKERNEL = ../arm/iamax.c
-IDAMAXKERNEL = ../arm/iamax.c
-ICAMAXKERNEL = ../arm/izamax.c
-IZAMAXKERNEL = ../arm/izamax.c
+ISAMAXKERNEL = iamax.S
+IDAMAXKERNEL = iamax.S
+ICAMAXKERNEL = izamax.S
+IZAMAXKERNEL = izamax.S
 
 ISAMINKERNEL = ../arm/iamin.c
 IDAMINKERNEL = ../arm/iamin.c
@@ -30,55 +30,55 @@ IDMAXKERNEL  = ../arm/imax.c
 ISMINKERNEL  = ../arm/imin.c
 IDMINKERNEL  = ../arm/imin.c
 
-SASUMKERNEL  = ../arm/asum.c
-DASUMKERNEL  = ../arm/asum.c
-CASUMKERNEL  = ../arm/zasum.c
-ZASUMKERNEL  = ../arm/zasum.c
+SASUMKERNEL  = asum.S
+DASUMKERNEL  = asum.S
+CASUMKERNEL  = casum.S
+ZASUMKERNEL  = zasum.S
 
-SAXPYKERNEL  = ../arm/axpy.c
-DAXPYKERNEL  = ../arm/axpy.c
-CAXPYKERNEL  = ../arm/zaxpy.c
-ZAXPYKERNEL  = ../arm/zaxpy.c
+SAXPYKERNEL  = axpy.S
+DAXPYKERNEL  = axpy.S
+CAXPYKERNEL  = zaxpy.S
+ZAXPYKERNEL  = zaxpy.S
 
-SCOPYKERNEL  = ../arm/copy.c
-DCOPYKERNEL  = ../arm/copy.c
-CCOPYKERNEL  = ../arm/zcopy.c
-ZCOPYKERNEL  = ../arm/zcopy.c
+SCOPYKERNEL  = copy.S
+DCOPYKERNEL  = copy.S
+CCOPYKERNEL  = copy.S
+ZCOPYKERNEL  = copy.S
 
-SDOTKERNEL   = ../arm/dot.c
-DDOTKERNEL   = ../arm/dot.c
-CDOTKERNEL   = ../arm/zdot.c
-ZDOTKERNEL   = ../arm/zdot.c
+SDOTKERNEL   = dot.S
+DDOTKERNEL   = dot.S
+CDOTKERNEL   = zdot.S
+ZDOTKERNEL   = zdot.S
 
-SNRM2KERNEL  = ../arm/nrm2.c
-DNRM2KERNEL  = ../arm/nrm2.c
-CNRM2KERNEL  = ../arm/znrm2.c
-ZNRM2KERNEL  = ../arm/znrm2.c
+SNRM2KERNEL  = nrm2.S
+DNRM2KERNEL  = nrm2.S
+CNRM2KERNEL  = znrm2.S
+ZNRM2KERNEL  = znrm2.S
 
-SROTKERNEL   = ../arm/rot.c
-DROTKERNEL   = ../arm/rot.c
-CROTKERNEL   = ../arm/zrot.c
-ZROTKERNEL   = ../arm/zrot.c
+SROTKERNEL   = rot.S
+DROTKERNEL   = rot.S
+CROTKERNEL   = zrot.S
+ZROTKERNEL   = zrot.S
 
-SSCALKERNEL  = ../arm/scal.c
-DSCALKERNEL  = ../arm/scal.c
-CSCALKERNEL  = ../arm/zscal.c
-ZSCALKERNEL  = ../arm/zscal.c
+SSCALKERNEL  = scal.S
+DSCALKERNEL  = scal.S
+CSCALKERNEL  = zscal.S
+ZSCALKERNEL  = zscal.S
 
-SSWAPKERNEL  = ../arm/swap.c
-DSWAPKERNEL  = ../arm/swap.c
-CSWAPKERNEL  = ../arm/zswap.c
-ZSWAPKERNEL  = ../arm/zswap.c
+SSWAPKERNEL  = swap.S
+DSWAPKERNEL  = swap.S
+CSWAPKERNEL  = swap.S
+ZSWAPKERNEL  = swap.S
 
-SGEMVNKERNEL = ../arm/gemv_n.c
-DGEMVNKERNEL = ../arm/gemv_n.c
-CGEMVNKERNEL = ../arm/zgemv_n.c
-ZGEMVNKERNEL = ../arm/zgemv_n.c
+SGEMVNKERNEL = gemv_n.S
+DGEMVNKERNEL = gemv_n.S
+CGEMVNKERNEL = zgemv_n.S
+ZGEMVNKERNEL = zgemv_n.S
 
-SGEMVTKERNEL = ../arm/gemv_t.c
-DGEMVTKERNEL = ../arm/gemv_t.c
-CGEMVTKERNEL = ../arm/zgemv_t.c
-ZGEMVTKERNEL = ../arm/zgemv_t.c
+SGEMVTKERNEL = gemv_t.S
+DGEMVTKERNEL = gemv_t.S
+CGEMVTKERNEL = zgemv_t.S
+ZGEMVTKERNEL = zgemv_t.S
 
 STRMMKERNEL	= ../generic/trmmkernel_4x4.c
 DTRMMKERNEL	= ../generic/trmmkernel_2x2.c
