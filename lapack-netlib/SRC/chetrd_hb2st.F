@@ -512,7 +512,7 @@ C                 END IF
 *
 *                         Call the kernel
 *                             
-#if defined(_OPENMP)
+#if defined(_OPENMP) && _OPENMP >= 201307L
                           IF( TTYPE.NE.1 ) THEN      
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
 !$OMP$     DEPEND(in:WORK(MYID-1))
