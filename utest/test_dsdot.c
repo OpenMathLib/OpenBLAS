@@ -31,9 +31,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include "common_utest.h"
+#include "openblas_utest.h"
 
-void test_dsdot_n_1()
+CTEST(dsdot,dsdot_n_1)
 {
 	float x= 0.172555164;
 	float y= -0.0138700781;
@@ -41,11 +41,9 @@ void test_dsdot_n_1()
 	int incy=1;
 	int n=1;
 
-	double res1=0.0f, res2=0.0f;
+	double res1=0.0f, res2=-0.00239335360107;
 
 	res1=BLASFUNC(dsdot)(&n, &x, &incx, &y, &incy);
-	res2=BLASFUNC_REF(dsdot)(&n, &x, &incx, &y, &incy);
-
-	CU_ASSERT_DOUBLE_EQUAL(res1, res2, CHECK_EPS);
+	ASSERT_DBL_NEAR_TOL(res1, res2, DOUBLE_EPS);
 
 }

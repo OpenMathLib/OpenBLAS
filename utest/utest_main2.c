@@ -32,6 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 #include <stdio.h>
+#include <complex.h>
 
 #define CTEST_MAIN
 #define CTEST_SEGFAULT
@@ -180,6 +181,282 @@ CTEST(drotmg, rotmg_D1eqD2_X1eqX2){
 
 	for(i=0; i<5; i++){
 		ASSERT_DBL_NEAR_TOL(te_param[i], tr_param[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(axpy,daxpy_inc_0)
+{
+	int i;
+	int N=8,incX=0,incY=0;
+	double a=0.25;
+	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	double x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y2[]={4.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(daxpy)(&N,&a,x1,&incX,y1,&incY);
+
+	for(i=0; i<N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(axpy,zaxpy_inc_0)
+{
+	int i;
+	int N=4,incX=0,incY=0;
+	double a[2]={0.25,0.5};
+	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	double x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y2[]={-3.0,9.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(zaxpy)(&N,a,x1,&incX,y1,&incY);
+
+	for(i=0; i<2*N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(axpy,saxpy_inc_0)
+{
+	int i;
+	int N=8,incX=0,incY=0;
+	float a=0.25;
+	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	float x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y2[]={4.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(saxpy)(&N,&a,x1,&incX,y1,&incY);
+
+	for(i=0; i<N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(axpy,caxpy_inc_0)
+{
+	int i;
+	int N=4,incX=0,incY=0;
+	float a[2]={0.25,0.5};
+	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	float x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y2[]={-3.0,9.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(caxpy)(&N,a,x1,&incX,y1,&incY);
+
+	for(i=0; i<2*N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST( zdotu,zdotu_n_1)
+{
+	int N=1,incX=1,incY=1;
+	double x1[]={1.0,1.0};
+	double y1[]={1.0,2.0};
+	double x2[]={1.0,1.0};
+	double y2[]={1.0,2.0};
+	double _Complex result1=0.0;
+	double _Complex result2={-1.0000+3.0000*I};
+	//OpenBLAS
+	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
+
+	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
+
+}
+
+CTEST(zdotu, zdotu_offset_1)
+{
+	int N=1,incX=1,incY=1;
+	double x1[]={1.0,2.0,3.0,4.0};
+	double y1[]={5.0,6.0,7.0,8.0};
+	double x2[]={1.0,2.0,3.0,4.0};
+	double y2[]={5.0,6.0,7.0,8.0};
+	double _Complex result1=0.0;
+	double _Complex result2={-9.0000+32.0000*I};
+	//OpenBLAS
+	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
+
+	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
+
+}
+
+CTEST(dsdot,dsdot_n_1)
+{
+	float x= 0.172555164;
+	float y= -0.0138700781;
+	int incx=1;
+	int incy=1;
+	int n=1;
+
+	double res1=0.0f, res2=-0.00239335360107;
+
+	res1=BLASFUNC(dsdot)(&n, &x, &incx, &y, &incy);
+	ASSERT_DBL_NEAR_TOL(res1, res2, DOUBLE_EPS);
+
+}
+
+CTEST(rot,drot_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	double c=0.25,s=0.5;
+	double x1[]={1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0};
+	double x2[]={-0.21484375000000,3.0,5.0,7.0};
+	double y2[]={ 0.03906250000000,4.0,6.0,8.0};
+
+
+	//OpenBLAS
+	BLASFUNC(drot)(&N,x1,&incX,y1,&incY,&c,&s);
+
+	for(i=0; i<N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(rot,zdrot_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	double c=0.25,s=0.5;
+	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	double x2[]={-0.21484375000000,-0.45703125000000 ,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y2[]={ 0.03906250000000, 0.17187500000000 ,6.0,8.0,2.0,4.0,6.0,8.0};
+	
+
+	//OpenBLAS
+	BLASFUNC(zdrot)(&N,x1,&incX,y1,&incY,&c,&s);
+
+	for(i=0; i<2*N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(rot,srot_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	float c=0.25,s=0.5;
+	float x1[]={1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0};
+	float x2[]={-0.21484375000000,3.0,5.0,7.0};
+	float y2[]={ 0.03906250000000,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(srot)(&N,x1,&incX,y1,&incY,&c,&s);
+
+	for(i=0; i<N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
+	}
+}
+
+CTEST(rot, csrot_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	float c=0.25,s=0.5;
+	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	float x2[]={-0.21484375000000,-0.45703125000000 ,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y2[]={ 0.03906250000000, 0.17187500000000 ,6.0,8.0,2.0,4.0,6.0,8.0};
+	
+	//OpenBLAS
+	BLASFUNC(csrot)(&N,x1,&incX,y1,&incY,&c,&s);
+
+	for(i=0; i<2*N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
+	}
+}
+
+CTEST(swap,dswap_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	double x1[]={1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0};
+	double x2[]={1.0,3.0,5.0,7.0};
+	double y2[]={2.0,4.0,6.0,8.0};
+	
+	//OpenBLAS
+	BLASFUNC(dswap)(&N,x1,&incX,y1,&incY);
+
+	for(i=0; i<N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(swap,zswap_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	double x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	double y2[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(zswap)(&N,x1,&incX,y1,&incY);
+
+	for(i=0; i<2*N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+	}
+}
+
+CTEST(swap,sswap_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	float x1[]={1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0};
+	float x2[]={1.0,3.0,5.0,7.0};
+	float y2[]={2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(sswap)(&N,x1,&incX,y1,&incY);
+
+	for(i=0; i<N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
+	}
+}
+
+CTEST(swap,cswap_inc_0)
+{
+	int i=0;
+	int N=4,incX=0,incY=0;
+	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+	float x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
+	float y2[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
+
+	//OpenBLAS
+	BLASFUNC(cswap)(&N,x1,&incX,y1,&incY);
+
+	for(i=0; i<2*N; i++){
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
 	}
 }
 

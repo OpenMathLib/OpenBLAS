@@ -8,8 +8,27 @@ else ()
     utest_main.c
     test_amax.c
     test_rotmg.c
+    test_rot.c
+    test_axpy.c
+    test_dotu.c
+    test_dsdot.c
+    test_swap.c
   )
 endif ()
+
+if (NOT USE_OPENMP)
+if (NOT OS_WINDOWS)
+set(OpenBLAS_utest_src
+  ${OpenBLAS_utest_src}
+  test_fork.c
+  )
+elseif (OS_CYGWIN_NT)
+set(OpenBLAS_utest_src
+  ${OpenBLAS_utest_src}
+  test_fork.c
+  )
+endif()
+endif()
 
 if (NOT NO_LAPACK)
 set(OpenBLAS_utest_src
