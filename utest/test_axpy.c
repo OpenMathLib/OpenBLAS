@@ -35,8 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CTEST(axpy,daxpy_inc_0)
 {
-	int i;
-	int N=8,incX=0,incY=0;
+	blasint i;
+	blasint N=8,incX=0,incY=0;
 	double a=0.25;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -55,8 +55,8 @@ CTEST(axpy,daxpy_inc_0)
 
 CTEST(axpy,zaxpy_inc_0)
 {
-	int i;
-	int N=4,incX=0,incY=0;
+	blasint i;
+	blasint N=4,incX=0,incY=0;
 	double a[2]={0.25,0.5};
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -74,8 +74,8 @@ CTEST(axpy,zaxpy_inc_0)
 
 CTEST(axpy,saxpy_inc_0)
 {
-	int i;
-	int N=8,incX=0,incY=0;
+	blasint i;
+	blasint N=8,incX=0,incY=0;
 	float a=0.25;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -93,8 +93,8 @@ CTEST(axpy,saxpy_inc_0)
 
 CTEST(axpy,caxpy_inc_0)
 {
-	int i;
-	int N=4,incX=0,incY=0;
+	blasint i;
+	blasint N=4,incX=0,incY=0;
 	float a[2]={0.25,0.5};
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};

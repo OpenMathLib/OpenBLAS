@@ -35,8 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CTEST(swap,dswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double x1[]={1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0};
 	double x2[]={1.0,3.0,5.0,7.0};
@@ -53,8 +53,8 @@ CTEST(swap,dswap_inc_0)
 
 CTEST(swap,zswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
 	double x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
@@ -71,8 +71,8 @@ CTEST(swap,zswap_inc_0)
 
 CTEST(swap,sswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float x1[]={1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0};
 	float x2[]={1.0,3.0,5.0,7.0};
@@ -89,8 +89,8 @@ CTEST(swap,sswap_inc_0)
 
 CTEST(swap,cswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
 	float x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};

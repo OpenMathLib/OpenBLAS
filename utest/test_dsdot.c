@@ -37,9 +37,9 @@ CTEST(dsdot,dsdot_n_1)
 {
 	float x= 0.172555164F;
 	float y= -0.0138700781F;
-	int incx=1;
-	int incy=1;
-	int n=1;
+	blasint incx=1;
+	blasint incy=1;
+	blasint n=1;
 
 	double res1=0.0f, res2=-0.00239335360107;
 

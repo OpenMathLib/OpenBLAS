@@ -35,8 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CTEST(rot,drot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double c=0.25,s=0.5;
 	double x1[]={1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0};
@@ -55,8 +55,8 @@ CTEST(rot,drot_inc_0)
 
 CTEST(rot,zdrot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double c=0.25,s=0.5;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -75,8 +75,8 @@ CTEST(rot,zdrot_inc_0)
 
 CTEST(rot,srot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float c=0.25,s=0.5;
 	float x1[]={1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0};
@@ -94,8 +94,8 @@ CTEST(rot,srot_inc_0)
 
 CTEST(rot, csrot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float c=0.25,s=0.5;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};

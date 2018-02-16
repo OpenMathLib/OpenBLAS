@@ -57,7 +57,7 @@ CTEST (drotmg,rotmg){
 	double te_y1, tr_y1;
 	double te_param[5];
 	double tr_param[5];
-	int i=0;
+	blasint i=0;
 	// original test case for libGoto bug fixed by feb2014 rewrite
 	te_d1= 0.21149573940783739;
 	te_d2= 0.046892057172954082;
@@ -104,7 +104,7 @@ CTEST (drotmg,rotmg_issue1452){
 	double te_y1, tr_y1;
 	double te_param[5];
 	double tr_param[5];
-	int i=0;
+	blasint i=0;
 
 	// from issue #1452, buggy version returned 0.000244 for param[3]
 	te_d1 = 5.9e-8;
@@ -149,7 +149,7 @@ CTEST(drotmg, rotmg_D1eqD2_X1eqX2){
 	double te_y1, tr_y1;
 	double te_param[5];
 	double tr_param[5];
-	int i=0;
+	blasint i=0;
 	te_d1= tr_d1=2.;
 	te_d2= tr_d2=2.;
 	te_x1= tr_x1=8.;
@@ -186,8 +186,8 @@ CTEST(drotmg, rotmg_D1eqD2_X1eqX2){
 
 CTEST(axpy,daxpy_inc_0)
 {
-	int i;
-	int N=8,incX=0,incY=0;
+	blasint i;
+	blasint N=8,incX=0,incY=0;
 	double a=0.25;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -206,8 +206,8 @@ CTEST(axpy,daxpy_inc_0)
 
 CTEST(axpy,zaxpy_inc_0)
 {
-	int i;
-	int N=4,incX=0,incY=0;
+	blasint i;
+	blasint N=4,incX=0,incY=0;
 	double a[2]={0.25,0.5};
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -225,8 +225,8 @@ CTEST(axpy,zaxpy_inc_0)
 
 CTEST(axpy,saxpy_inc_0)
 {
-	int i;
-	int N=8,incX=0,incY=0;
+	blasint i;
+	blasint N=8,incX=0,incY=0;
 	float a=0.25;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -244,8 +244,8 @@ CTEST(axpy,saxpy_inc_0)
 
 CTEST(axpy,caxpy_inc_0)
 {
-	int i;
-	int N=4,incX=0,incY=0;
+	blasint i;
+	blasint N=4,incX=0,incY=0;
 	float a[2]={0.25,0.5};
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -263,7 +263,7 @@ CTEST(axpy,caxpy_inc_0)
 
 CTEST( zdotu,zdotu_n_1)
 {
-	int N=1,incX=1,incY=1;
+	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
         _Complex double result1=openblas_make_complex_double(0.0,0.0);
@@ -278,7 +278,7 @@ CTEST( zdotu,zdotu_n_1)
 
 CTEST(zdotu, zdotu_offset_1)
 {
-	int N=1,incX=1,incY=1;
+	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,2.0,3.0,4.0};
 	double y1[]={5.0,6.0,7.0,8.0};
         _Complex double result1=openblas_make_complex_double(0.0,0.0);
@@ -296,9 +296,9 @@ CTEST(dsdot,dsdot_n_1)
 {
 	float x= 0.172555164F;
 	float y= -0.0138700781F;
-	int incx=1;
-	int incy=1;
-	int n=1;
+	blasint incx=1;
+	blasint incy=1;
+	blasint n=1;
 
 	double res1=0.0f, res2=-0.00239335360107;
 
@@ -309,8 +309,8 @@ CTEST(dsdot,dsdot_n_1)
 
 CTEST(rot,drot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double c=0.25,s=0.5;
 	double x1[]={1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0};
@@ -329,8 +329,8 @@ CTEST(rot,drot_inc_0)
 
 CTEST(rot,zdrot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double c=0.25,s=0.5;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -349,8 +349,8 @@ CTEST(rot,zdrot_inc_0)
 
 CTEST(rot,srot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float c=0.25,s=0.5;
 	float x1[]={1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0};
@@ -368,8 +368,8 @@ CTEST(rot,srot_inc_0)
 
 CTEST(rot, csrot_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float c=0.25,s=0.5;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
@@ -387,8 +387,8 @@ CTEST(rot, csrot_inc_0)
 
 CTEST(swap,dswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double x1[]={1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0};
 	double x2[]={1.0,3.0,5.0,7.0};
@@ -405,8 +405,8 @@ CTEST(swap,dswap_inc_0)
 
 CTEST(swap,zswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
 	double x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
@@ -423,8 +423,8 @@ CTEST(swap,zswap_inc_0)
 
 CTEST(swap,sswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float x1[]={1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0};
 	float x2[]={1.0,3.0,5.0,7.0};
@@ -441,8 +441,8 @@ CTEST(swap,sswap_inc_0)
 
 CTEST(swap,cswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
 	float x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
