@@ -27,8 +27,54 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#ifdef Z13_A
+static void   dscal_kernel_32( BLASLONG n, FLOAT  da , FLOAT *x )
+{
 
-
+          
+             __asm__ ("pfd    2, 0(%[x_ptr])   \n\t"
+                      "lgdr   %%r0,%[alpha]    \n\t"
+                      "vlvgp  %%v0,%%r0,%%r0   \n\t"
+                      "srlg   %[n],%[n],4 \n\t"
+                      "vlr    %%v1,%%v0        \n\t"
+                      "vlm    %%v16,%%v23, 0(%[x_ptr])          \n\t"
+                      "la     %[x_ptr], 128(%[x_ptr])     \n\t"
+                      "aghik  %[n], %[n], -1             \n\t"
+                      "jle     2f     \n\t"
+                       ".align 16 \n\t"
+                      "1:          \n\t"
+                      "vfmdb  %%v24, %%v16, %%v0          \n\t"
+                      "vfmdb  %%v25, %%v17, %%v0          \n\t"
+                      "vfmdb  %%v26, %%v18, %%v0          \n\t"
+                      "vfmdb  %%v27, %%v19, %%v1          \n\t"
+                      "vlm     %%v16,%%v19, 0(%[x_ptr])         \n\t"
+                      "vfmdb  %%v28, %%v20, %%v0          \n\t"
+                      "vfmdb  %%v29, %%v21, %%v1          \n\t"
+                      "vfmdb  %%v30, %%v22, %%v0          \n\t"
+                      "vfmdb  %%v31, %%v23, %%v1          \n\t"
+                      "vlm     %%v20,%%v23, 64(%[x_ptr])         \n\t"
+                      "lay    %[x_ptr], -128(%[x_ptr])    \n\t"
+                      "vstm   %%v24,%%v31, 0(%[x_ptr])          \n\t"
+                      "la     %[x_ptr],256(%[x_ptr])      \n\t"
+                      "brctg %[n],1b     \n\t"
+                      "2:            \n\t"
+                      "vfmdb  %%v24, %%v16, %%v0          \n\t"
+                      "vfmdb  %%v25, %%v17, %%v1          \n\t"
+                      "vfmdb  %%v26, %%v18, %%v0          \n\t"
+                      "vfmdb  %%v27, %%v19, %%v1          \n\t"
+                      "lay    %[x_ptr] , -128(%[x_ptr])   \n\t"
+                      "vfmdb  %%v28, %%v20, %%v0          \n\t"
+                      "vfmdb  %%v29, %%v21, %%v1          \n\t"
+                      "vfmdb  %%v30, %%v22, %%v0          \n\t"
+                      "vfmdb  %%v31, %%v23, %%v1          \n\t"
+                      "vstm   %%v24,%%v31, 0(%[x_ptr])         \n\t"
+                      : [mem] "+m" (*(double (*)[n])x) ,[x_ptr] "+&a"(x),[n] "+&r"(n)
+                                       : [alpha] "f"(da)
+                                       :"cc" ,  "r0","v0","v1","v16","v17","v18","v19","v20","v21",
+                                       "v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
+                 );
+ }
+#else
 static void   dscal_kernel_32( BLASLONG n, FLOAT  da , FLOAT *x )
 {
 
@@ -71,7 +117,7 @@ static void   dscal_kernel_32( BLASLONG n, FLOAT  da , FLOAT *x )
                  );
 
  }
-
+#endif
 static void   dscal_kernel_32_zero( BLASLONG n,  FLOAT *x )
 {
    
@@ -215,5 +261,3 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
     return 0;
 
 }
-
-
