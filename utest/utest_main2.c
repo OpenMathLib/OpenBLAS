@@ -269,7 +269,7 @@ CTEST( zdotu,zdotu_n_1)
         _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
         _Dcomplex result2=openblas_make_complex_double(-1.0,3.0);
 	//OpenBLAS
-	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
+	BLASFUNC(zdotu)(&result1,&N,x1,&incX,y1,&incY);
 
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
@@ -285,7 +285,7 @@ CTEST(zdotu, zdotu_offset_1)
         _Dcomplex result2=openblas_make_complex_double(-9.0,32.0);
        
 	//OpenBLAS
-	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
+	BLASFUNC(zdotu)(&result1,&N,x1+1,&incX,y1+1,&incY);
 
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
