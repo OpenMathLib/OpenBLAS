@@ -16,13 +16,10 @@ else ()
   )
 endif ()
 
+# known to hang with the native Windows and Android threads
+# FIXME needs checking if this works on any of the other platforms
 if (NOT USE_OPENMP)
-if (NOT OS_WINDOWS)
-set(OpenBLAS_utest_src
-  ${OpenBLAS_utest_src}
-  test_fork.c
-  )
-elseif (OS_CYGWIN_NT)
+if (OS_CYGWIN_NT OR OS_LINUX)
 set(OpenBLAS_utest_src
   ${OpenBLAS_utest_src}
   test_fork.c
