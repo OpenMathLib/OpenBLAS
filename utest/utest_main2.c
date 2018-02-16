@@ -266,8 +266,8 @@ CTEST( zdotu,zdotu_n_1)
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
-        _DComplex result1=openblas_make_complex_double(0.0,0.0);
-        _DComplex result2=openblas_make_complex_double(-1.0,3.0);
+        _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
+        _Dcomplex result2=openblas_make_complex_double(-1.0,3.0);
 	//OpenBLAS
 	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
 
@@ -281,8 +281,8 @@ CTEST(zdotu, zdotu_offset_1)
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,2.0,3.0,4.0};
 	double y1[]={5.0,6.0,7.0,8.0};
-        _DComplex result1=openblas_make_complex_double(0.0,0.0);
-        _DComplex result2=openblas_make_complex_double(-9.0,32.0);
+        _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
+        _Dcomplex result2=openblas_make_complex_double(-9.0,32.0);
        
 	//OpenBLAS
 	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
