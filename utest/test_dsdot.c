@@ -35,8 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CTEST(dsdot,dsdot_n_1)
 {
-	float x= 0.172555164;
-	float y= -0.0138700781;
+	float x= 0.172555164F;
+	float y= -0.0138700781F;
 	int incx=1;
 	int incy=1;
 	int n=1;
