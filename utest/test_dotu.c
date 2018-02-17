@@ -39,11 +39,15 @@ CTEST( zdotu,zdotu_n_1)
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
+#ifdef __CTEST_MSVC
+        _Dcomplex result1=openblas_make_complex_double{0.0,0.0};
+	_Dcomplex result2=openblas_make_complex_double(-1.0000,3.0000);
+	result1=BLASFUNC(zdotu)(&result1,&N,x1,&incX,y1,&incY);
+#else
 	_Complex double result1=openblas_make_complex_double(0.0,0.0);
 	_Complex double result2=openblas_make_complex_double(-1.0000,3.0000);
-	//OpenBLAS
 	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
-
+#endif
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
 //	printf("\%lf,%lf\n",creal(result1),cimag(result1));
@@ -55,11 +59,15 @@ CTEST(zdotu, zdotu_offset_1)
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,2.0,3.0,4.0};
 	double y1[]={5.0,6.0,7.0,8.0};
+#ifdef __CTEST_MSVC
+        _Dcomplex result1=openblas_make_complex_double{0.0,0.0};
+	_Dcomplex result2=openblas_make_complex_double(-9.0000,32.0000);
+	result1=BLASFUNC(zdotu)(&result1,&N,x1+1,&incX,y1+1,&incY);
+#else
 	_Complex double result1=openblas_make_complex_double(0.0,0.0);
 	_Complex double result2=openblas_make_complex_double(-9.0000,32.0000);
-	//OpenBLAS
 	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
-
+#endif
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
 //	printf("\%lf,%lf\n",creal(result1),cimag(result1));
