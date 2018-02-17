@@ -271,9 +271,13 @@ CTEST( zdotu,zdotu_n_1)
 	//OpenBLAS
 	BLASFUNC(zdotu)(&result1,&N,x1,&incX,y1,&incY);
 
+#ifdef OPENBLAS_COMPLEX_STRUCT
+	ASSERT_DBL_NEAR_TOL(result1.real, result2.real, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result1.imag, result2.imag, DOUBLE_EPS);
+#else
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
-
+#endif
 }
 
 CTEST(zdotu, zdotu_offset_1)
@@ -287,9 +291,13 @@ CTEST(zdotu, zdotu_offset_1)
 	//OpenBLAS
 	BLASFUNC(zdotu)(&result1,&N,x1+1,&incX,y1+1,&incY);
 
+#ifdef OPENBLAS_COMPLEX_STRUCT
+	ASSERT_DBL_NEAR_TOL(result1.real, result2.real, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result1.imag, result2.imag, DOUBLE_EPS);
+#else
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
-
+#endif
 }
 
 CTEST(dsdot,dsdot_n_1)
@@ -477,7 +485,7 @@ int main(int argc, const char ** argv){
   CTEST_ADD (swap,dswap_inc_0);
   CTEST_ADD (swap,zswap_inc_0);
   CTEST_ADD (swap,sswap_inc_0);
-  CTEST:ADD (swap,cswap_inc_0);
+  CTEST_ADD (swap,cswap_inc_0);
 
   int num_fail=0;
 
