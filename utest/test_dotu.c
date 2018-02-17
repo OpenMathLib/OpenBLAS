@@ -40,8 +40,8 @@ CTEST( zdotu,zdotu_n_1)
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
 #ifdef __CTEST_MSVC
-        _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
-	_Dcomplex result2=openblas_make_complex_double(-1.0000,3.0000);
+        openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
+	openblas_complex_double result2=openblas_make_complex_double(-1.0000,3.0000);
 	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
 #else
 	_Complex double result1=openblas_make_complex_double(0.0,0.0);
