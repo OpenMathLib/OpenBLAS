@@ -1,1 +1,3 @@
 include $(KERNELDIR)/KERNEL.PENRYN
+SSWAPKERNEL  = ../arm/swap.c
+DSWAPKERNEL  = ../arm/swap.c
