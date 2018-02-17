@@ -40,9 +40,9 @@ CTEST( zdotu,zdotu_n_1)
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
 #ifdef __CTEST_MSVC
-        _Dcomplex result1=openblas_make_complex_double{0.0,0.0};
+        _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
 	_Dcomplex result2=openblas_make_complex_double(-1.0000,3.0000);
-	result1=BLASFUNC(zdotu)(&result1,&N,x1,&incX,y1,&incY);
+	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
 #else
 	_Complex double result1=openblas_make_complex_double(0.0,0.0);
 	_Complex double result2=openblas_make_complex_double(-1.0000,3.0000);
@@ -60,9 +60,9 @@ CTEST(zdotu, zdotu_offset_1)
 	double x1[]={1.0,2.0,3.0,4.0};
 	double y1[]={5.0,6.0,7.0,8.0};
 #ifdef __CTEST_MSVC
-        _Dcomplex result1=openblas_make_complex_double{0.0,0.0};
+        _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
 	_Dcomplex result2=openblas_make_complex_double(-9.0000,32.0000);
-	result1=BLASFUNC(zdotu)(&result1,&N,x1+1,&incX,y1+1,&incY);
+	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
 #else
 	_Complex double result1=openblas_make_complex_double(0.0,0.0);
 	_Complex double result2=openblas_make_complex_double(-9.0000,32.0000);
