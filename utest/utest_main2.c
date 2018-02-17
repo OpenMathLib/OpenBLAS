@@ -266,8 +266,8 @@ CTEST( zdotu,zdotu_n_1)
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
-        _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
-        _Dcomplex result2=openblas_make_complex_double(-1.0,3.0);
+        openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
+        openblas_complex_double result2=openblas_make_complex_double(-1.0,3.0);
 	//OpenBLAS
 	BLASFUNC(zdotu)(&result1,&N,x1,&incX,y1,&incY);
 
@@ -281,8 +281,8 @@ CTEST(zdotu, zdotu_offset_1)
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,2.0,3.0,4.0};
 	double y1[]={5.0,6.0,7.0,8.0};
-        _Dcomplex result1=openblas_make_complex_double(0.0,0.0);
-        _Dcomplex result2=openblas_make_complex_double(-9.0,32.0);
+        openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
+        openblas_complex_double result2=openblas_make_complex_double(-9.0,32.0);
        
 	//OpenBLAS
 	BLASFUNC(zdotu)(&result1,&N,x1+1,&incX,y1+1,&incY);
@@ -460,6 +460,25 @@ CTEST(swap,cswap_inc_0)
 int main(int argc, const char ** argv){
 
   CTEST_ADD(amax, samax);
+  CTEST_ADD (drotmg,rotmg);
+  CTEST_ADD (drotmg,rotmg_issue1452);
+  CTEST_ADD (drotmg, rotmg_D1eqD2_X1eqX2);
+  CTEST_ADD (axpy,daxpy_inc_0);
+  CTEST_ADD (axpy,zaxpy_inc_0);
+  CTEST_ADD (axpy,saxpy_inc_0);
+  CTEST_ADD (axpy,caxpy_inc_0);
+  CTEST_ADD (zdotu,zdotu_n_1);
+  CTEST_ADD (zdotu, zdotu_offset_1);
+  CTEST_ADD (dsdot,dsdot_n_1);
+  CTEST_ADD (rot,drot_inc_0);
+  CTEST_ADD (rot,zdrot_inc_0);
+  CTEST_ADD (rot,srot_inc_0);
+  CTEST_ADD (rot, csrot_inc_0);
+  CTEST_ADD (swap,dswap_inc_0);
+  CTEST_ADD (swap,zswap_inc_0);
+  CTEST_ADD (swap,sswap_inc_0);
+  CTEST:ADD (swap,cswap_inc_0);
+
   int num_fail=0;
 
   num_fail=ctest_main(argc, argv);
