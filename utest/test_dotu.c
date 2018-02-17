@@ -48,8 +48,14 @@ CTEST( zdotu,zdotu_n_1)
 	_Complex double result2=openblas_make_complex_double(-1.0000,3.0000);
 	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
 #endif
+
+#ifdef OPENBLAS_COMPLEX_STRUCT
+	ASSERT_DBL_NEAR_TOL(result1.real, result2.real, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result1.imag, result2.imag, DOUBLE_EPS);
+#else	
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
+#endif
 //	printf("\%lf,%lf\n",creal(result1),cimag(result1));
 
 }
@@ -68,8 +74,14 @@ CTEST(zdotu, zdotu_offset_1)
 	_Complex double result2=openblas_make_complex_double(-9.0000,32.0000);
 	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
 #endif
+
+#ifdef OPENBLAS_COMPLEX_STRUCT
+	ASSERT_DBL_NEAR_TOL(result1.real,result2.real,DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result1.imag,result2.imag,DOUBLE_EPS);
+#else	
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
+#endif
 //	printf("\%lf,%lf\n",creal(result1),cimag(result1));
 
 }
