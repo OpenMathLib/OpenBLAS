@@ -161,7 +161,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 				else
 				{
-					while (ABS(*dd1) <= GAMSQ) {
+					while (ABS(*dd1) >= GAMSQ) {
 						*dd1  = *dd1 / (GAM * GAM);
 						*dx1  = *dx1 * GAM;
 						dh11  = dh11 * GAM;
@@ -197,7 +197,7 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				}
 				else
 				{
-					while (ABS(*dd2) <= GAMSQ) {
+					while (ABS(*dd2) >= GAMSQ) {
 						*dd2  = *dd2 / (GAM * GAM);
 						dh21  = dh21 * GAM;
 						dh22  = dh22 * GAM;
