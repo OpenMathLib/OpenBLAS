@@ -268,7 +268,7 @@ CTEST( zdotu,zdotu_n_1)
 	double y1[]={1.0,2.0};
         openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
         openblas_complex_double result2=openblas_make_complex_double(-1.0,3.0);
-#ifdef OPENBLAS_COMPLEX_STRUCT
+#ifndef __clang__
 	BLASFUNC(zdotu)(&result1,&N,x1,&incX,y1,&incY);
 #else
 	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
@@ -290,7 +290,7 @@ CTEST(zdotu, zdotu_offset_1)
 	double y1[]={5.0,6.0,7.0,8.0};
         openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
         openblas_complex_double result2=openblas_make_complex_double(-9.0,32.0);
-#ifdef OPENBLAS_COMPLEX_STRUCT
+#ifndef __clang__
 	BLASFUNC(zdotu)(&result1,&N,x1+1,&incX,y1+1,&incY);
 #else
 	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
