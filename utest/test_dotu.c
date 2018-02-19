@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 #include <complex.h>
+#include <stdio.h>
 
 CTEST( zdotu,zdotu_n_1)
 {
@@ -40,6 +41,7 @@ CTEST( zdotu,zdotu_n_1)
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
+fprintf(stderr,"running test zdotu_n_1\n");
 	
 	openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
         openblas_complex_double result2=openblas_make_complex_double(-1.0000,3.0000);
@@ -58,6 +60,8 @@ CTEST( zdotu,zdotu_n_1)
 #endif
 	
 #endif	
+	fprintf(stderr,"end of test zdotu_n_1\n");
+	return;
 }
 
 CTEST(zdotu, zdotu_offset_1)
@@ -84,4 +88,5 @@ CTEST(zdotu, zdotu_offset_1)
 #endif
 
 #endif
+	return;
 }
