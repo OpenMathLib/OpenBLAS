@@ -56,10 +56,13 @@ CTEST( zdotu,zdotu_n_1)
 	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
 	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
 #endif
+	
+#endif	
 }
 
 CTEST(zdotu, zdotu_offset_1)
 {
+#ifndef MSVC	
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,2.0,3.0,4.0};
 	double y1[]={5.0,6.0,7.0,8.0};
