@@ -8,12 +8,8 @@ UTESTBIN=openblas_utest
 
 include $(TOPDIR)/Makefile.system
 
-OBJS=utest_main.o test_amax.o test_rotmg.o test_axpy.o test_dsdot.o test_swap.o test_rot.o
+OBJS=utest_main.o test_amax.o test_rotmg.o test_axpy.o test_dotu.o test_dsdot.o test_swap.o test_rot.o
 #test_rot.o test_swap.o test_axpy.o test_dotu.o test_dsdot.o test_fork.o
-
-ifndef MSVC
-OBJS += test_dotu.o
-endif
 
 ifneq ($(NO_LAPACK), 1)
 OBJS += test_potrs.o
