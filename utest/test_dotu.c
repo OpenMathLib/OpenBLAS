@@ -36,7 +36,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CTEST( zdotu,zdotu_n_1)
 {
-#ifndef RETURN_BY_STACK	
+#ifndef MSVC
 	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
