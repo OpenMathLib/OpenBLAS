@@ -18,7 +18,7 @@ endif ()
 # crashing on travis cl with an error code suggesting resource not found
 if (NOT MSVC)
 set(OpenBLAS_utest_src
-  $(OpenBLAS_utest_src}
+  ${OpenBLAS_utest_src}
   test_dotu.c
   )
 endif ()
