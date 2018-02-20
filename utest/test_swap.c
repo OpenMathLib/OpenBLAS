@@ -31,32 +31,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include "common_utest.h"
+#include "openblas_utest.h"
 
-void test_dswap_inc_0(void)
+CTEST(swap,dswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double x1[]={1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0};
 	double x2[]={1.0,3.0,5.0,7.0};
 	double y2[]={2.0,4.0,6.0,8.0};
-
+	
 	//OpenBLAS
 	BLASFUNC(dswap)(&N,x1,&incX,y1,&incY);
-	//reference
-	BLASFUNC_REF(dswap)(&N,x2,&incX,y2,&incY);
 
 	for(i=0; i<N; i++){
-		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
-		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
 	}
 }
 
-void test_zswap_inc_0(void)
+CTEST(swap,zswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	double x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	double y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
 	double x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
@@ -64,19 +62,17 @@ void test_zswap_inc_0(void)
 
 	//OpenBLAS
 	BLASFUNC(zswap)(&N,x1,&incX,y1,&incY);
-	//reference
-	BLASFUNC_REF(zswap)(&N,x2,&incX,y2,&incY);
 
 	for(i=0; i<2*N; i++){
-		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
-		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
 	}
 }
 
-void test_sswap_inc_0(void)
+CTEST(swap,sswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float x1[]={1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0};
 	float x2[]={1.0,3.0,5.0,7.0};
@@ -84,19 +80,17 @@ void test_sswap_inc_0(void)
 
 	//OpenBLAS
 	BLASFUNC(sswap)(&N,x1,&incX,y1,&incY);
-	//reference
-	BLASFUNC_REF(sswap)(&N,x2,&incX,y2,&incY);
 
 	for(i=0; i<N; i++){
-		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
-		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
 	}
 }
 
-void test_cswap_inc_0(void)
+CTEST(swap,cswap_inc_0)
 {
-	int i=0;
-	int N=4,incX=0,incY=0;
+	blasint i=0;
+	blasint N=4,incX=0,incY=0;
 	float x1[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
 	float y1[]={2.0,4.0,6.0,8.0,2.0,4.0,6.0,8.0};
 	float x2[]={1.0,3.0,5.0,7.0,1.0,3.0,5.0,7.0};
@@ -104,11 +98,9 @@ void test_cswap_inc_0(void)
 
 	//OpenBLAS
 	BLASFUNC(cswap)(&N,x1,&incX,y1,&incY);
-	//reference
-	BLASFUNC_REF(cswap)(&N,x2,&incX,y2,&incY);
 
 	for(i=0; i<2*N; i++){
-		CU_ASSERT_DOUBLE_EQUAL(x1[i], x2[i], CHECK_EPS);
-		CU_ASSERT_DOUBLE_EQUAL(y1[i], y2[i], CHECK_EPS);
+		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
 	}
 }
