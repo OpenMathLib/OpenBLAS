@@ -1016,9 +1016,7 @@ void *blas_memory_alloc(int procpos){
   };
   void *(**func)(void *address);
 
-#if defined(SMP) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
-#endif
 
   if (!memory_initialized) {
 
@@ -1052,9 +1050,7 @@ void *blas_memory_alloc(int procpos){
     memory_initialized = 1;
 
   }
-#if defined(SMP) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
-#endif
 
 #ifdef DEBUG
   printf("Alloc Start ...\n");
@@ -1071,14 +1067,15 @@ void *blas_memory_alloc(int procpos){
     if (!memory[position].used && (memory[position].pos == mypos)) {
 #if defined(SMP) && !defined(USE_OPENMP)
       LOCK_COMMAND(&alloc_lock);
-#endif      
-/*      blas_lock(&memory[position].lock);*/
-
+#else      
+      blas_lock(&memory[position].lock);
+#endif
       if (!memory[position].used) goto allocation;
 #if defined(SMP) && !defined(USE_OPENMP)
       UNLOCK_COMMAND(&alloc_lock);
+#else
+      blas_unlock(&memory[position].lock);
 #endif      
-/*      blas_unlock(&memory[position].lock);*/
     }
 
     position ++;
@@ -1094,14 +1091,15 @@ void *blas_memory_alloc(int procpos){
 /*    if (!memory[position].used) { */
 #if defined(SMP) && !defined(USE_OPENMP)
       LOCK_COMMAND(&alloc_lock);
-#endif      
-/*      blas_lock(&memory[position].lock);*/
-
+#else
+      blas_lock(&memory[position].lock);
+#endif
       if (!memory[position].used) goto allocation;
 #if defined(SMP) && !defined(USE_OPENMP)
       UNLOCK_COMMAND(&alloc_lock);
-#endif      
-/*      blas_unlock(&memory[position].lock);*/
+#else      
+      blas_unlock(&memory[position].lock);
+#endif
 /*    } */
 
     position ++;
@@ -1119,10 +1117,10 @@ void *blas_memory_alloc(int procpos){
   memory[position].used = 1;
 #if defined(SMP) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
+#else
+  blas_unlock(&memory[position].lock);
 #endif
-  
-/*  blas_unlock(&memory[position].lock);*/
-
+	
   if (!memory[position].addr) {
     do {
 #ifdef DEBUG
@@ -1190,9 +1188,7 @@ void *blas_memory_alloc(int procpos){
 
   if (memory_initialized == 1) {
 
-#if defined(SMP) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
-#endif
 
     if (memory_initialized == 1) {
 
@@ -1201,9 +1197,8 @@ void *blas_memory_alloc(int procpos){
       memory_initialized = 2;
     }
 
-#if defined(SMP) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
-#endif
+
   }
 #endif
 
