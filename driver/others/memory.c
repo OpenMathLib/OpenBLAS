@@ -455,15 +455,11 @@ static void *alloc_mmap(void *address){
   }
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
-#endif    
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
-#endif    
   }
 
 #ifdef OS_LINUX
@@ -605,18 +601,14 @@ static void *alloc_mmap(void *address){
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
   }
 #endif
+  LOCK_COMMAND(&alloc_lock);
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
-    LOCK_COMMAND(&alloc_lock);
-#endif
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
-    UNLOCK_COMMAND(&alloc_lock);
-#endif
   }
+  UNLOCK_COMMAND(&alloc_lock);
 
   return map_address;
 }
@@ -1015,10 +1007,7 @@ void *blas_memory_alloc(int procpos){
     NULL,
   };
   void *(**func)(void *address);
-
-#if defined(SMP) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
-#endif
 
   if (!memory_initialized) {
 
@@ -1052,9 +1041,7 @@ void *blas_memory_alloc(int procpos){
     memory_initialized = 1;
 
   }
-#if defined(SMP) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
-#endif
 
 #ifdef DEBUG
   printf("Alloc Start ...\n");
@@ -1069,15 +1056,12 @@ void *blas_memory_alloc(int procpos){
 
   do {
     if (!memory[position].used && (memory[position].pos == mypos)) {
-#if defined(SMP) && !defined(USE_OPENMP)
       LOCK_COMMAND(&alloc_lock);
-#endif      
 /*      blas_lock(&memory[position].lock);*/
 
       if (!memory[position].used) goto allocation;
-#if defined(SMP) && !defined(USE_OPENMP)
+
       UNLOCK_COMMAND(&alloc_lock);
-#endif      
 /*      blas_unlock(&memory[position].lock);*/
     }
 
@@ -1092,15 +1076,12 @@ void *blas_memory_alloc(int procpos){
 
   do {
 /*    if (!memory[position].used) { */
-#if defined(SMP) && !defined(USE_OPENMP)
       LOCK_COMMAND(&alloc_lock);
-#endif      
 /*      blas_lock(&memory[position].lock);*/
 
       if (!memory[position].used) goto allocation;
-#if defined(SMP) && !defined(USE_OPENMP)
+      
       UNLOCK_COMMAND(&alloc_lock);
-#endif      
 /*      blas_unlock(&memory[position].lock);*/
 /*    } */
 
@@ -1117,10 +1098,8 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   memory[position].used = 1;
-#if defined(SMP) && !defined(USE_OPENMP)
+
   UNLOCK_COMMAND(&alloc_lock);
-#endif
-  
 /*  blas_unlock(&memory[position].lock);*/
 
   if (!memory[position].addr) {
@@ -1167,13 +1146,9 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
-#if defined(SMP) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
-#endif    
     memory[position].addr = map_address;
-#if defined(SMP) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
-#endif
 
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)memory[position].addr, position);
@@ -1190,9 +1165,7 @@ void *blas_memory_alloc(int procpos){
 
   if (memory_initialized == 1) {
 
-#if defined(SMP) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
-#endif
 
     if (memory_initialized == 1) {
 
@@ -1201,9 +1174,8 @@ void *blas_memory_alloc(int procpos){
       memory_initialized = 2;
     }
 
-#if defined(SMP) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
-#endif
+
   }
 #endif
 
@@ -1230,9 +1202,8 @@ void blas_memory_free(void *free_area){
 #endif
 
   position = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
-#endif
+
   while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
     position++;
 
@@ -1246,9 +1217,7 @@ void blas_memory_free(void *free_area){
   WMB;
 
   memory[position].used = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
-#endif
 
 #ifdef DEBUG
   printf("Unmap Succeeded.\n\n");
@@ -1263,9 +1232,8 @@ void blas_memory_free(void *free_area){
   for (position = 0; position < NUM_BUFFERS; position++)
     printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
 #endif
-#if defined(SMP) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
-#endif
+
   return;
 }
 
