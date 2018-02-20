@@ -801,32 +801,20 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
     i = (m & 1);
     if (i > 0) {
-      if (X > posY) {
-	/* a01 += 2;
-	a02 += 2; */
-	b += 4;
-      } else
-	if (X < posY) {
-	  b[  0] = *(a01 +  0);
-	  b[  1] = *(a01 +  1);
-	  b[  2] = *(a01 +  2);
-	  b[  3] = *(a01 +  3);
-
-	  /* a01 += lda;
-	  a02 += lda; */
-	  b += 4;
-	} else {
 #ifdef UNIT
-	  b[  0] = ONE;
-	  b[  1] = ZERO;
-#else
-	  b[  0] = *(a01 +  0);
-	  b[  1] = *(a01 +  1);
+      if (X < posY) {
 #endif
-	  b[  2] = *(a01 +  2);
-	  b[  3] = *(a01 +  3);
-	  b += 4;
-	}
+	b[  0] = *(a01 +  0);
+	b[  1] = *(a01 +  1);
+#ifdef UNIT
+      } else {
+	b[  0] = ONE;
+	b[  1] = ZERO;
+      }
+#endif
+      b[  2] = *(a01 +  2);
+      b[  3] = *(a01 +  3);
+      b += 4;
     }
     posY += 2;
   }
