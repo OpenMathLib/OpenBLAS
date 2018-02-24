@@ -43,7 +43,7 @@ static void ssymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vbroadcastss  8(%8),    %%xmm6	             \n\t"	// temp1[1]
 	"vbroadcastss 12(%8),    %%xmm7	             \n\t"	// temp1[1]
 
-	".align 16				     \n\t"
+	".p2align 4				     \n\t"
 	"1:				     \n\t"
 
 	"vmovups	(%3,%0,4), %%xmm9	           \n\t"  // 2 * y

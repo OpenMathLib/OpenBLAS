@@ -54,7 +54,7 @@ static void zscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"subq	        $8 , %0			            \n\t"		
 	"jz	2f					    \n\t"
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            	    \n\t"
 
 	//"prefetcht0     128(%1)				    \n\t"
@@ -156,7 +156,7 @@ static void zscal_kernel_8_zero_r( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"subq	        $8 , %0			            \n\t"		
 	"jz	2f					    \n\t"
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            	    \n\t"
 
 	//"prefetcht0     128(%1)				    \n\t"
@@ -245,7 +245,7 @@ static void zscal_kernel_8_zero_i( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"subq	        $8 , %0			            \n\t"		
 	"jz	2f					    \n\t"
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            	    \n\t"
 
 	//"prefetcht0     128(%1)				    \n\t"
@@ -312,7 +312,7 @@ static void zscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	"addq	$128, %1				    \n\t"
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            	    \n\t"
 
 	//"prefetcht0     128(%1)				    \n\t"

@@ -50,7 +50,7 @@ static void zdot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	"vxorpd		%%ymm6, %%ymm6, %%ymm6	             \n\t"
 	"vxorpd		%%ymm7, %%ymm7, %%ymm7	             \n\t"
 
-	".align 16			             \n\t"
+	".p2align 4			             \n\t"
 	"1:				             \n\t"
         "vmovups                  (%2,%0,8), %%ymm8          \n\t"  // 2 * x
         "vmovups                32(%2,%0,8), %%ymm9          \n\t"  // 2 * x
@@ -131,7 +131,7 @@ static void zdot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	"vxorpd		%%ymm6, %%ymm6, %%ymm6	             \n\t"
 	"vxorpd		%%ymm7, %%ymm7, %%ymm7	             \n\t"
 
-	".align 16			             \n\t"
+	".p2align 4			             \n\t"
 	"1:				             \n\t"
 	"prefetcht0	512(%2,%0,8)		     \n\t"
         "vmovups                  (%2,%0,8), %%ymm8          \n\t"  // 2 * x

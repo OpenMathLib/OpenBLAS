@@ -38,7 +38,7 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	(
 	"vbroadcastss		(%4), %%ymm0		    \n\t"  // alpha	
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
         "vmovups                  (%3,%0,4), %%ymm12         \n\t"  // 8 * y
