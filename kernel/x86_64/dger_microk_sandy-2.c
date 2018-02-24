@@ -53,7 +53,7 @@ static void dger_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"subq	        $8, %1			             \n\t"		
 	"jz		2f		             \n\t"
 
-	".align 8				            \n\t"
+	".p2align 3				            \n\t"
 	"1:				            \n\t"
 
 	"vmulpd		%%xmm4, %%xmm0, %%xmm4		\n\t"

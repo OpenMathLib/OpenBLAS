@@ -129,7 +129,7 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
         "je             4f                 \n\t"
 
 
-	".align 16				 \n\t"
+	".p2align 4				 \n\t"
 	"1:				 \n\t"
 	"vxorps	  %%ymm4 , %%ymm4 , %%ymm4        \n\t"
 	"vxorps	  %%ymm5 , %%ymm5 , %%ymm5        \n\t"
@@ -299,7 +299,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
         "je             4f                 \n\t"
 
 
-	".align 16				 \n\t"
+	".p2align 4				 \n\t"
 	"1:				 \n\t"
 	"vxorps	  %%ymm4 , %%ymm4 , %%ymm4        \n\t"
 	"vxorps	  %%ymm5 , %%ymm5 , %%ymm5        \n\t"

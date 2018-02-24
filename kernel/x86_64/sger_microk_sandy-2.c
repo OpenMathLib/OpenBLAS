@@ -53,7 +53,7 @@ static void sger_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"subq	        $16, %1			             \n\t"		
 	"jz		2f		             \n\t"
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
 	"vmulps		%%xmm4, %%xmm0, %%xmm4		\n\t"
