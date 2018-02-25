@@ -29,6 +29,7 @@ SDOTKERNEL   = dot.S
 DDOTKERNEL   = dot.S
 CDOTKERNEL   = zdot.S
 ZDOTKERNEL   = zdot.S
+DSDOTKERNEL  = dot.S
 
 SNRM2KERNEL  = nrm2.S
 DNRM2KERNEL  = nrm2.S
