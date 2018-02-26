@@ -47,7 +47,7 @@ static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"shufpd $0,  %%xmm6, %%xmm6                  \n\t"
 	"shufpd $0,  %%xmm7, %%xmm7                  \n\t"
 
-	".align 16		  		       \n\t"
+	".p2align 4		  		       \n\t"
 	"1:				       \n\t"
 	"movups	            (%4,%0,8), %%xmm12	       \n\t"	// 2 * a
 	"movups	            (%2,%0,8), %%xmm8	       \n\t"	// 2 * x

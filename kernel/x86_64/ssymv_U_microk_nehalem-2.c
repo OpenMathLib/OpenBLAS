@@ -50,7 +50,7 @@ static void ssymv_kernel_4x4(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT 
 
 	"xorq		%0,%0			     \n\t"
 
-	".align 16		  		       \n\t"
+	".p2align 4		  		       \n\t"
 	"1:				       \n\t"
 	"movups	            (%2,%0,4), %%xmm8	       \n\t"	// 4 * x
 	"movups	            (%3,%0,4), %%xmm9         \n\t"	// 4 * y
