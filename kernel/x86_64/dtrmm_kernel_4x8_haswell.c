@@ -24,7 +24,7 @@ static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOA
 		"	cmp $0, %1						\n\t"
 		"	jz 2f							\n\t"
 
-		"	.align 16						\n\t"
+		"	.p2align 4						\n\t"
 		"1:								\n\t"
 		"	vmovups   	(%2,%0,4) , %%ymm0			\n\t"
 		"	vmovups   	(%3,%0,8) , %%ymm1			\n\t"

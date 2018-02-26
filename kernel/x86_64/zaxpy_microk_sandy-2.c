@@ -54,11 +54,11 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vmulpd		(%5), %%ymm0 , %%ymm0		    \n\t"
 #endif
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
 	"vmovups        (%2,%0,8), %%ymm5                   \n\t" // 4 complex values from x
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups      32(%2,%0,8), %%ymm7                   \n\t" // 4 complex values from x
 	"vmovups      64(%2,%0,8), %%ymm9                   \n\t" // 4 complex values from x
 	"vmovups      96(%2,%0,8), %%ymm11                  \n\t" // 4 complex values from x
@@ -89,7 +89,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vaddpd         %%ymm10, %%ymm11, %%ymm11           \n\t"
 
 	"vmovups	%%ymm5 ,   (%3,%0,8)		    \n\t"
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups	%%ymm7 , 32(%3,%0,8)		    \n\t"
 	"vmovups	%%ymm9 , 64(%3,%0,8)		    \n\t"
 	"vmovups	%%ymm11, 96(%3,%0,8)		    \n\t"
@@ -127,13 +127,13 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vmulpd		(%5), %%ymm0 , %%ymm0		    \n\t"
 #endif
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
 	"prefetcht0	512(%2,%0,8)			    \n\t"
 	"prefetcht0	576(%2,%0,8)			    \n\t"
 	"vmovups        (%2,%0,8), %%ymm5                   \n\t" // 4 complex values from x
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups      32(%2,%0,8), %%ymm7                   \n\t" // 4 complex values from x
 	"vmovups      64(%2,%0,8), %%ymm9                   \n\t" // 4 complex values from x
 	"vmovups      96(%2,%0,8), %%ymm11                  \n\t" // 4 complex values from x
@@ -166,7 +166,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vaddpd         %%ymm10, %%ymm11, %%ymm11           \n\t"
 
 	"vmovups	%%ymm5 ,   (%3,%0,8)		    \n\t"
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups	%%ymm7 , 32(%3,%0,8)		    \n\t"
 	"vmovups	%%ymm9 , 64(%3,%0,8)		    \n\t"
 	"vmovups	%%ymm11, 96(%3,%0,8)		    \n\t"

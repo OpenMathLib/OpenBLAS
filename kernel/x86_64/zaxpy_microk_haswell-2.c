@@ -50,11 +50,11 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vmulpd		(%5), %%ymm0 , %%ymm0		    \n\t"
 #endif
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
 	"vmovups        (%2,%0,8), %%ymm5                   \n\t" // 2 complex values from x
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups      32(%2,%0,8), %%ymm7                   \n\t" // 2 complex values from x
 	"vmovups      64(%2,%0,8), %%ymm9                   \n\t" // 2 complex values from x
 	"vmovups      96(%2,%0,8), %%ymm11                  \n\t" // 2 complex values from x
@@ -70,7 +70,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vpermilpd	$0x5 , %%ymm11, %%ymm10 	    \n\t"  // exchange real and imag part
 
 	"vfmadd213pd    (%3,%0,8), %%ymm0 , %%ymm5          \n\t"
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vfmadd213pd  32(%3,%0,8), %%ymm0 , %%ymm7          \n\t"
 	"vfmadd213pd  64(%3,%0,8), %%ymm0 , %%ymm9          \n\t"
 	"vfmadd213pd  96(%3,%0,8), %%ymm0 , %%ymm11         \n\t"
@@ -96,7 +96,7 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vfmadd231pd	%%ymm1 , %%ymm10, %%ymm15  \n\t"
 
 	"vmovups	%%ymm5 ,   (%3,%0,8)		    \n\t"
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups	%%ymm7 , 32(%3,%0,8)		    \n\t"
 	"vmovups	%%ymm9 , 64(%3,%0,8)		    \n\t"
 	"vmovups	%%ymm11, 96(%3,%0,8)		    \n\t"

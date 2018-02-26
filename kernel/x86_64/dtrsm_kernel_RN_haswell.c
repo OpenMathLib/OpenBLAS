@@ -128,7 +128,7 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	cmpq		%1, %0						\n\t"
 	"	je	       21f						\n\t"
 
-	"	.align 16							\n\t"
+	"	.p2align 4							\n\t"
 	"1:									\n\t"
 
 	"	vmovups         (%2,%1,4), %%ymm4				\n\t"	// read a

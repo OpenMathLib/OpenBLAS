@@ -38,7 +38,7 @@ static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	(
 	"vbroadcastsd		(%4), %%ymm0		    \n\t"  // alpha	
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
         "vmovups                  (%3,%0,8), %%ymm12         \n\t"  // 4 * y
