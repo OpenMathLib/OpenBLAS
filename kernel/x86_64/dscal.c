@@ -99,7 +99,7 @@ static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_
 
 	"leaq		(%1,%4,4), %2		            \n\t"
 
-        ".align 16                                          \n\t"
+        ".p2align 4                                          \n\t"
 
         "1:                                                 \n\t"
 	"movsd	(%1)     , %%xmm4			    \n\t"

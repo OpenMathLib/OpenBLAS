@@ -62,7 +62,7 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"subq	        $4 , %1			       \n\t"		
 	"jz		2f		       \n\t"
 
-	".align 16				 \n\t"
+	".p2align 4				 \n\t"
 	"1:				 \n\t"
 
 	"xorpd           %%xmm4 , %%xmm4	 \n\t"
