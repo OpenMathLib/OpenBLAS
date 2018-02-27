@@ -74,8 +74,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DSDOT)
 	fmadd	DOTF, TMPX, TMPY, DOTF
 #else // DSDOT
-	fmul	TMPX, TMPX, TMPY
+	fcvt	d3, TMPY
 	fcvt	d2, TMPX
+	fmul	d2, d2, d3
 	fadd	DOTF, DOTF, d2
 #endif
 .endm
@@ -87,12 +88,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DSDOT)
 	fmla	v0.4s, v2.4s, v3.4s
 #else
-	fmul	v2.4s, v2.4s, v3.4s
-	ext	v3.16b, v2.16b, v2.16b, #8
-	fcvtl	v2.2d, v2.2s
+	fcvtl2	v5.2d, v3.4s
+	fcvtl2	v4.2d, v2.4s
 	fcvtl	v3.2d, v3.2s
+	fcvtl	v2.2d, v2.2s
+	fmul	v4.2d, v4.2d, v5.2d
+	fmul	v2.2d, v2.2d, v3.2d
+	fadd	v2.2d, v2.2d, v4.2d
 	fadd	v0.2d, v0.2d, v2.2d
-	fadd	v0.2d, v0.2d, v3.2d
 #endif
 #else //DOUBLE
 	ld1	{v2.2d, v3.2d}, [X], #32
@@ -136,8 +139,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DSDOT)
 	fmadd	DOTF, TMPX, TMPY, DOTF
 #else // DSDOT
-	fmul	TMPX, TMPX, TMPY
+	fcvt	d3, TMPY
 	fcvt	d2, TMPX
+	fmul	d2, d2, d3
 	fadd	DOTF, DOTF, d2
 #endif
 .endm
