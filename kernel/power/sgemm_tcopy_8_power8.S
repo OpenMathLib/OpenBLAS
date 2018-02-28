@@ -110,57 +110,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "sgemm_tcopy_macros_8_power8.S"
 
-#define STACKSIZE 576
+#define STACKSIZE 144
 
 	PROLOGUE
 	PROFCODE
 
 	addi	SP, SP, -STACKSIZE
 	li	r0, 0
+        std r14,   0(SP) 
+        std r15,   8(SP) 
+        std r16,  16(SP) 
+        std r17,  24(SP) 
+        std r18,  32(SP) 
+        std r19,  40(SP) 
+        std r20,  48(SP) 
+        std r21,  56(SP) 
+        std r22,  64(SP) 
+        std r23,  72(SP) 
+        std r24,  80(SP) 
+        std r25,  88(SP) 
+        std r26,  96(SP) 
+        std r27, 104(SP) 
+        std r28, 112(SP) 
+        std r29, 120(SP) 
+        std r30, 128(SP) 
+        std r31, 136(SP) 
 
-        std     r31,  144(SP)
-        std     r30,  152(SP)
-        std     r29,  160(SP)
-        std     r28,  168(SP)
-        std     r27,  176(SP)
-        std     r26,  184(SP)
-        std     r25,  192(SP)
-        std     r24,  200(SP)
-        std     r23,  208(SP)
-        std     r22,  216(SP)
-        std     r21,  224(SP)
-        std     r20,  232(SP)
-        std     r19,  240(SP)
-        std     r18,  248(SP)
-        std     r17,  256(SP)
-        std     r16,  264(SP)
-        std     r15,  272(SP)
-        std     r14,  280(SP)
-        addi    r11, SP, 288
-        stvx    v20, r11, r0
-        addi    r11, r11, 16
-        stvx    v21, r11, r0
-        addi    r11, r11, 16
-        stvx    v22, r11, r0
-        addi    r11, r11, 16
-        stvx    v23, r11, r0
-        addi    r11, r11, 16
-        stvx    v24, r11, r0
-        addi    r11, r11, 16
-        stvx    v25, r11, r0
-        addi    r11, r11, 16
-        stvx    v26, r11, r0
-        addi    r11, r11, 16
-        stvx    v27, r11, r0
-        addi    r11, r11, 16
-        stvx    v28, r11, r0
-        addi    r11, r11, 16
-        stvx    v29, r11, r0
-        addi    r11, r11, 16
-        stvx    v30, r11, r0
-        addi    r11, r11, 16
-        stvx    v31, r11, r0
-        li      r11, 0
 
 	cmpwi	cr0, M, 0
 	ble-	L999
@@ -202,51 +177,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 L999:
 
-	li	r3, 0
-
-        ld      r31,  144(SP)
-        ld      r30,  152(SP)
-        ld      r29,  160(SP)
-        ld      r28,  168(SP)
-        ld      r27,  176(SP)
-        ld      r26,  184(SP)
-        ld      r25,  192(SP)
-        ld      r24,  200(SP)
-        ld      r23,  208(SP)
-        ld      r22,  216(SP)
-        ld      r21,  224(SP)
-        ld      r20,  232(SP)
-        ld      r19,  240(SP)
-        ld      r18,  248(SP)
-        ld      r17,  256(SP)
-        ld      r16,  264(SP)
-        ld      r15,  272(SP)
-        ld      r14,  280(SP)
-        addi r11,SP,288
-        lvx    v20, r11, r3
-        addi   r11, r11, 16
-        lvx    v21, r11, r3
-        addi   r11, r11, 16
-        lvx    v22, r11, r3
-        addi   r11, r11, 16
-        lvx    v23, r11, r3
-        addi   r11, r11, 16
-        lvx    v24, r11, r3
-        addi   r11, r11, 16
-        lvx    v25, r11, r3
-        addi   r11, r11, 16
-        lvx    v26, r11, r3
-        addi   r11, r11, 16
-        lvx    v27, r11, r3
-        addi   r11, r11, 16
-        lvx    v28, r11, r3
-        addi   r11, r11, 16
-        lvx    v29, r11, r3
-        addi   r11, r11, 16
-        lvx    v30, r11, r3
-        addi   r11, r11, 16
-        lvx    v31, r11, r3
-        li     r11, 0
+        ld r14,   0(SP) 
+        ld r15,   8(SP) 
+        ld r16,  16(SP) 
+        ld r17,  24(SP) 
+        ld r18,  32(SP) 
+        ld r19,  40(SP) 
+        ld r20,  48(SP) 
+        ld r21,  56(SP) 
+        ld r22,  64(SP) 
+        ld r23,  72(SP) 
+        ld r24,  80(SP) 
+        ld r25,  88(SP) 
+        ld r26,  96(SP) 
+        ld r27, 104(SP) 
+        ld r28, 112(SP) 
+        ld r29, 120(SP) 
+        ld r30, 128(SP) 
+        ld r31, 136(SP) 
 
 	addi	SP, SP, STACKSIZE
 	blr

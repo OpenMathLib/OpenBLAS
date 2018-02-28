@@ -72,23 +72,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvd2x		vs51,	o48,	A2
 	addi		A2,	A2,	64
 
-	lxvd2x		vs52,	o0,	A2
-	lxvd2x		vs53,	o16,	A2
-	lxvd2x		vs54,	o32,	A2
-	lxvd2x		vs55,	o48,	A2
+	lxvd2x		vs2,	o0,	A2
+	lxvd2x		vs3,	o16,	A2
+	lxvd2x		vs4,	o32,	A2
+	lxvd2x		vs5,	o48,	A2
 	addi		A2,	A2,	64
 
 
-	lxvd2x		vs56,	o0,	A3
-	lxvd2x		vs57,	o16,	A3
-	lxvd2x		vs58,	o32,	A3
-	lxvd2x		vs59,	o48,	A3
+	lxvd2x		vs6,	o0,	A3
+	lxvd2x		vs7,	o16,	A3
+	lxvd2x		vs8,	o32,	A3
+	lxvd2x		vs9,	o48,	A3
 	addi		A3,	A3,	64
 
-	lxvd2x		vs60,	o0,	A3
-	lxvd2x		vs61,	o16,	A3
-	lxvd2x		vs62,	o32,	A3
-	lxvd2x		vs63,	o48,	A3
+	lxvd2x		vs10,	o0,	A3
+	lxvd2x		vs11,	o16,	A3
+	lxvd2x		vs12,	o32,	A3
+	lxvd2x		vs13,	o48,	A3
 	addi		A3,	A3,	64
 
 
@@ -126,23 +126,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs51,	o48,	T1
 	addi		T1,	T1,	64
 
-	stxvd2x		vs52,	o0,	T1
-	stxvd2x		vs53,	o16,	T1
-	stxvd2x		vs54,	o32,	T1
-	stxvd2x		vs55,	o48,	T1
+	stxvd2x		vs2,	o0,	T1
+	stxvd2x		vs3,	o16,	T1
+	stxvd2x		vs4,	o32,	T1
+	stxvd2x		vs5,	o48,	T1
 
 	addi		T1,	T1,	64
 
-	stxvd2x		vs56,	o0,	T1
-	stxvd2x		vs57,	o16,	T1
-	stxvd2x		vs58,	o32,	T1
-	stxvd2x		vs59,	o48,	T1
+	stxvd2x		vs6,	o0,	T1
+	stxvd2x		vs7,	o16,	T1
+	stxvd2x		vs8,	o32,	T1
+	stxvd2x		vs9,	o48,	T1
 	addi		T1,	T1,	64
 
-	stxvd2x		vs60,	o0,	T1
-	stxvd2x		vs61,	o16,	T1
-	stxvd2x		vs62,	o32,	T1
-	stxvd2x		vs63,	o48,	T1
+	stxvd2x		vs10,	o0,	T1
+	stxvd2x		vs11,	o16,	T1
+	stxvd2x		vs12,	o32,	T1
+	stxvd2x		vs13,	o48,	T1
 
 .endm
 
