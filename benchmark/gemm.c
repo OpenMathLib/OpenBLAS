@@ -237,7 +237,7 @@ int main(int argc, char *argv[]){
     timeg = time1/loops;
     fprintf(stderr,
 	    " %10.2f MFlops %10.6f sec\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)n / timeg * 1.e-6, time1);
+	    COMPSIZE * COMPSIZE * (2.*(double)k+2.) * (double)m * (double)n / timeg * 1.e-6, time1);
     
   }
 

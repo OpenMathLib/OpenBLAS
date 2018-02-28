@@ -301,7 +301,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 	        dtrmm_kernel_4x8( temp, &alpha , ptrba, ptrbb, C0, C1, C2, C3, C4, C5, C6, C7);
 
 		ptrba = ptrba + temp * 4;
-		ptrbb = ptrbb + temp * 8;
+		// ptrbb = ptrbb + temp * 8;
 
 /*
 		for (k=0; k<temp; k++)
@@ -446,7 +446,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                                   temp - 8;  // number of values in B
 
                     ptrba += temp*4; // number of values in A
-		    ptrbb += temp*8; // number of values in B
+		    // ptrbb += temp*8; // number of values in B
                 }
 #ifdef LEFT
 		off += 4; // number of values in A
@@ -709,14 +709,14 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		off += 1; // number of values in A
 #endif
 
-		C0 = C0+1;
+		/* C0 = C0+1;
 		C1 = C1+1;
 		C2 = C2+1;
 		C3 = C3+1;
 		C4 = C4+1;
 		C5 = C5+1;
 		C6 = C6+1;
-		C7 = C7+1;
+		C7 = C7+1; */
 
 	}
 
@@ -862,7 +862,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                                   temp - 4;  // number of values in B */
 
                     ptrba += temp*4; // number of values in A
-		    ptrbb += temp*4; // number of values in B
+		    // ptrbb += temp*4; // number of values in B
                 }
 #ifdef LEFT
 		off += 4; // number of values in A
@@ -1049,10 +1049,10 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		off += 1; // number of values in A
 #endif
 
-		C0 = C0+1;
+		/* C0 = C0+1;
 		C1 = C1+1;
 		C2 = C2+1;
-		C3 = C3+1;
+		C3 = C3+1; */
 
 	}
 
@@ -1311,8 +1311,8 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		off += 1; // number of values in A
 #endif
 
-		C0 = C0+1;
-		C1 = C1+1;
+		/* C0 = C0+1;
+		C1 = C1+1; */
 
 	}
 
@@ -1532,7 +1532,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		off += 1; // number of values in A
 #endif
 
-		C0 = C0+1;
+		// C0 = C0+1;
 
 	}
 

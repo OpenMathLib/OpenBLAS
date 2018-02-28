@@ -124,13 +124,13 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
       min_jj = js + min_j - jjs;
       if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
-      if (0 && GEMM_UNROLL_N <= 8) {
+      /* if (0 && GEMM_UNROLL_N <= 8) {
 
 	LASWP_NCOPY(min_jj, off + 1, off + k,
 		    c + (- off + jjs * lda) * COMPSIZE, lda,
 		    ipiv, sbb + k * (jjs - js) * COMPSIZE);
 
-      } else {
+      } else { */
 
 	LASWP_PLUS(min_jj, off + 1, off + k, ZERO,
 #ifdef COMPLEX
@@ -140,7 +140,7 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
 
 	GEMM_ONCOPY (k, min_jj, c + jjs * lda * COMPSIZE, lda, sbb + (jjs - js) * k * COMPSIZE);
 
-      }
+      // }
 
       for (is = 0; is < k; is += GEMM_P) {
 	min_i = k - is;
@@ -251,14 +251,14 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
       min_jj = MIN(n_to, xxx + div_n) - jjs;
       if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
-      if (0 && GEMM_UNROLL_N <= 8) {
+      /* if (0 && GEMM_UNROLL_N <= 8) {
 	printf("helllo\n");
 
 	LASWP_NCOPY(min_jj, off + 1, off + k,
 		    b + (- off + jjs * lda) * COMPSIZE, lda,
 		    ipiv, buffer[bufferside] + (jjs - xxx) * k * COMPSIZE);
 
-      } else {
+      } else { */
 
 	LASWP_PLUS(min_jj, off + 1, off + k, ZERO,
 #ifdef COMPLEX
@@ -268,7 +268,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
 	GEMM_ONCOPY (k, min_jj, b + jjs * lda * COMPSIZE, lda,
 		     buffer[bufferside] + (jjs - xxx) * k * COMPSIZE);
-      }
+      // }
 
       for (is = 0; is < k; is += GEMM_P) {
 	min_i = k - is;
