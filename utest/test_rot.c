@@ -48,8 +48,8 @@ CTEST(rot,drot_inc_0)
 	BLASFUNC(drot)(&N,x1,&incX,y1,&incY,&c,&s);
 
 	for(i=0; i<N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
 
@@ -68,8 +68,8 @@ CTEST(rot,zdrot_inc_0)
 	BLASFUNC(zdrot)(&N,x1,&incX,y1,&incY,&c,&s);
 
 	for(i=0; i<2*N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
 
@@ -87,8 +87,8 @@ CTEST(rot,srot_inc_0)
 	BLASFUNC(srot)(&N,x1,&incX,y1,&incY,&c,&s);
 
 	for(i=0; i<N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], SINGLE_EPS);
 	}
 }
 
@@ -106,7 +106,7 @@ CTEST(rot, csrot_inc_0)
 	BLASFUNC(csrot)(&N,x1,&incX,y1,&incY,&c,&s);
 
 	for(i=0; i<2*N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], SINGLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], SINGLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], SINGLE_EPS);
 	}
 }

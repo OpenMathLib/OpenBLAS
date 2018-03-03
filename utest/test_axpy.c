@@ -48,8 +48,8 @@ CTEST(axpy,daxpy_inc_0)
 	BLASFUNC(daxpy)(&N,&a,x1,&incX,y1,&incY);
 
 	for(i=0; i<N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
 
@@ -67,8 +67,8 @@ CTEST(axpy,zaxpy_inc_0)
 	BLASFUNC(zaxpy)(&N,a,x1,&incX,y1,&incY);
 
 	for(i=0; i<2*N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
 
@@ -86,8 +86,8 @@ CTEST(axpy,saxpy_inc_0)
 	BLASFUNC(saxpy)(&N,&a,x1,&incX,y1,&incY);
 
 	for(i=0; i<N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
 
@@ -105,7 +105,7 @@ CTEST(axpy,caxpy_inc_0)
 	BLASFUNC(caxpy)(&N,a,x1,&incX,y1,&incY);
 
 	for(i=0; i<2*N; i++){
-		ASSERT_DBL_NEAR_TOL(x1[i], x2[i], DOUBLE_EPS);
-		ASSERT_DBL_NEAR_TOL(y1[i], y2[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(x2[i], x1[i], DOUBLE_EPS);
+		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }

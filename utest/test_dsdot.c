@@ -44,6 +44,6 @@ CTEST(dsdot,dsdot_n_1)
 	double res1=0.0f, res2=-0.00239335360107;
 
 	res1=BLASFUNC(dsdot)(&n, &x, &incx, &y, &incy);
-	ASSERT_DBL_NEAR_TOL(res1, res2, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
 
 }

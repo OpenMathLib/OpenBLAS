@@ -33,7 +33,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 #include <complex.h>
-#include <stdio.h>
 
 CTEST( zdotu,zdotu_n_1)
 {
@@ -50,11 +49,11 @@ CTEST( zdotu,zdotu_n_1)
 #endif
 	
 #ifdef OPENBLAS_COMPLEX_STRUCT
-	ASSERT_DBL_NEAR_TOL(result1.real, result2.real, DOUBLE_EPS);
-	ASSERT_DBL_NEAR_TOL(result1.imag, result2.imag, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result2.real, result1.real, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result2.imag, result1.imag, DOUBLE_EPS);
 #else
-	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
-	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(creal(result2), creal(result1), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(cimag(result2), cimag(result1), DOUBLE_EPS);
 #endif
 	
 }
@@ -74,11 +73,11 @@ CTEST(zdotu, zdotu_offset_1)
 #endif
 	
 #ifdef OPENBLAS_COMPLEX_STRUCT
-	ASSERT_DBL_NEAR_TOL(result1.real, result2.real, DOUBLE_EPS);
-	ASSERT_DBL_NEAR_TOL(result1.imag, result2.imag, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result2.real, result1.real, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result2.imag, result1.imag, DOUBLE_EPS);
 #else
-	ASSERT_DBL_NEAR_TOL(creal(result1), creal(result2), DOUBLE_EPS);
-	ASSERT_DBL_NEAR_TOL(cimag(result1), cimag(result2), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(creal(result2), creal(result1), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(cimag(result2), cimag(result1), DOUBLE_EPS);
 #endif
 
 }
