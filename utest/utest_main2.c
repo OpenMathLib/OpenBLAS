@@ -70,7 +70,7 @@ CTEST (drotmg,rotmg)
 	  te_param[i]=tr_param[i]=0.0;
 	}
 
-	//reference values as calulated by netlib blas
+	//reference values as calculated by netlib blas
 
         tr_d1= 0.1732048;
         tr_d2= 0.03840234;
@@ -118,7 +118,7 @@ CTEST (drotmg,rotmg_issue1452)
 	  te_param[i]=tr_param[i]=0.0;
 	}
 	te_param[3]=1./4096.;
-	//reference values as calulated by gonum blas with rotmg rewritten to Hopkins' algorithm
+	//reference values as calculated by gonum blas with rotmg rewritten to Hopkins' algorithm
 	tr_d1= 0.99995592822897;
 	tr_d2= 0.98981219860583;
 	tr_x1= 0.03662270484346;
@@ -162,7 +162,7 @@ CTEST(drotmg, rotmg_D1eqD2_X1eqX2)
 	  te_param[i]=tr_param[i]=0.0;
 	}
 	
-	//reference values as calulated by netlib blas
+	//reference values as calculated by netlib blas
         tr_d1= 1.0;
         tr_d2= 1.0;
         tr_x1= 16.0;
@@ -202,7 +202,7 @@ CTEST(drotmg, drotmg_D1_big_D2_big_flag_zero)
 	te_y1= tr_y1=7.;
 
 	
-	//reference values as calulated by gonum 
+	//reference values as calculated by gonum 
         tr_d1= 68.96627824858757;
         tr_d2= 34.483139124293785;
         tr_x1= 45312.;
