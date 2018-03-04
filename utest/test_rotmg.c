@@ -53,7 +53,7 @@ CTEST (drotmg,rotmg)
 	  te_param[i]=tr_param[i]=0.0;
 	}
 
-	//reference values as calulated by netlib blas
+	//reference values as calculated by netlib blas
 
         tr_d1= 0.1732048;
         tr_d2= 0.03840234;
