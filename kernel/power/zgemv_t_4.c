@@ -27,13 +27,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#define NBMAX 1024
+#define NBMAX 4096
 #define HAVE_KERNEL_4x4_VEC 1
 #define HAVE_KERNEL_4x2_VEC 1
 #define HAVE_KERNEL_4x1_VEC 1
 
 #if defined(HAVE_KERNEL_4x4_VEC) || defined(HAVE_KERNEL_4x2_VEC) || defined(HAVE_KERNEL_4x1_VEC)
-#include <vecintrin.h> 
+#include <altivec.h> 
 #endif
 
 #ifdef HAVE_KERNEL_4x4_VEC_ASM
@@ -89,8 +89,8 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         register __vector double va3_2 = *(__vector double*) (&a3[i + 4]);
         register __vector double va3_3 = *(__vector double*) (&a3[i + 6]);
 
-        register __vector double vxr_0 = vec_permi(vx_0, vx_0, 2);
-        register __vector double vxr_1 = vec_permi(vx_1, vx_1, 2);
+        register __vector double vxr_0 = vec_xxpermdi(vx_0, vx_0, 2);
+        register __vector double vxr_1 = vec_xxpermdi(vx_1, vx_1, 2);
 
         i += 8;
 
@@ -111,7 +111,7 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
 
         vtemp1_p += vx_1*va1_1;
         vtemp1_r += vxr_1*va1_1;
-        vxr_0 = vec_permi(vx_2, vx_2, 2);
+        vxr_0 = vec_xxpermdi(vx_2, vx_2, 2);
         vtemp2_p += vx_1*va2_1;
         vtemp2_r += vxr_1*va2_1;
 
@@ -120,7 +120,7 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
 
         vtemp0_p += vx_2*va0_2;
         vtemp0_r += vxr_0*va0_2;
-        vxr_1 = vec_permi(vx_3, vx_3, 2);
+        vxr_1 = vec_xxpermdi(vx_3, vx_3, 2);
 
         vtemp1_p += vx_2*va1_2;
         vtemp1_r += vxr_0*va1_2;
@@ -298,8 +298,8 @@ static void zgemv_kernel_4x2(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         register __vector double va1_2 = *(__vector double*) (&a1[i + 4]);
         register __vector double va1_3 = *(__vector double*) (&a1[i + 6]);
 
-        register __vector double vxr_0 = vec_permi(vx_0, vx_0, 2);
-        register __vector double vxr_1 = vec_permi(vx_1, vx_1, 2);
+        register __vector double vxr_0 = vec_xxpermdi(vx_0, vx_0, 2);
+        register __vector double vxr_1 = vec_xxpermdi(vx_1, vx_1, 2);
 
         i += 8;
 
@@ -309,13 +309,13 @@ static void zgemv_kernel_4x2(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         vtemp1_p += vx_0*va1;
         vtemp1_r += vxr_0*va1;
 
-        vxr_0 = vec_permi(vx_2, vx_2, 2);  
+        vxr_0 = vec_xxpermdi(vx_2, vx_2, 2);  
         vtemp0_p += vx_1*va0_1;
         vtemp0_r += vxr_1*va0_1;
 
         vtemp1_p += vx_1*va1_1;
         vtemp1_r += vxr_1*va1_1;
-        vxr_1 = vec_permi(vx_3, vx_3, 2);
+        vxr_1 = vec_xxpermdi(vx_3, vx_3, 2);
 
         vtemp0_p += vx_2*va0_2;
         vtemp0_r += vxr_0*va0_2;
@@ -433,19 +433,19 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT al
         register __vector double va0_2 = *(__vector double*) (&a0[i + 4]);
         register __vector double va0_3 = *(__vector double*) (&a0[i + 6]);
        
-        register __vector double vxr_0 = vec_permi(vx_0, vx_0, 2);
-        register __vector double vxr_1 = vec_permi(vx_1, vx_1, 2);
+        register __vector double vxr_0 = vec_xxpermdi(vx_0, vx_0, 2);
+        register __vector double vxr_1 = vec_xxpermdi(vx_1, vx_1, 2);
 
         i += 8;
 
         vtemp0_p += vx_0*va0;
         vtemp0_r += vxr_0*va0;
  
-        vxr_0 = vec_permi(vx_2, vx_2, 2);  
+        vxr_0 = vec_xxpermdi(vx_2, vx_2, 2);  
         vtemp0_p += vx_1*va0_1;
         vtemp0_r += vxr_1*va0_1;
  
-        vxr_1 = vec_permi(vx_3, vx_3, 2);
+        vxr_1 = vec_xxpermdi(vx_3, vx_3, 2);
 
         vtemp0_p += vx_2*va0_2;
         vtemp0_r += vxr_0*va0_2;
