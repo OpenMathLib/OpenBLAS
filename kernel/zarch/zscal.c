@@ -30,74 +30,119 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
 
 static void   zscal_kernel_8(BLASLONG n, FLOAT da_r,FLOAT da_i, FLOAT *x) {
-    __asm__(
+    BLASLONG tempR1 ;
+    __asm__ (
+             "pfd    2, 0(%[x_tmp]) \n\t" 
+#if !defined(CONJ)
+            "lgdr   %[t1],%[alpha_r]    \n\t" 
+            "vlvgp  %%v28,%[t1],%[t1]   \n\t" //load both from disjoint          
+            "lgdr   %[t1],%[alpha_i]    \n\t"  
+            "vlvgp  %%v29,%[t1],%[t1]   \n\t" //load both from disjoint   
+            "vflcdb %%v29,%%v29       \n\t" //complement both
+            "vlvgg  %%v29,%[t1],1     \n\t" //restore 2nd  so that  {-alpha_i, alpha_i}   
 
-            "pfd    1, 0(%[x_ptr])     \n\t"
-            "lgdr   %%r0,%[alpha_r]    \n\t"
-            "vlvgp  %%v24,%%r0,%%r0    \n\t"
-            "lgdr   %%r0,%[alpha_i]    \n\t"
-            "vlvgp  %%v25,%%r0,%%r0    \n\t"                
-            "sllg   %%r0,%[n],4        \n\t"
-            "agr    %%r0,%[x_ptr]      \n\t"
+#else
+            "lgdr   %[t1],%[alpha_i]    \n\t"  
+            "vlvgp  %%v29,%[t1],%[t1]   \n\t" //load both from disjoint        
+            "lgdr   %[t1],%[alpha_r]    \n\t" 
+            "vlvgp  %%v28,%[t1],%[t1]   \n\t" //load both from disjoint    
+            "vflcdb %%v28,%%v28         \n\t" //complement both
+            "vlvgg  %%v28,%[t1],0       \n\t" //restore 1st  so that  {alpha_r,-alpha_r}   
+#endif           
+                               
+            "xgr    %[t1],%[t1]        \n\t" 
+            "sllg   %[tmp],%[tmp],4    \n\t" 
+            "vl     %%v20 ,  0(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v21 , 16(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v22 , 32(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v23 , 48(%[t1],%[x_tmp])  \n\t"   
+                      
+            "lay  %[tmp],-64 (%[tmp]) \n\t" //tmp-=64 so that t1+64 can break tmp condition
+            "j 2f \n\t"
             ".align 16 \n\t"
             "1:     \n\t"
-            "pfd 2, 256(%[x_ptr] ) \n\t"
+  
+            "vpdi   %%v24 , %%v20, %%v20, 4     \n\t"
+            "vpdi   %%v25 , %%v21, %%v21, 4     \n\t"
+            "vpdi   %%v26 , %%v22, %%v22, 4     \n\t"
+            "vpdi   %%v27 , %%v23, %%v23, 4     \n\t" 
+            "vfmdb  %%v16,  %%v20, %%v28        \n\t"
+            "vfmdb  %%v17,  %%v21, %%v28        \n\t"
+            "vfmdb  %%v18,  %%v22, %%v28        \n\t"
+            "vfmdb  %%v19,  %%v23, %%v28        \n\t"
+            "vl     %%v20,  64(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v21,  80(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v22,  96(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v23, 112(%[t1],%[x_tmp])  \n\t" 
+            "vfmadb %%v16,  %%v24, %%v29, %%v16 \n\t"
+            "vfmadb %%v17,  %%v25, %%v29, %%v17 \n\t" 
+            "vfmadb %%v18,  %%v26, %%v29, %%v18 \n\t"
+            "vfmadb %%v19,  %%v27, %%v29, %%v19 \n\t"
 
-            "vleg   %%v20 ,  0(%[x_ptr]),0  \n\t" 
-            "vleg   %%v21 ,  8(%[x_ptr]),0  \n\t"
-            "vleg   %%v20 , 16(%[x_ptr]),1  \n\t"
-            "vleg   %%v21 , 24(%[x_ptr]),1  \n\t"
-            "vleg   %%v22 , 32(%[x_ptr]),0  \n\t" 
-            "vleg   %%v23 , 40(%[x_ptr]),0  \n\t"
-            "vleg   %%v22 , 48(%[x_ptr]),1  \n\t"
-            "vleg   %%v23 , 56(%[x_ptr]),1  \n\t"
-            "vfmdb  %%v16,  %%v21, %%v25    \n\t"
-            "vfmdb  %%v17,  %%v20, %%v25    \n\t"
-            "vfmdb  %%v18,  %%v23, %%v25    \n\t"
-            "vfmdb  %%v19,  %%v22, %%v25    \n\t"
-            "vfmsdb %%v16, %%v20, %%v24 ,%%v16  \n\t"
-            "vfmadb %%v17, %%v21, %%v24, %%v17  \n\t"
-            "vfmsdb %%v18, %%v22, %%v24, %%v18  \n\t"
-            "vfmadb %%v19, %%v23, %%v24, %%v19  \n\t"
-            "vsteg  %%v16 ,  0(%[x_ptr]),0  \n\t" 
-            "vsteg  %%v17 ,  8(%[x_ptr]),0  \n\t"
-            "vsteg  %%v16 , 16(%[x_ptr]),1  \n\t"
-            "vsteg  %%v17 , 24(%[x_ptr]),1  \n\t"
-            "vsteg  %%v18 , 32(%[x_ptr]),0  \n\t" 
-            "vsteg  %%v19 , 40(%[x_ptr]),0  \n\t"
-            "vsteg  %%v18 , 48(%[x_ptr]),1  \n\t"
-            "vsteg  %%v19 , 56(%[x_ptr]),1  \n\t"
-            "vleg   %%v20 ,  64(%[x_ptr]),0 \n\t" 
-            "vleg   %%v21 , 72(%[x_ptr]),0  \n\t"
-            "vleg   %%v20 , 80(%[x_ptr]),1  \n\t"
-            "vleg   %%v21 , 88(%[x_ptr]),1  \n\t"
-            "vleg   %%v22 , 96(%[x_ptr]),0  \n\t" 
-            "vleg   %%v23 , 104(%[x_ptr]),0 \n\t"
-            "vleg   %%v22 , 112(%[x_ptr]),1 \n\t"
-            "vleg   %%v23 , 120(%[x_ptr]),1 \n\t"
-            "vfmdb  %%v16,  %%v21, %%v25    \n\t"
-            "vfmdb  %%v17,  %%v20, %%v25    \n\t"
-            "vfmdb  %%v18,  %%v23, %%v25    \n\t"
-            "vfmdb  %%v19,  %%v22, %%v25    \n\t"
-            "vfmsdb %%v16, %%v20, %%v24 ,%%v16  \n\t"
-            "vfmadb %%v17, %%v21, %%v24, %%v17  \n\t"
-            "vfmsdb %%v18, %%v22, %%v24, %%v18  \n\t"
-            "vfmadb %%v19, %%v23, %%v24, %%v19  \n\t"
-            "vsteg  %%v16 , 64(%[x_ptr]),0  \n\t" 
-            "vsteg  %%v17 , 72(%[x_ptr]),0  \n\t"
-            "vsteg  %%v16 , 80(%[x_ptr]),1  \n\t"
-            "vsteg  %%v17 , 88(%[x_ptr]),1  \n\t"
-            "vsteg  %%v18 ,  96(%[x_ptr]),0 \n\t" 
-            "vsteg  %%v19 , 104(%[x_ptr]),0 \n\t"
-            "vsteg  %%v18 , 112(%[x_ptr]),1 \n\t"
-            "vsteg  %%v19 , 120(%[x_ptr]),1 \n\t"
-   
-            "la     %[x_ptr],128(%[x_ptr])      \n\t"
-            "clgrjl %[x_ptr],%%r0,1b        \n\t"
-            : [mem] "+m" (*(double (*)[2*n])x) ,[x_ptr] "+&a"(x)
-            : [n] "r"(n), [alpha_r] "f"(da_r),[alpha_i] "f"(da_i)
-            : "cc", "r0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25"
+
+            "vst    %%v16 ,  0(%[t1],%[x_tmp])  \n\t" 
+            "vst    %%v17 , 16(%[t1],%[x_tmp])  \n\t" 
+            "vst    %%v18 , 32(%[t1],%[x_tmp])  \n\t" 
+            "vst    %%v19 , 48(%[t1],%[x_tmp])  \n\t"   
+    
+            "la     %[t1],64(%[t1] ) \n\t" 
+            "2:  \n\t" 
+            "pfd    2, 256(%[t1],%[x_tmp])  \n\t"  
+            "vpdi   %%v24 , %%v20, %%v20, 4     \n\t"
+            "vpdi   %%v25 , %%v21, %%v21, 4     \n\t"
+            "vpdi   %%v26 , %%v22, %%v22, 4     \n\t"
+            "vpdi   %%v27 , %%v23, %%v23, 4     \n\t" 
+
+            "vfmdb  %%v30,  %%v20, %%v28        \n\t"
+            "vfmdb  %%v31,  %%v21, %%v28        \n\t"
+            "vfmdb  %%v6,   %%v22, %%v28        \n\t"
+            "vfmdb  %%v7,   %%v23, %%v28       \n\t"
+
+            "vl     %%v20 , 64(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v21 , 80(%[t1],%[x_tmp])  \n\t"  
+            "vl     %%v22 , 96(%[t1],%[x_tmp])  \n\t" 
+            "vl     %%v23 ,112(%[t1],%[x_tmp])  \n\t" 
+
+            "vfmadb %%v30, %%v24, %%v29, %%v30  \n\t"
+            "vfmadb %%v31, %%v25, %%v29, %%v31  \n\t"
+            "vfmadb %%v6,  %%v26, %%v29, %%v6   \n\t"
+            "vfmadb %%v7,  %%v27, %%v29, %%v7   \n\t"
+
+
+            "vst    %%v30 ,  0(%[t1],%[x_tmp])  \n\t" 
+            "vst    %%v31 , 16(%[t1],%[x_tmp])  \n\t" 
+            "vst    %%v6 ,  32(%[t1],%[x_tmp])  \n\t" 
+            "vst    %%v7 ,  48(%[t1],%[x_tmp])  \n\t"  
+ 
+            "la     %[t1],64(%[t1] ) \n\t"
+          
+
+             "clgrjl %[t1],%[tmp],1b         \n\t"   
+//----------------------------------------------------------------------
+            "vfmdb  %%v16,  %%v20, %%v28        \n\t"
+            "vfmdb  %%v17,  %%v21, %%v28        \n\t"
+            "vfmdb  %%v18,  %%v22, %%v28        \n\t"
+            "vfmdb  %%v19,  %%v23, %%v28        \n\t"
+            "vpdi   %%v24 , %%v20, %%v20, 4     \n\t"
+            "vpdi   %%v25 , %%v21, %%v21, 4     \n\t" 
+            "vpdi   %%v26 , %%v22, %%v22, 4     \n\t"
+            "vpdi   %%v27 , %%v23, %%v23, 4     \n\t"             
+            "vfmadb %%v16,  %%v24, %%v29, %%v16 \n\t"
+            "vfmadb %%v17,  %%v25, %%v29, %%v17 \n\t"
+            "vfmadb %%v18,  %%v26, %%v29, %%v18 \n\t"
+            "vfmadb %%v19,  %%v27, %%v29, %%v19 \n\t"
+
+            "vst   %%v16 ,  0(%[t1],%[x_tmp])   \n\t" 
+            "vst   %%v17 , 16(%[t1],%[x_tmp])   \n\t" 
+            "vst   %%v18 , 32(%[t1],%[x_tmp])   \n\t" 
+            "vst   %%v19 , 48(%[t1],%[x_tmp])   \n\t"   
+
+            : [mem_x] "+m" (*(double (*)[2*n])x),[tmp]"+&r"(n) ,  [t1] "=&a" (tempR1) 
+            : [x_tmp] "a"(x),  [alpha_r] "f"(da_r),[alpha_i] "f"(da_i)
+            : "cc",  "v6","v7", "v16",
+            "v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
             );
+            
 
 
 }

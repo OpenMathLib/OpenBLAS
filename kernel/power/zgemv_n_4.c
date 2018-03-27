@@ -35,18 +35,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HAVE_KERNEL_ADDY 1
 
 #if defined(HAVE_KERNEL_4x4_VEC) || defined(HAVE_KERNEL_4x2_VEC) || defined(HAVE_KERNEL_4x1_VEC)
-#include <vecintrin.h> 
+#include <altivec.h> 
 #endif
 
 // 
-#define NBMAX 1024
+#define NBMAX 4096
 
 #ifdef HAVE_KERNEL_4x4_VEC_ASM
 
 #elif HAVE_KERNEL_4x4_VEC
 
 static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y) {
-    BLASLONG i;
+  
     FLOAT *a0, *a1, *a2, *a3;
     a0 = ap;
     a1 = ap + lda;
@@ -80,81 +80,114 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
     register __vector double *vptr_a1 = (__vector double *) a1;
     register __vector double *vptr_a2 = (__vector double *) a2;
     register __vector double *vptr_a3 = (__vector double *) a3;
+ 
+   
+    register __vector double vy_0;
+    register __vector double va0;
+    register __vector double va1;
+    register __vector double va2;
+    register __vector double va3;
+    register __vector double vy_1;
+    register __vector double va0_1;
+    register __vector double va1_1;
+    register __vector double va2_1;
+    register __vector double va3_1;
+    register __vector double vy_2;
+    register __vector double va0_2;
+    register __vector double va1_2;
+    register __vector double va2_2;
+    register __vector double va3_2;
+    register __vector double vy_3;
+    register __vector double va0_3;
+    register __vector double va1_3;
+    register __vector double va2_3;
+    register __vector double va3_3;
+      
+     BLASLONG  i = 0; 
+    while (i < n) {
 
-    for (i = 0; i < n; i += 4) {
+        vy_0 = vy[i];
+        va0 = vptr_a0[i];
+        va1 = vptr_a1[i];
+        va2 = vptr_a2[i];
+        va3 = vptr_a3[i];
 
-        register __vector double vy_0 = vy[i];
-        register __vector double vy_1 = vy[i + 1];
-        register __vector double vy_2 = vy[i + 2];
-        register __vector double vy_3 = vy[i + 3];
+        vy_1 = vy[i + 1];
+        va0_1 = vptr_a0[i + 1];
+        va1_1 = vptr_a1[i + 1];
+        va2_1 = vptr_a2[i + 1];
+        va3_1 = vptr_a3[i + 1];
 
-        register __vector double va0 = vptr_a0[i];
-        register __vector double va0_1 = vptr_a0[i + 1];
-        register __vector double va0_2 = vptr_a0[i + 2];
-        register __vector double va0_3 = vptr_a0[i + 3];
+        vy_2 = vy[i + 2];
+        va0_2 = vptr_a0[i + 2];
+        va1_2 = vptr_a1[i + 2];
+        va2_2 = vptr_a2[i + 2];
+        va3_2 = vptr_a3[i + 2];
 
-        register __vector double va1 = vptr_a1[i];
-        register __vector double va1_1 = vptr_a1[i + 1];
-        register __vector double va1_2 = vptr_a1[i + 2];
-        register __vector double va1_3 = vptr_a1[i + 3];
-
-        register __vector double va2 = vptr_a2[i];
-        register __vector double va2_1 = vptr_a2[i + 1];
-        register __vector double va2_2 = vptr_a2[i + 2];
-        register __vector double va2_3 = vptr_a2[i + 3];
-
-        register __vector double va3 = vptr_a3[i];
-        register __vector double va3_1 = vptr_a3[i + 1];
-        register __vector double va3_2 = vptr_a3[i + 2];
-        register __vector double va3_3 = vptr_a3[i + 3];
+        vy_3 = vy[i + 3];
+        va0_3 = vptr_a0[i + 3];
+        va1_3 = vptr_a1[i + 3];
+        va2_3 = vptr_a2[i + 3];
+        va3_3 = vptr_a3[i + 3];
 
         vy_0 += va0*vx0_r;
         vy_1 += va0_1*vx0_r;
         vy_2 += va0_2*vx0_r;
         vy_3 += va0_3*vx0_r;
+ 
 
         vy_0 += va1*vx1_r;
         vy_1 += va1_1*vx1_r;
         vy_2 += va1_2*vx1_r;
         vy_3 += va1_3*vx1_r;
 
-        va0 = vec_permi(va0, va0, 2);
-        va0_1 = vec_permi(va0_1, va0_1, 2);
-        va0_2 = vec_permi(va0_2, va0_2, 2);
-        va0_3 = vec_permi(va0_3, va0_3, 2);
+        va0 = vec_xxpermdi(va0, va0, 2);
+        va0_1 = vec_xxpermdi(va0_1, va0_1, 2);
+
 
         vy_0 += va2*vx2_r;
         vy_1 += va2_1*vx2_r;
+        va0_2 = vec_xxpermdi(va0_2, va0_2, 2);
+        va0_3 = vec_xxpermdi(va0_3, va0_3, 2);
         vy_2 += va2_2*vx2_r;
         vy_3 += va2_3*vx2_r;
 
-        va1 = vec_permi(va1, va1, 2);
-        va1_1 = vec_permi(va1_1, va1_1, 2);
-        va1_2 = vec_permi(va1_2, va1_2, 2);
-        va1_3 = vec_permi(va1_3, va1_3, 2);
+        va1 = vec_xxpermdi(va1, va1, 2);
+        va1_1 = vec_xxpermdi(va1_1, va1_1, 2);
+
 
         vy_0 += va3*vx3_r;
         vy_1 += va3_1*vx3_r;
+
+        va1_2 = vec_xxpermdi(va1_2, va1_2, 2);
+        va1_3 = vec_xxpermdi(va1_3, va1_3, 2);
+
         vy_2 += va3_2*vx3_r;
         vy_3 += va3_3*vx3_r;
 
-        va2 = vec_permi(va2, va2, 2);
-        va2_1 = vec_permi(va2_1, va2_1, 2);
-        va2_2 = vec_permi(va2_2, va2_2, 2);
-        va2_3 = vec_permi(va2_3, va2_3, 2);
+        va2 = vec_xxpermdi(va2, va2, 2);
+        va2_1 = vec_xxpermdi(va2_1, va2_1, 2);
+
 
         vy_0 += va0*vx0_i;
         vy_1 += va0_1*vx0_i;
+
+        va2_2 = vec_xxpermdi(va2_2, va2_2, 2);
+        va2_3 = vec_xxpermdi(va2_3, va2_3, 2);
+
         vy_2 += va0_2*vx0_i;
         vy_3 += va0_3*vx0_i;
 
-        va3 = vec_permi(va3, va3, 2);
-        va3_1 = vec_permi(va3_1, va3_1, 2);
-        va3_2 = vec_permi(va3_2, va3_2, 2);
-        va3_3 = vec_permi(va3_3, va3_3, 2);
+        va3 = vec_xxpermdi(va3, va3, 2);
+        va3_1 = vec_xxpermdi(va3_1, va3_1, 2);
+
 
         vy_0 += va1*vx1_i;
         vy_1 += va1_1*vx1_i;
+
+        va3_2 = vec_xxpermdi(va3_2, va3_2, 2);
+        va3_3 = vec_xxpermdi(va3_3, va3_3, 2);
+
         vy_2 += va1_2*vx1_i;
         vy_3 += va1_3*vx1_i;
 
@@ -173,7 +206,12 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         vy[i + 2] = vy_2;
         vy[i + 3] = vy_3;
 
+
+        i += 4;
+         
+       
     }
+
 }
 #else
 
@@ -260,20 +298,20 @@ static void zgemv_kernel_4x2(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         vy_2 += va0_2*vx0_r;
         vy_3 += va0_3*vx0_r;
 
-        va0 = vec_permi(va0, va0, 2);
-        va0_1 = vec_permi(va0_1, va0_1, 2);
-        va0_2 = vec_permi(va0_2, va0_2, 2);
-        va0_3 = vec_permi(va0_3, va0_3, 2);
+        va0 = vec_xxpermdi(va0, va0, 2);
+        va0_1 = vec_xxpermdi(va0_1, va0_1, 2);
+        va0_2 = vec_xxpermdi(va0_2, va0_2, 2);
+        va0_3 = vec_xxpermdi(va0_3, va0_3, 2);
 
         vy_0 += va1*vx1_r;
         vy_1 += va1_1*vx1_r;
         vy_2 += va1_2*vx1_r;
         vy_3 += va1_3*vx1_r;
 
-        va1 = vec_permi(va1, va1, 2);
-        va1_1 = vec_permi(va1_1, va1_1, 2);
-        va1_2 = vec_permi(va1_2, va1_2, 2);
-        va1_3 = vec_permi(va1_3, va1_3, 2);
+        va1 = vec_xxpermdi(va1, va1, 2);
+        va1_1 = vec_xxpermdi(va1_1, va1_1, 2);
+        va1_2 = vec_xxpermdi(va1_2, va1_2, 2);
+        va1_3 = vec_xxpermdi(va1_3, va1_3, 2);
 
         vy_0 += va0*vx0_i;
         vy_1 += va0_1*vx0_i;
@@ -356,10 +394,10 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
         vy_2 += va0_2*vx0_r;
         vy_3 += va0_3*vx0_r;
 
-        va0 = vec_permi(va0, va0, 2);
-        va0_1 = vec_permi(va0_1, va0_1, 2);
-        va0_2 = vec_permi(va0_2, va0_2, 2);
-        va0_3 = vec_permi(va0_3, va0_3, 2);
+        va0 = vec_xxpermdi(va0, va0, 2);
+        va0_1 = vec_xxpermdi(va0_1, va0_1, 2);
+        va0_2 = vec_xxpermdi(va0_2, va0_2, 2);
+        va0_3 = vec_xxpermdi(va0_3, va0_3, 2);
 
         vy_0 += va0*vx0_i;
         vy_1 += va0_1*vx0_i;
@@ -418,14 +456,14 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
         register __vector double *vptr_y1 = (__vector double *) (dest + inc_dest);
         register __vector double *vptr_y2 = (__vector double *) (dest + 2 * inc_dest);
         register __vector double *vptr_y3 = (__vector double *) (dest + 3 * inc_dest);
-        BLASLONG dest_t=0;
-        BLASLONG add_dest=inc_dest<<1; //inc_dest is already multiplied by 2, so for vector 4  we just multiply 2 times
+        BLASLONG dest_t = 0;
+        BLASLONG add_dest = inc_dest << 1; //inc_dest is already multiplied by 2, so for vector 4  we just multiply 2 times
         for (i = 0; i < n; i += 4) {
 
-            register __vector double vy_0=vptr_y[dest_t];
-            register __vector double vy_1=vptr_y1[dest_t];
-            register __vector double vy_2=vptr_y2[dest_t];
-            register __vector double vy_3=vptr_y3[dest_t];
+            register __vector double vy_0 = vptr_y[dest_t];
+            register __vector double vy_1 = vptr_y1[dest_t];
+            register __vector double vy_2 = vptr_y2[dest_t];
+            register __vector double vy_3 = vptr_y3[dest_t];
 
             register __vector double vsrc = vptr_src[i];
             register __vector double vsrc_1 = vptr_src[i + 1];
@@ -437,10 +475,10 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
             vy_2 += vsrc_2*valpha_r;
             vy_3 += vsrc_3*valpha_r;
 
-            vsrc = vec_permi(vsrc, vsrc, 2);
-            vsrc_1 = vec_permi(vsrc_1, vsrc_1, 2);
-            vsrc_2 = vec_permi(vsrc_2, vsrc_2, 2);
-            vsrc_3 = vec_permi(vsrc_3, vsrc_3, 2);
+            vsrc = vec_xxpermdi(vsrc, vsrc, 2);
+            vsrc_1 = vec_xxpermdi(vsrc_1, vsrc_1, 2);
+            vsrc_2 = vec_xxpermdi(vsrc_2, vsrc_2, 2);
+            vsrc_3 = vec_xxpermdi(vsrc_3, vsrc_3, 2);
 
             vy_0 += vsrc*valpha_i;
             vy_1 += vsrc_1*valpha_i;
@@ -451,8 +489,8 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
             vptr_y1[dest_t ] = vy_1;
             vptr_y2[dest_t] = vy_2;
             vptr_y3[dest_t] = vy_3;
-            
-            dest_t+=add_dest;
+
+            dest_t += add_dest;
 
         }
 
@@ -461,10 +499,10 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
         register __vector double *vptr_y = (__vector double *) dest;
         for (i = 0; i < n; i += 4) {
 
-            register __vector double vy_0=vptr_y[i];
-            register __vector double vy_1=vptr_y[i+1];
-            register __vector double vy_2=vptr_y[i+2];
-            register __vector double vy_3=vptr_y[i+3];
+            register __vector double vy_0 = vptr_y[i];
+            register __vector double vy_1 = vptr_y[i + 1];
+            register __vector double vy_2 = vptr_y[i + 2];
+            register __vector double vy_3 = vptr_y[i + 3];
 
             register __vector double vsrc = vptr_src[i];
             register __vector double vsrc_1 = vptr_src[i + 1];
@@ -476,10 +514,10 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
             vy_2 += vsrc_2*valpha_r;
             vy_3 += vsrc_3*valpha_r;
 
-            vsrc = vec_permi(vsrc, vsrc, 2);
-            vsrc_1 = vec_permi(vsrc_1, vsrc_1, 2);
-            vsrc_2 = vec_permi(vsrc_2, vsrc_2, 2);
-            vsrc_3 = vec_permi(vsrc_3, vsrc_3, 2);
+            vsrc = vec_xxpermdi(vsrc, vsrc, 2);
+            vsrc_1 = vec_xxpermdi(vsrc_1, vsrc_1, 2);
+            vsrc_2 = vec_xxpermdi(vsrc_2, vsrc_2, 2);
+            vsrc_3 = vec_xxpermdi(vsrc_3, vsrc_3, 2);
 
             vy_0 += vsrc*valpha_i;
             vy_1 += vsrc_1*valpha_i;
@@ -570,351 +608,351 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
 }
 #endif
 
-    int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT * buffer) {
-        BLASLONG i;
-        BLASLONG j;
-        FLOAT *a_ptr;
-        FLOAT *x_ptr;
-        FLOAT *y_ptr;
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT * buffer) {
+    BLASLONG i;
+    BLASLONG j;
+    FLOAT *a_ptr;
+    FLOAT *x_ptr;
+    FLOAT *y_ptr;
 
-        BLASLONG n1;
-        BLASLONG m1;
-        BLASLONG m2;
-        BLASLONG m3;
-        BLASLONG n2;
+    BLASLONG n1;
+    BLASLONG m1;
+    BLASLONG m2;
+    BLASLONG m3;
+    BLASLONG n2;
 
-        FLOAT xbuffer[8], *ybuffer;
+    FLOAT xbuffer[8], *ybuffer;
 
-        if (m < 1) return (0);
-        if (n < 1) return (0);
+    if (m < 1) return (0);
+    if (n < 1) return (0);
 
-        ybuffer = buffer;
+    ybuffer = buffer;
 
-        inc_x *= 2;
-        inc_y *= 2;
-        lda *= 2;
+    inc_x *= 2;
+    inc_y *= 2;
+    lda *= 2;
 
-        n1 = n / 4;
-        n2 = n % 4;
+    n1 = n / 4;
+    n2 = n % 4;
 
-        m3 = m % 4;
-        m1 = m - (m % 4);
-        m2 = (m % NBMAX) - (m % 4);
+    m3 = m % 4;
+    m1 = m - (m % 4);
+    m2 = (m % NBMAX) - (m % 4);
 
-        y_ptr = y;
+    y_ptr = y;
 
-        BLASLONG NB = NBMAX;
+    BLASLONG NB = NBMAX;
 
-        while (NB == NBMAX) {
+    while (NB == NBMAX) {
 
-            m1 -= NB;
-            if (m1 < 0) {
-                if (m2 == 0) break;
-                NB = m2;
-            }
-
-            a_ptr = a;
-
-            x_ptr = x;
-            //zero_y(NB,ybuffer);
-            memset(ybuffer, 0, NB * 16);
-
-            if (inc_x == 2) {
-
-                for (i = 0; i < n1; i++) {
-                    zgemv_kernel_4x4(NB, lda, a_ptr, x_ptr, ybuffer);
-
-                    a_ptr += lda << 2;
-                    x_ptr += 8;
-                }
-
-                if (n2 & 2) {
-                    zgemv_kernel_4x2(NB, lda, a_ptr, x_ptr, ybuffer);
-                    x_ptr += 4;
-                    a_ptr += 2 * lda;
-
-                }
-
-                if (n2 & 1) {
-                    zgemv_kernel_4x1(NB, a_ptr, x_ptr, ybuffer);
-                    x_ptr += 2;
-                    a_ptr += lda;
-
-                }
-            } else {
-
-                for (i = 0; i < n1; i++) {
-
-                    xbuffer[0] = x_ptr[0];
-                    xbuffer[1] = x_ptr[1];
-                    x_ptr += inc_x;
-                    xbuffer[2] = x_ptr[0];
-                    xbuffer[3] = x_ptr[1];
-                    x_ptr += inc_x;
-                    xbuffer[4] = x_ptr[0];
-                    xbuffer[5] = x_ptr[1];
-                    x_ptr += inc_x;
-                    xbuffer[6] = x_ptr[0];
-                    xbuffer[7] = x_ptr[1];
-                    x_ptr += inc_x;
-
-                    zgemv_kernel_4x4(NB, lda, a_ptr, xbuffer, ybuffer);
-
-                    a_ptr += lda << 2;
-                }
-
-                for (i = 0; i < n2; i++) {
-                    xbuffer[0] = x_ptr[0];
-                    xbuffer[1] = x_ptr[1];
-                    x_ptr += inc_x;
-                    zgemv_kernel_4x1(NB, a_ptr, xbuffer, ybuffer);
-                    a_ptr += lda;
-
-                }
-
-            }
-
-            add_y(NB, ybuffer, y_ptr, inc_y, alpha_r, alpha_i);
-            a += 2 * NB;
-            y_ptr += NB * inc_y;
+        m1 -= NB;
+        if (m1 < 0) {
+            if (m2 == 0) break;
+            NB = m2;
         }
 
-        if (m3 == 0) return (0);
+        a_ptr = a;
 
-        if (m3 == 1) {
-            a_ptr = a;
-            x_ptr = x;
-            FLOAT temp_r = 0.0;
-            FLOAT temp_i = 0.0;
+        x_ptr = x;
+        //zero_y(NB,ybuffer);
+        memset(ybuffer, 0, NB * 16);
 
-            if (lda == 2 && inc_x == 2) {
+        if (inc_x == 2) {
 
-                for (i = 0; i < (n & -2); i += 2) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                    temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-                    temp_r += a_ptr[2] * x_ptr[2] - a_ptr[3] * x_ptr[3];
-                    temp_i += a_ptr[2] * x_ptr[3] + a_ptr[3] * x_ptr[2];
-#else
-                    temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-                    temp_r += a_ptr[2] * x_ptr[2] + a_ptr[3] * x_ptr[3];
-                    temp_i += a_ptr[2] * x_ptr[3] - a_ptr[3] * x_ptr[2];
-#endif
+            for (i = 0; i < n1; i++) {
+                zgemv_kernel_4x4(NB, lda, a_ptr, x_ptr, ybuffer);
 
-                    a_ptr += 4;
-                    x_ptr += 4;
-                }
+                a_ptr += lda << 2;
+                x_ptr += 8;
+            }
 
-                for (; i < n; i++) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                    temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-#else
-                    temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-#endif
-
-                    a_ptr += 2;
-                    x_ptr += 2;
-                }
-
-            } else {
-
-                for (i = 0; i < n; i++) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                    temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-#else
-                    temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-#endif
-
-                    a_ptr += lda;
-                    x_ptr += inc_x;
-                }
+            if (n2 & 2) {
+                zgemv_kernel_4x2(NB, lda, a_ptr, x_ptr, ybuffer);
+                x_ptr += 4;
+                a_ptr += 2 * lda;
 
             }
+
+            if (n2 & 1) {
+                zgemv_kernel_4x1(NB, a_ptr, x_ptr, ybuffer);
+                x_ptr += 2;
+                a_ptr += lda;
+
+            }
+        } else {
+
+            for (i = 0; i < n1; i++) {
+
+                xbuffer[0] = x_ptr[0];
+                xbuffer[1] = x_ptr[1];
+                x_ptr += inc_x;
+                xbuffer[2] = x_ptr[0];
+                xbuffer[3] = x_ptr[1];
+                x_ptr += inc_x;
+                xbuffer[4] = x_ptr[0];
+                xbuffer[5] = x_ptr[1];
+                x_ptr += inc_x;
+                xbuffer[6] = x_ptr[0];
+                xbuffer[7] = x_ptr[1];
+                x_ptr += inc_x;
+
+                zgemv_kernel_4x4(NB, lda, a_ptr, xbuffer, ybuffer);
+
+                a_ptr += lda << 2;
+            }
+
+            for (i = 0; i < n2; i++) {
+                xbuffer[0] = x_ptr[0];
+                xbuffer[1] = x_ptr[1];
+                x_ptr += inc_x;
+                zgemv_kernel_4x1(NB, a_ptr, xbuffer, ybuffer);
+                a_ptr += lda;
+
+            }
+
+        }
+
+        add_y(NB, ybuffer, y_ptr, inc_y, alpha_r, alpha_i);
+        a += 2 * NB;
+        y_ptr += NB * inc_y;
+    }
+
+    if (m3 == 0) return (0);
+
+    if (m3 == 1) {
+        a_ptr = a;
+        x_ptr = x;
+        FLOAT temp_r = 0.0;
+        FLOAT temp_i = 0.0;
+
+        if (lda == 2 && inc_x == 2) {
+
+            for (i = 0; i < (n & -2); i += 2) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+                temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+                temp_r += a_ptr[2] * x_ptr[2] - a_ptr[3] * x_ptr[3];
+                temp_i += a_ptr[2] * x_ptr[3] + a_ptr[3] * x_ptr[2];
+#else
+                temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+                temp_r += a_ptr[2] * x_ptr[2] + a_ptr[3] * x_ptr[3];
+                temp_i += a_ptr[2] * x_ptr[3] - a_ptr[3] * x_ptr[2];
+#endif
+
+                a_ptr += 4;
+                x_ptr += 4;
+            }
+
+            for (; i < n; i++) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+                temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+#else
+                temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+#endif
+
+                a_ptr += 2;
+                x_ptr += 2;
+            }
+
+        } else {
+
+            for (i = 0; i < n; i++) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+                temp_r += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+#else
+                temp_r += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+#endif
+
+                a_ptr += lda;
+                x_ptr += inc_x;
+            }
+
+        }
 #if !defined(XCONJ) 
-            y_ptr[0] += alpha_r * temp_r - alpha_i * temp_i;
-            y_ptr[1] += alpha_r * temp_i + alpha_i * temp_r;
+        y_ptr[0] += alpha_r * temp_r - alpha_i * temp_i;
+        y_ptr[1] += alpha_r * temp_i + alpha_i * temp_r;
 #else
-            y_ptr[0] += alpha_r * temp_r + alpha_i * temp_i;
-            y_ptr[1] -= alpha_r * temp_i - alpha_i * temp_r;
+        y_ptr[0] += alpha_r * temp_r + alpha_i * temp_i;
+        y_ptr[1] -= alpha_r * temp_i - alpha_i * temp_r;
 #endif
-            return (0);
-        }
-
-        if (m3 == 2) {
-            a_ptr = a;
-            x_ptr = x;
-            FLOAT temp_r0 = 0.0;
-            FLOAT temp_i0 = 0.0;
-            FLOAT temp_r1 = 0.0;
-            FLOAT temp_i1 = 0.0;
-
-            if (lda == 4 && inc_x == 2) {
-
-                for (i = 0; i < (n & -2); i += 2) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-
-                    temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
-
-                    temp_r0 += a_ptr[4] * x_ptr[2] - a_ptr[5] * x_ptr[3];
-                    temp_i0 += a_ptr[4] * x_ptr[3] + a_ptr[5] * x_ptr[2];
-                    temp_r1 += a_ptr[6] * x_ptr[2] - a_ptr[7] * x_ptr[3];
-                    temp_i1 += a_ptr[6] * x_ptr[3] + a_ptr[7] * x_ptr[2];
-#else
-                    temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
-
-                    temp_r0 += a_ptr[4] * x_ptr[2] + a_ptr[5] * x_ptr[3];
-                    temp_i0 += a_ptr[4] * x_ptr[3] - a_ptr[5] * x_ptr[2];
-                    temp_r1 += a_ptr[6] * x_ptr[2] + a_ptr[7] * x_ptr[3];
-                    temp_i1 += a_ptr[6] * x_ptr[3] - a_ptr[7] * x_ptr[2];
-#endif
-
-                    a_ptr += 8;
-                    x_ptr += 4;
-                }
-
-                for (; i < n; i++) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                    temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
-#else
-                    temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
-#endif
-
-                    a_ptr += 4;
-                    x_ptr += 2;
-                }
-
-            } else {
-
-                for (i = 0; i < n; i++) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                    temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
-#else
-                    temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
-#endif
-
-                    a_ptr += lda;
-                    x_ptr += inc_x;
-                }
-
-            }
-#if !defined(XCONJ) 
-            y_ptr[0] += alpha_r * temp_r0 - alpha_i * temp_i0;
-            y_ptr[1] += alpha_r * temp_i0 + alpha_i * temp_r0;
-            y_ptr += inc_y;
-            y_ptr[0] += alpha_r * temp_r1 - alpha_i * temp_i1;
-            y_ptr[1] += alpha_r * temp_i1 + alpha_i * temp_r1;
-#else
-            y_ptr[0] += alpha_r * temp_r0 + alpha_i * temp_i0;
-            y_ptr[1] -= alpha_r * temp_i0 - alpha_i * temp_r0;
-            y_ptr += inc_y;
-            y_ptr[0] += alpha_r * temp_r1 + alpha_i * temp_i1;
-            y_ptr[1] -= alpha_r * temp_i1 - alpha_i * temp_r1;
-#endif
-            return (0);
-        }
-
-        if (m3 == 3) {
-            a_ptr = a;
-            x_ptr = x;
-            FLOAT temp_r0 = 0.0;
-            FLOAT temp_i0 = 0.0;
-            FLOAT temp_r1 = 0.0;
-            FLOAT temp_i1 = 0.0;
-            FLOAT temp_r2 = 0.0;
-            FLOAT temp_i2 = 0.0;
-
-            if (lda == 6 && inc_x == 2) {
-
-                for (i = 0; i < n; i++) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                    temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
-                    temp_r2 += a_ptr[4] * x_ptr[0] - a_ptr[5] * x_ptr[1];
-                    temp_i2 += a_ptr[4] * x_ptr[1] + a_ptr[5] * x_ptr[0];
-#else
-                    temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
-                    temp_r2 += a_ptr[4] * x_ptr[0] + a_ptr[5] * x_ptr[1];
-                    temp_i2 += a_ptr[4] * x_ptr[1] - a_ptr[5] * x_ptr[0];
-#endif
-
-                    a_ptr += 6;
-                    x_ptr += 2;
-                }
-
-            } else {
-
-                for (i = 0; i < n; i++) {
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                    temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
-                    temp_r2 += a_ptr[4] * x_ptr[0] - a_ptr[5] * x_ptr[1];
-                    temp_i2 += a_ptr[4] * x_ptr[1] + a_ptr[5] * x_ptr[0];
-#else
-                    temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
-                    temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
-                    temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
-                    temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
-                    temp_r2 += a_ptr[4] * x_ptr[0] + a_ptr[5] * x_ptr[1];
-                    temp_i2 += a_ptr[4] * x_ptr[1] - a_ptr[5] * x_ptr[0];
-#endif
-
-                    a_ptr += lda;
-                    x_ptr += inc_x;
-                }
-
-            }
-#if !defined(XCONJ) 
-            y_ptr[0] += alpha_r * temp_r0 - alpha_i * temp_i0;
-            y_ptr[1] += alpha_r * temp_i0 + alpha_i * temp_r0;
-            y_ptr += inc_y;
-            y_ptr[0] += alpha_r * temp_r1 - alpha_i * temp_i1;
-            y_ptr[1] += alpha_r * temp_i1 + alpha_i * temp_r1;
-            y_ptr += inc_y;
-            y_ptr[0] += alpha_r * temp_r2 - alpha_i * temp_i2;
-            y_ptr[1] += alpha_r * temp_i2 + alpha_i * temp_r2;
-#else
-            y_ptr[0] += alpha_r * temp_r0 + alpha_i * temp_i0;
-            y_ptr[1] -= alpha_r * temp_i0 - alpha_i * temp_r0;
-            y_ptr += inc_y;
-            y_ptr[0] += alpha_r * temp_r1 + alpha_i * temp_i1;
-            y_ptr[1] -= alpha_r * temp_i1 - alpha_i * temp_r1;
-            y_ptr += inc_y;
-            y_ptr[0] += alpha_r * temp_r2 + alpha_i * temp_i2;
-            y_ptr[1] -= alpha_r * temp_i2 - alpha_i * temp_r2;
-#endif
-            return (0);
-        }
-
         return (0);
     }
+
+    if (m3 == 2) {
+        a_ptr = a;
+        x_ptr = x;
+        FLOAT temp_r0 = 0.0;
+        FLOAT temp_i0 = 0.0;
+        FLOAT temp_r1 = 0.0;
+        FLOAT temp_i1 = 0.0;
+
+        if (lda == 4 && inc_x == 2) {
+
+            for (i = 0; i < (n & -2); i += 2) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+
+                temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
+
+                temp_r0 += a_ptr[4] * x_ptr[2] - a_ptr[5] * x_ptr[3];
+                temp_i0 += a_ptr[4] * x_ptr[3] + a_ptr[5] * x_ptr[2];
+                temp_r1 += a_ptr[6] * x_ptr[2] - a_ptr[7] * x_ptr[3];
+                temp_i1 += a_ptr[6] * x_ptr[3] + a_ptr[7] * x_ptr[2];
+#else
+                temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
+
+                temp_r0 += a_ptr[4] * x_ptr[2] + a_ptr[5] * x_ptr[3];
+                temp_i0 += a_ptr[4] * x_ptr[3] - a_ptr[5] * x_ptr[2];
+                temp_r1 += a_ptr[6] * x_ptr[2] + a_ptr[7] * x_ptr[3];
+                temp_i1 += a_ptr[6] * x_ptr[3] - a_ptr[7] * x_ptr[2];
+#endif
+
+                a_ptr += 8;
+                x_ptr += 4;
+            }
+
+            for (; i < n; i++) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+                temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
+#else
+                temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
+#endif
+
+                a_ptr += 4;
+                x_ptr += 2;
+            }
+
+        } else {
+
+            for (i = 0; i < n; i++) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+                temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
+#else
+                temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
+#endif
+
+                a_ptr += lda;
+                x_ptr += inc_x;
+            }
+
+        }
+#if !defined(XCONJ) 
+        y_ptr[0] += alpha_r * temp_r0 - alpha_i * temp_i0;
+        y_ptr[1] += alpha_r * temp_i0 + alpha_i * temp_r0;
+        y_ptr += inc_y;
+        y_ptr[0] += alpha_r * temp_r1 - alpha_i * temp_i1;
+        y_ptr[1] += alpha_r * temp_i1 + alpha_i * temp_r1;
+#else
+        y_ptr[0] += alpha_r * temp_r0 + alpha_i * temp_i0;
+        y_ptr[1] -= alpha_r * temp_i0 - alpha_i * temp_r0;
+        y_ptr += inc_y;
+        y_ptr[0] += alpha_r * temp_r1 + alpha_i * temp_i1;
+        y_ptr[1] -= alpha_r * temp_i1 - alpha_i * temp_r1;
+#endif
+        return (0);
+    }
+
+    if (m3 == 3) {
+        a_ptr = a;
+        x_ptr = x;
+        FLOAT temp_r0 = 0.0;
+        FLOAT temp_i0 = 0.0;
+        FLOAT temp_r1 = 0.0;
+        FLOAT temp_i1 = 0.0;
+        FLOAT temp_r2 = 0.0;
+        FLOAT temp_i2 = 0.0;
+
+        if (lda == 6 && inc_x == 2) {
+
+            for (i = 0; i < n; i++) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+                temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
+                temp_r2 += a_ptr[4] * x_ptr[0] - a_ptr[5] * x_ptr[1];
+                temp_i2 += a_ptr[4] * x_ptr[1] + a_ptr[5] * x_ptr[0];
+#else
+                temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
+                temp_r2 += a_ptr[4] * x_ptr[0] + a_ptr[5] * x_ptr[1];
+                temp_i2 += a_ptr[4] * x_ptr[1] - a_ptr[5] * x_ptr[0];
+#endif
+
+                a_ptr += 6;
+                x_ptr += 2;
+            }
+
+        } else {
+
+            for (i = 0; i < n; i++) {
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+                temp_r0 += a_ptr[0] * x_ptr[0] - a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] + a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] - a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] + a_ptr[3] * x_ptr[0];
+                temp_r2 += a_ptr[4] * x_ptr[0] - a_ptr[5] * x_ptr[1];
+                temp_i2 += a_ptr[4] * x_ptr[1] + a_ptr[5] * x_ptr[0];
+#else
+                temp_r0 += a_ptr[0] * x_ptr[0] + a_ptr[1] * x_ptr[1];
+                temp_i0 += a_ptr[0] * x_ptr[1] - a_ptr[1] * x_ptr[0];
+                temp_r1 += a_ptr[2] * x_ptr[0] + a_ptr[3] * x_ptr[1];
+                temp_i1 += a_ptr[2] * x_ptr[1] - a_ptr[3] * x_ptr[0];
+                temp_r2 += a_ptr[4] * x_ptr[0] + a_ptr[5] * x_ptr[1];
+                temp_i2 += a_ptr[4] * x_ptr[1] - a_ptr[5] * x_ptr[0];
+#endif
+
+                a_ptr += lda;
+                x_ptr += inc_x;
+            }
+
+        }
+#if !defined(XCONJ) 
+        y_ptr[0] += alpha_r * temp_r0 - alpha_i * temp_i0;
+        y_ptr[1] += alpha_r * temp_i0 + alpha_i * temp_r0;
+        y_ptr += inc_y;
+        y_ptr[0] += alpha_r * temp_r1 - alpha_i * temp_i1;
+        y_ptr[1] += alpha_r * temp_i1 + alpha_i * temp_r1;
+        y_ptr += inc_y;
+        y_ptr[0] += alpha_r * temp_r2 - alpha_i * temp_i2;
+        y_ptr[1] += alpha_r * temp_i2 + alpha_i * temp_r2;
+#else
+        y_ptr[0] += alpha_r * temp_r0 + alpha_i * temp_i0;
+        y_ptr[1] -= alpha_r * temp_i0 - alpha_i * temp_r0;
+        y_ptr += inc_y;
+        y_ptr[0] += alpha_r * temp_r1 + alpha_i * temp_i1;
+        y_ptr[1] -= alpha_r * temp_i1 - alpha_i * temp_r1;
+        y_ptr += inc_y;
+        y_ptr[0] += alpha_r * temp_r2 + alpha_i * temp_i2;
+        y_ptr[1] -= alpha_r * temp_i2 - alpha_i * temp_r2;
+#endif
+        return (0);
+    }
+
+    return (0);
+}
 
