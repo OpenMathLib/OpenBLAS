@@ -148,8 +148,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CONSTRUCTOR	__attribute__ ((constructor))
 #define DESTRUCTOR	__attribute__ ((destructor))
 #else
+#if __GNUC__ && INIT_PRIORITY && ((GCC_VERSION >= 40300) || (CLANG_VERSION >= 20900))
 #define CONSTRUCTOR	__attribute__ ((constructor(101)))
 #define DESTRUCTOR	__attribute__ ((destructor(101)))
+#elif __GNUC__ && INIT_PRIORITY
+#define CONSTRUCTOR	__attribute__ ((constructor))
+#define DESTRUCTOR	__attribute__ ((destructor))
+#else
+#define CONSTRUCTOR
+#define DESTRUCTOR
 #endif
 
 #ifdef DYNAMIC_ARCH
