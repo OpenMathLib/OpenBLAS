@@ -91,11 +91,7 @@ ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android))
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
-ifeq ($(OSNAME), FreeBSD)
-	@$(MAKE) -C exports so
-	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
-endif
-ifeq ($(OSNAME), NetBSD)
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
