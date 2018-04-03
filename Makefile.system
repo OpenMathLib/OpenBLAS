@@ -230,7 +230,7 @@ endif
 MD5SUM = md5 -r
 endif
 
-ifneq (,$(findstring $(OSNAME), FreeBSD OpenBSD))
+ifneq (,$(findstring $(OSNAME), FreeBSD OpenBSD DragonFly))
 MD5SUM = md5 -r
 endif
 

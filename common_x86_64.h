@@ -403,7 +403,7 @@ REALNAME:
 #define EPILOGUE .end
 #endif
 
-#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_OPENBSD) || defined(__ELF__) || defined(C_PGI)
+#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(__ELF__) || defined(C_PGI)
 #define PROLOGUE \
 	.text; \
 	.align 512; \

@@ -64,6 +64,10 @@ OS_NETBSD
 OS_OPENBSD
 #endif
 
+#if defined(__DragonFly__)
+OS_DRAGONFLY
+#endif
+
 #if defined(__sun)
 OS_SUNOS
 #endif

@@ -55,6 +55,7 @@ $os = Linux           if ($data =~ /OS_LINUX/);
 $os = FreeBSD         if ($data =~ /OS_FREEBSD/);
 $os = NetBSD          if ($data =~ /OS_NETBSD/);
 $os = OpenBSD         if ($data =~ /OS_OPENBSD/);
+$os = DragonFly       if ($data =~ /OS_DRAGONFLY/);
 $os = Darwin          if ($data =~ /OS_DARWIN/);
 $os = SunOS           if ($data =~ /OS_SUNOS/);
 $os = AIX             if ($data =~ /OS_AIX/);
