@@ -67,6 +67,26 @@ double sqrt(double);
 #undef  GETRF_FACTOR
 #define GETRF_FACTOR 1.00
 
+
+#if   defined(USE_PTHREAD_LOCK)
+static pthread_mutex_t    getrf_lock = PTHREAD_MUTEX_INITIALIZER;
+#elif defined(USE_PTHREAD_SPINLOCK)
+static pthread_spinlock_t getrf_lock = 0;
+#else
+static BLASULONG  getrf_lock = 0UL;
+#endif
+
+#if   defined(USE_PTHREAD_LOCK)
+static pthread_mutex_t    getrf_flag_lock = PTHREAD_MUTEX_INITIALIZER;
+#elif defined(USE_PTHREAD_SPINLOCK)
+static pthread_spinlock_t getrf_flag_lock = 0;
+#else
+static BLASULONG  getrf_flag_lock = 0UL;
+#endif
+
+
+
+
 static __inline BLASLONG FORMULA1(BLASLONG M, BLASLONG N, BLASLONG IS, BLASLONG BK, BLASLONG T) {
 
   double m = (double)(M - IS - BK);
@@ -217,7 +237,10 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
   blasint *ipiv = (blasint *)args -> c;
 
-  volatile BLASLONG *flag = (volatile BLASLONG *)args -> d;
+  //_Atomic
+   BLASLONG jw;
+  
+  _Atomic BLASLONG *flag = (_Atomic BLASLONG *)args -> d;
 
   if (args -> a == NULL) {
     TRSM_ILTCOPY(k, k, (FLOAT *)args -> b, lda, 0, sb);
@@ -245,8 +268,20 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
   for (xxx = n_from, bufferside = 0; xxx < n_to; xxx += div_n, bufferside ++) {
 
     for (i = 0; i < args -> nthreads; i++)
+#if 1
+    {
+	LOCK_COMMAND(&getrf_lock);
+	jw = job[mypos].working[i][CACHE_LINE_SIZE * bufferside];
+	UNLOCK_COMMAND(&getrf_lock);
+	do {
+	    LOCK_COMMAND(&getrf_lock);
+	    jw = job[mypos].working[i][CACHE_LINE_SIZE * bufferside];
+	    UNLOCK_COMMAND(&getrf_lock);
+	} while (jw);
+    }
+#else
       while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {};
-
+#endif
     for(jjs = xxx; jjs < MIN(n_to, xxx + div_n); jjs += min_jj){
       min_jj = MIN(n_to, xxx + div_n) - jjs;
       if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
@@ -283,18 +318,23 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 		       b   + (is + jjs * lda) * COMPSIZE, lda, is);
       }
     }
-
     MB;
-    for (i = 0; i < args -> nthreads; i++)
+    for (i = 0; i < args -> nthreads; i++) {
+LOCK_COMMAND(&getrf_lock);
       job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
-
+UNLOCK_COMMAND(&getrf_lock);
+    }
   }
 
+LOCK_COMMAND(&getrf_flag_lock);
   flag[mypos * CACHE_LINE_SIZE] = 0;
+UNLOCK_COMMAND(&getrf_flag_lock);
 
   if (m == 0) {
     for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
+LOCK_COMMAND(&getrf_lock);
       job[mypos].working[mypos][CACHE_LINE_SIZE * xxx] = 0;
+UNLOCK_COMMAND(&getrf_lock);
     }
   }
 
@@ -318,7 +358,18 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 	for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
 
 	  if ((current != mypos) && (!is)) {
+#if 1
+		LOCK_COMMAND(&getrf_lock);
+		jw = job[current].working[mypos][CACHE_LINE_SIZE * bufferside];
+		UNLOCK_COMMAND(&getrf_lock);
+		do {
+		    LOCK_COMMAND(&getrf_lock);
+		    jw = job[current].working[mypos][CACHE_LINE_SIZE * bufferside];
+		    UNLOCK_COMMAND(&getrf_lock);
+		} while (jw == 0);
+#else
 	    	    while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {};
+#endif
 	  }
 
 	  KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), k,
@@ -327,7 +378,9 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
 	  MB;
 	  if (is + min_i >= m) {
+LOCK_COMMAND(&getrf_lock);
 	    job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
+UNLOCK_COMMAND(&getrf_lock);
 	  }
 	}
 
@@ -339,7 +392,18 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
   for (i = 0; i < args -> nthreads; i++) {
     for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
+#if 1
+	LOCK_COMMAND(&getrf_lock);
+	jw = job[mypos].working[i][CACHE_LINE_SIZE *xxx];
+	UNLOCK_COMMAND(&getrf_lock);
+	do {
+	    LOCK_COMMAND(&getrf_lock);
+	    jw = job[mypos].working[i][CACHE_LINE_SIZE *xxx];
+	    UNLOCK_COMMAND(&getrf_lock);
+	} while(jw != 0);
+#else
       while (job[mypos].working[i][CACHE_LINE_SIZE * xxx] ) {};
+#endif
     }
   }
 
@@ -374,6 +438,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   BLASLONG i, j, k, is, bk;
 
   BLASLONG num_cpu;
+  BLASLONG f;
 
 #ifdef _MSC_VER
   BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE];
@@ -501,11 +566,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       if (mm >= nn) {
 
 	width  = blas_quickdivide(nn + args -> nthreads - num_cpu, args -> nthreads - num_cpu - 1);
+	if (width == 0) width = nn;
 	if (nn < width) width = nn;
 	nn -= width;
 	range_N[num_cpu + 1] = range_N[num_cpu] + width;
 
 	width  = blas_quickdivide(mm + args -> nthreads - num_cpu, args -> nthreads - num_cpu - 1);
+	if (width == 0) width = mm;
 	if (mm < width) width = mm;
 	if (nn <=    0) width = mm;
 	mm -= width;
@@ -514,11 +581,13 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       } else {
 
 	width  = blas_quickdivide(mm + args -> nthreads - num_cpu, args -> nthreads - num_cpu - 1);
+	if (width == 0) width = mm;
 	if (mm < width) width = mm;
 	mm -= width;
 	range_M[num_cpu + 1] = range_M[num_cpu] + width;
 
 	width  = blas_quickdivide(nn + args -> nthreads - num_cpu, args -> nthreads - num_cpu - 1);
+	if (width == 0) width = nn;
 	if (nn < width) width = nn;
 	if (mm <=    0) width = nn;
 	nn -= width;
@@ -561,7 +630,6 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     range_n_new[1] = offset + is + bk;
 
     if (num_cpu > 0) {
-
       queue[num_cpu - 1].next = NULL;
 
       exec_blas_async(0, &queue[0]);
@@ -572,8 +640,20 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
       if (iinfo && !info) info = iinfo + is;
 
-      for (i = 0; i < num_cpu; i ++) while (flag[i * CACHE_LINE_SIZE]) {};
-
+      for (i = 0; i < num_cpu; i ++) {
+#if 1
+	      LOCK_COMMAND(&getrf_flag_lock);
+	      f=flag[i*CACHE_LINE_SIZE];
+	      UNLOCK_COMMAND(&getrf_flag_lock);
+	      while (f!=0) {
+	      LOCK_COMMAND(&getrf_flag_lock);
+	      f=flag[i*CACHE_LINE_SIZE];
+	      UNLOCK_COMMAND(&getrf_flag_lock);
+	      };
+#else
+              while (flag[i*CACHE_LINE_SIZE]) {};
+#endif
+      }
       TRSM_ILTCOPY(bk, bk, a + (is +  is * lda) * COMPSIZE, lda, 0, sb);
 
     } else {
