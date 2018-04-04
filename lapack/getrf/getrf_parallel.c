@@ -237,10 +237,9 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
   blasint *ipiv = (blasint *)args -> c;
 
-  //_Atomic
    BLASLONG jw;
   
-  _Atomic BLASLONG *flag = (_Atomic BLASLONG *)args -> d;
+  volatile BLASLONG *flag = (volatile BLASLONG *)args -> d;
 
   if (args -> a == NULL) {
     TRSM_ILTCOPY(k, k, (FLOAT *)args -> b, lda, 0, sb);
@@ -320,21 +319,21 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
     }
     MB;
     for (i = 0; i < args -> nthreads; i++) {
-LOCK_COMMAND(&getrf_lock);
+      LOCK_COMMAND(&getrf_lock);
       job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
-UNLOCK_COMMAND(&getrf_lock);
+      UNLOCK_COMMAND(&getrf_lock);
     }
   }
 
-LOCK_COMMAND(&getrf_flag_lock);
+  LOCK_COMMAND(&getrf_flag_lock);
   flag[mypos * CACHE_LINE_SIZE] = 0;
-UNLOCK_COMMAND(&getrf_flag_lock);
+  UNLOCK_COMMAND(&getrf_flag_lock);
 
   if (m == 0) {
     for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
-LOCK_COMMAND(&getrf_lock);
+      LOCK_COMMAND(&getrf_lock);
       job[mypos].working[mypos][CACHE_LINE_SIZE * xxx] = 0;
-UNLOCK_COMMAND(&getrf_lock);
+      UNLOCK_COMMAND(&getrf_lock);
     }
   }
 
@@ -378,9 +377,9 @@ UNLOCK_COMMAND(&getrf_lock);
 
 	  MB;
 	  if (is + min_i >= m) {
-LOCK_COMMAND(&getrf_lock);
+            LOCK_COMMAND(&getrf_lock);
 	    job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
-UNLOCK_COMMAND(&getrf_lock);
+            UNLOCK_COMMAND(&getrf_lock);
 	  }
 	}
 
