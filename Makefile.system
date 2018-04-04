@@ -23,11 +23,16 @@ ifneq ($(findstring cmd.exe,$(SHELL)),)
 ifeq ($(shell where $(CC) 2>NUL),)
 CC = gcc
 endif
-else # POSIX
+else # POSIX-ish
 ifeq ($(shell command -v $(CC) 2>/dev/null),)
+ifeq ($(shell uname -s),Darwin)
+CC = clang
+# EXTRALIB += -Wl,-no_compact_unwind
+else
 CC = gcc
-endif
-endif
+endif # Darwin
+endif # CC exists
+endif # Shell is sane
 
 endif # CC is set to default
 
