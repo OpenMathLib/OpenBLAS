@@ -118,6 +118,8 @@ Please read GotoBLAS_01Readme.txt
 - **MingWin or Visual Studio(CMake)/Windows**: Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-in-Microsoft-Visual-Studio>.
 - **Darwin/Mac OS X**: Experimental. Although GotoBLAS2 supports Darwin, we are the beginner on Mac OS X.
 - **FreeBSD**: Supported by community. We didn't test the library on this OS.
+- **OpenBSD**: Supported by community. We didn't test the library on this OS.
+- **DragonFly BSD**: Supported by community. We didn't test the library on this OS.
 - **Android**: Supported by community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android>.
 
 ## Usages
