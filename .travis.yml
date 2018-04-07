@@ -151,7 +151,8 @@ jobs:
       env:
         - CMAKE=1
 
-    - os: osx
+    - &test-macos
+      os: osx
       stage: test
       osx_image: xcode8
       before_script:
@@ -162,6 +163,10 @@ jobs:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
         - BTYPE="BINARY=64 INTERFACE64=1"
+
+    - <<: *test-macos
+      env:
+        - BTYPE="BINARY=32"
 
 # whitelist
 branches:
