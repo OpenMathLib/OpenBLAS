@@ -7,7 +7,6 @@ language: c
 jobs:
   include:
     - &test-ubuntu
-      os: linux
       stage: test
       compiler: gcc
       addons:
@@ -58,8 +57,7 @@ jobs:
         - TARGET_BOX=LINUX32
         - BTYPE="BINARY=32"
 
-    - os: linux
-      stage: test
+    - stage: test
       compiler: gcc
       addons:
         apt:
@@ -79,7 +77,6 @@ jobs:
     # which is slower than container-based infrastructure used for jobs
     # that don't require sudo.
     - &test-alpine
-      os: linux
       stage: test
       dist: trusty
       sudo: true
@@ -123,7 +120,6 @@ jobs:
         - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=core2"
 
     - &test-cmake
-      os: linux
       stage: test
       compiler: clang
       addons:
@@ -150,17 +146,6 @@ jobs:
       compiler: gcc
       env:
         - CMAKE=1
-
-    - os: osx
-      stage: test
-      osx_image: xcode8
-      before_script: *common-before
-        - brew update
-        - brew install gcc # for gfortran
-      script:
-        - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
-      env:
-        - BTYPE="BINARY=64 INTERFACE64=1"
 
 # whitelist
 branches:
