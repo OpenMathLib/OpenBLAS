@@ -93,7 +93,7 @@ extern "C" {
 #include <sched.h>
 #endif
 
-#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_ANDROID)
+#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_ANDROID)
 #include <sched.h>
 #endif
 

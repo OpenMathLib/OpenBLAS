@@ -60,6 +60,14 @@ OS_FREEBSD
 OS_NETBSD
 #endif
 
+#if defined(__OpenBSD__)
+OS_OPENBSD
+#endif
+
+#if defined(__DragonFly__)
+OS_DRAGONFLY
+#endif
+
 #if defined(__sun)
 OS_SUNOS
 #endif
