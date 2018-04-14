@@ -209,7 +209,8 @@ int ret;
   size = CPU_ALLOC_SIZE(nums);
   ret = sched_getaffinity(0,size,cpusetp);
   if (ret!=0) return nums;
-  nums = CPU_COUNT_S(size,cpusetp);
+  ret = CPU_COUNT_S(size,cpusetp);
+  if (ret > 0 && ret < nums) nums = ret;	
   CPU_FREE(cpusetp);
   return nums;
  #endif
