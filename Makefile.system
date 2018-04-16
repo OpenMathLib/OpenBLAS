@@ -593,7 +593,9 @@ endif
 ifndef BINARY_DEFINED
 ifneq ($(OSNAME), AIX)
 ifdef BINARY64
+ifneq ($(ARCH), riscv64)
 CCOMMON_OPT += -m64
+endif
 else
 CCOMMON_OPT += -m32
 endif
@@ -687,7 +689,9 @@ endif
 else
 ifdef BINARY64
 ifneq ($(OSNAME), AIX)
+ifneq ($(ARCH), riscv64)
 FCOMMON_OPT += -m64
+endif
 endif
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
