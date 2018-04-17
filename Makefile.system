@@ -17,15 +17,24 @@ NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 #   http://stackoverflow.com/questions/4029274/mingw-and-make-variables
 # - Default value is 'cc' which is not always a valid command (e.g. MinGW).
 ifeq ($(origin CC),default)
+
+# Check if $(CC) refers to a valid command and set the value to gcc if not
+ifneq ($(findstring cmd.exe,$(SHELL)),)
+ifeq ($(shell where $(CC) 2>NUL),)
 CC = gcc
-# Change the default compile to clang on Mac OSX.
-# http://stackoverflow.com/questions/714100/os-detecting-makefile
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Darwin)
-     CC = clang
-#     EXTRALIB += -Wl,-no_compact_unwind
 endif
-endif
+else # POSIX-ish
+ifeq ($(shell command -v $(CC) 2>/dev/null),)
+ifeq ($(shell uname -s),Darwin)
+CC = clang
+# EXTRALIB += -Wl,-no_compact_unwind
+else
+CC = gcc
+endif # Darwin
+endif # CC exists
+endif # Shell is sane
+
+endif # CC is set to default
 
 # Default Fortran compiler (FC) is selected by f_check.
 
@@ -230,7 +239,7 @@ endif
 MD5SUM = md5 -r
 endif
 
-ifeq ($(OSNAME), FreeBSD)
+ifneq (,$(findstring $(OSNAME), FreeBSD OpenBSD DragonFly))
 MD5SUM = md5 -r
 endif
 
@@ -555,9 +564,14 @@ CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
 endif
 
+ifeq ($(CORE), 1004K)
+CCOMMON_OPT += -mips32r2   $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r2   $(MSA_FLAGS)
+endif
+
 ifeq ($(CORE), P5600)
-CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
-FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
+CCOMMON_OPT += -mips32r5   $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r5   $(MSA_FLAGS)
 endif
 
 ifeq ($(CORE), I6400)
