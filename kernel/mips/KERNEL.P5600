@@ -38,8 +38,8 @@ ZASUMKERNEL  = ../mips/zasum_msa.c
 else
 SASUMKERNEL  = ../mips/asum.c
 DASUMKERNEL  = ../mips/asum.c
-CASUMKERNEL  = ../mips/asum.c
-ZASUMKERNEL  = ../mips/asum.c
+CASUMKERNEL  = ../mips/zasum.c
+ZASUMKERNEL  = ../mips/zasum.c
 endif
 
 ifdef HAVE_MSA
