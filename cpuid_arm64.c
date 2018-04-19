@@ -121,7 +121,7 @@ int detect(void)
 			return CPU_VULCAN;
 		else if (strstr(cpu_part, "0x0a1") && strstr(cpu_implementer, "0x43"))
 			return CPU_THUNDERX;
-		else if (strstr(cpu_part, "0xFFF") && strstr(cpu_implementer, "0x43")) /* TODO */
+		else if (strstr(cpu_part, "0x0af") && strstr(cpu_implementer, "0x43"))
 			return CPU_THUNDERX2T99;
 	}
 
