@@ -17,9 +17,11 @@ endif
 
 #this does not work with OpenMP nor with native Windows or Android threads
 # FIXME TBD if this works on OSX, SunOS, POWER and zarch
+ifneq ($(NO_CBLAS), 1)
 ifndef USE_OPENMP
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux CYGWIN_NT))
 OBJS += test_fork.o
+endif
 endif
 endif
 
