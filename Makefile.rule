@@ -60,6 +60,13 @@ VERSION = 0.3.0.dev
 # automatically detected by the the script.
 # NUM_THREADS = 24
 
+# If you have enabled USE_OPENMP and your application would call
+# OpenBLAS's caculation API in multi threads, please comment it in.
+# This flag define how many OpenBLAS's caculation API can actually
+# run in parallel. If more number threads call OpenBLAS's caculation API,
+# it would wait former API finish.
+# NUM_PARALLEL = 2
+
 # if you don't need to install the static library, please comment it in.
 # NO_STATIC = 1
 
