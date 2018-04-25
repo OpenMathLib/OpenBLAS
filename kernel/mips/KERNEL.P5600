@@ -255,7 +255,3 @@ ZTRSMKERNEL_RN = ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT = ../generic/trsm_kernel_RT.c
 endif
 
-STRMMKERNEL     = ../generic/trmmkernel_4x4.c
-DTRMMKERNEL     = ../generic/trmmkernel_2x2.c
-CTRMMKERNEL     = ../generic/ztrmmkernel_2x2.c
-ZTRMMKERNEL     = ../generic/ztrmmkernel_2x2.c
