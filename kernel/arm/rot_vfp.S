@@ -483,13 +483,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	cmp	N, #0
 	ble	rot_kernel_L999
-
+/*
 	cmp	INC_X, #0
 	beq	rot_kernel_L999
 
 	cmp	INC_Y, #0
 	beq	rot_kernel_L999
-
+*/
 	cmp	INC_X, #1
 	bne	rot_kernel_S_BEGIN
 
@@ -584,6 +584,12 @@ rot_kernel_S1:
 rot_kernel_S10:
 
 	KERNEL_S1
+	
+	cmp	INC_X, #0
+	beq	rot_kernel_L999
+
+	cmp	INC_Y, #0
+	beq	rot_kernel_L999
 
 	subs    I, I, #1
         bne     rot_kernel_S10
