@@ -604,6 +604,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+
 #ifdef FORCE_PPCG4
 #define FORCE
 #define ARCHITECTURE    "POWER"
@@ -859,6 +860,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_RISCV64
+#define FORCE
+#define ARCHITECTURE    "RISCV64"
+#define SUBARCHITECTURE "RISCV64"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG   "-DRISCV64 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "riscv64"
+#define CORENAME  "RISCV64"
+#else
+#endif
+
 #ifdef FORCE_CORTEXA15
 #define FORCE
 #define ARCHITECTURE    "ARM"
@@ -1049,6 +1064,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cpuid_mips.c"
 #endif
 #define OPENBLAS_SUPPORTED
+#endif
+
+#ifdef __riscv
+#include "cpuid_riscv64.c"
 #endif
 
 #ifdef __arm__
