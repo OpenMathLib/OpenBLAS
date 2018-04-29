@@ -195,7 +195,9 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
   unsigned int result;
 
   if (y <= 1) return x;
-
+  
+  if (y > 64) return x/y;
+	
   y = blas_quick_divide_table[y];
 
   __asm__ __volatile__  ("mull %0" :"=d" (result) :"a"(x), "0" (y));
