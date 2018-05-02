@@ -2291,7 +2291,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P	16
 #endif
 
-#if defined(P5600) || defined(I6400) || defined(P6600) || defined(I6500)
+#if defined(P5600) || defined(MIPS1004K) || defined(I6400) || defined(P6600) || defined(I6500)
 #define SNUMOPT  2
 #define DNUMOPT  2
 
