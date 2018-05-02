@@ -570,8 +570,8 @@ FCOMMON_OPT += -mips32r2   $(MSA_FLAGS)
 endif
 
 ifeq ($(CORE), P5600)
-CCOMMON_OPT += -mips32r5   $(MSA_FLAGS)
-FCOMMON_OPT += -mips32r5   $(MSA_FLAGS)
+CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600  $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600  $(MSA_FLAGS)
 endif
 
 ifeq ($(CORE), I6400)
