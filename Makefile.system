@@ -433,7 +433,7 @@ CCOMMON_OPT    += -fopenmp
 endif
 
 ifeq ($(C_COMPILER), INTEL)
-CCOMMON_OPT    += -openmp
+CCOMMON_OPT    += -fopenmp
 endif
 
 ifeq ($(C_COMPILER), PGI)
