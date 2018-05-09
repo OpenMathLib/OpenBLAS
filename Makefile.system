@@ -718,7 +718,7 @@ FCOMMON_OPT += -i8
 endif
 endif
 ifeq ($(USE_OPENMP), 1)
-FCOMMON_OPT += -openmp
+FCOMMON_OPT += -fopenmp
 endif
 endif
 
