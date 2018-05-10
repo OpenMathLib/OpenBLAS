@@ -38,7 +38,7 @@ lapack_int LAPACKE_slassq( lapack_int n, float* x, lapack_int incx, float* scale
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input vector `x` and in/out scalars `scale` and `sumsq` for NaNs */
-        if( LAPACKE_s_nancheck( 1+(n-2)*ABS(incx), x, incx ) ) {
+        if( LAPACKE_s_nancheck( n, x, incx ) ) {
             return -2;
         }
         if( LAPACKE_s_nancheck( 1, scale, 1 ) ) {

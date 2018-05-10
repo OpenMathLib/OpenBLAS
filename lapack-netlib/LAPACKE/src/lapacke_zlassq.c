@@ -39,7 +39,7 @@ lapack_int LAPACKE_zlassq( lapack_int n, lapack_complex_double* x,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input vector `x` and in/out scalars `scale` and `sumsq` for NaNs */
-        if( LAPACKE_z_nancheck( 1+(n-2)*ABS(incx), x, incx ) ) {
+        if( LAPACKE_z_nancheck( n, x, incx ) ) {
             return -2;
         }
         if( LAPACKE_d_nancheck( 1, scale, 1 ) ) {
