@@ -36,12 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#if __STDC_VERSION__ >= 201112L
-#ifndef _Atomic
-#define _Atomic volatile
-#endif
-#include <stdatomic.h>
-#endif
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
