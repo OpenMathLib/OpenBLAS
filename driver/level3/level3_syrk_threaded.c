@@ -67,7 +67,7 @@
 #endif
 
 typedef struct {
-#if _STDC_VERSION__ >= 201112L  
+#if __STDC_VERSION__ >= 201112L
 _Atomic
 #else 
   volatile

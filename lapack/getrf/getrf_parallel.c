@@ -119,7 +119,7 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
   FLOAT *d = (FLOAT *)args -> b + (k + k * lda) * COMPSIZE;
   FLOAT *sbb = sb;
 
-#if _STDC_VERSION__ >= 201112L  
+#if __STDC_VERSION__ >= 201112L
   _Atomic BLASLONG *flag = (_Atomic BLASLONG *)args -> d;
 #else
   volatile BLASLONG *flag = (volatile BLASLONG *)args -> d;
@@ -201,7 +201,7 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
 /* Non blocking implementation */
 
 typedef struct {
-#if _STDC_VERSION__ >= 201112L  
+#if __STDC_VERSION__ >= 201112L
   _Atomic
 #else
   volatile
@@ -246,7 +246,7 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
   blasint *ipiv = (blasint *)args -> c;
   BLASLONG jw;
-#if _STDC_VERSION__ >= 201112L  
+#if __STDC_VERSION__ >= 201112L
   _Atomic BLASLONG *flag = (_Atomic BLASLONG *)args -> d;
 #else
   volatile BLASLONG *flag = (volatile BLASLONG *)args -> d;
@@ -452,7 +452,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #ifdef _MSC_VER
   BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE];
 #else
-#if _STDC_VERSION__ >= 201112L  
+#if __STDC_VERSION__ >= 201112L
   _Atomic
 #else  
   volatile
@@ -728,7 +728,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   BLASLONG range[MAX_CPU_NUMBER + 1];
 
   BLASLONG width, nn, num_cpu;
-#if _STDC_VERSION__ >= 201112L  
+#if __STDC_VERSION__ >= 201112L
   _Atomic
 #else  
   volatile
