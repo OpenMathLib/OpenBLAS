@@ -649,6 +649,12 @@ int omp_get_num_procs(void);
 __declspec(dllimport) int __cdecl omp_in_parallel(void);
 __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
+#if (__STDC_VERSION__ >= 201112L)
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#include <stdatomic.h>
+#endif
 #else
 #ifdef __ELF__
 int omp_in_parallel  (void) __attribute__ ((weak));
