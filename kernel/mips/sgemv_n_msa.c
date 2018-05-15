@@ -423,9 +423,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *A,
     FLOAT *y_org = y;
     FLOAT *pa0, *pa1, *pa2, *pa3, *pa4, *pa5, *pa6, *pa7;
     FLOAT temp, temp0, temp1, temp2, temp3, temp4, temp5, temp6, temp7;
-    v4f32 v_alpha, x0, x1, y0 = 0.0, y1 = 0.0;
+    v4f32 v_alpha, x0, x1, y0 = {0,0,0,0}, y1 = {0,0,0,0};
     v4f32 t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15;
-    v4f32 tp0 = 0.0, tp1 = 0.0, tp2 = 0.0, tp3 = 0.0, tp4 = 0.0, tp5 = 0.0, tp6 = 0.0, tp7 = 0.0;
+    v4f32 tp0 = {0,0,0,0}, tp1 = {0,0,0,0}, tp2 = {0,0,0,0}, tp3 = {0,0,0,0}, tp4 = {0,0,0,0}, tp5 = {0,0,0,0}, tp6 = {0,0,0,0}, tp7 = {0,0,0,0};
 
     v_alpha = COPY_FLOAT_TO_VECTOR(alpha);
 
