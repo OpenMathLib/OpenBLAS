@@ -58,7 +58,7 @@ lapack_int LAPACKE_cupmtr( int matrix_layout, char side, char uplo, char trans,
         if( LAPACKE_cge_nancheck( matrix_layout, m, n, c, ldc ) ) {
             return -9;
         }
-        if( LAPACKE_c_nancheck( m-1, tau, 1 ) ) {
+        if( LAPACKE_c_nancheck( r-1, tau, 1 ) ) {
             return -8;
         }
     }

@@ -440,13 +440,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	cmp	N, #0
 	ble	axpy_kernel_L999
-
+/*
 	cmp	INC_X, #0
 	beq	axpy_kernel_L999
 
 	cmp	INC_Y, #0
 	beq	axpy_kernel_L999
-
+*/
 	cmp	INC_X, #1
 	bne	axpy_kernel_S_BEGIN
 

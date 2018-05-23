@@ -72,12 +72,7 @@ ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android))
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
-ifeq ($(OSNAME), FreeBSD)
-	@cp $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
-	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
-	ln -fs $(LIBSONAME) $(LIBPREFIX).so
-endif
-ifeq ($(OSNAME), NetBSD)
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
 	@cp $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so
@@ -101,8 +96,9 @@ endif
 
 #Generating openblas.pc
 	@echo Generating openblas.pc in "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
-	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) > "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+	@echo 'openblas_config= USE_64BITINT='$(USE_64BITINT) 'DYNAMIC_ARCH='$(DYNAMIC_ARCH) 'NO_CBLAS='$(NO_CBLAS) 'NO_LAPACK='$(NO_LAPACK) 'NO_LAPACKE='$(NO_LAPACKE) 'NO_AFFINITY='$(NO_AFFINITY) 'USE_OPENMP='$(USE_OPENMP) $(CORE) 'MAX_THREADS='$(NUM_THREADS)>> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 	@echo 'version='$(VERSION) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 	@echo 'extralib='$(EXTRALIB) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 	@cat openblas.pc.in >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
@@ -115,7 +111,7 @@ endif
 
 ifndef NO_SHARED
 #ifeq logical or
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux FreeBSD NetBSD))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux FreeBSD NetBSD OpenBSD DragonFly))
 	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_LIBRARY_DIR}/$(LIBPREFIX).so)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 endif
 ifeq ($(OSNAME), $(filter $(OSNAME),WINNT CYGWIN_NT))

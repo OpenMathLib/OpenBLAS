@@ -29,9 +29,7 @@ USE_TRMM = 1
 endif
 
 ifeq ($(CORE), HASWELL)
-ifeq ($(ARCH), x86_64)
 USE_TRMM = 1
-endif
 endif
 
 ifeq ($(CORE), ZEN)

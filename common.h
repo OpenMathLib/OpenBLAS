@@ -93,7 +93,7 @@ extern "C" {
 #include <sched.h>
 #endif
 
-#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_ANDROID)
+#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_ANDROID)
 #include <sched.h>
 #endif
 
@@ -179,7 +179,7 @@ extern "C" {
 
 #define ALLOCA_ALIGN 63UL
 
-#define NUM_BUFFERS (MAX_CPU_NUMBER * 2)
+#define NUM_BUFFERS (MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER)
 
 #ifdef NEEDBUNDERSCORE
 #define BLASFUNC(FUNC) FUNC##_
@@ -648,6 +648,12 @@ int omp_get_num_procs(void);
 #else
 __declspec(dllimport) int __cdecl omp_in_parallel(void);
 __declspec(dllimport) int __cdecl omp_get_num_procs(void);
+#endif
+#if (__STDC_VERSION__ >= 201112L)
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#include <stdatomic.h>
 #endif
 #else
 #ifdef __ELF__

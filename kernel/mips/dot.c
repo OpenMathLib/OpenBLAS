@@ -41,8 +41,11 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 	while(i < n)
 	{
-
-		dot += y[iy] * x[ix] ;
+#if defined(DSDOT)
+		dot += (double)y[iy] * (double)x[ix] ;
+#else
+		dot += y[iy] * x[ix];
+#endif				
 		ix  += inc_x ;
 		iy  += inc_y ;
 		i++ ;
