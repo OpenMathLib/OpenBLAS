@@ -128,6 +128,8 @@ so : ../$(LIBSONAME)
 
 ifeq ($(OSNAME), Android)
 INTERNALNAME = $(LIBPREFIX).so
+FEXTRALIB += -lm
+EXTRALIB += -lm
 else
 INTERNALNAME = $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
