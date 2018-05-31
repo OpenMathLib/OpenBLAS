@@ -145,7 +145,7 @@
 /* INCX == 0 and INCY == 0 */	
 	jmp	.L27
 
-.L141	
+.L141:	
 	movl	%edx, %eax
 	sarl	$2,   %eax
 	jle	.L28
