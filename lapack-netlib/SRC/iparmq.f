@@ -104,13 +104,13 @@
 *>
 *> \param[in] NAME
 *> \verbatim
-*>          NAME is character string
+*>          NAME is CHARACTER string
 *>               Name of the calling subroutine
 *> \endverbatim
 *>
 *> \param[in] OPTS
 *> \verbatim
-*>          OPTS is character string
+*>          OPTS is CHARACTER string
 *>               This is a concatenation of the string arguments to
 *>               TTQRE.
 *> \endverbatim

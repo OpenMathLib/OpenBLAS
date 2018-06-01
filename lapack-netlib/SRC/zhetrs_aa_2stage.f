@@ -69,7 +69,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is COMPLEX*16array, dimension (LDA,N)
+*>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          Details of factors computed by ZHETRF_AA_2STAGE.
 *> \endverbatim
 *>
@@ -81,12 +81,13 @@
 *>
 *> \param[out] TB
 *> \verbatim
-*>          TB is COMPLEX*16array, dimension (LTB)
+*>          TB is COMPLEX*16 array, dimension (LTB)
 *>          Details of factors computed by ZHETRF_AA_2STAGE.
 *> \endverbatim
 *>
 *> \param[in] LTB
 *> \verbatim
+*>          LTB is INTEGER
 *>          The size of the array TB. LTB >= 4*N.
 *> \endverbatim
 *>
@@ -106,7 +107,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is COMPLEX*16array, dimension (LDB,NRHS)
+*>          B is COMPLEX*16 array, dimension (LDB,NRHS)
 *>          On entry, the right hand side matrix B.
 *>          On exit, the solution matrix X.
 *> \endverbatim
