@@ -203,7 +203,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALADHD, ALAERH, ALASVM, XLAENV, SERRVX,
-     $                   CGET04, SLACPY, SLARHS, SLATB4, SLATMS,
+     $                   SLACPY, SLARHS, SLATB4, SLATMS,
      $                   SSYSV_AA_2STAGE, SSYT01_AA, SPOT02,
      $                   SSYTRF_AA_2STAGE
 *     ..
