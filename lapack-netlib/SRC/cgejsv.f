@@ -701,7 +701,7 @@
           LWSVDJ  = MAX( 2 * N, 1 )         
           LWSVDJV = MAX( 2 * N, 1 )
 *         .. minimal REAL workspace length for CGEQP3, CPOCON, CGESVJ
-          LRWQP3  = N 
+          LRWQP3  = 2 * N 
           LRWCON  = N 
           LRWSVDJ = N 
           IF ( LQUERY ) THEN 
@@ -939,7 +939,7 @@
              END IF 
           END IF
           MINWRK = MAX( 2, MINWRK )
-          OPTWRK = MAX( 2, OPTWRK )
+          OPTWRK = MAX( OPTWRK, MINWRK )
           IF ( LWORK  .LT. MINWRK  .AND. (.NOT.LQUERY) ) INFO = - 17
           IF ( LRWORK .LT. MINRWRK .AND. (.NOT.LQUERY) ) INFO = - 19   
       END IF

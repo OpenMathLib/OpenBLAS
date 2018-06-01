@@ -147,6 +147,13 @@
       INTRINSIC          ABS
 *     ..
 *     .. Executable Statements ..
+*
+*     Quick return if possible
+*
+      IF( N.NE.2 .AND. N.NE.3 ) THEN
+         RETURN
+      END IF
+*
       IF( N.EQ.2 ) THEN
          S = ABS( H( 1, 1 )-SR2 ) + ABS( SI2 ) + ABS( H( 2, 1 ) )
          IF( S.EQ.ZERO ) THEN

@@ -85,6 +85,7 @@
 *>
 *> \param[in] LTB
 *> \verbatim
+*>          LTB is INTEGER
 *>          The size of the array TB. LTB >= 4*N.
 *> \endverbatim
 *>
