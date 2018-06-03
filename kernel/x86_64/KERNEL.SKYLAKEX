@@ -1,0 +1,4 @@
+include $(KERNELDIR)/KERNEL.HASWELL
+
+SGEMMKERNEL    =  sgemm_kernel_16x4_skylakex.S
+

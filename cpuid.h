@@ -115,6 +115,7 @@
 #define CORE_STEAMROLLER 25
 #define CORE_EXCAVATOR   26
 #define CORE_ZEN         27
+#define CORE_SKYLAKEX    28
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -137,6 +138,7 @@
 #define HAVE_AVX      (1 <<  18)
 #define HAVE_FMA4     (1 <<  19)
 #define HAVE_FMA3     (1 <<  20)
+#define HAVE_AVX512VL (1 <<  21)
 
 #define CACHE_INFO_L1_I     1
 #define CACHE_INFO_L1_D     2
@@ -211,5 +213,6 @@ typedef struct {
 #define CPUTYPE_STEAMROLLER 		49
 #define CPUTYPE_EXCAVATOR 		50
 #define CPUTYPE_ZEN 			51
+#define CPUTYPE_SKYLAKEX		52
 
 #endif
