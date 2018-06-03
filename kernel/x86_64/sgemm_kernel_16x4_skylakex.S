@@ -159,7 +159,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-16 * SIZE(AO), %zmm0
 	vbroadcastss	 -4 * SIZE(BO), %zmm2
 	vbroadcastss	 -3 * SIZE(BO), %zmm3
-	prefetcht0	A_PR1(AO)
+#	prefetcht0	A_PR1(AO)
 
 	VFMADD231PS_(  	%zmm4,%zmm2,%zmm0 )
 	VFMADD231PS_(  	%zmm6,%zmm3,%zmm0 )
@@ -183,7 +183,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups 	-16 * SIZE(AO), %zmm0
 	vbroadcastss	 -4 * SIZE(BO), %zmm2
 	vbroadcastss	 -3 * SIZE(BO), %zmm3
-	prefetcht0	A_PR1(AO)
 
 	VFMADD231PS_(  	%zmm4,%zmm2,%zmm0 )
 	VFMADD231PS_(  	%zmm6,%zmm3,%zmm0 )
