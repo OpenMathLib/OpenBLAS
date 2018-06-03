@@ -294,7 +294,7 @@ static gotoblas_t *get_coretype(void){
 	if (model == 5) {	
 	// Intel Skylake X
 #ifndef NO_AVX512
-	  return $gotoblas_SKYLAKEX;
+	  return &gotoblas_SKYLAKEX;
 #else		
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
