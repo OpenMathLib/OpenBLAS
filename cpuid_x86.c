@@ -1301,6 +1301,19 @@ int get_cpuname(void){
           else
 	    return CPUTYPE_NEHALEM;
 	case 5:
+	  // Skylake X
+#ifndef NO_AVX512
+	  return CPUTYPE_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	  return CPUTYPE_HASWELL;
+#else
+	  return CPUTYPE_SANDYBRIDGE;
+#endif
+	  else
+	  return CPUTYPE_NEHALEM;
+#endif			
         case 14:
 	  // Skylake
           if(support_avx())
@@ -1558,6 +1571,7 @@ static char *cpuname[] = {
   "STEAMROLLER",
   "EXCAVATOR",
   "ZEN",
+  "SKYLAKEX"	
 };
 
 static char *lowercpuname[] = {
@@ -1612,6 +1626,7 @@ static char *lowercpuname[] = {
   "steamroller",
   "excavator",
   "zen",
+  "skylakex"
 };
 
 static char *corename[] = {
@@ -1643,6 +1658,7 @@ static char *corename[] = {
   "STEAMROLLER",
   "EXCAVATOR",
   "ZEN",
+  "SKYLAKEX"	
 };
 
 static char *corename_lower[] = {
@@ -1674,6 +1690,7 @@ static char *corename_lower[] = {
   "steamroller",
   "excavator",
   "zen",
+  "skylakex"	
 };
 
 
@@ -1862,6 +1879,19 @@ int get_coretype(void){
           else
 	    return CORE_NEHALEM;
 	case 5:
+	 // Skylake X
+#ifndef NO_AVX512
+	    return CORE_SKYLAKEX;
+#else
+	  if/support_avx())
+#ifndef NO_AVX2
+	    return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+	  else
+	    return CORE_NEHALEM;
+#endif			
 	case 14:
 	  // Skylake
           if(support_avx())
