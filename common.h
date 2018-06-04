@@ -651,7 +651,7 @@ __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
 #if (__STDC_VERSION__ >= 201112L)
 #ifndef _Atomic
-#define _Atomic volatile
+#define _Atomic(x) volatile x
 #endif
 #include <stdatomic.h>
 #endif
