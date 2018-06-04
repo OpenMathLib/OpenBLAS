@@ -1883,7 +1883,7 @@ int get_coretype(void){
 #ifndef NO_AVX512
 	    return CORE_SKYLAKEX;
 #else
-	  if/support_avx())
+	  if(support_avx())
 #ifndef NO_AVX2
 	    return CORE_HASWELL;
 #else
