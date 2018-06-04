@@ -82,7 +82,7 @@ extern gotoblas_t  gotoblas_ZEN;
 #ifndef NO_AVX512
 extern gotoblas_t  gotoblas_SKYLAKEX;
 #else
-#define gotoblas_SKYLAKEX gotoblas_HASWELL;
+#define gotoblas_SKYLAKEX gotoblas_HASWELL
 #endif
 #endif
 #else
