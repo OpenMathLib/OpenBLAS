@@ -302,8 +302,8 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM;
 	  }
+#endif		
 	}
-#endif
 	//Intel Skylake
 	if (model == 14) {
 	  if(support_avx())
