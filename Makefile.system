@@ -1249,6 +1249,7 @@ export MSA_FLAGS
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
+export NO_AVX512
 
 export SGEMM_UNROLL_M
 export SGEMM_UNROLL_N
