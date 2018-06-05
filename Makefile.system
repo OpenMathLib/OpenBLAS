@@ -939,6 +939,10 @@ ifeq ($(NO_AVX2), 1)
 CCOMMON_OPT	+= -DNO_AVX2
 endif
 
+ifeq ($(NO_AVX512), 1)
+CCOMMON_OPT	+= -DNO_AVX512
+endif
+
 ifdef SMP
 CCOMMON_OPT	+= -DSMP_SERVER
 
