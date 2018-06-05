@@ -506,7 +506,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	//char mname[20];
 
-	for ( i=1 ; i <= 23; i++)
+	for ( i=1 ; i <= 24; i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{
