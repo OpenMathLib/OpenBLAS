@@ -663,6 +663,7 @@ __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #ifndef _Atomic
 #define _Atomic volatile
 #endif
+#endif
 
 #else
 #ifdef __ELF__
