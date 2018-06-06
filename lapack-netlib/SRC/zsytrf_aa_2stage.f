@@ -93,6 +93,7 @@
 *>
 *> \param[in] LTB
 *> \verbatim
+*>          LTB is INTEGER
 *>          The size of the array TB. LTB >= 4*N, internally
 *>          used to select NB such that LTB >= (3*NB+1)*N.
 *>
@@ -112,7 +113,7 @@
 *>
 *> \param[out] IPIV2
 *> \verbatim
-*>          IPIV is INTEGER array, dimension (N)
+*>          IPIV2 is INTEGER array, dimension (N)
 *>          On exit, it contains the details of the interchanges, i.e.,
 *>          the row and column k of T were interchanged with the
 *>          row and column IPIV(k).
@@ -125,6 +126,7 @@
 *>
 *> \param[in] LWORK
 *> \verbatim
+*>          LWORK is INTEGER
 *>          The size of WORK. LWORK >= N, internally used to select NB
 *>          such that LWORK >= N*NB.
 *>
@@ -662,6 +664,8 @@ c     $                     (J+1)*NB+1, (J+1)*NB+KB, IPIV, 1 )
 *
 *     Factor the band matrix
       CALL ZGBTRF( N, N, NB, NB, TB, LDTB, IPIV2, INFO )
+*
+      RETURN
 *
 *     End of ZSYTRF_AA_2STAGE
 *

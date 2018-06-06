@@ -209,6 +209,8 @@
          INFO = -5
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -8
+      ELSE IF( LWORK.LT.MAX( 2*N, 3*N-2 ) .AND. .NOT.LQUERY ) THEN
+         INFO = -10
       END IF
 *
       IF( INFO.EQ.0 ) THEN
@@ -219,9 +221,6 @@
          LWKOPT_HETRS = INT( WORK(1) )
          LWKOPT = MAX( LWKOPT_HETRF, LWKOPT_HETRS )
          WORK( 1 ) = LWKOPT
-         IF( LWORK.LT.LWKOPT .AND. .NOT.LQUERY ) THEN
-            INFO = -10
-         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN

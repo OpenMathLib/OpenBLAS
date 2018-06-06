@@ -163,7 +163,7 @@
       UPPER = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
 *     Get blocksize
-      NBMAX = ILAENV( 1, 'ZSYTRF', UPLO, N, -1, -1, -1 )
+      NBMAX = ILAENV( 1, 'ZSYTRI2', UPLO, N, -1, -1, -1 )
       IF ( NBMAX .GE. N ) THEN
          MINSIZE = N
       ELSE

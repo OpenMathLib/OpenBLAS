@@ -27,7 +27,7 @@
 *       ..
 *       .. Array Arguments ..
 *       LOGICAL            SELECT( * )
-*       REAL   T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
+*       REAL               T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WORK( * )
 *       ..
 *
@@ -45,9 +45,9 @@
 *> The right eigenvector x and the left eigenvector y of T corresponding
 *> to an eigenvalue w are defined by:
 *>
-*>    T*x = w*x,     (y**H)*T = w*(y**H)
+*>    T*x = w*x,     (y**T)*T = w*(y**T)
 *>
-*> where y**H denotes the conjugate transpose of y.
+*> where y**T denotes the transpose of the vector y.
 *> The eigenvalues are not input to this routine, but are read directly
 *> from the diagonal blocks of T.
 *>
@@ -251,14 +251,14 @@
 *     ..
 *     .. Array Arguments ..
       LOGICAL            SELECT( * )
-      REAL   T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
+      REAL               T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
      $                   WORK( * )
 *     ..
 *
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL   ZERO, ONE
+      REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
       INTEGER            NBMIN, NBMAX
       PARAMETER          ( NBMIN = 8, NBMAX = 128 )
@@ -268,7 +268,7 @@
      $                   RIGHTV, SOMEV
       INTEGER            I, IERR, II, IP, IS, J, J1, J2, JNXT, K, KI,
      $                   IV, MAXWRK, NB, KI2
-      REAL   BETA, BIGNUM, EMAX, OVFL, REC, REMAX, SCALE,
+      REAL               BETA, BIGNUM, EMAX, OVFL, REC, REMAX, SCALE,
      $                   SMIN, SMLNUM, ULP, UNFL, VCRIT, VMAX, WI, WR,
      $                   XNORM
 *     ..
