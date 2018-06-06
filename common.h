@@ -652,6 +652,12 @@ __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
 
 #if (__STDC_VERSION__ >= 201112L)
+#if defined(C_GCC) && ( __GNUC__ < 7) 
+// workaround for GCC bug 65467
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#endif
 #include <stdatomic.h>
 #else
 #ifndef _Atomic
