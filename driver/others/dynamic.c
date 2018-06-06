@@ -74,15 +74,22 @@ extern gotoblas_t  gotoblas_STEAMROLLER;
 extern gotoblas_t  gotoblas_EXCAVATOR;
 #ifdef NO_AVX2
 #define gotoblas_HASWELL gotoblas_SANDYBRIDGE
+#define gotoblas_SKYLAKEX gotoblas_SANDYBRIDGE
 #define gotoblas_ZEN gotoblas_SANDYBRIDGE
 #else
 extern gotoblas_t  gotoblas_HASWELL;
 extern gotoblas_t  gotoblas_ZEN;
+#ifndef NO_AVX512
+extern gotoblas_t  gotoblas_SKYLAKEX;
+#else
+#define gotoblas_SKYLAKEX gotoblas_HASWELL
+#endif
 #endif
 #else
 //Use NEHALEM kernels for sandy bridge
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
 #define gotoblas_HASWELL gotoblas_NEHALEM
+#define gotoblas_SKYLAKEX gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #define gotoblas_STEAMROLLER gotoblas_BARCELONA
@@ -284,8 +291,21 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	if (model == 5) {	
+	// Intel Skylake X
+#ifndef NO_AVX512
+	  return &gotoblas_SKYLAKEX;
+#else		
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+#endif		
+	}
 	//Intel Skylake
-	if (model == 14 || model == 5) {
+	if (model == 14) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
@@ -445,7 +465,8 @@ static char *corename[] = {
     "Haswell",
     "Steamroller",
     "Excavator",
-    "Zen"
+    "Zen",
+    "SkylakeX"	
 };
 
 char *gotoblas_corename(void) {
@@ -473,7 +494,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_STEAMROLLER)  return corename[21];
   if (gotoblas == &gotoblas_EXCAVATOR)    return corename[22];
   if (gotoblas == &gotoblas_ZEN)          return corename[23];
-
+  if (gotoblas == &gotoblas_SKYLAKEX)     return corename[24];
   return corename[0];
 }
 
@@ -485,7 +506,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	//char mname[20];
 
-	for ( i=1 ; i <= 23; i++)
+	for ( i=1 ; i <= 24; i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{
@@ -503,6 +524,7 @@ static gotoblas_t *force_coretype(char *coretype){
 
 	switch (found)
 	{
+		case 24: return (&gotoblas_SKYLAKEX);	
 		case 23: return (&gotoblas_ZEN);
 		case 22: return (&gotoblas_EXCAVATOR);
 		case 21: return (&gotoblas_STEAMROLLER);
