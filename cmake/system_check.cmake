@@ -67,7 +67,7 @@ else()
 endif()
 
 if (X86_64 OR X86)
-  file(WRITE ${PROJECT_BINARY_DIR}/avx512.tmp "void main(void){ __asm__ volatile(\"vaddps %zmm1, %zmm0, %zmm0\"); }")
+  file(WRITE ${PROJECT_BINARY_DIR}/avx512.tmp "int main(void){ __asm__ volatile(\"vbroadcastss -4 * 4(%rsi), %zmm2\"); }")
 execute_process(COMMAND ${CMAKE_C_COMPILER} -v -o ${PROJECT_BINARY_DIR}/avx512.o -x c ${PROJECT_BINARY_DIR}/avx512.tmp RESULT_VARIABLE NO_AVX512)
 if (NO_AVX512 EQUAL 1)
 set (CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX512")
