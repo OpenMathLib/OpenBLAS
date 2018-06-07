@@ -356,7 +356,7 @@ typedef int blasint;
 */
 
 #ifndef YIELDING
-#define YIELDING	sched_yield()
+#define YIELDING	usleep(10)
 #endif
 
 /***
