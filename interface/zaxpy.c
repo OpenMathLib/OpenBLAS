@@ -41,7 +41,11 @@
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
 #endif
-
+#if  defined(Z13)
+#define MULTI_THREAD_MINIMAL  200000
+#else
+#define MULTI_THREAD_MINIMAL  10000
+#endif
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
@@ -69,7 +73,7 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
 #endif
 
 #ifndef CBLAS
-  PRINT_DEBUG_CNAME;
+  PRINT_DEBUG_NAME;
 #else
   PRINT_DEBUG_CNAME;
 #endif
@@ -93,6 +97,11 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
   if (incx == 0 || incy == 0)
 	  nthreads = 1;
 
+  //Work around the low performance issue with small imput size &
+  //multithreads.
+  if (n <= MULTI_THREAD_MINIMAL) {
+	  nthreads = 1;
+  }
   if (nthreads == 1) {
 #endif
 
