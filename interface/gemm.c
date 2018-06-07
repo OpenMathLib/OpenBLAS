@@ -411,20 +411,22 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   mode |= (transa << BLAS_TRANSA_SHIFT);
   mode |= (transb << BLAS_TRANSB_SHIFT);
 
-  nthreads_max = num_cpu_avail(3);
-  nthreads_avail = nthreads_max;
-
 #ifndef COMPLEX
   MNK = (double) args.m * (double) args.n * (double) args.k;
   if ( MNK <= (65536.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	nthreads_max = 1;
+  else
+	nthreads_max = num_cpu_avail(3);
 #else
   MNK = (double) args.m * (double) args.n * (double) args.k;
   if ( MNK <= (8192.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	nthreads_max = 1;
+  else
+	nthreads_max = num_cpu_avail(3);
 #endif
   args.common = NULL;
 
+  nthreads_avail = nthreads_max;
   if ( nthreads_max > nthreads_avail )
   	args.nthreads = nthreads_avail;
   else
