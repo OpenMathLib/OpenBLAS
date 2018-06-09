@@ -1196,9 +1196,7 @@ int main(int argc, char *argv[]){
 #elif NO_PARALLEL_MAKE==1
     printf("MAKE += -j 1\n");
 #else
-#ifndef OS_WINDOWS
     printf("MAKE += -j %d\n", get_num_cores());
-#endif
 #endif
 
     break;
