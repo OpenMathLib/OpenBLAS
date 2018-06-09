@@ -153,6 +153,9 @@ ifeq ($(DYNAMIC_ARCH), 1)
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
 	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
+ifeq ($(DYNAMIC_OLDER), 1)
+	@echo DYNAMIC_OLDER=1 >> Makefile.conf_last
+endif	
 endif
 ifdef USE_THREAD
 	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last

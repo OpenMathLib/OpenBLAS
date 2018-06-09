@@ -17,6 +17,11 @@ VERSION = 0.3.1.dev
 # If you want to support multiple architecture in one binary
 # DYNAMIC_ARCH = 1
 
+# If you want the full list of x86_64 architectures supported in DYNAMIC_ARCH
+# mode (including individual optimizied codes for PENRYN, DUNNINGTON, OPTERON,
+# OPTERON_SSE3, ATOM and NANO rather than fallbacks to older architectures)
+# DYNAMIC_OLDER = 1
+
 # C compiler including binary type(32bit / 64bit). Default is gcc.
 # Don't use Intel Compiler or PGI, it won't generate right codes as I expect.
 # CC = gcc
