@@ -163,6 +163,9 @@ endif ()
 
 if (DYNAMIC_ARCH)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
+  if (DYNAMIC_OLDER)
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_OLDER")
+  endif ()
 endif ()
 
 if (NO_LAPACK)
