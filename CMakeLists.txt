@@ -12,6 +12,9 @@ set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${Open
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 
+include(CMakePackageConfigHelpers)
+
+
 set(OpenBLAS_LIBNAME openblas)
 
 #######
