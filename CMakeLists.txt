@@ -20,6 +20,7 @@ option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON
 endif()
 option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
 option(DYNAMIC_ARCH "Build with DYNAMIC_ARCH" OFF)
+option(DYNAMIC_OLDER "Support older cpus with DYNAMIC_ARCH" OFF)
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive LAPACK" OFF)
 #######
 if(BUILD_WITHOUT_LAPACK)
@@ -208,6 +209,7 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 
 # Install libraries
 install(TARGETS ${OpenBLAS_LIBNAME}
+	EXPORT "OpenBLASTargets"
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -267,3 +269,21 @@ if(PKG_CONFIG_FOUND)
 	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas.pc @ONLY)
 	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
 endif()
+
+
+# GNUInstallDirs "DATADIR" wrong here; CMake search path wants "share".
+set(PN OpenBLAS)
+set(CMAKECONFIG_INSTALL_DIR "share/cmake/${PN}")
+configure_package_config_file(cmake/${PN}Config.cmake.in
+                              "${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake"
+                              INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+                                 VERSION ${${PN}_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+install(EXPORT "${PN}Targets"
+        NAMESPACE "${PN}::"
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+
