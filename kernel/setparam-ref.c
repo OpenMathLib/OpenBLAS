@@ -662,6 +662,10 @@ static __inline__ int get_l2_size(void){
   l2 = BITMASK(ecx, 16, 0xffff);
 
 #ifndef ARCH_X86
+  if (l2 <= 0) {
+     fprintf (stderr,"OpenBLAS WARNING - could not determine the L2 cache size on this system, assuming 256k\n");
+     return 256;
+  }
   return l2;
 
 #else
