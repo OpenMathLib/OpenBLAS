@@ -13,9 +13,9 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the OpenBLAS project nor the names of 
-      its contributors may be used to endorse or promote products 
-      derived from this software without specific prior written 
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
       permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -139,6 +139,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FIXED_PAGESIZE 4096
 #endif
 
+#ifndef BUFFERS_PER_THREAD
+#ifdef USE_OPENMP
+#define BUFFERS_PER_THREAD (MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER)
+#else
+#define BUFFERS_PER_THREAD NUM_BUFFERS
+#endif
+#endif
+
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
 
 #if defined(_MSC_VER) && !defined(__clang__)
@@ -213,7 +221,7 @@ int i,n;
   ret = sched_getaffinity(0,size,cpusetp);
   if (ret!=0) return nums;
   ret = CPU_COUNT_S(size,cpusetp);
-  if (ret > 0 && ret < nums) nums = ret;	
+  if (ret > 0 && ret < nums) nums = ret;
   CPU_FREE(cpusetp);
   return nums;
  #endif
@@ -415,8 +423,15 @@ struct release_t {
 
 int hugetlb_allocated = 0;
 
-static struct release_t release_info[NUM_BUFFERS];
-static int release_pos = 0;
+#if defined(OS_WINDOWS)
+#define THREAD_LOCAL __declspec(thread)
+#define UNLIKELY_TO_BE_ZERO(x) (x)
+#else
+#define THREAD_LOCAL __thread
+#define UNLIKELY_TO_BE_ZERO(x) (__builtin_expect(x, 0))
+#endif
+static struct release_t THREAD_LOCAL release_info[BUFFERS_PER_THREAD];
+static int THREAD_LOCAL release_pos = 0;
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
 static int hot_alloc = 0;
@@ -459,15 +474,9 @@ static void *alloc_mmap(void *address){
   }
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
-    LOCK_COMMAND(&alloc_lock);
-#endif    
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
-    UNLOCK_COMMAND(&alloc_lock);
-#endif    
   }
 
 #ifdef OS_LINUX
@@ -611,15 +620,9 @@ static void *alloc_mmap(void *address){
 #endif
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
-    LOCK_COMMAND(&alloc_lock);
-#endif
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
-    UNLOCK_COMMAND(&alloc_lock);
-#endif
   }
 
   return map_address;
@@ -872,7 +875,7 @@ static void *alloc_hugetlb(void *address){
 
   tp.PrivilegeCount = 1;
   tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-  
+
   if (LookupPrivilegeValue(NULL, SE_LOCK_MEMORY_NAME, &tp.Privileges[0].Luid) != TRUE) {
       CloseHandle(hToken);
       return (void*)-1;
@@ -961,20 +964,17 @@ static BLASULONG base_address      = 0UL;
 static BLASULONG base_address      = BASE_ADDRESS;
 #endif
 
-static volatile struct {
-  BLASULONG lock;
+struct memory_t {
   void *addr;
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
-  int   pos;
-#endif
   int used;
 #ifndef __64BIT__
   char dummy[48];
 #else
   char dummy[40];
 #endif
+};
 
-} memory[NUM_BUFFERS];
+static struct memory_t THREAD_LOCAL memory[BUFFERS_PER_THREAD];
 
 static int memory_initialized = 0;
 
@@ -987,9 +987,6 @@ static int memory_initialized = 0;
 void *blas_memory_alloc(int procpos){
 
   int position;
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
-  int mypos;
-#endif
 
   void *map_address;
 
@@ -1020,102 +1017,48 @@ void *blas_memory_alloc(int procpos){
   };
   void *(**func)(void *address);
 
-#if defined(USE_OPENMP)
-  if (!memory_initialized) {
-#endif
+  if (UNLIKELY_TO_BE_ZERO(memory_initialized)) {
 
-  LOCK_COMMAND(&alloc_lock);
+    /* Only allow a single thread to initialize memory system */
+    LOCK_COMMAND(&alloc_lock);
 
-  if (!memory_initialized) {
-
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
-    for (position = 0; position < NUM_BUFFERS; position ++){
-      memory[position].addr   = (void *)0;
-      memory[position].pos    = -1;
-      memory[position].used   = 0;
-      memory[position].lock   = 0;
-    }
-#endif
+    if (!memory_initialized) {
 
 #ifdef DYNAMIC_ARCH
-    gotoblas_dynamic_init();
+      gotoblas_dynamic_init();
 #endif
 
 #if defined(SMP) && defined(OS_LINUX) && !defined(NO_AFFINITY)
-    gotoblas_affinity_init();
+      gotoblas_affinity_init();
 #endif
 
 #ifdef SMP
-    if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
+      if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
 #ifndef DYNAMIC_ARCH
-    blas_set_parameter();
+      blas_set_parameter();
 #endif
 #endif
 
-    memory_initialized = 1;
+      memory_initialized = 1;
 
+    }
+    UNLOCK_COMMAND(&alloc_lock);
   }
-  UNLOCK_COMMAND(&alloc_lock);
-#if defined(USE_OPENMP)
-  }
-#endif
 
 #ifdef DEBUG
   printf("Alloc Start ...\n");
 #endif
 
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
-
-  mypos = WhereAmI();
-
-  position = mypos;
-  while (position >= NUM_BUFFERS) position >>= 1;
-
-  do {
-    if (!memory[position].used && (memory[position].pos == mypos)) {
-#if defined(SMP) && !defined(USE_OPENMP)
-      LOCK_COMMAND(&alloc_lock);
-#else      
-      blas_lock(&memory[position].lock);
-#endif
-      if (!memory[position].used) goto allocation;
-#if defined(SMP) && !defined(USE_OPENMP)
-      UNLOCK_COMMAND(&alloc_lock);
-#else
-      blas_unlock(&memory[position].lock);
-#endif      
-    }
-
-    position ++;
-
-  } while (position < NUM_BUFFERS);
-
-
-#endif
-
   position = 0;
 
   do {
-#if defined(SMP) && !defined(USE_OPENMP)
-      LOCK_COMMAND(&alloc_lock);
-#else
-    if (!memory[position].used) { 
-      blas_lock(&memory[position].lock);
-#endif
       if (!memory[position].used) goto allocation;
-#if defined(SMP) && !defined(USE_OPENMP)
-      UNLOCK_COMMAND(&alloc_lock);
-#else      
-      blas_unlock(&memory[position].lock);
-      }
-#endif
-
     position ++;
 
-  } while (position < NUM_BUFFERS);
+  } while (position < BUFFERS_PER_THREAD);
 
   goto error;
 
@@ -1126,11 +1069,6 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   memory[position].used = 1;
-#if defined(SMP) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#else
-  blas_unlock(&memory[position].lock);
-#endif
 
   if (!memory[position].addr) {
     do {
@@ -1148,14 +1086,14 @@ void *blas_memory_alloc(int procpos){
 
 #ifdef ALLOC_DEVICEDRIVER
 	if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
-	    fprintf(stderr, "OpenBLAS Warning ... Physically contigous allocation was failed.\n");
+	    fprintf(stderr, "OpenBLAS Warning ... Physically contiguous allocation failed.\n");
 	}
 #endif
 
 #ifdef ALLOC_HUGETLBFILE
 	if ((*func == alloc_hugetlbfile) && (map_address == (void *)-1)) {
 #ifndef OS_WINDOWS
-	    fprintf(stderr, "OpenBLAS Warning ... HugeTLB(File) allocation was failed.\n");
+	    fprintf(stderr, "OpenBLAS Warning ... HugeTLB(File) allocation failed.\n");
 #endif
 	}
 #endif
@@ -1176,43 +1114,12 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
-#if defined(SMP) && !defined(USE_OPENMP)
-    LOCK_COMMAND(&alloc_lock);
-#endif    
     memory[position].addr = map_address;
-#if defined(SMP) && !defined(USE_OPENMP)
-    UNLOCK_COMMAND(&alloc_lock);
-#endif
 
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)memory[position].addr, position);
 #endif
   }
-
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
-
-  if (memory[position].pos == -1) memory[position].pos = mypos;
-
-#endif
-
-#ifdef DYNAMIC_ARCH
-
-  if (memory_initialized == 1) {
-
-    LOCK_COMMAND(&alloc_lock);
-
-    if (memory_initialized == 1) {
-
-      if (!gotoblas) gotoblas_dynamic_init();
-
-      memory_initialized = 2;
-    }
-
-    UNLOCK_COMMAND(&alloc_lock);
-
-  }
-#endif
-
 
 #ifdef DEBUG
   printf("Mapped   : %p  %3d\n\n",
@@ -1222,7 +1129,7 @@ void *blas_memory_alloc(int procpos){
   return (void *)memory[position].addr;
 
  error:
-  printf("BLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
+  printf("OpenBLAS : Program will terminate because you tried to allocate too many memory regions.\n");
 
   return NULL;
 }
@@ -1236,10 +1143,7 @@ void blas_memory_free(void *free_area){
 #endif
 
   position = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
-  LOCK_COMMAND(&alloc_lock);
-#endif
-  while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
+  while ((position < BUFFERS_PER_THREAD) && (memory[position].addr != free_area))
     position++;
 
   if (memory[position].addr != free_area) goto error;
@@ -1248,13 +1152,7 @@ void blas_memory_free(void *free_area){
   printf("  Position : %d\n", position);
 #endif
 
-  // arm: ensure all writes are finished before other thread takes this memory
-  WMB;
-
   memory[position].used = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#endif
 
 #ifdef DEBUG
   printf("Unmap Succeeded.\n\n");
@@ -1266,11 +1164,8 @@ void blas_memory_free(void *free_area){
   printf("BLAS : Bad memory unallocation! : %4d  %p\n", position,  free_area);
 
 #ifdef DEBUG
-  for (position = 0; position < NUM_BUFFERS; position++)
+  for (position = 0; position < BUFFERS_PER_THREAD; position++)
     printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
-#endif
-#if defined(SMP) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
 #endif
   return;
 }
@@ -1293,8 +1188,6 @@ void blas_shutdown(void){
   BLASFUNC(blas_thread_shutdown)();
 #endif
 
-  LOCK_COMMAND(&alloc_lock);
-
   for (pos = 0; pos < release_pos; pos ++) {
     release_info[pos].func(&release_info[pos]);
   }
@@ -1305,16 +1198,10 @@ void blas_shutdown(void){
   base_address      = BASE_ADDRESS;
 #endif
 
-  for (pos = 0; pos < NUM_BUFFERS; pos ++){
+  for (pos = 0; pos < BUFFERS_PER_THREAD; pos ++){
     memory[pos].addr   = (void *)0;
     memory[pos].used   = 0;
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
-    memory[pos].pos    = -1;
-#endif
-    memory[pos].lock   = 0;
   }
-
-  UNLOCK_COMMAND(&alloc_lock);
 
   return;
 }
