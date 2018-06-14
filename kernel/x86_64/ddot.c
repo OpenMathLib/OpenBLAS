@@ -29,13 +29,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(BULLDOZER) 
+#if defined(BULLDOZER)
 #include "ddot_microk_bulldozer-2.c"
 #elif defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "ddot_microk_steamroller-2.c"
 #elif defined(PILEDRIVER)
 #include "ddot_microk_piledriver-2.c"
-#elif defined(NEHALEM) 
+#elif defined(NEHALEM)
 #include "ddot_microk_nehalem-2.c"
 #elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
 #include "ddot_microk_haswell-2.c"
@@ -110,7 +110,7 @@ static FLOAT dot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLON
 	FLOAT temp1 = 0.0;
 	FLOAT temp2 = 0.0;
 
-        BLASLONG n1 = n & -4;	
+        BLASLONG n1 = n & -4;
 
 	while(i < n1)
 	{
@@ -169,13 +169,10 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	FLOAT dot = 0.0;
 
 #if defined(SMP)
-	nthreads = num_cpu_avail(1);
-
-	if (inc_x == 0 || inc_y == 0)
+	if (inc_x == 0 || inc_y == 0 || n <= 10000)
 		nthreads = 1;
-
-	if (n <= 10000)
-		nthreads = 1;
+	else
+		nthreads = num_cpu_avail(1);
 
 	if (nthreads == 1) {
 		dot = dot_compute(n, x, inc_x, y, inc_y);

@@ -90,18 +90,16 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
   if (incy < 0) y -= (n - 1) * incy * 2;
 
 #ifdef SMP
-  nthreads = num_cpu_avail(1);
-
   //disable multi-thread when incx==0 or incy==0
   //In that case, the threads would be dependent.
-  if (incx == 0 || incy == 0)
-	  nthreads = 1;
-
-  //Work around the low performance issue with small imput size &
+  //
+  //Temporarily work-around the low performance issue with small imput size &
   //multithreads.
-  if (n <= MULTI_THREAD_MINIMAL) {
+  if (incx == 0 || incy == 0 || n <= MULTI_THREAD_MINIMAL)
 	  nthreads = 1;
-  }
+  else
+	  nthreads = num_cpu_avail(1);
+
   if (nthreads == 1) {
 #endif
 

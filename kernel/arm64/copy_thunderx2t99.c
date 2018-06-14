@@ -183,13 +183,10 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if (n <= 0) return 0;
 
 #if defined(SMP)
-	nthreads = num_cpu_avail(1);
-
-	if (inc_x == 0)
+	if (inc_x == 0 || n <= 10000)
 		nthreads = 1;
-
-	if (n <= 10000)
-		nthreads = 1;
+	else
+		nthreads = num_cpu_avail(1);
 
 	if (nthreads == 1) {
 		do_copy(n, x, inc_x, y, inc_y);
