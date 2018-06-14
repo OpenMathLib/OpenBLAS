@@ -190,7 +190,7 @@ NO_AFFINITY = 1
 COMMON_PROF = -pg
 
 # Build Debug version
-DEBUG = 1
+# DEBUG = 1
 
 # Set maximum stack allocation.
 # The default value is 2048. 0 disable stack allocation a may reduce GER and GEMV
