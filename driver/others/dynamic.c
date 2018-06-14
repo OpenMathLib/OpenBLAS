@@ -56,16 +56,27 @@ EXTERN gotoblas_t  gotoblas_BANIAS;
 EXTERN gotoblas_t  gotoblas_ATHLON;
 
 extern gotoblas_t  gotoblas_PRESCOTT;
+extern gotoblas_t  gotoblas_CORE2;
+extern gotoblas_t  gotoblas_NEHALEM;
+extern gotoblas_t  gotoblas_BARCELONA;
+#ifdef DYNAMIC_OLDER
 extern gotoblas_t  gotoblas_ATOM;
 extern gotoblas_t  gotoblas_NANO;
-extern gotoblas_t  gotoblas_CORE2;
 extern gotoblas_t  gotoblas_PENRYN;
 extern gotoblas_t  gotoblas_DUNNINGTON;
-extern gotoblas_t  gotoblas_NEHALEM;
 extern gotoblas_t  gotoblas_OPTERON;
 extern gotoblas_t  gotoblas_OPTERON_SSE3;
-extern gotoblas_t  gotoblas_BARCELONA;
 extern gotoblas_t  gotoblas_BOBCAT;
+#else
+#define gotoblas_ATOM gotoblas_NEHALEM
+#define gotoblas_NANO gotoblas_NEHALEM
+#define gotoblas_PENRYN gotoblas_CORE2
+#define gotoblas_DUNNINGTON gotoblas_CORE2
+#define gotoblas_OPTERON gotoblas_CORE2
+#define gotoblas_OPTERON_SSE3 gotoblas_CORE2
+#define gotoblas_BOBCAT gotoblas_CORE2
+#endif
+
 #ifndef NO_AVX
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BULLDOZER;
