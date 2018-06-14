@@ -60,6 +60,14 @@ VERSION = 0.3.1.dev
 # This flag is always set for POWER8. Don't modify the flag 
 # USE_OPENMP = 1
 
+# The OpenMP scheduler to use - by default this is "static" and you
+# will normally not want to change this unless you know that your main
+# workload will involve tasks that have highly unbalanced running times
+# for individual threads. Changing away from "static" may also adversely
+# affect memory access locality in NUMA systems. Setting to "runtime" will
+# allow you to select the scheduler from the environment variable OMP_SCHEDULE
+# CCOMMON_OPT += -DOMP_SCHED=dynamic
+
 # You can define maximum number of threads. Basically it should be
 # less than actual number of cores. If you don't specify one, it's
 # automatically detected by the the script.
@@ -157,7 +165,8 @@ NO_AFFINITY = 1
 
 # If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute
 # with single thread. You can use this flag to avoid the overhead of multi-threading
-# in small matrix sizes. The default value is 4.
+# in small matrix sizes. The default value is 4, but values as high as 50 have been
+# reported to be optimal for certain workloads (50 is the recommended value for Julia).
 # GEMM_MULTITHREAD_THRESHOLD = 4
 
 # If you need santy check by comparing reference BLAS. It'll be very
@@ -181,7 +190,7 @@ NO_AFFINITY = 1
 COMMON_PROF = -pg
 
 # Build Debug version
-# DEBUG = 1
+DEBUG = 1
 
 # Set maximum stack allocation.
 # The default value is 2048. 0 disable stack allocation a may reduce GER and GEMV
