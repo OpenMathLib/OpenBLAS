@@ -338,6 +338,23 @@ static gotoblas_t *get_coretype(void){
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
+      case 6:
+        if (model == 6) {
+          // Cannon Lake
+#ifndef NO_AVX512
+	  return CPUTYPE_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	  return CPUTYPE_HASWELL;
+#else
+	  return CPUTYPE_SANDYBRIDGE;
+#endif
+	  else
+	  return CPUTYPE_NEHALEM;
+#endif			
+        }
+        return NULL;  
       case 9:
       case 8:
 	if (model == 14 ) { // Kaby Lake
