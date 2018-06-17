@@ -342,16 +342,16 @@ static gotoblas_t *get_coretype(void){
         if (model == 6) {
           // Cannon Lake
 #ifndef NO_AVX512
-	  return CPUTYPE_SKYLAKEX;
+	  return &gotoblas_SKYLAKEX;
 #else
 	  if(support_avx())
 #ifndef NO_AVX2
-	  return CPUTYPE_HASWELL;
+	  return &gotoblas_HASWELL;
 #else
-	  return CPUTYPE_SANDYBRIDGE;
+	  return &gotblas_SANDYBRIDGE;
 #endif
 	  else
-	  return CPUTYPE_NEHALEM;
+	  return &gotoblas_NEHALEM;
 #endif			
         }
         return NULL;  
