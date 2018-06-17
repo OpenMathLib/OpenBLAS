@@ -658,8 +658,8 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     }
 
     /* Clear synchronization flags */
-    for (i = 0; i < MAX_CPU_NUMBER; i++) {
-      for (j = 0; j < MAX_CPU_NUMBER; j++) {
+    for (i = 0; i < nthreads; i++) {
+      for (j = 0; j < nthreads; j++) {
 	for (k = 0; k < DIVIDE_RATE; k++) {
 	  job[i].working[j][CACHE_LINE_SIZE * k] = 0;
 	}
