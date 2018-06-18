@@ -326,6 +326,8 @@ int  goto_get_num_procs  (void) {
   return blas_cpu_number;
 }
 
+static void blas_memory_init();
+
 void openblas_fork_handler()
 {
   // This handler shuts down the OpenBLAS-managed PTHREAD pool when OpenBLAS is
@@ -337,7 +339,7 @@ void openblas_fork_handler()
   // implementation of OpenMP.
 #if !((defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)) || defined(OS_ANDROID)) && defined(SMP_SERVER)
   int err;
-  err = pthread_atfork ((void (*)(void)) BLASFUNC(blas_thread_shutdown), NULL, NULL);
+  err = pthread_atfork ((void (*)(void)) BLASFUNC(blas_thread_shutdown), NULL, blas_memory_init);
   if(err != 0)
     openblas_warning(0, "OpenBLAS Warning ... cannot install fork handler. You may meet hang after fork.\n");
 #endif
@@ -415,23 +417,104 @@ int openblas_get_num_threads(void) {
 #endif
 }
 
-struct release_t {
-  void *address;
-  void (*func)(struct release_t *);
-  long attr;
-};
-
 int hugetlb_allocated = 0;
 
 #if defined(OS_WINDOWS)
 #define THREAD_LOCAL __declspec(thread)
-#define UNLIKELY_TO_BE_ZERO(x) (x)
+#define LIKELY_ONE(x) (x)
 #else
 #define THREAD_LOCAL __thread
-#define UNLIKELY_TO_BE_ZERO(x) (__builtin_expect(x, 0))
+#define LIKELY_ONE(x) (__builtin_expect(x, 1))
 #endif
-static struct release_t THREAD_LOCAL release_info[BUFFERS_PER_THREAD];
-static int THREAD_LOCAL release_pos = 0;
+
+/* Stores information about the allocation and how to release it */
+struct alloc_t {
+  /* Whether this allocation is being used */
+  int used;
+  /* Any special attributes needed when releasing this allocation */
+  int attr;
+  /* Function that can properly release this memory */
+  void (*release_func)(struct alloc_t *);
+  /* Pad to 64-byte alignment */
+  char pad[64 - 2 * sizeof(int) - sizeof(void(*))];
+};
+
+/* Convenience macros for storing release funcs */
+#define STORE_RELEASE_FUNC(address, func)                   \
+  if (address != (void *)-1) {                              \
+    struct alloc_t *alloc_info = (struct alloc_t *)address; \
+    alloc_info->release_func = func;                        \
+  }
+
+#define STORE_RELEASE_FUNC_WITH_ATTR(address, func, attr)   \
+  if (address != (void *)-1) {                              \
+    struct alloc_t *alloc_info = (struct alloc_t *)address; \
+    alloc_info->release_func = func;                        \
+    alloc_info->attr = attr;                                \
+  }
+
+/* The number of bytes that will be allocated for each buffer. When allocating
+   memory, we store an alloc_t followed by the actual buffer memory. This means
+   that each allocation always has its associated alloc_t, without the need
+   for an auxiliary tracking structure. */
+static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
+
+/* Clang supports TLS from version 2.8 */
+#if defined(__clang__) && __clang_major__ > 2 || \
+    (__clang_minor__ == 2 || __clang_minor__ == 8)
+#define HAS_COMPILER_TLS
+#endif
+
+/* GCC supports TLS from version 4.1 */
+#if !defined(__clang__) && defined(__GNUC__) && \
+    (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
+#define HAS_COMPILER_TLS
+#endif
+
+/* MSVC supports TLS from version 2005 */
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+#define HAS_COMPILER_TLS
+#endif
+
+/* Versions of XCode before 8 did not properly support TLS */
+#if defined(__apple_build_version__) && __apple_build_version__ < 8000042
+#undef HAS_COMPILER_TLS
+#endif
+
+/* Android NDK's before version 12b did not support TLS */
+#if defined(__ANDROID__) && defined(__clang__)
+#if __has_include(<android/ndk-version.h>)
+#include <android/ndk-version.h>
+#endif
+#if defined(__ANDROID__) && defined(__clang__) && defined(__NDK_MAJOR__) && \
+    defined(__NDK_MINOR__) &&                                               \
+    ((__NDK_MAJOR__ < 12) || ((__NDK_MAJOR__ == 12) && (__NDK_MINOR__ < 1)))
+#undef HAS_COMPILER_TLS
+#endif
+#endif
+
+/* Holds pointers to allocated memory */
+#if defined(SMP) && !defined(USE_OPENMP)
+/* This is the number of threads than can be spawned by the server, which is the
+   server plus the number of threads in the thread pool */
+#  define MAX_ALLOCATING_THREADS MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER
+static int next_memory_table_pos = 0;
+#  if defined(HAS_COMPILER_TLS)
+/* Use compiler generated thread-local-storage */
+static int THREAD_LOCAL local_memory_table_pos = 0;
+#  else
+/* Use system-dependent thread-local-storage */
+#    if defined(OS_WINDOWS)
+static DWORD local_storage_key;
+#    else
+static pthread_key_t local_storage_key;
+#    endif /* defined(OS_WINDOWS) */
+#  endif /* defined(HAS_COMPILER_TLS) */
+#else
+/* There is only one allocating thread when in single-threaded mode and when using OpenMP */
+#  define MAX_ALLOCATING_THREADS 1
+#endif /* defined(SMP) && !defined(USE_OPENMP) */
+static struct alloc_t * local_memory_table[MAX_ALLOCATING_THREADS][BUFFERS_PER_THREAD];
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
 static int hot_alloc = 0;
@@ -447,11 +530,41 @@ static pthread_spinlock_t alloc_lock = 0;
 static BLASULONG  alloc_lock = 0UL;
 #endif
 
+/* Returns a pointer to the start of the per-thread memory allocation data */
+static __inline struct alloc_t ** get_memory_table() {
+#if defined(SMP) && !defined(USE_OPENMP)
+#  if !defined(HAS_COMPILER_TLS)
+#    if defined(OS_WINDOWS)
+  int local_memory_table_pos = (int)::TlsGetValue(local_storage_key);
+#    else
+  int local_memory_table_pos = (int)pthread_getspecific(local_storage_key);
+#    endif /* defined(OS_WINDOWS) */
+#  endif /* !defined(HAS_COMPILER_TLS) */
+  if (!local_memory_table_pos) {
+    LOCK_COMMAND(&alloc_lock);
+    local_memory_table_pos = next_memory_table_pos++;
+    UNLOCK_COMMAND(&alloc_lock);
+    if (next_memory_table_pos > MAX_ALLOCATING_THREADS)
+      printf("OpenBLAS : Program will terminate because you tried to start too many threads.\n");
+#  if !defined(HAS_COMPILER_TLS)
+#    if defined(OS_WINDOWS)
+    ::TlsSetValue(local_storage_key, (void*)local_memory_table_pos);
+#    else
+    pthread_setspecific(local_storage_key, (void*)local_memory_table_pos);
+#    endif /* defined(OS_WINDOWS) */
+#  endif /* !defined(HAS_COMPILER_TLS) */
+  }
+  return local_memory_table[local_memory_table_pos];
+#else
+  return local_memory_table[0];
+#endif /* defined(SMP) && !defined(USE_OPENMP) */
+}
+
 #ifdef ALLOC_MMAP
 
-static void alloc_mmap_free(struct release_t *release){
+static void alloc_mmap_free(struct alloc_t *alloc_info){
 
-  if (munmap(release -> address, BUFFER_SIZE)) {
+  if (munmap(alloc_info, allocation_block_size)) {
     printf("OpenBLAS : munmap failed\n");
   }
 }
@@ -465,22 +578,18 @@ static void *alloc_mmap(void *address){
 
   if (address){
     map_address = mmap(address,
-		       BUFFER_SIZE,
+		       allocation_block_size,
 		       MMAP_ACCESS, MMAP_POLICY | MAP_FIXED, -1, 0);
   } else {
     map_address = mmap(address,
-		       BUFFER_SIZE,
+		       allocation_block_size,
 		       MMAP_ACCESS, MMAP_POLICY, -1, 0);
   }
 
-  if (map_address != (void *)-1) {
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].func    = alloc_mmap_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC(map_address, alloc_mmap_free);
 
 #ifdef OS_LINUX
-  my_mbind(map_address, BUFFER_SIZE, MPOL_PREFERRED, NULL, 0, 0);
+  my_mbind(map_address, allocation_block_size, MPOL_PREFERRED, NULL, 0, 0);
 #endif
 
   return map_address;
@@ -533,25 +642,25 @@ static void *alloc_mmap(void *address){
 
   if (address){
     /* Just give up use advanced operation */
-    map_address = mmap(address, BUFFER_SIZE, MMAP_ACCESS, MMAP_POLICY | MAP_FIXED, -1, 0);
+    map_address = mmap(address, allocation_block_size, MMAP_ACCESS, MMAP_POLICY | MAP_FIXED, -1, 0);
 
 #ifdef OS_LINUX
-    my_mbind(map_address, BUFFER_SIZE, MPOL_PREFERRED, NULL, 0, 0);
+    my_mbind(map_address, allocation_block_size, MPOL_PREFERRED, NULL, 0, 0);
 #endif
 
   } else {
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
     if (hot_alloc == 0) {
-      map_address = mmap(NULL, BUFFER_SIZE, MMAP_ACCESS, MMAP_POLICY, -1, 0);
+      map_address = mmap(NULL, allocation_block_size, MMAP_ACCESS, MMAP_POLICY, -1, 0);
 
 #ifdef OS_LINUX
-      my_mbind(map_address, BUFFER_SIZE, MPOL_PREFERRED, NULL, 0, 0);
+      my_mbind(map_address, allocation_block_size, MPOL_PREFERRED, NULL, 0, 0);
 #endif
 
     } else {
 #endif
 
-      map_address = mmap(NULL, BUFFER_SIZE * SCALING,
+      map_address = mmap(NULL, allocation_block_size * SCALING,
 			 MMAP_ACCESS, MMAP_POLICY, -1, 0);
 
       if (map_address != (void *)-1) {
@@ -559,7 +668,7 @@ static void *alloc_mmap(void *address){
 #ifdef OS_LINUX
 #ifdef DEBUG
 		  int ret=0;
-		  ret=my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
+		  ret=my_mbind(map_address, allocation_block_size * SCALING, MPOL_PREFERRED, NULL, 0, 0);
 		  if(ret==-1){
 			  int errsv=errno;
 			  perror("OpenBLAS alloc_mmap:");
@@ -567,7 +676,7 @@ static void *alloc_mmap(void *address){
 		  }
 
 #else
-		  my_mbind(map_address, BUFFER_SIZE * SCALING, MPOL_PREFERRED, NULL, 0, 0);
+		  my_mbind(map_address, allocation_block_size * SCALING, MPOL_PREFERRED, NULL, 0, 0);
 #endif
 #endif
 
@@ -575,7 +684,7 @@ static void *alloc_mmap(void *address){
 	allocsize = DGEMM_P * DGEMM_Q * sizeof(double);
 
 	start   = (BLASULONG)map_address;
-	current = (SCALING - 1) * BUFFER_SIZE;
+	current = (SCALING - 1) * allocation_block_size;
 
 	while(current > 0) {
 	  *(BLASLONG *)start = (BLASLONG)start + PAGESIZE;
@@ -590,7 +699,7 @@ static void *alloc_mmap(void *address){
 	best = (BLASULONG)-1;
 	best_address = map_address;
 
-	while ((start + allocsize  < (BLASULONG)map_address + (SCALING - 1) * BUFFER_SIZE)) {
+	while ((start + allocsize  < (BLASULONG)map_address + (SCALING - 1) * allocation_block_size)) {
 
 	  current = run_bench(start, allocsize);
 
@@ -606,7 +715,7 @@ static void *alloc_mmap(void *address){
       if ((BLASULONG)best_address > (BLASULONG)map_address)
 	munmap(map_address,  (BLASULONG)best_address - (BLASULONG)map_address);
 
-      munmap((void *)((BLASULONG)best_address + BUFFER_SIZE), (SCALING - 1) * BUFFER_SIZE + (BLASULONG)map_address - (BLASULONG)best_address);
+      munmap((void *)((BLASULONG)best_address + allocation_block_size), (SCALING - 1) * allocation_block_size + (BLASULONG)map_address - (BLASULONG)best_address);
 
       map_address = best_address;
 
@@ -619,11 +728,7 @@ static void *alloc_mmap(void *address){
   }
 #endif
 
-  if (map_address != (void *)-1) {
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].func    = alloc_mmap_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC(map_address, alloc_mmap_free);
 
   return map_address;
 }
@@ -635,9 +740,9 @@ static void *alloc_mmap(void *address){
 
 #ifdef ALLOC_MALLOC
 
-static void alloc_malloc_free(struct release_t *release){
+static void alloc_malloc_free(struct alloc_t *alloc_info){
 
-  free(release -> address);
+  free(alloc_info);
 
 }
 
@@ -645,15 +750,11 @@ static void *alloc_malloc(void *address){
 
   void *map_address;
 
-  map_address = (void *)malloc(BUFFER_SIZE + FIXED_PAGESIZE);
+  map_address = (void *)malloc(allocation_block_size + FIXED_PAGESIZE);
 
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
-  if (map_address != (void *)-1) {
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].func    = alloc_malloc_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC(map_address, alloc_malloc_free);
 
   return map_address;
 
@@ -670,24 +771,20 @@ void *qfree (void *address);
 #define QCOMMS    0x2
 #define QFAST     0x4
 
-static void alloc_qalloc_free(struct release_t *release){
+static void alloc_qalloc_free(struct alloc_t *alloc_info){
 
-  qfree(release -> address);
+  qfree(alloc_info);
 
 }
 
 static void *alloc_qalloc(void *address){
   void *map_address;
 
-  map_address = (void *)qalloc(QCOMMS | QFAST, BUFFER_SIZE + FIXED_PAGESIZE);
+  map_address = (void *)qalloc(QCOMMS | QFAST, allocation_block_size + FIXED_PAGESIZE);
 
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
-  if (map_address != (void *)-1) {
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].func    = alloc_qalloc_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC(map_address, alloc_qalloc_free);
 
   return (void *)(((BLASULONG)map_address + FIXED_PAGESIZE - 1) & ~(FIXED_PAGESIZE - 1));
 }
@@ -696,9 +793,9 @@ static void *alloc_qalloc(void *address){
 
 #ifdef ALLOC_WINDOWS
 
-static void alloc_windows_free(struct release_t *release){
+static void alloc_windows_free(struct alloc_t *alloc_info){
 
-  VirtualFree(release -> address, BUFFER_SIZE, MEM_DECOMMIT);
+  VirtualFree(alloc_info, allocation_block_size, MEM_DECOMMIT);
 
 }
 
@@ -706,17 +803,13 @@ static void *alloc_windows(void *address){
   void *map_address;
 
   map_address  = VirtualAlloc(address,
-			      BUFFER_SIZE,
+			      allocation_block_size,
 			      MEM_RESERVE | MEM_COMMIT,
 			      PAGE_READWRITE);
 
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
-  if (map_address != (void *)-1) {
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].func    = alloc_windows_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC(map_address, alloc_windows_free);
 
   return map_address;
 }
@@ -728,13 +821,14 @@ static void *alloc_windows(void *address){
 #define DEVICEDRIVER_NAME "/dev/mapper"
 #endif
 
-static void alloc_devicedirver_free(struct release_t *release){
+static void alloc_devicedirver_free(struct alloc_t *alloc_info){
 
-  if (munmap(release -> address, BUFFER_SIZE)) {
+  int attr = alloc_info -> attr;
+  if (munmap(address, allocation_block_size)) {
     printf("OpenBLAS : Bugphysarea unmap failed.\n");
   }
 
-  if (close(release -> attr)) {
+  if (close(attr)) {
     printf("OpenBLAS : Bugphysarea close failed.\n");
   }
 
@@ -751,17 +845,12 @@ static void *alloc_devicedirver(void *address){
 
   }
 
-  map_address = mmap(address, BUFFER_SIZE,
+  map_address = mmap(address, allocation_block_size,
 		     PROT_READ | PROT_WRITE,
 		     MAP_FILE | MAP_SHARED,
 		     fd, 0);
 
-  if (map_address != (void *)-1) {
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].attr    = fd;
-    release_info[release_pos].func    = alloc_devicedirver_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC_WITH_ATTR(map_address, alloc_devicedirver_free, fd);
 
   return map_address;
 }
@@ -770,9 +859,9 @@ static void *alloc_devicedirver(void *address){
 
 #ifdef ALLOC_SHM
 
-static void alloc_shm_free(struct release_t *release){
+static void alloc_shm_free(struct alloc_t *alloc_info){
 
-  if (shmdt(release -> address)) {
+  if (shmdt(alloc_info)) {
     printf("OpenBLAS : Shared memory unmap failed.\n");
     }
 }
@@ -781,22 +870,21 @@ static void *alloc_shm(void *address){
   void *map_address;
   int shmid;
 
-  shmid = shmget(IPC_PRIVATE, BUFFER_SIZE,IPC_CREAT | 0600);
+  shmid = shmget(IPC_PRIVATE, allocation_block_size,IPC_CREAT | 0600);
 
   map_address = (void *)shmat(shmid, address, 0);
 
   if (map_address != (void *)-1){
 
 #ifdef OS_LINUX
-    my_mbind(map_address, BUFFER_SIZE, MPOL_PREFERRED, NULL, 0, 0);
+    my_mbind(map_address, allocation_block_size, MPOL_PREFERRED, NULL, 0, 0);
 #endif
 
     shmctl(shmid, IPC_RMID, 0);
 
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].attr    = shmid;
-    release_info[release_pos].func    = alloc_shm_free;
-    release_pos ++;
+    struct alloc_t *alloc_info = (struct alloc_t *)map_address;
+    alloc_info->release_func = alloc_shm_free;
+    alloc_info->attr = shmid;
   }
 
   return map_address;
@@ -804,23 +892,23 @@ static void *alloc_shm(void *address){
 
 #if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
 
-static void alloc_hugetlb_free(struct release_t *release){
+static void alloc_hugetlb_free(struct alloc_t *alloc_info){
 
 #if defined(OS_LINUX) || defined(OS_AIX)
-  if (shmdt(release -> address)) {
+  if (shmdt(alloc_info)) {
     printf("OpenBLAS : Hugepage unmap failed.\n");
   }
 #endif
 
 #ifdef __sun__
 
-  munmap(release -> address, BUFFER_SIZE);
+  munmap(alloc_info, allocation_block_size);
 
 #endif
 
 #ifdef OS_WINDOWS
 
-  VirtualFree(release -> address, BUFFER_SIZE, MEM_LARGE_PAGES | MEM_DECOMMIT);
+  VirtualFree(alloc_info, allocation_block_size, MEM_LARGE_PAGES | MEM_DECOMMIT);
 
 #endif
 
@@ -833,7 +921,7 @@ static void *alloc_hugetlb(void *address){
 #if defined(OS_LINUX) || defined(OS_AIX)
   int shmid;
 
-  shmid = shmget(IPC_PRIVATE, BUFFER_SIZE,
+  shmid = shmget(IPC_PRIVATE, allocation_block_size,
 #ifdef OS_LINUX
 		 SHM_HUGETLB |
 #endif
@@ -846,7 +934,7 @@ static void *alloc_hugetlb(void *address){
     map_address = (void *)shmat(shmid, address, SHM_RND);
 
 #ifdef OS_LINUX
-    my_mbind(map_address, BUFFER_SIZE, MPOL_PREFERRED, NULL, 0, 0);
+    my_mbind(map_address, allocation_block_size, MPOL_PREFERRED, NULL, 0, 0);
 #endif
 
     if (map_address != (void *)-1){
@@ -863,7 +951,7 @@ static void *alloc_hugetlb(void *address){
   mha.mha_pagesize = HUGE_PAGESIZE;
   memcntl(NULL, 0, MC_HAT_ADVISE, (char *)&mha, 0, 0);
 
-  map_address = (BLASULONG)memalign(HUGE_PAGESIZE, BUFFER_SIZE);
+  map_address = (BLASULONG)memalign(HUGE_PAGESIZE, allocation_block_size);
 #endif
 
 #ifdef OS_WINDOWS
@@ -887,7 +975,7 @@ static void *alloc_hugetlb(void *address){
   }
 
   map_address  = (void *)VirtualAlloc(address,
-				      BUFFER_SIZE,
+				      allocation_block_size,
 				      MEM_LARGE_PAGES | MEM_RESERVE | MEM_COMMIT,
 				      PAGE_READWRITE);
 
@@ -898,11 +986,7 @@ static void *alloc_hugetlb(void *address){
 
 #endif
 
-  if (map_address != (void *)-1){
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].func    = alloc_hugetlb_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC(map_address, alloc_hugetlb_free);
 
   return map_address;
 }
@@ -914,13 +998,14 @@ static void *alloc_hugetlb(void *address){
 
 static int hugetlb_pid = 0;
 
-static void alloc_hugetlbfile_free(struct release_t *release){
+static void alloc_hugetlbfile_free(struct alloc_t *alloc_info){
 
-  if (munmap(release -> address, BUFFER_SIZE)) {
+  int attr = alloc_info -> attr;
+  if (munmap(alloc_info, allocation_block_size)) {
     printf("OpenBLAS : HugeTLBfs unmap failed.\n");
   }
 
-  if (close(release -> attr)) {
+  if (close(attr)) {
     printf("OpenBLAS : HugeTLBfs close failed.\n");
   }
 }
@@ -941,17 +1026,12 @@ static void *alloc_hugetlbfile(void *address){
 
   unlink(filename);
 
-  map_address = mmap(address, BUFFER_SIZE,
+  map_address = mmap(address, allocation_block_size,
 		     PROT_READ | PROT_WRITE,
 		     MAP_SHARED,
 		     fd, 0);
 
-  if (map_address != (void *)-1) {
-    release_info[release_pos].address = map_address;
-    release_info[release_pos].attr    = fd;
-    release_info[release_pos].func    = alloc_hugetlbfile_free;
-    release_pos ++;
-  }
+  STORE_RELEASE_FUNC_WITH_ATTR(map_address, alloc_hugetlbfile_free, fd);
 
   return map_address;
 }
@@ -964,25 +1044,31 @@ static BLASULONG base_address      = 0UL;
 static BLASULONG base_address      = BASE_ADDRESS;
 #endif
 
-struct memory_t {
-  void *addr;
-  int used;
-#ifndef __64BIT__
-  char dummy[48];
+#if __STDC_VERSION__ >= 201112L
+static _Atomic int memory_initialized = 0;
 #else
-  char dummy[40];
+static volatile int memory_initialized = 0;
 #endif
-};
-
-static struct memory_t THREAD_LOCAL memory[BUFFERS_PER_THREAD];
-
-static int memory_initialized = 0;
 
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
 /*                0 : Level 3 functions      */
 /*                1 : Level 2 functions      */
 /*                2 : Thread                 */
+
+static void blas_memory_init(){
+#if defined(SMP) && !defined(USE_OPENMP)
+  next_memory_table_pos = 0;
+#  if !defined(HAS_COMPILER_TLS)
+#    if defined(OS_WINDOWS)
+  local_storage_key = ::TlsAlloc();
+#    else
+  pthread_key_create(&local_storage_key, NULL);
+#    endif /* defined(OS_WINDOWS) */
+#  endif /* defined(HAS_COMPILER_TLS) */
+#endif /* defined(SMP) && !defined(USE_OPENMP) */
+  memset(local_memory_table, 0, sizeof(local_memory_table));
+}
 
 void *blas_memory_alloc(int procpos){
 
@@ -1016,14 +1102,17 @@ void *blas_memory_alloc(int procpos){
     NULL,
   };
   void *(**func)(void *address);
+  struct alloc_t * alloc_info;
+  struct alloc_t ** alloc_table;
 
-  if (UNLIKELY_TO_BE_ZERO(memory_initialized)) {
-
+  if (!LIKELY_ONE(memory_initialized)) {
+#if defined(SMP) && !defined(USE_OPENMP)
     /* Only allow a single thread to initialize memory system */
     LOCK_COMMAND(&alloc_lock);
 
     if (!memory_initialized) {
-
+#endif
+      blas_memory_init();
 #ifdef DYNAMIC_ARCH
       gotoblas_dynamic_init();
 #endif
@@ -1044,8 +1133,10 @@ void *blas_memory_alloc(int procpos){
 
       memory_initialized = 1;
 
+#if defined(SMP) && !defined(USE_OPENMP)
     }
     UNLOCK_COMMAND(&alloc_lock);
+#endif
   }
 
 #ifdef DEBUG
@@ -1053,9 +1144,9 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   position = 0;
-
+  alloc_table = get_memory_table();
   do {
-      if (!memory[position].used) goto allocation;
+      if (!alloc_table[position] || !alloc_table[position]->used) goto allocation;
     position ++;
 
   } while (position < BUFFERS_PER_THREAD);
@@ -1068,9 +1159,8 @@ void *blas_memory_alloc(int procpos){
   printf("  Position -> %d\n", position);
 #endif
 
-  memory[position].used = 1;
-
-  if (!memory[position].addr) {
+  alloc_info = alloc_table[position];
+  if (!alloc_info) {
     do {
 #ifdef DEBUG
       printf("Allocation Start : %lx\n", base_address);
@@ -1082,7 +1172,7 @@ void *blas_memory_alloc(int procpos){
 
       while ((func != NULL) && (map_address == (void *) -1)) {
 
-	map_address = (*func)((void *)base_address);
+  map_address = (*func)((void *)base_address);
 
 #ifdef ALLOC_DEVICEDRIVER
 	if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
@@ -1110,23 +1200,24 @@ void *blas_memory_alloc(int procpos){
 #endif
       if (((BLASLONG) map_address) == -1) base_address = 0UL;
 
-      if (base_address) base_address += BUFFER_SIZE + FIXED_PAGESIZE;
+      if (base_address) base_address += allocation_block_size + FIXED_PAGESIZE;
 
     } while ((BLASLONG)map_address == -1);
 
-    memory[position].addr = map_address;
+    alloc_table[position] = alloc_info = map_address;
 
 #ifdef DEBUG
-    printf("  Mapping Succeeded. %p(%d)\n", (void *)memory[position].addr, position);
+    printf("  Mapping Succeeded. %p(%d)\n", (void *)alloc_info, position);
 #endif
   }
 
 #ifdef DEBUG
-  printf("Mapped   : %p  %3d\n\n",
-	  (void *)memory[position].addr, position);
+  printf("Mapped   : %p  %3d\n\n", (void *)alloc_info, position);
 #endif
 
-  return (void *)memory[position].addr;
+  alloc_info->used = 1;
+
+  return (void *)(((char *)alloc_info) + sizeof(struct alloc_t));
 
  error:
   printf("OpenBLAS : Program will terminate because you tried to allocate too many memory regions.\n");
@@ -1134,25 +1225,19 @@ void *blas_memory_alloc(int procpos){
   return NULL;
 }
 
-void blas_memory_free(void *free_area){
-
+void blas_memory_free(void *buffer){
+#ifdef DEBUG
   int position;
+  struct alloc_t ** alloc_table;
+#endif
+  /* Since we passed an offset pointer to the caller, get back to the actual allocation */
+  struct alloc_t *alloc_info = (void *)(((char *)buffer) - sizeof(struct alloc_t));
 
 #ifdef DEBUG
-  printf("Unmapped Start : %p ...\n", free_area);
+  printf("Unmapped Start : %p ...\n", alloc_info);
 #endif
 
-  position = 0;
-  while ((position < BUFFERS_PER_THREAD) && (memory[position].addr != free_area))
-    position++;
-
-  if (memory[position].addr != free_area) goto error;
-
-#ifdef DEBUG
-  printf("  Position : %d\n", position);
-#endif
-
-  memory[position].used = 0;
+  alloc_info->used = 0;
 
 #ifdef DEBUG
   printf("Unmap Succeeded.\n\n");
@@ -1160,12 +1245,13 @@ void blas_memory_free(void *free_area){
 
   return;
 
- error:
-  printf("BLAS : Bad memory unallocation! : %4d  %p\n", position,  free_area);
-
 #ifdef DEBUG
-  for (position = 0; position < BUFFERS_PER_THREAD; position++)
-    printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
+  alloc_table = get_memory_table();
+  for (position = 0; position < BUFFERS_PER_THREAD; position++){
+    if (alloc_table[position]) {
+      printf("%4ld  %p : %d\n", position, alloc_table[position], alloc_table[position]->used);
+    }
+  }
 #endif
   return;
 }
@@ -1182,14 +1268,20 @@ void blas_memory_free_nolock(void * map_address) {
 
 void blas_shutdown(void){
 
-  int pos;
+  int pos, thread;
 
 #ifdef SMP
   BLASFUNC(blas_thread_shutdown)();
 #endif
 
-  for (pos = 0; pos < release_pos; pos ++) {
-    release_info[pos].func(&release_info[pos]);
+  for (thread = 0; thread < MAX_ALLOCATING_THREADS; thread ++){
+    for (pos = 0; pos < BUFFERS_PER_THREAD; pos ++){
+      struct alloc_t *alloc_info = local_memory_table[thread][pos];
+      if (alloc_info) {
+        alloc_info->release_func(alloc_info);
+        alloc_info = (void *)0;
+      }
+    }
   }
 
 #ifdef SEEK_ADDRESS
@@ -1197,11 +1289,6 @@ void blas_shutdown(void){
 #else
   base_address      = BASE_ADDRESS;
 #endif
-
-  for (pos = 0; pos < BUFFERS_PER_THREAD; pos ++){
-    memory[pos].addr   = (void *)0;
-    memory[pos].used   = 0;
-  }
 
   return;
 }
@@ -1226,7 +1313,7 @@ static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
   size_t size;
   BLASULONG buffer;
 
-  size   = BUFFER_SIZE - PAGESIZE;
+  size   = allocation_block_size - PAGESIZE;
   buffer = (BLASULONG)sa + GEMM_OFFSET_A;
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
@@ -1247,7 +1334,7 @@ static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
   UNLOCK_COMMAND(&init_lock);
 #endif
 
-  size = MIN((BUFFER_SIZE - PAGESIZE), L2_SIZE);
+  size = MIN((allocation_block_size - PAGESIZE), L2_SIZE);
   buffer = (BLASULONG)sa + GEMM_OFFSET_A;
 
   while (size > 0) {
