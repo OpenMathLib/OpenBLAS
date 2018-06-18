@@ -60,8 +60,13 @@
 #endif
 */
 
-#define MB
-#define WMB
+#ifdef __GNUC__
+#define MB do { __asm__ __volatile__("": : :"memory"); } while (0)
+#define WMB do { __asm__ __volatile__("": : :"memory"); } while (0)
+#else
+#define MB do {} while (0)
+#define WMB do {} while (0)
+#endif
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
