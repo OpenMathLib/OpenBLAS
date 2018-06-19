@@ -21,6 +21,15 @@ ifeq ($(BUILD_RELAPACK), 1)
 RELA = re_lapack
 endif
 
+ifeq ($(NOFORTRAN), 0)
+undefine NOFORTRAN
+endif
+
+ifeq ($(NO_FORTRAN), 1)
+undefine NO_FORTRAN
+NOFORTRAN=1
+endif
+
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
