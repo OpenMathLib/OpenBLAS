@@ -122,8 +122,13 @@ endif
 
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
-CEXTRALIB =
-
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(C_COMPILER), CLANG)
+CEXTRALIB = -lomp
+endif
+endif
+endif
 
 sblat1 : sblat1.$(SUFFIX) ../$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o sblat1 sblat1.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
