@@ -8,6 +8,13 @@ endif
 endif
 endif
 
+ifeq ($(CORE), SKYLAKEX)
+ifndef NO_AVX512
+CCOMMON_OPT += -march=skylake-avx512
+FCOMMON_OPT += -march=skylake-avx512
+endif
+endif
+
 ifeq ($(OSNAME), Interix)
 ARFLAGS		= -m x64
 endif
