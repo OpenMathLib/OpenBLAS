@@ -543,9 +543,9 @@ static __inline struct alloc_t ** get_memory_table() {
   if (!local_memory_table_pos) {
     LOCK_COMMAND(&alloc_lock);
     local_memory_table_pos = next_memory_table_pos++;
-    UNLOCK_COMMAND(&alloc_lock);
     if (next_memory_table_pos > MAX_ALLOCATING_THREADS)
       printf("OpenBLAS : Program will terminate because you tried to start too many threads.\n");
+    UNLOCK_COMMAND(&alloc_lock);
 #  if !defined(HAS_COMPILER_TLS)
 #    if defined(OS_WINDOWS)
     ::TlsSetValue(local_storage_key, (void*)local_memory_table_pos);
