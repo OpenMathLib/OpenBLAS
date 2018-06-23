@@ -248,7 +248,7 @@ endif
 
 ifeq ($(OSNAME), Darwin)
 ifndef MACOSX_DEPLOYMENT_TARGET
-export MACOSX_DEPLOYMENT_TARGET=10.6
+export MACOSX_DEPLOYMENT_TARGET=10.8
 endif
 MD5SUM = md5 -r
 endif
@@ -495,6 +495,14 @@ ifneq ($(NO_AVX2), 1)
 DYNAMIC_CORE += SKYLAKEX
 endif
 endif
+endif
+
+ifdef DYNAMIC_LIST
+override DYNAMIC_CORE = PRESCOTT $(DYNAMIC_LIST)
+XCCOMMON_OPT = -DDYNAMIC_LIST -DDYN_PRESCOTT
+XCCOMMON_OPT += $(foreach dcore,$(DYNAMIC_LIST),-DDYN_$(dcore))
+CCOMMON_OPT += $(XCCOMMON_OPT)
+#CCOMMON_OPT	+= -DDYNAMIC_LIST='$(DYNAMIC_LIST)'
 endif
 
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
