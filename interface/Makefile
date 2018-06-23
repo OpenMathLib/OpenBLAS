@@ -260,7 +260,7 @@ HPLOBJS = dgemm.$(SUFFIX) dtrsm.$(SUFFIX) \
 	  idamax.$(SUFFIX) daxpy.$(SUFFIX) dcopy.$(SUFFIX) dscal.$(SUFFIX)
 
 CSBLAS1OBJS   = \
-	cblas_isamax.$(SUFFIX) cblas_sasum.$(SUFFIX) cblas_saxpy.$(SUFFIX) \
+	cblas_isamax.$(SUFFIX) cblas_isamin.$(SUFFIX) cblas_sasum.$(SUFFIX) cblas_saxpy.$(SUFFIX) \
 	cblas_scopy.$(SUFFIX) cblas_sdot.$(SUFFIX) cblas_sdsdot.$(SUFFIX) cblas_dsdot.$(SUFFIX) \
 	cblas_srot.$(SUFFIX) cblas_srotg.$(SUFFIX) cblas_srotm.$(SUFFIX) cblas_srotmg.$(SUFFIX) \
 	cblas_sscal.$(SUFFIX) cblas_sswap.$(SUFFIX) cblas_snrm2.$(SUFFIX) cblas_saxpby.$(SUFFIX)
@@ -277,7 +277,7 @@ CSBLAS3OBJS   = \
 	cblas_sgeadd.$(SUFFIX)
 
 CDBLAS1OBJS   = \
-	cblas_idamax.$(SUFFIX) cblas_dasum.$(SUFFIX) cblas_daxpy.$(SUFFIX) \
+	cblas_idamax.$(SUFFIX) cblas_idamin.$(SUFFIX) cblas_dasum.$(SUFFIX) cblas_daxpy.$(SUFFIX) \
 	cblas_dcopy.$(SUFFIX) cblas_ddot.$(SUFFIX) \
 	cblas_drot.$(SUFFIX) cblas_drotg.$(SUFFIX) cblas_drotm.$(SUFFIX) cblas_drotmg.$(SUFFIX) \
 	cblas_dscal.$(SUFFIX) cblas_dswap.$(SUFFIX) cblas_dnrm2.$(SUFFIX) cblas_daxpby.$(SUFFIX)
@@ -294,7 +294,7 @@ CDBLAS3OBJS   += \
         cblas_dgeadd.$(SUFFIX) 
 
 CCBLAS1OBJS   = \
-	cblas_icamax.$(SUFFIX) cblas_scasum.$(SUFFIX)  cblas_caxpy.$(SUFFIX) \
+	cblas_icamax.$(SUFFIX) cblas_icamin.$(SUFFIX) cblas_scasum.$(SUFFIX)  cblas_caxpy.$(SUFFIX) \
 	cblas_ccopy.$(SUFFIX) \
 	cblas_cdotc.$(SUFFIX) cblas_cdotu.$(SUFFIX) \
 	cblas_cdotc_sub.$(SUFFIX) cblas_cdotu_sub.$(SUFFIX) \
@@ -320,7 +320,7 @@ CCBLAS3OBJS   = \
 
 
 CZBLAS1OBJS   = \
-	cblas_izamax.$(SUFFIX) cblas_dzasum.$(SUFFIX)  cblas_zaxpy.$(SUFFIX) \
+	cblas_izamax.$(SUFFIX) cblas_izamin.$(SUFFIX) cblas_dzasum.$(SUFFIX)  cblas_zaxpy.$(SUFFIX) \
 	cblas_zcopy.$(SUFFIX) \
 	cblas_zdotc.$(SUFFIX) cblas_zdotu.$(SUFFIX) \
 	cblas_zdotc_sub.$(SUFFIX) cblas_zdotu_sub.$(SUFFIX) \
@@ -1358,6 +1358,18 @@ cblas_icamax.$(SUFFIX) cblas_icamax.$(PSUFFIX) : imax.c
 
 cblas_izamax.$(SUFFIX) cblas_izamax.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+
+cblas_isamin.$(SUFFIX) cblas_isamin.$(PSUFFIX) : imax.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
+
+cblas_idamin.$(SUFFIX) cblas_idamin.$(PSUFFIX) : imax.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
+
+cblas_icamin.$(SUFFIX) cblas_icamin.$(PSUFFIX) : imax.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
+
+cblas_izamin.$(SUFFIX) cblas_izamin.$(PSUFFIX) : imax.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
 
 cblas_ismax.$(SUFFIX) cblas_ismax.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
