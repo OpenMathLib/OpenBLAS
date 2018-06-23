@@ -49,6 +49,127 @@
 #define EXTERN
 #endif
 
+#ifdef DYNAMIC_LIST
+extern gotoblas_t gotoblas_PRESCOTT;
+
+#ifdef DYN_ATHLON
+extern gotoblas_t gotoblas_ATHLON;
+#else
+#define gotoblas_ATHLON gotoblas_PRESCOTT
+#endif
+#ifdef DYN_KATMAI
+extern gotoblas_t gotoblas_KATMAI;
+#else
+#define gotoblas_KATMAI gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BANIAS
+extern gotoblas_t gotoblas_BANIAS;
+#else
+#define gotoblas_BANIAS gotoblas_PRESCOTT
+#endif
+#ifdef DYN_COPPERMINE
+extern gotoblas_t gotoblas_COPPERMINE;
+#else
+#define gotoblas_COPPERMINE gotoblas_PRESCOTT
+#endif
+#ifdef DYN_NORTHWOOD
+extern gotoblas_t gotoblas_NORTHWOOD;
+#else
+#define gotoblas_NORTHWOOD gotoblas_PRESCOTT
+#endif
+#ifdef DYN_CORE2
+extern gotoblas_t gotoblas_CORE2;
+#else
+#define gotoblas_CORE2 gotoblas_PRESCOTT
+#endif
+#ifdef DYN_NEHALEM
+extern gotoblas_t gotoblas_NEHALEM;
+#else
+#define gotoblas_NEHALEM gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BARCELONA
+extern gotoblas_t gotoblas_BARCELONA;
+#else
+#define gotoblas_BARCELONA gotoblas_PRESCOTT
+#endif
+#ifdef DYN_ATOM
+extern gotoblas_t gotoblas_ATOM;
+#else
+#define gotoblas_ATOM gotoblas_PRESCOTT
+#endif
+#ifdef DYN_NANO
+extern gotoblas_t gotoblas_NANO;
+#else
+#define gotoblas_NANO gotoblas_PRESCOTT
+#endif
+#ifdef DYN_PENRYN
+extern gotoblas_t gotoblas_PENRYN;
+#else
+#define gotoblas_PENRYN gotoblas_PRESCOTT
+#endif
+#ifdef DYN_DUNNINGTON
+extern gotoblas_t gotoblas_DUNNINGTON;
+#else
+#define gotoblas_DUNNINGTON gotoblas_PRESCOTT
+#endif
+#ifdef DYN_OPTERON
+extern gotoblas_t gotoblas_OPTERON;
+#else
+#define gotoblas_OPTERON gotoblas_PRESCOTT
+#endif
+#ifdef DYN_OPTERON_SSE3
+extern gotoblas_t gotoblas_OPTERON_SSE3;
+#else
+#define gotoblas_OPTERON_SSE3 gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BOBCAT
+extern gotoblas_t gotoblas_BOBCAT;
+#else
+#define gotoblas_BOBCAT gotoblas_PRESCOTT
+#endif
+#ifdef DYN_SANDYBRIDGE
+extern gotoblas_t gotoblas_SANDYBRIDGE;
+#else
+#define gotoblas_SANDYBRIDGE gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BULLDOZER
+extern gotoblas_t gotoblas_BULLDOZER;
+#else
+#define gotoblas_BULLDOZER gotoblas_PRESCOTT
+#endif
+#ifdef DYN_PILEDRIVER
+extern gotoblas_t gotoblas_PILEDRIVER;
+#else
+#define gotoblas_PILEDRIVER gotoblas_PRESCOTT
+#endif
+#ifdef DYN_STEAMROLLER
+extern gotoblas_t gotoblas_STEAMROLLER;
+#else
+#define gotoblas_STEAMROLLER gotoblas_PRESCOTT
+#endif
+#ifdef DYN_EXCAVATOR
+extern gotoblas_t gotoblas_EXCAVATOR;
+#else
+#define gotoblas_EXCAVATOR gotoblas_PRESCOTT
+#endif
+#ifdef DYN_HASWELL
+extern gotoblas_t gotoblas_HASWELL;
+#else
+#define gotoblas_HASWELL gotoblas_PRESCOTT
+#endif
+#ifdef DYN_ZEN
+extern gotoblas_t gotoblas_ZEN;
+#else
+#define gotoblas_ZEN gotoblas_PRESCOTT
+#endif
+#ifdef DYN_SKYLAKEX
+extern gotoblas_t gotoblas_SKYLAKEX;
+#else
+#define gotoblas_SKYLAKEX gotoblas_PRESCOTT
+#endif
+
+
+#else // not DYNAMIC_LIST
 EXTERN gotoblas_t  gotoblas_KATMAI;
 EXTERN gotoblas_t  gotoblas_COPPERMINE;
 EXTERN gotoblas_t  gotoblas_NORTHWOOD;
@@ -108,6 +229,7 @@ extern gotoblas_t  gotoblas_SKYLAKEX;
 #define gotoblas_ZEN gotoblas_BARCELONA
 #endif
 
+#endif // DYNAMIC_LIST
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -338,6 +460,23 @@ static gotoblas_t *get_coretype(void){
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
+      case 6:
+        if (model == 6) {
+          // Cannon Lake
+#ifndef NO_AVX512
+	  return &gotoblas_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	  return &gotoblas_HASWELL;
+#else
+	  return &gotblas_SANDYBRIDGE;
+#endif
+	  else
+	  return &gotoblas_NEHALEM;
+#endif			
+        }
+        return NULL;  
       case 9:
       case 8:
 	if (model == 14 ) { // Kaby Lake
