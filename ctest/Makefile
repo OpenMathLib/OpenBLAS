@@ -102,7 +102,13 @@ clean ::
 	rm -f x*
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
-CEXTRALIB =
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(C_COMPILER), CLANG)
+CEXTRALIB = -lomp
+endif
+endif
+endif
 
 # Single real
 xscblat1: $(stestl1o) c_sblat1.o $(TOPDIR)/$(LIBNAME)

@@ -91,11 +91,7 @@
 #endif
 
 typedef struct {
-#if __STDC_VERSION__ >= 201112L
-_Atomic
-#else  
   volatile
-#endif
    BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
 } job_t;
 
@@ -348,12 +344,6 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     div_n = (n_to - n_from + DIVIDE_RATE - 1) / DIVIDE_RATE;
     for (js = n_from, bufferside = 0; js < n_to; js += div_n, bufferside ++) {
 
-      /* Make sure if no one is using workspace */
-      START_RPCC();
-      for (i = 0; i < args -> nthreads; i++)
-	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;};
-      STOP_RPCC(waiting1);
-
 #if defined(FUSED_GEMM) && !defined(TIMING)
 
       /* Fused operation to copy region of B into workspace and apply kernel */
@@ -391,10 +381,15 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       }
 #endif
 
-      /* Set flag so other threads can access local region of B */
-      for (i = mypos_n * nthreads_m; i < (mypos_n + 1) * nthreads_m; i++)
+      for (i = mypos_n * nthreads_m; i < (mypos_n + 1) * nthreads_m; i++) {
+        /* Make sure if no one is using workspace */
+        START_RPCC();
+        while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;MB;};
+        STOP_RPCC(waiting1);
+        /* Set flag so other threads can access local region of B */
         job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
-      WMB;
+        WMB;
+      }
     }
 
     /* Get regions of B from other threads and apply kernel */
@@ -413,7 +408,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
 	  /* Wait until other region of B is initialized */
 	  START_RPCC();
-	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
+	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;MB;};
 	  STOP_RPCC(waiting2);
 
           /* Apply kernel with local region of A and part of other region of B */
@@ -430,12 +425,13 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
         /* Clear synchronization flag if this thread is done with other region of B */
 	if (m_to - m_from == min_i) {
-	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
+	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
+	  WMB;
 	}
       }
     } while (current != mypos);
 
-    /* Iterate through steps of m 
+    /* Iterate through steps of m
      * Note: First step has already been finished */
     for(is = m_from + min_i; is < m_to; is += min_i){
       min_i = m_to - is;
@@ -465,14 +461,14 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			   c, ldc, is, js);
           STOP_RPCC(kernel);
-          
+
 #ifdef TIMING
           ops += 2 * min_i * MIN(range_n[current + 1]  - js, div_n) * min_l;
 #endif
-          
+
           /* Clear synchronization flag if this thread is done with region of B */
           if (is + min_i >= m_to) {
-            job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
+            job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
             WMB;
           }
 	}
@@ -492,7 +488,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   START_RPCC();
   for (i = 0; i < args -> nthreads; i++) {
     for (js = 0; js < DIVIDE_RATE; js++) {
-      while (job[mypos].working[i][CACHE_LINE_SIZE * js] ) {YIELDING;};
+      while (job[mypos].working[i][CACHE_LINE_SIZE * js] ) {YIELDING;MB;};
     }
   }
   STOP_RPCC(waiting3);
@@ -658,8 +654,8 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     }
 
     /* Clear synchronization flags */
-    for (i = 0; i < MAX_CPU_NUMBER; i++) {
-      for (j = 0; j < MAX_CPU_NUMBER; j++) {
+    for (i = 0; i < nthreads; i++) {
+      for (j = 0; j < nthreads; j++) {
 	for (k = 0; k < DIVIDE_RATE; k++) {
 	  job[i].working[j][CACHE_LINE_SIZE * k] = 0;
 	}
