@@ -89,11 +89,15 @@ extern gotoblas_t gotoblas_NEHALEM;
 #endif
 #ifdef DYN_BARCELONA
 extern gotoblas_t gotoblas_BARCELONA;
+#elif defined(DYN_NEHALEM)
+#define gotoblas_BARCELONA gotoblas_NEHALEM
 #else
 #define gotoblas_BARCELONA gotoblas_PRESCOTT
 #endif
 #ifdef DYN_ATOM
 extern gotoblas_t gotoblas_ATOM;
+elif defined(DYN_NEHALEM)
+#define gotoblas_ATOM gotoblas_NEHALEM
 #else
 #define gotoblas_ATOM gotoblas_PRESCOTT
 #endif
@@ -124,46 +128,82 @@ extern gotoblas_t gotoblas_OPTERON_SSE3;
 #endif
 #ifdef DYN_BOBCAT
 extern gotoblas_t gotoblas_BOBCAT;
+#elif defined(DYN_NEHALEM)
+#define gotoblas_BOBCAT gotoblas_NEHALEM
 #else
 #define gotoblas_BOBCAT gotoblas_PRESCOTT
 #endif
 #ifdef DYN_SANDYBRIDGE
 extern gotoblas_t gotoblas_SANDYBRIDGE;
+#elif defined(DYN_NEHALEM)
+#define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
 #else
 #define gotoblas_SANDYBRIDGE gotoblas_PRESCOTT
 #endif
 #ifdef DYN_BULLDOZER
 extern gotoblas_t gotoblas_BULLDOZER;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_BULLDOZER gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_BULLDOZER gotoblas_NEHALEM
 #else
 #define gotoblas_BULLDOZER gotoblas_PRESCOTT
 #endif
 #ifdef DYN_PILEDRIVER
 extern gotoblas_t gotoblas_PILEDRIVER;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_PILEDRIVER gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_PILEDRIVER gotoblas_NEHALEM
 #else
 #define gotoblas_PILEDRIVER gotoblas_PRESCOTT
 #endif
 #ifdef DYN_STEAMROLLER
 extern gotoblas_t gotoblas_STEAMROLLER;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_STEAMROLLER gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_STEAMROLLER gotoblas_NEHALEM
 #else
 #define gotoblas_STEAMROLLER gotoblas_PRESCOTT
 #endif
 #ifdef DYN_EXCAVATOR
 extern gotoblas_t gotoblas_EXCAVATOR;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_EXCAVATOR gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_EXCAVATOR gotoblas_NEHALEM
 #else
 #define gotoblas_EXCAVATOR gotoblas_PRESCOTT
 #endif
 #ifdef DYN_HASWELL
 extern gotoblas_t gotoblas_HASWELL;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_HASWELL gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_HASWELL gotoblas_NEHALEM
 #else
 #define gotoblas_HASWELL gotoblas_PRESCOTT
 #endif
 #ifdef DYN_ZEN
 extern gotoblas_t gotoblas_ZEN;
+#elif defined(DYN_HASWELL)
+#define gotoblas_ZEN gotoblas_HASWELL
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_ZEN gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_ZEN gotoblas_NEHALEM
 #else
 #define gotoblas_ZEN gotoblas_PRESCOTT
 #endif
 #ifdef DYN_SKYLAKEX
 extern gotoblas_t gotoblas_SKYLAKEX;
+#elif defined(DYN_HASWELL)
+#define gotoblas_SKYLAKEX gotoblas_HASWELL
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_SKYLAKEX gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_SKYLAKEX gotoblas_NEHALEM
 #else
 #define gotoblas_SKYLAKEX gotoblas_PRESCOTT
 #endif
