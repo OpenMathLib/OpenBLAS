@@ -25,14 +25,12 @@ endif ()
 
 # known to hang with the native Windows and Android threads
 # FIXME needs checking if this works on any of the other platforms
-if (NOT NO_CBLAS)
 if (NOT USE_OPENMP)
 if (OS_CYGWIN_NT OR OS_LINUX)
 set(OpenBLAS_utest_src
   ${OpenBLAS_utest_src}
   test_fork.c
   )
-endif()
 endif()
 endif()
 

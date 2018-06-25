@@ -13,9 +13,9 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the OpenBLAS project nor the names of 
-      its contributors may be used to endorse or promote products 
-      derived from this software without specific prior written 
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
       permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -48,11 +48,13 @@ void* xmalloc(size_t n)
     }
 }
 
-void check_dgemm(double *a, double *b, double *result, double *expected, int n)
+void check_dgemm(double *a, double *b, double *result, double *expected, blasint n)
 {
+    char trans1 = 'T';
+    char trans2 = 'N';
+    double zerod = 0, oned = 1;
     int i;
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, n, n,
-        1.0, a, n, b, n, 0.0, result, n);
+    BLASFUNC(dgemm)(&trans1, &trans2, &n, &n, &n, &oned, a, &n, b, &n, &zerod, result, &n);
     for(i = 0; i < n * n; ++i) {
         ASSERT_DBL_NEAR_TOL(expected[i], result[i], DOUBLE_EPS);
     }
@@ -60,7 +62,7 @@ void check_dgemm(double *a, double *b, double *result, double *expected, int n)
 
 CTEST(fork, safety)
 {
-    int n = 1000;
+    blasint n = 1000;
     int i;
 
     double *a, *b, *c, *d;
@@ -84,8 +86,10 @@ CTEST(fork, safety)
 
     // Compute a DGEMM product in the parent process prior to forking to
     // ensure that the OpenBLAS thread pool is initialized.
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, n, n,
-       1.0, a, n, b, n, 0.0, c, n);
+    char trans1 = 'T';
+    char trans2 = 'N';
+    double zerod = 0, oned = 1;
+    BLASFUNC(dgemm)(&trans1, &trans2, &n, &n, &n, &oned, a, &n, b, &n, &zerod, c, &n);
 
     fork_pid = fork();
     if (fork_pid == -1) {

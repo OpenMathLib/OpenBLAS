@@ -1339,6 +1339,23 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
 	}
 	break;
+      case 6:
+        switch (model) {
+        case 6: // Cannon Lake
+#ifndef NO_AVX512
+	  return CPUTYPE_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	  return CPUTYPE_HASWELL;
+#else
+	  return CPUTYPE_SANDYBRIDGE;
+#endif
+	  else
+	  return CPUTYPE_NEHALEM;
+#endif			
+        }
+      break;  
       case 9:
       case 8: 
         switch (model) {
