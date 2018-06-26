@@ -21,17 +21,6 @@ ifeq ($(BUILD_RELAPACK), 1)
 RELA = re_lapack
 endif
 
-ifeq ($(NO_FORTRAN), 1)
-define NOFORTRAN
-1
-endef
-define NO_LAPACK
-1
-endef
-export NOFORTRAN
-export NO_LAPACK
-endif
-
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
@@ -58,7 +47,7 @@ endif
 endif
 
 	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifndef NOFORTRAN
 	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
 endif
 ifneq ($(OSNAME), AIX)
@@ -119,7 +108,7 @@ endif
 endif
 
 tests :
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifndef NOFORTRAN
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
@@ -221,7 +210,7 @@ netlib :
 
 else
 netlib : lapack_prebuild
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifndef NOFORTRAN
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
@@ -242,10 +231,7 @@ prof_lapack : lapack_prebuild
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 lapack_prebuild :
-	$(info filter value of NOFORTRAN is:)
-	$(info x$(filter-out $(NOFORTRAN), 1 2)x)
-
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifndef NOFORTRAN
 	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "OPTS        = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -288,21 +274,21 @@ endif
 endif
 
 large.tgz :
-ifneq ($(NOFORTRAN), $(filter $(NOFORTRAN), 1 2))
+ifndef NOFORTRAN
 	if [ ! -a $< ]; then
 	-wget http://www.netlib.org/lapack/timing/large.tgz;
 	fi
 endif
 
 timing.tgz :
-ifneq ($(NOFORTRAN), $(filter $(NOFORTRAN), 1 2))
+ifndef NOFORTRAN
 	if [ ! -a $< ]; then
 	-wget http://www.netlib.org/lapack/timing/timing.tgz;
 	fi
 endif
 
 lapack-timing : large.tgz timing.tgz
-ifneq ($(NOFORTRAN), $(filter $(NOFORTRAN), 1 2))
+ifndef NOFORTRAN
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
 	$(MAKE) -C $(NETLIB_LAPACK_DIR)/TIMING
