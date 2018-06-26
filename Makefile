@@ -21,17 +21,6 @@ ifeq ($(BUILD_RELAPACK), 1)
 RELA = re_lapack
 endif
 
-ifeq ($(NO_FORTRAN), 1)
-define NOFORTRAN
-1
-endef
-define NO_LAPACK
-1
-endef
-export NOFORTRAN
-export NO_LAPACK
-endif
-
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
@@ -242,9 +231,6 @@ prof_lapack : lapack_prebuild
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 lapack_prebuild :
-	$(info filter value of x$(NOFORTRAN)x is:)
-	$(info x$(filter 0,$(NOFORTRAN))x)
-
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "OPTS        = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
