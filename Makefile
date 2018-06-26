@@ -58,7 +58,7 @@ endif
 endif
 
 	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
 endif
 ifneq ($(OSNAME), AIX)
@@ -119,7 +119,7 @@ endif
 endif
 
 tests :
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
@@ -221,7 +221,7 @@ netlib :
 
 else
 netlib : lapack_prebuild
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
@@ -242,10 +242,10 @@ prof_lapack : lapack_prebuild
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 lapack_prebuild :
-	$(info filter value of NOFORTRAN is:)
-	$(info x$(filter-out $(NOFORTRAN), 1 2)x)
+	$(info filter value of x$(NOFORTRAN)x is:)
+	$(info x$(filter 0,$(NOFORTRAN))x)
 
-ifneq ($(NOFORTRAN), $(filter-out $(NOFORTRAN), 1 2))
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "OPTS        = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -288,21 +288,21 @@ endif
 endif
 
 large.tgz :
-ifneq ($(NOFORTRAN), $(filter $(NOFORTRAN), 1 2))
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	if [ ! -a $< ]; then
 	-wget http://www.netlib.org/lapack/timing/large.tgz;
 	fi
 endif
 
 timing.tgz :
-ifneq ($(NOFORTRAN), $(filter $(NOFORTRAN), 1 2))
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	if [ ! -a $< ]; then
 	-wget http://www.netlib.org/lapack/timing/timing.tgz;
 	fi
 endif
 
 lapack-timing : large.tgz timing.tgz
-ifneq ($(NOFORTRAN), $(filter $(NOFORTRAN), 1 2))
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
 	$(MAKE) -C $(NETLIB_LAPACK_DIR)/TIMING
