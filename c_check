@@ -205,8 +205,8 @@ $no_avx512= 0;
 if (($architecture eq "x86") || ($architecture eq "x86_64")) {
     $code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
     print $tmpf "int main(void){ __asm__ volatile($code); }\n";
-    $args = " -o $tmpf.o -x c $tmpf";
-    my @cmd = ("$compiler_name $args");
+    $args = " -march=skylake-avx512 -o $tmpf.o -x c $tmpf";
+    my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
     system(@cmd) == 0;
     if ($? != 0) {
 	$no_avx512 = 1;
