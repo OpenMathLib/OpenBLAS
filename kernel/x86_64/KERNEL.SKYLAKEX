@@ -3,7 +3,7 @@ include $(KERNELDIR)/KERNEL.HASWELL
 SGEMMKERNEL    =  sgemm_kernel_16x4_skylakex.S
 
 
-DTRMMKERNEL    =  ../generic/trmmkernel_16x2.c
+#DTRMMKERNEL    =  ../generic/trmmkernel_16x2.c
 #DGEMMKERNEL    =  dgemm_kernel_16x2_skylakex.S
 #DGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 #DGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
