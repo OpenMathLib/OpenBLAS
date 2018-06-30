@@ -497,7 +497,7 @@ static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
 #if defined(SMP) && !defined(USE_OPENMP)
 /* This is the number of threads than can be spawned by the server, which is the
    server plus the number of threads in the thread pool */
-#  define MAX_ALLOCATING_THREADS MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER
+#  define MAX_ALLOCATING_THREADS MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER +1
 static int next_memory_table_pos = 0;
 #  if defined(HAS_COMPILER_TLS)
 /* Use compiler generated thread-local-storage */
