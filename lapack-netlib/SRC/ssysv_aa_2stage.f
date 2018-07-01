@@ -106,6 +106,7 @@
 *>
 *> \param[in] LTB
 *> \verbatim
+*>          LTB is INTEGER
 *>          The size of the array TB. LTB >= 4*N, internally
 *>          used to select NB such that LTB >= (3*NB+1)*N.
 *>
@@ -125,7 +126,7 @@
 *>
 *> \param[out] IPIV2
 *> \verbatim
-*>          IPIV is INTEGER array, dimension (N)
+*>          IPIV2 is INTEGER array, dimension (N)
 *>          On exit, it contains the details of the interchanges, i.e.,
 *>          the row and column k of T were interchanged with the
 *>          row and column IPIV(k).
@@ -151,6 +152,7 @@
 *>
 *> \param[in] LWORK
 *> \verbatim
+*>          LWORK is INTEGER
 *>          The size of WORK. LWORK >= N, internally used to select NB
 *>          such that LWORK >= N*NB.
 *>
@@ -234,19 +236,18 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -5
+      ELSE IF( LTB.LT.( 4*N ) .AND. .NOT.TQUERY ) THEN
+         INFO = -7
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -11
+      ELSE IF( LWORK.LT.N .AND. .NOT.WQUERY ) THEN
+         INFO = -13
       END IF
 *
       IF( INFO.EQ.0 ) THEN
          CALL SSYTRF_AA_2STAGE( UPLO, N, A, LDA, TB, -1, IPIV,
      $                          IPIV2, WORK, -1, INFO )
          LWKOPT = INT( WORK(1) )
-         IF( LTB.LT.INT( TB(1) ) .AND. .NOT.TQUERY ) THEN
-            INFO = -7
-         ELSE IF( LWORK.LT.LWKOPT .AND. .NOT.WQUERY ) THEN
-            INFO = -13
-         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN

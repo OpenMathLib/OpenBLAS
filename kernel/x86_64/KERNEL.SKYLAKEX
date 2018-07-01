@@ -1,0 +1,19 @@
+include $(KERNELDIR)/KERNEL.HASWELL
+
+SGEMMKERNEL    =  sgemm_kernel_16x4_skylakex.S
+
+
+#DTRMMKERNEL    =  ../generic/trmmkernel_16x2.c
+#DGEMMKERNEL    =  dgemm_kernel_16x2_skylakex.S
+#DGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
+#DGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
+#DGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
+#DGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
+#DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
+#DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+#DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+#DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+
+SGEMM_BETA = ../generic/gemm_beta.c
+DGEMM_BETA = ../generic/gemm_beta.c

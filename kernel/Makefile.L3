@@ -32,6 +32,10 @@ ifeq ($(CORE), HASWELL)
 USE_TRMM = 1
 endif
 
+ifeq ($(CORE), SKYLAKEX)
+USE_TRMM = 1
+endif
+
 ifeq ($(CORE), ZEN)
 USE_TRMM = 1
 endif

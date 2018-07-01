@@ -44,6 +44,7 @@
 #endif
 
 #ifndef COMPLEX
+#define SMP_THRESHOLD_MIN 65536.0
 #ifdef XDOUBLE
 #define ERROR_NAME "QGEMM "
 #elif defined(DOUBLE)
@@ -52,6 +53,7 @@
 #define ERROR_NAME "SGEMM "
 #endif
 #else
+#define SMP_THRESHOLD_MIN 8192.0
 #ifndef GEMM3M
 #ifdef XDOUBLE
 #define ERROR_NAME "XGEMM "
@@ -121,8 +123,6 @@ void NAME(char *TRANSA, char *TRANSB,
   FLOAT *sa, *sb;
 
 #ifdef SMP
-  int nthreads_max;
-  int nthreads_avail;
   double MNK;
 #ifndef COMPLEX
 #ifdef XDOUBLE
@@ -245,8 +245,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   XFLOAT *sa, *sb;
 
 #ifdef SMP
-  int nthreads_max;
-  int nthreads_avail;
   double MNK;
 #ifndef COMPLEX
 #ifdef XDOUBLE
@@ -411,25 +409,12 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   mode |= (transa << BLAS_TRANSA_SHIFT);
   mode |= (transb << BLAS_TRANSB_SHIFT);
 
-  nthreads_max = num_cpu_avail(3);
-  nthreads_avail = nthreads_max;
-
-#ifndef COMPLEX
   MNK = (double) args.m * (double) args.n * (double) args.k;
-  if ( MNK <= (65536.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
-	nthreads_max = 1;
-#else
-  MNK = (double) args.m * (double) args.n * (double) args.k;
-  if ( MNK <= (8192.0  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
-	nthreads_max = 1;
-#endif
-  args.common = NULL;
-
-  if ( nthreads_max > nthreads_avail )
-  	args.nthreads = nthreads_avail;
+  if ( MNK <= (SMP_THRESHOLD_MIN  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
+	args.nthreads = 1;
   else
-  	args.nthreads = nthreads_max;
-
+	args.nthreads = num_cpu_avail(3);
+  args.common = NULL;
 
  if (args.nthreads == 1) {
 #endif

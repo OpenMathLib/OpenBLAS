@@ -49,6 +49,167 @@
 #define EXTERN
 #endif
 
+#ifdef DYNAMIC_LIST
+extern gotoblas_t gotoblas_PRESCOTT;
+
+#ifdef DYN_ATHLON
+extern gotoblas_t gotoblas_ATHLON;
+#else
+#define gotoblas_ATHLON gotoblas_PRESCOTT
+#endif
+#ifdef DYN_KATMAI
+extern gotoblas_t gotoblas_KATMAI;
+#else
+#define gotoblas_KATMAI gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BANIAS
+extern gotoblas_t gotoblas_BANIAS;
+#else
+#define gotoblas_BANIAS gotoblas_PRESCOTT
+#endif
+#ifdef DYN_COPPERMINE
+extern gotoblas_t gotoblas_COPPERMINE;
+#else
+#define gotoblas_COPPERMINE gotoblas_PRESCOTT
+#endif
+#ifdef DYN_NORTHWOOD
+extern gotoblas_t gotoblas_NORTHWOOD;
+#else
+#define gotoblas_NORTHWOOD gotoblas_PRESCOTT
+#endif
+#ifdef DYN_CORE2
+extern gotoblas_t gotoblas_CORE2;
+#else
+#define gotoblas_CORE2 gotoblas_PRESCOTT
+#endif
+#ifdef DYN_NEHALEM
+extern gotoblas_t gotoblas_NEHALEM;
+#else
+#define gotoblas_NEHALEM gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BARCELONA
+extern gotoblas_t gotoblas_BARCELONA;
+#elif defined(DYN_NEHALEM)
+#define gotoblas_BARCELONA gotoblas_NEHALEM
+#else
+#define gotoblas_BARCELONA gotoblas_PRESCOTT
+#endif
+#ifdef DYN_ATOM
+extern gotoblas_t gotoblas_ATOM;
+elif defined(DYN_NEHALEM)
+#define gotoblas_ATOM gotoblas_NEHALEM
+#else
+#define gotoblas_ATOM gotoblas_PRESCOTT
+#endif
+#ifdef DYN_NANO
+extern gotoblas_t gotoblas_NANO;
+#else
+#define gotoblas_NANO gotoblas_PRESCOTT
+#endif
+#ifdef DYN_PENRYN
+extern gotoblas_t gotoblas_PENRYN;
+#else
+#define gotoblas_PENRYN gotoblas_PRESCOTT
+#endif
+#ifdef DYN_DUNNINGTON
+extern gotoblas_t gotoblas_DUNNINGTON;
+#else
+#define gotoblas_DUNNINGTON gotoblas_PRESCOTT
+#endif
+#ifdef DYN_OPTERON
+extern gotoblas_t gotoblas_OPTERON;
+#else
+#define gotoblas_OPTERON gotoblas_PRESCOTT
+#endif
+#ifdef DYN_OPTERON_SSE3
+extern gotoblas_t gotoblas_OPTERON_SSE3;
+#else
+#define gotoblas_OPTERON_SSE3 gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BOBCAT
+extern gotoblas_t gotoblas_BOBCAT;
+#elif defined(DYN_NEHALEM)
+#define gotoblas_BOBCAT gotoblas_NEHALEM
+#else
+#define gotoblas_BOBCAT gotoblas_PRESCOTT
+#endif
+#ifdef DYN_SANDYBRIDGE
+extern gotoblas_t gotoblas_SANDYBRIDGE;
+#elif defined(DYN_NEHALEM)
+#define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
+#else
+#define gotoblas_SANDYBRIDGE gotoblas_PRESCOTT
+#endif
+#ifdef DYN_BULLDOZER
+extern gotoblas_t gotoblas_BULLDOZER;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_BULLDOZER gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_BULLDOZER gotoblas_NEHALEM
+#else
+#define gotoblas_BULLDOZER gotoblas_PRESCOTT
+#endif
+#ifdef DYN_PILEDRIVER
+extern gotoblas_t gotoblas_PILEDRIVER;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_PILEDRIVER gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_PILEDRIVER gotoblas_NEHALEM
+#else
+#define gotoblas_PILEDRIVER gotoblas_PRESCOTT
+#endif
+#ifdef DYN_STEAMROLLER
+extern gotoblas_t gotoblas_STEAMROLLER;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_STEAMROLLER gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_STEAMROLLER gotoblas_NEHALEM
+#else
+#define gotoblas_STEAMROLLER gotoblas_PRESCOTT
+#endif
+#ifdef DYN_EXCAVATOR
+extern gotoblas_t gotoblas_EXCAVATOR;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_EXCAVATOR gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_EXCAVATOR gotoblas_NEHALEM
+#else
+#define gotoblas_EXCAVATOR gotoblas_PRESCOTT
+#endif
+#ifdef DYN_HASWELL
+extern gotoblas_t gotoblas_HASWELL;
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_HASWELL gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_HASWELL gotoblas_NEHALEM
+#else
+#define gotoblas_HASWELL gotoblas_PRESCOTT
+#endif
+#ifdef DYN_ZEN
+extern gotoblas_t gotoblas_ZEN;
+#elif defined(DYN_HASWELL)
+#define gotoblas_ZEN gotoblas_HASWELL
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_ZEN gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_ZEN gotoblas_NEHALEM
+#else
+#define gotoblas_ZEN gotoblas_PRESCOTT
+#endif
+#ifdef DYN_SKYLAKEX
+extern gotoblas_t gotoblas_SKYLAKEX;
+#elif defined(DYN_HASWELL)
+#define gotoblas_SKYLAKEX gotoblas_HASWELL
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_SKYLAKEX gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_SKYLAKEX gotoblas_NEHALEM
+#else
+#define gotoblas_SKYLAKEX gotoblas_PRESCOTT
+#endif
+
+
+#else // not DYNAMIC_LIST
 EXTERN gotoblas_t  gotoblas_KATMAI;
 EXTERN gotoblas_t  gotoblas_COPPERMINE;
 EXTERN gotoblas_t  gotoblas_NORTHWOOD;
@@ -56,16 +217,27 @@ EXTERN gotoblas_t  gotoblas_BANIAS;
 EXTERN gotoblas_t  gotoblas_ATHLON;
 
 extern gotoblas_t  gotoblas_PRESCOTT;
+extern gotoblas_t  gotoblas_CORE2;
+extern gotoblas_t  gotoblas_NEHALEM;
+extern gotoblas_t  gotoblas_BARCELONA;
+#ifdef DYNAMIC_OLDER
 extern gotoblas_t  gotoblas_ATOM;
 extern gotoblas_t  gotoblas_NANO;
-extern gotoblas_t  gotoblas_CORE2;
 extern gotoblas_t  gotoblas_PENRYN;
 extern gotoblas_t  gotoblas_DUNNINGTON;
-extern gotoblas_t  gotoblas_NEHALEM;
 extern gotoblas_t  gotoblas_OPTERON;
 extern gotoblas_t  gotoblas_OPTERON_SSE3;
-extern gotoblas_t  gotoblas_BARCELONA;
 extern gotoblas_t  gotoblas_BOBCAT;
+#else
+#define gotoblas_ATOM gotoblas_NEHALEM
+#define gotoblas_NANO gotoblas_NEHALEM
+#define gotoblas_PENRYN gotoblas_CORE2
+#define gotoblas_DUNNINGTON gotoblas_CORE2
+#define gotoblas_OPTERON gotoblas_CORE2
+#define gotoblas_OPTERON_SSE3 gotoblas_CORE2
+#define gotoblas_BOBCAT gotoblas_CORE2
+#endif
+
 #ifndef NO_AVX
 extern gotoblas_t  gotoblas_SANDYBRIDGE;
 extern gotoblas_t  gotoblas_BULLDOZER;
@@ -74,15 +246,22 @@ extern gotoblas_t  gotoblas_STEAMROLLER;
 extern gotoblas_t  gotoblas_EXCAVATOR;
 #ifdef NO_AVX2
 #define gotoblas_HASWELL gotoblas_SANDYBRIDGE
+#define gotoblas_SKYLAKEX gotoblas_SANDYBRIDGE
 #define gotoblas_ZEN gotoblas_SANDYBRIDGE
 #else
 extern gotoblas_t  gotoblas_HASWELL;
 extern gotoblas_t  gotoblas_ZEN;
+#ifndef NO_AVX512
+extern gotoblas_t  gotoblas_SKYLAKEX;
+#else
+#define gotoblas_SKYLAKEX gotoblas_HASWELL
+#endif
 #endif
 #else
 //Use NEHALEM kernels for sandy bridge
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
 #define gotoblas_HASWELL gotoblas_NEHALEM
+#define gotoblas_SKYLAKEX gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #define gotoblas_STEAMROLLER gotoblas_BARCELONA
@@ -90,6 +269,7 @@ extern gotoblas_t  gotoblas_ZEN;
 #define gotoblas_ZEN gotoblas_BARCELONA
 #endif
 
+#endif // DYNAMIC_LIST
 
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
@@ -284,8 +464,21 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	if (model == 5) {	
+	// Intel Skylake X
+#ifndef NO_AVX512
+	  return &gotoblas_SKYLAKEX;
+#else		
+	  if(support_avx())
+	    return &gotoblas_HASWELL;
+	  else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+#endif		
+	}
 	//Intel Skylake
-	if (model == 14 || model == 5) {
+	if (model == 14) {
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else{
@@ -307,6 +500,23 @@ static gotoblas_t *get_coretype(void){
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
+      case 6:
+        if (model == 6) {
+          // Cannon Lake
+#ifndef NO_AVX512
+	  return &gotoblas_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	  return &gotoblas_HASWELL;
+#else
+	  return &gotblas_SANDYBRIDGE;
+#endif
+	  else
+	  return &gotoblas_NEHALEM;
+#endif			
+        }
+        return NULL;  
       case 9:
       case 8:
 	if (model == 14 ) { // Kaby Lake
@@ -445,7 +655,8 @@ static char *corename[] = {
     "Haswell",
     "Steamroller",
     "Excavator",
-    "Zen"
+    "Zen",
+    "SkylakeX"	
 };
 
 char *gotoblas_corename(void) {
@@ -473,7 +684,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_STEAMROLLER)  return corename[21];
   if (gotoblas == &gotoblas_EXCAVATOR)    return corename[22];
   if (gotoblas == &gotoblas_ZEN)          return corename[23];
-
+  if (gotoblas == &gotoblas_SKYLAKEX)     return corename[24];
   return corename[0];
 }
 
@@ -485,7 +696,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	//char mname[20];
 
-	for ( i=1 ; i <= 23; i++)
+	for ( i=1 ; i <= 24; i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{
@@ -503,6 +714,7 @@ static gotoblas_t *force_coretype(char *coretype){
 
 	switch (found)
 	{
+		case 24: return (&gotoblas_SKYLAKEX);	
 		case 23: return (&gotoblas_ZEN);
 		case 22: return (&gotoblas_EXCAVATOR);
 		case 21: return (&gotoblas_STEAMROLLER);

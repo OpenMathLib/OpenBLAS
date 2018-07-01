@@ -48,6 +48,10 @@
 
 #else
 
+#ifndef OMP_SCHED
+#define OMP_SCHED static
+#endif
+
 int blas_server_avail = 0;
 
 static void * blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
@@ -331,7 +335,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
       break;
   }
 
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for schedule(OMP_SCHED)
   for (i = 0; i < num; i ++) {
 
 #ifndef USE_SIMPLE_THREADED_LEVEL3

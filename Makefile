@@ -153,6 +153,9 @@ ifeq ($(DYNAMIC_ARCH), 1)
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
 	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
+ifeq ($(DYNAMIC_OLDER), 1)
+	@echo DYNAMIC_OLDER=1 >> Makefile.conf_last
+endif	
 endif
 ifdef USE_THREAD
 	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
@@ -294,9 +297,10 @@ endif
 
 lapack-test :
 	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
-	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/EIG xeigtstc  xeigtstd  xeigtsts  xeigtstz 
+	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/LIN xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 ifneq ($(CROSS), 1)
-	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; make all; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
 endif
@@ -308,9 +312,9 @@ lapack-runtest:
 
 
 blas-test:
-	(cd $(NETLIB_LAPACK_DIR)/BLAS && rm -f x* *.out)
+	(cd $(NETLIB_LAPACK_DIR)/BLAS/TESTING && rm -f x* *.out)
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR) blas_testing
-	(cd $(NETLIB_LAPACK_DIR)/BLAS && cat *.out)
+	(cd $(NETLIB_LAPACK_DIR)/BLAS/TESTING && cat *.out)
 
 
 dummy :

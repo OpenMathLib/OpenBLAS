@@ -76,10 +76,11 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
 
 
 #ifdef SMP
-  nthreads = num_cpu_avail(1);
-
   if (n <= 1048576 )
 	nthreads = 1;
+  else
+	nthreads = num_cpu_avail(1);
+
 
   if (nthreads == 1) {
 #endif

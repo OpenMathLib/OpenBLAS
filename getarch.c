@@ -326,6 +326,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "HASWELL"
 #endif
 
+#ifdef FORCE_SKYLAKEX
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "SKYLAKEX"
+#define ARCHCONFIG   "-DSKYLAKEX " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3 -DHAVE_AVX512VL -march=skylake-avx512"
+#define LIBNAME   "skylakex"
+#define CORENAME  "SKYLAKEX"
+#endif
+
 #ifdef FORCE_ATOM
 #define FORCE
 #define FORCE_INTEL
@@ -1181,9 +1196,7 @@ int main(int argc, char *argv[]){
 #elif NO_PARALLEL_MAKE==1
     printf("MAKE += -j 1\n");
 #else
-#ifndef OS_WINDOWS
     printf("MAKE += -j %d\n", get_num_cores());
-#endif
 #endif
 
     break;

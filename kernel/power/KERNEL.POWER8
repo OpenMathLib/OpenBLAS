@@ -133,7 +133,7 @@ ZNRM2KERNEL  = ../arm/znrm2.c
 #
 SROTKERNEL   = srot.c
 DROTKERNEL   = drot.c
-#CROTKERNEL   = ../arm/zrot.c
+CROTKERNEL   = zrot.c
 ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c

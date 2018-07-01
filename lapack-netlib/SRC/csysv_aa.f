@@ -221,9 +221,6 @@
          LWKOPT_SYTRS = INT( WORK(1) )
          LWKOPT = MAX( LWKOPT_SYTRF, LWKOPT_SYTRS )
          WORK( 1 ) = LWKOPT
-         IF( LWORK.LT.LWKOPT .AND. .NOT.LQUERY ) THEN
-            INFO = -10
-         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN

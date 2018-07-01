@@ -217,8 +217,8 @@
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, CERRSY, ZLACPY, ZLARHS,
-     $                   CLATB4, ZLATMS, ZSYT02, ZSYT01, 
+      EXTERNAL           ALAERH, ALAHD, ALASUM, ZERRSY, ZLACPY, ZLARHS,
+     $                   ZLATB4, ZLATMS, ZSYT02, ZSYT01, 
      $                   ZSYTRF_AA_2STAGE, ZSYTRS_AA_2STAGE,
      $                   XLAENV
 *     ..
