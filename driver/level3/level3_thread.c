@@ -344,6 +344,12 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     div_n = (n_to - n_from + DIVIDE_RATE - 1) / DIVIDE_RATE;
     for (js = n_from, bufferside = 0; js < n_to; js += div_n, bufferside ++) {
 
+      /* Make sure if no one is using workspace */
+      START_RPCC();
+      for (i = 0; i < args -> nthreads; i++)
+	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;MB;};
+      STOP_RPCC(waiting1);
+
 #if defined(FUSED_GEMM) && !defined(TIMING)
 
       /* Fused operation to copy region of B into workspace and apply kernel */
@@ -381,15 +387,10 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       }
 #endif
 
-      for (i = mypos_n * nthreads_m; i < (mypos_n + 1) * nthreads_m; i++) {
-        /* Make sure if no one is using workspace */
-        START_RPCC();
-        while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;MB;};
-        STOP_RPCC(waiting1);
-        /* Set flag so other threads can access local region of B */
+      /* Set flag so other threads can access local region of B */
+      for (i = mypos_n * nthreads_m; i < (mypos_n + 1) * nthreads_m; i++)
         job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
-        WMB;
-      }
+      WMB;
     }
 
     /* Get regions of B from other threads and apply kernel */
@@ -425,13 +426,13 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
         /* Clear synchronization flag if this thread is done with other region of B */
 	if (m_to - m_from == min_i) {
-	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
+	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	  WMB;
 	}
       }
     } while (current != mypos);
 
-    /* Iterate through steps of m
+    /* Iterate through steps of m 
      * Note: First step has already been finished */
     for(is = m_from + min_i; is < m_to; is += min_i){
       min_i = m_to - is;
@@ -461,14 +462,14 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 			   sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			   c, ldc, is, js);
           STOP_RPCC(kernel);
-
+          
 #ifdef TIMING
           ops += 2 * min_i * MIN(range_n[current + 1]  - js, div_n) * min_l;
 #endif
-
+          
           /* Clear synchronization flag if this thread is done with region of B */
           if (is + min_i >= m_to) {
-            job[current].working[mypos][CACHE_LINE_SIZE * bufferside] = 0;
+            job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
             WMB;
           }
 	}
