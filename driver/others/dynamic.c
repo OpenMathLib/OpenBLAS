@@ -607,7 +607,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
       } else if (exfamily == 8) {
-	if (model == 1) {
+	if (model == 1 || model == 8) {
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{
