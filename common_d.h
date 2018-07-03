@@ -154,130 +154,130 @@
 #define DIMATCOPY_K_RN		dimatcopy_k_rn
 #define DIMATCOPY_K_CT      dimatcopy_k_ct
 #define DIMATCOPY_K_RT      dimatcopy_k_rt
-#define DGEADD_K                dgeadd_k 
+#define DGEADD_K                dgeadd_k
 
 #else
 
-#define	DAMAX_K			gotoblas -> damax_k
-#define	DAMIN_K			gotoblas -> damin_k
-#define	DMAX_K			gotoblas -> dmax_k
-#define	DMIN_K			gotoblas -> dmin_k
-#define	IDAMAX_K		gotoblas -> idamax_k
-#define	IDAMIN_K		gotoblas -> idamin_k
-#define	IDMAX_K			gotoblas -> idmax_k
-#define	IDMIN_K			gotoblas -> idmin_k
-#define	DASUM_K			gotoblas -> dasum_k
-#define	DAXPYU_K		gotoblas -> daxpy_k
-#define	DAXPYC_K		gotoblas -> daxpy_k
-#define	DCOPY_K			gotoblas -> dcopy_k
-#define	DDOTU_K			gotoblas -> ddot_k
-#define	DDOTC_K			gotoblas -> ddot_k
-#define	DNRM2_K			gotoblas -> dnrm2_k
-#define	DSCAL_K			gotoblas -> dscal_k
-#define	DSWAP_K			gotoblas -> dswap_k
-#define	DROT_K			gotoblas -> drot_k
+#define	DAMAX_K			get_gotoblas() -> damax_k
+#define	DAMIN_K			get_gotoblas() -> damin_k
+#define	DMAX_K			get_gotoblas() -> dmax_k
+#define	DMIN_K			get_gotoblas() -> dmin_k
+#define	IDAMAX_K		get_gotoblas() -> idamax_k
+#define	IDAMIN_K		get_gotoblas() -> idamin_k
+#define	IDMAX_K			get_gotoblas() -> idmax_k
+#define	IDMIN_K			get_gotoblas() -> idmin_k
+#define	DASUM_K			get_gotoblas() -> dasum_k
+#define	DAXPYU_K		get_gotoblas() -> daxpy_k
+#define	DAXPYC_K		get_gotoblas() -> daxpy_k
+#define	DCOPY_K			get_gotoblas() -> dcopy_k
+#define	DDOTU_K			get_gotoblas() -> ddot_k
+#define	DDOTC_K			get_gotoblas() -> ddot_k
+#define	DNRM2_K			get_gotoblas() -> dnrm2_k
+#define	DSCAL_K			get_gotoblas() -> dscal_k
+#define	DSWAP_K			get_gotoblas() -> dswap_k
+#define	DROT_K			get_gotoblas() -> drot_k
 
-#define	DGEMV_N			gotoblas -> dgemv_n
-#define	DGEMV_T			gotoblas -> dgemv_t
-#define	DGEMV_R			gotoblas -> dgemv_n
-#define	DGEMV_C			gotoblas -> dgemv_t
-#define	DGEMV_O			gotoblas -> dgemv_n
-#define	DGEMV_U			gotoblas -> dgemv_t
-#define	DGEMV_S			gotoblas -> dgemv_n
-#define	DGEMV_D			gotoblas -> dgemv_t
+#define	DGEMV_N			get_gotoblas() -> dgemv_n
+#define	DGEMV_T			get_gotoblas() -> dgemv_t
+#define	DGEMV_R			get_gotoblas() -> dgemv_n
+#define	DGEMV_C			get_gotoblas() -> dgemv_t
+#define	DGEMV_O			get_gotoblas() -> dgemv_n
+#define	DGEMV_U			get_gotoblas() -> dgemv_t
+#define	DGEMV_S			get_gotoblas() -> dgemv_n
+#define	DGEMV_D			get_gotoblas() -> dgemv_t
 
-#define	DGERU_K			gotoblas -> dger_k
-#define	DGERC_K			gotoblas -> dger_k
-#define	DGERV_K			gotoblas -> dger_k
-#define	DGERD_K			gotoblas -> dger_k
+#define	DGERU_K			get_gotoblas() -> dger_k
+#define	DGERC_K			get_gotoblas() -> dger_k
+#define	DGERV_K			get_gotoblas() -> dger_k
+#define	DGERD_K			get_gotoblas() -> dger_k
 
-#define DSYMV_U			gotoblas -> dsymv_U
-#define DSYMV_L			gotoblas -> dsymv_L
+#define DSYMV_U			get_gotoblas() -> dsymv_U
+#define DSYMV_L			get_gotoblas() -> dsymv_L
 
 #define DSYMV_THREAD_U		dsymv_thread_U
 #define DSYMV_THREAD_L		dsymv_thread_L
 
-#define	DGEMM_ONCOPY		gotoblas -> dgemm_oncopy
-#define	DGEMM_OTCOPY		gotoblas -> dgemm_otcopy
-#define	DGEMM_INCOPY		gotoblas -> dgemm_incopy
-#define	DGEMM_ITCOPY		gotoblas -> dgemm_itcopy
+#define	DGEMM_ONCOPY		get_gotoblas() -> dgemm_oncopy
+#define	DGEMM_OTCOPY		get_gotoblas() -> dgemm_otcopy
+#define	DGEMM_INCOPY		get_gotoblas() -> dgemm_incopy
+#define	DGEMM_ITCOPY		get_gotoblas() -> dgemm_itcopy
 
-#define	DTRMM_OUNUCOPY		gotoblas -> dtrmm_ounucopy
-#define	DTRMM_OUTUCOPY		gotoblas -> dtrmm_outucopy
-#define	DTRMM_OLNUCOPY		gotoblas -> dtrmm_olnucopy
-#define	DTRMM_OLTUCOPY		gotoblas -> dtrmm_oltucopy
-#define	DTRSM_OUNUCOPY		gotoblas -> dtrsm_ounucopy
-#define	DTRSM_OUTUCOPY		gotoblas -> dtrsm_outucopy
-#define	DTRSM_OLNUCOPY		gotoblas -> dtrsm_olnucopy
-#define	DTRSM_OLTUCOPY		gotoblas -> dtrsm_oltucopy
+#define	DTRMM_OUNUCOPY		get_gotoblas() -> dtrmm_ounucopy
+#define	DTRMM_OUTUCOPY		get_gotoblas() -> dtrmm_outucopy
+#define	DTRMM_OLNUCOPY		get_gotoblas() -> dtrmm_olnucopy
+#define	DTRMM_OLTUCOPY		get_gotoblas() -> dtrmm_oltucopy
+#define	DTRSM_OUNUCOPY		get_gotoblas() -> dtrsm_ounucopy
+#define	DTRSM_OUTUCOPY		get_gotoblas() -> dtrsm_outucopy
+#define	DTRSM_OLNUCOPY		get_gotoblas() -> dtrsm_olnucopy
+#define	DTRSM_OLTUCOPY		get_gotoblas() -> dtrsm_oltucopy
 
-#define	DTRMM_IUNUCOPY		gotoblas -> dtrmm_iunucopy
-#define	DTRMM_IUTUCOPY		gotoblas -> dtrmm_iutucopy
-#define	DTRMM_ILNUCOPY		gotoblas -> dtrmm_ilnucopy
-#define	DTRMM_ILTUCOPY		gotoblas -> dtrmm_iltucopy
-#define	DTRSM_IUNUCOPY		gotoblas -> dtrsm_iunucopy
-#define	DTRSM_IUTUCOPY		gotoblas -> dtrsm_iutucopy
-#define	DTRSM_ILNUCOPY		gotoblas -> dtrsm_ilnucopy
-#define	DTRSM_ILTUCOPY		gotoblas -> dtrsm_iltucopy
+#define	DTRMM_IUNUCOPY		get_gotoblas() -> dtrmm_iunucopy
+#define	DTRMM_IUTUCOPY		get_gotoblas() -> dtrmm_iutucopy
+#define	DTRMM_ILNUCOPY		get_gotoblas() -> dtrmm_ilnucopy
+#define	DTRMM_ILTUCOPY		get_gotoblas() -> dtrmm_iltucopy
+#define	DTRSM_IUNUCOPY		get_gotoblas() -> dtrsm_iunucopy
+#define	DTRSM_IUTUCOPY		get_gotoblas() -> dtrsm_iutucopy
+#define	DTRSM_ILNUCOPY		get_gotoblas() -> dtrsm_ilnucopy
+#define	DTRSM_ILTUCOPY		get_gotoblas() -> dtrsm_iltucopy
 
-#define	DTRMM_OUNNCOPY		gotoblas -> dtrmm_ounncopy
-#define	DTRMM_OUTNCOPY		gotoblas -> dtrmm_outncopy
-#define	DTRMM_OLNNCOPY		gotoblas -> dtrmm_olnncopy
-#define	DTRMM_OLTNCOPY		gotoblas -> dtrmm_oltncopy
-#define	DTRSM_OUNNCOPY		gotoblas -> dtrsm_ounncopy
-#define	DTRSM_OUTNCOPY		gotoblas -> dtrsm_outncopy
-#define	DTRSM_OLNNCOPY		gotoblas -> dtrsm_olnncopy
-#define	DTRSM_OLTNCOPY		gotoblas -> dtrsm_oltncopy
+#define	DTRMM_OUNNCOPY		get_gotoblas() -> dtrmm_ounncopy
+#define	DTRMM_OUTNCOPY		get_gotoblas() -> dtrmm_outncopy
+#define	DTRMM_OLNNCOPY		get_gotoblas() -> dtrmm_olnncopy
+#define	DTRMM_OLTNCOPY		get_gotoblas() -> dtrmm_oltncopy
+#define	DTRSM_OUNNCOPY		get_gotoblas() -> dtrsm_ounncopy
+#define	DTRSM_OUTNCOPY		get_gotoblas() -> dtrsm_outncopy
+#define	DTRSM_OLNNCOPY		get_gotoblas() -> dtrsm_olnncopy
+#define	DTRSM_OLTNCOPY		get_gotoblas() -> dtrsm_oltncopy
 
-#define	DTRMM_IUNNCOPY		gotoblas -> dtrmm_iunncopy
-#define	DTRMM_IUTNCOPY		gotoblas -> dtrmm_iutncopy
-#define	DTRMM_ILNNCOPY		gotoblas -> dtrmm_ilnncopy
-#define	DTRMM_ILTNCOPY		gotoblas -> dtrmm_iltncopy
-#define	DTRSM_IUNNCOPY		gotoblas -> dtrsm_iunncopy
-#define	DTRSM_IUTNCOPY		gotoblas -> dtrsm_iutncopy
-#define	DTRSM_ILNNCOPY		gotoblas -> dtrsm_ilnncopy
-#define	DTRSM_ILTNCOPY		gotoblas -> dtrsm_iltncopy
+#define	DTRMM_IUNNCOPY		get_gotoblas() -> dtrmm_iunncopy
+#define	DTRMM_IUTNCOPY		get_gotoblas() -> dtrmm_iutncopy
+#define	DTRMM_ILNNCOPY		get_gotoblas() -> dtrmm_ilnncopy
+#define	DTRMM_ILTNCOPY		get_gotoblas() -> dtrmm_iltncopy
+#define	DTRSM_IUNNCOPY		get_gotoblas() -> dtrsm_iunncopy
+#define	DTRSM_IUTNCOPY		get_gotoblas() -> dtrsm_iutncopy
+#define	DTRSM_ILNNCOPY		get_gotoblas() -> dtrsm_ilnncopy
+#define	DTRSM_ILTNCOPY		get_gotoblas() -> dtrsm_iltncopy
 
-#define	DGEMM_BETA		gotoblas -> dgemm_beta
-#define	DGEMM_KERNEL		gotoblas -> dgemm_kernel
+#define	DGEMM_BETA		get_gotoblas() -> dgemm_beta
+#define	DGEMM_KERNEL		get_gotoblas() -> dgemm_kernel
 
-#define	DTRMM_KERNEL_LN		gotoblas -> dtrmm_kernel_LN
-#define	DTRMM_KERNEL_LT		gotoblas -> dtrmm_kernel_LT
-#define	DTRMM_KERNEL_LR		gotoblas -> dtrmm_kernel_LN
-#define	DTRMM_KERNEL_LC		gotoblas -> dtrmm_kernel_LT
-#define	DTRMM_KERNEL_RN		gotoblas -> dtrmm_kernel_RN
-#define	DTRMM_KERNEL_RT		gotoblas -> dtrmm_kernel_RT
-#define	DTRMM_KERNEL_RR		gotoblas -> dtrmm_kernel_RN
-#define	DTRMM_KERNEL_RC		gotoblas -> dtrmm_kernel_RT
+#define	DTRMM_KERNEL_LN		get_gotoblas() -> dtrmm_kernel_LN
+#define	DTRMM_KERNEL_LT		get_gotoblas() -> dtrmm_kernel_LT
+#define	DTRMM_KERNEL_LR		get_gotoblas() -> dtrmm_kernel_LN
+#define	DTRMM_KERNEL_LC		get_gotoblas() -> dtrmm_kernel_LT
+#define	DTRMM_KERNEL_RN		get_gotoblas() -> dtrmm_kernel_RN
+#define	DTRMM_KERNEL_RT		get_gotoblas() -> dtrmm_kernel_RT
+#define	DTRMM_KERNEL_RR		get_gotoblas() -> dtrmm_kernel_RN
+#define	DTRMM_KERNEL_RC		get_gotoblas() -> dtrmm_kernel_RT
 
-#define	DTRSM_KERNEL_LN		gotoblas -> dtrsm_kernel_LN
-#define	DTRSM_KERNEL_LT		gotoblas -> dtrsm_kernel_LT
-#define	DTRSM_KERNEL_LR		gotoblas -> dtrsm_kernel_LN
-#define	DTRSM_KERNEL_LC		gotoblas -> dtrsm_kernel_LT
-#define	DTRSM_KERNEL_RN		gotoblas -> dtrsm_kernel_RN
-#define	DTRSM_KERNEL_RT		gotoblas -> dtrsm_kernel_RT
-#define	DTRSM_KERNEL_RR		gotoblas -> dtrsm_kernel_RN
-#define	DTRSM_KERNEL_RC		gotoblas -> dtrsm_kernel_RT
+#define	DTRSM_KERNEL_LN		get_gotoblas() -> dtrsm_kernel_LN
+#define	DTRSM_KERNEL_LT		get_gotoblas() -> dtrsm_kernel_LT
+#define	DTRSM_KERNEL_LR		get_gotoblas() -> dtrsm_kernel_LN
+#define	DTRSM_KERNEL_LC		get_gotoblas() -> dtrsm_kernel_LT
+#define	DTRSM_KERNEL_RN		get_gotoblas() -> dtrsm_kernel_RN
+#define	DTRSM_KERNEL_RT		get_gotoblas() -> dtrsm_kernel_RT
+#define	DTRSM_KERNEL_RR		get_gotoblas() -> dtrsm_kernel_RN
+#define	DTRSM_KERNEL_RC		get_gotoblas() -> dtrsm_kernel_RT
 
-#define	DSYMM_IUTCOPY		gotoblas -> dsymm_iutcopy
-#define	DSYMM_ILTCOPY		gotoblas -> dsymm_iltcopy
-#define	DSYMM_OUTCOPY		gotoblas -> dsymm_outcopy
-#define	DSYMM_OLTCOPY		gotoblas -> dsymm_oltcopy
+#define	DSYMM_IUTCOPY		get_gotoblas() -> dsymm_iutcopy
+#define	DSYMM_ILTCOPY		get_gotoblas() -> dsymm_iltcopy
+#define	DSYMM_OUTCOPY		get_gotoblas() -> dsymm_outcopy
+#define	DSYMM_OLTCOPY		get_gotoblas() -> dsymm_oltcopy
 
-#define DNEG_TCOPY		gotoblas -> dneg_tcopy
-#define DLASWP_NCOPY		gotoblas -> dlaswp_ncopy
+#define DNEG_TCOPY		get_gotoblas() -> dneg_tcopy
+#define DLASWP_NCOPY		get_gotoblas() -> dlaswp_ncopy
 
-#define	DAXPBY_K		gotoblas -> daxpby_k
-#define DOMATCOPY_K_CN		gotoblas -> domatcopy_k_cn
-#define DOMATCOPY_K_RN		gotoblas -> domatcopy_k_rn
-#define DOMATCOPY_K_CT		gotoblas -> domatcopy_k_ct
-#define DOMATCOPY_K_RT		gotoblas -> domatcopy_k_rt
-#define DIMATCOPY_K_CN		gotoblas -> dimatcopy_k_cn
-#define DIMATCOPY_K_RN		gotoblas -> dimatcopy_k_rn
-#define DIMATCOPY_K_CT		gotoblas -> dimatcopy_k_ct
-#define DIMATCOPY_K_RT		gotoblas -> dimatcopy_k_rt
+#define	DAXPBY_K		get_gotoblas() -> daxpby_k
+#define DOMATCOPY_K_CN		get_gotoblas() -> domatcopy_k_cn
+#define DOMATCOPY_K_RN		get_gotoblas() -> domatcopy_k_rn
+#define DOMATCOPY_K_CT		get_gotoblas() -> domatcopy_k_ct
+#define DOMATCOPY_K_RT		get_gotoblas() -> domatcopy_k_rt
+#define DIMATCOPY_K_CN		get_gotoblas() -> dimatcopy_k_cn
+#define DIMATCOPY_K_RN		get_gotoblas() -> dimatcopy_k_rn
+#define DIMATCOPY_K_CT		get_gotoblas() -> dimatcopy_k_ct
+#define DIMATCOPY_K_RT		get_gotoblas() -> dimatcopy_k_rt
 
-#define DGEADD_K                gotoblas -> dgeadd_k 
+#define DGEADD_K                get_gotoblas() -> dgeadd_k
 
 #endif
 
