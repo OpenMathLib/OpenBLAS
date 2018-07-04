@@ -229,49 +229,49 @@
 #define ZIMATCOPY_K_CTC         zimatcopy_k_ctc
 #define ZIMATCOPY_K_RTC         zimatcopy_k_rtc
 
-#define ZGEADD_K                zgeadd_k 
+#define ZGEADD_K                zgeadd_k
 
 #else
 
-#define	ZAMAX_K			gotoblas -> zamax_k
-#define	ZAMIN_K			gotoblas -> zamin_k
-#define	ZMAX_K			gotoblas -> zmax_k
-#define	ZMIN_K			gotoblas -> zmin_k
-#define	IZAMAX_K		gotoblas -> izamax_k
-#define	IZAMIN_K		gotoblas -> izamin_k
-#define	IZMAX_K			gotoblas -> izmax_k
-#define	IZMIN_K			gotoblas -> izmin_k
-#define	ZASUM_K			gotoblas -> zasum_k
-#define	ZAXPYU_K		gotoblas -> zaxpy_k
-#define	ZAXPYC_K		gotoblas -> zaxpyc_k
-#define	ZCOPY_K			gotoblas -> zcopy_k
-#define	ZDOTU_K			gotoblas -> zdotu_k
-#define	ZDOTC_K			gotoblas -> zdotc_k
-#define	ZNRM2_K			gotoblas -> znrm2_k
-#define	ZSCAL_K			gotoblas -> zscal_k
-#define	ZSWAP_K			gotoblas -> zswap_k
-#define	ZROT_K			gotoblas -> zdrot_k
+#define	ZAMAX_K			get_gotoblas() -> zamax_k
+#define	ZAMIN_K			get_gotoblas() -> zamin_k
+#define	ZMAX_K			get_gotoblas() -> zmax_k
+#define	ZMIN_K			get_gotoblas() -> zmin_k
+#define	IZAMAX_K		get_gotoblas() -> izamax_k
+#define	IZAMIN_K		get_gotoblas() -> izamin_k
+#define	IZMAX_K			get_gotoblas() -> izmax_k
+#define	IZMIN_K			get_gotoblas() -> izmin_k
+#define	ZASUM_K			get_gotoblas() -> zasum_k
+#define	ZAXPYU_K		get_gotoblas() -> zaxpy_k
+#define	ZAXPYC_K		get_gotoblas() -> zaxpyc_k
+#define	ZCOPY_K			get_gotoblas() -> zcopy_k
+#define	ZDOTU_K			get_gotoblas() -> zdotu_k
+#define	ZDOTC_K			get_gotoblas() -> zdotc_k
+#define	ZNRM2_K			get_gotoblas() -> znrm2_k
+#define	ZSCAL_K			get_gotoblas() -> zscal_k
+#define	ZSWAP_K			get_gotoblas() -> zswap_k
+#define	ZROT_K			get_gotoblas() -> zdrot_k
 
-#define	ZGEMV_N			gotoblas -> zgemv_n
-#define	ZGEMV_T			gotoblas -> zgemv_t
-#define	ZGEMV_R			gotoblas -> zgemv_r
-#define	ZGEMV_C			gotoblas -> zgemv_c
-#define	ZGEMV_O			gotoblas -> zgemv_o
-#define	ZGEMV_U			gotoblas -> zgemv_u
-#define	ZGEMV_S			gotoblas -> zgemv_s
-#define	ZGEMV_D			gotoblas -> zgemv_d
+#define	ZGEMV_N			get_gotoblas() -> zgemv_n
+#define	ZGEMV_T			get_gotoblas() -> zgemv_t
+#define	ZGEMV_R			get_gotoblas() -> zgemv_r
+#define	ZGEMV_C			get_gotoblas() -> zgemv_c
+#define	ZGEMV_O			get_gotoblas() -> zgemv_o
+#define	ZGEMV_U			get_gotoblas() -> zgemv_u
+#define	ZGEMV_S			get_gotoblas() -> zgemv_s
+#define	ZGEMV_D			get_gotoblas() -> zgemv_d
 
-#define	ZGERU_K			gotoblas -> zgeru_k
-#define	ZGERC_K			gotoblas -> zgerc_k
-#define	ZGERV_K			gotoblas -> zgerv_k
-#define	ZGERD_K			gotoblas -> zgerd_k
+#define	ZGERU_K			get_gotoblas() -> zgeru_k
+#define	ZGERC_K			get_gotoblas() -> zgerc_k
+#define	ZGERV_K			get_gotoblas() -> zgerv_k
+#define	ZGERD_K			get_gotoblas() -> zgerd_k
 
-#define ZSYMV_U			gotoblas -> zsymv_U
-#define ZSYMV_L			gotoblas -> zsymv_L
-#define ZHEMV_U			gotoblas -> zhemv_U
-#define ZHEMV_L			gotoblas -> zhemv_L
-#define ZHEMV_V			gotoblas -> zhemv_V
-#define ZHEMV_M			gotoblas -> zhemv_M
+#define ZSYMV_U			get_gotoblas() -> zsymv_U
+#define ZSYMV_L			get_gotoblas() -> zsymv_L
+#define ZHEMV_U			get_gotoblas() -> zhemv_U
+#define ZHEMV_L			get_gotoblas() -> zhemv_L
+#define ZHEMV_V			get_gotoblas() -> zhemv_V
+#define ZHEMV_M			get_gotoblas() -> zhemv_M
 
 #define ZSYMV_THREAD_U		zsymv_thread_U
 #define ZSYMV_THREAD_L		zsymv_thread_L
@@ -280,149 +280,149 @@
 #define ZHEMV_THREAD_V		zhemv_thread_V
 #define ZHEMV_THREAD_M		zhemv_thread_M
 
-#define	ZGEMM_ONCOPY		gotoblas -> zgemm_oncopy
-#define	ZGEMM_OTCOPY		gotoblas -> zgemm_otcopy
-#define	ZGEMM_INCOPY		gotoblas -> zgemm_incopy
-#define	ZGEMM_ITCOPY		gotoblas -> zgemm_itcopy
+#define	ZGEMM_ONCOPY		get_gotoblas() -> zgemm_oncopy
+#define	ZGEMM_OTCOPY		get_gotoblas() -> zgemm_otcopy
+#define	ZGEMM_INCOPY		get_gotoblas() -> zgemm_incopy
+#define	ZGEMM_ITCOPY		get_gotoblas() -> zgemm_itcopy
 
-#define	ZTRMM_OUNUCOPY		gotoblas -> ztrmm_ounucopy
-#define	ZTRMM_OUTUCOPY		gotoblas -> ztrmm_outucopy
-#define	ZTRMM_OLNUCOPY		gotoblas -> ztrmm_olnucopy
-#define	ZTRMM_OLTUCOPY		gotoblas -> ztrmm_oltucopy
-#define	ZTRSM_OUNUCOPY		gotoblas -> ztrsm_ounucopy
-#define	ZTRSM_OUTUCOPY		gotoblas -> ztrsm_outucopy
-#define	ZTRSM_OLNUCOPY		gotoblas -> ztrsm_olnucopy
-#define	ZTRSM_OLTUCOPY		gotoblas -> ztrsm_oltucopy
+#define	ZTRMM_OUNUCOPY		get_gotoblas() -> ztrmm_ounucopy
+#define	ZTRMM_OUTUCOPY		get_gotoblas() -> ztrmm_outucopy
+#define	ZTRMM_OLNUCOPY		get_gotoblas() -> ztrmm_olnucopy
+#define	ZTRMM_OLTUCOPY		get_gotoblas() -> ztrmm_oltucopy
+#define	ZTRSM_OUNUCOPY		get_gotoblas() -> ztrsm_ounucopy
+#define	ZTRSM_OUTUCOPY		get_gotoblas() -> ztrsm_outucopy
+#define	ZTRSM_OLNUCOPY		get_gotoblas() -> ztrsm_olnucopy
+#define	ZTRSM_OLTUCOPY		get_gotoblas() -> ztrsm_oltucopy
 
-#define	ZTRMM_IUNUCOPY		gotoblas -> ztrmm_iunucopy
-#define	ZTRMM_IUTUCOPY		gotoblas -> ztrmm_iutucopy
-#define	ZTRMM_ILNUCOPY		gotoblas -> ztrmm_ilnucopy
-#define	ZTRMM_ILTUCOPY		gotoblas -> ztrmm_iltucopy
-#define	ZTRSM_IUNUCOPY		gotoblas -> ztrsm_iunucopy
-#define	ZTRSM_IUTUCOPY		gotoblas -> ztrsm_iutucopy
-#define	ZTRSM_ILNUCOPY		gotoblas -> ztrsm_ilnucopy
-#define	ZTRSM_ILTUCOPY		gotoblas -> ztrsm_iltucopy
+#define	ZTRMM_IUNUCOPY		get_gotoblas() -> ztrmm_iunucopy
+#define	ZTRMM_IUTUCOPY		get_gotoblas() -> ztrmm_iutucopy
+#define	ZTRMM_ILNUCOPY		get_gotoblas() -> ztrmm_ilnucopy
+#define	ZTRMM_ILTUCOPY		get_gotoblas() -> ztrmm_iltucopy
+#define	ZTRSM_IUNUCOPY		get_gotoblas() -> ztrsm_iunucopy
+#define	ZTRSM_IUTUCOPY		get_gotoblas() -> ztrsm_iutucopy
+#define	ZTRSM_ILNUCOPY		get_gotoblas() -> ztrsm_ilnucopy
+#define	ZTRSM_ILTUCOPY		get_gotoblas() -> ztrsm_iltucopy
 
-#define	ZTRMM_OUNNCOPY		gotoblas -> ztrmm_ounncopy
-#define	ZTRMM_OUTNCOPY		gotoblas -> ztrmm_outncopy
-#define	ZTRMM_OLNNCOPY		gotoblas -> ztrmm_olnncopy
-#define	ZTRMM_OLTNCOPY		gotoblas -> ztrmm_oltncopy
-#define	ZTRSM_OUNNCOPY		gotoblas -> ztrsm_ounncopy
-#define	ZTRSM_OUTNCOPY		gotoblas -> ztrsm_outncopy
-#define	ZTRSM_OLNNCOPY		gotoblas -> ztrsm_olnncopy
-#define	ZTRSM_OLTNCOPY		gotoblas -> ztrsm_oltncopy
+#define	ZTRMM_OUNNCOPY		get_gotoblas() -> ztrmm_ounncopy
+#define	ZTRMM_OUTNCOPY		get_gotoblas() -> ztrmm_outncopy
+#define	ZTRMM_OLNNCOPY		get_gotoblas() -> ztrmm_olnncopy
+#define	ZTRMM_OLTNCOPY		get_gotoblas() -> ztrmm_oltncopy
+#define	ZTRSM_OUNNCOPY		get_gotoblas() -> ztrsm_ounncopy
+#define	ZTRSM_OUTNCOPY		get_gotoblas() -> ztrsm_outncopy
+#define	ZTRSM_OLNNCOPY		get_gotoblas() -> ztrsm_olnncopy
+#define	ZTRSM_OLTNCOPY		get_gotoblas() -> ztrsm_oltncopy
 
-#define	ZTRMM_IUNNCOPY		gotoblas -> ztrmm_iunncopy
-#define	ZTRMM_IUTNCOPY		gotoblas -> ztrmm_iutncopy
-#define	ZTRMM_ILNNCOPY		gotoblas -> ztrmm_ilnncopy
-#define	ZTRMM_ILTNCOPY		gotoblas -> ztrmm_iltncopy
-#define	ZTRSM_IUNNCOPY		gotoblas -> ztrsm_iunncopy
-#define	ZTRSM_IUTNCOPY		gotoblas -> ztrsm_iutncopy
-#define	ZTRSM_ILNNCOPY		gotoblas -> ztrsm_ilnncopy
-#define	ZTRSM_ILTNCOPY		gotoblas -> ztrsm_iltncopy
+#define	ZTRMM_IUNNCOPY		get_gotoblas() -> ztrmm_iunncopy
+#define	ZTRMM_IUTNCOPY		get_gotoblas() -> ztrmm_iutncopy
+#define	ZTRMM_ILNNCOPY		get_gotoblas() -> ztrmm_ilnncopy
+#define	ZTRMM_ILTNCOPY		get_gotoblas() -> ztrmm_iltncopy
+#define	ZTRSM_IUNNCOPY		get_gotoblas() -> ztrsm_iunncopy
+#define	ZTRSM_IUTNCOPY		get_gotoblas() -> ztrsm_iutncopy
+#define	ZTRSM_ILNNCOPY		get_gotoblas() -> ztrsm_ilnncopy
+#define	ZTRSM_ILTNCOPY		get_gotoblas() -> ztrsm_iltncopy
 
-#define	ZGEMM_BETA		gotoblas -> zgemm_beta
-#define	ZGEMM_KERNEL_N		gotoblas -> zgemm_kernel_n
-#define	ZGEMM_KERNEL_L		gotoblas -> zgemm_kernel_l
-#define	ZGEMM_KERNEL_R		gotoblas -> zgemm_kernel_r
-#define	ZGEMM_KERNEL_B		gotoblas -> zgemm_kernel_b
+#define	ZGEMM_BETA		get_gotoblas() -> zgemm_beta
+#define	ZGEMM_KERNEL_N		get_gotoblas() -> zgemm_kernel_n
+#define	ZGEMM_KERNEL_L		get_gotoblas() -> zgemm_kernel_l
+#define	ZGEMM_KERNEL_R		get_gotoblas() -> zgemm_kernel_r
+#define	ZGEMM_KERNEL_B		get_gotoblas() -> zgemm_kernel_b
 
-#define	ZTRMM_KERNEL_LN		gotoblas -> ztrmm_kernel_LN
-#define	ZTRMM_KERNEL_LT		gotoblas -> ztrmm_kernel_LT
-#define	ZTRMM_KERNEL_LR		gotoblas -> ztrmm_kernel_LR
-#define	ZTRMM_KERNEL_LC		gotoblas -> ztrmm_kernel_LC
-#define	ZTRMM_KERNEL_RN		gotoblas -> ztrmm_kernel_RN
-#define	ZTRMM_KERNEL_RT		gotoblas -> ztrmm_kernel_RT
-#define	ZTRMM_KERNEL_RR		gotoblas -> ztrmm_kernel_RR
-#define	ZTRMM_KERNEL_RC		gotoblas -> ztrmm_kernel_RC
+#define	ZTRMM_KERNEL_LN		get_gotoblas() -> ztrmm_kernel_LN
+#define	ZTRMM_KERNEL_LT		get_gotoblas() -> ztrmm_kernel_LT
+#define	ZTRMM_KERNEL_LR		get_gotoblas() -> ztrmm_kernel_LR
+#define	ZTRMM_KERNEL_LC		get_gotoblas() -> ztrmm_kernel_LC
+#define	ZTRMM_KERNEL_RN		get_gotoblas() -> ztrmm_kernel_RN
+#define	ZTRMM_KERNEL_RT		get_gotoblas() -> ztrmm_kernel_RT
+#define	ZTRMM_KERNEL_RR		get_gotoblas() -> ztrmm_kernel_RR
+#define	ZTRMM_KERNEL_RC		get_gotoblas() -> ztrmm_kernel_RC
 
-#define	ZTRSM_KERNEL_LN		gotoblas -> ztrsm_kernel_LN
-#define	ZTRSM_KERNEL_LT		gotoblas -> ztrsm_kernel_LT
-#define	ZTRSM_KERNEL_LR		gotoblas -> ztrsm_kernel_LR
-#define	ZTRSM_KERNEL_LC		gotoblas -> ztrsm_kernel_LC
-#define	ZTRSM_KERNEL_RN		gotoblas -> ztrsm_kernel_RN
-#define	ZTRSM_KERNEL_RT		gotoblas -> ztrsm_kernel_RT
-#define	ZTRSM_KERNEL_RR		gotoblas -> ztrsm_kernel_RR
-#define	ZTRSM_KERNEL_RC		gotoblas -> ztrsm_kernel_RC
+#define	ZTRSM_KERNEL_LN		get_gotoblas() -> ztrsm_kernel_LN
+#define	ZTRSM_KERNEL_LT		get_gotoblas() -> ztrsm_kernel_LT
+#define	ZTRSM_KERNEL_LR		get_gotoblas() -> ztrsm_kernel_LR
+#define	ZTRSM_KERNEL_LC		get_gotoblas() -> ztrsm_kernel_LC
+#define	ZTRSM_KERNEL_RN		get_gotoblas() -> ztrsm_kernel_RN
+#define	ZTRSM_KERNEL_RT		get_gotoblas() -> ztrsm_kernel_RT
+#define	ZTRSM_KERNEL_RR		get_gotoblas() -> ztrsm_kernel_RR
+#define	ZTRSM_KERNEL_RC		get_gotoblas() -> ztrsm_kernel_RC
 
-#define	ZSYMM_IUTCOPY		gotoblas -> zsymm_iutcopy
-#define	ZSYMM_ILTCOPY		gotoblas -> zsymm_iltcopy
-#define	ZSYMM_OUTCOPY		gotoblas -> zsymm_outcopy
-#define	ZSYMM_OLTCOPY		gotoblas -> zsymm_oltcopy
+#define	ZSYMM_IUTCOPY		get_gotoblas() -> zsymm_iutcopy
+#define	ZSYMM_ILTCOPY		get_gotoblas() -> zsymm_iltcopy
+#define	ZSYMM_OUTCOPY		get_gotoblas() -> zsymm_outcopy
+#define	ZSYMM_OLTCOPY		get_gotoblas() -> zsymm_oltcopy
 
-#define	ZHEMM_OUTCOPY		gotoblas -> zhemm_outcopy
-#define	ZHEMM_OLTCOPY		gotoblas -> zhemm_oltcopy
-#define	ZHEMM_IUTCOPY		gotoblas -> zhemm_iutcopy
-#define	ZHEMM_ILTCOPY		gotoblas -> zhemm_iltcopy
+#define	ZHEMM_OUTCOPY		get_gotoblas() -> zhemm_outcopy
+#define	ZHEMM_OLTCOPY		get_gotoblas() -> zhemm_oltcopy
+#define	ZHEMM_IUTCOPY		get_gotoblas() -> zhemm_iutcopy
+#define	ZHEMM_ILTCOPY		get_gotoblas() -> zhemm_iltcopy
 
-#define	ZGEMM3M_ONCOPYB		gotoblas -> zgemm3m_oncopyb
-#define	ZGEMM3M_ONCOPYR		gotoblas -> zgemm3m_oncopyr
-#define	ZGEMM3M_ONCOPYI		gotoblas -> zgemm3m_oncopyi
-#define	ZGEMM3M_OTCOPYB		gotoblas -> zgemm3m_otcopyb
-#define	ZGEMM3M_OTCOPYR		gotoblas -> zgemm3m_otcopyr
-#define	ZGEMM3M_OTCOPYI		gotoblas -> zgemm3m_otcopyi
+#define	ZGEMM3M_ONCOPYB		get_gotoblas() -> zgemm3m_oncopyb
+#define	ZGEMM3M_ONCOPYR		get_gotoblas() -> zgemm3m_oncopyr
+#define	ZGEMM3M_ONCOPYI		get_gotoblas() -> zgemm3m_oncopyi
+#define	ZGEMM3M_OTCOPYB		get_gotoblas() -> zgemm3m_otcopyb
+#define	ZGEMM3M_OTCOPYR		get_gotoblas() -> zgemm3m_otcopyr
+#define	ZGEMM3M_OTCOPYI		get_gotoblas() -> zgemm3m_otcopyi
 
-#define	ZGEMM3M_INCOPYB		gotoblas -> zgemm3m_incopyb
-#define	ZGEMM3M_INCOPYR		gotoblas -> zgemm3m_incopyr
-#define	ZGEMM3M_INCOPYI		gotoblas -> zgemm3m_incopyi
-#define	ZGEMM3M_ITCOPYB		gotoblas -> zgemm3m_itcopyb
-#define	ZGEMM3M_ITCOPYR		gotoblas -> zgemm3m_itcopyr
-#define	ZGEMM3M_ITCOPYI		gotoblas -> zgemm3m_itcopyi
+#define	ZGEMM3M_INCOPYB		get_gotoblas() -> zgemm3m_incopyb
+#define	ZGEMM3M_INCOPYR		get_gotoblas() -> zgemm3m_incopyr
+#define	ZGEMM3M_INCOPYI		get_gotoblas() -> zgemm3m_incopyi
+#define	ZGEMM3M_ITCOPYB		get_gotoblas() -> zgemm3m_itcopyb
+#define	ZGEMM3M_ITCOPYR		get_gotoblas() -> zgemm3m_itcopyr
+#define	ZGEMM3M_ITCOPYI		get_gotoblas() -> zgemm3m_itcopyi
 
-#define	ZSYMM3M_ILCOPYB		gotoblas -> zsymm3m_ilcopyb
-#define	ZSYMM3M_IUCOPYB		gotoblas -> zsymm3m_iucopyb
-#define	ZSYMM3M_ILCOPYR		gotoblas -> zsymm3m_ilcopyr
-#define	ZSYMM3M_IUCOPYR		gotoblas -> zsymm3m_iucopyr
-#define	ZSYMM3M_ILCOPYI		gotoblas -> zsymm3m_ilcopyi
-#define	ZSYMM3M_IUCOPYI		gotoblas -> zsymm3m_iucopyi
+#define	ZSYMM3M_ILCOPYB		get_gotoblas() -> zsymm3m_ilcopyb
+#define	ZSYMM3M_IUCOPYB		get_gotoblas() -> zsymm3m_iucopyb
+#define	ZSYMM3M_ILCOPYR		get_gotoblas() -> zsymm3m_ilcopyr
+#define	ZSYMM3M_IUCOPYR		get_gotoblas() -> zsymm3m_iucopyr
+#define	ZSYMM3M_ILCOPYI		get_gotoblas() -> zsymm3m_ilcopyi
+#define	ZSYMM3M_IUCOPYI		get_gotoblas() -> zsymm3m_iucopyi
 
-#define	ZSYMM3M_OLCOPYB		gotoblas -> zsymm3m_olcopyb
-#define	ZSYMM3M_OUCOPYB		gotoblas -> zsymm3m_oucopyb
-#define	ZSYMM3M_OLCOPYR		gotoblas -> zsymm3m_olcopyr
-#define	ZSYMM3M_OUCOPYR		gotoblas -> zsymm3m_oucopyr
-#define	ZSYMM3M_OLCOPYI		gotoblas -> zsymm3m_olcopyi
-#define	ZSYMM3M_OUCOPYI		gotoblas -> zsymm3m_oucopyi
+#define	ZSYMM3M_OLCOPYB		get_gotoblas() -> zsymm3m_olcopyb
+#define	ZSYMM3M_OUCOPYB		get_gotoblas() -> zsymm3m_oucopyb
+#define	ZSYMM3M_OLCOPYR		get_gotoblas() -> zsymm3m_olcopyr
+#define	ZSYMM3M_OUCOPYR		get_gotoblas() -> zsymm3m_oucopyr
+#define	ZSYMM3M_OLCOPYI		get_gotoblas() -> zsymm3m_olcopyi
+#define	ZSYMM3M_OUCOPYI		get_gotoblas() -> zsymm3m_oucopyi
 
-#define	ZHEMM3M_ILCOPYB		gotoblas -> zhemm3m_ilcopyb
-#define	ZHEMM3M_IUCOPYB		gotoblas -> zhemm3m_iucopyb
-#define	ZHEMM3M_ILCOPYR		gotoblas -> zhemm3m_ilcopyr
-#define	ZHEMM3M_IUCOPYR		gotoblas -> zhemm3m_iucopyr
-#define	ZHEMM3M_ILCOPYI		gotoblas -> zhemm3m_ilcopyi
-#define	ZHEMM3M_IUCOPYI		gotoblas -> zhemm3m_iucopyi
+#define	ZHEMM3M_ILCOPYB		get_gotoblas() -> zhemm3m_ilcopyb
+#define	ZHEMM3M_IUCOPYB		get_gotoblas() -> zhemm3m_iucopyb
+#define	ZHEMM3M_ILCOPYR		get_gotoblas() -> zhemm3m_ilcopyr
+#define	ZHEMM3M_IUCOPYR		get_gotoblas() -> zhemm3m_iucopyr
+#define	ZHEMM3M_ILCOPYI		get_gotoblas() -> zhemm3m_ilcopyi
+#define	ZHEMM3M_IUCOPYI		get_gotoblas() -> zhemm3m_iucopyi
 
-#define	ZHEMM3M_OLCOPYB		gotoblas -> zhemm3m_olcopyb
-#define	ZHEMM3M_OUCOPYB		gotoblas -> zhemm3m_oucopyb
-#define	ZHEMM3M_OLCOPYR		gotoblas -> zhemm3m_olcopyr
-#define	ZHEMM3M_OUCOPYR		gotoblas -> zhemm3m_oucopyr
-#define	ZHEMM3M_OLCOPYI		gotoblas -> zhemm3m_olcopyi
-#define	ZHEMM3M_OUCOPYI		gotoblas -> zhemm3m_oucopyi
+#define	ZHEMM3M_OLCOPYB		get_gotoblas() -> zhemm3m_olcopyb
+#define	ZHEMM3M_OUCOPYB		get_gotoblas() -> zhemm3m_oucopyb
+#define	ZHEMM3M_OLCOPYR		get_gotoblas() -> zhemm3m_olcopyr
+#define	ZHEMM3M_OUCOPYR		get_gotoblas() -> zhemm3m_oucopyr
+#define	ZHEMM3M_OLCOPYI		get_gotoblas() -> zhemm3m_olcopyi
+#define	ZHEMM3M_OUCOPYI		get_gotoblas() -> zhemm3m_oucopyi
 
-#define	ZGEMM3M_KERNEL		gotoblas -> zgemm3m_kernel
+#define	ZGEMM3M_KERNEL		get_gotoblas() -> zgemm3m_kernel
 
-#define ZNEG_TCOPY		gotoblas -> zneg_tcopy
-#define ZLASWP_NCOPY		gotoblas -> zlaswp_ncopy
+#define ZNEG_TCOPY		get_gotoblas() -> zneg_tcopy
+#define ZLASWP_NCOPY		get_gotoblas() -> zlaswp_ncopy
 
-#define ZAXPBY_K                gotoblas -> zaxpby_k
+#define ZAXPBY_K                get_gotoblas() -> zaxpby_k
 
-#define ZOMATCOPY_K_CN          gotoblas -> zomatcopy_k_cn
-#define ZOMATCOPY_K_RN          gotoblas -> zomatcopy_k_rn
-#define ZOMATCOPY_K_CT          gotoblas -> zomatcopy_k_ct
-#define ZOMATCOPY_K_RT          gotoblas -> zomatcopy_k_rt
-#define ZOMATCOPY_K_CNC         gotoblas -> zomatcopy_k_cnc
-#define ZOMATCOPY_K_RNC         gotoblas -> zomatcopy_k_rnc
-#define ZOMATCOPY_K_CTC         gotoblas -> zomatcopy_k_ctc
-#define ZOMATCOPY_K_RTC         gotoblas -> zomatcopy_k_rtc
+#define ZOMATCOPY_K_CN          get_gotoblas() -> zomatcopy_k_cn
+#define ZOMATCOPY_K_RN          get_gotoblas() -> zomatcopy_k_rn
+#define ZOMATCOPY_K_CT          get_gotoblas() -> zomatcopy_k_ct
+#define ZOMATCOPY_K_RT          get_gotoblas() -> zomatcopy_k_rt
+#define ZOMATCOPY_K_CNC         get_gotoblas() -> zomatcopy_k_cnc
+#define ZOMATCOPY_K_RNC         get_gotoblas() -> zomatcopy_k_rnc
+#define ZOMATCOPY_K_CTC         get_gotoblas() -> zomatcopy_k_ctc
+#define ZOMATCOPY_K_RTC         get_gotoblas() -> zomatcopy_k_rtc
 
-#define ZIMATCOPY_K_CN          gotoblas -> zimatcopy_k_cn
-#define ZIMATCOPY_K_RN          gotoblas -> zimatcopy_k_rn
-#define ZIMATCOPY_K_CT          gotoblas -> zimatcopy_k_ct
-#define ZIMATCOPY_K_RT          gotoblas -> zimatcopy_k_rt
-#define ZIMATCOPY_K_CNC         gotoblas -> zimatcopy_k_cnc
-#define ZIMATCOPY_K_RNC         gotoblas -> zimatcopy_k_rnc
-#define ZIMATCOPY_K_CTC         gotoblas -> zimatcopy_k_ctc
-#define ZIMATCOPY_K_RTC         gotoblas -> zimatcopy_k_rtc
+#define ZIMATCOPY_K_CN          get_gotoblas() -> zimatcopy_k_cn
+#define ZIMATCOPY_K_RN          get_gotoblas() -> zimatcopy_k_rn
+#define ZIMATCOPY_K_CT          get_gotoblas() -> zimatcopy_k_ct
+#define ZIMATCOPY_K_RT          get_gotoblas() -> zimatcopy_k_rt
+#define ZIMATCOPY_K_CNC         get_gotoblas() -> zimatcopy_k_cnc
+#define ZIMATCOPY_K_RNC         get_gotoblas() -> zimatcopy_k_rnc
+#define ZIMATCOPY_K_CTC         get_gotoblas() -> zimatcopy_k_ctc
+#define ZIMATCOPY_K_RTC         get_gotoblas() -> zimatcopy_k_rtc
 
-#define ZGEADD_K                gotoblas -> zgeadd_k
+#define ZGEADD_K                get_gotoblas() -> zgeadd_k
 
 #endif
 

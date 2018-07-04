@@ -145,114 +145,114 @@
 
 #else
 
-#define	QAMAX_K			gotoblas -> qamax_k
-#define	QAMIN_K			gotoblas -> qamin_k
-#define	QMAX_K			gotoblas -> qmax_k
-#define	QMIN_K			gotoblas -> qmin_k
-#define	IQAMAX_K		gotoblas -> iqamax_k
-#define	IQAMIN_K		gotoblas -> iqamin_k
-#define	IQMAX_K			gotoblas -> iqmax_k
-#define	IQMIN_K			gotoblas -> iqmin_k
-#define	QASUM_K			gotoblas -> qasum_k
-#define	QAXPYU_K		gotoblas -> qaxpy_k
-#define	QAXPYC_K		gotoblas -> qaxpy_k
-#define	QCOPY_K			gotoblas -> qcopy_k
-#define	QDOTU_K			gotoblas -> qdot_k
-#define	QDOTC_K			gotoblas -> qdot_k
-#define	QNRM2_K			gotoblas -> qnrm2_k
-#define	QSCAL_K			gotoblas -> qscal_k
-#define	QSWAP_K			gotoblas -> qswap_k
-#define	QROT_K			gotoblas -> qrot_k
+#define	QAMAX_K			get_gotoblas() -> qamax_k
+#define	QAMIN_K			get_gotoblas() -> qamin_k
+#define	QMAX_K			get_gotoblas() -> qmax_k
+#define	QMIN_K			get_gotoblas() -> qmin_k
+#define	IQAMAX_K		get_gotoblas() -> iqamax_k
+#define	IQAMIN_K		get_gotoblas() -> iqamin_k
+#define	IQMAX_K			get_gotoblas() -> iqmax_k
+#define	IQMIN_K			get_gotoblas() -> iqmin_k
+#define	QASUM_K			get_gotoblas() -> qasum_k
+#define	QAXPYU_K		get_gotoblas() -> qaxpy_k
+#define	QAXPYC_K		get_gotoblas() -> qaxpy_k
+#define	QCOPY_K			get_gotoblas() -> qcopy_k
+#define	QDOTU_K			get_gotoblas() -> qdot_k
+#define	QDOTC_K			get_gotoblas() -> qdot_k
+#define	QNRM2_K			get_gotoblas() -> qnrm2_k
+#define	QSCAL_K			get_gotoblas() -> qscal_k
+#define	QSWAP_K			get_gotoblas() -> qswap_k
+#define	QROT_K			get_gotoblas() -> qrot_k
 
-#define	QGEMV_N			gotoblas -> qgemv_n
-#define	QGEMV_T			gotoblas -> qgemv_t
-#define	QGEMV_R			gotoblas -> qgemv_n
-#define	QGEMV_C			gotoblas -> qgemv_t
-#define	QGEMV_O			gotoblas -> qgemv_n
-#define	QGEMV_U			gotoblas -> qgemv_t
-#define	QGEMV_S			gotoblas -> qgemv_n
-#define	QGEMV_D			gotoblas -> qgemv_t
+#define	QGEMV_N			get_gotoblas() -> qgemv_n
+#define	QGEMV_T			get_gotoblas() -> qgemv_t
+#define	QGEMV_R			get_gotoblas() -> qgemv_n
+#define	QGEMV_C			get_gotoblas() -> qgemv_t
+#define	QGEMV_O			get_gotoblas() -> qgemv_n
+#define	QGEMV_U			get_gotoblas() -> qgemv_t
+#define	QGEMV_S			get_gotoblas() -> qgemv_n
+#define	QGEMV_D			get_gotoblas() -> qgemv_t
 
-#define	QGERU_K			gotoblas -> qger_k
-#define	QGERC_K			gotoblas -> qger_k
-#define	QGERV_K			gotoblas -> qger_k
-#define	QGERD_K			gotoblas -> qger_k
+#define	QGERU_K			get_gotoblas() -> qger_k
+#define	QGERC_K			get_gotoblas() -> qger_k
+#define	QGERV_K			get_gotoblas() -> qger_k
+#define	QGERD_K			get_gotoblas() -> qger_k
 
-#define QSYMV_U			gotoblas -> qsymv_U
-#define QSYMV_L			gotoblas -> qsymv_L
+#define QSYMV_U			get_gotoblas() -> qsymv_U
+#define QSYMV_L			get_gotoblas() -> qsymv_L
 
 #define QSYMV_THREAD_U		qsymv_thread_U
 #define QSYMV_THREAD_L		qsymv_thread_L
 
-#define	QGEMM_ONCOPY		gotoblas -> qgemm_oncopy
-#define	QGEMM_OTCOPY		gotoblas -> qgemm_otcopy
-#define	QGEMM_INCOPY		gotoblas -> qgemm_incopy
-#define	QGEMM_ITCOPY		gotoblas -> qgemm_itcopy
+#define	QGEMM_ONCOPY		get_gotoblas() -> qgemm_oncopy
+#define	QGEMM_OTCOPY		get_gotoblas() -> qgemm_otcopy
+#define	QGEMM_INCOPY		get_gotoblas() -> qgemm_incopy
+#define	QGEMM_ITCOPY		get_gotoblas() -> qgemm_itcopy
 
-#define	QTRMM_OUNUCOPY		gotoblas -> qtrmm_ounucopy
-#define	QTRMM_OUTUCOPY		gotoblas -> qtrmm_outucopy
-#define	QTRMM_OLNUCOPY		gotoblas -> qtrmm_olnucopy
-#define	QTRMM_OLTUCOPY		gotoblas -> qtrmm_oltucopy
-#define	QTRSM_OUNUCOPY		gotoblas -> qtrsm_ounucopy
-#define	QTRSM_OUTUCOPY		gotoblas -> qtrsm_outucopy
-#define	QTRSM_OLNUCOPY		gotoblas -> qtrsm_olnucopy
-#define	QTRSM_OLTUCOPY		gotoblas -> qtrsm_oltucopy
+#define	QTRMM_OUNUCOPY		get_gotoblas() -> qtrmm_ounucopy
+#define	QTRMM_OUTUCOPY		get_gotoblas() -> qtrmm_outucopy
+#define	QTRMM_OLNUCOPY		get_gotoblas() -> qtrmm_olnucopy
+#define	QTRMM_OLTUCOPY		get_gotoblas() -> qtrmm_oltucopy
+#define	QTRSM_OUNUCOPY		get_gotoblas() -> qtrsm_ounucopy
+#define	QTRSM_OUTUCOPY		get_gotoblas() -> qtrsm_outucopy
+#define	QTRSM_OLNUCOPY		get_gotoblas() -> qtrsm_olnucopy
+#define	QTRSM_OLTUCOPY		get_gotoblas() -> qtrsm_oltucopy
 
-#define	QTRMM_IUNUCOPY		gotoblas -> qtrmm_iunucopy
-#define	QTRMM_IUTUCOPY		gotoblas -> qtrmm_iutucopy
-#define	QTRMM_ILNUCOPY		gotoblas -> qtrmm_ilnucopy
-#define	QTRMM_ILTUCOPY		gotoblas -> qtrmm_iltucopy
-#define	QTRSM_IUNUCOPY		gotoblas -> qtrsm_iunucopy
-#define	QTRSM_IUTUCOPY		gotoblas -> qtrsm_iutucopy
-#define	QTRSM_ILNUCOPY		gotoblas -> qtrsm_ilnucopy
-#define	QTRSM_ILTUCOPY		gotoblas -> qtrsm_iltucopy
+#define	QTRMM_IUNUCOPY		get_gotoblas() -> qtrmm_iunucopy
+#define	QTRMM_IUTUCOPY		get_gotoblas() -> qtrmm_iutucopy
+#define	QTRMM_ILNUCOPY		get_gotoblas() -> qtrmm_ilnucopy
+#define	QTRMM_ILTUCOPY		get_gotoblas() -> qtrmm_iltucopy
+#define	QTRSM_IUNUCOPY		get_gotoblas() -> qtrsm_iunucopy
+#define	QTRSM_IUTUCOPY		get_gotoblas() -> qtrsm_iutucopy
+#define	QTRSM_ILNUCOPY		get_gotoblas() -> qtrsm_ilnucopy
+#define	QTRSM_ILTUCOPY		get_gotoblas() -> qtrsm_iltucopy
 
-#define	QTRMM_OUNNCOPY		gotoblas -> qtrmm_ounncopy
-#define	QTRMM_OUTNCOPY		gotoblas -> qtrmm_outncopy
-#define	QTRMM_OLNNCOPY		gotoblas -> qtrmm_olnncopy
-#define	QTRMM_OLTNCOPY		gotoblas -> qtrmm_oltncopy
-#define	QTRSM_OUNNCOPY		gotoblas -> qtrsm_ounncopy
-#define	QTRSM_OUTNCOPY		gotoblas -> qtrsm_outncopy
-#define	QTRSM_OLNNCOPY		gotoblas -> qtrsm_olnncopy
-#define	QTRSM_OLTNCOPY		gotoblas -> qtrsm_oltncopy
+#define	QTRMM_OUNNCOPY		get_gotoblas() -> qtrmm_ounncopy
+#define	QTRMM_OUTNCOPY		get_gotoblas() -> qtrmm_outncopy
+#define	QTRMM_OLNNCOPY		get_gotoblas() -> qtrmm_olnncopy
+#define	QTRMM_OLTNCOPY		get_gotoblas() -> qtrmm_oltncopy
+#define	QTRSM_OUNNCOPY		get_gotoblas() -> qtrsm_ounncopy
+#define	QTRSM_OUTNCOPY		get_gotoblas() -> qtrsm_outncopy
+#define	QTRSM_OLNNCOPY		get_gotoblas() -> qtrsm_olnncopy
+#define	QTRSM_OLTNCOPY		get_gotoblas() -> qtrsm_oltncopy
 
-#define	QTRMM_IUNNCOPY		gotoblas -> qtrmm_iunncopy
-#define	QTRMM_IUTNCOPY		gotoblas -> qtrmm_iutncopy
-#define	QTRMM_ILNNCOPY		gotoblas -> qtrmm_ilnncopy
-#define	QTRMM_ILTNCOPY		gotoblas -> qtrmm_iltncopy
-#define	QTRSM_IUNNCOPY		gotoblas -> qtrsm_iunncopy
-#define	QTRSM_IUTNCOPY		gotoblas -> qtrsm_iutncopy
-#define	QTRSM_ILNNCOPY		gotoblas -> qtrsm_ilnncopy
-#define	QTRSM_ILTNCOPY		gotoblas -> qtrsm_iltncopy
+#define	QTRMM_IUNNCOPY		get_gotoblas() -> qtrmm_iunncopy
+#define	QTRMM_IUTNCOPY		get_gotoblas() -> qtrmm_iutncopy
+#define	QTRMM_ILNNCOPY		get_gotoblas() -> qtrmm_ilnncopy
+#define	QTRMM_ILTNCOPY		get_gotoblas() -> qtrmm_iltncopy
+#define	QTRSM_IUNNCOPY		get_gotoblas() -> qtrsm_iunncopy
+#define	QTRSM_IUTNCOPY		get_gotoblas() -> qtrsm_iutncopy
+#define	QTRSM_ILNNCOPY		get_gotoblas() -> qtrsm_ilnncopy
+#define	QTRSM_ILTNCOPY		get_gotoblas() -> qtrsm_iltncopy
 
-#define	QGEMM_BETA		gotoblas -> qgemm_beta
-#define	QGEMM_KERNEL		gotoblas -> qgemm_kernel
+#define	QGEMM_BETA		get_gotoblas() -> qgemm_beta
+#define	QGEMM_KERNEL		get_gotoblas() -> qgemm_kernel
 
-#define	QTRMM_KERNEL_LN		gotoblas -> qtrmm_kernel_LN
-#define	QTRMM_KERNEL_LT		gotoblas -> qtrmm_kernel_LT
-#define	QTRMM_KERNEL_LR		gotoblas -> qtrmm_kernel_LN
-#define	QTRMM_KERNEL_LC		gotoblas -> qtrmm_kernel_LT
-#define	QTRMM_KERNEL_RN		gotoblas -> qtrmm_kernel_RN
-#define	QTRMM_KERNEL_RT		gotoblas -> qtrmm_kernel_RT
-#define	QTRMM_KERNEL_RR		gotoblas -> qtrmm_kernel_RN
-#define	QTRMM_KERNEL_RC		gotoblas -> qtrmm_kernel_RT
+#define	QTRMM_KERNEL_LN		get_gotoblas() -> qtrmm_kernel_LN
+#define	QTRMM_KERNEL_LT		get_gotoblas() -> qtrmm_kernel_LT
+#define	QTRMM_KERNEL_LR		get_gotoblas() -> qtrmm_kernel_LN
+#define	QTRMM_KERNEL_LC		get_gotoblas() -> qtrmm_kernel_LT
+#define	QTRMM_KERNEL_RN		get_gotoblas() -> qtrmm_kernel_RN
+#define	QTRMM_KERNEL_RT		get_gotoblas() -> qtrmm_kernel_RT
+#define	QTRMM_KERNEL_RR		get_gotoblas() -> qtrmm_kernel_RN
+#define	QTRMM_KERNEL_RC		get_gotoblas() -> qtrmm_kernel_RT
 
-#define	QTRSM_KERNEL_LN		gotoblas -> qtrsm_kernel_LN
-#define	QTRSM_KERNEL_LT		gotoblas -> qtrsm_kernel_LT
-#define	QTRSM_KERNEL_LR		gotoblas -> qtrsm_kernel_LN
-#define	QTRSM_KERNEL_LC		gotoblas -> qtrsm_kernel_LT
-#define	QTRSM_KERNEL_RN		gotoblas -> qtrsm_kernel_RN
-#define	QTRSM_KERNEL_RT		gotoblas -> qtrsm_kernel_RT
-#define	QTRSM_KERNEL_RR		gotoblas -> qtrsm_kernel_RN
-#define	QTRSM_KERNEL_RC		gotoblas -> qtrsm_kernel_RT
+#define	QTRSM_KERNEL_LN		get_gotoblas() -> qtrsm_kernel_LN
+#define	QTRSM_KERNEL_LT		get_gotoblas() -> qtrsm_kernel_LT
+#define	QTRSM_KERNEL_LR		get_gotoblas() -> qtrsm_kernel_LN
+#define	QTRSM_KERNEL_LC		get_gotoblas() -> qtrsm_kernel_LT
+#define	QTRSM_KERNEL_RN		get_gotoblas() -> qtrsm_kernel_RN
+#define	QTRSM_KERNEL_RT		get_gotoblas() -> qtrsm_kernel_RT
+#define	QTRSM_KERNEL_RR		get_gotoblas() -> qtrsm_kernel_RN
+#define	QTRSM_KERNEL_RC		get_gotoblas() -> qtrsm_kernel_RT
 
-#define	QSYMM_IUTCOPY		gotoblas -> qsymm_iutcopy
-#define	QSYMM_ILTCOPY		gotoblas -> qsymm_iltcopy
-#define	QSYMM_OUTCOPY		gotoblas -> qsymm_outcopy
-#define	QSYMM_OLTCOPY		gotoblas -> qsymm_oltcopy
+#define	QSYMM_IUTCOPY		get_gotoblas() -> qsymm_iutcopy
+#define	QSYMM_ILTCOPY		get_gotoblas() -> qsymm_iltcopy
+#define	QSYMM_OUTCOPY		get_gotoblas() -> qsymm_outcopy
+#define	QSYMM_OLTCOPY		get_gotoblas() -> qsymm_oltcopy
 
-#define QNEG_TCOPY		gotoblas -> qneg_tcopy
-#define QLASWP_NCOPY		gotoblas -> qlaswp_ncopy
+#define QNEG_TCOPY		get_gotoblas() -> qneg_tcopy
+#define QLASWP_NCOPY		get_gotoblas() -> qlaswp_ncopy
 
 #endif
 

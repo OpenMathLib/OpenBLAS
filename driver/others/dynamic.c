@@ -278,6 +278,12 @@ extern gotoblas_t  gotoblas_SKYLAKEX;
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
 
+/* Do not reference gotoblas directly outside of dynamic.c, to prevent
+initialization order issues where an initializer attempts to call into OpenBLAS
+before gotoblas_dynamic_init has been called. Instead, use get_gotoblas(),
+defined in common.h. */
+gotoblas_t *gotoblas = NULL;
+
 #ifndef NO_AVX
 static inline void xgetbv(int op, int * eax, int * edx){
   //Use binary code for xgetbv
@@ -419,7 +425,7 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-	if (model == 7) return &gotoblas_ATOM; //Bay Trail	
+	if (model == 7) return &gotoblas_ATOM; //Bay Trail
 	return NULL;
       case 4:
 		//Intel Haswell
@@ -450,9 +456,9 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
 	//Intel Braswell / Avoton
-	if (model == 12 || model == 13) { 
+	if (model == 12 || model == 13) {
 	  return &gotoblas_NEHALEM;
-	}	
+	}
 	return NULL;
       case 5:
 	//Intel Broadwell
@@ -464,18 +470,18 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-	if (model == 5) {	
+	if (model == 5) {
 	// Intel Skylake X
 #ifndef NO_AVX512
 	  return &gotoblas_SKYLAKEX;
-#else		
+#else
 	  if(support_avx())
 	    return &gotoblas_HASWELL;
 	  else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM;
 	  }
-#endif		
+#endif
 	}
 	//Intel Skylake
 	if (model == 14) {
@@ -496,9 +502,9 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
 	//Apollo Lake
-	if (model == 12) { 
+	if (model == 12) {
 	  return &gotoblas_NEHALEM;
-	}	
+	}
 	return NULL;
       case 6:
         if (model == 6) {
@@ -514,9 +520,9 @@ static gotoblas_t *get_coretype(void){
 #endif
 	  else
 	  return &gotoblas_NEHALEM;
-#endif			
+#endif
         }
-        return NULL;  
+        return NULL;
       case 9:
       case 8:
 	if (model == 14 ) { // Kaby Lake
@@ -656,7 +662,7 @@ static char *corename[] = {
     "Steamroller",
     "Excavator",
     "Zen",
-    "SkylakeX"	
+    "SkylakeX"
 };
 
 char *gotoblas_corename(void) {
@@ -714,7 +720,7 @@ static gotoblas_t *force_coretype(char *coretype){
 
 	switch (found)
 	{
-		case 24: return (&gotoblas_SKYLAKEX);	
+		case 24: return (&gotoblas_SKYLAKEX);
 		case 23: return (&gotoblas_ZEN);
 		case 22: return (&gotoblas_EXCAVATOR);
 		case 21: return (&gotoblas_STEAMROLLER);

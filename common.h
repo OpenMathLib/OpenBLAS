@@ -641,6 +641,18 @@ void gotoblas_dynamic_quit(void);
 void gotoblas_profile_init(void);
 void gotoblas_profile_quit(void);
 
+#ifdef DYNAMIC_ARCH
+/* Do not reference gotoblas directly, instead use get_gotoblas(), below. This
+is to prevent initialization order issues where an initializer attempts to call
+into OpenBLAS before gotoblas_dynamic_init has been called. */
+extern gotoblas_t *gotoblas;
+static __inline__ gotoblas_t *get_gotoblas() {
+  if (gotoblas) return gotoblas;
+  gotoblas_dynamic_init();
+  return gotoblas;
+}
+#endif
+
 #ifdef USE_OPENMP
 
 #ifndef C_MSVC
@@ -652,7 +664,7 @@ __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
 
 #if (__STDC_VERSION__ >= 201112L)
-#if defined(C_GCC) && ( __GNUC__ < 7) 
+#if defined(C_GCC) && ( __GNUC__ < 7)
 // workaround for GCC bug 65467
 #ifndef _Atomic
 #define _Atomic volatile

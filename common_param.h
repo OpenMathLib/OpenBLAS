@@ -885,84 +885,83 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*zimatcopy_k_rnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
 
-  int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG); 
-  int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG); 
-  int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG); 
-  int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG); 
+  int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
+  int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG);
+  int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG);
+  int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG);
 
 } gotoblas_t;
 
-extern gotoblas_t *gotoblas;
 
-#define DTB_ENTRIES  gotoblas -> dtb_entries
-#define GEMM_OFFSET_A	gotoblas -> offsetA
-#define GEMM_OFFSET_B	gotoblas -> offsetB
-#define GEMM_ALIGN	gotoblas -> align
+#define DTB_ENTRIES  get_gotoblas() -> dtb_entries
+#define GEMM_OFFSET_A	get_gotoblas() -> offsetA
+#define GEMM_OFFSET_B	get_gotoblas() -> offsetB
+#define GEMM_ALIGN	get_gotoblas() -> align
 
-#define HAVE_EX_L2	gotoblas -> exclusive_cache
+#define HAVE_EX_L2	get_gotoblas() -> exclusive_cache
 
-#define	SGEMM_P		gotoblas -> sgemm_p
-#define	SGEMM_Q		gotoblas -> sgemm_q
-#define	SGEMM_R		gotoblas -> sgemm_r
-#define	SGEMM_UNROLL_M	gotoblas -> sgemm_unroll_m
-#define	SGEMM_UNROLL_N	gotoblas -> sgemm_unroll_n
-#define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
+#define	SGEMM_P		get_gotoblas() -> sgemm_p
+#define	SGEMM_Q		get_gotoblas() -> sgemm_q
+#define	SGEMM_R		get_gotoblas() -> sgemm_r
+#define	SGEMM_UNROLL_M	get_gotoblas() -> sgemm_unroll_m
+#define	SGEMM_UNROLL_N	get_gotoblas() -> sgemm_unroll_n
+#define SGEMM_UNROLL_MN	get_gotoblas() -> sgemm_unroll_mn
 
-#define	DGEMM_P		gotoblas -> dgemm_p
-#define	DGEMM_Q		gotoblas -> dgemm_q
-#define	DGEMM_R		gotoblas -> dgemm_r
-#define	DGEMM_UNROLL_M	gotoblas -> dgemm_unroll_m
-#define	DGEMM_UNROLL_N	gotoblas -> dgemm_unroll_n
-#define DGEMM_UNROLL_MN	gotoblas -> dgemm_unroll_mn
+#define	DGEMM_P		get_gotoblas() -> dgemm_p
+#define	DGEMM_Q		get_gotoblas() -> dgemm_q
+#define	DGEMM_R		get_gotoblas() -> dgemm_r
+#define	DGEMM_UNROLL_M	get_gotoblas() -> dgemm_unroll_m
+#define	DGEMM_UNROLL_N	get_gotoblas() -> dgemm_unroll_n
+#define DGEMM_UNROLL_MN	get_gotoblas() -> dgemm_unroll_mn
 
-#define	QGEMM_P		gotoblas -> qgemm_p
-#define	QGEMM_Q		gotoblas -> qgemm_q
-#define	QGEMM_R		gotoblas -> qgemm_r
-#define	QGEMM_UNROLL_M	gotoblas -> qgemm_unroll_m
-#define	QGEMM_UNROLL_N	gotoblas -> qgemm_unroll_n
-#define QGEMM_UNROLL_MN	gotoblas -> qgemm_unroll_mn
+#define	QGEMM_P		get_gotoblas() -> qgemm_p
+#define	QGEMM_Q		get_gotoblas() -> qgemm_q
+#define	QGEMM_R		get_gotoblas() -> qgemm_r
+#define	QGEMM_UNROLL_M	get_gotoblas() -> qgemm_unroll_m
+#define	QGEMM_UNROLL_N	get_gotoblas() -> qgemm_unroll_n
+#define QGEMM_UNROLL_MN	get_gotoblas() -> qgemm_unroll_mn
 
-#define	CGEMM_P		gotoblas -> cgemm_p
-#define	CGEMM_Q		gotoblas -> cgemm_q
-#define	CGEMM_R		gotoblas -> cgemm_r
-#define	CGEMM_UNROLL_M	gotoblas -> cgemm_unroll_m
-#define	CGEMM_UNROLL_N	gotoblas -> cgemm_unroll_n
-#define CGEMM_UNROLL_MN	gotoblas -> cgemm_unroll_mn
+#define	CGEMM_P		get_gotoblas() -> cgemm_p
+#define	CGEMM_Q		get_gotoblas() -> cgemm_q
+#define	CGEMM_R		get_gotoblas() -> cgemm_r
+#define	CGEMM_UNROLL_M	get_gotoblas() -> cgemm_unroll_m
+#define	CGEMM_UNROLL_N	get_gotoblas() -> cgemm_unroll_n
+#define CGEMM_UNROLL_MN	get_gotoblas() -> cgemm_unroll_mn
 
-#define	ZGEMM_P		gotoblas -> zgemm_p
-#define	ZGEMM_Q		gotoblas -> zgemm_q
-#define	ZGEMM_R		gotoblas -> zgemm_r
-#define	ZGEMM_UNROLL_M	gotoblas -> zgemm_unroll_m
-#define	ZGEMM_UNROLL_N	gotoblas -> zgemm_unroll_n
-#define ZGEMM_UNROLL_MN	gotoblas -> zgemm_unroll_mn
+#define	ZGEMM_P		get_gotoblas() -> zgemm_p
+#define	ZGEMM_Q		get_gotoblas() -> zgemm_q
+#define	ZGEMM_R		get_gotoblas() -> zgemm_r
+#define	ZGEMM_UNROLL_M	get_gotoblas() -> zgemm_unroll_m
+#define	ZGEMM_UNROLL_N	get_gotoblas() -> zgemm_unroll_n
+#define ZGEMM_UNROLL_MN	get_gotoblas() -> zgemm_unroll_mn
 
-#define	XGEMM_P		gotoblas -> xgemm_p
-#define	XGEMM_Q		gotoblas -> xgemm_q
-#define	XGEMM_R		gotoblas -> xgemm_r
-#define	XGEMM_UNROLL_M	gotoblas -> xgemm_unroll_m
-#define	XGEMM_UNROLL_N	gotoblas -> xgemm_unroll_n
-#define XGEMM_UNROLL_MN	gotoblas -> xgemm_unroll_mn
+#define	XGEMM_P		get_gotoblas() -> xgemm_p
+#define	XGEMM_Q		get_gotoblas() -> xgemm_q
+#define	XGEMM_R		get_gotoblas() -> xgemm_r
+#define	XGEMM_UNROLL_M	get_gotoblas() -> xgemm_unroll_m
+#define	XGEMM_UNROLL_N	get_gotoblas() -> xgemm_unroll_n
+#define XGEMM_UNROLL_MN	get_gotoblas() -> xgemm_unroll_mn
 
-#define	CGEMM3M_P		gotoblas -> cgemm3m_p
-#define	CGEMM3M_Q		gotoblas -> cgemm3m_q
-#define	CGEMM3M_R		gotoblas -> cgemm3m_r
-#define	CGEMM3M_UNROLL_M	gotoblas -> cgemm3m_unroll_m
-#define	CGEMM3M_UNROLL_N	gotoblas -> cgemm3m_unroll_n
-#define CGEMM3M_UNROLL_MN	gotoblas -> cgemm3m_unroll_mn
+#define	CGEMM3M_P		get_gotoblas() -> cgemm3m_p
+#define	CGEMM3M_Q		get_gotoblas() -> cgemm3m_q
+#define	CGEMM3M_R		get_gotoblas() -> cgemm3m_r
+#define	CGEMM3M_UNROLL_M	get_gotoblas() -> cgemm3m_unroll_m
+#define	CGEMM3M_UNROLL_N	get_gotoblas() -> cgemm3m_unroll_n
+#define CGEMM3M_UNROLL_MN	get_gotoblas() -> cgemm3m_unroll_mn
 
-#define	ZGEMM3M_P		gotoblas -> zgemm3m_p
-#define	ZGEMM3M_Q		gotoblas -> zgemm3m_q
-#define	ZGEMM3M_R		gotoblas -> zgemm3m_r
-#define	ZGEMM3M_UNROLL_M	gotoblas -> zgemm3m_unroll_m
-#define	ZGEMM3M_UNROLL_N	gotoblas -> zgemm3m_unroll_n
-#define ZGEMM3M_UNROLL_MN	gotoblas -> zgemm3m_unroll_mn
+#define	ZGEMM3M_P		get_gotoblas() -> zgemm3m_p
+#define	ZGEMM3M_Q		get_gotoblas() -> zgemm3m_q
+#define	ZGEMM3M_R		get_gotoblas() -> zgemm3m_r
+#define	ZGEMM3M_UNROLL_M	get_gotoblas() -> zgemm3m_unroll_m
+#define	ZGEMM3M_UNROLL_N	get_gotoblas() -> zgemm3m_unroll_n
+#define ZGEMM3M_UNROLL_MN	get_gotoblas() -> zgemm3m_unroll_mn
 
-#define	XGEMM3M_P		gotoblas -> xgemm3m_p
-#define	XGEMM3M_Q		gotoblas -> xgemm3m_q
-#define	XGEMM3M_R		gotoblas -> xgemm3m_r
-#define	XGEMM3M_UNROLL_M	gotoblas -> xgemm3m_unroll_m
-#define	XGEMM3M_UNROLL_N	gotoblas -> xgemm3m_unroll_n
-#define XGEMM3M_UNROLL_MN	gotoblas -> xgemm3m_unroll_mn
+#define	XGEMM3M_P		get_gotoblas() -> xgemm3m_p
+#define	XGEMM3M_Q		get_gotoblas() -> xgemm3m_q
+#define	XGEMM3M_R		get_gotoblas() -> xgemm3m_r
+#define	XGEMM3M_UNROLL_M	get_gotoblas() -> xgemm3m_unroll_m
+#define	XGEMM3M_UNROLL_N	get_gotoblas() -> xgemm3m_unroll_n
+#define XGEMM3M_UNROLL_MN	get_gotoblas() -> xgemm3m_unroll_mn
 
 #else
 

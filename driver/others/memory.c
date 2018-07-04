@@ -163,9 +163,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DESTRUCTOR	__attribute__ ((destructor))
 #endif
 
-#ifdef DYNAMIC_ARCH
-gotoblas_t *gotoblas = NULL;
-#endif
 extern void openblas_warning(int verbose, const char * msg);
 
 #ifndef SMP
@@ -421,10 +418,8 @@ int hugetlb_allocated = 0;
 
 #if defined(OS_WINDOWS)
 #define THREAD_LOCAL __declspec(thread)
-#define LIKELY_ONE(x) (x)
 #else
 #define THREAD_LOCAL __thread
-#define LIKELY_ONE(x) (__builtin_expect(x, 1))
 #endif
 
 /* Stores information about the allocation and how to release it */
@@ -1105,7 +1100,7 @@ void *blas_memory_alloc(int procpos){
   struct alloc_t * alloc_info;
   struct alloc_t ** alloc_table;
 
-  if (!LIKELY_ONE(memory_initialized)) {
+  if (!memory_initialized) {
 #if defined(SMP) && !defined(USE_OPENMP)
     /* Only allow a single thread to initialize memory system */
     LOCK_COMMAND(&alloc_lock);
