@@ -35,6 +35,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string.h>
 
+#if defined(_WIN32) && defined(_MSC_VER)
+#if _MSC_VER < 1900
+#define snprintf _snprintf_s
+#endif
+#endif
+
 static char* openblas_config_str=""
 #ifdef USE64BITINT
   "USE64BITINT "
