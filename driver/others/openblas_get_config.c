@@ -37,7 +37,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(_WIN32) && defined(_MSC_VER)
 #if _MSC_VER < 1900
-#define snprintf _snprintf_s
+#define snprintf _snprintf
 #endif
 #endif
 
