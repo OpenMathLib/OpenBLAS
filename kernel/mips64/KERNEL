@@ -1,3 +1,12 @@
+CAXPYKERNEL = ../mips/zaxpy.c
+ZAXPYKERNEL = ../mips/zaxpy.c
+SROTKERNEL = ../mips/rot.c
+DROTKERNEL = ../mips/rot.c
+CROTKERNEL = ../mips/zrot.c
+ZROTKERNEL = ../mips/zrot.c
+CSWAPKERNEL = ../mips/zswap.c
+ZSWAPKERNEL = ../mips/zwap.c
+
 ifndef SNRM2KERNEL
 SNRM2KERNEL = snrm2.S
 endif
