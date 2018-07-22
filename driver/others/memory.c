@@ -1279,7 +1279,7 @@ void blas_shutdown(void){
       struct alloc_t *alloc_info = local_memory_table[thread][pos];
       if (alloc_info) {
         alloc_info->release_func(alloc_info);
-        alloc_info = (void *)0;
+        local_memory_table[thread][pos] = (void *)0;
       }
     }
   }
