@@ -1452,6 +1452,8 @@ int get_cpuname(void){
 	switch (model) {
 	case 1:
 	  // AMD Ryzen
+	case 8:
+	  // AMD Ryzen2
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CPUTYPE_ZEN;

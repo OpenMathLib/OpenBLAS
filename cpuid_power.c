@@ -142,6 +142,52 @@ int detect(void){
 
   return  CPUTYPE_PPC970;
 #endif
+
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+int id;
+id = __asm __volatile("mfpvr %0" : "=r"(id));
+switch ( id >> 16 ) {
+  case 0x4e: // POWER9
+    return  return CPUTYPE_POWER8;
+    break;
+  case 0x4d:
+  case 0x4b: // POWER8/8E 
+    return CPUTYPE_POWER8;
+    break;
+  case 0x4a:
+  case 0x3f:  // POWER7/7E
+    return CPUTYPE_POWER6; 
+    break;
+  case 0x3e:
+    return CPUTYPE_POWER6;
+    break;
+  case 0x3a:
+    return CPUTYPE_POWER5;
+    break;
+  case 0x35:
+  case 0x38: // POWER4 /4+ 
+    return CPUTYPE_POWER4;
+    break;
+  case 0x40:
+  case 0x41: // POWER3 /3+ 
+    return CPUTYPE_POWER3;
+    break;
+  case 0x39:
+  case 0x3c:
+  case 0x44:
+  case 0x45:
+    return CPUTYPE_PPC970;
+    break;
+  case 0x70: 
+    return CPUTYPE_CELL;
+    break;
+  case 0x8003: 
+    return CPUTYPE_PPCG4;
+    break;
+  default:  
+    return  CPUTYPE_UNKNOWN;
+  }
+#endif
 }
 
 void get_architecture(void){

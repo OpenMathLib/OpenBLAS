@@ -140,7 +140,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef BUFFERS_PER_THREAD
-#ifdef USE_OPENMP
+#ifdef USE_OPENMP_UNUSED
 #define BUFFERS_PER_THREAD (MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER)
 #else
 #define BUFFERS_PER_THREAD NUM_BUFFERS
@@ -363,7 +363,7 @@ int blas_get_cpu_number(void){
 #endif
 
   // blas_goto_num = 0;
-#ifndef USE_OPENMP
+#ifndef USE_OPENMP_UNUSED
   blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
 
@@ -494,10 +494,10 @@ static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
 #endif
 
 /* Holds pointers to allocated memory */
-#if defined(SMP) && !defined(USE_OPENMP)
+#if defined(SMP) && !defined(USE_OPENMP_UNUSED)
 /* This is the number of threads than can be spawned by the server, which is the
    server plus the number of threads in the thread pool */
-#  define MAX_ALLOCATING_THREADS MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER +1
+#  define MAX_ALLOCATING_THREADS MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER * 2
 static int next_memory_table_pos = 0;
 #  if defined(HAS_COMPILER_TLS)
 /* Use compiler generated thread-local-storage */
@@ -532,7 +532,7 @@ static BLASULONG  alloc_lock = 0UL;
 
 /* Returns a pointer to the start of the per-thread memory allocation data */
 static __inline struct alloc_t ** get_memory_table() {
-#if defined(SMP) && !defined(USE_OPENMP)
+#if defined(SMP) && !defined(USE_OPENMP_UNUSED)
 #  if !defined(HAS_COMPILER_TLS)
 #    if defined(OS_WINDOWS)
   int local_memory_table_pos = (int)::TlsGetValue(local_storage_key);
@@ -1057,7 +1057,7 @@ static volatile int memory_initialized = 0;
 /*                2 : Thread                 */
 
 static void blas_memory_init(){
-#if defined(SMP) && !defined(USE_OPENMP)
+#if defined(SMP) && !defined(USE_OPENMP_UNUSED)
   next_memory_table_pos = 0;
 #  if !defined(HAS_COMPILER_TLS)
 #    if defined(OS_WINDOWS)
@@ -1279,7 +1279,7 @@ void blas_shutdown(void){
       struct alloc_t *alloc_info = local_memory_table[thread][pos];
       if (alloc_info) {
         alloc_info->release_func(alloc_info);
-        alloc_info = (void *)0;
+        local_memory_table[thread][pos] = (void *)0;
       }
     }
   }
