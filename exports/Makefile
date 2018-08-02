@@ -122,7 +122,7 @@ endif
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<
 
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 
 so : ../$(LIBSONAME)
 
