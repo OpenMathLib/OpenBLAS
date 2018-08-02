@@ -637,7 +637,7 @@ static inline BLASULONG run_bench(BLASULONG address, BLASULONG size) {
 
 static void *alloc_mmap(void *address){
   void *map_address, *best_address;
-  BLASULONG best, start, current;
+  BLASULONG best, start, current, original;
   BLASULONG allocsize;
 
   if (address){
@@ -685,8 +685,9 @@ static void *alloc_mmap(void *address){
 
 	start   = (BLASULONG)map_address;
 	current = (SCALING - 1) * allocation_block_size;
+	original = current;
 
-	while(current > 0) {
+	while(current > 0 && current <= original) {
 	  *(BLASLONG *)start = (BLASLONG)start + PAGESIZE;
 	  start += PAGESIZE;
 	  current -= PAGESIZE;
