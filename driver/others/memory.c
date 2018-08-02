@@ -108,6 +108,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/resource.h>
 #endif
 
+#ifdef OS_HAIKU
+#include <unistd.h>
+#endif
+
 #if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN)
 #include <sys/sysctl.h>
 #include <sys/resource.h>
@@ -231,6 +235,14 @@ int i,n;
 #endif
 
 #ifdef OS_ANDROID
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
+
+#ifdef OS_HAIKU
 int get_num_procs(void) {
   static int nums = 0;
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);

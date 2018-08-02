@@ -105,6 +105,10 @@ extern "C" {
 #endif
 #endif
 
+#ifdef OS_HAIKU
+#define NO_SYSV_IPC
+#endif
+
 #ifdef OS_WINDOWS
 #ifdef  ATOM
 #define GOTO_ATOM ATOM
