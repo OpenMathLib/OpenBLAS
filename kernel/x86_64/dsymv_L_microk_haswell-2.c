@@ -25,105 +25,68 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#include <immintrin.h>
+
 #define HAVE_KERNEL_4x4 1
-static void dsymv_kernel_4x4( BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2) __attribute__ ((noinline));
 
 static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2)
 {
 
 
-	__asm__  __volatile__
-	(
-	"vzeroupper				     \n\t"
-	"vxorpd		%%ymm0 , %%ymm0 , %%ymm0     \n\t"	// temp2[0]
-	"vxorpd		%%ymm1 , %%ymm1 , %%ymm1     \n\t"	// temp2[1]
-	"vxorpd		%%ymm2 , %%ymm2 , %%ymm2     \n\t"	// temp2[2]
-	"vxorpd		%%ymm3 , %%ymm3 , %%ymm3     \n\t"	// temp2[3]
-	"vbroadcastsd   (%[temp1]),    %%ymm4	             \n\t"	// temp1[0]
-	"vbroadcastsd  8(%[temp1]),    %%ymm5	             \n\t"	// temp1[1]
-	"vbroadcastsd 16(%[temp1]),    %%ymm6	             \n\t"	// temp1[1]
-	"vbroadcastsd 24(%[temp1]),    %%ymm7	             \n\t"	// temp1[1]
+	__m256d temp2_0, temp2_1, temp2_2, temp2_3; // temp2_0 temp2_1 temp2_2 temp2_3
+	__m256d temp1_0, temp1_1, temp1_2, temp1_3;
 
-	".p2align 4				     \n\t"
-	"1:				     \n\t"
+	temp2_0 = _mm256_setzero_pd();
+	temp2_1 = _mm256_setzero_pd();
+	temp2_2 = _mm256_setzero_pd();
+	temp2_3 = _mm256_setzero_pd();
 
-	"vmovups	(%[y],%[from],8), %%ymm9	           \n\t"  // 2 * y
-	"vmovups	(%[x],%[from],8), %%ymm8	           \n\t"  // 2 * x
+	temp1_0 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[0]));
+	temp1_1 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[1]));
+	temp1_2 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[2]));
+	temp1_3 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[3]));
 
-	"vmovups	(%[a0],%[from],8), %%ymm12	           \n\t"  // 2 * a
-	"vmovups	(%[a1],%[from],8), %%ymm13	           \n\t"  // 2 * a
-	"vmovups	(%[a2],%[from],8), %%ymm14	           \n\t"  // 2 * a
-	"vmovups	(%[a3],%[from],8), %%ymm15	           \n\t"  // 2 * a
+	for (; from != to; from += 4) {
+		__m256d _x, _y;
+		__m256d a0, a1, a2, a3;
 
-	"vfmadd231pd	%%ymm4, %%ymm12 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm12 , %%ymm0  \n\t"  // temp2 += x * a
+		_y = _mm256_loadu_pd(&y[from]);
+		_x = _mm256_loadu_pd(&x[from]);
 
-	"vfmadd231pd	%%ymm5, %%ymm13 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm13 , %%ymm1  \n\t"  // temp2 += x * a
+		a0 = _mm256_loadu_pd(&a[0][from]);
+		a1 = _mm256_loadu_pd(&a[1][from]);
+		a2 = _mm256_loadu_pd(&a[2][from]);
+		a3 = _mm256_loadu_pd(&a[3][from]);
 
-	"vfmadd231pd	%%ymm6, %%ymm14 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm14 , %%ymm2  \n\t"  // temp2 += x * a
+		_y += temp1_0 * a0 + temp1_1 * a1 + temp1_2 * a2 + temp1_3 * a3;
 
-	"vfmadd231pd	%%ymm7, %%ymm15 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm15 , %%ymm3  \n\t"  // temp2 += x * a
-	"addq		$4 , %[from]	  	 	      \n\t"
+		temp2_0 += _x * a0;
+		temp2_1 += _x * a1;
+		temp2_2 += _x * a2;
+		temp2_3 += _x * a3;
 
-	"vmovups	%%ymm9 ,  -32(%[y],%[from],8)		   \n\t"
+		_mm256_storeu_pd(&y[from], _y);
 
-	"cmpq		%[from] , %[to]			      \n\t"
-	"jnz		1b		      \n\t"
+	};
 
-	"vmovsd		  (%[temp2]), %%xmm4		      \n\t"
-	"vmovsd		 8(%[temp2]), %%xmm5		      \n\t"
-	"vmovsd		16(%[temp2]), %%xmm6		      \n\t"
-	"vmovsd		24(%[temp2]), %%xmm7		      \n\t"
+	__m128d xmm0, xmm1, xmm2, xmm3;
 
-	"vextractf128 $0x01, %%ymm0 , %%xmm12	      \n\t"
-	"vextractf128 $0x01, %%ymm1 , %%xmm13	      \n\t"
-	"vextractf128 $0x01, %%ymm2 , %%xmm14	      \n\t"
-	"vextractf128 $0x01, %%ymm3 , %%xmm15	      \n\t"
 
-	"vaddpd	        %%xmm0, %%xmm12, %%xmm0	      \n\t"
-	"vaddpd	        %%xmm1, %%xmm13, %%xmm1	      \n\t"
-	"vaddpd	        %%xmm2, %%xmm14, %%xmm2	      \n\t"
-	"vaddpd	        %%xmm3, %%xmm15, %%xmm3	      \n\t"
+	xmm0 = _mm_add_pd(_mm256_extractf128_pd(temp2_0, 0), _mm256_extractf128_pd(temp2_0, 1));
+	xmm1 = _mm_add_pd(_mm256_extractf128_pd(temp2_1, 0), _mm256_extractf128_pd(temp2_1, 1));
+	xmm2 = _mm_add_pd(_mm256_extractf128_pd(temp2_2, 0), _mm256_extractf128_pd(temp2_2, 1));
+	xmm3 = _mm_add_pd(_mm256_extractf128_pd(temp2_3, 0), _mm256_extractf128_pd(temp2_3, 1));
 
-	"vhaddpd        %%xmm0, %%xmm0, %%xmm0  \n\t"
-	"vhaddpd        %%xmm1, %%xmm1, %%xmm1  \n\t"
-	"vhaddpd        %%xmm2, %%xmm2, %%xmm2  \n\t"
-	"vhaddpd        %%xmm3, %%xmm3, %%xmm3  \n\t"
+	xmm0 = _mm_hadd_pd(xmm0, xmm0);
+	xmm1 = _mm_hadd_pd(xmm1, xmm1);
+	xmm2 = _mm_hadd_pd(xmm2, xmm2);
+	xmm3 = _mm_hadd_pd(xmm3, xmm3);
 
-	"vaddsd		%%xmm4, %%xmm0, %%xmm0  \n\t"
-	"vaddsd		%%xmm5, %%xmm1, %%xmm1  \n\t"
-	"vaddsd		%%xmm6, %%xmm2, %%xmm2  \n\t"
-	"vaddsd		%%xmm7, %%xmm3, %%xmm3  \n\t"
 
-	"vmovsd         %%xmm0 ,  (%[temp2])		\n\t"	// save temp2
-	"vmovsd         %%xmm1 , 8(%[temp2])		\n\t"	// save temp2
-	"vmovsd         %%xmm2 ,16(%[temp2])		\n\t"	// save temp2
-	"vmovsd         %%xmm3 ,24(%[temp2])		\n\t"	// save temp2
-	"vzeroupper				     \n\t"
-
-	:
-        : 
-          [from] "r" (from),	// 0	
-	  [to] "r" (to),  	// 1
-          [x] "r" (x),      // 2
-          [y] "r" (y),      // 3
-          [a0] "r" (a[0]),	// 4
-          [a1] "r" (a[1]),	// 5
-          [a2] "r" (a[2]),	// 6
-          [a3] "r" (a[3]),	// 7
-          [temp1] "r" (temp1),  // 8
-          [temp2] "r" (temp2)   // 9
-	: "cc", 
-	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
-	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
-	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
-	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
-	  "memory"
-	);
-
+	temp2[0] += xmm0[0];
+	temp2[1] += xmm1[0];
+	temp2[2] += xmm2[0];
+	temp2[3] += xmm3[0];
 } 
 
 
