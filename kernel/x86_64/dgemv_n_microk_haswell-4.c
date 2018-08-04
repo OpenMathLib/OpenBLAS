@@ -70,76 +70,32 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
 #define HAVE_KERNEL_4x2
 
-static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
-
 static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 
-	BLASLONG register i = 0;
+	int i = 0;
 
-	__asm__  __volatile__
-	(
-	"vbroadcastsd    (%2), %%ymm12	 \n\t"	// x0 
-	"vbroadcastsd   8(%2), %%ymm13	 \n\t"	// x1 
+	__m256d x0, x1;
+	__m256d __alpha;
 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
+	x0 = _mm256_broadcastsd_pd(_mm_load_sd(&x[0]));
+	x1 = _mm256_broadcastsd_pd(_mm_load_sd(&x[1]));
 
-	"vbroadcastsd    (%6), %%ymm6 	 \n\t"	// alpha 
-
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
-	"jz		2f		      \n\t"
-
-	"1:				 \n\t"
-
-	"vmulpd        %%ymm0 , %%ymm12, %%ymm4      \n\t" 
-	"vmulpd        %%ymm1 , %%ymm13, %%ymm5      \n\t" 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
-
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
-	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
-	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
-
-	"vmovups         %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
-
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
-	"jnz		1b		      \n\t"
-	
-
-	"2:				 \n\t"
-
-	"vmulpd        %%ymm0 , %%ymm12, %%ymm4      \n\t" 
-	"vmulpd        %%ymm1 , %%ymm13, %%ymm5      \n\t" 
+	__alpha = _mm256_broadcastsd_pd(_mm_load_sd(alpha));
 
 
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
-	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
-	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
+	for (i = 0; i < n; i+= 4) {
+		__m256d tempY;
+		__m256d sum;
 
-	"vmovups  %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
+		sum = _mm256_add_pd(
+				_mm256_mul_pd(_mm256_loadu_pd(&ap[0][i]), x0),
+				_mm256_mul_pd(_mm256_loadu_pd(&ap[1][i]), x1)
+			);
 
+		tempY = _mm256_loadu_pd(&y[i]);
+		tempY = _mm256_add_pd(tempY, _mm256_mul_pd(sum, __alpha));
+		_mm256_storeu_pd(&y[i], tempY);
+	}
 
-	"vzeroupper			              \n\t"
-
-
-	:
-          "+r" (i),	// 0	
-	  "+r" (n)  	// 1
-	:
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (ap[0]),  // 4
-          "r" (ap[1]),  // 5
-          "r" (alpha)   // 6
-	: "cc", 
-	  "%xmm0", "%xmm1", 
-	  "%xmm4", "%xmm5", 
-	  "%xmm6", 
-	  "%xmm8", 
-	  "%xmm12", "%xmm13",
-	  "memory"
-	);
 }
