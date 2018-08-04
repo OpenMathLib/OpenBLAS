@@ -39,21 +39,21 @@ static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vxorpd		%%ymm1 , %%ymm1 , %%ymm1     \n\t"	// temp2[1]
 	"vxorpd		%%ymm2 , %%ymm2 , %%ymm2     \n\t"	// temp2[2]
 	"vxorpd		%%ymm3 , %%ymm3 , %%ymm3     \n\t"	// temp2[3]
-	"vbroadcastsd   (%8),    %%ymm4	             \n\t"	// temp1[0]
-	"vbroadcastsd  8(%8),    %%ymm5	             \n\t"	// temp1[1]
-	"vbroadcastsd 16(%8),    %%ymm6	             \n\t"	// temp1[1]
-	"vbroadcastsd 24(%8),    %%ymm7	             \n\t"	// temp1[1]
+	"vbroadcastsd   (%[temp1]),    %%ymm4	             \n\t"	// temp1[0]
+	"vbroadcastsd  8(%[temp1]),    %%ymm5	             \n\t"	// temp1[1]
+	"vbroadcastsd 16(%[temp1]),    %%ymm6	             \n\t"	// temp1[1]
+	"vbroadcastsd 24(%[temp1]),    %%ymm7	             \n\t"	// temp1[1]
 
 	".p2align 4				     \n\t"
 	"1:				     \n\t"
 
-	"vmovups	(%3,%0,8), %%ymm9	           \n\t"  // 2 * y
-	"vmovups	(%2,%0,8), %%ymm8	           \n\t"  // 2 * x
+	"vmovups	(%[y],%[from],8), %%ymm9	           \n\t"  // 2 * y
+	"vmovups	(%[x],%[from],8), %%ymm8	           \n\t"  // 2 * x
 
-	"vmovups	(%4,%0,8), %%ymm12	           \n\t"  // 2 * a
-	"vmovups	(%5,%0,8), %%ymm13	           \n\t"  // 2 * a
-	"vmovups	(%6,%0,8), %%ymm14	           \n\t"  // 2 * a
-	"vmovups	(%7,%0,8), %%ymm15	           \n\t"  // 2 * a
+	"vmovups	(%[a0],%[from],8), %%ymm12	           \n\t"  // 2 * a
+	"vmovups	(%[a1],%[from],8), %%ymm13	           \n\t"  // 2 * a
+	"vmovups	(%[a2],%[from],8), %%ymm14	           \n\t"  // 2 * a
+	"vmovups	(%[a3],%[from],8), %%ymm15	           \n\t"  // 2 * a
 
 	"vfmadd231pd	%%ymm4, %%ymm12 , %%ymm9  \n\t"  // y     += temp1 * a
 	"vfmadd231pd	%%ymm8, %%ymm12 , %%ymm0  \n\t"  // temp2 += x * a
@@ -66,17 +66,17 @@ static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 
 	"vfmadd231pd	%%ymm7, %%ymm15 , %%ymm9  \n\t"  // y     += temp1 * a
 	"vfmadd231pd	%%ymm8, %%ymm15 , %%ymm3  \n\t"  // temp2 += x * a
-	"addq		$4 , %0	  	 	      \n\t"
+	"addq		$4 , %[from]	  	 	      \n\t"
 
-	"vmovups	%%ymm9 ,  -32(%3,%0,8)		   \n\t"
+	"vmovups	%%ymm9 ,  -32(%[y],%[from],8)		   \n\t"
 
-	"cmpq		%0 , %1			      \n\t"
+	"cmpq		%[from] , %[to]			      \n\t"
 	"jnz		1b		      \n\t"
 
-	"vmovsd		  (%9), %%xmm4		      \n\t"
-	"vmovsd		 8(%9), %%xmm5		      \n\t"
-	"vmovsd		16(%9), %%xmm6		      \n\t"
-	"vmovsd		24(%9), %%xmm7		      \n\t"
+	"vmovsd		  (%[temp2]), %%xmm4		      \n\t"
+	"vmovsd		 8(%[temp2]), %%xmm5		      \n\t"
+	"vmovsd		16(%[temp2]), %%xmm6		      \n\t"
+	"vmovsd		24(%[temp2]), %%xmm7		      \n\t"
 
 	"vextractf128 $0x01, %%ymm0 , %%xmm12	      \n\t"
 	"vextractf128 $0x01, %%ymm1 , %%xmm13	      \n\t"
@@ -98,24 +98,24 @@ static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vaddsd		%%xmm6, %%xmm2, %%xmm2  \n\t"
 	"vaddsd		%%xmm7, %%xmm3, %%xmm3  \n\t"
 
-	"vmovsd         %%xmm0 ,  (%9)		\n\t"	// save temp2
-	"vmovsd         %%xmm1 , 8(%9)		\n\t"	// save temp2
-	"vmovsd         %%xmm2 ,16(%9)		\n\t"	// save temp2
-	"vmovsd         %%xmm3 ,24(%9)		\n\t"	// save temp2
+	"vmovsd         %%xmm0 ,  (%[temp2])		\n\t"	// save temp2
+	"vmovsd         %%xmm1 , 8(%[temp2])		\n\t"	// save temp2
+	"vmovsd         %%xmm2 ,16(%[temp2])		\n\t"	// save temp2
+	"vmovsd         %%xmm3 ,24(%[temp2])		\n\t"	// save temp2
 	"vzeroupper				     \n\t"
 
 	:
         : 
-          "r" (from),	// 0	
-	  "r" (to),  	// 1
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (a[0]),	// 4
-          "r" (a[1]),	// 5
-          "r" (a[2]),	// 6
-          "r" (a[3]),	// 8
-          "r" (temp1),  // 8
-          "r" (temp2)   // 9
+          [from] "r" (from),	// 0	
+	  [to] "r" (to),  	// 1
+          [x] "r" (x),      // 2
+          [y] "r" (y),      // 3
+          [a0] "r" (a[0]),	// 4
+          [a1] "r" (a[1]),	// 5
+          [a2] "r" (a[2]),	// 6
+          [a3] "r" (a[3]),	// 7
+          [temp1] "r" (temp1),  // 8
+          [temp2] "r" (temp2)   // 9
 	: "cc", 
 	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
 	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
