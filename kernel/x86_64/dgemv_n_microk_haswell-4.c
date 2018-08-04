@@ -37,19 +37,19 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
 	__asm__  __volatile__
 	(
-	"vbroadcastsd    (%2), %%ymm12	 \n\t"	// x0 
-	"vbroadcastsd   8(%2), %%ymm13	 \n\t"	// x1 
-	"vbroadcastsd  16(%2), %%ymm14	 \n\t"	// x2 
-	"vbroadcastsd  24(%2), %%ymm15	 \n\t"	// x3 
+	"vbroadcastsd    (%[x]), %%ymm12	 \n\t"	// x0 
+	"vbroadcastsd   8(%[x]), %%ymm13	 \n\t"	// x1 
+	"vbroadcastsd  16(%[x]), %%ymm14	 \n\t"	// x2 
+	"vbroadcastsd  24(%[x]), %%ymm15	 \n\t"	// x3 
 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
-	"vmovups	(%6,%0,8), %%ymm2	 \n\t"
-	"vmovups	(%7,%0,8), %%ymm3	 \n\t"
-	"vbroadcastsd    (%8), %%ymm6 	 \n\t"	// alpha 
+	"vmovups	(%[ap0],%[i],8), %%ymm0	 \n\t"
+	"vmovups	(%[ap1],%[i],8), %%ymm1	 \n\t"
+	"vmovups	(%[ap2],%[i],8), %%ymm2	 \n\t"
+	"vmovups	(%[ap3],%[i],8), %%ymm3	 \n\t"
+	"vbroadcastsd    (%[alpha]), %%ymm6 	 \n\t"	// alpha 
 
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
+        "addq		$4 , %[i]  	 	      \n\t"
+	"subq	        $4 , %[n]		      \n\t"		
 	"jz		2f		      \n\t"
 
 	//		".align 16				 \n\t"
@@ -57,21 +57,21 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 
 	"vmulpd        %%ymm0 , %%ymm12, %%ymm4      \n\t" 
 	"vmulpd        %%ymm1 , %%ymm13, %%ymm5      \n\t" 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
+	"vmovups	(%[ap0],%[i],8), %%ymm0	 \n\t"
+	"vmovups	(%[ap1],%[i],8), %%ymm1	 \n\t"
 	"vfmadd231pd   %%ymm2 , %%ymm14, %%ymm4	     \n\t"
 	"vfmadd231pd   %%ymm3 , %%ymm15, %%ymm5	     \n\t"
-	"vmovups	(%6,%0,8), %%ymm2	 \n\t"
-	"vmovups	(%7,%0,8), %%ymm3	 \n\t"
+	"vmovups	(%[ap2],%[i],8), %%ymm2	 \n\t"
+	"vmovups	(%[ap3],%[i],8), %%ymm3	 \n\t"
 
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
+	"vmovups	-32(%[y],%[i],8), %%ymm8       \n\t"	// 4 * y
 	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
 	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
 
-	"vmovups         %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
+	"vmovups         %%ymm8,   -32(%[y],%[i],8)    \n\t"	// 4 * y
 
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
+        "addq		$4 , %[i]  	 	      \n\t"
+	"subq	        $4 , %[n]		      \n\t"		
 	"jnz		1b		      \n\t"
 	
 
@@ -83,26 +83,26 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vfmadd231pd   %%ymm3 , %%ymm15, %%ymm5	     \n\t"
 
 
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
+	"vmovups	-32(%[y],%[i],8), %%ymm8	       \n\t"	// 4 * y
 	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
 	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
 
-	"vmovups  %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
+	"vmovups  %%ymm8,   -32(%[y],%[i],8)	      \n\t"	// 4 * y
 
 
 	"vzeroupper			              \n\t"
 
 	:
-          "+r" (i),	// 0	
-	  "+r" (n)  	// 1
+          [i] "+r" (i),	// 0	
+	  [n] "+r" (n)  	// 1
 	:
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (ap[0]),  // 4
-          "r" (ap[1]),  // 5
-          "r" (ap[2]),  // 6
-          "r" (ap[3]),  // 7
-          "r" (alpha)   // 8
+          [x] "r" (x),      // 2
+          [y] "r" (y),      // 3
+          [ap0] "r" (ap[0]),  // 4
+          [ap1] "r" (ap[1]),  // 5
+          [ap2] "r" (ap[2]),  // 6
+          [ap3] "r" (ap[3]),  // 7
+          [alpha] "r" (alpha)   // 8
 	: "cc", 
 	  "%xmm4", "%xmm5", 
 	  "%xmm6", "%xmm7", 
