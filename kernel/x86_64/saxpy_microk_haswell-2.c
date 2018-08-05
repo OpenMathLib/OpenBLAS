@@ -36,36 +36,36 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	__asm__  __volatile__
 	(
-	"vbroadcastss		(%4), %%ymm0		    \n\t"  // alpha	
+	"vbroadcastss		(%[alpha]), %%ymm0		\n\t"  // alpha	
 
-	".p2align 4				            \n\t"
-	"1:				            \n\t"
+	".p2align 4				         	\n\t"
+	"1:				            		\n\t"
 
-        "vmovups                  (%3,%0,4), %%ymm12         \n\t"  // 8 * y
-        "vmovups                32(%3,%0,4), %%ymm13         \n\t"  // 8 * y
-        "vmovups                64(%3,%0,4), %%ymm14         \n\t"  // 8 * y
-        "vmovups                96(%3,%0,4), %%ymm15         \n\t"  // 8 * y
-	"vfmadd231ps       (%2,%0,4), %%ymm0  , %%ymm12  	     \n\t"   // y += alpha * x
-	"vfmadd231ps     32(%2,%0,4), %%ymm0  , %%ymm13  	     \n\t"   // y += alpha * x
-	"vfmadd231ps     64(%2,%0,4), %%ymm0  , %%ymm14  	     \n\t"   // y += alpha * x
-	"vfmadd231ps     96(%2,%0,4), %%ymm0  , %%ymm15  	     \n\t"   // y += alpha * x
-	"vmovups	%%ymm12,   (%3,%0,4)		     \n\t"
-	"vmovups	%%ymm13, 32(%3,%0,4)		     \n\t"
-	"vmovups	%%ymm14, 64(%3,%0,4)		     \n\t"
-	"vmovups	%%ymm15, 96(%3,%0,4)		     \n\t"
+        "vmovups                  (%[y],%[i],4), %%ymm12         \n\t"  // 8 * y
+        "vmovups                32(%[y],%[i],4), %%ymm13         \n\t"  // 8 * y
+        "vmovups                64(%[y],%[i],4), %%ymm14         \n\t"  // 8 * y
+        "vmovups                96(%[y],%[i],4), %%ymm15         \n\t"  // 8 * y
+	"vfmadd231ps       (%[x],%[i],4), %%ymm0  , %%ymm12  	     \n\t"   // y += alpha * x
+	"vfmadd231ps     32(%[x],%[i],4), %%ymm0  , %%ymm13  	     \n\t"   // y += alpha * x
+	"vfmadd231ps     64(%[x],%[i],4), %%ymm0  , %%ymm14  	     \n\t"   // y += alpha * x
+	"vfmadd231ps     96(%[x],%[i],4), %%ymm0  , %%ymm15  	     \n\t"   // y += alpha * x
+	"vmovups	%%ymm12,   (%[y],%[i],4)		     \n\t"
+	"vmovups	%%ymm13, 32(%[y],%[i],4)		     \n\t"
+	"vmovups	%%ymm14, 64(%[y],%[i],4)		     \n\t"
+	"vmovups	%%ymm15, 96(%[y],%[i],4)		     \n\t"
 
-	"addq		$32, %0	  	 	             \n\t"
-	"subq	        $32, %1			             \n\t"		
+	"addq		$32, %[i]  	 	             \n\t"
+	"subq	        $32, %[n]		             \n\t"		
 	"jnz		1b		             \n\t"
 	"vzeroupper				     \n\t"
 
 	:
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (alpha)   // 4
+          [i] "r" (i),	// 0	
+	  [n] "r" (n),  // 1
+          [x] "r" (x),  // 2
+          [y] "r" (y),  // 3
+          [alpha] "r" (alpha)   // 4
 	: "cc", 
 	  "%xmm0", 
 	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
