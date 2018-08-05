@@ -25,54 +25,49 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+
+
+#ifndef __AVX512CD__
+#pragma GCC target("avx2,fma")
+#endif
+
+#ifdef __AVX2__
+
+#include <immintrin.h>
+
 #define HAVE_KERNEL_8 1
-static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *alpha) __attribute__ ((noinline));
 
 static void daxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
+	BLASLONG i = 0;
 
+	__m256d __alpha;
 
-	BLASLONG register i = 0;
+	__alpha =  _mm256_broadcastsd_pd(_mm_load_sd(alpha));
 
-	__asm__  __volatile__
-	(
-	"vbroadcastsd		(%4), %%ymm0		    \n\t"  // alpha	
+#ifdef __AVX512CD__
+	BLASLONG n32;
+	__m512d __alpha5;
+	__alpha5 = _mm512_broadcastsd_pd(_mm_load_sd(alpha));
 
-	".p2align 4				            \n\t"
-	"1:				            \n\t"
+	n32 = n & ~31;
 
-        "vmovups                  (%3,%0,8), %%ymm12         \n\t"  // 4 * y
-        "vmovups                32(%3,%0,8), %%ymm13         \n\t"  // 4 * y
-        "vmovups                64(%3,%0,8), %%ymm14         \n\t"  // 4 * y
-        "vmovups                96(%3,%0,8), %%ymm15         \n\t"  // 4 * y
-	"vfmadd231pd       (%2,%0,8), %%ymm0  , %%ymm12  	     \n\t"   // y += alpha * x
-	"vfmadd231pd     32(%2,%0,8), %%ymm0  , %%ymm13  	     \n\t"   // y += alpha * x
-	"vfmadd231pd     64(%2,%0,8), %%ymm0  , %%ymm14  	     \n\t"   // y += alpha * x
-	"vfmadd231pd     96(%2,%0,8), %%ymm0  , %%ymm15  	     \n\t"   // y += alpha * x
-	"vmovups	%%ymm12,   (%3,%0,8)		     \n\t"
-	"vmovups	%%ymm13, 32(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm14, 64(%3,%0,8)		     \n\t"
-	"vmovups	%%ymm15, 96(%3,%0,8)		     \n\t"
+	for (; i < n32; i+= 32) {
+		_mm512_storeu_pd(&y[i +  0], _mm512_loadu_pd(&y[i +  0]) +  __alpha5 * _mm512_loadu_pd(&x[i +  0]));
+		_mm512_storeu_pd(&y[i +  8], _mm512_loadu_pd(&y[i +  8]) +  __alpha5 * _mm512_loadu_pd(&x[i +  8]));
+		_mm512_storeu_pd(&y[i + 16], _mm512_loadu_pd(&y[i + 16]) +  __alpha5 * _mm512_loadu_pd(&x[i + 16]));
+		_mm512_storeu_pd(&y[i + 24], _mm512_loadu_pd(&y[i + 24]) +  __alpha5 * _mm512_loadu_pd(&x[i + 24]));
+	}
 
-	"addq		$16, %0	  	 	             \n\t"
-	"subq	        $16, %1			             \n\t"		
-	"jnz		1b		             \n\t"
-	"vzeroupper				     \n\t"
+#endif
 
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (alpha)   // 4
-	: "cc", 
-	  "%xmm0", 
-	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
-	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
-	  "memory"
-	);
-
-} 
+	for (; i < n; i+= 16) {
+		_mm256_storeu_pd(&y[i +  0], _mm256_loadu_pd(&y[i +  0]) + __alpha * _mm256_loadu_pd(&x[i +  0]));
+		_mm256_storeu_pd(&y[i +  4], _mm256_loadu_pd(&y[i +  4]) + __alpha * _mm256_loadu_pd(&x[i +  4]));
+		_mm256_storeu_pd(&y[i +  8], _mm256_loadu_pd(&y[i +  8]) + __alpha * _mm256_loadu_pd(&x[i +  8]));
+		_mm256_storeu_pd(&y[i + 12], _mm256_loadu_pd(&y[i + 12]) + __alpha * _mm256_loadu_pd(&x[i + 12]));
+	}
+}
+#endif
 
 
