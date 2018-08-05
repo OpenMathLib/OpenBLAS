@@ -44,6 +44,34 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	__alpha =  _mm256_broadcastss_ps(_mm_load_ss(alpha));
 
+#ifdef __AVX512CD__
+	BLASLONG n64;
+	__m512 __alpha5;
+	__alpha5 = _mm512_broadcastss_ps(_mm_load_ss(alpha));
+
+	n64 = n & ~63;
+
+	for (; i < n64; i+= 64) {
+		__m512 y0, y16, y32, y48;
+
+		y0  = _mm512_loadu_ps(&y[i +  0]);
+		y16 = _mm512_loadu_ps(&y[i + 16]);
+		y32 = _mm512_loadu_ps(&y[i + 32]);
+		y48 = _mm512_loadu_ps(&y[i + 48]);
+
+		y0  += __alpha5 * _mm512_loadu_ps(&x[i +  0]);
+		y16 += __alpha5 * _mm512_loadu_ps(&x[i + 16]);
+		y32 += __alpha5 * _mm512_loadu_ps(&x[i + 32]);
+		y48 += __alpha5 * _mm512_loadu_ps(&x[i + 48]);
+
+		_mm512_storeu_ps(&y[i +  0], y0);
+		_mm512_storeu_ps(&y[i + 16], y16);
+		_mm512_storeu_ps(&y[i + 32], y32);
+		_mm512_storeu_ps(&y[i + 48], y48);
+	}
+
+#endif
+
 	for (; i < n; i+= 32) {
 		__m256 y0, y8, y16, y24;
 
