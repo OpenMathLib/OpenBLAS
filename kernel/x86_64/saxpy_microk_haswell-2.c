@@ -52,43 +52,19 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	n64 = n & ~63;
 
 	for (; i < n64; i+= 64) {
-		__m512 y0, y16, y32, y48;
-
-		y0  = _mm512_loadu_ps(&y[i +  0]);
-		y16 = _mm512_loadu_ps(&y[i + 16]);
-		y32 = _mm512_loadu_ps(&y[i + 32]);
-		y48 = _mm512_loadu_ps(&y[i + 48]);
-
-		y0  += __alpha5 * _mm512_loadu_ps(&x[i +  0]);
-		y16 += __alpha5 * _mm512_loadu_ps(&x[i + 16]);
-		y32 += __alpha5 * _mm512_loadu_ps(&x[i + 32]);
-		y48 += __alpha5 * _mm512_loadu_ps(&x[i + 48]);
-
-		_mm512_storeu_ps(&y[i +  0], y0);
-		_mm512_storeu_ps(&y[i + 16], y16);
-		_mm512_storeu_ps(&y[i + 32], y32);
-		_mm512_storeu_ps(&y[i + 48], y48);
+		_mm512_storeu_ps(&y[i +  0], _mm512_loadu_ps(&y[i +  0]) + __alpha5 * _mm512_loadu_ps(&x[i +  0]));
+		_mm512_storeu_ps(&y[i + 16], _mm512_loadu_ps(&y[i + 16]) + __alpha5 * _mm512_loadu_ps(&x[i + 16]));
+		_mm512_storeu_ps(&y[i + 32], _mm512_loadu_ps(&y[i + 32]) + __alpha5 * _mm512_loadu_ps(&x[i + 32]));
+		_mm512_storeu_ps(&y[i + 48], _mm512_loadu_ps(&y[i + 48]) + __alpha5 * _mm512_loadu_ps(&x[i + 48]));
 	}
 
 #endif
 
 	for (; i < n; i+= 32) {
-		__m256 y0, y8, y16, y24;
-
-		y0  = _mm256_loadu_ps(&y[i +  0]);
-		y8  = _mm256_loadu_ps(&y[i +  8]);
-		y16 = _mm256_loadu_ps(&y[i + 16]);
-		y24 = _mm256_loadu_ps(&y[i + 24]);
-
-		y0  += __alpha * _mm256_loadu_ps(&x[i +  0]);
-		y8  += __alpha * _mm256_loadu_ps(&x[i +  8]);
-		y16 += __alpha * _mm256_loadu_ps(&x[i + 16]);
-		y24 += __alpha * _mm256_loadu_ps(&x[i + 24]);
-
-		_mm256_storeu_ps(&y[i +  0], y0);
-		_mm256_storeu_ps(&y[i +  8], y8);
-		_mm256_storeu_ps(&y[i + 16], y16);
-		_mm256_storeu_ps(&y[i + 24], y24);
+		_mm256_storeu_ps(&y[i +  0], _mm256_loadu_ps(&y[i +  0]) + __alpha * _mm256_loadu_ps(&x[i +  0]));
+		_mm256_storeu_ps(&y[i +  8], _mm256_loadu_ps(&y[i +  8]) + __alpha * _mm256_loadu_ps(&x[i +  8]));
+		_mm256_storeu_ps(&y[i + 16], _mm256_loadu_ps(&y[i + 16]) + __alpha * _mm256_loadu_ps(&x[i + 16]));
+		_mm256_storeu_ps(&y[i + 24], _mm256_loadu_ps(&y[i + 24]) + __alpha * _mm256_loadu_ps(&x[i + 24]));
 	}
 }
 #endif
