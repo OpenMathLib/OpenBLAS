@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /* Ensure that the compiler knows how to generate AVX2 instructions if it doesn't already */
-#ifndef __AVX512CD_
+#ifndef __AVX512CD__
 #pragma GCC target("avx2,fma")
 #endif
 
