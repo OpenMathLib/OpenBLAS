@@ -43,18 +43,18 @@ static void ddot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 
 	".p2align 4				             \n\t"
 	"1:				             \n\t"
-        "vmovups                  (%2,%0,8), %%ymm12         \n\t"  // 2 * x
-        "vmovups                32(%2,%0,8), %%ymm13         \n\t"  // 2 * x
-        "vmovups                64(%2,%0,8), %%ymm14         \n\t"  // 2 * x
-        "vmovups                96(%2,%0,8), %%ymm15         \n\t"  // 2 * x
+        "vmovups                  (%[x],%[i],8), %%ymm12         \n\t"  // 2 * x
+        "vmovups                32(%[x],%[i],8), %%ymm13         \n\t"  // 2 * x
+        "vmovups                64(%[x],%[i],8), %%ymm14         \n\t"  // 2 * x
+        "vmovups                96(%[x],%[i],8), %%ymm15         \n\t"  // 2 * x
 
-	"vfmadd231pd      (%3,%0,8), %%ymm12, %%ymm4 \n\t"  // 2 * y
-	"vfmadd231pd    32(%3,%0,8), %%ymm13, %%ymm5 \n\t"  // 2 * y
-	"vfmadd231pd    64(%3,%0,8), %%ymm14, %%ymm6 \n\t"  // 2 * y
-	"vfmadd231pd    96(%3,%0,8), %%ymm15, %%ymm7 \n\t"  // 2 * y
+	"vfmadd231pd      (%[y],%[i],8), %%ymm12, %%ymm4 \n\t"  // 2 * y
+	"vfmadd231pd    32(%[y],%[i],8), %%ymm13, %%ymm5 \n\t"  // 2 * y
+	"vfmadd231pd    64(%[y],%[i],8), %%ymm14, %%ymm6 \n\t"  // 2 * y
+	"vfmadd231pd    96(%[y],%[i],8), %%ymm15, %%ymm7 \n\t"  // 2 * y
 
-	"addq		$16 , %0	  	     \n\t"
-	"subq	        $16 , %1		     \n\t"		
+	"addq		$16 , %[i]	  	     \n\t"
+	"subq	        $16 , %[n]		     \n\t"		
 	"jnz		1b		             \n\t"
 
 	"vextractf128	$1 , %%ymm4 , %%xmm12	     \n\t"
@@ -73,16 +73,16 @@ static void ddot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 
 	"vhaddpd        %%xmm4, %%xmm4, %%xmm4	\n\t"
 
-	"vmovsd		%%xmm4,    (%4)		\n\t"
+	"vmovsd		%%xmm4,    (%[dot])		\n\t"
 	"vzeroupper				\n\t"
 
 	:
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (dot)     // 4
+          [i] "r" (i),	// 0	
+	  [n] "r" (n),  	// 1
+          [x] "r" (x),      // 2
+          [y] "r" (y),      // 3
+          [dot] "r" (dot)     // 4
 	: "cc", 
 	  "%xmm4", "%xmm5", 
 	  "%xmm6", "%xmm7", 
