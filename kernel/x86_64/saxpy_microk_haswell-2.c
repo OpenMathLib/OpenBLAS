@@ -25,54 +25,43 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+
+#ifndef __AVX512CD__
+#pragma GCC target("avx2,fma")
+#endif
+
+#ifdef __AVX2__
+
 #define HAVE_KERNEL_16 1
-static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y , FLOAT *alpha) __attribute__ ((noinline));
+
+#include <immintrin.h>
 
 static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
+	BLASLONG i = 0;
 
+	__m256 __alpha;
 
-	BLASLONG register i = 0;
+	__alpha =  _mm256_broadcastss_ps(_mm_load_ss(alpha));
 
-	__asm__  __volatile__
-	(
-	"vbroadcastss		(%[alpha]), %%ymm0		\n\t"  // alpha	
+	for (; i < n; i+= 32) {
+		__m256 y0, y8, y16, y24;
 
-	".p2align 4				         	\n\t"
-	"1:				            		\n\t"
+		y0  = _mm256_loadu_ps(&y[i +  0]);
+		y8  = _mm256_loadu_ps(&y[i +  8]);
+		y16 = _mm256_loadu_ps(&y[i + 16]);
+		y24 = _mm256_loadu_ps(&y[i + 24]);
 
-        "vmovups                  (%[y],%[i],4), %%ymm12         \n\t"  // 8 * y
-        "vmovups                32(%[y],%[i],4), %%ymm13         \n\t"  // 8 * y
-        "vmovups                64(%[y],%[i],4), %%ymm14         \n\t"  // 8 * y
-        "vmovups                96(%[y],%[i],4), %%ymm15         \n\t"  // 8 * y
-	"vfmadd231ps       (%[x],%[i],4), %%ymm0  , %%ymm12  	     \n\t"   // y += alpha * x
-	"vfmadd231ps     32(%[x],%[i],4), %%ymm0  , %%ymm13  	     \n\t"   // y += alpha * x
-	"vfmadd231ps     64(%[x],%[i],4), %%ymm0  , %%ymm14  	     \n\t"   // y += alpha * x
-	"vfmadd231ps     96(%[x],%[i],4), %%ymm0  , %%ymm15  	     \n\t"   // y += alpha * x
-	"vmovups	%%ymm12,   (%[y],%[i],4)		     \n\t"
-	"vmovups	%%ymm13, 32(%[y],%[i],4)		     \n\t"
-	"vmovups	%%ymm14, 64(%[y],%[i],4)		     \n\t"
-	"vmovups	%%ymm15, 96(%[y],%[i],4)		     \n\t"
+		y0  += __alpha * _mm256_loadu_ps(&x[i +  0]);
+		y8  += __alpha * _mm256_loadu_ps(&x[i +  8]);
+		y16 += __alpha * _mm256_loadu_ps(&x[i + 16]);
+		y24 += __alpha * _mm256_loadu_ps(&x[i + 24]);
 
-	"addq		$32, %[i]  	 	             \n\t"
-	"subq	        $32, %[n]		             \n\t"		
-	"jnz		1b		             \n\t"
-	"vzeroupper				     \n\t"
-
-	:
-        : 
-          [i] "r" (i),	// 0	
-	  [n] "r" (n),  // 1
-          [x] "r" (x),  // 2
-          [y] "r" (y),  // 3
-          [alpha] "r" (alpha)   // 4
-	: "cc", 
-	  "%xmm0", 
-	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
-	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
-	  "memory"
-	);
-
-} 
-
+		_mm256_storeu_ps(&y[i +  0], y0);
+		_mm256_storeu_ps(&y[i +  8], y8);
+		_mm256_storeu_ps(&y[i + 16], y16);
+		_mm256_storeu_ps(&y[i + 24], y24);
+	}
+}
+#endif
 
