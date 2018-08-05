@@ -25,7 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-/* Ensure that the compiler knows how to generate AVX2 instructions if it doesn't already*/
+/* Ensure that the compiler knows how to generate AVX2 instructions if it doesn't already */
 #ifndef __AVX512CD_
 #pragma GCC target("avx2,fma")
 #endif
@@ -68,17 +68,13 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 		__m512d tempY;
 		__m512d sum;
 
-		sum = _mm512_add_pd(
-				_mm512_add_pd(
-					_mm512_mul_pd(_mm512_loadu_pd(&ap[0][i]), x05),
-					_mm512_mul_pd(_mm512_loadu_pd(&ap[1][i]), x15)),
-				_mm512_add_pd(
-					_mm512_mul_pd(_mm512_loadu_pd(&ap[2][i]), x25),
-					_mm512_mul_pd(_mm512_loadu_pd(&ap[3][i]), x35))
-			);
+		sum = _mm512_loadu_pd(&ap[0][i]) * x05 +
+		      _mm512_loadu_pd(&ap[1][i]) * x15 +
+		      _mm512_loadu_pd(&ap[2][i]) * x25 +
+		      _mm512_loadu_pd(&ap[3][i]) * x35;
 
 		tempY = _mm512_loadu_pd(&y[i]);
-		tempY = _mm512_add_pd(tempY, _mm512_mul_pd(sum, __alpha5));
+		tempY += sum *  __alpha5;
 		_mm512_storeu_pd(&y[i], tempY);
 	}
 #endif
@@ -87,17 +83,13 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 		__m256d tempY;
 		__m256d sum;
 
-		sum = _mm256_add_pd(
-				_mm256_add_pd(
-					_mm256_mul_pd(_mm256_loadu_pd(&ap[0][i]), x0),
-					_mm256_mul_pd(_mm256_loadu_pd(&ap[1][i]), x1)),
-				_mm256_add_pd(
-					_mm256_mul_pd(_mm256_loadu_pd(&ap[2][i]), x2),
-					_mm256_mul_pd(_mm256_loadu_pd(&ap[3][i]), x3))
-			);
+		sum = _mm256_loadu_pd(&ap[0][i]) * x0 +
+		      _mm256_loadu_pd(&ap[1][i]) * x1 +
+		      _mm256_loadu_pd(&ap[2][i]) * x2 +
+		      _mm256_loadu_pd(&ap[3][i]) * x3;
 
 		tempY = _mm256_loadu_pd(&y[i]);
-		tempY = _mm256_add_pd(tempY, _mm256_mul_pd(sum, __alpha));
+		tempY += sum *  __alpha;
 		_mm256_storeu_pd(&y[i], tempY);
 	}
 
@@ -124,13 +116,10 @@ static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 		__m256d tempY;
 		__m256d sum;
 
-		sum = _mm256_add_pd(
-				_mm256_mul_pd(_mm256_loadu_pd(&ap[0][i]), x0),
-				_mm256_mul_pd(_mm256_loadu_pd(&ap[1][i]), x1)
-			);
+		sum = _mm256_loadu_pd(&ap[0][i]) * x0 + _mm256_loadu_pd(&ap[1][i]) * x1;
 
 		tempY = _mm256_loadu_pd(&y[i]);
-		tempY = _mm256_add_pd(tempY, _mm256_mul_pd(sum, __alpha));
+		tempY +=  sum *  __alpha;
 		_mm256_storeu_pd(&y[i], tempY);
 	}
 
