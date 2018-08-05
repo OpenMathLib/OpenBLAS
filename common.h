@@ -257,7 +257,11 @@ typedef unsigned long BLASULONG;
 
 #ifdef USE64BITINT
 typedef BLASLONG blasint;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+#define blasabs(x) llabs(x)
+#else
 #define blasabs(x) labs(x)
+#endif
 #else
 typedef int blasint;
 #define blasabs(x) abs(x)
