@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013-2017, The OpenBLAS Project
+Copyright (c) 2013-2018, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -23,8 +23,7 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *****************************************************************************/
-
+*****************************************************************************/
 
 #include "common.h"
 #include <math.h>
@@ -35,79 +34,88 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ABS fabsf 
 #endif
 
+static FLOAT dasum_kernel_32(BLASLONG n, FLOAT *x)
+{
+    FLOAT asum;
 
- 
+    __asm__ (
+        "vzero   %%v0               \n\t"
+        "vzero   %%v1               \n\t"
+        "vzero   %%v2               \n\t"
+        "vzero   %%v3               \n\t"
+        "srlg  %%r0,%1,5            \n\t"
+        "xgr %%r1,%%r1              \n\t"
+        "0:                         \n\t"
+        "pfd  1, 1024(%%r1,%2)      \n\t"
+        "vl  %%v16, 0(%%r1,%2)      \n\t"
+        "vl  %%v17, 16(%%r1,%2)     \n\t"
+        "vl  %%v18, 32(%%r1,%2)     \n\t"
+        "vl  %%v19, 48(%%r1,%2)     \n\t"
+        "vl  %%v20, 64(%%r1,%2)     \n\t"
+        "vl  %%v21, 80(%%r1,%2)     \n\t"
+        "vl  %%v22, 96(%%r1,%2)     \n\t"
+        "vl  %%v23, 112(%%r1,%2)    \n\t"
 
-static   FLOAT  dasum_kernel_32(BLASLONG n, FLOAT *x) {
-    FLOAT asum    ; 
-    __asm__  (
-            "pfd     1, 0(%[ptr_x])   \n\t"
-            "sllg    %%r0,%[n],3  \n\t"
-            "agr     %%r0,%[ptr_x]    \n\t"   
-            "vzero   %%v0       \n\t"
-            "vzero   %%v1       \n\t"
-            "vzero   %%v2       \n\t"
-            "vzero   %%v3       \n\t"   
-            ".align 16 \n\t"
-            "1:      \n\t"
-            "pfd     1, 256(%[ptr_temp] ) \n\t"
-            "vlm     %%v24,%%v31, 0(%[ptr_temp] ) \n\t"  
-    
-            "vflpdb  %%v24, %%v24 \n\t"
-            "vflpdb  %%v25, %%v25 \n\t"
-            "vflpdb  %%v26, %%v26 \n\t"
-            "vflpdb  %%v27, %%v27 \n\t"
-            "vflpdb  %%v28, %%v28 \n\t"
-            "vflpdb  %%v29, %%v29 \n\t"
-            "vflpdb  %%v30, %%v30 \n\t"
-            "vflpdb  %%v31, %%v31 \n\t"
-    
-            "vfadb   %%v0,%%v0,%%v24    \n\t"
-            "vfadb   %%v1,%%v1,%%v25    \n\t"
-            "vfadb   %%v2,%%v2,%%v26    \n\t"
-            "vfadb   %%v3,%%v3,%%v27    \n\t" 
-            "vfadb   %%v0,%%v0,%%v28    \n\t"
-            "vfadb   %%v1,%%v1,%%v29    \n\t"
-            "vfadb   %%v2,%%v2,%%v30    \n\t"
-            "vfadb   %%v3,%%v3,%%v31    \n\t" 
-    
-            "vlm     %%v24,%%v31, 128(%[ptr_temp]) \n\t"  
-    
-            "vflpdb  %%v24, %%v24       \n\t"
-            "vflpdb  %%v25, %%v25       \n\t"
-            "vflpdb  %%v26, %%v26       \n\t"
-            "vflpdb  %%v27, %%v27       \n\t"
-            "vflpdb  %%v28, %%v28       \n\t"
-            "vflpdb  %%v29, %%v29       \n\t"
-            "vflpdb  %%v30, %%v30       \n\t"
-            "vflpdb  %%v31, %%v31       \n\t"
-            "la      %[ptr_temp],256(%[ptr_temp])  \n\t"  
-            "vfadb   %%v0,%%v0,%%v24    \n\t"
-            "vfadb   %%v1,%%v1,%%v25    \n\t"
-            "vfadb   %%v2,%%v2,%%v26    \n\t"
-            "vfadb   %%v3,%%v3,%%v27    \n\t" 
-            "vfadb   %%v0,%%v0,%%v28    \n\t"
-            "vfadb   %%v1,%%v1,%%v29    \n\t"
-            "vfadb   %%v2,%%v2,%%v30    \n\t"
-            "vfadb   %%v3,%%v3,%%v31    \n\t"  
-            
-            "clgrjl  %[ptr_temp],%%r0,1b           \n\t"
-            "vfadb   %%v24,%%v0,%%v1    \n\t"
-            "vfadb   %%v25,%%v2,%%v3    \n\t"
-            "vfadb   %%v0,%%v25,%%v24   \n\t"
-            "vrepg   %%v1,%%v0,1        \n\t"
-            "adbr    %%f0,%%f1          \n\t"
-            "ldr     %[asum],%%f0       \n\t"
-            : [asum] "=f"(asum),[ptr_temp] "+&a"(x)
-            : [mem] "m"( *(const double (*)[n])x ), [n] "r"(n), [ptr_x] "a"(x)
-            : "cc", "r0" ,"f0","f1","v0","v1","v2","v3","v24","v25","v26","v27","v28","v29","v30","v31"
-            );
-      return asum;
+        "vflpdb  %%v16, %%v16       \n\t"
+        "vflpdb  %%v17, %%v17       \n\t"
+        "vflpdb  %%v18, %%v18       \n\t"
+        "vflpdb  %%v19, %%v19       \n\t"
+        "vflpdb  %%v20, %%v20       \n\t"
+        "vflpdb  %%v21, %%v21       \n\t"
+        "vflpdb  %%v22, %%v22       \n\t"
+        "vflpdb  %%v23, %%v23       \n\t"
 
+        "vfadb   %%v0,%%v0,%%v16    \n\t"
+        "vfadb   %%v1,%%v1,%%v17    \n\t"
+        "vfadb   %%v2,%%v2,%%v18    \n\t"
+        "vfadb   %%v3,%%v3,%%v19    \n\t"
+        "vfadb   %%v0,%%v0,%%v20    \n\t"
+        "vfadb   %%v1,%%v1,%%v21    \n\t"
+        "vfadb   %%v2,%%v2,%%v22    \n\t"
+        "vfadb   %%v3,%%v3,%%v23    \n\t"
+
+        "vl  %%v16, 128(%%r1,%2)    \n\t"
+        "vl  %%v17, 144(%%r1,%2)    \n\t"
+        "vl  %%v18, 160(%%r1,%2)    \n\t"
+        "vl  %%v19, 176(%%r1,%2)    \n\t"
+        "vl  %%v20, 192(%%r1,%2)    \n\t"
+        "vl  %%v21, 208(%%r1,%2)    \n\t"
+        "vl  %%v22, 224(%%r1,%2)    \n\t"
+        "vl  %%v23, 240(%%r1,%2)    \n\t"
+
+        "vflpdb  %%v16, %%v16       \n\t"
+        "vflpdb  %%v17, %%v17       \n\t"
+        "vflpdb  %%v18, %%v18       \n\t"
+        "vflpdb  %%v19, %%v19       \n\t"
+        "vflpdb  %%v20, %%v20       \n\t"
+        "vflpdb  %%v21, %%v21       \n\t"
+        "vflpdb  %%v22, %%v22       \n\t"
+        "vflpdb  %%v23, %%v23       \n\t"
+
+        "vfadb   %%v0,%%v0,%%v16    \n\t"
+        "vfadb   %%v1,%%v1,%%v17    \n\t"
+        "vfadb   %%v2,%%v2,%%v18    \n\t"
+        "vfadb   %%v3,%%v3,%%v19    \n\t"
+        "vfadb   %%v0,%%v0,%%v20    \n\t"
+        "vfadb   %%v1,%%v1,%%v21    \n\t"
+        "vfadb   %%v2,%%v2,%%v22    \n\t"
+        "vfadb   %%v3,%%v3,%%v23    \n\t"
+        
+        "agfi  %%r1,256             \n\t"
+        "brctg %%r0,0b              \n\t"
+        "vfadb   %%v0,%%v0,%%v1     \n\t"
+        "vfadb   %%v0,%%v0,%%v2     \n\t"
+        "vfadb   %%v0,%%v0,%%v3     \n\t"
+        "vrepg   %%v1,%%v0,1        \n\t"
+        "adbr    %%f0,%%f1          \n\t"
+        "ldr     %0,%%f0                "
+        :"=f"(asum)
+        :"r"(n),"ZR"((const FLOAT (*)[n])x)
+        :"memory","cc","r0","r1","v0","v1","v2","v3","v16","v17","v18","v19","v20","v21","v22","v23"
+    );
+
+    return asum;
 }
-
-
-
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG i = 0;

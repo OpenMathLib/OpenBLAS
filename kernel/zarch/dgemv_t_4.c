@@ -25,178 +25,460 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-
 #include "common.h"
 
-#define HAVE_KERNEL_4x4_VEC 1
-#define HAVE_KERNEL_4x2_VEC 1
-#define HAVE_KERNEL_4x1_VEC 1
-
-#if defined(HAVE_KERNEL_4x4_VEC) || defined(HAVE_KERNEL_4x2_VEC) || defined(HAVE_KERNEL_4x1_VEC)
- #include <vecintrin.h>
-#endif
 #define NBMAX 2048
 
-#ifdef HAVE_KERNEL_4x4
-
-#elif HAVE_KERNEL_4x4_VEC
-
 static void dgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 {
-    BLASLONG i; 
-    __vector double* va0 = (__vector double*)ap[0];
-    __vector double* va1 = (__vector double*)ap[1];
-    __vector double* va2 = (__vector double*)ap[2];
-    __vector double* va3 = (__vector double*)ap[3];     
-    __vector double* v_x =(__vector double*)x;           
-    __vector double temp0 = {0,0};      
-    __vector double temp1 = {0,0};       
-    __vector double temp2 = {0,0};       
-    __vector double temp3 = {0,0};       
+    __asm__ volatile (   
+        "vzero %%v0                      \n\t"
+        "vzero %%v1                      \n\t"
+        "vzero %%v2                      \n\t"
+        "vzero %%v3                      \n\t"
+        "xgr   %%r1,%%r1                 \n\t"
 
-    for ( i=0; i< n/2; i+=2 )
-    {
-        temp0 += v_x[i] * va0[i]  + v_x[i+1] * va0[i+1] ;        
-        temp1 += v_x[i] * va1[i]  + v_x[i+1] * va1[i+1] ;    
-        temp2 += v_x[i] * va2[i]  + v_x[i+1] * va2[i+1] ;    
-        temp3 += v_x[i] * va3[i]  + v_x[i+1] * va3[i+1] ;        
-    }
-        
-    y[0] = temp0[0] + temp0[1];
-    y[1] = temp1[0] + temp1[1];
-    y[2] = temp2[0] + temp2[1];
-    y[3] = temp3[0] + temp3[1];; 
+        "lghi    %%r0,-16                \n\t"
+        "ngr     %%r0,%0                 \n\t"
+        "ltgr    %%r0,%%r0               \n\t"
+        "jz      1f                      \n\t"
+
+        "srlg  %%r0,%%r0,4               \n\t"
+        "0:                              \n\t"
+        "pfd 1,1024(%%r1,%1)             \n\t"
+        "pfd 1,1024(%%r1,%2)             \n\t"
+        "pfd 1,1024(%%r1,%3)             \n\t"
+        "pfd 1,1024(%%r1,%4)             \n\t"
+        "pfd 1,1024(%%r1,%5)             \n\t"
+
+        "vl  %%v16,0(%%r1,%5)            \n\t"
+        "vl  %%v17,16(%%r1,%5)           \n\t"
+        "vl  %%v18,32(%%r1,%5)           \n\t"
+        "vl  %%v19,48(%%r1,%5)           \n\t"
+        "vl  %%v20,64(%%r1,%5)           \n\t"
+        "vl  %%v21,80(%%r1,%5)           \n\t"
+        "vl  %%v22,96(%%r1,%5)           \n\t"
+        "vl  %%v23,112(%%r1,%5)          \n\t"
+
+        "vl  %%v24,0(%%r1,%1)            \n\t"
+        "vfmadb   %%v0,%%v16,%%v24,%%v0  \n\t"
+        "vl  %%v25,0(%%r1,%2)            \n\t"
+        "vfmadb   %%v1,%%v16,%%v25,%%v1  \n\t"
+        "vl  %%v26,0(%%r1,%3)            \n\t"
+        "vfmadb   %%v2,%%v16,%%v26,%%v2  \n\t"
+        "vl  %%v27,0(%%r1,%4)            \n\t"
+        "vfmadb   %%v3,%%v16,%%v27,%%v3  \n\t"
+
+        "vl  %%v28,16(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v17,%%v28,%%v0  \n\t"
+        "vl  %%v29,16(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v17,%%v29,%%v1  \n\t"
+        "vl  %%v30,16(%%r1,%3)           \n\t"
+        "vfmadb   %%v2,%%v17,%%v30,%%v2  \n\t"
+        "vl  %%v31,16(%%r1,%4)           \n\t"
+        "vfmadb   %%v3,%%v17,%%v31,%%v3  \n\t"
+
+        "vl  %%v24,32(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v18,%%v24,%%v0  \n\t"
+        "vl  %%v25,32(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v18,%%v25,%%v1  \n\t"
+        "vl  %%v26,32(%%r1,%3)           \n\t"
+        "vfmadb   %%v2,%%v18,%%v26,%%v2  \n\t"
+        "vl  %%v27,32(%%r1,%4)           \n\t"
+        "vfmadb   %%v3,%%v18,%%v27,%%v3  \n\t"
+
+        "vl  %%v28,48(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v19,%%v28,%%v0  \n\t"
+        "vl  %%v29,48(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v19,%%v29,%%v1  \n\t"
+        "vl  %%v30,48(%%r1,%3)           \n\t"
+        "vfmadb   %%v2,%%v19,%%v30,%%v2  \n\t"
+        "vl  %%v31,48(%%r1,%4)           \n\t"
+        "vfmadb   %%v3,%%v19,%%v31,%%v3  \n\t"
+
+        "vl  %%v24,64(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v20,%%v24,%%v0  \n\t"
+        "vl  %%v25,64(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v20,%%v25,%%v1  \n\t"
+        "vl  %%v26,64(%%r1,%3)           \n\t"
+        "vfmadb   %%v2,%%v20,%%v26,%%v2  \n\t"
+        "vl  %%v27,64(%%r1,%4)           \n\t"
+        "vfmadb   %%v3,%%v20,%%v27,%%v3  \n\t"
+
+        "vl  %%v28,80(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v21,%%v28,%%v0  \n\t"
+        "vl  %%v29,80(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v21,%%v29,%%v1  \n\t"
+        "vl  %%v30,80(%%r1,%3)           \n\t"
+        "vfmadb   %%v2,%%v21,%%v30,%%v2  \n\t"
+        "vl  %%v31,80(%%r1,%4)           \n\t"
+        "vfmadb   %%v3,%%v21,%%v31,%%v3  \n\t"
+
+        "vl  %%v24,96(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v22,%%v24,%%v0  \n\t"
+        "vl  %%v25,96(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v22,%%v25,%%v1  \n\t"
+        "vl  %%v26,96(%%r1,%3)           \n\t"
+        "vfmadb   %%v2,%%v22,%%v26,%%v2  \n\t"
+        "vl  %%v27,96(%%r1,%4)           \n\t"
+        "vfmadb   %%v3,%%v22,%%v27,%%v3  \n\t"
+
+        "vl  %%v28,112(%%r1,%1)          \n\t"
+        "vfmadb   %%v0,%%v23,%%v28,%%v0  \n\t"
+        "vl  %%v29,112(%%r1,%2)          \n\t"
+        "vfmadb   %%v1,%%v23,%%v29,%%v1  \n\t"
+        "vl  %%v30,112(%%r1,%3)          \n\t"
+        "vfmadb   %%v2,%%v23,%%v30,%%v2  \n\t"
+        "vl  %%v31,112(%%r1,%4)          \n\t"
+        "vfmadb   %%v3,%%v23,%%v31,%%v3  \n\t"
+
+        "agfi   %%r1,128                 \n\t"
+        "brctg  %%r0,0b                  \n\t"
+
+        "1:                              \n\t"
+        "lghi    %%r0,12                 \n\t"
+        "ngr     %%r0,%0                 \n\t"
+        "ltgr    %%r0,%%r0               \n\t"
+        "jz      3f                      \n\t"
+
+        "srlg  %%r0,%%r0,2               \n\t"
+        "2:                              \n\t"
+        "vl  %%v16,0(%%r1,%5)            \n\t"
+        "vl  %%v17,16(%%r1,%5)           \n\t"
+
+        "vl  %%v24,0(%%r1,%1)            \n\t"
+        "vfmadb   %%v0,%%v16,%%v24,%%v0  \n\t"
+        "vl  %%v25,0(%%r1,%2)            \n\t"
+        "vfmadb   %%v1,%%v16,%%v25,%%v1  \n\t"
+        "vl  %%v26,0(%%r1,%3)            \n\t"
+        "vfmadb   %%v2,%%v16,%%v26,%%v2  \n\t"
+        "vl  %%v27,0(%%r1,%4)            \n\t"
+        "vfmadb   %%v3,%%v16,%%v27,%%v3  \n\t"
+
+        "vl  %%v28,16(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v17,%%v28,%%v0  \n\t"
+        "vl  %%v29,16(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v17,%%v29,%%v1  \n\t"
+        "vl  %%v30,16(%%r1,%3)           \n\t"
+        "vfmadb   %%v2,%%v17,%%v30,%%v2  \n\t"
+        "vl  %%v31,16(%%r1,%4)           \n\t"
+        "vfmadb   %%v3,%%v17,%%v31,%%v3  \n\t"
+
+        "agfi   %%r1,32                  \n\t"
+        "brctg  %%r0,2b                  \n\t"
+
+        "3:                              \n\t"
+        "vrepg  %%v4,%%v0,1              \n\t"
+        "adbr   %%f0,%%f4                \n\t"
+        "std    %%f0,0(%6)               \n\t"
+        "vrepg  %%v4,%%v1,1              \n\t"
+        "adbr   %%f1,%%f4                \n\t"
+        "std    %%f1,8(%6)               \n\t"
+        "vrepg  %%v4,%%v2,1              \n\t"
+        "adbr   %%f2,%%f4                \n\t"
+        "std    %%f2,16(%6)              \n\t"
+        "vrepg  %%v4,%%v3,1              \n\t"
+        "adbr   %%f3,%%f4                \n\t"
+        "std    %%f3,24(%6)                  "
+        :
+        :"r"(n),"ZR"((const FLOAT (*)[n])ap[0]),"ZR"((const FLOAT (*)[n])ap[1]),"ZR"((const FLOAT (*)[n])ap[2]),"ZR"((const FLOAT (*)[n])ap[3]),"ZR"((const FLOAT (*)[n])x),"ZQ"((FLOAT (*)[4])y)
+        :"memory","cc","r0","r1","v0","v1","v2","v3","v4","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
+    );
 }
-#else
-static void dgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
-{
-    BLASLONG i;
-    FLOAT *a0,*a1,*a2,*a3;
-    a0 = ap[0];
-    a1 = ap[1];
-    a2 = ap[2];
-    a3 = ap[3];
-    FLOAT temp0 = 0.0;
-    FLOAT temp1 = 0.0;
-    FLOAT temp2 = 0.0;
-    FLOAT temp3 = 0.0;
-
-    for ( i=0; i< n; i+=4 )
-    {
-        temp0 += a0[i]*x[i] + a0[i+1]*x[i+1] + a0[i+2]*x[i+2] + a0[i+3]*x[i+3];        
-        temp1 += a1[i]*x[i] + a1[i+1]*x[i+1] + a1[i+2]*x[i+2] + a1[i+3]*x[i+3];        
-        temp2 += a2[i]*x[i] + a2[i+1]*x[i+1] + a2[i+2]*x[i+2] + a2[i+3]*x[i+3];        
-        temp3 += a3[i]*x[i] + a3[i+1]*x[i+1] + a3[i+2]*x[i+2] + a3[i+3]*x[i+3];        
-    }
-    y[0] = temp0;
-    y[1] = temp1;
-    y[2] = temp2;
-    y[3] = temp3;
-}
-    
-#endif
- 
-#ifdef HAVE_KERNEL_4x2
-
-#elif HAVE_KERNEL_4x2_VEC
 
 static void dgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 {
-    BLASLONG i; 
-    __vector double* va0 = (__vector double*)ap[0];
-    __vector double* va1 = (__vector double*)ap[1];     
-    __vector double* v_x =(__vector double*)x;           
-    __vector double temp0 = {0,0};      
-    __vector double temp1 = {0,0};         
+    __asm__ volatile (   
+        "vzero %%v0                      \n\t"
+        "vzero %%v1                      \n\t"
+        "xgr   %%r1,%%r1                 \n\t"
 
-    for ( i=0; i< n/2; i+=2 )
-    {
-        temp0 += v_x[i] * va0[i]  + v_x[i+1] * va0[i+1] ;        
-        temp1 += v_x[i] * va1[i]  + v_x[i+1] * va1[i+1] ;        
-    }
-        
-    y[0] = temp0[0] + temp0[1];
-    y[1] = temp1[0] + temp1[1]; 
+        "lghi    %%r0,-16                \n\t"
+        "ngr     %%r0,%0                 \n\t"
+        "ltgr    %%r0,%%r0               \n\t"
+        "jz      1f                      \n\t"
+
+        "srlg  %%r0,%%r0,4               \n\t"
+        "0:                              \n\t"
+        "pfd 1,1024(%%r1,%1)             \n\t"
+        "pfd 1,1024(%%r1,%2)             \n\t"
+        "pfd 1,1024(%%r1,%3)             \n\t"
+
+        "vl  %%v16,0(%%r1,%3)            \n\t"
+        "vl  %%v17,16(%%r1,%3)           \n\t"
+        "vl  %%v18,32(%%r1,%3)           \n\t"
+        "vl  %%v19,48(%%r1,%3)           \n\t"
+        "vl  %%v20,64(%%r1,%3)           \n\t"
+        "vl  %%v21,80(%%r1,%3)           \n\t"
+        "vl  %%v22,96(%%r1,%3)           \n\t"
+        "vl  %%v23,112(%%r1,%3)          \n\t"
+
+        "vl  %%v24,0(%%r1,%1)            \n\t"
+        "vfmadb   %%v0,%%v16,%%v24,%%v0  \n\t"
+        "vl  %%v25,0(%%r1,%2)            \n\t"
+        "vfmadb   %%v1,%%v16,%%v25,%%v1  \n\t"
+
+        "vl  %%v26,16(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v17,%%v26,%%v0  \n\t"
+        "vl  %%v27,16(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v17,%%v27,%%v1  \n\t"
+
+        "vl  %%v28,32(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v18,%%v28,%%v0  \n\t"
+        "vl  %%v29,32(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v18,%%v29,%%v1  \n\t"
+
+        "vl  %%v30,48(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v19,%%v30,%%v0  \n\t"
+        "vl  %%v31,48(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v19,%%v31,%%v1  \n\t"
+
+        "vl  %%v24,64(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v20,%%v24,%%v0  \n\t"
+        "vl  %%v25,64(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v20,%%v25,%%v1  \n\t"
+
+        "vl  %%v26,80(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v21,%%v26,%%v0  \n\t"
+        "vl  %%v27,80(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v21,%%v27,%%v1  \n\t"
+
+        "vl  %%v28,96(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v22,%%v28,%%v0  \n\t"
+        "vl  %%v29,96(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v22,%%v29,%%v1  \n\t"
+
+        "vl  %%v30,112(%%r1,%1)          \n\t"
+        "vfmadb   %%v0,%%v23,%%v30,%%v0  \n\t"
+        "vl  %%v31,112(%%r1,%2)          \n\t"
+        "vfmadb   %%v1,%%v23,%%v31,%%v1  \n\t"
+
+        "agfi   %%r1,128                 \n\t"
+        "brctg  %%r0,0b                  \n\t"
+
+        "1:                              \n\t"
+        "lghi    %%r0,12                 \n\t"
+        "ngr     %%r0,%0                 \n\t"
+        "ltgr    %%r0,%%r0               \n\t"
+        "jz      3f                      \n\t"
+
+        "srlg  %%r0,%%r0,2               \n\t"
+        "2:                              \n\t"
+        "vl  %%v16,0(%%r1,%3)            \n\t"
+        "vl  %%v17,16(%%r1,%3)           \n\t"
+
+        "vl  %%v24,0(%%r1,%1)            \n\t"
+        "vfmadb   %%v0,%%v16,%%v24,%%v0  \n\t"
+        "vl  %%v25,0(%%r1,%2)            \n\t"
+        "vfmadb   %%v1,%%v16,%%v25,%%v1  \n\t"
+
+        "vl  %%v26,16(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v17,%%v26,%%v0  \n\t"
+        "vl  %%v27,16(%%r1,%2)           \n\t"
+        "vfmadb   %%v1,%%v17,%%v27,%%v1  \n\t"
+
+        "agfi   %%r1,32                  \n\t"
+        "brctg  %%r0,2b                  \n\t"
+
+        "3:                              \n\t"
+        "vrepg  %%v2,%%v0,1              \n\t"
+        "adbr   %%f0,%%f2                \n\t"
+        "std    %%f0,0(%4)               \n\t"
+        "vrepg  %%v2,%%v1,1              \n\t"
+        "adbr   %%f1,%%f2                \n\t"
+        "std    %%f1,8(%4)                   "
+        :
+        :"r"(n),"ZR"((const FLOAT (*)[n])ap[0]),"ZR"((const FLOAT (*)[n])ap[1]),"ZR"((const FLOAT (*)[n])x),"ZQ"((FLOAT (*)[2])y)
+        :"memory","cc","r0","r1","v0","v1","v2","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
+    );
 }
-#else
-static void dgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
-{
-
-    BLASLONG i;
-    FLOAT *a0,*a1;
-    a0 = ap[0];
-    a1 = ap[1]; 
-    FLOAT temp0 = 0.0;
-    FLOAT temp1 = 0.0; 
-
-    for ( i=0; i< n; i+=4 )
-    {
-        temp0 += a0[i]*x[i] + a0[i+1]*x[i+1] + a0[i+2]*x[i+2] + a0[i+3]*x[i+3];        
-        temp1 += a1[i]*x[i] + a1[i+1]*x[i+1] + a1[i+2]*x[i+2] + a1[i+3]*x[i+3];         
-    }
-    y[0] = temp0;
-    y[1] = temp1; 
-
-}
-#endif    
-
-#ifdef HAVE_KERNEL_4x1
-
-#elif HAVE_KERNEL_4x1_VEC
 
 static void dgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y)
 {
-    BLASLONG i; 
-    __vector double* va0 = (__vector double*)a0;      
-    __vector double* v_x =(__vector double*)x;           
-    __vector double temp0 = {0,0};          
+    __asm__ volatile (   
+        "vzero %%v0                      \n\t"
+        "xgr   %%r1,%%r1                 \n\t"
 
-    for ( i=0; i< n/2; i+=2 )
-    {
-        temp0 += v_x[i] * va0[i]  + v_x[i+1] * va0[i+1] ;         
-    }
-        
-    y[0] = temp0[0] + temp0[1]; 
-}
-#else
-static void dgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y)
-{
-    BLASLONG i;
-    
-     
-    FLOAT temp0 = 0.0; 
+        "lghi    %%r0,-16                \n\t"
+        "ngr     %%r0,%0                 \n\t"
+        "ltgr    %%r0,%%r0               \n\t"
+        "jz      1f                      \n\t"
 
-    for ( i=0; i< n; i+=4 )
-    {
-        temp0 += a0[i]*x[i] + a0[i+1]*x[i+1] + a0[i+2]*x[i+2] + a0[i+3]*x[i+3];         
-    }
-    y[0] = temp0; 
+        "srlg  %%r0,%%r0,4               \n\t"
+        "0:                              \n\t"
+        "pfd 1,1024(%%r1,%1)             \n\t"
+        "pfd 1,1024(%%r1,%2)             \n\t"
+
+        "vl  %%v16,0(%%r1,%2)            \n\t"
+        "vl  %%v17,16(%%r1,%2)           \n\t"
+        "vl  %%v18,32(%%r1,%2)           \n\t"
+        "vl  %%v19,48(%%r1,%2)           \n\t"
+        "vl  %%v20,64(%%r1,%2)           \n\t"
+        "vl  %%v21,80(%%r1,%2)           \n\t"
+        "vl  %%v22,96(%%r1,%2)           \n\t"
+        "vl  %%v23,112(%%r1,%2)          \n\t"
+
+        "vl  %%v24,0(%%r1,%1)            \n\t"
+        "vfmadb   %%v0,%%v16,%%v24,%%v0  \n\t"
+
+        "vl  %%v25,16(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v17,%%v25,%%v0  \n\t"
+
+        "vl  %%v26,32(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v18,%%v26,%%v0  \n\t"
+
+        "vl  %%v27,48(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v19,%%v27,%%v0  \n\t"
+
+        "vl  %%v28,64(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v20,%%v28,%%v0  \n\t"
+
+        "vl  %%v29,80(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v21,%%v29,%%v0  \n\t"
+
+        "vl  %%v30,96(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v22,%%v30,%%v0  \n\t"
+
+        "vl  %%v31,112(%%r1,%1)          \n\t"
+        "vfmadb   %%v0,%%v23,%%v31,%%v0  \n\t"
+
+        "agfi   %%r1,128                 \n\t"
+        "brctg  %%r0,0b                  \n\t"
+
+        "1:                              \n\t"
+        "lghi    %%r0,12                 \n\t"
+        "ngr     %%r0,%0                 \n\t"
+        "ltgr    %%r0,%%r0               \n\t"
+        "jz      3f                      \n\t"
+
+        "srlg  %%r0,%%r0,2               \n\t"
+        "2:                              \n\t"
+        "vl  %%v16,0(%%r1,%2)            \n\t"
+        "vl  %%v17,16(%%r1,%2)           \n\t"
+
+        "vl  %%v24,0(%%r1,%1)            \n\t"
+        "vfmadb   %%v0,%%v16,%%v24,%%v0  \n\t"
+
+        "vl  %%v25,16(%%r1,%1)           \n\t"
+        "vfmadb   %%v0,%%v17,%%v25,%%v0  \n\t"
+
+        "agfi   %%r1,32                  \n\t"
+        "brctg  %%r0,2b                  \n\t"
+
+        "3:                              \n\t"
+        "vrepg  %%v1,%%v0,1              \n\t"
+        "adbr   %%f0,%%f1                \n\t"
+        "std    %%f0,0(%3)                   "
+        :
+        :"r"(n),"ZR"((const FLOAT (*)[n])a0),"ZR"((const FLOAT (*)[n])x),"ZQ"((FLOAT (*)[1])y)
+        :"memory","cc","r0","r1","v0","v1","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
+    );
 }
-#endif
-    
+
 static void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src)
 {
-        BLASLONG i;
-        for ( i=0; i<n; i++ )
-        {
-                *dest = *src;
-                dest++;
-                src += inc_src;
-        }
+    BLASLONG i;
+    for (i = 0; i < n; i++)
+    {
+        dest[i] = *src;
+        src += inc_src;
+    }
 }
  
-static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
+static void add_y_kernel_4(BLASLONG n, FLOAT da, FLOAT *src, FLOAT *dest)
 {
+    __asm__ volatile (   
+        "vlrepg %%v0,%1                   \n\t"
+        "xgr   %%r1,%%r1                  \n\t"
 
+        "lghi    %%r0,-16                 \n\t"
+        "ngr     %%r0,%0                  \n\t"
+        "ltgr    %%r0,%%r0                \n\t"
+        "jz      1f                       \n\t"
+
+        "srlg  %%r0,%%r0,4                \n\t"
+        "0:                               \n\t"
+        "pfd 1,1024(%%r1,%2)              \n\t"
+        "pfd 2,1024(%%r1,%3)              \n\t"
+
+        "vl  %%v16,0(%%r1,%2)             \n\t"
+        "vl  %%v17,16(%%r1,%2)            \n\t"
+        "vl  %%v18,32(%%r1,%2)            \n\t"
+        "vl  %%v19,48(%%r1,%2)            \n\t"
+        "vl  %%v20,64(%%r1,%2)            \n\t"
+        "vl  %%v21,80(%%r1,%2)            \n\t"
+        "vl  %%v22,96(%%r1,%2)            \n\t"
+        "vl  %%v23,112(%%r1,%2)           \n\t"
+
+        "vl  %%v24, 0(%%r1,%3)            \n\t"
+        "vfmadb   %%v24,%%v16,%%v0,%%v24  \n\t"
+        "vst  %%v24, 0(%%r1,%3)           \n\t"
+        "vl  %%v25, 16(%%r1,%3)           \n\t"
+        "vfmadb   %%v25,%%v17,%%v0,%%v25  \n\t"
+        "vst  %%v25, 16(%%r1,%3)          \n\t"
+        "vl  %%v26, 32(%%r1,%3)           \n\t"
+        "vfmadb   %%v26,%%v18,%%v0,%%v26  \n\t"
+        "vst  %%v26, 32(%%r1,%3)          \n\t"
+        "vl  %%v27, 48(%%r1,%3)           \n\t"
+        "vfmadb   %%v27,%%v19,%%v0,%%v27  \n\t"
+        "vst  %%v27, 48(%%r1,%3)          \n\t"
+        "vl  %%v28, 64(%%r1,%3)           \n\t"
+        "vfmadb   %%v28,%%v20,%%v0,%%v28  \n\t"
+        "vst  %%v28, 64(%%r1,%3)          \n\t"
+        "vl  %%v29, 80(%%r1,%3)           \n\t"
+        "vfmadb   %%v29,%%v21,%%v0,%%v29  \n\t"
+        "vst  %%v29, 80(%%r1,%3)          \n\t"
+        "vl  %%v30, 96(%%r1,%3)           \n\t"
+        "vfmadb   %%v30,%%v22,%%v0,%%v30  \n\t"
+        "vst  %%v30, 96(%%r1,%3)          \n\t"
+        "vl  %%v31, 112(%%r1,%3)          \n\t"
+        "vfmadb   %%v31,%%v23,%%v0,%%v31  \n\t"
+        "vst  %%v31, 112(%%r1,%3)         \n\t"
+
+        "agfi   %%r1,128                  \n\t"
+        "brctg  %%r0,0b                   \n\t"
+
+        "1:                               \n\t"
+        "lghi    %%r0,12                  \n\t"
+        "ngr     %%r0,%0                  \n\t"
+        "ltgr    %%r0,%%r0                \n\t"
+        "jz      3f                       \n\t"
+
+        "srlg  %%r0,%%r0,2                \n\t"
+        "2:                               \n\t"
+        "vl  %%v16,0(%%r1,%2)             \n\t"
+        "vl  %%v17,16(%%r1,%2)            \n\t"
+
+        "vl  %%v24, 0(%%r1,%3)            \n\t"
+        "vfmadb   %%v24,%%v16,%%v0,%%v24  \n\t"
+        "vst  %%v24, 0(%%r1,%3)           \n\t"
+        "vl  %%v25, 16(%%r1,%3)           \n\t"
+        "vfmadb   %%v25,%%v17,%%v0,%%v25  \n\t"
+        "vst  %%v25, 16(%%r1,%3)          \n\t"
+
+        "agfi   %%r1,32                   \n\t"
+        "brctg  %%r0,2b                   \n\t"
+
+        "3:                               \n\t"
+        "nop                                  "
+        :
+        :"r"(n),"m"(da),"ZR"((const FLOAT (*)[n])src),"ZR"((FLOAT (*)[n])dest)
+        :"memory","cc","r0","r1","v0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
+    );
+}
+static void add_y(BLASLONG n, FLOAT da, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
+{
+    if (inc_dest == 1)
+        add_y_kernel_4(n, da, src, dest);  
+    else
+    {
         BLASLONG i;
- 
-        for ( i=0; i<n; i++ )
+        for (i = 0; i < n; i++)
         {
-                *dest += src[i]  * da;
-                dest  += inc_dest;
+            *dest += src[i] * da;
+            dest  += inc_dest;
         }
-        return; 
-         
+    }
 }
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
@@ -212,7 +494,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     BLASLONG m2;
     BLASLONG m3;
     BLASLONG n2;
-    FLOAT ybuffer[4],*xbuffer;
+    FLOAT ybuffer[2] __attribute__ ((aligned(16)));
+    FLOAT *xbuffer;
     FLOAT *ytemp;
 
     if ( m < 1 ) return(0);
@@ -234,7 +517,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
     while ( NB == NBMAX )
     {
-        
         m1 -= NB;
         if ( m1 < 0)
         {

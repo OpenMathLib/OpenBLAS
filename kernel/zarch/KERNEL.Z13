@@ -1,18 +1,18 @@
 SAMAXKERNEL  = ../arm/amax.c
-DAMAXKERNEL  = ../arm/amax.c
+DAMAXKERNEL  = damax.c
 CAMAXKERNEL  = ../arm/zamax.c
-ZAMAXKERNEL  = ../arm/zamax.c
+ZAMAXKERNEL  = zamax.c
 
 SAMINKERNEL  = ../arm/amin.c
-DAMINKERNEL  = ../arm/amin.c
+DAMINKERNEL  = damin.c
 CAMINKERNEL  = ../arm/zamin.c
-ZAMINKERNEL  = ../arm/zamin.c
+ZAMINKERNEL  = zamin.c
 
 SMAXKERNEL   = ../arm/max.c
-DMAXKERNEL   = ../arm/max.c
+DMAXKERNEL   = dmax.c
 
 SMINKERNEL   = ../arm/min.c
-DMINKERNEL   = ../arm/min.c
+DMINKERNEL   = dmin.c
 
 ISAMAXKERNEL = ../arm/iamax.c
 IDAMAXKERNEL = idamax.c
@@ -25,10 +25,10 @@ ICAMINKERNEL = ../arm/izamin.c
 IZAMINKERNEL = izamin.c
 
 ISMAXKERNEL  = ../arm/imax.c
-IDMAXKERNEL  = ../arm/imax.c
+IDMAXKERNEL  = idmax.c
 
 ISMINKERNEL  = ../arm/imin.c
-IDMINKERNEL  = ../arm/imin.c
+IDMINKERNEL  = idmin.c
 
 SASUMKERNEL  = ../arm/asum.c
 DASUMKERNEL  = dasum.c
@@ -74,12 +74,12 @@ ZSWAPKERNEL  = zswap.c
 SGEMVNKERNEL = ../arm/gemv_n.c
 DGEMVNKERNEL = dgemv_n_4.c
 CGEMVNKERNEL = ../arm/zgemv_n.c
-ZGEMVNKERNEL = zgemv_n_4.c
+ZGEMVNKERNEL = ../arm/zgemv_n.c
 
 SGEMVTKERNEL = ../arm/gemv_t.c
 DGEMVTKERNEL = dgemv_t_4.c
 CGEMVTKERNEL = ../arm/zgemv_t.c
-ZGEMVTKERNEL = zgemv_t_4.c
+ZGEMVTKERNEL = ../arm/zgemv_t.c
 
 STRMMKERNEL	= strmm8x4V.S
 DTRMMKERNEL	= trmm8x4V.S
