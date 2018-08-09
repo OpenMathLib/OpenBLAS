@@ -25,105 +25,140 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+
+/* Ensure that the compiler knows how to generate AVX2 instructions if it doesn't already */
+#ifndef __AVX512CD__
+#pragma GCC target("avx2,fma")
+#endif
+
+#ifdef __AVX2__
+
+#include <immintrin.h>
+
 #define HAVE_KERNEL_4x4 1
-static void dsymv_kernel_4x4( BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2) __attribute__ ((noinline));
 
 static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2)
 {
 
 
-	__asm__  __volatile__
-	(
-	"vzeroupper				     \n\t"
-	"vxorpd		%%ymm0 , %%ymm0 , %%ymm0     \n\t"	// temp2[0]
-	"vxorpd		%%ymm1 , %%ymm1 , %%ymm1     \n\t"	// temp2[1]
-	"vxorpd		%%ymm2 , %%ymm2 , %%ymm2     \n\t"	// temp2[2]
-	"vxorpd		%%ymm3 , %%ymm3 , %%ymm3     \n\t"	// temp2[3]
-	"vbroadcastsd   (%8),    %%ymm4	             \n\t"	// temp1[0]
-	"vbroadcastsd  8(%8),    %%ymm5	             \n\t"	// temp1[1]
-	"vbroadcastsd 16(%8),    %%ymm6	             \n\t"	// temp1[1]
-	"vbroadcastsd 24(%8),    %%ymm7	             \n\t"	// temp1[1]
+	__m256d accum_0, accum_1, accum_2, accum_3; 
+	__m256d temp1_0, temp1_1, temp1_2, temp1_3;
 
-	".p2align 4				     \n\t"
-	"1:				     \n\t"
+	/* the 256 bit wide acculmulator vectors start out as zero */
+	accum_0 = _mm256_setzero_pd();
+	accum_1 = _mm256_setzero_pd();
+	accum_2 = _mm256_setzero_pd();
+	accum_3 = _mm256_setzero_pd();
 
-	"vmovups	(%3,%0,8), %%ymm9	           \n\t"  // 2 * y
-	"vmovups	(%2,%0,8), %%ymm8	           \n\t"  // 2 * x
+	temp1_0 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[0]));
+	temp1_1 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[1]));
+	temp1_2 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[2]));
+	temp1_3 = _mm256_broadcastsd_pd(_mm_load_sd(&temp1[3]));
 
-	"vmovups	(%4,%0,8), %%ymm12	           \n\t"  // 2 * a
-	"vmovups	(%5,%0,8), %%ymm13	           \n\t"  // 2 * a
-	"vmovups	(%6,%0,8), %%ymm14	           \n\t"  // 2 * a
-	"vmovups	(%7,%0,8), %%ymm15	           \n\t"  // 2 * a
+#ifdef __AVX512CD__
+	__m512d accum_05, accum_15, accum_25, accum_35;
+	__m512d temp1_05, temp1_15, temp1_25, temp1_35;
+	BLASLONG to2;
+	int delta;
 
-	"vfmadd231pd	%%ymm4, %%ymm12 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm12 , %%ymm0  \n\t"  // temp2 += x * a
+	/* the 512 bit wide accumulator vectors start out as zero */
+	accum_05 = _mm512_setzero_pd();
+	accum_15 = _mm512_setzero_pd();
+	accum_25 = _mm512_setzero_pd();
+	accum_35 = _mm512_setzero_pd();
 
-	"vfmadd231pd	%%ymm5, %%ymm13 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm13 , %%ymm1  \n\t"  // temp2 += x * a
+	temp1_05 = _mm512_broadcastsd_pd(_mm_load_sd(&temp1[0]));
+	temp1_15 = _mm512_broadcastsd_pd(_mm_load_sd(&temp1[1]));
+	temp1_25 = _mm512_broadcastsd_pd(_mm_load_sd(&temp1[2]));
+	temp1_35 = _mm512_broadcastsd_pd(_mm_load_sd(&temp1[3]));
 
-	"vfmadd231pd	%%ymm6, %%ymm14 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm14 , %%ymm2  \n\t"  // temp2 += x * a
+	delta = (to - from) & ~7;
+	to2 = from + delta;
 
-	"vfmadd231pd	%%ymm7, %%ymm15 , %%ymm9  \n\t"  // y     += temp1 * a
-	"vfmadd231pd	%%ymm8, %%ymm15 , %%ymm3  \n\t"  // temp2 += x * a
-	"addq		$4 , %0	  	 	      \n\t"
 
-	"vmovups	%%ymm9 ,  -32(%3,%0,8)		   \n\t"
+	for (; from < to2; from += 8) {
+		__m512d _x, _y;
+		__m512d a0, a1, a2, a3;
 
-	"cmpq		%0 , %1			      \n\t"
-	"jnz		1b		      \n\t"
+		_y = _mm512_loadu_pd(&y[from]);
+		_x = _mm512_loadu_pd(&x[from]);
 
-	"vmovsd		  (%9), %%xmm4		      \n\t"
-	"vmovsd		 8(%9), %%xmm5		      \n\t"
-	"vmovsd		16(%9), %%xmm6		      \n\t"
-	"vmovsd		24(%9), %%xmm7		      \n\t"
+		a0 = _mm512_loadu_pd(&a[0][from]);
+		a1 = _mm512_loadu_pd(&a[1][from]);
+		a2 = _mm512_loadu_pd(&a[2][from]);
+		a3 = _mm512_loadu_pd(&a[3][from]);
 
-	"vextractf128 $0x01, %%ymm0 , %%xmm12	      \n\t"
-	"vextractf128 $0x01, %%ymm1 , %%xmm13	      \n\t"
-	"vextractf128 $0x01, %%ymm2 , %%xmm14	      \n\t"
-	"vextractf128 $0x01, %%ymm3 , %%xmm15	      \n\t"
+		_y += temp1_05 * a0 + temp1_15 * a1 + temp1_25 * a2 + temp1_35 * a3;
 
-	"vaddpd	        %%xmm0, %%xmm12, %%xmm0	      \n\t"
-	"vaddpd	        %%xmm1, %%xmm13, %%xmm1	      \n\t"
-	"vaddpd	        %%xmm2, %%xmm14, %%xmm2	      \n\t"
-	"vaddpd	        %%xmm3, %%xmm15, %%xmm3	      \n\t"
+		accum_05 += _x * a0;
+		accum_15 += _x * a1;
+		accum_25 += _x * a2;
+		accum_35 += _x * a3;
 
-	"vhaddpd        %%xmm0, %%xmm0, %%xmm0  \n\t"
-	"vhaddpd        %%xmm1, %%xmm1, %%xmm1  \n\t"
-	"vhaddpd        %%xmm2, %%xmm2, %%xmm2  \n\t"
-	"vhaddpd        %%xmm3, %%xmm3, %%xmm3  \n\t"
+		_mm512_storeu_pd(&y[from], _y);
 
-	"vaddsd		%%xmm4, %%xmm0, %%xmm0  \n\t"
-	"vaddsd		%%xmm5, %%xmm1, %%xmm1  \n\t"
-	"vaddsd		%%xmm6, %%xmm2, %%xmm2  \n\t"
-	"vaddsd		%%xmm7, %%xmm3, %%xmm3  \n\t"
+	};
 
-	"vmovsd         %%xmm0 ,  (%9)		\n\t"	// save temp2
-	"vmovsd         %%xmm1 , 8(%9)		\n\t"	// save temp2
-	"vmovsd         %%xmm2 ,16(%9)		\n\t"	// save temp2
-	"vmovsd         %%xmm3 ,24(%9)		\n\t"	// save temp2
-	"vzeroupper				     \n\t"
+	/*
+	 * we need to fold our 512 bit wide accumulator vectors into 256 bit wide vectors so that the AVX2 code
+	 * below can continue using the intermediate results in its loop
+	 */
+	accum_0 = _mm256_add_pd(_mm512_extractf64x4_pd(accum_05, 0), _mm512_extractf64x4_pd(accum_05, 1));
+	accum_1 = _mm256_add_pd(_mm512_extractf64x4_pd(accum_15, 0), _mm512_extractf64x4_pd(accum_15, 1));
+	accum_2 = _mm256_add_pd(_mm512_extractf64x4_pd(accum_25, 0), _mm512_extractf64x4_pd(accum_25, 1));
+	accum_3 = _mm256_add_pd(_mm512_extractf64x4_pd(accum_35, 0), _mm512_extractf64x4_pd(accum_35, 1));
 
-	:
-        : 
-          "r" (from),	// 0	
-	  "r" (to),  	// 1
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (a[0]),	// 4
-          "r" (a[1]),	// 5
-          "r" (a[2]),	// 6
-          "r" (a[3]),	// 8
-          "r" (temp1),  // 8
-          "r" (temp2)   // 9
-	: "cc", 
-	  "%xmm0", "%xmm1", "%xmm2", "%xmm3", 
-	  "%xmm4", "%xmm5", "%xmm6", "%xmm7", 
-	  "%xmm8", "%xmm9", "%xmm10", "%xmm11", 
-	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
-	  "memory"
-	);
+#endif
 
+	for (; from != to; from += 4) {
+		__m256d _x, _y;
+		__m256d a0, a1, a2, a3;
+
+		_y = _mm256_loadu_pd(&y[from]);
+		_x = _mm256_loadu_pd(&x[from]);
+
+		/* load 4 rows of matrix data */
+		a0 = _mm256_loadu_pd(&a[0][from]);
+		a1 = _mm256_loadu_pd(&a[1][from]);
+		a2 = _mm256_loadu_pd(&a[2][from]);
+		a3 = _mm256_loadu_pd(&a[3][from]);
+
+		_y += temp1_0 * a0 + temp1_1 * a1 + temp1_2 * a2 + temp1_3 * a3;
+
+		accum_0 += _x * a0;
+		accum_1 += _x * a1;
+		accum_2 += _x * a2;
+		accum_3 += _x * a3;
+
+		_mm256_storeu_pd(&y[from], _y);
+
+	};
+
+	/*
+	 * we now have 4 accumulator vectors. Each vector needs to be summed up element wise and stored in the temp2
+	 * output array. There is no direct instruction for this in 256 bit space, only in 128 space.
+	 */
+
+	__m128d half_accum0, half_accum1, half_accum2, half_accum3;
+
+
+	/* Add upper half to lower half of each of the four 256 bit vectors to get to four 128 bit vectors */
+	half_accum0 = _mm_add_pd(_mm256_extractf128_pd(accum_0, 0), _mm256_extractf128_pd(accum_0, 1));
+	half_accum1 = _mm_add_pd(_mm256_extractf128_pd(accum_1, 0), _mm256_extractf128_pd(accum_1, 1));
+	half_accum2 = _mm_add_pd(_mm256_extractf128_pd(accum_2, 0), _mm256_extractf128_pd(accum_2, 1));
+	half_accum3 = _mm_add_pd(_mm256_extractf128_pd(accum_3, 0), _mm256_extractf128_pd(accum_3, 1));
+
+	/* in 128 bit land there is a hadd operation to do the rest of the element-wise sum in one go */
+	half_accum0 = _mm_hadd_pd(half_accum0, half_accum0);
+	half_accum1 = _mm_hadd_pd(half_accum1, half_accum1);
+	half_accum2 = _mm_hadd_pd(half_accum2, half_accum2);
+	half_accum3 = _mm_hadd_pd(half_accum3, half_accum3);
+
+	/* and store the lowest double value from each of these vectors in the temp2 output */
+	temp2[0] += half_accum0[0];
+	temp2[1] += half_accum1[0];
+	temp2[2] += half_accum2[0];
+	temp2[3] += half_accum3[0];
 } 
 
-
+#endif

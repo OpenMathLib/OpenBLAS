@@ -25,167 +25,104 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+/* Ensure that the compiler knows how to generate AVX2 instructions if it doesn't already */
+#ifndef __AVX512CD_
+#pragma GCC target("avx2,fma")
+#endif
 
+#ifdef __AVX2__
 
 #define HAVE_KERNEL_4x4 1
-static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
+
+#include <immintrin.h>
 
 static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 
-	BLASLONG register i = 0;
+	int i = 0;
 
-	__asm__  __volatile__
-	(
-	"vbroadcastsd    (%2), %%ymm12	 \n\t"	// x0 
-	"vbroadcastsd   8(%2), %%ymm13	 \n\t"	// x1 
-	"vbroadcastsd  16(%2), %%ymm14	 \n\t"	// x2 
-	"vbroadcastsd  24(%2), %%ymm15	 \n\t"	// x3 
+	__m256d x0, x1, x2, x3;
+	__m256d __alpha;
 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
-	"vmovups	(%6,%0,8), %%ymm2	 \n\t"
-	"vmovups	(%7,%0,8), %%ymm3	 \n\t"
-	"vbroadcastsd    (%8), %%ymm6 	 \n\t"	// alpha 
+	x0 = _mm256_broadcastsd_pd(_mm_load_sd(&x[0]));
+	x1 = _mm256_broadcastsd_pd(_mm_load_sd(&x[1]));
+	x2 = _mm256_broadcastsd_pd(_mm_load_sd(&x[2]));
+	x3 = _mm256_broadcastsd_pd(_mm_load_sd(&x[3]));
 
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
-	"jz		2f		      \n\t"
+	__alpha = _mm256_broadcastsd_pd(_mm_load_sd(alpha));
 
-	//		".align 16				 \n\t"
-	"1:				 \n\t"
+#ifdef __AVX512CD__
+	int n5;
+	__m512d x05, x15, x25, x35;
+	__m512d __alpha5;
+	n5 = n & ~7;
 
-	"vmulpd        %%ymm0 , %%ymm12, %%ymm4      \n\t" 
-	"vmulpd        %%ymm1 , %%ymm13, %%ymm5      \n\t" 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
-	"vfmadd231pd   %%ymm2 , %%ymm14, %%ymm4	     \n\t"
-	"vfmadd231pd   %%ymm3 , %%ymm15, %%ymm5	     \n\t"
-	"vmovups	(%6,%0,8), %%ymm2	 \n\t"
-	"vmovups	(%7,%0,8), %%ymm3	 \n\t"
+	x05 = _mm512_broadcastsd_pd(_mm_load_sd(&x[0]));
+	x15 = _mm512_broadcastsd_pd(_mm_load_sd(&x[1]));
+	x25 = _mm512_broadcastsd_pd(_mm_load_sd(&x[2]));
+	x35 = _mm512_broadcastsd_pd(_mm_load_sd(&x[3]));
 
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
-	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
-	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
+	__alpha5 = _mm512_broadcastsd_pd(_mm_load_sd(alpha));
 
-	"vmovups         %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
+	for (; i < n5; i+= 8) {
+		__m512d tempY;
+		__m512d sum;
 
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
-	"jnz		1b		      \n\t"
-	
+		sum = _mm512_loadu_pd(&ap[0][i]) * x05 +
+		      _mm512_loadu_pd(&ap[1][i]) * x15 +
+		      _mm512_loadu_pd(&ap[2][i]) * x25 +
+		      _mm512_loadu_pd(&ap[3][i]) * x35;
 
-	"2:				 \n\t"
+		tempY = _mm512_loadu_pd(&y[i]);
+		tempY += sum *  __alpha5;
+		_mm512_storeu_pd(&y[i], tempY);
+	}
+#endif
 
-	"vmulpd        %%ymm0 , %%ymm12, %%ymm4      \n\t" 
-	"vmulpd        %%ymm1 , %%ymm13, %%ymm5      \n\t" 
-	"vfmadd231pd   %%ymm2 , %%ymm14, %%ymm4	     \n\t"
-	"vfmadd231pd   %%ymm3 , %%ymm15, %%ymm5	     \n\t"
+	for (; i < n; i+= 4) {
+		__m256d tempY;
+		__m256d sum;
 
+		sum = _mm256_loadu_pd(&ap[0][i]) * x0 +
+		      _mm256_loadu_pd(&ap[1][i]) * x1 +
+		      _mm256_loadu_pd(&ap[2][i]) * x2 +
+		      _mm256_loadu_pd(&ap[3][i]) * x3;
 
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
-	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
-	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
-
-	"vmovups  %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
-
-
-	"vzeroupper			              \n\t"
-
-	:
-          "+r" (i),	// 0	
-	  "+r" (n)  	// 1
-	:
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (ap[0]),  // 4
-          "r" (ap[1]),  // 5
-          "r" (ap[2]),  // 6
-          "r" (ap[3]),  // 7
-          "r" (alpha)   // 8
-	: "cc", 
-	  "%xmm4", "%xmm5", 
-	  "%xmm6", "%xmm7", 
-	  "%xmm8", "%xmm9", 
-	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
-	  "memory"
-	);
+		tempY = _mm256_loadu_pd(&y[i]);
+		tempY += sum *  __alpha;
+		_mm256_storeu_pd(&y[i], tempY);
+	}
 
 } 
 
 
 #define HAVE_KERNEL_4x2
 
-static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
-
 static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 
-	BLASLONG register i = 0;
+	int i = 0;
 
-	__asm__  __volatile__
-	(
-	"vbroadcastsd    (%2), %%ymm12	 \n\t"	// x0 
-	"vbroadcastsd   8(%2), %%ymm13	 \n\t"	// x1 
+	__m256d x0, x1;
+	__m256d __alpha;
 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
+	x0 = _mm256_broadcastsd_pd(_mm_load_sd(&x[0]));
+	x1 = _mm256_broadcastsd_pd(_mm_load_sd(&x[1]));
 
-	"vbroadcastsd    (%6), %%ymm6 	 \n\t"	// alpha 
-
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
-	"jz		2f		      \n\t"
-
-	"1:				 \n\t"
-
-	"vmulpd        %%ymm0 , %%ymm12, %%ymm4      \n\t" 
-	"vmulpd        %%ymm1 , %%ymm13, %%ymm5      \n\t" 
-	"vmovups	(%4,%0,8), %%ymm0	 \n\t"
-	"vmovups	(%5,%0,8), %%ymm1	 \n\t"
-
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
-	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
-	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
-
-	"vmovups         %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
-
-        "addq		$4 , %0	  	 	      \n\t"
-	"subq	        $4 , %1			      \n\t"		
-	"jnz		1b		      \n\t"
-	
-
-	"2:				 \n\t"
-
-	"vmulpd        %%ymm0 , %%ymm12, %%ymm4      \n\t" 
-	"vmulpd        %%ymm1 , %%ymm13, %%ymm5      \n\t" 
+	__alpha = _mm256_broadcastsd_pd(_mm_load_sd(alpha));
 
 
-	"vmovups	-32(%3,%0,8), %%ymm8	       \n\t"	// 4 * y
-	"vaddpd		 %%ymm4 , %%ymm5 , %%ymm4      \n\t"
-	"vfmadd231pd     %%ymm6 , %%ymm4 , %%ymm8      \n\t"
+	for (i = 0; i < n; i+= 4) {
+		__m256d tempY;
+		__m256d sum;
 
-	"vmovups  %%ymm8,   -32(%3,%0,8)	      \n\t"	// 4 * y
+		sum = _mm256_loadu_pd(&ap[0][i]) * x0 + _mm256_loadu_pd(&ap[1][i]) * x1;
 
+		tempY = _mm256_loadu_pd(&y[i]);
+		tempY +=  sum *  __alpha;
+		_mm256_storeu_pd(&y[i], tempY);
+	}
 
-	"vzeroupper			              \n\t"
-
-
-	:
-          "+r" (i),	// 0	
-	  "+r" (n)  	// 1
-	:
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (ap[0]),  // 4
-          "r" (ap[1]),  // 5
-          "r" (alpha)   // 6
-	: "cc", 
-	  "%xmm0", "%xmm1", 
-	  "%xmm4", "%xmm5", 
-	  "%xmm6", 
-	  "%xmm8", 
-	  "%xmm12", "%xmm13",
-	  "memory"
-	);
 }
+
+#endif /* AVX2 */
