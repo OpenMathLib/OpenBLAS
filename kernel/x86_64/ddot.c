@@ -37,8 +37,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ddot_microk_piledriver-2.c"
 #elif defined(NEHALEM)
 #include "ddot_microk_nehalem-2.c"
-#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
+#elif defined(HASWELL) || defined(ZEN)
 #include "ddot_microk_haswell-2.c"
+#elif defined (SKYLAKEX)
+#include "ddot_microk_skylakex-2.c"
 #elif defined(SANDYBRIDGE)
 #include "ddot_microk_sandy-2.c"
 #endif
