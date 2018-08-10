@@ -1,5 +1,116 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.2
+30-Jul-2018
+
+common:
+	* fixes for regressions caused by the rewrite of the thread
+	  initialization code in 0.3.1
+
+POWER:
+	* fixed cpu autodetection for the BSDs
+
+MIPS64:
+	* fixed utest errors in AXPY, DSDOT, ROT and SWAP
+
+x86_64:
+	* added autodetection of AMD Ryzen 2
+	* fixed build with older versions of MSVC
+
+====================================================================
+Version 0.3.1
+01-Jul-2018
+
+common:
+	* rewritten thread initialization code with significantly reduced overhead
+	* added CBLAS interfaces to the IxAMIN BLAS extension functions
+	* fixed the lapack-test target
+	* CMAKE builds now create an OpenBLASConfig.cmake file
+	* ZAXPY now uses a single thread for small input sizes
+	* the LAPACK code was updated from Reference-LAPACK/lapack#253
+          (fixing LAPACKE interfaces to Aasen's functions)
+
+POWER:
+	* corrected CROT and ZROT behaviour with zero INC_X
+
+ARMV7:
+	* corrected xDOT behaviour with zero INC_X or INC_Y
+
+x86_64:
+	* retired some older targets of DYNAMIC_ARCH builds to a new option DYNAMIC_OLDER,
+	  this affects PENRYN,DUNNINGTON,OPTERON,OPTERON_SSE3,BOBCAT,ATOM and NANO
+	  (which will still be supported via the slower PRESCOTT kernels when this option is not set)
+	* added an option DYNAMIC_LIST that (used in conjunction with DYNAMIC_ARCH) allows to 
+	  specify the list of x86_64 targets to include. Any target not on the list will be supported 
+	  by the Sandybridge or Nehalem kernels if available, or by Prescott.
+	* improved SWITCH_RATIO on Haswell for increased GEMM throughput
+	* added initial support for Intel Skylake X, including an AVX512 SGEMM kernel
+	* added autodetection of Intel Cannon Lake series as Skylake X
+	* added a default L2 cache size for hypervisors that return zero here (Chromebook)
+	* fixed a name clash with recent Windows10 headers that broke the build with (at least)
+	  recent mingw from MSYS2
+	* fixed a link error in mixed clang/gfortran builds with OpenMP
+	* updated the OSX deployment target to 10.8
+	* switched on parallel make for builds on MS Windows by default
+
+x86:
+	* fixed SSWAP and DSWAP behaviour with zero INC_X and INC_Y
+
+====================================================================
+Version 0.3.0
+23-May-2108
+
+common:
+	* fixed some more thread race and locking bugs
+	* added preliminary support for calling an OpenMP build of the library from multiple threads
+	* removed performance impact of thread locks added in 0.2.20 on OpenMP code
+	* general code cleanup 
+	* optimized DSDOT implementation
+	* improved thread distribution for GEMM
+	* corrected IMATCOPY/OMATCOPY implementation
+	* fixed out-of-bounds accesses in the multithreaded xBMV/xPMV and SYMV implementations
+	* cmake build improvements
+	* pkgconfig file now contains build options
+	* openblas_get_config() now reports USE_OPENMP and NUM_THREADS settings used for the build
+	* corrections and improvements for systems with more than 64 cpus
+	* LAPACK code updated to 3.8.0 including later fixes
+	* added ReLAPACK, a recursive implementation of several LAPACK functions
+	* Rewrote ROTMG to handle cases that the netlib code failed to address
+	* Disabled (broken) multithreading code for xTRMV
+	* corrected prototypes of complex CBLAS functions to make our cblas.h match the generally accepted standard
+	* shared memory access failures on startup are now handled more gracefully
+	* restored utests from earlier releases (and made them pass on all affected systems)
+
+SPARC:
+	* several fixes for cpu autodetection
+
+POWER:
+	* corrected vector register overwriting in several Power8 kernels
+	* optimized additional BLAS functions
+
+ARM:
+	* added support for CortexA53 and A72 
+	* added autodetection for ThunderX2T99
+	* made most optimized kernels the default for generic ARMv8 targets 
+
+x86_64:
+	* parallelized DDOT kernel for Haswell
+	* changed alignment directives in assembly kernels to boost performance on OSX
+	* fixed register handling in the GEMV microkernels (bug exposed by gcc7)
+	* added support for building on OpenBSD and Dragonfly 
+	* updated compiler options to work with Intel release 2018
+	* support fully optimized build with clang/flang on Microsoft Windows
+	* fixed building on AIX
+
+IBM Z:
+	* added optimized BLAS 1/2 functions
+
+MIPS:
+	* fixed cpu autodetection helper code
+	* added mips32 1004K cpu (Mediatek MT7621 and similar SoC)
+	* added mips64 I6500 cpu
+
+====================================================================
 Version 0.2.20
 24-Jul-2017
 
