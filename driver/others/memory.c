@@ -471,26 +471,27 @@ struct alloc_t {
    for an auxiliary tracking structure. */
 static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
 
+#if !defined(USE_COMPILER_TLS)
 /* Clang supports TLS from version 2.8 */
 #if defined(__clang__) && __clang_major__ > 2 || \
     (__clang_minor__ == 2 || __clang_minor__ == 8)
-#define HAS_COMPILER_TLS
+#define USE_COMPILER_TLS 1
 #endif
 
 /* GCC supports TLS from version 4.1 */
 #if !defined(__clang__) && defined(__GNUC__) && \
     (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
-#define HAS_COMPILER_TLS
+#define USE_COMPILER_TLS 1
 #endif
 
 /* MSVC supports TLS from version 2005 */
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-#define HAS_COMPILER_TLS
+#define USE_COMPILER_TLS 1
 #endif
 
 /* Versions of XCode before 8 did not properly support TLS */
 #if defined(__apple_build_version__) && __apple_build_version__ < 8000042
-#undef HAS_COMPILER_TLS
+#define USE_COMPILER_TLS 0
 #endif
 
 /* Android NDK's before version 12b did not support TLS */
@@ -501,9 +502,10 @@ static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
 #if defined(__ANDROID__) && defined(__clang__) && defined(__NDK_MAJOR__) && \
     defined(__NDK_MINOR__) &&                                               \
     ((__NDK_MAJOR__ < 12) || ((__NDK_MAJOR__ == 12) && (__NDK_MINOR__ < 1)))
-#undef HAS_COMPILER_TLS
+#define USE_COMPILER_TLS 0
 #endif
 #endif
+#endif /* !USE_COMPILER_TLS */
 
 /* Holds pointers to allocated memory */
 #if defined(SMP) && !defined(USE_OPENMP_UNUSED)
@@ -511,7 +513,7 @@ static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
    server plus the number of threads in the thread pool */
 #  define MAX_ALLOCATING_THREADS MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER * 2
 static int next_memory_table_pos = 0;
-#  if defined(HAS_COMPILER_TLS)
+#  if USE_COMPILER_TLS
 /* Use compiler generated thread-local-storage */
 static int THREAD_LOCAL local_memory_table_pos = 0;
 #  else
@@ -521,7 +523,7 @@ static DWORD local_storage_key;
 #    else
 static pthread_key_t local_storage_key;
 #    endif /* defined(OS_WINDOWS) */
-#  endif /* defined(HAS_COMPILER_TLS) */
+#  endif /* USE_COMPILER_TLS */
 #else
 /* There is only one allocating thread when in single-threaded mode and when using OpenMP */
 #  define MAX_ALLOCATING_THREADS 1
@@ -545,26 +547,26 @@ static BLASULONG  alloc_lock = 0UL;
 /* Returns a pointer to the start of the per-thread memory allocation data */
 static __inline struct alloc_t ** get_memory_table() {
 #if defined(SMP) && !defined(USE_OPENMP_UNUSED)
-#  if !defined(HAS_COMPILER_TLS)
+#  if !USE_COMPILER_TLS
 #    if defined(OS_WINDOWS)
   int local_memory_table_pos = (int)::TlsGetValue(local_storage_key);
 #    else
   int local_memory_table_pos = (int)pthread_getspecific(local_storage_key);
 #    endif /* defined(OS_WINDOWS) */
-#  endif /* !defined(HAS_COMPILER_TLS) */
+#  endif /* !USE_COMPILER_TLS */
   if (!local_memory_table_pos) {
     LOCK_COMMAND(&alloc_lock);
     local_memory_table_pos = next_memory_table_pos++;
     if (next_memory_table_pos > MAX_ALLOCATING_THREADS)
       printf("OpenBLAS : Program will terminate because you tried to start too many threads.\n");
     UNLOCK_COMMAND(&alloc_lock);
-#  if !defined(HAS_COMPILER_TLS)
+#  if !USE_COMPILER_TLS
 #    if defined(OS_WINDOWS)
     ::TlsSetValue(local_storage_key, (void*)local_memory_table_pos);
 #    else
     pthread_setspecific(local_storage_key, (void*)local_memory_table_pos);
 #    endif /* defined(OS_WINDOWS) */
-#  endif /* !defined(HAS_COMPILER_TLS) */
+#  endif /* !USE_COMPILER_TLS */
   }
   return local_memory_table[local_memory_table_pos];
 #else
@@ -1072,13 +1074,13 @@ static volatile int memory_initialized = 0;
 static void blas_memory_init(){
 #if defined(SMP) && !defined(USE_OPENMP_UNUSED)
   next_memory_table_pos = 0;
-#  if !defined(HAS_COMPILER_TLS)
+#  if !USE_COMPILER_TLS
 #    if defined(OS_WINDOWS)
   local_storage_key = ::TlsAlloc();
 #    else
   pthread_key_create(&local_storage_key, NULL);
 #    endif /* defined(OS_WINDOWS) */
-#  endif /* defined(HAS_COMPILER_TLS) */
+#  endif /* USE_COMPILER_TLS */
 #endif /* defined(SMP) && !defined(USE_OPENMP) */
   memset(local_memory_table, 0, sizeof(local_memory_table));
 }
