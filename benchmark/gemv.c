@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
 
   FLOAT *a, *x, *y;
   FLOAT alpha[] = {1.0, 1.0};
-  FLOAT beta [] = {1.0, 1.0};
+  FLOAT beta [] = {1.0, 0.0};
   char trans='N';
   blasint m, i, j;
   blasint inc_x=1,inc_y=1;
