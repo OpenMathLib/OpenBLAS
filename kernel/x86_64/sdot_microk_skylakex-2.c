@@ -67,7 +67,7 @@ static void sdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	accum_0 = _mm512_extractf32x8_ps(accum_05, 0) + _mm512_extractf32x8_ps(accum_05, 1);
 	accum_1 = _mm512_extractf32x8_ps(accum_15, 0) + _mm512_extractf32x8_ps(accum_15, 1);
 	accum_2 = _mm512_extractf32x8_ps(accum_25, 0) + _mm512_extractf32x8_ps(accum_25, 1);
-	accum_3 = _mm512_extractf32x8_ps(accum_35, 0) + _mm512_extractf32x8_ps(accum_35, 1))
+	accum_3 = _mm512_extractf32x8_ps(accum_35, 0) + _mm512_extractf32x8_ps(accum_35, 1);
 
 #endif
 	for (; i < n; i += 32) {
