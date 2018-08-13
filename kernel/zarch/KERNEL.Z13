@@ -74,12 +74,12 @@ ZSWAPKERNEL  = zswap.c
 SGEMVNKERNEL = ../arm/gemv_n.c
 DGEMVNKERNEL = dgemv_n_4.c
 CGEMVNKERNEL = ../arm/zgemv_n.c
-ZGEMVNKERNEL = ../arm/zgemv_n.c
+ZGEMVNKERNEL = zgemv_n_4.c
 
 SGEMVTKERNEL = ../arm/gemv_t.c
 DGEMVTKERNEL = dgemv_t_4.c
 CGEMVTKERNEL = ../arm/zgemv_t.c
-ZGEMVTKERNEL = ../arm/zgemv_t.c
+ZGEMVTKERNEL = zgemv_t_4.c
 
 STRMMKERNEL	= strmm8x4V.S
 DTRMMKERNEL	= trmm8x4V.S

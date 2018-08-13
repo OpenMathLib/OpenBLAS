@@ -198,7 +198,7 @@ static FLOAT camax_kernel_32(BLASLONG n, FLOAT *x)
  
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG i = 0;
-    BLASLONG j = 0;
+    BLASLONG ix = 0;
     FLOAT maxf = 0.0;
     BLASLONG inc_x2;
 
@@ -216,53 +216,55 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         else
         {
             maxf=CABS1(x,0);
+            ix += 2;
             i++;
         }
 
         while (i < n) {
-            if (ABS(x[i*2]) > maxf) {
-                maxf = ABS(x[i*2]);
+            if (CABS1(x,ix) > maxf) {
+                maxf = CABS1(x,ix);
             }
+            ix += 2;
             i++;
         }
         return (maxf);
 
     } else {
 
-        inc_x2 = 2 * inc_x;
         maxf=CABS1(x,0);
-        i += inc_x2;
-        j++;
+        inc_x2 = 2 * inc_x;
+        ix += inc_x2;
+        i++;
 
         BLASLONG n1 = (n - 1) & -4;
-        while (j < n1) {
+        while (i < n1) {
 
-            if (CABS1(x,i) > maxf) {
-                maxf = CABS1(x,i);
+            if (CABS1(x,ix) > maxf) {
+                maxf = CABS1(x,ix);
             }
-            if (CABS1(x,i+inc_x2) > maxf) {
-                maxf = CABS1(x,i+inc_x2);
+            if (CABS1(x,ix+inc_x2) > maxf) {
+                maxf = CABS1(x,ix+inc_x2);
             }
-            if (CABS1(x,i+inc_x2*2) > maxf) {
-                maxf = CABS1(x,i+inc_x2*2);
+            if (CABS1(x,ix+inc_x2*2) > maxf) {
+                maxf = CABS1(x,ix+inc_x2*2);
             }
-            if (CABS1(x,i+inc_x2*3) > maxf) {
-                maxf = CABS1(x,i+inc_x2*3);
+            if (CABS1(x,ix+inc_x2*3) > maxf) {
+                maxf = CABS1(x,ix+inc_x2*3);
             }
 
-            i += inc_x2 * 4;
+            ix += inc_x2 * 4;
 
-            j += 4;
+            i += 4;
 
         }
 
 
-        while (j < n) {
-            if (CABS1(x,i) > maxf) {
-                maxf = CABS1(x,i);
+        while (i < n) {
+            if (CABS1(x,ix) > maxf) {
+                maxf = CABS1(x,ix);
             }
-            i += inc_x2;
-            j++;
+            ix += inc_x2;
+            i++;
         }
         return (maxf);
     }

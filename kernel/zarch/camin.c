@@ -198,7 +198,7 @@ static FLOAT camin_kernel_32(BLASLONG n, FLOAT *x)
  
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG i = 0;
-    BLASLONG j = 0;
+    BLASLONG ix = 0;
     FLOAT minf = 0.0;
     BLASLONG inc_x2;
 
@@ -216,53 +216,55 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         else
         {
             minf=CABS1(x,0);
+            ix += 2;
             i++;
         }
 
         while (i < n) {
-            if (ABS(x[i*2]) < minf) {
-                minf = ABS(x[i*2]);
+            if (CABS1(x,ix) < minf) {
+                minf = CABS1(x,ix);
             }
+            ix += 2;
             i++;
         }
         return (minf);
 
     } else {
 
-        inc_x2 = 2 * inc_x;
         minf=CABS1(x,0);
-        i += inc_x2;
-        j++;
+        inc_x2 = 2 * inc_x;
+        ix += inc_x2;
+        i++;
 
         BLASLONG n1 = (n - 1) & -4;
-        while (j < n1) {
+        while (i < n1) {
 
-            if (CABS1(x,i) < minf) {
-                minf = CABS1(x,i);
+            if (CABS1(x,ix) < minf) {
+                minf = CABS1(x,ix);
             }
-            if (CABS1(x,i+inc_x2) < minf) {
-                minf = CABS1(x,i+inc_x2);
+            if (CABS1(x,ix+inc_x2) < minf) {
+                minf = CABS1(x,ix+inc_x2);
             }
-            if (CABS1(x,i+inc_x2*2) < minf) {
-                minf = CABS1(x,i+inc_x2*2);
+            if (CABS1(x,ix+inc_x2*2) < minf) {
+                minf = CABS1(x,ix+inc_x2*2);
             }
-            if (CABS1(x,i+inc_x2*3) < minf) {
-                minf = CABS1(x,i+inc_x2*3);
+            if (CABS1(x,ix+inc_x2*3) < minf) {
+                minf = CABS1(x,ix+inc_x2*3);
             }
 
-            i += inc_x2 * 4;
+            ix += inc_x2 * 4;
 
-            j += 4;
+            i += 4;
 
         }
 
 
-        while (j < n) {
-            if (CABS1(x,i) < minf) {
-                minf = CABS1(x,i);
+        while (i < n) {
+            if (CABS1(x,ix) < minf) {
+                minf = CABS1(x,ix);
             }
-            i += inc_x2;
-            j++;
+            ix += inc_x2;
+            i++;
         }
         return (minf);
     }

@@ -52,67 +52,66 @@ int assert_dbl_near(double exp, double real, double tol) {
 int zgemv_n_c(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
 	BLASLONG i;
-	BLASLONG ix,iy;
+	BLASLONG ix, iy;
 	BLASLONG j;
 	FLOAT *a_ptr;
-	FLOAT temp_r,temp_i;
-	BLASLONG inc_x2,inc_y2;
+	FLOAT temp_r, temp_i;
+	BLASLONG inc_x2, inc_y2;
 	BLASLONG lda2;
 	BLASLONG i2;
 
-	lda2 = 2*lda;
+	lda2 = 2 * lda;
 
 	ix = 0;
 	a_ptr = a;
 
-	if ( inc_x == 1 && inc_y == 1 )
+	if (inc_x == 1 && inc_y == 1)
 	{
 
-	   for (j=0; j<n; j++)
-	   {
+		for (j = 0; j<n; j++)
+		{
 
 #if !defined(XCONJ)
-		temp_r = alpha_r * x[ix]   - alpha_i * x[ix+1];
-		temp_i = alpha_r * x[ix+1] + alpha_i * x[ix];
+			temp_r = alpha_r * x[ix] - alpha_i * x[ix + 1];
+			temp_i = alpha_r * x[ix + 1] + alpha_i * x[ix];
 #else
-		temp_r = alpha_r * x[ix]   + alpha_i * x[ix+1];
-		temp_i = alpha_r * x[ix+1] - alpha_i * x[ix];
+			temp_r = alpha_r * x[ix] + alpha_i * x[ix + 1];
+			temp_i = alpha_r * x[ix + 1] - alpha_i * x[ix];
 #endif
-		iy = 0;
-		i2=0;
+			iy = 0;
+			i2 = 0;
 
-		for (i=0; i<m; i++)
-		{
+			for (i = 0; i<m; i++)
+			{
 #if !defined(CONJ)
 
 #if !defined(XCONJ)
-			printf("\nParO: %f %f %f %f\n", a_ptr[i2], a_ptr[i2+1], temp_r, temp_i);
-			y[iy]   += temp_r * a_ptr[i2]   - temp_i * a_ptr[i2+1];
-			y[iy+1] += temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
+				y[iy] += temp_r * a_ptr[i2] - temp_i * a_ptr[i2 + 1];
+				y[iy + 1] += temp_r * a_ptr[i2 + 1] + temp_i * a_ptr[i2];
 #else
-			y[iy]   += temp_r * a_ptr[i2]   + temp_i * a_ptr[i2+1];
-			y[iy+1] += temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
+				y[iy] += temp_r * a_ptr[i2] + temp_i * a_ptr[i2 + 1];
+				y[iy + 1] += temp_r * a_ptr[i2 + 1] - temp_i * a_ptr[i2];
 #endif
 
 #else
 
 #if !defined(XCONJ)
-			y[iy]   += temp_r * a_ptr[i2]   + temp_i * a_ptr[i2+1];
-			y[iy+1] -= temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
+				y[iy] += temp_r * a_ptr[i2] + temp_i * a_ptr[i2 + 1];
+				y[iy + 1] -= temp_r * a_ptr[i2 + 1] - temp_i * a_ptr[i2];
 #else
-			y[iy]   += temp_r * a_ptr[i2]   - temp_i * a_ptr[i2+1];
-			y[iy+1] -= temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
+				y[iy] += temp_r * a_ptr[i2] - temp_i * a_ptr[i2 + 1];
+				y[iy + 1] -= temp_r * a_ptr[i2 + 1] + temp_i * a_ptr[i2];
 #endif
 
 #endif
-			i2 += 2;
-			iy += 2;
+				i2 += 2;
+				iy += 2;
+			}
+			a_ptr += lda2;
+			ix += 2;
 		}
-		a_ptr += lda2;
-		ix    += 2;
-	   }
 
-	   return(0);
+		return(0);
 
 	}
 
@@ -120,39 +119,39 @@ int zgemv_n_c(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alph
 	inc_x2 = 2 * inc_x;
 	inc_y2 = 2 * inc_y;
 
-	for (j=0; j<n; j++)
+	for (j = 0; j<n; j++)
 	{
 
 #if !defined(XCONJ)
-		temp_r = alpha_r * x[ix]   - alpha_i * x[ix+1];
-		temp_i = alpha_r * x[ix+1] + alpha_i * x[ix];
+		temp_r = alpha_r * x[ix] - alpha_i * x[ix + 1];
+		temp_i = alpha_r * x[ix + 1] + alpha_i * x[ix];
 #else
-		temp_r = alpha_r * x[ix]   + alpha_i * x[ix+1];
-		temp_i = alpha_r * x[ix+1] - alpha_i * x[ix];
+		temp_r = alpha_r * x[ix] + alpha_i * x[ix + 1];
+		temp_i = alpha_r * x[ix + 1] - alpha_i * x[ix];
 #endif
 		iy = 0;
-		i2=0;
+		i2 = 0;
 
-		for (i=0; i<m; i++)
+		for (i = 0; i<m; i++)
 		{
 #if !defined(CONJ)
 
 #if !defined(XCONJ)
-			y[iy]   += temp_r * a_ptr[i2]   - temp_i * a_ptr[i2+1];
-			y[iy+1] += temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
+			y[iy] += temp_r * a_ptr[i2] - temp_i * a_ptr[i2 + 1];
+			y[iy + 1] += temp_r * a_ptr[i2 + 1] + temp_i * a_ptr[i2];
 #else
-			y[iy]   += temp_r * a_ptr[i2]   + temp_i * a_ptr[i2+1];
-			y[iy+1] += temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
+			y[iy] += temp_r * a_ptr[i2] + temp_i * a_ptr[i2 + 1];
+			y[iy + 1] += temp_r * a_ptr[i2 + 1] - temp_i * a_ptr[i2];
 #endif
 
 #else
 
 #if !defined(XCONJ)
-			y[iy]   += temp_r * a_ptr[i2]   + temp_i * a_ptr[i2+1];
-			y[iy+1] -= temp_r * a_ptr[i2+1] - temp_i * a_ptr[i2];
+			y[iy] += temp_r * a_ptr[i2] + temp_i * a_ptr[i2 + 1];
+			y[iy + 1] -= temp_r * a_ptr[i2 + 1] - temp_i * a_ptr[i2];
 #else
-			y[iy]   += temp_r * a_ptr[i2]   - temp_i * a_ptr[i2+1];
-			y[iy+1] -= temp_r * a_ptr[i2+1] + temp_i * a_ptr[i2];
+			y[iy] += temp_r * a_ptr[i2] - temp_i * a_ptr[i2 + 1];
+			y[iy + 1] -= temp_r * a_ptr[i2 + 1] + temp_i * a_ptr[i2];
 #endif
 
 #endif
@@ -160,7 +159,7 @@ int zgemv_n_c(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alph
 			iy += inc_y2;
 		}
 		a_ptr += lda2;
-		ix    += inc_x2;
+		ix += inc_x2;
 	}
 
 
@@ -404,7 +403,7 @@ int main(int argc, char *argv[]){
 
   FLOAT *a, *x, *y, *y_c;
   FLOAT alpha[] = {1.0, 1.0};
-  FLOAT beta [] = {1.0, 1.0};
+  FLOAT beta [] = {1.0, 0.0};
   char trans='N';
   blasint m, i, j;
   blasint inc_x=1,inc_y=1;
@@ -422,6 +421,7 @@ int main(int argc, char *argv[]){
   struct timeval start, stop;
   double time1,timeg,timeg_c;
 
+  blasint y_size;
   blasint iy;
   int test = 1;
 
@@ -500,13 +500,15 @@ int main(int argc, char *argv[]){
 
    			for(i = 0; i < n * COMPSIZE * abs(inc_y); i++){
 				y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-        y_c[i]= y[i];
+        		y_c[i]= y[i];
    			}
-    			gettimeofday( &start, (struct timezone *)0);
-    			GEMV (&trans, &m, &n, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
-    			gettimeofday( &stop, (struct timezone *)0);
-    			time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-			    timeg += time1;
+    			
+
+		  gettimeofday( &start, (struct timezone *)0);
+		  GEMV (&trans, &m, &n, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
+		  gettimeofday( &stop, (struct timezone *)0);
+		  time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+		  timeg += time1;
 
           gettimeofday( &start, (struct timezone *)0);
 #ifdef COMPLEX
@@ -524,21 +526,27 @@ int main(int argc, char *argv[]){
           time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
           timeg_c += time1;
 
-          iy = 0;
+          if (trans == 'N')
+            y_size = m;
+          else
+            y_size = n;
+		  iy = 0;
+          for (i = 0; i < y_size; i++)
+		  {
 #ifdef COMPLEX
-          for (i = 0; i < m * 2; i++)
-#else
-          for (i = 0; i < m; i++)
-#endif
-          {
             test &= assert_dbl_near(y[iy], y_c[iy], SINGLE_EPS);
+			test &= assert_dbl_near(y[iy + 1], y_c[iy + 1], SINGLE_EPS);
+            iy += (inc_y * 2);
+#else
+			test &= assert_dbl_near(y[iy], y_c[iy], SINGLE_EPS);
             iy += inc_y;
+#endif
           }
 
     		}
 
     		timeg /= loops;
-        timeg_c /= loops;
+        	timeg_c /= loops;
 
     		fprintf(stderr, "%10.2f MFlops %10.6f sec %10.6f sec    %s\n", 2. * (double)m / timeg * 1.e-6, timeg, timeg_c, test ? "PASS" : "FAILD");
 
@@ -567,13 +575,14 @@ int main(int argc, char *argv[]){
 
    			for(i = 0; i < n * COMPSIZE * abs(inc_y); i++){
 				y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-        y_c[i]= y[i];
+        		y_c[i]= y[i];
    			}
-    			gettimeofday( &start, (struct timezone *)0);
-    			GEMV (&trans, &m, &n, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
-    			gettimeofday( &stop, (struct timezone *)0);
-    			time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-			    timeg += time1;
+    			
+		  gettimeofday( &start, (struct timezone *)0);
+    	  GEMV (&trans, &m, &n, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
+    	  gettimeofday( &stop, (struct timezone *)0);
+    	  time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+		  timeg += time1;
 
           gettimeofday( &start, (struct timezone *)0);
 #ifdef COMPLEX
@@ -591,21 +600,27 @@ int main(int argc, char *argv[]){
           time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
           timeg_c += time1;
 
+		  if (trans == 'N')
+            y_size = m;
+          else
+            y_size = n;
           iy = 0;
+          for (i = 0; i < y_size; i++)
+		  {
 #ifdef COMPLEX
-          for (i = 0; i < m * 2; i++)
-#else
-          for (i = 0; i < m; i++)
-#endif
-          {
             test &= assert_dbl_near(y[iy], y_c[iy], SINGLE_EPS);
+			test &= assert_dbl_near(y[iy + 1], y_c[iy + 1], SINGLE_EPS);
+            iy += (inc_y * 2);
+#else
+			test &= assert_dbl_near(y[iy], y_c[iy], SINGLE_EPS);
             iy += inc_y;
+#endif
           }
 
     		}
 
     		timeg /= loops;
-        timeg_c /= loops;
+        	timeg_c /= loops;
 
     		fprintf(stderr, "%10.2f MFlops %10.6f sec %10.6f sec    %s\n", 2. * (double)m / timeg * 1.e-6, timeg, timeg_c, test ? "PASS" : "FAILD");
 

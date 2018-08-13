@@ -27,9 +27,9 @@
 
 #include <string.h>
 
-#define CPU_GENERIC    	0
-#define CPU_Z13       	1
-#define CPU_Z14       	2
+#define CPU_GENERIC     0
+#define CPU_Z13         1
+#define CPU_Z14         2
 
 static char *cpuname[] = {
   "ZARCH_GENERIC",
@@ -112,7 +112,7 @@ void get_cpuconfig(void)
 	  printf("#define Z13\n");
 	  printf("#define DTB_DEFAULT_ENTRIES 64\n");
 	  break;
-  case CPU_Z14:
+	case CPU_Z14:
 	  printf("#define Z14\n");
 	  printf("#define DTB_DEFAULT_ENTRIES 64\n");
 	  break;

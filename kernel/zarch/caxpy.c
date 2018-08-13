@@ -110,7 +110,7 @@ static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
         "agfi  %%r1,128                 \n\t"
         "brctg %%r0,0b                      "
         :
-        :"r"(n),"ZR"((const FLOAT (*)[n * 2])x),"ZR"((FLOAT (*)[n * 2])y),"a"(alpha)
+        :"r"(n),"ZR"((const FLOAT (*)[n * 2])x),"ZR"((FLOAT (*)[n * 2])y),"ZQ"((const FLOAT (*)[2])alpha)
         :"memory","cc","r0","r1","v0","v1","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
     );
 }
@@ -118,7 +118,7 @@ static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2) {
     BLASLONG i = 0;
     BLASLONG ix = 0, iy = 0;
-    FLOAT da[2];
+    FLOAT da[2] __attribute__ ((aligned(16)));
 
     if (n <= 0) return (0);
 

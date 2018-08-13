@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define NBMAX 1024
 
-static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void cgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
     __asm__ volatile (
 		"vzero  %%v16                      \n\t"
@@ -47,107 +47,108 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *
 
 		"vl     %%v20,0(%%r1,%5)           \n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vleg   %%v21,8(%%r1,%5),0         \n\t"
-        "wflcdb %%v21,%%v21                \n\t"
-        "vleg   %%v21,0(%%r1,%5),1         \n\t"
+        "vlef   %%v21,4(%%r1,%5),0         \n\t"
+		"vlef   %%v21,12(%%r1,%5),2        \n\t"
+        "vflcsb %%v21,%%v21                \n\t"
+        "vlef   %%v21,0(%%r1,%5),1         \n\t"
+		"vlef   %%v21,8(%%r1,%5),3         \n\t"
 #else
-        "vleg   %%v21,0(%%r1,%5),1         \n\t"
-        "vflcdb %%v21,%%v21                \n\t"
-        "vleg   %%v21,8(%%r1,%5),0         \n\t"
+        "vlef   %%v21,0(%%r1,%5),1         \n\t"
+		"vlef   %%v21,8(%%r1,%5),3         \n\t"
+        "vflcsb %%v21,%%v21                \n\t"
+        "vlef   %%v21,4(%%r1,%5),0         \n\t"
+		"vlef   %%v21,12(%%r1,%5),2        \n\t"
 #endif
 
-        "vlrepg %%v24,0(%%r1,%1)           \n\t"
-        "vlrepg %%v25,8(%%r1,%1)           \n\t"
-		"vlrepg %%v26,0(%%r1,%2)           \n\t"
-        "vlrepg %%v27,8(%%r1,%2)           \n\t"
+		"vlef   %%v22,0(%%r1,%1),0         \n\t"
+		"vlef   %%v22,0(%%r1,%1),1         \n\t"
+		"vlef   %%v22,8(%%r1,%1),2         \n\t"
+		"vlef   %%v22,8(%%r1,%1),3         \n\t"
+		"vlef   %%v23,4(%%r1,%1),0         \n\t"
+		"vlef   %%v23,4(%%r1,%1),1         \n\t"
+		"vlef   %%v23,12(%%r1,%1),2        \n\t"
+		"vlef   %%v23,12(%%r1,%1),3        \n\t"
+		"vlef   %%v24,0(%%r1,%2),0         \n\t"
+		"vlef   %%v24,0(%%r1,%2),1         \n\t"
+		"vlef   %%v24,8(%%r1,%2),2         \n\t"
+		"vlef   %%v24,8(%%r1,%2),3         \n\t"
+		"vlef   %%v25,4(%%r1,%2),0         \n\t"
+		"vlef   %%v25,4(%%r1,%2),1         \n\t"
+		"vlef   %%v25,12(%%r1,%2),2        \n\t"
+		"vlef   %%v25,12(%%r1,%2),3        \n\t"
+
+        "vfmasb   %%v16,%%v22,%%v20,%%v16  \n\t"
+        "vfmasb   %%v16,%%v23,%%v21,%%v16  \n\t"
+        "vfmasb   %%v17,%%v24,%%v20,%%v17  \n\t"
+        "vfmasb   %%v17,%%v25,%%v21,%%v17  \n\t"
+
+		"vlef   %%v26,0(%%r1,%3),0         \n\t"
+		"vlef   %%v26,0(%%r1,%3),1         \n\t"
+		"vlef   %%v26,8(%%r1,%3),2         \n\t"
+		"vlef   %%v26,8(%%r1,%3),3         \n\t"
+		"vlef   %%v27,4(%%r1,%3),0         \n\t"
+		"vlef   %%v27,4(%%r1,%3),1         \n\t"
+		"vlef   %%v27,12(%%r1,%3),2        \n\t"
+		"vlef   %%v27,12(%%r1,%3),3        \n\t"
+		"vlef   %%v28,0(%%r1,%4),0         \n\t"
+		"vlef   %%v28,0(%%r1,%4),1         \n\t"
+		"vlef   %%v28,8(%%r1,%4),2         \n\t"
+		"vlef   %%v28,8(%%r1,%4),3         \n\t"
+		"vlef   %%v29,4(%%r1,%4),0         \n\t"
+		"vlef   %%v29,4(%%r1,%4),1         \n\t"
+		"vlef   %%v29,12(%%r1,%4),2        \n\t"
+		"vlef   %%v29,12(%%r1,%4),3        \n\t"
         
-        "vfmadb   %%v16,%%v24,%%v20,%%v16  \n\t"
-        "vfmadb   %%v16,%%v25,%%v21,%%v16  \n\t"
-        "vfmadb   %%v17,%%v26,%%v20,%%v17  \n\t"
-        "vfmadb   %%v17,%%v27,%%v21,%%v17  \n\t"
+        "vfmasb   %%v18,%%v26,%%v20,%%v18  \n\t"
+        "vfmasb   %%v18,%%v27,%%v21,%%v18  \n\t"
+        "vfmasb   %%v19,%%v28,%%v20,%%v19  \n\t"
+        "vfmasb   %%v19,%%v29,%%v21,%%v19  \n\t"
 
-        "vlrepg %%v28,0(%%r1,%3)           \n\t"
-		"vlrepg %%v29,8(%%r1,%3)           \n\t"
-        "vlrepg %%v30,0(%%r1,%4)           \n\t"
-        "vlrepg %%v31,8(%%r1,%4)           \n\t"
-        
-        "vfmadb   %%v18,%%v28,%%v20,%%v18  \n\t"
-        "vfmadb   %%v18,%%v29,%%v21,%%v18  \n\t"
-        "vfmadb   %%v19,%%v30,%%v20,%%v19  \n\t"
-        "vfmadb   %%v19,%%v31,%%v21,%%v19  \n\t"
-
-		"vl     %%v22,16(%%r1,%5)          \n\t"
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-		"vleg   %%v23,24(%%r1,%5),0        \n\t"
-        "wflcdb %%v23,%%v23                \n\t"
-        "vleg   %%v23,16(%%r1,%5),1        \n\t"
-#else
-		"vleg   %%v23,16(%%r1,%5),1        \n\t"
-        "vflcdb %%v23,%%v23                \n\t"
-        "vleg   %%v23,24(%%r1,%5),0        \n\t"
-#endif
-
-        "vlrepg %%v24,16(%%r1,%1)          \n\t"
-        "vlrepg %%v25,24(%%r1,%1)          \n\t"
-		"vlrepg %%v26,16(%%r1,%2)          \n\t"
-        "vlrepg %%v27,24(%%r1,%2)          \n\t"
-        
-        "vfmadb   %%v16,%%v24,%%v22,%%v16  \n\t"
-        "vfmadb   %%v16,%%v25,%%v23,%%v16  \n\t"
-        "vfmadb   %%v17,%%v26,%%v22,%%v17  \n\t"
-        "vfmadb   %%v17,%%v27,%%v23,%%v17  \n\t"
-
-        "vlrepg %%v28,16(%%r1,%3)          \n\t"
-		"vlrepg %%v29,24(%%r1,%3)          \n\t"
-        "vlrepg %%v30,16(%%r1,%4)          \n\t"
-        "vlrepg %%v31,24(%%r1,%4)          \n\t"
-        
-        "vfmadb   %%v18,%%v28,%%v22,%%v18  \n\t"
-        "vfmadb   %%v18,%%v29,%%v23,%%v18  \n\t"
-        "vfmadb   %%v19,%%v30,%%v22,%%v19  \n\t"
-        "vfmadb   %%v19,%%v31,%%v23,%%v19  \n\t"
-
-        "agfi   %%r1,32                    \n\t"
+        "agfi   %%r1,16                    \n\t"
         "brctg  %%r0,0b                    \n\t"
 
-		"vpdi %%v20,%%v16,%%v16,4          \n\t"
-        "vpdi %%v21,%%v17,%%v17,4          \n\t"
-        "vpdi %%v22,%%v18,%%v18,4          \n\t"
-        "vpdi %%v23,%%v19,%%v19,4          \n\t"
+		"vrepg  %%v20,%%v16,1              \n\t"
+		"vrepg  %%v21,%%v17,1              \n\t"
+		"vrepg  %%v22,%%v18,1              \n\t"
+		"vrepg  %%v23,%%v19,1              \n\t"
+		"vfasb  %%v16,%%v16,%%v20          \n\t"
+		"vfasb  %%v17,%%v17,%%v21          \n\t"
+		"vfasb  %%v18,%%v18,%%v22          \n\t"
+		"vfasb  %%v19,%%v19,%%v23          \n\t"
+		"vmrhg  %%v16,%%v16,%%v17          \n\t"
+		"vmrhg  %%v17,%%v18,%%v19          \n\t"
+		"verllg %%v18,%%v16,32             \n\t"
+        "verllg %%v19,%%v17,32             \n\t"
 #if !defined(XCONJ)
-		"vlrepg %%v24,0(%7)                \n\t"
-		"vleg   %%v25,8(%7),0              \n\t"
-        "wflcdb %%v25,%%v25                \n\t"
-        "vleg   %%v25,8(%7),1              \n\t"
+		"vlrepf %%v20,0(%7)                \n\t"
+		"vlef   %%v21,4(%7),0              \n\t"
+		"vlef   %%v21,4(%7),2              \n\t"
+        "vflcsb %%v21,%%v21                \n\t"
+        "vlef   %%v21,4(%7),1              \n\t"
+		"vlef   %%v21,4(%7),3              \n\t"
 #else
-		"vleg   %%v24,0(%7),1              \n\t"
-        "vflcdb %%v24,%%v24                \n\t"
-        "vleg   %%v24,0(%7),0              \n\t"
-		"vlrepg %%v25,8(%7)                \n\t"
+		"vlef   %%v20,0(%7),1              \n\t"
+		"vlef   %%v20,0(%7),3              \n\t"
+        "vflcsb %%v20,%%v20                \n\t"
+        "vlef   %%v20,0(%7),0              \n\t"
+		"vlef   %%v20,0(%7),2              \n\t"
+		"vlrepf %%v21,4(%7)                \n\t"
 #endif
-		"vl  %%v26,0(%6)                   \n\t"
-		"vl  %%v27,16(%6)                  \n\t"
-		"vl  %%v28,32(%6)                  \n\t"
-		"vl  %%v29,48(%6)                  \n\t"
-		"vfmadb   %%v26,%%v16,%%v24,%%v26  \n\t"
-        "vfmadb   %%v26,%%v20,%%v25,%%v26  \n\t"
-		"vfmadb   %%v27,%%v17,%%v24,%%v27  \n\t"
-        "vfmadb   %%v27,%%v21,%%v25,%%v27  \n\t"
-		"vfmadb   %%v28,%%v18,%%v24,%%v28  \n\t"
-        "vfmadb   %%v28,%%v22,%%v25,%%v28  \n\t"
-		"vfmadb   %%v29,%%v19,%%v24,%%v29  \n\t"
-        "vfmadb   %%v29,%%v23,%%v25,%%v29  \n\t"
-		"vst  %%v26,0(%6)                  \n\t"
-		"vst  %%v27,16(%6)                 \n\t"
-		"vst  %%v28,32(%6)                 \n\t"
-		"vst  %%v29,48(%6)                     "
+		"vl  %%v22,0(%6)                   \n\t"
+		"vl  %%v23,16(%6)                  \n\t"
+		"vfmasb   %%v22,%%v16,%%v20,%%v22  \n\t"
+        "vfmasb   %%v22,%%v18,%%v21,%%v22  \n\t"
+		"vfmasb   %%v23,%%v17,%%v20,%%v23  \n\t"
+        "vfmasb   %%v23,%%v19,%%v21,%%v23  \n\t"
+		"vst  %%v22,0(%6)                  \n\t"
+		"vst  %%v23,16(%6)                     "
         :
         :"r"(n),"ZR"((const FLOAT (*)[n * 2])ap[0]),"ZR"((const FLOAT (*)[n * 2])ap[1]),"ZR"((const FLOAT (*)[n * 2])ap[2]),"ZR"((const FLOAT (*)[n * 2])ap[3]),"ZR"((const FLOAT (*)[n * 2])x),"ZQ"((FLOAT (*)[8])y),"ZQ"((const FLOAT (*)[2])alpha)
-        :"memory","cc","r0","r1","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
+        :"memory","cc","r0","r1","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29"
     );
 }
 
-static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void cgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
     __asm__ volatile (
 		"vzero  %%v16                      \n\t"
@@ -161,77 +162,76 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *
 
 		"vl     %%v18,0(%%r1,%3)           \n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vleg   %%v19,8(%%r1,%3),0         \n\t"
-        "wflcdb %%v19,%%v19                \n\t"
-        "vleg   %%v19,0(%%r1,%3),1         \n\t"
+        "vlef   %%v19,4(%%r1,%3),0         \n\t"
+		"vlef   %%v19,12(%%r1,%3),2        \n\t"
+        "vflcsb %%v19,%%v19                \n\t"
+        "vlef   %%v19,0(%%r1,%3),1         \n\t"
+		"vlef   %%v19,8(%%r1,%3),3         \n\t"
 #else
-        "vleg   %%v19,0(%%r1,%3),1         \n\t"
-        "vflcdb %%v19,%%v19                \n\t"
-        "vleg   %%v19,8(%%r1,%3),0         \n\t"
+        "vlef   %%v19,0(%%r1,%3),1         \n\t"
+		"vlef   %%v19,8(%%r1,%3),3         \n\t"
+        "vflcsb %%v19,%%v19                \n\t"
+        "vlef   %%v19,4(%%r1,%3),0         \n\t"
+		"vlef   %%v19,12(%%r1,%3),2        \n\t"
 #endif
 
-        "vlrepg %%v20,0(%%r1,%1)           \n\t"
-        "vlrepg %%v21,8(%%r1,%1)           \n\t"
-		"vlrepg %%v22,0(%%r1,%2)           \n\t"
-        "vlrepg %%v23,8(%%r1,%2)           \n\t"
-        
-        "vfmadb   %%v16,%%v20,%%v18,%%v16  \n\t"
-        "vfmadb   %%v16,%%v21,%%v19,%%v16  \n\t"
-        "vfmadb   %%v17,%%v22,%%v18,%%v17  \n\t"
-        "vfmadb   %%v17,%%v23,%%v19,%%v17  \n\t"
+		"vlef   %%v20,0(%%r1,%1),0         \n\t"
+		"vlef   %%v20,0(%%r1,%1),1         \n\t"
+		"vlef   %%v20,8(%%r1,%1),2         \n\t"
+		"vlef   %%v20,8(%%r1,%1),3         \n\t"
+		"vlef   %%v21,4(%%r1,%1),0         \n\t"
+		"vlef   %%v21,4(%%r1,%1),1         \n\t"
+		"vlef   %%v21,12(%%r1,%1),2        \n\t"
+		"vlef   %%v21,12(%%r1,%1),3        \n\t"
+		"vlef   %%v22,0(%%r1,%2),0         \n\t"
+		"vlef   %%v22,0(%%r1,%2),1         \n\t"
+		"vlef   %%v22,8(%%r1,%2),2         \n\t"
+		"vlef   %%v22,8(%%r1,%2),3         \n\t"
+		"vlef   %%v23,4(%%r1,%2),0         \n\t"
+		"vlef   %%v23,4(%%r1,%2),1         \n\t"
+		"vlef   %%v23,12(%%r1,%2),2        \n\t"
+		"vlef   %%v23,12(%%r1,%2),3        \n\t"
 
-		"vl     %%v18,16(%%r1,%3)           \n\t"
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vleg   %%v19,24(%%r1,%3),0         \n\t"
-        "wflcdb %%v19,%%v19                \n\t"
-        "vleg   %%v19,16(%%r1,%3),1         \n\t"
-#else
-        "vleg   %%v19,16(%%r1,%3),1         \n\t"
-        "vflcdb %%v19,%%v19                \n\t"
-        "vleg   %%v19,24(%%r1,%3),0         \n\t"
-#endif
+        "vfmasb   %%v16,%%v20,%%v18,%%v16  \n\t"
+        "vfmasb   %%v16,%%v21,%%v19,%%v16  \n\t"
+        "vfmasb   %%v17,%%v22,%%v18,%%v17  \n\t"
+        "vfmasb   %%v17,%%v23,%%v19,%%v17  \n\t"
 
-        "vlrepg %%v20,16(%%r1,%1)           \n\t"
-        "vlrepg %%v21,24(%%r1,%1)           \n\t"
-		"vlrepg %%v22,16(%%r1,%2)           \n\t"
-        "vlrepg %%v23,24(%%r1,%2)           \n\t"
-        
-        "vfmadb   %%v16,%%v20,%%v18,%%v16  \n\t"
-        "vfmadb   %%v16,%%v21,%%v19,%%v16  \n\t"
-        "vfmadb   %%v17,%%v22,%%v18,%%v17  \n\t"
-        "vfmadb   %%v17,%%v23,%%v19,%%v17  \n\t"
-
-        "agfi   %%r1,32                    \n\t"
+        "agfi   %%r1,16                    \n\t"
         "brctg  %%r0,0b                    \n\t"
 
-		"vpdi %%v18,%%v16,%%v16,4          \n\t"
-        "vpdi %%v19,%%v17,%%v17,4          \n\t"
+		"vrepg  %%v18,%%v16,1              \n\t"
+		"vrepg  %%v19,%%v17,1              \n\t"
+		"vfasb  %%v16,%%v16,%%v18          \n\t"
+		"vfasb  %%v17,%%v17,%%v19          \n\t"
+		"vmrhg  %%v16,%%v16,%%v17          \n\t"
+		"verllg %%v17,%%v16,32             \n\t"
 #if !defined(XCONJ)
-		"vlrepg %%v20,0(%5)                \n\t"
-		"vleg   %%v21,8(%5),0              \n\t"
-        "wflcdb %%v21,%%v21                \n\t"
-        "vleg   %%v21,8(%5),1              \n\t"
+		"vlrepf %%v18,0(%5)                \n\t"
+		"vlef   %%v19,4(%5),0              \n\t"
+		"vlef   %%v19,4(%5),2              \n\t"
+        "vflcsb %%v19,%%v19                \n\t"
+        "vlef   %%v19,4(%5),1              \n\t"
+		"vlef   %%v19,4(%5),3              \n\t"
 #else
-		"vleg   %%v20,0(%5),1              \n\t"
-        "vflcdb %%v20,%%v20                \n\t"
-        "vleg   %%v20,0(%5),0              \n\t"
-		"vlrepg %%v21,8(%5)                \n\t"
+		"vlef   %%v18,0(%5),1              \n\t"
+		"vlef   %%v18,0(%5),3              \n\t"
+        "vflcsb %%v18,%%v18                \n\t"
+        "vlef   %%v18,0(%5),0              \n\t"
+		"vlef   %%v18,0(%5),2              \n\t"
+		"vlrepf %%v19,4(%5)                \n\t"
 #endif
-		"vl  %%v22,0(%4)                   \n\t"
-		"vl  %%v23,16(%4)                  \n\t"
-		"vfmadb   %%v22,%%v16,%%v20,%%v22  \n\t"
-        "vfmadb   %%v22,%%v18,%%v21,%%v22  \n\t"
-		"vfmadb   %%v23,%%v17,%%v20,%%v23  \n\t"
-        "vfmadb   %%v23,%%v19,%%v21,%%v23  \n\t"
-		"vst  %%v22,0(%4)                  \n\t"
-		"vst  %%v23,16(%4)                 \n\t"
+		"vl  %%v20,0(%4)                   \n\t"
+		"vfmasb   %%v20,%%v16,%%v18,%%v20  \n\t"
+        "vfmasb   %%v20,%%v17,%%v19,%%v20  \n\t"
+		"vst  %%v20,0(%4)                      "
         :
         :"r"(n),"ZR"((const FLOAT (*)[n * 2])ap[0]),"ZR"((const FLOAT (*)[n * 2])ap[1]),"ZR"((const FLOAT (*)[n * 2])x),"ZQ"((FLOAT (*)[4])y),"ZQ"((const FLOAT (*)[2])alpha)
         :"memory","cc","r0","r1","v16","v17","v18","v19","v20","v21","v22","v23"
     );
 }
 
-static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
     __asm__ volatile (
 		"vzero  %%v16                      \n\t"
@@ -243,60 +243,55 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
 
 		"vl     %%v17,0(%%r1,%2)           \n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vleg   %%v18,8(%%r1,%2),0         \n\t"
-        "wflcdb %%v18,%%v18                \n\t"
-        "vleg   %%v18,0(%%r1,%2),1         \n\t"
+        "vlef   %%v18,4(%%r1,%2),0         \n\t"
+		"vlef   %%v18,12(%%r1,%2),2        \n\t"
+        "vflcsb %%v18,%%v18                \n\t"
+        "vlef   %%v18,0(%%r1,%2),1         \n\t"
+		"vlef   %%v18,8(%%r1,%2),3         \n\t"
 #else
-        "vleg   %%v18,0(%%r1,%2),1         \n\t"
-        "vflcdb %%v18,%%v18                \n\t"
-        "vleg   %%v18,8(%%r1,%2),0         \n\t"
+        "vlef   %%v18,0(%%r1,%2),1         \n\t"
+		"vlef   %%v18,8(%%r1,%2),3         \n\t"
+        "vflcsb %%v18,%%v18                \n\t"
+        "vlef   %%v18,4(%%r1,%2),0         \n\t"
+		"vlef   %%v18,12(%%r1,%2),2        \n\t"
 #endif
 
-        "vlrepg %%v19,0(%%r1,%1)           \n\t"
-        "vlrepg %%v20,8(%%r1,%1)           \n\t"
-        
-        "vfmadb   %%v16,%%v19,%%v17,%%v16  \n\t"
-        "vfmadb   %%v16,%%v20,%%v18,%%v16  \n\t"
+		"vlef   %%v19,0(%%r1,%1),0         \n\t"
+		"vlef   %%v19,0(%%r1,%1),1         \n\t"
+		"vlef   %%v19,8(%%r1,%1),2         \n\t"
+		"vlef   %%v19,8(%%r1,%1),3         \n\t"
+		"vlef   %%v20,4(%%r1,%1),0         \n\t"
+		"vlef   %%v20,4(%%r1,%1),1         \n\t"
+		"vlef   %%v20,12(%%r1,%1),2        \n\t"
+		"vlef   %%v20,12(%%r1,%1),3        \n\t"
 
-		"vl     %%v17,16(%%r1,%2)           \n\t"
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vleg   %%v18,24(%%r1,%2),0         \n\t"
-        "wflcdb %%v18,%%v18                \n\t"
-        "vleg   %%v18,16(%%r1,%2),1         \n\t"
-#else
-        "vleg   %%v18,16(%%r1,%2),1         \n\t"
-        "vflcdb %%v18,%%v18                \n\t"
-        "vleg   %%v18,24(%%r1,%2),0         \n\t"
-#endif
+        "vfmasb   %%v16,%%v19,%%v17,%%v16  \n\t"
+        "vfmasb   %%v16,%%v20,%%v18,%%v16  \n\t"
 
-        "vlrepg %%v19,16(%%r1,%1)           \n\t"
-        "vlrepg %%v20,24(%%r1,%1)           \n\t"
-        
-        "vfmadb   %%v16,%%v19,%%v17,%%v16  \n\t"
-        "vfmadb   %%v16,%%v20,%%v18,%%v16  \n\t"
-
-        "agfi   %%r1,32                    \n\t"
+        "agfi   %%r1,16                    \n\t"
         "brctg  %%r0,0b                    \n\t"
 
-		"vpdi %%v17,%%v16,%%v16,4          \n\t"
+		"vrepg  %%v17,%%v16,1              \n\t"
+		"vfasb  %%v16,%%v16,%%v17          \n\t"
+		"verllg %%v17,%%v16,32             \n\t"
 #if !defined(XCONJ)
-		"vlrepg %%v18,0(%4)                \n\t"
-		"vleg   %%v19,8(%4),0              \n\t"
-        "wflcdb %%v19,%%v19                \n\t"
-        "vleg   %%v19,8(%4),1              \n\t"
+		"vlrepf %%v18,0(%4)                \n\t"
+		"vlef   %%v19,4(%4),0              \n\t"
+        "vflcsb %%v19,%%v19                \n\t"
+        "vlef   %%v19,4(%4),1              \n\t"
 #else
-		"vleg   %%v18,0(%4),1              \n\t"
-        "vflcdb %%v18,%%v18                \n\t"
-        "vleg   %%v18,0(%4),0              \n\t"
-		"vlrepg %%v19,8(%4)                \n\t"
+		"vlef   %%v18,0(%4),1              \n\t"
+        "vflcsb %%v18,%%v18                \n\t"
+        "vlef   %%v18,0(%4),0              \n\t"
+		"vlrepf %%v19,4(%4)                \n\t"
 #endif
-		"vl  %%v20,0(%3)                   \n\t"
-		"vfmadb   %%v20,%%v16,%%v18,%%v20  \n\t"
-        "vfmadb   %%v20,%%v17,%%v19,%%v20  \n\t"
-		"vst  %%v20,0(%3)                  \n\t"
+		"vleg     %%v20,0(%3),0            \n\t"
+		"vfmasb   %%v20,%%v16,%%v18,%%v20  \n\t"
+        "vfmasb   %%v20,%%v17,%%v19,%%v20  \n\t"
+		"vsteg    %%v20,0(%3),0                "
         :
         :"r"(n),"ZR"((const FLOAT (*)[n * 2])ap),"ZR"((const FLOAT (*)[n * 2])x),"ZQ"((FLOAT (*)[2])y),"ZQ"((const FLOAT (*)[2])alpha)
-        :"memory","cc","r0","r1","v16","v17","v18","v19","v20"
+        :"memory","cc","r0","r1","v16","v17","v18","v19","v20","v21","v22","v23"
     );
 }
 
@@ -378,7 +373,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			for( i = 0; i < n1 ; i++)
 			{
-				zgemv_kernel_4x4(NB,ap,xbuffer,y_ptr,alpha);
+				cgemv_kernel_4x4(NB,ap,xbuffer,y_ptr,alpha);
 				ap[0] += lda4;
 				ap[1] += lda4;
 				ap[2] += lda4;
@@ -390,7 +385,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			if ( n2 & 2 )
 			{
-				zgemv_kernel_4x2(NB,ap,xbuffer,y_ptr,alpha);
+				cgemv_kernel_4x2(NB,ap,xbuffer,y_ptr,alpha);
 				a_ptr += lda * 2;
 				y_ptr += 4;
 
@@ -398,7 +393,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 			if ( n2 & 1 )
 			{
-				zgemv_kernel_4x1(NB,a_ptr,xbuffer,y_ptr,alpha);
+				cgemv_kernel_4x1(NB,a_ptr,xbuffer,y_ptr,alpha);
 				/* a_ptr += lda;
 				y_ptr += 2; */
 
@@ -411,7 +406,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			for( i = 0; i < n1 ; i++)
 			{
 				memset(ybuffer,0,sizeof(ybuffer));
-				zgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha);
+				cgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha);
 				ap[0] += lda4;
 				ap[1] += lda4;
 				ap[2] += lda4;
@@ -436,7 +431,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 			for( i = 0; i < n2 ; i++)
 			{
 				memset(ybuffer,0,sizeof(ybuffer));
-				zgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha);
+				cgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha);
 				a_ptr += lda;
 				y_ptr[0] += ybuffer[0];
 				y_ptr[1] += ybuffer[1];

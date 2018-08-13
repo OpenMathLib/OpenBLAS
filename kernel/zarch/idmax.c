@@ -180,6 +180,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
             i = n1;
         }
+        else
+        {
+            maxf = x[0];
+            i++;
+        }
 
         while (i < n) {
             if (x[i] > maxf) {
@@ -192,7 +197,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
     } else {
 
-        BLASLONG n1 = n & -4;
+        maxf = x[0];
+        i += inc_x;
+        j++;
+
+        BLASLONG n1 = (n - 1) & -4;
         while (j < n1) {
 
             if (x[i] > maxf) {

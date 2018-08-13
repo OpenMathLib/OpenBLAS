@@ -202,6 +202,12 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
             i = n1;
       }
+      else
+        {
+            minf = CABS1(x,0);
+            ix += 2;
+            i++;
+        }
 
       while(i < n)
     {
@@ -217,9 +223,8 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
     } else {
  
-      inc_x2 = 2 * inc_x;
-
     minf = CABS1(x,0);
+    inc_x2 = 2 * inc_x;
     ix += inc_x2;
     i++;
 
