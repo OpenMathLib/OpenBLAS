@@ -74,6 +74,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include <errno.h>
 
+//#define DEBUG
+
 #if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
 #define ALLOC_WINDOWS
 #ifndef MEM_LARGE_PAGES
@@ -108,6 +110,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/resource.h>
 #endif
 
+#ifdef OS_HAIKU
+#include <unistd.h>
+#endif
+
 #if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN)
 #include <sys/sysctl.h>
 #include <sys/resource.h>
@@ -137,14 +143,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef FIXED_PAGESIZE
 #define FIXED_PAGESIZE 4096
-#endif
-
-#ifndef BUFFERS_PER_THREAD
-#ifdef USE_OPENMP
-#define BUFFERS_PER_THREAD (MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER)
-#else
-#define BUFFERS_PER_THREAD NUM_BUFFERS
-#endif
 #endif
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
@@ -231,6 +229,14 @@ int i,n;
 #endif
 
 #ifdef OS_ANDROID
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
+
+#ifdef OS_HAIKU
 int get_num_procs(void) {
   static int nums = 0;
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
@@ -327,6 +333,7 @@ int  goto_get_num_procs  (void) {
 }
 
 static void blas_memory_init();
+static void blas_tls_init();
 
 void openblas_fork_handler()
 {
@@ -363,7 +370,7 @@ int blas_get_cpu_number(void){
 #endif
 
   // blas_goto_num = 0;
-#ifndef USE_OPENMP
+#ifndef USE_OPENMP_UNUSED
   blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
 
@@ -420,10 +427,8 @@ int openblas_get_num_threads(void) {
 int hugetlb_allocated = 0;
 
 #if defined(OS_WINDOWS)
-#define THREAD_LOCAL __declspec(thread)
 #define LIKELY_ONE(x) (x)
 #else
-#define THREAD_LOCAL __thread
 #define LIKELY_ONE(x) (__builtin_expect(x, 1))
 #endif
 
@@ -459,105 +464,68 @@ struct alloc_t {
    for an auxiliary tracking structure. */
 static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
 
-/* Clang supports TLS from version 2.8 */
-#if defined(__clang__) && __clang_major__ > 2 || \
-    (__clang_minor__ == 2 || __clang_minor__ == 8)
-#define HAS_COMPILER_TLS
-#endif
-
-/* GCC supports TLS from version 4.1 */
-#if !defined(__clang__) && defined(__GNUC__) && \
-    (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
-#define HAS_COMPILER_TLS
-#endif
-
-/* MSVC supports TLS from version 2005 */
-#if defined(_MSC_VER) && _MSC_VER >= 1400
-#define HAS_COMPILER_TLS
-#endif
-
-/* Versions of XCode before 8 did not properly support TLS */
-#if defined(__apple_build_version__) && __apple_build_version__ < 8000042
-#undef HAS_COMPILER_TLS
-#endif
-
-/* Android NDK's before version 12b did not support TLS */
-#if defined(__ANDROID__) && defined(__clang__)
-#if __has_include(<android/ndk-version.h>)
-#include <android/ndk-version.h>
-#endif
-#if defined(__ANDROID__) && defined(__clang__) && defined(__NDK_MAJOR__) && \
-    defined(__NDK_MINOR__) &&                                               \
-    ((__NDK_MAJOR__ < 12) || ((__NDK_MAJOR__ == 12) && (__NDK_MINOR__ < 1)))
-#undef HAS_COMPILER_TLS
-#endif
-#endif
-
-/* Holds pointers to allocated memory */
-#if defined(SMP) && !defined(USE_OPENMP)
-/* This is the number of threads than can be spawned by the server, which is the
-   server plus the number of threads in the thread pool */
-#  define MAX_ALLOCATING_THREADS MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER +1
-static int next_memory_table_pos = 0;
-#  if defined(HAS_COMPILER_TLS)
-/* Use compiler generated thread-local-storage */
-static int THREAD_LOCAL local_memory_table_pos = 0;
+#if defined(SMP)
+#  if defined(OS_WINDOWS)
+static DWORD local_storage_key = 0;
 #  else
-/* Use system-dependent thread-local-storage */
-#    if defined(OS_WINDOWS)
-static DWORD local_storage_key;
-#    else
-static pthread_key_t local_storage_key;
-#    endif /* defined(OS_WINDOWS) */
-#  endif /* defined(HAS_COMPILER_TLS) */
-#else
-/* There is only one allocating thread when in single-threaded mode and when using OpenMP */
-#  define MAX_ALLOCATING_THREADS 1
-#endif /* defined(SMP) && !defined(USE_OPENMP) */
-static struct alloc_t * local_memory_table[MAX_ALLOCATING_THREADS][BUFFERS_PER_THREAD];
+static pthread_key_t local_storage_key = 0;
+#  endif /* defined(OS_WINDOWS) */
+#endif /* defined(SMP) */
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
 static int hot_alloc = 0;
 #endif
 
-/* Global lock for memory allocation */
+/* Global locks for memory allocation */
 
 #if   defined(USE_PTHREAD_LOCK)
 static pthread_mutex_t    alloc_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t    tls_lock = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(USE_PTHREAD_SPINLOCK)
 static pthread_spinlock_t alloc_lock = 0;
+static pthread_spinlock_t tls_lock = 0;
 #else
 static BLASULONG  alloc_lock = 0UL;
+static BLASULONG  tls_lock = 0UL;
 #endif
 
 /* Returns a pointer to the start of the per-thread memory allocation data */
 static __inline struct alloc_t ** get_memory_table() {
-#if defined(SMP) && !defined(USE_OPENMP)
-#  if !defined(HAS_COMPILER_TLS)
-#    if defined(OS_WINDOWS)
-  int local_memory_table_pos = (int)::TlsGetValue(local_storage_key);
-#    else
-  int local_memory_table_pos = (int)pthread_getspecific(local_storage_key);
-#    endif /* defined(OS_WINDOWS) */
-#  endif /* !defined(HAS_COMPILER_TLS) */
-  if (!local_memory_table_pos) {
-    LOCK_COMMAND(&alloc_lock);
-    local_memory_table_pos = next_memory_table_pos++;
-    if (next_memory_table_pos > MAX_ALLOCATING_THREADS)
-      printf("OpenBLAS : Program will terminate because you tried to start too many threads.\n");
-    UNLOCK_COMMAND(&alloc_lock);
-#  if !defined(HAS_COMPILER_TLS)
-#    if defined(OS_WINDOWS)
-    ::TlsSetValue(local_storage_key, (void*)local_memory_table_pos);
-#    else
-    pthread_setspecific(local_storage_key, (void*)local_memory_table_pos);
-#    endif /* defined(OS_WINDOWS) */
-#  endif /* !defined(HAS_COMPILER_TLS) */
+#if defined(SMP)
+  static int tls_initialized = 0;
+  if (!LIKELY_ONE(tls_initialized)) {
+    LOCK_COMMAND(&tls_lock);
+    /* Only one thread can get here at a time, so we are guaranteed to only do this initialization once  */
+    if (!tls_initialized) {
+      blas_tls_init();
+      /* Now any new thread entering the outer block will either do the TLS init, or nothing */
+      tls_initialized = 1;
+    }
+    UNLOCK_COMMAND(&tls_lock);
   }
-  return local_memory_table[local_memory_table_pos];
+#  if defined(OS_WINDOWS)
+  struct alloc_t ** local_memory_table = (struct alloc_t **)TlsGetValue(local_storage_key);
+#  else
+  struct alloc_t ** local_memory_table = (struct alloc_t **)pthread_getspecific(local_storage_key);
+#  endif /* defined(OS_WINDOWS) */
 #else
-  return local_memory_table[0];
-#endif /* defined(SMP) && !defined(USE_OPENMP) */
+  static struct alloc_t ** local_memory_table = NULL;
+#endif /* defined(SMP) */
+//QUAK
+if (!local_memory_table) fprintf(stderr,"get_memory_table: NULL\n");
+if (!local_storage_key) fprintf(stderr,"get_memory_table: no key\n");
+  if (local_storage_key && !local_memory_table) {
+    local_memory_table = (struct alloc_t **)malloc(sizeof(struct alloc_t *) * NUM_BUFFERS);
+    memset(local_memory_table, 0, sizeof(struct alloc_t *) * NUM_BUFFERS);
+#if defined(SMP)
+#  if defined(OS_WINDOWS)
+    TlsSetValue(local_storage_key, (void*)local_memory_table);
+#  else
+    pthread_setspecific(local_storage_key, (void*)local_memory_table);
+#  endif /* defined(OS_WINDOWS) */
+#endif /* defined(SMP) */
+  }
+  return local_memory_table;
 }
 
 #ifdef ALLOC_MMAP
@@ -637,7 +605,7 @@ static inline BLASULONG run_bench(BLASULONG address, BLASULONG size) {
 
 static void *alloc_mmap(void *address){
   void *map_address, *best_address;
-  BLASULONG best, start, current;
+  BLASULONG best, start, current, original;
   BLASULONG allocsize;
 
   if (address){
@@ -685,8 +653,9 @@ static void *alloc_mmap(void *address){
 
 	start   = (BLASULONG)map_address;
 	current = (SCALING - 1) * allocation_block_size;
+	original = current;
 
-	while(current > 0) {
+	while(current > 0 && current <= original) {
 	  *(BLASLONG *)start = (BLASLONG)start + PAGESIZE;
 	  start += PAGESIZE;
 	  current -= PAGESIZE;
@@ -1056,18 +1025,35 @@ static volatile int memory_initialized = 0;
 /*                1 : Level 2 functions      */
 /*                2 : Thread                 */
 
+static void blas_memory_cleanup(void* ptr){
+fprintf(stderr,"blas_memory_cleanup\n");
+  if (ptr) {
+    struct alloc_t ** table = (struct alloc_t **)ptr;
+    int pos;
+    for (pos = 0; pos < NUM_BUFFERS; pos ++){
+      struct alloc_t *alloc_info = table[pos];
+      if (alloc_info) {
+        alloc_info->release_func(alloc_info);
+        table[pos] = (void *)0;
+      }
+    }
+    free(table);
+  }
+}
+
+static void blas_tls_init(){
+#if defined(SMP)
+#  if defined(OS_WINDOWS)
+  local_storage_key = TlsAlloc();
+#  else
+  pthread_key_create(&local_storage_key, blas_memory_cleanup);
+#  endif /* defined(OS_WINDOWS) */
+#endif /* defined(SMP) */
+}
+
 static void blas_memory_init(){
-#if defined(SMP) && !defined(USE_OPENMP)
-  next_memory_table_pos = 0;
-#  if !defined(HAS_COMPILER_TLS)
-#    if defined(OS_WINDOWS)
-  local_storage_key = ::TlsAlloc();
-#    else
-  pthread_key_create(&local_storage_key, NULL);
-#    endif /* defined(OS_WINDOWS) */
-#  endif /* defined(HAS_COMPILER_TLS) */
-#endif /* defined(SMP) && !defined(USE_OPENMP) */
-  memset(local_memory_table, 0, sizeof(local_memory_table));
+  blas_tls_init();
+  memset(get_memory_table(), 0, sizeof(struct alloc_t *) * NUM_BUFFERS);
 }
 
 void *blas_memory_alloc(int procpos){
@@ -1104,15 +1090,16 @@ void *blas_memory_alloc(int procpos){
   void *(**func)(void *address);
   struct alloc_t * alloc_info;
   struct alloc_t ** alloc_table;
-
+//fprintf(stderr,"blas_memory_alloc procpos=%d\n",procpos);
   if (!LIKELY_ONE(memory_initialized)) {
+//QUAK
+  blas_tls_init();
 #if defined(SMP) && !defined(USE_OPENMP)
     /* Only allow a single thread to initialize memory system */
     LOCK_COMMAND(&alloc_lock);
 
     if (!memory_initialized) {
 #endif
-      blas_memory_init();
 #ifdef DYNAMIC_ARCH
       gotoblas_dynamic_init();
 #endif
@@ -1146,10 +1133,10 @@ void *blas_memory_alloc(int procpos){
   position = 0;
   alloc_table = get_memory_table();
   do {
-      if (!alloc_table[position] || !alloc_table[position]->used) goto allocation;
+      if (alloc_table == NULL || !alloc_table[position] || !alloc_table[position]->used) goto allocation;
     position ++;
 
-  } while (position < BUFFERS_PER_THREAD);
+  } while (position < NUM_BUFFERS);
 
   goto error;
 
@@ -1158,8 +1145,10 @@ void *blas_memory_alloc(int procpos){
 #ifdef DEBUG
   printf("  Position -> %d\n", position);
 #endif
-
-  alloc_info = alloc_table[position];
+  if (alloc_table == NULL) 
+    alloc_info = NULL;
+  else
+    alloc_info = alloc_table[position];
   if (!alloc_info) {
     do {
 #ifdef DEBUG
@@ -1170,7 +1159,7 @@ void *blas_memory_alloc(int procpos){
 
       func = &memoryalloc[0];
 
-      while ((func != NULL) && (map_address == (void *) -1)) {
+      while ((func != NULL) && ((*func) != NULL)  && (map_address == (void *) -1)) {
 
   map_address = (*func)((void *)base_address);
 
@@ -1204,13 +1193,13 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
+if (!alloc_table) alloc_table = map_address;
     alloc_table[position] = alloc_info = map_address;
 
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)alloc_info, position);
 #endif
   }
-
 #ifdef DEBUG
   printf("Mapped   : %p  %3d\n\n", (void *)alloc_info, position);
 #endif
@@ -1247,7 +1236,7 @@ void blas_memory_free(void *buffer){
 
 #ifdef DEBUG
   alloc_table = get_memory_table();
-  for (position = 0; position < BUFFERS_PER_THREAD; position++){
+  for (position = 0; position < NUM_BUFFERS; position++){
     if (alloc_table[position]) {
       printf("%4ld  %p : %d\n", position, alloc_table[position], alloc_table[position]->used);
     }
@@ -1267,22 +1256,15 @@ void blas_memory_free_nolock(void * map_address) {
 }
 
 void blas_shutdown(void){
-
-  int pos, thread;
-
 #ifdef SMP
   BLASFUNC(blas_thread_shutdown)();
 #endif
 
-  for (thread = 0; thread < MAX_ALLOCATING_THREADS; thread ++){
-    for (pos = 0; pos < BUFFERS_PER_THREAD; pos ++){
-      struct alloc_t *alloc_info = local_memory_table[thread][pos];
-      if (alloc_info) {
-        alloc_info->release_func(alloc_info);
-        alloc_info = (void *)0;
-      }
-    }
-  }
+#ifdef SMP
+  /* Only cleanupIf we were built for threading and TLS was initialized */
+  if (local_storage_key)
+#endif
+    blas_memory_cleanup((void*)get_memory_table());
 
 #ifdef SEEK_ADDRESS
   base_address      = 0UL;
@@ -1503,6 +1485,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     case DLL_THREAD_ATTACH:
       break;
     case DLL_THREAD_DETACH:
+#if defined(SMP)
+      blas_memory_cleanup((void*)get_memory_table());
+#endif
       break;
     case DLL_PROCESS_DETACH:
       gotoblas_quit();
