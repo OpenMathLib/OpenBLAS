@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.1.dev
+VERSION = 0.3.3.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -107,7 +107,13 @@ BUILD_LAPACK_DEPRECATED = 1
 # BUILD_RELAPACK = 1
 
 # If you want to use legacy threaded Level 3 implementation.
-# USE_SIMPLE_THREADED_LEVEL3 = 1
+USE_SIMPLE_THREADED_LEVEL3 = 1
+
+# If you want to use the new, still somewhat experimental code that uses
+# thread-local storage instead of a central memory buffer in memory.c
+# Note that if your system uses GLIBC, it needs to have at least glibc 2.21
+# for this to work.
+USE_TLS = 1
 
 # If you want to drive whole 64bit region by BLAS. Not all Fortran
 # compiler supports this. It's safe to keep comment it out if you
