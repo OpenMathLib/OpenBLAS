@@ -468,6 +468,7 @@ static const int allocation_block_size = BUFFER_SIZE + sizeof(struct alloc_t);
 #  if defined(OS_WINDOWS)
 static DWORD local_storage_key = 0;
 DWORD lsk;
+
 #  else
 static pthread_key_t local_storage_key = 0;
 pthread_key_t lsk;
@@ -1269,6 +1270,7 @@ void blas_shutdown(void){
 #ifdef SMP
   BLASFUNC(blas_thread_shutdown)();
 #endif
+
 #ifdef SMP
   /* Only cleanupIf we were built for threading and TLS was initialized */
   if (local_storage_key)

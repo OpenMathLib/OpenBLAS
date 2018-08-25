@@ -105,6 +105,10 @@ extern "C" {
 #endif
 #endif
 
+#ifdef OS_HAIKU
+#define NO_SYSV_IPC
+#endif
+
 #ifdef OS_WINDOWS
 #ifdef  ATOM
 #define GOTO_ATOM ATOM
@@ -253,8 +257,14 @@ typedef unsigned long BLASULONG;
 
 #ifdef USE64BITINT
 typedef BLASLONG blasint;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+#define blasabs(x) llabs(x)
+#else
+#define blasabs(x) labs(x)
+#endif
 #else
 typedef int blasint;
+#define blasabs(x) abs(x)
 #endif
 #else
 #ifdef USE64BITINT
