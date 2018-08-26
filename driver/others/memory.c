@@ -73,8 +73,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(USE_TLS) && ( !defined(__GLIBC_PREREQ) || (defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,20)))
-#warning "using tls version of memory.c"
+#if defined(USE_TLS) 
+#define COMPILE_TLS
+#if defined(__GLIBC_PREREQ) 
+#if !__GLIBC_PREREQ(2,20))
+#undef COMPILE_TLS
+#endif
+#endif
+#endif
+
+#if defined(COMPILE_TLS)
+
 #include <errno.h>
 
 #if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
