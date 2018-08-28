@@ -280,8 +280,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV 
-      EXTERNAL           LSAME, ILAENV
+      INTEGER            ILAENV2STAGE 
+      EXTERNAL           LSAME, ILAENV2STAGE
 *     ..
 *     .. Executable Statements ..
 *
@@ -297,9 +297,9 @@
 *
 *     Determine the block size, the workspace size and the hous size.
 *
-      IB     = ILAENV( 18, 'ZHETRD_HB2ST', VECT, N, KD, -1, -1 )
-      LHMIN  = ILAENV( 19, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
-      LWMIN  = ILAENV( 20, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
+      IB     = ILAENV2STAGE( 2, 'ZHETRD_HB2ST', VECT, N, KD, -1, -1 )
+      LHMIN  = ILAENV2STAGE( 3, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
+      LWMIN  = ILAENV2STAGE( 4, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
 *
       IF( .NOT.AFTERS1 .AND. .NOT.LSAME( STAGE1, 'N' ) ) THEN
          INFO = -1
