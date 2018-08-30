@@ -1,5 +1,32 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.3
+31-Aug-2018
+
+common:
+	* thread memory allocation has been switched back to the method
+	  used before version 0.3.1 due to unexpected problems caused by
+	  the new code under some circumstances. A new compile-time option
+	  USE_TLS has been added to enable the new code, and it is hoped
+	  that this can become the default again in the next version.
+	* LAPAck PR272 has been integrated, which fixes spurious errors
+	  in DSYEVR and related functions caused by missing conversion 
+	  from ILAENV to ILAENV_2STAGE in several _2stage routines.
+	* the cmake-generated OpenBLASConfig.cmake now uses correct case
+	  for the name of the library
+	* added support for Haiku OS  
+
+x86_64:
+	* added AVX512 implementations of SDOT, DDOT, SAXPY, DAXPY,
+	  DSCAL, DGEMVN and DSYMVL 
+	* added a workaround for a cygwin issue that prevented compilation
+	  of AVX512 code
+	  
+IBM Z:
+	* added autodetection of Z14
+	* fixed TRMM errors in the generic target
+	
+====================================================================
 Version 0.3.2
 30-Jul-2018
 
