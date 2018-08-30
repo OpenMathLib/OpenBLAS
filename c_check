@@ -223,13 +223,14 @@ $data =~ /globl\s([_\.]*)(.*)/;
 $need_fu      = $1;
 
 $cross = 0;
-$cross = 1 if ($os ne $hostos);
 
 if ($architecture ne $hostarch) {
     $cross = 1;
     $cross = 0 if (($hostarch eq "x86_64") && ($architecture eq "x86"));
     $cross = 0 if (($hostarch eq "mips64") && ($architecture eq "mips"));
 }
+
+$cross = 1 if ($os ne $hostos);
 
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 
