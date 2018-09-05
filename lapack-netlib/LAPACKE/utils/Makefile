@@ -186,7 +186,7 @@ OBJ = lapacke_cgb_nancheck.o \
 all: lib
 
 lib: $(OBJ)
-	$(ARCH) $(ARCHFLAGS) ../../$(LAPACKELIB) $^
+	$(AR) $(ARFLAGS) ../../$(LAPACKELIB) $^
 	$(RANLIB) ../../$(LAPACKELIB)
 
 clean: cleanobj

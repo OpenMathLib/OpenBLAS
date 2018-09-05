@@ -29,8 +29,8 @@ LOADOPTS = -Aa +U77
 #  The archiver and the flag(s) to use when building an archive
 #  (library).  If your system has no ranlib, set RANLIB = echo.
 #
-ARCH      = ar
-ARCHFLAGS = cr
+AR        = ar
+ARFLAGS   = cr
 RANLIB    = echo
 
 #  Timer for the SECOND and DSECND routines
