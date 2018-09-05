@@ -2455,16 +2455,16 @@ endif
 all: ../../$(LAPACKELIB)
 
 ../../$(LAPACKELIB): $(OBJ_A) $(OBJ_B) $(DEPRECATED) $(EXTENDED) $(MATGEN)
-	$(ARCH) $(ARCHFLAGS) $@ $(OBJ_A)
-	$(ARCH) $(ARCHFLAGS) $@ $(OBJ_B)
+	$(AR) $(ARFLAGS) $@ $(OBJ_A)
+	$(AR) $(ARFLAGS) $@ $(OBJ_B)
 ifdef BUILD_DEPRECATED
-	$(ARCH) $(ARCHFLAGS) $@ $(DEPRECATED)
+	$(AR) $(ARFLAGS) $@ $(DEPRECATED)
 endif
 ifdef (USEXBLAS)
-	$(ARCH) $(ARCHFLAGS) $@ $(EXTENDED)
+	$(AR) $(ARFLAGS) $@ $(EXTENDED)
 endif
 ifdef LAPACKE_WITH_TMG
-	$(ARCH) $(ARCHFLAGS) $@ $(MATGEN)
+	$(AR) $(ARFLAGS) $@ $(MATGEN)
 endif
 	$(RANLIB) $@
 
