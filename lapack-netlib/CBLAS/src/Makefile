@@ -45,22 +45,22 @@ sclev1 = cblas_scasum.o scasumsub.o cblas_scnrm2.o scnrm2sub.o
 
 # Single precision real
 slib1: $(slev1) $(sclev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Double precision real
 dlib1: $(dlev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Single precision complex
 clib1: $(clev1) $(sclev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Double precision complex
 zlib1: $(zlev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 #
@@ -97,22 +97,22 @@ zlev2 = cblas_zgemv.o cblas_zgbmv.o cblas_zhemv.o cblas_zhbmv.o cblas_zhpmv.o \
 
 # Single precision real
 slib2: $(slev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Double precision real
 dlib2: $(dlev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Single precision complex
 clib2: $(clev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Double precision complex
 zlib2: $(zlev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 #
@@ -143,22 +143,22 @@ zlev3 = cblas_zgemm.o cblas_zsymm.o cblas_zhemm.o cblas_zherk.o \
 
 # Single precision real
 slib3: $(slev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Double precision real
 dlib3: $(dlev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Single precision complex
 clib3: $(clev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # Double precision complex
 zlib3: $(zlev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 
@@ -168,22 +168,22 @@ alev3 = $(slev3) $(dlev3) $(clev3) $(zlev3)
 
 # All level 1
 all1: $(alev1)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # All level 2
 all2: $(alev2) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # All level 3
 all3: $(alev3) $(errhand)
-	$(AR) $(ARFLAGS) $(CBLASLIB) $^
+	$(ARCH) $(ARCHFLAGS) $(CBLASLIB) $^
 	$(RANLIB) $(CBLASLIB)
 
 # All levels and precisions
 $(CBLASLIB): $(alev1) $(alev2) $(alev3) $(errhand)
-	$(AR) $(ARFLAGS) $@ $^
+	$(ARCH) $(ARCHFLAGS) $@ $^
 	$(RANLIB) $@
 
 FRC:

@@ -121,10 +121,6 @@ if (($architecture eq "x86") && ($os ne Darwin) && ($os ne SunOS)) {
     $binary =32;
 }
 
-if ($architecture eq "riscv64") {
-    $defined = 1;
-}
-
 if ($compiler eq "PGI") {
     $compiler_name .= " -tp p7"    if ($binary eq "32");
     $compiler_name .= " -tp p7-64" if ($binary eq "64");

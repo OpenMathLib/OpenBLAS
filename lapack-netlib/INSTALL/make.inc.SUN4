@@ -29,8 +29,8 @@ LOADOPTS = -dalign -O4 -fast
 #  The archiver and the flag(s) to use when building an archive
 #  (library).  If your system has no ranlib, set RANLIB = echo.
 #
-AR        = ar
-ARFLAGS   = cr
+ARCH      = ar
+ARCHFLAGS = cr
 RANLIB    = ranlib
 
 #  Timer for the SECOND and DSECND routines

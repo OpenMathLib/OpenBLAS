@@ -32,8 +32,8 @@ LOADOPTS = -O3 -64 -mips4 -r10000 -OPT:IEEE_NaN_inf=ON
 #  The archiver and the flag(s) to use when building an archive
 #  (library).  If your system has no ranlib, set RANLIB = echo.
 #
-AR        = ar
-ARFLAGS   = cr
+ARCH      = ar
+ARCHFLAGS = cr
 RANLIB    = echo
 
 #  Timer for the SECOND and DSECND routines
