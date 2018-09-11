@@ -181,7 +181,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
   buffer = (FLOAT *)blas_memory_alloc(1);
 
 #ifdef SMP
-  nthreads = num_cpu_avail(2);
+  nthreads = num_cpu_avail();
 
   if (nthreads == 1) {
 #endif
