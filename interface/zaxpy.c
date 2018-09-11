@@ -98,7 +98,7 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
   if (incx == 0 || incy == 0 || n <= MULTI_THREAD_MINIMAL)
 	  nthreads = 1;
   else
-	  nthreads = num_cpu_avail(1);
+	  nthreads = num_cpu_avail();
 
   if (nthreads == 1) {
 #endif

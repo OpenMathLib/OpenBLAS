@@ -231,7 +231,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (inc_x == 0 || n <= 10000)
 		nthreads = 1;
 	else
-		nthreads = num_cpu_avail(1);
+		nthreads = num_cpu_avail();
 
 	if (nthreads == 1) {
 		asum = dasum_compute(n, x, inc_x);

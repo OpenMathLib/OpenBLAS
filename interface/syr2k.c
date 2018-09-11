@@ -368,7 +368,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   mode |= (uplo  << BLAS_UPLO_SHIFT);
 
   args.common = NULL;
-  args.nthreads = num_cpu_avail(3);
+  args.nthreads = num_cpu_avail();
 
   if (args.nthreads == 1) {
 #endif

@@ -93,7 +93,7 @@ void CNAME(blasint n, FLOAT alpha_r, void *vx, blasint incx){
   if ( n <= 1048576 )
 	nthreads = 1;
   else
-	nthreads = num_cpu_avail(1);
+	nthreads = num_cpu_avail();
 
   if (nthreads == 1) {
 #endif

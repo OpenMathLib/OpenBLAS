@@ -84,7 +84,7 @@ FLOAT *y = (FLOAT*)vy;
   if (incx == 0 || incy == 0)
 	  nthreads = 1;
   else
-	  nthreads = num_cpu_avail(1);
+	  nthreads = num_cpu_avail();
 
   if (nthreads == 1) {
 #endif

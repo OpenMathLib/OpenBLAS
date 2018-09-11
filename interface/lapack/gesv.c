@@ -114,7 +114,7 @@ int NAME(blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA, blasint *ipiv,
 
 #ifdef SMP
   args.common = NULL;
-  args.nthreads = num_cpu_avail(4);
+  args.nthreads = num_cpu_avail();
 
   if (args.nthreads == 1) {
 #endif

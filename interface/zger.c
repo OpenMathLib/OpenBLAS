@@ -220,7 +220,7 @@ void CNAME(enum CBLAS_ORDER order,
 #ifdef SMPTEST
   // Threshold chosen so that speed-up is > 1 on a Xeon E5-2630
   if(1L * m * n > 36L * sizeof(FLOAT) * sizeof(FLOAT) * GEMM_MULTITHREAD_THRESHOLD)
-    nthreads = num_cpu_avail(2);
+    nthreads = num_cpu_avail();
   else
     nthreads = 1;
 
