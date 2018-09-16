@@ -3,6 +3,11 @@
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets Fortran related variables.
 
+if (INTERFACE64)
+  set(SUFFIX64 64)
+  set(SUFFIX64_UNDERSCORE _64)
+endif()
+
 if (${F_COMPILER} STREQUAL "FLANG")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_FLANG")
   if (BINARY64 AND INTERFACE64)
