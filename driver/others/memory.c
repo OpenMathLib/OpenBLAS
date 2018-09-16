@@ -73,7 +73,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(USE_TLS) 
+#if defined(USE_TLS) && defined(SMP)
 #define COMPILE_TLS
 #if defined(__GLIBC_PREREQ) 
 #if !__GLIBC_PREREQ(2,20)
