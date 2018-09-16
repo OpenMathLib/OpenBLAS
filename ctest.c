@@ -101,6 +101,10 @@ OS_INTERIX
 OS_LINUX
 #endif
 
+#if defined(__HAIKU__)
+OS_HAIKU
+#endif
+
 #if defined(__i386) || defined(_X86)
 ARCH_X86
 #endif

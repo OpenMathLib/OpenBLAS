@@ -285,8 +285,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV 
-      EXTERNAL           LSAME, ILAENV
+      INTEGER            ILAENV2STAGE 
+      EXTERNAL           LSAME, ILAENV2STAGE
 *     ..
 *     .. Executable Statements ..
 *
@@ -296,7 +296,7 @@
       INFO   = 0
       UPPER  = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
-      LWMIN  = ILAENV( 20, 'CHETRD_HE2HB', '', N, KD, -1, -1 )
+      LWMIN  = ILAENV2STAGE( 4, 'CHETRD_HE2HB', '', N, KD, -1, -1 )
       
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1

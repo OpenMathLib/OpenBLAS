@@ -510,7 +510,7 @@ static gotoblas_t *get_coretype(void){
 #ifndef NO_AVX2
 	  return &gotoblas_HASWELL;
 #else
-	  return &gotblas_SANDYBRIDGE;
+	  return &gotoblas_SANDYBRIDGE;
 #endif
 	  else
 	  return &gotoblas_NEHALEM;
@@ -607,7 +607,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
       } else if (exfamily == 8) {
-	if (model == 1) {
+	if (model == 1 || model == 8) {
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{

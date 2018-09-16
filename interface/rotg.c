@@ -22,8 +22,8 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   long double s;
   long double r, roe, z;
 
-  long double ada = fabs(da);
-  long double adb = fabs(db);
+  long double ada = fabsl(da);
+  long double adb = fabsl(db);
   long double scale = ada + adb;
 
 #ifndef CBLAS

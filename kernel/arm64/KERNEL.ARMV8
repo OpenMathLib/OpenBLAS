@@ -51,10 +51,12 @@ CDOTKERNEL   = zdot.S
 ZDOTKERNEL   = zdot.S
 DSDOTKERNEL  = dot.S
 
+ifneq ($(OS_DARWIN)$(CROSS),11)
 SNRM2KERNEL  = nrm2.S
 DNRM2KERNEL  = nrm2.S
 CNRM2KERNEL  = znrm2.S
 ZNRM2KERNEL  = znrm2.S
+endif
 
 SROTKERNEL   = rot.S
 DROTKERNEL   = rot.S
@@ -86,7 +88,11 @@ DTRMMKERNEL	= ../generic/trmmkernel_2x2.c
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 
+ifneq ($(OS_DARWIN)$(CROSS),11)
 SGEMMKERNEL    =  sgemm_kernel_4x4.S
+else
+SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
+endif
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
 SGEMMONCOPYOBJ =  sgemm_oncopy.o

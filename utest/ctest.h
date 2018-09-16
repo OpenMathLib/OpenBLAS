@@ -84,7 +84,7 @@ struct ctest {
 #endif
 
 #if _MSC_VER < 1900
-#define snprintf _snprintf_s
+#define snprintf _snprintf
 #endif
 
 #ifndef __cplusplus

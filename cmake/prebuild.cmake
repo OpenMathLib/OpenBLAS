@@ -85,7 +85,7 @@ if (NOT NOFORTRAN)
 endif ()
 
 # Cannot run getarch on target if we are cross-compiling
-if (DEFINED CORE AND CMAKE_CROSSCOMPILING)
+if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSSTORE"))
   # Write to config as getarch would
 
   # TODO: Set up defines that getarch sets up based on every other target

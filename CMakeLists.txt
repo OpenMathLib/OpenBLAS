@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 1.dev)
+set(OpenBLAS_PATCH_VERSION 4.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 # Adhere to GNU filesystem layout conventions
@@ -150,6 +150,7 @@ endif()
 
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
+target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include>)
 
 # Android needs to explicitly link against libm
 if(ANDROID)
@@ -169,6 +170,7 @@ endif()
 # Set output for libopenblas
 set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES EXPORT_NAME "OpenBLAS")
 
 foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )

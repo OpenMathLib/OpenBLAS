@@ -29,15 +29,18 @@
 
 #define CPU_GENERIC    	0
 #define CPU_Z13       	1
+#define CPU_Z14       	2
 
 static char *cpuname[] = {
   "ZARCH_GENERIC",
-  "Z13"
+  "Z13",
+  "Z14"
 };
 
 static char *cpuname_lower[] = {
   "zarch_generic",
-  "z13"
+  "z13",
+  "z14"
 };
 
 int detect(void)
@@ -61,6 +64,10 @@ int detect(void)
 
   if (strstr(p, "2964")) return CPU_Z13;
   if (strstr(p, "2965")) return CPU_Z13;
+
+  /* detect z14, but fall back to z13 */
+  if (strstr(p, "3906")) return CPU_Z13;
+  if (strstr(p, "3907")) return CPU_Z13;
 
   return CPU_GENERIC;
 }
@@ -105,6 +112,10 @@ void get_cpuconfig(void)
 	  break;
 	case CPU_Z13:
 	  printf("#define Z13\n");
+	  printf("#define DTB_DEFAULT_ENTRIES 64\n");
+	  break;
+	case CPU_Z14:
+	  printf("#define Z14\n");
 	  printf("#define DTB_DEFAULT_ENTRIES 64\n");
 	  break;
 	}
