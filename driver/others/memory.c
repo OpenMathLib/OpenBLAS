@@ -75,6 +75,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(USE_TLS) && defined(SMP)
 #define COMPILE_TLS
+
+#if USE_TLS != 1
+#undef COMPILE_TLS
+#endif
+
 #if defined(__GLIBC_PREREQ) 
 #if !__GLIBC_PREREQ(2,20)
 #undef COMPILE_TLS
