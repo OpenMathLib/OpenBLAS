@@ -15,8 +15,6 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 
-set(OpenBLAS_LIBNAME openblas)
-
 #######
 if(MSVC)
 option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
@@ -42,6 +40,8 @@ message(WARNING "CMake support is experimental. This will not produce the same M
 
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
 include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
+
+set(OpenBLAS_LIBNAME openblas${SUFFIX64_UNDERSCORE})
 
 set(BLASDIRS interface driver/level2 driver/level3 driver/others)
 
@@ -214,10 +214,14 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
 
 # Install libraries
 install(TARGETS ${OpenBLAS_LIBNAME}
-	EXPORT "OpenBLASTargets"
+	EXPORT "OpenBLAS${SUFFIX64}Targets"
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+# Install headers
+set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/openblas${SUFFIX64})
+set(CMAKE_INSTALL_FULL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
 
 message(STATUS "Generating openblas_config.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
@@ -266,29 +270,31 @@ if(NOT NO_LAPACKE)
 	ADD_CUSTOM_TARGET(genlapacke
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
 	)
-	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openblas${SUFFIX64})
 endif()
 
 include(FindPkgConfig QUIET)
 if(PKG_CONFIG_FOUND)
-	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas.pc @ONLY)
-	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
+	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas${SUFFIX64}.pc @ONLY)
+	install (FILES ${PROJECT_BINARY_DIR}/openblas${SUFFIX64}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
 endif()
 
 
 # GNUInstallDirs "DATADIR" wrong here; CMake search path wants "share".
 set(PN OpenBLAS)
-set(CMAKECONFIG_INSTALL_DIR "share/cmake/${PN}")
+set(CMAKECONFIG_INSTALL_DIR "share/cmake/${PN}${SUFFIX64}")
 configure_package_config_file(cmake/${PN}Config.cmake.in
-                              "${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake"
+                              "${CMAKE_CURRENT_BINARY_DIR}/${PN}${SUFFIX64}Config.cmake"
                               INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
                                  VERSION ${${PN}_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake
-              ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}${SUFFIX64}Config.cmake
         DESTINATION ${CMAKECONFIG_INSTALL_DIR})
-install(EXPORT "${PN}Targets"
-        NAMESPACE "${PN}::"
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+        RENAME ${PN}${SUFFIX64}ConfigVersion.cmake
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+install(EXPORT "${PN}${SUFFIX64}Targets"
+        NAMESPACE "${PN}${SUFFIX64}::"
         DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 
