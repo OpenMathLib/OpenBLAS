@@ -55,11 +55,11 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
   }
 
 /*FIXME the GEMV unrolling performed here was found to be broken, see issue 1332 */
-/* Multiplying DTB size by 100 is just a quick-and-dirty hack to disable it for now[B */
+/* Multiplying DTB size by 1e9 is just a quick-and-dirty hack to disable it for now */
 
-  for (is = 0; is < m; is += DTB_ENTRIES * 100){
+  for (is = 0; is < m; is += DTB_ENTRIES * 1000000000){
 
-    min_i = MIN(m - is, DTB_ENTRIES * 100);
+    min_i = MIN(m - is, DTB_ENTRIES * 1000000000);
 
 #ifndef TRANSA
     if (is > 0){
