@@ -152,6 +152,9 @@ NO_AFFINITY = 1
 # FUNCTION_PROFILE = 1
 
 # Support for IEEE quad precision(it's *real* REAL*16)( under testing)
+# This option should not be used - it is a holdover from unfinished code present
+# in the original GotoBLAS2 library that may be usable as a starting point but
+# is not even expected to compile in its present form.
 # QUAD_PRECISION = 1
 
 # Theads are still working for a while after finishing BLAS operation
