@@ -582,7 +582,7 @@ int blas_thread_init(void){
       if(ret!=0){
 	struct rlimit rlim;
         const char *msg = strerror(ret);
-        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create: %s\n", msg);
+        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create failed for thread %ld of %ld: %s\n", i+1,blas_num_threads,msg);
 #ifdef RLIMIT_NPROC
         if(0 == getrlimit(RLIMIT_NPROC, &rlim)) {
           fprintf(STDERR, "OpenBLAS blas_thread_init: RLIMIT_NPROC "
