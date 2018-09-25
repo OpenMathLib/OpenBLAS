@@ -74,13 +74,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro COPY2x2
 
 	pld	[ AO1, #A_PRE ]
-	fldmiad	AO1, { d0 - d3 }
+	vldmia.f64	AO1, { d0 - d3 }
 
 	add	r3, AO1, LDA
 	pld	[ r3, #A_PRE ]
-	fldmiad	r3, { d4 - d7 }
+	vldmia.f64	r3, { d4 - d7 }
 
-	fstmiad	BO1, { d0 - d7 }
+	vstmia.f64	BO1, { d0 - d7 }
 	add	AO1, AO1, #32
 	add	BO1, BO1, M4
 
@@ -88,12 +88,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY1x2
 
-	fldmiad	AO1, { d0 -d1 }
+	vldmia.f64	AO1, { d0 -d1 }
 
 	add	r3, AO1, LDA
-	fldmiad	r3, { d2 - d3 }
+	vldmia.f64	r3, { d2 - d3 }
 
-	fstmiad	BO2, { d0 - d3 }
+	vstmia.f64	BO2, { d0 - d3 }
 	add	AO1, AO1, #16
 	add	BO2, BO2, #32
 
@@ -102,9 +102,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*************************************************************************************************************************/
 .macro COPY2x1
 
-	fldmiad	AO1, { d0 - d3 }
+	vldmia.f64	AO1, { d0 - d3 }
 
-	fstmiad	BO1, { d0 - d3 }
+	vstmia.f64	BO1, { d0 - d3 }
 	add	AO1, AO1, #32
 	add	BO1, BO1, M4
 
@@ -112,9 +112,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY1x1
 
-	fldmiad	AO1, { d0 - d1 }
+	vldmia.f64	AO1, { d0 - d1 }
 
-	fstmiad	BO2, { d0 - d1 }
+	vstmia.f64	BO2, { d0 - d1 }
 	add	AO1, AO1, #16
 	add	BO2, BO2, #16
 
