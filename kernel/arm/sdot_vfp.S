@@ -68,26 +68,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F4
 
-	fldmias	X!, { s14 }
-	fldmias	Y!, { s15 }
+	vldmia.f32	X!, { s14 }
+	vldmia.f32	Y!, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
 
-	fldmias	X!, { s14 }
-	fldmias	Y!, { s15 }
+	vldmia.f32	X!, { s14 }
+	vldmia.f32	Y!, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
 
-	fldmias	X!, { s14 }
-	fldmias	Y!, { s15 }
+	vldmia.f32	X!, { s14 }
+	vldmia.f32	Y!, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
 
-	fldmias	X!, { s14 }
-	fldmias	Y!, { s15 }
+	vldmia.f32	X!, { s14 }
+	vldmia.f32	Y!, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
@@ -96,8 +96,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1
 
-	fldmias	X!, { s14 }
-	fldmias	Y!, { s15 }
+	vldmia.f32	X!, { s14 }
+	vldmia.f32	Y!, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
@@ -109,32 +109,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	nop
 
-	fldmias	X, { s14 }
-	fldmias	Y, { s15 }
+	vldmia.f32	X, { s14 }
+	vldmia.f32	Y, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
-	fldmias	X, { s14 }
-	fldmias	Y, { s15 }
+	vldmia.f32	X, { s14 }
+	vldmia.f32	Y, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
-	fldmias	X, { s14 }
-	fldmias	Y, { s15 }
+	vldmia.f32	X, { s14 }
+	vldmia.f32	Y, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
-	fldmias	X, { s14 }
-	fldmias	Y, { s15 }
+	vldmia.f32	X, { s14 }
+	vldmia.f32	Y, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
@@ -146,8 +146,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S1
 
-	fldmias	X, { s14 }
-	fldmias	Y, { s15 }
+	vldmia.f32	X, { s14 }
+	vldmia.f32	Y, { s15 }
 	vmul.f32   s15, s14, s15
 	vcvt.f64.f32	d4, s15
 	vadd.f64   d0  , d0,  d4
@@ -162,12 +162,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F4
 
-	fldmias	X!, { s8 - s9 }
-	fldmias	Y!, { s4 - s5}
+	vldmia.f32	X!, { s8 - s9 }
+	vldmia.f32	Y!, { s4 - s5}
 	fmacs   s0  , s4,  s8
-	fldmias	X!, { s10 - s11 }
+	vldmia.f32	X!, { s10 - s11 }
 	fmacs   s1  , s5,  s9
-	fldmias	Y!, { s6 - s7 }
+	vldmia.f32	Y!, { s6 - s7 }
 	fmacs   s0  , s6,  s10
 	fmacs   s1  , s7,  s11
 
@@ -175,8 +175,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1
 
-	fldmias	X!, { s4 }
-	fldmias	Y!, { s8 }
+	vldmia.f32	X!, { s4 }
+	vldmia.f32	Y!, { s8 }
 	fmacs   s0  , s4,  s8
 
 .endm
@@ -185,26 +185,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_S4
 
 	nop
-	fldmias	X, { s4 }
-	fldmias	Y, { s8 }
+	vldmia.f32	X, { s4 }
+	vldmia.f32	Y, { s8 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacs   s0  , s4,  s8
 
-	fldmias	X, { s5 }
-	fldmias	Y, { s9 }
+	vldmia.f32	X, { s5 }
+	vldmia.f32	Y, { s9 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacs   s1  , s5,  s9
 
-	fldmias	X, { s6 }
-	fldmias	Y, { s10 }
+	vldmia.f32	X, { s6 }
+	vldmia.f32	Y, { s10 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacs   s0  , s6,  s10
 
-	fldmias	X, { s7 }
-	fldmias	Y, { s11 }
+	vldmia.f32	X, { s7 }
+	vldmia.f32	Y, { s11 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacs   s1  , s7,  s11
@@ -214,8 +214,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S1
 
-	fldmias	X, { s4 }
-	fldmias	Y, { s8 }
+	vldmia.f32	X, { s4 }
+	vldmia.f32	Y, { s8 }
 	add	X, X, INC_X
 	fmacs   s0  , s4,  s8
 	add	Y, Y, INC_Y
