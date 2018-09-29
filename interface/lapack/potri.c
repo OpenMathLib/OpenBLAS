@@ -121,7 +121,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
 #ifdef SMP
   args.common = NULL;
-  args.nthreads = num_cpu_avail(4);
+  args.nthreads = num_cpu_avail();
 
   if (args.nthreads == 1) {
 #endif

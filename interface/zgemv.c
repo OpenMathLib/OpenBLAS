@@ -255,7 +255,7 @@ void CNAME(enum CBLAS_ORDER order,
   if ( 1L * m * n < 1024L * GEMM_MULTITHREAD_THRESHOLD )
     nthreads = 1;
   else
-    nthreads = num_cpu_avail(2);
+    nthreads = num_cpu_avail();
 
   if (nthreads == 1) {
 #endif

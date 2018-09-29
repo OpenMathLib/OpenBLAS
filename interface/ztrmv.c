@@ -233,7 +233,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 #ifdef SMP
   // Calibrated on a Xeon E5-2630
   if(1L * n * n > 36L * sizeof(FLOAT) * sizeof(FLOAT) * GEMM_MULTITHREAD_THRESHOLD) {
-    nthreads = num_cpu_avail(2);
+    nthreads = num_cpu_avail();
     if(nthreads > 2 && 1L * n * n < 64L * sizeof(FLOAT) * sizeof(FLOAT) * GEMM_MULTITHREAD_THRESHOLD)
       nthreads = 2;
   } else

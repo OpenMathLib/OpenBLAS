@@ -320,7 +320,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 	if (inc_x == 0 || inc_y == 0 || n <= 10000)
 		nthreads = 1;
 	else
-		nthreads = num_cpu_avail(1);
+		nthreads = num_cpu_avail();
 
 	if (nthreads == 1) {
 		zdot_compute(n, x, inc_x, y, inc_y, &zdot);

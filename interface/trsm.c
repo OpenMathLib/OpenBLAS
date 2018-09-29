@@ -372,7 +372,7 @@ void CNAME(enum CBLAS_ORDER order,
 	if ( args.n < 2*GEMM_MULTITHREAD_THRESHOLD )
 		args.nthreads = 1;
   else
-	args.nthreads = num_cpu_avail(3);
+	args.nthreads = num_cpu_avail();
 		
 
   if (args.nthreads == 1) {

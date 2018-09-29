@@ -129,7 +129,7 @@ typedef struct blas_queue {
 
 extern int blas_server_avail;
 
-static __inline int num_cpu_avail(int level) {
+static __inline int num_cpu_avail(void) {
 
 #ifdef USE_OPENMP
 	int openmp_nthreads=0;

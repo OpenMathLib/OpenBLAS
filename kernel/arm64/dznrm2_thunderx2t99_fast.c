@@ -238,7 +238,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (n <= 10000)
 		nthreads = 1;
 	else
-		nthreads = num_cpu_avail(1);
+		nthreads = num_cpu_avail();
 
 	if (nthreads == 1) {
 		nrm2 = nrm2_compute(n, x, inc_x);
