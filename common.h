@@ -208,6 +208,13 @@ extern "C" {
 #undef	USE_PTHREAD_SPINLOCK
 #endif
 
+#ifdef OS_LINUX
+#ifdef LOONGSON3A 
+#undef  USE_PTHREAD_LOCK
+#undef  USE_PTHREAD_SPINLOCK
+#endif
+#endif
+
 #if   defined(USE_PTHREAD_LOCK)
 #define   LOCK_COMMAND(x)   pthread_mutex_lock(x)
 #define UNLOCK_COMMAND(x)   pthread_mutex_unlock(x)
