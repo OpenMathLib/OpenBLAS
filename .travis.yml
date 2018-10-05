@@ -85,8 +85,8 @@ jobs:
       sudo: true
       language: minimal
       before_install:
-        - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.6.0/alpine-chroot-install' \
-              && echo 'a827a4ba3d0817e7c88bae17fe34e50204983d1e  alpine-chroot-install' | sha1sum -c || exit 1"
+        - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.9.0/alpine-chroot-install' \
+          && echo 'e5dfbbdc0c4b3363b99334510976c86bfa6cb251  alpine-chroot-install' | sha1sum -c || exit 1"
         - alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
       install:
         - sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers'
