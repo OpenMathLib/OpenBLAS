@@ -10,4 +10,4 @@ DGEMMONCOPY    =  dgemm_ncopy_8_skylakex.c
 DGEMMOTCOPY    =  dgemm_tcopy_8_skylakex.c
 
 SGEMM_BETA = ../generic/gemm_beta.c
-DGEMM_BETA = ../generic/gemm_beta.c
+DGEMM_BETA = dgemm_beta_skylakex.c
