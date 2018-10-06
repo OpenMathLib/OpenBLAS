@@ -647,11 +647,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define  SAVE2x2(ALPHA)					\
-	if (ALPHA != 1.0) {				\
-		xmm0 = _mm_set1_pd(ALPHA);		\
-		xmm4 *= xmm0;				\
-		xmm6 *= xmm0;				\
-	}						\
+	xmm0 = _mm_set1_pd(ALPHA);			\
+	xmm4 *= xmm0;					\
+	xmm6 *= xmm0;					\
 							\
 	xmm4 += _mm_loadu_pd(CO1);			\
 	xmm6 += _mm_loadu_pd(CO1 + ldc);		\
