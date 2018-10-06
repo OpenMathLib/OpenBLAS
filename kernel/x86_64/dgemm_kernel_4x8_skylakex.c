@@ -333,17 +333,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define KERNEL4x4_SUB() 				\
 	ymm0  = _mm256_loadu_pd(AO - 16);		\
-	ymm1  = _mm256_loadu_pd(BO - 12);		\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 12));	\
 							\
 	ymm4 += ymm0 * ymm1;				\
 							\
-	ymm0  = _mm256_permute4x64_pd(ymm0, 0xb1);	\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 11));	\
 	ymm5 += ymm0 * ymm1;				\
 							\
-	ymm0  = _mm256_permute4x64_pd(ymm0, 0x1b);	\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 10));	\
 	ymm6 += ymm0 * ymm1;				\
 							\
-	ymm0  = _mm256_permute4x64_pd(ymm0, 0xb1);	\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 9));	\
 	ymm7 += ymm0 * ymm1;				\
 	AO += 4;					\
 	BO += 4;
@@ -355,24 +355,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ymm5 *= ymm0;					\
 	ymm6 *= ymm0;					\
 	ymm7 *= ymm0;					\
-							\
-	ymm5 = _mm256_permute4x64_pd(ymm5, 0xb1);	\
-	ymm7 = _mm256_permute4x64_pd(ymm7, 0xb1);	\
-							\
-	ymm0 = _mm256_blend_pd(ymm4, ymm5, 0x0a);	\
-	ymm1 = _mm256_blend_pd(ymm4, ymm5, 0x05);	\
-	ymm2 = _mm256_blend_pd(ymm6, ymm7, 0x0a);	\
-	ymm3 = _mm256_blend_pd(ymm6, ymm7, 0x05);	\
-							\
-	ymm2 = _mm256_permute4x64_pd(ymm2, 0x1b);	\
-	ymm3 = _mm256_permute4x64_pd(ymm3, 0x1b);	\
-	ymm2 = _mm256_permute4x64_pd(ymm2, 0xb1);	\
-	ymm3 = _mm256_permute4x64_pd(ymm3, 0xb1);	\
-							\
-	ymm4 = _mm256_blend_pd(ymm2, ymm0, 0x03);	\
-	ymm5 = _mm256_blend_pd(ymm3, ymm1, 0x03);	\
-	ymm6 = _mm256_blend_pd(ymm0, ymm2, 0x03);	\
-	ymm7 = _mm256_blend_pd(ymm1, ymm3, 0x03);	\
 							\
 	ymm4 += _mm256_loadu_pd(CO1 + (0 * ldc));	\
 	ymm5 += _mm256_loadu_pd(CO1 + (1 * ldc));	\
