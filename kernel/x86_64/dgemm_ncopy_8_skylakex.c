@@ -38,6 +38,7 @@
 
 #include <stdio.h>
 #include "common.h"
+#include <immintrin.h>
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict a, BLASLONG lda, FLOAT * __restrict b){
   BLASLONG i, j;
@@ -84,131 +85,129 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict a, BLASLONG lda, FLOAT * __
       i = (m >> 3);
       if (i > 0){
 	do{
-	  ctemp01 = *(aoffset1 +  0);
-	  ctemp02 = *(aoffset1 +  1);
-	  ctemp03 = *(aoffset1 +  2);
-	  ctemp04 = *(aoffset1 +  3);
-	  ctemp05 = *(aoffset1 +  4);
-	  ctemp06 = *(aoffset1 +  5);
+	__m128d xmm0, xmm1;
+      xmm0 = _mm_load_pd1(aoffset2 + 0);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset1 + 0);
+      _mm_storeu_pd(boffset + 0, xmm0);
+
 	  ctemp07 = *(aoffset1 +  6);
 	  ctemp08 = *(aoffset1 +  7);
 
-	  ctemp09 = *(aoffset2 +  0);
-	  ctemp10 = *(aoffset2 +  1);
-	  ctemp11 = *(aoffset2 +  2);
-	  ctemp12 = *(aoffset2 +  3);
-	  ctemp13 = *(aoffset2 +  4);
-	  ctemp14 = *(aoffset2 +  5);
+      xmm1 = _mm_load_pd1(aoffset4 + 0);
+      xmm1 = _mm_loadl_pd(xmm1, aoffset3 + 0);
+      _mm_storeu_pd(boffset + 2, xmm1);
+
+      xmm0 = _mm_load_pd1(aoffset6 + 0);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset5 + 0);
+      _mm_storeu_pd(boffset + 4, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset8 + 0);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset7 + 0);
+      _mm_storeu_pd(boffset + 6, xmm0);
+
 	  ctemp15 = *(aoffset2 +  6);
 	  ctemp16 = *(aoffset2 +  7);
 
-	  ctemp17 = *(aoffset3 +  0);
-	  ctemp18 = *(aoffset3 +  1);
-	  ctemp19 = *(aoffset3 +  2);
-	  ctemp20 = *(aoffset3 +  3);
-	  ctemp21 = *(aoffset3 +  4);
-	  ctemp22 = *(aoffset3 +  5);
+      xmm0 = _mm_load_pd1(aoffset2 + 1);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset1 + 1);
+      _mm_storeu_pd(boffset + 8, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset4 + 1);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset3 + 1);
+      _mm_storeu_pd(boffset + 10, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset6 + 1);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset5 + 1);
+      _mm_storeu_pd(boffset + 12, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset8 + 1);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset7 + 1);
+      _mm_storeu_pd(boffset + 14, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset2 + 2);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset1 + 2);
+      _mm_storeu_pd(boffset + 16, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset4 + 2);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset3 + 2);
+      _mm_storeu_pd(boffset + 18, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset6 + 2);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset5 + 2);
+      _mm_storeu_pd(boffset + 20, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset8 + 2);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset7 + 2);
+      _mm_storeu_pd(boffset + 22, xmm0);
+
 	  ctemp23 = *(aoffset3 +  6);
 	  ctemp24 = *(aoffset3 +  7);
 
-	  ctemp25 = *(aoffset4 +  0);
-	  ctemp26 = *(aoffset4 +  1);
-	  ctemp27 = *(aoffset4 +  2);
-	  ctemp28 = *(aoffset4 +  3);
-	  ctemp29 = *(aoffset4 +  4);
-	  ctemp30 = *(aoffset4 +  5);
+      xmm0 = _mm_load_pd1(aoffset2 + 3);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset1 + 3);
+      _mm_storeu_pd(boffset + 24, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset4 + 3);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset3 + 3);
+      _mm_storeu_pd(boffset + 26, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset6 + 3);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset5 + 3);
+      _mm_storeu_pd(boffset + 28, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset8 + 3);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset7 + 3);
+      _mm_storeu_pd(boffset + 30, xmm0);
+
 	  ctemp31 = *(aoffset4 +  6);
 	  ctemp32 = *(aoffset4 +  7);
 
-	  ctemp33 = *(aoffset5 +  0);
-	  ctemp34 = *(aoffset5 +  1);
-	  ctemp35 = *(aoffset5 +  2);
-	  ctemp36 = *(aoffset5 +  3);
-	  ctemp37 = *(aoffset5 +  4);
-	  ctemp38 = *(aoffset5 +  5);
+
+      xmm0 = _mm_load_pd1(aoffset2 + 4);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset1 + 4);
+      _mm_storeu_pd(boffset + 32, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset4 + 4);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset3 + 4);
+      _mm_storeu_pd(boffset + 34, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset6 + 4);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset5 + 4);
+      _mm_storeu_pd(boffset + 36, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset8 + 4);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset7 + 4);
+      _mm_storeu_pd(boffset + 38, xmm0);
+
 	  ctemp39 = *(aoffset5 +  6);
 	  ctemp40 = *(aoffset5 +  7);
 
-	  ctemp41 = *(aoffset6 +  0);
-	  ctemp42 = *(aoffset6 +  1);
-	  ctemp43 = *(aoffset6 +  2);
-	  ctemp44 = *(aoffset6 +  3);
-	  ctemp45 = *(aoffset6 +  4);
-	  ctemp46 = *(aoffset6 +  5);
+      xmm0 = _mm_load_pd1(aoffset2 + 5);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset1 + 5);
+      _mm_storeu_pd(boffset + 40, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset4 + 5);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset3 + 5);
+      _mm_storeu_pd(boffset + 42, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset6 + 5);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset5 + 5);
+      _mm_storeu_pd(boffset + 44, xmm0);
+
+      xmm0 = _mm_load_pd1(aoffset8 + 5);
+      xmm0 = _mm_loadl_pd(xmm0, aoffset7 + 5);
+      _mm_storeu_pd(boffset + 46, xmm0);
+
+
 	  ctemp47 = *(aoffset6 +  6);
 	  ctemp48 = *(aoffset6 +  7);
 
-	  ctemp49 = *(aoffset7 +  0);
-	  ctemp50 = *(aoffset7 +  1);
-	  ctemp51 = *(aoffset7 +  2);
-	  ctemp52 = *(aoffset7 +  3);
-	  ctemp53 = *(aoffset7 +  4);
-	  ctemp54 = *(aoffset7 +  5);
 	  ctemp55 = *(aoffset7 +  6);
 	  ctemp56 = *(aoffset7 +  7);
 
-	  ctemp57 = *(aoffset8 +  0);
-	  ctemp58 = *(aoffset8 +  1);
-	  ctemp59 = *(aoffset8 +  2);
-	  ctemp60 = *(aoffset8 +  3);
-	  ctemp61 = *(aoffset8 +  4);
-	  ctemp62 = *(aoffset8 +  5);
 	  ctemp63 = *(aoffset8 +  6);
 	  ctemp64 = *(aoffset8 +  7);
 
-	  *(boffset +  0) = ctemp01;
-	  *(boffset +  1) = ctemp09;
-	  *(boffset +  2) = ctemp17;
-	  *(boffset +  3) = ctemp25;
-	  *(boffset +  4) = ctemp33;
-	  *(boffset +  5) = ctemp41;
-	  *(boffset +  6) = ctemp49;
-	  *(boffset +  7) = ctemp57;
-
-	  *(boffset +  8) = ctemp02;
-	  *(boffset +  9) = ctemp10;
-	  *(boffset + 10) = ctemp18;
-	  *(boffset + 11) = ctemp26;
-	  *(boffset + 12) = ctemp34;
-	  *(boffset + 13) = ctemp42;
-	  *(boffset + 14) = ctemp50;
-	  *(boffset + 15) = ctemp58;
-
-	  *(boffset + 16) = ctemp03;
-	  *(boffset + 17) = ctemp11;
-	  *(boffset + 18) = ctemp19;
-	  *(boffset + 19) = ctemp27;
-	  *(boffset + 20) = ctemp35;
-	  *(boffset + 21) = ctemp43;
-	  *(boffset + 22) = ctemp51;
-	  *(boffset + 23) = ctemp59;
-
-	  *(boffset + 24) = ctemp04;
-	  *(boffset + 25) = ctemp12;
-	  *(boffset + 26) = ctemp20;
-	  *(boffset + 27) = ctemp28;
-	  *(boffset + 28) = ctemp36;
-	  *(boffset + 29) = ctemp44;
-	  *(boffset + 30) = ctemp52;
-	  *(boffset + 31) = ctemp60;
-
-	  *(boffset + 32) = ctemp05;
-	  *(boffset + 33) = ctemp13;
-	  *(boffset + 34) = ctemp21;
-	  *(boffset + 35) = ctemp29;
-	  *(boffset + 36) = ctemp37;
-	  *(boffset + 37) = ctemp45;
-	  *(boffset + 38) = ctemp53;
-	  *(boffset + 39) = ctemp61;
-
-	  *(boffset + 40) = ctemp06;
-	  *(boffset + 41) = ctemp14;
-	  *(boffset + 42) = ctemp22;
-	  *(boffset + 43) = ctemp30;
-	  *(boffset + 44) = ctemp38;
-	  *(boffset + 45) = ctemp46;
-	  *(boffset + 46) = ctemp54;
-	  *(boffset + 47) = ctemp62;
 
 	  *(boffset + 48) = ctemp07;
 	  *(boffset + 49) = ctemp15;
