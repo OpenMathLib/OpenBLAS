@@ -201,7 +201,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         flds            s0, ALPHA_R
         flds            s1, ALPHA_I
 
-        fldmias YO, { s4 - s7 }
+        vldmia.f32 YO, { s4 - s7 }
 
         FMAC_R1 s4 , s0 , s8
         FMAC_I1 s5 , s0 , s9
@@ -213,9 +213,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         FMAC_R2 s6 , s1 , s11
         FMAC_I2 s7 , s1 , s10
 
-        fstmias YO!, { s4 - s7 }
+        vstmia.f32 YO!, { s4 - s7 }
 
-        fldmias YO, { s4 - s7 }
+        vldmia.f32 YO, { s4 - s7 }
 
         FMAC_R1 s4 , s0 , s12
         FMAC_I1 s5 , s0 , s13
@@ -227,7 +227,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         FMAC_R2 s6 , s1 , s15
         FMAC_I2 s7 , s1 , s14
 
-        fstmias YO!, { s4 - s7 }
+        vstmia.f32 YO!, { s4 - s7 }
 
 .endm
 
@@ -266,14 +266,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         flds            s0, ALPHA_R
         flds            s1, ALPHA_I
 
-        fldmias YO, { s4 - s5 }
+        vldmia.f32 YO, { s4 - s5 }
 
         FMAC_R1 s4 , s0 , s8
         FMAC_I1 s5 , s0 , s9
         FMAC_R2 s4 , s1 , s9
         FMAC_I2 s5 , s1 , s8
 
-        fstmias YO, { s4 - s5 }
+        vstmia.f32 YO, { s4 - s5 }
 
         add     YO, YO, #8
 
@@ -349,47 +349,47 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         flds            s0, ALPHA_R
         flds            s1, ALPHA_I
 
-        fldmias YO, { s4 - s5 }
+        vldmia.f32 YO, { s4 - s5 }
 
         FMAC_R1 s4 , s0 , s8
         FMAC_I1 s5 , s0 , s9
         FMAC_R2 s4 , s1 , s9
         FMAC_I2 s5 , s1 , s8
 
-        fstmias YO, { s4 - s5 }
+        vstmia.f32 YO, { s4 - s5 }
 
 	add	YO, YO, INC_Y
 
-        fldmias YO, { s6 - s7 }
+        vldmia.f32 YO, { s6 - s7 }
 
         FMAC_R1 s6 , s0 , s10
         FMAC_I1 s7 , s0 , s11
         FMAC_R2 s6 , s1 , s11
         FMAC_I2 s7 , s1 , s10
 
-        fstmias YO, { s6 - s7 }
+        vstmia.f32 YO, { s6 - s7 }
 
 	add	YO, YO, INC_Y
 
-        fldmias YO, { s4 - s5 }
+        vldmia.f32 YO, { s4 - s5 }
 
         FMAC_R1 s4 , s0 , s12
         FMAC_I1 s5 , s0 , s13
         FMAC_R2 s4 , s1 , s13
         FMAC_I2 s5 , s1 , s12
 
-        fstmias YO, { s4 - s5 }
+        vstmia.f32 YO, { s4 - s5 }
 
 	add	YO, YO, INC_Y
 
-        fldmias YO, { s6 - s7 }
+        vldmia.f32 YO, { s6 - s7 }
 
         FMAC_R1 s6 , s0 , s14
         FMAC_I1 s7 , s0 , s15
         FMAC_R2 s6 , s1 , s15
         FMAC_I2 s7 , s1 , s14
 
-        fstmias YO, { s6 - s7 }
+        vstmia.f32 YO, { s6 - s7 }
 
 	add	YO, YO, INC_Y
 
@@ -430,14 +430,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         flds            s0, ALPHA_R
         flds            s1, ALPHA_I
 
-        fldmias YO, { s4 - s5 }
+        vldmia.f32 YO, { s4 - s5 }
 
         FMAC_R1 s4 , s0 , s8
         FMAC_I1 s5 , s0 , s9
         FMAC_R2 s4 , s1 , s9
         FMAC_I2 s5 , s1 , s8
 
-        fstmias YO, { s4 - s5 }
+        vstmia.f32 YO, { s4 - s5 }
 
         add     YO, YO, INC_Y
 

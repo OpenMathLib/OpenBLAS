@@ -67,26 +67,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F4
 
 	pld	[ X, #X_PRE  ]
-	fldmiad	X!, { d8 }
+	vldmia.f64	X!, { d8 }
 	pld	[ Y, #X_PRE  ]
-	fldmiad	Y!, { d4 }
-	fldmiad	Y!, { d5 }
+	vldmia.f64	Y!, { d4 }
+	vldmia.f64	Y!, { d5 }
 	fmacd   d0  , d4,  d8
-	fldmiad	X!, { d9 }
-	fldmiad	Y!, { d6 }
+	vldmia.f64	X!, { d9 }
+	vldmia.f64	Y!, { d6 }
 	fmacd   d1  , d5,  d9
-	fldmiad	X!, { d10 }
-	fldmiad	X!, { d11 }
+	vldmia.f64	X!, { d10 }
+	vldmia.f64	X!, { d11 }
 	fmacd   d0  , d6,  d10
-	fldmiad	Y!, { d7 }
+	vldmia.f64	Y!, { d7 }
 	fmacd   d1  , d7,  d11
 
 .endm
 
 .macro KERNEL_F1
 
-	fldmiad	X!, { d4 }
-	fldmiad	Y!, { d8 }
+	vldmia.f64	X!, { d4 }
+	vldmia.f64	Y!, { d8 }
 	fmacd   d0  , d4,  d8
 
 .endm
@@ -97,26 +97,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_S4
 
 	nop
-	fldmiad	X, { d4 }
-	fldmiad	Y, { d8 }
+	vldmia.f64	X, { d4 }
+	vldmia.f64	Y, { d8 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacd   d0  , d4,  d8
 
-	fldmiad	X, { d5 }
-	fldmiad	Y, { d9 }
+	vldmia.f64	X, { d5 }
+	vldmia.f64	Y, { d9 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacd   d1  , d5,  d9
 
-	fldmiad	X, { d6 }
-	fldmiad	Y, { d10 }
+	vldmia.f64	X, { d6 }
+	vldmia.f64	Y, { d10 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacd   d0  , d6,  d10
 
-	fldmiad	X, { d7 }
-	fldmiad	Y, { d11 }
+	vldmia.f64	X, { d7 }
+	vldmia.f64	Y, { d11 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 	fmacd   d1  , d7,  d11
@@ -126,8 +126,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S1
 
-	fldmiad	X, { d4 }
-	fldmiad	Y, { d8 }
+	vldmia.f64	X, { d4 }
+	vldmia.f64	Y, { d8 }
 	add	X, X, INC_X
 	fmacd   d0  , d4,  d8
 	add	Y, Y, INC_Y

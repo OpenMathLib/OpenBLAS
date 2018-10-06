@@ -2587,20 +2587,20 @@ void *blas_memory_alloc(int procpos){
 
   position = 0;
 
+  LOCK_COMMAND(&alloc_lock);
   do {
 /*    if (!memory[position].used) { */
-      LOCK_COMMAND(&alloc_lock);
 /*      blas_lock(&memory[position].lock);*/
 
       if (!memory[position].used) goto allocation;
       
-      UNLOCK_COMMAND(&alloc_lock);
 /*      blas_unlock(&memory[position].lock);*/
 /*    } */
 
     position ++;
 
   } while (position < NUM_BUFFERS);
+  UNLOCK_COMMAND(&alloc_lock);
 
   goto error;
 

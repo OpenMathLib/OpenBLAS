@@ -374,8 +374,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d7 }
-	fldmiad CO2, { d8 - d11 }
+	vldmia.f64 CO1, { d4 - d7 }
+	vldmia.f64 CO2, { d8 - d11 }
 
 	FADD_R	d16, d24 , d16
 	FADD_I  d17, d25 , d17
@@ -406,8 +406,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d10, d1 , d23
 	FMAC_I2	d11, d1 , d22
 
-	fstmiad CO1, { d4 - d7 }
-	fstmiad CO2, { d8 - d11 }
+	vstmia.f64 CO1, { d4 - d7 }
+	vstmia.f64 CO2, { d8 - d11 }
 
 	add	CO1, CO1, #32
 
@@ -570,8 +570,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d5 }
-	fldmiad CO2, { d8 - d9  }
+	vldmia.f64 CO1, { d4 - d5 }
+	vldmia.f64 CO2, { d8 - d9  }
 
 	FADD_R	d16, d24 , d16
 	FADD_I  d17, d25 , d17
@@ -588,8 +588,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d8 , d1 , d21
 	FMAC_I2	d9 , d1 , d20
 
-	fstmiad CO1, { d4 - d5 }
-	fstmiad CO2, { d8 - d9  }
+	vstmia.f64 CO1, { d4 - d5 }
+	vstmia.f64 CO2, { d8 - d9  }
 
 	add	CO1, CO1, #16
 
@@ -752,7 +752,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d7 }
+	vldmia.f64 CO1, { d4 - d7 }
 
 	FADD_R	d16, d24 , d16
 	FADD_I  d17, d25 , d17
@@ -769,7 +769,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d6 , d1 , d19
 	FMAC_I2	d7 , d1 , d18
 
-	fstmiad CO1, { d4 - d7 }
+	vstmia.f64 CO1, { d4 - d7 }
 
 	add	CO1, CO1, #32
 
@@ -887,7 +887,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d5 }
+	vldmia.f64 CO1, { d4 - d5 }
 
 	FADD_R	d16, d24 , d16
 	FADD_I  d17, d25 , d17
@@ -897,7 +897,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d4 , d1 , d17
 	FMAC_I2	d5 , d1 , d16
 
-	fstmiad CO1, { d4 - d5 }
+	vstmia.f64 CO1, { d4 - d5 }
 
 	add	CO1, CO1, #16
 

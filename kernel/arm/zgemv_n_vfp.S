@@ -204,7 +204,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         fldd            d0, ALPHA_R
         fldd            d1, ALPHA_I
 
-        fldmiad YO, { d4 - d7 }
+        vldmia.f64 YO, { d4 - d7 }
 
         FMAC_R1 d4 , d0 , d8
         FMAC_I1 d5 , d0 , d9
@@ -216,9 +216,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         FMAC_R2 d6 , d1 , d11
         FMAC_I2 d7 , d1 , d10
 
-        fstmiad YO!, { d4 - d7 }
+        vstmia.f64 YO!, { d4 - d7 }
 
-        fldmiad YO, { d4 - d7 }
+        vldmia.f64 YO, { d4 - d7 }
 
         FMAC_R1 d4 , d0 , d12
         FMAC_I1 d5 , d0 , d13
@@ -230,7 +230,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         FMAC_R2 d6 , d1 , d15
         FMAC_I2 d7 , d1 , d14
 
-        fstmiad YO!, { d4 - d7 }
+        vstmia.f64 YO!, { d4 - d7 }
 
 .endm
 
@@ -269,14 +269,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         fldd            d0, ALPHA_R
         fldd            d1, ALPHA_I
 
-        fldmiad YO, { d4 - d5 }
+        vldmia.f64 YO, { d4 - d5 }
 
         FMAC_R1 d4 , d0 , d8
         FMAC_I1 d5 , d0 , d9
         FMAC_R2 d4 , d1 , d9
         FMAC_I2 d5 , d1 , d8
 
-        fstmiad YO, { d4 - d5 }
+        vstmia.f64 YO, { d4 - d5 }
 
         add     YO, YO, #16
 
@@ -352,47 +352,47 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         fldd            d0, ALPHA_R
         fldd            d1, ALPHA_I
 
-        fldmiad YO, { d4 - d5 }
+        vldmia.f64 YO, { d4 - d5 }
 
         FMAC_R1 d4 , d0 , d8
         FMAC_I1 d5 , d0 , d9
         FMAC_R2 d4 , d1 , d9
         FMAC_I2 d5 , d1 , d8
 
-        fstmiad YO, { d4 - d5 }
+        vstmia.f64 YO, { d4 - d5 }
 
 	add	YO, YO, INC_Y
 
-        fldmiad YO, { d6 - d7 }
+        vldmia.f64 YO, { d6 - d7 }
 
         FMAC_R1 d6 , d0 , d10
         FMAC_I1 d7 , d0 , d11
         FMAC_R2 d6 , d1 , d11
         FMAC_I2 d7 , d1 , d10
 
-        fstmiad YO, { d6 - d7 }
+        vstmia.f64 YO, { d6 - d7 }
 
 	add	YO, YO, INC_Y
 
-        fldmiad YO, { d4 - d5 }
+        vldmia.f64 YO, { d4 - d5 }
 
         FMAC_R1 d4 , d0 , d12
         FMAC_I1 d5 , d0 , d13
         FMAC_R2 d4 , d1 , d13
         FMAC_I2 d5 , d1 , d12
 
-        fstmiad YO, { d4 - d5 }
+        vstmia.f64 YO, { d4 - d5 }
 
 	add	YO, YO, INC_Y
 
-        fldmiad YO, { d6 - d7 }
+        vldmia.f64 YO, { d6 - d7 }
 
         FMAC_R1 d6 , d0 , d14
         FMAC_I1 d7 , d0 , d15
         FMAC_R2 d6 , d1 , d15
         FMAC_I2 d7 , d1 , d14
 
-        fstmiad YO, { d6 - d7 }
+        vstmia.f64 YO, { d6 - d7 }
 
 	add	YO, YO, INC_Y
 
@@ -433,14 +433,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         fldd            d0, ALPHA_R
         fldd            d1, ALPHA_I
 
-        fldmiad YO, { d4 - d5 }
+        vldmia.f64 YO, { d4 - d5 }
 
         FMAC_R1 d4 , d0 , d8
         FMAC_I1 d5 , d0 , d9
         FMAC_R2 d4 , d1 , d9
         FMAC_I2 d5 , d1 , d8
 
-        fstmiad YO, { d4 - d5 }
+        vstmia.f64 YO, { d4 - d5 }
 
         add     YO, YO, INC_Y
 

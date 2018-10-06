@@ -270,6 +270,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	.align 5
 
 .L20:
+	beqz	INCY, .L27
 	dsra	I, N, 3
 	move	YY, Y
 
@@ -450,5 +451,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	j	$31
 	NOP
+	.align  3
+.L27:
+	LD	b1,  0 * SIZE(Y)
 
+.L28:
+	daddiu	N, N, -1
+	LD	a1,  0 * SIZE(X)
+	daddu	X, X, INCX
+	bgtz	N, .L28
+	MADD	b1, b1, ALPHA, a1
+
+	j	.L999
+	ST	b1,  0 * SIZE(Y)
+	
 	EPILOGUE

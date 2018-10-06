@@ -165,9 +165,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL2x2_I
 
 	pld	[ AO, #A_PRE ]
-	fldmias	AO!, { s0 - s3 }
+	vldmia.f32	AO!, { s0 - s3 }
 	pld	[ BO, #B_PRE ]
-	fldmias	BO!, { s4 - s7 }
+	vldmia.f32	BO!, { s4 - s7 }
 
 
 	fmuls	s8  , s0,  s4
@@ -197,9 +197,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL2x2_M1
 
 	pld	[ AO, #A_PRE ]
-	fldmias	AO!, { s0 - s3 }
+	vldmia.f32	AO!, { s0 - s3 }
 	pld	[ BO, #B_PRE ]
-	fldmias	BO!, { s4 - s7 }
+	vldmia.f32	BO!, { s4 - s7 }
 
 	fmacs	s8  , s0,  s4
 	fmacs	s9  , s0,  s5
@@ -225,8 +225,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL2x2_M2
 
-	fldmias	AO!, { s0 - s3 }
-	fldmias	BO!, { s4 - s7 }
+	vldmia.f32	AO!, { s0 - s3 }
+	vldmia.f32	BO!, { s4 - s7 }
 
 	fmacs	s8  , s0,  s4
 	fmacs	s9  , s0,  s5
@@ -254,8 +254,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL2x2_E
 
-	fldmias	AO!, { s0 - s3 }
-	fldmias	BO!, { s4 - s7 }
+	vldmia.f32	AO!, { s0 - s3 }
+	vldmia.f32	BO!, { s4 - s7 }
 
 	fmacs	s8  , s0,  s4
 	fmacs	s9  , s0,  s5
@@ -282,8 +282,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL2x2_SUB
 
-	fldmias	AO!, { s0 - s3 }
-	fldmias	BO!, { s4 - s7 }
+	vldmia.f32	AO!, { s0 - s3 }
+	vldmia.f32	BO!, { s4 - s7 }
 
 	fmacs	s8  , s0,  s4
 	fmacs	s9  , s0,  s5
@@ -317,7 +317,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	fldmias CO1, { s4 - s7 }
+	vldmia.f32 CO1, { s4 - s7 }
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
@@ -329,9 +329,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 s6 , s1 , s11
 	FMAC_I2	s7 , s1 , s10
 
-	fstmias CO1, { s4 - s7 }
+	vstmia.f32 CO1, { s4 - s7 }
 
-	fldmias CO2, { s4 - s7 }
+	vldmia.f32 CO2, { s4 - s7 }
 
 	FMAC_R1 s4 , s0 , s12
 	FMAC_I1 s5 , s0 , s13
@@ -343,7 +343,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 s6 , s1 , s15
 	FMAC_I2	s7 , s1 , s14
 
-	fstmias CO2, { s4 - s7 }
+	vstmia.f32 CO2, { s4 - s7 }
 
 	add	CO1, CO1, #16
 
@@ -500,23 +500,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	fldmias CO1, { s4 - s5 }
+	vldmia.f32 CO1, { s4 - s5 }
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
 	FMAC_R2 s4 , s1 , s9
 	FMAC_I2	s5 , s1 , s8
 
-	fstmias CO1, { s4 - s5 }
+	vstmia.f32 CO1, { s4 - s5 }
 
-	fldmias CO2, { s4 - s5 }
+	vldmia.f32 CO2, { s4 - s5 }
 
 	FMAC_R1 s4 , s0 , s12
 	FMAC_I1 s5 , s0 , s13
 	FMAC_R2 s4 , s1 , s13
 	FMAC_I2	s5 , s1 , s12
 
-	fstmias CO2, { s4 - s5 }
+	vstmia.f32 CO2, { s4 - s5 }
 
 	add	CO1, CO1, #8
 
@@ -671,7 +671,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	fldmias CO1, { s4 - s7 }
+	vldmia.f32 CO1, { s4 - s7 }
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
@@ -683,7 +683,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 s6 , s1 , s11
 	FMAC_I2	s7 , s1 , s10
 
-	fstmias CO1, { s4 - s7 }
+	vstmia.f32 CO1, { s4 - s7 }
 
 	add	CO1, CO1, #16
 
@@ -800,14 +800,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	flds		s0, ALPHA_R
 	flds		s1, ALPHA_I
 
-	fldmias CO1, { s4 - s5 }
+	vldmia.f32 CO1, { s4 - s5 }
 
 	FMAC_R1 s4 , s0 , s8
 	FMAC_I1 s5 , s0 , s9
 	FMAC_R2 s4 , s1 , s9
 	FMAC_I2	s5 , s1 , s8
 
-	fstmias CO1, { s4 - s5 }
+	vstmia.f32 CO1, { s4 - s5 }
 
 	add	CO1, CO1, #8
 
