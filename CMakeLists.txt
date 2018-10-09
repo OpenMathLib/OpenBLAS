@@ -17,12 +17,19 @@ include(CMakePackageConfigHelpers)
 
 #######
 if(MSVC)
-option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
+option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
 endif()
-option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
-option(DYNAMIC_ARCH "Build with DYNAMIC_ARCH" OFF)
-option(DYNAMIC_OLDER "Support older cpus with DYNAMIC_ARCH" OFF)
-option(BUILD_RELAPACK "Build with ReLAPACK (recursive LAPACK" OFF)
+option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
+option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64 only)" OFF)
+option(DYNAMIC_OLDER "Include specific support for older cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
+option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
+
+# Add a prefix or suffix to all exported symbol names in the shared library.
+# Avoids conflicts with other BLAS libraries, especially when using
+# 64 bit integer interfaces in OpenBLAS.
+
+set(SYMBOLPREFIX "" CACHE STRING  "Add a prefix to all exported symbol names in the shared library to avoid conflicts with other BLAS libraries" )
+set(SYMBOLSUFFIX "" CACHE STRING  "Add a suffix to all exported symbol names in the shared library, e.g. _64 for INTERFACE64 builds" )
 #######
 if(BUILD_WITHOUT_LAPACK)
 set(NO_LAPACK 1)
@@ -36,7 +43,7 @@ endif()
 #######
 
 
-message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only x86 support is currently available.")
+message(WARNING "CMake support is experimental. It does not yet support all build options and may not produce the same Makefiles that OpenBLAS ships with.")
 
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
 include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
@@ -209,6 +216,71 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
+
+if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFIX} STREQUAL "")
+if (NOT DEFINED ARCH)
+  set(ARCH_IN "x86_64")
+else()
+  set(ARCH_IN ${ARCH})
+endif()
+
+if (${CORE} STREQUAL "generic")
+  set(ARCH_IN "GENERIC")
+endif ()
+
+if (NOT DEFINED EXPRECISION)
+  set(EXPRECISION_IN 0)
+else()
+  set(EXPRECISION_IN ${EXPRECISION})
+endif()
+
+if (NOT DEFINED NO_CBLAS)
+  set(NO_CBLAS_IN 0)
+else()
+  set(NO_CBLAS_IN ${NO_CBLAS})
+endif()
+
+if (NOT DEFINED NO_LAPACK)
+  set(NO_LAPACK_IN 0)
+else()
+  set(NO_LAPACK_IN ${NO_LAPACK})
+endif()
+
+if (NOT DEFINED NO_LAPACKE)
+  set(NO_LAPACKE_IN 0)
+else()
+  set(NO_LAPACKE_IN ${NO_LAPACKE})
+endif()
+
+if (NOT DEFINED NEED2UNDERSCORES)
+  set(NEED2UNDERSCORES_IN 0)
+else()
+  set(NEED2UNDERSCORES_IN ${NEED2UNDERSCORES})
+endif()
+
+if (NOT DEFINED ONLY_CBLAS)
+  set(ONLY_CBLAS_IN 0)
+else()
+  set(ONLY_CBLAS_IN ${ONLY_CBLAS})
+endif()
+
+if (NOT DEFINED BU)
+  set(BU _)
+endif()
+
+if (NOT ${SYMBOLPREFIX} STREQUAL "")
+message(STATUS "adding prefix ${SYMBOLPREFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
+endif()
+if (NOT ${SYMBOLSUFFIX} STREQUAL "")
+message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
+endif()
+	add_custom_command(TARGET ${OpenBLAS_LIBNAME} POST_BUILD
+  	COMMAND perl  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
+        COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
+        COMMENT "renaming symbols"
+        )
+endif()
+
 
 # Install project
 
