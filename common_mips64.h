@@ -94,7 +94,7 @@ static inline unsigned int rpcc(void){
 #define RPCC_DEFINED
 
 #ifndef NO_AFFINITY
-#define WHEREAMI
+//#define WHEREAMI
 static inline int WhereAmI(void){
   int ret=0;
   __asm__ __volatile__(".set push \n"
