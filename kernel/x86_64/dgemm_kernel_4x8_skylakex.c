@@ -333,17 +333,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define KERNEL4x4_SUB() 				\
 	ymm0  = _mm256_loadu_pd(AO - 16);		\
-	ymm1  = _mm256_loadu_pd(BO - 12);		\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 12));	\
 							\
 	ymm4 += ymm0 * ymm1;				\
 							\
-	ymm0  = _mm256_permute4x64_pd(ymm0, 0xb1);	\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 11));	\
 	ymm5 += ymm0 * ymm1;				\
 							\
-	ymm0  = _mm256_permute4x64_pd(ymm0, 0x1b);	\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 10));	\
 	ymm6 += ymm0 * ymm1;				\
 							\
-	ymm0  = _mm256_permute4x64_pd(ymm0, 0xb1);	\
+	ymm1  = _mm256_broadcastsd_pd(_mm_load_sd(BO - 9));	\
 	ymm7 += ymm0 * ymm1;				\
 	AO += 4;					\
 	BO += 4;
@@ -355,24 +355,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ymm5 *= ymm0;					\
 	ymm6 *= ymm0;					\
 	ymm7 *= ymm0;					\
-							\
-	ymm5 = _mm256_permute4x64_pd(ymm5, 0xb1);	\
-	ymm7 = _mm256_permute4x64_pd(ymm7, 0xb1);	\
-							\
-	ymm0 = _mm256_blend_pd(ymm4, ymm5, 0x0a);	\
-	ymm1 = _mm256_blend_pd(ymm4, ymm5, 0x05);	\
-	ymm2 = _mm256_blend_pd(ymm6, ymm7, 0x0a);	\
-	ymm3 = _mm256_blend_pd(ymm6, ymm7, 0x05);	\
-							\
-	ymm2 = _mm256_permute4x64_pd(ymm2, 0x1b);	\
-	ymm3 = _mm256_permute4x64_pd(ymm3, 0x1b);	\
-	ymm2 = _mm256_permute4x64_pd(ymm2, 0xb1);	\
-	ymm3 = _mm256_permute4x64_pd(ymm3, 0xb1);	\
-							\
-	ymm4 = _mm256_blend_pd(ymm2, ymm0, 0x03);	\
-	ymm5 = _mm256_blend_pd(ymm3, ymm1, 0x03);	\
-	ymm6 = _mm256_blend_pd(ymm0, ymm2, 0x03);	\
-	ymm7 = _mm256_blend_pd(ymm1, ymm3, 0x03);	\
 							\
 	ymm4 += _mm256_loadu_pd(CO1 + (0 * ldc));	\
 	ymm5 += _mm256_loadu_pd(CO1 + (1 * ldc));	\
@@ -647,11 +629,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define  SAVE2x2(ALPHA)					\
-	if (ALPHA != 1.0) {				\
-		xmm0 = _mm_set1_pd(ALPHA);		\
-		xmm4 *= xmm0;				\
-		xmm6 *= xmm0;				\
-	}						\
+	xmm0 = _mm_set1_pd(ALPHA);			\
+	xmm4 *= xmm0;					\
+	xmm6 *= xmm0;					\
 							\
 	xmm4 += _mm_loadu_pd(CO1);			\
 	xmm6 += _mm_loadu_pd(CO1 + ldc);		\
@@ -947,39 +927,15 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"jg .label24\n"
 			/* multiply the result by alpha */
 			"vbroadcastsd (%[alpha]), %%zmm9\n"
-			"vmulpd %%zmm9, %%zmm1,  %%zmm1\n"
-			"vmulpd %%zmm9, %%zmm2,  %%zmm2\n"
-			"vmulpd %%zmm9, %%zmm3,  %%zmm3\n"
-			"vmulpd %%zmm9, %%zmm4,  %%zmm4\n"
-			"vmulpd %%zmm9, %%zmm5,  %%zmm5\n"
-			"vmulpd %%zmm9, %%zmm6,  %%zmm6\n"
-			"vmulpd %%zmm9, %%zmm7,  %%zmm7\n"
-			"vmulpd %%zmm9, %%zmm8,  %%zmm8\n"
-			"vmulpd %%zmm9, %%zmm11, %%zmm11\n"
-			"vmulpd %%zmm9, %%zmm12, %%zmm12\n"
-			"vmulpd %%zmm9, %%zmm13, %%zmm13\n"
-			"vmulpd %%zmm9, %%zmm14, %%zmm14\n"
-			"vmulpd %%zmm9, %%zmm15, %%zmm15\n"
-			"vmulpd %%zmm9, %%zmm16, %%zmm16\n"
-			"vmulpd %%zmm9, %%zmm17, %%zmm17\n"
-			"vmulpd %%zmm9, %%zmm18, %%zmm18\n"
-			"vmulpd %%zmm9, %%zmm21, %%zmm21\n"
-			"vmulpd %%zmm9, %%zmm22, %%zmm22\n"
-			"vmulpd %%zmm9, %%zmm23, %%zmm23\n"
-			"vmulpd %%zmm9, %%zmm24, %%zmm24\n"
-			"vmulpd %%zmm9, %%zmm25, %%zmm25\n"
-			"vmulpd %%zmm9, %%zmm26, %%zmm26\n"
-			"vmulpd %%zmm9, %%zmm27, %%zmm27\n"
-			"vmulpd %%zmm9, %%zmm28, %%zmm28\n"
 			/* And store additively in C */
-			"vaddpd (%[C0]), %%zmm1, %%zmm1\n"
-			"vaddpd (%[C1]), %%zmm2, %%zmm2\n"
-			"vaddpd (%[C2]), %%zmm3, %%zmm3\n"
-			"vaddpd (%[C3]), %%zmm4, %%zmm4\n"
-			"vaddpd (%[C4]), %%zmm5, %%zmm5\n"
-			"vaddpd (%[C5]), %%zmm6, %%zmm6\n"
-			"vaddpd (%[C6]), %%zmm7, %%zmm7\n"
-			"vaddpd (%[C7]), %%zmm8, %%zmm8\n"
+			"vfmadd213pd (%[C0]), %%zmm9, %%zmm1\n"
+			"vfmadd213pd (%[C1]), %%zmm9, %%zmm2\n"
+			"vfmadd213pd (%[C2]), %%zmm9, %%zmm3\n"
+			"vfmadd213pd (%[C3]), %%zmm9, %%zmm4\n"
+			"vfmadd213pd (%[C4]), %%zmm9, %%zmm5\n"
+			"vfmadd213pd (%[C5]), %%zmm9, %%zmm6\n"
+			"vfmadd213pd (%[C6]), %%zmm9, %%zmm7\n"
+			"vfmadd213pd (%[C7]), %%zmm9, %%zmm8\n"
 			"vmovupd %%zmm1, (%[C0])\n"
 			"vmovupd %%zmm2, (%[C1])\n"
 			"vmovupd %%zmm3, (%[C2])\n"
@@ -989,14 +945,14 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovupd %%zmm7, (%[C6])\n"
 			"vmovupd %%zmm8, (%[C7])\n"
 
-			"vaddpd 64(%[C0]), %%zmm11, %%zmm11\n"
-			"vaddpd 64(%[C1]), %%zmm12, %%zmm12\n"
-			"vaddpd 64(%[C2]), %%zmm13, %%zmm13\n"
-			"vaddpd 64(%[C3]), %%zmm14, %%zmm14\n"
-			"vaddpd 64(%[C4]), %%zmm15, %%zmm15\n"
-			"vaddpd 64(%[C5]), %%zmm16, %%zmm16\n"
-			"vaddpd 64(%[C6]), %%zmm17, %%zmm17\n"
-			"vaddpd 64(%[C7]), %%zmm18, %%zmm18\n"
+			"vfmadd213pd 64(%[C0]), %%zmm9, %%zmm11\n"
+			"vfmadd213pd 64(%[C1]), %%zmm9, %%zmm12\n"
+			"vfmadd213pd 64(%[C2]), %%zmm9, %%zmm13\n"
+			"vfmadd213pd 64(%[C3]), %%zmm9, %%zmm14\n"
+			"vfmadd213pd 64(%[C4]), %%zmm9, %%zmm15\n"
+			"vfmadd213pd 64(%[C5]), %%zmm9, %%zmm16\n"
+			"vfmadd213pd 64(%[C6]), %%zmm9, %%zmm17\n"
+			"vfmadd213pd 64(%[C7]), %%zmm9, %%zmm18\n"
 			"vmovupd %%zmm11, 64(%[C0])\n"
 			"vmovupd %%zmm12, 64(%[C1])\n"
 			"vmovupd %%zmm13, 64(%[C2])\n"
@@ -1006,14 +962,14 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovupd %%zmm17, 64(%[C6])\n"
 			"vmovupd %%zmm18, 64(%[C7])\n"
 
-			"vaddpd 128(%[C0]), %%zmm21, %%zmm21\n"
-			"vaddpd 128(%[C1]), %%zmm22, %%zmm22\n"
-			"vaddpd 128(%[C2]), %%zmm23, %%zmm23\n"
-			"vaddpd 128(%[C3]), %%zmm24, %%zmm24\n"
-			"vaddpd 128(%[C4]), %%zmm25, %%zmm25\n"
-			"vaddpd 128(%[C5]), %%zmm26, %%zmm26\n"
-			"vaddpd 128(%[C6]), %%zmm27, %%zmm27\n"
-			"vaddpd 128(%[C7]), %%zmm28, %%zmm28\n"
+			"vfmadd213pd 128(%[C0]), %%zmm9, %%zmm21\n"
+			"vfmadd213pd 128(%[C1]), %%zmm9, %%zmm22\n"
+			"vfmadd213pd 128(%[C2]), %%zmm9, %%zmm23\n"
+			"vfmadd213pd 128(%[C3]), %%zmm9, %%zmm24\n"
+			"vfmadd213pd 128(%[C4]), %%zmm9, %%zmm25\n"
+			"vfmadd213pd 128(%[C5]), %%zmm9, %%zmm26\n"
+			"vfmadd213pd 128(%[C6]), %%zmm9, %%zmm27\n"
+			"vfmadd213pd 128(%[C7]), %%zmm9, %%zmm28\n"
 			"vmovupd %%zmm21, 128(%[C0])\n"
 			"vmovupd %%zmm22, 128(%[C1])\n"
 			"vmovupd %%zmm23, 128(%[C2])\n"
@@ -1128,31 +1084,15 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"jg .label16\n"
 			/* multiply the result by alpha */
 			"vbroadcastsd (%[alpha]), %%zmm9\n"
-			"vmulpd %%zmm9, %%zmm1,  %%zmm1\n"
-			"vmulpd %%zmm9, %%zmm2,  %%zmm2\n"
-			"vmulpd %%zmm9, %%zmm3,  %%zmm3\n"
-			"vmulpd %%zmm9, %%zmm4,  %%zmm4\n"
-			"vmulpd %%zmm9, %%zmm5,  %%zmm5\n"
-			"vmulpd %%zmm9, %%zmm6,  %%zmm6\n"
-			"vmulpd %%zmm9, %%zmm7,  %%zmm7\n"
-			"vmulpd %%zmm9, %%zmm8,  %%zmm8\n"
-			"vmulpd %%zmm9, %%zmm11, %%zmm11\n"
-			"vmulpd %%zmm9, %%zmm12, %%zmm12\n"
-			"vmulpd %%zmm9, %%zmm13, %%zmm13\n"
-			"vmulpd %%zmm9, %%zmm14, %%zmm14\n"
-			"vmulpd %%zmm9, %%zmm15, %%zmm15\n"
-			"vmulpd %%zmm9, %%zmm16, %%zmm16\n"
-			"vmulpd %%zmm9, %%zmm17, %%zmm17\n"
-			"vmulpd %%zmm9, %%zmm18, %%zmm18\n"
 			/* And store additively in C */
-			"vaddpd (%[C0]), %%zmm1, %%zmm1\n"
-			"vaddpd (%[C1]), %%zmm2, %%zmm2\n"
-			"vaddpd (%[C2]), %%zmm3, %%zmm3\n"
-			"vaddpd (%[C3]), %%zmm4, %%zmm4\n"
-			"vaddpd (%[C4]), %%zmm5, %%zmm5\n"
-			"vaddpd (%[C5]), %%zmm6, %%zmm6\n"
-			"vaddpd (%[C6]), %%zmm7, %%zmm7\n"
-			"vaddpd (%[C7]), %%zmm8, %%zmm8\n"
+			"vfmadd213pd (%[C0]), %%zmm9, %%zmm1\n"
+			"vfmadd213pd (%[C1]), %%zmm9, %%zmm2\n"
+			"vfmadd213pd (%[C2]), %%zmm9, %%zmm3\n"
+			"vfmadd213pd (%[C3]), %%zmm9, %%zmm4\n"
+			"vfmadd213pd (%[C4]), %%zmm9, %%zmm5\n"
+			"vfmadd213pd (%[C5]), %%zmm9, %%zmm6\n"
+			"vfmadd213pd (%[C6]), %%zmm9, %%zmm7\n"
+			"vfmadd213pd (%[C7]), %%zmm9, %%zmm8\n"
 			"vmovupd %%zmm1, (%[C0])\n"
 			"vmovupd %%zmm2, (%[C1])\n"
 			"vmovupd %%zmm3, (%[C2])\n"
@@ -1162,14 +1102,14 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovupd %%zmm7, (%[C6])\n"
 			"vmovupd %%zmm8, (%[C7])\n"
 
-			"vaddpd 64(%[C0]), %%zmm11, %%zmm11\n"
-			"vaddpd 64(%[C1]), %%zmm12, %%zmm12\n"
-			"vaddpd 64(%[C2]), %%zmm13, %%zmm13\n"
-			"vaddpd 64(%[C3]), %%zmm14, %%zmm14\n"
-			"vaddpd 64(%[C4]), %%zmm15, %%zmm15\n"
-			"vaddpd 64(%[C5]), %%zmm16, %%zmm16\n"
-			"vaddpd 64(%[C6]), %%zmm17, %%zmm17\n"
-			"vaddpd 64(%[C7]), %%zmm18, %%zmm18\n"
+			"vfmadd213pd 64(%[C0]), %%zmm9, %%zmm11\n"
+			"vfmadd213pd 64(%[C1]), %%zmm9, %%zmm12\n"
+			"vfmadd213pd 64(%[C2]), %%zmm9, %%zmm13\n"
+			"vfmadd213pd 64(%[C3]), %%zmm9, %%zmm14\n"
+			"vfmadd213pd 64(%[C4]), %%zmm9, %%zmm15\n"
+			"vfmadd213pd 64(%[C5]), %%zmm9, %%zmm16\n"
+			"vfmadd213pd 64(%[C6]), %%zmm9, %%zmm17\n"
+			"vfmadd213pd 64(%[C7]), %%zmm9, %%zmm18\n"
 			"vmovupd %%zmm11, 64(%[C0])\n"
 			"vmovupd %%zmm12, 64(%[C1])\n"
 			"vmovupd %%zmm13, 64(%[C2])\n"
@@ -1241,24 +1181,15 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"add $64, %[BO]\n"
 			"subl $1, %[kloop]\n"
 			"jg .label1\n"
-			/* multiply the result by alpha */
-			"vmulpd %%zmm9, %%zmm1, %%zmm1\n"
-			"vmulpd %%zmm9, %%zmm2, %%zmm2\n"
-			"vmulpd %%zmm9, %%zmm3, %%zmm3\n"
-			"vmulpd %%zmm9, %%zmm4, %%zmm4\n"
-			"vmulpd %%zmm9, %%zmm5, %%zmm5\n"
-			"vmulpd %%zmm9, %%zmm6, %%zmm6\n"
-			"vmulpd %%zmm9, %%zmm7, %%zmm7\n"
-			"vmulpd %%zmm9, %%zmm8, %%zmm8\n"
-			/* And store additively in C */
-			"vaddpd (%[C0]), %%zmm1, %%zmm1\n"
-			"vaddpd (%[C1]), %%zmm2, %%zmm2\n"
-			"vaddpd (%[C2]), %%zmm3, %%zmm3\n"
-			"vaddpd (%[C3]), %%zmm4, %%zmm4\n"
-			"vaddpd (%[C4]), %%zmm5, %%zmm5\n"
-			"vaddpd (%[C5]), %%zmm6, %%zmm6\n"
-			"vaddpd (%[C6]), %%zmm7, %%zmm7\n"
-			"vaddpd (%[C7]), %%zmm8, %%zmm8\n"
+			/* multiply the result by alpha and add to the memory */
+			"vfmadd213pd (%[C0]), %%zmm9, %%zmm1\n"
+			"vfmadd213pd (%[C1]), %%zmm9, %%zmm2\n"
+			"vfmadd213pd (%[C2]), %%zmm9, %%zmm3\n"
+			"vfmadd213pd (%[C3]), %%zmm9, %%zmm4\n"
+			"vfmadd213pd (%[C4]), %%zmm9, %%zmm5\n"
+			"vfmadd213pd (%[C5]), %%zmm9, %%zmm6\n"
+			"vfmadd213pd (%[C6]), %%zmm9, %%zmm7\n"
+			"vfmadd213pd (%[C7]), %%zmm9, %%zmm8\n"
 			"vmovupd %%zmm1, (%[C0])\n"
 			"vmovupd %%zmm2, (%[C1])\n"
 			"vmovupd %%zmm3, (%[C2])\n"
@@ -1267,14 +1198,6 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovupd %%zmm6, (%[C5])\n"
 			"vmovupd %%zmm7, (%[C6])\n"
 			"vmovupd %%zmm8, (%[C7])\n"
-			"prefetchw 64(%[C0])\n"
-			"prefetchw 64(%[C1])\n"
-			"prefetchw 64(%[C2])\n"
-			"prefetchw 64(%[C3])\n"
-			"prefetchw 64(%[C4])\n"
-			"prefetchw 64(%[C5])\n"
-			"prefetchw 64(%[C6])\n"
-			"prefetchw 64(%[C7])\n"
 			   : 
   			     [AO]	"+r" (AO),
 			     [BO]	"+r" (BO),
