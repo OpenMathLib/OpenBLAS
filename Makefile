@@ -251,7 +251,7 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "ARCHFLAGS   = $(ARFLAGS) -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB   = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
