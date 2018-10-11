@@ -43,8 +43,7 @@ endif ()
 
 if (DEFINED TARGET)
 if (${TARGET} STREQUAL "SKYLAKEX" AND NOT NO_AVX512)
-  set (CCOMMON_OPT "${CCOMMON_OPT} -march=skylake-avx512")
-  set (FCOMMON_OPT "${FCOMMON_OPT} -march=skylake-avx512")
+  set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -march=skylake-avx512")
 endif()
 endif()
 
