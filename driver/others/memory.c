@@ -2586,7 +2586,7 @@ void *blas_memory_alloc(int procpos){
   printf("Alloc Start ...\n");
 #endif
 
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
+/* #if defined(WHEREAMI) && !defined(USE_OPENMP)
 
   mypos = WhereAmI();
 
@@ -2596,12 +2596,12 @@ void *blas_memory_alloc(int procpos){
   do {
     if (!memory[position].used && (memory[position].pos == mypos)) {
       LOCK_COMMAND(&alloc_lock);
-/*      blas_lock(&memory[position].lock);*/
+//      blas_lock(&memory[position].lock);
 
       if (!memory[position].used) goto allocation;
 
       UNLOCK_COMMAND(&alloc_lock);
-/*      blas_unlock(&memory[position].lock);*/
+//      blas_unlock(&memory[position].lock);
     }
 
     position ++;
@@ -2609,7 +2609,7 @@ void *blas_memory_alloc(int procpos){
   } while (position < NUM_BUFFERS);
 
 
-#endif
+#endif */
 
   position = 0;
 
