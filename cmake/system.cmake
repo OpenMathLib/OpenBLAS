@@ -42,6 +42,13 @@ if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
 endif ()
 
 if (DEFINED TARGET)
+if (${TARGET} STREQUAL "SKYLAKEX" AND NOT NO_AVX512)
+  set (CCOMMON_OPT "${CCOMMON_OPT} -march=skylake-avx512")
+  set (FCOMMON_OPT "${FCOMMON_OPT} -march=skylake-avx512")
+endif()
+endif()
+
+if (DEFINED TARGET)
   message(STATUS "Targeting the ${TARGET} architecture.")
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
 endif ()
