@@ -294,6 +294,8 @@ gotoblas_t TABLE_NAME = {
   chemm_outcopyTS,  chemm_oltcopyTS,
 
   0, 0, 0,
+
+#if defined(USE_GEMM3M)
 #ifdef CGEMM3M_DEFAULT_UNROLL_M
   CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N, MAX(CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N),
 #else
@@ -324,6 +326,33 @@ gotoblas_t TABLE_NAME = {
   chemm3m_oucopybTS,  chemm3m_olcopybTS,
   chemm3m_oucopyrTS,  chemm3m_olcopyrTS,
   chemm3m_oucopyiTS,  chemm3m_olcopyiTS,
+#else
+  0, 0, 0,
+
+  NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+#endif
 
 #ifndef NO_LAPACK
   cneg_tcopyTS, claswp_ncopyTS,
@@ -400,6 +429,7 @@ gotoblas_t TABLE_NAME = {
   zhemm_outcopyTS,  zhemm_oltcopyTS,
 
   0, 0, 0,
+#if defined(USE_GEMM3M)
 #ifdef ZGEMM3M_DEFAULT_UNROLL_M
   ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N, MAX(ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N),
 #else
@@ -430,6 +460,33 @@ gotoblas_t TABLE_NAME = {
   zhemm3m_oucopybTS,  zhemm3m_olcopybTS,
   zhemm3m_oucopyrTS,  zhemm3m_olcopyrTS,
   zhemm3m_oucopyiTS,  zhemm3m_olcopyiTS,
+#else
+  0, 0, 0,
+
+  NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+#endif
 
 #ifndef NO_LAPACK
   zneg_tcopyTS, zlaswp_ncopyTS,
@@ -503,6 +560,7 @@ gotoblas_t TABLE_NAME = {
   xhemm_outcopyTS,  xhemm_oltcopyTS,
 
   0, 0, 0,
+#if defined(USE_GEMM3M)
   QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N, MAX(QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N),
 
   xgemm3m_kernelTS,
@@ -528,6 +586,33 @@ gotoblas_t TABLE_NAME = {
   xhemm3m_oucopybTS,  xhemm3m_olcopybTS,
   xhemm3m_oucopyrTS,  xhemm3m_olcopyrTS,
   xhemm3m_oucopyiTS,  xhemm3m_olcopyiTS,
+#else
+  0, 0, 0,
+
+  NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+#endif
 
 #ifndef NO_LAPACK
   xneg_tcopyTS, xlaswp_ncopyTS,
