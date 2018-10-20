@@ -43,6 +43,10 @@
 #include "functable.h"
 #endif
 
+// this is smallest dimension N of square input a to permit threading
+// see graph in issue #1820 for explanation
+#define MULTI_THREAD_MINIMAL 362
+
 #ifdef XDOUBLE
 #define ERROR_NAME "XHEMV "
 #elif defined(DOUBLE)
@@ -195,8 +199,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, void *VALPHA
   buffer = (FLOAT *)blas_memory_alloc(1);
 
 #ifdef SMP
-  // see graph in issue #1820 for explanation and room for improvement
-  if (n<362) {
+  if (n<MULTI_THREAD_MINIMAL) {
 	  nthreads = 1 ;
   } else {
   	  nthreads = num_cpu_avail(2);
