@@ -154,6 +154,12 @@ Please read `GotoBLAS_01Readme.txt`.
 Statically link with `libopenblas.a` or dynamically link with `-lopenblas` if OpenBLAS was
 compiled as a shared library.
 
+### Notes on parallelism
+
+There are a number of compile time options that alter the way OpenBLAS handles parallelism.
+Calling a BLAS or LAPACK subroutine from a multithreaded region requires some special consideration.
+Please see the wiki page on parallelism for more details. <TODO>
+
 ### Setting the number of threads using environment variables
 
 Environment variables are used to specify a maximum number of threads.
