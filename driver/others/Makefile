@@ -15,7 +15,11 @@ endif
 # COMMONOBJS	+=  info.$(SUFFIX)
 
 ifeq ($(DYNAMIC_ARCH), 1)
+ifeq ($(ARCH),arm64)
+COMMONOBJS	+=  dynamic_arm64.$(SUFFIX)
+else
 COMMONOBJS	+=  dynamic.$(SUFFIX)
+endif
 else
 COMMONOBJS	+=  parameter.$(SUFFIX)
 endif
@@ -71,7 +75,11 @@ BLAS_SERVER = blas_server.c
 endif
 
 ifeq ($(DYNAMIC_ARCH), 1)
+ifeq ($(ARCH),arm64)
+HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_arm64.$(SUFFIX)
+else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
+endif
 else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) parameter.$(SUFFIX)
 endif

@@ -237,7 +237,6 @@ void get_cpuconfig(void)
 			break;
 
 		case CPU_THUNDERX:
-			printf("#define ARMV8\n");
 			printf("#define THUNDERX\n");
 			printf("#define L1_DATA_SIZE 32768\n");
 			printf("#define L1_DATA_LINESIZE 128\n");
