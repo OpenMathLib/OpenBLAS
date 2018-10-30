@@ -1,7 +1,6 @@
 /*
  *     Written by T. H. Do, 1/23/98, SGI/CRAY Research.
  */
-#include <string.h>
 #include "common.h"
 #include "cblas_test.h"
 

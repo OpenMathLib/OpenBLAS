@@ -4,7 +4,6 @@
  *
  *     Modified by T. H. Do, 4/15/98, SGI/CRAY Research.
  */
-#include <stdlib.h>
 #include "common.h"
 #include "cblas_test.h"
 

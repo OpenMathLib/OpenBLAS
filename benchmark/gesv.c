@@ -36,8 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
 #ifdef __CYGWIN32__
 #include <sys/time.h>
 #endif

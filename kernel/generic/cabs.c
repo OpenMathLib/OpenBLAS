@@ -36,7 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <math.h>
 #include "common.h"
 
 FLOAT NAME(FLOAT *a){

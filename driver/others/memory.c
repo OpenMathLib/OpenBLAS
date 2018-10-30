@@ -101,8 +101,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ALLOC_MALLOC
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <fcntl.h>
 
 #if !defined(OS_WINDOWS) || defined(OS_CYGWIN_NT)
@@ -1597,8 +1595,6 @@ void gotoblas_dummy_for_PGI(void) {
 #define ALLOC_MALLOC
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <fcntl.h>
 
 #ifndef OS_WINDOWS

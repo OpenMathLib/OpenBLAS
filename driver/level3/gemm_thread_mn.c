@@ -36,8 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "common.h"
 
 static const int divide_rule[][2] =

@@ -36,8 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <string.h>
 #include "common.h"
 
 extern int openblas_block_factor();

@@ -36,7 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
 #include <ctype.h>
 #include "common.h"
 #ifdef FUNCTION_PROFILE

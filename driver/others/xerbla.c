@@ -36,8 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "common.h"
 
 #if defined(OS_WINDOWS) && (defined(__MINGW32__) || defined(__MINGW64__))

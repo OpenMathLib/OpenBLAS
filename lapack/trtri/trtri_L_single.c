@@ -33,7 +33,6 @@
 * 	TEST single precision blocked: OK
 **************************************************************************************/
 
-#include <stdio.h>
 #include "common.h"
 
 // static FLOAT dp1 =  1.;

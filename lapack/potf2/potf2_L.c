@@ -36,8 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <math.h>
 #include "common.h"
 
 static FLOAT dm1 = -1.;

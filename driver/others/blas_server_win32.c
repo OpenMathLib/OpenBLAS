@@ -36,8 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "common.h"
 
 #if defined(OS_CYGWIN_NT) && !defined(unlikely)

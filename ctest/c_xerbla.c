@@ -1,7 +1,5 @@
-#include <stdio.h>
 #include <ctype.h>
 #include <stdarg.h>
-#include <string.h>
 #include "common.h"
 #include "cblas_test.h"
 

@@ -86,7 +86,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <dirent.h>
 #include <dlfcn.h>
 #include <unistd.h>
-#include <string.h>
 
 #if defined(BIGNUMA)
 // max number of nodes as defined in numa.h

@@ -36,7 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
 #include "common.h"
 
 static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,

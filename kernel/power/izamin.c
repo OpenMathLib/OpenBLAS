@@ -27,7 +27,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
 
 #include "common.h"
-#include <math.h>
  
 #define ABS fabs 
 #define CABS1(x,i)    ABS(x[i])+ABS(x[i+1])

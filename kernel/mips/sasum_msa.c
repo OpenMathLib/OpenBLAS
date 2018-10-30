@@ -26,7 +26,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
 #include "common.h"
-#include <math.h>
 #include "macros_msa.h"
 
 #define AND_VEC_W(in)   ((v4f32) ((v4i32) in & and_vec))

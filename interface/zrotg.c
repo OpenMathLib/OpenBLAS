@@ -1,4 +1,3 @@
-#include <math.h>
 #include "common.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
