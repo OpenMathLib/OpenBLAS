@@ -119,7 +119,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <linux/unistd.h>
 #include <sys/syscall.h>
-#include <sys/time.h>
 #include <sys/resource.h>
 #endif
 
@@ -1613,7 +1612,6 @@ void gotoblas_dummy_for_PGI(void) {
 #include <errno.h>
 #include <linux/unistd.h>
 #include <sys/syscall.h>
-#include <sys/time.h>
 #include <sys/resource.h>
 #endif
 

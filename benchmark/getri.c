@@ -36,9 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#ifdef __CYGWIN32__
-#include <sys/time.h>
-#endif
 #include "common.h"
 
 #undef GETRF

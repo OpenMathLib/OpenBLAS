@@ -25,21 +25,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifdef __CYGWIN32__
-#include <sys/time.h>
-#endif
 #include "common.h"
 
-
 #undef DOT
-
 
 #ifdef DOUBLE
 #define DOT   BLASFUNC(ddot)
 #else
 #define DOT   BLASFUNC(sdot)
 #endif
-
 
 #if defined(__WIN32__) || defined(__WIN64__)
 
