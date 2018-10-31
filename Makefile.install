@@ -48,6 +48,7 @@ ifndef NO_CBLAS
 	@sed 's/common/openblas_config/g' cblas.h > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas.h"
 endif
 
+ifneq (($OSNAME), AIX)
 ifndef NO_LAPACKE
 	@echo Copying LAPACKE header files to $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@-install -pm644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h"
@@ -72,6 +73,7 @@ ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
+
 ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
 	@cp $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
@@ -93,6 +95,33 @@ ifeq ($(OSNAME), CYGWIN_NT)
 endif
 endif
 
+else
+#install on AIX has different options syntax
+ifndef NO_LAPACKE
+	@echo Copying LAPACKE header files to $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
+	@-install -M 644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h"
+	@-install -M 644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_config.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_config.h"
+	@-install -M 644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_mangling_with_flags.h.in "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_mangling.h"
+	@-install -M 644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_utils.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_utils.h"
+endif
+
+#for install static library
+ifndef NO_STATIC
+	@echo Copying the static library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
+	@install -M 644 $(LIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
+	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
+	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+endif
+#for install shared library
+ifndef NO_SHARED
+	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
+	@install -M 755 $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
+	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
+	ln -fs $(LIBSONAME) $(LIBPREFIX).so ; \
+	ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
+endif
+
+endif
 
 #Generating openblas.pc
 	@echo Generating openblas.pc in "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
