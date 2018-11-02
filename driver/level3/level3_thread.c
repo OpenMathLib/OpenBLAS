@@ -48,6 +48,10 @@
 #define SWITCH_RATIO 2
 #endif
 
+#ifndef GEMM_PREFERED_SIZE
+#define GEMM_PREFERED_SIZE 1
+#endif
+
 //The array of job_t may overflow the stack.
 //Instead, use malloc to alloc job_t.
 #if MAX_CPU_NUMBER > BLAS3_MEM_ALLOC_THRESHOLD
@@ -510,6 +514,16 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   return 0;
 }
 
+static int round_up(int remainder, int width, int multiple)
+{
+	if (multiple > remainder || width <= multiple)
+		return width;
+	width = (width + multiple - 1) / multiple;
+	width = width * multiple;
+	return width;
+}
+
+
 static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 		       *range_n, FLOAT *sa, FLOAT *sb,
                        BLASLONG nthreads_m, BLASLONG nthreads_n) {
@@ -601,9 +615,14 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   num_parts = 0;
   while (m > 0){
     width = blas_quickdivide(m + nthreads_m - num_parts - 1, nthreads_m - num_parts);
+
+    width = round_up(m, width, GEMM_PREFERED_SIZE);
+
     m -= width;
+
     if (m < 0) width = width + m;
     range_M[num_parts + 1] = range_M[num_parts] + width;
+
     num_parts ++;
   }
   for (i = num_parts; i < MAX_CPU_NUMBER; i++) {
@@ -645,9 +664,12 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
       if (width < SWITCH_RATIO) {
         width = SWITCH_RATIO;
       }
+      width = round_up(n, width, GEMM_PREFERED_SIZE);
+
       n -= width;
       if (n < 0) width = width + n;
       range_N[num_parts + 1] = range_N[num_parts] + width;
+
       num_parts ++;
     }
     for (j = num_parts; j < MAX_CPU_NUMBER; j++) {
