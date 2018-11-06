@@ -718,6 +718,8 @@ endif
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
+# make single-threaded LAPACK calls thread-safe #1847
+FCOMMON_OPT += -frecursive
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
