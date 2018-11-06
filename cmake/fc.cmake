@@ -44,7 +44,7 @@ endif ()
 
 if (${F_COMPILER} STREQUAL "GFORTRAN")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_GFORT")
-  set(FCOMMON_OPT "${FCOMMON_OPT} -Wall")
+  set(FCOMMON_OPT "${FCOMMON_OPT} -Wall -frecursive")
   #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
   if (NOT NO_LAPACK)
     set(EXTRALIB "{EXTRALIB} -lgfortran")
