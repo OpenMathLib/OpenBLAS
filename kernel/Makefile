@@ -88,7 +88,11 @@ lsame.$(SUFFIX): $(KERNELDIR)/$(LSAME_KERNEL)
 	$(CC) -c $(CFLAGS) -DF_INTERFACE $< -o $(@F)
 
 setparam$(TSUFFIX).$(SUFFIX): setparam$(TSUFFIX).c kernel$(TSUFFIX).h
+ifeq ($(USE_GEMM3M), 1)
+	$(CC) -c $(CFLAGS) -DUSE_GEMM3M $< -o $@
+else
 	$(CC) -c $(CFLAGS) $< -o $@
+endif
 
 setparam$(TSUFFIX).c : setparam-ref.c
 	sed 's/TS/$(TSUFFIX)/g' $< > $(@F)

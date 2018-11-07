@@ -259,6 +259,16 @@ int get_num_procs(void) {
 }
 #endif
 
+#ifdef OS_AIX
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
+
+
+
 #ifdef OS_WINDOWS
 
 int get_num_procs(void) {
@@ -1732,6 +1742,22 @@ int i,n;
 #endif
 
 #ifdef OS_ANDROID
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
+	
+#ifdef OS_HAIKU
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
+
+#ifdef OS_AIX
 int get_num_procs(void) {
   static int nums = 0;
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);

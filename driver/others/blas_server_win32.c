@@ -478,7 +478,12 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
 void goto_set_num_threads(int num_threads)
 {
-	 long i;
+	long i;
+
+#if defined(SMP_SERVER) && defined(OS_CYGWIN_NT)
+	// Handle lazy re-init of the thread-pool after a POSIX fork
+	if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
 
 	if (num_threads < 1) num_threads = blas_cpu_number;
 
