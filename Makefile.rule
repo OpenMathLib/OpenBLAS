@@ -192,8 +192,8 @@ NO_AFFINITY = 1
 # Flags for POWER8 are defined in Makefile.power. Don't modify COMMON_OPT
 # COMMON_OPT = -O2
 
-# gfortran option for LAPACK
-# enable this flag only on 64bit Linux and if you need a thread safe lapack library
+# gfortran option for LAPACK to improve thread-safety
+# It is enabled by default in Makefile.system for gfortran
 # Flags for POWER8 are defined in Makefile.power. Don't modify FCOMMON_OPT
 # FCOMMON_OPT = -frecursive
 
