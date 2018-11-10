@@ -115,8 +115,8 @@ int detect(void)
 	fclose(infile);
 	if(cpu_part != NULL && cpu_implementer != NULL) {
 		if (strstr(cpu_implementer, "0x41") && 
-		(strstr(cpu_part, "0xd07") || strstr(cpu_part,"0xd08") || strstr(cpu_part,"0xd03") ))
-			return CPU_CORTEXA57; //or compatible A53, A72
+		(strstr(cpu_part, "0xd07") || strstr(cpu_part,"0xd08")))
+			return CPU_CORTEXA57; //or compatible, ex. A72
 		else if (strstr(cpu_part, "0x516") && strstr(cpu_implementer, "0x42"))
 			return CPU_VULCAN;
 		else if (strstr(cpu_part, "0x0a1") && strstr(cpu_implementer, "0x43"))

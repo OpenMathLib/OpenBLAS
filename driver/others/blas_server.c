@@ -850,6 +850,11 @@ void goto_set_num_threads(int num_threads) {
 
   long i;
 
+#ifdef SMP_SERVER
+  // Handle lazy re-init of the thread-pool after a POSIX fork
+  if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
+
   if (num_threads < 1) num_threads = blas_num_threads;
 
 #ifndef NO_AFFINITY

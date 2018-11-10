@@ -55,6 +55,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 	return 0;
   }
 
+  if (m == 0 || n == 0)
+	return 0;
 
   c_offset = c;
 
@@ -69,7 +71,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 
       i = m;
 
-      while (i > 32) {
+      while (i >= 32) {
 	  _mm512_storeu_pd(c_offset1, z_zero);
 	  _mm512_storeu_pd(c_offset1 + 8, z_zero);
 	  _mm512_storeu_pd(c_offset1 + 16, z_zero);
@@ -77,7 +79,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 	  c_offset1 += 32;
 	  i -= 32;
       }
-      while (i > 8) {
+      while (i >= 8) {
 	  _mm512_storeu_pd(c_offset1, z_zero);
 	  c_offset1 += 8;
 	  i -= 8;
