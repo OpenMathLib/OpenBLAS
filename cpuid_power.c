@@ -127,6 +127,33 @@ int detect(void){
 #endif
 
 #ifdef _AIX
+  FILE *infile;
+  char buffer[512], *p;
+
+  p = (char *)NULL;
+  infile = popen("prtconf|grep 'Processor Type'");
+  while (fgets(buffer, sizeof(buffer), infile)){
+    if (!strncmp("Pro", buffer, 3)){
+	p = strchr(buffer, ':') + 2;
+#if 0
+	fprintf(stderr, "%s\n", p);
+#endif
+	break;
+      }
+  }
+
+  pclose(infile);
+
+  if (!strncasecmp(p, "POWER3", 6)) return CPUTYPE_POWER3;
+  if (!strncasecmp(p, "POWER4", 6)) return CPUTYPE_POWER4;
+  if (!strncasecmp(p, "PPC970", 6)) return CPUTYPE_PPC970;
+  if (!strncasecmp(p, "POWER5", 6)) return CPUTYPE_POWER5;
+  if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
+  if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
+  if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
+  if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
+  if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
+
   return CPUTYPE_POWER5;
 #endif
 
