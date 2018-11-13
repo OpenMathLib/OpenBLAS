@@ -75,6 +75,11 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
 
   if (alpha == ZERO) return;
 
+  if (incx == 0 && incy == 0) {
+    *y += n * alpha *(*x);
+    return;
+  }
+    
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
