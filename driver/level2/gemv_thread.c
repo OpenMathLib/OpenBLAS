@@ -165,7 +165,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
 
   BLASLONG width, i, num_cpu;
 
-#if !defined(TRANSA) && !defined(iUNSAFE)
+#if !defined(TRANSA) && !defined(UNSAFE)
   int split_x=0;
 #endif
 
