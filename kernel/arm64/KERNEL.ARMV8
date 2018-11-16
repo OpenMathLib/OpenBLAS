@@ -46,7 +46,7 @@ CAMAXKERNEL  = zamax.S
 ZAMAXKERNEL  = zamax.S
 
 SAXPYKERNEL  = axpy.S
-DAXPYKERNEL  = daxpy_thunderx2t99.S
+DAXPYKERNEL  = axpy.S
 CAXPYKERNEL  = zaxpy.S
 ZAXPYKERNEL  = zaxpy.S
 
@@ -71,39 +71,37 @@ CGEMVTKERNEL = zgemv_t.S
 ZGEMVTKERNEL = zgemv_t.S
 
 
-SASUMKERNEL    = sasum_thunderx2t99.c
-DASUMKERNEL    = dasum_thunderx2t99.c
-CASUMKERNEL    = casum_thunderx2t99.c
-ZASUMKERNEL    = zasum_thunderx2t99.c
+SASUMKERNEL    = asum.S
+DASUMKERNEL    = asum.S
+CASUMKERNEL    = casum.S
+ZASUMKERNEL    = zasum.S
 
-SCOPYKERNEL    = copy_thunderx2t99.c
-DCOPYKERNEL    = copy_thunderx2t99.c
-CCOPYKERNEL    = copy_thunderx2t99.c
-ZCOPYKERNEL    = copy_thunderx2t99.c
+SCOPYKERNEL    = copy.S
+DCOPYKERNEL    = copy.S
+CCOPYKERNEL    = copy.S
+ZCOPYKERNEL    = copy.S
 
-SSWAPKERNEL    = swap_thunderx2t99.S
-DSWAPKERNEL    = swap_thunderx2t99.S
-CSWAPKERNEL    = swap_thunderx2t99.S
-ZSWAPKERNEL    = swap_thunderx2t99.S
+SSWAPKERNEL    = swap.S
+DSWAPKERNEL    = swap.S
+CSWAPKERNEL    = swap.S
+ZSWAPKERNEL    = swap.S
 
-ISAMAXKERNEL   = iamax_thunderx2t99.c
-IDAMAXKERNEL   = iamax_thunderx2t99.c
-ICAMAXKERNEL   = izamax_thunderx2t99.c
-IZAMAXKERNEL   = izamax_thunderx2t99.c
+ISAMAXKERNEL   = iamax.S
+IDAMAXKERNEL   = iamax.S
+ICAMAXKERNEL   = izamax.S
+IZAMAXKERNEL   = izamax.S
 
 ifneq ($(OS_DARWIN)$(CROSS),11)
-SNRM2KERNEL    = scnrm2_thunderx2t99.c
-CNRM2KERNEL    = scnrm2_thunderx2t99.c
-#DNRM2KERNEL    = dznrm2_thunderx2t99_fast.c
-#ZNRM2KERNEL    = dznrm2_thunderx2t99_fast.c
-DNRM2KERNEL    = dznrm2_thunderx2t99.c
-ZNRM2KERNEL    = dznrm2_thunderx2t99.c
+SNRM2KERNEL    = nrm2.S
+CNRM2KERNEL    = nrm2.S
+DNRM2KERNEL    = znrm2.S
+ZNRM2KERNEL    = znrm2.S
 endif
 
-DDOTKERNEL     = dot_thunderx2t99.c
-SDOTKERNEL     = dot_thunderx2t99.c
-CDOTKERNEL     = zdot_thunderx2t99.c
-ZDOTKERNEL     = zdot_thunderx2t99.c
+DDOTKERNEL     = dot.S
+SDOTKERNEL     = dot.S
+CDOTKERNEL     = zdot.S
+ZDOTKERNEL     = zdot.S
 DSDOTKERNEL    = dot.S
 
 ifneq ($(OS_DARWIN)$(CROSS),11)
@@ -174,22 +172,6 @@ ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
 ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
-
-ifeq ($(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N), 8x4)
-DGEMMKERNEL    = dgemm_kernel_8x4_thunderx2t99.S
-endif
-
-ifeq ($(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N), 16x4)
-SGEMMKERNEL    =  sgemm_kernel_16x4_thunderx2t99.S
-endif
-
-ifeq ($(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N), 8x4)
-CGEMMKERNEL    =  cgemm_kernel_8x4_thunderx2t99.S
-endif
-
-ifeq ($(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N), 4x4)
-ZGEMMKERNEL    =  zgemm_kernel_4x4_thunderx2t99.S
-endif
 
 else
 
