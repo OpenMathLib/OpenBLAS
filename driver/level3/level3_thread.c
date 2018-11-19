@@ -514,6 +514,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 		       *range_n, FLOAT *sa, FLOAT *sb,
                        BLASLONG nthreads_m, BLASLONG nthreads_n) {
 
+#ifndef USE_OPENMP
+static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
+#endif
+
   blas_arg_t newarg;
 
 #ifndef USE_ALLOC_HEAP
@@ -552,6 +556,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX | BLAS_NODE;
 #endif
+#endif
+
+#ifndef USE_OPENMP
+pthread_mutex_lock(&level3_lock);
 #endif
 
 #ifdef USE_ALLOC_HEAP
@@ -669,6 +677,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 
 #ifdef USE_ALLOC_HEAP
   free(job);
+#endif
+
+#ifndef USE_OPENMP
+  pthread_mutex_unlock(&level3_lock);
 #endif
 
   return 0;
