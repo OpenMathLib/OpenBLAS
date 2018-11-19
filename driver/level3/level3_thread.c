@@ -515,7 +515,12 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
                        BLASLONG nthreads_m, BLASLONG nthreads_n) {
 
 #ifndef USE_OPENMP
+#ifndef OS_WINDOWS
 static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
+#else
+CRITICAL_SECTION level3_lock;
+InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock;
+#endif
 #endif
 
   blas_arg_t newarg;
@@ -559,7 +564,11 @@ static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 #ifndef USE_OPENMP
+#ifndef OS_WINDOWS
 pthread_mutex_lock(&level3_lock);
+#else
+EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
+#endif
 #endif
 
 #ifdef USE_ALLOC_HEAP
@@ -680,7 +689,11 @@ pthread_mutex_lock(&level3_lock);
 #endif
 
 #ifndef USE_OPENMP
+#ifndef OS_WINDOWS
   pthread_mutex_unlock(&level3_lock);
+#else
+  LeaveCriticalSection((PCRITICAL_SECTION)&level3_lock);
+#endif
 #endif
 
   return 0;
