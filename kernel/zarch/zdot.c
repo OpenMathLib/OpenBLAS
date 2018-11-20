@@ -154,12 +154,12 @@ static  void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
 OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y) {
     BLASLONG i = 0;
     BLASLONG ix=0, iy=0;
-    OPENBLAS_COMPLEX_FLOAT result;
+    OPENBLAS_COMPLEX_FLOAT result=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
     FLOAT dot[4] __attribute__ ((aligned(16))) = {0.0, 0.0, 0.0, 0.0};
 
     if (n <= 0) {
-        CREAL(result) = 0.0;
-        CIMAG(result) = 0.0;
+        /* CREAL(result) = 0.0;
+        CIMAG(result) = 0.0; */
         return (result);
 
     }
