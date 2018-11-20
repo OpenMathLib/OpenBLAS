@@ -42,15 +42,12 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
 	FLOAT dot[2];
-	OPENBLAS_COMPLEX_FLOAT result;
+	OPENBLAS_COMPLEX_FLOAT result=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
 	BLASLONG inc_x2;
 	BLASLONG inc_y2;
 
 	dot[0]=0.0;
 	dot[1]=0.0;
-
-	CREAL(result) = 0.0 ;
-	CIMAG(result) = 0.0 ;
 
 	if ( n < 1 )  return(result);
 

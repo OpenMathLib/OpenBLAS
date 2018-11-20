@@ -312,9 +312,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 	int nthreads;
 	FLOAT dummy_alpha;
 #endif
-	OPENBLAS_COMPLEX_FLOAT zdot;
-       CREAL(zdot) = 0.0;
-       CIMAG(zdot) = 0.0;
+	OPENBLAS_COMPLEX_FLOAT zdot = OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
 
 #if defined(SMP)
 	if (inc_x == 0 || inc_y == 0 || n <= 10000)

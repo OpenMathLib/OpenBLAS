@@ -58,13 +58,10 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
     v4f32 dot5 = {0, 0, 0, 0};
     v4f32 dot6 = {0, 0, 0, 0};
     v4f32 dot7 = {0, 0, 0, 0};
-    OPENBLAS_COMPLEX_FLOAT result;
+    OPENBLAS_COMPLEX_FLOAT result=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
 
     dot[0] = 0.0;
     dot[1] = 0.0;
-
-    CREAL(result) = 0.0;
-    CIMAG(result) = 0.0;
 
     if (n < 1) return (result);
 
