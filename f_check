@@ -292,9 +292,6 @@ if ($link ne "") {
 	    && ($flags !~ /^-LIST:/)
 	    && ($flags !~ /^-LANG:/)
 	    ) {
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= $flags . " ";
 	}
 
@@ -311,17 +308,11 @@ if ($link ne "") {
 
 	if ($flags =~ /^\-rpath\@/) {
 	    $flags =~ s/\@/\,/g;
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 
 	if ($flags =~ /^\-rpath-link\@/) {
 	    $flags =~ s/\@/\,/g;
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 
@@ -330,7 +321,6 @@ if ($link ne "") {
 	    && ($flags !~ /gfortranbegin/)
 	    && ($flags !~ /frtbegin/)
 	    && ($flags !~ /pathfstart/)
-	    && ($flags !~ /numa/)
 	    && ($flags !~ /crt[0-9]/)
 	    && ($flags !~ /gcc/)
 	    && ($flags !~ /user32/)
