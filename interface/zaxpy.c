@@ -46,6 +46,9 @@
 #else
 #define MULTI_THREAD_MINIMAL  10000
 #endif
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
+#define MULTI_THREAD_MAX_NUM 2
+#endif
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
@@ -98,7 +101,11 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
   if (incx == 0 || incy == 0 || n <= MULTI_THREAD_MINIMAL)
 	  nthreads = 1;
   else
+#ifdef MULTI_THREAD_MAX_NUM
+          nthreads = MIN(MULTI_THREAD_MAX_NUM,num_cpu_avail(1));
+#else
 	  nthreads = num_cpu_avail(1);
+#endif
 
   if (nthreads == 1) {
 #endif
