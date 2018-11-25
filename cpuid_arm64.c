@@ -29,25 +29,37 @@
 
 #define CPU_UNKNOWN     	0
 #define CPU_ARMV8       	1
-#define CPU_CORTEXA57       	2
-#define CPU_VULCAN       	3
-#define CPU_THUNDERX    	4
-#define CPU_THUNDERX2T99   	5
+// Arm
+#define CPU_CORTEXA53     2
+#define CPU_CORTEXA57     3
+#define CPU_CORTEXA72     4
+#define CPU_CORTEXA73     5
+// Qualcomm
+#define CPU_FALKOR        6
+// Cavium
+#define CPU_THUNDERX      7
+#define CPU_THUNDERX2T99  8
 
 static char *cpuname[] = {
   "UNKNOWN",
   "ARMV8" ,
+  "CORTEXA53",
   "CORTEXA57",
-  "VULCAN",
+  "CORTEXA72",
+  "CORTEXA73",
+  "FALKOR",
   "THUNDERX",
   "THUNDERX2T99"
 };
 
 static char *cpuname_lower[] = {
   "unknown",
-  "armv8" ,
+  "armv8",
+  "cortexa53",
   "cortexa57",
-  "vulcan",
+  "cortexa72",
+  "cortexa73",
+  "falkor",
   "thunderx",
   "thunderx2t99"
 };
@@ -114,14 +126,24 @@ int detect(void)
 
 	fclose(infile);
 	if(cpu_part != NULL && cpu_implementer != NULL) {
-		if (strstr(cpu_implementer, "0x41") && 
-		(strstr(cpu_part, "0xd07") || strstr(cpu_part,"0xd08")))
-			return CPU_CORTEXA57; //or compatible, ex. A72
-		else if (strstr(cpu_part, "0x516") && strstr(cpu_implementer, "0x42"))
-			return CPU_VULCAN;
-		else if (strstr(cpu_part, "0x0a1") && strstr(cpu_implementer, "0x43"))
+    // Arm
+    if (strstr(cpu_implementer, "0x41")) {
+      if (strstr(cpu_part, "0xd03"))
+        return CPU_CORTEXA53;
+      else if (strstr(cpu_part, "0xd07"))
+        return CPU_CORTEXA57;
+      else if (strstr(cpu_part, "0xd08"))
+        return CPU_CORTEXA72;
+      else if (strstr(cpu_part, "0xd09"))
+        return CPU_CORTEXA73;
+    }
+    // Qualcomm
+    else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0xc00"))
+      return CPU_FALKOR;
+    // Cavium
+    else if (strstr(cpu_implementer, "0x43") && strstr(cpu_part, "0x0a1"))
 			return CPU_THUNDERX;
-		else if (strstr(cpu_part, "0x0af") && strstr(cpu_implementer, "0x43"))
+    else if (strstr(cpu_implementer, "0x43") && strstr(cpu_part, "0x0af"))
 			return CPU_THUNDERX2T99;
 	}
 
@@ -180,61 +202,61 @@ void get_subdirname(void)
 void get_cpuconfig(void)
 {
 
+  // All arches should define ARMv8
+  printf("#define ARMV8\n");
+  printf("#define HAVE_NEON\n"); // This shouldn't be necessary
+  printf("#define HAVE_VFPV4\n"); // This shouldn't be necessary
+
 	int d = detect();
 	switch (d)
 	{
 
+    case CPU_CORTEXA53:
+      printf("#define %s\n", cpuname[d]);
+      // Fall-through
 		case CPU_ARMV8:
-    			printf("#define ARMV8\n");
-    			printf("#define L1_DATA_SIZE 32768\n");
-    			printf("#define L1_DATA_LINESIZE 64\n");
-    			printf("#define L2_SIZE 262144\n");
-    			printf("#define L2_LINESIZE 64\n");
-    			printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    			printf("#define DTB_SIZE 4096\n");
-    			printf("#define L2_ASSOCIATIVE 4\n");
-			break;
-
-		case CPU_VULCAN:
-			printf("#define VULCAN                        \n");
-			printf("#define HAVE_VFP                      \n");
-			printf("#define HAVE_VFPV3                    \n");
-			printf("#define HAVE_NEON                     \n");
-			printf("#define HAVE_VFPV4                    \n");
-			printf("#define L1_CODE_SIZE         32768    \n");
-			printf("#define L1_CODE_LINESIZE     64       \n");
-			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
-			printf("#define L1_DATA_SIZE         32768    \n");
-			printf("#define L1_DATA_LINESIZE     64       \n");
-			printf("#define L1_DATA_ASSOCIATIVE  8        \n");
-			printf("#define L2_SIZE              262144   \n");
-			printf("#define L2_LINESIZE          64       \n");
-			printf("#define L2_ASSOCIATIVE       8        \n");
-			printf("#define L3_SIZE              33554432 \n");
-			printf("#define L3_LINESIZE          64       \n");
-			printf("#define L3_ASSOCIATIVE       32       \n");
-			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
-			printf("#define DTB_SIZE             4096     \n");
+      // Minimum parameters for ARMv8 (based on A53)
+    	printf("#define L1_DATA_SIZE 32768\n");
+    	printf("#define L1_DATA_LINESIZE 64\n");
+    	printf("#define L2_SIZE 262144\n");
+    	printf("#define L2_LINESIZE 64\n");
+    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
+    	printf("#define DTB_SIZE 4096\n");
+    	printf("#define L2_ASSOCIATIVE 4\n");
 			break;
 
 		case CPU_CORTEXA57:
-			printf("#define CORTEXA57\n");
-			printf("#define HAVE_VFP\n");
-			printf("#define HAVE_VFPV3\n");
-			printf("#define HAVE_NEON\n");
-			printf("#define HAVE_VFPV4\n");
+		case CPU_CORTEXA72:
+		case CPU_CORTEXA73:
+      // Common minimum settings for these Arm cores
+      // Can change a lot, but we need to be conservative
+      // TODO: detect info from /sys if possible
+      printf("#define %s\n", cpuname[d]);
 			printf("#define L1_CODE_SIZE 49152\n");
 			printf("#define L1_CODE_LINESIZE 64\n");
 			printf("#define L1_CODE_ASSOCIATIVE 3\n");
 			printf("#define L1_DATA_SIZE 32768\n");
 			printf("#define L1_DATA_LINESIZE 64\n");
 			printf("#define L1_DATA_ASSOCIATIVE 2\n");
-			printf("#define L2_SIZE 2097152\n");
+      printf("#define L2_SIZE 524288\n");
 			printf("#define L2_LINESIZE 64\n");
 			printf("#define L2_ASSOCIATIVE 16\n");
 			printf("#define DTB_DEFAULT_ENTRIES 64\n");
 			printf("#define DTB_SIZE 4096\n");
 			break;
+
+    case CPU_FALKOR:
+      printf("#define FALKOR\n");
+      printf("#define L1_CODE_SIZE 65536\n");
+      printf("#define L1_CODE_LINESIZE 64\n");
+      printf("#define L1_DATA_SIZE 32768\n");
+      printf("#define L1_DATA_LINESIZE 128\n");
+      printf("#define L2_SIZE 524288\n");
+      printf("#define L2_LINESIZE 64\n");
+      printf("#define DTB_DEFAULT_ENTRIES 64\n");
+      printf("#define DTB_SIZE 4096\n");
+      printf("#define L2_ASSOCIATIVE 16\n");
+      break;
 
 		case CPU_THUNDERX:
 			printf("#define THUNDERX\n");
@@ -249,10 +271,6 @@ void get_cpuconfig(void)
 
 		case CPU_THUNDERX2T99:
 			printf("#define VULCAN                        \n");
-			printf("#define HAVE_VFP                      \n");
-			printf("#define HAVE_VFPV3                    \n");
-			printf("#define HAVE_NEON                     \n");
-			printf("#define HAVE_VFPV4                    \n");
 			printf("#define L1_CODE_SIZE         32768    \n");
 			printf("#define L1_CODE_LINESIZE     64       \n");
 			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
