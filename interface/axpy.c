@@ -44,7 +44,11 @@
 #if  defined(Z13)
 #define MULTI_THREAD_MINIMAL  200000
 #else
-#define MULTI_THREAD_MINIMAL  10000
+#ifdef DOUBLE
+#define MULTI_THREAD_MINIMAL  262144
+#else
+#define MULTI_THREAD_MINIMAL  524288
+#endif
 #endif
 #ifndef CBLAS
 
