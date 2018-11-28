@@ -42,8 +42,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 static char* openblas_config_str=""
+"VERSION "
+ VERSION
 #ifdef USE64BITINT
-  "USE64BITINT "
+  " USE64BITINT "
 #endif
 #ifdef NO_CBLAS
   "NO_CBLAS "
