@@ -42,7 +42,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 static char* openblas_config_str=""
-"VERSION "
+"OpenBLAS "
  VERSION
 " "
 #ifdef USE64BITINT
