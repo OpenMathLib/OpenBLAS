@@ -1060,7 +1060,11 @@ endif
 
 KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 
+ifneq ($(ARCH), powerpc64)
 include $(TOPDIR)/Makefile.$(ARCH)
+else
+include $(TOPDIR)/Makefile.power
+endif
 
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 
