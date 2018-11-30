@@ -175,9 +175,9 @@ int detect(void){
   return  CPUTYPE_PPC970;
 #endif
 
-#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 int id;
-id = __asm __volatile("mfpvr %0" : "=r"(id));
+__asm __volatile("mfpvr %0" : "=r"(id));
 switch ( id >> 16 ) {
   case 0x4e: // POWER9
     return CPUTYPE_POWER8;
