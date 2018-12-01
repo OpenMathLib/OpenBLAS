@@ -10,6 +10,16 @@ if (${HOST_OS} STREQUAL "WINDOWS")
   set(HOST_OS WINNT)
 endif ()
 
+if (${HOST_OS} STREQUAL "Linux")
+# check if we're building natively on Android (TERMUX)
+    EXECUTE_PROCESS( COMMAND uname -o COMMAND tr -d '\n' OUTPUT_VARIABLE OPERATING_SYSTEM)
+      if(${OPERATING_SYSTEM} MATCHES "Android")
+        set(HOST_OS ANDROID)
+      endif(${OPERATING_SYSTEM} MATCHES "Android")
+endif()
+
+
+
 if(CMAKE_COMPILER_IS_GNUCC AND WIN32)
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpmachine
               OUTPUT_VARIABLE OPENBLAS_GCC_TARGET_MACHINE
