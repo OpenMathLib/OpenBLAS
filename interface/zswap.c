@@ -42,6 +42,14 @@
 #include "functable.h"
 #endif
 
+#if defined(THUNDERX2T99) || defined(VULCAN) || defined(ARMV8)
+// Multithreaded swap gives performance benefits in ThunderX2T99
+#else
+// Disable multi-threading as it does not show any performance
+// benefits. Keep the multi-threading code for the record.
+#undef SMP
+#endif
+
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){
@@ -81,7 +89,7 @@ FLOAT *y = (FLOAT*)vy;
 #ifdef SMP
   //disable multi-thread when incx==0 or incy==0
   //In that case, the threads would be dependent.
-  if (incx == 0 || incy == 0)
+  if (incx == 0 || incy == 0 || n < 1048576 * GEMM_MULTITHREAD_THRESHOLD / sizeof(FLOAT))
 	  nthreads = 1;
   else
 	  nthreads = num_cpu_avail(1);

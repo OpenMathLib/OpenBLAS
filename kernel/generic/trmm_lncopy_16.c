@@ -661,7 +661,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 	      b[  9] = ZERO;
 	      b[ 10] = ZERO;
 	      b[ 11] = ZERO;
-	      b[ 11] = ZERO;
+	      b[ 12] = ZERO;
 	      b[ 13] = ZERO;
 	      b[ 14] = ZERO;
 	      b[ 15] = ZERO;

@@ -9,6 +9,11 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+# Catch conflicting usage of ARCH in some BSD environments
+ifeq ($(ARCH), amd64)
+override ARCH=x86_64
+endif
+
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 
 # Default C compiler
@@ -505,6 +510,13 @@ CCOMMON_OPT += $(XCCOMMON_OPT)
 #CCOMMON_OPT	+= -DDYNAMIC_LIST='$(DYNAMIC_LIST)'
 endif
 
+ifeq ($(ARCH), arm64)
+DYNAMIC_CORE =  ARMV8
+DYNAMIC_CORE += CORTEXA57
+DYNAMIC_CORE += THUNDERX
+DYNAMIC_CORE += THUNDERX2T99
+endif
+
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
 ifndef DYNAMIC_CORE
 override DYNAMIC_ARCH=
@@ -713,6 +725,8 @@ endif
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
+# make single-threaded LAPACK calls thread-safe #1847
+FCOMMON_OPT += -frecursive
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
@@ -1022,6 +1036,8 @@ ifdef USE_TLS
 CCOMMON_OPT += -DUSE_TLS
 endif
 
+CCOMMON_OPT += -DVERSION=\"$(VERSION)\"
+
 ifndef SYMBOLPREFIX
 SYMBOLPREFIX =
 endif
@@ -1199,7 +1215,11 @@ endif
 
 LIBDLLNAME   = $(LIBPREFIX).dll
 IMPLIBNAME   = lib$(LIBNAMEBASE).dll.a
+ifneq ($(OSNAME), AIX)
 LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so)
+else
+LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.a)
+endif
 LIBDYNNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dylib)
 LIBDEFNAME   = $(LIBNAME:.$(LIBSUFFIX)=.def)
 LIBEXPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.exp)

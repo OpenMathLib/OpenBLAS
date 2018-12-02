@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.3
+VERSION = 0.3.4
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -107,13 +107,13 @@ BUILD_LAPACK_DEPRECATED = 1
 # BUILD_RELAPACK = 1
 
 # If you want to use legacy threaded Level 3 implementation.
-USE_SIMPLE_THREADED_LEVEL3 = 1
+# USE_SIMPLE_THREADED_LEVEL3 = 1
 
 # If you want to use the new, still somewhat experimental code that uses
 # thread-local storage instead of a central memory buffer in memory.c
 # Note that if your system uses GLIBC, it needs to have at least glibc 2.21
 # for this to work.
-USE_TLS = 1
+# USE_TLS = 1
 
 # If you want to drive whole 64bit region by BLAS. Not all Fortran
 # compiler supports this. It's safe to keep comment it out if you
@@ -152,6 +152,9 @@ NO_AFFINITY = 1
 # FUNCTION_PROFILE = 1
 
 # Support for IEEE quad precision(it's *real* REAL*16)( under testing)
+# This option should not be used - it is a holdover from unfinished code present
+# in the original GotoBLAS2 library that may be usable as a starting point but
+# is not even expected to compile in its present form.
 # QUAD_PRECISION = 1
 
 # Theads are still working for a while after finishing BLAS operation
@@ -189,8 +192,8 @@ NO_AFFINITY = 1
 # Flags for POWER8 are defined in Makefile.power. Don't modify COMMON_OPT
 # COMMON_OPT = -O2
 
-# gfortran option for LAPACK
-# enable this flag only on 64bit Linux and if you need a thread safe lapack library
+# gfortran option for LAPACK to improve thread-safety
+# It is enabled by default in Makefile.system for gfortran
 # Flags for POWER8 are defined in Makefile.power. Don't modify FCOMMON_OPT
 # FCOMMON_OPT = -frecursive
 

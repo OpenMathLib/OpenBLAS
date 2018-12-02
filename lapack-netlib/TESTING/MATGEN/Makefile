@@ -57,6 +57,8 @@ all: ../../$(TMGLIB)
 ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN) \
 	$(DZATGEN)
 
+.PHONY: ../../$(TMGLIB)
+
 ../../$(TMGLIB): $(ALLOBJ)
 	$(ARCH) $(ARCHFLAGS) $@ $^
 	$(RANLIB) $@

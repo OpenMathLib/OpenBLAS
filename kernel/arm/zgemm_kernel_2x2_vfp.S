@@ -360,7 +360,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d7 }
+	vldmia.f64 CO1, { d4 - d7 }
 
 	FMAC_R1 d4 , d0 , d8
 	FMAC_I1 d5 , d0 , d9
@@ -372,9 +372,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d6 , d1 , d11
 	FMAC_I2	d7 , d1 , d10
 
-	fstmiad CO1, { d4 - d7 }
+	vstmia.f64 CO1, { d4 - d7 }
 
-	fldmiad CO2, { d4 - d7 }
+	vldmia.f64 CO2, { d4 - d7 }
 
 	FMAC_R1 d4 , d0 , d12
 	FMAC_I1 d5 , d0 , d13
@@ -386,7 +386,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d6 , d1 , d15
 	FMAC_I2	d7 , d1 , d14
 
-	fstmiad CO2, { d4 - d7 }
+	vstmia.f64 CO2, { d4 - d7 }
 
 	add	CO1, CO1, #32
 
@@ -543,23 +543,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d5 }
+	vldmia.f64 CO1, { d4 - d5 }
 
 	FMAC_R1 d4 , d0 , d8
 	FMAC_I1 d5 , d0 , d9
 	FMAC_R2 d4 , d1 , d9
 	FMAC_I2	d5 , d1 , d8
 
-	fstmiad CO1, { d4 - d5 }
+	vstmia.f64 CO1, { d4 - d5 }
 
-	fldmiad CO2, { d4 - d5 }
+	vldmia.f64 CO2, { d4 - d5 }
 
 	FMAC_R1 d4 , d0 , d12
 	FMAC_I1 d5 , d0 , d13
 	FMAC_R2 d4 , d1 , d13
 	FMAC_I2	d5 , d1 , d12
 
-	fstmiad CO2, { d4 - d5 }
+	vstmia.f64 CO2, { d4 - d5 }
 
 	add	CO1, CO1, #16
 
@@ -714,7 +714,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d7 }
+	vldmia.f64 CO1, { d4 - d7 }
 
 	FMAC_R1 d4 , d0 , d8
 	FMAC_I1 d5 , d0 , d9
@@ -726,7 +726,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d6 , d1 , d11
 	FMAC_I2	d7 , d1 , d10
 
-	fstmiad CO1, { d4 - d7 }
+	vstmia.f64 CO1, { d4 - d7 }
 
 	add	CO1, CO1, #32
 
@@ -843,14 +843,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd		d0, ALPHA_R
 	fldd		d1, ALPHA_I
 
-	fldmiad CO1, { d4 - d5 }
+	vldmia.f64 CO1, { d4 - d5 }
 
 	FMAC_R1 d4 , d0 , d8
 	FMAC_I1 d5 , d0 , d9
 	FMAC_R2 d4 , d1 , d9
 	FMAC_I2	d5 , d1 , d8
 
-	fstmiad CO1, { d4 - d5 }
+	vstmia.f64 CO1, { d4 - d5 }
 
 	add	CO1, CO1, #16
 

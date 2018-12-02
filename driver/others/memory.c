@@ -73,8 +73,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(USE_TLS) 
+#if defined(USE_TLS) && defined(SMP)
 #define COMPILE_TLS
+
+#if USE_TLS != 1
+#undef COMPILE_TLS
+#endif
+
 #if defined(__GLIBC_PREREQ) 
 #if !__GLIBC_PREREQ(2,20)
 #undef COMPILE_TLS
@@ -253,6 +258,16 @@ int get_num_procs(void) {
   return nums;
 }
 #endif
+
+#ifdef OS_AIX
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
+
+
 
 #ifdef OS_WINDOWS
 
@@ -1733,6 +1748,22 @@ int get_num_procs(void) {
   return nums;
 }
 #endif
+	
+#ifdef OS_HAIKU
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
+
+#ifdef OS_AIX
+int get_num_procs(void) {
+  static int nums = 0;
+  if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+  return nums;
+}
+#endif
 
 #ifdef OS_WINDOWS
 
@@ -2555,7 +2586,7 @@ void *blas_memory_alloc(int procpos){
   printf("Alloc Start ...\n");
 #endif
 
-#if defined(WHEREAMI) && !defined(USE_OPENMP)
+/* #if defined(WHEREAMI) && !defined(USE_OPENMP)
 
   mypos = WhereAmI();
 
@@ -2565,12 +2596,12 @@ void *blas_memory_alloc(int procpos){
   do {
     if (!memory[position].used && (memory[position].pos == mypos)) {
       LOCK_COMMAND(&alloc_lock);
-/*      blas_lock(&memory[position].lock);*/
+//      blas_lock(&memory[position].lock);
 
       if (!memory[position].used) goto allocation;
 
       UNLOCK_COMMAND(&alloc_lock);
-/*      blas_unlock(&memory[position].lock);*/
+//      blas_unlock(&memory[position].lock);
     }
 
     position ++;
@@ -2578,24 +2609,24 @@ void *blas_memory_alloc(int procpos){
   } while (position < NUM_BUFFERS);
 
 
-#endif
+#endif */
 
   position = 0;
 
+  LOCK_COMMAND(&alloc_lock);
   do {
 /*    if (!memory[position].used) { */
-      LOCK_COMMAND(&alloc_lock);
 /*      blas_lock(&memory[position].lock);*/
 
       if (!memory[position].used) goto allocation;
       
-      UNLOCK_COMMAND(&alloc_lock);
 /*      blas_unlock(&memory[position].lock);*/
 /*    } */
 
     position ++;
 
   } while (position < NUM_BUFFERS);
+  UNLOCK_COMMAND(&alloc_lock);
 
   goto error;
 

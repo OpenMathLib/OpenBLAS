@@ -4,11 +4,10 @@ dist: precise
 sudo: true
 language: c
 
-jobs:
+matrix:
   include:
     - &test-ubuntu
       os: linux
-      stage: test
       compiler: gcc
       addons:
         apt:
@@ -59,7 +58,6 @@ jobs:
         - BTYPE="BINARY=32"
 
     - os: linux
-      stage: test
       compiler: gcc
       addons:
         apt:
@@ -80,13 +78,12 @@ jobs:
     # that don't require sudo.
     - &test-alpine
       os: linux
-      stage: test
       dist: trusty
       sudo: true
       language: minimal
       before_install:
-        - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.6.0/alpine-chroot-install' \
-              && echo 'a827a4ba3d0817e7c88bae17fe34e50204983d1e  alpine-chroot-install' | sha1sum -c || exit 1"
+        - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.9.0/alpine-chroot-install' \
+          && echo 'e5dfbbdc0c4b3363b99334510976c86bfa6cb251  alpine-chroot-install' | sha1sum -c || exit 1"
         - alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
       install:
         - sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers'
@@ -124,7 +121,6 @@ jobs:
 
     - &test-cmake
       os: linux
-      stage: test
       compiler: clang
       addons:
         apt:
@@ -153,7 +149,6 @@ jobs:
 
     - &test-macos
       os: osx
-      stage: test
       osx_image: xcode8
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
@@ -167,6 +162,42 @@ jobs:
     - <<: *test-macos
       env:
         - BTYPE="BINARY=32"
+
+    - &emulated-arm
+      dist: trusty
+      sudo: required
+      services: docker
+      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
+      name: "Emulated Build for ARMV6 with gcc"
+      before_install: sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      script: |
+        echo "FROM openblas/alpine:${IMAGE_ARCH}
+        COPY . /tmp/openblas
+        RUN mkdir /tmp/openblas/build                             &&  \
+            cd /tmp/openblas/build                                &&  \
+            CC=${COMPILER} cmake -D DYNAMIC_ARCH=OFF                  \
+                                 -D TARGET=${TARGET_ARCH}             \
+                                 -D BUILD_SHARED_LIBS=ON              \
+                                 -D BUILD_WITHOUT_LAPACK=ON           \
+                                 -D BUILD_WITHOUT_CBLAS=ON            \
+                                 -D CMAKE_BUILD_TYPE=Release ../  &&  \
+            cmake --build ." > Dockerfile
+        docker build .
+    - <<: *emulated-arm
+      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
+      name: "Emulated Build for ARMV6 with clang"
+    - <<: *emulated-arm
+      env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
+      name: "Emulated Build for ARMV8 with gcc"
+    - <<: *emulated-arm
+      env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
+      name: "Emulated Build for ARMV8 with clang"
+
+  allow_failures:
+    - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
+    - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
+    - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
+    - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
 
 # whitelist
 branches:
