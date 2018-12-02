@@ -11,7 +11,11 @@ endif
 
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
-override ARCH=x86_64
+override ARCH=x86_64 
+else ifeq ($(ARCH), powerpc64)
+override ARCH=power
+endif
+
 endif
 
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
@@ -1060,11 +1064,7 @@ endif
 
 KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 
-ifneq ($(ARCH), powerpc64)
 include $(TOPDIR)/Makefile.$(ARCH)
-else
-include $(TOPDIR)/Makefile.power
-endif
 
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 
