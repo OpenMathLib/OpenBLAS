@@ -1,5 +1,78 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.4
+02-Dec-2018
+
+common:
+	* the new, experimental thread-local memory allocation had 
+	  inadvertently been left enabled for gmake builds in 0.3.3
+	  despite the announcement. It is now disabled by default, and
+	  single-threaded builds will keep using the old allocator even
+	  if the USE_TLS option is turned on.
+	* OpenBLAS will now provide enough buffer space for at least 50
+	  threads by default.
+	* The output of openblas_get_config() now contains the version
+	  number.
+	* A serious thread safety bug in GEMV operation with small M and
+	  large N size has been fixed.
+	* The code will now automatically call blas_thread_init after a
+	  fork if needed before handling a call to openblas_set_num_threads
+	* Accesses to parallelized level3 functions from multiple callers
+	  are now serialized to avoid thread races (unless using OpenMP).
+	  This should provide better performance than the known-threadsafe
+	  (but non-default) USE_SIMPLE_THREADED_LEVEL3 option.
+	* When building LAPACK with gfortran, -frecursive is now (again)
+	  enabled by default to ensure correct behaviour.
+        * The OpenBLAS version cblas.h now supports both CBLAS_ORDER and
+	  CBLAS_LAYOUT as the name of the matrix row/column order option.
+	* Externally set LDFLAGS are now passed through to the final compile/link
+	  steps to facilitate setting platform-specific linker flags.
+	* A potential race condition during the build of LAPACK (that would 
+	  usually manifest itself as a failure to build TESTING/MATGEN) has been 
+	  fixed.
+	* xHEMV has been changed to stay single-threaded for small input sizes
+	  where the overhead of multithreading exceeds any possible gains
+	* CSWAP and ZSWAP have been limited to a single thread except on ARMV8 or
+	  ThunderX hardware with sizable input.
+	* Linker flags for the PGI compiler have been updated
+	* Behaviour of AXPY with zero increments is now handled in the C interface,
+	  correcting the result on at least Intel Atom.
+	* The result matrix from calling SGELSS with an all-zero input matrix is 
+	  now zeroed completely.
+	  
+x86_64:
+	* Autodetection of AMD Ryzen2 has been fixed (again).
+        * CMAKE builds now support labeling of an INTERFACE64=1 build of
+	  the library with the _64 suffix.
+	* AVX512 version of DGEMM has been added and the AVX512 SGEMM kernel
+	  has been sped up by rewriting with C intrinsics
+	* Fixed compilation on RHEL5/CENTOS5 (issue with typename __WAIT_STATUS)
+	
+POWER:
+	* added support for building on AIX (with gcc and GNU tools from AIX Toolbox).
+	* CPU type detection has been implemented for AIX.
+	* CPU type detection has been fixed for NETBSD.
+	
+MIPS64:
+	* AXPY on LOONGSON3A has been corrected to pass "zero increment" utest.
+	* DSDOT on LOONGSON3A has been fixed.
+	* the SGEMM microkernel has been hardened against potential data loss.
+	
+ARMV8:
+	* DYNAMic_ARCH support is now available for 64bit ARM
+	* cross-compiling for ARMV8 under iOS now works.
+	* cpu-specific code has been rearranged to make better use of both
+	  hardware commonalities and model-specific compiler optimizations.
+	* XGENE1 has been removed as a TARGET, superseded by the improved generic
+	  ARMV8 support.
+	
+ARMV7:
+	* Older assembly mnemonics have been converted to UAL form to allow
+	  building with clang 7.0
+	* Cross compiling LAPACKE for Android has been fixed again (broken by
+	  update to LAPACK 3.7.0 some while ago).  
+	  
+====================================================================
 Version 0.3.3
 31-Aug-2018
 

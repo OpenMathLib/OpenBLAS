@@ -18,7 +18,7 @@ else ifeq ($(ARCH), i386)
 override ARCH=x86
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
-endif 
+endif
 
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 
@@ -1041,6 +1041,8 @@ endif
 ifdef USE_TLS
 CCOMMON_OPT += -DUSE_TLS
 endif
+
+CCOMMON_OPT += -DVERSION=\"$(VERSION)\"
 
 ifndef SYMBOLPREFIX
 SYMBOLPREFIX =

@@ -56,7 +56,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
   }
 
   if (n == 0 || m == 0)
-	return;
+	return 0;
 
   c_offset = c;
 
