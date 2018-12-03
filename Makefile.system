@@ -11,9 +11,13 @@ endif
 
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
-override ARCH=x86_64 
+override ARCH=x86_64
 else ifeq ($(ARCH), powerpc64)
 override ARCH=power
+else ifeq ($(ARCH), i386)
+override ARCH=x86
+else ifeq ($(ARCH), aarch64)
+override ARCH=arm64
 endif
 
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
