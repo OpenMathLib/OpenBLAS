@@ -30,8 +30,8 @@ FCOMMON_OPT += -march=armv8-a -mtune=thunderx
 endif
 
 ifeq ($(CORE), FALKOR)
-CCOMMON_OPT += -march=armv8.1-a -mtune=falkor
-FCOMMON_OPT += -march=armv8.1-a -mtune=falkor
+CCOMMON_OPT += -march=armv8-a -mtune=falkor
+FCOMMON_OPT += -march=armv8-a -mtune=falkor
 endif
 
 ifeq ($(CORE), THUNDERX2T99)
