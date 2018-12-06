@@ -93,8 +93,8 @@ IZAMAXKERNEL   = izamax.S
 
 ifneq ($(OS_DARWIN)$(CROSS),11)
 SNRM2KERNEL    = nrm2.S
-CNRM2KERNEL    = nrm2.S
-DNRM2KERNEL    = znrm2.S
+DNRM2KERNEL    = nrm2.S
+CNRM2KERNEL    = znrm2.S
 ZNRM2KERNEL    = znrm2.S
 endif
 
