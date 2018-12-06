@@ -65,7 +65,7 @@ int blas_level1_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k, void *alpha
     /* Adjust Parameters */
     width  = blas_quickdivide(i + nthreads - num_cpu - 1,
 			      nthreads - num_cpu);
-
+    width = MAX(width,((width-1)&~15)+16);
     i -= width;
     if (i < 0) width = width + i;
 
@@ -136,7 +136,7 @@ int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n, BLASL
     /* Adjust Parameters */
     width  = blas_quickdivide(i + nthreads - num_cpu - 1,
 			      nthreads - num_cpu);
-
+    width = MAX(width,((width-1)&~15)+16);
     i -= width;
     if (i < 0) width = width + i;
 
