@@ -331,12 +331,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FORCE_INTEL
 #define ARCHITECTURE    "X86"
 #define SUBARCHITECTURE "SKYLAKEX"
+#ifndef WINNT
 #define ARCHCONFIG   "-DSKYLAKEX " \
 		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
 		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
                      "-DFMA3 -DHAVE_AVX512VL -march=skylake-avx512"
+#else
+#define ARCHCONFIG   "-DSKYLAKEX " \
+                     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+                     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+                     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+                     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3 -DHAVE_AVX512VL -march=skylake-avx512 -fno-asynchronous-unwind-tables"
+#endif
 #define LIBNAME   "skylakex"
 #define CORENAME  "SKYLAKEX"
 #endif
