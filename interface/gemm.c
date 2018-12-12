@@ -271,6 +271,14 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
   PRINT_DEBUG_CNAME;
 
+#if !defined(COMPLEX) && !defined(DOUBLE) && defined(USE_SGEMM_KERNEL_DIRECT)
+  if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && sgemm_kernel_direct_performant(m,n,k)) {
+	sgemm_kernel_direct(m, n, k, a, lda, b, ldb, c, ldc);
+	return;
+  }
+
+#endif
+
 #ifndef COMPLEX
   args.alpha = (void *)&alpha;
   args.beta  = (void *)&beta;
