@@ -6,7 +6,19 @@ TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
 ifdef TARGET_CORE
+ifeq ($(TARGET_CORE), SKYLAKEX)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=skylake-avx512
+ ifeq ($(OSNAME), CYGWIN_NT)
+  override CFLAGS += -fno-asynchronous-unwind-tables
+ endif
+ ifeq ($(OSNAME), WINNT)
+  ifeq ($(C_COMPILER), GCC)
+   override CFLAGS += -fno-asynchronous-unwind-tables
+  endif
+ endif
+else
 override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+endif
 BUILD_KERNEL = 1
 KDIR =
 TSUFFIX = _$(TARGET_CORE)
