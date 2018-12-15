@@ -33,6 +33,7 @@ ZAXPYKERNEL = zaxpy.c
 
 STRMMKERNEL    =  sgemm_kernel_16x4_haswell.S
 SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
+SGEMM_BETA     =  sgemm_beta_skylakex.c
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
