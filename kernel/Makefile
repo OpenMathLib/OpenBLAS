@@ -17,7 +17,7 @@ ifeq ($(TARGET_CORE), SKYLAKEX)
   endif
  endif
 else ifeq($(TARGET_CORE), HASWELL)
- override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=core-avx2
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -mavx2
 else
 override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
 endif
