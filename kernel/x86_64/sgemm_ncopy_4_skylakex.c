@@ -49,8 +49,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict a, BLASLONG lda, FLOAT * __
   FLOAT *b_offset;
   FLOAT  ctemp1,  ctemp2,  ctemp3,  ctemp4;
   FLOAT  ctemp5,  ctemp6,  ctemp7,  ctemp8;
-  FLOAT  ctemp9, ctemp10, ctemp11, ctemp12;
-  FLOAT ctemp13, ctemp14, ctemp15, ctemp16;
+  FLOAT  ctemp9,  ctemp13;
 
   a_offset = a;
   b_offset = b;
