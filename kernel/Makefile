@@ -16,6 +16,8 @@ ifeq ($(TARGET_CORE), SKYLAKEX)
    override CFLAGS += -fno-asynchronous-unwind-tables
   endif
  endif
+elseifeq($(TARGET_CORE), HASWELL)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=haswell
 else
 override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
 endif
