@@ -45,6 +45,7 @@ SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 DTRMMKERNEL    =  dtrmm_kernel_4x8_haswell.c
 DGEMMKERNEL    =  dgemm_kernel_4x8_haswell.S
+DGEMM_BETA     =  dgemm_beta_skylakex.c
 DGEMMINCOPY    =  ../generic/gemm_ncopy_4.c
 DGEMMITCOPY    =  ../generic/gemm_tcopy_4.c
 DGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
