@@ -19,7 +19,7 @@ ifeq ($(C_COMPILER), CLANG)
   GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
   GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 2)
   ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ2), 11)
-   AVX2OPT -mavx2
+   AVX2OPT = -mavx2
   endif
 endif
 ifdef NO_AVX2
