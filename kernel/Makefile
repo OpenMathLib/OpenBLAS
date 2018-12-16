@@ -37,7 +37,7 @@ ifeq ($(TARGET_CORE), SKYLAKEX)
    override CFLAGS += -fno-asynchronous-unwind-tables
   endif
  endif
-else ifeq($(TARGET_CORE), HASWELL)
+else ifeq ($(TARGET_CORE), HASWELL)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(AVX2OPT)
 else
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
