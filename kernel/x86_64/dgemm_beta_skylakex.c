@@ -61,17 +61,17 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
   c_offset = c;
 
   if (beta == ZERO){
-    __m512d z_zero;
 
-    z_zero = _mm512_setzero_pd();
     j = n;
     do {
       c_offset1 = c_offset;
       c_offset += ldc;
 
       i = m;
-
+#ifdef __AVX2__
+#ifdef __AVX512CD__
       while (i >= 32) {
+	  __m512d z_zero = _mm512_setzero_pd();
 	  _mm512_storeu_pd(c_offset1, z_zero);
 	  _mm512_storeu_pd(c_offset1 + 8, z_zero);
 	  _mm512_storeu_pd(c_offset1 + 16, z_zero);
@@ -79,12 +79,20 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 	  c_offset1 += 32;
 	  i -= 32;
       }
+#endif
       while (i >= 8) {
+#ifdef __AVX512CD__
+	  __m512d z_zero = _mm512_setzero_pd();
 	  _mm512_storeu_pd(c_offset1, z_zero);
+#else
+	 __m256d y_zero = _mm256_setzero_pd();
+	 _mm256_storeu_pd(c_offset1, y_zero);
+	 _mm256_storeu_pd(c_offset1 + 4, y_zero);
+#endif
 	  c_offset1 += 8;
 	  i -= 8;
       }
-
+#endif
       while (i > 0) {
 	  *c_offset1 = ZERO;
 	  c_offset1 ++;
