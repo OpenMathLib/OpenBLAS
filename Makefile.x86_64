@@ -9,6 +9,7 @@ endif
 endif
 
 ifeq ($(CORE), SKYLAKEX)
+ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
 CCOMMON_OPT += -march=skylake-avx512
 FCOMMON_OPT += -march=skylake-avx512
@@ -18,6 +19,7 @@ endif
 ifeq ($(OSNAME), WINNT)
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
 endif
 endif
 endif
