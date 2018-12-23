@@ -2,6 +2,12 @@ TOPDIR	= ..
 
 include ../Makefile.system
 
+ifdef NEED_PIC
+ifeq (,$(findstring PIC,$(CFLAGS)))
+CFLAGS+= -fPIC
+endif
+endif
+
 ifndef EXPRECISION
 EXPRECISION	= 0
 endif
