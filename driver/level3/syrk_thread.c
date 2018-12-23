@@ -48,7 +48,7 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
 
   BLASLONG width, i;
   BLASLONG n_from, n_to;
-  double dnum, nf, nt, di;
+  double dnum, nf, nt, di, dinum;
 
   int num_cpu;
   int mask = 0;
@@ -109,7 +109,11 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
       if (nthreads - num_cpu > 1) {
 
 	di = (double)i;
-	width = (BLASLONG)(( sqrt(di * di + dnum) - di + mask)/(mask+1)) * (mask+1);
+	dinum = di * di +dnum;
+	if (dinum <0)
+	  width = (BLASLONG)(( - di + mask)/(mask+1)) * (mask+1);
+	else
+	  width = (BLASLONG)(( sqrt(dinum) - di + mask)/(mask+1)) * (mask+1);
 
 	if ((width <= 0) || (width > n_to - i)) width = n_to - i;
 
@@ -136,9 +140,7 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
 
     nf = (double)(arg -> n - n_from);
     nt = (double)(arg -> n - n_to);
-
     dnum = (nt * nt - nf * nf) / (double)nthreads;
-
     num_cpu  = 0;
 
     range[0] = n_from;
@@ -149,8 +151,11 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
       if (nthreads - num_cpu > 1) {
 
 	di = (double)(arg -> n - i);
-	width = ((BLASLONG)((-sqrt(di * di + dnum) + di) + mask)/(mask+1)) * (mask+1);
-
+	dinum = di * di + dnum;
+	if (dinum<0)
+	  width = ((BLASLONG)(di + mask)/(mask+1)) * (mask+1);
+	else
+	  width = ((BLASLONG)((-sqrt(dinum) + di) + mask)/(mask+1)) * (mask+1);
 	if ((width <= 0) || (width > n_to - i)) width = n_to - i;
 
       } else {
