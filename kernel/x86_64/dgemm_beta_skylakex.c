@@ -50,7 +50,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
   FLOAT ctemp5, ctemp6, ctemp7, ctemp8;
 
   /* fast path.. just zero the whole matrix */
-  if (m == ldc && (unsigned long)beta == (unsigned long)ZERO) {
+  if (m == ldc && beta == ZERO) {
 	memset(c, 0, m * n * sizeof(FLOAT));
 	return 0;
   }
