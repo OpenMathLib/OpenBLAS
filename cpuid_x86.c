@@ -1649,7 +1649,7 @@ static char *lowercpuname[] = {
 };
 
 static char *corename[] = {
-  "UNKOWN",
+  "UNKNOWN",
   "80486",
   "P5",
   "P6",
