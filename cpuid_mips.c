@@ -75,7 +75,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CPU_1004K	2
 
 static char *cpuname[] = {
-  "UNKOWN",
+  "UNKNOWN",
   "P5600",
   "1004K"
 };
