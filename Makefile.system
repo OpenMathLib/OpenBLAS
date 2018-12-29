@@ -65,6 +65,7 @@ endif
 
 ifdef TARGET
 GETARCH_FLAGS := -DFORCE_$(TARGET)
+GETARCH_FLAGS += -DUSER_TARGET
 endif
 
 # Force fallbacks for 32bit
