@@ -117,7 +117,7 @@ matrix:
     - <<: *test-alpine
       env:
         - TARGET_BOX=LINUX64_MUSL
-        - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=core2"
+        - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=CORE2"
 
     - &test-cmake
       os: linux
