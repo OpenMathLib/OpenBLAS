@@ -1069,7 +1069,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef FORCE
 
 #ifdef USER_TARGET
-#error "The target specified in Makefile.rule is not supported. Please choose a target from TargetList.txt and revise Makefile.rule."
+#error "The TARGET specified on the command line or in Makefile.rule is not supported. Please choose a target from TargetList.txt"
 #endif
 
 #if defined(__powerpc__) || defined(__powerpc) || defined(powerpc) || \
