@@ -201,7 +201,7 @@ Please see Changelog.txt to view the differences between OpenBLAS and GotoBLAS2 
 * Please use GCC version 4.6 and above to compile Sandy Bridge AVX kernels on Linux/MinGW/BSD.
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture.
   Clang 3.0 will generate the wrong AVX binary code.
-* Please use GCC version 6 or LLVM version 6 and above to compile Skyalke AVX512 kernels.
+* Please use GCC version 6 or LLVM version 6 and above to compile Skylake AVX512 kernels.
 * The number of CPUs/cores should less than or equal to 256. On Linux `x86_64` (`amd64`),
   there is experimental support for up to 1024 CPUs/cores and 128 numa nodes if you build
   the library with `BIGNUMA=1`.
