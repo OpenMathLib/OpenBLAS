@@ -131,7 +131,7 @@ endif
 endif
 
 libs :
-ifeq ($(CORE), UNKOWN)
+ifeq ($(CORE), UNKNOWN)
 	$(error OpenBLAS: Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for the detail.)
 endif
 ifeq ($(NOFORTRAN), 1)
