@@ -50,7 +50,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
   FLOAT ctemp5, ctemp6, ctemp7, ctemp8;
 
   /* fast path.. just zero the whole matrix */
-  if (m == ldc && (unsigned long)beta == (unsigned long)ZERO) {
+  if (m == ldc && beta == ZERO) {
 	memset(c, 0, m * n * sizeof(FLOAT));
 	return 0;
   }
@@ -61,30 +61,36 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
   c_offset = c;
 
   if (beta == ZERO){
-    __m512 z_zero;
-    __m256 y_zero;
 
-    z_zero = _mm512_setzero_ps();
-    y_zero = _mm256_setzero_ps();
     j = n;
     do {
       c_offset1 = c_offset;
       c_offset += ldc;
 
       i = m;
-
+#ifdef __AVX2__
       while (i >= 32) {
+#ifdef __AVX512CD__
+	  __m512 z_zero = _mm512_setzero_ps();
 	  _mm512_storeu_ps(c_offset1, z_zero);
 	  _mm512_storeu_ps(c_offset1 + 16, z_zero);
+#else
+	  __m256 y_zero = _mm256_setzero_ps();
+	  _mm256_storeu_ps(c_offset1, y_zero);
+	  _mm256_storeu_ps(c_offset1 + 8, y_zero);
+	  _mm256_storeu_ps(c_offset1 + 16, y_zero);
+	  _mm256_storeu_ps(c_offset1 + 24, y_zero);
+#endif
 	  c_offset1 += 32;
 	  i -= 32;
       }
       while (i >= 8) {
+	    __m256 y_zero = _mm256_setzero_ps();
 	  _mm256_storeu_ps(c_offset1, y_zero);
 	  c_offset1 += 8;
 	  i -= 8;
       }
-
+#endif
       while (i > 0) {
 	  *c_offset1 = ZERO;
 	  c_offset1 ++;

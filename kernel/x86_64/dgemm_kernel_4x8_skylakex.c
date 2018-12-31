@@ -869,7 +869,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovapd %%zmm1, %%zmm27\n"
 			"vmovapd %%zmm1, %%zmm28\n"
 			"jmp .label24\n"
-			".align 32\n"
+			".p2align 5\n"
 			/* Inner math loop */
 			".label24:\n"
 			"vmovupd     -128(%[AO]),%%zmm0\n"
@@ -1037,7 +1037,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovapd %%zmm1, %%zmm17\n"
 			"vmovapd %%zmm1, %%zmm18\n"
 			"jmp .label16\n"
-			".align 32\n"
+			".p2align 5\n"
 			/* Inner math loop */
 			".label16:\n"
 			"vmovupd     -128(%[AO]),%%zmm0\n"
@@ -1165,7 +1165,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovapd %%zmm1, %%zmm8\n"
 			"vbroadcastsd (%[alpha]), %%zmm9\n"
 			"jmp .label1\n"
-			".align 32\n"
+			".p2align 5\n"
 			/* Inner math loop */
 			".label1:\n"
 			"vmovupd     -128(%[AO]),%%zmm0\n"

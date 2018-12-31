@@ -136,7 +136,7 @@ int detect(void){
   char buffer[512], *p;
 
   p = (char *)NULL;
-  infile = popen("prtconf|grep 'Processor Type'");
+  infile = popen("prtconf|grep 'Processor Type'", "r");
   while (fgets(buffer, sizeof(buffer), infile)){
     if (!strncmp("Pro", buffer, 3)){
 	p = strchr(buffer, ':') + 2;

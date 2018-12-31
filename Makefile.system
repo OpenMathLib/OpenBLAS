@@ -12,6 +12,12 @@ endif
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
 override ARCH=x86_64
+else ifeq ($(ARCH), powerpc64)
+override ARCH=power
+else ifeq ($(ARCH), i386)
+override ARCH=x86
+else ifeq ($(ARCH), aarch64)
+override ARCH=arm64
 endif
 
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
@@ -1148,14 +1154,18 @@ ifndef FCOMMON_OPT
 FCOMMON_OPT = -O2 -frecursive
 endif
 
-
-
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
 
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
+
+ifdef NEED_PIC
+ifeq (,$(findstring PIC,$(FFLAGS)))
+override FFLAGS += -fPIC
+endif
+endif
 
 #For LAPACK Fortran codes.
 #Disable -fopenmp for LAPACK Fortran codes on Windows.

@@ -1073,6 +1073,11 @@ static volatile int memory_initialized = 0;
     }
     free(table);
   }
+#if defined(OS_WINDOWS)
+  TlsFree(local_storage_key);
+#else
+  pthread_key_delete(local_storage_key);
+#endif		
 }
 
 static void blas_memory_init(){

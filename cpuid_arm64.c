@@ -270,7 +270,7 @@ void get_cpuconfig(void)
 			break;
 
 		case CPU_THUNDERX2T99:
-			printf("#define VULCAN                        \n");
+			printf("#define THUNDERX2T99                  \n");
 			printf("#define L1_CODE_SIZE         32768    \n");
 			printf("#define L1_CODE_LINESIZE     64       \n");
 			printf("#define L1_CODE_ASSOCIATIVE  8        \n");

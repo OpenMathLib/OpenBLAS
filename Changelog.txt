@@ -1,5 +1,37 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.5
+31-Dec-2018
+
+common:
+	* loop unrolling in TRMV has been enabled again.
+	* A domain error in the thread workload distribution for SYRK
+	  has been fixed.
+	* gmake builds will now automatically add -fPIC to the build
+	  options if the platform requires it.
+	* a pthreads key leakage (and associate crash on dlclose) in
+	  the USE_TLS codepath was fixed.
+	* building of the utest cases on systems that do not provide
+	  an implementation of complex.h was fixed.
+	  
+x86_64:
+	* the SkylakeX code was changed to compile on OSX.
+	* unwanted application of the -march=skylake-avx512 option
+	  to the common code parts of a DYNAMIC_ARCH build was fixed.
+	* improved performance of SGEMM for small workloads on Skylake X.
+	* performance of SGEMM and DGEMM was improved on Haswell.
+
+ARMV8:
+	* a configuration error that broke the CNRM2 kernel was corrected.
+	* compilation of the GEMM kernels with CMAKE was fixed.
+	* DYNAMIC_ARCH builds are now available with CMAKE as well.
+	* using CMAKE for cross-compilation to the new cpu TARGETs
+	  introduced in 0.3.4 now works.
+	  
+POWER:
+	* a problem in cpu autodetection for AIX has been corrected.
+	
+====================================================================
 Version 0.3.4
 02-Dec-2018
 
