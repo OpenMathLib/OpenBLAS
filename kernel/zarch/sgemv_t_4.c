@@ -158,8 +158,6 @@ static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "brctg  %%r0,2b                  \n\t"
 
         "3:                              \n\t"
-        "agfi   %%r1,128                 \n\t"
-        "brctg  %%r0,0b                  \n\t"
         "vrepf  %%v4,%%v0,1              \n\t"
         "aebr   %%f0,%%f4                \n\t"
         "vrepf  %%v4,%%v0,2              \n\t"
@@ -351,6 +349,9 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y)
 
         "vl  %%v31,112(%%r1,%1)          \n\t"
         "vfmasb   %%v0,%%v23,%%v31,%%v0  \n\t"
+        
+        "agfi   %%r1,128                 \n\t"
+        "brctg  %%r0,0b                  \n\t"
 
         "1:                              \n\t"
         "lghi    %%r0,28                 \n\t"
