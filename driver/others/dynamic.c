@@ -346,7 +346,7 @@ extern void openblas_warning(int verbose, const char * msg);
 #define FALLBACK_VERBOSE 1
 #define NEHALEM_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n"
 #define SANDYBRIDGE_FALLBACK "OpenBLAS : Your OS does not support AVX2 instructions. OpenBLAS is using Sandybridge kernels as a fallback, which may give poorer performance.\n"
-#define HASWELL_FALLBACK "OpenBLAS : Your OS does not support AVX512 instructions. OpenBLAS is using Haswell kernels as a fallback, which may give poorer performance.\n"
+#define HASWELL_FALLBACK "OpenBLAS : Your OS does not support AVX512VL instructions. OpenBLAS is using Haswell kernels as a fallback, which may give poorer performance.\n"
 #define BARCELONA_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n"
 
 static int get_vendor(void){
@@ -526,8 +526,10 @@ static gotoblas_t *get_coretype(void){
 	// Intel Skylake X
           if (support_avx512()) 
 	    return &gotoblas_SKYLAKEX;
-	  if(support_avx2())
+	  if(support_avx2()){
+	    openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
 	    return &gotoblas_HASWELL;
+          }
 	  if(support_avx()) {
 	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
 	    return &gotoblas_SANDYBRIDGE;
@@ -550,8 +552,10 @@ static gotoblas_t *get_coretype(void){
 	}
 	//Intel Phi Knights Landing
 	if (model == 7) {
-	  if(support_avx2())
+	  if(support_avx2()){
+	    openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
 	    return &gotoblas_HASWELL;
+	  }  
 	  if(support_avx()) {
 	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
 	    return &gotoblas_SANDYBRIDGE;
