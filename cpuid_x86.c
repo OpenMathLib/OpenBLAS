@@ -239,6 +239,8 @@ int support_avx512(){
       ret=0;  //OS does not even support AVX2
   }
   if((ebx & (1<<31)) != 0){
+    xgetbv(0, &eax, &edx); 
+    if((eax & 0xe0) == 0xe0)
       ret=1;  //OS supports AVX512VL
   }
   return ret;
