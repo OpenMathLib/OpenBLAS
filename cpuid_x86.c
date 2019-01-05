@@ -97,10 +97,10 @@ static C_INLINE void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
     ("mov %%ebx, %%edi;"
      "cpuid;"
      "xchgl %%ebx, %%edi;"
-     : "=a" (*eax), "=D" (*ebx), "=c" (*ecx), "=d" (*edx) : "a" (op) : "cc");
+     : "=a" (*eax), "=D" (*ebx), "=c" (*ecx), "=d" (*edx) : "a" (op), "c" (0) : "cc");
 #else
   __asm__ __volatile__
-    ("cpuid": "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx) : "a" (op) : "cc");
+    ("cpuid": "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx) : "a" (op) , "c" (0) : "cc");
 #endif
 }
 
@@ -211,6 +211,42 @@ int support_avx(){
 #endif
 }
 
+int support_avx2(){
+#ifndef NO_AVX2
+  int eax, ebx, ecx=0, edx;
+  int ret=0;
+
+  if (!support_avx) 
+    return 0;
+  cpuid(7, &eax, &ebx, &ecx, &edx);
+  if((ebx & (1<<7)) != 0)
+      ret=1;  //OS supports AVX2
+  return ret;
+#else
+  return 0;
+#endif
+}
+
+int support_avx512(){
+#ifndef NO_AVX512
+  int eax, ebx, ecx, edx;
+  int ret=0;
+
+  if (!support_avx) 
+    return 0;
+  cpuid(7, &eax, &ebx, &ecx, &edx);
+  if((ebx & 32) != 32){
+      ret=0;  //OS does not even support AVX2
+  }
+  if((ebx & (1<<31)) != 0){
+      ret=1;  //OS supports AVX512VL
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
+
 
 int get_vendor(void){
   int eax, ebx, ecx, edx;
@@ -294,6 +330,8 @@ int get_cputype(int gettype){
     if ((ecx & (1 << 20)) != 0) feature |= HAVE_SSE4_2;
 #ifndef NO_AVX
     if (support_avx()) feature |= HAVE_AVX;
+    if (support_avx2()) feature |= HAVE_AVX2;
+    if (support_avx512()) feature |= HAVE_AVX512VL;
     if ((ecx & (1 << 12)) != 0) feature |= HAVE_FMA3;
 #endif
 
@@ -1228,22 +1266,18 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
         case 12:
 	case 15:
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	case 13:
 	  //Broadwell
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	}
@@ -1252,33 +1286,27 @@ int get_cpuname(void){
         switch (model) {
         case 5:
 	case 6:
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	case 7:
 	case 15:
 	  //Broadwell
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	case 14:
 	  //Skylake
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	case 12:
@@ -1292,46 +1320,36 @@ int get_cpuname(void){
         switch (model) {
 	case 6:
 	  //Broadwell
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	case 5:
 	  // Skylake X
-#ifndef NO_AVX512
-	  return CPUTYPE_SKYLAKEX;
-#else
-	  if(support_avx())
-#ifndef NO_AVX2
-	  return CPUTYPE_HASWELL;
-#else
-	  return CPUTYPE_SANDYBRIDGE;
-#endif
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	  return CPUTYPE_NEHALEM;
-#endif			
         case 14:
 	  // Skylake
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	case 7:
 	    // Xeon Phi Knights Landing
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	case 12:
@@ -1342,30 +1360,24 @@ int get_cpuname(void){
       case 6:
         switch (model) {
         case 6: // Cannon Lake
-#ifndef NO_AVX512
-	  return CPUTYPE_SKYLAKEX;
-#else
-	  if(support_avx())
-#ifndef NO_AVX2
-	  return CPUTYPE_HASWELL;
-#else
-	  return CPUTYPE_SANDYBRIDGE;
-#endif
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	  return CPUTYPE_NEHALEM;
-#endif			
         }
       break;  
       case 9:
       case 8: 
         switch (model) {
 	case 14: // Kaby Lake
-          if(support_avx())
-#ifndef NO_AVX2
+          if(support_avx2())
             return CPUTYPE_HASWELL;
-#else
+          if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
-#endif
           else
 	    return CPUTYPE_NEHALEM;
 	}
@@ -2112,6 +2124,8 @@ void get_cpuconfig(void){
     if (features & HAVE_SSE4A)   printf("#define HAVE_SSE4A\n");
     if (features & HAVE_SSE5 )   printf("#define HAVE_SSSE5\n");
     if (features & HAVE_AVX )    printf("#define HAVE_AVX\n");
+    if (features & HAVE_AVX2 )    printf("#define HAVE_AVX2\n");
+    if (features & HAVE_AVX512VL )    printf("#define HAVE_AVX512VL\n");
     if (features & HAVE_3DNOWEX) printf("#define HAVE_3DNOWEX\n");
     if (features & HAVE_3DNOW)   printf("#define HAVE_3DNOW\n");
     if (features & HAVE_FMA4 )    printf("#define HAVE_FMA4\n");
@@ -2180,6 +2194,8 @@ void get_sse(void){
   if (features & HAVE_SSE4A)   printf("HAVE_SSE4A=1\n");
   if (features & HAVE_SSE5 )   printf("HAVE_SSSE5=1\n");
   if (features & HAVE_AVX )    printf("HAVE_AVX=1\n");
+  if (features & HAVE_AVX2 )    printf("HAVE_AVX2=1\n");
+  if (features & HAVE_AVX512VL )    printf("HAVE_AVX512VL=1\n");
   if (features & HAVE_3DNOWEX) printf("HAVE_3DNOWEX=1\n");
   if (features & HAVE_3DNOW)   printf("HAVE_3DNOW=1\n");
   if (features & HAVE_FMA4 )    printf("HAVE_FMA4=1\n");
