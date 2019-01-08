@@ -153,7 +153,7 @@ matrix:
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
         - brew update
-        - brew install gcc # for gfortran
+        - travis_wait 30 brew install gcc # for gfortran
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
