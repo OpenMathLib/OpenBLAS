@@ -134,7 +134,7 @@ static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 			     "=b" (*ebx),
 			     "=c" (*ecx),
 			     "=d" (*edx)
-			     : "0" (op));
+			     : "0" (op), "c"(0));
 #endif
 }
 

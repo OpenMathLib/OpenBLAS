@@ -139,6 +139,7 @@
 #define HAVE_FMA4     (1 <<  19)
 #define HAVE_FMA3     (1 <<  20)
 #define HAVE_AVX512VL (1 <<  21)
+#define HAVE_AVX2     (1 <<  22)
 
 #define CACHE_INFO_L1_I     1
 #define CACHE_INFO_L1_D     2
