@@ -1073,11 +1073,6 @@ static volatile int memory_initialized = 0;
     }
     free(table);
   }
-#if defined(OS_WINDOWS)
-  TlsFree(local_storage_key);
-#else
-  pthread_key_delete(local_storage_key);
-#endif		
 }
 
 static void blas_memory_init(){
@@ -1490,6 +1485,14 @@ void DESTRUCTOR gotoblas_quit(void) {
   if (gotoblas_initialized == 0) return;
 
   blas_shutdown();
+
+#if defined(SMP)
+#if defined(OS_WINDOWS)
+  TlsFree(local_storage_key);
+#else
+  pthread_key_delete(local_storage_key);
+#endif		
+#endif
 
 #ifdef PROFILE
    moncontrol (0);
