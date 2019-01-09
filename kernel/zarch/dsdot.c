@@ -27,61 +27,34 @@ USE OF THIS SOFTWARE,EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-static double dsdot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
+static double dsdot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y)
 {
     double dot;
 
     __asm__ volatile (   
         "vzero %%v0                      \n\t"
-        "srlg  %%r0,%1,5                 \n\t"
+        "srlg  %%r0,%1,4                 \n\t"
         "xgr   %%r1,%%r1                 \n\t"
         "0:                              \n\t"
         "pfd 1,1024(%%r1,%2)             \n\t"
-        "pfd 2,1024(%%r1,%3)             \n\t"
+        "pfd 1,1024(%%r1,%3)             \n\t"
 
-        "vl  %%v16,0(%%r1,%2)            \n\t"
-        "vl  %%v17,16(%%r1,%2)           \n\t"
-        "vl  %%v18,32(%%r1,%2)           \n\t"
-        "vl  %%v19,48(%%r1,%2)           \n\t"
-        "vl  %%v20,64(%%r1,%2)           \n\t"
-        "vl  %%v21,80(%%r1,%2)           \n\t"
-        "vl  %%v22,96(%%r1,%2)           \n\t"
-        "vl  %%v23,112(%%r1,%2)          \n\t"
-
-        "vl  %%v24,0(%%r1,%3)            \n\t"
-        "vfmsb   %%v16,%%v16,%%v24       \n\t"
-        "vl  %%v25,16(%%r1,%3)           \n\t"
-        "vfmsb   %%v17,%%v17,%%v25       \n\t"
-        "vl  %%v26,32(%%r1,%3)           \n\t"
-        "vfmsb   %%v18,%%v18,%%v26       \n\t"
-        "vl  %%v27,48(%%r1,%3)           \n\t"
-        "vfmsb   %%v19,%%v19,%%v27       \n\t"
-        "vl  %%v28,64(%%r1,%3)           \n\t"
-        "vfmsb   %%v20,%%v20,%%v28       \n\t"
-        "vl  %%v29,80(%%r1,%3)           \n\t"
-        "vfmsb   %%v21,%%v21,%%v29       \n\t"
-        "vl  %%v30,96(%%r1,%3)           \n\t"
-        "vfmsb   %%v22,%%v22,%%v30       \n\t"
-        "vl  %%v31,112(%%r1,%3)          \n\t"
-        "vfmsb   %%v23,%%v23,%%v31       \n\t"
-
-        "vflls   %%v24,%%v16             \n\t"
-        "vflls   %%v25,%%v17             \n\t"
-        "vflls   %%v26,%%v18             \n\t"
-        "vflls   %%v27,%%v19             \n\t"
-        "vflls   %%v28,%%v20             \n\t"
-        "vflls   %%v29,%%v21             \n\t"
-        "vflls   %%v30,%%v22             \n\t"
-        "vflls   %%v31,%%v23             \n\t"
-
-        "veslg   %%v16,%%v16,32          \n\t"
-        "veslg   %%v17,%%v17,32          \n\t"
-        "veslg   %%v18,%%v18,32          \n\t"
-        "veslg   %%v19,%%v19,32          \n\t"
-        "veslg   %%v20,%%v20,32          \n\t"
-        "veslg   %%v21,%%v21,32          \n\t"
-        "veslg   %%v22,%%v22,32          \n\t"
-        "veslg   %%v23,%%v23,32          \n\t"
+        "vlef  %%v16,0(%%r1,%2),0        \n\t"
+        "vlef  %%v16,4(%%r1,%2),2        \n\t"
+        "vlef  %%v17,8(%%r1,%2),0        \n\t"
+        "vlef  %%v17,12(%%r1,%2),2       \n\t"
+        "vlef  %%v18,16(%%r1,%2),0       \n\t"
+        "vlef  %%v18,20(%%r1,%2),2       \n\t"
+        "vlef  %%v19,24(%%r1,%2),0       \n\t"
+        "vlef  %%v19,28(%%r1,%2),2       \n\t"
+        "vlef  %%v20,32(%%r1,%2),0       \n\t"
+        "vlef  %%v20,36(%%r1,%2),2       \n\t"
+        "vlef  %%v21,40(%%r1,%2),0       \n\t"
+        "vlef  %%v21,44(%%r1,%2),2       \n\t"
+        "vlef  %%v22,48(%%r1,%2),0       \n\t"
+        "vlef  %%v22,52(%%r1,%2),2       \n\t"
+        "vlef  %%v23,56(%%r1,%2),0       \n\t"
+        "vlef  %%v23,60(%%r1,%2),2       \n\t"
 
         "vflls   %%v16,%%v16             \n\t"
         "vflls   %%v17,%%v17             \n\t"
@@ -92,24 +65,40 @@ static double dsdot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
         "vflls   %%v22,%%v22             \n\t"
         "vflls   %%v23,%%v23             \n\t"
 
-        "vfadb   %%v16,%%v16,%%v24       \n\t"
-        "vfadb   %%v17,%%v17,%%v25       \n\t"
-        "vfadb   %%v18,%%v18,%%v26       \n\t"
-        "vfadb   %%v19,%%v19,%%v27       \n\t"
-        "vfadb   %%v20,%%v20,%%v28       \n\t"
-        "vfadb   %%v21,%%v21,%%v29       \n\t"
-        "vfadb   %%v22,%%v22,%%v30       \n\t"
-        "vfadb   %%v23,%%v23,%%v31       \n\t"
-        "vfadb   %%v16,%%v16,%%v20       \n\t"
-        "vfadb   %%v17,%%v17,%%v21       \n\t"
-        "vfadb   %%v18,%%v18,%%v22       \n\t"
-        "vfadb   %%v19,%%v19,%%v23       \n\t"
-        "vfadb   %%v16,%%v16,%%v18       \n\t"
-        "vfadb   %%v17,%%v17,%%v19       \n\t"
-        "vfadb   %%v16,%%v16,%%v17       \n\t"
-        "vfadb   %%v0,%%v16,%%v0         \n\t"
+        "vlef    %%v24,0(%%r1,%3),0      \n\t"
+        "vlef    %%v24,4(%%r1,%3),2      \n\t"
+        "vflls   %%v24,%%v24             \n\t"
+        "vfmadb  %%v0,%%v16,%%v24,%%v0   \n\t"
+        "vlef    %%v25,8(%%r1,%3),0      \n\t"
+        "vlef    %%v25,12(%%r1,%3),2     \n\t"
+        "vflls   %%v25,%%v25             \n\t"
+        "vfmadb  %%v0,%%v17,%%v25,%%v0   \n\t"
+        "vlef    %%v26,16(%%r1,%3),0     \n\t"
+        "vlef    %%v26,20(%%r1,%3),2     \n\t"
+        "vflls   %%v26,%%v26             \n\t"
+        "vfmadb  %%v0,%%v18,%%v26,%%v0   \n\t"
+        "vlef    %%v27,24(%%r1,%3),0     \n\t"
+        "vlef    %%v27,28(%%r1,%3),2     \n\t"
+        "vflls   %%v27,%%v27             \n\t"
+        "vfmadb  %%v0,%%v19,%%v27,%%v0   \n\t"
+        "vlef    %%v28,32(%%r1,%3),0     \n\t"
+        "vlef    %%v28,36(%%r1,%3),2     \n\t"
+        "vflls   %%v28,%%v28             \n\t"
+        "vfmadb  %%v0,%%v20,%%v28,%%v0   \n\t"
+        "vlef    %%v29,40(%%r1,%3),0     \n\t"
+        "vlef    %%v29,44(%%r1,%3),2     \n\t"
+        "vflls   %%v29,%%v29             \n\t"
+        "vfmadb  %%v0,%%v21,%%v29,%%v0   \n\t"
+        "vlef    %%v30,48(%%r1,%3),0     \n\t"
+        "vlef    %%v30,52(%%r1,%3),2     \n\t"
+        "vflls   %%v30,%%v30             \n\t"
+        "vfmadb  %%v0,%%v22,%%v30,%%v0   \n\t"
+        "vlef    %%v31,56(%%r1,%3),0     \n\t"
+        "vlef    %%v31,60(%%r1,%3),2     \n\t"
+        "vflls   %%v31,%%v31             \n\t"    
+        "vfmadb  %%v0,%%v23,%%v31,%%v0   \n\t"
 
-        "agfi   %%r1,128                 \n\t"
+        "agfi   %%r1,64                  \n\t"
         "brctg  %%r0,0b                  \n\t"
         "vrepg  %%v1,%%v0,1              \n\t"
         "adbr   %%f0,%%f1                \n\t"
@@ -134,10 +123,10 @@ double CNAME(BLASLONG n,FLOAT *x,BLASLONG inc_x,FLOAT *y,BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		BLASLONG n1 = n & -32;
+		BLASLONG n1 = n & -16;
 
 		if ( n1 )
-			dot = dsdot_kernel_32(n1,x,y);
+			dot = dsdot_kernel_16(n1,x,y);
 
 		i = n1;
 		while(i < n)
