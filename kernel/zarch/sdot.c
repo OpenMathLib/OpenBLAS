@@ -37,7 +37,7 @@ static FLOAT sdot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
         "xgr   %%r1,%%r1                 \n\t"
         "0:                              \n\t"
         "pfd 1,1024(%%r1,%2)             \n\t"
-        "pfd 2,1024(%%r1,%3)             \n\t"
+        "pfd 1,1024(%%r1,%3)             \n\t"
 
         "vl  %%v16,0(%%r1,%2)            \n\t"
         "vl  %%v17,16(%%r1,%2)           \n\t"
