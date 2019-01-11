@@ -605,9 +605,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         {
 
             sgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer);
-            a_ptr  += lda;
+            // a_ptr  += lda;
             *y_ptr += ybuffer[0] * alpha;
-            y_ptr  += inc_y;
+            // y_ptr  += inc_y;
 
         }
         a += NB;
