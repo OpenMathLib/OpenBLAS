@@ -396,7 +396,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r,FLOAT alpha_i, 
 		ap[3] = ap[2] + lda;
 		x_ptr = x;
 		//zero_y(NB,ybuffer);
-		memset(ybuffer,0,NB*16);
+		memset(ybuffer,0,NB*8);
 
 		if ( inc_x == 2 )
 		{
