@@ -435,7 +435,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         ap[3] = ap[2] + lda;
 
         if ( inc_y != 1 )
-            memset(ybuffer,0,NB*8);
+            memset(ybuffer,0,NB*4);
         else
             ybuffer = y_ptr;
 
@@ -465,8 +465,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
             if ( n2 & 1 )
             {
                 sgemv_kernel_4x1(NB,a_ptr,x_ptr,ybuffer,&alpha);
-                a_ptr += lda;
-                x_ptr += 1;    
+                /* a_ptr += lda;
+                x_ptr += 1; */    
 
             }
 
