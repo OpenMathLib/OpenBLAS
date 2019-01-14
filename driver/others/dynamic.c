@@ -309,7 +309,7 @@ int support_avx2(){
   int eax, ebx, ecx=0, edx;
   int ret=0;
 
-  if (!support_avx) 
+  if (!support_avx())
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
   if((ebx & (1<<7)) != 0)
@@ -325,7 +325,7 @@ int support_avx512(){
   int eax, ebx, ecx, edx;
   int ret=0;
 
-  if (!support_avx) 
+  if (!support_avx())
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
   if((ebx & (1<<7)) != 1){
