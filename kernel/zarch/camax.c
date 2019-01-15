@@ -237,7 +237,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         i++;
 
         BLASLONG n1 = (n - 1) & -4;
-        while (i < n1) {
+        while ((i - 1) < n1) {
 
             if (CABS1(x,ix) > maxf) {
                 maxf = CABS1(x,ix);

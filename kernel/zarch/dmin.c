@@ -148,7 +148,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         j++;
 
         BLASLONG n1 = (n - 1) & -4;
-        while (j < n1) {
+        while ((j - 1) < n1) {
 
             if (x[i] < minf) {
                 minf = x[i];
