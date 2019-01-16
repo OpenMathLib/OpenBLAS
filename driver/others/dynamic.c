@@ -274,6 +274,7 @@ extern gotoblas_t  gotoblas_SKYLAKEX;
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
 #define VENDOR_CENTAUR    3
+#define VENDOR_HYGON	  4
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
@@ -369,6 +370,7 @@ static int get_vendor(void){
   if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
   if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
   if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor.vchar, "HygonGenuine")) return VENDOR_HYGON;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
 
@@ -604,7 +606,7 @@ static gotoblas_t *get_coretype(void){
     }
   }
 
-  if (vendor == VENDOR_AMD){
+  if (vendor == VENDOR_AMD || vendor == VENDOR_HYGON){
     if (family <= 0xe) {
         // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
         cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
@@ -684,6 +686,13 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+      } else if (exfamily == 9) {
+	  if(support_avx())
+	    return &gotoblas_ZEN;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+        }
       }else {
 	return &gotoblas_BARCELONA;
       }

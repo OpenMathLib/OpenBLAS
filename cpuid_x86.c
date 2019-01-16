@@ -271,6 +271,7 @@ int get_vendor(void){
   if (!strcmp(vendor, " SiS SiS SiS")) return VENDOR_SIS;
   if (!strcmp(vendor, "GenuineTMx86")) return VENDOR_TRANSMETA;
   if (!strcmp(vendor, "Geode by NSC")) return VENDOR_NSC;
+  if (!strcmp(vendor, "HygonGenuine")) return VENDOR_HYGON;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
 
@@ -1046,7 +1047,9 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
     }
   }
 
-  if ((get_vendor() == VENDOR_AMD) || (get_vendor() == VENDOR_CENTAUR)) {
+  if ((get_vendor() == VENDOR_AMD) ||
+      (get_vendor() == VENDOR_HYGON) ||
+      (get_vendor() == VENDOR_CENTAUR)) {
     cpuid(0x80000005, &eax, &ebx, &ecx, &edx);
 
     LDTB.size        = 4096;
@@ -1483,6 +1486,26 @@ int get_cpuname(void){
     return CPUTYPE_AMD_UNKNOWN;
   }
 
+  if (vendor == VENDOR_HYGON){
+    switch (family) {
+    case 0xf:
+      switch (exfamily) {
+      case 9:
+          //Hygon Dhyana
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CPUTYPE_ZEN;
+#else
+	    return CPUTYPE_SANDYBRIDGE; // closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CPUTYPE_BARCELONA;
+        }
+      break;
+    }
+    return CPUTYPE_HYGON_UNKNOWN;
+  }
+
   if (vendor == VENDOR_CYRIX){
     switch (family) {
     case 0x4:
@@ -1604,7 +1627,8 @@ static char *cpuname[] = {
   "STEAMROLLER",
   "EXCAVATOR",
   "ZEN",
-  "SKYLAKEX"	
+  "SKYLAKEX",
+  "DHYANA"
 };
 
 static char *lowercpuname[] = {
@@ -1659,7 +1683,8 @@ static char *lowercpuname[] = {
   "steamroller",
   "excavator",
   "zen",
-  "skylakex"
+  "skylakex",
+  "dhyana"
 };
 
 static char *corename[] = {
@@ -1691,7 +1716,8 @@ static char *corename[] = {
   "STEAMROLLER",
   "EXCAVATOR",
   "ZEN",
-  "SKYLAKEX"	
+  "SKYLAKEX",
+  "DHYANA"
 };
 
 static char *corename_lower[] = {
@@ -1723,7 +1749,8 @@ static char *corename_lower[] = {
   "steamroller",
   "excavator",
   "zen",
-  "skylakex"	
+  "skylakex",
+  "dhyana"
 };
 
 
@@ -2037,6 +2064,23 @@ int get_coretype(void){
       } else {
 	return CORE_BARCELONA;
       }
+    }
+  }
+
+  if (vendor == VENDOR_HYGON){
+    if (family == 0xf){
+        if (exfamily == 9) {
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_ZEN;
+#else
+	    return CORE_SANDYBRIDGE; // closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CORE_BARCELONA;
+	} else {
+		return CORE_BARCELONA;
+	}
     }
   }
 
