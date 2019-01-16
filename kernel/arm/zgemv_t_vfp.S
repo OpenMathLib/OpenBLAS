@@ -151,12 +151,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F2X1
 
-	fldmiad	XO! ,  { d2 - d3 }
-	fldmiad	AO1!,  { d4 - d5 }
+	vldmia.f64	XO! ,  { d2 - d3 }
+	vldmia.f64	AO1!,  { d4 - d5 }
 
 	fmacd	d12 , d4 , d2
 	fmacd	d13 , d4 , d3
-	fldmiad	AO2!,  { d8 - d9   }
+	vldmia.f64	AO2!,  { d8 - d9   }
 	KMAC_R  d12 , d5 , d3
         KMAC_I  d13 , d5 , d2
 
@@ -169,7 +169,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro	SAVE_F2
 
-	fldmiad	YO,  { d4 - d7 }
+	vldmia.f64	YO,  { d4 - d7 }
 
 	FMAC_R1 d4 , d0 , d12
         FMAC_I1 d5 , d0 , d13
@@ -181,7 +181,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         FMAC_R2 d6 , d1 , d15
         FMAC_I2 d7 , d1 , d14
 
-	fstmiad	YO!, { d4 - d7 }
+	vstmia.f64	YO!, { d4 - d7 }
 
 .endm
 
@@ -205,8 +205,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1X1
 
-	fldmiad	XO! ,  { d2 - d3 }
-	fldmiad	AO1!,  { d4 - d5 }
+	vldmia.f64	XO! ,  { d2 - d3 }
+	vldmia.f64	AO1!,  { d4 - d5 }
 
 	fmacd	d12 , d4 , d2
 	fmacd	d13 , d4 , d3
@@ -217,14 +217,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro	SAVE_F1
 
-	fldmiad	YO,  { d4 - d5 }
+	vldmia.f64	YO,  { d4 - d5 }
 
 	FMAC_R1 d4 , d0 , d12
         FMAC_I1 d5 , d0 , d13
         FMAC_R2 d4 , d1 , d13
         FMAC_I2 d5 , d1 , d12
 
-	fstmiad	YO!, { d4 - d5 }
+	vstmia.f64	YO!, { d4 - d5 }
 
 .endm
 
@@ -250,9 +250,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S2X1
 
-	fldmiad	XO  ,  { d2 - d3 }
-	fldmiad	AO1!,  { d4 - d5 }
-	fldmiad	AO2!,  { d8 - d9   }
+	vldmia.f64	XO  ,  { d2 - d3 }
+	vldmia.f64	AO1!,  { d4 - d5 }
+	vldmia.f64	AO2!,  { d8 - d9   }
 
 	fmacd	d12 , d4 , d2
 	fmacd	d13 , d4 , d3
@@ -270,25 +270,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro	SAVE_S2
 
-	fldmiad	YO,  { d4 - d5 }
+	vldmia.f64	YO,  { d4 - d5 }
 
 	FMAC_R1 d4 , d0 , d12
         FMAC_I1 d5 , d0 , d13
         FMAC_R2 d4 , d1 , d13
         FMAC_I2 d5 , d1 , d12
 
-	fstmiad	YO,  { d4 - d5 }
+	vstmia.f64	YO,  { d4 - d5 }
 
 	add	YO, YO, INC_Y
 
-	fldmiad	YO,  { d6 - d7 }
+	vldmia.f64	YO,  { d6 - d7 }
 
         FMAC_R1 d6 , d0 , d14
         FMAC_I1 d7 , d0 , d15
         FMAC_R2 d6 , d1 , d15
         FMAC_I2 d7 , d1 , d14
 
-	fstmiad	YO,  { d6 - d7 }
+	vstmia.f64	YO,  { d6 - d7 }
 
 	add	YO, YO, INC_Y
 
@@ -314,8 +314,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S1X1
 
-	fldmiad	XO  ,  { d2 - d3 }
-	fldmiad	AO1!,  { d4 - d5 }
+	vldmia.f64	XO  ,  { d2 - d3 }
+	vldmia.f64	AO1!,  { d4 - d5 }
 
 	fmacd	d12 , d4 , d2
 	fmacd	d13 , d4 , d3
@@ -328,14 +328,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro	SAVE_S1
 
-	fldmiad	YO,  { d4 - d5 }
+	vldmia.f64	YO,  { d4 - d5 }
 
 	FMAC_R1 d4 , d0 , d12
         FMAC_I1 d5 , d0 , d13
         FMAC_R2 d4 , d1 , d13
         FMAC_I2 d5 , d1 , d12
 
-	fstmiad	YO,  { d4 - d5 }
+	vstmia.f64	YO,  { d4 - d5 }
 
 	add	YO, YO, INC_Y
 

@@ -93,7 +93,7 @@ extern "C" {
 #include <sched.h>
 #endif
 
-#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_ANDROID)
+#if defined(OS_DARWIN) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_ANDROID)
 #include <sched.h>
 #endif
 
@@ -103,6 +103,10 @@ extern "C" {
 #if __ANDROID_API__ < 21
 #define FORCE_OPENBLAS_COMPLEX_STRUCT
 #endif
+#endif
+
+#ifdef OS_HAIKU
+#define NO_SYSV_IPC
 #endif
 
 #ifdef OS_WINDOWS
@@ -179,7 +183,7 @@ extern "C" {
 
 #define ALLOCA_ALIGN 63UL
 
-#define NUM_BUFFERS (MAX_CPU_NUMBER * 2)
+#define NUM_BUFFERS MAX(50,(MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER))
 
 #ifdef NEEDBUNDERSCORE
 #define BLASFUNC(FUNC) FUNC##_
@@ -253,8 +257,14 @@ typedef unsigned long BLASULONG;
 
 #ifdef USE64BITINT
 typedef BLASLONG blasint;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+#define blasabs(x) llabs(x)
+#else
+#define blasabs(x) labs(x)
+#endif
 #else
 typedef int blasint;
+#define blasabs(x) abs(x)
 #endif
 #else
 #ifdef USE64BITINT
@@ -642,6 +652,7 @@ void gotoblas_profile_init(void);
 void gotoblas_profile_quit(void);
 
 #ifdef USE_OPENMP
+
 #ifndef C_MSVC
 int omp_in_parallel(void);
 int omp_get_num_procs(void);
@@ -649,6 +660,21 @@ int omp_get_num_procs(void);
 __declspec(dllimport) int __cdecl omp_in_parallel(void);
 __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
+
+#if (__STDC_VERSION__ >= 201112L)
+#if defined(C_GCC) && ( __GNUC__ < 7) 
+// workaround for GCC bug 65467
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#endif
+#include <stdatomic.h>
+#else
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#endif
+
 #else
 #ifdef __ELF__
 int omp_in_parallel  (void) __attribute__ ((weak));

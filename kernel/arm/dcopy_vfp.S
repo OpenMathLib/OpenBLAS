@@ -65,15 +65,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro COPY_F4
 
 	pld	[ X, #X_PRE  ]
-	fldmiad	X!, { d0 - d3 }
-	fstmiad	Y!, { d0 - d3 }
+	vldmia.f64	X!, { d0 - d3 }
+	vstmia.f64	Y!, { d0 - d3 }
 
 .endm
 
 .macro COPY_F1
 
-	fldmiad	X!, { d0 }
-	fstmiad	Y!, { d0 }
+	vldmia.f64	X!, { d0 }
+	vstmia.f64	Y!, { d0 }
 
 .endm
 
@@ -83,23 +83,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro COPY_S4
 
 	nop
-	fldmiad	X, { d0 }
-	fstmiad	Y, { d0 }
+	vldmia.f64	X, { d0 }
+	vstmia.f64	Y, { d0 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
-	fldmiad	X, { d1 }
-	fstmiad	Y, { d1 }
+	vldmia.f64	X, { d1 }
+	vstmia.f64	Y, { d1 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
-	fldmiad	X, { d0 }
-	fstmiad	Y, { d0 }
+	vldmia.f64	X, { d0 }
+	vstmia.f64	Y, { d0 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
-	fldmiad	X, { d1 }
-	fstmiad	Y, { d1 }
+	vldmia.f64	X, { d1 }
+	vstmia.f64	Y, { d1 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
@@ -108,8 +108,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY_S1
 
-	fldmiad	X, { d0 }
-	fstmiad	Y, { d0 }
+	vldmia.f64	X, { d0 }
+	vstmia.f64	Y, { d0 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 

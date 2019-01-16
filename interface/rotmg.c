@@ -64,6 +64,13 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 
 	FLOAT du, dp1, dp2, dq2, dq1, dh11=ZERO, dh21=ZERO, dh12=ZERO, dh22=ZERO, dflag=-ONE, dtemp;
 
+	if (*dd2 == ZERO || dy1 == ZERO)
+	{
+		dflag = -TWO;
+		dparam[0] = dflag;
+		return;
+	}
+		
 	if(*dd1 < ZERO)
 	{
 		dflag = -ONE;
@@ -76,6 +83,16 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 		*dd2  = ZERO;
 		*dx1  = ZERO;
 	}
+	else if ((*dd1 == ZERO || *dx1 == ZERO) && *dd2 > ZERO)
+	{
+		dflag = ONE;
+		dh12 = 1;
+		dh21 = -1;
+		*dx1 = dy1;
+		dtemp = *dd1;
+		*dd1 = *dd2;
+		*dd2 = dtemp;
+	} 
 	else
 	{
 		dp2 = *dd2 * dy1;
@@ -90,6 +107,9 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 		dq1 =  dp1 * *dx1;
 		if(ABS(dq1) > ABS(dq2))
 		{
+			dflag = ZERO;
+			dh11  =  ONE;
+			dh22  =  ONE;
 			dh21 = -  dy1 / *dx1;
 			dh12 =    dp2 /  dp1;
 
@@ -100,8 +120,19 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 				*dd1  = *dd1 / du;
 				*dd2  = *dd2 / du;
 				*dx1  = *dx1 * du;
+			} else {
+				dflag = -ONE;
 
+				dh11  = ZERO;
+				dh12  = ZERO;
+				dh21  = ZERO;
+				dh22  = ZERO;
+
+				*dd1  = ZERO;
+				*dd2  = ZERO;
+				*dx1  = ZERO;
 			}
+			
 		}
 		else
 		{
@@ -120,7 +151,9 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 			}
 			else
 			{
-				dflag = ONE;
+				dflag =  ONE;
+				dh21  = -ONE;
+				dh12  =  ONE;
 
 				dh11  =  dp1 /  dp2;
 				dh22  = *dx1 /  dy1;
@@ -134,74 +167,33 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 		}
 
 
-		if(*dd1 != ZERO)
+		while ( *dd1 <= RGAMSQ && *dd1 != ZERO)
 		{
-			while( (*dd1 <= RGAMSQ) || (*dd1 >= GAMSQ) )
-			{
-				if(dflag == ZERO)
-				{
-					dh11  =  ONE;
-					dh22  =  ONE;
-					dflag = -ONE;
-				}
-				else
-				{
-					if(dflag == ONE)
-					{
-						dh21  = -ONE;
-						dh12  =  ONE;
-						dflag = -ONE;
-					}
-				}
-				if( *dd1 <= RGAMSQ )
-				{
-					*dd1  = *dd1 * (GAM * GAM);
-					*dx1  = *dx1 / GAM;
-					dh11  = dh11 / GAM;
-					dh12  = dh12 / GAM;
-				}
-				else
-				{
-					*dd1  = *dd1 / (GAM * GAM);
-					*dx1  = *dx1 * GAM;
-					dh11  = dh11 * GAM;
-					dh12  = dh12 * GAM;
-				}
-			}
+			dflag = -ONE;
+			*dd1  = *dd1 * (GAM * GAM);
+			*dx1  = *dx1 / GAM;
+			dh11  = dh11 / GAM;
+			dh12  = dh12 / GAM;
+		}
+		while (ABS(*dd1) > GAMSQ) {
+			dflag = -ONE;
+			*dd1  = *dd1 / (GAM * GAM);
+			*dx1  = *dx1 * GAM;
+			dh11  = dh11 * GAM;
+			dh12  = dh12 * GAM;
 		}
 
-		if(*dd2 != ZERO)
-		{
-			while( (ABS(*dd2) <= RGAMSQ) || (ABS(*dd2) >= GAMSQ) )
-			{
-				if(dflag == ZERO)
-				{
-					dh11  =  ONE;
-					dh22  =  ONE;
-					dflag = -ONE;
-				}
-				else
-				{
-					if(dflag == ONE)
-					{
-						dh21  = -ONE;
-						dh12  =  ONE;
-						dflag = -ONE;
-					}
-				}
-				if( ABS(*dd2) <= RGAMSQ )
-				{
-					*dd2  = *dd2 * (GAM * GAM);
-					dh21  = dh21 / GAM;
-					dh22  = dh22 / GAM;
-				}
-				else
-				{
-					*dd2  = *dd2 / (GAM * GAM);
-					dh21  = dh21 * GAM;
-					dh22  = dh22 * GAM;
-				}
-			}
+		while (ABS(*dd2) <= RGAMSQ && *dd2 != ZERO) {
+			dflag = -ONE;
+			*dd2  = *dd2 * (GAM * GAM);
+			dh21  = dh21 / GAM;
+			dh22  = dh22 / GAM;
+		}
+		while (ABS(*dd2) > GAMSQ) {
+			dflag = -ONE;
+			*dd2  = *dd2 / (GAM * GAM);
+			dh21  = dh21 * GAM;
+			dh22  = dh22 * GAM;
 		}
 
 	}

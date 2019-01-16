@@ -29,18 +29,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(BULLDOZER) 
+#if defined(BULLDOZER)
 #include "ddot_microk_bulldozer-2.c"
 #elif defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "ddot_microk_steamroller-2.c"
 #elif defined(PILEDRIVER)
 #include "ddot_microk_piledriver-2.c"
-#elif defined(NEHALEM) 
+#elif defined(NEHALEM)
 #include "ddot_microk_nehalem-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "ddot_microk_haswell-2.c"
+#elif defined (SKYLAKEX)
+#include "ddot_microk_skylakex-2.c"
 #elif defined(SANDYBRIDGE)
 #include "ddot_microk_sandy-2.c"
+#endif
+
+#if !defined(DSDOT)
+#define RETURN_TYPE     FLOAT
+#else
+#define RETURN_TYPE     double
 #endif
 
 
@@ -71,7 +79,7 @@ static void ddot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 
 #endif
 
-FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+static FLOAT dot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
@@ -104,7 +112,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	FLOAT temp1 = 0.0;
 	FLOAT temp2 = 0.0;
 
-        BLASLONG n1 = n & -4;	
+        BLASLONG n1 = n & -4;
 
 	while(i < n1)
 	{
@@ -139,4 +147,60 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 }
 
+#if defined(SMP)
+static int dot_thread_function(BLASLONG n, BLASLONG dummy0,
+        BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+        BLASLONG inc_y, RETURN_TYPE *result, BLASLONG dummy3)
+{
+        *(RETURN_TYPE *)result = dot_compute(n, x, inc_x, y, inc_y);
 
+        return 0;
+}
+
+extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
+        BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
+        void *c, BLASLONG ldc, int (*function)(), int nthreads);
+#endif
+
+FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+{
+#if defined(SMP)
+	int nthreads;
+	FLOAT dummy_alpha;
+#endif
+	FLOAT dot = 0.0;
+
+#if defined(SMP)
+	if (inc_x == 0 || inc_y == 0 || n <= 10000)
+		nthreads = 1;
+	else
+		nthreads = num_cpu_avail(1);
+
+	if (nthreads == 1) {
+		dot = dot_compute(n, x, inc_x, y, inc_y);
+	} else {
+		int mode, i;
+		char result[MAX_CPU_NUMBER * sizeof(double) * 2];
+		RETURN_TYPE *ptr;
+
+#if !defined(DOUBLE)
+		mode = BLAS_SINGLE  | BLAS_REAL;
+#else
+		mode = BLAS_DOUBLE  | BLAS_REAL;
+#endif
+		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
+				   x, inc_x, y, inc_y, result, 0,
+				   ( void *)dot_thread_function, nthreads);
+
+		ptr = (RETURN_TYPE *)result;
+		for (i = 0; i < nthreads; i++) {
+			dot = dot + (*ptr);
+			ptr = (RETURN_TYPE *)(((char *)ptr) + sizeof(double) * 2);
+		}
+	}
+#else
+	dot = dot_compute(n, x, inc_x, y, inc_y);
+#endif
+
+	return dot;
+}

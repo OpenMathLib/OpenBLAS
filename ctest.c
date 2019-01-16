@@ -60,6 +60,14 @@ OS_FREEBSD
 OS_NETBSD
 #endif
 
+#if defined(__OpenBSD__)
+OS_OPENBSD
+#endif
+
+#if defined(__DragonFly__)
+OS_DRAGONFLY
+#endif
+
 #if defined(__sun)
 OS_SUNOS
 #endif
@@ -91,6 +99,10 @@ OS_INTERIX
 #if defined(__gnu_hurd__)
 /* Hurd is very similar to GNU/Linux, it should work out of the box */
 OS_LINUX
+#endif
+
+#if defined(__HAIKU__)
+OS_HAIKU
 #endif
 
 #if defined(__i386) || defined(_X86)

@@ -6,21 +6,30 @@ cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 0.dev)
+set(OpenBLAS_PATCH_VERSION 6.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 
-set(OpenBLAS_LIBNAME openblas)
+include(CMakePackageConfigHelpers)
+
 
 #######
 if(MSVC)
-option(BUILD_WITHOUT_LAPACK "Without LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
+option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
 endif()
-option(BUILD_WITHOUT_CBLAS "Without CBLAS" OFF)
-option(DYNAMIC_ARCH "Build with DYNAMIC_ARCH" OFF)
-option(BUILD_RELAPACK "Build with ReLAPACK (recursive LAPACK" OFF)
+option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
+option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64 only)" OFF)
+option(DYNAMIC_OLDER "Include specific support for older cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
+option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
+
+# Add a prefix or suffix to all exported symbol names in the shared library.
+# Avoids conflicts with other BLAS libraries, especially when using
+# 64 bit integer interfaces in OpenBLAS.
+
+set(SYMBOLPREFIX "" CACHE STRING  "Add a prefix to all exported symbol names in the shared library to avoid conflicts with other BLAS libraries" )
+set(SYMBOLSUFFIX "" CACHE STRING  "Add a suffix to all exported symbol names in the shared library, e.g. _64 for INTERFACE64 builds" )
 #######
 if(BUILD_WITHOUT_LAPACK)
 set(NO_LAPACK 1)
@@ -34,10 +43,12 @@ endif()
 #######
 
 
-message(WARNING "CMake support is experimental. This will not produce the same Makefiles that OpenBLAS ships with. Only x86 support is currently available.")
+message(WARNING "CMake support is experimental. It does not yet support all build options and may not produce the same Makefiles that OpenBLAS ships with.")
 
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
 include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
+
+set(OpenBLAS_LIBNAME openblas${SUFFIX64_UNDERSCORE})
 
 set(BLASDIRS interface driver/level2 driver/level3 driver/others)
 
@@ -146,6 +157,7 @@ endif()
 
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
+target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include>)
 
 # Android needs to explicitly link against libm
 if(ANDROID)
@@ -165,6 +177,7 @@ endif()
 # Set output for libopenblas
 set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES EXPORT_NAME "OpenBLAS")
 
 foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
@@ -204,13 +217,83 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
 
+if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFIX} STREQUAL "")
+if (NOT DEFINED ARCH)
+  set(ARCH_IN "x86_64")
+else()
+  set(ARCH_IN ${ARCH})
+endif()
+
+if (${CORE} STREQUAL "generic")
+  set(ARCH_IN "GENERIC")
+endif ()
+
+if (NOT DEFINED EXPRECISION)
+  set(EXPRECISION_IN 0)
+else()
+  set(EXPRECISION_IN ${EXPRECISION})
+endif()
+
+if (NOT DEFINED NO_CBLAS)
+  set(NO_CBLAS_IN 0)
+else()
+  set(NO_CBLAS_IN ${NO_CBLAS})
+endif()
+
+if (NOT DEFINED NO_LAPACK)
+  set(NO_LAPACK_IN 0)
+else()
+  set(NO_LAPACK_IN ${NO_LAPACK})
+endif()
+
+if (NOT DEFINED NO_LAPACKE)
+  set(NO_LAPACKE_IN 0)
+else()
+  set(NO_LAPACKE_IN ${NO_LAPACKE})
+endif()
+
+if (NOT DEFINED NEED2UNDERSCORES)
+  set(NEED2UNDERSCORES_IN 0)
+else()
+  set(NEED2UNDERSCORES_IN ${NEED2UNDERSCORES})
+endif()
+
+if (NOT DEFINED ONLY_CBLAS)
+  set(ONLY_CBLAS_IN 0)
+else()
+  set(ONLY_CBLAS_IN ${ONLY_CBLAS})
+endif()
+
+if (NOT DEFINED BU)
+  set(BU _)
+endif()
+
+if (NOT ${SYMBOLPREFIX} STREQUAL "")
+message(STATUS "adding prefix ${SYMBOLPREFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
+endif()
+if (NOT ${SYMBOLSUFFIX} STREQUAL "")
+message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
+endif()
+	add_custom_command(TARGET ${OpenBLAS_LIBNAME} POST_BUILD
+  	COMMAND perl  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
+        COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
+        COMMENT "renaming symbols"
+        )
+endif()
+
+
 # Install project
 
 # Install libraries
 install(TARGETS ${OpenBLAS_LIBNAME}
+	EXPORT "OpenBLAS${SUFFIX64}Targets"
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+# Install headers
+set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/openblas${SUFFIX64})
+set(CMAKE_INSTALL_FULL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
 
 message(STATUS "Generating openblas_config.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
@@ -259,11 +342,31 @@ if(NOT NO_LAPACKE)
 	ADD_CUSTOM_TARGET(genlapacke
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
 	)
-	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openblas${SUFFIX64})
 endif()
 
 include(FindPkgConfig QUIET)
 if(PKG_CONFIG_FOUND)
-	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas.pc @ONLY)
-	install (FILES ${PROJECT_BINARY_DIR}/openblas.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
+	configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/openblas${SUFFIX64}.pc @ONLY)
+	install (FILES ${PROJECT_BINARY_DIR}/openblas${SUFFIX64}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
 endif()
+
+
+# GNUInstallDirs "DATADIR" wrong here; CMake search path wants "share".
+set(PN OpenBLAS)
+set(CMAKECONFIG_INSTALL_DIR "share/cmake/${PN}${SUFFIX64}")
+configure_package_config_file(cmake/${PN}Config.cmake.in
+                              "${CMAKE_CURRENT_BINARY_DIR}/${PN}${SUFFIX64}Config.cmake"
+                              INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+                                 VERSION ${${PN}_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}${SUFFIX64}Config.cmake
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
+        RENAME ${PN}${SUFFIX64}ConfigVersion.cmake
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+install(EXPORT "${PN}${SUFFIX64}Targets"
+        NAMESPACE "${PN}${SUFFIX64}::"
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+

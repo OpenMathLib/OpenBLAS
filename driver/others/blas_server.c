@@ -70,7 +70,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*********************************************************************/
 
 #include "common.h"
-#if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID) || defined(OS_SUNOS) || defined(OS_FREEBSD)
+#if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID) || defined(OS_SUNOS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_HAIKU)
 #include <dlfcn.h>
 #include <signal.h>
 #include <sys/resource.h>
@@ -582,7 +582,7 @@ int blas_thread_init(void){
       if(ret!=0){
 	struct rlimit rlim;
         const char *msg = strerror(ret);
-        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create: %s\n", msg);
+        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create failed for thread %ld of %ld: %s\n", i+1,blas_num_threads,msg);
 #ifdef RLIMIT_NPROC
         if(0 == getrlimit(RLIMIT_NPROC, &rlim)) {
           fprintf(STDERR, "OpenBLAS blas_thread_init: RLIMIT_NPROC "
@@ -849,6 +849,11 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 void goto_set_num_threads(int num_threads) {
 
   long i;
+
+#ifdef SMP_SERVER
+  // Handle lazy re-init of the thread-pool after a POSIX fork
+  if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
 
   if (num_threads < 1) num_threads = blas_num_threads;
 

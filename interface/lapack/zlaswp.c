@@ -96,7 +96,7 @@ int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
 #endif
 
-  blas_level1_thread(mode, n, k1, k2, dummyalpha, a, lda, NULL, 0, ipiv, incx, laswp[flag], nthreads);
+  blas_level1_thread(mode, n, k1, k2, dummyalpha, a, lda, NULL, 0, ipiv, incx, (int(*)())laswp[flag], nthreads);
   }
 #endif
 

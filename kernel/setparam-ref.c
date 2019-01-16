@@ -294,6 +294,8 @@ gotoblas_t TABLE_NAME = {
   chemm_outcopyTS,  chemm_oltcopyTS,
 
   0, 0, 0,
+
+#if defined(USE_GEMM3M)
 #ifdef CGEMM3M_DEFAULT_UNROLL_M
   CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N, MAX(CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N),
 #else
@@ -324,6 +326,33 @@ gotoblas_t TABLE_NAME = {
   chemm3m_oucopybTS,  chemm3m_olcopybTS,
   chemm3m_oucopyrTS,  chemm3m_olcopyrTS,
   chemm3m_oucopyiTS,  chemm3m_olcopyiTS,
+#else
+  0, 0, 0,
+
+  NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+#endif
 
 #ifndef NO_LAPACK
   cneg_tcopyTS, claswp_ncopyTS,
@@ -400,6 +429,7 @@ gotoblas_t TABLE_NAME = {
   zhemm_outcopyTS,  zhemm_oltcopyTS,
 
   0, 0, 0,
+#if defined(USE_GEMM3M)
 #ifdef ZGEMM3M_DEFAULT_UNROLL_M
   ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N, MAX(ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N),
 #else
@@ -430,6 +460,33 @@ gotoblas_t TABLE_NAME = {
   zhemm3m_oucopybTS,  zhemm3m_olcopybTS,
   zhemm3m_oucopyrTS,  zhemm3m_olcopyrTS,
   zhemm3m_oucopyiTS,  zhemm3m_olcopyiTS,
+#else
+  0, 0, 0,
+
+  NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+#endif
 
 #ifndef NO_LAPACK
   zneg_tcopyTS, zlaswp_ncopyTS,
@@ -503,6 +560,7 @@ gotoblas_t TABLE_NAME = {
   xhemm_outcopyTS,  xhemm_oltcopyTS,
 
   0, 0, 0,
+#if defined(USE_GEMM3M)
   QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N, MAX(QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N),
 
   xgemm3m_kernelTS,
@@ -528,6 +586,33 @@ gotoblas_t TABLE_NAME = {
   xhemm3m_oucopybTS,  xhemm3m_olcopybTS,
   xhemm3m_oucopyrTS,  xhemm3m_olcopyrTS,
   xhemm3m_oucopyiTS,  xhemm3m_olcopyiTS,
+#else
+  0, 0, 0,
+
+  NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+
+  NULL, NULL,
+  NULL, NULL,
+  NULL, NULL,
+#endif
 
 #ifndef NO_LAPACK
   xneg_tcopyTS, xlaswp_ncopyTS,
@@ -561,6 +646,78 @@ gotoblas_t TABLE_NAME = {
 
 };
 
+#if defined(ARCH_ARM64)
+static void init_parameter(void) {
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+
+  TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+  TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+  TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
+  TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+
+  TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
+  TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
+  TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
+  TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
+
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+  TABLE_NAME.qgemm_q = QGEMM_DEFAULT_Q;
+  TABLE_NAME.xgemm_q = XGEMM_DEFAULT_Q;
+  TABLE_NAME.qgemm_r = QGEMM_DEFAULT_R;
+  TABLE_NAME.xgemm_r = XGEMM_DEFAULT_R;
+#endif
+
+#if defined(USE_GEMM3M)
+#ifdef CGEMM3M_DEFAULT_P
+  TABLE_NAME.cgemm3m_p = CGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.cgemm3m_p = TABLE_NAME.sgemm_p;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_P
+  TABLE_NAME.zgemm3m_p = ZGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.zgemm3m_p = TABLE_NAME.dgemm_p;
+#endif
+
+#ifdef CGEMM3M_DEFAULT_Q
+  TABLE_NAME.cgemm3m_q = CGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.cgemm3m_q = TABLE_NAME.sgemm_q;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_Q
+  TABLE_NAME.zgemm3m_q = ZGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.zgemm3m_q = TABLE_NAME.dgemm_q;
+#endif
+
+#ifdef CGEMM3M_DEFAULT_R
+  TABLE_NAME.cgemm3m_r = CGEMM3M_DEFAULT_R;
+#else
+  TABLE_NAME.cgemm3m_r = TABLE_NAME.sgemm_r;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_R
+  TABLE_NAME.zgemm3m_r = ZGEMM3M_DEFAULT_R;
+#else
+  TABLE_NAME.zgemm3m_r = TABLE_NAME.dgemm_r;
+#endif
+
+#ifdef EXPRECISION
+  TABLE_NAME.xgemm3m_p = TABLE_NAME.qgemm_p;
+  TABLE_NAME.xgemm3m_q = TABLE_NAME.qgemm_q;
+  TABLE_NAME.xgemm3m_r = TABLE_NAME.qgemm_r;
+#endif
+#endif
+
+}
+#else // defined(ARCH_ARM64)
 #ifdef ARCH_X86
 static int get_l2_size_old(void){
   int i, eax, ebx, ecx, edx, cpuid_level;
@@ -647,7 +804,9 @@ static int get_l2_size_old(void){
       return 6144;
     }
   }
-  return 0;
+//  return 0;
+fprintf (stderr,"OpenBLAS WARNING - could not determine the L2 cache size on this system, assuming 256k\n");
+return 256;
 }
 #endif
 
@@ -660,6 +819,10 @@ static __inline__ int get_l2_size(void){
   l2 = BITMASK(ecx, 16, 0xffff);
 
 #ifndef ARCH_X86
+  if (l2 <= 0) {
+     fprintf (stderr,"OpenBLAS WARNING - could not determine the L2 cache size on this system, assuming 256k\n");
+     return 256;
+  }
   return l2;
 
 #else
@@ -859,6 +1022,22 @@ static void init_parameter(void) {
 
 #ifdef DEBUG
   fprintf(stderr, "Haswell\n");
+#endif
+
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+#endif
+#endif
+
+#ifdef SKYLAKEX
+
+#ifdef DEBUG
+  fprintf(stderr, "SkylakeX\n");
 #endif
 
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
@@ -1124,3 +1303,4 @@ static void init_parameter(void) {
 
 
 }
+#endif //defined(ARCH_ARM64)

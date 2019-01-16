@@ -40,6 +40,14 @@
 #include <stdlib.h>
 #include "common.h"
 
+#if defined(OS_CYGWIN_NT) && !defined(unlikely)
+#ifdef __GNUC__
+#define unlikely(x) __builtin_expect(!!(x), 0)
+#else
+#define unlikely(x) (x)
+#endif
+#endif
+
 /* This is a thread implementation for Win32 lazy implementation */
 
 /* Thread server common infomation */
@@ -53,7 +61,7 @@ typedef struct{
 
 } blas_pool_t;
 
-/* We need this grobal for cheking if initialization is finished.   */
+/* We need this global for cheking if initialization is finished.   */
 int blas_server_avail = 0;
 
 /* Local Variables */
@@ -340,6 +348,11 @@ int blas_thread_init(void){
 
 int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 
+#if defined(SMP_SERVER) && defined(OS_CYGWIN_NT)
+  // Handle lazy re-init of the thread-pool after a POSIX fork
+  if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
+
   blas_queue_t *current;
 
   current = queue;
@@ -405,6 +418,11 @@ int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
 /* Execute Threads */
 int exec_blas(BLASLONG num, blas_queue_t *queue){
 
+#if defined(SMP_SERVER) && defined(OS_CYGWIN_NT)
+  // Handle lazy re-init of the thread-pool after a POSIX fork
+  if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
+
 #ifndef ALL_THREADED
    int (*routine)(blas_arg_t *, void *, void *, double *, double *, BLASLONG);
 #endif
@@ -460,7 +478,12 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
 void goto_set_num_threads(int num_threads)
 {
-	 long i;
+	long i;
+
+#if defined(SMP_SERVER) && defined(OS_CYGWIN_NT)
+	// Handle lazy re-init of the thread-pool after a POSIX fork
+	if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
 
 	if (num_threads < 1) num_threads = blas_cpu_number;
 

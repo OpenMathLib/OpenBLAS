@@ -32,6 +32,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "dsymv_L_microk_bulldozer-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "dsymv_L_microk_haswell-2.c"
+#elif defined (SKYLAKEX)
+#include "dsymv_L_microk_skylakex-2.c"
 #elif defined(SANDYBRIDGE)
 #include "dsymv_L_microk_sandy-2.c"
 #elif defined(NEHALEM)

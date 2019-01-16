@@ -46,7 +46,7 @@ static void cdot_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	"vxorps		%%ymm6, %%ymm6, %%ymm6	             \n\t"
 	"vxorps		%%ymm7, %%ymm7, %%ymm7	             \n\t"
 
-	".align 16			             \n\t"
+	".p2align 4			             \n\t"
 	"1:				             \n\t"
         "vmovups                  (%2,%0,4), %%ymm8          \n\t"  // 2 * x
         "vmovups                32(%2,%0,4), %%ymm9          \n\t"  // 2 * x

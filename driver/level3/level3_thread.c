@@ -48,6 +48,10 @@
 #define SWITCH_RATIO 2
 #endif
 
+#ifndef GEMM_PREFERED_SIZE
+#define GEMM_PREFERED_SIZE 1
+#endif
+
 //The array of job_t may overflow the stack.
 //Instead, use malloc to alloc job_t.
 #if MAX_CPU_NUMBER > BLAS3_MEM_ALLOC_THRESHOLD
@@ -91,7 +95,8 @@
 #endif
 
 typedef struct {
-  volatile BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
+  volatile
+   BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
 } job_t;
 
 
@@ -346,7 +351,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       /* Make sure if no one is using workspace */
       START_RPCC();
       for (i = 0; i < args -> nthreads; i++)
-	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;};
+	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;MB;};
       STOP_RPCC(waiting1);
 
 #if defined(FUSED_GEMM) && !defined(TIMING)
@@ -408,7 +413,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
 	  /* Wait until other region of B is initialized */
 	  START_RPCC();
-	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
+	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;MB;};
 	  STOP_RPCC(waiting2);
 
           /* Apply kernel with local region of A and part of other region of B */
@@ -426,6 +431,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
         /* Clear synchronization flag if this thread is done with other region of B */
 	if (m_to - m_from == min_i) {
 	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
+	  WMB;
 	}
       }
     } while (current != mypos);
@@ -487,7 +493,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   START_RPCC();
   for (i = 0; i < args -> nthreads; i++) {
     for (js = 0; js < DIVIDE_RATE; js++) {
-      while (job[mypos].working[i][CACHE_LINE_SIZE * js] ) {YIELDING;};
+      while (job[mypos].working[i][CACHE_LINE_SIZE * js] ) {YIELDING;MB;};
     }
   }
   STOP_RPCC(waiting3);
@@ -508,9 +514,28 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   return 0;
 }
 
+static int round_up(int remainder, int width, int multiple)
+{
+	if (multiple > remainder || width <= multiple)
+		return width;
+	width = (width + multiple - 1) / multiple;
+	width = width * multiple;
+	return width;
+}
+
+
 static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 		       *range_n, FLOAT *sa, FLOAT *sb,
                        BLASLONG nthreads_m, BLASLONG nthreads_n) {
+
+#ifndef USE_OPENMP
+#ifndef OS_WINDOWS
+static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
+#else
+CRITICAL_SECTION level3_lock;
+InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock);
+#endif
+#endif
 
   blas_arg_t newarg;
 
@@ -549,6 +574,14 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   mode  =  BLAS_DOUBLE  | BLAS_COMPLEX | BLAS_NODE;
 #else
   mode  =  BLAS_SINGLE  | BLAS_COMPLEX | BLAS_NODE;
+#endif
+#endif
+
+#ifndef USE_OPENMP
+#ifndef OS_WINDOWS
+pthread_mutex_lock(&level3_lock);
+#else
+EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #endif
 #endif
 
@@ -599,9 +632,14 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   num_parts = 0;
   while (m > 0){
     width = blas_quickdivide(m + nthreads_m - num_parts - 1, nthreads_m - num_parts);
+
+    width = round_up(m, width, GEMM_PREFERED_SIZE);
+
     m -= width;
+
     if (m < 0) width = width + m;
     range_M[num_parts + 1] = range_M[num_parts] + width;
+
     num_parts ++;
   }
   for (i = num_parts; i < MAX_CPU_NUMBER; i++) {
@@ -643,9 +681,12 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
       if (width < SWITCH_RATIO) {
         width = SWITCH_RATIO;
       }
+      width = round_up(n, width, GEMM_PREFERED_SIZE);
+
       n -= width;
       if (n < 0) width = width + n;
       range_N[num_parts + 1] = range_N[num_parts] + width;
+
       num_parts ++;
     }
     for (j = num_parts; j < MAX_CPU_NUMBER; j++) {
@@ -653,8 +694,8 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     }
 
     /* Clear synchronization flags */
-    for (i = 0; i < MAX_CPU_NUMBER; i++) {
-      for (j = 0; j < MAX_CPU_NUMBER; j++) {
+    for (i = 0; i < nthreads; i++) {
+      for (j = 0; j < nthreads; j++) {
 	for (k = 0; k < DIVIDE_RATE; k++) {
 	  job[i].working[j][CACHE_LINE_SIZE * k] = 0;
 	}
@@ -667,6 +708,14 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 
 #ifdef USE_ALLOC_HEAP
   free(job);
+#endif
+
+#ifndef USE_OPENMP
+#ifndef OS_WINDOWS
+  pthread_mutex_unlock(&level3_lock);
+#else
+  LeaveCriticalSection((PCRITICAL_SECTION)&level3_lock);
+#endif
 #endif
 
   return 0;

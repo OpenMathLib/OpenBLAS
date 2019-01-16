@@ -138,6 +138,14 @@
 /* INCX != 1 or INCY != 1 */
 
 .L14:
+	cmpl	$0, %ebx
+	jne	.L141
+	cmpl	$0, %ecx
+	jne	.L141
+/* INCX == 0 and INCY == 0 */	
+	jmp	.L27
+
+.L141:	
 	movl	%edx, %eax
 	sarl	$2,   %eax
 	jle	.L28

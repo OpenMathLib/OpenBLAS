@@ -31,46 +31,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include "common_utest.h"
-#include <complex.h>
+#include "openblas_utest.h"
 
-void test_zdotu_n_1(void)
+CTEST( zdotu,zdotu_n_1)
 {
-	int N=1,incX=1,incY=1;
+	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,1.0};
 	double y1[]={1.0,2.0};
-	double x2[]={1.0,1.0};
-	double y2[]={1.0,2.0};
-	double _Complex result1=0.0;
-	double _Complex result2=0.0;
-	//OpenBLAS
+	
+	openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
+        openblas_complex_double result2=openblas_make_complex_double(-1.0000,3.0000);
+#ifdef RETURN_BY_STACK
+	BLASFUNC(zdotu)(&result1,&N,x1,&incX,y1,&incY);
+#else
 	result1=BLASFUNC(zdotu)(&N,x1,&incX,y1,&incY);
-	//reference
-	result2=BLASFUNC_REF(zdotu)(&N,x2,&incX,y2,&incY);
-
-	CU_ASSERT_DOUBLE_EQUAL(creal(result1), creal(result2), CHECK_EPS);
-	CU_ASSERT_DOUBLE_EQUAL(cimag(result1), cimag(result2), CHECK_EPS);
-//	printf("\%lf,%lf\n",creal(result1),cimag(result1));
-
+#endif
+	
+#ifdef OPENBLAS_COMPLEX_STRUCT
+	ASSERT_DBL_NEAR_TOL(result2.real, result1.real, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result2.imag, result1.imag, DOUBLE_EPS);
+#else
+	ASSERT_DBL_NEAR_TOL(creal(result2), creal(result1), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(cimag(result2), cimag(result1), DOUBLE_EPS);
+#endif
+	
 }
 
-void test_zdotu_offset_1(void)
+CTEST(zdotu, zdotu_offset_1)
 {
-	int N=1,incX=1,incY=1;
+	blasint N=1,incX=1,incY=1;
 	double x1[]={1.0,2.0,3.0,4.0};
 	double y1[]={5.0,6.0,7.0,8.0};
-	double x2[]={1.0,2.0,3.0,4.0};
-	double y2[]={5.0,6.0,7.0,8.0};
-	double _Complex result1=0.0;
-	double _Complex result2=0.0;
-	//OpenBLAS
+	
+	openblas_complex_double result1=openblas_make_complex_double(0.0,0.0);
+        openblas_complex_double result2=openblas_make_complex_double(-9.0,32.0);
+#ifdef RETURN_BY_STACK
+	BLASFUNC(zdotu)(&result1,&N,x1+1,&incX,y1+1,&incY);
+#else
 	result1=BLASFUNC(zdotu)(&N,x1+1,&incX,y1+1,&incY);
-	//reference
-	result2=BLASFUNC_REF(zdotu)(&N,x2+1,&incX,y2+1,&incY);
-
-	CU_ASSERT_DOUBLE_EQUAL(creal(result1), creal(result2), CHECK_EPS);
-	CU_ASSERT_DOUBLE_EQUAL(cimag(result1), cimag(result2), CHECK_EPS);
-//	printf("\%lf,%lf\n",creal(result1),cimag(result1));
+#endif
+	
+#ifdef OPENBLAS_COMPLEX_STRUCT
+	ASSERT_DBL_NEAR_TOL(result2.real, result1.real, DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(result2.imag, result1.imag, DOUBLE_EPS);
+#else
+	ASSERT_DBL_NEAR_TOL(creal(result2), creal(result1), DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(cimag(result2), cimag(result1), DOUBLE_EPS);
+#endif
 
 }
-

@@ -33,9 +33,10 @@ ZAXPYKERNEL = zaxpy.c
 
 STRMMKERNEL    =  sgemm_kernel_16x4_haswell.S
 SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
+SGEMM_BETA     =  sgemm_beta_skylakex.c
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
-SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
+SGEMMONCOPY    =  sgemm_ncopy_4_skylakex.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
@@ -44,9 +45,10 @@ SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 DTRMMKERNEL    =  dtrmm_kernel_4x8_haswell.c
 DGEMMKERNEL    =  dgemm_kernel_4x8_haswell.S
+DGEMM_BETA     =  dgemm_beta_skylakex.c
 DGEMMINCOPY    =  ../generic/gemm_ncopy_4.c
 DGEMMITCOPY    =  ../generic/gemm_tcopy_4.c
-DGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
+DGEMMONCOPY    =  dgemm_ncopy_8_skylakex.c
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_8.c
 DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)

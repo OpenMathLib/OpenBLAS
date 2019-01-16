@@ -40,11 +40,11 @@
 #include "common.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
-#endif 
+#endif
 #if  defined(Z13)
 #define MULTI_THREAD_MINIMAL  200000
 #else
-#define MULTI_THREAD_MINIMAL  10000        
+#define MULTI_THREAD_MINIMAL  10000
 #endif
 #ifndef CBLAS
 
@@ -75,6 +75,11 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
 
   if (alpha == ZERO) return;
 
+  if (incx == 0 && incy == 0) {
+    *y += n * alpha *(*x);
+    return;
+  }
+    
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -83,17 +88,15 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
   if (incy < 0) y -= (n - 1) * incy;
 
 #ifdef SMP
-  nthreads = num_cpu_avail(1);
-
   //disable multi-thread when incx==0 or incy==0
   //In that case, the threads would be dependent.
-  if (incx == 0 || incy == 0)
-	  nthreads = 1;
-
+  //
   //Temporarily work-around the low performance issue with small imput size &
   //multithreads.
-  if (n <= MULTI_THREAD_MINIMAL)
+  if (incx == 0 || incy == 0 || n <= MULTI_THREAD_MINIMAL)
 	  nthreads = 1;
+  else
+	  nthreads = num_cpu_avail(1);
 
   if (nthreads == 1) {
 #endif

@@ -50,11 +50,11 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vmulps		(%5), %%ymm0 , %%ymm0		    \n\t"
 #endif
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
 	"vmovups        (%2,%0,4), %%ymm5                   \n\t" // 4 complex values from x
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups      32(%2,%0,4), %%ymm7                   \n\t" // 4 complex values from x
 	"vmovups      64(%2,%0,4), %%ymm9                   \n\t" // 4 complex values from x
 	"vmovups      96(%2,%0,4), %%ymm11                  \n\t" // 4 complex values from x
@@ -70,7 +70,7 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vpermilps	$0xb1 , %%ymm11, %%ymm10 	    \n\t"  // exchange real and imag part
 
 	"vfmadd213ps    (%3,%0,4), %%ymm0 , %%ymm5          \n\t"
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vfmadd213ps  32(%3,%0,4), %%ymm0 , %%ymm7          \n\t"
 	"vfmadd213ps  64(%3,%0,4), %%ymm0 , %%ymm9          \n\t"
 	"vfmadd213ps  96(%3,%0,4), %%ymm0 , %%ymm11         \n\t"
@@ -96,7 +96,7 @@ static void caxpy_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"vfmadd231ps	%%ymm1 , %%ymm10, %%ymm15  \n\t"
 
 	"vmovups	%%ymm5 ,   (%3,%0,4)		    \n\t"
-	".align 2					    \n\t"
+	".p2align 1					    \n\t"
 	"vmovups	%%ymm7 , 32(%3,%0,4)		    \n\t"
 	"vmovups	%%ymm9 , 64(%3,%0,4)		    \n\t"
 	"vmovups	%%ymm11, 96(%3,%0,4)		    \n\t"

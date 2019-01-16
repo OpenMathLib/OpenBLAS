@@ -17,6 +17,10 @@ ifdef CPUIDEMU
 EXFLAGS = -DCPUIDEMU -DVENDOR=99
 endif
 
+ifeq ($(TARGET), 1004K)
+TARGET_FLAGS = -mips32r2
+endif
+
 ifeq ($(TARGET), P5600)
 TARGET_FLAGS = -mips32r5
 endif

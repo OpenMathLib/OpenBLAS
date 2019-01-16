@@ -57,7 +57,7 @@ lapack_int LAPACKE_sormtr( int matrix_layout, char side, char uplo, char trans,
         if( LAPACKE_sge_nancheck( matrix_layout, m, n, c, ldc ) ) {
             return -10;
         }
-        if( LAPACKE_s_nancheck( m-1, tau, 1 ) ) {
+        if( LAPACKE_s_nancheck( r-1, tau, 1 ) ) {
             return -9;
         }
     }

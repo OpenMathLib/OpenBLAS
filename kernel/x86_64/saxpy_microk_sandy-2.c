@@ -50,7 +50,7 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"subq	        $32, %1			             \n\t"		
 	"jz		2f		             \n\t"
 
-	".align 16				            \n\t"
+	".p2align 4				            \n\t"
 	"1:				            \n\t"
 
 	"vmulps		%%ymm4, %%ymm0, %%ymm4		\n\t"

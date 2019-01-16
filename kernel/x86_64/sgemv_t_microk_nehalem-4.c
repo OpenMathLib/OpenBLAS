@@ -40,7 +40,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
 	"xorps		%%xmm6 , %%xmm6	         \n\t"
 	"xorps		%%xmm7 , %%xmm7	         \n\t"
 
-	".align 16				 \n\t"
+	".p2align 4				 \n\t"
 	"1:				 \n\t"
 
 	"movups	       (%2,%0,4), %%xmm12              \n\t"   // 4 * x

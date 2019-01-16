@@ -49,6 +49,7 @@ SDOTKERNEL   = ../arm/dot.c
 DDOTKERNEL   = ddot.c
 CDOTKERNEL   = ../arm/zdot.c
 ZDOTKERNEL   = zdot.c
+DSDOTKERNEL  = ../generic/dot.c
 
 SNRM2KERNEL  = ../arm/nrm2.c
 DNRM2KERNEL  = ../arm/nrm2.c

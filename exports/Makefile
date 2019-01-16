@@ -114,20 +114,22 @@ $(LIBDYNNAME) : ../$(LIBNAME).osx.renamed osx.def
 endif
 ifneq (,$(filter 1 2,$(NOFORTRAN)))
 #only build without Fortran
-	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 else
-	$(FC) $(FFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(FC) $(FFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 endif
 
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<
 
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 
 so : ../$(LIBSONAME)
 
 ifeq ($(OSNAME), Android)
 INTERNALNAME = $(LIBPREFIX).so
+FEXTRALIB += -lm
+EXTRALIB += -lm
 else
 INTERNALNAME = $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
@@ -156,7 +158,7 @@ endif
 endif
 
 #http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
-ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD NetBSD))
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
 
 so : ../$(LIBSONAME)
 

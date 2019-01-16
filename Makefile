@@ -21,6 +21,17 @@ ifeq ($(BUILD_RELAPACK), 1)
 RELA = re_lapack
 endif
 
+ifeq ($(NO_FORTRAN), 1)
+define NOFORTRAN
+1
+endef
+define NO_LAPACK
+1
+endef
+export NOFORTRAN
+export NO_LAPACK
+endif
+
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
@@ -47,7 +58,7 @@ endif
 endif
 
 	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
-ifndef NOFORTRAN
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
 endif
 ifneq ($(OSNAME), AIX)
@@ -86,16 +97,12 @@ endif
 
 shared :
 ifndef NO_SHARED
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
-ifeq ($(OSNAME), FreeBSD)
-	@$(MAKE) -C exports so
-	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
-endif
-ifeq ($(OSNAME), NetBSD)
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
@@ -112,7 +119,7 @@ endif
 endif
 
 tests :
-ifndef NOFORTRAN
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
@@ -124,7 +131,7 @@ endif
 endif
 
 libs :
-ifeq ($(CORE), UNKOWN)
+ifeq ($(CORE), UNKNOWN)
 	$(error OpenBLAS: Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for the detail.)
 endif
 ifeq ($(NOFORTRAN), 1)
@@ -157,6 +164,9 @@ ifeq ($(DYNAMIC_ARCH), 1)
 	do  $(MAKE) GOTOBLAS_MAKEFILE= -C kernel TARGET_CORE=$$d kernel || exit 1 ;\
 	done
 	@echo DYNAMIC_ARCH=1 >> Makefile.conf_last
+ifeq ($(DYNAMIC_OLDER), 1)
+	@echo DYNAMIC_OLDER=1 >> Makefile.conf_last
+endif	
 endif
 ifdef USE_THREAD
 	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
@@ -211,7 +221,7 @@ netlib :
 
 else
 netlib : lapack_prebuild
-ifndef NOFORTRAN
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
@@ -232,7 +242,7 @@ prof_lapack : lapack_prebuild
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 lapack_prebuild :
-ifndef NOFORTRAN
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "OPTS        = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -241,7 +251,7 @@ ifndef NOFORTRAN
 	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "ARCHFLAGS   = $(ARFLAGS) -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB   = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -256,6 +266,8 @@ ifeq ($(F_COMPILER), GFORTRAN)
 	-@echo "TIMER       = INT_ETIME" >> $(NETLIB_LAPACK_DIR)/make.inc
 ifdef SMP
 ifeq ($(OSNAME), WINNT)
+	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
+else ifeq ($(OSNAME), Haiku)
 	-@echo "LOADER      = $(FC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 else
 	-@echo "LOADER      = $(FC) -pthread" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -275,21 +287,21 @@ endif
 endif
 
 large.tgz :
-ifndef NOFORTRAN
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	if [ ! -a $< ]; then
 	-wget http://www.netlib.org/lapack/timing/large.tgz;
 	fi
 endif
 
 timing.tgz :
-ifndef NOFORTRAN
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	if [ ! -a $< ]; then
 	-wget http://www.netlib.org/lapack/timing/timing.tgz;
 	fi
 endif
 
 lapack-timing : large.tgz timing.tgz
-ifndef NOFORTRAN
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	(cd $(NETLIB_LAPACK_DIR); $(TAR) zxf ../timing.tgz TIMING)
 	(cd $(NETLIB_LAPACK_DIR)/TIMING; $(TAR) zxf ../../large.tgz )
 	$(MAKE) -C $(NETLIB_LAPACK_DIR)/TIMING
@@ -298,9 +310,10 @@ endif
 
 lapack-test :
 	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
-	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING xeigtstc  xeigtstd  xeigtsts  xeigtstz  xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/EIG xeigtstc  xeigtstd  xeigtsts  xeigtstz 
+	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/LIN xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 ifneq ($(CROSS), 1)
-	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; make all; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
 endif
@@ -312,9 +325,9 @@ lapack-runtest:
 
 
 blas-test:
-	(cd $(NETLIB_LAPACK_DIR)/BLAS && rm -f x* *.out)
+	(cd $(NETLIB_LAPACK_DIR)/BLAS/TESTING && rm -f x* *.out)
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR) blas_testing
-	(cd $(NETLIB_LAPACK_DIR)/BLAS && cat *.out)
+	(cd $(NETLIB_LAPACK_DIR)/BLAS/TESTING && cat *.out)
 
 
 dummy :

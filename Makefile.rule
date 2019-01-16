@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.0.dev
+VERSION = 0.3.6.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -16,6 +16,11 @@ VERSION = 0.3.0.dev
 
 # If you want to support multiple architecture in one binary
 # DYNAMIC_ARCH = 1
+
+# If you want the full list of x86_64 architectures supported in DYNAMIC_ARCH
+# mode (including individual optimizied codes for PENRYN, DUNNINGTON, OPTERON,
+# OPTERON_SSE3, ATOM and NANO rather than fallbacks to older architectures)
+# DYNAMIC_OLDER = 1
 
 # C compiler including binary type(32bit / 64bit). Default is gcc.
 # Don't use Intel Compiler or PGI, it won't generate right codes as I expect.
@@ -55,10 +60,25 @@ VERSION = 0.3.0.dev
 # This flag is always set for POWER8. Don't modify the flag 
 # USE_OPENMP = 1
 
+# The OpenMP scheduler to use - by default this is "static" and you
+# will normally not want to change this unless you know that your main
+# workload will involve tasks that have highly unbalanced running times
+# for individual threads. Changing away from "static" may also adversely
+# affect memory access locality in NUMA systems. Setting to "runtime" will
+# allow you to select the scheduler from the environment variable OMP_SCHEDULE
+# CCOMMON_OPT += -DOMP_SCHED=dynamic
+
 # You can define maximum number of threads. Basically it should be
 # less than actual number of cores. If you don't specify one, it's
 # automatically detected by the the script.
 # NUM_THREADS = 24
+
+# If you have enabled USE_OPENMP and your application would call
+# OpenBLAS's calculation API from multi threads, please comment it in.
+# This flag defines how many instances of OpenBLAS's calculation API can 
+# actually run in parallel. If more threads call OpenBLAS's calculation API,
+# they need to wait for the preceding API calls to finish or risk data corruption.
+# NUM_PARALLEL = 2
 
 # if you don't need to install the static library, please comment it in.
 # NO_STATIC = 1
@@ -89,6 +109,12 @@ BUILD_LAPACK_DEPRECATED = 1
 # If you want to use legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1
 
+# If you want to use the new, still somewhat experimental code that uses
+# thread-local storage instead of a central memory buffer in memory.c
+# Note that if your system uses GLIBC, it needs to have at least glibc 2.21
+# for this to work.
+# USE_TLS = 1
+
 # If you want to drive whole 64bit region by BLAS. Not all Fortran
 # compiler supports this. It's safe to keep comment it out if you
 # are not sure(equivalent to "-i8" option).
@@ -100,7 +126,7 @@ BUILD_LAPACK_DEPRECATED = 1
 NO_WARMUP = 1
 
 # If you want to disable CPU/Memory affinity on Linux.
-#NO_AFFINITY = 1
+NO_AFFINITY = 1
 
 # if you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
 # BIGNUMA = 1
@@ -126,6 +152,9 @@ NO_WARMUP = 1
 # FUNCTION_PROFILE = 1
 
 # Support for IEEE quad precision(it's *real* REAL*16)( under testing)
+# This option should not be used - it is a holdover from unfinished code present
+# in the original GotoBLAS2 library that may be usable as a starting point but
+# is not even expected to compile in its present form.
 # QUAD_PRECISION = 1
 
 # Theads are still working for a while after finishing BLAS operation
@@ -144,8 +173,11 @@ NO_WARMUP = 1
 # CONSISTENT_FPCSR = 1
 
 # If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute
-# with single thread. You can use this flag to avoid the overhead of multi-threading
-# in small matrix sizes. The default value is 4.
+# with single thread. (Actually in recent versions this is a factor proportional to the
+# number of floating point operations necessary for the given problem size, no longer
+# an individual dimension). You can use this setting to avoid the overhead of multi-
+# threading in small matrix sizes. The default value is 4, but values as high as 50 have 
+# been reported to be optimal for certain workloads (50 is the recommended value for Julia).
 # GEMM_MULTITHREAD_THRESHOLD = 4
 
 # If you need santy check by comparing reference BLAS. It'll be very
@@ -160,8 +192,8 @@ NO_WARMUP = 1
 # Flags for POWER8 are defined in Makefile.power. Don't modify COMMON_OPT
 # COMMON_OPT = -O2
 
-# gfortran option for LAPACK
-# enable this flag only on 64bit Linux and if you need a thread safe lapack library
+# gfortran option for LAPACK to improve thread-safety
+# It is enabled by default in Makefile.system for gfortran
 # Flags for POWER8 are defined in Makefile.power. Don't modify FCOMMON_OPT
 # FCOMMON_OPT = -frecursive
 

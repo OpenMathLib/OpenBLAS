@@ -9,6 +9,17 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+# Catch conflicting usage of ARCH in some BSD environments
+ifeq ($(ARCH), amd64)
+override ARCH=x86_64
+else ifeq ($(ARCH), powerpc64)
+override ARCH=power
+else ifeq ($(ARCH), i386)
+override ARCH=x86
+else ifeq ($(ARCH), aarch64)
+override ARCH=arm64
+endif
+
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 
 # Default C compiler
@@ -17,15 +28,24 @@ NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 #   http://stackoverflow.com/questions/4029274/mingw-and-make-variables
 # - Default value is 'cc' which is not always a valid command (e.g. MinGW).
 ifeq ($(origin CC),default)
+
+# Check if $(CC) refers to a valid command and set the value to gcc if not
+ifneq ($(findstring cmd.exe,$(SHELL)),)
+ifeq ($(shell where $(CC) 2>NUL),)
 CC = gcc
-# Change the default compile to clang on Mac OSX.
-# http://stackoverflow.com/questions/714100/os-detecting-makefile
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Darwin)
-     CC = clang
-#     EXTRALIB += -Wl,-no_compact_unwind
 endif
-endif
+else # POSIX-ish
+ifeq ($(shell command -v $(CC) 2>/dev/null),)
+ifeq ($(shell uname -s),Darwin)
+CC = clang
+# EXTRALIB += -Wl,-no_compact_unwind
+else
+CC = gcc
+endif # Darwin
+endif # CC exists
+endif # Shell is sane
+
+endif # CC is set to default
 
 # Default Fortran compiler (FC) is selected by f_check.
 
@@ -45,12 +65,16 @@ endif
 
 ifdef TARGET
 GETARCH_FLAGS := -DFORCE_$(TARGET)
+GETARCH_FLAGS += -DUSER_TARGET
 endif
 
 # Force fallbacks for 32bit
 
 ifeq ($(BINARY), 32)
 ifeq ($(TARGET), HASWELL)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
+ifeq ($(TARGET), SKYLAKEX)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET), SANDYBRIDGE)
@@ -84,6 +108,9 @@ endif
 
 ifeq ($(BINARY), 32)
 ifeq ($(TARGET_CORE), HASWELL)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
+ifeq ($(TARGET_CORE), SKYLAKEX)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET_CORE), SANDYBRIDGE)
@@ -132,6 +159,10 @@ ifeq ($(NO_AVX2), 1)
 GETARCH_FLAGS	+= -DNO_AVX2
 endif
 
+ifeq ($(NO_AVX512), 1)
+GETARCH_FLAGS	+= -DNO_AVX512
+endif
+
 ifeq ($(DEBUG), 1)
 GETARCH_FLAGS	+= -g
 endif
@@ -173,6 +204,10 @@ else
 include $(TOPDIR)/Makefile_kernel.conf
 endif
 
+endif
+
+ifndef NUM_PARALLEL
+NUM_PARALLEL = 1
 endif
 
 ifndef NUM_THREADS
@@ -225,12 +260,12 @@ endif
 
 ifeq ($(OSNAME), Darwin)
 ifndef MACOSX_DEPLOYMENT_TARGET
-export MACOSX_DEPLOYMENT_TARGET=10.6
+export MACOSX_DEPLOYMENT_TARGET=10.8
 endif
 MD5SUM = md5 -r
 endif
 
-ifeq ($(OSNAME), FreeBSD)
+ifneq (,$(findstring $(OSNAME), FreeBSD OpenBSD DragonFly))
 MD5SUM = md5 -r
 endif
 
@@ -304,6 +339,7 @@ endif
 ifeq ($(OSNAME), CYGWIN_NT)
 NEED_PIC = 0
 NO_EXPRECISION = 1
+OS_CYGWIN_NT = 1
 endif
 
 ifneq ($(OSNAME), WINNT)
@@ -423,7 +459,7 @@ CCOMMON_OPT    += -fopenmp
 endif
 
 ifeq ($(C_COMPILER), INTEL)
-CCOMMON_OPT    += -openmp
+CCOMMON_OPT    += -fopenmp
 endif
 
 ifeq ($(C_COMPILER), PGI)
@@ -448,13 +484,44 @@ DYNAMIC_CORE = KATMAI COPPERMINE NORTHWOOD PRESCOTT BANIAS \
 endif
 
 ifeq ($(ARCH), x86_64)
-DYNAMIC_CORE = PRESCOTT CORE2 PENRYN DUNNINGTON NEHALEM OPTERON OPTERON_SSE3 BARCELONA BOBCAT ATOM NANO
+DYNAMIC_CORE = PRESCOTT CORE2 
+ifeq ($(DYNAMIC_OLDER), 1)
+DYNAMIC_CORE += PENRYN DUNNINGTON 
+endif
+DYNAMIC_CORE += NEHALEM 
+ifeq ($(DYNAMIC_OLDER), 1)
+DYNAMIC_CORE += OPTERON OPTERON_SSE3 
+endif
+DYNAMIC_CORE += BARCELONA 
+ifeq ($(DYNAMIC_OLDER), 1)
+DYNAMIC_CORE += BOBCAT ATOM NANO
+endif
 ifneq ($(NO_AVX), 1)
 DYNAMIC_CORE += SANDYBRIDGE BULLDOZER PILEDRIVER STEAMROLLER EXCAVATOR
 endif
 ifneq ($(NO_AVX2), 1)
 DYNAMIC_CORE += HASWELL ZEN
 endif
+ifneq ($(NO_AVX512), 1)
+ifneq ($(NO_AVX2), 1)
+DYNAMIC_CORE += SKYLAKEX
+endif
+endif
+endif
+
+ifdef DYNAMIC_LIST
+override DYNAMIC_CORE = PRESCOTT $(DYNAMIC_LIST)
+XCCOMMON_OPT = -DDYNAMIC_LIST -DDYN_PRESCOTT
+XCCOMMON_OPT += $(foreach dcore,$(DYNAMIC_LIST),-DDYN_$(dcore))
+CCOMMON_OPT += $(XCCOMMON_OPT)
+#CCOMMON_OPT	+= -DDYNAMIC_LIST='$(DYNAMIC_LIST)'
+endif
+
+ifeq ($(ARCH), arm64)
+DYNAMIC_CORE =  ARMV8
+DYNAMIC_CORE += CORTEXA57
+DYNAMIC_CORE += THUNDERX
+DYNAMIC_CORE += THUNDERX2T99
 endif
 
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
@@ -554,9 +621,14 @@ CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
 endif
 
+ifeq ($(CORE), 1004K)
+CCOMMON_OPT += -mips32r2   $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r2   $(MSA_FLAGS)
+endif
+
 ifeq ($(CORE), P5600)
-CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
-FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600 $(MSA_FLAGS)
+CCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600  $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r5 -mnan=2008 -mtune=p5600  $(MSA_FLAGS)
 endif
 
 ifeq ($(CORE), I6400)
@@ -660,6 +732,8 @@ endif
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
+# make single-threaded LAPACK calls thread-safe #1847
+FCOMMON_OPT += -frecursive
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
@@ -703,7 +777,7 @@ FCOMMON_OPT += -i8
 endif
 endif
 ifeq ($(USE_OPENMP), 1)
-FCOMMON_OPT += -openmp
+FCOMMON_OPT += -fopenmp
 endif
 endif
 
@@ -883,6 +957,10 @@ ifeq ($(DYNAMIC_ARCH), 1)
 CCOMMON_OPT	+= -DDYNAMIC_ARCH
 endif
 
+ifeq ($(DYNAMIC_OLDER), 1)
+CCOMMON_OPT	+= -DDYNAMIC_OLDER
+endif
+
 ifeq ($(NO_LAPACK), 1)
 CCOMMON_OPT	+= -DNO_LAPACK
 #Disable LAPACK C interface
@@ -903,6 +981,10 @@ endif
 
 ifeq ($(NO_AVX2), 1)
 CCOMMON_OPT	+= -DNO_AVX2
+endif
+
+ifeq ($(NO_AVX512), 1)
+CCOMMON_OPT	+= -DNO_AVX512
 endif
 
 ifdef SMP
@@ -951,9 +1033,17 @@ endif
 
 CCOMMON_OPT	+= -DMAX_CPU_NUMBER=$(NUM_THREADS)
 
+CCOMMON_OPT	+= -DMAX_PARALLEL_NUMBER=$(NUM_PARALLEL)
+
 ifdef USE_SIMPLE_THREADED_LEVEL3
 CCOMMON_OPT	+= -DUSE_SIMPLE_THREADED_LEVEL3
 endif
+
+ifdef USE_TLS
+CCOMMON_OPT += -DUSE_TLS
+endif
+
+CCOMMON_OPT += -DVERSION=\"$(VERSION)\"
 
 ifndef SYMBOLPREFIX
 SYMBOLPREFIX =
@@ -1065,14 +1155,18 @@ ifndef FCOMMON_OPT
 FCOMMON_OPT = -O2 -frecursive
 endif
 
-
-
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
 
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
+
+ifdef NEED_PIC
+ifeq (,$(findstring PIC,$(FFLAGS)))
+override FFLAGS += -fPIC
+endif
+endif
 
 #For LAPACK Fortran codes.
 #Disable -fopenmp for LAPACK Fortran codes on Windows.
@@ -1132,7 +1226,11 @@ endif
 
 LIBDLLNAME   = $(LIBPREFIX).dll
 IMPLIBNAME   = lib$(LIBNAMEBASE).dll.a
+ifneq ($(OSNAME), AIX)
 LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so)
+else
+LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.a)
+endif
 LIBDYNNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dylib)
 LIBDEFNAME   = $(LIBNAME:.$(LIBSUFFIX)=.def)
 LIBEXPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.exp)
@@ -1209,6 +1307,7 @@ export MSA_FLAGS
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
+export NO_AVX512
 
 export SGEMM_UNROLL_M
 export SGEMM_UNROLL_N

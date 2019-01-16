@@ -121,14 +121,17 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
     # Makefile.L3
     set(USE_TRMM false)
 
-    if (ARM OR ARM64 OR "${TARGET_CORE}" STREQUAL "LONGSOON3B" OR "${TARGET_CORE}" STREQUAL "GENERIC" OR "${CORE}" STREQUAL "generic" OR "${TARGET_CORE}" STREQUAL "HASWELL" OR "${CORE}" STREQUAL "haswell" OR "${CORE}" STREQUAL "zen")
+    if (ARM OR ARM64 OR "${TARGET_CORE}" STREQUAL "LONGSOON3B" OR "${TARGET_CORE}" STREQUAL "GENERIC" OR "${CORE}" STREQUAL "generic" OR "${TARGET_CORE}" STREQUAL "HASWELL" OR "${CORE}" STREQUAL "haswell" OR "${CORE}" STREQUAL "zen" OR "${TARGET_CORE}" STREQUAL "SKYLAKEX" OR "${CORE}" STREQUAL "skylakex")
       set(USE_TRMM true)
     endif ()
 
-    foreach (float_type ${FLOAT_TYPES})
+    foreach (float_type SINGLE DOUBLE)
       string(SUBSTRING ${float_type} 0 1 float_char)
       GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "" "gemm_kernel" false "" "" false ${float_type})
+    endforeach()
 
+    foreach (float_type ${FLOAT_TYPES})
+      string(SUBSTRING ${float_type} 0 1 float_char)
       if (${float_char}GEMMINCOPY)
         GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMINCOPY}" "${float_type}" "${${float_char}GEMMINCOPYOBJ}" false "" "" true ${float_type})
       endif ()

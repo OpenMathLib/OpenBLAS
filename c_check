@@ -54,6 +54,8 @@ $compiler = GCC       if ($compiler eq "");
 $os = Linux           if ($data =~ /OS_LINUX/);
 $os = FreeBSD         if ($data =~ /OS_FREEBSD/);
 $os = NetBSD          if ($data =~ /OS_NETBSD/);
+$os = OpenBSD         if ($data =~ /OS_OPENBSD/);
+$os = DragonFly       if ($data =~ /OS_DRAGONFLY/);
 $os = Darwin          if ($data =~ /OS_DARWIN/);
 $os = SunOS           if ($data =~ /OS_SUNOS/);
 $os = AIX             if ($data =~ /OS_AIX/);
@@ -62,6 +64,7 @@ $os = WINNT           if ($data =~ /OS_WINNT/);
 $os = CYGWIN_NT       if ($data =~ /OS_CYGWIN_NT/);
 $os = Interix         if ($data =~ /OS_INTERIX/);
 $os = Android         if ($data =~ /OS_ANDROID/);
+$os = Haiku           if ($data =~ /OS_HAIKU/);
 
 $architecture = x86    if ($data =~ /ARCH_X86/);
 $architecture = x86_64 if ($data =~ /ARCH_X86_64/);
@@ -199,6 +202,21 @@ $architecture = zarch  if ($data =~ /ARCH_ZARCH/);
 $binformat    = bin32;
 $binformat    = bin64  if ($data =~ /BINARY_64/);
 
+$no_avx512= 0;
+if (($architecture eq "x86") || ($architecture eq "x86_64")) {
+    $code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
+    print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
+    $args = " -march=skylake-avx512 -o $tmpf.o -x c $tmpf";
+    my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
+    system(@cmd) == 0;
+    if ($? != 0) {
+	$no_avx512 = 1;
+    } else {
+	$no_avx512 = 0;
+    }
+    unlink("tmpf.o");
+}
+
 $data = `$compiler_name -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
 $data =~ /globl\s([_\.]*)(.*)/;
@@ -206,13 +224,14 @@ $data =~ /globl\s([_\.]*)(.*)/;
 $need_fu      = $1;
 
 $cross = 0;
-$cross = 1 if ($os ne $hostos);
 
 if ($architecture ne $hostarch) {
     $cross = 1;
     $cross = 0 if (($hostarch eq "x86_64") && ($architecture eq "x86"));
     $cross = 0 if (($hostarch eq "mips64") && ($architecture eq "mips"));
 }
+
+$cross = 1 if ($os ne $hostos);
 
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 
@@ -286,6 +305,7 @@ print MAKEFILE "CROSS=1\n" if $cross != 0;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
+print MAKEFILE "NO_AVX512=1\n" if $no_avx512 eq 1;
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;

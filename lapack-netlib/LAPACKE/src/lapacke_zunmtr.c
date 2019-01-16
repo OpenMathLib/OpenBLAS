@@ -58,7 +58,7 @@ lapack_int LAPACKE_zunmtr( int matrix_layout, char side, char uplo, char trans,
         if( LAPACKE_zge_nancheck( matrix_layout, m, n, c, ldc ) ) {
             return -10;
         }
-        if( LAPACKE_z_nancheck( m-1, tau, 1 ) ) {
+        if( LAPACKE_z_nancheck( r-1, tau, 1 ) ) {
             return -9;
         }
     }

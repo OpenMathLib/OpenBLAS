@@ -97,7 +97,7 @@ if ($compiler eq "") {
 
 	if ($data =~ /Intel/) {
 	    $vendor = INTEL;
-	    $openmp = "-openmp";
+	    $openmp = "-fopenmp";
 	}
 
         if ($data =~ /Sun Fortran/) {
@@ -127,7 +127,7 @@ if ($compiler eq "") {
 
 	# for embeded underscore name, e.g. zho_ge, it may append 2 underscores.
 	$data = `$compiler -O2 -S ftest3.f > /dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s`;
-	if ($data =~ /zho_ge__/) {
+	if ($data =~ / zho_ge__/) {
 	    $need2bu       = 1;
 	}
     }
@@ -155,7 +155,7 @@ if ($compiler eq "") {
 	if ($compiler =~ /ifort/) {
 	    $vendor = INTEL;
 	    $bu       = "_";
-	    $openmp = "-openmp";
+	    $openmp = "-fopenmp";
 	}
 
 	if ($compiler =~ /pathf/) {
@@ -292,9 +292,6 @@ if ($link ne "") {
 	    && ($flags !~ /^-LIST:/)
 	    && ($flags !~ /^-LANG:/)
 	    ) {
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= $flags . " ";
 	}
 
@@ -311,17 +308,11 @@ if ($link ne "") {
 
 	if ($flags =~ /^\-rpath\@/) {
 	    $flags =~ s/\@/\,/g;
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 
 	if ($flags =~ /^\-rpath-link\@/) {
 	    $flags =~ s/\@/\,/g;
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 
@@ -330,7 +321,6 @@ if ($link ne "") {
 	    && ($flags !~ /gfortranbegin/)
 	    && ($flags !~ /frtbegin/)
 	    && ($flags !~ /pathfstart/)
-	    && ($flags !~ /numa/)
 	    && ($flags !~ /crt[0-9]/)
 	    && ($flags !~ /gcc/)
 	    && ($flags !~ /user32/)

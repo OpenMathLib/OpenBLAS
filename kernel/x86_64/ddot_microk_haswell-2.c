@@ -41,7 +41,7 @@ static void ddot_kernel_8( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *dot)
 	"vxorpd		%%ymm6, %%ymm6, %%ymm6	             \n\t"
 	"vxorpd		%%ymm7, %%ymm7, %%ymm7	             \n\t"
 
-	".align 16				             \n\t"
+	".p2align 4				             \n\t"
 	"1:				             \n\t"
         "vmovups                  (%2,%0,8), %%ymm12         \n\t"  // 2 * x
         "vmovups                32(%2,%0,8), %%ymm13         \n\t"  // 2 * x

@@ -93,6 +93,7 @@
 *>
 *> \param[in] LTB
 *> \verbatim
+*>          LTB is INTEGER
 *>          The size of the array TB. LTB >= 4*N, internally
 *>          used to select NB such that LTB >= (3*NB+1)*N.
 *>
@@ -109,6 +110,7 @@
 *>
 *> \param[in] LWORK
 *> \verbatim
+*>          LWORK is INTEGER
 *>          The size of WORK. LWORK >= N, internally used to select NB
 *>          such that LWORK >= N*NB.
 *>
@@ -128,10 +130,10 @@
 *>
 *> \param[out] IPIV2
 *> \verbatim
-*>          IPIV is INTEGER array, dimension (N)
+*>          IPIV2 is INTEGER array, dimension (N)
 *>          On exit, it contains the details of the interchanges, i.e.,
 *>          the row and column k of T were interchanged with the
-*>          row and column IPIV(k).
+*>          row and column IPIV2(k).
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -191,7 +193,7 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, DCOPY, DLACGV, DLACPY,
+      EXTERNAL           XERBLA, DCOPY, DLACPY,
      $                   DLASET, DGBTRF, DGEMM,  DGETRF, 
      $                   DSYGST, DSWAP, DTRSM 
 *     ..
@@ -641,6 +643,8 @@ c     $                     (J+1)*NB+1, (J+1)*NB+KB, IPIV, 1 )
 *
 *     Factor the band matrix
       CALL DGBTRF( N, N, NB, NB, TB, LDTB, IPIV2, INFO )
+*
+      RETURN
 *
 *     End of DSYTRF_AA_2STAGE
 *

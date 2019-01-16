@@ -29,9 +29,11 @@ USE_TRMM = 1
 endif
 
 ifeq ($(CORE), HASWELL)
-ifeq ($(ARCH), x86_64)
 USE_TRMM = 1
 endif
+
+ifeq ($(CORE), SKYLAKEX)
+USE_TRMM = 1
 endif
 
 ifeq ($(CORE), ZEN)
@@ -42,7 +44,7 @@ ifeq ($(CORE), POWER8)
 USE_TRMM = 1
 endif
 
-ifeq ($(CORE), Z13)
+ifeq ($(ARCH), zarch)
 USE_TRMM = 1
 endif
 

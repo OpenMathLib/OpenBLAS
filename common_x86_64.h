@@ -60,8 +60,13 @@
 #endif
 */
 
-#define MB
-#define WMB
+#ifdef __GNUC__
+#define MB do { __asm__ __volatile__("": : :"memory"); } while (0)
+#define WMB do { __asm__ __volatile__("": : :"memory"); } while (0)
+#else
+#define MB do {} while (0)
+#define WMB do {} while (0)
+#endif
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
@@ -129,7 +134,7 @@ static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 			     "=b" (*ebx),
 			     "=c" (*ecx),
 			     "=d" (*edx)
-			     : "0" (op));
+			     : "0" (op), "c"(0));
 #endif
 }
 
@@ -196,6 +201,13 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 
   if (y <= 1) return x;
 
+#if (MAX_CPU_NUMBER > 64)  
+  if (y > 64) { 
+	  result = x / y;
+	  return result;
+  }
+#endif
+	
   y = blas_quick_divide_table[y];
 
   __asm__ __volatile__  ("mull %0" :"=d" (result) :"a"(x), "0" (y));
@@ -403,7 +415,7 @@ REALNAME:
 #define EPILOGUE .end
 #endif
 
-#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(__ELF__) || defined(C_PGI)
+#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_NETBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(__ELF__) || defined(C_PGI)
 #define PROLOGUE \
 	.text; \
 	.align 512; \
