@@ -89,14 +89,14 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
-#ISAMAXKERNEL = ../arm/iamax.c
+ISAMAXKERNEL = isamax.c
 IDAMAXKERNEL = idamax.c
-#ICAMAXKERNEL = ../arm/izamax.c
-IZAMAXKERNEL =  izamax.c
+ICAMAXKERNEL = icamax.c
+IZAMAXKERNEL = izamax.c
 #
-#ISAMINKERNEL = ../arm/iamin.c
-IDAMINKERNEL =  idamin.c
-#ICAMINKERNEL = ../arm/izamin.c
+ISAMINKERNEL = isamin.c
+IDAMINKERNEL = idamin.c
+ICAMINKERNEL = icamin.c
 IZAMINKERNEL = izamin.c
 #
 #ISMAXKERNEL  = ../arm/imax.c
@@ -110,9 +110,9 @@ DASUMKERNEL  = dasum.c
 CASUMKERNEL  = casum.c
 ZASUMKERNEL  = zasum.c
 #
-#SAXPYKERNEL  = ../arm/axpy.c
+SAXPYKERNEL  = saxpy.c
 DAXPYKERNEL  = daxpy.c
-#CAXPYKERNEL  = ../arm/zaxpy.c
+CAXPYKERNEL  = caxpy.c
 ZAXPYKERNEL  = zaxpy.c
 #
 SCOPYKERNEL  = scopy.c
@@ -123,7 +123,7 @@ ZCOPYKERNEL  = zcopy.c
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
 DSDOTKERNEL  =  sdot.c
-#CDOTKERNEL   = ../arm/zdot.c
+CDOTKERNEL   =  cdot.c
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c
@@ -133,7 +133,7 @@ ZNRM2KERNEL  = ../arm/znrm2.c
 #
 SROTKERNEL   = srot.c
 DROTKERNEL   = drot.c
-CROTKERNEL   = zrot.c
+CROTKERNEL   = crot.c
 ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
