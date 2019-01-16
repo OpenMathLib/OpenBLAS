@@ -33,7 +33,7 @@ cat(sprintf("      SIZE             Flops                   Time\n"))
 
 n <- nfrom
 while (n <= nto) {
-  A <- matrix(rnorm(n * n), ncol = n, nrow = n)
+  A <- matrix(rnorm(n * n), nrow = n)
   ev <- 0
   z <- system.time(for (l in 1:loops) {
     ev <- eigen(A)
