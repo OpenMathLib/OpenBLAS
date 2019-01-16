@@ -40,7 +40,7 @@ while (n <= nto) {
     solve(A, B)
   })
 
-  mflops <- (2.0/3 * n * n * n + 2 * n * n * n) * loops/ (z[3] * 1e+06)
+  mflops <- (8.0 / 3 * n * n * n) * loops / (z[3] * 1e+06)
 
   st <- sprintf("%.0fx%.0f :", n, n)
   cat(sprintf("%20s %10.2f MFlops %10.6f sec\n", st, mflops, z[3]))
