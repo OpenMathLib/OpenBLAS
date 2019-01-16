@@ -113,8 +113,8 @@ static void zaxpy_kernel_4( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
 	:
         : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
+          "+r" (i),	// 0	
+	  "+r" (n),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (alpha),  // 4
