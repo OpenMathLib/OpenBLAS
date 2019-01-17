@@ -117,7 +117,7 @@ static void zscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	:
 	  "+r" (n),  	// 0
-          "+r" (x),     // 1
+          "+r" (x)      // 1
 	:
           "r" (alpha)   // 2
 	: "cc",
@@ -209,7 +209,7 @@ static void zscal_kernel_8_zero_r( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	:
 	  "+r" (n),  	// 0
-          "+r" (x),     // 1
+          "+r" (x)      // 1
 	:
           "r" (alpha)   // 2
 	: "cc",
@@ -286,7 +286,7 @@ static void zscal_kernel_8_zero_i( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	:
 	  "+r" (n),  	// 0
-          "+r" (x),     // 1
+          "+r" (x)      // 1
 	:
           "r" (alpha)   // 2
 	: "cc",
@@ -331,7 +331,7 @@ static void zscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	:
 	  "+r" (n),  	// 0
-          "+r" (x),     // 1
+          "+r" (x)      // 1
 	:
           "r" (alpha)   // 2
 	: "cc",
