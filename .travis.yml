@@ -149,7 +149,7 @@ matrix:
 
     - &test-macos
       os: osx
-      osx_image: xcode8.3
+      osx_image: xcode10.1
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
         - brew update
