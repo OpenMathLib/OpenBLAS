@@ -55,7 +55,7 @@ static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
        "lxvd2x      51, %[i48], %[y_ptr]      \n\t" 
        "addi        %[x_ptr], %[x_ptr], 64    \n\t" 
        "addi        %[y_ptr], %[y_ptr], 64    \n\t" 
-       "addic.      %[temp_n], %[temp_n], -16 \n\t" 
+       "addic.      %[temp_n], %[temp_n], -8  \n\t" 
        "ble         2f                        \n\t" 
        ".p2align    5                         \n\t" 
        "1:                                    \n\t" 
@@ -103,7 +103,7 @@ static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
        "stxvd2x     %x[x3], %[i48], %[y_ptr]  \n\t" 
        "addi        %[x_ptr], %[x_ptr], 128   \n\t" 
        "addi        %[y_ptr], %[y_ptr], 128   \n\t" 
-       "addic.      %[temp_n], %[temp_n], -16 \n\t" 
+       "addic.      %[temp_n], %[temp_n], -8  \n\t" 
        "bgt         1b                        \n\t" 
        "2:                                    \n\t" 
        "xvmulsp     40, 32, 36                \n\t" // c * x
@@ -173,41 +173,59 @@ static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT c, FLOAT s)
 {
-	BLASLONG i=0;
-	BLASLONG ix=0,iy=0;
-	FLOAT *x1=x;
-	FLOAT *y1=y;
-	FLOAT temp;
-	if ( n <= 0     )  return(0);
-	if ( (inc_x == 1) && (inc_y == 1) )
-	{
-		BLASLONG n1 = n & -8;
-		if ( n1 > 0 )
-		{
-			crot_kernel_8(n1, x1, y1, c, s);
-			i=n1;
-		}
-		while(i < n)
-		{
-			temp  = c*x[i] + s*y[i] ;
-			y[i]  = c*y[i] - s*x[i] ;
-			x[i]  = temp ;
-			i++ ;
-		}
+   BLASLONG i=0;
+    BLASLONG ix=0,iy=0;
+    FLOAT temp[2];
+    BLASLONG inc_x2;
+    BLASLONG inc_y2;
 
-	}
-	else
-	{
-		while(i < n)
-		{
-			temp   = c*x[ix] + s*y[iy] ;
-			y[iy]  = c*y[iy] - s*x[ix] ;
-			x[ix]  = temp ;
-			ix += inc_x ;
-			iy += inc_y ;
-			i++ ;
-		}
-	}
+    if ( n <= 0     )  return(0); 
+
+    if ( (inc_x == 1) && (inc_y == 1) )
+    {
+
+        BLASLONG n1 = n & -8; 
+        if ( n1 > 0 )
+        { 
+            crot_kernel_8(n1, x, y, c, s);
+            i=n1; 
+            ix=2*n1; 
+        }
+
+         while(i < n)
+           {
+                temp[0]   = c*x[ix]   + s*y[ix] ;
+                temp[1]   = c*x[ix+1] + s*y[ix+1] ;
+                y[ix]     = c*y[ix]   - s*x[ix] ;
+                y[ix+1]   = c*y[ix+1] - s*x[ix+1] ;
+                x[ix]     = temp[0] ;
+                x[ix+1]   = temp[1] ;
+
+                ix += 2 ; 
+                i++ ;
+
+            }
+
+    }
+    else
+    {
+        inc_x2 = 2 * inc_x ;
+        inc_y2 = 2 * inc_y ;
+        while(i < n)
+        {
+            temp[0]   = c*x[ix]   + s*y[iy] ;
+            temp[1]   = c*x[ix+1] + s*y[iy+1] ;
+            y[iy]     = c*y[iy]   - s*x[ix] ;
+            y[iy+1]   = c*y[iy+1] - s*x[ix+1] ;
+            x[ix]     = temp[0] ;
+            x[ix+1]   = temp[1] ;
+
+            ix += inc_x2 ;
+            iy += inc_y2 ;
+            i++ ;
+
+        }
+    }
 	return(0);
 }
 
