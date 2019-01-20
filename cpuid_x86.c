@@ -228,7 +228,7 @@ int support_avx2(){
 }
 
 int support_avx512(){
-#ifndef NO_AVX512
+#if !defined(NO_AVX) && !defined(NO_AVX512)
   int eax, ebx, ecx, edx;
   int ret=0;
 
