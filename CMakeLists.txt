@@ -33,6 +33,20 @@ set(NO_LAPACK 1)
 set(NO_LAPACKE 1)
 endif()
 
+if(MSVC AND MSVC_STATIC_CRT)
+    set(CompilerFlags
+            CMAKE_CXX_FLAGS
+            CMAKE_CXX_FLAGS_DEBUG
+            CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_C_FLAGS
+            CMAKE_C_FLAGS_DEBUG
+            CMAKE_C_FLAGS_RELEASE
+            )
+    foreach(CompilerFlag ${CompilerFlags})
+      string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+    endforeach()
+endif()
+
 if(CMAKE_CONFIGURATION_TYPES) # multiconfig generator?
         set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
         set(CMAKE_BUILD_TYPE
@@ -173,23 +187,26 @@ endforeach()
 enable_testing()
 add_subdirectory(utest)
 
+add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
+set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
+if (MSVC)
+    set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME}_static)
+else()
+    set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
+endif()
+
 if (NOT MSVC)
-	#only build shared library for MSVC
+    if(SMP)
+        target_link_libraries(${OpenBLAS_LIBNAME} pthread)
+        target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
+    endif()
 
-	add_library(${OpenBLAS_LIBNAME}_static STATIC ${LA_SOURCES} ${LAPACKE_SOURCES} ${TARGET_OBJS})
-	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
-	set_target_properties(${OpenBLAS_LIBNAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-
-	if(SMP)
-	target_link_libraries(${OpenBLAS_LIBNAME} pthread)
-	target_link_libraries(${OpenBLAS_LIBNAME}_static pthread)
-endif()
-
-#build test and ctest
-add_subdirectory(test)
-if(NOT NO_CBLAS)
-add_subdirectory(ctest)
-endif()
+    #build test and ctest
+    add_subdirectory(test)
+    if(NOT NO_CBLAS)
+    add_subdirectory(ctest)
+    endif()
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES 
@@ -247,27 +264,23 @@ install(TARGETS ${OpenBLAS_LIBNAME}
 
 	message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-	ADD_CUSTOM_TARGET(genf77blas
-	ALL
-	COMMAND ${AWK} 'BEGIN{print \"\#ifndef OPENBLAS_F77BLAS_H\" \; print \"\#define OPENBLAS_F77BLAS_H\" \; print \"\#include \\"openblas_config.h\\" \"}; NF {print}; END{print \"\#endif\"}' ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h > ${CMAKE_BINARY_DIR}/f77blas.h
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config.h
-	)
-	add_dependencies(genf77blas ${OpenBLAS_LIBNAME})
-
-	install (FILES ${CMAKE_BINARY_DIR}/f77blas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    set(F77BLAS_H ${CMAKE_BINARY_DIR}/generated/f77blas.h)
+    file(WRITE  ${F77BLAS_H} "#ifndef OPENBLAS_F77BLAS_H\n")
+    file(APPEND ${F77BLAS_H} "#define OPENBLAS_F77BLAS_H\n")
+    file(APPEND ${F77BLAS_H} "#include \"openblas_config.h\"\n")
+    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/common_interface.h COMMON_INTERFACE_H_CONTENTS)
+    file(APPEND ${F77BLAS_H} "${COMMON_INTERFACE_H_CONTENTS}\n")
+    file(APPEND ${F77BLAS_H} "#endif")
+    install (FILES ${F77BLAS_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-	ADD_CUSTOM_TARGET(gencblas
-	ALL
-	COMMAND ${SED} 's/common/openblas_config/g' ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h > "${CMAKE_BINARY_DIR}/cblas.tmp"
-	COMMAND cp "${CMAKE_BINARY_DIR}/cblas.tmp" "${CMAKE_BINARY_DIR}/cblas.h"
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h
-	)
-	add_dependencies(gencblas ${OpenBLAS_LIBNAME})
-
-	install (FILES ${CMAKE_BINARY_DIR}/cblas.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    set(CBLAS_H ${CMAKE_BINARY_DIR}/generated/cblas.h)
+	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
+	string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
+	file(WRITE ${CBLAS_H} "${CBLAS_H_CONTENTS_NEW}")
+	install (FILES ${CBLAS_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 if(NOT NO_LAPACKE)
@@ -282,9 +295,7 @@ if(NOT NO_LAPACKE)
 	install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
  
-if(NOT MSVC)
-	install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
-endif()
+install (TARGETS ${OpenBLAS_LIBNAME}_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 include(FindPkgConfig QUIET)
 if(PKG_CONFIG_FOUND)
