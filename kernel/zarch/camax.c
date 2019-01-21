@@ -55,7 +55,7 @@ static FLOAT camax_kernel_32(BLASLONG n, FLOAT *x)
         "srlg  %%r0,%1,5                  \n\t"
         "xgr %%r1,%%r1                    \n\t"
         "0:                               \n\t"
-        "pfd 1, 1024(%2)                  \n\t"
+        "pfd 1, 1024(%%r1,%2)             \n\t"
 
         "vlef  %%v16,0(%%r1,%2),0         \n\t"
         "vlef  %%v17,4(%%r1,%2),0         \n\t"
@@ -93,100 +93,88 @@ static FLOAT camax_kernel_32(BLASLONG n, FLOAT *x)
         "vlef  %%v22,120(%%r1,%2),3       \n\t"
         "vlef  %%v23,124(%%r1,%2),3       \n\t"
 
-        "vflpsb  %%v16, %%v16             \n\t"
-        "vflpsb  %%v17, %%v17             \n\t"
-        "vflpsb  %%v18, %%v18             \n\t"
-        "vflpsb  %%v19, %%v19             \n\t"
-        "vflpsb  %%v20, %%v20             \n\t"
-        "vflpsb  %%v21, %%v21             \n\t"
-        "vflpsb  %%v22, %%v22             \n\t"
-        "vflpsb  %%v23, %%v23             \n\t"
+        "vlef  %%v24,128(%%r1,%2),0       \n\t"
+        "vlef  %%v25,132(%%r1,%2),0       \n\t"
+        "vlef  %%v24,136(%%r1,%2),1       \n\t"
+        "vlef  %%v25,140(%%r1,%2),1       \n\t"
+        "vlef  %%v24,144(%%r1,%2),2       \n\t"
+        "vlef  %%v25,148(%%r1,%2),2       \n\t"
+        "vlef  %%v24,152(%%r1,%2),3       \n\t"
+        "vlef  %%v25,156(%%r1,%2),3       \n\t"
+
+        "vlef  %%v26,160(%%r1,%2),0       \n\t"
+        "vlef  %%v27,164(%%r1,%2),0       \n\t"
+        "vlef  %%v26,168(%%r1,%2),1       \n\t"
+        "vlef  %%v27,172(%%r1,%2),1       \n\t"
+        "vlef  %%v26,176(%%r1,%2),2       \n\t"
+        "vlef  %%v27,180(%%r1,%2),2       \n\t"
+        "vlef  %%v26,184(%%r1,%2),3       \n\t"
+        "vlef  %%v27,188(%%r1,%2),3       \n\t"
+
+        "vlef  %%v28,192(%%r1,%2),0       \n\t"
+        "vlef  %%v29,196(%%r1,%2),0       \n\t"
+        "vlef  %%v28,200(%%r1,%2),1       \n\t"
+        "vlef  %%v29,204(%%r1,%2),1       \n\t"
+        "vlef  %%v28,208(%%r1,%2),2       \n\t"
+        "vlef  %%v29,212(%%r1,%2),2       \n\t"
+        "vlef  %%v28,216(%%r1,%2),3       \n\t"
+        "vlef  %%v29,220(%%r1,%2),3       \n\t"
+
+        "vlef  %%v30,224(%%r1,%2),0       \n\t"
+        "vlef  %%v31,228(%%r1,%2),0       \n\t"
+        "vlef  %%v30,232(%%r1,%2),1       \n\t"
+        "vlef  %%v31,236(%%r1,%2),1       \n\t"
+        "vlef  %%v30,240(%%r1,%2),2       \n\t"
+        "vlef  %%v31,244(%%r1,%2),2       \n\t"
+        "vlef  %%v30,248(%%r1,%2),3       \n\t"
+        "vlef  %%v31,252(%%r1,%2),3       \n\t"
+
+        "vflpsb  %%v16,%%v16              \n\t"
+        "vflpsb  %%v17,%%v17              \n\t"
+        "vflpsb  %%v18,%%v18              \n\t"
+        "vflpsb  %%v19,%%v19              \n\t"
+        "vflpsb  %%v20,%%v20              \n\t"
+        "vflpsb  %%v21,%%v21              \n\t"
+        "vflpsb  %%v22,%%v22              \n\t"
+        "vflpsb  %%v23,%%v23              \n\t"
+        "vflpsb  %%v24,%%v24              \n\t"
+        "vflpsb  %%v25,%%v25              \n\t"
+        "vflpsb  %%v26,%%v26              \n\t"
+        "vflpsb  %%v27,%%v27              \n\t"
+        "vflpsb  %%v28,%%v28              \n\t"
+        "vflpsb  %%v29,%%v29              \n\t"
+        "vflpsb  %%v30,%%v30              \n\t"
+        "vflpsb  %%v31,%%v31              \n\t"
+
         "vfasb %%v16,%%v16,%%v17          \n\t"
-        "vfasb %%v17,%%v18,%%v19          \n\t"
-        "vfasb %%v18,%%v20,%%v21          \n\t"
-        "vfasb %%v19,%%v22,%%v23          \n\t"
+        "vfasb %%v18,%%v18,%%v19          \n\t"
+        "vfasb %%v20,%%v20,%%v21          \n\t"
+        "vfasb %%v22,%%v22,%%v23          \n\t"
+        "vfasb %%v24,%%v24,%%v25          \n\t"
+        "vfasb %%v26,%%v26,%%v27          \n\t"
+        "vfasb %%v28,%%v28,%%v29          \n\t"
+        "vfasb %%v30,%%v30,%%v31          \n\t"
         
-        "vfchsb  %%v24,%%v16,%%v17        \n\t"
-        "vfchsb  %%v25,%%v18,%%v19        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
+        "vfmaxsb  %%v16,%%v16,%%v24,0     \n\t"
+        "vfmaxsb  %%v18,%%v18,%%v26,0     \n\t"
+        "vfmaxsb  %%v20,%%v20,%%v28,0     \n\t"
+        "vfmaxsb  %%v22,%%v22,%%v30,0     \n\t"
 
-        "vfchsb  %%v26,%%v24,%%v25        \n\t"
-        "vsel    %%v26,%%v24,%%v25,%%v26  \n\t"
+        "vfmaxsb  %%v16,%%v16,%%v20,0     \n\t"
+        "vfmaxsb  %%v18,%%v18,%%v22,0     \n\t"
 
-        "vfchsb  %%v27,%%v26,%%v0         \n\t"
-        "vsel    %%v0,%%v26,%%v0,%%v27    \n\t"
+        "vfmaxsb  %%v16,%%v16,%%v18,0     \n\t"
 
-        "vlef  %%v16,128(%%r1,%2),0       \n\t"
-        "vlef  %%v17,132(%%r1,%2),0       \n\t"
-        "vlef  %%v16,136(%%r1,%2),1       \n\t"
-        "vlef  %%v17,140(%%r1,%2),1       \n\t"
-        "vlef  %%v16,144(%%r1,%2),2       \n\t"
-        "vlef  %%v17,148(%%r1,%2),2       \n\t"
-        "vlef  %%v16,152(%%r1,%2),3       \n\t"
-        "vlef  %%v17,156(%%r1,%2),3       \n\t"
-
-        "vlef  %%v18,160(%%r1,%2),0       \n\t"
-        "vlef  %%v19,164(%%r1,%2),0       \n\t"
-        "vlef  %%v18,168(%%r1,%2),1       \n\t"
-        "vlef  %%v19,172(%%r1,%2),1       \n\t"
-        "vlef  %%v18,176(%%r1,%2),2       \n\t"
-        "vlef  %%v19,180(%%r1,%2),2       \n\t"
-        "vlef  %%v18,184(%%r1,%2),3       \n\t"
-        "vlef  %%v19,188(%%r1,%2),3       \n\t"
-
-        "vlef  %%v20,192(%%r1,%2),0       \n\t"
-        "vlef  %%v21,196(%%r1,%2),0       \n\t"
-        "vlef  %%v20,200(%%r1,%2),1       \n\t"
-        "vlef  %%v21,204(%%r1,%2),1       \n\t"
-        "vlef  %%v20,208(%%r1,%2),2       \n\t"
-        "vlef  %%v21,212(%%r1,%2),2       \n\t"
-        "vlef  %%v20,216(%%r1,%2),3       \n\t"
-        "vlef  %%v21,220(%%r1,%2),3       \n\t"
-
-        "vlef  %%v22,224(%%r1,%2),0       \n\t"
-        "vlef  %%v23,228(%%r1,%2),0       \n\t"
-        "vlef  %%v22,232(%%r1,%2),1       \n\t"
-        "vlef  %%v23,236(%%r1,%2),1       \n\t"
-        "vlef  %%v22,240(%%r1,%2),2       \n\t"
-        "vlef  %%v23,244(%%r1,%2),2       \n\t"
-        "vlef  %%v22,248(%%r1,%2),3       \n\t"
-        "vlef  %%v23,252(%%r1,%2),3       \n\t"
-
-        "vflpsb  %%v16, %%v16             \n\t"
-        "vflpsb  %%v17, %%v17             \n\t"
-        "vflpsb  %%v18, %%v18             \n\t"
-        "vflpsb  %%v19, %%v19             \n\t"
-        "vflpsb  %%v20, %%v20             \n\t"
-        "vflpsb  %%v21, %%v21             \n\t"
-        "vflpsb  %%v22, %%v22             \n\t"
-        "vflpsb  %%v23, %%v23             \n\t"
-        "vfasb %%v16,%%v16,%%v17          \n\t"
-        "vfasb %%v17,%%v18,%%v19          \n\t"
-        "vfasb %%v18,%%v20,%%v21          \n\t"
-        "vfasb %%v19,%%v22,%%v23          \n\t"
-        
-        "vfchsb  %%v24,%%v16,%%v17        \n\t"
-        "vfchsb  %%v25,%%v18,%%v19        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-
-        "vfchsb  %%v26,%%v24,%%v25        \n\t"
-        "vsel    %%v26,%%v24,%%v25,%%v26  \n\t"
-
-        "vfchsb  %%v27,%%v26,%%v0         \n\t"
-        "vsel    %%v0,%%v26,%%v0,%%v27    \n\t"
+        "vfmaxsb  %%v0,%%v0,%%v16,0       \n\t"
 
         "agfi    %%r1, 256                \n\t"
         "brctg   %%r0, 0b                 \n\t"
 
         "veslg   %%v16,%%v0,32            \n\t"
-        "vfchsb  %%v17,%%v16,%%v0         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v17    \n\t"
+        "vfmaxsb %%v0,%%v0,%%v16,0        \n\t"
 
         "vrepf  %%v16,%%v0,2              \n\t"
-        "wfchsb %%v17,%%v16,%%v0          \n\t"
-        "vsel   %%v0,%%v16,%%v0,%%v17     \n\t"
+        "wfmaxsb %%v0,%%v0,%%v16,0        \n\t"
         "ler    %0,%%f0                       "
         :"=f"(amax)
         :"r"(n),"ZR"((const FLOAT (*)[n])x)
@@ -233,11 +221,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
         maxf=CABS1(x,0);
         inc_x2 = 2 * inc_x;
-        ix += inc_x2;
-        i++;
 
-        BLASLONG n1 = (n - 1) & -4;
-        while ((i - 1) < n1) {
+        BLASLONG n1 = n & -4;
+        while (i < n1) {
 
             if (CABS1(x,ix) > maxf) {
                 maxf = CABS1(x,ix);

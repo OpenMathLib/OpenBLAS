@@ -32,7 +32,7 @@ static FLOAT dmin_kernel_32(BLASLONG n, FLOAT *x)
     FLOAT min;
 
     __asm__ volatile (
-        "vl     %%v0,0(%2)                \n\t"
+        "vl    %%v0,0(%2)                 \n\t"
         "srlg  %%r0,%1,5                  \n\t"
         "xgr %%r1,%%r1                    \n\t"
         "0:                               \n\t"
@@ -46,62 +46,41 @@ static FLOAT dmin_kernel_32(BLASLONG n, FLOAT *x)
         "vl  %%v21,80(%%r1,%2)            \n\t"
         "vl  %%v22,96(%%r1,%2)            \n\t"
         "vl  %%v23,112(%%r1,%2)           \n\t"
+        "vl  %%v24,128(%%r1,%2)           \n\t"
+        "vl  %%v25,144(%%r1,%2)           \n\t"
+        "vl  %%v26,160(%%r1,%2)           \n\t"
+        "vl  %%v27,176(%%r1,%2)           \n\t"
+        "vl  %%v28,192(%%r1,%2)           \n\t"
+        "vl  %%v29,208(%%r1,%2)           \n\t"
+        "vl  %%v30,224(%%r1,%2)           \n\t"
+        "vl  %%v31,240(%%r1,%2)           \n\t"
         
-        "vfchdb  %%v24,%%v17,%%v16        \n\t"
-        "vfchdb  %%v25,%%v19,%%v18        \n\t"
-        "vfchdb  %%v26,%%v21,%%v20        \n\t"
-        "vfchdb  %%v27,%%v23,%%v22        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-        "vsel    %%v26,%%v20,%%v21,%%v26  \n\t"
-        "vsel    %%v27,%%v22,%%v23,%%v27  \n\t"
+        "vfmindb  %%v16,%%v16,%%v24,0     \n\t"
+        "vfmindb  %%v17,%%v17,%%v25,0     \n\t"
+        "vfmindb  %%v18,%%v18,%%v26,0     \n\t"
+        "vfmindb  %%v19,%%v19,%%v27,0     \n\t"
+        "vfmindb  %%v20,%%v20,%%v28,0     \n\t"
+        "vfmindb  %%v21,%%v21,%%v29,0     \n\t"
+        "vfmindb  %%v22,%%v22,%%v30,0     \n\t"
+        "vfmindb  %%v23,%%v23,%%v31,0     \n\t"
 
-        "vfchdb  %%v28,%%v25,%%v24        \n\t"
-        "vfchdb  %%v29,%%v27,%%v26        \n\t"
-        "vsel    %%v28,%%v24,%%v25,%%v28  \n\t"
-        "vsel    %%v29,%%v26,%%v27,%%v29  \n\t"
+        "vfmindb  %%v16,%%v16,%%v20,0     \n\t"
+        "vfmindb  %%v17,%%v17,%%v21,0     \n\t"
+        "vfmindb  %%v18,%%v18,%%v22,0     \n\t"
+        "vfmindb  %%v19,%%v19,%%v23,0     \n\t"
 
-        "vfchdb  %%v30,%%v29,%%v28        \n\t"
-        "vsel    %%v30,%%v28,%%v29,%%v30  \n\t"
+        "vfmindb  %%v16,%%v16,%%v18,0     \n\t"
+        "vfmindb  %%v17,%%v17,%%v19,0     \n\t"
 
-        "vfchdb  %%v31,%%v0,%%v30         \n\t"
-        "vsel    %%v0,%%v30,%%v0,%%v31    \n\t"
+        "vfmindb  %%v16,%%v16,%%v17,0     \n\t"
 
-        "vl  %%v16,128(%%r1,%2)           \n\t"
-        "vl  %%v17,144(%%r1,%2)           \n\t"
-        "vl  %%v18,160(%%r1,%2)           \n\t"
-        "vl  %%v19,176(%%r1,%2)           \n\t"
-        "vl  %%v20,192(%%r1,%2)           \n\t"
-        "vl  %%v21,208(%%r1,%2)           \n\t"
-        "vl  %%v22,224(%%r1,%2)           \n\t"
-        "vl  %%v23,240(%%r1,%2)           \n\t"
-        
-        "vfchdb  %%v24,%%v17,%%v16        \n\t"
-        "vfchdb  %%v25,%%v19,%%v18        \n\t"
-        "vfchdb  %%v26,%%v21,%%v20        \n\t"
-        "vfchdb  %%v27,%%v23,%%v22        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-        "vsel    %%v26,%%v20,%%v21,%%v26  \n\t"
-        "vsel    %%v27,%%v22,%%v23,%%v27  \n\t"
-
-        "vfchdb  %%v28,%%v25,%%v24        \n\t"
-        "vfchdb  %%v29,%%v27,%%v26        \n\t"
-        "vsel    %%v28,%%v24,%%v25,%%v28  \n\t"
-        "vsel    %%v29,%%v26,%%v27,%%v29  \n\t"
-
-        "vfchdb  %%v30,%%v29,%%v28        \n\t"
-        "vsel    %%v30,%%v28,%%v29,%%v30  \n\t"
-
-        "vfchdb  %%v31,%%v0,%%v30         \n\t"
-        "vsel    %%v0,%%v30,%%v0,%%v31    \n\t"
+        "vfmindb  %%v0,%%v0,%%16,0        \n\t"
 
         "agfi    %%r1, 256                \n\t"
         "brctg   %%r0, 0b                 \n\t"
 
-        "vrepg  %%v16,%%v0,1              \n\t"
-        "wfchdb %%v17,%%v0,%%v16          \n\t"
-        "vsel   %%v0,%%v16,%%v0,%%v17     \n\t"
+        "vrepg   %%v16,%%v0,1             \n\t"
+        "wfmindb %%v0,%%v0,%%v16,0        \n\t"
         "ldr    %0,%%f0                       "
         :"=f"(min)
         :"r"(n),"ZR"((const FLOAT (*)[n])x)
@@ -144,11 +123,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     } else {
 
         minf=x[0];
-        i += inc_x;
-        j++;
 
-        BLASLONG n1 = (n - 1) & -4;
-        while ((j - 1) < n1) {
+        BLASLONG n1 = n & -4;
+        while (j < n1) {
 
             if (x[i] < minf) {
                 minf = x[i];

@@ -39,8 +39,7 @@ static FLOAT damax_kernel_32(BLASLONG n, FLOAT *x)
     FLOAT amax;
 
     __asm__ volatile (
-        "vl     %%v0,0(%2)                \n\t"
-        "vflpdb %%v0,%%v0                 \n\t"
+        "vl    %%v0,0(%2)                 \n\t"
         "srlg  %%r0,%1,5                  \n\t"
         "xgr %%r1,%%r1                    \n\t"
         "0:                               \n\t"
@@ -54,79 +53,42 @@ static FLOAT damax_kernel_32(BLASLONG n, FLOAT *x)
         "vl  %%v21,80(%%r1,%2)            \n\t"
         "vl  %%v22,96(%%r1,%2)            \n\t"
         "vl  %%v23,112(%%r1,%2)           \n\t"
-        "vflpdb  %%v16, %%v16             \n\t"
-        "vflpdb  %%v17, %%v17             \n\t"
-        "vflpdb  %%v18, %%v18             \n\t"
-        "vflpdb  %%v19, %%v19             \n\t"
-        "vflpdb  %%v20, %%v20             \n\t"
-        "vflpdb  %%v21, %%v21             \n\t"
-        "vflpdb  %%v22, %%v22             \n\t"
-        "vflpdb  %%v23, %%v23             \n\t"
+        "vl  %%v24,128(%%r1,%2)           \n\t"
+        "vl  %%v25,144(%%r1,%2)           \n\t"
+        "vl  %%v26,160(%%r1,%2)           \n\t"
+        "vl  %%v27,176(%%r1,%2)           \n\t"
+        "vl  %%v28,192(%%r1,%2)           \n\t"
+        "vl  %%v29,208(%%r1,%2)           \n\t"
+        "vl  %%v30,224(%%r1,%2)           \n\t"
+        "vl  %%v31,240(%%r1,%2)           \n\t"
         
-        "vfchdb  %%v24,%%v16,%%v17        \n\t"
-        "vfchdb  %%v25,%%v18,%%v19        \n\t"
-        "vfchdb  %%v26,%%v20,%%v21        \n\t"
-        "vfchdb  %%v27,%%v22,%%v23        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-        "vsel    %%v26,%%v20,%%v21,%%v26  \n\t"
-        "vsel    %%v27,%%v22,%%v23,%%v27  \n\t"
+        "vfmaxdb  %%v16,%%v16,%%v24,8     \n\t"
+        "vfmaxdb  %%v17,%%v17,%%v25,8     \n\t"
+        "vfmaxdb  %%v18,%%v18,%%v26,8     \n\t"
+        "vfmaxdb  %%v19,%%v19,%%v27,8     \n\t"
+        "vfmaxdb  %%v20,%%v20,%%v28,8     \n\t"
+        "vfmaxdb  %%v21,%%v21,%%v29,8     \n\t"
+        "vfmaxdb  %%v22,%%v22,%%v30,8     \n\t"
+        "vfmaxdb  %%v23,%%v23,%%v31,8     \n\t"
 
-        "vfchdb  %%v28,%%v24,%%v25        \n\t"
-        "vfchdb  %%v29,%%v26,%%v27        \n\t"
-        "vsel    %%v28,%%v24,%%v25,%%v28  \n\t"
-        "vsel    %%v29,%%v26,%%v27,%%v29  \n\t"
+        "vfmaxdb  %%v16,%%v16,%%v20,8     \n\t"
+        "vfmaxdb  %%v17,%%v17,%%v21,8     \n\t"
+        "vfmaxdb  %%v18,%%v18,%%v22,8     \n\t"
+        "vfmaxdb  %%v19,%%v19,%%v23,8     \n\t"
 
-        "vfchdb  %%v30,%%v28,%%v29        \n\t"
-        "vsel    %%v30,%%v28,%%v29,%%v30  \n\t"
+        "vfmaxdb  %%v16,%%v16,%%v18,8     \n\t"
+        "vfmaxdb  %%v17,%%v17,%%v19,8     \n\t"
 
-        "vfchdb  %%v31,%%v30,%%v0         \n\t"
-        "vsel    %%v0,%%v30,%%v0,%%v31    \n\t"
+        "vfmaxdb  %%v16,%%v16,%%v17,8     \n\t"
 
-        "vl  %%v16,128(%%r1,%2)           \n\t"
-        "vl  %%v17,144(%%r1,%2)           \n\t"
-        "vl  %%v18,160(%%r1,%2)           \n\t"
-        "vl  %%v19,176(%%r1,%2)           \n\t"
-        "vl  %%v20,192(%%r1,%2)           \n\t"
-        "vl  %%v21,208(%%r1,%2)           \n\t"
-        "vl  %%v22,224(%%r1,%2)           \n\t"
-        "vl  %%v23,240(%%r1,%2)           \n\t"
-        "vflpdb  %%v16, %%v16             \n\t"
-        "vflpdb  %%v17, %%v17             \n\t"
-        "vflpdb  %%v18, %%v18             \n\t"
-        "vflpdb  %%v19, %%v19             \n\t"
-        "vflpdb  %%v20, %%v20             \n\t"
-        "vflpdb  %%v21, %%v21             \n\t"
-        "vflpdb  %%v22, %%v22             \n\t"
-        "vflpdb  %%v23, %%v23             \n\t"
-        
-        "vfchdb  %%v24,%%v16,%%v17        \n\t"
-        "vfchdb  %%v25,%%v18,%%v19        \n\t"
-        "vfchdb  %%v26,%%v20,%%v21        \n\t"
-        "vfchdb  %%v27,%%v22,%%v23        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-        "vsel    %%v26,%%v20,%%v21,%%v26  \n\t"
-        "vsel    %%v27,%%v22,%%v23,%%v27  \n\t"
-
-        "vfchdb  %%v28,%%v24,%%v25        \n\t"
-        "vfchdb  %%v29,%%v26,%%v27        \n\t"
-        "vsel    %%v28,%%v24,%%v25,%%v28  \n\t"
-        "vsel    %%v29,%%v26,%%v27,%%v29  \n\t"
-
-        "vfchdb  %%v30,%%v28,%%v29        \n\t"
-        "vsel    %%v30,%%v28,%%v29,%%v30  \n\t"
-
-        "vfchdb  %%v31,%%v30,%%v0         \n\t"
-        "vsel    %%v0,%%v30,%%v0,%%v31    \n\t"
+        "vfmaxdb  %%v0,%%v0,%%16,8        \n\t"
 
         "agfi    %%r1, 256                \n\t"
         "brctg   %%r0, 0b                 \n\t"
 
-        "vrepg  %%v16,%%v0,1              \n\t"
-        "wfchdb %%v17,%%v16,%%v0          \n\t"
-        "vsel   %%v0,%%v16,%%v0,%%v17     \n\t"
-        "ldr    %0,%%f0                       "
+        "vrepg   %%v16,%%v0,1             \n\t"
+        "wfmaxdb %%v0,%%v0,%%v16,8        \n\t"
+        "lpdr    %0,%%f0                      "
         :"=f"(amax)
         :"r"(n),"ZR"((const FLOAT (*)[n])x)
         :"memory","cc","r0","r1","v0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
@@ -168,11 +130,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     } else {
 
         maxf=ABS(x[0]);
-        i += inc_x;
-        j++;
 
-        BLASLONG n1 = (n - 1) & -4;
-        while ((j - 1) < n1) {
+        BLASLONG n1 = n & -4;
+        while (j < n1) {
 
             if (ABS(x[i]) > maxf) {
                 maxf = ABS(x[i]);

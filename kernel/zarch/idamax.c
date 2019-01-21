@@ -63,7 +63,7 @@ static BLASLONG idamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *amax)
         "vleig  %%v31,15,1               \n\t"
         "srlg  %%r0,%2,5                 \n\t"
         "xgr %%r1,%%r1                   \n\t"
-        "0: \n\t"
+        "0:                              \n\t"
         "pfd 1, 1024(%%r1,%3)            \n\t"
 
         "vl  %%v16,0(%%r1,%3)            \n\t"
@@ -83,10 +83,10 @@ static BLASLONG idamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *amax)
         "vflpdb  %%v22, %%v22            \n\t"
         "vflpdb  %%v23, %%v23            \n\t"
         
-        "vfchdb  %%v4,%%v16,%%v17        \n\t"
-        "vfchdb  %%v5,%%v18,%%v19        \n\t"
-        "vfchdb  %%v6,%%v20,%%v21        \n\t"
-        "vfchdb  %%v7,%%v22,%%v23        \n\t"
+        "vfchedb  %%v4,%%v16,%%v17       \n\t"
+        "vfchedb  %%v5,%%v18,%%v19       \n\t"
+        "vfchedb  %%v6,%%v20,%%v21       \n\t"
+        "vfchedb  %%v7,%%v22,%%v23       \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v4  \n\t"
         "vsel    %%v4,%%v24,%%v25,%%v4   \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v5  \n\t"
@@ -96,21 +96,21 @@ static BLASLONG idamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *amax)
         "vsel    %%v19,%%v22,%%v23,%%v7  \n\t"
         "vsel    %%v7,%%v30,%%v31,%%v7   \n\t"
 
-        "vfchdb  %%v20,%%v16,%%v17       \n\t"
-        "vfchdb  %%v21,%%v18,%%v19       \n\t"
+        "vfchedb  %%v20,%%v16,%%v17      \n\t"
+        "vfchedb  %%v21,%%v18,%%v19      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v20 \n\t"
         "vsel    %%v4,%%v4,%%v5,%%v20    \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v21 \n\t"
         "vsel    %%v5,%%v6,%%v7,%%v21    \n\t"
 
-        "vfchdb  %%v18,%%v16,%%v17       \n\t"
+        "vfchedb  %%v18,%%v16,%%v17      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v18 \n\t"
         "vsel    %%v4,%%v4,%%v5,%%v18    \n\t"
         "vag     %%v4,%%v4,%%v3          \n\t"
 
-        "vfchdb  %%v5,%%v16,%%v0         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v5    \n\t"
-        "vsel    %%v1,%%v4,%%v1,%%v5     \n\t"
+        "vfchedb  %%v5,%%v0,%%v16        \n\t"
+        "vsel    %%v0,%%v0,%%v16,%%v5    \n\t"
+        "vsel    %%v1,%%v1,%%v4,%%v5     \n\t"
         "vag     %%v3,%%v3,%%v2          \n\t"
 
         "vl  %%v16,128(%%r1,%3)          \n\t"
@@ -130,10 +130,10 @@ static BLASLONG idamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *amax)
         "vflpdb  %%v22, %%v22            \n\t"
         "vflpdb  %%v23, %%v23            \n\t"
 
-        "vfchdb  %%v4,%%v16,%%v17        \n\t"
-        "vfchdb  %%v5,%%v18,%%v19        \n\t"
-        "vfchdb  %%v6,%%v20,%%v21        \n\t"
-        "vfchdb  %%v7,%%v22,%%v23        \n\t"
+        "vfchedb  %%v4,%%v16,%%v17       \n\t"
+        "vfchedb  %%v5,%%v18,%%v19       \n\t"
+        "vfchedb  %%v6,%%v20,%%v21       \n\t"
+        "vfchedb  %%v7,%%v22,%%v23       \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v4  \n\t"
         "vsel    %%v4,%%v24,%%v25,%%v4   \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v5  \n\t"
@@ -143,21 +143,21 @@ static BLASLONG idamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *amax)
         "vsel    %%v19,%%v22,%%v23,%%v7  \n\t"
         "vsel    %%v7,%%v30,%%v31,%%v7   \n\t"
 
-        "vfchdb  %%v20,%%v16,%%v17       \n\t"
-        "vfchdb  %%v21,%%v18,%%v19       \n\t"
+        "vfchedb  %%v20,%%v16,%%v17      \n\t"
+        "vfchedb  %%v21,%%v18,%%v19      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v20 \n\t"
         "vsel    %%v4,%%v4,%%v5,%%v20    \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v21 \n\t"
         "vsel    %%v5,%%v6,%%v7,%%v21    \n\t"
 
-        "vfchdb  %%v18,%%v16,%%v17       \n\t"
+        "vfchedb  %%v18,%%v16,%%v17      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v18 \n\t"
         "vsel    %%v4,%%v4,%%v5,%%v18    \n\t"
         "vag     %%v4,%%v4,%%v3          \n\t"
 
-        "vfchdb  %%v5,%%v16,%%v0         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v5    \n\t"
-        "vsel    %%v1,%%v4,%%v1,%%v5     \n\t"
+        "vfchedb  %%v5,%%v0,%%v16        \n\t"
+        "vsel    %%v0,%%v0,%%v16,%%v5    \n\t"
+        "vsel    %%v1,%%v1,%%v4,%%v5     \n\t"
         "vag     %%v3,%%v3,%%v2          \n\t"
 
         "agfi    %%r1, 256               \n\t"
@@ -175,8 +175,8 @@ static BLASLONG idamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *amax)
         "wfchdb %%v4,%%v2,%%v0           \n\t"
         "vsel   %%v1,%%v3,%%v1,%%v4      \n\t"
         "vsel   %%v0,%%v2,%%v0,%%v4      \n\t"
-        "vlgvg  %0,%%v1,0                \n\t"
         "std    %%f0,%1                  \n\t"
+        "vlgvg  %0,%%v1,0                \n\t"
         "2:                              \n\t"
         "nop                                 "
         :"=r"(iamax),"=m"(*amax)
@@ -221,12 +221,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
     } else {
 
+        max = 0;
         maxf = ABS(x[0]);
-        i += inc_x;
-        j++;
 
-        BLASLONG n1 = (n - 1) & -4;
-        while ((j - 1) < n1) {
+        BLASLONG n1 = n & -4;
+        while (j < n1) {
 
             if (ABS(x[i]) > maxf) {
                 max = j;

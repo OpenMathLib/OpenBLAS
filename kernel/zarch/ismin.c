@@ -73,7 +73,7 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "vleif  %%v31,31,3               \n\t"
         "srlg  %%r0,%2,6                 \n\t"
         "xgr %%r1,%%r1                   \n\t"
-        "0: \n\t"
+        "0:                              \n\t"
         "pfd 1, 1024(%%r1,%3)            \n\t"
 
         "vl  %%v16,0(%%r1,%3)            \n\t"
@@ -85,10 +85,10 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "vl  %%v22,96(%%r1,%3)           \n\t"
         "vl  %%v23,112(%%r1,%3)          \n\t"
         
-        "vfchsb  %%v5,%%v17,%%v16        \n\t"
-        "vfchsb  %%v6,%%v19,%%v18        \n\t"
-        "vfchsb  %%v7,%%v21,%%v20        \n\t"
-        "vfchsb  %%v8,%%v23,%%v22        \n\t"
+        "vfchesb  %%v5,%%v17,%%v16       \n\t"
+        "vfchesb  %%v6,%%v19,%%v18       \n\t"
+        "vfchesb  %%v7,%%v21,%%v20       \n\t"
+        "vfchesb  %%v8,%%v23,%%v22       \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v5  \n\t"
         "vsel    %%v5,%%v24,%%v25,%%v5   \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v6  \n\t"
@@ -98,14 +98,14 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "vsel    %%v19,%%v22,%%v23,%%v8  \n\t"
         "vsel    %%v8,%%v30,%%v31,%%v8   \n\t"
 
-        "vfchsb  %%v20,%%v17,%%v16       \n\t"
-        "vfchsb  %%v21,%%v19,%%v18       \n\t"
+        "vfchesb  %%v20,%%v17,%%v16      \n\t"
+        "vfchesb  %%v21,%%v19,%%v18      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v20 \n\t"
         "vsel    %%v5,%%v5,%%v6,%%v20    \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v21 \n\t"
         "vsel    %%v6,%%v7,%%v8,%%v21    \n\t"
 
-        "vfchsb  %%v18,%%v17,%%v16       \n\t"
+        "vfchesb  %%v18,%%v17,%%v16      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v18 \n\t"
         "vsel    %%v5,%%v5,%%v6,%%v18    \n\t"
         "vsegf   %%v6,%%v5               \n\t"
@@ -113,13 +113,13 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "vag     %%v5,%%v5,%%v4          \n\t"
         "vag     %%v6,%%v6,%%v4          \n\t"
 
-        "vfchsb  %%v7,%%v0,%%v16         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v7    \n\t"
+        "vfchesb  %%v7,%%v16,%%v0        \n\t"
+        "vsel    %%v0,%%v0,%%v16,%%v7    \n\t"
         "vsegf   %%v8,%%v7               \n\t"
         "vesrlg  %%v7,%%v7,32            \n\t"
         "vsegf   %%v7,%%v7               \n\t"
-        "vsel    %%v1,%%v5,%%v1,%%v7     \n\t"
-        "vsel    %%v2,%%v6,%%v2,%%v8     \n\t"
+        "vsel    %%v1,%%v1,%%v5,%%v7     \n\t"
+        "vsel    %%v2,%%v2,%%v6,%%v8     \n\t"
         "vag     %%v4,%%v4,%%v3          \n\t"
 
         "vl  %%v16,128(%%r1,%3)          \n\t"
@@ -131,10 +131,10 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "vl  %%v22,224(%%r1,%3)          \n\t"
         "vl  %%v23,240(%%r1,%3)          \n\t"
         
-        "vfchsb  %%v5,%%v17,%%v16        \n\t"
-        "vfchsb  %%v6,%%v19,%%v18        \n\t"
-        "vfchsb  %%v7,%%v21,%%v20        \n\t"
-        "vfchsb  %%v8,%%v23,%%v22        \n\t"
+        "vfchesb  %%v5,%%v17,%%v16       \n\t"
+        "vfchesb  %%v6,%%v19,%%v18       \n\t"
+        "vfchesb  %%v7,%%v21,%%v20       \n\t"
+        "vfchesb  %%v8,%%v23,%%v22       \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v5  \n\t"
         "vsel    %%v5,%%v24,%%v25,%%v5   \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v6  \n\t"
@@ -144,14 +144,14 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "vsel    %%v19,%%v22,%%v23,%%v8  \n\t"
         "vsel    %%v8,%%v30,%%v31,%%v8   \n\t"
 
-        "vfchsb  %%v20,%%v17,%%v16       \n\t"
-        "vfchsb  %%v21,%%v19,%%v18       \n\t"
+        "vfchesb  %%v20,%%v17,%%v16      \n\t"
+        "vfchesb  %%v21,%%v19,%%v18      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v20 \n\t"
         "vsel    %%v5,%%v5,%%v6,%%v20    \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v21 \n\t"
         "vsel    %%v6,%%v7,%%v8,%%v21    \n\t"
 
-        "vfchsb  %%v18,%%v17,%%v16       \n\t"
+        "vfchesb  %%v18,%%v17,%%v16      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v18 \n\t"
         "vsel    %%v5,%%v5,%%v6,%%v18    \n\t"
         "vsegf   %%v6,%%v5               \n\t"
@@ -159,13 +159,13 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "vag     %%v5,%%v5,%%v4          \n\t"
         "vag     %%v6,%%v6,%%v4          \n\t"
 
-        "vfchsb  %%v7,%%v0,%%v16         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v7    \n\t"
+        "vfchesb  %%v7,%%v16,%%v0        \n\t"
+        "vsel    %%v0,%%v0,%%v16,%%v7    \n\t"
         "vsegf   %%v8,%%v7               \n\t"
         "vesrlg  %%v7,%%v7,32            \n\t"
         "vsegf   %%v7,%%v7               \n\t"
-        "vsel    %%v1,%%v5,%%v1,%%v7     \n\t"
-        "vsel    %%v2,%%v6,%%v2,%%v8     \n\t"
+        "vsel    %%v1,%%v1,%%v5,%%v7     \n\t"
+        "vsel    %%v2,%%v2,%%v6,%%v8     \n\t"
         "vag     %%v4,%%v4,%%v3          \n\t"
 
         "agfi    %%r1, 256               \n\t"
@@ -194,8 +194,8 @@ static BLASLONG ismin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *min)
         "wfchsb %%v4,%%v0,%%v2           \n\t"
         "vsel   %%v1,%%v3,%%v1,%%v4      \n\t"
         "vsel   %%v0,%%v2,%%v0,%%v4      \n\t"
-        "vlgvg  %0,%%v1,0                \n\t"
         "ste    %%f0,%1                  \n\t"
+        "vlgvg  %0,%%v1,0                \n\t"
         "2:                              \n\t"
         "nop                                 "
         :"=r"(imin),"=m"(*min)
@@ -240,12 +240,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
     } else {
 
+        min = 0;
         minf = x[0];
-        i += inc_x;
-        j++;
 
-        BLASLONG n1 = (n - 1) & -4;
-        while ((j - 1) < n1) {
+        BLASLONG n1 = n & -4;
+        while (j < n1) {
 
             if (x[i] < minf) {
                 min = j;

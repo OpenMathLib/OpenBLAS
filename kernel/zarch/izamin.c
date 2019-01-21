@@ -93,21 +93,21 @@ static BLASLONG izamin_kernel_16(BLASLONG n, FLOAT *x, FLOAT *amin)
         "vfadb %%v18,%%v20,%%v21         \n\t"
         "vfadb %%v19,%%v22,%%v23         \n\t"
         
-        "vfchdb  %%v4,%%v17,%%v16        \n\t"
-        "vfchdb  %%v5,%%v19,%%v18        \n\t"
+        "vfchedb  %%v4,%%v17,%%v16       \n\t"
+        "vfchedb  %%v5,%%v19,%%v18       \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v4  \n\t"
         "vsel    %%v4,%%v24,%%v25,%%v4   \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v5  \n\t"
         "vsel    %%v5,%%v26,%%v27,%%v5   \n\t"
 
-        "vfchdb  %%v18,%%v17,%%v16       \n\t"
+        "vfchedb  %%v18,%%v17,%%v16      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v18 \n\t"
         "vsel    %%v4,%%v4,%%v5,%%v18    \n\t"
         "vag     %%v4,%%v4,%%v3          \n\t"
 
-        "vfchdb  %%v5,%%v0,%%v16         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v5    \n\t"
-        "vsel    %%v1,%%v4,%%v1,%%v5     \n\t"
+        "vfchedb  %%v5,%%v16,%%v0        \n\t"
+        "vsel    %%v0,%%v0,%%v16,%%v5    \n\t"
+        "vsel    %%v1,%%v1,%%v4,%%v5     \n\t"
         "vag     %%v3,%%v3,%%v2          \n\t"
 
         "vleg  %%v16,128(%%r1,%3),0      \n\t"
@@ -139,21 +139,21 @@ static BLASLONG izamin_kernel_16(BLASLONG n, FLOAT *x, FLOAT *amin)
         "vfadb %%v18,%%v20,%%v21         \n\t"
         "vfadb %%v19,%%v22,%%v23         \n\t"
         
-        "vfchdb  %%v4,%%v17,%%v16        \n\t"
-        "vfchdb  %%v5,%%v19,%%v18        \n\t"
+        "vfchedb  %%v4,%%v17,%%v16       \n\t"
+        "vfchedb  %%v5,%%v19,%%v18       \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v4  \n\t"
         "vsel    %%v4,%%v24,%%v25,%%v4   \n\t"
         "vsel    %%v17,%%v18,%%v19,%%v5  \n\t"
         "vsel    %%v5,%%v26,%%v27,%%v5   \n\t"
 
-        "vfchdb  %%v18,%%v17,%%v16       \n\t"
+        "vfchedb  %%v18,%%v17,%%v16      \n\t"
         "vsel    %%v16,%%v16,%%v17,%%v18 \n\t"
         "vsel    %%v4,%%v4,%%v5,%%v18    \n\t"
         "vag     %%v4,%%v4,%%v3          \n\t"
 
-        "vfchdb  %%v5,%%v0,%%v16         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v5    \n\t"
-        "vsel    %%v1,%%v4,%%v1,%%v5     \n\t"
+        "vfchedb  %%v5,%%v16,%%v0        \n\t"
+        "vsel    %%v0,%%v0,%%v16,%%v5    \n\t"
+        "vsel    %%v1,%%v1,%%v4,%%v5     \n\t"
         "vag     %%v3,%%v3,%%v2          \n\t"
 
         "agfi    %%r1, 256               \n\t"
@@ -171,8 +171,8 @@ static BLASLONG izamin_kernel_16(BLASLONG n, FLOAT *x, FLOAT *amin)
         "wfchdb %%v4,%%v0,%%v2           \n\t"
         "vsel   %%v1,%%v3,%%v1,%%v4      \n\t"
         "vsel   %%v0,%%v2,%%v0,%%v4      \n\t"
-        "vlgvg  %0,%%v1,0                \n\t"
         "std    %%f0,%1                  \n\t"
+        "vlgvg  %0,%%v1,0                \n\t"
         "2:                              \n\t"
         "nop                                 "
         :"=r"(iamin),"=m"(*amin)
@@ -223,6 +223,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
     } else {
  
+    min = 0;
     minf = CABS1(x,0);
     inc_x2 = 2 * inc_x;
     ix += inc_x2;

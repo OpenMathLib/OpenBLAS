@@ -69,76 +69,66 @@ static FLOAT zamin_kernel_16(BLASLONG n, FLOAT *x)
         "vleg  %%v23,104(%%r1,%2),0       \n\t"
         "vleg  %%v22,112(%%r1,%2),1       \n\t"
         "vleg  %%v23,120(%%r1,%2),1       \n\t"
-        "vflpdb  %%v16, %%v16             \n\t"
-        "vflpdb  %%v17, %%v17             \n\t"
-        "vflpdb  %%v18, %%v18             \n\t"
-        "vflpdb  %%v19, %%v19             \n\t"
-        "vflpdb  %%v20, %%v20             \n\t"
-        "vflpdb  %%v21, %%v21             \n\t"
-        "vflpdb  %%v22, %%v22             \n\t"
-        "vflpdb  %%v23, %%v23             \n\t"
+        "vleg  %%v24,128(%%r1,%2),0       \n\t"
+        "vleg  %%v25,136(%%r1,%2),0       \n\t"
+        "vleg  %%v24,144(%%r1,%2),1       \n\t"
+        "vleg  %%v25,152(%%r1,%2),1       \n\t"
+        "vleg  %%v26,160(%%r1,%2),0       \n\t"
+        "vleg  %%v27,168(%%r1,%2),0       \n\t"
+        "vleg  %%v26,176(%%r1,%2),1       \n\t"
+        "vleg  %%v27,184(%%r1,%2),1       \n\t"
+        "vleg  %%v28,192(%%r1,%2),0       \n\t"
+        "vleg  %%v29,200(%%r1,%2),0       \n\t"
+        "vleg  %%v28,208(%%r1,%2),1       \n\t"
+        "vleg  %%v29,216(%%r1,%2),1       \n\t"
+        "vleg  %%v30,224(%%r1,%2),0       \n\t"
+        "vleg  %%v31,232(%%r1,%2),0       \n\t"
+        "vleg  %%v30,240(%%r1,%2),1       \n\t"
+        "vleg  %%v31,248(%%r1,%2),1       \n\t"
+
+        "vflpdb  %%v16,%%v16              \n\t"
+        "vflpdb  %%v17,%%v17              \n\t"
+        "vflpdb  %%v18,%%v18              \n\t"
+        "vflpdb  %%v19,%%v19              \n\t"
+        "vflpdb  %%v20,%%v20              \n\t"
+        "vflpdb  %%v21,%%v21              \n\t"
+        "vflpdb  %%v22,%%v22              \n\t"
+        "vflpdb  %%v23,%%v23              \n\t"
+        "vflpdb  %%v24,%%v24              \n\t"
+        "vflpdb  %%v25,%%v25              \n\t"
+        "vflpdb  %%v26,%%v26              \n\t"
+        "vflpdb  %%v27,%%v27              \n\t"
+        "vflpdb  %%v28,%%v28              \n\t"
+        "vflpdb  %%v29,%%v29              \n\t"
+        "vflpdb  %%v30,%%v30              \n\t"
+        "vflpdb  %%v31,%%v31              \n\t"
+
         "vfadb %%v16,%%v16,%%v17          \n\t"
-        "vfadb %%v17,%%v18,%%v19          \n\t"
-        "vfadb %%v18,%%v20,%%v21          \n\t"
-        "vfadb %%v19,%%v22,%%v23          \n\t"
+        "vfadb %%v18,%%v18,%%v19          \n\t"
+        "vfadb %%v20,%%v20,%%v21          \n\t"
+        "vfadb %%v22,%%v22,%%v23          \n\t"
+        "vfadb %%v24,%%v24,%%v25          \n\t"
+        "vfadb %%v26,%%v26,%%v27          \n\t"
+        "vfadb %%v28,%%v28,%%v29          \n\t"
+        "vfadb %%v30,%%v30,%%v31          \n\t"
         
-        "vfchdb  %%v24,%%v17,%%v16        \n\t"
-        "vfchdb  %%v25,%%v19,%%v18        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
+        "vfmindb  %%v16,%%v16,%%v24,0     \n\t"
+        "vfmindb  %%v18,%%v18,%%v26,0     \n\t"
+        "vfmindb  %%v20,%%v20,%%v28,0     \n\t"
+        "vfmindb  %%v22,%%v22,%%v30,0     \n\t"
 
-        "vfchdb  %%v26,%%v25,%%v24        \n\t"
-        "vsel    %%v26,%%v24,%%v25,%%v26  \n\t"
+        "vfmindb  %%v16,%%v16,%%v20,0     \n\t"
+        "vfmindb  %%v18,%%v18,%%v22,0     \n\t"
 
-        "vfchdb  %%v27,%%v0,%%v26         \n\t"
-        "vsel    %%v0,%%v26,%%v0,%%v27    \n\t"
+        "vfmindb  %%v16,%%v16,%%v18,0     \n\t"
 
-        "vleg  %%v16,128(%%r1,%2),0       \n\t"
-        "vleg  %%v17,136(%%r1,%2),0       \n\t"
-        "vleg  %%v16,144(%%r1,%2),1       \n\t"
-        "vleg  %%v17,152(%%r1,%2),1       \n\t"
-        "vleg  %%v18,160(%%r1,%2),0       \n\t"
-        "vleg  %%v19,168(%%r1,%2),0       \n\t"
-        "vleg  %%v18,176(%%r1,%2),1       \n\t"
-        "vleg  %%v19,184(%%r1,%2),1       \n\t"
-        "vleg  %%v20,192(%%r1,%2),0       \n\t"
-        "vleg  %%v21,200(%%r1,%2),0       \n\t"
-        "vleg  %%v20,208(%%r1,%2),1       \n\t"
-        "vleg  %%v21,216(%%r1,%2),1       \n\t"
-        "vleg  %%v22,224(%%r1,%2),0       \n\t"
-        "vleg  %%v23,232(%%r1,%2),0       \n\t"
-        "vleg  %%v22,240(%%r1,%2),1       \n\t"
-        "vleg  %%v23,248(%%r1,%2),1       \n\t"
-        "vflpdb  %%v16, %%v16             \n\t"
-        "vflpdb  %%v17, %%v17             \n\t"
-        "vflpdb  %%v18, %%v18             \n\t"
-        "vflpdb  %%v19, %%v19             \n\t"
-        "vflpdb  %%v20, %%v20             \n\t"
-        "vflpdb  %%v21, %%v21             \n\t"
-        "vflpdb  %%v22, %%v22             \n\t"
-        "vflpdb  %%v23, %%v23             \n\t"
-        "vfadb %%v16,%%v16,%%v17          \n\t"
-        "vfadb %%v17,%%v18,%%v19          \n\t"
-        "vfadb %%v18,%%v20,%%v21          \n\t"
-        "vfadb %%v19,%%v22,%%v23          \n\t"
-        
-        "vfchdb  %%v24,%%v17,%%v16        \n\t"
-        "vfchdb  %%v25,%%v19,%%v18        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-
-        "vfchdb  %%v26,%%v25,%%v24        \n\t"
-        "vsel    %%v26,%%v24,%%v25,%%v26  \n\t"
-
-        "vfchdb  %%v27,%%v0,%%v26         \n\t"
-        "vsel    %%v0,%%v26,%%v0,%%v27    \n\t"
+        "vfmindb  %%v0,%%v0,%%v16,0       \n\t"
 
         "agfi    %%r1, 256                \n\t"
         "brctg   %%r0, 0b                 \n\t"
 
         "vrepg  %%v16,%%v0,1              \n\t"
-        "wfchdb %%v17,%%v0,%%v16          \n\t"
-        "vsel   %%v0,%%v16,%%v0,%%v17     \n\t"
+        "wfmindb %%v0,%%v0,%%v16,0        \n\t"
         "ldr    %0,%%f0                       "
         :"=f"(amin)
         :"r"(n),"ZR"((const FLOAT (*)[n])x)
@@ -185,11 +175,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
         minf=CABS1(x,0);
         inc_x2 = 2 * inc_x;
-        ix += inc_x2;
-        i++;
 
-        BLASLONG n1 = (n - 1) & -4;
-        while ((i - 1) < n1) {
+        BLASLONG n1 = n & -4;
+        while (i < n1) {
 
             if (CABS1(x,ix) < minf) {
                 minf = CABS1(x,ix);

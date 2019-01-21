@@ -40,8 +40,7 @@ static FLOAT samin_kernel_64(BLASLONG n, FLOAT *x)
 
     __asm__ volatile (
         "vl     %%v0,0(%2)                \n\t"
-        "vflpsb %%v0,%%v0                 \n\t"
-        "srlg  %%r0,%1,6                  \n\t"
+        "srlg   %%r0,%1,6                 \n\t"
         "xgr %%r1,%%r1                    \n\t"
         "0:                               \n\t"
         "pfd 1, 1024(%%r1,%2)             \n\t"
@@ -54,83 +53,45 @@ static FLOAT samin_kernel_64(BLASLONG n, FLOAT *x)
         "vl  %%v21,80(%%r1,%2)            \n\t"
         "vl  %%v22,96(%%r1,%2)            \n\t"
         "vl  %%v23,112(%%r1,%2)           \n\t"
-        "vflpsb  %%v16, %%v16             \n\t"
-        "vflpsb  %%v17, %%v17             \n\t"
-        "vflpsb  %%v18, %%v18             \n\t"
-        "vflpsb  %%v19, %%v19             \n\t"
-        "vflpsb  %%v20, %%v20             \n\t"
-        "vflpsb  %%v21, %%v21             \n\t"
-        "vflpsb  %%v22, %%v22             \n\t"
-        "vflpsb  %%v23, %%v23             \n\t"
+        "vl  %%v24,128(%%r1,%2)           \n\t"
+        "vl  %%v25,144(%%r1,%2)           \n\t"
+        "vl  %%v26,160(%%r1,%2)           \n\t"
+        "vl  %%v27,176(%%r1,%2)           \n\t"
+        "vl  %%v28,192(%%r1,%2)           \n\t"
+        "vl  %%v29,208(%%r1,%2)           \n\t"
+        "vl  %%v30,224(%%r1,%2)           \n\t"
+        "vl  %%v31,240(%%r1,%2)           \n\t"
         
-        "vfchsb  %%v24,%%v17,%%v16        \n\t"
-        "vfchsb  %%v25,%%v19,%%v18        \n\t"
-        "vfchsb  %%v26,%%v21,%%v20        \n\t"
-        "vfchsb  %%v27,%%v23,%%v22        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-        "vsel    %%v26,%%v20,%%v21,%%v26  \n\t"
-        "vsel    %%v27,%%v22,%%v23,%%v27  \n\t"
+        "vfminsb  %%v16,%%v16,%%v24,8     \n\t"
+        "vfminsb  %%v17,%%v17,%%v25,8     \n\t"
+        "vfminsb  %%v18,%%v18,%%v26,8     \n\t"
+        "vfminsb  %%v19,%%v19,%%v27,8     \n\t"
+        "vfminsb  %%v20,%%v20,%%v28,8     \n\t"
+        "vfminsb  %%v21,%%v21,%%v29,8     \n\t"
+        "vfminsb  %%v22,%%v22,%%v30,8     \n\t"
+        "vfminsb  %%v23,%%v23,%%v31,8     \n\t"
 
-        "vfchsb  %%v28,%%v25,%%v24        \n\t"
-        "vfchsb  %%v29,%%v27,%%v26        \n\t"
-        "vsel    %%v28,%%v24,%%v25,%%v28  \n\t"
-        "vsel    %%v29,%%v26,%%v27,%%v29  \n\t"
+        "vfminsb  %%v16,%%v16,%%v20,8     \n\t"
+        "vfminsb  %%v17,%%v17,%%v21,8     \n\t"
+        "vfminsb  %%v18,%%v18,%%v22,8     \n\t"
+        "vfminsb  %%v19,%%v19,%%v23,8     \n\t"
 
-        "vfchsb  %%v30,%%v29,%%v28        \n\t"
-        "vsel    %%v30,%%v28,%%v29,%%v30  \n\t"
+        "vfminsb  %%v16,%%v16,%%v18,8     \n\t"
+        "vfminsb  %%v17,%%v17,%%v19,8     \n\t"
 
-        "vfchsb  %%v31,%%v0,%%v30         \n\t"
-        "vsel    %%v0,%%v30,%%v0,%%v31    \n\t"
+        "vfminsb  %%v16,%%v16,%%v17,8     \n\t"
 
-        "vl  %%v16,128(%%r1,%2)           \n\t"
-        "vl  %%v17,144(%%r1,%2)           \n\t"
-        "vl  %%v18,160(%%r1,%2)           \n\t"
-        "vl  %%v19,176(%%r1,%2)           \n\t"
-        "vl  %%v20,192(%%r1,%2)           \n\t"
-        "vl  %%v21,208(%%r1,%2)           \n\t"
-        "vl  %%v22,224(%%r1,%2)           \n\t"
-        "vl  %%v23,240(%%r1,%2)           \n\t"
-        "vflpsb  %%v16, %%v16             \n\t"
-        "vflpsb  %%v17, %%v17             \n\t"
-        "vflpsb  %%v18, %%v18             \n\t"
-        "vflpsb  %%v19, %%v19             \n\t"
-        "vflpsb  %%v20, %%v20             \n\t"
-        "vflpsb  %%v21, %%v21             \n\t"
-        "vflpsb  %%v22, %%v22             \n\t"
-        "vflpsb  %%v23, %%v23             \n\t"
-        
-        "vfchsb  %%v24,%%v17,%%v16        \n\t"
-        "vfchsb  %%v25,%%v19,%%v18        \n\t"
-        "vfchsb  %%v26,%%v21,%%v20        \n\t"
-        "vfchsb  %%v27,%%v23,%%v22        \n\t"
-        "vsel    %%v24,%%v16,%%v17,%%v24  \n\t"
-        "vsel    %%v25,%%v18,%%v19,%%v25  \n\t"
-        "vsel    %%v26,%%v20,%%v21,%%v26  \n\t"
-        "vsel    %%v27,%%v22,%%v23,%%v27  \n\t"
-
-        "vfchsb  %%v28,%%v25,%%v24        \n\t"
-        "vfchsb  %%v29,%%v27,%%v26        \n\t"
-        "vsel    %%v28,%%v24,%%v25,%%v28  \n\t"
-        "vsel    %%v29,%%v26,%%v27,%%v29  \n\t"
-
-        "vfchsb  %%v30,%%v29,%%v28        \n\t"
-        "vsel    %%v30,%%v28,%%v29,%%v30  \n\t"
-
-        "vfchsb  %%v31,%%v0,%%v30         \n\t"
-        "vsel    %%v0,%%v30,%%v0,%%v31    \n\t"
+        "vfminsb  %%v0,%%v0,%%16,8        \n\t"
 
         "agfi    %%r1, 256                \n\t"
         "brctg   %%r0, 0b                 \n\t"
 
         "veslg   %%v16,%%v0,32            \n\t"
-        "vfchsb  %%v17,%%v0,%%v16         \n\t"
-        "vsel    %%v0,%%v16,%%v0,%%v17    \n\t"
+        "vfminsb %%v0,%%v0,%%v16,8        \n\t"
 
-        "vrepf  %%v16,%%v0,2              \n\t"
-        "wfchsb %%v17,%%v0,%%v16          \n\t"
-        "vsel   %%v0,%%v16,%%v0,%%v17     \n\t"
-        "ler    %0,%%f0                       "
+        "vrepf   %%v16,%%v0,2             \n\t"
+        "wfminsb %%v0,%%v0,%%v16,8        \n\t"
+        "lper    %0,%%f0                      "
         :"=f"(amin)
         :"r"(n),"ZR"((const FLOAT (*)[n])x)
         :"memory","cc","r0","r1","v0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
@@ -172,11 +133,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     } else {
 
         minf=ABS(x[0]);
-        i += inc_x;
-        j++;
 
-        BLASLONG n1 = (n - 1) & -4;
-        while ((j - 1) < n1) {
+        BLASLONG n1 = n & -4;
+        while (j < n1) {
 
             if (ABS(x[i]) < minf) {
                 minf = ABS(x[i]);
