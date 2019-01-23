@@ -157,7 +157,7 @@ endif()
 
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
-target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include>)
+target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include/openblas${SUFFIX64}>)
 
 # Android needs to explicitly link against libm
 if(ANDROID)
