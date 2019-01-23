@@ -82,9 +82,9 @@
 #endif
 
 #ifndef COMPLEX
-#define SMP_FACTOR 8
+#define SMP_FACTOR 256
 #else
-#define SMP_FACTOR 4
+#define SMP_FACTOR 128
 #endif
 
 static int (*trsm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
@@ -372,11 +372,15 @@ void CNAME(enum CBLAS_ORDER order,
   mode |= (trans << BLAS_TRANSA_SHIFT);
   mode |= (side  << BLAS_RSIDE_SHIFT);
 
-  if ( args.m < SMP_FACTOR * GEMM_MULTITHREAD_THRESHOLD )
+/*
+  if ( args.m < 2 * GEMM_MULTITHREAD_THRESHOLD )
 	args.nthreads = 1;
   else
-	if ( args.n < SMP_FACTOR * GEMM_MULTITHREAD_THRESHOLD )
+	if ( args.n < 2 * GEMM_MULTITHREAD_THRESHOLD )
 		args.nthreads = 1;
+*/
+  if ( args.m * args.n < SMP_FACTOR * GEMM_MULTITHREAD_THRESHOLD)
+	args.nthreads = 1;
   else
 	args.nthreads = num_cpu_avail(3);
 		
