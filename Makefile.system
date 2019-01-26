@@ -95,6 +95,9 @@ endif
 ifeq ($(TARGET), ZEN)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
+ifeq ($(TARGET), ARMV8)
+GETARCH_FLAGS := -DFORCE_ARMV7
+endif
 endif
 
 
