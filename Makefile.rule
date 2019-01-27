@@ -85,7 +85,7 @@ VERSION = 0.3.6.dev
 # they need to wait for the preceding API calls to finish or risk data corruption.
 # NUM_PARALLEL = 2
 
-# If you don't need to generate the static library, please comment this in.
+# If you don't need to install the static library, please comment this in.
 # NO_STATIC = 1
 
 # If you don't need to generate the shared library, please comment this in.
@@ -134,6 +134,8 @@ NO_WARMUP = 1
 # This feature is only implemented on Linux, and is always disabled on other platforms.
 # Enabling affinity handling may improve performance, especially on NUMA systems, but 
 # it may conflict with certain applications that also try to manage affinity.
+# This conflict can result in threads of the application calling OpenBLAS ending up locked
+# to the same core(s) as OpenBLAS, possibly binding all threads to a single core.
 # For this reason, affinity handling is disabled by default. Can be safely enabled if nothing
 # else modifies affinity settings.
 NO_AFFINITY = 1
