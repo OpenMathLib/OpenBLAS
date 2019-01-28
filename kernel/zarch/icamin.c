@@ -283,6 +283,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
       }
       else
         {
+            min = 0;
             minf = CABS1(x,0);
             ix += 2;
             i++;
