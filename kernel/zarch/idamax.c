@@ -206,7 +206,6 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         }
         else
         {
-            max = 0;
             maxf = ABS(x[0]);
             i++;
         }

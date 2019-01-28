@@ -249,7 +249,6 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         }
         else
         {
-            min = 0;
             minf = ABS(x[0]);
             i++;
         }
