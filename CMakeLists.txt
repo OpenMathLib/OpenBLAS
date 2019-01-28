@@ -42,6 +42,19 @@ endif()
 
 #######
 
+if(MSVC AND MSVC_STATIC_CRT)
+    set(CompilerFlags
+            CMAKE_CXX_FLAGS
+            CMAKE_CXX_FLAGS_DEBUG
+            CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_C_FLAGS
+            CMAKE_C_FLAGS_DEBUG
+            CMAKE_C_FLAGS_RELEASE
+            )
+    foreach(CompilerFlag ${CompilerFlags})
+      string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+    endforeach()
+endif()
 
 message(WARNING "CMake support is experimental. It does not yet support all build options and may not produce the same Makefiles that OpenBLAS ships with.")
 
@@ -134,7 +147,7 @@ endif ()
 
 # Only generate .def for dll on MSVC and always produce pdb files for debug and release
 if(MSVC)
-  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 3.4)
+  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_LESS 3.4)
     set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
   endif()
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
@@ -149,12 +162,6 @@ if (${DYNAMIC_ARCH})
   endforeach()
 endif ()
 
-# Only build shared libs for MSVC
-if (MSVC)
-  set(BUILD_SHARED_LIBS ON)
-endif()
-
-
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
 target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include>)
@@ -166,7 +173,7 @@ endif()
 
 # Handle MSVC exports
 if(MSVC AND BUILD_SHARED_LIBS)
-  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 3.4)
+  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_LESS 3.4)
     include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
   else()
     # Creates verbose .def file (51KB vs 18KB)
@@ -314,7 +321,7 @@ install (FILES ${OPENBLAS_CONFIG_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 if(NOT NOFORTRAN)
   message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-  set(F77BLAS_H ${CMAKE_BINARY_DIR}/f77blas.h)
+  set(F77BLAS_H ${CMAKE_BINARY_DIR}/generated/f77blas.h)
   file(WRITE  ${F77BLAS_H} "#ifndef OPENBLAS_F77BLAS_H\n")
   file(APPEND ${F77BLAS_H} "#define OPENBLAS_F77BLAS_H\n")
   file(APPEND ${F77BLAS_H} "#include \"openblas_config.h\"\n")
@@ -327,10 +334,11 @@ endif()
 if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
+	set(CBLAS_H ${CMAKE_BINARY_DIR}/generated/cblas.h)
 	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
 	string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
-	file(WRITE ${CMAKE_BINARY_DIR}/cblas.tmp "${CBLAS_H_CONTENTS_NEW}")
-	install (FILES ${CMAKE_BINARY_DIR}/cblas.tmp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} RENAME cblas.h)
+	file(WRITE ${CBLAS_H} "${CBLAS_H_CONTENTS_NEW}")
+	install (FILES ${CBLAS_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 if(NOT NO_LAPACKE)
