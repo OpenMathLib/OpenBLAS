@@ -216,6 +216,8 @@ static BLASLONG isamax_kernel_64(BLASLONG n, FLOAT *x, FLOAT *amax)
         "j 2f                            \n\t"
         "1:                              \n\t"
         "wfchsb %%v4,%%v2,%%v0           \n\t"
+        "vesrlg %%v4,%%v4,32             \n\t"
+        "vsegf  %%v4,%%v4                \n\t"
         "vsel   %%v1,%%v3,%%v1,%%v4      \n\t"
         "vsel   %%v0,%%v2,%%v0,%%v4      \n\t"
         "ste    %%f0,%1                  \n\t"
