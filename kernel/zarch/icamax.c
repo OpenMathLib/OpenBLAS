@@ -94,7 +94,7 @@ static BLASLONG icamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *amax)
         "vlef  %%v18,48(%%r1,%3),2       \n\t"
         "vlef  %%v19,52(%%r1,%3),2       \n\t"
         "vlef  %%v18,56(%%r1,%3),3       \n\t"
-        "vlef  %%v19,30(%%r1,%3),3       \n\t"
+        "vlef  %%v19,60(%%r1,%3),3       \n\t"
 
         "vlef  %%v20,64(%%r1,%3),0       \n\t"
         "vlef  %%v21,68(%%r1,%3),0       \n\t"
