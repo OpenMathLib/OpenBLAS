@@ -199,7 +199,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
       if (n1 > 0) {
 
             min = izamin_kernel_16(n1, x, &minf);
-
+            ix = n1 * 2;
             i = n1;
       }
       else

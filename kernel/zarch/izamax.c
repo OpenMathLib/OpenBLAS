@@ -199,7 +199,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
       if (n1 > 0) {
 
             max = izamax_kernel_16(n1, x, &maxf);
-
+            ix = n1 * 2;
             i = n1;
       }
       else

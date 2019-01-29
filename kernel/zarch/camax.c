@@ -198,7 +198,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         if (n1 > 0) {
 
             maxf = camax_kernel_32(n1, x);
-
+            ix = n1 * 2;
             i = n1;
         }
         else
