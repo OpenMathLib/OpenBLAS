@@ -48,6 +48,10 @@ ifeq ($(ARCH), zarch)
 USE_TRMM = 1
 endif
 
+ifeq ($(CORE), Z14)
+USE_TRMM = 1
+endif
+
 
 
 
