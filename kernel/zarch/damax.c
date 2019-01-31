@@ -81,7 +81,7 @@ static FLOAT damax_kernel_32(BLASLONG n, FLOAT *x)
 
         "vfmaxdb  %%v16,%%v16,%%v17,8     \n\t"
 
-        "vfmaxdb  %%v0,%%v0,%%16,8        \n\t"
+        "vfmaxdb  %%v0,%%v0,%%v16,8       \n\t"
 
         "agfi    %%r1, 256                \n\t"
         "brctg   %%r0, 0b                 \n\t"

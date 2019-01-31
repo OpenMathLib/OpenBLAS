@@ -74,7 +74,7 @@ static FLOAT smax_kernel_64(BLASLONG n, FLOAT *x)
 
         "vfmaxsb  %%v16,%%v16,%%v17,0     \n\t"
 
-        "vfmaxsb  %%v0,%%v0,%%16,0        \n\t"
+        "vfmaxsb  %%v0,%%v0,%%v16,0       \n\t"
 
         "agfi    %%r1, 256                \n\t"
         "brctg   %%r0, 0b                 \n\t"

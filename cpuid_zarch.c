@@ -114,7 +114,14 @@ void get_cpuconfig(void)
 	  break;
 	case CPU_Z14:
 	  printf("#define Z14\n");
+	  printf("#define L1_DATA_SIZE 131072\n");
+	  printf("#define L1_DATA_LINESIZE 256\n");
+	  printf("#define L1_DATA_ASSOCIATIVE 8\n");
+	  printf("#define L2_SIZE 4194304\n");
+	  printf("#define L2_LINESIZE 256\n");
+	  printf("#define L2_ASSOCIATIVE 8\n");
 	  printf("#define DTB_DEFAULT_ENTRIES 64\n");
+	  printf("#define DTB_SIZE 4096\n");
 	  break;
 	}
 }
