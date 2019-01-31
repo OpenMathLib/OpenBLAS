@@ -132,7 +132,7 @@ double CNAME(BLASLONG n,FLOAT *x,BLASLONG inc_x,FLOAT *y,BLASLONG inc_y)
 		while(i < n)
 		{
 
-			dot += y[i] * x[i] ;
+			dot += (double) y[i] * (double) x[i] ;
 			i++ ;
 
 		}
@@ -146,7 +146,8 @@ double CNAME(BLASLONG n,FLOAT *x,BLASLONG inc_x,FLOAT *y,BLASLONG inc_y)
 	while(i < n1)
 	{
 
-		dot += y[iy] * x[ix] + y[iy+inc_y] * x[ix+inc_x];
+		dot += (double) y[iy] * (double) x[ix];
+		dot += (double) y[iy+inc_y] * (double) x[ix+inc_x];
 		ix  += inc_x*2 ;
 		iy  += inc_y*2 ;
 		i+=2 ;
@@ -156,7 +157,7 @@ double CNAME(BLASLONG n,FLOAT *x,BLASLONG inc_x,FLOAT *y,BLASLONG inc_y)
 	while(i < n)
 	{
 
-		dot += y[iy] * x[ix] ;
+		dot += (double) y[iy] * (double) x[ix] ;
 		ix  += inc_x ;
 		iy  += inc_y ;
 		i++ ;
