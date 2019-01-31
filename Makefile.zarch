@@ -4,3 +4,7 @@ CCOMMON_OPT += -march=z13 -mzvector
 FCOMMON_OPT += -march=z13 -mzvector
 endif
 
+ifeq ($(CORE), Z14)
+CCOMMON_OPT += -march=z14 -mzvector
+FCOMMON_OPT += -march=z14 -mzvector
+endif

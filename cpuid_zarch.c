@@ -27,9 +27,9 @@
 
 #include <string.h>
 
-#define CPU_GENERIC    	0
-#define CPU_Z13       	1
-#define CPU_Z14       	2
+#define CPU_GENERIC     0
+#define CPU_Z13         1
+#define CPU_Z14         2
 
 static char *cpuname[] = {
   "ZARCH_GENERIC",
@@ -64,10 +64,8 @@ int detect(void)
 
   if (strstr(p, "2964")) return CPU_Z13;
   if (strstr(p, "2965")) return CPU_Z13;
-
-  /* detect z14, but fall back to z13 */
-  if (strstr(p, "3906")) return CPU_Z13;
-  if (strstr(p, "3907")) return CPU_Z13;
+  if (strstr(p, "3906")) return CPU_Z14;
+  if (strstr(p, "3907")) return CPU_Z14;
 
   return CPU_GENERIC;
 }
