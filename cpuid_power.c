@@ -56,6 +56,7 @@
 #define CPUTYPE_CELL       6
 #define CPUTYPE_PPCG4	   7
 #define CPUTYPE_POWER8     8
+#define CPUTYPE_POWER9     9
 
 char *cpuname[] = {
   "UNKNOWN",
@@ -66,7 +67,8 @@ char *cpuname[] = {
   "POWER6",
   "CELL",
   "PPCG4",
-  "POWER8"
+  "POWER8",
+  "POWER9"
 };
 
 char *lowercpuname[] = {
@@ -78,7 +80,8 @@ char *lowercpuname[] = {
   "power6",
   "cell",
   "ppcg4",
-  "power8"
+  "power8",
+  "power9"	
 };
 
 char *corename[] = {
@@ -90,7 +93,8 @@ char *corename[] = {
   "POWER6",
   "CELL",
   "PPCG4",
-  "POWER8"
+  "POWER8",
+  "POWER8"   	
 };
 
 int detect(void){
@@ -120,6 +124,7 @@ int detect(void){
   if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
+  if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER8;
   if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
   if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
 
@@ -127,6 +132,33 @@ int detect(void){
 #endif
 
 #ifdef _AIX
+  FILE *infile;
+  char buffer[512], *p;
+
+  p = (char *)NULL;
+  infile = popen("prtconf|grep 'Processor Type'", "r");
+  while (fgets(buffer, sizeof(buffer), infile)){
+    if (!strncmp("Pro", buffer, 3)){
+	p = strchr(buffer, ':') + 2;
+#if 0
+	fprintf(stderr, "%s\n", p);
+#endif
+	break;
+      }
+  }
+
+  pclose(infile);
+
+  if (!strncasecmp(p, "POWER3", 6)) return CPUTYPE_POWER3;
+  if (!strncasecmp(p, "POWER4", 6)) return CPUTYPE_POWER4;
+  if (!strncasecmp(p, "PPC970", 6)) return CPUTYPE_PPC970;
+  if (!strncasecmp(p, "POWER5", 6)) return CPUTYPE_POWER5;
+  if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
+  if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
+  if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
+  if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER8;
+  if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
+  if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
   return CPUTYPE_POWER5;
 #endif
 
@@ -143,12 +175,12 @@ int detect(void){
   return  CPUTYPE_PPC970;
 #endif
 
-#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 int id;
-id = __asm __volatile("mfpvr %0" : "=r"(id));
+__asm __volatile("mfpvr %0" : "=r"(id));
 switch ( id >> 16 ) {
   case 0x4e: // POWER9
-    return  return CPUTYPE_POWER8;
+    return CPUTYPE_POWER8;
     break;
   case 0x4d:
   case 0x4b: // POWER8/8E 

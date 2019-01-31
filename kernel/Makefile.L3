@@ -44,7 +44,7 @@ ifeq ($(CORE), POWER8)
 USE_TRMM = 1
 endif
 
-ifeq ($(CORE), Z13)
+ifeq ($(ARCH), zarch)
 USE_TRMM = 1
 endif
 

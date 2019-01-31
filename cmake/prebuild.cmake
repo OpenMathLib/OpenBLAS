@@ -87,13 +87,18 @@ endif ()
 # Cannot run getarch on target if we are cross-compiling
 if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSSTORE"))
   # Write to config as getarch would
+  if (DEFINED TARGET_CORE)
+  set(TCORE ${TARGET_CORE})
+  else()
+  set(TCORE ${CORE})
+  endif()
 
   # TODO: Set up defines that getarch sets up based on every other target
   # Perhaps this should be inside a different file as it grows larger
   file(APPEND ${TARGET_CONF_TEMP}
-    "#define ${CORE}\n"
-    "#define CHAR_CORENAME \"${CORE}\"\n")
-  if ("${CORE}" STREQUAL "ARMV7")
+    "#define ${TCORE}\n"
+    "#define CHAR_CORENAME \"${TCORE}\"\n")
+  if ("${TCORE}" STREQUAL "ARMV7")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t65536\n"
       "#define L1_DATA_LINESIZE\t32\n"
@@ -108,7 +113,7 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
     set(SGEMM_UNROLL_N 4)
     set(DGEMM_UNROLL_M 4)
     set(DGEMM_UNROLL_N 4)
-  elseif ("${CORE}" STREQUAL "ARMV8")
+  elseif ("${TCORE}" STREQUAL "ARMV8")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t32768\n"
       "#define L1_DATA_LINESIZE\t64\n"
@@ -116,18 +121,26 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define L2_LINESIZE\t64\n"
       "#define DTB_DEFAULT_ENTRIES\t64\n"
       "#define DTB_SIZE\t4096\n"
-      "#define L2_ASSOCIATIVE\t32\n")
-    set(SGEMM_UNROLL_M 4)
+      "#define L2_ASSOCIATIVE\t32\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
     set(SGEMM_UNROLL_N 4)
-  elseif ("${CORE}" STREQUAL "CORTEXA57")
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "CORTEXA57" OR "${TCORE}" STREQUAL "CORTEXA53")
     file(APPEND ${TARGET_CONF_TEMP}
-      "#define L1_CODE_SIZE\t49152\n"
+      "#define L1_CODE_SIZE\t32768\n"
       "#define L1_CODE_LINESIZE\t64\n"
       "#define L1_CODE_ASSOCIATIVE\t3\n"
       "#define L1_DATA_SIZE\t32768\n"
       "#define L1_DATA_LINESIZE\t64\n"
       "#define L1_DATA_ASSOCIATIVE\t2\n"
-      "#define L2_SIZE\t2097152\n"
+      "#define L2_SIZE\t262144\n"
       "#define L2_LINESIZE\t64\n"
       "#define L2_ASSOCIATIVE\t16\n"
       "#define DTB_DEFAULT_ENTRIES\t64\n"
@@ -135,15 +148,124 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define HAVE_VFPV4\n"
       "#define HAVE_VFPV3\n"
       "#define HAVE_VFP\n"
-      "#define HAVE_NEON\n")
+      "#define HAVE_NEON\n"
+      "#define ARMV8\n")
     set(SGEMM_UNROLL_M 16)
     set(SGEMM_UNROLL_N 4)
     set(DGEMM_UNROLL_M 8)
     set(DGEMM_UNROLL_N 4)
     set(CGEMM_UNROLL_M 8)
     set(CGEMM_UNROLL_N 4)
-    set(ZGEMM_UNROLL_M 8)
+    set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "CORTEXA72" OR "${TCORE}" STREQUAL "CORTEXA73")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t49152\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t3\n"
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t2\n"
+      "#define L2_SIZE\t524288\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t16\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "FALKOR")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t65536\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t3\n"
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t128\n"
+      "#define L1_DATA_ASSOCIATIVE\t2\n"
+      "#define L2_SIZE\t524288\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t16\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "THUNDERX")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t32768\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t3\n"
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t128\n"
+      "#define L1_DATA_ASSOCIATIVE\t2\n"
+      "#define L2_SIZE\t167772164\n"
+      "#define L2_LINESIZE\t128\n"
+      "#define L2_ASSOCIATIVE\t16\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 4)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 2)
+    set(DGEMM_UNROLL_N 2)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 2)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 2)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "THUNDERX2T99")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t32768\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t8\n"
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t8\n"
+      "#define L2_SIZE\t262144\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t8\n"
+      "#define L3_SIZE\t33554432\n"
+      "#define L3_LINESIZE\t64\n"
+      "#define L3_ASSOCIATIVE\t32\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   endif()
 
   # Or should this actually be NUM_CORES?
@@ -163,6 +285,7 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
   file(APPEND ${TARGET_CONF_TEMP}
     "#define GEMM_MULTITHREAD_THRESHOLD\t${GEMM_MULTITHREAD_THRESHOLD}\n")
   # Move to where gen_config_h would place it
+  file(MAKE_DIRECTORY ${TARGET_CONF_DIR})
   file(RENAME ${TARGET_CONF_TEMP} "${TARGET_CONF_DIR}/${TARGET_CONF}")  
 
 else(NOT CMAKE_CROSSCOMPILING)

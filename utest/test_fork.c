@@ -31,10 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include "openblas_utest.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <cblas.h>
+#include "openblas_utest.h"
 
 void* xmalloc(size_t n)
 {

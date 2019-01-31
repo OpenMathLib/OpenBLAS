@@ -31,8 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(NEHALEM)
 #include "saxpy_microk_nehalem-2.c"
-#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
+#elif defined(HASWELL) || defined(ZEN)
 #include "saxpy_microk_haswell-2.c"
+#elif defined (SKYLAKEX)
+#include "saxpy_microk_skylakex-2.c"
 #elif defined(SANDYBRIDGE)
 #include "saxpy_microk_sandy-2.c"
 #elif defined(PILEDRIVER) || defined(STEAMROLLER) || defined(EXCAVATOR)

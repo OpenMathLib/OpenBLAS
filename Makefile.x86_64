@@ -9,11 +9,32 @@ endif
 endif
 
 ifeq ($(CORE), SKYLAKEX)
+ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
 CCOMMON_OPT += -march=skylake-avx512
 FCOMMON_OPT += -march=skylake-avx512
+ifeq ($(OSNAME), CYGWIN_NT)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+ifeq ($(OSNAME), WINNT)
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
 endif
 endif
+endif
+endif
+endif
+
+ifeq ($(CORE), HASWELL)
+ifndef DYNAMIC_ARCH
+ifndef NO_AVX2
+CCOMMON_OPT += -mavx2
+FCOMMON_OPT += -mavx2
+endif
+endif
+endif
+
+
 
 ifeq ($(OSNAME), Interix)
 ARFLAGS		= -m x64

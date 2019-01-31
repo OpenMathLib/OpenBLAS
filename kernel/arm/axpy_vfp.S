@@ -146,17 +146,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F4
 
 	pld	[ X, #X_PRE ]
-	fldmiad		X!,  { d4 - d7  }
+	vldmia.f64		X!,  { d4 - d7  }
 	pld	[ Y, #X_PRE ]
-	fldmiad		Y ,  { d8 - d11 }
+	vldmia.f64		Y ,  { d8 - d11 }
 	fmacd   	d8 , d0, d4
-	fstmiad		Y!, { d8 }
+	vstmia.f64		Y!, { d8 }
 	fmacd   	d9 , d0, d5
-	fstmiad		Y!, { d9 }
+	vstmia.f64		Y!, { d9 }
 	fmacd   	d10, d0, d6
-	fstmiad		Y!, { d10 }
+	vstmia.f64		Y!, { d10 }
 	fmacd   	d11, d0, d7
-	fstmiad		Y!, { d11 }
+	vstmia.f64		Y!, { d11 }
 
 
 .endm
@@ -164,19 +164,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1
 
-	fldmiad		X!,  { d4 }
-	fldmiad		Y ,  { d8 }
+	vldmia.f64		X!,  { d4 }
+	vldmia.f64		Y ,  { d8 }
 	fmacd   	d8 , d0, d4
-	fstmiad		Y!, { d8 }
+	vstmia.f64		Y!, { d8 }
 
 .endm
 
 .macro KERNEL_S1
 
-	fldmiad		X ,  { d4 }
-	fldmiad		Y ,  { d8 }
+	vldmia.f64		X ,  { d4 }
+	vldmia.f64		Y ,  { d8 }
 	fmacd   	d8 , d0, d4
-	fstmiad		Y , { d8 }
+	vstmia.f64		Y , { d8 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
@@ -186,16 +186,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F4
 
-	fldmias		X!,  { s4 - s7  }
-	fldmias		Y ,  { s8 - s11 }
+	vldmia.f32		X!,  { s4 - s7  }
+	vldmia.f32		Y ,  { s8 - s11 }
 	fmacs   	s8 , s0, s4
-	fstmias		Y!, { s8 }
+	vstmia.f32		Y!, { s8 }
 	fmacs   	s9 , s0, s5
-	fstmias		Y!, { s9 }
+	vstmia.f32		Y!, { s9 }
 	fmacs   	s10, s0, s6
-	fstmias		Y!, { s10 }
+	vstmia.f32		Y!, { s10 }
 	fmacs   	s11, s0, s7
-	fstmias		Y!, { s11 }
+	vstmia.f32		Y!, { s11 }
 
 
 .endm
@@ -203,19 +203,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1
 
-	fldmias		X!,  { s4 }
-	fldmias		Y ,  { s8 }
+	vldmia.f32		X!,  { s4 }
+	vldmia.f32		Y ,  { s8 }
 	fmacs   	s8 , s0, s4
-	fstmias		Y!, { s8 }
+	vstmia.f32		Y!, { s8 }
 
 .endm
 
 .macro KERNEL_S1
 
-	fldmias		X ,  { s4 }
-	fldmias		Y ,  { s8 }
+	vldmia.f32		X ,  { s4 }
+	vldmia.f32		Y ,  { s8 }
 	fmacs   	s8 , s0, s4
-	fstmias		Y , { s8 }
+	vstmia.f32		Y , { s8 }
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
 
@@ -231,42 +231,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F4
 
 	pld	[ X, #X_PRE ]
-	fldmiad		X!,  { d4 - d7  }
+	vldmia.f64		X!,  { d4 - d7  }
 	pld	[ Y, #X_PRE ]
-	fldmiad		Y ,  { d8 - d11 }
+	vldmia.f64		Y ,  { d8 - d11 }
 
 	FMAC_R1		d8 , d0, d4
 	FMAC_R2		d8 , d1, d5
 	FMAC_I1		d9 , d0, d5
 	FMAC_I2		d9 , d1, d4
-	fstmiad		Y!, { d8 }
-	fstmiad		Y!, { d9 }
+	vstmia.f64		Y!, { d8 }
+	vstmia.f64		Y!, { d9 }
 
 	FMAC_R1		d10, d0, d6
 	FMAC_R2		d10, d1, d7
 	FMAC_I1		d11, d0, d7
 	FMAC_I2		d11, d1, d6
-	fstmiad		Y!, { d10 }
-	fstmiad		Y!, { d11 }
+	vstmia.f64		Y!, { d10 }
+	vstmia.f64		Y!, { d11 }
 
 	pld	[ X, #X_PRE ]
-	fldmiad		X!,  { d4 - d7  }
+	vldmia.f64		X!,  { d4 - d7  }
 	pld	[ Y, #X_PRE ]
-	fldmiad		Y ,  { d8 - d11 }
+	vldmia.f64		Y ,  { d8 - d11 }
 
 	FMAC_R1		d8 , d0, d4
 	FMAC_R2		d8 , d1, d5
 	FMAC_I1		d9 , d0, d5
 	FMAC_I2		d9 , d1, d4
-	fstmiad		Y!, { d8 }
-	fstmiad		Y!, { d9 }
+	vstmia.f64		Y!, { d8 }
+	vstmia.f64		Y!, { d9 }
 
 	FMAC_R1		d10, d0, d6
 	FMAC_R2		d10, d1, d7
 	FMAC_I1		d11, d0, d7
 	FMAC_I2		d11, d1, d6
-	fstmiad		Y!, { d10 }
-	fstmiad		Y!, { d11 }
+	vstmia.f64		Y!, { d10 }
+	vstmia.f64		Y!, { d11 }
 
 
 
@@ -277,15 +277,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1
 
-	fldmiad		X!,  { d4 - d5  }
-	fldmiad		Y ,  { d8 - d9 }
+	vldmia.f64		X!,  { d4 - d5  }
+	vldmia.f64		Y ,  { d8 - d9 }
 
 	FMAC_R1		d8 , d0, d4
 	FMAC_R2		d8 , d1, d5
 	FMAC_I1		d9 , d0, d5
 	FMAC_I2		d9 , d1, d4
-	fstmiad		Y!, { d8 }
-	fstmiad		Y!, { d9 }
+	vstmia.f64		Y!, { d8 }
+	vstmia.f64		Y!, { d9 }
 
 
 
@@ -293,14 +293,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S1
 
-	fldmiad		X ,  { d4 - d5 }
-	fldmiad		Y ,  { d8 - d9 }
+	vldmia.f64		X ,  { d4 - d5 }
+	vldmia.f64		Y ,  { d8 - d9 }
 
 	FMAC_R1		d8 , d0, d4
 	FMAC_R2		d8 , d1, d5
 	FMAC_I1		d9 , d0, d5
 	FMAC_I2		d9 , d1, d4
-	fstmiad		Y  , { d8 - d9 }
+	vstmia.f64		Y  , { d8 - d9 }
 
 	add	X, X, INC_X
 	add	Y, Y, INC_Y
@@ -314,40 +314,40 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL_F4
 
 	pld	[ X, #X_PRE ]
-	fldmias		X!,  { s4 - s7  }
+	vldmia.f32		X!,  { s4 - s7  }
 	pld	[ Y, #X_PRE ]
-	fldmias		Y ,  { s8 - s11 }
+	vldmia.f32		Y ,  { s8 - s11 }
 
 	FMAC_R1		s8 , s0, s4
 	FMAC_R2		s8 , s1, s5
 	FMAC_I1		s9 , s0, s5
 	FMAC_I2		s9 , s1, s4
-	fstmias		Y!, { s8 }
-	fstmias		Y!, { s9 }
+	vstmia.f32		Y!, { s8 }
+	vstmia.f32		Y!, { s9 }
 
 	FMAC_R1		s10, s0, s6
 	FMAC_R2		s10, s1, s7
 	FMAC_I1		s11, s0, s7
 	FMAC_I2		s11, s1, s6
-	fstmias		Y!, { s10 }
-	fstmias		Y!, { s11 }
+	vstmia.f32		Y!, { s10 }
+	vstmia.f32		Y!, { s11 }
 
-	fldmias		X!,  { s4 - s7  }
-	fldmias		Y ,  { s8 - s11 }
+	vldmia.f32		X!,  { s4 - s7  }
+	vldmia.f32		Y ,  { s8 - s11 }
 
 	FMAC_R1		s8 , s0, s4
 	FMAC_R2		s8 , s1, s5
 	FMAC_I1		s9 , s0, s5
 	FMAC_I2		s9 , s1, s4
-	fstmias		Y!, { s8 }
-	fstmias		Y!, { s9 }
+	vstmia.f32		Y!, { s8 }
+	vstmia.f32		Y!, { s9 }
 
 	FMAC_R1		s10, s0, s6
 	FMAC_R2		s10, s1, s7
 	FMAC_I1		s11, s0, s7
 	FMAC_I2		s11, s1, s6
-	fstmias		Y!, { s10 }
-	fstmias		Y!, { s11 }
+	vstmia.f32		Y!, { s10 }
+	vstmia.f32		Y!, { s11 }
 
 
 
@@ -358,15 +358,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1
 
-	fldmias		X!,  { s4 - s5  }
-	fldmias		Y ,  { s8 - s9 }
+	vldmia.f32		X!,  { s4 - s5  }
+	vldmia.f32		Y ,  { s8 - s9 }
 
 	FMAC_R1		s8 , s0, s4
 	FMAC_R2		s8 , s1, s5
 	FMAC_I1		s9 , s0, s5
 	FMAC_I2		s9 , s1, s4
-	fstmias		Y!, { s8 }
-	fstmias		Y!, { s9 }
+	vstmia.f32		Y!, { s8 }
+	vstmia.f32		Y!, { s9 }
 
 
 
@@ -374,14 +374,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_S1
 
-	fldmias		X ,  { s4 - s5 }
-	fldmias		Y ,  { s8 - s9 }
+	vldmia.f32		X ,  { s4 - s5 }
+	vldmia.f32		Y ,  { s8 - s9 }
 
 	FMAC_R1		s8 , s0, s4
 	FMAC_R2		s8 , s1, s5
 	FMAC_I1		s9 , s0, s5
 	FMAC_I2		s9 , s1, s4
-	fstmias		Y  , { s8 - s9 }
+	vstmia.f32		Y  , { s8 - s9 }
 
 	add	X, X, INC_X
 	add	Y, Y, INC_Y

@@ -53,6 +53,7 @@
 #define VENDOR_SIS	  8
 #define VENDOR_TRANSMETA  9
 #define VENDOR_NSC	 10
+#define VENDOR_HYGON	 11
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
@@ -116,6 +117,7 @@
 #define CORE_EXCAVATOR   26
 #define CORE_ZEN         27
 #define CORE_SKYLAKEX    28
+#define CORE_DHYANA	 29
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -139,6 +141,7 @@
 #define HAVE_FMA4     (1 <<  19)
 #define HAVE_FMA3     (1 <<  20)
 #define HAVE_AVX512VL (1 <<  21)
+#define HAVE_AVX2     (1 <<  22)
 
 #define CACHE_INFO_L1_I     1
 #define CACHE_INFO_L1_D     2
@@ -214,5 +217,8 @@ typedef struct {
 #define CPUTYPE_EXCAVATOR 		50
 #define CPUTYPE_ZEN 			51
 #define CPUTYPE_SKYLAKEX		52
+#define CPUTYPE_DHYANA			53
+
+#define CPUTYPE_HYGON_UNKNOWN		54
 
 #endif

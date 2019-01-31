@@ -205,7 +205,7 @@ $binformat    = bin64  if ($data =~ /BINARY_64/);
 $no_avx512= 0;
 if (($architecture eq "x86") || ($architecture eq "x86_64")) {
     $code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
-    print $tmpf "int main(void){ __asm__ volatile($code); }\n";
+    print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
     $args = " -march=skylake-avx512 -o $tmpf.o -x c $tmpf";
     my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
     system(@cmd) == 0;
@@ -224,13 +224,14 @@ $data =~ /globl\s([_\.]*)(.*)/;
 $need_fu      = $1;
 
 $cross = 0;
-$cross = 1 if ($os ne $hostos);
 
 if ($architecture ne $hostarch) {
     $cross = 1;
     $cross = 0 if (($hostarch eq "x86_64") && ($architecture eq "x86"));
     $cross = 0 if (($hostarch eq "mips64") && ($architecture eq "mips"));
 }
+
+$cross = 1 if ($os ne $hostos);
 
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 

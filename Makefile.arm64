@@ -4,22 +4,37 @@ CCOMMON_OPT += -march=armv8-a
 FCOMMON_OPT += -march=armv8-a
 endif
 
-ifeq ($(CORE), CORTEXA57)
-CCOMMON_OPT += -march=armv8-a+crc+crypto+fp+simd -mtune=cortex-a57
-FCOMMON_OPT += -march=armv8-a+crc+crypto+fp+simd -mtune=cortex-a57
+ifeq ($(CORE), CORTEXA53)
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
 endif
 
-ifeq ($(CORE), VULCAN)
-CCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
-FCOMMON_OPT += -mtune=vulcan -mcpu=vulcan
+ifeq ($(CORE), CORTEXA57)
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a57
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a57
+endif
+
+ifeq ($(CORE), CORTEXA72)
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+endif
+
+ifeq ($(CORE), CORTEXA73)
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
 endif
 
 ifeq ($(CORE), THUNDERX)
-CCOMMON_OPT += -mtune=thunderx -mcpu=thunderx
-FCOMMON_OPT += -mtune=thunderx -mcpu=thunderx
+CCOMMON_OPT += -march=armv8-a -mtune=thunderx
+FCOMMON_OPT += -march=armv8-a -mtune=thunderx
+endif
+
+ifeq ($(CORE), FALKOR)
+CCOMMON_OPT += -march=armv8-a -mtune=falkor
+FCOMMON_OPT += -march=armv8-a -mtune=falkor
 endif
 
 ifeq ($(CORE), THUNDERX2T99)
-CCOMMON_OPT += -mtune=thunderx2t99 -mcpu=thunderx2t99
-FCOMMON_OPT += -mtune=thunderx2t99 -mcpu=thunderx2t99
+CCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
+FCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
 endif

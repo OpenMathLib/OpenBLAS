@@ -9,6 +9,17 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+# Catch conflicting usage of ARCH in some BSD environments
+ifeq ($(ARCH), amd64)
+override ARCH=x86_64
+else ifeq ($(ARCH), powerpc64)
+override ARCH=power
+else ifeq ($(ARCH), i386)
+override ARCH=x86
+else ifeq ($(ARCH), aarch64)
+override ARCH=arm64
+endif
+
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
 
 # Default C compiler
@@ -54,6 +65,7 @@ endif
 
 ifdef TARGET
 GETARCH_FLAGS := -DFORCE_$(TARGET)
+GETARCH_FLAGS += -DUSER_TARGET
 endif
 
 # Force fallbacks for 32bit
@@ -82,6 +94,9 @@ GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 ifeq ($(TARGET), ZEN)
 GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
+ifeq ($(TARGET), ARMV8)
+GETARCH_FLAGS := -DFORCE_ARMV7
 endif
 endif
 
@@ -505,6 +520,13 @@ CCOMMON_OPT += $(XCCOMMON_OPT)
 #CCOMMON_OPT	+= -DDYNAMIC_LIST='$(DYNAMIC_LIST)'
 endif
 
+ifeq ($(ARCH), arm64)
+DYNAMIC_CORE =  ARMV8
+DYNAMIC_CORE += CORTEXA57
+DYNAMIC_CORE += THUNDERX
+DYNAMIC_CORE += THUNDERX2T99
+endif
+
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
 ifndef DYNAMIC_CORE
 override DYNAMIC_ARCH=
@@ -713,6 +735,8 @@ endif
 ifeq ($(F_COMPILER), GFORTRAN)
 CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
+# make single-threaded LAPACK calls thread-safe #1847
+FCOMMON_OPT += -frecursive
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
@@ -1018,6 +1042,12 @@ ifdef USE_SIMPLE_THREADED_LEVEL3
 CCOMMON_OPT	+= -DUSE_SIMPLE_THREADED_LEVEL3
 endif
 
+ifdef USE_TLS
+CCOMMON_OPT += -DUSE_TLS
+endif
+
+CCOMMON_OPT += -DVERSION=\"$(VERSION)\"
+
 ifndef SYMBOLPREFIX
 SYMBOLPREFIX =
 endif
@@ -1128,14 +1158,18 @@ ifndef FCOMMON_OPT
 FCOMMON_OPT = -O2 -frecursive
 endif
 
-
-
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
 
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
+
+ifdef NEED_PIC
+ifeq (,$(findstring PIC,$(FFLAGS)))
+override FFLAGS += -fPIC
+endif
+endif
 
 #For LAPACK Fortran codes.
 #Disable -fopenmp for LAPACK Fortran codes on Windows.
@@ -1195,7 +1229,11 @@ endif
 
 LIBDLLNAME   = $(LIBPREFIX).dll
 IMPLIBNAME   = lib$(LIBNAMEBASE).dll.a
+ifneq ($(OSNAME), AIX)
 LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so)
+else
+LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.a)
+endif
 LIBDYNNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dylib)
 LIBDEFNAME   = $(LIBNAME:.$(LIBSUFFIX)=.def)
 LIBEXPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.exp)

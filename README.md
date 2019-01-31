@@ -110,6 +110,7 @@ Please read `GotoBLAS_01Readme.txt`.
 - **Intel Xeon 56xx (Westmere)**: Used GotoBLAS2 Nehalem codes.
 - **Intel Sandy Bridge**: Optimized Level-3 and Level-2 BLAS with AVX on x86-64.
 - **Intel Haswell**: Optimized Level-3 and Level-2 BLAS with AVX2 and FMA  on x86-64.
+- **Intel Skylake**: Optimized Level-3 and Level-2 BLAS with AVX512 and FMA  on x86-64.
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thanks to Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
@@ -200,6 +201,7 @@ Please see Changelog.txt to view the differences between OpenBLAS and GotoBLAS2 
 * Please use GCC version 4.6 and above to compile Sandy Bridge AVX kernels on Linux/MinGW/BSD.
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture.
   Clang 3.0 will generate the wrong AVX binary code.
+* Please use GCC version 6 or LLVM version 6 and above to compile Skylake AVX512 kernels.
 * The number of CPUs/cores should less than or equal to 256. On Linux `x86_64` (`amd64`),
   there is experimental support for up to 1024 CPUs/cores and 128 numa nodes if you build
   the library with `BIGNUMA=1`.

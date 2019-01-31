@@ -10,6 +10,16 @@ if (${HOST_OS} STREQUAL "WINDOWS")
   set(HOST_OS WINNT)
 endif ()
 
+if (${HOST_OS} STREQUAL "LINUX")
+# check if we're building natively on Android (TERMUX)
+    EXECUTE_PROCESS( COMMAND uname -o COMMAND tr -d '\n' OUTPUT_VARIABLE OPERATING_SYSTEM)
+      if(${OPERATING_SYSTEM} MATCHES "Android")
+        set(HOST_OS ANDROID)
+      endif(${OPERATING_SYSTEM} MATCHES "Android")
+endif()
+
+
+
 if(CMAKE_COMPILER_IS_GNUCC AND WIN32)
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpmachine
               OUTPUT_VARIABLE OPENBLAS_GCC_TARGET_MACHINE
@@ -67,7 +77,7 @@ else()
 endif()
 
 if (X86_64 OR X86)
-  file(WRITE ${PROJECT_BINARY_DIR}/avx512.tmp "int main(void){ __asm__ volatile(\"vbroadcastss -4 * 4(%rsi), %zmm2\"); }")
+  file(WRITE ${PROJECT_BINARY_DIR}/avx512.tmp "#include <immintrin.h>\n\nint main(void){ __asm__ volatile(\"vbroadcastss -4 * 4(%rsi), %zmm2\"); }")
 execute_process(COMMAND ${CMAKE_C_COMPILER} -march=skylake-avx512 -v -o ${PROJECT_BINARY_DIR}/avx512.o -x c ${PROJECT_BINARY_DIR}/avx512.tmp OUTPUT_QUIET ERROR_QUIET RESULT_VARIABLE NO_AVX512)
 if (NO_AVX512 EQUAL 1)
 set (CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX512")
