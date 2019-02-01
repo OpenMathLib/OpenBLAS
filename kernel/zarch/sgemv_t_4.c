@@ -158,32 +158,24 @@ static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "brctg  %%r0,2b                  \n\t"
 
         "3:                              \n\t"
-        "vrepf  %%v4,%%v0,1              \n\t"
-        "aebr   %%f0,%%f4                \n\t"
-        "vrepf  %%v4,%%v0,2              \n\t"
-        "aebr   %%f0,%%f4                \n\t"
-        "vrepf  %%v4,%%v0,3              \n\t"
+        "veslg  %%v4,%%v0,32             \n\t"
+        "vfasb  %%v0,%%v0,%%v4           \n\t"
+        "vrepg  %%v4,%%v0,1              \n\t"
         "aebr   %%f0,%%f4                \n\t"
         "ste    %%f0,0(%6)               \n\t"
-        "vrepf  %%v4,%%v1,1              \n\t"
-        "aebr   %%f1,%%f4                \n\t"
-        "vrepf  %%v4,%%v1,2              \n\t"
-        "aebr   %%f1,%%f4                \n\t"
-        "vrepf  %%v4,%%v1,3              \n\t"
+        "veslg  %%v4,%%v1,32             \n\t"
+        "vfasb  %%v1,%%v1,%%v4           \n\t"
+        "vrepg  %%v4,%%v1,1              \n\t"
         "aebr   %%f1,%%f4                \n\t"
         "ste    %%f1,4(%6)               \n\t"
-        "vrepf  %%v4,%%v2,1              \n\t"
-        "aebr   %%f2,%%f4                \n\t"
-        "vrepf  %%v4,%%v2,2              \n\t"
-        "aebr   %%f2,%%f4                \n\t"
-        "vrepf  %%v4,%%v2,3              \n\t"
+        "veslg  %%v4,%%v2,32             \n\t"
+        "vfasb  %%v2,%%v2,%%v4           \n\t"
+        "vrepg  %%v4,%%v2,1              \n\t"
         "aebr   %%f2,%%f4                \n\t"
         "ste    %%f2,8(%6)               \n\t"
-        "vrepf  %%v4,%%v3,1              \n\t"
-        "aebr   %%f3,%%f4                \n\t"
-        "vrepf  %%v4,%%v3,2              \n\t"
-        "aebr   %%f3,%%f4                \n\t"
-        "vrepf  %%v4,%%v3,3              \n\t"
+        "veslg  %%v4,%%v3,32             \n\t"
+        "vfasb  %%v3,%%v3,%%v4           \n\t"
+        "vrepg  %%v4,%%v3,1              \n\t"
         "aebr   %%f3,%%f4                \n\t"
         "ste    %%f3,12(%6)                  "
         :
@@ -281,18 +273,14 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
         "brctg  %%r0,2b                  \n\t"
 
         "3:                              \n\t"
-        "vrepf  %%v2,%%v0,1              \n\t"
-        "aebr   %%f0,%%f2                \n\t"
-        "vrepf  %%v2,%%v0,2              \n\t"
-        "aebr   %%f0,%%f2                \n\t"
-        "vrepf  %%v2,%%v0,3              \n\t"
+        "veslg  %%v2,%%v0,32             \n\t"
+        "vfasb  %%v0,%%v0,%%v2           \n\t"
+        "vrepg  %%v2,%%v0,1              \n\t"
         "aebr   %%f0,%%f2                \n\t"
         "ste    %%f0,0(%4)               \n\t"
-        "vrepf  %%v2,%%v1,1              \n\t"
-        "aebr   %%f1,%%f2                \n\t"
-        "vrepf  %%v2,%%v1,2              \n\t"
-        "aebr   %%f1,%%f2                \n\t"
-        "vrepf  %%v2,%%v1,3              \n\t"
+        "veslg  %%v2,%%v1,32             \n\t"
+        "vfasb  %%v1,%%v1,%%v2           \n\t"
+        "vrepg  %%v2,%%v1,1              \n\t"
         "aebr   %%f1,%%f2                \n\t"
         "ste    %%f1,4(%4)                   "
         :
@@ -349,7 +337,7 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y)
 
         "vl  %%v31,112(%%r1,%1)          \n\t"
         "vfmasb   %%v0,%%v23,%%v31,%%v0  \n\t"
-        
+
         "agfi   %%r1,128                 \n\t"
         "brctg  %%r0,0b                  \n\t"
 
@@ -370,11 +358,9 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y)
         "brctg  %%r0,2b                  \n\t"
 
         "3:                              \n\t"
-        "vrepf  %%v1,%%v0,1              \n\t"
-        "aebr   %%f0,%%f1                \n\t"
-        "vrepf  %%v1,%%v0,2              \n\t"
-        "aebr   %%f0,%%f1                \n\t"
-        "vrepf  %%v1,%%v0,3              \n\t"
+        "veslg  %%v1,%%v0,32             \n\t"
+        "vfasb  %%v0,%%v0,%%v1           \n\t"
+        "vrepg  %%v1,%%v0,1              \n\t"
         "aebr   %%f0,%%f1                \n\t"
         "ste    %%f0,0(%3)                   "
         :
@@ -823,5 +809,3 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
     return(0);
 }
-
-
