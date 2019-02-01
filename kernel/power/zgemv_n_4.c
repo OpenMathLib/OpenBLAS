@@ -389,20 +389,14 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
         register __vector double va0_2 = vptr_a0[i + 2];
         register __vector double va0_3 = vptr_a0[i + 3];
 
-        vy_0 += va0*vx0_r;
-        vy_1 += va0_1*vx0_r;
-        vy_2 += va0_2*vx0_r;
-        vy_3 += va0_3*vx0_r;
-
-        va0 = vec_xxpermdi(va0, va0, 2);
-        va0_1 = vec_xxpermdi(va0_1, va0_1, 2);
-        va0_2 = vec_xxpermdi(va0_2, va0_2, 2);
-        va0_3 = vec_xxpermdi(va0_3, va0_3, 2);
-
-        vy_0 += va0*vx0_i;
-        vy_1 += va0_1*vx0_i;
-        vy_2 += va0_2*vx0_i;
-        vy_3 += va0_3*vx0_i;
+        register __vector double va0x = vec_xxpermdi(va0, va0, 2);
+        register __vector double va0x_1 = vec_xxpermdi(va0_1, va0_1, 2);
+        register __vector double va0x_2 = vec_xxpermdi(va0_2, va0_2, 2);
+        register __vector double va0x_3 = vec_xxpermdi(va0_3, va0_3, 2);
+        vy_0 += va0*vx0_r + va0x*vx0_i;
+        vy_1 += va0_1*vx0_r +  va0x_1*vx0_i;
+        vy_2 += va0_2*vx0_r + va0x_2*vx0_i;
+        vy_3 += va0_3*vx0_r + va0x_3*vx0_i; 
 
         vy[i] = vy_0;
         vy[i + 1] = vy_1;
