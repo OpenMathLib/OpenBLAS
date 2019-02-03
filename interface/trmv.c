@@ -43,7 +43,7 @@
 #include "functable.h"
 #endif
 
-/*  trmv_thread was found to be broken, see issue 1332 */
+/* FIXME trmv_thread was found to be broken, see issue 1332 */
 #undef SMP
 
 #ifdef XDOUBLE
