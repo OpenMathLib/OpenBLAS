@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #include <stdio.h>
-#define NBMAX 2048
+#define NBMAX 4096
 
 #include <altivec.h> 
  
