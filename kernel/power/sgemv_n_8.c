@@ -26,11 +26,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 
+/****Note***
+UnUsed kernel
+This kernel works. But it was not competitive enough to be added in production
+It could be used and tested in future or could provide barebone for switching to inline assembly
+*/
+
 #include "common.h"
 
 #define NBMAX 4096
 
-static void sgemv_kernel_4x8(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, BLASLONG lda4, FLOAT *alpha)
+static void sgemv_kernel_8x8(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, BLASLONG lda4, FLOAT *alpha)
 {
 
     BLASLONG i;
@@ -61,27 +67,47 @@ static void sgemv_kernel_4x8(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, BLASLO
     __vector float* vb2 = (__vector float*)b2;
     __vector float* vb3 = (__vector float*)b3; 
     
-    __vector float   v_x0 = {x0,x0,x0,x0};
-    __vector float   v_x1 = {x1,x1,x1,x1};
-    __vector float   v_x2 = {x2,x2,x2,x2};
-    __vector float   v_x3 = {x3,x3,x3,x3};
-    __vector float   v_x4 = {x4,x4,x4,x4};
-    __vector float   v_x5 = {x5,x5,x5,x5};
-    __vector float   v_x6 = {x6,x6,x6,x6};
-    __vector float   v_x7 = {x7,x7,x7,x7};
+    register __vector float   v_x0 = {x0,x0,x0,x0};
+    register __vector float   v_x1 = {x1,x1,x1,x1};
+    register __vector float   v_x2 = {x2,x2,x2,x2};
+    register __vector float   v_x3 = {x3,x3,x3,x3};
+    register __vector float   v_x4 = {x4,x4,x4,x4};
+    register __vector float   v_x5 = {x5,x5,x5,x5};
+    register __vector float   v_x6 = {x6,x6,x6,x6};
+    register __vector float   v_x7 = {x7,x7,x7,x7};
     __vector float* v_y =(__vector float*)y;   
  
-    for ( i=0; i< n/4; i++)
+    for ( i=0; i< n/4; i+=2)
     {
-        register __vector float vy=v_y[i];
-        vy   += v_x0 * va0[i]   +  v_x1 * va1[i]   + v_x2 * va2[i]   + v_x3 * va3[i] ; 
-        vy  += v_x4 * vb0[i]   +  v_x5 * vb1[i]   + v_x6 * vb2[i]   + v_x7 * vb3[i] ;
-        v_y[i] =vy;  
+        register __vector float vy_1=v_y[i];
+        register __vector float vy_2=v_y[i+1];
+        register __vector float va0_1=va0[i] ; 
+        register __vector float va0_2=va0[i+1] ; 
+        register __vector float va1_1=va1[i] ; 
+        register __vector float va1_2=va1[i+1] ; 
+        register __vector float va2_1=va2[i] ; 
+        register __vector float va2_2=va2[i+1] ; 
+        register __vector float va3_1=va3[i] ; 
+        register __vector float va3_2=va3[i+1] ;
+        register __vector float vb0_1=vb0[i] ; 
+        register __vector float vb0_2=vb0[i+1] ; 
+        register __vector float vb1_1=vb1[i] ; 
+        register __vector float vb1_2=vb1[i+1] ; 
+        register __vector float vb2_1=vb2[i] ; 
+        register __vector float vb2_2=vb2[i+1] ; 
+        register __vector float vb3_1=vb3[i] ; 
+        register __vector float vb3_2=vb3[i+1] ;         
+        vy_1   += v_x0 * va0_1  +  v_x1 * va1_1  + v_x2 * va2_1  + v_x3 * va3_1 ;
+        vy_1   += v_x4 * vb0_1   +  v_x5 * vb1_1   + v_x6 * vb2_1   + v_x7 * vb3_1 ;
+        vy_2   +=  v_x0 * va0_2   +  v_x1 * va1_2   + v_x2 * va2_2   + v_x3 * va3_2 ; 
+        vy_2   += v_x4 * vb0_2   +  v_x5 * vb1_2   + v_x6 * vb2_2   + v_x7 * vb3_2 ;
+        v_y[i] =vy_1;
+        v_y[i+1] =vy_2;   
     }
 
 }
 	 
-static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT *alpha)
+static void sgemv_kernel_8x4(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT *alpha)
 {
     BLASLONG i;
     FLOAT x0,x1,x2,x3;
@@ -99,16 +125,27 @@ static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT 
     __vector float* va2 = (__vector float*)ap[2];
     __vector float* va3 = (__vector float*)ap[3]; 
  
-    for ( i=0; i< n/4; i++ )
+    for ( i=0; i< n/4; i+=2 )
     {
-        register __vector float vy=v_y[i];
-        vy   += v_x0 * va0[i]   +  v_x1 * va1[i]   + v_x2 * va2[i]   + v_x3 * va3[i] ;  
-        v_y[i] =vy;     
+        register __vector float vy_1=v_y[i];
+        register __vector float vy_2=v_y[i+1];
+        register __vector float va0_1=va0[i] ; 
+        register __vector float va0_2=va0[i+1] ; 
+        register __vector float va1_1=va1[i] ; 
+        register __vector float va1_2=va1[i+1] ; 
+        register __vector float va2_1=va2[i] ; 
+        register __vector float va2_2=va2[i+1] ; 
+        register __vector float va3_1=va3[i] ; 
+        register __vector float va3_2=va3[i+1] ;      
+        vy_1   += v_x0 * va0_1  +  v_x1 * va1_1  + v_x2 * va2_1  + v_x3 * va3_1 ;
+        vy_2   +=  v_x0 * va0_2   +  v_x1 * va1_2   + v_x2 * va2_2   + v_x3 * va3_2 ;
+        v_y[i] =vy_1;
+        v_y[i+1] =vy_2;   
     }
-
+  
 } 
 
-static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void sgemv_kernel_8x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 
     BLASLONG i;
@@ -121,15 +158,16 @@ static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
     __vector float* va0 = (__vector float*)ap[0];
     __vector float* va1 = (__vector float*)ap[1]; 
  
-    for ( i=0; i< n/4; i++ )
+    for ( i=0; i< n/4; i+=2 )
     { 
-        v_y[i]   += v_x0 * va0[i]   +  v_x1 * va1[i] ;     
+        v_y[i]   += v_x0 * va0[i]   +  v_x1 * va1[i] ;
+        v_y[i+1]  += v_x0 * va0[i+1]   +  v_x1 * va1[i+1] ;     
     }
 
 } 
  
  
-static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void sgemv_kernel_8x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 
     BLASLONG i;
@@ -139,9 +177,10 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
     __vector float* v_y =(__vector float*)y;      
     __vector float* va0 = (__vector float*)ap; 
  
-    for ( i=0; i< n/4; i++ )
+    for ( i=0; i< n/4; i+=2 )
     { 
-        v_y[i]   += v_x0 * va0[i]  ;        
+        v_y[i]   += v_x0 * va0[i]   ;
+        v_y[i+1] +=   v_x0 * va0[i+1]   ;        
     }
 
 }
@@ -192,9 +231,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		n2 = n &  3 ;
 
 	}
-	
-        m3 = m & 3  ;
-        m1 = m & -4 ;
+	 
+        m3 = m & 7  ;
+        m1 = m - m3;
         m2 = (m & (NBMAX-1)) - m3 ;
 
 
@@ -231,7 +270,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			for( i = 0; i < n1 ; i++)
 			{
-				sgemv_kernel_4x8(NB,ap,x_ptr,ybuffer,lda4,&alpha);
+				sgemv_kernel_8x8(NB,ap,x_ptr,ybuffer,lda4,&alpha);
 				ap[0] += lda8; 
 				ap[1] += lda8; 
 				ap[2] += lda8; 
@@ -243,7 +282,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			if ( n2 & 4 )
 			{
-				sgemv_kernel_4x4(NB,ap,x_ptr,ybuffer,&alpha);
+				sgemv_kernel_8x4(NB,ap,x_ptr,ybuffer,&alpha);
 				ap[0] += lda4; 
 				ap[1] += lda4; 
 				ap[2] += lda4; 
@@ -254,7 +293,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			if ( n2 & 2 )
 			{
-				sgemv_kernel_4x2(NB,ap,x_ptr,ybuffer,&alpha);
+				sgemv_kernel_8x2(NB,ap,x_ptr,ybuffer,&alpha);
 				a_ptr += lda*2;
 				x_ptr += 2;	
 			}
@@ -262,7 +301,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			if ( n2 & 1 )
 			{
-				sgemv_kernel_4x1(NB,a_ptr,x_ptr,ybuffer,&alpha); 
+				sgemv_kernel_8x1(NB,a_ptr,x_ptr,ybuffer,&alpha); 
                 a_ptr += lda;
                 x_ptr += 1;   
 			}
@@ -282,7 +321,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 				x_ptr += inc_x;	
 				xbuffer[3] = x_ptr[0];
 				x_ptr += inc_x;	
-				sgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,&alpha);
+				sgemv_kernel_8x4(NB,ap,xbuffer,ybuffer,&alpha);
 				ap[0] += lda4; 
 				ap[1] += lda4; 
 				ap[2] += lda4; 
@@ -294,7 +333,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			{
 				xbuffer[0] = x_ptr[0];
 				x_ptr += inc_x;	
-				sgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,&alpha);
+				sgemv_kernel_8x1(NB,a_ptr,xbuffer,ybuffer,&alpha);
 				a_ptr += lda;
 
 			}
@@ -312,30 +351,32 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 	}
 
-	if ( m3 == 0 ) return(0);
-
-	if ( m3 == 3 )
+	 
+	if ( m3 & 4 )
 	{
 		a_ptr = a;
 		x_ptr = x;
 		FLOAT temp0 = 0.0;
 		FLOAT temp1 = 0.0;
 		FLOAT temp2 = 0.0;
-		if ( lda == 3 && inc_x ==1 )
+		FLOAT temp3 = 0.0;		
+		if ( lda == 4 && inc_x ==1 )
 		{
 
 			for( i = 0; i < ( n & -4 ); i+=4 )
 			{
 
-				temp0 += a_ptr[0] * x_ptr[0] + a_ptr[3] * x_ptr[1];
-				temp1 += a_ptr[1] * x_ptr[0] + a_ptr[4] * x_ptr[1];
-				temp2 += a_ptr[2] * x_ptr[0] + a_ptr[5] * x_ptr[1];
+				temp0 += a_ptr[0] * x_ptr[0] + a_ptr[4] * x_ptr[1];
+				temp1 += a_ptr[1] * x_ptr[0] + a_ptr[5] * x_ptr[1];
+				temp2 += a_ptr[2] * x_ptr[0] + a_ptr[6] * x_ptr[1];
+				temp3 += a_ptr[3] * x_ptr[0] + a_ptr[7] * x_ptr[1];
 
-				temp0 += a_ptr[6] * x_ptr[2] + a_ptr[9]  * x_ptr[3];
-				temp1 += a_ptr[7] * x_ptr[2] + a_ptr[10] * x_ptr[3];
-				temp2 += a_ptr[8] * x_ptr[2] + a_ptr[11] * x_ptr[3];
+				temp0 += a_ptr[8] * x_ptr[2] + a_ptr[12]  * x_ptr[3];
+				temp1 += a_ptr[9] * x_ptr[2] + a_ptr[13] * x_ptr[3];
+				temp2 += a_ptr[10] * x_ptr[2] + a_ptr[14] * x_ptr[3];
+				temp3 += a_ptr[11] * x_ptr[2] + a_ptr[15] * x_ptr[3];
 
-				a_ptr += 12;
+				a_ptr += 16;
 				x_ptr += 4;
 			}
 
@@ -344,7 +385,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 				temp0 += a_ptr[0] * x_ptr[0];
 				temp1 += a_ptr[1] * x_ptr[0];
 				temp2 += a_ptr[2] * x_ptr[0];
-				a_ptr += 3;
+				temp3 += a_ptr[3] * x_ptr[0] ;
+				a_ptr +=4;
 				x_ptr ++;
 			}
 
@@ -357,6 +399,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 				temp0 += a_ptr[0] * x_ptr[0];
 				temp1 += a_ptr[1] * x_ptr[0];
 				temp2 += a_ptr[2] * x_ptr[0];
+				temp3 += a_ptr[3] * x_ptr[0];
 				a_ptr += lda;
 				x_ptr += inc_x;
 
@@ -369,11 +412,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		y_ptr[0] += alpha * temp1;
 		y_ptr += inc_y;
 		y_ptr[0] += alpha * temp2;
-		return(0);
+		y_ptr += inc_y;
+		y_ptr[0] += alpha * temp3; 
+		y_ptr += inc_y;
+        a     += 4;
 	}
 
 
-	if ( m3 == 2 )
+	if ( m3 & 2 )
 	{
 		a_ptr = a;
 		x_ptr = x;
@@ -420,10 +466,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		y_ptr[0] += alpha * temp0;
 		y_ptr += inc_y;
 		y_ptr[0] += alpha * temp1;
-		return(0);
+ 		y_ptr += inc_y;
+        a     += 2;
 	}
 
-	if ( m3 == 1 )
+	if ( m3 & 1 )
 	{
 		a_ptr = a;
 		x_ptr = x;
@@ -455,7 +502,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 		}
 		y_ptr[0] += alpha * temp;
-		return(0);
+ 
+ 
 	}
 
 
