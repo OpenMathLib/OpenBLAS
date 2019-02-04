@@ -25,6 +25,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+ 
+/****Note***
+UnUsed kernel
+This kernel works. But it was not competitive enough to be added in production
+It could be used and tested in future or could be used as base for switching to inline assembly
+*/
+
 #include "common.h"
 #include <stdio.h>
 #define NBMAX 4096

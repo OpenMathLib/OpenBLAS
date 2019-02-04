@@ -26,6 +26,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 
+/****Note***
+UnUsed kernel
+This kernel works. But it was not competitive enough to be added in production
+It could be used and tested in future or could provide barebone for switching to inline assembly
+*/
+
 #include "common.h"
 
 #define NBMAX 4096
