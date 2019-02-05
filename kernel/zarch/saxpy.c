@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013-2017, The OpenBLAS Project
+Copyright (c) 2013-2019, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,158 +27,141 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-static void saxpy_kernel_64(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
-{ 
-    __asm__ volatile( 
-        "vlrepf %%v0,%3                   \n\t"
-        "srlg  %%r0,%0,6                  \n\t"
-        "xgr   %%r1,%%r1                  \n\t"
-        "0:                               \n\t"
-        "pfd 1, 1024(%%r1,%1)             \n\t"
-        "pfd 2, 1024(%%r1,%2)             \n\t"
-
-        "vl  %%v16,0(%%r1,%1)             \n\t"
-        "vl  %%v17,16(%%r1,%1)            \n\t"
-        "vl  %%v18,32(%%r1,%1)            \n\t"
-        "vl  %%v19,48(%%r1,%1)            \n\t"
-        "vl  %%v20,0(%%r1,%2)             \n\t"
-        "vl  %%v21,16(%%r1,%2)            \n\t"
-        "vl  %%v22,32(%%r1,%2)            \n\t"
-        "vl  %%v23,48(%%r1,%2)            \n\t"
-        
-        "vfmasb   %%v16,%%v0,%%v16,%%v20  \n\t"
-        "vfmasb   %%v17,%%v0,%%v17,%%v21  \n\t"
-        "vfmasb   %%v18,%%v0,%%v18,%%v22  \n\t"
-        "vfmasb   %%v19,%%v0,%%v19,%%v23  \n\t"
-
-        "vl  %%v24,64(%%r1,%1)            \n\t"
-        "vl  %%v25,80(%%r1,%1)            \n\t"
-        "vl  %%v26,96(%%r1,%1)            \n\t"
-        "vl  %%v27,112(%%r1,%1)           \n\t"
-        "vl  %%v28,64(%%r1,%2)            \n\t"
-        "vl  %%v29,80(%%r1,%2)            \n\t"
-        "vl  %%v30,96(%%r1,%2)            \n\t"
-        "vl  %%v31,112(%%r1,%2)           \n\t"
-
-        "vfmasb   %%v20,%%v0,%%v24,%%v28  \n\t"
-        "vfmasb   %%v21,%%v0,%%v25,%%v29  \n\t"
-        "vfmasb   %%v22,%%v0,%%v26,%%v30  \n\t"
-        "vfmasb   %%v23,%%v0,%%v27,%%v31  \n\t"
-
-        "vst  %%v16,0(%%r1,%2)            \n\t"
-        "vst  %%v17,16(%%r1,%2)           \n\t"
-        "vst  %%v18,32(%%r1,%2)           \n\t"
-        "vst  %%v19,48(%%r1,%2)           \n\t"
-        "vst  %%v20,64(%%r1,%2)           \n\t"
-        "vst  %%v21,80(%%r1,%2)           \n\t"
-        "vst  %%v22,96(%%r1,%2)           \n\t"
-        "vst  %%v23,112(%%r1,%2)          \n\t"
-
-        "vl  %%v16,128(%%r1,%1)           \n\t"
-        "vl  %%v17,144(%%r1,%1)           \n\t"
-        "vl  %%v18,160(%%r1,%1)           \n\t"
-        "vl  %%v19,176(%%r1,%1)           \n\t"
-        "vl  %%v20,128(%%r1,%2)           \n\t"
-        "vl  %%v21,144(%%r1,%2)           \n\t"
-        "vl  %%v22,160(%%r1,%2)           \n\t"
-        "vl  %%v23,176(%%r1,%2)           \n\t"
-        
-        "vfmasb   %%v16,%%v0,%%v16,%%v20  \n\t"
-        "vfmasb   %%v17,%%v0,%%v17,%%v21  \n\t"
-        "vfmasb   %%v18,%%v0,%%v18,%%v22  \n\t"
-        "vfmasb   %%v19,%%v0,%%v19,%%v23  \n\t"
-
-        "vl  %%v24,192(%%r1,%1)           \n\t"
-        "vl  %%v25,208(%%r1,%1)           \n\t"
-        "vl  %%v26,224(%%r1,%1)           \n\t"
-        "vl  %%v27,240(%%r1,%1)           \n\t"
-        "vl  %%v28,192(%%r1,%2)           \n\t"
-        "vl  %%v29,208(%%r1,%2)           \n\t"
-        "vl  %%v30,224(%%r1,%2)           \n\t"
-        "vl  %%v31,240(%%r1,%2)           \n\t"
-
-        "vfmasb   %%v20,%%v0,%%v24,%%v28  \n\t"
-        "vfmasb   %%v21,%%v0,%%v25,%%v29  \n\t"
-        "vfmasb   %%v22,%%v0,%%v26,%%v30  \n\t"
-        "vfmasb   %%v23,%%v0,%%v27,%%v31  \n\t"
-        
-        "vst  %%v16,128(%%r1,%2)          \n\t"
-        "vst  %%v17,144(%%r1,%2)          \n\t"
-        "vst  %%v18,160(%%r1,%2)          \n\t"
-        "vst  %%v19,176(%%r1,%2)          \n\t"
-        "vst  %%v20,192(%%r1,%2)          \n\t"
-        "vst  %%v21,208(%%r1,%2)          \n\t"
-        "vst  %%v22,224(%%r1,%2)          \n\t"
-        "vst  %%v23,240(%%r1,%2)          \n\t"
-
-        "agfi  %%r1,256                   \n\t"
-        "brctg %%r0,0b                        "
-        :
-        :"r"(n),"ZR"((const FLOAT (*)[n])x),"ZR"((FLOAT (*)[n])y),"m"(*alpha)
-        :"memory","cc","r0","r1","v0","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
-    );
+static void saxpy_kernel_64(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha) {
+  __asm__("vlrepf %%v0,%[alpha]\n\t"
+       "srlg  %[n],%[n],6\n\t"
+       "xgr   %%r1,%%r1\n\t"
+       "0:\n\t"
+       "pfd 1, 1024(%%r1,%[x])\n\t"
+       "pfd 2, 1024(%%r1,%[y])\n\t"
+       "vl  %%v16,0(%%r1,%[x])\n\t"
+       "vl  %%v17,16(%%r1,%[x])\n\t"
+       "vl  %%v18,32(%%r1,%[x])\n\t"
+       "vl  %%v19,48(%%r1,%[x])\n\t"
+       "vl  %%v20,0(%%r1,%[y])\n\t"
+       "vl  %%v21,16(%%r1,%[y])\n\t"
+       "vl  %%v22,32(%%r1,%[y])\n\t"
+       "vl  %%v23,48(%%r1,%[y])\n\t"
+       "vl  %%v24,64(%%r1,%[x])\n\t"
+       "vl  %%v25,80(%%r1,%[x])\n\t"
+       "vl  %%v26,96(%%r1,%[x])\n\t"
+       "vl  %%v27,112(%%r1,%[x])\n\t"
+       "vl  %%v28,64(%%r1,%[y])\n\t"
+       "vl  %%v29,80(%%r1,%[y])\n\t"
+       "vl  %%v30,96(%%r1,%[y])\n\t"
+       "vl  %%v31,112(%%r1,%[y])\n\t"
+       "vfmasb   %%v16,%%v0,%%v16,%%v20\n\t"
+       "vfmasb   %%v17,%%v0,%%v17,%%v21\n\t"
+       "vfmasb   %%v18,%%v0,%%v18,%%v22\n\t"
+       "vfmasb   %%v19,%%v0,%%v19,%%v23\n\t"
+       "vfmasb   %%v24,%%v0,%%v24,%%v28\n\t"
+       "vfmasb   %%v25,%%v0,%%v25,%%v29\n\t"
+       "vfmasb   %%v26,%%v0,%%v26,%%v30\n\t"
+       "vfmasb   %%v27,%%v0,%%v27,%%v31\n\t"
+       "vst  %%v16,0(%%r1,%[y])\n\t"
+       "vst  %%v17,16(%%r1,%[y])\n\t"
+       "vst  %%v18,32(%%r1,%[y])\n\t"
+       "vst  %%v19,48(%%r1,%[y])\n\t"
+       "vst  %%v24,64(%%r1,%[y])\n\t"
+       "vst  %%v25,80(%%r1,%[y])\n\t"
+       "vst  %%v26,96(%%r1,%[y])\n\t"
+       "vst  %%v27,112(%%r1,%[y])\n\t"
+       "vl  %%v16,128(%%r1,%[x])\n\t"
+       "vl  %%v17,144(%%r1,%[x])\n\t"
+       "vl  %%v18,160(%%r1,%[x])\n\t"
+       "vl  %%v19,176(%%r1,%[x])\n\t"
+       "vl  %%v20,128(%%r1,%[y])\n\t"
+       "vl  %%v21,144(%%r1,%[y])\n\t"
+       "vl  %%v22,160(%%r1,%[y])\n\t"
+       "vl  %%v23,176(%%r1,%[y])\n\t"
+       "vl  %%v24,192(%%r1,%[x])\n\t"
+       "vl  %%v25,208(%%r1,%[x])\n\t"
+       "vl  %%v26,224(%%r1,%[x])\n\t"
+       "vl  %%v27,240(%%r1,%[x])\n\t"
+       "vl  %%v28,192(%%r1,%[y])\n\t"
+       "vl  %%v29,208(%%r1,%[y])\n\t"
+       "vl  %%v30,224(%%r1,%[y])\n\t"
+       "vl  %%v31,240(%%r1,%[y])\n\t"
+       "vfmasb   %%v16,%%v0,%%v16,%%v20\n\t"
+       "vfmasb   %%v17,%%v0,%%v17,%%v21\n\t"
+       "vfmasb   %%v18,%%v0,%%v18,%%v22\n\t"
+       "vfmasb   %%v19,%%v0,%%v19,%%v23\n\t"
+       "vfmasb   %%v24,%%v0,%%v24,%%v28\n\t"
+       "vfmasb   %%v25,%%v0,%%v25,%%v29\n\t"
+       "vfmasb   %%v26,%%v0,%%v26,%%v30\n\t"
+       "vfmasb   %%v27,%%v0,%%v27,%%v31\n\t"
+       "vst  %%v16,128(%%r1,%[y])\n\t"
+       "vst  %%v17,144(%%r1,%[y])\n\t"
+       "vst  %%v18,160(%%r1,%[y])\n\t"
+       "vst  %%v19,176(%%r1,%[y])\n\t"
+       "vst  %%v24,192(%%r1,%[y])\n\t"
+       "vst  %%v25,208(%%r1,%[y])\n\t"
+       "vst  %%v26,224(%%r1,%[y])\n\t"
+       "vst  %%v27,240(%%r1,%[y])\n\t"
+       "agfi  %%r1,256\n\t"
+       "brctg %[n],0b"
+       : "+m"(*(FLOAT (*)[n]) y),[n] "+&r"(n)
+       : [y] "a"(y), "m"(*(const FLOAT (*)[n]) x),[x] "a"(x),
+          [alpha] "m"(*alpha)
+       : "cc", "r1", "v0", "v16", "v17", "v18", "v19", "v20", "v21", "v22",
+          "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31");
 }
 
-int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
-{
-    BLASLONG i=0;
-    BLASLONG ix=0,iy=0;
+int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
+          BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy,
+          BLASLONG dummy2) {
+  BLASLONG i = 0;
+  BLASLONG ix = 0, iy = 0;
 
-    if ( n <= 0 )  return 0 ;
+  if (n <= 0)
+    return 0;
 
-    if ( (inc_x == 1) && (inc_y == 1) )
-    {
+  if ((inc_x == 1) && (inc_y == 1)) {
 
-        BLASLONG n1 = n & -64;
+    BLASLONG n1 = n & -64;
 
-        if ( n1 )
-            saxpy_kernel_64(n1, x, y , &da);
+    if (n1)
+      saxpy_kernel_64(n1, x, y, &da);
 
-        i = n1;
-        while(i < n)
-        {
+    i = n1;
+    while (i < n) {
 
-            y[i] += da * x[i] ;
-            i++ ;
-
-        }
-        return 0 ;
-
+      y[i] += da * x[i];
+      i++;
 
     }
+    return 0;
 
-    BLASLONG n1 = n & -4;
+  }
 
-    while(i < n1)
-    {
+  BLASLONG n1 = n & -4;
 
-        FLOAT m1      = da * x[ix] ;
-        FLOAT m2      = da * x[ix+inc_x] ;
-        FLOAT m3      = da * x[ix+2*inc_x] ;
-        FLOAT m4      = da * x[ix+3*inc_x] ;
+  while (i < n1) {
 
-        y[iy]         += m1 ;
-        y[iy+inc_y]   += m2 ;
-        y[iy+2*inc_y] += m3 ;
-        y[iy+3*inc_y] += m4 ;
+    FLOAT m1 = da * x[ix];
+    FLOAT m2 = da * x[ix + inc_x];
+    FLOAT m3 = da * x[ix + 2 * inc_x];
+    FLOAT m4 = da * x[ix + 3 * inc_x];
 
-        ix  += inc_x*4 ;
-        iy  += inc_y*4 ;
-        i+=4 ;
+    y[iy] += m1;
+    y[iy + inc_y] += m2;
+    y[iy + 2 * inc_y] += m3;
+    y[iy + 3 * inc_y] += m4;
 
-    }
+    ix += inc_x * 4;
+    iy += inc_y * 4;
+    i += 4;
 
-    while(i < n)
-    {
+  }
 
-        y[iy] += da * x[ix] ;
-        ix  += inc_x ;
-        iy  += inc_y ;
-        i++ ;
+  while (i < n) {
 
-    }
-    return 0 ;
+    y[iy] += da * x[ix];
+    ix += inc_x;
+    iy += inc_y;
+    i++;
+
+  }
+  return 0;
 
 }
-
-

@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013-2018, The OpenBLAS Project
+Copyright (c) 2013-2019, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,59 +27,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-static void dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
-{
-    __asm__ volatile (
-        "lgr  %%r1,%1            \n\t"
-        "lgr  %%r2,%2            \n\t"
-        "srlg %%r0,%0,5          \n\t"
-        "0:                      \n\t"
-        "pfd 1, 1024(%%r1)       \n\t"
-        "pfd 2, 1024(%%r2)       \n\t"
-        "mvc 0(256,%%r2),0(%%r1) \n\t"
-        "agfi   %%r1,256         \n\t"
-        "agfi   %%r2,256         \n\t"
-        "brctg %%r0,0b               "
-        :
-        :"r"(n),"a"((const FLOAT (*)[n])x),"a"((FLOAT (*)[n])y)
-        :"memory","cc","r0","r1","r2"
-    );
+static void dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
+  __asm__("srlg %[n],%[n],5\n\t"
+       "0:\n\t"
+       "pfd 1, 1024(%[x])\n\t"
+       "pfd 2, 1024(%[y])\n\t"
+       "mvc 0(256,%[y]),0(%[x])\n\t"
+       "la  %[x],256(%[x])\n\t"
+       "la  %[y],256(%[y])\n\t"
+       "brctg %[n],0b"
+       : "=m"(*(FLOAT (*)[n]) y),[x] "+&a"(x),[y] "+&a"(y)
+       : "m"(*(const FLOAT (*)[n]) x)
+       : "cc");
 }
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y) {
-    BLASLONG i = 0;
-    BLASLONG ix = 0, iy = 0;
+  BLASLONG i = 0;
+  BLASLONG ix = 0, iy = 0;
 
-    if (n <= 0) return 0;
-
-    if ((inc_x == 1) && (inc_y == 1)) {
-
-        BLASLONG n1 = n & -32;
-        if (n1 > 0) {
-            dcopy_kernel_32(n1, x, y);
-            i = n1;
-        }
-
-        while (i < n) {
-            y[i] = x[i];
-            i++;
-
-        }
-
-
-    } else {
-
-        while (i < n) {
-
-            y[iy] = x[ix];
-            ix += inc_x;
-            iy += inc_y;
-            i++;
-
-        }
-
-    }
+  if (n <= 0)
     return 0;
 
+  if ((inc_x == 1) && (inc_y == 1)) {
+
+    BLASLONG n1 = n & -32;
+    if (n1 > 0) {
+      dcopy_kernel_32(n1, x, y);
+      i = n1;
+    }
+
+    while (i < n) {
+      y[i] = x[i];
+      i++;
+
+    }
+
+  } else {
+
+    while (i < n) {
+
+      y[iy] = x[ix];
+      ix += inc_x;
+      iy += inc_y;
+      i++;
+
+    }
+
+  }
+  return 0;
 
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2014, The OpenBLAS Project
+Copyright (c) 2019, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -29,643 +29,688 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define NBMAX 2048
 
-static void cgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
-{
-    __asm__ volatile (
-		"vzero  %%v16                      \n\t"
-		"vzero  %%v17                      \n\t"
-		"vzero  %%v18                      \n\t"
-		"vzero  %%v19                      \n\t"
-        "xgr   %%r1,%%r1                   \n\t"
-        "srlg  %%r0,%0,1                   \n\t"
-        "0:                                \n\t"
-        "pfd 1,1024(%%r1,%1)               \n\t"
-        "pfd 1,1024(%%r1,%2)               \n\t"
-        "pfd 1,1024(%%r1,%3)               \n\t"
-        "pfd 1,1024(%%r1,%4)               \n\t"
-		"pfd 1,1024(%%r1,%5)               \n\t"
-
-		"vl     %%v20,0(%%r1,%5)           \n\t"
+static void cgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
+                             FLOAT *alpha) {
+  __asm__("vzero  %%v16\n\t"
+        "vzero  %%v17\n\t"
+        "vzero  %%v18\n\t"
+        "vzero  %%v19\n\t"
+        "vzero  %%v20\n\t"
+        "vzero  %%v21\n\t"
+        "vzero  %%v22\n\t"
+        "vzero  %%v23\n\t"
+        "vleib  %%v2,0,0\n\t"
+        "vleib  %%v2,1,1\n\t"
+        "vleib  %%v2,2,2\n\t"
+        "vleib  %%v2,3,3\n\t"
+        "vleib  %%v2,0,4\n\t"
+        "vleib  %%v2,1,5\n\t"
+        "vleib  %%v2,2,6\n\t"
+        "vleib  %%v2,3,7\n\t"
+        "vleib  %%v2,8,8\n\t"
+        "vleib  %%v2,9,9\n\t"
+        "vleib  %%v2,10,10\n\t"
+        "vleib  %%v2,11,11\n\t"
+        "vleib  %%v2,8,12\n\t"
+        "vleib  %%v2,9,13\n\t"
+        "vleib  %%v2,10,14\n\t"
+        "vleib  %%v2,11,15\n\t"
+        "vleib  %%v3,4,0\n\t"
+        "vleib  %%v3,5,1\n\t"
+        "vleib  %%v3,6,2\n\t"
+        "vleib  %%v3,7,3\n\t"
+        "vleib  %%v3,4,4\n\t"
+        "vleib  %%v3,5,5\n\t"
+        "vleib  %%v3,6,6\n\t"
+        "vleib  %%v3,7,7\n\t"
+        "vleib  %%v3,12,8\n\t"
+        "vleib  %%v3,13,9\n\t"
+        "vleib  %%v3,14,10\n\t"
+        "vleib  %%v3,15,11\n\t"
+        "vleib  %%v3,12,12\n\t"
+        "vleib  %%v3,13,13\n\t"
+        "vleib  %%v3,14,14\n\t"
+        "vleib  %%v3,15,15\n\t"
+        "xgr   %%r1,%%r1\n\t"
+        "srlg  %[n],%[n],1\n\t"
+        "0:\n\t"
+        "pfd 1,1024(%%r1,%[ap0])\n\t"
+        "pfd 1,1024(%%r1,%[ap1])\n\t"
+        "pfd 1,1024(%%r1,%[ap2])\n\t"
+        "pfd 1,1024(%%r1,%[ap3])\n\t"
+        "pfd 1,1024(%%r1,%[x])\n\t"
+        "vl     %%v0,0(%%r1,%[x])\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vlef   %%v21,4(%%r1,%5),0         \n\t"
-		"vlef   %%v21,12(%%r1,%5),2        \n\t"
-        "vflcsb %%v21,%%v21                \n\t"
-        "vlef   %%v21,0(%%r1,%5),1         \n\t"
-		"vlef   %%v21,8(%%r1,%5),3         \n\t"
+        "vlef   %%v1,4(%%r1,%[x]),0\n\t"
+        "vlef   %%v1,12(%%r1,%[x]),2\n\t"
+        "vflcsb %%v1,%%v1\n\t"
+        "vlef   %%v1,0(%%r1,%[x]),1\n\t"
+        "vlef   %%v1,8(%%r1,%[x]),3\n\t"
 #else
-        "vlef   %%v21,0(%%r1,%5),1         \n\t"
-		"vlef   %%v21,8(%%r1,%5),3         \n\t"
-        "vflcsb %%v21,%%v21                \n\t"
-        "vlef   %%v21,4(%%r1,%5),0         \n\t"
-		"vlef   %%v21,12(%%r1,%5),2        \n\t"
+        "vlef   %%v1,0(%%r1,%[x]),1\n\t"
+        "vlef   %%v1,8(%%r1,%[x]),3\n\t"
+        "vflcsb %%v1,%%v1\n\t"
+        "vlef   %%v1,4(%%r1,%[x]),0\n\t"
+        "vlef   %%v1,12(%%r1,%[x]),2\n\t"
 #endif
-
-		"vlef   %%v22,0(%%r1,%1),0         \n\t"
-		"vlef   %%v22,0(%%r1,%1),1         \n\t"
-		"vlef   %%v22,8(%%r1,%1),2         \n\t"
-		"vlef   %%v22,8(%%r1,%1),3         \n\t"
-		"vlef   %%v23,4(%%r1,%1),0         \n\t"
-		"vlef   %%v23,4(%%r1,%1),1         \n\t"
-		"vlef   %%v23,12(%%r1,%1),2        \n\t"
-		"vlef   %%v23,12(%%r1,%1),3        \n\t"
-		"vlef   %%v24,0(%%r1,%2),0         \n\t"
-		"vlef   %%v24,0(%%r1,%2),1         \n\t"
-		"vlef   %%v24,8(%%r1,%2),2         \n\t"
-		"vlef   %%v24,8(%%r1,%2),3         \n\t"
-		"vlef   %%v25,4(%%r1,%2),0         \n\t"
-		"vlef   %%v25,4(%%r1,%2),1         \n\t"
-		"vlef   %%v25,12(%%r1,%2),2        \n\t"
-		"vlef   %%v25,12(%%r1,%2),3        \n\t"
-
-        "vfmasb   %%v16,%%v22,%%v20,%%v16  \n\t"
-        "vfmasb   %%v16,%%v23,%%v21,%%v16  \n\t"
-        "vfmasb   %%v17,%%v24,%%v20,%%v17  \n\t"
-        "vfmasb   %%v17,%%v25,%%v21,%%v17  \n\t"
-
-		"vlef   %%v26,0(%%r1,%3),0         \n\t"
-		"vlef   %%v26,0(%%r1,%3),1         \n\t"
-		"vlef   %%v26,8(%%r1,%3),2         \n\t"
-		"vlef   %%v26,8(%%r1,%3),3         \n\t"
-		"vlef   %%v27,4(%%r1,%3),0         \n\t"
-		"vlef   %%v27,4(%%r1,%3),1         \n\t"
-		"vlef   %%v27,12(%%r1,%3),2        \n\t"
-		"vlef   %%v27,12(%%r1,%3),3        \n\t"
-		"vlef   %%v28,0(%%r1,%4),0         \n\t"
-		"vlef   %%v28,0(%%r1,%4),1         \n\t"
-		"vlef   %%v28,8(%%r1,%4),2         \n\t"
-		"vlef   %%v28,8(%%r1,%4),3         \n\t"
-		"vlef   %%v29,4(%%r1,%4),0         \n\t"
-		"vlef   %%v29,4(%%r1,%4),1         \n\t"
-		"vlef   %%v29,12(%%r1,%4),2        \n\t"
-		"vlef   %%v29,12(%%r1,%4),3        \n\t"
-        
-        "vfmasb   %%v18,%%v26,%%v20,%%v18  \n\t"
-        "vfmasb   %%v18,%%v27,%%v21,%%v18  \n\t"
-        "vfmasb   %%v19,%%v28,%%v20,%%v19  \n\t"
-        "vfmasb   %%v19,%%v29,%%v21,%%v19  \n\t"
-
-        "agfi   %%r1,16                    \n\t"
-        "brctg  %%r0,0b                    \n\t"
-
-		"vrepg  %%v20,%%v16,1              \n\t"
-		"vrepg  %%v21,%%v17,1              \n\t"
-		"vrepg  %%v22,%%v18,1              \n\t"
-		"vrepg  %%v23,%%v19,1              \n\t"
-		"vfasb  %%v16,%%v16,%%v20          \n\t"
-		"vfasb  %%v17,%%v17,%%v21          \n\t"
-		"vfasb  %%v18,%%v18,%%v22          \n\t"
-		"vfasb  %%v19,%%v19,%%v23          \n\t"
-		"vmrhg  %%v16,%%v16,%%v17          \n\t"
-		"vmrhg  %%v17,%%v18,%%v19          \n\t"
-		"verllg %%v18,%%v16,32             \n\t"
-        "verllg %%v19,%%v17,32             \n\t"
+        "vl    %%v24,0(%%r1,%[ap0])\n\t"
+        "vperm %%v25,%%v24,%%v24,%%v3\n\t"
+        "vperm %%v24,%%v24,%%v24,%%v2\n\t"
+        "vl    %%v26,0(%%r1,%[ap1])\n\t"
+        "vperm %%v27,%%v26,%%v26,%%v3\n\t"
+        "vperm %%v26,%%v26,%%v26,%%v2\n\t"
+        "vl    %%v28,0(%%r1,%[ap2])\n\t"
+        "vperm %%v29,%%v28,%%v28,%%v3\n\t"
+        "vperm %%v28,%%v28,%%v28,%%v2\n\t"
+        "vl    %%v30,0(%%r1,%[ap3])\n\t"
+        "vperm %%v31,%%v30,%%v30,%%v3\n\t"
+        "vperm %%v30,%%v30,%%v30,%%v2\n\t"
+        "vfmasb   %%v16,%%v24,%%v0,%%v16\n\t"
+        "vfmasb   %%v20,%%v25,%%v1,%%v20\n\t"
+        "vfmasb   %%v17,%%v26,%%v0,%%v17\n\t"
+        "vfmasb   %%v21,%%v27,%%v1,%%v21\n\t"
+        "vfmasb   %%v18,%%v28,%%v0,%%v18\n\t"
+        "vfmasb   %%v22,%%v29,%%v1,%%v22\n\t"
+        "vfmasb   %%v19,%%v30,%%v0,%%v19\n\t"
+        "vfmasb   %%v23,%%v31,%%v1,%%v23\n\t"
+        "agfi   %%r1,16\n\t"
+        "brctg  %[n],0b\n\t"
+        "vfadb  %%v16,%%v16,%%v20\n\t"
+        "vfadb  %%v17,%%v17,%%v21\n\t"
+        "vfadb  %%v18,%%v18,%%v22\n\t"
+        "vfadb  %%v19,%%v19,%%v23\n\t"
+        "vrepg  %%v20,%%v16,1\n\t"
+        "vrepg  %%v21,%%v17,1\n\t"
+        "vrepg  %%v22,%%v18,1\n\t"
+        "vrepg  %%v23,%%v19,1\n\t"
+        "vfasb  %%v16,%%v16,%%v20\n\t"
+        "vfasb  %%v17,%%v17,%%v21\n\t"
+        "vfasb  %%v18,%%v18,%%v22\n\t"
+        "vfasb  %%v19,%%v19,%%v23\n\t"
+        "vmrhg  %%v16,%%v16,%%v17\n\t"
+        "vmrhg  %%v17,%%v18,%%v19\n\t"
+        "verllg %%v18,%%v16,32\n\t"
+        "verllg %%v19,%%v17,32\n\t"
 #if !defined(XCONJ)
-		"vlrepf %%v20,0(%7)                \n\t"
-		"vlef   %%v21,4(%7),0              \n\t"
-		"vlef   %%v21,4(%7),2              \n\t"
-        "vflcsb %%v21,%%v21                \n\t"
-        "vlef   %%v21,4(%7),1              \n\t"
-		"vlef   %%v21,4(%7),3              \n\t"
+        "vlrepf %%v20,0(%[alpha])\n\t"
+        "vlef   %%v21,4(%[alpha]),0\n\t"
+        "vlef   %%v21,4(%[alpha]),2\n\t"
+        "vflcsb %%v21,%%v21\n\t"
+        "vlef   %%v21,4(%[alpha]),1\n\t"
+        "vlef   %%v21,4(%[alpha]),3\n\t"
 #else
-		"vlef   %%v20,0(%7),1              \n\t"
-		"vlef   %%v20,0(%7),3              \n\t"
-        "vflcsb %%v20,%%v20                \n\t"
-        "vlef   %%v20,0(%7),0              \n\t"
-		"vlef   %%v20,0(%7),2              \n\t"
-		"vlrepf %%v21,4(%7)                \n\t"
+        "vlef   %%v20,0(%[alpha]),1\n\t"
+        "vlef   %%v20,0(%[alpha]),3\n\t"
+        "vflcsb %%v20,%%v20\n\t"
+        "vlef   %%v20,0(%[alpha]),0\n\t"
+        "vlef   %%v20,0(%[alpha]),2\n\t"
+        "vlrepf %%v21,4(%[alpha])\n\t"
 #endif
-		"vl  %%v22,0(%6)                   \n\t"
-		"vl  %%v23,16(%6)                  \n\t"
-		"vfmasb   %%v22,%%v16,%%v20,%%v22  \n\t"
-        "vfmasb   %%v22,%%v18,%%v21,%%v22  \n\t"
-		"vfmasb   %%v23,%%v17,%%v20,%%v23  \n\t"
-        "vfmasb   %%v23,%%v19,%%v21,%%v23  \n\t"
-		"vst  %%v22,0(%6)                  \n\t"
-		"vst  %%v23,16(%6)                     "
-        :
-        :"r"(n),"ZR"((const FLOAT (*)[n * 2])ap[0]),"ZR"((const FLOAT (*)[n * 2])ap[1]),"ZR"((const FLOAT (*)[n * 2])ap[2]),"ZR"((const FLOAT (*)[n * 2])ap[3]),"ZR"((const FLOAT (*)[n * 2])x),"ZQ"((FLOAT (*)[8])y),"ZQ"((const FLOAT (*)[2])alpha)
-        :"memory","cc","r0","r1","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29"
-    );
+        "vl  %%v22,0(%[y])\n\t"
+        "vl  %%v23,16(%[y])\n\t"
+        "vfmasb   %%v22,%%v16,%%v20,%%v22\n\t"
+        "vfmasb   %%v22,%%v18,%%v21,%%v22\n\t"
+        "vfmasb   %%v23,%%v17,%%v20,%%v23\n\t"
+        "vfmasb   %%v23,%%v19,%%v21,%%v23\n\t"
+        "vst  %%v22,0(%[y])\n\t"
+        "vst  %%v23,16(%[y])"
+       : "+m"(*(FLOAT (*)[8]) y),[n] "+&r"(n)
+       : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap[0]),[ap0] "a"(ap[0]),
+          "m"(*(const FLOAT (*)[n * 2]) ap[1]),[ap1] "a"(ap[1]),
+          "m"(*(const FLOAT (*)[n * 2]) ap[2]),[ap2] "a"(ap[2]),
+          "m"(*(const FLOAT (*)[n * 2]) ap[3]),[ap3] "a"(ap[3]),
+          "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+          "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
+       : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19", "v20",
+          "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
+          "v31");
 }
 
-static void cgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
-{
-    __asm__ volatile (
-		"vzero  %%v16                      \n\t"
-		"vzero  %%v17                      \n\t"
-        "xgr   %%r1,%%r1                   \n\t"
-        "srlg  %%r0,%0,1                   \n\t"
-        "0:                                \n\t"
-        "pfd 1,1024(%%r1,%1)               \n\t"
-        "pfd 1,1024(%%r1,%2)               \n\t"
-        "pfd 1,1024(%%r1,%3)               \n\t"
-
-		"vl     %%v18,0(%%r1,%3)           \n\t"
+static void cgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
+                             FLOAT *alpha) {
+  __asm__("vzero  %%v16\n\t"
+        "vzero  %%v17\n\t"
+        "vzero  %%v18\n\t"
+        "vzero  %%v19\n\t"
+        "vleib  %%v2,0,0\n\t"
+        "vleib  %%v2,1,1\n\t"
+        "vleib  %%v2,2,2\n\t"
+        "vleib  %%v2,3,3\n\t"
+        "vleib  %%v2,0,4\n\t"
+        "vleib  %%v2,1,5\n\t"
+        "vleib  %%v2,2,6\n\t"
+        "vleib  %%v2,3,7\n\t"
+        "vleib  %%v2,8,8\n\t"
+        "vleib  %%v2,9,9\n\t"
+        "vleib  %%v2,10,10\n\t"
+        "vleib  %%v2,11,11\n\t"
+        "vleib  %%v2,8,12\n\t"
+        "vleib  %%v2,9,13\n\t"
+        "vleib  %%v2,10,14\n\t"
+        "vleib  %%v2,11,15\n\t"
+        "vleib  %%v3,4,0\n\t"
+        "vleib  %%v3,5,1\n\t"
+        "vleib  %%v3,6,2\n\t"
+        "vleib  %%v3,7,3\n\t"
+        "vleib  %%v3,4,4\n\t"
+        "vleib  %%v3,5,5\n\t"
+        "vleib  %%v3,6,6\n\t"
+        "vleib  %%v3,7,7\n\t"
+        "vleib  %%v3,12,8\n\t"
+        "vleib  %%v3,13,9\n\t"
+        "vleib  %%v3,14,10\n\t"
+        "vleib  %%v3,15,11\n\t"
+        "vleib  %%v3,12,12\n\t"
+        "vleib  %%v3,13,13\n\t"
+        "vleib  %%v3,14,14\n\t"
+        "vleib  %%v3,15,15\n\t"
+        "xgr   %%r1,%%r1\n\t"
+        "srlg  %[n],%[n],1\n\t"
+        "0:\n\t"
+        "pfd 1,1024(%%r1,%[ap0])\n\t"
+        "pfd 1,1024(%%r1,%[ap1])\n\t"
+        "pfd 1,1024(%%r1,%[x])\n\t"
+        "vl     %%v0,0(%%r1,%[x])\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vlef   %%v19,4(%%r1,%3),0         \n\t"
-		"vlef   %%v19,12(%%r1,%3),2        \n\t"
-        "vflcsb %%v19,%%v19                \n\t"
-        "vlef   %%v19,0(%%r1,%3),1         \n\t"
-		"vlef   %%v19,8(%%r1,%3),3         \n\t"
+        "vlef   %%v1,4(%%r1,%[x]),0\n\t"
+        "vlef   %%v1,12(%%r1,%[x]),2\n\t"
+        "vflcsb %%v1,%%v1\n\t"
+        "vlef   %%v1,0(%%r1,%[x]),1\n\t"
+        "vlef   %%v1,8(%%r1,%[x]),3\n\t"
 #else
-        "vlef   %%v19,0(%%r1,%3),1         \n\t"
-		"vlef   %%v19,8(%%r1,%3),3         \n\t"
-        "vflcsb %%v19,%%v19                \n\t"
-        "vlef   %%v19,4(%%r1,%3),0         \n\t"
-		"vlef   %%v19,12(%%r1,%3),2        \n\t"
+        "vlef   %%v1,0(%%r1,%[x]),1\n\t"
+        "vlef   %%v1,8(%%r1,%[x]),3\n\t"
+        "vflcsb %%v1,%%v1\n\t"
+        "vlef   %%v1,4(%%r1,%[x]),0\n\t"
+        "vlef   %%v1,12(%%r1,%[x]),2\n\t"
 #endif
-
-		"vlef   %%v20,0(%%r1,%1),0         \n\t"
-		"vlef   %%v20,0(%%r1,%1),1         \n\t"
-		"vlef   %%v20,8(%%r1,%1),2         \n\t"
-		"vlef   %%v20,8(%%r1,%1),3         \n\t"
-		"vlef   %%v21,4(%%r1,%1),0         \n\t"
-		"vlef   %%v21,4(%%r1,%1),1         \n\t"
-		"vlef   %%v21,12(%%r1,%1),2        \n\t"
-		"vlef   %%v21,12(%%r1,%1),3        \n\t"
-		"vlef   %%v22,0(%%r1,%2),0         \n\t"
-		"vlef   %%v22,0(%%r1,%2),1         \n\t"
-		"vlef   %%v22,8(%%r1,%2),2         \n\t"
-		"vlef   %%v22,8(%%r1,%2),3         \n\t"
-		"vlef   %%v23,4(%%r1,%2),0         \n\t"
-		"vlef   %%v23,4(%%r1,%2),1         \n\t"
-		"vlef   %%v23,12(%%r1,%2),2        \n\t"
-		"vlef   %%v23,12(%%r1,%2),3        \n\t"
-
-        "vfmasb   %%v16,%%v20,%%v18,%%v16  \n\t"
-        "vfmasb   %%v16,%%v21,%%v19,%%v16  \n\t"
-        "vfmasb   %%v17,%%v22,%%v18,%%v17  \n\t"
-        "vfmasb   %%v17,%%v23,%%v19,%%v17  \n\t"
-
-        "agfi   %%r1,16                    \n\t"
-        "brctg  %%r0,0b                    \n\t"
-
-		"vrepg  %%v18,%%v16,1              \n\t"
-		"vrepg  %%v19,%%v17,1              \n\t"
-		"vfasb  %%v16,%%v16,%%v18          \n\t"
-		"vfasb  %%v17,%%v17,%%v19          \n\t"
-		"vmrhg  %%v16,%%v16,%%v17          \n\t"
-		"verllg %%v17,%%v16,32             \n\t"
+        "vl    %%v20,0(%%r1,%[ap0])\n\t"
+        "vperm %%v21,%%v20,%%v20,%%v3\n\t"
+        "vperm %%v20,%%v20,%%v20,%%v2\n\t"
+        "vl    %%v22,0(%%r1,%[ap1])\n\t"
+        "vperm %%v23,%%v22,%%v22,%%v3\n\t"
+        "vperm %%v22,%%v22,%%v22,%%v2\n\t"
+        "vfmasb   %%v16,%%v20,%%v0,%%v16\n\t"
+        "vfmasb   %%v18,%%v21,%%v1,%%v18\n\t"
+        "vfmasb   %%v17,%%v22,%%v0,%%v17\n\t"
+        "vfmasb   %%v19,%%v23,%%v1,%%v19\n\t"
+        "agfi   %%r1,16\n\t"
+        "brctg  %[n],0b\n\t"
+        "vfadb  %%v16,%%v16,%%v18\n\t"
+        "vfadb  %%v17,%%v17,%%v19\n\t"
+        "vrepg  %%v18,%%v16,1\n\t"
+        "vrepg  %%v19,%%v17,1\n\t"
+        "vfasb  %%v16,%%v16,%%v18\n\t"
+        "vfasb  %%v17,%%v17,%%v19\n\t"
+        "vmrhg  %%v16,%%v16,%%v17\n\t"
+        "verllg %%v17,%%v16,32\n\t"
 #if !defined(XCONJ)
-		"vlrepf %%v18,0(%5)                \n\t"
-		"vlef   %%v19,4(%5),0              \n\t"
-		"vlef   %%v19,4(%5),2              \n\t"
-        "vflcsb %%v19,%%v19                \n\t"
-        "vlef   %%v19,4(%5),1              \n\t"
-		"vlef   %%v19,4(%5),3              \n\t"
+        "vlrepf %%v18,0(%[alpha])\n\t"
+        "vlef   %%v19,4(%[alpha]),0\n\t"
+        "vlef   %%v19,4(%[alpha]),2\n\t"
+        "vflcsb %%v19,%%v19\n\t"
+        "vlef   %%v19,4(%[alpha]),1\n\t"
+        "vlef   %%v19,4(%[alpha]),3\n\t"
 #else
-		"vlef   %%v18,0(%5),1              \n\t"
-		"vlef   %%v18,0(%5),3              \n\t"
-        "vflcsb %%v18,%%v18                \n\t"
-        "vlef   %%v18,0(%5),0              \n\t"
-		"vlef   %%v18,0(%5),2              \n\t"
-		"vlrepf %%v19,4(%5)                \n\t"
+        "vlef   %%v18,0(%[alpha]),1\n\t"
+        "vlef   %%v18,0(%[alpha]),3\n\t"
+        "vflcsb %%v18,%%v18\n\t"
+        "vlef   %%v18,0(%[alpha]),0\n\t"
+        "vlef   %%v18,0(%[alpha]),2\n\t"
+        "vlrepf %%v19,4(%[alpha])\n\t"
 #endif
-		"vl  %%v20,0(%4)                   \n\t"
-		"vfmasb   %%v20,%%v16,%%v18,%%v20  \n\t"
-        "vfmasb   %%v20,%%v17,%%v19,%%v20  \n\t"
-		"vst  %%v20,0(%4)                      "
-        :
-        :"r"(n),"ZR"((const FLOAT (*)[n * 2])ap[0]),"ZR"((const FLOAT (*)[n * 2])ap[1]),"ZR"((const FLOAT (*)[n * 2])x),"ZQ"((FLOAT (*)[4])y),"ZQ"((const FLOAT (*)[2])alpha)
-        :"memory","cc","r0","r1","v16","v17","v18","v19","v20","v21","v22","v23"
-    );
+        "vl  %%v20,0(%[y])\n\t"
+        "vfmasb   %%v20,%%v16,%%v18,%%v20\n\t"
+        "vfmasb   %%v20,%%v17,%%v19,%%v20\n\t"
+        "vst  %%v20,0(%[y])"
+       : "+m"(*(FLOAT (*)[4]) y),[n] "+&r"(n)
+       : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap[0]),[ap0] "a"(ap[0]),
+          "m"(*(const FLOAT (*)[n * 2]) ap[1]),[ap1] "a"(ap[1]),
+          "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+          "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
+       : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19", "v20",
+          "v21", "v22", "v23");
 }
 
-static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *alpha)
-{
-    __asm__ volatile (
-		"vzero  %%v16                      \n\t"
-        "xgr   %%r1,%%r1                   \n\t"
-        "srlg  %%r0,%0,1                   \n\t"
-        "0:                                \n\t"
-        "pfd 1,1024(%%r1,%1)               \n\t"
-        "pfd 1,1024(%%r1,%2)               \n\t"
-
-		"vl     %%v17,0(%%r1,%2)           \n\t"
+static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y,
+                             FLOAT *alpha) {
+  __asm__("vzero  %%v16\n\t"
+        "vzero  %%v17\n\t"
+        "vleib  %%v2,0,0\n\t"
+        "vleib  %%v2,1,1\n\t"
+        "vleib  %%v2,2,2\n\t"
+        "vleib  %%v2,3,3\n\t"
+        "vleib  %%v2,0,4\n\t"
+        "vleib  %%v2,1,5\n\t"
+        "vleib  %%v2,2,6\n\t"
+        "vleib  %%v2,3,7\n\t"
+        "vleib  %%v2,8,8\n\t"
+        "vleib  %%v2,9,9\n\t"
+        "vleib  %%v2,10,10\n\t"
+        "vleib  %%v2,11,11\n\t"
+        "vleib  %%v2,8,12\n\t"
+        "vleib  %%v2,9,13\n\t"
+        "vleib  %%v2,10,14\n\t"
+        "vleib  %%v2,11,15\n\t"
+        "vleib  %%v3,4,0\n\t"
+        "vleib  %%v3,5,1\n\t"
+        "vleib  %%v3,6,2\n\t"
+        "vleib  %%v3,7,3\n\t"
+        "vleib  %%v3,4,4\n\t"
+        "vleib  %%v3,5,5\n\t"
+        "vleib  %%v3,6,6\n\t"
+        "vleib  %%v3,7,7\n\t"
+        "vleib  %%v3,12,8\n\t"
+        "vleib  %%v3,13,9\n\t"
+        "vleib  %%v3,14,10\n\t"
+        "vleib  %%v3,15,11\n\t"
+        "vleib  %%v3,12,12\n\t"
+        "vleib  %%v3,13,13\n\t"
+        "vleib  %%v3,14,14\n\t"
+        "vleib  %%v3,15,15\n\t"
+        "xgr   %%r1,%%r1\n\t"
+        "srlg  %[n],%[n],1\n\t"
+        "0:\n\t"
+        "pfd 1,1024(%%r1,%[ap])\n\t"
+        "pfd 1,1024(%%r1,%[x])\n\t"
+        "vl     %%v0,0(%%r1,%[x])\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-        "vlef   %%v18,4(%%r1,%2),0         \n\t"
-		"vlef   %%v18,12(%%r1,%2),2        \n\t"
-        "vflcsb %%v18,%%v18                \n\t"
-        "vlef   %%v18,0(%%r1,%2),1         \n\t"
-		"vlef   %%v18,8(%%r1,%2),3         \n\t"
+        "vlef   %%v1,4(%%r1,%[x]),0\n\t"
+        "vlef   %%v1,12(%%r1,%[x]),2\n\t"
+        "vflcsb %%v1,%%v1\n\t"
+        "vlef   %%v1,0(%%r1,%[x]),1\n\t"
+        "vlef   %%v1,8(%%r1,%[x]),3\n\t"
 #else
-        "vlef   %%v18,0(%%r1,%2),1         \n\t"
-		"vlef   %%v18,8(%%r1,%2),3         \n\t"
-        "vflcsb %%v18,%%v18                \n\t"
-        "vlef   %%v18,4(%%r1,%2),0         \n\t"
-		"vlef   %%v18,12(%%r1,%2),2        \n\t"
+        "vlef   %%v1,0(%%r1,%[x]),1\n\t"
+        "vlef   %%v1,8(%%r1,%[x]),3\n\t"
+        "vflcsb %%v1,%%v1\n\t"
+        "vlef   %%v1,4(%%r1,%[x]),0\n\t"
+        "vlef   %%v1,12(%%r1,%[x]),2\n\t"
 #endif
-
-		"vlef   %%v19,0(%%r1,%1),0         \n\t"
-		"vlef   %%v19,0(%%r1,%1),1         \n\t"
-		"vlef   %%v19,8(%%r1,%1),2         \n\t"
-		"vlef   %%v19,8(%%r1,%1),3         \n\t"
-		"vlef   %%v20,4(%%r1,%1),0         \n\t"
-		"vlef   %%v20,4(%%r1,%1),1         \n\t"
-		"vlef   %%v20,12(%%r1,%1),2        \n\t"
-		"vlef   %%v20,12(%%r1,%1),3        \n\t"
-
-        "vfmasb   %%v16,%%v19,%%v17,%%v16  \n\t"
-        "vfmasb   %%v16,%%v20,%%v18,%%v16  \n\t"
-
-        "agfi   %%r1,16                    \n\t"
-        "brctg  %%r0,0b                    \n\t"
-
-		"vrepg  %%v17,%%v16,1              \n\t"
-		"vfasb  %%v16,%%v16,%%v17          \n\t"
-		"verllg %%v17,%%v16,32             \n\t"
+        "vl    %%v18,0(%%r1,%[ap])\n\t"
+        "vperm %%v19,%%v18,%%v18,%%v3\n\t"
+        "vperm %%v18,%%v18,%%v18,%%v2\n\t"
+        "vfmasb   %%v16,%%v18,%%v0,%%v16\n\t"
+        "vfmasb   %%v17,%%v19,%%v1,%%v17\n\t"
+        "agfi   %%r1,16\n\t"
+        "brctg  %[n],0b\n\t"
+        "vfadb  %%v16,%%v16,%%v17\n\t"
+        "vrepg  %%v17,%%v16,1\n\t"
+        "vfasb  %%v16,%%v16,%%v17\n\t"
+        "verllg %%v17,%%v16,32\n\t"
 #if !defined(XCONJ)
-		"vlrepf %%v18,0(%4)                \n\t"
-		"vlef   %%v19,4(%4),0              \n\t"
-        "vflcsb %%v19,%%v19                \n\t"
-        "vlef   %%v19,4(%4),1              \n\t"
+        "vlrepf %%v18,0(%[alpha])\n\t"
+        "vlef   %%v19,4(%[alpha]),0\n\t"
+        "vflcsb %%v19,%%v19\n\t"
+        "vlef   %%v19,4(%[alpha]),1\n\t"
 #else
-		"vlef   %%v18,0(%4),1              \n\t"
-        "vflcsb %%v18,%%v18                \n\t"
-        "vlef   %%v18,0(%4),0              \n\t"
-		"vlrepf %%v19,4(%4)                \n\t"
+        "vlef   %%v18,0(%[alpha]),1\n\t"
+        "vflcsb %%v18,%%v18\n\t"
+        "vlef   %%v18,0(%[alpha]),0\n\t"
+        "vlrepf %%v19,4(%[alpha])\n\t"
 #endif
-		"vleg     %%v20,0(%3),0            \n\t"
-		"vfmasb   %%v20,%%v16,%%v18,%%v20  \n\t"
-        "vfmasb   %%v20,%%v17,%%v19,%%v20  \n\t"
-		"vsteg    %%v20,0(%3),0                "
-        :
-        :"r"(n),"ZR"((const FLOAT (*)[n * 2])ap),"ZR"((const FLOAT (*)[n * 2])x),"ZQ"((FLOAT (*)[2])y),"ZQ"((const FLOAT (*)[2])alpha)
-        :"memory","cc","r0","r1","v16","v17","v18","v19","v20","v21","v22","v23"
-    );
+        "vleg     %%v0,0(%[y]),0\n\t"
+        "vfmasb   %%v0,%%v16,%%v18,%%v0\n\t"
+        "vfmasb   %%v0,%%v17,%%v19,%%v0\n\t"
+        "vsteg    %%v0,0(%[y]),0"
+       : "+m"(*(FLOAT (*)[2]) y),[n] "+&r"(n)
+       : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap),[ap] "a"(ap),
+          "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+          "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
+       : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19");
 }
 
-static void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src)
-{
-        BLASLONG i;
-        for ( i=0; i<n; i++ )
-        {
-                *dest     = *src;
-                *(dest+1) = *(src+1);
-                dest+=2;
-                src += inc_src;
-        }
+static void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {
+  BLASLONG i;
+  for (i = 0; i < n; i++) {
+    *dest = *src;
+    *(dest + 1) = *(src + 1);
+    dest += 2;
+    src += inc_src;
+  }
 }
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
-{
-	BLASLONG i;
-	BLASLONG j;
-	FLOAT *a_ptr;
-	FLOAT *x_ptr;
-	FLOAT *y_ptr;
-	FLOAT *ap[8];
-	BLASLONG n1;
-	BLASLONG m1;
-	BLASLONG m2;
-	BLASLONG m3;
-	BLASLONG n2;
-	BLASLONG lda4;
-	FLOAT ybuffer[8],*xbuffer;
-	FLOAT alpha[2];
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
+          FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+          BLASLONG inc_y, FLOAT *buffer) {
+  BLASLONG i;
+  BLASLONG j;
+  FLOAT *a_ptr;
+  FLOAT *x_ptr;
+  FLOAT *y_ptr;
+  FLOAT *ap[8];
+  BLASLONG n1;
+  BLASLONG m1;
+  BLASLONG m2;
+  BLASLONG m3;
+  BLASLONG n2;
+  BLASLONG lda4;
+  FLOAT ybuffer[8], *xbuffer;
+  FLOAT alpha[2];
 
-        if ( m < 1 ) return(0);
-        if ( n < 1 ) return(0);
+  if (m < 1)
+    return (0);
+  if (n < 1)
+    return (0);
 
-        inc_x <<= 1;
-        inc_y <<= 1;
-        lda   <<= 1;
-	lda4    = lda << 2;
+  inc_x <<= 1;
+  inc_y <<= 1;
+  lda <<= 1;
+  lda4 = lda << 2;
 
-	xbuffer = buffer;
-	
-	n1 = n  >> 2 ;
-	n2 = n  &  3 ;
-	
-	m3 = m & 3 ;
-	m1 = m - m3;
-	m2 = (m & (NBMAX-1)) - m3 ;
-	
-	alpha[0] = alpha_r;
-	alpha[1] = alpha_i;
+  xbuffer = buffer;
 
-	BLASLONG NB = NBMAX;
+  n1 = n >> 2;
+  n2 = n & 3;
 
-	while ( NB == NBMAX )
-	{
-		
-		m1 -= NB;
-		if ( m1 < 0)
-		{
-			if ( m2 == 0 ) break;	
-			NB = m2;
-		}
-		
-		y_ptr = y;
-		a_ptr = a;
-		x_ptr = x;
-		ap[0] = a_ptr;
-		ap[1] = a_ptr + lda;
-		ap[2] = ap[1] + lda;
-		ap[3] = ap[2] + lda;
-		if ( inc_x != 2 )
-			copy_x(NB,x_ptr,xbuffer,inc_x);
-		else
-			xbuffer = x_ptr;
-		
-		if ( inc_y == 2 )
-		{
+  m3 = m & 3;
+  m1 = m - m3;
+  m2 = (m & (NBMAX - 1)) - m3;
 
-			for( i = 0; i < n1 ; i++)
-			{
-				cgemv_kernel_4x4(NB,ap,xbuffer,y_ptr,alpha);
-				ap[0] += lda4;
-				ap[1] += lda4;
-				ap[2] += lda4;
-				ap[3] += lda4;
-				a_ptr += lda4;
-				y_ptr += 8;
-				
-			}
+  alpha[0] = alpha_r;
+  alpha[1] = alpha_i;
 
-			if ( n2 & 2 )
-			{
-				cgemv_kernel_4x2(NB,ap,xbuffer,y_ptr,alpha);
-				a_ptr += lda * 2;
-				y_ptr += 4;
+  BLASLONG NB = NBMAX;
 
-			}
+  while (NB == NBMAX) {
 
-			if ( n2 & 1 )
-			{
-				cgemv_kernel_4x1(NB,a_ptr,xbuffer,y_ptr,alpha);
-				/* a_ptr += lda;
-				y_ptr += 2; */
+    m1 -= NB;
+    if (m1 < 0) {
+      if (m2 == 0)
+        break;
+      NB = m2;
+    }
 
-			}
+    y_ptr = y;
+    a_ptr = a;
+    x_ptr = x;
+    ap[0] = a_ptr;
+    ap[1] = a_ptr + lda;
+    ap[2] = ap[1] + lda;
+    ap[3] = ap[2] + lda;
+    if (inc_x != 2)
+      copy_x(NB, x_ptr, xbuffer, inc_x);
+    else
+      xbuffer = x_ptr;
 
-		}
-		else
-		{
+    if (inc_y == 2) {
 
-			for( i = 0; i < n1 ; i++)
-			{
-				memset(ybuffer,0,sizeof(ybuffer));
-				cgemv_kernel_4x4(NB,ap,xbuffer,ybuffer,alpha);
-				ap[0] += lda4;
-				ap[1] += lda4;
-				ap[2] += lda4;
-				ap[3] += lda4;
-				a_ptr += lda4;
+      for (i = 0; i < n1; i++) {
+        cgemv_kernel_4x4(NB, ap, xbuffer, y_ptr, alpha);
+        ap[0] += lda4;
+        ap[1] += lda4;
+        ap[2] += lda4;
+        ap[3] += lda4;
+        a_ptr += lda4;
+        y_ptr += 8;
 
-				y_ptr[0] += ybuffer[0];
-				y_ptr[1] += ybuffer[1];
-				y_ptr  += inc_y;
-				y_ptr[0] += ybuffer[2];
-				y_ptr[1] += ybuffer[3];
-				y_ptr  += inc_y;
-				y_ptr[0] += ybuffer[4];
-				y_ptr[1] += ybuffer[5];
-				y_ptr  += inc_y;
-				y_ptr[0] += ybuffer[6];
-				y_ptr[1] += ybuffer[7];
-				y_ptr  += inc_y;
+      }
 
-			}
+      if (n2 & 2) {
+        cgemv_kernel_4x2(NB, ap, xbuffer, y_ptr, alpha);
+        a_ptr += lda * 2;
+        y_ptr += 4;
 
-			for( i = 0; i < n2 ; i++)
-			{
-				memset(ybuffer,0,sizeof(ybuffer));
-				cgemv_kernel_4x1(NB,a_ptr,xbuffer,ybuffer,alpha);
-				a_ptr += lda;
-				y_ptr[0] += ybuffer[0];
-				y_ptr[1] += ybuffer[1];
-				y_ptr  += inc_y;
+      }
 
-			}
+      if (n2 & 1) {
+        cgemv_kernel_4x1(NB, a_ptr, xbuffer, y_ptr, alpha);
+        /* a_ptr += lda;
+           y_ptr += 2; */
 
-		}
-		a += 2 * NB;
-		x += NB * inc_x;	
-	}
+      }
 
+    } else {
 
+      for (i = 0; i < n1; i++) {
+        memset(ybuffer, 0, sizeof(ybuffer));
+        cgemv_kernel_4x4(NB, ap, xbuffer, ybuffer, alpha);
+        ap[0] += lda4;
+        ap[1] += lda4;
+        ap[2] += lda4;
+        ap[3] += lda4;
+        a_ptr += lda4;
 
-	if ( m3 == 0 ) return(0);
+        y_ptr[0] += ybuffer[0];
+        y_ptr[1] += ybuffer[1];
+        y_ptr += inc_y;
+        y_ptr[0] += ybuffer[2];
+        y_ptr[1] += ybuffer[3];
+        y_ptr += inc_y;
+        y_ptr[0] += ybuffer[4];
+        y_ptr[1] += ybuffer[5];
+        y_ptr += inc_y;
+        y_ptr[0] += ybuffer[6];
+        y_ptr[1] += ybuffer[7];
+        y_ptr += inc_y;
 
-        x_ptr = x;
-        j=0;
-        a_ptr = a;
-        y_ptr = y;
+      }
 
-	if ( m3 == 3 )
-	{
+      for (i = 0; i < n2; i++) {
+        memset(ybuffer, 0, sizeof(ybuffer));
+        cgemv_kernel_4x1(NB, a_ptr, xbuffer, ybuffer, alpha);
+        a_ptr += lda;
+        y_ptr[0] += ybuffer[0];
+        y_ptr[1] += ybuffer[1];
+        y_ptr += inc_y;
 
-                FLOAT temp_r ;
-                FLOAT temp_i ;
-		FLOAT x0 = x_ptr[0];
-		FLOAT x1 = x_ptr[1];
-		x_ptr += inc_x;
-		FLOAT x2 = x_ptr[0];
-		FLOAT x3 = x_ptr[1];
-		x_ptr += inc_x;
-		FLOAT x4 = x_ptr[0];
-		FLOAT x5 = x_ptr[1];
-	        while ( j < n)
-        	{
+      }
+
+    }
+    a += 2 * NB;
+    x += NB * inc_x;
+  }
+
+  if (m3 == 0)
+    return (0);
+
+  x_ptr = x;
+  j = 0;
+  a_ptr = a;
+  y_ptr = y;
+
+  if (m3 == 3) {
+
+    FLOAT temp_r;
+    FLOAT temp_i;
+    FLOAT x0 = x_ptr[0];
+    FLOAT x1 = x_ptr[1];
+    x_ptr += inc_x;
+    FLOAT x2 = x_ptr[0];
+    FLOAT x3 = x_ptr[1];
+    x_ptr += inc_x;
+    FLOAT x4 = x_ptr[0];
+    FLOAT x5 = x_ptr[1];
+    while (j < n) {
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                       	temp_r  = a_ptr[0] * x0 - a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 + a_ptr[1] * x0; 
-                       	temp_r += a_ptr[2] * x2 - a_ptr[3] * x3; 
-                       	temp_i += a_ptr[2] * x3 + a_ptr[3] * x2; 
-                       	temp_r += a_ptr[4] * x4 - a_ptr[5] * x5;
-                       	temp_i += a_ptr[4] * x5 + a_ptr[5] * x4;
+      temp_r = a_ptr[0] * x0 - a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 + a_ptr[1] * x0;
+      temp_r += a_ptr[2] * x2 - a_ptr[3] * x3;
+      temp_i += a_ptr[2] * x3 + a_ptr[3] * x2;
+      temp_r += a_ptr[4] * x4 - a_ptr[5] * x5;
+      temp_i += a_ptr[4] * x5 + a_ptr[5] * x4;
 #else
 
-                       	temp_r  = a_ptr[0] * x0 + a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 - a_ptr[1] * x0; 
-                       	temp_r += a_ptr[2] * x2 + a_ptr[3] * x3; 
-                       	temp_i += a_ptr[2] * x3 - a_ptr[3] * x2; 
-                       	temp_r += a_ptr[4] * x4 + a_ptr[5] * x5;
-                       	temp_i += a_ptr[4] * x5 - a_ptr[5] * x4;
+      temp_r = a_ptr[0] * x0 + a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 - a_ptr[1] * x0;
+      temp_r += a_ptr[2] * x2 + a_ptr[3] * x3;
+      temp_i += a_ptr[2] * x3 - a_ptr[3] * x2;
+      temp_r += a_ptr[4] * x4 + a_ptr[5] * x5;
+      temp_i += a_ptr[4] * x5 - a_ptr[5] * x4;
 #endif
 
-#if !defined(XCONJ) 
-                	y_ptr[0] += alpha_r * temp_r - alpha_i * temp_i;
-                	y_ptr[1] += alpha_r * temp_i + alpha_i * temp_r;
+#if !defined(XCONJ)
+      y_ptr[0] += alpha_r * temp_r - alpha_i * temp_i;
+      y_ptr[1] += alpha_r * temp_i + alpha_i * temp_r;
 #else
-                	y_ptr[0] += alpha_r * temp_r + alpha_i * temp_i;
-                	y_ptr[1] -= alpha_r * temp_i - alpha_i * temp_r;
+      y_ptr[0] += alpha_r * temp_r + alpha_i * temp_i;
+      y_ptr[1] -= alpha_r * temp_i - alpha_i * temp_r;
 #endif
 
-                	a_ptr += lda;
-                	y_ptr += inc_y;
-                	j++;
-        	}
-        	return(0);
-	}
+      a_ptr += lda;
+      y_ptr += inc_y;
+      j++;
+    }
+    return (0);
+  }
 
+  if (m3 == 2) {
 
-	if ( m3 == 2 )
-	{
+    FLOAT temp_r;
+    FLOAT temp_i;
+    FLOAT temp_r1;
+    FLOAT temp_i1;
+    FLOAT x0 = x_ptr[0];
+    FLOAT x1 = x_ptr[1];
+    x_ptr += inc_x;
+    FLOAT x2 = x_ptr[0];
+    FLOAT x3 = x_ptr[1];
+    FLOAT ar = alpha[0];
+    FLOAT ai = alpha[1];
 
-                FLOAT temp_r ;
-                FLOAT temp_i ;
-                FLOAT temp_r1 ;
-                FLOAT temp_i1 ;
-		FLOAT x0 = x_ptr[0];
-		FLOAT x1 = x_ptr[1];
-		x_ptr += inc_x;
-		FLOAT x2 = x_ptr[0];
-		FLOAT x3 = x_ptr[1];
-		FLOAT ar = alpha[0];
-		FLOAT ai = alpha[1];
-
-	        while ( j < ( n & -2 ))
-        	{
+    while (j < (n & -2)) {
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                       	temp_r  = a_ptr[0] * x0 - a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 + a_ptr[1] * x0; 
-                       	temp_r += a_ptr[2] * x2 - a_ptr[3] * x3; 
-                       	temp_i += a_ptr[2] * x3 + a_ptr[3] * x2; 
-                	a_ptr += lda;
-                       	temp_r1  = a_ptr[0] * x0 - a_ptr[1] * x1; 
-                       	temp_i1  = a_ptr[0] * x1 + a_ptr[1] * x0; 
-                       	temp_r1 += a_ptr[2] * x2 - a_ptr[3] * x3; 
-                       	temp_i1 += a_ptr[2] * x3 + a_ptr[3] * x2; 
+      temp_r = a_ptr[0] * x0 - a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 + a_ptr[1] * x0;
+      temp_r += a_ptr[2] * x2 - a_ptr[3] * x3;
+      temp_i += a_ptr[2] * x3 + a_ptr[3] * x2;
+      a_ptr += lda;
+      temp_r1 = a_ptr[0] * x0 - a_ptr[1] * x1;
+      temp_i1 = a_ptr[0] * x1 + a_ptr[1] * x0;
+      temp_r1 += a_ptr[2] * x2 - a_ptr[3] * x3;
+      temp_i1 += a_ptr[2] * x3 + a_ptr[3] * x2;
 #else
 
-                       	temp_r  = a_ptr[0] * x0 + a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 - a_ptr[1] * x0; 
-                       	temp_r += a_ptr[2] * x2 + a_ptr[3] * x3; 
-                       	temp_i += a_ptr[2] * x3 - a_ptr[3] * x2; 
-                	a_ptr += lda;
-                       	temp_r1  = a_ptr[0] * x0 + a_ptr[1] * x1; 
-                       	temp_i1  = a_ptr[0] * x1 - a_ptr[1] * x0; 
-                       	temp_r1 += a_ptr[2] * x2 + a_ptr[3] * x3; 
-                       	temp_i1 += a_ptr[2] * x3 - a_ptr[3] * x2; 
+      temp_r = a_ptr[0] * x0 + a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 - a_ptr[1] * x0;
+      temp_r += a_ptr[2] * x2 + a_ptr[3] * x3;
+      temp_i += a_ptr[2] * x3 - a_ptr[3] * x2;
+      a_ptr += lda;
+      temp_r1 = a_ptr[0] * x0 + a_ptr[1] * x1;
+      temp_i1 = a_ptr[0] * x1 - a_ptr[1] * x0;
+      temp_r1 += a_ptr[2] * x2 + a_ptr[3] * x3;
+      temp_i1 += a_ptr[2] * x3 - a_ptr[3] * x2;
 #endif
 
-#if !defined(XCONJ) 
-                	y_ptr[0] += ar * temp_r - ai * temp_i;
-                	y_ptr[1] += ar * temp_i + ai * temp_r;
-                	y_ptr += inc_y;
-                	y_ptr[0] += ar * temp_r1 - ai * temp_i1;
-                	y_ptr[1] += ar * temp_i1 + ai * temp_r1;
+#if !defined(XCONJ)
+      y_ptr[0] += ar * temp_r - ai * temp_i;
+      y_ptr[1] += ar * temp_i + ai * temp_r;
+      y_ptr += inc_y;
+      y_ptr[0] += ar * temp_r1 - ai * temp_i1;
+      y_ptr[1] += ar * temp_i1 + ai * temp_r1;
 #else
-                	y_ptr[0] += ar * temp_r + ai * temp_i;
-                	y_ptr[1] -= ar * temp_i - ai * temp_r;
-                	y_ptr += inc_y;
-                	y_ptr[0] += ar * temp_r1 + ai * temp_i1;
-                	y_ptr[1] -= ar * temp_i1 - ai * temp_r1;
+      y_ptr[0] += ar * temp_r + ai * temp_i;
+      y_ptr[1] -= ar * temp_i - ai * temp_r;
+      y_ptr += inc_y;
+      y_ptr[0] += ar * temp_r1 + ai * temp_i1;
+      y_ptr[1] -= ar * temp_i1 - ai * temp_r1;
 #endif
 
-                	a_ptr += lda;
-                	y_ptr += inc_y;
-                	j+=2;
-        	}
+      a_ptr += lda;
+      y_ptr += inc_y;
+      j += 2;
+    }
 
-
-	        while ( j < n)
-        	{
+    while (j < n) {
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                       	temp_r  = a_ptr[0] * x0 - a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 + a_ptr[1] * x0; 
-                       	temp_r += a_ptr[2] * x2 - a_ptr[3] * x3; 
-                       	temp_i += a_ptr[2] * x3 + a_ptr[3] * x2; 
+      temp_r = a_ptr[0] * x0 - a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 + a_ptr[1] * x0;
+      temp_r += a_ptr[2] * x2 - a_ptr[3] * x3;
+      temp_i += a_ptr[2] * x3 + a_ptr[3] * x2;
 #else
 
-                       	temp_r  = a_ptr[0] * x0 + a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 - a_ptr[1] * x0; 
-                       	temp_r += a_ptr[2] * x2 + a_ptr[3] * x3; 
-                       	temp_i += a_ptr[2] * x3 - a_ptr[3] * x2; 
+      temp_r = a_ptr[0] * x0 + a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 - a_ptr[1] * x0;
+      temp_r += a_ptr[2] * x2 + a_ptr[3] * x3;
+      temp_i += a_ptr[2] * x3 - a_ptr[3] * x2;
 #endif
 
-#if !defined(XCONJ) 
-                	y_ptr[0] += ar * temp_r - ai * temp_i;
-                	y_ptr[1] += ar * temp_i + ai * temp_r;
+#if !defined(XCONJ)
+      y_ptr[0] += ar * temp_r - ai * temp_i;
+      y_ptr[1] += ar * temp_i + ai * temp_r;
 #else
-                	y_ptr[0] += ar * temp_r + ai * temp_i;
-                	y_ptr[1] -= ar * temp_i - ai * temp_r;
+      y_ptr[0] += ar * temp_r + ai * temp_i;
+      y_ptr[1] -= ar * temp_i - ai * temp_r;
 #endif
 
-                	a_ptr += lda;
-                	y_ptr += inc_y;
-                	j++;
-        	}
+      a_ptr += lda;
+      y_ptr += inc_y;
+      j++;
+    }
 
-        	return(0);
-	}
+    return (0);
+  }
 
+  if (m3 == 1) {
 
-	if ( m3 == 1 )
-	{
+    FLOAT temp_r;
+    FLOAT temp_i;
+    FLOAT temp_r1;
+    FLOAT temp_i1;
+    FLOAT x0 = x_ptr[0];
+    FLOAT x1 = x_ptr[1];
+    FLOAT ar = alpha[0];
+    FLOAT ai = alpha[1];
 
-                FLOAT temp_r ;
-                FLOAT temp_i ;
-                FLOAT temp_r1 ;
-                FLOAT temp_i1 ;
-		FLOAT x0 = x_ptr[0];
-		FLOAT x1 = x_ptr[1];
-		FLOAT ar = alpha[0];
-		FLOAT ai = alpha[1];
-
-	        while ( j < ( n & -2 ))
-        	{
+    while (j < (n & -2)) {
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                       	temp_r  = a_ptr[0] * x0 - a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 + a_ptr[1] * x0; 
-                	a_ptr += lda;
-                       	temp_r1  = a_ptr[0] * x0 - a_ptr[1] * x1; 
-                       	temp_i1  = a_ptr[0] * x1 + a_ptr[1] * x0; 
+      temp_r = a_ptr[0] * x0 - a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 + a_ptr[1] * x0;
+      a_ptr += lda;
+      temp_r1 = a_ptr[0] * x0 - a_ptr[1] * x1;
+      temp_i1 = a_ptr[0] * x1 + a_ptr[1] * x0;
 #else
 
-                       	temp_r  = a_ptr[0] * x0 + a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 - a_ptr[1] * x0; 
-                	a_ptr += lda;
-                       	temp_r1  = a_ptr[0] * x0 + a_ptr[1] * x1; 
-                       	temp_i1  = a_ptr[0] * x1 - a_ptr[1] * x0; 
+      temp_r = a_ptr[0] * x0 + a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 - a_ptr[1] * x0;
+      a_ptr += lda;
+      temp_r1 = a_ptr[0] * x0 + a_ptr[1] * x1;
+      temp_i1 = a_ptr[0] * x1 - a_ptr[1] * x0;
 #endif
 
-#if !defined(XCONJ) 
-                	y_ptr[0] += ar * temp_r - ai * temp_i;
-                	y_ptr[1] += ar * temp_i + ai * temp_r;
-                	y_ptr += inc_y;
-                	y_ptr[0] += ar * temp_r1 - ai * temp_i1;
-                	y_ptr[1] += ar * temp_i1 + ai * temp_r1;
+#if !defined(XCONJ)
+      y_ptr[0] += ar * temp_r - ai * temp_i;
+      y_ptr[1] += ar * temp_i + ai * temp_r;
+      y_ptr += inc_y;
+      y_ptr[0] += ar * temp_r1 - ai * temp_i1;
+      y_ptr[1] += ar * temp_i1 + ai * temp_r1;
 #else
-                	y_ptr[0] += ar * temp_r + ai * temp_i;
-                	y_ptr[1] -= ar * temp_i - ai * temp_r;
-                	y_ptr += inc_y;
-                	y_ptr[0] += ar * temp_r1 + ai * temp_i1;
-                	y_ptr[1] -= ar * temp_i1 - ai * temp_r1;
+      y_ptr[0] += ar * temp_r + ai * temp_i;
+      y_ptr[1] -= ar * temp_i - ai * temp_r;
+      y_ptr += inc_y;
+      y_ptr[0] += ar * temp_r1 + ai * temp_i1;
+      y_ptr[1] -= ar * temp_i1 - ai * temp_r1;
 #endif
 
-                	a_ptr += lda;
-                	y_ptr += inc_y;
-                	j+=2;
-        	}
+      a_ptr += lda;
+      y_ptr += inc_y;
+      j += 2;
+    }
 
-	        while ( j < n)
-        	{
+    while (j < n) {
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                       	temp_r  = a_ptr[0] * x0 - a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 + a_ptr[1] * x0; 
+      temp_r = a_ptr[0] * x0 - a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 + a_ptr[1] * x0;
 #else
 
-                       	temp_r  = a_ptr[0] * x0 + a_ptr[1] * x1; 
-                       	temp_i  = a_ptr[0] * x1 - a_ptr[1] * x0; 
+      temp_r = a_ptr[0] * x0 + a_ptr[1] * x1;
+      temp_i = a_ptr[0] * x1 - a_ptr[1] * x0;
 #endif
 
-#if !defined(XCONJ) 
-                	y_ptr[0] += ar * temp_r - ai * temp_i;
-                	y_ptr[1] += ar * temp_i + ai * temp_r;
+#if !defined(XCONJ)
+      y_ptr[0] += ar * temp_r - ai * temp_i;
+      y_ptr[1] += ar * temp_i + ai * temp_r;
 #else
-                	y_ptr[0] += ar * temp_r + ai * temp_i;
-                	y_ptr[1] -= ar * temp_i - ai * temp_r;
+      y_ptr[0] += ar * temp_r + ai * temp_i;
+      y_ptr[1] -= ar * temp_i - ai * temp_r;
 #endif
 
-                	a_ptr += lda;
-                	y_ptr += inc_y;
-                	j++;
-        	}
-        	return(0);
-	}
+      a_ptr += lda;
+      y_ptr += inc_y;
+      j++;
+    }
+    return (0);
+  }
 
-	return(0);
+  return (0);
 }

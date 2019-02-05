@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013-2018, The OpenBLAS Project
+Copyright (c) 2013-2019, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,175 +27,147 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-static void sscal_kernel_32(BLASLONG n, FLOAT da, FLOAT *x)
-{
-    __asm__ volatile ( 
-        "vlrepf %%v0,%1             \n\t"
-        "srlg  %%r0,%0,5            \n\t"
-        "xgr   %%r1,%%r1            \n\t"
-        "0:                         \n\t"
-        "pfd 2, 1024(%%r1,%2)       \n\t"
-        "vl  %%v24, 0(%%r1,%2)      \n\t"
-        "vfmsb    %%v24,%%v24,%%v0  \n\t"
-        "vst  %%v24, 0(%%r1,%2)     \n\t"
-        "vl   %%v25, 16(%%r1,%2)    \n\t"
-        "vfmsb    %%v25,%%v25,%%v0  \n\t"
-        "vst  %%v25, 16(%%r1,%2)    \n\t"
-        "vl   %%v26, 32(%%r1,%2)    \n\t"
-        "vfmsb    %%v26,%%v26,%%v0  \n\t"
-        "vst  %%v26, 32(%%r1,%2)    \n\t"
-        "vl   %%v27, 48(%%r1,%2)    \n\t"
-        "vfmsb    %%v27,%%v27,%%v0  \n\t"
-        "vst  %%v27, 48(%%r1,%2)    \n\t"
-        "vl   %%v24, 64(%%r1,%2)    \n\t"
-        "vfmsb    %%v24,%%v24,%%v0  \n\t"
-        "vst  %%v24, 64(%%r1,%2)    \n\t"
-        "vl   %%v25, 80(%%r1,%2)    \n\t"
-        "vfmsb    %%v25,%%v25,%%v0  \n\t"
-        "vst  %%v25, 80(%%r1,%2)    \n\t"
-        "vl   %%v26, 96(%%r1,%2)    \n\t"
-        "vfmsb    %%v26,%%v26,%%v0  \n\t"
-        "vst  %%v26, 96(%%r1,%2)    \n\t"
-        "vl   %%v27, 112(%%r1,%2)   \n\t"
-        "vfmsb    %%v27,%%v27,%%v0  \n\t"
-        "vst  %%v27, 112(%%r1,%2)   \n\t"
-        "agfi   %%r1,128            \n\t"
-        "brctg  %%r0,0b                 "
-        :
-        :"r"(n),"m"(da),"ZR"((FLOAT (*)[n])x)
-        :"memory","cc","r0","r1","v0","v24","v25","v26","v27"
-    );
+static void sscal_kernel_32(BLASLONG n, FLOAT da, FLOAT *x) {
+  __asm__("vlrepf %%v0,%[da]\n\t"
+       "srlg  %[n],%[n],5\n\t"
+       "xgr   %%r1,%%r1\n\t"
+       "0:\n\t"
+       "pfd 2, 1024(%%r1,%[x])\n\t"
+       "vl    %%v24,0(%%r1,%[x])\n\t"
+       "vfmsb %%v24,%%v24,%%v0\n\t"
+       "vst   %%v24,0(%%r1,%[x])\n\t"
+       "vl    %%v25,16(%%r1,%[x])\n\t"
+       "vfmsb %%v25,%%v25,%%v0\n\t"
+       "vst   %%v25,16(%%r1,%[x])\n\t"
+       "vl    %%v26,32(%%r1,%[x])\n\t"
+       "vfmsb %%v26,%%v26,%%v0\n\t"
+       "vst   %%v26,32(%%r1,%[x])\n\t"
+       "vl    %%v27,48(%%r1,%[x])\n\t"
+       "vfmsb %%v27,%%v27,%%v0\n\t"
+       "vst   %%v27,48(%%r1,%[x])\n\t"
+       "vl    %%v28,64(%%r1,%[x])\n\t"
+       "vfmsb %%v28,%%v28,%%v0\n\t"
+       "vst   %%v28,64(%%r1,%[x])\n\t"
+       "vl    %%v29,80(%%r1,%[x])\n\t"
+       "vfmsb %%v29,%%v29,%%v0\n\t"
+       "vst   %%v29,80(%%r1,%[x])\n\t"
+       "vl    %%v30,96(%%r1,%[x])\n\t"
+       "vfmsb %%v30,%%v30,%%v0\n\t"
+       "vst   %%v30,96(%%r1,%[x])\n\t"
+       "vl    %%v31,112(%%r1,%[x])\n\t"
+       "vfmsb %%v31,%%v31,%%v0\n\t"
+       "vst   %%v31,112(%%r1,%[x])\n\t"
+       "agfi   %%r1,128\n\t"
+       "brctg  %[n],0b"
+       : "+m"(*(FLOAT (*)[n]) x),[n] "+&r"(n)
+       : [x] "a"(x),[da] "m"(da)
+       : "cc", "r1", "v0", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
+          "v31");
 }
 
-static void sscal_kernel_32_zero(BLASLONG n, FLOAT *x)
-{
-    __asm__ volatile(
-        "vzero %%v24             \n\t"
-        "vzero %%v25             \n\t"
-        "vzero %%v26             \n\t"
-        "vzero %%v27             \n\t"
-        "srlg %%r0,%0,5          \n\t"
-        "xgr   %%r1,%%r1         \n\t"
-        "0:                      \n\t"
-        "pfd 2, 1024(%%r1,%1)    \n\t"
-
-        "vst  %%v24,0(%%r1,%1)   \n\t"
-        "vst  %%v25,16(%%r1,%1)  \n\t"
-        "vst  %%v26,32(%%r1,%1)  \n\t"
-        "vst  %%v27,48(%%r1,%1)  \n\t"
-        "vst  %%v24,64(%%r1,%1)  \n\t"
-        "vst  %%v25,80(%%r1,%1)  \n\t"
-        "vst  %%v26,96(%%r1,%1)  \n\t"
-        "vst  %%v27,112(%%r1,%1) \n\t"
-    
-        "agfi  %%r1,128          \n\t"
-        "brctg %%r0,0b               "
-        :
-        :"r"(n),"ZR"((FLOAT (*)[n])x)
-        :"memory","cc","r0","r1","v24","v25","v26","v27"
-    );
+static void sscal_kernel_32_zero(BLASLONG n, FLOAT *x) {
+  __asm__("vzero %%v0\n\t"
+       "srlg %[n],%[n],5\n\t"
+       "xgr   %%r1,%%r1\n\t"
+       "0:\n\t"
+       "pfd 2, 1024(%%r1,%[x])\n\t"
+       "vst  %%v0,0(%%r1,%[x])\n\t"
+       "vst  %%v0,16(%%r1,%[x])\n\t"
+       "vst  %%v0,32(%%r1,%[x])\n\t"
+       "vst  %%v0,48(%%r1,%[x])\n\t"
+       "vst  %%v0,64(%%r1,%[x])\n\t"
+       "vst  %%v0,80(%%r1,%[x])\n\t"
+       "vst  %%v0,96(%%r1,%[x])\n\t"
+       "vst  %%v0,112(%%r1,%[x])\n\t"
+       "agfi  %%r1,128\n\t"
+       "brctg %[n],0b"
+       : "=m"(*(FLOAT (*)[n]) x),[n] "+&r"(n)
+       : [x] "a"(x)
+       : "cc", "r1", "v0");
 }
 
-int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
-{
-    BLASLONG i=0,j=0;
-    if ( n <= 0 || inc_x <=0 )
-        return(0);
+int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
+          BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy,
+          BLASLONG dummy2) {
+  BLASLONG i = 0, j = 0;
+  if (n <= 0 || inc_x <= 0)
+    return (0);
 
- 
-    if ( inc_x == 1 )
-    {
+  if (inc_x == 1) {
 
-        if ( da == 0.0 )
-        {        
+    if (da == 0.0) {
 
-            BLASLONG n1 = n & -32;
-            if ( n1 > 0 )
-            {
-                
-                sscal_kernel_32_zero(n1, x);
-                j=n1;
-            }
+      BLASLONG n1 = n & -32;
+      if (n1 > 0) {
 
-            while(j < n)
-            {
+        sscal_kernel_32_zero(n1, x);
+        j = n1;
+      }
 
-                x[j]=0.0;
-                j++;
-            }
+      while (j < n) {
 
-        }
-        else
-        {
+        x[j] = 0.0;
+        j++;
+      }
 
-            BLASLONG n1 = n & -32;
-            if ( n1 > 0 )
-            { 
-                sscal_kernel_32(n1, da, x);
-                j=n1;
-            }
-            while(j < n)
-            {
+    } else {
 
-                x[j] = da * x[j] ;
-                j++;
-            }
-        }
+      BLASLONG n1 = n & -32;
+      if (n1 > 0) {
+        sscal_kernel_32(n1, da, x);
+        j = n1;
+      }
+      while (j < n) {
 
-
+        x[j] = da * x[j];
+        j++;
+      }
     }
-    else
-    {
 
-        if ( da == 0.0 )
-        {        
+  } else {
 
-                        BLASLONG n1 = n & -2;
+    if (da == 0.0) {
 
-                        while (j < n1) {
+      BLASLONG n1 = n & -2;
 
-                            x[i]=0.0;
-                            x[i + inc_x]=0.0;
+      while (j < n1) {
 
-                            i += inc_x * 2; 
-                            j += 2;
+        x[i] = 0.0;
+        x[i + inc_x] = 0.0;
 
-                        } 
-            while(j < n)
-            {
+        i += inc_x * 2;
+        j += 2;
 
-                x[i]=0.0;
-                i += inc_x ;
-                j++;
-            }
+      }
+      while (j < n) {
 
-        }
-        else
-        {
-                        BLASLONG n1 = n & -2;
+        x[i] = 0.0;
+        i += inc_x;
+        j++;
+      }
 
-                        while (j < n1) {
+    } else {
+      BLASLONG n1 = n & -2;
 
-                            x[i] = da * x[i] ;
-                            x[i + inc_x] = da * x[i + inc_x];
+      while (j < n1) {
 
-                            i += inc_x * 2; 
-                            j += 2;
+        x[i] = da * x[i];
+        x[i + inc_x] = da * x[i + inc_x];
 
-                        }  
+        i += inc_x * 2;
+        j += 2;
 
-            while(j < n)
-            {
+      }
 
-                x[i] = da * x[i] ;
-                i += inc_x ;
-                j++;
-            }
-        }
+      while (j < n) {
 
+        x[i] = da * x[i];
+        i += inc_x;
+        j++;
+      }
     }
-    return 0;
+
+  }
+  return 0;
 
 }
-
-
