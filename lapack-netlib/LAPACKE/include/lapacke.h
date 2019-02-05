@@ -70,7 +70,11 @@
 
 /* Complex type (single precision) */
 #ifndef lapack_complex_float
+#ifndef __cplusplus
 #include <complex.h>
+#else
+#include <complex>
+#endif
 #define lapack_complex_float    float _Complex
 #endif
 
