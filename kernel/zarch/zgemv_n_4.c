@@ -30,10 +30,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NBMAX 1024
 
 static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
-  __asm__("vl     %%v16,0(%[x])\n\t"
-       "vl     %%v17,16(%[x])\n\t"
-       "vl     %%v18,32(%[x])\n\t"
-       "vl     %%v19,48(%[x])\n\t"
+  __asm__("vl     %%v16,0(%[x]),3\n\t"
+       "vl     %%v17,16(%[x]),3\n\t"
+       "vl     %%v18,32(%[x]),3\n\t"
+       "vl     %%v19,48(%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v20,8(%[x]),0\n\t"
        "wflcdb %%v20,%%v20\n\t"
@@ -69,8 +69,8 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
        "pfd 1,1024(%%r1,%[ap2])\n\t"
        "pfd 1,1024(%%r1,%[ap3])\n\t"
        "pfd 2,1024(%%r1,%[y])\n\t"
-       "vl  %%v0,0(%%r1,%[y])\n\t"
-       "vl  %%v1,16(%%r1,%[y])\n\t"
+       "vl  %%v0,0(%%r1,%[y]),3\n\t"
+       "vl  %%v1,16(%%r1,%[y]),3\n\t"
        "vlrepg %%v24,0(%%r1,%[ap0])\n\t"
        "vlrepg %%v25,8(%%r1,%[ap0])\n\t"
        "vlrepg %%v26,0(%%r1,%[ap1])\n\t"
@@ -103,8 +103,8 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
        "vfmadb   %%v1,%%v30,%%v19,%%v1\n\t"
        "vfmadb   %%v0,%%v27,%%v23,%%v0\n\t"
        "vfmadb   %%v1,%%v31,%%v23,%%v1\n\t"
-       "vst %%v0,0(%%r1,%[y])\n\t"
-       "vst %%v1,16(%%r1,%[y])\n\t"
+       "vst %%v0,0(%%r1,%[y]),3\n\t"
+       "vst %%v1,16(%%r1,%[y]),3\n\t"
        "agfi   %%r1,32\n\t"
        "brctg  %[n],0b"
        : "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
@@ -119,8 +119,8 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
 }
 
 static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
-  __asm__("vl     %%v16,0(%[x])\n\t"
-       "vl     %%v17,16(%[x])\n\t"
+  __asm__("vl     %%v16,0(%[x]),3\n\t"
+       "vl     %%v17,16(%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v18,8(%[x]),0\n\t"
        "wflcdb %%v18,%%v18\n\t"
@@ -142,8 +142,8 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
        "pfd 1,1024(%%r1,%[ap0])\n\t"
        "pfd 1,1024(%%r1,%[ap1])\n\t"
        "pfd 2,1024(%%r1,%[y])\n\t"
-       "vl  %%v0,0(%%r1,%[y])\n\t"
-       "vl  %%v1,16(%%r1,%[y])\n\t"
+       "vl  %%v0,0(%%r1,%[y]),3\n\t"
+       "vl  %%v1,16(%%r1,%[y]),3\n\t"
        "vlrepg %%v20,0(%%r1,%[ap0])\n\t"
        "vlrepg %%v21,8(%%r1,%[ap0])\n\t"
        "vlrepg %%v22,0(%%r1,%[ap1])\n\t"
@@ -160,8 +160,8 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
        "vfmadb   %%v1,%%v26,%%v17,%%v1\n\t"
        "vfmadb   %%v0,%%v23,%%v19,%%v0\n\t"
        "vfmadb   %%v1,%%v27,%%v19,%%v1\n\t"
-       "vst %%v0,0(%%r1,%[y])\n\t"
-       "vst %%v1,16(%%r1,%[y])\n\t"
+       "vst %%v0,0(%%r1,%[y]),3\n\t"
+       "vst %%v1,16(%%r1,%[y]),3\n\t"
        "agfi   %%r1,32\n\t"
        "brctg  %[n],0b"
        : "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
@@ -173,7 +173,7 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
 }
 
 static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
-  __asm__("vl     %%v16,0(%[x])\n\t"
+  __asm__("vl     %%v16,0(%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v17,8(%[x]),0\n\t"
        "wflcdb %%v17,%%v17\n\t"
@@ -188,8 +188,8 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
        "0:\n\t"
        "pfd 1,1024(%%r1,%[ap])\n\t"
        "pfd 2,1024(%%r1,%[y])\n\t"
-       "vl  %%v0,0(%%r1,%[y])\n\t"
-       "vl  %%v1,16(%%r1,%[y])\n\t"
+       "vl  %%v0,0(%%r1,%[y]),3\n\t"
+       "vl  %%v1,16(%%r1,%[y]),3\n\t"
        "vlrepg %%v18,0(%%r1,%[ap])\n\t"
        "vlrepg %%v19,8(%%r1,%[ap])\n\t"
        "vlrepg %%v20,16(%%r1,%[ap])\n\t"
@@ -198,8 +198,8 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
        "vfmadb   %%v1,%%v20,%%v16,%%v1\n\t"
        "vfmadb   %%v0,%%v19,%%v17,%%v0\n\t"
        "vfmadb   %%v1,%%v21,%%v17,%%v1\n\t"
-       "vst %%v0,0(%%r1,%[y])\n\t"
-       "vst %%v1,16(%%r1,%[y])\n\t"
+       "vst %%v0,0(%%r1,%[y]),3\n\t"
+       "vst %%v1,16(%%r1,%[y]),3\n\t"
        "agfi   %%r1,32\n\t"
        "brctg  %[n],0b"
        : "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
@@ -227,14 +227,14 @@ static void add_y_4(BLASLONG n, FLOAT *src, FLOAT *dest, FLOAT alpha_r,
        "0:\n\t"
        "pfd 1,1024(%%r1,%[src])\n\t"
        "pfd 2,1024(%%r1,%[dest])\n\t"
-       "vl   %%v16,0(%%r1,%[src])\n\t"
-       "vl   %%v17,16(%%r1,%[src])\n\t"
-       "vl   %%v18,32(%%r1,%[src])\n\t"
-       "vl   %%v19,48(%%r1,%[src])\n\t"
-       "vl   %%v20,0(%%r1,%[dest])\n\t"
-       "vl   %%v21,16(%%r1,%[dest])\n\t"
-       "vl   %%v22,32(%%r1,%[dest])\n\t"
-       "vl   %%v23,48(%%r1,%[dest])\n\t"
+       "vl   %%v16,0(%%r1,%[src]),3\n\t"
+       "vl   %%v17,16(%%r1,%[src]),3\n\t"
+       "vl   %%v18,32(%%r1,%[src]),3\n\t"
+       "vl   %%v19,48(%%r1,%[src]),3\n\t"
+       "vl   %%v20,0(%%r1,%[dest]),3\n\t"
+       "vl   %%v21,16(%%r1,%[dest]),3\n\t"
+       "vl   %%v22,32(%%r1,%[dest]),3\n\t"
+       "vl   %%v23,48(%%r1,%[dest]),3\n\t"
        "vpdi %%v24,%%v16,%%v16,4\n\t"
        "vpdi %%v25,%%v17,%%v17,4\n\t"
        "vpdi %%v26,%%v18,%%v18,4\n\t"
@@ -247,10 +247,10 @@ static void add_y_4(BLASLONG n, FLOAT *src, FLOAT *dest, FLOAT alpha_r,
        "vfmadb %%v29,%%v25,%%v1,%%v29\n\t"
        "vfmadb %%v30,%%v26,%%v1,%%v30\n\t"
        "vfmadb %%v31,%%v27,%%v1,%%v31\n\t"
-       "vst %%v28,0(%%r1,%[dest])\n\t"
-       "vst %%v29,16(%%r1,%[dest])\n\t"
-       "vst %%v30,32(%%r1,%[dest])\n\t"
-       "vst %%v31,48(%%r1,%[dest])\n\t"
+       "vst %%v28,0(%%r1,%[dest]),3\n\t"
+       "vst %%v29,16(%%r1,%[dest]),3\n\t"
+       "vst %%v30,32(%%r1,%[dest]),3\n\t"
+       "vst %%v31,48(%%r1,%[dest]),3\n\t"
        "agfi   %%r1,64\n\t"
        "brctg  %[n],0b"
        : "+m"(*(FLOAT (*)[n * 2]) dest),[n] "+&r"(n)

@@ -47,7 +47,7 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
        "pfd 1,1024(%%r1,%[ap2])\n\t"
        "pfd 1,1024(%%r1,%[ap3])\n\t"
        "pfd 1,1024(%%r1,%[x])\n\t"
-       "vl     %%v0,0(%%r1,%[x])\n\t"
+       "vl     %%v0,0(%%r1,%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v1,8(%%r1,%[x]),0\n\t"
        "wflcdb %%v1,%%v1\n\t"
@@ -73,7 +73,7 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
        "vfmadb   %%v22,%%v29,%%v1,%%v22\n\t"
        "vfmadb   %%v19,%%v30,%%v0,%%v19\n\t"
        "vfmadb   %%v23,%%v31,%%v1,%%v23\n\t"
-       "vl     %%v0,16(%%r1,%[x])\n\t"
+       "vl     %%v0,16(%%r1,%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v1,24(%%r1,%[x]),0\n\t"
        "wflcdb %%v1,%%v1\n\t"
@@ -120,10 +120,10 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
        "vleg   %%v24,0(%[alpha]),0\n\t"
        "vlrepg %%v25,8(%[alpha])\n\t"
 #endif
-       "vl  %%v26,0(%[y])\n\t"
-       "vl  %%v27,16(%[y])\n\t"
-       "vl  %%v28,32(%[y])\n\t"
-       "vl  %%v29,48(%[y])\n\t"
+       "vl  %%v26,0(%[y]),3\n\t"
+       "vl  %%v27,16(%[y]),3\n\t"
+       "vl  %%v28,32(%[y]),3\n\t"
+       "vl  %%v29,48(%[y]),3\n\t"
        "vfmadb   %%v26,%%v16,%%v24,%%v26\n\t"
        "vfmadb   %%v26,%%v20,%%v25,%%v26\n\t"
        "vfmadb   %%v27,%%v17,%%v24,%%v27\n\t"
@@ -132,10 +132,10 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
        "vfmadb   %%v28,%%v22,%%v25,%%v28\n\t"
        "vfmadb   %%v29,%%v19,%%v24,%%v29\n\t"
        "vfmadb   %%v29,%%v23,%%v25,%%v29\n\t"
-       "vst  %%v26,0(%[y])\n\t"
-       "vst  %%v27,16(%[y])\n\t"
-       "vst  %%v28,32(%[y])\n\t"
-       "vst  %%v29,48(%[y])"
+       "vst  %%v26,0(%[y]),3\n\t"
+       "vst  %%v27,16(%[y]),3\n\t"
+       "vst  %%v28,32(%[y]),3\n\t"
+       "vst  %%v29,48(%[y]),3"
        : "+m"(*(FLOAT (*)[8]) y),[n] "+&r"(n)
        : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap[0]),[ap0] "a"(ap[0]),
           "m"(*(const FLOAT (*)[n * 2]) ap[1]),[ap1] "a"(ap[1]),
@@ -160,7 +160,7 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
        "pfd 1,1024(%%r1,%[ap0])\n\t"
        "pfd 1,1024(%%r1,%[ap1])\n\t"
        "pfd 1,1024(%%r1,%[x])\n\t"
-       "vl     %%v0,0(%%r1,%[x])\n\t"
+       "vl     %%v0,0(%%r1,%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v1,8(%%r1,%[x]),0\n\t"
        "wflcdb %%v1,%%v1\n\t"
@@ -178,7 +178,7 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
        "vfmadb   %%v18,%%v21,%%v1,%%v18\n\t"
        "vfmadb   %%v17,%%v22,%%v0,%%v17\n\t"
        "vfmadb   %%v19,%%v23,%%v1,%%v19\n\t"
-       "vl     %%v0,16(%%r1,%[x])\n\t"
+       "vl     %%v0,16(%%r1,%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v1,24(%%r1,%[x]),0\n\t"
        "wflcdb %%v1,%%v1\n\t"
@@ -213,14 +213,14 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
        "vleg   %%v20,0(%[alpha]),0\n\t"
        "vlrepg %%v21,8(%[alpha])\n\t"
 #endif
-       "vl  %%v22,0(%[y])\n\t"
-       "vl  %%v23,16(%[y])\n\t"
+       "vl  %%v22,0(%[y]),3\n\t"
+       "vl  %%v23,16(%[y]),3\n\t"
        "vfmadb   %%v22,%%v16,%%v20,%%v22\n\t"
        "vfmadb   %%v22,%%v18,%%v21,%%v22\n\t"
        "vfmadb   %%v23,%%v17,%%v20,%%v23\n\t"
        "vfmadb   %%v23,%%v19,%%v21,%%v23\n\t"
-       "vst  %%v22,0(%[y])\n\t"
-       "vst  %%v23,16(%[y])\n\t"
+       "vst  %%v22,0(%[y]),3\n\t"
+       "vst  %%v23,16(%[y]),3\n\t"
        : "+m"(*(FLOAT (*)[4]) y),[n] "+&r"(n)
        : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap[0]),[ap0] "a"(ap[0]),
           "m"(*(const FLOAT (*)[n * 2]) ap[1]),[ap1] "a"(ap[1]),
@@ -239,7 +239,7 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y,
        "0:\n\t"
        "pfd 1,1024(%%r1,%[ap])\n\t"
        "pfd 1,1024(%%r1,%[x])\n\t"
-       "vl     %%v0,0(%%r1,%[x])\n\t"
+       "vl     %%v0,0(%%r1,%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v1,8(%%r1,%[x]),0\n\t"
        "wflcdb %%v1,%%v1\n\t"
@@ -253,7 +253,7 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y,
        "vlrepg %%v19,8(%%r1,%[ap])\n\t"
        "vfmadb   %%v16,%%v18,%%v0,%%v16\n\t"
        "vfmadb   %%v17,%%v19,%%v1,%%v17\n\t"
-       "vl     %%v0,16(%%r1,%[x])\n\t"
+       "vl     %%v0,16(%%r1,%[x]),3\n\t"
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
        "vleg   %%v1,24(%%r1,%[x]),0\n\t"
        "wflcdb %%v1,%%v1\n\t"
@@ -282,10 +282,10 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y,
        "vleg   %%v18,0(%[alpha]),0\n\t"
        "vlrepg %%v19,8(%[alpha])\n\t"
 #endif
-       "vl  %%v0,0(%[y])\n\t"
+       "vl  %%v0,0(%[y]),3\n\t"
        "vfmadb   %%v0,%%v16,%%v18,%%v0\n\t"
        "vfmadb   %%v0,%%v17,%%v19,%%v0\n\t"
-       "vst  %%v0,0(%[y])\n\t"
+       "vst  %%v0,0(%[y]),3\n\t"
        : "+m"(*(FLOAT (*)[2]) y),[n] "+&r"(n)
        : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap),[ap] "a"(ap),
           "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
