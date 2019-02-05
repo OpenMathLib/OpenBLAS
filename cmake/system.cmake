@@ -187,6 +187,13 @@ if (DYNAMIC_ARCH)
   endif ()
 endif ()
 
+if (DYNAMIC_LIST)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_LIST")
+  foreach(DCORE ${DYNAMIC_LIST})
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DDYN_${DCORE}")
+  endforeach ()
+endif ()
+
 if (NO_LAPACK)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_LAPACK")
   #Disable LAPACK C interface
