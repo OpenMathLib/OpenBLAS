@@ -36,7 +36,7 @@ static void zcopy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y) {
        "la  %[x],256(%[x])\n\t"
        "la  %[y],256(%[y])\n\t"
        "brctg %[n],0b"
-       : "=m"(*(FLOAT (*)[n * 2]) y),[x] "+&a"(x),[y] "+&a"(y)
+       : "=m"(*(FLOAT (*)[n * 2]) y),[x] "+&a"(x),[y] "+&a"(y),[n] "+&r"(n)
        : "m"(*(const FLOAT (*)[n * 2]) x)
        : "cc");
 }
