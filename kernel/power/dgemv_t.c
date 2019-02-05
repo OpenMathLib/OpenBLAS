@@ -27,8 +27,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#define NBMAX 8192
-#define PREFETCH 1
+#define NBMAX 1024
+//#define PREFETCH 1
 #include <altivec.h> 
 
 #define HAVE_KERNEL4x8_ASM 1

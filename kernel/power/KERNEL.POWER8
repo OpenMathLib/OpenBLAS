@@ -147,14 +147,14 @@ CSWAPKERNEL  = cswap.c
 ZSWAPKERNEL  = zswap.c
 #
 
-#SGEMVNKERNEL = ../arm/gemv_n.c
+SGEMVNKERNEL = sgemv_n.c
 DGEMVNKERNEL = dgemv_n.c
-#CGEMVNKERNEL = ../arm/zgemv_n.c
+CGEMVNKERNEL = cgemv_n.c
 ZGEMVNKERNEL = zgemv_n_4.c
 #
-#SGEMVTKERNEL = ../arm/gemv_t.c
+SGEMVTKERNEL = sgemv_t.c
 DGEMVTKERNEL = dgemv_t.c
-#CGEMVTKERNEL = ../arm/zgemv_t.c
+CGEMVTKERNEL = cgemv_t.c
 ZGEMVTKERNEL = zgemv_t_4.c
 
 
