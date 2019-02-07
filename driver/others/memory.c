@@ -216,7 +216,7 @@ int i,n;
  #endif
 
  #if !__GLIBC_PREREQ(2, 7)
-  ret = sched_getaffinity(0,sizeof(cpu_set_t), cpusetp);
+  ret = sched_getaffinity(0,sizeof(cpusetp), cpusetp);
   if (ret!=0) return nums;
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
@@ -224,15 +224,18 @@ int i,n;
      if (CPU_ISSET(i,cpusetp)) n++;
   nums=n;
   #else
-  nums = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
+  nums = CPU_COUNT(sizeof(cpusetp),cpusetp);
   #endif
   return nums;
  #else
   cpusetp = CPU_ALLOC(nums);
   if (cpusetp == NULL) return nums;
   size = CPU_ALLOC_SIZE(nums);
-  ret = sched_getaffinity(0,size,cpusetp);
-  if (ret!=0) return nums;
+  ret = sched_getaffinity(0,sizeof(cpusetp),cpusetp);
+  if (ret!=0) {
+    CPU_FREE(cpusetp);
+    return nums;
+  }
   ret = CPU_COUNT_S(size,cpusetp);
   if (ret > 0 && ret < nums) nums = ret;
   CPU_FREE(cpusetp);
@@ -1728,7 +1731,7 @@ int i,n;
  #endif
 
  #if !__GLIBC_PREREQ(2, 7)
-  ret = sched_getaffinity(0,sizeof(cpu_set_t), cpusetp);
+  ret = sched_getaffinity(0,sizeof(cpusetp), cpusetp);
   if (ret!=0) return nums;
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
@@ -1736,15 +1739,18 @@ int i,n;
      if (CPU_ISSET(i,cpusetp)) n++;
   nums=n;
   #else
-  nums = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
+  nums = CPU_COUNT(sizeof(cpusetp),cpusetp);
   #endif
   return nums;
  #else
   cpusetp = CPU_ALLOC(nums);
   if (cpusetp == NULL) return nums;
   size = CPU_ALLOC_SIZE(nums);
-  ret = sched_getaffinity(0,size,cpusetp);
-  if (ret!=0) return nums;
+  ret = sched_getaffinity(0,sizeof(cpusetp),cpusetp);
+  if (ret!=0) {
+    CPU_FREE(cpusetp);
+    return nums;
+  }
   ret = CPU_COUNT_S(size,cpusetp);
   if (ret > 0 && ret < nums) nums = ret;	
   CPU_FREE(cpusetp);
