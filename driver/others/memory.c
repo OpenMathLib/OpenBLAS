@@ -2671,11 +2671,8 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   memory[position].used = 1;
-#if defined(SMP) && !defined(USE_OPENMP)
+
   UNLOCK_COMMAND(&alloc_lock);
-#else
-  blas_unlock(&memory[position].lock);
-#endif
 
   if (!memory[position].addr) {
     do {
