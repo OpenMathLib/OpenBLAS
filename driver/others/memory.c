@@ -201,10 +201,13 @@ int get_num_procs(void) {
   cpu_set_t cpuset,*cpusetp;
   size_t size;
   int ret;
+
+#if defined(__GLIBC_PREREQ)
 #if !__GLIBC_PREREQ(2, 7)
   int i;
 #if !__GLIBC_PREREQ(2, 6)
   int n;
+#endif
 #endif
 #endif
 
@@ -1725,10 +1728,13 @@ int get_num_procs(void) {
   cpu_set_t cpuset,*cpusetp;
   size_t size;
   int ret;
+
+#if defined(__GLIBC_PREREQ)
 #if !__GLIBC_PREREQ(2, 7)
   int i;
 #if !__GLIBC_PREREQ(2, 6)
   int n;
+#endif
 #endif
 #endif
 
