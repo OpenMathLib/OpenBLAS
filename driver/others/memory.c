@@ -236,21 +236,30 @@ int get_num_procs(void) {
   #endif
   return nums;
  #else
-  cpusetp = CPU_ALLOC(nums);
-  if (cpusetp == NULL) {
-  return nums;
-  }
-  cpuset = *cpusetp;
-  size = CPU_ALLOC_SIZE(nums);
-  ret = sched_getaffinity(0,sizeof(cpuset),&cpuset);
-  if (ret!=0) {
+  if (nums >= CPU_SETSIZE) {
+    cpusetp = CPU_ALLOC(nums);
+      if (cpusetp == NULL) {
+        return nums;
+      }
+    size = CPU_ALLOC_SIZE(nums);
+    ret = sched_getaffinity(0,size,cpusetp);
+    if (ret!=0) {
+      CPU_FREE(cpusetp);
+      return nums;
+    }
+    ret = CPU_COUNT_S(size,cpusetp);
+    if (ret > 0 && ret < nums) nums = ret;	
     CPU_FREE(cpusetp);
     return nums;
+  } else {
+    ret = sched_getaffinity(0,sizeof(cpuset),&cpuset);
+    if (ret!=0) {
+      return nums;
+    }
+    ret = CPU_COUNT(&cpuset);
+    if (ret > 0 && ret < nums) nums = ret;	
+    return nums;
   }
-  ret = CPU_COUNT_S(size,cpusetp);
-  if (ret > 0 && ret < nums) nums = ret;	
-  CPU_FREE(cpusetp);
-  return nums;
  #endif
 #endif
 }
@@ -1763,21 +1772,30 @@ int get_num_procs(void) {
   #endif
   return nums;
  #else
-  cpusetp = CPU_ALLOC(nums);
-  if (cpusetp == NULL) {
-  return nums;
-  }
-  cpuset = *cpusetp;
-  size = CPU_ALLOC_SIZE(nums);
-  ret = sched_getaffinity(0,sizeof(cpuset),&cpuset);
-  if (ret!=0) {
+  if (nums >= CPU_SETSIZE) {
+    cpusetp = CPU_ALLOC(nums);
+      if (cpusetp == NULL) {
+        return nums;
+      }
+    size = CPU_ALLOC_SIZE(nums);
+    ret = sched_getaffinity(0,size,cpusetp);
+    if (ret!=0) {
+      CPU_FREE(cpusetp);
+      return nums;
+    }
+    ret = CPU_COUNT_S(size,cpusetp);
+    if (ret > 0 && ret < nums) nums = ret;	
     CPU_FREE(cpusetp);
     return nums;
+  } else {
+    ret = sched_getaffinity(0,sizeof(cpuset),&cpuset);
+    if (ret!=0) {
+      return nums;
+    }
+    ret = CPU_COUNT(&cpuset);
+    if (ret > 0 && ret < nums) nums = ret;	
+    return nums;
   }
-  ret = CPU_COUNT_S(size,cpusetp);
-  if (ret > 0 && ret < nums) nums = ret;	
-  CPU_FREE(cpusetp);
-  return nums;
  #endif
 #endif
 }
