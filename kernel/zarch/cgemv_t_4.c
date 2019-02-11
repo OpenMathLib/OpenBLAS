@@ -31,6 +31,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void cgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
                              FLOAT *alpha) {
+  register FLOAT *ap0 = ap[0];
+  register FLOAT *ap1 = ap[1];
+  register FLOAT *ap2 = ap[2];
+  register FLOAT *ap3 = ap[3];
+
   __asm__("vzero  %%v16\n\t"
         "vzero  %%v17\n\t"
         "vzero  %%v18\n\t"
@@ -154,20 +159,23 @@ static void cgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
         "vfmasb   %%v23,%%v19,%%v21,%%v23\n\t"
         "vst  %%v22,0(%[y])\n\t"
         "vst  %%v23,16(%[y])"
-       : "+m"(*(FLOAT (*)[8]) y),[n] "+&r"(n)
-       : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap[0]),[ap0] "a"(ap[0]),
-          "m"(*(const FLOAT (*)[n * 2]) ap[1]),[ap1] "a"(ap[1]),
-          "m"(*(const FLOAT (*)[n * 2]) ap[2]),[ap2] "a"(ap[2]),
-          "m"(*(const FLOAT (*)[n * 2]) ap[3]),[ap3] "a"(ap[3]),
-          "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
-          "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
-       : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19", "v20",
-          "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
-          "v31");
+    : "+m"(*(struct { FLOAT x[8]; } *) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap0),[ap0] "a"(ap0),
+       "m"(*(const struct { FLOAT x[n * 2]; } *) ap1),[ap1] "a"(ap1),
+       "m"(*(const struct { FLOAT x[n * 2]; } *) ap2),[ap2] "a"(ap2),
+       "m"(*(const struct { FLOAT x[n * 2]; } *) ap3),[ap3] "a"(ap3),
+       "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
+       "m"(*(const struct { FLOAT x[2]; } *) alpha),[alpha] "a"(alpha)
+    : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19", "v20",
+       "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
+       "v31");
 }
 
 static void cgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
                              FLOAT *alpha) {
+  register FLOAT *ap0 = ap[0];
+  register FLOAT *ap1 = ap[1];
+
   __asm__("vzero  %%v16\n\t"
         "vzero  %%v17\n\t"
         "vzero  %%v18\n\t"
@@ -263,13 +271,13 @@ static void cgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
         "vfmasb   %%v20,%%v16,%%v18,%%v20\n\t"
         "vfmasb   %%v20,%%v17,%%v19,%%v20\n\t"
         "vst  %%v20,0(%[y])"
-       : "+m"(*(FLOAT (*)[4]) y),[n] "+&r"(n)
-       : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap[0]),[ap0] "a"(ap[0]),
-          "m"(*(const FLOAT (*)[n * 2]) ap[1]),[ap1] "a"(ap[1]),
-          "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
-          "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
-       : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19", "v20",
-          "v21", "v22", "v23");
+    : "+m"(*(struct { FLOAT x[4]; } *) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap0),[ap0] "a"(ap0),
+       "m"(*(const struct { FLOAT x[n * 2]; } *) ap1),[ap1] "a"(ap1),
+       "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
+       "m"(*(const struct { FLOAT x[2]; } *) alpha),[alpha] "a"(alpha)
+    : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19", "v20",
+       "v21", "v22", "v23");
 }
 
 static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y,
@@ -353,11 +361,11 @@ static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y,
         "vfmasb   %%v0,%%v16,%%v18,%%v0\n\t"
         "vfmasb   %%v0,%%v17,%%v19,%%v0\n\t"
         "vsteg    %%v0,0(%[y]),0"
-       : "+m"(*(FLOAT (*)[2]) y),[n] "+&r"(n)
-       : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap),[ap] "a"(ap),
-          "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
-          "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
-       : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19");
+    : "+m"(*(struct { FLOAT x[2]; } *) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap),[ap] "a"(ap),
+       "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
+       "m"(*(const struct { FLOAT x[2]; } *) alpha),[alpha] "a"(alpha)
+    : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19");
 }
 
 static void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {

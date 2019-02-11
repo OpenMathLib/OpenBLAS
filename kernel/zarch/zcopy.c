@@ -29,16 +29,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void zcopy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y) {
   __asm__("srlg %[n],%[n],4\n\t"
-       "0:\n\t"
-       "pfd 1, 1024(%[x])\n\t"
-       "pfd 2, 1024(%[y])\n\t"
-       "mvc 0(256,%[y]),0(%[x])\n\t"
-       "la  %[x],256(%[x])\n\t"
-       "la  %[y],256(%[y])\n\t"
-       "brctg %[n],0b"
-       : "=m"(*(FLOAT (*)[n * 2]) y),[x] "+&a"(x),[y] "+&a"(y),[n] "+&r"(n)
-       : "m"(*(const FLOAT (*)[n * 2]) x)
-       : "cc");
+    "0:\n\t"
+    "pfd 1, 1024(%[x])\n\t"
+    "pfd 2, 1024(%[y])\n\t"
+    "mvc 0(256,%[y]),0(%[x])\n\t"
+    "la  %[x],256(%[x])\n\t"
+    "la  %[y],256(%[y])\n\t"
+    "brctg %[n],0b"
+    : "=m"(*(struct { FLOAT x[n * 2]; } *) y),[x] "+&a"(x),[y] "+&a"(y),
+       [n] "+&r"(n)
+    : "m"(*(const struct { FLOAT x[n * 2]; } *) x)
+    : "cc");
 }
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y) {

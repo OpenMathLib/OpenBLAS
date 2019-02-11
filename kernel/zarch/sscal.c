@@ -29,61 +29,61 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void sscal_kernel_32(BLASLONG n, FLOAT da, FLOAT *x) {
   __asm__("vlrepf %%v0,%[da]\n\t"
-       "srlg  %[n],%[n],5\n\t"
-       "xgr   %%r1,%%r1\n\t"
-       "0:\n\t"
-       "pfd 2, 1024(%%r1,%[x])\n\t"
-       "vl    %%v24,0(%%r1,%[x])\n\t"
-       "vfmsb %%v24,%%v24,%%v0\n\t"
-       "vst   %%v24,0(%%r1,%[x])\n\t"
-       "vl    %%v25,16(%%r1,%[x])\n\t"
-       "vfmsb %%v25,%%v25,%%v0\n\t"
-       "vst   %%v25,16(%%r1,%[x])\n\t"
-       "vl    %%v26,32(%%r1,%[x])\n\t"
-       "vfmsb %%v26,%%v26,%%v0\n\t"
-       "vst   %%v26,32(%%r1,%[x])\n\t"
-       "vl    %%v27,48(%%r1,%[x])\n\t"
-       "vfmsb %%v27,%%v27,%%v0\n\t"
-       "vst   %%v27,48(%%r1,%[x])\n\t"
-       "vl    %%v28,64(%%r1,%[x])\n\t"
-       "vfmsb %%v28,%%v28,%%v0\n\t"
-       "vst   %%v28,64(%%r1,%[x])\n\t"
-       "vl    %%v29,80(%%r1,%[x])\n\t"
-       "vfmsb %%v29,%%v29,%%v0\n\t"
-       "vst   %%v29,80(%%r1,%[x])\n\t"
-       "vl    %%v30,96(%%r1,%[x])\n\t"
-       "vfmsb %%v30,%%v30,%%v0\n\t"
-       "vst   %%v30,96(%%r1,%[x])\n\t"
-       "vl    %%v31,112(%%r1,%[x])\n\t"
-       "vfmsb %%v31,%%v31,%%v0\n\t"
-       "vst   %%v31,112(%%r1,%[x])\n\t"
-       "agfi   %%r1,128\n\t"
-       "brctg  %[n],0b"
-       : "+m"(*(FLOAT (*)[n]) x),[n] "+&r"(n)
-       : [x] "a"(x),[da] "m"(da)
-       : "cc", "r1", "v0", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
-          "v31");
+    "srlg  %[n],%[n],5\n\t"
+    "xgr   %%r1,%%r1\n\t"
+    "0:\n\t"
+    "pfd 2, 1024(%%r1,%[x])\n\t"
+    "vl    %%v24,0(%%r1,%[x])\n\t"
+    "vfmsb %%v24,%%v24,%%v0\n\t"
+    "vst   %%v24,0(%%r1,%[x])\n\t"
+    "vl    %%v25,16(%%r1,%[x])\n\t"
+    "vfmsb %%v25,%%v25,%%v0\n\t"
+    "vst   %%v25,16(%%r1,%[x])\n\t"
+    "vl    %%v26,32(%%r1,%[x])\n\t"
+    "vfmsb %%v26,%%v26,%%v0\n\t"
+    "vst   %%v26,32(%%r1,%[x])\n\t"
+    "vl    %%v27,48(%%r1,%[x])\n\t"
+    "vfmsb %%v27,%%v27,%%v0\n\t"
+    "vst   %%v27,48(%%r1,%[x])\n\t"
+    "vl    %%v28,64(%%r1,%[x])\n\t"
+    "vfmsb %%v28,%%v28,%%v0\n\t"
+    "vst   %%v28,64(%%r1,%[x])\n\t"
+    "vl    %%v29,80(%%r1,%[x])\n\t"
+    "vfmsb %%v29,%%v29,%%v0\n\t"
+    "vst   %%v29,80(%%r1,%[x])\n\t"
+    "vl    %%v30,96(%%r1,%[x])\n\t"
+    "vfmsb %%v30,%%v30,%%v0\n\t"
+    "vst   %%v30,96(%%r1,%[x])\n\t"
+    "vl    %%v31,112(%%r1,%[x])\n\t"
+    "vfmsb %%v31,%%v31,%%v0\n\t"
+    "vst   %%v31,112(%%r1,%[x])\n\t"
+    "agfi   %%r1,128\n\t"
+    "brctg  %[n],0b"
+    : "+m"(*(struct { FLOAT x[n]; } *) x),[n] "+&r"(n)
+    : [x] "a"(x),[da] "Q"(da)
+    : "cc", "r1", "v0", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
+       "v31");
 }
 
 static void sscal_kernel_32_zero(BLASLONG n, FLOAT *x) {
   __asm__("vzero %%v0\n\t"
-       "srlg %[n],%[n],5\n\t"
-       "xgr   %%r1,%%r1\n\t"
-       "0:\n\t"
-       "pfd 2, 1024(%%r1,%[x])\n\t"
-       "vst  %%v0,0(%%r1,%[x])\n\t"
-       "vst  %%v0,16(%%r1,%[x])\n\t"
-       "vst  %%v0,32(%%r1,%[x])\n\t"
-       "vst  %%v0,48(%%r1,%[x])\n\t"
-       "vst  %%v0,64(%%r1,%[x])\n\t"
-       "vst  %%v0,80(%%r1,%[x])\n\t"
-       "vst  %%v0,96(%%r1,%[x])\n\t"
-       "vst  %%v0,112(%%r1,%[x])\n\t"
-       "agfi  %%r1,128\n\t"
-       "brctg %[n],0b"
-       : "=m"(*(FLOAT (*)[n]) x),[n] "+&r"(n)
-       : [x] "a"(x)
-       : "cc", "r1", "v0");
+    "srlg %[n],%[n],5\n\t"
+    "xgr   %%r1,%%r1\n\t"
+    "0:\n\t"
+    "pfd 2, 1024(%%r1,%[x])\n\t"
+    "vst  %%v0,0(%%r1,%[x])\n\t"
+    "vst  %%v0,16(%%r1,%[x])\n\t"
+    "vst  %%v0,32(%%r1,%[x])\n\t"
+    "vst  %%v0,48(%%r1,%[x])\n\t"
+    "vst  %%v0,64(%%r1,%[x])\n\t"
+    "vst  %%v0,80(%%r1,%[x])\n\t"
+    "vst  %%v0,96(%%r1,%[x])\n\t"
+    "vst  %%v0,112(%%r1,%[x])\n\t"
+    "agfi  %%r1,128\n\t"
+    "brctg %[n],0b"
+    : "=m"(*(struct { FLOAT x[n]; } *) x),[n] "+&r"(n)
+    : [x] "a"(x)
+    : "cc", "r1", "v0");
 }
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
