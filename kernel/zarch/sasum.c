@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013-2018, The OpenBLAS Project
+Copyright (c) 2013-2019, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -28,147 +28,141 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include <math.h>
 
-#if defined(DOUBLE) 
-#define ABS fabs 
-#else 
-#define ABS fabsf 
-#endif
+#define ABS fabsf
 
-static FLOAT sasum_kernel_64(BLASLONG n, FLOAT *x)
-{
-    FLOAT asum;
+static FLOAT sasum_kernel_64(BLASLONG n, FLOAT *x) {
+  FLOAT asum;
 
-    __asm__ (
-        "vzero   %%v0               \n\t"
-        "vzero   %%v1               \n\t"
-        "vzero   %%v2               \n\t"
-        "vzero   %%v3               \n\t"
-        "srlg  %%r0,%1,6            \n\t"
-        "xgr %%r1,%%r1              \n\t"
-        "0:                         \n\t"
-        "pfd  1, 1024(%%r1,%2)      \n\t"
-        "vl  %%v16, 0(%%r1,%2)      \n\t"
-        "vl  %%v17, 16(%%r1,%2)     \n\t"
-        "vl  %%v18, 32(%%r1,%2)     \n\t"
-        "vl  %%v19, 48(%%r1,%2)     \n\t"
-        "vl  %%v20, 64(%%r1,%2)     \n\t"
-        "vl  %%v21, 80(%%r1,%2)     \n\t"
-        "vl  %%v22, 96(%%r1,%2)     \n\t"
-        "vl  %%v23, 112(%%r1,%2)    \n\t"
+  __asm__("vzero   %%v24\n\t"
+    "vzero   %%v25\n\t"
+    "vzero   %%v26\n\t"
+    "vzero   %%v27\n\t"
+    "vzero   %%v28\n\t"
+    "vzero   %%v29\n\t"
+    "vzero   %%v30\n\t"
+    "vzero   %%v31\n\t"
+    "srlg  %[n],%[n],6\n\t"
+    "xgr %%r1,%%r1\n\t"
+    "0:\n\t"
+    "pfd  1, 1024(%%r1,%[x])\n\t"
+    "vl  %%v16, 0(%%r1,%[x])\n\t"
+    "vl  %%v17, 16(%%r1,%[x])\n\t"
+    "vl  %%v18, 32(%%r1,%[x])\n\t"
+    "vl  %%v19, 48(%%r1,%[x])\n\t"
+    "vl  %%v20, 64(%%r1,%[x])\n\t"
+    "vl  %%v21, 80(%%r1,%[x])\n\t"
+    "vl  %%v22, 96(%%r1,%[x])\n\t"
+    "vl  %%v23, 112(%%r1,%[x])\n\t"
+    "vflpsb  %%v16, %%v16\n\t"
+    "vflpsb  %%v17, %%v17\n\t"
+    "vflpsb  %%v18, %%v18\n\t"
+    "vflpsb  %%v19, %%v19\n\t"
+    "vflpsb  %%v20, %%v20\n\t"
+    "vflpsb  %%v21, %%v21\n\t"
+    "vflpsb  %%v22, %%v22\n\t"
+    "vflpsb  %%v23, %%v23\n\t"
+    "vfasb   %%v24,%%v24,%%v16\n\t"
+    "vfasb   %%v25,%%v25,%%v17\n\t"
+    "vfasb   %%v26,%%v26,%%v18\n\t"
+    "vfasb   %%v27,%%v27,%%v19\n\t"
+    "vfasb   %%v28,%%v28,%%v20\n\t"
+    "vfasb   %%v29,%%v29,%%v21\n\t"
+    "vfasb   %%v30,%%v30,%%v22\n\t"
+    "vfasb   %%v31,%%v31,%%v23\n\t"
+    "vl  %%v16, 128(%%r1,%[x])\n\t"
+    "vl  %%v17, 144(%%r1,%[x])\n\t"
+    "vl  %%v18, 160(%%r1,%[x])\n\t"
+    "vl  %%v19, 176(%%r1,%[x])\n\t"
+    "vl  %%v20, 192(%%r1,%[x])\n\t"
+    "vl  %%v21, 208(%%r1,%[x])\n\t"
+    "vl  %%v22, 224(%%r1,%[x])\n\t"
+    "vl  %%v23, 240(%%r1,%[x])\n\t"
+    "vflpsb  %%v16, %%v16\n\t"
+    "vflpsb  %%v17, %%v17\n\t"
+    "vflpsb  %%v18, %%v18\n\t"
+    "vflpsb  %%v19, %%v19\n\t"
+    "vflpsb  %%v20, %%v20\n\t"
+    "vflpsb  %%v21, %%v21\n\t"
+    "vflpsb  %%v22, %%v22\n\t"
+    "vflpsb  %%v23, %%v23\n\t"
+    "vfasb   %%v24,%%v24,%%v16\n\t"
+    "vfasb   %%v25,%%v25,%%v17\n\t"
+    "vfasb   %%v26,%%v26,%%v18\n\t"
+    "vfasb   %%v27,%%v27,%%v19\n\t"
+    "vfasb   %%v28,%%v28,%%v20\n\t"
+    "vfasb   %%v29,%%v29,%%v21\n\t"
+    "vfasb   %%v30,%%v30,%%v22\n\t"
+    "vfasb   %%v31,%%v31,%%v23\n\t"
+    "agfi  %%r1,256\n\t"
+    "brctg %[n],0b\n\t"
+    "vfasb   %%v24,%%v24,%%v25\n\t"
+    "vfasb   %%v24,%%v24,%%v26\n\t"
+    "vfasb   %%v24,%%v24,%%v27\n\t"
+    "vfasb   %%v24,%%v24,%%v28\n\t"
+    "vfasb   %%v24,%%v24,%%v29\n\t"
+    "vfasb   %%v24,%%v24,%%v30\n\t"
+    "vfasb   %%v24,%%v24,%%v31\n\t"
+    "veslg   %%v25,%%v24,32\n\t"
+    "vfasb   %%v24,%%v24,%%v25\n\t"
+    "vrepf   %%v25,%%v24,2\n\t"
+    "vfasb   %%v24,%%v24,%%v25\n\t"
+    "vstef   %%v24,%[asum],0"
+    : [asum] "=Q"(asum),[n] "+&r"(n)
+    : "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x)
+    : "cc", "r1", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+       "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31");
 
-        "vflpsb  %%v16, %%v16       \n\t"
-        "vflpsb  %%v17, %%v17       \n\t"
-        "vflpsb  %%v18, %%v18       \n\t"
-        "vflpsb  %%v19, %%v19       \n\t"
-        "vflpsb  %%v20, %%v20       \n\t"
-        "vflpsb  %%v21, %%v21       \n\t"
-        "vflpsb  %%v22, %%v22       \n\t"
-        "vflpsb  %%v23, %%v23       \n\t"
-
-        "vfasb   %%v0,%%v0,%%v16    \n\t"
-        "vfasb   %%v1,%%v1,%%v17    \n\t"
-        "vfasb   %%v2,%%v2,%%v18    \n\t"
-        "vfasb   %%v3,%%v3,%%v19    \n\t"
-        "vfasb   %%v0,%%v0,%%v20    \n\t"
-        "vfasb   %%v1,%%v1,%%v21    \n\t"
-        "vfasb   %%v2,%%v2,%%v22    \n\t"
-        "vfasb   %%v3,%%v3,%%v23    \n\t"
-
-        "vl  %%v16, 128(%%r1,%2)    \n\t"
-        "vl  %%v17, 144(%%r1,%2)    \n\t"
-        "vl  %%v18, 160(%%r1,%2)    \n\t"
-        "vl  %%v19, 176(%%r1,%2)    \n\t"
-        "vl  %%v20, 192(%%r1,%2)    \n\t"
-        "vl  %%v21, 208(%%r1,%2)    \n\t"
-        "vl  %%v22, 224(%%r1,%2)    \n\t"
-        "vl  %%v23, 240(%%r1,%2)    \n\t"
-
-        "vflpsb  %%v16, %%v16       \n\t"
-        "vflpsb  %%v17, %%v17       \n\t"
-        "vflpsb  %%v18, %%v18       \n\t"
-        "vflpsb  %%v19, %%v19       \n\t"
-        "vflpsb  %%v20, %%v20       \n\t"
-        "vflpsb  %%v21, %%v21       \n\t"
-        "vflpsb  %%v22, %%v22       \n\t"
-        "vflpsb  %%v23, %%v23       \n\t"
-
-        "vfasb   %%v0,%%v0,%%v16    \n\t"
-        "vfasb   %%v1,%%v1,%%v17    \n\t"
-        "vfasb   %%v2,%%v2,%%v18    \n\t"
-        "vfasb   %%v3,%%v3,%%v19    \n\t"
-        "vfasb   %%v0,%%v0,%%v20    \n\t"
-        "vfasb   %%v1,%%v1,%%v21    \n\t"
-        "vfasb   %%v2,%%v2,%%v22    \n\t"
-        "vfasb   %%v3,%%v3,%%v23    \n\t"
-        
-        "agfi  %%r1,256             \n\t"
-        "brctg %%r0,0b              \n\t"
-        "vfasb   %%v0,%%v0,%%v1     \n\t"
-        "vfasb   %%v0,%%v0,%%v2     \n\t"
-        "vfasb   %%v0,%%v0,%%v3     \n\t"
-        "veslg   %%v1,%%v0,32       \n\t"
-        "vfasb   %%v0,%%v0,%%v1     \n\t"
-        "vrepf   %%v1,%%v0,2        \n\t"
-        "aebr    %%f0,%%f1          \n\t"
-        "ler     %0,%%f0                "
-        :"=f"(asum)
-        :"r"(n),"ZR"((const FLOAT (*)[n])x)
-        :"memory","cc","r0","r1","v0","v1","v2","v3","v16","v17","v18","v19","v20","v21","v22","v23"
-    );
-
-    return asum;
+  return asum;
 }
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
-    BLASLONG i = 0;
-    BLASLONG j = 0;
-    FLOAT sumf = 0.0;
-    BLASLONG n1;
+  BLASLONG i = 0;
+  BLASLONG j = 0;
+  FLOAT sumf = 0.0;
+  BLASLONG n1;
 
-    if (n <= 0 || inc_x <= 0) return sumf;
+  if (n <= 0 || inc_x <= 0)
+    return sumf;
 
-    if (inc_x == 1) {
+  if (inc_x == 1) {
 
-        n1 = n & -64;
-               
-        if (n1 > 0) {
+    n1 = n & -64;
 
-            sumf = sasum_kernel_64(n1, x);
-            i = n1;
-        }
+    if (n1 > 0) {
 
-        while (i < n) {
-            sumf += ABS(x[i]);
-            i++;
-        }
+      sumf = sasum_kernel_64(n1, x);
+      i = n1;
+    }
 
-    } else {
-        BLASLONG n1 = n & -4;
-        register FLOAT sum1, sum2;
-        sum1 = 0.0;
-        sum2 = 0.0;
-        while (j < n1) {
+    while (i < n) {
+      sumf += ABS(x[i]);
+      i++;
+    }
 
-            sum1 += ABS(x[i]);
-            sum2 += ABS(x[i + inc_x]);
-            sum1 += ABS(x[i + 2 * inc_x]);
-            sum2 += ABS(x[i + 3 * inc_x]);
+  } else {
+    BLASLONG n1 = n & -4;
+    register FLOAT sum1, sum2;
+    sum1 = 0.0;
+    sum2 = 0.0;
+    while (j < n1) {
 
-            i += inc_x * 4;
-            j += 4;
+      sum1 += ABS(x[i]);
+      sum2 += ABS(x[i + inc_x]);
+      sum1 += ABS(x[i + 2 * inc_x]);
+      sum2 += ABS(x[i + 3 * inc_x]);
 
-        }
-        sumf = sum1 + sum2;
-        while (j < n) {
-
-            sumf += ABS(x[i]);
-            i += inc_x;
-            j++;
-        }
-
+      i += inc_x * 4;
+      j += 4;
 
     }
-    return sumf;
+    sumf = sum1 + sum2;
+    while (j < n) {
+
+      sumf += ABS(x[i]);
+      i += inc_x;
+      j++;
+    }
+
+  }
+  return sumf;
 }
-
-

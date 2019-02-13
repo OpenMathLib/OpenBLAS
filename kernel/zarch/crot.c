@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013-2018, The OpenBLAS Project
+Copyright (c) 2013-2019, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,230 +27,210 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-static void crot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s)
-{
-    __asm__  (
-        "vlrepf %%v0,%3                 \n\t"
-        "vlrepf %%v1,%4                 \n\t"
-        "srlg   %%r0,%0,5               \n\t"
-        "xgr    %%r1,%%r1               \n\t"
-        "0:                             \n\t"
-        "pfd 2, 1024(%%r1,%1)           \n\t"
-        "pfd 2, 1024(%%r1,%2)           \n\t"
-        "vl  %%v24, 0(%%r1,%1)          \n\t"
-        "vl  %%v25, 16(%%r1,%1)         \n\t"
-        "vl  %%v26, 32(%%r1,%1)         \n\t"
-        "vl  %%v27, 48(%%r1,%1)         \n\t"
-        "vl  %%v16, 0(%%r1,%2)          \n\t"
-        "vl  %%v17, 16(%%r1,%2)         \n\t"
-        "vl  %%v18, 32(%%r1,%2)         \n\t"
-        "vl  %%v19, 48(%%r1,%2)         \n\t"
-        
-        "vfmsb %%v28,%%v24,%%v0         \n\t"
-        "vfmsb %%v29,%%v25,%%v0         \n\t"
-        "vfmsb %%v20,%%v24,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v21,%%v25,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v30,%%v26,%%v0         \n\t"
-        "vfmsb %%v22,%%v26,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v31,%%v27,%%v0         \n\t"
-        "vfmsb %%v23,%%v27,%%v1         \n\t" /* yn=x*s */
-        /* 2nd parts*/
-        "vfmasb %%v28,%%v16,%%v1,%%v28  \n\t"
-        "vfmssb %%v20,%%v16,%%v0,%%v20  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v29,%%v17,%%v1,%%v29  \n\t"
-        "vfmssb %%v21,%%v17,%%v0,%%v21  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v30,%%v18,%%v1,%%v30  \n\t"
-        "vfmssb %%v22,%%v18,%%v0,%%v22  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v31,%%v19,%%v1,%%v31  \n\t"
-        "vfmssb %%v23,%%v19,%%v0,%%v23  \n\t" /* yn=y*c-yn */
-        
-        "vst  %%v28, 0(%%r1,%1)         \n\t"
-        "vst  %%v29, 16(%%r1,%1)        \n\t"
-        "vst  %%v30, 32(%%r1,%1)        \n\t"
-        "vst  %%v31, 48(%%r1,%1)        \n\t"
-        "vst  %%v20, 0(%%r1,%2)         \n\t"
-        "vst  %%v21, 16(%%r1,%2)        \n\t"
-        "vst  %%v22, 32(%%r1,%2)        \n\t"
-        "vst  %%v23, 48(%%r1,%2)        \n\t"
-        
-        "vl  %%v24, 64(%%r1,%1)         \n\t"
-        "vl  %%v25, 80(%%r1,%1)         \n\t"
-        "vl  %%v26, 96(%%r1,%1)         \n\t"
-        "vl  %%v27, 112(%%r1,%1)        \n\t"
-        "vl  %%v16, 64(%%r1,%2)         \n\t"
-        "vl  %%v17, 80(%%r1,%2)         \n\t"
-        "vl  %%v18, 96(%%r1,%2)         \n\t"
-        "vl  %%v19, 112(%%r1,%2)        \n\t"
-        
-        "vfmsb %%v28,%%v24,%%v0         \n\t"
-        "vfmsb %%v29,%%v25,%%v0         \n\t"
-        "vfmsb %%v20,%%v24,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v21,%%v25,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v30,%%v26,%%v0         \n\t"
-        "vfmsb %%v22,%%v26,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v31,%%v27,%%v0         \n\t"
-        "vfmsb %%v23,%%v27,%%v1         \n\t" /* yn=x*s */
-        /* 2nd parts*/
-        "vfmasb %%v28,%%v16,%%v1,%%v28  \n\t"
-        "vfmssb %%v20,%%v16,%%v0,%%v20  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v29,%%v17,%%v1,%%v29  \n\t"
-        "vfmssb %%v21,%%v17,%%v0,%%v21  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v30,%%v18,%%v1,%%v30  \n\t"
-        "vfmssb %%v22,%%v18,%%v0,%%v22  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v31,%%v19,%%v1,%%v31  \n\t"
-        "vfmssb %%v23,%%v19,%%v0,%%v23  \n\t" /* yn=y*c-yn */
-        
-        "vst  %%v28, 64(%%r1,%1)        \n\t"
-        "vst  %%v29, 80(%%r1,%1)        \n\t"
-        "vst  %%v30, 96(%%r1,%1)        \n\t"
-        "vst  %%v31, 112(%%r1,%1)       \n\t"
-        "vst  %%v20, 64(%%r1,%2)        \n\t"
-        "vst  %%v21, 80(%%r1,%2)        \n\t"
-        "vst  %%v22, 96(%%r1,%2)        \n\t"
-        "vst  %%v23, 112(%%r1,%2)       \n\t"
-        
-        "vl  %%v24, 128(%%r1,%1)        \n\t"
-        "vl  %%v25, 144(%%r1,%1)        \n\t"
-        "vl  %%v26, 160(%%r1,%1)        \n\t"
-        "vl  %%v27, 176(%%r1,%1)        \n\t"
-        "vl  %%v16, 128(%%r1,%2)        \n\t"
-        "vl  %%v17, 144(%%r1,%2)        \n\t"
-        "vl  %%v18, 160(%%r1,%2)        \n\t"
-        "vl  %%v19, 176(%%r1,%2)        \n\t"
-        
-        "vfmsb %%v28,%%v24,%%v0         \n\t"
-        "vfmsb %%v29,%%v25,%%v0         \n\t"
-        "vfmsb %%v20,%%v24,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v21,%%v25,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v30,%%v26,%%v0         \n\t"
-        "vfmsb %%v22,%%v26,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v31,%%v27,%%v0         \n\t"
-        "vfmsb %%v23,%%v27,%%v1         \n\t" /* yn=x*s */
-        /* 2nd parts*/
-        "vfmasb %%v28,%%v16,%%v1,%%v28  \n\t"
-        "vfmssb %%v20,%%v16,%%v0,%%v20  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v29,%%v17,%%v1,%%v29  \n\t"
-        "vfmssb %%v21,%%v17,%%v0,%%v21  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v30,%%v18,%%v1,%%v30  \n\t"
-        "vfmssb %%v22,%%v18,%%v0,%%v22  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v31,%%v19,%%v1,%%v31  \n\t"
-        "vfmssb %%v23,%%v19,%%v0,%%v23  \n\t" /* yn=y*c-yn */
-        
-        "vst  %%v28, 128(%%r1,%1)       \n\t"
-        "vst  %%v29, 144(%%r1,%1)       \n\t"
-        "vst  %%v30, 160(%%r1,%1)       \n\t"
-        "vst  %%v31, 176(%%r1,%1)       \n\t"
-        "vst  %%v20, 128(%%r1,%2)       \n\t"
-        "vst  %%v21, 144(%%r1,%2)       \n\t"
-        "vst  %%v22, 160(%%r1,%2)       \n\t"
-        "vst  %%v23, 176(%%r1,%2)       \n\t"
-        
-        "vl  %%v24, 192(%%r1,%1)        \n\t"
-        "vl  %%v25, 208(%%r1,%1)        \n\t"
-        "vl  %%v26, 224(%%r1,%1)        \n\t"
-        "vl  %%v27, 240(%%r1,%1)        \n\t"
-        "vl  %%v16, 192(%%r1,%2)        \n\t"
-        "vl  %%v17, 208(%%r1,%2)        \n\t"
-        "vl  %%v18, 224(%%r1,%2)        \n\t"
-        "vl  %%v19, 240(%%r1,%2)        \n\t"
-        
-        "vfmsb %%v28,%%v24,%%v0         \n\t"
-        "vfmsb %%v29,%%v25,%%v0         \n\t"
-        "vfmsb %%v20,%%v24,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v21,%%v25,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v30,%%v26,%%v0         \n\t"
-        "vfmsb %%v22,%%v26,%%v1         \n\t" /* yn=x*s */
-        "vfmsb %%v31,%%v27,%%v0         \n\t"
-        "vfmsb %%v23,%%v27,%%v1         \n\t" /* yn=x*s */
-        /* 2nd parts*/
-        "vfmasb %%v28,%%v16,%%v1,%%v28  \n\t"
-        "vfmssb %%v20,%%v16,%%v0,%%v20  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v29,%%v17,%%v1,%%v29  \n\t"
-        "vfmssb %%v21,%%v17,%%v0,%%v21  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v30,%%v18,%%v1,%%v30  \n\t"
-        "vfmssb %%v22,%%v18,%%v0,%%v22  \n\t" /* yn=y*c-yn */ 
-        "vfmasb %%v31,%%v19,%%v1,%%v31  \n\t"
-        "vfmssb %%v23,%%v19,%%v0,%%v23  \n\t" /* yn=y*c-yn */
-        
-        "vst  %%v28, 192(%%r1,%1)       \n\t"
-        "vst  %%v29, 208(%%r1,%1)       \n\t"
-        "vst  %%v30, 224(%%r1,%1)       \n\t"
-        "vst  %%v31, 240(%%r1,%1)       \n\t"
-        "vst  %%v20, 192(%%r1,%2)       \n\t"
-        "vst  %%v21, 208(%%r1,%2)       \n\t"
-        "vst  %%v22, 224(%%r1,%2)       \n\t"
-        "vst  %%v23, 240(%%r1,%2)       \n\t"
-            
-        "agfi  %%r1,256                 \n\t"
-        "brctg %%r0,0b                      "
-        :
-        :"r"(n),"ZR"((FLOAT (*)[n * 2])x),"ZR"((FLOAT (*)[n * 2])y),"m"(*c),"m"(*s)
-        :"memory","cc","r0","r1","v0","v1","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
-    );
+static void crot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s) {
+  __asm__("vlrepf %%v0,%[c]\n\t"
+    "vlrepf %%v1,%[s]\n\t"
+    "srlg   %[n],%[n],5\n\t"
+    "xgr    %%r1,%%r1\n\t"
+    "0:\n\t"
+    "pfd 2, 1024(%%r1,%[x])\n\t"
+    "pfd 2, 1024(%%r1,%[y])\n\t"
+    "vl  %%v24, 0(%%r1,%[x])\n\t"
+    "vl  %%v25, 16(%%r1,%[x])\n\t"
+    "vl  %%v26, 32(%%r1,%[x])\n\t"
+    "vl  %%v27, 48(%%r1,%[x])\n\t"
+    "vl  %%v16, 0(%%r1,%[y])\n\t"
+    "vl  %%v17, 16(%%r1,%[y])\n\t"
+    "vl  %%v18, 32(%%r1,%[y])\n\t"
+    "vl  %%v19, 48(%%r1,%[y])\n\t"
+    "vfmsb %%v28,%%v24,%%v0\n\t"
+    "vfmsb %%v29,%%v25,%%v0\n\t"
+    "vfmsb %%v20,%%v24,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v21,%%v25,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v30,%%v26,%%v0\n\t"
+    "vfmsb %%v22,%%v26,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v31,%%v27,%%v0\n\t"
+    "vfmsb %%v23,%%v27,%%v1\n\t" /* yn=x*s */
+    /* 2nd parts */
+    "vfmasb %%v28,%%v16,%%v1,%%v28\n\t"
+    "vfmssb %%v20,%%v16,%%v0,%%v20\n\t" /* yn=y*c-yn */
+    "vfmasb %%v29,%%v17,%%v1,%%v29\n\t"
+    "vfmssb %%v21,%%v17,%%v0,%%v21\n\t" /* yn=y*c-yn */
+    "vfmasb %%v30,%%v18,%%v1,%%v30\n\t"
+    "vfmssb %%v22,%%v18,%%v0,%%v22\n\t" /* yn=y*c-yn */
+    "vfmasb %%v31,%%v19,%%v1,%%v31\n\t"
+    "vfmssb %%v23,%%v19,%%v0,%%v23\n\t" /* yn=y*c-yn */
+    "vst  %%v28, 0(%%r1,%[x])\n\t"
+    "vst  %%v29, 16(%%r1,%[x])\n\t"
+    "vst  %%v30, 32(%%r1,%[x])\n\t"
+    "vst  %%v31, 48(%%r1,%[x])\n\t"
+    "vst  %%v20, 0(%%r1,%[y])\n\t"
+    "vst  %%v21, 16(%%r1,%[y])\n\t"
+    "vst  %%v22, 32(%%r1,%[y])\n\t"
+    "vst  %%v23, 48(%%r1,%[y])\n\t"
+    "vl  %%v24, 64(%%r1,%[x])\n\t"
+    "vl  %%v25, 80(%%r1,%[x])\n\t"
+    "vl  %%v26, 96(%%r1,%[x])\n\t"
+    "vl  %%v27, 112(%%r1,%[x])\n\t"
+    "vl  %%v16, 64(%%r1,%[y])\n\t"
+    "vl  %%v17, 80(%%r1,%[y])\n\t"
+    "vl  %%v18, 96(%%r1,%[y])\n\t"
+    "vl  %%v19, 112(%%r1,%[y])\n\t"
+    "vfmsb %%v28,%%v24,%%v0\n\t"
+    "vfmsb %%v29,%%v25,%%v0\n\t"
+    "vfmsb %%v20,%%v24,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v21,%%v25,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v30,%%v26,%%v0\n\t"
+    "vfmsb %%v22,%%v26,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v31,%%v27,%%v0\n\t"
+    "vfmsb %%v23,%%v27,%%v1\n\t" /* yn=x*s */
+    /* 2nd parts */
+    "vfmasb %%v28,%%v16,%%v1,%%v28\n\t"
+    "vfmssb %%v20,%%v16,%%v0,%%v20\n\t" /* yn=y*c-yn */
+    "vfmasb %%v29,%%v17,%%v1,%%v29\n\t"
+    "vfmssb %%v21,%%v17,%%v0,%%v21\n\t" /* yn=y*c-yn */
+    "vfmasb %%v30,%%v18,%%v1,%%v30\n\t"
+    "vfmssb %%v22,%%v18,%%v0,%%v22\n\t" /* yn=y*c-yn */
+    "vfmasb %%v31,%%v19,%%v1,%%v31\n\t"
+    "vfmssb %%v23,%%v19,%%v0,%%v23\n\t" /* yn=y*c-yn */
+    "vst  %%v28, 64(%%r1,%[x])\n\t"
+    "vst  %%v29, 80(%%r1,%[x])\n\t"
+    "vst  %%v30, 96(%%r1,%[x])\n\t"
+    "vst  %%v31, 112(%%r1,%[x])\n\t"
+    "vst  %%v20, 64(%%r1,%[y])\n\t"
+    "vst  %%v21, 80(%%r1,%[y])\n\t"
+    "vst  %%v22, 96(%%r1,%[y])\n\t"
+    "vst  %%v23, 112(%%r1,%[y])\n\t"
+    "vl  %%v24, 128(%%r1,%[x])\n\t"
+    "vl  %%v25, 144(%%r1,%[x])\n\t"
+    "vl  %%v26, 160(%%r1,%[x])\n\t"
+    "vl  %%v27, 176(%%r1,%[x])\n\t"
+    "vl  %%v16, 128(%%r1,%[y])\n\t"
+    "vl  %%v17, 144(%%r1,%[y])\n\t"
+    "vl  %%v18, 160(%%r1,%[y])\n\t"
+    "vl  %%v19, 176(%%r1,%[y])\n\t"
+    "vfmsb %%v28,%%v24,%%v0\n\t"
+    "vfmsb %%v29,%%v25,%%v0\n\t"
+    "vfmsb %%v20,%%v24,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v21,%%v25,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v30,%%v26,%%v0\n\t"
+    "vfmsb %%v22,%%v26,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v31,%%v27,%%v0\n\t"
+    "vfmsb %%v23,%%v27,%%v1\n\t" /* yn=x*s */
+    /* 2nd parts */
+    "vfmasb %%v28,%%v16,%%v1,%%v28\n\t"
+    "vfmssb %%v20,%%v16,%%v0,%%v20\n\t" /* yn=y*c-yn */
+    "vfmasb %%v29,%%v17,%%v1,%%v29\n\t"
+    "vfmssb %%v21,%%v17,%%v0,%%v21\n\t" /* yn=y*c-yn */
+    "vfmasb %%v30,%%v18,%%v1,%%v30\n\t"
+    "vfmssb %%v22,%%v18,%%v0,%%v22\n\t" /* yn=y*c-yn */
+    "vfmasb %%v31,%%v19,%%v1,%%v31\n\t"
+    "vfmssb %%v23,%%v19,%%v0,%%v23\n\t" /* yn=y*c-yn */
+    "vst  %%v28, 128(%%r1,%[x])\n\t"
+    "vst  %%v29, 144(%%r1,%[x])\n\t"
+    "vst  %%v30, 160(%%r1,%[x])\n\t"
+    "vst  %%v31, 176(%%r1,%[x])\n\t"
+    "vst  %%v20, 128(%%r1,%[y])\n\t"
+    "vst  %%v21, 144(%%r1,%[y])\n\t"
+    "vst  %%v22, 160(%%r1,%[y])\n\t"
+    "vst  %%v23, 176(%%r1,%[y])\n\t"
+    "vl  %%v24, 192(%%r1,%[x])\n\t"
+    "vl  %%v25, 208(%%r1,%[x])\n\t"
+    "vl  %%v26, 224(%%r1,%[x])\n\t"
+    "vl  %%v27, 240(%%r1,%[x])\n\t"
+    "vl  %%v16, 192(%%r1,%[y])\n\t"
+    "vl  %%v17, 208(%%r1,%[y])\n\t"
+    "vl  %%v18, 224(%%r1,%[y])\n\t"
+    "vl  %%v19, 240(%%r1,%[y])\n\t"
+    "vfmsb %%v28,%%v24,%%v0\n\t"
+    "vfmsb %%v29,%%v25,%%v0\n\t"
+    "vfmsb %%v20,%%v24,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v21,%%v25,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v30,%%v26,%%v0\n\t"
+    "vfmsb %%v22,%%v26,%%v1\n\t" /* yn=x*s */
+    "vfmsb %%v31,%%v27,%%v0\n\t"
+    "vfmsb %%v23,%%v27,%%v1\n\t" /* yn=x*s */
+    /* 2nd parts */
+    "vfmasb %%v28,%%v16,%%v1,%%v28\n\t"
+    "vfmssb %%v20,%%v16,%%v0,%%v20\n\t" /* yn=y*c-yn */
+    "vfmasb %%v29,%%v17,%%v1,%%v29\n\t"
+    "vfmssb %%v21,%%v17,%%v0,%%v21\n\t" /* yn=y*c-yn */
+    "vfmasb %%v30,%%v18,%%v1,%%v30\n\t"
+    "vfmssb %%v22,%%v18,%%v0,%%v22\n\t" /* yn=y*c-yn */
+    "vfmasb %%v31,%%v19,%%v1,%%v31\n\t"
+    "vfmssb %%v23,%%v19,%%v0,%%v23\n\t" /* yn=y*c-yn */
+    "vst  %%v28, 192(%%r1,%[x])\n\t"
+    "vst  %%v29, 208(%%r1,%[x])\n\t"
+    "vst  %%v30, 224(%%r1,%[x])\n\t"
+    "vst  %%v31, 240(%%r1,%[x])\n\t"
+    "vst  %%v20, 192(%%r1,%[y])\n\t"
+    "vst  %%v21, 208(%%r1,%[y])\n\t"
+    "vst  %%v22, 224(%%r1,%[y])\n\t"
+    "vst  %%v23, 240(%%r1,%[y])\n\t"
+    "agfi  %%r1,256\n\t"
+    "brctg %[n],0b"
+    : "+m"(*(struct { FLOAT x[n * 2]; } *) x),
+       "+m"(*(struct { FLOAT x[n * 2]; } *) y),[n] "+&r"(n)
+    : [x] "a"(x),[y] "a"(y),[c] "Q"(*c),[s] "Q"(*s)
+    : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
+       "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
+       "v31");
 }
 
-int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT c, FLOAT s)
-{
-    BLASLONG i=0;
-    BLASLONG ix=0,iy=0;
-    FLOAT temp[2];
-    BLASLONG inc_x2;
-    BLASLONG inc_y2;
+int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y,
+          FLOAT c, FLOAT s) {
+  BLASLONG i = 0;
+  BLASLONG ix = 0, iy = 0;
+  FLOAT temp[2];
+  BLASLONG inc_x2;
+  BLASLONG inc_y2;
 
-    if ( n <= 0     )  return(0); 
+  if (n <= 0)
+    return (0);
 
-    if ( (inc_x == 1) && (inc_y == 1) )
-    {
+  if ((inc_x == 1) && (inc_y == 1)) {
 
-        BLASLONG n1 = n & -32;
-        if ( n1 > 0 )
-        {
-            FLOAT cosa,sina;
-            cosa=c;
-            sina=s;
-            crot_kernel_32(n1, x, y, &cosa, &sina);
-            i=n1; 
-            ix=2*n1; 
-        }
+    BLASLONG n1 = n & -32;
+    if (n1 > 0) {
+      FLOAT cosa, sina;
+      cosa = c;
+      sina = s;
+      crot_kernel_32(n1, x, y, &cosa, &sina);
+      i = n1;
+      ix = 2 * n1;
+    }
 
-         while(i < n)
-           {
-                temp[0]   = c*x[ix]   + s*y[ix] ;
-                temp[1]   = c*x[ix+1] + s*y[ix+1] ;
-                y[ix]     = c*y[ix]   - s*x[ix] ;
-                y[ix+1]   = c*y[ix+1] - s*x[ix+1] ;
-                x[ix]     = temp[0] ;
-                x[ix+1]   = temp[1] ;
+    while (i < n) {
+      temp[0] = c * x[ix] + s * y[ix];
+      temp[1] = c * x[ix + 1] + s * y[ix + 1];
+      y[ix] = c * y[ix] - s * x[ix];
+      y[ix + 1] = c * y[ix + 1] - s * x[ix + 1];
+      x[ix] = temp[0];
+      x[ix + 1] = temp[1];
 
-                ix += 2 ; 
-                i++ ;
-
-            }
-
+      ix += 2;
+      i++;
 
     }
-    else
-    {
-        inc_x2 = 2 * inc_x ;
-        inc_y2 = 2 * inc_y ;
-        while(i < n)
-        {
-            temp[0]   = c*x[ix]   + s*y[iy] ;
-            temp[1]   = c*x[ix+1] + s*y[iy+1] ;
-            y[iy]     = c*y[iy]   - s*x[ix] ;
-            y[iy+1]   = c*y[iy+1] - s*x[ix+1] ;
-            x[ix]     = temp[0] ;
-            x[ix+1]   = temp[1] ;
 
-            ix += inc_x2 ;
-            iy += inc_y2 ;
-            i++ ;
+  } else {
+    inc_x2 = 2 * inc_x;
+    inc_y2 = 2 * inc_y;
+    while (i < n) {
+      temp[0] = c * x[ix] + s * y[iy];
+      temp[1] = c * x[ix + 1] + s * y[iy + 1];
+      y[iy] = c * y[iy] - s * x[ix];
+      y[iy + 1] = c * y[iy + 1] - s * x[ix + 1];
+      x[ix] = temp[0];
+      x[ix + 1] = temp[1];
 
-        }
+      ix += inc_x2;
+      iy += inc_y2;
+      i++;
 
     }
-    return(0);
- 
+
+  }
+  return (0);
+
 }
-
-

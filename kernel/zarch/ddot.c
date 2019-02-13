@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013-2017, The OpenBLAS Project
+Copyright (c) 2013-2019, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,123 +27,127 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-static FLOAT ddot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y)
-{
-    FLOAT dot;
+static FLOAT ddot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y) {
+  FLOAT dot;
 
-    __asm__ volatile (   
-        "vzero %%v0                      \n\t"
-        "srlg  %%r0,%1,4                 \n\t"
-        "xgr   %%r1,%%r1                 \n\t"
-        "0:                              \n\t"
-        "pfd 1,1024(%%r1,%2)             \n\t"
-        "pfd 1,1024(%%r1,%3)             \n\t"
+  __asm__("vzero %%v0\n\t"
+    "vzero %%v1\n\t"
+    "vzero %%v2\n\t"
+    "vzero %%v3\n\t"
+    "vzero %%v4\n\t"
+    "vzero %%v5\n\t"
+    "vzero %%v6\n\t"
+    "vzero %%v7\n\t"
+    "srlg  %[n],%[n],4\n\t"
+    "xgr   %%r1,%%r1\n\t"
+    "0:\n\t"
+    "pfd 1,1024(%%r1,%[x])\n\t"
+    "pfd 1,1024(%%r1,%[y])\n\t"
+    "vl  %%v16,0(%%r1,%[x])\n\t"
+    "vl  %%v17,16(%%r1,%[x])\n\t"
+    "vl  %%v18,32(%%r1,%[x])\n\t"
+    "vl  %%v19,48(%%r1,%[x])\n\t"
+    "vl  %%v20,64(%%r1,%[x])\n\t"
+    "vl  %%v21,80(%%r1,%[x])\n\t"
+    "vl  %%v22,96(%%r1,%[x])\n\t"
+    "vl  %%v23,112(%%r1,%[x])\n\t"
+    "vl  %%v24,0(%%r1,%[y])\n\t"
+    "vl  %%v25,16(%%r1,%[y])\n\t"
+    "vl  %%v26,32(%%r1,%[y])\n\t"
+    "vl  %%v27,48(%%r1,%[y])\n\t"
+    "vl  %%v28,64(%%r1,%[y])\n\t"
+    "vl  %%v29,80(%%r1,%[y])\n\t"
+    "vl  %%v30,96(%%r1,%[y])\n\t"
+    "vl  %%v31,112(%%r1,%[y])\n\t"
+    "vfmadb   %%v0,%%v16,%%v24,%%v0\n\t"
+    "vfmadb   %%v1,%%v17,%%v25,%%v1\n\t"
+    "vfmadb   %%v2,%%v18,%%v26,%%v2\n\t"
+    "vfmadb   %%v3,%%v19,%%v27,%%v3\n\t"
+    "vfmadb   %%v4,%%v20,%%v28,%%v4\n\t"
+    "vfmadb   %%v5,%%v21,%%v29,%%v5\n\t"
+    "vfmadb   %%v6,%%v22,%%v30,%%v6\n\t"
+    "vfmadb   %%v7,%%v23,%%v31,%%v7\n\t"
+    "agfi   %%r1,128\n\t"
+    "brctg  %[n],0b\n\t"
+    "vfadb   %%v0,%%v0,%%v1\n\t"
+    "vfadb   %%v0,%%v0,%%v2\n\t"
+    "vfadb   %%v0,%%v0,%%v3\n\t"
+    "vfadb   %%v0,%%v0,%%v4\n\t"
+    "vfadb   %%v0,%%v0,%%v5\n\t"
+    "vfadb   %%v0,%%v0,%%v6\n\t"
+    "vfadb   %%v0,%%v0,%%v7\n\t"
+    "vrepg  %%v1,%%v0,1\n\t"
+    "adbr   %%f0,%%f1\n\t"
+    "ldr    %[dot],%%f0"
+    : [dot] "=f"(dot),[n] "+&r"(n)
+    : "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x),
+       "m"(*(const struct { FLOAT x[n]; } *) y),[y] "a"(y)
+    : "cc", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v16",
+       "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26",
+       "v27", "v28", "v29", "v30", "v31");
 
-        "vl  %%v16,0(%%r1,%2)            \n\t"
-        "vl  %%v17,16(%%r1,%2)           \n\t"
-        "vl  %%v18,32(%%r1,%2)           \n\t"
-        "vl  %%v19,48(%%r1,%2)           \n\t"
-        "vl  %%v20,64(%%r1,%2)           \n\t"
-        "vl  %%v21,80(%%r1,%2)           \n\t"
-        "vl  %%v22,96(%%r1,%2)           \n\t"
-        "vl  %%v23,112(%%r1,%2)          \n\t"
-
-        "vl  %%v24,0(%%r1,%3)            \n\t"
-        "vfmadb   %%v0,%%v16,%%v24,%%v0  \n\t"
-        "vl  %%v25,16(%%r1,%3)           \n\t"
-        "vfmadb   %%v0,%%v17,%%v25,%%v0  \n\t"
-        "vl  %%v26,32(%%r1,%3)           \n\t"
-        "vfmadb   %%v0,%%v18,%%v26,%%v0  \n\t"
-        "vl  %%v27,48(%%r1,%3)           \n\t"
-        "vfmadb   %%v0,%%v19,%%v27,%%v0  \n\t"
-        "vl  %%v28,64(%%r1,%3)           \n\t"
-        "vfmadb   %%v0,%%v20,%%v28,%%v0  \n\t"
-        "vl  %%v29,80(%%r1,%3)           \n\t"
-        "vfmadb   %%v0,%%v21,%%v29,%%v0  \n\t"
-        "vl  %%v30,96(%%r1,%3)           \n\t"
-        "vfmadb   %%v0,%%v22,%%v30,%%v0  \n\t"
-        "vl  %%v31,112(%%r1,%3)          \n\t"
-        "vfmadb   %%v0,%%v23,%%v31,%%v0  \n\t"
-        
-        "agfi   %%r1,128                 \n\t"
-        "brctg  %%r0,0b                  \n\t"
-        "vrepg  %%v1,%%v0,1              \n\t"
-        "adbr   %%f0,%%f1                \n\t"
-        "ldr    %0,%%f0                      "
-        :"=f"(dot)
-        :"r"(n),"ZR"((const FLOAT (*)[n])x),"ZR"((const FLOAT (*)[n])y)
-        :"memory","cc","r0","r1","v0","v1","v16","v17","v18","v19","v20","v21","v22","v23","v24","v25","v26","v27","v28","v29","v30","v31"
-    );
-
-    return dot;
+  return dot;
 }
 
-FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
-{
-    BLASLONG i=0;
-    BLASLONG ix=0,iy=0;
+FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y) {
+  BLASLONG i = 0;
+  BLASLONG ix = 0, iy = 0;
 
-    FLOAT  dot = 0.0 ;
+  FLOAT dot = 0.0;
 
-    if ( n <= 0 )  return(dot);
+  if (n <= 0)
+    return (dot);
 
-    if ( (inc_x == 1) && (inc_y == 1) )
-    {
+  if ((inc_x == 1) && (inc_y == 1)) {
 
-        BLASLONG n1 = n & -16;
+    BLASLONG n1 = n & -16;
 
-        if ( n1 )
-            dot = ddot_kernel_16(n1, x, y);
+    if (n1)
+      dot = ddot_kernel_16(n1, x, y);
 
-        i = n1;
-        while(i < n)
-        {
+    i = n1;
+    while (i < n) {
 
-            dot += y[i] * x[i] ;
-            i++ ;
-
-        } 
-        return(dot);
-
+      dot += y[i] * x[i];
+      i++;
 
     }
+    return (dot);
 
-    FLOAT temp1 = 0.0;
-    FLOAT temp2 = 0.0;
+  }
 
-    BLASLONG n1 = n & -4;    
+  FLOAT temp1 = 0.0;
+  FLOAT temp2 = 0.0;
 
-    while(i < n1)
-    {
+  BLASLONG n1 = n & -4;
 
-        FLOAT m1 = y[iy]       * x[ix] ;
-        FLOAT m2 = y[iy+inc_y] * x[ix+inc_x] ;
+  while (i < n1) {
 
-        FLOAT m3 = y[iy+2*inc_y] * x[ix+2*inc_x] ;
-        FLOAT m4 = y[iy+3*inc_y] * x[ix+3*inc_x] ;
+    FLOAT m1 = y[iy] * x[ix];
+    FLOAT m2 = y[iy + inc_y] * x[ix + inc_x];
 
-        ix  += inc_x*4 ;
-        iy  += inc_y*4 ;
+    FLOAT m3 = y[iy + 2 * inc_y] * x[ix + 2 * inc_x];
+    FLOAT m4 = y[iy + 3 * inc_y] * x[ix + 3 * inc_x];
 
-        temp1 += m1+m3;
-        temp2 += m2+m4;
+    ix += inc_x * 4;
+    iy += inc_y * 4;
 
-        i+=4 ;
+    temp1 += m1 + m3;
+    temp2 += m2 + m4;
 
-    }
+    i += 4;
 
-    while(i < n)
-    {
+  }
 
-        temp1 += y[iy] * x[ix] ;
-        ix  += inc_x ;
-        iy  += inc_y ;
-        i++ ;
+  while (i < n) {
 
-    }
-    dot = temp1 + temp2;
-    return(dot);
+    temp1 += y[iy] * x[ix];
+    ix += inc_x;
+    iy += inc_y;
+    i++;
+
+  }
+  dot = temp1 + temp2;
+  return (dot);
 
 }
-
-
