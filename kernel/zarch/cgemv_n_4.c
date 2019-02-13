@@ -352,7 +352,7 @@ static void add_y_4(BLASLONG n, FLOAT *src, FLOAT *dest, FLOAT alpha_r,
     "brctg  %[n],0b"
     : "+m"(*(struct { FLOAT x[n * 2]; } *) dest),[n] "+&r"(n)
     : [dest] "a"(dest), "m"(*(const struct { FLOAT x[n * 2]; } *) src),
-       [src] "a"(src),[alpha_r] "m"(alpha_r),[alpha_i] "m"(alpha_i)
+       [src] "a"(src),[alpha_r] "Q"(alpha_r),[alpha_i] "Q"(alpha_i)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23");
 }
