@@ -26,7 +26,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 
-
 #define HAVE_KERNEL_4x8 1
 static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLONG lda4, FLOAT *alpha) __attribute__ ((noinline));
 
@@ -48,6 +47,8 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vbroadcastss  28(%2), %%ymm3 	 \n\t"	// x7 
 
 	"vbroadcastss    (%9), %%ymm6 	 \n\t"	// alpha 
+
+	"movq		%8, %%xmm10	\n\t" //save lda
 
         "testq          $0x04, %1                      \n\t"
         "jz             2f                    \n\t"
@@ -151,6 +152,7 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
         "4:                             \n\t"
 	"vzeroupper			        \n\t"
+	"movq		%%xmm10, %8	\n\t" //restore lda
 
 	:
           "+r" (i),	// 0	
@@ -170,12 +172,12 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	  "%xmm4", "%xmm5", 
 	  "%xmm6", "%xmm7", 
 	  "%xmm8", "%xmm9", 
+	  "%xmm10",
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 
 } 
-
 
 
 #define HAVE_KERNEL_4x4 1
@@ -195,6 +197,7 @@ static void sgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"vbroadcastss  12(%2), %%ymm15	 \n\t"	// x3 
 
 	"vbroadcastss    (%8), %%ymm6 	 \n\t"	// alpha 
+
 
         "testq          $0x04, %1                      \n\t"
         "jz             2f                    \n\t"
