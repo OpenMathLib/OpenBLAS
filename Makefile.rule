@@ -72,10 +72,16 @@ VERSION = 0.3.6.dev
 
 # You can define the maximum number of threads. Basically it should be less
 # than or equal to the number of CPU threads. If you don't specify one, it's
-# automatically detected by the the script.
+# automatically detected by the the build system.
 # If SMT (aka. HT) is enabled on the system, it may or may not be beneficial to 
 # restrict NUM_THREADS to the number of physical cores. By default, the automatic 
 # detection includes logical CPUs, thus allowing the use of SMT.
+# Users may opt at runtime to use less than NUM_THREADS threads.
+#
+# Note for package maintainers: you can build OpenBLAS with a large NUM_THREADS
+# value (eg. 32-256) if you expect your users to use that many threads. Due to the way
+# some internal structures are allocated, using a large NUM_THREADS value has a RAM
+# footprint penalty, even if users reduce the actual number of threads at runtime.
 # NUM_THREADS = 24
 
 # If you have enabled USE_OPENMP and your application would call
@@ -138,6 +144,7 @@ NO_WARMUP = 1
 # to the same core(s) as OpenBLAS, possibly binding all threads to a single core.
 # For this reason, affinity handling is disabled by default. Can be safely enabled if nothing
 # else modifies affinity settings.
+# Note: enabling affinity has been known to cause problems with NumPy and R
 NO_AFFINITY = 1
 
 # If you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
