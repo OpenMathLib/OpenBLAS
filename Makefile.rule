@@ -72,7 +72,7 @@ VERSION = 0.3.6.dev
 
 # You can define the maximum number of threads. Basically it should be less
 # than or equal to the number of CPU threads. If you don't specify one, it's
-# automatically detected by the the build system.
+# automatically detected by the build system.
 # If SMT (aka. HT) is enabled on the system, it may or may not be beneficial to 
 # restrict NUM_THREADS to the number of physical cores. By default, the automatic 
 # detection includes logical CPUs, thus allowing the use of SMT.
