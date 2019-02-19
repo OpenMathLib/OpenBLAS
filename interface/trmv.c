@@ -218,11 +218,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
   buffer = (FLOAT *)blas_memory_alloc(1);
 
 #ifdef SMP
-/*  nthreads = num_cpu_avail(2);
+  nthreads = num_cpu_avail(2);
 
-FIXME trmv_thread was found to be broken, see issue 1332 */
-  nthreads = 1;
-  
   if (nthreads == 1) {
 #endif
 
