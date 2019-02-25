@@ -78,7 +78,7 @@ endif()
 
 if (X86_64 OR X86)
   file(WRITE ${PROJECT_BINARY_DIR}/avx512.tmp "#include <immintrin.h>\n\nint main(void){ __asm__ volatile(\"vbroadcastss -4 * 4(%rsi), %zmm2\"); }")
-execute_process(COMMAND ${CMAKE_C_COMPILER} -march=skylake-avx512 -v -o ${PROJECT_BINARY_DIR}/avx512.o -x c ${PROJECT_BINARY_DIR}/avx512.tmp OUTPUT_QUIET ERROR_QUIET RESULT_VARIABLE NO_AVX512)
+execute_process(COMMAND ${CMAKE_C_COMPILER} -march=skylake-avx512 -c -v -o ${PROJECT_BINARY_DIR}/avx512.o -x c ${PROJECT_BINARY_DIR}/avx512.tmp OUTPUT_QUIET ERROR_QUIET RESULT_VARIABLE NO_AVX512)
 if (NO_AVX512 EQUAL 1)
 set (CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX512")
 endif()
