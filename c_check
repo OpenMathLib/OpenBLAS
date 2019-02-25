@@ -232,7 +232,7 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
 	($fh,$tmpf) = tempfile( UNLINK => 1 );
 	$code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
 	print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
-	$args = " -march=skylake-avx512 -o $tmpf.o -x c $tmpf";
+	$args = " -march=skylake-avx512 -c -o $tmpf.o -x c $tmpf";
 	my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
 	system(@cmd) == 0;
 	if ($? != 0) {
