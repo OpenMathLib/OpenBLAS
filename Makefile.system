@@ -222,6 +222,10 @@ override USE_THREAD = 0
 override USE_OPENMP = 0
 endif
 
+ifeq ($(USE_OPENMP),1)
+override NO_AFFINITY=1
+endif
+
 ifdef USE_THREAD
 ifeq ($(USE_THREAD), 0)
 SMP =
