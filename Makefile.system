@@ -156,6 +156,7 @@ endif
 
 ifeq ($(BINARY), 32)
 GETARCH_FLAGS	+= -DNO_AVX -DNO_AVX2 -DNO_AVX512
+NO_AVX512 = 1
 endif
 
 ifeq ($(NO_AVX2), 1)
