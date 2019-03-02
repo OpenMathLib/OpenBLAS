@@ -96,7 +96,7 @@ endif
 	@echo
 
 shared :
-ifndef NO_SHARED
+ifneq ($(NO_SHARED), 1)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
