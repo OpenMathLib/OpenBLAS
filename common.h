@@ -366,7 +366,11 @@ typedef int blasint;
 */
 
 #ifndef YIELDING
-#define YIELDING	sched_yield()
+#define YIELDING nanosleep((const struct timespec[]){{0,10000L}},NULL);
+// Line above is equal to following, but compliant with much older POSIX spec
+// #define YIELDING usleep(10);
+// Linux 2.4 might gain from implied scheduler programming instead
+// #define YIELDING	sched_yield()
 #endif
 
 /***
