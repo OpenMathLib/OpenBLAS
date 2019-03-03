@@ -2584,7 +2584,7 @@ void *blas_memory_alloc(int procpos){
 
   int position;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
-  int mypos;
+  int mypos = 0;
 #endif
 
   void *map_address;
