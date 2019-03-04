@@ -2694,21 +2694,26 @@ void *blas_memory_alloc(int procpos){
 
   position = 0;
 
+#if defined(SMP) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
+#endif
   do {
-/*    if (!memory[position].used) { */
-/*      blas_lock(&memory[position].lock);*/
-
+#if defined(USE_OPENMP)	  
+    if (!memory[position].used) { 
+      blas_lock(&memory[position].lock);
+#endif
       if (!memory[position].used) goto allocation;
       
-/*      blas_unlock(&memory[position].lock);*/
-/*    } */
-
+#if defined(USE_OPENMP)
+      blas_unlock(&memory[position].lock);      
+    }
+#endif
     position ++;
 
   } while (position < NUM_BUFFERS);
-  UNLOCK_COMMAND(&alloc_lock);
-
+#if defined(SMP) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);	
+#endif
   goto error;
 
   allocation :
@@ -2718,9 +2723,11 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   memory[position].used = 1;
-
+#if defined(SMP) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
-
+#else
+  blas_unlock(&memory[position].lock);	
+#endif
   if (!memory[position].addr) {
     do {
 #ifdef DEBUG
