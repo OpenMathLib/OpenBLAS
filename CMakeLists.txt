@@ -75,10 +75,10 @@ endif ()
 
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
-  list(APPEND SUBDIRS lapack)
   if(BUILD_RELAPACK)
     list(APPEND SUBDIRS relapack/src)
   endif()
+  list(APPEND SUBDIRS lapack)
 endif ()
 
 # set which float types we want to build for
@@ -223,6 +223,14 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
+
+if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
+  if (NOT MSVC)
+    target_link_libraries(${OpenBLAS_LIBNAME} "-Wl,-allow-multiple-definition")
+  else()
+    target_link_libraries(${OpenBLAS_LIBNAME} "/FORCE:MULTIPLE")
+  endif()
+endif()
 
 if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFIX} STREQUAL "")
 if (NOT DEFINED ARCH)
