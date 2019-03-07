@@ -241,7 +241,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define HAVE_PREFETCH
 #endif
 
-#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8)
+#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8) || ( defined(PPC970) && defined(OS_DARWIN) )
 #define DCBT_ARG	0
 #else
 #define DCBT_ARG	8
