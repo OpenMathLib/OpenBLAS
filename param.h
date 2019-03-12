@@ -2591,7 +2591,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(CORTEXA53) || defined(CORTEXA57) || \
     defined(CORTEXA72) || defined(CORTEXA73) || \
-    defined(FALKOR)
+    defined(FALKOR)    || defined(TSV110)
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
