@@ -566,8 +566,8 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-	//Apollo Lake
-	if (model == 12) { 
+	//Apollo Lake or Denverton
+	if (model == 12 || model == 15) { 
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
