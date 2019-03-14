@@ -39,7 +39,7 @@
 #ifndef COMMON_POWER
 #define COMMON_POWER
 
-#if defined(POWER8)
+#if defined(POWER8) || defined(POWER9)
 #define MB		__asm__ __volatile__ ("eieio":::"memory")
 #define WMB		__asm__ __volatile__ ("eieio":::"memory")
 #else
@@ -241,7 +241,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define HAVE_PREFETCH
 #endif
 
-#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8)
+#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8)  || defined(POWER9)
 #define DCBT_ARG	0
 #else
 #define DCBT_ARG	8
@@ -263,7 +263,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define L1_PREFETCH	dcbtst
 #endif
 
-#if defined(POWER8)
+#if defined(POWER8) || defined(POWER9)
 #define L1_DUALFETCH
 #define L1_PREFETCHSIZE (16 + 128 * 100)
 #define L1_PREFETCH	dcbtst
@@ -802,7 +802,7 @@ Lmcount$lazy_ptr:
 #define BUFFER_SIZE     (  2 << 20)
 #elif defined(PPC440FP2)
 #define BUFFER_SIZE     ( 16 << 20)
-#elif defined(POWER8)
+#elif defined(POWER8) || defined(POWER9)
 #define BUFFER_SIZE     ( 64 << 20)
 #else
 #define BUFFER_SIZE     ( 16 << 20)

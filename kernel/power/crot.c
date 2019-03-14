@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
 #include "common.h"
  
-#if defined(POWER8)
+#if defined(POWER8) || defined(POWER9)
 
 static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
 {

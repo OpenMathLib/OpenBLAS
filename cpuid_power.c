@@ -94,7 +94,7 @@ char *corename[] = {
   "CELL",
   "PPCG4",
   "POWER8",
-  "POWER8"   	
+  "POWER9"   	
 };
 
 int detect(void){
@@ -124,7 +124,7 @@ int detect(void){
   if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
-  if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER8;
+  if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER9;
   if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
   if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
 
@@ -156,7 +156,7 @@ int detect(void){
   if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
-  if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER8;
+  if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER9;
   if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
   if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
   return CPUTYPE_POWER5;
@@ -180,7 +180,7 @@ int id;
 __asm __volatile("mfpvr %0" : "=r"(id));
 switch ( id >> 16 ) {
   case 0x4e: // POWER9
-    return CPUTYPE_POWER8;
+    return CPUTYPE_POWER9;
     break;
   case 0x4d:
   case 0x4b: // POWER8/8E 
