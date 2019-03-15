@@ -2,11 +2,12 @@
 #include <vector>
 #include <random>
 #include <future>
+#include <omp.h>
 #include "/opt/OpenBLAS_zen_serial/include/cblas.h"
 
 const blasint randomMatSize = 1024; //dimension of the random square matrices used
-const uint32_t numConcurrentThreads = 64; //number of concurrent calls of the functions being tested
-const uint32_t numTestRounds = 32; //number of testing rounds before success exit
+const uint32_t numConcurrentThreads = 52; //number of concurrent calls of the functions being tested
+const uint32_t numTestRounds = 8; //number of testing rounds before success exit
 
 inline void pauser(){
     /// a portable way to pause a program
@@ -60,6 +61,14 @@ int main(){
 	std::vector<std::vector<double>> matBlock(numConcurrentThreads*3);
 	std::vector<std::future<void>> futureBlock(numConcurrentThreads);
 	
+	std::cout<<"*----------------------------*\n";
+	std::cout<<"| DGEMM thread safety tester |\n";
+	std::cout<<"*----------------------------*\n";
+	std::cout<<"Size of random matrices(N=M=K): "<<randomMatSize<<'\n';
+	std::cout<<"Number of concurrent calls into OpenBLAS : "<<numConcurrentThreads<<'\n';
+	std::cout<<"Number of testing rounds : "<<numTestRounds<<'\n';
+	std::cout<<"This test will need "<<(static_cast<uint64_t>(randomMatSize*randomMatSize)*numConcurrentThreads*3*8)/static_cast<double>(1024*1024)<<" MiB of RAM\n"<<std::endl;
+	
 	std::cout<<"Initializing random number generator..."<<std::flush;
 	std::mt19937_64 PRNG = InitPRNG();
 	std::cout<<"done\n";
@@ -70,14 +79,17 @@ int main(){
 		matBlock[i].resize(randomMatSize*randomMatSize);
 	}
 	std::cout<<"done\n";
+	//pauser();
 	std::cout<<"Filling matrices with random numbers..."<<std::flush;
 	FillMatrices(matBlock, PRNG, rngdist);
 	//PrintMatrices(matBlock);
 	std::cout<<"done\n";
 	std::cout<<"Testing CBLAS DGEMM thread safety\n";
+	omp_set_num_threads(numConcurrentThreads);
 	for(uint32_t R=0; R<numTestRounds; R++){
 		std::cout<<"DGEMM round #"<<R<<std::endl;
 		std::cout<<"Launching "<<numConcurrentThreads<<" threads..."<<std::flush;
+		#pragma omp parallel for default(none) shared(futureBlock, matBlock)
 		for(uint32_t i=0; i<numConcurrentThreads; i++){
 			futureBlock[i] = std::async(std::launch::async, launch_cblas_dgemm, &matBlock[i*3][0], &matBlock[i*3+1][0], &matBlock[i*3+2][0]);
 			//launch_cblas_dgemm( &matBlock[i][0], &matBlock[i+1][0], &matBlock[i+2][0]);
@@ -94,11 +106,13 @@ int main(){
 			for(uint32_t j=0; j<(randomMatSize*randomMatSize); j++){
 				if (std::abs(matBlock[i+2][j] - matBlock[2][j]) > 1.0E-13){
 					std::cout<<"ERROR: one of the threads returned a different result!"<<i+2<<std::endl;
+					std::cout<<"CBLAS DGEMM thread safety test FAILED!"<<std::endl;
 					return -1;
 				}
 			}
 		}
 		std::cout<<"OK!"<<std::endl;
 	}
+	std::cout<<"CBLAS DGEMM thread safety test PASSED!"<<std::endl;
 	return 0;
 }
