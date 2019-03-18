@@ -1313,6 +1313,13 @@ void blas_memory_free_nolock(void * map_address) {
   free(map_address);
 }
 
+#ifdef SMP
+void blas_thread_memory_cleanup(void) {
+    blas_memory_cleanup((void*)get_memory_table());
+}
+#endif
+
+
 void blas_shutdown(void){
 #ifdef SMP
   BLASFUNC(blas_thread_shutdown)();
@@ -1322,7 +1329,7 @@ void blas_shutdown(void){
   /* Only cleanupIf we were built for threading and TLS was initialized */
   if (local_storage_key)
 #endif
-    blas_memory_cleanup((void*)get_memory_table());
+    blas_thread_memory_cleanup();
 
 #ifdef SEEK_ADDRESS
   base_address      = 0UL;
@@ -1552,7 +1559,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
       break;
     case DLL_THREAD_DETACH:
 #if defined(SMP)
-      blas_memory_cleanup((void*)get_memory_table());
+      blas_thread_memory_cleanup();
 #endif
       break;
     case DLL_PROCESS_DETACH:
