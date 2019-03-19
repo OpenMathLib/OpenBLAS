@@ -56,7 +56,7 @@ BOOL APIENTRY DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved) {
         break;
       case DLL_THREAD_DETACH:
 #if defined(SMP) && defined(USE_TLS)
-        blas_thread_memory_cleanup(void);
+        blas_thread_memory_cleanup();
 #endif
         break;
   }
