@@ -598,9 +598,14 @@ REALNAME:;\
 #ifndef __64BIT__
 #define PROLOGUE \
 	.machine "any";\
+	.toc;\
 	.globl .REALNAME;\
+	.globl REALNAME;\
+	.csect REALNAME[DS],3;\
+REALNAME:;\
+	.long .REALNAME, TOC[tc0], 0;\
 	.csect .text[PR],5;\
-.REALNAME:;
+.REALNAME:
 
 #define EPILOGUE \
 _section_.text:;\
@@ -611,9 +616,14 @@ _section_.text:;\
 
 #define PROLOGUE \
 	.machine "any";\
+	.toc;\
 	.globl .REALNAME;\
+	.globl REALNAME;\
+	.csect REALNAME[DS],3;\
+REALNAME:;\
+	.llong .REALNAME, TOC[tc0], 0;\
 	.csect .text[PR], 5;\
-.REALNAME:;
+.REALNAME:
 
 #define EPILOGUE \
 _section_.text:;\
