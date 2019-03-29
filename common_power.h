@@ -241,7 +241,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define HAVE_PREFETCH
 #endif
 
-#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8)  || defined(POWER9)
+#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8) || defined(POWER9) || ( defined(PPC970) && defined(OS_DARWIN) )
 #define DCBT_ARG	0
 #else
 #define DCBT_ARG	8
@@ -598,9 +598,14 @@ REALNAME:;\
 #ifndef __64BIT__
 #define PROLOGUE \
 	.machine "any";\
+	.toc;\
 	.globl .REALNAME;\
+	.globl REALNAME;\
+	.csect REALNAME[DS],3;\
+REALNAME:;\
+	.long .REALNAME, TOC[tc0], 0;\
 	.csect .text[PR],5;\
-.REALNAME:;
+.REALNAME:
 
 #define EPILOGUE \
 _section_.text:;\
@@ -611,9 +616,14 @@ _section_.text:;\
 
 #define PROLOGUE \
 	.machine "any";\
+	.toc;\
 	.globl .REALNAME;\
+	.globl REALNAME;\
+	.csect REALNAME[DS],3;\
+REALNAME:;\
+	.llong .REALNAME, TOC[tc0], 0;\
 	.csect .text[PR], 5;\
-.REALNAME:;
+.REALNAME:
 
 #define EPILOGUE \
 _section_.text:;\

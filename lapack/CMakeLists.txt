@@ -63,7 +63,6 @@ if (USE_THREAD)
 
   # these do not have 'z' versions
   set(PARALLEL_SOURCES
-    ${GETRF_SRC}
     lauum/lauum_U_parallel.c
     lauum/lauum_L_parallel.c
     potrf/potrf_U_parallel.c
@@ -80,6 +79,10 @@ if (USE_THREAD)
     trtri/trtri_U_parallel.c
     trtri/trtri_L_parallel.c
   )
+
+  foreach (float_type ${FLOAT_TYPES})
+    GenerateNamedObjects("${GETRF_SRC}" "" "getrf_parallel" false "" "" false ${float_type})  
+  endforeach()
 
   GenerateNamedObjects("${PARALLEL_SOURCES}")
 endif ()

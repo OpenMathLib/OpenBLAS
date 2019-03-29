@@ -38,3 +38,8 @@ ifeq ($(CORE), THUNDERX2T99)
 CCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
 FCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
 endif
+
+ifeq ($(CORE), TSV110)
+CCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
+FCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
+endif

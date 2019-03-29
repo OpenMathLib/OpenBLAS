@@ -91,6 +91,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #endif
 
+#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
+#else
+#define NO_AVX512
+#endif
 /* #define FORCE_P2		*/
 /* #define FORCE_KATMAI		*/
 /* #define FORCE_COPPERMINE	*/
@@ -327,6 +331,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef FORCE_SKYLAKEX
+#ifdef NO_AVX512
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "HASWELL"
+#define ARCHCONFIG   "-DHASWELL " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3"
+#define LIBNAME   "haswell"
+#define CORENAME  "HASWELL"
+#else
 #define FORCE
 #define FORCE_INTEL
 #define ARCHITECTURE    "X86"
@@ -339,6 +357,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                      "-DFMA3 -DHAVE_AVX512VL -march=skylake-avx512"
 #define LIBNAME   "skylakex"
 #define CORENAME  "SKYLAKEX"
+#endif
 #endif
 
 #ifdef FORCE_ATOM
@@ -1058,6 +1077,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_TSV110
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "TSV110"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DTSV110 " \
+       "-DL1_CODE_SIZE=65536  -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=4 " \
+       "-DL1_DATA_SIZE=65536  -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=4 " \
+       "-DL2_SIZE=524288 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=8 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "tsv110"
+#define CORENAME  "TSV110"
+#else
+#endif
+
+
 #ifdef FORCE_ZARCH_GENERIC
 #define FORCE
 #define ARCHITECTURE    "ZARCH"
@@ -1076,6 +1112,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DDTB_DEFAULT_ENTRIES=64"
 #define LIBNAME   "z13"
 #define CORENAME  "Z13"
+#endif
+
+#ifdef FORCE_Z14
+#define FORCE
+#define ARCHITECTURE    "ZARCH"
+#define SUBARCHITECTURE "Z14"
+#define ARCHCONFIG   "-DZ14 " \
+       "-DDTB_DEFAULT_ENTRIES=64"
+#define LIBNAME   "z14"
+#define CORENAME  "Z14"
 #endif
 
 #ifndef FORCE

@@ -444,7 +444,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 typedef char env_var_t[MAX_PATH];
 #define readenv(p, n) 0
 #else
-#ifdef OS_WINDOWS
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
 typedef char env_var_t[MAX_PATH];
 #define readenv(p, n) GetEnvironmentVariable((LPCTSTR)(n), (LPTSTR)(p), sizeof(p))
 #else

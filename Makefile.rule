@@ -48,6 +48,8 @@ VERSION = 0.3.6.dev
 # HOSTCC = gcc
 
 # If you need 32bit binary, define BINARY=32, otherwise define BINARY=64
+# Please note that AVX is not available on 32-bit.
+# Setting BINARY=32 disables AVX/AVX2/AVX-512.
 # BINARY=64
 
 # About threaded BLAS. It will be automatically detected if you don't
@@ -57,7 +59,7 @@ VERSION = 0.3.6.dev
 # USE_THREAD = 0
 
 # If you're going to use this library with OpenMP, please comment it in.
-# This flag is always set for POWER8. Don't modify the flag 
+# This flag is always set for POWER8. Don't set USE_OPENMP = 0 if you're targeting POWER8.
 # USE_OPENMP = 1
 
 # The OpenMP scheduler to use - by default this is "static" and you
@@ -68,36 +70,45 @@ VERSION = 0.3.6.dev
 # allow you to select the scheduler from the environment variable OMP_SCHEDULE
 # CCOMMON_OPT += -DOMP_SCHED=dynamic
 
-# You can define maximum number of threads. Basically it should be
-# less than actual number of cores. If you don't specify one, it's
-# automatically detected by the the script.
+# You can define the maximum number of threads. Basically it should be less
+# than or equal to the number of CPU threads. If you don't specify one, it's
+# automatically detected by the build system.
+# If SMT (aka. HT) is enabled on the system, it may or may not be beneficial to 
+# restrict NUM_THREADS to the number of physical cores. By default, the automatic 
+# detection includes logical CPUs, thus allowing the use of SMT.
+# Users may opt at runtime to use less than NUM_THREADS threads.
+#
+# Note for package maintainers: you can build OpenBLAS with a large NUM_THREADS
+# value (eg. 32-256) if you expect your users to use that many threads. Due to the way
+# some internal structures are allocated, using a large NUM_THREADS value has a RAM
+# footprint penalty, even if users reduce the actual number of threads at runtime.
 # NUM_THREADS = 24
 
 # If you have enabled USE_OPENMP and your application would call
-# OpenBLAS's calculation API from multi threads, please comment it in.
-# This flag defines how many instances of OpenBLAS's calculation API can 
-# actually run in parallel. If more threads call OpenBLAS's calculation API,
+# OpenBLAS's calculation API from multiple threads, please comment this in.
+# This flag defines how many instances of OpenBLAS's calculation API can actually
+# run in parallel. If more than NUM_PARALLEL threads call OpenBLAS's calculation API,
 # they need to wait for the preceding API calls to finish or risk data corruption.
 # NUM_PARALLEL = 2
 
-# if you don't need to install the static library, please comment it in.
+# If you don't need to install the static library, please comment this in.
 # NO_STATIC = 1
 
-# if you don't need generate the shared library, please comment it in.
+# If you don't need to generate the shared library, please comment this in.
 # NO_SHARED = 1
 
-# If you don't need CBLAS interface, please comment it in.
+# If you don't need the CBLAS interface, please comment this in.
 # NO_CBLAS = 1
 
-# If you only want CBLAS interface without installing Fortran compiler,
-# please comment it in.
+# If you only want the CBLAS interface without installing a Fortran compiler,
+# please comment this in.
 # ONLY_CBLAS = 1
 
-# If you don't need LAPACK, please comment it in.
-# If you set NO_LAPACK=1, the library automatically sets NO_LAPACKE=1.
+# If you don't need LAPACK, please comment this in.
+# If you set NO_LAPACK=1, the build system automatically sets NO_LAPACKE=1.
 # NO_LAPACK = 1
 
-# If you don't need LAPACKE (C Interface to LAPACK), please comment it in.
+# If you don't need LAPACKE (C Interface to LAPACK), please comment this in.
 # NO_LAPACKE = 1
 
 # Build LAPACK Deprecated functions since LAPACK 3.6.0
@@ -106,7 +117,7 @@ BUILD_LAPACK_DEPRECATED = 1
 # Build RecursiveLAPACK on top of LAPACK
 # BUILD_RELAPACK = 1
 
-# If you want to use legacy threaded Level 3 implementation.
+# If you want to use the legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1
 
 # If you want to use the new, still somewhat experimental code that uses
@@ -116,8 +127,8 @@ BUILD_LAPACK_DEPRECATED = 1
 # USE_TLS = 1
 
 # If you want to drive whole 64bit region by BLAS. Not all Fortran
-# compiler supports this. It's safe to keep comment it out if you
-# are not sure(equivalent to "-i8" option).
+# compilers support this. It's safe to keep this commented out if you
+# are not sure. (This is equivalent to the "-i8" ifort option).
 # INTERFACE64 = 1
 
 # Unfortunately most of kernel won't give us high quality buffer.
@@ -125,10 +136,18 @@ BUILD_LAPACK_DEPRECATED = 1
 # but it will consume time. If you don't like it, you can disable one.
 NO_WARMUP = 1
 
-# If you want to disable CPU/Memory affinity on Linux.
+# Comment this in if you want to disable OpenBLAS's CPU/Memory affinity handling.
+# This feature is only implemented on Linux, and is always disabled on other platforms.
+# Enabling affinity handling may improve performance, especially on NUMA systems, but 
+# it may conflict with certain applications that also try to manage affinity.
+# This conflict can result in threads of the application calling OpenBLAS ending up locked
+# to the same core(s) as OpenBLAS, possibly binding all threads to a single core.
+# For this reason, affinity handling is disabled by default. Can be safely enabled if nothing
+# else modifies affinity settings.
+# Note: enabling affinity has been known to cause problems with NumPy and R
 NO_AFFINITY = 1
 
-# if you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
+# If you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
 # BIGNUMA = 1
 
 # Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers
@@ -180,7 +199,7 @@ NO_AFFINITY = 1
 # been reported to be optimal for certain workloads (50 is the recommended value for Julia).
 # GEMM_MULTITHREAD_THRESHOLD = 4
 
-# If you need santy check by comparing reference BLAS. It'll be very
+# If you need sanity check by comparing results to reference BLAS. It'll be very
 # slow (Not implemented yet).
 # SANITY_CHECK = 1
 

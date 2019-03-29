@@ -95,6 +95,9 @@ endif
 ifeq ($(TARGET), ZEN)
 GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
+ifeq ($(TARGET), ARMV8)
+GETARCH_FLAGS := -DFORCE_ARMV7
+endif
 endif
 
 
@@ -152,7 +155,8 @@ GETARCH_FLAGS	+= -DNO_AVX
 endif
 
 ifeq ($(BINARY), 32)
-GETARCH_FLAGS	+= -DNO_AVX
+GETARCH_FLAGS	+= -DNO_AVX -DNO_AVX2 -DNO_AVX512
+NO_AVX512 = 1
 endif
 
 ifeq ($(NO_AVX2), 1)

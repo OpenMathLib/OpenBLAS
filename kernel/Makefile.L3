@@ -24,7 +24,7 @@ ifeq ($(TARGET), LOONGSON3B)
 USE_TRMM = 1
 endif
 
-ifeq ($(TARGET), GENERIC)
+ifeq ($(CORE), GENERIC)
 USE_TRMM = 1
 endif
 
@@ -49,6 +49,10 @@ USE_TRMM = 1
 endif
 
 ifeq ($(ARCH), zarch)
+USE_TRMM = 1
+endif
+
+ifeq ($(CORE), Z14)
 USE_TRMM = 1
 endif
 

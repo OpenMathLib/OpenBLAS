@@ -119,9 +119,9 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	cmpq	       $0, %0						\n\t"
 	"	je	       4f						\n\t"
 
-	"	vmovups         (%2,%1,4), %%ymm0				\n\t"	// read a
-	"	vmovups         (%3,%1,8), %%ymm1				\n\t"	// read b0
-	"	vmovups       32(%3,%1,8), %%ymm2				\n\t"	// read b1
+	"	vmovups         (%8,%1,4), %%ymm0				\n\t"	// read a
+	"	vmovups         (%9,%1,8), %%ymm1				\n\t"	// read b0
+	"	vmovups       32(%9,%1,8), %%ymm2				\n\t"	// read b1
 
 
 	"	addq		$8, %1						\n\t"
@@ -131,18 +131,18 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	.p2align 4							\n\t"
 	"1:									\n\t"
 
-	"	vmovups         (%2,%1,4), %%ymm4				\n\t"	// read a
+	"	vmovups         (%8,%1,4), %%ymm4				\n\t"	// read a
         "       vpermpd         $0xb1  , %%ymm0 , %%ymm3                	\n\t"
 
 	"	vfmadd231pd	%%ymm0 , %%ymm1 , %%ymm8			\n\t"
 	"	vfmadd231pd	%%ymm0 , %%ymm2 , %%ymm12			\n\t"
 
-	"	vmovups         (%3,%1,8), %%ymm5				\n\t"	// read b0
+	"	vmovups         (%9,%1,8), %%ymm5				\n\t"	// read b0
 	"	vfmadd231pd	%%ymm3 , %%ymm1 , %%ymm9			\n\t"
 	"	vfmadd231pd	%%ymm3 , %%ymm2 , %%ymm13			\n\t"
 
         "       vpermpd         $0x1b  , %%ymm3 , %%ymm0                	\n\t"
-	"	vmovups       32(%3,%1,8), %%ymm6				\n\t"	// read b1
+	"	vmovups       32(%9,%1,8), %%ymm6				\n\t"	// read b1
         "       vpermpd         $0xb1  , %%ymm0 , %%ymm3                	\n\t"
 	"	vfmadd231pd	%%ymm0 , %%ymm1 , %%ymm10			\n\t"
 	"	vfmadd231pd	%%ymm0 , %%ymm2 , %%ymm14			\n\t"
@@ -155,18 +155,18 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 
 	"	jz		22f						\n\t"
 
-	"	vmovups         (%2,%1,4), %%ymm0				\n\t"	// read a
+	"	vmovups         (%8,%1,4), %%ymm0				\n\t"	// read a
 
 	"	vfmadd231pd	%%ymm4 , %%ymm5 , %%ymm8			\n\t"
 	"	vfmadd231pd	%%ymm4 , %%ymm6 , %%ymm12			\n\t"
 
         "       vpermpd         $0xb1  , %%ymm4 , %%ymm4                	\n\t"
-	"	vmovups         (%3,%1,8), %%ymm1				\n\t"	// read b0
+	"	vmovups         (%9,%1,8), %%ymm1				\n\t"	// read b0
 	"	vfmadd231pd	%%ymm4 , %%ymm5 , %%ymm9			\n\t"
 	"	vfmadd231pd	%%ymm4 , %%ymm6 , %%ymm13			\n\t"
 
         "       vpermpd         $0x1b  , %%ymm4 , %%ymm4                	\n\t"
-	"	vmovups       32(%3,%1,8), %%ymm2				\n\t"	// read b1
+	"	vmovups       32(%9,%1,8), %%ymm2				\n\t"	// read b1
 	"	vfmadd231pd	%%ymm4 , %%ymm5 , %%ymm10			\n\t"
 	"	vfmadd231pd	%%ymm4 , %%ymm6 , %%ymm14			\n\t"
 
@@ -268,7 +268,7 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vmovups		  (%6,%7,1) , %%ymm7			\n\t"	// read c7
 
 	"	vsubpd		%%ymm8 , %%ymm0 , %%ymm8		\n\t"
-	"	vmovups           (%9),  %%ymm0				\n\t"
+	"	vmovups           (%3),  %%ymm0				\n\t"
 	"	vsubpd		%%ymm9 , %%ymm1 , %%ymm9		\n\t"
 	"	vpermpd		$0x55 ,  %%ymm0 , %%ymm1		\n\t"
 	"	vsubpd		%%ymm10, %%ymm2 , %%ymm10		\n\t"
@@ -278,7 +278,7 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vpermpd		$0x00 ,  %%ymm0 , %%ymm0		\n\t"
 
 	"	vsubpd		%%ymm12, %%ymm4 , %%ymm12		\n\t"
-	"	vmovups         32(%9),  %%ymm4				\n\t"
+	"	vmovups         32(%3),  %%ymm4				\n\t"
 	"	vsubpd		%%ymm13, %%ymm5 , %%ymm13		\n\t"
 	"	vpermpd		$0x55 ,  %%ymm4 , %%ymm5		\n\t"
 	"	vsubpd		%%ymm14, %%ymm6 , %%ymm14		\n\t"
@@ -290,15 +290,15 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 
 	"5:								\n\t"	// i = 0
 
-	"	addq	$64, %9						\n\t"	// b=b+8
+	"	addq	$64, %3						\n\t"	// b=b+8
 
 	"	vmulpd		%%ymm8 , %%ymm0, %%ymm8			\n\t"	// a *bb
-	"	vmovups           (%9),  %%ymm0				\n\t"
-	"	vmovups		%%ymm8 , (%8)				\n\t"	// write a
+	"	vmovups           (%3),  %%ymm0				\n\t"
+	"	vmovups		%%ymm8 , (%2)				\n\t"	// write a
 	"	vmovups		%%ymm8 , (%4)				\n\t"	// write c
 
 	"	vfnmadd231pd	%%ymm8 , %%ymm1 , %%ymm9		\n\t"
-	"	vmovups         32(%9),  %%ymm1				\n\t"
+	"	vmovups         32(%3),  %%ymm1				\n\t"
 	"	vfnmadd231pd	%%ymm8 , %%ymm2 , %%ymm10		\n\t"
 	"	vpermpd		$0xaa ,  %%ymm0 , %%ymm2		\n\t"
 	"	vfnmadd231pd	%%ymm8 , %%ymm3 , %%ymm11		\n\t"
@@ -313,15 +313,15 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vpermpd		$0xff ,  %%ymm1 , %%ymm7		\n\t"
 	"	vpermpd		$0x00 ,  %%ymm1 , %%ymm4		\n\t"
 
-	"	addq	$64, %9						\n\t"	// b=b+8
-	"	addq	$32, %8						\n\t"	// a=a+8
+	"	addq	$64, %3						\n\t"	// b=b+8
+	"	addq	$32, %2						\n\t"	// a=a+8
 
 
 
 	"	vmulpd		%%ymm9 , %%ymm0, %%ymm9			\n\t"	// a *bb
-	"	vmovups           (%9),  %%ymm0				\n\t"
-	"	vmovups         32(%9),  %%ymm1				\n\t"
-	"	vmovups		%%ymm9 , (%8)				\n\t"	// write a
+	"	vmovups           (%3),  %%ymm0				\n\t"
+	"	vmovups         32(%3),  %%ymm1				\n\t"
+	"	vmovups		%%ymm9 , (%2)				\n\t"	// write a
 	"	vmovups		%%ymm9 , (%4,%7,1)			\n\t"	// write c
 
 	"	vfnmadd231pd	%%ymm9 , %%ymm2 , %%ymm10		\n\t"
@@ -337,13 +337,13 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vpermpd		$0xff ,  %%ymm1 , %%ymm7		\n\t"
 	"	vpermpd		$0x00 ,  %%ymm1 , %%ymm4		\n\t"
 
-	"	addq	$64, %9						\n\t"	// b=b+8
-	"	addq	$32, %8						\n\t"	// a=a+8
+	"	addq	$64, %3						\n\t"	// b=b+8
+	"	addq	$32, %2						\n\t"	// a=a+8
 
 	"	vmulpd		%%ymm10, %%ymm0, %%ymm10		\n\t"	// a *bb
-	"	vmovups           (%9),  %%ymm0				\n\t"
-	"	vmovups         32(%9),  %%ymm1				\n\t"
-	"	vmovups		%%ymm10, (%8)				\n\t"	// write a
+	"	vmovups           (%3),  %%ymm0				\n\t"
+	"	vmovups         32(%3),  %%ymm1				\n\t"
+	"	vmovups		%%ymm10, (%2)				\n\t"	// write a
 	"	vmovups		%%ymm10, (%4,%7,2)			\n\t"	// write c
 
 	"	vfnmadd231pd	%%ymm10, %%ymm3 , %%ymm11		\n\t"
@@ -358,14 +358,14 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vpermpd		$0x00 ,  %%ymm1 , %%ymm4		\n\t"
 
 
-	"	addq	$64, %9						\n\t"	// b=b+8
-	"	addq	$32, %8						\n\t"	// a=a+8
+	"	addq	$64, %3						\n\t"	// b=b+8
+	"	addq	$32, %2						\n\t"	// a=a+8
 
 
 
 	"	vmulpd		%%ymm11, %%ymm0, %%ymm11		\n\t"	// a *bb
-	"	vmovups         32(%9),  %%ymm1				\n\t"
-	"	vmovups		%%ymm11, (%8)				\n\t"	// write a
+	"	vmovups         32(%3),  %%ymm1				\n\t"
+	"	vmovups		%%ymm11, (%2)				\n\t"	// write a
 	"	vmovups		%%ymm11, (%5)     			\n\t"	// write c
 
 	"	vfnmadd231pd	%%ymm11, %%ymm4 , %%ymm12		\n\t"
@@ -378,13 +378,13 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vpermpd		$0x00 ,  %%ymm1 , %%ymm0		\n\t"
 
 
-	"	addq	$64, %9						\n\t"	// b=b+8
-	"	addq	$32, %8						\n\t"	// a=a+8
+	"	addq	$64, %3						\n\t"	// b=b+8
+	"	addq	$32, %2						\n\t"	// a=a+8
 
 
 	"	vmulpd		%%ymm12, %%ymm0, %%ymm12		\n\t"	// a *bb
-	"	vmovups         32(%9),  %%ymm1				\n\t"
-	"	vmovups		%%ymm12, (%8)				\n\t"	// write a
+	"	vmovups         32(%3),  %%ymm1				\n\t"
+	"	vmovups		%%ymm12, (%2)				\n\t"	// write a
 	"	vmovups		%%ymm12, (%5,%7,1)			\n\t"	// write c
 
 	"	vfnmadd231pd	%%ymm12, %%ymm5 , %%ymm13		\n\t"
@@ -394,12 +394,12 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vpermpd		$0xff ,  %%ymm1 , %%ymm7		\n\t"
 	"	vpermpd		$0x55 ,  %%ymm1 , %%ymm0		\n\t"
 
-	"	addq	$64, %9						\n\t"	// b=b+8
-	"	addq	$32, %8						\n\t"	// a=a+8
+	"	addq	$64, %3						\n\t"	// b=b+8
+	"	addq	$32, %2						\n\t"	// a=a+8
 
 	"	vmulpd		%%ymm13, %%ymm0, %%ymm13		\n\t"	// a *bb
-	"	vmovups         32(%9),  %%ymm1				\n\t"
-	"	vmovups		%%ymm13, (%8)				\n\t"	// write a
+	"	vmovups         32(%3),  %%ymm1				\n\t"
+	"	vmovups		%%ymm13, (%2)				\n\t"	// write a
 	"	vmovups		%%ymm13, (%5,%7,2)			\n\t"	// write c
 
 	"	vfnmadd231pd	%%ymm13, %%ymm6 , %%ymm14		\n\t"
@@ -408,39 +408,39 @@ static void dtrsm_RN_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vpermpd		$0xaa ,  %%ymm1 , %%ymm0		\n\t"
 
 
-	"	addq	$64, %9						\n\t"	// b=b+8
-	"	addq	$32, %8						\n\t"	// a=a+8
+	"	addq	$64, %3						\n\t"	// b=b+8
+	"	addq	$32, %2						\n\t"	// a=a+8
 
 
 	"	vmulpd		%%ymm14, %%ymm0, %%ymm14		\n\t"	// a *bb
-	"	vmovups         32(%9),  %%ymm1				\n\t"
-	"	vmovups		%%ymm14, (%8)				\n\t"	// write a
+	"	vmovups         32(%3),  %%ymm1				\n\t"
+	"	vmovups		%%ymm14, (%2)				\n\t"	// write a
 	"	vmovups		%%ymm14, (%6)     			\n\t"	// write c
 
 	"	vfnmadd231pd	%%ymm14, %%ymm7 , %%ymm15		\n\t"
 
 	"	vpermpd		$0xff ,  %%ymm1 , %%ymm0		\n\t"
 
-	"	addq	$32, %8						\n\t"	// a=a+8
+	"	addq	$32, %2						\n\t"	// a=a+8
 
 	"	vmulpd		%%ymm15, %%ymm0, %%ymm15		\n\t"	// a *bb
-	"	vmovups		%%ymm15, (%8)				\n\t"	// write a
+	"	vmovups		%%ymm15, (%2)				\n\t"	// write a
 	"	vmovups		%%ymm15, (%6,%7,1)			\n\t"	// write c
 
 	"	vzeroupper						\n\t"
 
         :
+          "+r" (n1),     // 0    
+          "+a" (i),      // 1    
+          "+r" (as),     // 2
+          "+r" (bs)      // 3
         :
-          "r" (n1),     // 0    
-          "a" (i),      // 1    
-          "r" (a),      // 2
-          "r" (b),      // 3
           "r" (c),      // 4
           "r" (c3),     // 5
           "r" (c6),     // 6
           "r" (ldc),    // 7
-          "r" (as),     // 8
-          "r" (bs)      // 9
+          "r" (a),     // 8
+          "r" (b)      // 9
         : "cc",
           "%xmm0", "%xmm1", "%xmm2", "%xmm3",
           "%xmm4", "%xmm5", "%xmm6", "%xmm7",
