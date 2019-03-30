@@ -70,7 +70,7 @@ gotoblas_t TABLE_NAME = {
 
   samax_kTS,  samin_kTS,  smax_kTS,  smin_kTS,
   isamax_kTS, isamin_kTS, ismax_kTS, ismin_kTS,
-  snrm2_kTS,  sasum_kTS,  scopy_kTS, sdot_kTS,
+  snrm2_kTS,  sasum_kTS, ssum_kTS, scopy_kTS, sdot_kTS,
   dsdot_kTS,
   srot_kTS,   saxpy_kTS,  sscal_kTS, sswap_kTS,
   sgemv_nTS,  sgemv_tTS, sger_kTS,
@@ -126,7 +126,7 @@ gotoblas_t TABLE_NAME = {
 
   damax_kTS,  damin_kTS,  dmax_kTS,  dmin_kTS,
   idamax_kTS, idamin_kTS, idmax_kTS, idmin_kTS,
-  dnrm2_kTS,  dasum_kTS,  dcopy_kTS, ddot_kTS,
+  dnrm2_kTS,  dasum_kTS,  dsum_kTS, dcopy_kTS, ddot_kTS,
   drot_kTS,   daxpy_kTS,  dscal_kTS, dswap_kTS,
   dgemv_nTS,  dgemv_tTS,  dger_kTS,
   dsymv_LTS,  dsymv_UTS,
@@ -178,7 +178,7 @@ gotoblas_t TABLE_NAME = {
 
   qamax_kTS,  qamin_kTS,  qmax_kTS,  qmin_kTS,
   iqamax_kTS, iqamin_kTS, iqmax_kTS, iqmin_kTS,
-  qnrm2_kTS,  qasum_kTS,  qcopy_kTS, qdot_kTS,
+  qnrm2_kTS,  qasum_kTS,  qsum_kTS, qcopy_kTS, qdot_kTS,
   qrot_kTS,   qaxpy_kTS,  qscal_kTS, qswap_kTS,
   qgemv_nTS,  qgemv_tTS,  qger_kTS,
   qsymv_LTS,  qsymv_UTS,
@@ -234,7 +234,7 @@ gotoblas_t TABLE_NAME = {
 #endif
 
   camax_kTS, camin_kTS, icamax_kTS, icamin_kTS,
-  cnrm2_kTS, casum_kTS, ccopy_kTS,
+  cnrm2_kTS, casum_kTS, csum_kTS, ccopy_kTS,
   cdotu_kTS, cdotc_kTS, csrot_kTS,
   caxpy_kTS, caxpyc_kTS, cscal_kTS, cswap_kTS,
 
@@ -369,7 +369,7 @@ gotoblas_t TABLE_NAME = {
 #endif
 
   zamax_kTS, zamin_kTS, izamax_kTS, izamin_kTS,
-  znrm2_kTS, zasum_kTS, zcopy_kTS,
+  znrm2_kTS, zasum_kTS, zsum_kTS, zcopy_kTS,
   zdotu_kTS, zdotc_kTS, zdrot_kTS,
   zaxpy_kTS, zaxpyc_kTS, zscal_kTS, zswap_kTS,
 
@@ -500,7 +500,7 @@ gotoblas_t TABLE_NAME = {
   XGEMM_DEFAULT_UNROLL_M, XGEMM_DEFAULT_UNROLL_N, MAX(XGEMM_DEFAULT_UNROLL_M, XGEMM_DEFAULT_UNROLL_N),
 
   xamax_kTS, xamin_kTS, ixamax_kTS, ixamin_kTS,
-  xnrm2_kTS, xasum_kTS, xcopy_kTS,
+  xnrm2_kTS, xasum_kTS, xsum_kTS, xcopy_kTS,
   xdotu_kTS, xdotc_kTS, xqrot_kTS,
   xaxpy_kTS, xaxpyc_kTS, xscal_kTS, xswap_kTS,
 

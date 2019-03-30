@@ -65,6 +65,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
       GenerateNamedObjects("${KERNELDIR}/${${float_char}SCALKERNEL}" "" "scal_k" false "" "" false ${float_type})
       GenerateNamedObjects("${KERNELDIR}/${${float_char}SWAPKERNEL}" "" "swap_k" false "" "" false ${float_type})
       GenerateNamedObjects("${KERNELDIR}/${${float_char}AXPBYKERNEL}" "" "axpby_k" false "" "" false ${float_type})
+      GenerateNamedObjects("${KERNELDIR}/${${float_char}SUMKERNEL}" "" "sum_k" false "" "" false ${float_type})
 
       if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
         GenerateNamedObjects("${KERNELDIR}/${${float_char}AXPYKERNEL}" "CONJ" "axpyc_k" false "" "" false ${float_type})
