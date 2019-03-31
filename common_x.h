@@ -19,6 +19,7 @@
 #define	XDOTC_K			xdotc_k
 #define	XNRM2_K			xnrm2_k
 #define	XSCAL_K			xscal_k
+#define	XSUM_K			xsum_k
 #define	XSWAP_K			xswap_k
 #define	XROT_K			xqrot_k
 
@@ -227,6 +228,7 @@
 #define	XDOTC_K			gotoblas -> xdotc_k
 #define	XNRM2_K			gotoblas -> xnrm2_k
 #define	XSCAL_K			gotoblas -> xscal_k
+#define	XSUM_K			gotoblas -> xsum_k
 #define	XSWAP_K			gotoblas -> xswap_k
 #define	XROT_K			gotoblas -> xqrot_k
 
