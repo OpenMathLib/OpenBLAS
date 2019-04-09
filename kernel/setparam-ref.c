@@ -718,6 +718,27 @@ static void init_parameter(void) {
 
 }
 #else // defined(ARCH_ARM64)
+#if defined(ARCH_POWER)
+static void init_parameter(void) {
+
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+
+  TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
+  TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
+  TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
+  TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
+
+
+  TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+  TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+  TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
+  TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+}
+#else //POWER
+
 #ifdef ARCH_X86
 static int get_l2_size_old(void){
   int i, eax, ebx, ecx, edx, cpuid_level;
@@ -1303,4 +1324,5 @@ static void init_parameter(void) {
 
 
 }
+#endif //POWER
 #endif //defined(ARCH_ARM64)
