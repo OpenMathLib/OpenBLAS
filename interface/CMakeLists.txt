@@ -12,6 +12,7 @@ set(BLAS1_REAL_ONLY_SOURCES
   rotm.c rotmg.c # N.B. these do not have complex counterparts
   rot.c
   asum.c
+  sum.c
 )
 
 # these will have 'z' prepended for the complex version
@@ -124,6 +125,7 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("max.c" "USE_ABS;USE_MIN" "scamin" ${CBLAS_FLAG} "" "" true "COMPLEX")
     GenerateNamedObjects("max.c" "USE_ABS" "scamax" ${CBLAS_FLAG} "" "" true "COMPLEX")
     GenerateNamedObjects("asum.c" "" "scasum" ${CBLAS_FLAG} "" "" true "COMPLEX")
+    GenerateNamedObjects("sum.c" "" "scsum" ${CBLAS_FLAG} "" "" true "COMPLEX")
   endif ()
   if (${float_type} STREQUAL "ZCOMPLEX")
     GenerateNamedObjects("zscal.c" "SSCAL" "dscal" ${CBLAS_FLAG} "" "" false "ZCOMPLEX")
@@ -132,6 +134,7 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("max.c" "USE_ABS;USE_MIN" "dzamin" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
     GenerateNamedObjects("max.c" "USE_ABS" "dzamax" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
     GenerateNamedObjects("asum.c" "" "dzasum" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
+    GenerateNamedObjects("sum.c" "" "dzsum" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
   endif ()
 endforeach ()
 

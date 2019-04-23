@@ -35,6 +35,11 @@ DASUMKERNEL  = dasum.c
 CASUMKERNEL  = casum.c
 ZASUMKERNEL  = zasum.c
 
+SSUMKERNEL  = ssum.c
+DSUMKERNEL  = dsum.c
+CSUMKERNEL  = csum.c
+ZSUMKERNEL  = zsum.c
+
 SAXPYKERNEL  = saxpy.c
 DAXPYKERNEL  = daxpy.c
 CAXPYKERNEL  = caxpy.c

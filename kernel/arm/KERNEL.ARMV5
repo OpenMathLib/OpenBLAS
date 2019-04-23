@@ -35,6 +35,11 @@ DASUMKERNEL  = ../arm/asum.c
 CASUMKERNEL  = ../arm/zasum.c
 ZASUMKERNEL  = ../arm/zasum.c
 
+SSUMKERNEL  = ../arm/sum.c
+DSUMKERNEL  = ../arm/sum.c
+CSUMKERNEL  = ../arm/zsum.c
+ZSUMKERNEL  = ../arm/zsum.c
+
 SAXPYKERNEL  = ../arm/axpy.c
 DAXPYKERNEL  = ../arm/axpy.c
 CAXPYKERNEL  = ../arm/zaxpy.c

@@ -63,6 +63,7 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
 
   float  (*snrm2_k) (BLASLONG, float *, BLASLONG);
   float  (*sasum_k) (BLASLONG, float *, BLASLONG);
+  float  (*ssum_k)  (BLASLONG, float *, BLASLONG);
   int    (*scopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   float  (*sdot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
@@ -154,6 +155,7 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
 
   double (*dnrm2_k) (BLASLONG, double *, BLASLONG);
   double (*dasum_k) (BLASLONG, double *, BLASLONG);
+  double (*dsum_k)  (BLASLONG, double *, BLASLONG);
   int    (*dcopy_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
   double (*ddot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG);
   int    (*drot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG, double, double);
@@ -245,6 +247,7 @@ BLASLONG (*iqmin_k) (BLASLONG, xdouble *, BLASLONG);
 
  xdouble (*qnrm2_k) (BLASLONG, xdouble *, BLASLONG);
  xdouble (*qasum_k) (BLASLONG, xdouble *, BLASLONG);
+ xdouble (*qsum_k)  (BLASLONG, xdouble *, BLASLONG);
   int    (*qcopy_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
  xdouble (*qdot_k)  (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
   int    (*qrot_k)  (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble);
@@ -332,6 +335,7 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
 
   float (*cnrm2_k) (BLASLONG, float *, BLASLONG);
   float (*casum_k) (BLASLONG, float *, BLASLONG);
+  float (*csum_k)  (BLASLONG, float *, BLASLONG);
   int    (*ccopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   openblas_complex_float (*cdotu_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   openblas_complex_float (*cdotc_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
@@ -495,6 +499,7 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
 
   double (*znrm2_k) (BLASLONG, double *, BLASLONG);
   double (*zasum_k) (BLASLONG, double *, BLASLONG);
+  double (*zsum_k)  (BLASLONG, double *, BLASLONG);
   int    (*zcopy_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
   openblas_complex_double (*zdotu_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
   openblas_complex_double (*zdotc_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
@@ -660,6 +665,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
 
   xdouble (*xnrm2_k) (BLASLONG, xdouble *, BLASLONG);
   xdouble (*xasum_k) (BLASLONG, xdouble *, BLASLONG);
+  xdouble (*xsum_k) (BLASLONG, xdouble *, BLASLONG);
   int    (*xcopy_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
   openblas_complex_xdouble (*xdotu_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
   openblas_complex_xdouble (*xdotc_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);

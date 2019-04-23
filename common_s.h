@@ -12,6 +12,7 @@
 #define	ISMAX_K			ismax_k
 #define	ISMIN_K			ismin_k
 #define	SASUM_K			sasum_k
+#define	SSUM_K			ssum_k
 #define	SAXPYU_K		saxpy_k
 #define	SAXPYC_K		saxpy_k
 #define	SCOPY_K			scopy_k
@@ -170,6 +171,7 @@
 #define	ISMAX_K			gotoblas -> ismax_k
 #define	ISMIN_K			gotoblas -> ismin_k
 #define	SASUM_K			gotoblas -> sasum_k
+#define	SSUM_K			gotoblas -> ssum_k
 #define	SAXPYU_K		gotoblas -> saxpy_k
 #define	SAXPYC_K		gotoblas -> saxpy_k
 #define	SCOPY_K			gotoblas -> scopy_k

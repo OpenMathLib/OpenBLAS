@@ -37,6 +37,9 @@ DASUMKERNEL  = asum_vfp.S
 CASUMKERNEL  = asum_vfp.S
 ZASUMKERNEL  = asum_vfp.S
 
+SSUMKERNEL  = sum_vfp.S
+DSUMKERNEL  = sum_vfp.S
+
 SAXPYKERNEL  = axpy_vfp.S
 DAXPYKERNEL  = axpy_vfp.S
 CAXPYKERNEL  = axpy_vfp.S
