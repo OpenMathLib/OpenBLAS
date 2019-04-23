@@ -14,52 +14,52 @@
 
 /* Table of constant values */
 
-static int c__1 = 1;
-static int c_false = FALSE_;
-static int c__2 = 2;
+static blasint c__1 = 1;
+static blasint c_false = FALSE_;
+static blasint c__2 = 2;
 static double c_b26 = 1.;
 static double c_b30 = 0.;
-static int c_true = TRUE_;
+static blasint c_true = TRUE_;
 
-int RELAPACK_dtrsyl_rec2(char *trana, char *tranb, int *isgn, int
-	*m, int *n, double *a, int *lda, double *b, int *
-	ldb, double *c__, int *ldc, double *scale, int *info,
+int RELAPACK_dtrsyl_rec2(char *trana, char *tranb, blasint *isgn, int
+	*m, blasint *n, double *a, blasint *lda, double *b, blasint *
+	ldb, double *c__, blasint *ldc, double *scale, blasint *info,
 	ftnlen trana_len, ftnlen tranb_len)
 {
     /* System generated locals */
-    int a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2,
+    blasint a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2,
 	    i__3, i__4;
     double d__1, d__2;
 
     /* Local variables */
-    static int j, k, l;
+    static blasint j, k, l;
     static double x[4]	/* was [2][2] */;
-    static int k1, k2, l1, l2;
+    static blasint k1, k2, l1, l2;
     static double a11, db, da11, vec[4]	/* was [2][2] */, dum[1], eps,
 	     sgn;
-    extern double ddot_(int *, double *, int *, double *,
-	    int *);
-    static int ierr;
+    extern double ddot_(int *, double *, blasint *, double *,
+	    blasint *);
+    static blasint ierr;
     static double smin, suml, sumr;
-    extern /* Subroutine */ int dscal_(int *, double *, double *,
-	    int *);
-    extern int lsame_(char *, char *, ftnlen, ftnlen);
-    static int knext, lnext;
+    extern /* Subroutine */ blasint dscal_(int *, double *, double *,
+	    blasint *);
+    extern blasint lsame_(char *, char *, ftnlen, ftnlen);
+    static blasint knext, lnext;
     static double xnorm;
-    extern /* Subroutine */ int dlaln2_(int *, int *, int *,
-	    double *, double *, double *, int *, double *,
-	     double *, double *, int *, double *, double *
-	    , double *, int *, double *, double *, int *),
-	     dlasy2_(int *, int *, int *, int *, int *,
-	    double *, int *, double *, int *, double *,
-	    int *, double *, double *, int *, double *,
-	    int *), dlabad_(double *, double *);
-    extern double dlamch_(char *, ftnlen), dlange_(char *, int *,
-	    int *, double *, int *, double *, ftnlen);
+    extern /* Subroutine */ blasint dlaln2_(int *, blasint *, blasint *,
+	    double *, double *, double *, blasint *, double *,
+	     double *, double *, blasint *, double *, double *
+	    , double *, blasint *, double *, double *, blasint *),
+	     dlasy2_(int *, blasint *, blasint *, blasint *, blasint *,
+	    double *, blasint *, double *, blasint *, double *,
+	    blasint *, double *, double *, blasint *, double *,
+	    blasint *), dlabad_(double *, double *);
+    extern double dlamch_(char *, ftnlen), dlange_(char *, blasint *,
+	    blasint *, double *, blasint *, double *, ftnlen);
     static double scaloc;
-    extern /* Subroutine */ int xerbla_(char *, int *, ftnlen);
+    extern /* Subroutine */ blasint xerbla_(char *, blasint *, ftnlen);
     static double bignum;
-    static int notrna, notrnb;
+    static blasint notrna, notrnb;
     static double smlnum;
 
     /* Parameter adjustments */

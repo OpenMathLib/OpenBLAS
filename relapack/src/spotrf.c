@@ -1,7 +1,7 @@
 #include "relapack.h"
 
-static void RELAPACK_spotrf_rec(const char *, const int *, float *, 
-        const int *, int *);
+static void RELAPACK_spotrf_rec(const char *, const blasint *, float *, 
+        const blasint *, blasint *);
 
 
 /** SPOTRF computes the Cholesky factorization of a real symmetric positive definite matrix A.
@@ -11,14 +11,14 @@ static void RELAPACK_spotrf_rec(const char *, const int *, float *,
  * http://www.netlib.org/lapack/explore-html/d0/da2/spotrf_8f.html
  * */
 void RELAPACK_spotrf(
-    const char *uplo, const int *n,
-    float *A, const int *ldA,
-    int *info
+    const char *uplo, const blasint *n,
+    float *A, const blasint *ldA,
+    blasint *info
 ) {
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -27,8 +27,8 @@ void RELAPACK_spotrf(
     else if (*ldA < MAX(1, *n))
         *info = -4;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("SPOTRF", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("SPOTRF", &minfo, strlen("SPOTRF"));
         return;
     }
 
@@ -42,9 +42,9 @@ void RELAPACK_spotrf(
 
 /** spotrf's recursive compute kernel */
 static void RELAPACK_spotrf_rec(
-    const char *uplo, const int *n,
-    float *A, const int *ldA,
-    int *info
+    const char *uplo, const blasint *n,
+    float *A, const blasint *ldA,
+    blasint *info
 ) {
 
     if (*n <= MAX(CROSSOVER_SPOTRF, 1)) {
@@ -58,8 +58,8 @@ static void RELAPACK_spotrf_rec(
     const float MONE[] = { -1. };
 
     // Splitting
-    const int n1 = SREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = SREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

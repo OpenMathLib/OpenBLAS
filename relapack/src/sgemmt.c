@@ -1,12 +1,12 @@
 #include "relapack.h"
 
 static void RELAPACK_sgemmt_rec(const char *, const char *, const char *,
-    const int *, const int *, const float *, const float *, const int *,
-    const float *, const int *, const float *, float *, const int *);
+    const blasint *, const blasint *, const float *, const float *, const blasint *,
+    const float *, const blasint *, const float *, float *, const blasint *);
 
 static void RELAPACK_sgemmt_rec2(const char *, const char *, const char *,
-    const int *, const int *, const float *, const float *, const int *,
-    const float *, const int *, const float *, float *, const int *);
+    const blasint *, const blasint *, const float *, const float *, const blasint *,
+    const float *, const blasint *, const float *, float *, const blasint *);
 
 
 /** SGEMMT computes a matrix-matrix product with general matrices but updates
@@ -20,10 +20,10 @@ static void RELAPACK_sgemmt_rec2(const char *, const char *, const char *,
  * */
 void RELAPACK_sgemmt(
     const char *uplo, const char *transA, const char *transB,
-    const int *n, const int *k,
-    const float *alpha, const float *A, const int *ldA,
-    const float *B, const int *ldB,
-    const float *beta, float *C, const int *ldC
+    const blasint *n, const blasint *k,
+    const float *alpha, const float *A, const blasint *ldA,
+    const float *B, const blasint *ldB,
+    const float *beta, float *C, const blasint *ldC
 ) {
 
 #if HAVE_XGEMMT
@@ -32,13 +32,13 @@ void RELAPACK_sgemmt(
 #else
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
-    const int notransA = LAPACK(lsame)(transA, "N");
-    const int tranA = LAPACK(lsame)(transA, "T");
-    const int notransB = LAPACK(lsame)(transB, "N");
-    const int tranB = LAPACK(lsame)(transB, "T");
-    int info = 0;
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const blasint notransA = LAPACK(lsame)(transA, "N");
+    const blasint tranA = LAPACK(lsame)(transA, "T");
+    const blasint notransB = LAPACK(lsame)(transB, "N");
+    const blasint tranB = LAPACK(lsame)(transB, "T");
+    blasint info = 0;
     if (!lower && !upper)
         info = 1;
     else if (!tranA && !notransA)
@@ -56,7 +56,7 @@ void RELAPACK_sgemmt(
     else if (*ldC < MAX(1, *n))
         info = 13;
     if (info) {
-        LAPACK(xerbla)("SGEMMT", &info);
+        LAPACK(xerbla)("SGEMMT", &info, strlen("SGEMMT"));
         return;
     }
 
@@ -74,10 +74,10 @@ void RELAPACK_sgemmt(
 /** sgemmt's recursive compute kernel */
 static void RELAPACK_sgemmt_rec(
     const char *uplo, const char *transA, const char *transB,
-    const int *n, const int *k,
-    const float *alpha, const float *A, const int *ldA,
-    const float *B, const int *ldB,
-    const float *beta, float *C, const int *ldC
+    const blasint *n, const blasint *k,
+    const float *alpha, const float *A, const blasint *ldA,
+    const float *B, const blasint *ldB,
+    const float *beta, float *C, const blasint *ldC
 ) {
 
     if (*n <= MAX(CROSSOVER_SGEMMT, 1)) {
@@ -87,8 +87,8 @@ static void RELAPACK_sgemmt_rec(
     }
 
     // Splitting
-    const int n1 = SREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = SREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_T
     // A_B
@@ -124,16 +124,16 @@ static void RELAPACK_sgemmt_rec(
 /** sgemmt's unblocked compute kernel */
 static void RELAPACK_sgemmt_rec2(
     const char *uplo, const char *transA, const char *transB,
-    const int *n, const int *k,
-    const float *alpha, const float *A, const int *ldA,
-    const float *B, const int *ldB,
-    const float *beta, float *C, const int *ldC
+    const blasint *n, const blasint *k,
+    const float *alpha, const float *A, const blasint *ldA,
+    const float *B, const blasint *ldB,
+    const float *beta, float *C, const blasint *ldC
 ) {
 
-    const int incB = (*transB == 'N') ? 1 : *ldB;
-    const int incC = 1;
+    const blasint incB = (*transB == 'N') ? 1 : *ldB;
+    const blasint incC = 1;
 
-    int i;
+    blasint i;
     for (i = 0; i < *n; i++) {
         // A_0
         // A_i
@@ -149,13 +149,13 @@ static void RELAPACK_sgemmt_rec2(
         float *const C_ii = C + *ldC * i + i;
 
         if (*uplo == 'L') {
-            const int nmi = *n - i;
+            const blasint nmi = *n - i;
             if (*transA == 'N')
                 BLAS(sgemv)(transA, &nmi, k, alpha, A_i, ldA, B_i, &incB, beta, C_ii, &incC);
             else
                 BLAS(sgemv)(transA, k, &nmi, alpha, A_i, ldA, B_i, &incB, beta, C_ii, &incC);
         } else {
-            const int ip1 = i + 1;
+            const blasint ip1 = i + 1;
             if (*transA == 'N')
                 BLAS(sgemv)(transA, &ip1, k, alpha, A_0, ldA, B_i, &incB, beta, C_0i, &incC);
             else

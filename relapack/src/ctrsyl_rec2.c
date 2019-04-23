@@ -14,16 +14,16 @@
 #include "f2c.h"
 
 #if BLAS_COMPLEX_FUNCTIONS_AS_ROUTINES
-complex cdotu_fun(int *n, complex *x, int *incx, complex *y, int *incy) {
-    extern void cdotu_(complex *, int *, complex *, int *, complex *, int *);
+complex cdotu_fun(int *n, complex *x, blasint *incx, complex *y, blasint *incy) {
+    extern void cdotu_(complex *, blasint *, complex *, blasint *, complex *, blasint *);
     complex result;
     cdotu_(&result, n, x, incx, y, incy);
     return result;
 }
 #define cdotu_ cdotu_fun
 
-complex cdotc_fun(int *n, complex *x, int *incx, complex *y, int *incy) {
-    extern void cdotc_(complex *, int *, complex *, int *, complex *, int *);
+complex cdotc_fun(int *n, complex *x, blasint *incx, complex *y, blasint *incy) {
+    extern void cdotc_(complex *, blasint *, complex *, blasint *, complex *, blasint *);
     complex result;
     cdotc_(&result, n, x, incx, y, incy);
     return result;
@@ -43,7 +43,7 @@ complex cladiv_fun(complex *a, complex *b) {
 
 /* Table of constant values */
 
-static int c__1 = 1;
+static blasint c__1 = 1;
 
 /** RELAPACK_CTRSYL_REC2 solves the complex Sylvester matrix equation (unblocked algorithm)
  *
@@ -51,12 +51,12 @@ static int c__1 = 1;
  * It serves as an unblocked kernel in the recursive algorithms.
  * */
 /* Subroutine */ void RELAPACK_ctrsyl_rec2(char *trana, char *tranb, int
-	*isgn, int *m, int *n, complex *a, int *lda, complex *b,
-	int *ldb, complex *c__, int *ldc, float *scale, int *info,
+	*isgn, blasint *m, blasint *n, complex *a, blasint *lda, complex *b,
+	int *ldb, complex *c__, blasint *ldc, float *scale, blasint *info,
 	ftnlen trana_len, ftnlen tranb_len)
 {
     /* System generated locals */
-    int a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2,
+    blasint a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2,
 	    i__3, i__4;
     float r__1, r__2;
     complex q__1, q__2, q__3, q__4;
@@ -66,7 +66,7 @@ static int c__1 = 1;
     void r_cnjg(complex *, complex *);
 
     /* Local variables */
-    static int j, k, l;
+    static blasint j, k, l;
     static complex a11;
     static float db;
     static complex x11;
@@ -75,20 +75,20 @@ static int c__1 = 1;
     static float dum[1], eps, sgn, smin;
     static complex suml, sumr;
     /* Complex */ complex cdotc_(int *, complex *, int
-	    *, complex *, int *);
-    extern int lsame_(char *, char *, ftnlen, ftnlen);
+	    *, complex *, blasint *);
+    extern blasint lsame_(char *, char *, ftnlen, ftnlen);
     /* Complex */ complex cdotu_(int *, complex *, int
-	    *, complex *, int *);
-    extern /* Subroutine */ int slabad_(float *, float *);
-    extern float clange_(char *, int *, int *, complex *,
-	    int *, float *, ftnlen);
+	    *, complex *, blasint *);
+    extern /* Subroutine */ blasint slabad_(float *, float *);
+    extern float clange_(char *, blasint *, blasint *, complex *,
+	    blasint *, float *, ftnlen);
     /* Complex */ complex cladiv_(complex *, complex *);
     static float scaloc;
     extern float slamch_(char *, ftnlen);
-    extern /* Subroutine */ int csscal_(int *, float *, complex *, int
-	    *), xerbla_(char *, int *, ftnlen);
+    extern /* Subroutine */ blasint csscal_(int *, float *, complex *, int
+	    *), xerbla_(char *, blasint *, ftnlen);
     static float bignum;
-    static int notrna, notrnb;
+    static blasint notrna, notrnb;
     static float smlnum;
 
     /* Parameter adjustments */

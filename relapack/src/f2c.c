@@ -9,7 +9,7 @@
 #endif
 #endif
 
-void sig_die(const char *s, int kill) {
+void sig_die(const char *s, blasint kill) {
 	/* print error message, then clear buffers */
 	fprintf(stderr, "%s\n", s);
 
