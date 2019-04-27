@@ -1,8 +1,8 @@
 #include "relapack.h"
 
-static void RELAPACK_ctrsyl_rec(const char *, const char *, const int *,
-    const int *, const int *, const float *, const int *, const float *,
-    const int *, float *, const int *, float *, int *);
+static void RELAPACK_ctrsyl_rec(const char *, const char *, const blasint *,
+    const blasint *, const blasint *, const float *, const blasint *, const float *,
+    const blasint *, float *, const blasint *, float *, blasint *);
 
 
 /** CTRSYL solves the complex Sylvester matrix equation.
@@ -12,18 +12,18 @@ static void RELAPACK_ctrsyl_rec(const char *, const char *, const int *,
  * http://www.netlib.org/lapack/explore-html/d8/df4/ctrsyl_8f.html
  * */
 void RELAPACK_ctrsyl(
-    const char *tranA, const char *tranB, const int *isgn,
-    const int *m, const int *n,
-    const float *A, const int *ldA, const float *B, const int *ldB,
-    float *C, const int *ldC, float *scale,
-    int *info
+    const char *tranA, const char *tranB, const blasint *isgn,
+    const blasint *m, const blasint *n,
+    const float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    float *C, const blasint *ldC, float *scale,
+    blasint *info
 ) {
 
     // Check arguments
-    const int notransA = LAPACK(lsame)(tranA, "N");
-    const int ctransA = LAPACK(lsame)(tranA, "C");
-    const int notransB = LAPACK(lsame)(tranB, "N");
-    const int ctransB = LAPACK(lsame)(tranB, "C");
+    const blasint notransA = LAPACK(lsame)(tranA, "N");
+    const blasint ctransA = LAPACK(lsame)(tranA, "C");
+    const blasint notransB = LAPACK(lsame)(tranB, "N");
+    const blasint ctransB = LAPACK(lsame)(tranB, "C");
     *info = 0;
     if (!ctransA && !notransA)
         *info = -1;
@@ -42,8 +42,8 @@ void RELAPACK_ctrsyl(
     else if (*ldC < MAX(1, *m))
         *info = -11;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("CTRSYL", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("CTRSYL", &minfo, strlen("CTRSYL"));
         return;
     }
 
@@ -58,11 +58,11 @@ void RELAPACK_ctrsyl(
 
 /** ctrsyl's recursive compute kernel */
 static void RELAPACK_ctrsyl_rec(
-    const char *tranA, const char *tranB, const int *isgn,
-    const int *m, const int *n,
-    const float *A, const int *ldA, const float *B, const int *ldB,
-    float *C, const int *ldC, float *scale,
-    int *info
+    const char *tranA, const char *tranB, const blasint *isgn,
+    const blasint *m, const blasint *n,
+    const float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    float *C, const blasint *ldC, float *scale,
+    blasint *info
 ) {
 
     if (*m <= MAX(CROSSOVER_CTRSYL, 1) && *n <= MAX(CROSSOVER_CTRSYL, 1)) {
@@ -75,18 +75,18 @@ static void RELAPACK_ctrsyl_rec(
     const float ONE[]  = { 1., 0. };
     const float MONE[] = { -1., 0. };
     const float MSGN[] = { -*isgn, 0. };
-    const int   iONE[] = { 1 };
+    const blasint   iONE[] = { 1 };
 
     // Outputs
     float scale1[] = { 1., 0. };
     float scale2[] = { 1., 0. };
-    int   info1[]  = { 0 };
-    int   info2[]  = { 0 };
+    blasint   info1[]  = { 0 };
+    blasint   info2[]  = { 0 };
 
     if (*m > *n) {
         // Splitting
-        const int m1 = CREC_SPLIT(*m);
-        const int m2 = *m - m1;
+        const blasint m1 = CREC_SPLIT(*m);
+        const blasint m2 = *m - m1;
 
         // A_TL A_TR
         // 0    A_BR
@@ -122,8 +122,8 @@ static void RELAPACK_ctrsyl_rec(
         }
     } else {
         // Splitting
-        const int n1 = CREC_SPLIT(*n);
-        const int n2 = *n - n1;
+        const blasint n1 = CREC_SPLIT(*n);
+        const blasint n2 = *n - n1;
 
         // B_TL B_TR
         // 0    B_BR

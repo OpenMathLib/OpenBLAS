@@ -15,7 +15,7 @@
 /* Table of constant values */
 
 static doublecomplex c_b1 = {1.,0.};
-static int c__1 = 1;
+static blasint c__1 = 1;
 
 /** ZHETRF_ROOK_REC2 computes a partial factorization of a complex Hermitian indefinite matrix using the boun ded Bunch-Kaufman ("rook") diagonal pivoting method
  *
@@ -24,12 +24,12 @@ static int c__1 = 1;
  * The blocked BLAS Level 3 updates were removed and moved to the
  * recursive algorithm.
  * */
-/* Subroutine */ void RELAPACK_zhetrf_rook_rec2(char *uplo, int *n,
-	int *nb, int *kb, doublecomplex *a, int *lda, int *
-	ipiv, doublecomplex *w, int *ldw, int *info, ftnlen uplo_len)
+/* Subroutine */ void RELAPACK_zhetrf_rook_rec2(char *uplo, blasint *n,
+	int *nb, blasint *kb, doublecomplex *a, blasint *lda, blasint *
+	ipiv, doublecomplex *w, blasint *ldw, blasint *info, ftnlen uplo_len)
 {
     /* System generated locals */
-    int a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4;
+    blasint a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4;
     double d__1, d__2;
     doublecomplex z__1, z__2, z__3, z__4, z__5;
 
@@ -39,30 +39,30 @@ static int c__1 = 1;
 	    doublecomplex *, doublecomplex *);
 
     /* Local variables */
-    static int j, k, p;
+    static blasint j, k, p;
     static double t, r1;
     static doublecomplex d11, d21, d22;
-    static int ii, jj, kk, kp, kw, jp1, jp2, kkw;
+    static blasint ii, jj, kk, kp, kw, jp1, jp2, kkw;
     static logical done;
-    static int imax, jmax;
+    static blasint imax, jmax;
     static double alpha;
     extern logical lsame_(char *, char *, ftnlen, ftnlen);
     static double dtemp, sfmin;
-    static int itemp, kstep;
-    extern /* Subroutine */ int zgemv_(char *, int *, int *,
-	    doublecomplex *, doublecomplex *, int *, doublecomplex *,
-	    int *, doublecomplex *, doublecomplex *, int *, ftnlen),
-	    zcopy_(int *, doublecomplex *, int *, doublecomplex *,
-	    int *), zswap_(int *, doublecomplex *, int *,
-	    doublecomplex *, int *);
+    static blasint itemp, kstep;
+    extern /* Subroutine */ blasint zgemv_(char *, blasint *, blasint *,
+	    doublecomplex *, doublecomplex *, blasint *, doublecomplex *,
+	    blasint *, doublecomplex *, doublecomplex *, blasint *, ftnlen),
+	    zcopy_(int *, doublecomplex *, blasint *, doublecomplex *,
+	    blasint *), zswap_(int *, doublecomplex *, blasint *,
+	    doublecomplex *, blasint *);
     extern double dlamch_(char *, ftnlen);
     static double absakk;
-    extern /* Subroutine */ int zdscal_(int *, double *,
-	    doublecomplex *, int *);
+    extern /* Subroutine */ blasint zdscal_(int *, double *,
+	    doublecomplex *, blasint *);
     static double colmax;
-    extern /* Subroutine */ int zlacgv_(int *, doublecomplex *, int *)
+    extern /* Subroutine */ blasint zlacgv_(int *, doublecomplex *, blasint *)
 	    ;
-    extern int izamax_(int *, doublecomplex *, int *);
+    extern blasint izamax_(int *, doublecomplex *, blasint *);
     static double rowmax;
 
     /* Parameter adjustments */

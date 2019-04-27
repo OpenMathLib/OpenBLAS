@@ -1,8 +1,8 @@
 #include "relapack.h"
 
-static void RELAPACK_ztrsyl_rec(const char *, const char *, const int *,
-    const int *, const int *, const double *, const int *, const double *,
-    const int *, double *, const int *, double *, int *);
+static void RELAPACK_ztrsyl_rec(const char *, const char *, const blasint *,
+    const blasint *, const blasint *, const double *, const blasint *, const double *,
+    const blasint *, double *, const blasint *, double *, blasint *);
 
 
 /** ZTRSYL solves the complex Sylvester matrix equation.
@@ -12,18 +12,18 @@ static void RELAPACK_ztrsyl_rec(const char *, const char *, const int *,
  * http://www.netlib.org/lapack/explore-html/d1/d36/ztrsyl_8f.html
  * */
 void RELAPACK_ztrsyl(
-    const char *tranA, const char *tranB, const int *isgn,
-    const int *m, const int *n,
-    const double *A, const int *ldA, const double *B, const int *ldB,
-    double *C, const int *ldC, double *scale,
-    int *info
+    const char *tranA, const char *tranB, const blasint *isgn,
+    const blasint *m, const blasint *n,
+    const double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    double *C, const blasint *ldC, double *scale,
+    blasint *info
 ) {
 
     // Check arguments
-    const int notransA = LAPACK(lsame)(tranA, "N");
-    const int ctransA = LAPACK(lsame)(tranA, "C");
-    const int notransB = LAPACK(lsame)(tranB, "N");
-    const int ctransB = LAPACK(lsame)(tranB, "C");
+    const blasint notransA = LAPACK(lsame)(tranA, "N");
+    const blasint ctransA = LAPACK(lsame)(tranA, "C");
+    const blasint notransB = LAPACK(lsame)(tranB, "N");
+    const blasint ctransB = LAPACK(lsame)(tranB, "C");
     *info = 0;
     if (!ctransA && !notransA)
         *info = -1;
@@ -42,8 +42,8 @@ void RELAPACK_ztrsyl(
     else if (*ldC < MAX(1, *m))
         *info = -11;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("ZTRSYL", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("ZTRSYL", &minfo, strlen("ZTRSYL"));
         return;
     }
 
@@ -58,11 +58,11 @@ void RELAPACK_ztrsyl(
 
 /** ztrsyl's recursive compute kernel */
 static void RELAPACK_ztrsyl_rec(
-    const char *tranA, const char *tranB, const int *isgn,
-    const int *m, const int *n,
-    const double *A, const int *ldA, const double *B, const int *ldB,
-    double *C, const int *ldC, double *scale,
-    int *info
+    const char *tranA, const char *tranB, const blasint *isgn,
+    const blasint *m, const blasint *n,
+    const double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    double *C, const blasint *ldC, double *scale,
+    blasint *info
 ) {
 
     if (*m <= MAX(CROSSOVER_ZTRSYL, 1) && *n <= MAX(CROSSOVER_ZTRSYL, 1)) {
@@ -75,18 +75,18 @@ static void RELAPACK_ztrsyl_rec(
     const double ONE[]  = { 1., 0. };
     const double MONE[] = { -1., 0. };
     const double MSGN[] = { -*isgn, 0. };
-    const int    iONE[] = { 1 };
+    const blasint    iONE[] = { 1 };
 
     // Outputs
     double scale1[] = { 1., 0. };
     double scale2[] = { 1., 0. };
-    int    info1[]  = { 0 };
-    int    info2[]  = { 0 };
+    blasint    info1[]  = { 0 };
+    blasint    info2[]  = { 0 };
 
     if (*m > *n) {
         // Splitting
-        const int m1 = ZREC_SPLIT(*m);
-        const int m2 = *m - m1;
+        const blasint m1 = ZREC_SPLIT(*m);
+        const blasint m2 = *m - m1;
 
         // A_TL A_TR
         // 0    A_BR
@@ -122,8 +122,8 @@ static void RELAPACK_ztrsyl_rec(
         }
     } else {
         // Splitting
-        const int n1 = ZREC_SPLIT(*n);
-        const int n2 = *n - n1;
+        const blasint n1 = ZREC_SPLIT(*n);
+        const blasint n2 = *n - n1;
 
         // B_TL B_TR
         // 0    B_BR
