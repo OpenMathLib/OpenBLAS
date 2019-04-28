@@ -221,7 +221,9 @@ static void RELAPACK_cgbtrf_rec(
     }
 
     // recursion(Ab_BR, ipiv_B)
-    RELAPACK_cgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+    //RELAPACK_cgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+       LAPACK(cgbtf2)(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, info);
+       
     if (*info)
         *info += n1;
     // shift pivots
