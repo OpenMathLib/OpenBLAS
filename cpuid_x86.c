@@ -228,7 +228,7 @@ int support_avx2(){
 }
 
 int support_avx512(){
-#ifndef NO_AVX512
+#if !defined(NO_AVX) && !defined(NO_AVX512)
   int eax, ebx, ecx, edx;
   int ret=0;
 
@@ -1359,6 +1359,8 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
 	case 12:
 	    // Apollo Lake
+	case 15:
+	    // Denverton		
 	    return CPUTYPE_NEHALEM;
 	}
 	break;
@@ -1376,9 +1378,9 @@ int get_cpuname(void){
         }
       break;  
       case 9:
-      case 8: 
+      case 8:      
         switch (model) {
-	case 14: // Kaby Lake
+	case 14: // Kaby Lake and refreshes
           if(support_avx2())
             return CPUTYPE_HASWELL;
           if(support_avx())

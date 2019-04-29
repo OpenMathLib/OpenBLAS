@@ -322,7 +322,7 @@ int support_avx2(){
 }
 
 int support_avx512(){
-#ifndef NO_AVX512
+#if !defined(NO_AVX) && !defined(NO_AVX512)
   int eax, ebx, ecx, edx;
   int ret=0;
 
@@ -566,8 +566,8 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-	//Apollo Lake
-	if (model == 12) { 
+	//Apollo Lake or Denverton
+	if (model == 12 || model == 15) { 
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
