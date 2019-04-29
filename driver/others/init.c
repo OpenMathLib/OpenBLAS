@@ -765,7 +765,7 @@ int gotoblas_set_affinity(int pos) {
 
   int mynode = 1;
 
-  /* if number of threads is larger than inital condition */
+  /* if number of threads is larger than initial condition */
   if (pos < 0) {
       sched_setaffinity(0, sizeof(cpu_orig_mask), &cpu_orig_mask[0]);
       return 0;

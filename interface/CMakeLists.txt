@@ -24,7 +24,7 @@ set(BLAS1_MANGLED_SOURCES
   axpby.c
 )
 
-# TODO: USE_NETLIB_GEMV shoudl switch gemv.c to netlib/*gemv.f
+# TODO: USE_NETLIB_GEMV should switch gemv.c to netlib/*gemv.f
 # these all have 'z' sources for complex versions
 set(BLAS2_SOURCES
   gemv.c ger.c

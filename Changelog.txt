@@ -74,7 +74,7 @@ ARMv8:
 	* ARMV8 builds with the BINARY=32 option are now automatically handled as ARMV7
 
 IBM Z:
-	* optimized microkernels for single precicion BLAS1/2 functions have been added
+	* optimized microkernels for single precision BLAS1/2 functions have been added
 	  for both Z13 and Z14
 
 ====================================================================
@@ -588,8 +588,8 @@ common:
 	  s/d/c/zaxpby, s/d/c/zimatcopy, s/d/c/zomatcopy.
 	* Added OPENBLAS_CORETYPE environment for dynamic_arch. (a86d34)
 	* Added NO_AVX2 flag for old binutils. (#401)
-	* Support outputing the CPU corename on runtime.(#407)
-	* Patched LAPACK to fix bug 114, 117, 118. 
+	* Support outputting the CPU corename on runtime.(#407)
+	* Patched LAPACK to fix bug 114, 117, 118.
 	  (http://www.netlib.org/lapack/bug_list.html)
 	* Disabled ?gemm3m for a work-around fix. (#400)
 x86/x86-64:
@@ -628,7 +628,7 @@ Version 0.2.9.rc1
 13-Jan-2013
 common:
 	* Update LAPACK to 3.5.0 version
-	* Fixed compatiable issues with Clang and Pathscale compilers.
+	* Fixed compatible issues with Clang and Pathscale compilers.
 
 x86/x86-64:
 	* Optimization on Intel Haswell.
@@ -705,7 +705,7 @@ Version 0.2.5
 26-Nov-2012
 common:
 	* Added NO_SHARED flag to disable generating the shared library.
-	* Compile LAPACKE with ILP64 modle when INTERFACE64=1 (#158)
+	* Compile LAPACKE with ILP64 model when INTERFACE64=1 (#158)
 	* Export LAPACK 3.4.2 symbols in shared library. (#147)
 	* Only detect the number of physical CPU cores on Mac OSX. (#157)
 	* Fixed NetBSD build. (#155)
@@ -896,7 +896,7 @@ x86/x86_64:
 	* Fixed #28 a wrong result of dsdot on x86_64.
 	* Fixed #32 a SEGFAULT bug of zdotc with gcc-4.6.
 	* Fixed #33 ztrmm bug on Nehalem.
-	* Work-around #27 the low performance axpy issue with small imput size & multithreads.
+	* Work-around #27 the low performance axpy issue with small input size & multithreads.
 
 MIPS64:
 	* Fixed #28 a wrong result of dsdot on Loongson3A/MIPS64.
@@ -919,7 +919,7 @@ common:
 	* Imported GotoBLAS2 1.13 BSD version
 
 x86/x86_64:
-	* On x86 32bits, fixed a bug in zdot_sse2.S line 191. This would casue
+	* On x86 32bits, fixed a bug in zdot_sse2.S line 191. This would cause
 	  zdotu & zdotc failures. Instead, work-around it. (Refs issue #8 #9 on github)
 	* Modified ?axpy functions to return same netlib BLAS results
 	  when incx==0 or incy==0 (Refs issue #7 on github)

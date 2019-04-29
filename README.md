@@ -133,7 +133,7 @@ Please read `GotoBLAS_01Readme.txt`.
 
 #### PPC/PPC64
 
-- **POWER8**: Optmized Level-3 BLAS and some Level-1, only with `USE_OPENMP=1`
+- **POWER8**: Optimized Level-3 BLAS and some Level-1, only with `USE_OPENMP=1`
 
 #### IBM zEnterprise System
 

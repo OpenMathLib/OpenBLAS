@@ -283,7 +283,7 @@ endif ()
 
 set(KERNELDIR	"${PROJECT_SOURCE_DIR}/kernel/${ARCH}")
 
-# TODO: nead to convert these Makefiles
+# TODO: need to convert these Makefiles
 # include ${PROJECT_SOURCE_DIR}/cmake/${ARCH}.cmake
 
 if (${CORE} STREQUAL "PPC440")

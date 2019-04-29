@@ -2751,7 +2751,7 @@ void *blas_memory_alloc(int procpos){
 
 #ifdef ALLOC_DEVICEDRIVER
 	if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
-	    fprintf(stderr, "OpenBLAS Warning ... Physically contigous allocation was failed.\n");
+	    fprintf(stderr, "OpenBLAS Warning ... Physically contiguous allocation was failed.\n");
 	}
 #endif
 
