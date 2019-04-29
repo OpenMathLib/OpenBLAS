@@ -122,9 +122,9 @@ static void dscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"vzeroupper					    \n\t"
 
 	:
-        : 
-	  "r" (n1),  	// 0
-          "r" (x),      // 1
+	  "+r" (n1),  	// 0
+          "+r" (x)      // 1
+	:
           "r" (alpha),  // 2
 	  "r" (n2)   	// 3
 	: "cc", 
@@ -187,10 +187,10 @@ static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	"vzeroupper					    \n\t"
 
+	: 
+	  "+r" (n1),  	// 0
+          "+r" (x)      // 1
 	:
-        : 
-	  "r" (n1),  	// 0
-          "r" (x),      // 1
           "r" (alpha),  // 2
 	  "r" (n2)   	// 3
 	: "cc", 

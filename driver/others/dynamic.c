@@ -274,6 +274,7 @@ extern gotoblas_t  gotoblas_SKYLAKEX;
 #define VENDOR_INTEL      1
 #define VENDOR_AMD        2
 #define VENDOR_CENTAUR    3
+#define VENDOR_HYGON	  4
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
@@ -304,9 +305,49 @@ int support_avx(){
 #endif
 }
 
+int support_avx2(){
+#ifndef NO_AVX2
+  int eax, ebx, ecx=0, edx;
+  int ret=0;
+
+  if (!support_avx())
+    return 0;
+  cpuid(7, &eax, &ebx, &ecx, &edx);
+  if((ebx & (1<<7)) != 0)
+      ret=1;  //OS supports AVX2
+  return ret;
+#else
+  return 0;
+#endif
+}
+
+int support_avx512(){
+#if !defined(NO_AVX) && !defined(NO_AVX512)
+  int eax, ebx, ecx, edx;
+  int ret=0;
+
+  if (!support_avx())
+    return 0;
+  cpuid(7, &eax, &ebx, &ecx, &edx);
+  if((ebx & (1<<7)) != 1){
+      ret=0;  //OS does not even support AVX2
+  }
+  if((ebx & (1<<31)) != 0){
+    xgetbv(0, &eax, &edx);
+    if((eax & 0xe0) == 0xe0)
+      ret=1;  //OS supports AVX512VL
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
+
 extern void openblas_warning(int verbose, const char * msg);
 #define FALLBACK_VERBOSE 1
 #define NEHALEM_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Nehalem kernels as a fallback, which may give poorer performance.\n"
+#define SANDYBRIDGE_FALLBACK "OpenBLAS : Your OS does not support AVX2 instructions. OpenBLAS is using Sandybridge kernels as a fallback, which may give poorer performance.\n"
+#define HASWELL_FALLBACK "OpenBLAS : Your OS does not support AVX512VL instructions. OpenBLAS is using Haswell kernels as a fallback, which may give poorer performance.\n"
 #define BARCELONA_FALLBACK "OpenBLAS : Your OS does not support AVX instructions. OpenBLAS is using Barcelona kernels as a fallback, which may give poorer performance.\n"
 
 static int get_vendor(void){
@@ -329,6 +370,7 @@ static int get_vendor(void){
   if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
   if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
   if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor.vchar, "HygonGenuine")) return VENDOR_HYGON;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
 
@@ -403,18 +445,24 @@ static gotoblas_t *get_coretype(void){
 	}
 	//Intel Haswell
 	if (model == 12 || model == 15) {
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	//Intel Broadwell
 	if (model == 13) {
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
@@ -424,27 +472,36 @@ static gotoblas_t *get_coretype(void){
       case 4:
 		//Intel Haswell
 	if (model == 5 || model == 6) {
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	//Intel Broadwell
 	if (model == 7 || model == 15) {
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	//Intel Skylake
 	if (model == 14) {
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
@@ -457,72 +514,86 @@ static gotoblas_t *get_coretype(void){
       case 5:
 	//Intel Broadwell
 	if (model == 6) {
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	if (model == 5) {	
 	// Intel Skylake X
-#ifndef NO_AVX512
-	  return &gotoblas_SKYLAKEX;
-#else		
-	  if(support_avx())
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2()){
+	    openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
 	    return &gotoblas_HASWELL;
-	  else {
-	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
-	    return &gotoblas_NEHALEM;
-	  }
-#endif		
+          }
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+          openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+          return &gotoblas_NEHALEM;
+          }
 	}
 	//Intel Skylake
 	if (model == 14) {
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
 	//Intel Phi Knights Landing
 	if (model == 7) {
-	  if(support_avx())
+	  if(support_avx2()){
+	    openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
 	    return &gotoblas_HASWELL;
-	  else{
+	  }  
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-	//Apollo Lake
-	if (model == 12) { 
+	//Apollo Lake or Denverton
+	if (model == 12 || model == 15) { 
 	  return &gotoblas_NEHALEM;
 	}	
 	return NULL;
       case 6:
         if (model == 6) {
           // Cannon Lake
-#ifndef NO_AVX512
-	  return &gotoblas_SKYLAKEX;
-#else
-	  if(support_avx())
-#ifndef NO_AVX2
-	  return &gotoblas_HASWELL;
-#else
-	  return &gotoblas_SANDYBRIDGE;
-#endif
-	  else
-	  return &gotoblas_NEHALEM;
-#endif			
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
         }
         return NULL;  
       case 9:
       case 8:
 	if (model == 14 ) { // Kaby Lake
-	  if(support_avx())
+	  if(support_avx2())
 	    return &gotoblas_HASWELL;
-	  else{
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
@@ -535,7 +606,7 @@ static gotoblas_t *get_coretype(void){
     }
   }
 
-  if (vendor == VENDOR_AMD){
+  if (vendor == VENDOR_AMD || vendor == VENDOR_HYGON){
     if (family <= 0xe) {
         // Verify that CPU has 3dnow and 3dnowext before claiming it is Athlon
         cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
@@ -615,6 +686,13 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+      } else if (exfamily == 9) {
+	  if(support_avx())
+	    return &gotoblas_ZEN;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+        }
       }else {
 	return &gotoblas_BARCELONA;
       }

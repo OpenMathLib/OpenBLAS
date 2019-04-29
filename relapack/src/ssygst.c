@@ -3,9 +3,9 @@
 #include "stdlib.h"
 #endif
 
-static void RELAPACK_ssygst_rec(const int *, const char *, const int *,
-    float *, const int *, const float *, const int *,
-    float *, const int *, int *);
+static void RELAPACK_ssygst_rec(const blasint *, const char *, const blasint *,
+    float *, const blasint *, const float *, const blasint *,
+    float *, const blasint *, blasint *);
 
 
 /** SSYGST reduces a real symmetric-definite generalized eigenproblem to standard form.
@@ -15,14 +15,14 @@ static void RELAPACK_ssygst_rec(const int *, const char *, const int *,
  * http://www.netlib.org/lapack/explore-html/d8/d78/ssygst_8f.html
  * */
 void RELAPACK_ssygst(
-    const int *itype, const char *uplo, const int *n,
-    float *A, const int *ldA, const float *B, const int *ldB,
-    int *info
+    const blasint *itype, const char *uplo, const blasint *n,
+    float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    blasint *info
 ) {
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (*itype < 1 || *itype > 3)
         *info = -1;
@@ -35,8 +35,8 @@ void RELAPACK_ssygst(
     else if (*ldB < MAX(1, *n))
         *info = -7;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("SSYGST", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("SSYGST", &minfo, strlen("SSYGST"));
         return;
     }
 
@@ -45,9 +45,9 @@ void RELAPACK_ssygst(
 
     // Allocate work space
     float *Work = NULL;
-    int   lWork = 0;
+    blasint   lWork = 0;
 #if XSYGST_ALLOW_MALLOC
-    const int n1 = SREC_SPLIT(*n);
+    const blasint n1 = SREC_SPLIT(*n);
     lWork = n1 * (*n - n1);
     Work  = malloc(lWork * sizeof(float));
     if (!Work)
@@ -67,9 +67,9 @@ void RELAPACK_ssygst(
 
 /** ssygst's recursive compute kernel */
 static void RELAPACK_ssygst_rec(
-    const int *itype, const char *uplo, const int *n,
-    float *A, const int *ldA, const float *B, const int *ldB,
-    float *Work, const int *lWork, int *info
+    const blasint *itype, const char *uplo, const blasint *n,
+    float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    float *Work, const blasint *lWork, blasint *info
 ) {
 
     if (*n <= MAX(CROSSOVER_SSYGST, 1)) {
@@ -84,14 +84,14 @@ static void RELAPACK_ssygst_rec(
     const float MONE[]  = { -1. };
     const float HALF[]  = { .5 };
     const float MHALF[] = { -.5 };
-    const int   iONE[]  = { 1 };
+    const blasint   iONE[]  = { 1 };
 
     // Loop iterator
-    int i;
+    blasint i;
 
     // Splitting
-    const int n1 = SREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = SREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

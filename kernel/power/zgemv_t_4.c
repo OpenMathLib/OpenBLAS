@@ -59,11 +59,7 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
     i = 0;
     n = n << 1;
     while (i < n) {
-//        __builtin_prefetch(&x[i]);
-//        __builtin_prefetch(&a0[i]);   
-//        __builtin_prefetch(&a1[i]);
-//        __builtin_prefetch(&a2[i]);
-//        __builtin_prefetch(&a3[i]);
+
         register __vector double vx_0 = *(__vector double*) (&x[i]);
         register __vector double vx_1 = *(__vector double*) (&x[i + 2]);
         register __vector double vx_2 = *(__vector double*) (&x[i + 4]);

@@ -14,16 +14,16 @@
 #include "f2c.h"
 
 #if BLAS_COMPLEX_FUNCTIONS_AS_ROUTINES
-doublecomplex zdotu_fun(int *n, doublecomplex *x, int *incx, doublecomplex *y, int *incy) {
-    extern void zdotu_(doublecomplex *, int *, doublecomplex *, int *, doublecomplex *, int *);
+doublecomplex zdotu_fun(int *n, doublecomplex *x, blasint *incx, doublecomplex *y, blasint *incy) {
+    extern void zdotu_(doublecomplex *, blasint *, doublecomplex *, blasint *, doublecomplex *, blasint *);
     doublecomplex result;
     zdotu_(&result, n, x, incx, y, incy);
     return result;
 }
 #define zdotu_ zdotu_fun
 
-doublecomplex zdotc_fun(int *n, doublecomplex *x, int *incx, doublecomplex *y, int *incy) {
-    extern void zdotc_(doublecomplex *, int *, doublecomplex *, int *, doublecomplex *, int *);
+doublecomplex zdotc_fun(int *n, doublecomplex *x, blasint *incx, doublecomplex *y, blasint *incy) {
+    extern void zdotc_(doublecomplex *, blasint *, doublecomplex *, blasint *, doublecomplex *, blasint *);
     doublecomplex result;
     zdotc_(&result, n, x, incx, y, incy);
     return result;
@@ -43,7 +43,7 @@ doublecomplex zladiv_fun(doublecomplex *a, doublecomplex *b) {
 
 /* Table of constant values */
 
-static int c__1 = 1;
+static blasint c__1 = 1;
 
 /** RELAPACK_ZTRSYL_REC2 solves the complex Sylvester matrix equation (unblocked algorithm)
  *
@@ -51,12 +51,12 @@ static int c__1 = 1;
  * It serves as an unblocked kernel in the recursive algorithms.
  * */
 /* Subroutine */ void RELAPACK_ztrsyl_rec2(char *trana, char *tranb, int
-	*isgn, int *m, int *n, doublecomplex *a, int *lda,
-	doublecomplex *b, int *ldb, doublecomplex *c__, int *ldc,
-	double *scale, int *info, ftnlen trana_len, ftnlen tranb_len)
+	*isgn, blasint *m, blasint *n, doublecomplex *a, blasint *lda,
+	doublecomplex *b, blasint *ldb, doublecomplex *c__, blasint *ldc,
+	double *scale, blasint *info, ftnlen trana_len, ftnlen tranb_len)
 {
     /* System generated locals */
-    int a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2,
+    blasint a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2,
 	    i__3, i__4;
     double d__1, d__2;
     doublecomplex z__1, z__2, z__3, z__4;
@@ -66,7 +66,7 @@ static int c__1 = 1;
     void d_cnjg(doublecomplex *, doublecomplex *);
 
     /* Local variables */
-    static int j, k, l;
+    static blasint j, k, l;
     static doublecomplex a11;
     static double db;
     static doublecomplex x11;
@@ -74,23 +74,23 @@ static int c__1 = 1;
     static doublecomplex vec;
     static double dum[1], eps, sgn, smin;
     static doublecomplex suml, sumr;
-    extern int lsame_(char *, char *, ftnlen, ftnlen);
+    extern blasint lsame_(char *, char *, ftnlen, ftnlen);
     /* Double Complex */ doublecomplex zdotc_(int *,
-	    doublecomplex *, int *, doublecomplex *, int *), zdotu_(
-	    int *, doublecomplex *, int *,
-	    doublecomplex *, int *);
-    extern /* Subroutine */ int dlabad_(double *, double *);
+	    doublecomplex *, blasint *, doublecomplex *, blasint *), zdotu_(
+	    blasint *, doublecomplex *, blasint *,
+	    doublecomplex *, blasint *);
+    extern /* Subroutine */ blasint dlabad_(double *, double *);
     extern double dlamch_(char *, ftnlen);
     static double scaloc;
-    extern /* Subroutine */ int xerbla_(char *, int *, ftnlen);
-    extern double zlange_(char *, int *, int *, doublecomplex *,
-	    int *, double *, ftnlen);
+    extern /* Subroutine */ blasint xerbla_(char *, blasint *, ftnlen);
+    extern double zlange_(char *, blasint *, blasint *, doublecomplex *,
+	    blasint *, double *, ftnlen);
     static double bignum;
-    extern /* Subroutine */ int zdscal_(int *, double *,
-	    doublecomplex *, int *);
+    extern /* Subroutine */ blasint zdscal_(int *, double *,
+	    doublecomplex *, blasint *);
     /* Double Complex */ doublecomplex zladiv_(doublecomplex *,
 	     doublecomplex *);
-    static int notrna, notrnb;
+    static blasint notrna, notrnb;
     static double smlnum;
 
     /* Parameter adjustments */

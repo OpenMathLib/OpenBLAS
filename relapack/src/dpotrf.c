@@ -1,7 +1,7 @@
 #include "relapack.h"
 
-static void RELAPACK_dpotrf_rec(const char *, const int *, double *,
-        const int *, int *);
+static void RELAPACK_dpotrf_rec(const char *, const blasint *, double *,
+        const blasint *, blasint *);
 
 
 /** DPOTRF computes the Cholesky factorization of a real symmetric positive definite matrix A.
@@ -11,14 +11,14 @@ static void RELAPACK_dpotrf_rec(const char *, const int *, double *,
  * http://www.netlib.org/lapack/explore-html/d0/d8a/dpotrf_8f.html
  * */
 void RELAPACK_dpotrf(
-    const char *uplo, const int *n,
-    double *A, const int *ldA,
-    int *info
+    const char *uplo, const blasint *n,
+    double *A, const blasint *ldA,
+    blasint *info
 ) {
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -27,8 +27,8 @@ void RELAPACK_dpotrf(
     else if (*ldA < MAX(1, *n))
         *info = -4;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("DPOTRF", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("DPOTRF", &minfo, strlen("DPOTRF"));
         return;
     }
 
@@ -42,9 +42,9 @@ void RELAPACK_dpotrf(
 
 /** dpotrf's recursive compute kernel */
 static void RELAPACK_dpotrf_rec(
-    const char *uplo, const int *n,
-    double *A, const int *ldA,
-    int *info
+    const char *uplo, const blasint *n,
+    double *A, const blasint *ldA,
+    blasint *info
 ){
 
     if (*n <= MAX(CROSSOVER_DPOTRF, 1)) {
@@ -58,8 +58,8 @@ static void RELAPACK_dpotrf_rec(
     const double MONE[] = { -1. };
 
     // Splitting
-    const int n1 = DREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = DREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

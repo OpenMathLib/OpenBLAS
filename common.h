@@ -85,6 +85,8 @@ extern "C" {
 
 #if !defined(_MSC_VER)
 #include <unistd.h>
+#elif _MSC_VER < 1900
+#define snprintf _snprintf
 #endif
 #include <time.h>
 
@@ -348,6 +350,11 @@ typedef int blasint;
 #endif
 #endif
 
+#ifdef POWER9
+#ifndef YIELDING
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
+#endif
 
 /*
 #ifdef PILEDRIVER
@@ -439,7 +446,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 typedef char env_var_t[MAX_PATH];
 #define readenv(p, n) 0
 #else
-#ifdef OS_WINDOWS
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
 typedef char env_var_t[MAX_PATH];
 #define readenv(p, n) GetEnvironmentVariable((LPCTSTR)(n), (LPTSTR)(p), sizeof(p))
 #else

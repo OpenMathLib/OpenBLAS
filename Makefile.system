@@ -65,6 +65,7 @@ endif
 
 ifdef TARGET
 GETARCH_FLAGS := -DFORCE_$(TARGET)
+GETARCH_FLAGS += -DUSER_TARGET
 endif
 
 # Force fallbacks for 32bit
@@ -93,6 +94,9 @@ GETARCH_FLAGS := -DFORCE_BARCELONA
 endif
 ifeq ($(TARGET), ZEN)
 GETARCH_FLAGS := -DFORCE_BARCELONA
+endif
+ifeq ($(TARGET), ARMV8)
+GETARCH_FLAGS := -DFORCE_ARMV7
 endif
 endif
 
@@ -151,7 +155,8 @@ GETARCH_FLAGS	+= -DNO_AVX
 endif
 
 ifeq ($(BINARY), 32)
-GETARCH_FLAGS	+= -DNO_AVX
+GETARCH_FLAGS	+= -DNO_AVX -DNO_AVX2 -DNO_AVX512
+NO_AVX512 = 1
 endif
 
 ifeq ($(NO_AVX2), 1)
@@ -521,6 +526,12 @@ DYNAMIC_CORE =  ARMV8
 DYNAMIC_CORE += CORTEXA57
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
+endif
+
+ifeq ($(ARCH), power)
+DYNAMIC_CORE = POWER6
+DYNAMIC_CORE += POWER8
+DYNAMIC_CORE += POWER9
 endif
 
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty

@@ -383,7 +383,7 @@
 	EMMS
 
 	movq	%rsp, %rbx	# save old stack
-	subq	$128 + LOCAL_BUFFER_SIZE, %rsp
+	subq	$256 + LOCAL_BUFFER_SIZE, %rsp
 	andq	$-4096, %rsp	# align stack
 
 	STACK_TOUCHING

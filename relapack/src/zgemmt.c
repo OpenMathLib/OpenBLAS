@@ -1,12 +1,12 @@
 #include "relapack.h"
 
 static void RELAPACK_zgemmt_rec(const char *, const char *, const char *,
-    const int *, const int *, const double *, const double *, const int *,
-    const double *, const int *, const double *, double *, const int *);
+    const blasint *, const blasint *, const double *, const double *, const blasint *,
+    const double *, const blasint *, const double *, double *, const blasint *);
 
 static void RELAPACK_zgemmt_rec2(const char *, const char *, const char *,
-    const int *, const int *, const double *, const double *, const int *,
-    const double *, const int *, const double *, double *, const int *);
+    const blasint *, const blasint *, const double *, const double *, const blasint *,
+    const double *, const blasint *, const double *, double *, const blasint *);
 
 
 /** ZGEMMT computes a matrix-matrix product with general matrices but updates
@@ -20,10 +20,10 @@ static void RELAPACK_zgemmt_rec2(const char *, const char *, const char *,
  * */
 void RELAPACK_zgemmt(
     const char *uplo, const char *transA, const char *transB,
-    const int *n, const int *k,
-    const double *alpha, const double *A, const int *ldA,
-    const double *B, const int *ldB,
-    const double *beta, double *C, const int *ldC
+    const blasint *n, const blasint *k,
+    const double *alpha, const double *A, const blasint *ldA,
+    const double *B, const blasint *ldB,
+    const double *beta, double *C, const blasint *ldC
 ) {
 
 #if HAVE_XGEMMT
@@ -32,15 +32,15 @@ void RELAPACK_zgemmt(
 #else
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
-    const int notransA = LAPACK(lsame)(transA, "N");
-    const int tranA = LAPACK(lsame)(transA, "T");
-    const int ctransA = LAPACK(lsame)(transA, "C");
-    const int notransB = LAPACK(lsame)(transB, "N");
-    const int tranB = LAPACK(lsame)(transB, "T");
-    const int ctransB = LAPACK(lsame)(transB, "C");
-    int info = 0;
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const blasint notransA = LAPACK(lsame)(transA, "N");
+    const blasint tranA = LAPACK(lsame)(transA, "T");
+    const blasint ctransA = LAPACK(lsame)(transA, "C");
+    const blasint notransB = LAPACK(lsame)(transB, "N");
+    const blasint tranB = LAPACK(lsame)(transB, "T");
+    const blasint ctransB = LAPACK(lsame)(transB, "C");
+    blasint info = 0;
     if (!lower && !upper)
         info = 1;
     else if (!tranA && !ctransA && !notransA)
@@ -58,7 +58,7 @@ void RELAPACK_zgemmt(
     else if (*ldC < MAX(1, *n))
         info = 13;
     if (info) {
-        LAPACK(xerbla)("ZGEMMT", &info);
+        LAPACK(xerbla)("ZGEMMT", &info, strlen("ZGEMMT"));
         return;
     }
 
@@ -76,10 +76,10 @@ void RELAPACK_zgemmt(
 /** zgemmt's recursive compute kernel */
 static void RELAPACK_zgemmt_rec(
     const char *uplo, const char *transA, const char *transB,
-    const int *n, const int *k,
-    const double *alpha, const double *A, const int *ldA,
-    const double *B, const int *ldB,
-    const double *beta, double *C, const int *ldC
+    const blasint *n, const blasint *k,
+    const double *alpha, const double *A, const blasint *ldA,
+    const double *B, const blasint *ldB,
+    const double *beta, double *C, const blasint *ldC
 ) {
 
     if (*n <= MAX(CROSSOVER_ZGEMMT, 1)) {
@@ -89,8 +89,8 @@ static void RELAPACK_zgemmt_rec(
     }
 
     // Splitting
-    const int n1 = ZREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = ZREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_T
     // A_B
@@ -126,16 +126,16 @@ static void RELAPACK_zgemmt_rec(
 /** zgemmt's unblocked compute kernel */
 static void RELAPACK_zgemmt_rec2(
     const char *uplo, const char *transA, const char *transB,
-    const int *n, const int *k,
-    const double *alpha, const double *A, const int *ldA,
-    const double *B, const int *ldB,
-    const double *beta, double *C, const int *ldC
+    const blasint *n, const blasint *k,
+    const double *alpha, const double *A, const blasint *ldA,
+    const double *B, const blasint *ldB,
+    const double *beta, double *C, const blasint *ldC
 ) {
 
-    const int incB = (*transB == 'N') ? 1 : *ldB;
-    const int incC = 1;
+    const blasint incB = (*transB == 'N') ? 1 : *ldB;
+    const blasint incC = 1;
 
-    int i;
+    blasint i;
     for (i = 0; i < *n; i++) {
         // A_0
         // A_i
@@ -151,13 +151,13 @@ static void RELAPACK_zgemmt_rec2(
         double *const C_ii = C + 2 * *ldC * i + 2 * i;
 
         if (*uplo == 'L') {
-            const int nmi = *n - i;
+            const blasint nmi = *n - i;
             if (*transA == 'N')
                 BLAS(zgemv)(transA, &nmi, k, alpha, A_i, ldA, B_i, &incB, beta, C_ii, &incC);
             else
                 BLAS(zgemv)(transA, k, &nmi, alpha, A_i, ldA, B_i, &incB, beta, C_ii, &incC);
         } else {
-            const int ip1 = i + 1;
+            const blasint ip1 = i + 1;
             if (*transA == 'N')
                 BLAS(zgemv)(transA, &ip1, k, alpha, A_0, ldA, B_i, &incB, beta, C_0i, &incC);
             else
