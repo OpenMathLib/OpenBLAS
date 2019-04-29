@@ -56,10 +56,10 @@ void RELAPACK_zgbtrf(
 
     // Allocate work space
     const blasint n1 = ZREC_SPLIT(*n);
-    const blasint mWorkl = (kv > n1) ? MAX(1, *m - *kl) : kv;
-    const blasint nWorkl = (kv > n1) ? n1 : kv;
-    const blasint mWorku = (*kl > n1) ? n1 : *kl;
-    const blasint nWorku = (*kl > n1) ? MAX(0, *n - *kl) : *kl;
+    const blasint mWorkl = abs ( (kv > n1) ? MAX(1, *m - *kl) : kv);
+    const blasint nWorkl = abs ( (kv > n1) ? n1 : kv);
+    const blasint mWorku = abs ( (*kl > n1) ? n1 : *kl);
+    const blasint nWorku = abs ( (*kl > n1) ? MAX(0, *n - *kl) : *kl);
     double *Workl = malloc(mWorkl * nWorkl * 2 * sizeof(double));
     double *Worku = malloc(mWorku * nWorku * 2 * sizeof(double));
     LAPACK(zlaset)("L", &mWorkl, &nWorkl, ZERO, ZERO, Workl, &mWorkl);
@@ -221,7 +221,9 @@ static void RELAPACK_zgbtrf_rec(
     }
 
     // recursion(Ab_BR, ipiv_B)
-    RELAPACK_zgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+ //   RELAPACK_zgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+ LAPACK(zgbtf2)(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, info);
+ 
     if (*info)
         *info += n1;
     // shift pivots
