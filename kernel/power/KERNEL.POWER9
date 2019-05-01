@@ -12,11 +12,11 @@ SGEMMKERNEL    =  sgemm_kernel_power9.S
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
-SGEMMOTCOPY    = sgemm_tcopy_8_power8.S
-SGEMMINCOPYOBJ =  sgemm_incopy.o
-SGEMMITCOPYOBJ =  sgemm_itcopy.o
-SGEMMONCOPYOBJ =  sgemm_oncopy.o
-SGEMMOTCOPYOBJ =  sgemm_otcopy.o
+SGEMMOTCOPY    = sgemm_tcopy_8_power8.S 
+SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 DGEMMKERNEL    =  dgemm_kernel_power9.S
 DGEMMINCOPY    = ../generic/gemm_ncopy_16.c
