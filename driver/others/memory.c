@@ -229,7 +229,7 @@ int get_num_procs(void) {
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
-     if (CPU_ISSET(i,cpuset)) n++;
+     if (CPU_ISSET(i,&cpuset)) n++;
   nums=n;
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
@@ -1772,7 +1772,7 @@ int get_num_procs(void) {
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
-     if (CPU_ISSET(i,cpuset)) n++;
+     if (CPU_ISSET(i,&cpuset)) n++;
   nums=n;
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
