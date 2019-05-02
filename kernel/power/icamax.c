@@ -75,7 +75,7 @@ static inline __attribute__((always_inline)) __vector float mvec_mergeo(__vector
 static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) { 
 
     BLASLONG index;
-    BLASLONG i;
+    BLASLONG i=0;
 #if  defined(USE_MASK_PERMUTATIONS)    
     register __vector unsigned int static_index0 = {0,1,2,3};
 #else
