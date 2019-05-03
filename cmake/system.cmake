@@ -65,6 +65,11 @@ if (DEFINED TARGET)
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
 endif ()
 
+# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
+if (X86_64)
+  set(GETARCH_FLAGS "${GETARCH_FLAGS} -march=native")
+endif ()
+
 if (INTERFACE64)
   message(STATUS "Using 64-bit integers.")
   set(GETARCH_FLAGS	"${GETARCH_FLAGS} -DUSE64BITINT")
