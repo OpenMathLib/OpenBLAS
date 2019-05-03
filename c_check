@@ -240,7 +240,7 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
 	} else {
 	    $no_avx512 = 0;
 	}
-	unlink("tmpf.o");
+	unlink("$tmpf.o");
     }
 }
 
