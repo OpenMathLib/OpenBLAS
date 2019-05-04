@@ -50,7 +50,7 @@
 
 /* This is a thread implementation for Win32 lazy implementation */
 
-/* Thread server common infomation */
+/* Thread server common information */
 typedef struct{
   CRITICAL_SECTION lock;
   HANDLE filled;
@@ -61,7 +61,7 @@ typedef struct{
 
 } blas_pool_t;
 
-/* We need this global for cheking if initialization is finished.   */
+/* We need this global for checking if initialization is finished.   */
 int blas_server_avail = 0;
 
 /* Local Variables */

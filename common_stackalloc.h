@@ -45,7 +45,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * SIZE must be carefully chosen to be:
  * - as small as possible to maximize the number of stack allocation
  * - large enough to support all architectures and kernel
- * Chosing a too small SIZE will lead to a stack smashing.
+ * Choosing a SIZE too small will lead to a stack smashing.
  */
 #define STACK_ALLOC(SIZE, TYPE, BUFFER)                                        \
   /* make it volatile because some function (ex: dgemv_n.S) */                 \
