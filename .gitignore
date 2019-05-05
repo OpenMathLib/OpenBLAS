@@ -88,3 +88,4 @@ build.*
 benchmark/*.goto
 benchmark/smallscaling
 
+.vscode
