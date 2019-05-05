@@ -15,6 +15,20 @@ target_link_libraries(${test_bin} ${OpenBLAS_LIBNAME})
 endforeach()
 
 # $1 exec, $2 input, $3 output_result
+if(WIN32)
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
+"Remove-Item -Force $args[2]\n"
+"$ErrorActionPreference = \"Stop\"\n"
+"Get-Content $args[1] | & $args[0]\n"
+"If (Get-Content $args[2] | %{$_ -match \"FATAL\"}) {\n"
+"echo Error\n"
+"exit 1\n"
+"} else {\n"
+"exit 0\n"
+"}\n"
+)
+set(helper_prefix powershell -ExecutionPolicy Bypass "${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1")
+else()
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh
 "rm -f $3\n"
 "$1 < $2\n"
@@ -26,14 +40,16 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh
 "exit 0\n"
 "fi\n"
 )
+set(helper_prefix sh "${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh")
+endif()
 
 set(float_types s d c z)
 foreach(float_type ${float_types})
 string(TOUPPER ${float_type} float_type_upper)
 add_test(NAME "${float_type}blas1" 
-  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/${float_type}blat1")
+  COMMAND $<TARGET_FILE:${float_type}blat1>)
 add_test(NAME "${float_type}blas2" 
-  COMMAND sh "${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh" "${CMAKE_CURRENT_BINARY_DIR}/${float_type}blat2" "${PROJECT_SOURCE_DIR}/test/${float_type}blat2.dat" ${float_type_upper}BLAT2.SUMM)
+  COMMAND ${helper_prefix} $<TARGET_FILE:${float_type}blat2> "${PROJECT_SOURCE_DIR}/test/${float_type}blat2.dat" ${float_type_upper}BLAT2.SUMM)
 add_test(NAME "${float_type}blas3" 
-  COMMAND sh "${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh" "${CMAKE_CURRENT_BINARY_DIR}/${float_type}blat3" "${PROJECT_SOURCE_DIR}/test/${float_type}blat3.dat" ${float_type_upper}BLAT3.SUMM)
+  COMMAND ${helper_prefix} $<TARGET_FILE:${float_type}blat3> "${PROJECT_SOURCE_DIR}/test/${float_type}blat3.dat" ${float_type_upper}BLAT3.SUMM)
 endforeach()

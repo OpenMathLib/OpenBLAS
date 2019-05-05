@@ -5,9 +5,18 @@ enable_language(Fortran)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DADD${BU} -DCBLAS")
 
+if(WIN32)
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.ps1
+"$ErrorActionPreference = \"Stop\"\n"
+"Get-Content $args[1] | & $args[0]\n"
+)
+set(test_helper powershell -ExecutionPolicy Bypass "${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.ps1")
+else()
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.sh
 "$1 < $2\n"
 )
+set(test_helper sh "${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.sh")
+endif()
 
 foreach(float_type ${FLOAT_TYPES})
   string(SUBSTRING ${float_type} 0 1 float_char_upper)
@@ -18,7 +27,7 @@ foreach(float_type ${FLOAT_TYPES})
     c_${float_char}blas1.c)
   target_link_libraries(x${float_char}cblat1 ${OpenBLAS_LIBNAME})
   add_test(NAME "x${float_char}cblat1"
-    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/x${float_char}cblat1")
+    COMMAND $<TARGET_FILE:x${float_char}cblat1>)
 
   #level2
   add_executable(x${float_char}cblat2
@@ -30,7 +39,7 @@ foreach(float_type ${FLOAT_TYPES})
     constant.c)
   target_link_libraries(x${float_char}cblat2 ${OpenBLAS_LIBNAME})
   add_test(NAME "x${float_char}cblat2"
-    COMMAND sh "${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.sh" "${CMAKE_CURRENT_BINARY_DIR}/x${float_char}cblat2" "${PROJECT_SOURCE_DIR}/ctest/${float_char}in2")
+    COMMAND ${test_helper} $<TARGET_FILE:x${float_char}cblat2> "${PROJECT_SOURCE_DIR}/ctest/${float_char}in2")
 
   #level3
   add_executable(x${float_char}cblat3
@@ -42,6 +51,6 @@ foreach(float_type ${FLOAT_TYPES})
     constant.c)
   target_link_libraries(x${float_char}cblat3 ${OpenBLAS_LIBNAME})
   add_test(NAME "x${float_char}cblat3"
-    COMMAND sh "${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.sh" "${CMAKE_CURRENT_BINARY_DIR}/x${float_char}cblat3" "${PROJECT_SOURCE_DIR}/ctest/${float_char}in3")
+    COMMAND ${test_helper} $<TARGET_FILE:x${float_char}cblat3> "${PROJECT_SOURCE_DIR}/ctest/${float_char}in3")
 
 endforeach()
