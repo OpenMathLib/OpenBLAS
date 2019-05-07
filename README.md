@@ -10,7 +10,7 @@ AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/09sohd35n
 
 OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version.
 
-Please read the documentation on the OpenBLAS wiki pages: <http://github.com/xianyi/OpenBLAS/wiki>.
+Please read the documentation on the OpenBLAS wiki pages: <https://github.com/xianyi/OpenBLAS/wiki>.
 
 ## Binary Packages
 
@@ -22,7 +22,7 @@ You can download them from [file hosting on sourceforge.net](https://sourceforge
 
 ## Installation from Source
 
-Download from project homepage, http://xianyi.github.com/OpenBLAS/, or check out the code
+Download from project homepage, https://xianyi.github.com/OpenBLAS/, or check out the code
 using Git from https://github.com/xianyi/OpenBLAS.git.
 
 ### Dependencies
