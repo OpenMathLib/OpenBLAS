@@ -26,6 +26,15 @@ matrix:
         - BTYPE="BINARY=64"
 
     - <<: *test-ubuntu
+      os: linux-ppc64le
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+    - <<: *test-ubuntu
       env:
         - TARGET_BOX=LINUX64
         - BTYPE="BINARY=64 USE_OPENMP=1"
