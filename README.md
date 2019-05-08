@@ -63,9 +63,7 @@ A debug version can be built using `make DEBUG=1`.
 
 ### Compile with MASS support on Power CPU (optional)
 
-The [IBM MASS](http://www-01.ibm.com/software/awdtools/mass/linux/mass-linux.html) library
-consists of a set of mathematical functions for C, C++, and Fortran applications that are
-are tuned for optimum performance on POWER architectures.
+The [IBM MASS](https://www.ibm.com/support/home/product/W511326D80541V01/other_software/mathematical_acceleration_subsystem) library consists of a set of mathematical functions for C, C++, and Fortran applications that are tuned for optimum performance on POWER architectures.
 OpenBLAS with MASS requires a 64-bit, little-endian OS on POWER.
 The library can be installed as shown:
 
@@ -115,6 +113,7 @@ Please read `GotoBLAS_01Readme.txt`.
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thanks to Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
 - **AMD STEAMROLLER**: Uses Bulldozer codes with some optimizations.
+- **AMD ZEN**: Uses Haswell codes with some optimizations.
 
 #### MIPS64
 
@@ -133,11 +132,13 @@ Please read `GotoBLAS_01Readme.txt`.
 
 #### PPC/PPC64
 
-- **POWER8**: Optimized Level-3 BLAS and some Level-1, only with `USE_OPENMP=1`
+- **POWER8**: Optimized BLAS, only for PPC64LE (Little Endian), only with `USE_OPENMP=1`
+- **POWER9**: Optimized Level-3 BLAS (real) and some Level-1,2. PPC64LE with OpenMP only. 
 
 #### IBM zEnterprise System
 
 - **Z13**: Optimized Level-3 BLAS and Level-1,2 (double precision)
+- **Z14**: Optimized Level-3 BLAS and Level-1,2 (single precision)
 
 ### Supported OS
 
