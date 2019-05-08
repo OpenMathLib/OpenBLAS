@@ -13,19 +13,15 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-#- script: |
-#    docker run --rm --privileged multiarch/qemu-user-static:register --reset
-#    ls /proc/sys/fs/binfmt_misc/
-#  condition: not(startsWith(variables['CONFIG'], 'linux_64'))
-#  displayName: 'Configure binfmt_misc'
-
 - script: |
+    docker run --rm --privileged multiarch/qemu-user-static:register --reset
     echo "FROM openblas/alpine:arm32
         COPY . /tmp/openblas
         RUN mkdir /tmp/openblas/build                             &&  \
             cd /tmp/openblas/build                                &&  \
-            CC=gcc cmake -D DYNAMIC_ARCH=OFF                  \
-                                 -D TARGET=ARMV6             \
+            CC=gcc cmake -D DYNAMIC_ARCH=OFF                          \
+                                 -D TARGET=ARMV6                      \
+                                 -D NOFORTRAN=ON                      \
                                  -D BUILD_SHARED_LIBS=ON              \
                                  -D BUILD_WITHOUT_LAPACK=ON           \
                                  -D BUILD_WITHOUT_CBLAS=ON            \
