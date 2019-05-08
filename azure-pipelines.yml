@@ -14,10 +14,10 @@ steps:
   displayName: 'Run a one-line script'
 
 - script: |
-  docker run --rm --privileged multiarch/qemu-user-static:register --reset
-  ls /proc/sys/fs/binfmt_misc/
+    docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    ls /proc/sys/fs/binfmt_misc/
   condition: not(startsWith(variables['CONFIG'], 'linux_64'))
-  displayName: Configure binfmt_misc
+  displayName: 'Configure binfmt_misc'
 
 - script: |
   echo "FROM openblas/alpine:arm32
@@ -32,7 +32,7 @@ steps:
                                  -D CMAKE_BUILD_TYPE=Release ../  &&  \
             cmake --build ." > Dockerfile
         docker build .
-
+  displayname: 'Run ARMV6 docker build'
 #- script: |
 #    echo Add other tasks to build, test, and deploy your project.
 #    echo See https://aka.ms/yaml
