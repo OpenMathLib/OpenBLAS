@@ -13,14 +13,14 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: |
-    docker run --rm --privileged multiarch/qemu-user-static:register --reset
+#- script: |
+#    docker run --rm --privileged multiarch/qemu-user-static:register --reset
 #    ls /proc/sys/fs/binfmt_misc/
 #  condition: not(startsWith(variables['CONFIG'], 'linux_64'))
 #  displayName: 'Configure binfmt_misc'
 
 - script: |
-  echo "FROM openblas/alpine:arm32
+    echo "FROM openblas/alpine:arm32
         COPY . /tmp/openblas
         RUN mkdir /tmp/openblas/build                             &&  \
             cd /tmp/openblas/build                                &&  \
@@ -31,10 +31,8 @@ steps:
                                  -D BUILD_WITHOUT_CBLAS=ON            \
                                  -D CMAKE_BUILD_TYPE=Release ../  &&  \
             cmake --build ." > Dockerfile
-        docker build .
-        
-        
-#  displayName: 'Run ARMV6 docker build'
+    docker build .
+  displayName: Run ARMV6 docker build
 
 #- script: |
 #    echo Add other tasks to build, test, and deploy your project.
