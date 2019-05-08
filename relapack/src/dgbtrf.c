@@ -1,5 +1,6 @@
 #include "relapack.h"
-#include "stdlib.h"
+#include <stdlib.h>
+#include <stdio.h>
 static void RELAPACK_dgbtrf_rec(const blasint *, const blasint *, const blasint *,
     const blasint *, double *, const blasint *, blasint *, double *, const blasint *, double *,
     const blasint *, blasint *);
@@ -218,7 +219,8 @@ static void RELAPACK_dgbtrf_rec(
     }
 
     // recursion(Ab_BR, ipiv_B)
-    RELAPACK_dgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+//    RELAPACK_dgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+        LAPACK(dgbtf2)(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, info);
     if (*info)
         *info += n1;
     // shift pivots

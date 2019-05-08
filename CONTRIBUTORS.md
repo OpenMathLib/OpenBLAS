@@ -167,4 +167,7 @@ In chronological order:
   * [2017-02-26] ztrmm kernel for IBM z13
   * [2017-03-13] strmm and ctrmm kernel for IBM z13
   * [2017-09-01] initial Blas Level-1,2 (double precision) for IBM z13
-
+  * [2018-03-07] added missing Blas Level 1-2  (double precision) simd codes
+  * [2019-02-01] added missing Blas Level-1,2 (single precision)  simd codes
+  * [2019-03-14] power9 dgemm/dtrmm kernel
+  * [2019-04-29] power9 sgemm/strmm kernel 

@@ -1,5 +1,4 @@
 #include "relapack.h"
-
 static void RELAPACK_sgetrf_rec(const blasint *, const blasint *, float *, const blasint *,
     blasint *, blasint *);
 
@@ -22,16 +21,14 @@ void RELAPACK_sgetrf(
         *info = -1;
     else if (*n < 0)
         *info = -2;
-    else if (*ldA < MAX(1, *n))
+    else if (*ldA < MAX(1, *m))
         *info = -4;
     if (*info) {
         const blasint minfo = -*info;
         LAPACK(xerbla)("SGETRF", &minfo, strlen("SGETRF"));
         return;
     }
-
     const blasint sn = MIN(*m, *n);
-
     RELAPACK_sgetrf_rec(m, &sn, A, ldA, ipiv, info);
 
     // Right remainder
@@ -61,7 +58,6 @@ static void RELAPACK_sgetrf_rec(
     float *A, const blasint *ldA, blasint *ipiv,
     blasint *info
 ) {
-
     if (*n <= MAX(CROSSOVER_SGETRF, 1)) {
         // Unblocked
         LAPACK(sgetf2)(m, n, A, ldA, ipiv, info);
@@ -77,7 +73,6 @@ static void RELAPACK_sgetrf_rec(
     const blasint n1 = SREC_SPLIT(*n);
     const blasint n2 = *n - n1;
     const blasint m2 = *m - n1;
-
     // A_L A_R
     float *const A_L = A;
     float *const A_R = A + *ldA * n1;

@@ -229,7 +229,7 @@ int get_num_procs(void) {
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
-     if (CPU_ISSET(i,cpuset)) n++;
+     if (CPU_ISSET(i,&cpuset)) n++;
   nums=n;
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
@@ -1772,7 +1772,7 @@ int get_num_procs(void) {
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
-     if (CPU_ISSET(i,cpuset)) n++;
+     if (CPU_ISSET(i,&cpuset)) n++;
   nums=n;
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
@@ -2751,7 +2751,7 @@ void *blas_memory_alloc(int procpos){
 
 #ifdef ALLOC_DEVICEDRIVER
 	if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
-	    fprintf(stderr, "OpenBLAS Warning ... Physically contigous allocation was failed.\n");
+	    fprintf(stderr, "OpenBLAS Warning ... Physically contiguous allocation was failed.\n");
 	}
 #endif
 

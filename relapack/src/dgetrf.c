@@ -15,16 +15,15 @@ void RELAPACK_dgetrf(
     double *A, const blasint *ldA, blasint *ipiv,
     blasint *info
 ) {
-
     // Check arguments
     *info = 0;
     if (*m < 0)
         *info = -1;
     else if (*n < 0)
         *info = -2;
-    else if (*ldA < MAX(1, *n))
+    else if (*ldA < MAX(1, *m))
         *info = -4;
-    if (*info) {
+    if (*info!=0) {
         const blasint minfo = -*info;
         LAPACK(xerbla)("DGETRF", &minfo, strlen("DGETRF"));
         return;
