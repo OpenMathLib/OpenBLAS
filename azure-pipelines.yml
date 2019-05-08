@@ -15,9 +15,9 @@ steps:
 
 - script: |
     docker run --rm --privileged multiarch/qemu-user-static:register --reset
-    ls /proc/sys/fs/binfmt_misc/
-  condition: not(startsWith(variables['CONFIG'], 'linux_64'))
-  displayName: 'Configure binfmt_misc'
+#    ls /proc/sys/fs/binfmt_misc/
+#  condition: not(startsWith(variables['CONFIG'], 'linux_64'))
+#  displayName: 'Configure binfmt_misc'
 
 - script: |
   echo "FROM openblas/alpine:arm32
