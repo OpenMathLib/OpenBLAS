@@ -32,6 +32,8 @@ steps:
                                  -D CMAKE_BUILD_TYPE=Release ../  &&  \
             cmake --build ." > Dockerfile
         docker build .
+        
+        
 #  displayName: 'Run ARMV6 docker build'
 
 #- script: |
