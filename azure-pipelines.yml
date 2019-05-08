@@ -13,9 +13,8 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-#- script: |
+- script: |
     docker run --rm --privileged multiarch/qemu-user-static:register --reset
-
     echo "FROM openblas/alpine:arm32
         COPY . /tmp/openblas
         RUN mkdir /tmp/openblas/build                             &&  \
