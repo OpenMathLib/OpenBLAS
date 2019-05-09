@@ -20,9 +20,14 @@ if(MSVC)
 option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
 endif()
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
-option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64 only)" OFF)
-option(DYNAMIC_OLDER "Include specific support for older cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
+option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)" OFF)
+option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
+else()
+set(NO_AFFINITY 1)
+endif()
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoids conflicts with other BLAS libraries, especially when using
