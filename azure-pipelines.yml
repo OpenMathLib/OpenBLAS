@@ -1,21 +1,18 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- master
+  # start a new build for every push
+  batch: False
+  branches:
+    include:
+      - develop
 
-pool:
-  vmImage: 'ubuntu-latest'
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    docker run --rm --privileged multiarch/qemu-user-static:register --reset
-    echo "FROM openblas/alpine:arm32
+jobs:
+- job: ARMv6_gcc
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: |
+      docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      echo "FROM openblas/alpine:arm32
         COPY . /tmp/openblas
         RUN mkdir /tmp/openblas/build                             &&  \
             cd /tmp/openblas/build                                &&  \
@@ -27,10 +24,24 @@ steps:
                                  -D BUILD_WITHOUT_CBLAS=ON            \
                                  -D CMAKE_BUILD_TYPE=Release ../  &&  \
             cmake --build ." > Dockerfile
-    docker build .
-  displayName: Run ARMV6 docker build
-
-#- script: |
-#    echo Add other tasks to build, test, and deploy your project.
-#    echo See https://aka.ms/yaml
-#  displayName: 'Run a multi-line script'
+      docker build .
+    displayName: Run ARMV6 docker build
+# manylinux1 is useful to test because the
+# standard Docker container uses an old version
+# of gcc / glibc
+- job: manylinux1_gcc
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: |
+      echo "FROM quay.io/pypa/manylinux1_x86_64
+        COPY . /tmp/openblas
+        RUN cd /tmp/openblas                                      &&  \
+            COMMON_FLAGS='DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32' && \
+            BTYPE='BINARY=64' CC=gcc && \
+            make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE && \
+            make -C test $COMMON_FLAGS $BTYPE && \
+            make -C ctest $COMMON_FLAGS $BTYPE && \
+            make -C utest $COMMON_FLAGS $BTYPE" > Dockerfile
+      docker build .
+    displayName: Run manylinux1 docker build

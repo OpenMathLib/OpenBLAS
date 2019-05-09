@@ -177,8 +177,8 @@ matrix:
       dist: trusty
       sudo: required
       services: docker
-      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
-      name: "Emulated Build for ARMV6 with gcc"
+      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
+      name: "Emulated Build for ARMV6 with clang"
       before_install: sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
       script: |
         echo "FROM openblas/alpine:${IMAGE_ARCH}
@@ -194,9 +194,6 @@ matrix:
             cmake --build ." > Dockerfile
         docker build .
     - <<: *emulated-arm
-      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
-      name: "Emulated Build for ARMV6 with clang"
-    - <<: *emulated-arm
       env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
       name: "Emulated Build for ARMV8 with gcc"
     - <<: *emulated-arm
@@ -204,7 +201,6 @@ matrix:
       name: "Emulated Build for ARMV8 with clang"
 
   allow_failures:
-    - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
     - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
     - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
     - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
