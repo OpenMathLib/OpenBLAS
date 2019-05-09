@@ -6,6 +6,8 @@ Travis CI: [![Build Status](https://travis-ci.org/xianyi/OpenBLAS.svg?branch=dev
 
 AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/09sohd35n8nkkx64/branch/develop?svg=true)](https://ci.appveyor.com/project/xianyi/openblas/branch/develop)
 
+[![Build Status](https://dev.azure.com/xianyi/OpenBLAS/_apis/build/status/xianyi.OpenBLAS?branchName=develop)](https://dev.azure.com/xianyi/OpenBLAS/_build/latest?definitionId=1&branchName=develop)
+
 ## Introduction
 
 OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version.
