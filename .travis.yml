@@ -202,7 +202,6 @@ matrix:
 
   allow_failures:
     - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
-    - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
     - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
 
 # whitelist
