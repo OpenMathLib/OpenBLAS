@@ -194,9 +194,6 @@ matrix:
             cmake --build ." > Dockerfile
         docker build .
     - <<: *emulated-arm
-      env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
-      name: "Emulated Build for ARMV8 with gcc"
-    - <<: *emulated-arm
       env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
       name: "Emulated Build for ARMV8 with clang"
 
