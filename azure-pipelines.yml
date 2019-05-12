@@ -26,26 +26,6 @@ jobs:
             cmake --build ." > Dockerfile
       docker build .
     displayName: Run ARMV6 docker build
-- job: ARMv8_gcc
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - script: |
-      docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      echo "FROM openblas/alpine:arm64
-        COPY . /tmp/openblas
-        RUN mkdir /tmp/openblas/build                             &&  \
-            cd /tmp/openblas/build                                &&  \
-            CC=gcc cmake -D DYNAMIC_ARCH=OFF                          \
-                                 -D TARGET=ARMV8                      \
-                                 -D NOFORTRAN=ON                      \
-                                 -D BUILD_SHARED_LIBS=ON              \
-                                 -D BUILD_WITHOUT_LAPACK=ON           \
-                                 -D BUILD_WITHOUT_CBLAS=ON            \
-                                 -D CMAKE_BUILD_TYPE=Release ../  &&  \
-            cmake --build ." > Dockerfile
-      docker build .
-    displayName: Run ARMV8 docker build   
 # manylinux1 is useful to test because the
 # standard Docker container uses an old version
 # of gcc / glibc
