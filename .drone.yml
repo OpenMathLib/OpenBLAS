@@ -1,0 +1,19 @@
+---
+kind: pipeline
+name: arm64_gcc
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: Build
+  image: centos:7
+  environment:
+    CC: gcc
+    COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
+  commands:
+    - make QUIET_MAKE=1 $COMMON_FLAGS
+    - make -C test $COMMON_FLAGS
+    - make -C ctest $COMMON_FLAGS
+    - make -C utest $COMMON_FLAGS"
