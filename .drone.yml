@@ -13,7 +13,7 @@ steps:
     CC: gcc
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
   commands:
-    - yum -y install make gcc
+    - yum -y install make gcc perl
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
