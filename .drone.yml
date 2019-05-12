@@ -8,7 +8,7 @@ platform:
 
 steps:
 - name: Build and Test
-  image: ubuntu:18.04
+  image: ubuntu:19.04
   environment:
     CC: gcc
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
