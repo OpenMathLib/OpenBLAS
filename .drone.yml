@@ -7,12 +7,13 @@ platform:
   arch: arm64
 
 steps:
-- name: Build
+- name: Build and Test
   image: centos:7
   environment:
     CC: gcc
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
   commands:
+    - sudo yum -y install make
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
