@@ -59,16 +59,15 @@ steps:
   image: ubuntu:18.04
   environment:
     CC: gcc
-    CXX: g++
     CMAKE_FLAGS: '-DDYNAMIC_ARCH=1 -DTARGET=ARMV8 -DNUM_THREADS=32 -DNOFORTRAN=ON -DBUILD_WITHOUT_LAPACK=ON'
   commands:
     - echo "CMAKE_FLAGS:= $CMAKE_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC $CXX g++ perl cmake
+    - apt-get install -y make $CC g++ perl cmake
     - $CC --version
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
-    - cmake --build .
+    - make -j
     - ctest
 
 ---
@@ -84,14 +83,13 @@ steps:
   image: ubuntu:18.04
   environment:
     CC: clang
-    CXX: clang++
     CMAKE_FLAGS: '-DDYNAMIC_ARCH=1 -DTARGET=ARMV8 -DNUM_THREADS=32 -DNOFORTRAN=ON -DBUILD_WITHOUT_LAPACK=ON'
   commands:
     - echo "CMAKE_FLAGS:= $CMAKE_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC $CXX perl cmake
+    - apt-get install -y make $CC g++ perl cmake
     - $CC --version
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
-    - cmake --build .
+    - make -j
     - ctest
