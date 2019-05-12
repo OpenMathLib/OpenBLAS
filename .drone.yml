@@ -13,8 +13,10 @@ steps:
     CC: gcc
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
   commands:
+    - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
     - apt-get install -y make $CC gfortran perl
+    - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
@@ -35,8 +37,10 @@ steps:
     CC: clang
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
   commands:
+    - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
     - apt-get install -y make $CC gfortran perl
+    - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
@@ -57,8 +61,10 @@ steps:
     CC: gcc
     CMAKE_FLAGS: '-DDYNAMIC_ARCH=1 -DTARGET=ARMV8 -DNUM_THREADS=32'
   commands:
+    - echo "CMAKE_FLAGS:= $CMAKE_FLAGS"
     - apt-get update -y
     - apt-get install -y make $CC gfortran perl cmake
+    - $CC --version
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - cmake --build .
@@ -79,8 +85,10 @@ steps:
     CC: clang
     CMAKE_FLAGS: '-DDYNAMIC_ARCH=1 -DTARGET=ARMV8 -DNUM_THREADS=32'
   commands:
+    - echo "CMAKE_FLAGS:= $CMAKE_FLAGS"
     - apt-get update -y
     - apt-get install -y make $CC gfortran perl cmake
+    - $CC --version
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - cmake --build .
