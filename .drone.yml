@@ -28,11 +28,11 @@ name: arm32_gcc_make
 
 platform:
   os: linux
-  arch: arm64
+  arch: arm
 
 steps:
 - name: Build and Test
-  image: ubuntu:18.04
+  image: ubuntu:19.04
   environment:
     CC: gcc
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV6 NUM_THREADS=32'
