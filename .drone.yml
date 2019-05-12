@@ -11,10 +11,10 @@ steps:
   image: ubuntu:18.04
   environment:
     CC: gcc
-    COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32 -j'
+    COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
   commands:
     - apt-get update -y
-    - apt-get install -y make gcc gfortran perl clang
+    - apt-get install -y make $CC gfortran perl
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
@@ -33,10 +33,10 @@ steps:
   image: ubuntu:18.04
   environment:
     CC: clang
-    COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32 -j'
+    COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
   commands:
     - apt-get update -y
-    - apt-get install -y make gcc gfortran perl clang
+    - apt-get install -y make $CC gfortran perl
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
