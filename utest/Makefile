@@ -13,6 +13,7 @@ OBJS=utest_main.o test_amax.o test_rotmg.o test_axpy.o test_dotu.o test_dsdot.o 
 
 ifneq ($(NO_LAPACK), 1)
 OBJS += test_potrs.o
+OBJS += test_kernel_regress.o
 endif
 
 #this does not work with OpenMP nor with native Windows or Android threads
