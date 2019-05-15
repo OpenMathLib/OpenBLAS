@@ -2062,13 +2062,13 @@ static void *alloc_mmap(void *address){
   }
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif    
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
 #endif    
   }
@@ -2214,13 +2214,13 @@ static void *alloc_mmap(void *address){
 #endif
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
 #endif
   }
@@ -2701,7 +2701,7 @@ void *blas_memory_alloc(int procpos){
 
   position = 0;
 
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
 #endif
   do {
@@ -2718,7 +2718,7 @@ void *blas_memory_alloc(int procpos){
     position ++;
 
   } while (position < NUM_BUFFERS);
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);	
 #endif
   goto error;
@@ -2730,7 +2730,7 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   memory[position].used = 1;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #else
   blas_unlock(&memory[position].lock);	
@@ -2779,11 +2779,11 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif    
     memory[position].addr = map_address;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
 #endif
 
@@ -2839,7 +2839,7 @@ void blas_memory_free(void *free_area){
 #endif
 
   position = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
 #endif
   while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
@@ -2855,7 +2855,7 @@ void blas_memory_free(void *free_area){
   WMB;
 
   memory[position].used = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
 
@@ -2872,7 +2872,7 @@ void blas_memory_free(void *free_area){
   for (position = 0; position < NUM_BUFFERS; position++)
     printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
 #endif
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
   return;
@@ -2924,7 +2924,7 @@ void blas_shutdown(void){
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
 #if   defined(USE_PTHREAD_LOCK)
 static pthread_mutex_t    init_lock = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(USE_PTHREAD_SPINLOCK)
@@ -2949,7 +2949,7 @@ static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
     if (hot_alloc != 2) {
 #endif
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
   LOCK_COMMAND(&init_lock);
 #endif
 
@@ -2959,7 +2959,7 @@ static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
     size    -= PAGESIZE;
   }
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
   UNLOCK_COMMAND(&init_lock);
 #endif
 
