@@ -56,7 +56,13 @@ VERSION = 0.3.7.dev
 # specify it.
 # For force setting for single threaded, specify USE_THREAD = 0
 # For force setting for multi  threaded, specify USE_THREAD = 1
-# USE_THREAD = 0
+USE_THREAD = 0
+
+# If you want to build a single-threaded OpenBLAS, but expect to call this
+# from several concurrent threads in some other program, comment this in for
+# thread safety. (This is done automatically for USE_THREAD=1 , and should not
+# be necessary when USE_OPENMP=1)
+# USE_LOCKING = 1
 
 # If you're going to use this library with OpenMP, please comment it in.
 # This flag is always set for POWER8. Don't set USE_OPENMP = 0 if you're targeting POWER8.
@@ -220,7 +226,7 @@ NO_AFFINITY = 1
 COMMON_PROF = -pg
 
 # Build Debug version
-# DEBUG = 1
+DEBUG = 1
 
 # Set maximum stack allocation.
 # The default value is 2048. 0 disable stack allocation a may reduce GER and GEMV
