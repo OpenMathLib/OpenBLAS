@@ -237,6 +237,10 @@ SMP = 1
 endif
 endif
 
+ifeq ($(SMP), 1)
+USE_LOCKING = 
+endif
+
 ifndef NEED_PIC
 NEED_PIC = 1
 endif
@@ -386,6 +390,12 @@ endif
 MAX_STACK_ALLOC ?= 2048
 ifneq ($(MAX_STACK_ALLOC), 0)
 CCOMMON_OPT	+= -DMAX_STACK_ALLOC=$(MAX_STACK_ALLOC)
+endif
+
+ifdef USE_LOCKING
+ifneq ($(USE_LOCKING), 0)
+CCOMMON_OPT	+= -DUSE_LOCKING
+endif
 endif
 
 #

@@ -136,6 +136,10 @@ endif ()
 
 if (USE_THREAD)
   message(STATUS "Multi-threading enabled with ${NUM_THREADS} threads.")
+else()
+  if (${USE_LOCKING})
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_LOCKING")
+  endif ()
 endif ()
 
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")

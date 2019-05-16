@@ -131,7 +131,7 @@ extern "C" {
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
 #include <pthread.h>
 #endif
 #endif
@@ -200,7 +200,7 @@ extern "C" {
 #error "You can't specify both LOCK operation!"
 #endif
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
 #define USE_PTHREAD_LOCK
 #undef	USE_PTHREAD_SPINLOCK
 #endif
