@@ -1622,12 +1622,14 @@ void gotoblas_dummy_for_PGI(void) {
   gotoblas_init();
   gotoblas_quit();
 
+#if __PGIC__ < 19
 #if 0
   asm ("\t.section\t.ctors,\"aw\",@progbits; .align 8; .quad gotoblas_init; .section .text");
   asm ("\t.section\t.dtors,\"aw\",@progbits; .align 8; .quad gotoblas_quit; .section .text");
 #else
   asm (".section .init,\"ax\"; call gotoblas_init@PLT; .section .text");
   asm (".section .fini,\"ax\"; call gotoblas_quit@PLT; .section .text");
+#endif
 #endif
 }
 #endif
@@ -3192,7 +3194,7 @@ void gotoblas_dummy_for_PGI(void) {
 
   gotoblas_init();
   gotoblas_quit();
-
+#if __PGIC__ < 19
 #if 0
   asm ("\t.section\t.ctors,\"aw\",@progbits; .align 8; .quad gotoblas_init; .section .text");
   asm ("\t.section\t.dtors,\"aw\",@progbits; .align 8; .quad gotoblas_quit; .section .text");
@@ -3200,6 +3202,7 @@ void gotoblas_dummy_for_PGI(void) {
   asm (".section .init,\"ax\"; call gotoblas_init@PLT; .section .text");
   asm (".section .fini,\"ax\"; call gotoblas_quit@PLT; .section .text");
 #endif
+#endif	
 }
 #endif
 
