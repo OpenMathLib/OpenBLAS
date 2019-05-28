@@ -123,8 +123,8 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
-	$(MAKE) -C utest all
 endif
+	$(MAKE) -C utest all
 ifndef NO_CBLAS
 	$(MAKE) -C ctest all
 endif
