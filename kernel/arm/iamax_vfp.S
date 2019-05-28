@@ -469,9 +469,11 @@ iamax_kernel_S10:
 
 
 iamax_kernel_L999:
-
+#if !defined(__ARM_PCS_VFP)
+	vmov    r0, s0
+#else
 	mov	r0, INDEX		// set return value
-
+#endif
 	pop     {r4}
 	bx	lr
 
