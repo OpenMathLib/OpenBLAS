@@ -2,13 +2,13 @@ include $(KERNELDIR)/KERNEL.ARMV5
 
 SAMAXKERNEL  = amax_vfp.S
 DAMAXKERNEL  = amax_vfp.S
-CAMAXKERNEL  = amax_vfp.S
-ZAMAXKERNEL  = amax_vfp.S
+#CAMAXKERNEL  = amax_vfp.S
+#ZAMAXKERNEL  = amax_vfp.S
 
 SAMINKERNEL  = amax_vfp.S
 DAMINKERNEL  = amax_vfp.S
-CAMINKERNEL  = amax_vfp.S
-ZAMINKERNEL  = amax_vfp.S
+#CAMINKERNEL  = amax_vfp.S
+#ZAMINKERNEL  = amax_vfp.S
 
 SMAXKERNEL   = amax_vfp.S
 DMAXKERNEL   = amax_vfp.S
@@ -18,13 +18,13 @@ DMINKERNEL   = amax_vfp.S
 
 ISAMAXKERNEL = iamax_vfp.S
 IDAMAXKERNEL = iamax_vfp.S
-ICAMAXKERNEL = iamax_vfp.S
-IZAMAXKERNEL = iamax_vfp.S
+#ICAMAXKERNEL = iamax_vfp.S
+#IZAMAXKERNEL = iamax_vfp.S
 
 ISAMINKERNEL = iamax_vfp.S
 IDAMINKERNEL = iamax_vfp.S
-ICAMINKERNEL = iamax_vfp.S
-IZAMINKERNEL = iamax_vfp.S
+#ICAMINKERNEL = iamax_vfp.S
+#IZAMINKERNEL = iamax_vfp.S
 
 ISMAXKERNEL  = iamax_vfp.S
 IDMAXKERNEL  = iamax_vfp.S
