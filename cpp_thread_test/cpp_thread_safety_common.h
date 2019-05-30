@@ -5,16 +5,29 @@ inline void pauser(){
     std::getline(std::cin, dummy);
 }
 
-void FillMatrices(std::vector<std::vector<double>>& matBlock, std::mt19937_64& PRNG, std::uniform_real_distribution<double>& rngdist, const blasint randomMatSize, const uint32_t numConcurrentThreads){
-	for(uint32_t i=0; i<3; i++){
+void FillMatrices(std::vector<std::vector<double>>& matBlock, std::mt19937_64& PRNG, std::uniform_real_distribution<double>& rngdist, const blasint randomMatSize, const uint32_t numConcurrentThreads, const uint32_t numMat){
+	for(uint32_t i=0; i<numMat; i++){
 		for(uint32_t j=0; j<(randomMatSize*randomMatSize); j++){
 			matBlock[i][j] = rngdist(PRNG);
 		}
 	}
-	for(uint32_t i=3; i<(numConcurrentThreads*3); i+=3){
-			matBlock[i] = matBlock[0];
-			matBlock[i+1] = matBlock[1];
-			matBlock[i+2] = matBlock[2];
+	for(uint32_t i=numMat; i<(numConcurrentThreads*numMat); i+=numMat){
+		for(uint32_t j=0; j<numMat; j++){
+			matBlock[i+j] = matBlock[j];
+		}
+	}
+}
+
+void FillVectors(std::vector<std::vector<double>>& vecBlock, std::mt19937_64& PRNG, std::uniform_real_distribution<double>& rngdist, const blasint randomMatSize, const uint32_t numConcurrentThreads, const uint32_t numVec){
+	for(uint32_t i=0; i<numVec; i++){
+		for(uint32_t j=0; j<randomMatSize; j++){
+			vecBlock[i][j] = rngdist(PRNG);
+		}
+	}
+	for(uint32_t i=numVec; i<(numConcurrentThreads*numVec); i+=numVec){
+		for(uint32_t j=0; j<numVec; j++){
+			vecBlock[i+j] = vecBlock[j];
+		}
 	}
 }
 
@@ -28,8 +41,8 @@ std::mt19937_64 InitPRNG(){
 	return PRNG;
 }
 
-void PrintMatrices(const std::vector<std::vector<double>>& matBlock, const blasint randomMatSize, const uint32_t numConcurrentThreads){
-	for (uint32_t i=0;i<numConcurrentThreads*3;i++){
+void PrintMatrices(const std::vector<std::vector<double>>& matBlock, const blasint randomMatSize, const uint32_t numConcurrentThreads, const uint32_t numMat){
+	for (uint32_t i=0;i<numConcurrentThreads*numMat;i++){
 		std::cout<<i<<std::endl;
 		for (uint32_t j=0;j<randomMatSize;j++){
 			for (uint32_t k=0;k<randomMatSize;k++){
