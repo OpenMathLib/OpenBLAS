@@ -432,8 +432,12 @@ amax_kernel_S10:
 
 
 amax_kernel_L999:
-#if !defined(__ARM_PCS_VFP) 
+#if !defined(__ARM_PCS_VFP)
+#if defined(DOUBLE)
+	vmov	r0, r1, d0
+#else	
 	vmov    r0, s0
+#endif
 #endif
 	bx	lr
 
