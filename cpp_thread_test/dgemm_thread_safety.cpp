@@ -55,8 +55,8 @@ int main(int argc, char* argv[]){
 	std::cout<<"done\n";
 	//pauser();
 	std::cout<<"Filling matrices with random numbers..."<<std::flush;
-	FillMatrices(matBlock, PRNG, rngdist, randomMatSize, numConcurrentThreads);
-	//PrintMatrices(matBlock, randomMatSize, numConcurrentThreads);
+	FillMatrices(matBlock, PRNG, rngdist, randomMatSize, numConcurrentThreads, 3);
+	//PrintMatrices(matBlock, randomMatSize, numConcurrentThreads, 3);
 	std::cout<<"done\n";
 	std::cout<<"Testing CBLAS DGEMM thread safety\n";
 	omp_set_num_threads(numConcurrentThreads);
@@ -74,12 +74,12 @@ int main(int argc, char* argv[]){
 			futureBlock[i].get();
 		}
 		std::cout<<"done\n";
-		//PrintMatrices(matBlock, randomMatSize, numConcurrentThreads);
+		//PrintMatrices(matBlock, randomMatSize, numConcurrentThreads, 3);
 		std::cout<<"Comparing results from different threads..."<<std::flush;
-		for(uint32_t i=3; i<(numConcurrentThreads*3); i+=3){
+		for(uint32_t i=3; i<(numConcurrentThreads*3); i+=3){ //i is the index of matrix A, for a given thread
 			for(uint32_t j=0; j<(randomMatSize*randomMatSize); j++){
-				if (std::abs(matBlock[i+2][j] - matBlock[2][j]) > 1.0E-13){
-					std::cout<<"ERROR: one of the threads returned a different result!"<<i+2<<std::endl;
+				if (std::abs(matBlock[i+2][j] - matBlock[2][j]) > 1.0E-13){ //i+2 is the index of matrix C, for a given thread
+					std::cout<<"ERROR: one of the threads returned a different result! Index : "<<i+2<<std::endl;
 					std::cout<<"CBLAS DGEMM thread safety test FAILED!"<<std::endl;
 					return -1;
 				}
