@@ -30,10 +30,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define LOAD	ld
  
-#define STACKSIZE 32192
+#define STACKSIZE 512
 
 #define FZERO	312+192(SP)
- 
+
+#define FLINK_SAVE (STACKSIZE+16) /* 16($r12) */
 
 #define	M	r3
 #define	N	r4
@@ -56,20 +57,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define FRAMEPOINTER r12
 
-#define BBUFFER r14
+#define T10 r14
 
 #define L	r15
-#define ALPHA	r16
+#define T8	r16
 #define T5	r17
 #define T2	r19
-#define BBO	r20
-#define	o8	r21
+#define T9	r20
+#define	T6	r21
 #define	I	r22
 #define J	r23
 #define AO	r24
 #define	BO	r25
 #define	CO	r26
-#define o16	r27
+#define T7	r27
 #define	T3	r28
 #define T4	r29
 
@@ -82,12 +83,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROFCODE
 
 	mr      FRAMEPOINTER, SP
-        addi    SP, SP, -STACKSIZE
-        addi    SP, SP, -STACKSIZE
-        addi    SP, SP, -STACKSIZE
-        addi    SP, SP, -STACKSIZE
-        li      r0, 0
-
+    addi    SP, SP, -STACKSIZE 
+    mflr    r0
 	stfd	f14,    0(SP)
 	stfd	f15,    8(SP)
 	stfd	f16,   16(SP)
@@ -111,6 +108,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stfd	f30,  128(SP)
 	stfd	f31,  136(SP)
 
+    xxspltd  alpha_r,vs1,0  /*copy from register f1 */
+    xxspltd  alpha_i,vs2,0  /*copy from register f2 */
  
 	std	r31,  144(SP)
 	std	r30,  152(SP)
@@ -132,21 +131,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r14,  280(SP)
  
  
-    stxv    v20,  288(SP)
-    stxv    v21,  304(SP)
-    stxv    v22,  320(SP)
-    stxv    v23,  336(SP)
-    stxv    v24,  352(SP)
-    stxv    v25,  368(SP)
-    stxv    v26,  384(SP)
-    stxv    v27,  400(SP)
-    stxv    v28,  416(SP)
-    stxv    v29,  432(SP)
-    stxv    v30,  448(SP)
-    stxv    v31,  464(SP)
+    stxv    vs52,  288(SP)
+    stxv    vs53,  304(SP)
+    stxv    vs54,  320(SP)
+    stxv    vs55,  336(SP)
+    stxv    vs56,  352(SP)
+    stxv    vs57,  368(SP)
+    stxv    vs58,  384(SP)
+    stxv    vs59,  400(SP)
+    stxv    vs60,  416(SP)
+    stxv    vs61,  432(SP)
+    stxv    vs62,  448(SP)
+    stxv    vs63,  464(SP)
 
+    std    r0, FLINK_SAVE(SP)
  
-	stw	r0,  FZERO
 
 #ifdef linux
 	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
@@ -162,35 +161,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "zgemm_macros_power9.S"
 
-	cmpwi	cr0, M, 0
-	ble	L999
-	cmpwi	cr0, N, 0
-	ble	L999
-	cmpwi	cr0, K, 0
-	ble	L999
+ 
 
 	slwi	LDC, LDC, ZBASE_SHIFT
-	li	PRE,  512
-	li	o8  , 8
-	li	o16 , 16 
-
-    addi    BBUFFER, SP, 512+4096
-    li      T1, -4096
-    and     BBUFFER, BBUFFER, T1
-
+	li	PRE,  512 
+    li  r0,   0
  
-	addi	ALPHA, SP, 296+192
- 
-    xxlor  alpha_r,vs1,vs1  /*copy from register f1 */
-    xxlor  alpha_i,vs2,vs2  /*copy from register f2 */
 
+#if defined(CC) || defined(CR) || defined(RC) || defined(RR) 
+/*negate for this case as we will use addition -1*(a+b) */
+  xvnegdp alpha_r,alpha_r
+  xvnegdp alpha_i,alpha_i
+#endif
 	.align 4
 
 #include "zgemm_logic_power9.S"
 
 L999:
-	addi	r3, 0, 0
-
+ 
 	lfd	f14,    0(SP)
 	lfd	f15,    8(SP)
 	lfd	f16,   16(SP)
@@ -233,24 +221,24 @@ L999:
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
 	ld	r14,  280(SP)
- 
-	lxv    v20,  288(SP)
-	lxv    v21,  304(SP)
-	lxv    v22,  320(SP)
-	lxv    v23,  336(SP)
-	lxv    v24,  352(SP)
-	lxv    v25,  368(SP)
-	lxv    v26,  384(SP)
-	lxv    v27,  400(SP)
-	lxv    v28,  416(SP)
-	lxv    v29,  432(SP)
-	lxv    v30,  448(SP)
-	lxv    v31,  464(SP)
 
-	addi	SP, SP, STACKSIZE
-	addi	SP, SP, STACKSIZE
-	addi	SP, SP, STACKSIZE
-	addi	SP, SP, STACKSIZE
+	ld    r0, 	 FLINK_SAVE(SP)	
+ 
+    lxv    vs52,  288(SP)
+    lxv    vs53,  304(SP)
+    lxv    vs54,  320(SP)
+    lxv    vs55,  336(SP)
+    lxv    vs56,  352(SP)
+    lxv    vs57,  368(SP)
+    lxv    vs58,  384(SP) 
+    lxv    vs59,  400(SP)
+	mtlr r0
+    lxv    vs60,  416(SP)
+    lxv    vs61,  432(SP) 
+    lxv    vs62,  448(SP)
+    lxv    vs63,  464(SP)
+
+	addi	SP, SP, STACKSIZE 
 	blr
 
 	EPILOGUE
