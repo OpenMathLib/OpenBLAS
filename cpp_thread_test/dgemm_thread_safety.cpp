@@ -77,7 +77,7 @@ int main(int argc, char* argv[]){
 		//PrintMatrices(matBlock, randomMatSize, numConcurrentThreads, 3);
 		std::cout<<"Comparing results from different threads..."<<std::flush;
 		for(uint32_t i=3; i<(numConcurrentThreads*3); i+=3){ //i is the index of matrix A, for a given thread
-			for(uint32_t j=0; j<(randomMatSize*randomMatSize); j++){
+			for(uint32_t j = 0; j < static_cast<uint32_t>(randomMatSize*randomMatSize); j++){
 				if (std::abs(matBlock[i+2][j] - matBlock[2][j]) > 1.0E-13){ //i+2 is the index of matrix C, for a given thread
 					std::cout<<"ERROR: one of the threads returned a different result! Index : "<<i+2<<std::endl;
 					std::cout<<"CBLAS DGEMM thread safety test FAILED!"<<std::endl;
@@ -85,8 +85,8 @@ int main(int argc, char* argv[]){
 				}
 			}
 		}
-		std::cout<<"OK!"<<std::endl;
+		std::cout<<"OK!\n"<<std::endl;
 	}
-	std::cout<<"CBLAS DGEMM thread safety test PASSED!"<<std::endl;
+	std::cout<<"CBLAS DGEMM thread safety test PASSED!\n"<<std::endl;
 	return 0;
 }
