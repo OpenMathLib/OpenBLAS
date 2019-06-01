@@ -86,7 +86,7 @@ int main(int argc, char* argv[]){
 		std::cout<<"done\n";
 		std::cout<<"Comparing results from different threads..."<<std::flush;
 		for(uint32_t i=2; i<(numConcurrentThreads*2); i+=2){ //i is the index of vector x, for a given thread
-			for(uint32_t j=0; j<randomMatSize; j++){
+			for(uint32_t j = 0; j < static_cast<uint32_t>(randomMatSize); j++){
 				if (std::abs(vecBlock[i+1][j] - vecBlock[1][j]) > 1.0E-13){ //i+1 is the index of vector y, for a given thread
 					std::cout<<"ERROR: one of the threads returned a different result! Index : "<<i+1<<std::endl;
 					std::cout<<"CBLAS DGEMV thread safety test FAILED!"<<std::endl;
@@ -94,8 +94,8 @@ int main(int argc, char* argv[]){
 				}
 			}
 		}
-		std::cout<<"OK!"<<std::endl;
+		std::cout<<"OK!\n"<<std::endl;
 	}
-	std::cout<<"CBLAS DGEMV thread safety test PASSED!"<<std::endl;
+	std::cout<<"CBLAS DGEMV thread safety test PASSED!\n"<<std::endl;
 	return 0;
 }
