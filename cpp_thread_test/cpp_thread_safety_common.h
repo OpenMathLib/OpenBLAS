@@ -7,7 +7,7 @@ inline void pauser(){
 
 void FillMatrices(std::vector<std::vector<double>>& matBlock, std::mt19937_64& PRNG, std::uniform_real_distribution<double>& rngdist, const blasint randomMatSize, const uint32_t numConcurrentThreads, const uint32_t numMat){
 	for(uint32_t i=0; i<numMat; i++){
-		for(uint32_t j=0; j<(randomMatSize*randomMatSize); j++){
+		for(uint32_t j = 0; j < static_cast<uint32_t>(randomMatSize*randomMatSize); j++){
 			matBlock[i][j] = rngdist(PRNG);
 		}
 	}
@@ -20,7 +20,7 @@ void FillMatrices(std::vector<std::vector<double>>& matBlock, std::mt19937_64& P
 
 void FillVectors(std::vector<std::vector<double>>& vecBlock, std::mt19937_64& PRNG, std::uniform_real_distribution<double>& rngdist, const blasint randomMatSize, const uint32_t numConcurrentThreads, const uint32_t numVec){
 	for(uint32_t i=0; i<numVec; i++){
-		for(uint32_t j=0; j<randomMatSize; j++){
+		for(uint32_t j = 0; j < static_cast<uint32_t>(randomMatSize); j++){
 			vecBlock[i][j] = rngdist(PRNG);
 		}
 	}
@@ -44,8 +44,8 @@ std::mt19937_64 InitPRNG(){
 void PrintMatrices(const std::vector<std::vector<double>>& matBlock, const blasint randomMatSize, const uint32_t numConcurrentThreads, const uint32_t numMat){
 	for (uint32_t i=0;i<numConcurrentThreads*numMat;i++){
 		std::cout<<i<<std::endl;
-		for (uint32_t j=0;j<randomMatSize;j++){
-			for (uint32_t k=0;k<randomMatSize;k++){
+		for (uint32_t j = 0; j < static_cast<uint32_t>(randomMatSize); j++){
+			for (uint32_t k = 0; k < static_cast<uint32_t>(randomMatSize); k++){
 				std::cout<<matBlock[i][j*randomMatSize + k]<<"  ";
 			}
 			std::cout<<std::endl;
@@ -53,4 +53,3 @@ void PrintMatrices(const std::vector<std::vector<double>>& matBlock, const blasi
 		std::cout<<std::endl;
 	}
 }
-
