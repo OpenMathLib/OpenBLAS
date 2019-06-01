@@ -220,6 +220,21 @@ COMMON_PROF = -pg
 # SYMBOLPREFIX=
 # SYMBOLSUFFIX=
 
+# Run a C++ based thread safety tester after the build is done.
+# This is mostly intended as a developer feature to spot regressions, but users and
+# package maintainers can enable this if they have doubts about the thread safety of
+# the library, given the configuration in this file.
+# By default, the thread safety tester launches 52 concurrent calculations at the same
+# time.
+#
+# Please note that the test uses ~1300 MiB of RAM for the DGEMM test.
+#
+# The test requires CBLAS to be built, a C++11 capable compiler and the presence of
+# an OpenMP implementation. If you are cross-compiling this test will probably not
+# work at all.
+#
+# CPP_THREAD_SAFETY_TEST = 1
+
 #
 #  End of user configuration
 #
