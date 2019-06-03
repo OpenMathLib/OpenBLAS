@@ -163,6 +163,10 @@ NO_AFFINITY = 1
 # Don't use Haswell optimizations if binutils is too old (e.g. RHEL6)
 # NO_AVX2 = 1
 
+# Don't use SkylakeX optimizations if binutils or compiler are too old (the build
+# system will try to determine this automatically)
+# NO_AVX512 = 1
+
 # Don't use parallel make.
 # NO_PARALLEL_MAKE = 1
 
