@@ -9,6 +9,11 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+# If ARCH is not set, we use the host system's architecture.
+ifndef ARCH
+ARCH := $(shell uname -m)
+endif
+
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
 override ARCH=x86_64
@@ -137,6 +142,10 @@ endif
 endif
 
 
+# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
+ifeq ($(ARCH), x86_64)
+GETARCH_FLAGS += -march=native
+endif
 
 
 ifdef INTERFACE64
