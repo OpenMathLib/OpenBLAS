@@ -6,7 +6,7 @@
 STRMMKERNEL	= sgemm_kernel_power9.S
 DTRMMKERNEL	= dgemm_kernel_power9.S
 CTRMMKERNEL	= ctrmm_kernel_8x4_power8.S
-ZTRMMKERNEL	= ztrmm_kernel_8x2_power8.S
+ZTRMMKERNEL	= zgemm_kernel_power9.S
 
 SGEMMKERNEL    =  sgemm_kernel_power9.S
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c

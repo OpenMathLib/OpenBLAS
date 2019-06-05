@@ -63,7 +63,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define T8	r16
 #define T5	r17
 #define T2	r19
-#define T9	r20
+#define TEMP_REG	r20
 #define	T6	r21
 #define	I	r22
 #define J	r23
