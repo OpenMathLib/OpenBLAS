@@ -62,7 +62,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   KERNEL8x16_L1_L4_I  AO,BO,  \OffsetA,\OffsetB,\Index,\IsLast,1
 .endm
 .macro KERNEL8x16_I1_L2_3  OffsetA,OffsetB, Index,IsLast
-   KERNEL8x16_L1_L2_I AO,BO,0,  \OffsetA,\OffsetB,\Index,\IsLast,1
+   KERNEL8x16_L1_L2_I AO,BO, \OffsetA,\OffsetB,\Index,\IsLast,1
 .endm
 
 .macro KERNEL8x16_I2_L4_2  AREG,BREG,OffsetA,OffsetB, Index,IsLast
@@ -112,15 +112,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lxv	vs24,	0(BO)
 	lxv	vs28,	16(BO)
+	xxperm  	vs26,	vs24,		permute_mask
+	xxperm  	vs30,	vs28,		permute_mask	  
 	lxv	vs0,	 0(AO)
 	lxv	vs1,	16(AO)
-	lxv	vs2,	32(AO)
-	lxv	vs3,	48(AO)
-	xxperm  	vs26,	vs24,		permute_mask
-	xxperm  	vs30,	vs28,		permute_mask	
 	xxpermdi	vs25,	vs24,	vs24,2	   
 	xxpermdi	vs29,	vs28,	vs28,2	  
-
+	lxv	vs2,	32(AO)
+	lxv	vs3,	48(AO) 
 	xxpermdi	vs27,	vs26,	vs26,2	
 	xxpermdi	vs31,	vs30,	vs30,2	 	
 
@@ -259,247 +258,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL8x16_L1_L4_I  AREG,BREG,   OffsetA,OffsetB, Index,IsLast ,Complete
 
-	lxv	vs8,	DISP32(\Index, 0+\OffsetB)(\BREG)
-	lxv	vs12,	DISP32(\Index,16+\OffsetB)(\BREG)
-
- 	lxv	vs4,	DISP64(\Index, 0+\OffsetA)(\AREG)
-	lxv	vs5,	DISP64(\Index,16+\OffsetA)(\AREG)
-	lxv	vs6,	DISP64(\Index,32+\OffsetA)(\AREG)
-	lxv	vs7,	DISP64(\Index,48+\OffsetA)(\AREG) 
-
-	xxperm  	vs10,	vs8,		permute_mask
-	xxperm  	vs14,	vs12,		permute_mask	
-	xxpermdi	vs9,	vs8,	vs8,2	 
-	xxpermdi	vs13,	vs12,	vs12,2	 
-
-    xvmaddasp		vs32, vs0,vs24
-	xvmaddasp		vs33, vs1,vs24
-	xvmaddasp		vs34, vs2,vs24	
-	xvmaddasp		vs35, vs3,vs24	 
-
-    xvmaddasp		vs36, vs0,vs25
-	xvmaddasp		vs37, vs1,vs25
-	xvmaddasp		vs38, vs2,vs25	
-	xvmaddasp		vs39, vs3,vs25 
-
- 	xxpermdi	vs11,	vs10,	vs10,2	
-	xxpermdi	vs15,	vs14,	vs14,2	
-
-    xvmaddasp		vs40, vs0,vs26
-	xvmaddasp		vs41, vs1,vs26
-	xvmaddasp		vs42, vs2,vs26	
-	xvmaddasp		vs43, vs3,vs26
-
-    xvmaddasp		vs44, vs0,vs27
-	xvmaddasp		vs45, vs1,vs27
-	xvmaddasp		vs46, vs2,vs27	
-	xvmaddasp		vs47, vs3,vs27
-
-    xvmaddasp		vs48, vs0,vs28
-	xvmaddasp		vs49, vs1,vs28
-	xvmaddasp		vs50, vs2,vs28	
-	xvmaddasp		vs51, vs3,vs28	
-
-    xvmaddasp		vs52, vs0,vs29
-	xvmaddasp		vs53, vs1,vs29
-	xvmaddasp		vs54, vs2,vs29	
-	xvmaddasp		vs55, vs3,vs29
-
-    xvmaddasp		vs56, vs0,vs30
-	xvmaddasp		vs57, vs1,vs30
-	xvmaddasp		vs58, vs2,vs30	
-	xvmaddasp		vs59, vs3,vs30
-
-    xvmaddasp		vs60, vs0,vs31
-	xvmaddasp		vs61, vs1,vs31
-	xvmaddasp		vs62, vs2,vs31	
-	xvmaddasp		vs63, vs3,vs31 
-
-	lxv	vs24,	DISP32(\Index,32+\OffsetB)(\BREG)
-	lxv	vs28,	DISP32(\Index,32+16+\OffsetB)(\BREG)
-
-	lxv	vs0,	DISP64(\Index,64+\OffsetA)(\AREG)
-	lxv	vs1,	DISP64(\Index,64+16+\OffsetA)(\AREG)
-	lxv	vs2,	DISP64(\Index,64+32+\OffsetA)(\AREG)
-	lxv	vs3,	DISP64(\Index,64+48+\OffsetA)(\AREG)
-
-	xxperm  	vs26,	vs24,		permute_mask
-	xxperm  	vs30,	vs28,		permute_mask	
-	xxpermdi	vs25,	vs24,	vs24,2	   
-	xxpermdi	vs29,	vs28,	vs28,2	  
- 
-
-    xvmaddasp		vs32, vs4,vs8
-	xvmaddasp		vs33, vs5,vs8
-	xvmaddasp		vs34, vs6,vs8	
-	xvmaddasp		vs35, vs7,vs8	
- 
-    xvmaddasp		vs36, vs4,vs9
-	xvmaddasp		vs37, vs5,vs9
-	xvmaddasp		vs38, vs6,vs9	
-	xvmaddasp		vs39, vs7,vs9
-         
-	xxpermdi	vs27,	vs26,	vs26,2	
-	xxpermdi	vs31,	vs30,	vs30,2		
-
-    xvmaddasp		vs40, vs4,vs10
-	xvmaddasp		vs41, vs5,vs10
-	xvmaddasp		vs42, vs6,vs10	
-	xvmaddasp		vs43, vs7,vs10
-
-    xvmaddasp		vs44, vs4,vs11
-	xvmaddasp		vs45, vs5,vs11
-	xvmaddasp		vs46, vs6,vs11	
-	xvmaddasp		vs47, vs7,vs11
-
-    xvmaddasp		vs48, vs4,vs12
-	xvmaddasp		vs49, vs5,vs12
-	xvmaddasp		vs50, vs6,vs12	
-	xvmaddasp		vs51, vs7,vs12	
-
-    xvmaddasp		vs52, vs4,vs13
-	xvmaddasp		vs53, vs5,vs13
-	xvmaddasp		vs54, vs6,vs13	
-	xvmaddasp		vs55, vs7,vs13
-
-    xvmaddasp		vs56, vs4,vs14
-	xvmaddasp		vs57, vs5,vs14
-	xvmaddasp		vs58, vs6,vs14	
-	xvmaddasp		vs59, vs7,vs14
-
-    xvmaddasp		vs60, vs4,vs15
-	xvmaddasp		vs61, vs5,vs15
-	xvmaddasp		vs62, vs6,vs15	
-	xvmaddasp		vs63, vs7,vs15
-
-	lxv	vs8,	DISP32(\Index,64+\OffsetB)(\BREG)
-	lxv	vs12,	DISP32(\Index,64+16+\OffsetB)(\BREG)
-
- 	lxv	vs4,	DISP64(\Index,128+0+\OffsetA)(\AREG)
-	lxv	vs5,	DISP64(\Index,128+16+\OffsetA)(\AREG)
-	lxv	vs6,	DISP64(\Index,128+32+\OffsetA)(\AREG)
-	lxv	vs7,	DISP64(\Index,128+48+\OffsetA)(\AREG) 
-
-	xxperm  	vs10,	vs8,		permute_mask
-	xxperm  	vs14,	vs12,		permute_mask	
-	xxpermdi	vs9,	vs8,	vs8,2	 
-	xxpermdi	vs13,	vs12,	vs12,2	
-
-    xvmaddasp		vs32, vs0,vs24
-	xvmaddasp		vs33, vs1,vs24
-	xvmaddasp		vs34, vs2,vs24	
-	xvmaddasp		vs35, vs3,vs24	 
-
-    xvmaddasp		vs36, vs0,vs25
-	xvmaddasp		vs37, vs1,vs25
-	xvmaddasp		vs38, vs2,vs25	
-	xvmaddasp		vs39, vs3,vs25
-
- 	xxpermdi	vs11,	vs10,	vs10,2	
-	xxpermdi	vs15,	vs14,	vs14,2	
-
-    xvmaddasp		vs40, vs0,vs26
-	xvmaddasp		vs41, vs1,vs26
-	xvmaddasp		vs42, vs2,vs26	
-	xvmaddasp		vs43, vs3,vs26
-
-    xvmaddasp		vs44, vs0,vs27
-	xvmaddasp		vs45, vs1,vs27
-	xvmaddasp		vs46, vs2,vs27	
-	xvmaddasp		vs47, vs3,vs27
-
-    xvmaddasp		vs48, vs0,vs28
-	xvmaddasp		vs49, vs1,vs28
-	xvmaddasp		vs50, vs2,vs28	
-	xvmaddasp		vs51, vs3,vs28	
-
-    xvmaddasp		vs52, vs0,vs29
-	xvmaddasp		vs53, vs1,vs29
-	xvmaddasp		vs54, vs2,vs29	
-	xvmaddasp		vs55, vs3,vs29
-
-    xvmaddasp		vs56, vs0,vs30
-	xvmaddasp		vs57, vs1,vs30
-	xvmaddasp		vs58, vs2,vs30	
-	xvmaddasp		vs59, vs3,vs30
-
-    xvmaddasp		vs60, vs0,vs31
-	xvmaddasp		vs61, vs1,vs31
-	xvmaddasp		vs62, vs2,vs31	
-	xvmaddasp		vs63, vs3,vs31 
- 
-.if \Complete==0
-	lxv	vs24,	DISP32(\Index,96+\OffsetB)(\BREG)
-	lxv	vs28,	DISP32(\Index,96+16+\OffsetB)(\BREG)
-
-	lxv	vs0,	DISP64(\Index,192+\OffsetA)(\AREG)
-	lxv	vs1,	DISP64(\Index,192+16+\OffsetA)(\AREG) 
-	lxv	vs2,	DISP64(\Index,192+32+\OffsetA)(\AREG)
-	lxv	vs3,	DISP64(\Index,192+48+\OffsetA)(\AREG)
-
-	xxperm  	vs26,	vs24,	permute_mask
-	xxperm  	vs30,	vs28,	permute_mask	
-	xxpermdi	vs25,	vs24,	vs24,2 
-	xxpermdi	vs29,	vs28,	vs28,2		
-
-.endif 
-.if \IsLast==1	
-.if \Complete==1
-  
-	addi		\BREG, \BREG,  DISP32(\Index,32*3+\OffsetB)
-	addi		\AREG, \AREG, DISP64(\Index,64*3+\OffsetA)
-.else
-  
-	addi		\BREG, \BREG,  DISP32(\Index,128)
-	addi		\AREG, \AREG, DISP64(\Index,256)
-.endif
-.endif   
- 
-    xvmaddasp		vs32, vs4,vs8
-	xvmaddasp		vs33, vs5,vs8
-	xvmaddasp		vs34, vs6,vs8	
-	xvmaddasp		vs35, vs7,vs8	 
- 
-    xvmaddasp		vs36, vs4,vs9
-	xvmaddasp		vs37, vs5,vs9
-	xvmaddasp		vs38, vs6,vs9	
-	xvmaddasp		vs39, vs7,vs9
-  
-.if \Complete==0        
-	xxpermdi	vs27,	vs26,	vs26,2	
-	xxpermdi	vs31,	vs30,	vs30,2	
- 	
-.endif
- 
-    xvmaddasp		vs40, vs4,vs10
-	xvmaddasp		vs41, vs5,vs10
-	xvmaddasp		vs42, vs6,vs10	
-	xvmaddasp		vs43, vs7,vs10
-
-    xvmaddasp		vs44, vs4,vs11
-	xvmaddasp		vs45, vs5,vs11
-	xvmaddasp		vs46, vs6,vs11	
-	xvmaddasp		vs47, vs7,vs11
-
-    xvmaddasp		vs48, vs4,vs12
-	xvmaddasp		vs49, vs5,vs12
-	xvmaddasp		vs50, vs6,vs12	
-	xvmaddasp		vs51, vs7,vs12	
-
-    xvmaddasp		vs52, vs4,vs13
-	xvmaddasp		vs53, vs5,vs13
-	xvmaddasp		vs54, vs6,vs13	
-	xvmaddasp		vs55, vs7,vs13
-
-    xvmaddasp		vs56, vs4,vs14
-	xvmaddasp		vs57, vs5,vs14
-	xvmaddasp		vs58, vs6,vs14	
-	xvmaddasp		vs59, vs7,vs14
-
-    xvmaddasp		vs60, vs4,vs15
-	xvmaddasp		vs61, vs5,vs15
-	xvmaddasp		vs62, vs6,vs15	
-	xvmaddasp		vs63, vs7,vs15
+KERNEL8x16_L1_L2_I  \AREG,\BREG, \OffsetA,\OffsetB, (\Index*2),0 ,0
+KERNEL8x16_L1_L2_I  \AREG,\BREG,\OffsetA,\OffsetB, (\Index*2+1),\IsLast ,\Complete
 
 .endm
 
@@ -509,224 +269,134 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   END8x16 \First, AO, BO, 64,32 
 .endm
 
-.macro KERNEL8x16_L1_L2_I  AREG,BREG,First,OffsetA,OffsetB, Index,IsLast ,Complete
-	
-	lxv	vs8,	DISP16(\Index, 0+\OffsetB)(\BREG)
+.macro KERNEL8x16_L1_L2_I  AREG,BREG, OffsetA,OffsetB, Index,IsLast ,Complete
+	lxv	vs8,	DISP16(\Index,\OffsetB)(\BREG)
 	lxv	vs12,	DISP16(\Index,16+\OffsetB)(\BREG)
 
- 	lxv	vs4,	DISP32(\Index, 0+\OffsetA)(\AREG)
+  xvmaddasp		vs32, vs0,vs24
+  xvmaddasp		vs36, vs0,vs25
+ 	lxv	vs4,	DISP32(\Index,0+\OffsetA)(\AREG)
 	lxv	vs5,	DISP32(\Index,16+\OffsetA)(\AREG)
-	lxv	vs6,	DISP32(\Index,32+\OffsetA)(\AREG)
-	lxv	vs7,	DISP32(\Index,48+\OffsetA)(\AREG) 
-
 	xxperm  	vs10,	vs8,		permute_mask
 	xxperm  	vs14,	vs12,		permute_mask	
+  xvmaddasp		vs40, vs0,vs26
+  xvmaddasp		vs44, vs0,vs27
+	lxv	vs6,	DISP32(\Index,32+\OffsetA)(\AREG)
+	lxv	vs7,	DISP32(\Index,48+\OffsetA)(\AREG) 
+  xvmaddasp		vs48, vs0,vs28
+  xvmaddasp		vs52, vs0,vs29
+
 	xxpermdi	vs9,	vs8,	vs8,2	 
 	xxpermdi	vs13,	vs12,	vs12,2	 
-.if \First==1
-    xvmulsp		vs32, vs0,vs24
-	xvmulsp		vs33, vs1,vs24
-	xvmulsp		vs34, vs2,vs24	
-	xvmulsp		vs35, vs3,vs24	
 
-    xvmulsp		vs36, vs0,vs25
-	xvmulsp		vs37, vs1,vs25
-	xvmulsp		vs38, vs2,vs25	
-	xvmulsp		vs39, vs3,vs25	
-.else
-    xvmaddasp		vs32, vs0,vs24
-	xvmaddasp		vs33, vs1,vs24
-	xvmaddasp		vs34, vs2,vs24	
-	xvmaddasp		vs35, vs3,vs24
-
-    xvmaddasp		vs36, vs0,vs25
-	xvmaddasp		vs37, vs1,vs25
-	xvmaddasp		vs38, vs2,vs25	
-	xvmaddasp		vs39, vs3,vs25		
-.endif
+  xvmaddasp		vs56, vs0,vs30
+  xvmaddasp		vs60, vs0,vs31
 
  	xxpermdi	vs11,	vs10,	vs10,2	
 	xxpermdi	vs15,	vs14,	vs14,2	
- 
-.if \First==1  
-    xvmulsp		vs40, vs0,vs26
-	xvmulsp		vs41, vs1,vs26
-	xvmulsp		vs42, vs2,vs26	
-	xvmulsp		vs43, vs3,vs26
 
-    xvmulsp		vs44, vs0,vs27
-	xvmulsp		vs45, vs1,vs27
-	xvmulsp		vs46, vs2,vs27	
-	xvmulsp		vs47, vs3,vs27
 
-    xvmulsp		vs48, vs0,vs28
-	xvmulsp		vs49, vs1,vs28
-	xvmulsp		vs50, vs2,vs28	
-	xvmulsp		vs51, vs3,vs28	
 
-    xvmulsp		vs52, vs0,vs29
-	xvmulsp		vs53, vs1,vs29
-	xvmulsp		vs54, vs2,vs29	
-	xvmulsp		vs55, vs3,vs29
+	xvmaddasp		vs33, vs1,vs24
+	xvmaddasp		vs37, vs1,vs25
 
-    xvmulsp		vs56, vs0,vs30
-	xvmulsp		vs57, vs1,vs30
-	xvmulsp		vs58, vs2,vs30	
-	xvmulsp		vs59, vs3,vs30
-
-    xvmulsp		vs60, vs0,vs31
-	xvmulsp		vs61, vs1,vs31
-	xvmulsp		vs62, vs2,vs31	
-	xvmulsp		vs63, vs3,vs31
-
-.else 
-    xvmaddasp		vs40, vs0,vs26
 	xvmaddasp		vs41, vs1,vs26
-	xvmaddasp		vs42, vs2,vs26	
-	xvmaddasp		vs43, vs3,vs26
-
-    xvmaddasp		vs44, vs0,vs27
 	xvmaddasp		vs45, vs1,vs27
-	xvmaddasp		vs46, vs2,vs27	
-	xvmaddasp		vs47, vs3,vs27
-
-    xvmaddasp		vs48, vs0,vs28
 	xvmaddasp		vs49, vs1,vs28
-	xvmaddasp		vs50, vs2,vs28	
-	xvmaddasp		vs51, vs3,vs28	
-
-    xvmaddasp		vs52, vs0,vs29
 	xvmaddasp		vs53, vs1,vs29
-	xvmaddasp		vs54, vs2,vs29	
-	xvmaddasp		vs55, vs3,vs29
-
-    xvmaddasp		vs56, vs0,vs30
 	xvmaddasp		vs57, vs1,vs30
-	xvmaddasp		vs58, vs2,vs30	
-	xvmaddasp		vs59, vs3,vs30
-
-    xvmaddasp		vs60, vs0,vs31
-	xvmaddasp		vs61, vs1,vs31
-	xvmaddasp		vs62, vs2,vs31	
-	xvmaddasp		vs63, vs3,vs31 
-
+	xvmaddasp		vs61, vs1,vs31    
+.if \Complete==0
+	lxv	vs0,	DISP32(\Index,64+\OffsetA)(\AREG)
+	lxv	vs1,	DISP32(\Index,64+16+\OffsetA)(\AREG) 
 .endif
+	xvmaddasp		vs34, vs2,vs24
+	xvmaddasp		vs38, vs2,vs25
+	xvmaddasp		vs42, vs2,vs26
+	xvmaddasp		vs46, vs2,vs27
+	xvmaddasp		vs50, vs2,vs28
+	xvmaddasp		vs54, vs2,vs29
+	xvmaddasp		vs58, vs2,vs30
+	xvmaddasp		vs62, vs2,vs31	
+
+	xvmaddasp		vs35, vs3,vs24	  
+	xvmaddasp		vs39, vs3,vs25
+	xvmaddasp		vs43, vs3,vs26
+	xvmaddasp		vs47, vs3,vs27
+	xvmaddasp		vs51, vs3,vs28
+	xvmaddasp		vs55, vs3,vs29
+	xvmaddasp		vs59, vs3,vs30
+	xvmaddasp		vs63, vs3,vs31
+.if \Complete==0	
+	lxv	vs2,	DISP32(\Index,64+32+\OffsetA)(\AREG)
+	lxv	vs3,	DISP32(\Index,64+48+\OffsetA)(\AREG)
+.endif
+    xvmaddasp		vs32, vs4,vs8
+    xvmaddasp		vs36, vs4,vs9
 .if \Complete==0
 	lxv	vs24,	DISP16(\Index,32+\OffsetB)(\BREG)
 	lxv	vs28,	DISP16(\Index,32+16+\OffsetB)(\BREG)
-
-	lxv	vs0,	DISP32(\Index,64+\OffsetA)(\AREG)
-	lxv	vs1,	DISP32(\Index,64+16+\OffsetA)(\AREG)
-	lxv	vs2,	DISP32(\Index,64+32+\OffsetA)(\AREG)
-	lxv	vs3,	DISP32(\Index,64+48+\OffsetA)(\AREG)
-
-	xxperm  	vs26,	vs24,	permute_mask
-	xxperm  	vs30,	vs28,	permute_mask	
-	xxpermdi	vs25,	vs24,	vs24,2	 
-	xxpermdi	vs29,	vs28,	vs28,2	
-.endif    
+.endif
 .if \IsLast==1	
 .if \Complete==1
- 	addi		\BREG, \BREG,  DISP16(\Index,32+\OffsetB) 
-	addi		\AREG, \AREG, DISP32(\Index,64+\OffsetA)
+	addi		\AREG, \AREG, DISP32(\Index,64+\OffsetA)  
+	addi		\BREG, \BREG,  DISP16(\Index,32+\OffsetB)
 
 .else
-  	addi		\BREG, \BREG,  DISP16(\Index,64)
-	addi		\AREG, \AREG, DISP32(\Index,128) 
+	addi		\AREG, \AREG, DISP32(\Index,128)  
+	addi		\BREG, \BREG,  DISP16(\Index,64)
+
 .endif
+.endif   
+    xvmaddasp		vs40, vs4,vs10
+    xvmaddasp		vs44, vs4,vs11
+.if \Complete==0
+	xxperm  	vs26,	vs24,	permute_mask
+	xxperm  	vs30,	vs28,	permute_mask	
 .endif
-
-.if \First==1
-    xvmulsp		vs32, vs4,vs8
-	xvmulsp		vs33, vs5,vs8
-	xvmulsp		vs34, vs6,vs8	
-	xvmulsp		vs35, vs7,vs8
-
-    xvmulsp		vs36, vs4,vs9
-	xvmulsp		vs37, vs5,vs9
-	xvmulsp		vs38, vs6,vs9	
-	xvmulsp		vs39, vs7,vs9
-.else
-    xvmaddasp		vs32, vs4,vs8
-	xvmaddasp		vs33, vs5,vs8
-	xvmaddasp		vs34, vs6,vs8	
-	xvmaddasp		vs35, vs7,vs8	
-
-    xvmaddasp		vs36, vs4,vs9
-	xvmaddasp		vs37, vs5,vs9
-	xvmaddasp		vs38, vs6,vs9	
-	xvmaddasp		vs39, vs7,vs9
+    xvmaddasp		vs48, vs4,vs12
+    xvmaddasp		vs52, vs4,vs13
+.if \Complete==0	
+	xxpermdi	vs25,	vs24,	vs24,2 
+	xxpermdi	vs29,	vs28,	vs28,2	 
 .endif 
+
+    xvmaddasp		vs56, vs4,vs14
+    xvmaddasp		vs60, vs4,vs15
  
 .if \Complete==0        
 	xxpermdi	vs27,	vs26,	vs26,2	
 	xxpermdi	vs31,	vs30,	vs30,2	
- 
-.endif
-.if \First==1  
-    xvmulsp		vs40, vs4,vs10
-	xvmulsp		vs41, vs5,vs10
-	xvmulsp		vs42, vs6,vs10	
-	xvmulsp		vs43, vs7,vs10
+ 	
+.endif 
 
-    xvmulsp		vs44, vs4,vs11
-	xvmulsp		vs45, vs5,vs11
-	xvmulsp		vs46, vs6,vs11	
-	xvmulsp		vs47, vs7,vs11
-
-    xvmulsp		vs48, vs4,vs12
-	xvmulsp		vs49, vs5,vs12
-	xvmulsp		vs50, vs6,vs12	
-	xvmulsp		vs51, vs7,vs12	
-
-    xvmulsp		vs52, vs4,vs13
-	xvmulsp		vs53, vs5,vs13
-	xvmulsp		vs54, vs6,vs13	
-	xvmulsp		vs55, vs7,vs13
-
-    xvmulsp		vs56, vs4,vs14
-	xvmulsp		vs57, vs5,vs14
-	xvmulsp		vs58, vs6,vs14	
-	xvmulsp		vs59, vs7,vs14
-
-    xvmulsp		vs60, vs4,vs15
-	xvmulsp		vs61, vs5,vs15
-	xvmulsp		vs62, vs6,vs15	
-	xvmulsp		vs63, vs7,vs15
-
-.else 
-    xvmaddasp		vs40, vs4,vs10
+	xvmaddasp		vs33, vs5,vs8
+	xvmaddasp		vs37, vs5,vs9
 	xvmaddasp		vs41, vs5,vs10
-	xvmaddasp		vs42, vs6,vs10	
-	xvmaddasp		vs43, vs7,vs10
-
-    xvmaddasp		vs44, vs4,vs11
 	xvmaddasp		vs45, vs5,vs11
-	xvmaddasp		vs46, vs6,vs11	
-	xvmaddasp		vs47, vs7,vs11
-
-    xvmaddasp		vs48, vs4,vs12
 	xvmaddasp		vs49, vs5,vs12
-	xvmaddasp		vs50, vs6,vs12	
-	xvmaddasp		vs51, vs7,vs12	
-
-    xvmaddasp		vs52, vs4,vs13
 	xvmaddasp		vs53, vs5,vs13
-	xvmaddasp		vs54, vs6,vs13	
-	xvmaddasp		vs55, vs7,vs13
-
-    xvmaddasp		vs56, vs4,vs14
 	xvmaddasp		vs57, vs5,vs14
-	xvmaddasp		vs58, vs6,vs14	
-	xvmaddasp		vs59, vs7,vs14
-
-    xvmaddasp		vs60, vs4,vs15
 	xvmaddasp		vs61, vs5,vs15
-	xvmaddasp		vs62, vs6,vs15	
+
+	xvmaddasp		vs34, vs6,vs8	
+	xvmaddasp		vs38, vs6,vs9	
+	xvmaddasp		vs42, vs6,vs10
+	xvmaddasp		vs46, vs6,vs11
+	xvmaddasp		vs50, vs6,vs12
+	xvmaddasp		vs54, vs6,vs13
+	xvmaddasp		vs58, vs6,vs14
+	xvmaddasp		vs62, vs6,vs15
+
+	xvmaddasp		vs35, vs7,vs8	
+	xvmaddasp		vs39, vs7,vs9	
+	xvmaddasp		vs43, vs7,vs10
+	xvmaddasp		vs47, vs7,vs11
+	xvmaddasp		vs51, vs7,vs12
+	xvmaddasp		vs55, vs7,vs13
+	xvmaddasp		vs59, vs7,vs14
 	xvmaddasp		vs63, vs7,vs15
-
-.endif
-
+ 
 .endm
 
  
@@ -763,7 +433,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     xxmrghw     vs2,    vs37,   vs41
     xxmrghw     vs3,    vs33,   vs45
-
+#ifndef TRMMKERNEL    
+    lxv        vs32, 0(CO)
+    lxv        vs33, 16(CO) 
+#endif 
     xxmrglw     vs16,   vs34,   vs46
     xxmrglw     vs18,   vs38,   vs42   
 
@@ -784,176 +457,203 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     xxmrghw     vs30,   vs39,   vs43 
     xxmrghw     vs31,   vs35,   vs47
-
-    xxperm      vs8,    vs0,    save_permute_1
-    xxperm      vs10,   vs1,    save_permute_1
-    xxperm      vs9,    vs0,    save_permute_2  
-    xxperm      vs11,   vs1,    save_permute_2      
-
-#ifndef TRMMKERNEL    
-    lxv        vs32, 0(CO)
-    lxv        vs33, 16(CO) 
+#ifndef TRMMKERNEL       
     lxv        vs34, 32(CO)  
     lxv        vs35, 48(CO)      
 #endif
-    xxlor      vs25,    vs24,   vs24
-    xxlor      vs27,    vs26,   vs26 
-
+    xxperm      vs8,    vs0,    save_permute_1
+    xxperm      vs10,   vs1,    save_permute_1
 #ifndef TRMMKERNEL    
     lxv        vs36, 0(T1)
     lxv        vs37, 16(T1) 
+#endif
+    xxperm      vs9,    vs0,    save_permute_2  
+    xxperm      vs11,   vs1,    save_permute_2      
+
+#ifndef TRMMKERNEL      
     lxv        vs38, 32(T1)  
     lxv        vs39, 48(T1)     
 #endif
+
+    xxlor      vs25,    vs24,   vs24
+    xxlor      vs27,    vs26,   vs26 
+
+
+
 #ifndef TRMMKERNEL       
     lxv        vs40, 0(T2)
     lxv        vs41, 16(T2) 
+#endif
+
+    xxperm     vs12,    vs2,    save_permute_1
+    xxperm     vs14,    vs3,    save_permute_1
+#ifndef TRMMKERNEL     
     lxv        vs42, 32(T2)  
     lxv        vs43, 48(T2)     
 #endif  
+       
+    xxperm     vs13,    vs2,    save_permute_2   
+    xxperm     vs15,    vs3,    save_permute_2  
 #ifndef TRMMKERNEL    
     lxv        vs44, 0(T3)
-    lxv        vs45, 16(T3) 
+    lxv        vs45, 16(T3)
+#endif
+    xxperm     vs16,    vs4,    save_permute_1
+    xxperm     vs18,    vs5,    save_permute_1
+#ifndef TRMMKERNEL      
     lxv        vs46, 32(T3)  
     lxv        vs47, 48(T3)                 
 #endif  
 
-    xxperm     vs12,    vs2,    save_permute_1
-    xxperm     vs14,    vs3,    save_permute_1
-       
-    xxperm     vs13,    vs2,    save_permute_2   
-    xxperm     vs15,    vs3,    save_permute_2      
+    
 
-    xxperm     vs16,    vs4,    save_permute_1
-    xxperm     vs18,    vs5,    save_permute_1
+
       
     xxperm     vs17,    vs4,    save_permute_2   
     xxperm     vs19,    vs5,    save_permute_2      
-
+#ifdef TRMMKERNEL
+    xvmulsp     vs32,   vs8,    alpha_r 
+    xvmulsp     vs33,   vs12,   alpha_r                 
+#else 
+    xvmaddasp   vs32,   vs8,    alpha_r 
+    xvmaddasp   vs33,   vs12,   alpha_r            
+#endif 
     xxperm     vs24,    vs30,   save_permute_1
     xxperm     vs26,    vs31,   save_permute_1 
+
+ 
+    stxv        vs32, 0(CO)
+    stxv        vs33, 16(CO)     
+#ifdef TRMMKERNEL   
+    xvmulsp     vs34,   vs16,   alpha_r 
+    xvmulsp     vs35,   vs24,   alpha_r                 
+#else    
+    xvmaddasp   vs34,   vs16,   alpha_r 
+    xvmaddasp   vs35,   vs24,   alpha_r           
+#endif 
          
     xxperm     vs25,    vs30,   save_permute_2   
     xxperm     vs27,    vs31,   save_permute_2  
 
 
-    /* multiply add normal way */
- 
-#ifdef TRMMKERNEL
-    xvmulsp     vs32,   vs8,    alpha_r 
-    xvmulsp     vs33,   vs12,   alpha_r   
-    xvmulsp     vs34,   vs16,   alpha_r 
-    xvmulsp     vs35,   vs24,   alpha_r  
+    stxv        vs34, 32(CO)  
+    stxv        vs35, 48(CO)  
+#ifdef TRMMKERNEL  
     xvmulsp     vs36,   vs9,    alpha_r 
-    xvmulsp     vs37,   vs13,   alpha_r  
+    xvmulsp     vs37,   vs13,   alpha_r                
+#else   
+    xvmaddasp   vs36,   vs9,    alpha_r 
+    xvmaddasp   vs37,   vs13,   alpha_r           
+#endif 
+    stxv        vs36, 0(T1)
+    stxv        vs37, 16(T1)
+#ifdef TRMMKERNEL  
     xvmulsp     vs38,   vs17,   alpha_r 
     xvmulsp     vs39,   vs25,   alpha_r               
-#else 
-    xvmaddasp   vs32,   vs8,    alpha_r 
-    xvmaddasp   vs33,   vs12,   alpha_r   
-    xvmaddasp   vs34,   vs16,   alpha_r 
-    xvmaddasp   vs35,   vs24,   alpha_r  
-    xvmaddasp   vs36,   vs9,    alpha_r 
-    xvmaddasp   vs37,   vs13,   alpha_r   
+#else   
     xvmaddasp   vs38,   vs17,   alpha_r 
     xvmaddasp   vs39,   vs25,   alpha_r         
 #endif 
-
-
-
-#ifdef TRMMKERNEL
-    xvmulsp     vs40,   vs10,   alpha_r 
-    xvmulsp     vs41,   vs14,   alpha_r 
-    xvmulsp     vs42,   vs18,   alpha_r 
-    xvmulsp     vs43,   vs26,   alpha_r  
-    xvmulsp     vs44,   vs11,   alpha_r 
-    xvmulsp     vs45,   vs15,   alpha_r  
-    xvmulsp     vs46,   vs19,   alpha_r 
-    xvmulsp     vs47,   vs27,   alpha_r                   
-#else
-
-    xvmaddasp   vs40,   vs10,   alpha_r 
-    xvmaddasp   vs41,   vs14,   alpha_r   
-    xvmaddasp   vs42,   vs18,   alpha_r 
-    xvmaddasp   vs43,   vs26,   alpha_r  
-    xvmaddasp   vs44,   vs11,   alpha_r 
-    xvmaddasp   vs45,   vs15,   alpha_r 
-    xvmaddasp   vs46,   vs19,   alpha_r 
-    xvmaddasp   vs47,   vs27,   alpha_r  
-        
-#endif  
-
-    stxv        vs32, 0(CO)
-    stxv        vs33, 16(CO) 
-    stxv        vs34, 32(CO)  
-    stxv        vs35, 48(CO)  
-
-    stxv        vs36, 0(T1)
-    stxv        vs37, 16(T1)  
     stxv        vs38, 32(T1)  
     stxv        vs39, 48(T1)
 
+#ifdef TRMMKERNEL
+    xvmulsp     vs40,   vs10,   alpha_r 
+    xvmulsp     vs41,   vs14,   alpha_r                    
+#else 
+    xvmaddasp   vs40,   vs10,   alpha_r 
+    xvmaddasp   vs41,   vs14,   alpha_r   
+#endif   
+
     stxv        vs40, 0(T2)
     stxv        vs41, 16(T2)  
+#ifdef TRMMKERNEL 
+    xvmulsp     vs42,   vs18,   alpha_r 
+    xvmulsp     vs43,   vs26,   alpha_r                     
+#else   
+    xvmaddasp   vs42,   vs18,   alpha_r 
+    xvmaddasp   vs43,   vs26,   alpha_r
+#endif      
     stxv        vs42, 32(T2)  
     stxv        vs43, 48(T2)  
+#ifdef TRMMKERNEL  
+    xvmulsp     vs44,   vs11,   alpha_r 
+    xvmulsp     vs45,   vs15,   alpha_r                    
+#else
+    xvmaddasp   vs44,   vs11,   alpha_r 
+    xvmaddasp   vs45,   vs15,   alpha_r    
+#endif      
     stxv        vs44, 0(T3)
     stxv        vs45, 16(T3) 
+#ifdef TRMMKERNEL 
+    xvmulsp     vs46,   vs19,   alpha_r 
+    xvmulsp     vs47,   vs27,   alpha_r                   
+#else 
+    xvmaddasp   vs46,   vs19,   alpha_r 
+    xvmaddasp   vs47,   vs27,   alpha_r 
+#endif      
     stxv        vs46, 32(T3)  
     stxv        vs47, 48(T3)
   
  /*****the same with the second 8X8 ****/
-#ifndef TRMMKERNEL
-  
+ #ifndef TRMMKERNEL 
     lxv        vs32, 0(T4)
     lxv        vs33, 16(T4) 
-    lxv        vs34, 32(T4)  
-    lxv        vs35, 48(T4)      
-    lxv        vs36, 0(T5)
-    lxv        vs37, 16(T5) 
-    lxv        vs38,32(T5)  
-    lxv        vs39, 48(T5)     
 #endif  
- 
     xxmrglw     vs8,    vs48,   vs60
     xxmrglw     vs10,   vs52,   vs56  
-
+#ifndef TRMMKERNEL    
+    lxv        vs34, 32(T4)  
+    lxv        vs35, 48(T4)  
+#endif  
     xxmrghw     vs1,    vs48,   vs60
     xxmrghw     vs0,    vs52,   vs56
+#ifndef TRMMKERNEL        
+    lxv        vs36, 0(T5)
+    lxv        vs37, 16(T5) 
+#endif  
     xxmrglw     vs12,   vs49,   vs61
     xxmrglw     vs14,   vs53,   vs57  
-
-#ifndef TRMMKERNEL   
-    lxv        vs40, 0(T6)
-    lxv        vs41, 16(T6)  
-    lxv        vs42, 32(T6)  
-    lxv        vs43, 48(T6)           
-    lxv        vs44, 0(T7)
-    lxv        vs45, 16(T7) 
-    lxv        vs46, 32(T7)  
-    lxv        vs47, 48(T7)     
-#endif  
+#ifndef TRMMKERNEL    
+    lxv        vs38,32(T5)  
+    lxv        vs39, 48(T5)     
+#endif   
+ 
     xxmrghw     vs2,    vs53,   vs57
     xxmrghw     vs3,    vs49,   vs61
-
+#ifndef TRMMKERNEL   
+    lxv        vs40, 0(T6)
+    lxv        vs41, 16(T6)
+#endif  
     xxmrglw     vs16,   vs50,   vs62
     xxmrglw     vs18,   vs54,   vs58   
-
+#ifndef TRMMKERNEL      
+    lxv        vs42, 32(T6)  
+    lxv        vs43, 48(T6) 
+#endif  
     xxlor      vs9, vs8,    vs8
     xxlor      vs11,    vs10,   vs10 
     xxmrghw     vs4,    vs54,   vs58
     xxmrghw     vs5,    vs50,   vs62
-
+#ifndef TRMMKERNEL              
+    lxv        vs44, 0(T7)
+    lxv        vs45, 16(T7) 
+#endif  
     xxlor      vs13,    vs12,   vs12
     xxlor      vs15,    vs14,   vs14
  
     xxmrglw     vs24,   vs51,   vs63
-    xxmrglw     vs26,   vs55,   vs59  
-
+    xxmrglw     vs26,   vs55,   vs59 
+#ifndef TRMMKERNEL    
+    lxv        vs46, 32(T7)  
+    lxv        vs47, 48(T7)     
+#endif  
     xxlor      vs17,    vs16,   vs16
     xxlor      vs19,    vs18,   vs18
     xxmrghw     vs30,   vs55,   vs59 
-    xxmrghw     vs31,   vs51,   vs63
+    xxmrghw     vs31,   vs51,   vs63 
+
+ 
 
     xxperm      vs8,    vs0,    save_permute_1
     xxperm      vs10,   vs1,    save_permute_1
@@ -965,11 +665,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xxlor      vs27,    vs26,   vs26 
     xxperm     vs12,    vs2,    save_permute_1
     xxperm     vs14,    vs3,    save_permute_1
+
     xxperm     vs13,    vs2,    save_permute_2   
     xxperm     vs15,    vs3,    save_permute_2      
- 
+ #ifdef TRMMKERNEL
+    xvmulsp     vs32,   vs8,    alpha_r 
+    xvmulsp     vs33,   vs12,   alpha_r                 
+#else 
+    xvmaddasp   vs32,   vs8,    alpha_r 
+    xvmaddasp   vs33,   vs12,   alpha_r            
+#endif  
     xxperm     vs16,    vs4,    save_permute_1
     xxperm     vs18,    vs5,    save_permute_1
+    stxv        vs32, 0(T4)
+    stxv        vs33, 16(T4) 
     xxperm     vs17,    vs4,    save_permute_2   
     xxperm     vs19,    vs5,    save_permute_2      
     xxperm     vs24,    vs30,   save_permute_1
@@ -977,64 +686,77 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xxperm     vs25,    vs30,   save_permute_2   
     xxperm     vs27,    vs31,   save_permute_2      
 
-#ifdef TRMMKERNEL
-    xvmulsp     vs32,   vs8,    alpha_r 
-    xvmulsp     vs33,   vs12,   alpha_r   
+#ifdef TRMMKERNEL   
     xvmulsp     vs34,   vs16,   alpha_r 
-    xvmulsp     vs35,   vs24,   alpha_r  
+    xvmulsp     vs35,   vs24,   alpha_r                 
+#else    
+    xvmaddasp   vs34,   vs16,   alpha_r 
+    xvmaddasp   vs35,   vs24,   alpha_r           
+#endif 
+    stxv        vs34, 32(T4)  
+    stxv        vs35, 48(T4)  
+
+#ifdef TRMMKERNEL  
     xvmulsp     vs36,   vs9,    alpha_r 
-    xvmulsp     vs37,   vs13,   alpha_r  
+    xvmulsp     vs37,   vs13,   alpha_r                
+#else   
+    xvmaddasp   vs36,   vs9,    alpha_r 
+    xvmaddasp   vs37,   vs13,   alpha_r           
+#endif 
+    stxv        vs36, 0(T5)
+    stxv        vs37, 16(T5) 
+
+#ifdef TRMMKERNEL  
     xvmulsp     vs38,   vs17,   alpha_r 
     xvmulsp     vs39,   vs25,   alpha_r               
-#else 
-    xvmaddasp   vs32,   vs8,    alpha_r 
-    xvmaddasp   vs33,   vs12,   alpha_r   
-    xvmaddasp   vs34,   vs16,   alpha_r 
-    xvmaddasp   vs35,   vs24,   alpha_r  
-    xvmaddasp   vs36,   vs9,    alpha_r 
-    xvmaddasp   vs37,   vs13,   alpha_r   
+#else  
     xvmaddasp   vs38,   vs17,   alpha_r 
     xvmaddasp   vs39,   vs25,   alpha_r         
 #endif 
 
-    stxv        vs32, 0(T4)
-    stxv        vs33, 16(T4) 
-    stxv        vs34, 32(T4)  
-    stxv        vs35, 48(T4)  
 
-    stxv        vs36, 0(T5)
-    stxv        vs37, 16(T5)  
+
+ 
     stxv        vs38, 32(T5)  
     stxv        vs39, 48(T5)
 
+
 #ifdef TRMMKERNEL
     xvmulsp     vs40,   vs10,   alpha_r 
-    xvmulsp     vs41,   vs14,   alpha_r 
-    xvmulsp     vs42,   vs18,   alpha_r 
-    xvmulsp     vs43,   vs26,   alpha_r  
-    xvmulsp     vs44,   vs11,   alpha_r 
-    xvmulsp     vs45,   vs15,   alpha_r  
-    xvmulsp     vs46,   vs19,   alpha_r 
-    xvmulsp     vs47,   vs27,   alpha_r                   
-#else
-
+    xvmulsp     vs41,   vs14,   alpha_r                    
+#else 
     xvmaddasp   vs40,   vs10,   alpha_r 
     xvmaddasp   vs41,   vs14,   alpha_r   
-    xvmaddasp   vs42,   vs18,   alpha_r 
-    xvmaddasp   vs43,   vs26,   alpha_r  
-    xvmaddasp   vs44,   vs11,   alpha_r 
-    xvmaddasp   vs45,   vs15,   alpha_r 
-    xvmaddasp   vs46,   vs19,   alpha_r 
-    xvmaddasp   vs47,   vs27,   alpha_r  
-        
 #endif  
-
     stxv        vs40, 0(T6)
-    stxv        vs41, 16(T6)  
+    stxv        vs41, 16(T6) 
+#ifdef TRMMKERNEL 
+    xvmulsp     vs42,   vs18,   alpha_r 
+    xvmulsp     vs43,   vs26,   alpha_r                     
+#else   
+    xvmaddasp   vs42,   vs18,   alpha_r 
+    xvmaddasp   vs43,   vs26,   alpha_r
+#endif  
     stxv        vs42, 32(T6)  
     stxv        vs43, 48(T6)  
+#ifdef TRMMKERNEL  
+    xvmulsp     vs44,   vs11,   alpha_r 
+    xvmulsp     vs45,   vs15,   alpha_r                    
+#else
+    xvmaddasp   vs44,   vs11,   alpha_r 
+    xvmaddasp   vs45,   vs15,   alpha_r    
+#endif  
+
     stxv        vs44, 0(T7)
     stxv        vs45, 16(T7) 
+#ifdef TRMMKERNEL 
+    xvmulsp     vs46,   vs19,   alpha_r 
+    xvmulsp     vs47,   vs27,   alpha_r                   
+#else 
+    xvmaddasp   vs46,   vs19,   alpha_r 
+    xvmaddasp   vs47,   vs27,   alpha_r 
+#endif  
+ 
     stxv        vs46, 32(T7)  
     stxv        vs47, 48(T7)
   
@@ -1224,11 +946,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     xxperm      vs10,   vs8,        permute_mask
     xxperm      vs14,   vs12,       permute_mask    
-    xxpermdi    vs9,    vs8,    vs8,2    
-    xxpermdi    vs13,   vs12,   vs12,2   
 
     xvmaddasp       vs32, vs0,vs24
     xvmaddasp       vs33, vs1,vs24
+
+    xxpermdi    vs9,    vs8,    vs8,2    
+    xxpermdi    vs13,   vs12,   vs12,2   
+
 
     xvmaddasp       vs36, vs0,vs25
     xvmaddasp       vs37, vs1,vs25
@@ -1247,21 +971,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     xvmaddasp       vs52, vs0,vs29
     xvmaddasp       vs53, vs1,vs29
-
+    lxv vs24,   DISP32(\Index,32+\OffsetB)(\BREG)
+    lxv vs28,   DISP32(\Index,32+16+\OffsetB)(\BREG)
     xvmaddasp       vs56, vs0,vs30
     xvmaddasp       vs57, vs1,vs30
 
     xvmaddasp       vs60, vs0,vs31
     xvmaddasp       vs61, vs1,vs31
 
-    lxv vs24,   DISP32(\Index,32+\OffsetB)(\BREG)
-    lxv vs28,   DISP32(\Index,32+16+\OffsetB)(\BREG)
+    xxperm      vs26,   vs24,       permute_mask
+    xxperm      vs30,   vs28,       permute_mask    
 
     lxv vs0,    DISP32(\Index,32+\OffsetA)(\AREG)
     lxv vs1,    DISP32(\Index,32+16+\OffsetA)(\AREG)
 
-    xxperm      vs26,   vs24,       permute_mask
-    xxperm      vs30,   vs28,       permute_mask    
+
     xxpermdi    vs25,   vs24,   vs24,2     
     xxpermdi    vs29,   vs28,   vs28,2    
 
@@ -1285,21 +1009,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     xvmaddasp       vs52, vs4,vs13
     xvmaddasp       vs53, vs5,vs13
-
+    lxv vs8,    DISP32(\Index,64+\OffsetB)(\BREG)
+    lxv vs12,   DISP32(\Index,64+16+\OffsetB)(\BREG)
     xvmaddasp       vs56, vs4,vs14
     xvmaddasp       vs57, vs5,vs14
 
     xvmaddasp       vs60, vs4,vs15
     xvmaddasp       vs61, vs5,vs15
 
-    lxv vs8,    DISP32(\Index,64+\OffsetB)(\BREG)
-    lxv vs12,   DISP32(\Index,64+16+\OffsetB)(\BREG)
+    xxperm      vs10,   vs8,        permute_mask
+    xxperm      vs14,   vs12,       permute_mask   
+ 
 
     lxv vs4,    DISP32(\Index,64+0+\OffsetA)(\AREG)
     lxv vs5,    DISP32(\Index,64+16+\OffsetA)(\AREG)
 
-    xxperm      vs10,   vs8,        permute_mask
-    xxperm      vs14,   vs12,       permute_mask    
+ 
     xxpermdi    vs9,    vs8,    vs8,2    
     xxpermdi    vs13,   vs12,   vs12,2  
 
@@ -1323,22 +1048,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     xvmaddasp       vs52, vs0,vs29
     xvmaddasp       vs53, vs1,vs29
-
-    xvmaddasp       vs56, vs0,vs30
-    xvmaddasp       vs57, vs1,vs30
-
-    xvmaddasp       vs60, vs0,vs31
-    xvmaddasp       vs61, vs1,vs31
-
 .if \Complete==0
     lxv vs24,   DISP32(\Index,96+\OffsetB)(\BREG)
     lxv vs28,   DISP32(\Index,96+16+\OffsetB)(\BREG)
+.endif 
+    xvmaddasp       vs56, vs0,vs30
+    xvmaddasp       vs57, vs1,vs30
+.if \Complete==0
+    xxperm      vs26,   vs24,   permute_mask
+    xxperm      vs30,   vs28,   permute_mask   
+.endif 
+    xvmaddasp       vs60, vs0,vs31
+    xvmaddasp       vs61, vs1,vs31
 
+
+.if \Complete==0
     lxv vs0,    DISP32(\Index,96+\OffsetA)(\AREG)
     lxv vs1,    DISP32(\Index,96+16+\OffsetA)(\AREG) 
+.endif 
 
-    xxperm      vs26,   vs24,   permute_mask
-    xxperm      vs30,   vs28,   permute_mask    
+.if \Complete==0     
     xxpermdi    vs25,   vs24,   vs24,2 
     xxpermdi    vs29,   vs28,   vs28,2      
 

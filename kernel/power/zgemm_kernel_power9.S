@@ -24,73 +24,67 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
- 
 #define ASSEMBLER
 #include "common.h"
 #include "def_vsx.h"
 
- 
 #define LOAD	ld
  
- 
+#define STACKSIZE 512
 
- 
-#define STACKSIZE  (512 )
-#define ALPHA_SP   (296+192)(SP)
-#define FZERO	(304+192)(SP)
- 
+#define FZERO	312+192(SP)
 
- 
+#define FLINK_SAVE (STACKSIZE+16) /* 16($r12) */
+
 #define	M	r3
 #define	N	r4
 #define	K	r5
- 
-#define A	r7
-#define	B	r8
-#define	C	r9
-#define	LDC	r10
-#define OFFSET	r6
- 
- 
 
-#define alpha_r vs18
+ 
+#define A	r8
+#define	B	r9
+#define	C	r10
+#define	LDC	r6
+#define OFFSET	r7
+ 
+ 
 
 #define o0	0
+#define alpha_r vs30
+#define alpha_i vs31
 
+#define VECSAVE r11
 
-#define T4	r12
-#define T3	r11
-#define C4	r14
-#define o8	r15
-#define o24	r16
-#define C2	r17
-#define L	r18
-#define T1	r19
-#define C3	r20
-#define TEMP_REG	r21
+#define FRAMEPOINTER r12
+
+#define T10 r14
+
+#define L	r15
+#define T8	r16
+#define T5	r17
+#define T2	r19
+#define TEMP_REG	r20
+#define	T6	r21
 #define	I	r22
 #define J	r23
 #define AO	r24
 #define	BO	r25
-#define	CO 	r26
-#define o16	r27
-#define	o32	r28
-#define	o48	r29
+#define	CO	r26
+#define T7	r27
+#define	T3	r28
+#define T4	r29
 
 #define PRE	r30
-#define T2	r31
-
-#include "dgemm_macros_power9.S"
-
+#define T1  	r31
 
 #ifndef NEEDPARAM
 
 	PROLOGUE
 	PROFCODE
 
-	addi	SP, SP, -STACKSIZE
-	li	r0, 0
-
+	mr      FRAMEPOINTER, SP
+    addi    SP, SP, -STACKSIZE 
+    mflr    r0
 	stfd	f14,    0(SP)
 	stfd	f15,    8(SP)
 	stfd	f16,   16(SP)
@@ -114,6 +108,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stfd	f30,  128(SP)
 	stfd	f31,  136(SP)
 
+    xxspltd  alpha_r,vs1,0  /*copy from register f1 */
+    xxspltd  alpha_i,vs2,0  /*copy from register f2 */
  
 	std	r31,  144(SP)
 	std	r30,  152(SP)
@@ -141,51 +137,48 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     stxv    vs55,  336(SP)
     stxv    vs56,  352(SP)
     stxv    vs57,  368(SP)
-    stxv    vs58,  384(SP) 
-    stxv    vs59,  400(SP) 
+    stxv    vs58,  384(SP)
+    stxv    vs59,  400(SP)
     stxv    vs60,  416(SP)
-    stxv    vs61,  432(SP) 
+    stxv    vs61,  432(SP)
     stxv    vs62,  448(SP)
     stxv    vs63,  464(SP)
 
+    std    r0, FLINK_SAVE(SP)
+ 
 
-	stfd	f1,  ALPHA_SP
-	stw	r0,  FZERO 
-
-	slwi	LDC, LDC, BASE_SHIFT
-
-#if defined(TRMMKERNEL)
-	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
+#ifdef linux
+	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 
 
-	cmpwi	cr0, M, 0
-	ble	.L999_H1
-	cmpwi	cr0, N, 0
-	ble	.L999_H1
-	cmpwi	cr0, K, 0
-	ble	.L999_H1
+#ifdef TRMMKERNEL
+#if defined(linux) && defined(__64BIT__)
+	ld	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
+#endif 
+#endif
+
+
+#include "zgemm_macros_power9.S"
 
  
+
+	slwi	LDC, LDC, ZBASE_SHIFT
+	li	PRE,  512 
+    li  r0,   0
  
-   	addi	T1, SP, 296+192
+
+#if defined(CC) || defined(CR) || defined(RC) || defined(RR) 
+/*negate for this case as we will use addition -1*(a+b) */
+  xvnegdp alpha_r,alpha_r
+  xvnegdp alpha_i,alpha_i
+#endif
+	.align 4
+
+#include "zgemm_logic_power9.S"
+
+L999:
  
-
-	li	PRE, 384
-	li	o8 , 8
-	li	o16, 16
-	li	o24, 24
-	li	o32, 32
-	li	o48, 48
-
-
-	lxvdsx	alpha_r, 0, T1
-
-#include "dgemm_logic_power9.S"
-
-.L999:
-	addi	r3, 0, 0
-
 	lfd	f14,    0(SP)
 	lfd	f15,    8(SP)
 	lfd	f16,   16(SP)
@@ -228,6 +221,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
 	ld	r14,  280(SP)
+
+	ld    r0, 	 FLINK_SAVE(SP)	
  
     lxv    vs52,  288(SP)
     lxv    vs53,  304(SP)
@@ -236,13 +231,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     lxv    vs56,  352(SP)
     lxv    vs57,  368(SP)
     lxv    vs58,  384(SP) 
-    lxv    vs59,  400(SP) 
+    lxv    vs59,  400(SP)
+	mtlr r0
     lxv    vs60,  416(SP)
     lxv    vs61,  432(SP) 
     lxv    vs62,  448(SP)
     lxv    vs63,  464(SP)
 
-	addi	SP, SP, STACKSIZE
+	addi	SP, SP, STACKSIZE 
 	blr
 
 	EPILOGUE
