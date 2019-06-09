@@ -47,7 +47,7 @@ if (${F_COMPILER} STREQUAL "GFORTRAN")
   # ensure reentrancy of lapack codes
   set(FCOMMON_OPT "${FCOMMON_OPT} -Wall -frecursive")
   # work around ABI violation in passing string arguments from C
-  set(FCOMMON_OPT "$(FCOMMON_OPT) -fno-optimize-sibling-calls")
+  set(FCOMMON_OPT "${FCOMMON_OPT} -fno-optimize-sibling-calls")
   #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
   if (NOT NO_LAPACK)
     set(EXTRALIB "{EXTRALIB} -lgfortran")
