@@ -38,13 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * Macros for N=8 and M=16
 **********************************************************************************************/
 
-.macro LOAD8x16_1
-   LOAD8x16 1
-.endm
-
-.macro LOAD8x16_0
-   LOAD8x16 0
-.endm
+ 
 
 .macro KERNEL8x16_L1_L4  Index,IsLast
   KERNEL8x16_L1_L4_I AO,BO, 0,0, \Index,\IsLast,0
@@ -61,10 +55,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL8x16_I1_L4_3  OffsetA,OffsetB, Index,IsLast
   KERNEL8x16_L1_L4_I  AO,BO,  \OffsetA,\OffsetB,\Index,\IsLast,1
 .endm
-.macro KERNEL8x16_I1_L2_3  OffsetA,OffsetB, Index,IsLast
-   KERNEL8x16_L1_L2_I AO,BO, \OffsetA,\OffsetB,\Index,\IsLast,1
-.endm
-
+ 
 .macro KERNEL8x16_I2_L4_2  AREG,BREG,OffsetA,OffsetB, Index,IsLast
   KERNEL8x16_L1_L4_I  \AREG,\BREG,  \OffsetA,\OffsetB,\Index,\IsLast,0
 .endm
@@ -108,59 +99,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxlxor		vs63,	vs63,	vs63	
 .endm
 
-.macro LOAD8x16  Zero
+.macro LOAD8x16  OffsetA,OffsetB
 
-	lxv	vs24,	0(BO)
-	lxv	vs28,	16(BO)
+	lxv	vs24,	(\OffsetB+0)(BO)
+	lxv	vs28,	(\OffsetB+16)(BO)
 	xxperm  	vs26,	vs24,		permute_mask
 	xxperm  	vs30,	vs28,		permute_mask	  
-	lxv	vs0,	 0(AO)
-	lxv	vs1,	16(AO)
+	lxv	vs0,	(\OffsetA+0)(AO)
+	lxv	vs1,	(\OffsetA+16)(AO)
 	xxpermdi	vs25,	vs24,	vs24,2	   
 	xxpermdi	vs29,	vs28,	vs28,2	  
-	lxv	vs2,	32(AO)
-	lxv	vs3,	48(AO) 
+	lxv	vs2,	(\OffsetA+32)(AO)
+	lxv	vs3,	(\OffsetA+48)(AO) 
 	xxpermdi	vs27,	vs26,	vs26,2	
 	xxpermdi	vs31,	vs30,	vs30,2	 	
 
-.if \Zero==1 
-    xxlxor		vs32,	vs32,	vs32
-    xxlxor		vs33,	vs33,	vs33
-	xxlxor		vs34,	vs34,	vs34
-	xxlxor		vs35,	vs35,	vs35
-	xxlxor		vs36,	vs36,	vs36
-	xxlxor		vs37,	vs37,	vs37
-	xxlxor		vs38,	vs38,	vs38
-	xxlxor		vs39,	vs39,	vs39
-	xxlxor		vs40,	vs40,	vs40
-	xxlxor		vs41,	vs41,	vs41
-	xxlxor		vs42,	vs42,	vs42
-	xxlxor		vs43,	vs43,	vs43
-	xxlxor		vs44,	vs44,	vs44
-	xxlxor		vs45,	vs45,	vs45
-	xxlxor		vs46,	vs46,	vs46
-	xxlxor		vs47,	vs47,	vs47
-	xxlxor		vs48,	vs48,	vs48
-	xxlxor		vs49,	vs49,	vs49
-	xxlxor		vs50,	vs50,	vs50
-	xxlxor		vs51,	vs51,	vs51 
-	xxlxor		vs52,	vs52,	vs52
-	xxlxor		vs53,	vs53,	vs53
-	xxlxor		vs54,	vs54,	vs54
-	xxlxor		vs55,	vs55,	vs55 
-	xxlxor		vs56,	vs56,	vs56
-	xxlxor		vs57,	vs57,	vs57
-	xxlxor		vs58,	vs58,	vs58
-	xxlxor		vs59,	vs59,	vs59 
-	xxlxor		vs60,	vs60,	vs60
-	xxlxor		vs61,	vs61,	vs61
-	xxlxor		vs62,	vs62,	vs62
-	xxlxor		vs63,	vs63,	vs63	
-.endif
 .endm
 
 .macro END8x16_NORMAL
   END8x16 0, AO, BO, 64,32 
+.endm
+
+.macro END8x16_WITHOUT_ADD
+	END8x16 0, AO,BO,0,0
 .endm
 
 .macro END8x16 First, AREG, BREG, OffsetA, OffsetB
@@ -258,145 +219,202 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL8x16_L1_L4_I  AREG,BREG,   OffsetA,OffsetB, Index,IsLast ,Complete
 
-KERNEL8x16_L1_L2_I  \AREG,\BREG, \OffsetA,\OffsetB, (\Index*2),0 ,0
-KERNEL8x16_L1_L2_I  \AREG,\BREG,\OffsetA,\OffsetB, (\Index*2+1),\IsLast ,\Complete
+KERNEL8x16_2  \AREG,\BREG, \OffsetA,\OffsetB, (\Index*2),0 ,0
+KERNEL8x16_2  \AREG,\BREG,\OffsetA,\OffsetB, (\Index*2+1),\IsLast ,\Complete
 
 .endm
 
 .macro KERNEL8x16 First
 
-  LOAD8x16 0
+  LOAD8x16 0,0
   END8x16 \First, AO, BO, 64,32 
 .endm
 
-.macro KERNEL8x16_L1_L2_I  AREG,BREG, OffsetA,OffsetB, Index,IsLast ,Complete
-	lxv	vs8,	DISP16(\Index,\OffsetB)(\BREG)
-	lxv	vs12,	DISP16(\Index,16+\OffsetB)(\BREG)
+.macro LOAD8x16_2
+    LOAD8x16_2O AO,BO, 0,0
+.endm	
+
+.macro LOAD8x16_2O  AREG,BREG, OffsetA,OffsetB
+  lxv	vs8,	(\OffsetB)(\BREG)
+  lxv	vs12,	(16+\OffsetB)(\BREG)
+  lxv	vs24,	(32+\OffsetB)(\BREG)
+  lxv	vs28,	(32+16+\OffsetB)(\BREG)
+  lxv	vs4,	(0+\OffsetA)(\AREG)
+  lxv	vs5,	(16+\OffsetA)(\AREG)
+  xxperm  	vs10,	vs8,		permute_mask
+  xxperm  	vs14,	vs12,		permute_mask	
+  lxv	vs6,	(32+\OffsetA)(\AREG)
+  lxv	vs7,	(48+\OffsetA)(\AREG) 
+  xxpermdi	vs9,	vs8,	 vs8,2	 
+  xxpermdi	vs13,	vs12,	vs12,2	 
+  lxv	vs0,	(64+\OffsetA)(\AREG)
+  lxv	vs1,	(64+16+\OffsetA)(\AREG) 
+  xxpermdi	vs11,	vs10,	vs10,2	
+  xxpermdi	vs15,	vs14,	vs14,2	
+  lxv	vs2,	(64+32+\OffsetA)(\AREG)
+  lxv	vs3,	(64+48+\OffsetA)(\AREG)
+
+  xxperm  	vs26,	vs24,	permute_mask
+  xxperm  	vs30,	vs28,	permute_mask	
+  xxpermdi	vs25,	vs24,	vs24,2 
+  xxpermdi	vs29,	vs28,	vs28,2	      
+  xxpermdi	vs27,	vs26,	vs26,2	
+  xxpermdi	vs31,	vs30,	vs30,2	 
+.endm
+
+.macro END8x16_2	  
+  /*for load2 offset will be 128 and 64*/
+   KERNEL8x16_2	AO,BO,	128,64,0 ,1,1 
+.endm
+ 
+
+
+.macro KERNEL8x16_E2	OffsetA,OffsetB, Index,IsLast 
+  KERNEL8x16_2	AO,BO,	\OffsetA,\OffsetB, \Index,\IsLast ,1 
+.endm
+
+
+.macro KERNEL8x16_L2	OffsetA,OffsetB, Index,IsLast
+  KERNEL8x16_2	AO,BO,	\OffsetA,\OffsetB, \Index,\IsLast ,0 
+.endm
+
+
+.macro KERNEL8x16_2  AREG,BREG,  OffsetA,OffsetB, Index,IsLast ,Complete
+  xvmaddasp		vs32, vs4,vs8
+  xvmaddasp		vs33, vs5,vs8
+  xvmaddasp		vs48, vs4,vs12
+  xvmaddasp		vs49, vs5,vs12
+
+  xvmaddasp		vs40, vs4,vs10
+  xvmaddasp		vs41, vs5,vs10
+  xvmaddasp		vs56, vs4,vs14
+  xvmaddasp		vs57, vs5,vs14
+
+  xvmaddasp		vs36, vs4,vs9
+  xvmaddasp		vs37, vs5,vs9
+  xvmaddasp		vs52, vs4,vs13
+  xvmaddasp		vs53, vs5,vs13
+
+  xvmaddasp		vs44, vs4,vs11
+  xvmaddasp		vs45, vs5,vs11
+  xvmaddasp		vs60, vs4,vs15
+  xvmaddasp		vs61, vs5,vs15
+
+.if \Complete==0	
+   lxv	vs4,	DISP32(\Index,0+\OffsetA)(\AREG)
+   lxv	vs5,	DISP32(\Index,16+\OffsetA)(\AREG)
+.endif
+
+  xvmaddasp		vs34, vs6,vs8	
+  xvmaddasp		vs35, vs7,vs8	
+  xvmaddasp		vs50, vs6,vs12
+  xvmaddasp		vs51, vs7,vs12
+.if \Complete==0  
+  lxv vs8,  DISP16(\Index,\OffsetB)(\BREG)
+  lxv vs12, DISP16(\Index,16+\OffsetB)(\BREG)
+.endif    
+  xvmaddasp		vs42, vs6,vs10
+  xvmaddasp		vs43, vs7,vs10
+  xvmaddasp		vs58, vs6,vs14
+  xvmaddasp		vs59, vs7,vs14
+.if \Complete==0  
+  xxperm    vs10, vs8,    permute_mask
+  xxperm    vs14, vs12,   permute_mask    
+.endif    
+  xvmaddasp		vs38, vs6,vs9	
+  xvmaddasp		vs39, vs7,vs9	
+  xvmaddasp   vs54, vs6,vs13
+  xvmaddasp   vs55, vs7,vs13
+.if \Complete==0
+  xxpermdi  vs9,  vs8,   vs8,2   
+  xxpermdi  vs13, vs12, vs12,2   
+.endif    
+  xvmaddasp		vs46, vs6,vs11
+  xvmaddasp		vs47, vs7,vs11
+  xvmaddasp		vs62, vs6,vs15
+  xvmaddasp		vs63, vs7,vs15
+.if \Complete==0
+  xxpermdi  vs11, vs10, vs10,2  
+  xxpermdi  vs15, vs14, vs14,2  
+.endif  
+
+.if \Complete==0
+   lxv	vs6,	DISP32(\Index,32+\OffsetA)(\AREG)
+   lxv	vs7,	DISP32(\Index,48+\OffsetA)(\AREG) 
+.endif 
 
   xvmaddasp		vs32, vs0,vs24
-  xvmaddasp		vs36, vs0,vs25
- 	lxv	vs4,	DISP32(\Index,0+\OffsetA)(\AREG)
-	lxv	vs5,	DISP32(\Index,16+\OffsetA)(\AREG)
-	xxperm  	vs10,	vs8,		permute_mask
-	xxperm  	vs14,	vs12,		permute_mask	
-  xvmaddasp		vs40, vs0,vs26
-  xvmaddasp		vs44, vs0,vs27
-	lxv	vs6,	DISP32(\Index,32+\OffsetA)(\AREG)
-	lxv	vs7,	DISP32(\Index,48+\OffsetA)(\AREG) 
+  xvmaddasp		vs33, vs1,vs24
   xvmaddasp		vs48, vs0,vs28
-  xvmaddasp		vs52, vs0,vs29
-
-	xxpermdi	vs9,	vs8,	vs8,2	 
-	xxpermdi	vs13,	vs12,	vs12,2	 
-
+  xvmaddasp		vs49, vs1,vs28
+  xvmaddasp		vs40, vs0,vs26
+  xvmaddasp		vs41, vs1,vs26
   xvmaddasp		vs56, vs0,vs30
+  xvmaddasp		vs57, vs1,vs30
+  xvmaddasp		vs36, vs0,vs25
+  xvmaddasp		vs37, vs1,vs25
+  xvmaddasp		vs52, vs0,vs29
+  xvmaddasp		vs53, vs1,vs29
+  xvmaddasp		vs44, vs0,vs27
+  xvmaddasp		vs45, vs1,vs27
   xvmaddasp		vs60, vs0,vs31
-
- 	xxpermdi	vs11,	vs10,	vs10,2	
-	xxpermdi	vs15,	vs14,	vs14,2	
-
-
-
-	xvmaddasp		vs33, vs1,vs24
-	xvmaddasp		vs37, vs1,vs25
-
-	xvmaddasp		vs41, vs1,vs26
-	xvmaddasp		vs45, vs1,vs27
-	xvmaddasp		vs49, vs1,vs28
-	xvmaddasp		vs53, vs1,vs29
-	xvmaddasp		vs57, vs1,vs30
-	xvmaddasp		vs61, vs1,vs31    
+  xvmaddasp		vs61, vs1,vs31 
 .if \Complete==0
-	lxv	vs0,	DISP32(\Index,64+\OffsetA)(\AREG)
-	lxv	vs1,	DISP32(\Index,64+16+\OffsetA)(\AREG) 
+  lxv	vs0,	DISP32(\Index,64+\OffsetA)(\AREG)
+  lxv	vs1,	DISP32(\Index,64+16+\OffsetA)(\AREG) 
 .endif
-	xvmaddasp		vs34, vs2,vs24
-	xvmaddasp		vs38, vs2,vs25
-	xvmaddasp		vs42, vs2,vs26
-	xvmaddasp		vs46, vs2,vs27
-	xvmaddasp		vs50, vs2,vs28
-	xvmaddasp		vs54, vs2,vs29
-	xvmaddasp		vs58, vs2,vs30
-	xvmaddasp		vs62, vs2,vs31	
 
-	xvmaddasp		vs35, vs3,vs24	  
-	xvmaddasp		vs39, vs3,vs25
-	xvmaddasp		vs43, vs3,vs26
-	xvmaddasp		vs47, vs3,vs27
-	xvmaddasp		vs51, vs3,vs28
-	xvmaddasp		vs55, vs3,vs29
-	xvmaddasp		vs59, vs3,vs30
-	xvmaddasp		vs63, vs3,vs31
-.if \Complete==0	
-	lxv	vs2,	DISP32(\Index,64+32+\OffsetA)(\AREG)
-	lxv	vs3,	DISP32(\Index,64+48+\OffsetA)(\AREG)
-.endif
-    xvmaddasp		vs32, vs4,vs8
-    xvmaddasp		vs36, vs4,vs9
+  xvmaddasp		vs34, vs2,vs24
+  xvmaddasp		vs35, vs3,vs24	  
+  xvmaddasp		vs50, vs2,vs28
+  xvmaddasp		vs51, vs3,vs28
 .if \Complete==0
-	lxv	vs24,	DISP16(\Index,32+\OffsetB)(\BREG)
-	lxv	vs28,	DISP16(\Index,32+16+\OffsetB)(\BREG)
+  lxv vs24, DISP16(\Index,32+\OffsetB)(\BREG)
+  lxv vs28, DISP16(\Index,32+16+\OffsetB)(\BREG)
+.endif  
+  xvmaddasp		vs42, vs2,vs26
+  xvmaddasp		vs43, vs3,vs26
+  xvmaddasp		vs58, vs2,vs30
+  xvmaddasp		vs59, vs3,vs30
+.if \Complete==0
+  xxperm    vs26, vs24, permute_mask
+  xxperm    vs30, vs28, permute_mask  
+.endif  
+  xvmaddasp		vs38, vs2,vs25
+  xvmaddasp		vs39, vs3,vs25
+  xvmaddasp		vs54, vs2,vs29
+  xvmaddasp		vs55, vs3,vs29
+.if \Complete==0
+  xxpermdi  vs25, vs24, vs24,2 
+  xxpermdi  vs29, vs28, vs28,2    
+.endif  
+  xvmaddasp		vs46, vs2,vs27
+  xvmaddasp		vs47, vs3,vs27
+  xvmaddasp		vs62, vs2,vs31	
+  xvmaddasp		vs63, vs3,vs31
+.if \Complete==0
+  xxpermdi  vs27, vs26, vs26,2  
+  xxpermdi  vs31, vs30, vs30,2   
 .endif
+.if \Complete==0
+  lxv	vs2,	DISP32(\Index,64+32+\OffsetA)(\AREG)
+  lxv	vs3,	DISP32(\Index,64+48+\OffsetA)(\AREG)
+.endif
+
+
 .if \IsLast==1	
 .if \Complete==1
-	addi		\AREG, \AREG, DISP32(\Index,64+\OffsetA)  
-	addi		\BREG, \BREG,  DISP16(\Index,32+\OffsetB)
+	addi		\BREG, \BREG,  DISP16(\Index,\OffsetB)
+  addi    \AREG, \AREG, DISP32(\Index,\OffsetA)  
 
 .else
-	addi		\AREG, \AREG, DISP32(\Index,128)  
 	addi		\BREG, \BREG,  DISP16(\Index,64)
+  addi    \AREG, \AREG, DISP32(\Index,128)  
 
 .endif
 .endif   
-    xvmaddasp		vs40, vs4,vs10
-    xvmaddasp		vs44, vs4,vs11
-.if \Complete==0
-	xxperm  	vs26,	vs24,	permute_mask
-	xxperm  	vs30,	vs28,	permute_mask	
-.endif
-    xvmaddasp		vs48, vs4,vs12
-    xvmaddasp		vs52, vs4,vs13
-.if \Complete==0	
-	xxpermdi	vs25,	vs24,	vs24,2 
-	xxpermdi	vs29,	vs28,	vs28,2	 
-.endif 
 
-    xvmaddasp		vs56, vs4,vs14
-    xvmaddasp		vs60, vs4,vs15
- 
-.if \Complete==0        
-	xxpermdi	vs27,	vs26,	vs26,2	
-	xxpermdi	vs31,	vs30,	vs30,2	
- 	
-.endif 
 
-	xvmaddasp		vs33, vs5,vs8
-	xvmaddasp		vs37, vs5,vs9
-	xvmaddasp		vs41, vs5,vs10
-	xvmaddasp		vs45, vs5,vs11
-	xvmaddasp		vs49, vs5,vs12
-	xvmaddasp		vs53, vs5,vs13
-	xvmaddasp		vs57, vs5,vs14
-	xvmaddasp		vs61, vs5,vs15
-
-	xvmaddasp		vs34, vs6,vs8	
-	xvmaddasp		vs38, vs6,vs9	
-	xvmaddasp		vs42, vs6,vs10
-	xvmaddasp		vs46, vs6,vs11
-	xvmaddasp		vs50, vs6,vs12
-	xvmaddasp		vs54, vs6,vs13
-	xvmaddasp		vs58, vs6,vs14
-	xvmaddasp		vs62, vs6,vs15
-
-	xvmaddasp		vs35, vs7,vs8	
-	xvmaddasp		vs39, vs7,vs9	
-	xvmaddasp		vs43, vs7,vs10
-	xvmaddasp		vs47, vs7,vs11
-	xvmaddasp		vs51, vs7,vs12
-	xvmaddasp		vs55, vs7,vs13
-	xvmaddasp		vs59, vs7,vs14
-	xvmaddasp		vs63, vs7,vs15
- 
 .endm
 
  
