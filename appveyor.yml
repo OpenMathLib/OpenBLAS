@@ -35,7 +35,9 @@ environment:
       DYNAMIC_ARCH: ON
       WITH_FORTRAN: no
     - COMPILER: cl
-
+    - COMPILER: MinGW64-gcc-7.2.0
+      WITH_FORTRAN: ignore
+    
 install:
   - if [%COMPILER%]==[clang-cl] call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
@@ -52,7 +54,10 @@ install:
 before_build:
   - ps: if (-Not (Test-Path .\build)) { mkdir build }
   - cd build
+  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+  - set PATH=C:\MinGW\bin;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin;%PATH%
   - if [%COMPILER%]==[cl] cmake -G "Visual Studio 15 2017 Win64" ..
+  - if [%COMPILER%]==[MinGW64-gcc-7.2.0] cmake -G "MinGW Makefiles" ..
   - if [%WITH_FORTRAN%]==[no] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
   - if [%WITH_FORTRAN%]==[yes] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 ..
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON -DDYNAMIC_LIST='CORE2;NEHALEM;SANDYBRIDGE;BULLDOZER;HASWELL' ..
@@ -64,3 +69,4 @@ test_script:
   - echo Running Test
   - cd utest
   - openblas_utest
+  
