@@ -257,8 +257,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         stvx    v31, r11, r0
         li r11,0
 
-	stw	r31,  144(SP)
-
 	stfd	f1,  ALPHA_SP
 	stw	r0,  FZERO
 
