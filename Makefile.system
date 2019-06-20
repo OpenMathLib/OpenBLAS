@@ -144,9 +144,10 @@ endif
 
 # On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
 ifeq ($(ARCH), x86_64)
+ifneq ($(C_COMPILER), PGI)
 GETARCH_FLAGS += -march=native
 endif
-
+endif
 
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
