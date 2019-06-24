@@ -59,7 +59,7 @@ set(FU "")
 if (APPLE OR (MSVC AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "Clang"))
   set(FU "_")
 endif()
-if (WIN32 AND MINGW AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "Clang"))
+if(CMAKE_COMPILER_IS_GNUCC AND WIN32 AND NOT CROSS)
   set(FU "_")
 endif()
 
