@@ -70,6 +70,11 @@ if (X86_64)
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -march=native")
 endif ()
 
+# On x86 no AVX support is available
+if ((DEFINED BINARY AND BINARY EQUAL 32) OR ("$CMAKE_SIZEOF_VOID_P}" EQUAL "4"))
+  set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX -DNO_AVX2 -DNO_AVX512")
+endif ()
+
 if (INTERFACE64)
   message(STATUS "Using 64-bit integers.")
   set(GETARCH_FLAGS	"${GETARCH_FLAGS} -DUSE64BITINT")
@@ -165,6 +170,9 @@ include("${PROJECT_SOURCE_DIR}/cmake/cc.cmake")
 if (NOT NOFORTRAN)
   # Fortran Compiler dependent settings
   include("${PROJECT_SOURCE_DIR}/cmake/fc.cmake")
+else ()
+set(NO_LAPACK 1)
+set(NO_LAPACKE 1)
 endif ()
 
 if (BINARY64)
