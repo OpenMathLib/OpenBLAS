@@ -72,7 +72,6 @@ build_script:
 
 test_script:
   - echo Running Test
-  - nm lib/libopenblas.a
   - cd utest
   - openblas_utest
   
