@@ -71,8 +71,10 @@ if (X86_64)
 endif ()
 
 # On x86 no AVX support is available
+if (X86 OR X86_64)
 if ((DEFINED BINARY AND BINARY EQUAL 32) OR ("$CMAKE_SIZEOF_VOID_P}" EQUAL "4"))
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX -DNO_AVX2 -DNO_AVX512")
+endif ()
 endif ()
 
 if (INTERFACE64)
