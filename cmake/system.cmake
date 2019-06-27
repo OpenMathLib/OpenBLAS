@@ -155,7 +155,9 @@ else()
 endif ()
 
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
-
+if(defined BINARY)
+  message(STATUS "Compiling a ${BINARY}-bit binary.")
+endif ()
 if (NOT DEFINED NEED_PIC)
   set(NEED_PIC 1)
 endif ()
