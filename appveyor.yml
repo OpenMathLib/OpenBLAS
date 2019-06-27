@@ -36,6 +36,7 @@ environment:
       WITH_FORTRAN: no
     - COMPILER: cl
     - COMPILER: MinGW64-gcc-7.2.0-mingw
+      DYNAMIC_ARCH: OFF
       WITH_FORTRAN: ignore
     - COMPILER: MinGW64-gcc-7.2.0
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
