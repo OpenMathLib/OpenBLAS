@@ -59,7 +59,7 @@ set(FU "")
 if (APPLE OR (MSVC AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "Clang"))
   set(FU "_")
 endif()
-if(MINGW)
+if(MINGW AND NOT MINGW64)
   set(FU "_")
 endif()
 
