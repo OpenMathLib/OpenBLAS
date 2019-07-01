@@ -5,7 +5,7 @@
 
 STRMMKERNEL	= sgemm_kernel_power9.S
 DTRMMKERNEL	= dgemm_kernel_power9.S
-CTRMMKERNEL	= ctrmm_kernel_8x4_power8.S
+CTRMMKERNEL	= cgemm_kernel_power9.S
 ZTRMMKERNEL	= zgemm_kernel_power9.S
 
 SGEMMKERNEL    =  sgemm_kernel_power9.S
@@ -28,9 +28,9 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-CGEMMKERNEL    = cgemm_kernel_8x4_power8.S
+CGEMMKERNEL    = cgemm_kernel_power9.S
 CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
-CGEMMITCOPY    = cgemm_tcopy_8_power8.S
+CGEMMITCOPY    = ../generic/zgemm_tcopy_8.c
 CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)

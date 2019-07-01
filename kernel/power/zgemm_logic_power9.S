@@ -1353,7 +1353,7 @@ ZGEMM_L1:
 ZGEMM_L1_BEGIN:
 /*----------------------------------------*/   
     mr    CO, C
-    slwi    T1, LDC , 1     
+   
     add     T2,C,LDC    
     mr    AO, A  
     add   C,  C,  T1
