@@ -211,7 +211,8 @@ if (USE_THREAD)
   target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
-if (MSVC OR NOT NOFORTRAN)
+#if (MSVC OR NOT NOFORTRAN)
+if (NOT NO_CBLAS)
   # Broken without fortran on unix
   add_subdirectory(utest)
 endif()
