@@ -14,7 +14,7 @@
 
 /* Table of constant values */
 
-static blasint c__1 = 1;
+static int c__1 = 1;
 static double c_b8 = -1.;
 static double c_b9 = 1.;
 
@@ -25,33 +25,33 @@ static double c_b9 = 1.;
  * The blocked BLAS Level 3 updates were removed and moved to the
  * recursive algorithm.
  * */
-/* Subroutine */ void RELAPACK_dsytrf_rec2(char *uplo, blasint *n, blasint *
-	nb, blasint *kb, double *a, blasint *lda, blasint *ipiv,
-	double *w, blasint *ldw, blasint *info, ftnlen uplo_len)
+/* Subroutine */ void RELAPACK_dsytrf_rec2(char *uplo, int *n, int *
+	nb, int *kb, double *a, int *lda, int *ipiv,
+	double *w, int *ldw, int *info, ftnlen uplo_len)
 {
     /* System generated locals */
-    blasint a_dim1, a_offset, w_dim1, w_offset, i__1, i__2;
+    int a_dim1, a_offset, w_dim1, w_offset, i__1, i__2;
     double d__1, d__2, d__3;
 
     /* Builtin functions */
     double sqrt(double);
 
     /* Local variables */
-    static blasint j, k;
+    static int j, k;
     static double t, r1, d11, d21, d22;
-    static blasint jj, kk, jp, kp, kw, kkw, imax, jmax;
+    static int jj, kk, jp, kp, kw, kkw, imax, jmax;
     static double alpha;
-    extern /* Subroutine */ blasint dscal_(int *, double *, double *,
-	    blasint *);
+    extern /* Subroutine */ int dscal_(int *, double *, double *,
+	    int *);
     extern logical lsame_(char *, char *, ftnlen, ftnlen);
-    extern /* Subroutine */ blasint dgemv_(char *, blasint *, blasint *,
-	    double *, double *, blasint *, double *, blasint *,
-	    double *, double *, blasint *, ftnlen), dcopy_(int *,
-	    double *, blasint *, double *, blasint *), dswap_(int
-	    *, double *, blasint *, double *, blasint *);
-    static blasint kstep;
+    extern /* Subroutine */ int dgemv_(char *, int *, int *,
+	    double *, double *, int *, double *, int *,
+	    double *, double *, int *, ftnlen), dcopy_(int *,
+	    double *, int *, double *, int *), dswap_(int
+	    *, double *, int *, double *, int *);
+    static int kstep;
     static double absakk;
-    extern blasint idamax_(int *, double *, blasint *);
+    extern int idamax_(int *, double *, int *);
     static double colmax, rowmax;
 
     /* Parameter adjustments */

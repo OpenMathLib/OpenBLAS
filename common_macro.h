@@ -66,7 +66,6 @@
 #define	DOTC_K			QDOTC_K
 #define	NRM2_K			QNRM2_K
 #define	SCAL_K			QSCAL_K
-#define	SUM_K			QSUM_K
 #define	SWAP_K			QSWAP_K
 #define	ROT_K			QROT_K
 
@@ -357,7 +356,6 @@
 #define	DOTC_K			DDOTC_K
 #define	NRM2_K			DNRM2_K
 #define	SCAL_K			DSCAL_K
-#define	SUM_K			DSUM_K
 #define	SWAP_K			DSWAP_K
 #define	ROT_K			DROT_K
 
@@ -660,7 +658,6 @@
 #define	DOTC_K			SDOTC_K
 #define	NRM2_K			SNRM2_K
 #define	SCAL_K			SSCAL_K
-#define	SUM_K			SSUM_K
 #define	SWAP_K			SSWAP_K
 #define	ROT_K			SROT_K
 
@@ -965,7 +962,6 @@
 #define	DOTC_K			XDOTC_K
 #define	NRM2_K			XNRM2_K
 #define	SCAL_K			XSCAL_K
-#define	SUM_K			XSUM_K
 #define	SWAP_K			XSWAP_K
 #define	ROT_K			XROT_K
 
@@ -1367,7 +1363,6 @@
 #define	DOTC_K			ZDOTC_K
 #define	NRM2_K			ZNRM2_K
 #define	SCAL_K			ZSCAL_K
-#define	SUM_K			ZSUM_K
 #define	SWAP_K			ZSWAP_K
 #define	ROT_K			ZROT_K
 
@@ -1790,7 +1785,6 @@
 #define	DOTC_K			CDOTC_K
 #define	NRM2_K			CNRM2_K
 #define	SCAL_K			CSCAL_K
-#define	SUM_K			CSUM_K
 #define	SWAP_K			CSWAP_K
 #define	ROT_K			CROT_K
 

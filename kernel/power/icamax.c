@@ -36,34 +36,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #define CABS1(x,i)    ABS(x[i])+ABS(x[i+1])
 
-#define USE_MASK_PERMUTATIONS 1 //with this type of permutation gcc output a little faster code
 
-#if  !defined(USE_MASK_PERMUTATIONS)
 
-static inline __attribute__((always_inline))  __vector float mvec_mergee(__vector float a,__vector float b ){
-  __vector float result;
-  __asm__ ( 
-      "vmrgew %0,%1,%2;\n" 
-      : "=v" (result) 
-      : "v" (a), 
-      "v" (b) 
-      : );
-  return result;
-}
-
-static inline __attribute__((always_inline)) __vector float mvec_mergeo(__vector float a,__vector float b ){
-  __vector float result;
-  __asm__ ( 
-      "vmrgow %0,%1,%2;\n" 
-      : "=v" (result) 
-      : "v" (a), 
-      "v" (b) 
-      : );
-  return result;
-}
-
-#endif
-
+ 
 /**
  * Find  maximum index 
  * Warning: requirements n>0  and n % 32 == 0
@@ -75,17 +50,13 @@ static inline __attribute__((always_inline)) __vector float mvec_mergeo(__vector
 static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) { 
 
     BLASLONG index;
-    BLASLONG i=0;
-#if  defined(USE_MASK_PERMUTATIONS)    
+    BLASLONG i;
     register __vector unsigned int static_index0 = {0,1,2,3};
-#else
-    register __vector unsigned int static_index0 = {2,0,3,1};
-#endif    
     register __vector unsigned int temp0 = {4,4,4, 4}; //temporary vector register
     register __vector unsigned int temp1=  temp0<<1;  //{8,8,8,8}
-    register __vector unsigned int static_index1=static_index0 +temp0; 
-    register __vector unsigned int static_index2=static_index0 +temp1; 
-    register __vector unsigned int static_index3=static_index1 +temp1;  
+    register __vector unsigned int static_index1=static_index0 +temp0;//{4,5,6,7};
+    register __vector unsigned int static_index2=static_index0 +temp1;//{8,9,10,11};
+    register __vector unsigned int static_index3=static_index1 +temp1; //{12,13,14,15};
     temp0=vec_xor(temp0,temp0);
     temp1=temp1 <<1 ; //{16,16,16,16}
     register __vector unsigned int temp_add=temp1 <<1; //{32,32,32,32}
@@ -93,11 +64,9 @@ static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
     register __vector float quadruple_values={0,0,0,0};
 
     register __vector float * v_ptrx=(__vector float *)x;
-#if  defined(USE_MASK_PERMUTATIONS)    
     register __vector unsigned char real_pack_mask = { 0,1,2,3,8,9,10,11,16,17,18,19, 24,25,26,27}; 
     register __vector unsigned char image_pack_mask=  {4, 5, 6, 7, 12, 13, 14, 15, 20, 21, 22, 23, 28, 29, 30, 31}; 
-#endif    
-    for(; i<n; i+=32 ){
+    for(; i<n; i+=32){
        //absolute temporary complex vectors
        register __vector float v0=vec_abs(v_ptrx[0]);
        register __vector float v1=vec_abs(v_ptrx[1]);
@@ -109,10 +78,8 @@ static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
        register __vector float v7=vec_abs(v_ptrx[7]);
 
        //pack complex real and imaginary parts together to sum real+image
-#if defined(USE_MASK_PERMUTATIONS)       
        register __vector float t1=vec_perm(v0,v1,real_pack_mask);
-       register __vector float ti=vec_perm(v0,v1,image_pack_mask); 
-            
+       register __vector float ti=vec_perm(v0,v1,image_pack_mask);      
        v0=t1+ti; //sum quadruple real with quadruple image
        register __vector float t2=vec_perm(v2,v3,real_pack_mask);
        register __vector float ti2=vec_perm(v2,v3,image_pack_mask); 
@@ -123,22 +90,6 @@ static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
        t2=vec_perm(v6,v7,real_pack_mask);
        ti2=vec_perm(v6,v7,image_pack_mask); 
        v3=t2+ti2;
-#else
-       register __vector float t1=mvec_mergee(v0,v1);
-       register __vector float ti=mvec_mergeo(v0,v1); 
-            
-       v0=t1+ti; //sum quadruple real with quadruple image
-       register __vector float t2= mvec_mergee(v2,v3);
-       register __vector float ti2=mvec_mergeo(v2,v3); 
-       v1=t2+ti2;
-       t1=mvec_mergee(v4,v5);
-       ti=mvec_mergeo(v4,v5);      
-       v2=t1+ti; //sum
-       t2=mvec_mergee(v6,v7);
-       ti2=mvec_mergeo(v6,v7); 
-       v3=t2+ti2;
-
-#endif
        // now we have 16 summed elements . lets compare them
        v_ptrx+=8;
        register __vector bool int r1=vec_cmpgt(v1,v0);
@@ -163,10 +114,8 @@ static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
        v7=vec_abs(v_ptrx[7]);
 
        //pack complex real and imaginary parts together to sum real+image
-#if defined(USE_MASK_PERMUTATIONS)       
        t1=vec_perm(v0,v1,real_pack_mask);
-       ti=vec_perm(v0,v1,image_pack_mask); 
-            
+       ti=vec_perm(v0,v1,image_pack_mask);      
        v0=t1+ti; //sum quadruple real with quadruple image
        t2=vec_perm(v2,v3,real_pack_mask);
        ti2=vec_perm(v2,v3,image_pack_mask); 
@@ -177,22 +126,6 @@ static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
        t2=vec_perm(v6,v7,real_pack_mask);
        ti2=vec_perm(v6,v7,image_pack_mask); 
        v3=t2+ti2;
-#else
-       t1=mvec_mergee(v0,v1);
-       ti=mvec_mergeo(v0,v1); 
-            
-       v0=t1+ti; //sum quadruple real with quadruple image
-       t2=mvec_mergee(v2,v3);
-       ti2=mvec_mergeo(v2,v3); 
-       v1=t2+ti2;
-       t1=mvec_mergee(v4,v5);
-       ti=mvec_mergeo(v4,v5);      
-       v2=t1+ti; //sum
-       t2=mvec_mergee(v6,v7);
-       ti2=mvec_mergeo(v6,v7); 
-       v3=t2+ti2;
-
-#endif
        // now we have 16 summed elements {from 16 to 31} . lets compare them
        v_ptrx+=8;
        r1=vec_cmpgt(v1,v0);

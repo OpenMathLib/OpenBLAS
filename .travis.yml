@@ -26,15 +26,6 @@ matrix:
         - BTYPE="BINARY=64"
 
     - <<: *test-ubuntu
-      os: linux-ppc64le
-      before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
-      env:
-        # for matrix annotation only
-        - TARGET_BOX=PPC64LE_LINUX
-        - BTYPE="BINARY=64 USE_OPENMP=1"
-
-    - <<: *test-ubuntu
       env:
         - TARGET_BOX=LINUX64
         - BTYPE="BINARY=64 USE_OPENMP=1"
@@ -169,9 +160,44 @@ matrix:
         - BTYPE="BINARY=64 INTERFACE64=1"
 
     - <<: *test-macos
-      osx_image: xcode8.3
       env:
         - BTYPE="BINARY=32"
+
+    - &emulated-arm
+      dist: trusty
+      sudo: required
+      services: docker
+      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
+      name: "Emulated Build for ARMV6 with gcc"
+      before_install: sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      script: |
+        echo "FROM openblas/alpine:${IMAGE_ARCH}
+        COPY . /tmp/openblas
+        RUN mkdir /tmp/openblas/build                             &&  \
+            cd /tmp/openblas/build                                &&  \
+            CC=${COMPILER} cmake -D DYNAMIC_ARCH=OFF                  \
+                                 -D TARGET=${TARGET_ARCH}             \
+                                 -D BUILD_SHARED_LIBS=ON              \
+                                 -D BUILD_WITHOUT_LAPACK=ON           \
+                                 -D BUILD_WITHOUT_CBLAS=ON            \
+                                 -D CMAKE_BUILD_TYPE=Release ../  &&  \
+            cmake --build ." > Dockerfile
+        docker build .
+    - <<: *emulated-arm
+      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
+      name: "Emulated Build for ARMV6 with clang"
+    - <<: *emulated-arm
+      env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
+      name: "Emulated Build for ARMV8 with gcc"
+    - <<: *emulated-arm
+      env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
+      name: "Emulated Build for ARMV8 with clang"
+
+  allow_failures:
+    - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
+    - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
+    - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
+    - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
 
 # whitelist
 branches:

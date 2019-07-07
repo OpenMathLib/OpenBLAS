@@ -43,7 +43,7 @@
 #define XX	r4
 #define PREA	r5
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifndef __64BIT__
 #define X r6
 #define INCX r7

@@ -1,8 +1,8 @@
 #include "relapack.h"
 #include "stdlib.h"
 
-static void RELAPACK_dpbtrf_rec(const char *, const blasint *, const blasint *,
-    double *, const blasint *, double *, const blasint *, blasint *);
+static void RELAPACK_dpbtrf_rec(const char *, const int *, const int *,
+    double *, const int *, double *, const int *, int *);
 
 
 /** DPBTRF computes the Cholesky factorization of a real symmetric positive definite band matrix A.
@@ -12,14 +12,14 @@ static void RELAPACK_dpbtrf_rec(const char *, const blasint *, const blasint *,
  * http://www.netlib.org/lapack/explore-html/df/da9/dpbtrf_8f.html
  * */
 void RELAPACK_dpbtrf(
-    const char *uplo, const blasint *n, const blasint *kd,
-    double *Ab, const blasint *ldAb,
-    blasint *info
+    const char *uplo, const int *n, const int *kd,
+    double *Ab, const int *ldAb,
+    int *info
 ) {
 
     // Check arguments
-    const blasint lower = LAPACK(lsame)(uplo, "L");
-    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const int lower = LAPACK(lsame)(uplo, "L");
+    const int upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -30,8 +30,8 @@ void RELAPACK_dpbtrf(
     else if (*ldAb < *kd + 1)
         *info = -5;
     if (*info) {
-        const blasint minfo = -*info;
-        LAPACK(xerbla)("DPBTRF", &minfo, strlen("DPBTRF"));
+        const int minfo = -*info;
+        LAPACK(xerbla)("DPBTRF", &minfo);
         return;
     }
 
@@ -42,9 +42,9 @@ void RELAPACK_dpbtrf(
     const double ZERO[] = { 0. };
 
     // Allocate work space
-    const blasint n1 = DREC_SPLIT(*n);
-    const blasint mWork = (*kd > n1) ? (lower ? *n - *kd : n1) : *kd;
-    const blasint nWork = (*kd > n1) ? (lower ? n1 : *n - *kd) : *kd;
+    const int n1 = DREC_SPLIT(*n);
+    const int mWork = (*kd > n1) ? (lower ? *n - *kd : n1) : *kd;
+    const int nWork = (*kd > n1) ? (lower ? n1 : *n - *kd) : *kd;
     double *Work = malloc(mWork * nWork * sizeof(double));
     LAPACK(dlaset)(uplo, &mWork, &nWork, ZERO, ZERO, Work, &mWork);
 
@@ -58,10 +58,10 @@ void RELAPACK_dpbtrf(
 
 /** dpbtrf's recursive compute kernel */
 static void RELAPACK_dpbtrf_rec(
-    const char *uplo, const blasint *n, const blasint *kd,
-    double *Ab, const blasint *ldAb,
-    double *Work, const blasint *ldWork,
-    blasint *info
+    const char *uplo, const int *n, const int *kd,
+    double *Ab, const int *ldAb,
+    double *Work, const int *ldWork,
+    int *info
 ){
 
     if (*n <= MAX(CROSSOVER_DPBTRF, 1)) {
@@ -75,12 +75,12 @@ static void RELAPACK_dpbtrf_rec(
     const double MONE[] = { -1. };
 
     // Unskew A
-    const blasint ldA[] = { *ldAb - 1 };
+    const int ldA[] = { *ldAb - 1 };
     double *const A = Ab + ((*uplo == 'L') ? 0 : *kd);
 
     // Splitting
-    const blasint n1 = MIN(DREC_SPLIT(*n), *kd);
-    const blasint n2 = *n - n1;
+    const int n1 = MIN(DREC_SPLIT(*n), *kd);
+    const int n2 = *n - n1;
 
     // * *
     // * Ab_BR
@@ -99,8 +99,8 @@ static void RELAPACK_dpbtrf_rec(
         return;
 
     // Banded splitting
-    const blasint n21 = MIN(n2, *kd - n1);
-    const blasint n22 = MIN(n2 - n21, n1);
+    const int n21 = MIN(n2, *kd - n1);
+    const int n22 = MIN(n2 - n21, n1);
 
     //     n1    n21    n22
     // n1  *     A_TRl  A_TRr

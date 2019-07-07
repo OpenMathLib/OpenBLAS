@@ -47,7 +47,7 @@
 #define STACKSIZE 304
 #endif
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifndef __64BIT__
 #define M	r3
 #define	N	r4
@@ -226,7 +226,7 @@
 	stw	r0,    4 + FZERO
 #endif
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifndef __64BIT__
 	lwz	INCY,	 FRAMESLOT(0) + STACKSIZE(SP)
 	lwz	BUFFER,  FRAMESLOT(1) + STACKSIZE(SP)

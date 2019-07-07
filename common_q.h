@@ -19,7 +19,6 @@
 #define	QDOTC_K			qdot_k
 #define	QNRM2_K			qnrm2_k
 #define	QSCAL_K			qscal_k
-#define	QSUM_K			qsum_k
 #define	QSWAP_K			qswap_k
 #define	QROT_K			qrot_k
 
@@ -162,7 +161,6 @@
 #define	QDOTC_K			gotoblas -> qdot_k
 #define	QNRM2_K			gotoblas -> qnrm2_k
 #define	QSCAL_K			gotoblas -> qscal_k
-#define	QSUM_K			gotoblas -> qsum_k
 #define	QSWAP_K			gotoblas -> qswap_k
 #define	QROT_K			gotoblas -> qrot_k
 

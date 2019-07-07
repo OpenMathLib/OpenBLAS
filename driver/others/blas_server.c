@@ -109,7 +109,7 @@ extern unsigned int openblas_thread_timeout();
 /* equal to "OMP_NUM_THREADS - 1" and thread only wakes up when     */
 /* jobs is queued.                                                  */
 
-/* We need this global for checking if initialization is finished.  */
+/* We need this grobal for cheking if initialization is finished.   */
 int blas_server_avail   __attribute__((aligned(ATTRIBUTE_SIZE))) = 0;
 
 /* Local Variables */
@@ -150,8 +150,8 @@ static unsigned int thread_timeout = (1U << (THREAD_TIMEOUT));
 
 #ifdef MONITOR
 
-/* Monitor is a function to see thread's status for every second. */
-/* Usually it turns off and it's for debugging.                   */
+/* Monitor is a function to see thread's status for every seconds. */
+/* Usually it turns off and it's for debugging.                    */
 
 static pthread_t      monitor_thread;
 static int main_status[MAX_CPU_NUMBER];

@@ -1,7 +1,7 @@
 #include "relapack.h"
 
-static void RELAPACK_zlauum_rec(const char *, const blasint *, double *,
-    const blasint *, blasint *);
+static void RELAPACK_zlauum_rec(const char *, const int *, double *,
+    const int *, int *);
 
 
 /** ZLAUUM computes the product U * U**H or L**H * L, where the triangular factor U or L is stored in the upper or lower triangular part of the array A.
@@ -11,14 +11,14 @@ static void RELAPACK_zlauum_rec(const char *, const blasint *, double *,
  * http://www.netlib.org/lapack/explore-html/d8/d45/zlauum_8f.html
  * */
 void RELAPACK_zlauum(
-    const char *uplo, const blasint *n,
-    double *A, const blasint *ldA,
-    blasint *info
+    const char *uplo, const int *n,
+    double *A, const int *ldA,
+    int *info
 ) {
 
     // Check arguments
-    const blasint lower = LAPACK(lsame)(uplo, "L");
-    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const int lower = LAPACK(lsame)(uplo, "L");
+    const int upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -27,8 +27,8 @@ void RELAPACK_zlauum(
     else if (*ldA < MAX(1, *n))
         *info = -4;
     if (*info) {
-        const blasint minfo = -*info;
-        LAPACK(xerbla)("ZLAUUM", &minfo, strlen("ZLAUUM"));
+        const int minfo = -*info;
+        LAPACK(xerbla)("ZLAUUM", &minfo);
         return;
     }
 
@@ -42,9 +42,9 @@ void RELAPACK_zlauum(
 
 /** zlauum's recursive compute kernel */
 static void RELAPACK_zlauum_rec(
-    const char *uplo, const blasint *n,
-    double *A, const blasint *ldA,
-    blasint *info
+    const char *uplo, const int *n,
+    double *A, const int *ldA,
+    int *info
 ) {
 
     if (*n <= MAX(CROSSOVER_ZLAUUM, 1)) {
@@ -57,8 +57,8 @@ static void RELAPACK_zlauum_rec(
     const double ONE[] = { 1., 0. };
 
     // Splitting
-    const blasint n1 = ZREC_SPLIT(*n);
-    const blasint n2 = *n - n1;
+    const int n1 = ZREC_SPLIT(*n);
+    const int n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

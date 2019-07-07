@@ -28,12 +28,8 @@ endif
 ifeq ($(CORE), HASWELL)
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX2
-ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -mavx2
-endif
-ifeq ($(F_COMPILER), GFORTRAN)
 FCOMMON_OPT += -mavx2
-endif
 endif
 endif
 endif

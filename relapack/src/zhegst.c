@@ -3,9 +3,9 @@
 #include "stdlib.h"
 #endif
 
-static void RELAPACK_zhegst_rec(const blasint *, const char *, const blasint *,
-    double *, const blasint *, const double *, const blasint *,
-    double *, const blasint *, blasint *);
+static void RELAPACK_zhegst_rec(const int *, const char *, const int *,
+    double *, const int *, const double *, const int *,
+    double *, const int *, int *);
 
 
 /** ZHEGST reduces a complex Hermitian-definite generalized eigenproblem to standard form.
@@ -15,14 +15,14 @@ static void RELAPACK_zhegst_rec(const blasint *, const char *, const blasint *,
  * http://www.netlib.org/lapack/explore-html/dc/d68/zhegst_8f.html
  * */
 void RELAPACK_zhegst(
-    const blasint *itype, const char *uplo, const blasint *n,
-    double *A, const blasint *ldA, const double *B, const blasint *ldB,
-    blasint *info
+    const int *itype, const char *uplo, const int *n,
+    double *A, const int *ldA, const double *B, const int *ldB,
+    int *info
 ) {
 
     // Check arguments
-    const blasint lower = LAPACK(lsame)(uplo, "L");
-    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const int lower = LAPACK(lsame)(uplo, "L");
+    const int upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (*itype < 1 || *itype > 3)
         *info = -1;
@@ -35,8 +35,8 @@ void RELAPACK_zhegst(
     else if (*ldB < MAX(1, *n))
         *info = -7;
     if (*info) {
-        const blasint minfo = -*info;
-        LAPACK(xerbla)("ZHEGST", &minfo, strlen("ZHEGST"));
+        const int minfo = -*info;
+        LAPACK(xerbla)("ZHEGST", &minfo);
         return;
     }
 
@@ -45,9 +45,9 @@ void RELAPACK_zhegst(
 
     // Allocate work space
     double *Work = NULL;
-    blasint    lWork = 0;
+    int    lWork = 0;
 #if XSYGST_ALLOW_MALLOC
-    const blasint n1 = ZREC_SPLIT(*n);
+    const int n1 = ZREC_SPLIT(*n);
     lWork = n1 * (*n - n1);
     Work  = malloc(lWork * 2 * sizeof(double));
     if (!Work)
@@ -67,9 +67,9 @@ void RELAPACK_zhegst(
 
 /** zhegst's recursive compute kernel */
 static void RELAPACK_zhegst_rec(
-    const blasint *itype, const char *uplo, const blasint *n,
-    double *A, const blasint *ldA, const double *B, const blasint *ldB,
-    double *Work, const blasint *lWork, blasint *info
+    const int *itype, const char *uplo, const int *n,
+    double *A, const int *ldA, const double *B, const int *ldB,
+    double *Work, const int *lWork, int *info
 ) {
 
     if (*n <= MAX(CROSSOVER_ZHEGST, 1)) {
@@ -84,14 +84,14 @@ static void RELAPACK_zhegst_rec(
     const double MONE[]  = { -1., 0. };
     const double HALF[]  = { .5, 0. };
     const double MHALF[] = { -.5, 0. };
-    const blasint    iONE[]  = { 1 };
+    const int    iONE[]  = { 1 };
 
     // Loop iterator
-    blasint i;
+    int i;
 
     // Splitting
-    const blasint n1 = ZREC_SPLIT(*n);
-    const blasint n2 = *n - n1;
+    const int n1 = ZREC_SPLIT(*n);
+    const int n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

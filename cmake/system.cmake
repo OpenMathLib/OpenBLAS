@@ -65,18 +65,6 @@ if (DEFINED TARGET)
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
 endif ()
 
-# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
-if (X86_64)
-  set(GETARCH_FLAGS "${GETARCH_FLAGS} -march=native")
-endif ()
-
-# On x86 no AVX support is available
-if (X86 OR X86_64)
-if ((DEFINED BINARY AND BINARY EQUAL 32) OR ("$CMAKE_SIZEOF_VOID_P}" EQUAL "4"))
-  set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX -DNO_AVX2 -DNO_AVX512")
-endif ()
-endif ()
-
 if (INTERFACE64)
   message(STATUS "Using 64-bit integers.")
   set(GETARCH_FLAGS	"${GETARCH_FLAGS} -DUSE64BITINT")
@@ -148,16 +136,10 @@ endif ()
 
 if (USE_THREAD)
   message(STATUS "Multi-threading enabled with ${NUM_THREADS} threads.")
-else()
-  if (${USE_LOCKING})
-    set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_LOCKING")
-  endif ()
 endif ()
 
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
-if (DEFINED BINARY)
-  message(STATUS "Compiling a ${BINARY}-bit binary.")
-endif ()
+
 if (NOT DEFINED NEED_PIC)
   set(NEED_PIC 1)
 endif ()
@@ -174,9 +156,6 @@ include("${PROJECT_SOURCE_DIR}/cmake/cc.cmake")
 if (NOT NOFORTRAN)
   # Fortran Compiler dependent settings
   include("${PROJECT_SOURCE_DIR}/cmake/fc.cmake")
-else ()
-set(NO_LAPACK 1)
-set(NO_LAPACKE 1)
 endif ()
 
 if (BINARY64)
@@ -202,22 +181,10 @@ if (NEED_PIC)
 endif ()
 
 if (DYNAMIC_ARCH)
-  if (X86 OR X86_64 OR ARM64 OR PPC)
-    set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
-    if (DYNAMIC_OLDER)
-      set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_OLDER")
-    endif ()
-  else ()
-    unset (DYNAMIC_ARCH)
-    message (STATUS "DYNAMIC_ARCH is not supported on the target architecture, removing")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
+  if (DYNAMIC_OLDER)
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_OLDER")
   endif ()
-endif ()
-
-if (DYNAMIC_LIST)
-  set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_LIST")
-  foreach(DCORE ${DYNAMIC_LIST})
-    set(CCOMMON_OPT "${CCOMMON_OPT} -DDYN_${DCORE}")
-  endforeach ()
 endif ()
 
 if (NO_LAPACK)
@@ -309,7 +276,7 @@ endif ()
 
 set(KERNELDIR	"${PROJECT_SOURCE_DIR}/kernel/${ARCH}")
 
-# TODO: need to convert these Makefiles
+# TODO: nead to convert these Makefiles
 # include ${PROJECT_SOURCE_DIR}/cmake/${ARCH}.cmake
 
 if (${CORE} STREQUAL "PPC440")

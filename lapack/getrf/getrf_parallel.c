@@ -279,6 +279,9 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
     for (i = 0; i < args -> nthreads; i++)
 #if 1
     {
+	LOCK_COMMAND(&getrf_lock);
+	jw = job[mypos].working[i][CACHE_LINE_SIZE * bufferside];
+	UNLOCK_COMMAND(&getrf_lock);
 	do {
 	    LOCK_COMMAND(&getrf_lock);
 	    jw = job[mypos].working[i][CACHE_LINE_SIZE * bufferside];
@@ -365,6 +368,9 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
 	  if ((current != mypos) && (!is)) {
 #if 1
+		LOCK_COMMAND(&getrf_lock);
+		jw = job[current].working[mypos][CACHE_LINE_SIZE * bufferside];
+		UNLOCK_COMMAND(&getrf_lock);
 		do {
 		    LOCK_COMMAND(&getrf_lock);
 		    jw = job[current].working[mypos][CACHE_LINE_SIZE * bufferside];
@@ -396,6 +402,9 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
   for (i = 0; i < args -> nthreads; i++) {
     for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
 #if 1
+	LOCK_COMMAND(&getrf_lock);
+	jw = job[mypos].working[i][CACHE_LINE_SIZE *xxx];
+	UNLOCK_COMMAND(&getrf_lock);
 	do {
 	    LOCK_COMMAND(&getrf_lock);
 	    jw = job[mypos].working[i][CACHE_LINE_SIZE *xxx];

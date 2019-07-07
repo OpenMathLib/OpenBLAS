@@ -91,7 +91,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
   //disable multi-thread when incx==0 or incy==0
   //In that case, the threads would be dependent.
   //
-  //Temporarily work-around the low performance issue with small input size &
+  //Temporarily work-around the low performance issue with small imput size &
   //multithreads.
   if (incx == 0 || incy == 0 || n <= MULTI_THREAD_MINIMAL)
 	  nthreads = 1;

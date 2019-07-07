@@ -1,18 +1,18 @@
 SAMAXKERNEL  = ../arm/amax.c
-DAMAXKERNEL  = damax_z13.c
+DAMAXKERNEL  = ../arm/amax.c
 CAMAXKERNEL  = ../arm/zamax.c
-ZAMAXKERNEL  = zamax_z13.c
+ZAMAXKERNEL  = ../arm/zamax.c
 
 SAMINKERNEL  = ../arm/amin.c
-DAMINKERNEL  = damin_z13.c
+DAMINKERNEL  = ../arm/amin.c
 CAMINKERNEL  = ../arm/zamin.c
-ZAMINKERNEL  = zamin_z13.c
+ZAMINKERNEL  = ../arm/zamin.c
 
 SMAXKERNEL   = ../arm/max.c
-DMAXKERNEL   = dmax_z13.c
+DMAXKERNEL   = ../arm/max.c
 
 SMINKERNEL   = ../arm/min.c
-DMINKERNEL   = dmin_z13.c
+DMINKERNEL   = ../arm/min.c
 
 ISAMAXKERNEL = ../arm/iamax.c
 IDAMAXKERNEL = idamax.c
@@ -25,20 +25,15 @@ ICAMINKERNEL = ../arm/izamin.c
 IZAMINKERNEL = izamin.c
 
 ISMAXKERNEL  = ../arm/imax.c
-IDMAXKERNEL  = idmax.c
+IDMAXKERNEL  = ../arm/imax.c
 
 ISMINKERNEL  = ../arm/imin.c
-IDMINKERNEL  = idmin.c
+IDMINKERNEL  = ../arm/imin.c
 
 SASUMKERNEL  = ../arm/asum.c
 DASUMKERNEL  = dasum.c
 CASUMKERNEL  = ../arm/zasum.c
 ZASUMKERNEL  = zasum.c
-
-SSUMKERNEL  = ../arm/asum.c
-DSUMKERNEL  = dasum.c
-CSUMKERNEL  = ../arm/zasum.c
-ZSUMKERNEL  = zasum.c
 
 SAXPYKERNEL  = ../arm/axpy.c
 DAXPYKERNEL  = daxpy.c

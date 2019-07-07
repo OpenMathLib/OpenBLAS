@@ -3,9 +3,9 @@
 #include "stdlib.h"
 #endif
 
-static void RELAPACK_chegst_rec(const blasint *, const char *, const blasint *,
-    float *, const blasint *, const float *, const blasint *,
-    float *, const blasint *, blasint *);
+static void RELAPACK_chegst_rec(const int *, const char *, const int *,
+    float *, const int *, const float *, const int *,
+    float *, const int *, int *);
 
 
 /** CHEGST reduces a complex Hermitian-definite generalized eigenproblem to standard form.
@@ -15,14 +15,14 @@ static void RELAPACK_chegst_rec(const blasint *, const char *, const blasint *,
  * http://www.netlib.org/lapack/explore-html/d7/d2a/chegst_8f.html
  * */
 void RELAPACK_chegst(
-    const blasint *itype, const char *uplo, const blasint *n,
-    float *A, const blasint *ldA, const float *B, const blasint *ldB,
-    blasint *info
+    const int *itype, const char *uplo, const int *n,
+    float *A, const int *ldA, const float *B, const int *ldB,
+    int *info
 ) {
 
     // Check arguments
-    const blasint lower = LAPACK(lsame)(uplo, "L");
-    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const int lower = LAPACK(lsame)(uplo, "L");
+    const int upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (*itype < 1 || *itype > 3)
         *info = -1;
@@ -35,8 +35,8 @@ void RELAPACK_chegst(
     else if (*ldB < MAX(1, *n))
         *info = -7;
     if (*info) {
-        const blasint minfo = -*info;
-        LAPACK(xerbla)("CHEGST", &minfo, strlen("CHEGST"));
+        const int minfo = -*info;
+        LAPACK(xerbla)("CHEGST", &minfo);
         return;
     }
 
@@ -45,9 +45,9 @@ void RELAPACK_chegst(
 
     // Allocate work space
     float *Work = NULL;
-    blasint   lWork = 0;
+    int   lWork = 0;
 #if XSYGST_ALLOW_MALLOC
-    const blasint n1 = CREC_SPLIT(*n);
+    const int n1 = CREC_SPLIT(*n);
     lWork = n1 * (*n - n1);
     Work  = malloc(lWork * 2 * sizeof(float));
     if (!Work)
@@ -67,9 +67,9 @@ void RELAPACK_chegst(
 
 /** chegst's recursive compute kernel */
 static void RELAPACK_chegst_rec(
-    const blasint *itype, const char *uplo, const blasint *n,
-    float *A, const blasint *ldA, const float *B, const blasint *ldB,
-    float *Work, const blasint *lWork, blasint *info
+    const int *itype, const char *uplo, const int *n,
+    float *A, const int *ldA, const float *B, const int *ldB,
+    float *Work, const int *lWork, int *info
 ) {
 
     if (*n <= MAX(CROSSOVER_CHEGST, 1)) {
@@ -84,14 +84,14 @@ static void RELAPACK_chegst_rec(
     const float MONE[]  = { -1., 0. };
     const float HALF[]  = { .5, 0. };
     const float MHALF[] = { -.5, 0. };
-    const blasint   iONE[]  = { 1 };
+    const int   iONE[]  = { 1 };
 
     // Loop iterator
-    blasint i;
+    int i;
 
     // Splitting
-    const blasint n1 = CREC_SPLIT(*n);
-    const blasint n2 = *n - n1;
+    const int n1 = CREC_SPLIT(*n);
+    const int n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

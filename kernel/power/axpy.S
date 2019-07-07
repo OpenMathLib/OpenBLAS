@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifndef __64BIT__
 #define N	r3
 #define X	r6

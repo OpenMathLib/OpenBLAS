@@ -58,7 +58,7 @@
 #define	N	r4
 #define	K	r5
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifndef __64BIT__
 #define A	r6
 #define	B	r7

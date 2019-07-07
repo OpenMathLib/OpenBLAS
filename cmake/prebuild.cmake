@@ -59,9 +59,6 @@ set(FU "")
 if (APPLE OR (MSVC AND NOT ${CMAKE_C_COMPILER_ID} MATCHES "Clang"))
   set(FU "_")
 endif()
-if(MINGW AND NOT MINGW64)
-  set(FU "_")
-endif()
 
 set(COMPILER_ID ${CMAKE_C_COMPILER_ID})
 if (${COMPILER_ID} STREQUAL "GNU")
@@ -85,11 +82,6 @@ endif ()
 # f_check
 if (NOT NOFORTRAN)
   include("${PROJECT_SOURCE_DIR}/cmake/f_check.cmake")
-else ()
- file(APPEND ${TARGET_CONF_TEMP}
-   "#define BUNDERSCORE _\n"
-   "#define NEEDBUNDERSCORE 1\n")
- set(BU "_")
 endif ()
 
 # Cannot run getarch on target if we are cross-compiling

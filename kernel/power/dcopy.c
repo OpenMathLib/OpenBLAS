@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(POWER8) || defined(POWER9)
+#if defined(POWER8)
 #include "dcopy_microk_power8.c"
 #endif
 

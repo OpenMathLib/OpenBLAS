@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 7.dev)
+set(OpenBLAS_PATCH_VERSION 6.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 # Adhere to GNU filesystem layout conventions
@@ -20,14 +20,9 @@ if(MSVC)
 option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
 endif()
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
-option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)" OFF)
-option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
+option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64 only)" OFF)
+option(DYNAMIC_OLDER "Include specific support for older cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
-else()
-set(NO_AFFINITY 1)
-endif()
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoids conflicts with other BLAS libraries, especially when using
@@ -47,19 +42,6 @@ endif()
 
 #######
 
-if(MSVC AND MSVC_STATIC_CRT)
-    set(CompilerFlags
-            CMAKE_CXX_FLAGS
-            CMAKE_CXX_FLAGS_DEBUG
-            CMAKE_CXX_FLAGS_RELEASE
-            CMAKE_C_FLAGS
-            CMAKE_C_FLAGS_DEBUG
-            CMAKE_C_FLAGS_RELEASE
-            )
-    foreach(CompilerFlag ${CompilerFlags})
-      string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-    endforeach()
-endif()
 
 message(WARNING "CMake support is experimental. It does not yet support all build options and may not produce the same Makefiles that OpenBLAS ships with.")
 
@@ -80,10 +62,10 @@ endif ()
 
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
+  list(APPEND SUBDIRS lapack)
   if(BUILD_RELAPACK)
     list(APPEND SUBDIRS relapack/src)
   endif()
-  list(APPEND SUBDIRS lapack)
 endif ()
 
 # set which float types we want to build for
@@ -152,7 +134,7 @@ endif ()
 
 # Only generate .def for dll on MSVC and always produce pdb files for debug and release
 if(MSVC)
-  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_LESS 3.4)
+  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 3.4)
     set(OpenBLAS_DEF_FILE "${PROJECT_BINARY_DIR}/openblas.def")
   endif()
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
@@ -167,9 +149,15 @@ if (${DYNAMIC_ARCH})
   endforeach()
 endif ()
 
+# Only build shared libs for MSVC
+if (MSVC)
+  set(BUILD_SHARED_LIBS ON)
+endif()
+
+
 # add objects to the openblas lib
 add_library(${OpenBLAS_LIBNAME} ${LA_SOURCES} ${LAPACKE_SOURCES} ${RELA_SOURCES} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
-target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include/openblas${SUFFIX64}>)
+target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include>)
 
 # Android needs to explicitly link against libm
 if(ANDROID)
@@ -178,7 +166,7 @@ endif()
 
 # Handle MSVC exports
 if(MSVC AND BUILD_SHARED_LIBS)
-  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_LESS 3.4)
+  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 3.4)
     include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
   else()
     # Creates verbose .def file (51KB vs 18KB)
@@ -211,8 +199,7 @@ if (USE_THREAD)
   target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
-#if (MSVC OR NOT NOFORTRAN)
-if (NOT NO_CBLAS)
+if (MSVC OR NOT NOFORTRAN)
   # Broken without fortran on unix
   add_subdirectory(utest)
 endif()
@@ -229,14 +216,6 @@ set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
-
-if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
-  if (NOT MSVC)
-    target_link_libraries(${OpenBLAS_LIBNAME} "-Wl,-allow-multiple-definition")
-  else()
-    target_link_libraries(${OpenBLAS_LIBNAME} "/FORCE:MULTIPLE")
-  endif()
-endif()
 
 if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFIX} STREQUAL "")
 if (NOT DEFINED ARCH)
@@ -335,7 +314,7 @@ install (FILES ${OPENBLAS_CONFIG_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 if(NOT NOFORTRAN)
   message(STATUS "Generating f77blas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-  set(F77BLAS_H ${CMAKE_BINARY_DIR}/generated/f77blas.h)
+  set(F77BLAS_H ${CMAKE_BINARY_DIR}/f77blas.h)
   file(WRITE  ${F77BLAS_H} "#ifndef OPENBLAS_F77BLAS_H\n")
   file(APPEND ${F77BLAS_H} "#define OPENBLAS_F77BLAS_H\n")
   file(APPEND ${F77BLAS_H} "#include \"openblas_config.h\"\n")
@@ -348,11 +327,10 @@ endif()
 if(NOT NO_CBLAS)
 	message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
 
-	set(CBLAS_H ${CMAKE_BINARY_DIR}/generated/cblas.h)
 	file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
 	string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
-	file(WRITE ${CBLAS_H} "${CBLAS_H_CONTENTS_NEW}")
-	install (FILES ${CBLAS_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	file(WRITE ${CMAKE_BINARY_DIR}/cblas.tmp "${CBLAS_H_CONTENTS_NEW}")
+	install (FILES ${CMAKE_BINARY_DIR}/cblas.tmp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} RENAME cblas.h)
 endif()
 
 if(NOT NO_LAPACKE)

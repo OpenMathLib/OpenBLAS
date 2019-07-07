@@ -129,13 +129,12 @@ static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
   *ecx=cpuinfo[2];
   *edx=cpuinfo[3];
 #else
-        __asm__ __volatile__("mov $0, %%ecx;"
-			     "cpuid"
+        __asm__ __volatile__("cpuid"
 			     : "=a" (*eax),
 			     "=b" (*ebx),
 			     "=c" (*ecx),
 			     "=d" (*edx)
-			     : "0" (op));
+			     : "0" (op), "c"(0));
 #endif
 }
 
@@ -211,7 +210,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 	
   y = blas_quick_divide_table[y];
 
-  __asm__ __volatile__  ("mull %0" :"=d" (result), "+a"(x) : "0" (y));
+  __asm__ __volatile__  ("mull %0" :"=d" (result) :"a"(x), "0" (y));
 
   return result;
 }
@@ -277,7 +276,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #ifdef ASSEMBLER
 
 #if defined(PILEDRIVER) || defined(BULLDOZER) || defined(STEAMROLLER) || defined(EXCAVATOR)
-//Enable some optimization for barcelona.
+//Enable some optimazation for barcelona.
 #define BARCELONA_OPTIMIZATION
 #endif
 

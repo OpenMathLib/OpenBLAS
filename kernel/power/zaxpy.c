@@ -36,18 +36,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(POWER8) || defined(POWER9)
+#if defined(POWER8)
 #include "zaxpy_microk_power8.c"
 #endif
 
 
 #ifndef HAVE_KERNEL_4
 
-static void zaxpy_kernel_4(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT da_r,FLOAT da_i)
+static void zaxpy_kernel_4(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 	BLASLONG register i  = 0;
 	BLASLONG register ix = 0;
- 
+	FLOAT da_r = alpha[0];
+	FLOAT da_i = alpha[1];
 	
 
 	while(i < n)

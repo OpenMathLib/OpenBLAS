@@ -61,7 +61,7 @@
 #define	N	r4
 #define	K	r5
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifndef __64BIT__
 #define A	r6
 #define	B	r7
@@ -172,7 +172,7 @@
 
 	stw	r0,  FZERO
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifdef __64BIT__
 	ld	LDC, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
@@ -192,7 +192,7 @@
 #endif
 #endif
 
-#if (defined(linux) || defined(__FreeBSD__)) && defined(__64BIT__)
+#if defined(linux) && defined(__64BIT__)
 	ld	OFFSET,  FRAMESLOT(1) + STACKSIZE(SP)
 #endif
 
@@ -246,7 +246,7 @@
 	li	PREA,   16 * 12 * SIZE
 #else
 
-#if defined(linux) || defined(__FreeBSD__)
+#ifdef linux
 #ifndef __64BIT__
 	lwz	PREA,  FRAMESLOT(2) + STACKSIZE(SP)
 	lwz	PREC,  FRAMESLOT(3) + STACKSIZE(SP)

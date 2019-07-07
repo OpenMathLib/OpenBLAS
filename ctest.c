@@ -113,7 +113,7 @@ ARCH_X86
 ARCH_X86_64
 #endif
 
-#if defined(__powerpc___) || defined(__PPC__) || defined(_POWER) || defined(__POWERPC__)
+#if defined(__powerpc___) || defined(__PPC__) || defined(_POWER)
 ARCH_POWER
 #endif
 

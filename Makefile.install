@@ -58,14 +58,14 @@ ifndef NO_LAPACKE
 endif
 
 #for install static library
-ifneq ($(NO_STATIC),1)
+ifndef NO_STATIC
 	@echo Copying the static library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@install -pm644 $(LIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 endif
 #for install shared library
-ifneq ($(NO_SHARED),1)
+ifndef NO_SHARED
 	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 	@install -pm755 $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
@@ -106,14 +106,14 @@ ifndef NO_LAPACKE
 endif
 
 #for install static library
-ifneq ($(NO_STATIC),1)
+ifndef NO_STATIC
 	@echo Copying the static library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@installbsd -c -m 644 $(LIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 endif
 #for install shared library
-ifneq ($(NO_SHARED),1)
+ifndef NO_SHARED
 	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 	@installbsd -c -m 755 $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
@@ -138,7 +138,7 @@ endif
 	@echo "SET(OpenBLAS_VERSION \"${VERSION}\")" > "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 	@echo "SET(OpenBLAS_INCLUDE_DIRS ${OPENBLAS_INCLUDE_DIR})" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 
-ifneq ($(NO_SHARED),1)
+ifndef NO_SHARED
 #ifeq logical or
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux FreeBSD NetBSD OpenBSD DragonFly))
 	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_LIBRARY_DIR}/$(LIBPREFIX).so)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"

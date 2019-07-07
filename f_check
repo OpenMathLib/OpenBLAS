@@ -125,7 +125,7 @@ if ($compiler eq "") {
 	    $openmp = "-openmp";
 	}
 
-	# for embedded underscore name, e.g. zho_ge, it may append 2 underscores.
+	# for embeded underscore name, e.g. zho_ge, it may append 2 underscores.
 	$data = `$compiler -O2 -S ftest3.f > /dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s`;
 	if ($data =~ / zho_ge__/) {
 	    $need2bu       = 1;

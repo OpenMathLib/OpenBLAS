@@ -204,7 +204,7 @@ void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
   if (side  < 0)                info =  1;
 
   if (info != 0) {
-    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME)-1);
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
 

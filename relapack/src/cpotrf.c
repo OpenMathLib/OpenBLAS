@@ -1,7 +1,7 @@
 #include "relapack.h"
 
-static void RELAPACK_cpotrf_rec(const char *, const blasint *, float *,
-        const blasint *, blasint *);
+static void RELAPACK_cpotrf_rec(const char *, const int *, float *,
+        const int *, int *);
 
 
 /** CPOTRF computes the Cholesky factorization of a complex Hermitian positive definite matrix A.
@@ -11,14 +11,14 @@ static void RELAPACK_cpotrf_rec(const char *, const blasint *, float *,
  * http://www.netlib.org/lapack/explore-html/dd/dce/cpotrf_8f.html
  * */
 void RELAPACK_cpotrf(
-    const char *uplo, const blasint *n,
-    float *A, const blasint *ldA,
-    blasint *info
+    const char *uplo, const int *n,
+    float *A, const int *ldA,
+    int *info
 ) {
 
     // Check arguments
-    const blasint lower = LAPACK(lsame)(uplo, "L");
-    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const int lower = LAPACK(lsame)(uplo, "L");
+    const int upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -27,8 +27,8 @@ void RELAPACK_cpotrf(
     else if (*ldA < MAX(1, *n))
         *info = -4;
     if (*info) {
-        const blasint minfo = -*info;
-        LAPACK(xerbla)("CPOTRF", &minfo, strlen("CPOTRF"));
+        const int minfo = -*info;
+        LAPACK(xerbla)("CPOTRF", &minfo);
         return;
     }
 
@@ -42,9 +42,9 @@ void RELAPACK_cpotrf(
 
 /** cpotrf's recursive compute kernel */
 static void RELAPACK_cpotrf_rec(
-    const char *uplo, const blasint *n,
-    float *A, const blasint *ldA,
-    blasint *info
+    const char *uplo, const int *n,
+    float *A, const int *ldA,
+    int *info
 ){
 
     if (*n <= MAX(CROSSOVER_CPOTRF, 1)) {
@@ -58,8 +58,8 @@ static void RELAPACK_cpotrf_rec(
     const float MONE[] = { -1., 0. };
 
     // Splitting
-    const blasint n1 = CREC_SPLIT(*n);
-    const blasint n2 = *n - n1;
+    const int n1 = CREC_SPLIT(*n);
+    const int n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

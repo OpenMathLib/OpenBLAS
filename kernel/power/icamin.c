@@ -50,7 +50,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static BLASLONG   ciamin_kernel_32(BLASLONG n, FLOAT *x, FLOAT *minf) { 
 
     BLASLONG index;
-    BLASLONG i=0;
+    BLASLONG i;
     register __vector unsigned int static_index0 = {0,1,2,3};
     register __vector unsigned int temp0 = {4,4,4, 4}; //temporary vector register
     register __vector unsigned int temp1=  temp0<<1;  //{8,8,8,8}

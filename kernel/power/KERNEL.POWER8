@@ -13,40 +13,40 @@ SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
 SGEMMOTCOPY    = sgemm_tcopy_8_power8.S 
-SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
-SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
-SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
-SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
+SGEMMINCOPYOBJ =  sgemm_incopy.o
+SGEMMITCOPYOBJ =  sgemm_itcopy.o
+SGEMMONCOPYOBJ =  sgemm_oncopy.o
+SGEMMOTCOPYOBJ =  sgemm_otcopy.o
 
 DGEMMKERNEL    =  dgemm_kernel_16x4_power8.S
 DGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 DGEMMITCOPY    =  dgemm_tcopy_16_power8.S
 DGEMMONCOPY    =  dgemm_ncopy_4_power8.S
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
-DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
-DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
-DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
-DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+DGEMMINCOPYOBJ =  dgemm_incopy.o
+DGEMMITCOPYOBJ =  dgemm_itcopy.o
+DGEMMONCOPYOBJ =  dgemm_oncopy.o
+DGEMMOTCOPYOBJ =  dgemm_otcopy.o
 
 CGEMMKERNEL    = cgemm_kernel_8x4_power8.S
 CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
 CGEMMITCOPY    = cgemm_tcopy_8_power8.S
 CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
-CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
-CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
-CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
-CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
+CGEMMONCOPYOBJ =  cgemm_oncopy.o
+CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+CGEMMINCOPYOBJ =  cgemm_incopy.o
+CGEMMITCOPYOBJ =  cgemm_itcopy.o
 
 ZGEMMKERNEL    = zgemm_kernel_8x2_power8.S
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
 ZGEMMITCOPY    = zgemm_tcopy_8_power8.S
-ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
-ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
-ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
-ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
+ZGEMMONCOPYOBJ =  zgemm_oncopy.o
+ZGEMMOTCOPYOBJ =  zgemm_otcopy.o
+ZGEMMINCOPYOBJ =  zgemm_incopy.o
+ZGEMMITCOPYOBJ =  zgemm_itcopy.o
 
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
@@ -147,14 +147,14 @@ CSWAPKERNEL  = cswap.c
 ZSWAPKERNEL  = zswap.c
 #
 
-SGEMVNKERNEL = sgemv_n.c
+#SGEMVNKERNEL = ../arm/gemv_n.c
 DGEMVNKERNEL = dgemv_n.c
-CGEMVNKERNEL = cgemv_n.c
+#CGEMVNKERNEL = ../arm/zgemv_n.c
 ZGEMVNKERNEL = zgemv_n_4.c
 #
-SGEMVTKERNEL = sgemv_t.c
+#SGEMVTKERNEL = ../arm/gemv_t.c
 DGEMVTKERNEL = dgemv_t.c
-CGEMVTKERNEL = cgemv_t.c
+#CGEMVTKERNEL = ../arm/zgemv_t.c
 ZGEMVTKERNEL = zgemv_t_4.c
 
 

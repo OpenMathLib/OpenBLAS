@@ -34,7 +34,7 @@ endif
 
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
-SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
+SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
 
 .PHONY : all libs netlib $(RELA) test ctest shared install
 .NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
@@ -96,7 +96,7 @@ endif
 	@echo
 
 shared :
-ifneq ($(NO_SHARED), 1)
+ifndef NO_SHARED
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
@@ -123,13 +123,10 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
-endif
 	$(MAKE) -C utest all
+endif
 ifndef NO_CBLAS
 	$(MAKE) -C ctest all
-ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
-	$(MAKE) -C cpp_thread_test all
-endif
 endif
 endif
 

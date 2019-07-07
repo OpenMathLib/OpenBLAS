@@ -1,6 +1,7 @@
 #include "relapack.h"
-static void RELAPACK_sgetrf_rec(const blasint *, const blasint *, float *, const blasint *,
-    blasint *, blasint *);
+
+static void RELAPACK_sgetrf_rec(const int *, const int *, float *, const int *,
+    int *, int *);
 
 
 /** SGETRF computes an LU factorization of a general M-by-N matrix A using partial pivoting with row interchanges.
@@ -10,9 +11,9 @@ static void RELAPACK_sgetrf_rec(const blasint *, const blasint *, float *, const
  * http://www.netlib.org/lapack/explore-html/de/de2/sgetrf_8f.html
  * */
 void RELAPACK_sgetrf(
-    const blasint *m, const blasint *n,
-    float *A, const blasint *ldA, blasint *ipiv,
-    blasint *info
+    const int *m, const int *n,
+    float *A, const int *ldA, int *ipiv,
+    int *info
 ) {
 
     // Check arguments
@@ -21,24 +22,26 @@ void RELAPACK_sgetrf(
         *info = -1;
     else if (*n < 0)
         *info = -2;
-    else if (*ldA < MAX(1, *m))
+    else if (*ldA < MAX(1, *n))
         *info = -4;
     if (*info) {
-        const blasint minfo = -*info;
-        LAPACK(xerbla)("SGETRF", &minfo, strlen("SGETRF"));
+        const int minfo = -*info;
+        LAPACK(xerbla)("SGETRF", &minfo);
         return;
     }
-    const blasint sn = MIN(*m, *n);
+
+    const int sn = MIN(*m, *n);
+
     RELAPACK_sgetrf_rec(m, &sn, A, ldA, ipiv, info);
 
     // Right remainder
     if (*m < *n) {
         // Constants
         const float ONE[] = { 1. };
-        const blasint  iONE[] = { 1. };
+        const int  iONE[] = { 1. };
 
         // Splitting
-        const blasint rn = *n - *m;
+        const int rn = *n - *m;
 
         // A_L A_R
         const float *const A_L = A;
@@ -54,10 +57,11 @@ void RELAPACK_sgetrf(
 
 /** sgetrf's recursive compute kernel */
 static void RELAPACK_sgetrf_rec(
-    const blasint *m, const blasint *n,
-    float *A, const blasint *ldA, blasint *ipiv,
-    blasint *info
+    const int *m, const int *n,
+    float *A, const int *ldA, int *ipiv,
+    int *info
 ) {
+
     if (*n <= MAX(CROSSOVER_SGETRF, 1)) {
         // Unblocked
         LAPACK(sgetf2)(m, n, A, ldA, ipiv, info);
@@ -67,12 +71,13 @@ static void RELAPACK_sgetrf_rec(
     // Constants
     const float ONE[]  = { 1. };
     const float MONE[] = { -1. };
-    const blasint   iONE[] = { 1 };
+    const int   iONE[] = { 1 };
 
     // Splitting
-    const blasint n1 = SREC_SPLIT(*n);
-    const blasint n2 = *n - n1;
-    const blasint m2 = *m - n1;
+    const int n1 = SREC_SPLIT(*n);
+    const int n2 = *n - n1;
+    const int m2 = *m - n1;
+
     // A_L A_R
     float *const A_L = A;
     float *const A_R = A + *ldA * n1;
@@ -86,8 +91,8 @@ static void RELAPACK_sgetrf_rec(
 
     // ipiv_T
     // ipiv_B
-    blasint *const ipiv_T = ipiv;
-    blasint *const ipiv_B = ipiv + n1;
+    int *const ipiv_T = ipiv;
+    int *const ipiv_B = ipiv + n1;
 
     // recursion(A_L, ipiv_T)
     RELAPACK_sgetrf_rec(m, &n1, A_L, ldA, ipiv_T, info);
@@ -106,7 +111,7 @@ static void RELAPACK_sgetrf_rec(
     // apply pivots to A_BL
     LAPACK(slaswp)(&n1, A_BL, ldA, iONE, &n2, ipiv_B, iONE);
     // shift pivots
-    blasint i;
+    int i;
     for (i = 0; i < n2; i++)
         ipiv_B[i] += n1;
 }

@@ -19,7 +19,6 @@
 #define	DDOTC_K			ddot_k
 #define	DNRM2_K			dnrm2_k
 #define	DSCAL_K			dscal_k
-#define	DSUM_K			dsum_k
 #define	DSWAP_K			dswap_k
 #define	DROT_K			drot_k
 
@@ -175,7 +174,6 @@
 #define	DDOTC_K			gotoblas -> ddot_k
 #define	DNRM2_K			gotoblas -> dnrm2_k
 #define	DSCAL_K			gotoblas -> dscal_k
-#define	DSUM_K			gotoblas -> dsum_k
 #define	DSWAP_K			gotoblas -> dswap_k
 #define	DROT_K			gotoblas -> drot_k
 
