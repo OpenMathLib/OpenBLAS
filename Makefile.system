@@ -1124,7 +1124,11 @@ endif
 endif
 
 ifdef NO_AFFINITY
+ifeq ($(NO_AFFINITY), 0)
+override undefine NO_AFFINITY
+else
 CCOMMON_OPT	+= -DNO_AFFINITY
+endif
 endif
 
 ifdef FUNCTION_PROFILE
