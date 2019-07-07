@@ -1,7 +1,7 @@
 #include "relapack.h"
 
-static void RELAPACK_dtrtri_rec(const char *, const char *, const int *,
-    double *, const int *, int *);
+static void RELAPACK_dtrtri_rec(const char *, const char *, const blasint *,
+    double *, const blasint *, blasint *);
 
 
 /** DTRTRI computes the inverse of a real upper or lower triangular matrix A.
@@ -11,16 +11,16 @@ static void RELAPACK_dtrtri_rec(const char *, const char *, const int *,
  * http://www.netlib.org/lapack/explore-html/d5/dba/dtrtri_8f.html
  * */
 void RELAPACK_dtrtri(
-    const char *uplo, const char *diag, const int *n,
-    double *A, const int *ldA,
-    int *info
+    const char *uplo, const char *diag, const blasint *n,
+    double *A, const blasint *ldA,
+    blasint *info
 ) {
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
-    const int nounit = LAPACK(lsame)(diag, "N");
-    const int unit = LAPACK(lsame)(diag, "U");
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
+    const blasint nounit = LAPACK(lsame)(diag, "N");
+    const blasint unit = LAPACK(lsame)(diag, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -31,8 +31,8 @@ void RELAPACK_dtrtri(
     else if (*ldA < MAX(1, *n))
         *info = -5;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("DTRTRI", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("DTRTRI", &minfo, strlen("DTRTRI"));
         return;
     }
 
@@ -42,7 +42,7 @@ void RELAPACK_dtrtri(
 
     // check for singularity
     if (nounit) {
-        int i;
+        blasint i;
         for (i = 0; i < *n; i++)
             if (A[i + *ldA * i] == 0) {
                 *info = i;
@@ -57,9 +57,9 @@ void RELAPACK_dtrtri(
 
 /** dtrtri's recursive compute kernel */
 static void RELAPACK_dtrtri_rec(
-    const char *uplo, const char *diag, const int *n,
-    double *A, const int *ldA,
-    int *info
+    const char *uplo, const char *diag, const blasint *n,
+    double *A, const blasint *ldA,
+    blasint *info
 ){
 
     if (*n <= MAX(CROSSOVER_DTRTRI, 1)) {
@@ -73,8 +73,8 @@ static void RELAPACK_dtrtri_rec(
     const double MONE[] = { -1. };
 
     // Splitting
-    const int n1 = DREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = DREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

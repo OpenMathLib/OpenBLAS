@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
-use File::Basename;
-use File::Temp qw(tempfile);
+#use File::Basename;
+# use File::Temp qw(tempfile);
 
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
@@ -12,7 +12,7 @@ $hostarch = "arm64" if ($hostarch eq "aarch64");
 $hostarch = "power" if ($hostarch =~ /^(powerpc|ppc).*/);
 $hostarch = "zarch" if ($hostarch eq "s390x");
 
-$tmpf = new File::Temp( UNLINK => 1 );
+#$tmpf = new File::Temp( UNLINK => 1 );
 $binary = $ENV{"BINARY"};
 
 $makefile = shift(@ARGV);
@@ -31,12 +31,25 @@ if ($?) {
 
 $cross_suffix = "";
 
-if (dirname($compiler_name) ne ".") {
-    $cross_suffix .= dirname($compiler_name) . "/";
-}
+eval "use File::Basename";
+if ($@){ 
+    warn "could not load PERL module File::Basename, emulating its functionality";
+    my $dirnam = substr($compiler_name, 0, rindex($compiler_name, "/")-1 );
+    if ($dirnam ne ".") {
+	$cross_suffix .= $dirnam . "/";
+    }
+    my $basnam = substr($compiler_name, rindex($compiler_name,"/")+1, length($compiler_name)-rindex($compiler_name,"/")-1);
+	if ($basnam =~ /([^\s]*-)(.*)/) {
+	$cross_suffix .= $1;
+    }
+} else {
+    if (dirname($compiler_name) ne ".") {
+	$cross_suffix .= dirname($compiler_name) . "/";
+    }
 
-if (basename($compiler_name) =~ /([^\s]*-)(.*)/) {
-    $cross_suffix .= $1;
+    if (basename($compiler_name) =~ /([^\s]*-)(.*)/) {
+	$cross_suffix .= $1;
+    }
 }
 
 $compiler = "";
@@ -171,20 +184,26 @@ if ($?) {
 
 $have_msa = 0;
 if (($architecture eq "mips") || ($architecture eq "mips64")) {
-    $code = '"addvi.b $w0, $w1, 1"';
-    $msa_flags = "-mmsa -mfp64 -msched-weight -mload-store-pairs";
-    print $tmpf "#include <msa.h>\n\n";
-    print $tmpf "void main(void){ __asm__ volatile($code); }\n";
-
-    $args = "$msa_flags -o $tmpf.o -x c $tmpf";
-    my @cmd = ("$compiler_name $args");
-    system(@cmd) == 0;
-    if ($? != 0) {
-        $have_msa = 0;
+    eval "use File::Temp qw(tempfile)";
+    if ($@){ 
+	warn "could not load PERL module File::Temp, so could not check MSA capatibility";
     } else {
-        $have_msa = 1;
+	$tmpf = new File::Temp( UNLINK => 1 );
+	$code = '"addvi.b $w0, $w1, 1"';
+	$msa_flags = "-mmsa -mfp64 -msched-weight -mload-store-pairs";
+	print $tmpf "#include <msa.h>\n\n";
+	print $tmpf "void main(void){ __asm__ volatile($code); }\n";
+
+	$args = "$msa_flags -o $tmpf.o -x c $tmpf";
+	my @cmd = ("$compiler_name $args");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $have_msa = 0;
+	} else {
+	    $have_msa = 1;
+	}
+	unlink("$tmpf.o");
     }
-    unlink("$tmpf.o");
 }
 
 $architecture = x86    if ($data =~ /ARCH_X86/);
@@ -204,17 +223,25 @@ $binformat    = bin64  if ($data =~ /BINARY_64/);
 
 $no_avx512= 0;
 if (($architecture eq "x86") || ($architecture eq "x86_64")) {
-    $code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
-    print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
-    $args = " -march=skylake-avx512 -o $tmpf.o -x c $tmpf";
-    my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
-    system(@cmd) == 0;
-    if ($? != 0) {
-	$no_avx512 = 1;
-    } else {
+    eval "use File::Temp qw(tempfile)";
+    if ($@){ 
+	warn "could not load PERL module File::Temp, so could not check compiler compatibility with AVX512";
 	$no_avx512 = 0;
+    } else {
+#	$tmpf = new File::Temp( UNLINK => 1 );
+	($fh,$tmpf) = tempfile( UNLINK => 1 );
+	$code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
+	print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
+	$args = " -march=skylake-avx512 -c -o $tmpf.o -x c $tmpf";
+	my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $no_avx512 = 1;
+	} else {
+	    $no_avx512 = 0;
+	}
+	unlink("$tmpf.o");
     }
-    unlink("tmpf.o");
 }
 
 $data = `$compiler_name -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;

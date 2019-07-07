@@ -171,7 +171,7 @@ IXAMAXKERNEL = izamax.S
 endif
 
 ifndef ISAMINKERNEL
-ISAMINKERNEL = iamax_sse.S
+ISAMINKERNEL = iamax.S
 endif
 
 ifndef IDAMINKERNEL
@@ -207,7 +207,7 @@ IQMAXKERNEL = iamax.S
 endif
 
 ifndef ISMINKERNEL
-ISMINKERNEL = iamax_sse.S
+ISMINKERNEL = iamax.S
 endif
 
 ifndef IDMINKERNEL

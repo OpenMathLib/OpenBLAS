@@ -323,7 +323,7 @@
    10    CONTINUE
 *
          IF( N.GT.1 .AND. KBAND.EQ.1 ) THEN
-            DO 20 J = 1, N - 1
+            DO 20 J = 2, N - 1
                CALL CHPR2( CUPLO, N, -CMPLX( E( J ) ), U( 1, J ), 1,
      $                     U( 1, J-1 ), 1, WORK )
    20       CONTINUE

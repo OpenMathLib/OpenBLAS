@@ -15,7 +15,7 @@
 /* Table of constant values */
 
 static doublecomplex c_b1 = {1.,0.};
-static int c__1 = 1;
+static blasint c__1 = 1;
 
 /** ZSYTRF_REC2 computes a partial factorization of a complex symmetric matrix using the Bunch-Kaufman diagon al pivoting method.
  *
@@ -24,12 +24,12 @@ static int c__1 = 1;
  * The blocked BLAS Level 3 updates were removed and moved to the
  * recursive algorithm.
  * */
-/* Subroutine */ void RELAPACK_zsytrf_rec2(char *uplo, int *n, int *
-	nb, int *kb, doublecomplex *a, int *lda, int *ipiv,
-	doublecomplex *w, int *ldw, int *info, ftnlen uplo_len)
+/* Subroutine */ void RELAPACK_zsytrf_rec2(char *uplo, blasint *n, blasint *
+	nb, blasint *kb, doublecomplex *a, blasint *lda, blasint *ipiv,
+	doublecomplex *w, blasint *ldw, blasint *info, ftnlen uplo_len)
 {
     /* System generated locals */
-    int a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4;
+    blasint a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4;
     double d__1, d__2, d__3, d__4;
     doublecomplex z__1, z__2, z__3;
 
@@ -38,22 +38,22 @@ static int c__1 = 1;
     void z_div(doublecomplex *, doublecomplex *, doublecomplex *);
 
     /* Local variables */
-    static int j, k;
+    static blasint j, k;
     static doublecomplex t, r1, d11, d21, d22;
-    static int jj, kk, jp, kp, kw, kkw, imax, jmax;
+    static blasint jj, kk, jp, kp, kw, kkw, imax, jmax;
     static double alpha;
     extern logical lsame_(char *, char *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zscal_(int *, doublecomplex *,
-	    doublecomplex *, int *);
-    static int kstep;
-    extern /* Subroutine */ int zgemv_(char *, int *, int *,
-	    doublecomplex *, doublecomplex *, int *, doublecomplex *,
-	    int *, doublecomplex *, doublecomplex *, int *, ftnlen),
-	    zcopy_(int *, doublecomplex *, int *, doublecomplex *,
-	    int *), zswap_(int *, doublecomplex *, int *,
-	    doublecomplex *, int *);
+    extern /* Subroutine */ blasint zscal_(int *, doublecomplex *,
+	    doublecomplex *, blasint *);
+    static blasint kstep;
+    extern /* Subroutine */ blasint zgemv_(char *, blasint *, blasint *,
+	    doublecomplex *, doublecomplex *, blasint *, doublecomplex *,
+	    blasint *, doublecomplex *, doublecomplex *, blasint *, ftnlen),
+	    zcopy_(int *, doublecomplex *, blasint *, doublecomplex *,
+	    blasint *), zswap_(int *, doublecomplex *, blasint *,
+	    doublecomplex *, blasint *);
     static double absakk, colmax;
-    extern int izamax_(int *, doublecomplex *, int *);
+    extern blasint izamax_(int *, doublecomplex *, blasint *);
     static double rowmax;
 
     /* Parameter adjustments */

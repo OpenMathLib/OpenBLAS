@@ -121,12 +121,12 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	.align 16							\n\t"
 	"1:									\n\t"
 
-	"	vbroadcastss	(%3,%1,1), %%xmm0				\n\t"	// read b
-	"	vmovups         (%2,%1,8), %%xmm4				\n\t"
-	"	vbroadcastss   4(%3,%1,1), %%xmm1				\n\t"	
-	"	vmovups       16(%2,%1,8), %%xmm5				\n\t"
-	"	vmovups       32(%2,%1,8), %%xmm6				\n\t"
-	"	vmovups       48(%2,%1,8), %%xmm7				\n\t"
+	"	vbroadcastss	(%7,%1,1), %%xmm0				\n\t"	// read b
+	"	vmovups         (%6,%1,8), %%xmm4				\n\t"
+	"	vbroadcastss   4(%7,%1,1), %%xmm1				\n\t"	
+	"	vmovups       16(%6,%1,8), %%xmm5				\n\t"
+	"	vmovups       32(%6,%1,8), %%xmm6				\n\t"
+	"	vmovups       48(%6,%1,8), %%xmm7				\n\t"
 
 	"	vfmaddps	%%xmm8 , %%xmm0 , %%xmm4 , %%xmm8		\n\t"
 	"	vfmaddps	%%xmm12, %%xmm1 , %%xmm4 , %%xmm12		\n\t"
@@ -166,20 +166,20 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 
 	"3:									\n\t"	
 
-	"	vbroadcastss     0(%6) , %%xmm0					\n\t" // i=0, read aa[i]		
+	"	vbroadcastss     0(%2) , %%xmm0					\n\t" // i=0, read aa[i]		
 	"	vshufps		$0x00  , %%xmm8  , %%xmm8  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x00  , %%xmm12 , %%xmm12 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  ,  0(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  ,  0(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups         0(%6)  , %%xmm4                                 \n\t"   // read a[k]
-	"       vmovups        16(%6)  , %%xmm5                                 \n\t"   // read a[k]
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups         0(%2)  , %%xmm4                                 \n\t"   // read a[k]
+	"       vmovups        16(%2)  , %%xmm5                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
 	"       vfnmaddps       %%xmm8  , %%xmm1 , %%xmm4 , %%xmm8              \n\t"
         "       vfnmaddps       %%xmm12 , %%xmm2 , %%xmm4 , %%xmm12             \n\t"
         "       vfnmaddps       %%xmm9  , %%xmm1 , %%xmm5 , %%xmm9              \n\t"
@@ -189,23 +189,23 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss     4(%6) , %%xmm0					\n\t" // i=1, read aa[i]		
+	"	vbroadcastss     4(%2) , %%xmm0					\n\t" // i=1, read aa[i]		
 	"	vshufps		$0x55  , %%xmm8  , %%xmm8  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x55  , %%xmm12 , %%xmm12 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  ,  4(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  ,  4(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups         0(%6)  , %%xmm4                                 \n\t"   // read a[k]
-	"       vmovups        16(%6)  , %%xmm5                                 \n\t"   // read a[k]
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups         0(%2)  , %%xmm4                                 \n\t"   // read a[k]
+	"       vmovups        16(%2)  , %%xmm5                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
 	"       vfnmaddps       %%xmm8  , %%xmm1 , %%xmm4 , %%xmm8              \n\t"
         "       vfnmaddps       %%xmm12 , %%xmm2 , %%xmm4 , %%xmm12             \n\t"
         "       vfnmaddps       %%xmm9  , %%xmm1 , %%xmm5 , %%xmm9              \n\t"
@@ -215,23 +215,23 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss     8(%6) , %%xmm0					\n\t" // i=2, read aa[i]		
+	"	vbroadcastss     8(%2) , %%xmm0					\n\t" // i=2, read aa[i]		
 	"	vshufps		$0xaa  , %%xmm8  , %%xmm8  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xaa  , %%xmm12 , %%xmm12 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  ,  8(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  ,  8(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups         0(%6)  , %%xmm4                                 \n\t"   // read a[k]
-	"       vmovups        16(%6)  , %%xmm5                                 \n\t"   // read a[k]
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups         0(%2)  , %%xmm4                                 \n\t"   // read a[k]
+	"       vmovups        16(%2)  , %%xmm5                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
 	"       vfnmaddps       %%xmm8  , %%xmm1 , %%xmm4 , %%xmm8              \n\t"
         "       vfnmaddps       %%xmm12 , %%xmm2 , %%xmm4 , %%xmm12             \n\t"
         "       vfnmaddps       %%xmm9  , %%xmm1 , %%xmm5 , %%xmm9              \n\t"
@@ -241,22 +241,22 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    12(%6) , %%xmm0					\n\t" // i=3, read aa[i]		
+	"	vbroadcastss    12(%2) , %%xmm0					\n\t" // i=3, read aa[i]		
 	"	vshufps		$0xff  , %%xmm8  , %%xmm8  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xff  , %%xmm12 , %%xmm12 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 12(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 12(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        16(%6)  , %%xmm5                                 \n\t"   // read a[k]
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        16(%2)  , %%xmm5                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm9  , %%xmm1 , %%xmm5 , %%xmm9              \n\t"
         "       vfnmaddps       %%xmm13 , %%xmm2 , %%xmm5 , %%xmm13             \n\t"
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
@@ -264,22 +264,22 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    16(%6) , %%xmm0					\n\t" // i=4, read aa[i]		
+	"	vbroadcastss    16(%2) , %%xmm0					\n\t" // i=4, read aa[i]		
 	"	vshufps		$0x00  , %%xmm9  , %%xmm9  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x00  , %%xmm13 , %%xmm13 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 16(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 16(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        16(%6)  , %%xmm5                                 \n\t"   // read a[k]
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        16(%2)  , %%xmm5                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm9  , %%xmm1 , %%xmm5 , %%xmm9              \n\t"
         "       vfnmaddps       %%xmm13 , %%xmm2 , %%xmm5 , %%xmm13             \n\t"
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
@@ -287,22 +287,22 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    20(%6) , %%xmm0					\n\t" // i=5, read aa[i]		
+	"	vbroadcastss    20(%2) , %%xmm0					\n\t" // i=5, read aa[i]		
 	"	vshufps		$0x55  , %%xmm9  , %%xmm9  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x55  , %%xmm13 , %%xmm13 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 20(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 20(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        16(%6)  , %%xmm5                                 \n\t"   // read a[k]
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        16(%2)  , %%xmm5                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm9  , %%xmm1 , %%xmm5 , %%xmm9              \n\t"
         "       vfnmaddps       %%xmm13 , %%xmm2 , %%xmm5 , %%xmm13             \n\t"
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
@@ -310,22 +310,22 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    24(%6) , %%xmm0					\n\t" // i=6, read aa[i]		
+	"	vbroadcastss    24(%2) , %%xmm0					\n\t" // i=6, read aa[i]		
 	"	vshufps		$0xaa  , %%xmm9  , %%xmm9  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xaa  , %%xmm13 , %%xmm13 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 24(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 24(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        16(%6)  , %%xmm5                                 \n\t"   // read a[k]
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        16(%2)  , %%xmm5                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm9  , %%xmm1 , %%xmm5 , %%xmm9              \n\t"
         "       vfnmaddps       %%xmm13 , %%xmm2 , %%xmm5 , %%xmm13             \n\t"
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
@@ -333,179 +333,179 @@ static void strsm_LT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    28(%6) , %%xmm0					\n\t" // i=7, read aa[i]		
+	"	vbroadcastss    28(%2) , %%xmm0					\n\t" // i=7, read aa[i]		
 	"	vshufps		$0xff  , %%xmm9  , %%xmm9  , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xff  , %%xmm13 , %%xmm13 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 28(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 28(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
         "       vfnmaddps       %%xmm14 , %%xmm2 , %%xmm6 , %%xmm14             \n\t"
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    32(%6) , %%xmm0					\n\t" // i=8, read aa[i]		
+	"	vbroadcastss    32(%2) , %%xmm0					\n\t" // i=8, read aa[i]		
 	"	vshufps		$0x00  , %%xmm10 , %%xmm10 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x00  , %%xmm14 , %%xmm14 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 32(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 32(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
         "       vfnmaddps       %%xmm14 , %%xmm2 , %%xmm6 , %%xmm14             \n\t"
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    36(%6) , %%xmm0					\n\t" // i=9, read aa[i]		
+	"	vbroadcastss    36(%2) , %%xmm0					\n\t" // i=9, read aa[i]		
 	"	vshufps		$0x55  , %%xmm10 , %%xmm10 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x55  , %%xmm14 , %%xmm14 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 36(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 36(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
         "       vfnmaddps       %%xmm14 , %%xmm2 , %%xmm6 , %%xmm14             \n\t"
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    40(%6) , %%xmm0					\n\t" // i=10, read aa[i]		
+	"	vbroadcastss    40(%2) , %%xmm0					\n\t" // i=10, read aa[i]		
 	"	vshufps		$0xaa  , %%xmm10 , %%xmm10 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xaa  , %%xmm14 , %%xmm14 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 40(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 40(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        32(%6)  , %%xmm6                                 \n\t"   // read a[k]
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        32(%2)  , %%xmm6                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm10 , %%xmm1 , %%xmm6 , %%xmm10             \n\t"
         "       vfnmaddps       %%xmm14 , %%xmm2 , %%xmm6 , %%xmm14             \n\t"
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    44(%6) , %%xmm0					\n\t" // i=11, read aa[i]		
+	"	vbroadcastss    44(%2) , %%xmm0					\n\t" // i=11, read aa[i]		
 	"	vshufps		$0xff  , %%xmm10 , %%xmm10 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xff  , %%xmm14 , %%xmm14 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 44(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 44(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    48(%6) , %%xmm0					\n\t" // i=12, read aa[i]		
+	"	vbroadcastss    48(%2) , %%xmm0					\n\t" // i=12, read aa[i]		
 	"	vshufps		$0x00  , %%xmm11 , %%xmm11 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x00  , %%xmm15 , %%xmm15 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 48(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 48(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    52(%6) , %%xmm0					\n\t" // i=13, read aa[i]		
+	"	vbroadcastss    52(%2) , %%xmm0					\n\t" // i=13, read aa[i]		
 	"	vshufps		$0x55  , %%xmm11 , %%xmm11 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0x55  , %%xmm15 , %%xmm15 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 52(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 52(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    56(%6) , %%xmm0					\n\t" // i=14, read aa[i]		
+	"	vbroadcastss    56(%2) , %%xmm0					\n\t" // i=14, read aa[i]		
 	"	vshufps		$0xaa  , %%xmm11 , %%xmm11 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xaa  , %%xmm15 , %%xmm15 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 56(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 56(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
-	"       vmovups        48(%6)  , %%xmm7                                 \n\t"   // read a[k]
+	"       vmovups        48(%2)  , %%xmm7                                 \n\t"   // read a[k]
         "       vfnmaddps       %%xmm11 , %%xmm1 , %%xmm7 , %%xmm11             \n\t"
         "       vfnmaddps       %%xmm15 , %%xmm2 , %%xmm7 , %%xmm15             \n\t"
 
-	"	addq		$64 , %6					\n\t"   // a -= m
-	"	addq		$8  , %7					\n\t"   // b -= n
+	"	addq		$64 , %2					\n\t"   // a -= m
+	"	addq		$8  , %3					\n\t"   // b -= n
 
-	"	vbroadcastss    60(%6) , %%xmm0					\n\t" // i=15, read aa[i]		
+	"	vbroadcastss    60(%2) , %%xmm0					\n\t" // i=15, read aa[i]		
 	"	vshufps		$0xff  , %%xmm11 , %%xmm11 , %%xmm1		\n\t" // extract bb0
 	"	vshufps		$0xff  , %%xmm15 , %%xmm15 , %%xmm2		\n\t" // extract bb1
 	"       vmulps          %%xmm0  , %%xmm1 , %%xmm1                       \n\t"   // bb0 * aa
 	"       vmulps          %%xmm0  , %%xmm2 , %%xmm2                       \n\t"   // bb1 * aa
         "       vmovss          %%xmm1  , 60(%4)                                \n\t"   // c[i] = bb0 * aa
         "       vmovss          %%xmm2  , 60(%5)                                \n\t"   // c[i] = bb1 * aa
-        "       vmovss          %%xmm1  ,   (%7)                        	\n\t"   // b[0] = bb0 * aa
-        "       vmovss          %%xmm2  ,  4(%7)                        	\n\t"   // b[1] = bb1 * aa
+        "       vmovss          %%xmm1  ,   (%3)                        	\n\t"   // b[0] = bb0 * aa
+        "       vmovss          %%xmm2  ,  4(%3)                        	\n\t"   // b[1] = bb1 * aa
 
 	"	vzeroupper							\n\t"
 
         :
+          "+r" (n1),     // 0    
+          "+a" (i),      // 1    
+          "+r" (as),     // 2
+          "+r" (bs)      // 3
         :
-          "r" (n1),     // 0    
-          "a" (i),      // 1    
-          "r" (a),      // 2
-          "r" (b),      // 3
-          "r" (c),      // 4
-          "r" (c1),     // 5
-          "r" (as),     // 6
-          "r" (bs)      // 7
+          "r" (c),       // 4
+          "r" (c1),      // 5
+          "r" (a),       // 6
+          "r" (b)        // 7
         : "cc",
           "%xmm0", "%xmm1", "%xmm2", "%xmm3",
           "%xmm4", "%xmm5", "%xmm6", "%xmm7",

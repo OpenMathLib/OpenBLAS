@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma GCC optimize "O1"
 
-#if defined(POWER8)
+#if defined(POWER8) || defined(POWER9)
 #if defined(DOUBLE)
 #include "zscal_microk_power8.c"
 #endif
