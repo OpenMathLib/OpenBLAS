@@ -3,9 +3,9 @@
 #include "stdlib.h"
 #endif
 
-static void RELAPACK_dsygst_rec(const int *, const char *, const int *,
-    double *, const int *, const double *, const int *,
-    double *, const int *, int *);
+static void RELAPACK_dsygst_rec(const blasint *, const char *, const blasint *,
+    double *, const blasint *, const double *, const blasint *,
+    double *, const blasint *, blasint *);
 
 
 /** DSYGST reduces a real symmetric-definite generalized eigenproblem to standard form.
@@ -15,14 +15,14 @@ static void RELAPACK_dsygst_rec(const int *, const char *, const int *,
  * http://www.netlib.org/lapack/explore-html/dc/d04/dsygst_8f.html
  * */
 void RELAPACK_dsygst(
-    const int *itype, const char *uplo, const int *n,
-    double *A, const int *ldA, const double *B, const int *ldB,
-    int *info
+    const blasint *itype, const char *uplo, const blasint *n,
+    double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    blasint *info
 ) {
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (*itype < 1 || *itype > 3)
         *info = -1;
@@ -35,8 +35,8 @@ void RELAPACK_dsygst(
     else if (*ldB < MAX(1, *n))
         *info = -7;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("DSYGST", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("DSYGST", &minfo, strlen("DSYGST"));
         return;
     }
 
@@ -45,10 +45,10 @@ void RELAPACK_dsygst(
 
     // Allocate work space
     double *Work = NULL;
-    int    lWork = 0;
+    blasint    lWork = 0;
 #if XSYGST_ALLOW_MALLOC
-    const int n1 = DREC_SPLIT(*n);
-    lWork = n1 * (*n - n1);
+    const blasint n1 = DREC_SPLIT(*n);
+    lWork = abs( n1 * (*n - n1) );
     Work  = malloc(lWork * sizeof(double));
     if (!Work)
         lWork = 0;
@@ -67,9 +67,9 @@ void RELAPACK_dsygst(
 
 /** dsygst's recursive compute kernel */
 static void RELAPACK_dsygst_rec(
-    const int *itype, const char *uplo, const int *n,
-    double *A, const int *ldA, const double *B, const int *ldB,
-    double *Work, const int *lWork, int *info
+    const blasint *itype, const char *uplo, const blasint *n,
+    double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    double *Work, const blasint *lWork, blasint *info
 ) {
 
     if (*n <= MAX(CROSSOVER_SSYGST, 1)) {
@@ -84,14 +84,14 @@ static void RELAPACK_dsygst_rec(
     const double MONE[]  = { -1. };
     const double HALF[]  = { .5 };
     const double MHALF[] = { -.5 };
-    const int    iONE[]  = { 1 };
+    const blasint    iONE[]  = { 1 };
 
     // Loop iterator
-    int i;
+    blasint i;
 
     // Splitting
-    const int n1 = DREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = DREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

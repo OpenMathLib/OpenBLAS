@@ -1,11 +1,11 @@
 #include "relapack.h"
 #include <math.h>
 
-static void RELAPACK_dtgsyl_rec(const char *, const int *, const int *,
-    const int *, const double *, const int *, const double *, const int *,
-    double *, const int *, const double *, const int *, const double *,
-    const int *, double *, const int *, double *, double *, double *, int *,
-    int *, int *);
+static void RELAPACK_dtgsyl_rec(const char *, const blasint *, const blasint *,
+    const blasint *, const double *, const blasint *, const double *, const blasint *,
+    double *, const blasint *, const double *, const blasint *, const double *,
+    const blasint *, double *, const blasint *, double *, double *, double *, blasint *,
+    blasint *, blasint *);
 
 
 /** DTGSYL solves the generalized Sylvester equation.
@@ -15,21 +15,21 @@ static void RELAPACK_dtgsyl_rec(const char *, const int *, const int *,
  * http://www.netlib.org/lapack/explore-html/db/d88/dtgsyl_8f.html
  * */
 void RELAPACK_dtgsyl(
-    const char *trans, const int *ijob, const int *m, const int *n,
-    const double *A, const int *ldA, const double *B, const int *ldB,
-    double *C, const int *ldC,
-    const double *D, const int *ldD, const double *E, const int *ldE,
-    double *F, const int *ldF,
+    const char *trans, const blasint *ijob, const blasint *m, const blasint *n,
+    const double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    double *C, const blasint *ldC,
+    const double *D, const blasint *ldD, const double *E, const blasint *ldE,
+    double *F, const blasint *ldF,
     double *scale, double *dif,
-    double *Work, const int *lWork, int *iWork, int *info
+    double *Work, const blasint *lWork, blasint *iWork, blasint *info
 ) {
 
     // Parse arguments
-    const int notran = LAPACK(lsame)(trans, "N");
-    const int tran = LAPACK(lsame)(trans, "T");
+    const blasint notran = LAPACK(lsame)(trans, "N");
+    const blasint tran = LAPACK(lsame)(trans, "T");
 
     // Compute work buffer size
-    int lwmin = 1;
+    blasint lwmin = 1;
     if (notran && (*ijob == 1 || *ijob == 2))
         lwmin = MAX(1, 2 * *m * *n);
     *info = 0;
@@ -58,8 +58,8 @@ void RELAPACK_dtgsyl(
     else if (*lWork < lwmin && *lWork != -1)
         *info = -20;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("DTGSYL", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("DTGSYL", &minfo, strlen("DTGSYL"));
         return;
     }
 
@@ -75,8 +75,8 @@ void RELAPACK_dtgsyl(
     // Constant
     const double ZERO[] = { 0. };
 
-    int isolve = 1;
-    int ifunc  = 0;
+    blasint isolve = 1;
+    blasint ifunc  = 0;
     if (notran) {
         if (*ijob >= 3) {
             ifunc = *ijob - 2;
@@ -87,12 +87,12 @@ void RELAPACK_dtgsyl(
     }
 
     double scale2;
-    int iround;
+    blasint iround;
     for (iround = 1; iround <= isolve; iround++) {
         *scale = 1;
         double dscale = 0;
         double dsum   = 1;
-        int pq;
+        blasint pq;
         RELAPACK_dtgsyl_rec(&cleantrans, &ifunc, m, n, A, ldA, B, ldB, C, ldC, D, ldD, E, ldE, F, ldF, scale, &dsum, &dscale, iWork, &pq, info);
         if (dscale != 0) {
             if (*ijob == 1 || *ijob == 3)
@@ -121,13 +121,13 @@ void RELAPACK_dtgsyl(
 
 /** dtgsyl's recursive vompute kernel */
 static void RELAPACK_dtgsyl_rec(
-    const char *trans, const int *ifunc, const int *m, const int *n,
-    const double *A, const int *ldA, const double *B, const int *ldB,
-    double *C, const int *ldC,
-    const double *D, const int *ldD, const double *E, const int *ldE,
-    double *F, const int *ldF,
+    const char *trans, const blasint *ifunc, const blasint *m, const blasint *n,
+    const double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    double *C, const blasint *ldC,
+    const double *D, const blasint *ldD, const double *E, const blasint *ldE,
+    double *F, const blasint *ldF,
     double *scale, double *dsum, double *dscale,
-    int *iWork, int *pq, int *info
+    blasint *iWork, blasint *pq, blasint *info
 ) {
 
     if (*m <= MAX(CROSSOVER_DTGSYL, 1) && *n <= MAX(CROSSOVER_DTGSYL, 1)) {
@@ -139,20 +139,20 @@ static void RELAPACK_dtgsyl_rec(
     // Constants
     const double ONE[]  = { 1. };
     const double MONE[] = { -1. };
-    const int    iONE[] = { 1 };
+    const blasint    iONE[] = { 1 };
 
     // Outputs
     double scale1[] = { 1. };
     double scale2[] = { 1. };
-    int    info1[]  = { 0 };
-    int    info2[]  = { 0 };
+    blasint    info1[]  = { 0 };
+    blasint    info2[]  = { 0 };
 
     if (*m > *n) {
         // Splitting
-        int m1 = DREC_SPLIT(*m);
+        blasint m1 = DREC_SPLIT(*m);
         if (A[m1 + *ldA * (m1 - 1)])
             m1++;
-        const int m2 = *m - m1;
+        const blasint m2 = *m - m1;
 
         // A_TL A_TR
         // 0    A_BR
@@ -210,10 +210,10 @@ static void RELAPACK_dtgsyl_rec(
         }
     } else {
         // Splitting
-        int n1 = DREC_SPLIT(*n);
+        blasint n1 = DREC_SPLIT(*n);
         if (B[n1 + *ldB * (n1 - 1)])
             n1++;
-        const int n2 = *n - n1;
+        const blasint n2 = *n - n1;
 
         // B_TL B_TR
         // 0    B_BR

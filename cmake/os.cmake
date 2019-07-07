@@ -8,6 +8,11 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(NO_EXPRECISION 1)
 endif ()
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD|OpenBSD|NetBSD|DragonFly")
+  set(EXTRALIB "${EXTRALIB} -lm")
+  set(NO_EXPRECISION 1)
+endif ()
+
 if (${CMAKE_SYSTEM_NAME} STREQUAL "AIX")
   set(EXTRALIB "${EXTRALIB} -lm")
 endif ()

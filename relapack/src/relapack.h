@@ -1,6 +1,14 @@
 #ifndef RELAPACK_INT_H
 #define RELAPACK_INT_H
-
+#include <string.h>
+#include "../../config.h"
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+typedef long long BLASLONG;
+typedef unsigned long long BLASULONG;
+#else
+typedef long BLASLONG;
+typedef unsigned long BLASULONG;
+#endif
 #include "../config.h"
 
 #include "../inc/relapack.h"
@@ -38,23 +46,23 @@
 #include "blas.h"
 
 // sytrf helper routines
-void RELAPACK_ssytrf_rec2(const char *, const int *, const int *, int *, float *, const int *, int *, float *, const int *, int *);
-void RELAPACK_dsytrf_rec2(const char *, const int *, const int *, int *, double *, const int *, int *, double *, const int *, int *);
-void RELAPACK_csytrf_rec2(const char *, const int *, const int *, int *, float *, const int *, int *, float *, const int *, int *);
-void RELAPACK_chetrf_rec2(const char *, const int *, const int *, int *, float *, const int *, int *, float *, const int *, int *);
-void RELAPACK_zsytrf_rec2(const char *, const int *, const int *, int *, double *, const int *, int *, double *, const int *, int *);
-void RELAPACK_zhetrf_rec2(const char *, const int *, const int *, int *, double *, const int *, int *, double *, const int *, int *);
-void RELAPACK_ssytrf_rook_rec2(const char *, const int *, const int *, int *, float *, const int *, int *, float *, const int *, int *);
-void RELAPACK_dsytrf_rook_rec2(const char *, const int *, const int *, int *, double *, const int *, int *, double *, const int *, int *);
-void RELAPACK_csytrf_rook_rec2(const char *, const int *, const int *, int *, float *, const int *, int *, float *, const int *, int *);
-void RELAPACK_chetrf_rook_rec2(const char *, const int *, const int *, int *, float *, const int *, int *, float *, const int *, int *);
-void RELAPACK_zsytrf_rook_rec2(const char *, const int *, const int *, int *, double *, const int *, int *, double *, const int *, int *);
-void RELAPACK_zhetrf_rook_rec2(const char *, const int *, const int *, int *, double *, const int *, int *, double *, const int *, int *);
+void RELAPACK_ssytrf_rec2(const char *, const blasint *, const blasint *, blasint *, float *, const blasint *, blasint *, float *, const blasint *, blasint *);
+void RELAPACK_dsytrf_rec2(const char *, const blasint *, const blasint *, blasint *, double *, const blasint *, blasint *, double *, const blasint *, blasint *);
+void RELAPACK_csytrf_rec2(const char *, const blasint *, const blasint *, blasint *, float *, const blasint *, blasint *, float *, const blasint *, blasint *);
+void RELAPACK_chetrf_rec2(const char *, const blasint *, const blasint *, blasint *, float *, const blasint *, blasint *, float *, const blasint *, blasint *);
+void RELAPACK_zsytrf_rec2(const char *, const blasint *, const blasint *, blasint *, double *, const blasint *, blasint *, double *, const blasint *, blasint *);
+void RELAPACK_zhetrf_rec2(const char *, const blasint *, const blasint *, blasint *, double *, const blasint *, blasint *, double *, const blasint *, blasint *);
+void RELAPACK_ssytrf_rook_rec2(const char *, const blasint *, const blasint *, blasint *, float *, const blasint *, blasint *, float *, const blasint *, blasint *);
+void RELAPACK_dsytrf_rook_rec2(const char *, const blasint *, const blasint *, blasint *, double *, const blasint *, blasint *, double *, const blasint *, blasint *);
+void RELAPACK_csytrf_rook_rec2(const char *, const blasint *, const blasint *, blasint *, float *, const blasint *, blasint *, float *, const blasint *, blasint *);
+void RELAPACK_chetrf_rook_rec2(const char *, const blasint *, const blasint *, blasint *, float *, const blasint *, blasint *, float *, const blasint *, blasint *);
+void RELAPACK_zsytrf_rook_rec2(const char *, const blasint *, const blasint *, blasint *, double *, const blasint *, blasint *, double *, const blasint *, blasint *);
+void RELAPACK_zhetrf_rook_rec2(const char *, const blasint *, const blasint *, blasint *, double *, const blasint *, blasint *, double *, const blasint *, blasint *);
 
 // trsyl helper routines
-void RELAPACK_strsyl_rec2(const char *, const char *, const int *, const int *, const int *, const float *, const int *, const float *, const int *, float *, const int *, float *, int *);
-void RELAPACK_dtrsyl_rec2(const char *, const char *, const int *, const int *, const int *, const double *, const int *, const double *, const int *, double *, const int *, double *, int *);
-void RELAPACK_ctrsyl_rec2(const char *, const char *, const int *, const int *, const int *, const float *, const int *, const float *, const int *, float *, const int *, float *, int *);
-void RELAPACK_ztrsyl_rec2(const char *, const char *, const int *, const int *, const int *, const double *, const int *, const double *, const int *, double *, const int *, double *, int *);
+void RELAPACK_strsyl_rec2(const char *, const char *, const blasint *, const blasint *, const blasint *, const float *, const blasint *, const float *, const blasint *, float *, const blasint *, float *, blasint *);
+void RELAPACK_dtrsyl_rec2(const char *, const char *, const blasint *, const blasint *, const blasint *, const double *, const blasint *, const double *, const blasint *, double *, const blasint *, double *, blasint *);
+void RELAPACK_ctrsyl_rec2(const char *, const char *, const blasint *, const blasint *, const blasint *, const float *, const blasint *, const float *, const blasint *, float *, const blasint *, float *, blasint *);
+void RELAPACK_ztrsyl_rec2(const char *, const char *, const blasint *, const blasint *, const blasint *, const double *, const blasint *, const double *, const blasint *, double *, const blasint *, double *, blasint *);
 
 #endif /*  RELAPACK_INT_H */

@@ -239,9 +239,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
   } else
       nthreads = 1;
 
-/* FIXME TRMV multithreading appears to be broken, see issue 1332*/
-  nthreads = 1;
-
   if(nthreads > 1) {
     buffer_size = n > 16 ? 0 : n * 4 + 40;
   }

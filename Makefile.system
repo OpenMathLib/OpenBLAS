@@ -9,6 +9,11 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
+# If ARCH is not set, we use the host system's architecture.
+ifndef ARCH
+ARCH := $(shell uname -m)
+endif
+
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
 override ARCH=x86_64
@@ -137,7 +142,12 @@ endif
 endif
 
 
-
+# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
+ifeq ($(ARCH), x86_64)
+ifneq ($(C_COMPILER), PGI)
+GETARCH_FLAGS += -march=native
+endif
+endif
 
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
@@ -155,7 +165,8 @@ GETARCH_FLAGS	+= -DNO_AVX
 endif
 
 ifeq ($(BINARY), 32)
-GETARCH_FLAGS	+= -DNO_AVX
+GETARCH_FLAGS	+= -DNO_AVX -DNO_AVX2 -DNO_AVX512
+NO_AVX512 = 1
 endif
 
 ifeq ($(NO_AVX2), 1)
@@ -234,6 +245,10 @@ SMP =
 else
 SMP = 1
 endif
+endif
+
+ifeq ($(SMP), 1)
+USE_LOCKING = 
 endif
 
 ifndef NEED_PIC
@@ -387,6 +402,12 @@ ifneq ($(MAX_STACK_ALLOC), 0)
 CCOMMON_OPT	+= -DMAX_STACK_ALLOC=$(MAX_STACK_ALLOC)
 endif
 
+ifdef USE_LOCKING
+ifneq ($(USE_LOCKING), 0)
+CCOMMON_OPT	+= -DUSE_LOCKING
+endif
+endif
+
 #
 #  Architecture dependent settings
 #
@@ -525,6 +546,12 @@ DYNAMIC_CORE =  ARMV8
 DYNAMIC_CORE += CORTEXA57
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
+endif
+
+ifeq ($(ARCH), power)
+DYNAMIC_CORE = POWER6
+DYNAMIC_CORE += POWER8
+DYNAMIC_CORE += POWER9
 endif
 
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
@@ -737,6 +764,8 @@ CCOMMON_OPT += -DF_INTERFACE_GFORT
 FCOMMON_OPT += -Wall
 # make single-threaded LAPACK calls thread-safe #1847
 FCOMMON_OPT += -frecursive
+# work around ABI problem with passing single-character arguments
+FCOMMON_OPT += -fno-optimize-sibling-calls
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
@@ -1042,7 +1071,7 @@ ifdef USE_SIMPLE_THREADED_LEVEL3
 CCOMMON_OPT	+= -DUSE_SIMPLE_THREADED_LEVEL3
 endif
 
-ifdef USE_TLS
+ifeq ($(USE_TLS), 1)
 CCOMMON_OPT += -DUSE_TLS
 endif
 

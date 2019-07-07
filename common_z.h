@@ -19,6 +19,7 @@
 #define	ZDOTC_K			zdotc_k
 #define	ZNRM2_K			znrm2_k
 #define	ZSCAL_K			zscal_k
+#define	ZSUM_K			zsum_k
 #define	ZSWAP_K			zswap_k
 #define	ZROT_K			zdrot_k
 
@@ -249,6 +250,7 @@
 #define	ZDOTC_K			gotoblas -> zdotc_k
 #define	ZNRM2_K			gotoblas -> znrm2_k
 #define	ZSCAL_K			gotoblas -> zscal_k
+#define	ZSUM_K			gotoblas -> zsum_k
 #define	ZSWAP_K			gotoblas -> zswap_k
 #define	ZROT_K			gotoblas -> zdrot_k
 

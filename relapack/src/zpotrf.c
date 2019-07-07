@@ -1,7 +1,7 @@
 #include "relapack.h"
 
-static void RELAPACK_zpotrf_rec(const char *, const int *, double *,
-        const int *, int *);
+static void RELAPACK_zpotrf_rec(const char *, const blasint *, double *,
+        const blasint *, blasint *);
 
 
 /** ZPOTRF computes the Cholesky factorization of a complex Hermitian positive definite matrix A.
@@ -11,14 +11,14 @@ static void RELAPACK_zpotrf_rec(const char *, const int *, double *,
  * http://www.netlib.org/lapack/explore-html/d1/db9/zpotrf_8f.html
  * */
 void RELAPACK_zpotrf(
-    const char *uplo, const int *n,
-    double *A, const int *ldA,
-    int *info
+    const char *uplo, const blasint *n,
+    double *A, const blasint *ldA,
+    blasint *info
 ) {
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -27,8 +27,8 @@ void RELAPACK_zpotrf(
     else if (*ldA < MAX(1, *n))
         *info = -4;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("ZPOTRF", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("ZPOTRF", &minfo, strlen("ZPOTRF"));
         return;
     }
 
@@ -42,9 +42,9 @@ void RELAPACK_zpotrf(
 
 /** zpotrf's recursive compute kernel */
 static void RELAPACK_zpotrf_rec(
-    const char *uplo, const int *n,
-    double *A, const int *ldA,
-    int *info
+    const char *uplo, const blasint *n,
+    double *A, const blasint *ldA,
+    blasint *info
 ) {
 
     if (*n <= MAX(CROSSOVER_ZPOTRF, 1)) {
@@ -58,8 +58,8 @@ static void RELAPACK_zpotrf_rec(
     const double MONE[] = { -1., 0. };
 
     // Splitting
-    const int n1 = ZREC_SPLIT(*n);
-    const int n2 = *n - n1;
+    const blasint n1 = ZREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
 
     // A_TL A_TR
     // A_BL A_BR

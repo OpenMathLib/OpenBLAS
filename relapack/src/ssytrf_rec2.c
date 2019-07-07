@@ -14,7 +14,7 @@
 
 /* Table of constant values */
 
-static int c__1 = 1;
+static blasint c__1 = 1;
 static float c_b8 = -1.f;
 static float c_b9 = 1.f;
 
@@ -25,32 +25,32 @@ static float c_b9 = 1.f;
  * The blocked BLAS Level 3 updates were removed and moved to the
  * recursive algorithm.
  * */
-/* Subroutine */ void RELAPACK_ssytrf_rec2(char *uplo, int *n, int *
-	nb, int *kb, float *a, int *lda, int *ipiv, float *w,
-	int *ldw, int *info, ftnlen uplo_len)
+/* Subroutine */ void RELAPACK_ssytrf_rec2(char *uplo, blasint *n, blasint *
+	nb, blasint *kb, float *a, blasint *lda, blasint *ipiv, float *w,
+	int *ldw, blasint *info, ftnlen uplo_len)
 {
     /* System generated locals */
-    int a_dim1, a_offset, w_dim1, w_offset, i__1, i__2;
+    blasint a_dim1, a_offset, w_dim1, w_offset, i__1, i__2;
     float r__1, r__2, r__3;
 
     /* Builtin functions */
     double sqrt(double);
 
     /* Local variables */
-    static int j, k;
+    static blasint j, k;
     static float t, r1, d11, d21, d22;
-    static int jj, kk, jp, kp, kw, kkw, imax, jmax;
+    static blasint jj, kk, jp, kp, kw, kkw, imax, jmax;
     static float alpha;
     extern logical lsame_(char *, char *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sscal_(int *, float *, float *, int *),
-	    sgemv_(char *, int *, int *, float *, float *, int *,
-	    float *, int *, float *, float *, int *, ftnlen);
-    static int kstep;
-    extern /* Subroutine */ int scopy_(int *, float *, int *, float *,
-	    int *), sswap_(int *, float *, int *, float *, int *
+    extern /* Subroutine */ blasint sscal_(int *, float *, float *, blasint *),
+	    sgemv_(char *, blasint *, blasint *, float *, float *, blasint *,
+	    float *, blasint *, float *, float *, blasint *, ftnlen);
+    static blasint kstep;
+    extern /* Subroutine */ blasint scopy_(int *, float *, blasint *, float *,
+	    blasint *), sswap_(int *, float *, blasint *, float *, blasint *
 	    );
     static float absakk;
-    extern int isamax_(int *, float *, int *);
+    extern blasint isamax_(int *, float *, blasint *);
     static float colmax, rowmax;
 
     /* Parameter adjustments */

@@ -1,10 +1,10 @@
 #include "relapack.h"
 #include <math.h>
 
-static void RELAPACK_ztgsyl_rec(const char *, const int *, const int *,
-    const int *, const double *, const int *, const double *, const int *,
-    double *, const int *, const double *, const int *, const double *,
-    const int *, double *, const int *, double *, double *, double *, int *);
+static void RELAPACK_ztgsyl_rec(const char *, const blasint *, const blasint *,
+    const blasint *, const double *, const blasint *, const double *, const blasint *,
+    double *, const blasint *, const double *, const blasint *, const double *,
+    const blasint *, double *, const blasint *, double *, double *, double *, blasint *);
 
 
 /** ZTGSYL solves the generalized Sylvester equation.
@@ -14,21 +14,21 @@ static void RELAPACK_ztgsyl_rec(const char *, const int *, const int *,
  * http://www.netlib.org/lapack/explore-html/db/d68/ztgsyl_8f.html
  * */
 void RELAPACK_ztgsyl(
-    const char *trans, const int *ijob, const int *m, const int *n,
-    const double *A, const int *ldA, const double *B, const int *ldB,
-    double *C, const int *ldC,
-    const double *D, const int *ldD, const double *E, const int *ldE,
-    double *F, const int *ldF,
+    const char *trans, const blasint *ijob, const blasint *m, const blasint *n,
+    const double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    double *C, const blasint *ldC,
+    const double *D, const blasint *ldD, const double *E, const blasint *ldE,
+    double *F, const blasint *ldF,
     double *scale, double *dif,
-    double *Work, const int *lWork, int *iWork, int *info
+    double *Work, const blasint *lWork, blasint *iWork, blasint *info
 ) {
 
     // Parse arguments
-    const int notran = LAPACK(lsame)(trans, "N");
-    const int tran = LAPACK(lsame)(trans, "C");
+    const blasint notran = LAPACK(lsame)(trans, "N");
+    const blasint tran = LAPACK(lsame)(trans, "C");
 
     // Compute work buffer size
-    int lwmin = 1;
+    blasint lwmin = 1;
     if (notran && (*ijob == 1 || *ijob == 2))
         lwmin = MAX(1, 2 * *m * *n);
     *info = 0;
@@ -57,8 +57,8 @@ void RELAPACK_ztgsyl(
     else if (*lWork < lwmin && *lWork != -1)
         *info = -20;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("ZTGSYL", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("ZTGSYL", &minfo, strlen("ZTGSYL"));
         return;
     }
 
@@ -74,8 +74,8 @@ void RELAPACK_ztgsyl(
     // Constant
     const double ZERO[] = { 0., 0. };
 
-    int isolve = 1;
-    int ifunc  = 0;
+    blasint isolve = 1;
+    blasint ifunc  = 0;
     if (notran) {
         if (*ijob >= 3) {
             ifunc = *ijob - 2;
@@ -86,7 +86,7 @@ void RELAPACK_ztgsyl(
     }
 
     double scale2;
-    int iround;
+    blasint iround;
     for (iround = 1; iround <= isolve; iround++) {
         *scale = 1;
         double dscale = 0;
@@ -119,13 +119,13 @@ void RELAPACK_ztgsyl(
 
 /** ztgsyl's recursive vompute kernel */
 static void RELAPACK_ztgsyl_rec(
-    const char *trans, const int *ifunc, const int *m, const int *n,
-    const double *A, const int *ldA, const double *B, const int *ldB,
-    double *C, const int *ldC,
-    const double *D, const int *ldD, const double *E, const int *ldE,
-    double *F, const int *ldF,
+    const char *trans, const blasint *ifunc, const blasint *m, const blasint *n,
+    const double *A, const blasint *ldA, const double *B, const blasint *ldB,
+    double *C, const blasint *ldC,
+    const double *D, const blasint *ldD, const double *E, const blasint *ldE,
+    double *F, const blasint *ldF,
     double *scale, double *dsum, double *dscale,
-    int *info
+    blasint *info
 ) {
 
     if (*m <= MAX(CROSSOVER_ZTGSYL, 1) && *n <= MAX(CROSSOVER_ZTGSYL, 1)) {
@@ -137,18 +137,18 @@ static void RELAPACK_ztgsyl_rec(
     // Constants
     const double ONE[]  = { 1., 0. };
     const double MONE[] = { -1., 0. };
-    const int    iONE[] = { 1 };
+    const blasint    iONE[] = { 1 };
 
     // Outputs
     double scale1[] = { 1., 0. };
     double scale2[] = { 1., 0. };
-    int    info1[]  = { 0 };
-    int    info2[]  = { 0 };
+    blasint    info1[]  = { 0 };
+    blasint    info2[]  = { 0 };
 
     if (*m > *n) {
         // Splitting
-        const int m1 = ZREC_SPLIT(*m);
-        const int m2 = *m - m1;
+        const blasint m1 = ZREC_SPLIT(*m);
+        const blasint m2 = *m - m1;
 
         // A_TL A_TR
         // 0    A_BR
@@ -206,8 +206,8 @@ static void RELAPACK_ztgsyl_rec(
         }
     } else {
         // Splitting
-        const int n1 = ZREC_SPLIT(*n);
-        const int n2 = *n - n1;
+        const blasint n1 = ZREC_SPLIT(*n);
+        const blasint n2 = *n - n1;
 
         // B_TL B_TR
         // 0    B_BR

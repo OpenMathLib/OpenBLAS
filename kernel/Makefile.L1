@@ -340,6 +340,32 @@ ifndef XSCALKERNEL
 XSCALKERNEL = zscal.S
 endif
 
+### SUM ###
+
+ifndef SSUMKERNEL
+SSUMKERNEL =  sum.S
+endif
+
+ifndef DSUMKERNEL
+DSUMKERNEL =  sum.S
+endif
+
+ifndef CSUMKERNEL
+CSUMKERNEL = zsum.S
+endif
+
+ifndef ZSUMKERNEL
+ZSUMKERNEL = zsum.S
+endif
+
+ifndef QSUMKERNEL
+QSUMKERNEL =  sum.S
+endif
+
+ifndef XSUMKERNEL
+XSUMKERNEL = zsum.S
+endif
+
 ### SWAP ###
 
 ifndef SSWAPKERNEL
@@ -453,7 +479,7 @@ endif
 SBLASOBJS	+= \
 	 samax_k$(TSUFFIX).$(SUFFIX)  samin_k$(TSUFFIX).$(SUFFIX)  smax_k$(TSUFFIX).$(SUFFIX)  smin_k$(TSUFFIX).$(SUFFIX) \
 	isamax_k$(TSUFFIX).$(SUFFIX) isamin_k$(TSUFFIX).$(SUFFIX) ismax_k$(TSUFFIX).$(SUFFIX) ismin_k$(TSUFFIX).$(SUFFIX) \
-	sasum_k$(TSUFFIX).$(SUFFIX) saxpy_k$(TSUFFIX).$(SUFFIX) scopy_k$(TSUFFIX).$(SUFFIX) \
+	sasum_k$(TSUFFIX).$(SUFFIX) ssum_k$(TSUFFIX).$(SUFFIX) saxpy_k$(TSUFFIX).$(SUFFIX) scopy_k$(TSUFFIX).$(SUFFIX) \
 	sdot_k$(TSUFFIX).$(SUFFIX) sdsdot_k$(TSUFFIX).$(SUFFIX) dsdot_k$(TSUFFIX).$(SUFFIX) \
 	snrm2_k$(TSUFFIX).$(SUFFIX) srot_k$(TSUFFIX).$(SUFFIX) sscal_k$(TSUFFIX).$(SUFFIX) sswap_k$(TSUFFIX).$(SUFFIX) \
 	saxpby_k$(TSUFFIX).$(SUFFIX)
@@ -463,31 +489,32 @@ DBLASOBJS	+= \
 	idamax_k$(TSUFFIX).$(SUFFIX) idamin_k$(TSUFFIX).$(SUFFIX) idmax_k$(TSUFFIX).$(SUFFIX) idmin_k$(TSUFFIX).$(SUFFIX) \
 	dasum_k$(TSUFFIX).$(SUFFIX) daxpy_k$(TSUFFIX).$(SUFFIX) dcopy_k$(TSUFFIX).$(SUFFIX) ddot_k$(TSUFFIX).$(SUFFIX) \
 	dnrm2_k$(TSUFFIX).$(SUFFIX) drot_k$(TSUFFIX).$(SUFFIX) dscal_k$(TSUFFIX).$(SUFFIX) dswap_k$(TSUFFIX).$(SUFFIX) \
-	daxpby_k$(TSUFFIX).$(SUFFIX)
+	daxpby_k$(TSUFFIX).$(SUFFIX) dsum_k$(TSUFFIX).$(SUFFIX)
 
 QBLASOBJS	+= \
 	 qamax_k$(TSUFFIX).$(SUFFIX)  qamin_k$(TSUFFIX).$(SUFFIX)  qmax_k$(TSUFFIX).$(SUFFIX)  qmin_k$(TSUFFIX).$(SUFFIX) \
 	iqamax_k$(TSUFFIX).$(SUFFIX) iqamin_k$(TSUFFIX).$(SUFFIX) iqmax_k$(TSUFFIX).$(SUFFIX) iqmin_k$(TSUFFIX).$(SUFFIX) \
 	qasum_k$(TSUFFIX).$(SUFFIX) qaxpy_k$(TSUFFIX).$(SUFFIX) qcopy_k$(TSUFFIX).$(SUFFIX) qdot_k$(TSUFFIX).$(SUFFIX) \
-	qnrm2_k$(TSUFFIX).$(SUFFIX) qrot_k$(TSUFFIX).$(SUFFIX) qscal_k$(TSUFFIX).$(SUFFIX) qswap_k$(TSUFFIX).$(SUFFIX)
+	qnrm2_k$(TSUFFIX).$(SUFFIX) qrot_k$(TSUFFIX).$(SUFFIX) qscal_k$(TSUFFIX).$(SUFFIX) qswap_k$(TSUFFIX).$(SUFFIX) \
+	qsum_k$(TSUFFIX).$(SUFFIX)
 
 CBLASOBJS	+= \
 	camax_k$(TSUFFIX).$(SUFFIX)  camin_k$(TSUFFIX).$(SUFFIX) icamax_k$(TSUFFIX).$(SUFFIX) icamin_k$(TSUFFIX).$(SUFFIX) \
 	casum_k$(TSUFFIX).$(SUFFIX) caxpy_k$(TSUFFIX).$(SUFFIX) caxpyc_k$(TSUFFIX).$(SUFFIX) ccopy_k$(TSUFFIX).$(SUFFIX) \
 	cdotc_k$(TSUFFIX).$(SUFFIX) cdotu_k$(TSUFFIX).$(SUFFIX) cnrm2_k$(TSUFFIX).$(SUFFIX) csrot_k$(TSUFFIX).$(SUFFIX) \
-	cscal_k$(TSUFFIX).$(SUFFIX) cswap_k$(TSUFFIX).$(SUFFIX) caxpby_k$(TSUFFIX).$(SUFFIX)
+	cscal_k$(TSUFFIX).$(SUFFIX) cswap_k$(TSUFFIX).$(SUFFIX) caxpby_k$(TSUFFIX).$(SUFFIX) csum_k$(TSUFFIX).$(SUFFIX)
 
 ZBLASOBJS	+= \
 	 zamax_k$(TSUFFIX).$(SUFFIX)  zamin_k$(TSUFFIX).$(SUFFIX) izamax_k$(TSUFFIX).$(SUFFIX) izamin_k$(TSUFFIX).$(SUFFIX) \
 	zasum_k$(TSUFFIX).$(SUFFIX) zaxpy_k$(TSUFFIX).$(SUFFIX) zaxpyc_k$(TSUFFIX).$(SUFFIX) zcopy_k$(TSUFFIX).$(SUFFIX) \
 	zdotc_k$(TSUFFIX).$(SUFFIX) zdotu_k$(TSUFFIX).$(SUFFIX) znrm2_k$(TSUFFIX).$(SUFFIX) zdrot_k$(TSUFFIX).$(SUFFIX) \
-	zscal_k$(TSUFFIX).$(SUFFIX) zswap_k$(TSUFFIX).$(SUFFIX) zaxpby_k$(TSUFFIX).$(SUFFIX)
+	zscal_k$(TSUFFIX).$(SUFFIX) zswap_k$(TSUFFIX).$(SUFFIX) zaxpby_k$(TSUFFIX).$(SUFFIX) zsum_k$(TSUFFIX).$(SUFFIX)
 
 XBLASOBJS	+= \
 	 xamax_k$(TSUFFIX).$(SUFFIX)  xamin_k$(TSUFFIX).$(SUFFIX) ixamax_k$(TSUFFIX).$(SUFFIX) ixamin_k$(TSUFFIX).$(SUFFIX) \
 	xasum_k$(TSUFFIX).$(SUFFIX) xaxpy_k$(TSUFFIX).$(SUFFIX) xaxpyc_k$(TSUFFIX).$(SUFFIX) xcopy_k$(TSUFFIX).$(SUFFIX) \
 	xdotc_k$(TSUFFIX).$(SUFFIX) xdotu_k$(TSUFFIX).$(SUFFIX) xnrm2_k$(TSUFFIX).$(SUFFIX) xqrot_k$(TSUFFIX).$(SUFFIX) \
-	xscal_k$(TSUFFIX).$(SUFFIX) xswap_k$(TSUFFIX).$(SUFFIX)
+	xscal_k$(TSUFFIX).$(SUFFIX) xswap_k$(TSUFFIX).$(SUFFIX) xsum_k$(TSUFFIX).$(SUFFIX)
 
 ### AMAX ###
 
@@ -617,7 +644,7 @@ $(KDIR)idmin_k$(TSUFFIX).$(SUFFIX)  $(KDIR)idmin_k$(TPSUFFIX).$(PSUFFIX)  : $(KE
 $(KDIR)iqmin_k$(TSUFFIX).$(SUFFIX)  $(KDIR)iqmin_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(IQMINKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -UUSE_ABS -DUSE_MIN $< -o $@
 
-
+### ASUM ###
 $(KDIR)sasum_k$(TSUFFIX).$(SUFFIX)   $(KDIR)sasum_k$(TPSUFFIX).$(PSUFFIX)   : $(KERNELDIR)/$(SASUMKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $@
 
@@ -636,6 +663,26 @@ $(KDIR)zasum_k$(TSUFFIX).$(SUFFIX)  $(KDIR)zasum_k$(TPSUFFIX).$(PSUFFIX)  : $(KE
 $(KDIR)xasum_k$(TSUFFIX).$(SUFFIX)  $(KDIR)xasum_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(XASUMKERNEL)
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE $< -o $@
 
+### SUM ###
+$(KDIR)ssum_k$(TSUFFIX).$(SUFFIX)   $(KDIR)ssum_k$(TPSUFFIX).$(PSUFFIX)   : $(KERNELDIR)/$(SSUMKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $@
+
+$(KDIR)dsum_k$(TSUFFIX).$(SUFFIX)   $(KDIR)dsum_k$(TPSUFFIX).$(PSUFFIX)   : $(KERNELDIR)/$(DSUMKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE $< -o $@
+
+$(KDIR)qsum_k$(TSUFFIX).$(SUFFIX)   $(KDIR)qsum_k$(TPSUFFIX).$(PSUFFIX)   : $(KERNELDIR)/$(QSUMKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE $< -o $@
+
+$(KDIR)csum_k$(TSUFFIX).$(SUFFIX)  $(KDIR)csum_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(CSUMKERNEL)
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE $< -o $@
+
+$(KDIR)zsum_k$(TSUFFIX).$(SUFFIX)  $(KDIR)zsum_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(ZSUMKERNEL)
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE $< -o $@
+
+$(KDIR)xsum_k$(TSUFFIX).$(SUFFIX)  $(KDIR)xsum_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(XSUMKERNEL)
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE $< -o $@
+
+### AXPY ###
 $(KDIR)saxpy_k$(TSUFFIX).$(SUFFIX)  $(KDIR)saxpy_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(SAXPYKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $@
 

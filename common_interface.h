@@ -122,6 +122,13 @@ xdouble BLASFUNC(qasum) (blasint *, xdouble *, blasint *);
 double BLASFUNC(dzasum)(blasint *, double *, blasint *);
 xdouble BLASFUNC(qxasum)(blasint *, xdouble *, blasint *);
 
+FLOATRET  BLASFUNC(ssum) (blasint *, float  *, blasint *);
+FLOATRET  BLASFUNC(scsum)(blasint *, float  *, blasint *);
+double BLASFUNC(dsum) (blasint *, double *, blasint *);
+xdouble BLASFUNC(qsum) (blasint *, xdouble *, blasint *);
+double BLASFUNC(dzsum)(blasint *, double *, blasint *);
+xdouble BLASFUNC(qxsum)(blasint *, xdouble *, blasint *);
+
 blasint    BLASFUNC(isamax)(blasint *, float  *, blasint *);
 blasint    BLASFUNC(idamax)(blasint *, double *, blasint *);
 blasint    BLASFUNC(iqamax)(blasint *, xdouble *, blasint *);
