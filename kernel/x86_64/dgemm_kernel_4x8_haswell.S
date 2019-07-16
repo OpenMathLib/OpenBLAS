@@ -292,8 +292,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
 	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
 
-	vperm2f128 $ 0x01 , %ymm2, %ymm2
-	vperm2f128 $ 0x01 , %ymm3, %ymm3
+	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
+	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
 
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
@@ -330,8 +330,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x0a, %ymm11, %ymm10, %ymm2
 	vblendpd $ 0x05, %ymm11, %ymm10, %ymm3
 
-	vperm2f128 $ 0x01 , %ymm2, %ymm2
-	vperm2f128 $ 0x01 , %ymm3, %ymm3
+	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
+	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
 
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
@@ -369,8 +369,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x0a, %ymm15, %ymm14, %ymm2
 	vblendpd $ 0x05, %ymm15, %ymm14, %ymm3
 
-	vperm2f128 $ 0x01 , %ymm2, %ymm2
-	vperm2f128 $ 0x01 , %ymm3, %ymm3
+	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
+	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
 
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
@@ -801,8 +801,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
 	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
 
-	vperm2f128 $ 0x01 , %ymm2, %ymm2
-	vperm2f128 $ 0x01 , %ymm3, %ymm3
+	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
+	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
 
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
@@ -839,8 +839,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x0a, %ymm11, %ymm10, %ymm2
 	vblendpd $ 0x05, %ymm11, %ymm10, %ymm3
 
-	vperm2f128 $ 0x01 , %ymm2, %ymm2
-	vperm2f128 $ 0x01 , %ymm3, %ymm3
+	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
+	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
 
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
@@ -1163,8 +1163,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
 	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
 
-	vperm2f128 $ 0x01 , %ymm2, %ymm2
-	vperm2f128 $ 0x01 , %ymm3, %ymm3
+	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
+	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
 
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
