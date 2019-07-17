@@ -106,7 +106,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #define	A_PR1	512
-#define	B_PR1	512
+#define	B_PR1	160
 
 /*******************************************************************************************
 * Macro definitions
