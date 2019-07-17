@@ -317,10 +317,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm6 ,  	(%rax)
 	vmovups	%ymm7 ,  	(%rax, LDC)
 
-	prefetcht0	32(CO1)
-	prefetcht0	32(CO1,LDC)
-	prefetcht0	32(%rax)
-	prefetcht0	32(%rax,LDC)
+	prefetcht0	56(CO1)
+	prefetcht0	56(CO1,LDC)
+	prefetcht0	56(%rax)
+	prefetcht0	56(%rax,LDC)
 
 	vpermilpd $ 0x05 , %ymm9 , %ymm9
 	vpermilpd $ 0x05 , %ymm11, %ymm11
@@ -356,10 +356,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm6 ,  	(%rbp)
 	vmovups	%ymm7 ,  	(%rbp, LDC)
 
-	prefetcht0	32(%rax)
-	prefetcht0	32(%rax,LDC)
-	prefetcht0	32(%rbp)
-	prefetcht0	32(%rbp,LDC)
+	prefetcht0	56(%rax)
+	prefetcht0	56(%rax,LDC)
+	prefetcht0	56(%rbp)
+	prefetcht0	56(%rbp,LDC)
 
 	vpermilpd $ 0x05 , %ymm13, %ymm13
 	vpermilpd $ 0x05 , %ymm15, %ymm15
@@ -395,10 +395,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm6 ,  	(%rbp)
 	vmovups	%ymm7 ,  	(%rbp, LDC)
 
-	prefetcht0	32(%rax)
-	prefetcht0	32(%rax,LDC)
-	prefetcht0	32(%rbp)
-	prefetcht0	32(%rbp,LDC)
+	prefetcht0	56(%rax)
+	prefetcht0	56(%rax,LDC)
+	prefetcht0	56(%rbp)
+	prefetcht0	56(%rbp,LDC)
 
 	addq	$ 4*SIZE, CO1
 .endm
@@ -826,10 +826,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm6 ,  	(%rax)
 	vmovups	%ymm7 ,  	(%rax, LDC)
 
-	prefetcht0	32(CO1)
-	prefetcht0	32(CO1,LDC)
-	prefetcht0	32(%rax)
-	prefetcht0	32(%rax,LDC)
+	prefetcht0	56(CO1)
+	prefetcht0	56(CO1,LDC)
+	prefetcht0	56(%rax)
+	prefetcht0	56(%rax,LDC)
 
 	vpermilpd $ 0x05 , %ymm9 , %ymm9
 	vpermilpd $ 0x05 , %ymm11, %ymm11
@@ -865,10 +865,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmovups	%ymm6 ,  	(%rbp)
 	vmovups	%ymm7 ,  	(%rbp, LDC)
 
-	prefetcht0	32(%rax)
-	prefetcht0	32(%rax,LDC)
-	prefetcht0	32(%rbp)
-	prefetcht0	32(%rbp,LDC)
+	prefetcht0	56(%rax)
+	prefetcht0	56(%rax,LDC)
+	prefetcht0	56(%rbp)
+	prefetcht0	56(%rbp,LDC)
 
 	addq	$ 4*SIZE, CO1
 .endm
