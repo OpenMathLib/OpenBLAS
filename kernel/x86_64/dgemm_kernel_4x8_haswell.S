@@ -267,23 +267,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro SAVE4x12
 
+        prefetcht0      128(%rsp) /*BUFFER 1*/
 	vbroadcastsd	ALPHA, %ymm0
 
 	vmulpd	%ymm0 , %ymm4 , %ymm4
 	vmulpd	%ymm0 , %ymm5 , %ymm5
 	vmulpd	%ymm0 , %ymm6 , %ymm6
 	vmulpd	%ymm0 , %ymm7 , %ymm7
-
+        prefetcht0      192(%rsp)
 	vmulpd	%ymm0 , %ymm8 , %ymm8
 	vmulpd	%ymm0 , %ymm9 , %ymm9
 	vmulpd	%ymm0 , %ymm10, %ymm10
 	vmulpd	%ymm0 , %ymm11, %ymm11
-
+        prefetcht0      256(%rsp)
 	vmulpd	%ymm0 , %ymm12, %ymm12
 	vmulpd	%ymm0 , %ymm13, %ymm13
 	vmulpd	%ymm0 , %ymm14, %ymm14
 	vmulpd	%ymm0 , %ymm15, %ymm15
-
+        prefetcht0      320(%rsp)
 	vpermilpd $ 0x05 , %ymm5, %ymm5
 	vpermilpd $ 0x05 , %ymm7, %ymm7
 
