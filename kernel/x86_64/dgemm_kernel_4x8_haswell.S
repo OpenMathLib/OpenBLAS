@@ -1865,6 +1865,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	SAVE4x12
 
+        salq    $3, K
+        prefetcht2 32(B)
+        prefetcht2 32(B, K, 8)
+        prefetcht2 96(B)
+        prefetcht2 96(B, K, 8)
+        addq    $128, B
+        sarq    $3, K
+
 	decq	I			# i --
 	jne	.L12_11
 	ALIGN_4	
@@ -1872,6 +1880,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
+        movq    M, I
+        sarq    $2, I
+        salq    $7, I
+        subq    I, B
+
 .L12_20:
 	// Test rest of M
 
@@ -2102,7 +2115,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	jmp .L13_16
 
-
+        PREFETCHT0_C
 .L13_13:
 
 	test $1, %rax
@@ -2147,6 +2160,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	SAVE4x12
 
+        salq    $3, K
+        prefetcht2 (B)
+        prefetcht2 (B, K, 8)
+        prefetcht2 64(B)
+        prefetcht2 64(B, K, 8)
+        addq    $128, B
+        sarq    $3, K
+
 	decq	I			# i --
 	jne	.L13_11
 	ALIGN_4	
@@ -2154,6 +2175,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
+
+        movq    M, I
+        sarq    $2, I
+        salq    $7, I
+        subq    I, B
+
 .L13_20:
 	// Test rest of M
 
