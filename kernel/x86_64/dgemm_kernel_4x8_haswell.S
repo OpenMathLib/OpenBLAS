@@ -1865,12 +1865,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	SAVE4x12
 
+        /* here for the prefetch of next b source block */
+	/* the increment should be proportional to the ratio of GEMM_Q/GEMM_P */
+	/* currently an increment of 128 byte is suitable */
         salq    $3, K
         prefetcht2 32(B)
         prefetcht2 32(B, K, 8)
         prefetcht2 96(B)
         prefetcht2 96(B, K, 8)
-        addq    $128, B
+        addq    $128, B /* increment */
         sarq    $3, K
 
 	decq	I			# i --
@@ -1880,6 +1883,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
+        /* recover the original value of pointer B */
         movq    M, I
         sarq    $2, I
         salq    $7, I
@@ -2160,6 +2164,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	SAVE4x12
 
+        /* here for the prefetch of next b source block */
+	/* the increment should be proportional to the ratio of GEMM_Q/GEMM_P */
+	/* currently an increment of 128 byte is suitable */
         salq    $3, K
         prefetcht2 (B)
         prefetcht2 (B, K, 8)
@@ -2175,7 +2182,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-
+        /* recover the original value of pointer B */
         movq    M, I
         sarq    $2, I
         salq    $7, I
