@@ -1866,7 +1866,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	SAVE4x12
 
         /* here for the prefetch of next b source block */
-	/* the increment should be proportional to the ratio of GEMM_Q/GEMM_P */
+	/* the increment should be proportional to GEMM_Q/GEMM_P */
 
         salq    $3, K
 #ifdef WINDOWS_ABI /* GEMM_P == GEMM_Q * 4 */
@@ -2184,19 +2184,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	SAVE4x12
 
         /* here for the prefetch of next b source block */
-	/* the increment should be proportional to the ratio of GEMM_Q/GEMM_P */
+	/* the increment should be proportional to GEMM_Q/GEMM_P */
 
         salq    $3, K
 #ifdef WINDOWS_ABI /* GEMM_P == GEMM_Q * 4 */
         prefetcht2 (B)
         prefetcht2 (B, K, 8)
-        addq    $64, B
+        addq    $64, B /* increment */
 #else /* GEMM_P == GEMM_Q * 2 under linux x86_64 */
         prefetcht2 (B)
         prefetcht2 (B, K, 8)
         prefetcht2 64(B)
         prefetcht2 64(B, K, 8)
-        addq    $128, B
+        addq    $128, B /* increment */
 #endif
         sarq    $3, K
 
