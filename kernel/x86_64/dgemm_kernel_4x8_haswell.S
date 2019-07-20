@@ -1622,35 +1622,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro PREFETCHT0_C
+        prefetcht0 ALPHA
         prefetcht0 (CO1)
         prefetcht0 24(CO1)
         prefetcht0 (CO1,LDC,4)
         prefetcht0 24(CO1,LDC,4)
         prefetcht0 (CO1,LDC,8)
         prefetcht0 24(CO1,LDC,8)
-        addq  LDC,CO1
-        prefetcht0 (CO1)
-        prefetcht0 24(CO1)
-        prefetcht0 (CO1,LDC,4)
-        prefetcht0 24(CO1,LDC,4)
-        prefetcht0 (CO1,LDC,8)
-        prefetcht0 24(CO1,LDC,8)
-        leaq  (CO1,LDC,2),CO1
-        prefetcht0 (CO1)
-        prefetcht0 24(CO1)
-        prefetcht0 (CO1,LDC,4)
-        prefetcht0 24(CO1,LDC,4)
-        prefetcht0 (CO1,LDC,8)
-        prefetcht0 24(CO1,LDC,8)
-        subq  LDC,CO1
-        prefetcht0 (CO1)
-        prefetcht0 24(CO1)
-        prefetcht0 (CO1,LDC,4)
-        prefetcht0 24(CO1,LDC,4)
-        prefetcht0 (CO1,LDC,8)
-        prefetcht0 24(CO1,LDC,8)
-        subq  LDC,CO1
-        subq  LDC,CO1
 .endm
 /*******************************************************************************************/
 
@@ -1820,12 +1798,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	dec	%rax
 	jne	.L12_12
 	
-        PREFETCHT0_C
 .L12_12a:
-
+        PREFETCHT0_C
+        addq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        leaq  (CO1,LDC,2),CO1
 	KERNEL4x12_M2
+        PREFETCHT0_C
+        subq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        subq  LDC,CO1
+        subq  LDC,CO1
 	KERNEL4x12_M2
 
 	KERNEL4x12_M1
@@ -2133,9 +2118,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L13_12a:
 
+        PREFETCHT0_C
+        addq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        leaq  (CO1,LDC,2),CO1
 	KERNEL4x12_M2
+        PREFETCHT0_C
+        subq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        subq  LDC,CO1
+        subq  LDC,CO1
 	KERNEL4x12_M2
 
 	KERNEL4x12_M1
@@ -2145,7 +2139,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	jmp .L13_16
 
-        PREFETCHT0_C
 .L13_13:
 
 	test $1, %rax
