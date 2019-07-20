@@ -279,43 +279,43 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd	%ymm0 , %ymm9 , %ymm9
 	vmulpd	%ymm0 , %ymm10, %ymm10
 	vmulpd	%ymm0 , %ymm11, %ymm11
-#if B_PR1 >= 96
+#if B_PR1 > 32
         prefetcht0      128 + BUFFER1
 #endif
 	vmulpd	%ymm0 , %ymm12, %ymm12
 	vmulpd	%ymm0 , %ymm13, %ymm13
 	vmulpd	%ymm0 , %ymm14, %ymm14
 	vmulpd	%ymm0 , %ymm15, %ymm15
-#if B_PR1 >= 160
+#if B_PR1 > 96
         prefetcht0      192 + BUFFER1
 #endif
 	vpermilpd $ 0x05 , %ymm5, %ymm5
 	vpermilpd $ 0x05 , %ymm7, %ymm7
-#if B_PR1 >= 224
+#if B_PR1 > 160
         prefetcht0      256 + BUFFER1
 #endif
 	vblendpd $ 0x0a, %ymm5, %ymm4, %ymm0
 	vblendpd $ 0x05, %ymm5, %ymm4, %ymm1
 	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
 	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
-#if B_PR1 >= 288
+#if B_PR1 > 224
         prefetcht0      320 + BUFFER1
 #endif
 	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
 	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
-#if B_PR1 >= 352
+#if B_PR1 > 288
         prefetcht0      384 + BUFFER1
 #endif
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
-#if B_PR1 >= 416
+#if B_PR1 > 352
         prefetcht0      448 + BUFFER1
 #endif
         leaq    (CO1, LDC, 2), %rax     
 	
-#if B_PR1 >= 480
+#if B_PR1 > 416
         prefetcht0      512 + BUFFER1
 #endif
 
