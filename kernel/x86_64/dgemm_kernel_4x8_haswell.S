@@ -279,30 +279,45 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd	%ymm0 , %ymm9 , %ymm9
 	vmulpd	%ymm0 , %ymm10, %ymm10
 	vmulpd	%ymm0 , %ymm11, %ymm11
+#if B_PR1 > 32
         prefetcht0      128 + BUFFER1
+#endif
 	vmulpd	%ymm0 , %ymm12, %ymm12
 	vmulpd	%ymm0 , %ymm13, %ymm13
 	vmulpd	%ymm0 , %ymm14, %ymm14
 	vmulpd	%ymm0 , %ymm15, %ymm15
+#if B_PR1 > 96
         prefetcht0      192 + BUFFER1
+#endif
 	vpermilpd $ 0x05 , %ymm5, %ymm5
 	vpermilpd $ 0x05 , %ymm7, %ymm7
-
+#if B_PR1 > 160
+        prefetcht0      256 + BUFFER1
+#endif
 	vblendpd $ 0x0a, %ymm5, %ymm4, %ymm0
 	vblendpd $ 0x05, %ymm5, %ymm4, %ymm1
 	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
 	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
-
+#if B_PR1 > 224
+        prefetcht0      320 + BUFFER1
+#endif
 	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
 	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
-
+#if B_PR1 > 288
+        prefetcht0      384 + BUFFER1
+#endif
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
-
+#if B_PR1 > 352
+        prefetcht0      448 + BUFFER1
+#endif
         leaq    (CO1, LDC, 2), %rax     
 	
+#if B_PR1 > 416
+        prefetcht0      512 + BUFFER1
+#endif
 
 #if !defined(TRMMKERNEL)
 
@@ -1613,29 +1628,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         prefetcht0 24(CO1,LDC,4)
         prefetcht0 (CO1,LDC,8)
         prefetcht0 24(CO1,LDC,8)
-        addq  LDC,CO1
-        prefetcht0 (CO1)
-        prefetcht0 24(CO1)
-        prefetcht0 (CO1,LDC,4)
-        prefetcht0 24(CO1,LDC,4)
-        prefetcht0 (CO1,LDC,8)
-        prefetcht0 24(CO1,LDC,8)
-        leaq  (CO1,LDC,2),CO1
-        prefetcht0 (CO1)
-        prefetcht0 24(CO1)
-        prefetcht0 (CO1,LDC,4)
-        prefetcht0 24(CO1,LDC,4)
-        prefetcht0 (CO1,LDC,8)
-        prefetcht0 24(CO1,LDC,8)
-        subq  LDC,CO1
-        prefetcht0 (CO1)
-        prefetcht0 24(CO1)
-        prefetcht0 (CO1,LDC,4)
-        prefetcht0 24(CO1,LDC,4)
-        prefetcht0 (CO1,LDC,8)
-        prefetcht0 24(CO1,LDC,8)
-        subq  LDC,CO1
-        subq  LDC,CO1
 .endm
 /*******************************************************************************************/
 
@@ -1805,12 +1797,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	dec	%rax
 	jne	.L12_12
 	
-        PREFETCHT0_C
 .L12_12a:
-
+        prefetcht0 ALPHA
+        PREFETCHT0_C
+        addq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        leaq  (CO1,LDC,2),CO1
 	KERNEL4x12_M2
+        PREFETCHT0_C
+        subq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        subq  LDC,CO1
+        subq  LDC,CO1
 	KERNEL4x12_M2
 
 	KERNEL4x12_M1
@@ -1865,6 +1865,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	SAVE4x12
 
+        /* here for the prefetch of next b source block */
+	/* the increment should be proportional to GEMM_Q/GEMM_P */
+
+        salq    $3, K
+#ifdef WINDOWS_ABI /* GEMM_P == GEMM_Q * 4 */
+        prefetcht2 32(B)
+        prefetcht2 32(B, K, 8)
+        addq    $64, B /* increment */
+#else /* GEMM_P == GEMM_Q * 2 under linux x86_64 */
+        prefetcht2 32(B)
+        prefetcht2 32(B, K, 8)
+        prefetcht2 96(B)
+        prefetcht2 96(B, K, 8)
+        addq    $128, B /* increment */
+#endif
+        sarq    $3, K
+
 	decq	I			# i --
 	jne	.L12_11
 	ALIGN_4	
@@ -1872,6 +1889,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
+
+        /* recover the original value of pointer B after prefetch */
+        movq    M, I
+        sarq    $2, I
+#ifdef WINDOWS_ABI /* GEMM_P == GEMM_Q * 4 */
+        salq    $6, I
+#else /* GEMM_P == GEMM_Q * 2 under linux x86_64 */
+        salq    $7, I
+#endif
+        subq    I, B
+
 .L12_20:
 	// Test rest of M
 
@@ -2089,10 +2117,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	jne	.L13_12
 
 .L13_12a:
-
+        prefetcht0 ALPHA
+        PREFETCHT0_C
+        addq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        leaq  (CO1,LDC,2),CO1
 	KERNEL4x12_M2
+        PREFETCHT0_C
+        subq  LDC,CO1
 	KERNEL4x12_M1
+        PREFETCHT0_C
+        subq  LDC,CO1
+        subq  LDC,CO1
 	KERNEL4x12_M2
 
 	KERNEL4x12_M1
@@ -2101,7 +2138,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x12_E
 
 	jmp .L13_16
-
 
 .L13_13:
 
@@ -2147,6 +2183,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	SAVE4x12
 
+        /* here for the prefetch of next b source block */
+	/* the increment should be proportional to GEMM_Q/GEMM_P */
+
+        salq    $3, K
+#ifdef WINDOWS_ABI /* GEMM_P == GEMM_Q * 4 */
+        prefetcht2 (B)
+        prefetcht2 (B, K, 8)
+        addq    $64, B /* increment */
+#else /* GEMM_P == GEMM_Q * 2 under linux x86_64 */
+        prefetcht2 (B)
+        prefetcht2 (B, K, 8)
+        prefetcht2 64(B)
+        prefetcht2 64(B, K, 8)
+        addq    $128, B /* increment */
+#endif
+        sarq    $3, K
+
 	decq	I			# i --
 	jne	.L13_11
 	ALIGN_4	
@@ -2154,6 +2207,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
+        /* recover the original value of pointer B */
+        movq    M, I
+        sarq    $2, I
+#ifdef WINDOWS_ABI /* GEMM_P == GEMM_Q * 4 */
+        salq    $6, I
+#else /* GEMM_P == GEMM_Q * 2 under linux x86_64 */
+        salq    $7, I
+#endif
+        subq    I, B
+
 .L13_20:
 	// Test rest of M
 
