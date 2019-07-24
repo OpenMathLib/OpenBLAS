@@ -6,6 +6,8 @@ TOPDIR = ..
 include $(TOPDIR)/Makefile.system
 
 override CFLAGS += -DADD$(BU) -DCBLAS
+override TARGET_ARCH=
+override TARGET_MACH=
 
 LIB = $(TOPDIR)/$(LIBNAME)
 

@@ -1,6 +1,9 @@
 UTEST_CHECK = 1
 TOPDIR	= ..
 
+override TARGET_ARCH=
+override TARGET_MACH=
+
 UTESTBIN=openblas_utest
 
 .PHONY : all
