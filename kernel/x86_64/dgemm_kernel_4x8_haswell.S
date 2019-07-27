@@ -107,6 +107,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define	A_PR1	512
 #define	B_PR1	160
+#define BROADCASTKERNEL
 
 /*******************************************************************************************
 * Macro definitions
@@ -133,7 +134,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht0	A_PR1(AO)
 	vmovups		-12 * SIZE(BO), %ymm1
 	prefetcht0	B_PR1(BO)
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+# else
 	vmovups 	-16 * SIZE(AO), %ymm0
+# endif
 	prefetcht0	B_PR1+64(BO)
 	vmovups		 -8 * SIZE(BO), %ymm2
 	prefetcht0	B_PR1+128(BO)
@@ -143,17 +148,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd  	%ymm0 ,%ymm2  , %ymm8
 	vmulpd  	%ymm0 ,%ymm3  , %ymm12
 	prefetcht0	B_PR1+256(BO)
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm5
 	vmulpd  	%ymm0 ,%ymm2  , %ymm9
 	vmulpd  	%ymm0 ,%ymm3  , %ymm13
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+# else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+# endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm6
 	vmulpd  	%ymm0 ,%ymm2  , %ymm10
 
 	addq		$ 12*SIZE, BO
 	vmulpd  	%ymm0 ,%ymm3  , %ymm14
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -13 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 	vmulpd  	%ymm0 ,%ymm2  , %ymm11
@@ -165,23 +182,38 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x12_M1
 	prefetcht0	A_PR1(AO)
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+# else
 	vmovups 	-16 * SIZE(AO), %ymm0
+# endif
 	prefetcht0	B_PR1(BO)
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	prefetcht0	B_PR1+64(BO)
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	prefetcht0	B_PR1+128(BO)
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+# else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
-
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -13 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
@@ -192,21 +224,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x12_M2
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -12 * SIZE(AO), %ymm0
+# else
 	vmovups 	-12 * SIZE(AO), %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -11 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -10 * SIZE(AO), %ymm0
+# else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 
 	addq		$ 8*SIZE, AO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		  0 * SIZE(BO), %ymm1
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
@@ -218,21 +266,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro KERNEL4x12_E
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -12 * SIZE(AO), %ymm0
+# else
 	vmovups 	-12 * SIZE(AO), %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -11 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -10 * SIZE(AO), %ymm0
+# else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 
 	addq		$ 8*SIZE, AO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm15
@@ -241,23 +305,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x12_SUB
 	vmovups		-12 * SIZE(BO), %ymm1
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+# else
 	vmovups 	-16 * SIZE(AO), %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vmovups		 -8 * SIZE(BO), %ymm2
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
 	vmovups		 -4 * SIZE(BO), %ymm3
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm12
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	addq		$ 12*SIZE, BO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm13
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+# else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 	addq		$ 4*SIZE, AO
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm14
+# if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+# else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+# endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
 	vfmadd231pd  	%ymm0 ,%ymm3  , %ymm15
@@ -289,27 +369,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if B_PR1 > 96
         prefetcht0      192 + BUFFER1
 #endif
+
+#if defined BROADCASTKERNEL
+        vperm2f128 $ 0x20 , %ymm6, %ymm4 , %ymm0
+        vperm2f128 $ 0x20 , %ymm7, %ymm5 , %ymm1
+        vperm2f128 $ 0x31 , %ymm6, %ymm4 , %ymm2
+        vperm2f128 $ 0x31 , %ymm7, %ymm5 , %ymm3
+#else
 	vpermilpd $ 0x05 , %ymm5, %ymm5
 	vpermilpd $ 0x05 , %ymm7, %ymm7
+#endif
+
 #if B_PR1 > 160
         prefetcht0      256 + BUFFER1
 #endif
+
+#if defined BROADCASTKERNEL
+        vunpcklpd %ymm1, %ymm0, %ymm4
+        vunpckhpd %ymm1, %ymm0, %ymm5
+        vunpcklpd %ymm3, %ymm2, %ymm6
+        vunpckhpd %ymm3, %ymm2, %ymm7
+#else
 	vblendpd $ 0x0a, %ymm5, %ymm4, %ymm0
 	vblendpd $ 0x05, %ymm5, %ymm4, %ymm1
 	vblendpd $ 0x0a, %ymm7, %ymm6, %ymm2
 	vblendpd $ 0x05, %ymm7, %ymm6, %ymm3
+#endif
+
 #if B_PR1 > 224
         prefetcht0      320 + BUFFER1
 #endif
+
+#ifndef BROADCASTKERNEL
 	vperm2f128 $ 0x01 , %ymm2, %ymm2 , %ymm2
 	vperm2f128 $ 0x01 , %ymm3, %ymm3 , %ymm3
+#endif
+
 #if B_PR1 > 288
         prefetcht0      384 + BUFFER1
 #endif
+
+#ifndef BROADCASTKERNEL
 	vblendpd $ 0x03, %ymm0, %ymm2 , %ymm4
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
+#endif
+
 #if B_PR1 > 352
         prefetcht0      448 + BUFFER1
 #endif
@@ -338,11 +444,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht1	56(%rax)
 	prefetcht1	56(%rax,LDC)
 
-	vpermilpd $ 0x05 , %ymm9 , %ymm9
+#if defined BROADCASTKERNEL
+        vperm2f128 $ 0x20 , %ymm10, %ymm8 , %ymm0
+        vperm2f128 $ 0x20 , %ymm11, %ymm9 , %ymm1
+        vperm2f128 $ 0x31 , %ymm10, %ymm8 , %ymm2
+        vperm2f128 $ 0x31 , %ymm11, %ymm9 , %ymm3
+        vunpcklpd %ymm1, %ymm0, %ymm4
+        vunpckhpd %ymm1, %ymm0, %ymm5
+        vunpcklpd %ymm3, %ymm2, %ymm6
+        vunpckhpd %ymm3, %ymm2, %ymm7
+#else
+	vpermilpd $ 0x05 , %ymm9, %ymm9
 	vpermilpd $ 0x05 , %ymm11, %ymm11
 
-	vblendpd $ 0x0a, %ymm9 , %ymm8 , %ymm0
-	vblendpd $ 0x05, %ymm9 , %ymm8 , %ymm1
+	vblendpd $ 0x0a, %ymm9, %ymm8, %ymm0
+	vblendpd $ 0x05, %ymm9, %ymm8, %ymm1
 	vblendpd $ 0x0a, %ymm11, %ymm10, %ymm2
 	vblendpd $ 0x05, %ymm11, %ymm10, %ymm3
 
@@ -353,7 +469,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
-
+#endif
 
 	leaq	(%rax, LDC, 2), %rax
 	leaq	(%rax, LDC, 2), %rbp
@@ -377,6 +493,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht1	56(%rbp)
 	prefetcht1	56(%rbp,LDC)
 
+#if defined BROADCASTKERNEL
+        vperm2f128 $ 0x20 , %ymm14, %ymm12 , %ymm0
+        vperm2f128 $ 0x20 , %ymm15, %ymm13 , %ymm1
+        vperm2f128 $ 0x31 , %ymm14, %ymm12 , %ymm2
+        vperm2f128 $ 0x31 , %ymm15, %ymm13 , %ymm3
+        vunpcklpd %ymm1, %ymm0, %ymm4
+        vunpckhpd %ymm1, %ymm0, %ymm5
+        vunpcklpd %ymm3, %ymm2, %ymm6
+        vunpckhpd %ymm3, %ymm2, %ymm7
+#else
 	vpermilpd $ 0x05 , %ymm13, %ymm13
 	vpermilpd $ 0x05 , %ymm15, %ymm15
 
@@ -392,7 +518,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
-
+#endif
 
 	leaq	(%rax, LDC, 4), %rax
 	leaq	(%rbp, LDC, 4), %rbp
@@ -693,19 +819,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x8_I
 	vmovups		-12 * SIZE(BO), %ymm1
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+#else
 	vmovups 	-16 * SIZE(AO), %ymm0
+#endif
 	vmovups		 -8 * SIZE(BO), %ymm2
 	vmulpd  	%ymm0 ,%ymm1  , %ymm4
 	vmulpd  	%ymm0 ,%ymm2  , %ymm8
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm5
 	vmulpd  	%ymm0 ,%ymm2  , %ymm9
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm6
 	vmulpd  	%ymm0 ,%ymm2  , %ymm10
 
 	addq		$  8*SIZE, BO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -13 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 	vmulpd  	%ymm0 ,%ymm2  , %ymm11
@@ -715,19 +857,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x8_M1
 	prefetcht0	A_PR1(AO)
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+#else
 	vmovups 	-16 * SIZE(AO), %ymm0
+#endif
 	prefetcht0	B_PR1(BO)
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	prefetcht0	B_PR1+64(BO)
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
-
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -13 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
@@ -736,18 +893,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x8_M2
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -12 * SIZE(AO), %ymm0
+#else
 	vmovups 	-12 * SIZE(AO), %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -11 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -10 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 
 	addq		$ 8*SIZE, AO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		 -4 * SIZE(BO), %ymm1
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
@@ -757,18 +930,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro KERNEL4x8_E
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -12 * SIZE(AO), %ymm0
+#else
 	vmovups 	-12 * SIZE(AO), %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -11 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -10 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 
 	addq		$ 8*SIZE, AO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
 	addq		$  8*SIZE, BO
@@ -776,19 +965,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x8_SUB
 	vmovups		-12 * SIZE(BO), %ymm1
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+#else
 	vmovups 	-16 * SIZE(AO), %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
 	vmovups		 -8 * SIZE(BO), %ymm2
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm8
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm9
 	addq		$  8*SIZE, BO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm10
 	addq		$ 4*SIZE, AO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vfmadd231pd  	%ymm0 ,%ymm2  , %ymm11
 
@@ -809,6 +1014,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd	%ymm0 , %ymm10, %ymm10
 	vmulpd	%ymm0 , %ymm11, %ymm11
 
+#if defined BROADCASTKERNEL
+        vperm2f128 $ 0x20 , %ymm6, %ymm4 , %ymm0
+        vperm2f128 $ 0x20 , %ymm7, %ymm5 , %ymm1
+        vperm2f128 $ 0x31 , %ymm6, %ymm4 , %ymm2
+        vperm2f128 $ 0x31 , %ymm7, %ymm5 , %ymm3
+        vunpcklpd %ymm1, %ymm0, %ymm4
+        vunpckhpd %ymm1, %ymm0, %ymm5
+        vunpcklpd %ymm3, %ymm2, %ymm6
+        vunpckhpd %ymm3, %ymm2, %ymm7
+#else
 	vpermilpd $ 0x05 , %ymm5, %ymm5
 	vpermilpd $ 0x05 , %ymm7, %ymm7
 
@@ -824,6 +1039,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
+#endif
 
         leaq    (CO1, LDC, 2), %rax     
 	
@@ -847,6 +1063,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prefetcht0	56(%rax)
 	prefetcht0	56(%rax,LDC)
 
+#if defined BROADCASTKERNEL
+        vperm2f128 $ 0x20 , %ymm10, %ymm8 , %ymm0
+        vperm2f128 $ 0x20 , %ymm11, %ymm9 , %ymm1
+        vperm2f128 $ 0x31 , %ymm10, %ymm8 , %ymm2
+        vperm2f128 $ 0x31 , %ymm11, %ymm9 , %ymm3
+        vunpcklpd %ymm1, %ymm0, %ymm4
+        vunpckhpd %ymm1, %ymm0, %ymm5
+        vunpcklpd %ymm3, %ymm2, %ymm6
+        vunpckhpd %ymm3, %ymm2, %ymm7
+#else
 	vpermilpd $ 0x05 , %ymm9 , %ymm9
 	vpermilpd $ 0x05 , %ymm11, %ymm11
 
@@ -862,7 +1088,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
-
+#endif
 
 	leaq	(%rax, LDC, 2), %rax
 	leaq	(%rax, LDC, 2), %rbp
@@ -1088,15 +1314,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL4x4_I
 	prefetcht0	A_PR1(AO)
 	vmovups		-12 * SIZE(BO), %ymm1
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+#else
 	vmovups 	-16 * SIZE(AO), %ymm0
+#endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm4
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm5
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm6
 
 	addq		$ 4*SIZE, BO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -13 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vmulpd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 
@@ -1104,29 +1346,60 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x4_M1
 	prefetcht0	A_PR1(AO)
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+#else
 	vmovups 	-16 * SIZE(AO), %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
-
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -13 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		-12 * SIZE(BO), %ymm1
 
 .endm
 
 .macro KERNEL4x4_M2
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -12 * SIZE(AO), %ymm0
+#else
 	vmovups 	-12 * SIZE(AO), %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -11 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -10 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 
 	addq		$ 8*SIZE, AO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	vmovups		 -8 * SIZE(BO), %ymm1
 	addq		$ 8*SIZE, BO
@@ -1134,30 +1407,62 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro KERNEL4x4_E
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -12 * SIZE(AO), %ymm0
+#else
 	vmovups 	-12 * SIZE(AO), %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -11 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -10 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 
 	addq		$ 8*SIZE, AO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 	addq		$ 4*SIZE, BO
 .endm
 
 .macro KERNEL4x4_SUB
 	vmovups		-12 * SIZE(BO), %ymm1
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -16 * SIZE(AO), %ymm0
+#else
 	vmovups 	-16 * SIZE(AO), %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm4
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -15 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm5
 	addq		$ 4*SIZE, BO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -14 * SIZE(AO), %ymm0
+#else
 	vpermpd		$ 0x1b, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm6
 	addq		$ 4*SIZE, AO
+#if defined BROADCASTKERNEL
+        vbroadcastsd    -17 * SIZE(AO), %ymm0
+#else
 	vpermilpd	$ 0x05, %ymm0  , %ymm0
+#endif
 	vfmadd231pd  	%ymm0 ,%ymm1  , %ymm7
 
 .endm
@@ -1171,6 +1476,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vmulpd	%ymm0 , %ymm5 , %ymm5
 	vmulpd	%ymm0 , %ymm6 , %ymm6
 
+#if defined BROADCASTKERNEL
+        vperm2f128 $ 0x20 , %ymm6, %ymm4 , %ymm0
+        vperm2f128 $ 0x20 , %ymm7, %ymm5 , %ymm1
+        vperm2f128 $ 0x31 , %ymm6, %ymm4 , %ymm2
+        vperm2f128 $ 0x31 , %ymm7, %ymm5 , %ymm3
+        vunpcklpd %ymm1, %ymm0, %ymm4
+        vunpckhpd %ymm1, %ymm0, %ymm5
+        vunpcklpd %ymm3, %ymm2, %ymm6
+        vunpckhpd %ymm3, %ymm2, %ymm7
+#else
 	vpermilpd $ 0x05 , %ymm5, %ymm5
 	vpermilpd $ 0x05 , %ymm7, %ymm7
 
@@ -1186,6 +1501,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	vblendpd $ 0x03, %ymm1, %ymm3 , %ymm5
 	vblendpd $ 0x03, %ymm2, %ymm0 , %ymm6
 	vblendpd $ 0x03, %ymm3, %ymm1 , %ymm7
+#endif
 
         leaq    (CO1, LDC, 2), %rax     
 	
