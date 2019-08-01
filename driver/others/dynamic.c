@@ -585,9 +585,27 @@ static gotoblas_t *get_coretype(void){
 	  }
         }
         return NULL;  
+      case 7:
+        if (model == 14) {
+	// Ice Lake
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2()){
+	    openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
+	    return &gotoblas_HASWELL;
+          }
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+          openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+          return &gotoblas_NEHALEM;
+          }
+        }
+        return NULL;  
       case 9:
       case 8:
-	if (model == 14 ) { // Kaby Lake
+	if (model == 14 ) { // Kaby Lake, Coffee Lake
 	  if(support_avx2())
 	    return &gotoblas_HASWELL;
 	  if(support_avx()) {
