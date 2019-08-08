@@ -2041,7 +2041,7 @@ static BLASULONG  alloc_lock = 0UL;
 
 static void alloc_mmap_free(struct release_t *release){
 
-if (!release->address) return 0;
+if (!release->address) return;
 
   if (munmap(release -> address, BUFFER_SIZE)) {
       int errsv=errno;
