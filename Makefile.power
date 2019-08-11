@@ -29,6 +29,10 @@ FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -fno-fas
 endif
 endif
 
+# workaround for C->FORTRAN ABI violation in LAPACKE
+ifeq ($(F_COMPILER), GFORTRAN)
+FCOMMON_OPT += -fno-optimize-sibling-calls
+endif
 
 FLAMEPATH	= $(HOME)/flame/lib
 

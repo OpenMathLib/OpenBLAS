@@ -9,8 +9,8 @@ SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
 
 #DGEMMKERNEL    =  dgemm_kernel_4x8_skylakex.c
 
-DGEMMINCOPY    =  dgemm_ncopy_8_skylakex.c
-DGEMMITCOPY    =  dgemm_tcopy_8_skylakex.c
+#DGEMMINCOPY    =  dgemm_ncopy_8_skylakex.c
+#DGEMMITCOPY    =  dgemm_tcopy_8_skylakex.c
 DGEMMONCOPY    =  dgemm_ncopy_8_skylakex.c
 DGEMMOTCOPY    =  dgemm_tcopy_8_skylakex.c
 

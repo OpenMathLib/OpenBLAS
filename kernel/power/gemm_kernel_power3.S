@@ -59,7 +59,7 @@
 #define	N	r4
 #define	K	r5
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 #define A	r6
 #define	B	r7
@@ -187,7 +187,7 @@
 	li	PREC,   4 * SIZE
 #else
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 	mr	PREA,  r10
 	lwz	PREB,  FRAMESLOT(0) + STACKSIZE(SP)

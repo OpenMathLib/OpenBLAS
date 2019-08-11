@@ -229,7 +229,7 @@ int get_num_procs(void) {
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
-     if (CPU_ISSET(i,cpuset)) n++;
+     if (CPU_ISSET(i,&cpuset)) n++;
   nums=n;
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
@@ -1622,12 +1622,14 @@ void gotoblas_dummy_for_PGI(void) {
   gotoblas_init();
   gotoblas_quit();
 
+#if __PGIC__ < 19
 #if 0
   asm ("\t.section\t.ctors,\"aw\",@progbits; .align 8; .quad gotoblas_init; .section .text");
   asm ("\t.section\t.dtors,\"aw\",@progbits; .align 8; .quad gotoblas_quit; .section .text");
 #else
   asm (".section .init,\"ax\"; call gotoblas_init@PLT; .section .text");
   asm (".section .fini,\"ax\"; call gotoblas_quit@PLT; .section .text");
+#endif
 #endif
 }
 #endif
@@ -1772,7 +1774,7 @@ int get_num_procs(void) {
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
-     if (CPU_ISSET(i,cpuset)) n++;
+     if (CPU_ISSET(i,&cpuset)) n++;
   nums=n;
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
@@ -2039,8 +2041,12 @@ static BLASULONG  alloc_lock = 0UL;
 
 static void alloc_mmap_free(struct release_t *release){
 
+if (!release->address) return;
+
   if (munmap(release -> address, BUFFER_SIZE)) {
-    printf("OpenBLAS : munmap failed\n");
+      int errsv=errno;
+       perror("OpenBLAS : munmap failed:");
+       printf("error code=%d,\trelease->address=%lx\n",errsv,release->address);
   }
 }
 
@@ -2062,15 +2068,21 @@ static void *alloc_mmap(void *address){
   }
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif    
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
 #endif    
+  } else {
+#ifdef DEBUG  
+        int errsv=errno;
+       perror("OpenBLAS : mmap failed:");
+       printf("error code=%d,\tmap_address=%lx\n",errsv,map_address);
+#endif
   }
 
 #ifdef OS_LINUX
@@ -2214,13 +2226,13 @@ static void *alloc_mmap(void *address){
 #endif
 
   if (map_address != (void *)-1) {
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     release_pos ++;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
 #endif
   }
@@ -2701,7 +2713,7 @@ void *blas_memory_alloc(int procpos){
 
   position = 0;
 
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
 #endif
   do {
@@ -2718,7 +2730,7 @@ void *blas_memory_alloc(int procpos){
     position ++;
 
   } while (position < NUM_BUFFERS);
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);	
 #endif
   goto error;
@@ -2730,7 +2742,7 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   memory[position].used = 1;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #else
   blas_unlock(&memory[position].lock);	
@@ -2751,7 +2763,7 @@ void *blas_memory_alloc(int procpos){
 
 #ifdef ALLOC_DEVICEDRIVER
 	if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
-	    fprintf(stderr, "OpenBLAS Warning ... Physically contigous allocation was failed.\n");
+	    fprintf(stderr, "OpenBLAS Warning ... Physically contiguous allocation was failed.\n");
 	}
 #endif
 
@@ -2779,11 +2791,11 @@ void *blas_memory_alloc(int procpos){
 
     } while ((BLASLONG)map_address == -1);
 
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif    
     memory[position].addr = map_address;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
 #endif
 
@@ -2839,7 +2851,7 @@ void blas_memory_free(void *free_area){
 #endif
 
   position = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
 #endif
   while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
@@ -2855,7 +2867,7 @@ void blas_memory_free(void *free_area){
   WMB;
 
   memory[position].used = 0;
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
 
@@ -2872,7 +2884,7 @@ void blas_memory_free(void *free_area){
   for (position = 0; position < NUM_BUFFERS; position++)
     printf("%4ld  %p : %d\n", position, memory[position].addr, memory[position].used);
 #endif
-#if defined(SMP) && !defined(USE_OPENMP)
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
   return;
@@ -2924,7 +2936,7 @@ void blas_shutdown(void){
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
 #if   defined(USE_PTHREAD_LOCK)
 static pthread_mutex_t    init_lock = PTHREAD_MUTEX_INITIALIZER;
 #elif defined(USE_PTHREAD_SPINLOCK)
@@ -2949,7 +2961,7 @@ static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
     if (hot_alloc != 2) {
 #endif
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
   LOCK_COMMAND(&init_lock);
 #endif
 
@@ -2959,7 +2971,7 @@ static void _touch_memory(blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
     size    -= PAGESIZE;
   }
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
   UNLOCK_COMMAND(&init_lock);
 #endif
 
@@ -3192,7 +3204,7 @@ void gotoblas_dummy_for_PGI(void) {
 
   gotoblas_init();
   gotoblas_quit();
-
+#if __PGIC__ < 19
 #if 0
   asm ("\t.section\t.ctors,\"aw\",@progbits; .align 8; .quad gotoblas_init; .section .text");
   asm ("\t.section\t.dtors,\"aw\",@progbits; .align 8; .quad gotoblas_quit; .section .text");
@@ -3200,6 +3212,7 @@ void gotoblas_dummy_for_PGI(void) {
   asm (".section .init,\"ax\"; call gotoblas_init@PLT; .section .text");
   asm (".section .fini,\"ax\"; call gotoblas_quit@PLT; .section .text");
 #endif
+#endif	
 }
 #endif
 

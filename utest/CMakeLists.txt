@@ -38,6 +38,7 @@ if (NOT NO_LAPACK)
 set(OpenBLAS_utest_src
   ${OpenBLAS_utest_src}
   test_potrs.c
+  test_kernel_regress.c
   )
 endif()
 

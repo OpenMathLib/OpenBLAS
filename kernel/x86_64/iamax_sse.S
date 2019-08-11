@@ -36,6 +36,10 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+/* This kernel was found to give wrong results when used for ISMIN/ISAMIN
+   with increment != 1, although it appears to be correct for corresponding
+   MAX operations. See issue 2116 */
+
 #define ASSEMBLER
 #include "common.h"
 
@@ -48,9 +52,11 @@
 #define XX	%r10
 #define	MM	%r11
 
+#define MAXPS	maxps
+#define MAXSS	maxss
 #ifdef USE_MIN
-#define maxps	minps
-#define maxss	minss
+#define MAXPS	minps
+#define MAXSS	minss
 #endif
 
 #include "l1param.h"
@@ -103,7 +109,7 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxss	  %xmm4, %xmm0
+	MAXSS	  %xmm4, %xmm0
 	decq	M
 	addq	$SIZE, X
 	ALIGN_3
@@ -117,7 +123,7 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxps	  %xmm4, %xmm1
+	MAXPS	  %xmm4, %xmm1
 	subq	$2, M
 	addq	$2 * SIZE, X
 	ALIGN_3
@@ -137,25 +143,25 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxps	%xmm4, %xmm0
+	MAXPS	%xmm4, %xmm0
 
 	movaps	 4 * SIZE(X), %xmm5
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxps	%xmm5, %xmm1
+	MAXPS	%xmm5, %xmm1
 
 	movaps	 8 * SIZE(X), %xmm6
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxps	%xmm6, %xmm2
+	MAXPS	%xmm6, %xmm2
 
 	movaps	12 * SIZE(X), %xmm7
 #ifdef USE_ABS
 	andps	%xmm15, %xmm7
 #endif
-	maxps	%xmm7, %xmm3
+	MAXPS	%xmm7, %xmm3
 
 	addq	$16 * SIZE, X
 	decq	I
@@ -173,13 +179,13 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxps	%xmm4, %xmm0
+	MAXPS	%xmm4, %xmm0
 
 	movaps	4 * SIZE(X), %xmm5
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxps	%xmm5, %xmm1
+	MAXPS	%xmm5, %xmm1
 	addq	$8 * SIZE, X
 	ALIGN_3
 
@@ -191,7 +197,7 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxps	%xmm6, %xmm2
+	MAXPS	%xmm6, %xmm2
 	addq	$4 * SIZE, X
 	ALIGN_3
 
@@ -204,7 +210,7 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm7
 #endif
-	maxps	%xmm7, %xmm3
+	MAXPS	%xmm7, %xmm3
 	addq	$2 * SIZE, X
 
 .L18:
@@ -215,22 +221,22 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxss	%xmm4, %xmm0
+	MAXSS	%xmm4, %xmm0
 	ALIGN_3
 
 .L20:
 	movq	XX, X
 	movq	MM, M
 
-	maxps	%xmm1, %xmm0
-	maxps	%xmm3, %xmm2
-	maxps	%xmm2, %xmm0
+	MAXPS	%xmm1, %xmm0
+	MAXPS	%xmm3, %xmm2
+	MAXPS	%xmm2, %xmm0
 	movaps	%xmm0, %xmm1
 	movhlps %xmm0, %xmm0
-	maxps	%xmm1, %xmm0
+	MAXPS	%xmm1, %xmm0
 	movaps	%xmm0, %xmm1
 	shufps	$1, %xmm0, %xmm0
-	maxss	%xmm1, %xmm0
+	MAXSS	%xmm1, %xmm0
 	shufps	$0, %xmm0, %xmm0
 
 	testq	$4, X
@@ -427,28 +433,28 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxps	%xmm4, %xmm0
+	MAXPS	%xmm4, %xmm0
 
 	movsd	 4 * SIZE(X), %xmm5
 	movhps	 6 * SIZE(X), %xmm5
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxps	%xmm5, %xmm1
+	MAXPS	%xmm5, %xmm1
 
 	movsd	 8 * SIZE(X), %xmm6
 	movhps	10 * SIZE(X), %xmm6
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxps	%xmm6, %xmm2
+	MAXPS	%xmm6, %xmm2
 
 	movsd	12 * SIZE(X), %xmm7
 	movhps	14 * SIZE(X), %xmm7
 #ifdef USE_ABS
 	andps	%xmm15, %xmm7
 #endif
-	maxps	%xmm7, %xmm3
+	MAXPS	%xmm7, %xmm3
 
 	addq	$16 * SIZE, X
 	decq	I
@@ -467,14 +473,14 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxps	%xmm4, %xmm0
+	MAXPS	%xmm4, %xmm0
 
 	movsd	4 * SIZE(X), %xmm5
 	movhps	6 * SIZE(X), %xmm5
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxps	%xmm5, %xmm1
+	MAXPS	%xmm5, %xmm1
 
 	addq	$8 * SIZE, X
 	ALIGN_3
@@ -488,7 +494,7 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxps	%xmm6, %xmm2
+	MAXPS	%xmm6, %xmm2
 	addq	$4 * SIZE, X
 	ALIGN_3
 
@@ -501,7 +507,7 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm7
 #endif
-	maxps	%xmm7, %xmm3
+	MAXPS	%xmm7, %xmm3
 	addq	$2 * SIZE, X
 
 .L38:
@@ -512,7 +518,7 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxss	%xmm4, %xmm0
+	MAXSS	%xmm4, %xmm0
 	jmp	.L40
 	ALIGN_4
 
@@ -520,15 +526,15 @@
 	movq	XX, X
 	movq	MM, M
 
-	maxps	%xmm1, %xmm0
-	maxps	%xmm3, %xmm2
-	maxps	%xmm2, %xmm0
+	MAXPS	%xmm1, %xmm0
+	MAXPS	%xmm3, %xmm2
+	MAXPS	%xmm2, %xmm0
 	movaps	%xmm0, %xmm1
 	movhlps %xmm0, %xmm0
-	maxps	%xmm1, %xmm0
+	MAXPS	%xmm1, %xmm0
 	movaps	%xmm0, %xmm1
 	shufps	$1, %xmm0, %xmm0
-	maxss	%xmm1, %xmm0
+	MAXSS	%xmm1, %xmm0
 	shufps	$0, %xmm0, %xmm0
 
 	movq	M,  I
@@ -687,56 +693,56 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxss	%xmm4, %xmm0
+	MAXSS	%xmm4, %xmm0
 
 	movss	0 * SIZE(X), %xmm5
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxss	%xmm5, %xmm1
+	MAXSS	%xmm5, %xmm1
 
 	movss	0 * SIZE(X), %xmm6
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxss	%xmm6, %xmm2
+	MAXSS	%xmm6, %xmm2
 
 	movss	0 * SIZE(X), %xmm7
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm7
 #endif
-	maxss	%xmm7, %xmm3
+	MAXSS	%xmm7, %xmm3
 
 	movss	0 * SIZE(X), %xmm4
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxss	%xmm4, %xmm0
+	MAXSS	%xmm4, %xmm0
 
 	movss	0 * SIZE(X), %xmm5
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxss	%xmm5, %xmm1
+	MAXSS	%xmm5, %xmm1
 
 	movss	0 * SIZE(X), %xmm6
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxss	%xmm6, %xmm2
+	MAXSS	%xmm6, %xmm2
 
 	movss	0 * SIZE(X), %xmm7
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm7
 #endif
-	maxss	%xmm7, %xmm3
+	MAXSS	%xmm7, %xmm3
 
 	decq	I
 	jg	.L81
@@ -754,28 +760,28 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxss	%xmm4, %xmm0
+	MAXSS	%xmm4, %xmm0
 
 	movss	0 * SIZE(X), %xmm5
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxss	%xmm5, %xmm1
+	MAXSS	%xmm5, %xmm1
 
 	movss	0 * SIZE(X), %xmm6
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxss	%xmm6, %xmm2
+	MAXSS	%xmm6, %xmm2
 
 	movss	0 * SIZE(X), %xmm7
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm7
 #endif
-	maxss	%xmm7, %xmm3
+	MAXSS	%xmm7, %xmm3
 	ALIGN_3
 
 .L86:
@@ -787,14 +793,14 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
-	maxss	%xmm4, %xmm0
+	MAXSS	%xmm4, %xmm0
 
 	movss	0 * SIZE(X), %xmm5
 	addq	INCX, X
 #ifdef USE_ABS
 	andps	%xmm15, %xmm5
 #endif
-	maxss	%xmm5, %xmm1
+	MAXSS	%xmm5, %xmm1
 	ALIGN_3
 
 .L87:
@@ -806,16 +812,16 @@
 #ifdef USE_ABS
 	andps	%xmm15, %xmm6
 #endif
-	maxss	%xmm6, %xmm2
+	MAXSS	%xmm6, %xmm2
 	ALIGN_4
 
 .L90:
 	movq	XX, X
 	movq	MM, M
 
-	maxss	%xmm1, %xmm0
-	maxss	%xmm3, %xmm2
-	maxss	%xmm2, %xmm0
+	MAXSS	%xmm1, %xmm0
+	MAXSS	%xmm3, %xmm2
+	MAXSS	%xmm2, %xmm0
 	shufps	$0, %xmm0, %xmm0
 
 	movq	M,  I

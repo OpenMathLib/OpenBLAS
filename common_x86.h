@@ -214,7 +214,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #endif
 
 #if defined(PILEDRIVER) || defined(BULLDOZER) || defined(STEAMROLLER) || defined(EXCAVATOR)
-//Enable some optimazation for barcelona.
+//Enable some optimization for barcelona.
 #define BARCELONA_OPTIMIZATION
 #endif
 

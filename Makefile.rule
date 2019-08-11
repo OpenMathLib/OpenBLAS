@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.6
+VERSION = 0.3.7.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -57,6 +57,12 @@ VERSION = 0.3.6
 # For force setting for single threaded, specify USE_THREAD = 0
 # For force setting for multi  threaded, specify USE_THREAD = 1
 # USE_THREAD = 0
+
+# If you want to build a single-threaded OpenBLAS, but expect to call this
+# from several concurrent threads in some other program, comment this in for
+# thread safety. (This is done automatically for USE_THREAD=1 , and should not
+# be necessary when USE_OPENMP=1)
+# USE_LOCKING = 1
 
 # If you're going to use this library with OpenMP, please comment it in.
 # This flag is always set for POWER8. Don't set USE_OPENMP = 0 if you're targeting POWER8.
@@ -157,6 +163,10 @@ NO_AFFINITY = 1
 # Don't use Haswell optimizations if binutils is too old (e.g. RHEL6)
 # NO_AVX2 = 1
 
+# Don't use SkylakeX optimizations if binutils or compiler are too old (the build
+# system will try to determine this automatically)
+# NO_AVX512 = 1
+
 # Don't use parallel make.
 # NO_PARALLEL_MAKE = 1
 
@@ -181,17 +191,17 @@ NO_AFFINITY = 1
 # time out to improve performance. This number should be from 4 to 30
 # which corresponds to (1 << n) cycles. For example, if you set to 26,
 # thread will be running for (1 << 26) cycles(about 25ms on 3.0GHz
-# system). Also you can control this mumber by THREAD_TIMEOUT
+# system). Also you can control this number by THREAD_TIMEOUT
 # CCOMMON_OPT	+= -DTHREAD_TIMEOUT=26
 
-# Using special device driver for mapping physically contigous memory
+# Using special device driver for mapping physically contiguous memory
 # to the user space. If bigphysarea is enabled, it will use it.
 # DEVICEDRIVER_ALLOCATION = 1
 
 # If you need to synchronize FP CSR between threads (for x86/x86_64 only).
 # CONSISTENT_FPCSR = 1
 
-# If any gemm arguement m, n or k is less or equal this threshold, gemm will be execute
+# If any gemm argument m, n or k is less or equal this threshold, gemm will be execute
 # with single thread. (Actually in recent versions this is a factor proportional to the
 # number of floating point operations necessary for the given problem size, no longer
 # an individual dimension). You can use this setting to avoid the overhead of multi-
@@ -238,6 +248,21 @@ COMMON_PROF = -pg
 #
 # SYMBOLPREFIX=
 # SYMBOLSUFFIX=
+
+# Run a C++ based thread safety tester after the build is done.
+# This is mostly intended as a developer feature to spot regressions, but users and
+# package maintainers can enable this if they have doubts about the thread safety of
+# the library, given the configuration in this file.
+# By default, the thread safety tester launches 52 concurrent calculations at the same
+# time.
+#
+# Please note that the test uses ~1300 MiB of RAM for the DGEMM test.
+#
+# The test requires CBLAS to be built, a C++11 capable compiler and the presence of
+# an OpenMP implementation. If you are cross-compiling this test will probably not
+# work at all.
+#
+# CPP_THREAD_SAFETY_TEST = 1
 
 #
 #  End of user configuration
