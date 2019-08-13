@@ -142,9 +142,9 @@ endif
 endif
 
 
-# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
+# On x86_64 build getarch with march=native unless the compiler is PGI. This is required to detect AVX512 support in getarch.
 ifeq ($(ARCH), x86_64)
-ifneq ($(C_COMPILER), PGI)
+ifeq ($(findstring pgcc,$(HOSTCC)),)
 GETARCH_FLAGS += -march=native
 endif
 endif
@@ -267,10 +267,9 @@ OBJCOPY = $(CROSS_SUFFIX)objcopy
 OBJCONV = $(CROSS_SUFFIX)objconv
 
 
-# When fortran support was either not detected or actively deselected, only build BLAS.
+# For detect fortran failed, only build BLAS.
 ifeq ($(NOFORTRAN), 1)
 NO_LAPACK = 1
-override FEXTRALIB = 
 endif
 
 #
@@ -697,9 +696,9 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 ifdef BINARY64
-CCOMMON_OPT += -tp p7-64
+CCOMMON_OPT += -m64 -Mnollvm
 else
-CCOMMON_OPT += -tp p7
+CCOMMON_OPT += -m32
 endif
 endif
 
@@ -1125,7 +1124,11 @@ endif
 endif
 
 ifdef NO_AFFINITY
+ifeq ($(NO_AFFINITY), 0)
+override undefine NO_AFFINITY
+else
 CCOMMON_OPT	+= -DNO_AFFINITY
+endif
 endif
 
 ifdef FUNCTION_PROFILE
