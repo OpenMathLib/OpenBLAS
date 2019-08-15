@@ -100,11 +100,10 @@ static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	BLASLONG i;
 	BLASLONG ix,iy;
 	FLOAT  dot[4] = { 0.0, 0.0, 0.0 , 0.0 } ; 
-	OPENBLAS_COMPLEX_FLOAT res;
 	
 	if ( n <= 0 ) 
 	{
-		res=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
+		OPENBLAS_COMPLEX_FLOAT res=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
 		*result=res;
 		return;
 
@@ -159,9 +158,9 @@ static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	}
 
 #if !defined(CONJ)
-	res=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
+	OPENBLAS_COMPLEX_FLOAT res=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
 #else
-	res=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
+	OPENBLAS_COMPLEX_FLOAT res=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
 #endif
         *result=res;
 	return;
