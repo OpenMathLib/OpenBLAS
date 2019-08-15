@@ -86,7 +86,7 @@ static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 
 #endif
 
-OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y,OPENBLAS_COMPLEX_FLOAT *result)
 {
 	BLASLONG i;
 	BLASLONG ix,iy;
@@ -94,10 +94,8 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
 	if ( n <= 0 ) 
 	{
-//	        CREAL(result) = 0.0 ;
-//        	CIMAG(result) = 0.0 ;
-		OPENBLAS_COMPLEX_FLOAT result=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
-		return(result);
+		*result=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
+		return;
 
 	}
 
@@ -150,18 +148,68 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 	}
 
 #if !defined(CONJ)
-	OPENBLAS_COMPLEX_FLOAT result=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
-//	CREAL(result) = dot[0] - dot[1];
-//	CIMAG(result) = dot[2] + dot[3];
+	*result=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
 #else
-	OPENBLAS_COMPLEX_FLOAT result=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
-//	CREAL(result) = dot[0] + dot[1];
-//	CIMAG(result) = dot[2] - dot[3];
-
+	*result=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
 #endif
 
-	return(result);
-
+	return;
 }
 
+#if defined(SMP)
+static int zdot_thread_function(BLASLONG n, BLASLONG dummy0,
+BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+BLASLONG inc_y, FLOAT *result, BLASLONG dummy3)
+{
+        zdot_compute(n, x, inc_x, y, inc_y, (void *)result);
+        return 0;
+}
+#endif
+
+OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+{
+#if defined(SMP)
+	int nthreads;
+	FLOAT dummy_alpha;
+#endif
+	OPENBLAS_COMPLEX_FLOAT zdot;
+       CREAL(zdot) = 0.0;
+       CIMAG(zdot) = 0.0;
+
+#if defined(SMP)
+	if (inc_x == 0 || inc_y == 0 || n <= 10000)
+		nthreads = 1;
+	else
+		nthreads = num_cpu_avail(1);
+
+	if (nthreads == 1) {
+		zdot_compute(n, x, inc_x, y, inc_y, &zdot);
+	} else {
+		int mode, i;
+		char result[MAX_CPU_NUMBER * sizeof(double) * 2];
+		OPENBLAS_COMPLEX_FLOAT *ptr;
+
+#if !defined(DOUBLE)
+		mode = BLAS_SINGLE  | BLAS_COMPLEX;
+#else
+		mode = BLAS_DOUBLE  | BLAS_COMPLEX;
+#endif
+
+		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
+				   x, inc_x, y, inc_y, result, 0,
+				   ( void *)zdot_thread_function, nthreads);
+
+		ptr = (OPENBLAS_COMPLEX_FLOAT *)result;
+		for (i = 0; i < nthreads; i++) {
+			CREAL(zdot) = CREAL(zdot) + CREAL(*ptr);
+			CIMAG(zdot) = CIMAG(zdot) + CIMAG(*ptr);
+			ptr = (void *)(((char *)ptr) + sizeof(double) * 2);
+		}
+	}
+#else
+	zdot_compute(n, x, inc_x, y, inc_y, &zdot);
+#endif
+
+	return zdot;
+}
 
