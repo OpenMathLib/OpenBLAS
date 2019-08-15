@@ -86,15 +86,26 @@ static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 
 #endif
 
+
+#if defined(SMP)
+extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
+        BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
+        void *c, BLASLONG ldc, int (*function)(), int nthreads);
+#endif
+                
+                
+
 static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y,OPENBLAS_COMPLEX_FLOAT *result)
 {
 	BLASLONG i;
 	BLASLONG ix,iy;
 	FLOAT  dot[4] = { 0.0, 0.0, 0.0 , 0.0 } ; 
-
+	OPENBLAS_COMPLEX_FLOAT res;
+	
 	if ( n <= 0 ) 
 	{
-		*result=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
+		res=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
+		*result=res;
 		return;
 
 	}
@@ -148,11 +159,11 @@ static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 	}
 
 #if !defined(CONJ)
-	*result=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
+	res=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
 #else
-	*result=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
+	res=OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
 #endif
-
+        *result=res;
 	return;
 }
 
