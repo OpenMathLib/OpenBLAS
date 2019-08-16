@@ -142,9 +142,9 @@ endif
 endif
 
 
-# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
+# On x86_64 build getarch with march=native unless the compiler is PGI. This is required to detect AVX512 support in getarch.
 ifeq ($(ARCH), x86_64)
-ifneq ($(C_COMPILER), PGI)
+ifeq ($(findstring pgcc,$(HOSTCC)),)
 GETARCH_FLAGS += -march=native
 endif
 endif
