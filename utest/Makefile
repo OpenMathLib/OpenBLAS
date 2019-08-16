@@ -1,6 +1,9 @@
 UTEST_CHECK = 1
 TOPDIR	= ..
 
+override TARGET_ARCH=
+override TARGET_MACH=
+
 UTESTBIN=openblas_utest
 
 .PHONY : all
@@ -13,7 +16,11 @@ OBJS=utest_main.o test_amax.o test_rotmg.o test_axpy.o test_dotu.o test_dsdot.o 
 
 ifneq ($(NO_LAPACK), 1)
 OBJS += test_potrs.o
+ifneq ($(NO_CBLAS), 1)
+ifneq ($(NO_LAPACKE), 1)
 OBJS += test_kernel_regress.o
+endif
+endif
 endif
 
 #this does not work with OpenMP nor with native Windows or Android threads

@@ -15,7 +15,7 @@ if (${HOST_OS} STREQUAL "LINUX")
     EXECUTE_PROCESS( COMMAND uname -o COMMAND tr -d '\n' OUTPUT_VARIABLE OPERATING_SYSTEM)
       if(${OPERATING_SYSTEM} MATCHES "Android")
         set(HOST_OS ANDROID)
-      endif(${OPERATING_SYSTEM} MATCHES "Android")
+      endif()
 endif()
 
 

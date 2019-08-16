@@ -109,6 +109,7 @@ endif
 ifeq ($(OSNAME), Darwin)
 	@$(MAKE) -C exports dyn
 	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
+	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).$(MAJOR_VERSION).dylib
 endif
 ifeq ($(OSNAME), WINNT)
 	@$(MAKE) -C exports dll

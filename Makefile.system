@@ -267,9 +267,10 @@ OBJCOPY = $(CROSS_SUFFIX)objcopy
 OBJCONV = $(CROSS_SUFFIX)objconv
 
 
-# For detect fortran failed, only build BLAS.
+# When fortran support was either not detected or actively deselected, only build BLAS.
 ifeq ($(NOFORTRAN), 1)
 NO_LAPACK = 1
+override FEXTRALIB = 
 endif
 
 #
@@ -1124,7 +1125,11 @@ endif
 endif
 
 ifdef NO_AFFINITY
+ifeq ($(NO_AFFINITY), 0)
+override undefine NO_AFFINITY
+else
 CCOMMON_OPT	+= -DNO_AFFINITY
+endif
 endif
 
 ifdef FUNCTION_PROFILE
