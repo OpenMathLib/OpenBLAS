@@ -94,7 +94,7 @@ int get_feature(char *search)
 	if( p == NULL ) return 0;
 
 	t = strtok(p," ");
-	while( t = strtok(NULL," "))
+	while( (t = strtok(NULL," ")))
 	{
 		if (!strcmp(t, search))   { return(1); }
 	}
@@ -344,7 +344,7 @@ void get_features(void)
 	if( p == NULL ) return;
 
 	t = strtok(p," ");
-	while( t = strtok(NULL," "))
+	while( (t = strtok(NULL," ")))
 	{
 	}
 
