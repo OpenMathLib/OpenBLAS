@@ -1379,6 +1379,8 @@ int get_cpuname(void){
       break;
       case 7: // family 6 exmodel 7
         switch (model) {
+        case 10: // Goldmont Plus
+          return CPUTYPE_NEHALEM;
         case 14: // Ice Lake
           if(support_avx512())
             return CPUTYPE_SKYLAKEX;
