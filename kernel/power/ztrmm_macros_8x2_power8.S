@@ -68,7 +68,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * Macros for N=2 and M=8
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x8_1', `
+#else
 .macro LOAD2x8_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -92,9 +96,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	64
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_I1', `
+#else
 .macro KERNEL2x8_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -152,9 +164,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs63,	vs7,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_1', `
+#else
 .macro KERNEL2x8_1
+#endif
 
 
 	xvmaddadp	vs32,	vs0,	vs16		// real*real, imag*real
@@ -221,9 +241,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	64
 	addi		BO,	BO,	32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_2', `
+#else
 .macro KERNEL2x8_2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -289,9 +317,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	64
 	addi		BO,	BO,	32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_E2', `
+#else
 .macro KERNEL2x8_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -329,9 +365,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs63,	vs15,	vs23		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_SUBI1', `
+#else
 .macro KERNEL2x8_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -389,9 +433,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs63,	vs7,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_SUB1', `
+#else
 .macro KERNEL2x8_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -449,9 +501,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs63,	vs7,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x8', `
+#else
 .macro SAVE2x8
+#endif
 
 
 	mr		T1,	CO
@@ -473,13 +533,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -497,13 +557,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs35,	vs35			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs35,vs35)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs34		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs35		// imagA*imagB
 
-	xxswapd		vs34,	vs34			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs35,	vs35			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs34,vs34)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs35,vs35)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs34		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs35		// imagA*realB
@@ -521,13 +581,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs37,	vs37			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs37,vs37)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs36		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs37		// imagA*imagB
 
-	xxswapd		vs36,	vs36			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs37,	vs37			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs36,vs36)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs37,vs37)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs36		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs37		// imagA*realB
@@ -545,13 +605,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs39,	vs39			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs39,vs39)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs38		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs39		// imagA*imagB
 
-	xxswapd		vs38,	vs38			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs39,	vs39			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs38,vs38)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs39,vs39)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs38		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs39		// imagA*realB
@@ -569,13 +629,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs41,	vs41			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs41,vs41)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs40		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs41		// imagA*imagB
 
-	xxswapd		vs40,	vs40			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs41,	vs41			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs40,vs40)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs41,vs41)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs40		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs41		// imagA*realB
@@ -593,13 +653,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs43,	vs43			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs43,vs43)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs42		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs43		// imagA*imagB
 
-	xxswapd		vs42,	vs42			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs43,	vs43			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs42,vs42)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs43,vs43)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs42		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs43		// imagA*realB
@@ -617,13 +677,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs45,	vs45			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs45,vs45)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs44		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs45		// imagA*imagB
 
-	xxswapd		vs44,	vs44			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs45,	vs45			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs44,vs44)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs45,vs45)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs44		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs45		// imagA*realB
@@ -641,13 +701,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs47,	vs47			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs47,vs47)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs46		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs47		// imagA*imagB
 
-	xxswapd		vs46,	vs46			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs47,	vs47			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs46,vs46)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs47,vs47)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs46		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs47		// imagA*realB
@@ -703,13 +763,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs49,	vs49			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs49,vs49)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs48		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs49		// imagA*imagB
 
-	xxswapd		vs48,	vs48			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs49,	vs49			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs48,vs48)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs49,vs49)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs48		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs49		// imagA*realB
@@ -727,13 +787,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs51,	vs51			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs51,vs51)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs50		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs51		// imagA*imagB
 
-	xxswapd		vs50,	vs50			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs51,	vs51			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs50,vs50)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs51,vs51)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs50		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs51		// imagA*realB
@@ -751,13 +811,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs53,	vs53			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs53,vs53)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs52		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs53		// imagA*imagB
 
-	xxswapd		vs52,	vs52			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs53,	vs53			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs52,vs52)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs53,vs53)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs52		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs53		// imagA*realB
@@ -775,13 +835,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs55,	vs55			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs55,vs55)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs54		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs55		// imagA*imagB
 
-	xxswapd		vs54,	vs54			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs55,	vs55			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs54,vs54)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs55,vs55)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs54		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs55		// imagA*realB
@@ -799,13 +859,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs57,	vs57			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs57,vs57)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs56		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs57		// imagA*imagB
 
-	xxswapd		vs56,	vs56			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs57,	vs57			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs56,vs56)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs57,vs57)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs56		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs57		// imagA*realB
@@ -823,13 +883,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs59,	vs59			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs59,vs59)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs58		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs59		// imagA*imagB
 
-	xxswapd		vs58,	vs58			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs59,	vs59			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs58,vs58)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs59,vs59)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs58		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs59		// imagA*realB
@@ -847,13 +907,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs61,	vs61			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs61,vs61)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs60		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs61		// imagA*imagB
 
-	xxswapd		vs60,	vs60			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs61,	vs61			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs60,vs60)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs61,vs61)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs60		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs61		// imagA*realB
@@ -871,13 +931,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs63,	vs63			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs63,vs63)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs62		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs63		// imagA*imagB
 
-	xxswapd		vs62,	vs62			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs63,	vs63			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs62,vs62)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs63,vs63)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs62		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs63		// imagA*realB
@@ -918,14 +978,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T2,	T2,	LDC
 	addi		CO,	CO,	128
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=4
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x4_1', `
+#else
 .macro LOAD2x4_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -942,9 +1010,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	64
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_I1', `
+#else
 .macro KERNEL2x4_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -979,9 +1055,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs47,	vs3,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_1', `
+#else
 .macro KERNEL2x4_1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -1016,9 +1100,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs3,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_2', `
+#else
 .macro KERNEL2x4_2
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1053,9 +1145,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs11,	vs23		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_E2', `
+#else
 .macro KERNEL2x4_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -1077,9 +1177,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs11,	vs23		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_SUBI1', `
+#else
 .macro KERNEL2x4_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1114,9 +1222,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs47,	vs3,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_SUB1', `
+#else
 .macro KERNEL2x4_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1151,9 +1267,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs3,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x4', `
+#else
 .macro SAVE2x4
+#endif
 
 
 	mr		T1,	CO
@@ -1170,13 +1294,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -1194,13 +1318,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs35,	vs35			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs35,vs35)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs34		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs35		// imagA*imagB
 
-	xxswapd		vs34,	vs34			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs35,	vs35			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs34,vs34)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs35,vs35)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs34		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs35		// imagA*realB
@@ -1218,13 +1342,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs37,	vs37			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs37,vs37)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs36		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs37		// imagA*imagB
 
-	xxswapd		vs36,	vs36			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs37,	vs37			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs36,vs36)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs37,vs37)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs36		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs37		// imagA*realB
@@ -1242,13 +1366,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs39,	vs39			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs39,vs39)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs38		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs39		// imagA*imagB
 
-	xxswapd		vs38,	vs38			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs39,	vs39			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs38,vs38)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs39,vs39)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs38		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs39		// imagA*realB
@@ -1291,13 +1415,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs41,	vs41			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs41,vs41)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs40		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs41		// imagA*imagB
 
-	xxswapd		vs40,	vs40			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs41,	vs41			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs40,vs40)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs41,vs41)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs40		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs41		// imagA*realB
@@ -1315,13 +1439,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs43,	vs43			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs43,vs43)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs42		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs43		// imagA*imagB
 
-	xxswapd		vs42,	vs42			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs43,	vs43			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs42,vs42)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs43,vs43)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs42		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs43		// imagA*realB
@@ -1339,13 +1463,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs45,	vs45			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs45,vs45)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs44		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs45		// imagA*imagB
 
-	xxswapd		vs44,	vs44			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs45,	vs45			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs44,vs44)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs45,vs45)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs44		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs45		// imagA*realB
@@ -1363,13 +1487,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs47,	vs47			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs47,vs47)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs46		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs47		// imagA*imagB
 
-	xxswapd		vs46,	vs46			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs47,	vs47			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs46,vs46)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs47,vs47)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs46		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs47		// imagA*realB
@@ -1401,14 +1525,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T1,	T1,	LDC
 	addi		CO,	CO,	64
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=2
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x2_1', `
+#else
 .macro LOAD2x2_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -1423,9 +1555,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	32
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_I1', `
+#else
 .macro KERNEL2x2_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -1450,9 +1590,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs39,	vs1,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_1', `
+#else
 .macro KERNEL2x2_1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -1477,9 +1625,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs1,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_2', `
+#else
 .macro KERNEL2x2_2
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1504,9 +1660,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs9,	vs23		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_E2', `
+#else
 .macro KERNEL2x2_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -1520,9 +1684,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs9,	vs23		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_SUBI1', `
+#else
 .macro KERNEL2x2_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1547,9 +1719,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs39,	vs1,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_SUB1', `
+#else
 .macro KERNEL2x2_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -1574,9 +1754,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs1,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x2', `
+#else
 .macro SAVE2x2
+#endif
 
 
 	mr		T1,	CO
@@ -1591,13 +1779,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -1615,13 +1803,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs35,	vs35			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs35,vs35)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs34		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs35		// imagA*imagB
 
-	xxswapd		vs34,	vs34			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs35,	vs35			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs34,vs34)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs35,vs35)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs34		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs35		// imagA*realB
@@ -1658,13 +1846,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs37,	vs37			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs37,vs37)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs36		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs37		// imagA*imagB
 
-	xxswapd		vs36,	vs36			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs37,	vs37			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs36,vs36)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs37,vs37)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs36		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs37		// imagA*realB
@@ -1682,13 +1870,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs39,	vs39			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs39,vs39)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs38		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs39		// imagA*imagB
 
-	xxswapd		vs38,	vs38			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs39,	vs39			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs38,vs38)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs39,vs39)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs38		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs39		// imagA*realB
@@ -1716,14 +1904,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T1,	T1,	LDC
 	addi		CO,	CO,	32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=1
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x1_1', `
+#else
 .macro LOAD2x1_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -1737,9 +1933,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	16
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_I1', `
+#else
 .macro KERNEL2x1_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 
@@ -1759,9 +1963,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs35,	vs0,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_1', `
+#else
 .macro KERNEL2x1_1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 
@@ -1781,9 +1993,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs0,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_2', `
+#else
 .macro KERNEL2x1_2
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -1803,9 +2023,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs8,	vs23		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_E2', `
+#else
 .macro KERNEL2x1_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -1815,9 +2043,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs8,	vs23		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_SUBI1', `
+#else
 .macro KERNEL2x1_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -1837,9 +2073,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs35,	vs0,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_SUB1', `
+#else
 .macro KERNEL2x1_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -1859,9 +2103,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs0,	vs19		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x1', `
+#else
 .macro SAVE2x1
+#endif
 
 
 	mr		T1,	CO
@@ -1875,13 +2127,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -1915,13 +2167,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs35,	vs35			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs35,vs35)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs34		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs35		// imagA*imagB
 
-	xxswapd		vs34,	vs34			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs35,	vs35			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs34,vs34)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs35,vs35)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs34		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs35		// imagA*realB
@@ -1947,14 +2199,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T1,	T1,	LDC
 	addi		CO,	CO,	16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=8
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x8_1', `
+#else
 .macro LOAD1x8_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -1976,9 +2236,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	64
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_I1', `
+#else
 .macro KERNEL1x8_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -2017,9 +2285,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs47,	vs7,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_1', `
+#else
 .macro KERNEL1x8_1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -2058,9 +2334,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs7,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_2', `
+#else
 .macro KERNEL1x8_2
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2099,9 +2383,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs15,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_E2', `
+#else
 .macro KERNEL1x8_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -2122,9 +2414,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs15,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_SUBI1', `
+#else
 .macro KERNEL1x8_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2163,9 +2463,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs47,	vs7,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_SUB1', `
+#else
 .macro KERNEL1x8_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2204,9 +2512,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs47,	vs7,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x8', `
+#else
 .macro SAVE1x8
+#endif
 
 
 	mr		T1,	CO
@@ -2228,13 +2544,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -2252,13 +2568,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs35,	vs35			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs35,vs35)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs34		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs35		// imagA*imagB
 
-	xxswapd		vs34,	vs34			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs35,	vs35			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs34,vs34)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs35,vs35)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs34		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs35		// imagA*realB
@@ -2276,13 +2592,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs37,	vs37			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs37,vs37)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs36		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs37		// imagA*imagB
 
-	xxswapd		vs36,	vs36			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs37,	vs37			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs36,vs36)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs37,vs37)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs36		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs37		// imagA*realB
@@ -2300,13 +2616,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs39,	vs39			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs39,vs39)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs38		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs39		// imagA*imagB
 
-	xxswapd		vs38,	vs38			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs39,	vs39			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs38,vs38)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs39,vs39)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs38		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs39		// imagA*realB
@@ -2324,13 +2640,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs41,	vs41			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs41,vs41)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs40		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs41		// imagA*imagB
 
-	xxswapd		vs40,	vs40			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs41,	vs41			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs40,vs40)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs41,vs41)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs40		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs41		// imagA*realB
@@ -2348,13 +2664,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs43,	vs43			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs43,vs43)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs42		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs43		// imagA*imagB
 
-	xxswapd		vs42,	vs42			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs43,	vs43			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs42,vs42)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs43,vs43)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs42		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs43		// imagA*realB
@@ -2372,13 +2688,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs45,	vs45			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs45,vs45)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs44		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs45		// imagA*imagB
 
-	xxswapd		vs44,	vs44			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs45,	vs45			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs44,vs44)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs45,vs45)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs44		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs45		// imagA*realB
@@ -2396,13 +2712,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs47,	vs47			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs47,vs47)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs46		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs47		// imagA*imagB
 
-	xxswapd		vs46,	vs46			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs47,	vs47			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs46,vs46)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs47,vs47)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs46		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs47		// imagA*realB
@@ -2443,14 +2759,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T2,	T2,	LDC
 	addi		CO,	CO,	128
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=4
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x4_1', `
+#else
 .macro LOAD1x4_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -2465,9 +2789,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	64
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_I1', `
+#else
 .macro KERNEL1x4_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -2491,9 +2823,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs39,	vs3,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_1', `
+#else
 .macro KERNEL1x4_1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -2517,9 +2857,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs3,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_2', `
+#else
 .macro KERNEL1x4_2
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2543,9 +2891,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs11,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_E2', `
+#else
 .macro KERNEL1x4_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -2558,9 +2914,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs11,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_SUBI1', `
+#else
 .macro KERNEL1x4_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2584,9 +2948,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs39,	vs3,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_SUB1', `
+#else
 .macro KERNEL1x4_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2610,9 +2982,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs39,	vs3,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x4', `
+#else
 .macro SAVE1x4
+#endif
 
 
 	mr		T1,	CO
@@ -2629,13 +3009,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -2653,13 +3033,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs35,	vs35			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs35,vs35)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs34		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs35		// imagA*imagB
 
-	xxswapd		vs34,	vs34			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs35,	vs35			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs34,vs34)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs35,vs35)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs34		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs35		// imagA*realB
@@ -2677,13 +3057,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs37,	vs37			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs37,vs37)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs36		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs37		// imagA*imagB
 
-	xxswapd		vs36,	vs36			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs37,	vs37			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs36,vs36)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs37,vs37)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs36		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs37		// imagA*realB
@@ -2701,13 +3081,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs39,	vs39			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs39,vs39)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs38		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs39		// imagA*imagB
 
-	xxswapd		vs38,	vs38			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs39,	vs39			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs38,vs38)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs39,vs39)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs38		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs39		// imagA*realB
@@ -2739,14 +3119,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T1,	T1,	LDC
 	addi		CO,	CO,	64
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=2
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x2_1', `
+#else
 .macro LOAD1x2_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -2759,9 +3147,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	32
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_I1', `
+#else
 .macro KERNEL1x2_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -2779,9 +3175,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs35,	vs1,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_1', `
+#else
 .macro KERNEL1x2_1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 	lxvd2x		vs9,	o16,	AO		// load real,imag from A
@@ -2799,9 +3203,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs1,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_2', `
+#else
 .macro KERNEL1x2_2
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2819,9 +3231,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs9,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_E2', `
+#else
 .macro KERNEL1x2_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
@@ -2830,9 +3250,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs9,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_SUBI1', `
+#else
 .macro KERNEL1x2_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2850,9 +3278,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs35,	vs1,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_SUB1', `
+#else
 .macro KERNEL1x2_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 	lxvd2x		vs1,	o16,	AO		// load real,imag from A
@@ -2870,9 +3306,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs35,	vs1,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x2', `
+#else
 .macro SAVE1x2
+#endif
 
 
 	mr		T1,	CO
@@ -2887,13 +3331,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -2911,13 +3355,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs35,	vs35			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs35,vs35)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs34		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs35		// imagA*imagB
 
-	xxswapd		vs34,	vs34			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs35,	vs35			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs34,vs34)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs35,vs35)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs34		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs35		// imagA*realB
@@ -2945,14 +3389,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T1,	T1,	LDC
 	addi		CO,	CO,	32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=1
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x1_1', `
+#else
 .macro LOAD1x1_1
+#endif
 
 	lxvdsx		vs16,	o0,	BO		// load real part from B
 	lxvdsx		vs17,	o8,	BO		// load imag part from B
@@ -2964,9 +3416,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO,	AO,	16
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_I1', `
+#else
 .macro KERNEL1x1_I1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 
@@ -2981,9 +3441,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_1', `
+#else
 .macro KERNEL1x1_1
+#endif
 
 	lxvd2x		vs8,	o0,	AO		// load real,imag from A
 
@@ -2998,9 +3466,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_2', `
+#else
 .macro KERNEL1x1_2
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -3015,18 +3491,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_E2', `
+#else
 .macro KERNEL1x1_E2
+#endif
 
 
 	xvmaddadp	vs32,	vs8,	vs20		// real*real, imag*real
 	xvmaddadp	vs33,	vs8,	vs21		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_SUBI1', `
+#else
 .macro KERNEL1x1_SUBI1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -3041,9 +3533,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp		vs33,	vs0,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_SUB1', `
+#else
 .macro KERNEL1x1_SUB1
+#endif
 
 	lxvd2x		vs0,	o0,	AO		// load real,imag from A
 
@@ -3058,9 +3558,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp	vs33,	vs0,	vs17		// real*imag, imag*imag
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x1', `
+#else
 .macro SAVE1x1
+#endif
 
 
 	mr		T1,	CO
@@ -3074,13 +3582,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xxlxor		vs0,	vs0,	vs0
 	xxlxor		vs1,	vs1,	vs1
-	xxswapd		vs33,	vs33			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
+	XXSWAPD(vs33,vs33)			// realA*imagB, imagA*imagB -> imagA*imagB, realA*imagB
 
 	XSFADD_R1	vs0,	vs0,	vs32		// realA*realB
 	XSFADD_R2	vs0,	vs0,	vs33		// imagA*imagB
 
-	xxswapd		vs32,	vs32			// realA*realB, imagA*realB -> imagA*realB, realA*realB
-	xxswapd		vs33,	vs33			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
+	XXSWAPD(vs32,vs32)			// realA*realB, imagA*realB -> imagA*realB, realA*realB
+	XXSWAPD(vs33,vs33)			// imagA*imagB, realA*imagB -> realA*imagB, imagA*imagB
 
 	XSFADD_I1	vs1,	vs1,	vs32		// realA*imagB
 	XSFADD_I2	vs1,	vs1,	vs33		// imagA*realB
@@ -3106,5 +3614,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add		T1,	T1,	LDC
 	addi		CO,	CO,	16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
