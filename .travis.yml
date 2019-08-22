@@ -27,6 +27,7 @@ matrix:
 
     - <<: *test-ubuntu
       os: linux-ppc64le
+      dist: xenial
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
       env:
