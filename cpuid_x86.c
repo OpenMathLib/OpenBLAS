@@ -1211,7 +1211,7 @@ int get_cpuname(void){
 	  return CPUTYPE_CORE2;
 	}
 	break;
-      case 1:
+      case 1:  // family 6 exmodel 1
 	switch (model) {
 	case  6:
 	  return CPUTYPE_CORE2;
@@ -1228,7 +1228,7 @@ int get_cpuname(void){
 	  return CPUTYPE_DUNNINGTON;
 	}
 	break;
-      case  2:
+      case  2: // family 6 exmodel 2
 	switch (model) {
 	case 5:
 	  //Intel Core (Clarkdale) / Core (Arrandale)
@@ -1257,7 +1257,7 @@ int get_cpuname(void){
 	  return CPUTYPE_NEHALEM;
 	}
 	break;
-      case 3:
+      case 3: // family 6 exmodel 3
 	switch (model) {
 	case  7:
 	    // Bay Trail	
@@ -1287,7 +1287,7 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
 	}
 	break;
-      case 4:
+      case 4: // family 6 exmodel 4
         switch (model) {
         case 5:
 	case 6:
@@ -1321,7 +1321,7 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
         }
         break;
-      case 5:
+      case 5:  // family 6 exmodel 5
         switch (model) {
 	case 6:
 	  //Broadwell
@@ -1364,7 +1364,7 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
 	}
 	break;
-      case 6:
+      case 6:  // family 6 exmodel 6
         switch (model) {
         case 6: // Cannon Lake
           if(support_avx512())
@@ -1376,7 +1376,22 @@ int get_cpuname(void){
 	  else
 	  return CPUTYPE_NEHALEM;
         }
-      break;  
+      break;
+      case 7: // family 6 exmodel 7
+        switch (model) {
+        case 10: // Goldmont Plus
+          return CPUTYPE_NEHALEM;
+        case 14: // Ice Lake
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	  return CPUTYPE_NEHALEM;
+        }
+      break;
       case 9:
       case 8:      
         switch (model) {

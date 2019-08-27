@@ -2041,8 +2041,12 @@ static BLASULONG  alloc_lock = 0UL;
 
 static void alloc_mmap_free(struct release_t *release){
 
+if (!release->address) return;
+
   if (munmap(release -> address, BUFFER_SIZE)) {
-    printf("OpenBLAS : munmap failed\n");
+      int errsv=errno;
+       perror("OpenBLAS : munmap failed:");
+       printf("error code=%d,\trelease->address=%lx\n",errsv,release->address);
   }
 }
 
@@ -2073,6 +2077,12 @@ static void *alloc_mmap(void *address){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
 #endif    
+  } else {
+#ifdef DEBUG  
+        int errsv=errno;
+       perror("OpenBLAS : mmap failed:");
+       printf("error code=%d,\tmap_address=%lx\n",errsv,map_address);
+#endif
   }
 
 #ifdef OS_LINUX

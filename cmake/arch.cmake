@@ -81,7 +81,8 @@ if (DYNAMIC_ARCH)
   endif ()
 
   if (NOT DYNAMIC_CORE)
-    unset(DYNAMIC_ARCH)
+    message (STATUS "DYNAMIC_ARCH is not supported on this architecture, removing from options")
+    unset(DYNAMIC_ARCH CACHE)
   endif ()
 endif ()
 

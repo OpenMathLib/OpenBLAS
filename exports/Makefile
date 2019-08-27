@@ -105,6 +105,10 @@ $(LIBPREFIX).def : gensymbol
 libgoto_hpl.def : gensymbol
 	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" $(BUILD_LAPACK_DEPRECATED) > $(@F)
 
+ifeq ($(OSNAME), Darwin)
+INTERNALNAME = $(LIBPREFIX).$(MAJOR_VERSION).dylib
+endif
+
 ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 else
@@ -114,9 +118,9 @@ $(LIBDYNNAME) : ../$(LIBNAME).osx.renamed osx.def
 endif
 ifneq (,$(filter 1 2,$(NOFORTRAN)))
 #only build without Fortran
-	$(CC) $(CFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(INTERNALNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 else
-	$(FC) $(FFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(FC) $(FFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(INTERNALNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 endif
 
 dllinit.$(SUFFIX) : dllinit.c
