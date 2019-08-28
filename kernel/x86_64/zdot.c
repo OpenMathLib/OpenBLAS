@@ -181,10 +181,10 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 #if defined(SMP)
 	int nthreads;
 	FLOAT dummy_alpha;
+	FLOAT zdotr=0., zdoti=0.;
 #endif
 	OPENBLAS_COMPLEX_FLOAT zdot;
-       CREAL(zdot) = 0.0;
-       CIMAG(zdot) = 0.0;
+        zdot=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
 
 #if defined(SMP)
 	if (inc_x == 0 || inc_y == 0 || n <= 10000)
@@ -211,15 +211,17 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
 		ptr = (OPENBLAS_COMPLEX_FLOAT *)result;
 		for (i = 0; i < nthreads; i++) {
-			CREAL(zdot) = CREAL(zdot) + CREAL(*ptr);
-			CIMAG(zdot) = CIMAG(zdot) + CIMAG(*ptr);
+			zdotr += CREAL(*ptr);
+			zdoti += CIMAG(*ptr);
+//			CREAL(zdot) = CREAL(zdot) + CREAL(*ptr);
+//			CIMAG(zdot) = CIMAG(zdot) + CIMAG(*ptr);
 			ptr = (void *)(((char *)ptr) + sizeof(double) * 2);
 		}
+	zdot = OPENBLAS_MAKE_COMPLEX_FLOAT(zdotr,zdoti);
 	}
 #else
 	zdot_compute(n, x, inc_x, y, inc_y, &zdot);
 #endif
-
 	return zdot;
 }
 
