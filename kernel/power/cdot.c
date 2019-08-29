@@ -25,12 +25,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
 #include "common.h"
-
 #ifndef HAVE_KERNEL_8
 #include <altivec.h> 
+static const unsigned char __attribute__((aligned(16))) swap_mask_arr[]={ 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
 static void cdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, float *dot)
 {
-    __vector unsigned char swap_mask = { 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
+    __vector unsigned char swap_mask = *((__vector unsigned char*)swap_mask_arr);
     register __vector float *vy = (__vector float *) y;
     register __vector float *vx = (__vector float *) x;
     BLASLONG i = 0;
@@ -96,7 +96,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
     BLASLONG i = 0;
     BLASLONG ix=0, iy=0;
     OPENBLAS_COMPLEX_FLOAT result;
-    FLOAT dot[4] __attribute__ ((aligned(16))) = {0.0, 0.0, 0.0, 0.0};
+    FLOAT dot[4] __attribute__((aligned(16))) = {0.0, 0.0, 0.0, 0.0};
 
     if (n <= 0) {
         CREAL(result) = 0.0;

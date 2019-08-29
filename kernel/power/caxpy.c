@@ -24,12 +24,11 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-
 #include "common.h"
- 
-
 #ifndef HAVE_ASM_KERNEL
 #include <altivec.h> 
+static const unsigned char __attribute__((aligned(16))) swap_mask_arr[]={ 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
+
 static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT alpha_i)
 {
 
@@ -43,7 +42,7 @@ static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT
     register __vector float valpha_i = {alpha_i, alpha_i,alpha_i, alpha_i};
 #endif
 
-    __vector unsigned char swap_mask = { 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
+    __vector unsigned char swap_mask = *((__vector unsigned char*)swap_mask_arr);
     register __vector float *vy = (__vector float *) y;
     register __vector float *vx = (__vector float *) x;
     BLASLONG i=0;

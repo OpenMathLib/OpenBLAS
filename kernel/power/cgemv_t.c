@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define NBMAX 1024 
 #include <altivec.h> 
-static const unsigned char swap_mask_arr[]={ 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
+static const unsigned char __attribute__((aligned(16))) swap_mask_arr[]={ 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
 
 static void cgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT alpha_i) {
     BLASLONG i;
@@ -260,8 +260,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     BLASLONG m2;
     BLASLONG m3;
     BLASLONG n2;
-
-    FLOAT ybuffer[8], *xbuffer;
+    FLOAT ybuffer[8] __attribute__((aligned(16)));
+    FLOAT *xbuffer;
 
     if (m < 1) return (0);
     if (n < 1) return (0);
