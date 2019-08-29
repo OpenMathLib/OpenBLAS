@@ -181,11 +181,19 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 #if defined(SMP)
 	int nthreads;
 	FLOAT dummy_alpha;
+#if defined(C_PGI) || defined(C_SUN)	
+	FLOAT zdotr=0., zdoti=0.;
+#endif	
 #endif
+	
 	OPENBLAS_COMPLEX_FLOAT zdot;
-       CREAL(zdot) = 0.0;
-       CIMAG(zdot) = 0.0;
-
+#if defined(C_PGI) || defined(C_SUN)	
+        zdot=OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
+#else
+	CREAL(zdot) = 0.0;
+	CIMAG(zdot) = 0.0;
+#endif
+	
 #if defined(SMP)
 	if (inc_x == 0 || inc_y == 0 || n <= 10000)
 		nthreads = 1;
@@ -211,15 +219,23 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
 		ptr = (OPENBLAS_COMPLEX_FLOAT *)result;
 		for (i = 0; i < nthreads; i++) {
+#if defined(C_PGI) || defined(C_SUN)			
+			zdotr += CREAL(*ptr);
+			zdoti += CIMAG(*ptr);
+#else			
 			CREAL(zdot) = CREAL(zdot) + CREAL(*ptr);
 			CIMAG(zdot) = CIMAG(zdot) + CIMAG(*ptr);
+#endif
 			ptr = (void *)(((char *)ptr) + sizeof(double) * 2);
 		}
+#if defined(C_PGI) || defined(C_SUN)		
+	zdot = OPENBLAS_MAKE_COMPLEX_FLOAT(zdotr,zdoti);
+#endif
 	}
 #else
 	zdot_compute(n, x, inc_x, y, inc_y, &zdot);
 #endif
-
+	
 	return zdot;
 }
 
