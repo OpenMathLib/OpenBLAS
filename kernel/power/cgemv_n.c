@@ -62,23 +62,24 @@ static void cgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
     register __vector float vx3_r = {x[6], -x[6],x[6], -x[6]};
     register __vector float vx3_i = {x[7], x[7],x[7], x[7]};
 #endif
-    register __vector float *vy = (__vector float *) y;
+    register __vector float *vptr_y = (__vector float *) y;
     register __vector float *vptr_a0 = (__vector float *) a0;
     register __vector float *vptr_a1 = (__vector float *) a1;
     register __vector float *vptr_a2 = (__vector float *) a2;
     register __vector float *vptr_a3 = (__vector float *) a3; 
     BLASLONG  i = 0; 
-    for (;i< n / 2; i+=2) {
-        register __vector float vy_0  = vy[i];
-        register __vector float vy_1  = vy[i + 1];
-        register __vector float va0   = vptr_a0[i];
-        register __vector float va1   = vptr_a1[i];
-        register __vector float va2   = vptr_a2[i];
-        register __vector float va3   = vptr_a3[i];
-        register __vector float va0_1 = vptr_a0[i + 1];
-        register __vector float va1_1 = vptr_a1[i + 1];
-        register __vector float va2_1 = vptr_a2[i + 1];
-        register __vector float va3_1 = vptr_a3[i + 1];
+    BLASLONG i2=16;
+    for (;i< n * 8; i+=32,i2+=32) {
+        register __vector float vy_0  = vec_vsx_ld(i,vptr_y);
+        register __vector float vy_1  = vec_vsx_ld(i2,vptr_y);
+        register __vector float va0   = vec_vsx_ld(i,vptr_a0);
+        register __vector float va1   = vec_vsx_ld(i, vptr_a1);
+        register __vector float va2   = vec_vsx_ld(i ,vptr_a2);
+        register __vector float va3   = vec_vsx_ld(i ,vptr_a3);
+        register __vector float va0_1 = vec_vsx_ld(i2 ,vptr_a0);
+        register __vector float va1_1 = vec_vsx_ld(i2 ,vptr_a1);
+        register __vector float va2_1 = vec_vsx_ld(i2 ,vptr_a2);
+        register __vector float va3_1 = vec_vsx_ld(i2 ,vptr_a3);
 
         vy_0 += va0*vx0_r + va1*vx1_r + va2*vx2_r + va3*vx3_r;
         vy_1 += va0_1*vx0_r + va1_1*vx1_r + va2_1*vx2_r + va3_1*vx3_r;
@@ -93,8 +94,8 @@ static void cgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         vy_0 += va0*vx0_i + va1*vx1_i + va2*vx2_i + va3*vx3_i;
         vy_1 += va0_1*vx0_i + va1_1*vx1_i + va2_1*vx2_i + va3_1*vx3_i;
 
-        vy[i] = vy_0;
-        vy[i + 1] = vy_1;
+        vec_vsx_st(vy_0 ,i,  vptr_y);
+        vec_vsx_st(vy_1,i2,vptr_y);
     }
 
 }	
@@ -118,17 +119,19 @@ static void cgemv_kernel_4x2(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
     register __vector float vx1_r = {x[2], -x[2],x[2], -x[2]};
     register __vector float vx1_i = {x[3], x[3],x[3], x[3]}; 
 #endif
-    register __vector float *vy = (__vector float *) y;
+    register __vector float *vptr_y = (__vector float *) y;
     register __vector float *vptr_a0 = (__vector float *) a0;
     register __vector float *vptr_a1 = (__vector float *) a1; 
-    BLASLONG  i = 0; 
-    for (;i< n / 2; i+=2) {
-        register __vector float vy_0  = vy[i];
-        register __vector float vy_1  = vy[i + 1];
-        register __vector float va0   = vptr_a0[i];
-        register __vector float va1   = vptr_a1[i]; 
-        register __vector float va0_1 = vptr_a0[i + 1];
-        register __vector float va1_1 = vptr_a1[i + 1]; 
+    BLASLONG  i = 0;
+    BLASLONG  i2 = 16;  
+    for (;i< n * 8; i+=32, i2+=32) { 
+        register __vector float vy_0  = vec_vsx_ld(i,vptr_y);
+        register __vector float vy_1  = vec_vsx_ld(i2,vptr_y);
+        register __vector float va0   = vec_vsx_ld(i,vptr_a0);
+        register __vector float va1   = vec_vsx_ld(i, vptr_a1); 
+        register __vector float va0_1 = vec_vsx_ld(i2 ,vptr_a0);
+        register __vector float va1_1 = vec_vsx_ld(i2 ,vptr_a1); 
+
         register __vector float va0x   = vec_perm(va0, va0,swap_mask);
         register __vector float va0x_1 = vec_perm(va0_1, va0_1,swap_mask);
         register __vector float va1x   = vec_perm(va1, va1,swap_mask);
@@ -136,8 +139,8 @@ static void cgemv_kernel_4x2(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         vy_0 += va0*vx0_r + va1*vx1_r + va0x*vx0_i + va1x*vx1_i;
         vy_1 += va0_1*vx0_r + va1_1*vx1_r + va0x_1*vx0_i + va1x_1*vx1_i; 
 
-        vy[i] = vy_0;
-        vy[i + 1] = vy_1;
+        vec_vsx_st(vy_0 ,i,  vptr_y);
+        vec_vsx_st(vy_1,i2,vptr_y);
     }
 
 }
@@ -154,21 +157,23 @@ static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
     register __vector float vx0_r = {x[0], -x[0],x[0], -x[0]};
     register __vector float vx0_i = {x[1], x[1],x[1], x[1]}; 
 #endif
-    register __vector float *vy = (__vector float *) y;
+    register __vector float *vptr_y = (__vector float *) y;
     register __vector float *vptr_a0 = (__vector float *) ap; 
     BLASLONG  i = 0; 
-    for (;i< n / 2; i+=2) {
-        register __vector float vy_0  = vy[i];
-        register __vector float vy_1  = vy[i + 1];
-        register __vector float va0   = vptr_a0[i];
-        register __vector float va0_1 = vptr_a0[i + 1]; 
+    BLASLONG  i2 = 16;  
+    for (;i< n * 8; i+=32, i2+=32) { 
+        register __vector float vy_0  = vec_vsx_ld(i,vptr_y);
+        register __vector float vy_1  = vec_vsx_ld(i2,vptr_y);
+        register __vector float va0   = vec_vsx_ld(i,vptr_a0); 
+        register __vector float va0_1 = vec_vsx_ld(i2 ,vptr_a0); 
+
         register __vector float va0x   = vec_perm(va0, va0,swap_mask);
         register __vector float va0x_1 = vec_perm(va0_1, va0_1,swap_mask);
         vy_0 += va0*vx0_r + va0x*vx0_i;
         vy_1 += va0_1*vx0_r + va0x_1*vx0_i; 
 
-        vy[i] = vy_0;
-        vy[i + 1] = vy_1;
+        vec_vsx_st(vy_0 ,i,  vptr_y);
+        vec_vsx_st(vy_1,i2,vptr_y);
     }
 }
 
@@ -213,20 +218,24 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
 
         register __vector float *vptr_src = (__vector float *) src;
         register __vector float *vptr_y = (__vector float *) dest; 
-        for (i = 0; i < n/2; i += 2 ){
 
-            register __vector float vy_0 = vptr_y[i];
-            register __vector float vy_1 = vptr_y[i +1]; 
+    BLASLONG  i2 = 16;  
+    for (;i< n * 8; i+=32, i2+=32) { 
+        register __vector float vy_0  = vec_vsx_ld(i,vptr_y);
+        register __vector float vy_1  = vec_vsx_ld(i2,vptr_y);
 
-            register __vector float vsrc = vptr_src[i];
-            register __vector float vsrc_1 = vptr_src[i + 1]; 
-            register __vector float vsrcx = vec_perm(vsrc, vsrc, swap_mask);
-            register __vector float vsrcx_1 = vec_perm(vsrc_1, vsrc_1, swap_mask);
 
-            vy_0 += vsrc*valpha_r + vsrcx*valpha_i;
-            vy_1 += vsrc_1*valpha_r +  vsrcx_1*valpha_i;  
-            vptr_y[i] = vy_0;
-            vptr_y[i+1 ] = vy_1;  
+        register __vector float vsrc  = vec_vsx_ld(i,vptr_src);
+        register __vector float vsrc_1  = vec_vsx_ld(i2,vptr_src);
+
+        register __vector float vsrcx = vec_perm(vsrc, vsrc, swap_mask);
+        register __vector float vsrcx_1 = vec_perm(vsrc_1, vsrc_1, swap_mask);
+
+        vy_0 += vsrc*valpha_r + vsrcx*valpha_i;
+        vy_1 += vsrc_1*valpha_r +  vsrcx_1*valpha_i;  
+
+        vec_vsx_st(vy_0 ,i,  vptr_y);
+        vec_vsx_st(vy_1,i2,vptr_y);
 
         }
  
