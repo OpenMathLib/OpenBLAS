@@ -27,13 +27,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #ifndef HAVE_KERNEL_8
 #include <altivec.h> 
+
+#define  offset_0 0
+#define  offset_1 16
+#define  offset_2 32
+#define  offset_3 48
+
+
+
 static const unsigned char __attribute__((aligned(16))) swap_mask_arr[]={ 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
 static void cdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, float *dot)
 {
     __vector unsigned char swap_mask = *((__vector unsigned char*)swap_mask_arr);
-    register __vector float *vy = (__vector float *) y;
-    register __vector float *vx = (__vector float *) x;
-    BLASLONG i = 0;
+    register __vector float *vptr_y = (__vector float *) y;
+    register __vector float *vptr_x = (__vector float *) x;
     register __vector float vd_0  = { 0 };
     register __vector float vd_1  = { 0 };
     register __vector float vd_2  = { 0 };
@@ -41,26 +48,23 @@ static void cdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, float *dot)
     register __vector float vdd_0 = { 0 };
     register __vector float vdd_1 = { 0 };
     register __vector float vdd_2 = { 0 };
-    register __vector float vdd_3 = { 0 };
-    for (; i < n/2; i += 4) {
+    register __vector float vdd_3 = { 0 };     
+    BLASLONG i=0;
+    for(;i<n/2;i+=4){ 
 
-        register __vector float vyy_0 ;
-        register __vector float vyy_1 ;
-        register __vector float vyy_2 ;
-        register __vector float vyy_3 ;
+        register __vector float vy_0 = vec_vsx_ld( offset_0 ,vptr_y ) ;
+        register __vector float vy_1 = vec_vsx_ld( offset_1 ,vptr_y ) ;
+        register __vector float vy_2 = vec_vsx_ld( offset_2 ,vptr_y ) ;
+        register __vector float vy_3 = vec_vsx_ld( offset_3 ,vptr_y ) ; 
 
-        register __vector float vy_0 = vy[i];
-        register __vector float vy_1 = vy[i + 1];
-        register __vector float vy_2 = vy[i + 2];
-        register __vector float vy_3 = vy[i + 3]; 
-        register __vector float vx_0= vx[i];
-        register __vector float vx_1 = vx[i + 1];
-        register __vector float vx_2 = vx[i + 2];
-        register __vector float vx_3 = vx[i + 3]; 
-        vyy_0 = vec_perm(vy_0, vy_0, swap_mask);
-        vyy_1 = vec_perm(vy_1, vy_1, swap_mask);
-        vyy_2 = vec_perm(vy_2, vy_2, swap_mask);
-        vyy_3 = vec_perm(vy_3, vy_3, swap_mask);  
+        register __vector float vx_0 = vec_vsx_ld( offset_0 ,vptr_x ) ;
+        register __vector float vx_1 = vec_vsx_ld( offset_1 ,vptr_x ) ;
+        register __vector float vyy_0 = vec_perm(vy_0, vy_0, swap_mask);
+        register __vector float vyy_1 = vec_perm(vy_1, vy_1, swap_mask);
+        register __vector float vx_2 = vec_vsx_ld( offset_2 ,vptr_x ) ;
+        register __vector float vx_3 = vec_vsx_ld( offset_3 ,vptr_x ) ;  
+        register __vector float vyy_2 = vec_perm(vy_2, vy_2, swap_mask);
+        register __vector float vyy_3 = vec_perm(vy_3, vy_3, swap_mask);  
 
         vd_0 += vx_0 * vy_0;
         vd_1 += vx_1 * vy_1;
@@ -72,6 +76,8 @@ static void cdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, float *dot)
         vdd_2 += vx_2 * vyy_2;
         vdd_3 += vx_3 * vyy_3;       
        
+       vptr_x+=4;
+       vptr_y+=4;
 
     }
     //aggregate
