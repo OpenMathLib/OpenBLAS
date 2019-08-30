@@ -24,12 +24,21 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-
 #include "common.h"
- 
-
 #ifndef HAVE_ASM_KERNEL
 #include <altivec.h> 
+
+#define  offset_0 0
+#define  offset_1 16
+#define  offset_2 32
+#define  offset_3 48
+#define  offset_4 64
+#define  offset_5 80
+#define  offset_6 96
+#define  offset_7 112
+
+static const unsigned char __attribute__((aligned(16))) swap_mask_arr[]={ 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
+
 static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT alpha_i)
 {
 
@@ -43,28 +52,29 @@ static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT
     register __vector float valpha_i = {alpha_i, alpha_i,alpha_i, alpha_i};
 #endif
 
-    __vector unsigned char swap_mask = { 4,5,6,7,0,1,2,3, 12,13,14,15, 8,9,10,11};
-    register __vector float *vy = (__vector float *) y;
-    register __vector float *vx = (__vector float *) x;
+    __vector unsigned char swap_mask = *((__vector unsigned char*)swap_mask_arr);
+    register __vector float *vptr_y = (__vector float *) y;
+    register __vector float *vptr_x = (__vector float *) x; 
     BLASLONG i=0;
-    for (; i < n/2; i += 8) {
+    for(;i<n/2;i+=8){ 
 
-        register __vector float vy_0 = vy[i];
-        register __vector float vy_1 = vy[i + 1];
-        register __vector float vy_2 = vy[i + 2];
-        register __vector float vy_3 = vy[i + 3];
-        register __vector float vy_4 = vy[i + 4];
-        register __vector float vy_5 = vy[i + 5];
-        register __vector float vy_6 = vy[i + 6];
-        register __vector float vy_7 = vy[i + 7];
-        register __vector float vx_0 = vx[i];
-        register __vector float vx_1 = vx[i + 1];
-        register __vector float vx_2 = vx[i + 2];
-        register __vector float vx_3 = vx[i + 3];
-        register __vector float vx_4 = vx[i + 4];
-        register __vector float vx_5 = vx[i + 5];
-        register __vector float vx_6 = vx[i + 6];
-        register __vector float vx_7 = vx[i + 7];
+        register __vector float vy_0 = vec_vsx_ld( offset_0 ,vptr_y ) ;
+        register __vector float vy_1 = vec_vsx_ld( offset_1 ,vptr_y ) ;
+        register __vector float vy_2 = vec_vsx_ld( offset_2 ,vptr_y ) ;
+        register __vector float vy_3 = vec_vsx_ld( offset_3 ,vptr_y ) ;
+        register __vector float vy_4 = vec_vsx_ld( offset_4 ,vptr_y ) ;
+        register __vector float vy_5 = vec_vsx_ld( offset_5 ,vptr_y ) ;
+        register __vector float vy_6 = vec_vsx_ld( offset_6 ,vptr_y ) ;
+        register __vector float vy_7 = vec_vsx_ld( offset_7 ,vptr_y ) ;
+
+        register __vector float vx_0 = vec_vsx_ld( offset_0 ,vptr_x ) ;
+        register __vector float vx_1 = vec_vsx_ld( offset_1 ,vptr_x ) ;
+        register __vector float vx_2 = vec_vsx_ld( offset_2 ,vptr_x ) ;
+        register __vector float vx_3 = vec_vsx_ld( offset_3 ,vptr_x ) ;
+        register __vector float vx_4 = vec_vsx_ld( offset_4 ,vptr_x ) ;
+        register __vector float vx_5 = vec_vsx_ld( offset_5 ,vptr_x ) ;
+        register __vector float vx_6 = vec_vsx_ld( offset_6 ,vptr_x ) ;
+        register __vector float vx_7 = vec_vsx_ld( offset_7 ,vptr_x ) ;
         vy_0 += vx_0*valpha_r;
         vy_1 += vx_1*valpha_r;
         vy_2 += vx_2*valpha_r;
@@ -89,15 +99,17 @@ static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT
         vy_5 += vx_5*valpha_i;
         vy_6 += vx_6*valpha_i;
         vy_7 += vx_7*valpha_i;
-        vy[i] = vy_0;
-        vy[i + 1] = vy_1;
-        vy[i + 2] = vy_2;
-        vy[i + 3] = vy_3;
-        vy[i + 4] = vy_4;
-        vy[i + 5] = vy_5 ;
-        vy[i + 6] = vy_6 ;
-        vy[i + 7] = vy_7 ;        
+        vec_vsx_st( vy_0, offset_0 ,vptr_y ) ;
+        vec_vsx_st( vy_1, offset_1 ,vptr_y ) ;
+        vec_vsx_st( vy_2, offset_2 ,vptr_y ) ;
+        vec_vsx_st( vy_3, offset_3 ,vptr_y ) ;
+        vec_vsx_st( vy_4, offset_4 ,vptr_y ) ;
+        vec_vsx_st( vy_5, offset_5 ,vptr_y ) ;
+        vec_vsx_st( vy_6, offset_6 ,vptr_y ) ;
+        vec_vsx_st( vy_7, offset_7 ,vptr_y ) ;   
 
+        vptr_x+=8;
+        vptr_y+=8;   
     }
 }
 #endif
