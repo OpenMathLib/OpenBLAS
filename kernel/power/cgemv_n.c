@@ -181,7 +181,7 @@ static void cgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
 
 
 static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT alpha_r, FLOAT alpha_i) {
-    BLASLONG i;
+    BLASLONG i=0;
 
 
     if (inc_dest != 2) {
@@ -246,7 +246,7 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
 
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT * buffer) {
-    BLASLONG i;
+    BLASLONG i=0;
     FLOAT *a_ptr;
     FLOAT *x_ptr;
     FLOAT *y_ptr;
