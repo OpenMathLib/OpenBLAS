@@ -699,7 +699,7 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 ifdef BINARY64
-CCOMMON_OPT += -tp p7-64
+CCOMMON_OPT += -tp p7-64 -D__MMX__ -Mnollvm
 else
 CCOMMON_OPT += -tp p7
 endif
