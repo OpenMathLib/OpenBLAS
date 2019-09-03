@@ -65,11 +65,47 @@
 #define TRSV TRSV_TLN
 #endif
 
+static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
+			 FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
+
+  TRSM (args, range_m, range_n, sa, sb, 0);
+
+  return 0;
+}
+
 blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
 
-    if (args -> n == 1){
-        TRSV (args -> m, args -> a, args -> lda, args -> b, 1, sb);
+  int mode;
+
+#ifndef TRANS
+    if (args -> n  == 1){
+      TRSV (args -> m, args -> a, args -> lda, args -> b, 1, sb);
     } else {
-        TRSM (args, range_m, range_n, sa, sb, 0);
+#ifdef XDOUBLE
+      mode  =  BLAS_XDOUBLE | BLAS_REAL;
+#elif defined(DOUBLE)
+      mode  =  BLAS_DOUBLE  | BLAS_REAL;
+#else
+      mode  =  BLAS_SINGLE  | BLAS_REAL;
+#endif
+
+      gemm_thread_n(mode, args, NULL, NULL, inner_thread, sa, sb,  args -> nthreads);
     }
-  return 0;  }
+#else
+    if (args -> n == 1){
+      TRSV (args -> m, args -> a, args -> lda, args -> b, 1, sb);
+    } else {
+#ifdef XDOUBLE
+      mode  =  BLAS_XDOUBLE | BLAS_REAL | (1 << BLAS_TRANSA_SHIFT);
+#elif defined(DOUBLE)
+      mode  =  BLAS_DOUBLE  | BLAS_REAL | (1 << BLAS_TRANSA_SHIFT);
+#else
+      mode  =  BLAS_SINGLE  | BLAS_REAL | (1 << BLAS_TRANSA_SHIFT);
+#endif
+
+      gemm_thread_n(mode, args, NULL, NULL, inner_thread, sa, sb,  args -> nthreads);
+    }
+#endif
+
+    return 0;
+  }

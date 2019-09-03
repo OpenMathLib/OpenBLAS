@@ -305,4 +305,148 @@ xtrtrs_LCU_single.$(SUFFIX) : xtrtrs_single.c
 xtrtrs_LCN_single.$(SUFFIX) : xtrtrs_single.c
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=4 -DDIAG $< -o $(@F)
 
+ctrtrs_UNU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=1 -UDIAG $< -o $(@F)
+
+ctrtrs_UNN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=1 -DDIAG $< -o $(@F)
+
+ctrtrs_UTU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=2 -UDIAG $< -o $(@F)
+
+ctrtrs_UTN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=2 -DDIAG $< -o $(@F)
+
+ctrtrs_URU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=3 -UDIAG $< -o $(@F)
+
+ctrtrs_URN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=3 -DDIAG $< -o $(@F)
+
+ctrtrs_UCU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=4 -UDIAG $< -o $(@F)
+
+ctrtrs_UCN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -UUPLO -DTRANS=4 -DDIAG $< -o $(@F)
+
+ctrtrs_LNU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=1 -UDIAG $< -o $(@F)
+
+ctrtrs_LNN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=1 -DDIAG $< -o $(@F)
+
+ctrtrs_LTU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=2 -UDIAG $< -o $(@F)
+
+ctrtrs_LTN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=2 -DDIAG $< -o $(@F)
+
+ctrtrs_LRU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=3 -UDIAG $< -o $(@F)
+
+ctrtrs_LRN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=3 -DDIAG $< -o $(@F)
+
+ctrtrs_LCU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=4 -UDIAG $< -o $(@F)
+
+ctrtrs_LCN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE -DUPLO -DTRANS=4 -DDIAG $< -o $(@F)
+
+ztrtrs_UNU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=1 -UDIAG $< -o $(@F)
+
+ztrtrs_UNN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=1 -DDIAG $< -o $(@F)
+
+ztrtrs_UTU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=2 -UDIAG $< -o $(@F)
+
+ztrtrs_UTN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=2 -DDIAG $< -o $(@F)
+
+ztrtrs_URU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=3 -UDIAG $< -o $(@F)
+
+ztrtrs_URN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=3 -DDIAG $< -o $(@F)
+
+ztrtrs_UCU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=4 -UDIAG $< -o $(@F)
+
+ztrtrs_UCN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -UUPLO -DTRANS=4 -DDIAG $< -o $(@F)
+
+ztrtrs_LNU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=1 -UDIAG $< -o $(@F)
+
+ztrtrs_LNN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=1 -DDIAG $< -o $(@F)
+
+ztrtrs_LTU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=2 -UDIAG $< -o $(@F)
+
+ztrtrs_LTN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=2 -DDIAG $< -o $(@F)
+
+ztrtrs_LRU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=3 -UDIAG $< -o $(@F)
+
+ztrtrs_LRN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=3 -DDIAG $< -o $(@F)
+
+ztrtrs_LCU_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=4 -UDIAG $< -o $(@F)
+
+ztrtrs_LCN_parallel.$(SUFFIX) : ztrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE -DUPLO -DTRANS=4 -DDIAG $< -o $(@F)
+
+xtrtrs_UNU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=1 -UDIAG $< -o $(@F)
+
+xtrtrs_UNN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=1 -DDIAG $< -o $(@F)
+
+xtrtrs_UTU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=2 -UDIAG $< -o $(@F)
+
+xtrtrs_UTN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=2 -DDIAG $< -o $(@F)
+
+xtrtrs_URU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=3 -UDIAG $< -o $(@F)
+
+xtrtrs_URN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=3 -DDIAG $< -o $(@F)
+
+xtrtrs_UCU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=4 -UDIAG $< -o $(@F)
+
+xtrtrs_UCN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UUPLO -DTRANS=4 -DDIAG $< -o $(@F)
+
+xtrtrs_LNU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=1 -UDIAG $< -o $(@F)
+
+xtrtrs_LNN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=1 -DDIAG $< -o $(@F)
+
+xtrtrs_LTU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=2 -UDIAG $< -o $(@F)
+
+xtrtrs_LTN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=2 -DDIAG $< -o $(@F)
+
+xtrtrs_LRU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=3 -UDIAG $< -o $(@F)
+
+xtrtrs_LRN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=3 -DDIAG $< -o $(@F)
+
+xtrtrs_LCU_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=4 -UDIAG $< -o $(@F)
+
+xtrtrs_LCN_parallel.$(SUFFIX) : xtrtrs_parallel.c
+	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DUPLO -DTRANS=4 -DDIAG $< -o $(@F)
+
 include ../../Makefile.tail

@@ -39,37 +39,80 @@
 #include <stdio.h>
 #include "common.h"
 
-#if   !defined(TRANS) && !defined(UPLO) && !defined(DIAG)
+#if   TRANS == 1 && !defined(UPLO) && !defined(DIAG)
 #define TRSM TRSM_LNUU
-#define TRSV TRSV_NUU
-#elif !defined(TRANS) && !defined(UPLO) && defined(DIAG)
+#define ZTRSV ZTRSV_NUU
+#elif TRANS == 1 && !defined(UPLO) && defined(DIAG)
 #define TRSM TRSM_LNUN
-#define TRSV TRSV_NUN
-#elif !defined(TRANS) && defined(UPLO) && !defined(DIAG)
+#define ZTRSV ZTRSV_NUN
+#elif TRANS == 1 && defined(UPLO) && !defined(DIAG)
 #define TRSM TRSM_LNLU
-#define TRSV TRSV_NLU
-#elif !defined(TRANS) && defined(UPLO) && defined(DIAG)
+#define ZTRSV ZTRSV_NLU
+#elif TRANS == 1 && defined(UPLO) && defined(DIAG)
 #define TRSM TRSM_LNLN
-#define TRSV TRSV_NLN
-#elif defined(TRANS) && !defined(UPLO) && !defined(DIAG)
+#define ZTRSV ZTRSV_NLN
+#elif TRANS == 2 && !defined(UPLO) && !defined(DIAG)
 #define TRSM TRSM_LTUU
-#define TRSV TRSV_TUU
-#elif defined(TRANS) && !defined(UPLO) && defined(DIAG)
+#define ZTRSV ZTRSV_TUU
+#elif TRANS == 2 && !defined(UPLO) && defined(DIAG)
 #define TRSM TRSM_LTUN
-#define TRSV TRSV_TUN
-#elif defined(TRANS) && defined(UPLO) && !defined(DIAG)
+#define ZTRSV ZTRSV_TUN
+#elif TRANS == 2 && defined(UPLO) && !defined(DIAG)
 #define TRSM TRSM_LTLU
-#define TRSV TRSV_TLU
-#elif defined(TRANS) && defined(UPLO) && defined(DIAG)
+#define ZTRSV ZTRSV_TLU
+#elif TRANS == 2 && defined(UPLO) && defined(DIAG)
 #define TRSM TRSM_LTLN
-#define TRSV TRSV_TLN
+#define ZTRSV ZTRSV_TLN
+#elif TRANS == 3 && !defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LRUU
+#define ZTRSV ZTRSV_RUU
+#elif TRANS == 3 && !defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LRUN
+#define ZTRSV ZTRSV_RUN
+#elif TRANS == 3 && defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LRLU
+#define ZTRSV ZTRSV_RLU
+#elif TRANS == 3 && defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LRLN
+#define ZTRSV ZTRSV_RLN
+#elif TRANS == 4 && !defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LCUU
+#define ZTRSV ZTRSV_CUU
+#elif TRANS == 4 && !defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LCUN
+#define ZTRSV ZTRSV_CUN
+#elif TRANS == 4 && defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LCLU
+#define ZTRSV ZTRSV_CLU
+#elif TRANS == 4 && defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LCLN
+#define ZTRSV ZTRSV_CLN
 #endif
+
+static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
+			 FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
+
+  TRSM (args, range_m, range_n, sa, sb, 0);
+  return 0;
+}
 
 blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
 
+  int mode;
+
     if (args -> n == 1){
-        TRSV (args -> m, args -> a, args -> lda, args -> b, 1, sb);
+      ZTRSV (args -> m, args -> a, args -> lda, args -> b, 1, sb);
     } else {
-        TRSM (args, range_m, range_n, sa, sb, 0);
+#ifdef XDOUBLE
+      mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
+#elif defined(DOUBLE)
+      mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
+#else
+      mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
+#endif
+
+      gemm_thread_n(mode, args, NULL, NULL, inner_thread, sa, sb, args -> nthreads);
     }
-  return 0;  }
+
+   return 0;
+  }
