@@ -105,6 +105,7 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
   # Perhaps this should be inside a different file as it grows larger
   file(APPEND ${TARGET_CONF_TEMP}
     "#define ${TCORE}\n"
+    "#define CORE_${TCORE}\n"
     "#define CHAR_CORENAME \"${TCORE}\"\n")
   if ("${TCORE}" STREQUAL "CORE2")
     file(APPEND ${TARGET_CONF_TEMP}
@@ -119,15 +120,19 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define HAVE_SSE\n"
       "#define HAVE_SSE2\n"
       "#define HAVE_SSE3\n"
-      "#define HAVE_SSSE3\n")
+      "#define HAVE_SSSE3\n"
+      "#define SLOCAL_BUFFER_SIZE\t16384\n"
+      "#define DLOCAL_BUFFER_SIZE\t16384\n"
+      "#define CLOCAL_BUFFER_SIZE\t16384\n"
+      "#define ZLOCAL_BUFFER_SIZE\t16384\n")
       set(SGEMM_UNROLL_M 8)
       set(SGEMM_UNROLL_N 4)
       set(DGEMM_UNROLL_M 4)
       set(DGEMM_UNROLL_N 4)
-      set(CGEMM_DEFAULT_UNROLL_M 4)
-      set(CGEMM_DEFAULT_UNROLL_N 2)
-      set(ZGEMM_DEFAULT_UNROLL_M 2)
-      set(ZGEMM_DEFAULT_UNROLL_N 2)      
+      set(CGEMM_UNROLL_M 4)
+      set(CGEMM_UNROLL_N 2)
+      set(ZGEMM_UNROLL_M 2)
+      set(ZGEMM_UNROLL_N 2)
   elseif ("${TCORE}" STREQUAL "ARMV7")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t65536\n"
@@ -143,6 +148,10 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
     set(SGEMM_UNROLL_N 4)
     set(DGEMM_UNROLL_M 4)
     set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 2)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 2)
   elseif ("${TCORE}" STREQUAL "ARMV8")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t32768\n"
@@ -331,6 +340,9 @@ else(NOT CMAKE_CROSSCOMPILING)
     set(GETARCH_FLAGS ${GETARCH_FLAGS} -DFORCE_GENERIC)
   else()
     list(APPEND GETARCH_SRC ${PROJECT_SOURCE_DIR}/cpuid.S)
+    if (DEFINED TARGET_CORE)
+    set(GETARCH_FLAGS ${GETARCH_FLAGS} -DFORCE_${TARGET_CORE})
+  endif ()
   endif ()
 
   if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
