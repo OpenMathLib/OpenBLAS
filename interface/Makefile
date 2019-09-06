@@ -2032,7 +2032,7 @@ sgetrs.$(SUFFIX) sgetrs.$(PSUFFIX) : lapack/getrs.c
 dgetrs.$(SUFFIX) dgetrs.$(PSUFFIX) : lapack/getrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-qgetrs.$(SUFFIX) qgetrs.$(PSUFFIX) : getrs.c
+qgetrs.$(SUFFIX) qgetrs.$(PSUFFIX) : lapack/getrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 cgetrs.$(SUFFIX) cgetrs.$(PSUFFIX) : lapack/zgetrs.c
@@ -2041,7 +2041,7 @@ cgetrs.$(SUFFIX) cgetrs.$(PSUFFIX) : lapack/zgetrs.c
 zgetrs.$(SUFFIX) zgetrs.$(PSUFFIX) : lapack/zgetrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-xgetrs.$(SUFFIX) xgetrs.$(PSUFFIX) : zgetrs.c
+xgetrs.$(SUFFIX) xgetrs.$(PSUFFIX) : lapack/zgetrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 strtrs.$(SUFFIX) strtrs.$(PSUFFIX) : lapack/trtrs.c
@@ -2050,7 +2050,7 @@ strtrs.$(SUFFIX) strtrs.$(PSUFFIX) : lapack/trtrs.c
 dtrtrs.$(SUFFIX) dtrtrs.$(PSUFFIX) : lapack/trtrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-qtrtrs.$(SUFFIX) qtrtrs.$(PSUFFIX) : trtrs.c
+qtrtrs.$(SUFFIX) qtrtrs.$(PSUFFIX) : lapack/trtrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 ctrtrs.$(SUFFIX) ctrtrs.$(PSUFFIX) : lapack/ztrtrs.c
@@ -2059,7 +2059,7 @@ ctrtrs.$(SUFFIX) ctrtrs.$(PSUFFIX) : lapack/ztrtrs.c
 ztrtrs.$(SUFFIX) ztrtrs.$(PSUFFIX) : lapack/ztrtrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-xtrtrs.$(SUFFIX) xtrtrs.$(PSUFFIX) : ztrtrs.c
+xtrtrs.$(SUFFIX) xtrtrs.$(PSUFFIX) : lapack/ztrtrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 sgesv.$(SUFFIX) sgesv.$(PSUFFIX) : lapack/gesv.c
