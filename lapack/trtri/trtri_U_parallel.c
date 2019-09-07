@@ -54,7 +54,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   BLASLONG n, info;
   BLASLONG bk, i, blocking;
   int mode;
-  BLASLONG lda, range_N[2];
+  BLASLONG lda; //, range_N[2];
   blas_arg_t newarg;
   FLOAT *a;
   FLOAT alpha[2] = { ONE, ZERO};
@@ -96,8 +96,8 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     bk = n - i;
     if (bk > blocking) bk = blocking;
 
-    range_N[0] = i;
-    range_N[1] = i + bk;
+    /* range_N[0] = i;
+    range_N[1] = i + bk; */
 
     newarg.lda = lda;
     newarg.ldb = lda;
