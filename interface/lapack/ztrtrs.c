@@ -150,11 +150,11 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
   if (args.nthreads == 1) {
 #endif
 
-      (trtrs_single[(uplo << 2) | (trans << 1) | diag])(&args, NULL, NULL, sa, sb, 0);
+      (trtrs_single[(uplo << 3) | (trans << 1) | diag])(&args, NULL, NULL, sa, sb, 0);
 
 #ifdef SMP
   } else {
-    (trtrs_parallel[(uplo << 2) | (trans << 1) | diag])(&args, NULL, NULL, sa, sb, 0);
+    (trtrs_parallel[(uplo << 3) | (trans << 1) | diag])(&args, NULL, NULL, sa, sb, 0);
   }
 #endif
 
