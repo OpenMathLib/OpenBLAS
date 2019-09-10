@@ -103,8 +103,8 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
   if (diag_arg == 'U') diag = 0;
   if (diag_arg == 'N') diag = 1;
 
-  if (args.ldb  < MAX(1, args.m)) info = 7;
-  if (args.lda  < MAX(1, args.m)) info = 9;
+  if (args.ldb  < MAX(1, args.m)) info = 9;
+  if (args.lda  < MAX(1, args.m)) info = 7;
   if (args.n    < 0) info = 5;
   if (args.m    < 0) info = 4;
   if (trans     < 0) info = 2;
@@ -112,7 +112,7 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
   if (diag      < 0) info = 3;
 
   if (info != 0) {
-    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
     *Info = - info;
     return 0;
   }
