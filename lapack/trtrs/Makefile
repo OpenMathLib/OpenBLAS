@@ -36,7 +36,7 @@ strtrs_LNN_single.$(SUFFIX) : trtrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -UTRANS -DDIAG $< -o $(@F)
 
 strtrs_LTU_single.$(SUFFIX) : trtrs_single.c
-	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -DTRANS -UDIAG $< -o $(@F)
 
 strtrs_LTN_single.$(SUFFIX) : trtrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
@@ -60,7 +60,7 @@ strtrs_LNN_parallel.$(SUFFIX) : trtrs_parallel.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -UTRANS -DDIAG $< -o $(@F)
 
 strtrs_LTU_parallel.$(SUFFIX) : trtrs_parallel.c
-	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -DTRANS -UDIAG $< -o $(@F)
 
 strtrs_LTN_parallel.$(SUFFIX) : trtrs_parallel.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
@@ -84,7 +84,7 @@ dtrtrs_LNN_single.$(SUFFIX) : trtrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -UTRANS -DDIAG $< -o $(@F)
 
 dtrtrs_LTU_single.$(SUFFIX) : trtrs_single.c
-	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -DTRANS -UDIAG $< -o $(@F)
 
 dtrtrs_LTN_single.$(SUFFIX) : trtrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
@@ -108,7 +108,7 @@ dtrtrs_LNN_parallel.$(SUFFIX) : trtrs_parallel.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -UTRANS -DDIAG $< -o $(@F)
 
 dtrtrs_LTU_parallel.$(SUFFIX) : trtrs_parallel.c
-	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -DTRANS -UDIAG $< -o $(@F)
 
 dtrtrs_LTN_parallel.$(SUFFIX) : trtrs_parallel.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
@@ -132,7 +132,7 @@ qtrtrs_LNN_single.$(SUFFIX) : trtrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -UTRANS -DDIAG $< -o $(@F)
 
 qtrtrs_LTU_single.$(SUFFIX) : trtrs_single.c
-	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -DTRANS -UDIAG $< -o $(@F)
 
 qtrtrs_LTN_single.$(SUFFIX) : trtrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
@@ -156,7 +156,7 @@ qtrtrs_LNN_parallel.$(SUFFIX) : trtrs_parallel.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -UTRANS -DDIAG $< -o $(@F)
 
 qtrtrs_LTU_parallel.$(SUFFIX) : trtrs_parallel.c
-	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
+	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -DTRANS -UDIAG $< -o $(@F)
 
 qtrtrs_LTN_parallel.$(SUFFIX) : trtrs_parallel.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DUPLO -DTRANS -DDIAG $< -o $(@F)
