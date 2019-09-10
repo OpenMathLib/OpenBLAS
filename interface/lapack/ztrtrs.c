@@ -122,11 +122,11 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
 
   *Info = 0;
 
-  if (args.m == 0 || args.n == 0) return 0;
+  if (args.m == 0) return 0;
 
   if (diag) {
-    if (AMIN_K(args.n, args.a, args.lda + 1) == ZERO) {
-      *Info = IAMIN_K(args.n, args.a, args.lda + 1);
+    if (AMIN_K(args.m, args.a, args.lda + 1) == ZERO) {
+      *Info = IAMIN_K(args.m, args.a, args.lda + 1);
       return 0;
     }
   }
