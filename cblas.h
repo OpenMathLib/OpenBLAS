@@ -25,6 +25,11 @@ char* openblas_get_config(void);
 /*Get the CPU corename on runtime.*/
 char* openblas_get_corename(void);
 
+/*Set the threading backend to a custom callback.*/
+typedef void (*openblas_dojob_callback)(int thread_num, void *jobdata, void *dojob_data);
+typedef void (*openblas_threads_callback)(void *callback_data, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, void *dojob_data);
+void openblas_set_threads_callback(openblas_threads_callback callback, void *callback_data);
+
 /* Get the parallelization type which is used by OpenBLAS */
 int openblas_get_parallel(void);
 /* OpenBLAS is compiled for sequential use  */
@@ -52,7 +57,7 @@ typedef enum CBLAS_UPLO      {CblasUpper=121, CblasLower=122} CBLAS_UPLO;
 typedef enum CBLAS_DIAG      {CblasNonUnit=131, CblasUnit=132} CBLAS_DIAG;
 typedef enum CBLAS_SIDE      {CblasLeft=141, CblasRight=142} CBLAS_SIDE;
 typedef CBLAS_ORDER CBLAS_LAYOUT;
-	
+
 float  cblas_sdsdot(OPENBLAS_CONST blasint n, OPENBLAS_CONST float alpha, OPENBLAS_CONST float *x, OPENBLAS_CONST blasint incx, OPENBLAS_CONST float *y, OPENBLAS_CONST blasint incy);
 double cblas_dsdot (OPENBLAS_CONST blasint n, OPENBLAS_CONST float *x, OPENBLAS_CONST blasint incx, OPENBLAS_CONST float *y, OPENBLAS_CONST blasint incy);
 float  cblas_sdot(OPENBLAS_CONST blasint n, OPENBLAS_CONST float  *x, OPENBLAS_CONST blasint incx, OPENBLAS_CONST float  *y, OPENBLAS_CONST blasint incy);
@@ -350,32 +355,32 @@ void cblas_caxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST void *alpha, OPENBLAS
 
 void cblas_zaxpby(OPENBLAS_CONST blasint n, OPENBLAS_CONST void *alpha, OPENBLAS_CONST void *x, OPENBLAS_CONST blasint incx,OPENBLAS_CONST void *beta, void *y, OPENBLAS_CONST blasint incy);
 
-void cblas_somatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, OPENBLAS_CONST float *a, 
-		     OPENBLAS_CONST blasint clda, float *b, OPENBLAS_CONST blasint cldb); 
+void cblas_somatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, OPENBLAS_CONST float *a,
+		     OPENBLAS_CONST blasint clda, float *b, OPENBLAS_CONST blasint cldb);
 void cblas_domatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double calpha, OPENBLAS_CONST double *a,
-		     OPENBLAS_CONST blasint clda, double *b, OPENBLAS_CONST blasint cldb); 
-void cblas_comatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float* calpha, OPENBLAS_CONST float* a, 
-		     OPENBLAS_CONST blasint clda, float*b, OPENBLAS_CONST blasint cldb); 
-void cblas_zomatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double* calpha, OPENBLAS_CONST double* a, 
-		     OPENBLAS_CONST blasint clda,  double *b, OPENBLAS_CONST blasint cldb); 
+		     OPENBLAS_CONST blasint clda, double *b, OPENBLAS_CONST blasint cldb);
+void cblas_comatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float* calpha, OPENBLAS_CONST float* a,
+		     OPENBLAS_CONST blasint clda, float*b, OPENBLAS_CONST blasint cldb);
+void cblas_zomatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double* calpha, OPENBLAS_CONST double* a,
+		     OPENBLAS_CONST blasint clda,  double *b, OPENBLAS_CONST blasint cldb);
 
-void cblas_simatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, float *a, 
-		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb); 
+void cblas_simatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, float *a,
+		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb);
 void cblas_dimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double calpha, double *a,
-		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb); 
-void cblas_cimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float* calpha, float* a, 
-		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb); 
-void cblas_zimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double* calpha, double* a, 
-		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb); 
+		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb);
+void cblas_cimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float* calpha, float* a,
+		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb);
+void cblas_zimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double* calpha, double* a,
+		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb);
 
-void cblas_sgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float cbeta, 
-		  float *c, OPENBLAS_CONST blasint cldc); 
-void cblas_dgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double calpha, double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double cbeta, 
-		  double *c, OPENBLAS_CONST blasint cldc); 
-void cblas_cgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float *calpha, float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float *cbeta, 
-		  float *c, OPENBLAS_CONST blasint cldc); 
-void cblas_zgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double *calpha, double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double *cbeta, 
-		  double *c, OPENBLAS_CONST blasint cldc); 
+void cblas_sgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float cbeta,
+		  float *c, OPENBLAS_CONST blasint cldc);
+void cblas_dgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double calpha, double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double cbeta,
+		  double *c, OPENBLAS_CONST blasint cldc);
+void cblas_cgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float *calpha, float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float *cbeta,
+		  float *c, OPENBLAS_CONST blasint cldc);
+void cblas_zgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double *calpha, double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double *cbeta,
+		  double *c, OPENBLAS_CONST blasint cldc);
 
 
 #ifdef __cplusplus

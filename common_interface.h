@@ -47,6 +47,12 @@ int    BLASFUNC(xerbla)(char *, blasint *info, blasint);
 
 void    openblas_set_num_threads_(int *);
 
+typedef void (*openblas_dojob_callback)(int thread_num, void *jobdata, void *dojob_data);
+typedef void (*openblas_threads_callback)(void *callback_data, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, void *dojob_data);
+void openblas_set_threads_callback(openblas_threads_callback callback, void *callback_data);
+extern openblas_threads_callback openblas_threads_callback_;
+extern void *openblas_threads_callback_data_;
+
 FLOATRET  BLASFUNC(sdot)  (blasint *, float  *, blasint *, float  *, blasint *);
 FLOATRET  BLASFUNC(sdsdot)(blasint *, float  *,        float  *, blasint *, float  *, blasint *);
 
@@ -761,10 +767,10 @@ void    BLASFUNC(dimatcopy) (char *, char *, blasint *, blasint *, double  *, do
 void    BLASFUNC(cimatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, blasint *);
 void    BLASFUNC(zimatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, blasint *);
 
-void    BLASFUNC(sgeadd) (blasint *, blasint *, float *, float *, blasint *, float *, float *, blasint*); 
-void    BLASFUNC(dgeadd) (blasint *, blasint *, double *, double *, blasint *, double *, double *, blasint*); 
-void    BLASFUNC(cgeadd) (blasint *, blasint *, float *, float *, blasint *, float *, float *, blasint*); 
-void    BLASFUNC(zgeadd) (blasint *, blasint *, double *, double *, blasint *, double *, double *, blasint*); 
+void    BLASFUNC(sgeadd) (blasint *, blasint *, float *, float *, blasint *, float *, float *, blasint*);
+void    BLASFUNC(dgeadd) (blasint *, blasint *, double *, double *, blasint *, double *, double *, blasint*);
+void    BLASFUNC(cgeadd) (blasint *, blasint *, float *, float *, blasint *, float *, float *, blasint*);
+void    BLASFUNC(zgeadd) (blasint *, blasint *, double *, double *, blasint *, double *, double *, blasint*);
 
 
 #ifdef __cplusplus
