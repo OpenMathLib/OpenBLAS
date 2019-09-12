@@ -48,7 +48,7 @@ int    BLASFUNC(xerbla)(char *, blasint *info, blasint);
 void    openblas_set_num_threads_(int *);
 
 typedef void (*openblas_dojob_callback)(int thread_num, void *jobdata, void *dojob_data);
-typedef void (*openblas_threads_callback)(void *callback_data, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, void *dojob_data);
+typedef void (*openblas_threads_callback)(void *callback_data, int sync, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, void *dojob_data);
 void openblas_set_threads_callback(openblas_threads_callback callback, void *callback_data);
 extern openblas_threads_callback openblas_threads_callback_;
 extern void *openblas_threads_callback_data_;

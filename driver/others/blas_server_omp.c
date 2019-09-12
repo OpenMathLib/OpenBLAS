@@ -339,7 +339,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
     for (i = 0; i < num; i ++)
       queue[i].position = i;
 #endif
-    openblas_threads_callback_(openblas_threads_callback_data_, (openblas_dojob_callback) exec_threads, num, sizeof(blas_queue_t), (void*) queue, (void*) &buf_index);
+    openblas_threads_callback_(openblas_threads_callback_data_, 1, (openblas_dojob_callback) exec_threads, num, sizeof(blas_queue_t), (void*) queue, (void*) &buf_index);
     return;
   }
 

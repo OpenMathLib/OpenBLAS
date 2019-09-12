@@ -27,7 +27,7 @@ char* openblas_get_corename(void);
 
 /*Set the threading backend to a custom callback.*/
 typedef void (*openblas_dojob_callback)(int thread_num, void *jobdata, void *dojob_data);
-typedef void (*openblas_threads_callback)(void *callback_data, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, void *dojob_data);
+typedef void (*openblas_threads_callback)(void *callback_data, int sync, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, void *dojob_data);
 void openblas_set_threads_callback(openblas_threads_callback callback, void *callback_data);
 
 /* Get the parallelization type which is used by OpenBLAS */
