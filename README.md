@@ -24,6 +24,11 @@ You can download them from [file hosting on sourceforge.net](https://sourceforge
 
 ## Installation from Source
 
+If you are using the [vcpkg](https://github.com/Microsoft/vcpkg/) dependency manager you can download and install OpenBLAS from source with CMake integration using a single command:
+```
+vcpkg install openblas
+```
+
 Download from project homepage, https://xianyi.github.com/OpenBLAS/, or check out the code
 using Git from https://github.com/xianyi/OpenBLAS.git.
 
