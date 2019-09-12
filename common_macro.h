@@ -641,7 +641,7 @@
 #define IMATCOPY_K_CT		DIMATCOPY_K_CT
 #define IMATCOPY_K_RT		DIMATCOPY_K_RT
 
-#define GEADD_K                 DGEADD_K 
+#define GEADD_K                 DGEADD_K
 #else
 
 #define	AMAX_K			SAMAX_K
@@ -944,7 +944,7 @@
 #define IMATCOPY_K_CT		SIMATCOPY_K_CT
 #define IMATCOPY_K_RT		SIMATCOPY_K_RT
 
-#define GEADD_K 		SGEADD_K 
+#define GEADD_K 		SGEADD_K
 #endif
 #else
 #ifdef XDOUBLE
@@ -1770,7 +1770,7 @@
 #define IMATCOPY_K_CTC		ZIMATCOPY_K_CTC
 #define IMATCOPY_K_RTC		ZIMATCOPY_K_RTC
 
-#define GEADD_K                 ZGEADD_K 
+#define GEADD_K                 ZGEADD_K
 
 #else
 
@@ -2193,7 +2193,7 @@
 #define IMATCOPY_K_CTC		CIMATCOPY_K_CTC
 #define IMATCOPY_K_RTC		CIMATCOPY_K_RTC
 
-#define GEADD_K                 CGEADD_K 
+#define GEADD_K                 CGEADD_K
 
 #endif
 #endif
@@ -2805,4 +2805,161 @@ typedef struct {
 #endif
 #endif
 
+#endif
+
+#ifndef COMPLEX
+#ifdef XDOUBLE
+#define  TRTRS_UNU_SINGLE  qtrtrs_UNU_single
+#define  TRTRS_UNN_SINGLE  qtrtrs_UNN_single
+#define  TRTRS_UTU_SINGLE  qtrtrs_UTU_single
+#define  TRTRS_UTN_SINGLE  qtrtrs_UTN_single
+#define  TRTRS_LNU_SINGLE  qtrtrs_LNU_single
+#define  TRTRS_LNN_SINGLE  qtrtrs_LNN_single
+#define  TRTRS_LTU_SINGLE  qtrtrs_LTU_single
+#define  TRTRS_LTN_SINGLE  qtrtrs_LTN_single
+#define  TRTRS_UNU_PARALLEL  qtrtrs_UNU_parallel
+#define  TRTRS_UNN_PARALLEL  qtrtrs_UNN_parallel
+#define  TRTRS_UTU_PARALLEL  qtrtrs_UTU_parallel
+#define  TRTRS_UTN_PARALLEL  qtrtrs_UTN_parallel
+#define  TRTRS_LNU_PARALLEL  qtrtrs_LNU_parallel
+#define  TRTRS_LNN_PARALLEL  qtrtrs_LNN_parallel
+#define  TRTRS_LTU_PARALLEL  qtrtrs_LTU_parallel
+#define  TRTRS_LTN_PARALLEL  qtrtrs_LTN_parallel
+
+#elif defined(DOUBLE)
+#define  TRTRS_UNU_SINGLE  dtrtrs_UNU_single
+#define  TRTRS_UNN_SINGLE  dtrtrs_UNN_single
+#define  TRTRS_UTU_SINGLE  dtrtrs_UTU_single
+#define  TRTRS_UTN_SINGLE  dtrtrs_UTN_single
+#define  TRTRS_LNU_SINGLE  dtrtrs_LNU_single
+#define  TRTRS_LNN_SINGLE  dtrtrs_LNN_single
+#define  TRTRS_LTU_SINGLE  dtrtrs_LTU_single
+#define  TRTRS_LTN_SINGLE  dtrtrs_LTN_single
+#define  TRTRS_UNU_PARALLEL  dtrtrs_UNU_parallel
+#define  TRTRS_UNN_PARALLEL  dtrtrs_UNN_parallel
+#define  TRTRS_UTU_PARALLEL  dtrtrs_UTU_parallel
+#define  TRTRS_UTN_PARALLEL  dtrtrs_UTN_parallel
+#define  TRTRS_LNU_PARALLEL  dtrtrs_LNU_parallel
+#define  TRTRS_LNN_PARALLEL  dtrtrs_LNN_parallel
+#define  TRTRS_LTU_PARALLEL  dtrtrs_LTU_parallel
+#define  TRTRS_LTN_PARALLEL  dtrtrs_LTN_parallel
+#else
+#define  TRTRS_UNU_SINGLE  strtrs_UNU_single
+#define  TRTRS_UNN_SINGLE  strtrs_UNN_single
+#define  TRTRS_UTU_SINGLE  strtrs_UTU_single
+#define  TRTRS_UTN_SINGLE  strtrs_UTN_single
+#define  TRTRS_LNU_SINGLE  strtrs_LNU_single
+#define  TRTRS_LNN_SINGLE  strtrs_LNN_single
+#define  TRTRS_LTU_SINGLE  strtrs_LTU_single
+#define  TRTRS_LTN_SINGLE  strtrs_LTN_single
+#define  TRTRS_UNU_PARALLEL  strtrs_UNU_parallel
+#define  TRTRS_UNN_PARALLEL  strtrs_UNN_parallel
+#define  TRTRS_UTU_PARALLEL  strtrs_UTU_parallel
+#define  TRTRS_UTN_PARALLEL  strtrs_UTN_parallel
+#define  TRTRS_LNU_PARALLEL  strtrs_LNU_parallel
+#define  TRTRS_LNN_PARALLEL  strtrs_LNN_parallel
+#define  TRTRS_LTU_PARALLEL  strtrs_LTU_parallel
+#define  TRTRS_LTN_PARALLEL  strtrs_LTN_parallel
+#endif
+#else
+#ifdef XDOUBLE
+#define  TRTRS_UNU_SINGLE  xtrtrs_UNU_single
+#define  TRTRS_UNN_SINGLE  xtrtrs_UNN_single
+#define  TRTRS_UTU_SINGLE  xtrtrs_UTU_single
+#define  TRTRS_UTN_SINGLE  xtrtrs_UTN_single
+#define  TRTRS_URU_SINGLE  xtrtrs_URU_single
+#define  TRTRS_URN_SINGLE  xtrtrs_URN_single
+#define  TRTRS_UCU_SINGLE  xtrtrs_UCU_single
+#define  TRTRS_UCN_SINGLE  xtrtrs_UCN_single
+#define  TRTRS_LNU_SINGLE  xtrtrs_LNU_single
+#define  TRTRS_LNN_SINGLE  xtrtrs_LNN_single
+#define  TRTRS_LTU_SINGLE  xtrtrs_LTU_single
+#define  TRTRS_LTN_SINGLE  xtrtrs_LTN_single
+#define  TRTRS_LRU_SINGLE  xtrtrs_LRU_single
+#define  TRTRS_LRN_SINGLE  xtrtrs_LRN_single
+#define  TRTRS_LCU_SINGLE  xtrtrs_LCU_single
+#define  TRTRS_LCN_SINGLE  xtrtrs_LCN_single
+#define  TRTRS_UNU_PARALLEL  xtrtrs_UNU_parallel
+#define  TRTRS_UNN_PARALLEL  xtrtrs_UNN_parallel
+#define  TRTRS_UTU_PARALLEL  xtrtrs_UTU_parallel
+#define  TRTRS_UTN_PARALLEL  xtrtrs_UTN_parallel
+#define  TRTRS_URU_PARALLEL  xtrtrs_URU_parallel
+#define  TRTRS_URN_PARALLEL  xtrtrs_URN_parallel
+#define  TRTRS_UCU_PARALLEL  xtrtrs_UCU_parallel
+#define  TRTRS_UCN_PARALLEL  xtrtrs_UCN_parallel
+#define  TRTRS_LNU_PARALLEL  xtrtrs_LNU_parallel
+#define  TRTRS_LNN_PARALLEL  xtrtrs_LNN_parallel
+#define  TRTRS_LTU_PARALLEL  xtrtrs_LTU_parallel
+#define  TRTRS_LTN_PARALLEL  xtrtrs_LTN_parallel
+#define  TRTRS_LRU_PARALLEL  xtrtrs_LRU_parallel
+#define  TRTRS_LRN_PARALLEL  xtrtrs_LRN_parallel
+#define  TRTRS_LCU_PARALLEL  xtrtrs_LCU_parallel
+#define  TRTRS_LCN_PARALLEL  xtrtrs_LCN_parallel
+#elif defined(DOUBLE)
+#define  TRTRS_UNU_SINGLE  ztrtrs_UNU_single
+#define  TRTRS_UNN_SINGLE  ztrtrs_UNN_single
+#define  TRTRS_UTU_SINGLE  ztrtrs_UTU_single
+#define  TRTRS_UTN_SINGLE  ztrtrs_UTN_single
+#define  TRTRS_URU_SINGLE  ztrtrs_URU_single
+#define  TRTRS_URN_SINGLE  ztrtrs_URN_single
+#define  TRTRS_UCU_SINGLE  ztrtrs_UCU_single
+#define  TRTRS_UCN_SINGLE  ztrtrs_UCN_single
+#define  TRTRS_LNU_SINGLE  ztrtrs_LNU_single
+#define  TRTRS_LNN_SINGLE  ztrtrs_LNN_single
+#define  TRTRS_LTU_SINGLE  ztrtrs_LTU_single
+#define  TRTRS_LTN_SINGLE  ztrtrs_LTN_single
+#define  TRTRS_LRU_SINGLE  ztrtrs_LRU_single
+#define  TRTRS_LRN_SINGLE  ztrtrs_LRN_single
+#define  TRTRS_LCU_SINGLE  ztrtrs_LCU_single
+#define  TRTRS_LCN_SINGLE  ztrtrs_LCN_single
+#define  TRTRS_UNU_PARALLEL  ztrtrs_UNU_parallel
+#define  TRTRS_UNN_PARALLEL  ztrtrs_UNN_parallel
+#define  TRTRS_UTU_PARALLEL  ztrtrs_UTU_parallel
+#define  TRTRS_UTN_PARALLEL  ztrtrs_UTN_parallel
+#define  TRTRS_URU_PARALLEL  ztrtrs_URU_parallel
+#define  TRTRS_URN_PARALLEL  ztrtrs_URN_parallel
+#define  TRTRS_UCU_PARALLEL  ztrtrs_UCU_parallel
+#define  TRTRS_UCN_PARALLEL  ztrtrs_UCN_parallel
+#define  TRTRS_LNU_PARALLEL  ztrtrs_LNU_parallel
+#define  TRTRS_LNN_PARALLEL  ztrtrs_LNN_parallel
+#define  TRTRS_LTU_PARALLEL  ztrtrs_LTU_parallel
+#define  TRTRS_LTN_PARALLEL  ztrtrs_LTN_parallel
+#define  TRTRS_LRU_PARALLEL  ztrtrs_LRU_parallel
+#define  TRTRS_LRN_PARALLEL  ztrtrs_LRN_parallel
+#define  TRTRS_LCU_PARALLEL  ztrtrs_LCU_parallel
+#define  TRTRS_LCN_PARALLEL  ztrtrs_LCN_parallel
+#else
+#define  TRTRS_UNU_SINGLE  ctrtrs_UNU_single
+#define  TRTRS_UNN_SINGLE  ctrtrs_UNN_single
+#define  TRTRS_UTU_SINGLE  ctrtrs_UTU_single
+#define  TRTRS_UTN_SINGLE  ctrtrs_UTN_single
+#define  TRTRS_URU_SINGLE  ctrtrs_URU_single
+#define  TRTRS_URN_SINGLE  ctrtrs_URN_single
+#define  TRTRS_UCU_SINGLE  ctrtrs_UCU_single
+#define  TRTRS_UCN_SINGLE  ctrtrs_UCN_single
+#define  TRTRS_LNU_SINGLE  ctrtrs_LNU_single
+#define  TRTRS_LNN_SINGLE  ctrtrs_LNN_single
+#define  TRTRS_LTU_SINGLE  ctrtrs_LTU_single
+#define  TRTRS_LTN_SINGLE  ctrtrs_LTN_single
+#define  TRTRS_LRU_SINGLE  ctrtrs_LRU_single
+#define  TRTRS_LRN_SINGLE  ctrtrs_LRN_single
+#define  TRTRS_LCU_SINGLE  ctrtrs_LCU_single
+#define  TRTRS_LCN_SINGLE  ctrtrs_LCN_single
+#define  TRTRS_UNU_PARALLEL  ctrtrs_UNU_parallel
+#define  TRTRS_UNN_PARALLEL  ctrtrs_UNN_parallel
+#define  TRTRS_UTU_PARALLEL  ctrtrs_UTU_parallel
+#define  TRTRS_UTN_PARALLEL  ctrtrs_UTN_parallel
+#define  TRTRS_URU_PARALLEL  ctrtrs_URU_parallel
+#define  TRTRS_URN_PARALLEL  ctrtrs_URN_parallel
+#define  TRTRS_UCU_PARALLEL  ctrtrs_UCU_parallel
+#define  TRTRS_UCN_PARALLEL  ctrtrs_UCN_parallel
+#define  TRTRS_LNU_PARALLEL  ctrtrs_LNU_parallel
+#define  TRTRS_LNN_PARALLEL  ctrtrs_LNN_parallel
+#define  TRTRS_LTU_PARALLEL  ctrtrs_LTU_parallel
+#define  TRTRS_LTN_PARALLEL  ctrtrs_LTN_parallel
+#define  TRTRS_LRU_PARALLEL  ctrtrs_LRU_parallel
+#define  TRTRS_LRN_PARALLEL  ctrtrs_LRN_parallel
+#define  TRTRS_LCU_PARALLEL  ctrtrs_LCU_parallel
+#define  TRTRS_LCN_PARALLEL  ctrtrs_LCN_parallel
+#endif
 #endif
