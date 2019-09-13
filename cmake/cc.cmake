@@ -3,7 +3,7 @@
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets C related variables.
 
-if (${CMAKE_C_COMPILER} STREQUAL "GNU" OR ${CMAKE_C_COMPILER} STREQUAL "LSB" OR ${CMAKE_C_COMPILER} STREQUAL "Clang")
+if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LSB" OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
 
   set(CCOMMON_OPT "${CCOMMON_OPT} -Wall")
   set(COMMON_PROF "${COMMON_PROF} -fno-inline")
@@ -43,7 +43,7 @@ if (${CMAKE_C_COMPILER} STREQUAL "GNU" OR ${CMAKE_C_COMPILER} STREQUAL "LSB" OR 
   endif ()
 endif ()
 
-if (${CMAKE_C_COMPILER} STREQUAL "PGI")
+if (${CMAKE_C_COMPILER_ID} STREQUAL "PGI")
   if (BINARY64)
     set(CCOMMON_OPT "${CCOMMON_OPT} -tp p7-64")
   else ()
@@ -51,7 +51,7 @@ if (${CMAKE_C_COMPILER} STREQUAL "PGI")
   endif ()
 endif ()
 
-if (${CMAKE_C_COMPILER} STREQUAL "PATHSCALE")
+if (${CMAKE_C_COMPILER_ID} STREQUAL "PATHSCALE")
   if (BINARY64)
     set(CCOMMON_OPT "${CCOMMON_OPT} -m64")
   else ()
@@ -59,7 +59,7 @@ if (${CMAKE_C_COMPILER} STREQUAL "PATHSCALE")
   endif ()
 endif ()
 
-if (${CMAKE_C_COMPILER} STREQUAL "OPEN64")
+if (${CMAKE_C_COMPILER_ID} STREQUAL "OPEN64")
 
   if (MIPS64)
 
@@ -87,7 +87,7 @@ if (${CMAKE_C_COMPILER} STREQUAL "OPEN64")
   endif ()
 endif ()
 
-if (${CMAKE_C_COMPILER} STREQUAL "SUN")
+if (${CMAKE_C_COMPILER_ID} STREQUAL "SUN")
   set(CCOMMON_OPT "${CCOMMON_OPT} -w")
   if (X86)
     set(CCOMMON_OPT "${CCOMMON_OPT} -m32")

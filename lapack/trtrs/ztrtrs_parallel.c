@@ -39,109 +39,80 @@
 #include <stdio.h>
 #include "common.h"
 
-#ifdef UNIT
-#define TRTI2	TRTI2_UU
-#define TRMM	TRMM_LNUU
-#define TRSM	TRSM_RNUU
-#else
-#define TRTI2	TRTI2_UN
-#define TRMM	TRMM_LNUN
-#define TRSM	TRSM_RNUN
+#if   TRANS == 1 && !defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LNUU
+#define ZTRSV ZTRSV_NUU
+#elif TRANS == 1 && !defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LNUN
+#define ZTRSV ZTRSV_NUN
+#elif TRANS == 1 && defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LNLU
+#define ZTRSV ZTRSV_NLU
+#elif TRANS == 1 && defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LNLN
+#define ZTRSV ZTRSV_NLN
+#elif TRANS == 2 && !defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LTUU
+#define ZTRSV ZTRSV_TUU
+#elif TRANS == 2 && !defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LTUN
+#define ZTRSV ZTRSV_TUN
+#elif TRANS == 2 && defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LTLU
+#define ZTRSV ZTRSV_TLU
+#elif TRANS == 2 && defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LTLN
+#define ZTRSV ZTRSV_TLN
+#elif TRANS == 3 && !defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LRUU
+#define ZTRSV ZTRSV_RUU
+#elif TRANS == 3 && !defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LRUN
+#define ZTRSV ZTRSV_RUN
+#elif TRANS == 3 && defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LRLU
+#define ZTRSV ZTRSV_RLU
+#elif TRANS == 3 && defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LRLN
+#define ZTRSV ZTRSV_RLN
+#elif TRANS == 4 && !defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LCUU
+#define ZTRSV ZTRSV_CUU
+#elif TRANS == 4 && !defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LCUN
+#define ZTRSV ZTRSV_CUN
+#elif TRANS == 4 && defined(UPLO) && !defined(DIAG)
+#define TRSM TRSM_LCLU
+#define ZTRSV ZTRSV_CLU
+#elif TRANS == 4 && defined(UPLO) && defined(DIAG)
+#define TRSM TRSM_LCLN
+#define ZTRSV ZTRSV_CLN
 #endif
+
+static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
+			 FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
+
+  TRSM (args, range_m, range_n, sa, sb, 0);
+  return 0;
+}
 
 blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
 
-  BLASLONG n, info;
-  BLASLONG bk, i, blocking;
   int mode;
-  BLASLONG lda; //, range_N[2];
-  blas_arg_t newarg;
-  FLOAT *a;
-  FLOAT alpha[2] = { ONE, ZERO};
-  FLOAT beta [2] = {-ONE, ZERO};
 
-#ifndef COMPLEX
+    if (args -> n == 1){
+      ZTRSV (args -> m, args -> a, args -> lda, args -> b, 1, sb);
+    } else {
 #ifdef XDOUBLE
-  mode  =  BLAS_XDOUBLE | BLAS_REAL;
+      mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
 #elif defined(DOUBLE)
-  mode  =  BLAS_DOUBLE  | BLAS_REAL;
+      mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
-  mode  =  BLAS_SINGLE  | BLAS_REAL;
-#endif
-#else
-#ifdef XDOUBLE
-  mode  =  BLAS_XDOUBLE | BLAS_COMPLEX;
-#elif defined(DOUBLE)
-  mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
-#else
-  mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
-#endif
+      mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
 #endif
 
-  n  = args -> n;
-  a  = (FLOAT *)args -> a;
-  lda = args -> lda;
+      gemm_thread_n(mode, args, NULL, NULL, inner_thread, sa, sb, args -> nthreads);
+    }
 
-  if (range_n) n  = range_n[1] - range_n[0];
-
-  if (n <= DTB_ENTRIES) {
-    info = TRTI2(args, NULL, range_n, sa, sb, 0);
-    return info;
+   return 0;
   }
-
-  blocking = GEMM_Q;
-  if (n < 4 * GEMM_Q) blocking = (n + 3) / 4;
-
-  for (i = 0; i < n; i += blocking) {
-    bk = n - i;
-    if (bk > blocking) bk = blocking;
-
-    /* range_N[0] = i;
-    range_N[1] = i + bk; */
-
-    newarg.lda = lda;
-    newarg.ldb = lda;
-    newarg.ldc = lda;
-    newarg.alpha = alpha;
-
-    newarg.m = i;
-    newarg.n = bk;
-    newarg.a = a + (i + i * lda) * COMPSIZE;
-    newarg.b = a + (    i * lda) * COMPSIZE;
-
-    newarg.beta  = beta;
-    newarg.nthreads = args -> nthreads;
-
-    gemm_thread_m(mode, &newarg, NULL, NULL, TRSM, sa, sb, args -> nthreads);
-
-    newarg.m = bk;
-    newarg.n = bk;
-
-    newarg.a = a + (i + i * lda) * COMPSIZE;
-
-    CNAME  (&newarg, NULL, NULL, sa, sb, 0);
-
-    newarg.m = i;
-    newarg.n = n - i - bk;
-    newarg.k = bk;
-
-    newarg.a = a + (     i       * lda) * COMPSIZE;
-    newarg.b = a + (i + (i + bk) * lda) * COMPSIZE;
-    newarg.c = a + (    (i + bk) * lda) * COMPSIZE;
-
-    newarg.beta  = NULL;
-
-    gemm_thread_n(mode, &newarg, NULL, NULL, GEMM_NN, sa, sb, args -> nthreads);
-
-    newarg.a = a + (i +  i       * lda) * COMPSIZE;
-    newarg.b = a + (i + (i + bk) * lda) * COMPSIZE;
-
-    newarg.m = bk;
-    newarg.n = n - i - bk;
-
-    gemm_thread_n(mode, &newarg, NULL, NULL, TRMM, sa, sb, args -> nthreads);
-
-  }
-
-  return 0;
-}

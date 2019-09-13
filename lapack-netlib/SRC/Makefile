@@ -507,22 +507,22 @@ ALL_AUX_OBJS = xerbla.o ../INSTALL/lsame.o
 SLAPACKOBJS     = \
         sgetrf.o sgetrs.o spotrf.o sgetf2.o \
         spotf2.o slaswp.o sgesv.o slauu2.o  \
-        slauum.o strti2.o strtri.o
+        slauum.o strti2.o strtri.o strtrs.o
 
 DLAPACKOBJS     = \
         dgetrf.o dgetrs.o dpotrf.o dgetf2.o \
         dpotf2.o dlaswp.o dgesv.o dlauu2.o  \
-        dlauum.o dtrti2.o dtrtri.o
+        dlauum.o dtrti2.o dtrtri.o dtrtrs.o
 
 CLAPACKOBJS     = \
         cgetrf.o cgetrs.o cpotrf.o cgetf2.o \
         cpotf2.o claswp.o cgesv.o clauu2.o \
-        clauum.o ctrti2.o ctrtri.o
+        clauum.o ctrti2.o ctrtri.o ctrtrs.o
 
 ZLAPACKOBJS     = \
         zgetrf.o zgetrs.o zpotrf.o zgetf2.o \
         zpotf2.o zlaswp.o zgesv.o  zlauu2.o \
-        zlauum.o ztrti2.o ztrtri.o
+        zlauum.o ztrti2.o ztrtri.o ztrtrs.o
 
 
 ALLAUX = $(filter-out $(ALL_AUX_OBJS),$(ALLAUX_O))

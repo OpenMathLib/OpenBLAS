@@ -394,7 +394,7 @@ XBLASOBJS    = $(XBLAS1OBJS) $(XBLAS2OBJS) $(XBLAS3OBJS)
 SLAPACKOBJS	= \
 	sgetrf.$(SUFFIX) sgetrs.$(SUFFIX) spotrf.$(SUFFIX) sgetf2.$(SUFFIX) \
 	spotf2.$(SUFFIX) slaswp.$(SUFFIX) sgesv.$(SUFFIX) slauu2.$(SUFFIX)  \
-	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX)
+	slauum.$(SUFFIX) strti2.$(SUFFIX) strtri.$(SUFFIX) strtrs.$(SUFFIX)
 
 
 #DLAPACKOBJS	= \
@@ -405,14 +405,14 @@ SLAPACKOBJS	= \
 DLAPACKOBJS	= \
 	dgetrf.$(SUFFIX) dgetrs.$(SUFFIX) dpotrf.$(SUFFIX) dgetf2.$(SUFFIX) \
 	dpotf2.$(SUFFIX) dlaswp.$(SUFFIX) dgesv.$(SUFFIX) dlauu2.$(SUFFIX)  \
-	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX)
+	dlauum.$(SUFFIX) dtrti2.$(SUFFIX) dtrtri.$(SUFFIX) dtrtrs.$(SUFFIX)
 
 
 QLAPACKOBJS	= \
 	qgetf2.$(SUFFIX) qgetrf.$(SUFFIX) qlauu2.$(SUFFIX) qlauum.$(SUFFIX) \
 	qpotf2.$(SUFFIX) qpotrf.$(SUFFIX) qtrti2.$(SUFFIX) qtrtri.$(SUFFIX) \
-	qlaswp.$(SUFFIX) qgetrs.$(SUFFIX) qgesv.$(SUFFIX)  qpotri.$(SUFFIX) \
-
+	qlaswp.$(SUFFIX) qtrtrs.$(SUFFIX) qgesv.$(SUFFIX)  qpotri.$(SUFFIX) \
+	qtrtrs.$(SUFFIX)
 
 #CLAPACKOBJS	= \
 #	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
@@ -423,7 +423,7 @@ QLAPACKOBJS	= \
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
 	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
-	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) 
+	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) ctrtrs.$(SUFFIX)
 
 
 #ZLAPACKOBJS	= \
@@ -435,13 +435,14 @@ CLAPACKOBJS	= \
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
 	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
-	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) 
+	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) ztrtrs.$(SUFFIX)
 
 
 XLAPACKOBJS	= \
 	xgetf2.$(SUFFIX) xgetrf.$(SUFFIX) xlauu2.$(SUFFIX) xlauum.$(SUFFIX) \
 	xpotf2.$(SUFFIX) xpotrf.$(SUFFIX) xtrti2.$(SUFFIX) xtrtri.$(SUFFIX) \
-	xlaswp.$(SUFFIX) xgetrs.$(SUFFIX) xgesv.$(SUFFIX)  xpotri.$(SUFFIX) \
+	xlaswp.$(SUFFIX) xtrtrs.$(SUFFIX) xgesv.$(SUFFIX)  xpotri.$(SUFFIX) \
+	xtrtrs.$(SUFFIX)
 
 ifneq ($(NO_LAPACK), 1)
 SBLASOBJS += $(SLAPACKOBJS)
@@ -2031,7 +2032,7 @@ sgetrs.$(SUFFIX) sgetrs.$(PSUFFIX) : lapack/getrs.c
 dgetrs.$(SUFFIX) dgetrs.$(PSUFFIX) : lapack/getrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-qgetrs.$(SUFFIX) qgetrs.$(PSUFFIX) : getrs.c
+qgetrs.$(SUFFIX) qgetrs.$(PSUFFIX) : lapack/getrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 cgetrs.$(SUFFIX) cgetrs.$(PSUFFIX) : lapack/zgetrs.c
@@ -2040,7 +2041,25 @@ cgetrs.$(SUFFIX) cgetrs.$(PSUFFIX) : lapack/zgetrs.c
 zgetrs.$(SUFFIX) zgetrs.$(PSUFFIX) : lapack/zgetrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-xgetrs.$(SUFFIX) xgetrs.$(PSUFFIX) : zgetrs.c
+xgetrs.$(SUFFIX) xgetrs.$(PSUFFIX) : lapack/zgetrs.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+strtrs.$(SUFFIX) strtrs.$(PSUFFIX) : lapack/trtrs.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+dtrtrs.$(SUFFIX) dtrtrs.$(PSUFFIX) : lapack/trtrs.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+qtrtrs.$(SUFFIX) qtrtrs.$(PSUFFIX) : lapack/trtrs.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+ctrtrs.$(SUFFIX) ctrtrs.$(PSUFFIX) : lapack/ztrtrs.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+ztrtrs.$(SUFFIX) ztrtrs.$(PSUFFIX) : lapack/ztrtrs.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+xtrtrs.$(SUFFIX) xtrtrs.$(PSUFFIX) : lapack/ztrtrs.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 sgesv.$(SUFFIX) sgesv.$(PSUFFIX) : lapack/gesv.c
