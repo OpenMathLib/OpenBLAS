@@ -1,4 +1,4 @@
-#if (( defined(__GNUC__)  && __GNUC__   < 6 )
+#if ( defined(__GNUC__)  && __GNUC__   < 6 )
 #pragma GCC optimize "O0"
 #endif
 /***************************************************************************
