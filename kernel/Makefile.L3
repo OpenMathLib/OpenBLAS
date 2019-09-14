@@ -24,8 +24,10 @@ ifeq ($(TARGET), LOONGSON3B)
 USE_TRMM = 1
 endif
 
-ifeq ($(CORE), GENERIC)
+ifneq($(DYNAMIC_ARCH), 1)
+ifeq ($(TARGET), GENERIC)
 USE_TRMM = 1
+endif
 endif
 
 ifeq ($(CORE), HASWELL)
