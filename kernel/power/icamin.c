@@ -1,3 +1,6 @@
+#if (( defined(__GNUC__)  && __GNUC__   < 6 )
+#pragma GCC optimize "O0"
+#endif
 /***************************************************************************
 Copyright (c) 2019, The OpenBLAS Project
 All rights reserved.
