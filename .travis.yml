@@ -17,7 +17,7 @@ matrix:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
         - set -e
-        - travis_wait 45 make $COMMON_FLAGS $BTYPE
+        - make $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE
