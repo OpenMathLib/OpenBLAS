@@ -1,3 +1,6 @@
+#define ASSEMBLER
+#include "common.h"
+/*
 	.file	"caxpy.c"
 	.abiversion 2
 	.section	".text"
@@ -5,6 +8,10 @@
 	.p2align 4,,15
 	.globl caxpy_k
 	.type	caxpy_k, @function
+*/
+
+	PROLOGUE
+
 caxpy_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
@@ -26,15 +33,24 @@ caxpy_k:
 	lfs 12,0(10)
 	lfs 0,4(10)
 	fmuls 10,2,10
+#ifdef CONJ	
 	fmsubs 11,11,1,10
+#else	
+	fmadds 11,11,1,10
+#endif
 	fadds 12,12,11
 	stfs 12,0(10)
 	lfs 11,0(8)
 	lfs 12,4(8)
 	add 8,8,9
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmsubs 12,12,1,11
+	fsubs 0,0,12
+#else	
 	fmadds 12,12,1,11
 	fadds 0,0,12
+#endif
 	stfs 0,4(10)
 	add 10,10,7
 	bdnz .L14
@@ -120,6 +136,28 @@ caxpy_k:
 	beq 0,.L44
 	.p2align 4,,15
 .L11:
+#ifdef CONJ
+	lxvd2x 44,3,6
+	lxvd2x 45,3,5
+	lxvd2x 33,9,6
+	lxvd2x 0,9,5
+	xxpermdi 44,44,44,2
+	xxpermdi 45,45,45,2
+	xxpermdi 32,33,33,2
+	xxpermdi 33,0,0,2
+	vperm 11,13,12,10
+	vperm 13,13,12,9
+	vperm 12,1,0,10
+	vperm 1,1,0,9
+	xvmulsp 0,11,43
+	xvmulsp 32,11,45
+	xvmsubmsp 45,12,0
+	xvmaddasp 32,12,43
+	xvaddsp 44,32,44
+	xvsubsp 32,33,45
+	vmrglw 1,0,12
+	vmrghw 0,0,12
+#else
 	lxvd2x 45,3,6
 	lxvd2x 33,3,5
 	lxvd2x 43,9,6
@@ -140,6 +178,7 @@ caxpy_k:
 	xvaddsp 32,33,43
 	vmrglw 1,0,13
 	vmrghw 0,0,13
+#endif
 	xxpermdi 0,33,33,2
 	xxpermdi 32,32,32,2
 	stxvd2x 0,9,6
@@ -162,15 +201,24 @@ caxpy_k:
 	addi 9,11,2
 	lfsx 11,8,5
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmadds 12,12,1,11
+#else	
 	fmsubs 12,12,1,11
+#endif	
 	fadds 0,0,12
 	stfsx 0,10,6
 	lfsx 11,8,6
 	lfsx 12,8,5
 	lfsx 0,10,5
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmsubs 12,12,1,11
+	fsubs 0,0,12
+#else	
 	fmadds 12,12,1,11
 	fadds 0,0,12
+#endif
 	stfsx 0,10,5
 	ble 7,.L39
 	sldi 9,9,2
@@ -182,15 +230,19 @@ caxpy_k:
 	addi 6,11,4
 	lfsx 11,8,5
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmadds 12,1,12,11
+#else	
 	fmsubs 12,1,12,11
+#endif	
 	fadds 0,0,12
 	stfsx 0,10,9
 	lfsx 11,8,9
 	lfsx 12,8,5
 	lfsx 0,10,5
 	fmuls 11,2,11
-	fmadds 12,1,12,11
-	fadds 0,0,12
+	fmsubs 12,1,12,11
+	fsubs 0,0,12
 	stfsx 0,10,5
 	ble 7,.L39
 	sldi 6,6,2
@@ -202,15 +254,24 @@ caxpy_k:
 	addi 9,11,6
 	lfsx 11,8,5
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmadds 12,1,12,11
+#else
 	fmsubs 12,1,12,11
+#endif
 	fadds 0,0,12
 	stfsx 0,10,6
 	lfsx 11,8,6
 	lfsx 12,8,5
 	lfsx 0,10,5
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmsubs 12,1,12,11
+	fsubs 0,0,12
+#else	
 	fmadds 12,1,12,11
 	fadds 0,0,12
+#endif	
 	stfsx 0,10,5
 	ble 7,.L39
 	sldi 9,9,2
@@ -220,15 +281,24 @@ caxpy_k:
 	lfsx 0,10,9
 	lfsx 11,8,7
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmadds 12,1,12,11
+#else	
 	fmsubs 12,1,12,11
+#endif	
 	fadds 0,0,12
 	stfsx 0,10,9
 	lfsx 11,8,9
 	lfsx 12,8,7
 	lfsx 0,10,7
 	fmuls 2,2,11
+#ifdef CONJ	
+	fmsubs 1,1,12,2
+	fsubs 1,0,1
+#else	
 	fmadds 1,1,12,2
 	fadds 1,0,1
+#endif	
 	stfsx 1,10,7
 	b .L33
 .L43:
@@ -253,20 +323,43 @@ caxpy_k:
 	lfs 12,-8(9)
 	lfs 0,-4(9)
 	fmuls 10,2,10
+#ifdef CONJ	
+	fmadds 11,1,11,10
+#else	
 	fmsubs 11,1,11,10
+#endif	
 	fadds 12,12,11
 	stfs 12,-8(9)
 	lfs 11,-8(3)
 	lfs 12,-4(3)
 	fmuls 11,2,11
+#ifdef CONJ	
+	fmsubs 12,1,12,11
+	fsubs 0,0,12
+#else	
 	fmadds 12,1,12,11
 	fadds 0,0,12
+#endif	
 	stfs 0,-4(9)
 	bdnz .L13
 .L39:
 	ld 31,-8(1)
 	b .L33
 .L42:
+#ifdef CONJ
+	fneg 0,1
+	xxpermdi 32,1,1,0
+	addis 9,2,.LANCHOR0@toc@ha
+	std 28,-32(1)
+	sradi. 28,4,1
+	addi 9,9,.LANCHOR0@toc@l
+	xscvdpspn 5,2
+	xvcvdpsp 32,32
+	lxvd2x 12,0,9
+	xxpermdi 39,0,0,0
+	xxspltw 5,5,0
+	xvcvdpsp 39,39
+#else
 	fneg 0,2
 	xxpermdi 39,2,2,0
 	addis 9,2,.LANCHOR0@toc@ha
@@ -279,6 +372,7 @@ caxpy_k:
 	xxpermdi 32,0,0,0
 	xxspltw 5,5,0
 	xvcvdpsp 32,32
+#endif
 	xxpermdi 12,12,12,2
 	vmrgew 7,7,0
 	beq 0,.L5
@@ -332,6 +426,7 @@ caxpy_k:
 	xxpermdi 11,11,11,2
 	xxpermdi 12,12,12,2
 	xxpermdi 0,0,0,2
+#ifndef CONJ	
 	xvmaddasp 6,5,40
 	xvmaddasp 7,5,41
 	xvmaddasp 8,5,42
@@ -348,6 +443,7 @@ caxpy_k:
 	vperm 13,13,13,6
 	vperm 1,1,1,6
 	vperm 0,0,0,6
+#endif
 	xvmaddasp 6,39,40
 	xvmaddasp 7,39,41
 	xvmaddasp 8,39,42
@@ -356,6 +452,24 @@ caxpy_k:
 	xvmaddasp 11,39,45
 	xvmaddasp 12,39,33
 	xvmaddasp 0,39,32
+#ifdef CONJ	
+	vperm 8,8,8,6
+	vperm 9,9,9,6
+	vperm 10,10,10,6
+	vperm 11,11,11,6
+	vperm 12,12,12,6
+	vperm 13,13,13,6
+	vperm 1,1,1,6
+	vperm 0,0,0,6
+	xvmaddasp 6,5,40
+	xvmaddasp 7,5,41
+	xvmaddasp 8,5,42
+	xvmaddasp 9,5,43
+	xvmaddasp 10,5,44
+	xvmaddasp 11,5,45
+	xvmaddasp 12,5,33
+	xvmaddasp 0,5,32
+#endif
 	xxpermdi 6,6,6,2
 	xxpermdi 7,7,7,2
 	xxpermdi 8,8,8,2
