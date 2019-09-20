@@ -1,3 +1,7 @@
+#define ASSEMBLER
+#include "common.h"
+
+/*
 	.file	"caxpy.c"
 	.abiversion 2
 	.section	".text"
@@ -5,6 +9,10 @@
 	.p2align 4,,15
 	.globl caxpy_k
 	.type	caxpy_k, @function
+*/
+
+	PROLOGUE
+
 caxpy_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
@@ -26,15 +34,24 @@ caxpy_k:
 	lfs 12,0(10)
 	lfs 0,4(10)
 	fmuls 10,2,10
+#ifdef CONJ	
+	fmadds 11,11,1,10
+#else
 	fmsubs 11,11,1,10
+#endif
 	fadds 12,12,11
 	stfs 12,0(10)
 	lfs 11,0(8)
 	lfs 12,4(8)
 	add 8,8,9
 	fmuls 11,2,11
+#ifdef CONJ
+	fmsubs 12,12,1,11
+	fsubs 0,0,12
+#else
 	fmadds 12,12,1,11
 	fadds 0,0,12
+#endif
 	stfs 0,4(10)
 	add 10,10,7
 	bdnz .L14
@@ -117,6 +134,22 @@ caxpy_k:
 	beq 0,.L40
 	.p2align 4,,15
 .L11:
+#ifdef CONJ
+	lxvx 33,3,5
+	lxvx 44,3,6
+	lxvx 43,9,6
+	lxvx 32,9,5
+	vperm 13,1,12,10
+	vperm 12,1,12,9
+	vperm 8,0,11,10
+	vperm 0,0,11,9
+	xvmulsp 33,12,44
+	xvmulsp 11,12,45
+	xvmaddasp 33,0,45
+	xvmsubmsp 44,0,11
+	xvaddsp 33,33,40
+	xvsubsp 32,32,44
+#else
 	lxvx 33,3,6
 	lxvx 32,3,5
 	lxvx 43,9,6
@@ -131,6 +164,7 @@ caxpy_k:
 	xvmaddmsp 32,0,11
 	xvaddsp 33,33,40
 	xvaddsp 32,32,44
+#endif
 	vmrglw 13,0,1
 	vmrghw 0,0,1
 	stxvx 45,9,6
@@ -153,15 +187,24 @@ caxpy_k:
 	lfsx 0,10,5
 	lfsx 11,8,3
 	fmuls 11,2,11
+#ifdef CONJ
+	fmadds 12,12,1,11
+#else
 	fmsubs 12,12,1,11
+#endif
 	fadds 0,0,12
 	stfsx 0,10,5
 	lfsx 11,8,5
 	lfsx 12,8,3
 	lfsx 0,10,3
 	fmuls 11,2,11
+#ifdef CONJ
+	fmsubs 12,12,1,11
+	fsubs 0,0,12
+#else
 	fmadds 12,12,1,11
 	fadds 0,0,12
+#endif
 	stfsx 0,10,3
 	ble 7,.L33
 	sldi 9,9,2
@@ -173,15 +216,24 @@ caxpy_k:
 	lfsx 0,10,9
 	lfsx 11,8,3
 	fmuls 11,2,11
+#ifdef CONJ
+	fmadds 12,1,12,11
+#else
 	fmsubs 12,1,12,11
+#endif
 	fadds 0,0,12
 	stfsx 0,10,9
 	lfsx 11,8,9
 	lfsx 12,8,3
 	lfsx 0,10,3
 	fmuls 11,2,11
+#ifdef CONJ
+	fmsubs 12,1,12,11
+	fsubs 0,0,12
+#else
 	fmadds 12,1,12,11
 	fadds 0,0,12
+#endif
 	stfsx 0,10,3
 	ble 7,.L33
 	sldi 6,6,2
@@ -193,15 +245,24 @@ caxpy_k:
 	lfsx 0,10,6
 	lfsx 11,8,5
 	fmuls 11,2,11
+#ifdef CONJ
+	fmadds 12,1,12,11
+#else
 	fmsubs 12,1,12,11
+#endif
 	fadds 0,0,12
 	stfsx 0,10,6
 	lfsx 11,8,6
 	lfsx 12,8,5
 	lfsx 0,10,5
 	fmuls 11,2,11
+#ifdef CONJ
+	fmsubs 12,1,12,11
+	fsubs 0,0,12
+#else
 	fmadds 12,1,12,11
 	fadds 0,0,12
+#endif
 	stfsx 0,10,5
 	ble 7,.L33
 	sldi 9,9,2
@@ -210,21 +271,43 @@ caxpy_k:
 	lfsx 0,10,9
 	lfsx 11,8,7
 	fmuls 11,2,11
+#ifdef CONJ
+	fmadds 12,1,12,11
+#else
 	fmsubs 12,1,12,11
+#endif
 	fadds 0,0,12
 	stfsx 0,10,9
 	lfsx 11,8,9
 	lfsx 12,8,7
 	lfsx 0,10,7
 	fmuls 2,2,11
+#ifdef CONJ
+	fmsubs 1,1,12,2
+	fsubs 1,0,1
+#else
 	fmadds 1,1,12,2
 	fadds 1,0,1
+#endif
 	stfsx 1,10,7
 	b .L33
 .L39:
 	mr 6,0
 	b .L9
 .L38:
+#ifdef CONJ
+	fneg 0,1
+	xxpermdi 45,1,1,0
+	xscvdpspn 12,2
+	addis 9,2,.LANCHOR0@toc@ha
+	sradi. 3,4,1
+	xxpermdi 44,0,0,0
+	addi 9,9,.LANCHOR0@toc@l
+	xvcvdpsp 45,45
+	lxv 33,0(9)
+	xvcvdpsp 32,44
+	xxspltw 12,12,0
+#else
 	fneg 12,2
 	xxpermdi 32,2,2,0
 	xscvdpspn 0,1
@@ -236,6 +319,7 @@ caxpy_k:
 	lxv 33,0(9)
 	xvcvdpsp 45,45
 	xxspltw 0,0,0
+#endif
 	vmrgew 0,0,13
 	beq 0,.L5
 	mr 6,8
@@ -256,6 +340,45 @@ caxpy_k:
 	lxv 43,-32(6)
 	lxv 45,-128(6)
 	lxv 44,-16(6)
+#ifdef CONJ
+	lxv 0,-128(9)
+	vpermr 17,6,6,1
+	xvmaddmsp 38,32,11
+	lxv 11,-96(9)
+	vpermr 18,7,7,1
+	vpermr 19,8,8,1
+	vpermr 2,9,9,1
+	vpermr 3,10,10,1
+	vpermr 4,11,11,1
+	xvmaddasp 0,32,45
+	vpermr 5,12,12,1
+	xvmaddmsp 39,32,11
+	lxv 11,-80(9)
+	vpermr 13,13,13,1
+	xvmaddasp 38,12,49
+	xvmaddmsp 40,32,11
+	lxv 11,-64(9)
+	xvmaddmsp 45,12,0
+	xvmaddasp 39,12,50
+	stxv 38,-112(9)
+	xvmaddmsp 41,32,11
+	lxv 11,-48(9)
+	xvmaddasp 40,12,51
+	stxv 45,-128(9)
+	stxv 39,-96(9)
+	xvmaddmsp 42,32,11
+	lxv 11,-32(9)
+	xvmaddasp 41,12,34
+	stxv 40,-80(9)
+	xvmaddmsp 43,32,11
+	lxv 11,-16(9)
+	xvmaddasp 42,12,35
+	stxv 41,-64(9)
+	xvmaddmsp 44,32,11
+	xvmaddasp 43,12,36
+	stxv 42,-48(9)
+	xvmaddasp 44,12,37
+#else
 	lxv 12,-128(9)
 	vpermr 17,6,6,1
 	xvmaddmsp 38,0,11
@@ -293,6 +416,7 @@ caxpy_k:
 	xvmaddasp 43,32,36
 	stxv 42,-48(9)
 	xvmaddasp 44,32,37
+#endif
 	stxv 43,-32(9)
 	stxv 44,-16(9)
 	bgt 7,.L6
@@ -320,14 +444,23 @@ caxpy_k:
 	addi 3,3,8
 	addi 9,9,8
 	fmuls 10,2,10
+#ifdef CONJ
+	fmadds 11,1,11,10
+#else
 	fmsubs 11,1,11,10
+#endif
 	fadds 12,12,11
 	stfs 12,-8(9)
 	lfs 11,-8(3)
 	lfs 12,-4(3)
 	fmuls 11,2,11
+#ifdef CONJ
+	fmsubs 12,1,12,11
+	fsubs 0,0,12
+#else
 	fmadds 12,1,12,11
 	fadds 0,0,12
+#endif
 	stfs 0,-4(9)
 	bdnz .L13
 	b .L33
