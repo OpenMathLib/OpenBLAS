@@ -565,6 +565,7 @@ else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
 endif
 endif
+endif
 
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
 ifndef DYNAMIC_CORE
