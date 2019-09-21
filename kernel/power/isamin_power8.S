@@ -1,10 +1,16 @@
-	.file	"isamin.c"
+/*	.file	"isamin.c"
 	.abiversion 2
 	.section	".text"
 	.align 2
 	.p2align 4,,15
 	.globl isamin_k
 	.type	isamin_k, @function
+*/
+#define ASSEMBLER
+#include "common.h"
+
+	PROLOGUE
+
 isamin_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha

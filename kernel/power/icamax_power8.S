@@ -1,10 +1,16 @@
-	.file	"icamax.c"
+/*	.file	"icamax.c"
 	.abiversion 2
 	.section	".text"
 	.align 2
 	.p2align 4,,15
 	.globl icamax_k
 	.type	icamax_k, @function
+*/
+#define ASSEMBLER
+#include "common.h"
+
+	PROLOGUE
+
 icamax_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
