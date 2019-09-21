@@ -322,12 +322,13 @@ CCOMMON_OPT	+= -DMS_ABI
 endif
 
 ifeq ($(C_COMPILER), GCC)
-#Test for supporting MS_ABI
+#Version tests for supporting specific features (MS_ABI, POWER9 intrinsics)
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 ifeq ($(GCCVERSIONGT4), 1)
-# GCC Majar version > 4
+# GCC Major version > 4
 # It is compatible with MSVC ABI.
 CCOMMON_OPT	+= -DMS_ABI
 endif
@@ -554,7 +555,15 @@ endif
 ifeq ($(ARCH), power)
 DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
+ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
+endif
+ifeq ($(C_COMPILER), GCC)
+ifeq ($(GCCVERSIONGT5), 1)
+DYNAMIC_CORE += POWER9
+else
+$(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
+endif
 endif
 
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
