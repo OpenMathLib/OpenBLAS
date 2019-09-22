@@ -89,14 +89,14 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
-ISAMAXKERNEL = isamax.c
+ISAMAXKERNEL = isamax_power9.S
 IDAMAXKERNEL = idamax.c
-ICAMAXKERNEL = icamax.c
+ICAMAXKERNEL = icamax_power9.S
 IZAMAXKERNEL = izamax.c
 #
-ISAMINKERNEL = isamin.c
+ISAMINKERNEL = isamin_power9.S
 IDAMINKERNEL = idamin.c
-ICAMINKERNEL = icamin.c
+ICAMINKERNEL = icamin_power9.S
 IZAMINKERNEL = izamin.c
 #
 #ISMAXKERNEL  = ../arm/imax.c
@@ -112,7 +112,7 @@ ZASUMKERNEL  = zasum.c
 #
 SAXPYKERNEL  = saxpy.c
 DAXPYKERNEL  = daxpy.c
-CAXPYKERNEL  = caxpy.c
+CAXPYKERNEL  = caxpy_power9.S
 ZAXPYKERNEL  = zaxpy.c
 #
 SCOPYKERNEL  = scopy.c
@@ -123,7 +123,7 @@ ZCOPYKERNEL  = zcopy.c
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
 DSDOTKERNEL  =  sdot.c
-CDOTKERNEL   =  cdot.c
+CDOTKERNEL   =  cdot_power9.S
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c
