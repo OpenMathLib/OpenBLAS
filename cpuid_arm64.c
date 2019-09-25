@@ -206,6 +206,33 @@ void get_subdirname(void)
 	printf("arm64");
 }
 
+void get_cpucount(void)
+{
+int n=0;
+
+#ifdef linux
+	FILE *infile;
+  	char buffer[2048], *p,*t;
+  	p = (char *) NULL ;
+
+  	infile = fopen("/proc/cpuinfo", "r");
+
+	while (fgets(buffer, sizeof(buffer), infile))
+	{
+
+		if (!strncmp("processor", buffer, 9))
+		n++;
+  	}
+
+  	fclose(infile);
+
+	printf("#define NUM_CORES %d\n",n);
+#endif
+
+}
+
+
+
 void get_cpuconfig(void)
 {
 
@@ -309,6 +336,7 @@ void get_cpuconfig(void)
 			printf("#define DTB_SIZE             4096     \n");
 			break;	
 	}
+	get_cpucount();
 }
 
 
@@ -351,5 +379,3 @@ void get_features(void)
 #endif
 	return;
 }
-
-
