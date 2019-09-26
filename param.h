@@ -2636,15 +2636,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ZGEMM_DEFAULT_UNROLL_M  4
 #define ZGEMM_DEFAULT_UNROLL_N  4
 
-#define SGEMM_DEFAULT_P	512
-#define DGEMM_DEFAULT_P	256
-#define CGEMM_DEFAULT_P 256
-#define ZGEMM_DEFAULT_P 128
+/*FIXME: this should be using the cache size, but there is currently no easy way to
+query that on ARM. So if getarch counted more than 8 cores we simply assume the host
+is a big desktop or server with abundant cache rather than a phone or embedded device */ 
+#if NUM_CORES > 8
+  #define SGEMM_DEFAULT_P 512
+  #define DGEMM_DEFAULT_P 256
+  #define CGEMM_DEFAULT_P 256
+  #define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_Q 1024
-#define DGEMM_DEFAULT_Q 512
-#define CGEMM_DEFAULT_Q 512
-#define ZGEMM_DEFAULT_Q 512
+  #define SGEMM_DEFAULT_Q 1024
+  #define DGEMM_DEFAULT_Q 512
+  #define CGEMM_DEFAULT_Q 512
+  #define ZGEMM_DEFAULT_Q 512
+#else
+  #define SGEMM_DEFAULT_P 128
+  #define DGEMM_DEFAULT_P 160
+  #define CGEMM_DEFAULT_P 128
+  #define ZGEMM_DEFAULT_P 128
+
+  #define SGEMM_DEFAULT_Q 352
+  #define DGEMM_DEFAULT_Q 128
+  #define CGEMM_DEFAULT_Q 224
+  #define ZGEMM_DEFAULT_Q 112
+#endif
 
 #define SGEMM_DEFAULT_R 4096
 #define DGEMM_DEFAULT_R 4096
