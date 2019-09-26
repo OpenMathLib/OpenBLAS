@@ -34,9 +34,9 @@ caxpy_k:
 	lfs 0,4(10)
 	fmuls 10,2,10
 #ifdef CONJ	
-	fmsubs 11,11,1,10
-#else	
 	fmadds 11,11,1,10
+#else	
+	fmsubs 11,11,1,10
 #endif
 	fadds 12,12,11
 	stfs 12,0(10)
@@ -241,8 +241,13 @@ caxpy_k:
 	lfsx 12,8,5
 	lfsx 0,10,5
 	fmuls 11,2,11
+#ifdef CONJ
 	fmsubs 12,1,12,11
 	fsubs 0,0,12
+#else
+	fmadds 12,1,12,11
+	fadds  0,0,12
+#endif
 	stfsx 0,10,5
 	ble 7,.L39
 	sldi 6,6,2
