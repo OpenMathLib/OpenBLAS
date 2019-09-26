@@ -1,10 +1,16 @@
-	.file	"cdot.c"
+#define ASSEMBLER
+#include "common.h"
+/*
+.file	"cdot.c"
 	.abiversion 2
 	.section	".text"
 	.align 2
 	.p2align 4,,15
 	.globl cdot_k
 	.type	cdot_k, @function
+*/
+	PROLOGUE
+	
 cdot_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
