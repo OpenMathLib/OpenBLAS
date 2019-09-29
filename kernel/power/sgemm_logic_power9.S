@@ -136,8 +136,8 @@ LSGEMM_L8x16_BEGIN:
 #endif 
  
     ZERO8x16 
-	mtctr		L 
 	ble		LSGEMM_L8x16_SUB0
+	mtctr		L 
     bl      LSGEMM_L8x16_LMAIN_SUB
 	andi.		L,	T12,	127
 	ble		LSGEMM_L8x16_SAVE
@@ -146,7 +146,7 @@ LSGEMM_L8x16_BEGIN:
 LSGEMM_L8x16_SUB0:
 #if defined(TRMMKERNEL)
 	andi.		L,	T11,	255
-    cmpwi   T11,128
+    cmpwi   T11,129
 #else
 	andi.		L,	K,	255
     cmpwi   K,129
