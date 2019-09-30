@@ -563,7 +563,7 @@ static void disable_affinity(void) {
 #endif
 
   /* if(common->final_num_procs > 64){ */
-  /*   fprintf(stderr, "\nOpenBLAS Warining : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->final_num_procs); */
+  /*   fprintf(stderr, "\nOpenBLAS Warning : The number of CPU/Cores(%d) is beyond the limit(64). Terminated.\n", common->final_num_procs); */
   /*   exit(1); */
   /* }else if(common->final_num_procs == 64){ */
   /*   lprocmask = 0xFFFFFFFFFFFFFFFFUL; */

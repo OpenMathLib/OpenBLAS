@@ -1427,7 +1427,7 @@ LEAQ (,%rax, SIZE), %rax;
 ADDQ	%rax, ptrba;
 LEAQ (ptrbb, %rax, 8), ptrbb;
 #endif
-#### intitial ####
+#### initial ####
 XOR_SY	yvec15, yvec15, yvec15;
 XOR_SY	yvec14, yvec14, yvec14;
 MOVQ bk, k;

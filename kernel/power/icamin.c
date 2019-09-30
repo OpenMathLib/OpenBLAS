@@ -145,7 +145,7 @@ static BLASLONG   ciamin_kernel_32(BLASLONG n, FLOAT *x, FLOAT *minf) {
        r2=vec_cmpgt(vf0,vv0);
        ind2 = vec_sel( indf0,indv0,r2);
        vv0= vec_sel(vf0,vv0,r2);       
-       //get asbolute index
+       //get absolute index
        ind2+=temp0;
        //compare with old quadruple and update 
        r1=vec_cmpgt(quadruple_values,vv0);

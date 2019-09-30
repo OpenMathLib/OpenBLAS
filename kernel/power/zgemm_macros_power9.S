@@ -1717,7 +1717,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /****************************TRMM POINTER REFRESH
 
-.macroSES*************************/
+.macros***************************/
 
 
 .macro SHIFT_REG  REG1,REG2,SHIFT_VAL

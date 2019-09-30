@@ -188,7 +188,7 @@
 	MADD	t14, t14, a1, b4
 	MADD	t24, t24, a2, b4
 	MADD	t34, t34, a3, b4
-	MADD	t44, t44, a4, b4			#	fisrt
+	MADD	t44, t44, a4, b4			#	first
 
 	LD	a1,  8 * SIZE(AO)
 	LD	a2,  9 * SIZE(AO)
@@ -281,7 +281,7 @@
 	MADD	t14, t14, a5, b8
 	MADD	t24, t24, a6, b8
 	MADD	t34, t34, a7, b8
-	MADD	t44, t44, a8, b8			#	fouth
+	MADD	t44, t44, a8, b8			#	fourth
 
 	daddiu	L, L, -1
 	bgtz	L, .L12

@@ -2709,7 +2709,7 @@ SHUF_SX $0xb1, xvec10, xvec10;
 SHUF_SX $0xb1, xvec9, xvec9;
 SHUF_SX	$0xb1, xvec8, xvec8;
 #endif
-#### Mulitply Alpha ####
+#### Multiply Alpha ####
 BROAD_SX MEMALPHA_R, xvec7;
 BROAD_SX MEMALPHA_I, xvec6;
 #### Writng back ####
@@ -3155,7 +3155,7 @@ SHUF_SX $0xb1, xvec14, xvec14;
 SHUF_SX $0xb1, xvec11, xvec11;
 SHUF_SX $0xb1, xvec10, xvec10;
 #endif
-#### Mulitply Alpha ####
+#### Multiply Alpha ####
 BROAD_SX MEMALPHA_R, xvec7;
 BROAD_SX MEMALPHA_I, xvec6;
 #### Writng back ####
@@ -3439,7 +3439,7 @@ MOV_SX		xvec7, xvec11;
 SHUF_SX $0xb1, xvec15, xvec15;
 SHUF_SX $0xb1, xvec11, xvec11;
 #endif
-#### Mulitply Alpha ####
+#### Multiply Alpha ####
 BROAD_SX MEMALPHA_R, xvec7;
 BROAD_SX MEMALPHA_I, xvec6;
 #### Writng back ####
@@ -4249,7 +4249,7 @@ ADDSUB_SX xvec15, xvec7, xvec7;
 MOV_SX		xvec7, xvec15;
 SHUF_SX $0xb1, xvec15, xvec15;
 #endif
-#### Mulitply Alpha ####
+#### Multiply Alpha ####
 BROAD_SX MEMALPHA_R, xvec7;
 BROAD_SX MEMALPHA_I, xvec6;
 #### Writng back ####

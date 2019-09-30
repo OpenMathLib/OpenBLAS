@@ -31,7 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * BLASTEST 	     	: OK
 *  CTEST		    	: OK
 *  TEST			      : OK
-*	 LAPACK-TEST		: OK
+*  LAPACK-TEST		: OK
 **************************************************************************************/
 #define unit_size 8
 #define DISP32(ind,disp) (ind*unit_size*32+disp)
@@ -2907,7 +2907,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
  
 
-/****************************TRMM POINTER REFRESH MACROSES*************************/
+/****************************TRMM POINTER REFRESH MACROS*************************/
 
 
 .macro SHIFT_REG  REG1,REG2,SHIFT_VAL

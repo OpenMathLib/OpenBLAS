@@ -1368,7 +1368,7 @@
     la \CIJ_REG,8(\CIJ_REG)
 .endm
 
-/****************************TRMM POINTER REFRESH MACROSES*************************/
+/****************************TRMM POINTER REFRESH MACROS*************************/
 
 .macro RefreshPointers  PTR_A,PTR_B,OFF_VAL,B_VAL,C_A,C_B
   #if (defined(LEFT) &&  defined(TRANSA)) ||  (!defined(LEFT) && !defined(TRANSA))

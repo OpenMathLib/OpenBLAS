@@ -211,7 +211,7 @@ static BLASLONG   ciamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
        r2=vec_cmpgt(vv0,vf0);
        ind2 = vec_sel( indf0,indv0,r2);
        vv0= vec_sel(vf0,vv0,r2);       
-       //get asbolute index
+       //get absolute index
        ind2+=temp0;
        //compare with old quadruple and update 
        r1=vec_cmpgt(vv0,quadruple_values);

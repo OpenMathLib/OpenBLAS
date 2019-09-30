@@ -5464,7 +5464,7 @@ KERNEL8x16_2  \AREG,\BREG,\OffsetA,\OffsetB, (\Index*2+1),\IsLast ,\Complete
 
 
 
-/****************************TRMM POINTER REFRESH MACROSES*************************/
+/****************************TRMM POINTER REFRESH MACROS*************************/
 
 .macro SHIFT_REG  REG1,REG2,SHIFT_VAL
 		.if \SHIFT_VAL==16 
