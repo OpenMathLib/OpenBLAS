@@ -169,7 +169,7 @@ matrix:
         - BTYPE="BINARY=64 INTERFACE64=1"
 
     - <<: *test-macos
-      osx_image: xcode8.3
+      osx_image: xcode9.2
       env:
         - BTYPE="BINARY=32"
 
