@@ -162,16 +162,16 @@ matrix:
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
         - brew update
-        - brew install gcc # for gfortran
+        - brew install gcc@8 # for gfortran
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
-        - BTYPE="BINARY=64 INTERFACE64=1"
+        - BTYPE="BINARY=64 INTERFACE64=1 FC=gfortran-8"
 
     - <<: *test-macos
-      osx_image: xcode9.3
+      osx_image: xcode8.3
       env:
-        - BTYPE="BINARY=32"
+        - BTYPE="BINARY=32 FC=gfortran-8"
 
 # whitelist
 branches:
