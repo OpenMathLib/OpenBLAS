@@ -166,11 +166,7 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG i
     if (nthreads - num_cpu > 1) {
 
       double di = (double)i;
-      if (di * di - dnum > 0) {
-        width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
-      } else {
-        width = m - i;
-      }
+      width = ((BLASLONG)(sqrt(di * di + dnum) - di) + mask) & ~mask;
 
       if (width < 4) width = 4;
       if (width > m - i) width = m - i;
@@ -216,9 +212,9 @@ int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG i
 
       double di = (double)(m - i);
       if (di * di - dnum > 0) {
-        width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
+	width = ((BLASLONG)(-sqrt(di * di - dnum) + di) + mask) & ~mask;
       } else {
-        width = m - i;
+	width = m - i;
       }
 
       if (width < 4) width = 4;
