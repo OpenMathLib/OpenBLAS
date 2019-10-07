@@ -176,7 +176,8 @@ matrix:
     - <<: *test-macos
       osx_image: xcode10.1
       env:
-        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk" CFLAGS="-O2 -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch arm64 -miphoneos-version-min=10.0"
+        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk"
+        - CFLAGS="-O2 -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch arm64 -miphoneos-version-min=10.0"
         - BTYPE="TARGET=ARMV8 BINARY=64 HOSTCC=clang"
 
 # whitelist
