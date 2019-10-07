@@ -54,37 +54,38 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 	ldr	s4, [X], #4
 	fcmp	s4, REGZERO
-	beq	KERNEL_F1_NEXT_\@
+	beq	2f     /* KERNEL_F1_NEXT_\@ */
+	beq     2f
 	fabs	s4, s4
 	fcmp	SCALE, s4
-	bge	KERNEL_F1_SCALE_GE_X_\@
+	bge	1f     /* KERNEL_F1_SCALE_GE_X_\@ */
 	fdiv	s2, SCALE, s4
 	fmul	s2, s2, s2
 	fmul	s3, SSQ, s2
 	fadd	SSQ, REGONE, s3
 	fmov	SCALE, s4
-	b	KERNEL_F1_NEXT_\@
-KERNEL_F1_SCALE_GE_X_\@:
+	b	2f     /* KERNEL_F1_NEXT_\@ */
+1:               /* KERNEL_F1_SCALE_GE_X_\@: */
 	fdiv	s2, s4, SCALE
 	fmla	SSQ, s2, v2.s[0]
 #else
 	ldr	d4, [X], #8
 	fcmp	d4, REGZERO
-	beq	KERNEL_F1_NEXT_\@
+	beq	2f     /* KERNEL_F1_NEXT_\@ */
 	fabs	d4, d4
 	fcmp	SCALE, d4
-	bge	KERNEL_F1_SCALE_GE_X_\@
+	bge	1f     /* KERNEL_F1_SCALE_GE_X_\@ */
 	fdiv	d2, SCALE, d4
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d4
-	b	KERNEL_F1_NEXT_\@
-KERNEL_F1_SCALE_GE_X_\@:
+	b	2f     /* KERNEL_F1_NEXT_\@ */
+1:                     /* KERNEL_F1_SCALE_GE_X_\@: */
 	fdiv	d2, d4, SCALE
 	fmla	SSQ, d2, v2.d[0]
 #endif
-KERNEL_F1_NEXT_\@:
+2:                     /* KERNEL_F1_NEXT_\@: */
 .endm
 
 .macro KERNEL_S1

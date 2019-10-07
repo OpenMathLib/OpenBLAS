@@ -103,12 +103,14 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
-#define PROLOGUE \
-	.text ;\
-	.align	4 ;\
-	.global	REALNAME ;\
-	.type	REALNAME, %function ;\
+.macro PROLOGUE 
+	.text ;
+	.p2align 2 ;
+	.global	REALNAME ;
+	.type	REALNAME, %function ;
 REALNAME:
+.endm
+
 
 #define EPILOGUE
 
