@@ -1197,7 +1197,11 @@ int get_cpuname(void){
 	case  3:
 	case  5:
 	case  6:
+#ifdef __64BIT__
+	  return CPUTYPE_CORE2;
+#else			
 	  return CPUTYPE_PENTIUM2;
+#endif
 	case  7:
 	case  8:
 	case 10:
