@@ -260,6 +260,19 @@ if ($architecture ne $hostarch) {
 
 $cross = 1 if ($os ne $hostos);
 
+# rework cross suffix and architecture if we are on OSX cross-compiling for ARMV8-based IOS
+# the initial autodetection will have been confused by the command-line arguments to clang
+# and the cross-compiler apparently still claims to build for x86_64 in its CC -E output
+if (($os eq "Darwin") && ($cross_suffix ne "")) {
+  my $tmpnam = `xcrun --sdk iphoneos --find clang`;
+  $cross_suffix = substr($tmpnam, 0, rindex($tmpnam, "/")+1 ); 
+# this should produce something like $cross_suffix="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/";
+  $cross =1;
+  $architecture = arm64;
+}
+
+
+
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 
 $linker_L = "";

@@ -37,8 +37,10 @@
 /*********************************************************************/
 
 #include "common.h"
+#if (defined OS_LINUX || defined OS_ANDROID)
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
+#endif
 
 extern gotoblas_t  gotoblas_ARMV8;
 extern gotoblas_t  gotoblas_CORTEXA57;
@@ -105,13 +107,17 @@ static gotoblas_t *force_coretype(char *coretype) {
 
 static gotoblas_t *get_coretype(void) {
   int implementer, variant, part, arch, revision, midr_el1;
-  
+
+#if (defined OS_LINUX || defined OS_ANDROID)
   if (!(getauxval(AT_HWCAP) & HWCAP_CPUID)) {
     char coremsg[128];
     snprintf(coremsg, 128, "Kernel lacks cpuid feature support. Auto detection of core type failed !!!\n");
     openblas_warning(1, coremsg);
     return NULL;
   }
+#else
+   return NULL;
+#endif
 
   get_cpu_ftr(MIDR_EL1, midr_el1);
   /*
