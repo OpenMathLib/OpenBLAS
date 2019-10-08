@@ -55,7 +55,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldr	s4, [X], #4
 	fcmp	s4, REGZERO
 	beq	2f     /* KERNEL_F1_NEXT_\@ */
-	beq     2f
 	fabs	s4, s4
 	fcmp	SCALE, s4
 	bge	1f     /* KERNEL_F1_SCALE_GE_X_\@ */
