@@ -194,10 +194,6 @@ int trsm_thread(int mode, BLASLONG m, BLASLONG n,
 
 int syrk_thread(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG);
 
-int beta_thread(int mode, BLASLONG m, BLASLONG n,
-		double alpha_r, double alpha_i,
-		void *c, BLASLONG ldc, int (*function)());
-
 int getrf_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k,
 		 void *offsetA, BLASLONG lda,
 		 void *offsetB, BLASLONG jb,
