@@ -429,7 +429,8 @@ static void KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG
     double *c_pointer = c;
     __mmask16 k01 = 0x00f0,k02 = 0x000f,k03 = 0x0033;
     BLASLONG ndiv8_count;
-    double *b_scratch = (double *)aligned_alloc(64,192*k);
+    double *b_scratch;
+    posix_memalign(&b_scratch,64,192*k);
     double *packed_b_pointer = packed_b;
     a_block_pointer = packed_a;
     for(ndiv8_count=ndiv8;ndiv8_count>2;ndiv8_count-=3){
@@ -637,9 +638,10 @@ static void KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG
     c_pointer ++;\
 }
 #define SAVE_m1n4 {\
-    *c_pointer += _mm256_cvtsd_f64(yc1);\
-    ya1 = _mm256_unpackhi_pd(yc1,yc1);\
-    c_pointer[LDC] += _mm256_cvtsd_f64(ya1);\
+    xb1 = _mm256_extractf128_pd(yc1,0);\
+    *c_pointer += _mm_cvtsd_f64(xb1);\
+    xb2 = _mm_unpackhi_pd(xb1,xb1);\
+    c_pointer[LDC] += _mm_cvtsd_f64(xb2);\
     xb1 = _mm256_extractf128_pd(yc1,1);\
     c_pointer[LDC*2] += _mm_cvtsd_f64(xb1);\
     xb2 = _mm_unpackhi_pd(xb1,xb1);\
