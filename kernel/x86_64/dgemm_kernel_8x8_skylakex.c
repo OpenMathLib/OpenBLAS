@@ -25,8 +25,8 @@
     "vbroadcastsd 56(%0),%%zmm4;vfmadd231pd %%zmm5,%%zmm4,%%zmm15;"
 
 #define INNER_KERNEL_k1m1n16 \
-    "prefetcht0 384(%1); prefetcht0 448(%1);"\
-    "prefetcht0 768(%0); vmovupd (%1),%%zmm5; vmovupd 64(%1),%%zmm6; addq $128,%1;"\
+    "prefetcht0 128(%1); prefetcht0 128(%1,%%r12,1);"\
+    "prefetcht0 768(%0); vmovupd (%1),%%zmm5; vmovupd (%1,%%r12,1),%%zmm6; addq $64,%1;"\
     "vbroadcastsd   (%0),%%zmm4;vfmadd231pd %%zmm5,%%zmm4,%%zmm8; vfmadd231pd %%zmm6,%%zmm4,%%zmm9;"
 
 #define INNER_KERNEL_k1m2n16 \
@@ -46,8 +46,8 @@
     "vbroadcastsd 56(%0),%%zmm4;vfmadd231pd %%zmm5,%%zmm4,%%zmm22;vfmadd231pd %%zmm6,%%zmm4,%%zmm23;"
 
 #define INNER_KERNEL_k1m1n24 \
-    "prefetcht0 384(%1); prefetcht0 448(%1); prefetcht0 512(%1);"\
-    "prefetcht0 768(%0); vmovupd (%1),%%zmm5; vmovupd 64(%1),%%zmm6; vmovupd 128(%1),%%zmm7; addq $192,%1;"\
+    "prefetcht0 128(%1); prefetcht0 128(%1,%%r12,1); prefetcht0 128(%1,%%r12,2);"\
+    "prefetcht0 768(%0); vmovupd (%1),%%zmm5; vmovupd (%1,%%r12,1),%%zmm6; vmovupd (%1,%%r12,2),%%zmm7; addq $64,%1;"\
     "vbroadcastsd   (%0),%%zmm4;vfmadd231pd %%zmm5,%%zmm4,%%zmm8; vfmadd231pd %%zmm6,%%zmm4,%%zmm9; vfmadd231pd %%zmm7,%%zmm4,%%zmm10;"
 
 #define INNER_KERNEL_k1m2n24 \
@@ -292,13 +292,13 @@
 
 #define COMPUTE_n8 {\
     __asm__ __volatile__(\
-    "movq %8,%%r14;movq %2,%%r13;"\
+    "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $6,%%r12;"\
     "cmpq $8,%8; jb 42222f;"\
     "42221:\n\t"\
     INNER_INIT_m8n8\
     INNER_KERNELm8(8)\
     INNER_SAVE_m8n8\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shrq $6,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $64,%3;"\
     "subq $8,%8; cmpq $8,%8; jnb 42221b;"\
     "42222:\n\t"\
@@ -306,7 +306,7 @@
     INNER_INIT_m4n8\
     INNER_KERNELm4(8)\
     INNER_SAVE_m4n8\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shrq $6,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $32,%3;"\
     "subq $4,%8;"\
     "42223:\n\t"\
@@ -314,7 +314,7 @@
     INNER_INIT_m2n8\
     INNER_KERNELm2(8)\
     INNER_SAVE_m2n8\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shrq $6,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "addq $16,%3;"\
     "subq $2,%8;"\
     "42224:\n\t"\
@@ -322,7 +322,7 @@
     INNER_INIT_m1n8\
     INNER_KERNELm1(8)\
     INNER_SAVE_m1n8\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shrq $6,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "addq $8,%3;"\
     "42225:\n\t"\
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
@@ -333,13 +333,13 @@
 }
 #define COMPUTE_n16 {\
     __asm__ __volatile__(\
-    "movq %8,%%r14;movq %2,%%r13;"\
+    "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $6,%%r12;"\
     "cmpq $8,%8; jb 32222f;"\
     "32221:\n\t"\
     INNER_INIT_m8n16\
     INNER_KERNELm8(16)\
     INNER_SAVE_m8n16\
-    "movq %%r13,%2; shlq $7,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $64,%3;"\
     "subq $8,%8; cmpq $8,%8; jnb 32221b;"\
     "32222:\n\t"\
@@ -347,7 +347,7 @@
     INNER_INIT_m4n16\
     INNER_KERNELm4(16)\
     INNER_SAVE_m4n16\
-    "movq %%r13,%2; shlq $7,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $32,%3;"\
     "subq $4,%8;"\
     "32223:\n\t"\
@@ -355,7 +355,7 @@
     INNER_INIT_m2n16\
     INNER_KERNELm2(16)\
     INNER_SAVE_m2n16\
-    "movq %%r13,%2; shlq $7,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $16,%3;"\
     "subq $2,%8;"\
     "32224:\n\t"\
@@ -363,28 +363,26 @@
     INNER_INIT_m1n16\
     INNER_KERNELm1(16)\
     INNER_SAVE_m1n16\
-    "movq %%r13,%2; shlq $7,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $8,%3;"\
     "32225:\n\t"\
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $4,%4;addq %4,%3;shrq $4,%4;"\
-    :"+r"(a_block_pointer),"+r"(b_scratch),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M)\
+    "leaq (%1,%%r12,2),%1;"\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M)\
     ::"zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17",\
-    "zmm18","zmm19","zmm20","zmm21","zmm22","zmm23","cc","memory","k1","r13","r14");\
+    "zmm18","zmm19","zmm20","zmm21","zmm22","zmm23","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
 }
 #define COMPUTE_n24 {\
     __asm__ __volatile__(\
-    "movq %8,%%r14;movq %9,%%r15;movq %2,%%r13;"\
+    "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $6,%%r12;"\
     "cmpq $8,%8; jb 22222f;"\
     "22221:\n\t"\
     INNER_INIT_m8n24\
-    "prefetcht2 (%%r15); prefetcht2 64(%%r15);"\
     INNER_KERNELm8(24)\
-    "prefetcht2 128(%%r15); prefetcht2 192(%%r15);"\
     INNER_SAVE_m8n24\
-    "prefetcht2 256(%%r15); prefetcht2 320(%%r15); addq $384,%%r15;"\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shlq $1,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $3,%4;subq %4,%3;shlq $1,%4;subq %4,%3;shrq $4,%4;addq $64,%3;"\
     "subq $8,%8; cmpq $8,%8; jnb 22221b;"\
     "22222:\n\t"\
@@ -392,7 +390,7 @@
     INNER_INIT_m4n24\
     INNER_KERNELm4(24)\
     INNER_SAVE_m4n24\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shlq $1,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $3,%4;subq %4,%3;shlq $1,%4;subq %4,%3;shrq $4,%4;addq $32,%3;"\
     "subq $4,%8;"\
     "22223:\n\t"\
@@ -400,7 +398,7 @@
     INNER_INIT_m2n24\
     INNER_KERNELm2(24)\
     INNER_SAVE_m2n24\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shlq $1,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $16,%3;"\
     "subq $2,%8;"\
     "22224:\n\t"\
@@ -408,19 +406,19 @@
     INNER_INIT_m1n24\
     INNER_KERNELm1(24)\
     INNER_SAVE_m1n24\
-    "movq %%r13,%2; shlq $6,%2;subq %2,%1;shlq $1,%2;subq %2,%1;shrq $7,%2;"\
+    "movq %%r13,%2; subq %%r12,%1;"\
     "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $8,%3;"\
     "22225:\n\t"\
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $3,%4;addq %4,%3;shlq $1,%4;addq %4,%3;shrq $4,%4;"\
-    :"+r"(a_block_pointer),"+r"(b_scratch),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),\
-    "+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(packed_b_pointer)\
+    "leaq (%1,%%r12,2),%1; addq %%r12,%1;"\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M)\
     ::"zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17","zmm18","zmm19",\
-    "zmm20","zmm21","zmm22","zmm23","zmm24","zmm25","zmm26","zmm27","zmm28","zmm29","zmm30","zmm31","cc","memory","k1","r13","r14","r15");\
+    "zmm20","zmm21","zmm22","zmm23","zmm24","zmm25","zmm26","zmm27","zmm28","zmm29","zmm30","zmm31","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
 }
 
-static void KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG ndiv8, BLASLONG k, BLASLONG LDC, double *c){//icopy=8,ocopy=8
+static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG ndiv8, BLASLONG k, BLASLONG LDC, double *c){//icopy=8,ocopy=8
 //perform C += A<pack> B<pack>
     if(k==0 || m==0 || ndiv8==0) return;
     int64_t ldc_in_bytes = (int64_t)LDC * sizeof(double);
@@ -429,38 +427,17 @@ static void KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG
     double *c_pointer = c;
     __mmask16 k01 = 0x00f0,k02 = 0x000f,k03 = 0x0033;
     BLASLONG ndiv8_count;
-    double *b_scratch;
-    posix_memalign(&b_scratch,64,192*k);
     double *packed_b_pointer = packed_b;
     a_block_pointer = packed_a;
     for(ndiv8_count=ndiv8;ndiv8_count>2;ndiv8_count-=3){
-      __asm__ __volatile__ (
-        "testq %2,%2; jz 100002f;movq %2,%%r13;shlq $6,%%r13;"
-        "100001:\n\t"
-        "vmovupd (%0),%%zmm5; vmovupd (%0,%%r13,1),%%zmm6; vmovupd (%0,%%r13,2),%%zmm7; addq $64,%0;"
-        "vmovupd %%zmm5,(%1); vmovupd %%zmm6,64(%1); vmovupd %%zmm7,128(%1); addq $192,%1;"
-        "decq %2; testq %2,%2; jnz 100001b;"
-        "100002:\n\t"
-        "movq %%r13,%2;shrq $6,%2;leaq (%0,%%r13,2),%0;subq %%r13,%1;subq %%r13,%1;subq %%r13,%1;"
-        :"+r"(packed_b_pointer),"+r"(b_scratch),"+r"(K)::"r13","cc","memory","zmm5","zmm6","zmm7");
       COMPUTE_n24
     }
     for(;ndiv8_count>1;ndiv8_count-=2){
-      __asm__ __volatile__ (
-        "testq %2,%2; jz 1000002f;movq %2,%%r13;shlq $6,%%r13;"
-        "1000001:\n\t"
-        "vmovupd (%0),%%zmm5; vmovupd (%0,%%r13,1),%%zmm6; addq $64,%0;"
-        "vmovupd %%zmm5,(%1); vmovupd %%zmm6,64(%1); addq $128,%1;"
-        "decq %2; testq %2,%2; jnz 1000001b;"
-        "1000002:\n\t"
-        "movq %%r13,%2;shrq $6,%2;leaq (%0,%%r13,1),%0;subq %%r13,%1;subq %%r13,%1;"
-        :"+r"(packed_b_pointer),"+r"(b_scratch),"+r"(K)::"r13","cc","memory","zmm5","zmm6");
       COMPUTE_n16
     }
     if(ndiv8_count>0){
       COMPUTE_n8
     }
-    free(b_scratch);b_scratch=NULL;
 }
 
 /* __m512d accumulators: zc1-zc4; temporary variables: za1,zb1-zb2 */
