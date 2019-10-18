@@ -330,7 +330,7 @@
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $3,%4;addq %4,%3;shrq $3,%4;"\
     :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(alpha)\
-    ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","cc","memory","k1","r13","r14");\
+    ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
 }
 #define COMPUTE_n16 {\
@@ -645,8 +645,8 @@ static void KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG
     c_pointer ++;\
 }
 
-static void __attribute__ ((noinline)) KERNEL_EDGE(double *packed_a, double *packed_b, BLASLONG m, BLASLONG edge_n, BLASLONG k, BLASLONG LDC, double *c,double *alpha){//icopy=8,ocopy=8
-//perform C += A<pack> B<pack> , edge_n<8 must be satisfied !
+static void KERNEL_EDGE(double *packed_a, double *packed_b, BLASLONG m, BLASLONG edge_n, BLASLONG k, BLASLONG LDC, double *c,double *alpha){//icopy=8,ocopy=8
+//perform C += A<pack> B<pack> , edge_n<8 must be satisfied.
     if(k==0 || m==0 || edge_n==0) return;
     double *a_block_pointer,*b_block_pointer,*b_base_pointer;
     double *c_pointer = c;
@@ -763,11 +763,16 @@ static void copy_4_to_8(double *src,double *dst,BLASLONG m,BLASLONG k){
 int __attribute__ ((noinline)) CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A, double * __restrict__ B, double * __restrict__ C, BLASLONG ldc){
     if(m==0 || n==0 || k==0 || alpha == 0.0) return 0;
     BLASLONG ndiv8 = n/8;double ALPHA = alpha;
+#ifdef ICOPY_4
     double *packed_a = (double *)malloc(m*k*sizeof(double));
     copy_4_to_8(A,packed_a,m,k);
+#else //ICOPY_8
+    double *packed_a = A;
+#endif
     if(ndiv8>0) KERNEL_MAIN(packed_a,B,m,ndiv8,k,ldc,C,&ALPHA);
     if(n>ndiv8*8) KERNEL_EDGE(packed_a,B+(int64_t)k*(int64_t)ndiv8*8,m,n-ndiv8*8,k,ldc,C+(int64_t)ldc*(int64_t)ndiv8*8,&ALPHA);
+#ifdef ICOPY_4
     free(packed_a);packed_a=NULL;
+#endif
     return 0;
 }
-
