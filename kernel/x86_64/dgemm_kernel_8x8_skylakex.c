@@ -1,6 +1,8 @@
 #include "common.h"
 #include <stdint.h>
 #include <immintrin.h>
+
+#define ICOPY_4
 //register usage: zmm3 for alpha, zmm4-zmm7 for temporary use, zmm8-zmm31 for accumulators.
 /* row-major c_block */
 #define INNER_KERNEL_k1m1n8 \
@@ -743,6 +745,7 @@ static void KERNEL_EDGE(double *packed_a, double *packed_b, BLASLONG m, BLASLONG
       }
     }
 }
+#ifdef ICOPY_4
 static void copy_4_to_8(double *src,double *dst,BLASLONG m,BLASLONG k){
     BLASLONG m_count,k_count;double *src1,*dst1,*src2;__m256d tmp;
     src1 = src; dst1 = dst; src2 = src1 + 4 * k;
@@ -760,6 +763,7 @@ static void copy_4_to_8(double *src,double *dst,BLASLONG m,BLASLONG k){
       }
     }
 }
+#endif
 int __attribute__ ((noinline)) CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A, double * __restrict__ B, double * __restrict__ C, BLASLONG ldc){
     if(m==0 || n==0 || k==0 || alpha == 0.0) return 0;
     BLASLONG ndiv8 = n/8;double ALPHA = alpha;
