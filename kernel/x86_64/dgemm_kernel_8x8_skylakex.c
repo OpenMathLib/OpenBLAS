@@ -1,8 +1,8 @@
 #include "common.h"
 #include <stdint.h>
 #include <immintrin.h>
+//register usage: zmm3 for alpha, zmm4-zmm7 for temporary use, zmm8-zmm31 for accumulators.
 /* row-major c_block */
-/* 64-bit pointer registers: a_block_pointer,b_block_pointer,c_pointer;*/
 #define INNER_KERNEL_k1m1n8 \
     "prefetcht0 384(%1);"\
     "prefetcht0 768(%0); vmovupd (%1),%%zmm5; addq $64,%1;"\
@@ -158,7 +158,7 @@
 #define INNER_STORE_m1n8(c1,disp) \
     "kxnorw %%k1,%%k1,%%k1;"\
     "vgatherqpd "#disp"(%3,%%zmm6,1), %%zmm7 %{%%k1%};"\
-    "vaddpd %%zmm7,"#c1","#c1";"\
+    "vfmadd132pd %%zmm3,%%zmm7,"#c1";"\
     "kxnorw %%k1,%%k1,%%k1;"\
     "vscatterqpd "#c1", "#disp"(%3,%%zmm6,1) %{%%k1%};"
 
@@ -227,26 +227,27 @@
     "vblendmpd "#c8","#c4",%%zmm7%{%5%};vshuff64x2 $0x4e,%%zmm7,%%zmm7,%%zmm7;"\
     "vblendmpd "#c4",%%zmm7,"#c4"%{%5%};vblendmpd  %%zmm7,"#c8","#c8"%{%5%};"
 
+//%7 for k01(input) only when m=4
 #define INNER_STORE_4x8(c1,c2,c3,c4) \
-    "vmovupd (%3),%%zmm4%{%5%};vmovupd -32(%3,%4,4),%%zmm4%{%7%};vaddpd %%zmm4,"#c1","#c1";"\
+    "vmovupd (%3),%%zmm4%{%5%};vmovupd -32(%3,%4,4),%%zmm4%{%7%};vfmadd132pd %%zmm3,%%zmm4,"#c1";"\
     "vmovupd "#c1",(%3)%{%5%}; vmovupd "#c1",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
-    "vmovupd (%3),%%zmm5%{%5%};vmovupd -32(%3,%4,4),%%zmm5%{%7%};vaddpd %%zmm5,"#c2","#c2";"\
+    "vmovupd (%3),%%zmm5%{%5%};vmovupd -32(%3,%4,4),%%zmm5%{%7%};vfmadd132pd %%zmm3,%%zmm5,"#c2";"\
     "vmovupd "#c2",(%3)%{%5%}; vmovupd "#c2",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
-    "vmovupd (%3),%%zmm6%{%5%};vmovupd -32(%3,%4,4),%%zmm6%{%7%};vaddpd %%zmm6,"#c3","#c3";"\
+    "vmovupd (%3),%%zmm6%{%5%};vmovupd -32(%3,%4,4),%%zmm6%{%7%};vfmadd132pd %%zmm3,%%zmm6,"#c3";"\
     "vmovupd "#c3",(%3)%{%5%}; vmovupd "#c3",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
-    "vmovupd (%3),%%zmm7%{%5%};vmovupd -32(%3,%4,4),%%zmm7%{%7%};vaddpd %%zmm7,"#c4","#c4";"\
+    "vmovupd (%3),%%zmm7%{%5%};vmovupd -32(%3,%4,4),%%zmm7%{%7%};vfmadd132pd %%zmm3,%%zmm7,"#c4";"\
     "vmovupd "#c4",(%3)%{%5%}; vmovupd "#c4",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
     "leaq (%3,%4,4),%3;"
 
 #define INNER_STORE_8x8(c1,c2,c3,c4,c5,c6,c7,c8) \
     "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vaddpd (%3),"#c1","#c1"; vmovupd "#c1",(%3); vaddpd (%3,%4,1),"#c2","#c2"; vmovupd "#c2",(%3,%4,1); leaq (%3,%4,2),%3;"\
+    "vfmadd213pd (%3),%%zmm3,"#c1"; vmovupd "#c1",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c2"; vmovupd "#c2",(%3,%4,1); leaq (%3,%4,2),%3;"\
     "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vaddpd (%3),"#c3","#c3"; vmovupd "#c3",(%3); vaddpd (%3,%4,1),"#c4","#c4"; vmovupd "#c4",(%3,%4,1); leaq (%3,%4,2),%3;"\
+    "vfmadd213pd (%3),%%zmm3,"#c3"; vmovupd "#c3",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c4"; vmovupd "#c4",(%3,%4,1); leaq (%3,%4,2),%3;"\
     "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vaddpd (%3),"#c5","#c5"; vmovupd "#c5",(%3); vaddpd (%3,%4,1),"#c6","#c6"; vmovupd "#c6",(%3,%4,1); leaq (%3,%4,2),%3;"\
+    "vfmadd213pd (%3),%%zmm3,"#c5"; vmovupd "#c5",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c6"; vmovupd "#c6",(%3,%4,1); leaq (%3,%4,2),%3;"\
     "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vaddpd (%3),"#c7","#c7"; vmovupd "#c7",(%3); vaddpd (%3,%4,1),"#c8","#c8"; vmovupd "#c8",(%3,%4,1); leaq (%3,%4,2),%3;"
+    "vfmadd213pd (%3),%%zmm3,"#c7"; vmovupd "#c7",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c8"; vmovupd "#c8",(%3,%4,1); leaq (%3,%4,2),%3;"
 
 #define INNER_SAVE_m4n8 \
     INNER_TRANS_4x8(%%zmm8,%%zmm9,%%zmm10,%%zmm11)\
@@ -292,6 +293,7 @@
 
 #define COMPUTE_n8 {\
     __asm__ __volatile__(\
+    "vbroadcastsd (%9),%%zmm3;"\
     "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $6,%%r12;"\
     "cmpq $8,%8; jb 42222f;"\
     "42221:\n\t"\
@@ -327,12 +329,13 @@
     "42225:\n\t"\
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $3,%4;addq %4,%3;shrq $3,%4;"\
-    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M)\
-    ::"zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","cc","memory","k1","r13","r14");\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(alpha)\
+    ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","cc","memory","k1","r13","r14");\
     a_block_pointer -= M * K;\
 }
 #define COMPUTE_n16 {\
     __asm__ __volatile__(\
+    "vbroadcastsd (%9),%%zmm3;"\
     "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $6,%%r12;"\
     "cmpq $8,%8; jb 32222f;"\
     "32221:\n\t"\
@@ -369,13 +372,14 @@
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $4,%4;addq %4,%3;shrq $4,%4;"\
     "leaq (%1,%%r12,2),%1;"\
-    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M)\
-    ::"zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17",\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(alpha)\
+    ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17",\
     "zmm18","zmm19","zmm20","zmm21","zmm22","zmm23","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
 }
 #define COMPUTE_n24 {\
     __asm__ __volatile__(\
+    "vbroadcastsd (%9),%%zmm3;"\
     "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $6,%%r12;"\
     "cmpq $8,%8; jb 22222f;"\
     "22221:\n\t"\
@@ -412,13 +416,13 @@
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $3,%4;addq %4,%3;shlq $1,%4;addq %4,%3;shrq $4,%4;"\
     "leaq (%1,%%r12,2),%1; addq %%r12,%1;"\
-    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M)\
-    ::"zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17","zmm18","zmm19",\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(alpha)\
+    ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17","zmm18","zmm19",\
     "zmm20","zmm21","zmm22","zmm23","zmm24","zmm25","zmm26","zmm27","zmm28","zmm29","zmm30","zmm31","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
 }
 
-static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG ndiv8, BLASLONG k, BLASLONG LDC, double *c){//icopy=8,ocopy=8
+static void KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG ndiv8, BLASLONG k, BLASLONG LDC, double *c,double *alpha){//icopy=8,ocopy=8
 //perform C += A<pack> B<pack>
     if(k==0 || m==0 || ndiv8==0) return;
     int64_t ldc_in_bytes = (int64_t)LDC * sizeof(double);
@@ -426,7 +430,7 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
     double *a_block_pointer;
     double *c_pointer = c;
     __mmask16 k01 = 0x00f0,k02 = 0x000f,k03 = 0x0033;
-    BLASLONG ndiv8_count;
+    BLASLONG m_count,ndiv8_count,k_count;
     double *packed_b_pointer = packed_b;
     a_block_pointer = packed_a;
     for(ndiv8_count=ndiv8;ndiv8_count>2;ndiv8_count-=3){
@@ -474,24 +478,27 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
 #define INIT_m8n2 zc2=INIT_m8n1
 #define INIT_m8n4 zc4=zc3=INIT_m8n2
 #define SAVE_m8n1 {\
-    za1 = _mm512_loadu_pd(c_pointer);\
-    zc1 = _mm512_add_pd(zc1,za1);\
+    __asm__ __volatile__("vbroadcastsd (%0),%1;":"+r"(alpha),"+v"(za1)::"memory");\
+    zb1 = _mm512_loadu_pd(c_pointer);\
+    zc1 = _mm512_fmadd_pd(zc1,za1,zb1);\
     _mm512_storeu_pd(c_pointer,zc1);\
     c_pointer += 8;\
 }
 #define SAVE_m8n2 {\
+    __asm__ __volatile__("vbroadcastsd (%0),%1;":"+r"(alpha),"+v"(za1)::"memory");\
     zb1 = _mm512_loadu_pd(c_pointer); zb2 = _mm512_loadu_pd(c_pointer+LDC);\
-    zc1 = _mm512_add_pd(zc1,zb1); zc2 = _mm512_add_pd(zc2,zb2);\
+    zc1 = _mm512_fmadd_pd(zc1,za1,zb1); zc2 = _mm512_fmadd_pd(zc2,za1,zb2);\
     _mm512_storeu_pd(c_pointer,zc1); _mm512_storeu_pd(c_pointer+LDC,zc2);\
     c_pointer += 8;\
 }
 #define SAVE_m8n4 {\
+    __asm__ __volatile__("vbroadcastsd (%0),%1;":"+r"(alpha),"+v"(za1)::"memory");\
     zb1 = _mm512_loadu_pd(c_pointer); zb2 = _mm512_loadu_pd(c_pointer+LDC);\
-    zc1 = _mm512_add_pd(zc1,zb1); zc2 = _mm512_add_pd(zc2,zb2);\
+    zc1 = _mm512_fmadd_pd(zc1,za1,zb1); zc2 = _mm512_fmadd_pd(zc2,za1,zb2);\
     _mm512_storeu_pd(c_pointer,zc1); _mm512_storeu_pd(c_pointer+LDC,zc2);\
     c_pointer += LDC*2;\
     zb1 = _mm512_loadu_pd(c_pointer); zb2 = _mm512_loadu_pd(c_pointer+LDC);\
-    zc3 = _mm512_add_pd(zc3,zb1); zc4 = _mm512_add_pd(zc4,zb2);\
+    zc3 = _mm512_fmadd_pd(zc3,za1,zb1); zc4 = _mm512_fmadd_pd(zc4,za1,zb2);\
     _mm512_storeu_pd(c_pointer,zc3); _mm512_storeu_pd(c_pointer+LDC,zc4);\
     c_pointer += 8-LDC*2;\
 }
@@ -518,24 +525,27 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
 #define INIT_m4n2 yc2=INIT_m4n1
 #define INIT_m4n4 yc4=yc3=INIT_m4n2
 #define SAVE_m4n1 {\
+    yb1 = _mm256_broadcast_sd(alpha);\
     ya1 = _mm256_loadu_pd(c_pointer);\
-    yc1 = _mm256_add_pd(yc1,ya1);\
+    yc1 = _mm256_fmadd_pd(yc1,yb1,ya1);\
     _mm256_storeu_pd(c_pointer,yc1);\
     c_pointer += 4;\
 }
 #define SAVE_m4n2 {\
+    ya1 = _mm256_broadcast_sd(alpha);\
     yb1 = _mm256_loadu_pd(c_pointer); yb2 = _mm256_loadu_pd(c_pointer+LDC);\
-    yc1 = _mm256_add_pd(yc1,yb1); yc2 = _mm256_add_pd(yc2,yb2);\
+    yc1 = _mm256_fmadd_pd(yc1,ya1,yb1); yc2 = _mm256_fmadd_pd(yc2,ya1,yb2);\
     _mm256_storeu_pd(c_pointer,yc1); _mm256_storeu_pd(c_pointer+LDC,yc2);\
     c_pointer += 4;\
 }
 #define SAVE_m4n4 {\
+    ya1 = _mm256_broadcast_sd(alpha);\
     yb1 = _mm256_loadu_pd(c_pointer); yb2 = _mm256_loadu_pd(c_pointer+LDC);\
-    yc1 = _mm256_add_pd(yc1,yb1); yc2 = _mm256_add_pd(yc2,yb2);\
+    yc1 = _mm256_fmadd_pd(yc1,ya1,yb1); yc2 = _mm256_fmadd_pd(yc2,ya1,yb2);\
     _mm256_storeu_pd(c_pointer,yc1); _mm256_storeu_pd(c_pointer+LDC,yc2);\
     c_pointer += LDC*2;\
     yb1 = _mm256_loadu_pd(c_pointer); yb2 = _mm256_loadu_pd(c_pointer+LDC);\
-    yc3 = _mm256_add_pd(yc3,yb1); yc4 = _mm256_add_pd(yc4,yb2);\
+    yc3 = _mm256_fmadd_pd(yc3,ya1,yb1); yc4 = _mm256_fmadd_pd(yc4,ya1,yb2);\
     _mm256_storeu_pd(c_pointer,yc3); _mm256_storeu_pd(c_pointer+LDC,yc4);\
     c_pointer += 4-LDC*2;\
 }
@@ -553,14 +563,16 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
 #define INIT_m2n1 xc1=_mm_setzero_pd();
 #define INIT_m2n2 xc2=INIT_m2n1
 #define SAVE_m2n1 {\
+    xb1 = _mm_loaddup_pd(alpha);\
     xa1 = _mm_loadu_pd(c_pointer);\
-    xc1 = _mm_add_pd(xc1,xa1);\
+    xc1 = _mm_fmadd_pd(xc1,xb1,xa1);\
     _mm_storeu_pd(c_pointer,xc1);\
     c_pointer += 2;\
 }
 #define SAVE_m2n2 {\
+    xa1 = _mm_loaddup_pd(alpha);\
     xb1 = _mm_loadu_pd(c_pointer); xb2 = _mm_loadu_pd(c_pointer+LDC);\
-    xc1 = _mm_add_pd(xc1,xb1); xc2 = _mm_add_pd(xc2,xb2);\
+    xc1 = _mm_fmadd_pd(xc1,xa1,xb1); xc2 = _mm_fmadd_pd(xc2,xa1,xb2);\
     _mm_storeu_pd(c_pointer,xc1); _mm_storeu_pd(c_pointer+LDC,xc2);\
     c_pointer += 2;\
 }
@@ -571,7 +583,7 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
 }
 #define INIT_m1n1 sc1=0.0;
 #define SAVE_m1n1 {\
-    *c_pointer += sc1;\
+    *c_pointer += sc1 * (*alpha);\
     c_pointer++;\
 }
 
@@ -596,6 +608,9 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
 #define INIT_m1n4 INIT_m4n1
 #define INIT_m2n4 INIT_m4n2
 #define SAVE_m2n4 {\
+    ya1 = _mm256_broadcast_sd(alpha);\
+    yc1 = _mm256_mul_pd(yc1,ya1);\
+    yc2 = _mm256_mul_pd(yc2,ya1);\
     yb1 = _mm256_unpacklo_pd(yc1,yc2);\
     yb2 = _mm256_unpackhi_pd(yc1,yc2);\
     xb1 = _mm_add_pd(_mm_loadu_pd(c_pointer),_mm256_extractf128_pd(yb1,0));\
@@ -609,12 +624,16 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
     c_pointer += 2;\
 }
 #define SAVE_m1n2 {\
+    xb1 = _mm_loaddup_pd(alpha);\
+    xc1 = _mm_mul_pd(xc1,xb1);\
     *c_pointer += _mm_cvtsd_f64(xc1);\
     xa1 = _mm_unpackhi_pd(xc1,xc1);\
     c_pointer[LDC]+= _mm_cvtsd_f64(xa1);\
     c_pointer ++;\
 }
 #define SAVE_m1n4 {\
+    ya1 = _mm256_broadcast_sd(alpha);\
+    yc1 = _mm256_mul_pd(yc1,ya1);\
     xb1 = _mm256_extractf128_pd(yc1,0);\
     *c_pointer += _mm_cvtsd_f64(xb1);\
     xb2 = _mm_unpackhi_pd(xb1,xb1);\
@@ -626,7 +645,7 @@ static void __attribute__ ((noinline)) KERNEL_MAIN(double *packed_a, double *pac
     c_pointer ++;\
 }
 
-static void KERNEL_EDGE(double *packed_a, double *packed_b, BLASLONG m, BLASLONG edge_n, BLASLONG k, BLASLONG LDC, double *c){//icopy=8,ocopy=8
+static void __attribute__ ((noinline)) KERNEL_EDGE(double *packed_a, double *packed_b, BLASLONG m, BLASLONG edge_n, BLASLONG k, BLASLONG LDC, double *c,double *alpha){//icopy=8,ocopy=8
 //perform C += A<pack> B<pack> , edge_n<8 must be satisfied !
     if(k==0 || m==0 || edge_n==0) return;
     double *a_block_pointer,*b_block_pointer,*b_base_pointer;
@@ -724,30 +743,30 @@ static void KERNEL_EDGE(double *packed_a, double *packed_b, BLASLONG m, BLASLONG
       }
     }
 }
-static void copy_4_to_8(double *src,double *dst,BLASLONG m,BLASLONG k,double alpha){
-    BLASLONG m_count,k_count;double *src1,*dst1,*src2;__m256d tmp,alp;
-    src1 = src; dst1 = dst; src2 = src1 + 4 * k; alp = _mm256_set1_pd(alpha);
+static void copy_4_to_8(double *src,double *dst,BLASLONG m,BLASLONG k){
+    BLASLONG m_count,k_count;double *src1,*dst1,*src2;__m256d tmp;
+    src1 = src; dst1 = dst; src2 = src1 + 4 * k;
     for(m_count=m;m_count>7;m_count-=8){
       for(k_count=k;k_count>0;k_count--){
-        tmp = _mm256_loadu_pd(src1);tmp = _mm256_mul_pd(tmp,alp);_mm256_storeu_pd(dst1+0,tmp);src1+=4;
-        tmp = _mm256_loadu_pd(src2);tmp = _mm256_mul_pd(tmp,alp);_mm256_storeu_pd(dst1+4,tmp);src2+=4;
+        tmp = _mm256_loadu_pd(src1);_mm256_storeu_pd(dst1+0,tmp);src1+=4;
+        tmp = _mm256_loadu_pd(src2);_mm256_storeu_pd(dst1+4,tmp);src2+=4;
         dst1+=8;
       }
       src1+=4*k;src2+=4*k;
     }
     for(;m_count>0;m_count--){
       for(k_count=k;k_count>0;k_count--){
-        *dst1 = (*src1) * alpha; src1++; dst1++;
+        *dst1 = (*src1); src1++; dst1++;
       }
     }
 }
 int __attribute__ ((noinline)) CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A, double * __restrict__ B, double * __restrict__ C, BLASLONG ldc){
-    if(m==0 || n==0 || k==0) return 0;
-    BLASLONG ndiv8 = n/8;
+    if(m==0 || n==0 || k==0 || alpha == 0.0) return 0;
+    BLASLONG ndiv8 = n/8;double ALPHA = alpha;
     double *packed_a = (double *)malloc(m*k*sizeof(double));
-    copy_4_to_8(A,packed_a,m,k,alpha);
-    if(ndiv8>0) KERNEL_MAIN(packed_a,B,m,ndiv8,k,ldc,C);
-    if(n>ndiv8*8) KERNEL_EDGE(packed_a,B+(int64_t)k*(int64_t)ndiv8*8,m,n-ndiv8*8,k,ldc,C+(int64_t)ldc*(int64_t)ndiv8*8);
+    copy_4_to_8(A,packed_a,m,k);
+    if(ndiv8>0) KERNEL_MAIN(packed_a,B,m,ndiv8,k,ldc,C,&ALPHA);
+    if(n>ndiv8*8) KERNEL_EDGE(packed_a,B+(int64_t)k*(int64_t)ndiv8*8,m,n-ndiv8*8,k,ldc,C+(int64_t)ldc*(int64_t)ndiv8*8,&ALPHA);
     free(packed_a);packed_a=NULL;
     return 0;
 }
