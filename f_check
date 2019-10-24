@@ -130,6 +130,11 @@ if ($compiler eq "") {
 	if ($data =~ / zho_ge__/) {
 	    $need2bu       = 1;
 	}
+	if ($vendor =~ /G95/) {
+    	  if ($ENV{NO_LAPACKE} != 1) {
+		$need2bu = "";
+	  }
+	}
     }
 
     if ($vendor eq "") {
@@ -277,6 +282,8 @@ $linker_a = "";
 if ($link ne "") {
 
     $link =~ s/\-Y\sP\,/\-Y/g;
+    
+    $link =~ s/\-R+/\-rpath\@/g;
 
     $link =~ s/\-rpath\s+/\-rpath\@/g;
 
