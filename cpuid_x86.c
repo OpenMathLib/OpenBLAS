@@ -1197,7 +1197,11 @@ int get_cpuname(void){
 	case  3:
 	case  5:
 	case  6:
+#if defined(__x86_64__) || defined(__amd64__)
+	  return CPUTYPE_CORE2;
+#else
 	  return CPUTYPE_PENTIUM2;
+#endif
 	case  7:
 	case  8:
 	case 10:
@@ -1379,6 +1383,8 @@ int get_cpuname(void){
       break;
       case 7: // family 6 exmodel 7
         switch (model) {
+	case 10: // Goldmont Plus
+	    return CPUTYPE_NEHALEM;
         case 14: // Ice Lake
           if(support_avx512())
             return CPUTYPE_SKYLAKEX;
