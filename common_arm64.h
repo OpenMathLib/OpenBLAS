@@ -107,7 +107,9 @@ static inline int blas_quickdivide(blasint x, blasint y){
 	.text ;
 	.p2align 2 ;
 	.global	REALNAME ;
+#ifndef __APPLE__
 	.type	REALNAME, %function ;
+#endif
 REALNAME:
 .endm
 
