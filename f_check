@@ -19,7 +19,7 @@ $nofortran = 0;
 
 $compiler = join(" ", @ARGV);
 $compiler_bin = shift(@ARGV);
-
+ 
 # f77 is too ambiguous
 $compiler = "" if $compiler eq "f77";
 
@@ -283,7 +283,7 @@ if ($link ne "") {
 
     $link =~ s/\-Y\sP\,/\-Y/g;
     
-    $link =~ s/\-R+/\-rpath\@/g;
+    $link =~ s/\-R\s*/\-rpath\@/g;
 
     $link =~ s/\-rpath\s+/\-rpath\@/g;
 
