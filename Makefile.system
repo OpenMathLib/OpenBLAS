@@ -769,6 +769,9 @@ else
 FCOMMON_OPT += -m32
 endif
 endif
+ifneq ($(NO_LAPACKE), 1)
+FCOMMON_OPT += -fno-second-underscore
+endif
 endif
 endif
 
