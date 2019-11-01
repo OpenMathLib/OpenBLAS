@@ -1,6 +1,6 @@
 include $(KERNELDIR)/KERNEL.HASWELL
 
-SGEMMKERNEL    =  sgemm_kernel_16x4_skylakex.c
+SGEMMKERNEL    =  sgemm_kernel_16x4_skylakex_2.c
 
 SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    =  sgemm_tcopy_16_skylakex.c
