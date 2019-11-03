@@ -19,7 +19,7 @@ $nofortran = 0;
 
 $compiler = join(" ", @ARGV);
 $compiler_bin = shift(@ARGV);
-
+ 
 # f77 is too ambiguous
 $compiler = "" if $compiler eq "f77";
 
@@ -129,6 +129,11 @@ if ($compiler eq "") {
 	$data = `$compiler -O2 -S ftest3.f > /dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s`;
 	if ($data =~ / zho_ge__/) {
 	    $need2bu       = 1;
+	}
+	if ($vendor =~ /G95/) {
+    	  if ($ENV{NO_LAPACKE} != 1) {
+		$need2bu = "";
+	  }
 	}
     }
 
@@ -277,6 +282,8 @@ $linker_a = "";
 if ($link ne "") {
 
     $link =~ s/\-Y\sP\,/\-Y/g;
+    
+    $link =~ s/\-R\s*/\-rpath\@/g;
 
     $link =~ s/\-rpath\s+/\-rpath\@/g;
 
