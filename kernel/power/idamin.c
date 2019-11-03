@@ -326,13 +326,15 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     minf = ABS(x[0]); //index's not incremented
     if (inc_x == 1) {
 
+#if defined(_CALL_ELF) && (_CALL_ELF == 2)
         BLASLONG n1 = n & -32;
         if (n1 > 0) {
 
             min = diamin_kernel_32(n1, x, &minf);
             i = n1;
         }
-
+#endif
+ 
         while (i < n) {
             if (ABS(x[i]) < minf) {
                 min = i;
