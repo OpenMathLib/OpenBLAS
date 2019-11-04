@@ -42,7 +42,6 @@
 #define unit_save_m16n2(c1,c2) \
     "vunpcklps "#c2","#c1",%%zmm6; vunpckhps "#c2","#c1",%%zmm7; vunpcklpd %%zmm7,%%zmm6,%%zmm4; vunpckhpd %%zmm7,%%zmm6,%%zmm5;"\
     "vfmadd213ps (%5),%%zmm0,%%zmm4; vfmadd213ps (%5,%3,1),%%zmm0,%%zmm5;"\
-    "prefetcht1 127(%5); prefetcht1 127(%5,%3,1);"\
     "vmovups %%zmm4,(%5); vmovups %%zmm5,(%5,%3,1); leaq (%5,%3,2),%5;"
 #define SAVE_h_m16n2 "movq %2,%5;" unit_save_m16n2(%%zmm8,%%zmm9)
 #define SAVE_h_m16n4  SAVE_h_m16n2  unit_save_m16n2(%%zmm10,%%zmm11)
@@ -54,19 +53,25 @@
 #define SAVE_m16(ndim) SAVE_h_m16n##ndim "addq $64,%2;"
 #define COMPUTE_m16(ndim) \
     INIT_m16n##ndim\
-    "movq %%r13,%4; movq %%r14,%1; leaq (%1,%%r12,2),%%r15; addq %%r12,%%r15;"\
-    "cmpq $4,%4; jb "#ndim"016162f;"\
+    "movq %%r13,%4; movq %%r14,%1; leaq (%1,%%r12,2),%%r15; addq %%r12,%%r15; movq %2,%5;"\
+    "cmpq $16,%4; jb "#ndim"016162f;"\
     #ndim"016161:\n\t"\
     KERNEL_k1m16n##ndim\
     KERNEL_k1m16n##ndim\
+    "prefetcht1 (%5); prefetcht1 63(%5); addq %3,%5;"\
     KERNEL_k1m16n##ndim\
     KERNEL_k1m16n##ndim\
-    "subq $4,%4; cmpq $4,%4; jnb "#ndim"016161b;"\
+    "prefetcht1 (%8); addq $"#ndim",%8;"\
+    "subq $4,%4; cmpq $16,%4; jnb "#ndim"016161b;"\
+    "movq %2,%5;"\
     #ndim"016162:\n\t"\
     "testq %4,%4; jz "#ndim"016163f;"\
+    "prefetcht0 (%5); prefetcht0 63(%5); prefetcht0 (%5,%3,1); prefetcht0 63(%5,%3,1);"\
     KERNEL_k1m16n##ndim\
+    "leaq (%5,%3,2),%5;"\
     "decq %4; jmp "#ndim"016162b;"\
     #ndim"016163:\n\t"\
+    "prefetcht0 (%%r14); prefetcht0 64(%%r14);"\
     SAVE_m16(ndim)
 
 /* m = 8 *//* ymm0 for alpha, ymm1-ymm3 for temporary use, ymm4-ymm15 for accumulators */
@@ -350,10 +355,11 @@
 #define COMPUTE_m1(ndim) COMPUTE_m1_n##ndim
 
 /* %0 = "+r"(a_pointer), %1 = "+r"(b_pointer), %2 = "+r"(c_pointer), %3 = "+r"(ldc_in_bytes), %4 = "+r"(K), %5 = "+r"(ctemp) */
-/* %6 = "+r"(&alpha), %7 = "+r"(M) */
+/* %6 = "+r"(&alpha), %7 = "+r"(M), %8 = "+r"(next_b) */
 /* r11 = m(const), r12 = k << 4(const), r13 = k(const), r14 = b_head_pos(const), r15 = %1 + 3r12 */
 
 #define COMPUTE(ndim) {\
+    next_b = b_pointer + ndim * K;\
     __asm__ __volatile__(\
     "vbroadcastss (%6),%%zmm0;"\
     "movq %4,%%r13; movq %4,%%r12; salq $4,%%r12; movq %1,%%r14; movq %7,%%r11;"\
@@ -378,7 +384,7 @@
     COMPUTE_m1(ndim)\
     "33105"#ndim":\n\t"\
     "movq %%r13,%4; movq %%r14,%1; movq %%r11,%7;"\
-    :"+r"(a_pointer),"+r"(b_pointer),"+r"(c_pointer),"+r"(ldc_in_bytes),"+r"(K),"+r"(ctemp),"+r"(alp),"+r"(M)\
+    :"+r"(a_pointer),"+r"(b_pointer),"+r"(c_pointer),"+r"(ldc_in_bytes),"+r"(K),"+r"(ctemp),"+r"(alp),"+r"(M),"+r"(next_b)\
     ::"r11","r12","r13","r14","r15","zmm0","zmm1","zmm2","zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14",\
     "zmm15","zmm16","zmm17","zmm18","zmm19","zmm20","zmm21","zmm22","zmm23","zmm24","zmm25","zmm26","zmm27","zmm28","zmm29","zmm30","zmm31",\
     "cc","memory");\
@@ -391,7 +397,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float * __restrict__ A, f
     int64_t ldc_in_bytes = (int64_t)LDC * sizeof(float);float ALPHA = alpha;
     int64_t M = (int64_t)m, K = (int64_t)k;
     BLASLONG n_count = n;
-    float *a_pointer = A,*b_pointer = B,*c_pointer = C,*ctemp = C,*alp = &ALPHA;
+    float *a_pointer = A,*b_pointer = B,*c_pointer = C,*ctemp = C,*alp = &ALPHA,*next_b = B;
     for(;n_count>23;n_count-=24) COMPUTE(24)
     for(;n_count>19;n_count-=20) COMPUTE(20)
     for(;n_count>15;n_count-=16) COMPUTE(16)
