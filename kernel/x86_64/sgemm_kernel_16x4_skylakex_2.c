@@ -54,15 +54,17 @@
 #define COMPUTE_m16(ndim) \
     INIT_m16n##ndim\
     "movq %%r13,%4; movq %%r14,%1; leaq (%1,%%r12,2),%%r15; addq %%r12,%%r15; movq %2,%5;"\
-    "cmpq $16,%4; jb "#ndim"016162f;"\
+    "cmpq $18,%4; jb "#ndim"016162f;"\
     #ndim"016161:\n\t"\
+    KERNEL_k1m16n##ndim\
     KERNEL_k1m16n##ndim\
     KERNEL_k1m16n##ndim\
     "prefetcht1 (%5); prefetcht1 63(%5); addq %3,%5;"\
     KERNEL_k1m16n##ndim\
     KERNEL_k1m16n##ndim\
-    "prefetcht1 (%8); addq $"#ndim",%8;"\
-    "subq $4,%4; cmpq $16,%4; jnb "#ndim"016161b;"\
+    KERNEL_k1m16n##ndim\
+    "prefetcht1 (%8); addq $32,%8;"\
+    "subq $6,%4; cmpq $18,%4; jnb "#ndim"016161b;"\
     "movq %2,%5;"\
     #ndim"016162:\n\t"\
     "testq %4,%4; jz "#ndim"016163f;"\
