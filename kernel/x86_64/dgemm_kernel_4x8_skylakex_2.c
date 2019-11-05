@@ -88,20 +88,21 @@
     "decq %2;cmpq $1,%2;jnb "#nn"01b;"\
     #nn"00:\n\t"
 
+/* %10 for prefetch of C elements before storage; %4 = ldc(in bytes),%11 for prefetch of next B block */
 #define INNER_KERNELm8(nn) \
-    "cmpq $8,%2;jb "#nn"001f;"\
+    "movq %3,%10;cmpq $16,%2;jb "#nn"001f;"\
     #nn"008:\n\t"\
     INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
     INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
+    "prefetcht1 (%10); prefetcht1 63(%10); addq %4,%10;"\
     INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
     INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
-    INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
-    INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
-    INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
-    INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
-    "subq $8,%2;cmpq $8,%2;jnb "#nn"008b;"\
+    "prefetcht1 (%11); addq $16,%11;"\
+    "subq $4,%2;cmpq $16,%2;jnb "#nn"008b;"\
+    "movq %3,%10;"\
     #nn"001:\n\t"\
     "cmpq $1,%2;jb "#nn"000f;"\
+    "prefetcht0 (%10); prefetcht0 63(%10); prefetcht0 (%10,%4,1); prefetcht0 63(%10,%4,1); leaq (%10,%4,2),%10;"\
     INNER_KERNEL_k1m8n##nn "addq $32,%0;"\
     "decq %2;jmp "#nn"001b;"\
     ""#nn"000:\n\t"
@@ -158,53 +159,53 @@
 
 #define INNER_STORE_m1n8(c1,disp) \
     "kxnorw %%k1,%%k1,%%k1;"\
-    "vgatherqpd "#disp"(%3,%%zmm6,1), %%zmm7 %{%%k1%};"\
+    "vgatherqpd "#disp"(%10,%%zmm6,1), %%zmm7 %{%%k1%};"\
     "vfmadd132pd %%zmm3,%%zmm7,"#c1";"\
     "kxnorw %%k1,%%k1,%%k1;"\
-    "vscatterqpd "#c1", "#disp"(%3,%%zmm6,1) %{%%k1%};"
+    "vscatterqpd "#c1", "#disp"(%10,%%zmm6,1) %{%%k1%};"
 
 #define INNER_SAVE_m1n8 \
+    "movq %3,%10;"\
     INNER_SETINDEX\
     INNER_STORE_m1n8(%%zmm8,0)
 
 #define INNER_SAVE_m1n16 \
     INNER_SAVE_m1n8\
-    "leaq (%3,%4,8),%3;"\
+    "leaq (%10,%4,8),%10;"\
     INNER_STORE_m1n8(%%zmm9,0)
 
 #define INNER_SAVE_m1n24 \
     INNER_SAVE_m1n16\
-    "leaq (%3,%4,8),%3;"\
+    "leaq (%10,%4,8),%10;"\
     INNER_STORE_m1n8(%%zmm10,0)
 
 #define INNER_SAVE_m2n8 \
+    "movq %3,%10;"\
     INNER_SETINDEX\
     INNER_STORE_m1n8(%%zmm8,0)\
     INNER_STORE_m1n8(%%zmm9,8)
 
 #define INNER_SAVE_m2n16 \
+    "movq %3,%10;"\
     INNER_SETINDEX\
     INNER_STORE_m1n8(%%zmm8,0)\
     INNER_STORE_m1n8(%%zmm10,8)\
-    "leaq (%3,%4,8),%3;"\
+    "leaq (%10,%4,8),%10;"\
     INNER_STORE_m1n8(%%zmm9,0)\
     INNER_STORE_m1n8(%%zmm11,8)
+
 #define INNER_SAVE_m2n24 \
+    "movq %3,%10;"\
     INNER_SETINDEX\
     INNER_STORE_m1n8(%%zmm8,0)\
     INNER_STORE_m1n8(%%zmm11,8)\
-    "leaq (%3,%4,8),%3;"\
+    "leaq (%10,%4,8),%10;"\
     INNER_STORE_m1n8(%%zmm9,0)\
     INNER_STORE_m1n8(%%zmm12,8)\
-    "leaq (%3,%4,8),%3;"\
+    "leaq (%10,%4,8),%10;"\
     INNER_STORE_m1n8(%%zmm10,0)\
     INNER_STORE_m1n8(%%zmm13,8)
-#define INNER_PREF_8x8 \
-    "prefetcht0 (%3); prefetcht0 56(%3); prefetcht0 (%3,%4,1); prefetcht0 56(%3,%4,1); prefetcht0 (%3,%4,2); prefetcht0 56(%3,%4,2);"\
-    "prefetcht0 (%3,%4,4); prefetcht0 56(%3,%4,4); leaq (%3,%4,2),%3;"\
-    "prefetcht0 (%3,%4,1); prefetcht0 56(%3,%4,1); prefetcht0 (%3,%4,4); prefetcht0 56(%3,%4,4); leaq (%3,%4,1),%3;"\
-    "prefetcht0 (%3,%4,2); prefetcht0 56(%3,%4,2); prefetcht0 (%3,%4,4); prefetcht0 56(%3,%4,4);"\
-    "subq %4,%3; subq %4,%3; subq %4,%3;"
+
 #define INNER_TRANS_4x8(c1,c2,c3,c4) \
     "vunpcklpd "#c2","#c1",%%zmm4;vunpckhpd "#c2","#c1",%%zmm5;vunpcklpd "#c4","#c3",%%zmm6;vunpckhpd "#c4","#c3",%%zmm7;"\
     "vblendmpd %%zmm6,%%zmm4,"#c1"%{%6%};vblendmpd %%zmm7,%%zmm5,"#c3"%{%6%};"\
@@ -212,6 +213,7 @@
     "vblendmpd %%zmm4,"#c1",%%zmm4%{%6%};vblendmpd %%zmm5,"#c3","#c2"%{%6%};"\
     "vblendmpd "#c1",%%zmm6,%%zmm6%{%6%};vblendmpd "#c3",%%zmm7,"#c4"%{%6%};"\
     "vmovapd %%zmm4,"#c1"; vmovapd %%zmm6,"#c3";"
+
 #define INNER_TRANS_8x8(c1,c2,c3,c4,c5,c6,c7,c8) \
     INNER_TRANS_4x8(c1,c2,c3,c4)\
     INNER_TRANS_4x8(c5,c6,c7,c8)\
@@ -223,64 +225,69 @@
     "vblendmpd "#c3",%%zmm6,"#c3"%{%5%};vblendmpd  %%zmm6,"#c7","#c7"%{%5%};"\
     "vblendmpd "#c8","#c4",%%zmm7%{%5%};vshuff64x2 $0x4e,%%zmm7,%%zmm7,%%zmm7;"\
     "vblendmpd "#c4",%%zmm7,"#c4"%{%5%};vblendmpd  %%zmm7,"#c8","#c8"%{%5%};"
+
 //%7 for k01(input) only when m=4
 #define INNER_STORE_4x8(c1,c2,c3,c4) \
-    "vmovupd (%3),%%zmm4%{%5%};vmovupd -32(%3,%4,4),%%zmm4%{%7%};vfmadd132pd %%zmm3,%%zmm4,"#c1";"\
-    "vmovupd "#c1",(%3)%{%5%}; vmovupd "#c1",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
-    "vmovupd (%3),%%zmm5%{%5%};vmovupd -32(%3,%4,4),%%zmm5%{%7%};vfmadd132pd %%zmm3,%%zmm5,"#c2";"\
-    "vmovupd "#c2",(%3)%{%5%}; vmovupd "#c2",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
-    "vmovupd (%3),%%zmm6%{%5%};vmovupd -32(%3,%4,4),%%zmm6%{%7%};vfmadd132pd %%zmm3,%%zmm6,"#c3";"\
-    "vmovupd "#c3",(%3)%{%5%}; vmovupd "#c3",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
-    "vmovupd (%3),%%zmm7%{%5%};vmovupd -32(%3,%4,4),%%zmm7%{%7%};vfmadd132pd %%zmm3,%%zmm7,"#c4";"\
-    "vmovupd "#c4",(%3)%{%5%}; vmovupd "#c4",-32(%3,%4,4)%{%7%}; leaq (%3,%4,1),%3;"\
-    "leaq (%3,%4,4),%3;"
+    "vmovupd (%10),%%zmm4%{%5%};vmovupd -32(%10,%4,4),%%zmm4%{%7%};vfmadd132pd %%zmm3,%%zmm4,"#c1";"\
+    "vmovupd "#c1",(%10)%{%5%}; vmovupd "#c1",-32(%10,%4,4)%{%7%}; leaq (%10,%4,1),%10;"\
+    "vmovupd (%10),%%zmm5%{%5%};vmovupd -32(%10,%4,4),%%zmm5%{%7%};vfmadd132pd %%zmm3,%%zmm5,"#c2";"\
+    "vmovupd "#c2",(%10)%{%5%}; vmovupd "#c2",-32(%10,%4,4)%{%7%}; leaq (%10,%4,1),%10;"\
+    "vmovupd (%10),%%zmm6%{%5%};vmovupd -32(%10,%4,4),%%zmm6%{%7%};vfmadd132pd %%zmm3,%%zmm6,"#c3";"\
+    "vmovupd "#c3",(%10)%{%5%}; vmovupd "#c3",-32(%10,%4,4)%{%7%}; leaq (%10,%4,1),%10;"\
+    "vmovupd (%10),%%zmm7%{%5%};vmovupd -32(%10,%4,4),%%zmm7%{%7%};vfmadd132pd %%zmm3,%%zmm7,"#c4";"\
+    "vmovupd "#c4",(%10)%{%5%}; vmovupd "#c4",-32(%10,%4,4)%{%7%}; leaq (%10,%4,1),%10;"\
+    "leaq (%10,%4,4),%10;"
+
 #define INNER_STORE_8x8(c1,c2,c3,c4,c5,c6,c7,c8) \
-    "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vfmadd213pd (%3),%%zmm3,"#c1"; vmovupd "#c1",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c2"; vmovupd "#c2",(%3,%4,1); leaq (%3,%4,2),%3;"\
-    "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vfmadd213pd (%3),%%zmm3,"#c3"; vmovupd "#c3",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c4"; vmovupd "#c4",(%3,%4,1); leaq (%3,%4,2),%3;"\
-    "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vfmadd213pd (%3),%%zmm3,"#c5"; vmovupd "#c5",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c6"; vmovupd "#c6",(%3,%4,1); leaq (%3,%4,2),%3;"\
-    "prefetcht1 120(%3); prefetcht1 120(%3,%4,1);"\
-    "vfmadd213pd (%3),%%zmm3,"#c7"; vmovupd "#c7",(%3); vfmadd213pd (%3,%4,1),%%zmm3,"#c8"; vmovupd "#c8",(%3,%4,1); leaq (%3,%4,2),%3;"
+    "vfmadd213pd (%10),%%zmm3,"#c1"; vmovupd "#c1",(%10); vfmadd213pd (%10,%4,1),%%zmm3,"#c2"; vmovupd "#c2",(%10,%4,1); leaq (%10,%4,2),%10;"\
+    "vfmadd213pd (%10),%%zmm3,"#c3"; vmovupd "#c3",(%10); vfmadd213pd (%10,%4,1),%%zmm3,"#c4"; vmovupd "#c4",(%10,%4,1); leaq (%10,%4,2),%10;"\
+    "vfmadd213pd (%10),%%zmm3,"#c5"; vmovupd "#c5",(%10); vfmadd213pd (%10,%4,1),%%zmm3,"#c6"; vmovupd "#c6",(%10,%4,1); leaq (%10,%4,2),%10;"\
+    "vfmadd213pd (%10),%%zmm3,"#c7"; vmovupd "#c7",(%10); vfmadd213pd (%10,%4,1),%%zmm3,"#c8"; vmovupd "#c8",(%10,%4,1); leaq (%10,%4,2),%10;"
+
 #define INNER_SAVE_m4n8 \
+    "movq %3,%10;"\
     INNER_TRANS_4x8(%%zmm8,%%zmm9,%%zmm10,%%zmm11)\
     INNER_STORE_4x8(%%zmm8,%%zmm9,%%zmm10,%%zmm11)
+
 #define INNER_SAVE_m4n16 \
+    "movq %3,%10;"\
     INNER_TRANS_4x8(%%zmm8,%%zmm10,%%zmm12,%%zmm14)\
     INNER_STORE_4x8(%%zmm8,%%zmm10,%%zmm12,%%zmm14)\
     INNER_TRANS_4x8(%%zmm9,%%zmm11,%%zmm13,%%zmm15)\
     INNER_STORE_4x8(%%zmm9,%%zmm11,%%zmm13,%%zmm15)
+
 #define INNER_SAVE_m4n24 \
+    "movq %3,%10;"\
     INNER_TRANS_4x8(%%zmm8,%%zmm11,%%zmm14,%%zmm17)\
     INNER_STORE_4x8(%%zmm8,%%zmm11,%%zmm14,%%zmm17)\
     INNER_TRANS_4x8(%%zmm9,%%zmm12,%%zmm15,%%zmm18)\
     INNER_STORE_4x8(%%zmm9,%%zmm12,%%zmm15,%%zmm18)\
     INNER_TRANS_4x8(%%zmm10,%%zmm13,%%zmm16,%%zmm19)\
     INNER_STORE_4x8(%%zmm10,%%zmm13,%%zmm16,%%zmm19)
+
 #define INNER_SAVE_m8n8 \
-    INNER_PREF_8x8\
+    "movq %3,%10;"\
     INNER_TRANS_8x8(%%zmm8,%%zmm9,%%zmm10,%%zmm11,%%zmm12,%%zmm13,%%zmm14,%%zmm15)\
     INNER_STORE_8x8(%%zmm8,%%zmm9,%%zmm10,%%zmm11,%%zmm12,%%zmm13,%%zmm14,%%zmm15)
+
 #define INNER_SAVE_m8n16 \
-    INNER_PREF_8x8\
+    "movq %3,%10;"\
     INNER_TRANS_8x8(%%zmm8,%%zmm10,%%zmm12,%%zmm14,%%zmm16,%%zmm18,%%zmm20,%%zmm22)\
     INNER_STORE_8x8(%%zmm8,%%zmm10,%%zmm12,%%zmm14,%%zmm16,%%zmm18,%%zmm20,%%zmm22)\
-    INNER_PREF_8x8\
     INNER_TRANS_8x8(%%zmm9,%%zmm11,%%zmm13,%%zmm15,%%zmm17,%%zmm19,%%zmm21,%%zmm23)\
     INNER_STORE_8x8(%%zmm9,%%zmm11,%%zmm13,%%zmm15,%%zmm17,%%zmm19,%%zmm21,%%zmm23)
+
 #define INNER_SAVE_m8n24 \
-    INNER_PREF_8x8\
+    "movq %3,%10;"\
     INNER_TRANS_8x8(%%zmm8,%%zmm11,%%zmm14,%%zmm17,%%zmm20,%%zmm23,%%zmm26,%%zmm29)\
     INNER_STORE_8x8(%%zmm8,%%zmm11,%%zmm14,%%zmm17,%%zmm20,%%zmm23,%%zmm26,%%zmm29)\
-    INNER_PREF_8x8\
     INNER_TRANS_8x8(%%zmm9,%%zmm12,%%zmm15,%%zmm18,%%zmm21,%%zmm24,%%zmm27,%%zmm30)\
     INNER_STORE_8x8(%%zmm9,%%zmm12,%%zmm15,%%zmm18,%%zmm21,%%zmm24,%%zmm27,%%zmm30)\
-    INNER_PREF_8x8\
     INNER_TRANS_8x8(%%zmm10,%%zmm13,%%zmm16,%%zmm19,%%zmm22,%%zmm25,%%zmm28,%%zmm31)\
     INNER_STORE_8x8(%%zmm10,%%zmm13,%%zmm16,%%zmm19,%%zmm22,%%zmm25,%%zmm28,%%zmm31)
 
 #define COMPUTE_n8 {\
+    b_pref = packed_b_pointer + 8 * K;\
     __asm__ __volatile__(\
     "vbroadcastsd (%9),%%zmm3;"\
     "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $5,%%r12;"\
@@ -290,7 +297,7 @@
     INNER_KERNELm8(8)\
     INNER_SAVE_m8n8\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1; addq %%r12,%0;"\
-    "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $64,%3;"\
+    "addq $64,%3;"\
     "subq $8,%8; cmpq $8,%8; jnb 42221b;"\
     "42222:\n\t"\
     "cmpq $4,%8; jb 42223f;"\
@@ -298,7 +305,7 @@
     INNER_KERNELm4(8)\
     INNER_SAVE_m4n8\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1;"\
-    "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $32,%3;"\
+    "addq $32,%3;"\
     "subq $4,%8;"\
     "42223:\n\t"\
     "cmpq $2,%8; jb 42224f;"\
@@ -318,11 +325,13 @@
     "42225:\n\t"\
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $3,%4;addq %4,%3;shrq $3,%4;"\
-    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(alpha)\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),\
+    "+r"(M),"+r"(alpha),"+r"(c_store),"+r"(b_pref)\
     ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
 }
 #define COMPUTE_n16 {\
+    b_pref = packed_b_pointer + 16 * K;\
     __asm__ __volatile__(\
     "vbroadcastsd (%9),%%zmm3;"\
     "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $5,%%r12;"\
@@ -332,7 +341,7 @@
     INNER_KERNELm8(16)\
     INNER_SAVE_m8n16\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1; addq %%r12,%0;"\
-    "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $64,%3;"\
+    "addq $64,%3;"\
     "subq $8,%8; cmpq $8,%8; jnb 32221b;"\
     "32222:\n\t"\
     "cmpq $4,%8; jb 32223f;"\
@@ -340,7 +349,7 @@
     INNER_KERNELm4(16)\
     INNER_SAVE_m4n16\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1;"\
-    "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $32,%3;"\
+    "addq $32,%3;"\
     "subq $4,%8;"\
     "32223:\n\t"\
     "cmpq $2,%8; jb 32224f;"\
@@ -348,7 +357,7 @@
     INNER_KERNELm2(16)\
     INNER_SAVE_m2n16\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1;"\
-    "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $16,%3;"\
+    "addq $16,%3;"\
     "subq $2,%8;"\
     "32224:\n\t"\
     "cmpq $1,%8; jb 32225f;"\
@@ -356,17 +365,19 @@
     INNER_KERNELm1(16)\
     INNER_SAVE_m1n16\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1;"\
-    "shlq $3,%4;subq %4,%3;shrq $3,%4;addq $8,%3;"\
+    "addq $8,%3;"\
     "32225:\n\t"\
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $4,%4;addq %4,%3;shrq $4,%4;"\
     "leaq (%1,%%r12,4),%1;"\
-    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(alpha)\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),\
+    "+r"(M),"+r"(alpha),"+r"(c_store),"+r"(b_pref)\
     ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17",\
     "zmm18","zmm19","zmm20","zmm21","zmm22","zmm23","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
 }
 #define COMPUTE_n24 {\
+    b_pref = packed_b_pointer + 24 * K;\
     __asm__ __volatile__(\
     "vbroadcastsd (%9),%%zmm3;"\
     "movq %8,%%r14;movq %2,%%r13;movq %2,%%r12;shlq $5,%%r12;"\
@@ -376,7 +387,7 @@
     INNER_KERNELm8(24)\
     INNER_SAVE_m8n24\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1; addq %%r12,%0;"\
-    "shlq $3,%4;subq %4,%3;shlq $1,%4;subq %4,%3;shrq $4,%4;addq $64,%3;"\
+    "addq $64,%3;"\
     "subq $8,%8; cmpq $8,%8; jnb 22221b;"\
     "22222:\n\t"\
     "cmpq $4,%8; jb 22223f;"\
@@ -384,7 +395,7 @@
     INNER_KERNELm4(24)\
     INNER_SAVE_m4n24\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1;"\
-    "shlq $3,%4;subq %4,%3;shlq $1,%4;subq %4,%3;shrq $4,%4;addq $32,%3;"\
+    "addq $32,%3;"\
     "subq $4,%8;"\
     "22223:\n\t"\
     "cmpq $2,%8; jb 22224f;"\
@@ -392,7 +403,7 @@
     INNER_KERNELm2(24)\
     INNER_SAVE_m2n24\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1;"\
-    "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $16,%3;"\
+    "addq $16,%3;"\
     "subq $2,%8;"\
     "22224:\n\t"\
     "cmpq $1,%8; jb 22225f;"\
@@ -400,12 +411,13 @@
     INNER_KERNELm1(24)\
     INNER_SAVE_m1n24\
     "movq %%r13,%2; subq %%r12,%1; subq %%r12,%1;"\
-    "shlq $4,%4;subq %4,%3;shrq $4,%4;addq $8,%3;"\
+    "addq $8,%3;"\
     "22225:\n\t"\
     "movq %%r14,%8;shlq $3,%8;subq %8,%3;shrq $3,%8;"\
     "shlq $3,%4;addq %4,%3;shlq $1,%4;addq %4,%3;shrq $4,%4;"\
     "leaq (%1,%%r12,4),%1; leaq (%1,%%r12,2),%1;"\
-    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),"+r"(M),"+r"(alpha)\
+    :"+r"(a_block_pointer),"+r"(packed_b_pointer),"+r"(K),"+r"(c_pointer),"+r"(ldc_in_bytes),"+Yk"(k02),"+Yk"(k03),"+Yk"(k01),\
+    "+r"(M),"+r"(alpha),"+r"(c_store),"+r"(b_pref)\
     ::"zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15","zmm16","zmm17","zmm18","zmm19",\
     "zmm20","zmm21","zmm22","zmm23","zmm24","zmm25","zmm26","zmm27","zmm28","zmm29","zmm30","zmm31","cc","memory","k1","r12","r13","r14");\
     a_block_pointer -= M * K;\
@@ -415,8 +427,8 @@ static void KERNEL_MAIN(double *packed_a, double *packed_b, BLASLONG m, BLASLONG
     if(k==0 || m==0 || ndiv8==0) return;
     int64_t ldc_in_bytes = (int64_t)LDC * sizeof(double);
     int64_t K = (int64_t)k; int64_t M = (int64_t)m;
-    double *a_block_pointer;
-    double *c_pointer = c;
+    double *a_block_pointer,*b_pref;
+    double *c_pointer = c,*c_store = c;
     __mmask16 k01 = 0x00f0,k02 = 0x000f,k03 = 0x0033;
     BLASLONG ndiv8_count;
     double *packed_b_pointer = packed_b;
