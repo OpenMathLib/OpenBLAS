@@ -324,6 +324,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
     if (inc_x == 1) {
 
+#if defined(_CALL_ELF) && (_CALL_ELF == 2)
         BLASLONG n1 = n & -32;
         if (n1 > 0) {
 
@@ -331,7 +332,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
             i = n1;
         }
-
+#endif
         while (i < n) {
             if (ABS(x[i]) > maxf) {
                 max = i;

@@ -1696,10 +1696,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ZGEMM_DEFAULT_P 256
 
 #ifdef WINDOWS_ABI
-#define SGEMM_DEFAULT_Q 320
+#define SGEMM_DEFAULT_Q 192
 #define DGEMM_DEFAULT_Q 128
 #else
-#define SGEMM_DEFAULT_Q 384
+#define SGEMM_DEFAULT_Q 192
 #define DGEMM_DEFAULT_Q 128
 #endif
 #define CGEMM_DEFAULT_Q 192
@@ -2588,38 +2588,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P	16
 
-// Darwin / Cross
-#if defined(OS_DARWIN) && defined(CROSS)
-
-#define SGEMM_DEFAULT_UNROLL_M  2
-#define SGEMM_DEFAULT_UNROLL_N  2
-
-#define DGEMM_DEFAULT_UNROLL_M  2
-#define DGEMM_DEFAULT_UNROLL_N  2
-
-#define CGEMM_DEFAULT_UNROLL_M  2
-#define CGEMM_DEFAULT_UNROLL_N  2
-
-#define ZGEMM_DEFAULT_UNROLL_M  2
-#define ZGEMM_DEFAULT_UNROLL_N  2
-
-#define SGEMM_DEFAULT_P	128
-#define DGEMM_DEFAULT_P	128
-#define CGEMM_DEFAULT_P 96
-#define ZGEMM_DEFAULT_P 64
-
-#define SGEMM_DEFAULT_Q 240
-#define DGEMM_DEFAULT_Q 120
-#define CGEMM_DEFAULT_Q 120
-#define ZGEMM_DEFAULT_Q 120
-
-#define SGEMM_DEFAULT_R 12288
-#define DGEMM_DEFAULT_R 8192
-#define CGEMM_DEFAULT_R 4096
-#define ZGEMM_DEFAULT_R 4096
-
-#else // Linux / Native
-
 #if defined(CORTEXA53) || defined(CORTEXA57) || \
     defined(CORTEXA72) || defined(CORTEXA73) || \
     defined(FALKOR)    || defined(TSV110)
@@ -2754,8 +2722,6 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_R 4096
 
 #endif // Cores
-
-#endif // Linux / Darwin
 
 #endif // ARMv8
 
