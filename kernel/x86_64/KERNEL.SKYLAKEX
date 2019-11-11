@@ -14,3 +14,6 @@ DGEMMOTCOPY    =  dgemm_tcopy_8_skylakex.c
 
 SGEMM_BETA = sgemm_beta_skylakex.c
 DGEMM_BETA = dgemm_beta_skylakex.c
+
+CGEMMKERNEL    =  cgemm_kernel_8x2_skylakex.c
+ZGEMMKERNEL    =  zgemm_kernel_4x2_skylakex.c
