@@ -316,14 +316,14 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         minf = CABS1(x,0); //index will not be incremented
 
 #if defined(_CALL_ELF) && (_CALL_ELF == 2)
-        BLASLONG n1 = n & -16;
+	BLASLONG n1 = n & -16;
         if (n1 > 0) {
 
             min = ziamin_kernel_16_TUNED(n1, x, &minf);
             i = n1;
             ix = n1 << 1;
         }
-#endif      
+#endif 
 
         while(i < n)
         {

@@ -11,11 +11,12 @@
 
 	PROLOGUE
 
-icamin_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
 	addi 2,2,.TOC.-.LCF0@l
+#if _CALL_ELF ==2
 	.localentry	icamin_k,.-icamin_k
+#endif
 	mr. 9,3
 	ble 0,.L25
 	cmpdi 7,5,0
@@ -388,7 +389,9 @@ icamin_k:
 	b .L21
 	.long 0
 	.byte 0,0,0,0,0,1,0,0
+#if _CALL_ELF ==2
 	.size	icamin_k,.-icamin_k
+#endif
 	.section	.rodata.cst16,"aM",@progbits,16
 	.align 4
 .LC2:

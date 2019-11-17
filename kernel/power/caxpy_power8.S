@@ -12,11 +12,12 @@
 
 	PROLOGUE
 
-caxpy_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
 	addi 2,2,.TOC.-.LCF0@l
+#if _CALL_ELF ==2
 	.localentry	caxpy_k,.-caxpy_k
+#endif
 	mr. 7,3
 	ble 0,.L33
 	cmpdi 7,9,1
@@ -515,7 +516,9 @@ caxpy_k:
 	b .L13
 	.long 0
 	.byte 0,0,0,0,0,4,0,0
+#if _CALL_ELF ==2
 	.size	caxpy_k,.-caxpy_k
+#endif
 	.section	.rodata
 	.align 4
 	.set	.LANCHOR0,. + 0
