@@ -762,7 +762,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int __attribute__ ((noinline))
 CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float * __restrict A, float * __restrict B, float * __restrict C, BLASLONG ldc)
 {
-	unsigned long M = m, N = n, K = k;
+	unsigned long long M = m, N = n, K = k;
 	if (M == 0)
 		return 0;
 	if (N == 0)
@@ -1215,7 +1215,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float * __restrict A, flo
 
 int sgemm_kernel_direct_performant(BLASLONG M, BLASLONG N, BLASLONG K)
 {
-	int mnk = M * N * K;
+	unsigned long mnk = M * N * K;
 	/* large matrixes -> not performant */
 	if (mnk >= 28 * 512 * 512)
 		return 0;
