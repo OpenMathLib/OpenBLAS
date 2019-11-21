@@ -70,6 +70,7 @@ int detect(void)
   if (strstr(p, "3906")) return CPU_Z14;
   if (strstr(p, "3907")) return CPU_Z14;
   if (strstr(p, "8561")) return CPU_Z14;        // fallback z15 to z14
+  if (strstr(p, "8562")) return CPU_Z14;        // fallback z15 to z14
 
   return CPU_GENERIC;
 }
