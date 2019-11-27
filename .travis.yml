@@ -4,10 +4,11 @@ dist: precise
 sudo: true
 language: c
 
-matrix:
+jobs:
   include:
     - &test-ubuntu
       os: linux
+      stage: test
       compiler: gcc
       addons:
         apt:
@@ -17,22 +18,13 @@ matrix:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
         - set -e
-        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE
       env:
         - TARGET_BOX=LINUX64
         - BTYPE="BINARY=64"
-
-    - <<: *test-ubuntu
-      os: linux-ppc64le
-      before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
-      env:
-        # for matrix annotation only
-        - TARGET_BOX=PPC64LE_LINUX
-        - BTYPE="BINARY=64 USE_OPENMP=1"
 
     - <<: *test-ubuntu
       env:
@@ -67,6 +59,7 @@ matrix:
         - BTYPE="BINARY=32"
 
     - os: linux
+      stage: test
       compiler: gcc
       addons:
         apt:
@@ -87,12 +80,13 @@ matrix:
     # that don't require sudo.
     - &test-alpine
       os: linux
+      stage: test
       dist: trusty
       sudo: true
       language: minimal
       before_install:
-        - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.9.0/alpine-chroot-install' \
-          && echo 'e5dfbbdc0c4b3363b99334510976c86bfa6cb251  alpine-chroot-install' | sha1sum -c || exit 1"
+        - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.6.0/alpine-chroot-install' \
+              && echo 'a827a4ba3d0817e7c88bae17fe34e50204983d1e  alpine-chroot-install' | sha1sum -c || exit 1"
         - alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
       install:
         - sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers'
@@ -126,10 +120,11 @@ matrix:
     - <<: *test-alpine
       env:
         - TARGET_BOX=LINUX64_MUSL
-        - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=CORE2"
+        - BTYPE="BINARY=64 NO_AFFINITY=1 USE_OPENMP=0 NO_LAPACK=0 TARGET=core2"
 
     - &test-cmake
       os: linux
+      stage: test
       compiler: clang
       addons:
         apt:
@@ -156,30 +151,17 @@ matrix:
       env:
         - CMAKE=1
 
-    - &test-macos
+    - osx-gcc
       os: osx
-      osx_image: xcode10.1
-      before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
+      stage: test
+      osx_image: xcode8
+      before_script: *common-before
         - brew update
-        - brew install gcc@8 # for gfortran
+        - brew install gcc # for gfortran
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
-        - BTYPE="BINARY=64 INTERFACE64=1 FC=gfortran-8"
-
-    - <<: *test-macos
-      osx_image: xcode8.3
-      env:
-        - BTYPE="BINARY=32 FC=gfortran-8"
-
-    - <<: *test-macos
-      osx_image: xcode10.1
-      env:
-        - COMMON_FLAGS="NUM_THREADS=32"
-        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk"
-        - CFLAGS="-O2 -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch arm64 -miphoneos-version-min=10.0"
-        - BTYPE="TARGET=ARMV8 BINARY=64 HOSTCC=clang"
+        - BTYPE="BINARY=64 INTERFACE64=1"
 
 # whitelist
 branches:
