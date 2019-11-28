@@ -97,15 +97,17 @@
 
 /* %10 for prefetch of C elements before storage; %4 = ldc(in bytes),%11 for prefetch of next B block */
 #define INNER_KERNELm8(nn) \
-    "movq %3,%10;cmpq $16,%2;jb "#nn"001f;"\
+    "movq %3,%10;cmpq $18,%2;jb "#nn"001f;"\
     #nn"008:\n\t"\
+    INNER_KERNEL_k1m8n##nn "addq $64,%1;"\
     INNER_KERNEL_k1m8n##nn "addq $64,%1;"\
     INNER_KERNEL_k1m8n##nn "addq $64,%1;"\
     "prefetcht1 (%10); prefetcht1 63(%10); addq %4,%10;"\
     INNER_KERNEL_k1m8n##nn "addq $64,%1;"\
     INNER_KERNEL_k1m8n##nn "addq $64,%1;"\
-    "prefetcht1 (%11); addq $16,%11;"\
-    "subq $4,%2;cmpq $16,%2;jnb "#nn"008b;"\
+    INNER_KERNEL_k1m8n##nn "addq $64,%1;"\
+    "prefetcht1 (%11); addq $32,%11;"\
+    "subq $6,%2;cmpq $18,%2;jnb "#nn"008b;"\
     "movq %3,%10;"\
     #nn"001:\n\t"\
     "cmpq $1,%2;jb "#nn"000f;"\
