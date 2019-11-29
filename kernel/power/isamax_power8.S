@@ -12,11 +12,12 @@
 
 	PROLOGUE
 
-isamax_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
 	addi 2,2,.TOC.-.LCF0@l
+#if _CALL_ELF ==2
 	.localentry	isamax_k,.-isamax_k
+#endif
 	mr. 11,3
 	ble 0,.L36
 	cmpdi 7,5,0
@@ -397,7 +398,9 @@ isamax_k:
 	b .L61
 	.long 0
 	.byte 0,0,0,0,0,1,0,0
+#if _CALL_ELF ==2
 	.size	isamax_k,.-isamax_k
+#endif
 	.section	.rodata.cst16,"aM",@progbits,16
 	.align 4
 .LC2:

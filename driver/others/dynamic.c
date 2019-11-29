@@ -329,7 +329,7 @@ int support_avx512(){
   if (!support_avx())
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
-  if((ebx & (1<<7)) != 1){
+  if((ebx & (1<<7)) == 0){
       ret=0;  //OS does not even support AVX2
   }
   if((ebx & (1<<31)) != 0){
