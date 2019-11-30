@@ -16,7 +16,11 @@
 0:	addis 2,12,.TOC.-.LCF0@ha
 	addi 2,2,.TOC.-.LCF0@l
 #if _CALL_ELF ==2
+#ifdef CONJ
+	.localentry	caxpyc_k,.-caxpyc_k
+#else
 	.localentry	caxpy_k,.-caxpy_k
+#endif
 #endif
 	mr. 7,3
 	ble 0,.L33
@@ -517,7 +521,11 @@
 	.long 0
 	.byte 0,0,0,0,0,4,0,0
 #if _CALL_ELF ==2
+#ifdef CONJ
+	.size	caxpyc_k,.-caxpyc_k
+#else
 	.size	caxpy_k,.-caxpy_k
+#endif
 #endif
 	.section	.rodata
 	.align 4
