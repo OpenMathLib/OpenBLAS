@@ -49,7 +49,7 @@ extern gotoblas_t  gotoblas_THUNDERX2T99;
 
 extern void openblas_warning(int verbose, const char * msg);
 
-#define NUM_CORETYPES    4
+#define NUM_CORETYPES    9
 
 /*
  * In case asm/hwcap.h is outdated on the build system, make sure
@@ -65,17 +65,27 @@ extern void openblas_warning(int verbose, const char * msg);
 
 static char *corename[] = {
   "armv8",
+  "cortexa53",
   "cortexa57",
+  "cortexa72",
+  "cortexa73",
+  "falkor",
   "thunderx",
   "thunderx2t99",
+  "tsv110"
   "unknown"
 };
 
 char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_ARMV8)        return corename[ 0];
-  if (gotoblas == &gotoblas_CORTEXA57)    return corename[ 1];
-  if (gotoblas == &gotoblas_THUNDERX)     return corename[ 2];
-  if (gotoblas == &gotoblas_THUNDERX2T99) return corename[ 3];
+  if (gotoblas == &gotoblas_CORTEXA53)    return corename[ 1];
+  if (gotoblas == &gotoblas_CORTEXA57)    return corename[ 2];
+  if (gotoblas == &gotoblas_CORTEXA72)    return corename[ 3];
+  if (gotoblas == &gotoblas_CORTEXA73)    return corename[ 4];
+  if (gotoblas == &gotoblas_FALKOR)       return corename[ 5];
+  if (gotoblas == &gotoblas_THUNDERX)     return corename[ 6];
+  if (gotoblas == &gotoblas_THUNDERX2T99) return corename[ 7];
+  if (gotoblas == &gotoblas_tsv110)       return corename[ 8];
   return corename[NUM_CORETYPES];
 }
 
@@ -96,9 +106,15 @@ static gotoblas_t *force_coretype(char *coretype) {
   switch (found)
   {
     case  0: return (&gotoblas_ARMV8);
-    case  1: return (&gotoblas_CORTEXA57);
-    case  2: return (&gotoblas_THUNDERX);
-    case  3: return (&gotoblas_THUNDERX2T99);
+    case  1: return (&gotoblas_CORTEXA53);
+    case  2: return (&gotoblas_CORTEXA57);
+    case  3: return (&gotoblas_CORTEXA72);
+    case  4: return (&gotoblas_CORTEXA73);
+    case  5: return (&gotoblas_FALKOR);
+    case  6: return (&gotoblas_THUNDERX);
+    case  7: return (&gotoblas_THUNDERX2T99);
+    case  8: return (&gotoblas_TSV110);
+  }
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -136,10 +152,14 @@ static gotoblas_t *get_coretype(void) {
     case 0x41: // ARM
       switch (part)
       {
-        case 0xd07: // Cortex A57
-        case 0xd08: // Cortex A72
         case 0xd03: // Cortex A53
+          return &gotoblas_CORTEXA53;
+        case 0xd07: // Cortex A57
           return &gotoblas_CORTEXA57;
+        case 0xd08: // Cortex A72
+          return &gotoblas_CORTEXA72;
+        case 0xd09: // Cortex A73
+          return &gotoblas_CORTEXA73;
       }
       break;
     case 0x42: // Broadcom
@@ -156,6 +176,20 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_THUNDERX;
         case 0x0af: // ThunderX2
           return &gotoblas_THUNDERX2T99;
+      }
+      break;
+    case 0x48: // HiSilicon
+      switch (part)
+      {
+        case 0xd01: // tsv110
+          return &gotoblas_TSV110;
+      }
+      break;
+    case 0x51: // Qualcomm
+      switch (part)
+      {
+        case 0xc00: // Falkor
+          return &gotoblas_FALKOR;
       }
       break;
   }
