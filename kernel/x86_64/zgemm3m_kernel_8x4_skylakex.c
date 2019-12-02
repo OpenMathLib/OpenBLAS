@@ -1,5 +1,5 @@
 /* %0 = "+r"(a_pointer), %1 = "+r"(b_pointer), %2 = "+r"(c_pointer), %3 = "+r"(ldc_in_bytes), %4 for k_count, %5 for c_store */
-/* r12 = k << 5(const), r13 = k(const), r14 = b_head_pos(const), r15 = %1 + 3r12 */
+/* r11 = m(const), r12 = k << 5(const), r13 = k(const), r14 = b_head_pos(const), r15 = %1 + 3r12 */
 
 #include "common.h"
 #include <stdint.h>
@@ -153,6 +153,7 @@
 #define COMPUTE_m4_n20 COMPUTE_L_m4(12,33633) COMPUTE_R_m4(8,33933)
 #define COMPUTE_m4_n24 COMPUTE_L_m4(12,33533) COMPUTE_R_m4(12,33933)
 #define COMPUTE_m4(ndim) COMPUTE_m4_n##ndim
+
 /* m = 2 *//* vmm0 for alpha, vmm1-vmm3 for temporary use, vmm4-vmm15 for accumulators */
 #define KERNEL_k1m2n1 \
     "vmovupd (%0),%%xmm1; addq $16,%0;"\
@@ -219,6 +220,7 @@
     "decq %4; jmp "#ndim"002022b;"\
     #ndim"002023:\n\t"\
     SAVE_m2(ndim)
+
 /* m = 1 *//* vmm0 for alpha, vmm1-vmm3 and vmm10-vmm15 for temporary use, vmm4-vmm9 for accumulators */
 #define KERNEL_k1m1n1 \
     "vmovsd (%0),%%xmm1; addq $8,%0;"\
@@ -278,6 +280,7 @@
     "decq %4; jmp "#ndim"001011b;"\
     #ndim"001012:\n\t"\
     SAVE_m1(ndim)
+
 #define COMPUTE(ndim) {\
     next_b = b_pointer + ndim * K;\
     __asm__ __volatile__(\
