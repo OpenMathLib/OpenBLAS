@@ -144,14 +144,14 @@
     "decq %4; jmp "#ndim""#sim"04042b;"\
     #ndim""#sim"04043:\n\t"\
     SAVE_R_m4n##ndim
-#define COMPUTE_m4_n1  COMPUTE_L_m4(1,33833)
-#define COMPUTE_m4_n2  COMPUTE_L_m4(2,33833)
-#define COMPUTE_m4_n4  COMPUTE_L_m4(4,33833)
-#define COMPUTE_m4_n8  COMPUTE_L_m4(8,33833)
-#define COMPUTE_m4_n12 COMPUTE_L_m4(12,33833)
-#define COMPUTE_m4_n16 COMPUTE_L_m4(12,33733) COMPUTE_R_m4(4,33933)
-#define COMPUTE_m4_n20 COMPUTE_L_m4(12,33633) COMPUTE_R_m4(8,33933)
-#define COMPUTE_m4_n24 COMPUTE_L_m4(12,33533) COMPUTE_R_m4(12,33933)
+#define COMPUTE_m4_n1  COMPUTE_L_m4(1,383)
+#define COMPUTE_m4_n2  COMPUTE_L_m4(2,383)
+#define COMPUTE_m4_n4  COMPUTE_L_m4(4,383)
+#define COMPUTE_m4_n8  COMPUTE_L_m4(8,383)
+#define COMPUTE_m4_n12 COMPUTE_L_m4(12,383)
+#define COMPUTE_m4_n16 COMPUTE_L_m4(12,373) COMPUTE_R_m4(4,393)
+#define COMPUTE_m4_n20 COMPUTE_L_m4(12,363) COMPUTE_R_m4(8,393)
+#define COMPUTE_m4_n24 COMPUTE_L_m4(12,353) COMPUTE_R_m4(12,393)
 #define COMPUTE_m4(ndim) COMPUTE_m4_n##ndim
 
 /* m = 2 *//* vmm0 for alpha, vmm1-vmm3 for temporary use, vmm4-vmm15 for accumulators */
