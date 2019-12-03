@@ -77,7 +77,7 @@ static char *corename[] = {
   "falkor",
   "thunderx",
   "thunderx2t99",
-  "tsv110"
+  "tsv110",
   "unknown"
 };
 
