@@ -90,7 +90,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_FALKOR)       return corename[ 5];
   if (gotoblas == &gotoblas_THUNDERX)     return corename[ 6];
   if (gotoblas == &gotoblas_THUNDERX2T99) return corename[ 7];
-  if (gotoblas == &gotoblas_tsv110)       return corename[ 8];
+  if (gotoblas == &gotoblas_TSV110)       return corename[ 8];
   return corename[NUM_CORETYPES];
 }
 
@@ -119,7 +119,6 @@ static gotoblas_t *force_coretype(char *coretype) {
     case  6: return (&gotoblas_THUNDERX);
     case  7: return (&gotoblas_THUNDERX2T99);
     case  8: return (&gotoblas_TSV110);
-  }
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
