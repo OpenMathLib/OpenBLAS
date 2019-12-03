@@ -586,6 +586,8 @@ static gotoblas_t *get_coretype(void){
         }
         return NULL;  
       case 7:
+	if (model == 10) // Goldmont Plus
+	   return &gotoblas_NEHALEM;
         if (model == 14) {
 	// Ice Lake
           if (support_avx512()) 
