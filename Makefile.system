@@ -559,9 +559,6 @@ DYNAMIC_CORE += TSV110
 endif
 
 ifeq ($(ARCH), power)
-
-
-ifeq ($(ARCH), power)
 DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
