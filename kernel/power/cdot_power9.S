@@ -13,10 +13,7 @@
 	
 cdot_k:
 .LCF0:
-0:	addis 2,12,.TOC.-.LCF0@ha
-	addi 2,2,.TOC.-.LCF0@l
-	.localentry	cdot_k,.-cdot_k
-	mr. 9,3
+0:	mr. 9,3
 	ble 0,.L10
 	cmpdi 7,5,1
 	beq 7,.L18
