@@ -1098,7 +1098,7 @@ ifeq ($(OS), AIX)
 	$(CC) -c $(CFLAGS) -DTRSMKERNEL -UCOMPLEX -DDOUBLE -UUPPER -DLT -UCONJ dtrsm_kernel_lt_nomacros.s -o $@
 	rm dtrsm_kernel_lt.s dtrsm_kernel_lt_nomacros.s
 else
-	$(CC) $(CFLAGS) -DTRSMKERNEL -UCOMPLEX -DDOUBLE -UUPPER -DLT -UCONJ $< -o $@
+	$(CC) -c $(CFLAGS) -DTRSMKERNEL -UCOMPLEX -DDOUBLE -UUPPER -DLT -UCONJ $< -o $@
 endif
 
 $(KDIR)dtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRSMKERNEL_RN) $(DTRSMDEPEND)

@@ -60,10 +60,10 @@
 #define XXSWAPD(T,A)	xxswapd	T, A
 #define XVMOVDP(T,A)	xvmovdp	T, A
 
-#define XXSPLTD_S(T,A,z)	"xxspltd	T, A, z	\n\t"
-#define XXMRGHD_S(T,A,B)	"xxmrghd	T, A, B	\n\t"
-#define XXMRGLD_S(T,A,B)	"xxmrgld	T, A, B	\n\t"
-#define XXSWAPD_S(T,A)	"xxswapd	T, A"
+#define XXSPLTD_S(T,A,z)	"xxspltd	" str(T) ", " str(A) ", " str(z)"	\n\t"
+#define XXMRGHD_S(T,A,B)	"xxmrghd	" str(T) ", " str(A) ", " str(B)"	\n\t"
+#define XXMRGLD_S(T,A,B)	"xxmrgld	" str(T) ", " str(A) ", " str(B)"	\n\t"
+#define XXSWAPD_S(T,A)	"xxswapd	" str(T) ", " str(A) "	\n\t"
 
 #endif
 
