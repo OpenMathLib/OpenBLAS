@@ -93,11 +93,11 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             "li       %[off],32 \n\t" 
 
 
-            "ble-     2f      \n\t"
+            "ble-     two%=      \n\t"
 
             //--------------------------------------------------           
-            ".p2align   5           \n\t"
-            "1:                     \n\t"
+            ".align   5           \n\t"
+            "one%=:                     \n\t"
             "xvmaddadp   34,36,32  \n\t"
             "xvmaddadp   35,38,32  \n\t"
             "addi   %[off2],  %[off2],32 \n\t"
@@ -137,7 +137,7 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             "lxvd2x     49, %[a6], %[off2]  \n\t"
             "lxvd2x     51, %[a7], %[off2]  \n\t" 
             "lxvd2x     33,  %[x], %[off2]  \n\t"            
-            "ble- 2f  \n\t"
+            "ble- two%=  \n\t"
             "xvmaddadp   34,36,32  \n\t"
             "xvmaddadp   35,38,32  \n\t"
             "addi   %[off2],  %[off2],32 \n\t" 
@@ -177,7 +177,7 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             "lxvd2x     49, %[a6], %[off2]  \n\t"
             "lxvd2x     51, %[a7], %[off2]  \n\t" 
             "lxvd2x     33,  %[x], %[off2]  \n\t"            
-            "ble- 2f  \n\t"
+            "ble- two%=  \n\t"
             "xvmaddadp   34,36,32  \n\t"
             "xvmaddadp   35,38,32  \n\t"
 #if defined(PREFETCH)            
@@ -229,7 +229,7 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             
             "lxvd2x     33,  %[x], %[off2]  \n\t"            
             "addic. %[n],%[n],-4 \n\t"                        
-            "ble- 2f  \n\t"            
+            "ble- two%=  \n\t"            
  
             "addi   %[off2],  %[off2],32 \n\t" 
 #if defined(PREFETCH)
@@ -288,9 +288,9 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
 #if defined(PREFETCH)
             "dcbt   %[temp],%[x]  \n\t" 
 #endif            
-            "bgt+ 1b  \n\t"
-            ".p2align   5           \n\t"
-            "2: \n\t"
+            "bgt+ one%=  \n\t"
+            ".align   5           \n\t"
+            "two%=: \n\t"
             //--------------------------------------------
 
             "xvmaddadp   34,36,32  \n\t"
@@ -301,7 +301,7 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             "xvmaddadp   7,46,32  \n\t" 
             "xvmaddadp   8,48,32  \n\t"
             "xvmaddadp   9,50,32  \n\t" 
-            "xxspltd 36, %x[alpha], 0 \n\t"
+            XXSPLTD_S(36,%x[alpha],0)
             "xvmaddadp  34,37,33  \n\t"
             "xvmaddadp  35,39,33  \n\t"            
             "xvmaddadp  4,41,33  \n\t"
@@ -322,21 +322,21 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
 
  
 
-            "xxmrgld 42,34,35 \n\t"
-            "xxmrghd 43,34,35 \n\t"
+            XXMRGLD_S(42,34,35)
+            XXMRGHD_S(43,34,35)
 
-            "xxmrgld 44,4,5 \n\t"
-            "xxmrghd 45,4,5 \n\t"
+            XXMRGLD_S(44,4,5)
+            XXMRGHD_S(45,4,5)
 
             "xvadddp 42,42,43 \n\t"
 
-            "xxmrgld 46,6,7 \n\t"
-            "xxmrghd 47,6,7 \n\t"
+            XXMRGLD_S(46,6,7)
+            XXMRGHD_S(47,6,7)
 
             "xvadddp 44,44,45 \n\t"
 
-            "xxmrgld 48,8,9 \n\t"
-            "xxmrghd 49,8,9 \n\t"
+            XXMRGLD_S(48,8,9)
+            XXMRGHD_S(49,8,9)
 
             "xvadddp 46,46,47 \n\t"
             
