@@ -34,7 +34,7 @@ ifndef SGEMM_BETA
 SGEMM_BETA = ../generic/gemm_beta.c
 endif
 ifndef DGEMM_BETA
-DGEMM_BETA = ../generic/gemm_beta.c
+DGEMM_BETA = ../arm64/dgemm_beta.S
 endif
 ifndef CGEMM_BETA
 CGEMM_BETA = ../generic/zgemm_beta.c
