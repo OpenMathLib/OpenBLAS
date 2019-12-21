@@ -67,7 +67,7 @@ CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ZTRMMKERNEL    =  zgemm_kernel_4x2_haswell.S
-ZGEMMKERNEL    =  zgemm_kernel_4x2_haswell.S
+ZGEMMKERNEL    =  zgemm_kernel_4x2_haswell.c
 ZGEMMINCOPY    =  ../generic/zgemm_ncopy_4.c
 ZGEMMITCOPY    =  ../generic/zgemm_tcopy_4.c
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
