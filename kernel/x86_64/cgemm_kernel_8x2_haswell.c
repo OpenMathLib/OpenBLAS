@@ -104,6 +104,7 @@
   KERNEL_k1m8n##ndim "decq %5; jnz "#ndim"8882b;"\
   #ndim"8883:\n\t"\
   "prefetcht0 (%%r14); prefetcht0 64(%%r14);" SAVE_m8n##ndim
+
 /* m=4, ymm 0-3 temp, ymm 4-15 acc, expanded accumulators */
 #define KERNEL_k1m4n1 \
   "vmovsldup (%0),%%ymm1; vmovshdup (%0),%%ymm2; addq $32,%0;"\
@@ -137,6 +138,7 @@
   "decq %5; jnz "#ndim"4441b;"\
   #ndim"4442:\n\t"\
   SAVE_m4n##ndim
+
 /* m=2, xmm 0-3 temp, xmm 4-15 acc, expanded accumulators */
 #if A_CONJ == B_CONJ
   #define acc_m2n1_exp(ar,ai,b2,cl,cr) "vfmadd231ps %%xmm"#ar",%%xmm"#b2",%%xmm"#cl"; vfmadd231ps %%xmm"#ai",%%xmm"#b2",%%xmm"#cr";"
@@ -189,6 +191,7 @@
   "decq %5; jnz "#ndim"2221b;"\
   #ndim"2222:\n\t"\
   SAVE_m2n##ndim
+
 /* m=1, xmm 0-3 temp, xmm 4-9 acc, expanded accumulators */
 #if A_CONJ == B_CONJ
   #define acc_m1n1_exp(ar,ai,b2,cl,cr) "vfmadd231ps %%xmm"#ar",%%xmm"#b2",%%xmm"#cl"; vfmadd231ps %%xmm"#ai",%%xmm"#b2",%%xmm"#cr";"
@@ -242,6 +245,7 @@
   "decq %5; jnz "#ndim"1111b;"\
   #ndim"1112:\n\t"\
   SAVE_m1n##ndim
+
 #define COMPUTE(ndim) {\
   b_pref = b_ptr + ndim * K *2;\
   __asm__ __volatile__ (\
@@ -266,6 +270,7 @@
     "xmm6","xmm7","xmm8","xmm9","xmm10","xmm11","xmm12","xmm13","xmm14","xmm15");\
   a_ptr -= M * K *2; b_ptr += ndim * K *2; c_ptr += (ndim * LDC - M) * 2;\
 }
+
 int __attribute__ ((noinline))
 CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alphar, float alphai, float * __restrict__ A, float * __restrict__ B, float * __restrict__ C, BLASLONG LDC)
 {
