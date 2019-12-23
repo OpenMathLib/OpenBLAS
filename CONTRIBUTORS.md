@@ -173,7 +173,8 @@ In chronological order:
   * [2019-04-29] power9 sgemm/strmm kernel 
 
 * Jiachen Wang <https://github.com/wjc404>
-  * [2018.07] optimize AVX2 DGEMM
-  * [2018-11] optimize AVX512 SGEMM and DGEMM
-  * [2018-11] AVX512 CGEMM & ZGEMM kernels
-  * [2018-12] optimize AVX2 CGEMM and ZGEMM
+  * [2019-07-29] optimize AVX2 DGEMM
+  * [2019-10-20] AVX512 DGEMM kernel (4x8)
+  * [2019-11-06] optimize AVX512 SGEMM
+  * [2019-11-12] AVX512 CGEMM & ZGEMM kernels
+  * [2019-12-23] optimize AVX2 CGEMM and ZGEMM
