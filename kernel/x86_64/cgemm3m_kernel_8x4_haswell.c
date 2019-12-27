@@ -255,7 +255,7 @@
     "33105"#ndim":\n\t"\
     "movq %%r13,%4; movq %%r14,%1; movq %%r11,%7;"\
     :"+r"(a_pointer),"+r"(b_pointer),"+r"(c_pointer),"+r"(ldc_in_bytes),"+r"(K),"+r"(ctemp),"+r"(const_val),"+r"(M),"+r"(next_b)\
-    ::"r11","r12","r13","r14","r15"\
+    ::"r11","r12","r13","r14","r15",\
     "xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","xmm8","xmm9","xmm10","xmm11","xmm12","xmm13","xmm14","xmm15","cc","memory");\
     a_pointer -= M * K; b_pointer += ndim * K; c_pointer += 2*(LDC * ndim - M);\
 }
