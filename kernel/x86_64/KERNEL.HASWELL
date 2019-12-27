@@ -97,6 +97,6 @@ ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
 ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 
-CGEMM3MKERNEL    =  zgemm3m_kernel_4x8_nehalem.S
+CGEMM3MKERNEL    =  cgemm3m_kernel_8x4_haswell.c
 ZGEMM3MKERNEL    =  zgemm3m_kernel_2x8_nehalem.S
 
