@@ -25,6 +25,8 @@ else ifeq ($(ARCH), i386)
 override ARCH=x86
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
+else ifeq ($(ARCH), zarch)
+override ARCH=zarch
 endif
 
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
@@ -556,6 +558,11 @@ DYNAMIC_CORE += FALKOR
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
 DYNAMIC_CORE += TSV110
+endif
+
+ifeq ($(ARCH), zarch)
+DYNAMIC_CORE = Z13
+DYNAMIC_CORE += Z14
 endif
 
 ifeq ($(ARCH), power)
