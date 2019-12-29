@@ -24,7 +24,7 @@
 *>
 *> \verbatim
 *>
-*> CPOTRF2 computes the Cholesky factorization of a real symmetric
+*> CPOTRF2 computes the Cholesky factorization of a Hermitian
 *> positive definite matrix A using the recursive algorithm.
 *>
 *> The factorization has the form
@@ -63,7 +63,7 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is COMPLEX array, dimension (LDA,N)
-*>          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+*>          On entry, the Hermitian matrix A.  If UPLO = 'U', the leading
 *>          N-by-N upper triangular part of A contains the upper
 *>          triangular part of the matrix A, and the strictly lower
 *>          triangular part of A is not referenced.  If UPLO = 'L', the
