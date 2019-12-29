@@ -26,51 +26,53 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
   THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************
-* Contents: Native high-level C interface to LAPACK function dstedc
+* Contents: Native high-level C interface to LAPACK function dgesvdq
 * Author: Intel Corporation
-* Generated June 2016
+* Generated November 2018
 *****************************************************************************/
 
 #include "lapacke_utils.h"
 
-lapack_int LAPACKE_dstedc( int matrix_layout, char compz, lapack_int n,
-                           double* d, double* e, double* z, lapack_int ldz )
+lapack_int LAPACKE_dgesvdq( int matrix_layout, char joba, char jobp,
+                           char jobr, char jobu, char jobv,
+                           lapack_int m, lapack_int n, double* a,
+                           lapack_int lda, double* s, double* u, lapack_int ldu,
+                           double* v, lapack_int ldv, lapack_int* numrank)
 {
     lapack_int info = 0;
     lapack_int liwork = -1;
-    lapack_int lwork = -1;
     lapack_int* iwork = NULL;
-    double* work = NULL;
     lapack_int iwork_query;
+    lapack_int lwork = -1;
+    double* work = NULL;
     double work_query;
+    lapack_int lrwork = -1;
+    double* rwork = NULL;
+    double rwork_query;
+    lapack_int i;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
-        LAPACKE_xerbla( "LAPACKE_dstedc", -1 );
+        LAPACKE_xerbla( "LAPACKE_dgesvdq", -1 );
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_d_nancheck( n, d, 1 ) ) {
-            return -4;
-        }
-        if( LAPACKE_d_nancheck( n-1, e, 1 ) ) {
-            return -5;
-        }
-        if( LAPACKE_lsame( compz, 'v' ) ) {
-            if( LAPACKE_dge_nancheck( matrix_layout, n, n, z, ldz ) ) {
-                return -6;
-            }
+        if( LAPACKE_dge_nancheck( matrix_layout, m, n, a, lda ) ) {
+            return -6;
         }
     }
 #endif
     /* Query optimal working array(s) size */
-    info = LAPACKE_dstedc_work( matrix_layout, compz, n, d, e, z, ldz,
-                                &work_query, lwork, &iwork_query, liwork );
+    info = LAPACKE_dgesvdq_work( matrix_layout, joba, jobp, jobr, jobu, jobv,
+                                 m, n, a, lda, s, u, ldu, v, ldv, numrank,
+                                 &iwork_query, liwork, &work_query, lwork,
+                                 &rwork_query, lrwork );
     if( info != 0 ) {
         goto exit_level_0;
     }
     liwork = iwork_query;
     lwork = (lapack_int)work_query;
+    lrwork = (lapack_int)rwork_query;
     /* Allocate memory for work arrays */
     iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
     if( iwork == NULL ) {
@@ -80,18 +82,25 @@ lapack_int LAPACKE_dstedc( int matrix_layout, char compz, lapack_int n,
     work = (double*)LAPACKE_malloc( sizeof(double) * lwork );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
-        goto exit_level_1;
+        goto exit_level_0;
+    }
+    rwork = (double*)LAPACKE_malloc( sizeof(double) * lrwork );
+    if( rwork == NULL ) {
+        info = LAPACK_WORK_MEMORY_ERROR;
+        goto exit_level_0;
     }
     /* Call middle-level interface */
-    info = LAPACKE_dstedc_work( matrix_layout, compz, n, d, e, z, ldz, work,
-                                lwork, iwork, liwork );
+    info = LAPACKE_dgesvdq_work( matrix_layout, joba, jobp, jobr, jobu, jobv,
+                                 m, n, a, lda, s, u, ldu, v, ldv, numrank,
+                                 iwork, liwork, work, lwork, rwork, lrwork );
+
     /* Release memory and exit */
-    LAPACKE_free( work );
-exit_level_1:
     LAPACKE_free( iwork );
+    LAPACKE_free( work );
+    LAPACKE_free( rwork );
 exit_level_0:
     if( info == LAPACK_WORK_MEMORY_ERROR ) {
-        LAPACKE_xerbla( "LAPACKE_dstedc", info );
+        LAPACKE_xerbla( "LAPACKE_dgesvdq", info );
     }
     return info;
 }
