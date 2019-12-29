@@ -42,7 +42,7 @@
 *> matrices.
 *>
 *> Aasen's algorithm is used to factor A as
-*>    A = U * T * U**T,  if UPLO = 'U', or
+*>    A = U**T * T * U,  if UPLO = 'U', or
 *>    A = L * T * L**T,  if UPLO = 'L',
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is symmetric tridiagonal. The factored
@@ -86,7 +86,7 @@
 *>
 *>          On exit, if INFO = 0, the tridiagonal matrix T and the
 *>          multipliers used to obtain the factor U or L from the
-*>          factorization A = U*T*U**T or A = L*T*L**T as computed by
+*>          factorization A = U**T*T*U or A = L*T*L**T as computed by
 *>          SSYTRF.
 *> \endverbatim
 *>
@@ -229,7 +229,7 @@
          RETURN
       END IF
 *
-*     Compute the factorization A = U*T*U**T or A = L*T*L**T.
+*     Compute the factorization A = U**T*T*U or A = L*T*L**T.
 *
       CALL SSYTRF_AA( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
       IF( INFO.EQ.0 ) THEN
