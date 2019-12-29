@@ -1,5 +1,3 @@
-include ../../make.inc
-
 #######################################################################
 #  This is the makefile to create a the variants libraries for LAPACK.
 #  The files are organized as follows:
@@ -17,6 +15,9 @@ include ../../make.inc
 #  1065-1081. http://dx.doi.org/10.1137/S0895479896297744
 #######################################################################
 
+TOPSRCDIR = ../..
+include $(TOPSRCDIR)/make.inc
+
 CHOLRL = cholesky/RL/cpotrf.o cholesky/RL/dpotrf.o cholesky/RL/spotrf.o cholesky/RL/zpotrf.o
 
 CHOLTOP = cholesky/TOP/cpotrf.o cholesky/TOP/dpotrf.o cholesky/TOP/spotrf.o cholesky/TOP/zpotrf.o
@@ -30,37 +31,36 @@ LUREC = lu/REC/cgetrf.o lu/REC/dgetrf.o lu/REC/sgetrf.o lu/REC/zgetrf.o
 QRLL = qr/LL/cgeqrf.o qr/LL/dgeqrf.o qr/LL/sgeqrf.o qr/LL/zgeqrf.o qr/LL/sceil.o
 
 
+.PHONY: all
 all: cholrl.a choltop.a lucr.a lull.a lurec.a qrll.a
 
 cholrl.a: $(CHOLRL)
-	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 choltop.a: $(CHOLTOP)
-	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 lucr.a: $(LUCR)
-	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 lull.a: $(LULL)
-	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 lurec.a: $(LUREC)
-	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 qrll.a: $(QRLL)
-	$(ARCH) $(ARCHFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
+.PHONY: clean cleanobj cleanlib
 clean: cleanobj cleanlib
 cleanobj:
 	rm -f $(CHOLRL) $(CHOLTOP) $(LUCR) $(LULL) $(LUREC) $(QRLL)
 cleanlib:
 	rm -f *.a
-
-.f.o:
-	$(FORTRAN) $(OPTS) -c -o $@ $<
