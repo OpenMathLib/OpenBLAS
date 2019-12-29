@@ -40,22 +40,26 @@
 # To clean everything including lapacke library type
 # 'make cleanall'
 #
-include ../make.inc
+TOPSRCDIR = ..
+include $(TOPSRCDIR)/make.inc
 
+.PHONY: all
 all: lapacke
 
+.PHONY: lapacke
 lapacke: include/lapacke_mangling.h
 	$(MAKE) -C src
 	$(MAKE) -C utils
 
 include/lapacke_mangling.h: include/lapacke_mangling_with_flags.h.in
-	cp $< $@
+	cp include/lapacke_mangling_with_flags.h.in $@
 
+.PHONY: lapacke_example
 lapacke_example: lapacke
 	$(MAKE) -C example
 
-#clean: cleanlib
-clean: cleanobj
+.PHONY: clean cleanobj cleanlib cleanexe
+clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C utils clean
 	$(MAKE) -C example clean
@@ -64,6 +68,6 @@ cleanobj:
 	$(MAKE) -C utils cleanobj
 	$(MAKE) -C example cleanobj
 cleanlib:
-	rm -f ../$(LAPACKELIB)
+	$(MAKE) -C src cleanlib
 cleanexe:
 	$(MAKE) -C example cleanexe
