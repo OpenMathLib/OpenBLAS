@@ -1,3 +1,4 @@
+*> \brief \b DGEMQR
 *
 *  Definition:
 *  ===========
@@ -144,7 +145,7 @@
 *> \verbatim
 *>
 *> These details are particular for this LAPACK implementation. Users should not 
-*> take them for granted. These details may change in the future, and are unlikely not
+*> take them for granted. These details may change in the future, and are not likely
 *> true for another LAPACK implementation. These details are relevant if one wants
 *> to try to understand the code. They are not part of the interface.
 *>
