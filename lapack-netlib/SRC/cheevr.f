@@ -210,7 +210,7 @@
 *>          eigenvalues are computed to high relative accuracy when
 *>          possible in future releases.  The current code does not
 *>          make any guarantees about high relative accuracy, but
-*>          furutre releases will. See J. Barlow and J. Demmel,
+*>          future releases will. See J. Barlow and J. Demmel,
 *>          "Computing Accurate Eigensystems of Scaled Diagonally
 *>          Dominant Matrices", LAPACK Working Note #7, for a discussion
 *>          of which matrices define their eigenvalues to high relative
