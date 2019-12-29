@@ -61,8 +61,8 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
 
   __asm__
     (
-       "xxspltd		32, %x19, 0	\n\t"	// alpha_r
-       "xxspltd		33, %x20, 0	\n\t"	// alpha_i
+       XXSPLTD_S(32,%x19,0)	// alpha_r
+       XXSPLTD_S(33,%x20,0)	// alpha_i
 
        "lxvd2x		36, 0, %21	\n\t"	// mvec
 
@@ -87,10 +87,10 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
        "lxvd2x		50, %23, %3	\n\t"	// y2
        "lxvd2x		51, %24, %3	\n\t"	// y3
 
-       "xxswapd		%x8, 40		\n\t"	// exchange real and imag part
-       "xxswapd		%x9, 41		\n\t"	// exchange real and imag part
-       "xxswapd		%x10, 42	\n\t"	// exchange real and imag part
-       "xxswapd		%x11, 43	\n\t"	// exchange real and imag part
+       XXSWAPD_S(%x8,40)	// exchange real and imag part
+       XXSWAPD_S(%x9,41)	// exchange real and imag part
+       XXSWAPD_S(%x10,42)	// exchange real and imag part
+       XXSWAPD_S(%x11,43)	// exchange real and imag part
 
        "addi		%2, %2, 64	\n\t"
        "addi		%3, %3, 64	\n\t"
@@ -105,19 +105,19 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
        "lxvd2x		%x6, %23, %3	\n\t"	// y6
        "lxvd2x		%x7, %24, %3	\n\t"	// y7
 
-       "xxswapd		%x12, 44	\n\t"	// exchange real and imag part
-       "xxswapd		%x13, 45	\n\t"	// exchange real and imag part
-       "xxswapd		%x14, 46	\n\t"	// exchange real and imag part
-       "xxswapd		%x15, 47	\n\t"	// exchange real and imag part
+       XXSWAPD_S(%x12,44)	// exchange real and imag part
+       XXSWAPD_S(%x13,45)	// exchange real and imag part
+       XXSWAPD_S(%x14,46)	// exchange real and imag part
+       XXSWAPD_S(%x15,47)	// exchange real and imag part
 
        "addi		%2, %2, 64	\n\t"
        "addi		%3, %3, 64	\n\t"
 
        "addic.		%1, %1, -8	\n\t"
-       "ble		2f		\n\t"
+       "ble		two%=		\n\t"
 
-       ".p2align	5		\n"
-       "1:				\n\t"
+       ".align	5		\n"
+       "one%=:				\n\t"
 
        "xvmaddadp	48, 40, 32	\n\t"	// alpha_r * x0_r , alpha_r * x0_i
        "xvmaddadp	49, 41, 32	\n\t"
@@ -163,31 +163,31 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
 
        "addi		%16, %16, 64	\n\t"
 
-       "xxswapd		%x8, 40		\n\t"	// exchange real and imag part
-       "xxswapd		%x9, 41		\n\t"	// exchange real and imag part
+       XXSWAPD_S(%x8,40)	// exchange real and imag part
+       XXSWAPD_S(%x9,41)	// exchange real and imag part
        "lxvd2x		48, 0, %3	\n\t"	// y0
        "lxvd2x		49, %22, %3	\n\t"	// y1
-       "xxswapd		%x10, 42	\n\t"	// exchange real and imag part
-       "xxswapd		%x11, 43	\n\t"	// exchange real and imag part
+       XXSWAPD_S(%x10,42)	// exchange real and imag part
+       XXSWAPD_S(%x11,43)	// exchange real and imag part
        "lxvd2x		50, %23, %3	\n\t"	// y2
        "lxvd2x		51, %24, %3	\n\t"	// y3
 
-       "xxswapd		%x12, 44	\n\t"	// exchange real and imag part
+       XXSWAPD_S(%x12,44)	// exchange real and imag part
        "addi		%3, %3, 64	\n\t"
-       "xxswapd		%x13, 45	\n\t"	// exchange real and imag part
+       XXSWAPD_S(%x13,45)	// exchange real and imag part
        "lxvd2x		%x4, 0, %3	\n\t"	// y4
        "lxvd2x		%x5, %22, %3	\n\t"	// y5
-       "xxswapd		%x14, 46	\n\t"	// exchange real and imag part
-       "xxswapd		%x15, 47	\n\t"	// exchange real and imag part
+       XXSWAPD_S(%x14,46)	// exchange real and imag part
+       XXSWAPD_S(%x15,47)	// exchange real and imag part
        "lxvd2x		%x6, %23, %3	\n\t"	// y6
        "lxvd2x		%x7, %24, %3	\n\t"	// y7
 
        "addi		%3, %3, 64	\n\t"
 
        "addic.		%1, %1, -8	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
-       "2:				\n\t"
+       "two%=:				\n\t"
 
        "xvmaddadp	48, 40, 32	\n\t"	// alpha_r * x0_r , alpha_r * x0_i
        "xvmaddadp	49, 41, 32	\n\t"

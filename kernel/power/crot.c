@@ -56,9 +56,9 @@ static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
        "addi        %[x_ptr], %[x_ptr], 64    \n\t" 
        "addi        %[y_ptr], %[y_ptr], 64    \n\t" 
        "addic.      %[temp_n], %[temp_n], -8  \n\t" 
-       "ble         2f                        \n\t" 
-       ".p2align    5                         \n\t" 
-       "1:                                    \n\t" 
+       "ble         two%=                        \n\t" 
+       ".align    5                         \n\t" 
+       "one%=:                                    \n\t" 
        "xvmulsp     40, 32, 36                \n\t" // c * x
        "xvmulsp     41, 33, 36                \n\t" 
        "xvmulsp     42, 34, 36                \n\t" 
@@ -104,8 +104,8 @@ static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
        "addi        %[x_ptr], %[x_ptr], 128   \n\t" 
        "addi        %[y_ptr], %[y_ptr], 128   \n\t" 
        "addic.      %[temp_n], %[temp_n], -8  \n\t" 
-       "bgt         1b                        \n\t" 
-       "2:                                    \n\t" 
+       "bgt         one%=                        \n\t" 
+       "two%=:                                    \n\t" 
        "xvmulsp     40, 32, 36                \n\t" // c * x
        "xvmulsp     41, 33, 36                \n\t" 
        "xvmulsp     42, 34, 36                \n\t" 

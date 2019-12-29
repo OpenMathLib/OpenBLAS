@@ -71,7 +71,7 @@ if ($compiler eq "") {
 
 	if ($data =~ /GNU/) {
 
-	    $data =~ /(\d)\.(\d).(\d)/;
+	    $data =~ /(\d+)\.(\d+).(\d+)/;
 	    $major = $1;
 	    $minor = $2;
 

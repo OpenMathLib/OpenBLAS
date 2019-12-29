@@ -462,7 +462,7 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
     for(i = 0; i < blas_num_threads - 1; i++){
       // Could also just use WaitForMultipleObjects
-      DWORD wait_thread_value = WaitForSingleObject(blas_threads[i], 5000);
+      DWORD wait_thread_value = WaitForSingleObject(blas_threads[i], 50);
 
 #ifndef OS_WINDOWSSTORE
       // TerminateThread is only available with WINAPI_DESKTOP and WINAPI_SYSTEM not WINAPI_APP in UWP
