@@ -34,7 +34,7 @@ References:For a more detailed description please refer to
 =========
 
 These variants are compiled by default in the build process but they are not tested by default.
-The build process creates one new library per variants in the four arithmetics (single real/double real/single complex/double complex).
+The build process creates one new library per variants in the four arithmetic (single real/double real/single complex/double complex).
 The libraries are in the SRC/VARIANTS directory.
 
 Corresponding libraries created in SRC/VARIANTS:
@@ -64,16 +64,16 @@ You should then see the following files in the TESTING directory:
 = LINKING YOUR PROGRAM =
 ========================
 
-You just need to add the variants methods library in your linking sequence before your lapack libary.
+You just need to add the variants methods library in your linking sequence before your lapack library.
 Here is a quick example for LU
 
 Default using LU Right Looking version:
- $(FORTRAN) -c myprog.f
- $(FORTRAN) -o myexe myprog.o $(LAPACKLIB) $(BLASLIB)
+ $(FC) $(FFLAGS) -c myprog.f
+ $(FC) $(FFLAGS) $(LDFLAGS) -o myexe myprog.o $(LAPACKLIB) $(BLASLIB)
 
 Using LU Left Looking version:
- $(FORTRAN) -c myprog.f
- $(FORTRAN) -o myexe myprog.o $(PATH TO LAPACK/SRC/VARIANTS)/lull.a $(LAPACKLIB) $(BLASLIB)
+ $(FC) $(FFLAGS) -c myprog.f
+ $(FC) $(FFLAGS) $(LDFLAGS) -o myexe myprog.o $(PATH TO LAPACK/SRC/VARIANTS)/lull.a $(LAPACKLIB) $(BLASLIB)
 
 ===========
 = SUPPORT =
