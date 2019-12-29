@@ -60,7 +60,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is DOUBLE PRECISION array, dimension (N)
+*>          X is DOUBLE PRECISION array, dimension (1+(N-1)*INCX)
 *>          The vector for which a scaled sum of squares is computed.
 *>             x( i )  = X( 1 + ( i - 1 )*INCX ), 1 <= i <= n.
 *> \endverbatim
