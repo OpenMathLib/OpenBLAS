@@ -94,7 +94,7 @@
 *> \param[in] LDC
 *> \verbatim
 *>          LDC is INTEGER
-*>          The leading dimension of the array C. LDA >= max(1,M).
+*>          The leading dimension of the array C. LDC >= max(1,M).
 *> \endverbatim
 *>
 *> \param[out] WORK

@@ -50,9 +50,9 @@
 *  Arguments:
 *  ==========
 *
-*> \param[in] STAGE
+*> \param[in] STAGE1
 *> \verbatim
-*>          STAGE is CHARACTER*1
+*>          STAGE1 is CHARACTER*1
 *>          = 'N':  "No": to mention that the stage 1 of the reduction  
 *>                  from dense to band using the zhetrd_he2hb routine
 *>                  was not called before this routine to reproduce AB. 
@@ -512,8 +512,7 @@ C                 END IF
 *
 *                         Call the kernel
 *                             
-#if defined(_OPENMP) &&  _OPENMP >= 201307
-
+#if defined(_OPENMP)
                           IF( TTYPE.NE.1 ) THEN      
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
 !$OMP$     DEPEND(in:WORK(MYID-1))

@@ -123,23 +123,22 @@
 *>
 *> \param[out] HOUS2
 *> \verbatim
-*>          HOUS2 is COMPLEX*16 array, dimension LHOUS2, that
-*>          store the Householder representation of the stage2
+*>          HOUS2 is COMPLEX*16 array, dimension (LHOUS2)
+*>          Stores the Householder representation of the stage2
 *>          band to tridiagonal.
 *> \endverbatim
 *>
 *> \param[in] LHOUS2
 *> \verbatim
 *>          LHOUS2 is INTEGER
-*>          The dimension of the array HOUS2. LHOUS2 = MAX(1, dimension)
-*>          If LWORK = -1, or LHOUS2=-1,
+*>          The dimension of the array HOUS2.
+*>          If LWORK = -1, or LHOUS2 = -1,
 *>          then a query is assumed; the routine
 *>          only calculates the optimal size of the HOUS2 array, returns
 *>          this value as the first entry of the HOUS2 array, and no error
 *>          message related to LHOUS2 is issued by XERBLA.
-*>          LHOUS2 = MAX(1, dimension) where
-*>          dimension = 4*N if VECT='N'
-*>          not available now if VECT='H'
+*>          If VECT='N', LHOUS2 = max(1, 4*n);
+*>          if VECT='V', option not yet available.
 *> \endverbatim
 *>
 *> \param[out] WORK
