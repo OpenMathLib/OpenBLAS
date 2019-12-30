@@ -694,7 +694,19 @@
     
     # functions added for lapack-3.8.0
 
-    ilaenv2stage
+    ilaenv2stage,
+
+    # functions added for lapack-3.9.0
+    cgesvdq,
+    cungtsqr,
+    dcombssq,
+    dgesvdq,
+    dorgtsqr,
+    scombssq,
+    sgesvdq,
+    sorgtsqr,
+    zgesvdq,
+    zungtsqr
 );
 
 @lapack_extendedprecision_objs = (
@@ -3347,6 +3359,15 @@
     LAPACKE_zsytrf_aa_2stage_work,
     LAPACKE_zsytrs_aa_2stage,
     LAPACKE_zsytrs_aa_2stage_work,
+    
+    # new functions from 3.9.0
+    LAPACKE_dgesvdq,
+    LAPACKE_dgesvdq_work,
+    LAPACKE_sgesvdq,
+    LAPACKE_sgesvdq_work,
+    LAPACKE_zgesvdq,
+    LAPACKE_zgesvdq_work
+
 );
 
 #These function may need 2 underscores.
@@ -3419,7 +3440,13 @@
     dsytrf_aa_2stage, dsytrs_aa_2stage,
     zhesv_aa_2stage, zhetrf_aa_2stage,
     zhetrs_aa_2stage, zsysv_aa_2stage,
-    zsytrf_aa_2stage, zsytrs_aa_2stage
+    zsytrf_aa_2stage, zsytrs_aa_2stage,
+# 3.9.0
+    claunhr_col_getrfnp, claunhr_col_getrfnp2, cunhr_col,
+    dlaorhr_col_getrfnp, dlaorhr_col_getrfnp2, dorhr_col,
+    slaorhr_col_getrfnp, slaorhr_col_getrfnp2, sorhr_col,
+    zlaunhr_col_getrfnp, zlaunhr_col_getrfnp2, zunhr_col
+
 );
 
 
