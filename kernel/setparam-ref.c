@@ -1345,4 +1345,5 @@ static void init_parameter(void) {
 
 }
 #endif //POWER
+#endif //ZARCH
 #endif //defined(ARCH_ARM64)
