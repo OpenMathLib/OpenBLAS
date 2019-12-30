@@ -735,7 +735,7 @@
      $                         W, 1, INFO )
          CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 11
-         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 2, IP, IP, B, 1,
+         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 7
