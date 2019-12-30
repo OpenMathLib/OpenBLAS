@@ -738,7 +738,7 @@
       CALL ZLACPY( 'Full', MPLUSN, MPLUSN, AI, LDA, A, LDA )
       CALL ZLACPY( 'Full', MPLUSN, MPLUSN, BI, LDA, B, LDA )
 *
-*     Compute the Schur factorization while swaping the
+*     Compute the Schur factorization while swapping the
 *     m-by-m (1,1)-blocks with n-by-n (2,2)-blocks.
 *
       CALL ZGGESX( 'V', 'V', 'S', ZLCTSX, 'B', MPLUSN, AI, LDA, BI, LDA,

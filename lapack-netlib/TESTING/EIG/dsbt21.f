@@ -28,15 +28,16 @@
 *>
 *> DSBT21  generally checks a decomposition of the form
 *>
-*>         A = U S U'
+*>         A = U S U**T
 *>
-*> where ' means transpose, A is symmetric banded, U is
+*> where **T means transpose, A is symmetric banded, U is
 *> orthogonal, and S is diagonal (if KS=0) or symmetric
 *> tridiagonal (if KS=1).
 *>
 *> Specifically:
 *>
-*>         RESULT(1) = | A - U S U' | / ( |A| n ulp ) *andC>         RESULT(2) = | I - UU' | / ( n ulp )
+*>         RESULT(1) = | A - U S U**T | / ( |A| n ulp ) and
+*>         RESULT(2) = | I - U U**T | / ( n ulp )
 *> \endverbatim
 *
 *  Arguments:
@@ -214,7 +215,7 @@
 *
       ANORM = MAX( DLANSB( '1', CUPLO, N, IKA, A, LDA, WORK ), UNFL )
 *
-*     Compute error matrix:    Error = A - U S U'
+*     Compute error matrix:    Error = A - U S U**T
 *
 *     Copy A from SB to SP storage format.
 *
@@ -265,7 +266,7 @@
 *
 *     Do Test 2
 *
-*     Compute  UU' - I
+*     Compute  U U**T - I
 *
       CALL DGEMM( 'N', 'C', N, N, N, ONE, U, LDU, U, LDU, ZERO, WORK,
      $            N )
