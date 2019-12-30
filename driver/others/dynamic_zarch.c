@@ -6,7 +6,7 @@ extern gotoblas_t gotoblas_Z14;
 extern gotoblas_t gotoblas_Z15;
 //#if (!defined C_GCC) || (GCC_VERSION >= 60000)
 //extern gotoblas_t gotoblas_Z14;
-#endif
+//#endif
 
 #define NUM_CORETYPES 5
 
