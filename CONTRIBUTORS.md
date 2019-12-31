@@ -171,3 +171,11 @@ In chronological order:
   * [2019-02-01] added missing Blas Level-1,2 (single precision)  simd codes
   * [2019-03-14] power9 dgemm/dtrmm kernel
   * [2019-04-29] power9 sgemm/strmm kernel 
+
+* Jiachen Wang <https://github.com/wjc404>
+  * [2019-07-29] optimize AVX2 DGEMM
+  * [2019-10-20] AVX512 DGEMM kernel (4x8)
+  * [2019-11-06] optimize AVX512 SGEMM
+  * [2019-11-12] AVX512 CGEMM & ZGEMM kernels
+  * [2019-12-23] optimize AVX2 CGEMM and ZGEMM
+  * [2019-12-27] AVX2 CGEMM3M kernel
