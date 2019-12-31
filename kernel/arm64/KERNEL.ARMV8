@@ -103,6 +103,7 @@ ZDOTKERNEL     = zdot.S
 DSDOTKERNEL    = dot.S
 
 DGEMM_BETA     = dgemm_beta.S
+SGEMM_BETA     = sgemm_beta.S
 
 SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
 STRMMKERNEL    =  strmm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
