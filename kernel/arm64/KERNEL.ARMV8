@@ -107,12 +107,21 @@ DGEMM_BETA     = dgemm_beta.S
 SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
 STRMMKERNEL    =  strmm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
+ifeq ($(SGEMM_UNROLL_N), 4)
+SGEMMINCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
+else
 SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
+endif
 SGEMMITCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
+
+ifeq ($(SGEMM_UNROLL_N), 4)
+SGEMMONCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
+else
 SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
+endif
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
