@@ -1,3 +1,5 @@
+*> \brief \b CGELQT3
+*
 *  Definition:
 *  ===========
 *

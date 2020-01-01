@@ -68,6 +68,10 @@
 *> DEQ
 *> DQT
 *> DQX
+*> DTQ
+*> DXQ
+*> DTS
+*> DHH
 *> \endverbatim
 *
 *  Parameters:
@@ -102,17 +106,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
+*> \date November 2019
 *
 *> \ingroup double_lin
 *
 *  =====================================================================
       PROGRAM DCHKAA
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine (version 3.9.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     Novemebr 2019
 *
 *  =====================================================================
 *
@@ -159,15 +163,14 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, DCHKEQ, DCHKGB, DCHKGE, DCHKGT, DCHKLQ,
-     $                   DCHKPB, DCHKPO, DCHKPS, DCHKPP, DCHKPT, DCHKQ3,
-     $                   DCHKQL, DCHKQR, DCHKRQ, DCHKSP, DCHKSY,
-     $                   DCHKSY_ROOK, DCHKSY_RK, DCHKSY_AA, DCHKTB,
-     $                   DCHKTP, DCHKTR, DCHKTZ, DDRVGB, DDRVGE,
-     $                   DDRVGT, DDRVLS, DDRVPB, DDRVPO, DDRVPP,
-     $                   DDRVPT, DDRVSP, DDRVSY, DDRVSY_ROOK, DDRVSY_RK,
-     $                   DDRVSY_AA, ILAVER, DCHKQRT,
-     $                   DCHKQRTP, DCHKLQTP, DCHKTSQR, DCHKLQT
-
+     $                   DCHKORHR_COL, DCHKPB, DCHKPO, DCHKPS, DCHKPP,
+     $                   DCHKPT, DCHKQ3, DCHKQL, DCHKQR, DCHKRQ, DCHKSP,
+     $                   DCHKSY, DCHKSY_ROOK, DCHKSY_RK, DCHKSY_AA,
+     $                   DCHKTB, DCHKTP, DCHKTR, DCHKTZ, DDRVGB, DDRVGE,
+     $                   DDRVGT, DDRVLS, DDRVPB, DDRVPO, DDRVPP, DDRVPT,
+     $                   DDRVSP, DDRVSY, DDRVSY_ROOK, DDRVSY_RK,
+     $                   DDRVSY_AA, ILAVER, DCHKLQTP, DCHKQRT, DCHKQRTP,
+     $                   DCHKLQT,DCHKTSQR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -1008,7 +1011,19 @@
             WRITE( NOUT, FMT = 9989 )PATH
          END IF
 *
+      ELSE IF( LSAMEN( 2, C2, 'HH' ) ) THEN
+*
+*        HH:  Householder reconstruction for tall-skinny matrices
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKORHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
+     $                         NBVAL, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 ) PATH
+         END IF
+*
       ELSE
+
 *
          WRITE( NOUT, FMT = 9990 )PATH
       END IF

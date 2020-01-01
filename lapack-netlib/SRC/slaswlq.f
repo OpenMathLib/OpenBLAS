@@ -1,3 +1,4 @@
+*> \brief \b SLASWLQ
 *
 *  Definition:
 *  ===========
@@ -18,9 +19,20 @@
 *>
 *> \verbatim
 *>
-*>          SLASWLQ computes a blocked Short-Wide LQ factorization of a
-*>          M-by-N matrix A, where N >= M:
-*>          A = L * Q
+*> SLASWLQ computes a blocked Tall-Skinny LQ factorization of
+*> a real M-by-N matrix A for M <= N:
+*>
+*>    A = ( L 0 ) *  Q,
+*>
+*> where:
+*>
+*>    Q is a n-by-N orthogonal matrix, stored on exit in an implicit
+*>    form in the elements above the digonal of the array A and in
+*>    the elemenst of the array T;
+*>    L is an lower-triangular M-by-M matrix stored on exit in
+*>    the elements on and below the diagonal of the array A.
+*>    0 is a M-by-(N-M) zero matrix, if M < N, and is not stored.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -150,10 +162,10 @@
       SUBROUTINE SLASWLQ( M, N, MB, NB, A, LDA, T, LDT, WORK, LWORK,
      $                  INFO)
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine (version 3.9.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd. --
-*     November 2017
+*     November 2019
 *
 *     .. Scalar Arguments ..
       INTEGER           INFO, LDA, M, N, MB, NB, LWORK, LDT

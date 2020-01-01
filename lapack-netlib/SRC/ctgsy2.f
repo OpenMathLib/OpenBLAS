@@ -67,7 +67,7 @@
 *>             R  * B**H + L  * E**H  = scale * -F
 *>
 *> This case is used to compute an estimate of Dif[(A, D), (B, E)] =
-*> = sigma_min(Z) using reverse communicaton with CLACON.
+*> = sigma_min(Z) using reverse communication with CLACON.
 *>
 *> CTGSY2 also (IJOB >= 1) contributes to the computation in CTGSYL
 *> of an upper bound on the separation between to matrix pairs. Then
@@ -81,7 +81,7 @@
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
-*>          = 'N', solve the generalized Sylvester equation (1).
+*>          = 'N': solve the generalized Sylvester equation (1).
 *>          = 'T': solve the 'transposed' system (3).
 *> \endverbatim
 *>
@@ -89,13 +89,13 @@
 *> \verbatim
 *>          IJOB is INTEGER
 *>          Specifies what kind of functionality to be performed.
-*>          =0: solve (1) only.
-*>          =1: A contribution from this subsystem to a Frobenius
-*>              norm-based estimate of the separation between two matrix
-*>              pairs is computed. (look ahead strategy is used).
-*>          =2: A contribution from this subsystem to a Frobenius
-*>              norm-based estimate of the separation between two matrix
-*>              pairs is computed. (SGECON on sub-systems is used.)
+*>          = 0: solve (1) only.
+*>          = 1: A contribution from this subsystem to a Frobenius
+*>               norm-based estimate of the separation between two matrix
+*>               pairs is computed. (look ahead strategy is used).
+*>          = 2: A contribution from this subsystem to a Frobenius
+*>               norm-based estimate of the separation between two matrix
+*>               pairs is computed. (SGECON on sub-systems is used.)
 *>          Not referenced if TRANS = 'T'.
 *> \endverbatim
 *>

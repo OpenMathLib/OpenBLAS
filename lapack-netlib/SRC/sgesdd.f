@@ -322,7 +322,7 @@
 *
             IF( WNTQN ) THEN
 *              sbdsdc needs only 4*N (or 6*N for uplo=L for LAPACK <= 3.6)
-*              keep 7*N for backwards compatability.
+*              keep 7*N for backwards compatibility.
                BDSPAC = 7*N
             ELSE
                BDSPAC = 3*N*N + 4*N
@@ -448,7 +448,7 @@
 *
             IF( WNTQN ) THEN
 *              sbdsdc needs only 4*N (or 6*N for uplo=L for LAPACK <= 3.6)
-*              keep 7*N for backwards compatability.
+*              keep 7*N for backwards compatibility.
                BDSPAC = 7*M
             ELSE
                BDSPAC = 3*M*M + 4*M

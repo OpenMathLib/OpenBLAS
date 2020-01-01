@@ -36,7 +36,7 @@
 *>
 *> \verbatim
 *>
-*> ZSYTRS2 solves a system of linear equations A*X = B with a real
+*> ZSYTRS2 solves a system of linear equations A*X = B with a complex
 *> symmetric matrix A using the factorization A = U*D*U**T or
 *> A = L*D*L**T computed by ZSYTRF and converted by ZSYCONV.
 *> \endverbatim

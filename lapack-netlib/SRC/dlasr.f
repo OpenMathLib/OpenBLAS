@@ -175,7 +175,7 @@
 *> \verbatim
 *>          A is DOUBLE PRECISION array, dimension (LDA,N)
 *>          The M-by-N matrix A.  On exit, A is overwritten by P*A if
-*>          SIDE = 'R' or by A*P**T if SIDE = 'L'.
+*>          SIDE = 'L' or by A*P**T if SIDE = 'R'.
 *> \endverbatim
 *>
 *> \param[in] LDA

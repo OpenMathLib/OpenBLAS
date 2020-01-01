@@ -166,7 +166,7 @@
 *>                                              DSTEMR('V', 'I')
 *>
 *> Tests 29 through 34 are disable at present because DSTEMR
-*> does not handle partial specturm requests.
+*> does not handle partial spectrum requests.
 *>
 *> (29)    | S - Z D Z' | / ( |S| n ulp )    DSTEMR('V', 'I')
 *>

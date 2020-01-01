@@ -385,7 +385,7 @@
       IF( .NOT.WANTZ ) THEN
          CALL DSTERF( N, W, WORK( INDE ), INFO )
       ELSE
-*        Not available in this release, and agrument checking should not
+*        Not available in this release, and argument checking should not
 *        let it getting here
          RETURN
          CALL DSTEDC( 'I', N, W, WORK( INDE ), WORK( INDWRK ), N,

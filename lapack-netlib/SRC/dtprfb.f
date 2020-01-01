@@ -152,8 +152,8 @@
 *> \verbatim
 *>          LDA is INTEGER
 *>          The leading dimension of the array A.
-*>          If SIDE = 'L', LDC >= max(1,K);
-*>          If SIDE = 'R', LDC >= max(1,M).
+*>          If SIDE = 'L', LDA >= max(1,K);
+*>          If SIDE = 'R', LDA >= max(1,M).
 *> \endverbatim
 *>
 *> \param[in,out] B

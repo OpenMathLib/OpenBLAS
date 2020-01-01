@@ -330,7 +330,7 @@
 *        of A and working backwards, and compute the matrix W = U12*D
 *        for use in updating A11
 *
-*        Initilize the first entry of array E, where superdiagonal
+*        Initialize the first entry of array E, where superdiagonal
 *        elements of D are stored
 *
          E( 1 ) = CZERO
@@ -658,7 +658,7 @@
 *        of A and working forwards, and compute the matrix W = L21*D
 *        for use in updating A22
 *
-*        Initilize the unused last entry of the subdiagonal array E.
+*        Initialize the unused last entry of the subdiagonal array E.
 *
          E( N ) = CZERO
 *
