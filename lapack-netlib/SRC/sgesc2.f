@@ -90,7 +90,7 @@
 *> \verbatim
 *>          SCALE is REAL
 *>           On exit, SCALE contains the scale factor. SCALE is chosen
-*>           0 <= SCALE <= 1 to prevent owerflow in the solution.
+*>           0 <= SCALE <= 1 to prevent overflow in the solution.
 *> \endverbatim
 *
 *  Authors:
@@ -151,7 +151,7 @@
 *     ..
 *     .. Executable Statements ..
 *
-*      Set constant to control owerflow
+*      Set constant to control overflow
 *
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' ) / EPS

@@ -769,7 +769,7 @@
       CALL DLACPY( 'Full', MPLUSN, MPLUSN, AI, LDA, A, LDA )
       CALL DLACPY( 'Full', MPLUSN, MPLUSN, BI, LDA, B, LDA )
 *
-*     Compute the Schur factorization while swaping the
+*     Compute the Schur factorization while swapping the
 *     m-by-m (1,1)-blocks with n-by-n (2,2)-blocks.
 *
       CALL DGGESX( 'V', 'V', 'S', DLCTSX, 'B', MPLUSN, AI, LDA, BI, LDA,

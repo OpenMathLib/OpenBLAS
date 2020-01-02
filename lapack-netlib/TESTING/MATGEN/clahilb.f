@@ -164,7 +164,7 @@
       INTEGER NMAX_EXACT, NMAX_APPROX, SIZE_D
       PARAMETER (NMAX_EXACT = 6, NMAX_APPROX = 11, SIZE_D = 8)
 *
-*     d's are generated from random permuation of those eight elements.
+*     d's are generated from random permutation of those eight elements.
       COMPLEX D1(8), D2(8), INVD1(8), INVD2(8)
       DATA D1 /(-1,0),(0,1),(-1,-1),(0,-1),(1,0),(-1,1),(1,1),(1,-1)/
       DATA D2 /(-1,0),(0,-1),(-1,1),(0,1),(1,0),(-1,-1),(1,-1),(1,1)/

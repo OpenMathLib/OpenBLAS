@@ -1,3 +1,5 @@
+*> \brief \b CGETSLS
+*
 *  Definition:
 *  ===========
 *

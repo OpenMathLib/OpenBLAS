@@ -43,7 +43,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define betaV0		v11.d[0]
 #define I	x16
 
-#define size 128
+#define prfm_size 640
+#define calc_size 128
 
 /**************************************************************************************
 * Macro definitions
@@ -119,27 +120,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldp	q2, q3, [A02]
 	ldp	q4, q5, [A03]
 	ldp	q6, q7, [A04]
-  
+ 
 	fmul v0.2d, v0.2d, betaV0
 	fmul v1.2d, v1.2d, betaV0
-	
+
 	fmul v2.2d, v2.2d, betaV0
 	fmul v3.2d, v3.2d, betaV0
-	
+
+	prfm    PLDL1KEEP, [A01, prfm_size]
+
 	fmul v4.2d, v4.2d, betaV0
 	fmul v5.2d, v5.2d, betaV0
-	
+
+	prfm    PLDL1KEEP, [A03, prfm_size]
+
 	fmul v6.2d, v6.2d, betaV0
 	fmul v7.2d, v7.2d, betaV0
 
 	st1	{v0.2d, v1.2d}, [A01]
-	add	A01, A01, size
+	add	A01, A01, calc_size
 	st1	{v2.2d, v3.2d}, [A02]
-	add	A02, A02, size
+	add	A02, A02, calc_size
 	st1	{v4.2d, v5.2d}, [A03]
-	add	A03, A03, size
+	add	A03, A03, calc_size
 	st1	{v6.2d, v7.2d}, [A04]
-	add	A04, A04, size
+	add	A04, A04, calc_size
 
 	subs    I , I , #1
 	bne	.Lgemm_beta_03

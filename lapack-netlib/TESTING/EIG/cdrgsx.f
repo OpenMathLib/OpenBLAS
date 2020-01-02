@@ -737,7 +737,7 @@
       CALL CLACPY( 'Full', MPLUSN, MPLUSN, AI, LDA, A, LDA )
       CALL CLACPY( 'Full', MPLUSN, MPLUSN, BI, LDA, B, LDA )
 *
-*     Compute the Schur factorization while swaping the
+*     Compute the Schur factorization while swapping the
 *     m-by-m (1,1)-blocks with n-by-n (2,2)-blocks.
 *
       CALL CGGESX( 'V', 'V', 'S', CLCTSX, 'B', MPLUSN, AI, LDA, BI, LDA,

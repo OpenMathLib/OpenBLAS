@@ -33,8 +33,9 @@
 *>
 *> \verbatim
 *>
-*> ZDRVBD checks the singular value decomposition (SVD) driver ZGESVD
-*> and ZGESDD.
+*> ZDRVBD checks the singular value decomposition (SVD) driver ZGESVD,
+*> ZGESDD, ZGESVJ, ZGEJSV, ZGESVDX, and ZGESVDQ.
+*>
 *> ZGESVD and ZGESDD factors A = U diag(S) VT, where U and VT are
 *> unitary and diag(S) is diagonal with the entries of the array S on
 *> its diagonal. The entries of S are the singular values, nonnegative
@@ -73,81 +74,92 @@
 *>
 *> Test for ZGESDD:
 *>
-*> (1)   | A - U diag(S) VT | / ( |A| max(M,N) ulp )
-*>
-*> (2)   | I - U'U | / ( M ulp )
-*>
-*> (3)   | I - VT VT' | / ( N ulp )
-*>
-*> (4)   S contains MNMIN nonnegative values in decreasing order.
-*>       (Return 0 if true, 1/ULP if false.)
-*>
-*> (5)   | U - Upartial | / ( M ulp ) where Upartial is a partially
-*>       computed U.
-*>
-*> (6)   | VT - VTpartial | / ( N ulp ) where VTpartial is a partially
-*>       computed VT.
-*>
-*> (7)   | S - Spartial | / ( MNMIN ulp |S| ) where Spartial is the
-*>       vector of singular values from the partial SVD
-*>
-*> Test for ZGESVJ:
-*>
-*> (1)   | A - U diag(S) VT | / ( |A| max(M,N) ulp )
-*>
-*> (2)   | I - U'U | / ( M ulp )
-*>
-*> (3)   | I - VT VT' | / ( N ulp )
-*>
-*> (4)   S contains MNMIN nonnegative values in decreasing order.
-*>       (Return 0 if true, 1/ULP if false.)
-*>
-*> Test for ZGEJSV:
-*>
-*> (1)   | A - U diag(S) VT | / ( |A| max(M,N) ulp )
-*>
-*> (2)   | I - U'U | / ( M ulp )
-*>
-*> (3)   | I - VT VT' | / ( N ulp )
-*>
-*> (4)   S contains MNMIN nonnegative values in decreasing order.
-*>        (Return 0 if true, 1/ULP if false.)
-*>
-*> Test for ZGESVDX( 'V', 'V', 'A' )/ZGESVDX( 'N', 'N', 'A' )
-*>
-*> (1)   | A - U diag(S) VT | / ( |A| max(M,N) ulp )
-*>
-*> (2)   | I - U'U | / ( M ulp )
-*>
-*> (3)   | I - VT VT' | / ( N ulp )
-*>
-*> (4)   S contains MNMIN nonnegative values in decreasing order.
-*>       (Return 0 if true, 1/ULP if false.)
-*>
-*> (5)   | U - Upartial | / ( M ulp ) where Upartial is a partially
-*>       computed U.
-*>
-*> (6)   | VT - VTpartial | / ( N ulp ) where VTpartial is a partially
-*>       computed VT.
-*>
-*> (7)   | S - Spartial | / ( MNMIN ulp |S| ) where Spartial is the
-*>       vector of singular values from the partial SVD
-*>
-*> Test for ZGESVDX( 'V', 'V', 'I' )
-*>
-*> (8)   | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
+*> (8)   | A - U diag(S) VT | / ( |A| max(M,N) ulp )
 *>
 *> (9)   | I - U'U | / ( M ulp )
 *>
 *> (10)  | I - VT VT' | / ( N ulp )
 *>
+*> (11)  S contains MNMIN nonnegative values in decreasing order.
+*>       (Return 0 if true, 1/ULP if false.)
+*>
+*> (12)  | U - Upartial | / ( M ulp ) where Upartial is a partially
+*>       computed U.
+*>
+*> (13)  | VT - VTpartial | / ( N ulp ) where VTpartial is a partially
+*>       computed VT.
+*>
+*> (14)  | S - Spartial | / ( MNMIN ulp |S| ) where Spartial is the
+*>       vector of singular values from the partial SVD
+*>
+*> Test for ZGESVDQ:
+*>
+*> (36)  | A - U diag(S) VT | / ( |A| max(M,N) ulp )
+*>
+*> (37)  | I - U'U | / ( M ulp )
+*>
+*> (38)  | I - VT VT' | / ( N ulp )
+*>
+*> (39)  S contains MNMIN nonnegative values in decreasing order.
+*>       (Return 0 if true, 1/ULP if false.)
+*>
+*> Test for ZGESVJ:
+*>
+*> (15)  | A - U diag(S) VT | / ( |A| max(M,N) ulp )
+*>
+*> (16)  | I - U'U | / ( M ulp )
+*>
+*> (17)  | I - VT VT' | / ( N ulp )
+*>
+*> (18)  S contains MNMIN nonnegative values in decreasing order.
+*>       (Return 0 if true, 1/ULP if false.)
+*>
+*> Test for ZGEJSV:
+*>
+*> (19)  | A - U diag(S) VT | / ( |A| max(M,N) ulp )
+*>
+*> (20)  | I - U'U | / ( M ulp )
+*>
+*> (21)  | I - VT VT' | / ( N ulp )
+*>
+*> (22)  S contains MNMIN nonnegative values in decreasing order.
+*>        (Return 0 if true, 1/ULP if false.)
+*>
+*> Test for ZGESVDX( 'V', 'V', 'A' )/ZGESVDX( 'N', 'N', 'A' )
+*>
+*> (23)  | A - U diag(S) VT | / ( |A| max(M,N) ulp )
+*>
+*> (24)  | I - U'U | / ( M ulp )
+*>
+*> (25)  | I - VT VT' | / ( N ulp )
+*>
+*> (26)  S contains MNMIN nonnegative values in decreasing order.
+*>       (Return 0 if true, 1/ULP if false.)
+*>
+*> (27)  | U - Upartial | / ( M ulp ) where Upartial is a partially
+*>       computed U.
+*>
+*> (28)  | VT - VTpartial | / ( N ulp ) where VTpartial is a partially
+*>       computed VT.
+*>
+*> (29)  | S - Spartial | / ( MNMIN ulp |S| ) where Spartial is the
+*>       vector of singular values from the partial SVD
+*>
+*> Test for ZGESVDX( 'V', 'V', 'I' )
+*>
+*> (30)  | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
+*>
+*> (31)  | I - U'U | / ( M ulp )
+*>
+*> (32)  | I - VT VT' | / ( N ulp )
+*>
 *> Test for ZGESVDX( 'V', 'V', 'V' )
 *>
-*> (11)   | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
+*> (33)   | U' A VT''' - diag(S) | / ( |A| max(M,N) ulp )
 *>
-*> (12)   | I - U'U | / ( M ulp )
+*> (34)   | I - U'U | / ( M ulp )
 *>
-*> (13)   | I - VT VT' | / ( N ulp )
+*> (35)   | I - VT VT' | / ( N ulp )
 *>
 *> The "sizes" are specified by the arrays MM(1:NSIZES) and
 *> NN(1:NSIZES); the value of each element pair (MM(j),NN(j))
@@ -394,6 +406,8 @@
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
 *
+      IMPLICIT NONE
+*
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUNIT, NSIZES,
      $                   NTYPES
@@ -411,7 +425,7 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION  ZERO, ONE, TWO, HALF
+      DOUBLE PRECISION   ZERO, ONE, TWO, HALF
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0, TWO = 2.0D0,
      $                   HALF = 0.5D0 )
       COMPLEX*16         CZERO, CONE
@@ -431,10 +445,13 @@
       DOUBLE PRECISION   ANORM, DIF, DIV, OVFL, RTUNFL, ULP, ULPINV,
      $                   UNFL, VL, VU
 *     ..
+*     .. Local Scalars for ZGESVDQ ..
+      INTEGER            LIWORK, NUMRANK
+*     ..
 *     .. Local Arrays ..
       CHARACTER          CJOB( 4 ), CJOBR( 3 ), CJOBV( 2 )
       INTEGER            IOLDSD( 4 ), ISEED2( 4 )
-      DOUBLE PRECISION   RESULT( 35 )
+      DOUBLE PRECISION   RESULT( 39 )
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH, DLARND
@@ -442,8 +459,8 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, XERBLA, ZBDT01, ZBDT05, ZGESDD,
-     $                   ZGESVD, ZGESVJ, ZGEJSV, ZGESVDX, ZLACPY,
-     $                   ZLASET, ZLATMS, ZUNT01, ZUNT03
+     $                   ZGESVD, ZGESVDQ, ZGESVJ, ZGEJSV, ZGESVDX,
+     $                   ZLACPY, ZLASET, ZLATMS, ZUNT01, ZUNT03
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, MAX, MIN
@@ -836,10 +853,65 @@
   120             CONTINUE
                   RESULT( 14 ) = MAX( RESULT( 14 ), DIF )
   130          CONTINUE
-
 *
-*              Test ZGESVJ: Factorize A
-*              Note: ZGESVJ does not work for M < N
+*              Test ZGESVDQ
+*              Note: ZGESVDQ only works for M >= N
+*
+               RESULT( 36 ) = ZERO
+               RESULT( 37 ) = ZERO
+               RESULT( 38 ) = ZERO
+               RESULT( 39 ) = ZERO
+*
+               IF( M.GE.N ) THEN
+                  IWTMP = 2*MNMIN*MNMIN + 2*MNMIN + MAX( M, N )
+                  LSWORK = IWTMP + ( IWSPC-1 )*( LWORK-IWTMP ) / 3
+                  LSWORK = MIN( LSWORK, LWORK )
+                  LSWORK = MAX( LSWORK, 1 )
+                  IF( IWSPC.EQ.4 )
+     $               LSWORK = LWORK
+*
+                  CALL ZLACPY( 'F', M, N, ASAV, LDA, A, LDA )
+                  SRNAMT = 'ZGESVDQ'
+*
+                  LRWORK = MAX(2, M, 5*N)
+                  LIWORK = MAX( N, 1 )
+                  CALL ZGESVDQ( 'H', 'N', 'N', 'A', 'A', 
+     $                          M, N, A, LDA, SSAV, USAV, LDU,
+     $                          VTSAV, LDVT, NUMRANK, IWORK, LIWORK,
+     $                          WORK, LWORK, RWORK, LRWORK, IINFO )
+*
+                  IF( IINFO.NE.0 ) THEN
+                     WRITE( NOUNIT, FMT = 9995 )'ZGESVDQ', IINFO, M, N,
+     $               JTYPE, LSWORK, IOLDSD
+                     INFO = ABS( IINFO )
+                     RETURN
+                  END IF
+*
+*                 Do tests 36--39
+*
+                  CALL ZBDT01( M, N, 0, ASAV, LDA, USAV, LDU, SSAV, E,
+     $                         VTSAV, LDVT, WORK, RWORK, RESULT( 36 ) )
+                  IF( M.NE.0 .AND. N.NE.0 ) THEN
+                     CALL ZUNT01( 'Columns', M, M, USAV, LDU, WORK,
+     $                            LWORK, RWORK, RESULT( 37 ) )
+                     CALL ZUNT01( 'Rows', N, N, VTSAV, LDVT, WORK,
+     $                            LWORK, RWORK, RESULT( 38 ) )
+                  END IF
+                  RESULT( 39 ) = ZERO
+                  DO 199 I = 1, MNMIN - 1
+                     IF( SSAV( I ).LT.SSAV( I+1 ) )
+     $                  RESULT( 39 ) = ULPINV
+                     IF( SSAV( I ).LT.ZERO )
+     $                  RESULT( 39 ) = ULPINV
+  199             CONTINUE
+                  IF( MNMIN.GE.1 ) THEN
+                     IF( SSAV( MNMIN ).LT.ZERO )
+     $                  RESULT( 39 ) = ULPINV
+                  END IF
+               END IF
+*
+*              Test ZGESVJ
+*              Note: ZGESVJ only works for M >= N
 *
                RESULT( 15 ) = ZERO
                RESULT( 16 ) = ZERO
@@ -847,13 +919,13 @@
                RESULT( 18 ) = ZERO
 *
                IF( M.GE.N ) THEN
-               IWTMP = 2*MNMIN*MNMIN + 2*MNMIN + MAX( M, N )
-               LSWORK = IWTMP + ( IWSPC-1 )*( LWORK-IWTMP ) / 3
-               LSWORK = MIN( LSWORK, LWORK )
-               LSWORK = MAX( LSWORK, 1 )
-               LRWORK = MAX(6,N)
-               IF( IWSPC.EQ.4 )
-     $            LSWORK = LWORK
+                  IWTMP = 2*MNMIN*MNMIN + 2*MNMIN + MAX( M, N )
+                  LSWORK = IWTMP + ( IWSPC-1 )*( LWORK-IWTMP ) / 3
+                  LSWORK = MIN( LSWORK, LWORK )
+                  LSWORK = MAX( LSWORK, 1 )
+                  LRWORK = MAX(6,N)
+                  IF( IWSPC.EQ.4 )
+     $               LSWORK = LWORK
 *
                   CALL ZLACPY( 'F', M, N, ASAV, LDA, USAV, LDA )
                   SRNAMT = 'ZGESVJ'
@@ -861,8 +933,7 @@
      &                        0, A, LDVT, WORK, LWORK, RWORK,
      &                        LRWORK, IINFO )
 *
-*                 ZGESVJ retuns V not VT, so we transpose to use the same
-*                 test suite.
+*                 ZGESVJ returns V not VH
 *
                   DO J=1,N
                      DO I=1,N
@@ -900,21 +971,21 @@
                   END IF
                END IF
 *
-*              Test ZGEJSV: Factorize A
-*              Note: ZGEJSV does not work for M < N
+*              Test ZGEJSV
+*              Note: ZGEJSV only works for M >= N
 *
                RESULT( 19 ) = ZERO
                RESULT( 20 ) = ZERO
                RESULT( 21 ) = ZERO
                RESULT( 22 ) = ZERO
                IF( M.GE.N ) THEN
-               IWTMP = 2*MNMIN*MNMIN + 2*MNMIN + MAX( M, N )
-               LSWORK = IWTMP + ( IWSPC-1 )*( LWORK-IWTMP ) / 3
-               LSWORK = MIN( LSWORK, LWORK )
-               LSWORK = MAX( LSWORK, 1 )
-               IF( IWSPC.EQ.4 )
-     $            LSWORK = LWORK
-               LRWORK = MAX( 7, N + 2*M)
+                  IWTMP = 2*MNMIN*MNMIN + 2*MNMIN + MAX( M, N )
+                  LSWORK = IWTMP + ( IWSPC-1 )*( LWORK-IWTMP ) / 3
+                  LSWORK = MIN( LSWORK, LWORK )
+                  LSWORK = MAX( LSWORK, 1 )
+                  IF( IWSPC.EQ.4 )
+     $               LSWORK = LWORK
+                  LRWORK = MAX( 7, N + 2*M)
 *
                   CALL ZLACPY( 'F', M, N, ASAV, LDA, VTSAV, LDA )
                   SRNAMT = 'ZGEJSV'
@@ -923,8 +994,7 @@
      &                   WORK, LWORK, RWORK,
      &                   LRWORK, IWORK, IINFO )
 *
-*                 ZGEJSV retuns V not VT, so we transpose to use the same
-*                 test suite.
+*                 ZGEJSV returns V not VH
 *
                   DO 133 J=1,N
                      DO 132 I=1,N
@@ -933,7 +1003,7 @@
   133             END DO
 *
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUNIT, FMT = 9995 )'GESVJ', IINFO, M, N,
+                     WRITE( NOUNIT, FMT = 9995 )'GEJSV', IINFO, M, N,
      $               JTYPE, LSWORK, IOLDSD
                      INFO = ABS( IINFO )
                      RETURN
@@ -1160,7 +1230,7 @@
 *
                NTEST = 0
                NFAIL = 0
-               DO 190 J = 1, 35
+               DO 190 J = 1, 39
                   IF( RESULT( J ).GE.ZERO )
      $               NTEST = NTEST + 1
                   IF( RESULT( J ).GE.THRESH )
@@ -1175,7 +1245,7 @@
                   NTESTF = 2
                END IF
 *
-               DO 200 J = 1, 35
+               DO 200 J = 1, 39
                   IF( RESULT( J ).GE.THRESH ) THEN
                      WRITE( NOUNIT, FMT = 9997 )M, N, JTYPE, IWSPC,
      $                  IOLDSD, J, RESULT( J )
@@ -1251,6 +1321,12 @@
      $      / '33 = | U**T A VT**T - diag(S) | / ( |A| max(M,N) ulp )',
      $      / '34 = | I - U**T U | / ( M ulp ) ',
      $      / '35 = | I - VT VT**T | / ( N ulp ) ',
+     $      ' ZGESVDQ(H,N,N,A,A',
+     $      / '36 = | A - U diag(S) VT | / ( |A| max(M,N) ulp ) ',
+     $      / '37 = | I - U**T U | / ( M ulp ) ',
+     $      / '38 = | I - VT VT**T | / ( N ulp ) ',
+     $      / '39 = 0 if S contains min(M,N) nonnegative values in',
+     $      ' decreasing order, else 1/ulp',
      $      / / )
  9997 FORMAT( ' M=', I5, ', N=', I5, ', type ', I1, ', IWS=', I1,
      $      ', seed=', 4( I4, ',' ), ' test(', I2, ')=', G11.4 )

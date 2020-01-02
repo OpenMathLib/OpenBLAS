@@ -70,7 +70,7 @@ lapack_int LAPACKE_dgelsd( int matrix_layout, lapack_int m, lapack_int n,
     if( info != 0 ) {
         goto exit_level_0;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lwork = (lapack_int)work_query;
     /* Allocate memory for work arrays */
     iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );

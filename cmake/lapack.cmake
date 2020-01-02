@@ -115,7 +115,9 @@ set(SLASRC
    stplqt.f stplqt2.f stpmlqt.f
    ssytrd_2stage.f ssytrd_sy2sb.f ssytrd_sb2st.F ssb2st_kernels.f
    ssyevd_2stage.f ssyev_2stage.f ssyevx_2stage.f ssyevr_2stage.f
-   ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f)
+   ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f
+   scombssq.f sgesvdq.f slaorhr_col_getrfnp.f
+   slaorhr_col_getrfnp2.f sorgtsqr.f sorhr_col.f )
 
 set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
    sla_gercond.f sla_gerpvgrw.f ssysvxx.f ssyrfsx.f
@@ -210,7 +212,9 @@ set(CLASRC
    ctplqt.f ctplqt2.f ctpmlqt.f
    chetrd_2stage.f chetrd_he2hb.f chetrd_hb2st.F chb2st_kernels.f
    cheevd_2stage.f cheev_2stage.f cheevx_2stage.f cheevr_2stage.f
-   chbev_2stage.f chbevx_2stage.f chbevd_2stage.f chegv_2stage.f)
+   chbev_2stage.f chbevx_2stage.f chbevd_2stage.f chegv_2stage.f
+   cgesvdq.f claunhr_col_getrfnp.f claunhr_col_getrfnp2.f 
+   cungtsqr.f cunhr_col.f )
 
 set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_gercond_c.f cla_gercond_x.f cla_gerpvgrw.f
@@ -299,7 +303,9 @@ set(DLASRC
    dtplqt.f dtplqt2.f dtpmlqt.f
    dsytrd_2stage.f dsytrd_sy2sb.f dsytrd_sb2st.F dsb2st_kernels.f
    dsyevd_2stage.f dsyev_2stage.f dsyevx_2stage.f dsyevr_2stage.f
-   dsbev_2stage.f dsbevx_2stage.f dsbevd_2stage.f dsygv_2stage.f)
+   dsbev_2stage.f dsbevx_2stage.f dsbevd_2stage.f dsygv_2stage.f
+   dcombssq.f dgesvdq.f dlaorhr_col_getrfnp.f
+   dlaorhr_col_getrfnp2.f dorgtsqr.f dorhr_col.f )
 
 set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gercond.f dla_gerpvgrw.f dsysvxx.f dsyrfsx.f
@@ -398,7 +404,9 @@ set(ZLASRC
    zgelq.f zlaswlq.f zlamswlq.f zgemlq.f
    zhetrd_2stage.f zhetrd_he2hb.f zhetrd_hb2st.F zhb2st_kernels.f
    zheevd_2stage.f zheev_2stage.f zheevx_2stage.f zheevr_2stage.f
-   zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f)
+   zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f
+   zgesvdq.f zlaunhr_col_getrfnp.f zlaunhr_col_getrfnp2.f
+   zungtsqr.f zunhr_col.f)
 
 set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
    zla_gercond_c.f zla_gercond_x.f zla_gerpvgrw.f zsysvxx.f zsyrfsx.f

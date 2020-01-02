@@ -29,12 +29,13 @@
 *>
 *>      ZGET51  generally checks a decomposition of the form
 *>
-*>              A = U B VC>
-*>      where * means conjugate transpose and U and V are unitary.
+*>              A = U B V**H
+*>
+*>      where **H means conjugate transpose and U and V are unitary.
 *>
 *>      Specifically, if ITYPE=1
 *>
-*>              RESULT = | A - U B V* | / ( |A| n ulp )
+*>              RESULT = | A - U B V**H | / ( |A| n ulp )
 *>
 *>      If ITYPE=2, then:
 *>
@@ -42,7 +43,7 @@
 *>
 *>      If ITYPE=3, then:
 *>
-*>              RESULT = | I - UU* | / ( n ulp )
+*>              RESULT = | I - U U**H | / ( n ulp )
 *> \endverbatim
 *
 *  Arguments:
@@ -52,9 +53,9 @@
 *> \verbatim
 *>          ITYPE is INTEGER
 *>          Specifies the type of tests to be performed.
-*>          =1: RESULT = | A - U B V* | / ( |A| n ulp )
+*>          =1: RESULT = | A - U B V**H | / ( |A| n ulp )
 *>          =2: RESULT = | A - B | / ( |A| n ulp )
-*>          =3: RESULT = | I - UU* | / ( n ulp )
+*>          =3: RESULT = | I - U U**H | / ( n ulp )
 *> \endverbatim
 *>
 *> \param[in] N
@@ -218,7 +219,7 @@
 *
          IF( ITYPE.EQ.1 ) THEN
 *
-*           ITYPE=1: Compute W = A - UBV'
+*           ITYPE=1: Compute W = A - U B V**H
 *
             CALL ZLACPY( ' ', N, N, A, LDA, WORK, N )
             CALL ZGEMM( 'N', 'N', N, N, N, CONE, U, LDU, B, LDB, CZERO,
@@ -259,7 +260,7 @@
 *
 *        Tests not scaled by norm(A)
 *
-*        ITYPE=3: Compute  UU' - I
+*        ITYPE=3: Compute  U U**H - I
 *
          CALL ZGEMM( 'N', 'C', N, N, N, CONE, U, LDU, U, LDU, CZERO,
      $               WORK, N )

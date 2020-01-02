@@ -7,8 +7,11 @@ if(NOT TARGET lapacke)
   include("@LAPACK_BINARY_DIR@/lapack-targets.cmake")
 endif()
 
+# Hint for project building against lapack
+set(LAPACKE_Fortran_COMPILER_ID ${LAPACK_Fortran_COMPILER_ID})
+
 # Report lapacke header search locations from build tree.
 set(LAPACKE_INCLUDE_DIRS "@LAPACK_BINARY_DIR@/include")
 
 # Report lapacke libraries.
-set(LAPACKE_LIBRARIES lapacke)
+set(LAPACKE_LIBRARIES lapacke ${LAPACK_LIBRARIES})

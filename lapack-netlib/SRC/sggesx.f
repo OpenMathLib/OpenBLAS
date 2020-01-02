@@ -131,10 +131,10 @@
 *> \verbatim
 *>          SENSE is CHARACTER*1
 *>          Determines which reciprocal condition numbers are computed.
-*>          = 'N' : None are computed;
-*>          = 'E' : Computed for average of selected eigenvalues only;
-*>          = 'V' : Computed for selected deflating subspaces only;
-*>          = 'B' : Computed for both.
+*>          = 'N':  None are computed;
+*>          = 'E':  Computed for average of selected eigenvalues only;
+*>          = 'V':  Computed for selected deflating subspaces only;
+*>          = 'B':  Computed for both.
 *>          If SENSE = 'E', 'V', or 'B', SORT must equal 'S'.
 *> \endverbatim
 *>

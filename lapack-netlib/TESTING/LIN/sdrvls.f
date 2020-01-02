@@ -233,8 +233,8 @@
       REAL               EPS, NORMA, NORMB, RCOND
 *     ..
 *     .. Local Arrays ..
-      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWQ
-      REAL               RESULT( NTESTS ), WQ
+      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWQ( 1 )
+      REAL               RESULT( NTESTS ), WQ( 1 )
 *     ..
 *     .. Allocatable Arrays ..
       REAL, ALLOCATABLE :: WORK (:)
@@ -358,28 +358,28 @@
 *
 *                             Compute workspace needed for SGELS
                               CALL SGELS( TRANS, M, N, NRHS, A, LDA,
-     $                                    B, LDB, WQ, -1, INFO )
-                              LWORK_SGELS = INT ( WQ )
+     $                                    B, LDB, WQ( 1 ), -1, INFO )
+                              LWORK_SGELS = INT ( WQ( 1 ) )
 *                             Compute workspace needed for SGETSLS
                               CALL SGETSLS( TRANS, M, N, NRHS, A, LDA,
-     $                                      B, LDB, WQ, -1, INFO )
-                              LWORK_SGETSLS = INT( WQ )
+     $                                      B, LDB, WQ( 1 ), -1, INFO )
+                              LWORK_SGETSLS = INT( WQ( 1 ) )
                            ENDDO
                         END IF
 *                       Compute workspace needed for SGELSY
                         CALL SGELSY( M, N, NRHS, A, LDA, B, LDB, IWQ,
      $                               RCOND, CRANK, WQ, -1, INFO )
-                        LWORK_SGELSY = INT( WQ )
+                        LWORK_SGELSY = INT( WQ( 1 ) )
 *                       Compute workspace needed for SGELSS
                         CALL SGELSS( M, N, NRHS, A, LDA, B, LDB, S,
      $                               RCOND, CRANK, WQ, -1 , INFO )
-                        LWORK_SGELSS = INT( WQ )
+                        LWORK_SGELSS = INT( WQ( 1 ) )
 *                       Compute workspace needed for SGELSD
                         CALL SGELSD( M, N, NRHS, A, LDA, B, LDB, S,
      $                               RCOND, CRANK, WQ, -1, IWQ, INFO )
-                        LWORK_SGELSD = INT( WQ )
+                        LWORK_SGELSD = INT( WQ( 1 ) )
 *                       Compute LIWORK workspace needed for SGELSY and SGELSD
-                        LIWORK = MAX( LIWORK, N, IWQ )
+                        LIWORK = MAX( LIWORK, N, IWQ( 1 ) )
 *                       Compute LWORK workspace needed for all functions
                         LWORK = MAX( LWORK, LWORK_SGELS, LWORK_SGETSLS,
      $                               LWORK_SGELSY, LWORK_SGELSS,

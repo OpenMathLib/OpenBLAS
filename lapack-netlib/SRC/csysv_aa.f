@@ -42,7 +42,7 @@
 *> matrices.
 *>
 *> Aasen's algorithm is used to factor A as
-*>    A = U * T * U**T,  if UPLO = 'U', or
+*>    A = U**T * T * U,  if UPLO = 'U', or
 *>    A = L * T * L**T,  if UPLO = 'L',
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is symmetric tridiagonal. The factored
@@ -75,7 +75,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is REAL array, dimension (LDA,N)
+*>          A is COMPLEX array, dimension (LDA,N)
 *>          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
 *>          N-by-N upper triangular part of A contains the upper
 *>          triangular part of the matrix A, and the strictly lower
@@ -86,7 +86,7 @@
 *>
 *>          On exit, if INFO = 0, the tridiagonal matrix T and the
 *>          multipliers used to obtain the factor U or L from the
-*>          factorization A = U*T*U**T or A = L*T*L**T as computed by
+*>          factorization A = U**T*T*U or A = L*T*L**T as computed by
 *>          CSYTRF.
 *> \endverbatim
 *>
@@ -106,7 +106,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is REAL array, dimension (LDB,NRHS)
+*>          B is COMPLEX array, dimension (LDB,NRHS)
 *>          On entry, the N-by-NRHS right hand side matrix B.
 *>          On exit, if INFO = 0, the N-by-NRHS solution matrix X.
 *> \endverbatim
@@ -119,7 +119,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (MAX(1,LWORK))
+*>          WORK is COMPLEX array, dimension (MAX(1,LWORK))
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
@@ -230,7 +230,7 @@
          RETURN
       END IF
 *
-*     Compute the factorization A = U*T*U**T or A = L*T*L**T.
+*     Compute the factorization A = U**T*T*U or A = L*T*L**T.
 *
       CALL CSYTRF_AA( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
       IF( INFO.EQ.0 ) THEN

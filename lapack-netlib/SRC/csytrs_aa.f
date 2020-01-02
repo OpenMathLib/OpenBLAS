@@ -37,7 +37,7 @@
 *> \verbatim
 *>
 *> CSYTRS_AA solves a system of linear equations A*X = B with a complex
-*> symmetric matrix A using the factorization A = U*T*U**T or
+*> symmetric matrix A using the factorization A = U**T*T*U or
 *> A = L*T*L**T computed by CSYTRF_AA.
 *> \endverbatim
 *
@@ -49,7 +49,7 @@
 *>          UPLO is CHARACTER*1
 *>          Specifies whether the details of the factorization are stored
 *>          as an upper or lower triangular matrix.
-*>          = 'U':  Upper triangular, form is A = U*T*U**T;
+*>          = 'U':  Upper triangular, form is A = U**T*T*U;
 *>          = 'L':  Lower triangular, form is A = L*T*L**T.
 *> \endverbatim
 *>
@@ -68,7 +68,7 @@
 *>
 *> \param[in] A
 *> \verbatim
-*>          A is REAL array, dimension (LDA,N)
+*>          A is COMPLEX array, dimension (LDA,N)
 *>          Details of factors computed by CSYTRF_AA.
 *> \endverbatim
 *>
@@ -86,7 +86,7 @@
 *>
 *> \param[in,out] B
 *> \verbatim
-*>          B is REAL array, dimension (LDB,NRHS)
+*>          B is COMPLEX array, dimension (LDB,NRHS)
 *>          On entry, the right hand side matrix B.
 *>          On exit, the solution matrix X.
 *> \endverbatim
@@ -97,14 +97,16 @@
 *>          The leading dimension of the array B.  LDB >= max(1,N).
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE array, dimension (MAX(1,LWORK))
+*>          WORK is COMPLEX array, dimension (MAX(1,LWORK))
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
-*>          LWORK is INTEGER, LWORK >= MAX(1,3*N-2).
+*>          LWORK is INTEGER
+*>          The dimension of the array WORK. LWORK >= max(1,3*N-2).
+*> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
@@ -198,22 +200,29 @@
 *
       IF( UPPER ) THEN
 *
-*        Solve A*X = B, where A = U*T*U**T.
+*        Solve A*X = B, where A = U**T*T*U.
 *
-*        Pivot, P**T * B
+*        1) Forward substitution with U**T
 *
-         DO K = 1, N
-            KP = IPIV( K )
-            IF( KP.NE.K )
-     $          CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
-         END DO
+         IF( N.GT.1 ) THEN
 *
-*        Compute (U \P**T * B) -> B    [ (U \P**T * B) ]
+*           Pivot, P**T * B -> B
 *
-         CALL CTRSM('L', 'U', 'T', 'U', N-1, NRHS, ONE, A( 1, 2 ), LDA,
-     $               B( 2, 1 ), LDB)
+            DO K = 1, N
+               KP = IPIV( K )
+               IF( KP.NE.K )
+     $            CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            END DO
 *
-*        Compute T \ B -> B   [ T \ (U \P**T * B) ]
+*           Compute U**T \ B -> B    [ (U**T \P**T * B) ]
+*
+            CALL CTRSM( 'L', 'U', 'T', 'U', N-1, NRHS, ONE, A( 1, 2 ),
+     $                  LDA, B( 2, 1 ), LDB)
+         END IF
+*
+*        2) Solve with triangular matrix T
+*
+*        Compute T \ B -> B   [ T \ (U**T \P**T * B) ]
 *
          CALL CLACPY( 'F', 1, N, A( 1, 1 ), LDA+1, WORK( N ), 1)
          IF( N.GT.1 ) THEN
@@ -223,35 +232,48 @@
          CALL CGTSV( N, NRHS, WORK( 1 ), WORK( N ), WORK( 2*N ), B, LDB,
      $               INFO )
 *
-*        Compute (U**T \ B) -> B   [ U**T \ (T \ (U \P**T * B) ) ]
+*        3) Backward substitution with U
 *
-         CALL CTRSM( 'L', 'U', 'N', 'U', N-1, NRHS, ONE, A( 1, 2 ), LDA,
-     $               B( 2, 1 ), LDB)
+         IF( N.GT.1 ) THEN
 *
-*        Pivot, P * B  [ P * (U**T \ (T \ (U \P**T * B) )) ]
+*           Compute U \ B -> B   [ U \ (T \ (U**T \P**T * B) ) ]
 *
-         DO K = N, 1, -1
-            KP = IPIV( K )
-            IF( KP.NE.K )
-     $         CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
-         END DO
+            CALL CTRSM( 'L', 'U', 'N', 'U', N-1, NRHS, ONE, A( 1, 2 ),
+     $                  LDA, B( 2, 1 ), LDB)
+*
+*           Pivot, P * B -> B  [ P * (U**T \ (T \ (U \P**T * B) )) ]
+*
+            DO K = N, 1, -1
+               KP = IPIV( K )
+               IF( KP.NE.K )
+     $            CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            END DO
+         END IF
 *
       ELSE
 *
 *        Solve A*X = B, where A = L*T*L**T.
 *
-*        Pivot, P**T * B
+*        1) Forward substitution with L
 *
-         DO K = 1, N
-            KP = IPIV( K )
-            IF( KP.NE.K )
-     $         CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
-         END DO
+         IF( N.GT.1 ) THEN
 *
-*        Compute (L \P**T * B) -> B    [ (L \P**T * B) ]
+*           Pivot, P**T * B -> B
 *
-         CALL CTRSM( 'L', 'L', 'N', 'U', N-1, NRHS, ONE, A( 2, 1 ), LDA,
-     $               B( 2, 1 ), LDB)
+            DO K = 1, N
+               KP = IPIV( K )
+               IF( KP.NE.K )
+     $            CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            END DO
+*
+*           Compute L \ B -> B    [ (L \P**T * B) ]
+*
+            CALL CTRSM( 'L', 'L', 'N', 'U', N-1, NRHS, ONE, A( 2, 1 ),
+     $                  LDA, B( 2, 1 ), LDB)
+         END IF
+*
+*        2) Solve with triangular matrix T
+*
 *
 *        Compute T \ B -> B   [ T \ (L \P**T * B) ]
 *
@@ -263,18 +285,23 @@
          CALL CGTSV( N, NRHS, WORK( 1 ), WORK(N), WORK( 2*N ), B, LDB,
      $               INFO)
 *
-*        Compute (L**T \ B) -> B   [ L**T \ (T \ (L \P**T * B) ) ]
+*        3) Backward substitution with L**T
 *
-         CALL CTRSM( 'L', 'L', 'T', 'U', N-1, NRHS, ONE, A( 2, 1 ), LDA,
-     $              B( 2, 1 ), LDB)
+         IF( N.GT.1 ) THEN
 *
-*        Pivot, P * B  [ P * (L**T \ (T \ (L \P**T * B) )) ]
+*           Compute (L**T \ B) -> B   [ L**T \ (T \ (L \P**T * B) ) ]
 *
-         DO K = N, 1, -1
-            KP = IPIV( K )
-            IF( KP.NE.K )
-     $         CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
-         END DO
+            CALL CTRSM( 'L', 'L', 'T', 'U', N-1, NRHS, ONE, A( 2, 1 ),
+     $                  LDA, B( 2, 1 ), LDB)
+*
+*           Pivot, P * B -> B  [ P * (L**T \ (T \ (L \P**T * B) )) ]
+*
+            DO K = N, 1, -1
+               KP = IPIV( K )
+               IF( KP.NE.K )
+     $            CALL CSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            END DO
+         END IF
 *
       END IF
 *

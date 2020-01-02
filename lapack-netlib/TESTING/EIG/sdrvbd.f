@@ -32,7 +32,7 @@
 *> \verbatim
 *>
 *> SDRVBD checks the singular value decomposition (SVD) drivers
-*> SGESVD, SGESDD, SGESVJ, and SGEJSV.
+*> SGESVD, SGESDD, SGESVDQ, SGESVJ, SGEJSV, and DGESVDX.
 *>
 *> Both SGESVD and SGESDD factor A = U diag(S) VT, where U and VT are
 *> orthogonal and diag(S) is diagonal with the entries of the array S
@@ -89,6 +89,17 @@
 *>
 *> (14)   | S - Spartial | / ( MNMIN ulp |S| ) where Spartial is the
 *>        vector of singular values from the partial SVD
+*>
+*> Test for SGESVDQ:
+*>
+*> (36)   | A - U diag(S) VT | / ( |A| max(M,N) ulp )
+*>
+*> (37)   | I - U'U | / ( M ulp )
+*>
+*> (38)   | I - VT VT' | / ( N ulp )
+*>
+*> (39)   S contains MNMIN nonnegative values in decreasing order.
+*>        (Return 0 if true, 1/ULP if false.)
 *>
 *> Test for SGESVJ:
 *>
@@ -360,6 +371,8 @@
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     June 2016
 *
+      IMPLICIT NONE
+*
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LDVT, LWORK, NOUT, NSIZES,
      $                   NTYPES
@@ -391,12 +404,18 @@
      $                   MMAX, MNMAX, MNMIN, MTYPES, N, NFAIL,
      $                   NMAX, NS, NSI, NSV, NTEST
       REAL               ANORM, DIF, DIV, OVFL, RTUNFL, ULP,
-     $                    ULPINV, UNFL, VL, VU
+     $                   ULPINV, UNFL, VL, VU
+*     ..
+*     .. Local Scalars for DGESVDQ ..
+      INTEGER            LIWORK, LRWORK, NUMRANK
+*     ..
+*     .. Local Arrays for DGESVDQ ..
+      REAL               RWORK( 2 )
 *     ..
 *     .. Local Arrays ..
       CHARACTER          CJOB( 4 ), CJOBR( 3 ), CJOBV( 2 )
       INTEGER            IOLDSD( 4 ), ISEED2( 4 )
-      REAL               RESULT( 40 )
+      REAL               RESULT( 39 )
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH, SLARND
@@ -404,8 +423,8 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, SBDT01, SGEJSV, SGESDD, SGESVD,
-     $                   SGESVDX, SGESVJ, SLABAD, SLACPY, SLASET,
-     $                   SLATMS, SORT01, SORT03, XERBLA
+     $                   SGESVDQ, SGESVDX, SGESVJ, SLABAD, SLACPY,
+     $                   SLASET, SLATMS, SORT01, SORT03, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, INT, MAX, MIN
@@ -781,8 +800,64 @@
                   RESULT( 14 ) = MAX( RESULT( 14 ), DIF )
   110          CONTINUE
 *
-*              Test SGESVJ: Factorize A
-*              Note: SGESVJ does not work for M < N
+*              Test SGESVDQ
+*              Note: SGESVDQ only works for M >= N
+*
+               RESULT( 36 ) = ZERO
+               RESULT( 37 ) = ZERO
+               RESULT( 38 ) = ZERO
+               RESULT( 39 ) = ZERO
+*
+               IF( M.GE.N ) THEN
+                  IWTMP = 5*MNMIN*MNMIN + 9*MNMIN + MAX( M, N )
+                  LSWORK = IWTMP + ( IWS-1 )*( LWORK-IWTMP ) / 3
+                  LSWORK = MIN( LSWORK, LWORK )
+                  LSWORK = MAX( LSWORK, 1 )
+                  IF( IWS.EQ.4 )
+     $               LSWORK = LWORK
+*
+                  CALL SLACPY( 'F', M, N, ASAV, LDA, A, LDA )
+                  SRNAMT = 'SGESVDQ'
+*
+                  LRWORK = 2
+                  LIWORK = MAX( N, 1 )
+                  CALL SGESVDQ( 'H', 'N', 'N', 'A', 'A', 
+     $                          M, N, A, LDA, SSAV, USAV, LDU,
+     $                          VTSAV, LDVT, NUMRANK, IWORK, LIWORK,
+     $                          WORK, LWORK, RWORK, LRWORK, IINFO )
+*
+                  IF( IINFO.NE.0 ) THEN
+                     WRITE( NOUT, FMT = 9995 )'SGESVDQ', IINFO, M, N,
+     $               JTYPE, LSWORK, IOLDSD
+                     INFO = ABS( IINFO )
+                     RETURN
+                  END IF
+*
+*                 Do tests 36--39
+*
+                  CALL SBDT01( M, N, 0, ASAV, LDA, USAV, LDU, SSAV, E,
+     $                         VTSAV, LDVT, WORK, RESULT( 36 ) )
+                  IF( M.NE.0 .AND. N.NE.0 ) THEN
+                     CALL SORT01( 'Columns', M, M, USAV, LDU, WORK,
+     $                            LWORK, RESULT( 37 ) )
+                     CALL SORT01( 'Rows', N, N, VTSAV, LDVT, WORK,
+     $                            LWORK, RESULT( 38 ) )
+                  END IF
+                  RESULT( 39 ) = ZERO
+                  DO 199 I = 1, MNMIN - 1
+                     IF( SSAV( I ).LT.SSAV( I+1 ) )
+     $                  RESULT( 39 ) = ULPINV
+                     IF( SSAV( I ).LT.ZERO )
+     $                  RESULT( 39 ) = ULPINV
+  199             CONTINUE
+                  IF( MNMIN.GE.1 ) THEN
+                     IF( SSAV( MNMIN ).LT.ZERO )
+     $                  RESULT( 39 ) = ULPINV
+                  END IF
+               END IF
+*
+*              Test SGESVJ
+*              Note: SGESVJ only works for M >= N
 *
                RESULT( 15 ) = ZERO
                RESULT( 16 ) = ZERO
@@ -802,8 +877,7 @@
                   CALL SGESVJ( 'G', 'U', 'V', M, N, USAV, LDA, SSAV,
      &                        0, A, LDVT, WORK, LWORK, INFO )
 *
-*                 SGESVJ retuns V not VT, so we transpose to use the same
-*                 test suite.
+*                 SGESVJ returns V not VT
 *
                   DO J=1,N
                      DO I=1,N
@@ -841,8 +915,8 @@
                   END IF
                END IF
 *
-*              Test SGEJSV: Factorize A
-*              Note: SGEJSV does not work for M < N
+*              Test SGEJSV
+*              Note: SGEJSV only works for M >= N
 *
                RESULT( 19 ) = ZERO
                RESULT( 20 ) = ZERO
@@ -862,8 +936,7 @@
      &                   M, N, VTSAV, LDA, SSAV, USAV, LDU, A, LDVT,
      &                   WORK, LWORK, IWORK, INFO )
 *
-*                 SGEJSV retuns V not VT, so we transpose to use the same
-*                 test suite.
+*                 SGEJSV returns V not VT
 *
                   DO 140 J=1,N
                      DO 130 I=1,N
@@ -872,7 +945,7 @@
   140             END DO
 *
                   IF( IINFO.NE.0 ) THEN
-                     WRITE( NOUT, FMT = 9995 )'GESVJ', IINFO, M, N,
+                     WRITE( NOUT, FMT = 9995 )'GEJSV', IINFO, M, N,
      $               JTYPE, LSWORK, IOLDSD
                      INFO = ABS( IINFO )
                      RETURN
@@ -1086,7 +1159,7 @@
 *
 *              End of Loop -- Check for RESULT(j) > THRESH
 *
-               DO 210 J = 1, 35
+               DO 210 J = 1, 39
                   IF( RESULT( J ).GE.THRESH ) THEN
                      IF( NFAIL.EQ.0 ) THEN
                         WRITE( NOUT, FMT = 9999 )
@@ -1097,7 +1170,7 @@
                      NFAIL = NFAIL + 1
                   END IF
   210          CONTINUE
-               NTEST = NTEST + 35
+               NTEST = NTEST + 39
   220       CONTINUE
   230    CONTINUE
   240 CONTINUE
@@ -1158,6 +1231,12 @@
      $      ' SGESVDX(V,V,V) ',
      $      / '34 = | I - U**T U | / ( M ulp ) ',
      $      / '35 = | I - VT VT**T | / ( N ulp ) ',
+     $      ' SGESVDQ(H,N,N,A,A',
+     $      / '36 = | A - U diag(S) VT | / ( |A| max(M,N) ulp ) ',
+     $      / '37 = | I - U**T U | / ( M ulp ) ',
+     $      / '38 = | I - VT VT**T | / ( N ulp ) ',
+     $      / '39 = 0 if S contains min(M,N) nonnegative values in',
+     $      ' decreasing order, else 1/ulp',
      $      / / )
  9997 FORMAT( ' M=', I5, ', N=', I5, ', type ', I1, ', IWS=', I1,
      $      ', seed=', 4( I4, ',' ), ' test(', I2, ')=', G11.4 )
