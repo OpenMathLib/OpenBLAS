@@ -92,6 +92,8 @@
 *>          K is INTEGER
 *>          The order of the matrix T (= the number of elementary
 *>          reflectors whose product defines the block reflector).
+*>          If SIDE = 'L', M >= K >= 0;
+*>          if SIDE = 'R', N >= K >= 0.
 *> \endverbatim
 *>
 *> \param[in] V

@@ -167,7 +167,7 @@
 *>                                              CSTEMR('V', 'I')
 *>
 *> Tests 29 through 34 are disable at present because CSTEMR
-*> does not handle partial specturm requests.
+*> does not handle partial spectrum requests.
 *>
 *> (29)    | S - Z D Z* | / ( |S| n ulp )    CSTEMR('V', 'I')
 *>

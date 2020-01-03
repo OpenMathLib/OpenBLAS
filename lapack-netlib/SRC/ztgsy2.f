@@ -67,7 +67,7 @@
 *>             R  * B**H + L  * E**H  = scale * -F
 *>
 *> This case is used to compute an estimate of Dif[(A, D), (B, E)] =
-*> = sigma_min(Z) using reverse communicaton with ZLACON.
+*> = sigma_min(Z) using reverse communication with ZLACON.
 *>
 *> ZTGSY2 also (IJOB >= 1) contributes to the computation in ZTGSYL
 *> of an upper bound on the separation between to matrix pairs. Then
@@ -81,7 +81,7 @@
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
-*>          = 'N', solve the generalized Sylvester equation (1).
+*>          = 'N': solve the generalized Sylvester equation (1).
 *>          = 'T': solve the 'transposed' system (3).
 *> \endverbatim
 *>

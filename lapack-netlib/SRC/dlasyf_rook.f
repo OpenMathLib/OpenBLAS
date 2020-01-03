@@ -21,7 +21,7 @@
 *       SUBROUTINE DLASYF_ROOK( UPLO, N, NB, KB, A, LDA, IPIV, W, LDW, INFO )
 *
 *       .. Scalar Arguments ..
-*       CHARADLATER          UPLO
+*       CHARACTER          UPLO
 *       INTEGER            INFO, KB, LDA, LDW, N, NB
 *       ..
 *       .. Array Arguments ..

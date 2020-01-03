@@ -52,6 +52,7 @@
 *> \verbatim
 *>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          The m by n matrix A.
+*> \endverbatim
 *>
 *> \param[in] LDA
 *> \verbatim

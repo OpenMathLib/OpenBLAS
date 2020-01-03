@@ -37,7 +37,7 @@
 *> CSYTRF_AA computes the factorization of a complex symmetric matrix A
 *> using the Aasen's algorithm.  The form of the factorization is
 *>
-*>    A = U*T*U**T  or  A = L*T*L**T
+*>    A = U**T*T*U  or  A = L*T*L**T
 *>
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is a complex symmetric tridiagonal matrix.
@@ -63,7 +63,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is REAL array, dimension (LDA,N)
+*>          A is COMPLEX array, dimension (LDA,N)
 *>          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
 *>          N-by-N upper triangular part of A contains the upper
 *>          triangular part of the matrix A, and the strictly lower
@@ -94,7 +94,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (MAX(1,LWORK))
+*>          WORK is COMPLEX array, dimension (MAX(1,LWORK))
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
@@ -223,7 +223,7 @@
       IF( UPPER ) THEN
 *
 *        .....................................................
-*        Factorize A as L*D*L**T using the upper triangle of A
+*        Factorize A as U**T*D*U using the upper triangle of A
 *        .....................................................
 *
 *        Copy first row A(1, 1:N) into H(1:n) (stored in WORK(1:N))
@@ -256,7 +256,7 @@
      $                   A( MAX(1, J), J+1 ), LDA,
      $                   IPIV( J+1 ), WORK, N, WORK( N*NB+1 ) )
 *
-*        Ajust IPIV and apply it back (J-th step picks (J+1)-th pivot)
+*        Adjust IPIV and apply it back (J-th step picks (J+1)-th pivot)
 *
          DO J2 = J+2, MIN(N, J+JB+1)
             IPIV( J2 ) = IPIV( J2 ) + J
@@ -375,7 +375,7 @@
      $                   A( J+1, MAX(1, J) ), LDA,
      $                   IPIV( J+1 ), WORK, N, WORK( N*NB+1 ) )
 *
-*        Ajust IPIV and apply it back (J-th step picks (J+1)-th pivot)
+*        Adjust IPIV and apply it back (J-th step picks (J+1)-th pivot)
 *
          DO J2 = J+2, MIN(N, J+JB+1)
             IPIV( J2 ) = IPIV( J2 ) + J

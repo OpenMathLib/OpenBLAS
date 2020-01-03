@@ -18,7 +18,7 @@
 *  Definition:
 *  ===========
 *
-*     SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
+*     SUBROUTINE ZGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
 *    $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
 *    $                    LWORK, RWORK, IWORK, INFO )
 *

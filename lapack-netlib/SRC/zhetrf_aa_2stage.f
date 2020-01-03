@@ -38,7 +38,7 @@
 *> ZHETRF_AA_2STAGE computes the factorization of a double hermitian matrix A
 *> using the Aasen's algorithm.  The form of the factorization is
 *>
-*>    A = U*T*U**T  or  A = L*T*L**T
+*>    A = U**H*T*U  or  A = L*T*L**H
 *>
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is a hermitian band matrix with the
@@ -66,7 +66,7 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX array, dimension (LDA,N)
+*>          A is COMPLEX*16 array, dimension (LDA,N)
 *>          On entry, the hermitian matrix A.  If UPLO = 'U', the leading
 *>          N-by-N upper triangular part of A contains the upper
 *>          triangular part of the matrix A, and the strictly lower
@@ -87,7 +87,7 @@
 *>
 *> \param[out] TB
 *> \verbatim
-*>          TB is COMPLEX array, dimension (LTB)
+*>          TB is COMPLEX*16 array, dimension (LTB)
 *>          On exit, details of the LU factorization of the band matrix.
 *> \endverbatim
 *>
@@ -121,7 +121,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX workspace of size LWORK
+*>          WORK is COMPLEX*16 workspace of size LWORK
 *> \endverbatim
 *>
 *> \param[in] LWORK
@@ -276,7 +276,7 @@
       IF( UPPER ) THEN
 *
 *        .....................................................
-*        Factorize A as L*D*L**T using the upper triangle of A
+*        Factorize A as U**H*D*U using the upper triangle of A
 *        .....................................................
 *
          DO J = 0, NT-1
@@ -452,14 +452,17 @@ c               END IF
 *                    > Apply pivots to previous columns of L
                      CALL ZSWAP( K-1, A( (J+1)*NB+1, I1 ), 1, 
      $                                A( (J+1)*NB+1, I2 ), 1 )
-*                    > Swap A(I1+1:M, I1) with A(I2, I1+1:M)               
-                     CALL ZSWAP( I2-I1-1, A( I1, I1+1 ), LDA,
-     $                                    A( I1+1, I2 ), 1 )
+*                    > Swap A(I1+1:M, I1) with A(I2, I1+1:M)
+                     IF( I2.GT.(I1+1) ) THEN
+                        CALL ZSWAP( I2-I1-1, A( I1, I1+1 ), LDA,
+     $                                       A( I1+1, I2 ), 1 )
+                        CALL ZLACGV( I2-I1-1, A( I1+1, I2 ), 1 )
+                     END IF
                      CALL ZLACGV( I2-I1, A( I1, I1+1 ), LDA )
-                     CALL ZLACGV( I2-I1-1, A( I1+1, I2 ), 1 )
 *                    > Swap A(I2+1:M, I1) with A(I2+1:M, I2)
-                     CALL ZSWAP( N-I2, A( I1, I2+1 ), LDA,
-     $                                 A( I2, I2+1 ), LDA ) 
+                     IF( I2.LT.N )
+     $                  CALL ZSWAP( N-I2, A( I1, I2+1 ), LDA,
+     $                                    A( I2, I2+1 ), LDA ) 
 *                    > Swap A(I1, I1) with A(I2, I2)
                      PIV = A( I1, I1 )
                      A( I1, I1 ) = A( I2, I2 )
@@ -476,7 +479,7 @@ c               END IF
       ELSE
 *
 *        .....................................................
-*        Factorize A as L*D*L**T using the lower triangle of A
+*        Factorize A as L*D*L**H using the lower triangle of A
 *        .....................................................
 *
          DO J = 0, NT-1
@@ -629,14 +632,17 @@ c               END IF
 *                    > Apply pivots to previous columns of L
                      CALL ZSWAP( K-1, A( I1, (J+1)*NB+1 ), LDA, 
      $                                A( I2, (J+1)*NB+1 ), LDA )
-*                    > Swap A(I1+1:M, I1) with A(I2, I1+1:M)               
-                     CALL ZSWAP( I2-I1-1, A( I1+1, I1 ), 1,
-     $                                    A( I2, I1+1 ), LDA )
+*                    > Swap A(I1+1:M, I1) with A(I2, I1+1:M)
+                     IF( I2.GT.(I1+1) ) THEN
+                        CALL ZSWAP( I2-I1-1, A( I1+1, I1 ), 1,
+     $                                       A( I2, I1+1 ), LDA )
+                        CALL ZLACGV( I2-I1-1, A( I2, I1+1 ), LDA )
+                     END IF
                      CALL ZLACGV( I2-I1, A( I1+1, I1 ), 1 )
-                     CALL ZLACGV( I2-I1-1, A( I2, I1+1 ), LDA )
 *                    > Swap A(I2+1:M, I1) with A(I2+1:M, I2)
-                     CALL ZSWAP( N-I2, A( I2+1, I1 ), 1,
-     $                                 A( I2+1, I2 ), 1 ) 
+                     IF( I2.LT.N )
+     $                  CALL ZSWAP( N-I2, A( I2+1, I1 ), 1,
+     $                                    A( I2+1, I2 ), 1 ) 
 *                    > Swap A(I1, I1) with A(I2, I2)
                      PIV = A( I1, I1 )
                      A( I1, I1 ) = A( I2, I2 )

@@ -24,7 +24,7 @@ message(STATUS "=========")
     set(F77_OUTPUT_EXE "/Fe" CACHE INTERNAL
       "Fortran compiler option for setting executable file name.")
   else()
-    # in other case, let user specify their fortran configrations.
+    # in other case, let user specify their fortran configurations.
     set(F77_OPTION_COMPILE "-c" CACHE STRING
       "Fortran compiler option for compiling without linking.")
     set(F77_OUTPUT_OBJ "-o" CACHE STRING

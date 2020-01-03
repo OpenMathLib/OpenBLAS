@@ -13,11 +13,14 @@ if(NOT TARGET lapacke)
   include(${_LAPACKE_SELF_DIR}/lapacke-targets.cmake)
 endif()
 
+# Hint for project building against lapack
+set(LAPACKE_Fortran_COMPILER_ID ${LAPACK_Fortran_COMPILER_ID})
+
 # Report lapacke header search locations.
 set(LAPACKE_INCLUDE_DIRS ${_LAPACKE_PREFIX}/include)
 
 # Report lapacke libraries.
-set(LAPACKE_LIBRARIES lapacke)
+set(LAPACKE_LIBRARIES lapacke ${LAPACK_LIBRARIES})
 
 unset(_LAPACKE_PREFIX)
 unset(_LAPACKE_SELF_DIR)

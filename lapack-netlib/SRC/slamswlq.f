@@ -1,3 +1,4 @@
+*> \brief \b SLAMSWLQ
 *
 *  Definition:
 *  ===========

@@ -28,14 +28,15 @@
 *>
 *> CSTT21  checks a decomposition of the form
 *>
-*>    A = U S UC>
-*> where * means conjugate transpose, A is real symmetric tridiagonal,
+*>    A = U S U**H
+*>
+*> where **H means conjugate transpose, A is real symmetric tridiagonal,
 *> U is unitary, and S is real and diagonal (if KBAND=0) or symmetric
 *> tridiagonal (if KBAND=1).  Two tests are performed:
 *>
-*>    RESULT(1) = | A - U S U* | / ( |A| n ulp )
+*>    RESULT(1) = | A - U S U**H | / ( |A| n ulp )
 *>
-*>    RESULT(2) = | I - UU* | / ( n ulp )
+*>    RESULT(2) = | I - U U**H | / ( n ulp )
 *> \endverbatim
 *
 *  Arguments:
@@ -201,7 +202,7 @@
       WORK( N**2 ) = AD( N )
       ANORM = MAX( ANORM, ABS( AD( N ) )+TEMP1, UNFL )
 *
-*     Norm of A - USU*
+*     Norm of A - U S U**H
 *
       DO 20 J = 1, N
          CALL CHER( 'L', N, -SD( J ), U( 1, J ), 1, WORK, N )
@@ -228,7 +229,7 @@
 *
 *     Do Test 2
 *
-*     Compute  UU* - I
+*     Compute  U U**H - I
 *
       CALL CGEMM( 'N', 'C', N, N, N, CONE, U, LDU, U, LDU, CZERO, WORK,
      $            N )

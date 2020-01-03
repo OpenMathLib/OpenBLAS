@@ -74,6 +74,8 @@
 *> ZEQ
 *> ZQT
 *> ZQX
+*> ZTS
+*> ZHH
 *> \endverbatim
 *
 *  Parameters:
@@ -108,17 +110,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
+*> \date November 2019
 *
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       PROGRAM ZCHKAA
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine (version 3.9.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
+*     November 2019
 *
 *  =====================================================================
 *
@@ -166,16 +168,16 @@
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, ZCHKEQ, ZCHKGB, ZCHKGE, ZCHKGT, ZCHKHE,
      $                   ZCHKHE_ROOK, ZCHKHE_RK, ZCHKHE_AA, ZCHKHP,
-     $                   ZCHKLQ, ZCHKPB, ZCHKPO, ZCHKPS, ZCHKPP, ZCHKPT,
-     $                   ZCHKQ3, ZCHKQL, ZCHKQR, ZCHKRQ, ZCHKSP, ZCHKSY,
-     $                   ZCHKSY_ROOK, ZCHKSY_RK, ZCHKSY_AA, ZCHKTB,
-     $                   ZCHKTP, ZCHKTR, ZCHKTZ, ZDRVGB, ZDRVGE, ZDRVGT,
-     $                   ZDRVHE, ZDRVHE_ROOK, ZDRVHE_RK, ZDRVHE_AA,
-     $                   ZDRVHE_AA_2STAGE, ZDRVHP, ZDRVLS, ZDRVPB, 
-     $                   ZDRVPO, ZDRVPP, ZDRVPT, ZDRVSP, ZDRVSY,
-     $                   ZDRVSY_ROOK, ZDRVSY_RK, ZDRVSY_AA,
-     $                   ZDRVSY_AA_2STAGE, ILAVER, ZCHKQRT, ZCHKQRTP,
-     $                   ZCHKLQT, ZCHKLQTP, ZCHKTSQR
+     $                   ZCHKLQ, ZCHKUNHR_COL, ZCHKPB, ZCHKPO, ZCHKPS,
+     $                   ZCHKPP, ZCHKPT, ZCHKQ3, ZCHKQL, ZCHKQR, ZCHKRQ,
+     $                   ZCHKSP, ZCHKSY, ZCHKSY_ROOK, ZCHKSY_RK,
+     $                   ZCHKSY_AA, ZCHKTB, ZCHKTP, ZCHKTR, ZCHKTZ,
+     $                   ZDRVGB, ZDRVGE, ZDRVGT, ZDRVHE, ZDRVHE_ROOK,
+     $                   ZDRVHE_RK, ZDRVHE_AA, ZDRVHE_AA_2STAGE, ZDRVHP,
+     $                   ZDRVLS, ZDRVPB,  ZDRVPO, ZDRVPP, ZDRVPT,
+     $                   ZDRVSP, ZDRVSY, ZDRVSY_ROOK, ZDRVSY_RK,
+     $                   ZDRVSY_AA, ZDRVSY_AA_2STAGE, ILAVER, ZCHKQRT,
+     $                   ZCHKQRTP, ZCHKLQT, ZCHKLQTP, ZCHKTSQR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -679,7 +681,7 @@
 *
 *        HK:  Hermitian indefinite matrices,
 *             with bounded Bunch-Kaufman (rook) pivoting algorithm,
-*             differnet matrix storage format than HR path version.
+*             different matrix storage format than HR path version.
 *
          NTYPES = 10
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -839,7 +841,7 @@
 *
 *        SK:  symmetric indefinite matrices,
 *             with bounded Bunch-Kaufman (rook) pivoting algorithm,
-*             differnet matrix storage format than SR path version.
+*             different matrix storage format than SR path version.
 *
          NTYPES = 11
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -1200,6 +1202,17 @@
      $                     NBVAL, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'HH' ) ) THEN
+*
+*        HH:  Householder reconstruction for tall-skinny matrices
+*
+         IF( TSTCHK ) THEN
+            CALL ZCHKUNHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
+     $                         NBVAL, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 ) PATH
          END IF
 *
       ELSE

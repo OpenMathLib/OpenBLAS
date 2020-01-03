@@ -233,8 +233,8 @@
       DOUBLE PRECISION   EPS, NORMA, NORMB, RCOND
 *     ..
 *     .. Local Arrays ..
-      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWQ
-      DOUBLE PRECISION   RESULT( NTESTS ), WQ
+      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWQ( 1 )
+      DOUBLE PRECISION   RESULT( NTESTS ), WQ( 1 )
 *     ..
 *     .. Allocatable Arrays ..
       DOUBLE PRECISION, ALLOCATABLE :: WORK (:)
@@ -359,27 +359,27 @@
 *                             Compute workspace needed for DGELS
                               CALL DGELS( TRANS, M, N, NRHS, A, LDA,
      $                                    B, LDB, WQ, -1, INFO )
-                              LWORK_DGELS = INT ( WQ )
+                              LWORK_DGELS = INT ( WQ ( 1 ) )
 *                             Compute workspace needed for DGETSLS
                               CALL DGETSLS( TRANS, M, N, NRHS, A, LDA,
      $                                      B, LDB, WQ, -1, INFO )
-                              LWORK_DGETSLS = INT( WQ )
+                              LWORK_DGETSLS = INT( WQ ( 1 ) )
                            ENDDO
                         END IF
 *                       Compute workspace needed for DGELSY
                         CALL DGELSY( M, N, NRHS, A, LDA, B, LDB, IWQ,
      $                               RCOND, CRANK, WQ, -1, INFO )
-                        LWORK_DGELSY = INT( WQ )
+                        LWORK_DGELSY = INT( WQ ( 1 ) )
 *                       Compute workspace needed for DGELSS
                         CALL DGELSS( M, N, NRHS, A, LDA, B, LDB, S,
      $                               RCOND, CRANK, WQ, -1 , INFO )
-                        LWORK_DGELSS = INT( WQ )
+                        LWORK_DGELSS = INT( WQ ( 1 ) )
 *                       Compute workspace needed for DGELSD
                         CALL DGELSD( M, N, NRHS, A, LDA, B, LDB, S,
      $                               RCOND, CRANK, WQ, -1, IWQ, INFO )
-                        LWORK_DGELSD = INT( WQ )
+                        LWORK_DGELSD = INT( WQ ( 1 ) )
 *                       Compute LIWORK workspace needed for DGELSY and DGELSD
-                        LIWORK = MAX( LIWORK, N, IWQ )
+                        LIWORK = MAX( LIWORK, N, IWQ( 1 ) )
 *                       Compute LWORK workspace needed for all functions
                         LWORK = MAX( LWORK, LWORK_DGELS, LWORK_DGETSLS,
      $                               LWORK_DGELSY, LWORK_DGELSS,

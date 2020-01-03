@@ -68,6 +68,8 @@
 *> SEQ
 *> SQT
 *> SQX
+*> STS
+*> SHH
 *> \endverbatim
 *
 *  Parameters:
@@ -102,17 +104,17 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
+*> \date November 2019
 *
 *> \ingroup single_lin
 *
 *  =====================================================================
       PROGRAM SCHKAA
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine (version 3.9.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
+*     November 2019
 *
 *  =====================================================================
 *
@@ -159,13 +161,13 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, SCHKEQ, SCHKGB, SCHKGE, SCHKGT, SCHKLQ,
-     $                   SCHKPB, SCHKPO, SCHKPS, SCHKPP, SCHKPT, SCHKQ3,
-     $                   SCHKQL, SCHKQR, SCHKRQ, SCHKSP, SCHKSY,
-     $                   SCHKSY_ROOK, SCHKSY_RK, SCHKSY_AA, SCHKTB,
-     $                   SCHKTP, SCHKTR, SCHKTZ, SDRVGB, SDRVGE, SDRVGT,
-     $                   SDRVLS, SDRVPB, SDRVPO, SDRVPP, SDRVPT, SDRVSP,
-     $                   SDRVSY, SDRVSY_ROOK, SDRVSY_RK, SDRVSY_AA,
-     $                   ILAVER, SCHKLQTP, SCHKQRT, SCHKQRTP,
+     $                   SCHKORHR_COL, SCHKPB, SCHKPO, SCHKPS, SCHKPP,
+     $                   SCHKPT, SCHKQ3, SCHKQL, SCHKQR, SCHKRQ, SCHKSP,
+     $                   SCHKSY, SCHKSY_ROOK, SCHKSY_RK, SCHKSY_AA,
+     $                   SCHKTB, SCHKTP, SCHKTR, SCHKTZ, SDRVGB, SDRVGE,
+     $                   SDRVGT, SDRVLS, SDRVPB, SDRVPO, SDRVPP, SDRVPT,
+     $                   SDRVSP, SDRVSY, SDRVSY_ROOK, SDRVSY_RK,
+     $                   SDRVSY_AA, ILAVER, SCHKLQTP, SCHKQRT, SCHKQRTP,
      $                   SCHKLQT, SCHKTSQR
 *     ..
 *     .. Scalars in Common ..
@@ -673,7 +675,7 @@
 *
 *        SK:  symmetric indefinite matrices,
 *             with bounded Bunch-Kaufman (rook) pivoting algorithm,
-*             differnet matrix storage format than SR path version.
+*             different matrix storage format than SR path version.
 *
          NTYPES = 10
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -1003,6 +1005,17 @@
      $                     NBVAL, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'HH' ) ) THEN
+*
+*        HH:  Householder reconstruction for tall-skinny matrices
+*
+         IF( TSTCHK ) THEN
+            CALL SCHKORHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
+     $                         NBVAL, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 ) PATH
          END IF
 *
       ELSE

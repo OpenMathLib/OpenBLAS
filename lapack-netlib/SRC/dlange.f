@@ -119,6 +119,7 @@
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     December 2016
 *
+      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          NORM
       INTEGER            LDA, M, N
@@ -135,10 +136,13 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, J
-      DOUBLE PRECISION   SCALE, SUM, VALUE, TEMP
+      DOUBLE PRECISION   SUM, VALUE, TEMP
+*     ..
+*     .. Local Arrays ..
+      DOUBLE PRECISION   SSQ( 2 ), COLSSQ( 2 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLASSQ
+      EXTERNAL           DLASSQ, DCOMBSSQ
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, DISNAN
@@ -194,13 +198,19 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
+*        SSQ(1) is scale
+*        SSQ(2) is sum-of-squares
+*        For better accuracy, sum each column separately.
 *
-         SCALE = ZERO
-         SUM = ONE
+         SSQ( 1 ) = ZERO
+         SSQ( 2 ) = ONE
          DO 90 J = 1, N
-            CALL DLASSQ( M, A( 1, J ), 1, SCALE, SUM )
+            COLSSQ( 1 ) = ZERO
+            COLSSQ( 2 ) = ONE
+            CALL DLASSQ( M, A( 1, J ), 1, COLSSQ( 1 ), COLSSQ( 2 ) )
+            CALL DCOMBSSQ( SSQ, COLSSQ )
    90    CONTINUE
-         VALUE = SCALE*SQRT( SUM )
+         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
       END IF
 *
       DLANGE = VALUE

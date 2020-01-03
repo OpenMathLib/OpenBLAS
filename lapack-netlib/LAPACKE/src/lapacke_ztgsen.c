@@ -84,7 +84,7 @@ lapack_int LAPACKE_ztgsen( int matrix_layout, lapack_int ijob,
     if( info != 0 ) {
         goto exit_level_0;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lwork = LAPACK_Z2INT( work_query );
     /* Allocate memory for work arrays */
     if( ijob != 0 ) {

@@ -1,30 +1,33 @@
-include ../make.inc
+TOPSRCDIR = ..
+include $(TOPSRCDIR)/make.inc
 
+.PHONY: all testlsame testslamch testdlamch testsecond testdsecnd testieee testversion
 all: testlsame testslamch testdlamch testsecond testdsecnd testieee testversion
 
 testlsame: lsame.o lsametst.o
-	$(LOADER) $(LOADOPTS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 testslamch: slamch.o lsame.o slamchtst.o
-	$(LOADER) $(LOADOPTS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 testdlamch: dlamch.o lsame.o dlamchtst.o
-	$(LOADER) $(LOADOPTS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 testsecond: second_$(TIMER).o secondtst.o
 	@echo "[INFO] : TIMER value: $(TIMER) (given by make.inc)"
-	$(LOADER) $(LOADOPTS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 testdsecnd: dsecnd_$(TIMER).o dsecndtst.o
 	@echo "[INFO] : TIMER value: $(TIMER) (given by make.inc)"
-	$(LOADER) $(LOADOPTS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 testieee: tstiee.o
-	$(LOADER) $(LOADOPTS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 testversion: ilaver.o LAPACK_version.o
-	$(LOADER) $(LOADOPTS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
+.PHONY: run
 run: all
 	./testlsame
 	./testslamch
@@ -34,6 +37,7 @@ run: all
 	./testieee
 	./testversion
 
+.PHONY: clean cleanobj cleanexe cleantest
 clean: cleanobj cleanexe cleantest
 cleanobj:
 	rm -f *.o
@@ -42,9 +46,5 @@ cleanexe:
 cleantest:
 	rm -f core
 
-.SUFFIXES: .o .f
-.f.o:
-	$(FORTRAN) $(OPTS) -c -o $@ $<
-
-slamch.o: slamch.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
-dlamch.o: dlamch.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+slamch.o: slamch.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
+dlamch.o: dlamch.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
