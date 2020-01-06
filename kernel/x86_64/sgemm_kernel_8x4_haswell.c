@@ -37,7 +37,7 @@
 
 #ifdef TRMMKERNEL
   #define init_set_k "movq %%r12,%4; subq %%r13,%4;"
-  #if LEFT != TRANSA
+  #if (defined LEFT && !defined TRANSA) || (!defined LEFT && defined TRANSA)
     #define INIT_SET_KSKIP "movq %9,%%r13; salq $2,%%r13;"
     #define init_set_pointers(a_copy,b_copy) "leaq (%0,%%r13,"#a_copy"),%0; leaq (%1,%%r13,"#b_copy"),%1;"
     #define save_set_pointers(a_copy,b_copy) ""
