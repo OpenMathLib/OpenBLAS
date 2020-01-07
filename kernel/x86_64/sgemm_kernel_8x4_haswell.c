@@ -9,7 +9,7 @@
   #define mult_alpha(acc,alpha,...) "vfmadd213ps ("#__VA_ARGS__"),"#alpha","#acc";"
 #endif
 
-#if defined TRMMKERNEL && !defined LEFT
+#if defined(TRMMKERNEL) && !defined(LEFT)
   #ifdef TRANSA
     #define HEAD_SET_OFFSET(ndim) {}
     #define TAIL_SET_OFFSET(ndim) {off+=ndim;}
@@ -22,7 +22,7 @@
   #define TAIL_SET_OFFSET(ndim) {}
 #endif
 
-#if defined TRMMKERNEL && defined LEFT
+#if defined(TRMMKERNEL) && defined(LEFT)
   #ifdef TRANSA
     #define init_update_kskip(val) "subq $"#val",%%r13;"
     #define save_update_kskip(val) ""
@@ -37,7 +37,7 @@
 
 #ifdef TRMMKERNEL
   #define init_set_k "movq %%r12,%4; subq %%r13,%4;"
-  #if (defined LEFT && !defined TRANSA) || (!defined LEFT && defined TRANSA)
+  #if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
     #define INIT_SET_KSKIP "movq %9,%%r13; salq $2,%%r13;"
     #define init_set_pointers(a_copy,b_copy) "leaq (%0,%%r13,"#a_copy"),%0; leaq (%1,%%r13,"#b_copy"),%1;"
     #define save_set_pointers(a_copy,b_copy) ""
@@ -63,7 +63,7 @@
 #define save_set_pa_pb_n2(mdim) save_set_pointers(mdim,2)
 #define save_set_pa_pb_n1(mdim) save_set_pointers(mdim,1)
 
-#if defined TRMMKERNEL && !defined LEFT && defined TRANSA
+#if defined(TRMMKERNEL) && !defined(LEFT) && defined(TRANSA)
   #define kernel_kstart_n8(mdim) \
     KERNEL_k1m##mdim##n4 KERNEL_k1m##mdim##n4 KERNEL_k1m##mdim##n4 KERNEL_k1m##mdim##n4 "subq $16,%4;"
   #define kernel_kstart_n12(mdim) \
@@ -109,7 +109,7 @@
     unit_kernel_k1m8n4(%%ymm4,%%ymm5,%%ymm6,%%ymm7,16,24,%1)\
     unit_kernel_k1m8n4(%%ymm8,%%ymm9,%%ymm10,%%ymm11,16,24,%1,%%r12,4)\
     unit_kernel_k1m8n4(%%ymm12,%%ymm13,%%ymm14,%%ymm15,16,24,%1,%%r12,8) "addq $32,%1;"
-#if defined TRMMKERNEL && !defined LEFT && !defined TRANSA
+#if defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA)
   #define unit_kernel_endn4_k1m8n8(offa1,offb1,offb2) \
     "vmovsldup "#offa1"(%0),%%ymm1; vmovshdup "#offa1"(%0),%%ymm2;"\
     unit_kernel_k1m8n4(%%ymm8,%%ymm9,%%ymm10,%%ymm11,offb1,offb2,%1,%%r12,4)
@@ -192,7 +192,7 @@
 #define KERNEL_k1m4n8 KERNEL_h_k1m4n8 "addq $16,%1;"
 #define KERNEL_h_k1m4n12 KERNEL_h_k1m4n8 unit_kernel_k1m4n4(%%xmm12,%%xmm13,%%xmm14,%%xmm15,0,8,%1,%%r12,8)
 #define KERNEL_k1m4n12 KERNEL_h_k1m4n12 "addq $16,%1;"
-#if defined TRMMKERNEL && !defined LEFT && !defined TRANSA
+#if defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA)
   #define unit_kernel_endn4_k1m4n8(offa1,offb1,offb2) \
     "vmovsldup "#offa1"(%0),%%xmm1; vmovshdup "#offa1"(%0),%%xmm2;"\
     unit_kernel_k1m4n4(%%xmm8,%%xmm9,%%xmm10,%%xmm11,offb1,offb2,%1,%%r12,4)
@@ -285,7 +285,7 @@
     "vbroadcastss  (%0),%%xmm10; vfmadd231ps %%xmm3,%%xmm10,%%xmm4; vfmadd231ps %%xmm2,%%xmm10,%%xmm6; vfmadd231ps %%xmm1,%%xmm10,%%xmm8;"\
     "vbroadcastss 4(%0),%%xmm10; vfmadd231ps %%xmm3,%%xmm10,%%xmm5; vfmadd231ps %%xmm2,%%xmm10,%%xmm7; vfmadd231ps %%xmm1,%%xmm10,%%xmm9;"\
     "addq $8,%0;"
-#if defined TRMMKERNEL && !defined LEFT && !defined TRANSA
+#if defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA)
   #define unit_kernel_endn4_k1m2n8(aoff1,aoff2,boff) \
     "vmovups "#boff"(%1,%%r12,4),%%xmm3;"\
     "vbroadcastss "#aoff1"(%0),%%xmm1; vfmadd231ps %%xmm3,%%xmm1,%%xmm6;"\
@@ -379,7 +379,7 @@
     "vmovups (%1),%%xmm3; vmovups (%1,%%r12,4),%%xmm2; vmovups (%1,%%r12,8),%%xmm1; addq $16,%1;"\
     "vbroadcastss  (%0),%%xmm10; vfmadd231ps %%xmm3,%%xmm10,%%xmm4; vfmadd231ps %%xmm2,%%xmm10,%%xmm5; vfmadd231ps %%xmm1,%%xmm10,%%xmm6;"\
     "addq $4,%0;"
-#if defined TRMMKERNEL && !defined LEFT && !defined TRANSA
+#if defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA)
   #define unit_kernel_endn4_k1m1n8(aoff,boff) \
     "vmovups "#boff"(%1,%%r12,4),%%xmm3;"\
     "vbroadcastss "#aoff"(%0),%%xmm1; vfmadd231ps %%xmm3,%%xmm1,%%xmm5;"
