@@ -179,3 +179,4 @@ In chronological order:
   * [2019-11-12] AVX512 CGEMM & ZGEMM kernels
   * [2019-12-23] optimize AVX2 CGEMM and ZGEMM
   * [2019-12-30] AVX2 CGEMM3M & ZGEMM3M kernels
+  * [2020-01-07] optimize AVX2 SGEMM and STRMM
