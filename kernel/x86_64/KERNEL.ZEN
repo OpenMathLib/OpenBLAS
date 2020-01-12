@@ -30,10 +30,10 @@ DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
 ZAXPYKERNEL = zaxpy.c
 
-STRMMKERNEL    =  sgemm_kernel_16x4_haswell.S
-SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
-SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
-SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
+STRMMKERNEL    =  sgemm_kernel_8x4_haswell.c
+SGEMMKERNEL    =  sgemm_kernel_8x4_haswell.c
+SGEMMINCOPY    =  ../generic/gemm_ncopy_8.c
+SGEMMITCOPY    =  ../generic/gemm_tcopy_8.c
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
