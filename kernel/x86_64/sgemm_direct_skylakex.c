@@ -1,6 +1,6 @@
 
 /* the direct sgemm code written by Arjan van der Ven */
-#include <immintrin.h>
+//#include <immintrin.h>
 
 /*
  * "Direct sgemm" code. This code operates directly on the inputs and outputs
