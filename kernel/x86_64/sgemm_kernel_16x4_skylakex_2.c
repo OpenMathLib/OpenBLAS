@@ -376,5 +376,5 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float * __restrict__ A, f
     if(n_count>0) COMPUTE(1)
     return 0;
 }
-
+#include <immintrin.h>
 #include "sgemm_direct_skylakex.c"
