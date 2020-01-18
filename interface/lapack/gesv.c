@@ -44,19 +44,19 @@
 
 #ifndef COMPLEX
 #ifdef XDOUBLE
-#define ERROR_NAME "QGESV  "
+#define ERROR_NAME "QGESV"
 #elif defined(DOUBLE)
-#define ERROR_NAME "DGESV  "
+#define ERROR_NAME "DGESV"
 #else
-#define ERROR_NAME "SGESV  "
+#define ERROR_NAME "SGESV"
 #endif
 #else
 #ifdef XDOUBLE
-#define ERROR_NAME "XGESV  "
+#define ERROR_NAME "XGESV"
 #elif defined(DOUBLE)
-#define ERROR_NAME "ZGESV  "
+#define ERROR_NAME "ZGESV"
 #else
-#define ERROR_NAME "CGESV  "
+#define ERROR_NAME "CGESV"
 #endif
 #endif
 
@@ -89,7 +89,7 @@ int NAME(blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA, blasint *ipiv,
   if (args.m   < 0)             info = 1;
 
   if (info) {
-    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
     *Info = - info;
     return 0;
   }
