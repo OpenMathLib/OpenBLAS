@@ -50,7 +50,10 @@ BOOL APIENTRY DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved) {
         gotoblas_init();
         break;
       case DLL_PROCESS_DETACH:
-        gotoblas_quit();
+        // If the process is about to exit, don't bother releasing any resources
+        // The kernel is much better at bulk releasing then.
+        if (!reserved)
+          gotoblas_quit();
         break;
       case DLL_THREAD_ATTACH:
         break;
