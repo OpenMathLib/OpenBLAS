@@ -1507,8 +1507,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P  8
 
-#define SWITCH_RATIO	32
-#define GEMM_PREFERED_SIZE	16
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            4
+#define GEMM_PREFERED_SIZE      4
+#else
+#define SWITCH_RATIO            8
+#define GEMM_PREFERED_SIZE      8
+#endif
 
 #ifdef ARCH_X86
 
@@ -1627,8 +1632,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P  8
 
-#define SWITCH_RATIO	32
-#define GEMM_PREFERED_SIZE	32
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO           8
+#define GEMM_PREFERED_SIZE     8
+#else
+#define SWITCH_RATIO           16
+#define GEMM_PREFERED_SIZE     16
+#endif
 #define USE_SGEMM_KERNEL_DIRECT 1
 
 #ifdef ARCH_X86
