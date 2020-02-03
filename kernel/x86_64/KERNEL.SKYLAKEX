@@ -7,10 +7,13 @@ SGEMMITCOPY    =  sgemm_tcopy_16_skylakex.c
 SGEMMONCOPY    =  sgemm_ncopy_4_skylakex.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
 
-DGEMMKERNEL    =  dgemm_kernel_4x8_skylakex_2.c
-
-DGEMMONCOPY    =  dgemm_ncopy_8_skylakex.c
-DGEMMOTCOPY    =  dgemm_tcopy_8_skylakex.c
+DGEMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
+DTRMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
+DGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
+DGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
+DGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
+DGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
+DTRSMKERNEL_RN =  ../generic/trsm_kernel_RN.c
 
 SGEMM_BETA = sgemm_beta_skylakex.c
 DGEMM_BETA = dgemm_beta_skylakex.c
