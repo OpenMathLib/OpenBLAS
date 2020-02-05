@@ -234,7 +234,7 @@ int main(int argc, char *argv[]){
    		fprintf(stderr, " %6dx%d : ", (int)m,(int)n);
    		for(j = 0; j < m; j++){
       			for(i = 0; i < n * COMPSIZE; i++){
-				a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+				a[j + i * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       			}
    		}
 
@@ -245,7 +245,7 @@ int main(int argc, char *argv[]){
 				x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    			}
 
-   			for(i = 0; i < n * COMPSIZE * abs(inc_y); i++){
+   			for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
 				y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    			}
     			gettimeofday( &start, (struct timezone *)0);
