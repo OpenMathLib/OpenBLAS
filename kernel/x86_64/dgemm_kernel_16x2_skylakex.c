@@ -1,3 +1,6 @@
+/* %0 = a_ptr, %1 = b_ptr, %2 = c_ptr, %3 = c_tmp, %4 = ldc(bytes), %5 = k_counter, %6 = b_pref */
+/* r10 = tmp, r11 = m_counter, r12 = size_of_1_tile_in_b, r13 = k, r14 = b_head, r15 = %1+3*r12 */
+
 #if (defined (LEFT) && !defined(TRANSA)) || (!defined (LEFT) && defined(TRANSA))
   #define BACKWARDS 1
 #else
