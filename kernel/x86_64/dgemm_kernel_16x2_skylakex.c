@@ -467,7 +467,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 #endif
 )
 {
-    if(m==0||n==0||k==0||alpha==0.0) return 0;
+    if(m==0||n==0) return 0;
     int64_t ldc_in_bytes = (int64_t)ldc * sizeof(double); double ALPHA = alpha;
     int64_t M = (int64_t)m, K = (int64_t)k, k_count = 0;
     BLASLONG n_count = n, off = 0;
