@@ -393,9 +393,10 @@
 #define INIT_m1n12 INIT_m1n10 "vpxor %%xmm9,%%xmm9,%%xmm9;"
 
 #define COMPUTE_SIMPLE(mdim,ndim)\
-  init_update_k(mdim) INIT_m##mdim##n##ndim "testq %%r13,%%r13; jz 7"#mdim"7"#ndim"9f;"\
+  init_update_k(mdim) INIT_m##mdim##n##ndim\
   "movq %%r13,%5;" INIT_set_papb(mdim,ndim)\
   kernel_kstart_n##ndim(mdim,subq)\
+  "testq %5,%5; jz 7"#mdim"7"#ndim"9f;"\
   "7"#mdim"7"#ndim"1:\n\t"\
   KERNEL_k1m##mdim##n##ndim "decq %5; jnz 7"#mdim"7"#ndim"1b;"\
   "7"#mdim"7"#ndim"9:\n\t"\
