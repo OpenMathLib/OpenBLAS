@@ -467,7 +467,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float * __restrict__ A, f
 ,BLASLONG offset
 #endif
 ){
-    if(m==0||n==0||k==0||alpha==0.0) return 0;
+    if(m==0||n==0) return 0;
     int64_t ldc_in_bytes = (int64_t)LDC * sizeof(float);
     float constval = alpha;
     float *const_val=&constval;
