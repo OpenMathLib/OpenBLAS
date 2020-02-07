@@ -31,6 +31,10 @@ OBJS += test_fork.o
 endif
 endif
 
+ifeq ($(C_COMPILER), PGI)
+OBJS = utest_main2.o
+endif
+
 all : run_test
 
 $(UTESTBIN): $(OBJS)
