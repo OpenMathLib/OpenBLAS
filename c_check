@@ -321,6 +321,7 @@ $linker_a = "";
 	    && ($flags !~ /kernel32/)
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
+	    && ($flags !~ /omp/)
 	    ) {
 	    $linker_l .= $flags . " "
 	}
