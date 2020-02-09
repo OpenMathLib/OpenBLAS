@@ -161,7 +161,7 @@ On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73,
 For **POWER**, the list encompasses POWER6, POWER8 and POWER9, on **ZARCH** it comprises Z13 and Z14.
 The TARGET option can be used in conjunction with DYNAMIC_ARCH=1 to specify which cpu model should be assumed for all the
 common code in the library, usually you will want to set this to the oldest model you expect to encounter.
-Please not that it is not possible to combine support for different architectures, so no combined 32 and 64 bit or x86_64 and arm64 in the same library.
+Please note that it is not possible to combine support for different architectures, so no combined 32 and 64 bit or x86_64 and arm64 in the same library.
 
 ### Supported OS
 
@@ -230,7 +230,7 @@ Please see Changelog.txt to view the differences between OpenBLAS and GotoBLAS2 
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture.
   Clang 3.0 will generate the wrong AVX binary code.
 * Please use GCC version 6 or LLVM version 6 and above to compile Skylake AVX512 kernels.
-* The number of CPUs/cores should less than or equal to 256. On Linux `x86_64` (`amd64`),
+* The number of CPUs/cores should be less than or equal to 256. On Linux `x86_64` (`amd64`),
   there is experimental support for up to 1024 CPUs/cores and 128 numa nodes if you build
   the library with `BIGNUMA=1`.
 * OpenBLAS does not set processor affinity by default.
