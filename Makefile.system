@@ -9,9 +9,11 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
-# If ARCH is not set, we use the host system's architecture.
+# If ARCH is not set, we use the host system's architecture for getarch compile options.
 ifndef ARCH
-ARCH := $(shell uname -m)
+HOSTARCH := $(shell uname -m)
+else
+HOSTARCH = $(ARCH)
 endif
 
 # Catch conflicting usage of ARCH in some BSD environments
@@ -23,6 +25,8 @@ else ifeq ($(ARCH), i386)
 override ARCH=x86
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
+else ifeq ($(ARCH), zarch)
+override ARCH=zarch
 endif
 
 NETLIB_LAPACK_DIR = $(TOPDIR)/lapack-netlib
@@ -142,9 +146,9 @@ endif
 endif
 
 
-# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
-ifeq ($(ARCH), x86_64)
-ifneq ($(C_COMPILER), PGI)
+# On x86_64 build getarch with march=native unless the compiler is PGI. This is required to detect AVX512 support in getarch.
+ifeq ($(HOSTARCH), x86_64)
+ifeq ($(findstring pgcc,$(HOSTCC)),)
 GETARCH_FLAGS += -march=native
 endif
 endif
@@ -320,12 +324,14 @@ CCOMMON_OPT	+= -DMS_ABI
 endif
 
 ifeq ($(C_COMPILER), GCC)
-#Test for supporting MS_ABI
+#Version tests for supporting specific features (MS_ABI, POWER9 intrinsics)
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
+GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 ifeq ($(GCCVERSIONGT4), 1)
-# GCC Majar version > 4
+# GCC Major version > 4
 # It is compatible with MSVC ABI.
 CCOMMON_OPT	+= -DMS_ABI
 endif
@@ -544,15 +550,34 @@ endif
 
 ifeq ($(ARCH), arm64)
 DYNAMIC_CORE =  ARMV8
+DYNAMIC_CORE += CORTEXA53
 DYNAMIC_CORE += CORTEXA57
+DYNAMIC_CORE += CORTEXA72
+DYNAMIC_CORE += CORTEXA73
+DYNAMIC_CORE += FALKOR
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
+DYNAMIC_CORE += TSV110
+endif
+
+ifeq ($(ARCH), zarch)
+DYNAMIC_CORE = Z13
+DYNAMIC_CORE += Z14
 endif
 
 ifeq ($(ARCH), power)
 DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
+ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
+endif
+ifeq ($(C_COMPILER), GCC)
+ifeq ($(GCCVERSIONGT5), 1)
+DYNAMIC_CORE += POWER9
+else
+$(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
+endif
+endif
 endif
 
 # If DYNAMIC_CORE is not set, DYNAMIC_ARCH cannot do anything, so force it to empty
@@ -697,7 +722,7 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 ifdef BINARY64
-CCOMMON_OPT += -tp p7-64
+CCOMMON_OPT += -tp p7-64 -D__MMX__ -Mnollvm
 else
 CCOMMON_OPT += -tp p7
 endif
@@ -756,6 +781,9 @@ FCOMMON_OPT += -m64
 else
 FCOMMON_OPT += -m32
 endif
+endif
+ifneq ($(NO_LAPACKE), 1)
+FCOMMON_OPT += -fno-second-underscore
 endif
 endif
 endif

@@ -43,7 +43,7 @@
 *> \param[in] INCX
 *> \verbatim
 *>          INCX is INTEGER
-*>         storage spacing between elements of SX
+*>         storage spacing between elements of DX
 *> \endverbatim
 *
 *  Authors:

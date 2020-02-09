@@ -129,7 +129,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #endif
 
-#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN)
+#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN)
 #include <sys/sysctl.h>
 #include <sys/resource.h>
 #endif
@@ -192,7 +192,7 @@ void goto_set_num_threads(int num_threads) {};
 
 #else
 
-#if defined(OS_LINUX) || defined(OS_SUNOS) || defined(OS_NETBSD)
+#if defined(OS_LINUX) || defined(OS_SUNOS)
 #ifndef NO_AFFINITY
 int get_num_procs(void);
 #else
@@ -312,7 +312,7 @@ int get_num_procs(void) {
 
 #endif
 
-#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY)
+#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY)
 
 int get_num_procs(void) {
 
@@ -404,7 +404,7 @@ extern int openblas_goto_num_threads_env();
 extern int openblas_omp_num_threads_env();
 
 int blas_get_cpu_number(void){
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
   int max_num;
 #endif
   int blas_goto_num   = 0;
@@ -412,7 +412,7 @@ int blas_get_cpu_number(void){
 
   if (blas_num_threads) return blas_num_threads;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
   max_num = get_num_procs();
 #endif
 
@@ -436,7 +436,7 @@ int blas_get_cpu_number(void){
   else if (blas_omp_num > 0) blas_num_threads = blas_omp_num;
   else blas_num_threads = MAX_CPU_NUMBER;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
   if (blas_num_threads > max_num) blas_num_threads = max_num;
 #endif
 
@@ -822,7 +822,7 @@ static void *alloc_qalloc(void *address){
 
 static void alloc_windows_free(struct alloc_t *alloc_info){
 
-  VirtualFree(alloc_info, allocation_block_size, MEM_DECOMMIT);
+  VirtualFree(alloc_info, 0, MEM_RELEASE);
 
 }
 
@@ -935,7 +935,7 @@ static void alloc_hugetlb_free(struct alloc_t *alloc_info){
 
 #ifdef OS_WINDOWS
 
-  VirtualFree(alloc_info, allocation_block_size, MEM_LARGE_PAGES | MEM_DECOMMIT);
+  VirtualFree(alloc_info, 0, MEM_LARGE_PAGES | MEM_RELEASE);
 
 #endif
 
@@ -1673,7 +1673,7 @@ void gotoblas_dummy_for_PGI(void) {
 #include <sys/resource.h>
 #endif
 
-#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN)
+#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN)
 #include <sys/sysctl.h>
 #include <sys/resource.h>
 #endif
@@ -1736,7 +1736,7 @@ void goto_set_num_threads(int num_threads) {};
 
 #else
 
-#if defined(OS_LINUX) || defined(OS_SUNOS) || defined(OS_NETBSD)
+#if defined(OS_LINUX) || defined(OS_SUNOS)
 #ifndef NO_AFFINITY
 int get_num_procs(void);
 #else
@@ -1855,7 +1855,7 @@ int get_num_procs(void) {
 
 #endif
 
-#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY)
+#if defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY)
 
 int get_num_procs(void) {
 
@@ -1945,7 +1945,7 @@ extern int openblas_goto_num_threads_env();
 extern int openblas_omp_num_threads_env();
 
 int blas_get_cpu_number(void){
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
   int max_num;
 #endif
   int blas_goto_num   = 0;
@@ -1953,7 +1953,7 @@ int blas_get_cpu_number(void){
 
   if (blas_num_threads) return blas_num_threads;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
   max_num = get_num_procs();
 #endif
 
@@ -1977,7 +1977,7 @@ int blas_get_cpu_number(void){
   else if (blas_omp_num > 0) blas_num_threads = blas_omp_num;
   else blas_num_threads = MAX_CPU_NUMBER;
 
-#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
+#if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)
   if (blas_num_threads > max_num) blas_num_threads = max_num;
 #endif
 
@@ -2310,7 +2310,7 @@ static void *alloc_qalloc(void *address){
 
 static void alloc_windows_free(struct release_t *release){
 
-  VirtualFree(release -> address, BUFFER_SIZE, MEM_DECOMMIT);
+  VirtualFree(release -> address, 0, MEM_RELEASE);
 
 }
 
@@ -2432,7 +2432,7 @@ static void alloc_hugetlb_free(struct release_t *release){
 
 #ifdef OS_WINDOWS
 
-  VirtualFree(release -> address, BUFFER_SIZE, MEM_LARGE_PAGES | MEM_DECOMMIT);
+  VirtualFree(release -> address, 0, MEM_LARGE_PAGES | MEM_RELEASE);
 
 #endif
 

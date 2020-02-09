@@ -21,7 +21,11 @@ else
 ifeq ($(ARCH),power)
 COMMONOBJS	+=  dynamic_power.$(SUFFIX)
 else
+ifeq ($(ARCH),zarch)
+COMMONOBJS += dynamic_zarch.$(SUFFIX)
+else
 COMMONOBJS	+=  dynamic.$(SUFFIX)
+endif
 endif
 endif
 else
@@ -85,7 +89,11 @@ else
 ifeq ($(ARCH),power)
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_power.$(SUFFIX)
 else
+ifeq ($(ARCH),zarch)
+HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_zarch.$(SUFFIX)
+else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
+endif
 endif
 endif
 else

@@ -68,7 +68,7 @@ lapack_int LAPACKE_ssyevd_2stage_work( int matrix_layout, char jobz, char uplo,
             goto exit_level_0;
         }
         /* Transpose input matrices */
-        LAPACKE_sge_trans( matrix_layout, n, n, a, lda, a_t, lda_t );
+        LAPACKE_ssy_trans( matrix_layout, uplo, n, a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
         LAPACK_ssyevd_2stage( &jobz, &uplo, &n, a_t, &lda_t, w, work, &lwork, iwork,
                        &liwork, &info );
@@ -76,7 +76,11 @@ lapack_int LAPACKE_ssyevd_2stage_work( int matrix_layout, char jobz, char uplo,
             info = info - 1;
         }
         /* Transpose output matrices */
-        LAPACKE_sge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
+        if ( jobz == 'V') {
+            LAPACKE_sge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
+        } else {
+            LAPACKE_ssy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda ); 
+        }
         /* Release memory and exit */
         LAPACKE_free( a_t );
 exit_level_0:

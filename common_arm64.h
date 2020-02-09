@@ -78,7 +78,18 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 #define BLAS_LOCK_DEFINED
 
+#if !defined(OS_DARWIN) && !defined (OS_ANDROID)
+static __inline BLASULONG rpcc(void){
+  BLASULONG ret = 0;
+ 
+  __asm__ __volatile__ ("isb; mrs %0,cntvct_el0":"=r"(ret));
 
+  return ret;
+}
+
+#define RPCC_DEFINED
+#define RPCC64BIT
+#endif 
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
@@ -103,12 +114,16 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
-#define PROLOGUE \
-	.text ;\
-	.align	4 ;\
-	.global	REALNAME ;\
-	.type	REALNAME, %function ;\
+.macro PROLOGUE 
+	.text ;
+	.p2align 2 ;
+	.global	REALNAME ;
+#ifndef __APPLE__
+	.type	REALNAME, %function ;
+#endif
 REALNAME:
+.endm
+
 
 #define EPILOGUE
 

@@ -715,6 +715,8 @@ set(DSRC
   lapacke_dgesv_work.c
   lapacke_dgesvd.c
   lapacke_dgesvd_work.c
+  lapacke_dgesvdq.c
+  lapacke_dgesvdq_work.c
   lapacke_dgesvdx.c
   lapacke_dgesvdx_work.c
   lapacke_dgesvj.c
@@ -1287,6 +1289,8 @@ set(SSRC
   lapacke_sgesv_work.c
   lapacke_sgesvd.c
   lapacke_sgesvd_work.c
+  lapacke_sgesvdq.c
+  lapacke_sgesvdq_work.c
   lapacke_sgesvdx.c
   lapacke_sgesvdx_work.c
   lapacke_sgesvj.c
@@ -1853,6 +1857,8 @@ set(ZSRC
   lapacke_zgesv_work.c
   lapacke_zgesvd.c
   lapacke_zgesvd_work.c
+  lapacke_zgesvdq.c
+  lapacke_zgesvdq_work.c
   lapacke_zgesvdx.c
   lapacke_zgesvdx_work.c
   lapacke_zgesvj.c

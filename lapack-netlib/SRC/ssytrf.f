@@ -39,7 +39,7 @@
 *> the Bunch-Kaufman diagonal pivoting method.  The form of the
 *> factorization is
 *>
-*>    A = U*D*U**T  or  A = L*D*L**T
+*>    A = U**T*D*U  or  A = L*D*L**T
 *>
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and D is symmetric and block diagonal with
@@ -144,7 +144,7 @@
 *>
 *> \verbatim
 *>
-*>  If UPLO = 'U', then A = U*D*U**T, where
+*>  If UPLO = 'U', then A = U**T*D*U, where
 *>     U = P(n)*U(n)* ... *P(k)U(k)* ...,
 *>  i.e., U is a product of terms P(k)*U(k), where k decreases from n to
 *>  1 in steps of 1 or 2, and D is a block diagonal matrix with 1-by-1
@@ -262,7 +262,7 @@
 *
       IF( UPPER ) THEN
 *
-*        Factorize A as U*D*U**T using the upper triangle of A
+*        Factorize A as U**T*D*U using the upper triangle of A
 *
 *        K is the main loop index, decreasing from N to 1 in steps of
 *        KB, where KB is the number of columns factorized by SLASYF;

@@ -64,7 +64,7 @@
 *> \verbatim
 *>          LDH is INTEGER
 *>              The leading dimension of H as declared in
-*>              the calling procedure.  LDH.GE.N
+*>              the calling procedure.  LDH >= N
 *> \endverbatim
 *>
 *> \param[in] S1

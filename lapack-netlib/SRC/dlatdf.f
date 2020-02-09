@@ -85,7 +85,7 @@
 *>          RHS is DOUBLE PRECISION array, dimension (N)
 *>          On entry, RHS contains contributions from other subsystems.
 *>          On exit, RHS contains the solution of the subsystem with
-*>          entries acoording to the value of IJOB (see above).
+*>          entries according to the value of IJOB (see above).
 *> \endverbatim
 *>
 *> \param[in,out] RDSUM
@@ -260,7 +260,7 @@
 *
 *        Solve for U-part, look-ahead for RHS(N) = +-1. This is not done
 *        in BSOLVE and will hopefully give us a better estimate because
-*        any ill-conditioning of the original matrix is transfered to U
+*        any ill-conditioning of the original matrix is transferred to U
 *        and not to L. U(N, N) is an approximation to sigma_min(LU).
 *
          CALL DCOPY( N-1, RHS, 1, XP, 1 )

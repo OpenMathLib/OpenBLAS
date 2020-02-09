@@ -30,17 +30,20 @@
 #define CPU_GENERIC     0
 #define CPU_Z13         1
 #define CPU_Z14         2
+#define CPU_Z15         3
 
 static char *cpuname[] = {
   "ZARCH_GENERIC",
   "Z13",
-  "Z14"
+  "Z14",
+  "Z15"
 };
 
 static char *cpuname_lower[] = {
   "zarch_generic",
   "z13",
-  "z14"
+  "z14",
+  "z15"
 };
 
 int detect(void)
@@ -66,6 +69,8 @@ int detect(void)
   if (strstr(p, "2965")) return CPU_Z13;
   if (strstr(p, "3906")) return CPU_Z14;
   if (strstr(p, "3907")) return CPU_Z14;
+  if (strstr(p, "8561")) return CPU_Z14;        // fallback z15 to z14
+  if (strstr(p, "8562")) return CPU_Z14;        // fallback z15 to z14
 
   return CPU_GENERIC;
 }

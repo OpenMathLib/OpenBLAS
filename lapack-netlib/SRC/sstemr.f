@@ -233,13 +233,13 @@
 *> \param[in,out] TRYRAC
 *> \verbatim
 *>          TRYRAC is LOGICAL
-*>          If TRYRAC.EQ..TRUE., indicates that the code should check whether
+*>          If TRYRAC = .TRUE., indicates that the code should check whether
 *>          the tridiagonal matrix defines its eigenvalues to high relative
 *>          accuracy.  If so, the code uses relative-accuracy preserving
 *>          algorithms that might be (a bit) slower depending on the matrix.
 *>          If the matrix does not define its eigenvalues to high relative
 *>          accuracy, the code can uses possibly faster algorithms.
-*>          If TRYRAC.EQ..FALSE., the code is not required to guarantee
+*>          If TRYRAC = .FALSE., the code is not required to guarantee
 *>          relatively accurate eigenvalues and can use the fastest possible
 *>          techniques.
 *>          On exit, a .TRUE. TRYRAC will be set to .FALSE. if the matrix

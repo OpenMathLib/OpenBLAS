@@ -33,7 +33,7 @@
 #include "lapacke_utils.h"
 
 /* Check a matrix for NaN entries.
- * Since matrix in packed format stored continiously it just required to
+ * Since matrix in packed format stored continuously it just required to
  * check 1d array for NaNs. It doesn't depend upon uplo or matrix_layout.
  */
 

@@ -6,4 +6,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/blas.pc.in ${CMAKE_CURRENT_BINARY_DIR
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/blas.pc
   DESTINATION ${PKG_CONFIG_DIR}
+  COMPONENT Development
   )

@@ -1,5 +1,3 @@
-include ../../make.inc
-
 ########################################################################
 #  This is the makefile for the eigenvalue test program from LAPACK.
 #  The test files are organized as follows:
@@ -32,6 +30,9 @@ include ../../make.inc
 #       make single FRC=FRC
 #
 ########################################################################
+
+TOPSRCDIR = ../..
+include $(TOPSRCDIR)/make.inc
 
 AEIGTST = \
    alahdg.o \
@@ -117,24 +118,26 @@ ZEIGTST = zchkee.o \
    zsgt01.o zslect.o \
    zstt21.o zstt22.o zunt01.o zunt03.o
 
+.PHONY: all
 all: single complex double complex16
 
+.PHONY: single complex double complex16
 single: xeigtsts
 complex: xeigtstc
 double: xeigtstd
 complex16: xeigtstz
 
-xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 $(AEIGTST): $(FRC)
 $(SCIGTST): $(FRC)
@@ -147,6 +150,7 @@ $(ZEIGTST): $(FRC)
 FRC:
 	@FRC=$(FRC)
 
+.PHONY: clean cleanobj cleanexe
 clean: cleanobj cleanexe
 cleanobj:
 	rm -f *.o
@@ -154,13 +158,10 @@ cleanexe:
 	rm -f xeigtst*
 
 schkee.o: schkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 dchkee.o: dchkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 cchkee.o: cchkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 zchkee.o: zchkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
-
-.f.o:
-	$(FORTRAN) $(OPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<

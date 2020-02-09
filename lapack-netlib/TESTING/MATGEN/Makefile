@@ -1,5 +1,3 @@
-include ../../make.inc
-
 #######################################################################
 #  This is the makefile to create a library of the test matrix
 #  generators used in LAPACK.  The files are organized as follows:
@@ -32,6 +30,9 @@ include ../../make.inc
 #
 #######################################################################
 
+TOPSRCDIR = ../..
+include $(TOPSRCDIR)/make.inc
+
 SCATGEN = slatm1.o slatm7.o slaran.o slarnd.o
 
 SMATGEN = slatms.o slatme.o slatmr.o slatmt.o \
@@ -52,32 +53,32 @@ ZMATGEN = zlatms.o zlatme.o zlatmr.o zlatmt.o \
    zlagge.o zlaghe.o zlagsy.o zlakf2.o zlarge.o zlaror.o zlarot.o \
    zlatm1.o zlarnd.o zlatm2.o zlatm3.o zlatm5.o zlatm6.o zlahilb.o
 
-all: ../../$(TMGLIB)
+.PHONY: all
+all: $(TMGLIB)
 
 ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN) \
 	$(DZATGEN)
 
-.PHONY: ../../$(TMGLIB)
-
-../../$(TMGLIB): $(ALLOBJ)
-	$(ARCH) $(ARCHFLAGS) $@ $^
+$(TMGLIB): $(ALLOBJ)
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
+.PHONY: single complex double complex16
 single: $(SMATGEN) $(SCATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
-	$(RANLIB) ../../$(TMGLIB)
+	$(AR) $(ARFLAGS) $(TMGLIB) $^
+	$(RANLIB) $(TMGLIB)
 
 complex: $(CMATGEN) $(SCATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
-	$(RANLIB) ../../$(TMGLIB)
+	$(AR) $(ARFLAGS) $(TMGLIB) $^
+	$(RANLIB) $(TMGLIB)
 
 double: $(DMATGEN) $(DZATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
-	$(RANLIB) ../../$(TMGLIB)
+	$(AR) $(ARFLAGS) $(TMGLIB) $^
+	$(RANLIB) $(TMGLIB)
 
 complex16: $(ZMATGEN) $(DZATGEN)
-	$(ARCH) $(ARCHFLAGS) ../../$(TMGLIB) $^
-	$(RANLIB) ../../$(TMGLIB)
+	$(AR) $(ARFLAGS) $(TMGLIB) $^
+	$(RANLIB) $(TMGLIB)
 
 $(SCATGEN): $(FRC)
 $(SMATGEN): $(FRC)
@@ -89,14 +90,12 @@ $(ZMATGEN): $(FRC)
 FRC:
 	@FRC=$(FRC)
 
-clean: cleanobj #cleanlib
+.PHONY: clean cleanobj cleanlib
+clean: cleanobj cleanlib
 cleanobj:
 	rm -f *.o
 cleanlib:
-	rm -f ../../$(TMGLIB)
+	rm -f $(TMGLIB)
 
-.f.o:
-	$(FORTRAN) $(OPTS) -c -o $@ $<
-
-slaran.o: slaran.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
-dlaran.o: dlaran.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+slaran.o: slaran.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
+dlaran.o: dlaran.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<

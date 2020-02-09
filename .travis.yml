@@ -17,7 +17,7 @@ matrix:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
         - set -e
-        - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE
@@ -160,18 +160,25 @@ matrix:
       os: osx
       osx_image: xcode10.1
       before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 NUM_THREADS=32"
         - brew update
-        - brew install gcc # for gfortran
+        - brew install gcc@8 # for gfortran
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
-        - BTYPE="BINARY=64 INTERFACE64=1"
+        - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-8"
 
     - <<: *test-macos
-      osx_image: xcode8.3
+      osx_image: xcode10.0
       env:
-        - BTYPE="BINARY=32"
+        - BTYPE="TARGET=NEHALEM BINARY=32 NOFORTRAN=1"
+
+    - <<: *test-macos
+      osx_image: xcode10.1
+      env:
+        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk"
+        - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch arm64 -miphoneos-version-min=10.0"
+        - BTYPE="TARGET=ARMV8 BINARY=64 HOSTCC=clang NOFORTRAN=1"
 
 # whitelist
 branches:

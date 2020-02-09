@@ -1197,7 +1197,11 @@ int get_cpuname(void){
 	case  3:
 	case  5:
 	case  6:
+#if defined(__x86_64__) || defined(__amd64__)
+	  return CPUTYPE_CORE2;
+#else
 	  return CPUTYPE_PENTIUM2;
+#endif
 	case  7:
 	case  8:
 	case 10:
@@ -1379,6 +1383,8 @@ int get_cpuname(void){
       break;
       case 7: // family 6 exmodel 7
         switch (model) {
+	case 10: // Goldmont Plus
+	    return CPUTYPE_NEHALEM;
         case 14: // Ice Lake
           if(support_avx512())
             return CPUTYPE_SKYLAKEX;
@@ -1425,7 +1431,11 @@ int get_cpuname(void){
     case 0x5:
       return CPUTYPE_AMDK6;
     case 0x6:
+#if defined(__x86_64__) || defined(__amd64__)
+      return CPUTYPE_BARCELONA;
+#else
       return CPUTYPE_ATHLON;
+#endif
     case 0xf:
       switch (exfamily) {
       case  0:
@@ -1808,7 +1818,11 @@ int get_coretype(void){
 	case  4:
 	case  5:
 	case  6:
+#if defined(__x86_64__) || defined(__amd64__)
+	  return CORE_CORE2;
+#else
 	  return CORE_P6;
+#endif
 	case  7:
 	  return CORE_KATMAI;
 	case  8:
@@ -2015,7 +2029,11 @@ int get_coretype(void){
 
   if (vendor == VENDOR_AMD){
     if (family <= 0x5) return CORE_80486;
+#if defined(__x86_64__) || defined(__amd64__)
+    if (family <= 0xe) return CORE_BARCELONA;
+#else
     if (family <= 0xe) return CORE_ATHLON;
+#endif
     if (family == 0xf){
       if ((exfamily == 0) || (exfamily == 2)) return CORE_OPTERON;
       else if (exfamily == 5) return CORE_BOBCAT;

@@ -66,7 +66,7 @@ if (DEFINED TARGET)
 endif ()
 
 # On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
-if (X86_64)
+if (X86_64 AND NOT ${CMAKE_C_COMPILER_ID} STREQUAL "PGI")
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -march=native")
 endif ()
 

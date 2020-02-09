@@ -78,10 +78,10 @@ static double ddot_kernel_8 (long n, double *x, double *y)
        "addi		%3, %3, 128	\n\t"
 
        "addic.		%1, %1, -16	\n\t"
-       "ble		2f		\n\t"
+       "ble		two%=		\n\t"
 
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "xvmaddadp	32, 40, 48	\n\t"
        "lxvd2x		40, 0, %2	\n\t"
@@ -112,9 +112,9 @@ static double ddot_kernel_8 (long n, double *x, double *y)
        "addi		%3, %3, 128	\n\t"
 
        "addic.		%1, %1, -16	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
-     "2:				\n\t"
+     "two%=:				\n\t"
 
        "xvmaddadp	32, 40, 48	\n\t"
        "xvmaddadp	33, 41, 49	\n\t"
@@ -135,7 +135,7 @@ static double ddot_kernel_8 (long n, double *x, double *y)
 
        "xvadddp		32, 32, 36	\n\t"
 
-       "xxswapd		33, 32		\n\t"
+       XXSWAPD_S(33,32)
 
        "xsadddp		%x0, 32, 33	\n"
 

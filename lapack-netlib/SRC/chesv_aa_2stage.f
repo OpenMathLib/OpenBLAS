@@ -43,7 +43,7 @@
 *> matrices.
 *>
 *> Aasen's 2-stage algorithm is used to factor A as
-*>    A = U * T * U**H,  if UPLO = 'U', or
+*>    A = U**H * T * U,  if UPLO = 'U', or
 *>    A = L * T * L**H,  if UPLO = 'L',
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is Hermitian and band. The matrix T is
@@ -257,7 +257,7 @@
       END IF
 *
 *
-*     Compute the factorization A = U*T*U**H or A = L*T*L**H.
+*     Compute the factorization A = U**H*T*U or A = L*T*L**H.
 *
       CALL CHETRF_AA_2STAGE( UPLO, N, A, LDA, TB, LTB, IPIV, IPIV2,
      $                       WORK, LWORK, INFO )

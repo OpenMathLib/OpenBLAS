@@ -157,7 +157,7 @@
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *>          > 0:  if INFO = i, the QR algorithm failed to compute all the
 *>                eigenvalues, and no eigenvectors have been computed;
-*>                elements and i+1:N of W contain eigenvalues which have
+*>                elements i+1:N of W contain eigenvalues which have
 *>                converged.
 *> \endverbatim
 *

@@ -49,7 +49,7 @@
 *> the first column of each being the real part and the second
 *> being the imaginary part.
 *>
-*> "s" is a scaling factor (.LE. 1), computed by SLALN2, which is
+*> "s" is a scaling factor (<= 1), computed by SLALN2, which is
 *> so chosen that X can be computed without overflow.  X is further
 *> scaled if necessary to assure that norm(ca A - w D)*norm(X) is less
 *> than overflow.

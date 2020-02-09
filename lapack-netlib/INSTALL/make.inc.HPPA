@@ -8,30 +8,28 @@ SHELL = /bin/sh
 
 #  CC is the C compiler, normally invoked with options CFLAGS.
 #
-CC     = cc
+CC = cc
 CFLAGS =
 
-#  Modify the FORTRAN and OPTS definitions to refer to the compiler
+#  Modify the FC and FFLAGS definitions to the desired compiler
 #  and desired compiler options for your machine.  NOOPT refers to
 #  the compiler options desired when NO OPTIMIZATION is selected.
 #
-FORTRAN = f77
-OPTS    = +O4 +U77
-DRVOPTS = $(OPTS) -K
-NOOPT   = +U77
+FC = f77
+FFLAGS = +O4 +U77
+FFLAGS_DRV = $(FFLAGS) -K
+FFLAGS_NOOPT = +U77
 
-#  Define LOADER and LOADOPTS to refer to the loader and desired
-#  load options for your machine.
+#  Define LDFLAGS to the desired linker options for your machine.
 #
-LOADER   = f77
-LOADOPTS = -Aa +U77
+LDFLAGS =
 
 #  The archiver and the flag(s) to use when building an archive
 #  (library).  If your system has no ranlib, set RANLIB = echo.
 #
-ARCH      = ar
-ARCHFLAGS = cr
-RANLIB    = echo
+AR = ar
+ARFLAGS = cr
+RANLIB = echo
 
 #  Timer for the SECOND and DSECND routines
 #
@@ -74,9 +72,9 @@ TIMER = EXT_ETIME
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
 #
-#BLASLIB      = ../../librefblas.a
+#BLASLIB      = $(TOPSRCDIR)/librefblas.a
 BLASLIB      = -lblas
-CBLASLIB     = ../../libcblas.a
-LAPACKLIB    = liblapack.a
-TMGLIB       = libtmglib.a
-LAPACKELIB   = liblapacke.a
+CBLASLIB     = $(TOPSRCDIR)/libcblas.a
+LAPACKLIB    = $(TOPSRCDIR)/liblapack.a
+TMGLIB       = $(TOPSRCDIR)/libtmglib.a
+LAPACKELIB   = $(TOPSRCDIR)/liblapacke.a

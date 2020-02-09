@@ -1,3 +1,4 @@
+*> \brief \b ZLAMTSQR
 *
 *  Definition:
 *  ===========

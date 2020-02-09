@@ -89,14 +89,30 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
+ifneq ($(GCCVERSIONGTEQ9),1)
+ISAMAXKERNEL = isamax_power9.S
+else
 ISAMAXKERNEL = isamax.c
+endif
 IDAMAXKERNEL = idamax.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+ICAMAXKERNEL = icamax_power9.S
+else
 ICAMAXKERNEL = icamax.c
+endif
 IZAMAXKERNEL = izamax.c
 #
+ifneq ($(GCCVERSIONGTEQ9),1)
+ISAMINKERNEL = isamin_power9.S
+else
 ISAMINKERNEL = isamin.c
+endif
 IDAMINKERNEL = idamin.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+ICAMINKERNEL = icamin_power9.S
+else
 ICAMINKERNEL = icamin.c
+endif
 IZAMINKERNEL = izamin.c
 #
 #ISMAXKERNEL  = ../arm/imax.c
@@ -112,7 +128,11 @@ ZASUMKERNEL  = zasum.c
 #
 SAXPYKERNEL  = saxpy.c
 DAXPYKERNEL  = daxpy.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+CAXPYKERNEL  = caxpy_power9.S
+else
 CAXPYKERNEL  = caxpy.c
+endif
 ZAXPYKERNEL  = zaxpy.c
 #
 SCOPYKERNEL  = scopy.c
@@ -123,7 +143,11 @@ ZCOPYKERNEL  = zcopy.c
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
 DSDOTKERNEL  =  sdot.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+CDOTKERNEL   =  cdot_power9.S
+else
 CDOTKERNEL   =  cdot.c
+endif
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c

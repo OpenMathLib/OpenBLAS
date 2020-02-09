@@ -69,7 +69,8 @@ find_program(HOSTNAME NAMES hostname)
 find_program(UNAME NAMES uname)
 
 # Get the build name and hostname
-exec_program(${HOSTNAME} ARGS OUTPUT_VARIABLE hostname)
+execute_process(${HOSTNAME}
+  OUTPUT_VARIABLE hostname)
 string(REGEX REPLACE "[/\\\\+<> #]" "-" hostname "${hostname}")
 
 message("HOSTNAME: ${hostname}")
@@ -83,7 +84,8 @@ find_package(Git REQUIRED)
 set(CTEST_GIT_COMMAND     ${GIT_EXECUTABLE})
 set(CTEST_UPDATE_COMMAND  ${GIT_EXECUTABLE})
 macro(getuname name flag)
-  exec_program("${UNAME}" ARGS "${flag}" OUTPUT_VARIABLE "${name}")
+  execute_process(COMMAND "${UNAME}" "${flag}"
+    OUTPUT_VARIABLE "${name}")
   string(REGEX REPLACE "[/\\\\+<> #]" "-" "${name}" "${${name}}")
   string(REGEX REPLACE "^(......|.....|....|...|..|.).*" "\\1" "${name}" "${${name}}")
 endmacro()
@@ -167,7 +169,7 @@ endif()
 # dashboard then set this variable to the directory
 # the dashboard should be in
 make_directory("${CTEST_DASHBOARD_ROOT}")
-# these are the the name of the source and binary directory on disk.
+# these are the names of the source and binary directory on disk.
 # They will be appended to DASHBOARD_ROOT
 set(CTEST_SOURCE_DIRECTORY  "${CTEST_DASHBOARD_ROOT}/${CTEST_DIR_NAME}")
 set(CTEST_BINARY_DIRECTORY  "${CTEST_SOURCE_DIRECTORY}-${CTEST_BUILD_NAME}")

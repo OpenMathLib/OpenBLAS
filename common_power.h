@@ -39,6 +39,35 @@
 #ifndef COMMON_POWER
 #define COMMON_POWER
 
+#define str(x)	#x
+
+#ifdef OS_AIX
+#define XXSPLTD(T,A,z)	xxpermdi	T, A, A, 0b##z##z
+#define XXMRGHD(T,A,B)	xxpermdi	T, A, B, 0b00
+#define XXMRGLD(T,A,B)	xxpermdi	T, A, B, 0b11
+#define XXSWAPD(T,A)	xxpermdi	T, A, A, 0b10
+#define XVMOVDP(T,A)	xvcpsgndp	T, A, A
+
+#define XXSPLTD_S(T,A,z)	"xxpermdi	" str(T) ", " str(A) ", " str(A) ", 0b" str(z ## z) "	\n\t"
+#define XXMRGHD_S(T,A,B)	"xxpermdi	" str(T) ", " str(A) ", " str(B) ", 0b00	\n\t"
+#define XXMRGLD_S(T,A,B)	"xxpermdi	" str(T) ", " str(A) ", " str(B) ", 0b11	\n\t"
+#define XXSWAPD_S(T,A)	"xxpermdi	" str(T) ", " str(A) ", " str(A) ", 0b10	\n\t"
+
+#else
+#define XXSPLTD(T,A,z)	xxspltd	T, A, z
+#define XXMRGHD(T,A,B)	xxmrghd	T, A, B
+#define XXMRGLD(T,A,B)	xxmrgld	T, A, B
+#define XXSWAPD(T,A)	xxswapd	T, A
+#define XVMOVDP(T,A)	xvmovdp	T, A
+
+#define XXSPLTD_S(T,A,z)	"xxspltd	" str(T) ", " str(A) ", " str(z)"	\n\t"
+#define XXMRGHD_S(T,A,B)	"xxmrghd	" str(T) ", " str(A) ", " str(B)"	\n\t"
+#define XXMRGLD_S(T,A,B)	"xxmrgld	" str(T) ", " str(A) ", " str(B)"	\n\t"
+#define XXSWAPD_S(T,A)	"xxswapd	" str(T) ", " str(A) "	\n\t"
+
+#endif
+
+
 #if defined(POWER8) || defined(POWER9)
 #define MB		__asm__ __volatile__ ("eieio":::"memory")
 #define WMB		__asm__ __volatile__ ("eieio":::"memory")
@@ -241,7 +270,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define HAVE_PREFETCH
 #endif
 
-#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8) || defined(POWER9) || ( defined(PPC970) && ( defined(OS_DARWIN) || defined(OS_FREEBSD) ) )
+#if defined(POWER3) || defined(POWER6) || defined(PPCG4) || defined(CELL) || defined(POWER8) || defined(POWER9) || defined(PPC970)
 #define DCBT_ARG	0
 #else
 #define DCBT_ARG	8
