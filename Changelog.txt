@@ -59,42 +59,42 @@ Version 0.3.7
 11-Aug 2019
 
 common:
-        * having the gmake special variables TARGET_ARCH or TARGET_MACH
-          defined no longer causes build failures in ctest or utest
-        * defining NO_AFFINITY or USE_TLS to 0 in gmake builds no longer
-          has the same effect as setting them to 1
-        * a new test program was added to allow checking the library for
-          thread safety
-        * a new option USE_LOCKING was added to ensure thread safety when
-          OpenBLAS itself is built without multithreading but will be 
-          called from multiple threads.
-        * a build failure on Linux with glibc versions earlier than 2.5
-          was fixed
-        * a runtime error with CPU enumeration (and NO_AFFINITY not set)
-          on glibc 2.6 was fixed
-        * NO_AFFINITY was added to the CMAKE options (and defaults to being
-          active on Linux, as in the gmake builds)
+  * having the gmake special variables TARGET_ARCH or TARGET_MACH
+    defined no longer causes build failures in ctest or utest
+  * defining NO_AFFINITY or USE_TLS to 0 in gmake builds no longer
+    has the same effect as setting them to 1
+  * a new test program was added to allow checking the library for
+    thread safety
+  * a new option USE_LOCKING was added to ensure thread safety when
+    OpenBLAS itself is built without multithreading but will be 
+    called from multiple threads.
+  * a build failure on Linux with glibc versions earlier than 2.5
+    was fixed
+  * a runtime error with CPU enumeration (and NO_AFFINITY not set)
+    on glibc 2.6 was fixed
+  * NO_AFFINITY was added to the CMAKE options (and defaults to being
+    active on Linux, as in the gmake builds)
 
 x86_64:
-        * the build-time logic for detection of AVX512 availability in
-          the processor and compiler was fixed
-        * gmake builds on OSX now set the internal name of the library to 
-          libopenblas.0.dylib (consistent with CMAKE)
-        * the Haswell DGEMM kernel received a significant speedup through
-          improved prefetch and load instructions
-        * performance of DGEMM, DTRMM, DTRSM and ZDOT on Zen/Zen2 was markedly
-          increased by avoiding vpermpd instructions
-        * the SKYLAKEX (AVX512) DGEMM helper functions have now been disabled
-          to fix remaining errors in DGEMM, DSYMM and DTRMM
+  * the build-time logic for detection of AVX512 availability in
+    the processor and compiler was fixed
+  * gmake builds on OSX now set the internal name of the library to 
+    libopenblas.0.dylib (consistent with CMAKE)
+  * the Haswell DGEMM kernel received a significant speedup through
+    improved prefetch and load instructions
+  * performance of DGEMM, DTRMM, DTRSM and ZDOT on Zen/Zen2 was markedly
+    increased by avoiding vpermpd instructions
+  * the SKYLAKEX (AVX512) DGEMM helper functions have now been disabled
+    to fix remaining errors in DGEMM, DSYMM and DTRMM
 
-## POWER:
-        * added support for building on FreeBSD/powerpc64 and FreeBSD/ppc970
-        * added optimized kernels for POWER9 SGEMM and STRMM
+POWER:
+  * added support for building on FreeBSD/powerpc64 and FreeBSD/ppc970
+  * added optimized kernels for POWER9 SGEMM and STRMM
 
-## ARMV7:
-        * fixed the softfp implementations of xAMAX and IxAMAX
-        * removed the predefined -march= flags on both ARMV5 and ARMV6 as
-          they were appropriate for only a subset of platforms
+ARMV7:
+  * fixed the softfp implementations of xAMAX and IxAMAX
+  * removed the predefined -march= flags on both ARMV5 and ARMV6 as
+    they were appropriate for only a subset of platforms
 
 ====================================================================
 Version 0.3.6
