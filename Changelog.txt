@@ -1,5 +1,60 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.8
+ 9-Feb-2020
+
+common: 
+`	* LAPACK has been updated to 3.9.0 (plus patches up to 
+	  January 2nd, 2020)
+	* CMAKE support has been improved in several areas including
+	  cross-compilation
+	* a thread race condition in the GEMM3M kernels was resolved
+	* the "generic" (plain C) gemm beta kernel used by many targets
+	  has been sped up
+	* an optimized version of the LAPACK trtrs functions has been added
+	* an incompatibilty between the LAPACK tests and the OpenBLAS
+	  implementation of XERBLA was resolved, removing the numerous
+	  warnings about wrong error exits in the former 
+	* support for NetBSD has been added
+	* support for compilation with g95 and non-GNU versions of ld
+	  has been improved
+	* support for compilation with (upcoming) gcc 10 has been added
+
+POWER:
+	* worked around miscompilation of several POWER8 and POWER9 
+	  kernels by older versions of gcc
+	* added support for big-endian POWER8 and for compilation on AIX
+	* corrected bugs in the big-endian support for PPC440 and PPC970
+	* DYNAMIC_ARCH support is now available in CMAKE builds as well
+
+ARMV8:
+	* performance of DGEMM_BETA and SGEMM_NCOPY has been improved
+	* compilation for 32bit works again 
+	* performance of the RPCC function has been improved
+	* improved performance on small systems
+	* DYNAMIC_ARCH support is now available in CMAKE builds as well
+	* cross-compilation from OSX to IOS was simplified
+ 
+x86_64:
+	* a new AVX512 DGEMM kernel was added and the AVX512 SGEMM kernel
+	  was significantly improved
+	* optimized AVX512 kernels for CGEMM and ZGEMM have been added
+	* AVX2 kernels for STRMM, SGEMM, and CGEMM have been significantly
+	  sped up and optimized CGEMM3M and ZGEMM3M kernels have been added 
+	* added support for QEMU virtual cpus
+	* a compilation problem with PGI and SUN compilers was fixed
+	* Intel "Goldmont plus" is now autodetected
+	* a potential crash on program exit on MS Windows has been fixed
+
+x86:
+	* an unwanted case sensitivity in the implementation of LSAME
+  	  on older 32bit AMD cpus was fixed
+
+zarch:
+	* Z15 is now supported as Z14
+	* DYNAMIC_ARCH is now available on ZARCH as well
+
+====================================================================
 Version 0.3.7
 11-Aug 2019
 
