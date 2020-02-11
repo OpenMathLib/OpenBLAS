@@ -31,7 +31,7 @@ char* gotoblas_corename(void) {
 }
 
 // __builtin_cpu_is is not supported by zarch
-static gotolabs_t* get_coretype(void) {
+static gotoblas_t* get_coretype(void) {
 	FILE* infile;
 	char buffer[512], * p;
 
