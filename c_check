@@ -195,7 +195,7 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
 	print $tmpf "void main(void){ __asm__ volatile($code); }\n";
 
 	$args = "$msa_flags -o $tmpf.o $tmpf";
-	my @cmd = ("$compiler_name $args");
+	my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
 	system(@cmd) == 0;
 	if ($? != 0) {
 	    $have_msa = 0;
