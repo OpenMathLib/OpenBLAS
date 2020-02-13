@@ -16,7 +16,7 @@
 #ifdef CONJ
 caxpyc_k:
 #else
-caxpyc:
+caxpy_k:
 #endif
 #endif
 .LCF0:
