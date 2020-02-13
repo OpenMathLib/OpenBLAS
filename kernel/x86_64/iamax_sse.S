@@ -36,10 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-/* This kernel was found to give wrong results when used for ISMIN/ISAMIN
-   with increment != 1, although it appears to be correct for corresponding
-   MAX operations. See issue 2116 */
-
 #define ASSEMBLER
 #include "common.h"
 
@@ -863,7 +859,7 @@
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm5
 #endif
-	cmpeqps	%xmm0, %xmm5
+	cmpeqss	%xmm0, %xmm5
 
 	movss	0 * SIZE(X), %xmm6
 	addq	INCX, X
