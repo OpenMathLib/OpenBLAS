@@ -89,30 +89,52 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
-ifneq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+ifneq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
+ifneq ($(GCCVERSIONGTEQ9),1)
 ISAMAXKERNEL = isamax_power8.S
 else
 ISAMAXKERNEL = isamax.c
 endif
+else
+ISAMAXKERNEL = isamax.c
+endif
+#
 IDAMAXKERNEL = idamax.c
-ifneq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+#
+ifneq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
+ifneq ($(GCCVERSIONGTEQ9),1)
 ICAMAXKERNEL = icamax_power8.S
 else
 ICAMAXKERNEL = icamax.c
 endif
+else
+ICAMAXKERNEL = icamax.c
+endif
+#
 IZAMAXKERNEL = izamax.c
 #
-ifneq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+ifneq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
+ifneq ($(GCCVERSIONGTEQ9),1)
 ISAMINKERNEL = isamin_power8.S
 else
 ISAMINKERNEL = isamin.c
 endif
+else
+ISAMINKERNEL = isamin.c
+endif
+#
 IDAMINKERNEL = idamin.c
-ifneq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+#
+ifneq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
+ifneq ($(GCCVERSIONGTEQ9),1)
 ICAMINKERNEL = icamin_power8.S
 else
 ICAMINKERNEL = icamin.c
 endif
+else
+ICAMINKERNEL = icamin.c
+endif
+#
 IZAMINKERNEL = izamin.c
 #
 #ISMAXKERNEL  = ../arm/imax.c
@@ -128,11 +150,16 @@ ZASUMKERNEL  = zasum.c
 #
 SAXPYKERNEL  = saxpy.c
 DAXPYKERNEL  = daxpy.c
-ifneq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+ifneq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
+ifneq ($(GCCVERSIONGTEQ9),1)
 CAXPYKERNEL  = caxpy_power8.S
 else
 CAXPYKERNEL  = caxpy.c
 endif
+else
+CAXPYKERNEL  = caxpy.c
+endif
+#
 ZAXPYKERNEL  = zaxpy.c
 #
 SCOPYKERNEL  = scopy.c

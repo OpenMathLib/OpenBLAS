@@ -1,4 +1,4 @@
-ifeq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+ifeq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
 SGEMMKERNEL    =  gemm_kernel.S
 SGEMMINCOPY    =  
 SGEMMITCOPY    =  
@@ -30,7 +30,7 @@ DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-ifeq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+ifeq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
 CGEMMKERNEL    =  zgemm_kernel.S
 CGEMMINCOPY    =
 CGEMMITCOPY    =
@@ -72,7 +72,7 @@ ZTRSMKERNEL_LT	=  ztrsm_kernel_LT.S
 ZTRSMKERNEL_RN	=  ztrsm_kernel_LT.S
 ZTRSMKERNEL_RT	=  ztrsm_kernel_RT.S
 
-ifeq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
+ifeq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
 STRSMKERNEL_LN	=  trsm_kernel_LN.S
 STRSMKERNEL_LT	=  trsm_kernel_LT.S
 STRSMKERNEL_RN	=  trsm_kernel_LT.S
