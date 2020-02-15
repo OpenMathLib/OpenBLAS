@@ -86,7 +86,7 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMAXKERNEL   = ../arm/max.c
 #DMAXKERNEL   = ../arm/max.c
 #
-SMINKERNEL   = min_ppc440.S
+#SMINKERNEL   =  ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
 ifneq ($(__BYTE_ORDER__),$(__ORDER_BIG_ENDIAN__))
