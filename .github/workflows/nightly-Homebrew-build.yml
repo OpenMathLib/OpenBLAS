@@ -3,7 +3,7 @@
 on:
   push:
     paths:
-      - '**/nightlyHomebrew-build.yml'
+      - '**/nightly-Homebrew-build.yml'
   pull_request:
     branches:
       - develop
@@ -51,13 +51,16 @@ jobs:
         # the HEAD flags tell Homebrew to build the develop branch fetch via git
 
       - name: Create bottle
-        run: brew bottle -v openblas
+        run: |
+          brew bottle -v openblas
+          mkdir bottles
+          mv *.bottle.tar.gz bottles
 
       - name: Upload bottle
         uses: actions/upload-artifact@v1
         with:
           name: openblas--HEAD.catalina.bottle.tar.gz
-          paht: ./*.bottle.*
+          path: bottles
 
       - name: Show linkage
         run: brew linkage -v openblas
