@@ -1,10 +1,20 @@
+# Only the "head" branch of the OpenBLAS package is tested
+
 on:
   push:
+    paths:
+      - '**/nightlyHomebrew-build.yml'
   pull_request:
     branches:
       - develop
+    paths:
+      - '**/nightly-Homebrew-build.yml'
   schedule:
     - cron: 45 7 * * *
+# This is 7:45 AM UTC daily, late at night in the USA
+
+# Since push and pull_request will still always be building and testing the `develop` branch,
+# it only makes sense to test if this file has been changed
 
 name: Nightly-Homebrew-Build
 jobs:
@@ -27,6 +37,7 @@ jobs:
         if: github.event_name == 'schedule'
 
       - uses: actions/checkout@v2
+        # This isn't even needed, technically. Homebrew will get `develop` via git
 
       - name: Update Homebrew
         if: github.event_name != 'pull_request'
@@ -37,6 +48,7 @@ jobs:
 
       - name: Install and bottle OpenBLAS
         run: brew install --fetch-HEAD --HEAD --build-bottle --keep-tmp openblas
+        # the HEAD flags tell Homebrew to build the develop branch fetch via git
 
       - name: Create bottle
         run: brew bottle -v openblas
