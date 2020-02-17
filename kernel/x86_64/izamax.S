@@ -47,12 +47,14 @@
 #define NUM	%r10
 #define RET	%rax
 
-#ifndef USE_MIN
+#if defined(USE_MAX)
 #define FMOV	fcmovbe
 #define IMOV	cmovnbe
-#else
+#elif defined(USE_MIN)
 #define FMOV	fcmovnb
 #define IMOV	cmovb
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 #include "l1param.h"

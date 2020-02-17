@@ -53,10 +53,12 @@
 #define X	%ecx
 #define I	%edx
 
-#ifndef USE_MIN
+#if defined(USE_MAX)
 #define FMOV	fcmovbe
-#else
+#elif defined(USE_MIN)
 #define FMOV	fcmovnbe
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 #include "l1param.h"

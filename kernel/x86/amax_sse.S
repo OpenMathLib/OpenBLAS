@@ -51,9 +51,14 @@
 #define INCX	%edx
 #define I	%eax
 
-#ifdef USE_MIN
+#if defined(USE_MAX)
+#define maxps	maxps
+#define maxss	maxss
+#elif defined(USE_MIN)
 #define maxps	minps
 #define maxss	minss
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 #include "l1param.h"

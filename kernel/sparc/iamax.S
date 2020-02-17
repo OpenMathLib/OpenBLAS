@@ -88,12 +88,14 @@
 #define a8	%f15
 #endif
 
-#ifndef USE_MIN
+#if defined(USE_MAX)
 #define FCMOV	FMOVG
 #define CMOV	movg
-#else
+#elif defined(USE_MIN)
 #define FCMOV	FMOVL
 #define CMOV	movl
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 	PROLOGUE

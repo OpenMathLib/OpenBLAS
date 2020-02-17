@@ -45,10 +45,12 @@
 #define INCX	$18
 #define XX	$19
 
-#ifndef USE_MIN
+#if defined(USE_MAX)
 #define CMPLT(a, b) cmptlt a, b
-#else
+#elif defined(USE_MIN)
 #define CMPLT(a, b) cmptlt b, a
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 #define STACKSIZE 6 * 8

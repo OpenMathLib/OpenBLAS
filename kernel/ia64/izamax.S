@@ -47,12 +47,14 @@
 #define PREFETCH_SIZE (32 * 16 + 16)
 #endif
 
-#ifdef USE_MIN
+#if defined(USE_MIN)
 #define CMPUNC cmp.lt.unc
 #define CMP    cmp.lt
-#else
+#elif defined(USE_MAX)
 #define CMPUNC cmp.gt.unc
 #define CMP    cmp.gt
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 #define RET	r8

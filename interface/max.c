@@ -46,7 +46,7 @@
 
 #ifdef USE_ABS
 
-#ifndef USE_MIN
+#if defined(USE_MAX)
 
 /* ABS & MAX */
 #ifndef COMPLEX
@@ -67,7 +67,7 @@
 #endif
 #endif
 
-#else
+#elif defined(USE_MIN)
 
 /* ABS & MIN */
 #ifndef COMPLEX
@@ -92,7 +92,7 @@
 
 #else
 
-#ifndef USE_MIN
+#if defined(USE_MAX)
 
 /* MAX */
 #ifdef XDOUBLE
@@ -103,7 +103,7 @@
 #define MAX_K	SMAX_K
 #endif
 
-#else
+#elif defined (USE_MIN)
 
 /* MIN */
 #ifdef XDOUBLE

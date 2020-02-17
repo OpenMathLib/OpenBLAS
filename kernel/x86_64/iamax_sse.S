@@ -52,11 +52,14 @@
 #define XX	%r10
 #define	MM	%r11
 
+#if defined(USE_MAX)
 #define MAXPS	maxps
 #define MAXSS	maxss
-#ifdef USE_MIN
+#elif defined(USE_MIN)
 #define MAXPS	minps
 #define MAXSS	minss
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 #include "l1param.h"

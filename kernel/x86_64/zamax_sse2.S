@@ -45,9 +45,14 @@
 
 #define I	%rax
 
-#ifdef USE_MIN
+#if defined(USE_MAX)
+#define maxpd	maxpd
+#define maxsd	maxsd
+#elif defined(USE_MIN)
 #define maxpd	minpd
 #define maxsd	minsd
+#else
+#error Neither USE_MAX nor USE_MIN is defined
 #endif
 
 #include "l1param.h"

@@ -603,22 +603,22 @@ qxnrm2.$(SUFFIX) qxnrm2.$(PSUFFIX) : nrm2.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 samax.$(SUFFIX) samax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 damax.$(SUFFIX) damax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 qamax.$(SUFFIX) qamax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 scamax.$(SUFFIX) scamax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 dzamax.$(SUFFIX) dzamax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 qxamax.$(SUFFIX) qxamax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 samin.$(SUFFIX) samin.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
@@ -639,13 +639,13 @@ qxamin.$(SUFFIX) qxamin.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
 
 smax.$(SUFFIX) smax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 dmax.$(SUFFIX) dmax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 qmax.$(SUFFIX) qmax.$(PSUFFIX) : max.c
-	$(CC) $(CFLAGS) -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 smin.$(SUFFIX) smin.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MIN $< -o $(@F)
@@ -657,22 +657,22 @@ qmin.$(SUFFIX) qmin.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MIN $< -o $(@F)
 
 isamax.$(SUFFIX) isamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 idamax.$(SUFFIX) idamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 iqamax.$(SUFFIX) iqamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 icamax.$(SUFFIX) icamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 izamax.$(SUFFIX) izamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 ixamax.$(SUFFIX) ixamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 isamin.$(SUFFIX) isamin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
@@ -693,13 +693,13 @@ ixamin.$(SUFFIX) ixamin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
 
 ismax.$(SUFFIX) ismax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 idmax.$(SUFFIX) idmax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 iqmax.$(SUFFIX) iqmax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 ismin.$(SUFFIX) ismin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -c -UUSE_ABS -DUSE_MIN $< -o $(@F)
@@ -1372,16 +1372,16 @@ xhemm3m.$(SUFFIX) xhemm3m.$(PSUFFIX) : symm.c
 	$(CC) -c $(CFLAGS) -DGEMM3M -DHEMM $< -o $(@F)
 
 cblas_isamax.$(SUFFIX) cblas_isamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_idamax.$(SUFFIX) cblas_idamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_icamax.$(SUFFIX) cblas_icamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_izamax.$(SUFFIX) cblas_izamax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_isamin.$(SUFFIX) cblas_isamin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
@@ -1396,10 +1396,10 @@ cblas_izamin.$(SUFFIX) cblas_izamin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
 
 cblas_ismax.$(SUFFIX) cblas_ismax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_idmax.$(SUFFIX) cblas_idmax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_ismin.$(SUFFIX) cblas_ismin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MIN $< -o $(@F)
@@ -1408,10 +1408,10 @@ cblas_idmin.$(SUFFIX) cblas_idmin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MIN $< -o $(@F)
 
 cblas_icmax.$(SUFFIX) cblas_icmax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_izmax.$(SUFFIX) cblas_izmax.$(PSUFFIX) : imax.c
-	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -UUSE_MIN $< -o $(@F)
+	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MAX $< -o $(@F)
 
 cblas_icmin.$(SUFFIX) cblas_icmin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MIN $< -o $(@F)
