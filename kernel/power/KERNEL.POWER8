@@ -88,7 +88,10 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
-#
+
+ISMINKERNEL    = imin.S
+ISMAXKERNEL    = imax.S
+
 ifneq ($(__BYTE_ORDER__),"__ORDER_BIG_ENDIAN__")
 ifneq ($(GCCVERSIONGTEQ9),1)
 ISAMAXKERNEL = isamax_power8.S
