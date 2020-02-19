@@ -1298,6 +1298,13 @@ int main(int argc, char *argv[]){
 #endif
 #endif
 
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
+#endif
+#if defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
+printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
+#endif
+
 #ifdef MAKE_NB_JOBS
   #if MAKE_NB_JOBS > 0
     printf("MAKE += -j %d\n", MAKE_NB_JOBS);

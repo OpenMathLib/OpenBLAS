@@ -1328,6 +1328,7 @@ export OSNAME
 export ARCH
 export CORE
 export LIBCORE
+export __BYTE_ORDER__
 export PGCPATH
 export CONFIG
 export CC
