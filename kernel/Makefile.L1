@@ -133,29 +133,29 @@ endif
 ### IMAX ###
 
 ifndef ISMAXKERNEL
-ISMAXKERNEL = iamax.S
+ISMAXKERNEL = imax.S
 endif
 
 ifndef IDMAXKERNEL
-IDMAXKERNEL = iamax.S
+IDMAXKERNEL = imax.S
 endif
 
 ifndef IQMAXKERNEL
-IQMAXKERNEL = iamax.S
+IQMAXKERNEL = imax.S
 endif
 
 ### IMIN ###
 
 ifndef ISMINKERNEL
-ISMINKERNEL = iamin.S
+ISMINKERNEL = imin.S
 endif
 
 ifndef IDMINKERNEL
-IDMINKERNEL = iamin.S
+IDMINKERNEL = imin.S
 endif
 
 ifndef IQMINKERNEL
-IQMINKERNEL = iamin.S
+IQMINKERNEL = imin.S
 endif
 
 ### ASUM ###
