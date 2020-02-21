@@ -328,6 +328,7 @@ ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
 GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
+GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 ifeq ($(GCCVERSIONGT4), 1)
@@ -554,6 +555,7 @@ DYNAMIC_CORE += CORTEXA53
 DYNAMIC_CORE += CORTEXA57
 DYNAMIC_CORE += CORTEXA72
 DYNAMIC_CORE += CORTEXA73
+DYNAMIC_CORE += NEOVERSEN1
 DYNAMIC_CORE += FALKOR
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
