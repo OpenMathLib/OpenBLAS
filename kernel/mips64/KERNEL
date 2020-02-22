@@ -167,3 +167,27 @@ endif
 
 CGEMM3MKERNEL    =  zgemm3m_kernel.S
 ZGEMM3MKERNEL    =  zgemm3m_kernel.S
+
+ifndef ISMINKERNEL
+ISMINKERNEL = imin.S
+endif
+
+ifndef IDMINKERNEL
+IDMINKERNEL = imin.S
+endif
+
+ifndef IQMINKERNEL
+IQMINKERNEL = imin.S
+endif
+
+ifndef ISMAXKERNEL
+ISMAXKERNEL = imax.S
+endif
+
+ifndef IDMAXKERNEL
+IDMAXKERNEL = imax.S
+endif
+
+ifndef IQMAXKERNEL
+IQMAXKERNEL = imax.S
+endif
