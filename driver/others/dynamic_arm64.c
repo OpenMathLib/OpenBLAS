@@ -197,7 +197,7 @@ static gotoblas_t *get_coretype(void) {
       switch (part)
       {
         case 0x000: // Skylark/EMAG8180
-          return &gotoblas_EMAG818;
+          return &gotoblas_EMAG8180;
       }
       break;
     case 0x51: // Qualcomm
