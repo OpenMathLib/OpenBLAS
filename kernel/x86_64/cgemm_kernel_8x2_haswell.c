@@ -50,7 +50,7 @@
   "vmovups (%0),%%ymm0; vmovups 32(%0),%%ymm1; prefetcht0 512(%0); addq $64,%0;"\
   acc_m8n2_con(0,1,4,5,6,7,0,8,%1) acc_m8n2_con(0,1,8,9,10,11,0,8,%1,%%r12,1)
 #define KERNEL_2_k1m8n4 \
-  "vpermilps $177,%%ymm0,%%ymm0; vpermilps $177,%%ymm1,%%ymm1;"\
+  "vpermilps $177,-64(%0),%%ymm0; vpermilps $177,-32(%0),%%ymm1;"\
   acc_m8n2_con(0,1,4,5,6,7,4,12,%1) acc_m8n2_con(0,1,8,9,10,11,4,12,%1,%%r12,1)
 #define KERNEL_1_k1m8n6 KERNEL_1_k1m8n4 acc_m8n2_con(0,1,12,13,14,15,0,8,%1,%%r12,2)
 #define KERNEL_2_k1m8n6 KERNEL_2_k1m8n4 acc_m8n2_con(0,1,12,13,14,15,4,12,%1,%%r12,2)
