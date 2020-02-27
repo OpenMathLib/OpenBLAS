@@ -93,7 +93,6 @@
   "movq $10,%5; movq $84,%%r15;"\
   #ndim"8881:\n\t"\
   "prefetcht1 (%3); subq $63,%3; addq %%r15,%3;"\
-  "prefetcht0 64(%1); prefetcht0 64(%1,%%r12,1); prefetcht0 64(%1,%%r12,2);"\
   KERNEL_k1m8n##ndim KERNEL_k1m8n##ndim\
   "testq $12,%5; movq $84,%%r15; cmovz %4,%%r15; prefetcht1 (%8); addq $16,%8;"\
   KERNEL_k1m8n##ndim KERNEL_k1m8n##ndim\
